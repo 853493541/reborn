@@ -9,3 +9,7 @@ node_modules/
 .pytest_cache/
 .mypy_cache/
 
+# Local/private game assets and extracted packages
+assets/*
+!assets/README.md
+
