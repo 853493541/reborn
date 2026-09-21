@@ -1,0 +1,62 @@
+{
+  "verdict": "FAIL",
+  "checks": {
+    "walk_ui_mixer": true,
+    "jump_ui_mixer": true,
+    "walk_not_jump2": true,
+    "jump_is_jump1": false,
+    "walk_shot_exists": true,
+    "jump_shot_exists": true,
+    "walk_sha_match_gt": false,
+    "jump_sha_match_gt": false,
+    "walk_pass": true,
+    "jump_pass": false
+  },
+  "walk": {
+    "found": true,
+    "list_text": "f1b02yd行走",
+    "mixer": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\samples\\actor_presets\\f1_hualuo\\mapviewer_clips\\hualuo_walk.fbx",
+    "mixer_name": "hualuo_walk.fbx",
+    "vp": "花萝 FBX · Mixer t=0.00 · f1s07cj重剑技能15",
+    "url": "http://127.0.0.1:64752/web/fbx_viewport.html?fbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_no_anim.fbx&tex=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Ftex%2F&closeup=1&clipFbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_walk.fbx&t=0.0000",
+    "has_mixer": true,
+    "url_has_clipFbx": true,
+    "frame": 0,
+    "frames": 19,
+    "url_after_scrub": "http://127.0.0.1:64752/web/fbx_viewport.html?fbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_no_anim.fbx&tex=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Ftex%2F&closeup=1&clipFbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_walk.fbx&t=0.0000"
+  },
+  "jump": {
+    "found": true,
+    "list_text": "f1b02yd小跳b",
+    "mixer": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\samples\\actor_presets\\f1_hualuo\\mapviewer_clips\\hualuo_walk.fbx",
+    "mixer_name": "hualuo_walk.fbx",
+    "vp": "花萝 FBX · Mixer t=0.00 · f1s07cj重剑技能15",
+    "url": "http://127.0.0.1:64752/web/fbx_viewport.html?fbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_no_anim.fbx&tex=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Ftex%2F&closeup=1&clipFbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_walk.fbx&t=0.0000",
+    "has_mixer": true,
+    "url_has_clipFbx": true,
+    "frame": 0,
+    "frames": 19,
+    "url_after_scrub": "http://127.0.0.1:64752/web/fbx_viewport.html?fbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_no_anim.fbx&tex=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Ftex%2F&closeup=1&clipFbx=%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fmapviewer_clips%2Fhualuo_walk.fbx&t=0.0000"
+  },
+  "sha": {
+    "walk": "58b329e5b03ffd78",
+    "jump": "58b329e5b03ffd78",
+    "gt_walk": "22219321cf633465",
+    "gt_jump": "625535d9da1986c7"
+  },
+  "shots": {
+    "walk": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_ui_walk_mid.png",
+    "jump": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_ui_jump_mid.png",
+    "window": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_ui_player_window.png"
+  },
+  "meta_w": {
+    "ok": null,
+    "error": null,
+    "bytes": 307134
+  },
+  "meta_j": {
+    "ok": null,
+    "error": null,
+    "bytes": 307134
+  }
+}

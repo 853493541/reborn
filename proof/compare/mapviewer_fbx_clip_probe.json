@@ -1,0 +1,81 @@
+{
+  "results": [
+    {
+      "path": "C:\\SeasunGame\\MovieEditor\\source\\fbx\\花萝\\花萝无动作.fbx",
+      "folder": "花萝",
+      "name": "花萝无动作.fbx",
+      "bytes": 2771440,
+      "sha256": "c841b8b93864fc565a3dc9eae2ce9d95b205f5e85ee661de687225eb13459289",
+      "binary": true,
+      "AnimStack_hits": 5,
+      "AnimationStack_nul": 0,
+      "clip_name_candidates": [
+        "TakeSseasun",
+        "Takes H*"
+      ]
+    },
+    {
+      "path": "C:\\SeasunGame\\MovieEditor\\source\\fbx\\走路\\花萝走路.fbx",
+      "folder": "走路",
+      "name": "花萝走路.fbx",
+      "bytes": 5320816,
+      "sha256": "79c49976827fb2bfae0d29816c0e95087bbd97150ec3c70053d7fda39cd4ef0e",
+      "binary": true,
+      "AnimStack_hits": 5,
+      "AnimationStack_nul": 0,
+      "clip_name_candidates": [
+        "TakeSseasun",
+        "Takes.Q"
+      ]
+    },
+    {
+      "path": "C:\\SeasunGame\\MovieEditor\\source\\fbx\\跳跃1\\跳跃1.fbx",
+      "folder": "跳跃1",
+      "name": "跳跃1.fbx",
+      "bytes": 4927680,
+      "sha256": "a4abeb70c861a79f43017ebfd2862ec2a95238d425efd310bfa93e635d5aed26",
+      "binary": true,
+      "AnimStack_hits": 5,
+      "AnimationStack_nul": 0,
+      "clip_name_candidates": [
+        "TakeSseasun",
+        "Takes.K"
+      ]
+    },
+    {
+      "path": "C:\\SeasunGame\\MovieEditor\\source\\fbx\\跳跃2\\跳跃2.fbx",
+      "folder": "跳跃2",
+      "name": "跳跃2.fbx",
+      "bytes": 4888368,
+      "sha256": "488116c87d29c05a6e7c26d620a92e08b758a2b9ad86f2637dfd7b1d004df056",
+      "binary": true,
+      "AnimStack_hits": 5,
+      "AnimationStack_nul": 0,
+      "clip_name_candidates": [
+        "TakeSseasun",
+        "Takes`旿"
+      ]
+    },
+    {
+      "path": "C:\\SeasunGame\\MovieEditor\\source\\fbx\\跳跃3\\跳跃3.fbx",
+      "folder": "跳跃3",
+      "name": "跳跃3.fbx",
+      "bytes": 4966992,
+      "sha256": "0848dbedf672a4c068992bb5b58957f5958f6041ae528e9a5b60509cc14a4b10",
+      "binary": true,
+      "AnimStack_hits": 5,
+      "AnimationStack_nul": 0,
+      "clip_name_candidates": [
+        "TakeSseasun",
+        "Takes菿"
+      ]
+    }
+  ],
+  "staged": [
+    "samples/actor_presets/f1_hualuo/mapviewer_clips/花萝__花萝无动作.fbx",
+    "samples/actor_presets/f1_hualuo/mapviewer_clips/走路__花萝走路.fbx",
+    "samples/actor_presets/f1_hualuo/mapviewer_clips/跳跃1__跳跃1.fbx",
+    "samples/actor_presets/f1_hualuo/mapviewer_clips/跳跃2__跳跃2.fbx",
+    "samples/actor_presets/f1_hualuo/mapviewer_clips/跳跃3__跳跃3.fbx"
+  ]
+}

@@ -1,0 +1,22 @@
+JX3 Ani Player proof render status
+=================================
+
+MINA: loaded f1_2227_body_hd.mesh.ani bones=33 frames=46 edges=13
+MIN2: OK m2b02yd奔跑.ani bones=191 frames=23 -> min2_run_stick.png
+MIN2: OK m2b02yd行走.ani bones=191 frames=19 -> min2_walk_stick.png
+ARCHIVE: copied /workspace/proof/b1_stick_f10.png -> /workspace/jx3-ani-player/proof/b1_stick_f10.png
+ARCHIVE: copied /workspace/proof/thor_b1_stick_f10.png -> /workspace/jx3-ani-player/proof/thor_b1_stick_f10.png
+
+MINA proof frames: 3
+MIN2 stick proof possible: YES
+MIN2 frames written this run: 2
+Archived interim frames: 2
+
+Outputs:
+  /workspace/jx3-ani-player/proof/mina_f1_2227_body_f00.png
+  /workspace/jx3-ani-player/proof/mina_f1_2227_body_fmid.png
+  /workspace/jx3-ani-player/proof/mina_f1_2227_body_flast.png
+  /workspace/jx3-ani-player/proof/min2_run_stick.png
+  /workspace/jx3-ani-player/proof/min2_walk_stick.png
+  /workspace/jx3-ani-player/proof/b1_stick_f10.png
+  /workspace/jx3-ani-player/proof/thor_b1_stick_f10.png

@@ -1,0 +1,2368 @@
+/**
+ * F1 花萝 textured FBX viewport — mirrors map-viewer ensurePlayerAnchorRig.
+ * Pose feed: poll /runtime/pose.json written by fbx_actor.apply_pose().
+ *
+ * Color fix = map-viewer prepareAnchorRigMaterials:
+ *  1. renderer.outputColorSpace = THREE.SRGBColorSpace
+ *  2. zero emissive if no emissiveMap; DoubleSide; alphaTest if needed
+ *  3. override material.map with {materialName}_Diffuse.png|.tga (sRGB, flipY=false)
+ *  4. bind TangentSpace_Normal (DirectX normalScale y=-1) + SpecularColor→specularMap
+ *  5. material.color.setHex(0xffffff) after override
+ *  6. enforce sRGB on leftover embedded map / emissiveMap
+ *  7. NEVER bind Normal/MRE/Specular into material.map; do not strip face normals
+ */
+import * as THREE from 'three';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createSfxLayer } from './sfx_layer.js?v=1789968018';
+
+const params = new URLSearchParams(location.search);
+const FBX_URL = params.get('fbx') || './samples/actor_presets/f1_hualuo/hualuo_no_anim.fbx';
+const TEX_BASE = (params.get('tex') || './samples/actor_presets/f1_hualuo/tex/').replace(/\/?$/, '/');
+const POSE_URL = params.get('pose') || './runtime/pose.json';
+const CLOSEUP = params.get('closeup') === '1';
+// Map-viewer GT path: AnimationMixer + clip JSON (MIN2→AnimationClip export).
+const CLIP_URL = params.get('clip') || '';
+const CLIP_FBX_URL = params.get('clipFbx') || params.get('clip_fbx') || '';
+const CLIP_TIME = params.has('t') ? Number(params.get('t')) : null;
+const CLIP_FRAME = params.has('frame') ? Number(params.get('frame')) : null;
+const SFX_ENABLED = params.get('sfx') === 'flws';
+const MODEL_MODE = params.get('model') || (SFX_ENABLED ? 'box' : 'fbx');
+const USE_SFX_BOX = MODEL_MODE === 'box';
+const SFX_API_URL = params.get('sfxApi') || '/api/sfx/flws';
+const SFX_SERVICE_URL = params.get('sfxService') || 'http://127.0.0.1:3015';
+let mixer = null;
+let clipAction = null;
+let clipDuration = 0;
+let mixerClock = new THREE.Clock(false);
+let useMixer = false;
+let sfxLayer = null;
+let sfxPoseTimeMs = 0;
+let sfxStatus = '';
+let sfxClockStartMs = performance.now();
+
+const hud = document.getElementById('hud');
+const canvas = document.getElementById('c');
+let sfxProgress = document.getElementById('sfx-progress');
+let sfxProgressLabel = document.getElementById('sfx-progress-label');
+let sfxProgressFill = document.getElementById('sfx-progress-fill');
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0x080c12, 1);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 5000);
+camera.position.set(0, 150, CLOSEUP ? 220 : 400);
+camera.lookAt(0, 80, 0);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enableZoom = true;
+controls.zoomSpeed = 1.15;
+controls.minDistance = 20;
+controls.maxDistance = 3000;
+controls.target.set(0, 80, 0);
+controls.update();
+
+scene.add(new THREE.HemisphereLight(0xc8ddf2, 0x16202a, 1.55));
+const key = new THREE.DirectionalLight(0xfff3dd, 1.85);
+key.position.set(150, 300, 200);
+scene.add(key);
+scene.add(new THREE.AmbientLight(0xa8bfd5, 0.7));
+const rim = new THREE.DirectionalLight(0x6e97c7, 1.1);
+rim.position.set(-120, 80, -60);
+scene.add(rim);
+const fillFace = new THREE.DirectionalLight(0xffe6d5, 0.9);
+fillFace.position.set(0, 120, 160);
+scene.add(fillFace);
+scene.add(new THREE.GridHelper(800, 40, 0x1a2a3a, 0x111a24));
+
+const textureLoader = new THREE.TextureLoader();
+textureLoader.setPath(TEX_BASE);
+
+let root = null;
+const boneByName = new Map();
+let lastPoseVer = -1;
+let textureFileLookup = new Map();
+
+function resize() {
+  const w = canvas.clientWidth || window.innerWidth;
+  const h = canvas.clientHeight || window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / Math.max(h, 1);
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+function updateSfxProgress(info) {
+  if (!SFX_ENABLED || !info) return;
+  if (!sfxProgress) {
+    sfxProgress = document.createElement('div');
+    sfxProgress.id = 'sfx-progress';
+    sfxProgress.style.cssText = 'position:absolute;left:10px;top:34px;width:min(360px,calc(100vw - 20px));z-index:3;display:none;color:#dbe8f5;font:11px/1.3 system-ui,sans-serif;text-shadow:0 1px 2px #000;pointer-events:none';
+    sfxProgressLabel = document.createElement('div');
+    sfxProgressLabel.id = 'sfx-progress-label';
+    sfxProgressFill = document.createElement('div');
+    sfxProgressFill.id = 'sfx-progress-fill';
+    const track = document.createElement('div');
+    track.style.cssText = 'height:8px;margin-top:4px;overflow:hidden;border:1px solid #52677d;border-radius:5px;background:#121c27';
+    sfxProgressFill.style.cssText = 'width:0%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#4ea8ff,#9be7ff);transition:width 120ms ease-out';
+    track.appendChild(sfxProgressFill);
+    sfxProgress.append(sfxProgressLabel, track);
+    document.body.appendChild(sfxProgress);
+  }
+  sfxProgress.style.display = 'block';
+  if (info.status && sfxProgressLabel) {
+    const percent = Number.isFinite(info.progress)
+      ? ` ${Math.round(Math.max(0, Math.min(1, info.progress)) * 100)}%`
+      : '';
+    sfxProgressLabel.textContent = `${info.status}${percent}`;
+  }
+  if (sfxProgressFill && Number.isFinite(info.progress)) {
+    const percent = Math.max(0, Math.min(1, info.progress)) * 100;
+    sfxProgressFill.style.width = `${percent}%`;
+  }
+}
+
+function indexBones(obj) {
+  boneByName.clear();
+  obj.traverse((o) => {
+    if (o.isBone || o.type === 'Bone') {
+      boneByName.set(o.name, o);
+      boneByName.set(o.name.toLowerCase(), o);
+    }
+  });
+}
+
+function normBone(n) {
+  return String(n || '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+function boneLookupKeys(name) {
+  const raw = String(name || '');
+  const low = raw.toLowerCase();
+  const spaced = normBone(raw);
+  const underscored = spaced.replace(/\s+/g, '_').replace(/-/g, '_');
+  const spacedFromUnder = underscored.replace(/_/g, ' ');
+  return [raw, low, spaced, underscored, spacedFromUnder, `bip01 ${underscored.replace(/^bip01_?/, '')}`.trim()];
+}
+
+function findBone(name) {
+  for (const k of boneLookupKeys(name)) {
+    const b = boneByName.get(k);
+    if (b) return b;
+  }
+  return null;
+}
+
+function applyMatrices(matrices, boneNames) {
+  if (!root || !matrices || !boneNames) return;
+  const n = Math.min(matrices.length, boneNames.length);
+  for (let i = 0; i < n; i++) {
+    const name = boneNames[i];
+    const bone = findBone(name);
+    if (!bone) continue;
+    const m = matrices[i];
+    if (!m || m.length < 12) continue;
+    const e = bone.matrix;
+    e.set(
+      m[0], m[1], m[2], m[3],
+      m[4], m[5], m[6], m[7],
+      m[8], m[9], m[10], m[11],
+      0, 0, 0, 1,
+    );
+    e.transpose();
+    bone.matrixAutoUpdate = false;
+    bone.updateMatrixWorld(true);
+  }
+  root.traverse((o) => {
+    if (o.isSkinnedMesh) o.skeleton?.update();
+  });
+}
+
+
+/** Build THREE.AnimationClip from exported MIN2 clip JSON; drive via AnimationMixer (map-viewer GT). */
+function normalizeTrackBoneName(trackName) {
+  const name = String(trackName || '');
+  const propertyIndex = name.lastIndexOf('.');
+  if (propertyIndex < 0) return name;
+  const bindingPath = name.slice(0, propertyIndex);
+  const propertyName = name.slice(propertyIndex);
+  const bone = findBone(bindingPath) || findBone(bindingPath.split('/').pop());
+  if (bone) return `${bone.name}${propertyName}`;
+  return name;
+}
+
+async function loadClipJson(url) {
+  const res = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`clip HTTP ${res.status}`);
+  return res.json();
+}
+
+function timesMax(tracks) {
+  let m = 0;
+  for (const t of tracks) {
+    const arr = t.times;
+    if (arr && arr.length) m = Math.max(m, arr[arr.length - 1]);
+  }
+  return m;
+}
+
+
+function animationClipFromJson(payload, rootObj) {
+  if (payload && payload.space === 'worldUuid') {
+    return animationClipFromWorldUuid(payload, rootObj || (typeof root !== 'undefined' ? root : null));
+  }
+  if (payload && payload.space === 'world') {
+    return animationClipFromWorldJson(payload, rootObj || (typeof root !== 'undefined' ? root : null));
+  }
+  if (payload && payload.space === 'min2localDelta') {
+    return animationClipFromMin2LocalDelta(payload, rootObj || (typeof root !== 'undefined' ? root : null));
+  }
+  const tracks = [];
+  for (const tr of payload.tracks || []) {
+    const tname = normalizeTrackBoneName(tr.name);
+    const times = Float32Array.from(tr.times || []);
+    const values = Float32Array.from(tr.values || []);
+    if (!times.length || !values.length) continue;
+    if (tr.type === 'quaternion' || tname.endsWith('.quaternion')) {
+      tracks.push(new THREE.QuaternionKeyframeTrack(tname, times, values));
+    } else if (tr.type === 'vector' || tname.endsWith('.position') || tname.endsWith('.scale')) {
+      tracks.push(new THREE.VectorKeyframeTrack(tname, times, values));
+    }
+  }
+  const duration = Number(payload.duration) || timesMax(tracks);
+  return new THREE.AnimationClip(payload.name || 'clip', duration, tracks);
+}
+
+
+﻿function animationClipFromMin2LocalDelta(payload, rootObj) {
+  const fps = Number(payload.fps) || 30;
+  const fc = Number(payload.frame_count) || 0;
+  const duration = Number(payload.duration) || Math.max(0, (fc - 1) / fps);
+  const times = Float32Array.from(Array.from({ length: fc }, (_, i) => i / fps));
+  const byKey = new Map();
+  for (const b of payload.bones || []) {
+    for (const k of boneLookupKeys(b.name)) byKey.set(_normNameKey(k), b);
+    byKey.set(_normNameKey(b.name), b);
+  }
+  const bones = [];
+  const seen = new Set();
+  for (const b of boneByName.values()) {
+    if (seen.has(b.uuid)) continue;
+    seen.add(b.uuid);
+    bones.push(b);
+  }
+  const qRest = new THREE.Quaternion();
+  const qAnim = new THREE.Quaternion();
+  const qBind = new THREE.Quaternion();
+  const qOut = new THREE.Quaternion();
+  const qInv = new THREE.Quaternion();
+  const tracks = [];
+  let matched = 0;
+  for (const b of bones) {
+    const src = byKey.get(_normNameKey(b.name));
+    if (!src) continue;
+    const k = _normNameKey(b.name);
+    if (!(k.startsWith('bip01') || k.startsWith('bone_'))) continue;
+    if (k.includes('finger') || k.includes('toe')) continue;
+    matched += 1;
+    const qvals = [];
+    const pvals = [];
+    qBind.copy(b.quaternion);
+    const bindPos = b.position.clone();
+    const r0 = src.local_quats[0];
+    qRest.set(r0[0], r0[1], r0[2], r0[3]).normalize();
+    for (let fi = 0; fi < fc; fi++) {
+      const qa = src.local_quats[fi];
+      qAnim.set(qa[0], qa[1], qa[2], qa[3]).normalize();
+      qInv.copy(qRest).invert();
+      qOut.copy(qBind).multiply(qInv).multiply(qAnim);
+      if (qvals.length >= 4) {
+        const px = qvals[qvals.length - 4];
+        const py = qvals[qvals.length - 3];
+        const pz = qvals[qvals.length - 2];
+        const pw = qvals[qvals.length - 1];
+        if (px * qOut.x + py * qOut.y + pz * qOut.z + pw * qOut.w < 0) {
+          qOut.set(-qOut.x, -qOut.y, -qOut.z, -qOut.w);
+        }
+      }
+      qvals.push(qOut.x, qOut.y, qOut.z, qOut.w);
+      pvals.push(bindPos.x, bindPos.y, bindPos.z);
+    }
+    tracks.push(new THREE.VectorKeyframeTrack(b.name + '.position', times, Float32Array.from(pvals)));
+    tracks.push(new THREE.QuaternionKeyframeTrack(b.name + '.quaternion', times, Float32Array.from(qvals)));
+  }
+  const clip = new THREE.AnimationClip(payload.name || 'clip', duration, tracks);
+  clip.userData = { worldRetargetMatched: matched };
+  return clip;
+}
+
+
+/** MIN2 parent-local → helper Bone hierarchy → SkeletonUtils.retargetClip → Mixer (Tony path).
+ * Axis/bind offsets go INTO the helper BEFORE retargetClip (authorized).
+ */
+
+function _normNameKey(n) {
+  return String(n || '').toLowerCase().replace(/[\s\-]+/g, '_').trim();
+}
+
+function _aliasKeys(n) {
+  const k = _normNameKey(n);
+  const out = new Set([k]);
+  out.add(k.replace(/^bip01_/, ''));
+  out.add(k.replace(/^bone_/, ''));
+  // space/underscore already normalized; also try bip01 + rest without extra underscores
+  if (k.startsWith('bip01') && !k.startsWith('bip01_')) out.add('bip01_' + k.slice(5));
+  if (k.startsWith('bone') && !k.startsWith('bone_')) out.add('bone_' + k.slice(4));
+  // common JX3 ↔ FBX aliases
+  const swaps = [
+    [/^bip01_l_/, 'bip01_l'],
+    [/^bip01_r_/, 'bip01_r'],
+  ];
+  for (const [re, rep] of swaps) {
+    if (re.test(k)) out.add(k.replace(re, rep));
+  }
+  // bone_spine ↔ bip01_spine etc.
+  if (k.startsWith('bone_')) out.add('bip01_' + k.slice(5));
+  if (k.startsWith('bip01_')) out.add('bone_' + k.slice(6));
+  return [...out];
+}
+
+function findBodySkinnedMeshForRetarget(rootObj) {
+  let best = null;
+  let bestN = -1;
+  let bestName = '';
+  rootObj.traverse((o) => {
+    if (!o?.isSkinnedMesh || !o.skeleton?.bones?.length) return;
+    const n = o.skeleton.bones.length;
+    const nm = String(o.name || '').toLowerCase();
+    const bodyBias = /hualuo|body|f1|player/.test(nm) ? 1000 : 0;
+    const score = n + bodyBias;
+    if (score > bestN) {
+      best = o;
+      bestN = score;
+      bestName = o.name || '';
+    }
+  });
+  return { mesh: best, boneCount: best?.skeleton?.bones?.length || 0, name: bestName };
+}
+
+function buildMin2HelperArmature(payload) {
+  const hier = payload.hierarchy || [];
+  if (!hier.length) throw new Error('min2HelperRetarget: empty hierarchy');
+
+  const byExact = new Map();
+  const byNorm = new Map();
+  for (const h of hier) {
+    const bone = new THREE.Bone();
+    bone.name = h.name;
+    bone.matrixAutoUpdate = true;
+    byExact.set(h.name, bone);
+    for (const a of _aliasKeys(h.name)) byNorm.set(a, bone);
+    byNorm.set(_normNameKey(h.name), bone);
+  }
+
+  const roots = [];
+  for (const h of hier) {
+    const bone = byExact.get(h.name);
+    const pname = h.parent;
+    if (pname) {
+      const parent = byExact.get(pname) || byNorm.get(_normNameKey(pname));
+      if (parent && parent !== bone) parent.add(bone);
+      else roots.push(bone);
+    } else {
+      roots.push(bone);
+    }
+  }
+
+  const firstPos = new Map();
+  const firstQuat = new Map();
+  for (const tr of payload.tracks || []) {
+    const name = String(tr.name || '');
+    const dot = name.lastIndexOf('.');
+    if (dot < 0) continue;
+    const bname = name.slice(0, dot);
+    const prop = name.slice(dot + 1);
+    const vals = tr.values || [];
+    if (prop === 'position' && vals.length >= 3) {
+      firstPos.set(bname, new THREE.Vector3(vals[0], vals[1], vals[2]));
+    } else if (prop === 'quaternion' && vals.length >= 4) {
+      firstQuat.set(bname, new THREE.Quaternion(vals[0], vals[1], vals[2], vals[3]).normalize());
+    }
+  }
+  for (const h of hier) {
+    const bone = byExact.get(h.name);
+    const p = firstPos.get(h.name);
+    const q = firstQuat.get(h.name);
+    if (p) bone.position.copy(p);
+    if (q) bone.quaternion.copy(q);
+    bone.scale.set(1, 1, 1);
+  }
+
+  const helperRoot = new THREE.Group();
+  helperRoot.name = '__min2HelperArmature';
+  for (const r of roots) helperRoot.add(r);
+
+  // (1) Z-up → Y-up to match 花萝 FBX (Seasun MIN2 is Z-up).
+  helperRoot.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+  helperRoot.updateMatrixWorld(true);
+
+  const boneList = [];
+  helperRoot.traverse((o) => {
+    if (o.isBone) boneList.push(o);
+  });
+  helperRoot.skeleton = new THREE.Skeleton(boneList);
+  helperRoot.updateMatrixWorld(true);
+  return helperRoot;
+}
+
+function buildRetargetNameMap(targetBones, sourceBones) {
+  const srcByNorm = new Map();
+  for (const b of sourceBones) {
+    for (const a of _aliasKeys(b.name)) srcByNorm.set(a, b.name);
+    if (typeof boneLookupKeys === 'function') {
+      for (const k of boneLookupKeys(b.name)) {
+        for (const a of _aliasKeys(k)) srcByNorm.set(a, b.name);
+      }
+    }
+  }
+  const names = {};
+  let matched = 0;
+  const unmatched = [];
+  for (const b of targetBones) {
+    let hit = null;
+    for (const a of _aliasKeys(b.name)) {
+      hit = srcByNorm.get(a);
+      if (hit) break;
+    }
+    if (hit) {
+      names[b.name] = hit;
+      matched += 1;
+    } else {
+      unmatched.push(b.name);
+    }
+  }
+  return { names, matched, total: targetBones.length, unmatched };
+}
+
+function animationClipFromTracksPayload(payload) {
+  const tracks = [];
+  for (const tr of payload.tracks || []) {
+    const tname = String(tr.name || '');
+    const times = Float32Array.from(tr.times || []);
+    const values = Float32Array.from(tr.values || []);
+    if (!times.length || !values.length) continue;
+    if (tr.type === 'quaternion' || tname.endsWith('.quaternion')) {
+      tracks.push(new THREE.QuaternionKeyframeTrack(tname, times, values));
+    } else if (tr.type === 'vector' || tname.endsWith('.position') || tname.endsWith('.scale')) {
+      tracks.push(new THREE.VectorKeyframeTrack(tname, times, values));
+    }
+  }
+  const duration = Number(payload.duration) || (typeof timesMax === 'function' ? timesMax(tracks) : 0);
+  return new THREE.AnimationClip(payload.name || 'clip', duration, tracks);
+}
+
+/** Convert absolute local tracks → deltas from frame 0 (so helper rest can be FBX bind). */
+function clipToRestDeltas(clip) {
+  const out = [];
+  for (const tr of clip.tracks) {
+    const values = tr.values;
+    const times = tr.times;
+    if (tr instanceof THREE.QuaternionKeyframeTrack || tr.name.endsWith('.quaternion')) {
+      const q0 = new THREE.Quaternion(values[0], values[1], values[2], values[3]).normalize();
+      const inv0 = q0.clone().invert();
+      const nv = new Float32Array(values.length);
+      const q = new THREE.Quaternion();
+      const qd = new THREE.Quaternion();
+      for (let i = 0; i < values.length; i += 4) {
+        q.set(values[i], values[i + 1], values[i + 2], values[i + 3]).normalize();
+        qd.copy(inv0).multiply(q);
+        if (i >= 4) {
+          const px = nv[i - 4], py = nv[i - 3], pz = nv[i - 2], pw = nv[i - 1];
+          if (px * qd.x + py * qd.y + pz * qd.z + pw * qd.w < 0) {
+            qd.x = -qd.x; qd.y = -qd.y; qd.z = -qd.z; qd.w = -qd.w;
+          }
+        }
+        nv[i] = qd.x; nv[i + 1] = qd.y; nv[i + 2] = qd.z; nv[i + 3] = qd.w;
+      }
+      out.push(new THREE.QuaternionKeyframeTrack(tr.name, times, nv));
+    } else if (tr instanceof THREE.VectorKeyframeTrack || tr.name.endsWith('.position')) {
+      const nv = new Float32Array(values.length);
+      const x0 = values[0], y0 = values[1], z0 = values[2];
+      for (let i = 0; i < values.length; i += 3) {
+        nv[i] = values[i] - x0;
+        nv[i + 1] = values[i + 1] - y0;
+        nv[i + 2] = values[i + 2] - z0;
+      }
+      out.push(new THREE.VectorKeyframeTrack(tr.name, times, nv));
+    } else {
+      out.push(tr);
+    }
+  }
+  return new THREE.AnimationClip(clip.name, clip.duration, out);
+}
+
+/** Parent-first order for helper bones. */
+function _helperBonesOrdered(helper) {
+  const bones = helper.skeleton?.bones || [];
+  const ordered = [];
+  const placed = new Set();
+  const visit = (b) => {
+    if (!b || placed.has(b.uuid)) return;
+    let p = b.parent;
+    while (p && !p.isBone) p = p.parent;
+    if (p && p.isBone) visit(p);
+    if (!placed.has(b.uuid)) {
+      placed.add(b.uuid);
+      ordered.push(b);
+    }
+  };
+  for (const b of bones) visit(b);
+  return ordered;
+}
+
+/**
+ * (2) Rest/bind offset: set helper locals so world bind matches FBX bind for mapped bones.
+ * Call AFTER Z-up on helperRoot; uses mesh bind pose. Animation must be rest-deltas.
+ */
+function alignHelperBindToFbx(helper, mesh, names) {
+  mesh.skeleton.pose();
+  if (mesh.parent) mesh.updateMatrixWorld(true);
+  else mesh.updateMatrixWorld(true);
+  helper.updateMatrixWorld(true);
+
+  // sourceName → targetBone
+  const tgtBySrc = new Map();
+  for (const [tName, sName] of Object.entries(names)) {
+    const tb = mesh.skeleton.bones.find((b) => b.name === tName);
+    if (tb) tgtBySrc.set(sName, tb);
+  }
+
+  const _local = new THREE.Matrix4();
+  const _inv = new THREE.Matrix4();
+  const _pos = new THREE.Vector3();
+  const _quat = new THREE.Quaternion();
+  const _scl = new THREE.Vector3();
+
+  let aligned = 0;
+  for (const bone of _helperBonesOrdered(helper)) {
+    const tgt = tgtBySrc.get(bone.name);
+    if (!tgt) continue;
+    const desired = tgt.matrixWorld;
+    let parentBone = bone.parent;
+    while (parentBone && !parentBone.isBone && parentBone !== helper) parentBone = parentBone.parent;
+    if (parentBone && parentBone.isBone) {
+      _inv.copy(parentBone.matrixWorld).invert();
+      _local.copy(_inv).multiply(desired);
+    } else {
+      // under helperRoot (has Z-up quat) — parent is Group
+      const p = bone.parent;
+      if (p) {
+        _inv.copy(p.matrixWorld).invert();
+        _local.copy(_inv).multiply(desired);
+      } else {
+        _local.copy(desired);
+      }
+    }
+    _local.decompose(_pos, _quat, _scl);
+    bone.position.copy(_pos);
+    bone.quaternion.copy(_quat);
+    bone.scale.set(1, 1, 1);
+    bone.updateMatrixWorld(true);
+    aligned += 1;
+  }
+
+  // Uniform scale: match mean bone length helper↔target on matched pairs (hip→spine etc.)
+  let sumH = 0, sumT = 0, n = 0;
+  for (const bone of helper.skeleton.bones) {
+    const tgt = tgtBySrc.get(bone.name);
+    if (!tgt || !bone.parent?.isBone || !tgt.parent?.isBone) continue;
+    const hl = bone.position.length();
+    const tl = tgt.position.length();
+    if (hl > 1e-6 && tl > 1e-6) {
+      sumH += hl;
+      sumT += tl;
+      n += 1;
+    }
+  }
+  let scale = 1;
+  if (n >= 4 && sumH > 1e-6) {
+    scale = sumT / sumH;
+    // Only scale root bone positions slightly via helperRoot — keep if sane
+    if (scale > 0.05 && scale < 50) {
+      helper.scale.setScalar(scale);
+      helper.updateMatrixWorld(true);
+    } else {
+      scale = 1;
+    }
+  }
+
+  return { aligned, scale, pairs: n };
+}
+
+/**
+ * Tony path: helper skel matching MIN2 hierarchy → SkeletonUtils.retargetClip onto primary body SkinnedMesh.
+ * Returns { clip, mixerRoot, meta }. mixerRoot MUST be the SkinnedMesh (tracks are .bones[name].*).
+ */
+function retargetClipViaHelper(payload, rootObj) {
+  if (typeof SkeletonUtils === 'undefined' || !SkeletonUtils.retargetClip) {
+    throw new Error('SkeletonUtils.retargetClip unavailable — import three/addons/utils/SkeletonUtils.js');
+  }
+  const { mesh, boneCount, name: meshName } = findBodySkinnedMeshForRetarget(rootObj);
+  if (!mesh) throw new Error('no SkinnedMesh on FBX root');
+
+  const helper = buildMin2HelperArmature(payload);
+  const absClip = animationClipFromTracksPayload(payload);
+  const { names, matched, total, unmatched } = buildRetargetNameMap(
+    mesh.skeleton.bones,
+    helper.skeleton.bones
+  );
+  const mapPct = total ? (100 * matched) / total : 0;
+  if (matched < 8) {
+    throw new Error(
+      `retargetClip bone map too low: matched=${matched}/${total} (${mapPct.toFixed(1)}%) mesh=${meshName} unmatched=${(unmatched || []).slice(0, 12).join(',')}`
+    );
+  }
+
+  // Axis-only first (Z-up on helperRoot already applied). Absolute MIN2 locals.
+  // Bind-align+deltas optional — disabled for this capture pass.
+  const bindInfo = { aligned: 0, scale: 1, pairs: 0 };
+  const srcClip = absClip;
+
+  let hipTarget =
+    mesh.skeleton.bones.find((b) => _normNameKey(b.name) === 'bip01') ||
+    mesh.skeleton.bones.find((b) => /pelvis|hip/.test(_normNameKey(b.name)));
+  const hip = hipTarget ? names[hipTarget.name] || hipTarget.name : 'bip01';
+
+  const fps = Number(payload.fps) || 30;
+  mesh.skeleton.pose();
+  rootObj.updateMatrixWorld(true);
+  helper.updateMatrixWorld(true);
+
+  let retargeted;
+  try {
+    retargeted = SkeletonUtils.retargetClip(mesh, helper, srcClip, {
+      names,
+      hip,
+      fps,
+      preserveHipPosition: false,
+      useFirstFramePosition: true,
+    });
+  } catch (err) {
+    throw new Error(
+      `SkeletonUtils.retargetClip threw matched=${matched}/${total} hip=${hip} scale=${bindInfo.scale} aligned=${bindInfo.aligned}: ${err?.message || err}`
+    );
+  }
+
+  mesh.skeleton.pose();
+  rootObj.updateMatrixWorld(true);
+
+  retargeted.name = payload.name || retargeted.name || 'clip';
+  if (!retargeted.duration || retargeted.duration < 0) {
+    retargeted.duration = Number(payload.duration) || srcClip.duration || 0;
+  }
+  const meta = {
+    matched,
+    total,
+    mapPct,
+    meshName,
+    boneCount,
+    hip,
+    tracks: retargeted.tracks.length,
+    space: 'min2HelperRetarget',
+    driver: 'SkeletonUtils.retargetClip',
+    axis: 'zUpToYUp',
+    bindAligned: bindInfo.aligned,
+    helperScale: bindInfo.scale,
+    unmatchedSample: (unmatched || []).slice(0, 8),
+  };
+  retargeted.userData = { ...(retargeted.userData || {}), ...meta };
+  return { clip: retargeted, mixerRoot: mesh, meta, helper };
+}
+
+function animationClipFromWorldUuid(payload, rootObj) {
+  // UUID-safe retarget: temporarily uniquify duplicate bone names so PropertyBinding
+  // hits every skinned influence, bake world→local with live parent.matrixWorld.
+  const fps = Number(payload.fps) || 30;
+  const fc = Number(payload.frame_count) || 0;
+  const duration = Number(payload.duration) || Math.max(0, (fc - 1) / fps);
+  const times = Float32Array.from(Array.from({ length: fc }, (_, i) => i / fps));
+
+  const worldByKey = new Map();
+  for (const b of payload.bones || []) {
+    const entry = { positions: b.positions || [], quats: b.quats || [], name: b.name };
+    for (const k of boneLookupKeys(b.name)) worldByKey.set(_normNameKey(k), entry);
+    worldByKey.set(_normNameKey(b.name), entry);
+  }
+
+  // Collect EVERY Bone under root (including duplicate names).
+  const allBones = [];
+  const walk = (obj) => {
+    if (!obj) return;
+    if (obj.isBone || obj.type === 'Bone') allBones.push(obj);
+    for (const c of obj.children || []) walk(c);
+  };
+  walk(rootObj);
+
+  // Snapshot original names; uniquify duplicates for binding.
+  const origNames = new Map();
+  const nameCount = new Map();
+  for (const b of allBones) {
+    origNames.set(b.uuid, b.name);
+    const base = b.name || 'bone';
+    const n = (nameCount.get(base) || 0) + 1;
+    nameCount.set(base, n);
+    if (n > 1) b.name = `${base}__u${n}_${b.uuid.slice(0, 6)}`;
+    // first keeps original name (PropertyBinding + findBone compatible for primary)
+  }
+
+  // Parents-first using live parent pointers (uuid-correct).
+  const ordered = [];
+  const placed = new Set();
+  const visit = (b) => {
+    if (!b || placed.has(b.uuid)) return;
+    let p = b.parent;
+    while (p && !(p.isBone || p.type === 'Bone')) p = p.parent;
+    if (p && p.uuid !== b.uuid) visit(p);
+    if (!placed.has(b.uuid)) {
+      placed.add(b.uuid);
+      ordered.push(b);
+    }
+  };
+  for (const b of allBones) visit(b);
+
+  const bindLocal = new Map();
+  for (const b of ordered) {
+    bindLocal.set(b.uuid, {
+      pos: b.position.clone(),
+      quat: b.quaternion.clone(),
+      scl: b.scale.clone(),
+    });
+  }
+
+  const posSeries = new Map();
+  const quatSeries = new Map();
+  for (const b of ordered) {
+    posSeries.set(b.uuid, []);
+    quatSeries.set(b.uuid, []);
+  }
+
+  const _min2 = new THREE.Matrix4();
+  const _local = new THREE.Matrix4();
+  const _inv = new THREE.Matrix4();
+  const _pos = new THREE.Vector3();
+  const _quat = new THREE.Quaternion();
+  const _scl = new THREE.Vector3(1, 1, 1);
+  const _ident = new THREE.Matrix4();
+  const _qx90 = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+  const _worldAlign = new THREE.Matrix4();
+
+  const baseName = (b) => origNames.get(b.uuid) || b.name;
+  const isCore = (n) => {
+    const k = _normNameKey(n);
+    if (!(k.startsWith('bip01') || k.startsWith('bone_'))) return false;
+    if (k.includes('finger') || k.includes('toe')) return false;
+    return true;
+  };
+
+  // Align MIN2 Z-up → FBX bip01 bind.
+  for (const b of ordered) {
+    const bind = bindLocal.get(b.uuid);
+    b.position.copy(bind.pos);
+    b.quaternion.copy(bind.quat);
+    b.scale.copy(bind.scl);
+  }
+  if (rootObj) rootObj.updateMatrixWorld(true);
+  {
+    const rootBone = ordered.find((b) => _normNameKey(baseName(b)) === 'bip01');
+    const rootSrc = worldByKey.get('bip01');
+    if (rootBone && rootSrc?.positions?.[0] && rootSrc?.quats?.[0]) {
+      const p0 = rootSrc.positions[0];
+      const q0 = rootSrc.quats[0];
+      _pos.set(p0[0], p0[2], -p0[1]);
+      _quat.set(q0[0], q0[1], q0[2], q0[3]).normalize().premultiply(_qx90);
+      _min2.compose(_pos, _quat, _scl.set(1, 1, 1));
+      _worldAlign.copy(rootBone.matrixWorld).multiply(_min2.clone().invert());
+    }
+  }
+
+  let matched = 0;
+  for (let fi = 0; fi < fc; fi++) {
+    for (const b of ordered) {
+      const bind = bindLocal.get(b.uuid);
+      b.position.copy(bind.pos);
+      b.quaternion.copy(bind.quat);
+      b.scale.copy(bind.scl);
+      b.matrixAutoUpdate = true;
+    }
+    if (rootObj) rootObj.updateMatrixWorld(true);
+
+    for (const b of ordered) {
+      const bn = baseName(b);
+      if (!isCore(bn)) continue;
+      const src = worldByKey.get(_normNameKey(bn));
+      if (!src?.positions?.[fi] || !src?.quats?.[fi]) continue;
+      if (fi === 0) matched += 1;
+      const p = src.positions[fi];
+      const q = src.quats[fi];
+      _pos.set(p[0], p[2], -p[1]);
+      _quat.set(q[0], q[1], q[2], q[3]).normalize().premultiply(_qx90);
+      _min2.compose(_pos, _quat, _scl.set(1, 1, 1));
+      _min2.premultiply(_worldAlign);
+
+      let parentBone = b.parent;
+      while (parentBone && !(parentBone.isBone || parentBone.type === 'Bone')) parentBone = parentBone.parent;
+      if (parentBone && parentBone.uuid === b.uuid) parentBone = null;
+      const parentWM = parentBone ? parentBone.matrixWorld : _ident;
+      _inv.copy(parentWM).invert();
+      _local.copy(_inv).multiply(_min2);
+      _local.decompose(_pos, _quat, _scl);
+      b.position.copy(_pos);
+      b.quaternion.copy(_quat);
+      b.scale.copy(bindLocal.get(b.uuid).scl);
+      b.updateMatrixWorld(true);
+    }
+
+    for (const b of ordered) {
+      const bn = baseName(b);
+      if (!isCore(bn) || !worldByKey.has(_normNameKey(bn))) continue;
+      posSeries.get(b.uuid).push(b.position.x, b.position.y, b.position.z);
+      const arr = quatSeries.get(b.uuid);
+      let qx = b.quaternion.x, qy = b.quaternion.y, qz = b.quaternion.z, qw = b.quaternion.w;
+      if (arr.length >= 4) {
+        const px = arr[arr.length - 4], py = arr[arr.length - 3], pz = arr[arr.length - 2], pw = arr[arr.length - 1];
+        if (px * qx + py * qy + pz * qz + pw * qw < 0) { qx = -qx; qy = -qy; qz = -qz; qw = -qw; }
+      }
+      arr.push(qx, qy, qz, qw);
+    }
+  }
+
+  // Restore bind locals before building tracks (track names use uniquified names).
+  for (const b of ordered) {
+    const bind = bindLocal.get(b.uuid);
+    b.position.copy(bind.pos);
+    b.quaternion.copy(bind.quat);
+    b.scale.copy(bind.scl);
+  }
+  if (rootObj) rootObj.updateMatrixWorld(true);
+
+  const tracks = [];
+  for (const b of ordered) {
+    const bn = baseName(b);
+    if (!isCore(bn) || !worldByKey.has(_normNameKey(bn))) continue;
+    // Use current (possibly uniquified) name so EVERY duplicate gets a track.
+    tracks.push(new THREE.VectorKeyframeTrack(`${b.name}.position`, times, Float32Array.from(posSeries.get(b.uuid))));
+    tracks.push(new THREE.QuaternionKeyframeTrack(`${b.name}.quaternion`, times, Float32Array.from(quatSeries.get(b.uuid))));
+  }
+
+  const clip = new THREE.AnimationClip(payload.name || 'clip', duration, tracks);
+  clip.userData = {
+    worldRetargetMatched: matched,
+    uniquified: true,
+    // Restore original names after mixer binds — caller must call restore after clipAction.
+    restoreBoneNames: () => {
+      for (const b of allBones) {
+        const n = origNames.get(b.uuid);
+        if (n != null) b.name = n;
+      }
+    },
+    keepUniqueNames: true, // keep uniquified names while mixer runs
+  };
+  // NOTE: do NOT restore names yet — Mixer PropertyBinding needs unique names.
+  return clip;
+}
+
+function animationClipFromWorldJson(payload, rootObj) {
+  // World MIN2 → parent-local using LIVE bone.matrixWorld (handles duplicate names).
+  const fps = Number(payload.fps) || 30;
+  const fc = Number(payload.frame_count) || 0;
+  const duration = Number(payload.duration) || Math.max(0, (fc - 1) / fps);
+  const times = Float32Array.from(Array.from({ length: fc }, (_, i) => i / fps));
+
+  const worldByKey = new Map();
+  for (const b of payload.bones || []) {
+    const entry = { positions: b.positions || [], quats: b.quats || [], name: b.name };
+    for (const k of boneLookupKeys(b.name)) worldByKey.set(_normNameKey(k), entry);
+    worldByKey.set(_normNameKey(b.name), entry);
+  }
+
+  const bones = [];
+  const seen = new Set();
+  for (const b of boneByName.values()) {
+    if (seen.has(b.uuid)) continue;
+    seen.add(b.uuid);
+    bones.push(b);
+  }
+  const ordered = [];
+  const placed = new Set();
+  const visit = (b) => {
+    if (!b || placed.has(b.uuid)) return;
+    let p = b.parent;
+    while (p && !(p.isBone || p.type === 'Bone')) p = p.parent;
+    if (p && p.uuid !== b.uuid) visit(p);
+    if (!placed.has(b.uuid)) {
+      placed.add(b.uuid);
+      ordered.push(b);
+    }
+  };
+  for (const b of bones) visit(b);
+
+  const bindLocal = new Map();
+  for (const b of ordered) {
+    bindLocal.set(b.uuid, {
+      pos: b.position.clone(),
+      quat: b.quaternion.clone(),
+      scl: b.scale.clone(),
+    });
+  }
+
+  const posSeries = new Map();
+  const quatSeries = new Map();
+  for (const b of ordered) {
+    posSeries.set(b.uuid, []);
+    quatSeries.set(b.uuid, []);
+  }
+
+  const _min2 = new THREE.Matrix4();
+  const _local = new THREE.Matrix4();
+  const _inv = new THREE.Matrix4();
+  const _pos = new THREE.Vector3();
+  const _quat = new THREE.Quaternion();
+  const _scl = new THREE.Vector3(1, 1, 1);
+  const _ident = new THREE.Matrix4();
+  const _qx90 = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+  const _worldAlign = new THREE.Matrix4();
+
+  // One-time: map MIN2 Z-up model space onto FBX bip01 bind world.
+  {
+    for (const b of ordered) {
+      const bind = bindLocal.get(b.uuid);
+      b.position.copy(bind.pos);
+      b.quaternion.copy(bind.quat);
+      b.scale.copy(bind.scl);
+    }
+    if (rootObj) rootObj.updateMatrixWorld(true);
+    const rootBone = findBone('bip01') || ordered.find((b) => _normNameKey(b.name) === 'bip01');
+    const rootSrc = worldByKey.get('bip01');
+    if (rootBone && rootSrc && rootSrc.positions[0] && rootSrc.quats[0]) {
+      const p0 = rootSrc.positions[0];
+      const q0 = rootSrc.quats[0];
+      _pos.set(p0[0], p0[2], -p0[1]);
+      _quat.set(q0[0], q0[1], q0[2], q0[3]).normalize().premultiply(_qx90);
+      _scl.set(1, 1, 1);
+      _min2.compose(_pos, _quat, _scl);
+      _worldAlign.copy(rootBone.matrixWorld).multiply(_min2.clone().invert());
+    }
+  }
+
+  let matched = 0;
+  const coreOnly = (n) => {
+    const k = _normNameKey(n);
+    if (!(k.startsWith('bip01') || k.startsWith('bone_'))) return false;
+    if (k.includes('finger') || k.includes('toe')) return false;
+    return true;
+  };
+
+  for (let fi = 0; fi < fc; fi++) {
+    // Rest bind
+    for (const b of ordered) {
+      const bind = bindLocal.get(b.uuid);
+      b.position.copy(bind.pos);
+      b.quaternion.copy(bind.quat);
+      b.scale.copy(bind.scl);
+      b.matrixAutoUpdate = true;
+    }
+    if (rootObj) rootObj.updateMatrixWorld(true);
+    else ordered[0]?.updateMatrixWorld?.(true);
+
+    for (const b of ordered) {
+      if (!coreOnly(b.name)) continue;
+      const src = worldByKey.get(_normNameKey(b.name));
+      if (!src || !src.positions[fi] || !src.quats[fi]) continue;
+      if (fi === 0) matched += 1;
+      const p = src.positions[fi];
+      const q = src.quats[fi];
+      // Z-up (MIN2) → Y-up (Three/FBX)
+      _pos.set(p[0], p[2], -p[1]);
+      _quat.set(q[0], q[1], q[2], q[3]).normalize().premultiply(_qx90);
+      _scl.set(1, 1, 1);
+      _min2.compose(_pos, _quat, _scl);
+      _min2.premultiply(_worldAlign);
+
+      let parentBone = b.parent;
+      while (parentBone && !(parentBone.isBone || parentBone.type === 'Bone')) {
+        parentBone = parentBone.parent;
+      }
+      if (parentBone && parentBone.uuid === b.uuid) parentBone = null;
+
+      const parentWM = parentBone ? parentBone.matrixWorld : _ident;
+      _inv.copy(parentWM).invert();
+      _local.copy(_inv).multiply(_min2);
+      _local.decompose(_pos, _quat, _scl);
+      b.position.copy(_pos);
+      b.quaternion.copy(_quat);
+      b.scale.copy(bindLocal.get(b.uuid).scl);
+      b.updateMatrixWorld(true);
+    }
+
+    for (const b of ordered) {
+      if (!coreOnly(b.name) || !worldByKey.has(_normNameKey(b.name))) continue;
+      posSeries.get(b.uuid).push(b.position.x, b.position.y, b.position.z);
+      const arr = quatSeries.get(b.uuid);
+      const qx = b.quaternion.x;
+      const qy = b.quaternion.y;
+      const qz = b.quaternion.z;
+      const qw = b.quaternion.w;
+      if (arr.length >= 4) {
+        const px = arr[arr.length - 4];
+        const py = arr[arr.length - 3];
+        const pz = arr[arr.length - 2];
+        const pw = arr[arr.length - 1];
+        if (px * qx + py * qy + pz * qz + pw * qw < 0) {
+          arr.push(-qx, -qy, -qz, -qw);
+          continue;
+        }
+      }
+      arr.push(qx, qy, qz, qw);
+    }
+  }
+
+  // Restore bind after baking keyframes
+  for (const b of ordered) {
+    const bind = bindLocal.get(b.uuid);
+    b.position.copy(bind.pos);
+    b.quaternion.copy(bind.quat);
+    b.scale.copy(bind.scl);
+  }
+  if (rootObj) rootObj.updateMatrixWorld(true);
+
+  const tracks = [];
+  for (const b of ordered) {
+    if (!coreOnly(b.name) || !worldByKey.has(_normNameKey(b.name))) continue;
+    tracks.push(new THREE.VectorKeyframeTrack(`${b.name}.position`, times, Float32Array.from(posSeries.get(b.uuid))));
+    tracks.push(new THREE.QuaternionKeyframeTrack(`${b.name}.quaternion`, times, Float32Array.from(quatSeries.get(b.uuid))));
+  }
+  const clip = new THREE.AnimationClip(payload.name || 'clip', duration, tracks);
+  clip.userData = { ...(clip.userData || {}), worldRetargetMatched: matched };
+  return clip;
+}
+
+async function startMixerClip(rootObj, clipUrl) {
+  const payload = await loadClipJson(clipUrl);
+  let clip;
+  let mixerRoot = rootObj;
+  let helperMeta = null;
+  if (payload && payload.space === 'min2HelperRetarget') {
+    const out = retargetClipViaHelper(payload, rootObj);
+    clip = out.clip;
+    mixerRoot = out.mixerRoot;
+    helperMeta = out.meta;
+  } else {
+    clip = (typeof animationClipFromJson === 'function')
+      ? animationClipFromJson(payload, rootObj)
+      : animationClipFromJson(payload);
+  }
+  clipDuration = clip.duration || Number(payload.duration) || 0;
+  mixer = new THREE.AnimationMixer(mixerRoot || rootObj);
+  clipAction = mixer.clipAction(clip);
+  clipAction.enabled = true;
+  clipAction.setLoop(THREE.LoopRepeat, Infinity);
+  clipAction.clampWhenFinished = false;
+  // Keep uniquified bone names so PropertyBinding hits every duplicate node.
+  if (typeof indexBones === 'function') indexBones(rootObj);
+  clipAction.reset().play();
+  let t = 0;
+  if (CLIP_FRAME != null && Number.isFinite(CLIP_FRAME) && payload.fps) {
+    t = CLIP_FRAME / Number(payload.fps);
+  } else if (CLIP_TIME != null && Number.isFinite(CLIP_TIME)) {
+    t = CLIP_TIME;
+  } else if (clipDuration > 0) {
+    t = clipDuration * 0.45;
+  }
+  mixer.setTime(Math.max(0, Math.min(t, Math.max(clipDuration, 0.0001))));
+  mixer.update(0);
+  rootObj.updateMatrixWorld(true);
+  if (headAttachments) updateAttachmentsMultiPass(headAttachments, rootObj, 3);
+  rootObj.traverse((o) => { if (o.isSkinnedMesh) o.skeleton?.update(); });
+  useMixer = true;
+  window.__MIXER_READY__ = {
+    clip: payload.name,
+    duration: clipDuration,
+    time: mixer.time,
+    tracks: clip.tracks.length,
+    quatOnly: !!payload.quat_only,
+    space: payload.space || 'local',
+    matched: clip.userData?.worldRetargetMatched,
+  };
+  hud.textContent += ` · mixer ${payload.name} t=${mixer.time.toFixed(3)}s tracks=${clip.tracks.length}` + (helperMeta ? ` map=${helperMeta.matched}/${helperMeta.total}` : '');
+}
+
+
+
+
+/** Play first embedded FBX clip via AnimationMixer (map-viewer actor-viewer path). */
+
+/** Map-viewer clip-source: load another FBX only for root.animations, play on skin root. */
+
+/* === HEAD_ATTACHMENTS_BEGIN === */
+
+/** Body mesh only has upperarm stubs; hand mesh owns the full arm chain.
+ *  Rename body duplicates so AnimationMixer binds bip01_* arm tracks to the hand mesh,
+ *  then bone-link body stubs from the hand bones each frame. */
+function preferHandArmBinding(root) {
+  const ARM_NAMES = new Set([
+    'bip01_l_clavicle', 'bip01_r_clavicle',
+    'bip01_l_upperarm', 'bip01_r_upperarm',
+    'bip01_l_foretwist', 'bip01_r_foretwist',
+    'bip01_l_foretwist1', 'bip01_r_foretwist1',
+    'bip01_l_hand', 'bip01_r_hand',
+    'bone_l_armtwist', 'bone_r_armtwist',
+  ]);
+  // also fingers on body if any
+  const isArmish = (name) => {
+    const n = String(name || '').toLowerCase();
+    if (ARM_NAMES.has(n)) return true;
+    if (/^bip01_[lr]_clavicle/.test(n)) return true;
+    if (/^bip01_[lr]_finger/.test(n)) return true;
+    if (/^bip01_[lr]_fore/.test(n)) return true;
+    if (/^bip01_[lr]_hand/.test(n)) return true;
+    if (/armtwist/.test(n)) return true;
+    return false;
+  };
+
+  let handMesh = null;
+  let bodyMesh = null;
+  root.traverse((o) => {
+    if (!o.isSkinnedMesh) return;
+    if (/hand_hdmesh/i.test(o.name) && !/glove/i.test(o.name)) handMesh = o;
+    if (/body_hdmesh/i.test(o.name)) bodyMesh = o;
+  });
+  if (!handMesh || !bodyMesh) {
+    return { renamed: 0, note: 'missing hand/body' };
+  }
+  const handNames = new Set(
+    handMesh.skeleton.bones.map((b) => String(b.name || '').toLowerCase())
+  );
+  let renamed = 0;
+  for (const bone of bodyMesh.skeleton.bones) {
+    const key = String(bone.name || '').toLowerCase();
+    if (!isArmish(key)) continue;
+    if (!handNames.has(key)) continue;
+    bone.name = `__body__${bone.name}`;
+    renamed += 1;
+  }
+  return { renamed, hand: handMesh.name, body: bodyMesh.name };
+}
+
+function createArmBodySyncLinks(root) {
+  // After rename, body arm bones are __body__*; hand keeps original names (mixer targets).
+  let handMesh = null;
+  let bodyMesh = null;
+  root.traverse((o) => {
+    if (!o.isSkinnedMesh) return;
+    if (/hand_hdmesh/i.test(o.name) && !/glove/i.test(o.name)) handMesh = o;
+    if (/body_hdmesh/i.test(o.name)) bodyMesh = o;
+  });
+  if (!handMesh || !bodyMesh) return [];
+
+  const handMap = new Map(
+    handMesh.skeleton.bones.map((b) => [String(b.name || '').toLowerCase(), b])
+  );
+  const links = [];
+  for (const bone of bodyMesh.skeleton.bones) {
+    const n = String(bone.name || '');
+    if (!n.startsWith('__body__')) continue;
+    const orig = n.slice('__body__'.length).toLowerCase();
+    const sourceBone = handMap.get(orig);
+    if (!sourceBone) continue;
+    links.push({
+      meshName: bodyMesh.name,
+      mesh: bodyMesh,
+      sourceBone,
+      targetBone: bone,
+      parentInverse: new THREE.Matrix4(),
+      targetWorld: new THREE.Matrix4(),
+      localMatrix: new THREE.Matrix4(),
+      position: new THREE.Vector3(),
+      quaternion: new THREE.Quaternion(),
+      scale: new THREE.Vector3(),
+    });
+  }
+  return links;
+}
+
+
+function findPrimarySkinnedMesh(root) {
+  let bestMatch = null;
+  root.traverse((object) => {
+    if (!object.isSkinnedMesh || !Array.isArray(object.skeleton?.bones) || object.skeleton.bones.length === 0) {
+      return;
+    }
+    const bones = object.skeleton.bones;
+    const lowerNames = new Set(bones.map((bone) => String(bone.name || '').toLowerCase()));
+    const score =
+      (lowerNames.has('bip01_pelvis') ? 1000 : 0) +
+      (lowerNames.has('bip01_head') ? 1000 : 0) +
+      bones.length;
+    if (!bestMatch || score > bestMatch.score) {
+      bestMatch = { object, score };
+    }
+  });
+  return bestMatch?.object || null;
+}
+
+/** Without MovieEditor actor-parts JSON, do not hide meshes (hiding head caused bald scalp). */
+function applyAnimatedHeadVisibility(root) {
+  return { mode: 'none', hidden: 0, note: 'skipped-no-actor-parts' };
+}
+
+/** Map-viewer createHeadAttachments (head/face/bang/plait/hat only). */
+function createHeadAttachments(root) {
+  const primaryMesh = findPrimarySkinnedMesh(root);
+  const primaryBones = primaryMesh?.skeleton?.bones || [];
+  const primaryRestWorldMap = new Map(
+    primaryBones.map((bone) => [String(bone.name || '').toLowerCase(), bone.matrixWorld.clone()])
+  );
+  const anchorBone = primaryMesh?.skeleton?.bones?.find((bone) => bone.name === 'bip01_head') || null;
+  if (!anchorBone) {
+    return { boneLinks: [], rootLinks: [], primaryBones, primaryRestWorldMap };
+  }
+
+  const primaryBoneMap = new Map(
+    primaryMesh.skeleton.bones.map((bone) => [String(bone.name || '').toLowerCase(), bone])
+  );
+
+  root.updateMatrixWorld(true);
+
+  const boneLinks = [];
+  const rootLinks = [];
+  root.traverse((object) => {
+    if (!object.isSkinnedMesh || !object.skeleton?.bones?.length) return;
+    if (object === primaryMesh) return;
+    if (!/head|face|bang|plait|hat/i.test(object.name)) return;
+
+    for (const bone of object.skeleton.bones) {
+      const sourceBone = primaryBoneMap.get(String(bone.name || '').toLowerCase());
+      if (!sourceBone || sourceBone === bone) continue;
+
+      boneLinks.push({
+        meshName: object.name,
+        mesh: object,
+        sourceBone,
+        targetBone: bone,
+        parentInverse: new THREE.Matrix4(),
+        targetWorld: new THREE.Matrix4(),
+        localMatrix: new THREE.Matrix4(),
+        position: new THREE.Vector3(),
+        quaternion: new THREE.Quaternion(),
+        scale: new THREE.Vector3(),
+      });
+    }
+
+    const boneSet = new Set(object.skeleton.bones);
+    const roots = object.skeleton.bones.filter((bone) => !boneSet.has(bone.parent));
+    for (const rootBone of roots) {
+      if (primaryBoneMap.has(String(rootBone.name || '').toLowerCase())) continue;
+
+      const localOffset = new THREE.Matrix4()
+        .copy(anchorBone.matrixWorld)
+        .invert()
+        .multiply(rootBone.matrixWorld);
+
+      rootLinks.push({
+        meshName: object.name,
+        mesh: object,
+        rootBone,
+        anchorBone,
+        defaultAnchorName: String(anchorBone.name || ''),
+        selectedAnchorName: String(anchorBone.name || ''),
+        rootRestWorld: rootBone.matrixWorld.clone(),
+        defaultLocalOffset: localOffset.clone(),
+        baseLocalOffset: new THREE.Matrix4().copy(localOffset),
+        localOffset,
+        tweakPosition: new THREE.Vector3(),
+        tweakEuler: new THREE.Euler(0, 0, 0, 'XYZ'),
+        tweakQuaternion: new THREE.Quaternion(),
+        tweakScale: new THREE.Vector3(1, 1, 1),
+        tweakMatrix: new THREE.Matrix4(),
+        parentInverse: new THREE.Matrix4(),
+        targetWorld: new THREE.Matrix4(),
+        localMatrix: new THREE.Matrix4(),
+        position: new THREE.Vector3(),
+        quaternion: new THREE.Quaternion(),
+        scale: new THREE.Vector3(),
+      });
+    }
+  });
+
+  return { boneLinks, rootLinks, faceCalibration: null, primaryBones, primaryRestWorldMap };
+}
+
+function updateHeadAttachments(attachments, root) {
+  if (!attachments) return;
+
+  for (const attachment of attachments.rootLinks || []) {
+    const parent = attachment.rootBone.parent;
+    attachment.targetWorld.multiplyMatrices(attachment.anchorBone.matrixWorld, attachment.localOffset);
+
+    if (parent) {
+      attachment.parentInverse.copy(parent.matrixWorld).invert();
+      attachment.localMatrix.multiplyMatrices(attachment.parentInverse, attachment.targetWorld);
+    } else {
+      attachment.localMatrix.copy(attachment.targetWorld);
+    }
+
+    attachment.localMatrix.decompose(
+      attachment.position,
+      attachment.quaternion,
+      attachment.scale,
+    );
+
+    attachment.rootBone.position.copy(attachment.position);
+    attachment.rootBone.quaternion.copy(attachment.quaternion);
+    attachment.rootBone.scale.copy(attachment.scale);
+  }
+
+  if (root) {
+    root.updateMatrixWorld(true);
+  }
+
+  for (const attachment of attachments.boneLinks || []) {
+    const parent = attachment.targetBone.parent;
+    attachment.targetWorld.copy(attachment.sourceBone.matrixWorld);
+
+    if (parent) {
+      attachment.parentInverse.copy(parent.matrixWorld).invert();
+      attachment.localMatrix.multiplyMatrices(attachment.parentInverse, attachment.targetWorld);
+    } else {
+      attachment.localMatrix.copy(attachment.targetWorld);
+    }
+
+    attachment.localMatrix.decompose(
+      attachment.position,
+      attachment.quaternion,
+      attachment.scale,
+    );
+
+    attachment.targetBone.position.copy(attachment.position);
+    attachment.targetBone.quaternion.copy(attachment.quaternion);
+    attachment.targetBone.scale.copy(attachment.scale);
+  }
+}
+
+let headAttachments = null;
+let partVisibility = null;
+
+
+/** Sleeve/hand fix: sync secondary arm bones from primary (body), gloves from hand mesh.
+ *  Sort links parent-before-child; multi-pass update after Mixer. */
+function boneDepth(bone) {
+  let d = 0;
+  let p = bone;
+  while (p && p.isBone) {
+    d += 1;
+    p = p.parent;
+  }
+  return d;
+}
+
+function pushBoneLink(list, meshName, mesh, sourceBone, targetBone) {
+  if (!sourceBone || !targetBone || sourceBone === targetBone) return;
+  list.push({
+    meshName,
+    mesh,
+    sourceBone,
+    targetBone,
+    parentInverse: new THREE.Matrix4(),
+    targetWorld: new THREE.Matrix4(),
+    localMatrix: new THREE.Matrix4(),
+    position: new THREE.Vector3(),
+    quaternion: new THREE.Quaternion(),
+    scale: new THREE.Vector3(),
+    _depth: boneDepth(targetBone),
+  });
+}
+
+function createHandSleeveAttachments(root, headAttachments) {
+  const primaryMesh = findPrimarySkinnedMesh(root);
+  if (!primaryMesh) return headAttachments;
+
+  const primaryBoneMap = new Map(
+    primaryMesh.skeleton.bones.map((bone) => [String(bone.name || '').toLowerCase(), bone])
+  );
+
+  let handMesh = null;
+  root.traverse((o) => {
+    if (o.isSkinnedMesh && /hand_hdmesh/i.test(o.name) && !/glove/i.test(o.name)) {
+      handMesh = o;
+    }
+  });
+  const handBoneMap = new Map(
+    (handMesh?.skeleton?.bones || []).map((bone) => [String(bone.name || '').toLowerCase(), bone])
+  );
+
+  const boneLinks = [...(headAttachments?.boneLinks || [])];
+  const rootLinks = [...(headAttachments?.rootLinks || [])];
+  const anchorHead = primaryMesh.skeleton.bones.find((b) => b.name === 'bip01_head') || null;
+
+  root.traverse((object) => {
+    if (!object.isSkinnedMesh || !object.skeleton?.bones?.length) return;
+    if (object === primaryMesh) return;
+    const name = String(object.name || '');
+    const isHand = /hand_hdmesh/i.test(name) && !/glove/i.test(name);
+    const isGlove = /glove_hdmesh/i.test(name) || /_lglove_|_rglove_/i.test(name);
+    if (!isHand && !isGlove) return;
+
+    for (const bone of object.skeleton.bones) {
+      const key = String(bone.name || '').toLowerCase();
+      // Prefer primary (body) for shared bip/armtwist; gloves also take from hand mesh.
+      let source = primaryBoneMap.get(key);
+      if (!source && isGlove) source = handBoneMap.get(key);
+      // Hand mesh: only link bones that exist on body (clavicle/upperarm/armtwist).
+      // Unique hand bones stay Mixer-driven.
+      if (isHand && !primaryBoneMap.has(key)) continue;
+      pushBoneLink(boneLinks, name, object, source, bone);
+    }
+
+    if (!isGlove) return;
+    // Glove-only roots → follow L/R hand bone on hand mesh (or body if present).
+    const boneSet = new Set(object.skeleton.bones);
+    const roots = object.skeleton.bones.filter((bone) => !boneSet.has(bone.parent));
+    const preferLeft = /lglove|_l_/i.test(name);
+    const preferRight = /rglove|_r_/i.test(name);
+    for (const rootBone of roots) {
+      const key = String(rootBone.name || '').toLowerCase();
+      if (primaryBoneMap.has(key) || handBoneMap.has(key)) continue;
+      let anchor =
+        (preferLeft && (handBoneMap.get('bip01_l_hand') || primaryBoneMap.get('bip01_l_hand'))) ||
+        (preferRight && (handBoneMap.get('bip01_r_hand') || primaryBoneMap.get('bip01_r_hand'))) ||
+        handBoneMap.get('bip01_l_hand') ||
+        handBoneMap.get('bip01_r_hand') ||
+        anchorHead;
+      if (!anchor || anchor === rootBone) continue;
+      const localOffset = new THREE.Matrix4()
+        .copy(anchor.matrixWorld)
+        .invert()
+        .multiply(rootBone.matrixWorld);
+      rootLinks.push({
+        meshName: name,
+        mesh: object,
+        rootBone,
+        anchorBone: anchor,
+        defaultAnchorName: String(anchor.name || ''),
+        selectedAnchorName: String(anchor.name || ''),
+        rootRestWorld: rootBone.matrixWorld.clone(),
+        defaultLocalOffset: localOffset.clone(),
+        baseLocalOffset: new THREE.Matrix4().copy(localOffset),
+        localOffset,
+        tweakPosition: new THREE.Vector3(),
+        tweakEuler: new THREE.Euler(0, 0, 0, 'XYZ'),
+        tweakQuaternion: new THREE.Quaternion(),
+        tweakScale: new THREE.Vector3(1, 1, 1),
+        tweakMatrix: new THREE.Matrix4(),
+        parentInverse: new THREE.Matrix4(),
+        targetWorld: new THREE.Matrix4(),
+        localMatrix: new THREE.Matrix4(),
+        position: new THREE.Vector3(),
+        quaternion: new THREE.Quaternion(),
+        scale: new THREE.Vector3(),
+      });
+    }
+  });
+
+  boneLinks.sort((a, b) => (a._depth || 0) - (b._depth || 0));
+  return {
+    ...(headAttachments || {}),
+    boneLinks,
+    rootLinks,
+    handSleeve: true,
+  };
+}
+
+function updateAttachmentsMultiPass(attachments, root, passes = 3) {
+  if (!attachments) return;
+  for (let i = 0; i < passes; i++) {
+    updateHeadAttachments(attachments, root);
+    if (root) {
+      root.updateMatrixWorld(true);
+      root.traverse((o) => {
+        if (o.isSkinnedMesh) o.skeleton?.update();
+      });
+    }
+  }
+}
+
+/* === HEAD_ATTACHMENTS_END === */
+
+async function loadAnimationsFromClipFbx(url) {
+  return new Promise((resolve, reject) => {
+    const loader = new FBXLoader();
+    loader.load(
+      url,
+      (obj) => resolve(Array.isArray(obj.animations) ? obj.animations : []),
+      undefined,
+      reject,
+    );
+  });
+}
+
+async function startMixerFromClips(rootObj, rawClips, sourceLabel) {
+  const raw = Array.isArray(rawClips) ? rawClips : [];
+  if (!raw.length) return false;
+  const clips = raw.map((clip) => {
+    const prepared = clip.clone();
+    prepared.tracks = prepared.tracks.map((track) => {
+      const t = track.clone();
+      const name = String(track.name || '');
+      const propertyIndex = name.lastIndexOf('.');
+      if (propertyIndex >= 0) {
+        const bindingPath = name.slice(0, propertyIndex);
+        const propertyName = name.slice(propertyIndex);
+        const normalizedBindingPath = bindingPath
+          .split('/')
+          .map((segment) => String(segment || '').split(':').pop())
+          .join('/');
+        t.name = normalizedBindingPath + propertyName;
+      }
+      return t;
+    });
+    prepared.resetDuration();
+    return prepared;
+  });
+  const clip = clips[0];
+  clipDuration = clip.duration || 0;
+  mixer = new THREE.AnimationMixer(rootObj);
+  clipAction = mixer.clipAction(clip);
+  clipAction.enabled = true;
+  clipAction.setLoop(THREE.LoopRepeat, Infinity);
+  clipAction.clampWhenFinished = false;
+  clipAction.reset().play();
+  let t = 0;
+  if (CLIP_FRAME != null && Number.isFinite(CLIP_FRAME) && clipDuration > 0) {
+    const fps = Number(params.get('fps')) || 30;
+    t = CLIP_FRAME / fps;
+  } else if (CLIP_TIME != null && Number.isFinite(CLIP_TIME)) {
+    t = CLIP_TIME;
+  } else if (clipDuration > 0) {
+    t = clipDuration * 0.45;
+  }
+  mixer.setTime(Math.max(0, Math.min(t, Math.max(clipDuration, 0.0001))));
+  mixer.update(0);
+  rootObj.updateMatrixWorld(true);
+  if (headAttachments) updateAttachmentsMultiPass(headAttachments, rootObj, 3);
+  rootObj.traverse((o) => { if (o.isSkinnedMesh) o.skeleton?.update(); });
+  useMixer = true;
+  window.__MIXER_READY__ = {
+    clip: clip.name,
+    duration: clipDuration,
+    time: mixer.time,
+    tracks: clip.tracks.length,
+    source: sourceLabel || 'clips',
+  };
+  hud.textContent += ` · mixer ${clip.name} t=${mixer.time.toFixed(3)}s tracks=${clip.tracks.length} (${sourceLabel || 'clips'})`;
+  return true;
+}
+
+async function startEmbeddedMixer(rootObj) {
+  const raw = Array.isArray(rootObj.animations) ? rootObj.animations : [];
+  if (!raw.length) return false;
+  // Match actor-viewer prepareClipLibraryClips: strip path/namespace only — do NOT remap via findBone.
+  const clips = raw.map((clip) => {
+    const prepared = clip.clone();
+    prepared.tracks = prepared.tracks.map((track) => {
+      const t = track.clone();
+      const name = String(track.name || '');
+      const propertyIndex = name.lastIndexOf('.');
+      if (propertyIndex >= 0) {
+        const bindingPath = name.slice(0, propertyIndex);
+        const propertyName = name.slice(propertyIndex);
+        const normalizedBindingPath = bindingPath
+          .split('/')
+          .map((segment) => String(segment || '').split(':').pop())
+          .join('/');
+        t.name = normalizedBindingPath + propertyName;
+      }
+      return t;
+    });
+    prepared.resetDuration();
+    return prepared;
+  });
+  const clip = clips[0];
+  clipDuration = clip.duration || 0;
+  mixer = new THREE.AnimationMixer(rootObj);
+  clipAction = mixer.clipAction(clip);
+  clipAction.enabled = true;
+  clipAction.setLoop(THREE.LoopRepeat, Infinity);
+  clipAction.clampWhenFinished = false;
+  clipAction.reset().play();
+  let t = 0;
+  if (CLIP_FRAME != null && Number.isFinite(CLIP_FRAME) && clipDuration > 0) {
+    // frame index at ~30fps if not specified — prefer duration fraction
+    const fps = Number(params.get('fps')) || (clip.tracks[0]?.times?.length > 1
+      ? (clip.tracks[0].times.length - 1) / clipDuration
+      : 30);
+    t = CLIP_FRAME / fps;
+  } else if (CLIP_TIME != null && Number.isFinite(CLIP_TIME)) {
+    t = CLIP_TIME;
+  } else if (clipDuration > 0) {
+    t = clipDuration * 0.45;
+  }
+  mixer.setTime(Math.max(0, Math.min(t, Math.max(clipDuration, 0.0001))));
+  mixer.update(0);
+  rootObj.updateMatrixWorld(true);
+  if (headAttachments) updateAttachmentsMultiPass(headAttachments, rootObj, 3);
+  rootObj.traverse((o) => { if (o.isSkinnedMesh) o.skeleton?.update(); });
+  useMixer = true;
+  window.__MIXER_READY__ = {
+    clip: clip.name,
+    duration: clipDuration,
+    time: mixer.time,
+    tracks: clip.tracks.length,
+    source: 'fbx-embedded',
+  };
+  hud.textContent += ` · mixer ${clip.name} t=${mixer.time.toFixed(3)}s tracks=${clip.tracks.length} (embedded)`;
+  return true;
+}
+
+function applyPoseByName(bones) {
+  if (!root || !bones) return;
+  const tmpPos = new THREE.Vector3();
+  const tmpQuat = new THREE.Quaternion();
+  const tmpScale = new THREE.Vector3();
+  for (const [name, m16] of Object.entries(bones)) {
+    const bone = findBone(name);
+    if (!bone || !m16 || m16.length < 16) continue;
+    const tx = m16[12], ty = m16[13], tz = m16[14];
+    if (Math.abs(tx) > 5000 || Math.abs(ty) > 5000 || Math.abs(tz) > 5000) {
+      continue;
+    }
+    const m = new THREE.Matrix4().fromArray(m16);
+    m.decompose(tmpPos, tmpQuat, tmpScale);
+    // Rotation-only retarget — FBX bind translation/scale stay; anim t was shredding mesh.
+    bone.quaternion.copy(tmpQuat);
+    bone.matrixAutoUpdate = true;
+    bone.updateMatrix();
+  }
+  root.updateMatrixWorld(true);
+  root.traverse((o) => {
+    if (o.isSkinnedMesh) o.skeleton?.update();
+  });
+}
+
+async function pollPose() {
+  try {
+    const candidates = [POSE_URL, './runtime/pose.json', './runtime/pose_by_name.json'];
+    for (const url of candidates) {
+      try {
+        const res = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) continue;
+        const pose = await res.json();
+        if (pose.v === lastPoseVer) return;
+        lastPoseVer = pose.v;
+        if (pose.bones) applyPoseByName(pose.bones);
+        else applyMatrices(pose.matrices, pose.bone_names);
+        if (Number.isFinite(pose.frame)) {
+          sfxPoseTimeMs = (Number(pose.frame) / 33) * 1000;
+        }
+        hud.textContent = `花萝 FBX · frame ${pose.frame ?? '—'} · bones ${boneByName.size / 2 | 0}`;
+        return;
+      } catch (_) { /* try next */ }
+    }
+  } catch (_) { /* optional */ }
+}
+
+function startSfxLayer() {
+  if (!SFX_ENABLED || !root) return;
+  createSfxLayer({
+    scene,
+    camera,
+    root,
+    findBone,
+    apiUrl: SFX_API_URL,
+    serviceBase: SFX_SERVICE_URL,
+    onStatus: (info) => {
+      updateSfxProgress(info);
+      if (!info?.status) return;
+      sfxStatus = info.status;
+      if (!window.__fbxReady) {
+        hud.textContent = `花萝 FBX · ${sfxStatus}`;
+      }
+    },
+  }).then((layer) => {
+    sfxLayer = layer;
+    window.__SFX_LAYER__ = layer;
+    sfxClockStartMs = performance.now();
+    window.__SFX_READY__ = {
+      status: layer.status,
+      ready: layer.ready,
+      timing: layer.timing,
+      emitters: layer.emitters.length,
+      source: layer.payload?.events?.[0]?.logical_path || null,
+    };
+    window.__FBX_META__ = { ...(window.__FBX_META__ || {}), sfx: window.__SFX_READY__ };
+  }).catch((error) => {
+    sfxStatus = `SFX init failed: ${error?.message || error}`;
+    window.__SFX_ERROR__ = sfxStatus;
+  });
+}
+
+/** map-viewer findPresetTextureFile */
+function findPresetTextureFile(lookup, materialName, suffix) {
+  if (!(lookup instanceof Map) || !materialName) return null;
+  const prefix = `${materialName}${suffix}`.toLowerCase();
+  if (lookup.has(`${prefix}.png`)) return lookup.get(`${prefix}.png`);
+  if (lookup.has(`${prefix}.tga`)) return lookup.get(`${prefix}.tga`);
+  return null;
+}
+
+function loadPresetTexture(fileName, colorSpace) {
+  if (!fileName) return Promise.resolve(null);
+  return new Promise((resolve) => {
+    textureLoader.load(
+      fileName,
+      (tex) => {
+        if (colorSpace) tex.colorSpace = colorSpace;
+        tex.flipY = false;
+        resolve(tex);
+      },
+      undefined,
+      () => resolve(null),
+    );
+  });
+}
+
+
+async function textureAlphaStats(texture) {
+  const image = texture?.image;
+  if (!image) return { hasAlpha: false, soft: false };
+  const cacheKey = image.currentSrc || image.src || texture.uuid;
+  if (!textureAlphaStats._cache) textureAlphaStats._cache = new Map();
+  if (textureAlphaStats._cache.has(cacheKey)) return textureAlphaStats._cache.get(cacheKey);
+  let hasAlpha = false;
+  let soft = false;
+  try {
+    const width = Math.min(64, image.naturalWidth || image.width || 0);
+    const height = Math.min(64, image.naturalHeight || image.height || 0);
+    if (width > 0 && height > 0) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (ctx) {
+        ctx.drawImage(image, 0, 0, width, height);
+        const pixels = ctx.getImageData(0, 0, width, height).data;
+        let mid = 0, low = 0, n = 0;
+        for (let i = 3; i < pixels.length; i += 4) {
+          const a = pixels[i];
+          n += 1;
+          if (a < 250) hasAlpha = true;
+          if (a < 12) low += 1;
+          else if (a < 244) mid += 1;
+        }
+        // Soft if a meaningful share of samples are partial-alpha
+        soft = hasAlpha && n > 0 && (mid / n) > 0.08;
+      }
+    }
+  } catch (_) { hasAlpha = false; soft = false; }
+  const out = { hasAlpha, soft };
+  textureAlphaStats._cache.set(cacheKey, out);
+  return out;
+}
+
+
+/** Hide cutout slots whose Diffuse is near-black (hat/head veils; dark glove FX cards). */
+async function disableIfDarkCutout(material) {
+  const name = String(material?.name || '');
+  // Kill near-black hat/head veils and dark glove alpha cards; keep bang/plait silhouette.
+  // Gloves must stay visible (wrist continuity). Only hat/head dark veils.
+  if (!/(hat|_head_hd_)/i.test(name) || /_face_hd_|glove/i.test(name)) return false;
+  if (!material?.map?.image) return false;
+  try {
+    const image = material.map.image;
+    const width = Math.min(48, image.naturalWidth || image.width || 0);
+    const height = Math.min(48, image.naturalHeight || image.height || 0);
+    if (width <= 0 || height <= 0) return false;
+    const canvas = document.createElement('canvas');
+    canvas.width = width; canvas.height = height;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return false;
+    ctx.drawImage(image, 0, 0, width, height);
+    const pixels = ctx.getImageData(0, 0, width, height).data;
+    let r = 0, g = 0, b = 0, wsum = 0;
+    for (let i = 0; i < pixels.length; i += 4) {
+      const a = pixels[i + 3];
+      if (a < 40) continue;
+      const w = a / 255;
+      r += pixels[i] * w; g += pixels[i + 1] * w; b += pixels[i + 2] * w;
+      wsum += w;
+    }
+    if (wsum < 1) return false;
+    const lum = (0.2126 * (r / wsum) + 0.7152 * (g / wsum) + 0.0722 * (b / wsum));
+    // Near-black hair cards (hat/bang s1/s2, head_hd) average ~30–40.
+    if (lum < 55) {
+      material.visible = false;
+      material.opacity = 0;
+      material.transparent = true;
+      material.depthWrite = false;
+      material.alphaTest = 1.1;
+      material.needsUpdate = true;
+      return true;
+    }
+  } catch (_) { /* ignore */ }
+  return false;
+}
+
+/**
+ * Cyan/lavender sleeve FX cards (hand_hd_s0/s1, body_hd_s1): Diffuse is
+ * blue-dominant with alpha. alphaTest alone still leaves solid cyan rectangles
+ * because those texels are high-alpha fills — hide in bind pose (map-viewer
+ * style helper cards), like disableIfDarkCutout for near-black hat veils.
+ */
+async function isCyanFxAlphaCard(material) {
+  if (!material?.map?.image) return false;
+  const name = String(material?.name || '');
+  // Only sleeve/body FX slots — never hide hair/hat/face/stockings cutouts.
+  if (!/(hand|body|glove)/i.test(name)) return false;
+  if (/_face_hd_|leg_hd/i.test(name)) return false;
+  try {
+    const image = material.map.image;
+    const width = Math.min(48, image.naturalWidth || image.width || 0);
+    const height = Math.min(48, image.naturalHeight || image.height || 0);
+    if (width <= 0 || height <= 0) return false;
+    const canvas = document.createElement('canvas');
+    canvas.width = width; canvas.height = height;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return false;
+    ctx.drawImage(image, 0, 0, width, height);
+    const pixels = ctx.getImageData(0, 0, width, height).data;
+    let wr = 0, wg = 0, wb = 0, wsum = 0, low = 0, n = 0;
+    for (let i = 0; i < pixels.length; i += 4) {
+      const a = pixels[i + 3];
+      n += 1;
+      if (a < 12) low += 1;
+      if (a < 40) continue;
+      const w = a / 255;
+      wr += pixels[i] * w; wg += pixels[i + 1] * w; wb += pixels[i + 2] * w;
+      wsum += w;
+    }
+    if (n < 1 || wsum < 1) return false;
+    // Prefer slots that carry punch-out alpha (FX cards), but solid cyan sheets
+    // (high-alpha blue fills on sleeve planes) also qualify when strongly blue.
+    const r = wr / wsum, b = wb / wsum;
+    const blueDom = (b - r) > 35;
+    if (!blueDom) return false;
+    const clearFrac = low / n;
+    // Strong cyan (hand_s0 ~75 B-R) OR milder cyan with clear punch-out.
+    return (b - r) > 50 || clearFrac >= 0.05;
+  } catch (_) { return false; }
+}
+
+async function disableIfCyanFxCard(material) {
+  if (!(await isCyanFxAlphaCard(material))) return false;
+  material.visible = false;
+  material.opacity = 0;
+  material.transparent = true;
+  material.depthWrite = false;
+  material.alphaTest = 1.1;
+  material.needsUpdate = true;
+  return true;
+}
+
+async function applyAlphaFromMap(material) {
+  // JX3 Diffuses often carry alpha that is NOT cloth opacity (dye/coverage).
+  // Using it as glass shreds stockings and makes robes see-through.
+  // Cutout allowlist = hair/ribbon/hat/head + glove cards; cyan sleeve FX
+  // planes are hidden (solid blue fills survive alphaTest). Keep face/body dye opaque.
+  // Map-viewer uses DoubleSide for all mats — never force FrontSide (dark face).
+  const name = String(material?.name || '').toLowerCase();
+  // Never cut out face skin itself.
+  if (!material?.map || /_face_hd_/.test(name)) {
+    material.transparent = false;
+    material.opacity = 1;
+    material.alphaTest = 0;
+    material.depthWrite = true;
+    material.side = THREE.DoubleSide;
+    material.needsUpdate = true;
+    return { hasAlpha: false, soft: false, forcedOpaque: true };
+  }
+
+  // Was: hide cyan sleeve cards. That removed forearm/sleeve meshes and caused
+  // wrist gaps vs map-viewer (which shows translucent purple sleeves). Keep them
+  // as soft-alpha translucent cloth instead.
+  if (await isCyanFxAlphaCard(material)) {
+    material.visible = true;
+    material.transparent = true;
+    material.opacity = 1;
+    material.depthWrite = false;
+    material.alphaTest = 0.15;
+    material.side = THREE.DoubleSide;
+    material.needsUpdate = true;
+    return { hasAlpha: true, soft: true, sleeveFxTranslucent: true };
+  }
+
+  // Hair/hat/head + glove overlays use Diffuse alpha as cutout.
+  // hand_hd skin slot (s2, no alpha) stays opaque via stats below; cyan hand
+  // slots were already hidden above.
+  const allowCutout = /(bang|plait|hair|ribbon|hat|_head_hd_|hand|glove)/i.test(name);
+
+  if (!allowCutout) {
+    material.transparent = false;
+    material.opacity = 1;
+    material.alphaTest = 0;
+    material.depthWrite = true;
+    material.side = THREE.DoubleSide;
+    material.needsUpdate = true;
+    return { hasAlpha: false, soft: false, forcedOpaque: true };
+  }
+
+  const stats = await textureAlphaStats(material.map);
+  if (stats.hasAlpha) {
+    material.transparent = true;
+    material.side = THREE.DoubleSide;
+    material.depthWrite = false;
+    // Map-viewer uses max(0.3); 0.06 left dark hat/head alpha veils over the face.
+    material.alphaTest = Math.max(material.alphaTest || 0, 0.3);
+  } else {
+    material.transparent = false;
+    material.opacity = 1;
+    material.alphaTest = 0;
+    material.depthWrite = true;
+    material.side = THREE.DoubleSide;
+  }
+  material.needsUpdate = true;
+  await disableIfDarkCutout(material);
+  return stats;
+}
+
+
+
+
+function boostFaceDrawOrder(root) {
+  root.traverse((o) => {
+    if (!o.isMesh && !o.isSkinnedMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    const isFace = mats.some((m) => /face/i.test(m?.name || '')) || /face/i.test(o.name || '');
+    const isHairHat = mats.some((m) => /(bang|plait|hair|ribbon|hat|_head_hd_)/i.test(m?.name || ''))
+      || /(bang|plait|hair|hat|head_hd)/i.test(o.name || '');
+    if (isHairHat) {
+      // Draw cutout overlays after opaque face skin.
+      o.renderOrder = Math.max(o.renderOrder || 0, 3);
+    }
+    if (!isFace) return;
+    o.renderOrder = 1;
+    for (const m of mats) {
+      if (!m) continue;
+      if (/face/i.test(m.name || '')) {
+        // Keep skin slots opaque/depthWrite, but match map-viewer DoubleSide.
+        // Do NOT strip face normalMaps — map-viewer binds TangentSpace_Normal.
+        m.side = THREE.DoubleSide;
+        m.transparent = false;
+        m.opacity = 1;
+        m.alphaTest = 0;
+        m.depthWrite = true;
+        m.needsUpdate = true;
+      }
+    }
+  });
+}
+function hideUnmappedHelpers(root) {
+  root.traverse((o) => {
+    if (!o.isMesh && !o.isSkinnedMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    const allWhiteNoMap = mats.every((m) => m && !m.map && (!m.color || m.color.r > 0.9));
+    const name = String(o.name || '').toLowerCase();
+    if (allWhiteNoMap && (/helper|dummy|col|bound|weapon|slot|attach|fx|plane/.test(name) || (o.geometry?.attributes?.position?.count || 0) < 30)) {
+      o.visible = false;
+    }
+  });
+}
+function mapLooksNonAlbedo(tex) {
+  const src = String(
+    tex?.image?.currentSrc ||
+      tex?.image?.src ||
+      tex?.source?.data?.currentSrc ||
+      tex?.source?.data?.src ||
+      tex?.name ||
+      '',
+  );
+  return /_(MRE|TangentSpace_Normal|Normal|SpecularColor|Specular)(\.|$)/i.test(src);
+}
+
+async function loadTextureFileList() {
+  const candidates = [
+    '/api/f1_hualuo_textures',
+    './texture_manifest.json',
+    '../viewport_fbx/texture_manifest.json',
+    './diffuse_manifest.json',
+    '../viewport_fbx/diffuse_manifest.json',
+  ];
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+    } catch (_) { /* next */ }
+  }
+  return [];
+}
+
+/**
+ * Full map-viewer prepareAnchorRigMaterials pass.
+ * Keeps original material types (Phong/Standard); only rewrites albedo slot.
+ */
+
+/** Map-viewer applyPlayerRigPresentation: pelvis→head = +Y, feet on ground. */
+function applyUprightPresentation(root) {
+  const placement = new THREE.Group();
+  const orientation = new THREE.Group();
+  orientation.add(root);
+  placement.add(orientation);
+  root.updateMatrixWorld(true);
+
+  let pelvis = null, head = null;
+  root.traverse((o) => {
+    if (!o.isBone) return;
+    const n = String(o.name || '').toLowerCase();
+    if (!pelvis && (n === 'bip01_pelvis' || n === 'pelvis' || n.endsWith('pelvis') || n.includes('pelvis'))) pelvis = o;
+    if (!head && (n === 'bip01_head' || n === 'head' || n.endsWith('_head') || n.endsWith(' head'))) head = o;
+  });
+  if (pelvis && head) {
+    const p = new THREE.Vector3(), h = new THREE.Vector3();
+    pelvis.getWorldPosition(p);
+    head.getWorldPosition(h);
+    const up = h.sub(p);
+    if (up.lengthSq() > 1e-4) {
+      up.normalize();
+      if (up.y < 0.6) {
+        orientation.quaternion.setFromUnitVectors(up, new THREE.Vector3(0, 1, 0));
+      }
+    }
+  } else {
+    orientation.rotation.x = -Math.PI / 2; // FBX often Z-up
+  }
+  orientation.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(orientation);
+  if (!box.isEmpty()) {
+    const c = box.getCenter(new THREE.Vector3());
+    placement.position.set(-c.x, -box.min.y, -c.z);
+  }
+  placement.updateMatrixWorld(true);
+  return placement;
+}
+
+function frameCameraOn(object, closeup) {
+  const box = new THREE.Box3().setFromObject(object);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const effectPadding = SFX_ENABLED ? 1.8 : 1;
+  if (closeup) {
+    // Prefer upper body / head
+    const target = new THREE.Vector3(center.x, box.min.y + size.y * 0.75, center.z);
+    const dist = (Math.max(size.y, size.z) * 0.9 + 40) * effectPadding;
+    camera.position.set(target.x + dist * 0.35, target.y + dist * 0.1, target.z + dist);
+    controls.target.copy(target);
+  } else {
+    const dist = (Math.max(size.x, size.y, size.z) * 1.6 + 40) * effectPadding;
+    camera.position.set(center.x + dist * 0.4, center.y + size.y * 0.2, center.z + dist);
+    controls.target.set(center.x, center.y + size.y * 0.3, center.z);
+  }
+  controls.update();
+  camera.updateProjectionMatrix();
+}
+
+async function prepareAnchorRigMaterials(obj) {
+  const overrideTasks = [];
+  let mapped = 0;
+
+  obj.traverse((object) => {
+    if (!object?.isMesh && !object?.isSkinnedMesh) return;
+    object.frustumCulled = false;
+    object.castShadow = false;
+    object.receiveShadow = false;
+
+    const materials = Array.isArray(object.material) ? object.material : [object.material];
+    for (const material of materials) {
+      if (!material) continue;
+
+      if (material.emissive) material.emissive.setRGB(0, 0, 0);
+      if ('emissiveIntensity' in material) material.emissiveIntensity = 0;
+      if (material.emissiveMap && mapLooksNonAlbedo(material.emissiveMap)) {
+        material.emissiveMap = null;
+      }
+
+      // Default opaque until Diffuse alpha is measured; DoubleSide like map-viewer.
+      material.transparent = false;
+      material.opacity = 1;
+      material.alphaTest = 0;
+      material.depthWrite = true;
+      material.side = THREE.DoubleSide;
+
+      if ('metalness' in material) material.metalness = 0;
+      if ('roughness' in material) material.roughness = 0.75;
+      if ('shininess' in material) material.shininess = 20;
+      if (material.specular?.isColor) material.specular.setRGB(0.08, 0.08, 0.08);
+      if (material.metalnessMap && mapLooksNonAlbedo(material.metalnessMap)) material.metalnessMap = null;
+      if (material.roughnessMap && mapLooksNonAlbedo(material.roughnessMap)) material.roughnessMap = null;
+      if (material.specularMap && mapLooksNonAlbedo(material.specularMap)) material.specularMap = null;
+
+      material.normalMap = null;
+      if (material.normalScale?.set) material.normalScale.set(1, 1);
+
+      if (material.map && mapLooksNonAlbedo(material.map)) {
+        material.map = null;
+      }
+
+      const matName = String(material.name || '').trim();
+      if (matName && textureFileLookup.size) {
+        const diffuseFile = findPresetTextureFile(textureFileLookup, matName, '_Diffuse');
+        if (diffuseFile) {
+          overrideTasks.push(
+            loadPresetTexture(diffuseFile, THREE.SRGBColorSpace).then(async (tex) => {
+              if (!tex) return;
+              material.map = tex;
+              if (material.color) material.color.setHex(0xffffff);
+              await applyAlphaFromMap(material);
+              material.needsUpdate = true;
+              mapped += 1;
+            }),
+          );
+        }
+        const normalFile = findPresetTextureFile(textureFileLookup, matName, '_TangentSpace_Normal');
+        if (normalFile) {
+          overrideTasks.push(
+            loadPresetTexture(normalFile, THREE.NoColorSpace).then((tex) => {
+              if (!tex) return;
+              material.normalMap = tex;
+              if (material.normalScale?.set) material.normalScale.set(1, -1); // DirectX normals (map-viewer)
+              material.needsUpdate = true;
+            }),
+          );
+        }
+        const specularFile = findPresetTextureFile(textureFileLookup, matName, '_SpecularColor');
+        if (specularFile) {
+          overrideTasks.push(
+            loadPresetTexture(specularFile, THREE.SRGBColorSpace).then((tex) => {
+              if (!tex) return;
+              // Phong/Lambert: specularMap only — never put Specular into material.map
+              if ('specularMap' in material) {
+                material.specularMap = tex;
+                material.needsUpdate = true;
+              }
+            }),
+          );
+        }
+      }
+
+      material.needsUpdate = true;
+    }
+  });
+
+  await Promise.all(overrideTasks);
+
+  // Final pass: re-assert color spaces + alpha policy after all maps land.
+  const alphaPass = [];
+  obj.traverse((object) => {
+    if (!object?.isMesh && !object?.isSkinnedMesh) return;
+    const materials = Array.isArray(object.material) ? object.material : [object.material];
+    for (const material of materials) {
+      if (!material) continue;
+      if (material.map && mapLooksNonAlbedo(material.map)) material.map = null;
+      if (material.map) {
+        material.map.colorSpace = THREE.SRGBColorSpace;
+        material.map.flipY = false;
+        if (material.color) material.color.setHex(0xffffff);
+        alphaPass.push(applyAlphaFromMap(material));
+      } else {
+        material.transparent = false;
+        material.alphaTest = 0;
+        material.depthWrite = true;
+      }
+      if (material.normalMap) {
+        material.normalMap.colorSpace = THREE.NoColorSpace;
+        material.normalMap.flipY = false;
+      }
+      if (material.emissiveMap) material.emissiveMap.colorSpace = THREE.SRGBColorSpace;
+      material.needsUpdate = true;
+    }
+  });
+  await Promise.all(alphaPass);
+
+  return mapped;
+}
+
+function setupSfxBoxActor() {
+  root = new THREE.Group();
+  root.name = 'sfx-box-root';
+  const body = new THREE.Mesh(
+    new THREE.BoxGeometry(42, 80, 42),
+    new THREE.MeshStandardMaterial({
+      color: 0x8ba7c7,
+      roughness: 0.72,
+      metalness: 0.05,
+    }),
+  );
+  body.position.y = 40;
+  body.name = 'sfx-box';
+  root.add(body);
+  scene.add(root);
+
+  camera.position.set(170, 380, 260);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  window.__actor = { root, placement: root, bonesByName: boneByName };
+  window.__FBX_READY__ = { bones: 0, model: 'box', diffuseMapped: 0 };
+  window.__FBX_META__ = window.__FBX_READY__;
+  window.__fbxReady = true;
+  hud.textContent = 'SFX box ready · loading timeline…';
+  startSfxLayer();
+}
+
+
+hud.textContent = `loading ${FBX_URL}…`;
+
+(async () => {
+  if (USE_SFX_BOX) {
+    setupSfxBoxActor();
+    return;
+  }
+  const fileList = await loadTextureFileList();
+  textureFileLookup = new Map();
+  for (const fileName of fileList) {
+    if (typeof fileName === 'string' && fileName) {
+      textureFileLookup.set(fileName.toLowerCase(), fileName);
+    }
+  }
+
+  const loader = new FBXLoader();
+  // Intentionally do NOT setResourcePath: FBX external refs include MRE/Normal and
+  // would bind those into material.map. We only load {mat}_Diffuse via prepare.
+
+  loader.load(
+    FBX_URL,
+    async (obj) => {
+      root = obj;
+      root.scale.setScalar(1);
+      scene.add(root);
+      indexBones(root);
+
+      let mapped = 0;
+      try {
+        mapped = await prepareAnchorRigMaterials(root);
+        hideUnmappedHelpers(root);
+        boostFaceDrawOrder(root);
+      } catch (err) {
+        console.warn('prepareAnchorRigMaterials failed:', err);
+      }
+
+      // Upright presentation (map-viewer applyPlayerRigPresentation)
+      scene.remove(root);
+      const placement = applyUprightPresentation(root);
+      scene.add(placement);
+      window.__FBX_PLACEMENT__ = placement;
+      frameCameraOn(placement, CLOSEUP);
+
+      let bc = 0;
+      root.traverse((o) => { if (o.isBone) bc++; });
+      hud.textContent = `花萝 FBX ready · ${bc} bones · textured (map-viewer preset) · Diffuse ${mapped}`;
+      window.__actor = { root, placement, bonesByName: boneByName };
+      partVisibility = applyAnimatedHeadVisibility(root);
+      window.__actor.partVisibility = partVisibility;
+      window.__actor.armBind = { renamed: 0, note: 'off' };
+      headAttachments = createHeadAttachments(root);
+      window.__actor.attachments = headAttachments;
+      updateAttachmentsMultiPass(headAttachments, root, 3);
+
+      window.__applyPose = (matricesByName) => {
+        if (useMixer) return;
+        if (matricesByName?.bones) applyPoseByName(matricesByName.bones);
+        else applyPoseByName(matricesByName);
+      };
+      // Map-viewer: skin FBX + clip-source FBX animations. Then embedded. Then ?clip= JSON.
+      try {
+        let ok = false;
+        if (CLIP_FBX_URL) {
+          const anims = await loadAnimationsFromClipFbx(CLIP_FBX_URL);
+          ok = await startMixerFromClips(root, anims, 'clipFbx');
+        }
+        if (!ok) {
+          ok = await startEmbeddedMixer(root);
+        }
+        if (!ok && CLIP_URL) {
+          await startMixerClip(root, CLIP_URL);
+        }
+      } catch (err) {
+        console.error('mixer clip failed', err);
+        window.__FBX_ERROR__ = `mixer: ${err?.message || err}`;
+        hud.textContent += ` · mixer FAIL`;
+      }
+      startSfxLayer();
+      // Set ready AFTER mixer so capture sees embedded/clipFbx state.
+      window.__FBX_READY__ = { bones: bc, fbx: FBX_URL, tex: TEX_BASE, diffuseMapped: mapped };
+      if (headAttachments) {
+        window.__FBX_READY__.attachments = {
+          boneLinks: headAttachments.boneLinks?.length || 0,
+          rootLinks: headAttachments.rootLinks?.length || 0,
+        };
+      }
+      if (partVisibility) window.__FBX_READY__.partVisibility = partVisibility;
+      if (window.__actor?.armBind) window.__FBX_READY__.armBind = window.__actor.armBind;
+      if (window.__MIXER_READY__) window.__FBX_READY__.mixer = window.__MIXER_READY__;
+      window.__FBX_META__ = window.__FBX_READY__;
+      window.__fbxReady = true;
+      window.dispatchEvent(new Event('fbx-ready'));
+    },
+    undefined,
+    (err) => {
+      hud.textContent = `FBX load failed: ${err?.message || err}`;
+      window.__FBX_ERROR__ = String(err?.message || err);
+      console.error(err);
+    },
+  );
+})();
+
+function frame() {
+  resize();
+  if (useMixer && mixer) {
+    if (CLIP_TIME == null && CLIP_FRAME == null) {
+      mixer.update(mixerClock.getDelta());
+    } else {
+      mixer.update(0);
+    }
+    if (headAttachments && window.__actor?.root) {
+      updateAttachmentsMultiPass(headAttachments, window.__actor.root, 2);
+    }
+  } else if (!USE_SFX_BOX) {
+    pollPose();
+  }
+  if (sfxLayer) {
+    const elapsedMs = performance.now() - sfxClockStartMs;
+    const effectTimeMs = USE_SFX_BOX
+      ? sfxLayer.timing.startMs
+        + (elapsedMs % Math.max(1, sfxLayer.timing.durationMs))
+      : (useMixer && mixer && CLIP_TIME == null && CLIP_FRAME == null)
+        ? elapsedMs % Math.max(1, sfxLayer.timing.totalMs)
+        : sfxPoseTimeMs;
+    sfxLayer.update(effectTimeMs);
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+window.fbxViewport = {
+  applyPose: (pose) => {
+    lastPoseVer = pose.v ?? lastPoseVer + 1;
+    applyMatrices(pose.matrices, pose.bone_names);
+  },
+  getBoneNames: () => [...new Set([...boneByName.keys()])],
+};

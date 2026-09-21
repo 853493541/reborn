@@ -1,0 +1,33 @@
+      let bc = 0;
+      root.traverse((o) => { if (o.isBone) bc++; });
+      hud.textContent = `花萝 FBX ready · ${bc} bones · textured (map-viewer preset) · Diffuse ${mapped}`;
+      window.__actor = { root, placement, bonesByName: boneByName };
+      window.__applyPose = (matricesByName) => {
+        if (useMixer) return;
+        if (matricesByName?.bones) applyPoseByName(matricesByName.bones);
+        else applyPoseByName(matricesByName);
+      };
+      // Map-viewer: skin FBX + clip-source FBX animations. Then embedded. Then ?clip= JSON.
+      try {
+        let ok = false;
+        if (CLIP_FBX_URL) {
+          const anims = await loadAnimationsFromClipFbx(CLIP_FBX_URL);
+          ok = await startMixerFromClips(root, anims, 'clipFbx');
+        }
+        if (!ok) {
+          ok = await startEmbeddedMixer(root);
+        }
+        if (!ok && CLIP_URL) {
+          await startMixerClip(root, CLIP_URL);
+        }
+      } catch (err) {
+        console.error('mixer clip failed', err);
+        window.__FBX_ERROR__ = `mixer: ${err?.message || err}`;
+        hud.textContent += ` · mixer FAIL`;
+      }
+      // Set ready AFTER mixer so capture sees embedded/clipFbx state.
+      window.__FBX_READY__ = { bones: bc, fbx: FBX_URL, tex: TEX_BASE, diffuseMapped: mapped };
+      if (window.__MIXER_READY__) window.__FBX_READY__.mixer = window.__MIXER_READY__;
+      window.__FBX_META__ = window.__FBX_READY__;
+      window.__fbxReady = true;
+      window.dispatchEvent(new Event('fbx-ready'));

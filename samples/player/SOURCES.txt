@@ -1,0 +1,6 @@
+NOTE=Player-action MIN2 samples from actor-assets extract (data/source/player/M2/动作).
+MISSING=data\\source\\player\\m2\\动作\\M2_1008d_决战幽冥壑_CAM041.ani — not present as loose file on Andy; kms references it but only plot m2_1008d_决战幽冥壑_cam041.ani exists (MaxScript payload). Needs single-path PakV4/zsCache extract (Lead gated broad pulls).
+ALSO_MISSING=data\\source\\player\\m2\\动作\\M2_1105_决战幽冥壑_CAM008.ani
+
+player_ani	m2b02yd奔跑.ani	bytes=55373	magic=MIN2	bone_count=13	declared=0	vc=191	fc=23	fps=33.0	src=C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\actor-assets\\data\\source\\player\\M2\\动作\\m2b02yd奔跑.ani
+player_ani	m2b02yd行走.ani	bytes=44797	magic=MIN2	bone_count=13	declared=0	vc=191	fc=19	fps=65.0	src=C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\actor-assets\\data\\source\\player\\M2\\动作\\m2b02yd行走.ani

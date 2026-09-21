@@ -1,0 +1,4 @@
+C:\Users\Zhibin Ren\AppData\Local\Programs\Python\Python312\Lib\tkinter\__init__.py:862: UserWarning: Glyph 33457 (\N{CJK UNIFIED IDEOGRAPH-82B1}) missing from font(s) DejaVu Sans.
+  func(*args)
+C:\Users\Zhibin Ren\AppData\Local\Programs\Python\Python312\Lib\tkinter\__init__.py:862: UserWarning: Glyph 33821 (\N{CJK UNIFIED IDEOGRAPH-841D}) missing from font(s) DejaVu Sans.
+  func(*args)

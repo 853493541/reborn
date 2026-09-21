@@ -1,0 +1,50 @@
+[
+  {
+    "path": "C:/SeasunGame/MovieEditor/source/player/F1/F1动作导入测试.FBX",
+    "bytes": 1540160,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "F1b02ty排箫行走01",
+        "duration": 0.46666666865348816,
+        "tracks": 276
+      }
+    ]
+  },
+  {
+    "path": "C:/SeasunGame/MovieEditor/source/player/F1/f1.fbx",
+    "bytes": 597836,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "Bip01|Bip01|Take 001|BaseLayer",
+        "duration": 11.733333587646484,
+        "tracks": 282
+      }
+    ]
+  },
+  {
+    "path": "C:/SeasunGame/MovieEditor/source/player/F1/F1-标准骨骼.FBX",
+    "bytes": 1914752,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "Take 001",
+        "duration": 11.733750343322754,
+        "tracks": 291
+      }
+    ]
+  },
+  {
+    "path": "C:/SeasunGame/Game/JX3/bin/zhcn_hd/MovieEditor/source/fbx/998/998.fbx",
+    "bytes": 4698880,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "seasun animation",
+        "duration": 1.5,
+        "tracks": 609
+      }
+    ]
+  }
+]

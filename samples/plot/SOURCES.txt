@@ -1,0 +1,23 @@
+SOURCE_TREE=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor
+ANI_DIR=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作
+NOTE=No maps / no Wwise. Small MovieEditor plot set for min2.py morph-vs-multibone validation.
+
+kms	cam007.kms	bytes=164149	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\协议动画文件\敖龙岛\决战幽冥壑\01 kms文件\cam007.kms
+kms	cam008.kms	bytes=61796	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\协议动画文件\敖龙岛\决战幽冥壑\01 kms文件\cam008.kms
+kms	cam041.kms	bytes=178899	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\协议动画文件\敖龙岛\决战幽冥壑\01 kms文件\cam041.kms
+kms	cam042.kms	bytes=228636	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\协议动画文件\敖龙岛\决战幽冥壑\01 kms文件\cam042.kms
+kms	cam048.kms	bytes=30115	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\协议动画文件\敖龙岛\决战幽冥壑\01 kms文件\cam048.kms
+kms	cam071_人物.kms	bytes=20113	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\协议动画文件\敖龙岛\决战幽冥壑\01 kms文件\cam071_人物.kms
+face_ani	m2_1008d_face_决战幽冥壑_cam042.ani	bytes=9408	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1008d_face_决战幽冥壑_cam042.ani
+body_ani	m2_1008d_决战幽冥壑_cam041_m2_1008d_body_hd.ani	bytes=60170	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1008d_决战幽冥壑_cam041_m2_1008d_body_hd.ani
+actor	m2_1018_沈眠风cl.actor	bytes=886	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\m2_1018_沈眠风cl.actor
+actor	m2_1065_柳静海cl.actor	bytes=670	magic=None	bone_count=None	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\m2_1065_柳静海cl.actor
+face_ani	m2_1105_face_决战幽冥壑_cam008.ani	bytes=10196	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1105_face_决战幽冥壑_cam008.ani
+skel_ani	m2_1105_决战幽冥壑_cam008.ani	bytes=24137	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1105_决战幽冥壑_cam008.ani
+skel_ani	m2_1112_决战幽冥壑_cam007.ani	bytes=34814	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1112_决战幽冥壑_cam007.ani
+face_ani	m2_1125_face_决战幽冥壑_cam007.ani	bytes=15998	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1125_face_决战幽冥壑_cam007.ani
+body_ani	m2_1125_决战幽冥壑_cam007_m2_1125_body_hd.ani	bytes=38264	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\m2_1125_决战幽冥壑_cam007_m2_1125_body_hd.ani
+body_ani	p080656c_决战幽冥壑_cam008_p080656c_body_hd.ani	bytes=37427	magic=b'MIN2'	bone_count=13	src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\敖龙岛\决战幽冥壑\动作\p080656c_决战幽冥壑_cam008_p080656c_body_hd.ani
+
+VALIDATION_HINT=All staged .ani are MIN2 with bone_count=13 (multi-bone / face morph-name tracks). No bone_count=1 morph-only clips in this plot tree; those live in PSS effects per EXPERIENCES §6.4.
+DEST=/workspace/jx3-ani-player/samples/plot/

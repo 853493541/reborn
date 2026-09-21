@@ -1,0 +1,2 @@
+[character-mode=fbx] chrome hosts Three »¨ÂÜ ¡ª http://127.0.0.1:8765/index.html?fbx=.%2Fsamples%2Factor_presets%2Ff1_hualuo%2Fhualuo_no_anim.fbx&tex=.%2Fsamples%2Factor_presets%2Ff1_hualuo%2Ftex%2F&frame=bind
+[character-mode=fbx] Mesh RQ toggle = matplotlib LBS fallback only

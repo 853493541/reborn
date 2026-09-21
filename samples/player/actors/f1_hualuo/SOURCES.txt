@@ -1,0 +1,6 @@
+﻿# F1 map-viewer actor preset (same as ensurePlayerAnchorRig)
+PRESET=花萝
+FBX=花萝无动作.fbx
+SRC=C:\SeasunGame\MovieEditor\source\fbx\花萝
+MAPVIEWER=ACTOR_PRESET_BY_BODY_TYPE.f1 + /api/actor-exports
+NOTE=Full wardrobe + textures, no embedded clips. Visual parity target for Ani Player.

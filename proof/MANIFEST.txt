@@ -1,0 +1,19 @@
+# proof MANIFEST (this box)
+OK min2_walk_stick.png bytes=68476 sha16=4013db74638b73b8
+OK min2_run_stick.png bytes=81344 sha16=6b6c2aa75da2a55f
+OK play_walk_stick.png bytes=49506 sha16=3d27abb89ef50d91
+OK play_run_stick.png bytes=52438 sha16=1f927cf8b5f3fb26
+OK play_walk_f9_canvas.png bytes=22693 sha16=c341e15b098b97fe
+OK play_run_f11_canvas.png bytes=26625 sha16=59c721b16d10a344
+
+# Dev3 Play skinned viewport
+OK play_skinned_walk_f9.png bytes=41039 sha16=57d294de50622e8e
+OK play_skinned_run_f11.png bytes=38824 sha16=332f59bce8c90451
+
+# skinned proofs (Dev4) skinning=rq_matrix_LBS matrices_at+quats_at
+OK skinned_run.png bytes=149601 sha16=25b13172a02ebd36
+OK skinned_run_f11.png bytes=112587 sha16=cd4e7c158627c11b
+OK skinned_run_f9.png bytes=111304 sha16=59e22ca01a5941b9
+OK skinned_walk.png bytes=151020 sha16=70436ba9c97c0511
+OK skinned_walk_f9.png bytes=117229 sha16=37e7fd9123991550
+OK skinned_bind.json bytes=10133 sha16=e571aebc18f87fb9

@@ -1,0 +1,42 @@
+[
+  {
+    "folder": "花萝",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/花萝/花萝无动作.fbx",
+    "bytes": 2771440,
+    "clips": [],
+    "takes": [],
+    "takesGbk": []
+  },
+  {
+    "folder": "走路",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/走路/花萝走路.fbx",
+    "bytes": 5320816,
+    "clips": [],
+    "takes": [],
+    "takesGbk": []
+  },
+  {
+    "folder": "跳跃1",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/跳跃1/跳跃1.fbx",
+    "bytes": 4927680,
+    "clips": [],
+    "takes": [],
+    "takesGbk": []
+  },
+  {
+    "folder": "跳跃2",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/跳跃2/跳跃2.fbx",
+    "bytes": 4888368,
+    "clips": [],
+    "takes": [],
+    "takesGbk": []
+  },
+  {
+    "folder": "跳跃3",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/跳跃3/跳跃3.fbx",
+    "bytes": 4966992,
+    "clips": [],
+    "takes": [],
+    "takesGbk": []
+  }
+]

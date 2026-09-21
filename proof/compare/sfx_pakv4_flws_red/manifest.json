@@ -1,0 +1,18 @@
+[
+  {
+    "file": "c_藏剑刀光01b红色.pss",
+    "bytes": 224930,
+    "magic": "PAR",
+    "rel": "data\\source\\other\\HD特效\\技能\\Pss\\发招\\c_藏剑刀光01b红色.pss",
+    "package": "bps6l6gzkjw6r",
+    "package_path": "115/bps6l6gzkjw6r.hpkg"
+  },
+  {
+    "file": "c_藏剑风车范围_红色.pss",
+    "bytes": 35213,
+    "magic": "PAR",
+    "rel": "data\\source\\other\\HD特效\\技能\\Pss\\状态\\c_藏剑风车范围_红色.pss",
+    "package": "jzwoyc7yazqta",
+    "package_path": "119/jzwoyc7yazqta.hpkg"
+  }
+]

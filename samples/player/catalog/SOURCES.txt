@@ -1,0 +1,5 @@
+NOTE=Catalog + playable resolve for 花萝 FBX action playback.
+UI=ui_lists.json (rows now include playable_path / playable)
+FEED=playable_f1_hualuo.json — default_clips + 风来吴山 rows with skeletal .ani
+FIRST_BAR=风来吴山·蓄力 → moves/f1s07cj重剑技能15蓄力_奇穴.ani
+REBUILD=python catalog.py && python catalog_resolve_patch.py

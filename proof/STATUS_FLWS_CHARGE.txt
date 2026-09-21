@@ -1,0 +1,10 @@
+FLWS charge F1 body mesh — STAGED (updated 2026-09-19 23:34:20 PT)
+================================================
+mesh=samples/mesh/f1_2227_body_hd.mesh
+sha256=e5255aea4eea44795d52a7a8012292659598786051ac4d65735a621e749e1dc2
+bytes=745372
+load_mesh_bones=37 bip01=10 verts=11738
+logical=data\source\player\f1\部件\f1_2227_body_hd.mesh
+clip=samples/player/moves/f1s07cj重剑技能15蓄力_奇穴.ani stick_bip=58 exact_bip_map=10
+blocker=none_for_mesh_acquire (prior STATUS used f1_meta_face; that remains REJECT_FACE_MORPH)
+staging=/workspace/jx3-staging/f1-body-pull/f1_2227_body_hd.mesh

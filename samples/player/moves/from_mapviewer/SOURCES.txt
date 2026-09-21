@@ -1,0 +1,3 @@
+Copied from jx3-web-map-viewer cache-extraction/actor-assets/data/source/player/**/动作/*.ani
+Purpose: restart skeletal MOVE playback using map-viewer move files (not PSS VFX).
+Count: 37 MIN2 player action clips.

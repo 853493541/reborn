@@ -1,0 +1,16 @@
+aniPath=data\source\player\f1\动作\f1s07cj重剑技能15.ani
+path=data\source\player\f1\动作\F1s07cj重剑技能15_风来吴山_悟.tani
+pssPaths=["data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑_风来吴山_刀光01_悟.pss"]
+pssEntries=[
+  {
+    "path": "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑_风来吴山_刀光01_悟.pss",
+    "startTimeMs": null,
+    "gataTimingWarning": "GATA per-PSS start time is not engine-verified; binary holds live runtime pointers in the per-entry header. No fabricated 0 fallback. effectiveStartTimeMs is set only when the source PSS globalStartDelay can be read.",
+    "effectiveStartTimeMs": 2000,
+    "pssStartDelayMs": 2000,
+    "pssPlayDurationMs": 5000,
+    "pssTotalDurationMs": 8000,
+    "timingSource": "pss-global-delay"
+  }
+]
+sfxTagList=["New SFX Tag_0"]

@@ -1,0 +1,211 @@
+﻿          'GET /api/actor/debug-info',
+        ],
+        clientDebugHint: 'In browser console: window.__debugState.getLogs() / .currentPlot / .currentAniHeader / .isPlaying',
+      });
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // ─── Player Animation Browser API ─────────────────────────────────────────
+
+  // List body types with animation counts
+  if (method === 'GET' && urlPath === '/api/player-anim/body-types') {
+    try {
+      const bodyTypes = ['f1', 'f2', 'm1', 'm2'];
+      const result = bodyTypes.map(bt => {
+        const entries = loadPlayerAnimationTable(bt);
+        return { bodyType: bt.toUpperCase(), entryCount: entries ? entries.length : 0 };
+      });
+      sendJson(res, 200, { bodyTypes: result, serialTablePath: join(PLAYER_ANIM_TABLE_DIR, 'player_serial_animation_table.txt') });
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  if (method === 'GET' && urlPath === '/api/player-anim/anchor-support') {
+    try {
+      const bt = (reqUrl.searchParams.get('bodyType') || '').toLowerCase();
+      const support = buildMovieEditorPlayerAnchorSupport(bt);
+      if (!support) {
+        sendJson(res, 404, { error: `No anchor support found for body type: ${bt}` });
+        return;
+      }
+      sendJson(res, 200, support);
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // Get paginated animation list for a body type
+  if (method === 'GET' && urlPath === '/api/player-anim/animations') {
+    try {
+      const bt = (reqUrl.searchParams.get('bodyType') || 'm2').toLowerCase();
+      const search = (reqUrl.searchParams.get('search') || '').toLowerCase();
+      const page = Math.max(0, parseInt(reqUrl.searchParams.get('page'), 10) || 0);
+      const limit = Math.min(500, Math.max(1, parseInt(reqUrl.searchParams.get('limit'), 10) || 100));
+      const entries = loadPlayerAnimationTable(bt);
+      if (!entries) { sendJson(res, 404, { error: `No animation table found for body type: ${bt}` }); return; }
+      let filtered = entries;
+      if (search) {
+        filtered = entries.filter(e =>
+          e.animFile.toLowerCase().includes(search) ||
+          String(e.id).includes(search)
+        );
+      }
+      const total = filtered.length;
+      const start = page * limit;
+      const slice = filtered.slice(start, start + limit);
+      sendJson(res, 200, { bodyType: bt.toUpperCase(), total, page, limit, animations: slice });
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // Get serial animation table (named sequences)
+  if (method === 'GET' && urlPath === '/api/player-anim/serial-table') {
+    try {
+      const entries = loadSerialAnimationTable();
+      if (!entries) { sendJson(res, 404, { error: 'Serial animation table not found' }); return; }
+      sendJson(res, 200, { total: entries.length, entries });
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // Get Tani.rt catalog entries (paginated, filterable by body type and search)
+  if (method === 'GET' && urlPath === '/api/player-anim/tani-catalog') {
+    try {
+      const catalog = loadTaniCatalog();
+      if (!catalog) { sendJson(res, 404, { error: 'Tani.rt catalog not found' }); return; }
+      const bt = (reqUrl.searchParams.get('bodyType') || '').toLowerCase();
+      const search = (reqUrl.searchParams.get('search') || '').toLowerCase();
+      const page = Math.max(0, parseInt(reqUrl.searchParams.get('page'), 10) || 0);
+      const limit = Math.min(500, Math.max(1, parseInt(reqUrl.searchParams.get('limit'), 10) || 100));
+      let filtered = catalog;
+      if (bt) {
+        filtered = filtered.filter(e => e.name.toLowerCase().startsWith(bt));
+      }
+      if (search) {
+        filtered = filtered.filter(e =>
+          e.name.toLowerCase().includes(search) ||
+          e.sourcePath.toLowerCase().includes(search) ||
+          e.shellPath.toLowerCase().includes(search)
+        );
+      }
+      const total = filtered.length;
+      const start = page * limit;
+      const slice = filtered.slice(start, start + limit);
+      sendJson(res, 200, { total, page, limit, entries: slice });
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // Parse a .tani binary from PakV5: extract it, then return its contents
+  if (method === 'GET' && urlPath === '/api/player-anim/tani-parse') {
+    try {
+      const filePath = reqUrl.searchParams.get('path');
+      if (!filePath) { sendJson(res, 400, { error: 'path required' }); return; }
+      const buf = extractFromPakV4(filePath, join(__dirname, 'cache-extraction', 'actor-assets'));
+      if (!buf) { sendJson(res, 404, { error: `Could not extract: ${filePath}` }); return; }
+      const parsed = parseTaniBinary(buf, filePath);
+      if (reqUrl.searchParams.get('detail') === '1') {
+        sendJson(res, 200, buildTaniDetailResponse(buf, filePath, parsed));
+      } else {
+        sendJson(res, 200, parsed);
+      }
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // Extract .ani from PakV5 and return its MIN2 header
+  if (method === 'GET' && urlPath === '/api/player-anim/ani-header') {
+    try {
+      const filePath = reqUrl.searchParams.get('path');
+      if (!filePath) { sendJson(res, 400, { error: 'path required' }); return; }
+      const buf = extractFromPakV4(filePath, join(__dirname, 'cache-extraction', 'actor-assets'));
+      if (!buf) { sendJson(res, 404, { error: `Could not extract: ${filePath}` }); return; }
+      sendJson(res, 200, parseMin2AniHeader(buf));
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // ─── End Player Animation Browser API ──────────────────────────────────────
+
+  // API: PSS deep verification — runs every check against every referenced
+  // file and reports per-stage pass/fail with diagnostics. Designed to catch
+  // "loads OK but renders wrong" issues that the analyze endpoint misses.
+  if (method === 'GET' && urlPath === '/api/pss/verify') {
+    try {
+      const sourcePath = reqUrl.searchParams.get('sourcePath');
+      if (!sourcePath) { sendJson(res, 400, { error: 'sourcePath required' }); return; }
+      sendJson(res, 200, buildPssVerifyResponse(sourcePath));
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // API: PSS effect catalog
+  if (method === 'GET' && urlPath === '/api/pss/catalog') {
+    try {
+      sendJson(res, 200, buildPssCatalogResponse(
+        reqUrl.searchParams.get('q'),
+        reqUrl.searchParams.get('limit'),
+      ));
+    } catch (err) {
+      sendJson(res, 500, { error: err?.message || String(err) });
+    }
+    return;
+  }
+
+  // API: C# sidecar probe. Invokes tools/pss-renderer-cli/bin/Release/
+  // PssRendererCli.exe which loads the real MovieEditor DLLs and reports
+  // what is available. Returns the sidecar's stdout JSON verbatim. 404 if
+  // the sidecar has not been built yet.
+  if (method === 'GET' && urlPath === '/api/debug/pss-sidecar-probe') {
+    const exePath = join(__dirname, 'tools', 'pss-renderer-cli', 'bin', 'Release', 'PssRendererCli.exe');
+    if (!existsSync(exePath)) {
+      sendJson(res, 404, {
+        ok: false,
+        error: 'sidecar-not-built',
+        hint: 'Run: dotnet build -c Release tools/pss-renderer-cli',
+        exePath,
+      });
+      return;
+    }
+    try {
+      const stdout = execFileSync(exePath, ['probe'], { timeout: 15000, windowsHide: true });
+      const parsed = JSON.parse(stdout.toString('utf8').trim());
+      sendJson(res, 200, parsed);
+    } catch (err) {
+      sendJson(res, 500, {
+        ok: false,
+        error: 'sidecar-failed',
+        message: err?.message || String(err),
+        stdout: err?.stdout?.toString('utf8'),
+        stderr: err?.stderr?.toString('utf8'),
+      });
+    }
+    return;
+  }
+
+  // API: Client-side PSS render debug log (GET = retrieve last log, POST = store)
+  if (urlPath === '/api/debug/pss-render-log') {
+    if (method === 'GET') {
+      sendJson(res, 200, { ok: true, log: globalPssRenderLog });
+      return;
+    }
+    if (method === 'POST') {
+      let body = '';

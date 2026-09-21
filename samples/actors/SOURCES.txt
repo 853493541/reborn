@@ -1,0 +1,25 @@
+# samples/actors — skinned pairing (Dev 4) — UPDATED after mesh stage
+# Pairing: samples/player/ m2b02yd奔跑|行走 → 沈眠风 → body mesh bind via mesh.py + load_min2_stick
+
+SOURCE_TREE=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor
+PLAYER_MESH_ROOT=data\source\player\m2\
+MESH_FLAT=samples/mesh/
+
+# --- primary pairing ---
+actor	m2_1018_沈眠风cl.actor	bytes=886	status=STAGED	src=.../plot/actor/m2_1018_沈眠风cl.actor
+DependModel	data\source\player\m2\mdl\m2.mdl	status=STAGED_PATH_STUB	flat=samples/mesh/m2.mdl	bytes=283	note=DependModel path list NOT binary skeleton; ignored for bind
+Part2_body	data\source\player\m2\m2_1018_body_hd.mesh	status=STAGED	flat=samples/mesh/m2_1018_body_hd.mesh	bytes=341372	sha256=b6516906f4625cd18e1278db83a546874b33832264c2e451ed1af422e76c4579
+Part3_leg	data\source\player\m2\m2_2201_leg.mesh	status=MISSING_LOOSE	Have=0_in_actor_but_path_listed
+Part4_hand	data\source\player\m2\m2_2201_hand.mesh	status=MISSING_LOOSE
+Part5_belt	data\source\player\m2\m2_2201_belt.mesh	status=MISSING_LOOSE
+Part8_face	data\source\player\m2\m2_1018沈眠风_face_hd.mesh	status=STAGED	flat=samples/mesh/m2_1018沈眠风_face_hd.mesh	bytes=191763	sha256=ecb0dfb5d7398561a1c42419f0d6ba55d6d78998e1b2aa18b565a061e40320fb	note=exact actor face name (NOT m2_1018_face_hd.mesh)
+
+# --- secondary (not critical path) ---
+actor	m2_1065_柳静海cl.actor	bytes=670	status=STAGED	src=.../plot/actor/m2_1065_柳静海cl.actor
+
+# --- bind status (Dev 4) ---
+# stick API: min2.load_min2_stick → clip.positions_at(f) lowercase bip01*
+# mesh parse: mesh.load_mesh (HSEM@0x54, AABB+u16 verts, bone weights)
+# proofs: proof/skinned_walk.png proof/skinned_run.png proof/skinned_bind.json
+PAIRING=沈眠风cl → body m2_1018_body_hd.mesh → clip samples/player/m2b02yd奔跑.ani|行走.ani
+DEST=/workspace/jx3-ani-player/samples/actors/

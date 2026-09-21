@@ -1,0 +1,11 @@
+data\source\other\HD特效\其他\Pss\X_血喷01.pss
+data\source\other\hd特效\其他\pss\l_龙偏色_金.pss
+data\source\other\hd特效\其他\pss\l_龙偏色_银.pss
+data\source\other\hd特效\其他\pss\q_气浪.pss
+data\source\other\hd特效\其他\pss\q_气浪02.pss
+data\source\other\hd特效\其他\pss\x_血喷01.pss
+data\source\other\hd特效\技能\pss\发招\g_丐帮棍刀光02.pss
+data\source\other\新特效\技能\Pss\发招\D_刀光02.pss
+data\source\other\新特效\技能\Pss\发招\D_刀光蓝02.pss
+data\source\other\新特效\技能\Pss\状态\x_鲜血拖尾01.pss
+data\source\other\新特效\技能\Pss\被击\S_闪光烟雾02.pss

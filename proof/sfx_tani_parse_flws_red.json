@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "magic": "GATA",
+  "version": 1,
+  "path": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15_风来吴山红色hd.tani",
+  "aniPath": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15.ani",
+  "pssPaths": [
+    "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑刀光01b红色.pss",
+    "data\\source\\other\\hd特效\\技能\\pss\\状态\\c_藏剑风车范围_红色.pss"
+  ],
+  "pssEntries": [
+    {
+      "path": "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑刀光01b红色.pss",
+      "effectiveStartTimeMs": 2000,
+      "pssStartDelayMs": 2000,
+      "pssPlayDurationMs": 5000,
+      "pssTotalDurationMs": 8000,
+      "timingSource": "pss-global-delay"
+    },
+    {
+      "path": "data\\source\\other\\hd特效\\技能\\pss\\状态\\c_藏剑风车范围_红色.pss",
+      "effectiveStartTimeMs": 2000,
+      "pssStartDelayMs": 2000,
+      "pssPlayDurationMs": 5000,
+      "pssTotalDurationMs": 8000,
+      "timingSource": "pss-global-delay"
+    }
+  ],
+  "timingBasis": "Both exact red PSS package members were analyzed from local CDN HPKG extraction."
+}

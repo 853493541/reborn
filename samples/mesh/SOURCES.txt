@@ -1,0 +1,19 @@
+NOTE=Shenmianfeng (沈眠风) single-path PakV4 pull authorized by Dev Lead. Exact actor-referenced paths.
+ACTOR=samples/actors/m2_1018_沈眠风cl.actor
+EXTRACTOR=PakV4SfxExtract.exe
+FILE	m2.mdl	bytes=283	sha256=65edf6abc41e2ac03cc1375ce9ee2a08b1b0af658f86c9df6a301ad69fbb7acc	magic=b'\\dat'	logical=data\source\player\m2\部件\mdl\m2.mdl	flat=samples/mesh/m2.mdl	nested=samples/mesh/data\source\player\m2\部件\mdl\m2.mdl
+FILE	m2_1018_body_hd.mesh	bytes=341372	sha256=b6516906f4625cd18e1278db83a546874b33832264c2e451ed1af422e76c4579	magic=b'\x00\x00\x00\x00'	logical=data\source\player\m2\部件\m2_1018_body_hd.mesh	flat=samples/mesh/m2_1018_body_hd.mesh	nested=samples/mesh/data\source\player\m2\部件\m2_1018_body_hd.mesh
+FILE	m2_1018沈眠风_face_hd.mesh	bytes=191763	sha256=ecb0dfb5d7398561a1c42419f0d6ba55d6d78998e1b2aa18b565a061e40320fb	magic=b'\x00\x00\x00\x00'	logical=data\source\player\m2\部件\m2_1018沈眠风_face_hd.mesh	flat=samples/mesh/m2_1018沈眠风_face_hd.mesh	nested=samples/mesh/data\source\player\m2\部件\m2_1018沈眠风_face_hd.mesh
+
+NOTE_F1=Real F1 body_hd meshes with bip01* bone-name hits (PakV4). Prefer f1_2401 (Loli1 actor) or f1_2227 (most bip hits) for FLWS 蓄力 bind. f1_meta_face_body_hd remains REJECT_FACE_MORPH.
+FILE	f1_2401_body_hd.mesh	bytes=78448	sha256=856ce232d51dfefce3667c1a5a550ea4ef9d775f6cb11eb4d7fe41c6f4e8ede0	magic=MESH@84	bip01_ascii_hits=24	STATUS=STAGED	logical=data\source\player\f1\部件\\f1_2401_body_hd.mesh	BIND_FOR=f1s07cj重剑技能15蓄力_奇穴.ani
+FILE	f1_2227_body_hd.mesh	bytes=745372	sha256=e5255aea4eea44795d52a7a8012292659598786051ac4d65735a621e749e1dc2	magic=MESH@84	bip01_ascii_hits=31	STATUS=STAGED	logical=data\source\player\f1\部件\\f1_2227_body_hd.mesh	BIND_FOR=f1s07cj重剑技能15蓄力_奇穴.ani
+FILE	f1_1001_body_hd.mesh	bytes=75384	sha256=cab6d9975442500e1d735769fb1b0599f700094d698c7b32b18d0ad30d8342c0	magic=MESH@84	bip01_ascii_hits=24	STATUS=STAGED	logical=data\source\player\f1\部件\\f1_1001_body_hd.mesh	BIND_FOR=f1s07cj重剑技能15蓄力_奇穴.ani
+FILE	f1_1000_body_hd.mesh	bytes=140031	sha256=c72ce9be7cf41a5e8bad52c1e356796641bb4801d0ad917cce17d82f619d6a0a	magic=MESH@84	bip01_ascii_hits=29	STATUS=STAGED	logical=data\source\player\f1\部件\\f1_1000_body_hd.mesh	BIND_FOR=f1s07cj重剑技能15蓄力_奇穴.ani
+FILE	f1_2003_body_hd.mesh	bytes=126462	sha256=52d7ad9ed95e845b05290be6981aab313898becffcd245679cc6669bf57e1fb0	magic=MESH@84	bip01_ascii_hits=24	STATUS=STAGED	logical=data\source\player\f1\部件\\f1_2003_body_hd.mesh	BIND_FOR=f1s07cj重剑技能15蓄力_奇穴.ani
+NOTE_DENSE_F1=Prefer f1_1008/1009/1006/1007/1004_body_hd (bip01_ascii_hits=114) over f1_2227 (31) for FLWS bone map.
+FILE	f1_1008_body_hd.mesh	bytes=1676592	sha256=3360d202496632d857a0def79da719d20ade814583953988d2be3b04ccaa8fd9	magic=MESH@84	bip01_ascii_hits=114	STATUS=STAGED	logical=data\\source\\player\\f1\\部件\\f1_1008_body_hd.mesh	NOTE=denser bip than 2227; try for FLWS map>=40%%
+FILE	f1_1009_body_hd.mesh	bytes=878970	sha256=6fe12cba33a0c730253a0f584a1d3d09b1bb98be48be43897bdd34c9f5583fd7	magic=MESH@84	bip01_ascii_hits=114	STATUS=STAGED	logical=data\\source\\player\\f1\\部件\\f1_1009_body_hd.mesh	NOTE=denser bip than 2227; try for FLWS map>=40%%
+FILE	f1_1006_body_hd.mesh	bytes=827950	sha256=cc1f433efb06d5cd39e285d0c0df5f20c3b754d966f72517e31c758e48c1938d	magic=MESH@84	bip01_ascii_hits=114	STATUS=STAGED	logical=data\\source\\player\\f1\\部件\\f1_1006_body_hd.mesh	NOTE=denser bip than 2227; try for FLWS map>=40%%
+FILE	f1_1007_body_hd.mesh	bytes=709125	sha256=55e2224702f42f1f6be26f8be3a520ca82d25778426ac946f5fa3f11e222be75	magic=MESH@84	bip01_ascii_hits=114	STATUS=STAGED	logical=data\\source\\player\\f1\\部件\\f1_1007_body_hd.mesh	NOTE=denser bip than 2227; try for FLWS map>=40%%
+FILE	f1_1004_body_hd.mesh	bytes=493060	sha256=bfbb8d83214332aa33a7863a892c02ff7a4727d9b152f45a48545142b87237a4	magic=MESH@84	bip01_ascii_hits=114	STATUS=STAGED	logical=data\\source\\player\\f1\\部件\\f1_1004_body_hd.mesh	NOTE=denser bip than 2227; try for FLWS map>=40%%

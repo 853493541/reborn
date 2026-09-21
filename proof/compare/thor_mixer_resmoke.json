@@ -1,0 +1,45 @@
+{
+  "checks": {
+    "walk_found": true,
+    "walk_mixer": false,
+    "walk_vp_mixer": false,
+    "walk_clip": true,
+    "jump_found": true,
+    "jump_mixer": false,
+    "jump_vp_mixer": false,
+    "jump_clip": true
+  },
+  "walk_fbx": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\samples\\actor_presets\\f1_hualuo\\mapviewer_clips\\hualuo_walk.fbx",
+  "jump_fbx": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\samples\\actor_presets\\f1_hualuo\\mapviewer_clips\\hualuo_jump2.fbx",
+  "walk_t": 0.63,
+  "jump_t": 0.33,
+  "shots": {
+    "walk": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_mixer_walk_mid.png",
+    "jump": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_mixer_jump_mid.png",
+    "window": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_mixer_player_window.png"
+  },
+  "meta_walk": {
+    "ok": null,
+    "error": null,
+    "bytes": 295540,
+    "mixer": {
+      "clip": "seasun animation",
+      "duration": 1.399999976158142,
+      "time": 0.63,
+      "tracks": 546,
+      "source": "clipFbx"
+    }
+  },
+  "meta_jump": {
+    "ok": null,
+    "error": null,
+    "bytes": 267184,
+    "mixer": {
+      "clip": "seasun animation",
+      "duration": 0.6666666865348816,
+      "time": 0.33,
+      "tracks": 546,
+      "source": "clipFbx"
+    }
+  }
+}

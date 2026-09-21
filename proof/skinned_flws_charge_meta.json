@@ -1,0 +1,52 @@
+{
+  "status": "OK",
+  "blocker": null,
+  "blocker_detail": "mesh_bip=57 mapped=80 bip_mapped=57/58 (98.3%). Need >=40% stick bip mapped. Refused m2_1018_body_hd.mesh substitute.",
+  "mesh": "samples/mesh/f1_1008_body_hd.mesh",
+  "mesh_bytes": 1676592,
+  "mesh_sha256": "3360d202496632d857a0def79da719d20ade814583953988d2be3b04ccaa8fd9",
+  "vertex_count": 30050,
+  "face_count": 42249,
+  "bone_count": 128,
+  "bones_with_weights": 119,
+  "mesh_bip_count": 57,
+  "bone_map_count": 80,
+  "bip_mapped": 57,
+  "stick_bip_count": 58,
+  "bip_mapped_fraction_of_stick_bip": 0.9827586206896551,
+  "skinning": "rq_matrix_LBS",
+  "skinning_attempted": true,
+  "m2_mesh_used": false,
+  "clip": {
+    "ani": "samples/player/moves/f1s07cj重剑技能15蓄力_奇穴.ani",
+    "stick_bones": 182,
+    "stick_frames": 51,
+    "fps": 33.0
+  },
+  "optional_head_parse_error": null,
+  "sample_mesh_bones": [
+    "ADD_L101",
+    "ADD_L102",
+    "ADD_L401",
+    "ADD_L402",
+    "ADD_L501",
+    "ADD_L502",
+    "ADD_R101",
+    "ADD_R102",
+    "ADD_R401",
+    "ADD_R402",
+    "ADD_R501",
+    "ADD_R502",
+    "B_LC",
+    "B_LH",
+    "B_LP",
+    "FB2_F11008body06_02",
+    "FB2_F11008body04_08",
+    "FB2_F11008body02_02"
+  ],
+  "frame_indices": [
+    0,
+    25,
+    50
+  ]
+}

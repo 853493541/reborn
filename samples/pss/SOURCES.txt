@@ -1,0 +1,11 @@
+KIND=PSS_or_effect_MIN2_bone_count_1_vertex_morph_control
+DEST_NAME=pss_bone1_control.ani
+ORIGINAL_NAME=h_蝴蝶转01.ani
+bone_count=1
+bone0_name='蝴蝶循环转'
+vertex_count=6
+frame_count=201
+fps=33.0
+bytes=29062
+src=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\data\source\other\HD特效\其他\Mesh\h_蝴蝶转01.ani
+NOTE=Control sample for min2.py bone_count=1 regress. Not from plot tree.

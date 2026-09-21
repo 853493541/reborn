@@ -1,0 +1,95 @@
+{
+  "preset": "花萝",
+  "body": "F1",
+  "walk": {
+    "ui_label": "行走 / 走路",
+    "kind": "walk",
+    "playable": {
+      "file": "f1b02yd行走.ani",
+      "rel": "samples\\player\\moves\\from_mapviewer\\f1\\动作\\f1b02yd行走.ani",
+      "magic": "MIN2",
+      "bytes": 83743,
+      "sha256": "cd10337ace1dec0f40715835a46c9fe95933ccf548eb64b5e37fa53f68deecad",
+      "bones": 182,
+      "frames": 43,
+      "fps": 28.0,
+      "bone0": "bip01"
+    },
+    "catalog_default": "moves/from_mapviewer/f1/动作/f1b02yd行走.ani",
+    "alt": "moves/from_mapviewer/f1/动作/f1b04ty行走.ani"
+  },
+  "jump": {
+    "ui_label": "跳跃",
+    "kind": "jump",
+    "mapviewer_names": [
+      "小跳a",
+      "小跳b",
+      "小跳c",
+      "二段跳a"
+    ],
+    "playable_skeletal": {
+      "file": "f1b02yd小跳b.ani",
+      "rel": "samples\\player\\moves\\from_mapviewer\\f1\\动作\\f1b02yd小跳b.ani",
+      "magic": "MIN2",
+      "bytes": 48172,
+      "sha256": "8e4fa260b3d37c1688a15d638acafcb7772c03fb25991726119909a1ad54a782",
+      "bones": 182,
+      "frames": 21,
+      "fps": 33.33333206176758,
+      "bone0": "bip01"
+    },
+    "note": "Map-viewer locomotion jump mid = F1b02yd小跳b.ani (MIN2). a/c are GATA .tani wrappers.",
+    "tani_a": {
+      "file": "f1b02yd小跳a.tani",
+      "rel": "samples\\player\\moves\\from_mapviewer\\f1\\动作\\f1b02yd小跳a.tani",
+      "bytes": 4556,
+      "sha256": "9e990d3bdbec9fd9e01f2d9ad22555704c6e607caa2989907d3561495bbf638c",
+      "tani_ani_path": "data\\source\\player\\f1\\动作\\f1b02yd小跳a.ani",
+      "tani_error": null
+    },
+    "tani_c": {
+      "file": "f1b02yd小跳c.tani",
+      "rel": "samples\\player\\moves\\from_mapviewer\\f1\\动作\\f1b02yd小跳c.tani",
+      "bytes": 6164,
+      "sha256": "39ba602af9a6891cb1453720f308aac877bb342ead8d7a377f45dffed6438e38",
+      "tani_ani_path": "data\\source\\player\\f1\\动作\\f1b02yd小跳c.ani",
+      "tani_error": null
+    },
+    "double_jump_tani": {
+      "file": "f1b02yd二段跳a.tani",
+      "rel": "samples\\player\\moves\\from_mapviewer\\f1\\动作\\f1b02yd二段跳a.tani",
+      "bytes": 5416,
+      "sha256": "ab4055036545f00116be3566223bd272d9ebd4f10d18a0e4c37464a6a3e93d7e",
+      "tani_ani_path": "data\\source\\player\\f1\\动作\\f1b02yd二段跳a.ani",
+      "tani_error": null
+    },
+    "phases": {
+      "a": {
+        "file": "f1b02yd小跳a.ani",
+        "bytes": 53873,
+        "sha256": "08556529ac55157e25579a1cfc8e65e150f6e70620b5ff08497cd96bb0f71f95",
+        "bones": 182,
+        "frames": 23,
+        "fps": 33.33333206176758
+      },
+      "b": {
+        "file": "f1b02yd小跳b.ani",
+        "bytes": 48172,
+        "sha256": "8e4fa260b3d37c1688a15d638acafcb7772c03fb25991726119909a1ad54a782",
+        "bones": 182,
+        "frames": 21,
+        "fps": 33.33333206176758,
+        "primary": true
+      },
+      "c": {
+        "file": "f1b02yd小跳c.ani",
+        "bytes": 58552,
+        "sha256": "28900c27948665a224330ba7fa747131ddd48686ef226873275df7ff5a7d8b5a",
+        "bones": 182,
+        "frames": 25,
+        "fps": 33.33333206176758
+      }
+    }
+  },
+  "dropped_focus": "风来吴山·蓄力 / charge skill — no longer product GT"
+}

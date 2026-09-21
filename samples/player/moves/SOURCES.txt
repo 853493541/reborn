@@ -1,0 +1,32 @@
+MOVE=风来吴山 (苍云 重剑技能15)
+MOVIEEDITOR=C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\seasun\\editortool\\movieeditor
+INDEX=resourcepack/foldertree.xml ERT_TANI PackNames for F1/F2/M1/M2 风来吴山 variants
+NOTE=AniTable.txt has NO row named 风来吴山. MovieEditor indexes .tani skill/sound-tag packs for this move. One real skeletal MIN2 body clip found in actor-assets (MovieEditor resource unpack path): 蓄力_奇穴 charge for skill15.
+
+SKELETAL_MIN2
+ani	f1s07cj重剑技能15蓄力_奇穴.ani	bytes=104451	magic=MIN2	src=...\\actor-assets\\data\\source\\player\\f1\\动作\\f1s07cj重剑技能15蓄力_奇穴.ani
+
+TANI_SOUNDTAG (not body skel)
+tani	f1_F1s07cj重剑技能15_奇穴_风来吴山hd.tani	bytes=4724
+tani	f1_F1s07cj重剑技能15_悟_风来吴山_悟.tani	bytes=19108
+tani	f1_F1s07cj重剑技能15_风来吴山HD.tani	bytes=5940
+tani	f1_F1s07cj重剑技能15_风来吴山_悟.tani	bytes=5144
+tani	f1_F1s07cj重剑技能15_风来吴山_皮肤.tani	bytes=7532
+tani	f1_F1s07cj重剑技能15蓄力_奇穴_风来吴山hd.tani	bytes=4724
+tani	f1_F1scj07重剑攻击03_奇穴_风来吴山HD.tani	bytes=4724
+tani	f1_f1s07cj重剑技能15_风来吴山_皮肤_红色.tani	bytes=7532
+tani	f1_f1s07cj重剑技能15_风来吴山火hd.tani	bytes=5940
+tani	f1_f1s07cj重剑技能15_风来吴山火红hd.tani	bytes=5940
+tani	f1_f1s07cj重剑技能15_风来吴山红色hd.tani	bytes=5940
+tani	f2_F2s07cj重剑技能15_风来吴山_悟.tani	bytes=5144
+tani	f2_F2s07cj重剑技能15_风来吴山_皮肤.tani	bytes=7532
+tani	f2_f2s07cj重剑技能15_风来吴山_皮肤_红色.tani	bytes=7532
+tani	f2_f2s07cj重剑技能15_风来吴山火红hd.tani	bytes=5940
+tani	f2_f2s07cj重剑技能15_风来吴山红色hd.tani	bytes=5940
+
+# --- prior M2 move set (not loco; staged earlier; documented by Dev 5) ---
+NOTE=Not 风来吴山. Kept for attack/GM pose demos. Magic checked MIN2.
+FILE	M2_藏宝斩断阴阳_cam001.ani	bytes=1024945	sha256=26526b0d736294a0cd5a1ac9339e87f64d4fcb6dac1bd1ff53690a2e31b34e2e	magic=b'MIN2'	status=STAGED_DOCUMENTED
+FILE	M2_GmAni_转身.ani	bytes=19909	sha256=29a6480d21ca1daf20428fa73530902e7c47e51eed37774e78ee8f3483989d80	magic=b'MIN2'	status=STAGED_DOCUMENTED
+FILE	M2_GmAni_蹲下起身.ani	bytes=52588	sha256=0532f988a76f8c9377013cbddbe787751aca5d2dff95641c933a88e1173608ad	magic=b'MIN2'	status=STAGED_DOCUMENTED
+FILE	M2_GmAni_接书低头抬头.ani	bytes=55117	sha256=8e357d0d99aeacdfdc87fdf8922f9bec01f0e142ed4001fa90a5cabf4225b826	magic=b'MIN2'	status=STAGED_DOCUMENTED

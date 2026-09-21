@@ -1,0 +1,14 @@
+{
+  "sha_shot": "3a3478a1ed742cce",
+  "sha_gt": "3a3478a1ed742cce",
+  "same": true,
+  "mixer": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\web\\runtime\\clip_flws_charge.json",
+  "cast_listed": true,
+  "cast_mix": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\web\\runtime\\clip_flws_cast.json",
+  "shot": "C:\\Users\\Zhibin Ren\\jx3-ani-player\\proof\\compare\\thor_flws_charge_mid.png",
+  "meta": {
+    "ok": null,
+    "error": null,
+    "bytes": 257315
+  }
+}

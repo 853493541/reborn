@@ -1,0 +1,216 @@
+[
+  {
+    "label": "花萝无动作",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/花萝/花萝无动作.fbx",
+    "bytes": 2771440,
+    "clipCount": 0,
+    "clips": [],
+    "boneCount": 369,
+    "bonesSample": [
+      "bip01",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_l_thigh",
+      "bip01_l_calf",
+      "bip01_l_foot",
+      "bip01_l_toe0",
+      "bip01_r_thigh",
+      "bip01_r_calf",
+      "bip01_r_foot",
+      "bip01_r_toe0",
+      "bip01_spine1",
+      "bip01_spine1",
+      "bip01_spine2",
+      "bip01_spine2",
+      "bip01_neck"
+    ]
+  },
+  {
+    "label": "花萝走路",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/走路/花萝走路.fbx",
+    "bytes": 5320816,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "seasun animation",
+        "duration": 1.399999976158142,
+        "tracks": 546,
+        "trackSample": [
+          "bip01.scale",
+          "bip01.quaternion",
+          "bip01.position",
+          "bip01_pelvis.scale",
+          "bip01_pelvis.quaternion",
+          "bip01_pelvis.position",
+          "bip01_spine.scale",
+          "bip01_spine.quaternion"
+        ]
+      }
+    ],
+    "boneCount": 369,
+    "bonesSample": [
+      "bip01",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_l_thigh",
+      "bip01_l_calf",
+      "bip01_l_foot",
+      "bip01_l_toe0",
+      "bip01_r_thigh",
+      "bip01_r_calf",
+      "bip01_r_foot",
+      "bip01_r_toe0",
+      "bip01_spine1",
+      "bip01_spine1",
+      "bip01_spine2",
+      "bip01_spine2",
+      "bip01_neck"
+    ]
+  },
+  {
+    "label": "跳跃1",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/跳跃1/跳跃1.fbx",
+    "bytes": 4927680,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "seasun animation",
+        "duration": 0.7333333492279053,
+        "tracks": 546,
+        "trackSample": [
+          "bip01.scale",
+          "bip01.quaternion",
+          "bip01.position",
+          "bip01_pelvis.scale",
+          "bip01_pelvis.quaternion",
+          "bip01_pelvis.position",
+          "bip01_spine.scale",
+          "bip01_spine.quaternion"
+        ]
+      }
+    ],
+    "boneCount": 369,
+    "bonesSample": [
+      "bip01",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_l_thigh",
+      "bip01_l_calf",
+      "bip01_l_foot",
+      "bip01_l_toe0",
+      "bip01_r_thigh",
+      "bip01_r_calf",
+      "bip01_r_foot",
+      "bip01_r_toe0",
+      "bip01_spine1",
+      "bip01_spine1",
+      "bip01_spine2",
+      "bip01_spine2",
+      "bip01_neck"
+    ]
+  },
+  {
+    "label": "跳跃2",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/跳跃2/跳跃2.fbx",
+    "bytes": 4888368,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "seasun animation",
+        "duration": 0.6666666865348816,
+        "tracks": 546,
+        "trackSample": [
+          "bip01.scale",
+          "bip01.quaternion",
+          "bip01.position",
+          "bip01_pelvis.scale",
+          "bip01_pelvis.quaternion",
+          "bip01_pelvis.position",
+          "bip01_spine.scale",
+          "bip01_spine.quaternion"
+        ]
+      }
+    ],
+    "boneCount": 369,
+    "bonesSample": [
+      "bip01",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_l_thigh",
+      "bip01_l_calf",
+      "bip01_l_foot",
+      "bip01_l_toe0",
+      "bip01_r_thigh",
+      "bip01_r_calf",
+      "bip01_r_foot",
+      "bip01_r_toe0",
+      "bip01_spine1",
+      "bip01_spine1",
+      "bip01_spine2",
+      "bip01_spine2",
+      "bip01_neck"
+    ]
+  },
+  {
+    "label": "跳跃3",
+    "path": "C:/SeasunGame/MovieEditor/source/fbx/跳跃3/跳跃3.fbx",
+    "bytes": 4966992,
+    "clipCount": 1,
+    "clips": [
+      {
+        "name": "seasun animation",
+        "duration": 0.800000011920929,
+        "tracks": 546,
+        "trackSample": [
+          "bip01.scale",
+          "bip01.quaternion",
+          "bip01.position",
+          "bip01_pelvis.scale",
+          "bip01_pelvis.quaternion",
+          "bip01_pelvis.position",
+          "bip01_spine.scale",
+          "bip01_spine.quaternion"
+        ]
+      }
+    ],
+    "boneCount": 369,
+    "bonesSample": [
+      "bip01",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_pelvis",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_spine",
+      "bip01_l_thigh",
+      "bip01_l_calf",
+      "bip01_l_foot",
+      "bip01_l_toe0",
+      "bip01_r_thigh",
+      "bip01_r_calf",
+      "bip01_r_foot",
+      "bip01_r_toe0",
+      "bip01_spine1",
+      "bip01_spine1",
+      "bip01_spine2",
+      "bip01_spine2",
+      "bip01_neck"
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+NOTE=风来吴山 from MovieEditor tree only (seasun/editortool/movieeditor).
+ME_ROOT=.../movieeditor/source/plot/actor/藏剑/
+ME_HIT=m2_藏剑开场.txt|kms references data\\source\\player\\m2\\动作\\m2s07cj重剑技能15_奇穴_风来吴山hd.tani
+ME_TREE_ANI=none (no loose .ani under 藏剑 plot folder)
+RESOLVED=PakV4 single-path for the ME-referenced logical paths + skill-family body .ani
+
+FILE	f1s07cj重剑技能15.ani	bytes=43459	sha256=326930e7296aea973e0224d2ae1ee5427daea44d036e939ae102548e527ffb10	magic=b'MIN2'	MIN2 bc=13 vc=182 fc=19 fps=33.0	logical=data\source\player\f1\动作\\f1s07cj重剑技能15.ani
+FILE	f2s07cj重剑技能15.ani	bytes=41641	sha256=668fd6baf12b38c75fd660a90c07ff94e9206f35003d65ce67513b36ed54cd18	magic=b'MIN2'	MIN2 bc=13 vc=203 fc=19 fps=33.0	logical=data\source\player\f2\动作\\f2s07cj重剑技能15.ani
+FILE	m1s07cj重剑技能15.ani	bytes=15823	sha256=14e85f417e58ec0d533524775745b695e2bce2f6463f0407b155a7fcd12718ca	magic=b'MIN2'	MIN2 bc=13 vc=83 fc=19 fps=33.0	logical=data\source\player\m1\动作\\m1s07cj重剑技能15.ani
+FILE	m2_藏剑开场.kms	bytes=639754	sha256=01244d0f32e1197ec097fa5221d74023f5f875bdd0203f1dfa98178f563687f4	magic=b'\xef\xbb\xbf<'	ME provenance	logical=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\藏剑\m2_藏剑开场.kms
+FILE	m2_藏剑开场.txt	bytes=1118	sha256=9290e326e89d82372df4a9aefaf768d667e07e2b74c56568652a81bd7e46aff2	magic=b'data'	ME provenance	logical=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\plot\actor\藏剑\m2_藏剑开场.txt
+FILE	m2s07cj重剑技能15.ani	bytes=38043	sha256=fe8ce8b737aa94d48be03d3d087631f7ce89b4b91b14f7dc30c7382090e797ed	magic=b'ANIM'	ANIM (not load_min2_stick)	logical=data\source\player\m2\动作\\m2s07cj重剑技能15.ani
+FILE	m2s07cj重剑技能15_奇穴_风来吴山hd.tani	bytes=4724	sha256=d9bd963fcbe7ec81e1e62a2dfde273c1d40fa13acb1fb7740c27c3e095dd2b65	magic=b'GATA'	TANI/GATA soundtag	logical=data\source\player\m2\动作\\m2s07cj重剑技能15_奇穴_风来吴山hd.tani
+FILE	f1s07cj重剑技能15蓄力_奇穴.ani	bytes=104451	sha256=8206455ec82840d1a5904c0d1a0b046ebf14f7e5a04f15064938e14615f97440	magic=MIN2	bc=13 vc=182 fc=51 fps=33.0	logical=data\\source\\player\\f1\\动作\\f1s07cj重剑技能15蓄力_奇穴.ani	NOTE=Lead primary FLWS skeletal
