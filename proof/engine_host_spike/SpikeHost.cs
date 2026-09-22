@@ -119,7 +119,8 @@ internal static class SpikeHost
                        : e.Button == MouseButtons.Middle ? 3 : 0;
             if (dragAction != 0)
             {
-                pending.Enqueue(new int[] { dragAction, 1, e.X, e.Y });
+                // action 19 = LEFE_KEY_DOWN, drag-start reference (MovieEditor sends it on every down)
+                pending.Enqueue(new int[] { 19, 1, e.X, e.Y });
                 Log(string.Format("mouse down {0} at {1},{2}", e.Button, e.X, e.Y));
             }
         };
@@ -131,7 +132,7 @@ internal static class SpikeHost
         {
             if (dragAction != 0)
             {
-                pending.Enqueue(new int[] { dragAction, 0, e.X, e.Y });
+                pending.Enqueue(new int[] { 19, 0, e.X, e.Y });
                 dragAction = 0;
                 Log(string.Format("mouse up {0} at {1},{2}", e.Button, e.X, e.Y));
             }
@@ -227,7 +228,7 @@ internal static class SpikeHost
             while (pending.Count > 0)
             {
                 int[] cmd = pending.Dequeue();
-                if (cmd[0] == 1 || cmd[0] == 4 || cmd[0] == 3 || cmd[0] == 2)
+                if (cmd[0] == 1 || cmd[0] == 4 || cmd[0] == 3 || cmd[0] == 2 || cmd[0] == 19)
                 {
                     scene.ExecAction(cmd[0], cmd[1], 0, makeLParam(cmd[2], cmd[3]));
                 }
