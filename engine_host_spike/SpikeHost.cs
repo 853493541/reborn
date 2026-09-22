@@ -23,7 +23,7 @@ internal static class SpikeHost
         Console.WriteLine("taniPath=" + taniPath);
 
         var form = new Form();
-        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (spike)";
+        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag orbit | M-drag pan | R-drag zoom | wheel zoom | F focus | R reset)";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -93,6 +93,49 @@ internal static class SpikeHost
 
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 2);
         Console.WriteLine("winId={0}", winId);
+
+        // Camera controls - same mapping as MovieEditor ViewWindow:
+        //   left drag   = ROTATE_VIEW (4)  orbit
+        //   middle drag = PAN_VIEW    (3)  pan
+        //   right drag  = ZOOM_VIEW   (2)  dolly
+        //   wheel       = MOUSE_WHEEL (31)
+        Func<int, int, int> makeLParam = delegate(int x, int y)
+        {
+            return ((y & 0xFFFF) << 16) | (x & 0xFFFF);
+        };
+        int dragAction = 0;
+        panel.MouseDown += delegate(object s, MouseEventArgs e)
+        {
+            dragAction = e.Button == MouseButtons.Left ? 4
+                       : e.Button == MouseButtons.Middle ? 3
+                       : e.Button == MouseButtons.Right ? 2 : 0;
+            if (dragAction != 0) scene.ExecAction(dragAction, 1, 0, makeLParam(e.X, e.Y));
+        };
+        panel.MouseMove += delegate(object s, MouseEventArgs e)
+        {
+            if (dragAction != 0) scene.ExecAction(dragAction, 1, 0, makeLParam(e.X, e.Y));
+        };
+        panel.MouseUp += delegate(object s, MouseEventArgs e)
+        {
+            if (dragAction != 0)
+            {
+                scene.ExecAction(dragAction, 0, 0, makeLParam(e.X, e.Y));
+                dragAction = 0;
+            }
+        };
+        MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
+        {
+            scene.ExecAction(31, 1, e.Delta < 0 ? 0 : 1, 1);
+        };
+        panel.MouseWheel += wheel;
+        form.MouseWheel += wheel;
+        form.KeyPreview = true;
+        form.KeyDown += delegate(object s, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F) { scene.FocusOnModel(); Console.WriteLine("FocusOnModel"); }
+            if (e.KeyCode == Keys.R) { scene.ResetCameraPosLookAtUp(); Console.WriteLine("ResetCamera"); }
+        };
+        panel.Focus();
 
         var actor = new KGMovieActorCLR();
         actor.Init();

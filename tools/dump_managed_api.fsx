@@ -371,3 +371,23 @@ findRefs exePath ["AddOutputWindow"; "SetPrimaryWindow"; "RemoveOutputWindow"; "
 dumpAssembly exePath ["ViewWindow"] false
 dumpAssembly exePath ["SceneForm"] false
 findRefs exePath ["SetScreenShot"; "DoScreenShotImmediate"]
+findRefs exePath ["SetCamareMoveState"; "InputUnivrsalHotKey"; "MoveCamera"]
+let dumpEnum (path: string) (name: string) =
+    use fs = File.OpenRead(path)
+    use pe = new PEReader(fs)
+    let md = pe.GetMetadataReader()
+    for th in md.TypeDefinitions do
+        let t = md.GetTypeDefinition(th)
+        if md.GetString(t.Name) = name then
+            printfn "-- enum %s --" name
+            for fh in t.GetFields() do
+                let f = md.GetFieldDefinition(fh)
+                if f.Attributes.HasFlag(FieldAttributes.Literal) then
+                    try
+                        let c = md.GetConstant(f.GetDefaultValue())
+                        let br = md.GetBlobReader(c.Value)
+                        let v = if c.TypeCode = ConstantTypeCode.Int32 then br.ReadInt32() else 0
+                        printfn "   %s = %d" (md.GetString f.Name) v
+                    with _ -> printfn "   %s = ?" (md.GetString f.Name)
+dumpEnum exePath "EXEACTION"
+dumpEnum exePath "OUTPUTWND"
