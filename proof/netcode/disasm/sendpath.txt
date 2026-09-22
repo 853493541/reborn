@@ -1,0 +1,450 @@
+
+==== 0x1801ac7d0 .. 0x1801ace80 (.text)
+  0x1801ac7d0: mov      qword ptr [rsp + 0x10], rbx
+  0x1801ac7d5: mov      qword ptr [rsp + 0x18], rbp
+  0x1801ac7da: mov      qword ptr [rsp + 0x20], rsi
+  0x1801ac7df: push     r14
+  0x1801ac7e1: sub      rsp, 0x40
+  0x1801ac7e5: xor      esi, esi
+  0x1801ac7e7: mov      rbp, rcx
+  0x1801ac7ea: mov      rcx, qword ptr [rcx + 0xe3f8]
+  0x1801ac7f1: mov      rbx, rdx
+  0x1801ac7f4: mov      r14d, esi
+  0x1801ac7f7: test     rcx, rcx
+  0x1801ac7fa: jne      0x1801ac82c
+  0x1801ac7fc: mov      r9d, 0x887
+  0x1801ac802: lea      r8, [rip + 0x5c0adf]  ; "m_piSocketStream"
+  0x1801ac809: lea      rax, [rip + 0x5c0d20]  ; "KPlayerClient::RealSend"
+  0x1801ac810: mov      ecx, 3
+  0x1801ac815: lea      rdx, [rip + 0x741c8c]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1801ac81c: mov      qword ptr [rsp + 0x20], rax
+  0x1801ac821: call     qword ptr [rip + 0x5b8a39]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801ac827: jmp      0x1801ac993
+  0x1801ac82c: test     rbx, rbx
+  0x1801ac82f: jne      0x1801ac840
+  0x1801ac831: mov      r9d, 0x888
+  0x1801ac837: lea      r8, [rip + 0x5bc6ba]  ; "piBuffer"
+  0x1801ac83e: jmp      0x1801ac809
+  0x1801ac840: test     r8b, r8b
+  0x1801ac843: je       0x1801ac91b
+  0x1801ac849: mov      rax, qword ptr [rdx]
+  0x1801ac84c: mov      rcx, rbx
+  0x1801ac84f: call     qword ptr [rax + 0x20]
+  0x1801ac852: mov      ecx, eax
+  0x1801ac854: call     0x180741cf0
+  0x1801ac859: mov      r14, rax
+  0x1801ac85c: test     rax, rax
+  0x1801ac85f: jne      0x1801ac870
+  0x1801ac861: mov      r9d, 0x88d
+  0x1801ac867: lea      r8, [rip + 0x5c0cda]  ; "piTempBuffer"
+  0x1801ac86e: jmp      0x1801ac809
+  0x1801ac870: mov      rax, qword ptr [rbx]
+  0x1801ac873: mov      rcx, rbx
+  0x1801ac876: mov      qword ptr [rsp + 0x50], rdi
+  0x1801ac87b: call     qword ptr [rax + 0x20]
+  0x1801ac87e: mov      edi, eax
+  0x1801ac880: mov      rcx, rbx
+  0x1801ac883: mov      rax, qword ptr [rbx]
+  0x1801ac886: call     qword ptr [rax + 0x18]
+  0x1801ac889: mov      rdx, qword ptr [r14]
+  0x1801ac88c: mov      rcx, r14
+  0x1801ac88f: mov      rbx, rax
+  0x1801ac892: call     qword ptr [rdx + 0x18]
+  0x1801ac895: mov      r8d, edi
+  0x1801ac898: mov      rdx, rbx
+  0x1801ac89b: mov      rcx, rax
+  0x1801ac89e: call     0x1807417f0
+  0x1801ac8a3: mov      rcx, qword ptr [rbp + 0xe3f8]
+  0x1801ac8aa: mov      rdx, r14
+  0x1801ac8ad: mov      rax, qword ptr [rcx]
+  0x1801ac8b0: call     qword ptr [rax + 0x30]
+  0x1801ac8b3: mov      rdi, qword ptr [rsp + 0x50]
+  0x1801ac8b8: cmp      eax, 1
+  0x1801ac8bb: je       0x1801ac980
+  0x1801ac8c1: mov      rcx, qword ptr [rbp + 0xe3f8]
+  0x1801ac8c8: mov      rax, qword ptr [rcx]
+  0x1801ac8cb: call     qword ptr [rax + 0x68]
+  0x1801ac8ce: mov      ecx, eax
+  0x1801ac8d0: call     0x180148230
+  0x1801ac8d5: mov      dword ptr [rsp + 0x38], eax
+  0x1801ac8d9: lea      r9, [rip + 0x5be9f8]  ; "nRetCode == 1"
+  0x1801ac8e0: lea      rax, [rip + 0x5c0b79]  ; "m_piSocketStream->GetLastError()"
+  0x1801ac8e7: mov      ecx, 3
+  0x1801ac8ec: mov      qword ptr [rsp + 0x30], rax
+  0x1801ac8f1: lea      r8, [rip + 0x5bd94a]  ; "MLogProcessError"
+  0x1801ac8f8: lea      rax, [rip + 0x5c0c31]  ; "KPlayerClient::RealSend"
+  0x1801ac8ff: mov      qword ptr [rsp + 0x28], rax
+  0x1801ac904: lea      rdx, [rip + 0x5bdd25]  ; "[slot=%s, attr=ProcessError, condition=%s, line=%d] func=%s | %s=%d"
+  0x1801ac90b: mov      dword ptr [rsp + 0x20], 0x892
+  0x1801ac913: call     qword ptr [rip + 0x5b8947]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801ac919: jmp      0x1801ac985
+  0x1801ac91b: mov      rax, qword ptr [rcx]
+  0x1801ac91e: call     qword ptr [rax + 0x30]
+  0x1801ac921: cmp      eax, 1
+  0x1801ac924: je       0x1801ac980
+  0x1801ac926: mov      rcx, qword ptr [rbp + 0xe3f8]
+  0x1801ac92d: mov      rax, qword ptr [rcx]
+  0x1801ac930: call     qword ptr [rax + 0x68]
+  0x1801ac933: mov      ecx, eax
+  0x1801ac935: call     0x180148230
+  0x1801ac93a: mov      dword ptr [rsp + 0x38], eax
+  0x1801ac93e: lea      r9, [rip + 0x5be993]  ; "nRetCode == 1"
+  0x1801ac945: lea      rax, [rip + 0x5c0b14]  ; "m_piSocketStream->GetLastError()"
+  0x1801ac94c: mov      ecx, 3
+  0x1801ac951: mov      qword ptr [rsp + 0x30], rax
+  0x1801ac956: lea      r8, [rip + 0x5bd8e5]  ; "MLogProcessError"
+  0x1801ac95d: lea      rax, [rip + 0x5c0bcc]  ; "KPlayerClient::RealSend"
+  0x1801ac964: mov      qword ptr [rsp + 0x28], rax
+  0x1801ac969: lea      rdx, [rip + 0x5bdcc0]  ; "[slot=%s, attr=ProcessError, condition=%s, line=%d] func=%s | %s=%d"
+  0x1801ac970: mov      dword ptr [rsp + 0x20], 0x897
+  0x1801ac978: call     qword ptr [rip + 0x5b88e2]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801ac97e: jmp      0x1801ac993
+  0x1801ac980: mov      esi, 1
+  0x1801ac985: test     r14, r14
+  0x1801ac988: je       0x1801ac993
+  0x1801ac98a: mov      rax, qword ptr [r14]
+  0x1801ac98d: mov      rcx, r14
+  0x1801ac990: call     qword ptr [rax + 0x10]
+  0x1801ac993: mov      rbx, qword ptr [rsp + 0x58]
+  0x1801ac998: mov      eax, esi
+  0x1801ac99a: mov      rsi, qword ptr [rsp + 0x68]
+  0x1801ac99f: mov      rbp, qword ptr [rsp + 0x60]
+  0x1801ac9a4: add      rsp, 0x40
+  0x1801ac9a8: pop      r14
+  0x1801ac9aa: ret      
+  0x1801ac9ab: int3     
+  0x1801ac9ac: int3     
+  0x1801ac9ad: int3     
+  0x1801ac9ae: int3     
+  0x1801ac9af: int3     
+  0x1801ac9b0: mov      qword ptr [rsp + 0x10], rbx
+  0x1801ac9b5: mov      qword ptr [rsp + 0x18], rsi
+  0x1801ac9ba: mov      qword ptr [rsp + 0x20], rdi
+  0x1801ac9bf: push     rbp
+  0x1801ac9c0: push     r12
+  0x1801ac9c2: push     r13
+  0x1801ac9c4: push     r14
+  0x1801ac9c6: push     r15
+  0x1801ac9c8: mov      rbp, rsp
+  0x1801ac9cb: sub      rsp, 0x70
+  0x1801ac9cf: mov      rax, qword ptr [rip + 0x80984a]  ; 0x1809b6220
+  0x1801ac9d6: xor      rax, rsp
+  0x1801ac9d9: mov      qword ptr [rbp - 0x10], rax
+  0x1801ac9dd: movzx    r12d, dl
+  0x1801ac9e1: mov      rdi, rcx
+  0x1801ac9e4: lea      rsi, [rcx + 0x8008]
+  0x1801ac9eb: mov      r14, qword ptr [rsi]
+  0x1801ac9ee: mov      rbx, qword ptr [r14 + 8]
+  0x1801ac9f2: cmp      byte ptr [rbx + 0x19], 0
+  0x1801ac9f6: jne      0x1801aca25
+  0x1801ac9f8: nop      dword ptr [rax + rax]
+  0x1801aca00: mov      r8, qword ptr [rbx + 0x10]
+  0x1801aca04: mov      rdx, rsi
+  0x1801aca07: mov      rcx, rsi
+  0x1801aca0a: call     0x180089b40
+  0x1801aca0f: mov      rcx, rbx
+  0x1801aca12: mov      rbx, qword ptr [rbx]
+  0x1801aca15: mov      edx, 0x28
+  0x1801aca1a: call     0x18073aa3c
+  0x1801aca1f: cmp      byte ptr [rbx + 0x19], 0
+  0x1801aca23: je       0x1801aca00
+  0x1801aca25: mov      qword ptr [r14 + 8], r14
+  0x1801aca29: mov      qword ptr [r14], r14
+  0x1801aca2c: mov      qword ptr [r14 + 0x10], r14
+  0x1801aca30: xor      r14d, r14d
+  0x1801aca33: mov      qword ptr [rsi + 8], r14
+  0x1801aca37: cmp      word ptr [rdi + 0x8000], r14w
+  0x1801aca3f: je       0x1801acb6d
+  0x1801aca45: movzx    eax, word ptr [rdi + 0x8002]
+  0x1801aca4c: movabs   r13, 0x666666666666666
+  0x1801aca56: mov      r15d, 0x7ff
+  0x1801aca5c: nop      dword ptr [rax]
+  0x1801aca60: movzx    ebx, ax
+  0x1801aca63: add      rbx, rbx
+  0x1801aca66: test     r12b, r12b
+  0x1801aca69: je       0x1801acb31
+  0x1801aca6f: mov      rcx, qword ptr [rdi + rbx*8 + 8]
+  0x1801aca74: test     rcx, rcx
+  0x1801aca77: je       0x1801acb31
+  0x1801aca7d: mov      rax, qword ptr [rcx]
+  0x1801aca80: call     qword ptr [rax + 0x18]
+  0x1801aca83: movzx    edx, word ptr [rax]
+  0x1801aca86: mov      dword ptr [rbp - 0x48], edx
+  0x1801aca89: mov      r15, qword ptr [rsi]
+  0x1801aca8c: mov      rax, qword ptr [r15 + 8]
+  0x1801aca90: mov      qword ptr [rbp - 0x30], rax
+  0x1801aca94: mov      dword ptr [rbp - 0x28], r14d
+  0x1801aca98: mov      rcx, r15
+  0x1801aca9b: cmp      byte ptr [rax + 0x19], 0
+  0x1801aca9f: jne      0x1801acac7
+  0x1801acaa1: mov      qword ptr [rbp - 0x30], rax
+  0x1801acaa5: cmp      dword ptr [rax + 0x1c], edx
+  0x1801acaa8: jge      0x1801acab4
+  0x1801acaaa: mov      dword ptr [rbp - 0x28], r14d
+  0x1801acaae: mov      rax, qword ptr [rax + 0x10]
+  0x1801acab2: jmp      0x1801acac1
+  0x1801acab4: mov      dword ptr [rbp - 0x28], 1
+  0x1801acabb: mov      rcx, rax
+  0x1801acabe: mov      rax, qword ptr [rax]
+  0x1801acac1: cmp      byte ptr [rax + 0x19], 0
+  0x1801acac5: je       0x1801acaa1
+  0x1801acac7: cmp      byte ptr [rcx + 0x19], 0
+  0x1801acacb: jne      0x1801acad2
+  0x1801acacd: cmp      edx, dword ptr [rcx + 0x1c]
+  0x1801acad0: jge      0x1801acb28
+  0x1801acad2: cmp      qword ptr [rsi + 8], r13
+  0x1801acad6: je       0x1801acd92
+  0x1801acadc: mov      qword ptr [rbp - 0x40], rsi
+  0x1801acae0: mov      qword ptr [rbp - 0x38], r14
+  0x1801acae4: mov      ecx, 0x28
+  0x1801acae9: call     0x18073aa70
+  0x1801acaee: nop      
+  0x1801acaef: mov      ecx, dword ptr [rbp - 0x48]
+  0x1801acaf2: mov      dword ptr [rax + 0x1c], ecx
+  0x1801acaf5: mov      dword ptr [rax + 0x20], r14d
+  0x1801acaf9: mov      qword ptr [rax], r15
+  0x1801acafc: mov      qword ptr [rax + 8], r15
+  0x1801acb00: mov      qword ptr [rax + 0x10], r15
+  0x1801acb04: mov      word ptr [rax + 0x18], 0
+  0x1801acb0a: mov      qword ptr [rbp - 0x38], r14
+  0x1801acb0e: movups   xmm0, xmmword ptr [rbp - 0x30]
+  0x1801acb12: movaps   xmmword ptr [rbp - 0x30], xmm0
+  0x1801acb16: mov      r8, rax
+  0x1801acb19: lea      rdx, [rbp - 0x30]
+  0x1801acb1d: mov      rcx, rsi
+  0x1801acb20: call     0x180089c20
+  0x1801acb25: mov      rcx, rax
+  0x1801acb28: inc      dword ptr [rcx + 0x20]
+  0x1801acb2b: mov      r15d, 0x7ff
+  0x1801acb31: mov      rcx, qword ptr [rdi + rbx*8 + 8]
+  0x1801acb36: test     rcx, rcx
+  0x1801acb39: je       0x1801acb46
+  0x1801acb3b: mov      rax, qword ptr [rcx]
+  0x1801acb3e: call     qword ptr [rax + 0x10]
+  0x1801acb41: mov      qword ptr [rdi + rbx*8 + 8], r14
+  0x1801acb46: movzx    eax, word ptr [rdi + 0x8002]
+  0x1801acb4d: inc      ax
+  0x1801acb50: and      ax, r15w
+  0x1801acb54: mov      word ptr [rdi + 0x8002], ax
+  0x1801acb5b: mov      ecx, 0xffff
+  0x1801acb60: add      word ptr [rdi + 0x8000], cx
+  0x1801acb67: jne      0x1801aca60
+  0x1801acb6d: mov      dword ptr [rdi + 0x8002], r14d
+  0x1801acb74: mov      word ptr [rdi + 0x8006], r14w
+  0x1801acb7c: test     r12b, r12b
+  0x1801acb7f: je       0x1801acd68
+  0x1801acb85: xorps    xmm0, xmm0
+  0x1801acb88: xor      eax, eax
+  0x1801acb8a: movups   xmmword ptr [rbp - 0x30], xmm0
+  0x1801acb8e: mov      qword ptr [rbp - 0x20], rax
+  0x1801acb92: mov      r8, qword ptr [rsi]
+  0x1801acb95: mov      rdx, qword ptr [r8]
+  0x1801acb98: movdqu   xmmword ptr [rbp - 0x30], xmm0
+  0x1801acb9d: mov      qword ptr [rbp - 0x20], r14
+  0x1801acba1: movzx    r9d, byte ptr [rbp - 0x50]
+  0x1801acba6: lea      rcx, [rbp - 0x30]
+  0x1801acbaa: call     0x180163130
+  0x1801acbaf: nop      
+  0x1801acbb0: mov      r15, qword ptr [rbp - 0x28]
+  0x1801acbb4: mov      rcx, r15
+  0x1801acbb7: mov      rsi, qword ptr [rbp - 0x30]
+  0x1801acbbb: sub      rcx, rsi
+  0x1801acbbe: sar      rcx, 3
+  0x1801acbc2: mov      edx, 0xa
+  0x1801acbc7: mov      qword ptr [rbp - 0x48], rcx
+  0x1801acbcb: mov      eax, ecx
+  0x1801acbcd: cmp      rcx, rdx
+  0x1801acbd0: cmova    eax, edx
+  0x1801acbd3: movsxd   r12, eax
+  0x1801acbd6: lea      rbx, [rsi - 8]
+  0x1801acbda: lea      rbx, [rbx + r12*8]
+  0x1801acbde: cmp      rbx, r15
+  0x1801acbe1: je       0x1801accdd
+  0x1801acbe7: cmp      rcx, 0x20
+  0x1801acbeb: jle      0x1801acc31
+  0x1801acbed: movzx    edi, byte ptr [rbp - 0x50]
+  0x1801acbf1: movzx    r9d, dil
+  0x1801acbf5: mov      r8, r15
+  0x1801acbf8: mov      rdx, rsi
+  0x1801acbfb: lea      rcx, [rbp - 0x40]
+  0x1801acbff: call     0x180162e90
+  0x1801acc04: mov      rax, qword ptr [rbp - 0x38]
+  0x1801acc08: cmp      rax, rbx
+  0x1801acc0b: ja       0x1801acc12
+  0x1801acc0d: mov      rsi, rax
+  0x1801acc10: jmp      0x1801acc1f
+  0x1801acc12: mov      r15, qword ptr [rbp - 0x40]
+  0x1801acc16: cmp      r15, rbx
+  0x1801acc19: jbe      0x1801accdd
+  0x1801acc1f: mov      rax, r15
+  0x1801acc22: sub      rax, rsi
+  0x1801acc25: and      rax, 0xfffffffffffffff8
+  0x1801acc29: cmp      rax, 0x100
+  0x1801acc2f: jg       0x1801acbf1
+  0x1801acc31: cmp      rsi, r15
+  0x1801acc34: je       0x1801accdd
+  0x1801acc3a: lea      r9, [rsi + 8]
+  0x1801acc3e: cmp      r9, r15
+  0x1801acc41: je       0x1801accdd
+  0x1801acc47: nop      word ptr [rax + rax]
+  0x1801acc50: mov      r8, r9
+  0x1801acc53: mov      rax, qword ptr [r9]
+  0x1801acc56: mov      qword ptr [rbp - 0x48], rax
+  0x1801acc5a: mov      rcx, rax
+  0x1801acc5d: shr      rcx, 0x20
+  0x1801acc61: cmp      ecx, dword ptr [rsi + 4]
+  0x1801acc64: jle      0x1801acc94
+  0x1801acc66: cmp      r9, rsi
+  0x1801acc69: je       0x1801acc8a
+  0x1801acc6b: lea      r8, [r9 + 4]
+  0x1801acc6f: nop      
+  0x1801acc70: lea      r8, [r8 - 8]
+  0x1801acc74: lea      rdx, [r8 - 4]
+  0x1801acc78: mov      ecx, dword ptr [rdx]
+  0x1801acc7a: mov      dword ptr [r8 + 4], ecx
+  0x1801acc7e: mov      ecx, dword ptr [r8]
+  0x1801acc81: mov      dword ptr [r8 + 8], ecx
+  0x1801acc85: cmp      rdx, rsi
+  0x1801acc88: jne      0x1801acc70
+  0x1801acc8a: mov      dword ptr [rsi], eax
+  0x1801acc8c: mov      eax, dword ptr [rbp - 0x44]
+  0x1801acc8f: mov      dword ptr [rsi + 4], eax
+  0x1801acc92: jmp      0x1801accd0
+  0x1801acc94: lea      rdx, [r9 - 8]
+  0x1801acc98: mov      r10d, dword ptr [rbp - 0x44]
+  0x1801acc9c: cmp      ecx, dword ptr [r9 - 4]
+  0x1801acca0: jle      0x1801accc9
+  0x1801acca2: nop      dword ptr [rax]
+  0x1801acca6: nop      word ptr [rax + rax]
+  0x1801accb0: mov      ecx, dword ptr [rdx]
+  0x1801accb2: mov      dword ptr [r8], ecx
+  0x1801accb5: mov      ecx, dword ptr [rdx + 4]
+  0x1801accb8: mov      dword ptr [r8 + 4], ecx
+  0x1801accbc: mov      r8, rdx
+  0x1801accbf: sub      rdx, 8
+  0x1801accc3: cmp      r10d, dword ptr [rdx + 4]
+  0x1801accc7: jg       0x1801accb0
+  0x1801accc9: mov      dword ptr [r8], eax
+  0x1801acccc: mov      dword ptr [r8 + 4], r10d
+  0x1801accd0: add      r9, 8
+  0x1801accd4: cmp      r9, r15
+  0x1801accd7: jne      0x1801acc50
+  0x1801accdd: lea      rdx, [rip + 0x5c04f4]  ; "Dump Unconfirm send buffer:"
+  0x1801acce4: mov      ecx, 6
+  0x1801acce9: call     qword ptr [rip + 0x5b8571]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801accef: test     r12, r12
+  0x1801accf2: jle      0x1801acd27
+  0x1801accf4: nop      dword ptr [rax]
+  0x1801accf8: nop      dword ptr [rax + rax]
+  0x1801acd00: mov      rax, qword ptr [rbp - 0x30]
+  0x1801acd04: mov      r9d, dword ptr [rax + r14*8 + 4]
+  0x1801acd09: mov      r8d, dword ptr [rax + r14*8]
+  0x1801acd0d: lea      rdx, [rip + 0x5c04e0]  ; "%d %d"
+  0x1801acd14: mov      ecx, 6
+  0x1801acd19: call     qword ptr [rip + 0x5b8541]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801acd1f: inc      r14
+  0x1801acd22: cmp      r14, r12
+  0x1801acd25: jl       0x1801acd00
+  0x1801acd27: mov      rcx, qword ptr [rbp - 0x30]
+  0x1801acd2b: test     rcx, rcx
+  0x1801acd2e: je       0x1801acd68
+  0x1801acd30: mov      rdx, qword ptr [rbp - 0x20]
+  0x1801acd34: sub      rdx, rcx
+  0x1801acd37: and      rdx, 0xfffffffffffffff8
+  0x1801acd3b: mov      rax, rcx
+  0x1801acd3e: cmp      rdx, 0x1000
+  0x1801acd45: jb       0x1801acd63
+  0x1801acd47: add      rdx, 0x27
+  0x1801acd4b: mov      rcx, qword ptr [rcx - 8]
+  0x1801acd4f: sub      rax, rcx
+  0x1801acd52: add      rax, -8
+  0x1801acd56: cmp      rax, 0x1f
+  0x1801acd5a: jbe      0x1801acd63
+  0x1801acd5c: call     qword ptr [rip + 0x5b93b6]  ; api-ms-win-crt-runtime-l1-1-0.dll!_invalid_parameter_noinfo_noreturn
+  0x1801acd62: int3     
+  0x1801acd63: call     0x18073aa3c
+  0x1801acd68: mov      rcx, qword ptr [rbp - 0x10]
+  0x1801acd6c: xor      rcx, rsp
+  0x1801acd6f: call     0x18073aa10
+  0x1801acd74: lea      r11, [rsp + 0x70]
+  0x1801acd79: mov      rbx, qword ptr [r11 + 0x38]
+  0x1801acd7d: mov      rsi, qword ptr [r11 + 0x40]
+  0x1801acd81: mov      rdi, qword ptr [r11 + 0x48]
+  0x1801acd85: mov      rsp, r11
+  0x1801acd88: pop      r15
+  0x1801acd8a: pop      r14
+  0x1801acd8c: pop      r13
+  0x1801acd8e: pop      r12
+  0x1801acd90: pop      rbp
+  0x1801acd91: ret      
+  0x1801acd92: call     0x18008a340
+  0x1801acd97: int3     
+  0x1801acd98: int3     
+  0x1801acd99: int3     
+  0x1801acd9a: int3     
+  0x1801acd9b: int3     
+  0x1801acd9c: int3     
+  0x1801acd9d: int3     
+  0x1801acd9e: int3     
+  0x1801acd9f: int3     
+  0x1801acda0: push     rbx
+  0x1801acda2: push     rbp
+  0x1801acda3: push     rsi
+  0x1801acda4: push     rdi
+  0x1801acda5: push     r14
+  0x1801acda7: sub      rsp, 0x30
+  0x1801acdab: mov      rax, qword ptr [rip + 0x81456e]  ; 0x1809c1320
+  0x1801acdb2: mov      r14, rdx
+  0x1801acdb5: xor      edi, edi
+  0x1801acdb7: mov      rbp, r8
+  0x1801acdba: mov      rsi, rcx
+  0x1801acdbd: mov      ebx, edi
+  0x1801acdbf: mov      edx, dword ptr [rax + 0x6c]
+  0x1801acdc2: mov      dword ptr [r14 + 7], edx
+  0x1801acdc6: test     r8, r8
+  0x1801acdc9: jne      0x1801acdf8
+  0x1801acdcb: mov      r9d, 0x866
+  0x1801acdd1: lea      r8, [rip + 0x74c800]  ; "nSize > 0"
+  0x1801acdd8: lea      rax, [rip + 0x5c0719]  ; "KPlayerClient::Send"
+  0x1801acddf: mov      ecx, 3
+  0x1801acde4: lea      rdx, [rip + 0x7416bd]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1801acdeb: mov      qword ptr [rsp + 0x20], rax
+  0x1801acdf0: call     qword ptr [rip + 0x5b846a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801acdf6: jmp      0x1801ace64
+  0x1801acdf8: mov      ecx, ebp
+  0x1801acdfa: call     0x180741cf0
+  0x1801acdff: mov      rbx, rax
+  0x1801ace02: test     rax, rax
+  0x1801ace05: jne      0x1801ace16
+  0x1801ace07: mov      r9d, 0x868
+  0x1801ace0d: lea      r8, [rip + 0x5bc0e4]  ; "piBuffer"
+  0x1801ace14: jmp      0x1801acdd8
+  0x1801ace16: mov      rax, qword ptr [rax]
+  0x1801ace19: mov      rcx, rbx
+  0x1801ace1c: call     qword ptr [rax + 0x18]
+  0x1801ace1f: mov      r8, rbp
+  0x1801ace22: mov      rdx, r14
+  0x1801ace25: mov      rcx, rax
+  0x1801ace28: call     0x1807417f0
+  0x1801ace2d: mov      rax, qword ptr [rbx]
+  0x1801ace30: mov      rcx, rbx
+  0x1801ace33: call     qword ptr [rax + 8]
+  0x1801ace36: lea      rcx, [rsi + 0x18cc0]
+  0x1801ace3d: mov      rdx, rbx
+  0x1801ace40: call     0x1801ac570
+  0x1801ace45: test     al, al
+  0x1801ace47: jne      0x1801ace77
+  0x1801ace49: mov      rax, qword ptr [rbx]
+  0x1801ace4c: mov      rcx, rbx
+  0x1801ace4f: call     qword ptr [rax + 0x10]
+  0x1801ace52: lea      rdx, [rip + 0x5c06b7]  ; "Client send pack list full!"
+  0x1801ace59: mov      ecx, 3
+  0x1801ace5e: call     qword ptr [rip + 0x5b83fc]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801ace64: mov      eax, 1
+  0x1801ace69: xchg     byte ptr [rsi + 0xe400], al
+  0x1801ace6f: mov      dword ptr [rsi + 0xe404], edi
+  0x1801ace75: jmp      0x1801ace7c
+  0x1801ace77: mov      edi, 1
+  0x1801ace7c: test     rbx, rbx

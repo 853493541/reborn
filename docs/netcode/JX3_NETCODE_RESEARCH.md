@@ -149,7 +149,8 @@ Not lockstep, not client-authoritative, not peer-to-peer. No protobuf on the gam
 
 | Question | Why static can't answer |
 |---|---|
-| Actual tick rates: routine sync interval, ping interval, disconnect timeout values | Values come from runtime/Lua/config, not literal strings |
+| ~~Actual tick rates: ping interval, disconnect timeout~~ **SOLVED**: ping 3000 ms, dead timeout 12000 ms (see §9) | — |
+| Routine sync interval and sync-frame defaults | set at runtime via Lua; not literal strings |
 | Whether own-movement uses full rollback-replay or simpler smoothing | Needs behavior test with added latency |
 | Whether gameplay stream is AES-encrypted, compressed, or both, and in which order | Code paths, not strings |
 | Server-side process topology (gateway/GS/room/battle servers — `R2C`/`L2C` message prefixes hint tiers) | No server binaries installed locally |
@@ -190,3 +191,34 @@ python tools\netcode\scan_net_strings.py "$bin\JX3ClientX64.exe"          --out 
 3. UI addon Lua (303 files under `interface\`) contains no net/sync config strings — runtime defaults likely live in PakV4-packed UI scripts or compiled logic; defer.
 4. Locate callers of `SetPlayerSyncFrameInterval` / `SetNetCompressThreshold` in `JX3ClientX64.exe` disassembly to recover default values (capstone is available).
 5. Disassemble `KPlayerClient::DoRoutineSync` scheduling to recover the default routine interval.
+
+---
+
+## 9. Disassembly addendum (second static pass)
+
+Full detail lives in **`docs/netcode/JX3_PROTOCOL_SPEC.md`**; raw transcripts in
+`proof/netcode/disasm/` (`handshake.txt`, `routine_sync.txt`, `sendpath.txt`,
+`threadfn_tail.txt`). New HIGH-confidence findings:
+
+| # | Finding | Evidence |
+|---|---|---|
+| 20 | **Frame prefix** (15 B): `u16 id; u8 flags; u16 send_seq; u16 ack_seq; u32 field7; u32 param`, protocol tail from `+0xF` | handshake `0x1801AD161`–`0x1801AD18C`; routine sync `0x18017862F`; ping `0x1801AD990` |
+| 21 | **Reliability layer**: 2048-slot unconfirmed ring (`this+0xE448`, 0x800 mask), cumulative ack via frame `+0x5`, retransmit with `flags |= 3`, "Unconfirm send buffer full!" | `0x1801AD5BD`–`0x1801AD6E2`, `0x1801AD49E` |
+| 22 | **Ping = protocol 6 every 3000 ms** (`0xBB8`), payload = u32 tick at `+0xB`, 15 bytes | `0x1801AD95B`, `0x1801AD990` |
+| 23 | **Dead timeout = 12000 ms** (`0x2EE0`), i.e. ping interval × 4 as the assert states | `0x1801AD948`, `0x1801ADB3A` |
+| 24 | **Handshake = protocol 1**: RoleID at `+0xB`, 16-byte session blob at `+0xF`, resume bool at `+0x1F`, resume serial at `+5`; response carries `bRecover` + `ReconnectTimeout` | `0x1801AD165`–`0x1801AD18C` |
+| 25 | **Routine sync = protocol 0x6E**: `u32 param @+0xB`, `u16 size @+0xF`, payload `@+0x11`, max frame 0x8000 | `0x18017862F`–`0x180178660` |
+| 26 | **Ack/window control protocol = 0x2FE**, handled before retransmit loop | `0x1801AD643`, `0x1801AD670` |
+| 27 | **Net thread = `NetToGSThread`**, separate from logic; received buffers published to a 20-bitsequence ring at `this+0x18CB0` | `0x1801AD0F7`, `0x1801AD827`–`0x1801AD88B` |
+| 28 | Socket stream vtable: `+0x30` send, `+0x38` readable, `+0x40` recv, `+0x68` GetLastError | `0x1801AC8B0`, `0x1801AD566`, `0x1801AD588` |
+
+**C2S protocol catalog:** `proof/netcode/c2s_protocol_catalog.tsv` (429 rows, heuristic
+attribution — only the four IDs above are HIGH). Built by `tools/netcode/dump_protocol_ids.py`.
+
+**Recreation artifacts added in this pass:**
+
+- `docs/netcode/JX3_PROTOCOL_SPEC.md` — full wire/session spec with addresses.
+- `docs/netcode/REBORN_SERVER_SPEC.md` — implementable server+client contract (our own protocol).
+- `tools/netcode/reference/jx3_model.py` — runnable reference server+client implementing the
+  model: 10/10 smoke checks pass (handshake, prediction/reconciliation, AOI, skill lifecycle,
+  move-state reject, retransmit recovery, reconnect resume).
