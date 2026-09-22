@@ -21,6 +21,13 @@ proof/netcode/mode_juejing/pak/
 proof/netcode/mode_juejing/pak2/
 proof/netcode/mode_juejing/pak_out/
 proof/netcode/mode_juejing/pak_out2/
+proof/netcode/mode_juejing/pak_out3/
+proof/netcode/mode_juejing/pak_out4/
+proof/netcode/mode_juejing/pak_out5/
+proof/netcode/mode_juejing/pak_out6/
+proof/netcode/mode_juejing/pak_probe/
 proof/netcode/mode_juejing/dbg/
 proof/netcode/mode_juejing/*/out/
+proof/netcode/mode_juejing/*/_work/
+proof/netcode/mode_juejing/**/*.tab
 

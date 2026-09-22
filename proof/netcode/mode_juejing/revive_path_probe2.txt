@@ -1,0 +1,4 @@
+﻿JX3LogicEditOperationX64.dll MapReviveList 0x008F5F5E NpcAIParameter\.....map\%s\NpcTeam\.%s%s\map\%s\CustomObject\.......%s%s\map\%s\NpcRelive\MapReviveList.tab.map\%s\PatrolPath\......%s\represent\common\movie_background_actor.krl.t
+JX3LogicEditOperationX64.dll NpcRelive 0x008F5EA4 p\%s\.%s%s\map\%s\DoodadRelive\.......%smaps\%s\......%s%s\map\%s\PatrolPath\.%s%s\map\%s\NpcRelive\..%s%s\Road\......%s%s\map\%s\NpcTeam\....%s%s\map\%s\AnchorPoint\........%s%s\m
+JX3LogicEditOperationX64.dll NpcRelive 0x008F5F54 %s\map\%s\NpcAIParameter\.....map\%s\NpcTeam\.%s%s\map\%s\CustomObject\.......%s%s\map\%s\NpcRelive\MapReviveList.tab.map\%s\PatrolPath\......%s\represent\common\movie_background_a
+JX3LogicEditOperationX64.dll NpcRelive 0x008F6870 position is out of logic region!..Exchange Entity.ReviveID........KLogicExporter::ExchangeNpcReliveSetting....Max.Min.....KLogicExporter::ExchangeDoodadReliveSetting.....IsRandom..

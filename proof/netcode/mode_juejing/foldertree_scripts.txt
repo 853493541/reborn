@@ -1,0 +1,3 @@
+﻿lua path-like strings: 0
+script-ish: 1
+  scripts

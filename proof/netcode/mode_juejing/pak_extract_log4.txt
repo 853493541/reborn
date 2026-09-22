@@ -1,0 +1,18 @@
+﻿HIT  settings\skill\Buff.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\Buff.tab (14517216 bytes)
+HIT  settings\skill\BuffRelays.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\BuffRelays.tab (173 bytes)
+HIT  settings\TopBuff.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\TopBuff.tab (108475 bytes)
+HIT  settings\CoolDownList.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\CoolDownList.tab (148782 bytes)
+HIT  settings\Activity.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\Activity.tab (114402 bytes)
+HIT  settings\CampLevelParam.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\CampLevelParam.tab (1079 bytes)
+HIT  settings\RelationCamp.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\RelationCamp.tab (39 bytes)
+MISS settings\DramaMap.tab
+MISS settings\NpcRelive\MapReviveList.tab
+MISS settings\MapReviveList.tab
+MISS settings\Relive\MapReviveList.tab
+MISS settings\scripts\Map\伊丽川\伊丽川野外营地子副本.lua
+MISS scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+MISS settings\scripts\BattleField\BattleField.lua
+MISS settings\scripts\Map\龙门绝境\龙门绝境.lua
+MISS settings\scripts\Map\绝境\绝境.lua
+HIT  settings\skill_mobile\Buff.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out4\Buff.tab (1678949 bytes)
+8 files extracted from 17 candidates
