@@ -107,7 +107,7 @@ above. See §6 for the fall state and landing rules.
 | Quantity | Table value | Derived |
 |---|---|---|
 | Logic tick | 11-frame jump animation = **0.733 s** (FBX `跳跃1`, see `proof/compare/MAPVIEWER_FBX_CLIPS.md`) | **66.7 ms/tick (15 ticks/s)** |
-| Length unit | `DashJumpSpeedXY = 800` = 蹑云逐月's 10×80 dash = **12.5 尺** (cross-check with `docs/netcode/SKILL_DATA_RESEARCH.md` §6) | **1 m = 192 units** (1 尺 = 64) |
+| Length unit | skill dash 蹑云逐月 = 10 frames × 80 units = **800 units = 12.5 尺** (cross-check with `docs/netcode/SKILL_DATA_RESEARCH.md` §6) | **1 m = 192 units** (1 尺 = 64) |
 | Jump speed | `VelocityZ0 = 90` u/frame | **7.03 m/s** |
 | Gravity | `Gravity0 = 11` u/frame² | **12.89 m/s²** |
 | Apex | v²/2g | **1.92 m** (discrete integration: 2.17 m) |
@@ -128,7 +128,7 @@ integration (disasm `proof/gravity/disasm/process_acceleration.txt`):
 - clamps `Vz` to `[-2048, 2047]` (`0x14031694A`–`0x140316965`);
 - recomputes heading `[char+0x26C]` from `(Vxy_fixed, Vz)` via
   `atan2` (`0x14020ED10`, `0x1403168DB`);
-- the whole vertical update is skipped when `[char+0x208] != 0`
+- the `Vz += accel` step is skipped when `[char+0x208] != 0`
   (`0x1403168E0`).
 
 **`KCharacter::ProcessVerticalMove` (`0x140318B80` wrapper / body `0x140318C50`)**
@@ -136,8 +136,10 @@ integration (disasm `proof/gravity/disasm/process_acceleration.txt`):
 
 - **`y += Vz`** — `add dword ptr [rbx+0x18], edi` with `edi = [rbx+0x270]`
   (`0x140318E70`);
-- ground clamp: `if y > ground (word[cell+4]<<6) y = ground`
-  (`0x140318E73`–`0x140318E7D`); cell heights are stored in 尺 (×64 to units);
+- y clamp: `if y > r15d then y = r15d` (`0x140318E73`–`0x140318E7D`), where
+  `r15d = max(word[cell+4]<<6, (word[cell+6]<<6) − scaled[+0x16C])`
+  (`0x140318DDA`–`0x140318E00`) — i.e. the ground height or the cell top minus
+  the scaled jump modifier; cell heights are stored in 尺 (×64 to units);
 - **landing resets the jump chain**: when move state == 4 and vertical motion,
   if `y - cellTop <= 64 units (1 尺)` then `[+0x330] = 0` and `[+0x338] = 0`
   (`0x14031A25E`–`0x14031A27E`, `r15d` zeroed at `0x140319F79`);
