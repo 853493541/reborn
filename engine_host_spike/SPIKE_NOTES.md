@@ -90,6 +90,23 @@ Source: `engine_host_spike/SpikeHost.cs`
 Env switches: `SPIKE_EDITOR=0` (skip editor), `SPIKE_SOUND=1` (init Wwise),
 `SPIKE_LOOP=0` (exit after one 8 s pass; default loops until window close).
 
+## Sound (Wwise) — enabled by default
+
+The tani carries a SoundTag event:
+`skillremake/cangjian/chengyouyou/m2s07cjzhongjianjineng15_fenglaiwushanHD`
+(Wwise event id 3378728138, bank `skillremake`, streamed WEM `161340541` =
+`m2s07cjzhongjianjineng15_fenglaiwushanHD.wav`, Wwise Vorbis, ~2.05 s).
+
+Host wiring:
+
+- `sound = new KG3DSoundCLR(); sound.Init(startupPath, hwnd);` — default ON
+  (`SPIKE_SOUND=0` disables), plus `sound.FrameMove()` in the render loop.
+- Banks come from the VFS via `config.ini [WwiseSetting] BasePath =
+  data/wwiseaudio/GeneratedSoundBanks/Windows` → `.../Base/{Init,skillremake}.bnk`
+  and `.../Base/161340541.wem`.
+- Full chain + extraction recipe: `docs/SOUND_PATH.md`.
+- Local (gitignored) copies: `assets/sound/`.
+
 ## Camera controls (mirrors MovieEditor `ViewWindow` -> `KGSceneCLR.ExecAction`)
 
 | Input | ExecAction | Meaning |
