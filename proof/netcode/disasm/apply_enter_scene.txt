@@ -1,0 +1,232 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::DoApplyEnterScene'
+# image base 0x180000000
+
+## xref @ 0x18016bc1e -> 0x18076d658 'KPlayerClient::DoApplyEnterScene'  fn start 0x18016bbe0
+  0x18016bbe0: mov      qword ptr [rsp + 0x10], rbx
+  0x18016bbe5: mov      qword ptr [rsp + 0x18], rbp
+  0x18016bbea: push     rsi
+  0x18016bbeb: push     rdi
+  0x18016bbec: push     r14
+  0x18016bbee: sub      rsp, 0x60
+  0x18016bbf2: mov      rax, qword ptr [rip + 0x84a627]
+  0x18016bbf9: xor      rax, rsp
+  0x18016bbfc: mov      qword ptr [rsp + 0x50], rax
+  0x18016bc01: mov      rbp, rcx
+  0x18016bc04: xor      ebx, ebx
+  0x18016bc06: mov      ecx, dword ptr [rip + 0x894a84]
+  0x18016bc0c: mov      rax, qword ptr gs:[0x58]
+  0x18016bc15: mov      edx, 4
+  0x18016bc1a: mov      rcx, qword ptr [rax + rcx*8]
+  0x18016bc1e: lea      r14, [rip + 0x601a33]  ; 'KPlayerClient::DoApplyEnterScene'
+  0x18016bc25: mov      eax, dword ptr [rdx + rcx]
+  0x18016bc28: cmp      dword ptr [rip + 0x87e782], eax
+  0x18016bc2e: jg       0x18016bd15
+  0x18016bc34: mov      edi, dword ptr [rip + 0x80b546]
+  0x18016bc3a: mov      dword ptr [rsp + 0x30], edi
+  0x18016bc3e: mov      rsi, qword ptr [rip + 0x80b52b]
+  0x18016bc45: mov      qword ptr [rsp + 0x38], rsi
+  0x18016bc4a: call     qword ptr [rip + 0x5f9fe0]  ; PerfAnalyzerX64.dll!GetRunState
+  0x18016bc50: test     al, al
+  0x18016bc52: je       0x18016bc66
+  0x18016bc54: xor      r9d, r9d
+  0x18016bc57: xor      r8d, r8d
+  0x18016bc5a: mov      rdx, rsi
+  0x18016bc5d: mov      ecx, edi
+  0x18016bc5f: call     qword ptr [rip + 0x5f9fdb]  ; PerfAnalyzerX64.dll!BeginSample
+  0x18016bc65: nop      
+  0x18016bc66: mov      rcx, qword ptr [rip + 0x8556b3]
+  0x18016bc6d: mov      r8d, dword ptr [rcx + 0x18]
+  0x18016bc71: mov      edx, dword ptr [rcx + 0x14]
+  0x18016bc74: call     0x18012b750
+  0x18016bc79: mov      rcx, rax
+  0x18016bc7c: test     rax, rax
+  0x18016bc7f: jne      0x18016bca5
+  0x18016bc81: mov      qword ptr [rsp + 0x20], r14
+  0x18016bc86: mov      r9d, 0xa13
+  0x18016bc8c: lea      r8, [rip + 0x785dd9]  ; 'pScene'
+  0x18016bc93: lea      rdx, [rip + 0x78280e]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18016bc9a: lea      ecx, [rax + 3]
+  0x18016bc9d: call     qword ptr [rip + 0x5f95bd]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18016bca3: jmp      0x18016bcd6
+  0x18016bca5: mov      eax, 3
+  0x18016bcaa: mov      word ptr [rsp + 0x40], ax
+  0x18016bcaf: mov      eax, dword ptr [rcx + 0x788]
+  0x18016bcb5: mov      dword ptr [rsp + 0x4b], eax
+  0x18016bcb9: mov      r8d, 0xf
+  0x18016bcbf: lea      rdx, [rsp + 0x40]
+  0x18016bcc4: mov      rcx, rbp
+  0x18016bcc7: call     0x1801acda0
+  0x18016bccc: mov      ecx, 1
+  0x18016bcd1: test     eax, eax
+  0x18016bcd3: cmovne   ebx, ecx
+  0x18016bcd6: call     qword ptr [rip + 0x5f9f54]  ; PerfAnalyzerX64.dll!GetRunState
+  0x18016bcdc: test     al, al
+  0x18016bcde: je       0x18016bcf1
+  0x18016bce0: xor      r9d, r9d
+  0x18016bce3: xor      r8d, r8d
+  0x18016bce6: mov      rdx, rsi
+  0x18016bce9: mov      ecx, edi
+  0x18016bceb: call     qword ptr [rip + 0x5f9f37]  ; PerfAnalyzerX64.dll!EndSample
+  0x18016bcf1: mov      eax, ebx
+  0x18016bcf3: mov      rcx, qword ptr [rsp + 0x50]
+  0x18016bcf8: xor      rcx, rsp
+  0x18016bcfb: call     0x18073aa10
+  0x18016bd00: lea      r11, [rsp + 0x60]
+  0x18016bd05: mov      rbx, qword ptr [r11 + 0x28]
+  0x18016bd09: mov      rbp, qword ptr [r11 + 0x30]
+  0x18016bd0d: mov      rsp, r11
+  0x18016bd10: pop      r14
+  0x18016bd12: pop      rdi
+  0x18016bd13: pop      rsi
+  0x18016bd14: ret      
+  0x18016bd15: lea      rcx, [rip + 0x87e694]
+  0x18016bd1c: call     0x18073ac34
+  0x18016bd21: cmp      dword ptr [rip + 0x87e688], -1
+  0x18016bd28: jne      0x18016bc34
+  0x18016bd2e: xor      r9d, r9d
+  0x18016bd31: lea      r8, [r9 - 1]
+  0x18016bd35: mov      rdx, r14
+  0x18016bd38: xor      ecx, ecx
+  0x18016bd3a: call     qword ptr [rip + 0x5f9ef8]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x18016bd40: mov      qword ptr [rip + 0x80b429], rax
+  0x18016bd47: lea      rcx, [rip + 0x87e662]
+  0x18016bd4e: call     0x18073abd4
+  0x18016bd53: jmp      0x18016bc34
+  0x18016bd58: int3     
+  0x18016bd59: int3     
+  0x18016bd5a: int3     
+  0x18016bd5b: int3     
+  0x18016bd5c: int3     
+  0x18016bd5d: int3     
+  0x18016bd5e: int3     
+  0x18016bd5f: int3     
+  0x18016bd60: mov      qword ptr [rsp + 0x18], rbx
+  0x18016bd65: push     rbp
+  0x18016bd66: push     rsi
+  0x18016bd67: push     rdi
+  0x18016bd68: sub      rsp, 0x60
+  0x18016bd6c: mov      rax, qword ptr [rip + 0x84a4ad]
+  0x18016bd73: xor      rax, rsp
+  0x18016bd76: mov      qword ptr [rsp + 0x50], rax
+  0x18016bd7b: mov      rbp, rcx
+  0x18016bd7e: mov      dword ptr [rsp + 0x30], 0
+  0x18016bd86: mov      rcx, qword ptr [rip + 0x855593]
+  0x18016bd8d: mov      edi, edx
+  0x18016bd8f: xor      esi, esi
+  0x18016bd91: call     0x18012b610
+  0x18016bd96: mov      rbx, rax
+  0x18016bd99: test     rax, rax
+  0x18016bd9c: jne      0x18016bdce
+  0x18016bd9e: lea      rcx, [rip + 0x6036cb]  ; 'KPlayerClient::DoApplyEquipLiftedFaceData'
+  0x18016bda5: mov      r9d, 0x1e81
+  0x18016bdab: mov      qword ptr [rsp + 0x20], rcx
+  0x18016bdb0: lea      r8, [rip + 0x5faf81]  ; 'pPlayer'
+  0x18016bdb7: lea      ecx, [rsi + 3]
+  0x18016bdba: lea      rdx, [rip + 0x7826e7]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18016bdc1: call     qword ptr [rip + 0x5f9499]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18016bdc7: xor      eax, eax
+  0x18016bdc9: jmp      0x18016bfa1
+  0x18016bdce: cmp      dword ptr [rax + 0x1e84c], esi
+  0x18016bdd4: jne      0x18016be08
+  0x18016bdd6: lea      rcx, [rip + 0x603693]  ; 'KPlayerClient::DoApplyEquipLiftedFaceData'
+  0x18016bddd: mov      r9d, 0x1e82
+  0x18016bde3: mov      qword ptr [rsp + 0x20], rcx
+  0x18016bde8: lea      r8, [rip + 0x6036b1]  ; 'pPlayer->m_bEquipLiftedFace'
+  0x18016bdef: mov      ecx, 3
+  0x18016bdf4: lea      rdx, [rip + 0x7826ad]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18016bdfb: call     qword ptr [rip + 0x5f945f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18016be01: xor      eax, eax
+  0x18016be03: jmp      0x18016bfa1
+  0x18016be08: cmp      dword ptr [rax + 0x1ea10], esi
+  0x18016be0e: je       0x18016be27
+  0x18016be10: call     0x18012b9d0
+  0x18016be15: mov      rcx, rax
+  0x18016be18: mov      rdx, rbx
+  0x18016be1b: call     0x1802d5120
+  0x18016be20: xor      eax, eax
+  0x18016be22: jmp      0x18016bfa1
+  0x18016be27: lea      rcx, [rbp + 0x28d38]
+  0x18016be2e: mov      edx, edi
+  0x18016be30: lea      r8, [rsp + 0x30]
+  0x18016be35: call     0x1802f30b0
+  0x18016be3a: mov      rdx, rax
+  0x18016be3d: test     rax, rax
+  0x18016be40: je       0x18016bf46
+  0x18016be46: cmp      dword ptr [rsp + 0x30], 0x175
+  0x18016be4e: je       0x18016be82
+  0x18016be50: lea      rcx, [rip + 0x603619]  ; 'KPlayerClient::DoApplyEquipLiftedFaceData'
+  0x18016be57: mov      r9d, 0x1e8c
+  0x18016be5d: mov      qword ptr [rsp + 0x20], rcx
+  0x18016be62: lea      r8, [rip + 0x603657]  ; 'dwSize == sizeof(pPlayer->m_LiftedFaceData)'
+  0x18016be69: mov      ecx, 3
+  0x18016be6e: lea      rdx, [rip + 0x782633]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18016be75: call     qword ptr [rip + 0x5f93e5]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18016be7b: xor      eax, eax
+  0x18016be7d: jmp      0x18016bfa1
+  0x18016be82: lea      r9, [rbx + 0x1e850]
+  0x18016be89: mov      ecx, 2
+  0x18016be8e: nop      
+  0x18016be90: lea      r9, [r9 + 0x80]
+  0x18016be97: movups   xmm0, xmmword ptr [rax]
+  0x18016be9a: lea      rax, [rax + 0x80]
+  0x18016bea1: movups   xmmword ptr [r9 - 0x80], xmm0
+  0x18016bea6: movups   xmm1, xmmword ptr [rax - 0x70]
+  0x18016beaa: movups   xmmword ptr [r9 - 0x70], xmm1
+  0x18016beaf: movups   xmm0, xmmword ptr [rax - 0x60]
+  0x18016beb3: movups   xmmword ptr [r9 - 0x60], xmm0
+  0x18016beb8: movups   xmm1, xmmword ptr [rax - 0x50]
+  0x18016bebc: movups   xmmword ptr [r9 - 0x50], xmm1
+  0x18016bec1: movups   xmm0, xmmword ptr [rax - 0x40]
+  0x18016bec5: movups   xmmword ptr [r9 - 0x40], xmm0
+  0x18016beca: movups   xmm1, xmmword ptr [rax - 0x30]
+  0x18016bece: movups   xmmword ptr [r9 - 0x30], xmm1
+  0x18016bed3: movups   xmm0, xmmword ptr [rax - 0x20]
+  0x18016bed7: movups   xmmword ptr [r9 - 0x20], xmm0
+  0x18016bedc: movups   xmm1, xmmword ptr [rax - 0x10]
+  0x18016bee0: movups   xmmword ptr [r9 - 0x10], xmm1
+  0x18016bee5: sub      rcx, 1
+  0x18016bee9: jne      0x18016be90
+  0x18016beeb: movups   xmm0, xmmword ptr [rax]
+  0x18016beee: movups   xmmword ptr [r9], xmm0
+  0x18016bef2: movups   xmm1, xmmword ptr [rax + 0x10]
+  0x18016bef6: movups   xmmword ptr [r9 + 0x10], xmm1
+  0x18016befb: movups   xmm0, xmmword ptr [rax + 0x20]
+  0x18016beff: movups   xmmword ptr [r9 + 0x20], xmm0
+  0x18016bf04: movups   xmm1, xmmword ptr [rax + 0x30]
+  0x18016bf08: movups   xmmword ptr [r9 + 0x30], xmm1
+  0x18016bf0d: movups   xmm0, xmmword ptr [rax + 0x40]
+  0x18016bf11: movups   xmmword ptr [r9 + 0x40], xmm0
+  0x18016bf16: movups   xmm1, xmmword ptr [rax + 0x50]
+  0x18016bf1a: movups   xmmword ptr [r9 + 0x50], xmm1
+  0x18016bf1f: movups   xmm0, xmmword ptr [rax + 0x60]
+  0x18016bf23: movups   xmmword ptr [r9 + 0x60], xmm0
+  0x18016bf28: mov      ecx, dword ptr [rax + 0x70]
+  0x18016bf2b: mov      dword ptr [r9 + 0x70], ecx
+  0x18016bf2f: xor      ecx, ecx
+  0x18016bf31: movzx    r8d, byte ptr [rax + 0x74]
+  0x18016bf36: mov      byte ptr [r9 + 0x74], r8b
+  0x18016bf3a: mov      r8d, dword ptr [rsp + 0x30]
+  0x18016bf3f: call     0x180746ec0
+  0x18016bf44: mov      esi, eax
+  0x18016bf46: mov      eax, 0xe4
+  0x18016bf4b: mov      dword ptr [rsp + 0x43], edi
+  0x18016bf4f: mov      r8d, 0x13
+  0x18016bf55: mov      word ptr [rsp + 0x38], ax
+  0x18016bf5a: lea      rdx, [rsp + 0x38]
+  0x18016bf5f: mov      dword ptr [rsp + 0x47], esi
+  0x18016bf63: mov      rcx, rbp
+  0x18016bf66: call     0x1801acda0
+  0x18016bf6b: test     eax, eax
+  0x18016bf6d: jne      0x18016bf9c
+  0x18016bf6f: lea      rcx, [rip + 0x6034fa]  ; 'KPlayerClient::DoApplyEquipLiftedFaceData'
+  0x18016bf76: mov      r9d, 0x1e99
+  0x18016bf7c: mov      qword ptr [rsp + 0x20], rcx
+  0x18016bf81: lea      r8, [rip + 0x784360]  ; 'bRetCode'
+  0x18016bf88: lea      ecx, [rax + 3]
+  0x18016bf8b: lea      rdx, [rip + 0x782516]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18016bf92: call     qword ptr [rip + 0x5f92c8]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18016bf98: xor      eax, eax
+  0x18016bf9a: jmp      0x18016bfa1
+  0x18016bf9c: mov      eax, 1
+  0x18016bfa1: .byte    0x48
+
