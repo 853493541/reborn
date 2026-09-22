@@ -94,10 +94,10 @@ Env switches: `SPIKE_EDITOR=0` (skip editor), `SPIKE_SOUND=1` (init Wwise),
 
 | Input | ExecAction | Meaning |
 |---|---|---|
-| Left drag | `ExecAction(4, 1, 0, lParam)` | ROTATE_VIEW — orbit |
+| Left drag | `ExecAction(4, 1, 0, lParam)` | ROTATE_VIEW — orbit / angle |
 | Middle drag | `ExecAction(3, 1, 0, lParam)` | PAN_VIEW — pan |
-| Right drag | `ExecAction(2, 1, 0, lParam)` | ZOOM_VIEW — dolly |
-| Wheel | `ExecAction(31, 1, delta>0?1:0, 1)` | MOUSE_WHEEL |
+| Wheel | `ExecAction(31, 1, delta>0?1:0, 1)` | MOUSE_WHEEL — zoom |
+| Q / E | `GetCameraPos` + `SetCameraPos(y +/- 50)` | camera height up / down |
 | F | `scene.FocusOnModel()` | focus actor |
 | R | `scene.ResetCameraPosLookAtUp()` | reset camera |
 

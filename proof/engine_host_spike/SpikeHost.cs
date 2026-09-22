@@ -23,7 +23,7 @@ internal static class SpikeHost
         Console.WriteLine("taniPath=" + taniPath);
 
         var form = new Form();
-        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag orbit | M-drag pan | R-drag zoom | wheel zoom | F focus | R reset)";
+        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag angle | M-drag pan | wheel zoom | Q/E height | F focus | R reset)";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -94,11 +94,12 @@ internal static class SpikeHost
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 2);
         Console.WriteLine("winId={0}", winId);
 
-        // Camera controls - same mapping as MovieEditor ViewWindow:
-        //   left drag   = ROTATE_VIEW (4)  orbit
-        //   middle drag = PAN_VIEW    (3)  pan
-        //   right drag  = ZOOM_VIEW   (2)  dolly
-        //   wheel       = MOUSE_WHEEL (31)
+        // Camera controls:
+        //   left drag  = ROTATE_VIEW (4)  orbit / angle
+        //   middle drag= PAN_VIEW    (3)  pan
+        //   wheel      = MOUSE_WHEEL (31) zoom
+        //   Q / E      = camera height up / down
+        //   F = focus, R = reset
         Func<int, int, int> makeLParam = delegate(int x, int y)
         {
             return ((y & 0xFFFF) << 16) | (x & 0xFFFF);
@@ -107,8 +108,7 @@ internal static class SpikeHost
         panel.MouseDown += delegate(object s, MouseEventArgs e)
         {
             dragAction = e.Button == MouseButtons.Left ? 4
-                       : e.Button == MouseButtons.Middle ? 3
-                       : e.Button == MouseButtons.Right ? 2 : 0;
+                       : e.Button == MouseButtons.Middle ? 3 : 0;
             if (dragAction != 0) scene.ExecAction(dragAction, 1, 0, makeLParam(e.X, e.Y));
         };
         panel.MouseMove += delegate(object s, MouseEventArgs e)
@@ -134,6 +134,14 @@ internal static class SpikeHost
         {
             if (e.KeyCode == Keys.F) { scene.FocusOnModel(); Console.WriteLine("FocusOnModel"); }
             if (e.KeyCode == Keys.R) { scene.ResetCameraPosLookAtUp(); Console.WriteLine("ResetCamera"); }
+            if (e.KeyCode == Keys.Q || e.KeyCode == Keys.E)
+            {
+                float cx = 0f, cy = 0f, cz = 0f;
+                scene.GetCameraPos(ref cx, ref cy, ref cz);
+                float step = e.KeyCode == Keys.Q ? 50f : -50f;
+                scene.SetCameraPos(cx, cy + step, cz, false);
+                Console.WriteLine("camera height {0} -> {1}", cy, cy + step);
+            }
         };
         panel.Focus();
 
@@ -151,6 +159,15 @@ internal static class SpikeHost
         model.AttachModel(handle);
         int playResult = model.PlayAnimation(taniPath, 0, 1.0f, 0);
         Console.WriteLine("PlayAnimation result={0}", playResult);
+
+        if (Environment.GetEnvironmentVariable("SPIKE_CAMTEST") == "1")
+        {
+            float tx = 0f, ty = 0f, tz = 0f;
+            int g = scene.GetCameraPos(ref tx, ref ty, ref tz);
+            Console.WriteLine("GetCameraPos ret={0} pos=({1},{2},{3})", g, tx, ty, tz);
+            int s2 = scene.SetCameraPos(tx, ty + 300f, tz, false);
+            Console.WriteLine("SetCameraPos ret={0} newY={1}", s2, ty + 300f);
+        }
 
         int[] shots = { 0, 2000, 4000, 7000 };
         int ci = 0;
