@@ -211,14 +211,12 @@ and `OnSyncDropItem` / `OnSyncNewDoodad` carry dynamic/dropped items. Logging co
         |
         v
 [S2C replication]
-  B1 doodad create/state to client ......... NAME ONLY (OnSyncNewDoodad/OnSyncSimpleObject/
-                                                       OnSyncDoodadState; payload layout unknown)
+  B1 doodad create/state to client ......... RECOVERED (layouts in JX3_LOOT_PROTOCOL_LAYOUTS.md)
   B2 client caches + renders container ..... KNOWN   (DoodadTemplate fields, interaction rules)
         |
         v
 [C2S interaction]
-  C1 pick request ......................... NAME ONLY (DoPickPrepare/OnBreakPickPrepare/
-                                                       OnBreakPicking; layout unknown)
+  C1 pick request ......................... RECOVERED (DoApplyLootList proto 0x4D, DoLootMoney 0x51)
   C2 server validation (range/owner/once) .. INFERRED (MaxLootRange=5, CanOperateEach)
         |
         v
@@ -230,13 +228,14 @@ and `OnSyncDropItem` / `OnSyncNewDoodad` carry dynamic/dropped items. Logging co
         |
         v
 [S2C result]
-  E1 rolled loot list ...................... NAME ONLY (OnOpenLootList/OnSyncLootList; layout)
-  E2 dropped/dynamic items ................. NAME ONLY (OnSyncDropItem; layout)
+  E1 rolled loot list ...................... RECOVERED (OnSyncLootList: looters + item records)
+  E2 dropped/dynamic items ................. same channel (new doodad / loot list); no separate
+                                                       client handler found (OnSyncDropItem is coin shop)
         |
         v
 [C2S take]
-  F1 take item ............................. NAME ONLY (PickUpItem/LootItem; layout)
-  F2 inventory grant ....................... NAME ONLY (OnAddItemNotify/OnSyncItemData; layout)
+  F1 take item ............................. RECOVERED (DoApplyLootList 0x4D)
+  F2 inventory grant ....................... NAME ONLY (OnAddItemNotify/OnSyncItemData)
         |
         v
 [lifecycle]

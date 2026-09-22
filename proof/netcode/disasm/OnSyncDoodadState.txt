@@ -1,0 +1,241 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncDoodadState'
+# image base 0x180000000
+
+## xref @ 0x180197644 -> 0x180772628 'KPlayerClient::OnSyncDoodadState'  fn start 0x1801975f0
+  0x1801975f0: mov      qword ptr [rsp + 0x10], rbx
+  0x1801975f5: push     rdi
+  0x1801975f6: sub      rsp, 0x30
+  0x1801975fa: mov      rcx, qword ptr [rip + 0x829d1f]
+  0x180197601: mov      rbx, rdx
+  0x180197604: mov      edx, dword ptr [rdx + 7]
+  0x180197607: call     0x18012b560
+  0x18019760c: mov      rdi, rax
+  0x18019760f: test     rax, rax
+  0x180197612: je       0x1801976a8
+  0x180197618: movsx    edx, byte ptr [rbx + 0xb]
+  0x18019761c: mov      rcx, rax
+  0x18019761f: mov      qword ptr [rsp + 0x40], rsi
+  0x180197624: call     0x1802c7190
+  0x180197629: mov      rcx, qword ptr [rip + 0x829cf0]
+  0x180197630: mov      r8d, dword ptr [rcx + 0x18]
+  0x180197634: mov      edx, dword ptr [rcx + 0x14]
+  0x180197637: call     0x18012b750
+  0x18019763c: mov      rsi, rax
+  0x18019763f: test     rax, rax
+  0x180197642: jne      0x18019767d
+  0x180197644: lea      rax, [rip + 0x5dafdd]  ; 'KPlayerClient::OnSyncDoodadState'
+  0x18019764b: mov      r9d, 0x3cc3
+  0x180197651: lea      r8, [rip + 0x75a414]  ; 'pScene'
+  0x180197658: mov      qword ptr [rsp + 0x20], rax
+  0x18019765d: lea      rdx, [rip + 0x756e44]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180197664: lea      ecx, [rsi + 3]
+  0x180197667: call     qword ptr [rip + 0x5cdbf3]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18019766d: mov      rsi, qword ptr [rsp + 0x40]
+  0x180197672: mov      rbx, qword ptr [rsp + 0x48]
+  0x180197677: add      rsp, 0x30
+  0x18019767b: pop      rdi
+  0x18019767c: ret      
+  0x18019767d: movzx    r8d, byte ptr [rbx + 0xd]
+  0x180197682: mov      rcx, rsi
+  0x180197685: mov      edx, dword ptr [rdi + 0xd0]
+  0x18019768b: call     0x180158ee0
+  0x180197690: movzx    r8d, byte ptr [rbx + 0xc]
+  0x180197695: mov      rcx, rsi
+  0x180197698: mov      edx, dword ptr [rdi + 0xd0]
+  0x18019769e: call     0x180158e80
+  0x1801976a3: mov      rsi, qword ptr [rsp + 0x40]
+  0x1801976a8: mov      rbx, qword ptr [rsp + 0x48]
+  0x1801976ad: add      rsp, 0x30
+  0x1801976b1: pop      rdi
+  0x1801976b2: ret      
+  0x1801976b3: int3     
+  0x1801976b4: int3     
+  0x1801976b5: int3     
+  0x1801976b6: int3     
+  0x1801976b7: int3     
+  0x1801976b8: int3     
+  0x1801976b9: int3     
+  0x1801976ba: int3     
+  0x1801976bb: int3     
+  0x1801976bc: int3     
+  0x1801976bd: int3     
+  0x1801976be: int3     
+  0x1801976bf: int3     
+  0x1801976c0: push     rbx
+  0x1801976c2: sub      rsp, 0x30
+  0x1801976c6: mov      rcx, qword ptr [rip + 0x829c53]
+  0x1801976cd: mov      rbx, rdx
+  0x1801976d0: mov      edx, dword ptr [rcx + 4]
+  0x1801976d3: call     0x18012b610
+  0x1801976d8: test     rax, rax
+  0x1801976db: jne      0x1801976ec
+  0x1801976dd: mov      r9d, 0x7c7f
+  0x1801976e3: lea      r8, [rip + 0x5cf64e]  ; 'pPlayer'
+  0x1801976ea: jmp      0x18019770d
+  0x1801976ec: movzx    edx, byte ptr [rbx + 7]
+  0x1801976f0: mov      rcx, rax
+  0x1801976f3: mov      r8d, dword ptr [rbx + 8]
+  0x1801976f7: call     0x1802c2f10
+  0x1801976fc: test     eax, eax
+  0x1801976fe: jne      0x18019772b
+  0x180197700: mov      r9d, 0x7c82
+  0x180197706: lea      r8, [rip + 0x758bdb]  ; 'bRetCode'
+  0x18019770d: lea      rax, [rip + 0x5e240c]  ; 'KPlayerClient::OnSyncEmotionActionDIYInfo'
+  0x180197714: mov      ecx, 3
+  0x180197719: lea      rdx, [rip + 0x756d88]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180197720: mov      qword ptr [rsp + 0x20], rax
+  0x180197725: call     qword ptr [rip + 0x5cdb35]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18019772b: add      rsp, 0x30
+  0x18019772f: pop      rbx
+  0x180197730: ret      
+  0x180197731: int3     
+  0x180197732: int3     
+  0x180197733: int3     
+  0x180197734: int3     
+  0x180197735: int3     
+  0x180197736: int3     
+  0x180197737: int3     
+  0x180197738: int3     
+  0x180197739: int3     
+  0x18019773a: int3     
+  0x18019773b: int3     
+  0x18019773c: int3     
+  0x18019773d: int3     
+  0x18019773e: int3     
+  0x18019773f: int3     
+  0x180197740: push     rbx
+  0x180197742: sub      rsp, 0x30
+  0x180197746: mov      rcx, qword ptr [rip + 0x829bd3]
+  0x18019774d: mov      rbx, rdx
+  0x180197750: mov      edx, dword ptr [rcx + 4]
+  0x180197753: call     0x18012b610
+  0x180197758: test     rax, rax
+  0x18019775b: jne      0x18019776c
+  0x18019775d: mov      r9d, 0x7c6f
+  0x180197763: lea      r8, [rip + 0x5cf5ce]  ; 'pPlayer'
+  0x18019776a: jmp      0x18019778e
+  0x18019776c: movzx    r8d, word ptr [rbx + 9]
+  0x180197771: lea      rdx, [rbx + 0xb]
+  0x180197775: mov      rcx, rax
+  0x180197778: call     0x1802c0c60
+  0x18019777d: test     eax, eax
+  0x18019777f: jne      0x1801977ac
+  0x180197781: mov      r9d, 0x7c72
+  0x180197787: lea      r8, [rip + 0x758b5a]  ; 'bRetCode'
+  0x18019778e: lea      rax, [rip + 0x5e235b]  ; 'KPlayerClient::OnSyncEmotionActionDIYList'
+  0x180197795: mov      ecx, 3
+  0x18019779a: lea      rdx, [rip + 0x756d07]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801977a1: mov      qword ptr [rsp + 0x20], rax
+  0x1801977a6: call     qword ptr [rip + 0x5cdab4]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801977ac: add      rsp, 0x30
+  0x1801977b0: pop      rbx
+  0x1801977b1: ret      
+  0x1801977b2: int3     
+  0x1801977b3: int3     
+  0x1801977b4: int3     
+  0x1801977b5: int3     
+  0x1801977b6: int3     
+  0x1801977b7: int3     
+  0x1801977b8: int3     
+  0x1801977b9: int3     
+  0x1801977ba: int3     
+  0x1801977bb: int3     
+  0x1801977bc: int3     
+  0x1801977bd: int3     
+  0x1801977be: int3     
+  0x1801977bf: int3     
+  0x1801977c0: push     rbx
+  0x1801977c2: sub      rsp, 0x30
+  0x1801977c6: mov      rcx, qword ptr [rip + 0x829b53]
+  0x1801977cd: mov      rbx, rdx
+  0x1801977d0: mov      edx, dword ptr [rcx + 4]
+  0x1801977d3: call     0x18012b610
+  0x1801977d8: test     rax, rax
+  0x1801977db: jne      0x1801977ec
+  0x1801977dd: mov      r9d, 0x764c
+  0x1801977e3: lea      r8, [rip + 0x5cf54e]  ; 'pPlayer'
+  0x1801977ea: jmp      0x18019780d
+  0x1801977ec: movsxd   r8, dword ptr [rbx + 9]
+  0x1801977f0: lea      rdx, [rbx + 0xd]
+  0x1801977f4: mov      rcx, rax
+  0x1801977f7: call     0x1802c0ae0
+  0x1801977fc: test     eax, eax
+  0x1801977fe: jne      0x18019782b
+  0x180197800: mov      r9d, 0x764f
+  0x180197806: lea      r8, [rip + 0x758adb]  ; 'bRetCode'
+  0x18019780d: lea      rax, [rip + 0x5e1344]  ; 'KPlayerClient::OnSyncEmotionActionList'
+  0x180197814: mov      ecx, 3
+  0x180197819: lea      rdx, [rip + 0x756c88]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180197820: mov      qword ptr [rsp + 0x20], rax
+  0x180197825: call     qword ptr [rip + 0x5cda35]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18019782b: add      rsp, 0x30
+  0x18019782f: pop      rbx
+  0x180197830: ret      
+  0x180197831: int3     
+  0x180197832: int3     
+  0x180197833: int3     
+  0x180197834: int3     
+  0x180197835: int3     
+  0x180197836: int3     
+  0x180197837: int3     
+  0x180197838: int3     
+  0x180197839: int3     
+  0x18019783a: int3     
+  0x18019783b: int3     
+  0x18019783c: int3     
+  0x18019783d: int3     
+  0x18019783e: int3     
+  0x18019783f: int3     
+  0x180197840: push     rbx
+  0x180197842: sub      rsp, 0x30
+  0x180197846: mov      rcx, qword ptr [rip + 0x829ad3]
+  0x18019784d: mov      rbx, rdx
+  0x180197850: mov      edx, dword ptr [rcx + 4]
+  0x180197853: call     0x18012b610
+  0x180197858: test     rax, rax
+  0x18019785b: jne      0x18019788e
+  0x18019785d: lea      rax, [rip + 0x5e10f4]  ; 'KPlayerClient::OnSyncEmotionPackage'
+  0x180197864: mov      r9d, 0x73b7
+  0x18019786a: lea      r8, [rip + 0x5cf4c7]  ; 'pPlayer'
+  0x180197871: mov      qword ptr [rsp + 0x20], rax
+  0x180197876: lea      rdx, [rip + 0x756c2b]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18019787d: mov      ecx, 3
+  0x180197882: call     qword ptr [rip + 0x5cd9d8]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180197888: add      rsp, 0x30
+  0x18019788c: pop      rbx
+  0x18019788d: ret      
+  0x18019788e: mov      r8d, dword ptr [rbx + 9]
+  0x180197892: lea      rdx, [rbx + 0xd]
+  0x180197896: mov      rcx, rax
+  0x180197899: call     0x1802c0e60
+  0x18019789e: mov      rcx, qword ptr [rip + 0x829a83]
+  0x1801978a5: test     rcx, rcx
+  0x1801978a8: je       0x1801978b9
+  0x1801978aa: mov      rax, qword ptr [rcx]
+  0x1801978ad: add      rsp, 0x30
+  0x1801978b1: pop      rbx
+  0x1801978b2: jmp      qword ptr [rax + 0x1118]
+  0x1801978b9: add      rsp, 0x30
+  0x1801978bd: pop      rbx
+  0x1801978be: ret      
+  0x1801978bf: int3     
+  0x1801978c0: push     rbx
+  0x1801978c2: sub      rsp, 0x30
+  0x1801978c6: mov      rcx, qword ptr [rip + 0x829a53]
+  0x1801978cd: mov      rbx, rdx
+  0x1801978d0: mov      edx, dword ptr [rcx + 4]
+  0x1801978d3: call     0x18012b610
+  0x1801978d8: test     rax, rax
+  0x1801978db: jne      0x1801978ec
+  0x1801978dd: mov      r9d, 0x71ed
+  0x1801978e3: lea      r8, [rip + 0x5cf35e]  ; 'pClientPlayer'
+  0x1801978ea: jmp      0x18019792d
+  0x1801978ec: mov      rcx, qword ptr [rax + 0x60]
+  0x1801978f0: test     rcx, rcx
+  0x1801978f3: jne      0x180197904
+  0x1801978f5: mov      r9d, 0x71f0
+  0x1801978fb: .byte    0x4c
+  0x1801978fc: .byte    0x8d
+  0x1801978fd: .byte    0x05
+  0x1801978fe: push     -0x5f
+
