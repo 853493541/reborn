@@ -1,0 +1,191 @@
+[
+ {
+  "file": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\extracted\\scripts\\skill\\藏剑\\藏剑_灵峰剑式_风来吴山.lua",
+  "size": 3265,
+  "consumed": 3265,
+  "error": null,
+  "functions": [
+   {
+    "depth": 0,
+    "source": null,
+    "params": 0,
+    "maxstack": 11,
+    "numbers": [
+     0.0,
+     50.0,
+     108.0,
+     3.0,
+     124.0,
+     4.0,
+     140.0,
+     5.0,
+     156.0,
+     172.0,
+     6.0,
+     188.0,
+     7.0,
+     204.0,
+     8.0,
+     220.0,
+     9.0,
+     236.0,
+     252.0,
+     10.0
+    ],
+    "strings": [
+     "Include",
+     "scripts/Include/Skill.lh",
+     "scripts/Include/NewSkill.lh",
+     "tSkillData",
+     "nAddRage",
+     "nCostRage",
+     "nDamageBase",
+     "nDamageRand",
+     "GetSkillLevelData",
+     "CanCast",
+     "CanLearnSkill",
+     "OnSkillLevelUp",
+     "Apply"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 1,
+    "maxstack": 9,
+    "numbers": [
+     1905.0,
+     1801.0,
+     1908.0,
+     1.0,
+     3084.0,
+     0.0,
+     1950.0,
+     30461.0,
+     1694.0,
+     6545.0,
+     16.0,
+     343.0,
+     444.0,
+     20.0,
+     10.0,
+     80.0,
+     6.0,
+     256.0
+    ],
+    "strings": [
+     "dwLevel",
+     "AddAttribute",
+     "ATTRIBUTE_EFFECT_MODE",
+     "EFFECT_TO_SELF_NOT_ROLLBACK",
+     "ATTRIBUTE_TYPE",
+     "CAST_SKILL_TARGET_DST",
+     "EXECUTE_SCRIPT",
+     "skill/藏剑/藏剑_灵峰剑式_风来吴山.lua",
+     "BindBuff",
+     "AddSlowCheckSelfBuff",
+     "BUFF_COMPARE_FLAG",
+     "EQUAL",
+     "GREATER_EQUAL",
+     "AddCheckSelfLearntSkill",
+     "SKILL_COMPARE_FLAG",
+     "SetPublicCoolDown",
+     "SetNormalCoolDown",
+     "SetCheckCoolDown",
+     "nCostRage",
+     "tSkillData",
+     "nCostSprintPower",
+     "CONSUME_BASE",
+     "nChannelInterval",
+     "nChannelFrame",
+     "nMinRadius",
+     "LENGTH_BASE",
+     "nMaxRadius",
+     "nAngleRange",
+     "nMinChannelInterval",
+     "nMinChannelFrame",
+     "nBeatBackRate",
+     "PERCENT_BASE",
+     "nBrokenRate"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 9,
+    "numbers": [
+     0.0,
+     99.0,
+     1950.0,
+     1.0,
+     1856.0,
+     6548.0,
+     7.0,
+     10103.0,
+     10104.0,
+     5956.0,
+     9713.0,
+     22908.0,
+     23848.0,
+     6542.0,
+     4096.0,
+     29732.0
+    ],
+    "strings": [
+     "SKILL_RESULT_CODE",
+     "SUCCESS",
+     "AddBuff",
+     "GetSkillLevel",
+     "XiaohaoJianQi",
+     "dwID",
+     "GetBuff",
+     "DelGroupBuff",
+     "DelBuff",
+     "GetAltitude",
+     "nLevel",
+     "CastSkillXYZ",
+     "nX",
+     "nY",
+     "nZ"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 3,
+    "numbers": [],
+    "strings": []
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 7,
+    "numbers": [
+     1362.0,
+     18333.0
+    ],
+    "strings": [
+     "dwLevel",
+     "dwMaxLevel",
+     "AcquireAchievement",
+     "GetSkillLevel",
+     "LearnSkillLevel"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 4,
+    "numbers": [],
+    "strings": [
+     "GetPlayer",
+     "GetScene"
+    ]
+   }
+  ]
+ }
+]

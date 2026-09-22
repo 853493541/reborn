@@ -1,0 +1,90 @@
+﻿
+==== 0x1800906b0 .. 0x180090760 (.text)
+  0x1800906b0: mov      r8, rdx
+  0x1800906b3: mov      edx, ecx
+  0x1800906b5: lea      rcx, [rip + 0xc1084]  ; 0x180151740
+  0x1800906bc: jmp      0x1800b1f60
+  0x1800906c1: int3     
+  0x1800906c2: int3     
+  0x1800906c3: int3     
+  0x1800906c4: int3     
+  0x1800906c5: int3     
+  0x1800906c6: int3     
+  0x1800906c7: int3     
+  0x1800906c8: int3     
+  0x1800906c9: int3     
+  0x1800906ca: int3     
+  0x1800906cb: int3     
+  0x1800906cc: int3     
+  0x1800906cd: int3     
+  0x1800906ce: int3     
+  0x1800906cf: int3     
+  0x1800906d0: push     rbp
+  0x1800906d2: push     r12
+  0x1800906d4: sub      rsp, 0x188
+  0x1800906db: mov      rax, qword ptr [rip + 0xbb9e6]  ; 0x18014c0c8
+  0x1800906e2: xor      rax, rsp
+  0x1800906e5: mov      qword ptr [rsp + 0x150], rax
+  0x1800906ed: mov      qword ptr [rsp + 0x38], 0
+  0x1800906f6: mov      r9d, r8d
+  0x1800906f9: mov      r12, rdx
+  0x1800906fc: mov      rbp, rcx
+  0x1800906ff: test     rcx, rcx
+  0x180090702: jne      0x180090734
+  0x180090704: lea      rcx, [rip + 0x8c32d]  ; "PAKFS_IsFileExist"
+  0x18009070b: mov      r9d, 0x852
+  0x180090711: mov      qword ptr [rsp + 0x20], rcx
+  0x180090716: lea      r8, [rip + 0x8bd5b]  ; "cszFilePath"
+  0x18009071d: lea      ecx, [rbp + 3]
+  0x180090720: lea      rdx, [rip + 0x86269]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180090727: call     qword ptr [rip + 0x85b83]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x18009072d: xor      eax, eax
+  0x18009072f: jmp      0x1800908cb
+  0x180090734: lea      r8, [rsp + 0x38]
+  0x180090739: mov      qword ptr [rsp + 0x178], rsi
+  0x180090741: mov      edx, r9d
+  0x180090744: lea      rcx, [rip + 0xc0ff5]  ; 0x180151740
+  0x18009074b: call     0x1800b1f60
+  0x180090750: test     eax, eax
+  0x180090752: je       0x180090931
+  0x180090758: mov      rsi, qword ptr [rsp + 0x38]
+  0x18009075d: test     rsi, rsi
+
+==== 0x1800ae1a0 .. 0x1800ae230 (.text)
+  0x1800ae1a0: sub      rsp, 0x48
+  0x1800ae1a4: mov      rax, qword ptr [rsp + 0x78]
+  0x1800ae1a9: xor      r10d, r10d
+  0x1800ae1ac: mov      dword ptr [rsp + 0x38], r10d
+  0x1800ae1b1: mov      qword ptr [rsp + 0x30], rax
+  0x1800ae1b6: mov      eax, dword ptr [rsp + 0x70]
+  0x1800ae1ba: mov      dword ptr [rsp + 0x28], eax
+  0x1800ae1be: mov      dword ptr [rsp + 0x20], r10d
+  0x1800ae1c3: call     0x1800ae1d0
+  0x1800ae1c8: add      rsp, 0x48
+  0x1800ae1cc: ret      
+  0x1800ae1cd: int3     
+  0x1800ae1ce: int3     
+  0x1800ae1cf: int3     
+  0x1800ae1d0: mov      r11, rsp
+  0x1800ae1d3: push     rdi
+  0x1800ae1d4: sub      rsp, 0x1c0
+  0x1800ae1db: mov      rax, qword ptr [rip + 0x9dee6]  ; 0x18014c0c8
+  0x1800ae1e2: xor      rax, rsp
+  0x1800ae1e5: mov      qword ptr [rsp + 0x170], rax
+  0x1800ae1ed: mov      qword ptr [r11 - 0x18], rbp
+  0x1800ae1f1: xor      edi, edi
+  0x1800ae1f3: mov      qword ptr [r11 - 0x20], rsi
+  0x1800ae1f7: xor      eax, eax
+  0x1800ae1f9: mov      qword ptr [r11 - 0x28], r12
+  0x1800ae1fd: mov      rsi, r8
+  0x1800ae200: mov      qword ptr [r11 - 0x30], r13
+  0x1800ae204: mov      r12, rcx
+  0x1800ae207: mov      qword ptr [r11 - 0x38], r14
+  0x1800ae20b: lea      rcx, [rip + 0xa348e]  ; 0x1801516a0
+  0x1800ae212: mov      r14, qword ptr [rsp + 0x200]
+  0x1800ae21a: mov      r13d, r9d
+  0x1800ae21d: mov      qword ptr [r11 - 0x40], r15
+  0x1800ae221: mov      rbp, rdx
+  0x1800ae224: mov      r15d, edi
+  0x1800ae227: mov      qword ptr [rsp + 0x48], rdi
