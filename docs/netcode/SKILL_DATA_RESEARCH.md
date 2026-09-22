@@ -154,8 +154,10 @@ Four independent script sites prove the factor:
 | `少林\判定距离重置捉影.lua`, `绝境_云飞玉皇.lua` | `Distance >= 8 * 64`, `Distance <= 4 * 64` | 8尺 / 4尺 |
 
 So `LENGTH_BASE = 64` (the constant used as `nMaxRadius = 25 * LENGTH_BASE` = 25尺).
-If JX3 follows the modern 尺 = 1/3 m, then **1 m = 192 units** (MED; calibrate in
-game if exact meters matter).
+**Calibrated:** 1 engine unit = 1 cm (mesh-measured, see
+`UNIT_SCALE_AND_CHARACTER_SIZE.md`), so **1 尺 = 64 units = 0.64 m** and
+**1 m = 100 units = 1.5625 尺**. The game's 尺 is about twice the real-world
+尺 — this resolves all the "ranges look 2× too large" ambiguity.
 
 ### 6.3 Worked example — 蹑云逐月 = 20尺
 
