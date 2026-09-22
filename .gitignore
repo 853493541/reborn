@@ -35,3 +35,6 @@ proof/netcode/mode_juejing/pak_drop/
 proof/netcode/mode_juejing/pak_drop2/
 proof/netcode/mode_juejing/pak_logic/
 proof/netcode/mode_juejing/pak_drop/
+
+# Raw extracted game tables (research evidence, kept local)
+proof/netcode/camera_files/

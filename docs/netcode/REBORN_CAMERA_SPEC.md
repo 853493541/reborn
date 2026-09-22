@@ -126,8 +126,12 @@ spring integrate with clamp, then `pos = base + track_delta`
 
 ## 7. Known gaps (values, not structure)
 
-1. Actual numeric values of the parameter tables (`CameraConfig` ini lives
-   behind a runtime path root; extraction needs VFS enumeration).
+1. Actual numeric values of the parameter tables — **partially recovered**:
+   the path table (`Represent\filepath.ini`) maps `CameraConfig` to
+   `Represent/camera/config.ini` (CDN stream set, not local paks). Real
+   skill-camera rows recovered (see
+   `docs/netcode/JX3_CAMERA_RESEARCH.md` §7): enter/exit ms, FOV rad, duration,
+   screen effect, edge color temp/saturation.
 2. Camera obstruction/collision details (engine-side in JX3).
 3. Mouse sensitivity defaults (`userdata\custom.dat`, binary).
 
