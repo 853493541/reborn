@@ -1,0 +1,547 @@
+0x00C7F850	ascii	px camera model
+0x00C80058	ascii	HandleCamera
+0x00C800D8	ascii	SetCameraRTParams
+0x00C800F0	ascii	GetCameraRTParams
+0x00C80110	ascii	SetCameraParams
+0x00C80128	ascii	GetCameraParams
+0x00C80140	ascii	GetCameraYawPitchRoll
+0x00C80170	ascii	SetCameraDragSpeed
+0x00C80188	ascii	SetCameraMaxDistance
+0x00C801A8	ascii	SetCameraSpringResetSpeed
+0x00C801C8	ascii	SetCameraResetSpeed
+0x00C801E0	ascii	SetCameraFollowMode
+0x00C801F8	ascii	SetCameraYaw
+0x00C80208	ascii	SetCameraPitch
+0x00C80220	ascii	SetCameraRoll
+0x00C80230	ascii	SetCameraAngle
+0x00C80248	ascii	GetCameraAngle
+0x00C80260	ascii	SwitchCameraMode
+0x00C80350	ascii	SetCharacterCameraView
+0x00C80420	ascii	ReviseCharacterCameraYaw
+0x00C80450	ascii	SetLocalCamera
+0x00C80468	ascii	SetRemoteCamera
+0x00C80594	ascii	camera
+0x00C80740	ascii	EnableControlCamera
+0x00C80758	ascii	EnableControlCameraOnly
+0x00C80778	ascii	ToggleControlCamera
+0x00C80790	ascii	UpdateEnableControlCamera
+0x00C807B0	ascii	ForceResetCamera
+0x00C81508	ascii	ZoomCamera
+0x00C81518	ascii	ZoomCharacterCamera
+0x00C81FA8	ascii	KRLAnimationFeedBackTag::ApplySkillMoveCameraTag
+0x00C81FE8	ascii	pcSkillMoveCameraConfig
+0x00C82158	ascii	cameraTag.bOnLyLocalClient
+0x00C83498	ascii	OnPlaySceneCameraAni
+0x00C834B8	ascii	OnPlayCameraAni
+0x00C83550	ascii	OnPauseMovieCamera
+0x00C83568	ascii	OnClearPauseMovieCameraFlag
+0x00C83778	ascii	OnSetCameraRotationSpeedRatio
+0x00C83888	ascii	OnChangeCameraUp
+0x00C839F0	ascii	OnEnableFixCamera
+0x00C83A08	ascii	OnEnableHoldCamera
+0x00C83A20	ascii	OnDisableHoldCamera
+0x00C83A60	ascii	OnEnableLookAtCamera
+0x00C83A80	ascii	OnDisableLookAtCamera
+0x00C83AB0	ascii	OnSetCameraOffset
+0x00C83AE0	ascii	OnResetCameraOffset
+0x00C83B90	ascii	OnEnterCameraPostRender
+0x00C83DE8	ascii	OnSetRemoteCameraMode
+0x00C83EF0	ascii	OnSetLocalCameraMode
+0x00C83FC8	ascii	OnSetGodCameraMode
+0x00C84050	ascii	OnSetHomelandCameraMode
+0x00C84090	ascii	OnSetCameraDeltaHeight
+0x00C840C0	ascii	OnEnableTelescopeCamera
+0x00C840F0	ascii	OnDisableTelescopeCamera
+0x00C84110	ascii	OnDisableCameraZoom
+0x00C84128	ascii	OnSetCameraHeight
+0x00C84140	ascii	OnForceSetCameraParam
+0x00C841E8	ascii	EnableCameraTrackBlur
+0x00C84968	ascii	OnEnableAirCombatCamera
+0x00C84A50	ascii	OnDisableSkillMoveCamera
+0x00C84AD0	ascii	OnCameraShake
+0x00C84AE0	ascii	OnSetCameraShake
+0x00C84AF8	ascii	OnSetCameraBreath
+0x00C84B10	ascii	pCharacterCamera
+0x00C84D98	ascii	OnCameraDynamicFollow
+0x00C84E00	ascii	OnSetGodCameraSmooth
+0x00C84E20	ascii	OnSetHomelandCameraMoveSpeed
+0x00C84E58	ascii	OnEnableHomelandCameraObserveMode
+0x00C84E80	ascii	OnSetHomelandCameraOffset
+0x00C84EC8	ascii	OnSetHomelandCameraDirOffset
+0x00C84EF0	ascii	OnSetHomelandCameraLOLMode
+0x00C850C8	ascii	OnEnableAdjustCameraByMove
+0x00C85110	ascii	OnSetCharacterCameraLockCtrl
+0x00C85138	ascii	OnSetCharacterCameraLockTarget
+0x00C85160	ascii	OnEnableCameraFocusDiverge
+0x00C851B8	ascii	xt_OnEnableCameraFocusDiverge %s
+0x00C85740	ascii	-camera smooth
+0x00C85758	ascii	-set camera mode
+0x00C85770	ascii	-set camera 2nd mode
+0x00C857D8	ascii	-set camera up down speed
+0x00C85800	ascii	-set camera lookat pos
+0x00C85890	ascii	-force update camera
+0x00C858B0	ascii	-set force update camera
+0x00C85BD8	ascii	OnDisableAniTagCameraShake
+0x00C85BF8	ascii	OnDisableAniTagCameraAngle
+0x00C86A08	ascii	play scene camera ani
+0x00C86A28	ascii	play camera ani
+0x00C86AB0	ascii	pause movie camera
+0x00C86AC8	ascii	clear pause movie camera flag
+0x00C86AF0	ascii	enable adjust camera by move
+0x00C86B18	ascii	set character camera lock ctrl
+0x00C86B40	ascii	set character camera lock target
+0x00C86B68	ascii	set character camera pitch limit
+0x00C86B90	ascii	enable camera focus diverge
+0x00C86DA8	ascii	open sprint camera
+0x00C86DC0	ascii	close sprint camera
+0x00C86DD8	ascii	enable camera animation
+0x00C86DF8	ascii	disable camera animation
+0x00C86E18	ascii	set camera rotation speed ratio
+0x00C86E40	ascii	enable dynamic follow camera
+0x00C86E68	ascii	disable dynamic follow camera
+0x00C86F78	ascii	open camera offset
+0x00C86F90	ascii	close camera offset
+0x00C86FC0	ascii	change camera up
+0x00C87140	ascii	enable hold camera
+0x00C87158	ascii	disable hold camera
+0x00C87170	ascii	enable fix camera
+0x00C87188	ascii	enable look at camera
+0x00C871A8	ascii	disable look at camera
+0x00C87248	ascii	enter camera post render
+0x00C87268	ascii	leave camera post render
+0x00C87288	ascii	set camera offset
+0x00C872A0	ascii	reset camera offset
+0x00C87420	ascii	set remote camera mode
+0x00C87440	ascii	set local camera mode
+0x00C87460	ascii	set god camera mode
+0x00C87478	ascii	set homeland camera mode
+0x00C874B0	ascii	reset camera mode
+0x00C874E8	ascii	set camera delat height
+0x00C87508	ascii	enable telescope camera
+0x00C87528	ascii	disable telescope camera
+0x00C87548	ascii	disable camera zoom
+0x00C87560	ascii	set camera height
+0x00C87578	ascii	force set camera param
+0x00C87598	ascii	enable camera track blur
+0x00C875B8	ascii	enable camera frustum clip
+0x00C87CC0	ascii	enable aircombat camera
+0x00C87D60	ascii	disable skill move camera
+0x00C87DA0	ascii	camera shake
+0x00C87DB0	ascii	set camera shake
+0x00C87DC8	ascii	set camera breath
+0x00C87FA8	ascii	set god camera smooth
+0x00C87FC8	ascii	camera dynamic follow
+0x00C87FE8	ascii	set homeland camera move speed
+0x00C88010	ascii	enable homeland camera observe mode
+0x00C88040	ascii	set homeland camera offset
+0x00C88060	ascii	set homeland camera dir offset
+0x00C88088	ascii	set homeland camera lol mode
+0x00C88710	ascii	DisableAniTagCameraShake
+0x00C88730	ascii	DisableAniTagCameraAngle
+0x00C88950	ascii	ob -camera params
+0x00C88968	ascii	ob -camera move speed
+0x00C88A50	ascii	replay -remote camera
+0x00C88A70	ascii	replay -reset camera
+0x00C88AE8	ascii	replay -auto switch camera
+0x00C88C30	ascii	enable animation camera
+0x00C894D8	ascii	set camera dead zone smooth object
+0x00C89840	ascii	camera mode
+0x00C8C4B8	ascii	CameraMovePitchApplyAngle
+0x00C8C4D8	ascii	CameraMovePitchSmoothTime
+0x00C8C4F8	ascii	CameraMovePitchAdjustPitch
+0x00C8C518	ascii	CameraMovePitchAdjustMaxPitch
+0x00C8C540	ascii	CameraMovePitchApplyMaxPitch
+0x00C8C568	ascii	CameraAdjustYawWhenMoveTurn
+0x00C8C590	ascii	CameraAdjustYawWhenMoveTurnDisableAngle
+0x00C8C5C0	ascii	CameraMovePitchApplyTimeInterval
+0x00C91A80	ascii	InitializeCamera()
+0x00C91B68	ascii	RLDataLayer::InitializeCamera
+0x00C91B90	ascii	m_tabCamera
+0x00C9C538	ascii	CameraComponent::OnAttach
+0x00C9C558	ascii	CameraComponent::Enable
+0x00C9C588	ascii	CameraComponent::OnPositionChanged
+0x00C9C5B8	ascii	CameraComponent::OnRotationChanged
+0x00C9C5E8	ascii	CameraComponent::AttachCamera
+0x00C9C610	ascii	!m_piCamera
+0x00C9C630	ascii	piCamera
+0x00C9C860	ascii	CameraComponent
+0x00C9C878	ascii	CameraComponent::LuaEnable
+0x00C9C898	ascii	CameraComponent::LuaGetPosition
+0x00C9C8C0	ascii	CameraComponent::LuaGetLookAt
+0x00C9E190	ascii	KRLDummy::AddCamera
+0x00C9E1A8	ascii	m_piComCamera
+0x00C9E1B8	ascii	m_piComCamera->OnAttach(this)
+0x00C9E1E0	ascii	KRLDummy::GetCamera
+0x00C9E1F8	ascii	KRLDummy::RemoveCamera
+0x00C9E900	ascii	GetCamera
+0x00C9EBB8	ascii	KRLDummy::LuaGetCamera
+0x00CA0BA8	ascii	CheckReferenceCameraValid()
+0x00CA0CE0	ascii	nCameraCount > 0 && nCameraCount <= _countof(sRefCameraParam.arrCamera)
+0x00CA0D38	ascii	m_dwReferenceCameraID
+0x00CA0EA8	ascii	KRLIllusionVideoMgr::CheckReferenceCameraValid
+0x00CA1858	ascii	ApplyMoveCamera
+0x00CA1870	ascii	pCameraCommonInfo
+0x00CA18B0	ascii	UnApplyMoveCamera
+0x00CA18C8	ascii	ApplyShakeCamera
+0x00CA2F48	ascii	KRLMovieObjectAnimation::StopReferenceCameraAni
+0x00CA3398	ascii	KRLReferenceCameraAni::OnSequencePlotFinish
+0x00CA33D0	ascii	KRLReferenceCameraAni::OnMovieSequenceLoadFinish
+0x00CA3410	ascii	KRLReferenceCameraAni::Init
+0x00CA3438	ascii	KRLReferenceCameraAni::Play
+0x00CA3480	ascii	KRLReferenceCameraAni::Pause
+0x00CA34E0	ascii	KRLReferenceCameraAni::UnLoadCameraAni
+0x00CA3510	ascii	KRLReferenceCameraAni::LoadCameraAni
+0x00CA3540	ascii	rsParam.nCameraCount > 0 && rsParam.nCameraCount <= _countof(rsParam.arrCamera)
+0x00CA35A0	ascii	Reference Camera FileName Is Null, DataType(%d), ID(%d)
+0x00CA3608	ascii	KRLReferenceCameraAni::PlayCameraAni
+0x00CA3638	ascii	m_eState == erlRefCameraState_LoadFinish
+0x00CA36B0	ascii	[KRLReferenceCameraAni]PlayObjPlot bBind = %d, vPos = (%f, %f, %f), vScale = (%f, %f, %f), qRot = (%f, %f, %f, %f)
+0x00CA3740	ascii	KRLReferenceCameraAni::SyncCamera
+0x00CA3768	ascii	pi3DCamera
+0x00CA3778	ascii	KRLReferenceCameraAni::GetTotalTime
+0x00CA7018	ascii	KRLRushFullScreenSfx::CheckCamera
+0x00CA9E30	ascii	m_szCameraBone
+0x00CAE6B8	ascii	KRLCharacter::GetAnimationCameraModel
+0x00CAEDD8	ascii	m_Interaction.szCameraBone
+0x00CAF100	ascii	CameraAdjust
+0x00CAF530	ascii	KRLCharacter::SetFreeze Get m_CameraAniPauseControl.vObjectPosition From [Bip01 Head] Fail!
+0x00CB0120	ascii	KRLCharacter::UpdateAnimationEnableCameraFollow
+0x00CB3328	ascii	KRLLocalCharacter::UpdateCameraUp
+0x00CB33A0	ascii	KRLLocalCharacter::UpdateCameraTrackBlur
+0x00CB6510	ascii	KRLRide::GetCameraAdjust
+0x00CB9A30	ascii	KRLScene::InitCamera
+0x00CB9A50	ascii	pCameraEntity
+0x00CB9A60	ascii	KRLScene::UpdateCamera
+0x00CB9BC8	ascii	KRLScene::PlayReferenceCameraAni
+0x00CB9BF0	ascii	KRLScene::StopReferenceCameraAni
+0x00CB9C18	ascii	KRLScene::PauseReferenceCameraAni
+0x00CB9D00	ascii	KRLScene::PlayCameraAni
+0x00CBBB90	ascii	KRLCameraAni::OnActionFinish
+0x00CBBBD8	ascii	KRLCameraAni::OnMotionNotify
+0x00CBBC20	ascii	KRLCameraAni::Init
+0x00CBBC38	ascii	KRLCameraAni::PlayAction
+0x00CBBC78	ascii	KRLCameraAni::RestCamera
+0x00CBBC98	ascii	KRLCameraAni::EnableCharacterCamera
+0x00CBBCC8	ascii	KRLCameraAni::Play
+0x00CBBDC0	ascii	pMovieCamera
+0x00CBBDD0	ascii	KRLCameraAni::Pause
+0x00CBBDE8	ascii	KRLCameraAni::UpdateCameraParam
+0x00CBBE10	ascii	KRLCameraAni::BeginPlay
+0x00CBBE30	ascii	KRLCameraAni::SyncCamera
+0x00CBE3B0	ascii	LuaGetCurrentCameraDirection
+0x00CBE7E0	ascii	GetCurrentCameraDirection
+0x00CBEE10	ascii	Luna<class CameraComponent>::index
+0x00CBEE40	ascii	Luna<class CameraComponent>::newindex
+0x00CBF110	ascii	Luna<class CameraComponent>::GetFunArgs
+0x00CC2248	ascii	KGameWorldHandler::ZoomCamera
+0x00CC2270	ascii	KGameWorldHandler::ZoomCharacterCamera
+0x00CC22A0	ascii	KGameWorldHandler::BeginDragCamera
+0x00CC22D0	ascii	KGameWorldHandler::EndDragCamera
+0x00CC22F8	ascii	KGameWorldHandler::SetCameraDragParams
+0x00CC2328	ascii	KGameWorldHandler::SetCameraParams
+0x00CC2358	ascii	KGameWorldHandler::GetCameraParams
+0x00CC2388	ascii	[RL] GetCameraParams(%u) failed.
+0x00CC23B0	ascii	KGameWorldHandler::SetCameraDragSpeed
+0x00CC23E0	ascii	KGameWorldHandler::SetCameraMaxDistance
+0x00CC2410	ascii	KGameWorldHandler::SetCameraSpringResetSpeed
+0x00CC2448	ascii	KGameWorldHandler::SetCameraResetSpeed
+0x00CC2478	ascii	KGameWorldHandler::SetCameraResetMode
+0x00CC24A8	ascii	KGameWorldHandler::SetCameraRTParams
+0x00CC24D8	ascii	KGameWorldHandler::GetCameraRTParams
+0x00CC2508	ascii	KGameWorldHandler::EnableControlCamera
+0x00CC2538	ascii	KGameWorldHandler::ToggleControlCamera
+0x00CC2568	ascii	KGameWorldHandler::EnableControlCameraOnly
+0x00CC25A0	ascii	KGameWorldHandler::UpdateEnableControlCamera
+0x00CC25D8	ascii	KGameWorldHandler::ForceResetCamera
+0x00CC2658	ascii	KGameWorldHandler::GetCameraYawPitchRoll
+0x00CC2690	ascii	KGameWorldHandler::SwitchCameraMode
+0x00CC3DA0	ascii	KGameWorldHandler::GetCameraInitParams
+0x00CC3DD0	ascii	pnCameraFollowMode
+0x00CC3DE8	ascii	pfCameraDragSpeed
+0x00CC3E00	ascii	pfCameraMaxDistance
+0x00CC3E18	ascii	pfCameraResetSpeed
+0x00CC4048	ascii	KGameWorldHandler::OnPlayCameraAnimation
+0x00CC4D80	ascii	KGameWorldHandler::OnReviseCameraYaw
+0x00CC4E20	ascii	BeginSwitchControllerCameraID
+0x00CC4E80	ascii	EndSwitchControllerCameraID
+0x00CC4EA8	ascii	KGameWorldHandler::OnSetRemoteCameraMode
+0x00CC4EE0	ascii	KGameWorldHandler::OnSetGodCameraMode
+0x00CC4F10	ascii	KGameWorldHandler::OnResetCameraMode
+0x00CC56B8	ascii	KGameWorldHandler::OnGetCameraInfo
+0x00CC8460	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleCameraAnimation:1654
+0x00CC8940	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleZoomCamera:1882
+0x00CC8A10	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleZoomCharacterCamera:1901
+0x00CC8AF0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetCameraDragSpeed:1920
+0x00CC8BD0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetCameraMaxDistance:1939
+0x00CC8CB0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetCameraSpringResetSpeed:1958
+0x00CC8D90	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetCameraParam:2013
+0x00CC8E60	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetCameraRTParam:2032
+0x00CC8F30	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleEnableControlCamera:2051
+0x00CC9010	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleToggleControlCamera:2077
+0x00CC90F0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetCameraView:2096
+0x00CC91C0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleTureCameraToFaceDirection:2115
+0x00CC92A0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSwitchCameraMode:2134
+0x00CCC458	ascii	krlEventAdaptor::HandlePlayReferenceCameraAni
+0x00CCC490	ascii	krlEventAdaptor::HandleStopReferenceCameraAni
+0x00CCC4C8	ascii	krlEventAdaptor::HandlePauseReferenceCameraAni
+0x00CCDDA0	ascii	CameraSpeedRatio
+0x00CCDDB8	ascii	CameraRideYawOffset
+0x00CCDE68	ascii	CameraFollowMode
+0x00CCDE80	ascii	CameraDragSpeed
+0x00CCDE98	ascii	CameraMaxDistance
+0x00CCDEB0	ascii	CameraResetSpeed
+0x00CCDEC8	ascii	CameraPitchSpeed
+0x00CCE098	ascii	SprintCameraAngle
+0x00CCE0B0	ascii	SprintCameraPitch
+0x00CCE0C8	ascii	SprintCameraMaxDistance
+0x00CCE0E8	ascii	SprintCameraSmoothTime
+0x00CCE108	ascii	SprintCameraSpringTime
+0x00CCE138	ascii	SprintCameraOffset
+0x00CCE150	ascii	SprintCameraOffsetSmoothTime
+0x00CCE178	ascii	CarrierCameraPitch
+0x00CCE190	ascii	CarrierCameraYaw
+0x00CCE1A8	ascii	CarrierCameraMaxDistance
+0x00CCE1C8	ascii	CarrierCameraDeltaHeight
+0x00CCE200	ascii	SprintCameraMaxOffset
+0x00CCE428	ascii	SprintCameraMaxDragSpeed
+0x00CCE448	ascii	SprintCameraMinTrackBackSpeed
+0x00CCE470	ascii	SprintCameraMaxTrackBackSpeed
+0x00CCE498	ascii	SprintCameraTrackBackSpeedSlope
+0x00CCE4C0	ascii	DiveCameraRollRange
+0x00CCE4D8	ascii	DiveCameraRollTime
+0x00CCE7D0	ascii	AirCombatToSkillMoveCameraDis
+0x00CCE848	ascii	CharacterCameraSmoothTime
+0x00CCE888	ascii	UpdateAnimationCameraDistance
+0x00CCEAD0	ascii	CameraFollowCharacterAction_MinDis
+0x00CCEB00	ascii	CameraFollowCharacterAction_MaxDis
+0x00CCEB30	ascii	CameraFollowCharacterAction_Speed
+0x00CCEE48	ascii	KTableList::GetCameraShakeConfig
+0x00CCF760	ascii	SkillMoveCamera
+0x00CCFA68	ascii	SceneAnimationCamera
+0x00CCFBB8	ascii	EmotionActionSmoothCamera
+0x00CCFCC0	ascii	NpcDialogSceneCameraAni
+0x00CD0820	ascii	CameraAni
+0x00CD0A48	ascii	PlayerRushCamera
+0x00CD0E98	ascii	AnimationCameraModel
+0x00CD1150	ascii	PlayerAnimationEnableCameraFollow
+0x00CD1B80	ascii	CarrierCamera
+0x00CD1B90	ascii	m_pCarrierCameraFile
+0x00CD1BB0	ascii	m_tabCarrierCamera
+0x00CD1F40	ascii	GliderCamera
+0x00CD1F50	ascii	m_pGliderCamera
+0x00CD1F78	ascii	NpcDialogCamera
+0x00CD1F90	ascii	m_pNpcDialogCamera
+0x00CD1FA8	ascii	m_tabNpcDialogCamera
+0x00CD1FC8	ascii	AirCombatCamera
+0x00CD1FE0	ascii	m_pAirCombatCamera
+0x00CD1FF8	ascii	m_tabAirCombatCamera
+0x00CD21F8	ascii	CameraPostRender
+0x00CD2210	ascii	m_pCameraPostRender
+0x00CD2228	ascii	m_tabCameraPostRender
+0x00CD2288	ascii	CameraCommon
+0x00CD2298	ascii	m_pCameraCommonConfig
+0x00CD22B8	ascii	m_tabCameraCommonConfig
+0x00CD22D8	ascii	DynamicFollowCamera
+0x00CD22F0	ascii	m_pDynamicFollowCamera
+0x00CD2310	ascii	m_tabDynamicFollowCamera
+0x00CD2910	ascii	CameraShake
+0x00CD2920	ascii	m_pCameraShake
+0x00CD2938	ascii	m_tabCameraShake
+0x00CD4C70	ascii	CameraConfig
+0x00CD4C80	ascii	KTableList::LoadCameraConfigFile
+0x00CD4CD0	ascii	nValue == _countof(g_szCameraObjectPositionOffsetFiles)
+0x00CD4D18	ascii	CameraLockTargetConfig
+0x00CD4D38	ascii	[rl] load CameraLockTargetConfig failed, file:%s
+0x00CD4D78	ascii	CameraDirectory
+0x00CD4D90	ascii	KTableList::LoadCameraAllTable
+0x00CD4EB0	ascii	CameraDistance
+0x00CD4EC8	ascii	KTableList::GetGliderCameraTable
+0x00CD4FC8	ascii	KTableList::GetCameraPostRender
+0x00CD5838	ascii	CameraSmooth
+0x00CD5848	ascii	CameraSmoothTime
+0x00CD7F90	ascii	bDragCamera
+0x00CE6BA8	ascii	CameraPostion
+0x00CE6BC8	ascii	CameraLookAt
+0x00CE6DA8	ascii	KRLHomelandScene::InitCamera
+0x00CE6DF8	ascii	p3DCamera
+0x00CE6E08	ascii	KRLHomelandScene::UninitCamera
+0x00D089F0	ascii	AdjustCharacterCameraObjectY
+0x00D08A28	ascii	AdjustCharacterCameraPosition
+0x00D08A50	ascii	pCameraCommonInfo->p3DCamera
+0x00D08A78	ascii	pCameraCommonInfo->p3DScene
+0x00D08AA0	ascii	pvCamera
+0x00D08AD0	ascii	tabAirCombatCamera
+0x00D08AE8	ascii	InitCameraDistance
+0x00D08BD8	ascii	SmoothToAirCombatCamera
+0x00D08C30	ascii	GetAirCombatCameraOriginalParams
+0x00D08C90	ascii	EnableFixCamera
+0x00D08CA8	ascii	pCameraModeEntity
+0x00D08CC0	ascii	LockCameraMode
+0x00D08CF0	ascii	LeaveSkillMoveCamera
+0x00D08D10	ascii	pCameraController
+0x00D08D28	ascii	pSkillMoveCamera
+0x00D08D40	ascii	pSprintCamera
+0x00D08D50	ascii	camera controller
+0x00D08DA0	ascii	StartScreenBaseCameraShake
+0x00D08DC0	ascii	StopCameraShake
+0x00D08DD8	ascii	SetCameraShake
+0x00D08DF0	ascii	pShakeCameraConfig
+0x00D08EB0	ascii	SetCameraFollowCharacterAction
+0x00D08EF0	ascii	CameraHeight
+0x00D08F00	ascii	CameraMaxDeltaYaw
+0x00D08F18	ascii	CameraMaxDeltaPitch
+0x00D08F40	ascii	pCarrierCameraController->fMaxDragSpeed > 0.0f
+0x00D08F88	ascii	pCarrierCameraController->fRotationSpeed > 0.0f
+0x00D09018	ascii	pCarrierCameraController->fSmoothTime > 0.0f
+0x00D09060	ascii	TurnCameraYawToObjectYaw
+0x00D09080	ascii	InitCameraPitch
+0x00D090D8	ascii	InitCameraAngle
+0x00D090F0	ascii	SmoothToCarrierCamera
+0x00D09298	ascii	pCharacterCamera->pRLRemoteCameraCharacter
+0x00D09308	ascii	SetEnableRandomCameraShake
+0x00D09350	ascii	CameraBreathAmplitudeUp
+0x00D09370	ascii	CameraBreathAmplitudeRight
+0x00D09390	ascii	CameraBreathAmplitudeForward
+0x00D093B8	ascii	CameraBreathSpeedMin
+0x00D093D8	ascii	CameraBreathSpeedMax
+0x00D09408	ascii	SetCharacterCameraLockTarget invalid config ID:%d
+0x00D09B08	ascii	FinalizeCamera
+0x00D09B38	ascii	InitializeCameraComponent
+0x00D09B58	ascii	InitializeCameraMode
+0x00D09B78	ascii	InitializeCameraController
+0x00D09B98	ascii	pCameraControllerEntity
+0x00D09BB8	ascii	InitializeCamera
+0x00D0AC10	ascii	pObjectController && pCameraMovement
+0x00D0ACE0	ascii	BeginDragCamera
+0x00D0AD10	ascii	EndDragCamera
+0x00D0AD20	ascii	HasDraggedCamera
+0x00D0AEA0	ascii	HoldCamera
+0x00D0AEC8	ascii	SmoothToDynamicFollowCamera
+0x00D0AEF0	ascii	IsInDynamicFollowCamera
+0x00D0B358	ascii	[FocusFace] Leave by scroll camera
+0x00D0B398	ascii	CameraLight
+0x00D0B498	ascii	bEnableCameraLight
+0x00D0B4B0	ascii	bFirstCameraSpotLight
+0x00D0B4D0	ascii	bFirstCameraCastShadow
+0x00D0B4F0	ascii	bFirstCameraCastOITShadow
+0x00D0B510	ascii	bSecondCameraSpotLight
+0x00D0B530	ascii	bSecondCameraCastShadow
+0x00D0B550	ascii	bSecondCameraCastOITShadow
+0x00D0B5B0	ascii	fMainCameraLightIntensity
+0x00D0B5D0	ascii	fMainCameraLightRadius
+0x00D0B5F0	ascii	fMainCameraLightLength
+0x00D0B610	ascii	fMainCameraLightRadialAttenuationStart
+0x00D0B640	ascii	fMainCameraLightAxialAttenuationStart
+0x00D0B670	ascii	fMainCameraLightBaseColor
+0x00D0BDE0	ascii	GetCurrentCameraAngle
+0x00D0BE40	ascii	tabGliderCamera
+0x00D0BE58	ascii	InitCameraAngleEnable
+0x00D0BE78	ascii	InitCameraDistanceEnable
+0x00D0BF08	ascii	SmoothToGliderCamera
+0x00D0BFF0	ascii	UpdateGliderCameraYaw
+0x00D0C0B0	ascii	GetCameraEntity
+0x00D0C0E8	ascii	pCameraMovement
+0x00D0C118	ascii	InitMainCamera
+0x00D0C130	ascii	InitRLCamera
+0x00D0C140	ascii	InitCharacterCameraCharacter
+0x00D0C167	ascii	<InitCharacterCamera
+0x00D0C180	ascii	pCharacterCamera->pRLLocalCharacter
+0x00D0C1B0	ascii	pCharacterCamera->pRLArrowsActor
+0x00D0C350	ascii	CameraPositionOffset
+0x00D0C398	ascii	CameraAdjustY
+0x00D0CCB0	ascii	ResetCharacterCamera
+0x00D0D248	ascii	AdjustCameraForSlope
+0x00D0D268	ascii	AdjustCameraFine
+0x00D0D298	ascii	UpdateCameraFollowAction
+0x00D0D2B8	ascii	SetCharacterCameraPosition
+0x00D0D2D8	ascii	pSprintCameraController
+0x00D0D2F8	ascii	pCarrierCameraController
+0x00D0D318	ascii	pMovePitchCameraController
+0x00D0D338	ascii	pFocusFaceCameraContorller
+0x00D0D358	ascii	pDynamicFollowCameraController
+0x00D0D388	ascii	SetGodCameraPosition
+0x00D0D3C0	ascii	SetHomelandCameraPosition
+0x00D0D528	ascii	SuspendCameraRollRange
+0x00D0D548	ascii	SuspendCameraRollTime
+0x00D0D568	ascii	SuspendCameraRollResetTime
+0x00D0D588	ascii	IsSuspendCameraRoll
+0x00D0D5A0	ascii	pGodCamera
+0x00D0D5B0	ascii	pHomelandCamera
+0x00D0D5E8	ascii	GetTelescopeCameraOriginalParams
+0x00D0D648	ascii	TrackCameraFrameMove
+0x00D0D730	ascii	DiveCameraMaxDragSpeed
+0x00D0D760	ascii	SmoothToDiveCamera
+0x00D0D788	ascii	SuspendCameraMaxDragSpeed
+0x00D0D800	ascii	pNPCDialogCameraController
+0x00D0D998	ascii	tabNpcDialogCamera
+0x00D0D9B0	ascii	InitCameraEyeScaleEnable
+0x00D0DA48	ascii	PlaySceneCameraAni
+0x00D0DA60	ascii	SmoothToNpcDialogCamera
+0x00D0DA98	ascii	pcSkillMoveCameraParam
+0x00D0DAE8	ascii	SmoothToTelescopeCamera
+0x00D0DB08	ascii	pDynamicFollowCameraCtrl
+0x00D0DB28	ascii	pCameraCtrlHelper
+0x00D0DB40	ascii	UpdateCameraController
+0x00D0DB60	ascii	pTrackCamera
+0x00D0DB70	ascii	pGliderCameraController
+0x00D0DB90	ascii	pDiveCameraController
+0x00D0DBB0	ascii	pSuspendCameraController
+0x00D0DBD0	ascii	pAirCombatCameraController
+0x00D0DBF0	ascii	pSkillMoveCameraController
+0x00D0DC10	ascii	pTelescopeCameraController
+0x00D0DC40	ascii	UpdateCharacterCamera
+0x00D0DCC0	ascii	ClampMouseForCarrierCamera
+0x00D0DD08	ascii	ClampMouseForSprintCamera
+0x00D0DD28	ascii	ClampMouseForGliderCamera
+0x00D0DD78	ascii	UpdateCharacterCameraControl
+0x00D0DDE8	ascii	NeedResetCamera
+0x00D0DE18	ascii	PostUpdateCharacterCameraControl
+0x00D0DEF0	ascii	UpdateGodCameraControl
+0x00D0DF10	ascii	UpdateGodCamera
+0x00D0DF28	ascii	MouseMoveCamera
+0x00D0DF40	ascii	UpdateHomelandCameraControl
+0x00D0DF68	ascii	UpdateHomelandCamera
+0x00D0DFD0	ascii	ZoomCharacterCamera_Step
+0x00D0DFF0	ascii	fMaxCameraDistance > 0.0f
+0x00D0E010	ascii	 Character Camera -> Zoom(%f, %f)
+0x00D0E098	ascii	ZoomHomelandCamera
+0x00D0E0B0	ascii	 Homeland Camera -> Zoom(%f, %f)
+0x00D0E0E0	ascii	FetchCameraMatrix
+0x00D0E100	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\Utility\UpdateCameraUtility.cpp,UpdateCamera:37
+0x00D0E1B0	ascii	UpdateCamera
+0x00D0E1C0	ascii	pCameraComponent
+0x00D0E1D8	ascii	Update3DCamera
+0x00D0E1F0	ascii	UpdateMainCamera
+0x00D0E208	ascii	SetCameraParam
+0x00D0E220	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\Utility\UpdateCameraUtility.cpp,UpdateRLCamera:201
+0x00D0E2D0	ascii	UpdateRLCamera
+0x00D0E400	ascii	GetCameraTransform
+0x00D0E438	ascii	FetchCameraTransform
+0x00D0E458	ascii	pCameraTransform
+0x00EAD9F8	ascii	.?AVCameraComponent@@
+0x00EAE3A8	ascii	.?AUBackupCameraState@?A0xe2f0a99f@@
+0x00EAE630	ascii	.?AU?$Variant@UBackupCameraState@?A0xe2f0a99f@@@_variant_internal@@
+0x00EAEBC8	ascii	.?AVKRLReferenceCameraAni@@
+0x00EB1A20	ascii	.?AVKRLCameraAni@@
+0x00EC1730	ascii	.?AVKRLCameraSystem@@
+0x00EC3218	ascii	.?AUKRLCameraComponent@@
+0x00EC3360	ascii	.?AUKRLCameraCommonInfoComponent@@
+0x00EC33A0	ascii	.?AUKRLCameraControllerHelperComponent@@
+0x00EC33E8	ascii	.?AUKRLCameraMovementControllerComponent@@
+0x00EC3430	ascii	.?AUKRLTrackCameraComponent@@
+0x00EC3468	ascii	.?AUKRLCharacterCameraComponent@@
+0x00EC34A8	ascii	.?AUKRLGodCameraComponent@@
+0x00EC34E0	ascii	.?AUKRLHomelandCameraComponent@@
+0x00EC3520	ascii	.?AUKRLAirCombatCameraControllerComponent@@
+0x00EC3568	ascii	.?AUKRLCarrierCameraControllerComponent@@
+0x00EC35B0	ascii	.?AUKRLDiveCameraControllerComponent@@
+0x00EC35F8	ascii	.?AUKRLGliderCameraControllerComponent@@
+0x00EC3640	ascii	.?AUKRLNPCDialogCameraControllerComponent@@
+0x00EC3688	ascii	.?AUKRLRushAniCameraControllerComponent@@
+0x00EC36D0	ascii	.?AUKRLSkillMoveCameraControllerComponent@@
+0x00EC3718	ascii	.?AUKRLSprintCameraControllerComponent@@
+0x00EC3760	ascii	.?AUKRLSuspendCameraControllerComponent@@
+0x00EC37A8	ascii	.?AUKRLTelescopeCameraControllerComponent@@
+0x00EC38B0	ascii	.?AUKRLMovePitchCameraControllerComponent@@
+0x00EC38F8	ascii	.?AUKRLFocusFaceCameraControllerComponent@@
+0x00EC3940	ascii	.?AUKRLDynamicFollowCameraControllerComponent@@
