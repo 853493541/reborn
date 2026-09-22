@@ -723,9 +723,11 @@ class AniPlayer(tk.Tk):
         self.vp_label = tk.Label(vp_bar, text="No effect loaded —", bg="#0A0E12", fg=ORANGE, font=("Sans", 9))
         self.vp_label.pack(side=tk.LEFT, padx=8, pady=4)
         for text_, cmd in (
+            ("风来吴山·红", self.play_flws_red),
             ("Reset", self.stop),
             ("Replay", self.play),
             ("Grid", self._toggle_grid),
+            ("Open 3D", self._open_fbx_external),
             ("Bones", lambda: None),
             ("Debug", lambda: None),
         ):
@@ -918,7 +920,10 @@ class AniPlayer(tk.Tk):
             frame.pack(fill=tk.BOTH, expand=True)
             frame.load_url(self._fbx_url)
             self._fbx_frame = frame
-            self.vp_label.configure(text=f"花萝 FBX · {self._fbx_url}")
+            self.vp_label.configure(text=f"花萝 FBX · external browser (see Open 3D)")
+            # TkinterWeb cannot run three.js WebGL — drive an external browser
+            # tab instead so the user actually sees the character.
+            self._open_fbx_external(quiet=True)
         except Exception as exc:
             # No embeddable webview — open external + keep status in matplotlib.
             import webbrowser
@@ -935,6 +940,50 @@ class AniPlayer(tk.Tk):
             self.vp_label.configure(text=f"花萝 FBX (external) · {self._fbx_url}")
 
 
+
+    def _open_fbx_external(self, quiet: bool = False) -> None:
+        """Open (or re-open) the Three.js viewport in the system browser.
+
+        The Tk embed cannot run WebGL, so the browser tab is the real stage.
+        Clip clicks publish ``runtime/nav.json``; that tab follows via pollNav.
+        """
+        url = getattr(self, "_fbx_url", None)
+        if not url:
+            return
+        try:
+            import webbrowser
+
+            webbrowser.open(url, new=2)
+        except Exception:
+            if not quiet and hasattr(self, "vp_label"):
+                self.vp_label.configure(text=f"Open in browser: {url}")
+            return
+        if hasattr(self, "vp_label"):
+            self.vp_label.configure(text="花萝 FBX · external browser tab · Open 3D")
+
+    def play_flws_red(self) -> None:
+        """One-click 风来吴山红色: red body clip + red PSS SFX, full timeline."""
+        from fbx_actor import CLIP_JSON_FLWS_CAST
+
+        if getattr(self, "_fbx_actor", None) is None:
+            return
+        if not CLIP_JSON_FLWS_CAST.is_file():
+            if hasattr(self, "meta"):
+                self.meta.configure(text=f"Missing {CLIP_JSON_FLWS_CAST.name}")
+            return
+        self._fbx_mixer_clip = str(CLIP_JSON_FLWS_CAST)
+        self._clip_path = CLIP_JSON_FLWS_CAST
+        self._nav_fbx_viewport(
+            clip_json=CLIP_JSON_FLWS_CAST,
+            t=None,
+            playing=True,
+            label="风来吴山·红色",
+        )
+        if hasattr(self, "vp_label"):
+            self.vp_label.configure(text="花萝 FBX · 风来吴山·红色 (body + SFX)")
+        if hasattr(self, "clip_hint"):
+            self.clip_hint.configure(text="风来吴山·红色  ·  body + SFX")
+        self._open_fbx_external(quiet=True)
 
     def _resolve_mixer_clip_json(self, path, row=None):
         """风来吴山·蓄力/释放 → MIN2 AnimationClip JSON; else None."""
@@ -998,7 +1047,11 @@ class AniPlayer(tk.Tk):
         return None
 
     def _nav_fbx_viewport(self, *, clip_fbx=None, clipFbx=None, clip_json=None, clipJson=None, t=None, playing: bool = False, label: str = "") -> None:
-        """Reload viewport URL for skin + clipFbx or MIN2 clip-JSON Mixer."""
+        """Reload viewport URL for skin + clipFbx or MIN2 clip-JSON Mixer.
+
+        Also publishes ``runtime/nav.json`` so an external browser tab follows
+        the Tk selection (the embedded webview cannot run WebGL).
+        """
         clip_fbx = clip_fbx if clip_fbx is not None else clipFbx
         clip_json = clip_json if clip_json is not None else clipJson
         actor = getattr(self, "_fbx_actor", None)
@@ -1020,6 +1073,12 @@ class AniPlayer(tk.Tk):
         try:
             if frame is not None and hasattr(frame, "load_url"):
                 frame.load_url(url)
+        except Exception:
+            pass
+        try:
+            from fbx_actor import publish_nav
+
+            publish_nav(url)
         except Exception:
             pass
         tag = Path(clip_fbx).name if clip_fbx else "bind"

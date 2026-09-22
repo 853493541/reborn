@@ -142,9 +142,8 @@ def load_mesh(path: str | Path) -> Jx3Mesh:
         raise ValueError(f"face index {faces.max()} >= vert count {num_verts}")
 
     if bone_off == 0 or bone_off >= len(data):
-        raise ValueError(
-            f"bone section missing/blocked: bone_off={bone_off} (expected after tris)"
-        )
+        # Static effect mesh (PSS `.Mesh`): HSEM geometry without a bone block.
+        return Jx3Mesh(path=path, positions=positions, faces=faces, bones=[])
 
     bone_count = struct.unpack_from("<I", data, bone_off)[0]
     off = bone_off + 4

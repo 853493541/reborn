@@ -1,7 +1,12 @@
 ﻿# Handoff — SFX / skill “animation” (UPDATED)
 
-**Updated:** 2026-09-21 ~11:33 PT  
+**Updated:** 2026-09-21  
 **Andy decision:** **Map-viewer is NO LONGER SFX reference** — FX there was wrong / not playable. Need a **new** path to how **game** or **Movie Editor** plays SFX.
+
+> **HARD RULE (2026-09-21):** No map-viewer experience may be used at all —
+> no reference, no parsed JSON, no converted GLBs/placeholders, no ported
+> heuristics. Original raw game resources only. See `SFX_GROUND_RULES.md`.
+> The decoder must be our own, parsed from raw bytes + engine evidence.
 
 Vocabulary:
 - **Moves** = body loco/pose (already working in companion)

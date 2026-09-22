@@ -131,8 +131,13 @@ def web_viewport_url(
             q["clip"] = "/web/runtime/" + jp.name
         # The FLWS clip rows are the first real SFX vertical slice. The web
         # viewport keeps the existing body mixer and adds the PSS timeline
-        # against the same actor/transport.
+        # against the same actor/transport. Keep the character visible: with
+        # sfx=flws the page would otherwise default to the SFX-only box mode.
         q["sfx"] = "flws"
+        q["model"] = "fbx"
+        # The authored FLWS range is much wider than the close-up character
+        # framing; keep the full red ring in view for the focused FLWS path.
+        q["closeup"] = "0"
     # Freeze at t when scrubbing; omit t while playing so Mixer advances.
     if not playing and t is not None and t >= 0:
         q["t"] = f"{float(t):.4f}"
@@ -204,7 +209,23 @@ _POSE_JSON = WEB_DIR / "runtime" / "pose.json"
 _POSE_BY_NAME = ROOT / "viewport_fbx" / "runtime" / "pose_by_name.json"
 # web/fbx_viewport.html polls ./runtime/ under /web/ — twin required.
 _POSE_BY_NAME_WEB = WEB_DIR / "runtime" / "pose_by_name.json"
+_NAV_JSON = WEB_DIR / "runtime" / "nav.json"
+_NAV_JSON_VIEWPORT = ROOT / "viewport_fbx" / "runtime" / "nav.json"
 _pose_ver = 0
+_nav_ver = 0
+
+
+def publish_nav(url: str) -> None:
+    """Broadcast the current viewport URL so external browser tabs follow clip
+    selection made in the Tk app (embedded webview cannot run WebGL)."""
+    global _nav_ver
+    _nav_ver += 1
+    payload = json.dumps({"v": _nav_ver, "url": url}) + "\n"
+    for dest in (_NAV_JSON, _NAV_JSON_VIEWPORT):
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(".tmp")
+        tmp.write_text(payload, encoding="utf-8")
+        tmp.replace(dest)
 
 
 def mat3x4_to_mat4_colmajor(m12: Sequence[float]) -> List[float]:
@@ -319,6 +340,83 @@ class _RootHandler(SimpleHTTPRequestHandler):
                 self.send_response(500)
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            return
+        if parsed.path == "/api/sfx/asset":
+            try:
+                from urllib.parse import parse_qs
+
+                from pss_assets import load_asset_index
+
+                logical = (parse_qs(parsed.query).get("path") or [""])[0]
+                index = load_asset_index()
+                local = index.get(logical.replace("/", "\\").lower()) or index.get(logical.lower())
+                if not local or not Path(local).is_file():
+                    self.send_response(404)
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    return
+                data = Path(local).read_bytes()
+                ext = Path(local).suffix.lower()
+                mime = {
+                    ".dds": "image/vnd-ms.dds",
+                    ".tga": "image/x-tga",
+                    ".jsondef": "application/json",
+                    ".def": "application/json",
+                    ".mesh": "application/octet-stream",
+                }.get(ext, "application/octet-stream")
+                self.send_response(200)
+                self.send_header("Content-Type", mime)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+            except Exception as exc:
+                body = json.dumps({"ok": False, "error": str(exc)}).encode("utf-8")
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            return
+        if parsed.path == "/api/sfx/mesh":
+            try:
+                from urllib.parse import parse_qs
+
+                from mesh import load_mesh
+                from pss_assets import load_asset_index
+
+                logical = (parse_qs(parsed.query).get("path") or [""])[0]
+                index = load_asset_index()
+                local = index.get(logical.replace("/", "\\").lower()) or index.get(logical.lower())
+                if not local or not Path(local).is_file():
+                    self.send_response(404)
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    return
+                parsed_mesh = load_mesh(local)
+                payload = {
+                    "path": logical,
+                    "vertex_count": parsed_mesh.vertex_count,
+                    "face_count": parsed_mesh.face_count,
+                    "positions": parsed_mesh.positions.astype("float32").ravel().tolist(),
+                    "faces": parsed_mesh.faces.astype("uint32").ravel().tolist(),
+                }
+                body = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            except Exception as exc:
+                body = json.dumps({"ok": False, "error": str(exc)}).encode("utf-8")
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)

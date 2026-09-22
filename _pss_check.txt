@@ -1,0 +1,22 @@
+FILE proof\compare\sfx_pakv4_flws_red\c_藏剑风车范围_红色.pss v1 blocks=11 emitters=5
+  resources: textures=11 materials=3 meshes=0
+  [ 0] '光边暗色_模型粒子' kind=mesh dur=4800 delay=0 face='Follow Emitter (Mesh)' motion='Emitter' blend='InvsrcAlpha' shape='Emitter Shape Point' ptype='Particle Type Mesh'
+        material=data/source/other/HD特效/材质/标准单层.def
+        textures=[C_藏剑气场.tga, N_Noise01.tga, A_alpha14.tga]
+        modules=['Emitter Shape', 'Emitter Spawn', 'Particle LifeTime', 'Particle Material', 'Particle Type', 'Particle Size', 'Emitter Translation', 'Particle Color LifeTime']
+  [ 1] '光边1_模型粒子' kind=mesh dur=4800 delay=0 face='Follow Emitter (Mesh)' motion='Emitter' blend='InvsrcAlpha' shape='Emitter Shape Point' ptype='Particle Type Mesh'
+        material=data/source/other/HD特效/材质/标准单层.def
+        textures=[A_alpha010HD.tga, N_Noise01.tga, A_alpha14.tga]
+        modules=['Emitter Shape', 'Emitter Spawn', 'Particle LifeTime', 'Particle Material', 'Particle Type', 'Particle Size', 'Emitter Translation', 'Particle Color LifeTime']
+  [ 2] '光边2_模型粒子' kind=mesh dur=7200 delay=0 face='Follow Emitter (Mesh)' motion='System' blend='InvsrcAlpha' shape='Emitter Shape Point' ptype='Particle Type Mesh'
+        material=data/source/other/HD特效/材质/独立材质/消散_alpha.def
+        textures=[G_光亮.tga, Noise010HD.tga]
+        modules=['Emitter Shape', 'Emitter Spawn', 'Particle LifeTime', 'Particle Size', 'Particle Material', 'Particle Color LifeTime', 'Emitter Translation', 'Particle Type', 'Emitter Rotation']
+  [ 3] '光边3_模型粒子' kind=mesh dur=7200 delay=0 face='Follow Emitter (Mesh)' motion='System' blend='InvsrcAlpha' shape='Emitter Shape Point' ptype='Particle Type Mesh'
+        material=data/source/other/HD特效/材质/独立材质/消散_alpha.def
+        textures=[G_光亮.tga, Noise010HD.tga]
+        modules=['Emitter Shape', 'Emitter Spawn', 'Particle LifeTime', 'Particle Size', 'Particle Material', 'Particle Color LifeTime', 'Emitter Translation', 'Particle Type']
+  [ 4] '纹理_模型粒子' kind=mesh dur=4800 delay=0 face='Follow Emitter (Mesh)' motion='Emitter' blend='InvsrcAlpha' shape='Emitter Shape Point' ptype='Particle Type Mesh'
+        material=data/source/other/HD特效/材质/标准三层.def
+        textures=[C_藏剑气场.tga, N_Noise01.tga, A_alpha14.tga]
+        modules=['Emitter Shape', 'Emitter Spawn', 'Particle LifeTime', 'Particle Material', 'Particle Size', 'Emitter Translation', 'Particle Color LifeTime', 'Particle Type']
