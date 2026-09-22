@@ -134,7 +134,6 @@ All content paths were probed across 15 VFS prefixes (`settings\`, `沙漠风暴
 server-only. What the client knows is *which table* each container uses, not its rows.
 
 ## 5. Client interaction + protocol (visible)
-
 ```
 CanLoot / CanLootBoxItem / DoPickPrepare / OnBreakPickPrepare / OnBreakPicking
 PickUpItem / OverLootFrame / PlayerBeginPickAnimationID / PlayerEndPickAnimationID
@@ -161,14 +160,58 @@ To reconstruct actual spawn density/positions and drop rates, the remaining opti
 runtime: capture `OnSyncNewDoodad`/`OnSyncDoodadState` while playing the mode, or read
 the server's map logic if it is ever available. Static client mining is exhausted here.
 
-## 7. Reproduce
+## 7. Roll tables — the possible item pool (2026-09-21 update)
+
+**Question asked:** can we know the random roll table per loot container?
+
+| Question | Answer | Evidence |
+|---|---|---|
+| which drop table does a container use? | yes — 97 named tables (`沙漠风暴/equipment1.tab`, ...) | `mode_doodad_stats.txt` |
+| what rows/rates are inside a drop table? | **no** — not in the client | see below |
+| what items can appear in the mode? | **mostly yes** — 133 mode item scripts + consumables/specials | `mode_item_scripts.txt`, `mode_item_catalog.txt` |
+| exact per-container roll odds | **no** — server-side; reconstruct empirically | §5 protocol |
+
+Where the drop tables are not:
+
+- client PakV4: all 97 names × 15 VFS prefixes → 0 extracted
+- per-map logical files (`CustomObject.tab`, `AnchorPointList.tab`, `DoodadReviveList.tab`,
+  `MapReviveList.tab`, `.land`/`.pland`, `logicalTrigger.json`) → 0 extracted
+- launcher/editor caches: resolved with a path-hash PakV5 reader
+  (`jx3-web-map-viewer/tools/jx3-cache-reader.js`) — asset roots (`data/source/...`)
+  hit, but `settings/...` and `scripts/...` are **not present** in those caches
+
+What we *can* enumerate — the item pool:
+
+- **133 `scripts/skill/沙漠风暴/道具_*.lua`** item scripts (source, from the earlier
+  map-viewer extraction cache): 临时飞爪, 孤风飒踏冲刺, 乘黄之威, 九转归一, 云栖松,
+  人剑合一, 任驰骋, 伪九霄风雷, 傍花随柳, 凌然天风, 剑破虚空, 剑转流云, 化蝶, 十方玄机,
+  听风吹雪, 唐门车装填, 啸如虎, 夺命蛊, 如意法, 孤影化双, 守如山, 平沙落雁, 幻蛊,
+  应天授命, 徐如林, 心诤(4), 怖畏暗刑, 惊鸿游龙, 抢珠式, 振翅图南, 捉影式, 撼地, 散流霞, …
+  (full list in `mode_item_scripts.txt`; effect summaries in `mode_item_catalog.txt`)
+- 163 `绝境战场/绝境_*.lua` skill scripts (the mode's weapon/starter kits)
+- direct-pickup templates in `DoodadTemplate` (consumables, 匿踪宝盒, 觅踪窥影烟,
+  流萤魂返丹, 驼铃, 飞艇, 楼兰神兵匣, 马匪的货物, 钥匙开的宝藏, …)
+
+Note on script shipping: the current client pak stores some scripts as Lua 5.1 bytecode
+(`\x1bLuaQ`, e.g. `CheckTreasureBattleFieldMap.lua`), while the earlier extracted cache
+holds readable GBK source — both are useful, the cache gives the readable form.
+
+To recover **exact roll contents/rates**, capture the loot messages while playing:
+`OnOpenLootList` / `OnSyncLootList` carry the rolled result for each opened container,
+and `OnSyncDropItem` / `OnSyncNewDoodad` carry dynamic/dropped items. Logging container id
+(`DoodadTemplate` ID) + rolled items over many opens reconstructs the tables empirically.
+
+## 8. Reproduce
 
 ```powershell
 python tools\netcode\extract_pak_paths.py --list proof\netcode\mode_juejing\pak_candidates6.txt --out-dir proof\netcode\mode_juejing\pak_out6
 # then parse pak_out6\DoodadTemplate.tab (GBK TSV, MapName=沙漠风暴)
+python tools\netcode\mine_item_scripts.py    # item pool catalog from the extraction cache
 ```
 
 Evidence: `mode_doodads.txt` (435 mode rows), `mode_doodad_stats.txt`
 (kind/bar/prepare/frame stats + 97 drop tables + 25 script hooks),
 `doodad_tables_parse.txt` (DoodadClass + samples), `loot_symbols.txt` (loot protocol),
-`drop_paths.txt` / `drop_ctx.txt` (drop-file references).
+`drop_paths.txt` / `drop_ctx.txt` (drop-file references),
+`mode_item_scripts.txt` + `mode_item_catalog.txt` (item pool),
+`cache_files.txt` / `cacheout2/` probe notes (launcher-cache hash reader results).

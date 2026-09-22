@@ -1,0 +1,6 @@
+﻿TradeMallItemList.tab @0x0086DD90:  == 1 && "Get GroupID"..SkinInfo.dwGroupID <= MAX_SKILL_SKIN_GROUPID....P..@......F@....KTradeMallItemList::Init........TradeMallItemList.tab...KTradeMallItemList::LoadTradeMallItemList.......nRetCode > 0 && nRetCode < (int)sizeof(szFileNam
+
+WeaponInfo.tab @0x00813E50: o.nCollectionNeedMoney >= 0.....SubSetID........7daysRewards....PermanentCoin...Property........DyeingIDUpperLimit......WeaponInfo.tab..KExterior::LoadWeaponExteriorInfoTable..[Exterior] In table "%s", line:%d, ID:%u already exist!.[Exterio
+
+EquipBoxEnchantInfo.tab @0x0083EB50: ........KDiamondManager::Init...m_nMaxDiamondLevel > 0..m_nUpdateDiamondCostVigor >= 0..m_nStrengthEquipCostVigor >= 0..EquipBoxEnchantInfo.tab.KDiamondManager::LoadEquipBoxEnchantInfo....BoxID.......CAN_OPERATOR_EQUIP_BOX_POS(nBoxID)......
+

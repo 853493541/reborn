@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<PlotData MapId="677" MapPath="data\source\maps\榫欓棬瀵诲疂\榫欓棬瀵诲疂.jsonmap" MaxFrame="100" VERSION="2.0.0" CurElementsId="1" FrameRate="30">
+
+  <KPlotProperty EPT_Plot_EnableGameDOF="False" EPT_Plot_DisableGameBGMusic="False" EPT_Plot_EnableGameMusic="False" EPT_Plot_EnvConfig="" EPT_Plot_PlayerEnvConfig="" EPT_Plot_PostRenderConfig="" EPT_Plot_RCidx="" EPT_Plot_PlayerSpotLightEnvConfig="" EPT_Plot_EnvPresetConfig="" EPT_Plot_ResolutionX="3835" EPT_Plot_ResolutionY="1888" />
+
+  <Elements Id="0" ParentID="4294967295">
+
+    <KObject ObjectType="MOT_DIRECTOR" Name="MOT_DIRECTOR6" ResourceName="" TagName="">
+
+      <KProperty EPT_TEXT="Director01" EPT_RESOURCE_NAME="" EPT_Object_InitTrans="0.000,0.000,0.000,1.000,1.000,1.000,0.000,0.000,0.000" EPT_Object_Trans="0.000,0.000,0.000,1.000,1.000,1.000,0.000,0.000,0.000" EPT_Object_ElementID="0" />
+
+    </KObject>
+
+  </Elements>
+
+  <ListElementAniGroup ListElementAniGroupCount="1" ListElementAniGroupValue="0" />
+
+  <EditorData CameraPos="185149.300,16733.650,17114.940" CameraLookAt="101552.300,-59794.870,-39804.950" CameraRoll="0.000" />
+
+  <AllLayerInfo LayerCount="0" />
+
+</PlotData>

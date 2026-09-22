@@ -1,0 +1,6 @@
+﻿DoodadTemplate.tab @0x00803808
+bHideLevel......bCanShareLootListByQuestEvent...dwIdentityVisiableID....nMaxLifeCount...nMaxPosture.....nPostureReplenish...key.................................DoodadTemplate.tab......KDoodadTemplateList::Init.......nHeight >= 2....m_pDoodadTemplateList...[KDoodadTemplateList]Line:%d ID:(%d) in %s was repeated!........Invalid doodad template: %u.....KDoodadTemplateList::LoadFro
+
+DoodadClass.tab @0x00874510
+KNpcAdronTab::Init......MapLevel........Contribution....NpcClass.tab....KNpcClassList::Init.....m_NpcClassList..ClassName.......ClassDrop.......ParentClassID...DoodadClass.tab.KDoodadClassList::Init..m_DoodadClassList...Drop1...Count1..Drop2...Count2..Drop3...Count3..Drop4...Count4......OrderList.tab...%s/NpcOrder/%s..[KNpcOrderManager] Failed to open tab file: "%s"........KNpc
+
