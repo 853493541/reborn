@@ -174,7 +174,42 @@ implements the camera-track player:
 - used by `KRLCameraAni::SyncCamera` / `KRLReferenceCameraAni::SyncCamera`
   (`0x00CBBE30`, `0x00CA3740`) for cutscenes/replays
 
-## 6. Evidence index
+## 6. Follow formula recovered (second disasm pass)
+
+From `SetCharacterCameraPosition` (`0x180B0E820`, `proof/netcode/disasm/camera_set.txt`):
+
+1. **Anchor selection** (`0x180B0EE17`–`0x180B0EFDC`): the follow target position is
+   gathered in priority order — mount socket (`[pRLCharacter+0x3A08]`), custom
+   offsets (`+0xCF8`, `+0x3CA8 == 2` branch), character head/entity position
+   (`+0x3B9C`, `+0x38`), else the raw character position — into a 3-float anchor.
+2. **Desired offset** (`0x180B0F1EE`–`0x180B0F290`): the offset is the distance
+   vector rotated by yaw/pitch via sinf/cosf (`0x180BB83B5` / `0x180BB83BB`),
+   plus height and per-axis deltas `[r14+0xD0]` etc. Form:
+
+   ```
+   offset = (cos(P)*sin(Y)*d,   sin(P)*d + h,   cos(P)*cos(Y)*d)
+   ```
+
+3. **Exponential smoothing with dead zone** (`0x180B0F2BA`–`0x180B0F3A6`):
+   `dt = now - last` (global timestamps `[g+0x80] - [g+0x88]`), and per axis:
+
+   ```
+   delta = desired - current
+   if |delta| > eps and |delta| > |delta| * dt / SmoothTime:
+       current += delta * dt / SmoothTime
+   else:
+       current = desired
+   ```
+
+   Smoothed state persists in `[r14+0x1B8/0x1BC/0x1C0]`; final camera pos =
+   anchor + offset (`0x180B0F3AF`–`0x180B0F435`), then the engine camera is set
+   with look-at params (`call 0x180B10A70`, plus distance smoothing fields
+   `[r14+0x214..0x24C]` via `0x180B0E6E0`).
+
+Reference implementation of this exact model (all 9 smoke checks pass):
+`tools/netcode/reference/camera_model.py`, spec: `docs/netcode/REBORN_CAMERA_SPEC.md`.
+
+## 7. Evidence index
 
 | File | Content |
 |---|---|
