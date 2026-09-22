@@ -4,6 +4,10 @@ Branch: `spike/engine-host`
 Status: **Spike A PASSED (2026-09-21)** — engine host plays the real tani + SFX
 Evidence: `proof/engine_host_spike/spike_t{0,2000,4000,7000}ms.png`, recipe in
 `engine_host_spike/SPIKE_NOTES.md`
+Status: **Spike B PASSED (2026-09-21)** — engine host loads and renders the real
+龙门寻宝 map (separate app `map_spike_host.exe`; does not touch the actor spike)
+Evidence: `proof/map_spike/map_tour_00.png` + `map_tour_07.png`, recipe in
+`engine_host_spike/SPIKE_B_MAP_NOTES.md`
 
 ## Goal
 
@@ -43,6 +47,27 @@ KPlayerAniform.advTree_Ani_SelectedIndexChanged
 
 List source: `ResourcePack\tani.rt` / `foldertree.xml` (tani ID 5332,
 shell `Root\官方资源\主角模型\小女孩\动作\`).
+
+## Verified map (scene) display chain (Spike B, from IL)
+
+```
+MainForm::LoadMap(id, path)                     // 场景 menu entry
+  -> SceneForm::LoadScene(id, path)
+       m_Scene = new KGSceneCLR()               // bare instance, NO AttachScene
+       r = m_Scene.LoadMap(path, EditorConfig.EnableMapAysncLoad)   // r < 0 = fail
+       OnAfterLoadMap:
+         SetSceneFullLoading(true)              // only if config enabled
+         SetActiveEnvironment()
+         KMovieCore.set_MainScene(m_Scene)
+         AddView -> KGSceneCLR.AddOutputWindow  // MUST come after LoadMap
+```
+
+Map catalog: `ResourcePack\MapList.tab` (GBK TSV). 龙门寻宝 = ID 296 ->
+`data\source\maps\龙门寻宝\龙门寻宝.jsonmap` (client PakV4 VFS). Per-map bundle:
+`.jsonmap` (quality dirs + object counts), `.SRScene`, `.rcidx`, `_Setting.ini`,
+`systemCamera.json`, `environment.json`, `playerEnvironment.json`, plus
+`landscape/ foliage/ entities/ env_probe/ bd/` source folders in the pak.
+Parsers/extractors: `maplist.py`, `_probe_map_files.py`.
 
 Target content for the red FLWS tani:
 
