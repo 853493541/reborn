@@ -94,18 +94,27 @@ Env switches: `SPIKE_EDITOR=0` (skip editor), `SPIKE_SOUND=1` (init Wwise),
 
 | Input | ExecAction | Meaning |
 |---|---|---|
-| Left down | `ExecAction(19, 1, 0, lParam)` | LEFE_KEY_DOWN — drag-start reference (no rotation) |
+| Left down | `ExecAction(30, 1, 0, lParam)` | MOUSE_MOVE — sets engine input reference (no rotation) |
 | Left drag | `ExecAction(1, 1, 0, lParam)` | ROTATE_CAMERA — orbit / angle |
-| Left up | `ExecAction(19, 0, 0, lParam)` | drag release |
+| Left up | `ExecAction(30, 1, 0, lParam)` | keep reference at release point |
 | Wheel | `ExecAction(31, 1, delta>0?1:0, 1)` | MOUSE_WHEEL — zoom |
 | Q / E | `GetCameraPos` + `SetCameraPos(y +/- 50)` | camera height up / down |
 | F | `scene.FocusOnModel()` | focus actor |
 | R | `scene.ResetCameraPosLookAtUp()` | reset camera |
 
-**Drag-start matters:** sending the rotate action on mouse-down makes the camera jump
-(the engine uses the message position as a delta reference). MovieEditor sends
-`LEFE_KEY_DOWN (19)` on every mouse-down and only sends rotate on moves — verified
-that this removes the click jump.
+**Reference action (critical):** `MOUSE_MOVE (30)` updates the engine's stored input
+position; the next `ROTATE_CAMERA (1)` rotates by the delta from it. `LEFE_KEY_DOWN (19)`
+does **not** update the reference — using 19 on mouse-down makes the first move of every
+drag jump (verified: 12 px move → camera flew to (-122,211,37)). Probe (INPUTTEST=5):
+
+```
+A: 19,1 then 1,1 zero-delta -> JUMP (-80,210,-88)     <- 19 does not set reference
+B: 30,1 then 1,1 zero-delta -> unchanged              <- 30 sets reference
+   then 1,1 +10px -> (-5.8,59.4,-186.1)  small step   <- correct
+```
+
+So: send 30 on mouse-down (and at release), send 1 on moves. Verified live with two
+injected drags — no jump, smooth orbit.
 
 **Important:** `ROTATE_VIEW (4)` and `PAN_VIEW (3)` are **no-ops** in this host
 (they likely need editor selection/edit-state). `ROTATE_CAMERA (1)` is the working
