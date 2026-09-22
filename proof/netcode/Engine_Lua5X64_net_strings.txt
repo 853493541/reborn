@@ -1,0 +1,461 @@
+# Engine_Lua5X64.dll netcode keyword scan
+# source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\Engine_Lua5X64.dll
+
+## transport (20)
+0x0012CD20	ascii	Warning : compressbuffer overflow!
+0x001317F0	ascii	[NEWPACK_FILE]Elem file raw data CRC :%u, CRC In Header:%u , CompressedSize:%u , Flag:%u, Size:%u, TimeStamp:%u
+0x00132160	ascii	nRetCode && piDecompressor
+0x00132F30	ascii	KGPack_LzoDecompressor::Decompress
+0x00132FC0	ascii	KGPack_CreateDecompressor
+0x00132FE0	ascii	uCompressType
+0x00132FF0	ascii	ppiDecompressor
+0x00133000	ascii	pLzoDecompressor
+0x001361F3	ascii	UCL data compression library.
+0x0013E700	ascii	No getcpu support
+0x0013EBF0	ascii	<jemalloc>: perCPU arena getcpu() not available. Setting narenas to %u.
+0x00142118	ascii	sizeof(write_cb_packet_t) == sizeof(void *) * 2
+0x0016C5CC	ascii	GetCPInfoExW
+0x0016C984	ascii	SendMessageW
+0x0016FAC8	ascii	.?AVKG_FileEventListenerBase@@
+0x0016FAF8	ascii	.?AVKG_V3FileEventListener@@
+0x001709B0	ascii	.?AU?$_InitialTaskHandle@XV<lambda_d4a7214cc88d70657b4e86e0e5f49c98>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@
+0x00170A50	ascii	.?AU?$_PPLTaskHandle@EU?$_InitialTaskHandle@XV<lambda_d4a7214cc88d70657b4e86e0e5f49c98>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@U_TaskProcHandle@details@3@@details@Concurrency@@
+0x00170F98	ascii	.?AUIKGPack_Decompressor@@
+0x00170FC8	ascii	.?AVKGPack_LzoDecompressor@@
+
+## prediction_correction (321)
+0x000C7C15	ascii	PACK
+0x000C7D31	ascii	PACKH
+0x000D74D1	ascii	|$ PACK
+0x00107999	ascii	EGpackH
+0x0011E3BB	ascii	E7packH
+0x0012B438	ascii	KG_CreateExtendPackageFileManager
+0x0012B520	ascii	g_piExtendPackageManager
+0x0012BCC0	ascii	KGPack_LoadPackageFiles
+0x0012BCD8	ascii	cszPackageListFileName
+0x0012BCF0	ascii	nFilePriority > KGPACK_FILE_PRIORITY_INVALID
+0x0012BD20	ascii	nFilePriority < KGPACK_FILE_PRIORITY_COUNT
+0x0012BD50	ascii	nManagerType > KGPACK_MANAGER_TYPE_INVALID
+0x0012BD80	ascii	nManagerType < KGPACK_MANAGER_TYPE_COUNT
+0x0012BDB0	ascii	nRetCode && piPackageFileManager
+0x0012BE90	ascii	KGPackFile::Open
+0x0012BEC8	ascii	KGPackFile::Read
+0x0012BF08	ascii	KGPackFile::Seek
+0x0012BFA8	ascii	KGPackFileV3::Open
+0x0012BFC0	ascii	KGPackFileV3::Read
+0x0012C018	ascii	KGPackFileV3::Seek
+0x0012C140	ascii	KG_CreateFileMapping
+0x0012C158	ascii	g_pKGCreateFileMapping
+0x0012C170	ascii	KG_CreateInsidePackageFileManager
+0x0012C198	ascii	gs_PackFileV3Func.pKGCreateInsidePackageFileManager
+0x0012C1D0	ascii	KG_CreateOutsidePackageFileManager
+0x0012C1F8	ascii	gs_PackFileV3Func.pKGCreateOutsidePackageFileManager
+0x0012C250	ascii	gs_PackFileV3Func.pKGRegisterDefaultFileManager
+0x0012C2A8	ascii	gs_PackFileV3Func.pKGUnregisterAllDefaultFileManager
+0x0012C2F8	ascii	gs_PackFileV3Func.pKGRegisterLogStream
+0x0012C338	ascii	gs_PackFileV3Func.pKGUnregisterLogStream
+0x0012C378	ascii	gs_PackFileV3Func.pKGIsV3FileExists
+0x0012C3A0	ascii	KG_CreateRawInsidePackageFileManager
+0x0012C3C8	ascii	gs_PackFileV3Func.pKGFileNameHashW64Bit
+0x0012C408	ascii	KGInitPackFileV3
+0x0012C420	ascii	pcszPackageDirectory
+0x0012C578	ascii	\Package.CFG
+0x0012CD48	ascii	Error: Cannot write XPackFileFragment
+0x0012CD70	ascii	Error: Cannot write XPackFileFragmentElemHeader [%s]
+0x0012CE00	ascii	Error: Cannot write XPackFileFragmentInfo [%s]
+0x0012CF56	ascii	ComprFlag
+0x0012DB70	ascii	KPackList::FindElemFile uId = 0x%08X, DataLackedFlag is ON!
+0x00130AE0	ascii	Black
+0x00130C80	ascii	LuaPackupNumber
+0x00130CC8	ascii	LuaPackupBoolean
+0x00130D00	ascii	LuaPackupString
+0x00130D28	ascii	LuaPackupNill
+0x00130D38	ascii	LuaPackage_NewTable
+0x00130D70	ascii	LuaPackage_SetTable
+0x00130D88	ascii	*pbyType == eLuaPackTable
+0x00130DA8	ascii	LuaPackup values up to limit: %d
+0x00130DD0	ascii	LuaPackup
+0x00130E18	ascii	PackupTable
+0x00130E48	ascii	LuaUnpack
+0x00130F30	ascii	UnpackTable
+0x00130F40	ascii	*pbyData != KLuaValueDef::eLuaPackNill
+0x00131450	ascii	KGPack_OpenSequenceManager
+0x00131470	ascii	ppiRetPackageFileManager
+0x001314A8	ascii	KGPack_OpenMergeIndexManager
+0x001314F8	ascii	KGPack_CreatePackageFilePatcher
+0x00131518	ascii	cszBePatchedPackageFileName
+0x00131538	ascii	ppiRetPackageFilePatcher
+0x001315E0	ascii	[NEWPACK_FILE]The count of index is not same with directory area: uDirectoryEntryCount = %u; uIndexEntryCount = %u
+0x00131660	ascii	[NEWPACK_FILE]Index and directory area CRC error: PackageFileName:%s PackageHeader.uCheckSum32=%u. uIndexAndDirectoryAreaCRC=%u.
+0x00131700	ascii	pcszPackPath
+0x00131710	ascii	pPackageFile
+0x0013176C	ascii	fpPack
+0x001317B8	ascii	uDataSize > sizeof(KG_PackageElemFileHeader)
+0x001317F0	ascii	[NEWPACK_FILE]Elem file raw data CRC :%u, CRC In Header:%u , CompressedSize:%u , Flag:%u, Size:%u, TimeStamp:%u
+0x00131860	ascii	_CheckPackageFileCRC
+0x00131878	ascii	pcszPackPath[0]
+0x001318A0	ascii	[NEWPACK_FILE]Package Path:%s ;PackageSize: %u; PackageID:%u ;IndexID: %u ;Package CRC: %u;
+0x00131918	ascii	cszPackageListFileName[0]
+0x00131950	ascii	pPackageListFile
+0x00131978	ascii	szPackageName[uStrlen - 1] == '\n'
+0x001319A0	ascii	KGPack_NewPackFileTrace::RecordTraceData
+0x001319F0	ascii	it == KGPack_NewPackFileTrace::m_sTraceFileMap.end()
+0x00131A28	ascii	KGPack_NewPackFileTrace::RemoveTraceData
+0x00131A70	ascii	[NEWPACK_FILE]Buffer Address :%u, FileName:%s, FileSize:%u,OpenFileTime:%d/%d/%d %d:%d:%d
+0x00131AD0	ascii	[NEWPACK_FILE]There are %u files opened. Total file size: %u. Total file mapping size:%u, Total alloc memory by file(exclude FileMapping type):%u
+0x00131B68	ascii	KGPack_PackageFile::Init
+0x00131B88	ascii	cszPackageFileName
+0x00131BA0	ascii	nRetCode && m_piFileMapping
+0x00131BC0	ascii	nRetCode && piFileMappingBuffer
+0x00131BE8	ascii	m_PackageHeader.uSignature == KG_PACKAGE_SIGNATURE
+0x00131C20	ascii	m_PackageHeader.uFileSize == uFileSize
+0x00131C48	ascii	m_PackageHeader.uDataAreaOffset >= sizeof(KG_PackageHeader)
+0x00131C88	ascii	m_PackageHeader.uDataAreaSize > 0
+0x00131CB0	ascii	m_PackageHeader.uIndexAreaOffset >= sizeof(KG_PackageHeader)
+0x00131CF0	ascii	m_PackageHeader.uIndexAreaSize > 0
+0x00131D20	ascii	(m_PackageHeader.uIndexAreaSize % sizeof(KG_PackageIndexEntry)) == 0
+0x00131D70	ascii	m_PackageHeader.uDirectoryAreaOffset >= sizeof(KG_PackageHeader)
+0x00131DB8	ascii	m_PackageHeader.uDirectoryAreaSize > 0
+0x00131DE0	ascii	(m_PackageHeader.uDirectoryAreaSize % sizeof(KG_PackageDirectoryEntry)) == 0
+0x00131EA0	ascii	KGPack_PackageFile::GetIID
+0x00131F28	ascii	KGPack_PackageFile::GetFileBuffer
+0x00131F68	ascii	KGPack_PackageFile::GetPackageHeader
+0x00131FA0	ascii	KGPack_PackageFile::GetIndexArea
+0x00131FD0	ascii	uBufferSize == (m_uIndexEntryCount * sizeof(KG_PackageIndexEntry))
+0x00132018	ascii	KGPack_PackageFile::GetFileBufferByOffset
+0x00132070	ascii	[NEWPACK_FILE]The buffer size is smaller than the ElemFileHeader. piFileMappingBuffer->GetSize() = %u; sizeof(KG_PackageElemFileHeader) = %u.
+0x00132100	ascii	[NEWPACK_FILE]The check sum is not same.CRC in file header:%u. Data's crc:%u
+0x001322B8	ascii	KGPack_PackageFileMergeIndexManager32::Init
+0x001322E8	ascii	cInitParam.nFilePriority > KGPACK_FILE_PRIORITY_INVALID
+0x00132320	ascii	cInitParam.nFilePriority < KGPACK_FILE_PRIORITY_COUNT
+0x00132358	ascii	uStrlen < (sizeof(m_szPackageFilePath) - 1)
+0x001323E0	ascii	IndexEntryCount can not placed in 22 bit index, package name = "%s"
+0x00132428	ascii	PackageCount can not placed in 10 bit index
+0x00132498	ascii	KGPack_PackageFileMergeIndexManager32::GetFile
+0x001324E0	ascii	false && "Error File Priority in KGPack_PackageFileSequenceManager::GetFile!\n"
+0x00132530	ascii	KGPack_PackageFileMergeIndexManager32::GetFID
+0x00132570	ascii	KGPack_PackageFileMergeIndexManager32::GetFileBuffer
+0x001325A8	ascii	uPackageId < uCount
+0x001325C0	ascii	KGPack_PackageFileMergeIndexManager32::GetElemFile
+0x001325F8	ascii	pPackElemFile
+0x00132608	ascii	KGPack_PackageFileMergeIndexManager32::GetExternalFile
+0x00132678	ascii	nRetCode && piFileMapping
+0x00132698	ascii	pPackExternalFile
+0x001326B0	ascii	KGPack_PackageFileMergeIndexManager32::KGPack_MergeIndex
+0x001327D8	ascii	KGPack_PackageFileMergeIndexManager64::Init
+0x00132808	ascii	KGPack_PackageFileMergeIndexManager64::GetFile
+0x00132838	ascii	KGPack_PackageFileMergeIndexManager64::GetFID
+0x00132868	ascii	KGPack_PackageFileMergeIndexManager64::GetFileBuffer
+0x001328A0	ascii	KGPack_PackageFileMergeIndexManager64::GetElemFile
+0x001328D8	ascii	KGPack_PackageFileMergeIndexManager64::GetExternalFile
+0x00132910	ascii	KGPack_PackageFileMergeIndexManager64::KGPack_MergeIndex
+0x001329E0	ascii	KGPack_PackageFileSequenceManager::Init
+0x00132A08	ascii	KGPack_PackageFileSequenceManager::GetFile
+0x00132A38	ascii	KGPack_PackageFileSequenceManager::GetFID
+0x00132A68	ascii	KGPack_PackageFileSequenceManager::GetFileBuffer
+0x00132AA0	ascii	KGPack_PackageFileSequenceManager::GetElemFile
+0x00132AD0	ascii	KGPack_PackageFileSequenceManager::GetExternalFile
+0x00132B08	ascii	KGPack_PackageFileSequenceManager::GetOriginalIFile
+0x00132B40	ascii	pPackIFile
+0x00132D48	ascii	[NEWPACK_FILE]Alloc %d bytes(%.3f MB) memory failed.
+0x00132D80	ascii	KGPack_CreateAllocFileBuffer
+0x00132DE0	ascii	KGPack_FileMappingFileBuffer::GetData
+0x00132E08	ascii	KGPack_CreateFileBufferFromFileMappingBuffer
+0x00132E38	ascii	piFileMappingBuffer
+0x00132E68	ascii	pFileMappingFileBuffer
+0x00132EB0	ascii	KGPack_CreateIFileBuffer
+0x00132F30	ascii	KGPack_LzoDecompressor::Decompress
+0x00132FC0	ascii	KGPack_CreateDecompressor
+0x00133080	ascii	KGPack_PackageFilePatcher::Init
+0x00133180	ascii	KGPack_PackageFilePatcher::UnInit
+0x00133248	ascii	KGPack_PackageFilePatcher::Patch
+0x00133270	ascii	cszPatchPackageFileName
+0x00133298	ascii	PatchPackageHeader.uSignature == KG_PACKAGE_SIGNATURE
+0x001332D0	ascii	PatchPackageHeader.uDataAreaOffset >= sizeof(KG_PackageHeader)
+0x00133310	ascii	PatchPackageHeader.uDataAreaSize > 0
+0x00133340	ascii	PatchPackageHeader.uIndexAreaOffset >= sizeof(KG_PackageHeader)
+0x00133380	ascii	PatchPackageHeader.uIndexAreaSize > 0
+0x001333B0	ascii	(PatchPackageHeader.uIndexAreaSize % sizeof(KG_PackageIndexEntry)) == 0
+0x00133400	ascii	PatchPackageHeader.uDirectoryAreaOffset >= sizeof(KG_PackageHeader)
+0x00133448	ascii	PatchPackageHeader.uDirectoryAreaSize > 0
+0x00133480	ascii	(PatchPackageHeader.uDirectoryAreaSize % sizeof(KG_PackageDirectoryEntry)) == 0
+0x00133530	ascii	KGPack_CreateMiniBackup
+0x00133548	ascii	PackageHeader.uSignature == KG_PACKAGE_SIGNATURE
+0x00133580	ascii	PackageHeader.uDataAreaOffset >= sizeof(KG_PackageHeader)
+0x001335C0	ascii	PackageHeader.uDataAreaSize > 0
+0x001335E0	ascii	PackageHeader.uIndexAreaOffset >= sizeof(KG_PackageHeader)
+0x00133620	ascii	PackageHeader.uIndexAreaSize > 0
+0x00133650	ascii	(PackageHeader.uIndexAreaSize % sizeof(KG_PackageIndexEntry)) == 0
+0x00133698	ascii	PackageHeader.uDirectoryAreaOffset >= sizeof(KG_PackageHeader)
+0x001336D8	ascii	PackageHeader.uDirectoryAreaSize > 0
+0x00133700	ascii	(PackageHeader.uDirectoryAreaSize % sizeof(KG_PackageDirectoryEntry)) == 0
+0x00133778	ascii	uReadCount == PackageHeader.uIndexAreaSize
+0x001337A8	ascii	uReadCount == PackageHeader.uDirectoryAreaSize
+0x001337E8	ascii	pBackupFile
+0x001337F8	ascii	uWriteCount == (size_t)PackageHeader.uDirectoryAreaSize
+0x00133830	ascii	uWriteCount == (size_t)PackageHeader.uIndexAreaSize
+0x00133868	ascii	KGPack_RemoveMiniBackup
+0x00133880	ascii	KGPack_IsMiniBackupExist
+0x001338A0	ascii	KGPack_RestoreMiniBackup
+0x001338C0	ascii	MiniBackupHeader.uSignature == 'KBGK'
+0x001338F0	ascii	MiniBackupHeader.uPackageHeaderOffset >= sizeof(KGPack_MiniBackupHeader)
+0x00133940	ascii	MiniBackupHeader.uPackageHeaderSize > 0
+0x00133970	ascii	MiniBackupHeader.uDirectoryAreaOffset >= sizeof(KGPack_MiniBackupHeader)
+0x001339C0	ascii	MiniBackupHeader.uDirectoryAreaSize > 0
+0x001339F0	ascii	MiniBackupHeader.uIndexAreaOffset >= sizeof(KGPack_MiniBackupHeader)
+0x00133A38	ascii	MiniBackupHeader.uIndexAreaSize > 0
+0x00133A60	ascii	PackageHeader.uIndexAreaSize == MiniBackupHeader.uIndexAreaSize
+0x00133AA0	ascii	PackageHeader.uDirectoryAreaSize == MiniBackupHeader.uDirectoryAreaSize
+0x00133AF0	ascii	PackageHeader.uFileSize == (PackageHeader.uIndexAreaOffset + PackageHeader.uIndexAreaSize)
+0x00133B50	ascii	uReadCount == MiniBackupHeader.uIndexAreaSize
+0x00133B80	ascii	uReadCount == MiniBackupHeader.uDirectoryAreaSize
+0x00133BB8	ascii	uWriteCount == PackageHeader.uDirectoryAreaSize
+0x00133BE8	ascii	uWriteCount == PackageHeader.uIndexAreaSize
+0x00133C78	ascii	KGPack_ElemFile::GetBuffer
+0x00133CC0	ascii	KGPack_ExternalFile::GetBuffer
+0x00133D08	ascii	KGPack_IFile::GetBuffer
+0x00133E98	ascii	stack overflow (%s)
+0x001341D8	ascii	stack overflow
+0x001341F0	ascii	C stack overflow
+0x00134AF0	ascii	too many results to unpack
+0x00135198	ascii	invalid format (repeated flags)
+0x001353E0	ascii	stack traceback:
+0x001354C0	ascii	'package.%s' must be a string
+0x00135570	ascii	'package.preload' must be a table
+0x0013559A	ascii	no field package.preload['%s']
+0x001355F8	ascii	'package.loaders' must be a table
+0x00135678	ascii	_PACKAGE
+0x0013CB28	ascii	n == 0 || *(bin->stack_head) != NULL || racy
+0x0013D540	ascii	(uintptr_t)(*bin->stack_head) == cache_bin_preceding_junk
+0x0013E000	ascii	<jemalloc>: error in background thread creation for arena %u. Abort.
+0x0013E718	ascii	background_thread
+0x0013E730	ascii	max_background_threads
+0x0013ED60	ascii	have_background_thread
+0x0013F330	ascii	size: %zu, flags: %d
+0x0013F488	ascii	ptr: %p, size: %zu, flags: %d
+0x0013F5E0	ascii	ptr: %p, size: %zu, extra: %zu, flags: %d
+0x0013F6B8	ascii	ptr: %p, flags: %d
+0x0013F768	ascii	ptr: %p, size: %zu, flags: 0
+0x0013F970	ascii	ptrs: %p, num: %zu, size: %zu, flags: %d
+0x0013FAA8	ascii	ret >= bin->stack_head
+0x0013FAC0	ascii	ret <= bin->stack_head
+0x0013FB08	ascii	cache_bin_empty_position_get(bin) == bin->stack_head
+0x001401D0	ascii	atomic_load_b(&info->indefinite_sleep, ATOMIC_ACQUIRE) == (next_wakeup == BACKGROUND_THREAD_INDEFINITE_SLEEP)
+0x00140240	ascii	J:\JX3_BD\DevEnv\jemalloc-5.3.0\include\jemalloc\internal\background_thread_inlines.h
+0x00140F88	ascii	J:\JX3_BD\DevEnv\jemalloc-5.3.0\src\background_thread.c
+0x00140FC0	ascii	<jemalloc>: option background_thread currently supports pthread only
+0x00141C18	ascii	prof_backtrace
+0x00141C40	ascii	activity_callback
+0x00142018	ascii	info->state == background_thread_started
+0x00142048	ascii	info->state == background_thread_paused
+0x00142118	ascii	sizeof(write_cb_packet_t) == sizeof(void *) * 2
+0x00143708	ascii	opt.background_thread
+0x00143C68	ascii	stats.background_thread.num_threads
+0x00143C90	ascii	stats.background_thread.num_runs
+0x00143CB8	ascii	stats.background_thread.run_interval
+0x00143D80	ascii	Background threads: %zu, num_runs: %llu, run_interval: %llu ns
+0x001448D0	ascii	stack_traces
+0x00145000	ascii	head_content == *cache_bin->stack_head
+0x00148B98	ascii	prof_backtrace_hook != NULL
+0x00149650	ascii	stack_size < ((size_t)1 << (sizeof(cache_bin_sz_t) * 8))
+0x00149690	ascii	free_spots == bin_stack_size
+0x001496E8	ascii	bin_stack_size > 0 || empty_position == full_position
+0x00169207	ascii	?AllocTrack@BufferPool@@QEAAPEAX_KPEBD1I@Z
+0x0016964E	ascii	?FreeTrack@BufferPool@@QEAAXPEAX@Z
+0x00169C5C	ascii	?InsertTail@DoubleList@@QEAAXPEAUDoubleNode@@@Z
+0x00169D23	ascii	?KGInitPackFileV3@@YAHPEB_W0W4KGPACK_FILE_V3_READ_PRIORITY@@@Z
+0x00169EA6	ascii	?KGPack_ClearPackageFiles@@YAXXZ
+0x00169EC7	ascii	?KGPack_CreatePackageFilePatcher@@YAHQEBDPEAPEAUIKGPack_PackageFilePatcher@@@Z
+0x00169F16	ascii	?KGPack_IsPackHasError@@YAHXZ
+0x00169F34	ascii	?KGPack_LoadPackageFiles@@YAHQEBDW4KGPACK_FILE_PRIORITY@@W4KGPACK_MANAGER_TYPE@@@Z
+0x00169F87	ascii	?KGPack_OpenMergeIndexManager@@YAHQEBDAEBUKGPACK_MANAGER_INIT_PARAM@@PEAPEAUIKGPack_PackageFileManager@@@Z
+0x00169FF2	ascii	?KGPack_OpenSequenceManager@@YAHQEBDAEBUKGPACK_MANAGER_INIT_PARAM@@PEAPEAUIKGPack_PackageFileManager@@@Z
+0x0016A073	ascii	?KGUninitPackFileV3@@YAXXZ
+0x0016A0F2	ascii	?KG_GetTickCount@@YAIXZ
+0x0016A47D	ascii	?ReallocTrack@BufferPool@@QEAAPEAXPEAX_KPEBD2I@Z
+0x0016AB29	ascii	CreatePackFileShell
+0x0016AB7C	ascii	KG_CreateFileMapping
+0x0016AC7C	ascii	KG_RegisterPakFileCallback
+0x0016AD2C	ascii	LuaPackage_NewTable
+0x0016AD40	ascii	LuaPackage_SetTable
+0x0016AD54	ascii	LuaPackup
+0x0016AD5E	ascii	LuaPackupBoolean
+0x0016AD6F	ascii	LuaPackupNill
+0x0016AD7D	ascii	LuaPackupNumber
+0x0016AD8D	ascii	LuaPackupString
+0x0016AD9D	ascii	LuaUnpack
+0x0016AFBF	ascii	g_ClearPackageFiles
+0x0016B120	ascii	g_GetHttpIndexPackageReader
+0x0016B13C	ascii	g_GetPackPath
+0x0016B14A	ascii	g_GetPackV3DataVersion
+0x0016B21D	ascii	g_IfUsePackFileV3
+0x0016B2EA	ascii	g_IsPakSubFileDataLacked
+0x0016B303	ascii	g_IsPakSubFileDataLackedEx
+0x0016B36C	ascii	g_LoadPackageFiles
+0x0016B443	ascii	g_RegisterFileSampleCallback
+0x0016B460	ascii	g_ReloadPackageIndex
+0x0016B484	ascii	g_SetDataLackedFileHandler
+0x0016B508	ascii	g_SetPackageVersion
+0x0016C70C	ascii	CreateFileMappingW
+0x0016C7E0	ascii	GetTickCount
+0x0016D238	ascii	_Xtime_get_ticks
+0x0016D386	ascii	?_Execute_once@std@@YAHAEAUonce_flag@1@P6AHPEAX1PEAPEAX@Z1@Z
+0x0016D610	ascii	?_CallInContext@_ContextCallback@details@Concurrency@@QEBAXV?$function@$$A6AXXZ@std@@_N@Z
+0x0016D66C	ascii	?_Reset@_ContextCallback@details@Concurrency@@AEAAXXZ
+0x0016D6A4	ascii	?_Capture@_ContextCallback@details@Concurrency@@AEAAXXZ
+0x0016FA78	ascii	.?AVKGPackFile@@
+0x0016FAA0	ascii	.?AVKGPackFileV3@@
+0x0016FDE0	ascii	.?AUIPackFileShell@@
+0x0016FE08	ascii	.?AVKPackFileManager@@
+0x0016FE30	ascii	.?AVKPackFile@@
+0x001701D0	ascii	.?AV?$_Fake_no_copy_callable_adapter@P8Tracker@KAllocator@@EAAXXZPEAV12@@std@@
+0x001704C0	ascii	.?AV?$_CancellationTokenCallback@V<lambda_be3e5d9dce35d2c8dbfa8485373731d5>@@@details@Concurrency@@
+0x00170850	ascii	.?AV?$_Packaged_state@$$A6AXXZ@std@@
+0x00170930	ascii	.?AV?$_Func_impl_no_alloc@V?$_Fake_no_copy_callable_adapter@P8Tracker@KAllocator@@EAAXXZPEAV12@@std@@X$$V@std@@
+0x00170B98	ascii	.?AUIKG_FileMappingBuffer@@
+0x00170BC8	ascii	.?AUIKG_FileMapping@@
+0x00170BF0	ascii	.?AVKG_FileMappingBuffer@@
+0x00170C20	ascii	.?AVKG_FileMapping@@
+0x00170DA8	ascii	.?AUIKGPack_PackageFileManager@@
+0x00170DE0	ascii	.?AUIKGPack_PackageFileManager2@@
+0x00170E18	ascii	.?AVKGPack_PackageFileMergeIndexManager32@@
+0x00170E58	ascii	.?AVKGPack_PackageFileMergeIndexManager64@@
+0x00170E98	ascii	.?AVKGPack_PackageFileSequenceManager@@
+0x00170ED0	ascii	.?AUIKGPack_FileBuffer@@
+0x00170F00	ascii	.?AVKGPack_AllocFileBuffer@@
+0x00170F30	ascii	.?AVKGPack_FileMappingFileBuffer@@
+0x00170F68	ascii	.?AVKGPack_IFileBuffer@@
+0x00170F98	ascii	.?AUIKGPack_Decompressor@@
+0x00170FC8	ascii	.?AVKGPack_LzoDecompressor@@
+0x00170FF8	ascii	.?AUIKGPack_PackageFilePatcher@@
+0x00171030	ascii	.?AVKGPack_PackageFilePatcher@@
+0x00171060	ascii	.?AUIKGPack_File@@
+0x00171088	ascii	.?AVKGPack_ElemFile@@
+0x001710B0	ascii	.?AVKGPack_ExternalFile@@
+0x001710E0	ascii	.?AVKGPack_IFile@@
+0x0018469C	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x001846E4	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0
+0x00184D9E	ascii	Mhttp://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S
+0x00184DF3	ascii	Mhttp://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0
+0x00184E87	ascii	Phttp://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0
+0x00185556	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x001858FE	ascii	Qhttp://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_
+0x00185962	ascii	Nhttp://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0 
+0x00185CCB	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x00185FEE	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x00186036	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0 
+0x0018686F	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1
+
+## protocol (1)
+0x0016C9CE	ascii	DispatchMessageW
+
+## domain (106)
+0x0011846E	ascii	__gcD
+0x0012B9D0	ascii	m_pchBuffer
+0x0012BA70	ascii	(nRetCode != -1) && (nRetCode < (int)m_uMaxBufferSize)
+0x0012BB60	ascii	nRetCode == m_uCurrentBufferSize
+0x0012BC90	ascii	invalid string position
+0x0012BEA8	ascii	nRetCode && piFileBuffer
+0x0012BEDC	ascii	Buffer
+0x0012BF20	ascii	m_piFileBuffer
+0x0012BFD8	ascii	pvBuffer
+0x0012BFF8	ascii	uBufferSize
+0x0012C008	ascii	pbyBuffer
+0x0012C0E0	ascii	bad cast
+0x0012CD20	ascii	Warning : compressbuffer overflow!
+0x0012D0B0	ascii	nRetCode == (int)m_uCurrentBufferSize
+0x00130440	ascii	nRetCode == ERROR_BUFFER_OVERFLOW
+0x00130698	ascii	[error]Remove invalid node: index %d, size %d
+0x00130880	ascii	pszBuffer
+0x00130930	ascii	KTextFilter::LoadWhiteListFile
+0x00130950	ascii	Text whitelist error(%s : %d)
+0x00130970	ascii	KTextFilter::AddWhiteListText
+0x00130990	ascii	nWhiteListTextLen >= 0
+0x001309A8	ascii	nWhiteListTextLen < MAX_TEXT_LEN
+0x00130AEB	ascii	White
+0x00130C90	ascii	uBufferSize >= 1
+0x00130CA8	ascii	uBufferSize >= sizeof(double)
+0x00130CE0	ascii	uBufferSize >= sizeof(bool)
+0x00130D10	ascii	uBufferSize >= uStrLen
+0x00130D50	ascii	uBufferSize >= sizeof(DWORD)
+0x00131200	ascii	KLuaScriptEx::LoadFromBuffer
+0x00131778	ascii	pbyElemFileBuffer
+0x00131888	ascii	pReadBuffer
+0x001319D0	ascii	pBufferAddress
+0x00131A28	ascii	KGPack_NewPackFileTrace::RemoveTraceData
+0x00131A70	ascii	[NEWPACK_FILE]Buffer Address :%u, FileName:%s, FileSize:%u,OpenFileTime:%d/%d/%d %d:%d:%d
+0x00131BC0	ascii	nRetCode && piFileMappingBuffer
+0x00131E30	ascii	nRetCode && m_piIndexAreaBuffer
+0x00131E60	ascii	nRetCode && m_piDirectoryAreaBuffer
+0x00131ED0	ascii	m_piIndexAreaBuffer
+0x00131F28	ascii	KGPack_PackageFile::GetFileBuffer
+0x00131F50	ascii	ppiRetFileBuffer
+0x00131FD0	ascii	uBufferSize == (m_uIndexEntryCount * sizeof(KG_PackageIndexEntry))
+0x00132018	ascii	KGPack_PackageFile::GetFileBufferByOffset
+0x00132070	ascii	[NEWPACK_FILE]The buffer size is smaller than the ElemFileHeader. piFileMappingBuffer->GetSize() = %u; sizeof(KG_PackageElemFileHeader) = %u.
+0x00132150	ascii	pvDstBuffer
+0x00132570	ascii	KGPack_PackageFileMergeIndexManager32::GetFileBuffer
+0x00132868	ascii	KGPack_PackageFileMergeIndexManager64::GetFileBuffer
+0x00132A68	ascii	KGPack_PackageFileSequenceManager::GetFileBuffer
+0x00132D80	ascii	KGPack_CreateAllocFileBuffer
+0x00132DE0	ascii	KGPack_FileMappingFileBuffer::GetData
+0x00132E08	ascii	KGPack_CreateFileBufferFromFileMappingBuffer
+0x00132E38	ascii	piFileMappingBuffer
+0x00132E50	ascii	uFileBufferSize > 0
+0x00132E68	ascii	pFileMappingFileBuffer
+0x00132EB0	ascii	KGPack_CreateIFileBuffer
+0x00132ED0	ascii	pIFileBuffer
+0x00132F58	ascii	pcbySrcBuffer
+0x00132F78	ascii	pbyDestBuffer
+0x00132F88	ascii	uDestBufferSize
+0x001331B0	ascii	pIndexAreaBuffer
+0x001331C8	ascii	pDirectoryAreaBuffer
+0x001334D0	ascii	pbyWorkBuffer
+0x00133868	ascii	KGPack_RemoveMiniBackup
+0x00133C78	ascii	KGPack_ElemFile::GetBuffer
+0x00133CC0	ascii	KGPack_ExternalFile::GetBuffer
+0x00133D08	ascii	KGPack_IFile::GetBuffer
+0x001358B8	ascii	MOVE
+0x00135E10	utf16le	api-ms-win-core-synch-l1-2-0.dll
+0x0013FB08	ascii	cache_bin_empty_position_get(bin) == bin->stack_head
+0x00141C10	ascii	remove
+0x001496E8	ascii	bin_stack_size > 0 || empty_position == full_position
+0x00149720	ascii	cache_bin_empty_position_get(bin) == empty_position
+0x00168A15	ascii	??0BufferPool@@QEAA@II@Z
+0x00168BEA	ascii	??1BufferPool@@QEAA@XZ
+0x00168CA9	ascii	??4BufferPool@@QEAAAEAV0@AEBV0@@Z
+0x00169062	ascii	??_FBufferPool@@QEAAXXZ
+0x0016912A	ascii	?Alloc@BufferPool@@QEAAPEAX_K@Z
+0x001691E3	ascii	?AllocChunkPool@BufferPool@@AEAAXXZ
+0x00169207	ascii	?AllocTrack@BufferPool@@QEAAPEAX_KPEBD1I@Z
+0x00169518	ascii	?Free@BufferPool@@QEAAXPEAX@Z
+0x0016964E	ascii	?FreeTrack@BufferPool@@QEAAXPEAX@Z
+0x001696B6	ascii	?GetBufferLength@BufferPool@@AEAA_KPEAX@Z
+0x00169E45	ascii	?KGLogRemoveOption@@YAHW4KGLOG_OPTIONS@@@Z
+0x0016A457	ascii	?Realloc@BufferPool@@QEAAPEAXPEAX_K@Z
+0x0016A47D	ascii	?ReallocTrack@BufferPool@@QEAAPEAXPEAX_KPEBD2I@Z
+0x0016A50F	ascii	?ReleaseChunkPool@BufferPool@@AEAAXXZ
+0x0016A535	ascii	?RemoveIndexVertex@KPolygon@@QEAAHH@Z
+0x0016AF09	ascii	TRemoveCtrlInEncodedText
+0x0016AF80	ascii	g_BuildAloneFileWhiteList
+0x0016C632	ascii	FlushFileBuffers
+0x0016C95E	ascii	CharLowerBuffW
+0x0016D45E	ascii	_Cnd_broadcast
+0x0016DA58	ascii	ImmSetCompositionWindow
+0x0016DAD8	ascii	memmove
+0x0016DD54	ascii	_get_stream_buffer_pointers
+0x0016DEFC	ascii	remove
+0x0016FB28	ascii	.?AVbad_cast@std@@
+0x00170818	ascii	.?AV?$_Deferred_async_state@X@std@@
+0x00170888	ascii	.?AV?$_Task_async_state@X@std@@
+0x001709B0	ascii	.?AU?$_InitialTaskHandle@XV<lambda_d4a7214cc88d70657b4e86e0e5f49c98>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@
+0x00170A50	ascii	.?AU?$_PPLTaskHandle@EU?$_InitialTaskHandle@XV<lambda_d4a7214cc88d70657b4e86e0e5f49c98>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@U_TaskProcHandle@details@3@@details@Concurrency@@
+0x00170B98	ascii	.?AUIKG_FileMappingBuffer@@
+0x00170BF0	ascii	.?AVKG_FileMappingBuffer@@
+0x00170ED0	ascii	.?AUIKGPack_FileBuffer@@
+0x00170F00	ascii	.?AVKGPack_AllocFileBuffer@@
+0x00170F30	ascii	.?AVKGPack_FileMappingFileBuffer@@
+0x00170F68	ascii	.?AVKGPack_IFileBuffer@@
+
+## cn_client (0)
+(none)

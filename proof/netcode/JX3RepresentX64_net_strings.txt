@@ -1,0 +1,3393 @@
+# JX3RepresentX64.dll netcode keyword scan
+# source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3RepresentX64.dll
+
+## transport (567)
+0x00C7F968	ascii	rigBindPosePtr
+0x00C80548	ascii	UpdateCharacterLightBinding
+0x00C80570	ascii	SetCharacterLightBindingType
+0x00C808BC	ascii	select
+0x00C825B8	ascii	KRLSoundManager::SetWwiseListener
+0x00C827D8	ascii	KRLSoundManager::_UpdateWwiseListener
+0x00C837A8	ascii	OnBindCharacterSfx
+0x00C837C0	ascii	OnUnbindCharacterSfx
+0x00C837E0	ascii	OnBindDoodadSfx
+0x00C837F8	ascii	OnUnbindDoodadSfx
+0x00C83D10	ascii	OnSetObjSelectable
+0x00C83D90	ascii	OnShowSelectionSFX
+0x00C845E8	ascii	OnEnableSocketLOD
+0x00C84AA0	ascii	OnSetTargetSFXConnection
+0x00C84FE8	ascii	OnLanternConnection
+0x00C85A70	ascii	nSocketIndex != -1
+0x00C85B40	ascii	OnSetWwiseListener
+0x00C85B58	ascii	OnResetWwiseListener
+0x00C863D8	ascii	player selectable
+0x00C863F0	ascii	player unselectable
+0x00C86EC8	ascii	bind character sfx
+0x00C86EE0	ascii	unbind character sfx
+0x00C86F00	ascii	bind doodad sfx
+0x00C86F18	ascii	unbind doodad sfx
+0x00C873C8	ascii	set obj selectable
+0x00C87408	ascii	show selection sfx
+0x00C879C0	ascii	enable socket lod
+0x00C87A88	ascii	set selection enhance
+0x00C87AA8	ascii	enable selection arrow
+0x00C87AC8	ascii	set selection arrow state
+0x00C87B38	ascii	set socket visible param
+0x00C87BD0	ascii	max socket lod0 counts
+0x00C87BF0	ascii	max socket lod1 counts
+0x00C87D80	ascii	set target sfx connection
+0x00C88170	ascii	lantern connection
+0x00C885D0	ascii	on disconnect
+0x00C886B0	ascii	SetWwiseListener
+0x00C886C8	ascii	ResetWwiseListener
+0x00C8D8E8	ascii	RLActorHelper::LoadSocket
+0x00C8E060	ascii	RLActorNT::_RebindSockets
+0x00C8E330	ascii	RLActorNT::LoadSocket
+0x00C8E350	ascii	it->second.m_prlModel->LoadModel(rLoadSocketParam.szModel, rLoadSocketParam.szMtl, rLoadSocketParam.bCommonMaterial != 0, m_ModelLoadArgs, 0, rLoadSocketParam.bSync, false, bCanLod ? nLODLevel : 0) != ModelLoadResult::Error
+0x00C8E460	ascii	socketInfo.m_prlModel
+0x00C8E480	ascii	socketInfo.m_prlModel->LoadModel(rLoadSocketParam.szModel, rLoadSocketParam.szMtl, rLoadSocketParam.bCommonMaterial != 0, m_ModelLoadArgs, 0, rLoadSocketParam.bSync, false, bCanLod ? nLODLevel : 0) != ModelLoadResult::Error
+0x00C8E5A0	ascii	RLActorNT::SetSocketVisible
+0x00C8E5C8	ascii	RLActorNT::ChangeSocketName
+0x00C8E5F0	ascii	RLActorNT::LoadSocketMaterial
+0x00C8E618	ascii	RLActorNT::PlaySocketAnimation
+0x00C8E640	ascii	RLActorNT::SetSocketAlwaysRenderTwice
+0x00C8E670	ascii	RLActorNT::LoadSocketSFX
+0x00C8E690	ascii	(*pprlSfx)->LoadModel(szSFX, nullptr, false, m_ModelLoadArgs, 0, false, false, m_nSocketLODLevel) != ModelLoadResult::Error
+0x00C8E728	ascii	RLActorNT::UnloadSocketSFX
+0x00C8E748	ascii	RLActorNT::SetSocketDetail
+0x00C8E768	ascii	RLActorNT::HasSocketName
+0x00C8E788	ascii	_ValidString(szSocket)
+0x00C8E7A8	ascii	RLActorNT::SetSocketSubsetVisible
+0x00C8E7D0	ascii	RLActorNT::SetSocketSfxMinimalLODLevel
+0x00C8E800	ascii	RLActorNT::SetSocketSfxAlpha
+0x00C8E828	ascii	RLActorNT::SetSocketSfxIntensity
+0x00C8E850	ascii	RLActorNT::SetSocketPlayerControlVisibleState
+0x00C8EBC8	ascii	RLActorNT::EnableForceHideSocket
+0x00C8EBF0	ascii	strlen(szSocketName) < sizeof(socketInfo.szSocketName)
+0x00C8EC38	ascii	RLActorNT::_OnForceHideSocket
+0x00C8FB48	ascii	SendSemanticEvent
+0x00C903B0	ascii	sfx socket name
+0x00C903D0	ascii	sfx socket name1
+0x00C904B0	ascii	socket lod
+0x00C906E8	ascii	socket lod0 distance
+0x00C90708	ascii	socket lod1 distance
+0x00C90728	ascii	socket lod2 distance
+0x00C908C8	ascii	max socket lod2 counts
+0x00C90978	ascii	actor on bind
+0x00C90A00	ascii	sockets
+0x00C90A68	ascii	selectable
+0x00C90B58	ascii	color channel
+0x00C90DE8	ascii	socket name
+0x00C90DF8	ascii	socket offset
+0x00C90E48	ascii	runtime selectable
+0x00C90E98	ascii	bind
+0x00C91130	ascii	try bind until succeed
+0x00C91370	ascii	bind to rlmodel
+0x00C91388	ascii	bind rlmodel
+0x00C91398	ascii	bind to actor
+0x00C913A8	ascii	bind info
+0x00C913B8	ascii	bind to socket
+0x00C913D0	ascii	bind to socket name
+0x00C916F0	ascii	channel effect pos src
+0x00C91710	ascii	channel effect pos dest
+0x00C91730	ascii	channel effect pos changed
+0x00C918E8	ascii	socket wait anim
+0x00C91900	ascii	socket wait anim sec
+0x00C91920	ascii	weapon socket
+0x00C92848	ascii	KRLAnimationSFXTag::BindSFX
+0x00C92B48	ascii	GetPlayerSocket
+0x00C92B78	ascii	nSocketIndex < CHARACTER_SOCKET_COUNT
+0x00C92BC0	ascii	GetNpcSocket
+0x00C92F28	ascii	ResetSocketResource
+0x00C930D0	ascii	LoadModelSFXParam.szSocketName
+0x00C93120	ascii	RLActorSfx::AddSocketSfx
+0x00C93140	ascii	nIndex >= 0 && nIndex < CHARACTER_SOCKET_COUNT
+0x00C93940	ascii	m_eBindType == BindType::Standlone
+0x00C93A00	ascii	RLModel::BindTo
+0x00C93A18	ascii	szSocket
+0x00C93A28	ascii	::BindTo(m_piModel, prlParent->GetModel(), szSocket)
+0x00C93A68	ascii	m_pRLModelMgr->Bind(this, prlParent, szSocket, bBindHide)
+0x00C93AD0	ascii	m_eBindType == BindType::Attach || m_eBindType == BindType::Bind
+0x00C93BB0	ascii	m_eBindState3D != BindState3D::SubActor
+0x00C93C70	ascii	m_szSocket
+0x00C93C80	ascii	::BindTo(m_piModel, piParentModel, m_szSocket)
+0x00C93CB8	ascii	m_pRLModelMgr->Bind(this, m_prlParent, m_szSocket)
+0x00C93CF8	ascii	RLModel::_CommitAttachNBind
+0x00C93D38	ascii	m_bInAttachNBindList
+0x00C93D58	ascii	eType != BindType::Error
+0x00C93DC8	ascii	m_eBindType == BindType::Attach
+0x00C93E30	ascii	m_eBindType == BindType::Bind
+0x00C93E58	ascii	::BindTo(m_piModel, prlHost->GetModel(), szSocket)
+0x00C94040	ascii	BindTo(prlParent, snapshoot.szSocket)
+0x00C96E78	ascii	!prlModel->_InAttachNBindList()
+0x00C96EA0	ascii	RLModelMgr::Bind
+0x00C96EB8	ascii	RLModelMgr::RemoveAttachNBind
+0x00C96F08	ascii	m_hashAttachNBind.size() == 0 && m_mapRLModel.size() == 0
+0x00C9ABD0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\Backend\RLBackend.cpp,SO3RL::BindTo:519
+0x00C9AC70	ascii	SO3RL::BindTo
+0x00C9AC90	ascii	SO3RL::GetBindExtraInfo
+0x00C9ACB0	ascii	pszSocketOrBone
+0x00C9ACC8	ascii	pBindExtraInfo
+0x00C9BD58	ascii	curSocketIdx <= pUnit->uSocketCount
+0x00C9CF58	ascii	SetSelectable
+0x00C9CFE0	ascii	LoadSocketSFX
+0x00C9CFF0	ascii	UnloadSocketSFX
+0x00C9D008	ascii	UnbindFromOthers
+0x00C9D038	ascii	UpdateChannelEffectPos
+0x00C9D058	ascii	GetSocketPosition
+0x00C9D2C8	ascii	RendererComponent::LuaSetSelectable
+0x00C9D310	ascii	_SetSelectable(bSelectable)
+0x00C9D440	ascii	_ApplyAnchorPointFromLocal(dwCharacterID, pszSocket, vOutSocketPosition)
+0x00C9D558	ascii	RendererComponent::LuaLoadSocketSFX
+0x00C9D5F0	ascii	RendererComponent::LuaUnloadSocketSFX
+0x00C9D638	ascii	RendererComponent::LuaUnbindFromOthers
+0x00C9D6B0	ascii	RendererComponent::LuaUpdateChannelEffectPos
+0x00C9D700	ascii	RendererComponent::LuaGetSocketPosition
+0x00C9D730	ascii	pszSocket
+0x00C9DAB0	ascii	RendererComponent::LoadSocketSFX
+0x00C9DAD8	ascii	strSocket
+0x00C9DB60	ascii	pRLSfx->BindTo(m_rlActor.GetRLModel(), strSocket)
+0x00C9DBA0	ascii	RendererComponent::UnloadSocketSFX
+0x00C9DBD0	ascii	RendererComponent::BindTo
+0x00C9DC00	ascii	RendererComponent::UnbindFromOthers
+0x00C9DC30	ascii	RendererComponent::UpdateChannelEffectPos
+0x00C9DC68	ascii	RendererComponent::GetSocketPosition
+0x00C9DC98	ascii	m_rlActor.GetBonePosition(pszSocket, rvPos, vOffset)
+0x00C9E380	ascii	pTypeListEntity
+0x00C9E520	ascii	!m_bInDummyTraverse
+0x00C9E5F8	ascii	KRLDummyMgr::DummyMutualBind
+0x00C9E6C0	ascii	piChildRender->BindTo(piParentRender->GetActor().GetRLModel(), szSocket)
+0x00C9E790	ascii	m_bInDummyTraverse
+0x00C9EE18	ascii	GetBindPos
+0x00C9EE28	ascii	Bind
+0x00C9F1B8	ascii	GetSocketTransformation
+0x00C9F1D8	ascii	szSocket[0] != '\0'
+0x00C9F6C8	ascii	LoadPlayerSocket
+0x00C9F6E0	ascii	LoadSFXBySocket
+0x00C9F710	ascii	UnLoadSFXBySocket
+0x00CA0008	ascii	HangPetCore::LoadSFXBySocket
+0x00CA0038	ascii	HangPetCore::UnLoadSFXBySocket
+0x00CA0414	ascii	socket
+0x00CA0420	ascii	GetSocketScaleAdjust
+0x00CA0440	ascii	socket_scale
+0x00CA0450	ascii	by_socket
+0x00CA0538	ascii	HangPetRide::BindPet
+0x00CA0558	ascii	HangPetRide::UnBindPet
+0x00CA0578	ascii	m_rlRide.GetPartInfo(m_szSocket, matSocket, vOffset)
+0x00CA05B8	ascii	matSocket.decompose(nullptr, &qRot, &vPos)
+0x00CA1130	ascii	pcszSocket
+0x00CA1180	ascii	KRLSocketDynamicSFX::OnPlayAnimationFinish
+0x00CA11F0	ascii	KRLSocketDynamicSFX::Init
+0x00CA1220	ascii	KRLSocketDynamicSFX::DisplaySfx
+0x00CA1268	ascii	KRLSocketDynamicSFX::UpdateModel
+0x00CA12F0	ascii	KRLSocketDynamicSFX::UpdateAnimation
+0x00CA1320	ascii	KRLSocketDynamicSFX::LoadSFXConfig
+0x00CA1350	ascii	cpSocketDynamicSFXConfig
+0x00CA1808	ascii	ApplyBindModel
+0x00CA1820	ascii	pBindModel
+0x00CA1830	ascii	pBindModel->szModelFile
+0x00CA184C	ascii	isBind
+0x00CA1938	ascii	ApplyBindChainSfx
+0x00CA1F60	ascii	pRLSources->m_rlActor.GetPartInfo(m_szSocketName, matPart, vOffset)
+0x00CA2088	ascii	strSocketName
+0x00CA2488	ascii	m_nLinkCount <= _countof(m_listBindInfo)
+0x00CA24F0	ascii	BindAni
+0x00CA25F8	ascii	KRLGroupRideLink::UnbindCharacter
+0x00CA2628	ascii	KRLGroupRideLink::ForceRebind
+0x00CA2650	ascii	KRLGroupRideLink::ForceRebind Failed, nPos(%d), dwDependID(%d)
+0x00CA27A8	ascii	m_nLinkCount <= _countof(m_listEnterInfo)
+0x00CA28F0	ascii	KRLGroupRideLink::BindCharacter
+0x00CA2A20	ascii	KRLHandLink::CloudUnbindCharacter
+0x00CA2B90	ascii	KRLHandLink::CloudForceBind
+0x00CA2BB8	ascii	KRLHandLink::DependBindToCloud
+0x00CA2CE8	ascii	KRLHandLink::PlayBindingAnimation
+0x00CA3680	ascii	prlBindCharacter
+0x00CA3698	ascii	piBindModel
+0x00CA36B0	ascii	[KRLReferenceCameraAni]PlayObjPlot bBind = %d, vPos = (%f, %f, %f), vScale = (%f, %f, %f), qRot = (%f, %f, %f, %f)
+0x00CA3A20	ascii	KRLSlotLink::ForceBind
+0x00CA3AF0	ascii	KRLSlotLink::BindCharacter
+0x00CA3B10	ascii	m_BaseInfo.szBindSocket
+0x00CA3B30	ascii	KRLSlotLink::UnbindCharacter
+0x00CA3B90	ascii	cpSlotLinkModel->nBindPos >= erlLinkPos_First && cpSlotLinkModel->nBindPos < m_nLinkCount
+0x00CA3C60	ascii	m_BaseInfo.nSelectPos >= erlLinkPos_First && m_BaseInfo.nSelectPos < m_nLinkCount
+0x00CA3CC8	ascii	pSelectionCharacter
+0x00CA3EE0	ascii	KRLSocketDynamicObject::OnPlayAnimationFinish
+0x00CA3F18	ascii	KRLSocketDynamicObject::Init
+0x00CA3F88	ascii	KRLSocketDynamicObject::UpdateModel
+0x00CA4000	ascii	KRLSocketDynamicObject::Update
+0x00CA4098	ascii	KRLSocketDynamicObject::GetIdleState
+0x00CA40C8	ascii	KRLSocketDynamicObject::BindToMaster
+0x00CA40F8	ascii	KRLSocketDynamicObject::PlayAnimation
+0x00CA4128	ascii	KRLSocketDynamicObject::UnbindFromMaster
+0x00CA4160	ascii	pRLBindModel
+0x00CA44F0	ascii	SetSocketVisible
+0x00CA4748	ascii	KRLCharacter::LuaSetSocketVisible
+0x00CA4D68	ascii	GetCurrentShapeCanBindRust
+0x00CA4E48	ascii	KRLRide::LuaGetCurrentShapeCanBindRust
+0x00CA6080	ascii	pcSocketResource
+0x00CA60A0	ascii	VirtualNPC Load Socket[%s] Failed, SocketIndex(%d), ModelID(%d)
+0x00CA6148	ascii	RLVirtualNPC::LoadSocket
+0x00CA6198	ascii	pcSocketResurce
+0x00CA61E0	ascii	RLVirtualNPC::GetPlayerSocketOffset
+0x00CA6538	ascii	KRLBuffBullet::BindBullet
+0x00CA6558	ascii	KRLBuffBullet::UnbindBullet
+0x00CA69B8	ascii	m_listBindInfo[nPos].pCharacter
+0x00CA6B50	ascii	KRLObjectLink::UpdateSocketVisible
+0x00CA6BF0	ascii	PlayerHideSocket
+0x00CA6C08	ascii	tabHideSocket
+0x00CA6C18	ascii	KRLObjectLink::EnableForceHideSocket
+0x00CA6CB8	ascii	m_nLinkCount >= 0 && m_nLinkCount <= _countof(m_listBindInfo)
+0x00CA7508	ascii	!m_listBindInfo[erlPos].dwCharacterID
+0x00CA7590	ascii	KRLNpcLink::BindingLink
+0x00CA75C0	ascii	KRLNpcLink::BindingNpcLink
+0x00CA7748	ascii	KRLNpcLink::BindCharacter
+0x00CA7768	ascii	pcszSocketName
+0x00CA7780	ascii	m_listBindInfo[i].eState == erlLinkState_Enter || m_listBindInfo[i].eState == erlLinkState_None
+0x00CA7820	ascii	KRLNpcLink::UnbindCharacter
+0x00CA7848	ascii	KRLNpcLink::BindToMounts
+0x00CA7868	ascii	prlBindSocketModel
+0x00CA7890	ascii	KRLNpcLink::UnBindToMounts
+0x00CA79D0	ascii	m_listBindInfo[erlLinkPos_First].pCharacter
+0x00CA7A08	ascii	IsPlayer(m_listBindInfo[erlLinkPos_First].dwCharacterID)
+0x00CA8A98	ascii	KRLSummit::UpdateSocket
+0x00CA8AB8	ascii	KRLSummit::LoadSocket
+0x00CA9BA0	ascii	KRLRushState::GetTransSocketParam
+0x00CA9C00	ascii	dwSocketType < PLAYER_RUSH_SOCKET_TYPE_COUNT
+0x00CA9C38	ascii	KRLRushState::GetSocketParam
+0x00CAA288	ascii	KRLRushState::UpdateSocketParam
+0x00CAA2B0	ascii	KRLRushState::IsSocketParamChanged
+0x00CAA2E0	ascii	pSocketParam
+0x00CAA300	ascii	KRLRushState::LoadSocket
+0x00CAA320	ascii	KRLRushState::UpdateTransSocket
+0x00CAA348	ascii	KRLRushState::UpdateTransSocketParam
+0x00CAA378	ascii	pTransSocketParam
+0x00CAA390	ascii	KRLRushState::UnloadSocket
+0x00CAA3B0	ascii	pcszPreSocketName
+0x00CAA3C8	ascii	pcszTransSocketName
+0x00CAB598	ascii	KRLShadow::UpdateSocket
+0x00CABC18	ascii	ConnectionID
+0x00CAC248	ascii	KRLCharacter::PlaySocketSFX
+0x00CAC280	ascii	m_SocketSfx.cpSfxData
+0x00CAC2A0	ascii	socket sfx
+0x00CAC2E0	ascii	KRLCharacter::ClearCharacterRLECSSfxBySocket
+0x00CAC438	ascii	KRLCharacter::PlaySocketAnimation
+0x00CAC460	ascii	nCastID >= 0 && nCastID < RL_SOCKET_ANIMATION_COUNT
+0x00CAC4A0	ascii	!cstr_path_null(SocketParam.pszSocketAni[nCastID])
+0x00CACA40	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\src\case\actionobject\krlcharacter.cpp,KRLCharacter::HideSocket:5712
+0x00CACB18	ascii	KRLCharacter::UpdateSelectSheathPose
+0x00CAD190	ascii	KRLCharacter::UpdatePlayerWeaponSocket
+0x00CAD1C0	ascii	szSheathSocket
+0x00CAD1D8	ascii	szWeaponSocket
+0x00CAD1F0	ascii	KRLCharacter::UpdateNPCWeaponSocket
+0x00CAD430	ascii	Character Load Socket[%s] Failed, SocketIndex(%d), ObjectType(%d), ModelID(%d)
+0x00CAD600	ascii	KRLCharacter::UpdateSocket
+0x00CAD620	ascii	KRLCharacter::UpdateSocketTransform
+0x00CAD650	ascii	cnSocektIndex >= 0 && cnSocektIndex < CHARACTER_SOCKET_COUNT
+0x00CAD6A0	ascii	pRLSocketModel
+0x00CAD7C8	ascii	KRLCharacter::ResetSelectable
+0x00CAD7F0	ascii	KRLCharacter::SetSelectable
+0x00CAD8A8	ascii	KRLCharacter::LoadSocket
+0x00CAD920	ascii	KRLCharacter::ParseSocket
+0x00CADB68	ascii	KRLCharacter::UpdateExtendSocket
+0x00CADCC0	ascii	KRLCharacter::PlayUnBindSkillEffectResultSFX
+0x00CADDB0	ascii	KRLCharacter::UnloadWeaponSocket
+0x00CAEBC0	ascii	KRLCharacter::BindSfx
+0x00CAEC00	ascii	KRLCharacter::OnChannelSkillStart
+0x00CAF0F4	ascii	Socket
+0x00CAF470	ascii	KRLCharacter::GetPlayerSocketOffset
+0x00CAFBA0	ascii	KRLCharacter::ChangePlayerWeaponSelect
+0x00CAFC00	ascii	KRLCharacter::ResetSelectSheathPose
+0x00CAFC98	ascii	dwIndex < RL_WEAPON_ANIMATION_SOCKET_COUNT
+0x00CB0188	ascii	KRLCharacter::LoadSocketDynamicSFX
+0x00CB01B8	ascii	KRLCharacter::UpdateSocketDynamicObject
+0x00CB01F0	ascii	m_nSelectWeapon < RL_EQUIP_WEAPON_COUNT && m_nSelectWeapon >= RL_EQUIP_WEAPON_HEAVY
+0x00CB0700	ascii	KRLCharacter::UpdatePlayerEquipSFXForceBindToBone
+0x00CB17D8	ascii	KRLRideLink::Rebinding
+0x00CB17F8	ascii	KRLRideLink::PullRideRebinding
+0x00CB1A28	ascii	m_listBindInfo[erlLinkPos_First].pCharacter == nullptr
+0x00CB1A70	ascii	m_listBindInfo[erlLinkPos_Second].pCharacter == nullptr
+0x00CB1B58	ascii	KRLRideLink::UnbindCharacter
+0x00CB1BA8	ascii	KRLRideLink::ForceRebind
+0x00CB1DF8	ascii	KRLDoodad::SetSelectable
+0x00CB1FB8	ascii	KRLDoodad::LoadCorpseSocket
+0x00CB2240	ascii	m_prlFaceDefinition->BindTo(m_rlActorHelper.GetRLModel(), "s_face")
+0x00CB2398	ascii	KRLDoodad::BindSfx
+0x00CB2820	ascii	m_prlModel->BindTo(m_pCharacter->m_rlActor.GetRLModel(), "s_face")
+0x00CB2D38	ascii	KRLLocalCharacter::UpdateListener
+0x00CB3648	ascii	cnSokcketIndex >= 0 && cnSokcketIndex < CHARACTER_SOCKET_COUNT
+0x00CB36E0	ascii	m_sPreviewEquipData[i].sCustomData.nSocketIndex != cnSokcketIndex
+0x00CB3798	ascii	KRLLocalCharacter::EquipSocketApplyLogicTransform
+0x00CB3938	ascii	KRLMannedSpace::BindCharacter
+0x00CB3988	ascii	KRLMannedSpace::UnbindCharacter
+0x00CB3A40	ascii	KRLMannedSpace::SetSelectable
+0x00CB3C30	ascii	SocketName
+0x00CB3C40	ascii	szSocketName
+0x00CB3C50	ascii	ColorChannel
+0x00CB52A8	ascii	KRLRepresentCharacter::LoadSockets
+0x00CB52D8	ascii	rlScoket.nIndex < CHARACTER_SOCKET_COUNT
+0x00CB5740	ascii	prlSocket->nIndex < CHARACTER_SOCKET_COUNT
+0x00CB5778	ascii	KRLRepresentCharacter::LoadSocket
+0x00CB57A0	ascii	prlSocket
+0x00CB57C0	ascii	KRLRepresentCharacter::AttachToSocket
+0x00CB5B78	ascii	BindToHorse
+0x00CB5D40	ascii	KRLRide::LoadSockets
+0x00CB5D60	ascii	KRLRide::PlaySocketAnimation
+0x00CB5D88	ascii	KRLRide::LoadSocketSFX
+0x00CB5DA8	ascii	KRLRide::LoadSocket
+0x00CB5DC0	ascii	KRLRide::UnloadSocket
+0x00CB5E20	ascii	KRLRide::BindCharacter
+0x00CB5E40	ascii	KRLRide::UnbindCharacter
+0x00CB6140	ascii	KRLRide::SetSelectable
+0x00CB6228	ascii	KRLRide::IsBindCharacter
+0x00CB62C0	ascii	HideSocket
+0x00CB6588	ascii	KRLRide::UpdateCharacterSocketVisible
+0x00CB6960	ascii	KRLRide::CheckBindRustAnimation
+0x00CB6DC8	ascii	KRLSfx::Bind
+0x00CB6DD8	ascii	szAdjustSocketName
+0x00CB74B8	ascii	KRLTarget::BeginTargetLightningConnection
+0x00CB74F0	ascii	pTargetLightningConnection
+0x00CB7510	ascii	pSFXConnection
+0x00CB7528	ascii	KRLTarget::UpdateTargetLightningConnection
+0x00CB7560	ascii	KRLTarget::EndTargetLightningConnection
+0x00CB7590	ascii	pConnection
+0x00CB75A0	ascii	KRLTarget::BeginLanternConnection
+0x00CB75C8	ascii	KRLTarget::UpdateLanternConnection
+0x00CB75F8	ascii	KRLTarget::EndLanternConnection
+0x00CB7888	ascii	unbind
+0x00CB7CC0	ascii	RLHenchman::Select
+0x00CB8188	ascii	RLHenchmanMgr::Unselect
+0x00CB81A8	ascii	RLHenchmanMgr::Select
+0x00CB8370	ascii	RLVehicle::Rebind
+0x00CB8670	ascii	RLVehicle::Bind
+0x00CB8690	ascii	RLVehicle::Unbind
+0x00CBB680	ascii	KRLCustomSfxMgr::UpdatePlayerEquipSFXForceBindToBone
+0x00CBB990	ascii	ChannelSeparate
+0x00CBC968	ascii	CustomProtocol::Send
+0x00CBC9D0	ascii	CustomProtocol::Recv
+0x00CBCA04	ascii	Recv
+0x00CBCA10	ascii	PB.Recv must be function
+0x00CBCA30	ascii	error running function PB.Recv: %s
+0x00CBCDD8	ascii	SKILL_CHANNEL
+0x00CBCE88	ascii	CUSTOM_CHANNEL
+0x00CBD118	ascii	OTACTION_SKILL_CHANNEL
+0x00CBD1C8	ascii	OTACTION_CUSTOM_CHANNEL
+0x00CBD9B8	ascii	LuaGetSocketTransform
+0x00CBDD18	ascii	LuaDummyMutualBind
+0x00CBE410	ascii	GetSocketTransform
+0x00CBE508	ascii	DummyMutualBind
+0x00CBF1C8	ascii	nSelectWeapon
+0x00CBFC94	ascii	send
+0x00CC2970	ascii	socketUpdate
+0x00CC2980	ascii	shadowColorChannel
+0x00CC2A60	ascii	mtlColorChannel
+0x00CC3220	ascii	KGameWorldHandler::SelectPtInScene
+0x00CC3260	ascii	KGameWorldHandler::SelectPtInGround
+0x00CC3290	ascii	KGameWorldHandler::SelectRayPtInGround
+0x00CC3528	ascii	KGameWorldHandler::SetSceneObjectSelectable
+0x00CC37A8	ascii	KGameWorldHandler::GetPlayerSocketDynamicSFXResource
+0x00CC3A20	ascii	KGameWorldHandler::ShowSelectionSFX
+0x00CC3A50	ascii	KGameWorldHandler::HideSelectionSFX
+0x00CC3B48	ascii	KGameWorldHandler::ShowTargetSelectionSFX
+0x00CC3B80	ascii	KGameWorldHandler::HideTargetSelectionSFX
+0x00CC4298	ascii	KGameWorldHandler::BindSfxToCharacter
+0x00CC42C8	ascii	KGameWorldHandler::UnbindSfxFromCharacter
+0x00CC4300	ascii	KGameWorldHandler::BindSfxToDoodad
+0x00CC4330	ascii	KGameWorldHandler::UnbindSfxFromDoodad
+0x00CC4F40	ascii	KGameWorldHandler::OnNewNpcSocketInfo
+0x00CC4F70	ascii	dwSocketIndex < erlLinkPos_Count || (dwSocketIndex >= 10000 && dwSocketIndex - 10000 < erlLinkPos_Count)
+0x00CC5058	ascii	KGameWorldHandler::OnSyncNpcSocketInfo
+0x00CC5188	ascii	KGameWorldHandler::GetPlayerSocketOffset
+0x00CC51C0	ascii	KGameWorldHandler::OnGetCharacterPoseStateSocket
+0x00CC5200	ascii	pPoseStateSocket
+0x00CC5218	ascii	KGameWorldHandler::OnGetCharacterSheathTypeSocket
+0x00CC5258	ascii	pSheathTypeSocket
+0x00CC55F0	ascii	KGameWorldHandler::OnPlayChannelSkill
+0x00CC5650	ascii	KGameWorldHandler::OnBindCharacterSlot
+0x00CC5680	ascii	KGameWorldHandler::OnUnBindCharacterSlot
+0x00CC7F60	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleDisconnect:1537
+0x00CC8030	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleReconnected:1556
+0x00CC9920	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSetObjectSelectable:2296
+0x00CC9A00	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleShowSelectedSFX:2315
+0x00CC9AD0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleHideSelectedSFX:2334
+0x00CC9D40	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleShowTargetSelectedSFX:2391
+0x00CC9E20	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleHideTargetSelectedSFX:2410
+0x00CCBBB0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleChannelSkill:3173
+0x00CCCFD0	ascii	skill channel
+0x00CCD040	ascii	custom channel
+0x00CCE750	ascii	SocketLOD0Distance
+0x00CCE768	ascii	SocketLOD1Distance
+0x00CCF978	ascii	TargetLightningConnection
+0x00CD07C8	ascii	RideLinkBindSocket
+0x00CD0990	ascii	PlayerSocketAnimation
+0x00CD0B28	ascii	PlayerSocketOffset
+0x00CD0F50	ascii	NPCAnimationBindSocketModel
+0x00CD1208	ascii	PlayerSocketDynamicObjectModel
+0x00CD1278	ascii	NpcUniformSocketModel
+0x00CD1740	ascii	PlayerEquipSFXForceBindAnimation
+0x00CD1948	ascii	PlayerSocketDynamicSfx
+0x00CD1B10	ascii	RideLinkAnimationSocket
+0x00CD1B30	ascii	m_pRideLinkAnimationSocketFile
+0x00CD1B58	ascii	m_tabRideLinkAnimationSocket
+0x00CD1D18	ascii	PlayerAnimationSocketHideConfig
+0x00CD1D40	ascii	m_pPlayerAniSocketHideConfig
+0x00CD1D68	ascii	m_tabPlayerAniSocketHideConfig
+0x00CD2458	ascii	PlayerExtendSocketAdjust
+0x00CD2478	ascii	m_pPlayerExtendSocketAdjust
+0x00CD24A0	ascii	m_tabPlayerExtendSocketAdjust
+0x00CD2790	ascii	SelectionEnhance
+0x00CD27A8	ascii	m_pSelectionEnhance
+0x00CD27C0	ascii	m_tabSelectionEnhance
+0x00CD3A10	ascii	KTableList::LoadRidesEquipAndSocketModel
+0x00CD3AB8	ascii	SOCKET_CONFIG_FILE_NAME
+0x00CD3AD8	ascii	nValue == MODEL_RIDES_SOCKET_COUNT
+0x00CD3B70	ascii	(m_pRidesSocketModel[nIndex])
+0x00CD3C20	ascii	SHEATH_SOCKET_LH
+0x00CD3C38	ascii	SHEATH_SOCKET_RH
+0x00CD3C50	ascii	EXTRA_SHEATH_SOCKET_DART
+0x00CD3C70	ascii	EXTRA_SHEATH_SOCKET_RACK
+0x00CD5438	ascii	BindModelConfig
+0x00CD5768	ascii	KTableList::InitNpcUniformSocketModel
+0x00CD7EC8	ascii	bBind
+0x00CD7EE8	ascii	bRejectSocketScale
+0x00CD7F60	ascii	szBindSocket
+0x00CD8688	ascii	GetRidesSocketModel
+0x00CD86A0	ascii	pSocket
+0x00CD86B0	ascii	GetNpcSocketByAnimation
+0x00CD8E58	ascii	pResource->szBindPos
+0x00CD9010	ascii	ForceBindInfo
+0x00CD90C0	ascii	BindBone
+0x00CD9368	ascii	EquipTransformIndex2SocketIndex
+0x00CD9390	ascii	SocketIndex2EquipTransformIndex
+0x00CD93B8	ascii	RepresentPos2SocketIndex
+0x00CD9F58	ascii	pbyCompress
+0x00CDA398	ascii	hlbs::AppliqueModel::_Compress
+0x00CDA410	ascii	hlbs::AppliqueModel::_Decompress
+0x00CDA698	ascii	uDataLen >= pSubModelHeader->uCompressSize + ruUseSize
+0x00CDA6E0	ascii	byUnCompressData
+0x00CDA6F8	ascii	uUnCompressSize == uSubDataSize
+0x00CE0EA8	ascii	KRLHomelandBuilder::SelectModelList
+0x00CE3708	ascii	m_setSelectModels.size() > 0
+0x00CE4098	ascii	KRLHomelandBuilder::_InsertSelectModelList
+0x00CE40D0	ascii	KRLHomelandBuilder::_EraseSelectModelList
+0x00CE4108	ascii	KRLHomelandBuilder::SetSelected
+0x00CE4130	ascii	KRLHomelandBuilder::SetCtrlSelected
+0x00CE4160	ascii	KRLHomelandBuilder::DragOverSelect
+0x00CE4190	ascii	KRLHomelandBuilder::SelectAll
+0x00CE41B8	ascii	KRLHomelandBuilder::SelectByRLID
+0x00CE4C58	ascii	!m_setSelectModels.empty()
+0x00CE5078	ascii	KRLHomelandBuilder::DestroyAllSelectedModels
+0x00CE6280	ascii	KRLHomelandGizmo::ShowSelectedFrame
+0x00CE6A60	ascii	socket_P%d
+0x00CE8620	ascii	SceneInteraction::InteractionManager::GetFurnitureSocketTransform
+0x00CE8670	ascii	strlen(szSocket) > 2 && (szSocket[0] == 'S' || szSocket[0] == 's') && szSocket[1] == '_'
+0x00CE8D58	ascii	SceneInteraction::Interactor::BindSlotActor
+0x00CE8EB8	ascii	SceneInteraction::Interactor::CharacterBind
+0x00CE8EF0	ascii	SceneInteraction::Interactor::CharacterUnbind
+0x00CE8F28	ascii	SceneInteraction::Interactor::DummyBind
+0x00CE8F58	ascii	m_mapSocketDummy.find(strSocket) == m_mapSocketDummy.end()
+0x00CE8FB0	ascii	SceneInteraction::Interactor::DummyUnbind
+0x00CE8FE8	ascii	it != m_mapSocketDummy.end()
+0x00CE9010	ascii	SceneInteraction::Interactor::_SocketDummyLoaded
+0x00CE9060	ascii	::BindTo(pi3DModel, m_piModel, strSocket)
+0x00CE9368	ascii	SceneInteraction::Interactor::GetSocketTransform
+0x00CE94C0	ascii	CharacterBind
+0x00CE94D0	ascii	CharacterUnbind
+0x00CE94E8	ascii	DummyBind
+0x00CE94F8	ascii	DummyUnbind
+0x00CE9508	ascii	UnbindAllDummy
+0x00CE9578	ascii	BindSlotActor
+0x00CE9870	ascii	SceneInteraction::Interactor::LuaCharacterBind
+0x00CE98A8	ascii	SceneInteraction::Interactor::LuaCharacterUnbind
+0x00CE98E8	ascii	SceneInteraction::Interactor::LuaDummyBind
+0x00CE9920	ascii	SceneInteraction::Interactor::LuaDummyUnbind
+0x00CE9A58	ascii	SceneInteraction::Interactor::LuaBindSlotActor
+0x00CE9A90	ascii	szSocketName && szSocketName[0] != '\0'
+0x00CE9F10	ascii	SFXSocketName
+0x00CEA080	ascii	GetFurnitureSocketTransform
+0x00CEA3C8	ascii	C_GetFurnitureSocketTransform
+0x00CEA980	ascii	bySelectWeapon
+0x00CEABA0	ascii	nSelectTargetType
+0x00CEAC98	ascii	dwSelectTargetID
+0x00CEAF70	ascii	KRLECSPool::BindComponent
+0x00CF13E0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_SET_OBJECT_SELECT
+0x00CF1440	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_SET_OBJECT_SELECT
+0x00CF14A0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_SET_OBJECT_SELECT
+0x00CF3A10	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CHANNEL_SKILL
+0x00CF3A60	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CHANNEL_SKILL
+0x00CF3AB0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CHANNEL_SKILL
+0x00CF3D50	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_BIND_CHARACTER_SLOT
+0x00CF3DB0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_BIND_CHARACTER_SLOT
+0x00CF3E10	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_BIND_CHARACTER_SLOT
+0x00CF3E70	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_UNBIND_CHARACTER_SLOT
+0x00CF3ED0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_UNBIND_CHARACTER_SLOT
+0x00CF3F30	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_UNBIND_CHARACTER_SLOT
+0x00CFE730	ascii	pmsEndJumpIdle
+0x00CFF1F0	ascii	KREPRESENT_EVENT_RECONNECTED
+0x00CFF218	ascii	KREPRESENT_EVENT_DISCONNECT
+0x00D05168	ascii	KREPRESENT_EVENT_UNBIND_CHARACTER_SLOT
+0x00D05198	ascii	KREPRESENT_EVENT_BIND_CHARACTER_SLOT
+0x00D05320	ascii	KREPRESENT_EVENT_CHANNEL_SKILL
+0x00D05E30	ascii	KREPRESENT_EVENT_HIDE_SELECTED_SFX
+0x00D05E60	ascii	KREPRESENT_EVENT_SHOW_SELECTED_SFX
+0x00D05E90	ascii	KREPRESENT_EVENT_SET_OBJECT_SELECT
+0x00D063A8	ascii	pRigBindPose
+0x00D069F0	ascii	RLActorPerspectiveSystem::ParamListener
+0x00D07310	ascii	RLSfxSystem::BindSocket
+0x00D07330	ascii	pSfxComponent->szSocket
+0x00D07410	ascii	RLSfxSystem::UpdateChannelEffect
+0x00D07450	ascii	RLSfxSystem::UpdateChannelEffectAndParticle
+0x00D076A8	ascii	RLSfxSystem::ParamListener
+0x00D07A38	ascii	RLSprintSystem::ParamListener
+0x00D07B8D	ascii	$tHBindTransform
+0x00D07BA0	ascii	UnbindTransform
+0x00D097D0	ascii	BindRLECSSFXSocket
+0x00D09830	ascii	SetRLECSSFXChannelEffectPos
+0x00D09858	ascii	SetRLECSSFXChannelEffectPosAndUpdateParticle
+0x00D0A288	ascii	CreateSceneObjectListEntity
+0x00D0C1B0	ascii	pCharacterCamera->pRLArrowsActor
+0x00D0CD88	ascii	Convert Npc Uniform Socket From [%s] To [%s]
+0x00D0E3C8	ascii	CharacterLightSocket
+0x00D0E3E8	ascii	cpszSocketName
+0x00EA42E8	ascii	.?AVIKRustBroadcastListener@@
+0x00EA4AD8	ascii	.?AV_ModelSocketInfo@@
+0x00EAE2F0	ascii	.?AVKRLSocketDynamicSFX@@
+0x00EAEB90	ascii	.?AVIKMovieEventListener@@
+0x00EAEC28	ascii	.?AVKRLSocketDynamicObject@@
+0x00EAF860	ascii	.?AU?$_InitialTaskHandle@XV<lambda_55e3b852b1defc35c7a6cbaabb1dbf84>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@
+0x00EAF920	ascii	.?AU?$_PPLTaskHandle@EU?$_InitialTaskHandle@XV<lambda_55e3b852b1defc35c7a6cbaabb1dbf84>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@U_TaskProcHandle@details@3@@details@Concurrency@@
+0x00EC17C0	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLActorPerspectiveSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC19F0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLActorPerspectiveSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC1B00	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLFullBodyIKSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC1CE0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLFullBodyIKSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC1E70	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLReplaySystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC2040	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLReplaySystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC2200	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLSfxSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC23B0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLSfxSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC2510	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLSprintSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC26D0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLSprintSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC27D0	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLUGCSceneSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC28C0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLUGCSceneSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00FDFAFA	ascii	?BindInstance@Context@behaviac@@QEAA_NPEBDPEAVAgent@2@@Z
+0x00FDFB36	ascii	?UnbindInstance@Context@behaviac@@QEAA_NPEBD@Z
+
+## prediction_correction (566)
+0x00C7F268	ascii	timetick
+0x00C7F8A0	ascii	solverFlag
+0x00C7F8B0	ascii	solverFlagUnevenTerrian
+0x00C7F8D0	ascii	solverFlagTwoBone
+0x00C7FC48	ascii	inputDeltaTime
+0x00C7FD00	ascii	inputCharacterTrajectoryDeltaPos
+0x00C7FD28	ascii	inputCharacterTrajectoryDeltaQuat
+0x00C7FDB0	ascii	UpdateBackend
+0x00C805F8	ascii	SetCharacterLightTransformFlags
+0x00C80DD8	ascii	Events::Replay::RECORD_STATE
+0x00C80E00	ascii	Events::Replay::GET_RECORD_STATE
+0x00C80E28	ascii	Events::Replay::BEGIN_REPLAY
+0x00C80E50	ascii	Events::Replay::END_REPLAY
+0x00C80E70	ascii	Events::Replay::GET_REPLAY_STATE
+0x00C80E98	ascii	Events::Replay::SCENE_STATE
+0x00C80EC0	ascii	Events::Replay::GET_SCENE_STATE
+0x00C80EE8	ascii	Events::Replay::PUSH_EVENT
+0x00C80F08	ascii	Events::Replay::PUSH_SKILL_EFFECT
+0x00C80F30	ascii	Events::Replay::PAUSE_STATE
+0x00C80F58	ascii	Events::Replay::SAVE
+0x00C80F78	ascii	Events::Replay::LOAD
+0x00C80F98	ascii	Events::Replay::SET_SPEED
+0x00C80FB8	ascii	Events::Replay::SET_SLIDE
+0x00C80FD8	ascii	Events::Replay::LOGIC_READY
+0x00C81000	ascii	Events::Replay::LOGIC_HEADER_DATA
+0x00C81028	ascii	Events::Replay::SET_AUTO_SWITCH_CAMERA
+0x00C811D8	ascii	nStackNum >= 0
+0x00C81560	ascii	HasValidSprintTrack
+0x00C81788	ascii	pBackgroundEntity
+0x00C819B0	ascii	SetTransformFlags
+0x00C81EB8	ascii	KRLAnimationFeedBackTag::Apply
+0x00C81EE0	ascii	KRLAnimationFeedBackTag::Init
+0x00C81F08	ascii	KRLAnimationFeedBackTag::ApplyFreezeMotionTag
+0x00C81F58	ascii	KRLAnimationFeedBackTag::ApplyBeHitShakeTag
+0x00C81FA8	ascii	KRLAnimationFeedBackTag::ApplySkillMoveCameraTag
+0x00C82008	ascii	KRLAnimationFeedBackTag::Finish
+0x00C83530	ascii	OnReplayDynamicWeather
+0x00C83568	ascii	OnClearPauseMovieCameraFlag
+0x00C84090	ascii	OnSetCameraDeltaHeight
+0x00C841E8	ascii	EnableCameraTrackBlur
+0x00C84998	ascii	OnSetRideFadeOutFlag
+0x00C86208	ascii	disable remote character interpolate
+0x00C86A90	ascii	Replay dynamicWeather
+0x00C86AC8	ascii	clear pause movie camera flag
+0x00C87598	ascii	enable camera track blur
+0x00C87CF0	ascii	set ride fade out flag
+0x00C88A10	ascii	replay -record
+0x00C88A28	ascii	replay -replay
+0x00C88A40	ascii	replay -pause
+0x00C88A50	ascii	replay -remote camera
+0x00C88A70	ascii	replay -reset camera
+0x00C88A90	ascii	replay -save
+0x00C88AA0	ascii	replay -load
+0x00C88AB0	ascii	replay -speed
+0x00C88AC0	ascii	replay -slide
+0x00C88AD0	ascii	replay -logic ready
+0x00C88AE8	ascii	replay -auto switch camera
+0x00C88EB0	ascii	reset ground track
+0x00C88EC8	ascii	disable body reshaping
+0x00C8CB70	ascii	Callback
+0x00C8EAA0	ascii	RLActorNT::SetModelSfxPositionOnlyFlag
+0x00C8EB50	ascii	S_SetThreadSafeVisibleCallback
+0x00C8ED10	ascii	RLActorNT::SetPartCallbackAnimation
+0x00C8F240	ascii	m_rlCallback.Init()
+0x00C8FE70	ascii	!((uintptr_t)pBackgroundArgs ^ (uintptr_t)request.pBackgroundArgs)
+0x00C907E0	ascii	body reshaping count
+0x00C90938	ascii	actor flag
+0x00C90C5C	ascii	track
+0x00C90E18	ascii	no mapping
+0x00C91450	ascii	scene object flag
+0x00C91568	ascii	doodad flag
+0x00C91580	ascii	render flag
+0x00C917F8	ascii	animation update call back
+0x00C91840	ascii	callback fun
+0x00C91850	ascii	callback param
+0x00C91940	ascii	actor callback type
+0x00C91958	ascii	actor callback obj
+0x00C91970	ascii	actor callback op
+0x00C91DE0	ascii	KRLAnimationFactory::CreateFeedBackTag
+0x00C92980	ascii	pFeedBackTag
+0x00C93410	ascii	UpBodyHighTrackFinish
+0x00C93430	ascii	UpBodyLowerTrackFinish
+0x00C93450	ascii	WholeBodyHighTrackFinish
+0x00C93618	ascii	remapping
+0x00C93648	ascii	RLCombiResourcesMgr::LoadCombiModelCallback
+0x00C98710	ascii	LOGICAL_TRIGGER_CALLBACK
+0x00C99300	ascii	RL_WEAPON_RACK
+0x00C99318	ascii	BACK_EXTEND
+0x00C99418	ascii	SHEATH_RACK
+0x00C9ABD0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\Backend\RLBackend.cpp,SO3RL::BindTo:519
+0x00C9BB80	ascii	dwRoleType <= rtTotal
+0x00C9C980	ascii	SetLinearDamping
+0x00C9C998	ascii	SetAngularDamping
+0x00C9CBC8	ascii	PhysxComponent::LuaSetLinearDamping
+0x00C9CC10	ascii	PhysxComponent::LuaSetAngularDamping
+0x00C9DED8	ascii	playback
+0x00C9F5E8	ascii	SetForceHideFlag
+0x00CA0DF0	ascii	KRLIllusionVideoMgr::StartVideo Bgm Error Because EndTime <= StartTime
+0x00CA26E8	ascii	DeltaLen
+0x00CA4EE0	ascii	RLGroundTrack::Init
+0x00CA50E8	ascii	RLGroundTrack::InsertPosition
+0x00CA5130	ascii	pGroundTrackModel
+0x00CA5150	ascii	pGroundTrackModel->nPointCount > 0 && pGroundTrackModel->nPointCount <= 4
+0x00CA51A8	ascii	RLGroundTrack::UpdateMoveStateChange
+0x00CA51D8	ascii	RLGroundTrack::BFSPosition
+0x00CA5240	ascii	RLGroundTrack::SyncTrackNode
+0x00CA6C50	ascii	KRLObjectLink::SetTaniIKTagApplyFlag
+0x00CA9E48	ascii	KRLRushState::UpBodyHighTrackAnimationFinish
+0x00CA9E80	ascii	KRLRushState::DownBodyLowTrackAnimationFinish
+0x00CAA718	ascii	KRLRushState::UpdateTreadTargetFeedback
+0x00CAB5D8	ascii	pMotionCallBackExtraInfo
+0x00CAC948	ascii	EnableNpcBodyReshaping
+0x00CADB50	ascii	BackExtend
+0x00CAE110	ascii	KRLCharacter::UpBodyHighTrackAnimationFinish
+0x00CAE148	ascii	KRLCharacter::UpBodyLowTrackAnimationFinish
+0x00CAE180	ascii	KRLCharacter::DownBodyHighTrackAnimationFinish
+0x00CAE1B8	ascii	KRLCharacter::DownBodyLowTrackAnimationFinish
+0x00CAE1F0	ascii	KRLCharacter::WholeBodyHighTrackAnimationFinish
+0x00CAE230	ascii	KRLCharacter::WholeBodyLowTrackAnimationFinish
+0x00CAE268	ascii	KRLCharacter::UpdateUpBodyLowTrackAnimationOffset
+0x00CAE2A8	ascii	KRLCharacter::UpdateDownBodyLowTrackAnimationOffset
+0x00CAE2E8	ascii	KRLCharacter::UpdateWholeBodyLowTrackAnimationOffset
+0x00CAF3A8	ascii	pRidesTrackModel
+0x00CAF858	ascii	KRLCharacter::SetRepresentHideFlag
+0x00CAF888	ascii	eType >= prhtBackCloakModel && eType < prhtTotal
+0x00CAFD30	ascii	KRLCharacter::SetBodyReshapingParams
+0x00CAFD60	ascii	pnBodyReshapingParam
+0x00CB09A8	ascii	effect_interpolate_speed
+0x00CB0C88	ascii	WeatherSubTrackName
+0x00CB2750	ascii	_Test_Flag
+0x00CB33A0	ascii	KRLLocalCharacter::UpdateCameraTrackBlur
+0x00CB4010	ascii	KRLPainting::PaintBackwardLocus
+0x00CB41B8	ascii	BackwardStepCount
+0x00CB41D0	ascii	m_PaintParam.nBackStepCount
+0x00CB4298	ascii	BackwardOffset
+0x00CB5A48	ascii	MaxDistanceBackward
+0x00CB5A70	ascii	DeltaMoveSpeed
+0x00CB8AC0	ascii	BodyReshaping
+0x00CB9698	ascii	UpdateBlackList
+0x00CB96B0	ascii	KRLMovie::AddMovieUpdateBlackList
+0x00CB96F8	ascii	KRLMovie::ClearMovieUpdateBlackList
+0x00CB9E30	ascii	KRLScene::SetCurrentPackageIndex
+0x00CBA2C0	ascii	KRLSceneMgr::UpdateBackend
+0x00CBBA60	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\actionobject\KDynamicWeather.cpp,KDynamicWeather::EnableInterpolate:722
+0x00CBBC00	ascii	pCallBackData
+0x00CBCB88	ascii	ON_KNOCKED_BACK
+0x00CBD078	ascii	KNOCK_BACK
+0x00CBD658	ascii	RL_PHYSIC_CONTACT_FLAGS
+0x00CBD678	ascii	stack traceback:
+0x00CBEB00	ascii	[Script newindex] SetFunc invalid. call stack:
+0x00CBEF60	ascii	ms_nArgStkId <= MAX_STACK
+0x00CBF1D8	ascii	bSprintFlag
+0x00CBF218	ascii	bParkourFlag
+0x00CBF228	ascii	bSlideSprintFlag
+0x00CBF250	ascii	bSheathFlag
+0x00CBF7D0	ascii	pack
+0x00CBF930	ascii	unpack
+0x00CBF950	ascii	packed
+0x00CBFAC0	ascii	packed 
+0x00CC00A4	ascii	delta
+0x00CC1FF0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\src\case\gameworld\kgameworldhandler.cpp,KGameWorldHandler::UpdateBackend:221
+0x00CC20B8	ascii	KGameWorldHandler::UpdateBackend
+0x00CCC160	ascii	krlEventAdaptor::HandlePostReplayData
+0x00CCC190	ascii	unEventLen == sizeof(STKREPRESENT_EVENT_POST_REPLAY_DATA)
+0x00CCC2C8	ascii	krlEventAdaptor::HandleCharacterBodyReshaping
+0x00CCC3B0	ascii	krlEventAdaptor::HandleUpdateRepresentHideFlag
+0x00CCC710	ascii	GetAdjustWaterDelta
+0x00CCC910	ascii	pfDeltaY != nullptr
+0x00CCCA48	ascii	eType >= ctet_back_extend && eType < ctet_count
+0x00CCCAC8	ascii	KRLCharacterFrameData::SetBodyReshapingParams
+0x00CCCB00	ascii	nCount <= (int)BODY_RESHAPING_PARAM_COUNTS
+0x00CCCBE8	ascii	KRLLocalCharacterFrameData::Interpolate
+0x00CCCC40	ascii	KRLRemoteCharacterFrameData::Interpolate
+0x00CCCF58	ascii	knock back
+0x00CCDC30	ascii	NPCLookAtInterpolateTime
+0x00CCDC50	ascii	NPCLookAtDeltaDistance
+0x00CCDE00	ascii	OptimizationStartTime
+0x00CCE1C8	ascii	CarrierCameraDeltaHeight
+0x00CCE448	ascii	SprintCameraMinTrackBackSpeed
+0x00CCE470	ascii	SprintCameraMaxTrackBackSpeed
+0x00CCE498	ascii	SprintCameraTrackBackSpeedSlope
+0x00CCE8B0	ascii	FocusFaceExitDisDelta
+0x00CCF238	ascii	KTableList::GetPlayerAnimationTrackType
+0x00CCF268	ascii	dwKindID < m_PlayerAnimationTracks[nAnimationTrack].nTrackType
+0x00CCF2F0	ascii	dwPreviousAnimationKindID < m_PlayerAnimationTracks[nAnimationTrack].nTrackType
+0x00CCF350	ascii	dwCurrentAnimationKindID < m_PlayerAnimationTracks[nAnimationTrack].nTrackType
+0x00CCF800	ascii	PhysicFolderBlack
+0x00CCFB10	ascii	PlayerLinkBlack
+0x00CCFBE8	ascii	SprintTrack
+0x00CCFC10	ascii	SFXOptimizeBlackList
+0x00CD0098	ascii	PlayerNormalAttackAdjust
+0x00CD0848	ascii	IntersectFeedback
+0x00CD0E70	ascii	GroundTrackModel
+0x00CD1608	ascii	NpcInterpolationDirection
+0x00CD27E0	ascii	KRLSprintTrack
+0x00CD27F8	ascii	m_pSprintTrack
+0x00CD2810	ascii	m_tabSprintTrack
+0x00CD2D80	ascii	nValue == rtTotal
+0x00CD2F20	ascii	NpcTreadFeedback
+0x00CD2FA0	ascii	PlayerTreadFeedback
+0x00CD37B0	ascii	PlayerGroundTrackBone
+0x00CD37D0	ascii	KTableList::LoadPlayerGroundTrackBone
+0x00CD3810	ascii	m_PlayerGroundTrackBone.nBoneCount <= MAX_PLAYER_GROUND_TRACK_BONE_COUNT
+0x00CD3878	ascii	m_PlayerGroundTrackBone.nDeepDiffusion >= 0
+0x00CD38C0	ascii	m_PlayerGroundTrackBone.nXDiffusion >= 0
+0x00CD3930	ascii	m_PlayerGroundTrackBone.sBoneInfo[i].nZLength > 0
+0x00CD3C70	ascii	EXTRA_SHEATH_SOCKET_RACK
+0x00CD4BA0	ascii	m_PlayerAnimationTracks[nAnimationTrack].pTrackType
+0x00CD4BE0	ascii	m_PlayerAnimationTracks[nAnimationTrack].pRelation
+0x00CD4EF0	ascii	KTableList::GetTrackBlurEffectTable
+0x00CD4F20	ascii	TrackBlurEffect
+0x00CD5258	ascii	represent\npc\npc_no_mapping.txt
+0x00CD52E0	ascii	represent\common\uneven_terrain_IK_blacklist.txt
+0x00CD5320	ascii	KTableList::LoadUnevenTerrainIKBlackList
+0x00CD56B0	ascii	PhysicFileBlack
+0x00CD56C8	ascii	KTableList::InitPhysicFileBlack
+0x00CD6C68	ascii	m_NpcTreadFeedbackModels
+0x00CD6C88	ascii	m_PlayerTreadFeedbackModels
+0x00CD80F0	ascii	nMaxStack
+0x00CD8840	ascii	KnockBack
+0x00CD8898	ascii	DashBackward
+0x00CD88E0	ascii	DashBackwardIdle
+0x00CD8930	ascii	RepulsedBackward
+0x00CD8978	ascii	SkidBackward
+0x00CD89D8	ascii	JumpingOnce
+0x00CD8A18	ascii	JumpingTwice
+0x00CD8A60	ascii	SwimBackward
+0x00CD8AD0	ascii	FlyBackward
+0x00CD8B60	ascii	WalkBackward
+0x00CD8B88	ascii	WalkFightBackward
+0x00CD8BA0	ascii	RunBackward
+0x00CD8BC8	ascii	RunFightBackward
+0x00CD8C38	ascii	MissileFixedTrackFrameTable
+0x00CD8C60	ascii	LoadFixedTrackMissileFrameFile
+0x00CD9110	ascii	PositionOnlyFlag
+0x00CD9190	ascii	pBackExtendModel
+0x00CDB618	ascii	m_bPatternFlag[byPatternID] == false
+0x00CDF2E0	ascii	m_piSNE->Model_SetFlags(hTerrainModel, eKG3DSNMF_TerrainHoleModel)
+0x00CDF3E0	ascii	m_piSNE->Model_SetFlags(hWater, eKG3DSNMF_WaterModel)
+0x00CE12A8	ascii	KRLHomelandBuilder::_GetBOPPack
+0x00CE12D0	ascii	pPack
+0x00CE1310	ascii	_GetBOPPack(pBrushModel, pPack)
+0x00CE1398	ascii	pPack->nCreatePointer < _countof(pPack->arrCreatedContainer)
+0x00CE1418	ascii	pPack->nOriginPointer < _countof(pPack->arrOriginContainers)
+0x00CE4700	ascii	m_piSNE->Model_SetFlags(hModel, eKG3DSNMF_TerrainHoleModel)
+0x00CE4748	ascii	m_piSNE->Model_SetFlags(hModel, eKG3DSNMF_WaterModel)
+0x00CE5218	ascii	KRLHomelandBuilder::PackUpModelGroup
+0x00CEA830	ascii	bOnParachuteFlag
+0x00CEA848	ascii	bFlyFlag
+0x00CEA898	ascii	bHangFlag
+0x00CEA8A8	ascii	bDriftFlag
+0x00CEA900	ascii	bNotIgnoreFlag
+0x00CEA930	ascii	bSprintKickFlag
+0x00CEA960	ascii	byFightFlag
+0x00CEAB08	ascii	nVehicleTrack
+0x00CEC548	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_RLReplaySkillEffect
+0x00CEC588	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_RLReplaySkillEffect
+0x00CEC5C8	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_RLReplaySkillEffect
+0x00CEC7F0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKLOGIC_EVENT_3DOBJ_API_CALL_BACK
+0x00CEC850	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKLOGIC_EVENT_3DOBJ_API_CALL_BACK
+0x00CEC8B0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKLOGIC_EVENT_3DOBJ_API_CALL_BACK
+0x00CF4980	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_POST_REPLAY_DATA
+0x00CF49E0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_POST_REPLAY_DATA
+0x00CF4A40	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_POST_REPLAY_DATA
+0x00CF4AA0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CHARACTER_BODY_RESHPING
+0x00CF4B00	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CHARACTER_BODY_RESHPING
+0x00CF4B60	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CHARACTER_BODY_RESHPING
+0x00CF4CE0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_UPDATE_REPRESENT_HIDE_FLAG
+0x00CF4D40	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_UPDATE_REPRESENT_HIDE_FLAG
+0x00CF4DA0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_UPDATE_REPRESENT_HIDE_FLAG
+0x00CFE3E8	ascii	pcmsOnKnockedBack
+0x00CFE8C8	ascii	prtTotal
+0x00CFEB20	ascii	dwTrack < _countof(m_SerialAniParam)
+0x00CFFBD8	ascii	KLOGIC_EVENT_3DOBJ_API_CALL_BACK
+0x00D000C0	ascii	nBodyReshapingParams
+0x00D00520	ascii	const char *__cdecl rttr::detail::f<nullptr>(void) noexcept
+0x00D00638	ascii	const char *__cdecl rttr::detail::f<void>(void) noexcept
+0x00D006D0	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<float>>(void) noexcept
+0x00D00740	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<float>*>(void) noexcept
+0x00D007B0	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<float const >>(void) noexcept
+0x00D00830	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<float const >*>(void) noexcept
+0x00D008B0	ascii	const char *__cdecl rttr::detail::f<const float*>(void) noexcept
+0x00D00900	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<class hlbs::Transform *>>(void) noexcept
+0x00D00980	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<class hlbs::Transform *>*>(void) noexcept
+0x00D00A00	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<unsigned long>>(void) noexcept
+0x00D00A80	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<unsigned long>*>(void) noexcept
+0x00D00B00	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<unsigned long const >>(void) noexcept
+0x00D00BB0	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<unsigned long const >*>(void) noexcept
+0x00D00C30	ascii	const char *__cdecl rttr::detail::f<const unsigned long*>(void) noexcept
+0x00D00C90	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<signed char>>(void) noexcept
+0x00D00D00	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<signed char>*>(void) noexcept
+0x00D00D70	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<signed char const >>(void) noexcept
+0x00D00DF0	ascii	const char *__cdecl rttr::detail::f<classstd::reference_wrapper<signed char const >*>(void) noexcept
+0x00D00E70	ascii	const char *__cdecl rttr::detail::f<const signed char*>(void) noexcept
+0x00D010E0	ascii	const char *__cdecl rttr::detail::f<struct std::char_traits<char>>(void) noexcept
+0x00D01500	ascii	const char *__cdecl rttr::detail::f<class std::allocator<char>>(void) noexcept
+0x00D01560	ascii	const char *__cdecl rttr::detail::f<class std::allocator<class hlbs::Transform *>>(void) noexcept
+0x00D01CF8	ascii	const char *__cdecl rttr::detail::f<bool>(void) noexcept
+0x00D01D40	ascii	const char *__cdecl rttr::detail::f<char>(void) noexcept
+0x00D01D90	ascii	const char *__cdecl rttr::detail::f<signed char>(void) noexcept
+0x00D01DE0	ascii	const char *__cdecl rttr::detail::f<short>(void) noexcept
+0x00D01E28	ascii	const char *__cdecl rttr::detail::f<int>(void) noexcept
+0x00D01E70	ascii	const char *__cdecl rttr::detail::f<__int64>(void) noexcept
+0x00D01EC0	ascii	const char *__cdecl rttr::detail::f<unsigned char>(void) noexcept
+0x00D01F10	ascii	const char *__cdecl rttr::detail::f<unsigned short>(void) noexcept
+0x00D01F60	ascii	const char *__cdecl rttr::detail::f<unsigned int>(void) noexcept
+0x00D01FB0	ascii	const char *__cdecl rttr::detail::f<unsigned __int64>(void) noexcept
+0x00D02008	ascii	const char *__cdecl rttr::detail::f<float>(void) noexcept
+0x00D02098	ascii	const char *__cdecl rttr::detail::f<double>(void) noexcept
+0x00D020E0	ascii	const char *__cdecl rttr::detail::f<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >>(void) noexcept
+0x00D02210	ascii	const char *__cdecl rttr::detail::f<class Mathematics::BoundingBox>(void) noexcept
+0x00D02280	ascii	const char *__cdecl rttr::detail::f<class FMATRIX4>(void) noexcept
+0x00D022D0	ascii	const char *__cdecl rttr::detail::f<class FQUATERNION>(void) noexcept
+0x00D02330	ascii	const char *__cdecl rttr::detail::f<class FVECTOR3>(void) noexcept
+0x00D02380	ascii	const char *__cdecl rttr::detail::f<class hlbs::Object>(void) noexcept
+0x00D023E0	ascii	const char *__cdecl rttr::detail::f<class hlbs::Transform>(void) noexcept
+0x00D02440	ascii	const char *__cdecl rttr::detail::f<class RLCmdMgr>(void) noexcept
+0x00D02490	ascii	const char *__cdecl rttr::detail::f<struct KRL_CHARACTER_BASE_NOEQUIP>(void) noexcept
+0x00D02500	ascii	const char *__cdecl rttr::detail::f<struct KRL_CHARACTER_STATE_DATA>(void) noexcept
+0x00D02570	ascii	const char *__cdecl rttr::detail::f<enum KLOGIC_AND_REP_EVENT>(void) noexcept
+0x00D025D0	ascii	const char *__cdecl rttr::detail::f<float[16]>(void) noexcept
+0x00D02620	ascii	const char *__cdecl rttr::detail::f<float[4]>(void) noexcept
+0x00D02670	ascii	const char *__cdecl rttr::detail::f<float[3]>(void) noexcept
+0x00D026C0	ascii	const char *__cdecl rttr::detail::f<enum hlbs::ObjectType>(void) noexcept
+0x00D02720	ascii	const char *__cdecl rttr::detail::f<unsigned long>(void) noexcept
+0x00D02770	ascii	const char *__cdecl rttr::detail::f<enum hlbs::ObjectRepresentTags>(void) noexcept
+0x00D02820	ascii	const char *__cdecl rttr::detail::f<classhlbs::Transform*>(void) noexcept
+0x00D02880	ascii	const char *__cdecl rttr::detail::f<class std::vector<class hlbs::Transform *,class std::allocator<class hlbs::Transform *> >>(void) noexcept
+0x00D02930	ascii	const char *__cdecl rttr::detail::f<class nonstd::sv_lite::basic_string_view<char,struct std::char_traits<char> >>(void) noexcept
+0x00D029D0	ascii	const char *__cdecl rttr::detail::f<unsigned long[4]>(void) noexcept
+0x00D02A28	ascii	const char *__cdecl rttr::detail::f<char[64]>(void) noexcept
+0x00D02A78	ascii	const char *__cdecl rttr::detail::f<char[32]>(void) noexcept
+0x00D02AD0	ascii	const char *__cdecl rttr::detail::f<signed char[31]>(void) noexcept
+0x00D02B28	ascii	const char *__cdecl rttr::detail::f<int*>(void) noexcept
+0x00D02B70	ascii	const char *__cdecl rttr::detail::f<signed char*>(void) noexcept
+0x00D02BC0	ascii	const char *__cdecl rttr::detail::f<unsigned int*>(void) noexcept
+0x00D02C10	ascii	const char *__cdecl rttr::detail::f<unsigned char*>(void) noexcept
+0x00D02C60	ascii	const char *__cdecl rttr::detail::f<float*>(void) noexcept
+0x00D02CA8	ascii	const char *__cdecl rttr::detail::f<bool*>(void) noexcept
+0x00D02CF0	ascii	const char *__cdecl rttr::detail::f<classhlbs::Object*>(void) noexcept
+0x00D03C60	ascii	const char *__cdecl rttr::detail::f<classrttr::variant*>(void) noexcept
+0x00D03CC0	ascii	const char *__cdecl rttr::detail::f<class rttr::variant>(void) noexcept
+0x00D03D60	ascii	const char *__cdecl rttr::detail::f<signed char(*)[31]>(void) noexcept
+0x00D03DC0	ascii	const char *__cdecl rttr::detail::f<unsigned long(*)[4]>(void) noexcept
+0x00D03F00	ascii	const char *__cdecl rttr::detail::f<classstd::vector<class hlbs::Transform *,class std::allocator<class hlbs::Transform *> >*>(void) noexcept
+0x00D03FB0	ascii	const char *__cdecl rttr::detail::f<classFQUATERNION*>(void) noexcept
+0x00D04010	ascii	const char *__cdecl rttr::detail::f<classFMATRIX4*>(void) noexcept
+0x00D04060	ascii	const char *__cdecl rttr::detail::f<classMathematics::BoundingBox*>(void) noexcept
+0x00D040D0	ascii	const char *__cdecl rttr::detail::f<unsigned long*>(void) noexcept
+0x00D04120	ascii	const char *__cdecl rttr::detail::f<enumhlbs::ObjectRepresentTags*>(void) noexcept
+0x00D04190	ascii	const char *__cdecl rttr::detail::f<enumhlbs::ObjectType*>(void) noexcept
+0x00D041F0	ascii	const char *__cdecl rttr::detail::f<float(*)[3]>(void) noexcept
+0x00D04240	ascii	const char *__cdecl rttr::detail::f<float(*)[4]>(void) noexcept
+0x00D04290	ascii	const char *__cdecl rttr::detail::f<float(*)[16]>(void) noexcept
+0x00D042E0	ascii	const char *__cdecl rttr::detail::f<classFVECTOR3*>(void) noexcept
+0x00D04330	ascii	const char *__cdecl rttr::detail::f<enumKLOGIC_AND_REP_EVENT*>(void) noexcept
+0x00D04390	ascii	const char *__cdecl rttr::detail::f<classstd::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >*>(void) noexcept
+0x00D04710	ascii	KREPRESENT_EVENT_UPDATE_REPRESENT_HIDE_FLAG
+0x00D04890	ascii	KREPRESENT_EVENT_POST_REPLAY_DATA
+0x00D050D0	ascii	KREPRESENT_EVENT_CHARACTER_BODY_RESHPING
+0x00D05A58	ascii	KREPRESENT_EVENT_UISCENE_UPDATE_FLAG
+0x00D06F08	ascii	REPLAY_SYSTEM_NOTIFY
+0x00D06F28	ascii	RLReplaySystem::PushEvent
+0x00D06F60	ascii	RLReplaySystem::PushSkillEffectResult
+0x00D06F90	ascii	[RL Replay] %s
+0x00D06FA8	ascii	RLReplaySystem::PostRecordData
+0x00D06FD0	ascii	pReplayComponent
+0x00D06FE8	ascii	RLReplaySystem::PostLogicHeaderData
+0x00D07068	ascii	RLECS::RLComponentArray<struct RLReplayComponent>::GetData
+0x00D070B0	ascii	RLECS::RLComponentArray<struct RLReplayComponent>::InsertData
+0x00D07250	ascii	RLSfxSystem::ProcessReplay
+0x00D07650	ascii	RLSfxSystem::ProcessSetReplaytimes
+0x00D07900	ascii	RLSprintSystem::ParkourUpdateQueryTrackPoints
+0x00D08508	ascii	RLECS::RLComponentArray<struct RLReplayComponent>::RemoveData
+0x00D08978	ascii	SO3RL::GetReplay3DScene
+0x00D08F00	ascii	CameraMaxDeltaYaw
+0x00D08F18	ascii	CameraMaxDeltaPitch
+0x00D09900	ascii	SetRLECSSFXReplayTimes
+0x00D0A970	ascii	CreateBackgroundHierarchy
+0x00D0A990	ascii	g_pBackgroundHierarchy
+0x00D0A9F0	ascii	StartBackgroundEntitySession
+0x00D0AA18	ascii	StopBackgroundEntitySession
+0x00D0AA40	ascii	StartBackgroundComponentSession
+0x00D0AA68	ascii	StopBackgroundComponentSession
+0x00D0AD98	ascii	InterpolateType
+0x00D0BD10	ascii	RollTurnBackAcceleration
+0x00D0BD88	ascii	TrackBlurSampleStrength
+0x00D0BDA8	ascii	TrackBlurSampleDist
+0x00D0BDC0	ascii	DoneEnableTrackBlurEffect
+0x00D0BF28	ascii	UpdateTrackBlurEffectParam
+0x00D0BFD0	ascii	EnableTrackBlurEffect
+0x00D0C010	ascii	pfDeltaYaw
+0x00D0C450	ascii	CreateNewReplayScene
+0x00D0C470	ascii	DeleteReplayScene
+0x00D0C488	ascii	pReplayRLScene
+0x00D0C4A0	ascii	pReplayRLScene->m_p3DScene
+0x00D0C808	ascii	RLEvent.RLReplaySkillEffect
+0x00D0C8E0	ascii	uLeftSize >= sizeof(RLReplaySaveNodeHeader) + cpSkillData->uLength
+0x00D0C950	ascii	uLeftSize >= sizeof(RLReplaySaveNodeHeader) + cpRecordData->uLength
+0x00D0C9F8	ascii	uWriteLen == ulzSize + sizeof(RLReplaySaveHeader)
+0x00D0CA60	ascii	pHeader->nVersion == RLREPLAY_CURRENT_VERSION
+0x00D0CA98	ascii	uFileSize - sizeof(RLReplaySaveHeader) == pHeader->ulzLength
+0x00D0CAE8	ascii	uFileSize - sizeof(RLReplaySaveHeader) == pHeader->uLength
+0x00D0CB48	ascii	uLeftSize >= sizeof(RLReplaySaveNodeHeader)
+0x00D0CB80	ascii	uLeftSize >= sizeof(RLReplaySaveNodeHeader) + pNodeHeader->uLength
+0x00D0D460	ascii	[RL Sprint] Get track ID failed. Height: %.2fm, Width: %.2fm
+0x00D0D4B0	ascii	[RL Sprint] Try get sprint track ani failed. (TrackID: %d)
+0x00D0D648	ascii	TrackCameraFrameMove
+0x00D0DB60	ascii	pTrackCamera
+0x00D0DC70	ascii	ComputeMouseMoveDelta
+0x00D0DCE0	ascii	pfRetDeltaYaw
+0x00D0DCF0	ascii	pfRetDeltaPitch
+0x00D0E6B0	ascii	InterpolateDirection
+0x00D0EF70	ascii	stack overflow (%s)
+0x00D0F338	ascii	stack overflow
+0x00D0F358	ascii	C stack overflow
+0x00D12070	ascii	const char *__cdecl rttr::detail::f<void*>(void) noexcept
+0x00D120C0	ascii	const char *__cdecl rttr::detail::f<class rttr::type>(void) noexcept
+0x00D12120	ascii	const char *__cdecl rttr::detail::f<classrttr::type*>(void) noexcept
+0x00D12178	ascii	const char *__cdecl rttr::detail::f<__int64*>(void) noexcept
+0x00D121C8	ascii	const char *__cdecl rttr::detail::f<short*>(void) noexcept
+0x00D12210	ascii	const char *__cdecl rttr::detail::f<unsigned __int64*>(void) noexcept
+0x00D12270	ascii	const char *__cdecl rttr::detail::f<unsigned short*>(void) noexcept
+0x00D122C8	ascii	const char *__cdecl rttr::detail::f<double*>(void) noexcept
+0x00D12310	ascii	const char *__cdecl rttr::detail::f<char*>(void) noexcept
+0x00D12360	ascii	const char *__cdecl rttr::detail::f<class std::reference_wrapper<class rttr::variant>>(void) noexcept
+0x00D12530	ascii	const char *__cdecl rttr::detail::f<class rttr::detail::metadata>(void) noexcept
+0x00D125A0	ascii	const char *__cdecl rttr::detail::f<classrttr::detail::metadata*>(void) noexcept
+0x00E98EA8	ascii	.PEAURLReplaySkillEffectData@@
+0x00E98F20	ascii	.?AV?$holder@PEAURLReplaySkillEffectData@@@any@any_lite@nonstd@@
+0x00E99078	ascii	.?AVKRLAnimationFeedBackTag@@
+0x00EAD4A0	ascii	.?AURollback@detail@util@@
+0x00EAD4E0	ascii	.?AU?$RollbackImpl@V<lambda_70de07e2289fc46962e61c81a4fd6193>@@@detail@util@@
+0x00EAE3A8	ascii	.?AUBackupCameraState@?A0xe2f0a99f@@
+0x00EAE4F0	ascii	.?AUITicker@rl_ab@@
+0x00EAE550	ascii	.?AU?$RollbackImpl@V<lambda_20f3357845e4f71912ebbd568b4837d0>@@@detail@util@@
+0x00EAE5C0	ascii	.?AU?$RollbackImpl@V<lambda_f59aa511ee8b299ed8c192b1132f15c0>@@@detail@util@@
+0x00EAE630	ascii	.?AU?$Variant@UBackupCameraState@?A0xe2f0a99f@@@_variant_internal@@
+0x00EAE6A0	ascii	.?AU?$RollbackImpl@V<lambda_179da7438a69b6264a1e22fed1413838>@@@detail@util@@
+0x00EAE710	ascii	.?AU?$RollbackImpl@V<lambda_2e27189a74a8fce762ef1c6af2e1fde0>@@@detail@util@@
+0x00EAEC90	ascii	.?AVRLGroundTrack@@
+0x00EAF1D0	ascii	.?AV?$_CancellationTokenCallback@V<lambda_be3e5d9dce35d2c8dbfa8485373731d5>@@@details@Concurrency@@
+0x00EAF740	ascii	.?AV?$_Packaged_state@$$A6AXXZ@std@@
+0x00EB0BA0	ascii	.?AU?$RollbackImpl@V<lambda_8bbc3b856b5520d92dbfc0c619debd8d>@@@detail@util@@
+0x00EB10B0	ascii	.?AURLActorCallback@@
+0x00EB1108	ascii	.?AURLActorDoodadCallback@@
+0x00EB2AA0	ascii	.?AV_Node_back@std@@
+0x00EB3490	ascii	.?AU?$RollbackImpl@V<lambda_e9fb9b0313dcfd529c72457f79c3d20b>@@@detail@util@@
+0x00EB3500	ascii	.?AU?$RollbackImpl@V<lambda_8e89658b7084df896f1be05ec482b120>@@@detail@util@@
+0x00EB35A0	ascii	.?AU?$RollbackImpl@V<lambda_12b20c192a7dacd58eaa8eaa18fff8f1>@@@detail@util@@
+0x00EB3690	ascii	.?AU?$RollbackImpl@V<lambda_4b9e2fe089404d0c7b87beb38b3683bd>@@@detail@util@@
+0x00EB3780	ascii	.?AU?$RollbackImpl@V<lambda_c16a20a3db7871d1d65f33191a938400>@@@detail@util@@
+0x00EB3870	ascii	.?AU?$RollbackImpl@V<lambda_adcd58dc4f76f0f385f6fc71cb8435fd>@@@detail@util@@
+0x00EB3960	ascii	.?AU?$RollbackImpl@V<lambda_60c51377b33b1a391cc475f7cebc1cbe>@@@detail@util@@
+0x00EB3A50	ascii	.?AU?$RollbackImpl@V<lambda_c3888c5075a1346d7253f740ddd1bc81>@@@detail@util@@
+0x00EB3B40	ascii	.?AU?$RollbackImpl@V<lambda_3a91d6ad475ee69bc5b47fc6c139aaef>@@@detail@util@@
+0x00EB3C30	ascii	.?AU?$RollbackImpl@V<lambda_4f95540bc224b1d22eeb9bbc23efc274>@@@detail@util@@
+0x00EB3D20	ascii	.?AU?$RollbackImpl@V<lambda_04e19dd37ed829d30cf972554ee89a0f>@@@detail@util@@
+0x00EB3E10	ascii	.?AU?$RollbackImpl@V<lambda_4c8b0aaabc3e29202e682cdaac609200>@@@detail@util@@
+0x00EB3F00	ascii	.?AU?$RollbackImpl@V<lambda_401734d8503fb48a585d90f4c670cbba>@@@detail@util@@
+0x00EB3FF0	ascii	.?AU?$RollbackImpl@V<lambda_da4ae55af5cd982e4a620738793ff5f8>@@@detail@util@@
+0x00EB40E0	ascii	.?AU?$RollbackImpl@V<lambda_1300824ace97cbcd29565746336f2426>@@@detail@util@@
+0x00EB41D0	ascii	.?AU?$RollbackImpl@V<lambda_462b3fa1dd04a46d5094d231521b2096>@@@detail@util@@
+0x00EBCB38	ascii	.?AVCRTTIBase@behaviac@@
+0x00EBCCC0	ascii	.?AVparameter_info_wrapper_base@detail@rttr@@
+0x00EBCD10	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_STATE_DATA@@PEQ4@MX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBCDE8	ascii	.?AVproperty_wrapper_base@detail@rttr@@
+0x00EBCE30	ascii	.?AV?$metadata_handler@$0A@@detail@rttr@@
+0x00EBCE80	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_STATE_DATA@@PEQ4@KX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBCF60	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_STATE_DATA@@PEQ4@HX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD040	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_STATE_DATA@@PEQ4@EX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD120	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_STATE_DATA@@PEQ4@_NX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD200	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@Y0BP@CX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD2E0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@Y0CA@DX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD3C0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@Y0EA@DX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD4A0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@Y03KX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD580	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@KX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD660	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@HX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD740	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@EX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD820	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@UKRL_CHARACTER_BASE_NOEQUIP@@PEQ4@_NX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBD900	ascii	.?AV?$parameter_info_wrapper@V?$basic_string_view@DU?$char_traits@D@std@@@sv_lite@nonstd@@$0A@Uno_param_name@detail@rttr@@X@detail@rttr@@
+0x00EBD9C0	ascii	.?AV?$method_wrapper@P8RLCmdMgr@@EAAHV?$basic_string_view@DU?$char_traits@D@std@@@sv_lite@nonstd@@@ZV1@$0A@Udefault_invoke@detail@rttr@@U?$default_args@$$V@67@U?$parameter_infos@V?$parameter_info_wrapper@V?$basic_string_view@DU?$char_traits@D@std@@@sv_lite@nonstd@@$0A@Uno_param_name@detail@rttr@@X@detail@rttr@@@67@$0A@U?$type_list@$$V@7@@detail@rttr@@
+0x00EBDB80	ascii	.?AVmethod_wrapper_base@detail@rttr@@
+0x00EBDBC0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VTransform@hlbs@@PEQ45@V?$vector@PEAVTransform@hlbs@@V?$allocator@PEAVTransform@hlbs@@@std@@@std@@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBDCF0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VTransform@hlbs@@PEQ45@PEAV45@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBDDD0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VTransform@hlbs@@PEQ45@VFQUATERNION@@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBDEB0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VTransform@hlbs@@PEQ45@VFVECTOR3@@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBDF90	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VTransform@hlbs@@PEQ45@HX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE060	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VTransform@hlbs@@PEQ45@VFMATRIX4@@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE140	ascii	.?AV?$parameter_info_wrapper@AEAVFVECTOR3@@$0A@Uno_param_name@detail@rttr@@X@detail@rttr@@
+0x00EBE1C0	ascii	.?AV?$method_wrapper@P8Transform@hlbs@@EBAXAEAVFVECTOR3@@@ZV12@$0A@Udefault_invoke@detail@rttr@@U?$default_args@$$V@56@U?$parameter_infos@V?$parameter_info_wrapper@AEAVFVECTOR3@@$0A@Uno_param_name@detail@rttr@@X@detail@rttr@@@56@$0A@U?$type_list@$$V@6@@detail@rttr@@
+0x00EBE320	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@HX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE3F0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@VBoundingBox@Mathematics@@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE4E0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@IX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE5B0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@EX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE680	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@_NX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE750	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@W4ObjectRepresentTags@5@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE840	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@W4ObjectType@5@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE920	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VObject@hlbs@@PEQ45@KX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBE9F0	ascii	.?AV?$method_wrapper@P8Object@hlbs@@EAAPEAV12@XZV12@$0A@Udefault_invoke@detail@rttr@@U?$default_args@$$V@45@U?$parameter_infos@$$V@45@$0A@U?$type_list@$$V@5@@detail@rttr@@
+0x00EBEAE0	ascii	.?AV?$parameter_info_wrapper@I$0A@Uno_param_name@detail@rttr@@X@detail@rttr@@
+0x00EBEB50	ascii	.?AV?$method_wrapper@P8Object@hlbs@@EAAPEAV12@I@ZV12@$0A@Udefault_invoke@detail@rttr@@U?$default_args@$$V@45@U?$parameter_infos@V?$parameter_info_wrapper@I$0A@Uno_param_name@detail@rttr@@X@detail@rttr@@@45@$0A@U?$type_list@$$V@5@@detail@rttr@@
+0x00EBEC90	ascii	.?AV?$enumeration_wrapper@W4ObjectRepresentTags@hlbs@@$0A@$0A@@detail@rttr@@
+0x00EBED00	ascii	.?AVenumeration_wrapper_base@detail@rttr@@
+0x00EBED50	ascii	.?AV?$enumeration_wrapper@W4ObjectType@hlbs@@$0A@$0A@@detail@rttr@@
+0x00EBEDC0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VFVECTOR3@@PEQ4@Y02MX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBEE90	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VFVECTOR3@@PEQ4@MX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBEF60	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VFQUATERNION@@PEQ4@Y03MX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBF030	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VFQUATERNION@@PEQ4@MX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBF100	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VFMATRIX4@@PEQ4@Y0BA@MX$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBF1D0	ascii	.?AV?$property_wrapper@Umember_object_ptr@detail@rttr@@VBoundingBox@Mathematics@@PEQ45@VFVECTOR3@@X$0A@Ureturn_as_copy@23@Uset_value@23@$0A@U?$type_list@$$V@3@@detail@rttr@@
+0x00EBF2C0	ascii	.?AV?$enumeration_wrapper@W4KLOGIC_AND_REP_EVENT@@$0A@$0A@@detail@rttr@@
+0x00EBF330	ascii	.?AV?$_Ref_count_obj2@Vregistration_executer@detail@rttr@@@std@@
+0x00EBF3A0	ascii	.?AV?$enumeration_wrapper@W4KLOGIC_AND_REP_EVENT@@$0NO@$0A@@detail@rttr@@
+0x00EBF410	ascii	.?AV?$enumeration_wrapper@W4ObjectType@hlbs@@$0L@$0A@@detail@rttr@@
+0x00EBF480	ascii	.?AV?$enumeration_wrapper@W4ObjectRepresentTags@hlbs@@$07$0A@@detail@rttr@@
+0x00EBFDE8	ascii	.?AUreturn_member_func@detail@rttr@@
+0x00EC13D0	ascii	.?AUvoid_member_func@detail@rttr@@
+0x00EC1E38	ascii	.?AURLReplayComponent@@
+0x00EC1E70	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLReplaySystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC1FE0	ascii	.?AV?$RLComponentArray@URLReplayComponent@@@RLECS@@
+0x00EC2040	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLReplaySystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC29E0	ascii	.?AVRLReplaySystem@@
+0x00EC2FB0	ascii	.?AV?$_Ref_count_obj2@V?$RLComponentArray@URLReplayComponent@@@RLECS@@@std@@
+0x00EC3430	ascii	.?AUKRLTrackCameraComponent@@
+0x00EC4150	ascii	.?AV?$_Func_base@_NAEBVconstructor@rttr@@@std@@
+0x00EC41A0	ascii	.?AV?$_Func_base@_NAEBVproperty@rttr@@@std@@
+0x00EC41F0	ascii	.?AV?$_Func_base@_NAEBVmethod@rttr@@@std@@
+0x00EC4240	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_7949857cc05aab74b830bf4a71d61e0f>@@_NAEBVconstructor@rttr@@@std@@
+0x00EC42D0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_614b0612032d07ac7320eabc1b2bf5fb>@@_NAEBVconstructor@rttr@@@std@@
+0x00EC4360	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_8c8dc0dd0bccf8223f20e676a4d8e832>@@_NAEBVproperty@rttr@@@std@@
+0x00EC43F0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_6ef0f37881c5692997e2a91c38a07103>@@_NAEBVmethod@rttr@@@std@@
+0x00EC4480	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_6f87871e4c6499883376a9b628077f25>@@_NAEBVconstructor@rttr@@@std@@
+0x00EC4510	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_7d9613b2d6c5027c23fc2694c5cbe7d2>@@_NAEBVproperty@rttr@@@std@@
+0x00EC45A0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_4c510f457e7b88885f315bb6349056a8>@@_NAEBVproperty@rttr@@@std@@
+0x00EC4630	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_3ebc413cb699e812fe3aebc6cbf29416>@@_NAEBVmethod@rttr@@@std@@
+0x00EC46C0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_c9eb0098b940380ded1ddb4d5220beff>@@_NAEBVmethod@rttr@@@std@@
+0x00EC47F0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_ccd8469e50558ced73c8aba86862e1a8>@@_NAEBVproperty@rttr@@@std@@
+0x00EC4880	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_4561c11590f5ab39832eb1c596ff3006>@@_NAEBVmethod@rttr@@@std@@
+0x00EC4908	ascii	.?AVdestructor_wrapper_base@detail@rttr@@
+0x00EC4950	ascii	.?AVconstructor_wrapper_base@detail@rttr@@
+0x00FDF68E	ascii	?KG_GetTickCount@@YAIXZ
+0x00FDF774	ascii	LuaPackup
+0x00FE0406	ascii	?InitClassLayerInfo@?$TLayerInfoDecl@$00@CRTTIBase@behaviac@@QEAAXPEBDPEBUCLayerInfoBase@23@@Z
+0x00FE0468	ascii	?InitClassLayerInfo@?$TLayerInfoDecl@$01@CRTTIBase@behaviac@@QEAAXPEBDPEBUCLayerInfoBase@23@@Z
+0x00FE063C	ascii	?InitClassLayerInfo@?$TLayerInfoDecl@$02@CRTTIBase@behaviac@@QEAAXPEBDPEBUCLayerInfoBase@23@@Z
+0x00FE09A8	ascii	SetTableCallBackMask
+0x00FE0D9E	ascii	?SetLinearDamping@PxWorld@@QEAAXI_KM@Z
+0x00FE0DC8	ascii	?SetAngularDamping@PxWorld@@QEAAXI_KM@Z
+0x00FE1C6A	ascii	_Xtime_get_ticks
+0x00FE1EEC	ascii	?_Execute_once@std@@YAHAEAUonce_flag@1@P6AHPEAX1PEAPEAX@Z1@Z
+0x00FE20E6	ascii	?_CallInContext@_ContextCallback@details@Concurrency@@QEBAXV?$function@$$A6AXXZ@std@@_N@Z
+0x00FE2142	ascii	?_Reset@_ContextCallback@details@Concurrency@@AEAAXXZ
+0x00FE217A	ascii	?_Capture@_ContextCallback@details@Concurrency@@AEAAXXZ
+0x0101509C	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x010150E4	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0
+0x0101579E	ascii	Mhttp://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S
+0x010157F3	ascii	Mhttp://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0
+0x01015887	ascii	Phttp://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0
+0x01015F57	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x010162FF	ascii	Qhttp://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_
+0x01016363	ascii	Nhttp://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0 
+0x010166CC	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x010169EF	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x01016A37	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0 
+0x01017270	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1
+
+## protocol (43)
+0x00C86E90	ascii	navigate new
+0x00C86EA0	ascii	navigate param
+0x00C86EB8	ascii	navigate go
+0x00C8F3B0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqCharacterDisplayData, this, &RLActorMgrNT::_OnRequestCharacterDisplayData)
+0x00C8F440	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasCharacterDisplayData, this, &RLActorMgrNT::_OnResponseCharacterDisplayData)
+0x00C8F4D0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqRidesDisplayData, this, &RLActorMgrNT::_OnRequestRidesDisplayData)
+0x00C8F560	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasRidesDisplayData, this, &RLActorMgrNT::_OnResponseRidesDisplayData)
+0x00C8F5F0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqRLUnitFile, this, &RLActorMgrNT::_OnRequestRLUnitFile)
+0x00C8F670	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasRLUnitFile, this, &RLActorMgrNT::_OnRespondRLUnitFile)
+0x00C8F6F0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqRLVirtualNPC, this, &RLActorMgrNT::_OnRequestRLVirtualNPC)
+0x00C8F770	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasRLVirtualNPC, this, &RLActorMgrNT::_OnRespondRLVirtualNPC)
+0x00C900B8	ascii	RLAsyncTaskAdapter::dispatch
+0x00C98DD0	ascii	Param.pDispatcher
+0x00C98DE8	ascii	m_pDispatcher == nullptr
+0x00CB7820	ascii	timeout
+0x00CBB170	ascii	KRLCustomSfxMgr::Dispatch
+0x00CBB5A0	ascii	KRLCustomSfxMgr::DispatchPlayerEquipSfx
+0x00CBC968	ascii	CustomProtocol::Send
+0x00CBC9D0	ascii	CustomProtocol::Recv
+0x00CBEE70	ascii	[Script Dispatcher] s_pObjData(%p) or s_pLuaData(%p) invalid.
+0x00CBEEC0	ascii	[Script Dispatcher] pointer invalid.
+0x00CC8030	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleReconnected:1556
+0x00CCDC10	ascii	SkillEffectResultTimeout
+0x00CCE268	ascii	DeathAnimationTimeout
+0x00CCE288	ascii	PauseAnimationTimeout
+0x00CCE2A8	ascii	NavigateEffectID
+0x00CCE2C0	ascii	NavigateInterval
+0x00CCE2D8	ascii	NavigateFadeOut
+0x00CCE2F0	ascii	NavigateOffset
+0x00CD9F68	ascii	hlbs::AppliqueModel::Serialize
+0x00CD9FE8	ascii	hlbs::AppliqueModel::Deserialize
+0x00CDB948	ascii	hlbs::FoliageCoverModel::Serialize
+0x00CDB9A8	ascii	hlbs::FoliageCoverModel::Deserialize
+0x00CDBFD8	ascii	hlbs::FoliageVisibleModel::Serialize
+0x00CDC038	ascii	hlbs::FoliageVisibleModel::Deserialize
+0x00CE5B50	ascii	m_Delegate.Initialize(KRL_HOMELAND_MSG_COUNT)
+0x00CFF1F0	ascii	KREPRESENT_EVENT_RECONNECTED
+0x00D0A9F0	ascii	StartBackgroundEntitySession
+0x00D0AA18	ascii	StopBackgroundEntitySession
+0x00D0AA40	ascii	StartBackgroundComponentSession
+0x00D0AA68	ascii	StopBackgroundComponentSession
+0x00D11180	ascii	additional six characters expected to parse unicode surrogate pair.
+0x00D111E0	ascii	expecting another \u token to begin the second half of a unicode surrogate pair
+
+## domain (2202)
+0x00C7F1E8	ascii	position
+0x00C7F208	ascii	fixed mode position
+0x00C7F280	ascii	subactor
+0x00C7F2E0	ascii	npclist
+0x00C7F2EC	ascii	npcid
+0x00C7F420	ascii	ray cast ti
+0x00C7F430	ascii	ray cast touch
+0x00C7F6E8	ascii	obj remove trigger
+0x00C7F838	ascii	remoteplayerlist
+0x00C7F908	ascii	straightestLegFactor
+0x00C7FC80	ascii	inputAchievedRequestedMovement
+0x00C7FEA8	ascii	ApplyEntityAction
+0x00C7FED8	ascii	pEntity
+0x00C7FEE8	ascii	nAction >= 0 && nAction < _countof(s_EntityActions)
+0x00C7FF50	ascii	GetComponent(pEntity, (KRL_COMPONENT_TYPE)nType) == nullptr
+0x00C7FF98	ascii	CreateEntity
+0x00C7FFD8	ascii	GetChildEntity(pEntity, pszName) == nullptr
+0x00C80010	ascii	pChildEntity
+0x00C802E0	ascii	PlayPlayerAnimation
+0x00C80308	ascii	PlayNPCAnimation
+0x00C803A0	ascii	nMoveStyle >= 0 && nMoveStyle < RL_CONTROL_COUNT
+0x00C803E0	ascii	EnableMouseControlMove
+0x00C80818	ascii	HandleEntityAction
+0x00C80850	ascii	AutoMoveToPoint
+0x00C80868	ascii	AutoMoveToTarget
+0x00C80AE0	ascii	Events::UGCScene::Move::SPEED
+0x00C80B08	ascii	Events::UGCScene::Move::UPDATE
+0x00C80B30	ascii	Events::UGCScene::Param::POSITION
+0x00C80B58	ascii	Events::UGCScene::Param::MOVE_STATE
+0x00C80CC0	ascii	Events::IK::SET_POSITION
+0x00C80D00	ascii	Events::IK::LOOK_AT_SET_POSITION
+0x00C80D28	ascii	Events::ActorPerspective::NPC_ENABLE
+0x00C80D58	ascii	Events::ActorPerspective::OUTLINE_COL
+0x00C80D88	ascii	Events::ActorPerspective::MODE
+0x00C80DB0	ascii	Events::ActorPerspective::RESET
+0x00C80F08	ascii	Events::Replay::PUSH_SKILL_EFFECT
+0x00C81088	ascii	SkillConvexHullEffect
+0x00C810F0	ascii	OnNpcPlayParabolicMove
+0x00C81218	ascii	SkillEffectResult
+0x00C81478	ascii	RemoveSceneFromOutputWindow
+0x00C81578	ascii	GetEntity
+0x00C815F8	ascii	RemoveUISceneFromOutputWindow
+0x00C816B0	ascii	pBuffer
+0x00C81788	ascii	pBackgroundEntity
+0x00C817A0	ascii	pAsyncArgs
+0x00C817B0	ascii	LoadEntityFromFile::<lambda_35bd20e49a903e59b8141bc7c57b3714>::operator ()
+0x00C81810	ascii	LoadEntityFromFile::<lambda_3001c18bda724f848657c62ce7e15ca8>::operator ()
+0x00C81870	ascii	LoadEntityFromFile
+0x00C81BC8	ascii	KRLAnimationDamagePercentageTag::Apply
+0x00C81C30	ascii	KRLAnimationDamagePercentageTag::Init
+0x00C81F58	ascii	KRLAnimationFeedBackTag::ApplyBeHitShakeTag
+0x00C81F90	ascii	pcBeHitShakeModel
+0x00C81FA8	ascii	KRLAnimationFeedBackTag::ApplySkillMoveCameraTag
+0x00C81FE8	ascii	pcSkillMoveCameraConfig
+0x00C82180	ascii	eEntityType == KRL_ENTITY_TYPE::AVATOR || eEntityType == KRL_ENTITY_TYPE::PLAYER || eEntityType == KRL_ENTITY_TYPE::NPC
+0x00C82270	ascii	eActorType > sat_none && eActorType < sat_count
+0x00C822B0	ascii	dwActorID
+0x00C825E0	ascii	eActorType > slt_none && eActorType < slt_count
+0x00C826D8	ascii	nActorType > sat_none && nActorType < sat_count
+0x00C82750	ascii	KRLSoundManager::OnNotifyAddActor
+0x00C82778	ascii	pActorVolume
+0x00C82788	ascii	pActorEventVec
+0x00C827A0	ascii	KRLSoundManager::OnRemoveWwiseSoundObject
+0x00C82868	ascii	KRLSoundManager::_IsActorExist
+0x00C82890	ascii	KRLSoundManager::_GetActorPosAndRotation
+0x00C82A20	ascii	bad cast
+0x00C82A60	ascii	invalid string position
+0x00C82C30	ascii	OnPlayerLink
+0x00C82C50	ascii	prlPlayerLink
+0x00C82CD0	ascii	OnNpcFilterOn
+0x00C82CE0	ascii	OnNpcFilterOff
+0x00C82CF8	ascii	HideAllNpc be Called!
+0x00C82D18	ascii	ShowAllNpc be Called!
+0x00C82D38	ascii	OnSmartShowOrHideNpc
+0x00C82D58	ascii	bShowNpc : %d Current s_nSmartHideAllNpcRef's value : %d
+0x00C82DA0	ascii	OnSmartShowOrHidePlayer
+0x00C82E00	ascii	OnUniformPlayerByCamp
+0x00C82E20	ascii	OnLockNpc
+0x00C82E58	ascii	IS_NPC(dwCharacterID)
+0x00C82E78	ascii	OnUnlockNpc
+0x00C82E88	ascii	OnNPCLookAt
+0x00C82EA0	ascii	OnSetNpcAnimation
+0x00C82EC0	ascii	OnSetNpcFightIdleAniID
+0x00C82EE0	ascii	pRLCharacter->m_EquipResource.nObject == KRL_ENTITY_TYPE::NPC
+0x00C82F30	ascii	OnHideRelationPlayers
+0x00C82F50	ascii	OnShowRelationPlayers
+0x00C82F70	ascii	OnHideRelationNPCs
+0x00C82F88	ascii	OnShowRelationNPCs
+0x00C82FA8	ascii	OnSwitchTopBuffer
+0x00C83050	ascii	hide npc
+0x00C83070	ascii	show npc
+0x00C83080	ascii	OnEnableMergeDamage
+0x00C832E8	ascii	MoveTime
+0x00C832F8	ascii	MoveAnimation
+0x00C83308	ascii	AttachPlayerTime
+0x00C83320	ascii	AttachPlayerAnimation
+0x00C83428	ascii	OnPlayTwoPlayerMovie
+0x00C83640	ascii	OnRemoveDiretionSfx
+0x00C838E8	ascii	OnPlayNpcDialogSound
+0x00C83908	ascii	OnStopAllNpcDialogSound
+0x00C83A48	ascii	_TestSkillBullet
+0x00C83B18	ascii	OnShowNpcCursor
+0x00C83B40	ascii	OnHideNpcCursor
+0x00C83B58	ascii	OnRotateNpcCursor
+0x00C83B70	ascii	OnSetNpcCursorDetail
+0x00C83CA8	ascii	OnSetNpcMaterial
+0x00C83CC0	ascii	pNpcMaterial
+0x00C83E50	ascii	OnSetGasFieldSkillVisible
+0x00C84578	ascii	OnEnablePlayerRushTitle
+0x00C84780	ascii	pClientPlayer
+0x00C84890	ascii	OnPlayMutilPlayerMovie
+0x00C84910	ascii	OnDialogueWithNpc
+0x00C84968	ascii	OnEnableAirCombatCamera
+0x00C849B8	ascii	OnShowOrHidePartyPlayer
+0x00C849D8	ascii	OnShowOrHideOtherPlayer
+0x00C84A50	ascii	OnDisableSkillMoveCamera
+0x00C84E20	ascii	OnSetHomelandCameraMoveSpeed
+0x00C84F10	ascii	OnShowOrHideLocalSkillBuff
+0x00C84F30	ascii	OnShowOrHideLocalBuffAnimation
+0x00C84F80	ascii	LoadNPCSpecial
+0x00C84FA8	ascii	pNpcSpecialModel
+0x00C850C8	ascii	OnEnableAdjustCameraByMove
+0x00C85330	ascii	OnEnableRemotePlayerNamePostfix
+0x00C85358	ascii	OnEnableRemotePlayerNamePostfixDist
+0x00C85388	ascii	OnEnableRemotePlayerNamePostfixForceType
+0x00C853C0	ascii	OnEnableNPCNamePostfixDist
+0x00C855D0	ascii	-lock axiz move
+0x00C85900	ascii	OnSetPlayerControlVisibleByRepresentIndex
+0x00C85940	ascii	nState >= PLAYER_CONTROL_VISIBLE_STATE_NONE && nState < PLAYER_CONTROL_VISIBLE_STATE_COUNT
+0x00C859B0	ascii	OnClearPlayerControlVisibleState
+0x00C85A88	ascii	OnSetPlayerEquipSFXVisible
+0x00C85AB8	ascii	OnPlayActorWwiseSound
+0x00C85AE0	ascii	OnStopActorWwiseSound
+0x00C85B10	ascii	OnSetActorWwiseVolume
+0x00C85BA8	ascii	OnPlaySoundAtPosition
+0x00C85C60	ascii	PlayerAIAnimationID
+0x00C85C78	ascii	pcPlayerAnimationModel
+0x00C85C98	ascii	szPlayerAnimationHD
+0x00C85F30	ascii	OnSetNpcAnimationSpeedScale
+0x00C85F68	ascii	OnPlayPlayerOrNpcAnimation
+0x00C862B8	ascii	switch top buffer
+0x00C86390	ascii	npc filter on
+0x00C863A0	ascii	npc filter off
+0x00C863B8	ascii	hide player
+0x00C863C8	ascii	show player
+0x00C863D8	ascii	player selectable
+0x00C863F0	ascii	player unselectable
+0x00C86408	ascii	show or hide party player
+0x00C86428	ascii	show or hide other player
+0x00C86448	ascii	hide npc title
+0x00C86460	ascii	hide player title
+0x00C86478	ascii	show npc title
+0x00C86490	ascii	show player title
+0x00C864A8	ascii	smart sh npc
+0x00C864B8	ascii	smart sh player
+0x00C864D0	ascii	hide player bird float title
+0x00C864F8	ascii	show player bird float title
+0x00C86558	ascii	set npc fight idle ani id
+0x00C86578	ascii	lock npc
+0x00C86588	ascii	set npc animation
+0x00C865A0	ascii	unlock npc
+0x00C865B0	ascii	set npc lookat
+0x00C865E8	ascii	hide relation player
+0x00C86608	ascii	show relation player
+0x00C86628	ascii	hide relation npc
+0x00C86640	ascii	show relation npc
+0x00C86658	ascii	enable skill animation uniform
+0x00C86680	ascii	disable skill animation uniform
+0x00C86758	ascii	uniform player by camp
+0x00C86800	ascii	enablemergedamage
+0x00C869A8	ascii	play two player movie
+0x00C869C8	ascii	play mutil player movie
+0x00C86AF0	ascii	enable adjust camera by move
+0x00C86CD0	ascii	remove direction sfx
+0x00C87010	ascii	play npc dialog sound
+0x00C87030	ascii	stop npc dialog
+0x00C871E0	ascii	show npc cursor
+0x00C871F8	ascii	hide npc cursor
+0x00C87210	ascii	rotate npc cursor
+0x00C87228	ascii	set npc cursor detail
+0x00C87308	ascii	skill bullet
+0x00C87350	ascii	set player commonmaterial
+0x00C87388	ascii	set npc material
+0x00C87840	ascii	enable player rush title
+0x00C87C60	ascii	dialogue with npc
+0x00C87CC0	ascii	enable aircombat camera
+0x00C87D60	ascii	disable skill move camera
+0x00C87FE8	ascii	set homeland camera move speed
+0x00C880B0	ascii	show or hide local skill buff
+0x00C880D8	ascii	show or hide local buff animation
+0x00C88138	ascii	npc special
+0x00C88328	ascii	enable remote player name postfix
+0x00C88350	ascii	enable remote player name postfix dist
+0x00C88380	ascii	enable remote player name postfix force type
+0x00C883B8	ascii	enable NPC name postfix dist
+0x00C88420	ascii	enable special npc sfx no clip
+0x00C88540	ascii	enable hidden character skill text
+0x00C88570	ascii	set player control visible by rep index
+0x00C885A0	ascii	clear player control visible state
+0x00C885E0	ascii	enable preview local player equip
+0x00C88608	ascii	update preview local player equip transform
+0x00C88640	ascii	set player equip sfx visible
+0x00C88668	ascii	PlayActorWwiseSound
+0x00C88680	ascii	StopActorWwiseSound
+0x00C88698	ascii	SetActorWwiseVolume
+0x00C886F8	ascii	PlaySoundAtPosition
+0x00C88878	ascii	play player or npc animation
+0x00C888E0	ascii	set npc animation speed scale
+0x00C88928	ascii	ob -ap npc
+0x00C88968	ascii	ob -camera move speed
+0x00C88B38	ascii	set remotesimpleskillsfx
+0x00C88D40	ascii	set show remote player
+0x00C88FC0	ascii	set show player title relation
+0x00C88FE8	ascii	set show npc title relation
+0x00C891A0	ascii	enable npc use employer relation
+0x00C891E0	ascii	set actor max lod
+0x00C89328	ascii	create npc shadow
+0x00C89340	ascii	play npc shadow
+0x00C89358	ascii	remove npc shadow
+0x00C895B8	ascii	set day night cycle -sync gs time
+0x00C896C0	ascii	set player weather effect
+0x00C897A0	ascii	set hide all employee npc
+0x00C89820	ascii	invalid bitset<N> position
+0x00C8C4B8	ascii	CameraMovePitchApplyAngle
+0x00C8C4D8	ascii	CameraMovePitchSmoothTime
+0x00C8C4F8	ascii	CameraMovePitchAdjustPitch
+0x00C8C518	ascii	CameraMovePitchAdjustMaxPitch
+0x00C8C540	ascii	CameraMovePitchApplyMaxPitch
+0x00C8C568	ascii	CameraAdjustYawWhenMoveTurn
+0x00C8C590	ascii	CameraAdjustYawWhenMoveTurnDisableAngle
+0x00C8C5C0	ascii	CameraMovePitchApplyTimeInterval
+0x00C8CB3C	ascii	Actor
+0x00C8CB48	ascii	ActorProj
+0x00C8CBA0	ascii	[Memory Buffer] should be found.
+0x00C8CBC8	ascii	[Memory Buffer] _FreeElementAt Error1.
+0x00C8CBF8	ascii	[Memory Buffer] _ConstructPage Error1.
+0x00C8CC28	ascii	[Memory Buffer] GetElement Error1.
+0x00C8CC58	ascii	[Memory Buffer] GetElement Error2.
+0x00C8CC88	ascii	[Memory Buffer] FreeElement Error.
+0x00C8CEB0	ascii	OnPositionChanged
+0x00C8CEC8	ascii	OnCastSkill
+0x00C8CED8	ascii	OnNPCAction
+0x00C8D0F0	ascii	RLResourceLoader::StartLoadNPCFace
+0x00C8D280	ascii	pNpcFaceArgs
+0x00C8D350	ascii	m_nLoadingState.load() == erlrls_wait_async_task
+0x00C8D430	ascii	RLResourceLoader::LoadNPCFace
+0x00C8D578	ascii	pNPCFaceArgs
+0x00C8D6B8	ascii	RLResourceLoaderMgr::StartLoadNPCFace
+0x00C8D8E8	ascii	RLActorHelper::LoadSocket
+0x00C8D968	ascii	RLActorHelper::LoadAllModel
+0x00C8DB68	ascii	RLActorNT::Init
+0x00C8DB90	ascii	RLActorNT::LoadModel
+0x00C8DBB0	ascii	m_prlModel->LoadModel(rLoadModelParam.szModel, rLoadModelParam.szMtl, false, m_ModelLoadArgs, nLoadPriority, rLoadModelParam.bSync, rLoadModelParam.bEmptyModel, m_nLODLevel) != ModelLoadResult::Error
+0x00C8DCA0	ascii	RLActorNT::LoadModelMaterial
+0x00C8DCC8	ascii	RLActorNT::LoadSfx
+0x00C8DCE0	ascii	m_prlModel->LoadModel(rLoadSFXParam.szSFX, nullptr, false, m_ModelLoadArgs, 0, rLoadSFXParam.bSync, false, m_nLODLevel) != ModelLoadResult::Error
+0x00C8DD90	ascii	RLActorNT::LoadPart
+0x00C8DDD0	ascii	it->second.m_prlModel->LoadModel(rLoadPartParam.szModel, rLoadPartParam.szMtl, rLoadPartParam.bCommonMaterial != 0, m_ModelLoadArgs, 0, rLoadPartParam.bSync, false, rLoadPartParam.bSpecialLOD ? m_nSpecialLODLevel : m_nLODLevel) != ModelLoadResult::Error
+0x00C8DF20	ascii	partInfo.m_prlModel->LoadModel(rLoadPartParam.szModel, rLoadPartParam.szMtl, rLoadPartParam.bCommonMaterial != 0, m_ModelLoadArgs, 0, rLoadPartParam.bSync, false, rLoadPartParam.bSpecialLOD ? m_nSpecialLODLevel : m_nLODLevel) != ModelLoadResult::Error
+0x00C8E060	ascii	RLActorNT::_RebindSockets
+0x00C8E0A8	ascii	RLActorNT::LoadPartSFX
+0x00C8E0C8	ascii	nIndex >= 0 && nIndex < RLACTOR_NT_MODEL_PART_INFO_SFX_SIZE
+0x00C8E1B0	ascii	RLActorNT::UnloadPartSFX
+0x00C8E1D0	ascii	RLActorNT::SetPartDetial
+0x00C8E1F0	ascii	RLActorNT::SetPartSubsetVisible
+0x00C8E218	ascii	RLActorNT::SetPartSubsetArgFloat
+0x00C8E240	ascii	RLActorNT::SetPartSubsetArgColor
+0x00C8E268	ascii	RLActorNT::SetPartSubsetArgTexture
+0x00C8E298	ascii	RLActorNT::SetPartVisible
+0x00C8E2B8	ascii	RLActorNT::SetPartPlayerControlVisibleState
+0x00C8E2F8	ascii	RLActorNT::PlayPartAnimation
+0x00C8E330	ascii	RLActorNT::LoadSocket
+0x00C8E350	ascii	it->second.m_prlModel->LoadModel(rLoadSocketParam.szModel, rLoadSocketParam.szMtl, rLoadSocketParam.bCommonMaterial != 0, m_ModelLoadArgs, 0, rLoadSocketParam.bSync, false, bCanLod ? nLODLevel : 0) != ModelLoadResult::Error
+0x00C8E480	ascii	socketInfo.m_prlModel->LoadModel(rLoadSocketParam.szModel, rLoadSocketParam.szMtl, rLoadSocketParam.bCommonMaterial != 0, m_ModelLoadArgs, 0, rLoadSocketParam.bSync, false, bCanLod ? nLODLevel : 0) != ModelLoadResult::Error
+0x00C8E5A0	ascii	RLActorNT::SetSocketVisible
+0x00C8E5C8	ascii	RLActorNT::ChangeSocketName
+0x00C8E5F0	ascii	RLActorNT::LoadSocketMaterial
+0x00C8E618	ascii	RLActorNT::PlaySocketAnimation
+0x00C8E640	ascii	RLActorNT::SetSocketAlwaysRenderTwice
+0x00C8E670	ascii	RLActorNT::LoadSocketSFX
+0x00C8E728	ascii	RLActorNT::UnloadSocketSFX
+0x00C8E748	ascii	RLActorNT::SetSocketDetail
+0x00C8E768	ascii	RLActorNT::HasSocketName
+0x00C8E7A8	ascii	RLActorNT::SetSocketSubsetVisible
+0x00C8E7D0	ascii	RLActorNT::SetSocketSfxMinimalLODLevel
+0x00C8E800	ascii	RLActorNT::SetSocketSfxAlpha
+0x00C8E828	ascii	RLActorNT::SetSocketSfxIntensity
+0x00C8E850	ascii	RLActorNT::SetSocketPlayerControlVisibleState
+0x00C8E888	ascii	RLActorNT::LoadModelSFX
+0x00C8E960	ascii	RLActorNT::UnloadModelSFX
+0x00C8E980	ascii	RLActorNT::HasModelSFX
+0x00C8E9A0	ascii	RLActorNT::SetModelSfxPosition
+0x00C8E9C8	ascii	RLActorNT::SetModelSfxRotation
+0x00C8E9F0	ascii	RLActorNT::SetModelSfxMinimalLODLevel
+0x00C8EA20	ascii	RLActorNT::ModelSfxAdjustWorldDirection
+0x00C8EA50	ascii	RLActorNT::SetModelSfxAlpha
+0x00C8EA78	ascii	RLActorNT::SetModelSfxIntensity
+0x00C8EAA0	ascii	RLActorNT::SetModelSfxPositionOnlyFlag
+0x00C8EAD0	ascii	RLActorNT::AddSubActor
+0x00C8EAF0	ascii	it == m_mapSubActors.end()
+0x00C8EB10	ascii	RLActorNT::RemoveSubActor
+0x00C8EB30	ascii	it != m_mapSubActors.end()
+0x00C8EB78	ascii	g_pActorMgrNT
+0x00C8EB88	ascii	RLActorNT::SetThreadSafeVisible
+0x00C8EBC8	ascii	RLActorNT::EnableForceHideSocket
+0x00C8EC38	ascii	RLActorNT::_OnForceHideSocket
+0x00C8EC60	ascii	RLActorNT::ResumePartAnimaton
+0x00C8ED10	ascii	RLActorNT::SetPartCallbackAnimation
+0x00C8ED50	ascii	RLActorNT::_CreateUnevenTerrainIKSolver
+0x00C8ED90	ascii	RLActorNT::_ModifyAnimationFromUnevenTerrainIK
+0x00C8F1D0	ascii	RLActorMgrNT::Init
+0x00C8F2B0	ascii	m_rlActorBuffer.Init(sizeof(RLActorNT), 1024, 4, cstr_string("Actor"))
+0x00C8F310	ascii	m_rlActorProjBuffer.Init(sizeof(RLActorProj), 1204, 1, cstr_string("ActorProj"))
+0x00C8F3B0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqCharacterDisplayData, this, &RLActorMgrNT::_OnRequestCharacterDisplayData)
+0x00C8F440	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasCharacterDisplayData, this, &RLActorMgrNT::_OnResponseCharacterDisplayData)
+0x00C8F4D0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqRidesDisplayData, this, &RLActorMgrNT::_OnRequestRidesDisplayData)
+0x00C8F560	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasRidesDisplayData, this, &RLActorMgrNT::_OnResponseRidesDisplayData)
+0x00C8F5F0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqRLUnitFile, this, &RLActorMgrNT::_OnRequestRLUnitFile)
+0x00C8F670	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasRLUnitFile, this, &RLActorMgrNT::_OnRespondRLUnitFile)
+0x00C8F6F0	ascii	g_pRL->m_AsyncTask.Delegates.Register(eraqRLVirtualNPC, this, &RLActorMgrNT::_OnRequestRLVirtualNPC)
+0x00C8F770	ascii	g_pRL->m_AsyncTask.Delegates.Register(erasRLVirtualNPC, this, &RLActorMgrNT::_OnRespondRLVirtualNPC)
+0x00C8F7F0	ascii	RLActorMgrNT::CreateRLActorNT
+0x00C8F818	ascii	prlActorNT
+0x00C8F828	ascii	prlActorNT->Init()
+0x00C8F840	ascii	RLActorMgrNT:m_mapRLActorNT
+0x00C8F868	ascii	RLActorMgrNT::_OnRequestCharacterDisplayData
+0x00C8F8A0	ascii	RLActorMgrNT::_OnResponseCharacterDisplayData
+0x00C8F8E8	ascii	RLActorMgrNT::_OnRequestRidesDisplayData
+0x00C8F920	ascii	RLActorMgrNT::_OnResponseRidesDisplayData
+0x00C8F958	ascii	RLActorMgrNT::_OnRequestRLUnitFile
+0x00C8F998	ascii	RLActorMgrNT::_OnRespondRLUnitFile
+0x00C8F9D8	ascii	RLActorMgrNT::_OnRequestRLVirtualNPC
+0x00C8FA08	ascii	RLActorMgrNT::_OnRespondRLVirtualNPC
+0x00C8FA34	ascii	pNpc
+0x00C8FB80	ascii	Boardcast
+0x00C8FB90	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\RLAsyncTask.cpp,HandleXhgEvent:337
+0x00C8FC30	ascii	StopAsyncTask
+0x00C8FC70	ascii	InitAsyncTaskSystem
+0x00C8FC88	ascii	pTask->pAsyncTaskSystem
+0x00C8FCA8	ascii	RLAsyncTask
+0x00C8FCB8	ascii	pTask->pAsyncTaskGroup
+0x00C8FCD8	ascii	RLAsyncTask-Fast
+0x00C8FCF0	ascii	pTask->pAsyncTaskGroupFast
+0x00C8FD20	ascii	InitAsyncTask
+0x00C8FD30	ascii	UpdateAsyncTask
+0x00C8FD50	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\RLAsyncTask.cpp,UpdateAsyncTask:634
+0x00C8FDF0	ascii	AsyncCall
+0x00C8FE00	ascii	pAsyncTask
+0x00C8FE10	ascii	BigActionAsyncCall
+0x00C8FE38	ascii	SmallTaskAsyncCall
+0x00C8FE50	ascii	SmallActionAsyncCall
+0x00C8FF10	ascii	RLAsyncTaskMgr::Init
+0x00C8FF30	ascii	RLAsyncTaskMgr::_CopyPendingTask TaskKey conflict!
+0x00C8FF70	ascii	RLAsyncTaskMgr
+0x00C900B8	ascii	RLAsyncTaskAdapter::dispatch
+0x00C90120	ascii	RLAsyncTaskAdapter::IO
+0x00C901C0	ascii	npc count
+0x00C901D0	ascii	player count
+0x00C90238	ascii	npc visible
+0x00C90248	ascii	employee npc visibility type
+0x00C90270	ascii	player visible
+0x00C90498	ascii	npc assisted count
+0x00C904F8	ascii	npc fur
+0x00C90508	ascii	player fur
+0x00C90528	ascii	npc fur count
+0x00C90538	ascii	player fur count
+0x00C90550	ascii	npc fur0 distance
+0x00C90568	ascii	npc fur1 distance
+0x00C90580	ascii	npc fur2 distance
+0x00C90598	ascii	npc fur0 amount
+0x00C905B0	ascii	npc fur1 amount
+0x00C905C8	ascii	npc fur2 amount
+0x00C905E0	ascii	player fur0 distance
+0x00C90600	ascii	player fur1 distance
+0x00C90620	ascii	player fur2 distance
+0x00C90640	ascii	player fur0 amount
+0x00C90658	ascii	player fur1 amount
+0x00C90670	ascii	player fur2 amount
+0x00C90688	ascii	npc tangible
+0x00C90698	ascii	player tangible
+0x00C906B0	ascii	tangible npc count
+0x00C906C8	ascii	tangible player count
+0x00C907A0	ascii	vg resource npc count
+0x00C90928	ascii	actor list
+0x00C90938	ascii	actor flag
+0x00C90978	ascii	actor on bind
+0x00C90988	ascii	host actor id
+0x00C909B8	ascii	face actor id
+0x00C909C8	ascii	auto remove
+0x00C90AE0	ascii	sfx caster type
+0x00C90D78	ascii	animation load sync
+0x00C90E88	ascii	actor height
+0x00C90EA0	ascii	synchronize
+0x00C91050	ascii	bone position
+0x00C910C8	ascii	lookat position
+0x00C91110	ascii	reject apply position
+0x00C91398	ascii	bind to actor
+0x00C914A8	ascii	balloon position
+0x00C916A0	ascii	sfx position only
+0x00C91788	ascii	main player position
+0x00C917A8	ascii	force main player
+0x00C91940	ascii	actor callback type
+0x00C91958	ascii	actor callback obj
+0x00C91970	ascii	actor callback op
+0x00C91A98	ascii	InitializeActorList()
+0x00C91BA0	ascii	RLDataLayer::InitializeActorList
+0x00C91BC8	ascii	m_tabActorList
+0x00C91BE0	ascii	list of all game NPCs and players
+0x00C91CB0	ascii	KRLAnimationFactory::CreateController
+0x00C91CF0	ascii	KRLAnimationFactory::CreateSFXTag
+0x00C91D20	ascii	KRLAnimationFactory::ReactivatedCreateSFXTag
+0x00C91D70	ascii	KRLAnimationFactory::CreateMovieObjectTag
+0x00C91DA8	ascii	KRLAnimationFactory::CreateFaceMotionTag
+0x00C91DE0	ascii	KRLAnimationFactory::CreateFeedBackTag
+0x00C91E10	ascii	KRLAnimationFactory::CreateDamagePercentageTag
+0x00C91E90	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\KRLAnimationController.cpp,KRLAnimationController::FrameMove:45
+0x00C91F50	ascii	KRLAnimationController::FrameMove
+0x00C91FB0	ascii	KRLAnimationManager::OnActorSetAnimationPlaySpeed
+0x00C91FF0	ascii	KRLAnimationManager::OnActorPauseAnimation
+0x00C92028	ascii	KRLAnimationManager::OnActorSeekAnimation
+0x00C92060	ascii	KRLAnimationManager::OnActorPurgeAnimation
+0x00C92098	ascii	KRLAnimationManager::OnActorPlayAnimation
+0x00C920E8	ascii	KRLAnimationManager::OnActorVisible
+0x00C92118	ascii	KRLAnimationManager::OnActorVisibleChanged
+0x00C928A8	ascii	m_TagInfo.bSetWorldPosition
+0x00C92990	ascii	pDamagePercentageTag
+0x00C92AC8	ascii	GetPlayerWeaponLoadOptimization
+0x00C92B08	ascii	GetPlayerOptMDL
+0x00C92B40	ascii	cast
+0x00C92B48	ascii	GetPlayerSocket
+0x00C92BC0	ascii	GetNpcSocket
+0x00C92BD0	ascii	GetNpcModel
+0x00C92BE0	ascii	GetNpcForceRelationAdjust
+0x00C92C30	ascii	TransformPlayerEquip
+0x00C92CD8	ascii	GetPlayerModel
+0x00C92D28	ascii	GetPlayerEmptyModel
+0x00C92E50	ascii	ResponseVirtualNPC
+0x00C92E80	ascii	GetNpcDIYTable
+0x00C92EA0	ascii	behit
+0x00C92F68	ascii	ResetPlayerEquipResource
+0x00C92FE0	ascii	GetPosition
+0x00C93020	ascii	RLActorSfx::Init
+0x00C93038	ascii	prlActorHelper
+0x00C93050	ascii	RLActorSfx::AddSfx
+0x00C93068	ascii	m_prlActorHelper
+0x00C93108	ascii	Position
+0x00C93120	ascii	RLActorSfx::AddSocketSfx
+0x00C93178	ascii	prlSfxActor
+0x00C93198	ascii	strPosition
+0x00C93318	ascii	Prepare Cast Skill
+0x00C93330	ascii	Cast Skill
+0x00C935F8	ascii	main player
+0x00C93748	ascii	actor
+0x00C93AB0	ascii	RLModel::RemoveFromParent
+0x00C93BB0	ascii	m_eBindState3D != BindState3D::SubActor
+0x00C940A8	ascii	piBuffer && piBuffer->GetData()
+0x00C94198	ascii	RLModel::_NPCFaceLoaded
+0x00C941B8	ascii	uid == m_uNPCFaceTaskID
+0x00C941F8	ascii	pBonePosition
+0x00C96DB0	ascii	m_rlModelBuffer.Init(sizeof(RLModel), 1024, 8, cstr_string("Model"))
+0x00C96EB8	ascii	RLModelMgr::RemoveAttachNBind
+0x00C96F50	ascii	RLModelSnapshootBuffer::Init
+0x00C96F80	ascii	m_Buffer.Init(sizeof(RLModelSnapshoot), 1024, 8, cstr_string("Snapshoot"))
+0x00C97070	ascii	NpcDrop
+0x00C97128	ascii	s_movespine2
+0x00C97138	ascii	s_movebigbrush
+0x00C971B0	ascii	s_movejian01
+0x00C971C0	ascii	s_movejian02
+0x00C971D0	ascii	s_moveqin01
+0x00C971E0	ascii	s_moveqin02
+0x00C99210	ascii	atlTraceSync
+0x00C99500	ascii	S_MoveQin01
+0x00C99510	ascii	S_MoveQin02
+0x00C99540	ascii	S_MoveJian01
+0x00C99550	ascii	S_MoveJian02
+0x00C9AB90	ascii	SO3RL::RemoveScene
+0x00C9ACE0	ascii	LoadBufferFromFile
+0x00C9B160	ascii	szBuffer
+0x00C9BB08	ascii	KGRLLoader::LoadPlayerAllModel
+0x00C9BD08	ascii	KGRLLoader::LoadUnitFromBuffer
+0x00C9BD88	ascii	KGRLLoader::LoadUnitFromBufferV1
+0x00C9BDB0	ascii	KGRLLoader::LoadUnitFromBufferV2
+0x00C9BE08	ascii	KGRLLoader::LoadUnitFromBufferV3
+0x00C9BE60	ascii	KGRLLoader::LoadUnitFromBufferV4
+0x00C9BEB8	ascii	KGRLLoader::LoadUnitFromBufferV5
+0x00C9C2B8	ascii	BehaviorComponent::_RemoveThisTable
+0x00C9C588	ascii	CameraComponent::OnPositionChanged
+0x00C9C800	ascii	RemoveSelf
+0x00C9C898	ascii	CameraComponent::LuaGetPosition
+0x00C9C948	ascii	RemoveShape
+0x00C9C958	ascii	SetVelocity
+0x00C9C968	ascii	SetAngularVelocity
+0x00C9CB60	ascii	PhysxComponent::LuaSetVelocity
+0x00C9CB98	ascii	PhysxComponent::LuaSetAngularVelocity
+0x00C9CD20	ascii	linear_velocity_x
+0x00C9CD38	ascii	linear_velocity_y
+0x00C9CD50	ascii	linear_velocity_z
+0x00C9CD68	ascii	angular_velocity_x
+0x00C9CD80	ascii	angular_velocity_y
+0x00C9CD98	ascii	angular_velocity_z
+0x00C9CE38	ascii	worldpositionx
+0x00C9CE50	ascii	worldpositiony
+0x00C9CE68	ascii	worldpositionz
+0x00C9D058	ascii	GetSocketPosition
+0x00C9D440	ascii	_ApplyAnchorPointFromLocal(dwCharacterID, pszSocket, vOutSocketPosition)
+0x00C9D700	ascii	RendererComponent::LuaGetSocketPosition
+0x00C9D808	ascii	PhysxComponent::OnPositionChanged
+0x00C9D948	ascii	PhysxComponent::SetVelocity
+0x00C9D970	ascii	PhysxComponent::SetAngularVelocity
+0x00C9DB60	ascii	pRLSfx->BindTo(m_rlActor.GetRLModel(), strSocket)
+0x00C9DC68	ascii	RendererComponent::GetSocketPosition
+0x00C9DC98	ascii	m_rlActor.GetBonePosition(pszSocket, rvPos, vOffset)
+0x00C9DD28	ascii	RendererComponent::OnPositionChanged
+0x00C9DDD8	ascii	RendererComponent::_UpdatePlayerResource
+0x00C9DE10	ascii	RendererComponent::_UpdateNpcResource
+0x00C9DE64	ascii	player
+0x00C9DEF8	ascii	GetEntityTypeName
+0x00C9DF68	ascii	m_pEntity
+0x00C9E0E0	ascii	KRLDummy::RemoveRenderer
+0x00C9E170	ascii	KRLDummy::RemovePhysx
+0x00C9E1F8	ascii	KRLDummy::RemoveCamera
+0x00C9E340	ascii	KRLDummy::CreateDummyEntity
+0x00C9E368	ascii	pRLScene->m_pEntity
+0x00C9E380	ascii	pTypeListEntity
+0x00C9E6C0	ascii	piChildRender->BindTo(piParentRender->GetActor().GetRLModel(), szSocket)
+0x00C9E7A8	ascii	PlayersSync
+0x00C9E868	ascii	SetPosition
+0x00C9E8B8	ascii	RemoveRenderer
+0x00C9E8F0	ascii	RemovePhysx
+0x00C9E930	ascii	RemoveBehavior
+0x00C9E960	ascii	RegPlayerSync
+0x00C9EA28	ascii	KRLDummy::LuaSetPosition
+0x00C9EA48	ascii	SetPosition(vPos)
+0x00C9EB30	ascii	KRLDummy::LuaRemoveRenderer
+0x00C9EB98	ascii	KRLDummy::LuaRemovePhysx
+0x00C9EC50	ascii	KRLDummy::LuaRemoveBehavior
+0x00C9ECA0	ascii	KRLDummy::LuaRemoveSelf
+0x00C9ECC0	ascii	KRLDummy::LuaRegPlayerSync
+0x00C9EFA0	ascii	GetPlayerInfo
+0x00C9F0F8	ascii	GetPlayerPos
+0x00C9F108	ascii	pPlayer
+0x00C9F118	ascii	GetPlayerRot
+0x00C9F128	ascii	GetCastSkillTargetPosition
+0x00C9F180	ascii	GetPlayerTargetID
+0x00C9F198	ascii	prlPlayer->m_pFrameData
+0x00C9F250	ascii	GetPlayersAround
+0x00C9F558	ascii	IsPlayerHasBuff
+0x00C9F570	ascii	nIndex >= 0 && nIndex < _countof(dwSkillBuffs)
+0x00C9F658	ascii	LoadPlayerParts
+0x00C9F6C8	ascii	LoadPlayerSocket
+0x00C9FCB0	ascii	m_rlPet.Create(g_pRL->GenerateID(m_dwSceneID), m_eRenderActorType)
+0x00C9FD00	ascii	m_rlItem.Create(g_pRL->GenerateID(m_dwSceneID), m_eRenderActorType)
+0x00C9FD60	ascii	m_rlFace.Create(g_pRL->GenerateID(m_dwSceneID), m_eRenderActorType)
+0x00CA0210	ascii	HangPetCore::SetRidePosition
+0x00CA0470	ascii	HangPetNPC::OnNPCCreated
+0x00CA04A0	ascii	HangPetNPC::OnPlayerCreated
+0x00CA04C8	ascii	HangPetNPC::_Clear
+0x00CA0A88	ascii	enable_update_npc_share_head_cover
+0x00CA10D0	ascii	DestructibleDamage
+0x00CA1858	ascii	ApplyMoveCamera
+0x00CA1888	ascii	pMovementComponent
+0x00CA18B0	ascii	UnApplyMoveCamera
+0x00CA1960	ascii	context.rData.GetCasterID()
+0x00CA1990	ascii	pCharacter->m_pFrameData->GetID() != context.rData.GetCasterID()
+0x00CA1AB0	ascii	ApplyNpcDisappearTimePercentage
+0x00CA1D60	ascii	m_pLightningSFXActor
+0x00CA1D80	ascii	m_pFillingsActor
+0x00CA1D98	ascii	m_pSFXActor
+0x00CA1F60	ascii	pRLSources->m_rlActor.GetPartInfo(m_szSocketName, matPart, vOffset)
+0x00CA2050	ascii	m_pSpecialWeaponsSFXActor
+0x00CA20C0	ascii	KRLNpcShadow::Init
+0x00CA20D8	ascii	KRLNpcShadow::CreateShadow
+0x00CA2128	ascii	KRLNpcShadow::ClearShadow
+0x00CA2148	ascii	KRLNpcShadow::UpdateShadow
+0x00CA2828	ascii	KRLGroupRideLink::UpdateEnterPosition
+0x00CA2AC8	ascii	KRLHandLink::SetMovePosition
+0x00CA2C28	ascii	KRLHandLink::UpdateClosePosition
+0x00CA2FC8	ascii	krlPlayerEquipSfx::OnPlayAnimationFinish
+0x00CA3000	ascii	krlPlayerEquipSfx::Init
+0x00CA3030	ascii	krlPlayerEquipSfx::Show
+0x00CA3050	ascii	krlPlayerEquipSfx::Reset
+0x00CA3070	ascii	krlPlayerEquipSfx::UpdatePosition
+0x00CA3098	ascii	krlPlayerEquipSfx::UpdateAnimation
+0x00CA3740	ascii	KRLReferenceCameraAni::SyncCamera
+0x00CA3958	ascii	KRLSlotLink::SetMoveParam
+0x00CA3998	ascii	pRLMover
+0x00CA39F8	ascii	KRLSlotLink::UpdateClosePosition
+0x00CA3A88	ascii	KRLSlotLink::SetPosition
+0x00CA3D28	ascii	KRLDirectionSfx::LoadActor
+0x00CA3D78	ascii	KRLDirectionSfx::ReloadActors
+0x00CA3F40	ascii	m_rlActor.Create(g_pRL->GenerateID(dwSceneID), eratEffect)
+0x00CA42F0	ascii	KRLWwiseManager::SetWwiseObjectPosition
+0x00CA44E0	ascii	SetInteractor
+0x00CA4510	ascii	HasBuff
+0x00CA45D8	ascii	PlayerCanPlayRust
+0x00CA46B0	ascii	pPlayerAnimationModel
+0x00CA46D0	ascii	KRLCharacter::LuaSetPosition
+0x00CA47B0	ascii	KRLCharacter::LuaSetInteractor
+0x00CA4820	ascii	SetInteractor(bManaged, bCollision, nType)
+0x00CA4858	ascii	KRLCharacter::LuaHasBuff
+0x00CA49A0	ascii	KRLCharacter::LuaPlayerCanPlayRust
+0x00CA4C78	ascii	MoveTo
+0x00CA4CC0	ascii	HangPetCore::LuaSetPosition
+0x00CA4D28	ascii	GetCurrentShapePosition
+0x00CA4DF0	ascii	KRLRide::LuaGetCurrentShapePosition
+0x00CA50E8	ascii	RLGroundTrack::InsertPosition
+0x00CA51A8	ascii	RLGroundTrack::UpdateMoveStateChange
+0x00CA51D8	ascii	RLGroundTrack::BFSPosition
+0x00CA5240	ascii	RLGroundTrack::SyncTrackNode
+0x00CA5900	ascii	piBuffer
+0x00CA5910	ascii	pbyBuffer
+0x00CA5A68	ascii	RLLogicCellsMgr::LoadTerrainBufferV8
+0x00CA5F28	ascii	m_dwVirtualNPCID
+0x00CA5FA0	ascii	RLVirtualNPC::Init
+0x00CA5FD0	ascii	RLVirtualNPC::UpdateDisplay
+0x00CA6008	ascii	RLVirtualNPC::OnUpdateDisplay
+0x00CA6048	ascii	VirtualNPC Load Model[%s] Failed, ModelID(%d)
+0x00CA60A0	ascii	VirtualNPC Load Socket[%s] Failed, SocketIndex(%d), ModelID(%d)
+0x00CA60F0	ascii	RLVirtualNPC::PlayAnimation
+0x00CA6120	ascii	RLVirtualNPC::LoadEquipModel
+0x00CA6148	ascii	RLVirtualNPC::LoadSocket
+0x00CA6168	ascii	RLVirtualNPC::CheckEquipsSDResource
+0x00CA61B0	ascii	RLVirtualNPC::CheckEquipsHDResource
+0x00CA61E0	ascii	RLVirtualNPC::GetPlayerSocketOffset
+0x00CA6238	ascii	RLVirtualNPCMgr::Init
+0x00CA6258	ascii	RLVirtualNPCMgr::Reset
+0x00CA6278	ascii	RLVirtualNPCMgr::Add
+0x00CA6298	ascii	prlVirtualNPC
+0x00CA62C0	ascii	KRLBuffBullet::Init
+0x00CA62D8	ascii	KRLBuffBullet::OnUpdateBuff
+0x00CA6300	ascii	KRLBuffBullet::OnCastSkill
+0x00CA6320	ascii	KRLBuffBullet::Update
+0x00CA6340	ascii	KRLBuffBullet::LoadBullet
+0x00CA6380	ascii	KRLBuffBullet::LoadBullets
+0x00CA63A0	ascii	KRLBuffBullet::IdleBullet
+0x00CA63C0	ascii	KRLBuffBullet::LaunchChargeBullet
+0x00CA6408	ascii	prlActor
+0x00CA6418	ascii	KRLBuffBullet::LaunchBullet
+0x00CA6440	ascii	KRLBuffBullet::RecycleBullet
+0x00CA6468	ascii	KRLBuffBullet::EndingPoseBullet
+0x00CA6490	ascii	KRLBuffBullet::BurstChargeBullet
+0x00CA64B8	ascii	KRLBuffBullet::BurstBullet
+0x00CA64D8	ascii	KRLBuffBullet::UpdateBullet
+0x00CA6500	ascii	KRLBuffBullet::PlayHitSFX
+0x00CA6538	ascii	KRLBuffBullet::BindBullet
+0x00CA6558	ascii	KRLBuffBullet::UnbindBullet
+0x00CA6580	ascii	KRLBuffBullet::AddBulletToScene
+0x00CA65A8	ascii	KRLBuffBullet::RemoveBulletFromScene
+0x00CA65D8	ascii	KRLBuffBullet::SetBulletDirection
+0x00CA6600	ascii	KRLBuffBullet::PlayBulletAnimation
+0x00CA6640	ascii	KRLBuffBullet::UpdateTargetPosition
+0x00CA6750	ascii	KRLFootprint::IsDisplayNpcFootprint
+0x00CA6920	ascii	KRLObjectLink::TurnFaceToPosition
+0x00CA69E0	ascii	KRLObjectLink::GetMovePosition
+0x00CA6A38	ascii	prlCharacter->m_EquipResource.Player.nRoleType != rtInvalid
+0x00CA6B20	ascii	KRLObjectLink::UpdateClosePosition
+0x00CA6B80	ascii	!IsPlayer(prlCharacter->GetEntityIndex())
+0x00CA6BF0	ascii	PlayerHideSocket
+0x00CA6DF0	ascii	KRLAnimationShadow::AttachPlayer
+0x00CA7098	ascii	KRLPlayerLink::AttachRLCharacter
+0x00CA70C0	ascii	KRLPlayerLink::UpdateLinkResource
+0x00CA70E8	ascii	pPlayerLinkModel
+0x00CA7100	ascii	Character Dink Depend Move Interrupt!
+0x00CA7130	ascii	KRLPlayerLink::BeginLink
+0x00CA7160	ascii	KRLPlayerLink::ApplyTaniIKTag
+0x00CA71B0	ascii	KRLPlayerLink::UpdateProcess
+0x00CA71D8	ascii	KRLPlayerLink::Active
+0x00CA71F8	ascii	KRLPlayerLink::PlayAnimation
+0x00CA7220	ascii	KRLPlayerLink::AdjustDependPosition
+0x00CA7250	ascii	KRLPlayerLink::GetLinkResource
+0x00CA7278	ascii	KRLPlayerLink::GetLinkResource Error %d %d %d %d %d
+0x00CA72B8	ascii	KRLPlayerLink::UpdatePosition
+0x00CA7308	ascii	KRLPlayerLink::UpdateClose
+0x00CA7328	ascii	KRLPlayerLink::EndMoveAndTurnFace
+0x00CA7388	ascii	KRLPlayerLink::BeginTransRepresent
+0x00CA73B8	ascii	KRLPlayerLink::EndTransRepresent
+0x00CA73E0	ascii	KRLPlayerLink::OnPlayAnimationFinish
+0x00CA7460	ascii	KRLNpcLink::AttachRLCharacter
+0x00CA7538	ascii	KRLNpcLink::BeginLink
+0x00CA7580	ascii	pNpcLinkModel
+0x00CA7590	ascii	KRLNpcLink::BindingLink
+0x00CA75C0	ascii	KRLNpcLink::BindingNpcLink
+0x00CA7608	ascii	KRLNpcLink::SetScreenShotVisible
+0x00CA7630	ascii	KRLNpcLink::Detach
+0x00CA7648	ascii	KRLNpcLink::DetachNpc
+0x00CA7668	ascii	KRLNpcLink::Active
+0x00CA7680	ascii	KRLNpcLink::UpdateAnimation
+0x00CA76A8	ascii	KRLNpcLink::OnPlayAnimationFinish
+0x00CA76D0	ascii	KRLNpcLink::AdjustDependPosition
+0x00CA76F8	ascii	pNpcCharacter
+0x00CA7708	ascii	KRLNpcLink::GetCharacterID
+0x00CA7728	ascii	KRLNpcLink::GetPosition
+0x00CA7748	ascii	KRLNpcLink::BindCharacter
+0x00CA7820	ascii	KRLNpcLink::UnbindCharacter
+0x00CA7848	ascii	KRLNpcLink::BindToMounts
+0x00CA7890	ascii	KRLNpcLink::UnBindToMounts
+0x00CA78B0	ascii	KRLNpcLink::UpdateClose
+0x00CA78D0	ascii	KRLNpcLink::UpdateAlpha
+0x00CA78F0	ascii	KRLNpcLink::PlayCloseAnimation
+0x00CA7918	ascii	pNpcDinkModel
+0x00CA7928	ascii	KRLNpcLink::PlayEnterAnimation
+0x00CA7950	ascii	KRLNpcLink::PlayAnimation
+0x00CA7970	ascii	[KRLNpcDink] Play Animation(%s) Failed.
+0x00CA79A0	ascii	KRLNpcLink::GetRideEndLinkAnimation
+0x00CA7A08	ascii	IsPlayer(m_listBindInfo[erlLinkPos_First].dwCharacterID)
+0x00CA7A50	ascii	KRLNpcLink::GetNormalEndLinkAnimation
+0x00CA7B30	ascii	KRLObjectLinkMgr::Remove
+0x00CA7DB0	ascii	KRLCustomAnimation::InitDataBuffer
+0x00CA7E00	ascii	m_pUpdateBuffer
+0x00CA7E18	ascii	m_pUpdateBuffer->Create(m_dwCharacterNumBones)
+0x00CA7E50	ascii	m_pUpdateResultBuffer
+0x00CA7E70	ascii	m_pUpdateResultBuffer->Create(m_dwCharacterNumBones)
+0x00CA7EC8	ascii	krlSkillBullet::Init
+0x00CA7F68	ascii	krlSkillBullet::Release
+0x00CA7F88	ascii	krlSkillBullet::StartFly
+0x00CA7FD0	ascii	krlSkillBullet::Show
+0x00CA8018	ascii	krlSkillBullet::Hide
+0x00CA8038	ascii	krlSkillBullet::PlayAnimation
+0x00CA8060	ascii	tabSkillBullet
+0x00CA81A8	ascii	krlSkillBullet::GetTarPosition
+0x00CA8200	ascii	krlSkillBullet::GetPosition
+0x00CA8230	ascii	krlSkillBullet::SetPosition
+0x00CA8258	ascii	krlSkillBullet::SetRotation
+0x00CA8280	ascii	krlSkillBulletMgr::Reset
+0x00CA82A0	ascii	krlSkillBulletMgr::Clear
+0x00CA82C0	ascii	m_arrSkillBullet
+0x00CA82D8	ascii	krlSkillBulletMgr::NotifyAdd
+0x00CA8340	ascii	!"KSKILL_BULLET_TYPE INVALID"
+0x00CA83D8	ascii	krlSkillBulletMgr::NotifyFly
+0x00CA8420	ascii	krlSkillBulletMgr::NotifyRemove
+0x00CA8450	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\actionobject\krlskillbulletmgr.cpp,krlSkillBulletMgr::Active:276
+0x00CA8518	ascii	krlSkillBulletMgr::Active
+0x00CA8538	ascii	krlSkillBulletMgr::AddCommonSkillBullet
+0x00CA8568	ascii	krlSkillBulletMgr::GetCYEquipModelPath
+0x00CA85B8	ascii	KRLSkillRushState::Init
+0x00CA85D8	ascii	KRLSkillRushState::Cast
+0x00CA85F8	ascii	RLSkillShadow::Init
+0x00CA8620	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\actionobject\krlskillshadow.cpp,RLSkillShadow::Activate:45
+0x00CA86E0	ascii	RLSkillShadow::UpdateReachable
+0x00CA8718	ascii	RLSkillShadow::UpdateTrailing
+0x00CA8740	ascii	RLSkillShadow::Play
+0x00CA8758	ascii	param.dwCastID
+0x00CA8788	ascii	RLSkillShadow::GetCharacterPosition
+0x00CA87B8	ascii	RLSkillShadow::PlayCopyShadow
+0x00CA8810	ascii	RLSkillShadow::PlayCastShadow
+0x00CA8838	ascii	RLSkillShadow::PlayTargetShadow
+0x00CA8860	ascii	RLSkillShadow::PlayTrailingShadow
+0x00CA8888	ascii	RLSkillShadow::CreateShadow
+0x00CA8910	ascii	KRLSummit::UpdatePosition
+0x00CA8930	ascii	KRLSummit::InitPositionData
+0x00CA8958	ascii	KRLSummit::BeginUpdatePosition
+0x00CA8980	ascii	!m_PositionData.bUpdate
+0x00CA8BE8	ascii	SkillEarlyWarningMgr::AddSkillEarlyWarning
+0x00CA8EE8	ascii	pSkillMissileModel
+0x00CA8F50	ascii	KRLMissile::HitTarget
+0x00CA8F70	ascii	KRLMissile::PlayHitSfx
+0x00CA8F90	ascii	m_HitSfxEntity
+0x00CA8FA8	ascii	KRLMissile::NoticeBeHitShake
+0x00CA8FD0	ascii	GetTargetPosition
+0x00CA9018	ascii	GetCasterOrientation
+0x00CA9038	ascii	pCaster
+0x00CA92A0	ascii	KRLMissileMgr::RemoveRLMissileParam
+0x00CA93F0	ascii	pRLCaster
+0x00CA9410	ascii	OnMissileDamageTagArrive
+0x00CA9500	ascii	HitTarget
+0x00CA9510	ascii	CalcPositionToTargetDistance
+0x00CA97E0	ascii	PlayerInAirAnimation
+0x00CA9820	ascii	PlayerTurnLeftAnimation
+0x00CA9860	ascii	PlayerTurnRightAnimation
+0x00CA9880	ascii	KRLRideRush::UpdateSkillMoveAnimation
+0x00CA98B0	ascii	PlayerAnimation_%d
+0x00CA9A40	ascii	nIndex >= 0 && nIndex < RL_PLAYER_RUSH_STEP_SHADOW_COUNT
+0x00CA9AA8	ascii	KRLCharacterShadow::SetPlayerControlVisibleState
+0x00CA9BC8	ascii	dwPlayerRushType < PLAYER_RUSH_MODE_COUNT
+0x00CA9C00	ascii	dwSocketType < PLAYER_RUSH_SOCKET_TYPE_COUNT
+0x00CA9CB0	ascii	m_prlActor
+0x00CA9E08	ascii	KRLRushState::GetBonePosition
+0x00CAA0E8	ascii	KRLRushState::UpdateMoveAnimation
+0x00CAA4E8	ascii	KRLRushState::UpdateBlockPosition
+0x00CAA590	ascii	KRLRushState::UpdatePosition
+0x00CAA788	ascii	KRLRushState::UpdateTreadPosition
+0x00CAA820	ascii	KRLRushState::UpdatePlayerSwingParam
+0x00CAA8F8	ascii	KRLRushState::UpdateHenchmanPosition
+0x00CAA928	ascii	KRLRushState::UpdatePlayerSwingAnimation
+0x00CAABF8	ascii	KRLRushState::PlaySkillMoveAnimation
+0x00CAAC28	ascii	KRLRushState::UpdateSkillMoveAnimation
+0x00CAAC58	ascii	KRLRushState::OnSkillMoveAnimationFinish
+0x00CAB098	ascii	KRLRushState::PlayerRushSFX
+0x00CAB410	ascii	KRLShadow::UpdateMoveModePosition
+0x00CAB438	ascii	KRLShadow::UpdateFollowModePosition
+0x00CAB8E8	ascii	KRLSwingHenchmanMgr::Remove
+0x00CABB70	ascii	npc_source
+0x00CABB80	ascii	NPC_source
+0x00CABB90	ascii	data/source/npc_source/%s/
+0x00CABCE0	ascii	KRLCharacter::ChangeCharacterMoves
+0x00CABD10	ascii	KRLCharacter::GetEntityType
+0x00CABF18	ascii	KRLCharacter::UpdateSkillBuff
+0x00CABF40	ascii	pSkillBuff
+0x00CAC140	ascii	KRLCharacter::UpdateSkillRushState
+0x00CAC460	ascii	nCastID >= 0 && nCastID < RL_SOCKET_ANIMATION_COUNT
+0x00CAC4A0	ascii	!cstr_path_null(SocketParam.pszSocketAni[nCastID])
+0x00CAC5B0	ascii	KRLCharacter::BreakPrepareCastSkill
+0x00CAC5E0	ascii	KRLCharacter::PrepareCastSkill
+0x00CAC608	ascii	m_rlActor.HasModel()
+0x00CAC628	ascii	KRLCharacter::GetNextPerSkillAniID
+0x00CAC670	ascii	m_nPerSkillAniIndex >= 0 && m_nPerSkillAniIndex < RL_SKILL_SEQUENCE_COUNT
+0x00CAC6E8	ascii	KRLCharacter::CastSkill
+0x00CAC948	ascii	EnableNpcBodyReshaping
+0x00CACD70	ascii	KRLCharacter::UpdatePlayerEquipSFXCustomTransform
+0x00CACDB0	ascii	KRLCharacter::SetPlayerEquipSFXState
+0x00CACFF8	ascii	KRLCharacter::UpdateBalloonPosition
+0x00CAD050	ascii	KRLCharacter::UpdateTitleMarkPosition
+0x00CAD098	ascii	KRLCharacter::GetHeadTopBufferHeight
+0x00CAD0C8	ascii	KRLCharacter::GetTitleMarkPosition
+0x00CAD130	ascii	KRLCharacter::UpdatePlayerSheath
+0x00CAD158	ascii	KRLCharacter::UpdatePlayerAnimationSpeed
+0x00CAD190	ascii	KRLCharacter::UpdatePlayerWeaponSocket
+0x00CAD1F0	ascii	KRLCharacter::UpdateNPCWeaponSocket
+0x00CAD2E8	ascii	KRLCharacter::GetNpcDIYData
+0x00CAD310	ascii	KRLCharacter::LoadSpecialNpc
+0x00CAD350	ascii	m_rlNpcSpecial.Create(g_pRL->GenerateID(GetSceneID()), eratUnknown)
+0x00CAD4B8	ascii	pTabPlayerVirtual
+0x00CAD520	ascii	SkillSkin
+0x00CAD530	ascii	pTabSkillSkinUnit
+0x00CAD568	ascii	KRLCharacter::UpdateNpcSpecialModel
+0x00CAD768	ascii	KRLCharacter::UpdateFaceModelNPC
+0x00CAD838	ascii	pet npc must be nullptr here
+0x00CAD940	ascii	KRLCharacter::ChangePlayerWeaponPoseState
+0x00CAD978	ascii	KRLCharacter::UpdatePlayerWeaponModel
+0x00CADAD0	ascii	KRLCharacter::UpdateNpcSkillTypeBuff
+0x00CADB00	ascii	tabNpcSpecialBuffConfig
+0x00CADBF0	ascii	pSkillMoveModel
+0x00CADC88	ascii	KRLCharacter::PlaySkillEffectResultAnimation
+0x00CADCC0	ascii	KRLCharacter::PlayUnBindSkillEffectResultSFX
+0x00CADE80	ascii	KRLCharacter::PlayNpcWholeAnimation
+0x00CADEF8	ascii	m_EquipResource.nObject == KRL_ENTITY_TYPE::NPC
+0x00CAE398	ascii	KRLCharacter::UpdateBuffMDL
+0x00CAE3C0	ascii	m_rlSkillBuffLoadActor.Create(g_pRL->GenerateID(GetSceneID()), eratEffect)
+0x00CAE7D0	ascii	KRLCharacter::DoNpcAction
+0x00CAE8B8	ascii	KRLCharacter::UpdateNpcAutoLookAt
+0x00CAEA88	ascii	KRLCharacter::BeHitted
+0x00CAEAA8	ascii	prlCast
+0x00CAEAB8	ascii	prlCast->m_pFrameData
+0x00CAEAD8	ascii	EnableHideInBeHitted
+0x00CAEAF8	ascii	KRLCharacter::BeHittedByNpc
+0x00CAEB20	ascii	pSkillCasterModel
+0x00CAEB38	ascii	KRLCharacter::BeHittedByPlayer
+0x00CAEB60	ascii	npc_source/a
+0x00CAEB70	ascii	NPC_source\A
+0x00CAEB90	ascii	KRLCharacter::PlayBeHittedAnimation
+0x00CAEC00	ascii	KRLCharacter::OnChannelSkillStart
+0x00CAEC28	ascii	pcSkillCasterBirdModel
+0x00CAEC48	ascii	pcSkillCasterModel
+0x00CAEDB0	ascii	KRLCharacter::GetBonePosition
+0x00CAEDF8	ascii	KRLCharacter::ResetSkillMove
+0x00CAEED0	ascii	KRLCharacter::GetCaptionPositionAdjustXYZ
+0x00CAEF38	ascii	KRLCharacter::GetBalloonPositionFollowAction
+0x00CAEFF4	ascii	buff
+0x00CAF218	ascii	KRLCharacter::PlayReferenceBehitAnimation
+0x00CAF318	ascii	KRLCharacter::UpdateMannedSpaceSkillBuff
+0x00CAF350	ascii	pSkillBuffID
+0x00CAF360	ascii	SkillBuffParts
+0x00CAF378	ascii	KRLCharacter::UpdateVehicleSkillBuff
+0x00CAF3C0	ascii	KRLCharacter::UpdateEarlyWarningSkillBuff
+0x00CAF438	ascii	PlayerAnimationID
+0x00CAF470	ascii	KRLCharacter::GetPlayerSocketOffset
+0x00CAF4A0	ascii	KRLCharacter::PlayPlayerShadow
+0x00CAF530	ascii	KRLCharacter::SetFreeze Get m_CameraAniPauseControl.vObjectPosition From [Bip01 Head] Fail!
+0x00CAF688	ascii	m_DirArrowEntity
+0x00CAF8C8	ascii	KRLCharacter::SetPlayerControlVisibleState
+0x00CAFAA0	ascii	KRLCharacter::PlaySkillCasterEffect
+0x00CAFBA0	ascii	KRLCharacter::ChangePlayerWeaponSelect
+0x00CAFBD0	ascii	KRLCharacter::ChangePlayerWeaponSheath
+0x00CAFCF8	ascii	CanCastSkill
+0x00CAFF58	ascii	KRLCharacter::SetActivatedSkillSkinID
+0x00CAFF88	ascii	pdwActiveSkillSkinIDs
+0x00CAFFA8	ascii	KRLCharacter::SetSkillSkinSFXRelation
+0x00CAFFE0	ascii	KRLCharacter::SetSkillSkinSFXRelation GetSkillSkinSFXReplaceModel Error
+0x00CB0058	ascii	KRLCharacter::SetSkillSkinAnimationRelation
+0x00CB0090	ascii	KRLCharacter::SetSkillSkinAnimationRelation GetSkillSkinAnimationReplaceModel Error
+0x00CB00F8	ascii	KRLCharacter::AddParabolicMove
+0x00CB0160	ascii	KRLCharacter::UpdateParabolicMove
+0x00CB05F8	ascii	PlayerAnimationAutoTurningToTargetKind
+0x00CB0628	ascii	KRLCharacter::StartBeHitShake
+0x00CB0650	ascii	KRLCharacter::UpdateBeHitShakeSimulation
+0x00CB0688	ascii	m_sBeHitShake.fDuration > 0.0f
+0x00CB0700	ascii	KRLCharacter::UpdatePlayerEquipSFXForceBindToBone
+0x00CB0818	ascii	enable_local_player_effect
+0x00CB0838	ascii	enable_remote_player_effect
+0x00CB0860	ascii	enable_npc_effect
+0x00CB0CA0	ascii	WeatherFactorMin
+0x00CB0CB8	ascii	WeatherFactorMax
+0x00CB1448	ascii	KRLCursor::UpdatePosition
+0x00CB1468	ascii	KRLCursor::ShowSkillModel
+0x00CB1488	ascii	KRLCursor::ShowNpcModel
+0x00CB1500	ascii	KRLCursor::GetNpcModelPosition
+0x00CB1528	ascii	pvResultPosition
+0x00CB1540	ascii	GetRLCursorPosition
+0x00CB1558	ascii	pvPosition
+0x00CB1950	ascii	KRLRideLink::AdjustDependPosition
+0x00CB1B00	ascii	KRLRideLink::GetPullRideMovePosition
+0x00CB2240	ascii	m_prlFaceDefinition->BindTo(m_rlActorHelper.GetRLModel(), "s_face")
+0x00CB2298	ascii	KRLDoodad::UpdatePosition
+0x00CB2820	ascii	m_prlModel->BindTo(m_pCharacter->m_rlActor.GetRLModel(), "s_face")
+0x00CB2A48	ascii	KRLFaceDefinition::Remover
+0x00CB2C30	ascii	KRLLocalCharacter::UpdateSkillBuff
+0x00CB2C60	ascii	pwSkillBuffer
+0x00CB2C70	ascii	pdwSkillBuffOwner
+0x00CB2CB0	ascii	KRLLocalCharacter::PrepareCastSkill
+0x00CB2CE0	ascii	KRLLocalCharacter::CastSkill
+0x00CB2E80	ascii	KRLLocalCharacter::UpdateJumpEndPosition
+0x00CB33D8	ascii	KRLLocalCharacter::UpdateLookAtPosition
+0x00CB3528	ascii	KRLLocalCharacter::UpdateLogicPlayerEquipSFXTransform
+0x00CB3960	ascii	m_ModelData.rlActor.HasModel()
+0x00CB3BC0	ascii	KRLMannedSpace::LoadSkillBuffPart
+0x00CB3BE8	ascii	tabSkillBuff
+0x00CB3C70	ascii	skill buff part %d
+0x00CB4530	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\src\case\actionobject\krlremotecharacter.cpp,KRLRemoteCharacter::UpdatePosition:570
+0x00CB4600	ascii	KRLRemoteCharacter::UpdatePosition
+0x00CB4778	ascii	KRLRemoteCharacter::UpdateSkillBuff
+0x00CB4800	ascii	KRLRemoteCharacter::PrepareCastSkill
+0x00CB4830	ascii	KRLRemoteCharacter::CastSkill
+0x00CB4B90	ascii	KRLRemoteCharacter::UpdateJumpEndPosition
+0x00CB5968	ascii	GetRideBuffAnimationAdjust
+0x00CB5988	ascii	buffer
+0x00CB5990	ascii	tabBuffs
+0x00CB59E8	ascii	InitPositionOffset
+0x00CB5A00	ascii	ResetPositionDis
+0x00CB5A70	ascii	DeltaMoveSpeed
+0x00CB5EF0	ascii	pdwSkillBuffs
+0x00CB5F30	ascii	KRLRide::LoadSkillBuff
+0x00CB5F50	ascii	KRLRide::UnloadSkillBuff
+0x00CB5F70	ascii	KRLRide::SetPosition
+0x00CB5FB0	ascii	KRLRide::GetPosition
+0x00CB61D8	ascii	KRLRide::GetPartPosition
+0x00CB62B0	ascii	HideBuff
+0x00CB6670	ascii	!pModelData->rlActor.IsNull()
+0x00CB6698	ascii	KRLRide::FrameMove
+0x00CB66B0	ascii	KRLRide::PrepareUpdatePosition
+0x00CB66D8	ascii	KRLRide::UpdatePosition
+0x00CB6A70	ascii	KRLRide::UpdateFadeInPosition
+0x00CB6B10	ascii	KRLRide::UpdateFadeOutPosition
+0x00CB6D98	ascii	m_rlActor.Create(m_uID, eratEffect)
+0x00CB7000	ascii	m_rlActor.IsModelLoaded()
+0x00CB72E0	ascii	m_rlActor[nIndex].Create(g_pRL->GenerateID(m_pRLScene->m_dwScene), eratEffect)
+0x00CB7340	ascii	m_rlEnemyExActor[nIndex].Create(g_pRL->GenerateID(m_pRLScene->m_dwScene), eratEffect)
+0x00CB7478	ascii	NPC_White
+0x00CB7488	ascii	NPC_Scale
+0x00CB7B38	ascii	RLHenchman::UpdatePosition
+0x00CB7BB8	ascii	RLHenchman::InitPosition
+0x00CB7EE8	ascii	m_pBuffers
+0x00CB8528	ascii	RLVehicle::UpdateVehiclePosition
+0x00CB85C8	ascii	RLVehicle::UpdatePassengerPosition
+0x00CB8750	ascii	RLVehicle::InitPassengerPosition
+0x00CB88D8	ascii	dwPlayerID
+0x00CB8BB0	ascii	KRLMovie::SetPlayer
+0x00CB8D68	ascii	HideNpc
+0x00CB8D78	ascii	HidePlayer
+0x00CB8D88	ascii	PlayerID
+0x00CB9150	ascii	EnableResetStartPosition
+0x00CB9370	ascii	KRLMovie::CheckAlternateNpcDisplayState
+0x00CB9468	ascii	SecondPlayerID
+0x00CB9480	ascii	KRLMovie::UpdateAlternateNpc
+0x00CB94A8	ascii	actor%d
+0x00CB94E8	ascii	SyncPreload
+0x00CB9580	ascii	KRLMovie::LoadAlternateNpc
+0x00CB95A0	ascii	AlternateNpc
+0x00CB95B0	ascii	KRLMovie::RevertAlternateNpcDisplay
+0x00CB97A0	ascii	KRLMovie::ProcessPlayerDisplay
+0x00CB97C8	ascii	KRLMovie::ProcessPlayerDisplay::Stop
+0x00CB9A50	ascii	pCameraEntity
+0x00CB9C68	ascii	KRLScene::SetMoviePlayer
+0x00CB9CD0	ascii	KRLScene::GetPlayerAround
+0x00CB9F98	ascii	KRLScene::IsFrameMove
+0x00CBA038	ascii	KRLScene::SetSceneSFXPosition
+0x00CBA248	ascii	KRLSceneMgr::Remove
+0x00CBA4D0	ascii	KRLSkillChainMgr::LoadSkillChain
+0x00CBA508	ascii	pChainInfo->dwSkillLevel
+0x00CBA528	ascii	pChainInfo->dwSkillID
+0x00CBA568	ascii	SkillChainID
+0x00CBA5D8	ascii	KRLSkillChainMgr::LoadPlayerChain
+0x00CBA600	ascii	KRLSkillChainMgr::UpdateSkillChain
+0x00CBA630	ascii	KRLSkillChainMgr::_UpdatePublicChain
+0x00CBA668	ascii	KRLSkillChainMgr::RemoveSkillChain
+0x00CBA698	ascii	KRLSkillChainMgr::RemovePlayerChain
+0x00CBA6C8	ascii	KRLSkillChainMgr::SetPlayerChainFreeze
+0x00CBA6F8	ascii	KRLSkillChainMgr::_CreatePublicChain
+0x00CBA768	ascii	KRLSkillChainMgr::CreatePublicChain
+0x00CBA828	ascii	KRLSkillChainMgr::UpdatePublicChain
+0x00CBA888	ascii	KRLSkillChainMgr::DestoryPublicChain
+0x00CBA8B8	ascii	KRLSkillChainMgr::_DestroyPublicChain
+0x00CBA8E8	ascii	KRLSkillChainMgr::_AdjustPublicChainByForceRelation
+0x00CBA938	ascii	CommitSkillEffect
+0x00CBA950	ascii	KRLSkillEffectResult::KSkillEffectResultData::InvokeResult
+0x00CBA9A0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\src\case\actionobject\krlskilleffectresult.cpp,KRLSkillEffectResult::Activate:142
+0x00CBAA70	ascii	PlaySkillEffectText
+0x00CBAAC0	ascii	RegisterSkillEffectResult
+0x00CBAB10	ascii	ProcessSkillEffectSound
+0x00CBAB30	ascii	pcHitTargetSoundModel
+0x00CBAB50	ascii	pcHitTargetSoundModel->szEvent && pcHitTargetSoundModel->szEvent[0] != '\0'
+0x00CBABB0	ascii	PlaySkillEffectResult
+0x00CBABD0	ascii	DoSkillEffectText
+0x00CBAC00	ascii	PlaySkillHitStageText
+0x00CBAC60	ascii	RLSkillModel::Initialize
+0x00CBACA0	ascii	RLSkillModel::LoadModel
+0x00CBACD0	ascii	RLSkillModel::InitPosition
+0x00CBAD00	ascii	RLSkillModel::UpdateTargetPosition
+0x00CBAD60	ascii	RLSkillModel::Active
+0x00CBAD80	ascii	RLSkillModelMgr::CastSkill
+0x00CBADA0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\actionobject\krlskillmodelmgr.cpp,RLSkillModelMgr::Active:62
+0x00CBAE60	ascii	InitSkillSequence
+0x00CBAE78	ascii	pRLSkillSequence
+0x00CBAE90	ascii	GetSkillNextAnimationID
+0x00CBB040	ascii	m_arrPlayerEquipSfx
+0x00CBB058	ascii	m_arrNPCSkillSfx
+0x00CBB0A0	ascii	pPlayerEquipSfx
+0x00CBB118	ascii	pRLPlayerEquipSfx
+0x00CBB1A0	ascii	KRLCustomSfxMgr::NotifySkill
+0x00CBB1D8	ascii	SkillLevel
+0x00CBB208	ascii	KRLCustomSfxMgr::NotifyBeenHit
+0x00CBB230	ascii	pBeenHitSfxTab
+0x00CBB288	ascii	SfxParam.csPosition
+0x00CBB330	ascii	BulletParam.csPosition
+0x00CBB368	ascii	TarPosition
+0x00CBB378	ascii	BulletParam.csTargetPosition
+0x00CBB3B0	ascii	BeenHitSfx
+0x00CBB4B8	ascii	KRLCustomSfxMgr::UpdatePlayerEquipSFX
+0x00CBB4E8	ascii	KRLCustomSfxMgr::NotifyPlayerEquipSFX
+0x00CBB540	ascii	KRLCustomSfxMgr::AddPlayerEquipSfx
+0x00CBB570	ascii	KRLCustomSfxMgr::DeletePlayerEquipSfx
+0x00CBB5A0	ascii	KRLCustomSfxMgr::DispatchPlayerEquipSfx
+0x00CBB5D0	ascii	KRLCustomSfxMgr::ResetPlayerEquipSFX
+0x00CBB618	ascii	KRLCustomSfxMgr::SetPlayerEquipSFXState
+0x00CBB648	ascii	KRLCustomSfxMgr::UpdatePlayerEquipSfxTransform
+0x00CBB680	ascii	KRLCustomSfxMgr::UpdatePlayerEquipSFXForceBindToBone
+0x00CBBE30	ascii	KRLCameraAni::SyncCamera
+0x00CBBEE0	ascii	CasterBoneName
+0x00CBBF20	ascii	HitFloor
+0x00CBC300	ascii	Player
+0x00CBC310	ascii	SkillID(%d) CasterType(%s) Cannot find bone [%s]
+0x00CBC7F0	ascii	SkillID(%d) TargetType(%s) Cannot find bone [%s]
+0x00CBCC18	ascii	ON_SKILL_MOVE_SRC
+0x00CBCC30	ascii	ON_SKILL_MOVE_DST
+0x00CBCC48	ascii	ON_SKILL_MOVE_TAIL
+0x00CBCC60	ascii	ON_SKILL_MOVE_DEATH
+0x00CBCD58	ascii	ON_DASH_TO_POSITION
+0x00CBCDB8	ascii	CAST_SKILL
+0x00CBCDC8	ascii	SKILL_PREPARE
+0x00CBCDD8	ascii	SKILL_CHANNEL
+0x00CBCE60	ascii	ITEM_SKILL
+0x00CBCEF0	ascii	BEHIT
+0x00CBD0F8	ascii	OTACTION_SKILL_PREPARE
+0x00CBD118	ascii	OTACTION_SKILL_CHANNEL
+0x00CBD190	ascii	OTACTION_ITEM_SKILL
+0x00CBD228	ascii	SKILL_MOVE_SRC
+0x00CBD240	ascii	SKILL_MOVE_DST
+0x00CBD258	ascii	SKILL_MOVE_DEATH
+0x00CBD314	ascii	BUFF
+0x00CBD3B4	ascii	PLAYER
+0x00CBD580	ascii	CHARACTER_MOVE_STATE
+0x00CBD7E8	ascii	pszBuffer
+0x00CBE040	ascii	LuaRayCast
+0x00CBE100	ascii	LuaScenePositionToGameWorldPosition
+0x00CBE130	ascii	LuaGameWorldPositionToScenePosition
+0x00CBE1A8	ascii	LuaGetPlayerRideModelName
+0x00CBE330	ascii	LuaRustAnimationBroadcastMessage
+0x00CBE620	ascii	RayCast
+0x00CBE698	ascii	ScenePositionToGameWorldPosition
+0x00CBE6C0	ascii	GameWorldPositionToScenePosition
+0x00CBE700	ascii	GetPlayerRideModelName
+0x00CBE790	ascii	RustAnimationBroadcastMessage
+0x00CBEBE8	ascii	Luna<class SceneInteraction::Interactor>::index
+0x00CBEC28	ascii	Luna<class SceneInteraction::Interactor>::newindex
+0x00CBEFE0	ascii	Luna<class SceneInteraction::Interactor>::GetFunArgs
+0x00CBF1B8	ascii	nMoveState
+0x00CBF1F8	ascii	nVelocityXY
+0x00CBF420	ascii	pb.Buffer
+0x00CBF440	ascii	string/buffer/slice
+0x00CBF780	ascii	pb.Buffer: %p
+0x00CBFD70	ascii	KrlEventAPI::OnNPCSetNameDisable
+0x00CC05C8	ascii	KGameWorldCharacterController::GetMoveInfo
+0x00CC20E0	ascii	KGameWorldHandler::SetGasFieldSkillVisible
+0x00CC2198	ascii	KGameWorldHandler::RemoveSceneOutputWindow
+0x00CC26F0	ascii	KGameWorldHandler::MouseControlMoveEnable
+0x00CC27F8	ascii	KGameWorldHandler::AutoMoveToPoint
+0x00CC2828	ascii	KGameWorldHandler::AutoMoveToTarget
+0x00CC28F8	ascii	KGameWorldHandler::PlaySkillShadow
+0x00CC2928	ascii	dwCastID
+0x00CC2938	ascii	SkillSkinID
+0x00CC29FC	ascii	Cast
+0x00CC2AE8	ascii	OnDisplayName : RemoteCharacter Sync State Error!
+0x00CC2C50	ascii	KGameWorldHandler::OnCharacterSkillEffectResult
+0x00CC2C90	ascii	KGameWorldHandler::OnCharacterSkillChainDisplay
+0x00CC3118	ascii	KGameWorldHandler::OnDoodadAfterHit
+0x00CC3148	ascii	KGameWorldHandler::OnDoodadBeHit
+0x00CC3330	ascii	KGameWorldHandler::GameWorldPositionToScreenPoint
+0x00CC3370	ascii	KGameWorldHandler::GameWorldPositionToScreenPoint(%d, %f, %f, %f, %d)
+0x00CC33C8	ascii	KGameWorldHandler::GameWorldPositionToScenePosition
+0x00CC3410	ascii	KGameWorldHandler::GameWorldPositionToScenePosition(%d, %f, %f, %f, %d)
+0x00CC3468	ascii	KGameWorldHandler::ScenePositionToGameWorldPosition
+0x00CC3560	ascii	KGameWorldHandler::GetPlayerAdjustAnimationByIdleActionID
+0x00CC35C0	ascii	pcsPlayerAniRepIDAdjust
+0x00CC35E0	ascii	CheckPlayerSDEquipResource
+0x00CC3600	ascii	CheckPlayerHDEquipResource
+0x00CC3620	ascii	FillPlayerVGResource
+0x00CC3640	ascii	KGameWorldHandler::GetPlayerEquipStyleCount
+0x00CC3678	ascii	KGameWorldHandler::GetPlayerEquipCanAdjustTransform
+0x00CC36C8	ascii	KGameWorldHandler::GetPlayerEquipHideParam
+0x00CC3700	ascii	KGameWorldHandler::GetPlayerFootprintResource
+0x00CC3750	ascii	KGameWorldHandler::GetPlayerEquipSfxResource
+0x00CC37A8	ascii	KGameWorldHandler::GetPlayerSocketDynamicSFXResource
+0x00CC3800	ascii	KGameWorldHandler::GetPlayerMysteryHatResource
+0x00CC3838	ascii	KGameWorldHandler::GetPlayerMysteryHairParam
+0x00CC3870	ascii	KGameWorldHandler::GetPlayerMysteryChestParam
+0x00CC38A8	ascii	FillPlayerSubsetHideResource
+0x00CC38D0	ascii	KGameWorldHandler::GetPlayerHairSubsetHideResource
+0x00CC3910	ascii	KGameWorldHandler::GetPlayerChestSubsetHideResource
+0x00CC39A8	ascii	resourceSfxs[dwOutputCount].cpszPosition
+0x00CC39E0	ascii	CheckNPCSDEquipResource
+0x00CC3A00	ascii	CheckNPCHDEquipResource
+0x00CC3C38	ascii	KGameWorldHandler::GetMinimapLayer
+0x00CC3FC0	ascii	IsPlayer(dwControllerID)
+0x00CC3FE0	ascii	IsPlayer(dwControllerID) && IsPlayer(dwFollowID)
+0x00CC4208	ascii	KGameWorldHandler::OnCharacterBeHitted
+0x00CC4510	ascii	KGameWorldHandler::OnCharacterCastSkill
+0x00CC4598	ascii	local player
+0x00CC45A8	ascii	remote player
+0x00CC45E0	ascii	tabActorList
+0x00CC45F0	ascii	tabActor
+0x00CC4658	ascii	shadow npc
+0x00CC4698	ascii	KGameWorldHandler::OnRemoveCharacter
+0x00CC46F0	ascii	KGameWorldHandler::OnRemoveDoodad
+0x00CC4B18	ascii	KGameWorldHandler::OnCharacterResetSkillMove
+0x00CC4C50	ascii	KGameWorldHandler::OnSyncRepresentCharacterList
+0x00CC4CA0	ascii	KGameWorldHandler::OnSyncPlayerFaceLiftData
+0x00CC4D10	ascii	KGameWorldHandler::OnNotifySkillBullet
+0x00CC4D40	ascii	KGameWorldHandler::OnNotifySkillBullet Type Error!
+0x00CC4F40	ascii	KGameWorldHandler::OnNewNpcSocketInfo
+0x00CC4FF0	ascii	(prlNpcLink && prlNpcLink->GetRided()) || prlCharacter->m_pRLRidingHorse
+0x00CC5048	ascii	prlNpcLink
+0x00CC5058	ascii	KGameWorldHandler::OnSyncNpcSocketInfo
+0x00CC5188	ascii	KGameWorldHandler::GetPlayerSocketOffset
+0x00CC52A8	ascii	KGameWorldHandler::OnSyncStaticFontInfo
+0x00CC52E8	ascii	OnSyncStaticFontInfo %d %s
+0x00CC5360	ascii	pcszBuffer
+0x00CC55B8	ascii	KGameWorldHandler::UpdateBFPlayerHeadTopParam
+0x00CC55F0	ascii	KGameWorldHandler::OnPlayChannelSkill
+0x00CC5A50	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleNewNPCDisplay:269
+0x00CC5B20	ascii	krlEventAdaptor::HandleNewNPCDisplay
+0x00CC5B60	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleNewPlayerDisplay:328
+0x00CC5C30	ascii	krlEventAdaptor::HandleNewPlayerDisplay
+0x00CC5F70	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSyncCharacterData:528
+0x00CC6040	ascii	krlEventAdaptor::HandleSyncCharacterData
+0x00CC6480	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSyncDoodadVisible:732
+0x00CC6550	ascii	krlEventAdaptor::HandleSyncDoodadVisible
+0x00CC68D0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleCharacterSkillBuffer:868
+0x00CC69A8	ascii	krlEventAdaptor::HandleCharacterSkillBuffer
+0x00CC6BB0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandlePrepareCastSkill:950
+0x00CC6C80	ascii	krlEventAdaptor::HandlePrepareCastSkill
+0x00CC6CB0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleCastSkill:980
+0x00CC6D78	ascii	krlEventAdaptor::HandleCastSkill
+0x00CC6DA0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSkillEffectResult:1024
+0x00CC6E70	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSkillChainDisplay:1043
+0x00CC7AC0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleDoodadAfterHit:1393
+0x00CC7B90	ascii	krlEventAdaptor::HandleDoodadAfterHit
+0x00CC7BC0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleDoodadBeHit:1422
+0x00CC7C90	ascii	krlEventAdaptor::HandleDoodadBeHit
+0x00CC9370	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleMouseMoveEnable:2153
+0x00CC96B0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleAutoMoveToPoint:2229
+0x00CC9780	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleAutoMoveToTarget:2258
+0x00CCA990	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleCharacterBeHitted:2683
+0x00CCACD0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleResetSkillMove:2759
+0x00CCB010	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSyncCharacterRepresentBaseInfoList:2853
+0x00CCB100	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSyncCharacterRepresentBaseInfo:2872
+0x00CCB250	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandlePlayerFaceLiftData:2937
+0x00CCB410	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleNotifySkillBullet:2980
+0x00CCB930	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleGetBFPlayerKungfuID:3113
+0x00CCBA10	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleGetBFPlayerParam:3132
+0x00CCBAE0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleSkillEarlyWarning:3152
+0x00CCBBB0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\case\gameworld\krlEventAdaptor.cpp,krlEventAdaptor::HandleChannelSkill:3173
+0x00CCC290	ascii	krlEventAdaptor::HandleCharacterSkillSkin
+0x00CCC5D0	ascii	KRLCharacterFrameData::GetSkillBuffID
+0x00CCC600	ascii	nIndex >= 0 && nIndex < _countof(m_wSkillBuffer)
+0x00CCC640	ascii	KRLCharacterFrameData::GetSkillBufferOwner
+0x00CCC678	ascii	pdwBufferOwner
+0x00CCC690	ascii	nCount >= SKILL_BUFF_PART_COUNT
+0x00CCC6B8	ascii	KRLCharacterFrameData::SetSkillBufferOwner
+0x00CCC728	ascii	pPosition != nullptr
+0x00CCC828	ascii	KRLCharacterFrameData::ConvertFramePosition
+0x00CCC960	ascii	KRLCharacterFrameData::AdjustPosition
+0x00CCCFC0	ascii	skill prepare
+0x00CCCFD0	ascii	skill channel
+0x00CCD018	ascii	item skill
+0x00CCD090	ascii	cast skill
+0x00CCD730	ascii	KStep_Async
+0x00CCDB28	ascii	CaptionSkillBufferHeight
+0x00CCDBA8	ascii	BufferHeightN
+0x00CCDBB8	ascii	BufferHeightY1
+0x00CCDBF0	ascii	CastSkillResetPeriod
+0x00CCDC10	ascii	SkillEffectResultTimeout
+0x00CCDC30	ascii	NPCLookAtInterpolateTime
+0x00CCDC50	ascii	NPCLookAtDeltaDistance
+0x00CCDEE0	ascii	PlayerIdleRandomAnimationTimeIntervalMin
+0x00CCDF18	ascii	PlayerIdleRandomAnimationTimeIntervalMax
+0x00CCDF50	ascii	PlayerIdleRandomSFXTimeIntervalMin
+0x00CCDF80	ascii	PlayerIdleRandomSFXTimeIntervalMax
+0x00CCE078	ascii	SkillRushStateAdjustTime
+0x00CCE238	ascii	PlayerSwingSchoolID
+0x00CCE250	ascii	PlayerSwingWeaponID
+0x00CCE358	ascii	FadeNpcLimit
+0x00CCE368	ascii	FadePlayerLimit
+0x00CCE520	ascii	nNpcAdjustSlipOffsetY
+0x00CCE540	ascii	nNpcAdjustOffsetY
+0x00CCE598	ascii	NpcLinkFadeTime
+0x00CCE6E8	ascii	LocalPlayerEnvironmentOffset
+0x00CCE780	ascii	HitMissAdjustOffset
+0x00CCE798	ascii	NpcAutoLookAtDistance
+0x00CCE7B8	ascii	NpcAutoLookAtAngle
+0x00CCE7D0	ascii	AirCombatToSkillMoveCameraDis
+0x00CCE8F0	ascii	FocusFaceZoomFactor
+0x00CCE950	ascii	LocalPlayerEmployeeClipLevel
+0x00CCE978	ascii	LocalPlayerAssistedClipLevel
+0x00CCE9A0	ascii	OtherPlayerEmployeeClipLevel
+0x00CCE9C8	ascii	OtherPlayerAssistedClipLevel
+0x00CCE9F0	ascii	NpcEmployeeClipLevel
+0x00CCEA60	ascii	LocalPlayerFootprintClipLevel
+0x00CCEA88	ascii	OtherPlayerFootprintClipLevel
+0x00CCEAB0	ascii	NpcFootprintClipLevel
+0x00CCEC60	ascii	SkillTurningToTargetSpeed
+0x00CCEC80	ascii	SkillTurningToLogicSpeed
+0x00CCECA0	ascii	SkillTurningTime
+0x00CCEDF0	ascii	KTableList::GetNpcBehitTransferAnimation
+0x00CCEE28	ascii	m_tabNpcBehitTransfer
+0x00CCEFA0	ascii	velocity_texture_length
+0x00CCEFC0	ascii	velocity_texture_yaw_%d_%d
+0x00CCEFE0	ascii	velocity_texture_strength_%d_%d
+0x00CCF200	ascii	GetPlayerAnimationID nIndex : %d, Out of range
+0x00CCF238	ascii	KTableList::GetPlayerAnimationTrackType
+0x00CCF268	ascii	dwKindID < m_PlayerAnimationTracks[nAnimationTrack].nTrackType
+0x00CCF2F0	ascii	dwPreviousAnimationKindID < m_PlayerAnimationTracks[nAnimationTrack].nTrackType
+0x00CCF350	ascii	dwCurrentAnimationKindID < m_PlayerAnimationTracks[nAnimationTrack].nTrackType
+0x00CCF3B0	ascii	KTableList::GetPlayerAnimationFusion
+0x00CCF410	ascii	KTableList::GetPlayerSFXModel
+0x00CCF438	ascii	pPlayerEquipSFXData
+0x00CCF5E8	ascii	NpcDirectionSfx
+0x00CCF638	ascii	SkillModel
+0x00CCF658	ascii	SkillMissileTable
+0x00CCF698	ascii	SkillBuffModel
+0x00CCF6C0	ascii	SkillEffectModel
+0x00CCF6E0	ascii	SkillResultTable
+0x00CCF708	ascii	SkillChainModel
+0x00CCF720	ascii	SkillDash
+0x00CCF740	ascii	SkillTag
+0x00CCF760	ascii	SkillMoveCamera
+0x00CCF780	ascii	NpcSkillBuffEffectModel
+0x00CCF7A0	ascii	NpcSkillMoveModel
+0x00CCF7D8	ascii	NpcLink
+0x00CCF7E8	ascii	PhysicFolderWhite
+0x00CCF848	ascii	BuffBulletTable
+0x00CCF930	ascii	HangPetNPCPet
+0x00CCF9A8	ascii	SkillRushState
+0x00CCFA08	ascii	PlayerBuffAnimationStateAdjustTable
+0x00CCFA38	ascii	SkillResetDownAnimation
+0x00CCFB10	ascii	PlayerLinkBlack
+0x00CCFB98	ascii	SyncPreloadSceneMovie
+0x00CCFC30	ascii	LanternNPC
+0x00CCFC40	ascii	LanternSkillIdx
+0x00CCFCA0	ascii	NpcActionAnimation
+0x00CCFCC0	ascii	NpcDialogSceneCameraAni
+0x00CCFE58	ascii	NpcSerialAnimationTable
+0x00CCFE78	ascii	NpcAnimationAdjustTable
+0x00CCFE98	ascii	NpcForceLoadPriorityTable
+0x00CCFEB8	ascii	NpcBuffAnimationAdjustTable
+0x00CCFF08	ascii	PlayerWeaponAnimationTable
+0x00CCFF38	ascii	PlayerSpecialWeaponAni
+0x00CCFF58	ascii	PlayerBuffAnimationAdjustTable
+0x00CCFF80	ascii	PlayerPoseStateAnimationAdjustTable
+0x00CCFFB0	ascii	PlayerSerialAnimationTable
+0x00CCFFD0	ascii	PlayerCraftAnimationTable
+0x00CD0018	ascii	PlayerTable
+0x00CD0028	ascii	PlayerSkillMoveAnimationTable
+0x00CD0050	ascii	PlayerSkillMoveBirdAnimationTable
+0x00CD0080	ascii	PlayerBuffLoadMDL
+0x00CD0098	ascii	PlayerNormalAttackAdjust
+0x00CD00C0	ascii	PlayerForceRelationAnimationAdjust
+0x00CD0100	ascii	PlayerUniformOptByCamp
+0x00CD0120	ascii	PlayerUniformOptByForce
+0x00CD0140	ascii	PlayerOptimizationUniform
+0x00CD01A8	ascii	PlayerWeaponOptimization
+0x00CD01D0	ascii	PlayerWeaponAnimation
+0x00CD0248	ascii	PlayerRush
+0x00CD0298	ascii	PlayerRushParam
+0x00CD02C8	ascii	PlayerRushRollAdjust
+0x00CD02F8	ascii	PlayerRushFullScreenSFX
+0x00CD0320	ascii	PlayerRushChain
+0x00CD0348	ascii	PlayerRushSfx
+0x00CD0378	ascii	PlayerInteract
+0x00CD03B0	ascii	PlayerInterreact
+0x00CD03F0	ascii	PlayerInteractParam
+0x00CD0560	ascii	PlayerRushBlur
+0x00CD0590	ascii	PlayerRushSkill
+0x00CD05B0	ascii	PlayerRushAdjust
+0x00CD0600	ascii	PlayerStroll
+0x00CD0698	ascii	PlayerStrollAdjust
+0x00CD0708	ascii	BeHitEffect
+0x00CD07E8	ascii	PlayerRideLinkAnimation
+0x00CD0918	ascii	PlayerSwing
+0x00CD0948	ascii	WhiteUpHorse
+0x00CD0978	ascii	PlayerLink
+0x00CD0990	ascii	PlayerSocketAnimation
+0x00CD09B8	ascii	PlayerAnimationWeaponAdjust
+0x00CD09F8	ascii	NpcMaterial
+0x00CD0A18	ascii	NpcDisplayPriority
+0x00CD0A30	ascii	NpcLinkAnimation
+0x00CD0A48	ascii	PlayerRushCamera
+0x00CD0A90	ascii	PlayerSummit
+0x00CD0AB0	ascii	PlayerAnimationPoseAdjust
+0x00CD0AD0	ascii	PlayerAlterPoseAnimation
+0x00CD0AF0	ascii	PlayerAlterPoseBirdAnimation
+0x00CD0B28	ascii	PlayerSocketOffset
+0x00CD0B50	ascii	PlayerAnimationShadow
+0x00CD0BC8	ascii	PlayerAnimationKindRelation
+0x00CD0BF0	ascii	PlayerAnimationOffsetAdjust
+0x00CD0C28	ascii	NpcSpecial
+0x00CD0C78	ascii	NpcWalkRunLRB
+0x00CD0C98	ascii	SkillEarlyWarning
+0x00CD0CC0	ascii	BuffEarlyWarning
+0x00CD0CF0	ascii	SfxLodNpc
+0x00CD0D30	ascii	RemoteSimpleSkillSfx
+0x00CD0DB8	ascii	SpecialBuffRide
+0x00CD0ED0	ascii	DisableRemoteSFXNPCModel
+0x00CD0F08	ascii	NPCNameReplace
+0x00CD0F50	ascii	NPCAnimationBindSocketModel
+0x00CD0F78	ascii	NPCAnimationPathAdjust
+0x00CD0F98	ascii	SkillSkinSfxReplaceModel
+0x00CD0FB8	ascii	SkillSkinAnimationReplaceModel
+0x00CD1060	ascii	PlayerRushStepShadow
+0x00CD10E0	ascii	PlayerAnimationUseOriginRootTrans
+0x00CD1108	ascii	PlayerRideAnimationForceReshape
+0x00CD1150	ascii	PlayerAnimationEnableCameraFollow
+0x00CD1190	ascii	PlayerCastSkillResetAnimation
+0x00CD11B8	ascii	NpcDisableLodModel
+0x00CD1208	ascii	PlayerSocketDynamicObjectModel
+0x00CD1258	ascii	NpcUniformFaceModel
+0x00CD1278	ascii	NpcUniformSocketModel
+0x00CD12A0	ascii	NpcMissingDefaultModel
+0x00CD12E0	ascii	PlayerFootprint
+0x00CD1310	ascii	NpcFootprint
+0x00CD13D8	ascii	PlayerAnimationRepresentIDAdjust
+0x00CD1408	ascii	PlayerFaceMotionModel
+0x00CD14E8	ascii	PlayerFootprintIdleSFX
+0x00CD1508	ascii	NpcAnimationSpeedConfig
+0x00CD1588	ascii	PlayerPartAnimation
+0x00CD15C0	ascii	NpcUseLookAtControllerModel
+0x00CD15F8	ascii	NpcShadow
+0x00CD1608	ascii	NpcInterpolationDirection
+0x00CD1648	ascii	BeHitShakeModel
+0x00CD1660	ascii	NpcFresnelStrength
+0x00CD1678	ascii	BeHitSoundType
+0x00CD1690	ascii	HitTargetSound
+0x00CD16A8	ascii	NpcUseLogicPitch
+0x00CD16D0	ascii	PlayerHairColor
+0x00CD16F0	ascii	PlayerHairAccessoriesColor
+0x00CD1728	ascii	PlayerMysteryHair
+0x00CD1740	ascii	PlayerEquipSFXForceBindAnimation
+0x00CD1778	ascii	NpcFootprintIdleSFX
+0x00CD1798	ascii	PlayerMysteryHairTextureReplace
+0x00CD1830	ascii	PlayerAnimationDisableRust
+0x00CD1860	ascii	PlayerMysteryTextureTable
+0x00CD18A8	ascii	PlayerMysteryChest
+0x00CD18C8	ascii	NpcParam
+0x00CD1948	ascii	PlayerSocketDynamicSfx
+0x00CD1980	ascii	SkillHitEffect
+0x00CD1A08	ascii	PlayerPainting
+0x00CD1A48	ascii	NPCDiy
+0x00CD1A50	ascii	m_pNpcDIYFile
+0x00CD1A60	ascii	m_tabNpcDIY
+0x00CD1D18	ascii	PlayerAnimationSocketHideConfig
+0x00CD1D40	ascii	m_pPlayerAniSocketHideConfig
+0x00CD1D68	ascii	m_tabPlayerAniSocketHideConfig
+0x00CD1F78	ascii	NpcDialogCamera
+0x00CD1F90	ascii	m_pNpcDialogCamera
+0x00CD1FA8	ascii	m_tabNpcDialogCamera
+0x00CD1FC8	ascii	AirCombatCamera
+0x00CD1FE0	ascii	m_pAirCombatCamera
+0x00CD1FF8	ascii	m_tabAirCombatCamera
+0x00CD2018	ascii	PlayerEquipSfx
+0x00CD2030	ascii	m_pPlayerEquipSfx
+0x00CD2048	ascii	m_tabPlayerEquipSfx
+0x00CD20B0	ascii	PlayerFlyJumpAnimation
+0x00CD20F8	ascii	SkillShadow
+0x00CD2108	ascii	m_pSkillShadow
+0x00CD2120	ascii	m_tabSkillShadow
+0x00CD2178	ascii	SkillBullet
+0x00CD2188	ascii	m_pSkillBullet
+0x00CD21A0	ascii	m_tabSkillBullet
+0x00CD2248	ascii	PlayerVirtual
+0x00CD2258	ascii	m_pPlayerVirtual
+0x00CD2270	ascii	m_tabPlayerVirtual
+0x00CD2330	ascii	PlayerSuspendAnimation
+0x00CD2378	ascii	SkillCasterEffect
+0x00CD2390	ascii	m_pSkillCasterEffect
+0x00CD23B0	ascii	m_tabSkillCasterEffect
+0x00CD2458	ascii	PlayerExtendSocketAdjust
+0x00CD2478	ascii	m_pPlayerExtendSocketAdjust
+0x00CD24A0	ascii	m_tabPlayerExtendSocketAdjust
+0x00CD2520	ascii	PlayerEquipTransform
+0x00CD2540	ascii	m_pPlayerEquipTranform
+0x00CD2560	ascii	m_tabPlayerEquipTransform
+0x00CD2580	ascii	NpcProperty
+0x00CD2590	ascii	m_pNpcProperty
+0x00CD25A8	ascii	m_tabNpcProperty
+0x00CD2668	ascii	SkillUserData
+0x00CD2678	ascii	m_pSkillUserData
+0x00CD2690	ascii	m_tabSkillUserData
+0x00CD26A8	ascii	BehitTransfer
+0x00CD26B8	ascii	m_pNpcBehitTransfer
+0x00CD2860	ascii	PlayerMysteryHat
+0x00CD2878	ascii	m_pPlayerMysteryHatConfig
+0x00CD2898	ascii	m_tabPlayerMysteryHatConfig
+0x00CD2950	ascii	NpcSpecialBuffConfig
+0x00CD2970	ascii	m_pNpcSpecialBuffConfig
+0x00CD2990	ascii	m_tabNpcSpecialBuffConfig
+0x00CD29B0	ascii	PlayerMysteryChestParam
+0x00CD29D0	ascii	m_pPlayerMysteryChestParam
+0x00CD29F0	ascii	m_tabPlayerMysteryChestParam
+0x00CD2D20	ascii	SkillCasterModel
+0x00CD2D60	ascii	PLAYER_CONFIG_FILE_NAME
+0x00CD2DA8	ascii	NPC_CONFIG_FILE_NAME
+0x00CD2F20	ascii	NpcTreadFeedback
+0x00CD2FA0	ascii	PlayerTreadFeedback
+0x00CD3020	ascii	PlayerTread
+0x00CD3090	ascii	SkillDirectory
+0x00CD3360	ascii	KTableList::LoadPlayerMysteryPendantModel
+0x00CD3470	ascii	NpcModel
+0x00CD3480	ascii	KTableList::LoadNpcUniformPlayerModel
+0x00CD34B0	ascii	UNIFORM_PLAYER_MODEL
+0x00CD34D0	ascii	NpcDirectory
+0x00CD34F0	ascii	PlayerMysteryModelConfig
+0x00CD3510	ascii	KTableList::LoadPlayerMysteryArgConfig
+0x00CD37B0	ascii	PlayerGroundTrackBone
+0x00CD37D0	ascii	KTableList::LoadPlayerGroundTrackBone
+0x00CD3810	ascii	m_PlayerGroundTrackBone.nBoneCount <= MAX_PLAYER_GROUND_TRACK_BONE_COUNT
+0x00CD3878	ascii	m_PlayerGroundTrackBone.nDeepDiffusion >= 0
+0x00CD38C0	ascii	m_PlayerGroundTrackBone.nXDiffusion >= 0
+0x00CD3930	ascii	m_PlayerGroundTrackBone.sBoneInfo[i].nZLength > 0
+0x00CD3970	ascii	SkillCasterBirdModel
+0x00CD3990	ascii	KTableList::LoadSkillCastBirdModel
+0x00CD39C0	ascii	(m_pPlayerSkillCasterBirdModel[nRoleType])
+0x00CD3B98	ascii	PlayerEquipModel
+0x00CD3BB0	ascii	KTableList::LoadPlayerAllModel
+0x00CD3D80	ascii	g_szPlayerModelFiles[nRoleType][nEquipFile][FILE_NAME_LEN - 1] == '\0'
+0x00CD3DD8	ascii	PlayerEquipDirectory
+0x00CD4110	ascii	PlayerEquipSFXDirectory
+0x00CD4150	ascii	PlayerEquipSFXModelParam
+0x00CD4178	ascii	m_pPlayerEquipSFXModelParamModel
+0x00CD4250	ascii	PlayerEquipSFXSequenceIndex
+0x00CD4278	ascii	KTableList::LoadPlayerEquipSFXSequence
+0x00CD42B8	ascii	m_pPlayerEquipSFXSequenceIndexModel
+0x00CD4310	ascii	rPlayerEquipSFXSequenceData.pModel
+0x00CD4340	ascii	PlayerAnimationIdleRandomSFX
+0x00CD4368	ascii	KTableList::LoadPlayerIdleRandomSfx
+0x00CD43C8	ascii	m_pKRLPlayerIdleSFXModel
+0x00CD43E8	ascii	PlayerAnimationModel
+0x00CD4408	ascii	KTableList::LoadPlayerConfigFile
+0x00CD4490	ascii	nValue == _countof(g_szPlayerAnimationFiles)
+0x00CD44F0	ascii	nValue == _countof(g_szPlayerAnimationAdjustFiles)
+0x00CD4568	ascii	nValue == _countof(g_szPlayerAnimationTerrainAdjustFiles)
+0x00CD45E0	ascii	nValue == _countof(g_szPlayerAnimationRidesTypeFiles)
+0x00CD4648	ascii	nValue == _countof(g_szPlayerAnimationFusionFiles)
+0x00CD46B0	ascii	nValue == _countof(g_szPlayerAnimationIndexFiles)
+0x00CD4718	ascii	nValue == _countof(g_szPlayerRandomAnimationFiles)
+0x00CD4788	ascii	nValue == _countof(g_szPlayerSequenceAnimationFiles)
+0x00CD47F0	ascii	nValue == _countof(g_szPlayerAnimationIdleRandomFiles)
+0x00CD4870	ascii	nValue == _countof(g_szPlayerAnimationIdleTransformFiles)
+0x00CD48B8	ascii	PlayerAnimationTableWeapon
+0x00CD48D8	ascii	KTableList::LoadPlayerAnimationWeaponTable
+0x00CD4918	ascii	nTabWidth - 2 < PLAYER_WEAPON_ANI_TAB_MAX_LEN
+0x00CD4950	ascii	PlayerForceWeaponRelation
+0x00CD49F8	ascii	LoadPlayerAnimationWeaponTable : GetSchoolName %d Failed
+0x00CD4A40	ascii	PlayerDirectory
+0x00CD4A58	ascii	KTableList::LoadPlayerAllAnimationModel
+0x00CD4B18	ascii	KTableList::LoadPlayerAnimationRelationTable
+0x00CD4BA0	ascii	m_PlayerAnimationTracks[nAnimationTrack].pTrackType
+0x00CD4BE0	ascii	m_PlayerAnimationTracks[nAnimationTrack].pRelation
+0x00CD4C20	ascii	PlayerAnimationRelationDownTable
+0x00CD4C48	ascii	PlayerAnimationRelationUpTable
+0x00CD4CA8	ascii	OBJECT_POSITION_OFFSET_FILE_NAME
+0x00CD4CD0	ascii	nValue == _countof(g_szCameraObjectPositionOffsetFiles)
+0x00CD4FB0	ascii	ZuoQiSkillMove
+0x00CD4FF0	ascii	KTableList::GetPlayerVirtual
+0x00CD5050	ascii	KTableList::GetHomeLandBasePosition
+0x00CD5080	ascii	BasePosition
+0x00CD5090	ascii	tabBasePosition
+0x00CD5200	ascii	nRoleType >= 0 && nRoleType < _countof(m_PlayerEquipAlternativeData)
+0x00CD5258	ascii	represent\npc\npc_no_mapping.txt
+0x00CD5288	ascii	represent\player\model_adapt.txt
+0x00CD5518	ascii	KTableList::InitRemoteSimpleSkillSfxHash
+0x00CD55D8	ascii	KTableList::InitPlayerAnimationUseOriginRootTransHash
+0x00CD5618	ascii	pPlayerAnimationUseOriginRootTrans
+0x00CD5648	ascii	KTableList::InitPlayerRideAnimationForceReshapehHash
+0x00CD5688	ascii	pPlayerRideAnimationForceReshape
+0x00CD56F8	ascii	PhysicFileWhite
+0x00CD5710	ascii	KTableList::InitPhysicFileWhite
+0x00CD5738	ascii	KTableList::InitNpcUniformFaceModel
+0x00CD5768	ascii	KTableList::InitNpcUniformSocketModel
+0x00CD5798	ascii	KTableList::InitNpcUniformUseNpcModel
+0x00CD57C8	ascii	KTableList::InitNpcUniformUsePlayerModel
+0x00CD5BD8	ascii	KTableList::InitSkillBuffModel
+0x00CD5C00	ascii	pSkillBuffModel
+0x00CD5C80	ascii	KTableList::InitPlayerAnimationModel
+0x00CD5CB0	ascii	KTableList::InitPlayerFootprintModel
+0x00CD5CE0	ascii	pPlayerFootprintModel
+0x00CD5D00	ascii	KTableList::InitNpcFootprintModel
+0x00CD5D28	ascii	pNpcFootprintModel
+0x00CD5F70	ascii	KTableList::InitPlayerFootprintIdleSFXModel
+0x00CD5FA8	ascii	pPlayerFootprintIdleSFXModel
+0x00CD5FD0	ascii	pPlayerFootprintIdleSFXModel->FootprintIdleSFXModel.nReappearIntervalMinTime <= pPlayerFootprintIdleSFXModel->FootprintIdleSFXModel.nReappearIntervalMaxTime
+0x00CD6090	ascii	KTableList::InitNpcFootprintIdleSFXModel
+0x00CD60C8	ascii	pNpcFootprintIdleSFXModel
+0x00CD60F0	ascii	pNpcFootprintIdleSFXModel->FootprintIdleSFXModel.nReappearIntervalMinTime <= pNpcFootprintIdleSFXModel->FootprintIdleSFXModel.nReappearIntervalMaxTime
+0x00CD61A8	ascii	KTableList::InitPlayerMysteryHairTextureReplaceModel
+0x00CD61E8	ascii	pPlayerMysteryHairTextureReplaceModel
+0x00CD6218	ascii	KTableList::InitPlayerMysteryTextureTable
+0x00CD6300	ascii	KTableList::InitPlayerMysteryChestModel
+0x00CD6340	ascii	nStartIndex <= MAX_RL_PLAYER_MYSTERY_CHEST_SUBSET_COUNT
+0x00CD6388	ascii	KTableList::InitNpcShadowModel
+0x00CD63B0	ascii	pNpcShadowModel
+0x00CD63C8	ascii	pNpcShadowModel->dwCount <= 20
+0x00CD63F0	ascii	KTableList::InitModelBeHitSoundTypeModel
+0x00CD6428	ascii	pBeHitSoundType
+0x00CD6440	ascii	pBeHitSoundType->eBeHitSoundType >= rhst_flesh && pBeHitSoundType->eBeHitSoundType <= rhst_metal
+0x00CD64B8	ascii	KTableList::InitPlayerMysteryHair
+0x00CD6770	ascii	pKillSFX->eMoveType >= KILL_SFX_MOVE_TYPE::ksmt_speed && pKillSFX->eMoveType <= ksmt_time
+0x00CD6818	ascii	KTableList::InitSkillHitEffect
+0x00CD6840	ascii	pModel->dwStageCount <= MAX_SKILL_HIT_STAGE_COUNT
+0x00CD6AC8	ascii	KTableList::InitDisableRemoteSFXNPCModel
+0x00CD6C68	ascii	m_NpcTreadFeedbackModels
+0x00CD6C88	ascii	m_PlayerTreadFeedbackModels
+0x00CD6CB0	ascii	m_PlayerTreadModels
+0x00CD6D00	ascii	m_NpcSkillCasterModels
+0x00CD6D20	ascii	m_PlayerSkillCasterModel
+0x00CD6E30	ascii	KTableList::GetSkillBulletTab
+0x00CD6E58	ascii	tabSubSkillBullet
+0x00CD6E70	ascii	KTableList::GetPlayerEquipTransform
+0x00CD6EA0	ascii	KTableList::GetNpcPropertyTab
+0x00CD6F58	ascii	KTableList::GetBehaviacAnimationWhiteList
+0x00CD6FA0	ascii	WhiteList
+0x00CD7038	ascii	npc_source[\\|/]+(.+?)[\\|/]+
+0x00CD70C8	ascii	szNpcAnimationTable && szNpcAnimationTable[0] != '\0'
+0x00CD7108	ascii	KTableList::GetPlayerSheathWeaponAdjustModel
+0x00CD7F00	ascii	bNpcEffectScale
+0x00CD7FB0	ascii	struct KGStrView __cdecl util::GetTypeName<struct KRLPlayerTreadModelKey>(void)
+0x00CD8010	ascii	struct KGStrView __cdecl util::GetTypeName<struct KNpcSkillCasterModelKey>(void)
+0x00CD8080	ascii	struct KGStrView __cdecl util::GetTypeName<struct KSkillCasterModelKey>(void)
+0x00CD8450	ascii	dwSkillID
+0x00CD8460	ascii	dwSkillLevel
+0x00CD86B0	ascii	GetNpcSocketByAnimation
+0x00CD86D0	ascii	pNpcAnimation
+0x00CD8720	ascii	Character skill buffer [%d, %u] not found
+0x00CD8788	ascii	pPlayerModel
+0x00CD8798	ascii	GetCharacterQuestMarkOrSkillBuffHeight
+0x00CD8828	ascii	KnockDownBeHit
+0x00CD8BF4	ascii	BeHit
+0x00CD8D18	ascii	GetNpcEquipResource
+0x00CD8D30	ascii	GetNpcAnimationModelResource
+0x00CD8D58	ascii	GetPlayerAnimationModelResource
+0x00CD8D80	ascii	TransformNPCEquipResource
+0x00CD8DB0	ascii	GetNPCEquipModelResource
+0x00CD8DD0	ascii	pRLPlayerModel
+0x00CD8DE8	ascii	GetPlayerMDL
+0x00CD8DF8	ascii	GetPlayerModelHeight
+0x00CD8E18	ascii	cpRLPlayerModel
+0x00CD8E30	ascii	GetPlayerEquipSfxModelResource
+0x00CD9110	ascii	PositionOnlyFlag
+0x00CD9128	ascii	AdjustPositionByRidingHorse
+0x00CD9160	ascii	GetPlayerMysteryPendantModelResource
+0x00CD91C0	ascii	GetPlayerMysteryPendantModelAttribute
+0x00CD9290	ascii	GetPlayerEquipModelHideParam
+0x00CD9470	ascii	TransformPlayerMysteryChestResourceToParam
+0x00CD9578	ascii	GetPlayerHatStyleCount
+0x00CD95F0	ascii	[RL] GetPlayerHatStyleCount(HatRepresentID = %u, RoleType = %s) failed
+0x00CD97F8	ascii	hlbs::AppliqueBrush::Move
+0x00CD9B98	ascii	m_nColCount * m_nRowCount < MAX_APPLIQUE_TEMP_BUFFER_SIZE
+0x00CDA440	ascii	nBuffIndex >= 0 && nBuffIndex < RL_HOMELAND_MAX_APPLIQUE_SUB_MODEL_COUNT
+0x00CDA498	ascii	ruOutDataLen < MAX_APPLIQUE_TEMP_BUFFER_SIZE
+0x00CDABF8	ascii	hlbs::CascadeBrush::Move
+0x00CDB200	ascii	hlbs::FoliageCoverBrush::Move
+0x00CDB6C0	ascii	_CheckDataBufferCapacity(nRenderCount)
+0x00CDB880	ascii	EraseRoot_RemovePatternID:%u Fail
+0x00CDBB70	ascii	_CheckDataBufferCapacity(nSDKTotalCount)
+0x00CDBCE0	ascii	hlbs::FoliageCoverModel::_CheckDataBufferCapacity
+0x00CDBE28	ascii	FoliageCover_RemovePattern:%d Fail
+0x00CDD8A8	ascii	hlbs::StripBrush::Move
+0x00CDDBF8	ascii	KRLFurnitureShopMgr::SetPosition
+0x00CDDF88	ascii	uPathLength + 1 <= uPreBufferLen
+0x00CDDFB0	ascii	nRetCode > 0 && nRetCode < (int)uPreBufferLen
+0x00CDDFE8	ascii	uPostfixPos <= uPreBufferLen
+0x00CDE010	ascii	uPathLength - uPostfixPos <= uPostBufferLen
+0x00CDE1B0	ascii	nRetCode > 0 && nRetCode < (int)uBufferLength
+0x00CDE780	ascii	!m_SubLand[nSubLandIndex].sfxEntity
+0x00CDE7B0	ascii	data/source/Home/effect/effect_pss/place_f_4_4_loop_white.pss
+0x00CDE838	ascii	m_SubLand[nSubLandIndex].sfxEntity
+0x00CDECB8	ascii	KRLHomelandBuilder::CastBrushModelToNormalModel
+0x00CE0C68	ascii	QueryCollisionPosition(ray, fMaxDist, vHitPos)
+0x00CE0EE0	ascii	raycastResult.block.userData.eType == MeshUserData::UDT_Homeland
+0x00CE0F30	ascii	raycastResult.block.userData.hlData.dwBaseID == m_dwBaseID
+0x00CE1010	ascii	KRLHomelandBuilder::MoveBrush
+0x00CE1160	ascii	_SaveNode(pRoot, 0, szBuffer + uCurLength, uTotalLength, uCurLength)
+0x00CE1AC8	ascii	_SaveModel(pObject, szBuffer, uTotalLength, uCurLength, uCost)
+0x00CE1B20	ascii	_SaveSubGroupModel(pObject, szBuffer, uTotalLength, uCurLength, uCost)
+0x00CE1B78	ascii	_SaveLight(pObject, szBuffer, uTotalLength, uCurLength, uCost)
+0x00CE1BD0	ascii	_SaveBrushModel(pObject, szBuffer, uTotalLength, uCurLength, uCost)
+0x00CE1C30	ascii	_SaveCascadeBrushModel(pObject, szBuffer, uTotalLength, uCurLength, uCost)
+0x00CE1C90	ascii	_SaveContainer(pObject, usChildIndex, szBuffer, uTotalLength, uCurLength, uCost)
+0x00CE1D00	ascii	_SaveNode(pChild, (unsigned short)i, szBuffer, uTotalLength, uCurLength)
+0x00CE1E78	ascii	memcmp(szBuffer + uRLLength - 8, md5, 16) == 0
+0x00CE22C0	ascii	_LoadString(szBuffer, uTotalCost, szLightMtl, std::min(MAX_PATH, (int)(usLightModelSize - uTotalCost)))
+0x00CE2340	ascii	_LoadString(szBuffer, uTotalCost, szLightMask, std::min(MAX_PATH, (int)(usLightModelSize - uTotalCost)))
+0x00CE27D0	ascii	_LoadNode(dwVersion, szBuffer, pObject, bSkipTree, uTotalLength, uCurLength, ChildHLNodeIDVec)
+0x00CE2A60	ascii	_LoadString(szBuffer, uTotalCost, szLightMtl, std::min(MAX_PATH, int(usLightModelSize - uTotalCost)))
+0x00CE2AE0	ascii	_LoadString(szBuffer, uTotalCost, szLightMask, std::min(MAX_PATH, int(usLightModelSize - uTotalCost)))
+0x00CE2EF0	ascii	_LoadBlueprintNode(dwVersion, szBuffer, node.pObject, hSubParent, bSkipTree, dwID, bKeepInstID, dwObjectID, uTotalLength, uCurLength, arrNodes, pParent ? pRoot : node.pObject)
+0x00CE3658	ascii	KRLHomelandBuilder::GetModelPosition
+0x00CE37E0	ascii	_SaveNode(pObject, 0, szBuffer + uCurLength, uTotalLength, uCurLength)
+0x00CE3838	ascii	m_piSaveBlueprintBuffer
+0x00CE3AE0	ascii	m_piBlueprintBuffer
+0x00CE3AF8	ascii	KRLHomelandBuilder::SetObjLocalPosition
+0x00CE3F88	ascii	KRLHomelandBuilder::MoveLoadBlueprint
+0x00CE3FB8	ascii	KRLHomelandBuilder::GetHitPosByRoot
+0x00CE42E8	ascii	KRLHomelandBuilder::_SetPosition
+0x00CE4A70	ascii	KRLHomelandBuilder::GetRootPosition
+0x00CE4CA0	ascii	KRLHomelandBuilder::_Sync3DTransform
+0x00CE5578	ascii	KRLHomelandBuilder::MoveCustomBrush
+0x00CE56C0	ascii	KRLHomelandBuilder::GetSubLandPosition
+0x00CE5840	ascii	pvBuffer
+0x00CE5BA8	ascii	KRLHomelandBuilderAsyn::_OnGetModelLocalPositionOfRoot
+0x00CE6BB8	ascii	pPosition
+0x00CE6BD8	ascii	pLookAtPosition
+0x00CE6F90	ascii	KRLHomelandSFX::SetSlotSFXPosition
+0x00CE7318	ascii	RedoUndo::OnSetLocalPosition
+0x00CE7340	ascii	pActionSetLocalPosition
+0x00CE7438	ascii	m_pBuilder->_SetPosition(pObject, pActionPlace->vOldPos)
+0x00CE7520	ascii	m_pBuilder->_SetPosition(pObject, pActionPlace->vNewPos)
+0x00CE7AC0	ascii	RedoUndo::_UndoActionSetLocalPosition
+0x00CE7AF0	ascii	m_pBuilder->_SetPosition(pObject, pActionSetLocalPosition->vOldPos)
+0x00CE7B48	ascii	RedoUndo::_RedoActionSetLocalPosition
+0x00CE7B80	ascii	m_pBuilder->_SetPosition(pObject, pActionSetLocalPosition->vNewPos)
+0x00CE7CE0	ascii	pInteractor->Init(&m_ScriptMgr, m_piSNE, m_piGizmol)
+0x00CE7D20	ascii	pInteractor
+0x00CE7D40	ascii	pInteractor->OnScriptLoaded()
+0x00CE7E28	ascii	it != m_mapInteractor.end()
+0x00CE7EA0	ascii	it->second.CreateSlotActor(nSlotIndex, pzModel, 1.f)
+0x00CE8020	ascii	SceneInteraction::InteractionManager::GetFurniturePosition
+0x00CE87B0	ascii	SceneInteraction::Interactor::Init
+0x00CE8808	ascii	SceneInteraction::Interactor::InitSlots
+0x00CE8848	ascii	Interactor::InitSlots model:%s Anchor Error!
+0x00CE88A0	ascii	SceneInteraction::Interactor::_InitScript
+0x00CE89A0	ascii	SceneInteraction::Interactor::On3DNodeLoaded
+0x00CE8A18	ascii	SceneInteraction::Interactor::On3DNodeTransformUpdated
+0x00CE8A60	ascii	SceneInteraction::Interactor::OnSlotStateUpdated
+0x00CE8B18	ascii	SceneInteraction::Interactor::LoadModel
+0x00CE8BA0	ascii	SceneInteraction::Interactor::LoadNode
+0x00CE8BE8	ascii	SceneInteraction::Interactor::SetLightVisible
+0x00CE8C70	ascii	SceneInteraction::Interactor::CreateSlotActor
+0x00CE8CA8	ascii	SceneInteraction::Interactor::CreateSlotRideActor
+0x00CE8CE8	ascii	SceneInteraction::Interactor::GetSlotActor
+0x00CE8D20	ascii	SceneInteraction::Interactor::DestroySlotActor
+0x00CE8D58	ascii	SceneInteraction::Interactor::BindSlotActor
+0x00CE8EB8	ascii	SceneInteraction::Interactor::CharacterBind
+0x00CE8EF0	ascii	SceneInteraction::Interactor::CharacterUnbind
+0x00CE8F28	ascii	SceneInteraction::Interactor::DummyBind
+0x00CE8FB0	ascii	SceneInteraction::Interactor::DummyUnbind
+0x00CE9010	ascii	SceneInteraction::Interactor::_SocketDummyLoaded
+0x00CE9098	ascii	SceneInteraction::Interactor::PlaySlotAnimation
+0x00CE9148	ascii	SceneInteraction::Interactor::PlayAnimation
+0x00CE91C0	ascii	SceneInteraction::Interactor::_RegisterEventHandler
+0x00CE9200	ascii	SceneInteraction::Interactor::_UnregisterEventHandler
+0x00CE9260	ascii	SceneInteraction::Interactor::GetTransmitPosition
+0x00CE9368	ascii	SceneInteraction::Interactor::GetSocketTransform
+0x00CE93A8	ascii	SceneInteraction::Interactor::_CallScript
+0x00CE9470	ascii	Interactor
+0x00CE9520	ascii	CreateSlotActor
+0x00CE9538	ascii	CreateSlotRideActor
+0x00CE9550	ascii	GetSlotActor
+0x00CE9560	ascii	DestroySlotActor
+0x00CE9578	ascii	BindSlotActor
+0x00CE9588	ascii	SceneInteraction::Interactor::LuaSetVisible
+0x00CE95C0	ascii	SceneInteraction::Interactor::LuaLoadModel
+0x00CE9620	ascii	SceneInteraction::Interactor::LuaGetPosition
+0x00CE9658	ascii	SceneInteraction::Interactor::LuaSetLightVisible
+0x00CE96B8	ascii	SceneInteraction::Interactor::LuaLoadNode
+0x00CE9710	ascii	SceneInteraction::Interactor::LuaPlayAnimation
+0x00CE9778	ascii	SceneInteraction::Interactor::LuaGetCurAnimationName
+0x00CE97E8	ascii	SceneInteraction::Interactor::LuaGetModelFile
+0x00CE9870	ascii	SceneInteraction::Interactor::LuaCharacterBind
+0x00CE98A8	ascii	SceneInteraction::Interactor::LuaCharacterUnbind
+0x00CE98E8	ascii	SceneInteraction::Interactor::LuaDummyBind
+0x00CE9920	ascii	SceneInteraction::Interactor::LuaDummyUnbind
+0x00CE9958	ascii	SceneInteraction::Interactor::LuaCreateSlotActor
+0x00CE9994	ascii	pActor
+0x00CE99A0	ascii	SceneInteraction::Interactor::LuaCreateSlotRideActor
+0x00CE99E0	ascii	SceneInteraction::Interactor::LuaGetSlotActor
+0x00CE9A18	ascii	SceneInteraction::Interactor::LuaDestroySlotActor
+0x00CE9A58	ascii	SceneInteraction::Interactor::LuaBindSlotActor
+0x00CE9B58	ascii	pRLCharacter->SetInteractor(bEnable, bEnableCollision, nType)
+0x00CE9C20	ascii	GetFurniturePosition
+0x00CE9DD8	ascii	sfxEntity
+0x00CE9E00	ascii	LoadPlayerPart
+0x00CEA218	ascii	C_GetPlayersAround
+0x00CEA320	ascii	C_GetFurniturePosition
+0x00CEA440	ascii	C_LoadPlayerPart
+0x00CEA640	ascii	bImmunityCastIDSame
+0x00CEA680	ascii	byMoveMode
+0x00CEA6D8	ascii	dwNPCSpecies
+0x00CEA820	ascii	bBirdMove
+0x00CEA998	ascii	byMoveState
+0x00CEAA28	ascii	nVelocityZ
+0x00CEAA38	ascii	nPassiveVelocityXY
+0x00CEAA68	ascii	nPassiveVelocityZ
+0x00CEAB60	ascii	nHangVelocityXY
+0x00CEAC10	ascii	nSpecialBuffID
+0x00CEAC88	ascii	dwSkillMoveID
+0x00CEAD40	ascii	dwFakePlayerID
+0x00CEAE10	ascii	KRLEntityAdmin::Init
+0x00CEAE40	ascii	KRLEntityAdmin::Update
+0x00CEAE60	ascii	KRLEntityAdmin::UpdateSystem
+0x00CEAEB0	ascii	KRLEntityAdmin::CreateEntity
+0x00CEAED8	ascii	KRLEntityAdmin::CreateSystem
+0x00CEAF00	ascii	KRLECSPool::CreateEntity
+0x00CEAF20	ascii	KRLECSPool::DestroyEntity
+0x00CEAF40	ascii	KRLECSPool::GetSystemFocusOfEntity
+0x00CEAF90	ascii	Components.find(pEntity) == Components.end()
+0x00CEB030	ascii	LookupEntity
+0x00CEB160	ascii	KPROTOBUF_BASE::KPROTO_WRITE_BUFFER::WriteEmptyMember
+0x00CEB1A0	ascii	KPROTOBUF_BASE::KPROTO_WRITE_BUFFER::WriteBaseMember
+0x00CEB208	ascii	KPROTOBUF_BASE::KPROTO_WRITE_BUFFER::WriteSPMemberPrepare
+0x00CEB250	ascii	KPROTOBUF_BASE::KPROTO_WRITE_BUFFER::WriteBuffer
+0x00CEB290	ascii	m_uWriteSize + uSize < sizeof(m_byWriteBuffer)
+0x00CEB2C8	ascii	KPROTOBUF_BASE::KPROTO_WRITE_BUFFER::EndWriteEmpty
+0x00CEB308	ascii	KPROTOBUF_BASE::KPROTO_READ_BUFFER::ParseData
+0x00CEB340	ascii	uSize > 0 && uSize < sizeof(m_byReadBuffer)
+0x00CEB378	ascii	BufferSection.BaseInfo.byBaseType < EBT_TOTAL
+0x00CEB3D0	ascii	KPROTOBUF_BASE::KPROTO_READ_BUFFER::ReadBaseMember
+0x00CEB418	ascii	pBufferSection
+0x00CEB430	ascii	!pBufferSection->BaseInfo.bSP
+0x00CEB460	ascii	nCount == pBufferSection->nCount
+0x00CEB488	ascii	KPROTOBUF_BASE::KPROTO_READ_BUFFER::ReadSPMember
+0x00CEB4D8	ascii	pBufferSection->BaseInfo.bSP
+0x00CEB918	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_KRL_CHARACTER_MOVE_POSITION
+0x00CEB968	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_KRL_CHARACTER_MOVE_POSITION
+0x00CEB9C0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_KRL_CHARACTER_MOVE_POSITION
+0x00CEBFE8	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_KCaster
+0x00CEC020	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_KCaster
+0x00CEC058	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_KCaster
+0x00CEC090	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_KRepresentSkillEffectResult
+0x00CEC0E0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_KRepresentSkillEffectResult
+0x00CEC130	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_KRepresentSkillEffectResult
+0x00CEC430	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_KRepresentPlayerMysteryHairResource
+0x00CEC490	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_KRepresentPlayerMysteryHairResource
+0x00CEC4F0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_KRepresentPlayerMysteryHairResource
+0x00CEC548	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_RLReplaySkillEffect
+0x00CEC588	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_RLReplaySkillEffect
+0x00CEC5C8	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_RLReplaySkillEffect
+0x00CED080	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_NEW_DISPLAY_NPC
+0x00CED0E0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_NEW_DISPLAY_NPC
+0x00CED140	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_NEW_DISPLAY_NPC
+0x00CED1A0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_NEW_DISPLAY_PLAYER
+0x00CED200	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_NEW_DISPLAY_PLAYER
+0x00CED260	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_NEW_DISPLAY_PLAYER
+0x00CED8F0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_SYNC_CHARACTER_DATA
+0x00CED950	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_SYNC_CHARACTER_DATA
+0x00CED9B0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_SYNC_CHARACTER_DATA
+0x00CEDB30	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CHAR_SKILL_BUFFER
+0x00CEDB90	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CHAR_SKILL_BUFFER
+0x00CEDBF0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CHAR_SKILL_BUFFER
+0x00CEE740	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_PREPARE_CAST_SKILL
+0x00CEE7A0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_PREPARE_CAST_SKILL
+0x00CEE800	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_PREPARE_CAST_SKILL
+0x00CEE860	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CAST_SKILL
+0x00CEE8B0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CAST_SKILL
+0x00CEE900	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CAST_SKILL
+0x00CEE950	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_SKILL_EFFECT_RESULT
+0x00CEE9B0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_SKILL_EFFECT_RESULT
+0x00CEEA10	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_SKILL_EFFECT_RESULT
+0x00CEEA70	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_SKILL_CHAIN_DISPLAY
+0x00CEEAD0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_SKILL_CHAIN_DISPLAY
+0x00CEEB30	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_SKILL_CHAIN_DISPLAY
+0x00CEF970	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_DOODAD_AFTER_HIT
+0x00CEF9D0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_DOODAD_AFTER_HIT
+0x00CEFA30	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_DOODAD_AFTER_HIT
+0x00CEFA90	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_DOODAD_BE_HIT
+0x00CEFAE0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_DOODAD_BE_HIT
+0x00CEFB30	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_DOODAD_BE_HIT
+0x00CF0E40	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_MOUSE_MOVE_ENABLE
+0x00CF0EA0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_MOUSE_MOVE_ENABLE
+0x00CF0F00	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_MOUSE_MOVE_ENABLE
+0x00CF2AA0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CHAE_BE_HITTED
+0x00CF2AF0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CHAE_BE_HITTED
+0x00CF2B50	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CHAE_BE_HITTED
+0x00CF2DC0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_RESET_SKILL_MOVE
+0x00CF2E20	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_RESET_SKILL_MOVE
+0x00CF2E80	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_RESET_SKILL_MOVE
+0x00CF3440	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_NOTIFY_SKILL_BULLET
+0x00CF34A0	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_NOTIFY_SKILL_BULLET
+0x00CF3500	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_NOTIFY_SKILL_BULLET
+0x00CF38F0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_SKILL_EARLY_WARNING
+0x00CF3950	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_SKILL_EARLY_WARNING
+0x00CF39B0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_SKILL_EARLY_WARNING
+0x00CF3A10	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CHANNEL_SKILL
+0x00CF3A60	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CHANNEL_SKILL
+0x00CF3AB0	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CHANNEL_SKILL
+0x00CF40B0	ascii	KPROTOBUF_CONVERTOR::__KPB_WRITE_STKREPRESENT_EVENT_CHARACTER_SKILL_SKIN
+0x00CF4110	ascii	KPROTOBUF_CONVERTOR::__KPB_READER_STKREPRESENT_EVENT_CHARACTER_SKILL_SKIN
+0x00CF4170	ascii	KPROTOBUF_CONVERTOR::__KPB_CONSTRUCT_STKREPRESENT_EVENT_CHARACTER_SKILL_SKIN
+0x00CF72C8	ascii	Fail read container from behaviac::string at position %u
+0x00CF9F28	ascii	PetCharaterMoveState
+0x00CF9F60	ascii	PetMoveState
+0x00CFDCA0	ascii	m_eMasterMoveState
+0x00CFDCD0	ascii	m_eMoveState
+0x00CFE2E0	utf16le	CHARACTER_MOVE_STATE
+0x00CFE520	ascii	pcmsOnSkillMoveScr
+0x00CFE538	ascii	pcmsOnSkillMoveDst
+0x00CFE550	ascii	pcmsOnSkillMoveTail
+0x00CFE568	ascii	pcmsOnSkillMoveDeath
+0x00CFE5D8	ascii	pcmsOnDashToPosition
+0x00CFE6A8	utf16le	PetMoveState
+0x00CFEA18	ascii	PetBaseAgent::MoveTo
+0x00CFEA38	ascii	PetBaseAgent::MoveToInTime
+0x00CFEA58	ascii	PetBaseAgent::MoveToInAcceleration
+0x00CFED28	ascii	PetBaseAgent::GetPosition
+0x00CFED48	ascii	PetBaseAgent::TurnToPosition
+0x00CFEDF0	ascii	PetBaseAgent::SetPetMoveState
+0x00CFEE88	ascii	PetBaseAgent::UpdatePosition
+0x00CFEEB0	ascii	m_MoveParam.fSpeed > 0
+0x00CFEED0	ascii	m_MoveParam.fSpeedMax > 0
+0x00CFEEF0	ascii	m_MoveParam.fAcceleration > 0
+0x00CFEF18	ascii	MoveFinish
+0x00CFEF70	ascii	PetBaseAgent::UpdatePositionParam
+0x00CFF2B8	ascii	KREPRESENT_EVENT_DOODAD_BE_HIT
+0x00CFF2E0	ascii	KREPRESENT_EVENT_DOODAD_AFTER_HIT
+0x00CFF558	ascii	KREPRESENT_EVENT_SKILL_CHAIN_DISPLAY
+0x00CFF588	ascii	KREPRESENT_EVENT_SKILL_EFFECT_RESULT
+0x00CFF5B8	ascii	KREPRESENT_EVENT_CAST_SKILL
+0x00CFF5E0	ascii	KREPRESENT_EVENT_PREPARE_CAST_SKILL
+0x00CFF800	ascii	KREPRESENT_EVENT_CHAR_SKILL_BUFFER
+0x00CFF8C0	ascii	KREPRESENT_EVENT_SYNC_CHARACTER_DATA
+0x00CFFA08	ascii	KREPRESENT_EVENT_NEW_DISPLAY_PLAYER
+0x00CFFA38	ascii	KREPRESENT_EVENT_NEW_DISPLAY_NPC
+0x00D002C8	ascii	fDamageAbsorbPercentage
+0x00D047D8	ascii	KREPRESENT_EVENT_REMOVE_GIZMOS
+0x00D04AC8	ascii	KREPRESENT_EVENT_GET_ALLBFPLAYER_KUNGFUID
+0x00D04B00	ascii	KREPRESENT_EVENT_GET_ALLBFPLAYER_PARAM
+0x00D05108	ascii	KREPRESENT_EVENT_CHARACTER_SKILL_SKIN
+0x00D05320	ascii	KREPRESENT_EVENT_CHANNEL_SKILL
+0x00D05348	ascii	KREPRESENT_EVENT_SKILL_EARLY_WARNING
+0x00D05540	ascii	KREPRESENT_EVENT_NOTIFY_SKILL_BULLET
+0x00D05570	ascii	KREPRESENT_EVENT_ON_SYNC_FACE_DATA
+0x00D056E0	ascii	KREPRESENT_EVENT_RESET_SKILL_MOVE
+0x00D05758	ascii	KREPRESENT_EVENT_CHAE_BE_HITTED
+0x00D05F48	ascii	KREPRESENT_EVENT_AUTO_MOVE_TO_TARGET
+0x00D05F78	ascii	KREPRESENT_EVENT_AUTO_MOVE_TO_POINT
+0x00D06028	ascii	KREPRESENT_EVENT_MOUSE_MOVE_ENABLE
+0x00D069D0	ascii	any-lite: bad any_cast
+0x00D069F0	ascii	RLActorPerspectiveSystem::ParamListener
+0x00D06A20	ascii	dwEntity != 0
+0x00D06A80	ascii	RLECS::RLComponentArray<struct RLActorPerspectiveComponent>::GetData
+0x00D06AD8	ascii	entity >= 0 && entity < MAX_ENTITIES
+0x00D06BA8	ascii	dwECSEntity != 0
+0x00D06C40	ascii	RLFullBodyIKSystem::SetFullBodyIKPosition
+0x00D06CB8	ascii	RLFullBodyIKSystem::SetLookAtIKPosition
+0x00D06EC0	ascii	RLECS::RLComponentArray<struct RLPlayerComponent>::GetData
+0x00D06F60	ascii	RLReplaySystem::PushSkillEffectResult
+0x00D07100	ascii	m_nEntityToIndex[entity] == INVALID_COMPONENT_INDEX
+0x00D07350	ascii	RLSfxSystem::UpdateSFXPosition
+0x00D07608	ascii	RLSfxSystem::UpdateActorSoundType
+0x00D07820	ascii	RLECS::RLComponentArray<struct RLSfxExComponent>::RemoveData
+0x00D078B8	ascii	RLECS::RLComponentArray<struct RLSfxComponent>::RemoveData
+0x00D07E48	ascii	pRootEntity
+0x00D07E58	ascii	pParentEntity
+0x00D07E68	ascii	LogicPointToScenePosition
+0x00D07E88	ascii	ScenePositionToLogicPoint
+0x00D07FF8	ascii	!m_pbySystemBuffer
+0x00D08010	ascii	m_pbySystemBuffer
+0x00D08508	ascii	RLECS::RLComponentArray<struct RLReplayComponent>::RemoveData
+0x00D08560	ascii	RLECS::RLComponentArray<struct RLActorPerspectiveComponent>::RemoveData
+0x00D085B8	ascii	RLECS::RLComponentArray<struct RLPlayerComponent>::RemoveData
+0x00D08610	ascii	RLECS::RLComponentArray<struct RLFullBodyIKComponent>::RemoveData
+0x00D08660	ascii	RLECS::RLComponentArray<struct RLAvatarSprintComponent>::RemoveData
+0x00D086B8	ascii	RLECS::RLComponentArray<struct RLSprintComponent>::RemoveData
+0x00D08710	ascii	RLECS::RLComponentArray<struct RLUGCSceneComponent>::RemoveData
+0x00D08A28	ascii	AdjustCharacterCameraPosition
+0x00D08AB8	ascii	LoadAirCombatParams
+0x00D08AD0	ascii	tabAirCombatCamera
+0x00D08BC0	ascii	EnterAirCombat
+0x00D08BD8	ascii	SmoothToAirCombatCamera
+0x00D08C30	ascii	GetAirCombatCameraOriginalParams
+0x00D08CA8	ascii	pCameraModeEntity
+0x00D08CF0	ascii	LeaveSkillMoveCamera
+0x00D08D28	ascii	pSkillMoveCamera
+0x00D08D78	ascii	SetForceObjectPositionOffset
+0x00D094BC	ascii	Move
+0x00D094D8	ascii	GetMoveInfo
+0x00D095F8	ascii	ChangeCharacterMovement
+0x00D09658	ascii	CreateRLECSSFXEntity
+0x00D09690	ascii	DestroyRLECSSFXEntity
+0x00D096E8	ascii	CreateRLECSSFXAndEntity
+0x00D09750	ascii	SetRLECSSFXPosition
+0x00D097E8	ascii	SetRLECSSFXSkillSkinOwnerID
+0x00D099D0	ascii	SetRLECSSFXActorSoundType
+0x00D09A20	ascii	GetRLECSSFXPosition
+0x00D09B98	ascii	pCameraControllerEntity
+0x00D09BD0	ascii	CreateCharacterLightEntity
+0x00D09BF0	ascii	CreateLocalCharacterEntity
+0x00D09C30	ascii	pRLCharacter->m_pEntity == nullptr
+0x00D09C60	ascii	CreateCharacterEntity
+0x00D09CA8	ascii	CreateDoodadEntity
+0x00D0A188	ascii	InitializeRootEntity
+0x00D0A210	ascii	InitializeReferenceEntity
+0x00D0A230	ascii	InitializeComponentFactory
+0x00D0A250	ascii	InitializeNodeFactory
+0x00D0A288	ascii	CreateSceneObjectListEntity
+0x00D0A2D8	ascii	LinkEntity
+0x00D0A2F0	ascii	SingleLinkEntity
+0x00D0A308	ascii	UnlinkEntity
+0x00D0A318	ascii	SingleUnlinkEntity
+0x00D0A330	ascii	UnlinkAllEntity
+0x00D0A358	ascii	SeekBuffer
+0x00D0A440	ascii	LoadComponentFromBuffer
+0x00D0A4B0	ascii	LoadEntityFromBuffer() failed. Not support version
+0x00D0A4F0	ascii	LoadEntityFromBuffer
+0x00D0A528	ascii	uTotalCount * sizeof(KRLComponentV0) == pBufferReader->nSize
+0x00D0A5C8	ascii	LoadRLEntityComponents
+0x00D0A640	ascii	LoadRLEntityV0
+0x00D0A658	ascii	uEntityCount * sizeof(KRLEntityV0) == Reader.nSize
+0x00D0A698	ascii	uEntityCount > 0
+0x00D0A6B0	ascii	uParentIndex < uEntityCount
+0x00D0A6D8	ascii	pDescendantEntity
+0x00D0A9B0	ascii	FlushQueuedEntityAction
+0x00D0A9F0	ascii	StartBackgroundEntitySession
+0x00D0AA18	ascii	StopBackgroundEntitySession
+0x00D0AA90	ascii	QueueEntityAction
+0x00D0AAF0	ascii	pFactory
+0x00D0AB30	ascii	pFactory->nRegistryCount < pFactory->nRegistryCapacity
+0x00D0AB90	ascii	GetCollisionPosition
+0x00D0AC10	ascii	pObjectController && pCameraMovement
+0x00D0AF50	ascii	DynamicFollowSmoothObjectPosition
+0x00D0B050	ascii	RLECS::RLComponentArray<struct RLPlayerComponent>::InsertData
+0x00D0B0A0	ascii	RLECS::RLComponentArray<struct RLActorPerspectiveComponent>::InsertData
+0x00D0B180	ascii	CreateEntityV
+0x00D0B1C8	ascii	CreateTransformEntity
+0x00D0B1E8	ascii	pEntity == nullptr
+0x00D0B200	ascii	CreateFactory
+0x00D0B388	ascii	PlayerLight
+0x00D0B3A8	ascii	EnvMapPlayer
+0x00D0B430	ascii	PlayerEnvProbe
+0x00D0B450	ascii	fPlayerLightDiffuseIntensity
+0x00D0B478	ascii	fPlayerLightDiffuseColor
+0x00D0B4D0	ascii	bFirstCameraCastShadow
+0x00D0B4F0	ascii	bFirstCameraCastOITShadow
+0x00D0B530	ascii	bSecondCameraCastShadow
+0x00D0B550	ascii	bSecondCameraCastOITShadow
+0x00D0B570	ascii	fFirstSpotLightFactor
+0x00D0B590	ascii	fSecondSpotLightFactor
+0x00D0B6B0	ascii	fPlayerEnvMapIntensity
+0x00D0B6D0	ascii	fPlayerEnvMapSaturation
+0x00D0B6F0	ascii	fPlayerEnvMapRotationAxisY
+0x00D0B870	ascii	fVignetteFactor
+0x00D0B8E0	ascii	fZoomFactor
+0x00D0B8F8	ascii	PlayerEnvProbeDiffuseFile
+0x00D0B918	ascii	PlayerEnvProbeSpecularFile
+0x00D0BA40	ascii	pRLActor
+0x00D0BA60	ascii	pRLActor->Create(g_pRL->GenerateID(), eratEffect)
+0x00D0BAA0	ascii	StartAutoMoveToPoint
+0x00D0BAD8	ascii	UpdateFollowAndAutoMove
+0x00D0BB18	ascii	UpdateAutoMoveToPoint
+0x00D0BB40	ascii	UpdateAutoMoveToTarget
+0x00D0BB60	ascii	StopFollowAndAutoMove
+0x00D0BBB0	ascii	StopAutoMoveToPoint
+0x00D0BBC8	ascii	StopAutoMoveToTarget
+0x00D0BF48	ascii	VelocityThreshold
+0x00D0C038	ascii	GetSceneEntity
+0x00D0C050	ascii	pSceneEntity
+0x00D0C060	ascii	GetCharacterEntity
+0x00D0C078	ascii	GetRideEntity
+0x00D0C098	ascii	GetHomelandEntity
+0x00D0C0B0	ascii	GetCameraEntity
+0x00D0C0E8	ascii	pCameraMovement
+0x00D0C1B0	ascii	pCharacterCamera->pRLArrowsActor
+0x00D0C350	ascii	CameraPositionOffset
+0x00D0C3A8	ascii	GetNpcConfig
+0x00D0C3B8	ascii	pNpcUnitProperty
+0x00D0C808	ascii	RLEvent.RLReplaySkillEffect
+0x00D0C858	ascii	ppvBuffer
+0x00D0C888	ascii	pilz4Buffer
+0x00D0C8C8	ascii	cpSkillData
+0x00D0C8E0	ascii	uLeftSize >= sizeof(RLReplaySaveNodeHeader) + cpSkillData->uLength
+0x00D0CA38	ascii	piRetBuffer
+0x00D0CBD0	ascii	piTempBuffer
+0x00D0CC68	ascii	pSyncCharacter
+0x00D0CD50	ascii	Convert Npc Uniform Face From [%s] To [%s]
+0x00D0CD88	ascii	Convert Npc Uniform Socket From [%s] To [%s]
+0x00D0CE38	ascii	SyncRideTransformFromCharacter
+0x00D0CE60	ascii	SyncRideTransformFromActor
+0x00D0D008	ascii	SetSceneMoveEnable
+0x00D0D160	ascii	GetObjectPositionOffset
+0x00D0D1A0	ascii	UpdateObjectPositionOffset
+0x00D0D1C0	ascii	ChangeObjectPosition
+0x00D0D2B8	ascii	SetCharacterCameraPosition
+0x00D0D318	ascii	pMovePitchCameraController
+0x00D0D388	ascii	SetGodCameraPosition
+0x00D0D3C0	ascii	SetHomelandCameraPosition
+0x00D0D3F8	ascii	pdwNPCID
+0x00D0D430	ascii	pSkillConvexHullEffect
+0x00D0D5C8	ascii	GetTargetLogicPosition
+0x00D0D648	ascii	TrackCameraFrameMove
+0x00D0D7B8	ascii	LeaveAirCombat
+0x00D0D800	ascii	pNPCDialogCameraController
+0x00D0D888	ascii	[RL] LockControl LeaveNpcDialog
+0x00D0D8B0	ascii	LeaveNpcDialog
+0x00D0D8C8	ascii	[RL] LockControl EnterNpcDialog(%u)
+0x00D0D8F8	ascii	EnterNpcDialog
+0x00D0D910	ascii	pRLTarget->m_EquipResource.nObject == KRL_ENTITY_TYPE::NPC && pRLTarget->m_EquipResource.UnitHolder.IsValid()
+0x00D0D998	ascii	tabNpcDialogCamera
+0x00D0DA60	ascii	SmoothToNpcDialogCamera
+0x00D0DA80	ascii	EnterSkillMove
+0x00D0DA98	ascii	pcSkillMoveCameraParam
+0x00D0DBD0	ascii	pAirCombatCameraController
+0x00D0DBF0	ascii	pSkillMoveCameraController
+0x00D0DC70	ascii	ComputeMouseMoveDelta
+0x00D0DD68	ascii	MouseMove
+0x00D0DE00	ascii	pbIsMoveControl
+0x00D0DE70	ascii	ComputeForwardMove
+0x00D0DE88	ascii	pnForwardMove
+0x00D0DE98	ascii	ComputeStrafeMove
+0x00D0DEB0	ascii	pnStrafeMove
+0x00D0DEC0	ascii	ComputeUpMove
+0x00D0DED0	ascii	pnUpMove
+0x00D0DEE0	ascii	UpdateMove
+0x00D0DF28	ascii	MouseMoveCamera
+0x00D0E300	ascii	pLightEntity
+0x00D0E6F8	ascii	KGameWorldHandler::ProcessSceneObjectDamage
+0x00D0EBF0	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3Represent\Src\Pure\PureSceneObject.cpp,PureSceneObjectMgr::Sync:414
+0x00D0EDA8	ascii	PureSceneObjectMgr::SetDamage
+0x00D0F8D0	ascii	MOVE
+0x00D11B10	utf16le	api-ms-win-core-synch-l1-2-0.dll
+0x00E906AC	ascii	GetRepresentECSRootEntity
+0x00E98EA8	ascii	.PEAURLReplaySkillEffectData@@
+0x00E98F20	ascii	.?AV?$holder@PEAURLReplaySkillEffectData@@@any@any_lite@nonstd@@
+0x00E98FF8	ascii	.?AVKRLAnimationDamagePercentageTag@@
+0x00E99158	ascii	.?AVbad_cast@std@@
+0x00EA42E8	ascii	.?AVIKRustBroadcastListener@@
+0x00EA4A48	ascii	.?AVRLActorNT@@
+0x00EA5280	ascii	.?AVRLActorMgrNT@@
+0x00EA5418	ascii	.?AVRLAsyncTaskAdapter@@
+0x00EA5450	ascii	.?AVKRLAnimationFactory@@
+0x00EA54F8	ascii	.?AVRLActorSfx@@
+0x00EAD468	ascii	.?AUIAsync@step_internal@@
+0x00EAD5C0	ascii	.?AU?$AsyncImpl@V<lambda_462f86bdc41e60870e3ac6ed876221db>@@@step_internal@@
+0x00EAD860	ascii	.?AVKStringBuffer@@
+0x00EAD890	ascii	.?AV?$KCachedStringBuffer@$0EAA@@@
+0x00EADD90	ascii	.?AV?$_Func_base@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EADE40	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_2d500766935c896865b41748bdfd27ef>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EAE460	ascii	.?AUNpcDisappearTimePercentage@?A0xe2f0a99f@@
+0x00EAEA30	ascii	.?AVKRLNpcShadow@@
+0x00EAEB30	ascii	.?AVkrlPlayerEquipSfx@@
+0x00EAF700	ascii	.?AV?$_Deferred_async_state@X@std@@
+0x00EAF780	ascii	.?AV?$_Task_async_state@X@std@@
+0x00EAF860	ascii	.?AU?$_InitialTaskHandle@XV<lambda_55e3b852b1defc35c7a6cbaabb1dbf84>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@
+0x00EAF920	ascii	.?AU?$_PPLTaskHandle@EU?$_InitialTaskHandle@XV<lambda_55e3b852b1defc35c7a6cbaabb1dbf84>@@U_TypeSelectorNoAsync@details@Concurrency@@@?$task@E@Concurrency@@U_TaskProcHandle@details@3@@details@Concurrency@@
+0x00EAFAE0	ascii	.?AVRLVirtualNPC@@
+0x00EAFB10	ascii	.?AVRLVirtualNPCMgr@@
+0x00EAFC40	ascii	.?AVKRLPlayerLink@@
+0x00EAFC70	ascii	.?AVKRLNpcLink@@
+0x00EAFCD0	ascii	.?AVKRLSkillRushState@@
+0x00EB04C0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_e52728f3b0652502b683f91228b3b8b0>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0560	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_e2ef14d88544cbbada24a6e4bcc16a44>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0600	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_74caa14fb7457263fd179bc5014dc08e>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB06A0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_c8489ffc87f8652cd4e46728145fa602>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0740	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_f7308efae16420cd462ef2c17911ef88>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB07E0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_852b5739e908031c0e8ed6839a827950>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0880	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_736d446612242f1625f96501dc126064>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0920	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_e5513e58e13306d69cb42faef2d84bc9>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB09C0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_5303750edbba97a89e24dcd8ffb48dce>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0A60	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_5daae21ef7ef5db0b6957b22c6fbd32f>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB0B00	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_8111daf84eb6d5cbc42c330e449bb8d5>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB10B0	ascii	.?AURLActorCallback@@
+0x00EB1108	ascii	.?AURLActorDoodadCallback@@
+0x00EB1140	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_0ec9c0730e3f7b8018d66280661220eb>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB11E0	ascii	.?AV?$_Func_impl_no_alloc@V<lambda_092010e18fbde7481dbeaa21cc71826e>@@HPEAVRLActorNT@@W4RLProcessorEvent@@PEAX@std@@
+0x00EB18D8	ascii	.?AVRLSkillModel@@
+0x00EB1908	ascii	.?AVKRLSkillTag@@
+0x00EB2780	ascii	.?AUKRLPlayerTreadModelKey@@
+0x00EB27B8	ascii	.?AUKNpcSkillCasterModelKey@@
+0x00EB27F0	ascii	.?AUKSkillCasterModelKey@@
+0x00EB2828	ascii	.?AVKHeapStringBuffer@@
+0x00EB2D90	ascii	.?AU?$AsyncImpl@V<lambda_d64f1c63aeed5723b0e532f2dbd729d0>@@@step_internal@@
+0x00EB2E00	ascii	.?AU?$AsyncImpl@V<lambda_50b807ff385f65172d4d38a691f3290f>@@@step_internal@@
+0x00EB2E70	ascii	.?AU?$AsyncImpl@V<lambda_4e86ae73a7f578f30a657dfdb49045df>@@@step_internal@@
+0x00EB2EE0	ascii	.?AU?$AsyncImpl@V<lambda_64f846418dee4d15fe1b4308a775fa4b>@@@step_internal@@
+0x00EB2FC0	ascii	.?AU?$AsyncImpl@V<lambda_2e15e6cfc6cc9452854d95a4311c5c7e>@@@step_internal@@
+0x00EB30A0	ascii	.?AU?$AsyncImpl@V<lambda_f0ee77f4c97062610b5898057fb9ddc1>@@@step_internal@@
+0x00EB3110	ascii	.?AU?$AsyncImpl@V<lambda_a1467d43215290b090b8957e1c4f29ca>@@@step_internal@@
+0x00EB3180	ascii	.?AU?$AsyncImpl@V<lambda_184d1b3c25a0cfce985ab8ebbf47f255>@@@step_internal@@
+0x00EB31F0	ascii	.?AU?$AsyncImpl@V<lambda_71e002ebd83a53a7f47132ef24b7716d>@@@step_internal@@
+0x00EB3260	ascii	.?AU?$AsyncImpl@V<lambda_8723609a671a54ee5857ca05d048de73>@@@step_internal@@
+0x00EB32D0	ascii	.?AU?$AsyncImpl@V<lambda_64b8343ad0a560079700a78d3bcfdd7a>@@@step_internal@@
+0x00EB3340	ascii	.?AU?$AsyncImpl@V<lambda_dcd722ba2db4fd4b424607f8dd73cb5a>@@@step_internal@@
+0x00EB33B0	ascii	.?AU?$AsyncImpl@V<lambda_61ccfbdee5508ea51c7ee9f1fae6ccfb>@@@step_internal@@
+0x00EB3420	ascii	.?AU?$AsyncImpl@V<lambda_77930bc06d3df5e6dd4f9d1b1221f961>@@@step_internal@@
+0x00EB5520	ascii	.?AVInteractorHandle@SceneInteraction@@
+0x00EB56D0	ascii	.?AVKPROTO_WRITE_BUFFER@KPROTOBUF_BASE@@
+0x00EB5718	ascii	.?AVKPROTO_READ_BUFFER@KPROTOBUF_BASE@@
+0x00EB60A0	ascii	.?AV?$CCustomizedProperty@W4PetCharaterMoveState@@@behaviac@@
+0x00EB6100	ascii	.?AV?$CCustomizedArrayItemProperty@W4PetCharaterMoveState@@@behaviac@@
+0x00EB6170	ascii	.?AV?$CInstanceCustomizedProperty@W4PetCharaterMoveState@@@behaviac@@
+0x00EB61E0	ascii	.?AV?$CInstanceConst@W4PetCharaterMoveState@@@behaviac@@
+0x00EB6240	ascii	.?AV?$CInstanceConstBase@W4PetCharaterMoveState@@@behaviac@@
+0x00EB62A0	ascii	.?AV?$CCustomizedProperty@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB6360	ascii	.?AV?$CProperty@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB6410	ascii	.?AV?$CCustomizedArrayItemProperty@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB64D0	ascii	.?AV?$CInstanceCustomizedProperty@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB6590	ascii	.?AV?$CInstanceMember@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@$00@behaviac@@
+0x00EB6650	ascii	.?AV?$CInstanceMember@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@$0A@@behaviac@@
+0x00EB6710	ascii	.?AV?$CInstanceConst@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB67C0	ascii	.?AV?$CInstanceConstBase@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB7080	ascii	.?AV?$CCustomizedProperty@W4PetMoveState@@@behaviac@@
+0x00EB70E0	ascii	.?AV?$CCustomizedArrayItemProperty@W4PetMoveState@@@behaviac@@
+0x00EB7140	ascii	.?AV?$CInstanceCustomizedProperty@W4PetMoveState@@@behaviac@@
+0x00EB71A0	ascii	.?AV?$CInstanceConst@W4PetMoveState@@@behaviac@@
+0x00EB71F0	ascii	.?AV?$CInstanceConstBase@W4PetMoveState@@@behaviac@@
+0x00EB7250	ascii	.?AV?$CCustomizedProperty@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB7300	ascii	.?AV?$CProperty@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB73A0	ascii	.?AV?$CCustomizedArrayItemProperty@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB7450	ascii	.?AV?$CInstanceCustomizedProperty@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB7500	ascii	.?AV?$CInstanceMember@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@$00@behaviac@@
+0x00EB75A0	ascii	.?AV?$CInstanceMember@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@$0A@@behaviac@@
+0x00EB7650	ascii	.?AV?$CInstanceConst@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB76F0	ascii	.?AV?$CInstanceConstBase@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB9960	ascii	.?AV?$CArrayItemVariable@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB9A00	ascii	.?AV?$CVariable@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB9AA0	ascii	.?AV?$TValue@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB9B40	ascii	.?AV?$CInstanceProperty@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EB9BE0	ascii	.?AV?$CArrayItemVariable@W4PetMoveState@@@behaviac@@
+0x00EB9C38	ascii	.?AV?$CVariable@W4PetMoveState@@@behaviac@@
+0x00EBA150	ascii	.?AV?$CArrayItemVariable@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EBA210	ascii	.?AV?$CVariable@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EBA2C0	ascii	.?AV?$TValue@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EBA370	ascii	.?AV?$CInstanceProperty@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@behaviac@@
+0x00EBA430	ascii	.?AV?$CArrayItemVariable@W4PetCharaterMoveState@@@behaviac@@
+0x00EBA490	ascii	.?AV?$CVariable@W4PetCharaterMoveState@@@behaviac@@
+0x00EBB500	ascii	.?AVCMethod_behaviac_Agent_VectorRemove@?1??load@BehaviorLoaderImplement@behaviac@@UEAA_NXZ@
+0x00EBB6D0	ascii	.?AV?$CMemberProperty@W4PetCharaterMoveState@@@behaviac@@
+0x00EBB730	ascii	.?AV?$CProperty@W4PetCharaterMoveState@@@behaviac@@
+0x00EBB830	ascii	.?AV?$CMemberProperty@W4PetMoveState@@@behaviac@@
+0x00EBB880	ascii	.?AV?$CProperty@W4PetMoveState@@@behaviac@@
+0x00EBBC98	ascii	.?AV?$TValue@W4PetMoveState@@@behaviac@@
+0x00EBBCE0	ascii	.?AV?$CInstanceProperty@W4PetMoveState@@@behaviac@@
+0x00EBBD40	ascii	.?AV?$CInstanceMember@W4PetMoveState@@$0A@@behaviac@@
+0x00EBBE90	ascii	.?AV?$TValue@W4PetCharaterMoveState@@@behaviac@@
+0x00EBBEE0	ascii	.?AV?$CInstanceProperty@W4PetCharaterMoveState@@@behaviac@@
+0x00EBBF40	ascii	.?AV?$CInstanceMember@W4PetCharaterMoveState@@$0A@@behaviac@@
+0x00EBC0A0	ascii	.?AU?$TList@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@@
+0x00EBC140	ascii	.?AUTListPool@?$TList@V?$vector@W4PetCharaterMoveState@@V?$stl_allocator@W4PetCharaterMoveState@@@behaviac@@@behaviac@@@@
+0x00EBC310	ascii	.?AU?$TList@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@@
+0x00EBC3A0	ascii	.?AUTListPool@?$TList@V?$vector@W4PetMoveState@@V?$stl_allocator@W4PetMoveState@@@behaviac@@@behaviac@@@@
+0x00EC1778	ascii	.?AVbad_any_cast@any_lite@nonstd@@
+0x00EC17C0	ascii	.?AV?$_Binder@U_Unforced@std@@P8RLActorPerspectiveSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+0x00EC1890	ascii	.?AW4ActorPerspectiveMode@@
+0x00EC18C8	ascii	.?AURLActorPerspectiveComponent@@
+0x00EC1940	ascii	.?AV?$RLComponentArray@URLActorPerspectiveComponent@@@RLECS@@
+0x00EC19F0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8RLActorPerspectiveSystem@@EAAXAEAVRLEvent@RLECS@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@XAEAVRLEvent@RLECS@@@std@@
+0x00EC1B98	ascii	.?AW4IKEffectorPositionType@@
+0x00EC1DB0	ascii	.?AURLPlayerComponent@@
+0x00EC1DE0	ascii	.?AV?$RLComponentArray@URLPlayerComponent@@@RLECS@@
+0x00EC2A10	ascii	.?AVRLActorPerspectiveSystem@@
+0x00EC2AE0	ascii	.?AVRLPlayerSystem@@
+0x00EC2BB0	ascii	.?AV?$_Ref_count_obj2@VRLEntityManager@RLECS@@@std@@
+0x00EC2EC0	ascii	.?AV?$_Ref_count_obj2@V?$RLComponentArray@URLPlayerComponent@@@RLECS@@@std@@
+0x00EC2F30	ascii	.?AV?$_Ref_count_obj2@V?$RLComponentArray@URLActorPerspectiveComponent@@@RLECS@@@std@@
+0x00EC33E8	ascii	.?AUKRLCameraMovementControllerComponent@@
+0x00EC3520	ascii	.?AUKRLAirCombatCameraControllerComponent@@
+0x00EC3640	ascii	.?AUKRLNPCDialogCameraControllerComponent@@
+0x00EC36D0	ascii	.?AUKRLSkillMoveCameraControllerComponent@@
+0x00EC38B0	ascii	.?AUKRLMovePitchCameraControllerComponent@@
+0x00EC3A30	ascii	.?AV?$holder@W4IKEffectorPositionType@@@any@any_lite@nonstd@@
+0x00EC3DD8	ascii	.?AUIKG_Buffer@@
+0x00EC3E00	ascii	.?AUIKG_Buffer_ReSize@@
+0x00EC3E30	ascii	.?AVKG_Buffer@@
+0x00FE0020	ascii	?CreatorRemoveElement@AgentMeta@behaviac@@SAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+0x00FE024E	ascii	?VectorRemove@Agent@behaviac@@SAXAEAUIList@@AEBUObject@System@@@Z
+0x00FE0AC4	ascii	?Hit@Interval@Configure@@QEBAEM@Z
+0x00FE0B4C	ascii	?RayCast@PxWorld@@QEAAHPEAURayCastResult@@AEBVFVECTOR3@@1MMHHHHHPEAX@Z
+0x00FE0D34	ascii	?SetVelocity@PxWorld@@QEAAXI_KAEBVFVECTOR3@@@Z
+0x00FE0D66	ascii	?SetAngularVelocity@PxWorld@@QEAAXI_KAEBVFVECTOR3@@@Z
+0x00FE11D6	ascii	GetAsyncKeyState
+0x00FE1B36	ascii	?sync@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ
+0x00FE1CD4	ascii	_Cnd_do_broadcast_at_thread_exit
+0x00FE1F72	ascii	_Cnd_broadcast
+0x00FE2A84	ascii	memmove
+0x00FE2A8E	ascii	__RTDynamicCast
+0x00FE2EA4	ascii	remove
+
+## cn_client (3)
+0x00CCED21	gbk	客户端
+0x00CFE324	utf16cjk	移动状态
+0x00CFE6C8	utf16cjk	移动状态

@@ -1,0 +1,920 @@
+# JX3ClientX64Base.dll netcode keyword scan
+# source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3ClientX64Base.dll
+
+## transport (618)
+0x0031D140	ascii	.\crypto\bio\bss_mem.c
+0x0031D158	ascii	.\crypto\rsa\rsa_pk1.c
+0x0031D170	ascii	.\crypto\rsa\rsa_lib.c
+0x0031D238	ascii	.\crypto\rsa\rsa_eng.c
+0x0031D250	ascii	.\crypto\bio\bio_lib.c
+0x0031D278	ascii	.\crypto\evp\bio_b64.c
+0x0031D380	ascii	.\crypto\err\err.c
+0x0031D398	ascii	.\crypto\buffer\buffer.c
+0x0031D4F0	ascii	.\crypto\bn\bn_lib.c
+0x0031D508	ascii	.\crypto\bn\bn_blind.c
+0x0031D520	ascii	.\crypto\bn\bn_ctx.c
+0x0031D538	ascii	.\crypto\bn\bn_gcd.c
+0x0031D550	ascii	.\crypto\bn\bn_add.c
+0x0031D600	ascii	.\crypto\pem\pem_oth.c
+0x0031D850	ascii	.\crypto\pem\pem_lib.c
+0x0031D8C8	ascii	ENCRYPTED
+0x0031D950	ascii	ENCRYPTED PRIVATE KEY
+0x0031E670	ascii	PKCS7_ENCRYPT
+0x0031E680	ascii	d.encrypted
+0x0031E960	ascii	.\crypto\evp\p_lib.c
+0x0031E978	ascii	.\crypto\pem\pem_pkey.c
+0x0031ECA0	ascii	.\crypto\asn1\x_pubkey.c
+0x0031ECE8	ascii	.\crypto\dsa\dsa_lib.c
+0x0031F0F0	ascii	.\crypto\dsa\dsa_asn1.c
+0x0031F108	ascii	.\crypto\ec\ec_key.c
+0x0031F890	ascii	.\crypto\ec\ec_asn1.c
+0x0031F998	ascii	.\crypto\rsa\rsa_eay.c
+0x0031F9B0	ascii	.\crypto\engine\eng_init.c
+0x0031F9D0	ascii	.\crypto\ex_data.c
+0x0031F9E8	ascii	.\crypto\evp\encode.c
+0x0031FA86	ascii	@@.\crypto\rand\md_rand.c
+0x0031FB68	ascii	.\crypto\err\err_def.c
+0x0031FBB0	ascii	.\crypto\buffer\buf_str.c
+0x0031FBD0	ascii	.\crypto\bn\bn_mod.c
+0x0031FBE8	ascii	.\crypto\bn\bn_exp.c
+0x0031FC00	ascii	.\crypto\bn\bn_rand.c
+0x0031FC18	ascii	.\crypto\bn\bn_shift.c
+0x0031FC30	ascii	.\crypto\bn\bn_div.c
+0x003206C0	ascii	.\crypto\asn1\x_name.c
+0x00320708	ascii	.\crypto\stack\stack.c
+0x003207A0	ascii	.\crypto\asn1\tasn_dec.c
+0x003207D8	ascii	.\crypto\asn1\tasn_enc.c
+0x003207F8	ascii	.\crypto\asn1\tasn_new.c
+0x00320818	ascii	.\crypto\asn1\a_dup.c
+0x00320850	ascii	.\crypto\evp\evp_key.c
+0x00320898	ascii	.\crypto\bio\bss_file.c
+0x003208D0	ascii	.\crypto\evp\enc_min.c
+0x003209A8	ascii	.\crypto\evp\evp_enc.c
+0x00320DC8	ascii	GOST R 3410-2001 Parameter Set Cryptocom
+0x00320E18	ascii	GOST R 34.11-94 with GOST R 34.10-2001 Cryptocom
+0x00320E78	ascii	GOST R 34.11-94 with GOST R 34.10-94 Cryptocom
+0x00320ED0	ascii	GOST 34.10-2001 Cryptocom
+0x00320F00	ascii	GOST 34.10-94 Cryptocom
+0x00320F28	ascii	GOST 28147-89 Cryptocom ParamSet
+0x00320FC8	ascii	id-GostR3410-2001-CryptoPro-XchB-ParamSet
+0x00320FF8	ascii	id-GostR3410-2001-CryptoPro-XchA-ParamSet
+0x00321028	ascii	id-GostR3410-2001-CryptoPro-C-ParamSet
+0x00321050	ascii	id-GostR3410-2001-CryptoPro-B-ParamSet
+0x00321078	ascii	id-GostR3410-2001-CryptoPro-A-ParamSet
+0x003210C0	ascii	id-GostR3410-94-CryptoPro-XchC-ParamSet
+0x003210E8	ascii	id-GostR3410-94-CryptoPro-XchB-ParamSet
+0x00321110	ascii	id-GostR3410-94-CryptoPro-XchA-ParamSet
+0x00321138	ascii	id-GostR3410-94-CryptoPro-D-ParamSet
+0x00321160	ascii	id-GostR3410-94-CryptoPro-C-ParamSet
+0x00321188	ascii	id-GostR3410-94-CryptoPro-B-ParamSet
+0x003211B0	ascii	id-GostR3410-94-CryptoPro-A-ParamSet
+0x003211F8	ascii	id-Gost28147-89-CryptoPro-RIC-1-ParamSet
+0x00321228	ascii	id-Gost28147-89-CryptoPro-Oscar-1-0-ParamSet
+0x00321258	ascii	id-Gost28147-89-CryptoPro-Oscar-1-1-ParamSet
+0x00321288	ascii	id-Gost28147-89-CryptoPro-D-ParamSet
+0x003212B0	ascii	id-Gost28147-89-CryptoPro-C-ParamSet
+0x003212D8	ascii	id-Gost28147-89-CryptoPro-B-ParamSet
+0x00321300	ascii	id-Gost28147-89-CryptoPro-A-ParamSet
+0x00321348	ascii	id-GostR3411-94-CryptoProParamSet
+0x003213B0	ascii	id-Gost28147-89-CryptoPro-KeyMeshing
+0x003215E8	ascii	cryptocom
+0x003215F8	ascii	cryptopro
+0x00321760	ascii	id-smime-ct-compressedData
+0x003222B0	ascii	sha224WithRSAEncryption
+0x003222D8	ascii	sha512WithRSAEncryption
+0x00322300	ascii	sha384WithRSAEncryption
+0x00322328	ascii	sha256WithRSAEncryption
+0x00322668	ascii	rsaOAEPEncryptionSET
+0x003227C8	ascii	encrypted track 2
+0x003227F0	ascii	generate cryptogram
+0x00322808	ascii	setAttr-GenCryptgrm
+0x00322B00	ascii	generic cryptogram
+0x00322B18	ascii	setext-genCrypt
+0x00323D20	ascii	md4WithRSAEncryption
+0x00323D50	ascii	Selected Attribute Types
+0x00323D70	ascii	selected-attribute-types
+0x003242C8	ascii	id-cmc-decryptedPOP
+0x003242E0	ascii	id-cmc-encryptedPOP
+0x00324328	ascii	id-cmc-senderNonce
+0x003249D0	ascii	id-smime-cti-ets-proofOfSender
+0x00324D88	ascii	id-smime-aa-smimeEncryptCerts
+0x00325650	ascii	Netscape Server Gated Crypto
+0x00325678	ascii	Microsoft Encrypted File System
+0x003256A0	ascii	Microsoft Server Gated Crypto
+0x00325878	ascii	zlib compression
+0x00325898	ascii	run length compression
+0x00325940	ascii	dsaEncryption
+0x00325F50	ascii	dsaEncryption-old
+0x00325F88	ascii	sha1WithRSAEncryption
+0x00326200	ascii	shaWithRSAEncryption
+0x00326340	ascii	pkcs7-encryptedData
+0x003264E0	ascii	md5WithRSAEncryption
+0x00326500	ascii	md2WithRSAEncryption
+0x00326520	ascii	rsaEncryption
+0x003265A8	ascii	.\crypto\objects\obj_dat.c
+0x00326730	ascii	.\crypto\asn1\a_time.c
+0x00326778	ascii	.\crypto\asn1\asn1_lib.c
+0x00326A88	ascii	.\crypto\ec\ec_lib.c
+0x00326AD0	ascii	.\crypto\ecdsa\ecs_lib.c
+0x00326B28	ascii	.\crypto\dh\dh_lib.c
+0x00326CD8	ascii	.\crypto\evp\evp_pkey.c
+0x00326CF0	ascii	.\crypto\asn1\d2i_pr.c
+0x00326DE0	ascii	.\crypto\asn1\x_long.c
+0x00326DF8	ascii	.\crypto\asn1\a_object.c
+0x00326E28	ascii	.\crypto\asn1\d2i_pu.c
+0x0032DD80	ascii	.\crypto\ec\ec_curve.c
+0x0032DDB0	ascii	.\crypto\dsa\dsa_ossl.c
+0x0032DDD0	ascii	.\crypto\dsa\dsa_utl.c
+0x0032DF20	ascii	.\crypto\ec\ec2_smpl.c
+0x0032DF40	ascii	c:\users\gangzhu\desktop\openssl-0.9.8zg.tar\openssl-0.9.8zg\crypto\ec\ec2_smpt.c
+0x0032DF98	ascii	.\crypto\asn1\a_int.c
+0x0032DFB0	ascii	.\crypto\asn1\a_bitstr.c
+0x0032DFD0	ascii	.\crypto\bn\bn_mont.c
+0x0032DFE8	ascii	.\crypto\rsa\rsa_ssl.c
+0x0032E000	ascii	.\crypto\rsa\rsa_none.c
+0x0032E018	ascii	.\crypto\rsa\rsa_oaep.c
+0x0032E030	ascii	.\crypto\rsa\rsa_x931.c
+0x0032E048	ascii	.\crypto\engine\eng_lib.c
+0x0032E098	ascii	.\crypto\lhash\lhash.c
+0x0032E0B0	ascii	.\crypto\engine\eng_table.c
+0x0032E0D0	ascii	.\crypto\engine\eng_list.c
+0x0032E148	ascii	.\crypto\evp\digest.c
+0x0032E520	utf16le	Intel Hardware Cryptographic Service Provider
+0x0032E580	ascii	CryptReleaseContext
+0x0032E598	ascii	CryptGenRandom
+0x0032E5A8	ascii	CryptAcquireContextW
+0x0032E6A8	ascii	.\crypto\bn\bn_recp.c
+0x0032E6C0	ascii	.\crypto\objects\obj_lib.c
+0x0032E6E0	ascii	.\crypto\asn1\tasn_utl.c
+0x0032E700	ascii	.\crypto\ui\ui_lib.c
+0x0032E758	ascii	.\crypto\engine\tb_cipher.c
+0x0032E778	ascii	.\crypto\rsa\rsa_sign.c
+0x0032E80F	ascii	?.\crypto\bio\b_print.c
+0x0032E850	ascii	.\crypto\bn\bn_print.c
+0x0032E878	ascii	.\crypto\objects\o_names.c
+0x0032E898	ascii	.\crypto\evp\evp_pbe.c
+0x0032E8D0	ascii	.\crypto\asn1\a_gentm.c
+0x0032E908	ascii	.\crypto\asn1\a_utctm.c
+0x0032E9C0	ascii	.\crypto\x509v3\pcy_cache.c
+0x0032EC20	ascii	.\crypto\x509\x509_obj.c
+0x0032EC50	ascii	.\crypto\ec\ec_mult.c
+0x0032EC80	ascii	.\crypto\ecdsa\ecs_ossl.c
+0x0032ECB8	ascii	.\crypto\dh\dh_key.c
+0x0032ECD8	ascii	.\crypto\pkcs12\p12_decr.c
+0x0032ECF8	ascii	.\crypto\asn1\asn_pack.c
+0x0032ED20	ascii	.\crypto\asn1\a_set.c
+0x0032ED38	ascii	.\crypto\bn\bn_exp2.c
+0x0032ED50	ascii	.\crypto\ec\ec2_mult.c
+0x0032EE08	utf16le	.\crypto\bn\bn_gf2m.c
+0x0032EE38	ascii	.\crypto\bn\bn_gf2m.c
+0x0032EF80	ascii	.\crypto\ec\ecp_mont.c
+0x0032F0D0	ascii	.\crypto\ec\ecp_nist.c
+0x0032F0E8	ascii	.\crypto\engine\eng_ctrl.c
+0x0032F108	ascii	.\crypto\engine\tb_digest.c
+0x0032F5C8	ascii	.\crypto\ui\ui_openssl.c
+0x0032F608	ascii	.\crypto\mem_dbg.c
+0x0032F620	ascii	.\crypto\x509v3\pcy_data.c
+0x0032FA30	ascii	.\crypto\x509v3\v3_cpols.c
+0x0032FCB0	ascii	.\crypto\x509v3\v3_pcons.c
+0x0032FCD0	ascii	.\crypto\x509v3\pcy_map.c
+0x00330110	ascii	.\crypto\evp\evp_lib.c
+0x00330290	ascii	.\crypto\ec\ecp_smpl.c
+0x003307A8	ascii	.\crypto\x509v3\v3_utl.c
+0x00330800	ascii	.\crypto\x509v3\v3_conf.c
+0x003309B8	ascii	.\crypto\x509v3\v3_pmaps.c
+0x003319DF	ascii	E.\crypto\asn1\evp_asn1.c
+0x00331A30	ascii	.\crypto\asn1\a_mbstr.c
+0x00331A68	ascii	.\crypto\bn\bn_sqrt.c
+0x00331A80	ascii	.\crypto\asn1\a_enum.c
+0x00331A98	ascii	.\crypto\x509\x509name.c
+0x00331CA0	ascii	.\crypto\x509v3\v3_info.c
+0x00331CC0	ascii	.\crypto\conf\conf_mod.c
+0x00331D58	ascii	.\crypto\x509\x509_cmp.c
+0x00331F40	ascii	.\crypto\asn1\asn1_gen.c
+0x00331FB8	ascii	.\crypto\conf\conf_lib.c
+0x00332310	ascii	.\crypto\x509v3\v3_ncons.c
+0x003324B0	ascii	.\crypto\x509v3\v3_pci.c
+0x00332818	ascii	.\crypto\x509v3\v3_ocsp.c
+0x00332990	ascii	.\crypto\x509v3\v3_extku.c
+0x00332B50	ascii	.\crypto\x509v3\v3_sxnet.c
+0x00332F80	ascii	.\crypto\x509v3\v3_crld.c
+0x00333008	ascii	.\crypto\x509v3\v3_akey.c
+0x00333128	ascii	.\crypto\x509v3\v3_bcons.c
+0x00333348	ascii	.\crypto\x509v3\v3_alt.c
+0x00333788	ascii	.\crypto\x509v3\v3_bitst.c
+0x00333818	ascii	.\crypto\x509v3\v3_skey.c
+0x00333B80	ascii	.\crypto\x509v3\v3_ia5.c
+0x00333BA0	ascii	.\crypto\dso\dso_lib.c
+0x00333C60	ascii	smimeencrypt
+0x00333C70	ascii	S/MIME encryption
+0x00333D10	ascii	.\crypto\x509v3\v3_purp.c
+0x00333D78	ascii	.\crypto\conf\conf_def.c
+0x00333DC8	ascii	.\crypto\conf\conf_api.c
+0x00334AE0	ascii	.\crypto\asn1\t_x509.c
+0x00334BB0	ascii	.\crypto\asn1\a_strex.c
+0x00334BE0	ascii	.\crypto\asn1\a_verify.c
+0x00334D50	ascii	.\crypto\asn1\a_d2i_fp.c
+0x00334DD8	ascii	Generator (uncompressed):
+0x00334DF8	ascii	Generator (compressed):
+0x00335078	ascii	.\crypto\dso\dso_win32.c
+0x003350B0	ascii	.\crypto\evp\p_verify.c
+0x003350C8	ascii	.\crypto\evp\p_sign.c
+0x00335108	ascii	.\crypto\asn1\a_bool.c
+0x003357B8	ascii	Connection #%ld to host %s left intact
+0x003357E8	ascii	Re-used connection seems dead, get a new one
+0x00335878	ascii	Connection timed out after %ld milliseconds
+0x00335C60	ascii	getaddrinfo() thread failed to start
+0x00336628	ascii	Closing connection %ld
+0x00336640	ascii	Connection %ld seems to be dead!
+0x00336768	ascii	Connection #%ld is still name resolving, can't reuse
+0x003367A0	ascii	Connection #%ld isn't open enough, can't reuse
+0x00336808	ascii	Multiplexed connection found!
+0x00336888	ascii	Connected to %s (%s) port %ld (#%ld)
+0x00336B80	ascii	No valid port number in connect to host string (%s)
+0x00336BC8	ascii	Connecting to hostname: %s
+0x00336BE8	ascii	Connecting to port: %d
+0x00336C40	ascii	Found connection %ld, with requests in the pipe (%zu)
+0x00336C78	ascii	We can reuse, but we want a new connection anyway
+0x00336CB0	ascii	Re-using existing connection! (#%ld) with %s %s
+0x00336CE8	ascii	No more connections allowed to host: %zu
+0x00336D18	ascii	No connections available in cache
+0x00336D40	ascii	No connections available.
+0x00336E18	ascii	Send failure: %s
+0x00336E30	ascii	Recv failure: %s
+0x00336F28	ascii	Couldn't bind to interface '%s'
+0x00336FB0	ascii	Couldn't bind to '%s'
+0x00337008	ascii	Bind to local port %hu failed, trying next
+0x00337038	ascii	bind failed with errno %d: %s
+0x003370E0	ascii	Connection time-out
+0x003370F8	ascii	After %ldms connect time, move on!
+0x00337120	ascii	Connection failed
+0x00337138	ascii	connect to %s port %ld failed: %s
+0x00337160	ascii	Failed to connect to %s port %ld: %s
+0x00337188	ascii	Could not set TCP_NODELAY: %s
+0x003371A8	ascii	TCP_NODELAY set
+0x00337200	ascii	Immediate connect fail for %s: %s
+0x00337718	ascii	Rewind stream after send
+0x00337738	ascii	NTLM send, close instead of sending %I64d bytes
+0x00337890	ascii	TCP6
+0x00337898	ascii	TCP4
+0x00337940	ascii	Connection:
+0x00337C28	ascii	Proxy-Connection
+0x00337C40	ascii	Proxy-Connection: Keep-Alive
+0x00337CB8	ascii	Failed sending PUT request
+0x00337CF0	ascii	Failed sending POST request
+0x00337D20	ascii	Failed sending HTTP POST request
+0x00337D48	ascii	Failed sending HTTP request
+0x00337E78	ascii	Connection closure while negotiating auth (HTTP 1.0?)
+0x00337EB0	ascii	HTTP error before end of send, keep sending
+0x00337EE0	ascii	HTTP error before end of send, stop sending
+0x00337F10	ascii	Keep sending data to get tossed away!
+0x00338080	ascii	Proxy-Connection:
+0x00338098	ascii	HTTP/1.0 proxy connection set to keep alive!
+0x003380D0	ascii	HTTP/1.1 proxy connection set close!
+0x003380F8	ascii	HTTP/1.0 connection set to keep alive!
+0x003381A0	ascii	Connection cache is full, closing the oldest one.
+0x00338640	ascii	we are done reading and this is set to close, stop send
+0x003386C8	ascii	select/poll returned error
+0x00338820	ascii	REFUSED_STREAM, retrying a fresh connect
+0x00338850	ascii	Connection died, retrying a fresh connect
+0x00338B30	ascii	allocate connect buffer!
+0x00338B50	ascii	CONNECT phase completed!
+0x00338B98	ascii	CONNECT
+0x00338BB0	ascii	CONNECT %s HTTP/%s
+0x00338BD0	ascii	Failed sending CONNECT to proxy
+0x00338BF0	ascii	Proxy CONNECT aborted due to timeout
+0x00338C18	ascii	CONNECT response too large!
+0x00338C38	ascii	Proxy CONNECT connection closed
+0x00338C60	ascii	Proxy CONNECT aborted
+0x00338CD8	ascii	Ignoring Content-Length in CONNECT %03d response
+0x00338D10	ascii	Ignoring Transfer-Encoding in CONNECT %03d response
+0x00338D48	ascii	CONNECT responded chunked
+0x00338D78	ascii	Connect me again please
+0x00338D98	ascii	Received HTTP code %d from proxy after CONNECT
+0x00338DC8	ascii	Proxy replied %d to CONNECT request
+0x00339470	ascii	Failed to encode DOH packet [%d]
+0x003397C8	ascii	crypto engine not set, can't load certificate
+0x00339AE0	ascii	failed to load private key from crypto engine
+0x00339B30	ascii	crypto engine not set, can't load private key
+0x00339D90	ascii	set default crypto engine '%s'
+0x00339DB0	ascii	set default crypto engine '%s' failed
+0x00339EF0	ascii	SSL connection timeout
+0x00339F80	ascii	select/poll on SSL socket, errno: %d
+0x0033A800	ascii	Cipher selection: %s
+0x0033AAB8	ascii	OpenSSL SSL_connect: %s in connection to %s:%ld 
+0x0033AAF0	ascii	SSL connection using %s / %s
+0x0033ABB0	ascii	SSL_ERROR_WANT_CONNECT
+0x0033B378	ascii	Failure sending ABOR command: %s
+0x0033B3A0	ascii	control connection looks dead
+0x0033B3C8	ascii	partial download completed, closing connection
+0x0033B608	ascii	Connecting to %s (%s) port %d
+0x0033B6A8	ascii	socket failure: %s
+0x0033B6C0	ascii	bind(port=%hu) on non-local address failed: %s
+0x0033B6F0	ascii	bind(port=%hu) failed: %s
+0x0033B710	ascii	bind() failed, we ran out of ports!
+0x0033B768	ascii	Failure sending EPRT command: %s
+0x0033B798	ascii	Failure sending PORT command: %s
+0x0033B7E0	ascii	Connect data stream passively
+0x0033B868	ascii	Failure sending QUIT command: %s
+0x0033BA40	ascii	Skip %u.%u.%u.%u for data connection, re-use %s instead
+0x0033BB10	ascii	Connect data stream actively
+0x0033BEA8	ascii	Error accept()ing server connect
+0x0033BED0	ascii	Connection accepted from server
+0x0033BF38	ascii	Failed to clear the command channel (CCC)
+0x0033BF68	ascii	Checking for server connect
+0x0033BF88	ascii	Accept timeout occurred while waiting server connect
+0x0033BFC0	ascii	There is negative response in cache while serv connect
+0x0033BFF8	ascii	Error while waiting for server connect
+0x0033C020	ascii	Ready to accept data connection from server
+0x0033C208	ascii	FTP response aborted due to select/poll error: %d
+0x0033C4A0	ascii	Failed sending DICT request
+0x0033C540	ascii	WSAStartup failed (%d)
+0x0033C5E0	ascii	Sending data failed (%d)
+0x0033C6A4	ascii	 SEND
+0x0033CB20	ascii	SEND LOCATION
+0x0033CBF0	ascii	ENCRYPT
+0x0033CC98	ascii	WSACreateEvent
+0x0033CCA8	ascii	failed to find WSACreateEvent function (%u)
+0x0033CCD8	ascii	WSACloseEvent
+0x0033CCE8	ascii	failed to find WSACloseEvent function (%u)
+0x0033CD18	ascii	WSAEventSelect
+0x0033CD28	ascii	failed to find WSAEventSelect function (%u)
+0x0033CD58	ascii	WSAEnumNetworkEvents
+0x0033CD70	ascii	failed to find WSAEnumNetworkEvents function (%u)
+0x0033CDA8	ascii	WSACreateEvent failed (%d)
+0x0033CDC8	ascii	WSAEnumNetworkEvents failed (%d)
+0x0033CE00	ascii	WSACloseEvent failed (%d)
+0x0033D128	ascii	Failed sending RTSP request
+0x0033D1D8	ascii	Got an error writing an RTP packet
+0x0033D200	ascii	Cannot write a 0 size RTP packet.
+0x0033D338	ascii	Malformed ACK packet, rejecting
+0x0033D380	ascii	invalid blocksize value in OACK packet
+0x0033D4B8	ascii	invalid tsize -:%s:- value in OACK packet
+0x0033D4E8	ascii	Connected for transmit
+0x0033D500	ascii	Connected for receive
+0x0033D568	ascii	tftp_send_first: internal error
+0x0033D588	ascii	Received last DATA packet block %d again.
+0x0033D5B8	ascii	Received unexpected DATA packet block %d, expecting block %d
+0x0033D788	ascii	bind() failed; %s
+0x0033D7A0	ascii	Received too short packet
+0x0033D7D0	ascii	Internal error: Unexpected packet
+0x0033D9B8	ascii	encrypted
+0x0033D9D8	ascii	LDAP local: trying to establish %s connection
+0x0033DA08	ascii	LDAP local: Cannot connect to %s:%ld
+0x0033DA30	ascii	LDAP local: bind via ldap_win_bind %s
+0x0033DAB8	ascii	Invalid input packet
+0x0033DCB0	ascii	Failed sending Gopher request
+0x0033DD18	ascii	Select failed
+0x0033DF6C	ascii	SELECT
+0x0033E018	ascii	Cannot SELECT without a mailbox.
+0x0033E040	ascii	SELECT %s
+0x0033E188	ascii	PREAUTH connection, already authenticated!
+0x0033E2B8	ascii	SOCKS4%s: connecting to HTTP proxy %s port %d
+0x0033E308	ascii	SOCKS4 connect to IPv4 %s (locally resolved)
+0x0033E338	ascii	SOCKS4 connection to %s not supported
+0x0033E360	ascii	Failed to resolve "%s" for SOCKS4 connect.
+0x0033E3B8	ascii	Failed to send SOCKS4 connect request.
+0x0033E3E0	ascii	Failed to receive SOCKS4 connect request ack.
+0x0033E470	ascii	Can't complete SOCKS4 connection to %d.%d.%d.%d:%d. (%d), request rejected or failed.
+0x0033E4D0	ascii	Can't complete SOCKS4 connection to %d.%d.%d.%d:%d. (%d), request rejected because SOCKS server cannot connect to identd on the client.
+0x0033E560	ascii	Can't complete SOCKS4 connection to %d.%d.%d.%d:%d. (%d), request rejected because the client program and identd report different user-ids.
+0x0033E5F0	ascii	Can't complete SOCKS4 connection to %d.%d.%d.%d:%d. (%d), Unknown.
+0x0033E638	ascii	SOCKS5: connecting to HTTP proxy %s port %d
+0x0033E6C8	ascii	SOCKS5: no connection here
+0x0033E6E8	ascii	SOCKS5: connection timeout
+0x0033E708	ascii	SOCKS5: error occurred during connection
+0x0033E798	ascii	Unable to send initial SOCKS5 request.
+0x0033E878	ascii	Failed to send SOCKS5 sub-negotiation request.
+0x0033E950	ascii	No authentication method was acceptable. (It is quite likely that the SOCKS5 server wanted a username/password, since none was supplied to the server on this connection.)
+0x0033EA70	ascii	SOCKS5 connect to IPv4 %s (locally resolved)
+0x0033EAA0	ascii	SOCKS5 connect to IPv6 %s (locally resolved)
+0x0033EAD0	ascii	SOCKS5 connection to %s not supported
+0x0033EAF8	ascii	Failed to resolve "%s" for SOCKS5 connect.
+0x0033EB28	ascii	Failed to send SOCKS5 connect request.
+0x0033EB50	ascii	Failed to receive SOCKS5 connect request ack.
+0x0033EBB8	ascii	Can't complete SOCKS5 connection to %d.%d.%d.%d:%d. (%d)
+0x0033EBF8	ascii	Can't complete SOCKS5 connection to %s:%d. (%d)
+0x0033EC30	ascii	Can't complete SOCKS5 connection to %02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%d. (%d)
+0x0033EDF0	ascii	Couldn't connect to server
+0x0033EE50	ascii	FTP: The server failed to connect to data port
+0x0033EE80	ascii	FTP: Accepting server connect has timed out
+0x0033F1A8	ascii	SSL connect error
+0x0033F200	ascii	LDAP: cannot bind
+0x0033F2D0	ascii	Failed binding local connection end
+0x0033F398	ascii	SSL crypto engine not found
+0x0033F3B8	ascii	Can not set SSL crypto engine as default
+0x0033F3E8	ascii	Failed to initialise SSL crypto engine
+0x0033F410	ascii	Failed sending data to the peer
+0x0033F590	ascii	Failed to shut down the SSL connection
+0x0033F620	ascii	Send failed since rewinding of the data stream failed
+0x0033F7B0	ascii	Socket not ready for send/recv
+0x0033F848	ascii	The max connection limit is reached
+0x0033F9F8	ascii	Descriptor is not a socket
+0x0033FA98	ascii	Socket is unsupported
+0x0033FB78	ascii	Connection was aborted
+0x0033FB90	ascii	Connection was reset
+0x0033FBB8	ascii	Socket is already connected
+0x0033FBD8	ascii	Socket is not connected
+0x0033FBF0	ascii	Socket has been shut down
+0x0033FC38	ascii	Connection refused
+0x0033FD00	ascii	Disconnected
+0x00340358	ascii	select/poll error
+0x003410E0	ascii	NtUserSendInput
+0x003410F0	ascii	NtUserSendInput
+0x00341AA0	ascii	Connection: Keep-Alive
+0x00353328	ascii	already connected
+0x003533B8	ascii	connection aborted
+0x003533D0	ascii	connection already in progress
+0x003533F0	ascii	connection refused
+0x00353408	ascii	connection reset
+0x00353728	ascii	not a socket
+0x00353748	ascii	not connected
+0x00365CF8	ascii	.\crypto\x509\x509_lu.c
+0x00365D28	ascii	.\crypto\x509\by_file.c
+0x00366320	ascii	unable to decrypt CRL's signature
+0x00366348	ascii	unable to decrypt certificate's signature
+0x003669D0	ascii	.\crypto\pkcs12\p12_crpt.c
+0x003669F0	ascii	.\crypto\pkcs12\p12_kiss.c
+0x00366A10	ascii	.\crypto\pkcs12\p12_utl.c
+0x00366A30	ascii	.\crypto\ocsp\ocsp_cl.c
+0x00366A48	ascii	.\crypto\ocsp\ocsp_srv.c
+0x00366AF8	ascii	.\crypto\ocsp\ocsp_vfy.c
+0x00366B28	ascii	.\crypto\engine\eng_pkey.c
+0x00366B78	ascii	.\crypto\engine\eng_fat.c
+0x00367F70	ascii	.\crypto\x509\x509_vpm.c
+0x00367F90	ascii	.\crypto\asn1\x_info.c
+0x00367FA8	ascii	.\crypto\pem\pem_info.c
+0x00367FD0	ascii	.\crypto\evp\evp_cnf.c
+0x00368070	ascii	.\crypto\engine\eng_cnf.c
+0x00368098	ascii	.\crypto\asn1\asn_moid.c
+0x00368150	ascii	.\crypto\pkcs12\p12_key.c
+0x003683A8	ascii	.\crypto\evp\e_rc2.c
+0x00368848	ascii	.\crypto\pkcs12\p12_add.c
+0x00368868	ascii	.\crypto\pkcs12\p12_mutl.c
+0x003688B8	ascii	.\crypto\x509\x509_vfy.c
+0x003693A8	ascii	HWCryptoHook_ModExpCRT
+0x003693C0	ascii	HWCryptoHook_RSAUnloadKey
+0x003693E0	ascii	HWCryptoHook_RSAGetPublicKey
+0x00369400	ascii	HWCryptoHook_RSALoadKey
+0x00369418	ascii	HWCryptoHook_RandomBytes
+0x00369438	ascii	HWCryptoHook_RSA
+0x00369450	ascii	HWCryptoHook_ModExp
+0x00369468	ascii	HWCryptoHook_Finish
+0x00369480	ascii	HWCryptoHook_Init
+0x003698C8	ascii	nFast HWCryptoHook RSA key handle
+0x00369948	ascii	CryptoSwift hardware engine support
+0x00369978	ascii	CryptoSwift DH method
+0x00369990	ascii	CryptoSwift DSA method
+0x003699A8	ascii	CryptoSwift RSA method
+0x00369B40	ascii	CryptoSwift error number is 
+0x00369D20	ascii	AEP_CloseConnection
+0x00369D50	ascii	AEP_OpenConnection
+0x00369E40	ascii	return connection failed
+0x00369ED8	ascii	connections in use
+0x00369F58	ascii	AEP_GET_CONNECTION
+0x0036A590	ascii	bind_engine
+0x0036A5A8	ascii	.\crypto\engine\eng_dyn.c
+0x0036A8C8	ascii	.\crypto\evp\p5_crpt.c
+0x0036AF98	ascii	.\crypto\evp\e_aes.c
+0x0036B6C8	ascii	.\crypto\asn1\x_pkey.c
+0x0036B760	ascii	.\crypto\hmac\hmac.c
+0x0036B798	ascii	.\crypto\x509v3\pcy_tree.c
+0x0036BA88	ascii	.\crypto\dyn_lck.c
+0x0036BB10	ascii	.\crypto\evp\p5_crpt2.c
+0x00370DD8	ascii	encryption
+0x00370F10	ascii	.\crypto\x509v3\pcy_node.c
+0x00371C20	ascii	decrypt error
+0x00371C70	ascii	decryption failed
+0x00371D20	ascii	decompression failure
+0x003721A0	ascii	unsupported compression algorithm
+0x003724B8	ascii	tls rsa encrypted value length is wrong
+0x00372728	ascii	tlsv1 alert decrypt error
+0x00372748	ascii	tlsv1 alert decryption failed
+0x00372948	ascii	sslv3 alert decompression failure
+0x00372A98	ascii	ssl2 connection id too long
+0x00372C90	ascii	read wrong packet type
+0x00372D08	ascii	public key encrypt error
+0x00372E50	ascii	packet length too long
+0x00372F68	ascii	no compression specified
+0x003730A8	ascii	non sslv2 initial packet
+0x00373178	ascii	missing rsa encrypting cert
+0x00373560	ascii	encrypted length too long
+0x003735A0	ascii	duplicate compression id
+0x00373610	ascii	decryption failed or bad record mac
+0x00373680	ascii	connection type not set
+0x00373698	ascii	connection id is different
+0x003736B8	ascii	compression library error
+0x003736D8	ascii	compression id not within private range
+0x00373700	ascii	compression failure
+0x00373718	ascii	compressed length too long
+0x00373920	ascii	bad rsa encrypt
+0x00373930	ascii	bad rsa decrypt
+0x00373978	ascii	bad packet length
+0x00373A80	ascii	bad decompression
+0x00373E40	ascii	SSL_RSA_PUBLIC_ENCRYPT
+0x00373E58	ascii	SSL_RSA_PRIVATE_DECRYPT
+0x00373FB0	ascii	SSL_GET_SERVER_SEND_PKEY
+0x00373FD0	ascii	SSL_GET_SERVER_SEND_CERT
+0x00374268	ascii	SSL_COMP_add_compression_method
+0x003744C8	ascii	SSL3_SEND_SERVER_KEY_EXCHANGE
+0x003744E8	ascii	SSL3_SEND_SERVER_HELLO
+0x00374500	ascii	SSL3_SEND_SERVER_CERTIFICATE
+0x00374520	ascii	SSL3_SEND_CLIENT_VERIFY
+0x00374538	ascii	SSL3_SEND_CLIENT_KEY_EXCHANGE
+0x00374558	ascii	SSL3_SEND_CLIENT_CERTIFICATE
+0x00374578	ascii	SSL3_SEND_CERTIFICATE_REQUEST
+0x003747D0	ascii	SSL3_CONNECT
+0x00374920	ascii	SSL2_CONNECT
+0x003749A0	ascii	SSL23_CONNECT
+0x00374AE8	ascii	DTLS1_SEND_SERVER_KEY_EXCHANGE
+0x00374B08	ascii	DTLS1_SEND_SERVER_HELLO
+0x00374B20	ascii	DTLS1_SEND_SERVER_CERTIFICATE
+0x00374B40	ascii	DTLS1_SEND_HELLO_VERIFY_REQUEST
+0x00374B60	ascii	DTLS1_SEND_CLIENT_VERIFY
+0x00374B80	ascii	DTLS1_SEND_CLIENT_KEY_EXCHANGE
+0x00374BA0	ascii	DTLS1_SEND_CLIENT_CERTIFICATE
+0x00374BC0	ascii	DTLS1_SEND_CERTIFICATE_REQUEST
+0x00374D18	ascii	DTLS1_CONNECT
+0x00375B38	ascii	socket
+0x00375B40	ascii	.\crypto\comp\comp_lib.c
+0x00375B68	ascii	.\crypto\bio\bf_buff.c
+0x00375B80	ascii	socket connect
+0x00375B98	ascii	.\crypto\bio\bss_conn.c
+0x00375C28	ascii	.\crypto\pqueue\pqueue.c
+0x00375C70	ascii	.\crypto\x509\by_dir.c
+0x00375CA8	ascii	.\crypto\bio\b_sock.c
+0x00376208	ascii	OCSP_sendreq_bio
+0x00376998	ascii	could not bind to the requested symbol name
+0x00376B98	ascii	WIN32_BIND_VAR
+0x00376BA8	ascii	WIN32_BIND_FUNC
+0x00376BE8	ascii	VMS_BIND_SYM
+0x00376CD0	ascii	DSO_bind_var
+0x00376CE0	ascii	DSO_bind_func
+0x00376D30	ascii	DL_BIND_VAR
+0x00376D40	ascii	DL_BIND_FUNC
+0x00376D98	ascii	DLFCN_BIND_VAR
+0x00376DA8	ascii	DLFCN_BIND_FUNC
+0x00376FC0	ascii	pkcs12 pbe crypt error
+0x00377100	ascii	error setting encrypted data type
+0x00377128	ascii	encrypt error
+0x00377178	ascii	PKCS8_encrypt
+0x00377228	ascii	PKCS12_pbe_crypt
+0x00377310	ascii	PKCS12_item_i2d_encrypt
+0x00377328	ascii	PKCS12_item_decrypt_d2i
+0x003782A8	ascii	decrypted key is wrong length
+0x00378420	ascii	PKCS7_encrypt
+0x00378430	ascii	PKCS7_decrypt
+0x00378568	ascii	WSAStartup
+0x003785A8	ascii	unable to listen socket
+0x003785C0	ascii	unable to create socket
+0x003785D8	ascii	unable to bind socket
+0x00378680	ascii	nbio connect error
+0x003786F0	ascii	error setting nbio on accept socket
+0x00378718	ascii	error setting nbio on accepted socket
+0x00378770	ascii	connect error
+0x003787B8	ascii	WSASTARTUP
+0x00378920	ascii	BIO_get_accept_socket
+0x00378D18	ascii	invalid compression bit
+0x00378D30	ascii	invalid compressed point
+0x00378F50	ascii	EC_POINT_set_compressed_coordinates_GFp
+0x00378F78	ascii	EC_POINT_set_compressed_coordinates_GF2m
+0x003793D0	ascii	EC_GFP_SIMPLE_SET_COMPRESSED_COORDINATES_GFP
+0x00379400	ascii	ec_GFp_simple_set_compressed_coordinates
+0x00379720	ascii	ec_GF2m_simple_set_compressed_coordinates
+0x00379AB8	ascii	CRYPTO_set_ex_data
+0x00379AD0	ascii	CRYPTO_get_new_lockid
+0x00379AE8	ascii	CRYPTO_get_new_dynlockid
+0x00379B08	ascii	CRYPTO_get_ex_new_index
+0x00379E38	ascii	unsupported encryption algorithm
+0x0037B7B0	ascii	unsupported encryption
+0x0037B840	ascii	not encrypted
+0x0037B8A0	ascii	bad decrypt
+0x0037C110	ascii	EVP_PKEY_encrypt
+0x0037C128	ascii	EVP_PKEY_decrypt
+0x0037C1D8	ascii	EVP_EncryptFinal_ex
+0x0037C218	ascii	EVP_DecryptFinal_ex
+0x0037C748	ascii	bad fixed header decrypt
+0x0037C848	ascii	RSA_public_decrypt
+0x0037C860	ascii	RSA_private_encrypt
+0x0037CA10	ascii	RSA_NULL_PUBLIC_ENCRYPT
+0x0037CA28	ascii	RSA_NULL_PUBLIC_DECRYPT
+0x0037CA40	ascii	RSA_NULL_PRIVATE_ENCRYPT
+0x0037CA60	ascii	RSA_NULL_PRIVATE_DECRYPT
+0x0037CAE0	ascii	RSA_EAY_PUBLIC_ENCRYPT
+0x0037CAF8	ascii	RSA_EAY_PUBLIC_DECRYPT
+0x0037CB10	ascii	RSA_EAY_PRIVATE_ENCRYPT
+0x0037CB28	ascii	RSA_EAY_PRIVATE_DECRYPT
+0x0037D1A0	ascii	CRYPTO lib
+0x0037D240	ascii	WSAstartup
+0x0037D254	ascii	listen
+0x0037D25C	ascii	bind
+0x0037D268	ascii	ioctlsocket
+0x0037D278	ascii	connect
+0x0037D378	ascii	common libcrypto routines
+0x0037D4C0	ascii	.\crypto\err\err_str.c
+0x0037D508	ascii	.\crypto\ecdh\ech_lib.c
+0x0037D538	ascii	.\crypto\ecdh\ech_ossl.c
+0x003810C0	ascii	Connection
+0x0038823A	ascii	C3cGJe2h+b+kqdZ28uDPeLMOwbQ5evC2uytI/C1mDYi7TlMP/L6AEgVwG6tru2VI
+0x0038AFE0	ascii	Connection: Keep-Alive
+0x0038B8A0	ascii	tp6channel.data
+0x0038B900	ascii	SOFTWARE\VMware,t002\services\1-yunqos.gamesafe.http://gamesafe..wegamex.com.hk/5-11CE-BFC1-0800ss\{4D36E968-E32qEtuCR7F8XYv5bf3xoh6gDPOyzN01GH499999999-6666-6666-8888-99889988\Network\{4D36E9rtualBox Guest APROCESS_FLAG_AAAHARDWARE\ACPI\FA Inc.\VMware VGAJscAp92$eUdnSKLB72-E325-11CE-BFCVMware Virtual ETP6_WRITE_CHANNENtCreateProcessE0123456789ABCDEFGetNativeSystemIHARDWARE\DEVICEMHARDWARE\DESCRIPHARDWARE\ACPI\DSTION\System\BIOSHARDWARE\ACPI\RSt 0\Scsi Bus 0\TSOFTWARE\Oracle\s\VMware Physicahttp://safe.wegaInterlockedExchat001\Control\ClaInterlockedCompaNtAllocateVirtuahttp://down.qq.cNtDuplicateObjecarget Id 0\LogicVMware User ProcNtCreateUserProc\drivers\VBoxVid\Tencent\DeskUpdNtWriteVirtualMel Disk Helper SeSYSTEM\ControlSentrolSet\ServicentrolSet\serviceQueryPerformanceSetUnhandledExceRtlPcToFileHeadehttp://down.safeimmunity debuggeNtGetContextThreNtSetContextThreft\Windows\Curre\drivers\vmmouseCreateTimerQueuetqos.gamesafe.weNtQuerySystemInfZwQuerySystemInfoft\\Cryptographt001\Services\Diall\Oracle VM ViNtQueryInformatiNullExportFunctiCreateVSDIDrvObjntrolSet\ControlNtFreeVirtualMemGetFileVersionInNtSetInformationNtYieldExecutionSYSTEM\CurrentCoSystem\CurrentCoSystemBiosVersioRtlLookupFunctioSOFTWARE\Microso\Tencent\Desktoptqos.gamesafe.qqToolhelp32ReadPrAP\Scsi\Scsi PorSystemManufacturmex.com.hk/gamesSOFTWARE\\MicrosTerminateProcessVirtualBox GuestntVersion\Uninst Inc.\VMwareHostLdrInitializeThu\\.\PhysicalDrivaTiQrZM!ImklVWjwNtCreateThreadExRtlRestoreContex
+0x0041C1DF	ascii	WSaV
+
+## prediction_correction (138)
+0x001A0B16	ascii	Flag
+0x001A0B97	ascii	Tick
+0x0031D5B0	utf16le	no stack?
+0x003206D8	ascii	Stack part of OpenSSL 0.9.8zg 11 Jun 2015
+0x00320708	ascii	.\crypto\stack\stack.c
+0x00320A80	ascii	deltaRevocationList
+0x00321D78	ascii	X509v3 Policy Mappings
+0x00321D90	ascii	policyMappings
+0x00322798	ascii	cleartext track 2
+0x003227C8	ascii	encrypted track 2
+0x00322978	ascii	setCext-Track2Data
+0x00322A38	ascii	setCext-certType
+0x00322AA0	ascii	setext-track2
+0x00324068	ascii	AD Time Stamping
+0x00324080	ascii	ad_timestamping
+0x00325620	ascii	X509v3 Delta CRL Indicator
+0x00325640	ascii	deltaCRL
+0x00325768	ascii	Time Stamping
+0x00325778	ascii	timeStamping
+0x00325EF0	ascii	nsCertType
+0x0032E478	ascii	CloseToolhelp32Snapshot
+0x0032E490	ascii	CreateToolhelp32Snapshot
+0x0032ECF8	ascii	.\crypto\asn1\asn_pack.c
+0x0032FC50	ascii	inhibitPolicyMapping
+0x0032FC80	ascii	Inhibit Policy Mapping
+0x00330968	ascii	POLICY_MAPPING
+0x003309A8	ascii	POLICY_MAPPINGS
+0x003364C8	ascii	CURL_SSL_BACKEND
+0x00336E48	ascii	Write callback asked for PAUSE when not supported!
+0x003381D8	ascii	operation aborted by callback
+0x003381F8	ascii	Read callback asked for PAUSE when not supported!
+0x003382B8	ascii	seek callback returned error %d
+0x003382D8	ascii	the ioctl callback returned %d
+0x003382F8	ascii	ioctl callback returned error %d
+0x00338918	ascii	Callback aborted
+0x00338AE8	ascii	Site %s:%d is pipeline blacklisted
+0x00338B10	ascii	Server %s is blacklisted
+0x00339470	ascii	Failed to encode DOH packet [%d]
+0x0033A428	ascii	Newsession Ticket
+0x0033A950	ascii	error signaled by ssl ctx callback
+0x0033B008	ascii	STARTTLS denied
+0x0033B1B8	ascii	STARTTLS
+0x0033B2B8	ascii	STARTTLS denied, code %d
+0x0033B308	ascii	STARTTLS not supported.
+0x0033BA18	ascii	Couldn't interpret the 227-response
+0x0033BBE8	ascii	Skipping time comparison
+0x0033D1D8	ascii	Got an error writing an RTP packet
+0x0033D200	ascii	Cannot write a 0 size RTP packet.
+0x0033D338	ascii	Malformed ACK packet, rejecting
+0x0033D380	ascii	invalid blocksize value in OACK packet
+0x0033D450	ascii	blksize parsed from OACK
+0x0033D490	ascii	tsize parsed from OACK
+0x0033D4B8	ascii	invalid tsize -:%s:- value in OACK packet
+0x0033D588	ascii	Received last DATA packet block %d again.
+0x0033D5B8	ascii	Received unexpected DATA packet block %d, expecting block %d
+0x0033D5F8	ascii	Timeout waiting for block %d ACK.  Retries = %d
+0x0033D648	ascii	Received ACK for block %d, expecting %d
+0x0033D678	ascii	tftp_tx: giving up waiting for block %d ack
+0x0033D7A0	ascii	Received too short packet
+0x0033D7D0	ascii	Internal error: Unexpected packet
+0x0033DAB8	ascii	Invalid input packet
+0x0033E3E0	ascii	Failed to receive SOCKS4 connect request ack.
+0x0033EB50	ascii	Failed to receive SOCKS5 connect request ack.
+0x0033F268	ascii	Operation was aborted by an application callback
+0x0033F748	ascii	Caller must register CURLOPT_CONV_ callback options
+0x0033F830	ascii	Chunk callback failed
+0x0033F908	ascii	API function called from within callback
+0x00340150	ascii	NTLM handshake failure (bad type-2 message). Target Info Offset Len is set incorrect by the peer
+0x003403B0	ascii	Excessive server response line length received, %zd bytes. Stripping
+0x003413B8	utf16le	Global\TesServiceMappingObject
+0x00353FF0	ascii	WaitForThreadpoolTimerCallbacks
+0x00354090	ascii	FreeLibraryWhenCallbackReturns
+0x003540E8	ascii	GetCurrentPackageId
+0x00354100	ascii	GetTickCount64
+0x003589C8	ascii	ContextStackSize
+0x00358A08	ascii	DynamicProgressFeedback
+0x00359298	ascii	GetTraceEnableFlags
+0x0035A1F0	ascii	Access violation - no RTTI data!
+0x0035A89C	ascii	`RTTI
+0x0035F990	utf16le	ext-ms-win-kernel32-package-current-l1-1-0
+0x00366000	ascii	proxy certificates not allowed, please set the appropriate flag
+0x003673C0	ascii	  ##%%&&))**,,//1122447788;;==>>@@CCEEFFIIJJLLOOQQRRTTWWXX[[]]^^aabbddgghhkkmmnnppssuuvvyyzz||
+0x00368F60	ascii	request fallback
+0x00369518	ascii	SET_CALLBACK_DATA
+0x00369678	ascii	no callback
+0x00369D38	ascii	AEP_SetBNCallBacks
+0x00369E28	ascii	setbncallback failure
+0x00371D70	ascii	SSL for verify callback
+0x003726E0	ascii	tlsv1 alert inappropriate fallback
+0x00372820	ascii	ssl session id callback failed
+0x00372C90	ascii	read wrong packet type
+0x00372D40	ascii	problems mapping cipher functions
+0x00372E50	ascii	packet length too long
+0x00372ED0	ascii	no verify callback
+0x003730A8	ascii	non sslv2 initial packet
+0x00373348	ascii	krb5 server bad ticket
+0x00373410	ascii	invalid ticket keys length
+0x00373488	ascii	inappropriate fallback
+0x00373978	ascii	bad packet length
+0x00373A98	ascii	bad data returned by callback
+0x003743D0	ascii	SSL_add_file_cert_subjects_to_stack
+0x003743F8	ascii	SSL_add_dir_cert_subjects_to_stack
+0x003745E0	ascii	SSL3_NEW_SESSION_TICKET
+0x00374658	ascii	SSL3_GET_NEW_SESSION_TICKET
+0x00374850	ascii	SSL3_CALLBACK_CTRL
+0x003769C8	ascii	the meth_data stack is corrupt
+0x00376A90	ascii	incorrect file syntax
+0x00377160	ascii	cant pack structure
+0x003771B8	ascii	PKCS12_unpack_p7data
+0x003771D0	ascii	PKCS12_unpack_authsafes
+0x00377250	ascii	PKCS12_pack_p7encdata
+0x00377268	ascii	PKCS12_pack_p7data
+0x003772F0	ascii	PKCS12_item_pack_safebag
+0x00377858	ascii	incorrect policy syntax tag
+0x00377B68	ascii	V2I_POLICY_MAPPINGS
+0x00378970	ascii	BIO_callback_ctrl
+0x00379A40	ascii	no dynlock create callback
+0x00379C30	ascii	missing close square bracket
+0x0037AAE8	ascii	ASN1_unpack_string
+0x0037ABF8	ascii	ASN1_seq_unpack
+0x0037AC08	ascii	ASN1_seq_pack
+0x0037AC40	ascii	ASN1_pack_string
+0x0037ACB0	ascii	ASN1_item_unpack
+0x0037ACD8	ascii	ASN1_item_pack
+0x0037BA08	ascii	PEM_def_callback
+0x0037C470	ascii	sslv3 rollback attack
+0x00384C08	ascii	FILEMAPPINGGROUP
+0x00384C90	ascii	FILEMAPPING
+0x003852C4	ascii	qfDjSNIq6AXfMm835SI8noackCeuUHoOYoEy1GGoeNqnyFC27xHeWLEgFzAbfd2n
+0x00385CA1	ascii	Fv0EqV7jlaGgWH8SbIAlnVzGDWBfH3EciQ3LVh/gLOkf0/QyGqKNjuVxVymstcwu
+0x003860E8	ascii	3CPQeqScG/WFFMJIJ3/a6en4Hnu1w4KG0JN2cA7M4QXlmhSseFSlaGn6JqdJXBJ3
+0x0038AA70	utf16le	Flags
+0x0038B900	ascii	SOFTWARE\VMware,t002\services\1-yunqos.gamesafe.http://gamesafe..wegamex.com.hk/5-11CE-BFC1-0800ss\{4D36E968-E32qEtuCR7F8XYv5bf3xoh6gDPOyzN01GH499999999-6666-6666-8888-99889988\Network\{4D36E9rtualBox Guest APROCESS_FLAG_AAAHARDWARE\ACPI\FA Inc.\VMware VGAJscAp92$eUdnSKLB72-E325-11CE-BFCVMware Virtual ETP6_WRITE_CHANNENtCreateProcessE0123456789ABCDEFGetNativeSystemIHARDWARE\DEVICEMHARDWARE\DESCRIPHARDWARE\ACPI\DSTION\System\BIOSHARDWARE\ACPI\RSt 0\Scsi Bus 0\TSOFTWARE\Oracle\s\VMware Physicahttp://safe.wegaInterlockedExchat001\Control\ClaInterlockedCompaNtAllocateVirtuahttp://down.qq.cNtDuplicateObjecarget Id 0\LogicVMware User ProcNtCreateUserProc\drivers\VBoxVid\Tencent\DeskUpdNtWriteVirtualMel Disk Helper SeSYSTEM\ControlSentrolSet\ServicentrolSet\serviceQueryPerformanceSetUnhandledExceRtlPcToFileHeadehttp://down.safeimmunity debuggeNtGetContextThreNtSetContextThreft\Windows\Curre\drivers\vmmouseCreateTimerQueuetqos.gamesafe.weNtQuerySystemInfZwQuerySystemInfoft\\Cryptographt001\Services\Diall\Oracle VM ViNtQueryInformatiNullExportFunctiCreateVSDIDrvObjntrolSet\ControlNtFreeVirtualMemGetFileVersionInNtSetInformationNtYieldExecutionSYSTEM\CurrentCoSystem\CurrentCoSystemBiosVersioRtlLookupFunctioSOFTWARE\Microso\Tencent\Desktoptqos.gamesafe.qqToolhelp32ReadPrAP\Scsi\Scsi PorSystemManufacturmex.com.hk/gamesSOFTWARE\\MicrosTerminateProcessVirtualBox GuestntVersion\Uninst Inc.\VMwareHostLdrInitializeThu\\.\PhysicalDrivaTiQrZM!ImklVWjwNtCreateThreadExRtlRestoreContex
+0x003F7960	ascii	.?AV__non_rtti_object@std@@
+0x0181A8A4	ascii	(DigiCert SHA2 Assured ID Timestamping CA0
+0x0181AD59	ascii	Chttp://cacerts.digicert.com/DigiCertSHA2AssuredIDTimestampingCA.crt0
+0x0181AFB1	ascii	(DigiCert SHA2 Assured ID Timestamping CA0
+0x0181B43F	ascii	(DigiCert SHA2 Assured ID Timestamping CA
+
+## protocol (86)
+0x00320AE8	ascii	protocolInformation
+0x00322900	ascii	payment gateway capabilities
+0x00324438	ascii	id-regCtrl-protocolEncrKey
+0x003247E0	ascii	id-mod-timestamp-protocol
+0x00325650	ascii	Netscape Server Gated Crypto
+0x003256A0	ascii	Microsoft Server Gated Crypto
+0x00336618	ascii	<no protocol>
+0x00336910	ascii	Protocol "%s" not supported or disabled in libcurl
+0x00338BF0	ascii	Proxy CONNECT aborted due to timeout
+0x00339EF0	ascii	SSL connection timeout
+0x00339F68	ascii	SSL shutdown timeout
+0x0033A428	ascii	Newsession Ticket
+0x0033A6D0	ascii	old SSL session ID is stale, removing
+0x0033A6F8	ascii	failed to store ssl session
+0x0033AA00	ascii	SSL: SSL_set_session failed: %s
+0x0033AA20	ascii	SSL re-using session ID
+0x0033BF88	ascii	Accept timeout occurred while waiting server connect
+0x0033C1D0	ascii	We got a 421 - timeout!
+0x0033C1F0	ascii	FTP response timeout
+0x0033CF68	ascii	Refusing to issue an RTSP request [%s] without a session ID.
+0x0033D068	ascii	Session
+0x0033D070	ascii	Session ID cannot be set as a custom header.
+0x0033D0C0	ascii	Session: %s
+0x0033D290	ascii	Session:
+0x0033D2A0	ascii	Got a blank Session ID
+0x0033D2B8	ascii	Got RTSP Session ID Line [%s], but wanted ID [%s]
+0x0033D2F8	ascii	set timeouts for state %d; Total %ld, retry %d maxtry %d
+0x0033D560	ascii	timeout
+0x0033D5F8	ascii	Timeout waiting for block %d ACK.  Retries = %d
+0x0033D7F8	ascii	TFTP response timeout
+0x0033E6E8	ascii	SOCKS5: connection timeout
+0x0033E7D8	ascii	SOCKS5 read timeout
+0x0033ECD8	ascii	Unsupported protocol
+0x0033ED40	ascii	A requested feature, protocol or option was not found built-in in this libcurl due to a build-time decision.
+0x0033F0F8	ascii	Timeout was reached
+0x0033F7F8	ascii	RTSP session error
+0x0033FA50	ascii	Bad protocol
+0x0033FA60	ascii	Protocol option is unsupported
+0x0033FA80	ascii	Protocol is unsupported
+0x0033FAE8	ascii	Protocol family not supported
+0x00340340	ascii	server response timeout
+0x00353670	ascii	no protocol option
+0x00353820	ascii	protocol error
+0x00353830	ascii	protocol not supported
+0x003538D0	ascii	stream timeout
+0x00353978	ascii	wrong protocol type
+0x003589F0	ascii	SchedulingProtocol
+0x0036B898	ascii	ssl_session
+0x00371BF0	ascii	protocol version
+0x00372168	ascii	unsupported protocol
+0x00372240	ascii	unknown protocol
+0x00372658	ascii	tlsv1 alert protocol version
+0x003727A8	ascii	ssl session id is different
+0x003727C8	ascii	ssl session id has bad length
+0x003727E8	ascii	ssl session id context too long
+0x00372808	ascii	ssl session id conflict
+0x00372820	ascii	ssl session id callback failed
+0x00372A10	ascii	ssl3 session id too short
+0x00372A30	ascii	ssl3 session id too long
+0x00372AB8	ascii	ssl23 doing session id reuse
+0x00372B10	ascii	session id context uninitialized
+0x00372CA8	ascii	read timeout expired
+0x00372D28	ascii	protocol is shutdown
+0x00372E88	ascii	old session cipher not returned
+0x00372F10	ascii	no protocols available
+0x00373890	ascii	bad ssl session id length
+0x00373958	ascii	bad protocol version number
+0x00373B10	ascii	attempt to reuse session in different context
+0x00373D58	ascii	SSL_set_session_id_context
+0x00373D78	ascii	SSL_set_session
+0x00373E08	ascii	SSL_SESSION_print_fp
+0x00373E20	ascii	SSL_SESSION_new
+0x00373E30	ascii	ssl_session_dup
+0x00373FF0	ascii	SSL_GET_PREV_SESSION
+0x00374008	ascii	SSL_GET_NEW_SESSION
+0x003741A0	ascii	SSL_CTX_set_session_id_context
+0x003745E0	ascii	SSL3_NEW_SESSION_TICKET
+0x00374658	ascii	SSL3_GET_NEW_SESSION_TICKET
+0x00374A28	ascii	i2d_SSL_SESSION
+0x00374C88	ascii	DTLS1_HANDLE_TIMEOUT
+0x00374D40	ascii	DTLS1_CHECK_TIMEOUT_NUM
+0x00374DB8	ascii	d2i_SSL_SESSION
+0x003754A0	ascii	s->session->master_key_length >= 0 && s->session->master_key_length <= (int)sizeof(s->session->master_key)
+0x00375758	ascii	os.length <= (int)sizeof(ret->session_id)
+0x003757B8	ascii	c->iv_len <= (int)sizeof(s->session->key_arg)
+0x003762D8	ascii	OCSP_CHECK_DELEGATED
+
+## domain (65)
+0x0031D130	ascii	memory buffer
+0x0031D398	ascii	.\crypto\buffer\buffer.c
+0x0031D538	ascii	.\crypto\bn\bn_gcd.c
+0x0031F1C8	ascii	cofactor
+0x0031FBB0	ascii	.\crypto\buffer\buf_str.c
+0x00324100	ascii	id-aca-chargingIdentity
+0x00324118	ascii	id-aca-accessIdentity
+0x00324370	ascii	id-cmc-identityProof
+0x00324770	ascii	ac-auditEntity
+0x003259B0	ascii	pbeWithMD5AndCast5CBC
+0x003259C8	ascii	cast5-ofb
+0x003259D8	ascii	CAST5-OFB
+0x003259E8	ascii	cast5-cfb
+0x003259F8	ascii	CAST5-CFB
+0x00325A08	ascii	cast5-ecb
+0x00325A18	ascii	CAST5-ECB
+0x00325A28	ascii	cast5-cbc
+0x00325A38	ascii	CAST5-CBC
+0x0032E478	ascii	CloseToolhelp32Snapshot
+0x0032E490	ascii	CreateToolhelp32Snapshot
+0x0032E618	ascii	NetApiBufferFree
+0x00332B70	ascii	removeFromCRL
+0x00332B80	ascii	Remove From CRL
+0x003333A0	ascii	move
+0x00336218	ascii	Content-Disposition
+0x00336270	ascii	Content-Disposition: %s%s%s%s%s%s%s
+0x003370F8	ascii	After %ldms connect time, move on!
+0x00337428	ascii	identity
+0x00338680	ascii	Failed to alloc scratch buffer!
+0x00338930	ascii	** Resuming transfer from byte position %I64d
+0x00338B30	ascii	allocate connect buffer!
+0x0033F2F8	ascii	Number of redirects hit maximum amount
+0x0033FBA8	ascii	No buffer space
+0x00353508	ascii	identifier removed
+0x00353600	ascii	no buffer space
+0x00354070	ascii	FlushProcessWriteBuffers
+0x00358990	ascii	TargetOversubscriptionFactor
+0x0035A140	utf16le	api-ms-win-core-synch-l1-2-0
+0x0035A218	ascii	Bad dynamic_cast!
+0x00367DC8	ascii	cast-cbc
+0x00367DD8	ascii	CAST-cbc
+0x00367DE4	ascii	cast
+0x00367DEC	ascii	CAST
+0x00369869	ascii	 then hit <enter> or C<enter> to cancel
+0x0036DCC7	ascii	6CAST part of OpenSSL 0.9.8zg 11 Jun 2015
+0x00371AF8	ascii	unknown PSK identity
+0x00373F80	ascii	SSL_INIT_WBIO_BUFFER
+0x003744B0	ascii	SSL3_SETUP_BUFFERS
+0x00374D58	ascii	DTLS1_BUFFER_RECORD
+0x00375B5C	ascii	buffer
+0x00375B68	ascii	.\crypto\bio\bf_buff.c
+0x00375D90	ascii	no result buffer
+0x00376760	ascii	ENGINE_remove
+0x003767D0	ascii	ENGINE_LIST_REMOVE
+0x003787E8	ascii	LINEBUFFER_CTRL
+0x00378838	ascii	BUFFER_CTRL
+0x00378E10	ascii	buffer too small
+0x00379360	ascii	EC_GROUP_get_cofactor
+0x0037D430	ascii	memory buffer routines
+0x00380E18	ascii	invalid string position
+0x00380E48	ascii	bad cast
+0x003F7580	ascii	.?AUIThreadProxyFactory@details@Concurrency@@
+0x003F75C0	ascii	.?AVFreeThreadProxyFactory@details@Concurrency@@
+0x003F7610	ascii	.?AV?$ThreadProxyFactory@VFreeThreadProxy@details@Concurrency@@@details@Concurrency@@
+0x003F7C68	ascii	.?AVbad_cast@std@@
+
+## cn_client (1)
+0x0038A6EA	gbk	，请重新安装游戏客户端再试。

@@ -1,0 +1,29 @@
+# NAVX64.dll netcode keyword scan
+# source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\NAVX64.dll
+
+## transport (0)
+(none)
+
+## prediction_correction (12)
+0x0000B09C	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x0000B0E4	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0
+0x0000B79E	ascii	Mhttp://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S
+0x0000B7F3	ascii	Mhttp://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0
+0x0000B887	ascii	Phttp://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0
+0x0000BF57	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x0000C2FF	ascii	Qhttp://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_
+0x0000C363	ascii	Nhttp://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0 
+0x0000C6CC	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x0000C9EF	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x0000CA37	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0 
+0x0000D270	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1
+
+## protocol (0)
+(none)
+
+## domain (2)
+0x000092ED	ascii	?RemoveObstacle@PathEngineNavi@@QEAA_N_J@Z
+0x00009836	ascii	memmove
+
+## cn_client (0)
+(none)

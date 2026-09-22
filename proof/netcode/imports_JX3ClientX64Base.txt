@@ -1,0 +1,6 @@
+# JX3ClientX64Base.dll (25,278,008 bytes)
+## imports (1 DLLs)
+### kernel32.dll (1)
+  LoadLibraryA
+
+## delay-imports (0 DLLs)
