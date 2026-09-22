@@ -1,0 +1,39 @@
+JX3ClientX64.exe|ascii|ChaosFight|0x007C83CE|REATE_ROOM_RESPOND)...KPlayerClient::OnForceStartBattleFieldChaosFightRespond.nSize == sizeof(S2C_FORCE_START_BATTLE_FIELD_CHAOS_FIGHT_RESPOND).......
+JX3ClientX64.exe|ascii|Battlefield|0x007BE5B5|ient::DoApplyBFPlayerTeamGroupIDInfo...KPlayerClient::DoSyncBattlefieldCompetitorSkillCDStateRequest...KPlayerClient::DoCancelSyncBattlefieldCompetito
+JX3ClientX64.exe|ascii|Battlefield|0x007BE5FB|dCompetitorSkillCDStateRequest...KPlayerClient::DoCancelSyncBattlefieldCompetitorSkillCDStateRequest.....KPlayerClient::DoSyncBattlefieldCompetitorsLi
+JX3ClientX64.exe|ascii|Battlefield|0x007BE63D|fieldCompetitorSkillCDStateRequest.....KPlayerClient::DoSyncBattlefieldCompetitorsListRequest..KPlayerClient::DoSyncDungeonCompetitorSkillCDStateReque
+JX3ClientX64.exe|ascii|Battlefield|0x007C6449|ArenaCompetitorList........KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList......KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorL
+JX3ClientX64.exe|ascii|Battlefield|0x007C648D|eldCompetitorList......KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList..KPlayerClient::OnSyncEmotionPackage.....KPlayerClient::OnSetRan
+JX3ClientX64.exe|ascii|Battlefield|0x007C7FC5|PlayerClient::OnSyncBoxCanUseFlag......KPlayerClient::OnSyncBattlefieldCompetitorCDState.......KPlayerClient::OnSyncBattlefieldCompetitorBuffList.....
+JX3ClientX64.exe|ascii|Battlefield|0x007C7FFD|SyncBattlefieldCompetitorCDState.......KPlayerClient::OnSyncBattlefieldCompetitorBuffList......nSize == sizeof(S2C_SYNC_BATTLEFIELD_COMPETITOR_BUFF_LI
+JX3ClientX64.exe|ascii|Battlefield|0x007C8357|zeof(S2C_ARENA_CREATE_ROOM_RESPOND)..KPlayerClient::OnCreateBattlefieldRoomRespond...nSize == sizeof(S2C_BATTLE_FIELD_CREATE_ROOM_RESPOND)...KPlayerCl
+JX3ClientX64.exe|ascii|BattleField|0x007C202C|NOTIFY).KPlayerClient::OnSetForce.......KPlayerClient::OnSetBattleFieldSide.....KPlayerClient::OnSetNameCardSkinRespond.KPlayerClient::OnSyncNameCard.
+JX3ClientX64.exe|ascii|BattleField|0x007C83C3|TLE_FIELD_CREATE_ROOM_RESPOND)...KPlayerClient::OnForceStartBattleFieldChaosFightRespond.nSize == sizeof(S2C_FORCE_START_BATTLE_FIELD_CHAOS_FIGHT_RESP
+JX3ClientX64.exe|ascii|BattleField|0x007F2CCC|........ApplyBFTongLeagueJoinInfo.......GetClientTeam...JoinBattleFieldQueue....LeaveBattleFieldQueue...AcceptJoinBattleField...LeaveBattleField......
+JX3ClientX64.exe|ascii|BattleField|0x007F2CE5|JoinInfo.......GetClientTeam...JoinBattleFieldQueue....LeaveBattleFieldQueue...AcceptJoinBattleField...LeaveBattleField........JoinTongBattleFieldQueu
+JX3ClientX64.exe|ascii|BattleField|0x007F2D02|..JoinBattleFieldQueue....LeaveBattleFieldQueue...AcceptJoinBattleField...LeaveBattleField........JoinTongBattleFieldQueue........LeaveTongBattleField
+JX3ClientX64.exe|ascii|BattleField|0x007F2D15|eue....LeaveBattleFieldQueue...AcceptJoinBattleField...LeaveBattleField........JoinTongBattleFieldQueue........LeaveTongBattleFieldQueue.......AcceptJ
+JX3ClientX64.exe|ascii|BattleField|0x007F2D30|e...AcceptJoinBattleField...LeaveBattleField........JoinTongBattleFieldQueue........LeaveTongBattleFieldQueue.......AcceptJoinTongBattleField.......Le
+JX3ClientX64.exe|ascii|BattleField|0x007F2D51|BattleField........JoinTongBattleFieldQueue........LeaveTongBattleFieldQueue.......AcceptJoinTongBattleField.......LeaveTongBattleField....JoinArenaQu
+JX3LogicEditOperationX64.dll|ascii|ChaosFight|0x0077947E|REATE_ROOM_RESPOND)...KPlayerClient::OnForceStartBattleFieldChaosFightRespond.nSize == sizeof(S2C_FORCE_START_BATTLE_FIELD_CHAOS_FIGHT_RESPOND).......
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x0076F745|ient::DoApplyBFPlayerTeamGroupIDInfo...KPlayerClient::DoSyncBattlefieldCompetitorSkillCDStateRequest...KPlayerClient::DoCancelSyncBattlefieldCompetito
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x0076F78B|dCompetitorSkillCDStateRequest...KPlayerClient::DoCancelSyncBattlefieldCompetitorSkillCDStateRequest.....KPlayerClient::DoSyncBattlefieldCompetitorsLi
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x0076F7CD|fieldCompetitorSkillCDStateRequest.....KPlayerClient::DoSyncBattlefieldCompetitorsListRequest..KPlayerClient::DoSyncDungeonCompetitorSkillCDStateReque
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x007774F9|ArenaCompetitorList........KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList......KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorL
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x0077753D|eldCompetitorList......KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList..KPlayerClient::OnSyncEmotionPackage.....KPlayerClient::OnSetRan
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x00779075|PlayerClient::OnSyncBoxCanUseFlag......KPlayerClient::OnSyncBattlefieldCompetitorCDState.......KPlayerClient::OnSyncBattlefieldCompetitorBuffList.....
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x007790AD|SyncBattlefieldCompetitorCDState.......KPlayerClient::OnSyncBattlefieldCompetitorBuffList......nSize == sizeof(S2C_SYNC_BATTLEFIELD_COMPETITOR_BUFF_LI
+JX3LogicEditOperationX64.dll|ascii|Battlefield|0x00779407|zeof(S2C_ARENA_CREATE_ROOM_RESPOND)..KPlayerClient::OnCreateBattlefieldRoomRespond...nSize == sizeof(S2C_BATTLE_FIELD_CREATE_ROOM_RESPOND)...KPlayerCl
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x0077310C|NOTIFY).KPlayerClient::OnSetForce.......KPlayerClient::OnSetBattleFieldSide.....KPlayerClient::OnSetNameCardSkinRespond.KPlayerClient::OnSyncNameCard.
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x00779473|TLE_FIELD_CREATE_ROOM_RESPOND)...KPlayerClient::OnForceStartBattleFieldChaosFightRespond.nSize == sizeof(S2C_FORCE_START_BATTLE_FIELD_CHAOS_FIGHT_RESP
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x00787844|ayerInfo........KGPQ::LuaGetScene.......m_eOwnerType == pqotBattleField || m_eOwnerType == pqotQueuedDungeon....nRetCode > 0 && nRetCode < (int)sizeof
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x007A565F|.....g_GetRelation...pSrcCharacter->m_pScene.KCharacter::SetBattleFieldSide..nBattleFieldSide > INVALID_BATTLE_SIDE..nBattleFieldSide < MAX_BATTLE_SID
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x007A5671|...pSrcCharacter->m_pScene.KCharacter::SetBattleFieldSide..nBattleFieldSide > INVALID_BATTLE_SIDE..nBattleFieldSide < MAX_BATTLE_SIDE......KCharacter:
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x007A5699|etBattleFieldSide..nBattleFieldSide > INVALID_BATTLE_SIDE..nBattleFieldSide < MAX_BATTLE_SIDE......KCharacter::GetName.....pNpc->m_pTemplate...eState.
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x007AC9A0|lePointToLog........NormalMapIncomePunish...CHEAT_PUNISH....BattleFieldIncomePunish.DungeonIncomePunish.....SalePunish......SyncPlayerCount.GLOBE...Sy
+JX3LogicEditOperationX64.dll|ascii|BattleField|0x007BFEAC|........ApplyBFTongLeagueJoinInfo.......GetClientTeam...JoinBattleFieldQueue....LeaveBattleFieldQueue...AcceptJoinBattleField...LeaveBattleField......
+JX3RepresentX64.dll|ascii|BattleField|0x00CAFA5E|D()), eratUnknown)....................KRLCharacter::UpdateCJBattleFieldHeadTop................KRLCharacter::UpdateChest.......KRLCharacter::PlaySkillC
+JX3RepresentX64.dll|ascii|BattleField|0x00CCD2D8|....Å.»..............ÊÒ.....í!......Å.».........None........BattleField.....vector<bool> too long............ÊÒ.....................iffpiif.........ii
+JX3RepresentX64.dll|ascii|BattleField|0x00CCFCE2|ionAnimation......iii.....NpcDialogSceneCameraAni.....iO..CJBattleField...iOfffippppiiii..........MissileDirectory........iOssfffffffiiiffff......iOsf
+JX3RepresentX64.dll|ascii|BattleField|0x00CEA731|erID.......nDesignationPrefix......nDesignationPostfix.....nBattleFieldSide........szTitle.........szTongNameOrEmployer............szCustomData....¨.Ó
+JX3RepresentX64.dll|ascii|battlefield|0x00C88E9A|e attach target...........end preload shader......set local battlefield side......reset ground track......disable body reshaping..........enable local

@@ -1,0 +1,19 @@
+﻿== 娌欐紶椋庢毚.tab lines 256
+  HDR: ID	Name	SourcePath	ShellPath
+   0	涓€闃惰澶?data/source\doodad\榫欓棬鑽掓紶\WJ_xn鍔犳矙瀹ゅ唴绠卞瓙001_001_HD.Mesh	
+   1	涓€闃舵鍣?data\source\maps_source\灏忕墿浠禱瀹ゅ唴\xwj_cj鍓戝專001_002_HD.Mesh	
+   2	浜岄樁瑁呭	data/source\doodad\榫欓棬鑽掓紶\WJ_xn鍔犳矙瀹ゅ唴绠卞瓙001_002_HD.Mesh	
+   3	浜岄樁姝﹀櫒	data\source\maps_source\灏忕墿浠禱瀹ゅ唴\xwj_cj鍓戝專001_002_HD.Mesh	
+   4	涓夐樁瑁呭	data/source\doodad\榫欓棬鑽掓紶\WJ_xn鍔犳矙瀹ゅ唴绠卞瓙001_003_HD.Mesh	
+== 娌欐紶椋庢毚_瀵诲疂妯″紡.tab lines 169
+  HDR: ID	Name	SourcePath	ShellPath
+   0	浼铇戣弴	data\source\doodad\娲涢亾\WJ_椴滃铇戣弴001_HD.Mesh	
+   1	浼鑽綈	data\source\maps_source\闂ㄦ淳\浜旀瘨\wj_xn浜旀瘨娓楁紡鐨勮嵂缃?01_hd.mesh	
+   2	浼椋熶汉鑺?data\source\maps_source\Foliage\GM_Fern003_001.srt	
+   3	浼閬楅	data\source\maps_source\闂ㄦ淳\鏄庢暀\wj_mj鍔ㄧ墿灏搁001_001_hd.mesh	
+   4	鍖胯釜瀹濈洅	data\source\maps_source\灏忕墿浠禱瀹ゅ唴\wj_ly绠卞瓙001_HD.Mesh	
+== 瀵诲疂绯荤粺.tab lines 4
+  HDR: ID	Name	SourcePath	ShellPath
+   0	涔濆窞绁堢榧?data\source\maps_source\灏忕墿浠禱棣欑倝\WJ_鏂归紟002.Mesh	
+   1	瀹濈	data\source\doodad\绋婚鏉慭WJ_鐗╀粈绠?14.Mesh	
+   2	0	data\source\doodad\灏戞灄\WJ_sl姘寸几001.Mesh	

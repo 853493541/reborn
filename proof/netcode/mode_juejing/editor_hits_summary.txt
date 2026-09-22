@@ -1,0 +1,27 @@
+﻿total 240
+{'Ani.rt': 10, 'Folader.rt': 10, 'MapList.tab': 10, 'Mesh.rt': 10, 'Pss.rt': 9, 'Tree.rt': 10, 'Bangle_f1.tab': 6, 'Bangle_f2.tab': 6, 'Bangle_m1.tab': 6, 'Bangle_m2.tab': 6, 'Chest_f1.tab': 6, 'Chest_f2.tab': 6, 'Chest_m1.tab': 6, 'Chest_m2.tab': 6, 'Hat_f1.tab': 6, 'Hat_f2.tab': 6, 'Hat_m1.tab': 6, 'Hat_m2.tab': 6, 'Pants_f1.tab': 10, 'Pants_f2.tab': 10, 'Pants_m1.tab': 10, 'Pants_m2.tab': 10, 'Waist_f1.tab': 6, 'Waist_f2.tab': 6, 'Waist_m1.tab': 6, 'Waist_m2.tab': 6, 'ACT_澶т笘鐣屽皬娓告垙.tab': 1, '涓栫晫濂囬亣.tab': 1, '娌欐紶椋庢毚.tab': 10, '娌欐紶椋庢毚_瀵诲疂妯″紡.tab': 10, '娴琛?tab': 2, '鐧藉笣姹熷叧.tab': 1, 'WeaponLeftHand.tab': 10, 'WeaponRightHand.tab': 10}
+Ani.rt 0x000970EE 2.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty鐏甸瓊鍑虹獚02.ani  4383	F1b02ty榫欓棬缁濆_绔欏Э01.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э01.ani	Root\瀹樻柟璧勬簮\
+Ani.rt 0x00097124 绐?2.ani  4383	F1b02ty榫欓棬缁濆_绔欏Э01.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э01.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э01.ani  4384	
+Ani.rt 0x00097162 1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э01.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э01.ani  4384	F1b02ty榫欓棬缁濆_绔欏Э02.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty锟?
+Ani.rt 0x00097183 	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э01.ani  4384	F1b02ty榫欓棬缁濆_绔欏Э02.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э02.ani	Root\瀹樻柟璧勬簮\
+Ani.rt 0x000971B9 濮?1.ani  4384	F1b02ty榫欓棬缁濆_绔欏Э02.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э02.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э02.ani  4385	
+Ani.rt 0x000971F7 1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э02.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э02.ani  4385	F1b02ty榫欓棬缁濆_绔欏Э03.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty锟?
+Ani.rt 0x00097218 	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э02.ani  4385	F1b02ty榫欓棬缁濆_绔欏Э03.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э03.ani	Root\瀹樻柟璧勬簮\
+Ani.rt 0x0009724E 濮?2.ani  4385	F1b02ty榫欓棬缁濆_绔欏Э03.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э03.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э03.ani  4386	
+Ani.rt 0x0009728C 1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э03.ani	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э03.ani  4386	F1b02ty榫欓棬缁濆_绔欏Э04.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty锟?
+Ani.rt 0x000972AD 	Root\瀹樻柟璧勬簮\涓昏妯″瀷\灏忓コ瀛‐鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э03.ani  4386	F1b02ty榫欓棬缁濆_绔欏Э04.ani	data\source\player\f1\鍔ㄤ綔\F1b02ty榫欓棬缁濆_绔欏Э04.ani	Root\瀹樻柟璧勬簮\
+Folader.rt 0x00143F65 鏉庢爲  22900	鏉ㄦ床	data\source\doodad\鏉ㄦ床	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鏉ㄦ床  22901	鏋楁捣缁濆	data\source\doodad\鏋楁捣缁濆	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鏋楁捣缁濆  22902	鏋崕璋?data\
+Folader.rt 0x00143F81 \doodad\鏉ㄦ床	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鏉ㄦ床  22901	鏋楁捣缁濆	data\source\doodad\鏋楁捣缁濆	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鏋楁捣缁濆  22902	鏋崕璋?data\source\doodad\鏋崕璋?Root\瀹?
+Folader.rt 0x00143FA1 閿涖槑鏉ㄦ床  22901	鏋楁捣缁濆	data\source\doodad\鏋楁捣缁濆	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鏋楁捣缁濆  22902	鏋崕璋?data\source\doodad\鏋崕璋?Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鏋崕璋? 22903	鏍?
+Folader.rt 0x00144286 鍦板矝	data\source\doodad\娲炲ぉ绂忓湴宀?Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\娲炲ぉ绂忓湴宀? 22912	娴峰矝缁濆	data\source\doodad\娴峰矝缁濆	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\娴峰矝缁濆  22913	鐏甸渼宄?data\
+Folader.rt 0x001442A2 绂忓湴宀?Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\娲炲ぉ绂忓湴宀? 22912	娴峰矝缁濆	data\source\doodad\娴峰矝缁濆	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\娴峰矝缁濆  22913	鐏甸渼宄?data\source\doodad\鐏甸渼宄?Root\瀹?
+Folader.rt 0x001442C2 澶╃鍦板矝  22912	娴峰矝缁濆	data\source\doodad\娴峰矝缁濆	Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\娴峰矝缁濆  22913	鐏甸渼宄?data\source\doodad\鐏甸渼宄?Root\瀹樻柟璧勬簮\鍦板浘鐗╀欢\鐏甸渼宄? 22914	鐑?
+Folader.rt 0x0014A997 p	Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹ゅ唴\澶ф槑瀹玕JZ_dmg榫欓姹犲鍐?01Lightmap  23177	澶╁師缁濆	data\source\maps_source\鍓湰瀹ゅ唴\澶╁師缁濆	Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹ゅ唴\澶╁師锟?
+Folader.rt 0x0014A9C1 Z_dmg榫欓姹犲鍐?01Lightmap  23177	澶╁師缁濆	data\source\maps_source\鍓湰瀹ゅ唴\澶╁師缁濆	Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹ゅ唴\澶╁師缁濆  23178	澶╁	data\source\maps_source\鍓?
+Folader.rt 0x0014A9EA 锟?data\source\maps_source\鍓湰瀹ゅ唴\澶╁師缁濆	Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹ゅ唴\澶╁師缁濆  23178	澶╁	data\source\maps_source\鍓湰瀹ゅ唴\澶╁	Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹?
+Folader.rt 0x0014B024 e\maps_source\鍓湰瀹ゅ唴\鏈夊吔鐒?Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹ゅ唴\鏈夊吔鐒? 23194	鏋楁捣缁濆	data\source\maps_source\鍓湰瀹ゅ唴\鏋楁捣缁濆	Root\瀹樻柟璧勬簮\鍦烘櫙鐗╀欢\鍓湰瀹ゅ唴\鏋楁捣锟?
+MapList.tab 0x00005239 _鍛ㄥぉ灞?data\source\maps\鎸戞垬椴查箯宀沖鍛ㄥぉ灞縗鎸戞垬椴查箯宀沖鍛ㄥぉ灞?jsonmap	0  410	娴峰矝缁濆	data\source\maps\娴峰矝缁濆\娴峰矝缁濆.jsonmap	0  411	椴查箯宀?data\source\maps\椴查箯锟?
+MapList.tab 0x00005253 绮戒粎閿辫埢绡插懆澶╁笨\鎸戞垬椴查箯宀沖鍛ㄥぉ灞?jsonmap	0  410	娴峰矝缁濆	data\source\maps\娴峰矝缁濆\娴峰矝缁濆.jsonmap	0  411	椴查箯宀?data\source\maps\椴查箯宀沑椴查箯宀?jsonmap	0  412	鍒?
+MapList.tab 0x0000525C _鍛ㄥぉ灞縗鎸戞垬椴查箯宀沖鍛ㄥぉ灞?jsonmap	0  410	娴峰矝缁濆	data\source\maps\娴峰矝缁濆\娴峰矝缁濆.jsonmap	0  411	椴查箯宀?data\source\maps\椴查箯宀沑椴查箯宀?jsonmap	0  412	鍒楁槦宀?data
+MapList.tab 0x0000686A 娉夊簻_椋庨洩闀滄硦婀?data\source\maps\榫欐硥搴淿闀滄硦婀朶榫欐硥搴淿闀滄硦婀?jsonmap	0  512	鐧介緳缁濆	data\source\maps\鐧介緳缁濆\鐧介緳缁濆.jsonmap	0  513	琛嶅ぉ瀹梍骞荤伒澧僟鍜屽钩	data\sourc
+MapList.tab 0x00006884 e\maps\榫欐硥搴淿闀滄硦婀朶榫欐硥搴淿闀滄硦婀?jsonmap	0  512	鐧介緳缁濆	data\source\maps\鐧介緳缁濆\鐧介緳缁濆.jsonmap	0  513	琛嶅ぉ瀹梍骞荤伒澧僟鍜屽钩	data\source\maps\琛嶅ぉ瀹梍骞荤伒澧僜琛嶅ぉ锟?

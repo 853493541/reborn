@@ -1,0 +1,49 @@
+== 天原绝境
+== 天原绝境_id532_extracted
+  jsonmap 天原绝境.jsonmap: {
+	"filePaths": {
+		"hd": {
+			"specDir": "/",
+			"landscapeDir": "landscape/",
+			"foliageDir": "foliage/",
+			"foliagePatternDir": "foliage/",
+			"envProbeDir": "env_probe/",
+			"viewProbeDir": "",
+			"offlineGIDir": "",
+			"rayMarchFogDir": "",
+			"universalMaskDir": "",
+			"volumetricCloudDir": 
+  setting 天原绝境_Setting.ini: [CameraSet] | [Bumper] | [LogicalScene] | [Terrain] | RenderTerrain=1 | [Water] | WaterColor_00=0.121569,0.196078,0.266667,0.800000 | WaterColor_01=0.121569,0.196078,0.266667,0.800000 | WaterColor_02=0.121569,0.196078,0.266667,0.800000 | WaterColor_03=0.121569,0.196078,0.266667,0.800000 | WaterColor_04=0.121569,0.196078,0.266667,0.800000 | WaterSpecrColor=0.500000,0.500000,0.500000,1.000000 | WaterFogColor=0.300000,0.500000,0.610000,1.000000 | [ScreenShockwave]
+  environment keys: ['lightSource', 'enableDayNightCycle', 'enableCovermap', 'enableCovermapOnlyForFoliage', 'cameraRangeFromDist', 'cameraRangeToDist', 'underWaterFogColor', 'enablePlaneReflectionViaRender', 'enableSceneFadeV2', 'sceneFadeStartRatio', 'sceneFadePower', 'sunlight']
+== 海岛绝境
+== 海岛绝境_id410_extracted
+  jsonmap 海岛绝境.jsonmap: {
+    "filePaths": {
+        "hd": {
+            "specDir": "/",
+            "landscapeDir": "landscape/",
+            "foliageDir": "foliage/",
+            "foliagePatternDir": "foliage/",
+            "envProbeDir": "env_probe/",
+            "viewProbeDir": "",
+            "offlineGIDir": "",
+     
+  setting 海岛绝境_Setting.ini: [CameraSet] | [Bumper] | [LogicalScene] | [Terrain] | RenderTerrain=1 | [Water] | WaterColor_00=0.121569,0.196078,0.266667,0.800000 | WaterColor_01=0.121569,0.196078,0.266667,0.800000 | WaterColor_02=0.121569,0.196078,0.266667,0.800000 | WaterColor_03=0.121569,0.196078,0.266667,0.800000 | WaterColor_04=0.121569,0.196078,0.266667,0.800000 | WaterSpecrColor=0.500000,0.500000,0.500000,1.000000 | WaterFogColor=0.300000,0.500000,0.610000,1.000000 | [ScreenShockwave]
+  environment keys: ['lightSource', 'enableDayNightCycle', 'enableCovermap', 'enableCovermapOnlyForFoliage', 'cameraRangeFromDist', 'cameraRangeToDist', 'underWaterFogColor', 'enableSeasonVariation', 'enablePlaneReflectionViaRender', 'enableSceneFadeV2', 'sceneFadeStartRatio', 'sceneFadePower']
+== 白龙绝境
+== 白龙绝境_id512_extracted
+  jsonmap 白龙绝境.jsonmap: {
+	"filePaths": {
+		"hd": {
+			"specDir": "/",
+			"landscapeDir": "landscape/",
+			"foliageDir": "foliage/",
+			"foliagePatternDir": "foliage/",
+			"envProbeDir": "env_probe/",
+			"viewProbeDir": "",
+			"offlineGIDir": "",
+			"rayMarchFogDir": "",
+			"universalMaskDir": "",
+			"volumetricCloudDir": 
+  setting 白龙绝境_Setting.ini: [CameraSet] | [Bumper] | [LogicalScene] | [Terrain] | RenderTerrain=1 | [Water] | WaterColor_00=0.121569,0.196078,0.266667,0.800000 | WaterColor_01=0.121569,0.196078,0.266667,0.800000 | WaterColor_02=0.121569,0.196078,0.266667,0.800000 | WaterColor_03=0.121569,0.196078,0.266667,0.800000 | WaterColor_04=0.121569,0.196078,0.266667,0.800000 | WaterSpecrColor=0.500000,0.500000,0.500000,1.000000 | WaterFogColor=0.300000,0.500000,0.610000,1.000000 | [ScreenShockwave]
+  environment keys: ['lightSource', 'enableDayNightCycle', 'enableCovermap', 'enableCovermapOnlyForFoliage', 'cameraRangeFromDist', 'cameraRangeToDist', 'underWaterFogColor', 'enableSeasonVariation', 'enablePlaneReflectionViaRender', 'enableSceneFadeV2', 'sceneFadeStartRatio', 'sceneFadePower']
