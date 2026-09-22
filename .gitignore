@@ -13,3 +13,8 @@ node_modules/
 assets/*
 !assets/README.md
 
+# Extracted proprietary game assets from PakV4 (research scratch)
+proof/netcode/skill_motion/*.tani
+proof/netcode/skill_motion/*.ani
+proof/netcode/skill_motion/out/
+

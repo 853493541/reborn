@@ -1,0 +1,100 @@
+# KG3D_AnimationTagX64.dll netcode keyword scan
+# source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KG3D_AnimationTagX64.dll
+
+## transport (14)
+0x000470C0	ascii	uBindIndex < m_vecBindData.size()
+0x00048308	ascii	BindPart
+0x00048328	ascii	NumSocket
+0x00048348	ascii	Socket%d
+0x00048A98	ascii	KG3D_AnimationTagEventManager::_GetBindMatrixInTarget
+0x00048AD0	ascii	stBindExtraInfo.uBindIndex != static_cast<unsigned int>(-1)
+0x0004A688	ascii	CONNECT
+0x0004A6A8	ascii	Connection
+0x0004A718	ascii	Connection established
+0x000581F6	ascii	getaddrinfo
+0x00058212	ascii	WSASocketW
+0x0005A648	ascii	.?AVSocketStream@detail@httplib@@
+0x0005A680	ascii	.?AVnocompressor@detail@httplib@@
+0x0005A6B8	ascii	.?AVcompressor@detail@httplib@@
+
+## prediction_correction (20)
+0x000488C8	ascii	KG3D_AnimationTagEventManager::_OnApplyFeedBackForce
+0x00049D20	ascii	pFallBackAllocator
+0x00056CFA	ascii	KG3D_ConvertToStandardHashString
+0x00056D1E	ascii	KG3D_ConvertToOriginalHashString
+0x000570E2	ascii	GetTickCount
+0x00057FC8	ascii	_Xtime_get_ticks
+0x000580CA	ascii	?pbackfail@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHH@Z
+0x0005ABC0	ascii	.?AV_Node_back@std@@
+0x0006049C	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x000604E4	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0
+0x00060B9E	ascii	Mhttp://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S
+0x00060BF3	ascii	Mhttp://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0
+0x00060C87	ascii	Phttp://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0
+0x00061357	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x000616FF	ascii	Qhttp://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_
+0x00061763	ascii	Nhttp://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0 
+0x00061ACC	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x00061DEF	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x00061E37	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0 
+0x00062670	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1
+
+## protocol (0)
+(none)
+
+## domain (52)
+0x000462C0	utf16le	api-ms-win-core-synch-l1-2-0.dll
+0x000472F0	ascii	KG3D_AnimationMotionTagData::LoadFromFile(IKG3D_BufferReader* piBuffer, DWORD dwVersion, DWORD dwNumKeyFrames) dwVersion %u error
+0x00047B88	ascii	KG3D_AnimationTagAsync::Init
+0x00047BD8	ascii	KG3D_AnimationTagAsync::PushTask
+0x00047C08	ascii	piActor
+0x00047C10	ascii	pAsyncSFXTagData
+0x00047F28	ascii	KG3D_AnimationTagSystem::FrameMove
+0x000480E8	ascii	invalid string position
+0x00048418	ascii	piBuffer
+0x000485C0	ascii	KG3D_AnimationTagEventManager::_OnProcessApplySFXTagAsync
+0x00048600	ascii	KG3D_AnimationTagEventManager::_ProcessKeepFollowPositionSoundTag
+0x00048778	ascii	piMdlActor
+0x00048A20	ascii	KG3D_AnimationTagEventManager::_OnProcessFrameMoveForceFieldTag
+0x00048A60	ascii	KG3D_AnimationTagEventManager::_OnFrameMoveIKSystemTag
+0x00048AD0	ascii	stBindExtraInfo.uBindIndex != static_cast<unsigned int>(-1)
+0x00048B10	ascii	KG3D_AnimationTagEventManager::_UpdatetActorIKState
+0x00048B80	ascii	KG3D_Vector<T, uFastBufferSize>::operator[], out of range
+0x00049318	ascii	bad cast
+0x00049870	utf16le	KG3D_Memory_Buffer_836B46D1-981A-438F-836A-620ADE30B313_%u
+0x00049938	ascii	g_piMemoryShareBuffer
+0x0004A820	ascii	KG3D_HttpFile::AllocBuffer
+0x0004A840	ascii	m_pDataBuffer
+0x0004A8C8	ascii	Buffer
+0x0004AAD0	utf16le	Buffer_90BC751A-7FF7-43D3-9C91-94E565D361C6_%u
+0x0004B2E0	ascii	KG3D_BufferReader::GetNextLine
+0x0004B300	ascii	uLineLength < uLineBufferCharCount
+0x0004B328	ascii	KG3D_BufferReader::Init
+0x0004B410	ascii	KG3D_IniFile::LoadFromBuffer
+0x0004B430	ascii	uBufferSize
+0x00056D42	ascii	??0KGAsyncTask@@QEAA@XZ
+0x00056D5C	ascii	??1KGAsyncTask@@UEAA@XZ
+0x00056D76	ascii	?CreateGroup@KGAsyncTaskInterface@@SAPEAUKGAsyncTaskGroup@@HPEBD@Z
+0x00056DBC	ascii	?DestoryGroup@KGAsyncTaskInterface@@SAHPEAUKGAsyncTaskGroup@@@Z
+0x00056DFE	ascii	?AddTask@KGAsyncTaskInterface@@SAHPEAVKGAsyncTask@@HPEAUKGAsyncTaskGroup@@@Z
+0x00056E4E	ascii	?Reset@KGAsyncTask@@MEAAXXZ
+0x00056EA0	ascii	KG_CreateNamedBuffer
+0x00056EC8	ascii	KG_CreateBuffer
+0x00057B5C	ascii	_Cnd_broadcast
+0x00057EDE	ascii	?sync@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ
+0x000584BC	ascii	_get_stream_buffer_pointers
+0x00058952	ascii	__RTDynamicCast
+0x00058982	ascii	memmove
+0x00059138	ascii	.?AVKGAsyncTask@@
+0x00059160	ascii	.?AVKGCommonAsyncTask@@
+0x00059188	ascii	.?AVKG3D_AnimationTagAsync@@
+0x000593C0	ascii	.?AUIKG3D_SceneActor@@
+0x000593E8	ascii	.?AUIKG3D_Actor@@
+0x00059410	ascii	.?AUIEKG3D_Actor@@
+0x00059858	ascii	.?AVbad_cast@std@@
+0x0005A6E8	ascii	.?AVBufferStream@detail@httplib@@
+0x0005B390	ascii	.?AVKG3D_BufferReader@@
+0x0005B3B8	ascii	.?AUIKG3D_BufferReader@@
+
+## cn_client (0)
+(none)
