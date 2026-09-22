@@ -129,6 +129,20 @@ Verified with `MAP_MOVETEST=1` (camera pos before/after each action, in
 map scene (it was a no-op on the actor empty scene); ROTATE_CAMERA orbits;
 wheel zooms. ROTATE_VIEW(4) does nothing in the host.
 
+## Rendered maps (proof in `proof/map_spike/`)
+
+| Map | MapList.tab ID | world camera (systemCamera0) | look |
+|---|---|---|---|
+| 龙门寻宝 | 296 | (147463, 5231, 49912) | warm day |
+| 龙门寻宝_夜晚 | 297 | (160187, 13972, 106129) | night (blue/dark) |
+| 海岛绝境 | 410 | (136312, 1154, 102968) | bright sea |
+| 白龙绝境 | 512 | (78921, 8265, 135919) | bright |
+| 天原绝境 | 532 | (68135, 29128, 112142) | blue-tinted |
+
+Each map dir has tour PNGs + the extracted descriptor bundle
+(`<name>_id<ID>_extracted/`). Batch render: `engine_host_spike/render_map.ps1
+-Name <map> -Tour "x,y,z;..."` (runs the host and copies PNGs to proof).
+
 ## Open questions / next steps
 
 - Exact meaning of `SetCameraPos` 4th bool (terrain snap semantics).
