@@ -201,7 +201,77 @@ To recover **exact roll contents/rates**, capture the loot messages while playin
 and `OnSyncDropItem` / `OnSyncNewDoodad` carry dynamic/dropped items. Logging container id
 (`DoodadTemplate` ID) + rolled items over many opens reconstructs the tables empirically.
 
-## 8. Reproduce
+## 8. The spawn→pickup action chain: what we have vs what's missing
+
+```
+[round start / server]
+  A1 spawn anchor set per map .............. MISSING  (server map logic: CustomObject/AnchorPoint)
+  A2 per-map tier/config selection ......... PARTIAL  (recovered from a shipped Lua bytecode)
+  A3 spawner rolls (count, template, weight) MISSING  (server mode script)
+        |
+        v
+[S2C replication]
+  B1 doodad create/state to client ......... NAME ONLY (OnSyncNewDoodad/OnSyncSimpleObject/
+                                                       OnSyncDoodadState; payload layout unknown)
+  B2 client caches + renders container ..... KNOWN   (DoodadTemplate fields, interaction rules)
+        |
+        v
+[C2S interaction]
+  C1 pick request ......................... NAME ONLY (DoPickPrepare/OnBreakPickPrepare/
+                                                       OnBreakPicking; layout unknown)
+  C2 server validation (range/owner/once) .. INFERRED (MaxLootRange=5, CanOperateEach)
+        |
+        v
+[server roll]
+  D1 container -> drop table lookup ........ KNOWN   (97 named tables)
+  D2 table contents + roll algorithm ....... MISSING  (server-side; not in client pak)
+  D3 decoy/identification/special chains ... NAMES ONLY (未知的宝藏/已知类型的宝藏/伪传的秘籍/
+                                                       䖳装备触发铁血宝箱; scripts not shipped)
+        |
+        v
+[S2C result]
+  E1 rolled loot list ...................... NAME ONLY (OnOpenLootList/OnSyncLootList; layout)
+  E2 dropped/dynamic items ................. NAME ONLY (OnSyncDropItem; layout)
+        |
+        v
+[C2S take]
+  F1 take item ............................. NAME ONLY (PickUpItem/LootItem; layout)
+  F2 inventory grant ....................... NAME ONLY (OnAddItemNotify/OnSyncItemData; layout)
+        |
+        v
+[lifecycle]
+  G1 per-template timings .................. KNOWN   (Prepare/OverLoot/Remove/Revive frames)
+  G2 per-anchor respawn/refresh ............ MISSING  (server DoodadReviveList/MapReviveList)
+```
+
+**Recoverable statically right now** (we have the tooling and the binaries):
+
+1. **B1, C1, E1, E2, F1, F2 payload layouts** — disassemble the handlers in
+   `JX3LogicEditOperationX64.dll` (same method as `OnSwitchMap`/`DoClientConfirmReady`);
+   gives exact fields for doodad sync, loot list, and take-item messages.
+2. **A2 + parts of D3** — more shipped Lua bytecode: the current pak stores scripts as
+   Lua 5.1 bytecode; `tools/netcode/lua51_dump.py` extracts constants/globals safely.
+   First result: `CheckTreasureBattleFieldMap.lua` contains the **map→tier/config table**
+   (IDs 296/297, 410, 512, 532, 645, 676/677, 709/715 → tiers 1..5), a buff refresh
+   (`AddBuff(dwID=26524, level 1800, custom value)`), a desert-horse list, the
+   `Tool_GetChickenMapItem` hook, and an item-grant routine
+   (`GetItem`/`INVENTORY_INDEX`/`EQUIP`, box slots, `Type_Index` item ids like `7_100446`,
+   `6_42592`, `8_44286`).
+3. **More bytecode sources** — probe/extract other shipped map scripts
+   (`scripts\Map\<map>\include\*.lua`) and dump them for spawn/round logic.
+
+**Only obtainable at runtime** (not in any local file):
+
+- A1 anchor positions, A3 spawner weights, D2 drop-table rows/rates, G2 per-anchor respawn.
+  Capture `OnSyncNewDoodad`/`OnSyncDoodadState` (spawns + positions) and
+  `OnSyncLootList`/`OnSyncDropItem` (rolled contents) across matches, then reconstruct.
+
+Note: earlier inline PakV4 probes used a relative work path and silently returned 0
+(fixed in `extract_pak_paths.py`). All drop-table/doodad conclusions above were
+re-verified with the fixed tool (`pak_candidates8.txt`: 97 tables × prefixes + doodad
+scripts × map roots → 0 files).
+
+## 9. Reproduce
 
 ```powershell
 python tools\netcode\extract_pak_paths.py --list proof\netcode\mode_juejing\pak_candidates6.txt --out-dir proof\netcode\mode_juejing\pak_out6

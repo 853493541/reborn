@@ -1,0 +1,20 @@
+# CheckTreasureBattleFieldMap.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=5
+  strings: '7_100446', '7_100447', '7_100448', '7_100449', '7_100450', '7_100451', '6_42592', '8_44286', '8_40969', '8_40970', 'TreasureHunt_IsMap', 'IsTreasureBattleFieldMap', 'GetTreasureBattleFieldMap', 'GeTrafficOffSet', 'GetDesertHorseList', 'ReFreshTreasureBattleFieldMapBuff', 'Tool_GetChickenMapItem'
+  numbers: 296.0, 1.0, 297.0, 410.0, 512.0, 532.0, 645.0, 2.0, 676.0, 3.0, 677.0, 709.0, 4.0, 715.0, 5.0, 22495.0, 22496.0, 22497.0, 22622.0, 22623.0
+  globals: =GeTrafficOffSet, =GetDesertHorseList, =GetTreasureBattleFieldMap, =IsTreasureBattleFieldMap, =ReFreshTreasureBattleFieldMapBuff, =Tool_GetChickenMapItem, =TreasureHunt_IsMap
+  function <?> line 50-59 params=1 ups=1 stack=2
+    numbers: 4.0, 5.0
+  function <?> line 61-63 params=1 ups=1 stack=2
+  function <?> line 66-68 params=0 ups=1 stack=2
+  function <?> line 71-79 params=1 ups=0 stack=2
+    strings: 'dwMapID'
+    numbers: 297.0, 10.0, 410.0, 20.0, 0.0
+  function <?> line 81-83 params=0 ups=1 stack=2
+  function <?> line 97-114 params=1 ups=1 stack=10
+    strings: 'GetMapID', 'GetBuff', 'nCustomValue', 'AddBuff', 'dwID', 'nLevel', 'DelBuff'
+    numbers: 1.0, 0.0, 26524.0, 1800.0
+  function <?> line 116-167 params=1 ups=1 stack=14
+    strings: 'GetItem', 'INVENTORY_INDEX', 'EQUIP', 'dwMapBanTradeItemMask', 'bBind', 'dwTabType', '_', 'dwIndex', 'bCanStack', 'nStackNum', 'Type', 'Index', 'Count', 'BoxId', 'BoxX', 'table', 'insert', 'GetBoxSize', 'LIMITED_PACKAGE', 'GLOBAL'
+    numbers: 0.0, 12.0, 1.0, 3.0
+    globals: GLOBAL, INVENTORY_INDEX, table
