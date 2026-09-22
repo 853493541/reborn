@@ -22,6 +22,12 @@ live capture (messages).** If a server file is obtained, a parser can be written
 (disassemble the loader + sample file); if a capture is obtained, the existing decoder already
 extracts positions and rolled loot.
 
+**Status: CLOSED as a local dead end (2026-09-21).** Every local store was probed
+(client PakV4, both launcher caches, editor tree, filesystem, AppData) — do not repeat this
+search. Re-open only when (a) a server map bundle / private-server package appears, or
+(b) a runtime capture is produced. Scope note: this dead end covers *spawn anchors, refresh
+rules and drop tables* only; everything else about the mode is already recovered.
+
 ---
 
 ## 1. What the rules look like (recovered from binaries, HIGH)

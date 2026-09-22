@@ -116,6 +116,12 @@ room create/force-start/side payloads.
 - zone/phase timing observations, actual player counts per match
 - S2C opcode IDs if the dispatch table can't be cracked (observed directly)
 
+> **Local dead end (2026-09-21):** the spawn/refresh/drop-table values were searched in every
+> local store (client PakV4, both launcher caches, editor tree, filesystem, AppData) — confirmed
+> absent. Do not re-probe. See `JX3_MODE_SPAWN_RULES_SEARCH.md` §0. Re-open only with a server
+> map bundle (then write the file parser from the known schema) or a capture (decoder already
+> ready in `tools/netcode/loot/`).
+
 ## 10. Server-only (never in any local file)
 
 - spawner distribution/weights (A3)
