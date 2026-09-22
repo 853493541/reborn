@@ -171,37 +171,7 @@ Rules:
 | 0x0044 | `OP_SKILL_REJECT` | S→C | u8 reason |
 | 0x0045 | `OP_COOLDOWN` | S→C | skill_id, ready_at, u8 kind |
 | 0x0046 | `OP_BUFF_SYNC` | S→C | full/incremental |
-| 0x0050 | `OP_DOODAD_ADD` | S→C | id, template, name, tier, pos (container spawn) |
-| 0x0051 | `OP_DOODAD_REMOVE` | S→C | id |
-| 0x0052 | `OP_DOODAD_STATE` | S→C | id, state |
-| 0x0053 | `OP_LOOT_OPEN` | C→S | id |
-| 0x0054 | `OP_LOOT_LIST` | S→C | id, template, name, items[{slot,name,rarity,count}] |
-| 0x0055 | `OP_LOOT_TAKE` | C→S | id, slot |
-| 0x0056 | `OP_LOOT_RESULT` | S→C | id, ok, slot, item, reason |
-| 0x0057 | `OP_ITEM_ADD` | S→C | name, rarity, count, inventory_size |
 | 0x006E | `OP_ROUTINE_SYNC` | C→S | u32 param + size-prefixed payload (JX3-shape analog) |
-
-### 5.4 Loot spawn rules (JX3-shaped, our data)
-
-Mirrors the observed JX3 rule structure (anchors + semi-random subset + tier zones +
-weighted tables + wind-up/timers):
-
-1. **Anchors**: fixed set per map (hotspot clusters + scattered points), deterministic
-   from `(seed, map_id)`.
-2. **Match spawn**: each anchor activates with probability `active_ratio` (hotspots
-   favored); position = anchor + gaussian jitter.
-3. **Tier zones**: distance from center → zone 3 (rich) / 2 / 1 (poor); zone weights pick
-   the container template (1st/2nd/3rd gear, weapon, meds, supply, secret).
-4. **Phase escalation**: later phases shift weights toward higher tiers.
-5. **Open roll**: contents rolled on first open from the container's weighted table
-   (`LOOT_TABLES`), then delivered after `prepare_ms` (wind-up).
-6. **Pickup**: range ≤ 5 m, once per player; inventory grant via `OP_ITEM_ADD`.
-7. **Lifecycle**: container despawns when emptied; respawns on its template timer
-   (`respawn_s`); state changes broadcast as `OP_DOODAD_STATE` / `OP_DOODAD_REMOVE`.
-
-Reference implementation: `tools/netcode/reference/jx3_model.py` (`Spawner`,
-`CONTAINERS`, `LOOT_TABLES`, `ZONE_WEIGHTS`, `Peer._loot_open/_loot_take`) with
-15/15 smoke checks passing.
 
 IDs ≥ 0x0100 reserved for content (inventory, quests, social, arena echoes).
 

@@ -16,7 +16,6 @@ from __future__ import annotations
 import asyncio
 import json
 import math
-import random
 import struct
 import sys
 import time
@@ -42,14 +41,6 @@ OP_SKILL_EFFECT = 0x0043
 OP_SKILL_REJECT = 0x0044
 OP_COOLDOWN = 0x0045
 OP_BUFF_SYNC = 0x0046
-OP_DOODAD_ADD = 0x0050
-OP_DOODAD_REMOVE = 0x0051
-OP_DOODAD_STATE = 0x0052
-OP_LOOT_OPEN = 0x0053
-OP_LOOT_LIST = 0x0054
-OP_LOOT_TAKE = 0x0055
-OP_LOOT_RESULT = 0x0056
-OP_ITEM_ADD = 0x0057
 OP_ROUTINE_SYNC = 0x006E
 
 FLAG_RETRANSMIT = 0x01
@@ -77,203 +68,6 @@ SKILLS = {
     1: {"cast_ms": 400, "cd_ms": 2000, "move_forbidden": True, "range": 6.0},
     2: {"cast_ms": 200, "cd_ms": 800, "move_forbidden": False, "range": 6.0},
 }
-
-# ---------------------------------------------------------------- loot rules
-# Mirrors the JX3 shape observed statically:
-#   - fixed anchor set per map, only a subset active per match (semi-random)
-#   - tiered containers (1st/2nd/3rd tier gear, weapon cases, meds, supply, secret)
-#   - rich zone in the centre, poor ring outside; hotspot clusters
-#   - wind-up before the loot list arrives (OpenPrepareFrame analog)
-#   - per-container weighted drop table (contents rolled on open)
-#   - container removed when emptied, respawns on a timer (DoodadReviveDelay analog)
-
-LOOT_RANGE = 5.0
-LOOT_ANCHOR_COUNT = 48
-LOOT_ACTIVE_RATIO = 0.55
-LOOT_JITTER = 6.0
-LOOT_EXTENT = 120.0
-LOOT_HOTSPOTS = 6
-
-CONTAINERS = {
-    1: {"name": "一阶装备", "tier": 1, "prepare_ms": 240, "respawn_s": 25.0, "table": "eq1"},
-    2: {"name": "二阶装备", "tier": 2, "prepare_ms": 240, "respawn_s": 45.0, "table": "eq2"},
-    3: {"name": "三阶装备", "tier": 3, "prepare_ms": 400, "respawn_s": 70.0, "table": "eq3"},
-    4: {"name": "武器匣", "tier": 2, "prepare_ms": 240, "respawn_s": 45.0, "table": "wp2"},
-    5: {"name": "药品囊", "tier": 1, "prepare_ms": 180, "respawn_s": 20.0, "table": "med"},
-    6: {"name": "补给箱", "tier": 2, "prepare_ms": 500, "respawn_s": 60.0, "table": "supply"},
-    7: {"name": "秘宝匣", "tier": 3, "prepare_ms": 700, "respawn_s": 90.0, "table": "secret"},
-}
-
-# table entries: (name, rarity, weight, min_count, max_count)
-LOOT_TABLES = {
-    "eq1": [("布甲护腕", "common", 100, 1, 1), ("皮甲护腕", "common", 80, 1, 1),
-            ("青铜重靴", "common", 70, 1, 1), ("粗铁剑", "common", 60, 1, 1),
-            ("轻功残页", "rare", 8, 1, 1)],
-    "eq2": [("精铁护腕", "rare", 90, 1, 1), ("玄铁重靴", "rare", 80, 1, 1),
-            ("百炼剑", "rare", 70, 1, 1), ("回气散", "rare", 50, 1, 2),
-            ("绝境秘卷", "epic", 8, 1, 1)],
-    "eq3": [("寒月护腕", "epic", 80, 1, 1), ("赤霄战靴", "epic", 70, 1, 1),
-            ("龙渊剑", "epic", 60, 1, 1), ("天阶秘匣", "legendary", 10, 1, 1)],
-    "wp2": [("连环弩", "rare", 80, 1, 1), ("破军长枪", "rare", 70, 1, 1),
-            ("风雷双刃", "epic", 20, 1, 1)],
-    "med": [("金疮药", "common", 100, 1, 3), ("止血草", "common", 90, 1, 3),
-            ("麻布绷带", "common", 90, 1, 2), ("行气散", "rare", 30, 1, 1)],
-    "supply": [("金疮药", "common", 80, 2, 4), ("回气散", "rare", 50, 1, 2),
-               ("匿踪烟", "rare", 35, 1, 1), ("伪装的秘籍", "common", 40, 1, 1)],
-    "secret": [("觅踪窥影烟", "epic", 60, 1, 1), ("流萤魂返丹", "epic", 40, 1, 1),
-               ("铁血宝匣", "legendary", 12, 1, 1)],
-}
-
-# template weights by zone tier (centre rich, rim poor) and anchor hotspot flag
-ZONE_WEIGHTS = {
-    3: {1: 10, 2: 30, 3: 40, 4: 25, 5: 5, 6: 30, 7: 12},
-    2: {1: 35, 2: 35, 3: 12, 4: 25, 5: 20, 6: 15, 7: 4},
-    1: {1: 60, 2: 18, 3: 3, 4: 12, 5: 30, 6: 6, 7: 1},
-}
-HOTSPOT_BIAS = {1: 0.5, 2: 1.2, 3: 2.5, 4: 1.5, 5: 0.7, 6: 1.2, 7: 0.5}
-
-
-def zone_of(x: float, z: float, extent: float = LOOT_EXTENT) -> int:
-    d = math.hypot(x, z) / extent
-    if d < 0.35:
-        return 3
-    if d < 0.7:
-        return 2
-    return 1
-
-
-def build_anchors(map_id: int, count: int = LOOT_ANCHOR_COUNT, seed: int = 0x5EED,
-                  extent: float = LOOT_EXTENT, hotspots: int = LOOT_HOTSPOTS):
-    rng = random.Random((seed * 1_000_003) ^ (map_id * 7919))
-    anchors: list[dict] = []
-
-    def add(x: float, z: float, hotspot: bool) -> None:
-        anchors.append({"x": x, "z": z, "zone": zone_of(x, z, extent), "hotspot": hotspot})
-
-    for _ in range(hotspots):
-        cx = rng.uniform(-0.75, 0.75) * extent
-        cz = rng.uniform(-0.75, 0.75) * extent
-        for _ in range(4):
-            add(cx + rng.gauss(0, 9), cz + rng.gauss(0, 9), True)
-    while len(anchors) < count:
-        add(rng.uniform(-extent, extent), rng.uniform(-extent, extent), False)
-    return anchors
-
-
-def roll_template(anchor: dict, phase: int, rng: random.Random) -> int:
-    weights = dict(ZONE_WEIGHTS[anchor["zone"]])
-    if anchor["hotspot"]:
-        for tid in weights:
-            weights[tid] *= HOTSPOT_BIAS[tid]
-    if phase >= 2:
-        weights[2] = weights.get(2, 0) * 1.4
-        weights[3] = weights.get(3, 0) * 1.6
-    ids = list(weights)
-    return rng.choices(ids, weights=[weights[i] for i in ids], k=1)[0]
-
-
-def roll_contents(table: str, rng: random.Random, rolls: int = 2) -> list[dict]:
-    entries = LOOT_TABLES[table]
-    names = [e[0] for e in entries]
-    weights = [e[2] for e in entries]
-    out = []
-    for _ in range(rolls):
-        pick = rng.choices(range(len(entries)), weights=weights, k=1)[0]
-        name, rarity, _w, lo, hi = entries[pick]
-        out.append({"name": name, "rarity": rarity, "count": rng.randint(lo, hi)})
-    return out
-
-
-class Spawner:
-    """Anchor + weighted-roll container spawner with despawn/respawn timers."""
-
-    def __init__(self, map_id: int = 1, count: int = LOOT_ANCHOR_COUNT,
-                 active_ratio: float = LOOT_ACTIVE_RATIO, jitter: float = LOOT_JITTER,
-                 respawn_scale: float = 1.0, seed: int = 0x5EED) -> None:
-        self.map_id = map_id
-        self.anchors = build_anchors(map_id, count, seed)
-        self.rng = random.Random(seed ^ map_id)
-        self.active_ratio = active_ratio
-        self.jitter = jitter
-        self.respawn_scale = respawn_scale
-        self.containers: dict[int, dict] = {}
-        self.next_id = 0x400000
-        self.phase = 1
-        self.spawn_match()
-
-    def _new_container(self, anchor_idx: int, phase: int | None = None) -> dict:
-        anchor = self.anchors[anchor_idx]
-        template = roll_template(anchor, self.phase if phase is None else phase, self.rng)
-        spec = CONTAINERS[template]
-        cid = self.next_id
-        self.next_id += 1
-        pos = (
-            anchor["x"] + self.rng.gauss(0, self.jitter),
-            0.0,
-            anchor["z"] + self.rng.gauss(0, self.jitter),
-        )
-        container = {
-            "id": cid,
-            "template": template,
-            "name": spec["name"],
-            "tier": spec["tier"],
-            "pos": pos,
-            "anchor": anchor_idx,
-            "state": "active",
-            "contents": None,
-            "taken": set(),
-            "respawn_at": None,
-            "prepare_ms": spec["prepare_ms"],
-        }
-        self.containers[cid] = container
-        return container
-
-    def spawn_match(self) -> None:
-        for idx in range(len(self.anchors)):
-            anchor = self.anchors[idx]
-            chance = self.active_ratio * (1.25 if anchor["hotspot"] else 1.0)
-            if self.rng.random() < chance:
-                self._new_container(idx)
-
-    def force_spawn(self, pos, template: int = 1) -> int:
-        """Test/tutorial helper: place a container at an exact position."""
-        idx = len(self.anchors)
-        self.anchors.append({"x": pos[0], "z": pos[2], "zone": zone_of(pos[0], pos[2]),
-                             "hotspot": False, "forced": True})
-        self.phase = self.phase
-        anchor = self.anchors[idx]
-        spec = CONTAINERS[template]
-        cid = self.next_id
-        self.next_id += 1
-        self.containers[cid] = {
-            "id": cid, "template": template, "name": spec["name"], "tier": spec["tier"],
-            "pos": (float(pos[0]), 0.0, float(pos[2])), "anchor": idx,
-            "state": "active", "contents": None, "taken": set(), "respawn_at": None,
-            "prepare_ms": spec["prepare_ms"],
-        }
-        return cid
-
-    def tick(self, t: float) -> None:
-        for container in list(self.containers.values()):
-            if container["state"] == "gone" and container["respawn_at"] and t >= container["respawn_at"]:
-                anchor = self.anchors[container["anchor"]]
-                spec = CONTAINERS[container["template"]]
-                container.update({
-                    "state": "active", "contents": None, "taken": set(),
-                    "respawn_at": None,
-                    "pos": (anchor["x"] + self.rng.gauss(0, self.jitter), 0.0,
-                            anchor["z"] + self.rng.gauss(0, self.jitter)),
-                    "prepare_ms": spec["prepare_ms"],
-                })
-
-    def visible(self, pos, range_: float) -> list[dict]:
-        return [c for c in self.containers.values()
-                if c["state"] == "active" and dist(c["pos"], pos) <= range_]
-
-    def deplete(self, container: dict, t: float) -> None:
-        spec = CONTAINERS[container["template"]]
-        container["state"] = "gone"
-        container["respawn_at"] = t + spec["respawn_s"] * self.respawn_scale
 
 
 def now() -> float:
@@ -381,8 +175,7 @@ class SessionState:
 
 
 class GameServer:
-    def __init__(self, ping_ms: float = PING_MS, dead_ms: float = DEAD_TIMEOUT_MS,
-                 loot: Spawner | None = None, loot_respawn_s: float = 1.0) -> None:
+    def __init__(self, ping_ms: float = PING_MS, dead_ms: float = DEAD_TIMEOUT_MS) -> None:
         self.entities: dict[int, Entity] = {}
         self.sessions: dict[bytes, SessionState] = {}
         self.peers: set["Peer"] = set()
@@ -390,7 +183,6 @@ class GameServer:
         self.ping_ms = ping_ms
         self.dead_ms = dead_ms
         self.server_tick = 0
-        self.loot = loot or Spawner(respawn_scale=loot_respawn_s)
         self._server = None
         self._task = None
 
@@ -445,7 +237,6 @@ class GameServer:
                     ent.pos = (ent.pos[0], 0.0, ent.pos[2])
             if n % SNAPSHOT_EVERY:
                 continue
-            self.loot.tick(now())
             for peer in self.peers:
                 await peer.push_state()
 
@@ -460,9 +251,6 @@ class Peer:
         self.session_key: bytes | None = None
         self.last_recv = now()
         self.known: set[int] = set()
-        self.known_doodads: set[int] = set()
-        self.opened: set[int] = set()
-        self.inventory: list[dict] = []
         self.task = asyncio.create_task(self._ticker())
 
     async def _ticker(self) -> None:
@@ -534,73 +322,8 @@ class Peer:
             self.entity.last_input_seq = int(param)
         elif op == OP_CAST_SKILL:
             await self._cast(json.loads(payload) if payload else {})
-        elif op == OP_LOOT_OPEN:
-            await self._loot_open(json.loads(payload) if payload else {})
-        elif op == OP_LOOT_TAKE:
-            await self._loot_take(json.loads(payload) if payload else {})
         elif op == OP_ACK:
             pass
-
-    async def _loot_open(self, msg: dict) -> None:
-        ent = self.entity
-        if not ent:
-            return
-        cid = int(msg.get("id", 0))
-        container = self.server.loot.containers.get(cid)
-        if not container or container["state"] != "active":
-            await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": False, "reason": "gone"})
-            return
-        if dist(ent.pos, container["pos"]) > LOOT_RANGE:
-            await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": False, "reason": "range"})
-            return
-        if cid in self.opened:
-            await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": False, "reason": "already"})
-            return
-        if container["contents"] is None:
-            container["contents"] = roll_contents(CONTAINERS[container["template"]]["table"],
-                                                  self.server.loot.rng)
-        self.opened.add(cid)
-
-        async def deliver() -> None:
-            await asyncio.sleep(container["prepare_ms"] / 1000.0)
-            items = [{"slot": i, **it} for i, it in enumerate(container["contents"])
-                     if i not in container["taken"]]
-            await self.send(OP_LOOT_LIST, cid, {
-                "id": cid,
-                "template": container["template"],
-                "name": container["name"],
-                "items": items,
-            })
-
-        asyncio.create_task(deliver())
-
-    async def _loot_take(self, msg: dict) -> None:
-        ent = self.entity
-        if not ent:
-            return
-        cid = int(msg.get("id", 0))
-        slot = int(msg.get("slot", -1))
-        container = self.server.loot.containers.get(cid)
-        if not container or container["state"] != "active" or container["contents"] is None:
-            await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": False, "reason": "gone"})
-            return
-        if dist(ent.pos, container["pos"]) > LOOT_RANGE:
-            await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": False, "reason": "range"})
-            return
-        if slot in container["taken"] or slot < 0 or slot >= len(container["contents"]):
-            await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": False, "reason": "slot"})
-            return
-        item = container["contents"][slot]
-        container["taken"].add(slot)
-        self.inventory.append(dict(item))
-        await self.send(OP_ITEM_ADD, slot, {"name": item["name"], "rarity": item["rarity"],
-                                            "count": item["count"],
-                                            "inventory_size": len(self.inventory)})
-        await self.send(OP_LOOT_RESULT, cid, {"id": cid, "ok": True, "slot": slot,
-                                              "item": item})
-        if len(container["taken"]) >= len(container["contents"]):
-            self.server.loot.deplete(container, now())
-            await self.send(OP_DOODAD_STATE, cid, {"id": cid, "state": "gone"})
 
     async def _cast(self, msg: dict) -> None:
         ent = self.entity
@@ -668,17 +391,6 @@ class Peer:
         if visible:
             await self.send(OP_ENTITY_SNAPSHOT, 0, {"entities": [
                 {"eid": e.eid, "pos": list(e.pos), "facing": e.facing, "hp": e.hp} for e in visible]})
-        doodads = self.server.loot.visible(ent.pos, AOI_RANGE)
-        current_d = {c["id"] for c in doodads}
-        for cid in self.known_doodads - current_d:
-            await self.send(OP_DOODAD_REMOVE, cid, {"id": cid})
-        for c in doodads:
-            if c["id"] not in self.known_doodads:
-                await self.send(OP_DOODAD_ADD, c["id"], {
-                    "id": c["id"], "template": c["template"], "name": c["name"],
-                    "tier": c["tier"], "pos": [round(v, 2) for v in c["pos"]],
-                })
-        self.known_doodads = current_d
 
 
 class GameClient:
@@ -695,8 +407,6 @@ class GameClient:
         self.history: list[tuple[int, int, float]] = []
         self.events: asyncio.Queue = asyncio.Queue()
         self.remote: dict[int, dict] = {}
-        self.doodads: dict[int, dict] = {}
-        self.inventory: list[dict] = []
         self.last_state_tick = 0
         self.recovered = 0
         self.session_key = b"\x00" * 16
@@ -779,21 +489,6 @@ class GameClient:
                 self.remote[rec["eid"]] = rec
         elif op in (OP_SKILL_PREPARE, OP_SKILL_CAST, OP_SKILL_EFFECT, OP_SKILL_REJECT, OP_COOLDOWN):
             await self.events.put(("skill", (op, msg)))
-        elif op == OP_DOODAD_ADD:
-            self.doodads[int(param)] = msg
-            await self.events.put(("doodad_add", msg))
-        elif op == OP_DOODAD_REMOVE:
-            self.doodads.pop(int(param), None)
-            await self.events.put(("doodad_remove", msg))
-        elif op == OP_DOODAD_STATE:
-            await self.events.put(("doodad_state", msg))
-        elif op == OP_LOOT_LIST:
-            await self.events.put(("loot_list", msg))
-        elif op == OP_LOOT_RESULT:
-            await self.events.put(("loot_result", msg))
-        elif op == OP_ITEM_ADD:
-            self.inventory.append(msg)
-            await self.events.put(("item_add", msg))
         elif op == OP_PONG:
             await self.events.put(("pong", msg))
 
@@ -815,14 +510,6 @@ class GameClient:
         frame = self.channel.build(OP_PING, int(now() * 1000) & 0xFFFFFFFF)
         if frame:
             self.writer.write(frame)
-
-    def loot_open(self, cid: int) -> None:
-        data = json.dumps({"id": cid}, separators=(",", ":")).encode()
-        self.writer.write(self.channel.build(OP_LOOT_OPEN, 0, data))
-
-    def loot_take(self, cid: int, slot: int) -> None:
-        data = json.dumps({"id": cid, "slot": slot}, separators=(",", ":")).encode()
-        self.writer.write(self.channel.build(OP_LOOT_TAKE, 0, data))
 
     async def wait(self, kind: str, timeout: float = 3.0):
         t0 = now()
@@ -847,16 +534,9 @@ async def smoke() -> int:
         print(f"{'PASS' if cond else 'FAIL'}: {name}{(' - ' + detail) if detail else ''}")
         ok = ok and cond
 
-    server = GameServer(loot=Spawner(count=12, active_ratio=0.35, respawn_scale=0.02))
+    server = GameServer()
     port = await server.start()
     key1 = b"k" * 16
-
-    s1 = Spawner(count=20, seed=123)
-    s2 = Spawner(count=20, seed=123)
-    det = (s1.anchors == s2.anchors
-           and [ (c["template"], round(c["pos"][0], 3), round(c["pos"][2], 3)) for c in s1.containers.values() ]
-           == [ (c["template"], round(c["pos"][0], 3), round(c["pos"][2], 3)) for c in s2.containers.values() ])
-    check("spawn rules deterministic per seed", det and len(s1.anchors) >= 20)
 
     c1 = GameClient("c1")
     await c1.connect(port, key1)
@@ -917,35 +597,6 @@ async def smoke() -> int:
             retried = True
     check("dropped cast recovered by retransmit", retried and c1.channel.retransmits > 0,
           f"retried={retried} retransmits={c1.channel.retransmits} unacked={len(c1.channel.unacked)}")
-
-    cid = server.loot.force_spawn((0.0, 0.0, 3.0), template=1)
-    add = await c1.wait("doodad_add", timeout=2.0)
-    check("container spawns in aoi", add["id"] == cid and add["name"] == "一阶装备",
-          f"id={add.get('id')} name={add.get('name')} pos={add.get('pos')}")
-
-    c1.loot_open(cid)
-    lst = await c1.wait("loot_list", timeout=2.0)
-    check("loot list arrives after windup", lst["id"] == cid and len(lst["items"]) >= 1,
-          f"items={lst.get('items')}")
-
-    first = lst["items"][0]
-    c1.loot_take(cid, first["slot"])
-    item = await c1.wait("item_add", timeout=1.0)
-    res = await c1.wait("loot_result", timeout=1.0)
-    check("take grants item to inventory", res.get("ok") and len(c1.inventory) == 1
-          and item["name"] == first["name"], f"item={item} inv={len(c1.inventory)}")
-
-    for it in lst["items"][1:]:
-        c1.loot_take(cid, it["slot"])
-        await c1.wait("item_add", timeout=1.0)
-        await c1.wait("loot_result", timeout=1.0)
-    rem = await c1.wait("doodad_remove", timeout=1.5)
-    check("emptied container despawns", rem.get("id") == cid,
-          f"inv={len(c1.inventory)} removed={rem.get('id')}")
-
-    respawn = await c1.wait("doodad_add", timeout=3.0)
-    check("container respawns on timer", respawn["id"] == cid and respawn["template"] == 1,
-          f"respawn={respawn.get('name')} pos={respawn.get('pos')}")
 
     pos_before = c1.server_pos
     resume_seq = c1.channel.recv_ack
