@@ -34,6 +34,9 @@ Exhausted static avenues (all 0 hits):
 - 97 drop-table paths across 15 VFS prefixes
 - all doodad scripts (`scripts/Map/沙漠风暴/doodad/*.lua`, 25 distinct hooks)
 - map bundles extracted from PakV4 contain no doodad/spawn records
+- launcher/editor cache (15 GB, path-hash PakV5 reader): for the four BR maps only the
+  `.jsonmap` descriptors are cached (龙门寻宝, 天原绝境); every logical/spawn file misses
+  (`cache_map_probe.txt`, hits=2/32)
 
 How to actually get spawn positions (runtime only):
 1. **Capture `OnSyncNewDoodad` / `OnSyncSimpleObject` / `OnSyncDoodadState`** while

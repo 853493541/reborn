@@ -1,0 +1,33 @@
+﻿HIT  data/source/maps/榫欓棬瀵诲疂/榫欓棬瀵诲疂.jsonmap 1943 -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\cache_maps\榫欓棬瀵诲疂.jsonmap
+MISS data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/CustomObject.tab No FN mapping found for data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/CustomObject.tab
+MISS data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/AnchorPoint/AnchorPointList.tab No FN mapping found for data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/AnchorPoint/AnchorPointList.tab
+MISS data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/DoodadRelive/DoodadReviveList.tab No FN mapping found for data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/DoodadRelive/DoodadReviveList.tab
+MISS data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/NpcRelive/MapReviveList.tab No FN mapping found for data/source/maps/榫欓棬瀵诲疂/map/榫欓棬瀵诲疂/NpcRelive/MapReviveList.tab
+MISS data/source/maps/榫欓棬瀵诲疂/榫欓棬瀵诲疂.land No FN mapping found for data/source/maps/榫欓棬瀵诲疂/榫欓棬瀵诲疂.land
+MISS data/source/maps/榫欓棬瀵诲疂/榫欓棬瀵诲疂.pland No FN mapping found for data/source/maps/榫欓棬瀵诲疂/榫欓棬瀵诲疂.pland
+MISS data/source/maps/榫欓棬瀵诲疂/logicalTrigger.json No FN mapping found for data/source/maps/榫欓棬瀵诲疂/logicalTrigger.json
+MISS data/source/maps/鐧介緳缁濆/鐧介緳缁濆.jsonmap No FN mapping found for data/source/maps/鐧介緳缁濆/鐧介緳缁濆.jsonmap
+MISS data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/CustomObject.tab No FN mapping found for data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/CustomObject.tab
+MISS data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/AnchorPoint/AnchorPointList.tab No FN mapping found for data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/AnchorPoint/AnchorPointList.tab
+MISS data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/DoodadRelive/DoodadReviveList.tab No FN mapping found for data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/DoodadRelive/DoodadReviveList.tab
+MISS data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/NpcRelive/MapReviveList.tab No FN mapping found for data/source/maps/鐧介緳缁濆/map/鐧介緳缁濆/NpcRelive/MapReviveList.tab
+MISS data/source/maps/鐧介緳缁濆/鐧介緳缁濆.land No FN mapping found for data/source/maps/鐧介緳缁濆/鐧介緳缁濆.land
+MISS data/source/maps/鐧介緳缁濆/鐧介緳缁濆.pland No FN mapping found for data/source/maps/鐧介緳缁濆/鐧介緳缁濆.pland
+MISS data/source/maps/鐧介緳缁濆/logicalTrigger.json No FN mapping found for data/source/maps/鐧介緳缁濆/logicalTrigger.json
+HIT  data/source/maps/澶╁師缁濆/澶╁師缁濆.jsonmap 1997 -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\cache_maps\澶╁師缁濆.jsonmap
+MISS data/source/maps/澶╁師缁濆/map/澶╁師缁濆/CustomObject.tab No FN mapping found for data/source/maps/澶╁師缁濆/map/澶╁師缁濆/CustomObject.tab
+MISS data/source/maps/澶╁師缁濆/map/澶╁師缁濆/AnchorPoint/AnchorPointList.tab No FN mapping found for data/source/maps/澶╁師缁濆/map/澶╁師缁濆/AnchorPoint/AnchorPointList.tab
+MISS data/source/maps/澶╁師缁濆/map/澶╁師缁濆/DoodadRelive/DoodadReviveList.tab No FN mapping found for data/source/maps/澶╁師缁濆/map/澶╁師缁濆/DoodadRelive/DoodadReviveList.tab
+MISS data/source/maps/澶╁師缁濆/map/澶╁師缁濆/NpcRelive/MapReviveList.tab No FN mapping found for data/source/maps/澶╁師缁濆/map/澶╁師缁濆/NpcRelive/MapReviveList.tab
+MISS data/source/maps/澶╁師缁濆/澶╁師缁濆.land No FN mapping found for data/source/maps/澶╁師缁濆/澶╁師缁濆.land
+MISS data/source/maps/澶╁師缁濆/澶╁師缁濆.pland No FN mapping found for data/source/maps/澶╁師缁濆/澶╁師缁濆.pland
+MISS data/source/maps/澶╁師缁濆/logicalTrigger.json No FN mapping found for data/source/maps/澶╁師缁濆/logicalTrigger.json
+MISS data/source/maps/娴峰矝缁濆/娴峰矝缁濆.jsonmap No FN mapping found for data/source/maps/娴峰矝缁濆/娴峰矝缁濆.jsonmap
+MISS data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/CustomObject.tab No FN mapping found for data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/CustomObject.tab
+MISS data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/AnchorPoint/AnchorPointList.tab No FN mapping found for data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/AnchorPoint/AnchorPointList.tab
+MISS data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/DoodadRelive/DoodadReviveList.tab No FN mapping found for data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/DoodadRelive/DoodadReviveList.tab
+MISS data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/NpcRelive/MapReviveList.tab No FN mapping found for data/source/maps/娴峰矝缁濆/map/娴峰矝缁濆/NpcRelive/MapReviveList.tab
+MISS data/source/maps/娴峰矝缁濆/娴峰矝缁濆.land No FN mapping found for data/source/maps/娴峰矝缁濆/娴峰矝缁濆.land
+MISS data/source/maps/娴峰矝缁濆/娴峰矝缁濆.pland No FN mapping found for data/source/maps/娴峰矝缁濆/娴峰矝缁濆.pland
+MISS data/source/maps/娴峰矝缁濆/logicalTrigger.json No FN mapping found for data/source/maps/娴峰矝缁濆/logicalTrigger.json
+{"hits":2,"miss":30}
