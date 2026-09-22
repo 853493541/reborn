@@ -106,6 +106,76 @@ python tools\netcode\lua51_constants.py "<...>\scripts\skill\藏剑\藏剑_灵�
 ## 5. Open items
 
 1. Pair `tSkillCoefficient[skillID]` values to skills (instruction-level Lua decode; constants already extracted).
-2. Calibrate `LENGTH_BASE`/`GAME_FPS` to meters/frames from a known reference.
+2. ~~Calibrate `LENGTH_BASE`/`GAME_FPS`~~ solved for length: see §6.
 3. Attribute meanings for `SKILL_ADAPTIVE_DAMAGE` mode arg (0 vs 1).
 4. `Buff.tab` (14 MB, 413 KB `skill_buff.txt`) modifiers — attack buffs/debuffs per class.
+
+---
+
+## 6. Player-facing text and the 尺 unit translation
+
+### 6.1 Where the strings live
+
+| DB | Path | Content |
+|---|---|---|
+| Skill tooltips | `...\ad-desc-probe-out\ui\Scheme\Case\Skill.txt` (34,583 rows, 32 cols) | per skill+level: `Name, Desc, ShortDesc, SpecialDesc, KungfuDesc, HelpDesc` |
+| Buff tooltips | `...\ui\Scheme\Case\Buff.txt` | buff descriptions |
+| Attribute labels | `interface\**\lang\zhcn.jx3dat` (e.g. `LM_Tip`) | key → label: `['physics attack'] = "外功攻击"`, `['critical damage base'] = "会心伤害"` … |
+| Skill realization | `settings\skill\SkillRealization.tab` | SkillID, SkillLevel, LevelUpExp, LevelUpPlayerLevel, ExpAddOdds, Name, School |
+
+Tooltip text uses markup resolved by the client at runtime:
+
+```
+<SUB id level>            embed sub-skill description
+<BUFF id level>           embed buff description
+<SKILL PhysicsDamage>     computed damage line
+<SKILLEx {D0} {SkillPhysicsAP}>   formula placeholder (D0 = coefficient, AP = attack power)
+<KUNGFU id level> / <TALENT id level>
+```
+
+Examples (level 1 rows, verbatim):
+
+- 风来吴山 (1645): “消耗10点剑气 … 8次 `<SUB 1905 0>` **外功伤害附加200%武器伤害** …” — matches the script constant `nWeaponDamagePercent = 2048`.
+- 风来吴山 damage line (1905): `<SKILL PhysicsDamage>（<SKILLEx {D0} {SkillPhysicsAP}>）` — the visible damage number is **attack-power scaled**.
+- 太阴指 (228): “门派轻功 … 解除自身控制效果并**向后疾退** … 对周围**8尺**内的目标造成 `<SUB 497 0>` 混元性内功伤害 …”.
+- 蹑云逐月 (9003): “江湖轻功，解除被击僵直，**向前冲刺一段距离** …”.
+
+Tool: `tools/netcode/query_skill_tooltip.py --db <Skill.txt> 蹑云逐月`.
+
+### 6.2 The unit conversion: 1 尺 = 64 engine units
+
+Four independent script sites prove the factor:
+
+| Script | Code | Meaning |
+|---|---|---|
+| `刀宗\套路及子技能\破绽产生.lua` | `local Distance = GetCharacterDistance(...) / 64` | converts units → 尺 |
+| `绝境战场\绝境_棒打狗头.lua` | `if nDistance >= 4 * 64 * 4 * 64 then --超过4尺才冲刺` | squared distance, 4尺 = 4×64 |
+| `霸刀\套路及子技能\霸刀_大刀_鸣震九霄.lua` | `GetDistanceSq(...) > 15 * 15 * 64 * 64` | 15尺 |
+| `少林\判定距离重置捉影.lua`, `绝境_云飞玉皇.lua` | `Distance >= 8 * 64`, `Distance <= 4 * 64` | 8尺 / 4尺 |
+
+So `LENGTH_BASE = 64` (the constant used as `nMaxRadius = 25 * LENGTH_BASE` = 25尺).
+If JX3 follows the modern 尺 = 1/3 m, then **1 m = 192 units** (MED; calibrate in
+game if exact meters matter).
+
+### 6.3 Worked example — 蹑云逐月 = 20尺
+
+Compiled `江湖轻功_蹑云逐月.lua` (`proof/netcode/skill_data/nieyun_constants.json`):
+
+- `tSkillData` levels → `nDashFrame` = **10 / 12 / 14 / 16** frames
+- `GetSkillLevelData` builds `ATTRIBUTE_TYPE.DASH_FORWARD` with speed constant **80** units/frame
+
+| Level | units | 尺 |
+|---|---|---|
+| 1 | 10 × 80 = 800 | 12.5 |
+| 2 | 12 × 80 = 960 | 15 |
+| 3 | 14 × 80 = 1120 | 17.5 |
+| 4 | 16 × 80 = 1280 | **20** |
+
+The max-level dash is exactly **20尺**, matching the player-visible distance.
+Cross-checks: 太阴指 16 × 60 = 960 units = **15尺**; 斗转星移 6 × 128 = 768 = **12尺**;
+风来吴山 radius `10 * LENGTH_BASE` = 10尺 (tooltip says 10尺); 龙牙冲刺
+`nMaxRadius = 25 * LENGTH_BASE` = 25尺.
+
+Conversion summary: **units = 尺 × 64** (and our measured animation root motion of
+157 units for 太阴指 was the in-place animation sway, not the 960-unit script dash).
+
