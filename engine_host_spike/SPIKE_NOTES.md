@@ -94,12 +94,27 @@ Env switches: `SPIKE_EDITOR=0` (skip editor), `SPIKE_SOUND=1` (init Wwise),
 
 | Input | ExecAction | Meaning |
 |---|---|---|
-| Left drag | `ExecAction(4, 1, 0, lParam)` | ROTATE_VIEW — orbit / angle |
-| Middle drag | `ExecAction(3, 1, 0, lParam)` | PAN_VIEW — pan |
+| Left drag | `ExecAction(1, 1, 0, lParam)` | ROTATE_CAMERA — orbit / angle |
 | Wheel | `ExecAction(31, 1, delta>0?1:0, 1)` | MOUSE_WHEEL — zoom |
 | Q / E | `GetCameraPos` + `SetCameraPos(y +/- 50)` | camera height up / down |
 | F | `scene.FocusOnModel()` | focus actor |
 | R | `scene.ResetCameraPosLookAtUp()` | reset camera |
+
+**Important:** `ROTATE_VIEW (4)` and `PAN_VIEW (3)` are **no-ops** in this host
+(they likely need editor selection/edit-state). `ROTATE_CAMERA (1)` is the working
+orbit action. `ZOOM_VIEW (2)` with drag-style lParam sends the camera to extreme
+values — do not use. Input events must be queued and executed inside the render
+loop (`ExecAction` called directly from a WinForms event handler stalls the loop).
+
+Probe results (`SPIKE_CAMPROBE=1`), camera pos before -> after 10 drag steps:
+
+```
+act 1:    (0,59,-186) -> (-93,228,58)      moved=True   <- orbit
+act 2:    -> (153549,-278515,-77099)       moved=True   <- runaway, avoid
+act 31:   moved slightly                                <- wheel zoom
+act 1001: -> (0,59,-186)                   moved=True   <- ZOOM_TO_OBJECT reframes
+act 3/4/12/17/18/30: no movement
+```
 
 `lParam = ((y & 0xFFFF) << 16) | (x & 0xFFFF)`; drag end sends the same action
 with arg2=0. Enum values from `MovieEditor.EXEACTION` (ROTATE_CAMERA=1,

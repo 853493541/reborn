@@ -19,11 +19,18 @@ internal static class SpikeHost
         string outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "spike_out");
         Directory.CreateDirectory(outDir);
 
+        // input debug log (file only - Console can block)
+        Action<string> Log = delegate(string s)
+        {
+            try { File.AppendAllText(Path.Combine(outDir, "input.log"), DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n"); }
+            catch { }
+        };
+
         Console.WriteLine("actorPath=" + actorPath);
         Console.WriteLine("taniPath=" + taniPath);
 
         var form = new Form();
-        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag angle | M-drag pan | wheel zoom | Q/E height | F focus | R reset)";
+        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag angle | wheel zoom | Q/E height | F focus | R reset)";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -95,7 +102,7 @@ internal static class SpikeHost
         Console.WriteLine("winId={0}", winId);
 
         // Camera controls:
-        //   left drag  = ROTATE_VIEW (4)  orbit / angle
+        //   left drag  = ROTATE_CAMERA (1)  orbit / angle (ROTATE_VIEW=4 has no effect in host)
         //   middle drag= PAN_VIEW    (3)  pan
         //   wheel      = MOUSE_WHEEL (31) zoom
         //   Q / E      = camera height up / down
@@ -105,43 +112,43 @@ internal static class SpikeHost
             return ((y & 0xFFFF) << 16) | (x & 0xFFFF);
         };
         int dragAction = 0;
+        var pending = new System.Collections.Generic.Queue<int[]>();
         panel.MouseDown += delegate(object s, MouseEventArgs e)
         {
-            dragAction = e.Button == MouseButtons.Left ? 4
+            dragAction = e.Button == MouseButtons.Left ? 1
                        : e.Button == MouseButtons.Middle ? 3 : 0;
-            if (dragAction != 0) scene.ExecAction(dragAction, 1, 0, makeLParam(e.X, e.Y));
+            if (dragAction != 0)
+            {
+                pending.Enqueue(new int[] { dragAction, 1, e.X, e.Y });
+                Log(string.Format("mouse down {0} at {1},{2}", e.Button, e.X, e.Y));
+            }
         };
         panel.MouseMove += delegate(object s, MouseEventArgs e)
         {
-            if (dragAction != 0) scene.ExecAction(dragAction, 1, 0, makeLParam(e.X, e.Y));
+            if (dragAction != 0) pending.Enqueue(new int[] { dragAction, 1, e.X, e.Y });
         };
         panel.MouseUp += delegate(object s, MouseEventArgs e)
         {
             if (dragAction != 0)
             {
-                scene.ExecAction(dragAction, 0, 0, makeLParam(e.X, e.Y));
+                pending.Enqueue(new int[] { dragAction, 0, e.X, e.Y });
                 dragAction = 0;
+                Log(string.Format("mouse up {0} at {1},{2}", e.Button, e.X, e.Y));
             }
         };
         MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
         {
-            scene.ExecAction(31, 1, e.Delta < 0 ? 0 : 1, 1);
+            pending.Enqueue(new int[] { 31, e.Delta < 0 ? 0 : 1, 0, 0 });
         };
         panel.MouseWheel += wheel;
         form.MouseWheel += wheel;
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F) { scene.FocusOnModel(); Console.WriteLine("FocusOnModel"); }
-            if (e.KeyCode == Keys.R) { scene.ResetCameraPosLookAtUp(); Console.WriteLine("ResetCamera"); }
-            if (e.KeyCode == Keys.Q || e.KeyCode == Keys.E)
-            {
-                float cx = 0f, cy = 0f, cz = 0f;
-                scene.GetCameraPos(ref cx, ref cy, ref cz);
-                float step = e.KeyCode == Keys.Q ? 50f : -50f;
-                scene.SetCameraPos(cx, cy + step, cz, false);
-                Console.WriteLine("camera height {0} -> {1}", cy, cy + step);
-            }
+            if (e.KeyCode == Keys.F) pending.Enqueue(new int[] { 102, 0, 0, 0 });
+            if (e.KeyCode == Keys.R) pending.Enqueue(new int[] { 103, 0, 0, 0 });
+            if (e.KeyCode == Keys.Q) pending.Enqueue(new int[] { 100, 0, 0, 0 });
+            if (e.KeyCode == Keys.E) pending.Enqueue(new int[] { 101, 0, 0, 0 });
         };
         panel.Focus();
 
@@ -160,25 +167,94 @@ internal static class SpikeHost
         int playResult = model.PlayAnimation(taniPath, 0, 1.0f, 0);
         Console.WriteLine("PlayAnimation result={0}", playResult);
 
-        if (Environment.GetEnvironmentVariable("SPIKE_CAMTEST") == "1")
+        if (Environment.GetEnvironmentVariable("SPIKE_CAMPROBE") == "1")
         {
-            float tx = 0f, ty = 0f, tz = 0f;
-            int g = scene.GetCameraPos(ref tx, ref ty, ref tz);
-            Console.WriteLine("GetCameraPos ret={0} pos=({1},{2},{3})", g, tx, ty, tz);
-            int s2 = scene.SetCameraPos(tx, ty + 300f, tz, false);
-            Console.WriteLine("SetCameraPos ret={0} newY={1}", s2, ty + 300f);
+            int[] acts = { 1, 2, 3, 4, 12, 17, 18, 30, 31, 1001 };
+            foreach (int a in acts)
+            {
+                float x0 = 0f, y0 = 0f, z0 = 0f;
+                scene.GetCameraPos(ref x0, ref y0, ref z0);
+                for (int i = 1; i <= 10; i++)
+                {
+                    scene.ExecAction(a, 1, 0, makeLParam(500 + i * 20, 300 + i * 5));
+                    engine.FrameMove(); engine.Render(); Application.DoEvents(); Thread.Sleep(15);
+                }
+                float x1 = 0f, y1 = 0f, z1 = 0f;
+                scene.GetCameraPos(ref x1, ref y1, ref z1);
+                bool moved = Math.Abs(x1 - x0) > 0.01 || Math.Abs(y1 - y0) > 0.01 || Math.Abs(z1 - z0) > 0.01;
+                Console.WriteLine("act {0}: ({1:F1},{2:F1},{3:F1}) -> ({4:F1},{5:F1},{6:F1}) moved={7}",
+                    a, x0, y0, z0, x1, y1, z1, moved);
+            }
+            Console.WriteLine("CAMPROBE done");
+        }
+
+        if (Environment.GetEnvironmentVariable("SPIKE_INPUTTEST") == "2")
+        {
+            Console.WriteLine("INPUTTEST2 start");
+            float bx = 0f, by = 0f, bz = 0f;
+            scene.GetCameraPos(ref bx, ref by, ref bz);
+            Console.WriteLine("cam before = ({0:F1},{1:F1},{2:F1})", bx, by, bz);
+            string before = Path.Combine(outDir, "inputtest2_before.png");
+            scene.SetScreenShot(before, 2); scene.DoScreenShotImmediate();
+            scene.ExecAction(1, 1, 0, makeLParam(300, 300));
+            for (int i = 1; i <= 20; i++)
+            {
+                scene.ExecAction(1, 1, 0, makeLParam(300 + i * 15, 300 + i * 3));
+                engine.FrameMove(); engine.Render(); Application.DoEvents(); Thread.Sleep(10);
+            }
+            float ax = 0f, ay = 0f, az = 0f;
+            scene.GetCameraPos(ref ax, ref ay, ref az);
+            Console.WriteLine("cam after  = ({0:F1},{1:F1},{2:F1})", ax, ay, az);
+            string mid = Path.Combine(outDir, "inputtest2_mid.png");
+            scene.SetScreenShot(mid, 2); scene.DoScreenShotImmediate();
+            Console.WriteLine("mid shot -> " + mid);
+            int rel = scene.ExecAction(1, 0, 0, makeLParam(600, 360));
+            Console.WriteLine("release ExecAction ret={0}", rel);
+            engine.FrameMove(); engine.Render(); Application.DoEvents(); Thread.Sleep(200);
+            string after = Path.Combine(outDir, "inputtest2_after_release.png");
+            scene.SetScreenShot(after, 2); scene.DoScreenShotImmediate();
+            Console.WriteLine("after shot -> " + after);
         }
 
         int[] shots = { 0, 2000, 4000, 7000 };
         int ci = 0;
         bool loop = Environment.GetEnvironmentVariable("SPIKE_LOOP") != "0";
+        bool camlog = Environment.GetEnvironmentVariable("SPIKE_CAMLOG") == "1";
         var sw = System.Diagnostics.Stopwatch.StartNew();
+        var camSw = System.Diagnostics.Stopwatch.StartNew();
         while (!form.IsDisposed)
         {
+            while (pending.Count > 0)
+            {
+                int[] cmd = pending.Dequeue();
+                if (cmd[0] == 4 || cmd[0] == 3 || cmd[0] == 2)
+                {
+                    scene.ExecAction(cmd[0], cmd[1], 0, makeLParam(cmd[2], cmd[3]));
+                }
+                else if (cmd[0] == 31)
+                {
+                    scene.ExecAction(31, 1, cmd[1], 1);
+                }
+                else if (cmd[0] == 100 || cmd[0] == 101)
+                {
+                    float cx = 0f, cy = 0f, cz = 0f;
+                    scene.GetCameraPos(ref cx, ref cy, ref cz);
+                    scene.SetCameraPos(cx, cy + (cmd[0] == 100 ? 50f : -50f), cz, false);
+                }
+                else if (cmd[0] == 102) scene.FocusOnModel();
+                else if (cmd[0] == 103) scene.ResetCameraPosLookAtUp();
+            }
             sound.FrameMove();
             engine.FrameMove();
             engine.Render();
             Application.DoEvents();
+            if (camlog && camSw.ElapsedMilliseconds >= 1000)
+            {
+                camSw.Restart();
+                float lx = 0f, ly = 0f, lz = 0f;
+                scene.GetCameraPos(ref lx, ref ly, ref lz);
+                Log(string.Format("campos {0:F1},{1:F1},{2:F1}", lx, ly, lz));
+            }
             if (ci < shots.Length && sw.ElapsedMilliseconds >= shots[ci])
             {
                 string png = Path.Combine(outDir, "spike_t" + shots[ci] + "ms.png");
@@ -204,5 +280,8 @@ internal static class SpikeHost
         Console.WriteLine("DONE");
     }
 }
+
+
+
 
 
