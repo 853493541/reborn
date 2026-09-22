@@ -17,4 +17,10 @@ assets/*
 proof/netcode/skill_motion/*.tani
 proof/netcode/skill_motion/*.ani
 proof/netcode/skill_motion/out/
+proof/netcode/mode_juejing/pak/
+proof/netcode/mode_juejing/pak2/
+proof/netcode/mode_juejing/pak_out/
+proof/netcode/mode_juejing/pak_out2/
+proof/netcode/mode_juejing/dbg/
+proof/netcode/mode_juejing/*/out/
 

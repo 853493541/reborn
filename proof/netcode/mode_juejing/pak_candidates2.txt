@@ -1,0 +1,13 @@
+settings\MapList.tab
+MapList.tab
+settings\SkillMove.tab
+settings\PVPField.tab
+settings\JumpParam.tab
+settings\JumpFrameParam.tab
+settings\ParkourMove.tab
+settings\Sprint.tab
+settings\SceneRemoteDataList.tab
+settings\Player\PlayerSceneFilter.tab
+settings\DoodadTemplate.tab
+settings\CharacterAction.tab
+settings\CoolDownList.tab

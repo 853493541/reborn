@@ -1,0 +1,3 @@
+CharacterAction rows=10858 cols=6
+HDR: Name(此项不读) | ID | IsLoop | Range | AnimationID | ScriptFuncName
+太阴指 rows: 0
