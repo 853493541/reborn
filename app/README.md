@@ -7,7 +7,12 @@ A small WinForms launcher with two options:
 | Option | Host | What it plays |
 |---|---|---|
 | 角色动作 / Character Action | `bin64\spike_host.exe` | FLWS tani on 花萝 + PSS SFX + skill sound |
-| 地图显示 / Map Display | `bin64\map_spike_host.exe` | MovieEditor map render (龙门寻宝, editor camera) |
+| 地图显示 / Map Display | `bin64\map_spike_host.exe` | MovieEditor map render (picker: 龙门寻宝 / 夜晚 / 海岛绝境 / 白龙绝境 / 天原绝境) |
+
+Character host keys: **left drag** orbit · **Q/E** camera height · **wheel** zoom ·
+**T** third-person follow camera (behind the character, tracks every frame;
+`FOLLOW_POS=x,y,z` overrides the offset, `FOLLOW_AIM=0` disables look-at) ·
+**F** focus · **R** reset.
 
 ## Build
 
