@@ -391,3 +391,4 @@ let dumpEnum (path: string) (name: string) =
                     with _ -> printfn "   %s = ?" (md.GetString f.Name)
 dumpEnum exePath "EXEACTION"
 dumpEnum exePath "OUTPUTWND"
+findRefs exePath ["SetCameraPos"; "GetCameraPos"; "SetCamareMoveState"]
