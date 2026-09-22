@@ -1,0 +1,16 @@
+﻿MISS data\source\maps\白龙绝境\map\白龙绝境\CustomObject.tab
+MISS data\source\maps\白龙绝境\map\白龙绝境\CustomObject\CustomObject.tab
+MISS data\source\maps\白龙绝境\CustomObject.tab
+MISS data\source\maps\天原绝境\map\天原绝境\CustomObject.tab
+MISS data\source\maps\天原绝境\CustomObject.tab
+MISS data\source\maps\海岛绝境\map\海岛绝境\CustomObject.tab
+MISS data\source\maps\海岛绝境\CustomObject.tab
+MISS data\source\maps\龙门寻宝\map\龙门寻宝\CustomObject.tab
+MISS data\source\maps\龙门寻宝\CustomObject.tab
+MISS data\source\maps\白龙绝境\map\白龙绝境\AnchorPoint\AnchorPointList.tab
+MISS data\source\maps\白龙绝境\map\白龙绝境\DoodadRelive\DoodadReviveList.tab
+MISS data\source\maps\白龙绝境\map\白龙绝境\NpcRelive\MapReviveList.tab
+MISS data\source\maps\白龙绝境\map\白龙绝境\NpcTeam\NpcTeamList.tab
+HIT  settings\DoodadClass.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out6\DoodadClass.tab (1608 bytes)
+HIT  settings\DoodadTemplate.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out6\DoodadTemplate.tab (1345146 bytes)
+2 files extracted from 15 candidates

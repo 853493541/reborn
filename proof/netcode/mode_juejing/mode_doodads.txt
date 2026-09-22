@@ -1,0 +1,66 @@
+== MapName values for mode:
+  沙漠风暴: 255 templates
+  沙漠公益活动: 12 templates
+  沙漠风暴_寻宝模式: 168 templates
+== sample rows for mode maps
+  [沙漠风暴] ID=6816 ; Name=一阶装备 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/equipment1.tab ; Count1=1 ; RepresentID=46396 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6817 ; Name=一阶武器 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/weapon1.tab ; Count1=1 ; RepresentID=46399 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6818 ; Name=二阶装备 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/equipment2.tab ; Count1=1 ; RepresentID=46397 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6819 ; Name=二阶武器 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/weapon2.tab ; Count1=1 ; RepresentID=46400 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6820 ; Name=三阶装备 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/equipment3.tab ; Count1=1 ; RepresentID=46398 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6821 ; Name=三阶武器 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/weapon3.tab ; Count1=1 ; RepresentID=46401 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6822 ; Name=麻布绷带 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/mabubengdai.tab ; Count1=1 ; RepresentID=46404 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6823 ; Name=止血草 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/zhixuecao.tab ; Count1=1 ; RepresentID=46403 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6824 ; Name=金疮药 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/jinchuangyao.tab ; Count1=1 ; RepresentID=46402 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6833 ; Name=叹息风碑 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46413 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/摸装备触发吃鸡铁血宝箱.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6857 ; Name=砂石 ; MapName=沙漠风暴 ; Level=1 ; RemoveDelay=2880 ; OpenPrepareFrame=48 ; RepresentID=46428 ; MoneyDropRate=1048576 ; BarText=拾取 ; OverLootFrame=1440 ; ProgressID=-1
+  [沙漠风暴] ID=6858 ; Name=灌木 ; MapName=沙漠风暴 ; Level=1 ; RemoveDelay=2880 ; OpenPrepareFrame=48 ; RepresentID=46431 ; MoneyDropRate=1048576 ; BarText=拾取 ; OverLootFrame=1440 ; ProgressID=-1
+  [沙漠风暴] ID=6859 ; Name=瓦罐 ; MapName=沙漠风暴 ; Level=1 ; RemoveDelay=2880 ; OpenPrepareFrame=48 ; RepresentID=46430 ; MoneyDropRate=1048576 ; BarText=拾取 ; OverLootFrame=1440 ; ProgressID=-1
+  [沙漠风暴] ID=6860 ; Name=枯树 ; MapName=沙漠风暴 ; Level=1 ; RemoveDelay=2880 ; OpenPrepareFrame=48 ; RepresentID=46429 ; MoneyDropRate=1048576 ; BarText=拾取 ; OverLootFrame=1440 ; ProgressID=-1
+  [沙漠风暴] ID=6863 ; Name=匿踪宝盒 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/hide.tab ; Count1=1 ; RepresentID=46437 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/匿踪宝盒.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6865 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46438 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6867 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46440 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6868 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46441 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6869 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46442 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6870 ; Name=风化的石马 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/horse1.tab ; Count1=1 ; RepresentID=46443 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/摸装备触发吃鸡铁血宝箱.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6871 ; Name=风化的石马 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/horse2.tab ; Count1=1 ; RepresentID=46444 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/摸装备触发吃鸡铁血宝箱.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6872 ; Name=风化的石马 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/horse3.tab ; Count1=1 ; RepresentID=46445 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/摸装备触发吃鸡铁血宝箱.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6873 ; Name=鬼黄藤 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/guihuangteng.tab ; Count1=1 ; RepresentID=46446 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6874 ; Name=千里镜 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/qianlijing.tab ; Count1=1 ; RepresentID=46447 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6875 ; Name=行气散 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/xingqisan.tab ; Count1=1 ; RepresentID=46448 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6882 ; Name=劫掠的货物 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=48 ; Drop1=沙漠风暴/chengwu.tab ; Count1=1 ; Drop2=沙漠风暴/chengzhuang.tab ; Count2=2 ; Drop3=沙漠风暴/gaojidaoju.tab ; Count3=2 ; Drop4=沙漠风暴/zizhuang.tab ; Count4=3 ; Drop5=沙漠风暴/horse3.tab ; Count5=1 ; RepresentID=46455 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/马匪的货物.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6883 ; Name=天阶武器 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/chengwu.tab ; Count1=1 ; RepresentID=46456 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6884 ; Name=天阶装备 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/chengzhuang.tab ; Count1=1 ; RepresentID=46457 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6885 ; Name=楼兰神兵匣 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/zuzhoubox_purple.tab ; Count1=4 ; Drop2=沙漠风暴/zuzhoubox_yellow.tab ; Count2=1 ; RepresentID=46458 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/吃鸡铁血宝箱.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6905 ; Name=天赐·鸡肉腊八粥 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/labazhou.tab ; Count1=1 ; RepresentID=46476 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6937 ; Name=丢弃的金创药 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46505 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6938 ; Name=丢弃的麻布绷带 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46509 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6939 ; Name=丢弃的砂石 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46508 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6940 ; Name=丢弃的灌木 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46510 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6941 ; Name=丢弃的瓦罐 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46506 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6942 ; Name=丢弃的鬼黄藤 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46511 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6943 ; Name=丢弃的行气散 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46507 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6949 ; Name=丢弃的武器·一 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46517 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6950 ; Name=丢弃的装备·一 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46518 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6951 ; Name=丢弃的武器·二 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46519 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6952 ; Name=丢弃的装备·二 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46520 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6953 ; Name=丢弃的武器·三 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46521 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6954 ; Name=丢弃的装备·三 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46522 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6955 ; Name=丢弃的武器·天 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46523 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6956 ; Name=丢弃的装备·天 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46524 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6973 ; Name=流萤魂返花 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/heilianhua.tab ; Count1=1 ; RepresentID=46536 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/拾取黑莲花.lua ; OverLootFrame=320
+  [沙漠风暴] ID=6989 ; Name=定安散 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/huilandaoju.tab ; Count1=1 ; RepresentID=46551 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6990 ; Name=丢弃的定安散 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Count1=1 ; RepresentID=46551 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6994 ; Name=驼铃 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/tuoling.tab ; Count1=1 ; RepresentID=46558 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=6995 ; Name=飞艇 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/feiting.tab ; Count1=1 ; RepresentID=46557 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=7213 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46748 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=7214 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46749 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/丢弃的物品.lua ; OverLootFrame=320
+  [沙漠风暴] ID=7215 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46750 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=7216 ; Name=丢弃的物品 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=46751 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=7648 ; Name=觅踪窥影烟 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/fanyinyan.tab ; Count1=1 ; RepresentID=47113 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=7655 ; Name=丢弃的觅踪窥影烟 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Count1=1 ; RepresentID=47120 ; BarText=拾取 ; OverLootFrame=320
+  [沙漠风暴] ID=7697 ; Name=叹息风碑 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; RepresentID=47199 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/摸装备触发吃鸡铁血宝箱.lua ; OverLootFrame=320
+  [沙漠风暴] ID=7720 ; Name=一阶装备 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/equipment1_sea.tab ; Count1=1 ; RepresentID=47182 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=7722 ; Name=一阶武器 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/weapon1.tab ; Count1=1 ; RepresentID=47183 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+  [沙漠风暴] ID=7723 ; Name=二阶装备 ; MapName=沙漠风暴 ; Kind=7 ; CanOperateEach=1 ; OpenPrepareFrame=8 ; Drop1=沙漠风暴/equipment2_sea.tab ; Count1=1 ; RepresentID=47184 ; BarText=拾取 ; Script=scripts/Map/沙漠风暴/doodad/装备盒子.lua ; OverLootFrame=320
+total mode rows=435
