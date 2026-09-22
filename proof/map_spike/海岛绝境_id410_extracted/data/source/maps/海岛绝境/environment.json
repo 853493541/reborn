@@ -1,0 +1,424 @@
+{
+    "lightSource": 0,
+    "enableDayNightCycle": 1,
+    "enableCovermap": 0,
+    "enableCovermapOnlyForFoliage": 0,
+    "cameraRangeFromDist": 30000,
+    "cameraRangeToDist": 800000,
+    "underWaterFogColor": [
+        0.11760000139474869,
+        0.513700008392334,
+        0.48240000009536745,
+        1.0
+    ],
+    "enableSeasonVariation": 0,
+    "enablePlaneReflectionViaRender": 0,
+    "enableSceneFadeV2": 0,
+    "sceneFadeStartRatio": 0.30000001192092898,
+    "sceneFadePower": 1.0,
+    "sunlight": {
+        "dir": [
+            -0.6135085225105286,
+            0.5735764503479004,
+            -0.5427865982055664
+        ],
+        "diffuse": [
+            1.0,
+            0.9903868436813355,
+            0.9662927985191345,
+            1.0
+        ],
+        "specular": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "diffuseIntensity": 3.0,
+        "specularIntensity": 1.0,
+        "ambientColor": [
+            0.5,
+            0.5,
+            0.5,
+            1.0
+        ],
+        "skyLightColor": [
+            0.5,
+            0.5,
+            0.5,
+            1.0
+        ],
+        "commonLightColor": [
+            0.5,
+            0.5,
+            0.5,
+            1.0
+        ],
+        "ambientIntensity": 1.0,
+        "skyLightIntensity": 1.0,
+        "commonLightIntensity": 1.0
+    },
+    "moonlight": {
+        "dir": [
+            0.5773500204086304,
+            0.5773500204086304,
+            0.5773500204086304
+        ],
+        "diffuse": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "specular": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "diffuseIntensity": 1.0,
+        "specularIntensity": 1.0
+    },
+    "envMap": {
+        "intensity": 1.100000023841858,
+        "saturation": 1.0
+    },
+    "speedTreeEnv": {
+        "lodLevelOption": 0,
+        "globalLodScaleTimes": 1.0,
+        "enableWindAnimationOriginal": 1,
+        "enableWindAnimationLod0": 0,
+        "enableWindAnimationLod1": 0,
+        "enableWindAnimationLod2": 0,
+        "enableWindAnimationBillboard": 0
+    },
+    "oldSkySkyBox": {
+        "topColor": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "midColor": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "botmColor": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "topPercent": 100.0,
+        "midPercent": 50.0,
+        "botmPercent": 100.0,
+        "topMidBlendPercent": 20.0,
+        "midBotmBlendPercent": 80.0
+    },
+    "oldSkyWeather": {
+        "enable": 0,
+        "type": 0,
+        "enableSnowCover": 0,
+        "enableSplash": 0,
+        "useMaterial": 0,
+        "density": 10.0,
+        "densityGate": 10.0,
+        "speed": 150.0,
+        "speedGate": 800.0,
+        "length": 10.0,
+        "width": 10.0,
+        "alpha": 0.20000000298023225,
+        "splashAlpha": 0.20000000298023225,
+        "splashScale": 0.05000000074505806,
+        "windScale": 1.0,
+        "wind": 0.0,
+        "particalTexture": "data/public/stainForDyWeather.dds",
+        "materialFile": "data/material/Material/Decal/Mtl_Decal_Default.JsonIns",
+        "useNew": 0,
+        "rainColor": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "rainTextures": "",
+        "waterWaveIntensity": 0.5,
+        "rainRippleIntensity": 0.5
+    },
+    "cloudList": {},
+    "farMountainList": {},
+    "lensflares": {
+        "sunLensflareDesc": {
+            "lensflareDescTexturePath": "data/source/maps_source/Texture/光晕/Flare.tga",
+            "lensflareDescTexNumX": 3,
+            "lensflareDescTexNumY": 3,
+            "lensflareDescVisibility": 1.0,
+            "lensflareDescBound": 0.0,
+            "lensflareDescDummyLenSize": 0.0,
+            "lensflareList": {}
+        },
+        "moonLensflareDesc": {
+            "lensflareDescTexturePath": "Data/source/maps_source/Texture/光晕/MoonFlare06.tga",
+            "lensflareDescTexNumX": 1,
+            "lensflareDescTexNumY": 1,
+            "lensflareDescVisibility": 1.0,
+            "lensflareDescBound": 0.0,
+            "lensflareDescDummyLenSize": 0.0,
+            "lensflareList": {}
+        }
+    },
+    "globalEnvironmentSphere": {
+        "savefileSpecular": "data\\source\\maps\\海岛绝境\\env_probe\\skybox_s.dds",
+        "savefileDiffuse": "data\\source\\maps\\海岛绝境\\env_probe\\skybox_d.dds",
+        "customAtmoBottom": 0,
+        "atmoBottomColorStartY": 0.20000000298023225,
+        "atmoBottomColorLength": 0.30000001192092898,
+        "atmoBottomColor": [
+            0.21815823018550874,
+            0.25922027230262759,
+            0.40450140833854678,
+            1.0
+        ],
+        "dynamic": 1,
+        "useDefaultFile": 1
+    },
+    "dayNightCycle": {
+        "CurrentDate": [
+            2000.0,
+            1.0,
+            1.0
+        ],
+        "Latitude": 0.0,
+        "Longitude": 0.0,
+        "time": 0.0,
+        "Timezone": 1.0,
+        "StarTrailsEnable": 0,
+        "Height": 0.0,
+        "MaxMilkyWayIntensity": 0.0,
+        "MaxSunLightIntensity": 0.0,
+        "MaxMoonLightIntensity": 0.0,
+        "MaxStarDensity": 0.0,
+        "MaxStarTwinkle": 0.0,
+        "MaxStarIntensity": 0.0,
+        "MaxMoonOpacity": 0.0
+    },
+    "shadowMaskSharpen": {
+        "blurHScale": 10.0,
+        "blurVScale": 10.0,
+        "blurHDistribution": 25.0,
+        "blurVDistribution": 92.0,
+        "contrastFactor": 8.600000381469727,
+        "gaussianBias": 0.11999999731779099
+    },
+    "heightFog": {
+        "enable": 0,
+        "fogDensity": 0.019999999552965165,
+        "fogHeightFalloff": 0.20000000298023225,
+        "fogOpacity": 0.30000001192092898,
+        "fogStartDistance": 0.0,
+        "fogCutoffDistance": 0.0,
+        "fogHeight": 30000.0,
+        "directionalInscatteringExponent": 4.0,
+        "directionalInscatteringStartDistance": 10000.0,
+        "fogColor": [
+            0.4699999988079071,
+            0.6380000114440918,
+            1.0,
+            1.0
+        ],
+        "directionalInscatteringColor": [
+            0.25,
+            0.25,
+            0.125,
+            1.0
+        ]
+    },
+    "distanceFog": {
+        "enable": 0,
+        "fogColor": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "fogStartDistance": 0.0,
+        "fogEndDistance": 30000.0
+    },
+    "sceneFog": {
+        "fogEnable": 0,
+        "fogColor": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "fogStartValue": 2000.0,
+        "fogEndValue": 40000.0,
+        "fogDensity": 1.0
+    },
+    "indirectLightVolume": {
+        "enable": 0,
+        "enableDiffLodSmoothFilter": 1,
+        "diffLodSmoothFilterBeginPosScale": 0.800000011920929,
+        "indirectLightVolumeWeight": 1.0,
+        "surfelAlbedoIntensity": 1.0,
+        "localLightAffect": 1.0,
+        "mainLightAffect": 1.0,
+        "emissiveAffect": 1.0,
+        "jitterPrevWeight": 0.6000000238418579,
+        "offlineEnable": 0,
+        "offlineWeight": 1.0,
+        "offlineSHLuminosityEnhance": 2.0,
+        "offlineDistanceLevel": 64
+    },
+    "fakeCloudShadow": {
+        "enableFakeCloudShadow": 0,
+        "speedR": [
+            0.0,
+            0.0
+        ],
+        "speedG": [
+            0.0,
+            0.0
+        ],
+        "speedB": [
+            0.0,
+            0.0
+        ],
+        "densityR": 0.0,
+        "densityG": 0.0,
+        "densityB": 0.0
+    },
+    "colorGrade": {
+        "enable": 1,
+        "globalColorTemperature": 6500.0,
+        "globalTint": 0.0,
+        "globalColorGain": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "globalGamma": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "globalSaturation": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "globalContrast": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "globalOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "highlightColorGain": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "highlightGamma": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "highlightSaturation": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "highlightContrast": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "highlightOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "highlightMin": 0.5,
+        "midtonesColorGain": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "midtonesGamma": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "midtonesSaturation": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "midtonesContrast": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "midtonesOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "shadowColorGain": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "shadowGamma": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "shadowSaturation": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "shadowContrast": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "shadowOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "shadowMax": 0.09000000357627869
+    },
+    "editor_ui_attribute": {
+        "movieEditorCurrFrame": 0
+    }
+}

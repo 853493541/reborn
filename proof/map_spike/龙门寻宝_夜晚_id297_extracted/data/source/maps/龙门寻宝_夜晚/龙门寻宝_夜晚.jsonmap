@@ -1,0 +1,53 @@
+{
+    "filePaths": {
+        "hd": {
+            "specDir": "/",
+            "landscapeDir": "landscape/",
+            "foliageDir": "foliage/",
+            "foliagePatternDir": "foliage/",
+            "envProbeDir": "env_probe/",
+            "viewProbeDir": "",
+            "offlineGIDir": "",
+            "environmentFile": "environment.json",
+            "playerEnvironmentFile": "playerEnvironment.json",
+            "rcidxFile": "%MapName%.rcidx"
+        },
+        "bd": {
+            "specDir": "bd/",
+            "landscapeDir": "landscape/",
+            "foliageDir": "",
+            "foliagePatternDir": "foliage/",
+            "envProbeDir": "bd/env_probe/",
+            "viewProbeDir": "",
+            "offlineGIDir": "bd/offlineGI/",
+            "environmentFile": "bd/environment.json",
+            "playerEnvironmentFile": "bd/playerEnvironment.json",
+            "rcidxFile": "bd/%MapName%.rcidx"
+        },
+        "mb": {
+            "specDir": "mb/",
+            "landscapeDir": "landscape/",
+            "landscapeProceduralDir": "mb/landscape/procedural/",
+            "foliageDir": "mb/foliage/",
+            "foliagePatternDir": "mb/foliage/",
+            "envProbeDir": "mb/env_probe/",
+            "viewProbeDir": "mb/view_probe/",
+            "offlineGIDir": "mb/offlineGI/",
+            "environmentFile": "mb/environment.json",
+            "playerEnvironmentFile": "mb/playerEnvironment.json",
+            "rcidxFile": "mb/%MapName%.rcidx"
+        },
+        "low": {
+            "specDir": "low/",
+            "landscapeDir": "landscape/",
+            "foliageDir": "foliage/",
+            "foliagePatternDir": "foliage/",
+            "envProbeDir": "env_probe/",
+            "viewProbeDir": "",
+            "offlineGIDir": "",
+            "environmentFile": "low/environment.json",
+            "playerEnvironmentFile": "low/playerEnvironment.json",
+            "rcidxFile": "low/%MapName%.rcidx"
+        }
+    }
+}

@@ -1,0 +1,173 @@
+{
+    "__internal_type": "JXSubSceneInfo",
+    "worldObjects": {
+        "{1c73307d-c56e-48f8-8713-e06d32b54349}": {
+            "comBasic": {
+                "actorLocalMatrix": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.10452842712402344,
+                    0.9945219159126282,
+                    0.0,
+                    0.0,
+                    -0.9945219159126282,
+                    0.10452842712402344,
+                    0.0,
+                    1.0,
+                    5000.0,
+                    1.0,
+                    1.0
+                ],
+                "actorBoundBoxMax": [
+                    19.143421173095704,
+                    5082.4814453125,
+                    33.993709564208987
+                ],
+                "actorBoundBoxMin": [
+                    -17.143413543701173,
+                    4998.77001953125,
+                    -19.435012817382814
+                ],
+                "uuid": "{1c73307d-c56e-48f8-8713-e06d32b54349}",
+                "_ignoreBatch": 0
+            },
+            "comEditor": {
+                "editorSelectable": 0,
+                "templateFile": "system/systemcamera3.json",
+                "hostLayer": "ref.{ca6fca27-6d16-419c-8cbf-b40c121d67be}"
+            },
+            "comRender": {
+                "actorDetailName": "DefaultGroupName"
+            }
+        },
+        "{4f8b2b3c-4c18-4f55-8113-5f5594081551}": {
+            "comBasic": {
+                "actorLocalMatrix": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.10452842712402344,
+                    0.9945219159126282,
+                    0.0,
+                    0.0,
+                    -0.9945219159126282,
+                    0.10452842712402344,
+                    0.0,
+                    1.0,
+                    5000.0,
+                    1.0,
+                    1.0
+                ],
+                "actorBoundBoxMax": [
+                    19.143421173095704,
+                    5082.4814453125,
+                    33.993709564208987
+                ],
+                "actorBoundBoxMin": [
+                    -17.143413543701173,
+                    4998.77001953125,
+                    -19.435012817382814
+                ],
+                "uuid": "{4f8b2b3c-4c18-4f55-8113-5f5594081551}",
+                "_ignoreBatch": 0
+            },
+            "comEditor": {
+                "editorSelectable": 0,
+                "templateFile": "system/systemcamera1.json",
+                "hostLayer": "ref.{ca6fca27-6d16-419c-8cbf-b40c121d67be}"
+            },
+            "comRender": {
+                "actorDetailName": "DefaultGroupName"
+            }
+        },
+        "{7b43e257-3528-4fec-9dc8-8de7a8cf003a}": {
+            "comBasic": {
+                "actorLocalMatrix": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.10452842712402344,
+                    0.9945219159126282,
+                    0.0,
+                    0.0,
+                    -0.9945219159126282,
+                    0.10452842712402344,
+                    0.0,
+                    1.0,
+                    5000.0,
+                    1.0,
+                    1.0
+                ],
+                "actorBoundBoxMax": [
+                    19.143421173095704,
+                    5082.4814453125,
+                    33.993709564208987
+                ],
+                "actorBoundBoxMin": [
+                    -17.143413543701173,
+                    4998.77001953125,
+                    -19.435012817382814
+                ],
+                "uuid": "{7b43e257-3528-4fec-9dc8-8de7a8cf003a}",
+                "_ignoreBatch": 0
+            },
+            "comEditor": {
+                "editorSelectable": 0,
+                "templateFile": "system/systemcamera2.json",
+                "hostLayer": "ref.{ca6fca27-6d16-419c-8cbf-b40c121d67be}"
+            },
+            "comRender": {
+                "actorDetailName": "DefaultGroupName"
+            }
+        },
+        "{9e484be7-0ad7-4bd9-9e57-a7c4a98d47f3}": {
+            "comBasic": {
+                "actorLocalMatrix": [
+                    0.7026082873344421,
+                    0.0012788308085873724,
+                    -0.6984659433364868,
+                    0.0,
+                    0.10236772894859314,
+                    0.9891811609268189,
+                    0.10116705298423767,
+                    0.0,
+                    0.690759003162384,
+                    -0.14473892748355866,
+                    0.6950457096099854,
+                    0.0,
+                    136311.53125,
+                    1153.886962890625,
+                    102967.859375,
+                    1.0
+                ],
+                "actorBoundBoxMax": [
+                    136327.640625,
+                    1198.2305908203125,
+                    102983.859375
+                ],
+                "actorBoundBoxMin": [
+                    136242.65625,
+                    1141.804931640625,
+                    102898.734375
+                ],
+                "uuid": "{9e484be7-0ad7-4bd9-9e57-a7c4a98d47f3}",
+                "_ignoreBatch": 0
+            },
+            "comEditor": {
+                "editorSelectable": 0,
+                "templateFile": "system/systemcamera0.json",
+                "hostLayer": "ref.{ca6fca27-6d16-419c-8cbf-b40c121d67be}"
+            },
+            "comRender": {
+                "actorDetailName": "DefaultGroupName"
+            }
+        }
+    }
+}
