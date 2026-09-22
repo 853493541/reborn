@@ -13,6 +13,40 @@ spawn points + drop tables**. Everything below is what the client ships.
 
 ---
 
+## 0. Answer: do we know where loot spawns?
+
+**No — not from client files.** The spawn positions/density are server-side. What we
+know and do not know, precisely:
+
+| Question | Answer | Confidence |
+|---|---|---|
+| Which loot can spawn? | 423 templates (tier boxes, consumables, specials, gatherable nodes, death bags) | HIGH |
+| How does a container behave? | interaction frames, loot window, despawn, respawn, pick-up rules | HIGH |
+| Which drop table does each container use? | 97 named tables (`沙漠风暴/equipment1.tab`, ...) | HIGH |
+| What is inside a drop table (item + rate)? | unknown — tables not shipped in client pak | — |
+| **Where do containers appear on the map?** | **unknown — spawn anchors are server map logic** | — |
+| How many per anchor, respawn timing per anchor? | unknown — server mode script | — |
+
+Exhausted static avenues (all 0 hits):
+- per-map logical files: `CustomObject.tab`, `DoodadRelive\DoodadReviveList.tab`,
+  `AnchorPoint\AnchorPointList.tab`, `NpcRelive\MapReviveList.tab`, `.land` / `.pland`,
+  `logicalTrigger.json`, `LandObject.tab`
+- 97 drop-table paths across 15 VFS prefixes
+- all doodad scripts (`scripts/Map/沙漠风暴/doodad/*.lua`, 25 distinct hooks)
+- map bundles extracted from PakV4 contain no doodad/spawn records
+
+How to actually get spawn positions (runtime only):
+1. **Capture `OnSyncNewDoodad` / `OnSyncSimpleObject` / `OnSyncDoodadState`** while
+   playing: each spawned container carries doodad id + position. Log over several
+   matches per map, cluster positions → anchor set; histogram template ids per anchor →
+   spawn weights.
+2. Read the server's map logic (`CustomObject` / `AnchorPoint` / mode script) if it ever
+   becomes available.
+3. Client-side visual markers do not reveal anchors (containers only exist after the
+   server spawns them; empty anchors render nothing).
+
+---
+
 ## 1. Loot container schema (`settings\DoodadTemplate.tab`, 51 columns)
 
 ```

@@ -1,0 +1,6 @@
+﻿total tabs 191 spawn-ish 5
+  LandObject.tab
+  RandomQuestGroup.tab
+  settings/Road/RoadPoint.tab
+  settings/skill/TenExtraPoint.tab
+  settings/skill_mobile/TenExtraPoint.tab
