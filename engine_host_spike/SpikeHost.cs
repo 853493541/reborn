@@ -69,7 +69,7 @@ internal static class SpikeHost
         if (ok == 0) { Console.WriteLine("FATAL: engine init failed"); return; }
 
         bool withEditor = Environment.GetEnvironmentVariable("SPIKE_EDITOR") != "0";
-        bool withSound = Environment.GetEnvironmentVariable("SPIKE_SOUND") == "1";
+        bool withSound = Environment.GetEnvironmentVariable("SPIKE_SOUND") != "0";
 
         if (withEditor)
         {
@@ -86,7 +86,11 @@ internal static class SpikeHost
         }
         if (withSound)
         {
-            try { sound.Init(startupPath, form.Handle.ToInt64()); }
+            try
+            {
+                int soundResult = sound.Init(startupPath, form.Handle.ToInt64());
+                Console.WriteLine("sound.Init result={0} (Wwise banks under data/Wwiseaudio/GeneratedSoundBanks/Windows/Base)", soundResult);
+            }
             catch (Exception e) { Console.WriteLine("sound.Init ex: " + e.Message); }
         }
         else
@@ -167,6 +171,7 @@ internal static class SpikeHost
         model.AttachModel(handle);
         int playResult = model.PlayAnimation(taniPath, 0, 1.0f, 0);
         Console.WriteLine("PlayAnimation result={0}", playResult);
+        PlayFlwsSound(outDir);
 
         if (Environment.GetEnvironmentVariable("SPIKE_INPUTTEST") == "5")
         {
@@ -359,6 +364,7 @@ internal static class SpikeHost
             {
                 if (!loop) break;
                 model.PlayAnimation(taniPath, 0, 1.0f, 0);
+                PlayFlwsSound(outDir);
                 ci = shots.Length;
                 sw.Restart();
                 Console.WriteLine("loop restart");
@@ -366,6 +372,31 @@ internal static class SpikeHost
             Thread.Sleep(10);
         }
         Console.WriteLine("DONE");
+    }
+
+    [System.Runtime.InteropServices.DllImport("winmm.dll", CharSet = System.Runtime.InteropServices.CharSet.Ansi)]
+    private static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
+
+    private const uint SND_ASYNC = 0x0001;
+    private const uint SND_FILENAME = 0x00020000;
+    private const uint SND_NODEFAULT = 0x0002;
+
+    private static void PlayFlwsSound(string outDir)
+    {
+        if (Environment.GetEnvironmentVariable("SPIKE_SOUND_PLAY") == "0") return;
+        try
+        {
+            string wav = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "flws_sound.wav");
+            if (!File.Exists(wav)) wav = Path.Combine(outDir, "flws_sound.wav");
+            if (!File.Exists(wav))
+            {
+                Console.WriteLine("sound wav missing: " + wav);
+                return;
+            }
+            bool ok = PlaySound(wav, IntPtr.Zero, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+            Console.WriteLine("PlaySound({0}) = {1}", wav, ok);
+        }
+        catch (Exception e) { Console.WriteLine("PlaySound ex: " + e.Message); }
     }
 }
 

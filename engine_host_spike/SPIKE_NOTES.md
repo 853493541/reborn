@@ -1,4 +1,4 @@
-# Spike A — engine host recipe (PASSED 2026-09-21)
+﻿# Spike A — engine host recipe (PASSED 2026-09-21)
 
 Result: MovieEditor engine DLLs hosted in our own C# process play the real
 `重剑技能15_风来吴山红色hd.tani` on the 花萝 actor, including the red PSS SFX.
@@ -90,23 +90,19 @@ Source: `engine_host_spike/SpikeHost.cs`
 Env switches: `SPIKE_EDITOR=0` (skip editor), `SPIKE_SOUND=1` (init Wwise),
 `SPIKE_LOOP=0` (exit after one 8 s pass; default loops until window close).
 
-## Sound (Wwise) — enabled by default
+## Sound (Wwise) — enabled by default, played directly
 
 The tani carries a SoundTag event:
 `skillremake/cangjian/chengyouyou/m2s07cjzhongjianjineng15_fenglaiwushanHD`
 (Wwise event id 3378728138, bank `skillremake`, streamed WEM `161340541` =
 `m2s07cjzhongjianjineng15_fenglaiwushanHD.wav`, Wwise Vorbis, ~2.05 s).
 
-Host wiring:
-
-- `sound = new KG3DSoundCLR(); sound.Init(startupPath, hwnd);` — default ON
-  (`SPIKE_SOUND=0` disables), plus `sound.FrameMove()` in the render loop.
-- Banks come from the VFS via `config.ini [WwiseSetting] BasePath =
-  data/wwiseaudio/GeneratedSoundBanks/Windows` → `.../Base/{Init,skillremake}.bnk`
-  and `.../Base/161340541.wem`.
-- Full chain + extraction recipe: `docs/SOUND_PATH.md`.
-- Local (gitignored) copies: `assets/sound/`.
-
+- Host wires `KG3DSoundCLR.Init` + `FrameMove` (`SPIKE_SOUND=0` disables), but
+  Frida shows the engine never loads the bank nor posts the event, so the host
+  plays the decoded WAV directly with `winmm PlaySound` on animation start and
+  each loop restart (`SPIKE_SOUND_PLAY=0` disables).
+- WAV: `bin64/flws_sound.wav` (ww2ogg -> ffmpeg from WEM 161340541).
+- Full chain, files and decode recipe: `docs/SOUND_PATH.md`.
 ## Camera controls (mirrors MovieEditor `ViewWindow` -> `KGSceneCLR.ExecAction`)
 
 | Input | ExecAction | Meaning |
@@ -152,3 +148,4 @@ act 3/4/12/17/18/30: no movement
 `lParam = ((y & 0xFFFF) << 16) | (x & 0xFFFF)`; drag end sends the same action
 with arg2=0. Enum values from `MovieEditor.EXEACTION` (ROTATE_CAMERA=1,
 ZOOM_VIEW=2, PAN_VIEW=3, ROTATE_VIEW=4, MOUSE_WHEEL=31).
+

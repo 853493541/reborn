@@ -73,9 +73,23 @@ Command:
 `engine_host_spike/SpikeHost.cs`:
 
 - `sound = new KG3DSoundCLR(); sound.Init(startupPath, hwnd);` (enabled by default,
-  `SPIKE_SOUND=0` to disable)
-- `sound.FrameMove()` every frame in the render loop
-- the engine then fires the SoundTag event automatically when the tani plays
+  `SPIKE_SOUND=0` to disable) + `sound.FrameMove()` every frame.
+- **The engine's SoundTag does not fire in the host** — verified with Frida
+  (`tools/frida-audio-agent.js`): Wwise initializes and registers the actor game
+  object (`Actor Wwise`), but there is **no `LoadBank` and no `PostEvent`**. So the
+  sound is played directly:
+  - decoded once offline: `ww2ogg` (`tools/bin/ww2ogg`) → OGG → `ffmpeg` → PCM WAV
+    (`flws_sound.wav`, 180,302 bytes, 1.97 s)
+  - at runtime: `winmm PlaySound(flws_sound.wav, SND_ASYNC|SND_FILENAME)` on
+    animation start and on every loop restart (`SPIKE_SOUND_PLAY=0` disables)
+  - WAV staged next to the host exe (`bin64/flws_sound.wav`) and in `assets/sound/`
+
+Decode recipe (one-off):
+
+```powershell
+& tools\bin\ww2ogg\ww2ogg.exe 161340541.wem --pcb tools\bin\ww2ogg\packed_codebooks_aoTuV_603.bin -o flws_sound.ogg
+& ffmpeg.exe -y -i flws_sound.ogg -acodec pcm_s16le flws_sound.wav
+```
 
 If Wwise is not initialized, the tani still plays but silently. Wwise DLLs
 (`KG3D_WwiseX64.dll`, `fmodex64.dll`) load from `bin64`; banks come from the VFS
