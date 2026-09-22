@@ -17,27 +17,30 @@ Handler `0x18019D510`. Packet pointer `p` (assert `pDoodadData`).
 
 | Off | Size | Meaning | Where it goes |
 |---|---|---|---|
-| `+0x07` | u32 | doodad **template id** | looked up in doodad list |
-| `+0x0B` | u32 | doodad **global id** | passed to scene `AddDoodad` path |
-| `+0x0F` | u8 | flag/camp byte | doodad+0x44 |
-| `+0x10` | u8 | flag byte | doodad+0x48 |
-| `+0x11` | u8 | flag byte | doodad+0x118 |
-| `+0x12` | u8 | **kind/type** (e.g. 0x0E checked later) | doodad+0xAC |
-| `+0x13` | u8 | state byte (passed to `0x1802C7190`) | state |
-| `+0x14` | u32 | NPC template id (0 = none; copies 0x20-byte name into doodad+0x8C) | doodad+0xC0 |
-| `+0x18` | u32 | secondary npc/type id | doodad+0xC4 |
-| `+0x1C` | u32 | value | doodad+0xC8 |
-| `+0x20/+0x24` | u32 ×2 | optional range/param pair (if +0x20 > 0) | `0x1802C7580` |
-| `+0x28` | u8 | flag | doodad+0x108 |
-| `+0x29` | u32 | value | doodad+0xFC |
-| `+0x2D` | u32 | count/owner-related (if > 0, team check) | doodad+0x11C |
-| `+0x31` | u32 | value | doodad+0x120 |
-| `+0x35` | u32 | **link/owner id** (-1 = none) | doodad+0xD0 |
-| `+0x39` | u64 | **packed transform**: bits0-17 = X (18-bit fixed), bits18-35 = Z, bits36-57 = Y (22-bit); bit58 = flag→doodad+0xCC, bit59/bit60 = two bools to scene calls | position/flags |
-| `+0x43` | u8 | spawn broadcast flag | gate for scene list insert |
+| `+0x07` | u32 | doodad **template id** (used as list lookup key) | looked up in doodad list |
+| `+0x0B` | u32 | doodad id (second key; role vs +0x07 not fully proven) | passed to scene `AddDoodad` path |
+| `+0x0F` | u8 | byte stored as doodad field | doodad+0x44 |
+| `+0x10` | u8 | byte stored as doodad field | doodad+0x48 |
+| `+0x11` | u8 | byte stored as doodad field | doodad+0x118 |
+| `+0x12` | u8 | kind/type byte; `0x0E` compared later against doodad+0xAC | doodad+0xAC |
+| `+0x13` | u8 | state byte (same setter as `OnSyncDoodadState` uses) | state |
+| `+0x14` | u32 | NPC template id (0 = none; proven by lookup + 0x20-byte name copy) | doodad+0xC0 |
+| `+0x18` | u32 | u32 stored (role unknown) | doodad+0xC4 |
+| `+0x1C` | u32 | u32 stored (role unknown) | doodad+0xC8 |
+| `+0x20/+0x24` | u32 ×2 | u32 pair, used only when `[+0x20] > 0` | `0x1802C7580` |
+| `+0x28` | u8 | byte stored (role unknown) | doodad+0x108 |
+| `+0x29` | u32 | u32 stored (role unknown) | doodad+0xFC |
+| `+0x2D` | s32 | if > 0 and player+0x20960 set, passed to a check | doodad+0x11C |
+| `+0x31` | u32 | u32 stored (role unknown) | doodad+0x120 |
+| `+0x35` | s32 | id used with two scene calls when `!= -1`; `-1` = none | doodad+0xD0 |
+| `+0x39` | u64 | **packed transform** (bit ranges proven by masks): bits0-17 = X, bits18-35 = Z, bits36-57 = Y; bit58 → doodad+0xCC; bit59/bit60 passed as bools to scene calls | position/flags |
+| `+0x43` | u8 | gate byte: when non-zero the doodad is inserted into a scene list | scene list insert |
 
-X/Z pack in 18 bits with a 7-bit region at bit11 (`(x>>11)&0x7F`) — i.e. region + 11-bit
-sub-cell fixed point. Y is 22-bit.
+Field **offsets/sizes** are read directly from disassembly (HIGH). The **semantics labels**
+in the right column that say "role unknown" are deliberately not guessed. Bit ranges inside
+`+0x39` are proven by the AND/shift masks; that X/Z carry a 7-bit region at bit11
+(`(v>>11)&0x7F` is passed to a scene call) is proven; calling it a "terrain region" is an
+inference (MED).
 
 ## 2. S→C `OnSyncDoodadState` — container state update (HIGH)
 
@@ -87,7 +90,7 @@ Builder inside the doodad handler block (`0x18019DA0F`), assert folded at `0x180
 
 ```
 protocol id = 0x4D          (77)
-frame size  = 0x0F          (15 bytes: 15-byte header only)
+frame size  = 0x0F          (11-byte base header + u32 param @+0xB)
 param       = u32 @+0xB ← [request+7]  (doodad/entity global id)
 ```
 
@@ -97,16 +100,18 @@ Clean builder `0x180175020`.
 
 ```
 protocol id = 0x51          (81)
-frame size  = 0x0F          (15 bytes)
-param       = u32 @+0xB    (money/loot index)     [semantics MED]
+frame size  = 0x0F          (11-byte base header + u32 param @+0xB)
+param       = u32 @+0xB    (money/loot index)     [semantics MED, not proven]
 ```
 
-## 6. Pick / prepare (client-side only) (HIGH)
+## 6. Pick / prepare (scope-limited finding)
 
-No `DoPickPrepare` message exists in either binary — the "prepare" phase is purely the
-client-side interaction timer from `DoodadTemplate` (`OpenPrepareFrame` frames), after
-which the client sends `DoApplyLootList` (0x4D). `PickUpItem`/`CanLoot` are Lua-facing
-functions (`KPlayer::LuaCanLootBoxItem`) that gate the UI, not wire messages.
+`DoPickPrepare` / `OnBreakPickPrepare` / `PickUpItem` were **not found as strings** in the two
+binaries scanned (`JX3ClientX64.exe`, `JX3LogicEditOperationX64.dll`). What is verified: the
+take request is `DoApplyLootList` (0x4D), and the UI gates use Lua-facing
+`KPlayer::LuaCanLootBoxItem` / `CanLoot`. Whether a prepare-phase message exists in another
+module is **unverified**; `OpenPrepareFrame` in `DoodadTemplate` is at least the client-side
+wind-up timer (frames).
 
 ## 7. What this enables
 
@@ -118,10 +123,28 @@ A capture/replay tool can now:
 
 Combined with `DoodadTemplate` (template → drop-table name), logging messages 1+3 during
 play reconstructs the empirical spawn distribution and roll table per container — the
-remaining server-only pieces (chain items A1/A3/D2/G2).
+pieces that are not available locally (chain items A1/A3/D2/G2).
 
 ## 8. Evidence
 
 `proof/netcode/disasm/OnSyncNewDoodad.txt`, `OnSyncDoodadState.txt`,
 `OnSyncLootList.txt`, `OnOpenLootList.txt`, `DoApplyLootList.txt`,
 `apply_loot_build.txt`, `DoLootMoney.txt`.
+
+## 9. Assumptions and scope limits (audit, 2026-09-21)
+
+| Statement | Status |
+|---|---|
+| offsets/sizes of all fields listed in §1–§5 | PROVEN (read from disassembly) |
+| `+0x14` = NPC template id | PROVEN (lookup + 0x20-byte name copy into doodad) |
+| `+0x39` bit ranges, bit58→+0xCC, bits59/60→scene bools | PROVEN (masks/shifts) |
+| X/Z contain a 7-bit sub-field at bit11 | PROVEN (mask+shift+call); "terrain region" is INFERRED |
+| §1 "role unknown" fields (`+0x18,+0x1C,+0x29,+0x31,+0x0F,+0x10,+0x11,+0x28`) | semantics NOT claimed |
+| `+0x0B` vs `+0x07` split of template/global id | PARTIAL — both are lookup/registration keys; which is authoritative is inferred |
+| `+0x2D` "team check" | INFERRED (a non-null manager slot at player+0x20960 gates a call) |
+| `+0x35` "link/owner id" | INFERRED from paired scene calls; only `-1 = none` is proven |
+| `+0x43` "broadcast/spawn gate" | INFERRED (byte gates a list insert) |
+| `DoLootMoney` param semantics | NOT proven |
+| "no prepare message" | SCOPE-LIMITED to the two binaries scanned |
+| `OnSyncLootList` window fields (`+0x12,+0x17,+0x1B`, dest +0x68/0x6C/0x70) | offsets PROVEN; meanings not claimed |
+| drop-table contents/rates, spawn anchors | NOT in this doc (see `JX3_MODE_SPAWN_RULES_SEARCH.md`) |

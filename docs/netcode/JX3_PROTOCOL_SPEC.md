@@ -30,7 +30,9 @@ Transport itself is TCP (winsock via `CoreNet::KNetSocket` in `KBaseX64.dll`); t
 Requests are built as a fixed prefix buffer and passed to `KPlayerClient::SendPacket`
 (`0x1801ACDA0`, caller-supplied total size) or sent as a `KNetBuffer` via `RealSend`.
 
-Observed prefix layout (17-byte scratch path, e.g. `DoRoutineSync` @ `0x1801785D0`):
+Observed prefix layout. **Base header = 11 bytes**; the u32 at `+0x0B` is a protocol-dependent
+parameter that some protocols use (making 15 bytes), others do not (e.g. `DoClientConfirmReady`
+= 11 bytes @ `0x180170E60`; `DoSyncBattlefieldCompetitorsListRequest` = 11 bytes @ `0x1801A9503`).
 
 | Off | Size | Field | Evidence |
 |---|---|---|---|
@@ -38,9 +40,9 @@ Observed prefix layout (17-byte scratch path, e.g. `DoRoutineSync` @ `0x1801785D
 | `+0x02` | u8 | **flags** (bit0 = retransmit, bit1 = carries ack/window) | `and byte [data+2], 0xFC` @ `0x1801AD178`; retransmit sets `or byte [data+2], 3` @ `0x1801AD6C9`; ping sets bit1 @ `0x1801AD995` |
 | `+0x03` | u16 | **send serial** (retransmit path: ring serial) | `mov word [data+3], cx` @ `0x1801AD6DB` |
 | `+0x05` | u16 | **ack serial** (last serial received from peer) | `mov word [data+5], r15w` (our recv serial) @ `0x1801AD6CD`; handshake writes `[this+0xE408]` @ `0x1801AD18C`; log reads it as `RecvSerial` @ `0x1801AD1DD` |
-| `+0x07` | u32 | reserved / send-side field, 0 on control packets | handshake `mov dword [data+7], 0` @ `0x1801AD17F`; ping @ `0x1801AD9B4` |
-| `+0x0B` | u32 | **protocol parameter** (RoleID for handshake, timestamp for ping) | handshake writes `[this+0xE434]` (RoleID) @ `0x1801AD16B`; ping writes tick @ `0x1801AD99C`; log prints `[data+0xB]` as RoleID @ `0x1801AD1E5` |
-| `+0x0F` | — | protocol-specific tail starts here | routine sync: `u16 size` @ `+0xF`, payload @ `+0x11` @ `0x180178641`/`0x180178660`; handshake: 16-byte session key @ `+0xF`, bool @ `+0x1F` @ `0x1801AD183`/`0x1801AD17C` |
+| `+0x07` | u32 | field used by protocol handlers (0 on ping/handshake; template id in `OnSyncNewDoodad`) | handshake/ping write 0 @ `0x1801AD17F`/`0x1801AD9B4`; `OnSyncNewDoodad` reads it as template id @ `0x18019D6B9` |
+| `+0x0B` | u32 | **optional protocol parameter** (present only in 15-byte packets; RoleID for handshake, tick for ping, ids for loot requests) | handshake `[this+0xE434]` @ `0x1801AD16B`; ping tick @ `0x1801AD99C`; `DoApplyLootList` @ `0x18019DA2A` |
+| `+0x0F` | — | protocol-specific tail (only when `+0x0B` param is used) | routine sync: `u16 size` @ `+0xF`, payload @ `+0x11` @ `0x180178641`/`0x180178660`; handshake: 16-byte session key @ `+0xF`, bool @ `+0x1F` @ `0x1801AD183`/`0x1801AD17C` |
 
 Packet size limits: `MAX_EXTERNAL_PACKAGE_SIZE = 0x8000` (32768); `DoRoutineSync`
 rejects `size + 0x11 >= 0x8000` (`0x1801785E9`).

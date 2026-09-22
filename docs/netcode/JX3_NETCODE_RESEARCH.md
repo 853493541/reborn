@@ -202,7 +202,7 @@ Full detail lives in **`docs/netcode/JX3_PROTOCOL_SPEC.md`**; raw transcripts in
 
 | # | Finding | Evidence |
 |---|---|---|
-| 20 | **Frame prefix** (15 B): `u16 id; u8 flags; u16 send_seq; u16 ack_seq; u32 field7; u32 param`, protocol tail from `+0xF` | handshake `0x1801AD161`–`0x1801AD18C`; routine sync `0x18017862F`; ping `0x1801AD990` |
+| 20 | **Frame prefix**: base **11 B** = `u16 id; u8 flags; u16 send_seq; u16 ack_seq; u32 field7`; protocols that need it add `u32 param` at `+0xB` (15 B total), tail from `+0xF` | handshake `0x1801AD161`–`0x1801AD18C`; routine sync `0x18017862F`; ping `0x1801AD990`; 11-B examples: proto 2 `0x180170E60`, proto 0x164 `0x1801A9503` |
 | 21 | **Reliability layer**: 2048-slot unconfirmed ring (`this+0xE448`, 0x800 mask), cumulative ack via frame `+0x5`, retransmit with `flags |= 3`, "Unconfirm send buffer full!" | `0x1801AD5BD`–`0x1801AD6E2`, `0x1801AD49E` |
 | 22 | **Ping = protocol 6 every 3000 ms** (`0xBB8`), payload = u32 tick at `+0xB`, 15 bytes | `0x1801AD95B`, `0x1801AD990` |
 | 23 | **Dead timeout = 12000 ms** (`0x2EE0`), i.e. ping interval × 4 as the assert states | `0x1801AD948`, `0x1801ADB3A` |

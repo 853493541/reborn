@@ -1,4 +1,4 @@
-# 绝境战场 / 沙漠风暴 — ground loot system (PUBG mode)
+# 绝境战场 / 沙漠风暴 — ground loot system (PUBG-style, per user description)
 
 **Branch:** `research/jx3-netcode`
 **Date:** 2026-09-21
@@ -7,24 +7,26 @@
 **Evidence:** `proof/netcode/mode_juejing/mode_doodads.txt`, `mode_doodad_stats.txt`,
 `doodad_tables_parse.txt`, `loot_symbols.txt`, `drop_paths.txt`.
 
-The BR mode's internal system name is **沙漠风暴** ("desert storm"); 绝境 maps run it.
-Loot is not hard-placed in the client map data — it is **doodad templates + server-side
-spawn points + drop tables**. Everything below is what the client ships.
+The name the **game data** uses for the BR systems is **沙漠风暴** (this is an evidence-backed
+label: the `DoodadTemplate` sets, doodad script paths and cooldown notes use it — not a claim
+about UI naming, where the modes appear as 龙门绝境/绝境 etc.). Maps: `龙门寻宝` (DisplayName
+龙门绝境), 白龙绝境, 天原绝境, plus 海岛/洱海/林海 which are out of scope here.
 
 ---
 
 ## 0. Answer: do we know where loot spawns?
 
-**No — not from client files.** The spawn positions/density are server-side. What we
-know and do not know, precisely:
+**No — not from client files.** Nothing local contains the spawn positions/density; evidence
+indicates they are authored server-side (exporter structures + absence from every local store).
+What we know and do not know, precisely:
 
 | Question | Answer | Confidence |
 |---|---|---|
-| Which loot can spawn? | 423 templates (tier boxes, consumables, specials, gatherable nodes, death bags) | HIGH |
-| How does a container behave? | interaction frames, loot window, despawn, respawn, pick-up rules | HIGH |
+| Which loot can spawn? | 423 container rows across the two `沙漠风暴` sets (255 + 168) | HIGH |
+| How does a container behave? | interaction frames, loot window, despawn, respawn, pick-up rules | HIGH (fields), frame→seconds unverified |
 | Which drop table does each container use? | 97 named tables (`沙漠风暴/equipment1.tab`, ...) | HIGH |
-| What is inside a drop table (item + rate)? | unknown — tables not shipped in client pak | — |
-| **Where do containers appear on the map?** | **unknown — spawn anchors are server map logic** | — |
+| What is inside a drop table (item + rate)? | unknown — tables not present in client pak | — |
+| **Where do containers appear on the map?** | **unknown — spawn anchors are in server map logic** | — |
 | How many per anchor, respawn timing per anchor? | unknown — server mode script | — |
 
 Exhausted static avenues (all 0 hits):
@@ -65,21 +67,21 @@ Loot-relevant fields:
 
 | Field | Meaning |
 |---|---|
-| `MapName=沙漠风暴` | the BR template set (423 rows incl. 寻宝模式 variants) |
-| `Kind=7` | loot container (349 rows); other kinds: 8 (42), 0 (24), 3, 2, 14 |
+| `MapName=沙漠风暴` | the BR template set: **255 rows** (plus 168 rows in `沙漠风暴_寻宝模式`, 12 in `沙漠公益活动`; total 435) |
+| `Kind=7` | loot container (349 rows of the 423 in the two 沙漠风暴 sets); other kinds: 8 (42), 0 (24), 3, 2, 14 |
 | `ClassID` | links to `DoodadClass.tab` class drops (corpse/mining/herb classes) |
 | `DropN` + `CountN` | up to 10 **drop-table** references with stack counts |
 | `CanOperateEach=1` | each container lootable once (per player) |
 | `OpenPrepareFrame` | interaction wind-up frames before the loot opens (8 default; 48/96 for gatherables) |
 | `OverLootFrame=320` | loot window/ownership window (1440 for gatherables) |
-| `ReviveDelay` | container respawn delay (180 frames ≈ 6 s on 4 templates) |
-| `RemoveDelay=2880` | node despawn (砂石/灌木/瓦罐/枯树 ≈ 96 s at 30 fps) |
-| `MoneyMin/Max/DropRate` | coin drops (`MoneyDropRate=1048576` = 100%) |
+| `ReviveDelay` | container respawn delay (180 frames on 4 templates; **frame→seconds not verified**) |
+| `RemoveDelay=2880` | node despawn (砂石/灌木/瓦罐/枯树; **frame rate not verified** — would be 96 s at 30 fps) |
+| `MoneyMin/Max/DropRate` | coin drops (`MoneyDropRate=1048576` = 100%, engine fixed-point) |
 | `CanPick` / `BarText` | interaction verb: 拾取 (254), 打开, 操作, 逃出生天, 打破侠客内力封锁 |
-| `Script` | client-side doodad script hook (not shipped in the client pak) |
-| `IndependentDrop*` | independent per-player rolls (all 0 for BR rows — randomness is in the drop tables/spawner) |
+| `Script` | doodad script hook path (files not present in the client pak — probed) |
+| `IndependentDrop*` | independent per-player roll columns (all 0 for BR rows; randomness is in the drop tables/spawner) |
 
-## 2. What spawns (423 沙漠风暴 templates)
+## 2. What spawns (423 rows in the two 沙漠风暴 sets)
 
 **Tiered gear boxes** (the main ground loot): 一阶/二阶/三阶/天阶 × 装备/武器
 (`equipment1..3`, `weapon1..3`, `chengzhuang`, `chengwu`), each with per-map variants:
@@ -121,7 +123,7 @@ So the spawner distribution is server-side: the mode script picks spawn points (
 anchor sets per map) and rolls which template lands on each. The client just receives
 `OnSyncNewDoodad` / `OnSyncDoodadState` / `OnSyncSimpleObject` and renders them.
 
-## 4. Drop tables (server-side, referenced by name)
+## 4. Drop tables (referenced by name; rows not present locally)
 
 97 distinct `DropN` tables are referenced, e.g.:
 
@@ -133,31 +135,38 @@ hide.tab, fanyinyan.tab, heilianhua.tab, tuoling.tab, feiting.tab, ...
 ```
 
 All content paths were probed across 15 VFS prefixes (`settings\`, `沙漠风暴\`,
-`Doodad\`, `Drop\`, ...) — **0 extracted**: drop tables, like mode scripts, are
-server-only. What the client knows is *which table* each container uses, not its rows.
+`Doodad\`, `Drop\`, ...) — **0 extracted**. Conclusion (evidence-scoped): the tables are
+**not present in the client PakV4 or any other local store**; they are most likely
+server-side. What the client ships is *which table* each container uses, not its rows.
 
-## 5. Client interaction + protocol (visible)
+## 5. Client interaction + protocol (verified names only)
+
+Verified strings (in `JX3ClientX64.exe` / `JX3LogicEditOperationX64.dll`):
+
 ```
-CanLoot / CanLootBoxItem / DoPickPrepare / OnBreakPickPrepare / OnBreakPicking
-PickUpItem / OverLootFrame / PlayerBeginPickAnimationID / PlayerEndPickAnimationID
-OnOpenLootList / OnSyncLootList / OnCloseLootWindow / OnSyncDropItem
+CanLoot / CanLootBoxItem / KPlayer::LuaCanLootBoxItem   (UI gating)
+OnOpenLootList / OnSyncLootList / OnCloseLootWindow / OnSyncDropItem*  (*coin-shop handler, not loot)
+DoApplyLootList (proto 0x4D) / DoLootMoney (proto 0x51) (C→S take)
+OnAddItemNotify / OnSyncItemData                        (inventory sync)
 MaxLootRange (MapList 绝境 rows = 5) / nLootIndex / nLootItemIndex / LootMode
 ```
 
-Flow: client asks to pick (`DoPickPrepare`) → server validates range/ownership/loot mode
-→ returns loot list (`OnSyncLootList`) → client opens the loot window (`OverLootFrame`),
-player takes items (`PickUpItem`), server syncs inventory (`OnAddItemNotify` etc.).
+`DoPickPrepare` / `OnBreakPickPrepare` / `PickUpItem` are **not present as strings in those
+two binaries** (scope-limited search — not proof they don't exist elsewhere). Verified flow:
+client side plays the `OpenPrepareFrame` wind-up, sends `DoApplyLootList` (0x4D) for the
+container, server answers `OnSyncLootList`, taking an entry is what fills the loot window;
+inventory updates come via `OnAddItemNotify`/`OnSyncItemData`.
 
 ## 6. Summary of the randomness model
 
-| Layer | Where | Client-visible? |
-|---|---|---|
-| which spawn anchors exist on the map | server map logic (`CustomObject` / anchor points) | no |
-| which template lands on an anchor | server mode script (spawner rolls) | no |
-| which item comes out of a container | drop table `沙漠风暴/<tier>.tab` | only table name |
-| identification/decoy behaviour | container template + client script hook names | names only (未知/已知/伪传) |
-| interaction, timing, respawn | `DoodadTemplate` fields (`OpenPrepareFrame`, `OverLootFrame`, `ReviveDelay`, `RemoveDelay`) | yes |
-| pickup rules | `MapList` (`MaxLootRange=5`, item/skill ban masks) + loot protocol | yes |
+| Layer | Where | Client-visible? | Confidence |
+|---|---|---|---|
+| which spawn anchors exist on the map | server map logic (`CustomObject` / anchor points) | no | MED — exporter writes such files; no runtime read found |
+| which template lands on an anchor | server mode script (spawner rolls) | no | INFERRED — not directly observed |
+| which item comes out of a container | drop table `沙漠风暴/<tier>.tab` | only table name | HIGH for the reference; rows not local |
+| identification/decoy behaviour | container template + script hook names | names only (未知/已知/伪传) | MED |
+| interaction, timing, respawn | `DoodadTemplate` fields (`OpenPrepareFrame`, `OverLootFrame`, `ReviveDelay`, `RemoveDelay`) | yes | HIGH (fields), frame→seconds unverified |
+| pickup rules | `MapList` (`MaxLootRange=5`, item/skill ban masks) + loot protocol | yes | HIGH |
 
 To reconstruct actual spawn density/positions and drop rates, the remaining options are
 runtime: capture `OnSyncNewDoodad`/`OnSyncDoodadState` while playing the mode, or read
@@ -281,8 +290,8 @@ python tools\netcode\extract_pak_paths.py --list proof\netcode\mode_juejing\pak_
 python tools\netcode\mine_item_scripts.py    # item pool catalog from the extraction cache
 ```
 
-Evidence: `mode_doodads.txt` (435 mode rows), `mode_doodad_stats.txt`
-(kind/bar/prepare/frame stats + 97 drop tables + 25 script hooks),
+Evidence: `mode_doodads.txt` (435 rows incl. `沙漠公益活动`; 423 in the two `沙漠风暴` sets),
+`mode_doodad_stats.txt` (kind/bar/prepare/frame stats + 97 drop tables + 25 script hooks),
 `doodad_tables_parse.txt` (DoodadClass + samples), `loot_symbols.txt` (loot protocol),
 `drop_paths.txt` / `drop_ctx.txt` (drop-file references),
 `mode_item_scripts.txt` + `mode_item_catalog.txt` (item pool),

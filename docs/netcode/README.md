@@ -32,6 +32,8 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `SKILL_DATA_EXTRACTION.md`, `SKILL_MOTION_METHOD.md` | skill/asset extraction methods |
 | `JX3_CAMERA_RESEARCH.md`, `REBORN_CAMERA_SPEC.md` | camera behaviour research + spec |
 | `JX3_MODE_*.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md` | 绝境 mode loading and loot protocol layouts |
+| `JX3_DROPS_RESEARCH.md` | **drops session record (audited)**: containers, tables, wire formats, dead ends, confidence |
+| `JX3_MODE_LOOT_SYSTEM.md`, `JX3_MODE_SPAWN_RULES_SEARCH.md` | loot container schema / spawn-rule hunt + dead-end log |
 
 ## Tools (`tools/netcode/`)
 
@@ -44,6 +46,9 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `lua51_constants.py` | JX3 Lua 5.1 bytecode constant dumper (32-bit header, size_t=4) |
 | `measure_skill_motion.py`, `dump_motion_floats.py` | tani/ani motion extraction |
 | `character_mesh_census.py`, `measure_character_size.py` | mesh height census / unit calibration |
+| `loot/capture.py` | loot/doodad capture decoder (spawn positions, rolled contents, takes) + selftest |
+| `extract_pak_paths.py`, `mine_item_scripts.py`, `dump_mode_inventory.py` | PakV4 path extraction, item-pool catalog, container inventory |
+| `lua51_dump.py`, `gbk_grep.py`, `search_tree.py` | Lua 5.1 bytecode proto/const dump, GBK/UTF-16 binary grep, tree token search |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 
 ## Evidence (`proof/netcode/`)

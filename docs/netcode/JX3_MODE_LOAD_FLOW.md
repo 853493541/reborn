@@ -195,14 +195,14 @@ Evidence: `proof/netcode/mode_juejing/juejing_maplist_rows.txt`,
 
 The mode state arrives as a hybrid of sectioned initial sync + pull + subscriptions:
 
-| Mechanism | Evidence | Meaning |
+| Mechanism | Evidence | Meaning (confidence) |
 |---|---|---|
-| **Sectioned initial sync** | client sends protocol **4** (11-byte, header only) from `0x1801A3FD0`; server closes with `OnSyncRoleDataOver` logging `Sync role data over !` (`0x1801A3DE3`) | role data arrives in chunks with acks, not one burst |
-| **Mode role data** | `OnSyncBFRoleData` (`0x180193AC0`): player id `+0x0F`, u32 `+0x13`, array start `+0x17`, count u8 `+0x6F` → manager vtable `+0x13C8` | per-player BR data (camp/side/rank…) applied incrementally |
-| **Competitor list is pull-based** | `DoSyncBattlefieldCompetitorsListRequest` (`0x1801A9470`) sends protocol **0x164** (11-byte) when cached scene version (`scene+0xF0`) is older than the packet's version byte `+0x11` | client asks only when stale |
-| **Competitor cooldowns are subscribed** | `DoSyncBattlefieldCompetitorSkillCDStateRequest` / `DoCancelSync...` | per-competitor CD sync on/off |
-| **Periodic refresh** | `KBattlefieldCache::AddNextSyncTime` | timer-driven re-sync |
-| **Continuous world replication** | `OnSyncNewPlayer` / `OnSyncNewNpc` / `OnSyncEntity` / `OnSyncSimpleObject` | entity/AOI streams independently |
+| **Sectioned initial sync** | client sends protocol **4** (11-byte, header only) from `0x1801A3FD0`; server closes with `OnSyncRoleDataOver` logging `Sync role data over !` (`0x1801A3DE3`) | role data is chunked and terminated by an "over" message (HIGH for the facts; "acks per chunk" MED) |
+| **Mode role data** | `OnSyncBFRoleData` (`0x180193AC0`): `+0x0F` passed to entity lookup, `+0x13` u32, `+0x17` pointer, `+0x6F` count byte → manager vtable `+0x13C8` | per-player BR data applied incrementally (offsets HIGH; "player id"/camp-side meaning MED) |
+| **Competitor list is pull-based** | `DoSyncBattlefieldCompetitorsListRequest` (`0x1801A9470`) sends protocol **0x164** (11-byte) when `scene+0xF0` is below the packet byte `+0x11` | compare-and-request logic HIGH; labels "cached version" MED |
+| **Competitor cooldowns are subscribed** | `DoSyncBattlefieldCompetitorSkillCDStateRequest` / `DoCancelSync...` | per-competitor CD sync on/off (HIGH: message names) |
+| **Periodic refresh** | `KBattlefieldCache::AddNextSyncTime` | timer-driven re-sync (HIGH: name; interval unknown) |
+| **Continuous world replication** | `OnSyncNewPlayer` / `OnSyncNewNpc` / `OnSyncEntity` / `OnSyncSimpleObject` | entity/AOI streams independently (HIGH: handlers exist) |
 
 Expected order after `DoClientConfirmReady` (proto 2) / `DoApplyEnterScene` (proto 3):
 

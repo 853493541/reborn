@@ -14,7 +14,8 @@
 
 | Item | Status | Evidence / notes |
 |---|---|---|
-| Maps (5 BR maps), map→tier table | DONE | `MapList.tab`, `CheckTreasureBattleFieldMap.lua` dump |
+| Maps (5 BR maps) | DONE | `MapList.tab` |
+| map→tier/config mapping | PARTIAL / MED | inferred from constant clustering in `CheckTreasureBattleFieldMap.lua` bytecode (`proof/netcode/mode_juejing/CheckTreasureBattleFieldMap.dump.txt`); not a decoded table |
 | Loot template set (423 containers, timings, drop refs) | DONE | `DoodadTemplate.tab` (MapName=沙漠风暴) |
 | Drop-table **names** (97) | DONE | `mode_doodad_stats.txt` |
 | Drop-table **contents/rates** | SERVER | not in PakV4 / logical files / launcher cache |
