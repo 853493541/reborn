@@ -7,6 +7,23 @@ recover their values locally?
 
 ---
 
+## 0. How to read this (status, plain language)
+
+| Thing | Do we have it? |
+|---|---|
+| **Rule shape** — anchor fields (`AnchorID/X/Y/Z/Dir/RollDir`), refresh fields (`IsRandom/ReviveID/Min/Max`), per-map counters, file names | YES (recovered from binaries) |
+| **Runtime wire format** — how a spawned container + its rolled loot are delivered to the client | YES, fully decoded (`JX3_LOOT_PROTOCOL_LAYOUTS.md`), decoder built and tested (`tools/netcode/loot/`) |
+| **Byte layout of the server's static map files** (`AnchorPointList.tab`, `DoodadReviveList.tab`, `.land`/`.pland`) | NO — only the field names/schema are known; the loader has not been reversed because **no sample file exists locally** |
+| **Actual values** — anchor coordinates, refresh counts/radii, weights, drop-table rows/rates | NO — not in any local store |
+
+So, in one sentence: **we know the shape of the rules and can parse them when they arrive at
+runtime, but the values themselves must come from either the server's map bundle (files) or a
+live capture (messages).** If a server file is obtained, a parser can be written for it
+(disassemble the loader + sample file); if a capture is obtained, the existing decoder already
+extracts positions and rolled loot.
+
+---
+
 ## 1. What the rules look like (recovered from binaries, HIGH)
 
 The editor/logic module carries the authoring structures:
