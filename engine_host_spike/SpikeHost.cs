@@ -227,7 +227,7 @@ internal static class SpikeHost
             while (pending.Count > 0)
             {
                 int[] cmd = pending.Dequeue();
-                if (cmd[0] == 4 || cmd[0] == 3 || cmd[0] == 2)
+                if (cmd[0] == 1 || cmd[0] == 4 || cmd[0] == 3 || cmd[0] == 2)
                 {
                     scene.ExecAction(cmd[0], cmd[1], 0, makeLParam(cmd[2], cmd[3]));
                 }
