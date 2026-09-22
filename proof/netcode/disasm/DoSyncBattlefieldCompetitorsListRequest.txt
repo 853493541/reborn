@@ -1,0 +1,222 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::DoSyncBattlefieldCompetitorsListRequest'
+# image base 0x180000000
+
+## xref @ 0x1801a9517 -> 0x180770bb8 'KPlayerClient::DoSyncBattlefieldCompetitorsListRequest'  fn start 0x1801a9470
+  0x1801a9470: push     rbx
+  0x1801a9472: sub      rsp, 0x50
+  0x1801a9476: mov      rax, qword ptr [rip + 0x80cda3]
+  0x1801a947d: xor      rax, rsp
+  0x1801a9480: mov      qword ptr [rsp + 0x40], rax
+  0x1801a9485: mov      r8d, dword ptr [rdx + 0xd]
+  0x1801a9489: mov      rbx, rdx
+  0x1801a948c: mov      edx, dword ptr [rdx + 9]
+  0x1801a948f: mov      rcx, qword ptr [rip + 0x817e8a]
+  0x1801a9496: call     0x18012b750
+  0x1801a949b: mov      r11, rax
+  0x1801a949e: test     rax, rax
+  0x1801a94a1: jne      0x1801a94e1
+  0x1801a94a3: lea      rax, [rip + 0x5cf46e]  ; 'KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList'
+  0x1801a94aa: mov      r9d, 0x737d
+  0x1801a94b0: lea      r8, [rip + 0x5bd8b9]  ; 'pClientScene'
+  0x1801a94b7: lea      rdx, [rip + 0x744fea]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801a94be: mov      qword ptr [rsp + 0x20], rax
+  0x1801a94c3: mov      ecx, 3
+  0x1801a94c8: call     qword ptr [rip + 0x5bbd92]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801a94ce: mov      rcx, qword ptr [rsp + 0x40]
+  0x1801a94d3: xor      rcx, rsp
+  0x1801a94d6: call     0x18073aa10
+  0x1801a94db: add      rsp, 0x50
+  0x1801a94df: pop      rbx
+  0x1801a94e0: ret      
+  0x1801a94e1: movzx    eax, byte ptr [rbx + 0x11]
+  0x1801a94e5: cmp      qword ptr [r11 + 0xf0], rax
+  0x1801a94ec: jae      0x1801a952d
+  0x1801a94ee: mov      eax, 0x164
+  0x1801a94f3: lea      rdx, [rsp + 0x30]
+  0x1801a94f8: mov      r8d, 0xb
+  0x1801a94fe: mov      word ptr [rsp + 0x30], ax
+  0x1801a9503: lea      rcx, [rip + 0x817eb6]
+  0x1801a950a: call     0x1801acda0
+  0x1801a950f: test     eax, eax
+  0x1801a9511: jne      0x1801a95eb
+  0x1801a9517: lea      rax, [rip + 0x5c769a]  ; 'KPlayerClient::DoSyncBattlefieldCompetitorsListRequest'
+  0x1801a951e: mov      r9d, 0x2920
+  0x1801a9524: lea      r8, [rip + 0x746dbd]  ; 'bRetCode'
+  0x1801a952b: jmp      0x1801a94b7
+  0x1801a952d: xor      r10d, r10d
+  0x1801a9530: test     al, al
+  0x1801a9532: je       0x1801a95c6
+  0x1801a9538: lea      rdx, [rbx + 0x12]
+  0x1801a953c: nop      dword ptr [rax]
+  0x1801a9540: mov      r9, qword ptr [r11 + 0xe8]
+  0x1801a9547: mov      rcx, r9
+  0x1801a954a: mov      rax, qword ptr [r9 + 8]
+  0x1801a954e: cmp      byte ptr [rax + 0x19], 0
+  0x1801a9552: jne      0x1801a956f
+  0x1801a9554: mov      r8d, dword ptr [rdx]
+  0x1801a9557: cmp      dword ptr [rax + 0x20], r8d
+  0x1801a955b: jae      0x1801a9563
+  0x1801a955d: mov      rax, qword ptr [rax + 0x10]
+  0x1801a9561: jmp      0x1801a9569
+  0x1801a9563: mov      rcx, rax
+  0x1801a9566: mov      rax, qword ptr [rax]
+  0x1801a9569: cmp      byte ptr [rax + 0x19], 0
+  0x1801a956d: je       0x1801a9557
+  0x1801a956f: cmp      byte ptr [rcx + 0x19], 0
+  0x1801a9573: jne      0x1801a957c
+  0x1801a9575: mov      eax, dword ptr [rcx + 0x20]
+  0x1801a9578: cmp      dword ptr [rdx], eax
+  0x1801a957a: jae      0x1801a957f
+  0x1801a957c: mov      rcx, r9
+  0x1801a957f: cmp      rcx, r9
+  0x1801a9582: je       0x1801a95b2
+  0x1801a9584: mov      rax, qword ptr [rdx + 8]
+  0x1801a9588: mov      qword ptr [rcx + 0x48], rax
+  0x1801a958c: mov      rax, qword ptr [rdx + 0x10]
+  0x1801a9590: mov      qword ptr [rcx + 0x50], rax
+  0x1801a9594: mov      eax, dword ptr [rdx + 0x18]
+  0x1801a9597: mov      dword ptr [rcx + 0x58], eax
+  0x1801a959a: mov      eax, dword ptr [rdx + 4]
+  0x1801a959d: mov      dword ptr [rcx + 0x5c], eax
+  0x1801a95a0: mov      eax, dword ptr [rdx + 0x1c]
+  0x1801a95a3: mov      dword ptr [rcx + 0x60], eax
+  0x1801a95a6: mov      eax, dword ptr [rdx + 0x20]
+  0x1801a95a9: mov      dword ptr [rcx + 0x64], eax
+  0x1801a95ac: mov      eax, dword ptr [rdx + 0x24]
+  0x1801a95af: mov      dword ptr [rcx + 0x68], eax
+  0x1801a95b2: movzx    eax, byte ptr [rbx + 0x11]
+  0x1801a95b6: inc      r10d
+  0x1801a95b9: add      rdx, 0x28
+  0x1801a95bd: cmp      r10d, eax
+  0x1801a95c0: jl       0x1801a9540
+  0x1801a95c6: mov      rcx, qword ptr [rip + 0x817d5b]
+  0x1801a95cd: test     rcx, rcx
+  0x1801a95d0: je       0x1801a95eb
+  0x1801a95d2: mov      rax, qword ptr [rcx]
+  0x1801a95d5: call     qword ptr [rax + 0x14e8]
+  0x1801a95db: mov      rcx, qword ptr [rip + 0x817d46]
+  0x1801a95e2: mov      rax, qword ptr [rcx]
+  0x1801a95e5: call     qword ptr [rax + 0x14f0]
+  0x1801a95eb: mov      rcx, qword ptr [rsp + 0x40]
+  0x1801a95f0: xor      rcx, rsp
+  0x1801a95f3: call     0x18073aa10
+  0x1801a95f8: add      rsp, 0x50
+  0x1801a95fc: pop      rbx
+  0x1801a95fd: ret      
+  0x1801a95fe: int3     
+  0x1801a95ff: int3     
+  0x1801a9600: mov      qword ptr [rsp + 8], rbx
+  0x1801a9605: mov      qword ptr [rsp + 0x18], rsi
+  0x1801a960a: mov      qword ptr [rsp + 0x20], rdi
+  0x1801a960f: push     rbp
+  0x1801a9610: push     r12
+  0x1801a9612: push     r13
+  0x1801a9614: push     r14
+  0x1801a9616: push     r15
+  0x1801a9618: lea      rbp, [rsp - 0x37]
+  0x1801a961d: sub      rsp, 0x100
+  0x1801a9624: mov      rax, qword ptr [rip + 0x80cbf5]
+  0x1801a962b: xor      rax, rsp
+  0x1801a962e: mov      qword ptr [rbp + 0x27], rax
+  0x1801a9632: mov      r15, rdx
+  0x1801a9635: test     rdx, rdx
+  0x1801a9638: jne      0x1801a966a
+  0x1801a963a: mov      r9d, 0x8b4e
+  0x1801a9640: lea      r8, [rip + 0x5cacd9]  ; 'pSync'
+  0x1801a9647: lea      rax, [rip + 0x5d369a]  ; 'KPlayerClient::OnSyncVariableInfoFromDungeonPlayerList'
+  0x1801a964e: mov      qword ptr [rsp + 0x20], rax
+  0x1801a9653: lea      rdx, [rip + 0x744e4e]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801a965a: mov      ecx, 3
+  0x1801a965f: call     qword ptr [rip + 0x5bbbfb]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801a9665: jmp      0x1801a98fc
+  0x1801a966a: movzx    eax, byte ptr [rdx + 0x15]
+  0x1801a966e: imul     rcx, rax, 0x4d
+  0x1801a9672: add      rcx, 0x16
+  0x1801a9676: cmp      r8, rcx
+  0x1801a9679: je       0x1801a968a
+  0x1801a967b: mov      r9d, 0x8b4f
+  0x1801a9681: lea      r8, [rip + 0x5d3698]  ; 'nSize == sizeof(S2C_SYNC_VARIABLE_INFO_FROM_DUNGEON_PLAYER_LIST) + sizeof(S2C_SYNC_VARIABLE_INFO_FROM_DUNGEON_PLAYER_LIST::COMPETITOR_INFO) * pSync->byCount'
+  0x1801a9688: jmp      0x1801a9647
+  0x1801a968a: mov      r8d, dword ptr [rdx + 0xd]
+  0x1801a968e: mov      edx, dword ptr [rdx + 9]
+  0x1801a9691: mov      rcx, qword ptr [rip + 0x817c88]
+  0x1801a9698: call     0x18012b750
+  0x1801a969d: mov      rdi, rax
+  0x1801a96a0: test     rax, rax
+  0x1801a96a3: jne      0x1801a96b4
+  0x1801a96a5: mov      r9d, 0x8b52
+  0x1801a96ab: lea      r8, [rip + 0x5bd6be]  ; 'pClientScene'
+  0x1801a96b2: jmp      0x1801a9647
+  0x1801a96b4: mov      eax, dword ptr [r15 + 0x11]
+  0x1801a96b8: mov      dword ptr [rdi + 0x108], eax
+  0x1801a96be: add      rdi, 0xf8
+  0x1801a96c5: mov      rsi, qword ptr [rdi]
+  0x1801a96c8: mov      rbx, qword ptr [rsi + 8]
+  0x1801a96cc: cmp      byte ptr [rbx + 0x19], 0
+  0x1801a96d0: jne      0x1801a9705
+  0x1801a96d2: nop      dword ptr [rax]
+  0x1801a96d6: nop      word ptr [rax + rax]
+  0x1801a96e0: mov      r8, qword ptr [rbx + 0x10]
+  0x1801a96e4: mov      rdx, rdi
+  0x1801a96e7: mov      rcx, rdi
+  0x1801a96ea: call     0x180124f10
+  0x1801a96ef: mov      rcx, rbx
+  0x1801a96f2: mov      rbx, qword ptr [rbx]
+  0x1801a96f5: mov      edx, 0x78
+  0x1801a96fa: call     0x18073aa3c
+  0x1801a96ff: cmp      byte ptr [rbx + 0x19], 0
+  0x1801a9703: je       0x1801a96e0
+  0x1801a9705: mov      qword ptr [rsi + 8], rsi
+  0x1801a9709: mov      qword ptr [rsi], rsi
+  0x1801a970c: mov      qword ptr [rsi + 0x10], rsi
+  0x1801a9710: xor      r13d, r13d
+  0x1801a9713: mov      qword ptr [rdi + 8], r13
+  0x1801a9717: mov      r14d, r13d
+  0x1801a971a: cmp      byte ptr [r15 + 0x15], r13b
+  0x1801a971e: jbe      0x1801a98d7
+  0x1801a9724: mov      qword ptr [rbp - 0x79], rdi
+  0x1801a9728: lea      r12, [r15 + 0x4a]
+  0x1801a972c: nop      dword ptr [rax]
+  0x1801a9730: xorps    xmm0, xmm0
+  0x1801a9733: movups   xmmword ptr [rbp - 0x29], xmm0
+  0x1801a9737: movups   xmmword ptr [rbp - 0x19], xmm0
+  0x1801a973b: movups   xmmword ptr [rbp - 9], xmm0
+  0x1801a973f: movups   xmmword ptr [rbp + 7], xmm0
+  0x1801a9743: movups   xmmword ptr [rbp + 0x17], xmm0
+  0x1801a9747: movsxd   rax, r14d
+  0x1801a974a: imul     rcx, rax, 0x4d
+  0x1801a974e: lea      rdx, [r15 + 0x1a]
+  0x1801a9752: add      rdx, rcx
+  0x1801a9755: mov      r8d, 0x20
+  0x1801a975b: lea      rcx, [rbp - 0x29]
+  0x1801a975f: call     qword ptr [rip + 0x5bcbab]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1801a9765: mov      byte ptr [rbp - 0xa], 0
+  0x1801a9769: mov      rax, qword ptr [r12 - 8]
+  0x1801a976e: mov      qword ptr [rbp - 9], rax
+  0x1801a9772: mov      rax, qword ptr [r12]
+  0x1801a9776: mov      qword ptr [rbp - 1], rax
+  0x1801a977a: mov      eax, dword ptr [r12 + 8]
+  0x1801a977f: mov      dword ptr [rbp + 7], eax
+  0x1801a9782: mov      eax, dword ptr [r12 - 0x10]
+  0x1801a9787: mov      dword ptr [rbp + 0xb], eax
+  0x1801a978a: mov      eax, dword ptr [r12 + 0xc]
+  0x1801a978f: mov      dword ptr [rbp + 0x13], eax
+  0x1801a9792: mov      eax, dword ptr [r12 + 0x10]
+  0x1801a9797: mov      dword ptr [rbp + 0x17], eax
+  0x1801a979a: mov      eax, dword ptr [r12 + 0x14]
+  0x1801a979f: mov      dword ptr [rbp + 0x1b], eax
+  0x1801a97a2: movzx    eax, byte ptr [r12 + 0x18]
+  0x1801a97a8: mov      dword ptr [rbp + 0x1f], eax
+  0x1801a97ab: mov      eax, dword ptr [r12 - 0xc]
+  0x1801a97b0: mov      dword ptr [rbp + 0xf], eax
+  0x1801a97b3: mov      esi, dword ptr [r12 - 0x34]
+  0x1801a97b8: movaps   xmm0, xmmword ptr [rbp - 0x29]
+  0x1801a97bc: movups   xmmword ptr [rbp - 0x69], xmm0
+  0x1801a97c0: movaps   xmm0, xmmword ptr [rbp - 0x19]
+  0x1801a97c4: movups   xmmword ptr [rbp - 0x59], xmm0
+  0x1801a97c8: movaps   xmm0, xmmword ptr [rbp - 9]
+  0x1801a97cc: movups   xmmword ptr [rbp - 0x49], xmm0
+  0x1801a97d0: .byte    0x0f
+  0x1801a97d1: .byte    0x28
+  0x1801a97d2: .byte    0x45
+

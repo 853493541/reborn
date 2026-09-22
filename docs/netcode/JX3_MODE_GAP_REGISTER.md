@@ -55,6 +55,13 @@
 | `GetBattleFieldObjective` / `GetBattleFieldPQInfo` | client-side objective/queue data model |
 | `BattleFieldIncomePunish` | economy rule values |
 
+**Recovered since this register was written** (see `JX3_MODE_LOAD_FLOW.md` §8):
+`DoSyncBattlefieldCompetitorsListRequest` = protocol **0x164** (pull on staleness);
+`OnSyncBFRoleData` fields (`+0xF` player id, `+0x13`, array `+0x17`, count `+0x6F`);
+sectioned initial sync = protocol **4** acks + `OnSyncRoleDataOver` terminator.
+Still missing from this table: competitor base/variable/CD/buff/stat record layouts,
+room create/force-start/side payloads.
+
 ## 4. Round / phase logic
 
 | Item | Status |

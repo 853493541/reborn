@@ -190,3 +190,31 @@ Evidence: `proof/netcode/mode_juejing/juejing_maplist_rows.txt`,
 `pvpfield_and_scriptfile.txt`, `scene_load_symbols.txt`, `mode_load_symbols.txt`,
 `tab_paths.txt`, `disasm/onswitchmap.txt`, `disasm/apply_enter_scene.txt`,
 `disasm/client_ready.txt`, `disasm/confirm_enter_queue.txt`.
+
+## 8. Post-enter data flow — is everything sent at once? **No** (HIGH)
+
+The mode state arrives as a hybrid of sectioned initial sync + pull + subscriptions:
+
+| Mechanism | Evidence | Meaning |
+|---|---|---|
+| **Sectioned initial sync** | client sends protocol **4** (11-byte, header only) from `0x1801A3FD0`; server closes with `OnSyncRoleDataOver` logging `Sync role data over !` (`0x1801A3DE3`) | role data arrives in chunks with acks, not one burst |
+| **Mode role data** | `OnSyncBFRoleData` (`0x180193AC0`): player id `+0x0F`, u32 `+0x13`, array start `+0x17`, count u8 `+0x6F` → manager vtable `+0x13C8` | per-player BR data (camp/side/rank…) applied incrementally |
+| **Competitor list is pull-based** | `DoSyncBattlefieldCompetitorsListRequest` (`0x1801A9470`) sends protocol **0x164** (11-byte) when cached scene version (`scene+0xF0`) is older than the packet's version byte `+0x11` | client asks only when stale |
+| **Competitor cooldowns are subscribed** | `DoSyncBattlefieldCompetitorSkillCDStateRequest` / `DoCancelSync...` | per-competitor CD sync on/off |
+| **Periodic refresh** | `KBattlefieldCache::AddNextSyncTime` | timer-driven re-sync |
+| **Continuous world replication** | `OnSyncNewPlayer` / `OnSyncNewNpc` / `OnSyncEntity` / `OnSyncSimpleObject` | entity/AOI streams independently |
+
+Expected order after `DoClientConfirmReady` (proto 2) / `DoApplyEnterScene` (proto 3):
+
+```
+sectioned role data (proto 4 acks) -> OnSyncRoleDataOver
+  -> continuous entity/AOI streams
+  -> pull competitor list (0x164) when stale
+  -> subscribe competitor CD states as needed
+  -> periodic KBattlefieldCache refresh + OnSync* deltas
+  -> containers spawn/despawn via OnSyncNewDoodad / OnSyncDoodadState (loot chain)
+```
+
+Mode path protocol IDs known so far: **2** ready, **3** enter scene, **4** role-data
+section check, **0x116** confirm queue entry, **0x164** competitors list request,
+**0x4D** apply loot, **0x51** loot money, **0x6E** routine sync, **6** ping.
