@@ -1,0 +1,419 @@
+﻿########## methods StateMachineManager
+===== methods StateMachineManager =====
+  LoadSceneStateMachineInfoToList
+  LoadAllStateMachineToScene
+  ClearAllStateMachine
+  AddRegionStateMachineToScene
+  .ctor
+########## methods LogicalInfoPresenter
+===== methods LogicalInfoPresenter =====
+  get_EnableAsyncAddNpcToScene
+  set_EnableAsyncAddNpcToScene
+  get_AsyncLoad
+  set_AsyncLoad
+  get_LoadTaskComplete
+  get_OverwriteNPC
+  set_OverwriteNPC
+  get_AniStartFrame
+  set_AniStartFrame
+  get_AniEndFrame
+  set_AniEndFrame
+  get_NPCSaveDir
+  set_NPCSaveDir
+  get_SubLogicName
+  set_SubLogicName
+  .ctor
+  BindDataEvent
+  UnBindDataEvent
+  LoadLogicData
+  AddRegionNpcToScene
+  AddAllNpcToScene
+  ClearAllNpc
+  LoadAllDummiesToScene
+  ClearAllDummiesFromScene
+  AddNpcToScene
+  IsSupportedDummyModel
+  OnTick
+  OnViewClosing
+  OnBeforeLoad
+  OnAfterLoad
+  OnBeforeLoadNpcData
+  OnAfterLoadNpcData
+  OnCurentLoadNpc
+  <LoadLogicData>b__38_0
+########## scan calls on StateMachineManager
+########## scan calls on LogicalInfoPresenter
+########## dump StateMachineManager::LoadAllStateMachineToScene
+===== StateMachineManager::LoadAllStateMachineToScene =====
+  IL_0000: call meth LoadSceneStateMachineInfoToList
+  IL_0005: ldsfld field m_StaticMachineList
+  IL_000A: callvirt mref ?::GetEnumerator
+  IL_000F: stloc.0
+  IL_0010: br -> IL_0102
+  IL_0015: ldloca.s 0
+  IL_0017: call mref ?::get_Current
+  IL_001C: stloc.1
+  IL_001D: newobj mref CLRfloat3::.ctor
+  IL_0022: stloc.2
+  IL_0023: ldloc.2
+  IL_0024: ldloc.1
+  IL_0025: ldfld field trans
+  IL_002A: ldfld mref Vector3::X
+  IL_002F: stfld mref CLRfloat3::x
+  IL_0034: ldloc.2
+  IL_0035: ldloc.1
+  IL_0036: ldfld field trans
+  IL_003B: ldfld mref Vector3::Y
+  IL_0040: stfld mref CLRfloat3::y
+  IL_0045: ldloc.2
+  IL_0046: ldloc.1
+  IL_0047: ldfld field trans
+  IL_004C: ldfld mref Vector3::Z
+  IL_0051: stfld mref CLRfloat3::z
+  IL_0056: newobj mref CLRfloat4::.ctor
+  IL_005B: stloc.3
+  IL_005C: ldloc.3
+  IL_005D: ldloc.1
+  IL_005E: ldfld field quat
+  IL_0063: ldfld mref Quaternion::X
+  IL_0068: stfld mref CLRfloat4::x
+  IL_006D: ldloc.3
+  IL_006E: ldloc.1
+  IL_006F: ldfld field quat
+  IL_0074: ldfld mref Quaternion::Y
+  IL_0079: stfld mref CLRfloat4::y
+  IL_007E: ldloc.3
+  IL_007F: ldloc.1
+  IL_0080: ldfld field quat
+  IL_0085: ldfld mref Quaternion::Z
+  IL_008A: stfld mref CLRfloat4::z
+  IL_008F: ldloc.3
+  IL_0090: ldloc.1
+  IL_0091: ldfld field quat
+  IL_0096: ldfld mref Quaternion::W
+  IL_009B: stfld mref CLRfloat4::w
+  IL_00A0: newobj mref CLRfloat3::.ctor
+  IL_00A5: stloc.s 4
+  IL_00A7: ldloc.s 4
+  IL_00A9: ldloc.1
+  IL_00AA: ldfld field scale
+  IL_00AF: ldfld mref Vector3::X
+  IL_00B4: stfld mref CLRfloat3::x
+  IL_00B9: ldloc.s 4
+  IL_00BB: ldloc.1
+  IL_00BC: ldfld field scale
+  IL_00C1: ldfld mref Vector3::Y
+  IL_00C6: stfld mref CLRfloat3::y
+  IL_00CB: ldloc.s 4
+  IL_00CD: ldloc.1
+  IL_00CE: ldfld field scale
+  IL_00D3: ldfld mref Vector3::Z
+  IL_00D8: stfld mref CLRfloat3::z
+  IL_00DD: ldsfld field MainFrm
+  IL_00E2: callvirt meth get_sceneform
+  IL_00E7: callvirt meth get_Scene
+  IL_00EC: ldloc.1
+  IL_00ED: ldfld field strUUID
+  IL_00F2: ldloc.1
+  IL_00F3: ldfld field strStatePath
+  IL_00F8: ldloc.2
+  IL_00F9: ldloc.3
+  IL_00FA: ldloc.s 4
+  IL_00FC: callvirt mref KGSceneCLR::AddStateMachineModel
+  IL_0101: pop
+  IL_0102: ldloca.s 0
+  IL_0104: call mref ?::MoveNext
+  IL_0109: brtrue -> IL_0015
+  IL_010E: leave.s -> IL_011E
+  IL_0110: ldloca.s 0
+  IL_0114: mkrefany tok6F1B0001
+  IL_0119: ldc.r4 tokDC0A0000
+  IL_011E: ret
+########## dump LogicalInfoPresenter::AddNpcToScene
+===== LogicalInfoPresenter::AddNpcToScene =====
+  IL_0000: newobj mref CLRfloat3::.ctor
+  IL_0005: stloc.0
+  IL_0006: ldloc.0
+  IL_0007: ldarg.1
+  IL_0008: ldfld field pos
+  IL_000D: ldfld field x
+  IL_0012: stfld mref CLRfloat3::x
+  IL_0017: ldloc.0
+  IL_0018: ldarg.1
+  IL_0019: ldfld field pos
+  IL_001E: ldfld field y
+  IL_0023: stfld mref CLRfloat3::y
+  IL_0028: ldloc.0
+  IL_0029: ldarg.1
+  IL_002A: ldfld field pos
+  IL_002F: ldfld field z
+  IL_0034: stfld mref CLRfloat3::z
+  IL_0039: newobj mref CLRfloat4::.ctor
+  IL_003E: stloc.1
+  IL_003F: ldloc.1
+  IL_0040: ldarg.1
+  IL_0041: ldfld field quat
+  IL_0046: ldfld field x
+  IL_004B: stfld mref CLRfloat4::x
+  IL_0050: ldloc.1
+  IL_0051: ldarg.1
+  IL_0052: ldfld field quat
+  IL_0057: ldfld field y
+  IL_005C: stfld mref CLRfloat4::y
+  IL_0061: ldloc.1
+  IL_0062: ldarg.1
+  IL_0063: ldfld field quat
+  IL_0068: ldfld field z
+  IL_006D: stfld mref CLRfloat4::z
+  IL_0072: ldloc.1
+  IL_0073: ldarg.1
+  IL_0074: ldfld field quat
+  IL_0079: ldfld field w
+  IL_007E: stfld mref CLRfloat4::w
+  IL_0083: ldsfld field MainFrm
+  IL_0088: callvirt meth get_sceneform
+  IL_008D: callvirt meth get_Scene
+  IL_0092: ldarg.1
+  IL_0093: ldfld field nRepresentID
+  IL_0098: ldloc.0
+  IL_0099: ldloc.1
+  IL_009A: callvirt mref KGSceneCLR::AddRepresentModel
+  IL_009F: pop
+  IL_00A0: ret
+########## dump LogicalInfoPresenter::LoadAllDummiesToScene
+===== LogicalInfoPresenter::LoadAllDummiesToScene =====
+  IL_0000: ldarg.0
+  IL_0001: ldfld field m_data
+  IL_0006: callvirt meth LoadDummyData
+  IL_000B: call meth get_Instance
+  IL_0010: callvirt meth get_PlotData
+  IL_0015: callvirt meth get_MapId
+  IL_001A: stloc.0
+  IL_001B: ldc.i4.0
+  IL_001C: stloc.1
+  IL_001D: ldc.i4.0
+  IL_001E: stloc.2
+  IL_001F: ldc.i4.0
+  IL_0020: stloc.3
+  IL_0021: br -> IL_01C9
+  IL_0026: ldarg.0
+  IL_0027: ldfld field m_data
+  IL_002C: callvirt meth get_DummyDataList
+  IL_0031: ldloc.3
+  IL_0032: callvirt mref ?::get_Item
+  IL_0037: stloc.s 4
+  IL_0039: ldloc.s 4
+  IL_003B: ldfld field nMapID
+  IL_0040: brfalse.s -> IL_0055
+  IL_0042: ldloc.s 4
+  IL_0044: ldfld field nMapID
+  IL_0049: ldloc.0
+  IL_004A: beq.s -> IL_0055
+  IL_004C: ldloc.2
+  IL_004D: ldc.i4.1
+  IL_004E: add
+  IL_004F: stloc.2
+  IL_0050: br -> IL_01C5
+  IL_0055: ldloc.s 4
+  IL_0057: ldfld field strModelPath
+  IL_005C: stloc.s 5
+  IL_005E: ldloc.s 5
+  IL_0060: call mref String::IsNullOrEmpty
+  IL_0065: brfalse.s -> IL_008E
+  IL_0067: ldloc.s 4
+  IL_0069: ldfld field nRepresentID
+  IL_006E: ldc.i4.0
+  IL_006F: ble.s -> IL_008E
+  IL_0071: ldsfld field MainFrm
+  IL_0076: callvirt meth get_sceneform
+  IL_007B: callvirt meth get_Scene
+  IL_0080: ldloc.s 4
+  IL_0082: ldfld field nRepresentID
+  IL_0087: callvirt mref KGSceneCLR::GetRepresentModelPath
+  IL_008C: stloc.s 5
+  IL_008E: ldloc.s 5
+  IL_0090: call meth IsSupportedDummyModel
+  IL_0095: brtrue.s -> IL_00A0
+  IL_0097: ldloc.2
+  IL_0098: ldc.i4.1
+  IL_0099: add
+  IL_009A: stloc.2
+  IL_009B: br -> IL_01C5
+  IL_00A0: newobj mref CLRfloat3::.ctor
+  IL_00A5: stloc.s 6
+  IL_00A7: ldloc.s 6
+  IL_00A9: ldloc.s 4
+  IL_00AB: ldfld field pos
+  IL_00B0: ldfld field x
+  IL_00B5: stfld mref CLRfloat3::x
+  IL_00BA: ldloc.s 6
+  IL_00BC: ldloc.s 4
+  IL_00BE: ldfld field pos
+  IL_00C3: ldfld field y
+  IL_00C8: stfld mref CLRfloat3::y
+  IL_00CD: ldloc.s 6
+  IL_00CF: ldloc.s 4
+  IL_00D1: ldfld field pos
+  IL_00D6: ldfld field z
+  IL_00DB: stfld mref CLRfloat3::z
+  IL_00E0: ldloc.s 4
+  IL_00E2: ldfld field nDir
+  IL_00E7: call meth FaceDirectionToQuaternion
+  IL_00EC: stloc.s 7
+  IL_00EE: newobj mref CLRfloat4::.ctor
+  IL_00F3: stloc.s 8
+  IL_00F5: ldloc.s 8
+  IL_00F7: ldloc.s 7
+  IL_00F9: ldfld mref Quaternion::X
+  IL_00FE: stfld mref CLRfloat4::x
+  IL_0103: ldloc.s 8
+  IL_0105: ldloc.s 7
+  IL_0107: ldfld mref Quaternion::Y
+  IL_010C: stfld mref CLRfloat4::y
+  IL_0111: ldloc.s 8
+  IL_0113: ldloc.s 7
+  IL_0115: ldfld mref Quaternion::Z
+  IL_011A: stfld mref CLRfloat4::z
+  IL_011F: ldloc.s 8
+  IL_0121: ldloc.s 7
+  IL_0123: ldfld mref Quaternion::W
+  IL_0128: stfld mref CLRfloat4::w
+  IL_012D: newobj mref CLRfloat3::.ctor
+  IL_0132: stloc.s 9
+  IL_0134: ldloc.s 9
+  IL_0136: ldloc.s 4
+  IL_0138: ldfld field scale
+  IL_013D: ldfld field x
+  IL_0142: stfld mref CLRfloat3::x
+  IL_0147: ldloc.s 9
+  IL_0149: ldloc.s 4
+  IL_014B: ldfld field scale
+  IL_0150: ldfld field y
+  IL_0155: stfld mref CLRfloat3::y
+  IL_015A: ldloc.s 9
+  IL_015C: ldloc.s 4
+  IL_015E: ldfld field scale
+  IL_0163: ldfld field z
+  IL_0168: stfld mref CLRfloat3::z
+  IL_016D: ldstr str "{0}_{1}"
+  IL_0172: ldloc.s 4
+  IL_0174: ldfld field nMapID
+  IL_0179: box type Int32
+  IL_017E: ldloc.s 4
+  IL_0180: ldfld field nCharacterID
+  IL_0185: box type Int32
+  IL_018A: call mref String::Format
+  IL_018F: stloc.s 10
+  IL_0191: ldsfld field MainFrm
+  IL_0196: callvirt meth get_sceneform
+  IL_019B: callvirt meth get_Scene
+  IL_01A0: ldloc.s 10
+  IL_01A2: ldloc.s 5
+  IL_01A4: ldloc.s 6
+  IL_01A6: ldloc.s 8
+  IL_01A8: ldloc.s 9
+  IL_01AA: callvirt mref KGSceneCLR::AddDummyModel
+  IL_01AF: stloc.s 11
+  IL_01B1: ldloc.s 11
+  IL_01B3: brfalse.s -> IL_01C1
+  IL_01B5: ldloc.s 11
+  IL_01B7: ldc.i4.m1
+  IL_01B8: conv.i8
+  IL_01B9: beq.s -> IL_01C1
+  IL_01BB: ldloc.1
+  IL_01BC: ldc.i4.1
+  IL_01BD: add
+  IL_01BE: stloc.1
+  IL_01BF: br.s -> IL_01C5
+  IL_01C1: ldloc.2
+  IL_01C2: ldc.i4.1
+  IL_01C3: add
+  IL_01C4: stloc.2
+  IL_01C5: ldloc.3
+  IL_01C6: ldc.i4.1
+  IL_01C7: add
+  IL_01C8: stloc.3
+  IL_01C9: ldloc.3
+  IL_01CA: ldarg.0
+  IL_01CB: ldfld field m_data
+  IL_01D0: callvirt meth get_DummyNum
+  IL_01D5: blt -> IL_0026
+  IL_01DA: ldarg.0
+  IL_01DB: ldfld field m_view
+  IL_01E0: ldstr str "Dummy\u52A0\u8F7D\u5B8C\u6BD5\uFF0C\u6210\u529F{0}\uFF0C\u8DF3\u8FC7{1}"
+  IL_01E5: ldloc.1
+  IL_01E6: box type Int32
+  IL_01EB: ldloc.2
+  IL_01EC: box type Int32
+  IL_01F1: call mref String::Format
+  IL_01F6: callvirt meth UpdateStatusText
+  IL_01FB: ret
+########## dump SceneForm::buttonItem_SetMainPlayerType_Click
+===== SceneForm::buttonItem_SetMainPlayerType_Click =====
+  IL_0000: ldarg.0
+  IL_0001: ldfld field m_listSelectedElements
+  IL_0006: brfalse.s -> IL_0016
+  IL_0008: ldarg.0
+  IL_0009: ldfld field m_listSelectedElements
+  IL_000E: callvirt mref ?::get_Count
+  IL_0013: ldc.i4.0
+  IL_0014: bgt.s -> IL_0017
+  IL_0016: ret
+  IL_0017: ldarg.0
+  IL_0018: ldfld field m_listSelectedElements
+  IL_001D: ldc.i4.0
+  IL_001E: callvirt mref ?::get_Item
+  IL_0023: stloc.0
+  IL_0024: call meth get_Instance
+  IL_0029: ldloc.0
+  IL_002A: callvirt meth GetElement
+  IL_002F: callvirt meth get_MovieObject
+  IL_0034: callvirt meth get_ID
+  IL_0039: ldc.i4.s 107
+  IL_003B: ldc.i4.0
+  IL_003C: call meth GetObjectProperty
+  IL_0041: castclass type String
+  IL_0046: stloc.1
+  IL_0047: ldloc.1
+  IL_0048: call mref String::IsNullOrEmpty
+  IL_004D: brfalse.s -> IL_0050
+  IL_004F: ret
+  IL_0050: ldc.i4.m1
+  IL_0051: stloc.2
+  IL_0052: ldloc.1
+  IL_0053: call mref Path::GetFileNameWithoutExtension
+  IL_0058: dup
+  IL_0059: ldstr str "f1"
+  IL_005E: callvirt mref String::Contains
+  IL_0063: brtrue.s -> IL_0068
+  IL_0065: ldloc.2
+  IL_0066: br.s -> IL_0069
+  IL_0068: ldc.i4.0
+  IL_0069: stloc.2
+  IL_006A: dup
+  IL_006B: ldstr str "f2"
+  IL_0070: callvirt mref String::Contains
+  IL_0075: brtrue.s -> IL_007A
+  IL_0077: ldloc.2
+  IL_0078: br.s -> IL_007B
+  IL_007A: ldc.i4.1
+  IL_007B: stloc.2
+  IL_007C: dup
+  IL_007D: ldstr str "m1"
+  IL_0082: callvirt mref String::Contains
+  IL_0087: brtrue.s -> IL_008C
+  IL_0089: ldloc.2
+  IL_008A: br.s -> IL_008D
+  IL_008C: ldc.i4.2
+  IL_008D: stloc.2
+  IL_008E: ldstr str "m2"
+  IL_0093: callvirt mref String::Contains
+  IL_0098: brtrue.s -> IL_009D
+  IL_009A: ldloc.2
+  IL_009B: br.s -> IL_009E
+  IL_009D: ldc.i4.3
+  IL_009E: stloc.2
+  IL_009F: ldsfld field atlEngine
+  IL_00A4: ldloc.2
+  IL_00A5: callvirt mref KGEngineCLR::SetMainPlayerType
+  IL_00AA: ret

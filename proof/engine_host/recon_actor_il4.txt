@@ -1,0 +1,633 @@
+﻿########## dump ActorEditorCommandHelper::SetObjectProperty
+===== ActorEditorCommandHelper::SetObjectProperty =====
+  IL_0000: ldarg.0
+  IL_0001: brtrue.s -> IL_0004
+  IL_0003: ret
+  IL_0004: ldc.i4.0
+  IL_0005: stloc.0
+  IL_0006: ldarg.1
+  IL_0007: ldc.i4.s 108
+  IL_0009: sub
+  IL_000A: switch (9 cases)
+  IL_0033: ldarg.1
+  IL_0034: ldc.i4 474
+  IL_0039: beq.s -> IL_0045
+  IL_003B: ldarg.1
+  IL_003C: ldc.i4 475
+  IL_0041: beq.s -> IL_005E
+  IL_0043: br.s -> IL_006C
+  IL_0045: ldc.i4.8
+  IL_0046: stloc.0
+  IL_0047: br.s -> IL_006C
+  IL_0049: ldc.i4 520
+  IL_004E: stloc.0
+  IL_004F: br.s -> IL_006C
+  IL_0051: ldc.i4.s 104
+  IL_0053: stloc.0
+  IL_0054: br.s -> IL_006C
+  IL_0056: ldc.i4 748
+  IL_005B: stloc.0
+  IL_005C: br.s -> IL_006C
+  IL_005E: call meth GetBufferSize
+  IL_0063: stloc.0
+  IL_0064: br.s -> IL_006C
+  IL_0066: ldc.i4 808
+  IL_006B: stloc.0
+  IL_006C: ldloc.0
+  IL_006D: newobj meth .ctor
+  IL_0072: stloc.1
+  IL_0073: ldarg.1
+  IL_0074: ldc.i4.s 108
+  IL_0076: sub
+  IL_0077: switch (9 cases)
+  IL_00A0: ldarg.1
+  IL_00A1: ldc.i4 474
+  IL_00A6: beq.s -> IL_00B5
+  IL_00A8: ldarg.1
+  IL_00A9: ldc.i4 475
+  IL_00AE: beq.s -> IL_0120
+  IL_00B0: br -> IL_014F
+  IL_00B5: ldarg.3
+  IL_00B6: isinst typedef KMaterialDetail
+  IL_00BB: stloc.3
+  IL_00BC: ldc.i4.2
+  IL_00BD: newarr type Int32
+  IL_00C2: stloc.s 4
+  IL_00C4: ldloc.s 4
+  IL_00C6: ldc.i4.0
+  IL_00C7: ldloc.3
+  IL_00C8: ldfld field m_nColorChannel
+  IL_00CD: stelem.i4
+  IL_00CE: ldloc.s 4
+  IL_00D0: ldc.i4.1
+  IL_00D1: ldloc.3
+  IL_00D2: ldfld field m_nColorIndex
+  IL_00D7: stelem.i4
+  IL_00D8: ldloc.1
+  IL_00D9: ldloc.s 4
+  IL_00DB: ldc.i4.2
+  IL_00DC: callvirt meth CopyFrom
+  IL_00E1: br.s -> IL_014F
+  IL_00E3: ldarg.3
+  IL_00E4: castclass type String
+  IL_00E9: stloc.s 5
+  IL_00EB: ldloc.1
+  IL_00EC: ldloc.s 5
+  IL_00EE: callvirt meth CopyFrom
+  IL_00F3: br.s -> IL_014F
+  IL_00F5: ldarg.3
+  IL_00F6: isinst tok1B000043
+  IL_00FB: stloc.s 6
+  IL_00FD: ldloc.1
+  IL_00FE: ldloc.s 6
+  IL_0100: ldc.i4.s 26
+  IL_0102: callvirt meth CopyFrom
+  IL_0107: br.s -> IL_014F
+  IL_0109: ldarg.3
+  IL_010A: isinst tok1B000043
+  IL_010F: stloc.s 7
+  IL_0111: ldloc.1
+  IL_0112: ldloc.s 7
+  IL_0114: ldc.i4 187
+  IL_0119: callvirt meth CopyFrom
+  IL_011E: br.s -> IL_014F
+  IL_0120: ldarg.3
+  IL_0121: isinst typedef KMaterialDetailData
+  IL_0126: ldloc.1
+  IL_0127: callvirt meth get_Ptr
+  IL_012C: ldloc.1
+  IL_012D: callvirt meth get_Length
+  IL_0132: callvirt meth WriteToBuffer
+  IL_0137: pop
+  IL_0138: br.s -> IL_014F
+  IL_013A: ldarg.3
+  IL_013B: isinst tok1B000043
+  IL_0140: stloc.s 8
+  IL_0142: ldloc.1
+  IL_0143: ldloc.s 8
+  IL_0145: ldc.i4 202
+  IL_014A: callvirt meth CopyFrom
+  IL_014F: ldloca.s 2
+  IL_0153: ldc.i8 281791644951511040
+  IL_015C: nop
+  IL_015D: nop
+  IL_015E: stfld field nActionType
+  IL_0163: ldloca.s 2
+  IL_0165: ldc.i4.0
+  IL_0166: stfld field nInstanceType
+  IL_016B: ldloca.s 2
+  IL_016D: ldarg.1
+  IL_016E: stfld field nPropertyType
+  IL_0173: ldloca.s 2
+  IL_0175: ldarg.2
+  IL_0176: stfld field nPropertyID
+  IL_017B: ldloca.s 2
+  IL_017D: ldloc.1
+  IL_017E: callvirt meth get_Ptr
+  IL_0183: stfld field pbyBuffer
+  IL_0188: ldloca.s 2
+  IL_018A: ldloc.1
+  IL_018B: callvirt meth get_Length
+  IL_0190: stfld field nBufferLength
+  IL_0195: newobj mref ?::.ctor
+  IL_019A: ldloca.s 2
+  IL_019C: ldarg.0
+  IL_019F: ldc.i4.s 22
+  IL_01A1: nop
+  IL_01A2: stloc.0
+  IL_01A3: newobj mref ?::.ctor
+  IL_01A8: callvirt mref ?::OnAction
+  IL_01AD: ldloc.1
+  IL_01AE: callvirt meth FreeHGlobal
+  IL_01B3: ret
+########## dump ActorEditorCommandHelper::GetObjectProperty
+===== ActorEditorCommandHelper::GetObjectProperty =====
+  IL_0000: ldnull
+  IL_0001: stloc.0
+  IL_0002: ldarg.0
+  IL_0003: brtrue.s -> IL_0007
+  IL_0005: ldloc.0
+  IL_0006: ret
+  IL_0007: ldc.i4.0
+  IL_0008: stloc.1
+  IL_0009: ldarg.1
+  IL_000A: ldc.i4.s 51
+  IL_000C: bgt.s -> IL_002B
+  IL_000E: ldarg.1
+  IL_000F: ldc.i4.s 46
+  IL_0011: beq -> IL_009F
+  IL_0016: ldarg.1
+  IL_0017: ldc.i4.s 50
+  IL_0019: beq -> IL_00C0
+  IL_001E: ldarg.1
+  IL_001F: ldc.i4.s 51
+  IL_0021: beq -> IL_00A7
+  IL_0026: br -> IL_00EE
+  IL_002B: ldarg.1
+  IL_002C: ldc.i4.s 56
+  IL_002E: beq -> IL_00C0
+  IL_0033: ldarg.1
+  IL_0034: ldc.i4.s 107
+  IL_0036: sub
+  IL_0037: switch (10 cases)
+  IL_0064: ldarg.1
+  IL_0065: ldc.i4 472
+  IL_006A: sub
+  IL_006B: switch (4 cases)
+  IL_0080: br.s -> IL_00EE
+  IL_0082: ldc.i4 520
+  IL_0087: stloc.1
+  IL_0088: br.s -> IL_00EE
+  IL_008A: ldc.i4.s 104
+  IL_008C: stloc.1
+  IL_008D: br.s -> IL_00EE
+  IL_008F: ldc.i4 748
+  IL_0094: stloc.1
+  IL_0095: br.s -> IL_00EE
+  IL_0097: ldc.i4 808
+  IL_009C: stloc.1
+  IL_009D: br.s -> IL_00EE
+  IL_009F: ldc.i4 1040
+  IL_00A4: stloc.1
+  IL_00A5: br.s -> IL_00EE
+  IL_00A7: ldarg.0
+  IL_00A8: ldc.i4.s 50
+  IL_00AA: ldc.i4.0
+  IL_00AB: call meth GetObjectProperty
+  IL_00B0: unbox.any type Int32
+  IL_00B5: ldc.i4.2
+  IL_00B6: mul
+  IL_00B7: ldc.i4 260
+  IL_00BC: mul
+  IL_00BD: stloc.1
+  IL_00BE: br.s -> IL_00EE
+  IL_00C0: ldc.i4.4
+  IL_00C1: stloc.1
+  IL_00C2: br.s -> IL_00EE
+  IL_00C4: ldc.i4.8
+  IL_00C5: stloc.1
+  IL_00C6: br.s -> IL_00EE
+  IL_00C8: ldarg.0
+  IL_00C9: ldc.i4 472
+  IL_00CE: ldarg.2
+  IL_00CF: call meth GetObjectProperty
+  IL_00D4: unbox.any type Int32
+  IL_00D9: stloc.s 4
+  IL_00DB: ldc.i4 524
+  IL_00E0: ldloc.s 4
+  IL_00E2: mul
+  IL_00E3: ldc.i4.4
+  IL_00E4: add
+  IL_00E5: stloc.1
+  IL_00E6: br.s -> IL_00EE
+  IL_00E8: call meth GetBufferSize
+  IL_00ED: stloc.1
+  IL_00EE: ldloca.s 2
+  IL_00F2: ldc.i8 281510169974800384
+  IL_00FB: nop
+  IL_00FC: nop
+  IL_00FD: stfld field nActionType
+  IL_0102: ldloca.s 2
+  IL_0104: ldc.i4.0
+  IL_0105: stfld field nInstanceType
+  IL_010A: ldloca.s 2
+  IL_010C: ldarg.1
+  IL_010D: stfld field nPropertyType
+  IL_0112: ldloca.s 2
+  IL_0114: ldarg.2
+  IL_0115: stfld field nPropertyID
+  IL_011A: ldloc.1
+  IL_011B: newobj meth .ctor
+  IL_0120: stloc.3
+  IL_0121: ldloca.s 2
+  IL_0123: ldloc.3
+  IL_0124: callvirt meth get_Ptr
+  IL_0129: stfld field pbyBuffer
+  IL_012E: ldloca.s 2
+  IL_0130: ldloc.3
+  IL_0131: callvirt meth get_Length
+  IL_0136: stfld field nBufferLength
+  IL_013B: newobj mref ?::.ctor
+  IL_0140: ldloca.s 2
+  IL_0142: ldarg.0
+  IL_0145: ldc.i4.s 22
+  IL_0147: nop
+  IL_0148: stloc.0
+  IL_0149: newobj mref ?::.ctor
+  IL_014E: callvirt mref ?::OnAction
+  IL_0153: ldarg.1
+  IL_0154: ldc.i4.s 51
+  IL_0156: bgt.s -> IL_0175
+  IL_0158: ldarg.1
+  IL_0159: ldc.i4.s 46
+  IL_015B: beq -> IL_0243
+  IL_0160: ldarg.1
+  IL_0161: ldc.i4.s 50
+  IL_0163: beq -> IL_026F
+  IL_0168: ldarg.1
+  IL_0169: ldc.i4.s 51
+  IL_016B: beq -> IL_0287
+  IL_0170: br -> IL_0391
+  IL_0175: ldarg.1
+  IL_0176: ldc.i4.s 56
+  IL_0178: beq -> IL_0378
+  IL_017D: ldarg.1
+  IL_017E: ldc.i4.s 107
+  IL_0180: sub
+  IL_0181: switch (10 cases)
+  IL_01AE: ldarg.1
+  IL_01AF: ldc.i4 472
+  IL_01B4: sub
+  IL_01B5: switch (4 cases)
+  IL_01CA: br -> IL_0391
+  IL_01CF: ldsfld mref String::Empty
+  IL_01D4: stloc.s 5
+  IL_01D6: ldloc.3
+  IL_01D7: ldloca.s 5
+  IL_01D9: callvirt meth CopyTo
+  IL_01DE: ldloc.s 5
+  IL_01E0: stloc.0
+  IL_01E1: br -> IL_0391
+  IL_01E6: ldc.i4.s 26
+  IL_01E8: newarr type Single
+  IL_01ED: stloc.s 6
+  IL_01EF: ldloc.3
+  IL_01F0: ldloc.s 6
+  IL_01F2: ldc.i4.s 26
+  IL_01F4: callvirt meth CopyTo
+  IL_01F9: ldloc.s 6
+  IL_01FB: stloc.0
+  IL_01FC: br -> IL_0391
+  IL_0201: ldc.i4 187
+  IL_0206: newarr type Single
+  IL_020B: stloc.s 7
+  IL_020D: ldloc.3
+  IL_020E: ldloc.s 7
+  IL_0210: ldc.i4 187
+  IL_0215: callvirt meth CopyTo
+  IL_021A: ldloc.s 7
+  IL_021C: stloc.0
+  IL_021D: br -> IL_0391
+  IL_0222: ldc.i4 202
+  IL_0227: newarr type Single
+  IL_022C: stloc.s 8
+  IL_022E: ldloc.3
+  IL_022F: ldloc.s 8
+  IL_0231: ldc.i4 202
+  IL_0236: callvirt meth CopyTo
+  IL_023B: ldloc.s 8
+  IL_023D: stloc.0
+  IL_023E: br -> IL_0391
+  IL_0243: ldc.i4.2
+  IL_0244: newarr type String
+  IL_0249: stloc.s 9
+  IL_024B: ldloc.3
+  IL_024C: ldloc.s 9
+  IL_024E: ldc.i4.0
+  IL_024F: ldelema type String
+  IL_0254: callvirt meth CopyTo
+  IL_0259: ldloc.3
+  IL_025A: ldloc.s 9
+  IL_025C: ldc.i4.1
+  IL_025D: ldelema type String
+  IL_0262: callvirt meth CopyTo
+  IL_0267: ldloc.s 9
+  IL_0269: stloc.0
+  IL_026A: br -> IL_0391
+  IL_026F: ldc.i4.0
+  IL_0270: stloc.s 10
+  IL_0272: ldloc.3
+  IL_0273: ldloca.s 10
+  IL_0275: callvirt meth CopyTo
+  IL_027A: ldloc.s 10
+  IL_027C: box type Int32
+  IL_0281: stloc.0
+  IL_0282: br -> IL_0391
+  IL_0287: ldloc.3
+  IL_0288: callvirt meth get_Length
+  IL_028D: ldc.i4 520
+  IL_0292: div
+  IL_0293: stloc.s 11
+  IL_0295: ldloc.s 11
+  IL_0297: newarr type String
+  IL_029C: stloc.s 12
+  IL_029E: ldloc.3
+  IL_029F: ldloc.s 12
+  IL_02A1: ldloc.s 11
+  IL_02A3: callvirt meth CopyTo
+  IL_02A8: ldloc.s 12
+  IL_02AA: stloc.0
+  IL_02AB: br -> IL_0391
+  IL_02B0: newobj meth .ctor
+  IL_02B5: ldc.i4.2
+  IL_02B6: newarr type Int32
+  IL_02BB: stloc.s 13
+  IL_02BD: ldloc.3
+  IL_02BE: ldloc.s 13
+  IL_02C0: ldc.i4.2
+  IL_02C1: callvirt meth CopyTo
+  IL_02C6: dup
+  IL_02C7: ldloc.s 13
+  IL_02C9: ldc.i4.0
+  IL_02CA: ldelem.i4
+  IL_02CB: stfld field m_nColorChannel
+  IL_02D0: dup
+  IL_02D1: ldloc.s 13
+  IL_02D3: ldc.i4.1
+  IL_02D4: ldelem.i4
+  IL_02D5: stfld field m_nColorIndex
+  IL_02DA: stloc.0
+  IL_02DB: br -> IL_0391
+  IL_02E0: newobj meth .ctor
+  IL_02E5: stloc.s 14
+  IL_02E7: ldloc.3
+  IL_02E8: ldloc.s 14
+  IL_02EA: ldflda field nMtlDetailNum
+  IL_02EF: callvirt meth CopyTo
+  IL_02F4: ldloc.s 14
+  IL_02F6: ldloc.s 14
+  IL_02F8: ldfld field nMtlDetailNum
+  IL_02FD: newarr type Int32
+  IL_0302: stfld field ColorIndexs
+  IL_0307: ldloc.s 14
+  IL_0309: ldloc.s 14
+  IL_030B: ldfld field nMtlDetailNum
+  IL_0310: newarr type String
+  IL_0315: stfld field DetailNames
+  IL_031A: ldc.i4.0
+  IL_031B: stloc.s 15
+  IL_031D: br.s -> IL_034D
+  IL_031F: ldloc.3
+  IL_0320: ldloc.s 14
+  IL_0322: ldfld field ColorIndexs
+  IL_0327: ldloc.s 15
+  IL_0329: ldelema type Int32
+  IL_032E: callvirt meth CopyTo
+  IL_0333: ldloc.3
+  IL_0334: ldloc.s 14
+  IL_0336: ldfld field DetailNames
+  IL_033B: ldloc.s 15
+  IL_033D: ldelema type String
+  IL_0342: callvirt meth CopyTo
+  IL_0347: ldloc.s 15
+  IL_0349: ldc.i4.1
+  IL_034A: add
+  IL_034B: stloc.s 15
+  IL_034D: ldloc.s 15
+  IL_034F: ldloc.s 14
+  IL_0351: ldfld field nMtlDetailNum
+  IL_0356: blt.s -> IL_031F
+  IL_0358: ldloc.s 14
+  IL_035A: stloc.0
+  IL_035B: br.s -> IL_0391
+  IL_035D: newobj meth .ctor
+  IL_0362: dup
+  IL_0363: ldloc.3
+  IL_0364: callvirt meth get_Ptr
+  IL_0369: ldloc.3
+  IL_036A: callvirt meth get_Length
+  IL_036F: callvirt meth ReadFromBuffer
+  IL_0374: pop
+  IL_0375: stloc.0
+  IL_0376: br.s -> IL_0391
+  IL_0378: ldc.i4.0
+  IL_0379: stloc.s 16
+  IL_037B: ldloc.3
+  IL_037C: ldloca.s 16
+  IL_037E: callvirt meth CopyTo
+  IL_0383: ldloc.s 16
+  IL_0385: brfalse.s -> IL_038A
+  IL_0387: ldc.i4.1
+  IL_0388: br.s -> IL_038B
+  IL_038A: ldc.i4.0
+  IL_038B: box type Boolean
+  IL_0390: stloc.0
+  IL_0391: ldloc.3
+  IL_0392: callvirt meth FreeHGlobal
+  IL_0397: ldloc.0
+  IL_0398: ret
+########## methods KGGizmoAxisOperator_CLR
+===== methods KGGizmoAxisOperator_CLR =====
+  .ctor
+  ~KGGizmoAxisOperator_CLR
+  EnableUnit
+  SetUnit
+  GetUnit
+  EnableFreeRotation
+  SetGizmoScaling
+  GetGizmoScaling
+  Dispose
+  Dispose
+########## methods KG_TransformCLR (if any)
+########## enums EPT_Object_Trans value context
+CALL LayerHelper::GetAllLayerInfo -> OnAction
+CALL LayerHelper::GetLayerCount -> OnAction
+CALL LayerHelper::GetLayerElementCount -> OnAction
+CALL LayerHelper::GetLayerElementIDs -> OnAction
+CALL LayerHelper::GetLayerObjectIDs -> OnAction
+CALL LayerHelper::AddLayer -> OnAction
+CALL LayerHelper::RemoveLayer -> OnAction
+CALL LayerHelper::AddActorToLayer -> OnAction
+CALL LayerHelper::RemoveActorFormLayer -> OnAction
+CALL LayerHelper::SelectActorInLayer -> OnAction
+CALL LayerHelper::ShowLayerElement -> OnAction
+CALL LayerHelper::HideLayerElement -> OnAction
+CALL LayerHelper::RenameLayer -> OnAction
+CALL CommandHelper::OnUndoRedo -> OnAction
+CALL CommandHelper::ResetPlot -> OnAction
+CALL CommandHelper::ClearPlot -> OnAction
+CALL CommandHelper::SetPlotLoop -> OnAction
+CALL CommandHelper::LoadKmscFile -> OnAction
+CALL CommandHelper::ChangeSceneEnviroment -> OnAction
+CALL CommandHelper::ChangePlayerEnviroment -> OnAction
+CALL CommandHelper::ChangePlayerSpotLightEnviroment -> OnAction
+CALL CommandHelper::ChangeScenePresetEnviroment -> OnAction
+CALL CommandHelper::SetEditorState -> OnAction
+CALL CommandHelper::ObjectDropToFloor -> OnAction
+CALL CommandHelper::SelectedObj -> OnAction
+CALL CommandHelper::SelectedObjs -> OnAction
+CALL CommandHelper::UnselectedObj -> OnAction
+CALL CommandHelper::AddAction -> OnAction
+CALL CommandHelper::RemoveAction -> OnAction
+CALL CommandHelper::AddObject -> OnAction
+CALL CommandHelper::RemoveObject -> OnAction
+CALL CommandHelper::GetActionProperty -> OnAction
+CALL CommandHelper::GetObjectProperty -> OnAction
+CALL CommandHelper::GetObjectProperty -> OnAction
+CALL CommandHelper::SetObjectProperty -> OnAction
+CALL CommandHelper::SetPlotProperty -> OnAction
+CALL CommandHelper::SetEditorProperty -> OnAction
+CALL CommandHelper::GetPlotProperty -> OnAction
+CALL CommandHelper::GetEditorProperty -> OnAction
+CALL CommandHelper::ChangeMaterialModel -> OnAction
+CALL CommandHelper::LoadModelToObject -> OnAction
+CALL CommandHelper::PreViewAction -> OnAction
+CALL CommandHelper::StopPreViewAction -> OnAction
+CALL CommandHelper::GetTemplateMDL -> OnAction
+CALL CommandHelper::PlaceObjByHand -> OnAction
+CALL CommandHelper::PlaceObjByHand -> OnAction
+CALL CommandHelper::InsertTrackPoint -> OnAction
+CALL CommandHelper::AdjustTrackPoints -> OnAction
+CALL CommandHelper::ChangeSelectedTrackPointInterType -> OnAction
+CALL CommandHelper::PlotSeekFrame -> OnAction
+CALL CommandHelper::EnableTrackEditMode -> OnAction
+CALL CommandHelper::ShowRepresentLightModel -> OnAction
+CALL CommandHelper::IsShowRepresentLightModel -> OnAction
+CALL CommandHelper::SeekAction -> OnAction
+CALL CommandHelper::SeekActionByRate -> OnAction
+CALL CommandHelper::ReloadAllScript -> OnAction
+CALL CommandHelper::ResetSetKeyTrans -> OnAction
+CALL CommandHelper::SetSelectable -> OnAction
+CALL CommandHelper::BindToObj -> OnAction
+CALL CommandHelper::ObjectUnBind -> OnAction
+CALL CommandHelper::PreViewObjAnimation -> OnAction
+CALL CommandHelper::OnSetCoodMode -> OnAction
+CALL CommandHelper::ShowBone -> OnAction
+CALL CommandHelper::SetActorBonePreviewBone -> OnAction
+CALL CommandHelper::SetActorBoneSelectedIDs -> OnAction
+CALL CommandHelper::SetActorBoneNodeEditMode -> OnAction
+CALL CommandHelper::SetActorBonesVisible -> OnAction
+CALL CommandHelper::SetActorSocketVisible -> OnAction
+CALL CommandHelper::SetIKBoneNodeRootName -> OnAction
+CALL CommandHelper::AddIKBoneNodeToActorBone -> OnAction
+CALL CommandHelper::RemoveIKBoneNodeFormActorBone -> OnAction
+CALL CommandHelper::GetActorBoneRelativePos -> OnAction
+CALL CommandHelper::GenerateBonebound -> OnAction
+CALL CommandHelper::IsVaildBoneBound -> OnAction
+CALL CommandHelper::GetAnimationNumFrame -> OnAction
+CALL CommandHelper::GetStateNum -> OnAction
+CALL CommandHelper::GetStateIDByIndex -> OnAction
+CALL CommandHelper::GetDefaultStateID -> OnAction
+CALL CommandHelper::GetAnimationFrameLength -> OnAction
+CALL CommandHelper::GetAnimationLength -> OnAction
+CALL CommandHelper::GetSFXLength -> OnAction
+CALL CommandHelper::RemoveCachedBuffer -> OnAction
+CALL CommandHelper::RefreshTextures -> OnAction
+CALL CommandHelper::SynchronizeCamera -> OnAction
+CALL CommandHelper::SetActiveCamera -> OnAction
+CALL CommandHelper::RotateBone -> OnAction
+CALL CommandHelper::RotateBones -> OnAction
+CALL CommandHelper::ScaleBones -> OnAction
+CALL CommandHelper::PostScaleBones -> OnAction
+CALL CommandHelper::TranslateBones -> OnAction
+CALL CommandHelper::GetPartResource -> OnAction
+CALL CommandHelper::GetPartModelName -> OnAction
+CALL CommandHelper::GetDependModelName -> OnAction
+CALL CommandHelper::OpenRecDir -> OnAction
+CALL CommandHelper::EnableFKToActorBone -> OnAction
+CALL CommandHelper::ClearActorBoneIKFK -> OnAction
+CALL CommandHelper::EnablePostTransformToActorBone -> OnAction
+CALL CommandHelper::ClearActorBonePostTransform -> OnAction
+CALL CommandHelper::AlwaysEnableBoneTransform -> OnAction
+CALL CommandHelper::EnableBoneCover -> OnAction
+CALL CommandHelper::DisableBoneCover -> OnAction
+CALL CommandHelper::GetActorBoneRotation -> OnAction
+CALL CommandHelper::RemoveActionRunTime -> OnAction
+CALL CommandHelper::SaveActionFile -> OnAction
+CALL CommandHelper::SaveActionFileAsJson -> OnAction
+CALL CommandHelper::ImportActionGroupFromJson -> OnAction
+CALL CommandHelper::DoPackAction -> OnAction
+CALL CommandHelper::DoUnPackAction -> OnAction
+CALL CommandHelper::DoPackObject -> OnAction
+CALL CommandHelper::DoUnPackObject -> OnAction
+CALL CommandHelper::StartSeekPlot_Trans -> OnAction
+CALL CommandHelper::SeekPlot_Trans -> OnAction
+CALL CommandHelper::EndSeekPlot_Trans -> OnAction
+CALL CommandHelper::EnableScreenRefLine -> OnAction
+CALL CommandHelper::GetScreenRefLineEnabled -> OnAction
+CALL CommandHelper::EnableScreenGridLine -> OnAction
+CALL CommandHelper::GetScreenGridLineEnable -> OnAction
+CALL CommandHelper::SetScreenGridLineSize -> OnAction
+CALL CommandHelper::GetScreenGridLineSize -> OnAction
+CALL CommandHelper::EnableScreenSafeLine -> OnAction
+CALL CommandHelper::GetScreenSafeLineEnable -> OnAction
+CALL CommandHelper::EnableScreenSafeActionLine -> OnAction
+CALL CommandHelper::GetScreenSafeActionLineEnable -> OnAction
+CALL CommandHelper::SetScreenSafeActionLinePCT -> OnAction
+CALL CommandHelper::GetScreenSafeActionLinePCT -> OnAction
+CALL CommandHelper::ScreenSafeActionLocked -> OnAction
+CALL CommandHelper::GetScreenSafeActionLineLocked -> OnAction
+CALL CommandHelper::SetScreenSafeActionLineHV -> OnAction
+CALL CommandHelper::GetScreenSafeActionLineHV -> OnAction
+CALL CommandHelper::EnableScreenSafeTitleLine -> OnAction
+CALL CommandHelper::GetScreenSafeTitleLineEnable -> OnAction
+CALL CommandHelper::SetScreenSafeTitleLinePCT -> OnAction
+CALL CommandHelper::GetScreenSafeTitleLinePCT -> OnAction
+CALL CommandHelper::ScreenSafeTitleLocked -> OnAction
+CALL CommandHelper::GetScreenSafeTitleLineLocked -> OnAction
+CALL CommandHelper::SetScreenSafeTitleLineHV -> OnAction
+CALL CommandHelper::GetScreenSafeTitleLineHV -> OnAction
+CALL CommandHelper::LoadPostRender -> OnAction
+CALL CommandHelper::SavePostRender -> OnAction
+CALL CommandHelper::GetObjectCanRedress -> OnAction
+CALL CommandHelper::GetSubSetVisible -> OnAction
+CALL CommandHelper::GetSubSetVisible -> OnAction
+CALL CommandHelper::SetSubSetVisible -> OnAction
+CALL CommandHelper::SetSubSetVisible -> OnAction
+CALL CommandHelper::GetMaterialParam -> OnAction
+CALL CommandHelper::GetMaterialParam -> OnAction
+CALL CommandHelper::GetDecalMaterialPram -> OnAction
+CALL CommandHelper::GetDecalMaterialPram -> OnAction
+CALL CommandHelper::GetMaterailParam -> OnAction
+CALL CommandHelper::GetMaterailParam -> OnAction
+CALL CommandHelper::SetMaterialParamValue -> OnAction
+CALL CommandHelper::SetDecalMaterialParamValue -> OnAction
+CALL CommandHelper::SetMaterailParamValue -> OnAction
+CALL CommandHelper::UpdataCameraPos -> OnAction
+CALL CommandHelper::ExportCameraToUsd -> OnAction
+CALL CommandHelper::ExportObjectPlot -> OnAction
+CALL CommandHelper::ExportSceneNode -> OnAction
+CALL CommandHelper::SaveInsPackFile -> OnAction
+CALL CommandHelper::LoadInsPackFile -> OnAction
+CALL CommandHelper::JumpPlot -> OnAction
+CALL CommandHelper::EnableBufferReaderCache -> OnAction
+CALL KActionGroupExportForm::button_ExportActionGroup_Click -> OnAction
+CALL ActorEditorCommandHelper::SetObjectProperty -> OnAction
+CALL ActorEditorCommandHelper::GetObjectProperty -> OnAction
+CALL ActorEditorCommandHelper::LoadFromFile -> OnAction
+CALL ActorEditorCommandHelper::LoadFromFile -> OnAction
+CALL ActorEditorCommandHelper::SaveToFile -> OnAction
+CALL ActorEditorCommandHelper::ChangePartMeshAndMtl -> OnAction
+CALL ActorEditorCommandHelper::BindToSocket -> OnAction
+CALL ActorEditorCommandHelper::UnBind -> OnAction
+CALL ActorEditorCommandHelper::ClearBind -> OnAction
