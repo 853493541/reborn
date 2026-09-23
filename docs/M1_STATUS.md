@@ -14,6 +14,7 @@
 | M1.4 clip state machine (idle/walk/run/jump/fall) with real VFS clips | log clip switches; walk/skill screenshots |
 | M1.5 input (WASD, Shift, Space, 1) + mouse orbit + wheel zoom + follow camera | `RC_DEMO=1` scripted run |
 | M1.6 one skill cast: FLWS tani + blade/ring SFX | `reborn_out/rc_04_20000ms.png` |
+| Object/foliage collision (baked bins, `FoliageCollision.cs`) | `reborn_out/rc_00_7000ms.png` + log `blocked=True hits=664` at z≈25613/ground 415 (matches the map-host proof) |
 
 Clips used (VFS, F1):
 - idle `data\source\player\f1\动作\f1b01ty普通待机01.ani`
@@ -46,10 +47,26 @@ Env: `RC_MAP`, `RC_SPAWN`, `RC_AUTORUN`, `RC_SHOTS`, `RC_CLIP_*`, `RC_SKILL_MS`,
 3. Refinements: real fall clip, camera orbit verification, yaw calibration
    (`RC_YAW_OFFSET`), walk/run animation speed vs ground speed.
 
+## Collision
+
+- Terrain heightfield: **direct from the game** — `TerrainSampler` drives
+  `PhysicsEngineX64.dll` `CreatePhysicsTerrainDataLoader` + region `LoadRegion`.
+- Objects/foliage/trees: `client/FoliageCollision.cs` over the baked
+  `collision_data/<map>_foliage_collision.bin` + `<map>_structure_collision.bin`
+  (derived from the game's own `entities/sceneinfo_full` JSON, `.foliage` files and
+  SpeedTree `.CollisionMesh`). 龙门寻宝: 5351 instances / 699 meshes.
+- Capsule radius/height: `RC_RADIUS` / `RC_HEIGHT` (25 / 170 default).
+- `C` teleports in front of the nearest collision instance (debug).
+- Demo: `RC_DEMO_COLLIDE=1 RC_SPAWN=15007,398,25400 RC_DEMO_DIR=0,1`
+  -> blocked at z≈25613, ground 415 (map-host proof: z=25606).
+- Swap path: when the live PhysX scene recon lands
+  (`docs/REAL_CLIENT_MAP_COLLISION.md` open items 1/3), replace the two collision
+  calls (`SupportHeight` / `Resolve`) with the engine's scene queries; the rest of
+  the movement code stays.
+
 ## Notes
 
 - Repositioning uses `AddDummyModel` with the same name (same handle, animation
   continues); only when position/facing changed.
 - FPS in the demo run: 230-340 with one animated character.
-- No object collision yet (terrain slope blocking only); `FoliageCollision.cs` can be
-  copied in next.
+- `RC_COL_DEBUG=1` logs candidate instance AABBs and collision call counts.

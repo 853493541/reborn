@@ -117,6 +117,27 @@ internal static class RebornClient
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 
+        // baked object/foliage collision (derived from the game's own map files)
+        FoliageCollision col = null;
+        try
+        {
+            string colDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "collision_data");
+            string mapName = Path.GetFileNameWithoutExtension(mapPath);
+            string fp = Path.Combine(colDir, mapName + "_foliage_collision.bin");
+            if (!File.Exists(fp)) fp = Path.Combine(colDir, "foliage_collision.bin");
+            string sp = Path.Combine(colDir, mapName + "_structure_collision.bin");
+            if (!File.Exists(sp)) sp = Path.Combine(colDir, "structure_collision.bin");
+            if (File.Exists(fp) || File.Exists(sp))
+            {
+                col = new FoliageCollision(fp, sp);
+                Log("FoliageCollision: " + col.Describe()
+                    + " foliage=" + (File.Exists(fp) ? Path.GetFileName(fp) : "(none)")
+                    + " structures=" + (File.Exists(sp) ? Path.GetFileName(sp) : "(none)"));
+            }
+            else Log("FoliageCollision: no bins in " + colDir);
+        }
+        catch (Exception e) { Log("FoliageCollision ex: " + e.Message); }
+
         // ---------------- player ----------------
         float px = 0f, py = 0f, pz = 0f, vy = 0f;
         float viewX = 0f, viewZ = 1f;       // camera view direction (horizontal)
@@ -212,6 +233,14 @@ internal static class RebornClient
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
+        bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
+        bool demoTeleport = Env("RC_COL_TELEPORT", "0") == "1";
+        float demoDirX = 0f, demoDirZ = 0f;
+        {
+            string[] dd = Env("RC_DEMO_DIR", "0,1").Split(',');
+            if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
+        }
+        bool cDown = false, teleportToStructure = false;
         int dragAction = 0;
         var pending = new System.Collections.Generic.Queue<int[]>();
         Func<int, int, int> makeLParam = delegate(int x, int y) { return ((y & 0xFFFF) << 16) | (x & 0xFFFF); };
@@ -253,6 +282,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
+            else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
@@ -263,12 +293,19 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
+            else if (e.KeyCode == Keys.C) cDown = false;
         };
         panel.Focus();
 
         // ---------------- main loop ----------------
         // real game values (settings/JumpParam.tab + number.krl.txt)
         float pGravity = -1289f, pJumpV = 703f, pSpeed = 200f, pRun = 667f;
+        float playerRadius = 25f, playerHeight = 170f;
+        float.TryParse(Env("RC_RADIUS", "25"), out playerRadius);
+        float.TryParse(Env("RC_HEIGHT", "170"), out playerHeight);
+        int blockedEvents = 0;
+        long colCalls = 0, colBlockedCalls = 0;
+        bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
         long lastMs = 0, lastMeasure = 0, lastLog = 0, lastHud = 0, skillUntil = 0;
         long frames = 0, fpsAt = 0, fps = 0;
         int shotIdx = 0;
@@ -304,6 +341,40 @@ internal static class RebornClient
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             }
+            if (demoCollide)
+            {
+                if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
+                pW = now >= 3000 && now < 9000;
+            }
+
+            if (teleportToStructure)
+            {
+                teleportToStructure = false;
+                if (col != null)
+                {
+                    float nx, ny, nz;
+                    float d = col.NearestInstance(px, pz, out nx, out ny, out nz);
+                    if (d < float.MaxValue)
+                    {
+                        float ddx = px - nx, ddz = pz - nz;
+                        float dl = (float)Math.Sqrt(ddx * ddx + ddz * ddz);
+                        if (dl < 1f) { ddx = 1f; ddz = 0f; dl = 1f; }
+                        px = nx + ddx / dl * 320f;
+                        pz = nz + ddz / dl * 320f;
+                        py = sampler != null ? sampler.Sample(px, pz) : py;
+                        vy = 0f; grounded = true;
+                        float fx = nx - px, fz = nz - pz;
+                        float fl = (float)Math.Sqrt(fx * fx + fz * fz);
+                        if (fl > 1e-4f) { fx /= fl; fz /= fl; }
+                        viewX = fx; viewZ = fz;
+                        demoDirX = fx; demoDirZ = fz;
+                        curYaw = (float)Math.Atan2(fx, fz);
+                        try { scene.SetCameraPos(px - fx * followDist, py + 60f, pz - fz * followDist, false); } catch { }
+                        Log(string.Format("teleport to structure: {0:F0}u away, at ({1:F0},{2:F0},{3:F0})", d, px, py, pz));
+                    }
+                    else Log("no solid structure found");
+                }
+            }
 
             if (now - lastMeasure >= 500) { lastMeasure = now; measureView(); }
             float hl = (float)Math.Sqrt(viewX * viewX + viewZ * viewZ);
@@ -327,15 +398,9 @@ internal static class RebornClient
             if (pS) { dirX -= hx; dirZ -= hz; }
             if (pA) { dirX -= rX; dirZ -= rZ; }
             if (pD) { dirX += rX; dirZ += rZ; }
+            if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
-
-            // jump
-            if (jumpPressed)
-            {
-                jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; }
-            }
 
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
@@ -359,23 +424,64 @@ internal static class RebornClient
                 curYaw = (float)Math.Atan2(ux, uz);
             }
 
-            // vertical
+            // object/foliage collision (walls, buildings, rocks, trees)
+            if (col != null)
+            {
+                float stepGround = col.SupportHeight(px, pz, py - 20f, py + 70f);
+                if (moving)
+                {
+                    float ux2 = dirX / len, uz2 = dirZ / len;
+                    for (int si = 1; si <= 3; si++)
+                    {
+                        float sd = playerRadius + si * 25f;
+                        float sh2 = col.SupportHeight(px + ux2 * sd, pz + uz2 * sd, py - 20f, py + 70f);
+                        if (sh2 > stepGround) stepGround = sh2;
+                    }
+                }
+                if (stepGround > ground)
+                {
+                    ground = stepGround;
+                }
+                else
+                {
+                    colCalls++;
+                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
+                        playerRadius, playerHeight, ref ground, ref grounded);
+                    if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                    if (grounded)
+                    {
+                        float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
+                        if (sh > ground) ground = sh;
+                    }
+                }
+            }
+
+            // grounded / ledge / step (map-host rules)
+            if (grounded)
+            {
+                if (py - ground > 150f) { grounded = false; vy = 0f; }
+                else if (py > ground) py = ground;
+                else if (ground - py <= 70f) py = ground;
+            }
+
+            // jump
+            if (jumpPressed)
+            {
+                jumpPressed = false;
+                if (grounded) { vy = pJumpV; grounded = false; }
+            }
+
+            // gravity
             if (!grounded)
             {
                 vy += pGravity * dt;
                 py += vy * dt;
-                ground = sampler != null ? sampler.Sample(px, pz) : py;
                 if (py <= ground)
                 {
                     py = ground;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
                 }
-            }
-            else
-            {
-                if (ground < py - 150f) { grounded = false; vy = 0f; }
-                else py = ground;
             }
 
             // animation state
@@ -433,15 +539,34 @@ internal static class RebornClient
                 string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN" : "WALK") : "IDLE";
                 hud.Text = string.Format(
-                    "JX3 Reborn M1\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5}\nclip {6}\nWASD move | Shift run | Space jump | 1 skill | L-drag orbit | wheel zoom",
-                    fps, px, py, pz, state, blocked ? " (blocked)" : "",
+                    "JX3 Reborn M1\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nclip {7}\nWASD move | Shift run | Space jump | 1 skill | C teleport | L-drag orbit | wheel zoom",
+                    fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     curClip == null ? "-" : Path.GetFileName(curClip));
             }
             if (now - lastLog >= 2000)
             {
                 lastLog = now;
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} clip={8}",
-                    now / 1000, fps, px, py, pz, vy, grounded, blocked, curClip == null ? "-" : Path.GetFileName(curClip)));
+                string nearInfo = "";
+                if (colDebug && col != null)
+                {
+                    float nx, ny, nz;
+                    float nd = col.NearestInstance(px, pz, out nx, out ny, out nz);
+                    var cand = new System.Collections.Generic.List<int>();
+                    col.GatherCandidates(px, pz, 800f, cand);
+                    nearInfo = string.Format(" near={0:F0} cand={1}", nd, cand.Count);
+                    for (int ci = 0; ci < cand.Count && ci < 3; ci++)
+                    {
+                        float ax, ay, az, bx, by, bz;
+                        if (col.GetInstanceBounds(cand[ci], out ax, out ay, out az, out bx, out by, out bz))
+                            nearInfo += string.Format(" | i{0} AABB({1:F0},{2:F0},{3:F0})-({4:F0},{5:F0},{6:F0})",
+                                cand[ci], ax, ay, az, bx, by, bz);
+                    }
+                    nearInfo += string.Format(" py={0:F0}", py);
+                }
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10}{11} clip={12}",
+                    now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
+                    colCalls, colBlockedCalls, nearInfo,
+                    curClip == null ? "-" : Path.GetFileName(curClip)));
             }
             while (shotIdx < shots.Length && now >= shots[shotIdx])
             {

@@ -5,5 +5,5 @@ set BIN=C:\SeasunGame\MovieEditor\bin64
 "%CSC%" /nologo /platform:x64 /target:exe /out:"%BIN%\reborn_client.exe" ^
   /r:"%BIN%\MovieEngineCLR.dll" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
-  client\RebornClient.cs client\TerrainSampler.cs
+  client\RebornClient.cs client\TerrainSampler.cs client\FoliageCollision.cs
 echo build exit=%ERRORLEVEL%
