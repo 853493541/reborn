@@ -1,0 +1,12 @@
+# Camera loader default constants (JX3RepresentX64.dll, image base 0x180000000)
+# extracted from LoadCarrierParams (0x180ACFB70, proof/netcode/disasm/camera_mouse_config.txt)
+CameraMaxDeltaYaw_default	0x180D09F48
+CameraMaxDeltaPitch_default	0x180D09F44
+MaxDragSpeed_default	0x180D09F40
+TargetDistance_default	0x180C82240
+InitCameraPitch_default	0x180C8319C
+smooth_dead_epsilon	0x180C8223B
+abs_mask	0x180C83240
+pi_half	0x180C83AC8
+# 10-row move-pitch loader (0x180338C10, camera_config.txt)
+CameraAdjustYawWhenMoveTurnDisableAngle_default	0x180C8D3E8

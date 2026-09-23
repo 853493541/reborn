@@ -1,0 +1,157 @@
+
+==== 0x180611b80 .. 0x180611c60 (.text)
+  0x180611b80: int3     
+  0x180611b81: int3     
+  0x180611b82: int3     
+  0x180611b83: int3     
+  0x180611b84: int3     
+  0x180611b85: int3     
+  0x180611b86: int3     
+  0x180611b87: int3     
+  0x180611b88: int3     
+  0x180611b89: int3     
+  0x180611b8a: int3     
+  0x180611b8b: int3     
+  0x180611b8c: int3     
+  0x180611b8d: int3     
+  0x180611b8e: int3     
+  0x180611b8f: int3     
+  0x180611b90: mov      eax, dword ptr [rcx + 0x1dc]
+  0x180611b96: ret      
+  0x180611b97: int3     
+  0x180611b98: int3     
+  0x180611b99: int3     
+  0x180611b9a: int3     
+  0x180611b9b: int3     
+  0x180611b9c: int3     
+  0x180611b9d: int3     
+  0x180611b9e: int3     
+  0x180611b9f: int3     
+  0x180611ba0: mov      eax, dword ptr [rcx + 0x1e4]
+  0x180611ba6: ret      
+  0x180611ba7: int3     
+  0x180611ba8: int3     
+  0x180611ba9: int3     
+  0x180611baa: int3     
+  0x180611bab: int3     
+  0x180611bac: int3     
+  0x180611bad: int3     
+  0x180611bae: int3     
+  0x180611baf: int3     
+  0x180611bb0: mov      eax, dword ptr [rcx + 0x1d8]
+  0x180611bb6: ret      
+  0x180611bb7: int3     
+  0x180611bb8: int3     
+  0x180611bb9: int3     
+  0x180611bba: int3     
+  0x180611bbb: int3     
+  0x180611bbc: int3     
+  0x180611bbd: int3     
+  0x180611bbe: int3     
+  0x180611bbf: int3     
+  0x180611bc0: cmp      dword ptr [rcx + 0x4c], 0
+  0x180611bc4: je       0x180611bca
+  0x180611bc6: mov      eax, dword ptr [rcx + 0x58]
+  0x180611bc9: ret      
+  0x180611bca: mov      eax, dword ptr [rcx + 0x3a0]
+  0x180611bd0: ret      
+  0x180611bd1: int3     
+  0x180611bd2: int3     
+  0x180611bd3: int3     
+  0x180611bd4: int3     
+  0x180611bd5: int3     
+  0x180611bd6: int3     
+  0x180611bd7: int3     
+  0x180611bd8: int3     
+  0x180611bd9: int3     
+  0x180611bda: int3     
+  0x180611bdb: int3     
+  0x180611bdc: int3     
+  0x180611bdd: int3     
+  0x180611bde: int3     
+  0x180611bdf: int3     
+  0x180611be0: mov      eax, dword ptr [rcx + 0x3b8]
+  0x180611be6: ret      
+  0x180611be7: int3     
+  0x180611be8: int3     
+  0x180611be9: int3     
+  0x180611bea: int3     
+  0x180611beb: int3     
+  0x180611bec: int3     
+  0x180611bed: int3     
+  0x180611bee: int3     
+  0x180611bef: int3     
+  0x180611bf0: movzx    eax, byte ptr [rcx + 0x38a]
+  0x180611bf7: ret      
+  0x180611bf8: int3     
+  0x180611bf9: int3     
+  0x180611bfa: int3     
+  0x180611bfb: int3     
+  0x180611bfc: int3     
+  0x180611bfd: int3     
+  0x180611bfe: int3     
+  0x180611bff: int3     
+  0x180611c00: lea      rax, [rcx + 0x40c]
+  0x180611c07: ret      
+  0x180611c08: int3     
+  0x180611c09: int3     
+  0x180611c0a: int3     
+  0x180611c0b: int3     
+  0x180611c0c: int3     
+  0x180611c0d: int3     
+  0x180611c0e: int3     
+  0x180611c0f: int3     
+  0x180611c10: mov      eax, dword ptr [rcx + 0x214]
+  0x180611c16: ret      
+  0x180611c17: int3     
+  0x180611c18: int3     
+  0x180611c19: int3     
+  0x180611c1a: int3     
+  0x180611c1b: int3     
+  0x180611c1c: int3     
+  0x180611c1d: int3     
+  0x180611c1e: int3     
+  0x180611c1f: int3     
+  0x180611c20: mov      eax, dword ptr [rcx + 0x3b0]
+  0x180611c26: ret      
+  0x180611c27: int3     
+  0x180611c28: int3     
+  0x180611c29: int3     
+  0x180611c2a: int3     
+  0x180611c2b: int3     
+  0x180611c2c: int3     
+  0x180611c2d: int3     
+  0x180611c2e: int3     
+  0x180611c2f: int3     
+  0x180611c30: movzx    eax, byte ptr [rcx + 0x145]
+  0x180611c37: ret      
+  0x180611c38: int3     
+  0x180611c39: int3     
+  0x180611c3a: int3     
+  0x180611c3b: int3     
+  0x180611c3c: int3     
+  0x180611c3d: int3     
+  0x180611c3e: int3     
+  0x180611c3f: int3     
+  0x180611c40: mov      eax, dword ptr [rcx + 0x184]
+  0x180611c46: ret      
+  0x180611c47: int3     
+  0x180611c48: int3     
+  0x180611c49: int3     
+  0x180611c4a: int3     
+  0x180611c4b: int3     
+  0x180611c4c: int3     
+  0x180611c4d: int3     
+  0x180611c4e: int3     
+  0x180611c4f: int3     
+  0x180611c50: mov      eax, dword ptr [rcx + 0x18c]
+  0x180611c56: ret      
+  0x180611c57: int3     
+  0x180611c58: int3     
+  0x180611c59: int3     
+  0x180611c5a: int3     
+  0x180611c5b: int3     
+  0x180611c5c: int3     
+  0x180611c5d: int3     
+  0x180611c5e: int3     
+  0x180611c5f: int3     

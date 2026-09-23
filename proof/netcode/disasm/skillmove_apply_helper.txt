@@ -1,0 +1,128 @@
+
+==== 0x180542440 .. 0x180542560 (.text)
+  0x180542440: sub      rsp, 0x28
+  0x180542444: mov      rax, qword ptr [rip + 0x99bb95]  ; 0x180eddfe0
+  0x18054244b: mov      edx, r8d
+  0x18054244e: addsd    xmm1, qword ptr [rax + 0x80]
+  0x180542456: movsd    qword ptr [rcx + 0x8308], xmm1
+  0x18054245e: add      rcx, 0xa8
+  0x180542465: call     0x18001f942
+  0x18054246a: mov      eax, 1
+  0x18054246f: add      rsp, 0x28
+  0x180542473: ret      
+  0x180542474: int3     
+  0x180542475: int3     
+  0x180542476: int3     
+  0x180542477: int3     
+  0x180542478: int3     
+  0x180542479: int3     
+  0x18054247a: int3     
+  0x18054247b: int3     
+  0x18054247c: int3     
+  0x18054247d: int3     
+  0x18054247e: int3     
+  0x18054247f: int3     
+  0x180542480: int3     
+  0x180542481: int3     
+  0x180542482: int3     
+  0x180542483: int3     
+  0x180542484: int3     
+  0x180542485: int3     
+  0x180542486: int3     
+  0x180542487: int3     
+  0x180542488: int3     
+  0x180542489: int3     
+  0x18054248a: int3     
+  0x18054248b: int3     
+  0x18054248c: int3     
+  0x18054248d: int3     
+  0x18054248e: int3     
+  0x18054248f: int3     
+  0x180542490: push     rbx
+  0x180542492: sub      rsp, 0x20
+  0x180542496: mov      rbx, rcx
+  0x180542499: xor      edx, edx
+  0x18054249b: add      rcx, 0x70
+  0x18054249f: call     0x1800053d5
+  0x1805424a4: xor      eax, eax
+  0x1805424a6: mov      dword ptr [rbx + 0x8338], eax
+  0x1805424ac: mov      dword ptr [rbx + 0x24], eax
+  0x1805424af: mov      dword ptr [rbx + 0x82f8], eax
+  0x1805424b5: mov      dword ptr [rbx + 0x77e8], eax
+  0x1805424bb: mov      qword ptr [rbx + 0x82e0], rax
+  0x1805424c2: mov      dword ptr [rbx + 0x82e8], eax
+  0x1805424c8: add      rsp, 0x20
+  0x1805424cc: pop      rbx
+  0x1805424cd: ret      
+  0x1805424ce: int3     
+  0x1805424cf: int3     
+  0x1805424d0: int3     
+  0x1805424d1: int3     
+  0x1805424d2: int3     
+  0x1805424d3: int3     
+  0x1805424d4: int3     
+  0x1805424d5: int3     
+  0x1805424d6: int3     
+  0x1805424d7: int3     
+  0x1805424d8: int3     
+  0x1805424d9: int3     
+  0x1805424da: int3     
+  0x1805424db: int3     
+  0x1805424dc: int3     
+  0x1805424dd: int3     
+  0x1805424de: int3     
+  0x1805424df: int3     
+  0x1805424e0: sub      rsp, 0x38
+  0x1805424e4: test     rdx, rdx
+  0x1805424e7: jne      0x18054251b
+  0x1805424e9: lea      rcx, [rip + 0x773868]  ; "KRLRemoteCharacter::SetBeControlled"
+  0x1805424f0: mov      r9d, 0x9fb
+  0x1805424f6: mov      qword ptr [rsp + 0x20], rcx
+  0x1805424fb: lea      r8, [rip + 0x765bde]  ; "prlTargetCharacter"
+  0x180542502: mov      ecx, 3
+  0x180542507: lea      rdx, [rip + 0x73e642]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x18054250e: call     qword ptr [rip + 0xb57aec]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180542514: xor      eax, eax
+  0x180542516: add      rsp, 0x38
+  0x18054251a: ret      
+  0x18054251b: mov      dword ptr [rcx + 0x82e0], 2
+  0x180542525: mov      eax, 1
+  0x18054252a: add      rsp, 0x38
+  0x18054252e: ret      
+  0x18054252f: int3     
+  0x180542530: int3     
+  0x180542531: int3     
+  0x180542532: int3     
+  0x180542533: int3     
+  0x180542534: int3     
+  0x180542535: int3     
+  0x180542536: int3     
+  0x180542537: int3     
+  0x180542538: int3     
+  0x180542539: int3     
+  0x18054253a: int3     
+  0x18054253b: int3     
+  0x18054253c: int3     
+  0x18054253d: int3     
+  0x18054253e: int3     
+  0x18054253f: int3     
+  0x180542540: int3     
+  0x180542541: int3     
+  0x180542542: int3     
+  0x180542543: int3     
+  0x180542544: int3     
+  0x180542545: int3     
+  0x180542546: int3     
+  0x180542547: int3     
+  0x180542548: int3     
+  0x180542549: int3     
+  0x18054254a: int3     
+  0x18054254b: int3     
+  0x18054254c: int3     
+  0x18054254d: int3     
+  0x18054254e: int3     
+  0x18054254f: int3     
+  0x180542550: mov      dword ptr [rcx + 0x82e0], 0
+  0x18054255a: mov      eax, 1
+  0x18054255f: ret      

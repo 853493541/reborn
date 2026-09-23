@@ -126,14 +126,19 @@ spring integrate with clamp, then `pos = base + track_delta`
 
 ## 7. Known gaps (values, not structure)
 
-1. Actual numeric values of the parameter tables — **partially recovered**:
-   the path table (`Represent\filepath.ini`) maps `CameraConfig` to
-   `Represent/camera/config.ini` (CDN stream set, not local paks). Real
-   skill-camera rows recovered (see
-   `docs/netcode/JX3_CAMERA_RESEARCH.md` §7): enter/exit ms, FOV rad, duration,
-   screen effect, edge color temp/saturation.
-2. Camera obstruction/collision details (engine-side in JX3).
-3. Mouse sensitivity defaults (`userdata\custom.dat`, binary).
-
-Until extracted, ship JX3's key names with tunable defaults and a single
-`camera.json` to override them.
+1. **Per-mode row values** — the krl tables are not shipped in the current
+   build (downloader verified the install is complete). **Verified defaults**
+   that the current build actually uses (see
+   `docs/netcode/JX3_CAMERA_RESEARCH.md` §8.1, `proof/netcode/camera_defaults_verified.txt`):
+   `CameraMaxDeltaYaw = 2π`, `CameraMaxDeltaPitch = 1.56`,
+   `TargetDistance = 1.0`, `SmoothTime = 1.0`,
+   `CameraAdjustYawWhenMoveTurnDisableAngle = 0.26 rad (15°)`,
+   `InitCameraPitch = π` (sentinel), everything else 0/false.
+   Ship these as the defaults in `camera.json`.
+2. **Obstruction** — implemented (reference `obstruction` hook): raycast
+   anchor→camera, clamp to hit−0.2, smooth return; JX3 does the same inside the
+   engine camera (`bObstructdAvert` in `KG3DEngineX64.dll`).
+3. **Camera shake** — implemented (`CameraShake` class): burst = cos over
+   period, amplitude × decay per cycle, ends after max cycles; idle = rand
+   jitter within ± amplitude. Matches the recovered updater (`0x180B10A70`).
+4. Mouse sensitivity defaults (`userdata\custom.dat`, binary; user setting).
