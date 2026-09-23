@@ -145,55 +145,29 @@ def main():
     for s in skipped[:10]:
         print('   skip', s)
 
-    # Some trees ship a degenerate CollisionMesh (a tiny fragment), in which
-    # case the real client has no usable tree collider. Generate a trunk
-    # The shipped tree colliders are trunk-only, and 68 of them are degenerate
-    # fragments. Every tree also gets a "canopy column" cylinder (in the tree's
-    # local space, from its world bounds) so the whole tree is solid.
+    # Use exactly the colliders the game ships. Trees whose CollisionMesh is a
+    # degenerate fragment (no usable collider in the real client either) are
+    # skipped rather than filled with invented geometry.
     import numpy as np
     extra = {}      # synthetic mesh key -> (verts, tris)
     placed = []     # (object, mesh key) pairs to write
-    canopy = 0
+    degenerate = 0
     for o in objs:
         p = norm_pak_path(o['model'])
         m = meshes.get(p)
         if m is None:
             continue
-        if not o.get('srt'):
-            placed.append((o, p))
+        # use exactly the shipped CollisionMesh: no synthetic colliders,
+        # no invented sizes
+        v = m.positions
+        h = float(v[:, 1].max() - v[:, 1].min())
+        xz = float(max(v[:, 0].max() - v[:, 0].min(),
+                       v[:, 2].max() - v[:, 2].min()))
+        if o.get('srt') and (h < 150.0 or xz < 30.0):
+            degenerate += 1
             continue
-        bmin = o.get('bmin') or [0, 0, 0]
-        bmax = o.get('bmax') or [0, 0, 0]
-        try:
-            M = np.asarray(o['m'], dtype=np.float64).reshape(4, 4)
-            Mi = np.linalg.inv(M)
-            corners = np.asarray([[x, y, z, 1.0]
-                                  for x in (bmin[0], bmax[0])
-                                  for y in (bmin[1], bmax[1])
-                                  for z in (bmin[2], bmax[2])])
-            loc = corners @ Mi
-            lmin = loc[:, :3].min(axis=0)
-            lmax = loc[:, :3].max(axis=0)
-            lx = float(lmax[0] - lmin[0])
-            lz = float(lmax[2] - lmin[2])
-            radius = min(220.0, max(35.0, 0.10 * min(lx, lz)))
-            y0 = float(lmin[1])
-            y1 = float(min(lmax[1], lmin[1] + 1500.0))
-            ck = '%s#canopy%d_%d_%d' % (p, int(radius), int(y0), int(y1))
-            if ck not in extra:
-                extra[ck] = make_cylinder(radius, y0, y1)
-            v = m.positions
-            h = float(v[:, 1].max() - v[:, 1].min())
-            xz = float(max(v[:, 0].max() - v[:, 0].min(),
-                           v[:, 2].max() - v[:, 2].min()))
-            if h >= 150.0 and xz >= 30.0:
-                placed.append((o, p))       # keep the real trunk collider too
-            placed.append((o, ck))
-            canopy += 1
-        except Exception as e:
-            placed.append((o, p))
-            print('   canopy skip %s: %s' % (p, e))
-    print('trees given canopy cylinders: %d' % canopy)
+        placed.append((o, p))
+    print('trees with only a degenerate shipped collider (skipped): %d' % degenerate)
 
     all_meshes = {}
     for path in meshes:
