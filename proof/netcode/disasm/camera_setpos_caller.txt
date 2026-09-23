@@ -1,0 +1,54 @@
+
+==== 0x180b1e9b0 .. 0x180b1ea40 (.text)
+  0x180b1e9b0: mov      ebx, 0x318
+  0x180b1e9b5: je       0x180b1e9ee
+  0x180b1e9b7: cmp      dword ptr [rbp + 0x44], r15d
+  0x180b1e9bb: jne      0x180b1e9ee
+  0x180b1e9bd: movss    xmm1, dword ptr [rbx + 0x31c]
+  0x180b1e9c5: movss    xmm0, dword ptr [rdi + 0x3c]
+  0x180b1e9ca: subss    xmm0, xmm1
+  0x180b1e9ce: andps    xmm0, xmmword ptr [rip + 0x16e86b]  ; 0x180c8d240
+  0x180b1e9d5: comiss   xmm0, dword ptr [rip + 0x16e798]  ; 0x180c8d174
+  0x180b1e9dc: jbe      0x180b1e9ee
+  0x180b1e9de: movss    xmm2, dword ptr [rip + 0x188c8e]  ; 0x180ca7674
+  0x180b1e9e6: mov      rcx, rdi
+  0x180b1e9e9: call     0x18000b785
+  0x180b1e9ee: mov      r9, r14
+  0x180b1e9f1: movss    dword ptr [rsp + 0x20], xmm6
+  0x180b1e9f7: mov      r8, rdi
+  0x180b1e9fa: mov      rdx, rbp
+  0x180b1e9fd: mov      rcx, rbx
+  0x180b1ea00: call     0x1800016ea
+  0x180b1ea05: test     eax, eax
+  0x180b1ea07: jne      0x180b1ea1b
+  0x180b1ea09: mov      r9d, 0xe0
+  0x180b1ea0f: lea      r8, [rip + 0x162172]  ; "nRetCode"
+  0x180b1ea16: jmp      0x180b1e451
+  0x180b1ea1b: mov      r15d, 1
+  0x180b1ea21: jmp      0x180b1e46f
+  0x180b1ea26: int3     
+  0x180b1ea27: int3     
+  0x180b1ea28: int3     
+  0x180b1ea29: int3     
+  0x180b1ea2a: int3     
+  0x180b1ea2b: int3     
+  0x180b1ea2c: int3     
+  0x180b1ea2d: int3     
+  0x180b1ea2e: int3     
+  0x180b1ea2f: int3     
+  0x180b1ea30: int3     
+  0x180b1ea31: int3     
+  0x180b1ea32: int3     
+  0x180b1ea33: int3     
+  0x180b1ea34: int3     
+  0x180b1ea35: int3     
+  0x180b1ea36: int3     
+  0x180b1ea37: int3     
+  0x180b1ea38: int3     
+  0x180b1ea39: int3     
+  0x180b1ea3a: int3     
+  0x180b1ea3b: int3     
+  0x180b1ea3c: int3     
+  0x180b1ea3d: int3     
+  0x180b1ea3e: int3     
+  0x180b1ea3f: int3     

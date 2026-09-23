@@ -1,0 +1,76 @@
+
+==== 0x180b10d90 .. 0x180b10f00 (.text)
+  0x180b10d90: push     rbx
+  0x180b10d92: push     rsi
+  0x180b10d93: push     rdi
+  0x180b10d94: sub      rsp, 0x80
+  0x180b10d9b: mov      rax, qword ptr [rip + 0x389336]  ; 0x180e9a0d8
+  0x180b10da2: xor      rax, rsp
+  0x180b10da5: mov      qword ptr [rsp + 0x40], rax
+  0x180b10daa: cmp      dword ptr [rcx + 0x184], 0
+  0x180b10db1: movaps   xmm0, xmm3
+  0x180b10db4: mov      rdi, r8
+  0x180b10db7: mov      rsi, rdx
+  0x180b10dba: mov      rbx, rcx
+  0x180b10dbd: je       0x180b1101f
+  0x180b10dc3: cmp      dword ptr [rcx + 0x188], 0
+  0x180b10dca: movss    xmm3, dword ptr [rcx + 0x198]
+  0x180b10dd2: movss    xmm1, dword ptr [rcx + 0x190]
+  0x180b10dda: movss    xmm2, dword ptr [rcx + 0x194]
+  0x180b10de2: movss    xmm4, dword ptr [rdx]
+  0x180b10de6: movss    xmm5, dword ptr [rdx + 4]
+  0x180b10deb: movaps   xmmword ptr [rsp + 0x70], xmm6
+  0x180b10df0: subss    xmm5, xmm1
+  0x180b10df4: movss    xmm6, dword ptr [rdx + 8]
+  0x180b10df9: subss    xmm6, xmm2
+  0x180b10dfd: movaps   xmmword ptr [rsp + 0x60], xmm7
+  0x180b10e02: movaps   xmm7, xmm3
+  0x180b10e05: minss    xmm7, xmm0
+  0x180b10e09: movss    xmm0, dword ptr [rcx + 0x18c]
+  0x180b10e11: subss    xmm4, xmm0
+  0x180b10e15: divss    xmm5, xmm3
+  0x180b10e19: divss    xmm4, xmm3
+  0x180b10e1d: divss    xmm6, xmm3
+  0x180b10e21: mulss    xmm4, xmm7
+  0x180b10e25: mulss    xmm5, xmm7
+  0x180b10e29: mulss    xmm6, xmm7
+  0x180b10e2d: addss    xmm4, xmm0
+  0x180b10e31: addss    xmm5, xmm1
+  0x180b10e35: addss    xmm6, xmm2
+  0x180b10e39: movss    dword ptr [rcx + 0x18c], xmm4
+  0x180b10e41: movss    dword ptr [rcx + 0x190], xmm5
+  0x180b10e49: movss    dword ptr [rcx + 0x194], xmm6
+  0x180b10e51: je       0x180b10ec4
+  0x180b10e53: movss    xmm0, dword ptr [r8 + 8]
+  0x180b10e59: subss    xmm0, dword ptr [rcx + 0x40]
+  0x180b10e5e: movss    xmm5, dword ptr [r8]
+  0x180b10e63: subss    xmm5, dword ptr [rcx + 0x38]
+  0x180b10e68: movss    xmm2, dword ptr [r8 + 4]
+  0x180b10e6e: subss    xmm2, dword ptr [rcx + 0x3c]
+  0x180b10e73: divss    xmm0, xmm3
+  0x180b10e77: divss    xmm5, xmm3
+  0x180b10e7b: divss    xmm2, xmm3
+  0x180b10e7f: mulss    xmm0, xmm7
+  0x180b10e83: mulss    xmm5, xmm7
+  0x180b10e87: addss    xmm0, dword ptr [rcx + 0x40]
+  0x180b10e8c: mulss    xmm2, xmm7
+  0x180b10e90: addss    xmm5, dword ptr [rcx + 0x38]
+  0x180b10e95: addss    xmm2, dword ptr [rcx + 0x3c]
+  0x180b10e9a: movss    dword ptr [r8 + 8], xmm0
+  0x180b10ea0: movss    dword ptr [r8], xmm5
+  0x180b10ea5: movss    dword ptr [r8 + 4], xmm2
+  0x180b10eab: movss    xmm0, dword ptr [rcx + 0x198]
+  0x180b10eb3: subss    xmm0, xmm7
+  0x180b10eb7: movss    dword ptr [rcx + 0x198], xmm0
+  0x180b10ebf: jmp      0x180b10ff1
+  0x180b10ec4: movss    xmm0, dword ptr [rcx + 0x38]
+  0x180b10ec9: movss    xmm1, dword ptr [rcx + 0x3c]
+  0x180b10ece: subss    xmm0, xmm4
+  0x180b10ed2: subss    xmm1, xmm5
+  0x180b10ed6: movaps   xmmword ptr [rsp + 0x50], xmm8
+  0x180b10edc: movss    dword ptr [rsp + 0x20], xmm0
+  0x180b10ee2: movss    xmm0, dword ptr [rcx + 0x40]
+  0x180b10ee7: lea      rcx, [rsp + 0x20]
+  0x180b10eec: subss    xmm0, xmm6
+  0x180b10ef0: movss    dword ptr [rsp + 0x24], xmm1
+  0x180b10ef6: movss    dword ptr [rsp + 0x28], xmm0

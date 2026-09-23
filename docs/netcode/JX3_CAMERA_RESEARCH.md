@@ -121,6 +121,17 @@ moving drags yaw (`CameraAdjustYawWhenMoveTurn*`); sprint pulls the camera back
 with a speed-dependent offset (`SprintCamera*`); mounts/vehicles use their own
 row (`CarrierCamera*`).
 
+**Sprint clamp mechanism — VERIFIED** (`ClampMouse` @ `0x180B1FE70`, sprint
+branch `0x180B20140–0x180B20200`; `ClampMouseForSprintCamera` assert):
+- int speeds from sprint controller `[+0x1D8]` / `[+0x1DC]` (getters
+  `0x180611BB0` / `0x180611B90`) × **π/128 = 0.024543693** (`0x180D0CF64`) → radians;
+- slew-rate limiter `0x180B13B60`: `clamp(angle, −dt·[rcx+0x5C], +dt·[rcx+0x5C])`;
+- final mouse pitch clamp:
+  `clamp(speed_angle, max(min_angle, base + slew_result)) − base`.
+So sprint limits how far the camera can pitch back as a function of speed,
+rate-limited over time. `MouseMoveCamera` (`0x180B240D0`) is the *homeland*
+housing camera (screen-edge drag via X3DEngine `IView`), separate from this.
+
 ## 3. Runtime control from game logic (Lua-facing)
 
 `KGameWorldHandler` exposes camera setters called from logic/Lua
@@ -184,11 +195,27 @@ From `SetCharacterCameraPosition` (`0x180B0E820`, `proof/netcode/disasm/camera_s
    (`+0x3B9C`, `+0x38`), else the raw character position — into a 3-float anchor.
 2. **Desired offset** (`0x180B0F1EE`–`0x180B0F290`): the offset is the distance
    vector rotated by yaw/pitch via sinf/cosf (`0x180BB83B5` / `0x180BB83BB`),
-   plus height and per-axis deltas `[r14+0xD0]` etc. Form:
+   plus height and per-axis deltas `[r14+0xD0]` etc. **Machine-verified form**
+   (π/2 constant @ `0x180C8DAC8`, `xmm8 = yaw − π/2`):
 
    ```
-   offset = (cos(P)*sin(Y)*d,   sin(P)*d + h,   cos(P)*cos(Y)*d)
+   offset = ( cos(yaw)·sin(pol)·A + sin(yaw)·B,
+              cos(pol)·A + C,
+              sin(yaw)·sin(pol)·A − cos(yaw)·B )
    ```
+
+   `yaw` = first param (`yaw=0` → +X, positive → +Z), `pol` = second param
+   (angle from vertical-down, i.e. `pitch_from_horizontal = π/2 − pol`),
+   `A/B/C` = the controller's `CameraPositionOffset` fields
+   (`[r14+0xC8/0xCC/0xD0]` = distance / lateral / height).
+
+   **Move-pitch adjustment path (partially decoded):**
+   `AdjustCharacterCameraPosition` (`0x180AC8F10`, sole caller `0x180B1006E`)
+   composes a rotation from two angles in its params struct
+   (`[rsi+0x20]`, `[rsi+0x24]`, scale `[rsi+0x28]`) and writes the result into
+   `[r14+0x8C]` — the vertical offset consumed here as `C` — plus the adjusted
+   position into `[r14+0x38]`. The easing/timing consumption of
+   `CameraMovePitchSmoothTime` / `CameraMovePitchApplyTimeInterval` is still open.
 
 3. **Exponential smoothing with dead zone** (`0x180B0F2BA`–`0x180B0F3A6`):
    `dt = now - last` (global timestamps `[g+0x80] - [g+0x88]`), and per axis:
@@ -277,11 +304,159 @@ skill move animation).
 
 Files kept locally (raw game data, git-ignored): `proof/netcode/camera_files/`.
 
-## 8. Remaining open items
+## 8. Verified constants + shake + obstruction (fourth pass)
 
-1. `Represent/camera/config.ini` (main follow params + 7
-   `OBJECT_POSITION_OFFSET_FILE_NAME` files) and the per-mode `*.krl.txt` rows —
-   only in the CDN stream set; fetch via the client updater/stream downloader or
-   VFS enumeration, then drop the numbers into `REBORN_CAMERA_SPEC.md` rows.
-2. Camera obstruction/collision (engine-side).
-3. Mouse sensitivity defaults (`userdata\custom.dat`).
+### 8.1 Machine-verified default constants (current build's effective values)
+
+`tools/netcode/verify_camera_defaults.py` pairs each `GetFloat(key, default)`
+with the actual constant the loader passes, following register chains.
+Output: `proof/netcode/camera_defaults_verified.txt`.
+
+| Key (loader) | Default | Evidence |
+|---|---|---|
+| `CameraHeight` (carrier) | **0.0** | xorps |
+| `CameraMaxDeltaYaw` | **6.2800002 (2π)** | const @ `0x180D09F48` |
+| `CameraMaxDeltaPitch` | **1.56** | const @ `0x180D09F44` |
+| `MaxDragSpeed` | 0.00314 (placeholder) | const @ `0x180D09F40` |
+| `RotationSpeed` | 0.00314 (placeholder) | same const |
+| `ForbidStrafe` / `ForbidRotation` / `TurnCameraYawToObjectYaw` | bool, no default (false) | GetBool `+0x70` |
+| `TargetDistance` | **1.0** (also clamped to 1.0 when table ≤ 0) | const @ `0x180C82240` |
+| `SmoothTime` | **1.0** | same const via xmm6 chain |
+| `InitCameraPitch` | **π (3.1415927)** — sentinel: caller-provided value used when table returns π | const @ `0x180C8D19C` |
+| `InitCameraAngle` | 0.0 | xorps |
+| 10-row move-pitch table: `ZoomLength`, `CameraMovePitchApplyAngle/SmoothTime/AdjustPitch/AdjustMaxPitch/ApplyMaxPitch/ApplyTimeInterval`, `CameraAdjustYawWhenMoveTurn` | all **0.0** | xorps |
+| `CameraAdjustYawWhenMoveTurnDisableAngle` | **0.26 rad ≈ 15°** | const @ `0x180C8D3E8` |
+
+### 8.2 Camera shake (recovered, `0x180B10A70`)
+
+`proof/netcode/disasm/camera_setcore.txt` — the post-placement updater is the
+**shake controller**:
+
+- state `[+0x1EC]`: 0 = off/idle, 1 = burst active
+- burst: phase = cos((t mod period)/period · 2π); position jitter and rotation
+  scaled by amplitude; each cycle amplitude ×= decay (`[+0x208]`); after
+  `max cycles` (`[+0x1F4]`) the shake disables itself
+- idle branch: 3× `rand()` offsets within ± amplitude applied directly
+- rotation weights `[+0x20C]/[+0x210]`, rotation scale `[+0x1FC]`
+
+### 8.3 Obstruction: engine-side flag
+
+No collision code in SO3Represent — obstruction is an engine camera feature:
+`KG3DEngineX64.dll` contains the parameter **`bObstructdAvert`**
+("obstructed avert") — the engine camera pulls forward when the view is
+obstructed. Reproduction: raycast anchor→camera, clamp distance to hit−ε,
+smooth return when clear (implemented in the reference).
+
+## 9. Remaining open items
+
+1. `Represent/camera/config.ini` (per-mode row values + 7 object-position-offset
+   files) and the `*.krl.txt` rows — **not shipped in the current build**
+   (downloader confirmed 0 missing files; Sep build moved configs server-side).
+   Current-build effective values are the verified defaults above; the krl file
+   format is a simple key-value float table (`sLoadNumberFromFile`,
+   `0x180857DF0`), so old-build files parse trivially if ever obtained.
+2. Mouse sensitivity defaults (`userdata\custom.dat`, binary; user setting).
+
+## 10. Fifth pass — air-combat, shake, follow-action, skill-move, camera-ani
+
+All machine-checked where numbers are given (`proof/netcode/disasm/`,
+`camera_defaults_verified.txt`).
+
+**Air-combat params (VERIFIED defaults, `LoadAirCombatParams` @ `0x180AC9C00`):**
+
+| Key | Default |
+|---|---|
+| `InitCameraDistance` | 2000 |
+| `AdjustEyeScale` | 0.2 |
+| `YawRange` | 70 |
+| `EnterYawAngleSpeed` | 500 |
+| `EnterPitchAngleSpeed` | 500 |
+| `FinalYawAngle` | 30 |
+| `ScreenWidthLimit` | 0.2 |
+| `ScreenHeightLimit` | 0.25 |
+
+**Camera shake (VERIFIED model):** logic → `OnSetCameraShake(int)` (event
+adaptor) → row from the `CameraShake` table via
+`KTableList::GetCameraShakeConfig` with keys `ShakeType`, `ShakeIntensity`,
+`ShakeTotalTime`, `ShakeCycleCount`, `ShakeOffsetX`, `ShakeOffsetY`,
+`ShakeDecayRate`, `ShakePeriodTime` → updater `0x180B10A70` applies the
+cos/decay/jitter curve (fields `+0x1EC` mode, `+0x1F4` amplitude/cycles,
+`+0x200` period, `+0x208` decay).
+
+**Follow-action (VERIFIED mechanism):** `SetCameraFollowCharacterAction`
+(`0x180ACE370`) writes an enum at camera object `+0x27C`; when nonzero,
+`SetCharacterCameraPosition` resolves the `s_face` target and uses it as the
+camera look-at (`0x180B0F152–0x180B0F187`). Min/MaxDis/Speed keys load via krl;
+distance blend still open.
+
+**Skill-move camera (partial):** `ApplySkillMoveCameraTag` (`0x1802F8D20`) uses
+`pcSkillMoveCameraConfig`; config field `+0x22C` = duration → expiry timestamp
+`now + duration` stored at `[obj+0x8308]` (`0x180542440`), gated by character
+flag bit 30. FOV interpolation curve still open.
+
+**Camera animation (VERIFIED):** `KRLCameraAni::SyncCamera` (`0x1805AE2xx`)
+writes track position to camera `[+0x44/0x48/0x4C]` and look-target to
+`[+0x50/0x54/0x58]` per frame, then engine setters via vtable
+(`+0x30`, `+0xA0`, `+0x50`, `+0xA8`).
+
+**Sprint camera (VERIFIED structure, §2):** int speeds `[+0x1D8]`/`[+0x1DC]`
+× **π/128**, slew limiter `0x180B13B60`, final clamp
+`clamp(speed_angle, max(min_angle, base+slew)) − base`.
+
+## 11. Seventh pass — move-pitch, height state machine, carrier, skill-move apply
+
+**Move-pitch / slope (`AdjustCameraForSlope`, blend `0x180B0FF45–0x180B1001E`):**
+- `[rsi+0x54]` is the row's apply-angle; if > ε:
+  `angle[i] += slopeOffset[i] · weight · [rsi+0x54]` (`xmm11` weight).
+- slope offsets live in `[r14+0x14C/0x150/0x154]` and refresh only when
+  `now − [r14+0x158] >` **1000.0 ms** (double const `0x180C8E3D0`).
+- adjusted angles go to `AdjustCharacterCameraPosition` (`0x180B1006E`) →
+  `[r14+0x38/0x3C/0x40]`.
+
+**Height state machine (`0x180B100F0–0x180B10283`, state `[r14+0xC0]`):**
+- 3→1 and 4→2 resets; transitions gated by `[r14+0xB4]`, `[r14+0xB8]` vs
+  `[r14+0xBC]`, `[r14+0xE4]`;
+- state 2: instant `[r14+0x8C] = target`;
+- state 1: rate-limited `target = [rdi+0x24] − dt·(π/3000)` — const
+  `0x180D0E180 = 0.0010471976` rad/ms ≈ **60°/s** — never below current, flips
+  to state 2 on reach.
+
+**Carrier smoothing (`SmoothToCarrierCamera` @ `0x180AD0230`):** per-axis
+exponential step, `delta / timeFactor([rcx+0x44])`, ratio clamped `[0,1]`
+(consts `1.0` @ `0x180C82240`, abs-mask @ `0x180C8D240`), state
+`[rdi+0x60..0x6C]`, outputs `pfRetYaw` / `pfRetPitch` / `pfRetAngle`.
+
+**Skill-move apply (`0x1804FBAE0`):** params → `[obj+0x7458/0x7460/0x7464]`,
+rotated via `0x180024A78` → `[obj+0x746C/0x7470/0x7474]`, `[obj+0x7448]`, then
+engine camera vtable `+0xA48`.
+
+**Reference implementation updated** to the verified rate-limited pitch motion
+(`PITCH_RATE` = π/3000 rad/ms ≈ 60°/s); all 13 smoke checks pass.
+
+## 12. Eighth pass — engine chase camera + real engine configs
+
+**Engine chase camera** (`KG3DEngineX64.dll`, loader `0x1804C1660`): reads ini
+section **`[Camera]`** via `g_OpenIniFile`: `nChaseType`, **`bObstructdAvert`**,
+`fChaseRate`, `fMaxDistance`, `fMinDistance`, `fMaxAngelVel`, `fMinAngelVel`,
+`fAngelRateHor`, `fAngelRateVel`, `fDisZoomRate`, `fFlexCoefficient`,
+`fDampCoefficient`, `bUseFlexibilitySys`, `fFlexRate`, `fDistance`, `fAngleHor`,
+`fAngleVel`, `fLootAtOffsetY`, `bLockedCamera`, `fFovy`.
+
+Struct offsets (`rdi`): `+0x10` bObstructdAvert, `+0x18` nChaseType,
+`+0x1C` fChaseRate, `+0x20/24` fMax/fMinDistance, `+0x28/2C` fMax/fMinAngelVel,
+`+0x30/34` fAngelRateHor/Vel, `+0x38` fDisZoomRate, `+0x3C/40`
+fFlex/fDampCoefficient, `+0x44` bUseFlexibilitySys, `+0x48` fFlexRate,
+`+0x4C` fDistance, `+0x50/54` fAngleHor/Vel, `+0x58` fLootAtOffsetY,
+`+0x5C` bLockedCamera, `+0x60` fFovy.
+
+So the engine's third-person chase camera IS a configurable spring/flex system
+(`fFlexCoefficient`, `fDampCoefficient`, `fFlexRate`) with distance/angle limits
+and obstruction avert — values live in the missing `[Camera]` ini.
+
+**Real engine configs found** in
+`SeasunDownloaderV2.4\seasun\client\_HttpFileForDebug_\local\data\public\`
+(engine data/public is streamed, not in client paks):
+`lookatconfig.ini` (head/neck look-at: Spine1→Spine2 `30 / 0.4 / 90 / 20 / 2.5`,
+Neck→Head `20 / 0.9 / 30 / 75 / 4`, `FaceSocket=s_face`),
+`flexconfig.ini` (`fDamping = 0.675 / 0.2`), `3denginesettings.ini`,
+`environmentdefault.ini`, `physics.ini`, and more.

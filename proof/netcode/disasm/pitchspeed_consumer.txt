@@ -1,0 +1,174 @@
+
+==== 0x180afa3b0 .. 0x180afa6b0 (.text)
+  0x180afa3b0: mov      qword ptr [rsp + 8], rbx
+  0x180afa3b5: push     rdi
+  0x180afa3b6: sub      rsp, 0x60
+  0x180afa3ba: mov      rbx, rdx
+  0x180afa3bd: mov      rdi, rcx
+  0x180afa3c0: test     rdx, rdx
+  0x180afa3c3: jne      0x180afa3f9
+  0x180afa3c5: lea      rcx, [rip + 0x21269c]  ; "LoadGliderParams"
+  0x180afa3cc: mov      qword ptr [rsp + 0x20], rcx
+  0x180afa3d1: lea      r9d, [rdx + 0xe]
+  0x180afa3d5: lea      ecx, [rbx + 3]
+  0x180afa3d8: lea      r8, [rip + 0x1998b5]  ; "tab"
+  0x180afa3df: lea      rdx, [rip + 0x18676a]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180afa3e6: call     qword ptr [rip + 0x59fc14]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180afa3ec: xor      eax, eax
+  0x180afa3ee: mov      rbx, qword ptr [rsp + 0x70]
+  0x180afa3f3: add      rsp, 0x60
+  0x180afa3f7: pop      rdi
+  0x180afa3f8: ret      
+  0x180afa3f9: mov      rax, qword ptr [rdx]
+  0x180afa3fc: xorps    xmm2, xmm2
+  0x180afa3ff: lea      rdx, [rip + 0x20f92a]  ; "MaxDragSpeed"
+  0x180afa406: movaps   xmmword ptr [rsp + 0x50], xmm6
+  0x180afa40b: mov      rcx, rbx
+  0x180afa40e: call     qword ptr [rax + 0x50]
+  0x180afa411: movss    xmm6, dword ptr [rip + 0x20fb27]  ; 0x180d09f40
+  0x180afa419: lea      rdx, [rip + 0x212660]  ; "PitchSpeed"
+  0x180afa420: movss    dword ptr [rdi + 0x9c], xmm0
+  0x180afa428: movaps   xmm2, xmm6
+  0x180afa42b: mov      rax, qword ptr [rbx]
+  0x180afa42e: mov      rcx, rbx
+  0x180afa431: call     qword ptr [rax + 0x50]
+  0x180afa434: movss    dword ptr [rdi + 0xd0], xmm0
+  0x180afa43c: movaps   xmm2, xmm6
+  0x180afa43f: mov      rax, qword ptr [rbx]
+  0x180afa442: lea      rdx, [rip + 0x212647]  ; "BeginTurnAngle"
+  0x180afa449: mov      rcx, rbx
+  0x180afa44c: call     qword ptr [rax + 0x50]
+  0x180afa44f: movss    dword ptr [rdi + 0xd4], xmm0
+  0x180afa457: movaps   xmm2, xmm6
+  0x180afa45a: mov      rax, qword ptr [rbx]
+  0x180afa45d: lea      rdx, [rip + 0x212644]  ; "PitchMaxSpeed"
+  0x180afa464: mov      rcx, rbx
+  0x180afa467: call     qword ptr [rax + 0x50]
+  0x180afa46a: movss    dword ptr [rdi + 0xa0], xmm0
+  0x180afa472: movaps   xmm2, xmm6
+  0x180afa475: mov      rax, qword ptr [rbx]
+  0x180afa478: lea      rdx, [rip + 0x212639]  ; "RollMaxSpeed"
+  0x180afa47f: mov      rcx, rbx
+  0x180afa482: call     qword ptr [rax + 0x50]
+  0x180afa485: movss    dword ptr [rdi + 0xa4], xmm0
+  0x180afa48d: movaps   xmm2, xmm6
+  0x180afa490: mov      rax, qword ptr [rbx]
+  0x180afa493: lea      rdx, [rip + 0x20f8de]  ; "RotationSpeed"
+  0x180afa49a: mov      rcx, rbx
+  0x180afa49d: call     qword ptr [rax + 0x50]
+  0x180afa4a0: movss    dword ptr [rdi + 0xc8], xmm0
+  0x180afa4a8: movaps   xmm2, xmm6
+  0x180afa4ab: mov      rax, qword ptr [rbx]
+  0x180afa4ae: lea      rdx, [rip + 0x1d4813]  ; "CameraPitchSpeed"
+  0x180afa4b5: mov      rcx, rbx
+  0x180afa4b8: call     qword ptr [rax + 0x50]
+  0x180afa4bb: movss    dword ptr [rdi + 0xb4], xmm0
+  0x180afa4c3: movaps   xmm2, xmm6
+  0x180afa4c6: mov      rax, qword ptr [rbx]
+  0x180afa4c9: lea      rdx, [rip + 0x2125f8]  ; "MaxObjectCamarePitchDifference"
+  0x180afa4d0: mov      rcx, rbx
+  0x180afa4d3: call     qword ptr [rax + 0x50]
+  0x180afa4d6: movss    dword ptr [rdi + 0xb0], xmm0
+  0x180afa4de: movaps   xmm2, xmm6
+  0x180afa4e1: mov      rax, qword ptr [rbx]
+  0x180afa4e4: lea      rdx, [rip + 0x212605]  ; "RollTurnOverAcceleration"
+  0x180afa4eb: mov      rcx, rbx
+  0x180afa4ee: call     qword ptr [rax + 0x50]
+  0x180afa4f1: movss    dword ptr [rdi + 0xdc], xmm0
+  0x180afa4f9: movaps   xmm2, xmm6
+  0x180afa4fc: mov      rax, qword ptr [rbx]
+  0x180afa4ff: lea      rdx, [rip + 0x21260a]  ; "RollTurnBackAcceleration"
+  0x180afa506: mov      rcx, rbx
+  0x180afa509: call     qword ptr [rax + 0x50]
+  0x180afa50c: movss    dword ptr [rdi + 0xe0], xmm0
+  0x180afa514: movaps   xmm2, xmm6
+  0x180afa517: mov      rax, qword ptr [rbx]
+  0x180afa51a: lea      rdx, [rip + 0x21260f]  ; "PitchAcceleration"
+  0x180afa521: mov      rcx, rbx
+  0x180afa524: call     qword ptr [rax + 0x50]
+  0x180afa527: movss    dword ptr [rdi + 0xe4], xmm0
+  0x180afa52f: xorps    xmm2, xmm2
+  0x180afa532: mov      rax, qword ptr [rbx]
+  0x180afa535: lea      rdx, [rip + 0x21260c]  ; "InitPitch"
+  0x180afa53c: mov      rcx, rbx
+  0x180afa53f: call     qword ptr [rax + 0x50]
+  0x180afa542: movss    dword ptr [rdi + 0xd8], xmm0
+  0x180afa54a: lea      r8, [rip + 0x20f3c7]  ; "YawRange"
+  0x180afa551: mov      rax, qword ptr [rbx]
+  0x180afa554: mov      rcx, rbx
+  0x180afa557: lea      rdx, [rsp + 0x30]
+  0x180afa55c: call     qword ptr [rax + 0xa0]
+  0x180afa562: movups   xmm0, xmmword ptr [rax]
+  0x180afa565: movups   xmmword ptr [rdi + 0x24], xmm0
+  0x180afa569: mov      eax, dword ptr [rax + 0x10]
+  0x180afa56c: lea      rcx, [rsp + 0x30]
+  0x180afa571: mov      dword ptr [rdi + 0x34], eax
+  0x180afa574: call     qword ptr [rip + 0x5a04ee]  ; SemanticX64.dll!??1Interval@Configure@@QEAA@XZ
+  0x180afa57a: mov      rax, qword ptr [rbx]
+  0x180afa57d: lea      r8, [rip + 0x2125d4]  ; "PitchRange"
+  0x180afa584: lea      rdx, [rsp + 0x30]
+  0x180afa589: mov      rcx, rbx
+  0x180afa58c: call     qword ptr [rax + 0xa0]
+  0x180afa592: lea      rcx, [rsp + 0x30]
+  0x180afa597: movups   xmm0, xmmword ptr [rax]
+  0x180afa59a: movups   xmmword ptr [rdi + 0x38], xmm0
+  0x180afa59e: mov      eax, dword ptr [rax + 0x10]
+  0x180afa5a1: mov      dword ptr [rdi + 0x48], eax
+  0x180afa5a4: call     qword ptr [rip + 0x5a04be]  ; SemanticX64.dll!??1Interval@Configure@@QEAA@XZ
+  0x180afa5aa: mov      rax, qword ptr [rbx]
+  0x180afa5ad: lea      r8, [rip + 0x2125b4]  ; "ADRollRange"
+  0x180afa5b4: lea      rdx, [rsp + 0x30]
+  0x180afa5b9: mov      rcx, rbx
+  0x180afa5bc: call     qword ptr [rax + 0xa0]
+  0x180afa5c2: lea      rcx, [rsp + 0x30]
+  0x180afa5c7: movups   xmm0, xmmword ptr [rax]
+  0x180afa5ca: movups   xmmword ptr [rdi + 0x4c], xmm0
+  0x180afa5ce: mov      eax, dword ptr [rax + 0x10]
+  0x180afa5d1: mov      dword ptr [rdi + 0x5c], eax
+  0x180afa5d4: call     qword ptr [rip + 0x5a048e]  ; SemanticX64.dll!??1Interval@Configure@@QEAA@XZ
+  0x180afa5da: mov      rax, qword ptr [rbx]
+  0x180afa5dd: lea      r8, [rip + 0x212594]  ; "QERollRange"
+  0x180afa5e4: lea      rdx, [rsp + 0x30]
+  0x180afa5e9: mov      rcx, rbx
+  0x180afa5ec: call     qword ptr [rax + 0xa0]
+  0x180afa5f2: lea      rcx, [rsp + 0x30]
+  0x180afa5f7: movups   xmm0, xmmword ptr [rax]
+  0x180afa5fa: movups   xmmword ptr [rdi + 0x60], xmm0
+  0x180afa5fe: mov      eax, dword ptr [rax + 0x10]
+  0x180afa601: mov      dword ptr [rdi + 0x70], eax
+  0x180afa604: call     qword ptr [rip + 0x5a045e]  ; SemanticX64.dll!??1Interval@Configure@@QEAA@XZ
+  0x180afa60a: mov      rax, qword ptr [rbx]
+  0x180afa60d: lea      r8, [rip + 0x212574]  ; "TrackBlurSampleStrength"
+  0x180afa614: lea      rdx, [rsp + 0x30]
+  0x180afa619: mov      rcx, rbx
+  0x180afa61c: call     qword ptr [rax + 0xa0]
+  0x180afa622: lea      rcx, [rsp + 0x30]
+  0x180afa627: movups   xmm0, xmmword ptr [rax]
+  0x180afa62a: movups   xmmword ptr [rdi + 0x74], xmm0
+  0x180afa62e: mov      eax, dword ptr [rax + 0x10]
+  0x180afa631: mov      dword ptr [rdi + 0x84], eax
+  0x180afa637: call     qword ptr [rip + 0x5a042b]  ; SemanticX64.dll!??1Interval@Configure@@QEAA@XZ
+  0x180afa63d: mov      rax, qword ptr [rbx]
+  0x180afa640: lea      r8, [rip + 0x212561]  ; "TrackBlurSampleDist"
+  0x180afa647: lea      rdx, [rsp + 0x30]
+  0x180afa64c: mov      rcx, rbx
+  0x180afa64f: call     qword ptr [rax + 0xa0]
+  0x180afa655: lea      rcx, [rsp + 0x30]
+  0x180afa65a: movups   xmm0, xmmword ptr [rax]
+  0x180afa65d: movups   xmmword ptr [rdi + 0x88], xmm0
+  0x180afa664: mov      eax, dword ptr [rax + 0x10]
+  0x180afa667: mov      dword ptr [rdi + 0x98], eax
+  0x180afa66d: call     qword ptr [rip + 0x5a03f5]  ; SemanticX64.dll!??1Interval@Configure@@QEAA@XZ
+  0x180afa673: mov      rax, qword ptr [rbx]
+  0x180afa676: lea      rdx, [rip + 0x20f78b]  ; "SmoothTime"
+  0x180afa67d: movss    xmm2, dword ptr [rip + 0x1acfef]  ; 0x180ca7674
+  0x180afa685: mov      rcx, rbx
+  0x180afa688: call     qword ptr [rax + 0x50]
+  0x180afa68b: movss    xmm2, dword ptr [rip + 0x212795]  ; 0x180d0ce28
+  0x180afa693: lea      rdx, [rip + 0x1d47fe]  ; "SprintCameraAngle"
+  0x180afa69a: movss    dword ptr [rdi + 0xcc], xmm0
+  0x180afa6a2: mov      rcx, rbx
+  0x180afa6a5: mov      rax, qword ptr [rbx]
+  0x180afa6a8: call     qword ptr [rax + 0x50]
+  0x180afa6ab: movaps   xmm6, xmmword ptr [rsp + 0x50]
