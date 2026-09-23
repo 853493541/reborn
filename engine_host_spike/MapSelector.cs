@@ -24,6 +24,12 @@ internal sealed class MapSelector : Form
     static readonly string CollisionDir =
         Path.Combine(Path.GetDirectoryName(HostExe), "collision_data");
 
+    // only the maps we are working with
+    static readonly string[] MainMaps =
+    {
+        "龙门寻宝", "龙门寻宝_夜晚", "海岛绝境", "白龙绝境", "天原绝境"
+    };
+
     sealed class MapEntry
     {
         public int Id;
@@ -107,16 +113,21 @@ internal sealed class MapSelector : Form
         try
         {
             string text = Encoding.GetEncoding("gbk").GetString(File.ReadAllBytes(MapListPath));
+            var seen = new List<string>();
             foreach (string line in text.Split('\n'))
             {
                 string[] p = line.TrimEnd('\r').Split('\t');
                 int id;
                 if (p.Length < 3 || !int.TryParse(p[0], out id)) continue;
-                var e = new MapEntry { Id = id, Name = p[1], Path = p[2].Trim() };
+                string name = p[1].Trim();
+                if (Array.IndexOf(MainMaps, name) < 0) continue;
+                if (seen.Contains(name)) continue;
+                seen.Add(name);
+                var e = new MapEntry { Id = id, Name = name, Path = p[2].Trim() };
                 e.HasCollision = File.Exists(Path.Combine(CollisionDir, e.Name + "_structure_collision.bin"));
                 _maps.Add(e);
             }
-            Log(string.Format("loaded {0} maps from MapList.tab ({1} with baked collision)",
+            Log(string.Format("{0} main maps, {1} with baked collision",
                 _maps.Count, _maps.FindAll(m => m.HasCollision).Count));
         }
         catch (Exception e) { Log("MapList.tab: " + e.Message); }
