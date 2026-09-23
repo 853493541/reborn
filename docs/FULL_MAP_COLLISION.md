@@ -223,3 +223,19 @@ meshes load in ~0.3 s after the map itself loads).
   so those trees stay walk-through unless the SpeedTree `.srt` geometry is
   decoded (open item). The rest of the map (buildings, walls, rocks, props)
   is covered.
+
+### Baked maps (2026-09-22)
+
+| map | regions | foliage files | world objects | structure bin | trees |
+|---|---|---|---|---|---|
+| 龙门寻宝 | 8x8 | 13 | 4,963 | 55.0 MB / 622 meshes | 118 shipped + 62 measured |
+| 龙门寻宝_夜晚 | 8x8 | 13 | 4,963 | 55.9 MB / 709 meshes | 83 degenerate, 73 measured |
+| 白龙绝境 | 8x8 | 60 | ~5,017 | 75.9 MB / 822 meshes | 452 degenerate, 168 measured |
+| 天原绝境 | 8x8 | 31 | ~5,700 | 21.9 MB / 535 meshes | 324 degenerate, 259 measured |
+| 海岛绝境 | 4x4 | 15 | ~4,000 | 43.6 MB / 245 meshes | 758 degenerate, 0 measured (no visual meshes) |
+
+All baked with:
+`python tools/bake_map_collision.py --map <name> --copy-to C:/SeasunGame/MovieEditor/bin64/collision_data`
+
+Runtime load verified for 龙门寻宝 (5,351 inst), 龙门寻宝_夜晚 (5,521),
+白龙绝境 (5,377), 天原绝境 (6,672) - each loads its per-map bins.
