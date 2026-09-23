@@ -142,3 +142,40 @@ spring integrate with clamp, then `pos = base + track_delta`
    period, amplitude × decay per cycle, ends after max cycles; idle = rand
    jitter within ± amplitude. Matches the recovered updater (`0x180B10A70`).
 4. Mouse sensitivity defaults (`userdata\custom.dat`, binary; user setting).
+
+## 8. Product implementation (engine host)
+
+Implemented in `engine_host_spike/CameraSystem.cs` (C# port of the Python
+reference, byte-for-byte parity: `CameraSmoke.cs` ports the 13 reference
+checks and prints ALL PASS).
+
+- Modes/rows exactly as the spec; verified defaults shipped in
+  `engine_host_spike/camera.json` (copied to `bin64\camera.json`; the host
+  loads it at startup, overriding row values with no code change).
+- Follow math: anchor + (cos(yaw)cos(pitch)d, sin(pitch)d + h, sin(yaw)cos(pitch)d),
+  exponential smoothing `offset += delta*dt/SmoothTime` with dead-zone snap.
+- Movement-reactive pitch (pi/3000 rad/ms = 60 deg/s), yaw-follow while turning
+  (dead zone 0.26 rad), sprint pull-back (SprintCameraMaxDistance), follow-action
+  lock target, camera shake and cinematic spring (TrackCamera) ported as well.
+- Obstruction: ray-march from the character's chest toward the camera against
+  the real terrain sampler (14 steps, 20 u margin); on hit the camera is pulled
+  to hit-0.2 m. Plus a final clamp above terrain+30 u.
+- Integration in `MapSpike.cs` (player follow mode):
+  right-drag = yaw/pitch (`MAP_CAMERA_SENS`, default 0.0035 rad/px),
+  wheel = TargetDistance (2..30 m), Shift+move = sprint mode pull-back,
+  movement input is camera-relative (forward = camera -> anchor).
+- Units: rows are meters; the host scales them by `UnitsPerMeter` (default 192,
+  `MAP_CAMERA_SCALE`). Character 6 m distance -> 1152 u, height 2 m -> 384 u.
+- Verified in game: camera settles at camDistXZ 1083 u (= 6 m * 192 * cos20°)
+  with the terrain clamp active.
+
+Build (from the repo root):
+
+```
+csc /platform:x64 /target:exe /out:map_spike_host.exe ^
+  /r:MovieEngineCLR.dll /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
+  engine_host_spike\MapSpike.cs engine_host_spike\FoliageCollision.cs ^
+  engine_host_spike\CameraSystem.cs
+csc /platform:x64 /target:exe /out:camera_smoke.exe ^
+  engine_host_spike\CameraSystem.cs engine_host_spike\CameraSmoke.cs
+```
