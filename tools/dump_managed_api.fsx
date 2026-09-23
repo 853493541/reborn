@@ -392,3 +392,4 @@ let dumpEnum (path: string) (name: string) =
 dumpEnum exePath "EXEACTION"
 dumpEnum exePath "OUTPUTWND"
 findRefs exePath ["UpdateSoundShell"; "atlSound"; "KG3DSoundCLR"]
+findRefs exePath ["SetCameraPos"; "GetCameraPos"; "SetCamareMoveState"]

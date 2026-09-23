@@ -30,7 +30,7 @@ internal static class SpikeHost
         Console.WriteLine("taniPath=" + taniPath);
 
         var form = new Form();
-        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag angle | wheel zoom | Q/E height | F focus | R reset)";
+        form.Text = "JX3 Engine Host \u2014 \u98CE\u6765\u5434\u5C71 (L-drag angle | wheel zoom | Q/E height | T follow | F focus | R reset)";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -154,6 +154,7 @@ internal static class SpikeHost
             if (e.KeyCode == Keys.R) pending.Enqueue(new int[] { 103, 0, 0, 0 });
             if (e.KeyCode == Keys.Q) pending.Enqueue(new int[] { 100, 0, 0, 0 });
             if (e.KeyCode == Keys.E) pending.Enqueue(new int[] { 101, 0, 0, 0 });
+            if (e.KeyCode == Keys.T) pending.Enqueue(new int[] { 104, 0, 0, 0 });
         };
         panel.Focus();
 
@@ -293,6 +294,40 @@ internal static class SpikeHost
         int ci = 0;
         bool loop = Environment.GetEnvironmentVariable("SPIKE_LOOP") != "0";
         bool camlog = Environment.GetEnvironmentVariable("SPIKE_CAMLOG") == "1";
+
+        // Third-person follow camera (key T): fixed offset behind the character.
+        // Default offset is behind (-Z) and above; override with FOLLOW_POS=x,y,z.
+        bool follow = false;
+        float followX = 0f, followY = 110f, followZ = -230f;
+        bool followAim = Environment.GetEnvironmentVariable("FOLLOW_AIM") != "0";
+        string followPosEnv = Environment.GetEnvironmentVariable("FOLLOW_POS");
+        if (!string.IsNullOrEmpty(followPosEnv))
+        {
+            string[] parts = followPosEnv.Split(',');
+            if (parts.Length == 3)
+            {
+                float.TryParse(parts[0], out followX);
+                float.TryParse(parts[1], out followY);
+                float.TryParse(parts[2], out followZ);
+            }
+        }
+
+        if (Environment.GetEnvironmentVariable("SPIKE_FOLLOW_TEST") == "1")
+        {
+            string sBefore = Path.Combine(outDir, "follow_before.png");
+            scene.SetScreenShot(sBefore, 2); scene.DoScreenShotImmediate();
+            Console.WriteLine("follow before -> " + sBefore);
+            follow = true;
+            for (int i = 0; i < 40; i++)
+            {
+                scene.SetCameraPos(followX, followY, followZ, followAim);
+                engine.FrameMove(); engine.Render(); Application.DoEvents(); Thread.Sleep(25);
+            }
+            string sAfter = Path.Combine(outDir, "follow_after.png");
+            scene.SetScreenShot(sAfter, 2); scene.DoScreenShotImmediate();
+            Console.WriteLine("follow after -> " + sAfter);
+            follow = false;
+        }
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var camSw = System.Diagnostics.Stopwatch.StartNew();
         bool dragshot = Environment.GetEnvironmentVariable("SPIKE_DRAGSHOT") == "1";
@@ -328,6 +363,16 @@ internal static class SpikeHost
                 }
                 else if (cmd[0] == 102) scene.FocusOnModel();
                 else if (cmd[0] == 103) scene.ResetCameraPosLookAtUp();
+                else if (cmd[0] == 104)
+                {
+                    follow = !follow;
+                    Console.WriteLine("third-person follow = {0} (pos {1},{2},{3})", follow, followX, followY, followZ);
+                    if (follow) scene.SetCameraPos(followX, followY, followZ, followAim);
+                }
+            }
+            if (follow)
+            {
+                scene.SetCameraPos(followX, followY, followZ, followAim);
             }
             sound.FrameMove();
             engine.FrameMove();
@@ -399,6 +444,7 @@ internal static class SpikeHost
         catch (Exception e) { Console.WriteLine("PlaySound ex: " + e.Message); }
     }
 }
+
 
 
 
