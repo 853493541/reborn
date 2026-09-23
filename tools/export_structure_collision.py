@@ -176,9 +176,9 @@ def main():
             lmax = loc[:, :3].max(axis=0)
             lx = float(lmax[0] - lmin[0])
             lz = float(lmax[2] - lmin[2])
-            radius = min(600.0, max(40.0, 0.25 * min(lx, lz)))
+            radius = min(220.0, max(35.0, 0.10 * min(lx, lz)))
             y0 = float(lmin[1])
-            y1 = float(min(lmax[1], lmin[1] + 2500.0))
+            y1 = float(min(lmax[1], lmin[1] + 1500.0))
             ck = '%s#canopy%d_%d_%d' % (p, int(radius), int(y0), int(y1))
             if ck not in extra:
                 extra[ck] = make_cylinder(radius, y0, y1)
