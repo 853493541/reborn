@@ -234,3 +234,15 @@ replaces those with a generated trunk cylinder (radius = 6% of the tree
 footprint clamped to 25..120, height = half the tree height clamped to
 250..1200) so every tree blocks. Verified: blocked at a formerly
 walk-through tree (28962/24728 area, 16 blocked events).
+
+### 8.2 Solid trees (canopy columns)
+
+The shipped tree colliders are trunk-only (thin) and 68 are degenerate
+fragments, so the player clips through the visible canopy. Every .srt object
+now also gets a canopy-column cylinder generated in the tree's local space
+from its world bounds (radius = 25% of the smaller footprint side, clamped
+40..600; height = bounds height clamped to 2500) - the tree becomes solid
+while the real trunk collider is kept where it exists.
+
+Verified: blocked at the tree at 26144/23648 (canopy cylinder radius ~600,
+player stopped at z=23055); runtime list is 5,475 instances / 773 meshes.

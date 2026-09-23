@@ -66,20 +66,27 @@ def load_objects(region_dir):
     return objs
 
 
-def make_cylinder(radius, height, segs=12):
+def make_cylinder(radius, y0, y1, segs=14):
     import math
     verts = []
     tris = []
     for i in range(segs):
         a = 2.0 * math.pi * i / segs
         x, z = radius * math.cos(a), radius * math.sin(a)
-        verts.append((x, 0.0, z))
-        verts.append((x, height, z))
+        verts.append((x, y0, z))
+        verts.append((x, y1, z))
     for i in range(segs):
         j = (i + 1) % segs
         b0, t0, b1, t1 = i * 2, i * 2 + 1, j * 2, j * 2 + 1
         tris.append((b0, b1, t1))
         tris.append((b0, t1, t0))
+    # caps
+    cb = len(verts); verts.append((0.0, y0, 0.0))
+    ct = len(verts); verts.append((0.0, y1, 0.0))
+    for i in range(segs):
+        j = (i + 1) % segs
+        tris.append((cb, j * 2, i * 2))
+        tris.append((ct, i * 2 + 1, j * 2 + 1))
     return verts, tris
 
 
@@ -140,37 +147,53 @@ def main():
 
     # Some trees ship a degenerate CollisionMesh (a tiny fragment), in which
     # case the real client has no usable tree collider. Generate a trunk
-    # cylinder from the object's bounds for those so trees still block.
+    # The shipped tree colliders are trunk-only, and 68 of them are degenerate
+    # fragments. Every tree also gets a "canopy column" cylinder (in the tree's
+    # local space, from its world bounds) so the whole tree is solid.
     import numpy as np
-    extra = {}          # synthetic mesh key -> (verts list, tris list)
-    obj_key = []        # per object: mesh key or None
-    degenerate = 0
+    extra = {}      # synthetic mesh key -> (verts, tris)
+    placed = []     # (object, mesh key) pairs to write
+    canopy = 0
     for o in objs:
         p = norm_pak_path(o['model'])
         m = meshes.get(p)
         if m is None:
-            obj_key.append(None)
             continue
-        key = p
-        if o.get('srt'):
+        if not o.get('srt'):
+            placed.append((o, p))
+            continue
+        bmin = o.get('bmin') or [0, 0, 0]
+        bmax = o.get('bmax') or [0, 0, 0]
+        try:
+            M = np.asarray(o['m'], dtype=np.float64).reshape(4, 4)
+            Mi = np.linalg.inv(M)
+            corners = np.asarray([[x, y, z, 1.0]
+                                  for x in (bmin[0], bmax[0])
+                                  for y in (bmin[1], bmax[1])
+                                  for z in (bmin[2], bmax[2])])
+            loc = corners @ Mi
+            lmin = loc[:, :3].min(axis=0)
+            lmax = loc[:, :3].max(axis=0)
+            lx = float(lmax[0] - lmin[0])
+            lz = float(lmax[2] - lmin[2])
+            radius = min(600.0, max(40.0, 0.25 * min(lx, lz)))
+            y0 = float(lmin[1])
+            y1 = float(min(lmax[1], lmin[1] + 2500.0))
+            ck = '%s#canopy%d_%d_%d' % (p, int(radius), int(y0), int(y1))
+            if ck not in extra:
+                extra[ck] = make_cylinder(radius, y0, y1)
             v = m.positions
             h = float(v[:, 1].max() - v[:, 1].min())
             xz = float(max(v[:, 0].max() - v[:, 0].min(),
                            v[:, 2].max() - v[:, 2].min()))
-            if h < 150.0 or xz < 30.0:
-                bmin = o['bmin'] or [0, 0, 0]
-                bmax = o['bmax'] or [0, 0, 0]
-                w = max(1.0, float(bmax[0]) - float(bmin[0]))
-                d = max(1.0, float(bmax[2]) - float(bmin[2]))
-                hh = max(1.0, float(bmax[1]) - float(bmin[1]))
-                radius = min(120.0, max(25.0, 0.06 * min(w, d)))
-                ch = min(1200.0, max(250.0, 0.5 * hh))
-                key = '%s#cyl%d_%d' % (p, int(radius), int(ch))
-                if key not in extra:
-                    extra[key] = make_cylinder(radius, ch)
-                degenerate += 1
-        obj_key.append(key)
-    print('degenerate tree colliders replaced with cylinders: %d' % degenerate)
+            if h >= 150.0 and xz >= 30.0:
+                placed.append((o, p))       # keep the real trunk collider too
+            placed.append((o, ck))
+            canopy += 1
+        except Exception as e:
+            placed.append((o, p))
+            print('   canopy skip %s: %s' % (p, e))
+    print('trees given canopy cylinders: %d' % canopy)
 
     all_meshes = {}
     for path in meshes:
@@ -182,7 +205,7 @@ def main():
     mesh_index = {p: i for i, p in enumerate(sorted(all_meshes))}
 
     out = bytearray()
-    out += struct.pack('<IIII', MAGIC, 2, len(mesh_index), len(objs))
+    out += struct.pack('<IIII', MAGIC, 2, len(mesh_index), len(placed))
     for path in sorted(all_meshes):
         verts, tris = all_meshes[path]
         out += struct.pack('<II', len(verts), len(tris))
@@ -190,9 +213,7 @@ def main():
         out += tris.tobytes()
 
     written = 0
-    for o, key in zip(objs, obj_key):
-        if key is None:
-            continue
+    for o, key in placed:
         mi = mesh_index.get(key)
         if mi is None:
             continue

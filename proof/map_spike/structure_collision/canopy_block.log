@@ -1,0 +1,91 @@
+21:27:47.512 start mapPath=data\source\maps\龙门寻宝\龙门寻宝.jsonmap async=False fullload=False editor=True
+21:27:47.965 InitPath=0 InitMemory=0 InitPak=0
+21:28:12.390 Init3DEngine=1 err=1
+21:28:12.424 editor.Init result=0
+21:28:13.655 LoadMap result=0 in 1228 ms
+21:28:13.656 SetActiveEnvironment=0
+21:28:13.656 GetSceneRect=0 x=-1024 y=-1024 w=4096 h=4096
+21:28:13.926 winId=660382
+21:28:13.928 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400)
+21:28:14.240 FoliageCollision loaded: instances=5475 meshes=773
+21:28:14.806 player AddDummyModel("C:\SeasunGame\MovieEditor\source\花萝无动作.actor") -> 4998977064
+21:28:14.807 follow camera at (26144,794,22000) dist=800 dir=(0.00,1.00)
+21:28:14.807 player start=(26144,734,22800) gravity=-1289 jump=703 speed=200 firstPerson=False
+21:28:15.035 spawn camera dir=(0.00,1.00)
+21:28:15.301 player pos=(26144,734,22852) ground=734 vy=0 grounded=True blocked=False cam=(26144,798,22502) camDistXZ=350
+21:28:15.591 shot t=500ms -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\map_t00500ms.png exists=True
+21:28:15.606 player pos=(26144,735,22911) ground=735 vy=0 grounded=True blocked=False cam=(26144,797,22511) camDistXZ=400
+21:28:15.863 player pos=(26144,736,22962) ground=736 vy=0 grounded=True blocked=False cam=(26144,797,22512) camDistXZ=450
+21:28:16.099 shot t=1000ms -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\map_t01000ms.png exists=True
+21:28:16.114 player pos=(26144,736,23009) ground=736 vy=0 grounded=True blocked=False cam=(26144,797,22509) camDistXZ=500
+21:28:16.367 player pos=(26144,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26144,798,22505) camDistXZ=550
+21:28:16.631 player pos=(26144,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26144,798,22505) camDistXZ=550
+21:28:16.881 player pos=(26144,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26144,798,22505) camDistXZ=550
+21:28:17.047 loading 1.000 cam=(26145,808,22455) t=2011ms
+21:28:17.081 shot t=2000ms -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\map_t02000ms.png exists=True
+21:28:17.148 player pos=(26145,810,23055) ground=737 vy=547 grounded=False blocked=False cam=(26145,867,22255) camDistXZ=800
+21:28:17.404 player pos=(26145,905,23055) ground=737 vy=218 grounded=False blocked=False cam=(26145,955,22255) camDistXZ=800
+21:28:17.643 jump shot 1 y=921 vy=-16 -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\jump_01.png
+21:28:17.671 player pos=(26145,917,23055) ground=737 vy=-81 grounded=False blocked=False cam=(26145,967,22255) camDistXZ=800
+21:28:17.914 player pos=(26145,853,23055) ground=737 vy=-403 grounded=False blocked=False cam=(26145,903,22255) camDistXZ=800
+21:28:18.172 player pos=(26145,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26145,798,22505) camDistXZ=550
+21:28:18.422 player pos=(26146,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26146,798,22505) camDistXZ=550
+21:28:18.687 player pos=(26146,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26146,798,22505) camDistXZ=550
+21:28:18.934 player pos=(26146,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26146,798,22505) camDistXZ=550
+21:28:19.078 shot t=4000ms -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\map_t04000ms.png exists=True
+21:28:19.096 loading 1.000 cam=(26146,835,22355) t=4060ms
+21:28:19.194 player pos=(26146,822,23055) ground=737 vy=520 grounded=False blocked=False cam=(26146,872,22255) camDistXZ=800
+21:28:19.444 player pos=(26146,910,23055) ground=737 vy=185 grounded=False blocked=False cam=(26146,960,22255) camDistXZ=800
+21:28:19.648 jump shot 2 y=921 vy=-3 -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\jump_02.png
+21:28:19.722 jump shot 3 y=918 vy=-68 -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\jump_03.png
+21:28:19.751 player pos=(26146,911,23055) ground=737 vy=-132 grounded=False blocked=False cam=(26146,961,22255) camDistXZ=800
+21:28:20.007 player pos=(26146,827,23055) ground=737 vy=-475 grounded=False blocked=False cam=(26146,877,22255) camDistXZ=800
+21:28:20.276 player pos=(26147,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26147,798,22505) camDistXZ=550
+21:28:20.531 player pos=(26148,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26148,798,22505) camDistXZ=550
+21:28:20.797 player pos=(26148,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26148,798,22505) camDistXZ=550
+21:28:21.050 player pos=(26148,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26148,798,22505) camDistXZ=550
+21:28:21.107 loading 1.000 cam=(26148,809,22455) t=6071ms
+21:28:21.311 player pos=(26148,860,23055) ground=737 vy=412 grounded=False blocked=False cam=(26148,910,22255) camDistXZ=800
+21:28:21.572 player pos=(26148,921,23055) ground=737 vy=80 grounded=False blocked=False cam=(26148,971,22255) camDistXZ=800
+21:28:21.704 jump shot 4 y=922 vy=-21 -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\jump_04.png
+21:28:21.825 player pos=(26148,901,23055) ground=737 vy=-217 grounded=False blocked=False cam=(26148,951,22255) camDistXZ=800
+21:28:22.078 player pos=(26148,801,23055) ground=737 vy=-545 grounded=False blocked=False cam=(26148,867,22255) camDistXZ=800
+21:28:22.330 player pos=(26149,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26149,799,22505) camDistXZ=550
+21:28:22.584 player pos=(26149,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26149,799,22505) camDistXZ=550
+21:28:22.849 player pos=(26149,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26149,799,22505) camDistXZ=550
+21:28:23.085 shot t=8000ms -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\map_t08000ms.png exists=True
+21:28:23.099 player pos=(26149,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26149,799,22505) camDistXZ=550
+21:28:23.120 loading 1.000 cam=(26150,809,22455) t=8085ms
+21:28:23.360 player pos=(26150,874,23055) ground=737 vy=367 grounded=False blocked=False cam=(26150,924,22255) camDistXZ=800
+21:28:23.613 player pos=(26150,922,23055) ground=737 vy=40 grounded=False blocked=False cam=(26150,972,22255) camDistXZ=800
+21:28:23.706 jump shot 5 y=922 vy=-6 -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\jump_05.png
+21:28:23.876 player pos=(26150,892,23055) ground=737 vy=-265 grounded=False blocked=False cam=(26150,942,22255) camDistXZ=800
+21:28:24.131 player pos=(26150,779,23055) ground=737 vy=-595 grounded=False blocked=False cam=(26150,836,22355) camDistXZ=700
+21:28:24.389 player pos=(26151,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26151,799,22505) camDistXZ=550
+21:28:24.644 player pos=(26151,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26151,799,22505) camDistXZ=550
+21:28:24.902 player pos=(26151,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26151,799,22505) camDistXZ=550
+21:28:25.138 loading 1.000 cam=(26151,810,22455) t=10102ms
+21:28:25.173 player pos=(26151,775,23055) ground=737 vy=630 grounded=False blocked=False cam=(26151,836,22355) camDistXZ=700
+21:28:25.435 player pos=(26151,892,23055) ground=737 vy=292 grounded=False blocked=False cam=(26151,942,22255) camDistXZ=800
+21:28:25.727 jump shot 6 y=922 vy=-11 -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\jump_06.png
+21:28:25.745 player pos=(26151,918,23055) ground=737 vy=-76 grounded=False blocked=False cam=(26151,968,22255) camDistXZ=800
+21:28:26.009 player pos=(26151,850,23055) ground=737 vy=-416 grounded=False blocked=False cam=(26151,900,22255) camDistXZ=800
+21:28:26.261 player pos=(26151,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26151,799,22505) camDistXZ=550
+21:28:26.522 player pos=(26152,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26152,799,22505) camDistXZ=550
+21:28:26.771 player pos=(26152,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26152,799,22505) camDistXZ=550
+21:28:27.032 player pos=(26152,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26152,799,22505) camDistXZ=550
+21:28:27.144 loading 1.000 cam=(26153,810,22455) t=12108ms
+21:28:27.284 player pos=(26153,832,23055) ground=737 vy=494 grounded=False blocked=False cam=(26153,882,22255) camDistXZ=800
+21:28:27.546 player pos=(26153,914,23055) ground=737 vy=158 grounded=False blocked=False cam=(26153,964,22255) camDistXZ=800
+21:28:27.795 player pos=(26153,910,23055) ground=737 vy=-164 grounded=False blocked=False cam=(26153,960,22255) camDistXZ=800
+21:28:28.059 player pos=(26153,819,23055) ground=737 vy=-505 grounded=False blocked=False cam=(26153,869,22255) camDistXZ=800
+21:28:28.314 player pos=(26153,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26153,799,22505) camDistXZ=550
+21:28:28.576 player pos=(26154,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26154,799,22505) camDistXZ=550
+21:28:28.833 player pos=(26154,737,23055) ground=737 vy=0 grounded=True blocked=False cam=(26154,799,22505) camDistXZ=550
+21:28:29.097 player pos=(26154,737,23055) ground=737 vy=0 grounded=True blocked=True cam=(26154,800,22505) camDistXZ=550
+21:28:29.157 loading 1.000 cam=(26154,810,22455) t=14121ms
+21:28:29.355 player pos=(26154,858,23055) ground=737 vy=418 grounded=False blocked=False cam=(26154,908,22255) camDistXZ=800
+21:28:29.607 player pos=(26154,920,23055) ground=737 vy=92 grounded=False blocked=False cam=(26154,970,22255) camDistXZ=800
+21:28:29.865 player pos=(26154,898,23055) ground=737 vy=-241 grounded=False blocked=False cam=(26154,948,22255) camDistXZ=800
+21:28:30.096 shot t=15000ms -> C:\SeasunGame\MovieEditor\bin64\map_spike_out\map_t15000ms.png exists=True
+21:28:30.096 done
