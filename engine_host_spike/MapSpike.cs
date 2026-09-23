@@ -335,6 +335,44 @@ internal static class MapSpike
                 Log(string.Format("GetSceneRect={0} x={1} y={2} w={3} h={4}", rr, rx, ry, rw, rh));
             }
             catch (Exception e) { Log("GetSceneRect ex: " + e.Message); }
+
+            // MAP_EXPORT_FBX=path : dump the whole rendered scene (objects +
+            // terrain) with world transforms via the engine's own exporter.
+            string fbxEnv = Environment.GetEnvironmentVariable("MAP_EXPORT_FBX");
+            if (!string.IsNullOrEmpty(fbxEnv))
+            {
+                try
+                {
+                    for (int i = 0; i < 30; i++)
+                    {
+                        engine.FrameMove();
+                        engine.Render();
+                        Application.DoEvents();
+                    }
+                    int er = scene.ExportSceneToFbx(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        "map_export", fbxEnv);
+                    Log(string.Format("ExportSceneToFbx(1,1,1) -> {0} exists={1} size={2}",
+                        er, File.Exists(fbxEnv), File.Exists(fbxEnv) ? new FileInfo(fbxEnv).Length : 0));
+                    int er2 = scene.ExportSceneToFbx(1, 1, 1, 1, 1, 1, 1, 0, 1024, 1024, 0, 0,
+                        "map_export", fbxEnv.Replace(".fbx", "_full.fbx"));
+                    Log(string.Format("ExportSceneToFbx(all) -> {0} exists={1} size={2}",
+                        er2, File.Exists(fbxEnv.Replace(".fbx", "_full.fbx")),
+                        File.Exists(fbxEnv.Replace(".fbx", "_full.fbx")) ? new FileInfo(fbxEnv.Replace(".fbx", "_full.fbx")).Length : 0));
+                    int er3 = scene.ExportSceneToUsd(fbxEnv.Replace(".fbx", ".usd"));
+                    Log(string.Format("ExportSceneToUsd -> {0} exists={1} size={2}",
+                        er3, File.Exists(fbxEnv.Replace(".fbx", ".usd")),
+                        File.Exists(fbxEnv.Replace(".fbx", ".usd")) ? new FileInfo(fbxEnv.Replace(".fbx", ".usd")).Length : 0));
+                    try
+                    {
+                        string savePath = fbxEnv.Replace(".fbx", "_scene.kms");
+                        int sr = scene.SaveToFile(savePath);
+                        Log(string.Format("SaveToFile -> {0} exists={1} size={2}",
+                            sr, File.Exists(savePath), File.Exists(savePath) ? new FileInfo(savePath).Length : 0));
+                    }
+                    catch (Exception e2) { Log("SaveToFile ex: " + e2.Message); }
+                }
+                catch (Exception e) { Log("ExportSceneToFbx ex: " + e.Message); }
+            }
         }
         else
         {
@@ -577,7 +615,12 @@ internal static class MapSpike
                 }
                 try
                 {
-                    foliageCol = new FoliageCollision(colPath);
+                    string structPath = System.IO.Path.Combine(
+                        System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                        "collision_data", "structure_collision.bin");
+                    if (Environment.GetEnvironmentVariable("MAP_STRUCTURE_COLLISION") == "0")
+                        structPath = null;
+                    foliageCol = new FoliageCollision(colPath, structPath);
                     Log("FoliageCollision loaded: " + foliageCol.Describe());
                 }
                 catch (Exception e) { Log("FoliageCollision ex: " + e.Message); }

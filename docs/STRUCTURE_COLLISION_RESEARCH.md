@@ -163,3 +163,39 @@ Decoded result for 龙门寻宝 (13 region files): 4028 instances, pattern IDs
 - rock boulder (104424, 180840): player steps up onto the boulder,
   `ground=3468` vs terrain 3453 (step-up), walks off normally
 - regenerating: `python tools/export_foliage_collision.py`
+
+## 7. SOLVED: the map's real world objects (walls/buildings/props)
+
+The per-region object files the engine loads are
+`<map>/entities/sceneinfo_full/%03u_%03u.json` - the scene loader template is
+`%s%s\entities\%%s_full\%%03u_%%03u.json` (SceneManagerx64 OnSyncLoad builds it
+with the placeholder filled by the string "sceneinfo"; verified in the
+disassembly at 0x18004b7e3-0x18004b816: fmt string at 0x180069288, arg
+"sceneinfo" at 0x180069158).
+
+All 64 region files exist for 龙门寻宝 (11.9 MB total, 4965 objects:
+4777 mesh objects + 186 SpeedTree .srt + 2 misc). Each object carries:
+
+  comRender.actorModel          mesh path (data\source\maps_source\...)
+  comBasic.actorLocalMatrix     4x4 row-major, translation in row 3
+  comBasic.actorBoundBoxMin/Max world-space bounds
+  comLogic / comCustomInfo      (no explicit physics flags: all are static)
+
+Models include 城墙 (cq_龙门城墙/玉门关城墙), 建筑 (jz_xb楼兰三间房/哨台/
+玉门关建筑), 石头 (st_xb龙门荒漠石), 栈道/工地物件, props (jars, boxes,
+tables), etc.
+
+Pipeline:
+- `tools/export_structure_collision.py` reads the region JSONs, extracts all
+  589 distinct .mesh files from the pak, parses them and writes
+  `structure_collision.bin` (v2 format: meshes + instances with full 4x4
+  matrices and world AABBs). Run: `python tools/export_structure_collision.py`
+- `engine_host_spike/FoliageCollision.cs` now loads both
+  `foliage_collision.bin` (v1) and `structure_collision.bin` (v2) into one
+  instance list (5171 instances, 593 meshes), with per-mesh triangle grids and
+  exact world-space capsule/triangle distances through the instance matrix
+  (handles anisotropic scale). Step-up/support logic unchanged.
+
+Verified in game: at a 楼兰三间房 building (15007, 25400 area) the player is
+blocked (19 blocked events); wooden 栈道 posts stop the player at (14900, 25900).
+Proof screenshot: bin64/map_spike_out/map_t25000ms.png (wooden posts).
