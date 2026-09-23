@@ -239,3 +239,19 @@ All baked with:
 
 Runtime load verified for 龙门寻宝 (5,351 inst), 龙门寻宝_夜晚 (5,521),
 白龙绝境 (5,377), 天原绝境 (6,672) - each loads its per-map bins.
+
+## Map selector (`engine_host_spike/MapSelector.cs`)
+
+A small WinForms launcher lists all 621 maps from
+`MovieEditor\ResourcePack\MapList.tab`, marks the ones with baked collision
+(`bin64\collision_data\<map>_structure_collision.bin`), bakes a selected map
+with one click (runs `tools/bake_map_collision.py` and streams the log) and
+launches the host with the right environment:
+
+- `MAP_PATH` = the map's ResourcePath
+- `MAP_PLAYER=1` for walk mode (or free camera)
+- optional spawn `x,y,z`
+
+Build: `csc /platform:x64 /target:winexe /r:System.Windows.Forms.dll
+/r:System.Drawing.dll /out:map_selector.exe MapSelector.cs`
+Run: `engine_host_spike\run_selector.cmd` (or `bin64\map_selector.exe`).
