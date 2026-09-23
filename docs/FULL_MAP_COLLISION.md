@@ -191,3 +191,35 @@ Both exporters copy their output to
 - `07c2918` Tree collision: use exactly the shipped CollisionMesh colliders
 - `f5460b6` Tree collision: measure degenerate-tree colliders from their
   visual meshes
+
+## Multi-map baking (any map, one command)
+
+```
+python tools/bake_map_collision.py --map <mapname> --copy-to C:/SeasunGame/MovieEditor/bin64/collision_data
+```
+
+What it does (all from the pak, nothing authored):
+1. reads `entities/<map>_sceneinfo.json` for `RegionTableSize` (e.g. 8x8, 4x4)
+2. extracts and decodes `foliage/foliageinfo/%03u_%03u.foliage`
+3. extracts the foliage pattern table + the four pattern meshes
+4. extracts `entities/sceneinfo_full/%03u_%03u.json` (the map's world objects)
+5. writes `<map>_foliage_collision.bin` and `<map>_structure_collision.bin`
+
+The host picks up per-map files automatically:
+`bin64/collision_data/<map>_foliage_collision.bin` /
+`<map>_structure_collision.bin`, falling back to the generic names.
+
+Collision data is baked **offline** - the host never generates it at run
+time; it only parses the bins at startup (龙门寻宝: 5,351 instances / 699
+meshes load in ~0.3 s after the map itself loads).
+
+### Status per map
+
+- 龙门寻宝: complete - 4,963 world objects, 394 foliage solids, trees with
+  the shipped CollisionMesh plus 62 measured from visual meshes.
+- 海岛绝境 (4x4 regions): world objects baked (4,177 instances / 245 meshes,
+  43 MB) and 15 foliage files decoded. Note: 758 of its trees ship degenerate
+  CollisionMeshes AND no sibling visual `.mesh` (the .srt is billboard-only),
+  so those trees stay walk-through unless the SpeedTree `.srt` geometry is
+  decoded (open item). The rest of the map (buildings, walls, rocks, props)
+  is covered.

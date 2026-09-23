@@ -615,13 +615,31 @@ internal static class MapSpike
                 }
                 try
                 {
-                    string structPath = System.IO.Path.Combine(
+                    string colDir = System.IO.Path.Combine(
                         System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-                        "collision_data", "structure_collision.bin");
-                    if (Environment.GetEnvironmentVariable("MAP_STRUCTURE_COLLISION") == "0")
-                        structPath = null;
+                        "collision_data");
+                    // per-map files first (<map>_foliage_collision.bin), fall back
+                    // to the generic names
+                    string mapName = System.IO.Path.GetFileNameWithoutExtension(mapPath);
+                    if (!string.IsNullOrEmpty(mapName))
+                    {
+                        string p = System.IO.Path.Combine(colDir, mapName + "_foliage_collision.bin");
+                        if (File.Exists(p)) colPath = p;
+                    }
+                    string structPath = null;
+                    if (Environment.GetEnvironmentVariable("MAP_STRUCTURE_COLLISION") != "0")
+                    {
+                        string s = !string.IsNullOrEmpty(mapName)
+                            ? System.IO.Path.Combine(colDir, mapName + "_structure_collision.bin")
+                            : null;
+                        if (s == null || !File.Exists(s))
+                            s = System.IO.Path.Combine(colDir, "structure_collision.bin");
+                        if (File.Exists(s)) structPath = s;
+                    }
                     foliageCol = new FoliageCollision(colPath, structPath);
-                    Log("FoliageCollision loaded: " + foliageCol.Describe());
+                    Log("FoliageCollision loaded: " + foliageCol.Describe()
+                        + " foliage=" + System.IO.Path.GetFileName(colPath)
+                        + " structures=" + (structPath == null ? "(none)" : System.IO.Path.GetFileName(structPath)));
                 }
                 catch (Exception e) { Log("FoliageCollision ex: " + e.Message); }
             }
