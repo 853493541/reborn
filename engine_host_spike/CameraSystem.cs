@@ -386,6 +386,23 @@ public sealed class CameraSystem
         fx = -Math.Cos(Yaw);
         fz = -Math.Sin(Yaw);
     }
+
+    // JX3 "CameraAdjustYawWhenMoveTurn": while moving, drag the camera yaw
+    // toward the character's movement yaw once it leaves the dead zone.
+    // Rate-limited pull (converges; no per-frame delta feedback).
+    public void FollowYaw(double moveYaw, double dt)
+    {
+        var row = Row;
+        double k = row.F("CameraAdjustYawWhenMoveTurn", 0.0);
+        if (k <= 0.0) return;
+        double dead = row.F("CameraAdjustYawWhenMoveTurnDisableAngle", 15.0 * DEG);
+        double diff = moveYaw - Yaw;
+        while (diff > Math.PI) diff -= 2.0 * Math.PI;
+        while (diff < -Math.PI) diff += 2.0 * Math.PI;
+        if (Math.Abs(diff) <= dead) return;
+        double step = k * Math.Min(1.0, dt / 0.2) * diff;
+        Yaw = (Yaw + step + Math.PI) % (2.0 * Math.PI) - Math.PI;
+    }
 }
 
 public sealed class CameraShake
