@@ -142,6 +142,7 @@ internal static class MapSpike
         };
         bool shiftDown = false;
         bool pW = false, pA = false, pS = false, pD = false, pJump = false;
+        bool camDbg = Environment.GetEnvironmentVariable("MAP_CAMERA_DEBUG") == "1";
         bool teleportToStructure = false;
         string shownTitle = "";
         bool needReMeasure = false;
@@ -902,8 +903,8 @@ internal static class MapSpike
                 scene.SetCamareMoveState(1, 1);
                 for (int i = 0; i < 3; i++)
                 {
+                    // no Render here: the nudge must not be visible on screen
                     engine.FrameMove();
-                    engine.Render();
                     Application.DoEvents();
                 }
                 scene.SetCamareMoveState(1, 0);
@@ -1202,20 +1203,26 @@ internal static class MapSpike
                             lastMeasureMs = nowMs;
                             measureView();
                         }
-                        double vx = pdX, vy = pdY, vz = pdZ;
-                        double vlen = Math.Sqrt(vx * vx + vy * vy + vz * vz);
-                        if (vlen < 1e-6) { vx = 0; vy = 0; vz = 1; vlen = 1; }
-                        vx /= vlen; vy /= vlen; vz /= vlen;
+                        // only the horizontal part of the engine view direction is
+                        // stable across nudges; the vertical comes from the camera
+                        // row height (a nudge-vertical would jitter 5x/s)
+                        double vx = pdX, vz = pdZ;
+                        double vlen = Math.Sqrt(vx * vx + vz * vz);
+                        if (vlen < 1e-6) { vx = 0; vz = 1; vlen = 1; }
+                        vx /= vlen; vz /= vlen;
+                        double vy = 0.0;
+                        double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
 
                         // chest anchor on the view line
                         double[] anchor = { plX, plY + 90.0, plZ };
                         double camX = anchor[0] - vx * dist;
-                        double camY = anchor[1] - vy * dist;
+                        double camY = anchor[1] + camHeight;
                         double camZ = anchor[2] - vz * dist;
 
                         // obstruction: terrain above the anchor->camera ray
                         const double margin = 20.0;
-                        double ddx = camX - anchor[0], ddy = camY - anchor[1], ddz = camZ - anchor[2];
+                        double ddy = camY - anchor[1];
+                        double ddx = camX - anchor[0], ddz = camZ - anchor[2];
                         double rayLen = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
                         const int steps = 14;
                         for (int i = 2; i <= steps; i++)
@@ -1234,6 +1241,13 @@ internal static class MapSpike
                         float camGround = sampler.Sample((float)camX, (float)camZ) + 30f;
                         if (camY < camGround) camY = camGround;
                         scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                        if (camDbg)
+                        {
+                            float gx = 0f, gy = 0f, gz = 0f;
+                            try { scene.GetCameraPos(ref gx, ref gy, ref gz); } catch { }
+                            Log(string.Format("camdbg set=({0:F0},{1:F0},{2:F0}) get=({3:F0},{4:F0},{5:F0}) dir=({6:F2},{7:F2},{8:F2}) dist={9:F0}",
+                                camX, camY, camZ, gx, gy, gz, vx, vy, vz, dist));
+                        }
                     }
                     catch (Exception e) { Log("camera system ex: " + e.Message); }
                 }
