@@ -246,3 +246,16 @@ while the real trunk collider is kept where it exists.
 
 Verified: blocked at the tree at 26144/23648 (canopy cylinder radius ~600,
 player stopped at z=23055); runtime list is 5,475 instances / 773 meshes.
+
+### 8.3 Degenerate trees: collider measured from the tree's own mesh
+
+Each tree also ships a sibling visual mesh (`<base>.mesh`). For the 68 trees
+whose CollisionMesh is a degenerate fragment, the collider is now measured
+from that mesh: the convex hull (monotone chain) of the geometry within 250
+world units of the base, extruded as a capped prism - the actual trunk/low
+branch cross-section, no invented sizes. 62 of 68 measured (6 small
+s_xca trees ship no visual mesh under the expected name; those stay
+walk-through like the real client). 118 trees keep the shipped CollisionMesh.
+
+Verified: blocked at a formerly degenerate tree (28962/24728 area, 21 blocked
+events; collider = 16-vertex prism, local XZ 311x350, height 255).

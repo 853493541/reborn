@@ -66,6 +66,73 @@ def load_objects(region_dir):
     return objs
 
 
+def convex_hull_2d(pts):
+    """Monotone chain; pts: list of (x, z). Returns hull CCW."""
+    pts = sorted(set(pts))
+    if len(pts) <= 2:
+        return pts
+
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    lower = []
+    for p in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+    upper = []
+    for p in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+    return lower[:-1] + upper[:-1]
+
+
+def make_prism(hull, y0, y1):
+    """Extrude a convex XZ polygon between y0..y1 (capped)."""
+    n = len(hull)
+    verts = []
+    for (x, z) in hull:
+        verts.append((x, y0, z))
+        verts.append((x, y1, z))
+    tris = []
+    for i in range(n):
+        j = (i + 1) % n
+        b0, t0, b1, t1 = i * 2, i * 2 + 1, j * 2, j * 2 + 1
+        tris.append((b0, b1, t1))
+        tris.append((b0, t1, t0))
+    cb = len(verts); verts.append((hull[0][0], y0, hull[0][1]))
+    ct = len(verts); verts.append((hull[0][0], y1, hull[0][1]))
+    for i in range(n):
+        j = (i + 1) % n
+        tris.append((cb, j * 2, i * 2))
+        tris.append((ct, i * 2 + 1, j * 2 + 1))
+    return verts, tris
+
+
+def trunk_prism_from_mesh(mesh_obj, world_thresh=250.0, scale=1.0):
+    """Convex prism of the mesh's cross-section within world_thresh of the base.
+
+    The tree meshes are in local units; the player is ~170 world units tall, so
+    the collider only needs the trunk up to ~250 world units above the base.
+    """
+    v = mesh_obj.positions
+    if v.size == 0:
+        return None
+    y_local = world_thresh / max(scale, 1e-6)
+    y_min = float(v[:, 1].min())
+    sel = v[v[:, 1] <= y_min + y_local]
+    if len(sel) < 3:
+        sel = v[v[:, 1] <= y_min + 2.0 * y_local]
+    if len(sel) < 3:
+        return None
+    hull = convex_hull_2d([(round(float(p[0]), 2), round(float(p[2]), 2)) for p in sel])
+    if len(hull) < 3:
+        return None
+    y1 = y_min + y_local
+    return make_prism(hull, y_min, y1)
+
+
 def make_cylinder(radius, y0, y1, segs=14):
     import math
     verts = []
@@ -109,10 +176,15 @@ def main():
     objs = load_objects(args.regions)
     print('objects with .mesh: %d' % len(objs))
     models = {}
+    visual_of = {}   # tree collision mesh path -> sibling visual .mesh path
     for o in objs:
-        models.setdefault(norm_pak_path(o['model']), 0)
-        models[norm_pak_path(o['model'])] += 1
-    print('distinct models: %d' % len(models))
+        p = norm_pak_path(o['model'])
+        models[p] = models.get(p, 0) + 1
+        if o.get('srt'):
+            vis = p[:-len('.CollisionMesh')] + '.mesh'
+            visual_of[p] = vis
+            models[vis] = models.get(vis, 0) + 1
+    print('distinct models: %d (incl. %d tree visual meshes)' % (len(models), len(visual_of)))
 
     # extract all distinct meshes in batches
     work = Path(args.work)
@@ -145,29 +217,46 @@ def main():
     for s in skipped[:10]:
         print('   skip', s)
 
-    # Use exactly the colliders the game ships. Trees whose CollisionMesh is a
-    # degenerate fragment (no usable collider in the real client either) are
-    # skipped rather than filled with invented geometry.
+    # Trees: keep the shipped CollisionMesh when it is usable; where it is only
+    # a degenerate fragment, measure the trunk from the tree's own visual mesh
+    # (sibling .mesh): convex prism of the cross-section within ~250 world
+    # units of the base - no invented sizes.
     import numpy as np
     extra = {}      # synthetic mesh key -> (verts, tris)
     placed = []     # (object, mesh key) pairs to write
     degenerate = 0
+    measured = 0
     for o in objs:
         p = norm_pak_path(o['model'])
         m = meshes.get(p)
         if m is None:
             continue
-        # use exactly the shipped CollisionMesh: no synthetic colliders,
-        # no invented sizes
+        if not o.get('srt'):
+            placed.append((o, p))
+            continue
         v = m.positions
         h = float(v[:, 1].max() - v[:, 1].min())
         xz = float(max(v[:, 0].max() - v[:, 0].min(),
                        v[:, 2].max() - v[:, 2].min()))
-        if o.get('srt') and (h < 150.0 or xz < 30.0):
-            degenerate += 1
+        if h >= 150.0 and xz >= 30.0:
+            placed.append((o, p))
             continue
-        placed.append((o, p))
-    print('trees with only a degenerate shipped collider (skipped): %d' % degenerate)
+        degenerate += 1
+        vis = meshes.get(visual_of.get(p, ''))
+        if vis is None:
+            continue
+        mm = np.asarray(o['m'], dtype=np.float64).reshape(4, 4)
+        scale = float(np.mean([np.linalg.norm(mm[:3, k]) for k in range(3)]))
+        key = '%s#trunk%d' % (p, int(scale * 100))
+        if key not in extra:
+            prism = trunk_prism_from_mesh(vis, 250.0, scale)
+            if prism is None:
+                continue
+            extra[key] = prism
+        placed.append((o, key))
+        measured += 1
+    print('degenerate tree colliders: %d, measured from visual mesh: %d'
+          % (degenerate, measured))
 
     all_meshes = {}
     for path in meshes:
