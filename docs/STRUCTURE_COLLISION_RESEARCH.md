@@ -224,3 +224,13 @@ player stopped at z=23610).
 
 Final coverage: 5,357 collision instances / 626 meshes
 (structures 4,963 + foliage 394), all from the game's own local files.
+
+### 8.1 Degenerate tree colliders
+
+68 of the 186 trees ship a degenerate CollisionMesh (a tiny fragment, e.g.
+S_西北枯树001_002: 26x37x7 units for a 1731x1125x1639 tree) - the real client
+has no usable collider there either. export_structure_collision.py now
+replaces those with a generated trunk cylinder (radius = 6% of the tree
+footprint clamped to 25..120, height = half the tree height clamped to
+250..1200) so every tree blocks. Verified: blocked at a formerly
+walk-through tree (28962/24728 area, 16 blocked events).

@@ -58,11 +58,29 @@ def load_objects(region_dir):
             objs.append({
                 'uuid': g,
                 'model': coll,
+                'srt': ext == '.srt',
                 'm': [float(v) for v in m],
                 'bmin': b.get('actorBoundBoxMin'),
                 'bmax': b.get('actorBoundBoxMax'),
             })
     return objs
+
+
+def make_cylinder(radius, height, segs=12):
+    import math
+    verts = []
+    tris = []
+    for i in range(segs):
+        a = 2.0 * math.pi * i / segs
+        x, z = radius * math.cos(a), radius * math.sin(a)
+        verts.append((x, 0.0, z))
+        verts.append((x, height, z))
+    for i in range(segs):
+        j = (i + 1) % segs
+        b0, t0, b1, t1 = i * 2, i * 2 + 1, j * 2, j * 2 + 1
+        tris.append((b0, b1, t1))
+        tris.append((b0, t1, t0))
+    return verts, tris
 
 
 def norm_pak_path(p):
@@ -120,22 +138,62 @@ def main():
     for s in skipped[:10]:
         print('   skip', s)
 
-    mesh_index = {p: i for i, p in enumerate(sorted(meshes))}
+    # Some trees ship a degenerate CollisionMesh (a tiny fragment), in which
+    # case the real client has no usable tree collider. Generate a trunk
+    # cylinder from the object's bounds for those so trees still block.
+    import numpy as np
+    extra = {}          # synthetic mesh key -> (verts list, tris list)
+    obj_key = []        # per object: mesh key or None
+    degenerate = 0
+    for o in objs:
+        p = norm_pak_path(o['model'])
+        m = meshes.get(p)
+        if m is None:
+            obj_key.append(None)
+            continue
+        key = p
+        if o.get('srt'):
+            v = m.positions
+            h = float(v[:, 1].max() - v[:, 1].min())
+            xz = float(max(v[:, 0].max() - v[:, 0].min(),
+                           v[:, 2].max() - v[:, 2].min()))
+            if h < 150.0 or xz < 30.0:
+                bmin = o['bmin'] or [0, 0, 0]
+                bmax = o['bmax'] or [0, 0, 0]
+                w = max(1.0, float(bmax[0]) - float(bmin[0]))
+                d = max(1.0, float(bmax[2]) - float(bmin[2]))
+                hh = max(1.0, float(bmax[1]) - float(bmin[1]))
+                radius = min(120.0, max(25.0, 0.06 * min(w, d)))
+                ch = min(1200.0, max(250.0, 0.5 * hh))
+                key = '%s#cyl%d_%d' % (p, int(radius), int(ch))
+                if key not in extra:
+                    extra[key] = make_cylinder(radius, ch)
+                degenerate += 1
+        obj_key.append(key)
+    print('degenerate tree colliders replaced with cylinders: %d' % degenerate)
+
+    all_meshes = {}
+    for path in meshes:
+        all_meshes[path] = (meshes[path].positions.astype('<f4'),
+                            meshes[path].faces.astype('<u4'))
+    for k, (cv, ct) in extra.items():
+        all_meshes[k] = (np.asarray(cv, dtype='<f4'), np.asarray(ct, dtype='<u4'))
+
+    mesh_index = {p: i for i, p in enumerate(sorted(all_meshes))}
 
     out = bytearray()
     out += struct.pack('<IIII', MAGIC, 2, len(mesh_index), len(objs))
-    for path in sorted(meshes):
-        m = meshes[path]
-        verts = m.positions.astype('<f4')
-        tris = m.faces.astype('<u4')
-        out += struct.pack('<II', m.vertex_count, m.face_count)
+    for path in sorted(all_meshes):
+        verts, tris = all_meshes[path]
+        out += struct.pack('<II', len(verts), len(tris))
         out += verts.tobytes()
         out += tris.tobytes()
 
     written = 0
-    for o in objs:
-        p = norm_pak_path(o['model'])
-        mi = mesh_index.get(p)
+    for o, key in zip(objs, obj_key):
+        if key is None:
+            continue
+        mi = mesh_index.get(key)
         if mi is None:
             continue
         bmin = o['bmin'] or [0, 0, 0]
