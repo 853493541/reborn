@@ -144,20 +144,17 @@ internal static class MapSpike
         bool pW = false, pA = false, pS = false, pD = false, pJump = false;
         bool teleportToStructure = false;
         string shownTitle = "";
+        bool needReMeasure = false;
+        long lastMeasureMs = 0;
         bool firstPersonCam = Environment.GetEnvironmentVariable("MAP_PLAYER_CAM") == "1";
         bool followMode = playerMode && !firstPersonCam;
         // JX3-modeled follow camera (docs/netcode/REBORN_CAMERA_SPEC.md)
         CameraSystem camSys = null;
-        double camSens = 0.0035;
-        int lastMouseX = -1, lastMouseY = -1;
         float worldDirX = 0f, worldDirZ = 0f;
         int lastKeySig = -1;
-        double[] camAnchorSm = null;
         if (playerMode && followMode)
         {
             camSys = new CameraSystem();
-            string sensEnv = Environment.GetEnvironmentVariable("MAP_CAMERA_SENS");
-            if (!string.IsNullOrEmpty(sensEnv)) double.TryParse(sensEnv, out camSens);
             string scaleEnv = Environment.GetEnvironmentVariable("MAP_CAMERA_SCALE");
             if (!string.IsNullOrEmpty(scaleEnv))
             {
@@ -197,10 +194,6 @@ internal static class MapSpike
         };
         panel.MouseDown += delegate(object s, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                lastMouseX = e.X; lastMouseY = e.Y;
-            }
             if (e.Button == MouseButtons.Left)
             {
                 int sel = (Control.ModifierKeys & Keys.Control) != 0 ? 20
@@ -214,16 +207,7 @@ internal static class MapSpike
             pending.Enqueue(new int[] { 30, 1, e.X, e.Y });
             if (e.Button == MouseButtons.Right)
             {
-                if (playerMode && followMode && camSys != null)
-                {
-                    // JX3 follow camera owns yaw/pitch in follow mode
-                    if (lastMouseX >= 0)
-                    {
-                        camSys.Mouse((e.X - lastMouseX) * camSens, (e.Y - lastMouseY) * camSens);
-                    }
-                    lastMouseX = e.X; lastMouseY = e.Y;
-                    return;
-                }
+                // engine-native camera rotation (ROTATE_CAMERA / PAN_VIEW)
                 int a = (Control.ModifierKeys & Keys.Shift) != 0 ? 4
                       : (Control.ModifierKeys & Keys.Alt) != 0 ? 1 : 3;
                 pending.Enqueue(new int[] { a, 1, e.X, e.Y });
@@ -820,15 +804,19 @@ internal static class MapSpike
             {
                 try
                 {
-                    // settle the JX3 follow camera behind the character
-                    double[] a0 = { plX, plY, plZ };
-                    for (int i = 0; i < 90; i++) camSys.Update(1.0 / 60.0, a0);
-                    camAnchorSm = new double[] { plX, plY, plZ };
-                    scene.SetCameraPos((float)camSys.Pos[0], (float)camSys.Pos[1], (float)camSys.Pos[2], false);
+                    // place the follow camera on the engine view line through
+                    // the character (the engine camera owns the look direction)
+                    double dist0 = camSys.UpdateDistance(0.5);
+                    float camX = plX - pdX * (float)dist0;
+                    float camY = plY + 90f - pdY * (float)dist0;
+                    float camZ = plZ - pdZ * (float)dist0;
+                    float g0 = sampler != null ? sampler.Sample(camX, camZ) + 30f : camY;
+                    if (camY < g0) camY = g0;
+                    scene.SetCameraPos(camX, camY, camZ, false);
                     float cx = 0f, cy = 0f, cz = 0f;
                     scene.GetCameraPos(ref cx, ref cy, ref cz);
                     Log(string.Format("follow camera at ({0:F0},{1:F0},{2:F0}) dist={3:F0} dir=({4:F2},{5:F2})",
-                        cx, cy, cz, camSys.Distance, pdX, pdZ));
+                        cx, cy, cz, dist0, pdX, pdZ));
                     try { form.Text = "JX3 Map Player - FOLLOW (F = free camera)"; } catch { }
                 }
                 catch (Exception e) { Log("camera place ex: " + e.Message); }
@@ -921,9 +909,9 @@ internal static class MapSpike
                 scene.SetCamareMoveState(1, 0);
                 float bx = 0f, by = 0f, bz = 0f;
                 scene.GetCameraPos(ref bx, ref by, ref bz);
-                float dx = bx - ax, dz = bz - az;
-                float dl = (float)Math.Sqrt(dx * dx + dz * dz);
-                if (dl > 0.5f) { pdX = dx / dl; pdZ = dz / dl; pdY = 0f; }
+                float dx = bx - ax, dy = by - ay, dz = bz - az;
+                float dl = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                if (dl > 0.5f) { pdX = dx / dl; pdY = dy / dl; pdZ = dz / dl; }
             }
             catch { }
         };
@@ -1053,19 +1041,17 @@ internal static class MapSpike
                         plZ = nz + ddz / dl * 320f;
                         plY = sampler != null ? sampler.Sample(plX, plZ) : plY;
                         pvy = 0f;
-                        // aim the follow camera at the structure and snap it behind
+                        // switch to follow mode; the camera re-measures and places
+                        // itself on the engine view line next frame
                         followMode = true;
-                        float fdx = -ddx / dl, fdz = -ddz / dl;
-                        pdX = fdx; pdZ = fdz;
+                        needReMeasure = true;
                         try
                         {
                             if (camSys != null)
                             {
-                                camSys.Yaw = Math.Atan2(-fdz, -fdx);
-                                double[] a0 = { plX, plY, plZ };
-                                for (int i = 0; i < 90; i++) camSys.Update(1.0 / 60.0, a0);
-                                camAnchorSm = new double[] { plX, plY, plZ };
-                                scene.SetCameraPos((float)camSys.Pos[0], (float)camSys.Pos[1], (float)camSys.Pos[2], false);
+                                double d0 = camSys.UpdateDistance(0.5);
+                                scene.SetCameraPos(plX - pdX * (float)d0, plY + 90f - pdY * (float)d0,
+                                                   plZ - pdZ * (float)d0, false);
                             }
                         }
                         catch { }
@@ -1190,54 +1176,64 @@ internal static class MapSpike
                 {
                     try
                     {
-                        // JX3-modeled follow camera (REBORN_CAMERA_SPEC.md):
-                        // anchor + rotated offset, SmoothTime exponential
-                        // smoothing, move-pitch, yaw-follow, sprint pull-back,
-                        // obstruction pull-in (terrain ray-march).
+                        // The ENGINE camera owns the look direction (its native
+                        // rotation from the mouse actions); the JX3 camera model
+                        // provides the distance dynamics (zoom / sprint pull-back
+                        // / SmoothTime smoothing). The camera is placed on the
+                        // engine's own view line through the character, so the
+                        // character is always centred.
                         bool movingNow = len > 0f;
-                        if (movingNow && shiftDown)
+                        bool sprinting = movingNow && shiftDown;
+                        if (sprinting)
                         {
                             if (camSys.Mode != CameraSystem.MODE_SPRINT)
                                 camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
-                            camSys.SprintSpeed = (pRun / 192.0);
                         }
                         else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
                         {
                             camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
                         }
+                        double dist = camSys.UpdateDistance(dt, sprinting, pRun / 192.0);
 
-                        // smooth the anchor slightly to damp collision micro-jitter
-                        if (camAnchorSm == null) camAnchorSm = new double[] { plX, plY, plZ };
-                        double aK = Math.Min(1.0, dt / 0.05);
-                        camAnchorSm[0] += (plX - camAnchorSm[0]) * aK;
-                        camAnchorSm[1] += (plY - camAnchorSm[1]) * aK;
-                        camAnchorSm[2] += (plZ - camAnchorSm[2]) * aK;
-
-                        Func<double[], double[], double?> obst = delegate(double[] a, double[] p)
+                        // refresh the engine view direction a few times per second
+                        if (needReMeasure || nowMs - lastMeasureMs >= 200)
                         {
-                            // ray from the character's chest toward the camera;
-                            // terrain above the ray pulls the camera in
-                            const double eyeUp = 80.0, margin = 20.0;
-                            double ddx = p[0] - a[0], ddy = p[1] - a[1], ddz = p[2] - a[2];
-                            double dist = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
-                            const int steps = 14;
-                            for (int i = 2; i <= steps; i++)
-                            {
-                                double t = (double)i / steps;
-                                float g = sampler.Sample((float)(a[0] + ddx * t), (float)(a[2] + ddz * t));
-                                if (g + margin > a[1] + eyeUp + ddy * t) return t * dist;
-                            }
-                            return null;
-                        };
-                        camSys.Update(dt, camAnchorSm, movingNow, 0.0, 0.0, obst);
-                        // camera yaw points from the camera to the anchor, i.e.
-                        // the travel direction + pi
-                        if (movingNow) camSys.FollowYaw(Math.Atan2(-dirZ, -dirX), dt);
+                            needReMeasure = false;
+                            lastMeasureMs = nowMs;
+                            measureView();
+                        }
+                        double vx = pdX, vy = pdY, vz = pdZ;
+                        double vlen = Math.Sqrt(vx * vx + vy * vy + vz * vz);
+                        if (vlen < 1e-6) { vx = 0; vy = 0; vz = 1; vlen = 1; }
+                        vx /= vlen; vy /= vlen; vz /= vlen;
 
-                        float camX = (float)camSys.Pos[0], camY = (float)camSys.Pos[1], camZ = (float)camSys.Pos[2];
-                        float camGround = sampler.Sample(camX, camZ) + 30f;
+                        // chest anchor on the view line
+                        double[] anchor = { plX, plY + 90.0, plZ };
+                        double camX = anchor[0] - vx * dist;
+                        double camY = anchor[1] - vy * dist;
+                        double camZ = anchor[2] - vz * dist;
+
+                        // obstruction: terrain above the anchor->camera ray
+                        const double margin = 20.0;
+                        double ddx = camX - anchor[0], ddy = camY - anchor[1], ddz = camZ - anchor[2];
+                        double rayLen = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
+                        const int steps = 14;
+                        for (int i = 2; i <= steps; i++)
+                        {
+                            double t = (double)i / steps;
+                            float g = sampler.Sample((float)(anchor[0] + ddx * t), (float)(anchor[2] + ddz * t));
+                            if (g + margin > anchor[1] + ddy * t)
+                            {
+                                double d2 = Math.Max(150.0, t * rayLen - 40.0);
+                                camX = anchor[0] - vx * d2;
+                                camY = anchor[1] - vy * d2;
+                                camZ = anchor[2] - vz * d2;
+                                break;
+                            }
+                        }
+                        float camGround = sampler.Sample((float)camX, (float)camZ) + 30f;
                         if (camY < camGround) camY = camGround;
-                        scene.SetCameraPos(camX, camY, camZ, false);
+                        scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
                     }
                     catch (Exception e) { Log("camera system ex: " + e.Message); }
                 }

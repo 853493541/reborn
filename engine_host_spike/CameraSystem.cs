@@ -387,6 +387,29 @@ public sealed class CameraSystem
         fz = -Math.Sin(Yaw);
     }
 
+    // Distance-only update for hosts whose orientation comes from the engine
+    // (the engine camera owns the look direction; we advance the JX3 distance
+    // dynamics: SmoothTime smoothing + sprint pull-back). Returns the smoothed
+    // distance in host units.
+    public double UpdateDistance(double dt, bool sprinting = false, double sprintSpeed = 0.0)
+    {
+        var row = Row;
+        double meters = UnitsPerMeter;
+        if (Mode == MODE_SPRINT && sprinting && sprintSpeed > 0.0)
+        {
+            double target = row.F("SprintCameraMaxDistance", 9.0) * meters;
+            double st = Math.Max(row.F("SprintCameraSmoothTime", 0.3), 1e-3);
+            Distance += Math.Min(1.0, dt / st) * (target - Distance);
+        }
+        else
+        {
+            double target = row.F("TargetDistance", 6.0) * meters;
+            double st = Math.Max(row.F("SmoothTime", 0.1), 1e-3);
+            Distance += Math.Min(1.0, dt / st) * (target - Distance);
+        }
+        return Distance;
+    }
+
     // JX3 "CameraAdjustYawWhenMoveTurn": while moving, drag the camera yaw
     // toward the character's movement yaw once it leaves the dead zone.
     // Rate-limited pull (converges; no per-frame delta feedback).
