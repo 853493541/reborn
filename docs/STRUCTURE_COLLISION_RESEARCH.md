@@ -199,3 +199,28 @@ Pipeline:
 Verified in game: at a 楼兰三间房 building (15007, 25400 area) the player is
 blocked (19 blocked events); wooden 栈道 posts stop the player at (14900, 25900).
 Proof screenshot: bin64/map_spike_out/map_t25000ms.png (wooden posts).
+
+## 8. SpeedTree collision: the baked .CollisionMesh files
+
+PhysicsEngineX64.dll `_GetCollisionGeometryFilesFromFile` handles the tree
+extensions: for `.srt`/`.st` it builds `<base>.CollisionMesh` from the file
+name and uses that as the collision geometry (verified in the disassembly at
+0x18002455b-0x1800245cd: strncpy of ".CollisionMesh" after the base name, then
+KG3D_ConvertToStandardHashString).
+
+Those files ship in the pak next to the .srt, e.g.
+`Data/source/maps_source/树/S_xb多枝枯树003_001.CollisionMesh` (28,962 bytes).
+They are regular HSEM meshes (parse with mesh.py).
+
+tools/export_structure_collision.py now maps every `.srt` object to its
+`.CollisionMesh` sibling, so the export covers all 4,963 objects
+(4,777 .mesh + 186 .srt) with 622 meshes.
+
+Note: the shipped collision meshes vary - 118/186 trees have a real trunk
+collider standing on the ground; the rest are small/buried boxes (the real
+game lets the player walk there too). Verified in game: blocked at a tree
+trunk (26144/23648 area, trunk world AABB x 25810..25902 z 23592..23674,
+player stopped at z=23610).
+
+Final coverage: 5,357 collision instances / 626 meshes
+(structures 4,963 + foliage 394), all from the game's own local files.

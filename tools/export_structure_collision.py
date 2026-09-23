@@ -47,11 +47,17 @@ def load_objects(region_dir):
             if not model or not m or len(m) != 16:
                 continue
             ext = Path(model).suffix.lower()
-            if ext != '.mesh':
+            if ext == '.mesh':
+                coll = model
+            elif ext == '.srt':
+                # SpeedTree: the physics engine builds "<base>.CollisionMesh"
+                # from the .srt name (PhysicsEngine::_GetCollisionGeometryFilesFromFile)
+                coll = model[:-len('.srt')] + '.CollisionMesh'
+            else:
                 continue
             objs.append({
                 'uuid': g,
-                'model': model,
+                'model': coll,
                 'm': [float(v) for v in m],
                 'bmin': b.get('actorBoundBoxMin'),
                 'bmax': b.get('actorBoundBoxMax'),
