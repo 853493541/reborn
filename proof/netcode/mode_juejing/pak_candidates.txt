@@ -1,0 +1,11 @@
+settings\SubMapInfo.tab
+settings/SubMapInfo.tab
+Settings\SubMapInfo.tab
+data\settings\SubMapInfo.tab
+data\source\settings\SubMapInfo.tab
+submapinfo.tab
+settings\NpcTemplateList.tab
+settings\skill\skills.tab
+skill\skills.tab
+data\source\skill\skills.tab
+data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani

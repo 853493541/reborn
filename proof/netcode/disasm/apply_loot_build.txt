@@ -1,0 +1,100 @@
+﻿
+==== 0x18019d980 .. 0x18019db00 (.text)
+  0x18019d980: mov      ecx, dword ptr [rdx + 0x20]
+  0x18019d983: cmp      dword ptr [rbx + 8], ecx
+  0x18019d986: jae      0x18019d98b
+  0x18019d988: mov      rdx, rax
+  0x18019d98b: cmp      rdx, rax
+  0x18019d98e: je       0x18019da0f
+  0x18019d990: lea      rdx, [rbx + 8]
+  0x18019d994: lea      rcx, [rbp + 0x110]
+  0x18019d99b: call     0x180168d50
+  0x18019d9a0: mov      rcx, qword ptr [rax]
+  0x18019d9a3: mov      qword ptr [rbx + 0xf0], rcx
+  0x18019d9aa: test     rcx, rcx
+  0x18019d9ad: je       0x18019d9eb
+  0x18019d9af: call     0x1802e23f0
+  0x18019d9b4: call     0x18012b9d0
+  0x18019d9b9: mov      rcx, rax
+  0x18019d9bc: mov      rdx, rbx
+  0x18019d9bf: call     0x1802d14a0
+  0x18019d9c4: mov      rcx, qword ptr [rip + 0x82395d]  ; 0x1809c1328
+  0x18019d9cb: test     rcx, rcx
+  0x18019d9ce: je       0x18019da62
+  0x18019d9d4: mov      eax, dword ptr [rbx + 8]
+  0x18019d9d7: lea      rdx, [rsp + 0x30]
+  0x18019d9dc: mov      dword ptr [rsp + 0x30], eax
+  0x18019d9e0: mov      rax, qword ptr [rcx]
+  0x18019d9e3: call     qword ptr [rax + 0x138]
+  0x18019d9e9: jmp      0x18019da62
+  0x18019d9eb: mov      r9d, 0x381b
+  0x18019d9f1: mov      qword ptr [rsp + 0x20], rsi
+  0x18019d9f6: lea      r8, [rip + 0x752c63]  ; "false"
+  0x18019d9fd: mov      ecx, 4
+  0x18019da02: lea      rdx, [rip + 0x753cf7]  ; "KGLOG_CHECK_ERROR(%s) at line %d in %s
+"
+  0x18019da09: call     qword ptr [rip + 0x5c7851]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18019da0f: mov      eax, 0x4d
+  0x18019da14: lea      rdx, [rsp + 0x38]
+  0x18019da19: mov      word ptr [rsp + 0x38], ax
+  0x18019da1e: mov      r8d, 0xf
+  0x18019da24: mov      eax, dword ptr [rdi + 7]
+  0x18019da27: mov      rcx, r13
+  0x18019da2a: mov      dword ptr [rsp + 0x43], eax
+  0x18019da2e: call     0x1801acda0
+  0x18019da33: test     eax, eax
+  0x18019da35: jne      0x18019da62
+  0x18019da37: lea      rax, [rip + 0x5d044a]  ; "KPlayerClient::DoApplyLootList"
+  0x18019da3e: mov      r9d, 0x118d
+  0x18019da44: lea      r8, [rip + 0x75289d]  ; "bRetCode"
+  0x18019da4b: mov      qword ptr [rsp + 0x20], rax
+  0x18019da50: lea      rdx, [rip + 0x750a51]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x18019da57: mov      ecx, 3
+  0x18019da5c: call     qword ptr [rip + 0x5c77fe]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18019da62: mov      r12d, 1
+  0x18019da68: mov      r14, qword ptr [rsp + 0x58]
+  0x18019da6d: mov      rbp, qword ptr [rsp + 0xa0]
+  0x18019da75: mov      r15, qword ptr [rsp + 0x50]
+  0x18019da7a: movzx    ecx, word ptr [rdi + 0x41]
+  0x18019da7e: test     r12d, r12d
+  0x18019da81: mov      rax, qword ptr [rip + 0x823898]  ; 0x1809c1320
+  0x18019da88: mov      r13, qword ptr [rsp + 0x60]
+  0x18019da8d: mov      rdi, qword ptr [rsp + 0x70]
+  0x18019da92: mov      rsi, qword ptr [rsp + 0x78]
+  0x18019da97: mov      r12, qword ptr [rsp + 0x68]
+  0x18019da9c: mov      word ptr [rax + 0x4c], cx
+  0x18019daa0: jne      0x18019dabd
+  0x18019daa2: test     rbx, rbx
+  0x18019daa5: je       0x18019dabd
+  0x18019daa7: mov      rcx, qword ptr [rip + 0x823872]  ; 0x1809c1320
+  0x18019daae: lea      r8, [rip + 0x5d47db]  ; "PlayerClient::OnSyncNewDoodad"
+  0x18019dab5: mov      rdx, rbx
+  0x18019dab8: call     0x18012aa60
+  0x18019dabd: mov      rcx, qword ptr [rsp + 0x48]
+  0x18019dac2: xor      rcx, rsp
+  0x18019dac5: call     0x18073aa10
+  0x18019daca: add      rsp, 0x80
+  0x18019dad1: pop      rbx
+  0x18019dad2: ret      
+  0x18019dad3: int3     
+  0x18019dad4: int3     
+  0x18019dad5: int3     
+  0x18019dad6: int3     
+  0x18019dad7: int3     
+  0x18019dad8: int3     
+  0x18019dad9: int3     
+  0x18019dada: int3     
+  0x18019dadb: int3     
+  0x18019dadc: int3     
+  0x18019dadd: int3     
+  0x18019dade: int3     
+  0x18019dadf: int3     
+  0x18019dae0: mov      r11, rsp
+  0x18019dae3: push     rbx
+  0x18019dae4: push     rsi
+  0x18019dae5: push     r15
+  0x18019dae7: sub      rsp, 0xa0
+  0x18019daee: mov      rax, qword ptr [rip + 0x81872b]  ; 0x1809b6220
+  0x18019daf5: xor      rax, rsp
+  0x18019daf8: mov      qword ptr [rsp + 0x60], rax

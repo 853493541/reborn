@@ -1,0 +1,188 @@
+[
+ {
+  "file": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\extracted\\scripts\\skill\\江湖\\江湖轻功_蹑云逐月.lua",
+  "size": 3335,
+  "consumed": 3335,
+  "error": null,
+  "functions": [
+   {
+    "depth": 0,
+    "source": null,
+    "params": 0,
+    "maxstack": 6,
+    "numbers": [
+     10.0,
+     12.0,
+     14.0,
+     16.0,
+     10448.0,
+     10028.0,
+     10080.0,
+     10176.0,
+     10626.0
+    ],
+    "strings": [
+     "Include",
+     "scripts/Include/Skill.lh",
+     "tSkillData",
+     "nDashFrame",
+     "GetSkillLevelData",
+     "CanCast",
+     "CanLearnSkill",
+     "OnSkillLevelUp",
+     "Apply"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 1,
+    "maxstack": 9,
+    "numbers": [
+     80.0,
+     0.0,
+     562.0,
+     15083.0,
+     6279.0,
+     8265.0,
+     11077.0,
+     17585.0,
+     29332.0,
+     31213.0,
+     31257.0,
+     44728.0,
+     45050.0,
+     44944.0,
+     16.0,
+     1.0,
+     503.0,
+     2.0,
+     88.0,
+     3.0,
+     165.0,
+     804.0,
+     2436.0,
+     2437.0,
+     14561.0,
+     1000.0
+    ],
+    "strings": [
+     "dwLevel",
+     "AddAttribute",
+     "ATTRIBUTE_EFFECT_MODE",
+     "EFFECT_TO_SELF_NOT_ROLLBACK",
+     "ATTRIBUTE_TYPE",
+     "DASH_FORWARD",
+     "tSkillData",
+     "nDashFrame",
+     "EFFECT_TO_DEST_NOT_ROLLBACK",
+     "EXECUTE_SCRIPT",
+     "skill/江湖/江湖轻功_蹑云逐月.lua",
+     "skill/江湖/基础特殊基础CD.lua",
+     "AddSlowCheckSelfBuff",
+     "BUFF_COMPARE_FLAG",
+     "EQUAL",
+     "GREATER_EQUAL",
+     "AddCheckSelfLearntSkill",
+     "SKILL_COMPARE_FLAG",
+     "SetPublicCoolDown",
+     "SetNormalCoolDown",
+     "SetCheckCoolDown",
+     "BindBuff",
+     "nPrepareFrames",
+     "nBulletVelocity",
+     "nBreakRate"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 2,
+    "numbers": [],
+    "strings": []
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 3,
+    "numbers": [],
+    "strings": []
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 10,
+    "numbers": [
+     20788.0,
+     1.0,
+     671.0,
+     2.0,
+     670.0,
+     3.0,
+     669.0,
+     4.0,
+     668.0,
+     13249.0,
+     0.0
+    ],
+    "strings": [
+     "GetSkillLevel",
+     "dwLevel",
+     "LearnSkillLevel",
+     "AcquireAchievement",
+     "GetQuestIndex",
+     "GetQuestPhase",
+     "SetQuestValue"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 1,
+    "maxstack": 8,
+    "numbers": [],
+    "strings": [
+     "pairs"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 2,
+    "maxstack": 12,
+    "numbers": [
+     17639.0,
+     1.0,
+     10533.0,
+     32592.0,
+     24230.0,
+     30115.0,
+     2.0,
+     2002.0,
+     0.0,
+     520.0
+    ],
+    "strings": [
+     "GetPlayer",
+     "GetKungfuMountID",
+     "AddBuff",
+     "dwID",
+     "nLevel",
+     "GetSkillLevel",
+     "IsHaveBuff",
+     "GetQuestPhase",
+     "GetScene",
+     "GetNpcByNickName",
+     "30115JieWeiP",
+     "FireAIEvent",
+     "RemoteCallToClient",
+     "CallUIGlobalFunction",
+     "TeachingAim.Open"
+    ]
+   }
+  ]
+ }
+]

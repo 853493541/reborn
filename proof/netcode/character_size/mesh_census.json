@@ -1,0 +1,212 @@
+[
+ {
+  "file": "m2_1018_body_hd.mesh",
+  "dir": "部件",
+  "height": 181.64,
+  "ymin": -0.09,
+  "ymax": 181.56,
+  "x": 103.77,
+  "z": 101.98,
+  "verts": 5098
+ },
+ {
+  "file": "m2_1018_body_hd.mesh",
+  "dir": "mesh",
+  "height": 181.64,
+  "ymin": -0.09,
+  "ymax": 181.56,
+  "x": 103.77,
+  "z": 101.98,
+  "verts": 5098
+ },
+ {
+  "file": "f1_1008_body_hd.mesh",
+  "dir": "mesh",
+  "height": 150.24,
+  "ymin": -0.01,
+  "ymax": 150.23,
+  "x": 64.8,
+  "z": 67.25,
+  "verts": 30050
+ },
+ {
+  "file": "f1_1006_body_hd.mesh",
+  "dir": "mesh",
+  "height": 141.88,
+  "ymin": -0.01,
+  "ymax": 141.87,
+  "x": 181.58,
+  "z": 31.56,
+  "verts": 15400
+ },
+ {
+  "file": "f1_1009_body_hd.mesh",
+  "dir": "mesh",
+  "height": 120.7,
+  "ymin": 0.15,
+  "ymax": 120.85,
+  "x": 64.8,
+  "z": 50.43,
+  "verts": 16184
+ },
+ {
+  "file": "f1_1007_body_hd.mesh",
+  "dir": "mesh",
+  "height": 117.51,
+  "ymin": -0.09,
+  "ymax": 117.42,
+  "x": 64.8,
+  "z": 41.03,
+  "verts": 13307
+ },
+ {
+  "file": "f1_1004_body_hd.mesh",
+  "dir": "mesh",
+  "height": 114.59,
+  "ymin": -0.05,
+  "ymax": 114.55,
+  "x": 64.8,
+  "z": 52.01,
+  "verts": 8372
+ },
+ {
+  "file": "f1_2227_body_hd.mesh",
+  "dir": "部件",
+  "height": 92.64,
+  "ymin": 6.82,
+  "ymax": 99.46,
+  "x": 63.48,
+  "z": 38.76,
+  "verts": 11738
+ },
+ {
+  "file": "f1_2227_body_hd.mesh",
+  "dir": "mesh",
+  "height": 92.64,
+  "ymin": 6.82,
+  "ymax": 99.46,
+  "x": 63.48,
+  "z": 38.76,
+  "verts": 11738
+ },
+ {
+  "file": "f1_2003_body_hd.mesh",
+  "dir": "部件",
+  "height": 60.38,
+  "ymin": 39.14,
+  "ymax": 99.52,
+  "x": 53.61,
+  "z": 19.13,
+  "verts": 2246
+ },
+ {
+  "file": "f1_2003_body_hd.mesh",
+  "dir": "mesh",
+  "height": 60.38,
+  "ymin": 39.14,
+  "ymax": 99.52,
+  "x": 53.61,
+  "z": 19.13,
+  "verts": 2246
+ },
+ {
+  "file": "f1_2401_body_hd.mesh",
+  "dir": "部件",
+  "height": 54.32,
+  "ymin": 45.21,
+  "ymax": 99.53,
+  "x": 33.28,
+  "z": 27.13,
+  "verts": 1194
+ },
+ {
+  "file": "f1_2401_body_hd.mesh",
+  "dir": "mesh",
+  "height": 54.32,
+  "ymin": 45.21,
+  "ymax": 99.53,
+  "x": 33.28,
+  "z": 27.13,
+  "verts": 1194
+ },
+ {
+  "file": "f1_1001_body_hd.mesh",
+  "dir": "部件",
+  "height": 54.3,
+  "ymin": 45.23,
+  "ymax": 99.53,
+  "x": 33.28,
+  "z": 16.57,
+  "verts": 1092
+ },
+ {
+  "file": "f1_1001_body_hd.mesh",
+  "dir": "mesh",
+  "height": 54.3,
+  "ymin": 45.23,
+  "ymax": 99.53,
+  "x": 33.28,
+  "z": 16.57,
+  "verts": 1092
+ },
+ {
+  "file": "f1_1000_body_hd.mesh",
+  "dir": "部件",
+  "height": 47.51,
+  "ymin": 52.03,
+  "ymax": 99.54,
+  "x": 33.28,
+  "z": 17.12,
+  "verts": 2079
+ },
+ {
+  "file": "f1_1000_body_hd.mesh",
+  "dir": "mesh",
+  "height": 47.51,
+  "ymin": 52.03,
+  "ymax": 99.54,
+  "x": 33.28,
+  "z": 17.12,
+  "verts": 2079
+ },
+ {
+  "file": "f1_1000_head_hd.mesh",
+  "dir": "mesh",
+  "height": 18.99,
+  "ymin": 97.44,
+  "ymax": 116.43,
+  "x": 15.13,
+  "z": 16.61,
+  "verts": 2190
+ },
+ {
+  "file": "m2_1018沈眠风_face_hd.mesh",
+  "dir": "部件",
+  "height": 17.0,
+  "ymin": -8.3,
+  "ymax": 8.69,
+  "x": 21.87,
+  "z": 20.52,
+  "verts": 2701
+ },
+ {
+  "file": "m2_1018沈眠风_face_hd.mesh",
+  "dir": "mesh",
+  "height": 17.0,
+  "ymin": -8.3,
+  "ymax": 8.69,
+  "x": 21.87,
+  "z": 20.52,
+  "verts": 2701
+ },
+ {
+  "file": "f1_meta_face_body_hd.mesh",
+  "dir": "mesh",
+  "height": 14.7,
+  "ymin": -7.37,
+  "ymax": 7.34,
+  "x": 17.91,
+  "z": 17.13,
+  "verts": 27386
+ }
+]

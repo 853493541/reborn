@@ -1,0 +1,101 @@
+== skills containing 绝境
+  SkillName=天原绝境_滑翔翼 ; SkillID=29021 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_滑翔翼.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_照明火把释放 ; SkillID=29043 ; KindType=None ; FunctionType=Damage ; CastMode=PointArea ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_照明火把释放.lua ; UseCastScript=1 ; MaxLevel=1
+  SkillName=天原绝境_照明火把实际效果 ; SkillID=29044 ; KindType=None ; FunctionType=Damage ; CastMode=CasterArea ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/照明火把实际效果.lua ; UseCastScript=1 ; MaxLevel=2
+  SkillName=天原绝境_燧石单体 ; SkillID=29051 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_燧石点燃技能.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_冰雹aoe ; SkillID=29055 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_冰雹aoe.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_剑宗深寒 ; SkillID=29056 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_剑宗深寒.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_武家炽血 ; SkillID=29061 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_剑宗炽血.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_橙色下装被击降攻击 ; SkillID=29068 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_橙胖次降攻击.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_战象践踏 ; SkillID=29146 ; KindType=None ; FunctionType=Damage ; CastMode=CasterArea ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境战象践踏.lua ; MaxLevel=5 ; SkillEventMask1=131532
+  SkillName=天原绝境_战象冲锋 ; SkillID=29264 ; KindType=None ; FunctionType=Damage ; CastMode=Rectangle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境战象冲刺.lua ; MaxLevel=1 ; SkillEventMask1=131532
+  SkillName=天原绝境_战象下车 ; SkillID=29267 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境战象下车.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_战象践踏母技能 ; SkillID=29283 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境战象践踏母技能.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_极寒掉血 ; SkillID=29342 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_战象推人母技能 ; SkillID=29476 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境战象推人母技能.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_天玄冰 ; SkillID=29637 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原绝境_天玄冰.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=天原绝境_冰封复活 ; SkillID=31507 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/天原主动复活.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=春泥护花_绝境战场 ; SkillID=33285 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10018 ; BelongSchool=2 ; ScriptFile=万花\万花_养心决_春泥护花.lua ; MaxLevel=7 ; SkillEventMask1=8721 ; SkillEventMask2=524288
+  SkillName=洱海绝境_脱战附近aoe ; SkillID=35149 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10516 ; BelongSchool=13 ; ScriptFile=沙漠风暴/洱海绝境脱战烫人.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillMark=1
+  SkillName=绝境·扶摇直上 ; SkillID=37681 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/江湖轻功_扶摇直上.lua ; MaxLevel=11 ; SkillEventMask1=66051
+  SkillName=绝境·蹑云逐月 ; SkillID=37682 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\江湖轻功_蹑云逐月.lua ; MaxLevel=4 ; SkillEventMask1=66051
+  SkillName=绝境·凌霄揽胜 ; SkillID=37683 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\江湖轻功_凌霄揽胜.lua ; MaxLevel=1 ; SkillEventMask1=66051
+  SkillName=绝境·瑶台枕鹤 ; SkillID=37684 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\江湖轻功_瑶台枕鹤.lua ; MaxLevel=1 ; SkillEventMask1=66051
+  SkillName=绝境·迎风回浪 ; SkillID=37685 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\江湖轻功_迎风回浪.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillEventMask1=66051
+  SkillName=绝境·后撤 ; SkillID=37686 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\后撤.lua ; MaxLevel=1 ; SkillEventMask1=66051
+  SkillName=绝境·回风扫叶 ; SkillID=37687 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境_回风扫叶.lua ; MaxLevel=5 ; SkillEventMask1=519 ; SkillEventMask2=32768
+  SkillName=绝境渊被击 ; SkillID=37717 ; KindType=Physics ; FunctionType=Damage ; CastMode=CasterSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境_渊触发技能事件.lua ; MaxLevel=6
+  SkillName=绝境·骑乘 ; SkillID=37746 ; KindType=None ; FunctionType=Damage ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\骑乘.lua ; UseCastScript=1 ; MaxLevel=1 ; MapBanMask=1
+  SkillName=绝境·扶摇直上·悟 ; SkillID=38381 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/绝境战场_移动端_扶摇.lua ; MaxLevel=11 ; SkillEventMask1=66051
+  SkillName=绝境·蹑云逐月·悟 ; SkillID=38382 ; KindType=Leap ; FunctionType=Fly ; CastMode=PointRectangle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/绝境战场_移动端_蹑云逐月.lua ; MaxLevel=1 ; SkillEventMask1=66051
+  SkillName=绝境·雾暗迷云 ; SkillID=39483 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境_雾暗迷云.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillEventMask2=32768 ; SkillMark=1
+  SkillName=绝境·截阳 ; SkillID=39492 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境·截阳.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillEventMask2=524288 ; SkillMark=1
+  SkillName=绝境·引窍 ; SkillID=39493 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境·引窍.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillEventMask2=525312 ; SkillMark=1
+  SkillName=绝境·风流云散 ; SkillID=39494 ; KindType=Leap ; FunctionType=Normal ; CastMode=PointArea ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境·风流云散.lua ; MaxLevel=1 ; SkillEventMask1=65681 ; SkillEventMask2=524288 ; SkillMark=1
+  SkillName=绝境截阳实际伤害子技能 ; SkillID=39526 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境截阳伤害子技能.lua ; MaxLevel=1 ; SkillEventMask1=144
+  SkillName=绝境引窍伤害子技能 ; SkillID=39527 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境引窍伤害子技能.lua ; MaxLevel=1 ; SkillEventMask1=144
+  SkillName=绝境绝脉层数消除后造成伤害子技能 ; SkillID=39528 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场/绝境绝脉爆炸伤害.lua ; MaxLevel=10 ; SkillEventMask1=144
+  SkillName=绝境·扶摇直上·林海 ; SkillID=41281 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/江湖轻功_扶摇直上绝境专用.lua ; MaxLevel=11 ; SkillEventMask1=66051
+  SkillName=绝境·蹑云逐月·林海 ; SkillID=41282 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖\江湖轻功_蹑云逐月绝境专用.lua ; MaxLevel=4 ; SkillEventMask1=66051
+  SkillName=绝境·扶摇直上·悟·林海 ; SkillID=41283 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/绝境战场_移动端_扶摇.lua ; MaxLevel=11 ; SkillEventMask1=66051
+  SkillName=绝境·蹑云逐月·悟·林海 ; SkillID=41284 ; KindType=Leap ; FunctionType=Fly ; CastMode=PointRectangle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/绝境战场_移动端_蹑云逐月.lua ; MaxLevel=1 ; SkillEventMask1=66051
+  SkillName=林海绝境进战 ; SkillID=41291 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/林海绝境进战.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=林海绝境脱战 ; SkillID=41292 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=江湖/林海绝境脱战.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=绝境战场技能 ; SkillID=64888 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=绝境_四象轮回（武器初始） ; SkillID=64889 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_四象轮回.lua ; MaxLevel=1 ; SkillEventMask1=128 ; SkillEventMask2=32768
+  SkillName=绝境_穿云（武器初始） ; SkillID=64890 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_穿云.lua ; MaxLevel=1 ; SkillEventMask1=7 ; SkillEventMask2=32768
+  SkillName=绝境_普渡四方（武器初始） ; SkillID=64891 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_普渡四方.lua ; MaxLevel=1 ; SkillEventMask1=16 ; SkillEventMask2=32768
+  SkillName=绝境_夺魄箭（武器初始） ; SkillID=64892 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_夺魄箭.lua ; MaxLevel=1 ; SkillEventMask1=2147484683 ; SkillEventMask2=32768 ; SkillMark=1
+  SkillName=绝境_夕照雷锋（武器初始） ; SkillID=64893 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_夕照雷锋.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillEventMask1=1027 ; SkillEventMask2=32768 ; SkillMark=1
+  SkillName=绝境_阳明指（武器初始） ; SkillID=64894 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_阳明指.lua ; MaxLevel=1 ; SkillEventMask1=2164262033 ; SkillEventMask2=32768
+  SkillName=绝境_蝎心（武器初始） ; SkillID=64895 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_蝎心.lua ; MaxLevel=1 ; SkillEventMask1=17681 ; SkillEventMask2=32768 ; SkillMark=1
+  SkillName=绝境_赤日轮（武器初始） ; SkillID=64896 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_赤日轮.lua ; MaxLevel=1 ; SkillEventMask2=32768 ; SkillMark=1
+  SkillName=绝境_江海凝光（武器初始） ; SkillID=64897 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_江海凝光.lua ; MaxLevel=1 ; SkillEventMask1=593 ; SkillEventMask2=32768
+  SkillName=绝境_横扫六合 ; SkillID=64898 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_横扫六合.lua ; MaxLevel=1 ; SkillEventMask2=32768
+  SkillName=绝境_捕风式 ; SkillID=64899 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_捕风式.lua ; MaxLevel=1 ; SkillEventMask1=561 ; SkillEventMask2=32768
+  SkillName=绝境_抱残式 ; SkillID=64900 ; KindType=SolarMagic ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_抱残式.lua ; MaxLevel=1 ; SkillEventMask1=16913 ; SkillEventMask2=32768
+  SkillName=绝境_守缺式 ; SkillID=64901 ; KindType=SolarMagic ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64888 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_守缺式.lua ; MaxLevel=1 ; SkillEventMask2=32768
+  SkillName=绝境战场子技能 ; SkillID=64902 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=绝境_夕照雷锋伤害子技能 ; SkillID=64903 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_夕照雷锋伤害子技能.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=绝境自动轮判断技能 ; SkillID=64986 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_赤日轮自动释放.lua ; MaxLevel=4 ; SkillMark=1
+  SkillName=绝境守缺式一段 ; SkillID=64989 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=64902 ; BelongSchool=13 ; ScriptFile=绝境战场\绝境_一段守缺.lua ; MaxLevel=1 ; SkillEventMask1=561
+  total=182
+== skills containing 战场
+  SkillName=神农洇_战场BOSS_大毒尸_普通攻击 ; SkillID=7184 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; BelongKungfu=10123 ; BelongSchool=13 ; ScriptFile=Quest\神农洇_战场BOSS_大毒尸_普通攻击.lua ; MaxLevel=20 ; SkillEventMask1=515 ; SkillMark=1
+  SkillName=神农洇_战场BOSS_大毒尸_狂暴 ; SkillID=7186 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10123 ; BelongSchool=13 ; ScriptFile=Quest\神农洇_战场BOSS_大毒尸_狂暴.lua ; MaxLevel=20 ; SkillEventMask1=8705 ; SkillMark=1
+  SkillName=神农洇_战场BOSS_大毒尸_剧毒喷溅 ; SkillID=7187 ; KindType=Poison ; FunctionType=Damage ; CastMode=CasterArea ; BelongKungfu=10123 ; BelongSchool=13 ; ScriptFile=Quest\神农洇_战场BOSS_大毒尸_剧毒喷溅.lua ; MaxLevel=20 ; SkillEventMask1=785 ; SkillMark=1
+  SkillName=神农洇_战场NPC_前锋_AOE ; SkillID=7214 ; KindType=Physics ; FunctionType=Damage ; CastMode=CasterArea ; BelongKungfu=10123 ; BelongSchool=13 ; ScriptFile=Quest\神农洇_战场NPC_前锋_AOE.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=神农洇_战场NPC_守卫_击退 ; SkillID=7334 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10123 ; BelongSchool=13 ; ScriptFile=Quest\神农洇_战场NPC_守卫_击退.lua ; MaxLevel=30 ; SkillEventMask1=519 ; SkillMark=1
+  SkillName=神农洇_战场BOSS_大将_AOE ; SkillID=7335 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10123 ; BelongSchool=13 ; ScriptFile=Quest\神农洇_战场BOSS_大将_AOE.lua ; MaxLevel=30 ; SkillEventMask1=521 ; SkillMark=1
+  SkillName=秦皇陵_安禄山_战场绞肉机 ; SkillID=8731 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10310 ; BelongSchool=12 ; ScriptFile=npc/副本BOSS/秦皇陵/秦皇陵_安禄山_战场绞肉机.lua ; MaxLevel=2 ; SkillEventMask1=519 ; SkillMark=1
+  SkillName=战场任务 ; SkillID=10502 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=体验战场机器人 ; SkillID=10515 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=12 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=MOBA战场 ; SkillID=10582 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=12 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=MOBA战场装备 ; SkillID=21762 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10254 ; BelongSchool=16 ; ScriptFile=装备/MOBA战场装备.lua ; MaxLevel=1 ; SkillEventMask1=1 ; MapBanMask=8 ; SkillMark=1
+  SkillName=花海战场_俞长生_箭雨 ; SkillID=25564 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterAreaOfDepth ; BelongKungfu=25090 ; BelongSchool=13 ; ScriptFile=Quest/万花_乱世/花海战场_俞长生_箭雨.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillEventMask1=32775 ; SkillMark=1
+  SkillName=花海战场_俞长生_破竹势 ; SkillID=25565 ; KindType=Physics ; FunctionType=Normal ; CastMode=Sector ; BelongKungfu=25090 ; BelongSchool=13 ; ScriptFile=Quest/万花_乱世/花海战场_俞长生_破竹势.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillMark=1
+  SkillName=花海战场_俞长生_破竹势伤害 ; SkillID=25566 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=25090 ; BelongSchool=13 ; ScriptFile=Quest/万花_乱世/花海战场_俞长生_破竹势伤害.lua ; UseCastScript=1 ; MaxLevel=2 ; SkillMark=1
+  SkillName=花海战场_俞长生_远程放箭 ; SkillID=25567 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterAreaOfDepth ; BelongKungfu=25090 ; BelongSchool=13 ; ScriptFile=Quest/万花_乱世/花海战场_俞长生_远程放箭.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillMark=1
+  SkillName=杀鸡_退出战场 ; SkillID=31269 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10433 ; BelongSchool=13 ; ScriptFile=Quest/羊村/杀鸡_退出战场.lua ; UseCastScript=1 ; MaxLevel=1 ; SkillMark=1
+  SkillName=春泥护花_绝境战场 ; SkillID=33285 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10018 ; BelongSchool=2 ; ScriptFile=万花\万花_养心决_春泥护花.lua ; MaxLevel=7 ; SkillEventMask1=8721 ; SkillEventMask2=524288
+  SkillName=绝境战场技能 ; SkillID=64888 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=绝境战场子技能 ; SkillID=64902 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; SkillMark=1
+  total=19
+== skills containing 夺马
+  total=0
+== skills containing 沙漠
+  SkillName=沙漠风暴 ; SkillID=10516 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongSchool=13 ; ScriptFile=Default.lua ; MaxLevel=1 ; MapBanMask=508 ; SkillMark=1
+  SkillName=沙漠风暴_伤害吸收盾 ; SkillID=18879 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10254 ; BelongSchool=16 ; ScriptFile=装备/沙漠风暴_伤害吸收盾.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=沙漠风暴_反击 ; SkillID=18880 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10254 ; BelongSchool=16 ; ScriptFile=装备\吃鸡被动反击技能.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=沙漠风暴_降低技能命中几率 ; SkillID=18881 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=10254 ; BelongSchool=16 ; ScriptFile=装备/沙漠风暴_降低技能命中几率.lua ; MaxLevel=1 ; SkillEventMask1=4608 ; SkillMark=1
+  SkillName=沙漠风暴_附加dot ; SkillID=18882 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10254 ; BelongSchool=16 ; ScriptFile=装备/沙漠风暴_加dot.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=沙漠劫匪_攻击 ; SkillID=33713 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10719 ; BelongSchool=13 ; ScriptFile=Quest/ACT_镖人联动/沙漠劫匪_攻击.lua ; MaxLevel=1 ; SkillEventMask1=131075 ; SkillMark=1
+  SkillName=沙漠劫匪_乌合之人 ; SkillID=33714 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10719 ; BelongSchool=13 ; ScriptFile=Quest/ACT_镖人联动/沙漠劫匪_乌合之人.lua ; MaxLevel=1 ; SkillEventMask1=1025 ; SkillMark=1
+  SkillName=精英沙漠劫匪_攻击 ; SkillID=33715 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; BelongKungfu=10719 ; BelongSchool=13 ; ScriptFile=Quest/ACT_镖人联动/精英沙漠劫匪_攻击.lua ; MaxLevel=1 ; SkillEventMask1=131075 ; SkillMark=1
+  SkillName=精英沙漠劫匪_乌合之从 ; SkillID=33716 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10719 ; BelongSchool=13 ; ScriptFile=Quest/ACT_镖人联动/精英沙漠劫匪_乌合之从.lua ; MaxLevel=1 ; SkillEventMask1=1025 ; SkillMark=1
+  SkillName=精英沙漠劫匪_乌合之众 ; SkillID=33717 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10719 ; BelongSchool=13 ; ScriptFile=Quest/ACT_镖人联动/精英沙漠劫匪_乌合之众.lua ; MaxLevel=1 ; SkillEventMask1=1 ; SkillMark=1
+  SkillName=精英沙漠劫匪_乌合之众死亡治疗 ; SkillID=33723 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; BelongKungfu=10719 ; BelongSchool=13 ; ScriptFile=Quest/ACT_镖人联动/精英沙漠劫匪_乌合之众死亡治疗.lua ; MaxLevel=1 ; SkillEventMask1=1 ; SkillMark=1
+  SkillName=玩具_猫猫石伪装举_沙漠石头 ; SkillID=39264 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=25432 ; BelongSchool=13 ; ScriptFile=Quest/趣味玩法/玩具_猫猫石伪装举_沙漠石头.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=玩具_猫猫石伪装蹲_沙漠石头 ; SkillID=39265 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=25432 ; BelongSchool=13 ; ScriptFile=Quest/趣味玩法/玩具_猫猫石伪装蹲_沙漠石头.lua ; MaxLevel=1 ; SkillMark=1
+  SkillName=玩具_猫猫石伪装_沙漠石头 ; SkillID=39268 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; BelongKungfu=25432 ; BelongSchool=13 ; ScriptFile=Quest/趣味玩法/玩具_猫猫石伪装_沙漠石头.lua ; UseCastScript=1 ; MaxLevel=1 ; MapBanMask=776 ; SkillMark=1
+  total=14

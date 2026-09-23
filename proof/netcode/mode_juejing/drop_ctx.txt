@@ -1,0 +1,10 @@
+﻿DropItemFile @0x008727C8: dTabFile....DropTypeFile....CoinShopSettings/RewardsDraw....DropItemFile....pDropList...............................KNpcExteriorBox::Init...dwAssistedID != ERROR_ID........KNpcExteriorBox::Load...nVersion == CURRENT_NPC_
+
+DropTypeFile @0x00872798: ardsDraw.tab........KCoinShopDrawDropCenter::LoadTabFile....DropTypeFile....CoinShopSettings/RewardsDraw....DropItemFile....pDropList...............................KNpcExteriorBox::Init...dwAssistedID != ERROR_ID........
+
+LoadDropItemTab @0x00872617: ist] Failed to load file "%s" !......KCoinShopDrawDropList::LoadDropItemTab..DropItem.nDropType > 0..DropItem.dwType > 0.....DropItem.dwIndex > 0....DropItem.nCount > 0.....pItemVec........KCoinShopDrawDropList::GetItemV
+
+LoadDropTypeTab @0x0087254F: e()..KCoinShopDrawDropList::Init.....KCoinShopDrawDropList::LoadDropTypeTab..DropType........DropRate........DropType.nSingleDropRate > 0 && DropType.nSingleDropRate <= MILLION_NUM.[KCoinShopDrawDropList] Failed to load 
+
+ClassDrop @0x008744F0: ....KNpcClassList::Init.....m_NpcClassList..ClassName.......ClassDrop.......ParentClassID...DoodadClass.tab.KDoodadClassList::Init..m_DoodadClassList...Drop1...Count1..Drop2...Count2..Drop3...Count3..Drop4...Count4......
+

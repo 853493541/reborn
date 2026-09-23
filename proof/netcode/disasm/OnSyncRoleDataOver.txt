@@ -1,0 +1,137 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncRoleDataOver'
+# image base 0x180000000
+
+## xref @ 0x1801a3de3 -> 0x180774800 'KPlayerClient::OnSyncRoleDataOver'  fn start 0x1801a3db0
+  0x1801a3db0: mov      qword ptr [rsp + 8], rbx
+  0x1801a3db5: mov      qword ptr [rsp + 0x10], rbp
+  0x1801a3dba: mov      qword ptr [rsp + 0x18], rsi
+  0x1801a3dbf: mov      qword ptr [rsp + 0x20], rdi
+  0x1801a3dc4: push     r14
+  0x1801a3dc6: sub      rsp, 0x40
+  0x1801a3dca: mov      ecx, dword ptr [rip + 0x85c8c0]
+  0x1801a3dd0: mov      rax, qword ptr gs:[0x58]
+  0x1801a3dd9: mov      r8d, 4
+  0x1801a3ddf: mov      rdx, qword ptr [rax + rcx*8]
+  0x1801a3de3: lea      r14, [rip + 0x5d0a16]  ; 'KPlayerClient::OnSyncRoleDataOver'
+  0x1801a3dea: mov      eax, dword ptr [r8 + rdx]
+  0x1801a3dee: cmp      dword ptr [rip + 0x8465ec], eax
+  0x1801a3df4: jg       0x1801a3f8a
+  0x1801a3dfa: mov      edi, dword ptr [rip + 0x7d33f8]
+  0x1801a3e00: mov      dword ptr [rsp + 0x30], edi
+  0x1801a3e04: mov      rsi, qword ptr [rip + 0x7d33dd]
+  0x1801a3e0b: mov      qword ptr [rsp + 0x38], rsi
+  0x1801a3e10: call     qword ptr [rip + 0x5c1e1a]  ; PerfAnalyzerX64.dll!GetRunState
+  0x1801a3e16: test     al, al
+  0x1801a3e18: je       0x1801a3e2c
+  0x1801a3e1a: xor      r9d, r9d
+  0x1801a3e1d: xor      r8d, r8d
+  0x1801a3e20: mov      rdx, rsi
+  0x1801a3e23: mov      ecx, edi
+  0x1801a3e25: call     qword ptr [rip + 0x5c1e15]  ; PerfAnalyzerX64.dll!BeginSample
+  0x1801a3e2b: nop      
+  0x1801a3e2c: lea      rdx, [rip + 0x5d09f5]  ; 'Sync role data over !'
+  0x1801a3e33: mov      ecx, 6
+  0x1801a3e38: call     qword ptr [rip + 0x5c1422]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801a3e3e: mov      rcx, qword ptr [rip + 0x81d4db]
+  0x1801a3e45: mov      edx, dword ptr [rcx + 4]
+  0x1801a3e48: call     0x18012b610
+  0x1801a3e4d: mov      rbx, rax
+  0x1801a3e50: test     rax, rax
+  0x1801a3e53: jne      0x1801a3e7e
+  0x1801a3e55: mov      r9d, 0x55c8
+  0x1801a3e5b: lea      r8, [rip + 0x5c2ed6]  ; 'pPlayer'
+  0x1801a3e62: mov      qword ptr [rsp + 0x20], r14
+  0x1801a3e67: lea      rdx, [rip + 0x74a63a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801a3e6e: mov      ecx, 3
+  0x1801a3e73: call     qword ptr [rip + 0x5c13e7]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801a3e79: jmp      0x1801a3f54
+  0x1801a3e7e: mov      rcx, qword ptr [rip + 0x81d49b]
+  0x1801a3e85: mov      r8d, dword ptr [rcx + 0x18]
+  0x1801a3e89: mov      edx, dword ptr [rcx + 0x14]
+  0x1801a3e8c: call     0x18012b750
+  0x1801a3e91: mov      rbp, rax
+  0x1801a3e94: test     rax, rax
+  0x1801a3e97: jne      0x1801a3ea8
+  0x1801a3e99: mov      r9d, 0x55cb
+  0x1801a3e9f: lea      r8, [rip + 0x74dbc6]  ; 'pScene'
+  0x1801a3ea6: jmp      0x1801a3e62
+  0x1801a3ea8: mov      eax, dword ptr [rbx + 0x14]
+  0x1801a3eab: cdq      
+  0x1801a3eac: and      edx, 0x7ff
+  0x1801a3eb2: lea      r8d, [rdx + rax]
+  0x1801a3eb6: sar      r8d, 0xb
+  0x1801a3eba: mov      eax, dword ptr [rbx + 0x10]
+  0x1801a3ebd: cdq      
+  0x1801a3ebe: and      edx, 0x7ff
+  0x1801a3ec4: add      edx, eax
+  0x1801a3ec6: sar      edx, 0xb
+  0x1801a3ec9: mov      r9d, 1
+  0x1801a3ecf: mov      rcx, rbp
+  0x1801a3ed2: call     0x180159360
+  0x1801a3ed7: test     eax, eax
+  0x1801a3ed9: jne      0x1801a3eed
+  0x1801a3edb: mov      r9d, 0x55d2
+  0x1801a3ee1: lea      r8, [rip + 0x74c400]  ; 'bRetCode'
+  0x1801a3ee8: jmp      0x1801a3e62
+  0x1801a3eed: mov      rcx, qword ptr [rip + 0x81d434]
+  0x1801a3ef4: test     rcx, rcx
+  0x1801a3ef7: je       0x1801a3f04
+  0x1801a3ef9: mov      rax, qword ptr [rcx]
+  0x1801a3efc: xor      edx, edx
+  0x1801a3efe: call     qword ptr [rax + 0x8d8]
+  0x1801a3f04: mov      eax, dword ptr [rbx + 0x18]
+  0x1801a3f07: mov      dword ptr [rsp + 0x28], eax
+  0x1801a3f0b: mov      eax, dword ptr [rbx + 0x14]
+  0x1801a3f0e: mov      dword ptr [rsp + 0x20], eax
+  0x1801a3f12: mov      r9d, dword ptr [rbx + 0x10]
+  0x1801a3f16: mov      r8, rbp
+  0x1801a3f19: mov      rdx, rbx
+  0x1801a3f1c: mov      rcx, qword ptr [rip + 0x81d3fd]
+  0x1801a3f23: call     0x18012a6f0
+  0x1801a3f28: test     eax, eax
+  0x1801a3f2a: jne      0x1801a3f3e
+  0x1801a3f2c: mov      r9d, 0x55da
+  0x1801a3f32: lea      r8, [rip + 0x74c3af]  ; 'bRetCode'
+  0x1801a3f39: jmp      0x1801a3e62
+  0x1801a3f3e: mov      rcx, qword ptr [rip + 0x81d3e3]
+  0x1801a3f45: test     rcx, rcx
+  0x1801a3f48: je       0x1801a3f54
+  0x1801a3f4a: mov      rax, qword ptr [rcx]
+  0x1801a3f4d: call     qword ptr [rax + 0x2f0]
+  0x1801a3f53: nop      
+  0x1801a3f54: call     qword ptr [rip + 0x5c1cd6]  ; PerfAnalyzerX64.dll!GetRunState
+  0x1801a3f5a: test     al, al
+  0x1801a3f5c: je       0x1801a3f6f
+  0x1801a3f5e: xor      r9d, r9d
+  0x1801a3f61: xor      r8d, r8d
+  0x1801a3f64: mov      rdx, rsi
+  0x1801a3f67: mov      ecx, edi
+  0x1801a3f69: call     qword ptr [rip + 0x5c1cb9]  ; PerfAnalyzerX64.dll!EndSample
+  0x1801a3f6f: mov      rbx, qword ptr [rsp + 0x50]
+  0x1801a3f74: mov      rbp, qword ptr [rsp + 0x58]
+  0x1801a3f79: mov      rsi, qword ptr [rsp + 0x60]
+  0x1801a3f7e: mov      rdi, qword ptr [rsp + 0x68]
+  0x1801a3f83: add      rsp, 0x40
+  0x1801a3f87: pop      r14
+  0x1801a3f89: ret      
+  0x1801a3f8a: lea      rcx, [rip + 0x84644f]
+  0x1801a3f91: call     0x18073ac34
+  0x1801a3f96: cmp      dword ptr [rip + 0x846443], -1
+  0x1801a3f9d: jne      0x1801a3dfa
+  0x1801a3fa3: xor      r9d, r9d
+  0x1801a3fa6: lea      r8, [r9 - 1]
+  0x1801a3faa: mov      rdx, r14
+  0x1801a3fad: xor      ecx, ecx
+  0x1801a3faf: call     qword ptr [rip + 0x5c1c83]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x1801a3fb5: mov      qword ptr [rip + 0x7d322c], rax
+  0x1801a3fbc: lea      rcx, [rip + 0x84641d]
+  0x1801a3fc3: call     0x18073abd4
+  0x1801a3fc8: jmp      0x1801a3dfa
+  0x1801a3fcd: int3     
+  0x1801a3fce: int3     
+  0x1801a3fcf: int3     
+  0x1801a3fd0: sub      rsp, 0x58
+  0x1801a3fd4: .byte    0x48
+  0x1801a3fd5: .byte    0x8b
+  0x1801a3fd6: .byte    0x05
+

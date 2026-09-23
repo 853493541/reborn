@@ -1,0 +1,12 @@
+﻿HIT  settings\SubMapInfo.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out\SubMapInfo.tab (1775 bytes)
+HIT  settings/SubMapInfo.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out\SubMapInfo.tab (1775 bytes)
+HIT  Settings\SubMapInfo.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out\SubMapInfo.tab (1775 bytes)
+MISS data\settings\SubMapInfo.tab
+MISS data\source\settings\SubMapInfo.tab
+MISS submapinfo.tab
+HIT  settings\NpcTemplateList.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out\NpcTemplateList.tab (37873 bytes)
+HIT  settings\skill\skills.tab -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out\skills.tab (16397035 bytes)
+MISS skill\skills.tab
+MISS data\source\skill\skills.tab
+HIT  data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani -> C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing\pak_out\f1s07cj重剑技能15_风来吴山红色hd.tani (5940 bytes)
+6 files extracted from 11 candidates

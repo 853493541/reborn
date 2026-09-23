@@ -1,0 +1,26 @@
+﻿doodad hits 149
+Bangle_f1.tab | .钁憋拷	Data\source\player\F1\閮ㄤ欢\F1_3117_hand.mesh		1  8248	缁濆閫㈢敓路鑻ュ€炬姢鎵?data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh	
+Bangle_f1.tab | 鎱娿仾锟?data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh		4  8249	缁濆閫㈢敓路鎯婃ⅵ鎶ゆ墜	data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh	
+Bangle_f1.tab | 浣嶃仾锟?data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh		4  8250	缁濆閫㈢敓路瀵勬捣鎶ゆ墜	data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh	
+Bangle_f1.tab | 锛涖仾锟?data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh		4  8251	缁濆閫㈢敓路骞芥鎶ゆ墜	data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh	
+Bangle_f1.tab | 瀵屻仾锟?data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh		4  8252	缁濆閫㈢敓路鏆▊鎶ゆ墜	data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh	
+Bangle_f1.tab | .銇拷	data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh		4  8253	缁濆閫㈢敓路杈炲綊鎶ゆ墜	data\source\player\F1\閮ㄤ欢\F1_3045_hand.mesh	
+Bangle_f2.tab | .钁憋拷	Data\source\player\F2\閮ㄤ欢\F2_3117_hand.mesh		1  8248	缁濆閫㈢敓路鑻ュ€炬姢鎵?Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh	
+Bangle_f2.tab | 鎱娿仾锟?Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh		4  8249	缁濆閫㈢敓路鎯婃ⅵ鎶ゆ墜	Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh	
+Bangle_f2.tab | 浣嶃仾锟?Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh		4  8250	缁濆閫㈢敓路瀵勬捣鎶ゆ墜	Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh	
+Bangle_f2.tab | 锛涖仾锟?Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh		4  8251	缁濆閫㈢敓路骞芥鎶ゆ墜	Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh	
+Bangle_f2.tab | 瀵屻仾锟?Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh		4  8252	缁濆閫㈢敓路鏆▊鎶ゆ墜	Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh	
+Bangle_f2.tab | .銇拷	Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh		4  8253	缁濆閫㈢敓路杈炲綊鎶ゆ墜	Data\source\player\F2\閮ㄤ欢\F2_3045_hand.mesh	
+Bangle_m1.tab | .钁憋拷	Data\source\player\M1\閮ㄤ欢\M1_3117_hand.mesh		1  8248	缁濆閫㈢敓路鑻ュ€炬姢鎵?Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh	
+Bangle_m1.tab | 鎱娿仾锟?Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh		4  8249	缁濆閫㈢敓路鎯婃ⅵ鎶ゆ墜	Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh	
+Bangle_m1.tab | 浣嶃仾锟?Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh		4  8250	缁濆閫㈢敓路瀵勬捣鎶ゆ墜	Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh	
+Bangle_m1.tab | 锛涖仾锟?Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh		4  8251	缁濆閫㈢敓路骞芥鎶ゆ墜	Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh	
+Bangle_m1.tab | 瀵屻仾锟?Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh		4  8252	缁濆閫㈢敓路鏆▊鎶ゆ墜	Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh	
+Bangle_m1.tab | .銇拷	Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh		4  8253	缁濆閫㈢敓路杈炲綊鎶ゆ墜	Data\source\player\M1\閮ㄤ欢\M1_3045_hand.mesh	
+Bangle_m2.tab | .钁憋拷	Data\source\player\M2\閮ㄤ欢\M2_3117_hand.mesh		1  8248	缁濆閫㈢敓路鑻ュ€炬姢鎵?Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh	
+Bangle_m2.tab | 鎱娿仾锟?Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh		4  8249	缁濆閫㈢敓路鎯婃ⅵ鎶ゆ墜	Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh	
+Bangle_m2.tab | 浣嶃仾锟?Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh		4  8250	缁濆閫㈢敓路瀵勬捣鎶ゆ墜	Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh	
+Bangle_m2.tab | 锛涖仾锟?Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh		4  8251	缁濆閫㈢敓路骞芥鎶ゆ墜	Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh	
+Bangle_m2.tab | 瀵屻仾锟?Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh		4  8252	缁濆閫㈢敓路鏆▊鎶ゆ墜	Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh	
+Bangle_m2.tab | .銇拷	Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh		4  8253	缁濆閫㈢敓路杈炲綊鎶ゆ墜	Data\source\player\M2\閮ㄤ欢\M2_3045_hand.mesh	
+Chest_f1.tab | .鍖嗭拷	Data\source\player\F1\閮ㄤ欢\F1_3117_body.mesh		1  8192	缁濆閫㈢敓路鑻ュ€捐。	data\source\player\F1\閮ㄤ欢\F1_3045_body.mesh		4

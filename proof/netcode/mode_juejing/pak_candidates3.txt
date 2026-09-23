@@ -1,0 +1,16 @@
+skill\Buff.tab
+skill\BuffRelays.tab
+TopBuff.tab
+CoolDownList.tab
+Activity.tab
+CampLevelParam.tab
+RelationCamp.tab
+DramaMap.tab
+settings\RecordBuffList.tab
+settings\NpcRelive\MapReviveList.tab
+NpcRelive\MapReviveList.tab
+scripts\Map\伊丽川\伊丽川野外营地子副本.lua
+settings\scripts\Map\伊丽川\伊丽川野外营地子副本.lua
+scripts\BattleField\BattleField.lua
+scripts\Map\龙门绝境\龙门绝境.lua
+scripts\Map\绝境\绝境.lua

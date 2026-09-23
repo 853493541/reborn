@@ -1,0 +1,64 @@
+﻿mode templates: 423
+Kind {'7': 349, '8': 42, '0': 24, '3': 6, '2': 1, '14': 1}
+BarText {'鎷惧彇': 254, '': 162, '閫冨嚭鐢熷ぉ': 3, '绡濈伀鍫?: 1, '寮€鍚?: 1, '鎵撶牬渚犲鍐呭姏灏侀攣': 1, '鎿嶄綔': 1}
+OpenPrepareFrame {'8': 268, '48': 46, '96': 34, '64': 30, '32': 18, '16': 12, '0': 10, '80': 3}
+OverLootFrame {'320': 377, '1440': 45, '460800': 1}
+RemoveDelay {'0': 380, '2880': 42, '460800': 1}
+ReviveDelay {'': 258, '0': 158, '180': 4, '5': 3}
+script hooks: 25
+   95 scripts/Map/娌欐紶椋庢毚/doodad/浼紶鐨勭绫?lua
+   67 scripts/Map/娌欐紶椋庢毚/doodad/宸茬煡绫诲瀷鐨勫疂钘?lua
+   41 scripts/Map/娌欐紶椋庢毚/doodad/瑁呭鐩掑瓙.lua
+   16 scripts/Map/娌欐紶椋庢毚/doodad/鏈煡鐨勫疂钘?lua
+   13 scripts/Map/娌欐紶椋庢毚/doodad/涓㈠純鐨勭墿鍝?lua
+   10 scripts/Map/娌欐紶椋庢毚/doodad/鎽歌澶囪Е鍙戝悆楦￠搧琛€瀹濈.lua
+   9 scripts/Map/娌欐紶椋庢毚/doodad/鎷惧彇鍚冮浮鎶€鑳?lua
+   8 scripts/Map/娌欐紶椋庢毚/doodad/椹尓鐨勮揣鐗?lua
+   6 scripts/Map/娌欐紶椋庢毚/doodad/鍖胯釜瀹濈洅.lua
+   6 scripts/Map/娌欐紶椋庢毚/doodad/瀵诲疂_铇戣弴.lua
+   6 scripts/Map/娌欐紶椋庢毚/doodad/缁峰甫閲戠柈鑽?lua
+   5 scripts/Map/娌欐紶椋庢毚/doodad/鍚冮浮閾佽瀹濈.lua
+   3 scripts/Map/娌欐紶椋庢毚/doodad/鏈煡鐨勫疂钘廮缃愬瓙绫?lua
+   2 scripts/Map/娌欐紶椋庢毚/doodad/澶╁師缁濆_婊戠储.lua
+   2 scripts/Map/娌欐紶椋庢毚/doodad/閽ュ寵寮€鐨勫疂钘?lua
+drop tables referenced: 97
+   9 娌欐紶椋庢毚/chengwu.tab
+   7 娌欐紶椋庢毚/horse3.tab
+   5 娌欐紶椋庢毚/equipment3_bl.tab
+   3 娌欐紶椋庢毚/chengzhuang.tab
+   3 娌欐紶椋庢毚/chengzhuang_bl.tab
+   3 娌欐紶椋庢毚/equipment3_lw.tab
+   3 娌欐紶椋庢毚/jewelry4_skill.tab
+   2 娌欐紶椋庢毚/weapon1.tab
+   2 娌欐紶椋庢毚/weapon2.tab
+   2 娌欐紶椋庢毚/weapon3.tab
+   2 娌欐紶椋庢毚/jinchuangyao.tab
+   2 娌欐紶椋庢毚/gaojidaoju.tab
+   2 娌欐紶椋庢毚/equipment3_sea.tab
+   2 娌欐紶椋庢毚/huilandaoju_sea.tab
+   2 娌欐紶椋庢毚/horse3_sea.tab
+   2 娌欐紶椋庢毚/zuzhoubox_purple_bl.tab
+   2 娌欐紶椋庢毚/zuzhoubox_yellow_bl.tab
+   2 娌欐紶椋庢毚/chengzhuang_skill.tab
+   2 娌欐紶椋庢毚/equipment4_lw.tab
+   2 娌欐紶椋庢毚/weaponZ4.tab
+   1 娌欐紶椋庢毚/equipment1.tab
+   1 娌欐紶椋庢毚/equipment2.tab
+   1 娌欐紶椋庢毚/equipment3.tab
+   1 娌欐紶椋庢毚/mabubengdai.tab
+   1 娌欐紶椋庢毚/zhixuecao.tab
+   1 娌欐紶椋庢毚/hide.tab
+   1 娌欐紶椋庢毚/horse1.tab
+   1 娌欐紶椋庢毚/horse2.tab
+   1 娌欐紶椋庢毚/guihuangteng.tab
+   1 娌欐紶椋庢毚/qianlijing.tab
+   1 娌欐紶椋庢毚/xingqisan.tab
+   1 娌欐紶椋庢毚/zizhuang.tab
+   1 娌欐紶椋庢毚/zuzhoubox_purple.tab
+   1 娌欐紶椋庢毚/zuzhoubox_yellow.tab
+   1 娌欐紶椋庢毚/labazhou.tab
+   1 娌欐紶椋庢毚/heilianhua.tab
+   1 娌欐紶椋庢毚/huilandaoju.tab
+   1 娌欐紶椋庢毚/tuoling.tab
+   1 娌欐紶椋庢毚/feiting.tab
+   1 娌欐紶椋庢毚/fanyinyan.tab

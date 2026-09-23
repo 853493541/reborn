@@ -1,0 +1,197 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::DoClientConfirmReady'
+# image base 0x180000000
+
+## xref @ 0x180170e0e -> 0x18076d680 'KPlayerClient::DoClientConfirmReady'  fn start 0x180170dd0
+  0x180170dd0: mov      qword ptr [rsp + 0x10], rbx
+  0x180170dd5: mov      qword ptr [rsp + 0x18], rbp
+  0x180170dda: push     rsi
+  0x180170ddb: push     rdi
+  0x180170ddc: push     r14
+  0x180170dde: sub      rsp, 0x60
+  0x180170de2: mov      rax, qword ptr [rip + 0x845437]
+  0x180170de9: xor      rax, rsp
+  0x180170dec: mov      qword ptr [rsp + 0x50], rax
+  0x180170df1: mov      rbp, rcx
+  0x180170df4: xor      ebx, ebx
+  0x180170df6: mov      ecx, dword ptr [rip + 0x88f894]
+  0x180170dfc: mov      rax, qword ptr gs:[0x58]
+  0x180170e05: mov      edx, 4
+  0x180170e0a: mov      rcx, qword ptr [rax + rcx*8]
+  0x180170e0e: lea      r14, [rip + 0x5fc86b]  ; 'KPlayerClient::DoClientConfirmReady'
+  0x180170e15: mov      eax, dword ptr [rdx + rcx]
+  0x180170e18: cmp      dword ptr [rip + 0x879596], eax
+  0x180170e1e: jg       0x180170edd
+  0x180170e24: mov      edi, dword ptr [rip + 0x80636e]
+  0x180170e2a: mov      dword ptr [rsp + 0x30], edi
+  0x180170e2e: mov      rsi, qword ptr [rip + 0x806353]
+  0x180170e35: mov      qword ptr [rsp + 0x38], rsi
+  0x180170e3a: call     qword ptr [rip + 0x5f4df0]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180170e40: test     al, al
+  0x180170e42: je       0x180170e56
+  0x180170e44: xor      r9d, r9d
+  0x180170e47: xor      r8d, r8d
+  0x180170e4a: mov      rdx, rsi
+  0x180170e4d: mov      ecx, edi
+  0x180170e4f: call     qword ptr [rip + 0x5f4deb]  ; PerfAnalyzerX64.dll!BeginSample
+  0x180170e55: nop      
+  0x180170e56: mov      eax, 2
+  0x180170e5b: mov      word ptr [rsp + 0x40], ax
+  0x180170e60: lea      r8d, [rax + 9]
+  0x180170e64: lea      rdx, [rsp + 0x40]
+  0x180170e69: mov      rcx, rbp
+  0x180170e6c: call     0x1801acda0
+  0x180170e71: test     eax, eax
+  0x180170e73: jne      0x180170e99
+  0x180170e75: mov      qword ptr [rsp + 0x20], r14
+  0x180170e7a: mov      r9d, 0xa2b
+  0x180170e80: lea      r8, [rip + 0x77f461]  ; 'bRetCode'
+  0x180170e87: lea      rdx, [rip + 0x77d61a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180170e8e: lea      ecx, [rax + 3]
+  0x180170e91: call     qword ptr [rip + 0x5f43c9]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180170e97: jmp      0x180170e9e
+  0x180170e99: mov      ebx, 1
+  0x180170e9e: call     qword ptr [rip + 0x5f4d8c]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180170ea4: test     al, al
+  0x180170ea6: je       0x180170eb9
+  0x180170ea8: xor      r9d, r9d
+  0x180170eab: xor      r8d, r8d
+  0x180170eae: mov      rdx, rsi
+  0x180170eb1: mov      ecx, edi
+  0x180170eb3: call     qword ptr [rip + 0x5f4d6f]  ; PerfAnalyzerX64.dll!EndSample
+  0x180170eb9: mov      eax, ebx
+  0x180170ebb: mov      rcx, qword ptr [rsp + 0x50]
+  0x180170ec0: xor      rcx, rsp
+  0x180170ec3: call     0x18073aa10
+  0x180170ec8: lea      r11, [rsp + 0x60]
+  0x180170ecd: mov      rbx, qword ptr [r11 + 0x28]
+  0x180170ed1: mov      rbp, qword ptr [r11 + 0x30]
+  0x180170ed5: mov      rsp, r11
+  0x180170ed8: pop      r14
+  0x180170eda: pop      rdi
+  0x180170edb: pop      rsi
+  0x180170edc: ret      
+  0x180170edd: lea      rcx, [rip + 0x8794d0]
+  0x180170ee4: call     0x18073ac34
+  0x180170ee9: cmp      dword ptr [rip + 0x8794c4], -1
+  0x180170ef0: jne      0x180170e24
+  0x180170ef6: xor      r9d, r9d
+  0x180170ef9: lea      r8, [r9 - 1]
+  0x180170efd: mov      rdx, r14
+  0x180170f00: xor      ecx, ecx
+  0x180170f02: call     qword ptr [rip + 0x5f4d30]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x180170f08: mov      qword ptr [rip + 0x806279], rax
+  0x180170f0f: lea      rcx, [rip + 0x87949e]
+  0x180170f16: call     0x18073abd4
+  0x180170f1b: jmp      0x180170e24
+  0x180170f20: sub      rsp, 0x58
+  0x180170f24: mov      rax, qword ptr [rip + 0x8452f5]
+  0x180170f2b: xor      rax, rsp
+  0x180170f2e: mov      qword ptr [rsp + 0x40], rax
+  0x180170f33: mov      eax, 0x13a
+  0x180170f38: lea      rdx, [rsp + 0x30]
+  0x180170f3d: mov      r8d, 0xb
+  0x180170f43: mov      word ptr [rsp + 0x30], ax
+  0x180170f48: call     0x1801acda0
+  0x180170f4d: test     eax, eax
+  0x180170f4f: jne      0x180170f8e
+  0x180170f51: lea      rcx, [rip + 0x5ff468]  ; 'KPlayerClient::DoCloseIdenfityRequest'
+  0x180170f58: mov      r9d, 0x25d9
+  0x180170f5e: mov      qword ptr [rsp + 0x20], rcx
+  0x180170f63: lea      r8, [rip + 0x77f37e]  ; 'bRetCode'
+  0x180170f6a: lea      ecx, [rax + 3]
+  0x180170f6d: lea      rdx, [rip + 0x77d534]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180170f74: call     qword ptr [rip + 0x5f42e6]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180170f7a: xor      eax, eax
+  0x180170f7c: mov      rcx, qword ptr [rsp + 0x40]
+  0x180170f81: xor      rcx, rsp
+  0x180170f84: call     0x18073aa10
+  0x180170f89: add      rsp, 0x58
+  0x180170f8d: ret      
+  0x180170f8e: mov      eax, 1
+  0x180170f93: mov      rcx, qword ptr [rsp + 0x40]
+  0x180170f98: xor      rcx, rsp
+  0x180170f9b: call     0x18073aa10
+  0x180170fa0: add      rsp, 0x58
+  0x180170fa4: ret      
+  0x180170fa5: int3     
+  0x180170fa6: int3     
+  0x180170fa7: int3     
+  0x180170fa8: int3     
+  0x180170fa9: int3     
+  0x180170faa: int3     
+  0x180170fab: int3     
+  0x180170fac: int3     
+  0x180170fad: int3     
+  0x180170fae: int3     
+  0x180170faf: int3     
+  0x180170fb0: push     r13
+  0x180170fb2: push     r14
+  0x180170fb4: push     r15
+  0x180170fb6: sub      rsp, 0x30
+  0x180170fba: mov      r10, qword ptr [rdx + 8]
+  0x180170fbe: lea      r14, [rcx + 0x18cd8]
+  0x180170fc5: sub      r10, qword ptr [rdx]
+  0x180170fc8: mov      r15, rdx
+  0x180170fcb: movabs   rax, 0x4ec4ec4ec4ec4ec5
+  0x180170fd5: mov      r13, rcx
+  0x180170fd8: imul     r10
+  0x180170fdb: sar      rdx, 4
+  0x180170fdf: mov      rax, rdx
+  0x180170fe2: shr      rax, 0x3f
+  0x180170fe6: add      rdx, rax
+  0x180170fe9: lea      eax, [rdx - 1]
+  0x180170fec: cmp      eax, 0x1d
+  0x180170fef: ja       0x1801710f0
+  0x180170ff5: mov      qword ptr [rsp + 0x58], rbp
+  0x180170ffa: movsxd   rax, edx
+  0x180170ffd: imul     rbp, rax, 0x25
+  0x180171001: add      rbp, 0x11
+  0x180171005: cmp      rbp, 0x8000
+  0x18017100c: jb       0x18017104b
+  0x18017100e: lea      rcx, [rip + 0x5fe2eb]  ; 'KPlayerClient::DoCoinShopBuyRequest'
+  0x180171015: mov      r9d, 0x1db1
+  0x18017101b: mov      qword ptr [rsp + 0x20], rcx
+  0x180171020: lea      r8, [rip + 0x5fc7d1]  ; 'uPakSize < sizeof(m_byTempData)'
+  0x180171027: lea      rdx, [rip + 0x77d47a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18017102e: mov      ecx, 3
+  0x180171033: call     qword ptr [rip + 0x5f4227]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180171039: mov      rbp, qword ptr [rsp + 0x58]
+  0x18017103e: xor      eax, eax
+  0x180171040: add      rsp, 0x30
+  0x180171044: pop      r15
+  0x180171046: pop      r14
+  0x180171048: pop      r13
+  0x18017104a: ret      
+  0x18017104b: mov      qword ptr [rsp + 0x50], rbx
+  0x180171050: mov      eax, 0xdb
+  0x180171055: mov      qword ptr [rsp + 0x60], rsi
+  0x18017105a: lea      rbx, [r14 + 0x11]
+  0x18017105e: mov      word ptr [r14], ax
+  0x180171062: mov      qword ptr [rsp + 0x68], rdi
+  0x180171067: xor      edi, edi
+  0x180171069: mov      byte ptr [r14 + 0xf], 0
+  0x18017106e: mov      byte ptr [r14 + 0x10], dl
+  0x180171072: mov      word ptr [r14 + 0xb], r8w
+  0x180171077: mov      word ptr [r14 + 0xd], r9w
+  0x18017107c: mov      esi, edx
+  0x18017107e: nop      
+  0x180171080: mov      rcx, qword ptr [r15]
+  0x180171083: mov      rdx, rbx
+  0x180171086: add      rcx, rdi
+  0x180171089: call     0x18017d5c0
+  0x18017108e: add      rbx, 0x25
+  0x180171092: add      rdi, 0x34
+  0x180171096: sub      rsi, 1
+  0x18017109a: jne      0x180171080
+  0x18017109c: mov      r8, rbp
+  0x18017109f: mov      rdx, r14
+  0x1801710a2: mov      rcx, r13
+  0x1801710a5: call     0x1801acda0
+  0x1801710aa: mov      rdi, qword ptr [rsp + 0x68]
+  0x1801710af: mov      rsi, qword ptr [rsp + 0x60]
+  0x1801710b4: mov      rbx, qword ptr [rsp + 0x50]
+  0x1801710b9: test     eax, eax
+  0x1801710bb: jne      0x1801710db
+  0x1801710bd: lea      rcx, [rip + 0x5fe23c]  ; 'KPlayerClient::DoCoinShopBuyRequest'
+  0x1801710c4: mov      r9d, 0x1dc2
+

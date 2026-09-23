@@ -1,0 +1,101 @@
+﻿lines 192
+---------------------------------------------------------------------->
+
+-- 鑴氭湰鍚嶇О:	scripts/skill/涓囪姳/涓囪姳_鍏诲績鍐砡鏄ユ偿鎶よ姳.lua
+
+-- 鏇存柊鏃堕棿:	2013/6/3 16:42:23
+
+-- 鏇存柊鐢ㄦ埛:	taoli
+
+-- 鑴氭湰璇存槑:	
+
+----------------------------------------------------------------------<
+
+------------------------------------------------
+
+-- 鏂囦欢鍚?   :  涓囪姳_鍏诲績鍐砡鏄ユ偿鎶よ姳.lua
+
+-- 鍒涘缓浜?   :  鍚村	
+
+-- 鍒涘缓鏃堕棿  :  2008-08-18
+
+-- 鐢ㄩ€?妯″潡):  姝﹀姛鎶€鑳?
+-- 姝﹀姛闂ㄦ淳  :  涓囪姳
+
+-- 姝﹀姛绫诲瀷  :  鏃?
+-- 姝﹀姛濂楄矾  :  鍏诲績鍐?
+-- 鎶€鑳藉悕绉? :  鏄ユ偿鎶よ姳
+
+-- 鎶€鑳芥晥鏋? :  缁欏弸鏂瑰唴鍔熸姢鐩撅紱鎶ょ浘鎸佺画鏃堕棿鍐呭噺灏戜粐鎭?5%锛涙寔缁?0绉?
+------------------------------------------------
+
+
+
+--------------鑴氭湰鏂囦欢寮€濮?-----------------------------------------------
+
+Include("scripts/Include/Skill.lh")
+
+--鎵归噺鏇挎崲skill鑴氭湰Include("scripts/Include/Player.lh")
+
+
+
+tSkillData = 
+
+{
+
+	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 1
+
+
+
+};
+
+
+
+--璁剧疆姝﹀姛鎶€鑳界骇鍒浉鍏虫暟鍊?
+function GetSkillLevelData(skill)
+
+
+
+	local dwSkillLevel = skill.dwLevel;
+
+    	
+
+	----------------- 榄旀硶灞炴€?-------------------------------------------------
+
+
+
+	   	
+
+	--skill.AddAttribute(
+
+		--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+
+		--ATTRIBUTE_TYPE.CLEAR_COOL_DOWN,
+
+		--1419,
+
+		--0											
+
+	--);
+
+    
+
+	skill.AddAttribute(
+
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+
+		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+
+		"skill/娌欐紶椋庢毚/閬撳叿_鏄ユ偿鎶よ姳.lua", -- 杩炲崗鎶€
+
+		0
+
+	);
+
+		
+
+	----------------- 鎶€鑳芥柦鏀綛uff闇€姹?---------------------------------------------
+
+	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 闇€姹傝嚜韬獴uff
+
+	--skill.AddSl

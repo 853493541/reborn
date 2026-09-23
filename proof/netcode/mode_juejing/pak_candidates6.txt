@@ -1,0 +1,15 @@
+data\source\maps\白龙绝境\map\白龙绝境\CustomObject.tab
+data\source\maps\白龙绝境\map\白龙绝境\CustomObject\CustomObject.tab
+data\source\maps\白龙绝境\CustomObject.tab
+data\source\maps\天原绝境\map\天原绝境\CustomObject.tab
+data\source\maps\天原绝境\CustomObject.tab
+data\source\maps\海岛绝境\map\海岛绝境\CustomObject.tab
+data\source\maps\海岛绝境\CustomObject.tab
+data\source\maps\龙门寻宝\map\龙门寻宝\CustomObject.tab
+data\source\maps\龙门寻宝\CustomObject.tab
+data\source\maps\白龙绝境\map\白龙绝境\AnchorPoint\AnchorPointList.tab
+data\source\maps\白龙绝境\map\白龙绝境\DoodadRelive\DoodadReviveList.tab
+data\source\maps\白龙绝境\map\白龙绝境\NpcRelive\MapReviveList.tab
+data\source\maps\白龙绝境\map\白龙绝境\NpcTeam\NpcTeamList.tab
+settings\DoodadClass.tab
+settings\DoodadTemplate.tab

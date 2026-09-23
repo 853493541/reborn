@@ -1,0 +1,13 @@
+﻿python : Traceback (most recent call last):
+At line:1 char:1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<string>", line 12, in <module>
+NameError: name 't' is not defined
+bytes 253832 head b"\xfb\xdd^\x16\xe9R4\x00\x0e\xc6@\x00\xd5\xcd\x066\xc6\x96V\xe7B\xf66\xf6\xe2\x16f\x96r\xe6\x96\xe0!\xa1@\x1a\x8f\xd8M\x91\xbcl\xd9\xd4X\x08\x1d\x9cY\xff\x99\x98\xa8\x15lL\x0bk`)\x93\xb1\xaf\x9a'\x97\xa0\xa1\xa2\x96\xa9\xa9\xa1\xab@#\xecmMN"
+utf-8 fail
+gb18030 fail
+utf-16le fail

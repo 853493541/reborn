@@ -1,0 +1,418 @@
+## skills (41435 rows)
+-- 绝境: 182
+   SkillName=天原绝境_滑翔翼 ; SkillID=29021 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境_滑翔翼.lua ; MaxLevel=1
+   SkillName=天原绝境_照明火把释放 ; SkillID=29043 ; KindType=None ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=沙漠风暴/天原绝境_照明火把释放.lua ; MaxLevel=1
+   SkillName=天原绝境_照明火把实际效果 ; SkillID=29044 ; KindType=None ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=沙漠风暴/照明火把实际效果.lua ; MaxLevel=2
+   SkillName=天原绝境_燧石单体 ; SkillID=29051 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_燧石点燃技能.lua ; MaxLevel=1
+   SkillName=天原绝境_冰雹aoe ; SkillID=29055 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=沙漠风暴/天原绝境_冰雹aoe.lua ; MaxLevel=1
+   SkillName=天原绝境_剑宗深寒 ; SkillID=29056 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_剑宗深寒.lua ; MaxLevel=1
+   SkillName=天原绝境_武家炽血 ; SkillID=29061 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_剑宗炽血.lua ; MaxLevel=1
+   SkillName=天原绝境_橙色下装被击降攻击 ; SkillID=29068 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_橙胖次降攻击.lua ; MaxLevel=1
+   SkillName=天原绝境_战象践踏 ; SkillID=29146 ; KindType=None ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=沙漠风暴/天原绝境战象践踏.lua ; MaxLevel=5
+   SkillName=天原绝境_战象冲锋 ; SkillID=29264 ; KindType=None ; FunctionType=Damage ; CastMode=Rectangle ; ScriptFile=沙漠风暴/天原绝境战象冲刺.lua ; MaxLevel=1
+   SkillName=天原绝境_战象下车 ; SkillID=29267 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境战象下车.lua ; MaxLevel=1
+   SkillName=天原绝境_战象践踏母技能 ; SkillID=29283 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境战象践踏母技能.lua ; MaxLevel=1
+   SkillName=天原绝境_极寒掉血 ; SkillID=29342 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=天原绝境_战象推人母技能 ; SkillID=29476 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境战象推人母技能.lua ; MaxLevel=1
+   SkillName=天原绝境_天玄冰 ; SkillID=29637 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_天玄冰.lua ; MaxLevel=1
+   SkillName=天原绝境_冰封复活 ; SkillID=31507 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原主动复活.lua ; MaxLevel=1
+   SkillName=春泥护花_绝境战场 ; SkillID=33285 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=万花\万花_养心决_春泥护花.lua ; MaxLevel=7
+   SkillName=洱海绝境_脱战附近aoe ; SkillID=35149 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=沙漠风暴/洱海绝境脱战烫人.lua ; MaxLevel=1
+   SkillName=绝境·扶摇直上 ; SkillID=37681 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖/江湖轻功_扶摇直上.lua ; MaxLevel=11
+   SkillName=绝境·蹑云逐月 ; SkillID=37682 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖\江湖轻功_蹑云逐月.lua ; MaxLevel=4
+   SkillName=绝境·凌霄揽胜 ; SkillID=37683 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖\江湖轻功_凌霄揽胜.lua ; MaxLevel=1
+   SkillName=绝境·瑶台枕鹤 ; SkillID=37684 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖\江湖轻功_瑶台枕鹤.lua ; MaxLevel=1
+   SkillName=绝境·迎风回浪 ; SkillID=37685 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖\江湖轻功_迎风回浪.lua ; MaxLevel=1
+   SkillName=绝境·后撤 ; SkillID=37686 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖\后撤.lua ; MaxLevel=1
+   SkillName=绝境·回风扫叶 ; SkillID=37687 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境_回风扫叶.lua ; MaxLevel=5
+   SkillName=绝境渊被击 ; SkillID=37717 ; KindType=Physics ; FunctionType=Damage ; CastMode=CasterSingle ; ScriptFile=绝境战场/绝境_渊触发技能事件.lua ; MaxLevel=6
+   SkillName=绝境·骑乘 ; SkillID=37746 ; KindType=None ; FunctionType=Damage ; CastMode=CasterSingle ; ScriptFile=江湖\骑乘.lua ; MaxLevel=1 ; MapBanMask=1
+   SkillName=绝境·扶摇直上·悟 ; SkillID=38381 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖/绝境战场_移动端_扶摇.lua ; MaxLevel=11
+   SkillName=绝境·蹑云逐月·悟 ; SkillID=38382 ; KindType=Leap ; FunctionType=Fly ; CastMode=PointRectangle ; ScriptFile=江湖/绝境战场_移动端_蹑云逐月.lua ; MaxLevel=1
+   SkillName=绝境·雾暗迷云 ; SkillID=39483 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境_雾暗迷云.lua ; MaxLevel=1
+   SkillName=绝境·截阳 ; SkillID=39492 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境·截阳.lua ; MaxLevel=1
+   SkillName=绝境·引窍 ; SkillID=39493 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境·引窍.lua ; MaxLevel=1
+   SkillName=绝境·风流云散 ; SkillID=39494 ; KindType=Leap ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=绝境战场/绝境·风流云散.lua ; MaxLevel=1
+   SkillName=绝境截阳实际伤害子技能 ; SkillID=39526 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境截阳伤害子技能.lua ; MaxLevel=1
+   SkillName=绝境引窍伤害子技能 ; SkillID=39527 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境引窍伤害子技能.lua ; MaxLevel=1
+   SkillName=绝境绝脉层数消除后造成伤害子技能 ; SkillID=39528 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境绝脉爆炸伤害.lua ; MaxLevel=10
+   SkillName=绝境·扶摇直上·林海 ; SkillID=41281 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖/江湖轻功_扶摇直上绝境专用.lua ; MaxLevel=11
+   SkillName=绝境·蹑云逐月·林海 ; SkillID=41282 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖\江湖轻功_蹑云逐月绝境专用.lua ; MaxLevel=4
+   SkillName=绝境·扶摇直上·悟·林海 ; SkillID=41283 ; KindType=Leap ; FunctionType=Fly ; CastMode=CasterSingle ; ScriptFile=江湖/绝境战场_移动端_扶摇.lua ; MaxLevel=11
+   SkillName=绝境·蹑云逐月·悟·林海 ; SkillID=41284 ; KindType=Leap ; FunctionType=Fly ; CastMode=PointRectangle ; ScriptFile=江湖/绝境战场_移动端_蹑云逐月.lua ; MaxLevel=1
+-- 沙漠风暴: 5
+   SkillName=沙漠风暴 ; SkillID=10516 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1 ; MapBanMask=508
+   SkillName=沙漠风暴_伤害吸收盾 ; SkillID=18879 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=装备/沙漠风暴_伤害吸收盾.lua ; MaxLevel=1
+   SkillName=沙漠风暴_反击 ; SkillID=18880 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=装备\吃鸡被动反击技能.lua ; MaxLevel=1
+   SkillName=沙漠风暴_降低技能命中几率 ; SkillID=18881 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=装备/沙漠风暴_降低技能命中几率.lua ; MaxLevel=1
+   SkillName=沙漠风暴_附加dot ; SkillID=18882 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=装备/沙漠风暴_加dot.lua ; MaxLevel=1
+-- 吃鸡: 6
+   SkillName=吃鸡减速30% ; SkillID=18878 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=装备\吃鸡被动减速技能.lua ; MaxLevel=1
+   SkillName=龙泉府_狗吃鸡 ; SkillID=21237 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=Quest/ACT_100级PQ/龙泉府_狗吃鸡.lua ; MaxLevel=1
+   SkillName=表现_吃鸡外观201904 ; SkillID=21591 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=装备/挂件相关/表现_吃鸡套201904.lua ; MaxLevel=1
+   SkillName=镖人_吃鸡技能_刀马眩晕 ; SkillID=33812 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=Quest/ACT_镖人联动/吃鸡联动刀马眩晕母技能.lua ; MaxLevel=1
+   SkillName=镖人_吃鸡技能_刀马眩晕子技能 ; SkillID=33819 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetArea ; ScriptFile=Quest/ACT_镖人联动/吃鸡联动刀马眩晕.lua ; MaxLevel=1
+   SkillName=吃鸡专用霸刀切大刀无武器 ; SkillID=41293 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=霸刀\套路及子技能\霸刀_大刀_冰凝.lua ; MaxLevel=1
+-- 楚河汉界: 9
+   SkillName=楚河汉界 ; SkillID=16455 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=霸刀\套路及子技能\霸刀_大刀_雪絮金屏主动技能.lua ; MaxLevel=1
+   SkillName=楚河汉界矩形AOE子技能 ; SkillID=16845 ; KindType=Physics ; FunctionType=Damage ; CastMode=Rectangle ; ScriptFile=霸刀\套路及子技能\霸刀_楚河汉界矩形AOE伤害.lua ; MaxLevel=1
+   SkillName=霸刀_曳鼎_楚河汉界无障碍 ; SkillID=16957 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=霸刀\霸刀奇穴套路\楚河汉界变充能.lua ; MaxLevel=1
+   SkillName=霸刀_分疆_楚河汉界增加2秒刀气时间 ; SkillID=17047 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=霸刀\霸刀奇穴套路\上将军印换技能.lua ; MaxLevel=1
+   SkillName=柳静海_楚河汉界吟唱 ; SkillID=17323 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc/门派掌门/柳静海_楚河汉界吟唱.lua ; MaxLevel=3
+   SkillName=柳静海_楚河汉界 ; SkillID=17332 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=PointRectangle ; ScriptFile=npc/门派掌门/柳静海_楚河汉界.lua ; MaxLevel=3
+   SkillName=楚河汉界 ; SkillID=17346 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/刀轮海厅/楚河汉界.lua ; MaxLevel=2
+   SkillName=柳静海_楚河汉界大 ; SkillID=17855 ; KindType=Physics ; FunctionType=Normal ; CastMode=Rectangle ; ScriptFile=npc/门派掌门/柳静海_楚河汉界大.lua ; MaxLevel=2
+   SkillName=道具_楚河汉界 ; SkillID=27902 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/道具_楚河汉界.lua ; MaxLevel=1
+-- 雷霆: 36
+   SkillName=雷霆震怒 ; SkillID=558 ; KindType=LunarMagic ; FunctionType=Stun ; CastMode=TargetSingle ; ScriptFile=七秀\西河剑器_雷霆震怒.lua ; MaxLevel=1
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_瞬发空技能 ; SkillID=2149 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆(瞬发空技能).lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_吟唱空技能 ; SkillID=2150 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆(吟唱空技能).lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_开启 ; SkillID=2151 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_开启.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_1级吟唱 ; SkillID=2152 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_1级吟唱.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_2级吟唱 ; SkillID=2153 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_2级吟唱.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_3级吟唱 ; SkillID=2154 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_3级吟唱.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_1级瞬发 ; SkillID=2155 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_1级瞬发.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_2级瞬发 ; SkillID=2156 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_2级瞬发.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_3级瞬发 ; SkillID=2158 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_3级瞬发.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_1级实体 ; SkillID=2159 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_1级实体.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_2级实体 ; SkillID=2160 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_2级实体.lua ; MaxLevel=30
+   SkillName=荻花圣殿_5号BOSS_万花机甲_雷霆_3级实体 ; SkillID=2161 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\荻花圣殿_5号BOSS_万花机甲_雷霆_3级实体.lua ; MaxLevel=30
+   SkillName=烛龙殿_六号_雷霆一击 ; SkillID=3682 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\烛龙殿\烛龙殿_六号_雷霆一击.lua ; MaxLevel=35
+   SkillName=少林特殊武器_雷霆猛击 ; SkillID=3882 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\荻花圣殿\少林特殊武器_雷霆猛击.lua ; MaxLevel=1
+   SkillName=少林特殊武器_雷霆猛击高度判定 ; SkillID=3883 ; KindType=Physics ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=npc\副本BOSS\荻花圣殿\少林特殊武器_雷霆猛击高度判定.lua ; MaxLevel=10
+   SkillName=南诏骑兵_雷霆枪法 ; SkillID=7484 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetArea ; ScriptFile=Quest\南诏骑兵_雷霆枪法.lua ; MaxLevel=10
+   SkillName=血战天策_苏曼莎_玩家_雷霆震怒 ; SkillID=8413 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\血战天策\血战天策_苏曼莎_玩家_雷霆震怒.lua ; MaxLevel=5
+   SkillName=秦皇陵_令狐伤_雷霆重击 ; SkillID=9060 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\秦皇陵\秦皇陵_令狐伤_雷霆重击.lua ; MaxLevel=2
+   SkillName=轻妒_雷霆降低时间和持续效果 ; SkillID=14715 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=七秀\镇派\繁音急节充能.lua ; MaxLevel=1
+   SkillName=纯阳_千秋子_雷霆掌 ; SkillID=15341 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=Quest\ACT_95级门派事件\纯阳_千秋子_雷霆一击.lua ; MaxLevel=1
+   SkillName=雷霆强化奇穴 ; SkillID=18204 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=七秀\镇派\雷霆距离CD.lua ; MaxLevel=1
+   SkillName=雷霆充能奇穴 ; SkillID=18466 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=七秀\镇派\雷霆充能奇穴.lua ; MaxLevel=1
+   SkillName=雷霆加距离 ; SkillID=18476 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=被雷霆帝骖目标加速叠急曲 ; SkillID=22732 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=七秀/90级奇穴/新钗燕.lua ; MaxLevel=1
+   SkillName=雷霆护体 ; SkillID=22963 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/ACT_浪客行/词缀_雷霆护体.lua ; MaxLevel=1
+   SkillName=雷霆释放母技能 ; SkillID=22965 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/ACT_浪客行/词缀_雷霆释放母技能.lua ; MaxLevel=1
+   SkillName=雷霆释放子技能 ; SkillID=22966 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/ACT_浪客行/词缀_雷霆释放子技能.lua ; MaxLevel=1
+   SkillName=雷霆伤害一 ; SkillID=22967 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=Rectangle ; ScriptFile=Quest/ACT_浪客行/词缀_雷霆释放伤害2尺宽.lua ; MaxLevel=1
+   SkillName=雷霆伤害二 ; SkillID=22968 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=Rectangle ; ScriptFile=Quest/ACT_浪客行/词缀_雷霆释放伤害3尺宽.lua ; MaxLevel=1
+   SkillName=雷霆伤害三 ; SkillID=22969 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=Rectangle ; ScriptFile=Quest/ACT_浪客行/词缀_雷霆释放伤害4尺宽.lua ; MaxLevel=1
+   SkillName=杜姬欣_雷霆震怒·逆练 ; SkillID=28833 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/百战异闻录/钱宗龙·杜姬欣/杜姬欣_雷霆震怒·逆练.lua ; MaxLevel=30
+   SkillName=雷霆通道子技能 ; SkillID=28981 ; KindType=SolarMagic ; FunctionType=Stun ; CastMode=TargetSingle ; ScriptFile=七秀/90级奇穴/雷霆通道子技能.lua ; MaxLevel=1
+   SkillName=缠竹雷霆换技能 ; SkillID=33104 ; KindType=LunarMagic ; FunctionType=Stun ; CastMode=TargetSingle ; ScriptFile=七秀/西河剑器_缠竹雷霆震怒.lua ; MaxLevel=1
+   SkillName=杜姬心_雷霆震怒反向嘲讽 ; SkillID=33556 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/百战异闻录/钱宗龙·杜姬欣/杜姬心_反向嘲讽.lua ; MaxLevel=1
+   SkillName=绝境_雷霆震怒 ; SkillID=65156 ; KindType=Adaptive ; FunctionType=Stun ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_雷霆震怒.lua ; MaxLevel=1
+-- 无相: 108
+   SkillName=无相诀 ; SkillID=261 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\少林_达摩武诀_无相诀.lua ; MaxLevel=4
+   SkillName=玄一无相 ; SkillID=308 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=玄一无相_减速 ; SkillID=338 ; KindType=None ; FunctionType=Slow ; CastMode=TargetSingle ; ScriptFile=纯阳\技能事件_玄一无相.lua ; MaxLevel=1
+   SkillName=天地无极_有玄一无相Buff ; SkillID=903 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=纯阳\子技能_天地无极_有玄一无相Buff.lua ; MaxLevel=32
+   SkillName=天子峰_4号BOSS_玄悲_无相诀 ; SkillID=998 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\天子峰\天子峰_4号BOSS_玄悲_无相诀.lua ; MaxLevel=20
+   SkillName=洗髓经_无相_无色 ; SkillID=1219 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\少林_子技能_洗髓经_无色.lua ; MaxLevel=1
+   SkillName=英雄灵宵峡_3号BOSS_宝树王_无相自在 ; SkillID=1392 ; KindType=SolarMagic ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\英雄灵霄峡\英雄灵宵峡_3号BOSS_宝树王_无相自在.lua ; MaxLevel=20
+   SkillName=英雄天子峰_4号boss_道衍_无相决 ; SkillID=1441 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\英雄天子峰\英雄天子峰_4号boss_道衍_无相决.lua ; MaxLevel=31
+   SkillName=英雄荻花宫_4号boss_无相天劫 ; SkillID=1452 ; KindType=SolarMagic ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\英雄荻花宫\英雄荻花宫_4号boss_无相天劫.lua ; MaxLevel=31
+   SkillName=无影无相 ; SkillID=1807 ; KindType=NeutralMagic ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\25人谢云流\无影无相.lua ; MaxLevel=31
+   SkillName=无影无相·人剑合一 ; SkillID=1808 ; KindType=NeutralMagic ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\25人谢云流\无影无相·人剑合一.lua ; MaxLevel=31
+   SkillName=洗髓经_重置无相诀 ; SkillID=1849 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=item\橙武_洗髓经_重置无相诀.lua ; MaxLevel=1 ; MapBanMask=40
+   SkillName=防御_无色无相 ; SkillID=2587 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\镇派\防御_无色无相.lua ; MaxLevel=1
+   SkillName=无相诀_自身减速 ; SkillID=3075 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\无相诀_自身减速.lua ; MaxLevel=1
+   SkillName=少林_无相诀驱散回血 ; SkillID=3804 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\少林_无相诀驱散回血.lua ; MaxLevel=1
+   SkillName=小橙武BOSS_少林_无相诀打断事件 ; SkillID=4342 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\小橙武BOSS\小橙武BOSS_少林_无相诀打断事件.lua ; MaxLevel=1
+   SkillName=小橙武BOSS_少林_无相诀 ; SkillID=4364 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc\副本BOSS\小橙武BOSS\小橙武BOSS_少林_无相诀.lua ; MaxLevel=5
+   SkillName=少林_易筋_十宣1_无相回血 ; SkillID=5901 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=少林_易筋_十宣2_无相反弹 ; SkillID=5902 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=少林_洗髓_极泉1_无相诀变效果 ; SkillID=5934 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\镇派\无相变效果.lua ; MaxLevel=1
+   SkillName=少林_无相诀免控 ; SkillID=6580 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=少林_舍身诀重置无相 ; SkillID=6783 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\镇派\舍身降低15秒调息.lua ; MaxLevel=1
+   SkillName=血龙出渊_澄信_无相诀 ; SkillID=7426 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest\血龙出渊_澄信_无相诀.lua ; MaxLevel=1
+   SkillName=风雪稻香村_剧情表现_天魔无相子弹 ; SkillID=9117 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/风雪稻香村/风雪稻香村_剧情表现_天魔无相子弹.lua ; MaxLevel=1
+   SkillName=天魔无相 ; SkillID=10220 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=无相楼阵法 ; SkillID=10822 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=无相楼子技能 ; SkillID=10854 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=无相楼奇穴 ; SkillID=10855 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=无相楼任务 ; SkillID=10868 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=无相门轻功 ; SkillID=10869 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=仙侣庭园_4号_无相咒 ; SkillID=14111 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=npc\副本BOSS\永王行宫_仙侣庭院\4号_仲虚念\无相咒.lua ; MaxLevel=3
+   SkillName=仙侣庭园_4号_无相咒惩戒 ; SkillID=14112 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=npc\副本BOSS\永王行宫_仙侣庭院\4号_仲虚念\无相咒_惩戒.lua ; MaxLevel=3
+   SkillName=问蝉_无相调息时间降低 ; SkillID=14754 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\镇派\少林_无相降低调息时间.lua ; MaxLevel=1
+   SkillName=意相_血量越低无相持续时间越长 ; SkillID=14793 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\90级奇穴\无相受控施展.lua ; MaxLevel=1
+   SkillName=无相诀降低调息 ; SkillID=15744 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\镇派\少林_无相被驱散减少CD.lua ; MaxLevel=1
+   SkillName=无相诀反弹 ; SkillID=18164 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=少林\少林_达摩武诀_无相诀反弹.lua ; MaxLevel=4
+   SkillName=无相诀减伤提高 ; SkillID=19263 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=24887 少林_善法_无相期间承伤减无相cd ; SkillID=24887 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=修罗僧_P1_无相劫指预警 ; SkillID=26072 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=npc/副本BOSS/挑战达摩洞/修罗僧/一阶段/修罗僧_P1_无相劫指预警.lua ; MaxLevel=2
+   SkillName=修罗僧_P1_无相劫指实际伤害 ; SkillID=26073 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/挑战达摩洞/修罗僧/一阶段/修罗僧_P1_无相劫指实际伤害.lua ; MaxLevel=4
+-- 连环: 40
+   SkillName=连环弩 ; SkillID=3100 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\唐门_弓弩_连环弩.lua ; MaxLevel=1
+   SkillName=连环弩_子技能_1级 ; SkillID=3183 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\连环弩_子技能_1级.lua ; MaxLevel=1
+   SkillName=连环弩_子技能_2级 ; SkillID=3184 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\连环弩_子技能_2级.lua ; MaxLevel=1
+   SkillName=连环弩_子技能_3级 ; SkillID=3185 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\连环弩_子技能_3级.lua ; MaxLevel=1
+   SkillName=连环弩_子技能_击退 ; SkillID=3186 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=唐门\连环弩_子技能_击退.lua ; MaxLevel=1
+   SkillName=十二连环坞 ; SkillID=10038 ; KindType=None ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=月侍弓_连环箭 ; SkillID=13695 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\弃智书院\月侍弓_连环箭.lua ; MaxLevel=2
+   SkillName=仙侣庭园_关卡_连环刺 ; SkillID=14062 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc\副本BOSS\永王行宫_仙侣庭院\3号_关卡\剑士连环刺.lua ; MaxLevel=4
+   SkillName=妙手连环_追命会心重置CD ; SkillID=14850 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=唐门\90级奇穴\唐门_惊羽_追命箭无视防御.lua ; MaxLevel=1
+   SkillName=食雷兽连环爪击 ; SkillID=26099 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Quest/节日冬至/食雷兽连环爪击.lua ; MaxLevel=1
+   SkillName=7号_宫傲_连环爆炸 ; SkillID=26359 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc/副本BOSS/白帝江关/7号_宫傲/连环爆炸.lua ; MaxLevel=1
+   SkillName=7号_宫傲_连环爆炸2 ; SkillID=26368 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/白帝江关/7号_宫傲/连环爆炸2.lua ; MaxLevel=1
+   SkillName=千机连环生成弩 ; SkillID=30840 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=唐门\千机连环生成弩.lua ; MaxLevel=1
+   SkillName=狼牙_连环离弦 ; SkillID=31006 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/ACT_浪客行/狼牙_连环离弦.lua ; MaxLevel=1
+   SkillName=狼牙_连环离弦_AOE ; SkillID=31007 ; KindType=Physics ; FunctionType=Normal ; CastMode=Rectangle ; ScriptFile=Quest/ACT_浪客行/狼牙_连环离弦_AOE.lua ; MaxLevel=3
+   SkillName=千机连环分身连弩伤害 ; SkillID=31014 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\千机变_分身连弩伤害.lua ; MaxLevel=1
+   SkillName=千机连环分身重弩伤害 ; SkillID=31015 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=唐门\千机变_重弩伤害.lua ; MaxLevel=1
+   SkillName=千机连环分身连弩伤害50% ; SkillID=31024 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\千机变_分身连弩伤害.lua ; MaxLevel=1
+   SkillName=千机连环分身重弩伤害50% ; SkillID=31025 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=唐门\千机变_分身重弩伤害.lua ; MaxLevel=1
+   SkillName=千机连环连弩伤害普通 ; SkillID=31026 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\千机变_连弩伤害分身_普通.lua ; MaxLevel=1
+   SkillName=千机连环连弩伤害高级 ; SkillID=31027 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=唐门\千机变_连弩伤害分身_普通.lua ; MaxLevel=1
+   SkillName=千机连环重弩伤害普通 ; SkillID=31028 ; KindType=Physics ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=唐门\千机变_重弩伤害分身_普通.lua ; MaxLevel=1
+   SkillName=千机连环重弩伤害高级 ; SkillID=31029 ; KindType=Physics ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=唐门\千机变_重弩伤害分身_高级.lua ; MaxLevel=1
+   SkillName=千机连环重弩伤害普通减半 ; SkillID=31032 ; KindType=Physics ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=唐门\千机变_重弩伤害分身减半_普通.lua ; MaxLevel=1
+   SkillName=千机连环重弩伤害高级减半 ; SkillID=31033 ; KindType=Physics ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=唐门\千机变_重弩伤害分身减半_高级.lua ; MaxLevel=1
+   SkillName=狼牙_连环离弦_AOE_第一段 ; SkillID=31038 ; KindType=Physics ; FunctionType=Normal ; CastMode=Rectangle ; ScriptFile=Quest/ACT_浪客行/狼牙_连环离弦_AOE_第一段.lua ; MaxLevel=1
+   SkillName=道具_连环弩 ; SkillID=32300 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/道具_连环弩.lua ; MaxLevel=1
+   SkillName=道具_连环弩子技能1 ; SkillID=32302 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/道具_连环弩子技能1.lua ; MaxLevel=5
+   SkillName=道具_连环弩子技能2 ; SkillID=32303 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/道具_连环弩子技能2.lua ; MaxLevel=5
+   SkillName=道具_连环弩子技能3 ; SkillID=32304 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/道具_连环弩子技能3.lua ; MaxLevel=5
+   SkillName=道具_连环弩子技能4击退 ; SkillID=32305 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/道具_连环弩子技能4击退.lua ; MaxLevel=1
+   SkillName=唐门_千机连环30尺攻击检测技能 ; SkillID=32755 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=唐门\唐门_千机连环30尺攻击检测技能.lua ; MaxLevel=1
+   SkillName=天策连环强伤害子技能 ; SkillID=32909 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=天策/90级奇穴/挫锐伤害子技能.lua ; MaxLevel=1
+   SkillName=天策连环枪叠层数 ; SkillID=32910 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=天策/90级奇穴/连环枪叠buff.lua ; MaxLevel=1
+   SkillName=寻宝_千机连环 ; SkillID=41430 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=奇境寻宝/唐门_惊羽诀/寻宝_千机连环.lua ; MaxLevel=1
+   SkillName=寻宝_千机连环伤害子技能 ; SkillID=41435 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=奇境寻宝/唐门_惊羽诀/寻宝_千机连环实际伤害.lua ; MaxLevel=1
+   SkillName=连环慢 ; SkillID=41437 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=无相楼/傀儡调_召唤傀儡.lua ; MaxLevel=1
+   SkillName=连环慢·贰 ; SkillID=41438 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=无相楼/傀儡调_傀儡冲刺.lua ; MaxLevel=1
+   SkillName=唐门_惊羽_万翎逐鸿连环弩 ; SkillID=44456 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=唐门\90级奇穴\唐门_惊羽_万翎逐鸿连环弩.lua ; MaxLevel=1
+   SkillName=连环参悟施展A技后卸除增伤 ; SkillID=64531 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=八荒衡鉴\肉鸽门派技能\被动技能_施展A技后卸除增伤.lua ; MaxLevel=1
+-- 飞爪: 19
+   SkillName=子母飞爪之子爪 ; SkillID=3116 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=唐门\唐门_诡道_子母飞爪之子爪.lua ; MaxLevel=1
+   SkillName=子母飞爪之母爪 ; SkillID=3117 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=唐门\唐门_诡道_子母飞爪之母爪.lua ; MaxLevel=1
+   SkillName=曹炎烈_飞爪母技能 ; SkillID=15682 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/上阳宫_观风殿/曹炎烈_飞爪母技能.lua ; MaxLevel=1
+   SkillName=曹炎烈_飞爪子技能 ; SkillID=15683 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/上阳宫_观风殿/曹炎烈_飞爪子技能.lua ; MaxLevel=1
+   SkillName=新子母飞爪 ; SkillID=18481 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=唐门\唐门_诡道_新子母飞爪.lua ; MaxLevel=1
+   SkillName=新子母飞爪对友方 ; SkillID=18484 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=唐门\唐门_诡道_新子母飞爪对友方.lua ; MaxLevel=1
+   SkillName=子母飞爪队友动态技能 ; SkillID=18488 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=唐门\唐门_诡道_子母飞爪队友动态技能.lua ; MaxLevel=1
+   SkillName=子母飞爪队友动态技能1 ; SkillID=18489 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=唐门\唐门_诡道_子母飞爪队友动态技能1.lua ; MaxLevel=1
+   SkillName=子母飞爪自身二段技能 ; SkillID=18511 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=唐门\唐门_诡道_子母飞爪自身二段.lua ; MaxLevel=1
+   SkillName=唐门子母飞爪隐藏表现技能 ; SkillID=18516 ; KindType=None ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=唐门\子母抓链状表现.lua ; MaxLevel=1
+   SkillName=5号_飞爪表现 ; SkillID=18580 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=npc\副本BOSS\上阳宫_观风殿\独孤先生\连线脚本.lua ; MaxLevel=2
+   SkillName=子母飞爪可对友方目标释放 ; SkillID=23642 ; KindType=None ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=唐门\90级奇穴\唐门_子母飞爪可对队友释放.lua ; MaxLevel=1
+   SkillName=唐门_天罗_鸿爪留泥_子母飞爪进攻 ; SkillID=25134 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=道具_临时飞爪 ; SkillID=28031 ; KindType=Physics ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=沙漠风暴/道具_临时飞爪.lua ; MaxLevel=2
+   SkillName=道具_临时飞爪链状表现 ; SkillID=28032 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetChain ; ScriptFile=沙漠风暴/道具_临时飞爪链状表现.lua ; MaxLevel=1
+   SkillName=洱海飞爪 ; SkillID=34919 ; KindType=Physics ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=沙漠风暴/道具_临时飞爪.lua ; MaxLevel=1
+   SkillName=道具_临时飞爪_皆传 ; SkillID=37923 ; KindType=Physics ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=沙漠风暴/绝境·临时飞爪.lua ; MaxLevel=1
+   SkillName=寻宝_子母飞爪 ; SkillID=41431 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=奇境寻宝/唐门_惊羽诀/寻宝_子母飞爪.lua ; MaxLevel=1
+   SkillName=寻宝_子母飞爪实际拉人效果 ; SkillID=43356 ; KindType=Physics ; FunctionType=Damage ; CastMode=TargetChain ; ScriptFile=奇境寻宝/唐门_惊羽诀/寻宝_子母飞爪实际拉人.lua ; MaxLevel=1
+-- 滑翔: 10
+   SkillName=滑翔翼_绿豆机关弩 ; SkillID=19352 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Quest/儿童节/滑翔翼_绿豆机关弩.lua ; MaxLevel=4
+   SkillName=滑翔翼_芝麻机关弩 ; SkillID=19353 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Quest/儿童节/滑翔翼_芝麻机关弩.lua ; MaxLevel=4
+   SkillName=滑翔翼_火箭加速 ; SkillID=19354 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/儿童节/滑翔翼_火箭加速.lua ; MaxLevel=4
+   SkillName=滑翔翼_火箭加速母技能 ; SkillID=19411 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/儿童节/滑翔翼_火箭加速母技能.lua ; MaxLevel=1
+   SkillName=滑翔翼_绿豆机关弩母技能 ; SkillID=19420 ; KindType=Physics ; FunctionType=Normal ; CastMode=Sector ; ScriptFile=Quest/儿童节/滑翔翼_绿豆机关弩母技能.lua ; MaxLevel=1
+   SkillName=滑翔翼_芝麻机关弩母技能 ; SkillID=19421 ; KindType=Physics ; FunctionType=Normal ; CastMode=Sector ; ScriptFile=Quest/儿童节/滑翔翼_芝麻机关弩母技能.lua ; MaxLevel=1
+   SkillName=滑翔翼_糖果盒 ; SkillID=19448 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/儿童节/滑翔翼_糖果盒母技能.lua ; MaxLevel=1
+   SkillName=滑翔翼_芝麻机关弩自动射击 ; SkillID=27093 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/儿童节/芝麻机关弩_自动射击母技能.lua ; MaxLevel=1
+   SkillName=滑翔翼_绿豆机关弩自动射击 ; SkillID=27094 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest/儿童节/绿豆机关弩_自动射击母技能.lua ; MaxLevel=1
+   SkillName=天原绝境_滑翔翼 ; SkillID=29021 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境_滑翔翼.lua ; MaxLevel=1
+-- 火把: 11
+   SkillName=大明宫_傀儡_火把 ; SkillID=5651 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\大明宫\大明宫_傀儡·火把.lua ; MaxLevel=1
+   SkillName=流离岛-詹素-挥舞火把 ; SkillID=6286 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc\副本BOSS\流离岛\流离岛挥舞火把.lua ; MaxLevel=2
+   SkillName=挥舞火把 ; SkillID=7828 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=Quest\挥舞火把.lua ; MaxLevel=1
+   SkillName=火把_流烟 ; SkillID=13781 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=Quest\太原\火把_流烟.lua ; MaxLevel=1
+   SkillName=明教_挥舞火把 ; SkillID=15394 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=Quest\ACT_95级门派事件\明教_挥舞火把.lua ; MaxLevel=1
+   SkillName=霸刀_周六_火把流烟 ; SkillID=17090 ; KindType=None ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=Quest/ACT_95级门派事件/霸刀_周六_火把流烟.lua ; MaxLevel=1
+   SkillName=4号_拓跋思羽_火把范围 ; SkillID=20427 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterArea ; ScriptFile=npc/副本BOSS/冰火岛/没藏呼月/火把范围.lua ; MaxLevel=1
+   SkillName=3号_火把 ; SkillID=22354 ; KindType=SolarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=npc/副本BOSS/凌雪阁_玄鹤别院/江潮/火把技能.lua ; MaxLevel=1
+   SkillName=天原绝境_照明火把释放 ; SkillID=29043 ; KindType=None ; FunctionType=Damage ; CastMode=PointArea ; ScriptFile=沙漠风暴/天原绝境_照明火把释放.lua ; MaxLevel=1
+   SkillName=天原绝境_照明火把实际效果 ; SkillID=29044 ; KindType=None ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=沙漠风暴/照明火把实际效果.lua ; MaxLevel=2
+   SkillName=1号_慈渡骨_火把子弹 ; SkillID=30347 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=npc/副本BOSS/河阳之战/1号_慈渡骨/1号_慈渡骨_火把子弹.lua ; MaxLevel=1
+-- 燧石: 1
+   SkillName=天原绝境_燧石单体 ; SkillID=29051 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_燧石点燃技能.lua ; MaxLevel=1
+-- 战象: 5
+   SkillName=天原绝境_战象践踏 ; SkillID=29146 ; KindType=None ; FunctionType=Damage ; CastMode=CasterArea ; ScriptFile=沙漠风暴/天原绝境战象践踏.lua ; MaxLevel=5
+   SkillName=天原绝境_战象冲锋 ; SkillID=29264 ; KindType=None ; FunctionType=Damage ; CastMode=Rectangle ; ScriptFile=沙漠风暴/天原绝境战象冲刺.lua ; MaxLevel=1
+   SkillName=天原绝境_战象下车 ; SkillID=29267 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境战象下车.lua ; MaxLevel=1
+   SkillName=天原绝境_战象践踏母技能 ; SkillID=29283 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境战象践踏母技能.lua ; MaxLevel=1
+   SkillName=天原绝境_战象推人母技能 ; SkillID=29476 ; KindType=Physics ; FunctionType=Normal ; CastMode=CasterSingle ; ScriptFile=沙漠风暴/天原绝境战象推人母技能.lua ; MaxLevel=1
+-- 天玄: 2
+   SkillName=天原绝境_天玄冰 ; SkillID=29637 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=沙漠风暴/天原绝境_天玄冰.lua ; MaxLevel=1
+   SkillName=李天玄_冲刺技能 ; SkillID=36978 ; KindType=Physics ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=npc/桃园非梦/新手关/新手村通用冲刺.lua ; MaxLevel=1
+-- 绝脉: 8
+   SkillName=仙侣庭园_1号_绝脉劲爆炸 ; SkillID=14165 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=npc\副本BOSS\永王行宫_仙侣庭院\1号_屈焰阳\1号_屈焰阳_绝脉劲爆炸.lua ; MaxLevel=5
+   SkillName=仙侣庭园_1号_屈焰阳_绝脉爆炸AOE ; SkillID=14533 ; KindType=LunarMagic ; FunctionType=Normal ; CastMode=PointArea ; ScriptFile=npc\副本BOSS\永王行宫_仙侣庭院\1号_屈焰阳\1号_屈焰阳_绝脉爆炸AOE.lua ; MaxLevel=5
+   SkillName=绝脉层数消除后造成伤害子技能 ; SkillID=38085 ; KindType=NeutralMagic ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=段氏/段氏子技能/绝脉层数消除后造成伤害子技能.lua ; MaxLevel=15
+   SkillName=段氏奇穴_破穴引爆绝脉返能量加引窍伤害 ; SkillID=38467 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=段氏奇穴_额外炸3层绝脉 ; SkillID=38482 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=段氏奇穴_爆绝脉减疗 ; SkillID=38503 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=段氏奇穴_绝脉可叠加15层 ; SkillID=38509 ; KindType=Physics ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=Default.lua ; MaxLevel=1
+   SkillName=绝境绝脉层数消除后造成伤害子技能 ; SkillID=39528 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场/绝境绝脉爆炸伤害.lua ; MaxLevel=10
+-- 武器初始: 9
+   SkillName=绝境_四象轮回（武器初始） ; SkillID=64889 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_四象轮回.lua ; MaxLevel=1
+   SkillName=绝境_穿云（武器初始） ; SkillID=64890 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_穿云.lua ; MaxLevel=1
+   SkillName=绝境_普渡四方（武器初始） ; SkillID=64891 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_普渡四方.lua ; MaxLevel=1
+   SkillName=绝境_夺魄箭（武器初始） ; SkillID=64892 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_夺魄箭.lua ; MaxLevel=1
+   SkillName=绝境_夕照雷锋（武器初始） ; SkillID=64893 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_夕照雷锋.lua ; MaxLevel=1
+   SkillName=绝境_阳明指（武器初始） ; SkillID=64894 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_阳明指.lua ; MaxLevel=1
+   SkillName=绝境_蝎心（武器初始） ; SkillID=64895 ; KindType=Adaptive ; FunctionType=Normal ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_蝎心.lua ; MaxLevel=1
+   SkillName=绝境_赤日轮（武器初始） ; SkillID=64896 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_赤日轮.lua ; MaxLevel=1
+   SkillName=绝境_江海凝光（武器初始） ; SkillID=64897 ; KindType=Adaptive ; FunctionType=Damage ; CastMode=TargetSingle ; ScriptFile=绝境战场\绝境_江海凝光.lua ; MaxLevel=1
+## buff (6640 rows)
+-- 绝境: 1
+   Name=移动端_衍天_绝境战场_起卦回血 ; ID=71717 ; Useage=418 ; Count=3 ; Interval=16 ; MoveStateMask=3758030846
+-- 楚河汉界: 1
+   Name=移动端_霸刀_楚河汉界_隐藏且无敌 ; ID=70411 ; Useage=415 ; FunctionType=Normal ; Count=1 ; Interval=1920 ; MoveStateMask=3758030846
+-- 雷霆: 2
+   Name=移动端_雷霆震怒_控制效果 ; ID=70049 ; Useage=405 ; FunctionType=Stun ; Count=1 ; Interval=96 ; ScriptFile=七秀/移动端_云裳心经_子技能/移动端_雷霆震怒_秘籍效果.lua ; MoveStateMask=1405095936
+   Name=移动端_雷霆震怒_秘籍秘章 ; ID=70066 ; Useage=405 ; Count=1 ; Interval=8 ; MoveStateMask=3758030846
+-- 无相: 17
+   Name=移动端_无相诀 ; ID=70875 ; Useage=401 ; Count=10 ; Interval=16 ; MoveStateMask=3758030846
+   Name=移动段_无相楼_替型幻生护盾 ; ID=71555 ; Useage=450 ; Count=20 ; Interval=16 ; MoveStateMask=3758030846
+   Name=移动段_无相楼_替型幻生秘籍减伤 ; ID=71556 ; Useage=450 ; Count=1 ; Interval=320 ; MoveStateMask=3758030846
+   Name=无相楼隐身 ; ID=71557 ; Useage=450 ; Count=3 ; Interval=16 ; MoveStateMask=3620864254
+   Name=移动端_无相楼_根据缠绞增伤 ; ID=71558 ; Useage=450 ; Count=1 ; Interval=32 ; MoveStateMask=3758030846
+   Name=无相楼定身夹线buff ; ID=71561 ; Useage=450 ; FunctionType=Halt ; Count=1 ; Interval=8 ; MoveStateMask=1405100032
+   Name=移动端_无相楼_勾线正在运功 ; ID=71562 ; Useage=450 ; Count=1 ; Interval=80 ; MoveStateMask=3758030846
+   Name=移动端_无相楼_千丝落絮二段需求buff ; ID=71564 ; Useage=450 ; Count=1 ; Interval=4 ; MoveStateMask=67108864
+   Name=移动端_无相楼_游丝枕月免控 ; ID=71565 ; Useage=450 ; Count=8 ; Interval=16 ; MoveStateMask=3758030846
+   Name=移动端_无相楼_游丝枕月免控 ; ID=71565 ; Useage=450 ; Count=5 ; Interval=16 ; ScriptFile=无相楼/移动端_无相楼_子技能/移动端_游丝枕月二段免控结束.lua ; MoveStateMask=67108864
+   Name=移动端_无相楼_傀儡在场证明 ; ID=71566 ; Useage=450 ; Count=1 ; ScriptFile=无相楼/移动端_无相楼_子技能/傀儡常驻buff消失.lua ; MoveStateMask=3758030846
+   Name=移动端_无相楼_打断秘籍_傀儡冲刺后释放技能标记 ; ID=71567 ; Useage=450 ; Count=1 ; Interval=32 ; MoveStateMask=3758030846
+   Name=移动端_无相楼_打断秘籍_傀儡冲刺后释放技能冲刺维持 ; ID=71567 ; Useage=450 ; Count=1 ; Interval=32 ; ScriptFile=无相楼/移动端_无相楼_子技能/移动端_无相楼_打断_秘籍1冲刺后造成伤害.lua ; MoveStateMask=131072
+   Name=移动端_无相楼_打断后禁疗 ; ID=71568 ; Useage=450 ; Count=1 ; Interval=48 ; MoveStateMask=3758030846
+   Name=移动端_无相楼_下一次招式增伤 ; ID=71570 ; Useage=450 ; Count=1 ; Interval=8 ; MoveStateMask=3758030846
+   Name=无相楼_千丝落絮真二段需求buff ; ID=71571 ; Useage=450 ; Count=1 ; Interval=160 ; MoveStateMask=3758030846
+   Name=移动端_无相楼_游丝枕月切二段 ; ID=71578 ; Useage=450 ; Count=1 ; Interval=240 ; MoveStateMask=3758030846
+-- 连环: 4
+   Name=移动端_天罗_千机连环_机关搜索目标 ; ID=70925 ; Useage=409 ; Count=100 ; Interval=24 ; MoveStateMask=3758030846
+   Name=连环慢秘籍下一招式增伤实际效果 ; ID=71616 ; Useage=450 ; Count=1 ; Interval=8 ; MoveStateMask=3758030846
+   Name=连环慢秘籍_勾线增伤标记 ; ID=71617 ; Useage=450 ; Count=1 ; Interval=48 ; MoveStateMask=3758030846
+   Name=连环慢秘籍_勾线增伤实际效果 ; ID=71618 ; Useage=450 ; Count=1 ; Interval=8 ; MoveStateMask=3758030846
+## npc (649 rows)
+## doodad (11010 rows)
+-- 楚河汉界: 2
+   Name=柳静海楚河汉界标记 ; ID=6556
+   Name=伪传·楚河汉界 ; ID=9125
+-- 雷霆: 1
+   Name=雷霆机甲武器 ; ID=6491
+-- 无相: 3
+   Name=无相楼摆件 ; ID=11077
+   Name=降魔相·无相 ; ID=11633
+   Name=心归净乐·无相 ; ID=11634
+-- 连环: 3
+   Name=十二连环坞粮草 ; ID=5478
+   Name=十二连环坞兵器架 ; ID=5479
+   Name=伪传·连环弩 ; ID=9822
+-- 飞爪: 3
+   Name=飞爪补给箱 ; ID=8988
+   Name=伪传·临时飞爪 ; ID=9135
+   Name=临时飞爪 ; ID=9191
+-- 火把: 11
+   Name=火把 ; ID=868
+   Name=冒烟火把 ; ID=905
+   Name=蛮族火把 ; ID=2391
+   Name=碑铭·火把节的传说 ; ID=2779
+   Name=火把 ; ID=4424
+   Name=火把 ; ID=4479
+   Name=火把 ; ID=4661
+   Name=引路火把 ; ID=5716
+   Name=照明火把 ; ID=9193
+   Name=火把 ; ID=9435
+   Name=火把 ; ID=10673
+-- 燧石: 1
+   Name=燧石 ; ID=9195
+## cooldown (3510 rows)
+-- 绝境: 69
+   ID=2173 ; Duration=90 ; MinDuration=90 ; MaxCount=1
+   ID=2174 ; Duration=12 ; MinDuration=12 ; MaxCount=1 ; CanAccelerate=1
+   ID=2175 ; Duration=3 ; MinDuration=3 ; MaxCount=1 ; CanAccelerate=1
+   ID=2192 ; Duration=10 ; MinDuration=10 ; MaxCount=1 ; CanAccelerate=1
+   ID=2375 ; Duration=60 ; MinDuration=60 ; MaxCount=1
+   ID=2617 ; Duration=60 ; MinDuration=60 ; MaxCount=3
+   ID=2630 ; Duration=1 ; MinDuration=1 ; MaxCount=1
+   ID=2875 ; Duration=45 ; MinDuration=45 ; MaxCount=1 ; CanAccelerate=1
+   ID=2897 ; Duration=15 ; MinDuration=15 ; MaxCount=1 ; CanAccelerate=1
+   ID=2898 ; Duration=40 ; MinDuration=40 ; MaxCount=1 ; CanAccelerate=1
+   ID=2989 ; Duration=45 ; MinDuration=45 ; Usage=46 ; MaxCount=3 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=2990 ; Duration=60 ; MinDuration=60 ; MaxCount=1 ; CanAccelerate=1
+   ID=3217 ; Duration=12 ; MinDuration=12 ; Usage=46 ; MaxCount=1
+   ID=7096 ; Duration=12 ; MinDuration=12 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7097 ; Duration=8 ; MinDuration=8 ; Usage=46 ; MaxCount=2 ; CanAccelerate=1
+   ID=7100 ; Duration=5 ; MinDuration=5 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7101 ; Duration=10 ; MinDuration=10 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7102 ; Duration=8 ; MinDuration=8 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7103 ; Duration=20 ; MinDuration=20 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7104 ; Duration=25 ; MinDuration=25 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7105 ; Duration=25 ; MinDuration=25 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7106 ; Duration=25 ; MinDuration=25 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7107 ; Duration=18 ; MinDuration=18 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7108 ; Duration=12 ; MinDuration=12 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7109 ; Duration=8 ; MinDuration=8 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7113 ; Duration=15 ; MinDuration=15 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7114 ; Duration=3 ; MinDuration=3 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7115 ; Duration=8 ; MinDuration=8 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7117 ; Duration=11 ; MinDuration=11 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7118 ; Duration=7 ; MinDuration=7 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7119 ; Duration=12 ; MinDuration=12 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7120 ; Duration=20 ; MinDuration=20 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7121 ; Duration=23 ; MinDuration=23 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7122 ; Duration=15 ; MinDuration=15 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7123 ; Duration=20 ; MinDuration=20 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7124 ; Duration=30 ; MinDuration=30 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7125 ; Duration=60 ; MinDuration=60 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7126 ; Duration=40 ; MinDuration=40 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7127 ; Duration=20 ; MinDuration=20 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+   ID=7128 ; Duration=45 ; MinDuration=45 ; Usage=46 ; MaxCount=1 ; CanAccelerate=1
+-- 吃鸡: 14
+   ID=1316 ; Duration=120 ; MinDuration=120 ; Usage=13 ; MaxCount=1
+   ID=1328 ; Duration=120 ; MinDuration=120 ; Usage=46 ; MaxCount=1 ; NeedSyncOB=1
+   ID=1491 ; Duration=5 ; MinDuration=5 ; Usage=46 ; MaxCount=1
+   ID=1505 ; Duration=30 ; MinDuration=30 ; Usage=46 ; MaxCount=1
+   ID=2035 ; Duration=15 ; MinDuration=15 ; MaxCount=1 ; CanAccelerate=1
+   ID=2036 ; Duration=75 ; MinDuration=75 ; MaxCount=1 ; CanAccelerate=1
+   ID=2375 ; Duration=60 ; MinDuration=60 ; MaxCount=1
+   ID=2528 ; Duration=15 ; MinDuration=15 ; Usage=73 ; MaxCount=1 ; CanAccelerate=1
+   ID=2563 ; Duration=180 ; MinDuration=180 ; MaxCount=1 ; CanAccelerate=1
+   ID=2639 ; Duration=40 ; MinDuration=40 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=2657 ; Duration=5 ; MinDuration=5 ; MaxCount=1 ; CanAccelerate=1
+   ID=3379 ; Duration=43 ; MinDuration=43 ; Usage=85 ; MaxCount=1 ; CanAccelerate=1
+   ID=3413 ; Duration=600 ; MinDuration=600 ; Usage=46 ; MaxCount=1
+   ID=5004 ; Duration=14 ; MinDuration=14 ; Usage=4 ; MaxCount=2 ; CanAccelerate=1
+-- 楚河汉界: 4
+   ID=1136 ; Duration=45 ; MinDuration=45 ; Usage=71 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1190 ; Duration=45 ; MinDuration=45 ; Usage=71 ; MaxCount=2 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1191 ; Duration=1 ; MinDuration=1 ; Usage=71 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=2989 ; Duration=45 ; MinDuration=45 ; Usage=46 ; MaxCount=3 ; CanAccelerate=1 ; NeedSyncOB=1
+-- 雷霆: 4
+   ID=117 ; Duration=90 ; MinDuration=90 ; Usage=4 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1270 ; Duration=90 ; MinDuration=90 ; Usage=4 ; MaxCount=2 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1423 ; Duration=30 ; MinDuration=30 ; Usage=4 ; MaxCount=2 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=2990 ; Duration=60 ; MinDuration=60 ; MaxCount=1 ; CanAccelerate=1
+-- 无相: 3
+   ID=47 ; Duration=75 ; MinDuration=75 ; Usage=5 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1225 ; Duration=60 ; MinDuration=60 ; Usage=5 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=2875 ; Duration=45 ; MinDuration=45 ; MaxCount=1 ; CanAccelerate=1
+-- 连环: 5
+   ID=466 ; Duration=45 ; MinDuration=45 ; Usage=10 ; MaxCount=1 ; CanAccelerate=1
+   ID=2476 ; Duration=50 ; MinDuration=50 ; Usage=10 ; MaxCount=1 ; CanAccelerate=1
+   ID=2897 ; Duration=15 ; MinDuration=15 ; MaxCount=1 ; CanAccelerate=1
+   ID=3214 ; Duration=22 ; MinDuration=22 ; Usage=84 ; MaxCount=1 ; CanAccelerate=1
+   ID=3319 ; Duration=0.5 ; MinDuration=0.5 ; Usage=85 ; MaxCount=1 ; CanAccelerate=1
+-- 飞爪: 8
+   ID=472 ; Duration=20 ; MinDuration=20 ; Usage=10 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1272 ; Duration=35 ; MinDuration=35 ; Usage=10 ; MaxCount=1 ; CanAccelerate=1 ; NeedSyncOB=1
+   ID=1274 ; Duration=0.5 ; MinDuration=0.5 ; Usage=10 ; MaxCount=1 ; CanAccelerate=1
+   ID=2038 ; Duration=60 ; MinDuration=60 ; MaxCount=1
+   ID=2279 ; Duration=60 ; MinDuration=60 ; MaxCount=1 ; CanAccelerate=1
+   ID=2617 ; Duration=60 ; MinDuration=60 ; MaxCount=3
+   ID=2630 ; Duration=1 ; MinDuration=1 ; MaxCount=1
+   ID=3215 ; Duration=25 ; MinDuration=25 ; Usage=84 ; MaxCount=1 ; CanAccelerate=1
+-- 滑翔: 3
+   ID=1329 ; Duration=15 ; MinDuration=15 ; Usage=46 ; MaxCount=1
+   ID=1330 ; Duration=1 ; MinDuration=1 ; Usage=46 ; MaxCount=1
+   ID=1331 ; Duration=30 ; MinDuration=30 ; Usage=46 ; MaxCount=1
+-- 火把: 1
+   ID=2173 ; Duration=90 ; MinDuration=90 ; MaxCount=1
+-- 战象: 2
+   ID=2174 ; Duration=12 ; MinDuration=12 ; MaxCount=1 ; CanAccelerate=1
+   ID=2175 ; Duration=3 ; MinDuration=3 ; MaxCount=1 ; CanAccelerate=1
+-- 天玄: 1
+   ID=2192 ; Duration=10 ; MinDuration=10 ; MaxCount=1 ; CanAccelerate=1

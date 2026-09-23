@@ -1,0 +1,117 @@
+﻿
+==== 0x1800b1f60 .. 0x1800b2100 (.text)
+  0x1800b1f60: push     rdi
+  0x1800b1f62: sub      rsp, 0x40
+  0x1800b1f66: mov      qword ptr [rsp + 0x30], 0xfffffffffffffffe
+  0x1800b1f6f: mov      qword ptr [rsp + 0x50], rbx
+  0x1800b1f74: mov      qword ptr [rsp + 0x58], rsi
+  0x1800b1f79: mov      rsi, r8
+  0x1800b1f7c: movsxd   rdi, edx
+  0x1800b1f7f: mov      rbx, rcx
+  0x1800b1f82: mov      qword ptr [r8], 0
+  0x1800b1f89: cmp      edi, 9
+  0x1800b1f8c: ja       0x1800b2088
+  0x1800b1f92: call     0x1800f742c
+  0x1800b1f97: test     eax, eax
+  0x1800b1f99: je       0x1800b1fa2
+  0x1800b1f9b: mov      ecx, eax
+  0x1800b1f9d: call     0x1800f745c
+  0x1800b1fa2: mov      rax, rdi
+  0x1800b1fa5: shl      rax, 5
+  0x1800b1fa9: cmp      byte ptr [rax + rbx + 0x50], 0
+  0x1800b1fae: jne      0x1800b2001
+  0x1800b1fb0: lea      rax, [rip + 0x6f349]  ; "KG_PakNumManager::GetPakManager"
+  0x1800b1fb7: mov      qword ptr [rsp + 0x20], rax
+  0x1800b1fbc: mov      r9d, 0x68
+  0x1800b1fc2: lea      r8, [rip + 0x6f2ef]  ; "m_PakManager[nManager].bUsed"
+  0x1800b1fc9: lea      rdx, [rip + 0x649c0]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800b1fd0: lea      ecx, [r9 - 0x65]
+  0x1800b1fd4: call     qword ptr [rip + 0x642d6]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800b1fda: nop      
+  0x1800b1fdb: mov      rcx, rbx
+  0x1800b1fde: call     0x1800f7432
+  0x1800b1fe3: test     eax, eax
+  0x1800b1fe5: je       0x1800b1fef
+  0x1800b1fe7: mov      ecx, eax
+  0x1800b1fe9: call     0x1800f745c
+  0x1800b1fee: nop      
+  0x1800b1fef: xor      eax, eax
+  0x1800b1ff1: mov      rbx, qword ptr [rsp + 0x50]
+  0x1800b1ff6: mov      rsi, qword ptr [rsp + 0x58]
+  0x1800b1ffb: add      rsp, 0x40
+  0x1800b1fff: pop      rdi
+  0x1800b2000: ret      
+  0x1800b2001: mov      rax, qword ptr [rax + rbx + 0x58]
+  0x1800b2006: test     rax, rax
+  0x1800b2009: jne      0x1800b205c
+  0x1800b200b: lea      rax, [rip + 0x6f2ee]  ; "KG_PakNumManager::GetPakManager"
+  0x1800b2012: mov      qword ptr [rsp + 0x20], rax
+  0x1800b2017: mov      r9d, 0x69
+  0x1800b201d: lea      r8, [rip + 0x6f2fc]  ; "m_PakManager[nManager].pPackageManager"
+  0x1800b2024: lea      rdx, [rip + 0x64965]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800b202b: lea      ecx, [r9 - 0x66]
+  0x1800b202f: call     qword ptr [rip + 0x6427b]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800b2035: nop      
+  0x1800b2036: mov      rcx, rbx
+  0x1800b2039: call     0x1800f7432
+  0x1800b203e: test     eax, eax
+  0x1800b2040: je       0x1800b204a
+  0x1800b2042: mov      ecx, eax
+  0x1800b2044: call     0x1800f745c
+  0x1800b2049: nop      
+  0x1800b204a: xor      eax, eax
+  0x1800b204c: mov      rbx, qword ptr [rsp + 0x50]
+  0x1800b2051: mov      rsi, qword ptr [rsp + 0x58]
+  0x1800b2056: add      rsp, 0x40
+  0x1800b205a: pop      rdi
+  0x1800b205b: ret      
+  0x1800b205c: mov      qword ptr [rsi], rax
+  0x1800b205f: mov      rcx, rbx
+  0x1800b2062: call     0x1800f7432
+  0x1800b2067: test     eax, eax
+  0x1800b2069: je       0x1800b2073
+  0x1800b206b: mov      ecx, eax
+  0x1800b206d: call     0x1800f745c
+  0x1800b2072: nop      
+  0x1800b2073: mov      eax, 1
+  0x1800b2078: mov      rbx, qword ptr [rsp + 0x50]
+  0x1800b207d: mov      rsi, qword ptr [rsp + 0x58]
+  0x1800b2082: add      rsp, 0x40
+  0x1800b2086: pop      rdi
+  0x1800b2087: ret      
+  0x1800b2088: mov      dword ptr [rsp + 0x28], edi
+  0x1800b208c: lea      rax, [rip + 0x6f26d]  ; "KG_PakNumManager::GetPakManager"
+  0x1800b2093: mov      qword ptr [rsp + 0x20], rax
+  0x1800b2098: mov      r9d, 0x65
+  0x1800b209e: lea      r8, [rip + 0x6f183]  ; "nManager >= 0 && nManager < KG_MAX_PAK_MANAGER_COUNT"
+  0x1800b20a5: lea      rdx, [rip + 0x6f1d4]  ; "KGLOG_ERROR_PARAM(%s) at line %d in %s with param: %d
+"
+  0x1800b20ac: lea      ecx, [r9 - 0x62]
+  0x1800b20b0: call     qword ptr [rip + 0x641fa]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800b20b6: xor      eax, eax
+  0x1800b20b8: mov      rbx, qword ptr [rsp + 0x50]
+  0x1800b20bd: mov      rsi, qword ptr [rsp + 0x58]
+  0x1800b20c2: add      rsp, 0x40
+  0x1800b20c6: pop      rdi
+  0x1800b20c7: ret      
+  0x1800b20c8: int3     
+  0x1800b20c9: int3     
+  0x1800b20ca: int3     
+  0x1800b20cb: int3     
+  0x1800b20cc: int3     
+  0x1800b20cd: int3     
+  0x1800b20ce: int3     
+  0x1800b20cf: int3     
+  0x1800b20d0: push     rdi
+  0x1800b20d2: sub      rsp, 0x40
+  0x1800b20d6: mov      qword ptr [rsp + 0x30], 0xfffffffffffffffe
+  0x1800b20df: mov      qword ptr [rsp + 0x50], rbx
+  0x1800b20e4: mov      qword ptr [rsp + 0x58], rsi
+  0x1800b20e9: mov      rsi, r8
+  0x1800b20ec: movsxd   rdi, edx
+  0x1800b20ef: mov      rbx, rcx
+  0x1800b20f2: mov      qword ptr [r8], 0
+  0x1800b20f9: cmp      edi, 9
+  0x1800b20fc: ja       0x1800b2159

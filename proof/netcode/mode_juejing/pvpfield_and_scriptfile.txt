@@ -1,0 +1,15 @@
+PVPField rows: 61
+PVPField rows for 绝境 map ids: 0
+MapList rows with ScriptFile: 70
+  716 无相楼_贾府 -> scripts/Map/无相楼/无相楼子副本通用.lua
+  717 无相楼_却月楼 -> scripts/Map/无相楼/无相楼子副本通用.lua
+  727 伊丽川_摩罗道_低级1 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  728 伊丽川_摩罗道_低级2 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  729 伊丽川_踏实力_低级40 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  730 伊丽川_踏实力_中级41 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  731 伊丽川_踏实力_高级45 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  732 伊丽川_诺布众_高级34 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  733 伊丽川_诺布众_低级37 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  734 伊丽川_踏实力_低级44 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  735 伊丽川_踏实力_中级50 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua
+  736 伊丽川_踏实力_低级53 -> scripts/Map/伊丽川/伊丽川野外营地子副本.lua

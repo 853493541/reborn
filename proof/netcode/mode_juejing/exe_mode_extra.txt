@@ -1,0 +1,11 @@
+CountDown 0x007D0FDD int> __cdecl EnumReflect::GetName<enum KTEAM_BIDDING_START_RESULT,tbsrCountDown>(void) noexcept..........struct std::pair<char const *,unsigned int> __cdecl EnumReflect::GetName<en
+CountDown 0x007D1305 nsigned int> __cdecl EnumReflect::GetName<enum KBIDDING_INFO_STATE,bisCountDown>(void) noexcept..struct std::pair<char const *,unsigned int> __cdecl EnumReflect::GetName<enum KBIDD
+CountDown 0x007D1729 ned int> __cdecl EnumReflect::GetName<enum KBIDDING_OPERATION_TYPE,botCountDown>(void) noexcept..............struct std::pair<char const *,unsigned int> __cdecl EnumReflect::GetNam
+CountDown 0x0081A343 reInfo>::Load..............KTeamBiddingMgr.BeginBidding....Bidding.BidCountDown....FinishBidding...EndBidding......RiseMoney.......DeleteBiddingInfo.......AddPenaltyRecord........C
+CountDown 0x0081A3D6 o.......AddPenaltyRecord........CanBeginBidding.CanBidding......CanBidCountDown.CanFinishBidding........CanEndBidding...CanRiseMoney....CanDeleteBiddingInfo....CanAddPenaltyRecord.
+CountDown 0x0081A4AB lBiddingInfo.......GetBiddingInfo..GetBiddingInfoByLootlist........GetCountDownIndex........x.@......*@....KTeamBiddingMgr::CheckBiddingValid..............nPrice >= 0 && nPrice <= 
+CountDown 0x0081A8B4 o->second.nPrice >= itInfo->second.nStepPrice.....KTeamBiddingMgr::CanCountDown...pTeamBidding->nCountDownIndex != itItem->second.itInfo != pTeamBidding->InfoMap.end()...CheckBidTi
+CountDown 0x0081A8CF >second.nStepPrice.....KTeamBiddingMgr::CanCountDown...pTeamBidding->nCountDownIndex != itItem->second.itInfo != pTeamBidding->InfoMap.end()...CheckBidTimeOut(itInfo->second.nStart
+CountDown 0x0081AB37 .......KTeamBiddingMgr::LuaBeginBidding........KTeamBiddingMgr::LuaBidCountDown........KTeamBiddingMgr::LuaBidding.....KTeamBiddingMgr::LuaFinishBidding.......KTeamBiddingMgr::LuaE
+CountDown 0x0081AC82 Bidding.....KTeamBiddingMgr::LuaCanBidding..KTeamBiddingMgr::LuaCanBidCountDown.....KTeamBiddingMgr::LuaCanFinishBidding....KTeamBiddingMgr::LuaCanEndBidding.......KTeamBiddingMgr:
+CountDown 0x0081AFA7 ngIndex) != pTeamBidding->InfoMap.end()........KTeamBiddingMgr::LuaGetCountDownIndex...it != pTeamBidding->InfoMap.end()........y.@......+@....KHomelandMgr::Init......KHomelandMgr:

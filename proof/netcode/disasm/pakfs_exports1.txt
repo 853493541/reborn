@@ -1,0 +1,181 @@
+﻿
+==== 0x1800ab1f0 .. 0x1800ab490 (.text)
+  0x1800ab1f0: mov      qword ptr [rsp + 8], rbx
+  0x1800ab1f5: push     rdi
+  0x1800ab1f6: sub      rsp, 0x30
+  0x1800ab1fa: mov      qword ptr [rsp + 0x48], 0
+  0x1800ab203: mov      rbx, r8
+  0x1800ab206: mov      rdi, rdx
+  0x1800ab209: test     rdx, rdx
+  0x1800ab20c: jne      0x1800ab21d
+  0x1800ab20e: mov      r9d, 0x4bf
+  0x1800ab214: lea      r8, [rip + 0x751cd]  ; "ppszRetNameList"
+  0x1800ab21b: jmp      0x1800ab284
+  0x1800ab21d: test     rbx, rbx
+  0x1800ab220: jne      0x1800ab231
+  0x1800ab222: mov      r9d, 0x4c0
+  0x1800ab228: lea      r8, [rip + 0x71879]  ; "pnListSize"
+  0x1800ab22f: jmp      0x1800ab284
+  0x1800ab231: lea      rdx, [rsp + 0x48]
+  0x1800ab236: call     0x1800906b0
+  0x1800ab23b: test     eax, eax
+  0x1800ab23d: je       0x1800ab277
+  0x1800ab23f: mov      rcx, qword ptr [rsp + 0x48]
+  0x1800ab244: test     rcx, rcx
+  0x1800ab247: je       0x1800ab277
+  0x1800ab249: mov      r8, rbx
+  0x1800ab24c: mov      rdx, rdi
+  0x1800ab24f: call     0x18008cf80
+  0x1800ab254: test     eax, eax
+  0x1800ab256: jne      0x1800ab267
+  0x1800ab258: mov      r9d, 0x4c6
+  0x1800ab25e: lea      r8, [rip + 0x6bb43]  ; "bRetCode"
+  0x1800ab265: jmp      0x1800ab284
+  0x1800ab267: mov      eax, 1
+  0x1800ab26c: mov      rbx, qword ptr [rsp + 0x40]
+  0x1800ab271: add      rsp, 0x30
+  0x1800ab275: pop      rdi
+  0x1800ab276: ret      
+  0x1800ab277: mov      r9d, 0x4c3
+  0x1800ab27d: lea      r8, [rip + 0x7446c]  ; "bRetCode && pManager"
+  0x1800ab284: lea      rcx, [rip + 0x7513d]  ; "KG_PAKFS_CollectAllFileNames"
+  0x1800ab28b: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ab290: lea      rdx, [rip + 0x6b6f9]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800ab297: mov      ecx, 3
+  0x1800ab29c: call     qword ptr [rip + 0x6b00e]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800ab2a2: xor      eax, eax
+  0x1800ab2a4: mov      rbx, qword ptr [rsp + 0x40]
+  0x1800ab2a9: add      rsp, 0x30
+  0x1800ab2ad: pop      rdi
+  0x1800ab2ae: ret      
+  0x1800ab2af: int3     
+  0x1800ab2b0: sub      rsp, 0x38
+  0x1800ab2b4: call     0x1800ce8f0
+  0x1800ab2b9: test     eax, eax
+  0x1800ab2bb: jne      0x1800ab2ed
+  0x1800ab2bd: lea      rcx, [rip + 0x757ec]  ; "KG_PAKFS_CombineRollbackPatch"
+  0x1800ab2c4: mov      r9d, 0x888
+  0x1800ab2ca: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ab2cf: lea      r8, [rip + 0x6bad2]  ; "bRetCode"
+  0x1800ab2d6: lea      ecx, [rax + 3]
+  0x1800ab2d9: lea      rdx, [rip + 0x6b6b0]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800ab2e0: call     qword ptr [rip + 0x6afca]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800ab2e6: xor      eax, eax
+  0x1800ab2e8: add      rsp, 0x38
+  0x1800ab2ec: ret      
+  0x1800ab2ed: mov      eax, 1
+  0x1800ab2f2: add      rsp, 0x38
+  0x1800ab2f6: ret      
+  0x1800ab2f7: int3     
+  0x1800ab2f8: int3     
+  0x1800ab2f9: int3     
+  0x1800ab2fa: int3     
+  0x1800ab2fb: int3     
+  0x1800ab2fc: int3     
+  0x1800ab2fd: int3     
+  0x1800ab2fe: int3     
+  0x1800ab2ff: int3     
+  0x1800ab300: mov      qword ptr [rsp + 0x10], rbx
+  0x1800ab305: mov      qword ptr [rsp + 0x18], rbp
+  0x1800ab30a: push     rsi
+  0x1800ab30b: push     rdi
+  0x1800ab30c: push     r14
+  0x1800ab30e: sub      rsp, 0x40
+  0x1800ab312: xor      ebx, ebx
+  0x1800ab314: xor      bpl, bpl
+  0x1800ab317: mov      qword ptr [rsp + 0x60], rbx
+  0x1800ab31c: movzx    r14d, r8b
+  0x1800ab320: mov      edi, edx
+  0x1800ab322: mov      rsi, rcx
+  0x1800ab325: test     rcx, rcx
+  0x1800ab328: jne      0x1800ab33c
+  0x1800ab32a: mov      r9d, 0x105
+  0x1800ab330: lea      r8, [rip + 0x749f9]  ; "cwszStreamDownloader"
+  0x1800ab337: jmp      0x1800ab45b
+  0x1800ab33c: lea      rdx, [rsp + 0x60]
+  0x1800ab341: mov      ecx, edi
+  0x1800ab343: call     0x1800906b0
+  0x1800ab348: test     eax, eax
+  0x1800ab34a: je       0x1800ab44e
+  0x1800ab350: cmp      qword ptr [rsp + 0x60], rbx
+  0x1800ab355: je       0x1800ab44e
+  0x1800ab35b: lea      r8, [rsp + 0x78]
+  0x1800ab360: mov      qword ptr [rsp + 0x78], rbx
+  0x1800ab365: mov      edx, edi
+  0x1800ab367: lea      rcx, [rip + 0xa63d2]  ; 0x180151740
+  0x1800ab36e: call     0x1800b20d0
+  0x1800ab373: test     eax, eax
+  0x1800ab375: jne      0x1800ab3a1
+  0x1800ab377: mov      r9d, 0x39
+  0x1800ab37d: lea      rax, [rip + 0x747dc]  ; "KGPK4_GetSubPakManager"
+  0x1800ab384: lea      r8, [rip + 0x6ba1d]  ; "bRetCode"
+  0x1800ab38b: mov      qword ptr [rsp + 0x20], rax
+  0x1800ab390: lea      rdx, [rip + 0x6b5f9]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800ab397: lea      ecx, [r9 - 0x36]
+  0x1800ab39b: call     qword ptr [rip + 0x6af0f]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800ab3a1: mov      rdi, qword ptr [rsp + 0x78]
+  0x1800ab3a6: test     rdi, rdi
+  0x1800ab3a9: je       0x1800ab3b8
+  0x1800ab3ab: mov      dl, 1
+  0x1800ab3ad: mov      rcx, rdi
+  0x1800ab3b0: call     0x1800d51f0
+  0x1800ab3b5: mov      bpl, 1
+  0x1800ab3b8: mov      r8d, 0xfde9
+  0x1800ab3be: lea      rcx, [rsp + 0x30]
+  0x1800ab3c3: mov      rdx, rsi
+  0x1800ab3c6: call     qword ptr [rip + 0x6af6c]  ; KGPK4_BaseX64.dll!?KGPK4_I18n_ToPrintMultiByte@@YA?AV?$KScopedBuffer@D@@PEB_WI@Z
+  0x1800ab3cc: lea      rdx, [rip + 0x74975]  ; "KG_PAKFS_ConnectToSD : %s"
+  0x1800ab3d3: mov      ecx, 7
+  0x1800ab3d8: mov      r8, qword ptr [rax]
+  0x1800ab3db: call     qword ptr [rip + 0x6aecf]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800ab3e1: mov      rcx, qword ptr [rsp + 0x30]
+  0x1800ab3e6: test     rcx, rcx
+  0x1800ab3e9: je       0x1800ab3f1
+  0x1800ab3eb: call     qword ptr [rip + 0x6b2af]  ; api-ms-win-crt-heap-l1-1-0.dll!free
+  0x1800ab3f1: mov      rcx, qword ptr [rsp + 0x60]
+  0x1800ab3f6: movzx    r8d, r14b
+  0x1800ab3fa: mov      rdx, rsi
+  0x1800ab3fd: call     0x18008d2c0
+  0x1800ab402: test     eax, eax
+  0x1800ab404: jne      0x1800ab433
+  0x1800ab406: lea      rax, [rip + 0x7490b]  ; "KG_PAKFS_ConnectToSD"
+  0x1800ab40d: mov      r9d, 0x113
+  0x1800ab413: lea      r8, [rip + 0x6b98e]  ; "bRetCode"
+  0x1800ab41a: mov      qword ptr [rsp + 0x20], rax
+  0x1800ab41f: lea      rdx, [rip + 0x6b56a]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800ab426: mov      ecx, 3
+  0x1800ab42b: call     qword ptr [rip + 0x6ae7f]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800ab431: jmp      0x1800ab438
+  0x1800ab433: mov      ebx, 1
+  0x1800ab438: test     rdi, rdi
+  0x1800ab43b: je       0x1800ab479
+  0x1800ab43d: test     bpl, bpl
+  0x1800ab440: je       0x1800ab479
+  0x1800ab442: xor      edx, edx
+  0x1800ab444: mov      rcx, rdi
+  0x1800ab447: call     0x1800d51f0
+  0x1800ab44c: jmp      0x1800ab479
+  0x1800ab44e: mov      r9d, 0x108
+  0x1800ab454: lea      r8, [rip + 0x74295]  ; "bRetCode && pManager"
+  0x1800ab45b: lea      rax, [rip + 0x748b6]  ; "KG_PAKFS_ConnectToSD"
+  0x1800ab462: mov      ecx, 3
+  0x1800ab467: lea      rdx, [rip + 0x6b522]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800ab46e: mov      qword ptr [rsp + 0x20], rax
+  0x1800ab473: call     qword ptr [rip + 0x6ae37]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800ab479: mov      rbp, qword ptr [rsp + 0x70]
+  0x1800ab47e: mov      eax, ebx
+  0x1800ab480: mov      rbx, qword ptr [rsp + 0x68]
+  0x1800ab485: add      rsp, 0x40
+  0x1800ab489: pop      r14
+  0x1800ab48b: pop      rdi
+  0x1800ab48c: pop      rsi
+  0x1800ab48d: ret      
+  0x1800ab48e: int3     
+  0x1800ab48f: int3     
+
+==== 0x1800adb10 .. 0x1800acd10 (.text)

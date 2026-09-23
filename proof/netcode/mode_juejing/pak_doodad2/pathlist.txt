@@ -1,0 +1,13 @@
+scripts\Map\龙门寻宝\doodad\装备盒子.lua
+scripts\Map\龙门寻宝\装备盒子.lua
+scripts\Map\白龙绝境\doodad\装备盒子.lua
+scripts\Map\天原绝境\doodad\装备盒子.lua
+scripts\Map\海岛绝境\doodad\装备盒子.lua
+scripts\Map\龙门寻宝\doodad\未知的宝藏.lua
+scripts\Map\龙门寻宝\doodad\吃鸡铁血宝箱.lua
+scripts\Map\龙门寻宝\doodad\匿踪宝盒.lua
+scripts\Doodad\沙漠风暴\装备盒子.lua
+scripts\skill\沙漠风暴\宝箱\装备盒子.lua
+scripts\Map\沙漠风暴\装备盒子.lua
+scripts\沙漠风暴\doodad\装备盒子.lua
+scripts\Map\龙门寻宝\include\CheckTreasureBattleFieldMap.lua

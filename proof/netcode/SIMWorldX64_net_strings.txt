@@ -1,0 +1,95 @@
+# SIMWorldX64.dll netcode keyword scan
+# source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\SIMWorldX64.dll
+
+## transport (5)
+0x0004F968	ascii	rigBindPosePtr
+0x00051690	ascii	E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Source\PhysXExtensions\src\ExtDefaultCpuDispatcher.cpp
+0x0005AAAA	ascii	?push@SListImpl@shdfnd@physx@@QEAAXPEAVSListEntry@23@@Z
+0x0005AAE4	ascii	?pop@SListImpl@shdfnd@physx@@QEAAPEAVSListEntry@23@XZ
+0x0005BCF0	ascii	.?AVDefaultCpuDispatcher@Ext@physx@@
+
+## prediction_correction (36)
+0x0004F8D8	ascii	solverFlagUnevenTerrian
+0x0004F8F0	ascii	solverFlagTwoBone
+0x0004FBD0	ascii	inputDeltaTime
+0x0004FC68	ascii	inputCharacterTrajectoryDeltaPos
+0x0004FC90	ascii	inputCharacterTrajectoryDeltaQuat
+0x0004FCB8	ascii	solverFlag
+0x0004FE68	ascii	Black
+0x00050170	ascii	Flags
+0x000511E8	ascii	PxWorld::Activate invalid param. uTimeTick:%u m_uTimeTick:%u
+0x00051358	ascii	timetick
+0x000596A0	ascii	?SetAngularDamping@PxWorld@@QEAAXI_KM@Z
+0x000597A6	ascii	?SetLinearDamping@PxWorld@@QEAAXI_KM@Z
+0x0005A302	ascii	_Xtime_get_ticks
+0x0005A8F6	ascii	?getAllocator@shdfnd@physx@@YAAEAVPxAllocatorCallback@2@XZ
+0x0005AB48	ascii	?getDefaultStackSize@ThreadImpl@shdfnd@physx@@SAIXZ
+0x0005B8A0	ascii	.?AVPxAllocatorCallback@physx@@
+0x0005B8D0	ascii	.?AVPxErrorCallback@physx@@
+0x0005B968	ascii	.?AVPhysicErrorCallBack@PhysicAdaptor@@
+0x0005B9A0	ascii	.?AVPxDefaultErrorCallback@physx@@
+0x0005B9E0	ascii	.?AU?$PxHitCallback@UPxRaycastHit@physx@@@physx@@
+0x0005BA70	ascii	.?AVPxQueryFilterCallback@physx@@
+0x0005BB00	ascii	.?AU?$PxHitCallback@UPxSweepHit@physx@@@physx@@
+0x0005BB80	ascii	.?AVPxContactModifyCallback@physx@@
+0x0005BBB8	ascii	.?AVPxSimulationEventCallback@physx@@
+0x0006349C	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x000634E4	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0
+0x00063B9E	ascii	Mhttp://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S
+0x00063BF3	ascii	Mhttp://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0
+0x00063C87	ascii	Phttp://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0
+0x00064357	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x000646FF	ascii	Qhttp://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_
+0x00064763	ascii	Nhttp://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0 
+0x00064ACC	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x00064DEF	ascii	5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x00064E37	ascii	2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0 
+0x00065670	ascii	8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1
+
+## protocol (2)
+0x00051690	ascii	E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Source\PhysXExtensions\src\ExtDefaultCpuDispatcher.cpp
+0x0005BCF0	ascii	.?AVDefaultCpuDispatcher@Ext@physx@@
+
+## domain (39)
+0x0004F928	ascii	straightestLegFactor
+0x0004FBF8	ascii	inputAchievedRequestedMovement
+0x0004FE60	ascii	White
+0x00050DA8	ascii	position
+0x00050DC8	ascii	fixed mode position
+0x00050DF0	ascii	subactor
+0x000510A0	ascii	obj remove trigger
+0x00051368	ascii	npclist
+0x00051370	ascii	npcid
+0x000513F0	ascii	ray cast ti
+0x00051400	ascii	ray cast touch
+0x000514B0	ascii	remoteplayerlist
+0x00051730	ascii	E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Source\foundation\include\PsSync.h
+0x00051F70	ascii	computeMassAndInertia: Dynamic actor with illegal collision shapes
+0x000520F0	ascii	PxRigidBodyExt::addForce methods do not support eACCELERATION or eVELOCITY_CHANGE modes
+0x00052608	ascii	MemoryEventStringBuffer
+0x000526F0	ascii	E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Source\PhysXProfileSDK\PxProfileMemoryBuffer.h
+0x00058F0E	ascii	?GetPlayerPos@PxWorld@@QEBA?AVFVECTOR3@@XZ
+0x00059136	ascii	?OnFixedModePositionChanged@PxWorld@@AEAAHW4opResult@Semantic@@UKVTable@3@PEBUUStrImpl@3@@Z
+0x000591E1	ascii	?OnPositionChanged@PxWorld@@AEAAHW4opResult@Semantic@@UKVTable@3@PEBUUStrImpl@3@@Z
+0x000595DB	ascii	?RayCast@PxWorld@@QEAAHPEAURayCastResult@@AEBVFVECTOR3@@1MMHHHHHPEAX@Z
+0x00059622	ascii	?RayCastDirect@PxWorld@@QEAAHAEBVFVECTOR3@@0MMHAEAV2@1@Z
+0x0005967B	ascii	?RemoveSummitPoint@PxWorld@@QEAAHH@Z
+0x000596C8	ascii	?SetAngularVelocity@PxWorld@@QEAAXI_KAEBVFVECTOR3@@@Z
+0x0005986A	ascii	?SetVelocity@PxWorld@@QEAAXI_KAEBVFVECTOR3@@@Z
+0x0005A38C	ascii	_Cnd_broadcast
+0x0005A39E	ascii	_Cnd_do_broadcast_at_thread_exit
+0x0005A476	ascii	memmove
+0x0005A99C	ascii	??0SyncImpl@shdfnd@physx@@QEAA@XZ
+0x0005A9C0	ascii	??1SyncImpl@shdfnd@physx@@QEAA@XZ
+0x0005A9E4	ascii	?set@SyncImpl@shdfnd@physx@@QEAAXXZ
+0x0005AA0A	ascii	?reset@SyncImpl@shdfnd@physx@@QEAAXXZ
+0x0005AA32	ascii	?getSize@SyncImpl@shdfnd@physx@@SAAEBIXZ
+0x0005AE46	ascii	?wait@SyncImpl@shdfnd@physx@@QEAA_NI@Z
+0x0005B9E0	ascii	.?AU?$PxHitCallback@UPxRaycastHit@physx@@@physx@@
+0x0005BA30	ascii	.?AU?$PxHitBuffer@UPxRaycastHit@physx@@@physx@@
+0x0005BB00	ascii	.?AU?$PxHitCallback@UPxSweepHit@physx@@@physx@@
+0x0005BB40	ascii	.?AU?$PxHitBuffer@UPxSweepHit@physx@@@physx@@
+0x0005BC90	ascii	.?AVSyncImpl@shdfnd@physx@@
+
+## cn_client (0)
+(none)

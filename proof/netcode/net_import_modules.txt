@@ -1,0 +1,330 @@
+## ACE-SSC64.dll
+### winhttp.dll (winhttp)
+  (10 functions)
+### ws2_32.dll (winsock)
+  (27 functions)
+
+## avcodec-59.dll
+### ws2_32.dll (winsock)
+  (25 functions)
+
+## avfilter-7.dll
+### ws2_32.dll (winsock)
+  (25 functions)
+
+## avformat-58.dll
+### crypt32.dll (crypto)
+  (9 functions)
+### ws2_32.dll (winsock)
+  (36 functions)
+
+## avformat-59.dll
+### crypt32.dll (crypto)
+  (7 functions)
+### secur32.dll (secur32)
+  (9 functions)
+### ws2_32.dll (winsock)
+  (42 functions)
+
+## BugTrace.dll
+### ws2_32.dll (winsock)
+  (32 functions)
+
+## DLBT.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (39 functions)
+
+## DumpReport64.exe
+### wininet.dll (wininet)
+  (11 functions)
+### ws2_32.dll (winsock)
+  (5 functions)
+
+## Engine_Lua5X64.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (1 functions)
+
+## fmodex64.dll
+### wsock32.dll (winsock-legacy)
+  (18 functions)
+
+## FreeImage.dll
+### ws2_32.dll (winsock)
+  (4 functions)
+
+## GameConfig.exe
+### iphlpapi.dll (iphlpapi)
+  (5 functions)
+### ws2_32.dll (winsock)
+  (3 functions)
+
+## GCloudVoice.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (32 functions)
+
+## gmesdk.dll
+### crypt32.dll (crypto)
+  (7 functions)
+### iphlpapi.dll (iphlpapi)
+  (2 functions)
+### winhttp.dll (winhttp)
+  (5 functions)
+### ws2_32.dll (winsock)
+  (48 functions)
+
+## JX3BenchmarkX64.exe
+### ws2_32.dll (winsock)
+  (14 functions)
+
+## JX3ClientX64.exe
+### crypt32.dll (crypto)
+  (10 functions)
+### iphlpapi.dll (iphlpapi)
+  (2 functions)
+### wininet.dll (wininet)
+  (7 functions)
+### ws2_32.dll (winsock)
+  (39 functions)
+
+## JX3InteractionX64.dll
+### wininet.dll (wininet)
+  (13 functions)
+
+## JX3LogicEditOperationX64.dll
+### crypt32.dll (crypto)
+  (10 functions)
+### ws2_32.dll (winsock)
+  (35 functions)
+
+## JX3UIX64.dll
+### crypt32.dll (crypto)
+  (10 functions)
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (38 functions)
+
+## KBaseX64.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (33 functions)
+
+## kdlcoreX64.dll
+### ws2_32.dll (winsock)
+  (27 functions)
+
+## kdownloadX64.dll
+### winhttp.dll (winhttp)
+  (10 functions)
+### ws2_32.dll (winsock)
+  (15 functions)
+
+## KG3D_AnimationTagX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_ApexClothingX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_ApexFrameworkX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## kg3d_DataCenterX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_FlexibleBodyX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_IKSystemX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_LoaderNoRenderX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_MaterialSystemX64.dll
+### ws2_32.dll (winsock)
+  (23 functions)
+
+## KG3D_NVBlastDestructionX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## kg3d_objectX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_ShaderReflectionX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_TressFXX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3D_WwiseProfileX64.dll
+### ws2_32.dll (winsock)
+  (20 functions)
+
+## KG3DEngineAdapterX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## KG3DEngineDX11EX64.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (36 functions)
+
+## KGApiStreamingX64.dll
+### ws2_32.dll (winsock)
+  (24 functions)
+
+## KGCommonX64.dll
+### ws2_32.dll (winsock)
+  (18 functions)
+
+## KGPK4_StreamDownloaderX64.exe
+### crypt32.dll (crypto)
+  (10 functions)
+### iphlpapi.dll (iphlpapi)
+  (8 functions)
+### ws2_32.dll (winsock)
+  (44 functions)
+
+## KGUICocosX64.dll
+### crypt32.dll (crypto)
+  (7 functions)
+### ws2_32.dll (winsock)
+  (33 functions)
+
+## KGUIX64.dll
+### crypt32.dll (crypto)
+  (7 functions)
+### ws2_32.dll (winsock)
+  (26 functions)
+
+## libbehaviacX64.dll
+### ws2_32.dll (winsock)
+  (15 functions)
+
+## libcef.dll
+### crypt32.dll (crypto)
+  (31 functions)
+### iphlpapi.dll (iphlpapi)
+  (8 functions)
+### secur32.dll (secur32)
+  (14 functions)
+### winhttp.dll (winhttp)
+  (14 functions)
+### ws2_32.dll (winsock)
+  (42 functions)
+
+## libgmecrypto-1_1-x64.dll
+### ws2_32.dll (winsock)
+  (24 functions)
+
+## ParasitismX64.dll
+### ws2_32.dll (winsock)
+  (37 functions)
+
+## PerformanceToolX64.exe
+### iphlpapi.dll (iphlpapi)
+  (3 functions)
+### ws2_32.dll (winsock)
+  (37 functions)
+
+## PhysicsEngineX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## PhysicsX64.dll
+### ws2_32.dll (winsock)
+  (21 functions)
+
+## PhysX3Common_x64.dll
+### ws2_32.dll (winsock)
+  (22 functions)
+
+## PhysX3CommonCHECKED_x64.dll
+### ws2_32.dll (winsock)
+  (22 functions)
+
+## PhysX3CommonDEBUG_x64.dll
+### ws2_32.dll (winsock)
+  (22 functions)
+
+## PhysXCooking64.dll
+### wsock32.dll (winsock-legacy)
+  (12 functions)
+
+## PhysXCore64.dll
+### wsock32.dll (winsock-legacy)
+  (12 functions)
+
+## PhysXLoader64.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+
+## python35.dll
+### ws2_32.dll (winsock)
+  (3 functions)
+
+## rail_sdkX64.dll
+### crypt32.dll (crypto)
+  (12 functions)
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (34 functions)
+
+## RemoteDebugger4RUSTX64.dll
+### ws2_32.dll (winsock)
+  (17 functions)
+
+## SemanticX64.dll
+### ws2_32.dll (winsock)
+  (16 functions)
+
+## SimplygonSDKRuntimeReleasex64.dll
+### iphlpapi.dll (iphlpapi)
+  (1 functions)
+### ws2_32.dll (winsock)
+  (30 functions)
+
+## TCJ.dll
+### crypt32.dll (crypto)
+  (7 functions)
+### wininet.dll (wininet)
+  (7 functions)
+### ws2_32.dll (winsock)
+  (34 functions)
+
+## TerSafe.dll
+### ws2_32.dll (winsock)
+  (35 functions)
+
+## txffmpeg.dll
+### ws2_32.dll (winsock)
+  (20 functions)
+
+## UGC_Corex64.dll
+### ws2_32.dll (winsock)
+  (14 functions)
+
+## xPlatform.dll
+### ws2_32.dll (winsock)
+  (31 functions)
+

@@ -1,0 +1,164 @@
+ALL COLUMNS (118):
+    0 SkillName
+    1 SkillID
+    2 Design_Belong
+    3 Design_Effect
+    4 MaxLevel
+    5 KindType
+    6 FunctionType
+    7 UIType
+    8 BelongKungfu
+    9 BelongSchool
+   10 CastMode
+   11 WeaponRequest
+   12 IsCostAmmo
+   13 CostItemType
+   14 CostItemIndex
+   15 MountRequestType
+   16 MountRequestDetail
+   17 MountType
+   18 IsMountAble
+   19 IsPassiveSkill
+   20 IsChannelSkill
+   21 IsExpSkill
+   22 IsExactHit
+   23 IsInstinct
+   24 IsAutoTurn
+   25 CauseAbradeEquipment
+   26 CauseBeatBreak
+   27 CauseBeatBack
+   28 HasCriticalStrike
+   29 SkillEventMask1
+   30 SkillEventMask2
+   31 SkillCastFlag
+   32 UseCastScript
+   33 Use3DObstacle
+   34 CheckReachable
+   35 IgnorePositiveShield
+   36 IgnoreNegativeShield
+   37 NeedOutOfFight
+   38 SelfOnFear
+   39 SelfHorseStateRequest
+   40 TargetTypePlayer
+   41 TargetTypeNpc
+   42 TargetRelationNone
+   43 TargetRelationSelf
+   44 TargetRelationAlly
+   45 TargetRelationEnemy
+   46 TargetRelationDialog
+   47 TargetRelationNeutrality
+   48 TargetRelationParty
+   49 TargetRelationRaid
+   50 TargetHorseStateRequest
+   51 TargetOnFear
+   52 AutoSelectTarget
+   53 NPCWeaponType
+   54 CommonSkillActiveMode
+   55 IsBindCombatTag
+   56 EffectPlayType
+   57 ScriptFile
+   58 _ScriptFileHashID
+   59 EffectType
+   60 CheckBindBuff
+   61 MountRequestDetailLevel
+   62 CastMask
+   63 SelfMoveStateMask
+   64 TargetMoveStateMask
+   65 RecipeType
+   66 RecipeTagMask
+   67 MapBanMask
+   68 SkillMark
+   69 SelfBackupMoveStateMask
+   70 TargetRelationMentor
+   71 TargetRelationApprentice
+   72 KungfuMountID
+   73 HorseMask
+   74 PetTemplateID
+   75 TargetNpcSpeciesMask
+   76 SelfSprintStateRequest
+   77 SelfTerrainStateRequest
+   78 SelfFollowStateRequest
+   79 IgnoreCamp
+   80 TargetFollowStateRequest
+   81 IsCheckStealth
+   82 SelfMoveStateMask2
+   83 SelfBackupMoveStateMask2
+   84 TargetMoveStateMask2
+   85 Pos
+   86 CanReverse
+   87 CanCastOnTower
+   88 TargetRelationTeamGroup
+   89 TargetJumpCountMask
+   90 UseEarlyWarningScript
+   91 TargetFollowTypeRequest
+   92 IgnoreSilence
+   93 LongRange
+   94 AOE
+   95 AbradeEquipRate
+   96 UseSkillCoefficient
+   97 RangePutOpti
+   98 IgnoreSelectCheck
+   99 BelongDynamicGroupID
+  100 PlatformType
+  101 SkillCoefficient
+  102 DotCoefficient
+  103 IgnorePet
+  104 SurplusCoefficient
+  105 NeedCheckSkillSlot
+  106 IsFrost
+  107 IgnoreRangeBlock
+  108 MazeCast
+  109 SkillEventMask3
+  110 IgnoreImmunityCast
+  111 IgnoreControl
+  112 HitStiffDelayFrame
+  113 HitStiffSkillMoveID
+  114 HitStiffVelocityXY
+  115 HitStiffAccelerateXY
+  116 AddPosture
+  117 UseDamageScalingCompression
+move-ish columns: [(63, 'SelfMoveStateMask'), (64, 'TargetMoveStateMask'), (69, 'SelfBackupMoveStateMask'), (82, 'SelfMoveStateMask2'), (83, 'SelfBackupMoveStateMask2'), (84, 'TargetMoveStateMask2'), (113, 'HitStiffSkillMoveID')]
+skill 228 row:
+  SkillName=太阴指
+  SkillID=228
+  Design_Belong=测试技能
+  Design_Effect=直接伤害技能
+  MaxLevel=6
+  KindType=Leap
+  FunctionType=Damage
+  UIType=1
+  BelongKungfu=10088
+  BelongSchool=2
+  CastMode=CasterSingle
+  CostItemType=Invalid
+  MountRequestType=2
+  IsExpSkill=1
+  IsExactHit=1
+  HasCriticalStrike=1
+  SkillEventMask1=66049
+  SkillEventMask2=524288
+  UseCastScript=1
+  Use3DObstacle=1
+  IgnorePositiveShield=1
+  IgnoreNegativeShield=1
+  SelfHorseStateRequest=NotHorse
+  TargetTypePlayer=1
+  TargetRelationSelf=1
+  TargetHorseStateRequest=Any
+  TargetOnFear=1
+  CommonSkillActiveMode=Invalid
+  EffectPlayType=AniAndSfx
+  ScriptFile=万花\万花_轻功_震地拔冲.lua
+  EffectType=Neutral
+  SelfMoveStateMask=2617262334
+  TargetMoveStateMask=2617262334
+  SelfSprintStateRequest=NotInSprint
+  SelfTerrainStateRequest=Any
+  SelfMoveStateMask2=63
+  SelfBackupMoveStateMask2=63
+  TargetMoveStateMask2=63
+  TargetFollowTypeRequest=Any
+  UseSkillCoefficient=1
+  PlatformType=1
+  SkillEventMask3=1
+  IgnoreControl=1
