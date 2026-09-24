@@ -1,0 +1,187 @@
+Camera real-value evidence (2026-09-23)
+=======================================
+Companion to docs/CAMERA_REAL_VALUES.md. Raw values only, no interpretation
+beyond the labels noted inline.
+
+1. Represent/common/number.krl.txt - camera block
+-------------------------------------------------
+Source file: C:\Users\Zhibin Ren\Desktop\reborn\proof\gravity\number.krl.txt
+(extracted game data; loader sLoadNumberFromFile JX3RepresentX64.dll 0x180857DF0;
+logical name CommonNumber mapped in Represent/filepath.ini).
+
+Character / global:
+  CharacterWalkSpeed=6
+  CharacterRunSpeed=20
+  CharacterSwimSpeed=20
+  CharacterRideWalkSpeed=8
+  CharacterRideRunSpeed=40
+  CameraSpeedRatio=1.5625
+  CameraFollowMode=1
+  CameraDragSpeed=1
+  CameraMaxDistance=1245
+  CameraResetSpeed=1
+  CameraPitchSpeed=0.001
+  CameraInitYaw=0.5022619
+  CameraInitPitch=-0.17
+  CameraInitRoll=0
+  CharacterCameraSmoothTime=60
+
+Sprint camera:
+  SprintCameraAngle=0.3
+  SprintCameraPitch=-0.35
+  SprintCameraMaxDistance=60
+  SprintCameraSmoothTime=500
+  SprintCameraSpringTime=500
+  StrollYOffset=500
+  SprintCameraOffset=40
+  SprintCameraOffsetSmoothTime=500
+  SprintCameraMaxDragSpeed=0.0025
+  SprintCameraMinTrackBackSpeed=10        # comment in file: 最小追踪速度(角度/秒)
+  SprintCameraMaxTrackBackSpeed=90        # comment in file: 最小追踪速度(角度/秒)
+  SprintCameraTrackBackSpeedSlope=1.0     # comment in file: 速度增加斜率[0, 1)
+  SprintCameraMaxOffset=100
+
+Carrier camera:
+  CarrierCameraPitch=-0.17
+  CarrierCameraYaw=0
+  CarrierCameraMaxDistance=1
+  CarrierCameraDeltaHeight=50
+
+Other camera-adjacent:
+  DiveCameraRollRange=12
+  DiveCameraRollTime=400
+  NearByWallDistance=800
+  AirCombatToSkillMoveCameraDis=2000.0
+  TitleAdjustHeightMin=-20
+  TitleAdjustHeightMax=100
+  TitleAdjustDistanceMin=1200
+  TitleAdjustDistanceMax=4600
+  TitleAdjustFovMin=0.7
+  TitleAdjustFovMax=1.4
+  TitleAdjustFovValue=40
+  nNpcAdjustSlipOffsetY=64
+  nNpcAdjustOffsetY=200
+  m1PelvisHeight=66.0605774
+  m2PelvisHeight=98.5870590
+  f1PelvisHeight=69.5535660
+  f2PelvisHeight=96.9901352
+
+2. Per-map camera init
+----------------------
+Source: C:\Users\Zhibin Ren\Desktop\reborn\proof\gravity\scene_init_param.txt
+
+  MapID	CameraYaw	CameraPitch	CameraRoll
+  0	0.5022619	-0.17	0
+  1	0.5022619	-0.17	0
+  653	2.11075783	-0.17	0
+
+Saved per-role runtime fYaw values match these (e.g. 2.1107578277588).
+
+3. Per-user settings (userdata custom.dat)
+------------------------------------------
+Path: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\<account>\<region>\<server>\<role>\custom.dat
+Format: Lua-ish text, entries {k="...",v=...}. 92 role files carry the camera keys.
+
+VideoSettingPanel.tCameraStatic (most common, 68/92):
+  {fDragSpeed=1,fMaxCameraDistance=2000,fSpringResetSpeed=1,
+   fCameraResetSpeed=1,nCameraMode=0,fDragPitchSpeed=1}
+User-modified variants:
+  fMaxCameraDistance=760 / 1125 / 1245, nCameraMode=1
+
+Other keys:
+  VideoSettingPanel.bCameraSmoothing = true   (92)
+  VideoSettingPanel.bCurveCamera     = true   (92)
+  VideoSettingPanel.bEyeFollow       = true (66) / false (26)
+  UISetting_Comprehensive.nCameraModeInClassicMode = 1 (47) / 0 (20)
+  UISetting_Comprehensive.nCameraModeInJoystickMode = 0 (67)
+  g_Scene_tCameraStatic = {}                  (92)
+  g_Scene_tCameraRuntime = {fYaw, fPitch, fCameraToObjectEyeScale}
+
+g_Scene_tCameraRuntime samples (untouched role first):
+  {fYaw=3.1214437484741, fPitch=-0.34999978542328, fCameraToObjectEyeScale=1}
+  {fYaw=2.1107578277588, fCameraToObjectEyeScale=1, fPitch=-0.17000000178814}
+  {fYaw=3.3352382183075, fPitch=-0.35530573129654, fCameraToObjectEyeScale=0.89999997615814}
+  fPitch range across roles: -0.17 .. -0.78
+  fCameraToObjectEyeScale: 1 (most), 0.9 (some)
+
+4. Official FBX export unit
+---------------------------
+File: C:\SeasunGame\MovieEditor\source\fbx\花萝\花萝无动作.fbx (same for 走路/跳跃*)
+Binary FBX header property block:
+  "UnitScaleFactor"  double  bytes 00 00 00 00 00 00 F0 3F  = 1.0
+  "OriginalUnitScaleFactor" double  = 1.0
+FBX convention: UnitScaleFactor is relative to centimeters (1.0 = cm).
+
+5. Zoom step function
+---------------------
+JX3RepresentX64.dll ZoomCharacterCamera_Step @ 0x180b3ce40
+  xmm7 = fMaxCameraDistance (arg), assert fMaxCameraDistance > 0.0f
+  xmm1 = [this+0x78]                 ; current distance
+  xmm0 = fMaxCameraDistance * 0.2f   ; const @ 0x180cb9e9c
+  xmm1 = xmm1 / xmm0 * 120.0f        ; const @ 0x180cd8ab4
+  step = clamp(xmm1, 10.0f, 120.0f)  ; const @ 0x180cad554
+  if (flag) step = -step             ; sign mask @ 0x180cad610
+  => step = clamp(current / (0.2 * fMaxCameraDistance) * 120, 10, 120) units
+
+Related constants:
+  0x180cade98 = 1.5707964 (pi/2)  assert fabs(fExpectPitch) < D3DX_PI * 0.5f
+  0x180ca1918 = 0.001             setter lower clamp
+  0x180ca1280 = 1.0               setter upper clamp
+
+6. Engine camera caps
+---------------------
+JX3UIX64.dll Lua3DEngine_Get3DEngineOptionCaps @ 0x18000682e reads caps via
+vtable slots:
+  +0x48 fMinCameraDistance
+  +0x50 fMaxCameraDistance
+  +0x58 fMinCameraAngle
+  +0x60 fMaxCameraAngle
+
+Confirmed default fMaxCameraDistance = 2000.0:
+  JX3RepresentX64.dll const blob 0x180d2af90 = 44 fa 00 00 (2000.0f),
+  preceded by -1.56298 @ 0x180d2af88 and 1.0 @ 0x180d2af8c; nearby strings
+  "pCameraController", "pSkillMoveCamera", "pSpriteCamera", "camera control".
+
+Live-probe path (JX3RepresentX64.dll EnterCarrier):
+  manager [[0x180f06a50] + 0xB0] -> vtable [vt + 0x238] returns caps object,
+  then caps vtable +0x48/+0x50/+0x58/+0x60 return the four values.
+
+7. Where the missing camera files would be
+------------------------------------------
+From Represent/filepath.ini (camera research §7):
+  CameraConfig          -> Represent/camera/config.ini
+  CameraCommon          -> Represent/camera/camera_common.krl.txt
+  SkillMoveCamera       -> Represent/camera/skill_move_camera.txt
+  AirCombatCamera       -> Represent/camera/*.krl.txt
+  NpcDialogCamera       -> Represent/camera/*.krl.txt
+  CarrierCamera         -> Represent/camera/*.krl.txt
+  GliderCamera          -> Represent/camera/*.krl.txt
+  DynamicFollowCamera   -> Represent/camera/*.krl.txt
+  PlayerRushCamera      -> Represent/player/player_rush_camera.txt
+  CameraLockTargetConfig-> Represent/camera/CameraLockTargetConfig.txt
+  CameraSegmentConfig   -> Represent/camera/CameraSegmentConfig.json
+
+Local availability (checked 2026-09-23):
+  - not in the current paks (PakV4SfxExtract finds data\source\... but not
+    represent\camera\...)
+  - Aug-build cache has only:
+      SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\
+        skill-tables-out\Represent\camera\skill_move_camera.txt   (408 bytes)
+        represent-out\represent\filepath.ini                      (22905 bytes)
+
+8. Camera row loaders (schema, for reference)
+---------------------------------------------
+JX3RepresentX64.dll:
+  LoadCarrierParams    @ 0x180ae5xxx  (keys CameraHeight, CameraMaxDeltaYaw,
+      CameraMaxDeltaPitch, MaxDragSpeed, RotationSpeed, ForbidStrafe,
+      ForbidRotation, TargetDistance, SmoothTime, TurnCameraYawToObjectYaw,
+      InitCameraPitch, InitCameraAngle)
+  MovePitch10RowLoader (keys ZoomLength, CameraMovePitchApplyAngle,
+      CameraMovePitchSmoothTime, CameraMovePitchAdjustPitch,
+      CameraMovePitchAdjustMaxPitch, CameraMovePitchApplyMaxPitch,
+      CameraAdjustYawWhenMoveTurn, CameraAdjustYawWhenMoveTurnDisableAngle,
+      CameraMovePitchApplyTimeInterval)
+  Verified defaults: proof/netcode/camera_defaults_verified.txt
+  Row table names: tabCamera 0x180cb2e82, tabCarrierCamera 0x180cf3cf2,
+      tabAirCombatCamera 0x180d2acf0, tabNpcDialogCamera 0x180d2fcb8
+      (row files absent from this install)
