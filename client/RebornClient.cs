@@ -202,6 +202,20 @@ internal static class RebornClient
                 camSys.Mode, camSys.Distance,
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
         }
+        try
+        {
+            // FOV: the editor's view-angle factor. A wider value makes the
+            // character look smaller (open item: the game's fFovy is missing),
+            // so it can be tuned for testing with RC_VIEW_ANGLE.
+            Log("view angle factor=" + scene.GetViewAngleFactor());
+            float va;
+            if (float.TryParse(Env("RC_VIEW_ANGLE", ""), out va) && va > 0f)
+            {
+                scene.SetViewAngleFactor(va);
+                Log("view angle factor set to " + va);
+            }
+        }
+        catch (Exception e) { Log("view angle: " + e.Message); }
         float worldDirX = 0f, worldDirZ = 0f;
         int lastKeySig = -1;
         long handle = 0, attachedHandle = -999;
@@ -298,10 +312,8 @@ internal static class RebornClient
             }
             else
             {
-                float cx = 0f, cy = 0f, cz = 0f;
-                scene.GetCameraPos(ref cx, ref cy, ref cz);
-                px = cx + viewX * 500f;
-                pz = cz + viewZ * 500f;
+                // default test spawn on 龙门寻宝 (override with RC_SPAWN=x,y,z)
+                px = 23334f; py = 761f; pz = 24224f;
             }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
@@ -515,10 +527,20 @@ internal static class RebornClient
         // ---------------- main loop ----------------
         // table values converted from 15 logic frames/s into continuous seconds
         // (1 world unit = 1 cm; exact 15 Hz integer model is the next movement pass)
-        float pGravity = -2475f, pJumpV = 1350f, pSpeed = 90f, pRun = 300f;
-        float playerRadius = 25f, playerHeight = 170f;
-        float.TryParse(Env("RC_RADIUS", "25"), out playerRadius);
-        float.TryParse(Env("RC_HEIGHT", "170"), out playerHeight);
+        // RC_SPEED_MULT is a host-only testing multiplier (default 3x for faster
+        // traversal); set RC_SPEED_MULT=1 for the real 90/300 u/s.
+        float speedMult = 3f;
+        float.TryParse(Env("RC_SPEED_MULT", "3"), out speedMult);
+        float pGravity = -2475f, pJumpV = 1350f;
+        float pSpeed = 90f * speedMult, pRun = 300f * speedMult;
+        // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
+        // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
+        // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
+        // meshes. Capsule radius scaled from the old adult preset (25 at 170)
+        // by the same ratio.
+        float playerRadius = 17f, playerHeight = 116f;
+        float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
+        float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
@@ -558,7 +580,10 @@ internal static class RebornClient
         // and cannot set the engine's aim, so the engine pitch must be aligned
         // once to look at the character from there (continuous vertical orbit
         // deltas break the engine screenshot path, so this is loop-limited).
-        for (int pass = 0; pass < 3; pass++)
+        // RC_PITCH_ALIGN=0 skips it (also avoids the 32x32 screenshot bug when
+        // recording/capturing).
+        bool pitchAlign = Env("RC_PITCH_ALIGN", "1") == "1";
+        for (int pass = 0; pitchAlign && pass < 3; pass++)
         {
             measureView();
             double camH0 = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
