@@ -346,12 +346,8 @@ internal static class RebornClient
         };
         MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
         {
-            // zoom = TargetDistance in meters (JX3 script hook set_max_distance)
-            double td = camSys.Rows[CameraSystem.MODE_CHARACTER].F("TargetDistance", 6.0);
-            td -= (e.Delta > 0 ? 1.0 : -1.0) * 0.5;
-            if (td < 2.0) td = 2.0;
-            if (td > 30.0) td = 30.0;
-            camSys.SetMaxDistance(td);
+            // real JX3 wheel zoom (ZoomCharacterCamera_Step)
+            camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
         };
         panel.MouseWheel += wheel;
         form.MouseWheel += wheel;
@@ -704,7 +700,7 @@ internal static class RebornClient
                 {
                     camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
                 }
-                double dist = camSys.UpdateDistance(dt, sprinting, pRun / 192.0);
+                double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter);
 
                 double vx = hx, vvy = viewY, vz = hz;
                 double vlen = Math.Sqrt(vx * vx + vvy * vvy + vz * vz);
