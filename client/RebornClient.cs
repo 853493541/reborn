@@ -140,9 +140,28 @@ internal static class RebornClient
 
         // ---------------- player ----------------
         float px = 0f, py = 0f, pz = 0f, vy = 0f;
-        float viewX = 0f, viewZ = 1f;       // camera view direction (horizontal)
+        float viewX = 0f, viewY = 0f, viewZ = 1f;   // spawn orientation (measured once)
         bool grounded = false;
-        float followDist = 800f;
+        // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
+        CameraSystem camSys = new CameraSystem();
+        {
+            double sc;
+            if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
+            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "camera.json");
+            if (File.Exists(camCfg))
+            {
+                try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
+                catch (Exception e) { Log("camera config ex: " + e.Message); }
+            }
+            camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
+            camSys.Pitch = camSys.Row.F("InitCameraPitch", -20.0 * CameraSystem.DEG);
+            camSys.Distance = camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter;
+            Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
+                camSys.Mode, camSys.Distance,
+                camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
+        }
+        float worldDirX = 0f, worldDirZ = 0f;
+        int lastKeySig = -1;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
@@ -169,16 +188,57 @@ internal static class RebornClient
                 float ax = 0f, ay = 0f, az = 0f;
                 scene.GetCameraPos(ref ax, ref ay, ref az);
                 scene.SetCamareMoveState(1, 1);
+                // no Render here: the nudge must not be visible on screen
+                for (int i = 0; i < 3; i++) { engine.FrameMove(); Application.DoEvents(); }
+                scene.SetCamareMoveState(1, 0);
+                float bx = 0f, by = 0f, bz = 0f;
+                scene.GetCameraPos(ref bx, ref by, ref bz);
+                float dx = bx - ax, dy = by - ay, dz = bz - az;
+                float dl = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                if (dl > 0.5f) { viewX = dx / dl; viewY = dy / dl; viewZ = dz / dl; }
+            }
+            catch { }
+        };
+
+        // orbit calibration probe: measure pixel -> radians for ROTATE_CAMERA
+        if (Env("RC_ORBIT_TEST", "0") == "1")
+        {
+            Action<int, int, int, int> send = delegate(int act, int a2, int x, int y)
+            {
+                scene.ExecAction(act, a2, 0, ((y & 0xFFFF) << 16) | (x & 0xFFFF));
+                Pump(engine, 60);
+            };
+            Action<string> logDir = delegate(string tag)
+            {
+                float ax = 0f, ay = 0f, az = 0f;
+                scene.GetCameraPos(ref ax, ref ay, ref az);
+                scene.SetCamareMoveState(1, 1);
                 for (int i = 0; i < 3; i++) { engine.FrameMove(); engine.Render(); Application.DoEvents(); }
                 scene.SetCamareMoveState(1, 0);
                 float bx = 0f, by = 0f, bz = 0f;
                 scene.GetCameraPos(ref bx, ref by, ref bz);
-                float dx = bx - ax, dz = bz - az;
-                float dl = (float)Math.Sqrt(dx * dx + dz * dz);
-                if (dl > 0.5f) { viewX = dx / dl; viewZ = dz / dl; }
+                float dx = bx - ax, dy = by - ay, dz = bz - az;
+                float dl = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                if (dl > 1e-4f) Log(string.Format("orbit {0}: dir=({1:F3},{2:F3},{3:F3}) cam=({4:F0},{5:F0},{6:F0})",
+                    tag, dx / dl, dy / dl, dz / dl, bx, by, bz));
+                else Log("orbit " + tag + ": no movement");
+            };
+            try
+            {
+                logDir("start");
+                send(30, 1, 640, 360);
+                send(1, 1, 840, 360);   // +200 px horizontal
+                logDir("after +200x");
+                send(30, 1, 640, 360);
+                send(1, 1, 640, 510);   // +150 px vertical
+                logDir("after +150y");
+                send(30, 1, 640, 360);
+                send(1, 1, 640, 210);   // -150 px vertical
+                logDir("after -150y");
             }
-            catch { }
-        };
+            catch (Exception e) { Log("orbit test ex: " + e.Message); }
+            if (Env("RC_ORBIT_TEST_ONLY", "0") == "1") return;
+        }
 
         try
         {
@@ -227,13 +287,19 @@ internal static class RebornClient
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
-        try { scene.SetCameraPos(px - viewX * followDist, py + 60f, pz - viewZ * followDist, false); } catch { }
+        // camera yaw from the measured engine view direction (camera -> anchor)
+        if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+        {
+            camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            Log(string.Format("camera yaw init={0:F3} (view dir {1:F2},{2:F2})", camSys.Yaw, viewX, viewZ));
+        }
 
         // ---------------- input ----------------
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
+        bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool demoTeleport = Env("RC_COL_TELEPORT", "0") == "1";
         float demoDirX = 0f, demoDirZ = 0f;
         {
@@ -241,40 +307,50 @@ internal static class RebornClient
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
         bool cDown = false, teleportToStructure = false;
-        int dragAction = 0;
-        var pending = new System.Collections.Generic.Queue<int[]>();
+        bool mouseLocked = false;
+        var lockCenter = new System.Drawing.Point(panel.ClientSize.Width / 2, panel.ClientSize.Height / 2);
+        var orbitQueue = new System.Collections.Generic.Queue<int[]>();
         Func<int, int, int> makeLParam = delegate(int x, int y) { return ((y & 0xFFFF) << 16) | (x & 0xFFFF); };
+        Action lockMouse = delegate
+        {
+            mouseLocked = true;
+            Cursor.Hide();
+            try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
+        };
+        Action unlockMouse = delegate
+        {
+            mouseLocked = false;
+            Cursor.Show();
+        };
         panel.MouseDown += delegate(object s, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                dragAction = 1;
-                pending.Enqueue(new int[] { 30, 1, e.X, e.Y });
-            }
+            if (e.Button == MouseButtons.Left && !mouseLocked) lockMouse();
         };
         panel.MouseMove += delegate(object s, MouseEventArgs e)
         {
-            if (dragAction != 0) pending.Enqueue(new int[] { dragAction, 1, e.X, e.Y });
-        };
-        panel.MouseUp += delegate(object s, MouseEventArgs e)
-        {
-            if (dragAction != 0)
+            if (!mouseLocked) return;
+            int dx = e.X - lockCenter.X, dy = e.Y - lockCenter.Y;
+            if (dx != 0 || dy != 0)
             {
-                pending.Enqueue(new int[] { 30, 1, e.X, e.Y });
-                dragAction = 0;
+                orbitQueue.Enqueue(new int[] { dx, dy });
+                try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
         MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
         {
-            followDist -= (e.Delta > 0 ? 1f : -1f) * 150f;
-            if (followDist < 300f) followDist = 300f;
-            if (followDist > 3000f) followDist = 3000f;
+            // zoom = TargetDistance in meters (JX3 script hook set_max_distance)
+            double td = camSys.Rows[CameraSystem.MODE_CHARACTER].F("TargetDistance", 6.0);
+            td -= (e.Delta > 0 ? 1.0 : -1.0) * 0.5;
+            if (td < 2.0) td = 2.0;
+            if (td > 30.0) td = 30.0;
+            camSys.SetMaxDistance(td);
         };
         panel.MouseWheel += wheel;
         form.MouseWheel += wheel;
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Escape) unlockMouse();
             if (e.KeyCode == Keys.W) pW = true;
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
@@ -306,10 +382,32 @@ internal static class RebornClient
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
-        long lastMs = 0, lastMeasure = 0, lastLog = 0, lastHud = 0, skillUntil = 0;
+        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0;
+        bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
+        bool camPitchFix = Env("RC_CAM_PITCH_FIX", "1") == "1";
         long frames = 0, fpsAt = 0, fps = 0;
         int shotIdx = 0;
         long[] shots = ParseShots(Env("RC_SHOTS", "3000,8000,15000,30000"));
+
+        // one-time engine pitch alignment with the camera row geometry
+        // (continuous vertical orbit deltas break the engine screenshot path)
+        if (camPitchFix)
+        {
+            measureView();
+            double camH0 = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+            double desired = -Math.Atan2(camH0, Math.Max(1.0, camSys.Distance));
+            double measured = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+            int dyp = (int)(-(desired - measured) / 0.00121);
+            if (dyp > 200) dyp = 200;
+            if (dyp < -200) dyp = -200;
+            if (dyp != 0)
+            {
+                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X, lockCenter.Y + dyp));
+                Log("camera pitch align: dyp=" + dyp);
+            }
+        }
+
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
         while (!form.IsDisposed)
@@ -322,15 +420,16 @@ internal static class RebornClient
             frames++;
             if (now - fpsAt >= 1000) { fps = frames * 1000 / (now - fpsAt); frames = 0; fpsAt = now; }
 
-            while (pending.Count > 0)
+            if (orbitQueue.Count > 0)
             {
-                int[] cmd = pending.Dequeue();
-                try
-                {
-                    if (cmd[0] == 31) scene.ExecAction(31, 1, cmd[1], 1);
-                    else scene.ExecAction(cmd[0], cmd[1], 0, makeLParam(cmd[2], cmd[3]));
-                }
-                catch (Exception e) { Log("action ex: " + e.Message); }
+                int ox = 0, oy = 0;
+                while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
+                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy));
+                measureView();
+                if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+                    camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+                lastCamMeasure = now;
             }
 
             if (demo)
@@ -345,6 +444,20 @@ internal static class RebornClient
             {
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
                 pW = now >= 3000 && now < 9000;
+            }
+            if (camDemo)
+            {
+                // engine ROTATE_CAMERA mapping: 0.0035 rad/px (MAP_CAMERA_SENS)
+                if (now >= 2000 && now < 6000)
+                {
+                    int px2 = (int)(dt * 1.0f / 0.0035f);
+                    orbitQueue.Enqueue(new int[] { px2, 0 });
+                }
+                if (now >= 6000 && now < 9000)
+                {
+                    int py2 = (int)(dt * 0.5f / 0.0035f);
+                    orbitQueue.Enqueue(new int[] { 0, py2 });
+                }
             }
 
             if (teleportToStructure)
@@ -366,20 +479,37 @@ internal static class RebornClient
                         float fx = nx - px, fz = nz - pz;
                         float fl = (float)Math.Sqrt(fx * fx + fz * fz);
                         if (fl > 1e-4f) { fx /= fl; fz /= fl; }
-                        viewX = fx; viewZ = fz;
                         demoDirX = fx; demoDirZ = fz;
                         curYaw = (float)Math.Atan2(fx, fz);
-                        try { scene.SetCameraPos(px - fx * followDist, py + 60f, pz - fz * followDist, false); } catch { }
                         Log(string.Format("teleport to structure: {0:F0}u away, at ({1:F0},{2:F0},{3:F0})", d, px, py, pz));
                     }
                     else Log("no solid structure found");
                 }
             }
 
-            if (now - lastMeasure >= 500) { lastMeasure = now; measureView(); }
-            float hl = (float)Math.Sqrt(viewX * viewX + viewZ * viewZ);
-            float hx = hl > 1e-4f ? viewX / hl : 0f;
-            float hz = hl > 1e-4f ? viewZ / hl : 1f;
+            // refresh the engine view direction a few times per second
+            if (now - lastCamMeasure >= 200)
+            {
+                lastCamMeasure = now;
+                measureView();
+                if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+                    camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+
+            }
+            if (camDebug && now - lastCamLog >= 500)
+            {
+                lastCamLog = now;
+                float dbgx = 0f, dbgy = 0f, dbgz = 0f;
+                scene.GetCameraPos(ref dbgx, ref dbgy, ref dbgz);
+                Log(string.Format("camdbg mode={0} yaw={1:F2} dist={2:F0} meas=({3:F2},{4:F2}) cam=({5:F0},{6:F0},{7:F0})",
+                    camSys.Mode, camSys.Yaw, camSys.Distance, viewX, viewZ, dbgx, dbgy, dbgz));
+            }
+
+            // movement is camera-relative: forward = camera -> anchor
+            double cfx, cfz;
+            camSys.Forward(out cfx, out cfz);
+            float hx = (float)cfx;
+            float hz = (float)cfz;
 
             // skill
             if (skillPressed)
@@ -391,13 +521,19 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction
-            float dirX = 0f, dirZ = 0f;
+            // input -> direction; hold the world-space direction while the key
+            // set is unchanged (the camera may rotate without curving the run)
+            float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
-            if (pW) { dirX += hx; dirZ += hz; }
-            if (pS) { dirX -= hx; dirZ -= hz; }
-            if (pA) { dirX -= rX; dirZ -= rZ; }
-            if (pD) { dirX += rX; dirZ += rZ; }
+            if (pW) { inX += hx; inZ += hz; }
+            if (pS) { inX -= hx; inZ -= hz; }
+            if (pA) { inX -= rX; inZ -= rZ; }
+            if (pD) { inX += rX; inZ += rZ; }
+            float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
+            if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
+            int keySig = (pW ? 1 : 0) | (pS ? 2 : 0) | (pA ? 4 : 0) | (pD ? 8 : 0);
+            if (keySig != lastKeySig) { lastKeySig = keySig; worldDirX = inX; worldDirZ = inZ; }
+            float dirX = worldDirX, dirZ = worldDirZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
@@ -503,31 +639,63 @@ internal static class RebornClient
                 lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
             }
 
-            // follow camera
+            // JX3 follow camera: the ENGINE camera owns the look direction (native
+            // rotation from the mouse actions); the camera model drives the distance
+            // dynamics (zoom / sprint pull-back / SmoothTime). The camera is placed
+            // on the engine's own view line through the character, so it is centred.
             try
             {
-                float baseY = py + 50f;
-                float useDist = followDist;
+                bool movingNow = len > 0f;
+                bool sprinting = movingNow && shiftDown;
+                if (sprinting)
+                {
+                    if (camSys.Mode != CameraSystem.MODE_SPRINT)
+                        camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
+                }
+                else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
+                {
+                    camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
+                }
+                double dist = camSys.UpdateDistance(dt, sprinting, pRun / 192.0);
+
+                double vx = viewX, vvy = viewY, vz = viewZ;
+                double vlen = Math.Sqrt(vx * vx + vvy * vvy + vz * vz);
+                if (vlen < 1e-6) { vx = 0; vvy = 0; vz = 1; vlen = 1; }
+                vx /= vlen; vvy /= vlen; vz /= vlen;
+
+                // chest anchor on the engine's own 3D view line
+                double ax2 = px, ay2 = py + 90.0, az2 = pz;
+                double camX = ax2 - vx * dist;
+                double camY = ay2 - vvy * dist;
+                double camZ = az2 - vz * dist;
+
+                // obstruction: terrain above the anchor->camera ray
                 if (sampler != null)
                 {
-                    for (int i = 1; i <= 16; i++)
+                    const double margin = 20.0;
+                    double ddy = camY - ay2;
+                    double ddx = camX - ax2, ddz = camZ - az2;
+                    double rayLen = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
+                    const int steps = 14;
+                    for (int i = 2; i <= steps; i++)
                     {
-                        float t = i / 16f;
-                        float sx = px - hx * followDist * t;
-                        float sz = pz - hz * followDist * t;
-                        if (sampler.Sample(sx, sz) + 10f > baseY) { useDist = followDist * ((i - 1) / 16f); break; }
+                        double t = (double)i / steps;
+                        float g = sampler.Sample((float)(ax2 + ddx * t), (float)(az2 + ddz * t));
+                        if (g + margin > ay2 + ddy * t)
+                        {
+                            double d2 = Math.Max(150.0, t * rayLen - 40.0);
+                            camX = ax2 - vx * d2;
+                            camY = ay2 - vvy * d2;
+                            camZ = az2 - vz * d2;
+                            break;
+                        }
                     }
+                    float camGround = sampler.Sample((float)camX, (float)camZ) + 30f;
+                    if (camY < camGround) camY = camGround;
                 }
-                if (useDist < 80f) useDist = 80f;
-                float camX = px - hx * useDist;
-                float camZ = pz - hz * useDist;
-                float camY = baseY;
-                float camGround = sampler != null ? sampler.Sample(camX, camZ) + 30f : camY;
-                if (camY < camGround) camY = camGround;
-                if (camY > py + 120f) camY = py + 120f;
-                scene.SetCameraPos(camX, camY, camZ, false);
+                scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
             }
-            catch { }
+            catch (Exception e) { Log("camera system ex: " + e.Message); }
 
             engine.FrameMove();
             engine.Render();
@@ -539,8 +707,9 @@ internal static class RebornClient
                 string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN" : "WALK") : "IDLE";
                 hud.Text = string.Format(
-                    "JX3 Reborn M1\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nclip {7}\nWASD move | Shift run | Space jump | 1 skill | C teleport | L-drag orbit | wheel zoom",
+                    "JX3 Reborn M1\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\ncam {7} yaw {8:F2} dist {9:F0}\nclip {10}\nWASD move | Shift run | Space jump | 1 skill | C teleport | click=look (Esc unlock) | wheel zoom",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
+                    camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip));
             }
             if (now - lastLog >= 2000)

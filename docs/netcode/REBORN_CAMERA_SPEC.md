@@ -142,3 +142,47 @@ spring integrate with clamp, then `pos = base + track_delta`
    period, amplitude × decay per cycle, ends after max cycles; idle = rand
    jitter within ± amplitude. Matches the recovered updater (`0x180B10A70`).
 4. Mouse sensitivity defaults (`userdata\custom.dat`, binary; user setting).
+
+## 8. Product implementation (engine-host client)
+
+Ported from the `camara-imp` branch (`engine_host_spike/CameraSystem.cs`),
+now in `client/CameraSystem.cs` (C# port of the Python reference, byte-for-byte
+parity: `client/CameraSmoke.cs` ports the 13 reference checks, ALL PASS).
+
+- Modes/rows exactly as the spec; verified defaults shipped in
+  `client/camera.json` (copied to `bin64\camera.json`; loaded at startup,
+  overriding row values with no code change).
+- Follow math: anchor + (cos(yaw)cos(pitch)d, sin(pitch)d + h, sin(yaw)cos(pitch)d),
+  exponential smoothing `offset += delta*dt/SmoothTime` with dead-zone snap.
+- Movement-reactive pitch (pi/3000 rad/ms = 60 deg/s), yaw-follow while turning
+  (dead zone 0.26 rad), sprint pull-back (SprintCameraMaxDistance), follow-action
+  lock target, camera shake and cinematic spring (TrackCamera) ported as well.
+- Obstruction: ray-march from the character's chest toward the camera against
+  the real terrain sampler (14 steps, 20 u margin); on hit the camera is pulled
+  to hit-0.2 m. Plus a final clamp above terrain+30 u.
+- Integration in `client/RebornClient.cs` (follow mode):
+  - **the engine owns the look direction** (native `ROTATE_CAMERA` from the
+    mouse); `measureView()` refreshes the horizontal direction a few times per
+    second and syncs `CameraSystem.Yaw` (`atan2(-viewZ, -viewX)`).
+  - the camera model drives the distance dynamics (zoom / sprint pull-back /
+    SmoothTime); the camera is placed on the engine's own 3D view line through
+    the chest anchor, so the character stays centred.
+  - one-time startup pitch alignment to the row geometry
+    (`-atan2(CameraHeight, Distance)`); continuous vertical orbit deltas break
+    the engine screenshot path, so this is a single correction.
+  - wheel = TargetDistance (2..30 m), Shift+move = sprint mode pull-back,
+    movement input is camera-relative with the world direction held while the
+    key set is unchanged (breaks the camera-relative/yaw-follow feedback).
+- Units: rows are meters; scaled by `UnitsPerMeter` (default 192,
+  `RC_CAMERA_SCALE`). Character 6 m distance -> 1152 u, height 2 m -> 384 u.
+- Verified in the client: orbit keeps the character centred; sprint pulls the
+  distance 1152 -> 1728 u (= 9 m sprint row) and restores 1152 u; walk/run/
+  collision unaffected.
+
+Build (from the repo root):
+
+```
+client\build_client.cmd
+csc /platform:x64 /target:exe /out:camera_smoke.exe ^
+  client\CameraSystem.cs client\CameraSmoke.cs
+```
