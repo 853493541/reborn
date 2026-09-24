@@ -199,6 +199,8 @@ internal static class RebornClient
                 scene.SetCamareMoveState(1, 0);
                 float bx = 0f, by = 0f, bz = 0f;
                 scene.GetCameraPos(ref bx, ref by, ref bz);
+                // put the camera back where it was: the nudge must not shift it
+                scene.SetCameraPos(ax, ay, az, false);
                 float dx = bx - ax, dy = by - ay, dz = bz - az;
                 float dl = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
                 if (dl > 0.5f) { viewX = dx / dl; viewY = dy / dl; viewZ = dz / dl; }
@@ -388,7 +390,7 @@ internal static class RebornClient
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
-        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0;
+        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0;
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         bool camPitchFix = Env("RC_CAM_PITCH_FIX", "1") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
@@ -437,10 +439,13 @@ internal static class RebornClient
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
                 scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
                 scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy));
-                measureView();
-                if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
-                    camSys.Yaw = Math.Atan2(-viewZ, -viewX);
-                lastCamMeasure = now;
+                // track yaw ourselves: the engine orbit also moves the camera
+                // position, and a nudge here made the camera flash and glide back
+                camSys.Yaw -= ox * 0.0018f;
+                float twoPi = 2f * (float)Math.PI;
+                if (camSys.Yaw > (float)Math.PI) camSys.Yaw -= twoPi;
+                if (camSys.Yaw < -(float)Math.PI) camSys.Yaw += twoPi;
+                lastOrbitMs = now;
             }
 
             if (demo)
@@ -515,14 +520,14 @@ internal static class RebornClient
                 }
             }
 
-            // refresh the engine view direction a few times per second
-            if (now - lastCamMeasure >= 200)
+            // drift correction: measure the engine view direction only while the
+            // mouse is idle (the nudge moves the camera, so keep it rare)
+            if (now - lastCamMeasure >= 1000 && now - lastOrbitMs > 400)
             {
                 lastCamMeasure = now;
                 measureView();
                 if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                     camSys.Yaw = Math.Atan2(-viewZ, -viewX);
-
             }
             if (camDebug && now - lastCamLog >= 500)
             {
@@ -701,7 +706,7 @@ internal static class RebornClient
                 }
                 double dist = camSys.UpdateDistance(dt, sprinting, pRun / 192.0);
 
-                double vx = viewX, vvy = viewY, vz = viewZ;
+                double vx = hx, vvy = viewY, vz = hz;
                 double vlen = Math.Sqrt(vx * vx + vvy * vvy + vz * vz);
                 if (vlen < 1e-6) { vx = 0; vvy = 0; vz = 1; vlen = 1; }
                 vx /= vlen; vvy /= vlen; vz /= vlen;
