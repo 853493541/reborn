@@ -49,3 +49,8 @@ proof/netcode/mode_juejing/pak_item/
 proof/netcode/mode_juejing/pak_drop3/
 proof/netcode/mode_juejing/pak_logic/
 proof/netcode/mode_juejing/cache_maps/
+
+# Raw extracted loading-screen images (research scratch, kept local;
+# re-extract with tools/netcode/extract_hpkg_member.py)
+proof/netcode/mode_ui/loading/**/*.png
+proof/netcode/mode_ui/loading/**/*.dds
