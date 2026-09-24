@@ -142,13 +142,40 @@ internal static class MapSpike
         };
         bool shiftDown = false;
         bool pW = false, pA = false, pS = false, pD = false, pJump = false;
+        bool camDbg = Environment.GetEnvironmentVariable("MAP_CAMERA_DEBUG") == "1";
         bool teleportToStructure = false;
         string shownTitle = "";
+        bool needReMeasure = false;
+        long lastMeasureMs = 0;
         bool firstPersonCam = Environment.GetEnvironmentVariable("MAP_PLAYER_CAM") == "1";
         bool followMode = playerMode && !firstPersonCam;
-        bool needReMeasure = false;
-        float followDist = 800f;
-        long lastMeasureMs = 0;
+        // JX3-modeled follow camera (docs/netcode/REBORN_CAMERA_SPEC.md)
+        CameraSystem camSys = null;
+        float worldDirX = 0f, worldDirZ = 0f;
+        int lastKeySig = -1;
+        if (playerMode && followMode)
+        {
+            camSys = new CameraSystem();
+            string scaleEnv = Environment.GetEnvironmentVariable("MAP_CAMERA_SCALE");
+            if (!string.IsNullOrEmpty(scaleEnv))
+            {
+                double sc;
+                if (double.TryParse(scaleEnv, out sc) && sc > 0) camSys.UnitsPerMeter = sc;
+            }
+            string camCfg = System.IO.Path.Combine(
+                System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                "camera.json");
+            if (File.Exists(camCfg))
+            {
+                try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
+                catch (Exception e) { Log("camera config ex: " + e.Message); }
+            }
+            camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
+            camSys.Pitch = camSys.Row.F("InitCameraPitch", -0.35);   // real client default
+            Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
+                camSys.Mode, camSys.Distance, camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter,
+                camSys.UnitsPerMeter));
+        }
         var pending = new System.Collections.Generic.Queue<int[]>();
         Action<Keys, int> camKey = delegate(Keys k, int state)
         {
@@ -181,6 +208,7 @@ internal static class MapSpike
             pending.Enqueue(new int[] { 30, 1, e.X, e.Y });
             if (e.Button == MouseButtons.Right)
             {
+                // engine-native camera rotation (ROTATE_CAMERA / PAN_VIEW)
                 int a = (Control.ModifierKeys & Keys.Shift) != 0 ? 4
                       : (Control.ModifierKeys & Keys.Alt) != 0 ? 1 : 3;
                 pending.Enqueue(new int[] { a, 1, e.X, e.Y });
@@ -198,9 +226,11 @@ internal static class MapSpike
         {
             if (playerMode && followMode)
             {
-                followDist -= (e.Delta > 0 ? 1f : -1f) * 150f;
-                if (followDist < 300f) followDist = 300f;
-                if (followDist > 3000f) followDist = 3000f;
+                if (camSys != null)
+                {
+                    // real client zoom: wheel up = closer, real step formula
+                    camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
+                }
                 return;
             }
             pending.Enqueue(new int[] { 31, e.Delta < 0 ? 0 : 1, 0, 1 });
@@ -210,27 +240,10 @@ internal static class MapSpike
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (playerMode && e.KeyCode == Keys.F)
+            if (playerMode)
             {
-                followMode = !followMode;
-                needReMeasure = true;
-                Log("camera mode -> " + (followMode ? "FOLLOW (third person)" : "FREE"));
-                try
-                {
-                    form.Text = followMode
-                        ? "JX3 Map Player - FOLLOW (WASD walk, Space jump, F = free cam, wheel = distance)"
-                        : "JX3 Map Player - FREE cam (WASD walk, arrows/QE move cam, F = follow)";
-                }
-                catch { }
-                return;
-            }
-            if (playerMode && e.KeyCode == Keys.C)
-            {
-                teleportToStructure = true;
-                return;
-            }
-            if (playerMode && followMode)
-            {
+                // follow camera only (no free cam)
+                if (e.KeyCode == Keys.C) { teleportToStructure = true; return; }
                 if (e.KeyCode == Keys.W) pW = true;
                 else if (e.KeyCode == Keys.S) pS = true;
                 else if (e.KeyCode == Keys.A) pA = true;
@@ -239,28 +252,6 @@ internal static class MapSpike
                 else if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) shiftDown = true;
                 return;
             }
-            if (playerMode && !followMode)
-            {
-                // Free camera: WASD still walks the character (never lose it),
-                // arrow keys / Q / E move the camera.
-                if (e.KeyCode == Keys.W) pW = true;
-                else if (e.KeyCode == Keys.S) pS = true;
-                else if (e.KeyCode == Keys.A) pA = true;
-                else if (e.KeyCode == Keys.D) pD = true;
-                else if (e.KeyCode == Keys.Space) pJump = true;
-                else if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) shiftDown = true;
-                else if (e.KeyCode == Keys.Up) camKey(Keys.W, 1);
-                else if (e.KeyCode == Keys.Down) camKey(Keys.S, 1);
-                else if (e.KeyCode == Keys.Left) camKey(Keys.A, 1);
-                else if (e.KeyCode == Keys.Right) camKey(Keys.D, 1);
-                else if (e.KeyCode == Keys.Q) camKey(Keys.Q, 1);
-                else if (e.KeyCode == Keys.E) camKey(Keys.E, 1);
-                else if (e.KeyCode == Keys.Add) pending.Enqueue(new int[] { 81, 25, 1, 0 });
-                else if (e.KeyCode == Keys.Subtract) pending.Enqueue(new int[] { 81, 26, 1, 0 });
-                else if (e.KeyCode == Keys.R) pending.Enqueue(new int[] { 83, 0, 0, 0 });
-                return;
-            }
-            if (playerMode && e.KeyCode == Keys.Space) { pJump = true; return; }
             if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) { shiftDown = true; pending.Enqueue(new int[] { 80, CMS_FAST, 1, 0 }); }
             else if (e.KeyCode == Keys.W || e.KeyCode == Keys.S || e.KeyCode == Keys.A || e.KeyCode == Keys.D
                      || e.KeyCode == Keys.Q || e.KeyCode == Keys.E) camKey(e.KeyCode, 1);
@@ -279,14 +270,6 @@ internal static class MapSpike
                 else if (e.KeyCode == Keys.A) pA = false;
                 else if (e.KeyCode == Keys.D) pD = false;
                 else if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) shiftDown = false;
-                else if (!followMode && e.KeyCode == Keys.Up) camKey(Keys.W, 0);
-                else if (!followMode && e.KeyCode == Keys.Down) camKey(Keys.S, 0);
-                else if (!followMode && e.KeyCode == Keys.Left) camKey(Keys.A, 0);
-                else if (!followMode && e.KeyCode == Keys.Right) camKey(Keys.D, 0);
-                else if (!followMode && e.KeyCode == Keys.Q) camKey(Keys.Q, 0);
-                else if (!followMode && e.KeyCode == Keys.E) camKey(Keys.E, 0);
-                else if (!followMode && e.KeyCode == Keys.Add) pending.Enqueue(new int[] { 81, 25, 0, 0 });
-                else if (!followMode && e.KeyCode == Keys.Subtract) pending.Enqueue(new int[] { 81, 26, 0, 0 });
                 return;
             }
             if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) { shiftDown = false; pending.Enqueue(new int[] { 80, CMS_FAST, 0, 0 }); }
@@ -772,12 +755,20 @@ internal static class MapSpike
             {
                 try
                 {
-                    scene.SetCameraPos(plX - pdX * followDist, plY + 60f, plZ - pdZ * followDist, false);
+                    // place the follow camera on the engine view line through
+                    // the character (the engine camera owns the look direction)
+                    double dist0 = camSys.UpdateDistance(0.5);
+                    float camX = plX - pdX * (float)dist0;
+                    float camY = plY + 90f - pdY * (float)dist0;
+                    float camZ = plZ - pdZ * (float)dist0;
+                    float g0 = sampler != null ? sampler.Sample(camX, camZ) + 30f : camY;
+                    if (camY < g0) camY = g0;
+                    scene.SetCameraPos(camX, camY, camZ, false);
                     float cx = 0f, cy = 0f, cz = 0f;
                     scene.GetCameraPos(ref cx, ref cy, ref cz);
                     Log(string.Format("follow camera at ({0:F0},{1:F0},{2:F0}) dist={3:F0} dir=({4:F2},{5:F2})",
-                        cx, cy, cz, followDist, pdX, pdZ));
-                    try { form.Text = "JX3 Map Player - FOLLOW (F = free camera)"; } catch { }
+                        cx, cy, cz, dist0, pdX, pdZ));
+                    try { form.Text = "JX3 Map Player - FOLLOW (WASD walk, Space jump)"; } catch { }
                 }
                 catch (Exception e) { Log("camera place ex: " + e.Message); }
             }
@@ -862,16 +853,16 @@ internal static class MapSpike
                 scene.SetCamareMoveState(1, 1);
                 for (int i = 0; i < 3; i++)
                 {
+                    // no Render here: the nudge must not be visible on screen
                     engine.FrameMove();
-                    engine.Render();
                     Application.DoEvents();
                 }
                 scene.SetCamareMoveState(1, 0);
                 float bx = 0f, by = 0f, bz = 0f;
                 scene.GetCameraPos(ref bx, ref by, ref bz);
-                float dx = bx - ax, dz = bz - az;
-                float dl = (float)Math.Sqrt(dx * dx + dz * dz);
-                if (dl > 0.5f) { pdX = dx / dl; pdZ = dz / dl; pdY = 0f; }
+                float dx = bx - ax, dy = by - ay, dz = bz - az;
+                float dl = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                if (dl > 0.5f) { pdX = dx / dl; pdY = dy / dl; pdZ = dz / dl; }
             }
             catch { }
         };
@@ -881,6 +872,11 @@ internal static class MapSpike
         {
             measureView();
             Log(string.Format("spawn camera dir=({0:F2},{1:F2})", pdX, pdZ));
+        }
+        if (camSys != null && (Math.Abs(pdX) > 1e-4f || Math.Abs(pdZ) > 1e-4f))
+        {
+            camSys.Yaw = Math.Atan2(-pdZ, -pdX);
+            Log(string.Format("camera yaw init={0:F3} (view dir {1:F2},{2:F2})", camSys.Yaw, pdX, pdZ));
         }
 
         if (playerMode && Environment.GetEnvironmentVariable("MAP_ORBIT_TEST") == "1")
@@ -943,22 +939,45 @@ internal static class MapSpike
                 if (dt < 0f) dt = 0f;
                 if (dt > 0.05f) dt = 0.05f;
 
+                if (followMode && camSys != null)
+                {
+                    // movement is camera-relative: forward = camera -> anchor
+                    double cfx, cfz;
+                    camSys.Forward(out cfx, out cfz);
+                    pdX = (float)cfx; pdZ = (float)cfz;
+                }
                 float hl = (float)Math.Sqrt(pdX * pdX + pdZ * pdZ);
                 float hx = hl > 1e-4f ? pdX / hl : 0f;
                 float hz = hl > 1e-4f ? pdZ / hl : 1f;
-                float dirX = 0f, dirZ = 0f;
+                bool demoWalk = playerDemo && grounded && (nowMs % 2000) < 1400;
+                float inX = 0f, inZ = 0f;
                 float rX = hz, rZ = -hx;
-                if (pW) { dirX += hx; dirZ += hz; }
-                if (pS) { dirX -= hx; dirZ -= hz; }
-                if (pA) { dirX -= rX; dirZ -= rZ; }
-                if (pD) { dirX += rX; dirZ += rZ; }
-                float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
-                if (playerDemo && grounded && (nowMs % 2000) < 1400)
+                if (pW || demoWalk) { inX += hx; inZ += hz; }
+                if (pS) { inX -= hx; inZ -= hz; }
+                if (pA) { inX -= rX; inZ -= rZ; }
+                if (pD) { inX += rX; inZ += rZ; }
+                float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
+                if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
+                float dirX, dirZ;
+                if (followMode && camSys != null)
                 {
-                    dirX += hx;
-                    dirZ += hz;
-                    len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
+                    // hold the world-space direction while the key set is
+                    // unchanged: the camera may rotate without curving the run
+                    // (also breaks the camera-relative/yaw-follow feedback loop)
+                    int keySig = (pW ? 1 : 0) | (pS ? 2 : 0) | (pA ? 4 : 0) | (pD ? 8 : 0) |
+                                 (demoWalk ? 16 : 0);
+                    if (keySig != lastKeySig)
+                    {
+                        lastKeySig = keySig;
+                        worldDirX = inX; worldDirZ = inZ;
+                    }
+                    dirX = worldDirX; dirZ = worldDirZ;
                 }
+                else
+                {
+                    dirX = inX; dirZ = inZ;
+                }
+                float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
                 if (teleportToStructure && foliageCol != null)
                 {
                     teleportToStructure = false;
@@ -973,15 +992,18 @@ internal static class MapSpike
                         plZ = nz + ddz / dl * 320f;
                         plY = sampler != null ? sampler.Sample(plX, plZ) : plY;
                         pvy = 0f;
-                        // switch to follow camera right behind the character so the
-                        // obstacle is immediately visible
+                        // switch to follow mode; the camera re-measures and places
+                        // itself on the engine view line next frame
                         followMode = true;
                         needReMeasure = true;
-                        float fdx = -ddx / dl, fdz = -ddz / dl;
-                        pdX = fdx; pdZ = fdz;
                         try
                         {
-                            scene.SetCameraPos(plX - fdx * followDist, plY + 60f, plZ - fdz * followDist, false);
+                            if (camSys != null)
+                            {
+                                double d0 = camSys.UpdateDistance(0.5);
+                                scene.SetCameraPos(plX - pdX * (float)d0, plY + 90f - pdY * (float)d0,
+                                                   plZ - pdZ * (float)d0, false);
+                            }
                         }
                         catch { }
                         Log(string.Format("teleport to structure: was {0:F0}u away, now at ({1:F0},{2:F0},{3:F0})",
@@ -1067,9 +1089,7 @@ internal static class MapSpike
                     else if (ground - plY <= 70f) plY = ground;   // step up (terrain/rock)
                 }
                 // visible collision feedback in the window title
-                string baseTitle = followMode
-                    ? "JX3 Map Player - FOLLOW (WASD walk, Space jump, F = free cam, C = teleport to structure)"
-                    : "JX3 Map Player - FREE cam (WASD walk, arrows/QE cam, F = follow, C = teleport to structure)";
+                string baseTitle = "JX3 Map Player - FOLLOW (WASD walk, Space jump, wheel = zoom, C = teleport to structure)";
                 string wantTitle = blocked ? "BLOCKED by structure  |  " + baseTitle : baseTitle;
                 if (wantTitle != shownTitle)
                 {
@@ -1097,50 +1117,87 @@ internal static class MapSpike
                     grounded = false;
                 }
 
-                if (followMode)
-                {
-                    if (needReMeasure || nowMs - lastMeasureMs >= 500)
-                    {
-                        needReMeasure = false;
-                        lastMeasureMs = nowMs;
-                        measureView();
-                    }
-                }
                 if (firstPersonCam)
                 {
                     try { scene.SetCameraPos(plX, plY + 90f, plZ, true); } catch { }
                 }
-                else if (followMode)
+                else if (followMode && camSys != null)
                 {
                     try
                     {
-                        // Horizontal third-person camera: keep the view axis at a
-                        // fixed height above the character, pull the camera in when
-                        // terrain blocks it, and never climb onto mesas.
-                        float baseY = plY + 50f;
-                        float useDist = followDist;
-                        for (int i = 1; i <= 16; i++)
+                        // The ENGINE camera owns the look direction (its native
+                        // rotation from the mouse actions); the JX3 camera model
+                        // provides the distance dynamics (zoom / sprint pull-back
+                        // / SmoothTime smoothing). The camera is placed on the
+                        // engine's own view line through the character, so the
+                        // character is always centred.
+                        bool movingNow = len > 0f;
+                        bool sprinting = movingNow && shiftDown;
+                        if (sprinting)
                         {
-                            float t = i / 16f;
-                            float sx = plX - hx * followDist * t;
-                            float sz = plZ - hz * followDist * t;
-                            float g = sampler.Sample(sx, sz);
-                            if (g + 10f > baseY)
+                            if (camSys.Mode != CameraSystem.MODE_SPRINT)
+                                camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
+                        }
+                        else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
+                        {
+                            camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
+                        }
+                        double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter);
+
+                        // refresh the engine view direction a few times per second
+                        if (needReMeasure || nowMs - lastMeasureMs >= 200)
+                        {
+                            needReMeasure = false;
+                            lastMeasureMs = nowMs;
+                            measureView();
+                        }
+                        // only the horizontal part of the engine view direction is
+                        // stable across nudges; the vertical comes from the camera
+                        // row height (a nudge-vertical would jitter 5x/s)
+                        double vx = pdX, vz = pdZ;
+                        double vlen = Math.Sqrt(vx * vx + vz * vz);
+                        if (vlen < 1e-6) { vx = 0; vz = 1; vlen = 1; }
+                        vx /= vlen; vz /= vlen;
+                        double vy = 0.0;
+                        double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+
+                        // chest anchor on the view line
+                        double[] anchor = { plX, plY + 90.0, plZ };
+                        double camX = anchor[0] - vx * dist;
+                        double camY = anchor[1] + camHeight;
+                        double camZ = anchor[2] - vz * dist;
+
+                        // obstruction: terrain above the anchor->camera ray
+                        const double margin = 20.0;
+                        double ddy = camY - anchor[1];
+                        double ddx = camX - anchor[0], ddz = camZ - anchor[2];
+                        double rayLen = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
+                        const int steps = 14;
+                        for (int i = 2; i <= steps; i++)
+                        {
+                            double t = (double)i / steps;
+                            float g = sampler.Sample((float)(anchor[0] + ddx * t), (float)(anchor[2] + ddz * t));
+                            if (g + margin > anchor[1] + ddy * t)
                             {
-                                useDist = followDist * ((i - 1) / 16f);
+                                double d2 = Math.Max(150.0, t * rayLen - 40.0);
+                                camX = anchor[0] - vx * d2;
+                                camY = anchor[1] - vy * d2;
+                                camZ = anchor[2] - vz * d2;
                                 break;
                             }
                         }
-                        if (useDist < 80f) useDist = 80f;
-                        float camX = plX - hx * useDist;
-                        float camZ = plZ - hz * useDist;
-                        float camY = baseY;
-                        float camGround = sampler.Sample(camX, camZ) + 30f;
+                        float camGround = sampler.Sample((float)camX, (float)camZ) + 30f;
                         if (camY < camGround) camY = camGround;
-                        if (camY > plY + 120f) camY = plY + 120f;
-                        scene.SetCameraPos(camX, camY, camZ, false);
+                        scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                        if (camDbg)
+                        {
+                            float gx = 0f, gy = 0f, gz = 0f;
+                            try { scene.GetCameraPos(ref gx, ref gy, ref gz); } catch { }
+                            Log(string.Format("camdbg set=({0:F0},{1:F0},{2:F0}) get=({3:F0},{4:F0},{5:F0}) dir=({6:F2},{7:F2},{8:F2}) dist={9:F0}",
+                                camX, camY, camZ, gx, gy, gz, vx, vy, vz, dist));
+                        }
                     }
-                    catch { }
+                    catch (Exception e) { Log("camera system ex: " + e.Message); }
                 }
                 if (actorOk)
                 {

@@ -142,16 +142,51 @@ spring integrate with clamp, then `pos = base + track_delta`
    period, amplitude × decay per cycle, ends after max cycles; idle = rand
    jitter within ± amplitude. Matches the recovered updater (`0x180B10A70`).
 4. Mouse sensitivity defaults (`userdata\custom.dat`, binary; user setting).
+5. **Resolved 2026-09-23** — per-user camera settings and the real zoom step:
+   - `userdata/<account>/<region>/<server>/<role>/custom.dat` (Lua-ish text)
+     stores the camera panel state:
+     `VideoSettingPanel.tCameraStatic = {fDragSpeed, fMaxCameraDistance,
+     fSpringResetSpeed, fCameraResetSpeed, nCameraMode, fDragPitchSpeed}`
+     plus `bCameraSmoothing`, `bCurveCamera`, `bEyeFollow`,
+     `UISetting_Comprehensive.nCameraModeInClassicMode` and the saved runtime
+     camera `g_Scene_tCameraRuntime = {fYaw, fPitch, fCameraToObjectEyeScale}`.
+     Real defaults across 92 roles: `fDragSpeed = fDragPitchSpeed =
+     fSpringResetSpeed = fCameraResetSpeed = 1`, **`fMaxCameraDistance = 2000`**
+     (68 roles untouched; user-adjusted roles use 760/1125/1245),
+     **`nCameraMode = 0`** (some roles 1), smoothing/curve = true,
+     `fCameraToObjectEyeScale = 1` (0.9 on some roles).
+     Saved pitch: **-0.35 rad (-20°) default**, observed range -0.17..-0.78 rad.
+   - Engine caps (from `Lua3DEngine_Get3DEngineOptionCaps`, `JX3UIX64.dll`):
+     `fMinCameraDistance`, `fMaxCameraDistance`, `fMinCameraAngle`,
+     `fMaxCameraAngle`; the values come from the engine caps object (per
+     graphics option level) and are not in any accessible config — only the
+     `fMaxCameraDistance = 2000` default is confirmed (DLL const blob
+     `0x180d2af90`, next to `-1.56298 / 1.0 / 0`; string block also contains
+     `AdjustEyeScale`, `InitCameraEyeScaleEnable`, `InitEyeScale`).
+   - Wheel zoom (real, `ZoomCharacterCamera_Step`, `JX3RepresentX64.dll`
+     `0x180b3ce40`): `step = clamp(current / (0.2 * fMaxCameraDistance) * 120,
+     10, 120)` world units; sign by direction. Pitch is asserted
+     `|pitch| < π/2`; the smoothing setter clamps its value to [0.001, 1.0].
+   - Camera row tables (`tabCamera`, `tabCarrierCamera`, `tabAirCombatCamera`,
+     `tabNpcDialogCamera`) are still absent from this install and from the CDN
+     resource index, so the per-mode row values (default follow distance,
+     min distance, angle caps) remain unknown.
+   - **Units: 1 engine unit = 1 cm (1 m = 100 u)** — mesh-verified
+     (`docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md`: adult male 181.64 u =
+     1.816 m); the earlier `UnitsPerMeter = 192` was wrong (it would make the
+     adult 0.95 m). `fMaxCameraDistance = 2000` is therefore 20 m.
 
-## 8. Product implementation (engine-host client)
+## 8. Product implementation (engine host + client)
 
-Ported from the `camara-imp` branch (`engine_host_spike/CameraSystem.cs`),
-now in `client/CameraSystem.cs` (C# port of the Python reference, byte-for-byte
-parity: `client/CameraSmoke.cs` ports the 13 reference checks, ALL PASS).
+Implemented in `engine_host_spike/CameraSystem.cs` (C# port of the Python
+reference, byte-for-byte parity: `CameraSmoke.cs` ports the 13 reference
+checks and prints ALL PASS). The same model is ported into the engine-host
+client (`client/CameraSystem.cs`, commit `bdfb586`; `client/CameraSmoke.cs`
+13/13).
 
 - Modes/rows exactly as the spec; verified defaults shipped in
-  `client/camera.json` (copied to `bin64\camera.json`; loaded at startup,
-  overriding row values with no code change).
+  `engine_host_spike/camera.json` (copied to `bin64\camera.json`; the host
+  loads it at startup, overriding row values with no code change).
 - Follow math: anchor + (cos(yaw)cos(pitch)d, sin(pitch)d + h, sin(yaw)cos(pitch)d),
   exponential smoothing `offset += delta*dt/SmoothTime` with dead-zone snap.
 - Movement-reactive pitch (pi/3000 rad/ms = 60 deg/s), yaw-follow while turning
@@ -160,29 +195,46 @@ parity: `client/CameraSmoke.cs` ports the 13 reference checks, ALL PASS).
 - Obstruction: ray-march from the character's chest toward the camera against
   the real terrain sampler (14 steps, 20 u margin); on hit the camera is pulled
   to hit-0.2 m. Plus a final clamp above terrain+30 u.
-- Integration in `client/RebornClient.cs` (follow mode):
-  - **the engine owns the look direction** (native `ROTATE_CAMERA` from the
-    mouse); `measureView()` refreshes the horizontal direction a few times per
-    second and syncs `CameraSystem.Yaw` (`atan2(-viewZ, -viewX)`).
+- Integration in `MapSpike.cs` (player follow mode, **follow camera only** —
+  the F free-cam toggle was removed 2026-09-23):
+  right-drag = engine-native rotation (the engine camera owns the look
+  direction; the host re-measures it via the nudge probe every 200 ms),
+  wheel = real JX3 zoom step (see §7.5) with limits `MinCameraDistance = 100 u`
+  (placeholder for the unknown engine cap) .. `MaxCameraDistance = 2000 u`
+  (real setting default, 20 m), Shift+move = sprint mode pull-back,
+  movement input holds its world direction while the key set is unchanged.
+- Units: rows are meters; the host scales them by `UnitsPerMeter`
+  (default **100**, `MAP_CAMERA_SCALE`). Character 6 m distance -> 600 u,
+  height 2 m -> 200 u, real pitch -0.35 rad.
+- Verified in game: camera settles at camDistXZ 600 u (= 6 m * 100 * cos20°)
+  with the terrain clamp active.
+- Engine-host client integration (`client/RebornClient.cs`, commit `2eb6ca3`):
+  - the engine owns the look direction (native `ROTATE_CAMERA` from the
+    mouse); while orbiting, yaw is tracked from the orbit deltas at the
+    measured rate 0.0018 rad/px, and `measureView()` only runs when the mouse
+    has been idle >400 ms (drift correction, 1 Hz) and restores the camera
+    position after the nudge.
   - the camera model drives the distance dynamics (zoom / sprint pull-back /
-    SmoothTime); the camera is placed on the engine's own 3D view line through
-    the chest anchor, so the character stays centred.
+    SmoothTime); the camera is placed on the engine's 3D view line through the
+    chest anchor.
   - one-time startup pitch alignment to the row geometry
     (`-atan2(CameraHeight, Distance)`); continuous vertical orbit deltas break
     the engine screenshot path, so this is a single correction.
-  - wheel = TargetDistance (2..30 m), Shift+move = sprint mode pull-back,
-    movement input is camera-relative with the world direction held while the
+  - movement input is camera-relative with the world direction held while the
     key set is unchanged (breaks the camera-relative/yaw-follow feedback).
-- Units: rows are meters; scaled by `UnitsPerMeter` (default 192,
-  `RC_CAMERA_SCALE`). Character 6 m distance -> 1152 u, height 2 m -> 384 u.
-- Verified in the client: orbit keeps the character centred; sprint pulls the
-  distance 1152 -> 1728 u (= 9 m sprint row) and restores 1152 u; walk/run/
-  collision unaffected.
+  - **Pending adoption (camera fix later):** the client still runs the
+    pre-`37bb969` values — `UnitsPerMeter = 192`, wheel 2..30 m, sprint row
+    9 m, and the 1.92x-off player sim constants. Value list:
+    `docs/CAMERA_ADOPTION_FOR_ONLINE_CLIENT.md`.
 
 Build (from the repo root):
 
 ```
 client\build_client.cmd
+csc /platform:x64 /target:exe /out:map_spike_host.exe ^
+  /r:MovieEngineCLR.dll /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
+  engine_host_spike\MapSpike.cs engine_host_spike\FoliageCollision.cs ^
+  engine_host_spike\CameraSystem.cs
 csc /platform:x64 /target:exe /out:camera_smoke.exe ^
-  client\CameraSystem.cs client\CameraSmoke.cs
+  engine_host_spike\CameraSystem.cs engine_host_spike\CameraSmoke.cs
 ```

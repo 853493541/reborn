@@ -1,0 +1,73 @@
+Real JX3 camera values (2026-09-23)
+===================================
+
+Sources
+-------
+1. Per-user settings (text) in
+   C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\<account>\<region>\<server>\<role>\custom.dat
+   Keys are Lua-ish: {k="...",v=...}.
+2. JX3RepresentX64.dll (MovieEditor\bin64) - camera controller code/constants.
+3. JX3UIX64.dll - Lua3DEngine_Get3DEngineOptionCaps binding (engine camera caps).
+4. docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md - 1 engine unit = 1 cm.
+
+1. VideoSettingPanel.tCameraStatic (camera settings panel, 92 role files)
+-----------------------------------------------------------------------
+Default (68 roles untouched):
+  {fDragSpeed=1, fMaxCameraDistance=2000, fSpringResetSpeed=1,
+   fCameraResetSpeed=1, nCameraMode=0, fDragPitchSpeed=1}
+User-adjusted roles (some):
+  fMaxCameraDistance=760 / 1125 / 1245, nCameraMode=1
+Toggles: bCameraSmoothing=true (92), bCurveCamera=true (92),
+         bEyeFollow=true (66) / false (26)
+UISetting_Comprehensive.nCameraModeInClassicMode = 1 (47) / 0 (20)
+UISetting_Comprehensive.nCameraModeInJoystickMode = 0 (67)
+
+2. g_Scene_tCameraRuntime (saved camera per role)
+-------------------------------------------------
+  {fYaw=..., fPitch=-0.34999978542328, fCameraToObjectEyeScale=1}   (default/untouched)
+Observed fPitch range: -0.17 .. -0.78 rad; fCameraToObjectEyeScale 1 (0.9 on some)
+=> default camera pitch = -0.35 rad = -20.05 deg.
+
+3. Engine camera caps (Lua3DEngine_Get3DEngineOptionCaps, JX3UIX64.dll 0x18000682e)
+-----------------------------------------------------------------------------------
+  fMinCameraDistance  (vtable +0x48)
+  fMaxCameraDistance  (vtable +0x50)
+  fMinCameraAngle     (vtable +0x58)
+  fMaxCameraAngle     (vtable +0x60)
+Values come from the engine caps object (per graphics option level); not in any
+accessible config. Confirmed default fMaxCameraDistance = 2000.0:
+  JX3RepresentX64.dll const blob 0x180d2af90 = 44fa0000, preceded by
+  -1.56298 (0x180d2af88) and 1.0 (0x180d2af8c); nearby strings
+  "pCameraController", "pSkillMoveCamera", "pSpriteCamera", "camera control".
+Also: "AdjustEyeScale", "InitCameraEyeScaleEnable", "InitEyeScale"
+(0x180d2ad20/0x180d2fcd0/0x180d2fcf0).
+
+4. Wheel zoom (ZoomCharacterCamera_Step, JX3RepresentX64.dll 0x180b3ce40)
+------------------------------------------------------------------------
+  xmm7 = fMaxCameraDistance (arg); assert fMaxCameraDistance > 0.0f
+  xmm1 = [this+0x78]                       ; current distance
+  xmm0 = fMaxCameraDistance * 0.2f         ; const 0x180cb9e9c = 0.2
+  xmm1 = xmm1 / xmm0 * 120.0f              ; const 0x180cd8ab4 = 120
+  step = clamp(xmm1, 10.0f, 120.0f)        ; const 0x180cad554 = 10
+  if (flag) step = -step                   ; xorps sign mask 0x180cad610
+  => step = clamp(current / (0.2 * fMaxCameraDistance) * 120, 10, 120) units
+
+5. Other verified camera constants
+----------------------------------
+  CameraMaxDeltaYaw   = 6.28   (0x180d09f48)
+  CameraMaxDeltaPitch = 1.56   (0x180d09f44)
+  MaxDragSpeed = RotationSpeed = 0.00314 (0x180d09f40)
+  TargetDistance = 1.0, SmoothTime = 1.0 (0x180c82240)
+  CameraAdjustYawWhenMoveTurnDisableAngle = 0.26 (0x180c8d3e8)
+  InitCameraPitch = pi sentinel (0x180c8d19c)
+  assert |fExpectPitch| < pi/2 (const 0x180cade98 = 1.5707964)
+  smoothing setter clamps value to [0.001 (0x180ca1918), 1.0 (0x180ca1280)]
+  Camera table names (row tables, absent from install/CDN index):
+    tabCamera 0x180cb2e82, tabCarrierCamera 0x180cf3cf2,
+    tabAirCombatCamera 0x180d2acf0, tabNpcDialogCamera 0x180d2fcb8
+
+6. Units
+--------
+  1 engine unit = 1 cm, 1 m = 100 u (adult male mesh 181.64 u = 1.816 m).
+  fMaxCameraDistance = 2000 u = 20 m. The host's old UnitsPerMeter = 192 was
+  wrong (would make the adult 0.95 m).
