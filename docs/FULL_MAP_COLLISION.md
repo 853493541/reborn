@@ -249,7 +249,7 @@ with one click (runs `tools/bake_map_collision.py` and streams the log) and
 launches the host with the right environment:
 
 - `MAP_PATH` = the map's ResourcePath
-- `MAP_PLAYER=1` for walk mode (or free camera)
+- `MAP_PLAYER=1` for walk mode (follow camera only)
 - optional spawn `x,y,z`
 
 Build: `csc /platform:x64 /target:winexe /r:System.Windows.Forms.dll
