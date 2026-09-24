@@ -142,6 +142,39 @@ spring integrate with clamp, then `pos = base + track_delta`
    period, amplitude × decay per cycle, ends after max cycles; idle = rand
    jitter within ± amplitude. Matches the recovered updater (`0x180B10A70`).
 4. Mouse sensitivity defaults (`userdata\custom.dat`, binary; user setting).
+5. **Resolved 2026-09-23** — per-user camera settings and the real zoom step:
+   - `userdata/<account>/<region>/<server>/<role>/custom.dat` (Lua-ish text)
+     stores the camera panel state:
+     `VideoSettingPanel.tCameraStatic = {fDragSpeed, fMaxCameraDistance,
+     fSpringResetSpeed, fCameraResetSpeed, nCameraMode, fDragPitchSpeed}`
+     plus `bCameraSmoothing`, `bCurveCamera`, `bEyeFollow`,
+     `UISetting_Comprehensive.nCameraModeInClassicMode` and the saved runtime
+     camera `g_Scene_tCameraRuntime = {fYaw, fPitch, fCameraToObjectEyeScale}`.
+     Real defaults across 92 roles: `fDragSpeed = fDragPitchSpeed =
+     fSpringResetSpeed = fCameraResetSpeed = 1`, **`fMaxCameraDistance = 2000`**
+     (68 roles untouched; user-adjusted roles use 760/1125/1245),
+     **`nCameraMode = 0`** (some roles 1), smoothing/curve = true,
+     `fCameraToObjectEyeScale = 1` (0.9 on some roles).
+     Saved pitch: **-0.35 rad (-20°) default**, observed range -0.17..-0.78 rad.
+   - Engine caps (from `Lua3DEngine_Get3DEngineOptionCaps`, `JX3UIX64.dll`):
+     `fMinCameraDistance`, `fMaxCameraDistance`, `fMinCameraAngle`,
+     `fMaxCameraAngle`; the values come from the engine caps object (per
+     graphics option level) and are not in any accessible config — only the
+     `fMaxCameraDistance = 2000` default is confirmed (DLL const blob
+     `0x180d2af90`, next to `-1.56298 / 1.0 / 0`; string block also contains
+     `AdjustEyeScale`, `InitCameraEyeScaleEnable`, `InitEyeScale`).
+   - Wheel zoom (real, `ZoomCharacterCamera_Step`, `JX3RepresentX64.dll`
+     `0x180b3ce40`): `step = clamp(current / (0.2 * fMaxCameraDistance) * 120,
+     10, 120)` world units; sign by direction. Pitch is asserted
+     `|pitch| < π/2`; the smoothing setter clamps its value to [0.001, 1.0].
+   - Camera row tables (`tabCamera`, `tabCarrierCamera`, `tabAirCombatCamera`,
+     `tabNpcDialogCamera`) are still absent from this install and from the CDN
+     resource index, so the per-mode row values (default follow distance,
+     min distance, angle caps) remain unknown.
+   - **Units: 1 engine unit = 1 cm (1 m = 100 u)** — mesh-verified
+     (`docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md`: adult male 181.64 u =
+     1.816 m); the earlier `UnitsPerMeter = 192` was wrong (it would make the
+     adult 0.95 m). `fMaxCameraDistance = 2000` is therefore 20 m.
 
 ## 8. Product implementation (engine host)
 
@@ -160,13 +193,18 @@ checks and prints ALL PASS).
 - Obstruction: ray-march from the character's chest toward the camera against
   the real terrain sampler (14 steps, 20 u margin); on hit the camera is pulled
   to hit-0.2 m. Plus a final clamp above terrain+30 u.
-- Integration in `MapSpike.cs` (player follow mode):
-  right-drag = yaw/pitch (`MAP_CAMERA_SENS`, default 0.0035 rad/px),
-  wheel = TargetDistance (2..30 m), Shift+move = sprint mode pull-back,
-  movement input is camera-relative (forward = camera -> anchor).
-- Units: rows are meters; the host scales them by `UnitsPerMeter` (default 192,
-  `MAP_CAMERA_SCALE`). Character 6 m distance -> 1152 u, height 2 m -> 384 u.
-- Verified in game: camera settles at camDistXZ 1083 u (= 6 m * 192 * cos20°)
+- Integration in `MapSpike.cs` (player follow mode, **follow camera only** —
+  the F free-cam toggle was removed 2026-09-23):
+  right-drag = engine-native rotation (the engine camera owns the look
+  direction; the host re-measures it via the nudge probe every 200 ms),
+  wheel = real JX3 zoom step (see §7.5) with limits `MinCameraDistance = 100 u`
+  (placeholder for the unknown engine cap) .. `MaxCameraDistance = 2000 u`
+  (real setting default, 20 m), Shift+move = sprint mode pull-back,
+  movement input holds its world direction while the key set is unchanged.
+- Units: rows are meters; the host scales them by `UnitsPerMeter`
+  (default **100**, `MAP_CAMERA_SCALE`). Character 6 m distance -> 600 u,
+  height 2 m -> 200 u, real pitch -0.35 rad.
+- Verified in game: camera settles at camDistXZ 600 u (= 6 m * 100 * cos20°)
   with the terrain clamp active.
 
 Build (from the repo root):

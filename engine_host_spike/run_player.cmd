@@ -9,11 +9,11 @@ REM Controls:
 REM   W/S/A/D      walk (always moves the character, camera-relative)
 REM   Shift        run
 REM   Space        jump
-REM   F            toggle FOLLOW (third person) / FREE camera
 REM   Alt+right    orbit view angle around the character (follow camera)
 REM   right-drag   pan camera
-REM   wheel        zoom follow distance (in FOLLOW mode)
-REM   free camera: arrow keys move, Q/E up/down
+REM   wheel        zoom follow distance: real client step
+REM                clamp(cur/(0.2*2000)*120, 10, 120) units,
+REM                range 100..2000 units (1..20 m)
 REM
 REM Collision: terrain heights come from the game terrain loader; steep
 REM slopes/rocks (>~60 degrees) block with wall sliding, ledges >150cm drop you.

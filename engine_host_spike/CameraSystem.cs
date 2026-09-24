@@ -85,8 +85,9 @@ public sealed class CameraSystem
 
     double _t, _lastT;
 
-    // meters -> host units for all distance/height params
-    public double UnitsPerMeter = 192.0;
+    // meters -> host units. 1 m = 100 u: mesh-verified (adult male
+    // 181.64 u = 1.816 m, docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md).
+    public double UnitsPerMeter = 100.0;
 
     public CameraSystem()
     {
@@ -126,10 +127,18 @@ public sealed class CameraSystem
             case MODE_CHARACTER:
                 p.Set("CameraHeight", 2.0);
                 p.Set("TargetDistance", 6.0);
+                // real zoom limits, world units (NOT meters). The client's
+                // VideoSettingPanel.tCameraStatic default fMaxCameraDistance is
+                // 2000 (userdata/<account>/<role>/custom.dat, 68/92 roles;
+                // DLL const blob 0x180d2af90). fMinCameraDistance (engine cap)
+                // is not present in this install (camera row tables missing),
+                // so the floor is 100 u = 1 m.
+                p.Set("MaxCameraDistance", 2000.0);
+                p.Set("MinCameraDistance", 100.0);
                 p.Set("SmoothTime", 0.08);
                 p.Set("MaxDragSpeed", 60.0);
                 p.Set("RotationSpeed", 60.0);
-                p.Set("InitCameraPitch", -20.0 * DEG);
+                p.Set("InitCameraPitch", -0.35);        // real client default (custom.dat)
                 p.Set("InitCameraDistance", 6.0);
                 p.Set("CameraMovePitchApplyAngle", -12.0 * DEG);
                 p.Set("CameraMovePitchSmoothTime", 0.25);
@@ -274,6 +283,30 @@ public sealed class CameraSystem
     }
 
     public void SetMaxDistance(double meters) { Rows[MODE_CHARACTER].Set("TargetDistance", meters); }
+
+    // JX3 wheel zoom, mirrored from ZoomCharacterCamera_Step
+    // (JX3RepresentX64.dll 0x180b3ce40):
+    //   step = clamp(current / (0.2 * fMaxCameraDistance) * 120, 10, 120)
+    // current/step in world units; limits from the real per-user setting.
+    public double ZoomStep(double current)
+    {
+        double step = current / (0.2 * Row.F("MaxCameraDistance", 2000.0)) * 120.0;
+        if (step > 120.0) step = 120.0;
+        if (step < 10.0) step = 10.0;
+        return step;
+    }
+
+    // direction: +1 = zoom out, -1 = zoom in (one wheel notch)
+    public void ZoomBy(double direction)
+    {
+        double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
+        td += direction * ZoomStep(td);
+        double min = Row.F("MinCameraDistance", 100.0);
+        double max = Row.F("MaxCameraDistance", 2000.0);
+        if (td < min) td = min;
+        if (td > max) td = max;
+        SetMaxDistance(td / UnitsPerMeter);
+    }
     public void SetDragSpeed(double v) { Rows[MODE_CHARACTER].Set("MaxDragSpeed", v); }
     public void SetFollowMode(string mode) { SwitchMode(mode); }
     public void SetPitch(double deg) { Pitch = deg * DEG; }

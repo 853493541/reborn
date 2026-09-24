@@ -171,7 +171,7 @@ internal static class MapSpike
                 catch (Exception e) { Log("camera config ex: " + e.Message); }
             }
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
-            camSys.Pitch = camSys.Row.F("InitCameraPitch", -20.0 * CameraSystem.DEG);
+            camSys.Pitch = camSys.Row.F("InitCameraPitch", -0.35);   // real client default
             Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
                 camSys.Mode, camSys.Distance, camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter,
                 camSys.UnitsPerMeter));
@@ -228,12 +228,8 @@ internal static class MapSpike
             {
                 if (camSys != null)
                 {
-                    // zoom = TargetDistance in meters (script hook set_max_distance)
-                    double td = camSys.Rows[CameraSystem.MODE_CHARACTER].F("TargetDistance", 6.0);
-                    td -= (e.Delta > 0 ? 1.0 : -1.0) * 0.5;
-                    if (td < 2.0) td = 2.0;
-                    if (td > 30.0) td = 30.0;
-                    camSys.SetMaxDistance(td);
+                    // real client zoom: wheel up = closer, real step formula
+                    camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
                 }
                 return;
             }
@@ -244,26 +240,10 @@ internal static class MapSpike
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (playerMode && e.KeyCode == Keys.F)
+            if (playerMode)
             {
-                followMode = !followMode;
-                Log("camera mode -> " + (followMode ? "FOLLOW (third person)" : "FREE"));
-                try
-                {
-                    form.Text = followMode
-                        ? "JX3 Map Player - FOLLOW (WASD walk, Space jump, F = free cam, wheel = distance)"
-                        : "JX3 Map Player - FREE cam (WASD walk, arrows/QE move cam, F = follow)";
-                }
-                catch { }
-                return;
-            }
-            if (playerMode && e.KeyCode == Keys.C)
-            {
-                teleportToStructure = true;
-                return;
-            }
-            if (playerMode && followMode)
-            {
+                // follow camera only (no free cam)
+                if (e.KeyCode == Keys.C) { teleportToStructure = true; return; }
                 if (e.KeyCode == Keys.W) pW = true;
                 else if (e.KeyCode == Keys.S) pS = true;
                 else if (e.KeyCode == Keys.A) pA = true;
@@ -272,28 +252,6 @@ internal static class MapSpike
                 else if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) shiftDown = true;
                 return;
             }
-            if (playerMode && !followMode)
-            {
-                // Free camera: WASD still walks the character (never lose it),
-                // arrow keys / Q / E move the camera.
-                if (e.KeyCode == Keys.W) pW = true;
-                else if (e.KeyCode == Keys.S) pS = true;
-                else if (e.KeyCode == Keys.A) pA = true;
-                else if (e.KeyCode == Keys.D) pD = true;
-                else if (e.KeyCode == Keys.Space) pJump = true;
-                else if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) shiftDown = true;
-                else if (e.KeyCode == Keys.Up) camKey(Keys.W, 1);
-                else if (e.KeyCode == Keys.Down) camKey(Keys.S, 1);
-                else if (e.KeyCode == Keys.Left) camKey(Keys.A, 1);
-                else if (e.KeyCode == Keys.Right) camKey(Keys.D, 1);
-                else if (e.KeyCode == Keys.Q) camKey(Keys.Q, 1);
-                else if (e.KeyCode == Keys.E) camKey(Keys.E, 1);
-                else if (e.KeyCode == Keys.Add) pending.Enqueue(new int[] { 81, 25, 1, 0 });
-                else if (e.KeyCode == Keys.Subtract) pending.Enqueue(new int[] { 81, 26, 1, 0 });
-                else if (e.KeyCode == Keys.R) pending.Enqueue(new int[] { 83, 0, 0, 0 });
-                return;
-            }
-            if (playerMode && e.KeyCode == Keys.Space) { pJump = true; return; }
             if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) { shiftDown = true; pending.Enqueue(new int[] { 80, CMS_FAST, 1, 0 }); }
             else if (e.KeyCode == Keys.W || e.KeyCode == Keys.S || e.KeyCode == Keys.A || e.KeyCode == Keys.D
                      || e.KeyCode == Keys.Q || e.KeyCode == Keys.E) camKey(e.KeyCode, 1);
@@ -312,14 +270,6 @@ internal static class MapSpike
                 else if (e.KeyCode == Keys.A) pA = false;
                 else if (e.KeyCode == Keys.D) pD = false;
                 else if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) shiftDown = false;
-                else if (!followMode && e.KeyCode == Keys.Up) camKey(Keys.W, 0);
-                else if (!followMode && e.KeyCode == Keys.Down) camKey(Keys.S, 0);
-                else if (!followMode && e.KeyCode == Keys.Left) camKey(Keys.A, 0);
-                else if (!followMode && e.KeyCode == Keys.Right) camKey(Keys.D, 0);
-                else if (!followMode && e.KeyCode == Keys.Q) camKey(Keys.Q, 0);
-                else if (!followMode && e.KeyCode == Keys.E) camKey(Keys.E, 0);
-                else if (!followMode && e.KeyCode == Keys.Add) pending.Enqueue(new int[] { 81, 25, 0, 0 });
-                else if (!followMode && e.KeyCode == Keys.Subtract) pending.Enqueue(new int[] { 81, 26, 0, 0 });
                 return;
             }
             if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Shift) { shiftDown = false; pending.Enqueue(new int[] { 80, CMS_FAST, 0, 0 }); }
@@ -818,7 +768,7 @@ internal static class MapSpike
                     scene.GetCameraPos(ref cx, ref cy, ref cz);
                     Log(string.Format("follow camera at ({0:F0},{1:F0},{2:F0}) dist={3:F0} dir=({4:F2},{5:F2})",
                         cx, cy, cz, dist0, pdX, pdZ));
-                    try { form.Text = "JX3 Map Player - FOLLOW (F = free camera)"; } catch { }
+                    try { form.Text = "JX3 Map Player - FOLLOW (WASD walk, Space jump)"; } catch { }
                 }
                 catch (Exception e) { Log("camera place ex: " + e.Message); }
             }
@@ -1139,9 +1089,7 @@ internal static class MapSpike
                     else if (ground - plY <= 70f) plY = ground;   // step up (terrain/rock)
                 }
                 // visible collision feedback in the window title
-                string baseTitle = followMode
-                    ? "JX3 Map Player - FOLLOW (WASD walk, Space jump, F = free cam, C = teleport to structure)"
-                    : "JX3 Map Player - FREE cam (WASD walk, arrows/QE cam, F = follow, C = teleport to structure)";
+                string baseTitle = "JX3 Map Player - FOLLOW (WASD walk, Space jump, wheel = zoom, C = teleport to structure)";
                 string wantTitle = blocked ? "BLOCKED by structure  |  " + baseTitle : baseTitle;
                 if (wantTitle != shownTitle)
                 {
@@ -1194,7 +1142,7 @@ internal static class MapSpike
                         {
                             camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
                         }
-                        double dist = camSys.UpdateDistance(dt, sprinting, pRun / 192.0);
+                        double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter);
 
                         // refresh the engine view direction a few times per second
                         if (needReMeasure || nowMs - lastMeasureMs >= 200)
