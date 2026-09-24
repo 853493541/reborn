@@ -40,8 +40,10 @@ internal static class RebornClient
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
-        float yawOffset = 0f;
-        float.TryParse(Env("RC_YAW_OFFSET", "0"), out yawOffset);
+        // the actor model faces -Z at identity (dummy probe), so the yaw that
+        // points it along the movement direction needs a pi offset
+        float yawOffset = (float)Math.PI;
+        float.TryParse(Env("RC_YAW_OFFSET", ""), out yawOffset);
         float scale = 1f;
         float.TryParse(Env("RC_SCALE", "1"), out scale);
         long skillMs = 8000;
