@@ -57,16 +57,22 @@ internal static class RebornClient
 
         outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
         Directory.CreateDirectory(outDir);
+        var logLines = new System.Collections.Generic.List<string>();
         Log = delegate(string s)
         {
             try { File.AppendAllText(Path.Combine(outDir, "reborn.log"), DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n"); }
             catch { }
             Console.WriteLine(s);
+            lock (logLines)
+            {
+                logLines.Add(DateTime.Now.ToString("HH:mm:ss") + " " + s);
+                if (logLines.Count > 200) logLines.RemoveRange(0, logLines.Count - 200);
+            }
         };
         Log("start map=" + mapPath);
 
         var form = new Form();
-        form.Text = "JX3 Reborn";
+        form.Text = "JX3";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -78,9 +84,22 @@ internal static class RebornClient
         hud.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
         hud.Font = new System.Drawing.Font("Consolas", 10f);
         hud.Padding = new Padding(6);
-        hud.Location = new System.Drawing.Point(10, 10);
+        hud.Location = new System.Drawing.Point(38, 10);
         hud.Text = "loading...";
         panel.Controls.Add(hud);
+        // "I" toggle in the top-left corner: expands/collapses the info window
+        var infoToggle = new Label();
+        infoToggle.AutoSize = false;
+        infoToggle.Size = new System.Drawing.Size(22, 22);
+        infoToggle.Location = new System.Drawing.Point(10, 10);
+        infoToggle.Text = "I";
+        infoToggle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+        infoToggle.ForeColor = System.Drawing.Color.White;
+        infoToggle.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+        infoToggle.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
+        infoToggle.Cursor = Cursors.Hand;
+        infoToggle.MouseClick += delegate { hud.Visible = !hud.Visible; };
+        panel.Controls.Add(infoToggle);
         form.Show();
         Application.DoEvents();
 
@@ -123,6 +142,17 @@ internal static class RebornClient
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 
+        // Prime the physics terrain loader before the engine starts streaming
+        // (its first region load initialises the source reader; if the first
+        // call happens after the engine's camera jump it can return all-zero
+        // heights for the spawn region on 龙门寻宝).
+        if (sampler != null)
+        {
+            sampler.Sample(0f, 0f);
+            System.Threading.Thread.Sleep(300);
+            sampler.Sample(0f, 0f);
+        }
+
         // baked object/foliage collision (derived from the game's own map files)
         FoliageCollision col = null;
         try
@@ -150,6 +180,7 @@ internal static class RebornClient
         bool grounded = false;
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
+        CameraSettings cameraSettings = null;
         {
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
@@ -160,7 +191,12 @@ internal static class RebornClient
                 catch (Exception e) { Log("camera config ex: " + e.Message); }
             }
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
-            camSys.Pitch = camSys.Row.F("InitCameraPitch", -20.0 * CameraSystem.DEG);
+            cameraSettings = CameraSettings.Load(
+                editorRoot, mapPath, AppDomain.CurrentDomain.BaseDirectory, Log);
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
+            camSys.Pitch = cameraSettings.InitPitch;
+            camSys.Yaw = cameraSettings.InitYaw;
             camSys.Distance = camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter;
             Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
                 camSys.Mode, camSys.Distance,
@@ -267,7 +303,22 @@ internal static class RebornClient
                 px = cx + viewX * 500f;
                 pz = cz + viewZ * 500f;
             }
+            // The physics terrain loader tracks the engine's streamed terrain:
+            // right after the camera jumps it can return all-zero heights for
+            // the spawn region (observed on 龙门寻宝). Pump frames and retry
+            // through the neighbouring region until real heights arrive.
             py = sampler != null ? sampler.Sample(px, pz) : 0f;
+            if (sampler != null && py == 0f)
+            {
+                long warm = Environment.TickCount;
+                while (py == 0f && Environment.TickCount - warm < 10000)
+                {
+                    Pump(engine, 250);
+                    sampler.Sample(px - 51200f, pz);
+                    py = sampler.Sample(px, pz);
+                }
+                Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
+            }
             Log(string.Format("spawn=({0:F0},{1:F0},{2:F0}) view=({3:F2},{4:F2})", px, py, pz, viewX, viewZ));
         }
         catch (Exception e) { Log("spawn ex: " + e.Message); }
@@ -316,6 +367,7 @@ internal static class RebornClient
         }
         bool cDown = false, teleportToStructure = false;
         bool mouseLocked = false;
+        bool lmbDown = false, rmbDown = false;
         var lockCenter = new System.Drawing.Point(panel.ClientSize.Width / 2, panel.ClientSize.Height / 2);
         var orbitQueue = new System.Collections.Generic.Queue<int[]>();
         Func<int, int, int> makeLParam = delegate(int x, int y) { return ((y & 0xFFFF) << 16) | (x & 0xFFFF); };
@@ -328,28 +380,95 @@ internal static class RebornClient
         Action unlockMouse = delegate
         {
             mouseLocked = false;
+            lmbDown = false;
+            rmbDown = false;
             Cursor.Show();
         };
-        panel.MouseDown += delegate(object s, MouseEventArgs e)
+
+        // Rotate the engine camera to a target yaw/pitch through the engine's
+        // own ROTATE_CAMERA orbit (bounded passes; continuous vertical deltas
+        // break the engine screenshot path). Engine orbit is ~0.0018 rad/px
+        // yaw / ~0.00121 rad/px pitch.
+        Action<double, double> alignEngineCamera = delegate(double targetYaw, double targetPitch)
         {
-            if (e.Button == MouseButtons.Left && !mouseLocked) lockMouse();
+            for (int pass = 0; pass < 8; pass++)
+            {
+                measureView();
+                double currentYaw = Math.Atan2(-viewZ, -viewX);
+                double currentPitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+                double yawDelta = WrapAngle(targetYaw - currentYaw);
+                double pitchDelta = targetPitch - currentPitch;
+                if (Math.Abs(yawDelta) < 0.015 && Math.Abs(pitchDelta) < 0.015) break;
+                int dx2 = (int)Math.Round(-yawDelta / 0.0018);
+                int dy2 = (int)Math.Round(-pitchDelta / 0.00121);
+                if (dx2 > 300) dx2 = 300; if (dx2 < -300) dx2 = -300;
+                if (dy2 > 300) dy2 = 300; if (dy2 < -300) dy2 = -300;
+                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + dx2, lockCenter.Y + dy2));
+                engine.FrameMove();
+            }
+            measureView();
+            if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+                camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            camSys.Pitch = targetPitch;
         };
-        panel.MouseMove += delegate(object s, MouseEventArgs e)
+
+        // Camera yaw that puts the camera behind the character (curYaw = facing).
+        Func<double> cameraYawBehind = delegate()
         {
-            if (!mouseLocked) return;
-            int dx = e.X - lockCenter.X, dy = e.Y - lockCenter.Y;
+            return Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw));
+        };
+
+        // Real bindings (ui/hotkey/default.txt): LMB drag = rotate camera,
+        // RMB drag = rotate camera and turn the character, wheel = x0.9/x1.1
+        // zoom, F11 = reset behind the character (-15 deg pitch), Home/End =
+        // view presets 0/180 relative to the character facing.
+        // The handlers are shared by the panel and the HUD labels (a label
+        // would otherwise swallow clicks), with coordinates mapped to the panel.
+        Func<object, MouseEventArgs, System.Drawing.Point> panelPoint = delegate(object s, MouseEventArgs e)
+        {
+            Control c = s as Control;
+            if (c == null || c == panel) return e.Location;
+            return panel.PointToClient(c.PointToScreen(e.Location));
+        };
+        MouseEventHandler onMouseDown = delegate(object s, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) lmbDown = true;
+            else if (e.Button == MouseButtons.Right) rmbDown = true;
+            if ((lmbDown || rmbDown) && !mouseLocked) lockMouse();
+        };
+        MouseEventHandler onMouseUp = delegate(object s, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) lmbDown = false;
+            else if (e.Button == MouseButtons.Right) rmbDown = false;
+            if (!lmbDown && !rmbDown && mouseLocked) unlockMouse();
+        };
+        MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
+        {
+            if (!mouseLocked || (!lmbDown && !rmbDown)) return;
+            System.Drawing.Point p = panelPoint(s, e);
+            int dx = p.X - lockCenter.X, dy = p.Y - lockCenter.Y;
             if (dx != 0 || dy != 0)
             {
-                orbitQueue.Enqueue(new int[] { dx, dy });
+                int sx = (int)Math.Round(dx * cameraSettings.DragSpeed);
+                int sy = (int)Math.Round(dy * cameraSettings.DragPitchSpeed);
+                orbitQueue.Enqueue(new int[] { sx, sy });
                 try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
         MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
         {
-            // real JX3 wheel zoom (ZoomCharacterCamera_Step)
+            // CameraZoomIn/Out: Camera_Zoom(0.9 / 1.1)
             camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
         };
-        panel.MouseWheel += wheel;
+        Control[] hitTargets = new Control[] { panel, hud };
+        foreach (Control c in hitTargets)
+        {
+            c.MouseDown += onMouseDown;
+            c.MouseUp += onMouseUp;
+            c.MouseMove += onMouseMove;
+            c.MouseWheel += wheel;
+        }
         form.MouseWheel += wheel;
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
@@ -363,6 +482,22 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
+            else if (e.KeyCode == Keys.F11)
+            {
+                // CameraReset: behind the character, pitch -15 deg, distance 1x
+                camSys.SetMaxDistance(camSys.Row.F("InitCameraDistance", 6.0));
+                alignEngineCamera(cameraYawBehind(), -Math.PI / 12.0);
+                Log("camera reset: behind character, pitch -15deg");
+            }
+            else if (e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
+            {
+                // CameraSetView(0) / (180): yaw preset relative to facing
+                measureView();
+                double cp = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+                double by = cameraYawBehind() + (e.KeyCode == Keys.End ? Math.PI : 0.0);
+                alignEngineCamera(by, cp);
+                Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
+            }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
@@ -378,8 +513,9 @@ internal static class RebornClient
         panel.Focus();
 
         // ---------------- main loop ----------------
-        // real game values (settings/JumpParam.tab + number.krl.txt)
-        float pGravity = -1289f, pJumpV = 703f, pSpeed = 200f, pRun = 667f;
+        // table values converted from 15 logic frames/s into continuous seconds
+        // (1 world unit = 1 cm; exact 15 Hz integer model is the next movement pass)
+        float pGravity = -2475f, pJumpV = 1350f, pSpeed = 90f, pRun = 300f;
         float playerRadius = 25f, playerHeight = 170f;
         float.TryParse(Env("RC_RADIUS", "25"), out playerRadius);
         float.TryParse(Env("RC_HEIGHT", "170"), out playerHeight);
@@ -388,7 +524,6 @@ internal static class RebornClient
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0;
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
-        bool camPitchFix = Env("RC_CAM_PITCH_FIX", "1") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
         long rotTestStart = 0;
@@ -398,9 +533,32 @@ internal static class RebornClient
         int shotIdx = 0;
         long[] shots = ParseShots(Env("RC_SHOTS", "3000,8000,15000,30000"));
 
-        // one-time engine pitch alignment with the camera row geometry
-        // (continuous vertical orbit deltas break the engine screenshot path)
-        if (camPitchFix)
+        // Initialize from the real scene_init_param row (or the user's saved
+        // runtime yaw/pitch with RC_CUSTOM_DAT). Maps without their own row
+        // (e.g. map 296) have no real init data: keep the spawn view instead
+        // of applying another map's yaw. 300 px/pass and the engine orbit is
+        // ~0.0015 rad/px, so a large correction needs several passes.
+        bool applyCamInit = cameraSettings.HasSceneInit || cameraSettings.HasSavedRuntime;
+        if (applyCamInit)
+        {
+            alignEngineCamera(cameraSettings.InitYaw, cameraSettings.InitPitch);
+            Log(string.Format("camera init applied mapId={0} yaw={1:F3} pitch={2:F3}",
+                cameraSettings.MapId, camSys.Yaw, camSys.Pitch));
+        }
+        else
+        {
+            measureView();
+            Log(string.Format("camera init skipped mapId={0} (no scene_init_param row; keeping spawn view)",
+                cameraSettings.MapId));
+        }
+        if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+            camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+
+        // The host places the camera at anchor + horizontal offset + CameraHeight
+        // and cannot set the engine's aim, so the engine pitch must be aligned
+        // once to look at the character from there (continuous vertical orbit
+        // deltas break the engine screenshot path, so this is loop-limited).
+        for (int pass = 0; pass < 3; pass++)
         {
             measureView();
             double camH0 = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
@@ -409,12 +567,10 @@ internal static class RebornClient
             int dyp = (int)(-(desired - measured) / 0.00121);
             if (dyp > 200) dyp = 200;
             if (dyp < -200) dyp = -200;
-            if (dyp != 0)
-            {
-                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
-                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X, lockCenter.Y + dyp));
-                Log("camera pitch align: dyp=" + dyp);
-            }
+            if (dyp > -8 && dyp < 8) break;
+            scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+            scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X, lockCenter.Y + dyp));
+            Log("camera pitch align: dyp=" + dyp + " pass=" + pass);
         }
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -433,6 +589,14 @@ internal static class RebornClient
             {
                 int ox = 0, oy = 0;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
+                // row per-frame clamps (CameraMaxDeltaYaw/Pitch, row speeds in
+                // CAMERA_REAL_VALUES.md) converted through the measured engine
+                // orbit sensitivity: 0.0018 rad/px yaw, 0.00121 rad/px pitch
+                CameraParams orow = camSys.Row;
+                double yawMaxPx = orow.F("CameraMaxDeltaYaw", 2.0 * Math.PI) / 0.0018;
+                double pitchMaxPx = orow.F("CameraMaxDeltaPitch", 1.56) / 0.00121;
+                if (ox > yawMaxPx) ox = (int)yawMaxPx; else if (ox < -yawMaxPx) ox = (int)-yawMaxPx;
+                if (oy > pitchMaxPx) oy = (int)pitchMaxPx; else if (oy < -pitchMaxPx) oy = (int)-pitchMaxPx;
                 scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
                 scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy));
                 // track yaw ourselves: the engine orbit also moves the camera
@@ -589,6 +753,11 @@ internal static class RebornClient
                 curYaw = (float)Math.Atan2(ux, uz);
             }
 
+            // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
+            // camera direction; LMB drag rotates the camera only.
+            if (rmbDown)
+                curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+
             // object/foliage collision (walls, buildings, rocks, trees)
             if (col != null)
             {
@@ -700,17 +869,20 @@ internal static class RebornClient
                 {
                     camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
                 }
-                double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter);
+                double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
+                              * cameraSettings.EyeScale;
 
-                double vx = hx, vvy = viewY, vz = hz;
-                double vlen = Math.Sqrt(vx * vx + vvy * vvy + vz * vz);
-                if (vlen < 1e-6) { vx = 0; vvy = 0; vz = 1; vlen = 1; }
-                vx /= vlen; vvy /= vlen; vz /= vlen;
+                // The nudge's vertical component jitters; original camera placement
+                // uses the horizontal measured direction and the configured height.
+                double vx = hx, vz = hz;
+                double hlen = Math.Sqrt(vx * vx + vz * vz);
+                if (hlen < 1e-6) { vx = 0; vz = 1; hlen = 1; }
+                vx /= hlen; vz /= hlen;
 
-                // chest anchor on the engine's own 3D view line
+                double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
                 double camX = ax2 - vx * dist;
-                double camY = ay2 - vvy * dist;
+                double camY = ay2 + camHeight;
                 double camZ = az2 - vz * dist;
 
                 // obstruction: terrain above the anchor->camera ray
@@ -729,7 +901,7 @@ internal static class RebornClient
                         {
                             double d2 = Math.Max(150.0, t * rayLen - 40.0);
                             camX = ax2 - vx * d2;
-                            camY = ay2 - vvy * d2;
+                            camY = ay2 + camHeight;
                             camZ = az2 - vz * d2;
                             break;
                         }
@@ -752,7 +924,7 @@ internal static class RebornClient
                 string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN" : "WALK") : "IDLE";
                 hud.Text = string.Format(
-                    "JX3 Reborn M1\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\ncam {7} yaw {8:F2} dist {9:F0}\nclip {10}\nWASD move | Shift run | Space jump | 1 skill | C teleport | click=look (Esc unlock) | wheel zoom",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\ncam {7} yaw {8:F2} dist {9:F0}\nclip {10}\nWASD move | Shift run | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip));
@@ -803,6 +975,13 @@ internal static class RebornClient
     {
         string v = Environment.GetEnvironmentVariable(name);
         return string.IsNullOrEmpty(v) ? def : v;
+    }
+
+    static double WrapAngle(double angle)
+    {
+        while (angle > Math.PI) angle -= 2.0 * Math.PI;
+        while (angle < -Math.PI) angle += 2.0 * Math.PI;
+        return angle;
     }
 
     static long[] ParseShots(string s)

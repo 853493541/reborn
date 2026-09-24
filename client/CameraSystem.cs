@@ -135,11 +135,15 @@ public sealed class CameraSystem
                 // so the floor is 100 u = 1 m.
                 p.Set("MaxCameraDistance", 2000.0);
                 p.Set("MinCameraDistance", 100.0);
-                p.Set("SmoothTime", 0.08);
-                p.Set("MaxDragSpeed", 60.0);
-                p.Set("RotationSpeed", 60.0);
+                p.Set("SmoothTime", 0.06);                 // CommonNumber: 60 ms
+                p.Set("MaxDragSpeed", 0.00314);             // verified loader default
+                p.Set("RotationSpeed", 0.00314);            // verified loader default
                 p.Set("InitCameraPitch", -0.35);        // real client default (custom.dat)
                 p.Set("InitCameraDistance", 6.0);
+                // Host placeholders (docs/CAMERA_REAL_VALUES.md §7/§8 item 6):
+                // the real per-mode move-pitch rows are CDN-only. The DLL
+                // loader defaults are 0, but the model needs non-zero pivots
+                // (CameraSmoke 13/13); the host keeps the pre-CDN rows.
                 p.Set("CameraMovePitchApplyAngle", -12.0 * DEG);
                 p.Set("CameraMovePitchSmoothTime", 0.25);
                 p.Set("CameraMovePitchAdjustPitch", -20.0 * DEG);
@@ -150,26 +154,34 @@ public sealed class CameraSystem
                 break;
             case MODE_SPRINT:
                 p.Set("CameraHeight", 2.2);
-                p.Set("TargetDistance", 8.0);
-                p.Set("SmoothTime", 0.15);
-                p.Set("MaxDragSpeed", 70.0);
-                p.Set("RotationSpeed", 70.0);
-                p.Set("InitCameraPitch", -20.0 * DEG);
-                p.Set("InitCameraDistance", 8.0);
-                p.Set("SprintCameraMinTrackBackSpeed", 4.0);
-                p.Set("SprintCameraMaxTrackBackSpeed", 14.0);
-                p.Set("SprintCameraTrackBackSpeedSlope", 0.5);
-                p.Set("SprintCameraMaxDistance", 9.0);
-                p.Set("SprintCameraSmoothTime", 0.3);
+                p.Set("TargetDistance", 6.0);               // per-mode row unavailable
+                p.Set("SmoothTime", 0.5);
+                p.Set("MaxDragSpeed", 0.0025);
+                p.Set("RotationSpeed", 0.0025);
+                p.Set("InitCameraPitch", -0.35);
+                p.Set("InitCameraDistance", 6.0);
+                p.Set("SprintCameraAngle", 0.3);
+                p.Set("SprintCameraPitch", -0.35);
+                p.Set("SprintCameraMaxDistance", 60.0);     // unit/consumer unresolved; not an absolute target
+                p.Set("SprintCameraSmoothTime", 0.5);
+                p.Set("SprintCameraSpringTime", 0.5);
+                p.Set("SprintCameraOffset", 40.0);
+                p.Set("SprintCameraOffsetSmoothTime", 0.5);
+                p.Set("SprintCameraMinTrackBackSpeed", 10.0);
+                p.Set("SprintCameraMaxTrackBackSpeed", 90.0);
+                p.Set("SprintCameraTrackBackSpeedSlope", 1.0);
+                p.Set("SprintCameraMaxOffset", 100.0);
                 break;
             case MODE_CARRIER:
                 p.Set("CameraHeight", 3.0);
                 p.Set("TargetDistance", 7.0);
                 p.Set("SmoothTime", 0.12);
-                p.Set("InitCameraPitch", -20.0 * DEG);
+                p.Set("InitCameraPitch", -0.17);
                 p.Set("InitCameraDistance", 7.0);
                 p.Set("CarrierCameraMaxDistance", 8.5);
-                p.Set("CarrierCameraDeltaHeight", 1.0);
+                p.Set("CarrierCameraPitch", -0.17);
+                p.Set("CarrierCameraYaw", 0.0);
+                p.Set("CarrierCameraDeltaHeight", 50.0);
                 p.Set("ForbidStrafe", true);
                 p.Set("TurnCameraYawToObjectYaw", true);
                 break;
@@ -284,23 +296,15 @@ public sealed class CameraSystem
 
     public void SetMaxDistance(double meters) { Rows[MODE_CHARACTER].Set("TargetDistance", meters); }
 
-    // JX3 wheel zoom, mirrored from ZoomCharacterCamera_Step
-    // (JX3RepresentX64.dll 0x180b3ce40):
-    //   step = clamp(current / (0.2 * fMaxCameraDistance) * 120, 10, 120)
-    // current/step in world units; limits from the real per-user setting.
-    public double ZoomStep(double current)
-    {
-        double step = current / (0.2 * Row.F("MaxCameraDistance", 2000.0)) * 120.0;
-        if (step > 120.0) step = 120.0;
-        if (step < 10.0) step = 10.0;
-        return step;
-    }
-
-    // direction: +1 = zoom out, -1 = zoom in (one wheel notch)
+    // JX3 wheel zoom, from the real UI binding (ui/script/hotkeys.lua):
+    //   CAMERAZOOMIN  -> CameraZoomIn()  = Camera_Zoom(0.9)   (distance * 0.9)
+    //   CAMERAZOOMOUT -> CameraZoomOut() = Camera_Zoom(1.1)   (distance * 1.1)
+    // clamped to [fMinCameraDistance, fMaxCameraDistance]; units: world units.
+    // (The DLL's ZoomCharacterCamera_Step is a different path, not the wheel.)
     public void ZoomBy(double direction)
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
-        td += direction * ZoomStep(td);
+        td *= (direction > 0.0) ? 1.1 : 0.9;
         double min = Row.F("MinCameraDistance", 100.0);
         double max = Row.F("MaxCameraDistance", 2000.0);
         if (td < min) td = min;
@@ -430,14 +434,18 @@ public sealed class CameraSystem
         double meters = UnitsPerMeter;
         if (Mode == MODE_SPRINT && sprinting && sprintSpeed > 0.0)
         {
-            double target = row.F("SprintCameraMaxDistance", 9.0) * meters;
-            double st = Math.Max(row.F("SprintCameraSmoothTime", 0.3), 1e-3);
+            // SprintCameraMaxDistance is a pull-back delta (60 u), not an
+            // absolute 60 m target. The exact engine consumer/unit remains an
+            // open RE item; use the observed world-unit delta conservatively.
+            double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters +
+                            row.F("SprintCameraMaxDistance", 60.0);
+            double st = Math.Max(row.F("SprintCameraSmoothTime", 0.5), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         else
         {
-            double target = row.F("TargetDistance", 6.0) * meters;
-            double st = Math.Max(row.F("SmoothTime", 0.1), 1e-3);
+            double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters;
+            double st = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         return Distance;
