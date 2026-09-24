@@ -40,10 +40,14 @@ internal static class RebornClient
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
-        // the actor model faces -Z at identity (dummy probe), so the yaw that
-        // points it along the movement direction needs a pi offset
+        // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
+        // that points it along the movement direction needs a pi offset.
+        // (note: TryParse sets the out param to 0 on failure, so parse into a temp)
         float yawOffset = (float)Math.PI;
-        float.TryParse(Env("RC_YAW_OFFSET", ""), out yawOffset);
+        {
+            float yo;
+            if (float.TryParse(Env("RC_YAW_OFFSET", ""), out yo)) yawOffset = yo;
+        }
         float scale = 1f;
         float.TryParse(Env("RC_SCALE", "1"), out scale);
         long skillMs = 8000;
@@ -387,6 +391,11 @@ internal static class RebornClient
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0;
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         bool camPitchFix = Env("RC_CAM_PITCH_FIX", "1") == "1";
+        bool rotTest = Env("RC_ROT_TEST", "0") == "1";
+        int rotTestStep = -1;
+        long rotTestStart = 0;
+        string fixedCam = Env("RC_FIXED_CAM", "");
+        bool fixedCamSet = false;
         long frames = 0, fpsAt = 0, fps = 0;
         int shotIdx = 0;
         long[] shots = ParseShots(Env("RC_SHOTS", "3000,8000,15000,30000"));
@@ -446,6 +455,23 @@ internal static class RebornClient
             {
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
                 pW = now >= 3000 && now < 9000;
+            }
+            if (rotTest)
+            {
+                if (rotTestStart == 0) rotTestStart = now;
+                long step = (now - rotTestStart) / 2000;
+                if (step != rotTestStep)
+                {
+                    rotTestStep = (int)step;
+                    float[] yaws = { 0f, (float)Math.PI / 2, (float)Math.PI, -(float)Math.PI / 2 };
+                    if (step >= 0 && step < yaws.Length)
+                    {
+                        curYaw = yaws[step];
+                        placePlayer(px, py, pz, curYaw);
+                        if (handle != attachedHandle) { model.AttachModel(handle); attachedHandle = handle; }
+                        Log(string.Format("rot test yaw={0:F3} offset={1:F3}", curYaw, yawOffset));
+                    }
+                }
             }
             if (camDemo)
             {
@@ -641,12 +667,27 @@ internal static class RebornClient
                 lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
             }
 
+            if (!string.IsNullOrEmpty(fixedCam))
+            {
+                if (!fixedCamSet)
+                {
+                    fixedCamSet = true;
+                    string[] fc = fixedCam.Split(',');
+                    if (fc.Length >= 3)
+                    {
+                        scene.SetCameraPos(float.Parse(fc[0]), float.Parse(fc[1]), float.Parse(fc[2]), true);
+                        Log("fixed camera at " + fixedCam);
+                    }
+                }
+            }
             // JX3 follow camera: the ENGINE camera owns the look direction (native
             // rotation from the mouse actions); the camera model drives the distance
             // dynamics (zoom / sprint pull-back / SmoothTime). The camera is placed
             // on the engine's own view line through the character, so it is centred.
             try
             {
+                if (string.IsNullOrEmpty(fixedCam))
+                {
                 bool movingNow = len > 0f;
                 bool sprinting = movingNow && shiftDown;
                 if (sprinting)
@@ -696,6 +737,7 @@ internal static class RebornClient
                     if (camY < camGround) camY = camGround;
                 }
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                }
             }
             catch (Exception e) { Log("camera system ex: " + e.Message); }
 
