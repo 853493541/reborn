@@ -9,6 +9,9 @@ This answers "how does the game load the mode" from the client's side: the queue
 scene-transfer → map-load pipeline, the config table that parameterises the mode,
 and the runtime machinery that only exists while the mode is active.
 
+For the **screen-level** flow (queue panel, loading window art/progress, first
+in-match HUD frame, result) see `JX3_MODE_UI_FLOW.md`.
+
 ---
 
 ## 1. Where the mode is defined: `settings\MapList.tab` (HIGH)

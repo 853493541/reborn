@@ -1,0 +1,5 @@
+# Client/editor binary scan for per-map loading-art consumers
+# date: 2026-09-23  dir: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64
+JX3BenchmarkX64.exe: ['ProgressX', 'background.bmp']
+JX3RepresentX64.dll: ['%sminimap']
+X3DEngine.dll: ['ProgressX', 'background.bmp']

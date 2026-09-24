@@ -1,0 +1,510 @@
+# X3DEngine.dll xrefs for 'ProgressX'
+# image base 0x180000000
+
+## xref @ 0x1800186c4 -> 0x180025248 'ProgressX'  fn start 0x1800183c0
+  0x1800183c0: mov      qword ptr [rsp + 0x10], rbx
+  0x1800183c5: mov      qword ptr [rsp + 0x18], rsi
+  0x1800183ca: mov      qword ptr [rsp + 0x20], rdi
+  0x1800183cf: push     rbp
+  0x1800183d0: push     r14
+  0x1800183d2: push     r15
+  0x1800183d4: lea      rbp, [rsp - 0x510]
+  0x1800183dc: sub      rsp, 0x610
+  0x1800183e3: mov      rax, qword ptr [rip + 0xe203e]
+  0x1800183ea: xor      rax, rsp
+  0x1800183ed: mov      qword ptr [rbp + 0x500], rax
+  0x1800183f4: mov      r15, rcx
+  0x1800183f7: xor      esi, esi
+  0x1800183f9: movups   xmm0, xmmword ptr [rip + 0xcda0]  ; 'UI\\Loading\\background.bmp'
+  0x180018400: movaps   xmmword ptr [rbp + 0xc0], xmm0
+  0x180018407: movsd    xmm1, qword ptr [rip + 0xcda1]  ; 'round.bmp'
+  0x18001840f: movsd    qword ptr [rbp + 0xd0], xmm1
+  0x180018417: movzx    eax, word ptr [rip + 0xcd9a]  ; 'p'
+  0x18001841e: mov      word ptr [rbp + 0xd8], ax
+  0x180018425: xor      edx, edx
+  0x180018427: mov      r8d, 0xea
+  0x18001842d: lea      rcx, [rbp + 0xda]
+  0x180018434: call     0x180022bb4
+  0x180018439: movups   xmm0, xmmword ptr [rip + 0xcd80]  ; 'UI\\Loading\\progress.bmp'
+  0x180018440: movaps   xmmword ptr [rbp + 0x3f0], xmm0
+  0x180018447: movsd    xmm1, qword ptr [rip + 0xcd81]  ; 'ess.bmp'
+  0x18001844f: movsd    qword ptr [rbp + 0x400], xmm1
+  0x180018457: xor      edx, edx
+  0x180018459: mov      r8d, 0xec
+  0x18001845f: lea      rcx, [rbp + 0x408]
+  0x180018466: call     0x180022bb4
+  0x18001846b: movups   xmm0, xmmword ptr [rip + 0xcd66]  ; 'UI\\Loading\\sprite.bmp'
+  0x180018472: movaps   xmmword ptr [rbp + 0x1d0], xmm0
+  0x180018479: mov      eax, dword ptr [rip + 0xcd69]  ; 'e.bmp'
+  0x18001847f: mov      dword ptr [rbp + 0x1e0], eax
+  0x180018485: movzx    eax, word ptr [rip + 0xcd60]  ; 'p'
+  0x18001848c: mov      word ptr [rbp + 0x1e4], ax
+  0x180018493: xor      edx, edx
+  0x180018495: mov      r8d, 0xee
+  0x18001849b: lea      rcx, [rbp + 0x1e6]
+  0x1800184a2: call     0x180022bb4
+  0x1800184a7: lea      rcx, [r15 + 0xc]
+  0x1800184ab: xor      r8d, r8d
+  0x1800184ae: xor      edx, edx
+  0x1800184b0: call     qword ptr [rip + 0xbb52]  ; Engine_Lua5X64.dll!g_OpenIniFile
+  0x1800184b6: mov      r14, rax
+  0x1800184b9: test     rax, rax
+  0x1800184bc: je       0x18001870c
+  0x1800184c2: mov      dword ptr [rsp + 0x30], 1
+  0x1800184ca: mov      dword ptr [rsp + 0x38], 0xffffffff
+  0x1800184d2: mov      dword ptr [rsp + 0x34], esi
+  0x1800184d6: xor      r8d, r8d
+  0x1800184d9: xor      edx, edx
+  0x1800184db: lea      rcx, [rip + 0xcc96]  ; 'config.ini'
+  0x1800184e2: call     qword ptr [rip + 0xbb20]  ; Engine_Lua5X64.dll!g_OpenIniFile
+  0x1800184e8: mov      rbx, rax
+  0x1800184eb: test     rax, rax
+  0x1800184ee: je       0x18001851d
+  0x1800184f0: mov      rax, qword ptr [rax]
+  0x1800184f3: lea      rcx, [rsp + 0x34]
+  0x1800184f8: mov      qword ptr [rsp + 0x20], rcx
+  0x1800184fd: xor      r9d, r9d
+  0x180018500: lea      r8, [rip + 0xcc81]  ; 'SceneType'
+  0x180018507: lea      rdx, [rip + 0xcc86]  ; 'Login'
+  0x18001850e: mov      rcx, rbx
+  0x180018511: call     qword ptr [rax + 0x50]
+  0x180018514: mov      rax, qword ptr [rbx]
+  0x180018517: mov      rcx, rbx
+  0x18001851a: call     qword ptr [rax + 0x10]
+  0x18001851d: mov      rax, qword ptr [r14]
+  0x180018520: lea      rcx, [rsp + 0x30]
+  0x180018525: mov      qword ptr [rsp + 0x20], rcx
+  0x18001852a: mov      r9d, 1
+  0x180018530: lea      r8, [rip + 0xccb9]  ; 'count'
+  0x180018537: lea      rdx, [rip + 0xccba]  ; 'Loading'
+  0x18001853e: mov      rcx, r14
+  0x180018541: call     qword ptr [rax + 0x50]
+  0x180018544: cmp      dword ptr [rsp + 0x34], 1
+  0x180018549: jne      0x180018572
+  0x18001854b: mov      rax, qword ptr [r14]
+  0x18001854e: lea      rcx, [rsp + 0x38]
+  0x180018553: mov      qword ptr [rsp + 0x20], rcx
+  0x180018558: mov      r9d, 0xffffffff
+  0x18001855e: lea      r8, [rip + 0xcc9b]  ; 'version1'
+  0x180018565: lea      rdx, [rip + 0xcc8c]  ; 'Loading'
+  0x18001856c: mov      rcx, r14
+  0x18001856f: call     qword ptr [rax + 0x50]
+  0x180018572: mov      edx, dword ptr [rsp + 0x38]
+  0x180018576: cmp      edx, -1
+  0x180018579: jne      0x18001859f
+  0x18001857b: mov      edx, dword ptr [rsp + 0x30]
+  0x18001857f: test     edx, edx
+  0x180018581: jle      0x1800185a3
+  0x180018583: xor      ecx, ecx
+  0x180018585: call     qword ptr [rip + 0xc055]  ; api-ms-win-crt-time-l1-1-0.dll!_time64
+  0x18001858b: mov      rcx, rax
+  0x18001858e: call     qword ptr [rip + 0xc05c]  ; api-ms-win-crt-utility-l1-1-0.dll!srand
+  0x180018594: call     qword ptr [rip + 0xc05e]  ; api-ms-win-crt-utility-l1-1-0.dll!rand
+  0x18001859a: cdq      
+  0x18001859b: idiv     dword ptr [rsp + 0x30]
+  0x18001859f: mov      dword ptr [rsp + 0x30], edx
+  0x1800185a3: mov      r8d, edx
+  0x1800185a6: lea      rdx, [rip + 0xcc63]  ; 'Loading_%d'
+  0x1800185ad: lea      rcx, [rbp + 0x2e0]
+  0x1800185b4: call     0x1800137b0
+  0x1800185b9: mov      rax, qword ptr [r14]
+  0x1800185bc: mov      dword ptr [rsp + 0x28], 0x104
+  0x1800185c4: lea      rcx, [rbp - 0x50]
+  0x1800185c8: mov      qword ptr [rsp + 0x20], rcx
+  0x1800185cd: lea      r9, [rip + 0xdb361]
+  0x1800185d4: lea      r8, [rip + 0xcc45]  ; 'background'
+  0x1800185db: lea      rdx, [rbp + 0x2e0]
+  0x1800185e2: mov      rcx, r14
+  0x1800185e5: call     qword ptr [rax + 0x48]
+  0x1800185e8: cmp      byte ptr [rbp - 0x50], sil
+  0x1800185ec: je       0x18001860c
+  0x1800185ee: mov      r8d, 0x104
+  0x1800185f4: lea      rdx, [rbp - 0x50]
+  0x1800185f8: lea      rcx, [rbp + 0xc0]
+  0x1800185ff: call     qword ptr [rip + 0xbfb3]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x180018605: mov      byte ptr [rbp + 0x1c3], sil
+  0x18001860c: mov      rax, qword ptr [r14]
+  0x18001860f: mov      dword ptr [rsp + 0x28], 0x104
+  0x180018617: lea      rcx, [rbp - 0x50]
+  0x18001861b: mov      qword ptr [rsp + 0x20], rcx
+  0x180018620: lea      r9, [rip + 0xdb30e]
+  0x180018627: lea      r8, [rip + 0xcc02]  ; 'progress'
+  0x18001862e: lea      rdx, [rbp + 0x2e0]
+  0x180018635: mov      rcx, r14
+  0x180018638: call     qword ptr [rax + 0x48]
+  0x18001863b: cmp      byte ptr [rbp - 0x50], sil
+  0x18001863f: je       0x18001865f
+  0x180018641: mov      r8d, 0x104
+  0x180018647: lea      rdx, [rbp - 0x50]
+  0x18001864b: lea      rcx, [rbp + 0x3f0]
+  0x180018652: call     qword ptr [rip + 0xbf60]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x180018658: mov      byte ptr [rbp + 0x4f3], sil
+  0x18001865f: mov      rax, qword ptr [r14]
+  0x180018662: mov      dword ptr [rsp + 0x28], 0x104
+  0x18001866a: lea      rcx, [rbp - 0x50]
+  0x18001866e: mov      qword ptr [rsp + 0x20], rcx
+  0x180018673: lea      r9, [rip + 0xdb2bb]
+  0x18001867a: lea      r8, [rip + 0xcbbb]  ; 'sprite'
+  0x180018681: lea      rdx, [rbp + 0x2e0]
+  0x180018688: mov      rcx, r14
+  0x18001868b: call     qword ptr [rax + 0x48]
+  0x18001868e: cmp      byte ptr [rbp - 0x50], sil
+  0x180018692: je       0x1800186b2
+  0x180018694: mov      r8d, 0x104
+  0x18001869a: lea      rdx, [rbp - 0x50]
+  0x18001869e: lea      rcx, [rbp + 0x1d0]
+  0x1800186a5: call     qword ptr [rip + 0xbf0d]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1800186ab: mov      byte ptr [rbp + 0x2d3], sil
+  0x1800186b2: lea      rax, [r15 + 0x298]
+  0x1800186b9: mov      r10, qword ptr [r14]
+  0x1800186bc: mov      qword ptr [rsp + 0x20], rax
+  0x1800186c1: mov      r9d, dword ptr [rax]
+  0x1800186c4: lea      r8, [rip + 0xcb7d]  ; 'ProgressX'
+  0x1800186cb: lea      rdx, [rbp + 0x2e0]
+  0x1800186d2: mov      rcx, r14
+  0x1800186d5: call     qword ptr [r10 + 0x50]
+  0x1800186d9: lea      rax, [r15 + 0x29c]
+  0x1800186e0: mov      r10, qword ptr [r14]
+  0x1800186e3: mov      qword ptr [rsp + 0x20], rax
+  0x1800186e8: mov      r9d, dword ptr [rax]
+  0x1800186eb: lea      r8, [rip + 0xcb66]  ; 'ProgressY'
+  0x1800186f2: lea      rdx, [rbp + 0x2e0]
+  0x1800186f9: mov      rcx, r14
+  0x1800186fc: call     qword ptr [r10 + 0x50]
+  0x180018700: mov      rax, qword ptr [r14]
+  0x180018703: mov      rcx, r14
+  0x180018706: call     qword ptr [rax + 0x10]
+  0x180018709: mov      r14, rsi
+  0x18001870c: xorps    xmm0, xmm0
+  0x18001870f: movups   xmmword ptr [rsp + 0x40], xmm0
+  0x180018714: movups   xmmword ptr [rsp + 0x50], xmm0
+  0x180018719: movups   xmmword ptr [rsp + 0x60], xmm0
+  0x18001871e: movups   xmmword ptr [rsp + 0x70], xmm0
+  0x180018723: movups   xmmword ptr [rbp - 0x80], xmm0
+  0x180018727: lea      rax, [rip + 0xc9a2]
+  0x18001872e: mov      qword ptr [rsp + 0x40], rax
+  0x180018733: mov      qword ptr [rsp + 0x48], rsi
+  0x180018738: mov      qword ptr [rsp + 0x50], rsi
+  0x18001873d: mov      qword ptr [rsp + 0x58], rsi
+  0x180018742: mov      qword ptr [rsp + 0x60], rsi
+  0x180018747: mov      word ptr [rsp + 0x68], si
+  0x18001874c: mov      qword ptr [rsp + 0x6c], 0xffffffffffffffff
+  0x180018755: mov      qword ptr [rsp + 0x78], rsi
+  0x18001875a: mov      dword ptr [rbp - 0x80], esi
+  0x18001875d: mov      qword ptr [rbp - 0x78], rsi
+  0x180018761: call     0x180017fc0
+  0x180018766: mov      rbx, rax
+  0x180018769: lea      rcx, [rax + 8]
+  0x18001876d: call     qword ptr [rip + 0xb9ad]  ; KERNEL32.dll!EnterCriticalSection
+  0x180018773: inc      dword ptr [rbx + 0x30]
+  0x180018776: lea      rcx, [rbx + 8]
+  0x18001877a: call     qword ptr [rip + 0xb9a8]  ; KERNEL32.dll!LeaveCriticalSection
+  0x180018780: nop      
+  0x180018781: lea      rdx, [rbp + 0xc0]
+  0x180018788: lea      rcx, [rsp + 0x40]
+  0x18001878d: call     0x180018180
+  0x180018792: mov      rcx, qword ptr [rsp + 0x48]
+  0x180018797: mov      qword ptr [rsp + 0x48], rsi
+  0x18001879c: mov      qword ptr [rsp + 0x50], rsi
+  0x1800187a1: mov      qword ptr [rsp + 0x58], rsi
+  0x1800187a6: mov      qword ptr [rsp + 0x60], rsi
+  0x1800187ab: mov      qword ptr [rsp + 0x6c], 0xffffffffffffffff
+  0x1800187b4: mov      word ptr [rsp + 0x68], 0
+  0x1800187bb: mov      qword ptr [r15 + 0x268], rcx
+  0x1800187c2: test     rcx, rcx
+  0x1800187c5: jne      0x1800187f7
+  0x1800187c7: mov      r9d, 0x131
+  0x1800187cd: lea      r8, [rip + 0xcac0]  ; 'm_hBg'
+  0x1800187d4: lea      rax, [rip + 0xca8d]  ; 'NSX3DEngine::KWindowsLoadingWnd::LoadSource'
+  0x1800187db: mov      qword ptr [rsp + 0x20], rax
+  0x1800187e0: lea      rdx, [rip + 0xbfa9]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800187e7: mov      ecx, 3
+  0x1800187ec: call     qword ptr [rip + 0xb80e]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800187f2: jmp      0x18001890b
+  0x1800187f7: lea      r8, [rbp - 0x70]
+  0x1800187fb: mov      edx, 0x20
+  0x180018800: call     qword ptr [rip + 0xb8a2]  ; GDI32.dll!GetObjectA
+  0x180018806: mov      eax, dword ptr [rbp - 0x6c]
+  0x180018809: mov      dword ptr [r15 + 0x280], eax
+  0x180018810: mov      eax, dword ptr [rbp - 0x68]
+  0x180018813: mov      dword ptr [r15 + 0x284], eax
+  0x18001881a: lea      rdx, [rbp + 0x3f0]
+  0x180018821: lea      rcx, [rsp + 0x40]
+  0x180018826: call     0x180018180
+  0x18001882b: mov      rcx, qword ptr [rsp + 0x48]
+  0x180018830: mov      qword ptr [rsp + 0x48], rsi
+  0x180018835: mov      qword ptr [rsp + 0x50], rsi
+  0x18001883a: mov      qword ptr [rsp + 0x58], rsi
+  0x18001883f: mov      qword ptr [rsp + 0x60], rsi
+  0x180018844: mov      qword ptr [rsp + 0x6c], 0xffffffffffffffff
+  0x18001884d: mov      word ptr [rsp + 0x68], 0
+  0x180018854: mov      qword ptr [r15 + 0x270], rcx
+  0x18001885b: test     rcx, rcx
+  0x18001885e: jne      0x180018872
+  0x180018860: mov      r9d, 0x139
+  0x180018866: lea      r8, [rip + 0xca33]  ; 'm_hProgress'
+  0x18001886d: jmp      0x1800187d4
+  0x180018872: lea      r8, [rbp - 0x70]
+  0x180018876: mov      edx, 0x20
+  0x18001887b: call     qword ptr [rip + 0xb827]  ; GDI32.dll!GetObjectA
+  0x180018881: mov      eax, dword ptr [rbp - 0x6c]
+  0x180018884: mov      dword ptr [r15 + 0x288], eax
+  0x18001888b: lea      rdx, [rbp + 0x1d0]
+  0x180018892: lea      rcx, [rsp + 0x40]
+  0x180018897: call     0x180018180
+  0x18001889c: mov      rcx, qword ptr [rsp + 0x48]
+  0x1800188a1: mov      qword ptr [rsp + 0x48], rsi
+  0x1800188a6: mov      qword ptr [rsp + 0x50], rsi
+  0x1800188ab: mov      qword ptr [rsp + 0x58], rsi
+  0x1800188b0: mov      qword ptr [rsp + 0x60], rsi
+  0x1800188b5: mov      qword ptr [rsp + 0x6c], 0xffffffffffffffff
+  0x1800188be: mov      word ptr [rsp + 0x68], 0
+  0x1800188c5: mov      qword ptr [r15 + 0x278], rcx
+  0x1800188cc: test     rcx, rcx
+  0x1800188cf: jne      0x1800188e3
+  0x1800188d1: mov      r9d, 0x140
+  0x1800188d7: lea      r8, [rip + 0xc9d2]  ; 'm_hSprite'
+  0x1800188de: jmp      0x1800187d4
+  0x1800188e3: lea      r8, [rbp - 0x70]
+  0x1800188e7: mov      edx, 0x20
+  0x1800188ec: call     qword ptr [rip + 0xb7b6]  ; GDI32.dll!GetObjectA
+  0x1800188f2: mov      eax, dword ptr [rbp - 0x6c]
+  0x1800188f5: mov      dword ptr [r15 + 0x290], eax
+  0x1800188fc: mov      eax, dword ptr [rbp - 0x68]
+  0x1800188ff: mov      dword ptr [r15 + 0x294], eax
+  0x180018906: mov      esi, 1
+  0x18001890b: test     r14, r14
+  0x18001890e: je       0x18001891a
+  0x180018910: mov      rdx, qword ptr [r14]
+  0x180018913: mov      rcx, r14
+  0x180018916: call     qword ptr [rdx + 0x10]
+  0x180018919: nop      
+  0x18001891a: lea      rcx, [rsp + 0x40]
+  0x18001891f: call     0x180017500
+  0x180018924: mov      eax, esi
+  0x180018926: mov      rcx, qword ptr [rbp + 0x500]
+  0x18001892d: xor      rcx, rsp
+  0x180018930: call     0x1800216a0
+  0x180018935: lea      r11, [rsp + 0x610]
+  0x18001893d: mov      rbx, qword ptr [r11 + 0x28]
+  0x180018941: mov      rsi, qword ptr [r11 + 0x30]
+  0x180018945: mov      rdi, qword ptr [r11 + 0x38]
+  0x180018949: mov      rsp, r11
+  0x18001894c: pop      r15
+  0x18001894e: pop      r14
+  0x180018950: pop      rbp
+  0x180018951: ret      
+  0x180018952: int3     
+  0x180018953: int3     
+  0x180018954: int3     
+  0x180018955: int3     
+  0x180018956: int3     
+  0x180018957: int3     
+  0x180018958: int3     
+  0x180018959: int3     
+  0x18001895a: int3     
+  0x18001895b: int3     
+  0x18001895c: int3     
+  0x18001895d: int3     
+  0x18001895e: int3     
+  0x18001895f: int3     
+  0x180018960: push     rbx
+  0x180018962: push     rbp
+  0x180018963: push     r14
+  0x180018965: sub      rsp, 0x60
+  0x180018969: movd     xmm0, dword ptr [rcx + 0x288]
+  0x180018971: mov      rbx, rcx
+  0x180018974: cvtdq2ps xmm0, xmm0
+  0x180018977: mov      ebp, edx
+  0x180018979: mulss    xmm0, dword ptr [rcx + 0x130]
+  0x180018981: mov      rcx, qword ptr [rcx + 0x128]
+  0x180018988: cvttss2si r14d, xmm0
+  0x18001898d: test     rcx, rcx
+  0x180018990: je       0x180018b9a
+  0x180018996: mov      qword ptr [rsp + 0x80], rsi
+  0x18001899e: call     qword ptr [rip + 0xb9f4]  ; USER32.dll!GetDC
+  0x1800189a4: mov      rsi, rax
+  0x1800189a7: test     rax, rax
+  0x1800189aa: je       0x180018b92
+  0x1800189b0: xor      ecx, ecx
+  0x1800189b2: mov      qword ptr [rsp + 0x88], rdi
+  0x1800189ba: call     qword ptr [rip + 0xb6b8]  ; GDI32.dll!CreateCompatibleDC
+  0x1800189c0: mov      rdi, rax
+  0x1800189c3: test     rax, rax
+  0x1800189c6: je       0x180018b7a
+  0x1800189cc: mov      rdx, qword ptr [rbx + 0x268]
+  0x1800189d3: mov      rcx, rax
+  0x1800189d6: mov      qword ptr [rsp + 0x90], r15
+  0x1800189de: call     qword ptr [rip + 0xb684]  ; GDI32.dll!SelectObject
+  0x1800189e4: mov      ecx, dword ptr [rbx + 0x284]
+  0x1800189ea: mov      r15, rax
+  0x1800189ed: mov      r9d, dword ptr [rbx + 0x280]
+  0x1800189f4: mov      dword ptr [rsp + 0x40], 0xcc0020
+  0x1800189fc: test     ebp, ebp
+  0x1800189fe: je       0x180018a4c
+  0x180018a00: xor      ebp, ebp
+  0x180018a02: xor      r8d, r8d
+  0x180018a05: mov      dword ptr [rsp + 0x38], ebp
+  0x180018a09: xor      edx, edx
+  0x180018a0b: mov      dword ptr [rsp + 0x30], ebp
+  0x180018a0f: mov      qword ptr [rsp + 0x28], rdi
+  0x180018a14: mov      dword ptr [rsp + 0x20], ecx
+  0x180018a18: mov      rcx, rsi
+  0x180018a1b: call     qword ptr [rip + 0xb68f]  ; GDI32.dll!BitBlt
+  0x180018a21: mov      rdx, qword ptr [rbx + 0x270]
+  0x180018a28: mov      rcx, rdi
+  0x180018a2b: call     qword ptr [rip + 0xb637]  ; GDI32.dll!SelectObject
+  0x180018a31: mov      edx, dword ptr [rbx + 0x298]
+  0x180018a37: mov      r9d, r14d
+  0x180018a3a: mov      dword ptr [rsp + 0x40], 0xcc0020
+  0x180018a42: mov      dword ptr [rsp + 0x38], ebp
+  0x180018a46: mov      dword ptr [rsp + 0x30], ebp
+  0x180018a4a: jmp      0x180018aae
+  0x180018a4c: mov      r8d, dword ptr [rbx + 0x2a8]
+  0x180018a53: mov      edx, dword ptr [rbx + 0x2a4]
+  0x180018a59: mov      dword ptr [rsp + 0x38], r8d
+  0x180018a5e: mov      dword ptr [rsp + 0x30], edx
+  0x180018a62: mov      qword ptr [rsp + 0x28], rdi
+  0x180018a67: mov      dword ptr [rsp + 0x20], ecx
+  0x180018a6b: mov      rcx, rsi
+  0x180018a6e: call     qword ptr [rip + 0xb63c]  ; GDI32.dll!BitBlt
+  0x180018a74: mov      rdx, qword ptr [rbx + 0x270]
+  0x180018a7b: mov      rcx, rdi
+  0x180018a7e: call     qword ptr [rip + 0xb5e4]  ; GDI32.dll!SelectObject
+  0x180018a84: mov      edx, dword ptr [rbx + 0x2a4]
+  0x180018a8a: mov      eax, edx
+  0x180018a8c: mov      r9d, dword ptr [rbx + 0x298]
+  0x180018a93: sub      eax, r9d
+  0x180018a96: sub      r9d, edx
+  0x180018a99: mov      dword ptr [rsp + 0x40], 0xcc0020
+  0x180018aa1: add      r9d, r14d
+  0x180018aa4: xor      ebp, ebp
+  0x180018aa6: mov      dword ptr [rsp + 0x38], ebp
+  0x180018aaa: mov      dword ptr [rsp + 0x30], eax
+  0x180018aae: mov      eax, dword ptr [rbx + 0x28c]
+  0x180018ab4: mov      rcx, rsi
+  0x180018ab7: mov      r8d, dword ptr [rbx + 0x29c]
+  0x180018abe: mov      qword ptr [rsp + 0x28], rdi
+  0x180018ac3: mov      dword ptr [rsp + 0x20], eax
+  0x180018ac7: call     qword ptr [rip + 0xb5e3]  ; GDI32.dll!BitBlt
+  0x180018acd: mov      ecx, dword ptr [rbx + 0x298]
+  0x180018ad3: mov      eax, dword ptr [rbx + 0x290]
+  0x180018ad9: cdq      
+  0x180018ada: sub      eax, edx
+  0x180018adc: sar      eax, 1
+  0x180018ade: sub      ecx, eax
+  0x180018ae0: mov      eax, dword ptr [rbx + 0x28c]
+  0x180018ae6: sub      eax, dword ptr [rbx + 0x294]
+  0x180018aec: add      ecx, r14d
+  0x180018aef: cdq      
+  0x180018af0: mov      dword ptr [rbx + 0x2a4], ecx
+  0x180018af6: sub      eax, edx
+  0x180018af8: mov      rcx, rdi
+  0x180018afb: mov      rdx, qword ptr [rbx + 0x278]
+  0x180018b02: sar      eax, 1
+  0x180018b04: add      eax, dword ptr [rbx + 0x29c]
+  0x180018b0a: mov      dword ptr [rbx + 0x2a8], eax
+  0x180018b10: call     qword ptr [rip + 0xb552]  ; GDI32.dll!SelectObject
+  0x180018b16: mov      ecx, dword ptr [rbx + 0x294]
+  0x180018b1c: mov      eax, dword ptr [rbx + 0x2a0]
+  0x180018b22: mov      r9d, dword ptr [rbx + 0x290]
+  0x180018b29: mov      r8d, dword ptr [rbx + 0x2a8]
+  0x180018b30: mov      edx, dword ptr [rbx + 0x2a4]
+  0x180018b36: mov      dword ptr [rsp + 0x50], eax
+  0x180018b3a: mov      dword ptr [rsp + 0x48], ecx
+  0x180018b3e: mov      dword ptr [rsp + 0x40], r9d
+  0x180018b43: mov      dword ptr [rsp + 0x38], ebp
+  0x180018b47: mov      dword ptr [rsp + 0x30], ebp
+  0x180018b4b: mov      qword ptr [rsp + 0x28], rdi
+  0x180018b50: mov      dword ptr [rsp + 0x20], ecx
+  0x180018b54: mov      rcx, rsi
+  0x180018b57: call     qword ptr [rip + 0xb70b]  ; MSIMG32.dll!AlphaBlend
+  0x180018b5d: mov      rdx, r15
+  0x180018b60: mov      rcx, rdi
+  0x180018b63: call     qword ptr [rip + 0xb4ff]  ; GDI32.dll!SelectObject
+  0x180018b69: mov      rcx, rdi
+  0x180018b6c: call     qword ptr [rip + 0xb4de]  ; GDI32.dll!DeleteDC
+  0x180018b72: mov      r15, qword ptr [rsp + 0x90]
+  0x180018b7a: mov      rcx, qword ptr [rbx + 0x128]
+  0x180018b81: mov      rdx, rsi
+  0x180018b84: call     qword ptr [rip + 0xb806]  ; USER32.dll!ReleaseDC
+  0x180018b8a: mov      rdi, qword ptr [rsp + 0x88]
+  0x180018b92: mov      rsi, qword ptr [rsp + 0x80]
+  0x180018b9a: add      rsp, 0x60
+  0x180018b9e: pop      r14
+  0x180018ba0: pop      rbp
+  0x180018ba1: pop      rbx
+  0x180018ba2: ret      
+  0x180018ba3: int3     
+  0x180018ba4: int3     
+  0x180018ba5: int3     
+  0x180018ba6: int3     
+  0x180018ba7: int3     
+  0x180018ba8: int3     
+  0x180018ba9: int3     
+  0x180018baa: int3     
+  0x180018bab: int3     
+  0x180018bac: int3     
+  0x180018bad: int3     
+  0x180018bae: int3     
+  0x180018baf: int3     
+  0x180018bb0: push     rbx
+  0x180018bb2: sub      rsp, 0x30
+  0x180018bb6: movss    xmm0, dword ptr [rip + 0xc746]
+  0x180018bbe: mov      rbx, rcx
+  0x180018bc1: movaps   xmmword ptr [rsp + 0x20], xmm6
+  0x180018bc6: movaps   xmm6, xmm1
+  0x180018bc9: comiss   xmm0, xmm6
+  0x180018bcc: ja       0x180018bd1
+  0x180018bce: movaps   xmm1, xmm0
+  0x180018bd1: comiss   xmm0, xmm2
+  0x180018bd4: movss    dword ptr [rcx + 0x134], xmm1
+  0x180018bdc: ja       0x180018be1
+  0x180018bde: movaps   xmm2, xmm0
+  0x180018be1: comiss   xmm6, xmm0
+  0x180018be4: movss    dword ptr [rcx + 0x138], xmm2
+  0x180018bec: jb       0x180018c11
+  0x180018bee: call     qword ptr [rip + 0xb43c]  ; Engine_Lua5X64.dll!?KG_GetTickCount@@YAIXZ
+  0x180018bf4: sub      eax, dword ptr [rbx + 0x13c]
+  0x180018bfa: xorps    xmm0, xmm0
+  0x180018bfd: cvtsi2ss xmm0, rax
+  0x180018c02: divss    xmm0, xmm6
+  0x180018c06: cvttss2si rax, xmm0
+  0x180018c0b: mov      dword ptr [rbx + 0x144], eax
+  0x180018c11: movaps   xmm6, xmmword ptr [rsp + 0x20]
+  0x180018c16: add      rsp, 0x30
+  0x180018c1a: pop      rbx
+  0x180018c1b: ret      
+  0x180018c1c: int3     
+  0x180018c1d: int3     
+  0x180018c1e: int3     
+  0x180018c1f: int3     
+  0x180018c20: mov      qword ptr [rsp + 8], rbx
+  0x180018c25: push     rdi
+  0x180018c26: sub      rsp, 0x20
+  0x180018c2a: cmp      dword ptr [rcx + 0x148], 0
+  0x180018c31: mov      edi, edx
+  0x180018c33: mov      rbx, rcx
+  0x180018c36: je       0x180018c3e
+  0x180018c38: mov      rax, qword ptr [rcx]
+  0x180018c3b: call     qword ptr [rax + 0x30]
+  0x180018c3e: mov      dword ptr [rbx + 0x148], 1
+  0x180018c48: call     qword ptr [rip + 0xb3e2]  ; Engine_Lua5X64.dll!?KG_GetTickCount@@YAIXZ
+  0x180018c4e: test     edi, edi
+  0x180018c50: mov      dword ptr [rbx + 0x138], 0x3f800000
+  0x180018c5a: mov      dword ptr [rbx + 0x140], eax
+  0x180018c60: lea      rcx, [rbx + 0x110]
+  0x180018c67: mov      dword ptr [rbx + 0x13c], eax
+  0x180018c6d: lea      rdx, [rip + 0x44c]
+  0x180018c74: mov      eax, 0x1f4
+  0x180018c79: mov      r8, rbx
+  0x180018c7c: cmovne   eax, edi
+  0x180018c7f: xor      r9d, r9d
+  0x180018c82: mov      dword ptr [rbx + 0x144], eax
+  0x180018c88: xor      eax, eax
+  0x180018c8a: mov      dword ptr [rbx + 0x134], eax
+  0x180018c90: mov      dword ptr [rbx + 0x150], eax
+  0x180018c96: mov      rbx, qword ptr [rsp + 0x30]
+  0x180018c9b: add      rsp, 0x20
+  0x180018c9f: pop      rdi
+

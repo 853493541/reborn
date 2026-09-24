@@ -95,7 +95,7 @@ room create/force-start/side payloads.
 | Item | Status |
 |---|---|
 | Mode HUD labels, item tooltips, queue UI text | STATIC (PakV4 `ui/...` extraction — not yet enumerated) |
-| Loading backgrounds (`ui\Loading\Loading.ini`, 18 entries) | DONE |
+| Loading backgrounds (`ui\Loading\Loading.ini`, 18 entries) | DONE — window RE + 18 class-art backgrounds in `JX3_MODE_UI_FLOW.md` §4; per-map `[loading]` art extracted (`proof/netcode/mode_ui/loading/`) but has **no reader in the PC client binaries** (scan `proof/netcode/mode_ui/consumer_scan_bin64.txt`) |
 
 ---
 

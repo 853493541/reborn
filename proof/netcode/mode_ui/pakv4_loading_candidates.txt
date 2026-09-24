@@ -1,0 +1,5 @@
+ui\loading\loading.ini
+ui\loading\progress.bmp
+ui\loading\sprite.bmp
+ui\loading\background1.bmp
+UI\Loading\Loading.ini
