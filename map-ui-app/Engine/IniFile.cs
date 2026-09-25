@@ -48,9 +48,9 @@ namespace MapUiApp.Engine
 
         /// <summary>
         /// The client keeps re-issued element definitions under suffixed names
-        /// (e.g. Image_Bg4_0_0 is a newer Image_Bg4_0). The engine reuses the earlier
-        /// definition's placement unless the newer one authors it, so do the same for
-        /// the only placement keys that are left implicit: Left and Top.
+        /// (e.g. Image_Bg4_0_0 is a newer Image_Bg4_0, Handle_Bg_0! a newer Handle_Bg).
+        /// The engine keeps the earlier definition as the fallback for every key the
+        /// newer one leaves out, so fill those gaps here.
         /// </summary>
         private static void InheritFromBaseSections(IniFile ini)
         {
@@ -66,8 +66,17 @@ namespace MapUiApp.Engine
                     if (baseName == null) break;
                     name = baseName;
                     if (!ini.ByName.TryGetValue(baseName, out var baseSection)) continue;
-                    if (!section.Values.ContainsKey("Left") && baseSection.Values.TryGetValue("Left", out var left)) section.Values["Left"] = left;
-                    if (!section.Values.ContainsKey("Top") && baseSection.Values.TryGetValue("Top", out var top)) section.Values["Top"] = top;
+                    bool hasSize = section.Values.ContainsKey("Width") || section.Values.ContainsKey("Height");
+                    bool autoSize = section.GetBool("AutoSize") || (!hasSize && baseSection.GetBool("AutoSize"));
+                    foreach (var pair in baseSection.Values)
+                    {
+                        if (section.Values.ContainsKey(pair.Key)) continue;
+                        // An authored box (even 0x0) wins over an inherited AutoSize...
+                        if (pair.Key == "AutoSize" && hasSize) continue;
+                        // ...and an auto-sized element takes its size from the artwork.
+                        if (autoSize && (pair.Key == "Width" || pair.Key == "Height")) continue;
+                        section.Values[pair.Key] = pair.Value;
+                    }
                     break;
                 }
             }

@@ -207,7 +207,30 @@ namespace MapUiApp.Engine
             }
             BuildSearchBox();
             SetAlphaSlider(1.0);
+            ReorderChrome();
             Wire(_middleBuild, "Btn_Close", () => MiddleOpen = false);
+        }
+
+        /// <summary>
+        /// The INI's draw order is not the game's: the panel set (Handle_Bg_Common) is
+        /// listed after the title bar (Handle_Bg_0!) but renders behind it, while the map
+        /// backdrop (Handle_Mbg, a child of the title bar) renders behind both.
+        /// </summary>
+        private void ReorderChrome()
+        {
+            if (!_middleBuild.Elements.TryGetValue("Handle_Total", out var totalElement) || totalElement is not Canvas total) return;
+            if (!_middleBuild.Elements.TryGetValue("Handle_Bg_Common", out var panel)) return;
+            if (!_middleBuild.Elements.TryGetValue("Handle_Bg_0!", out var titleBar)) return;
+            if (_middleBuild.Elements.TryGetValue("Handle_Mbg", out var mbg) && mbg is Canvas mbgCanvas && mbgCanvas.Parent is Canvas mbgParent)
+            {
+                mbgParent.Children.Remove(mbgCanvas);
+                Canvas.SetLeft(mbgCanvas, 0);
+                Canvas.SetTop(mbgCanvas, 0);
+                int panelIndex = total.Children.IndexOf(panel);
+                total.Children.Insert(panelIndex < 0 ? 0 : panelIndex, mbgCanvas);
+            }
+            Panel.SetZIndex(panel, 1);
+            Panel.SetZIndex(titleBar, 2);
         }
 
         /// <summary>
