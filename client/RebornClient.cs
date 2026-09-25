@@ -430,6 +430,38 @@ internal static class RebornClient
             camSys.Pitch = targetPitch;
         };
 
+        // The model pitch is the offset parameter of the JX3 sphere offset;
+        // the engine view pitch that keeps the anchor centered follows from it:
+        //   aimPitch = -atan2(offsetY, |offsetXZ|)
+        // (offset is anchor->camera, so the view direction camera->anchor is -offset).
+        Func<double> geometricAimPitch = delegate()
+        {
+            double h = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+            double[] off = new double[3];
+            CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, Math.Max(1.0, camSys.Distance), h, off);
+            double horiz = Math.Sqrt(off[0] * off[0] + off[2] * off[2]);
+            return -Math.Atan2(off[1], Math.Max(1e-3, horiz));
+        };
+
+        // Align the engine aim to the geometry without touching the tracked
+        // model pitch (alignEngineCamera would overwrite it with the view pitch).
+        Action alignAim = delegate()
+        {
+            double modelPitch = camSys.Pitch;
+            alignEngineCamera(camSys.Yaw, geometricAimPitch());
+            camSys.Pitch = modelPitch;
+        };
+
+        // Aim pitch of any model pitch (the view pitch that keeps the anchor
+        // centred for the current distance/height). Used by the feed-forward
+        // that keeps the engine look on the anchor while the model pitch moves.
+        Func<double, double> aimPitchOf = delegate(double p)
+        {
+            double h = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+            double d = Math.Max(1.0, camSys.Distance);
+            return -Math.Atan2(Math.Sin(p) * d + h, Math.Cos(p) * d);
+        };
+
         // Camera yaw that puts the camera behind the character (curYaw = facing).
         Func<double> cameraYawBehind = delegate()
         {
@@ -522,18 +554,18 @@ internal static class RebornClient
             }
             else if (e.KeyCode == Keys.F11)
             {
-                // CameraReset: behind the character, pitch -15 deg, distance 1x
+                // Camera reset: behind the character, model pitch -15 deg, distance 1x
                 camSys.SetMaxDistance(camSys.Row.F("InitCameraDistance", 6.0));
-                alignEngineCamera(cameraYawBehind(), -Math.PI / 12.0);
+                camSys.Yaw = cameraYawBehind();
+                camSys.Pitch = -Math.PI / 12.0;
+                alignAim();
                 Log("camera reset: behind character, pitch -15deg");
             }
             else if (e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
             {
                 // CameraSetView(0) / (180): yaw preset relative to facing
-                measureView();
-                double cp = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                double by = cameraYawBehind() + (e.KeyCode == Keys.End ? Math.PI : 0.0);
-                alignEngineCamera(by, cp);
+                camSys.Yaw = cameraYawBehind() + (e.KeyCode == Keys.End ? Math.PI : 0.0);
+                alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
             }
         };
@@ -573,7 +605,12 @@ internal static class RebornClient
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
-        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0;
+        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
+        bool orbitApplied = false;
+        float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
+        bool dbgIntSet = false;
+        long lastYawSync = 0;
+        int pitchAimErrPx = 0;
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
@@ -584,53 +621,35 @@ internal static class RebornClient
         int shotIdx = 0;
         long[] shots = ParseShots(Env("RC_SHOTS", "3000,8000,15000,30000"));
 
-        // Initialize from the real scene_init_param row (or the user's saved
-        // runtime yaw/pitch with RC_CUSTOM_DAT). Maps without their own row
-        // (e.g. map 296) have no real init data: keep the spawn view instead
-        // of applying another map's yaw. 300 px/pass and the engine orbit is
-        // ~0.0015 rad/px, so a large correction needs several passes.
+        // Initialize the model yaw/pitch from the real scene_init_param row (or
+        // the user's saved runtime values with RC_CUSTOM_DAT). Maps without
+        // their own row keep the spawn view. Model pitch is the offset
+        // parameter of the JX3 sphere offset; the engine view pitch follows
+        // from it (see geometricAimPitch / CAMERA_FIX_SPEC.md).
         bool applyCamInit = cameraSettings.HasSceneInit || cameraSettings.HasSavedRuntime;
         if (applyCamInit)
         {
-            alignEngineCamera(cameraSettings.InitYaw, cameraSettings.InitPitch);
+            camSys.Yaw = cameraSettings.InitYaw;
+            camSys.Pitch = cameraSettings.InitPitch;
             Log(string.Format("camera init applied mapId={0} yaw={1:F3} pitch={2:F3}",
                 cameraSettings.MapId, camSys.Yaw, camSys.Pitch));
         }
         else
         {
             measureView();
+            if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+                camSys.Yaw = Math.Atan2(-viewZ, -viewX);
             Log(string.Format("camera init skipped mapId={0} (no scene_init_param row; keeping spawn view)",
                 cameraSettings.MapId));
         }
-        if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
-            camSys.Yaw = Math.Atan2(-viewZ, -viewX);
 
-        // Camera aim geometry: the placement keeps the engine's aim on the
-        // anchor (camY = anchor.y - tan(pitch) * distance), so the tracked
-        // pitch must match the engine's view pitch. Maps with a real scene row
-        // already got it from the init loop above; maps without one keep the
-        // spawn view direction, so align the engine pitch once to the row
-        // geometry (-atan2(CameraHeight, distance)) and adopt it as tracked
-        // pitch. Loop-limited: continuous vertical orbit deltas break the
-        // engine screenshot path. RC_PITCH_ALIGN=0 skips the alignment.
-        bool pitchAlign = Env("RC_PITCH_ALIGN", "1") == "1" && !applyCamInit;
-        double alignHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
-        double alignPitch = -Math.Atan2(alignHeight, Math.Max(1.0, camSys.Distance));
-        if (pitchAlign)
+        // One-time engine aim alignment (loop-limited: continuous vertical
+        // orbit deltas break the engine screenshot path). RC_PITCH_ALIGN=0 skips.
+        if (Env("RC_PITCH_ALIGN", "1") == "1")
         {
-            for (int pass = 0; pass < 3; pass++)
-            {
-                measureView();
-                double measured = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                int dyp = (int)Math.Round(-(alignPitch - measured) / 0.00121);
-                if (dyp > 200) dyp = 200;
-                if (dyp < -200) dyp = -200;
-                if (dyp > -8 && dyp < 8) break;
-                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
-                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X, lockCenter.Y + dyp));
-                Log("camera pitch align: dyp=" + dyp + " pass=" + pass);
-            }
-            camSys.Pitch = alignPitch;
+            Log(string.Format("camera aim align: yaw={0:F3} modelPitch={1:F3} aimPitch={2:F3}",
+                camSys.Yaw, camSys.Pitch, geometricAimPitch()));
+            alignAim();
         }
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -645,7 +664,25 @@ internal static class RebornClient
             frames++;
             if (now - fpsAt >= 1000) { fps = frames * 1000 / (now - fpsAt); frames = 0; fpsAt = now; }
 
-            if (orbitQueue.Count > 0)
+            // Aim sync: every 100 ms while dragging (plus once right after it
+            // stops) read the engine view back with the nudge probe. Yaw is
+            // authoritative there; the pitch error is stored as pixels and
+            // combined into the next orbit action (closed loop). A per-frame
+            // read-back is noisy, and a position read-back is circular (our
+            // placement overwrites the position).
+            bool dragging = orbitQueue.Count > 0 || (lastOrbitMs != 0 && now - lastOrbitMs < 150);
+            if (dragging ? (now - lastYawSync >= 100) : orbitApplied)
+            {
+                lastYawSync = now;
+                orbitApplied = false;
+                measureView();
+                if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
+                    camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+                double measuredPitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+                pitchAimErrPx = (int)Math.Round((measuredPitch - aimPitchOf(camSys.Pitch)) / 0.00121);
+            }
+
+            if (orbitQueue.Count > 0 || pitchAimErrPx != 0)
             {
                 int ox = 0, oy = 0;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
@@ -657,20 +694,38 @@ internal static class RebornClient
                 double pitchMaxPx = orow.F("CameraMaxDeltaPitch", 1.56) / 0.00121;
                 if (ox > yawMaxPx) ox = (int)yawMaxPx; else if (ox < -yawMaxPx) ox = (int)-yawMaxPx;
                 if (oy > pitchMaxPx) oy = (int)pitchMaxPx; else if (oy < -pitchMaxPx) oy = (int)-pitchMaxPx;
-                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
-                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy));
-                // track yaw and pitch ourselves: the engine orbit also moves
-                // the camera position, and a nudge here made the camera flash
-                // and glide back. Pitch tracking keeps the placement geometry
-                // consistent with the engine's aim (see the placement below).
-                camSys.Yaw -= ox * 0.0018f;
+
+                // JX3 input (ApplyMouse): mouse X -> yaw, mouse Y -> pitch;
+                // pitch += dy (drag down raises the camera offset, and the aim
+                // - which stays on the character - looks further down). The
+                // engine raw orbit turns the view the other way for pitch, so
+                // the aim feed-forward is computed from the desired aim change:
+                //   engine view pitch change = -(oy + oyFF) * 0.00121
+                //   desired                  = aimPitchOf(P_new) - aimPitchOf(P_old)
+                double yawNew = camSys.Yaw - ox * 0.0018;
                 float twoPi = 2f * (float)Math.PI;
-                if (camSys.Yaw > (float)Math.PI) camSys.Yaw -= twoPi;
-                if (camSys.Yaw < -(float)Math.PI) camSys.Yaw += twoPi;
-                camSys.Pitch -= oy * 0.00121f;
+                if (yawNew > Math.PI) yawNew -= twoPi;
+                if (yawNew < -Math.PI) yawNew += twoPi;
+                camSys.Yaw = yawNew;
+
+                double pOld = camSys.Pitch;
+                camSys.Pitch += oy * 0.00121;
                 double pmax = Math.PI / 2.0 - 0.05;
                 if (camSys.Pitch > pmax) camSys.Pitch = pmax;
                 else if (camSys.Pitch < -pmax) camSys.Pitch = -pmax;
+                double pNew = camSys.Pitch;
+
+                double aimDelta = aimPitchOf(pNew) - aimPitchOf(pOld);
+                int oyFF = (int)Math.Round(-aimDelta / 0.00121 - oy);
+                oyFF += pitchAimErrPx;      // closed-loop residual (last measureView)
+                pitchAimErrPx = 0;
+                if (oyFF > 400) oyFF = 400; else if (oyFF < -400) oyFF = -400;
+
+                // one combined orbit per frame (a second ROTATE_CAMERA start
+                // without a FrameMove would drop the first delta)
+                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy + oyFF));
+                orbitApplied = true;
                 lastOrbitMs = now;
             }
 
@@ -713,10 +768,11 @@ internal static class RebornClient
                     if (px2 < 1) px2 = 1;
                     orbitQueue.Enqueue(new int[] { px2, 0 });
                 }
-                if (now >= 6000 && now < 9000)
+                if (now >= 6000 && now < 12000)
                 {
-                    int py2 = (int)(dt * 0.5f / 0.0035f);
-                    if (py2 < 1) py2 = 1;
+                    // pitch probe: alternate direction so the sweep stays inside
+                    // the row range (no ground clamp)
+                    int py2 = (((now - 6000) / 1500) % 2 == 0) ? 1 : -1;
                     orbitQueue.Enqueue(new int[] { 0, py2 });
                 }
             }
@@ -762,8 +818,13 @@ internal static class RebornClient
                 lastCamLog = now;
                 float dbgx = 0f, dbgy = 0f, dbgz = 0f;
                 scene.GetCameraPos(ref dbgx, ref dbgy, ref dbgz);
-                Log(string.Format("camdbg mode={0} yaw={1:F2} pitch={2:F2} dist={3:F0} cam=({4:F0},{5:F0},{6:F0})",
-                    camSys.Mode, camSys.Yaw, camSys.Pitch, camSys.Distance, dbgx, dbgy, dbgz));
+                double rdx = dbgx - px, rdy = dbgy - (py + 90.0), rdz = dbgz - pz;
+                double rgeo = Math.Sqrt(rdx * rdx + rdy * rdy + rdz * rdz);
+                measureView();
+                double vyaw = Math.Atan2(-viewZ, -viewX);
+                double vpitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0})",
+                    camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz));
             }
 
             // movement is camera-relative: forward = camera -> anchor
@@ -943,41 +1004,37 @@ internal static class RebornClient
                 double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
                               * cameraSettings.EyeScale;
 
-                // The nudge's vertical component jitters, so the horizontal
-                // direction comes from the tracked yaw; the height comes from
-                // the tracked pitch: the engine aims at the anchor with pitch P,
-                // so the camera sits at anchor.y - tan(P) * distance (at the
-                // startup pitch -atan2(CameraHeight, distance) this equals the
-                // row CameraHeight, 200 u at 600 u).
-                double vx = hx, vz = hz;
-                double hlen = Math.Sqrt(vx * vx + vz * vz);
-                if (hlen < 1e-6) { vx = 0; vz = 1; hlen = 1; }
-                vx /= hlen; vz /= hlen;
-
-                double pitchOffset = Math.Tan(camSys.Pitch);
+                // JX3 sphere offset (SetCharacterCameraPosition @ 0x180B0E820,
+                // CAMERA_FIX_SPEC.md): constant-length orbit around the anchor;
+                // pitch only rotates it and CameraHeight is a separate additive
+                // term. Never use tan(pitch) here (the old bug scaled the orbit
+                // radius while dragging, so dragging changed the distance).
+                double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
-                double camX = ax2 - vx * dist;
-                double camY = ay2 - pitchOffset * dist;
-                double camZ = az2 - vz * dist;
+                double[] camOff = new double[3];
+                CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
+                double camX = ax2 + camOff[0];
+                double camY = ay2 + camOff[1];
+                double camZ = az2 + camOff[2];
 
-                // obstruction: terrain above the anchor->camera ray
+                // obstruction: terrain above the anchor->camera ray (scaling the
+                // offset keeps the retracted camera on the same orbit line)
                 if (sampler != null)
                 {
                     const double margin = 20.0;
-                    double ddy = camY - ay2;
-                    double ddx = camX - ax2, ddz = camZ - az2;
-                    double rayLen = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
+                    double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                     const int steps = 14;
                     for (int i = 2; i <= steps; i++)
                     {
                         double t = (double)i / steps;
-                        float g = sampler.Sample((float)(ax2 + ddx * t), (float)(az2 + ddz * t));
-                        if (g + margin > ay2 + ddy * t)
+                        float g = sampler.Sample((float)(ax2 + camOff[0] * t), (float)(az2 + camOff[2] * t));
+                        if (g + margin > ay2 + camOff[1] * t)
                         {
-                            double d2 = Math.Max(150.0, t * rayLen - 40.0);
-                            camX = ax2 - vx * d2;
-                            camY = ay2 - pitchOffset * d2;
-                            camZ = az2 - vz * d2;
+                            double d2 = Math.Max(150.0, t * offLen - 40.0);
+                            double s = d2 / Math.Max(1.0, offLen);
+                            camX = ax2 + camOff[0] * s;
+                            camY = ay2 + camOff[1] * s;
+                            camZ = az2 + camOff[2] * s;
                             break;
                         }
                     }
@@ -985,6 +1042,7 @@ internal static class RebornClient
                     if (camY < camGround) camY = camGround;
                 }
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
                 }
             }
             catch (Exception e) { Log("camera system ex: " + e.Message); }
@@ -992,6 +1050,18 @@ internal static class RebornClient
             engine.FrameMove();
             engine.Render();
             Application.DoEvents();
+
+            if (camDebug && dbgIntSet && now - lastPostLog >= 500)
+            {
+                lastPostLog = now;
+                float abx = 0f, aby = 0f, abz = 0f;
+                scene.GetCameraPos(ref abx, ref aby, ref abz);
+                double pd = Math.Sqrt((abx - dbgIntX) * (abx - dbgIntX) +
+                                      (aby - dbgIntY) * (aby - dbgIntY) +
+                                      (abz - dbgIntZ) * (abz - dbgIntZ));
+                Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1}",
+                    dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd));
+            }
 
             if (now - lastHud >= 250)
             {

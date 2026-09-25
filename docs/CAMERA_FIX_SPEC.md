@@ -30,18 +30,26 @@ From `JX3RepresentX64.dll SetCharacterCameraPosition` (`0x180B0E820`,
   (`ApplyMouse`/`ClampMouse`, `camera_input_controls`); nothing writes a
   camera position from the mouse.
 
-## 2. What is inferred (needs one probe)
+## 2. Resolved by the drag-model proof (2026-09-24)
 
-- Which of the caller params (`+0x20` vs `+0x24`) is yaw vs pitch, and the
-  sign relation to our `camSys.Yaw/camSys.Pitch` (our yaw is derived from the
-  engine's measured view direction, so it should already be in the engine's
-  convention, but this is not proven byte-for-byte).
-- The exact `B` lateral term and the `k` constant (irrelevant in this fix:
-  `B` is 0 in the host rows).
+`docs/CAMERA_DRAG_MODEL.md` proves from this build's disassembly
+(`proof/netcode/disasm/mouse_drag_update.txt`, `camera_set_tail.txt`):
 
-Neither affects the fix structure: our placement already uses the same
-horizontal yaw convention as the engine (`Forward()` = view direction), and
-the fix only adds the `cos(pitch)` factor and corrects the vertical term.
+- controller `+0x20` = **yaw**, `+0x24` = **pitch**; `ApplyMouse`
+  (`0x180B36E20`) scales the mouse deltas by **2*pi** (`0x180CB9F34`) and
+  sends X to yaw / Y to pitch; pitch is clamped to `|pitch| < pi/2 - 0.0157`
+  (`0x180CAD538` / `0x180CAD584`) by the setter `0x180AE29D0`.
+- The camera is placed at `anchor + rotated offset` and the engine camera is
+  set with **look-at at the anchor** (character head, `Bip01 Head`), so the
+  character stays centred while the camera position orbits. Left/right drag
+  therefore **does** move the camera position; L/R vs U/D is yaw vs pitch,
+  not position vs rotation.
+- `B`/lateral term still untested (0 in the host rows); it does not affect the
+  fix.
+
+Probe outcome (`RC_CAM_DEBUG=1`): pure yaw integration drifts up to **4.36 rad**
+from the engine aim during drags, so yaw **must** be read back from the engine
+after each orbit (closed loop), not integrated from pixels.
 
 ## 3. The defect in our code
 
@@ -91,10 +99,12 @@ Also:
 1. **Delete the height-in-pitch calibration** (`RebornClient.cs:588-604`):
    do not set `alignPitch = -atan2(CameraHeight, distance)`. Keep the
    saved/row pitch; `CameraHeight` stays an additive term.
-2. **Remove the yaw-from-position feedback** in the normal loop
-   (`RebornClient.cs:722-730`): never assign `camSys.Yaw` from
-   `measureView()` while running; keep it as a debug-only diagnostic. Drag
-   integrates yaw/pitch from the deltas (with the row clamps).
+2. **Keep the yaw closed loop** (updated after the probe): after each orbit
+   batch read the engine aim back into `camSys.Yaw` (the `orbitApplied` block
+   in `RebornClient.cs`); pixel integration alone drifts (4.36 rad measured).
+   Vertical pixels still integrate into the model pitch at the measured rate;
+   the engine aim pitch is aligned once via `alignAim()` and re-pinned when
+   needed.
 3. Same change in `engine_host_spike/MapSpike.cs` so both hosts agree.
 
 ### Expected look change (one-time retune)
@@ -134,6 +144,11 @@ With `RC_CAM_DEBUG=1`:
    `cp` horizontal terms.
 
 Record the two outcomes in this file when done.
+
+**Run 2026-09-24:** the probe was executed (`bin64\reborn_out\reborn.log`);
+outcomes, addresses and the per-piece proof are recorded in
+`docs/CAMERA_DRAG_MODEL.md` (L/R = yaw orbit, U/D = pitch; closed loop
+required; anchor/look-at = character head).
 
 ## 7. Not covered here
 

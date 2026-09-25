@@ -42,6 +42,37 @@ internal static class CameraSmoke
               Math.Abs(cam.Pos[1] - ey) < 0.01,
               string.Format("pos=({0:F2},{1:F2},{2:F2})", cam.Pos[0], cam.Pos[1], cam.Pos[2]));
 
+        // Part 1 regression (CAMERA_FIX_SPEC.md): pitch rotates a constant-length
+        // JX3 sphere offset; it must not scale the distance with tan(pitch).
+        var cam3 = new CameraSystem();
+        cam3.UnitsPerMeter = 1.0;
+        cam3.SwitchMode(CameraSystem.MODE_CHARACTER);
+        cam3.Distance = 6.0;
+        double[] pitches = { -40.0 * DEG, -20.0 * DEG, 0.0, 25.0 * DEG, 40.0 * DEG };
+        double worst = 0.0;
+        foreach (double pv in pitches)
+        {
+            // pin the idle/move pitch pull to the test pitch (Update drives Pitch
+            // toward these rows every frame at PitchRate)
+            cam3.Rows[CameraSystem.MODE_CHARACTER].Set("CameraMovePitchAdjustPitch", pv);
+            cam3.Rows[CameraSystem.MODE_CHARACTER].Set("CameraMovePitchApplyAngle", pv);
+            cam3.Pitch = pv;
+            for (int i = 0; i < 90; i++) cam3.Update(1.0 / 60.0, anchor);
+            double hhx = cam3.Pos[0] - anchor[0], hhz = cam3.Pos[2] - anchor[2];
+            double horiz = Math.Sqrt(hhx * hhx + hhz * hhz);
+            double err = Math.Max(Math.Abs(horiz - Math.Cos(pv) * 6.0),
+                                  Math.Abs(cam3.Pos[1] - (Math.Sin(pv) * 6.0 + 2.0)));
+            if (err > worst) worst = err;
+        }
+        Check("pitch drag keeps constant-length orbit", worst < 0.02,
+              string.Format("worst err={0:F4}", worst));
+
+        double[] offD = new double[3];
+        CameraSystem.DesiredOffset(0.0, 90.0 * DEG, 6.0, 2.0, offD);
+        Check("desired offset vertical at +90deg pitch",
+              Math.Abs(offD[0]) < 1e-9 && Math.Abs(offD[1] - 8.0) < 1e-9 && Math.Abs(offD[2]) < 1e-9,
+              string.Format("off=({0:F3},{1:F3},{2:F3})", offD[0], offD[1], offD[2]));
+
         cam.Mouse(0.2, 0.0);
         cam.Update(1.0 / 60.0, anchor);
         Check("mouse yaw orbits camera", Math.Abs(cam.Yaw + 0.2) < 1e-3,

@@ -366,13 +366,8 @@ public sealed class CameraSystem
         if (moving && Math.Abs(turnAngle) > row.F("CameraAdjustYawWhenMoveTurnDisableAngle", 15.0 * DEG))
             Yaw += row.F("CameraAdjustYawWhenMoveTurn", 1.0) * turnAngle;
 
-        // JX3-exact convention: offset = (cos(yaw)*cos(pitch)*d, sin(pitch)*d + h,
-        // sin(yaw)*cos(pitch)*d)  (yaw=0 -> +X, yaw+ -> +Z; pitch from horizontal)
-        double yaw = Yaw, pitch = Pitch;
         double[] desired = new double[3];
-        desired[0] = Math.Cos(yaw) * Math.Cos(pitch) * distance;
-        desired[1] = Math.Sin(pitch) * distance + height;
-        desired[2] = Math.Sin(yaw) * Math.Cos(pitch) * distance;
+        DesiredOffset(Yaw, Pitch, distance, height, desired);
 
         double smoothTime = Math.Max(row.F("SmoothTime", 0.1), 1e-3);
         for (int i = 0; i < 3; i++)
@@ -422,6 +417,20 @@ public sealed class CameraSystem
     {
         fx = -Math.Cos(Yaw);
         fz = -Math.Sin(Yaw);
+    }
+
+    // JX3-exact follow offset (SetCharacterCameraPosition @ 0x180B0F1EE):
+    //   off = (cos(yaw)*cos(pitch)*d,  sin(pitch)*d + height,  sin(yaw)*cos(pitch)*d)
+    // yaw=0 -> +X, yaw+ -> +Z, pitch from horizontal. The row distance is the
+    // 3D orbit radius: pitch only rotates the offset (constant length) and the
+    // row height is a separate additive term. Never use tan(pitch) here - that
+    // re-scales the radius while dragging (see docs/CAMERA_FIX_SPEC.md).
+    public static void DesiredOffset(double yaw, double pitch, double distance, double height, double[] outOff)
+    {
+        double cp = Math.Cos(pitch);
+        outOff[0] = Math.Cos(yaw) * cp * distance;
+        outOff[1] = Math.Sin(pitch) * distance + height;
+        outOff[2] = Math.Sin(yaw) * cp * distance;
     }
 
     // Distance-only update for hosts whose orientation comes from the engine
