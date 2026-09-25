@@ -672,7 +672,7 @@ internal static class RebornClient
             // read-back is noisy, and a position read-back is circular (our
             // placement overwrites the position).
             bool dragging = orbitQueue.Count > 0 || (lastOrbitMs != 0 && now - lastOrbitMs < 150);
-            if (dragging ? (now - lastYawSync >= 60) : orbitApplied)
+            if (dragging ? (now - lastYawSync >= 200) : orbitApplied)
             {
                 lastYawSync = now;
                 orbitApplied = false;
@@ -691,10 +691,11 @@ internal static class RebornClient
                 pitchAimErrPx = (int)Math.Round((measuredPitch - aimPitchOf(camSys.Pitch)) / 0.00121);
             }
 
-            // spread the yaw correction over the next frames (~60 ms)
+            // spread the yaw correction over the next frames (~0.2 s, gentler
+            // right after the drag so the camera does not visibly adjust)
             if (yawCorr != 0.0)
             {
-                double ystep = yawCorr * Math.Min(1.0, dt / 0.06);
+                double ystep = yawCorr * Math.Min(1.0, dt / 0.2);
                 camSys.Yaw += ystep;
                 yawCorr -= ystep;
                 if (Math.Abs(yawCorr) < 1e-3) yawCorr = 0.0;
@@ -738,8 +739,15 @@ internal static class RebornClient
 
                 double aimDelta = aimPitchOf(pNew) - aimPitchOf(pOld);
                 int oyFF = (int)Math.Round(-aimDelta / 0.00121 - oy);
-                oyFF += pitchAimErrPx;      // closed-loop residual (last measureView)
-                pitchAimErrPx = 0;
+                // apply the closed-loop pitch error over frames (a full jump
+                // right after the drag is the visible "adjustment")
+                if (pitchAimErrPx != 0)
+                {
+                    int apply = (int)Math.Round(pitchAimErrPx * Math.Min(1.0, dt / 0.15));
+                    if (apply == 0) apply = pitchAimErrPx > 0 ? 1 : -1;
+                    oyFF += apply;
+                    pitchAimErrPx -= apply;
+                }
                 if (oyFF > 400) oyFF = 400; else if (oyFF < -400) oyFF = -400;
 
                 // one combined orbit per frame (a second ROTATE_CAMERA start
