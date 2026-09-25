@@ -401,6 +401,92 @@ public sealed class FoliageCollision
         }
     }
 
+    // Nearest world-space hit of the segment A->B against the structure and
+    // foliage instances (camera obstruction). Returns the distance from A
+    // along A->B in world units, or -1 when nothing is hit.
+    public float Raycast(float ax, float ay, float az, float bx, float by, float bz)
+    {
+        float dx = bx - ax, dy = by - ay, dz = bz - az;
+        float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        if (len < 1e-3f) return -1f;
+        float minX = Math.Min(ax, bx), maxX = Math.Max(ax, bx);
+        float minY = Math.Min(ay, by), maxY = Math.Max(ay, by);
+        float minZ = Math.Min(az, bz), maxZ = Math.Max(az, bz);
+        GatherCandidates((minX + maxX) * 0.5f, (minZ + maxZ) * 0.5f,
+                         Math.Max(maxX - minX, maxZ - minZ) * 0.5f, _cand);
+        float bestT = float.MaxValue;
+        for (int ci = 0; ci < _cand.Count; ci++)
+        {
+            Instance it = _inst[_cand[ci]];
+            if (it.maxY < minY || it.minY > maxY) continue;
+            if (it.maxX < minX || it.minX > maxX) continue;
+            if (it.maxZ < minZ || it.minZ > maxZ) continue;
+            float[] w2l = it.w2l;
+            if (w2l == null) continue;
+            float lAx = ax * w2l[0] + ay * w2l[4] + az * w2l[8] + w2l[12];
+            float lAy = ax * w2l[1] + ay * w2l[5] + az * w2l[9] + w2l[13];
+            float lAz = ax * w2l[2] + ay * w2l[6] + az * w2l[10] + w2l[14];
+            float lBx = bx * w2l[0] + by * w2l[4] + bz * w2l[8] + w2l[12];
+            float lBy = bx * w2l[1] + by * w2l[5] + bz * w2l[9] + w2l[13];
+            float lBz = bx * w2l[2] + by * w2l[6] + bz * w2l[10] + w2l[14];
+            float ldx = lBx - lAx, ldy = lBy - lAy, ldz = lBz - lAz;
+            MeshData md = it.mesh;
+            float lminx = Math.Min(lAx, lBx), lmaxx = Math.Max(lAx, lBx);
+            float lminz = Math.Min(lAz, lBz), lmaxz = Math.Max(lAz, lBz);
+            int cx0 = (int)((lminx - md.gx0) / md.gcell);
+            int cx1 = (int)((lmaxx - md.gx0) / md.gcell);
+            int cz0 = (int)((lminz - md.gz0) / md.gcell);
+            int cz1 = (int)((lmaxz - md.gz0) / md.gcell);
+            if (cx0 < 0) cx0 = 0; if (cz0 < 0) cz0 = 0;
+            if (cx1 >= md.gx) cx1 = md.gx - 1; if (cz1 >= md.gz) cz1 = md.gz - 1;
+            if (cx0 > cx1 || cz0 > cz1) continue;
+            for (int cz = cz0; cz <= cz1; cz++)
+            {
+                int rowBase = cz * md.gx;
+                for (int cx = cx0; cx <= cx1; cx++)
+                {
+                    int c = rowBase + cx;
+                    int s0 = md.cellStart[c], s1 = md.cellStart[c + 1];
+                    for (int k = s0; k < s1; k++)
+                    {
+                        float t;
+                        if (!RayTri(md.verts, md.tris, md.cellTri[k],
+                                    lAx, lAy, lAz, ldx, ldy, ldz, out t)) continue;
+                        if (t < bestT) bestT = t;
+                    }
+                }
+            }
+        }
+        return bestT == float.MaxValue ? -1f : bestT * len;
+    }
+
+    // Moller-Trumbore; t in [0,1] along O + t*D.
+    static bool RayTri(float[] v, int[] tris, int tri,
+                       float ox, float oy, float oz,
+                       float dx, float dy, float dz, out float t)
+    {
+        t = 0f;
+        int i0 = tris[tri * 3] * 3, i1 = tris[tri * 3 + 1] * 3, i2 = tris[tri * 3 + 2] * 3;
+        float e1x = v[i1] - v[i0], e1y = v[i1 + 1] - v[i0 + 1], e1z = v[i1 + 2] - v[i0 + 2];
+        float e2x = v[i2] - v[i0], e2y = v[i2 + 1] - v[i0 + 1], e2z = v[i2 + 2] - v[i0 + 2];
+        float px = dy * e2z - dz * e2y;
+        float py = dz * e2x - dx * e2z;
+        float pz = dx * e2y - dy * e2x;
+        float det = e1x * px + e1y * py + e1z * pz;
+        if (det > -1e-9f && det < 1e-9f) return false;
+        float inv = 1f / det;
+        float tx = ox - v[i0], ty = oy - v[i0 + 1], tz = oz - v[i0 + 2];
+        float u = (tx * px + ty * py + tz * pz) * inv;
+        if (u < 0f || u > 1f) return false;
+        float qx = ty * e1z - tz * e1y;
+        float qy = tz * e1x - tx * e1z;
+        float qz = tx * e1y - ty * e1x;
+        float w = (dx * qx + dy * qy + dz * qz) * inv;
+        if (w < 0f || u + w > 1f) return false;
+        t = (e2x * qx + e2y * qy + e2z * qz) * inv;
+        return t >= 0f && t <= 1f;
+    }
+
     bool InstanceContact(Instance it, float px, float py, float pz,
                          float radius, float height, ref Contact best)
     {

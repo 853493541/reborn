@@ -181,6 +181,7 @@ internal static class RebornClient
         bool grounded = false;
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
+        CameraObstruction camObst = new CameraObstruction();
         CameraSettings cameraSettings = null;
         {
             double sc;
@@ -609,6 +610,8 @@ internal static class RebornClient
         bool orbitApplied = false;
         float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
         bool dbgIntSet = false;
+        double dbgHit = -1.0, dbgLen = 0.0;
+        bool dbgObst = false;
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
         double yawCorr = 0.0;
@@ -861,8 +864,18 @@ internal static class RebornClient
                 measureView();
                 double vyaw = Math.Atan2(-viewZ, -viewX);
                 double vpitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0})",
-                    camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz));
+                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0}",
+                    camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz,
+                    dbgObst ? 1 : 0, dbgHit, dbgLen));
+                if (col != null)
+                {
+                    float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
+                    float hS = col.Raycast(px, py + 90f, pz, px, py + 90f, pz + 2000f);
+                    float hE = col.Raycast(px, py + 90f, pz, px + 2000f, py + 90f, pz);
+                    float hW = col.Raycast(px, py + 90f, pz, px - 2000f, py + 90f, pz);
+                    Log(string.Format("obstprobe N={0:F0} S={1:F0} E={2:F0} W={3:F0} inst={4}",
+                        hN, hS, hE, hW, col.InstanceCount));
+                }
             }
 
             // movement is camera-relative: forward = camera -> anchor
@@ -1051,16 +1064,41 @@ internal static class RebornClient
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
                 double[] camOff = new double[3];
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
-                double camX = ax2 + camOff[0];
-                double camY = ay2 + camOff[1];
-                double camZ = az2 + camOff[2];
+                double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
+                if (offLen < 1e-3) offLen = 1e-3;
+                double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
 
-                // obstruction: terrain above the anchor->camera ray (scaling the
-                // offset keeps the retracted camera on the same orbit line)
+                // Native JX3 obstruction: nearest hit of the anchor->camera
+                // segment against structures/foliage (5-probe camera footprint)
+                // and terrain; then 18 u clearance + 50/100 u hysteresis + flex
+                // return (docs/CAMERA_WALL_OBSTRUCTION.md).
+                double hitDist = -1.0;
+                if (col != null)
+                {
+                    double rx = uz, rz = -ux;
+                    double rl = Math.Sqrt(rx * rx + rz * rz);
+                    if (rl < 1e-6) { rx = 1.0; rz = 0.0; rl = 1.0; }
+                    rx /= rl; rz /= rl;
+                    double fx = uy * rz, fy = uz * rx - ux * rz, fz = -uy * rx;
+                    const double foot = 22.0;
+                    for (int p = 0; p < 5; p++)
+                    {
+                        double ox2 = 0, oy2 = 0, oz2 = 0;
+                        if (p == 1) { ox2 = rx * foot; oz2 = rz * foot; }
+                        else if (p == 2) { ox2 = -rx * foot; oz2 = -rz * foot; }
+                        else if (p == 3) { ox2 = fx * foot; oy2 = fy * foot; oz2 = fz * foot; }
+                        else if (p == 4) { ox2 = -fx * foot; oy2 = -fy * foot; oz2 = -fz * foot; }
+                        float h = col.Raycast((float)(ax2 + ox2), (float)(ay2 + oy2), (float)(az2 + oz2),
+                                              (float)(ax2 + ox2 + ux * offLen),
+                                              (float)(ay2 + oy2 + uy * offLen),
+                                              (float)(az2 + oz2 + uz * offLen));
+                        if (h > 0f && (hitDist < 0.0 || h < hitDist)) hitDist = h;
+                    }
+                }
+                // terrain read as another obstruction ray (center probe march)
                 if (sampler != null)
                 {
                     const double margin = 20.0;
-                    double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                     const int steps = 14;
                     for (int i = 2; i <= steps; i++)
                     {
@@ -1068,14 +1106,20 @@ internal static class RebornClient
                         float g = sampler.Sample((float)(ax2 + camOff[0] * t), (float)(az2 + camOff[2] * t));
                         if (g + margin > ay2 + camOff[1] * t)
                         {
-                            double d2 = Math.Max(150.0, t * offLen - 40.0);
-                            double s = d2 / Math.Max(1.0, offLen);
-                            camX = ax2 + camOff[0] * s;
-                            camY = ay2 + camOff[1] * s;
-                            camZ = az2 + camOff[2] * s;
+                            double th = t * offLen;
+                            if (hitDist < 0.0 || th < hitDist) hitDist = th;
                             break;
                         }
                     }
+                }
+                double camLen = camObst.Update(dt, offLen, hitDist);
+                dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
+                double s = camLen / offLen;
+                double camX = ax2 + camOff[0] * s;
+                double camY = ay2 + camOff[1] * s;
+                double camZ = az2 + camOff[2] * s;
+                if (sampler != null)
+                {
                     float camGround = sampler.Sample((float)camX, (float)camZ) + 30f;
                     if (camY < camGround) camY = camGround;
                 }

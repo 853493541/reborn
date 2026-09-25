@@ -541,6 +541,71 @@ public sealed class TrackCamera
     }
 }
 
+// Native JX3 wall-obstruction response (docs/CAMERA_WALL_OBSTRUCTION.md):
+//  - the camera is pulled to 18 u short of the nearest ray hit (along the
+//    anchor -> camera line);
+//  - 50 u / 100 u hysteresis prevents flicker at the boundary;
+//  - pull-in is immediate, the spring (fFlex 1.5, fDamp 2.828) eases the
+//    return out once the hit clears.
+// `hitDistance <= 0` means "no hit". `desired` is the unobstructed length of
+// the anchor -> camera offset. The caller owns the actual ray queries.
+public sealed class CameraObstruction
+{
+    public bool Obstructed;
+    public double Distance = -1.0;     // current (possibly pulled) length
+    public double MinDistance = 5.0;
+    public double Clearance = 18.0;
+    public double PullThreshold = 50.0;    // while free
+    public double ReleaseThreshold = 100.0; // while obstructed
+    public double Flex = 1.5;
+    public double Damp = 2.828;
+
+    double _vel;
+
+    public double Update(double dt, double desired, double hitDistance)
+    {
+        if (Distance < 0.0) Distance = desired;
+        double target = desired;
+        if (hitDistance > 0.0)
+        {
+            double pull = hitDistance - Clearance;
+            if (pull < MinDistance) pull = MinDistance;
+            if (!Obstructed)
+            {
+                if (desired - hitDistance > PullThreshold) Obstructed = true;
+            }
+            else if (hitDistance - Distance > ReleaseThreshold)
+            {
+                Obstructed = false;
+            }
+            if (Obstructed && pull < target) target = pull;
+        }
+        else
+        {
+            Obstructed = false;
+        }
+
+        if (target < Distance)
+        {
+            Distance = target;   // pull in immediately (no clipping)
+            _vel = 0.0;
+        }
+        else if (target > Distance)
+        {
+            double e = target - Distance;
+            _vel += (-Flex * e - Damp * _vel) * dt;
+            Distance += _vel * dt;
+            if (Distance > target) Distance = target;
+            if (Math.Abs(target - Distance) < 0.5 && Math.Abs(_vel) < 1.0)
+            {
+                Distance = target;
+                _vel = 0.0;
+            }
+        }
+        return Distance;
+    }
+}
+
 // tiny JSON reader for the flat camera config (objects of numbers/bools/strings)
 internal static class MiniJson
 {

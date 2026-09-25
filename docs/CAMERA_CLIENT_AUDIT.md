@@ -159,10 +159,14 @@ real head anchor (`IKG3D_Camera`) per `docs/CAMERA_STATUS.md`.
 
 ## Practical gaps with the most visible effect
 
-1. Dragging re-scales the camera distance (wrong pitch model, above) — the
-   worst current camera defect.
-2. Walls/buildings/trees never push the camera (terrain only) — the native
-   18-u wall clearance and model filter are absent.
+1. Dragging re-scales the camera distance (wrong pitch model, above) — fixed
+   in the camara-fix worktree (sphere offset + aim closed loop).
+2. Walls/buildings/trees never push the camera (terrain only) — **fixed**:
+   `FoliageCollision.Raycast` + `CameraObstruction` implement the native 18-u
+   clearance, 50/100-u hysteresis and flex return over the extracted
+   structure/foliage instances (`docs/CAMERA_WALL_OBSTRUCTION.md` host
+   section). Remaining: the engine `bObscatleCamera` exclusions and geometry
+   baked into the terrain mesh have no ray data.
 3. No auto pitch when running (the real client dips the camera while moving).
 4. Mounts, gliding, air combat and dialogs do not change the camera.
 5. The camera never shakes and never eases back with the native flex curve.

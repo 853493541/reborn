@@ -154,6 +154,24 @@ internal static class CameraSmoke
         dd = Math.Sqrt(cam2.Pos[0] * cam2.Pos[0] + cam2.Pos[1] * cam2.Pos[1] + cam2.Pos[2] * cam2.Pos[2]);
         Check("camera recovers when clear", dd > 3.0, string.Format("dist={0:F2}", dd));
 
+        // native wall obstruction state machine (18 u clearance, 50/100
+        // hysteresis, spring return) - docs/CAMERA_WALL_OBSTRUCTION.md
+        var obstA = new CameraObstruction();
+        double od = obstA.Update(1.0 / 60.0, 600.0, 500.0);
+        Check("obstruction pulls in to hit-18u", obstA.Obstructed && Math.Abs(od - 482.0) < 1e-6,
+              string.Format("dist={0:F1}", od));
+        var obstB = new CameraObstruction();
+        double od2 = obstB.Update(1.0 / 60.0, 600.0, 570.0);
+        Check("shallow hit ignored (50 u hysteresis)", !obstB.Obstructed && Math.Abs(od2 - 600.0) < 1e-6,
+              string.Format("dist={0:F1}", od2));
+        for (int i = 0; i < 300; i++) od = obstA.Update(1.0 / 60.0, 600.0, -1.0);
+        Check("camera springs back when clear", !obstA.Obstructed && Math.Abs(od - 600.0) < 1.0,
+              string.Format("dist={0:F2}", od));
+        var obstC = new CameraObstruction();
+        double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
+        Check("obstruction respects min distance", Math.Abs(od3 - 5.0) < 1e-6,
+              string.Format("dist={0:F1}", od3));
+
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
         Environment.Exit(_fail == 0 ? 0 : 1);
     }
