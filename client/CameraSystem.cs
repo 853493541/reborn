@@ -296,6 +296,18 @@ public sealed class CameraSystem
 
     public void SetMaxDistance(double meters) { Rows[MODE_CHARACTER].Set("TargetDistance", meters); }
 
+    // One clamp for every distance writer (S5): [MinCameraDistance,
+    // MaxCameraDistance] in world units. ZoomBy, the sprint pull-back and the
+    // client's F11 reset all go through this.
+    public double ClampDistanceUnits(double units)
+    {
+        double min = Row.F("MinCameraDistance", 100.0);
+        double max = Row.F("MaxCameraDistance", 2000.0);
+        if (units < min) units = min;
+        if (units > max) units = max;
+        return units;
+    }
+
     // JX3 wheel zoom, from the real UI binding (ui/script/hotkeys.lua):
     //   CAMERAZOOMIN  -> CameraZoomIn()  = Camera_Zoom(0.9)   (distance * 0.9)
     //   CAMERAZOOMOUT -> CameraZoomOut() = Camera_Zoom(1.1)   (distance * 1.1)
@@ -305,11 +317,7 @@ public sealed class CameraSystem
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
         td *= (direction > 0.0) ? 1.1 : 0.9;
-        double min = Row.F("MinCameraDistance", 100.0);
-        double max = Row.F("MaxCameraDistance", 2000.0);
-        if (td < min) td = min;
-        if (td > max) td = max;
-        SetMaxDistance(td / UnitsPerMeter);
+        SetMaxDistance(ClampDistanceUnits(td) / UnitsPerMeter);
     }
     public void SetDragSpeed(double v) { Rows[MODE_CHARACTER].Set("MaxDragSpeed", v); }
     public void SetFollowMode(string mode) { SwitchMode(mode); }
@@ -448,12 +456,16 @@ public sealed class CameraSystem
             // open RE item; use the observed world-unit delta conservatively.
             double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters +
                             row.F("SprintCameraMaxDistance", 60.0);
+            double maxU = row.F("MaxCameraDistance", 2000.0);
+            if (target > maxU) target = maxU;   // shared caps, upper bound only
             double st = Math.Max(row.F("SprintCameraSmoothTime", 0.5), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         else
         {
             double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters;
+            double maxU = Rows[MODE_CHARACTER].F("MaxCameraDistance", 2000.0);
+            if (target > maxU) target = maxU;
             double st = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }

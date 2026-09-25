@@ -156,6 +156,13 @@ internal static class CameraSmoke
 
         // native wall obstruction state machine (18 u clearance, 50/100
         // hysteresis, spring return) - docs/CAMERA_WALL_OBSTRUCTION.md
+        Check("shared distance clamp helper (S5)",
+              Math.Abs(cam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
+              Math.Abs(cam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&
+              Math.Abs(cam.ClampDistanceUnits(600.0) - 600.0) < 1e-9,
+              string.Format("{0:F0}/{1:F0}/{2:F0}", cam.ClampDistanceUnits(50.0),
+                  cam.ClampDistanceUnits(5000.0), cam.ClampDistanceUnits(600.0)));
+
         var obstA = new CameraObstruction();
         double od = obstA.Update(1.0 / 60.0, 600.0, 500.0);
         Check("obstruction pulls in to hit-18u", obstA.Obstructed && Math.Abs(od - 482.0) < 1e-6,

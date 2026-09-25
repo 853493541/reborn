@@ -20,38 +20,32 @@ its `CameraSmoke.cs` is byte-identical to ours (so the smoke test is safe).
 |---|---|---|---|
 | `client/CameraSystem.cs:89` | `UnitsPerMeter = 192.0` | **`100.0`** | 1 engine unit = 1 cm (mesh 181.64 u = 1.816 m; official FBX `UnitScaleFactor=1.0` cm; pelvis 98.59 u; ragdoll limbs in cm). `docs/CAMERA_REAL_VALUES.md` §1 |
 | `client/RebornClient.cs:698` | `pRun / 192.0` | `pRun / camSys.UnitsPerMeter` | same |
-| `client/RebornClient.cs:380` | `pGravity=-1289, pJumpV=703, pSpeed=200, pRun=667` | `-2475, 1350, 90, 300` | the table values in world units: gravity 11 u/frame^2 and jump 90 u/frame at 15 fps; walk/run 6/20 u/frame (pending the `.krl` speed-unit check). Current values are the 192-derived metric numbers, i.e. 1.92x off in the world |
+| `client/RebornClient.cs:380` | `pGravity=-1289, pJumpV=703, pSpeed=200, pRun=667` | `-2475, 1350, 96, 320` | table values in world units at **16 game frames/s** (1 frame = 1/16 s): walk/run 6/20 u/frame -> 96/320 u/s (`PLAYER_CONTROLS_FINDINGS.md` §3; the old 15-fps note was wrong); gravity/jump from `JX3_GRAVITY_RESEARCH.md`. Current values are the 192-derived metric numbers, i.e. 1.92x off in the world |
 
 Effect of the unit fix: follow distance 6 m becomes 600 u (was 1152 u),
 `CameraHeight` 2 m becomes 200 u (was 384 u) — the current camera sits ~1.92x
 too far back.
 
-## 2. Wheel zoom — replace the invented step
+## 2. Wheel zoom — `Camera_Zoom(0.9 / 1.1)`
 
-`client/RebornClient.cs:341-349` does `TargetDistance ± 0.5 m`, clamped
-`2..30 m`. The real client (`ZoomCharacterCamera_Step`,
-`JX3RepresentX64.dll 0x180b3ce40`):
+**Corrected 2026-09-24:** the wheel binding is `CAMERAZOOMIN/OUT` ->
+`CameraZoomIn/Out()` -> `Camera_Zoom(0.9 / 1.1)` (`CAMERA_INPUT_CONTROLS.md`
+§2): multiply the target distance by 0.9 / 1.1 and clamp to
+`[fMinCameraDistance, fMaxCameraDistance]` (`CAMERA_REAL_VALUES.md` §5).
+`ZoomCharacterCamera_Step` (`0x180b3ce40`) is **not** the wheel path - it is a
+separate step-zoom used by other camera code. Our `CameraSystem.ZoomBy` serves
+the wheel with the proven factors (row keys `MaxCameraDistance=2000`,
+`MinCameraDistance=100`); the Step formula is unused by the wheel.
 
-```
-step = clamp(current / (0.2 * fMaxCameraDistance) * 120, 10, 120)   ; units
-```
+## 3. Camera placement — the sphere offset (supersedes the fixed-camY note)
 
-Limits: `fMaxCameraDistance` = **2000 u (20 m)** (real per-user default +
-DLL const blob `0x180d2af90`), `fMinCameraDistance` = engine cap (unknown;
-placeholder 100 u). Our `CameraSystem.ZoomStep` / `ZoomBy` implement exactly
-this — copy them (plus the two row keys `MaxCameraDistance=2000`,
-`MinCameraDistance=100`) and call `camSys.ZoomBy(e.Delta > 0 ? -1 : +1)`.
-
-## 3. Camera placement — they still have the idle-jitter version
-
-`client/RebornClient.cs:700-709` places the camera on the **full 3D** measured
-view direction (`viewY` included). The nudge probe's vertical component
-jitters ~5x/s, which is the idle shake fixed in `1d3f7c9`. Use the fixed
-version:
-
-- only the **horizontal** part of the measured direction for the offset,
-- `camY = anchor.y + CameraHeight * UnitsPerMeter` (row height),
-- keep the terrain ray-march + `terrain+30 u` clamp.
+**Corrected 2026-09-24:** the real camera is the constant-length sphere
+offset, `camera = anchor + (cos(yaw)cos(pitch)d, sin(pitch)d + height,
+sin(yaw)cos(pitch)d)`, smoothed per axis (`CAMERA_FIX_SPEC.md`,
+`CAMERA_DRAG_MODEL.md`). The earlier "horizontal direction + fixed
+`camY = anchor.y + CameraHeight`, no pitch" note is wrong and would freeze the
+pitch geometry (drag up/down must orbit the camera vertically). Keep the
+proven offset plus the native obstruction rule.
 
 ## 4. Real defaults to adopt (from `number.krl.txt` + `custom.dat`)
 
@@ -67,7 +61,7 @@ version:
 | `SprintCameraOffset` / `MaxOffset` | 40 u / 100 u | - |
 | `SprintCameraMaxDistance` | 60 (unit TBC — **not** an absolute target) | 9 m as absolute target |
 | `CarrierCameraPitch/Yaw/DeltaHeight` | -0.17 / 0 / 50 u | -0.35 / 0 / 1 m |
-| `NearByWallDistance` | **800 u** (obstruction trigger) | ray-march only |
+| `NearByWallDistance` | 800 u **loaded, no reader** — NOT an obstruction trigger | terrain ray-march; wall rule is 18 u clearance + 50/100 u hysteresis (`CAMERA_WALL_OBSTRUCTION.md`) |
 | per-map init | `scene_init_param.txt`: maps 0/1 yaw 0.5022619 pitch -0.17; map 653 yaw 2.11075783 | measured at startup |
 
 ## 5. Read the user's real camera settings at startup

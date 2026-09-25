@@ -121,7 +121,7 @@ block (extracted: `proof/gravity/number.krl.txt`; loader
 | `CarrierCameraYaw` | 0 | rad |
 | `CarrierCameraMaxDistance` | 1 | u? (see §6) |
 | `CarrierCameraDeltaHeight` | 50 | u |
-| `NearByWallDistance` | 800 | u (obstruction range) |
+| `NearByWallDistance` | 800 | loaded, **no reader found** — legacy/unused, NOT an obstruction rule (see `CAMERA_WALL_OBSTRUCTION.md` §11) |
 | `AirCombatToSkillMoveCameraDis` | 2000.0 | u |
 | `DiveCameraRollRange` / `DiveCameraRollTime` | 12 / 400 | deg? / ms |
 | `TitleAdjustFovMin` / `Max` / `Value` | 0.7 / 1.4 / 40 | nameplate FOV scale |
@@ -149,7 +149,14 @@ camera from the map's real init yaw/pitch instead of guessing.
 
 ## 5. Wheel zoom — real behaviour and limits
 
-`ZoomCharacterCamera_Step` (`JX3RepresentX64.dll 0x180b3ce40`):
+The wheel binding is `CAMERAZOOMIN/OUT` -> `CameraZoomIn/Out()` ->
+`Camera_Zoom(0.9 / 1.1)` (`docs/CAMERA_INPUT_CONTROLS.md` §2): the target
+distance is multiplied by 0.9 (zoom in) / 1.1 (zoom out) and clamped to
+`[fMinCameraDistance, fMaxCameraDistance]`.
+
+`ZoomCharacterCamera_Step` (`JX3RepresentX64.dll 0x180b3ce40`) is **not the
+wheel path** (the client serves the wheel with `CameraSystem.ZoomBy(0.9/1.1)`);
+it is a separate step-zoom used by other camera code:
 
 ```
 xmm7 = fMaxCameraDistance                      ; assert > 0
@@ -205,7 +212,7 @@ getters at +0x50/+0x58/+0x60/+0x68 (corrected 2026-09-24).
 | 1 | `Represent/camera/config.ini` + `Represent/camera/*.krl.txt` — the per-mode rows (CameraCommon, AirCombatCamera, NpcDialogCamera, CarrierCamera, GliderCamera, DynamicFollowCamera), plus `CameraLockTargetConfig`, `CameraSegmentConfig.json`, `Represent/player/player_rush_camera.txt` | Not in local paks; ship via CDN mini-updates. Aug-build cache has only `skill_move_camera.txt` + `filepath.ini` (`SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\`) | (a) CDN mini-update fetch using the game's own downloader config (`bin64\KGPK4_StreamDownloader.zhcn_hd.conf`, `jx3hd_v4_mini` URLs); (b) run the real client once to let it update, then read the local files | **yes** (data access) |
 | 2 | Engine `[Camera]` ini: `nChaseType`, `bObstructdAvert`, `fChaseRate`, `fMaxDistance`, `fMinDistance`, `fMax/MinAngelVel`, `fAngelRateHor/Vel`, `fDisZoomRate`, `fFlexCoefficient`, `fDampCoefficient`, `bUseFlexibilitySys`, `fFlexRate`, `fDistance`, `fAngleHor/Vel`, `fLootAtOffsetY`, `bLockedCamera`, **`fFovy`** | Loader `KG3DEngineX64.dll 0x1804C1660` reads an ini that is not in the install | same CDN/client route as #1; or engine-binary defaults (RE) | **yes** |
 | 3 | Engine caps `fMinCameraDistance`, `fMinCameraAngle`, `fMaxCameraAngle` | compiled per option level | live caps probe from the host (§6) | no |
-| 4 | `.krl` speed unit (u/frame vs 尺/s) — drives the sprint camera trigger and the host player sim | `number.krl` `CharacterWalkSpeed=6`, `Run=20`, `RideRun=40` | measure the walk clip stride (`samples/actor_presets/f1_hualuo/mapviewer_clips_ascii/walk.fbx`, 1.4 s cycle) or read the consumer of the loaded field (`JX3RepresentX64.dll` config struct `+0x4c` walk, `+0x50` run) | no |
+| 4 | `.krl` speed unit — **resolved 2026-09-24**: 16 game frames per second (1 frame = 1/16 s), `CharacterWalkSpeed=6` / `Run=20` u/frame -> **96 / 320 u/s** (`PLAYER_CONTROLS_FINDINGS.md` §3; client uses the same constants) | `number.krl` `CharacterWalkSpeed=6`, `Run=20`, `RideRun=40` | — | done |
 | 5 | Units of `SprintCameraMaxDistance=60`, `CarrierCameraMaxDistance=1`, `SprintCameraMaxOffset=100` | ambiguous (u vs offset vs ratio) | read their consumers in the camera controller (`JX3RepresentX64.dll`) | no |
 | 6 | Settings -> engine wiring: `nCameraMode` 0/1, `bCurveCamera`, `bEyeFollow`, `fSpringResetSpeed`/`fCameraResetSpeed`, and whether the panel `fMaxCameraDistance` (2000) feeds the engine cap or the follow distance (vs `number.krl` 1245) | UI panel is C++/pak; binding not decoded | RE of the panel binding / engine settings apply path | no (RE work) |
 | 7 | 广角 / FOV — no per-user key found | candidates: `fCameraViewAngleFactor = 1.0` (`config.default.ini`), `fFovy` (missing ini #2), `TitleAdjustFov*` (nameplates) | #2 | partial |
@@ -218,7 +225,7 @@ getters at +0x50/+0x58/+0x60/+0x68 (corrected 2026-09-24).
 Already applied on `camara-imp` (commit `37bb969`):
 
 - `UnitsPerMeter = 100` (was 192)
-- wheel zoom = real step formula, range 100 u .. 2000 u
+- wheel zoom = `Camera_Zoom(0.9/1.1)`, range 100 u .. 2000 u
 - default pitch -0.35 rad, free camera removed (follow only)
 
 Still to adopt from this file (values are real; safe ones first):
@@ -229,7 +236,9 @@ Still to adopt from this file (values are real; safe ones first):
    `SprintCameraMaxDragSpeed = 0.0025`, `Offset = 40 u`, `MaxOffset = 100 u`
    (verify #5 for the distance/offset units).
 3. Carrier camera: `Pitch = -0.17`, `Yaw = 0`, `DeltaHeight = 50 u`.
-4. Obstruction: `NearByWallDistance = 800 u`.
+4. Obstruction: **not** `NearByWallDistance` (no reader in the represent
+   camera path). Use the proven rule: 18 u clearance after the nearest ray hit,
+   50/100 u hysteresis, flex return (`CAMERA_WALL_OBSTRUCTION.md`).
 5. Initialise the camera per map from `scene_init_param.txt`
    (`CameraInitYaw/Pitch`), and keep `-0.35` as the character/sprint pitch.
 6. Keep the per-mode rows (`TargetDistance`, `CameraHeight`, `MaxDragSpeed`,

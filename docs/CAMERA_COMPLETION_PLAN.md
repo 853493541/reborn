@@ -66,15 +66,18 @@ correction (compare `measureView` pitch with `camSys.Pitch`; if the host's aim
 is off, nudge the engine orbit, then re-measure) — never as the source of the
 camera height.
 
-**C. Drag = angle only.**
+**C. Drag = angle only.** *(updated 2026-09-24 — the old "never write
+`camSys.Yaw` from a measured view" rule is reversed by the later proof)*
 
-- Keep `orbitQueue -> ExecAction(30/1, ...)` purely as the host's aim driver
-  (the managed `SetCameraPos` cannot set look-at — `CAMERA_STATUS.md` blocker 1).
-- Delete the yaw re-derivation from `measureView` while dragging; at most keep
-  an idle-only diagnostic (`RC_CAM_DEBUG`). Do **not** write `camSys.Yaw`
-  from measured camera positions in the normal loop
-  (`RebornClient.cs:722-730`) — that is position -> angle feedback and makes
-  drags shift the position.
+- Keep `orbitQueue -> ExecAction(30/1, ...)` as the host's aim driver (the
+  managed `SetCameraPos` cannot set look-at — `CAMERA_STATUS.md` blocker 1).
+- **Yaw must be read back from the engine aim** (`measureView()`): pixel-only
+  integration drifts up to 4.36 rad from the engine view (`CAMERA_DRAG_MODEL.md`
+  §3), which puts the placed camera on a different orbit angle than the aim.
+  A *position*-derived yaw is the trap (our own placement overwrites the
+  position -> circular); the measured view direction is authoritative.
+- The read-back is smoothed (10 ms low-pass) and frozen while obstructed and
+  idle (`RebornClient.cs` aim-sync block).
 
 **D. Same fix in `engine_host_spike/MapSpike.cs`** (its placement uses a fixed
 `camHeight` without the `cos(pitch)` horizontal factor; align it with the same

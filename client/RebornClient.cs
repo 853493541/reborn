@@ -439,8 +439,11 @@ internal static class RebornClient
         Func<double> geometricAimPitch = delegate()
         {
             double h = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+            // the placement scales the row distance by EyeScale, so the aim
+            // must use the same effective distance (S2)
+            double d = Math.Max(1.0, camSys.Distance * cameraSettings.EyeScale);
             double[] off = new double[3];
-            CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, Math.Max(1.0, camSys.Distance), h, off);
+            CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, d, h, off);
             double horiz = Math.Sqrt(off[0] * off[0] + off[2] * off[2]);
             return -Math.Atan2(off[1], Math.Max(1e-3, horiz));
         };
@@ -460,7 +463,7 @@ internal static class RebornClient
         Func<double, double> aimPitchOf = delegate(double p)
         {
             double h = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
-            double d = Math.Max(1.0, camSys.Distance);
+            double d = Math.Max(1.0, camSys.Distance * cameraSettings.EyeScale);
             return -Math.Atan2(Math.Sin(p) * d + h, Math.Cos(p) * d);
         };
 
@@ -557,7 +560,8 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.F11)
             {
                 // Camera reset: behind the character, model pitch -15 deg, distance 1x
-                camSys.SetMaxDistance(camSys.Row.F("InitCameraDistance", 6.0));
+                camSys.SetMaxDistance(camSys.ClampDistanceUnits(
+                    camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
                 camSys.Pitch = -Math.PI / 12.0;
                 alignAim();
@@ -616,6 +620,9 @@ internal static class RebornClient
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
         double yawCorr = 0.0;
+        bool aimDirty = false;
+        double lastAimDist = -1.0;
+        double aimPitchOverride = double.NaN;   // set when the ground clamp moves the camera
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
@@ -687,8 +694,9 @@ internal static class RebornClient
                 yawCorr = 0.0;
                 pitchAimErrPx = 0;
                 orbitApplied = false;
+                aimDirty = true;   // re-pin once the obstruction clears
             }
-            else if (dragging || orbitApplied)
+            else if (dragging || orbitApplied || aimDirty)
             {
                 lastYawSync = now;
                 orbitApplied = false;
@@ -704,7 +712,15 @@ internal static class RebornClient
                     yawCorr = d;
                 }
                 double measuredPitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                pitchAimErrPx = (int)Math.Round((measuredPitch - aimPitchOf(camSys.Pitch)) / 0.00121);
+                // If the ground clamp moved the camera off the orbit line, aim
+                // at the anchor from the actual clamped position instead of the
+                // unclamped geometry (S3).
+                double aimTarget = double.IsNaN(aimPitchOverride)
+                    ? aimPitchOf(camSys.Pitch) : aimPitchOverride;
+                pitchAimErrPx = (int)Math.Round((measuredPitch - aimTarget) / 0.00121);
+                // re-pin after a distance change (zoom / sprint / EyeScale) is
+                // done once the engine aim is within a pixel of the target (S1)
+                if (!dragging && Math.Abs(pitchAimErrPx) <= 1) aimDirty = false;
             }
 
             // Low-pass the (per-frame re-measured) yaw correction: fast enough
@@ -760,11 +776,19 @@ internal static class RebornClient
                 // right after the drag is the visible "adjustment")
                 if (pitchAimErrPx != 0)
                 {
-                    int apply = (int)Math.Round(pitchAimErrPx *
-                        (1.0 - Math.Exp(-Math.Min(0.05, dt) / 0.01)));
-                    if (apply == 0) apply = pitchAimErrPx > 0 ? 1 : -1;
-                    oyFF += apply;
-                    pitchAimErrPx -= apply;
+                    // deadband: a residual of a pixel is nudge noise (S4)
+                    if (Math.Abs(pitchAimErrPx) <= 1)
+                    {
+                        pitchAimErrPx = 0;
+                    }
+                    else
+                    {
+                        int apply = (int)Math.Round(pitchAimErrPx *
+                            (1.0 - Math.Exp(-Math.Min(0.05, dt) / 0.01)));
+                        if (apply == 0) apply = pitchAimErrPx > 0 ? 1 : -1;
+                        oyFF += apply;
+                        pitchAimErrPx -= apply;
+                    }
                 }
                 if (oyFF > 400) oyFF = 400; else if (oyFF < -400) oyFF = -400;
 
@@ -1067,6 +1091,13 @@ internal static class RebornClient
                 }
                 double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
                               * cameraSettings.EyeScale;
+                // any distance change (wheel zoom, sprint pull-back, EyeScale)
+                // changes the aim pitch; flag a re-pin (S1)
+                if (Math.Abs(dist - lastAimDist) > 0.5)
+                {
+                    aimDirty = true;
+                    lastAimDist = dist;
+                }
 
                 // JX3 sphere offset (SetCharacterCameraPosition @ 0x180B0E820,
                 // CAMERA_FIX_SPEC.md): constant-length orbit around the anchor;
@@ -1146,10 +1177,19 @@ internal static class RebornClient
                 double camX = ax2 + camOff[0] * s;
                 double camY = ay2 + camOff[1] * s;
                 double camZ = az2 + camOff[2] * s;
+                aimPitchOverride = double.NaN;
                 if (sampler != null)
                 {
                     float camGround = sampler.Sample((float)camX, (float)camZ) + 30f;
-                    if (camY < camGround) camY = camGround;
+                    if (camY < camGround)
+                    {
+                        camY = camGround;
+                        // the clamp moved the camera off the orbit line: the
+                        // view must aim at the anchor from the clamped point
+                        double gh = Math.Sqrt((camX - ax2) * (camX - ax2) +
+                                              (camZ - az2) * (camZ - az2));
+                        aimPitchOverride = -Math.Atan2(camY - ay2, Math.Max(1e-3, gh));
+                    }
                 }
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
