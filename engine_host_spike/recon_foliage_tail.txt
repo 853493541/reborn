@@ -1,0 +1,169 @@
+﻿
+==== 0x1800218f0 .. 0x180021b20 (.text)
+  0x1800218f0: add      cl, byte ptr [rbx + 0x1be8c1c6]
+  0x1800218f6: test     al, 1
+  0x1800218f8: je       0x180021903
+  0x1800218fa: inc      rcx
+  0x1800218fd: mov      qword ptr [rbp - 0x39], rcx
+  0x180021901: inc      ebx
+  0x180021903: mov      eax, esi
+  0x180021905: shr      eax, 0x1c
+  0x180021908: test     al, 1
+  0x18002190a: je       0x180021917
+  0x18002190c: add      rcx, 0x40
+  0x180021910: mov      qword ptr [rbp - 0x39], rcx
+  0x180021914: add      ebx, 0x40
+  0x180021917: mov      rax, qword ptr [r14]
+  0x18002191a: lea      r9, [rbp - 0x39]
+  0x18002191e: mov      r8d, 0x1d
+  0x180021924: mov      dword ptr [rsp + 0x20], esi
+  0x180021928: lea      rdx, [rbp - 0x2d]
+  0x18002192c: mov      rcx, r14
+  0x18002192f: call     qword ptr [rax + 0x48]
+  0x180021932: movss    xmm0, dword ptr [r13]
+  0x180021938: addss    xmm0, dword ptr [rdi]
+  0x18002193c: shr      esi, 0x1f
+  0x18002193f: lea      ecx, [rax + rbx]
+  0x180021942: test     sil, sil
+  0x180021945: mov      rsi, qword ptr [rsp + 0xa0]
+  0x18002194d: lea      eax, [rcx + 4]
+  0x180021950: mov      rbx, qword ptr [rsp + 0xe8]
+  0x180021958: cmove    eax, ecx
+  0x18002195b: movss    dword ptr [rdi], xmm0
+  0x18002195f: movss    xmm1, dword ptr [r13 + 4]
+  0x180021965: addss    xmm1, dword ptr [rdi + 4]
+  0x18002196a: movss    dword ptr [rdi + 4], xmm1
+  0x18002196f: movss    xmm0, dword ptr [r13 + 8]
+  0x180021975: addss    xmm0, dword ptr [rdi + 8]
+  0x18002197a: movss    dword ptr [rdi + 8], xmm0
+  0x18002197f: mov      rcx, qword ptr [rbp - 0x21]
+  0x180021983: xor      rcx, rsp
+  0x180021986: call     0x18005d740
+  0x18002198b: add      rsp, 0xa8
+  0x180021992: pop      r14
+  0x180021994: pop      r13
+  0x180021996: pop      rdi
+  0x180021997: pop      rbp
+  0x180021998: ret      
+  0x180021999: int3     
+  0x18002199a: int3     
+  0x18002199b: int3     
+  0x18002199c: int3     
+  0x18002199d: int3     
+  0x18002199e: int3     
+  0x18002199f: int3     
+  0x1800219a0: sub      rsp, 0x38
+  0x1800219a4: mov      r10, qword ptr [r9]
+  0x1800219a7: mov      r11, rdx
+  0x1800219aa: test     r10, r10
+  0x1800219ad: jne      0x1800219e0
+  0x1800219af: lea      rcx, [rip + 0x423c2]  ; "SceneFileLoader_Foliage_Binary::ReadUint"
+  0x1800219b6: mov      r9d, 0x228
+  0x1800219bc: mov      qword ptr [rsp + 0x20], rcx
+  0x1800219c1: lea      r8, [rip + 0x423e0]  ; "*ppByteCurBuffer"
+  0x1800219c8: lea      ecx, [r10 + 3]
+  0x1800219cc: lea      rdx, [rip + 0x3ed35]  ; "ERROR_BREAK(%s) at line %u in %s"
+  0x1800219d3: call     qword ptr [rip + 0x3e78f]  ; KGCommonX64.dll!KG_PrintfLog
+  0x1800219d9: xor      eax, eax
+  0x1800219db: add      rsp, 0x38
+  0x1800219df: ret      
+  0x1800219e0: mov      eax, dword ptr [rsp + 0x60]
+  0x1800219e4: mov      ecx, r8d
+  0x1800219e7: shr      eax, cl
+  0x1800219e9: and      al, 3
+  0x1800219eb: jne      0x180021a07
+  0x1800219ed: movzx    ecx, byte ptr [r10]
+  0x1800219f1: lea      rax, [r10 + 1]
+  0x1800219f5: mov      qword ptr [r9], rax
+  0x1800219f8: mov      edx, 1
+  0x1800219fd: mov      dword ptr [r11], ecx
+  0x180021a00: mov      eax, edx
+  0x180021a02: add      rsp, 0x38
+  0x180021a06: ret      
+  0x180021a07: cmp      al, 1
+  0x180021a09: jne      0x180021a25
+  0x180021a0b: movzx    ecx, word ptr [r10]
+  0x180021a0f: lea      rax, [r10 + 2]
+  0x180021a13: mov      qword ptr [r9], rax
+  0x180021a16: mov      edx, 2
+  0x180021a1b: mov      dword ptr [r11], ecx
+  0x180021a1e: mov      eax, edx
+  0x180021a20: add      rsp, 0x38
+  0x180021a24: ret      
+  0x180021a25: mov      ecx, dword ptr [r10]
+  0x180021a28: mov      edx, 4
+  0x180021a2d: mov      dword ptr [r11], ecx
+  0x180021a30: mov      eax, edx
+  0x180021a32: add      qword ptr [r9], rdx
+  0x180021a35: add      rsp, 0x38
+  0x180021a39: ret      
+  0x180021a3a: int3     
+  0x180021a3b: int3     
+  0x180021a3c: int3     
+  0x180021a3d: int3     
+  0x180021a3e: int3     
+  0x180021a3f: int3     
+  0x180021a40: sub      rsp, 0x38
+  0x180021a44: mov      r10, qword ptr [r9]
+  0x180021a47: mov      r11, rdx
+  0x180021a4a: test     r10, r10
+  0x180021a4d: jne      0x180021a80
+  0x180021a4f: lea      rcx, [rip + 0x4236a]  ; "SceneFileLoader_Foliage_Binary::ReadUint1"
+  0x180021a56: mov      r9d, 0x24e
+  0x180021a5c: mov      qword ptr [rsp + 0x20], rcx
+  0x180021a61: lea      r8, [rip + 0x42340]  ; "*ppByteCurBuffer"
+  0x180021a68: lea      ecx, [r10 + 3]
+  0x180021a6c: lea      rdx, [rip + 0x3ec95]  ; "ERROR_BREAK(%s) at line %u in %s"
+  0x180021a73: call     qword ptr [rip + 0x3e6ef]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180021a79: xor      eax, eax
+  0x180021a7b: add      rsp, 0x38
+  0x180021a7f: ret      
+  0x180021a80: mov      eax, dword ptr [rsp + 0x60]
+  0x180021a84: mov      ecx, r8d
+  0x180021a87: shr      eax, cl
+  0x180021a89: and      al, 3
+  0x180021a8b: je       0x180021a79
+  0x180021a8d: cmp      al, 1
+  0x180021a8f: jne      0x180021aab
+  0x180021a91: movzx    ecx, byte ptr [r10]
+  0x180021a95: lea      rax, [r10 + 1]
+  0x180021a99: mov      qword ptr [r9], rax
+  0x180021a9c: mov      edx, 1
+  0x180021aa1: mov      dword ptr [r11], ecx
+  0x180021aa4: mov      eax, edx
+  0x180021aa6: add      rsp, 0x38
+  0x180021aaa: ret      
+  0x180021aab: cmp      al, 2
+  0x180021aad: jne      0x180021ac9
+  0x180021aaf: movzx    ecx, word ptr [r10]
+  0x180021ab3: lea      rax, [r10 + 2]
+  0x180021ab7: mov      qword ptr [r9], rax
+  0x180021aba: mov      edx, 2
+  0x180021abf: mov      dword ptr [r11], ecx
+  0x180021ac2: mov      eax, edx
+  0x180021ac4: add      rsp, 0x38
+  0x180021ac8: ret      
+  0x180021ac9: mov      ecx, dword ptr [r10]
+  0x180021acc: mov      edx, 4
+  0x180021ad1: mov      dword ptr [r11], ecx
+  0x180021ad4: mov      eax, edx
+  0x180021ad6: add      qword ptr [r9], rdx
+  0x180021ad9: add      rsp, 0x38
+  0x180021add: ret      
+  0x180021ade: int3     
+  0x180021adf: int3     
+  0x180021ae0: sub      rsp, 0x38
+  0x180021ae4: mov      r10, qword ptr [r9]
+  0x180021ae7: mov      r11, rdx
+  0x180021aea: test     r10, r10
+  0x180021aed: jne      0x180021b20
+  0x180021aef: lea      rcx, [rip + 0x422fa]  ; "SceneFileLoader_Foliage_Binary::Readfloat"
+  0x180021af6: mov      r9d, 0x276
+  0x180021afc: mov      qword ptr [rsp + 0x20], rcx
+  0x180021b01: lea      r8, [rip + 0x422a0]  ; "*ppByteCurBuffer"
+  0x180021b08: lea      ecx, [r10 + 3]
+  0x180021b0c: lea      rdx, [rip + 0x3ebf5]  ; "ERROR_BREAK(%s) at line %u in %s"
+  0x180021b13: call     qword ptr [rip + 0x3e64f]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180021b19: xor      eax, eax
+  0x180021b1b: add      rsp, 0x38
+  0x180021b1f: ret      

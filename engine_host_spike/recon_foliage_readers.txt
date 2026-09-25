@@ -1,0 +1,168 @@
+﻿
+==== 0x180021ae0 .. 0x180021d40 (.text)
+  0x180021ae0: sub      rsp, 0x38
+  0x180021ae4: mov      r10, qword ptr [r9]
+  0x180021ae7: mov      r11, rdx
+  0x180021aea: test     r10, r10
+  0x180021aed: jne      0x180021b20
+  0x180021aef: lea      rcx, [rip + 0x422fa]  ; "SceneFileLoader_Foliage_Binary::Readfloat"
+  0x180021af6: mov      r9d, 0x276
+  0x180021afc: mov      qword ptr [rsp + 0x20], rcx
+  0x180021b01: lea      r8, [rip + 0x422a0]  ; "*ppByteCurBuffer"
+  0x180021b08: lea      ecx, [r10 + 3]
+  0x180021b0c: lea      rdx, [rip + 0x3ebf5]  ; "ERROR_BREAK(%s) at line %u in %s"
+  0x180021b13: call     qword ptr [rip + 0x3e64f]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180021b19: xor      eax, eax
+  0x180021b1b: add      rsp, 0x38
+  0x180021b1f: ret      
+  0x180021b20: mov      eax, dword ptr [rsp + 0x60]
+  0x180021b24: mov      ecx, r8d
+  0x180021b27: shr      eax, cl
+  0x180021b29: and      al, 3
+  0x180021b2b: jne      0x180021b56
+  0x180021b2d: movzx    ecx, byte ptr [r10]
+  0x180021b31: lea      rax, [r10 + 1]
+  0x180021b35: mov      qword ptr [r9], rax
+  0x180021b38: mov      edx, 1
+  0x180021b3d: mov      eax, edx
+  0x180021b3f: movd     xmm0, ecx
+  0x180021b43: cvtdq2ps xmm0, xmm0
+  0x180021b46: divss    xmm0, dword ptr [rsp + 0x68]
+  0x180021b4c: movss    dword ptr [r11], xmm0
+  0x180021b51: add      rsp, 0x38
+  0x180021b55: ret      
+  0x180021b56: cmp      al, 1
+  0x180021b58: jne      0x180021b83
+  0x180021b5a: movzx    ecx, word ptr [r10]
+  0x180021b5e: lea      rax, [r10 + 2]
+  0x180021b62: mov      qword ptr [r9], rax
+  0x180021b65: mov      edx, 2
+  0x180021b6a: mov      eax, edx
+  0x180021b6c: movd     xmm0, ecx
+  0x180021b70: cvtdq2ps xmm0, xmm0
+  0x180021b73: divss    xmm0, dword ptr [rsp + 0x68]
+  0x180021b79: movss    dword ptr [r11], xmm0
+  0x180021b7e: add      rsp, 0x38
+  0x180021b82: ret      
+  0x180021b83: mov      ecx, dword ptr [r10]
+  0x180021b86: mov      edx, 4
+  0x180021b8b: mov      dword ptr [r11], ecx
+  0x180021b8e: mov      eax, edx
+  0x180021b90: add      qword ptr [r9], rdx
+  0x180021b93: add      rsp, 0x38
+  0x180021b97: ret      
+  0x180021b98: int3     
+  0x180021b99: int3     
+  0x180021b9a: int3     
+  0x180021b9b: int3     
+  0x180021b9c: int3     
+  0x180021b9d: int3     
+  0x180021b9e: int3     
+  0x180021b9f: int3     
+  0x180021ba0: push     rbx
+  0x180021ba2: push     rbp
+  0x180021ba3: push     rsi
+  0x180021ba4: push     rdi
+  0x180021ba5: push     r14
+  0x180021ba7: push     r15
+  0x180021ba9: sub      rsp, 0x168
+  0x180021bb0: mov      rax, qword ptr [rip + 0x52459]  ; 0x180074010
+  0x180021bb7: xor      rax, rsp
+  0x180021bba: mov      qword ptr [rsp + 0x150], rax
+  0x180021bc2: mov      rdi, qword ptr [rsp + 0x1d0]
+  0x180021bca: mov      r10, r9
+  0x180021bcd: mov      r14, qword ptr [rsp + 0x1c0]
+  0x180021bd5: mov      ebp, r8d
+  0x180021bd8: mov      r15, qword ptr [rsp + 0x1c8]
+  0x180021be0: mov      esi, edx
+  0x180021be2: mov      byte ptr [rsp + 0x40], 0
+  0x180021be7: mov      rbx, rcx
+  0x180021bea: test     rdi, rdi
+  0x180021bed: jne      0x180021c1f
+  0x180021bef: lea      rcx, [rip + 0x4222a]  ; "SceneFileLoader_Foliage_Binary::LoadHouseInstances"
+  0x180021bf6: mov      r9d, 0x29d
+  0x180021bfc: mov      qword ptr [rsp + 0x20], rcx
+  0x180021c01: lea      r8, [rip + 0x42250]  ; "pRetHouseData"
+  0x180021c08: lea      ecx, [rdi + 3]
+  0x180021c0b: lea      rdx, [rip + 0x3eaf6]  ; "ERROR_BREAK(%s) at line %u in %s"
+  0x180021c12: call     qword ptr [rip + 0x3e550]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180021c18: xor      eax, eax
+  0x180021c1a: jmp      0x180021cbf
+  0x180021c1f: call     0x1800252b0
+  0x180021c24: test     eax, eax
+  0x180021c26: jne      0x180021c55
+  0x180021c28: lea      rcx, [rip + 0x421f1]  ; "SceneFileLoader_Foliage_Binary::LoadHouseInstances"
+  0x180021c2f: mov      r9d, 0x29e
+  0x180021c35: mov      qword ptr [rsp + 0x20], rcx
+  0x180021c3a: lea      r8, [rip + 0x41d8f]  ; "CheckValid()"
+  0x180021c41: lea      ecx, [rax + 3]
+  0x180021c44: lea      rdx, [rip + 0x3eabd]  ; "ERROR_BREAK(%s) at line %u in %s"
+  0x180021c4b: call     qword ptr [rip + 0x3e517]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180021c51: xor      eax, eax
+  0x180021c53: jmp      0x180021cbf
+  0x180021c55: cmp      qword ptr [rcx + 0x70], 0x10
+  0x180021c5a: lea      r9, [rcx + 0x58]
+  0x180021c5e: jb       0x180021c63
+  0x180021c60: mov      r9, qword ptr [r9]
+  0x180021c63: lea      r8, [rip + 0x421fe]  ; "%shousedata/%s.foliage"
+  0x180021c6a: mov      qword ptr [rsp + 0x20], r10
+  0x180021c6f: mov      edx, 0x104
+  0x180021c74: lea      rcx, [rsp + 0x40]
+  0x180021c79: call     0x18000f580
+  0x180021c7e: mov      rcx, qword ptr [rbx + 8]
+  0x180021c82: lea      rdx, [rsp + 0x40]
+  0x180021c87: mov      rax, qword ptr [rcx]
+  0x180021c8a: call     qword ptr [rax + 0x40]
+  0x180021c8d: test     eax, eax
+  0x180021c8f: jne      0x180021c98
+  0x180021c91: mov      eax, 1
+  0x180021c96: jmp      0x180021cbf
+  0x180021c98: mov      rax, qword ptr [rbx]
+  0x180021c9b: lea      r9, [rsp + 0x40]
+  0x180021ca0: mov      byte ptr [rsp + 0x38], 0
+  0x180021ca5: mov      r8d, ebp
+  0x180021ca8: mov      qword ptr [rsp + 0x30], rdi
+  0x180021cad: mov      edx, esi
+  0x180021caf: mov      qword ptr [rsp + 0x28], r15
+  0x180021cb4: mov      rcx, rbx
+  0x180021cb7: mov      qword ptr [rsp + 0x20], r14
+  0x180021cbc: call     qword ptr [rax + 0x30]
+  0x180021cbf: mov      rcx, qword ptr [rsp + 0x150]
+  0x180021cc7: xor      rcx, rsp
+  0x180021cca: call     0x18005d740
+  0x180021ccf: add      rsp, 0x168
+  0x180021cd6: pop      r15
+  0x180021cd8: pop      r14
+  0x180021cda: pop      rdi
+  0x180021cdb: pop      rsi
+  0x180021cdc: pop      rbp
+  0x180021cdd: pop      rbx
+  0x180021cde: ret      
+  0x180021cdf: int3     
+  0x180021ce0: mov      qword ptr [rsp + 0x18], rbx
+  0x180021ce5: push     rdi
+  0x180021ce6: sub      rsp, 0x20
+  0x180021cea: mov      rbx, qword ptr [rcx]
+  0x180021ced: mov      rdi, rcx
+  0x180021cf0: test     rbx, rbx
+  0x180021cf3: je       0x180021d60
+  0x180021cf5: mov      qword ptr [rsp + 0x38], rsi
+  0x180021cfa: mov      rsi, qword ptr [rcx + 8]
+  0x180021cfe: cmp      rbx, rsi
+  0x180021d01: je       0x180021d1a
+  0x180021d03: mov      rdx, rbx
+  0x180021d06: mov      rcx, rbx
+  0x180021d09: call     0x1800221b0
+  0x180021d0e: add      rbx, 0x10
+  0x180021d12: cmp      rbx, rsi
+  0x180021d15: jne      0x180021d03
+  0x180021d17: mov      rbx, qword ptr [rdi]
+  0x180021d1a: mov      rdx, qword ptr [rdi + 0x10]
+  0x180021d1e: mov      rsi, qword ptr [rsp + 0x38]
+  0x180021d23: sub      rdx, rbx
+  0x180021d26: and      rdx, 0xfffffffffffffff0
+  0x180021d2a: cmp      rdx, 0x1000
+  0x180021d31: jb       0x180021d4b
+  0x180021d33: mov      rax, qword ptr [rbx - 8]
+  0x180021d37: add      rdx, 0x27
+  0x180021d3b: sub      rbx, rax

@@ -1,0 +1,272 @@
+﻿
+==== 0x180026400 .. 0x180026660 (.text)
+  0x180026400: or       byte ptr [rax], al
+  0x180026402: add      byte ptr [rcx], al
+  0x180026404: add      byte ptr [rcx + rcx*4 + 0x60], cl
+  0x180026408: adc      byte ptr [rcx + rcx*4 + 0x60], cl
+  0x18002640c: sbb      byte ptr [rcx + rcx*4 + 0x60], cl
+  0x180026410: and      byte ptr [rax - 0x77], cl
+  0x180026413: and      al, 0x58
+  0x180026416: mov      qword ptr [rsp + 0x60], rax
+  0x18002641b: test     rdi, rdi
+  0x18002641e: je       0x1800264e0
+  0x180026424: test     r14d, r14d
+  0x180026427: js       0x1800264ae
+  0x18002642d: cmp      r14d, dword ptr [rsi + 0x10]
+  0x180026431: jge      0x1800264ae
+  0x180026433: test     r15d, r15d
+  0x180026436: js       0x1800264ae
+  0x180026438: cmp      r15d, dword ptr [rsi + 0x14]
+  0x18002643c: jge      0x1800264ae
+  0x18002643e: lea      r9, [rsi + 0x28]
+  0x180026442: mov      dword ptr [rsp + 0x28], r15d
+  0x180026447: mov      dword ptr [rsp + 0x20], r14d
+  0x18002644c: lea      r8, [rip + 0xd53ed]  ; "%hs\entities\sceneinfo\%03u_%03u.json"
+  0x180026453: mov      edx, 0x104
+  0x180026458: lea      rcx, [rbp - 0x50]
+  0x18002645c: call     0x180022630
+  0x180026461: mov      byte ptr [rbp + 0xb3], r12b
+  0x180026468: lea      rcx, [rbp - 0x50]
+  0x18002646c: call     0x180039d40
+  0x180026471: mov      rbx, rax
+  0x180026474: lea      rax, [rip + 0xd53f5]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::_LoadRegionFileData"
+  0x18002647b: mov      qword ptr [rsp + 0x20], rax
+  0x180026480: mov      r9d, 0xd1
+  0x180026486: lea      r8, [rip + 0xd39cb]  ; "bRetCode"
+  0x18002648d: lea      rdx, [rip + 0xd0edc]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180026494: lea      ecx, [r12 + 3]
+  0x180026499: call     qword ptr [rip + 0xc9d11]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18002649f: test     rbx, rbx
+  0x1800264a2: je       0x1800264ae
+  0x1800264a4: mov      r9, qword ptr [rbx]
+  0x1800264a7: mov      rcx, rbx
+  0x1800264aa: call     qword ptr [r9 + 0x10]
+  0x1800264ae: lea      rax, [rip + 0xd5283]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::LoadRegionData"
+  0x1800264b5: mov      qword ptr [rsp + 0x20], rax
+  0x1800264ba: mov      r9d, 0x6e
+  0x1800264c0: lea      r8, [rip + 0xd3991]  ; "bRetCode"
+  0x1800264c7: lea      rdx, [rip + 0xd0ea2]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x1800264ce: lea      ecx, [r9 - 0x6b]
+  0x1800264d2: call     qword ptr [rip + 0xc9cd8]  ; KGCommonX64.dll!KG_PrintfLog
+  0x1800264d8: mov      rbx, qword ptr [rsp + 0x60]
+  0x1800264dd: nop      dword ptr [rax]
+  0x1800264e0: cmp      qword ptr [rsp + 0x38], 0
+  0x1800264e6: je       0x1800264fb
+  0x1800264e8: mov      rax, qword ptr [rsi]
+  0x1800264eb: lea      rdx, [rsp + 0x38]
+  0x1800264f0: mov      rcx, rsi
+  0x1800264f3: call     qword ptr [rax + 0x20]
+  0x1800264f6: mov      rbx, qword ptr [rsp + 0x60]
+  0x1800264fb: test     rbx, rbx
+  0x1800264fe: je       0x180026558
+  0x180026500: cmp      qword ptr [rbx], 0
+  0x180026504: je       0x18002652b
+  0x180026506: mov      rdi, qword ptr [rbx]
+  0x180026509: nop      dword ptr [rax]
+  0x180026510: mov      rcx, rdi
+  0x180026513: cmp      rdi, qword ptr [rbx + 0x10]
+  0x180026517: je       0x18002652b
+  0x180026519: mov      rdi, qword ptr [rdi + 0x10]
+  0x18002651d: call     qword ptr [rip + 0xca37d]  ; api-ms-win-crt-heap-l1-1-0.dll!free
+  0x180026523: mov      qword ptr [rbx], rdi
+  0x180026526: test     rdi, rdi
+  0x180026529: jne      0x180026510
+  0x18002652b: mov      rax, qword ptr [rbx]
+  0x18002652e: test     rax, rax
+  0x180026531: je       0x18002653d
+  0x180026533: cmp      rax, qword ptr [rbx + 0x10]
+  0x180026537: jne      0x18002653d
+  0x180026539: mov      qword ptr [rax + 8], r12
+  0x18002653d: mov      edx, 1
+  0x180026542: mov      rcx, qword ptr [rbx + 0x20]
+  0x180026546: call     0x1800eae64
+  0x18002654b: mov      edx, 0x28
+  0x180026550: mov      rcx, rbx
+  0x180026553: call     0x1800eae64
+  0x180026558: mov      rcx, qword ptr [rsp + 0x78]
+  0x18002655d: call     qword ptr [rip + 0xca33d]  ; api-ms-win-crt-heap-l1-1-0.dll!free
+  0x180026563: mov      edx, 1
+  0x180026568: mov      rcx, qword ptr [rsp + 0x70]
+  0x18002656d: call     0x1800eae64
+  0x180026572: xor      eax, eax
+  0x180026574: mov      rcx, qword ptr [rbp + 0xc0]
+  0x18002657b: xor      rcx, rsp
+  0x18002657e: call     0x1800eae40
+  0x180026583: add      rsp, 0x1d0
+  0x18002658a: pop      r15
+  0x18002658c: pop      r14
+  0x18002658e: pop      r12
+  0x180026590: pop      rdi
+  0x180026591: pop      rsi
+  0x180026592: pop      rbx
+  0x180026593: pop      rbp
+  0x180026594: ret      
+  0x180026595: int3     
+  0x180026596: int3     
+  0x180026597: int3     
+  0x180026598: int3     
+  0x180026599: int3     
+  0x18002659a: int3     
+  0x18002659b: int3     
+  0x18002659c: int3     
+  0x18002659d: int3     
+  0x18002659e: int3     
+  0x18002659f: int3     
+  0x1800265a0: push     rbx
+  0x1800265a2: sub      rsp, 0x30
+  0x1800265a6: mov      rbx, rdx
+  0x1800265a9: test     rdx, rdx
+  0x1800265ac: jne      0x1800265df
+  0x1800265ae: lea      rcx, [rip + 0xd51d3]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::FreeRegionData"
+  0x1800265b5: mov      r9d, 0x9f
+  0x1800265bb: mov      qword ptr [rsp + 0x20], rcx
+  0x1800265c0: lea      r8, [rip + 0xd5201]  ; "ppRegionData"
+  0x1800265c7: lea      ecx, [rbx + 3]
+  0x1800265ca: lea      rdx, [rip + 0xd0d9f]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x1800265d1: call     qword ptr [rip + 0xc9bd9]  ; KGCommonX64.dll!KG_PrintfLog
+  0x1800265d7: xor      eax, eax
+  0x1800265d9: add      rsp, 0x30
+  0x1800265dd: pop      rbx
+  0x1800265de: ret      
+  0x1800265df: mov      qword ptr [rsp + 0x40], rdi
+  0x1800265e4: mov      rdi, qword ptr [rdx]
+  0x1800265e7: test     rdi, rdi
+  0x1800265ea: jne      0x180026622
+  0x1800265ec: lea      rcx, [rip + 0xd5195]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::FreeRegionData"
+  0x1800265f3: mov      r9d, 0xa0
+  0x1800265f9: mov      qword ptr [rsp + 0x20], rcx
+  0x1800265fe: lea      r8, [rip + 0xd51d3]  ; "*ppRegionData"
+  0x180026605: lea      ecx, [rdi + 3]
+  0x180026608: lea      rdx, [rip + 0xd0d61]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18002660f: call     qword ptr [rip + 0xc9b9b]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180026615: mov      rdi, qword ptr [rsp + 0x40]
+  0x18002661a: xor      eax, eax
+  0x18002661c: add      rsp, 0x30
+  0x180026620: pop      rbx
+  0x180026621: ret      
+  0x180026622: lea      rcx, [rdi + 8]
+  0x180026626: call     0x180026e00
+  0x18002662b: mov      rcx, qword ptr [rip + 0xf8e2e]  ; 0x18011f460
+  0x180026632: xor      r9d, r9d
+  0x180026635: add      rcx, 0x90
+  0x18002663c: xor      r8d, r8d
+  0x18002663f: mov      rdx, rdi
+  0x180026642: mov      rax, qword ptr [rcx]
+  0x180026645: call     qword ptr [rax + 0x10]
+  0x180026648: mov      rdi, qword ptr [rsp + 0x40]
+  0x18002664d: mov      eax, 1
+  0x180026652: mov      qword ptr [rbx], 0
+  0x180026659: add      rsp, 0x30
+  0x18002665d: pop      rbx
+  0x18002665e: ret      
+  0x18002665f: int3     
+
+==== 0x180026660 .. 0x180026820 (.text)
+  0x180026660: mov      qword ptr [rsp + 0x18], rbx
+  0x180026665: push     rbp
+  0x180026666: push     rsi
+  0x180026667: push     rdi
+  0x180026668: push     r12
+  0x18002666a: push     r13
+  0x18002666c: push     r14
+  0x18002666e: push     r15
+  0x180026670: lea      rbp, [rsp - 0x27]
+  0x180026675: sub      rsp, 0xd0
+  0x18002667c: mov      rax, qword ptr [rip + 0xf4d55]  ; 0x18011b3d8
+  0x180026683: xor      rax, rsp
+  0x180026686: mov      qword ptr [rbp + 0x17], rax
+  0x18002668a: mov      rbx, rdx
+  0x18002668d: mov      r13, rcx
+  0x180026690: xor      r12d, r12d
+  0x180026693: mov      r15d, r12d
+  0x180026696: xorps    xmm0, xmm0
+  0x180026699: movups   xmmword ptr [rbp - 0x59], xmm0
+  0x18002669d: movups   xmmword ptr [rbp - 0x19], xmm0
+  0x1800266a1: movups   xmmword ptr [rbp - 0x69], xmm0
+  0x1800266a5: mov      dword ptr [rbp - 0x59], r12d
+  0x1800266a9: mov      qword ptr [rbp - 0x51], r12
+  0x1800266ad: movdqa   xmmword ptr [rbp - 0x49], xmm0
+  0x1800266b2: xorps    xmm1, xmm1
+  0x1800266b5: movdqa   xmmword ptr [rbp - 0x39], xmm1
+  0x1800266ba: movdqa   xmmword ptr [rbp - 0x29], xmm0
+  0x1800266bf: mov      qword ptr [rbp - 0x19], 0x400
+  0x1800266c7: mov      dword ptr [rbp - 0x11], r12d
+  0x1800266cb: mov      qword ptr [rbp - 9], r12
+  0x1800266cf: lea      ecx, [r12 + 0x28]
+  0x1800266d4: call     0x1800eae6c
+  0x1800266d9: mov      qword ptr [rbp - 0x79], rax
+  0x1800266dd: xorps    xmm0, xmm0
+  0x1800266e0: movups   xmmword ptr [rax], xmm0
+  0x1800266e3: movups   xmmword ptr [rax + 0x10], xmm0
+  0x1800266e7: mov      qword ptr [rax], r12
+  0x1800266ea: mov      qword ptr [rax + 8], 0x10000
+  0x1800266f2: mov      qword ptr [rax + 0x10], r12
+  0x1800266f6: mov      qword ptr [rax + 0x18], r12
+  0x1800266fa: mov      qword ptr [rax + 0x20], r12
+  0x1800266fe: mov      qword ptr [rbp - 0x51], rax
+  0x180026702: mov      qword ptr [rbp - 0x49], rax
+  0x180026706: mov      rcx, rbx
+  0x180026709: call     0x180039d40
+  0x18002670e: mov      rdi, rax
+  0x180026711: test     rax, rax
+  0x180026714: jne      0x180026744
+  0x180026716: lea      rax, [rip + 0xd519b]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::_LoadSceneDesc"
+  0x18002671d: mov      qword ptr [rsp + 0x20], rax
+  0x180026722: mov      r9d, 0x101
+  0x180026728: lea      r8, [rip + 0xd51c9]  ; "pFileBuffer"
+  0x18002672f: lea      rdx, [rip + 0xd0c3a]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180026736: lea      ecx, [rdi + 3]
+  0x180026739: call     qword ptr [rip + 0xc9a71]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18002673f: jmp      0x180026a61
+  0x180026744: mov      rax, qword ptr [rax]
+  0x180026747: mov      rcx, rdi
+  0x18002674a: call     qword ptr [rax + 0x18]
+  0x18002674d: mov      ebx, eax
+  0x18002674f: test     eax, eax
+  0x180026751: jne      0x180026783
+  0x180026753: mov      r9d, 0x103
+  0x180026759: lea      r8, [rip + 0xd51a8]  ; "uJsonFileSize != 0"
+  0x180026760: lea      rax, [rip + 0xd5151]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::_LoadSceneDesc"
+  0x180026767: mov      qword ptr [rsp + 0x20], rax
+  0x18002676c: lea      rdx, [rip + 0xd0bfd]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180026773: mov      ecx, 3
+  0x180026778: call     qword ptr [rip + 0xc9a32]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18002677e: jmp      0x180026a57
+  0x180026783: lea      r14d, [rbx + 1]
+  0x180026787: mov      rcx, qword ptr [rip + 0xf8cd2]  ; 0x18011f460
+  0x18002678e: add      rcx, 0x90
+  0x180026795: mov      qword ptr [rbp - 0x79], r12
+  0x180026799: mov      rax, qword ptr [rcx]
+  0x18002679c: lea      rdx, [rbp - 0x79]
+  0x1800267a0: mov      qword ptr [rsp + 0x20], rdx
+  0x1800267a5: xor      r9d, r9d
+  0x1800267a8: lea      r8d, [r9 + 1]
+  0x1800267ac: mov      edx, r14d
+  0x1800267af: call     qword ptr [rax]
+  0x1800267b1: mov      rsi, rax
+  0x1800267b4: test     rax, rax
+  0x1800267b7: jne      0x1800267d0
+  0x1800267b9: mov      ecx, r14d
+  0x1800267bc: call     0x180038ee0
+  0x1800267c1: mov      r9d, 0x106
+  0x1800267c7: lea      r8, [rip + 0xd5152]  ; "pszJson"
+  0x1800267ce: jmp      0x180026760
+  0x1800267d0: mov      rax, qword ptr [rdi]
+  0x1800267d3: mov      r8, rsi
+  0x1800267d6: mov      edx, ebx
+  0x1800267d8: mov      rcx, rdi
+  0x1800267db: call     qword ptr [rax + 0x38]
+  0x1800267de: mov      r8d, eax
+  0x1800267e1: test     eax, eax
+  0x1800267e3: jns      0x18002680e
+  0x1800267e5: lea      rax, [rip + 0xd50cc]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::_LoadSceneDesc"
+  0x1800267ec: mov      qword ptr [rsp + 0x20], rax
+  0x1800267f1: mov      r9d, 0x109
+  0x1800267f7: lea      rdx, [rip + 0xd3b82]  ; "KGLOG_COM_ASSERT_EXIT(0x%X) at line %u in %s"
+  0x1800267fe: mov      ecx, 3
+  0x180026803: call     qword ptr [rip + 0xc99a7]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180026809: jmp      0x180026a3a
+  0x18002680e: mov      byte ptr [rbx + rsi], 0
+  0x180026812: mov      qword ptr [rbp + 7], rsi
+  0x180026816: mov      qword ptr [rbp + 0xf], rsi
+  0x18002681a: lea      rdx, [rbp + 7]

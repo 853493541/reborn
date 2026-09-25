@@ -1,0 +1,69 @@
+﻿
+==== 0x18002bcc0 .. 0x18002bd80 (.text)
+
+==== 0x18002ba90 .. 0x18002bb80 (.text)
+  0x18002ba90: mov      qword ptr [rsp + 8], rbx
+  0x18002ba95: push     rdi
+  0x18002ba96: sub      rsp, 0x30
+  0x18002ba9a: cmp      qword ptr [rcx + 0x48], 0
+  0x18002ba9f: mov      rdi, rdx
+  0x18002baa2: mov      rbx, rcx
+  0x18002baa5: je       0x18002bae0
+  0x18002baa7: cmp      qword ptr [rcx + 0x50], 0
+  0x18002baac: je       0x18002bae0
+  0x18002baae: call     0x18002c330
+  0x18002bab3: test     eax, eax
+  0x18002bab5: jne      0x18002baed
+  0x18002bab7: lea      r9d, [rax + 0x38]
+  0x18002babb: lea      rcx, [rip + 0xd1006]  ; "PhysicsEngine::StaticPhysicsSceneManager::UpdateScene"
+  0x18002bac2: mov      qword ptr [rsp + 0x20], rcx
+  0x18002bac7: lea      r8, [rip + 0xce38a]  ; "bRetCode"
+  0x18002bace: mov      ecx, 3
+  0x18002bad3: lea      rdx, [rip + 0xcb896]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18002bada: call     qword ptr [rip + 0xc46d0]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18002bae0: xor      eax, eax
+  0x18002bae2: mov      rbx, qword ptr [rsp + 0x40]
+  0x18002bae7: add      rsp, 0x30
+  0x18002baeb: pop      rdi
+  0x18002baec: ret      
+  0x18002baed: cmp      dword ptr [rbx + 0x68], 0
+  0x18002baf1: jne      0x18002bb41
+  0x18002baf3: movss    xmm0, dword ptr [rdi]
+  0x18002baf7: subss    xmm0, dword ptr [rbx + 0x6c]
+  0x18002bafc: movss    xmm1, dword ptr [rdi + 8]
+  0x18002bb01: subss    xmm1, dword ptr [rbx + 0x74]
+  0x18002bb06: mov      eax, dword ptr [rbx + 0x10]
+  0x18002bb09: imul     eax, eax
+  0x18002bb0c: mulss    xmm0, xmm0
+  0x18002bb10: mulss    xmm1, xmm1
+  0x18002bb14: cvtps2pd xmm2, xmm0
+  0x18002bb17: xorps    xmm0, xmm0
+  0x18002bb1a: addsd    xmm2, xmm0
+  0x18002bb1e: cvtps2pd xmm0, xmm1
+  0x18002bb21: addsd    xmm2, xmm0
+  0x18002bb25: xorps    xmm0, xmm0
+  0x18002bb28: cvtsi2ss xmm0, eax
+  0x18002bb2c: mulss    xmm0, dword ptr [rbx + 0x28]
+  0x18002bb31: mulss    xmm0, dword ptr [rbx + 0x28]
+  0x18002bb36: cvtps2pd xmm0, xmm0
+  0x18002bb39: comisd   xmm0, xmm2
+  0x18002bb3d: ja       0x18002bb6f
+  0x18002bb3f: jmp      0x18002bb48
+  0x18002bb41: mov      dword ptr [rbx + 0x68], 0
+  0x18002bb48: mov      rdx, rdi
+  0x18002bb4b: mov      rcx, rbx
+  0x18002bb4e: call     0x18002c0c0
+  0x18002bb53: test     eax, eax
+  0x18002bb55: jne      0x18002bb60
+  0x18002bb57: lea      r9d, [rax + 0x47]
+  0x18002bb5b: jmp      0x18002babb
+  0x18002bb60: movsd    xmm0, qword ptr [rdi]
+  0x18002bb64: movsd    qword ptr [rbx + 0x6c], xmm0
+  0x18002bb69: mov      eax, dword ptr [rdi + 8]
+  0x18002bb6c: mov      dword ptr [rbx + 0x74], eax
+  0x18002bb6f: mov      rbx, qword ptr [rsp + 0x40]
+  0x18002bb74: mov      eax, 1
+  0x18002bb79: add      rsp, 0x30
+  0x18002bb7d: pop      rdi
+  0x18002bb7e: ret      
+  0x18002bb7f: int3     

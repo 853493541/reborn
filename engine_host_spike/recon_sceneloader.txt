@@ -1,0 +1,134 @@
+﻿
+==== 0x180025ab0 .. 0x180025cf0 (.text)
+  0x180025ab0: push     rbp
+  0x180025ab2: push     rsi
+  0x180025ab3: push     rdi
+  0x180025ab4: sub      rsp, 0x280
+  0x180025abb: mov      rax, qword ptr [rip + 0xf5916]  ; 0x18011b3d8
+  0x180025ac2: xor      rax, rsp
+  0x180025ac5: mov      qword ptr [rsp + 0x260], rax
+  0x180025acd: mov      qword ptr [rsp + 0x28], rdx
+  0x180025ad2: lea      r9, [rip + 0xd5bb7]  ; "%s\entities\%s_sceneinfo.json"
+  0x180025ad9: mov      rdi, rdx
+  0x180025adc: mov      qword ptr [rsp + 0x20], rcx
+  0x180025ae1: mov      edx, 0x104
+  0x180025ae6: mov      rbp, r8
+  0x180025ae9: mov      rsi, rcx
+  0x180025aec: mov      r8d, edx
+  0x180025aef: lea      rcx, [rsp + 0x40]
+  0x180025af4: call     0x180025e30
+  0x180025af9: mov      rcx, qword ptr [rip + 0xf99f8]  ; 0x18011f4f8
+  0x180025b00: mov      byte ptr [rsp + 0x143], 0
+  0x180025b08: test     rcx, rcx
+  0x180025b0b: je       0x180025ce0
+  0x180025b11: mov      rax, qword ptr [rcx]
+  0x180025b14: lea      rdx, [rsp + 0x40]
+  0x180025b19: call     qword ptr [rax + 0x40]
+  0x180025b1c: test     eax, eax
+  0x180025b1e: je       0x180025ce0
+  0x180025b24: mov      rcx, qword ptr [rip + 0xf9935]  ; 0x18011f460
+  0x180025b2b: lea      rdx, [rsp + 0x30]
+  0x180025b30: add      rcx, 0x90
+  0x180025b37: mov      qword ptr [rsp + 0x2b8], rbx
+  0x180025b3f: xor      r9d, r9d
+  0x180025b42: mov      qword ptr [rsp + 0x20], rdx
+  0x180025b47: mov      qword ptr [rsp + 0x278], r14
+  0x180025b4f: mov      edx, 0x230
+  0x180025b54: mov      qword ptr [rsp + 0x270], r15
+  0x180025b5c: mov      rax, qword ptr [rcx]
+  0x180025b5f: lea      r8d, [r9 + 8]
+  0x180025b63: mov      qword ptr [rsp + 0x30], 0
+  0x180025b6c: call     qword ptr [rax]
+  0x180025b6e: mov      rbx, rax
+  0x180025b71: test     rax, rax
+  0x180025b74: jne      0x180025b80
+  0x180025b76: mov      ecx, 0x230
+  0x180025b7b: call     0x180038ee0
+  0x180025b80: mov      dword ptr [rbx + 8], 1
+  0x180025b87: lea      rax, [rip + 0xd5f2a]  ; 0x1800fbab8
+  0x180025b8e: mov      qword ptr [rbx], rax
+  0x180025b91: xorps    xmm0, xmm0
+  0x180025b94: xor      eax, eax
+  0x180025b96: movups   xmmword ptr [rbx + 0xc], xmm0
+  0x180025b9a: mov      qword ptr [rbx + 0x1c], rax
+  0x180025b9e: mov      dword ptr [rbx + 0x24], eax
+  0x180025ba1: mov      byte ptr [rbx + 0x28], al
+  0x180025ba4: mov      byte ptr [rbx + 0x12c], al
+  0x180025baa: test     rsi, rsi
+  0x180025bad: jne      0x180025bbe
+  0x180025baf: mov      r9d, 0xae
+  0x180025bb5: lea      r8, [rip + 0xd5c64]  ; "pszScenePath"
+  0x180025bbc: jmp      0x180025c20
+  0x180025bbe: test     rdi, rdi
+  0x180025bc1: jne      0x180025bd2
+  0x180025bc3: mov      r9d, 0xaf
+  0x180025bc9: lea      r8, [rip + 0xd5c60]  ; "pszSceneName"
+  0x180025bd0: jmp      0x180025c20
+  0x180025bd2: mov      r9, rsi
+  0x180025bd5: mov      qword ptr [rsp + 0x20], rdi
+  0x180025bda: lea      r8, [rip + 0xd5aaf]  ; "%s\entities\%s_sceneinfo.json"
+  0x180025be1: mov      edx, 0x104
+  0x180025be6: lea      rcx, [rsp + 0x150]
+  0x180025bee: call     0x180022630
+  0x180025bf3: lea      rdx, [rsp + 0x150]
+  0x180025bfb: mov      byte ptr [rsp + 0x253], 0
+  0x180025c03: mov      rcx, rbx
+  0x180025c06: call     0x180026660
+  0x180025c0b: test     eax, eax
+  0x180025c0d: jne      0x180025ca6
+  0x180025c13: mov      r9d, 0xb5
+  0x180025c19: lea      r8, [rip + 0xd4238]  ; "bRetCode"
+  0x180025c20: lea      rax, [rip + 0xd5bc1]  ; "PhysicsEngine::SceneFileDataLoader_JsonSource::Init"
+  0x180025c27: mov      ecx, 3
+  0x180025c2c: lea      rdx, [rip + 0xd173d]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180025c33: mov      qword ptr [rsp + 0x20], rax
+  0x180025c38: call     qword ptr [rip + 0xca572]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180025c3e: lea      rcx, [rip + 0xd5a6b]  ; "PhysicsEngine::_TryToCreateJsonSourceFileLoader"
+  0x180025c45: mov      r9d, 0x23
+  0x180025c4b: mov      qword ptr [rsp + 0x20], rcx
+  0x180025c50: lea      r8, [rip + 0xd4201]  ; "bRetCode"
+  0x180025c57: lea      rdx, [rip + 0xd1712]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180025c5e: lea      ecx, [r9 - 0x20]
+  0x180025c62: call     qword ptr [rip + 0xca548]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180025c68: mov      rdx, qword ptr [rbx]
+  0x180025c6b: mov      rcx, rbx
+  0x180025c6e: call     qword ptr [rdx + 8]
+  0x180025c71: xor      eax, eax
+  0x180025c73: mov      r14, qword ptr [rsp + 0x278]
+  0x180025c7b: mov      rbx, qword ptr [rsp + 0x2b8]
+  0x180025c83: mov      r15, qword ptr [rsp + 0x270]
+  0x180025c8b: mov      rcx, qword ptr [rsp + 0x260]
+  0x180025c93: xor      rcx, rsp
+  0x180025c96: call     0x1800eae40
+  0x180025c9b: add      rsp, 0x280
+  0x180025ca2: pop      rdi
+  0x180025ca3: pop      rsi
+  0x180025ca4: pop      rbp
+  0x180025ca5: ret      
+  0x180025ca6: mov      r9d, 0x104
+  0x180025cac: lea      rcx, [rbx + 0x28]
+  0x180025cb0: mov      edx, r9d
+  0x180025cb3: mov      r8, rsi
+  0x180025cb6: call     qword ptr [rip + 0xcadb4]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy_s
+  0x180025cbc: mov      r9d, 0x104
+  0x180025cc2: lea      rcx, [rbx + 0x12c]
+  0x180025cc9: mov      edx, r9d
+  0x180025ccc: mov      r8, rdi
+  0x180025ccf: call     qword ptr [rip + 0xcad9b]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy_s
+  0x180025cd5: mov      eax, 1
+  0x180025cda: mov      qword ptr [rbp], rbx
+  0x180025cde: jmp      0x180025c73
+  0x180025ce0: xor      eax, eax
+  0x180025ce2: jmp      0x180025c8b
+  0x180025ce4: int3     
+  0x180025ce5: int3     
+  0x180025ce6: int3     
+  0x180025ce7: int3     
+  0x180025ce8: int3     
+  0x180025ce9: int3     
+  0x180025cea: int3     
+  0x180025ceb: int3     
+  0x180025cec: int3     
+  0x180025ced: int3     
+  0x180025cee: int3     
+  0x180025cef: int3     

@@ -1,0 +1,62 @@
+﻿== region manager vtable 0x1800fd198
+  [ 0] 0x18002f0b0
+    0x18002f0b0: push rbx
+    0x18002f0b2: sub rsp, 0x20
+    0x18002f0b6: lea rax, [rip + 0xcb82b]
+    0x18002f0bd: mov rbx, rcx
+    0x18002f0c0: mov qword ptr [rcx], rax
+    0x18002f0c3: test dl, 1
+    0x18002f0c6: je 0x18002f0d2
+    0x18002f0c8: mov edx, 0x48
+    0x18002f0cd: call 0x1800eae64
+    0x18002f0d2: mov rax, rbx
+    0x18002f0d5: add rsp, 0x20
+    0x18002f0d9: pop rbx
+  [ 1] 0x18002f0a0
+    0x18002f0a0: mov eax, 6
+    0x18002f0a5: ret 
+    0x18002f0a6: int3 
+    0x18002f0a7: int3 
+    0x18002f0a8: int3 
+    0x18002f0a9: int3 
+    0x18002f0aa: int3 
+    0x18002f0ab: int3 
+    0x18002f0ac: int3 
+    0x18002f0ad: int3 
+    0x18002f0ae: int3 
+    0x18002f0af: int3 
+  [ 2] 0x4573636973796850
+    (no)
+  [ 3] 0x5f3a3a656e69676e
+    (no)
+  [ 4] 0x6f53657461657243
+    (no)
+  [ 5] 0x64616f4c65637275
+    (no)
+  [ 6] 0x7265
+    (no)
+  [ 7] 0x4573636973796850
+    (no)
+  [ 8] 0x433a3a656e69676e
+    (no)
+  [ 9] 0x7968506574616572
+    (no)
+  [10] 0x7272655473636973
+    (no)
+  [11] 0x4c617461446e6961
+    (no)
+  [12] 0x726564616f
+    (no)
+  [13] 0x61727265547a7370
+    (no)
+  [14] 0x2620687461506e69
+    (no)
+  [15] 0x7265547a73702026
+    (no)
+  [16] 0x687461506e696172
+    (no)
+  [17] 0x5d305b
+    (no)
+  [18] 0x70616d6e6f736a2e
+    (no)
+  [19] 0

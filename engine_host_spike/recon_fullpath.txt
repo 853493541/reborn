@@ -1,0 +1,88 @@
+﻿
+==== 0x18004c9a0 .. 0x18004cb60 (.text)
+  0x18004c9a0: xchg     esp, eax
+  0x18004c9a1: and      al, 0x70
+  0x18004c9a3: add      al, byte ptr [rax]
+  0x18004c9a5: add      byte ptr [rax - 0x77], cl
+  0x18004c9a8: and      al, 0x38
+  0x18004c9ab: mov      r8d, 0x104
+  0x18004c9b1: lea      rax, [rsp + 0x380]
+  0x18004c9b9: mov      qword ptr [rsp + 0x30], 0x104
+  0x18004c9c2: mov      qword ptr [rsp + 0x28], rax
+  0x18004c9c7: mov      qword ptr [rsp + 0x20], 0x104
+  0x18004c9d0: call     qword ptr [rip + 0x138ba]  ; api-ms-win-crt-filesystem-l1-1-0.dll!_splitpath_s
+  0x18004c9d6: lea      rax, [rsp + 0x380]
+  0x18004c9de: mov      edx, 0x104
+  0x18004c9e3: mov      qword ptr [rsp + 0x28], rax
+  0x18004c9e8: lea      r9, [rsp + 0x270]
+  0x18004c9f0: lea      rax, [rsp + 0x160]
+  0x18004c9f8: lea      r8, [rip + 0x1c869]  ; "%s%s\entities\%s_sceneinfo.json"
+  0x18004c9ff: mov      qword ptr [rsp + 0x20], rax
+  0x18004ca04: lea      rcx, [rsp + 0x50]
+  0x18004ca09: call     0x1800537e0
+  0x18004ca0e: mov      rbx, 0xffffffffffffffff
+  0x18004ca15: mov      byte ptr [rsp + 0x153], 0
+  0x18004ca1d: mov      r8, rbx
+  0x18004ca20: lea      rax, [rsp + 0x50]
+  0x18004ca25: inc      r8
+  0x18004ca28: cmp      byte ptr [rax + r8], 0
+  0x18004ca2d: jne      0x18004ca25
+  0x18004ca2f: lea      rcx, [rdi + 0x230]
+  0x18004ca36: lea      rdx, [rsp + 0x50]
+  0x18004ca3b: call     0x18000a180
+  0x18004ca40: lea      rax, [rsp + 0x160]
+  0x18004ca48: mov      edx, 0x104
+  0x18004ca4d: lea      r9, [rsp + 0x270]
+  0x18004ca55: mov      qword ptr [rsp + 0x20], rax
+  0x18004ca5a: lea      r8, [rip + 0x1c827]  ; "%s%s\entities\%%s_full\%%03u_%%03u.json"
+  0x18004ca61: lea      rcx, [rsp + 0x50]
+  0x18004ca66: call     0x1800537e0
+  0x18004ca6b: lea      rax, [rsp + 0x50]
+  0x18004ca70: mov      byte ptr [rsp + 0x153], 0
+  0x18004ca78: mov      r8, rbx
+  0x18004ca7b: nop      dword ptr [rax + rax]
+  0x18004ca80: inc      r8
+  0x18004ca83: cmp      byte ptr [rax + r8], 0
+  0x18004ca88: jne      0x18004ca80
+  0x18004ca8a: lea      rcx, [rdi + 0x250]
+  0x18004ca91: lea      rdx, [rsp + 0x50]
+  0x18004ca96: call     0x18000a180
+  0x18004ca9b: lea      rax, [rsp + 0x160]
+  0x18004caa3: mov      edx, 0x104
+  0x18004caa8: lea      r9, [rsp + 0x270]
+  0x18004cab0: mov      qword ptr [rsp + 0x20], rax
+  0x18004cab5: lea      r8, [rip + 0x1c7f4]  ; "%s%s\curve\data\%%s_full%%s\%%03u_%%03u.json"
+  0x18004cabc: lea      rcx, [rsp + 0x50]
+  0x18004cac1: call     0x1800537e0
+  0x18004cac6: lea      rax, [rsp + 0x50]
+  0x18004cacb: mov      byte ptr [rsp + 0x153], 0
+  0x18004cad3: inc      rbx
+  0x18004cad6: cmp      byte ptr [rax + rbx], 0
+  0x18004cada: jne      0x18004cad3
+  0x18004cadc: mov      r8, rbx
+  0x18004cadf: lea      rcx, [rdi + 0x270]
+  0x18004cae6: lea      rdx, [rsp + 0x50]
+  0x18004caeb: call     0x18000a180
+  0x18004caf0: mov      eax, dword ptr [rdi + 0x20c]
+  0x18004caf6: lea      r8, [rdi + 0x1d8]
+  0x18004cafd: lea      rcx, [rdi + 0x298]
+  0x18004cb04: mov      dword ptr [rdi + 0x22c], 1
+  0x18004cb0e: mov      dword ptr [rdi + 0x290], eax
+  0x18004cb14: cmp      rcx, r8
+  0x18004cb17: je       0x18004cb2f
+  0x18004cb19: cmp      qword ptr [r8 + 0x18], 0x10
+  0x18004cb1e: mov      rdx, r8
+  0x18004cb21: jb       0x18004cb26
+  0x18004cb23: mov      rdx, qword ptr [r8]
+  0x18004cb26: mov      r8, qword ptr [r8 + 0x10]
+  0x18004cb2a: call     0x18000a180
+  0x18004cb2f: cmp      qword ptr [rsi + 0x18], 0x10
+  0x18004cb34: jb       0x18004cb39
+  0x18004cb36: mov      rsi, qword ptr [rsi]
+  0x18004cb39: mov      rdx, rsi
+  0x18004cb3c: mov      rcx, rdi
+  0x18004cb3f: call     0x180027ac0
+  0x18004cb44: movss    dword ptr [rdi + 0x190], xmm0
+  0x18004cb4c: mov      eax, 1
+  0x18004cb51: mov      rcx, qword ptr [rsp + 0x490]
+  0x18004cb59: xor      rcx, rsp

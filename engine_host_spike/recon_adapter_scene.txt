@@ -1,0 +1,383 @@
+﻿
+==== 0x18007a4c0 .. 0x18007ac00 (.text)
+  0x18007a4c0: push     rbp
+  0x18007a4c2: push     rbx
+  0x18007a4c3: push     rsi
+  0x18007a4c4: push     rdi
+  0x18007a4c5: push     r12
+  0x18007a4c7: push     r13
+  0x18007a4c9: push     r14
+  0x18007a4cb: push     r15
+  0x18007a4cd: lea      rbp, [rsp - 0x1298]
+  0x18007a4d5: mov      eax, 0x1398
+  0x18007a4da: call     0x1802081a0
+  0x18007a4df: sub      rsp, rax
+  0x18007a4e2: mov      rax, qword ptr [rip + 0x271b27]  ; 0x1802ec010
+  0x18007a4e9: xor      rax, rsp
+  0x18007a4ec: mov      qword ptr [rbp + 0x1280], rax
+  0x18007a4f3: mov      r12, r8
+  0x18007a4f6: mov      rsi, rdx
+  0x18007a4f9: mov      rbx, rcx
+  0x18007a4fc: lea      r8, [rip + 0x228f45]  ; "KG3DEngineDX11EX64.dll"
+  0x18007a503: lea      rdx, [rip + 0x22489a]  ; "%s"
+  0x18007a50a: mov      r14, r9
+  0x18007a50d: lea      rcx, [rbp + 0x1170]
+  0x18007a514: call     0x180041800
+  0x18007a519: xor      r13d, r13d
+  0x18007a51c: mov      dword ptr [rbp + 0xf70], 0x11c
+  0x18007a526: xor      edx, edx
+  0x18007a528: mov      qword ptr [rbp + 0xf7c], r13
+  0x18007a52f: mov      r8d, 0x100
+  0x18007a535: lea      rcx, [rbp + 0xf84]
+  0x18007a53c: call     0x1801bce6d
+  0x18007a541: xor      eax, eax
+  0x18007a543: mov      word ptr [rbp + 0x1086], r13w
+  0x18007a54b: mov      r8b, 3
+  0x18007a54e: mov      dword ptr [rbp + 0x1088], eax
+  0x18007a554: xor      ecx, ecx
+  0x18007a556: lea      edx, [rax + 2]
+  0x18007a559: call     qword ptr [rip + 0x192d19]  ; KERNEL32.dll!VerSetConditionMask
+  0x18007a55f: mov      r8b, 3
+  0x18007a562: lea      edx, [r13 + 1]
+  0x18007a566: mov      rcx, rax
+  0x18007a569: call     qword ptr [rip + 0x192d09]  ; KERNEL32.dll!VerSetConditionMask
+  0x18007a56f: mov      r8b, 3
+  0x18007a572: lea      edx, [r13 + 0x20]
+  0x18007a576: mov      rcx, rax
+  0x18007a579: call     qword ptr [rip + 0x192cf9]  ; KERNEL32.dll!VerSetConditionMask
+  0x18007a57f: lea      edx, [r13 + 0x23]
+  0x18007a583: mov      qword ptr [rbp + 0xf74], 6
+  0x18007a58e: mov      r8, rax
+  0x18007a591: mov      word ptr [rbp + 0x1084], r13w
+  0x18007a599: lea      rcx, [rbp + 0xf70]
+  0x18007a5a0: call     qword ptr [rip + 0x192cda]  ; KERNEL32.dll!VerifyVersionInfoW
+  0x18007a5a6: test     eax, eax
+  0x18007a5a8: jne      0x18007a667
+  0x18007a5ae: lea      rdx, [rip + 0x227dcb]  ; 0x1802a2380
+  0x18007a5b5: lea      rcx, [rsp + 0x60]
+  0x18007a5ba: call     0x18007e040
+  0x18007a5bf: test     eax, eax
+  0x18007a5c1: jg       0x18007a60d
+  0x18007a5c3: lea      rax, [rip + 0x21af16]  ; "nRetCode > 0"
+  0x18007a5ca: mov      r9d, 0x99c
+  0x18007a5d0: mov      qword ptr [rsp + 0x40], rax
+  0x18007a5d5: lea      r8, [rip + 0x227e64]  ; "_CheckOperationSystem"
+  0x18007a5dc: mov      dword ptr [rsp + 0x38], 0x99c
+  0x18007a5e4: lea      rdx, [rip + 0x226655]  ; "D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\K"
+  0x18007a5eb: mov      qword ptr [rsp + 0x30], r8
+  0x18007a5f0: lea      rax, [rip + 0x2266e9]  ; "KGLOG_PROCESS_ERROR[%s][%s][%d](%s)"
+  0x18007a5f7: mov      qword ptr [rsp + 0x28], rdx
+  0x18007a5fc: lea      ecx, [r13 + 3]
+  0x18007a600: mov      qword ptr [rsp + 0x20], rax
+  0x18007a605: call     qword ptr [rip + 0x1930ad]  ; UGC_Corex64.dll!_log
+  0x18007a60b: jmp      0x18007a638
+  0x18007a60d: lea      rdx, [rsp + 0x60]
+  0x18007a612: mov      ecx, 4
+  0x18007a617: call     qword ptr [rip + 0x192db3]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18007a61d: mov      r9d, 0x10010
+  0x18007a623: lea      r8, [rip + 0x224e2e]  ; "KG3DEngineAdapter"
+  0x18007a62a: lea      rdx, [rsp + 0x60]
+  0x18007a62f: mov      rcx, r14
+  0x18007a632: call     qword ptr [rip + 0x1930a0]  ; USER32.dll!MessageBoxA
+  0x18007a638: lea      r8, [rip + 0x228e21]  ; "KG3DEngineManager::_CreateDX11Engine"
+  0x18007a63f: mov      r9d, 0x15ad
+  0x18007a645: mov      qword ptr [rsp + 0x20], r8
+  0x18007a64a: lea      rdx, [rip + 0x1cd397]  ; "KGLOG_COM_ASSERT_EXIT(0x%X) at line %u in %s"
+  0x18007a651: mov      r8d, 0x80004005
+  0x18007a657: mov      ecx, 3
+  0x18007a65c: call     qword ptr [rip + 0x192d6e]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18007a662: jmp      0x18007aa8f
+  0x18007a667: lea      rcx, [rbp + 0x1170]
+  0x18007a66e: call     qword ptr [rip + 0x192b5c]  ; KERNEL32.dll!GetModuleHandleA
+  0x18007a674: mov      qword ptr [rbx + 0x9b0], rax
+  0x18007a67b: test     rax, rax
+  0x18007a67e: je       0x18007a6d5
+  0x18007a680: lea      rdx, [rip + 0x228e01]  ; "KG3D_GetEngine"
+  0x18007a687: mov      dword ptr [rbx + 0x9c8], 1
+  0x18007a691: mov      rcx, rax
+  0x18007a694: call     qword ptr [rip + 0x192b96]  ; KERNEL32.dll!GetProcAddress
+  0x18007a69a: test     rax, rax
+  0x18007a69d: jne      0x18007a6be
+  0x18007a69f: lea      rax, [rip + 0x228df2]  ; "pKG3D_GetEngine"
+  0x18007a6a6: mov      r9d, 0x15b9
+  0x18007a6ac: mov      qword ptr [rsp + 0x40], rax
+  0x18007a6b1: mov      dword ptr [rsp + 0x38], 0x15b9
+  0x18007a6b9: jmp      0x18007aa60
+  0x18007a6be: lea      rdi, [rbx + 0x9b8]
+  0x18007a6c5: mov      rcx, rdi
+  0x18007a6c8: call     rax
+  0x18007a6ca: cmp      qword ptr [rdi], r13
+  0x18007a6cd: jne      0x18007ab3e
+  0x18007a6d3: jmp      0x18007a6dc
+  0x18007a6d5: lea      rdi, [rbx + 0x9b8]
+  0x18007a6dc: lea      rcx, [rbp + 0x1170]
+  0x18007a6e3: call     qword ptr [rip + 0x192b3f]  ; KERNEL32.dll!LoadLibraryA
+  0x18007a6e9: mov      qword ptr [rbx + 0x9b0], rax
+  0x18007a6f0: test     rax, rax
+  0x18007a6f3: jne      0x18007a7d7
+  0x18007a6f9: call     qword ptr [rip + 0x192b99]  ; KERNEL32.dll!GetLastError
+  0x18007a6ff: mov      qword ptr [rsp + 0x30], r13
+  0x18007a704: lea      rdi, [rip + 0x217ef6]  ; 0x180292601
+  0x18007a70b: mov      esi, eax
+  0x18007a70d: mov      dword ptr [rsp + 0x28], 0x80
+  0x18007a715: lea      rax, [rsp + 0x60]
+  0x18007a71a: mov      byte ptr [rsp + 0x60], r13b
+  0x18007a71f: mov      r8d, esi
+  0x18007a722: mov      qword ptr [rsp + 0x20], rax
+  0x18007a727: mov      r9d, 0x400
+  0x18007a72d: xor      edx, edx
+  0x18007a72f: mov      ecx, 0x1000
+  0x18007a734: call     qword ptr [rip + 0x192a8e]  ; KERNEL32.dll!FormatMessageA
+  0x18007a73a: mov      byte ptr [rbp - 0x21], r13b
+  0x18007a73e: cmp      esi, 0x7e
+  0x18007a741: jne      0x18007a766
+  0x18007a743: xor      edx, edx
+  0x18007a745: lea      rcx, [rbp + 0x1170]
+  0x18007a74c: call     qword ptr [rip + 0x1931b6]  ; api-ms-win-crt-filesystem-l1-1-0.dll!_access
+  0x18007a752: test     eax, eax
+  0x18007a754: lea      rdi, [rip + 0x228d55]  ; 0x1802a34b0
+  0x18007a75b: lea      rcx, [rip + 0x228dbe]  ; 0x1802a3520
+  0x18007a762: cmovne   rdi, rcx
+  0x18007a766: lea      rax, [rsp + 0x60]
+  0x18007a76b: mov      qword ptr [rsp + 0x28], rdi
+  0x18007a770: mov      r9d, esi
+  0x18007a773: mov      qword ptr [rsp + 0x20], rax
+  0x18007a778: lea      r8, [rbp + 0x1170]
+  0x18007a77f: lea      rdx, [rip + 0x228e12]  ; 0x1802a3598
+  0x18007a786: lea      rcx, [rbp + 0xf70]
+  0x18007a78d: call     0x18007e040
+  0x18007a792: test     eax, eax
+  0x18007a794: jg       0x18007a7b5
+  0x18007a796: lea      rax, [rip + 0x21ad43]  ; "nRetCode > 0"
+  0x18007a79d: mov      r9d, 0x15de
+  0x18007a7a3: mov      qword ptr [rsp + 0x40], rax
+  0x18007a7a8: mov      dword ptr [rsp + 0x38], 0x15de
+  0x18007a7b0: jmp      0x18007aa60
+  0x18007a7b5: mov      r9d, 0x10010
+  0x18007a7bb: lea      r8, [rip + 0x224c96]  ; "KG3DEngineAdapter"
+  0x18007a7c2: lea      rdx, [rbp + 0xf70]
+  0x18007a7c9: mov      rcx, r14
+  0x18007a7cc: call     qword ptr [rip + 0x192f06]  ; USER32.dll!MessageBoxA
+  0x18007a7d2: jmp      0x18007aa8f
+  0x18007a7d7: lea      rdx, [rip + 0x228de2]  ; "KG3D_CreateEngine"
+  0x18007a7de: mov      rcx, rax
+  0x18007a7e1: call     qword ptr [rip + 0x192a49]  ; KERNEL32.dll!GetProcAddress
+  0x18007a7e7: mov      r15, rax
+  0x18007a7ea: test     rax, rax
+  0x18007a7ed: jne      0x18007a80e
+  0x18007a7ef: lea      rax, [rip + 0x228de2]  ; "pKG3D_CreateEngine"
+  0x18007a7f6: mov      r9d, 0x15e6
+  0x18007a7fc: mov      qword ptr [rsp + 0x40], rax
+  0x18007a801: mov      dword ptr [rsp + 0x38], 0x15e6
+  0x18007a809: jmp      0x18007aa60
+  0x18007a80e: lea      rcx, [rsp + 0x78]
+  0x18007a813: call     0x180035bd0
+  0x18007a818: xorps    xmm0, xmm0
+  0x18007a81b: mov      dword ptr [rbp + 0xe08], 1
+  0x18007a825: lea      rdx, [rsi + 0x48]
+  0x18007a829: mov      dword ptr [rbp + 0xe0c], 2
+  0x18007a833: lea      rcx, [rsp + 0x78]
+  0x18007a838: mov      qword ptr [rbp + 0xe10], 0x80
+  0x18007a843: movups   xmmword ptr [rbp + 0xe18], xmm0
+  0x18007a84a: mov      dword ptr [rbp + 0xe38], r13d
+  0x18007a851: movups   xmmword ptr [rbp + 0xe28], xmm0
+  0x18007a858: mov      qword ptr [rbp + 0xe3c], 0x4e20
+  0x18007a863: mov      qword ptr [rbp + 0xe44], r13
+  0x18007a86a: call     0x180065d60
+  0x18007a86f: lea      rax, [rbx + 0x20]
+  0x18007a873: mov      dword ptr [rbp + 0xf50], 5
+  0x18007a87d: mov      qword ptr [rsp + 0x60], rax
+  0x18007a882: mov      rax, qword ptr [rbx + 0x2018]
+  0x18007a889: mov      qword ptr [rsp + 0x68], rax
+  0x18007a88e: mov      dword ptr [rbp + 0xf54], 1
+  0x18007a898: call     qword ptr [rip + 0x1929aa]  ; KERNEL32.dll!GetCurrentThreadId
+  0x18007a89e: movups   xmm0, xmmword ptr [rsi]
+  0x18007a8a1: mov      dword ptr [rbp + 0xf58], eax
+  0x18007a8a7: mov      r9d, 0x103
+  0x18007a8ad: movups   xmm1, xmmword ptr [rsi + 0x10]
+  0x18007a8b1: mov      eax, dword ptr [rsi + 0xf54]
+  0x18007a8b7: lea      rcx, [rbp + 0xe4c]
+  0x18007a8be: movups   xmmword ptr [rbp + 0xe08], xmm0
+  0x18007a8c5: mov      dword ptr [rbp + 0xf5c], eax
+  0x18007a8cb: mov      r8, r12
+  0x18007a8ce: movups   xmm0, xmmword ptr [rsi + 0x20]
+  0x18007a8d2: mov      eax, dword ptr [rsi + 0x40]
+  0x18007a8d5: lea      edx, [r9 + 1]
+  0x18007a8d9: movups   xmmword ptr [rbp + 0xe18], xmm1
+  0x18007a8e0: mov      dword ptr [rbp + 0xe48], eax
+  0x18007a8e6: movups   xmm1, xmmword ptr [rsi + 0x30]
+  0x18007a8ea: movups   xmmword ptr [rbp + 0xe28], xmm0
+  0x18007a8f1: movups   xmmword ptr [rbp + 0xe38], xmm1
+  0x18007a8f8: call     qword ptr [rip + 0x1932b2]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy_s
+  0x18007a8fe: mov      eax, dword ptr [rsi + 0xf3c]
+  0x18007a904: mov      rdx, rdi
+  0x18007a907: neg      eax
+  0x18007a909: mov      dword ptr [rbp - 0x2c], r13d
+  0x18007a90d: mov      eax, dword ptr [rsi + 0x340]
+  0x18007a913: sbb      ecx, ecx
+  0x18007a915: mov      dword ptr [rbp + 0x270], eax
+  0x18007a91b: mov      eax, dword ptr [rsi + 0xf58]
+  0x18007a921: and      ecx, 2
+  0x18007a924: mov      dword ptr [rbp + 0xf60], ecx
+  0x18007a92a: lea      rcx, [rsp + 0x60]
+  0x18007a92f: mov      dword ptr [rbp + 0xf64], eax
+  0x18007a935: call     r15
+  0x18007a938: mov      edi, eax
+  0x18007a93a: test     eax, eax
+  0x18007a93c: jns      0x18007a98c
+  0x18007a93e: lea      r8, [rip + 0x233ddb]  ; 0x1802ae720
+  0x18007a945: mov      edx, 0x200
+  0x18007a94a: lea      rcx, [rbp + 0xf70]
+  0x18007a951: call     0x180069910
+  0x18007a956: lea      rdx, [rbp + 0xf70]
+  0x18007a95d: mov      byte ptr [rbp + 0x116f], r13b
+  0x18007a964: mov      ecx, 4
+  0x18007a969: call     qword ptr [rip + 0x192a61]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18007a96f: mov      r9d, 0x10010
+  0x18007a975: lea      r8, [rip + 0x224adc]  ; "KG3DEngineAdapter"
+  0x18007a97c: lea      rdx, [rbp + 0xf70]
+  0x18007a983: mov      rcx, r14
+  0x18007a986: call     qword ptr [rip + 0x192d4c]  ; USER32.dll!MessageBoxA
+  0x18007a98c: test     edi, edi
+  0x18007a98e: je       0x18007a9af
+  0x18007a990: lea      rax, [rip + 0x2273e9]  ; "hrRetCode == 0"
+  0x18007a997: mov      r9d, 0x1602
+  0x18007a99d: mov      qword ptr [rsp + 0x40], rax
+  0x18007a9a2: mov      dword ptr [rsp + 0x38], 0x1602
+  0x18007a9aa: jmp      0x18007aa60
+  0x18007a9af: mov      rcx, qword ptr [rbx + 0x9b8]
+  0x18007a9b6: test     rcx, rcx
+  0x18007a9b9: jne      0x18007a9da
+  0x18007a9bb: lea      rax, [rip + 0x228856]  ; "m_piEngine"
+  0x18007a9c2: mov      r9d, 0x1603
+  0x18007a9c8: mov      qword ptr [rsp + 0x40], rax
+  0x18007a9cd: mov      dword ptr [rsp + 0x38], 0x1603
+  0x18007a9d5: jmp      0x18007aa60
+  0x18007a9da: mov      rax, qword ptr [rcx]
+  0x18007a9dd: mov      rdx, qword ptr [rbx + 0x9d8]
+  0x18007a9e4: call     qword ptr [rax + 0x118]
+  0x18007a9ea: mov      edi, eax
+  0x18007a9ec: test     eax, eax
+  0x18007a9ee: jns      0x18007aa3e
+  0x18007a9f0: lea      r8, [rip + 0x228bf9]  ; 0x1802a35f0
+  0x18007a9f7: mov      edx, 0x200
+  0x18007a9fc: lea      rcx, [rbp + 0xf70]
+  0x18007aa03: call     0x180069910
+  0x18007aa08: lea      rdx, [rbp + 0xf70]
+  0x18007aa0f: mov      byte ptr [rbp + 0x116f], r13b
+  0x18007aa16: mov      ecx, 4
+  0x18007aa1b: call     qword ptr [rip + 0x1929af]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18007aa21: mov      r9d, 0x10010
+  0x18007aa27: lea      r8, [rip + 0x224a2a]  ; "KG3DEngineAdapter"
+  0x18007aa2e: lea      rdx, [rbp + 0xf70]
+  0x18007aa35: mov      rcx, r14
+  0x18007aa38: call     qword ptr [rip + 0x192c9a]  ; USER32.dll!MessageBoxA
+  0x18007aa3e: test     edi, edi
+  0x18007aa40: je       0x18007aad0
+  0x18007aa46: lea      rax, [rip + 0x227333]  ; "hrRetCode == 0"
+  0x18007aa4d: mov      r9d, 0x160f
+  0x18007aa53: mov      qword ptr [rsp + 0x40], rax
+  0x18007aa58: mov      dword ptr [rsp + 0x38], 0x160f
+  0x18007aa60: lea      r8, [rip + 0x2289f9]  ; "KG3DEngineManager::_CreateDX11Engine"
+  0x18007aa67: mov      ecx, 3
+  0x18007aa6c: mov      qword ptr [rsp + 0x30], r8
+  0x18007aa71: lea      rdx, [rip + 0x2261c8]  ; "D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\K"
+  0x18007aa78: lea      rax, [rip + 0x226261]  ; "KGLOG_PROCESS_ERROR[%s][%s][%d](%s)"
+  0x18007aa7f: mov      qword ptr [rsp + 0x28], rdx
+  0x18007aa84: mov      qword ptr [rsp + 0x20], rax
+  0x18007aa89: call     qword ptr [rip + 0x192c29]  ; UGC_Corex64.dll!_log
+  0x18007aa8f: mov      rcx, rbx
+  0x18007aa92: call     0x1800771d0
+  0x18007aa97: mov      rcx, qword ptr [rbx + 0x9b8]
+  0x18007aa9e: test     rcx, rcx
+  0x18007aaa1: je       0x18007aab0
+  0x18007aaa3: mov      rdx, qword ptr [rcx]
+  0x18007aaa6: call     qword ptr [rdx + 0x10]
+  0x18007aaa9: mov      qword ptr [rbx + 0x9b8], r13
+  0x18007aab0: mov      rcx, qword ptr [rbx + 0x9b0]
+  0x18007aab7: test     rcx, rcx
+  0x18007aaba: je       0x18007aac9
+  0x18007aabc: call     qword ptr [rip + 0x192776]  ; KERNEL32.dll!FreeLibrary
+  0x18007aac2: mov      qword ptr [rbx + 0x9b0], r13
+  0x18007aac9: mov      eax, 0x80004005
+  0x18007aace: jmp      0x18007ab41
+  0x18007aad0: mov      rcx, qword ptr [rbx + 0x9b8]
+  0x18007aad7: lea      rdx, [rsp + 0x50]
+  0x18007aadc: mov      qword ptr [rsp + 0x50], r13
+  0x18007aae1: mov      rax, qword ptr [rcx]
+  0x18007aae4: call     qword ptr [rax + 0x680]
+  0x18007aaea: mov      rdx, qword ptr [rsp + 0x50]
+  0x18007aaef: test     rdx, rdx
+  0x18007aaf2: je       0x18007ab00
+  0x18007aaf4: lea      rcx, [rbx + 0x1f68]
+  0x18007aafb: call     0x18001af20
+  0x18007ab00: mov      rcx, qword ptr [rbx + 0x9b8]
+  0x18007ab07: lea      r8, [rip + 0x228b52]  ; "bvt_test_uuid"
+  0x18007ab0e: lea      rdx, [rip + 0x228b5b]  ; "uuid"
+  0x18007ab15: mov      r9, qword ptr [rcx]
+  0x18007ab18: call     qword ptr [r9 + 0x720]
+  0x18007ab1f: mov      rcx, qword ptr [rbx + 0x9b8]
+  0x18007ab26: lea      r8, [rip + 0x228b4b]  ; "bvt_test_account"
+  0x18007ab2d: lea      rdx, [rip + 0x228b5c]  ; "account"
+  0x18007ab34: mov      r9, qword ptr [rcx]
+  0x18007ab37: call     qword ptr [r9 + 0x720]
+  0x18007ab3e: mov      eax, r13d
+  0x18007ab41: mov      rcx, qword ptr [rbp + 0x1280]
+  0x18007ab48: xor      rcx, rsp
+  0x18007ab4b: call     0x180175860
+  0x18007ab50: add      rsp, 0x1398
+  0x18007ab57: pop      r15
+  0x18007ab59: pop      r14
+  0x18007ab5b: pop      r13
+  0x18007ab5d: pop      r12
+  0x18007ab5f: pop      rdi
+  0x18007ab60: pop      rsi
+  0x18007ab61: pop      rbx
+  0x18007ab62: pop      rbp
+  0x18007ab63: ret      
+  0x18007ab64: int3     
+  0x18007ab65: int3     
+  0x18007ab66: int3     
+  0x18007ab67: int3     
+  0x18007ab68: int3     
+  0x18007ab69: int3     
+  0x18007ab6a: int3     
+  0x18007ab6b: int3     
+  0x18007ab6c: int3     
+  0x18007ab6d: int3     
+  0x18007ab6e: int3     
+  0x18007ab6f: int3     
+  0x18007ab70: mov      qword ptr [rsp + 0x18], rbx
+  0x18007ab75: push     rbp
+  0x18007ab76: push     rsi
+  0x18007ab77: push     rdi
+  0x18007ab78: push     r12
+  0x18007ab7a: push     r13
+  0x18007ab7c: push     r14
+  0x18007ab7e: push     r15
+  0x18007ab80: sub      rsp, 0x180
+  0x18007ab87: mov      rax, qword ptr [rip + 0x271482]  ; 0x1802ec010
+  0x18007ab8e: xor      rax, rsp
+  0x18007ab91: mov      qword ptr [rsp + 0x170], rax
+  0x18007ab99: mov      rbx, r9
+  0x18007ab9c: mov      r13d, r8d
+  0x18007ab9f: mov      r12, rdx
+  0x18007aba2: mov      rbp, rcx
+  0x18007aba5: xor      esi, esi
+  0x18007aba7: xor      r14d, r14d
+  0x18007abaa: xor      r15d, r15d
+  0x18007abad: mov      edx, 0x104
+  0x18007abb2: lea      rcx, [rsp + 0x60]
+  0x18007abb7: call     qword ptr [rip + 0x192fcb]  ; api-ms-win-crt-stdio-l1-1-0.dll!_getcwd
+  0x18007abbd: test     rax, rax
+  0x18007abc0: jne      0x18007ac0e
+  0x18007abc2: lea      rax, [rip + 0x228aff]  ; "_getcwd(szOldDir, MAX_PATH)"
+  0x18007abc9: mov      qword ptr [rsp + 0x40], rax
+  0x18007abce: mov      dword ptr [rsp + 0x38], 0x1682
+  0x18007abd6: lea      r8, [rip + 0x228b0b]  ; "KG3DEngineManager::_InitFileSystem"
+  0x18007abdd: mov      qword ptr [rsp + 0x30], r8
+  0x18007abe2: lea      rdx, [rip + 0x226057]  ; "D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\K"
+  0x18007abe9: mov      qword ptr [rsp + 0x28], rdx
+  0x18007abee: lea      rax, [rip + 0x2260eb]  ; "KGLOG_PROCESS_ERROR[%s][%s][%d](%s)"
+  0x18007abf5: mov      qword ptr [rsp + 0x20], rax
+  0x18007abfa: lea      ecx, [rsi + 3]

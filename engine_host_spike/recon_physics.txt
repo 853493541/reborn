@@ -1,0 +1,574 @@
+﻿##########################################################################################
+# EXPORTS in C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+##########################################################################################
+
+==== GetPhysicsManager @ 0x18000f850
+  0x18000f850: lea      rax, [rip + 0x10bd79]  ; -> "锟斤拷锟?"
+  0x18000f857: mov      qword ptr [rcx], rax
+  0x18000f85a: xor      eax, eax
+  0x18000f85c: ret      
+
+==== CreatePhysicsTerrainDataLoader @ 0x180031320
+  0x180031320: push     rbp
+  0x180031322: push     rbx
+  0x180031323: push     rsi
+  0x180031324: push     r12
+  0x180031326: push     r14
+  0x180031328: push     r15
+  0x18003132a: lea      rbp, [rsp - 0x498]
+  0x180031332: sub      rsp, 0x598
+  0x180031339: mov      rax, qword ptr [rip + 0xea098]  ; -> "2锟斤拷-锟?"
+  0x180031340: xor      rax, rsp
+  0x180031343: mov      qword ptr [rbp + 0x480], rax
+  0x18003134a: mov      r12, r8
+  0x18003134d: mov      r15, rdx
+  0x180031350: mov      rsi, rcx
+  0x180031353: xor      edx, edx
+  0x180031355: mov      r8d, 0x104
+  0x18003135b: lea      rcx, [rbp + 0x150]
+  0x180031362: xor      r14d, r14d
+  0x180031365: call     0x1800ed1ee
+  0x18003136a: xor      edx, edx
+  0x18003136c: lea      rcx, [rbp + 0x260]
+  0x180031373: mov      r8d, 0x104
+  0x180031379: call     0x1800ed1ee
+  0x18003137e: test     rsi, rsi
+  0x180031381: je       0x18003179d
+  0x180031387: cmp      byte ptr [rsi], r14b
+  0x18003138a: je       0x18003179d
+  0x180031390: xorps    xmm0, xmm0
+  0x180031393: lea      rcx, [rbp + 0x40]
+  0x180031397: xor      edx, edx
+  0x180031399: mov      r8d, 0x104
+  0x18003139f: movups   xmmword ptr [rbp - 0x40], xmm0
+  0x1800313a3: movups   xmmword ptr [rbp - 0x30], xmm0
+  0x1800313a7: movups   xmmword ptr [rbp - 0x20], xmm0
+  0x1800313ab: movups   xmmword ptr [rbp - 0x10], xmm0
+  0x1800313af: movups   xmmword ptr [rbp], xmm0
+  0x1800313b3: movups   xmmword ptr [rbp + 0x10], xmm0
+  0x1800313b7: movups   xmmword ptr [rbp + 0x20], xmm0
+  0x1800313bb: movups   xmmword ptr [rbp + 0x30], xmm0
+  0x1800313bf: call     0x1800ed1ee
+  0x1800313c4: mov      qword ptr [rsp + 0x40], 0x20
+  0x1800313cd: lea      rax, [rbp - 0x68]
+  0x1800313d1: mov      qword ptr [rsp + 0x38], rax
+  0x1800313d6: lea      r9, [rbp + 0x40]
+  0x1800313da: xorps    xmm0, xmm0
+  0x1800313dd: mov      qword ptr [rsp + 0x30], 0x80
+  0x1800313e6: xorps    xmm1, xmm1
+  0x1800313e9: lea      rax, [rbp - 0x40]
+  0x1800313ed: mov      qword ptr [rsp + 0x28], rax
+  0x1800313f2: lea      r8d, [r14 + 0x20]
+  0x1800313f6: lea      rdx, [rsp + 0x78]
+  0x1800313fb: mov      qword ptr [rsp + 0x20], 0x104
+  0x180031404: mov      rcx, rsi
+  0x180031407: movups   xmmword ptr [rbp - 0x68], xmm0
+  0x18003140b: movups   xmmword ptr [rbp - 0x58], xmm0
+  0x18003140f: movups   xmmword ptr [rsp + 0x78], xmm1
+  0x180031414: movups   xmmword ptr [rbp - 0x78], xmm1
+  0x180031418: call     qword ptr [rip + 0xbf472]  ; -> "锟斤拷"
+  0x18003141e: cmp      byte ptr [rsp + 0x78], r14b
+  0x180031423: je       0x18003153c
+  0x180031429: mov      qword ptr [rsp + 0x590], rdi
+  0x180031431: lea      rax, [rsp + 0x78]
+  0x180031436: mov      rdi, 0xffffffffffffffff
+  0x18003143d: mov      qword ptr [rsp + 0x60], r14
+  0x180031442: mov      r8, rdi
+  0x180031445: mov      qword ptr [rsp + 0x68], 0xf
+  0x18003144e: mov      byte ptr [rsp + 0x50], r14b
+  0x180031453: inc      r8
+  0x180031456: cmp      byte ptr [rax + r8], r14b
+  0x18003145a: jne      0x180031453
+  0x18003145c: lea      rdx, [rsp + 0x78]
+  0x180031461: lea      rcx, [rsp + 0x50]
+  0x180031466: call     0x180004700
+  0x18003146b: lea      rax, [rbp + 0x40]
+  0x18003146f: nop      
+  0x180031470: inc      rdi
+  0x180031473: cmp      byte ptr [rax + rdi], r14b
+  0x180031477: jne      0x180031470
+  0x180031479: mov      rdx, qword ptr [rsp + 0x68]
+  0x18003147e: mov      rcx, qword ptr [rsp + 0x60]
+  0x180031483: mov      rax, rdx
+  0x180031486: sub      rax, rcx
+  0x180031489: cmp      rdi, rax
+  0x18003148c: ja       0x1800314be
+  0x18003148e: cmp      rdx, 0x10
+  0x180031492: lea      rax, [rcx + rdi]
+  0x180031496: lea      rbx, [rsp + 0x50]
+  0x18003149b: mov      qword ptr [rsp + 0x60], rax
+  0x1800314a0: cmovae   rbx, qword ptr [rsp + 0x50]
+  0x1800314a6: lea      rdx, [rbp + 0x40]
+  0x1800314aa: add      rbx, rcx
+  0x1800314ad: mov      r8, rdi
+  0x1800314b0: mov      rcx, rbx
+  0x1800314b3: call     0x1800ed451
+  0x1800314b8: mov      byte ptr [rbx + rdi], r14b
+  0x1800314bc: jmp      0x1800314d4
+  0x1800314be: lea      r9, [rbp + 0x40]
+  0x1800314c2: mov      qword ptr [rsp + 0x20], rdi
+  0x1800314c7: mov      rdx, rdi
+  0x1800314ca: lea      rcx, [rsp + 0x50]
+  0x1800314cf: call     0x180022300
+  0x1800314d4: cmp      qword ptr [rsp + 0x68], 0x10
+  0x1800314da: lea      r8, [rsp + 0x50]
+  0x1800314df: mov      edx, 0x104
+  0x1800314e4: lea      rcx, [rbp + 0x40]
+  0x1800314e8: cmovae   r8, qword ptr [rsp + 0x50]
+  0x1800314ee: call     qword ptr [rip + 0xbf564]  ; -> "p锟?"
+  0x1800314f4: mov      rdx, qword ptr [rsp + 0x68]
+  0x1800314f9: mov      rdi, qword ptr [rsp + 0x590]
+  0x180031501: cmp      rdx, 0x10
+  0x180031505: jb       0x18003153c
+  0x180031507: mov      rcx, qword ptr [rsp + 0x50]
+  0x18003150c: inc      rdx
+  0x18003150f: mov      rax, rcx
+  0x180031512: cmp      rdx, 0x1000
+  0x180031519: jb       0x180031537
+  0x18003151b: mov      rcx, qword ptr [rcx - 8]
+  0x18003151f: add      rdx, 0x27
+  0x180031523: sub      rax, rcx
+  0x180031526: add      rax, -8
+  0x18003152a: cmp      rax, 0x1f
+  0x18003152e: jbe      0x180031537
+  0x180031530: call     qword ptr [rip + 0xbf462]  ; -> "|锟?"
+  0x180031536: int3     
+  0x180031537: call     0x1800eae64
+  0x18003153c: lea      rdx, [rip + 0xcbce5]  ; -> ".jsonmap"
+  0x180031543: lea      rcx, [rbp - 0x68]
+  0x180031547: call     qword ptr [rip + 0xbf4f3]  ; -> "锟斤拷"
+  0x18003154d: test     eax, eax
+  0x18003154f: jne      0x180031628
+  0x180031555: lea      rax, [rbp - 0x40]
+  0x180031559: mov      edx, 0x104
+  0x18003155e: lea      r9, [rbp + 0x40]
+  0x180031562: mov      qword ptr [rsp + 0x20], rax
+  0x180031567: lea      r8, [rip + 0xcbcca]  ; -> "%slandscape\%s_landscapeinfo.json"
+  0x18003156e: lea      rcx, [rbp + 0x370]
+  0x180031575: call     0x1800317f0
+  0x18003157a: mov      rcx, qword ptr [rip + 0xedf77]  ; -> 0x18011f4f8
+  0x180031581: test     rcx, rcx
+  0x180031584: je       0x1800315bc
+  0x180031586: mov      rax, qword ptr [rcx]
+  0x180031589: lea      rdx, [rbp + 0x370]
+  0x180031590: call     qword ptr [rax + 0x40]
+  0x180031593: test     eax, eax
+  0x180031595: je       0x1800315bc
+  0x180031597: lea      r9, [rbp + 0x40]
+  0x18003159b: mov      edx, 0x104
+  0x1800315a0: lea      r8, [rip + 0xcbcb9]  ; -> "%slandscape"
+  0x1800315a7: lea      rcx, [rbp + 0x150]
+  0x1800315ae: call     0x1800317f0
+  0x1800315b3: lea      r8, [rbp - 0x40]
+  0x1800315b7: jmp      0x1800316ae
+  0x1800315bc: lea      r9, [rbp + 0x40]
+  0x1800315c0: mov      edx, 0x104
+  0x1800315c5: lea      r8, [rip + 0xcbca4]  ; -> "%slandscape\landscapeinfo.json"
+  0x1800315cc: lea      rcx, [rbp + 0x370]
+  0x1800315d3: call     0x1800317f0
+  0x1800315d8: mov      rcx, qword ptr [rip + 0xedf19]  ; -> 0x18011f4f8
+  0x1800315df: test     rcx, rcx
+  0x1800315e2: je       0x180031616
+  0x1800315e4: mov      rax, qword ptr [rcx]
+  0x1800315e7: lea      rdx, [rbp + 0x370]
+  0x1800315ee: call     qword ptr [rax + 0x40]
+  0x1800315f1: test     eax, eax
+  0x1800315f3: je       0x180031616
+  0x1800315f5: lea      r9, [rbp + 0x40]
+  0x1800315f9: mov      edx, 0x104
+  0x1800315fe: lea      r8, [rip + 0xcbc5b]  ; -> "%slandscape"
+  0x180031605: lea      rcx, [rbp + 0x150]
+  0x18003160c: call     0x1800317f0
+  0x180031611: jmp      0x1800316c0
+  0x180031616: mov      r9d, 0x4b
+  0x18003161c: lea      r8, [rip + 0xc9c9d]  ; -> "FALSE"
+  0x180031623: jmp      0x1800317aa
+  0x180031628: lea      rdx, [rip + 0xcbc61]  ; -> ".json"
+  0x18003162f: lea      rcx, [rbp - 0x68]
+  0x180031633: call     qword ptr [rip + 0xbf407]  ; -> "锟斤拷"
+  0x180031639: test     eax, eax
+  0x18003163b: jne      0x180031691
+  0x18003163d: lea      rdx, [rip + 0xcbc54]  ; -> "landscapeinfo"
+  0x180031644: lea      rcx, [rbp - 0x40]
+  0x180031648: call     qword ptr [rip + 0xbf072]  ; -> "锟絣"
+  0x18003164e: mov      rbx, rax
+  0x180031651: test     rax, rax
+  0x180031654: je       0x18003167f
+  0x180031656: lea      rax, [rbp - 0x40]
+  0x18003165a: mov      edx, 0x104
+  0x18003165f: lea      r8, [rbp + 0x40]
+  0x180031663: lea      rcx, [rbp + 0x150]
+  0x18003166a: cmp      rax, rbx
+  0x18003166d: je       0x1800316ba
+  0x18003166f: call     qword ptr [rip + 0xbf3e3]  ; -> "p锟?"
+  0x180031675: lea      r8, [rbp - 0x40]
+  0x180031679: mov      byte ptr [rbx - 1], r14b
+  0x18003167d: jmp      0x1800316ae
+  0x18003167f: mov      r9d, 0x60
+  0x180031685: lea      r8, [rip + 0xc9c34]  ; -> "FALSE"
+  0x18003168c: jmp      0x1800317aa
+  0x180031691: mov      r8, rsi
+  0x180031694: lea      rcx, [rbp + 0x150]
+  0x18003169b: mov      edx, 0x104
+  0x1800316a0: call     qword ptr [rip + 0xbf3b2]  ; -> "p锟?"
+  0x1800316a6: test     r15, r15
+  0x1800316a9: je       0x1800316c0
+  0x1800316ab: mov      r8, r15
+  0x1800316ae: lea      rcx, [rbp + 0x260]
+  0x1800316b5: mov      edx, 0x104
+  0x1800316ba: call     qword ptr [rip + 0xbf398]  ; -> "p锟?"
+  0x1800316c0: mov      rcx, qword ptr [rip + 0xedd99]  ; -> 0x18011f460
+  0x1800316c7: lea      rdx, [rsp + 0x70]
+  0x1800316cc: add      rcx, 0x90
+  0x1800316d3: mov      qword ptr [rsp + 0x20], rdx
+  0x1800316d8: xor      r9d, r9d
+  0x1800316db: mov      qword ptr [rsp + 0x70], r14
+  0x1800316e0: mov      edx, 0x248
+  0x1800316e5: mov      rax, qword ptr [rcx]
+  0x1800316e8: lea      r8d, [r9 + 8]
+  0x1800316ec: call     qword ptr [rax]
+  0x1800316ee: mov      rbx, rax
+  0x1800316f1: test     rax, rax
+  0x1800316f4: jne      0x180031700
+  0x1800316f6: mov      ecx, 0x248
+  0x1800316fb: call     0x180038ee0
+  0x180031700: mov      dword ptr [rbx + 8], 1
+  0x180031707: lea      rax, [rip + 0xcbba2]  ; -> "锟絙锟?"
+  0x18003170e: mov      qword ptr [rbx], rax
+  0x180031711: lea      r8, [rbp + 0x260]
+  0x180031718: xorps    xmm0, xmm0
+  0x18003171b: lea      rdx, [rbp + 0x150]
+  0x180031722: movups   xmmword ptr [rbx + 0xc], xmm0
+  0x180031726: xor      eax, eax
+  0x180031728: mov      rcx, rbx
+  0x18003172b: movups   xmmword ptr [rbx + 0x1c], xmm0
+  0x18003172f: movups   xmmword ptr [rbx + 0x2c], xmm0
+  0x180031733: mov      dword ptr [rbx + 0x3c], eax
+  0x180031736: mov      byte ptr [rbx + 0x40], al
+  0x180031739: mov      byte ptr [rbx + 0x144], al
+  0x18003173f: call     0x1800318f0
+  0x180031744: test     eax, eax
+  0x180031746: jne      0x180031791
+  0x180031748: mov      r9d, 0x14
+  0x18003174e: lea      rax, [rip + 0xcba53]  ; -> "PhysicsEngine::_CreateSourceLoader"
+  0x180031755: lea      r8, [rip + 0xc86fc]  ; -> "bRetCode"
+  0x18003175c: mov      qword ptr [rsp + 0x20], rax
+  0x180031761: lea      rdx, [rip + 0xc5c08]  ; -> "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180031768: lea      ecx, [r9 - 0x11]
+  0x18003176c: call     qword ptr [rip + 0xbea3e]  ; -> "@l"
+  0x180031772: mov      rax, qword ptr [rbx]
+  0x180031775: mov      rcx, rbx
+  0x180031778: call     qword ptr [rax + 8]
+  0x18003177b: mov      r9d, 0x6e
+  0x180031781: lea      r8, [rip + 0xc86d0]  ; -> "bRetCode"
+  0x180031788: lea      rdx, [rip + 0xc5be1]  ; -> "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18003178f: jmp      0x1800317b1
+  0x180031791: mov      qword ptr [r12], rbx
+  0x180031795: mov      r14d, 1
+  0x18003179b: jmp      0x1800317c8
+  0x18003179d: mov      r9d, 0x28
+  0x1800317a3: lea      r8, [rip + 0xcba56]  ; -> "pszTerrainPath && pszTerrainPath[0]"
+  0x1800317aa: lea      rdx, [rip + 0xc5c97]  ; -> "KGLOG_PROCESS_ERROR(%s) at line %u in %s"
+  ... (truncated)
+
+==== CreatePhysicsTerrain @ 0x18002eae0
+  0x18002eae0: mov      qword ptr [rsp + 8], rbx
+  0x18002eae5: mov      qword ptr [rsp + 0x10], rbp
+  0x18002eaea: push     rsi
+  0x18002eaeb: push     rdi
+  0x18002eaec: push     r14
+  0x18002eaee: sub      rsp, 0x40
+  0x18002eaf2: mov      rax, qword ptr [rip + 0xec8df]  ; -> "2锟斤拷-锟?"
+  0x18002eaf9: xor      rax, rsp
+  0x18002eafc: mov      qword ptr [rsp + 0x38], rax
+  0x18002eb01: xor      r14d, r14d
+  0x18002eb04: mov      rsi, r8
+  0x18002eb07: mov      rdi, rdx
+  0x18002eb0a: mov      rbp, rcx
+  0x18002eb0d: test     rcx, rcx
+  0x18002eb10: je       0x18002ed70
+  0x18002eb16: test     r8, r8
+  0x18002eb19: je       0x18002ed70
+  0x18002eb1f: cmp      dword ptr [rdx + 8], r14d
+  0x18002eb23: jge      0x18002eb55
+  0x18002eb25: mov      r9d, 0x26e
+  0x18002eb2b: lea      r8, [rip + 0xce416]  ; -> "config.nUpdateDelta >= 0"
+  0x18002eb32: lea      rax, [rip + 0xce3e7]  ; -> "PhysicsEngine::CreatePhysicsTerrain"
+  0x18002eb39: mov      ecx, 3
+  0x18002eb3e: lea      rdx, [rip + 0xc882b]  ; -> "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18002eb45: mov      qword ptr [rsp + 0x20], rax
+  0x18002eb4a: call     qword ptr [rip + 0xc1660]  ; -> "@l"
+  0x18002eb50: jmp      0x18002ed70
+  0x18002eb55: mov      eax, dword ptr [rdx + 4]
+  0x18002eb58: test     eax, eax
+  0x18002eb5a: jg       0x18002eb6b
+  0x18002eb5c: mov      r9d, 0x26f
+  0x18002eb62: lea      r8, [rip + 0xce3ff]  ; -> "config.nForceLoadSize > 0"
+  0x18002eb69: jmp      0x18002eb32
+  0x18002eb6b: cmp      dword ptr [rdx], eax
+  0x18002eb6d: jge      0x18002eb7e
+  0x18002eb6f: mov      r9d, 0x270
+  0x18002eb75: lea      r8, [rip + 0xce40c]  ; -> "config.nPreLoadSize >= config.nForceLoadSize"
+  0x18002eb7c: jmp      0x18002eb32
+  0x18002eb7e: cmp      dword ptr [rdx + 0xc], r14d
+  0x18002eb82: jge      0x18002eb93
+  0x18002eb84: mov      r9d, 0x271
+  0x18002eb8a: lea      r8, [rip + 0xce427]  ; -> "config.nMaxCacheCount >= 0"
+  0x18002eb91: jmp      0x18002eb32
+  0x18002eb93: mov      rcx, qword ptr [rip + 0xf08c6]  ; -> 0x18011f460
+  0x18002eb9a: lea      rdx, [rsp + 0x30]
+  0x18002eb9f: add      rcx, 0x90
+  0x18002eba6: mov      qword ptr [rsp + 0x20], rdx
+  0x18002ebab: xor      r9d, r9d
+  0x18002ebae: mov      qword ptr [rsp + 0x30], r14
+  0x18002ebb3: mov      edx, 0x148
+  0x18002ebb8: mov      rax, qword ptr [rcx]
+  0x18002ebbb: lea      r8d, [r9 + 8]
+  0x18002ebbf: call     qword ptr [rax]
+  0x18002ebc1: mov      rbx, rax
+  0x18002ebc4: test     rax, rax
+  0x18002ebc7: jne      0x18002ebd3
+  0x18002ebc9: mov      ecx, 0x148
+  0x18002ebce: call     0x180038ee0
+  0x18002ebd3: lea      rax, [rip + 0xce406]  ; -> "锟絙锟?"
+  0x18002ebda: mov      dword ptr [rbx + 8], 1
+  0x18002ebe1: mov      ecx, 0x18
+  0x18002ebe6: mov      qword ptr [rbx], rax
+  0x18002ebe9: mov      dword ptr [rbx + 0xc], 1
+  0x18002ebf0: mov      qword ptr [rbx + 0x40], r14
+  0x18002ebf4: mov      qword ptr [rbx + 0x48], r14
+  0x18002ebf8: mov      qword ptr [rbx + 0x50], r14
+  0x18002ebfc: mov      qword ptr [rbx + 0x58], r14
+  0x18002ec00: mov      dword ptr [rbx + 0x60], 1
+  0x18002ec07: mov      dword ptr [rbx + 0xf0], 0x3f800000
+  0x18002ec11: mov      dword ptr [rbx + 0xf4], 0x3f800000
+  0x18002ec1b: mov      qword ptr [rbx + 0xf8], 0x3f800000
+  0x18002ec26: mov      qword ptr [rbx + 0x100], r14
+  0x18002ec2d: mov      qword ptr [rbx + 0x108], 0x3f800000
+  0x18002ec38: mov      qword ptr [rbx + 0x110], r14
+  0x18002ec3f: mov      dword ptr [rbx + 0x118], 0x3f800000
+  0x18002ec49: mov      dword ptr [rbx + 0x11c], 0x3f800000
+  0x18002ec53: mov      dword ptr [rbx + 0x120], 0x3f800000
+  0x18002ec5d: mov      qword ptr [rbx + 0x128], r14
+  0x18002ec64: mov      qword ptr [rbx + 0x130], r14
+  0x18002ec6b: call     0x1800eae6c
+  0x18002ec70: mov      ecx, 0x18
+  0x18002ec75: mov      qword ptr [rax], rax
+  0x18002ec78: mov      qword ptr [rax + 8], rax
+  0x18002ec7c: mov      qword ptr [rbx + 0x128], rax
+  0x18002ec83: mov      qword ptr [rbx + 0x138], r14
+  0x18002ec8a: mov      qword ptr [rbx + 0x140], r14
+  0x18002ec91: call     0x1800eae6c
+  0x18002ec96: xorps    xmm0, xmm0
+  0x18002ec99: xorps    xmm1, xmm1
+  0x18002ec9c: mov      qword ptr [rax], rax
+  0x18002ec9f: mov      qword ptr [rax + 8], rax
+  0x18002eca3: mov      qword ptr [rbx + 0x138], rax
+  0x18002ecaa: movups   xmmword ptr [rbx + 0x20], xmm0
+  0x18002ecae: movups   xmmword ptr [rbx + 0x30], xmm0
+  0x18002ecb2: movups   xmmword ptr [rbx + 0x10], xmm1
+  0x18002ecb6: mov      qword ptr [rbx + 0x64], r14
+  0x18002ecba: mov      dword ptr [rbx + 0x6c], r14d
+  0x18002ecbe: movaps   xmm0, xmmword ptr [rip + 0xcaadb]  ; -> 0x1800f97a0
+  0x18002ecc5: movaps   xmm1, xmmword ptr [rip + 0xcaae4]  ; -> 0x1800f97b0
+  0x18002eccc: movaps   xmm2, xmmword ptr [rip + 0xcaaed]  ; -> 0x1800f97c0
+  0x18002ecd3: movaps   xmm3, xmmword ptr [rip + 0xc8686]  ; -> 0x1800f7360
+  0x18002ecda: movups   xmmword ptr [rbx + 0x70], xmm0
+  0x18002ecde: movups   xmmword ptr [rbx + 0x80], xmm1
+  0x18002ece5: movups   xmmword ptr [rbx + 0x90], xmm2
+  0x18002ecec: movups   xmmword ptr [rbx + 0xa0], xmm3
+  0x18002ecf3: movups   xmm0, xmmword ptr [rbx + 0x70]
+  0x18002ecf7: movups   xmm1, xmmword ptr [rbx + 0x80]
+  0x18002ecfe: movups   xmmword ptr [rbx + 0xb0], xmm0
+  0x18002ed05: movups   xmm0, xmmword ptr [rbx + 0x90]
+  0x18002ed0c: movups   xmmword ptr [rbx + 0xc0], xmm1
+  0x18002ed13: movups   xmmword ptr [rbx + 0xd0], xmm0
+  0x18002ed1a: movups   xmmword ptr [rbx + 0xe0], xmm3
+  0x18002ed21: cmp      qword ptr [rbx + 0x50], r14
+  0x18002ed25: jne      0x18002ed3c
+  0x18002ed27: mov      qword ptr [rbx + 0x50], rbp
+  0x18002ed2b: mov      eax, 1
+  0x18002ed30: movups   xmm0, xmmword ptr [rdi]
+  0x18002ed33: movups   xmmword ptr [rbx + 0x10], xmm0
+  0x18002ed37: mov      qword ptr [rsi], rbx
+  0x18002ed3a: jmp      0x18002ed73
+  0x18002ed3c: lea      rax, [rip + 0xce1dd]  ; -> "PhysicsEngine::CreatePhysicsTerrain"
+  0x18002ed43: mov      r9d, 0x277
+  0x18002ed49: lea      r8, [rip + 0xcb108]  ; -> "bRetCode"
+  0x18002ed50: mov      qword ptr [rsp + 0x20], rax
+  0x18002ed55: lea      rdx, [rip + 0xc8614]  ; -> "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18002ed5c: mov      ecx, 3
+  0x18002ed61: call     qword ptr [rip + 0xc1449]  ; -> "@l"
+  0x18002ed67: mov      rdx, qword ptr [rbx]
+  0x18002ed6a: mov      rcx, rbx
+  0x18002ed6d: call     qword ptr [rdx + 8]
+  0x18002ed70: mov      eax, r14d
+  0x18002ed73: mov      rcx, qword ptr [rsp + 0x38]
+  0x18002ed78: xor      rcx, rsp
+  0x18002ed7b: call     0x1800eae40
+  0x18002ed80: mov      rbx, qword ptr [rsp + 0x60]
+  0x18002ed85: mov      rbp, qword ptr [rsp + 0x68]
+  0x18002ed8a: add      rsp, 0x40
+  0x18002ed8e: pop      r14
+  0x18002ed90: pop      rdi
+  0x18002ed91: pop      rsi
+  0x18002ed92: ret      
+
+==== CreatePhysicsSceneDynamicLoader @ 0x18002cb40
+  0x18002cb40: mov      qword ptr [rsp + 0x10], rbp
+  0x18002cb45: push     rsi
+  0x18002cb46: push     rdi
+  0x18002cb47: push     r14
+  0x18002cb49: sub      rsp, 0x40
+  0x18002cb4d: mov      rax, qword ptr [rip + 0xee884]  ; -> "2锟斤拷-锟?"
+  0x18002cb54: xor      rax, rsp
+  0x18002cb57: mov      qword ptr [rsp + 0x38], rax
+  0x18002cb5c: xor      r14d, r14d
+  0x18002cb5f: mov      rsi, r8
+  0x18002cb62: mov      rbp, rdx
+  0x18002cb65: mov      rdi, rcx
+  0x18002cb68: test     r8, r8
+  0x18002cb6b: je       0x18002ccce
+  0x18002cb71: mov      rcx, qword ptr [rip + 0xf28e8]  ; -> 0x18011f460
+  0x18002cb78: lea      rdx, [rsp + 0x30]
+  0x18002cb7d: add      rcx, 0x90
+  0x18002cb84: mov      qword ptr [rsp + 0x20], rdx
+  0x18002cb89: xor      r9d, r9d
+  0x18002cb8c: mov      qword ptr [rsp + 0x60], rbx
+  0x18002cb91: mov      edx, 0xa0
+  0x18002cb96: mov      qword ptr [rsp + 0x30], r14
+  0x18002cb9b: lea      r8d, [r14 + 8]
+  0x18002cb9f: mov      rax, qword ptr [rcx]
+  0x18002cba2: call     qword ptr [rax]
+  0x18002cba4: mov      rbx, rax
+  0x18002cba7: test     rax, rax
+  0x18002cbaa: jne      0x18002cbb6
+  0x18002cbac: mov      ecx, 0xa0
+  0x18002cbb1: call     0x180038ee0
+  0x18002cbb6: lea      rax, [rip + 0xd00db]  ; -> " 锟?锟?"
+  0x18002cbbd: mov      dword ptr [rbx + 0x14], 1
+  0x18002cbc4: mov      ecx, 0x18
+  0x18002cbc9: mov      qword ptr [rbx], rax
+  0x18002cbcc: mov      qword ptr [rbx + 0x48], r14
+  0x18002cbd0: mov      qword ptr [rbx + 0x50], r14
+  0x18002cbd4: mov      qword ptr [rbx + 0x58], r14
+  0x18002cbd8: mov      qword ptr [rbx + 0x60], r14
+  0x18002cbdc: mov      dword ptr [rbx + 0x68], 1
+  0x18002cbe3: mov      qword ptr [rbx + 0x78], r14
+  0x18002cbe7: mov      qword ptr [rbx + 0x80], r14
+  0x18002cbee: call     0x1800eae6c
+  0x18002cbf3: mov      ecx, 0x18
+  0x18002cbf8: mov      qword ptr [rax], rax
+  0x18002cbfb: mov      qword ptr [rax + 8], rax
+  0x18002cbff: mov      qword ptr [rbx + 0x78], rax
+  0x18002cc03: mov      qword ptr [rbx + 0x88], r14
+  0x18002cc0a: mov      qword ptr [rbx + 0x90], r14
+  0x18002cc11: call     0x1800eae6c
+  0x18002cc16: xorps    xmm0, xmm0
+  0x18002cc19: mov      qword ptr [rax], rax
+  0x18002cc1c: mov      qword ptr [rax + 8], rax
+  0x18002cc20: mov      qword ptr [rbx + 0x88], rax
+  0x18002cc27: xor      eax, eax
+  0x18002cc29: mov      qword ptr [rbx + 0x98], r14
+  0x18002cc30: movups   xmmword ptr [rbx + 0x18], xmm0
+  0x18002cc34: mov      qword ptr [rbx + 0x28], rax
+  0x18002cc38: mov      dword ptr [rbx + 0x30], eax
+  0x18002cc3b: mov      qword ptr [rbx + 8], rax
+  0x18002cc3f: mov      dword ptr [rbx + 0x10], eax
+  0x18002cc42: movups   xmmword ptr [rbx + 0x34], xmm0
+  0x18002cc46: mov      qword ptr [rbx + 0x6c], r14
+  0x18002cc4a: mov      dword ptr [rbx + 0x74], r14d
+  0x18002cc4e: cmp      qword ptr [rbx + 0x58], rax
+  0x18002cc52: jne      0x18002cc95
+  0x18002cc54: test     rdi, rdi
+  0x18002cc57: je       0x18002cc95
+  0x18002cc59: mov      qword ptr [rbx + 0x58], rdi
+  0x18002cc5d: movsd    xmm0, qword ptr [rbp]
+  0x18002cc62: movsd    qword ptr [rbx + 8], xmm0
+  0x18002cc67: mov      eax, dword ptr [rbp + 8]
+  0x18002cc6a: mov      dword ptr [rbx + 0x10], eax
+  0x18002cc6d: mov      eax, 1
+  0x18002cc72: mov      qword ptr [rsi], rbx
+  0x18002cc75: mov      rbx, qword ptr [rsp + 0x60]
+  0x18002cc7a: mov      rcx, qword ptr [rsp + 0x38]
+  0x18002cc7f: xor      rcx, rsp
+  0x18002cc82: call     0x1800eae40
+  0x18002cc87: mov      rbp, qword ptr [rsp + 0x68]
+  0x18002cc8c: add      rsp, 0x40
+  0x18002cc90: pop      r14
+  0x18002cc92: pop      rdi
+  0x18002cc93: pop      rsi
+  0x18002cc94: ret      
+
+==== CreateSceneFileDataLoader @ 0x180025cf0
+  0x180025cf0: push     rbx
+  0x180025cf2: sub      rsp, 0x4b0
+  0x180025cf9: mov      rax, qword ptr [rip + 0xf56d8]  ; -> "2锟斤拷-锟?"
+  0x180025d00: xor      rax, rsp
+  0x180025d03: mov      qword ptr [rsp + 0x4a0], rax
+  0x180025d0b: mov      qword ptr [rsp + 0x50], 0
+  0x180025d14: mov      rbx, rdx
+  0x180025d17: test     rcx, rcx
+  0x180025d1a: jne      0x180025d4a
+  0x180025d1c: lea      r9d, [rcx + 0x39]
+  0x180025d20: lea      r8, [rip + 0xd59e9]  ; -> "pszSceneFile"
+  0x180025d27: lea      rcx, [rip + 0xd59b2]  ; -> "PhysicsEngine::CreateSceneFileDataLoader"
+  0x180025d2e: mov      qword ptr [rsp + 0x20], rcx
+  0x180025d33: lea      rdx, [rip + 0xd1636]  ; -> "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x180025d3a: mov      ecx, 3
+  0x180025d3f: call     qword ptr [rip + 0xca46b]  ; -> "@l"
+  0x180025d45: jmp      0x180025e0e
+  0x180025d4a: test     rbx, rbx
+  0x180025d4d: jne      0x180025d5c
+  0x180025d4f: lea      r9d, [rbx + 0x3a]
+  0x180025d53: lea      r8, [rip + 0xd59c6]  ; -> "ppLoader"
+  0x180025d5a: jmp      0x180025d27
+  0x180025d5c: mov      qword ptr [rsp + 0x40], 0
+  0x180025d65: lea      rax, [rsp + 0x280]
+  0x180025d6d: mov      qword ptr [rsp + 0x38], 0
+  0x180025d76: lea      r9, [rsp + 0x60]
+  0x180025d7b: mov      qword ptr [rsp + 0x30], 0x104
+  0x180025d84: lea      rdx, [rsp + 0x170]
+  0x180025d8c: mov      qword ptr [rsp + 0x28], rax
+  0x180025d91: mov      r8d, 0x104
+  0x180025d97: mov      qword ptr [rsp + 0x20], 0x104
+  0x180025da0: call     qword ptr [rip + 0xcaaea]  ; -> "锟斤拷"
+  0x180025da6: lea      rax, [rsp + 0x60]
+  0x180025dab: mov      edx, 0x104
+  0x180025db0: lea      r9, [rsp + 0x170]
+  0x180025db8: mov      qword ptr [rsp + 0x20], rax
+  0x180025dbd: lea      r8, [rip + 0xd5968]  ; -> "%s%s"
+  0x180025dc4: lea      rcx, [rsp + 0x390]
+  0x180025dcc: call     0x180022630
+  0x180025dd1: lea      r8, [rsp + 0x50]
+  0x180025dd6: lea      rdx, [rsp + 0x280]
+  0x180025dde: lea      rcx, [rsp + 0x390]
+  0x180025de6: call     0x180025ab0
+  0x180025deb: test     eax, eax
+  0x180025ded: je       0x180025dfe
+  0x180025def: mov      rax, qword ptr [rsp + 0x50]
+  0x180025df4: mov      qword ptr [rbx], rax
+  0x180025df7: mov      eax, 1
+  0x180025dfc: jmp      0x180025e10
+  0x180025dfe: mov      rcx, qword ptr [rsp + 0x50]
+  0x180025e03: test     rcx, rcx
+  0x180025e06: je       0x180025e0e
+  0x180025e08: mov      rax, qword ptr [rcx]
+  0x180025e0b: call     qword ptr [rax + 8]
+  0x180025e0e: xor      eax, eax
+  0x180025e10: mov      rcx, qword ptr [rsp + 0x4a0]
+  0x180025e18: xor      rcx, rsp
+  0x180025e1b: call     0x1800eae40
+  0x180025e20: add      rsp, 0x4b0
+  0x180025e27: pop      rbx
+  0x180025e28: ret      
+
+##########################################################################################
+# XREFS in C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KG3DEngineAdapterX64.dll
+##########################################################################################
+
+-- string "PhysicsEngineX64.dll" @ 0x1802a3698
+
+-- string "GetPhysicsManager" @ 0x1802a36b0
+
+0 xrefs

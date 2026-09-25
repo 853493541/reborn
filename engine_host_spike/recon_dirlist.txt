@@ -1,0 +1,152 @@
+﻿
+==== 0x18001ee20 .. 0x18001f060 (.text)
+  0x18001ee20: mov      qword ptr [rsp + 0x18], rbx
+  0x18001ee25: push     rbp
+  0x18001ee26: push     rsi
+  0x18001ee27: push     rdi
+  0x18001ee28: sub      rsp, 0x250
+  0x18001ee2f: mov      rax, qword ptr [rip + 0xb11da]  ; 0x1800d0010
+  0x18001ee36: xor      rax, rsp
+  0x18001ee39: mov      qword ptr [rsp + 0x240], rax
+  0x18001ee41: xor      ebp, ebp
+  0x18001ee43: mov      rsi, rdx
+  0x18001ee46: mov      rdi, rcx
+  0x18001ee49: test     rcx, rcx
+  0x18001ee4c: je       0x18001ef36
+  0x18001ee52: test     rdx, rdx
+  0x18001ee55: je       0x18001ef36
+  0x18001ee5b: cmp      word ptr [rcx], bp
+  0x18001ee5e: je       0x18001ef36
+  0x18001ee64: mov      ecx, 0x260
+  0x18001ee69: call     0x180052994
+  0x18001ee6e: mov      r9, rdi
+  0x18001ee71: lea      r8, [rip + 0x9b6a0]  ; "%"
+  0x18001ee78: mov      edx, 0x104
+  0x18001ee7d: lea      rcx, [rsp + 0x30]
+  0x18001ee82: mov      rbx, rax
+  0x18001ee85: mov      dword ptr [rax + 0x258], 1
+  0x18001ee8f: mov      qword ptr [rax], 0xffffffffffffffff
+  0x18001ee96: call     0x18000cdc0
+  0x18001ee9b: test     eax, eax
+  0x18001ee9d: jle      0x18001eee9
+  0x18001ee9f: cdqe     
+  0x18001eea1: cmp      rax, 0x104
+  0x18001eea7: jae      0x18001eee9
+  0x18001eea9: lea      rdx, [rbx + 8]
+  0x18001eead: mov      word ptr [rsp + 0x236], bp
+  0x18001eeb5: lea      rcx, [rsp + 0x30]
+  0x18001eeba: call     qword ptr [rip + 0x3c1f8]  ; KERNEL32.dll!FindFirstFileW
+  0x18001eec0: mov      qword ptr [rbx], rax
+  0x18001eec3: cmp      rax, -1
+  0x18001eec7: jne      0x18001eedf
+  0x18001eec9: lea      rdx, [rip + 0x97278]  ; "KGLOG_PROCESS_ERROR(%s) at line %u in %s"
+  0x18001eed0: mov      r9d, 0x10c
+  0x18001eed6: lea      r8, [rip + 0x9b683]  ; "pHandleImpl->hFindFile != INVALID_HANDLE_VALUE"
+  0x18001eedd: jmp      0x18001eefd
+  0x18001eedf: mov      qword ptr [rsi], rbx
+  0x18001eee2: mov      eax, 1
+  0x18001eee7: jmp      0x18001ef38
+  0x18001eee9: lea      rdx, [rip + 0x97358]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18001eef0: mov      r9d, 0x108
+  0x18001eef6: lea      r8, [rip + 0x9b62b]  ; "nRetCode > 0 && nRetCode < countof(szDestDirectory)"
+  0x18001eefd: lea      rax, [rip + 0x9b5fc]  ; "KG_OpenDirectory"
+  0x18001ef04: mov      ecx, 3
+  0x18001ef09: mov      qword ptr [rsp + 0x20], rax
+  0x18001ef0e: call     0x1800234f0
+  0x18001ef13: mov      rcx, qword ptr [rbx]
+  0x18001ef16: cmp      rcx, -1
+  0x18001ef1a: je       0x18001ef29
+  0x18001ef1c: call     qword ptr [rip + 0x3c19e]  ; KERNEL32.dll!FindClose
+  0x18001ef22: mov      qword ptr [rbx], 0xffffffffffffffff
+  0x18001ef29: mov      edx, 0x260
+  0x18001ef2e: mov      rcx, rbx
+  0x18001ef31: call     0x1800528b4
+  0x18001ef36: mov      eax, ebp
+  0x18001ef38: mov      rcx, qword ptr [rsp + 0x240]
+  0x18001ef40: xor      rcx, rsp
+  0x18001ef43: call     0x180052890
+  0x18001ef48: mov      rbx, qword ptr [rsp + 0x280]
+  0x18001ef50: add      rsp, 0x250
+  0x18001ef57: pop      rdi
+  0x18001ef58: pop      rsi
+  0x18001ef59: pop      rbp
+  0x18001ef5a: ret      
+  0x18001ef5b: int3     
+  0x18001ef5c: int3     
+  0x18001ef5d: int3     
+  0x18001ef5e: int3     
+  0x18001ef5f: int3     
+  0x18001ef60: mov      qword ptr [rsp + 8], rbx
+  0x18001ef65: mov      qword ptr [rsp + 0x10], rsi
+  0x18001ef6a: mov      qword ptr [rsp + 0x18], rdi
+  0x18001ef6f: push     r14
+  0x18001ef71: sub      rsp, 0x30
+  0x18001ef75: xor      ebx, ebx
+  0x18001ef77: mov      r14, r8
+  0x18001ef7a: mov      rdi, rdx
+  0x18001ef7d: mov      rsi, rcx
+  0x18001ef80: test     rcx, rcx
+  0x18001ef83: je       0x18001f016
+  0x18001ef89: test     rdx, rdx
+  0x18001ef8c: je       0x18001f042
+  0x18001ef92: test     r8, r8
+  0x18001ef95: je       0x18001f016
+  0x18001ef97: mov      rcx, qword ptr [rcx]
+  0x18001ef9a: cmp      rcx, -1
+  0x18001ef9e: je       0x18001f016
+  0x18001efa0: cmp      dword ptr [rsi + 0x258], ebx
+  0x18001efa6: je       0x18001efb6
+  0x18001efa8: mov      dword ptr [r8], ebx
+  0x18001efab: mov      dword ptr [rsi + 0x258], ebx
+  0x18001efb1: mov      eax, dword ptr [r8]
+  0x18001efb4: jmp      0x18001f031
+  0x18001efb6: lea      rdx, [rsi + 8]
+  0x18001efba: call     qword ptr [rip + 0x3c108]  ; KERNEL32.dll!FindNextFileW
+  0x18001efc0: test     eax, eax
+  0x18001efc2: je       0x18001efe1
+  0x18001efc4: mov      dword ptr [r14], ebx
+  0x18001efc7: lea      rcx, [rsi + 0x34]
+  0x18001efcb: mov      eax, 1
+  0x18001efd0: mov      qword ptr [rdi + 8], rcx
+  0x18001efd4: test     byte ptr [rsi + 8], 0x10
+  0x18001efd8: setne    bl
+  0x18001efdb: inc      ebx
+  0x18001efdd: mov      dword ptr [rdi], ebx
+  0x18001efdf: jmp      0x18001f044
+  0x18001efe1: call     qword ptr [rip + 0x3c2b1]  ; KERNEL32.dll!GetLastError
+  0x18001efe7: cmp      eax, 0x12
+  0x18001efea: je       0x18001f025
+  0x18001efec: lea      rax, [rip + 0x9b59d]  ; "KG_ReadDirectory"
+  0x18001eff3: mov      r9d, 0x146
+  0x18001eff9: lea      r8, [rip + 0x9b5a8]  ; "nRetCode == ERROR_NO_MORE_FILES"
+  0x18001f000: mov      qword ptr [rsp + 0x20], rax
+  0x18001f005: lea      rdx, [rip + 0x9723c]  ; "KGLOG_ASSERT_EXIT(%s) at line %u in %s"
+  0x18001f00c: mov      ecx, 3
+  0x18001f011: call     0x1800234f0
+  0x18001f016: test     rdi, rdi
+  0x18001f019: je       0x18001f042
+  0x18001f01b: mov      qword ptr [rdi + 8], rbx
+  0x18001f01f: mov      eax, ebx
+  0x18001f021: mov      dword ptr [rdi], ebx
+  0x18001f023: jmp      0x18001f044
+  0x18001f025: mov      dword ptr [r14], 1
+  0x18001f02c: mov      eax, 1
+  0x18001f031: test     eax, eax
+  0x18001f033: je       0x18001efc7
+  0x18001f035: mov      qword ptr [rdi + 8], rbx
+  0x18001f039: mov      eax, 1
+  0x18001f03e: mov      dword ptr [rdi], ebx
+  0x18001f040: jmp      0x18001f044
+  0x18001f042: mov      eax, ebx
+  0x18001f044: mov      rbx, qword ptr [rsp + 0x40]
+  0x18001f049: mov      rsi, qword ptr [rsp + 0x48]
+  0x18001f04e: mov      rdi, qword ptr [rsp + 0x50]
+  0x18001f053: add      rsp, 0x30
+  0x18001f057: pop      r14
+  0x18001f059: ret      
+  0x18001f05a: int3     
+  0x18001f05b: int3     
+  0x18001f05c: int3     
+  0x18001f05d: int3     
+  0x18001f05e: int3     
+  0x18001f05f: int3     

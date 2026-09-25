@@ -1,0 +1,69 @@
+﻿
+==== 0x18003a250 .. 0x18003a3c0 (.text)
+  0x18003a250: mov      qword ptr [rsp + 0x10], rbx
+  0x18003a255: mov      qword ptr [rsp + 0x18], rbp
+  0x18003a25a: mov      qword ptr [rsp + 0x20], rsi
+  0x18003a25f: push     rdi
+  0x18003a260: sub      rsp, 0x30
+  0x18003a264: mov      rdi, rcx
+  0x18003a267: mov      ecx, 0x170
+  0x18003a26c: call     0x1800eae6c
+  0x18003a271: xor      edx, edx
+  0x18003a273: mov      qword ptr [rsp + 0x40], rax
+  0x18003a278: mov      r8d, 0x170
+  0x18003a27e: mov      rcx, rax
+  0x18003a281: mov      rbx, rax
+  0x18003a284: call     0x1800ed1ee
+  0x18003a289: lea      rax, [rip + 0xc6ab0]  ; 0x180100d40
+  0x18003a290: mov      dword ptr [rbx + 8], 1
+  0x18003a297: xor      edx, edx
+  0x18003a299: mov      qword ptr [rbx], rax
+  0x18003a29c: mov      r8d, 0x104
+  0x18003a2a2: lea      rcx, [rbx + 0xc]
+  0x18003a2a6: call     0x1800ed1ee
+  0x18003a2ab: xor      ebp, ebp
+  0x18003a2ad: mov      dword ptr [rbx + 0x110], 1
+  0x18003a2b7: mov      qword ptr [rbx + 0x118], rbp
+  0x18003a2be: mov      qword ptr [rbx + 0x120], rbp
+  0x18003a2c5: mov      qword ptr [rbx + 0x128], rbp
+  0x18003a2cc: mov      qword ptr [rbx + 0x130], rbp
+  0x18003a2d3: mov      qword ptr [rbx + 0x138], rbp
+  0x18003a2da: mov      dword ptr [rbx + 0x140], ebp
+  0x18003a2e0: mov      qword ptr [rbx + 0x148], rbp
+  0x18003a2e7: mov      qword ptr [rbx + 0x158], rbp
+  0x18003a2ee: mov      qword ptr [rbx + 0x150], rbp
+  0x18003a2f5: mov      qword ptr [rbx + 0x168], rbp
+  0x18003a2fc: mov      qword ptr [rbx + 0x160], rbp
+  0x18003a303: test     rdi, rdi
+  0x18003a306: jne      0x18003a31a
+  0x18003a308: mov      r9d, 0x166
+  0x18003a30e: lea      r8, [rip + 0xc684b]  ; "pcszRootPath"
+  0x18003a315: jmp      0x18003a3d7
+  0x18003a31a: mov      r9d, 0x104
+  0x18003a320: lea      rcx, [rbx + 0xc]
+  0x18003a324: mov      edx, r9d
+  0x18003a327: mov      r8, rdi
+  0x18003a32a: call     qword ptr [rip + 0xb6740]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy_s
+  0x18003a330: lea      rcx, [rip + 0xc6819]  ; "Semanticx64.dll"
+  0x18003a337: call     qword ptr [rip + 0xb5ddb]  ; KERNEL32.dll!LoadLibraryA
+  0x18003a33d: mov      qword ptr [rbx + 0x118], rax
+  0x18003a344: test     rax, rax
+  0x18003a347: je       0x18003a3b1
+  0x18003a349: lea      rdx, [rip + 0xc6830]  ; "handle2filepath"
+  0x18003a350: mov      rcx, rax
+  0x18003a353: call     qword ptr [rip + 0xb5dc7]  ; KERNEL32.dll!GetProcAddress
+  0x18003a359: mov      rcx, qword ptr [rbx + 0x118]
+  0x18003a360: lea      rdx, [rip + 0xc6809]  ; "filepath2handle"
+  0x18003a367: mov      qword ptr [rbx + 0x120], rax
+  0x18003a36e: call     qword ptr [rip + 0xb5dac]  ; KERNEL32.dll!GetProcAddress
+  0x18003a374: mov      rcx, qword ptr [rbx + 0x118]
+  0x18003a37b: lea      rdx, [rip + 0xc681e]  ; "addfilehandle"
+  0x18003a382: mov      qword ptr [rbx + 0x128], rax
+  0x18003a389: call     qword ptr [rip + 0xb5d91]  ; KERNEL32.dll!GetProcAddress
+  0x18003a38f: mov      rcx, qword ptr [rbx + 0x118]
+  0x18003a396: lea      rdx, [rip + 0xc67f3]  ; "addsearchpath"
+  0x18003a39d: mov      qword ptr [rbx + 0x138], rax
+  0x18003a3a4: call     qword ptr [rip + 0xb5d76]  ; KERNEL32.dll!GetProcAddress
+  0x18003a3aa: mov      qword ptr [rbx + 0x130], rax
+  0x18003a3b1: lea      rcx, [rip + 0xc6808]  ; "Engine_Lua5X64.dll"
+  0x18003a3b8: call     qword ptr [rip + 0xb5d5a]  ; KERNEL32.dll!LoadLibraryA

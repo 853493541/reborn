@@ -1,0 +1,5 @@
+﻿PhysicsEngineX64.dll ['0x1802a3698']
+   ref 0x1800737da
+GetPhysicsManager ['0x1802a36b0']
+   ref 0x180073831
+KG3DEngineManager::_CreatePhysicsEngine []

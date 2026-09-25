@@ -1,0 +1,90 @@
+﻿====================================================================================================
+IMPORTS PhysicsEngineX64.dll: KERNEL32.dll(45), KGCommonX64.dll(9), MSVCP140.dll(69), PhysX3CharacterKinematic_x64.dll(1), PhysX3Common_x64.dll(46), PhysX3Cooking_x64.dll(1), PhysX3_x64.dll(37), SHLWAPI.dll(4), USER32.dll(1), VCRUNTIME140.dll(18), VCRUNTIME140_1.dll(1), WS2_32.dll(21), api-ms-win-crt-convert-l1-1-0.dll(5), api-ms-win-crt-filesystem-l1-1-0.dll(4), api-ms-win-crt-heap-l1-1-0.dll(6), api-ms-win-crt-math-l1-1-0.dll(13), api-ms-win-crt-runtime-l1-1-0.dll(14), api-ms-win-crt-stdio-l1-1-0.dll(15), api-ms-win-crt-string-l1-1-0.dll(9), api-ms-win-crt-time-l1-1-0.dll(2), ole32.dll(3)
+IMPORTS PhysicsEngineX64.dll: KERNEL32.dll(45), KGCommonX64.dll(9), MSVCP140.dll(69), PhysX3CharacterKinematic_x64.dll(1), PhysX3Common_x64.dll(46), PhysX3Cooking_x64.dll(1), PhysX3_x64.dll(37), SHLWAPI.dll(4), USER32.dll(1), VCRUNTIME140.dll(18), VCRUNTIME140_1.dll(1), WS2_32.dll(21), api-ms-win-crt-convert-l1-1-0.dll(5), api-ms-win-crt-filesystem-l1-1-0.dll(4), api-ms-win-crt-heap-l1-1-0.dll(6), api-ms-win-crt-math-l1-1-0.dll(13), api-ms-win-crt-runtime-l1-1-0.dll(14), api-ms-win-crt-stdio-l1-1-0.dll(15), api-ms-win-crt-string-l1-1-0.dll(9), api-ms-win-crt-time-l1-1-0.dll(2), ole32.dll(3)
+IMPORTS PhysicsX64.dll: KERNEL32.dll(45), KGCommonX64.dll(9), MSVCP140.dll(69), PhysX3CharacterKinematic_x64.dll(1), PhysX3Common_x64.dll(43), PhysX3Cooking_x64.dll(1), PhysX3_x64.dll(37), SHLWAPI.dll(4), USER32.dll(1), VCRUNTIME140.dll(18), VCRUNTIME140_1.dll(1), WS2_32.dll(21), api-ms-win-crt-convert-l1-1-0.dll(5), api-ms-win-crt-filesystem-l1-1-0.dll(4), api-ms-win-crt-heap-l1-1-0.dll(6), api-ms-win-crt-math-l1-1-0.dll(12), api-ms-win-crt-runtime-l1-1-0.dll(14), api-ms-win-crt-stdio-l1-1-0.dll(15), api-ms-win-crt-string-l1-1-0.dll(9), api-ms-win-crt-time-l1-1-0.dll(2), ole32.dll(3)
+
+====================================================================================================
+MANAGER vtable @ 0x18000f860
+  [ 0] 0x8b4930ec83485340
+      (not code: 0x8b4930ec83485340)
+  [ 1] 0xc08500000332e8d8
+      (not code: 0xc08500000332e8d8)
+  [ 2] 0x85480000012c880f
+      (not code: 0x85480000012c880f)
+  [ 3] 0x4800000115840fdb
+      (not code: 0x4800000115840fdb)
+  [ 4] 0xf000010fc713d83
+      (not code: 0xf000010fc713d83)
+  [ 5] 0xcb8b480000010185
+      (not code: 0xcb8b480000010185)
+  [ 6] 0x589480004500be8
+      (not code: 0x589480004500be8)
+  [ 7] 0x48c88b480010fc5c
+      (not code: 0x48c88b480010fc5c)
+  [ 8] 0x48038b481675c085
+      (not code: 0x48038b481675c085)
+  [ 9] 0x10fc471d8948cb8b
+      (not code: 0x10fc471d8948cb8b)
+  [10] 0xfc3e0d8b4810ff00
+      (not code: 0xfc3e0d8b4810ff00)
+  [11] 0x6050ff018b480010
+      (not code: 0x6050ff018b480010)
+  [12] 0x1b75c08548d88b48
+      (not code: 0x1b75c08548d88b48)
+  [13] 0x89480010fc3a05ff
+      (not code: 0x89480010fc3a05ff)
+  [14] 0xcd15ff0010fc2b05
+      (not code: 0xcd15ff0010fc2b05)
+  [15] 0xc48348c033000e08
+      (not code: 0xc48348c033000e08)
+  [16] 0xfc161d3948c35b30
+      (not code: 0xfc161d3948c35b30)
+  [17] 0x9e840f0010
+      (not code: 0x9e840f0010)
+  [18] 0xfc06058d4c008b48
+      (not code: 0xfc06058d4c008b48)
+  [19] 0xe7c77158d480010
+      (not code: 0xe7c77158d480010)
+  [20] 0xc08510ffcb8b4800
+      (not code: 0xc08510ffcb8b4800)
+  [21] 0x58d4c038b485079
+      (not code: 0x58d4c038b485079)
+  [22] 0x5d158d480010fbec
+      (not code: 0x5d158d480010fbec)
+  [23] 0x10ffcb8b48000e7c
+      (not code: 0x10ffcb8b48000e7c)
+
+====================================================================================================
+STRING XREFS
+
+-- "PhysicsEngine::PhysicsManager::_InitPhysX" @ 0x1800fa350 xrefs=0
+
+-- "PhysicsEngine::PhysicsManager::CreatePhysicsScene" @ 0x1800fa500 xrefs=0
+
+-- "PhysicsEngine::PhysicsManager::CreatePhysXTerrain" @ 0x1800fa538 xrefs=0
+
+-- "PhysicsEngine::PhysicsManager::CreatePhysicsSceneLoader" @ 0x1800fa570 xrefs=0
+
+-- "PhysicsEngine::PhysicsManager::SetWorkingDir" @ 0x1800fa5a8 xrefs=0
+
+-- "PhysicsEngine::KG3D_PhysxTerrain::LoadTerrain" @ 0x1800fce28 xrefs=0
+
+-- "PhysicsEngine::KG3D_PhysxTerrain::GetTileBBox" @ 0x1800fce90 xrefs=0
+
+-- "PhysicsEngine::KG3D_PhysxTerrain::CreateEditInterface" @ 0x1800fce58 xrefs=0
+
+-- "PhysicsEngine::PhysicsScene::SweepEx" @ 0x1800faa58 xrefs=0
+
+-- "PhysicsEngine::PhysicsScene::RayCast" NOT FOUND
+
+-- "PhysicsEngine::PhysicsScene::GetFloorHeight" NOT FOUND
+
+-- "PhysicsEngine::QueryPhysXParam" NOT FOUND
+
+====================================================================================================
+ADAPTER imports of interest: KG3DEngineAdapterX64.dll
+  ClipMgrX64.dll(1), HASMLibX64.dll(3), KBaseX64.dll(5), KERNEL32.dll(76), KGCommonX64.dll(35), MSVCP140.dll(73), PSAPI.DLL(1), RUSTLibX64.dll(5), RemoteDebugger4RUSTX64.dll(1), SHELL32.dll(1), SHLWAPI.dll(3), UGC_Corex64.dll(3), USER32.dll(6), VCRUNTIME140.dll(22), VCRUNTIME140_1.dll(1), VERSION.dll(3), WINMM.dll(1), WS2_32.dll(21), api-ms-win-crt-convert-l1-1-0.dll(6), api-ms-win-crt-environment-l1-1-0.dll(2), api-ms-win-crt-filesystem-l1-1-0.dll(2), api-ms-win-crt-heap-l1-1-0.dll(8), api-ms-win-crt-locale-l1-1-0.dll(2), api-ms-win-crt-math-l1-1-0.dll(23), api-ms-win-crt-multibyte-l1-1-0.dll(2), api-ms-win-crt-runtime-l1-1-0.dll(18), api-ms-win-crt-stdio-l1-1-0.dll(22), api-ms-win-crt-string-l1-1-0.dll(16), api-ms-win-crt-time-l1-1-0.dll(4), api-ms-win-crt-utility-l1-1-0.dll(2), ole32.dll(4)
+
+  string "PhysicsEngineX64.dll" @ 0x1802a3698
+
+  string "GetPhysicsManager" @ 0x1802a36b0
