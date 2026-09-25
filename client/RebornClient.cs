@@ -676,7 +676,19 @@ internal static class RebornClient
             // read-back is noisy, and a position read-back is circular (our
             // placement overwrites the position).
             bool dragging = orbitQueue.Count > 0 || (lastOrbitMs != 0 && now - lastOrbitMs < 150);
-            if (dragging || orbitApplied)
+            // Near a wall with no input the aim probe is unreliable (the camera
+            // sits at/around the anchor and any tiny yaw change swings the
+            // obstruction ray), and a correction loop there kept creeping the
+            // camera in until the wall cleared. Freeze the aim loops while
+            // obstructed and idle; the drag path still runs normally.
+            bool aimFrozen = camObst.Obstructed && !dragging;
+            if (aimFrozen)
+            {
+                yawCorr = 0.0;
+                pitchAimErrPx = 0;
+                orbitApplied = false;
+            }
+            else if (dragging || orbitApplied)
             {
                 lastYawSync = now;
                 orbitApplied = false;
@@ -804,7 +816,7 @@ internal static class RebornClient
                     if (px2 < 1) px2 = 1;
                     orbitQueue.Enqueue(new int[] { px2, 0 });
                 }
-                if (now >= 6000 && now < 12000)
+                if (now >= 6000 && now < 12000 && Env("RC_CAM_DEMO_PITCH", "1") == "1")
                 {
                     // pitch probe: alternate direction so the sweep stays inside
                     // the row range (no ground clamp)
@@ -842,7 +854,7 @@ internal static class RebornClient
 
             // drift correction: measure the engine view direction only while the
             // mouse is idle (the nudge moves the camera, so keep it rare)
-            if (now - lastCamMeasure >= 1000 && now - lastOrbitMs > 400)
+            if (!camObst.Obstructed && now - lastCamMeasure >= 1000 && now - lastOrbitMs > 400)
             {
                 lastCamMeasure = now;
                 measureView();
