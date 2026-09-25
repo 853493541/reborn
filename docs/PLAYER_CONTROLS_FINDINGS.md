@@ -158,14 +158,28 @@ Evidence: `proof/movement/extracted/ui_hotkey_default.txt`,
 | Input | hardcoded `KeyDown/KeyUp` if-chain — **no hotkey table, no rebinding, no contexts** |
 | Movement | WASD camera-relative, Shift debug ×10, `Space` jump, `/` walk-run, W-double-tap sprint, `1` skill, `C` debug teleport; world-dir held while keys unchanged |
 | Turn | body turns instantly to the move direction / RMB camera direction (**no turn-rate model**) |
-| Camera | LMB/RMB drag, wheel ×0.9/×1.1, F11, Home/End; JX3 sphere offset; aim closed loop (drag model proven in `docs/CAMERA_DRAG_MODEL.md`); settings read from `custom.dat` (3 keys) |
+| Camera | LMB/RMB drag, wheel ×0.9/×1.1, F11, Home/End; JX3 sphere offset; per-frame aim sync (`00f1237`); **no wall obstruction**, no FOV/modes/shake; settings read from `custom.dat` (3 keys) |
 | Jump | continuous approximation tuned to the table numbers (integer 15 Hz model **not ported**) |
 | Combat | one skill key (`1`), no targeting, no action bars, no cast model |
 | UI | HUD label + `I` toggle only; no panels, no customization |
 | Settings | read-only `custom.dat`; `config.ini`/广角 ignored; engine caps not probed |
 
+### Coverage
+
+| Subsystem | Research | Implemented |
+|---|---|---|
+| Camera drag/aim | ~95% | ~85% (walls/FOV/caps/modes missing) |
+| Camera settings | ~80% | ~40% |
+| Movement | ~90% | ~50% |
+| Input/hotkeys | ~95% | ~10% |
+| Combat controls | ~85% | ~5% |
+| UI customization | ~70% | ~5% |
+| Jump/轻功 | ~90% | ~40% |
+| Netcode | ~85% | 0% |
+
 Open gaps for the full control system are consolidated in
-`docs/controls/CONTROLS_GAP_REGISTER.md` (planned) and in the findings above.
+`docs/controls/CONTROLS_GAP_REGISTER.md`; the camera-specific status is in
+`docs/CAMERA_CONFORMANCE_CHECKS.md`.
 
 ---
 
@@ -183,3 +197,21 @@ Open gaps for the full control system are consolidated in
 | `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` | combat, targeting, cooldowns |
 | `proof/netcode/camera_settings_real.txt` | per-user settings + zoom step |
 | `docs/MAP_MINIMAP_RESEARCH.md` §2b | per-window `custom.dat` state |
+
+---
+
+## 8. The notes set (branch `control-system-notes`)
+
+| File | Content |
+|---|---|
+| `docs/controls/README.md` | index + summary |
+| `docs/controls/JX3_HOTKEY_SYSTEM.md` | hotkey manager, files, 428 commands, rebinding |
+| `docs/controls/JX3_MOVEMENT_CONTROLS.md` | movement keys + movement/turn model |
+| `docs/controls/JX3_CAMERA_CONTROLS.md` | camera inputs, drag pipeline, modes, obstruction |
+| `docs/controls/JX3_COMBAT_CONTROLS.md` | targeting, action bars, cast input, authority |
+| `docs/controls/JX3_UI_CUSTOMIZATION.md` | customization counts and mechanics |
+| `docs/controls/REBORN_CONTROLS_SPEC.md` | target architecture (design only) + phases |
+| `docs/controls/CONTROLS_GAP_REGISTER.md` | master live checklist |
+| `docs/CAMERA_FIX_SUGGESTIONS.md` | camera defects S1–S9 + suggested fixes |
+| `docs/CAMERA_CONFORMANCE_CHECKS.md` | notes-vs-code matrix with acceptance |
+| `docs/CAMERA_DISTANCE_FOV_SPEC.md` | 镜头最大距离 + 广角 spec |
