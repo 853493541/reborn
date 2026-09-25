@@ -1,0 +1,17 @@
+﻿# MapList.tab rows=677 cols=77
+# flag distributions
+  IsArenaMap: {'': 2, '0': 664, '1': 11}
+  IsBattlefield: {'': 650, '0': 1, '1': 26}
+  IsTongWarMap: {'': 676, '1': 1}
+  IsTongLeagueMap: {'': 676, '1': 1}
+  NewCampFight: {'': 6, '0': 650, '1': 21}
+  bCanTongWar: {'': 2, ' ': 2, '0': 628, '1': 45}
+  CanJoinTongBattlefield: {'0': 656, '1': 21}
+  CanJoinArena: {'': 2, '0': 591, '1': 84}
+  CanJoinBattleField: {'': 2, '0': 591, '1': 84}
+# mode_flags rows=85 unique ids=85 mismatches=0
+# skills_mapban_arena_bit8.tsv: rows=529 mismatches=0
+# skills_mapban_bit2.tsv: rows=4 mismatches=0
+# skills_mapban_bit504.tsv: rows=69 mismatches=0
+# skills_mapban_bit520_8_512.tsv: rows=4 mismatches=0
+# skills_mapban_juejing_bit512.tsv: rows=14 mismatches=0
