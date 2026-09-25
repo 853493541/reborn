@@ -186,6 +186,17 @@ internal static class CameraSmoke
         double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
         Check("obstruction respects min distance", Math.Abs(od3 - 5.0) < 1e-6,
               string.Format("dist={0:F1}", od3));
+        var obstH = new CameraObstruction();
+        obstH.Update(1.0 / 60.0, 600.0, 500.0);           // obstructed, pulled to 482
+        for (int i = 0; i < 900; i++) obstH.Update(1.0 / 60.0, 600.0, 620.0);
+        Check("obstructed-side 100 u hysteresis keeps the state",
+              obstH.Obstructed && Math.Abs(obstH.Distance - 600.0) < 1.0,
+              string.Format("dist={0:F1} obst={1}", obstH.Distance, obstH.Obstructed));
+        for (int i = 0; i < 600; i++) obstH.Update(1.0 / 60.0, 600.0, -1.0);
+        Check("releases once the ray is fully clear",
+              !obstH.Obstructed && Math.Abs(obstH.Distance - 600.0) < 1.0,
+              string.Format("dist={0:F1}", obstH.Distance));
+
         var obstD = new CameraObstruction();
         obstD.Update(1.0 / 60.0, 600.0, 50.0);            // pulled to 32 u
         double minOut = obstD.Distance;

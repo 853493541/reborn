@@ -324,6 +324,32 @@ public sealed class CameraSystem
     public void SetPitch(double deg) { Pitch = deg * DEG; }
     public void SetFollowAction(double[] target) { FollowActionTarget = target; }
 
+    // CameraMovePitch* rows: while moving the pitch eases to
+    // CameraMovePitchApplyAngle, when idle to CameraMovePitchAdjustPitch, both
+    // rate-limited by PitchRate (60 deg/s). The current build's real table
+    // values are 0.0 (data-gated), so the host calls this only with
+    // RC_MOVE_PITCH=1 until the real per-mode rows arrive.
+    public void AdjustPitch(double dt, bool moving)
+    {
+        var row = Row;
+        if (moving)
+        {
+            double applyAngle = row.F("CameraMovePitchApplyAngle", -12.0 * DEG);
+            double step = PitchRate * dt;
+            if (Math.Abs(applyAngle - Pitch) <= step) Pitch = applyAngle;
+            else Pitch += Math.Sign(applyAngle - Pitch) * step;
+            MovePitchApplied = true;
+        }
+        else
+        {
+            double adjust = row.F("CameraMovePitchAdjustPitch", -20.0 * DEG);
+            double step = PitchRate * dt;
+            if (Math.Abs(adjust - Pitch) <= step) Pitch = adjust;
+            else Pitch += Math.Sign(adjust - Pitch) * step;
+            MovePitchApplied = false;
+        }
+    }
+
     // anchor: (x, y=height, z) in host units
     public void Update(double dt, double[] anchor, bool moving = false, double turnAngle = 0.0,
                        double charYaw = 0.0, Func<double[], double[], double?> obstruction = null)
@@ -354,22 +380,7 @@ public sealed class CameraSystem
             distance = Distance;
         }
 
-        if (moving)
-        {
-            double applyAngle = row.F("CameraMovePitchApplyAngle", -12.0 * DEG);
-            double step = PitchRate * dt;
-            if (Math.Abs(applyAngle - Pitch) <= step) Pitch = applyAngle;
-            else Pitch += Math.Sign(applyAngle - Pitch) * step;
-            MovePitchApplied = true;
-        }
-        else
-        {
-            double adjust = row.F("CameraMovePitchAdjustPitch", -20.0 * DEG);
-            double step = PitchRate * dt;
-            if (Math.Abs(adjust - Pitch) <= step) Pitch = adjust;
-            else Pitch += Math.Sign(adjust - Pitch) * step;
-            MovePitchApplied = false;
-        }
+        AdjustPitch(dt, moving);
 
         if (moving && Math.Abs(turnAngle) > row.F("CameraAdjustYawWhenMoveTurnDisableAngle", 15.0 * DEG))
             Yaw += row.F("CameraAdjustYawWhenMoveTurn", 1.0) * turnAngle;
@@ -567,7 +578,8 @@ public sealed class CameraObstruction
     public double Distance = -1.0;     // current (possibly pulled) length
     public double MinDistance = 5.0;
     public double Clearance = 18.0;
-    public double PullThreshold = 50.0;    // while free
+    public double PullThreshold = 50.0;     // free-side entry hysteresis
+    public double ReleaseThreshold = 100.0; // obstructed-side release hysteresis
     public double Flex = 1.5;
     public double Damp = 2.828;
 
@@ -586,10 +598,12 @@ public sealed class CameraObstruction
             if (Obstructed)
             {
                 // stay in front of the wall: as the hit recedes, the target
-                // follows it (the flex spring eases the way out); a full
-                // release only happens when the ray is clear to the desired
-                // point. Releasing earlier popped the camera through the wall.
-                if (hitDistance >= desired) Obstructed = false;
+                // follows it (the flex spring eases the way out). Release uses
+                // the larger obstructed-side hysteresis (100 u past the desired
+                // point); a fully clear ray (hitDistance <= 0) releases at once
+                // in the branch below. Releasing earlier popped the camera
+                // through the wall.
+                if (hitDistance >= desired + ReleaseThreshold) Obstructed = false;
                 else target = pull < desired ? pull : desired;
             }
         }

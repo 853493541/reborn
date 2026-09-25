@@ -387,6 +387,8 @@ internal static class RebornClient
         bool divDown = false;
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
+        bool dragArmed = false;
+        System.Drawing.Point pressPoint = new System.Drawing.Point(0, 0);
         var lockCenter = new System.Drawing.Point(panel.ClientSize.Width / 2, panel.ClientSize.Height / 2);
         var orbitQueue = new System.Collections.Generic.Queue<int[]>();
         Func<int, int, int> makeLParam = delegate(int x, int y) { return ((y & 0xFFFF) << 16) | (x & 0xFFFF); };
@@ -489,18 +491,31 @@ internal static class RebornClient
         {
             if (e.Button == MouseButtons.Left) lmbDown = true;
             else if (e.Button == MouseButtons.Right) rmbDown = true;
-            if ((lmbDown || rmbDown) && !mouseLocked) lockMouse();
+            // S7: don't lock the cursor on press; a click must stay a click.
+            // The lock (and camera rotation) starts once the pointer moves.
+            pressPoint = panelPoint(s, e);
+            dragArmed = true;
         };
         MouseEventHandler onMouseUp = delegate(object s, MouseEventArgs e)
         {
+            // S7: a press that never moved never locked the cursor - that press
+            // was a click and the camera was not rotated.
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
+            dragArmed = false;
             if (!lmbDown && !rmbDown && mouseLocked) unlockMouse();
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
-            if (!mouseLocked || (!lmbDown && !rmbDown)) return;
+            if ((!lmbDown && !rmbDown) || !dragArmed) return;
             System.Drawing.Point p = panelPoint(s, e);
+            if (!mouseLocked)
+            {
+                int mdx = p.X - pressPoint.X, mdy = p.Y - pressPoint.Y;
+                if (mdx * mdx + mdy * mdy < 16) return;   // 4 px dead zone
+                lockMouse();
+                return;
+            }
             int dx = p.X - lockCenter.X, dy = p.Y - lockCenter.Y;
             if (dx != 0 || dy != 0)
             {
@@ -623,6 +638,7 @@ internal static class RebornClient
         bool aimDirty = false;
         double lastAimDist = -1.0;
         double aimPitchOverride = double.NaN;   // set when the ground clamp moves the camera
+        int adjYawPx = 0, adjPitchPx = 0;       // CameraMovePitch*/FollowYaw feed (RC_MOVE_PITCH)
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
@@ -737,10 +753,14 @@ internal static class RebornClient
                 if (camSys.Yaw < -Math.PI) camSys.Yaw += twoPiY;
             }
 
-            if (orbitQueue.Count > 0 || pitchAimErrPx != 0)
+            if (orbitQueue.Count > 0 || pitchAimErrPx != 0 || adjYawPx != 0 || adjPitchPx != 0)
             {
                 int ox = 0, oy = 0;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
+                // model-driven camera motion (move-pitch / yaw-follow) is fed to
+                // the engine as orbit pixels: no raw drag counterpart exists, so
+                // the full delta is synthesised
+                ox += adjYawPx; adjYawPx = 0;
                 // row per-frame clamps (CameraMaxDeltaYaw/Pitch, row speeds in
                 // CAMERA_REAL_VALUES.md) converted through the measured engine
                 // orbit sensitivity: 0.0018 rad/px yaw, 0.00121 rad/px pitch
@@ -772,6 +792,7 @@ internal static class RebornClient
 
                 double aimDelta = aimPitchOf(pNew) - aimPitchOf(pOld);
                 int oyFF = (int)Math.Round(-aimDelta / 0.00121 - oy);
+                oyFF += adjPitchPx; adjPitchPx = 0;
                 // apply the closed-loop pitch error over frames (a full jump
                 // right after the drag is the visible "adjustment")
                 if (pitchAimErrPx != 0)
@@ -974,9 +995,20 @@ internal static class RebornClient
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
-            // camera direction; LMB drag rotates the camera only.
+            // camera direction; LMB drag rotates the camera only. The turn is
+            // rate-limited (S6) instead of snapping the yaw in one frame.
             if (rmbDown)
-                curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            {
+                float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+                float d = targetYaw - curYaw;
+                while (d > Math.PI) d -= 2f * (float)Math.PI;
+                while (d < -Math.PI) d += 2f * (float)Math.PI;
+                float rate = (float)camSys.Row.F("RotationSpeed", 0.0);
+                if (rate <= 0f) rate = 10f;   // host default rad/s
+                float step = rate * (float)dt;
+                if (Math.Abs(d) <= step) curYaw = targetYaw;
+                else curYaw += Math.Sign(d) * step;
+            }
 
             // object/foliage collision (walls, buildings, rocks, trees)
             if (col != null)
@@ -1080,6 +1112,22 @@ internal static class RebornClient
                 {
                 bool movingNow = len > 0f;
                 bool sprinting = movingNow && shiftDown;
+                // move-reactive camera (B6): row-gated; the real move-pitch
+                // table is 0.0 in this build, so it stays opt-in until the
+                // per-mode rows arrive. Any change is synthesised back to the
+                // engine in the orbit block (adjYawPx / adjPitchPx).
+                if (Env("RC_MOVE_PITCH", "0") == "1")
+                {
+                    double yawPreAdj = camSys.Yaw, pitchPreAdj = camSys.Pitch;
+                    camSys.AdjustPitch(dt, movingNow);
+                    if (movingNow) camSys.FollowYaw((float)Math.Atan2(-dirZ, -dirX), dt);
+                    double dYawAdj = camSys.Yaw - yawPreAdj;
+                    while (dYawAdj > Math.PI) dYawAdj -= 2.0 * Math.PI;
+                    while (dYawAdj < -Math.PI) dYawAdj += 2.0 * Math.PI;
+                    adjYawPx = (int)Math.Round(-dYawAdj / 0.0018);
+                    double aimAdj = aimPitchOf(camSys.Pitch) - aimPitchOf(pitchPreAdj);
+                    adjPitchPx = (int)Math.Round(-aimAdj / 0.00121);
+                }
                 if (sprinting)
                 {
                     if (camSys.Mode != CameraSystem.MODE_SPRINT)
