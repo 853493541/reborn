@@ -1,0 +1,5 @@
+384	转乾坤	lvl=1	atImmunity=5
+2781	转乾坤免控	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+2781	转乾坤免控	lvl=2	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+22171	道具_转乾坤	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+22172	道具_转乾坤瞬发	lvl=1	atImmunity=5

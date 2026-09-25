@@ -1,0 +1,41 @@
+700	冰心诀-冻逝-免疫定身	lvl=1	atImmunity=4
+730	自由行动	lvl=1	atImmunity=2 atImmunity=4 atImmunity=8 atImmunity=11 atImmunity=6 atImmunity=7 atKnockedDownRate=-1024
+763	免疫沉默	lvl=1	atImmunity=5
+855	天策-力拔	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024
+1903	藏剑_啸日_免疫控制	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+2756	天策_任驰骋免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024
+2756	天策_任驰骋免控	lvl=2	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+3743	测试免疫	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atImmunity=5
+4245	明教_朝圣言_自身减伤免控	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024 atPullRate=-1024 atRepulsedRate=-1024 atImmunity=5
+4344	NPC通用_免疫嘲讽	lvl=1	atImmunity=9
+5950	五毒_蛊虫献祭通用免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+5995	丐帮_笑醉狂_免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+6219	五毒_奇穴_宠物加免控	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atPullRate=-1024 atKnockedDownRate=-1024 atRepulsedRate=-1024 atKnockedBackRate=-1024
+7173	少林_被打免疫减速	lvl=1	atImmunity=2
+7508	哑运加速免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+7918	免疫控制	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedBackRate=-1024 atKnockedDownRate=-1024 atPullRate=-2048 atRepulsedRate=-1024
+8247	无惧	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+8458	水月免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=5 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+8458	水月免控	lvl=2	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+8483	盾毅免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024
+8716	盾墙队友免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+8832	通用_嘲讽免疫	lvl=1	atImmunity=9
+8864	千碟_免控buff	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024 atImmunity=5
+8864	千碟_免控buff	lvl=2	atKnockedDownRate=-1024 atKnockedBackRate=-1024 atImmunity=5 atImmunity=3
+8864	千碟_免控buff	lvl=3	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atImmunity=5
+8864	千碟_免控buff	lvl=4	atKnockedDownRate=-1024 atKnockedBackRate=-1024 atImmunity=5 atImmunity=3 atEntrap=
+17973	月影护盾	lvl=1	atImmunity=5 atImmunity=14 atKnockedBackRate=-1024
+18246	短暂免疫眩晕	lvl=1	atImmunity=8
+20346	百战异闻录通用恐惧	lvl=1	atSilenceAll=
+20704	摧蕊免疫击倒效果	lvl=1	atImmunity=11 atKnockedDownRate=-1024
+24353	寂灭蛊免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atPullRate=-1024 atRepulsedRate=-1024 atImmunity=5 atImmunity=14
+24414	孔雀引免控buff	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024 atImmunity=5 atImmunity=14
+26065	衍天宗荧惑守心生效效果	lvl=1	atImmunity=17
+26065	衍天宗荧惑守心生效效果	lvl=2	atImmunity=16
+26065	衍天宗荧惑守心生效效果	lvl=3	atImmunity=15
+26065	衍天宗荧惑守心生效效果	lvl=4	atImmunity=16 atImmunity=17
+26065	衍天宗荧惑守心生效效果	lvl=5	atImmunity=15 atImmunity=17
+26065	衍天宗荧惑守心生效效果	lvl=6	atImmunity=15 atImmunity=16
+26065	衍天宗荧惑守心生效效果	lvl=7	atImmunity=15 atImmunity=16 atImmunity=17
+27038	万灵山庄_恐惧	lvl=1	atSilenceAll=
+27102	风止韧性及免疫击倒	lvl=1	atKnockedDownRate=-1024 atImmunity=11

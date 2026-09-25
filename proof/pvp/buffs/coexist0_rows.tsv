@@ -1,0 +1,13 @@
+# Coexist=0 samples
+  12850	明教_驱夜前置	Useage=8	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=atChangeSkillIcon:25168
+  12850	明教_驱夜前置_暗尘	Useage=8	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=atChangeSkillIcon:25168
+  12850	明教_驱夜前置_降灵尊	Useage=8	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=atChangeSkillIcon:25168
+  12850	明教_驱夜前置_日月同辉	Useage=8	FT=	MS=4294967295	MS2=63	MapBan=	MapInv=	A1=atChangeSkillIcon:25168
+  12850	明教_驱夜前置_夷数神光	Useage=8	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=atChangeSkillIcon:25168
+  28313	剑气护盾_护盾	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atPhysicsDamageAbsorb:180000
+  28313	剑气护盾_护盾	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atPhysicsDamageAbsorb:180000
+  28331	剑舞反弹_护盾	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atPhysicsDamageAbsorb:2000000
+  28331	剑舞反弹_护盾	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atPhysicsDamageAbsorb:180000
+  28331	剑舞反弹_护盾	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atPhysicsDamageAbsorb:180000
+  28767	防反通用护盾_外功	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atPhysicsDamageAbsorb:9000000
+  28768	防反通用护盾_内功	Useage=290	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=0	A1=atLunarDamageAbsorb:9000000
