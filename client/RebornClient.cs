@@ -611,6 +611,7 @@ internal static class RebornClient
         bool dbgIntSet = false;
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
+        double yawCorr = 0.0;
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
@@ -671,15 +672,35 @@ internal static class RebornClient
             // read-back is noisy, and a position read-back is circular (our
             // placement overwrites the position).
             bool dragging = orbitQueue.Count > 0 || (lastOrbitMs != 0 && now - lastOrbitMs < 150);
-            if (dragging ? (now - lastYawSync >= 100) : orbitApplied)
+            if (dragging ? (now - lastYawSync >= 60) : orbitApplied)
             {
                 lastYawSync = now;
                 orbitApplied = false;
                 measureView();
                 if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
-                    camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+                {
+                    // smooth correction: snapping Yaw to the measured value
+                    // every sync made the camera shake while dragging
+                    double vyawMeas = Math.Atan2(-viewZ, -viewX);
+                    double d = vyawMeas - camSys.Yaw;
+                    while (d > Math.PI) d -= 2.0 * Math.PI;
+                    while (d < -Math.PI) d += 2.0 * Math.PI;
+                    yawCorr = d;
+                }
                 double measuredPitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
                 pitchAimErrPx = (int)Math.Round((measuredPitch - aimPitchOf(camSys.Pitch)) / 0.00121);
+            }
+
+            // spread the yaw correction over the next frames (~60 ms)
+            if (yawCorr != 0.0)
+            {
+                double ystep = yawCorr * Math.Min(1.0, dt / 0.06);
+                camSys.Yaw += ystep;
+                yawCorr -= ystep;
+                if (Math.Abs(yawCorr) < 1e-3) yawCorr = 0.0;
+                double twoPiY = 2.0 * Math.PI;
+                if (camSys.Yaw > Math.PI) camSys.Yaw -= twoPiY;
+                if (camSys.Yaw < -Math.PI) camSys.Yaw += twoPiY;
             }
 
             if (orbitQueue.Count > 0 || pitchAimErrPx != 0)
@@ -764,7 +785,8 @@ internal static class RebornClient
                 // engine ROTATE_CAMERA mapping: 0.0035 rad/px (MAP_CAMERA_SENS)
                 if (now >= 2000 && now < 6000)
                 {
-                    int px2 = (int)(dt * 1.0f / 0.0035f);
+                    // fast yaw sweep (~1.5 rad/s) to stress the smoothness
+                    int px2 = (int)(dt * 3.0f / 0.0035f);
                     if (px2 < 1) px2 = 1;
                     orbitQueue.Enqueue(new int[] { px2, 0 });
                 }
@@ -811,7 +833,13 @@ internal static class RebornClient
                 lastCamMeasure = now;
                 measureView();
                 if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
-                    camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+                {
+                    double vyawMeas = Math.Atan2(-viewZ, -viewX);
+                    double d = vyawMeas - camSys.Yaw;
+                    while (d > Math.PI) d -= 2.0 * Math.PI;
+                    while (d < -Math.PI) d += 2.0 * Math.PI;
+                    yawCorr = d;
+                }
             }
             if (camDebug && now - lastCamLog >= 500)
             {
