@@ -370,8 +370,8 @@ internal static class RebornClient
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
-        bool wSprint = false;    // double-tap W and hold -> sprint (8.5 尺/s)
-        long lastWPress = 0;
+        bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
+        long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -493,11 +493,16 @@ internal static class RebornClient
             if (e.KeyCode == Keys.Escape) unlockMouse();
             if (e.KeyCode == Keys.W)
             {
-                if (!pW)   // new press (auto-repeat keeps pW true)
+                long t = Environment.TickCount;
+                if (!pW || t - lastWDown > 100)   // new press, not keyboard auto-repeat
                 {
-                    long t = Environment.TickCount;
-                    if (t - lastWPress < 350) wSprint = true;
-                    lastWPress = t;
+                    // double-tap: second press within 500 ms of the first release
+                    if (lastWUp != 0 && t - lastWUp < 500)
+                    {
+                        wSprint = true;
+                        Log("sprint on (double-tap W)");
+                    }
+                    lastWDown = t;
                 }
                 pW = true;
             }
@@ -534,7 +539,7 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) { pW = false; wSprint = false; }
+            if (e.KeyCode == Keys.W) { pW = false; wSprint = false; lastWUp = Environment.TickCount; }
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -556,7 +561,7 @@ internal static class RebornClient
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f, pJumpV = 1350f;
         float pSpeed = 96f, pRun = 320f;
-        float pSprint = 8.5f * 64f;   // double-tap W hold: 8.5 尺/s = 544 u/s
+        float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
@@ -799,7 +804,10 @@ internal static class RebornClient
             bool blocked = false;
             if (moving)
             {
-                float sp = (shiftDown ? pRun * 10f : (walkMode ? pSpeed : pRun)) / len;
+                float sp = (shiftDown ? pRun * 10f
+                            : walkMode ? pSpeed
+                            : wSprint ? pSprint
+                            : pRun) / len;
                 float step = sp * dt;
                 float ux = dirX / len, uz = dirZ / len;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
@@ -989,10 +997,13 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
-                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
-                float moveSpeed = shiftDown ? pRun * 10f : (walkMode ? pSpeed : pRun);
+                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
+                float moveSpeed = shiftDown ? pRun * 10f
+                                : walkMode ? pSpeed
+                                : wSprint ? pSprint
+                                : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | Wx2 hold sprint | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
@@ -1018,10 +1029,21 @@ internal static class RebornClient
                     }
                     nearInfo += string.Format(" py={0:F0}", py);
                 }
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10}{11} clip={12}",
+                float curSpd = !moving ? 0f
+                             : shiftDown ? pRun * 10f
+                             : walkMode ? pSpeed
+                             : wSprint ? pSprint
+                             : pRun;
+                string moveMode = !moving ? "IDLE"
+                                : shiftDown ? "RUN10"
+                                : walkMode ? "WALK"
+                                : wSprint ? "SPRINT"
+                                : "RUN";
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
-                    curClip == null ? "-" : Path.GetFileName(curClip)));
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    curSpd, moveMode));
             }
             while (shotIdx < shots.Length && now >= shots[shotIdx])
             {
