@@ -1,0 +1,42 @@
+位移技能ID	角色类型	融合	是否使用残影	残影类型	残影时间	残影个数	Once（高）	Loop（高）	离地高度	Once(低）	Loop（低）	离地高度	离地修正动作(Oce)	离地修正动作(loop)	离水高度	离水修正动作(Oce)	离水修正动作(Loop)
+0	0	0	0	2	800	5			0			0			0		
+70	1	0	1	2	800	0	data\source\player\m2\动作\M2bqg丐帮一段冲a_01.tani	data\source\player\m2\动作\M2bqg丐帮一段冲b.ani	2850	data\source\player\m2\动作\M2bqg丐帮一段冲a01_01.tani	data\source\player\m2\动作\M2bqg丐帮一段冲b.ani						
+70	2	0	1	2	800	0	data\source\player\f2\动作\f2bqg丐帮一段冲a_01.tani	data\source\player\f2\动作\f2bqg丐帮一段冲b.ani	2850	data\source\player\f2\动作\f2bqg丐帮一段冲a01_01.tani	data\source\player\f2\动作\f2bqg丐帮一段冲b.ani						
+70	5	0	1	2	800	0	data\source\player\M1\动作\M1bqg丐帮一段冲a_01.tani	data\source\player\M1\动作\M1bqg丐帮一段冲b.ani	2850	data\source\player\M1\动作\M1bqg丐帮一段冲a01_01.tani	data\source\player\M1\动作\M1bqg丐帮一段冲b.ani						
+70	6	0	1	2	800	0	data\source\player\f1\动作\f1bqg丐帮一段冲a_01.tani	data\source\player\f1\动作\f1bqg丐帮一段冲b.ani	2850	data\source\player\f1\动作\f1bqg丐帮一段冲a01_01.tani	data\source\player\f1\动作\f1bqg丐帮一段冲b.ani						
+72	1	0	1	2	800	0	data\source\player\m2\动作\m2bqg丐帮二段冲a_k.tani	data\source\player\m2\动作\M2bqg丐帮二段冲b.ani				1000	Data\source\player\M2\动作\M2bqg明教翻滚01a.tani		2500	Data\source\player\M2\动作\M2bqg丐帮零段跳01c.ani	
+72	2	0	1	2	800	0	data\source\player\F2\动作\F2bqg丐帮二段冲a_k.tani	data\source\player\f2\动作\f2bqg丐帮二段冲b.ani				1000	Data\source\player\f2\动作\f2bqg明教翻滚01a.tani		2500	Data\source\player\f2\动作\f2bqg丐帮零段跳01c.ani	
+72	5	0	1	2	800	0	data\source\player\M1\动作\M1bqg丐帮二段冲a_k.tani	data\source\player\M1\动作\M1bqg丐帮二段冲b.ani				1000	Data\source\player\M1\动作\M1bqg明教翻滚01a.tani		2500	Data\source\player\M1\动作\M1bqg丐帮零段跳01c.ani	
+72	6	0	1	2	800	0	data\source\player\F1\动作\F1bqg丐帮二段冲a_k.tani	data\source\player\f1\动作\f1bqg丐帮二段冲b.ani				1000	Data\source\player\f1\动作\f1bqg明教翻滚01a.tani		2500	Data\source\player\f1\动作\f1bqg丐帮零段跳01c.ani	
+73	1	0	1	2	800	0	data\source\player\m2\动作\M2bqg丐帮三段冲a下降.tani	data\source\player\m2\动作\M2bqg丐帮三段冲b.ani				1000	Data\source\player\M2\动作\M2bqg明教翻滚01a.tani		2500	Data\source\player\M2\动作\M2bqg丐帮零段跳01c.ani	
+73	2	0	1	2	800	0	data\source\player\f2\动作\f2bqg丐帮三段冲a下降.tani	data\source\player\f2\动作\f2bqg丐帮三段冲b.ani				1000	Data\source\player\f2\动作\f2bqg明教翻滚01a.tani		2500	Data\source\player\f2\动作\f2bqg丐帮零段跳01c.ani	
+73	5	0	1	2	800	0	data\source\player\M1\动作\M1bqg丐帮三段冲a下降.tani	data\source\player\M1\动作\M1bqg丐帮三段冲b.ani				1000	Data\source\player\M1\动作\M1bqg明教翻滚01a.tani		2500	Data\source\player\M1\动作\M1bqg丐帮零段跳01c.ani	
+73	6	0	1	2	800	0	data\source\player\f1\动作\f1bqg丐帮三段冲a下降.tani	data\source\player\f1\动作\f1bqg丐帮三段冲b.ani				1000	Data\source\player\f1\动作\f1bqg明教翻滚01a.tani		2500	Data\source\player\f1\动作\f1bqg丐帮零段跳01c.ani	
+472	1	0	0				data\source\player\m2\动作\M2nqg加速跑衔接滑雪01.ani			data\source\player\m2\动作\M2nqg加速跑衔接滑雪01.ani							
+472	2	0	0				data\source\player\f2\动作\f2nqg加速跑衔接滑雪01.ani			data\source\player\f2\动作\f2nqg加速跑衔接滑雪01.ani							
+472	5	0	0				data\source\player\m1\动作\m1nqg加速跑衔接滑雪01.ani			data\source\player\m1\动作\m1nqg加速跑衔接滑雪01.ani							
+472	6	0	0				data\source\player\f1\动作\f1nqg加速跑衔接滑雪01.ani			data\source\player\f1\动作\f1nqg加速跑衔接滑雪01.ani							
+473	1	0	0				data\source\player\m2\动作\M2nqg滑雪衔接加速跑01.ani			data\source\player\m2\动作\M2nqg滑雪衔接加速跑01.ani							
+473	2	0	0				data\source\player\f2\动作\f2nqg滑雪衔接加速跑01.ani			data\source\player\f2\动作\f2nqg滑雪衔接加速跑01.ani							
+473	5	0	0				data\source\player\m1\动作\m1nqg滑雪衔接加速跑01.ani			data\source\player\m1\动作\m1nqg滑雪衔接加速跑01.ani							
+473	6	0	0				data\source\player\f1\动作\f1nqg滑雪衔接加速跑01.ani			data\source\player\f1\动作\f1nqg滑雪衔接加速跑01.ani							
+474	1	0	0				data\source\player\m2\动作\M2nqg_jump01a.tani	data\source\player\m2\动作\M2nqg_jump01b.tani		data\source\player\m2\动作\M2nqg_jump01a.tani	data\source\player\m2\动作\M2nqg_jump01b.tani		Data\source\player\M2\动作\M2nqg_jump01c.tani				
+474	2	0	0				data\source\player\f2\动作\f2nqg_jump01a.tani	data\source\player\f2\动作\f2nqg_jump01b.tani		data\source\player\f2\动作\f2nqg_jump01a.tani	data\source\player\f2\动作\f2nqg_jump01b.tani		Data\source\player\f2\动作\f2nqg_jump01c.tani				
+474	5	0	0				data\source\player\m1\动作\m1nqg_jump01a.tani	data\source\player\m1\动作\m1nqg_jump01b.tani		data\source\player\m1\动作\m1nqg_jump01a.tani	data\source\player\m1\动作\m1nqg_jump01b.tani		Data\source\player\m1\动作\m1nqg_jump01c.tani				
+474	6	0	0				data\source\player\f1\动作\f1nqg_jump01a.tani	data\source\player\f1\动作\f1nqg_jump01b.tani		data\source\player\f1\动作\f1nqg_jump01a.tani	data\source\player\f1\动作\f1nqg_jump01b.tani		Data\source\player\f1\动作\f1nqg_jump01c.tani				
+477	1	0	0				data\source\player\m2\动作\M2nqg_jump02a.tani	data\source\player\m2\动作\M2nqg_jump02b.tani		data\source\player\m2\动作\M2nqg_jump02a.tani	data\source\player\m2\动作\M2nqg_jump02b.tani		Data\source\player\M2\动作\M2nqg_jump02c.tani				
+477	2	0	0				data\source\player\f2\动作\f2nqg_jump02a.tani	data\source\player\f2\动作\f2nqg_jump02b.tani		data\source\player\f2\动作\f2nqg_jump02a.tani	data\source\player\f2\动作\f2nqg_jump02b.tani		Data\source\player\f2\动作\f2nqg_jump02c.tani				
+477	5	0	0				data\source\player\m1\动作\m1nqg_jump02a.tani	data\source\player\m1\动作\m1nqg_jump02b.tani		data\source\player\m1\动作\m1nqg_jump02a.tani	data\source\player\m1\动作\m1nqg_jump02b.tani		Data\source\player\m1\动作\m1nqg_jump02c.tani				
+477	6	0	0				data\source\player\f1\动作\f1nqg_jump02a.tani	data\source\player\f1\动作\f1nqg_jump02b.tani		data\source\player\f1\动作\f1nqg_jump02a.tani	data\source\player\f1\动作\f1nqg_jump02b.tani		Data\source\player\f1\动作\f1nqg_jump02c.tani				
+478	1	0	0				data\source\player\m2\动作\M2nqg_Lturn_01a.tani	data\source\player\m2\动作\M2nqg_Lturn_01b.tani		data\source\player\m2\动作\M2nqg_Lturn_01a.tani	data\source\player\m2\动作\M2nqg_Lturn_01b.tani		data\source\player\m2\动作\M2nqg_Lturn_01c.tani				
+478	2	0	0				data\source\player\f2\动作\f2nqg_Lturn_01a.tani	data\source\player\f2\动作\f2nqg_Lturn_01b.tani		data\source\player\f2\动作\f2nqg_Lturn_01a.tani	data\source\player\f2\动作\f2nqg_Lturn_01b.tani		data\source\player\f2\动作\f2nqg_Lturn_01c.tani				
+478	5	0	0				data\source\player\m1\动作\m1nqg_Lturn_01a.tani	data\source\player\m1\动作\m1nqg_Lturn_01b.tani		data\source\player\m1\动作\m1nqg_Lturn_01a.tani	data\source\player\m1\动作\m1nqg_Lturn_01b.tani		data\source\player\m1\动作\m1nqg_Lturn_01c.tani				
+478	6	0	0				data\source\player\f1\动作\f1nqg_Lturn_01a.tani	data\source\player\f1\动作\f1nqg_Lturn_01b.tani		data\source\player\f1\动作\f1nqg_Lturn_01a.tani	data\source\player\f1\动作\f1nqg_Lturn_01b.tani		data\source\player\f1\动作\f1nqg_Lturn_01c.tani				
+479	1	0	0				data\source\player\m2\动作\M2nqg_Rturn_01a.tani	data\source\player\m2\动作\M2nqg_Rturn_01b.tani		data\source\player\m2\动作\M2nqg_Rturn_01a.tani	data\source\player\m2\动作\M2nqg_Rturn_01b.tani		data\source\player\m2\动作\M2nqg_Rturn_01c.tani				
+479	2	0	0				data\source\player\f2\动作\f2nqg_Rturn_01a.tani	data\source\player\f2\动作\f2nqg_Rturn_01b.tani		data\source\player\f2\动作\f2nqg_Rturn_01a.tani	data\source\player\f2\动作\f2nqg_Rturn_01b.tani		data\source\player\f2\动作\f2nqg_Rturn_01c.tani				
+479	5	0	0				data\source\player\m1\动作\m1nqg_Rturn_01a.tani	data\source\player\m1\动作\m1nqg_Rturn_01b.tani		data\source\player\m1\动作\m1nqg_Rturn_01a.tani	data\source\player\m1\动作\m1nqg_Rturn_01b.tani		data\source\player\m1\动作\m1nqg_Rturn_01c.tani				
+479	6	0	0				data\source\player\f1\动作\f1nqg_Rturn_01a.tani	data\source\player\f1\动作\f1nqg_Rturn_01b.tani		data\source\player\f1\动作\f1nqg_Rturn_01a.tani	data\source\player\f1\动作\f1nqg_Rturn_01b.tani		data\source\player\f1\动作\f1nqg_Rturn_01c.tani				
+480	1	0	0				data\source\player\m2\动作\M2nqg_jump03a.tani	data\source\player\m2\动作\M2nqg_jump03b.tani		data\source\player\m2\动作\M2nqg_jump03a.tani	data\source\player\m2\动作\M2nqg_jump03b.tani		data\source\player\m2\动作\M2nqg_jump03c.tani				
+480	2	0	0				data\source\player\f2\动作\f2nqg_jump03a.tani	data\source\player\f2\动作\f2nqg_jump03b.tani		data\source\player\f2\动作\f2nqg_jump03a.tani	data\source\player\f2\动作\f2nqg_jump03b.tani		data\source\player\f2\动作\f2nqg_jump03c.tani				
+480	5	0	0				data\source\player\m1\动作\m1nqg_jump03a.tani	data\source\player\m1\动作\m1nqg_jump03b.tani		data\source\player\m1\动作\m1nqg_jump03a.tani	data\source\player\m1\动作\m1nqg_jump03b.tani		data\source\player\m1\动作\m1nqg_jump03c.tani				
+480	6	0	0				data\source\player\f1\动作\f1nqg_jump03a.tani	data\source\player\f1\动作\f1nqg_jump03b.tani		data\source\player\f1\动作\f1nqg_jump03a.tani	data\source\player\f1\动作\f1nqg_jump03b.tani		data\source\player\f1\动作\f1nqg_jump03c.tani				

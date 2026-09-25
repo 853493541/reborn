@@ -1,0 +1,311 @@
+TurningEpsilon = 0.02
+AnimationBlendTime = 190
+KeepTurningFrame = 30
+
+ChongCiQingGong:1 = 
+{
+	1 = -- stander male
+	{
+		EnterAnimation = data\source\player\M2\动作\M2bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\M2\动作\M2bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\M2\动作\M2bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\M2\动作\M2bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\M2\动作\M2bqg苍云俯冲bM.tani
+	}
+	2 = -- stander female
+	{
+		EnterAnimation = data\source\player\F2\动作\F2bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\F2\动作\F2bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\F2\动作\F2bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\F2\动作\F2bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\F2\动作\F2bqg苍云俯冲bM.tani
+	}
+	5 = -- little boy
+	{
+		EnterAnimation = data\source\player\M1\动作\M1bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\M1\动作\M1bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\M1\动作\M1bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\M1\动作\M1bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\M1\动作\M1bqg苍云俯冲bM.tani
+	
+	}
+	6 = -- little girl
+	{
+		EnterAnimation = data\source\player\F1\动作\F1bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\F1\动作\F1bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\F1\动作\F1bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\F1\动作\F1bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\F1\动作\F1bqg苍云俯冲bM.tani
+	}
+	
+}
+
+ChongCiQingGong:2 = 
+{
+	1 = -- stander male
+	{
+		EnterAnimation = data\source\player\M2\动作\少林强化俯冲a.ani
+		CrashAnimation = data\source\player\M2\动作\少林落地冲刺.ani
+		TurnLeftAnimation = data\source\player\M2\动作\M2bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\M2\动作\M2bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\M2\动作\M2bqg苍云俯冲bM.tani
+	}
+	2 = -- stander female
+	{
+		EnterAnimation = data\source\player\F2\动作\F2bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\F2\动作\F2bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\F2\动作\F2bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\F2\动作\F2bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\F2\动作\F2bqg苍云俯冲bM.tani
+	}
+	5 = -- little boy
+	{
+		EnterAnimation = data\source\player\M1\动作\M1bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\M1\动作\M1bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\M1\动作\M1bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\M1\动作\M1bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\M1\动作\M1bqg苍云俯冲bM.tani
+	
+	}
+	6 = -- little girl
+	{
+		EnterAnimation = data\source\player\F1\动作\F1bqg苍云俯冲a.tani
+		CrashAnimation = data\source\player\F1\动作\F1bqg苍云落地冲刺.tani
+		TurnLeftAnimation = data\source\player\F1\动作\F1bqg苍云俯冲bR.tani
+		TurnRightAnimation = data\source\player\F1\动作\F1bqg苍云俯冲bL.tani
+		InAirAnimation = data\source\player\F1\动作\F1bqg苍云俯冲bM.tani
+	}
+	
+}
+
+ChongCiQingGong:3 = 
+{
+	1 = -- stander male
+	{
+		EnterAnimation = data\source\player\M2\动作\M2bqg唐门shift三段跳a_export.tani
+		CrashAnimation = data\source\player\M2\动作\M2bqg唐门shift四段跳a_export.tani
+		TurnLeftAnimation = data\source\player\M2\动作\M2bqg唐门shift三段跳b_turn_R_export.tani
+		TurnRightAnimation = data\source\player\M2\动作\M2bqg唐门shift三段跳b_turn_L_export.tani
+		InAirAnimation = data\source\player\M2\动作\M2bqg唐门shift三段跳b_export.tani
+	}
+}
+
+ZuoQiQingGong:120 =
+{
+	1 = 		-- stander male
+	{
+		RideInAirAnimation = data\source\NPC_source\WJ_独轮车002\动作\WJ_独轮车002_滑翔01_01.tani
+
+		PlayerInAirAnimation = data\source\player\M2\动作\M2独轮车带人跳01b.ani
+	}
+	2 = 		-- stander female
+	{
+
+		RideInAirAnimation = data\source\NPC_source\WJ_独轮车002\动作\WJ_独轮车002_滑翔01_01.tani
+
+		PlayerInAirAnimation = data\source\player\F2\动作\F2独轮车带人跳01b.ani
+	}
+	5 = 		-- little boy
+	{
+		RideInAirAnimation = data\source\NPC_source\WJ_独轮车002\动作\WJ_独轮车002_滑翔01_01.tani
+
+		PlayerInAirAnimation = data\source\player\M1\动作\M1独轮车跳01b.ani
+	}
+	6 = 		-- little girl
+	{
+
+		RideInAirAnimation = data\source\NPC_source\WJ_独轮车002\动作\WJ_独轮车002_滑翔01_01.tani
+
+		PlayerInAirAnimation = data\source\player\F1\动作\F1独轮车跳01b.ani
+	}
+}
+
+ZuoQiQingGong:123 =
+{
+	--	RideTurnLeftAnimation = data\source\NPC_source\A103\动作\A103_滑翔左拖尾.tani
+	--	RideTurnRightAnimation = data\source\NPC_source\A103\动作\A103_滑翔右拖尾.tani
+	--	RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾.tani
+
+	1 = 		-- stander male
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾.tani
+		--PlayerTurnLeftAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+	}
+	2 = 		-- stander female
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾.tani
+		--PlayerTurnLeftAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+	}
+	5 = 		-- little boy
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾.tani
+		--PlayerTurnLeftAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+	}
+	6 = 		-- little girl
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾.tani
+		--PlayerTurnLeftAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+	}
+}
+
+ZuoQiQingGong:145 =
+{
+	1 = 		-- stander male
+	{
+		RideInAirAnimation = data\source\NPC_source\WJ_天灯002\动作\WJ_天灯002_st01.ani
+		PlayerInAirAnimation = data\source\player\M2\动作\M2滑翔机主控待机01.ani
+	}
+	2 = 		-- stander female
+	{
+		RideInAirAnimation = data\source\NPC_source\WJ_天灯002\动作\WJ_天灯002_st01.ani
+		PlayerInAirAnimation = data\source\player\F2\动作\F2滑翔机主控待机01.ani
+	}
+	5 = 		-- little boy
+	{
+		RideInAirAnimation = data\source\NPC_source\WJ_天灯002\动作\WJ_天灯002_st01.ani
+		PlayerInAirAnimation = data\source\player\M1\动作\M1滑翔机主控待机01.ani
+	}
+	6 = 		-- little girl
+	{
+		RideInAirAnimation = data\source\NPC_source\WJ_天灯002\动作\WJ_天灯002_st01.ani
+		PlayerInAirAnimation = data\source\player\F1\动作\F1滑翔机主控待机01.ani
+	}
+}
+
+ZuoQiQingGong:182 =
+{
+	--	RideTurnLeftAnimation = data\source\NPC_source\A103\动作\A103_滑翔左拖尾.tani
+	--	RideTurnRightAnimation = data\source\NPC_source\A103\动作\A103_滑翔右拖尾.tani
+	--	RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾.tani
+
+	1 = 		-- stander male
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色.tani
+		--PlayerTurnLeftAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+	}
+	2 = 		-- stander female
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色.tani
+		--PlayerTurnLeftAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+	}
+	5 = 		-- little boy
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色.tani
+		--PlayerTurnLeftAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+	}
+	6 = 		-- little girl
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色.tani
+		--PlayerTurnLeftAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+	}
+}
+
+ZuoQiQingGong:246 =
+{
+	--	RideTurnLeftAnimation = data\source\NPC_source\A103\动作\A103_滑翔左拖尾_hd.tani
+	--	RideTurnRightAnimation = data\source\NPC_source\A103\动作\A103_滑翔右拖尾_hd.tani
+	--	RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾_hd.tani
+
+	1 = 		-- stander male
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色_hd.tani
+		--PlayerTurnLeftAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\M2\动作\M2陆行雕主控待机.ani
+	}
+	2 = 		-- stander female
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色_hd.tani
+		--PlayerTurnLeftAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\F2\动作\F2陆行雕主控待机.ani
+	}
+	5 = 		-- little boy
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色_hd.tani
+		--PlayerTurnLeftAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\M1\动作\M1陆行雕主控待机.ani
+	}
+	6 = 		-- little girl
+	{
+		RideInAirAnimation = data\source\NPC_source\A103\动作\A103_滑翔01拖尾银色_hd.tani
+		--PlayerTurnLeftAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+		--PlayerTurnRightAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+		PlayerInAirAnimation = data\source\player\F1\动作\F1陆行雕主控待机.ani
+	}
+}
+
+ZuoQiQingGong:340 =
+{
+
+	1 = 		-- stander male
+	{
+		RideInAirAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_st01.ani
+		PlayerInAirAnimation = data\source\player\M2\动作\M2HZQ_仙剑木剑01_加速run01.ani
+	}
+	2 = 		-- stander female
+	{
+		RideInAirAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_st01.ani
+		PlayerInAirAnimation = data\source\player\f2\动作\f2HZQ_仙剑木剑01_加速run01.ani
+	}
+	5 = 		-- little boy
+	{
+		RideInAirAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_st01.ani
+		PlayerInAirAnimation = data\source\player\M1\动作\M1HZQ_仙剑木剑01_加速run01.ani
+	}
+	6 = 		-- little girl
+	{
+		RideInAirAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_st01.ani
+		PlayerInAirAnimation = data\source\player\f1\动作\f1HZQ_仙剑木剑01_加速run01.ani
+	}
+}
+
+ZuoQiSkillMove:340 =
+{
+	
+	547 = 
+	{
+			PlayerAnimation_1 = data\source\player\M2\动作\M2HZQ_仙剑木剑01_向左滑01.ani -- standard male
+			PlayerAnimation_2 = data\source\player\F2\动作\F2HZQ_仙剑木剑01_向左滑01.ani -- standard sfemale
+			PlayerAnimation_5 = data\source\player\M1\动作\M1HZQ_仙剑木剑01_向左滑01.ani -- little male
+			PlayerAnimation_6 = data\source\player\F1\动作\F1HZQ_仙剑木剑01_向左滑01.ani -- little sfemale
+			RideAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_向左滑01.ani
+	}
+	
+	448 = 
+	{
+
+			PlayerAnimation_1 = data\source\player\M2\动作\M2HZQ_仙剑木剑01_向上滑01.ani -- standard male
+			PlayerAnimation_2 = data\source\player\F2\动作\F2HZQ_仙剑木剑01_向上滑01.ani -- standard  female
+			PlayerAnimation_5 = data\source\player\M1\动作\M1HZQ_仙剑木剑01_向上滑01.ani -- little male
+			PlayerAnimation_6 = data\source\player\F1\动作\F1HZQ_仙剑木剑01_向上滑01.ani -- little  female
+			RideAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_向上滑01.ani
+	}
+
+	449 = 
+	{
+
+			PlayerAnimation_1 = data\source\player\M2\动作\M2HZQ_仙剑木剑01_向右滑01.ani -- standard male
+			PlayerAnimation_2 = data\source\player\F2\动作\F2HZQ_仙剑木剑01_向右滑01.ani -- standard  female
+			PlayerAnimation_5 = data\source\player\M1\动作\M1HZQ_仙剑木剑01_向右滑01.ani -- little male
+			PlayerAnimation_6 = data\source\player\F1\动作\F1HZQ_仙剑木剑01_向右滑01.ani -- little female
+			RideAnimation = data\source\NPC_source\ZQ_仙剑木剑01\动作\ZQ_仙剑木剑01_向右滑01.ani
+	}
+}

@@ -1,0 +1,58 @@
+JX3 jump/fall model verification
+tick = 66.7 ms (15/s), 1 m = 192 units
+
+== 1. single jump, integer client model ==
+  order B (y += v; v -= g, matches JumpTo compensation):
+    v0=90 u/f  g=11 u/f2 -> apex 414 u (2.16 m) at frame 9, air 18 frames (1.20 s)
+  continuous formula      -> apex 1.92 m, air 1.09 s
+  v0 = 7.03 m/s, g = 12.89 m/s^2
+  note: gravity is clamped to <= 0x1F (31 u/f2) in KCharacter::Jump
+
+== 2. animation tick alignment ==
+  JumpParam/JumpFrameParam TotalFrame 11 (school 10 jump 0)
+  11 frames x 66.7 ms = 0.733 s
+  FBX 跳跃1 (hualuo_jump1) = 0.733 s -> match
+  FBX 跳跃2 = 0.667 s = 10 ticks, 跳跃3 = 0.800 s = 12 ticks -> match
+
+== 3. per-jump chain apex (all schools, first 4 jumps) ==
+  school  0 (max 4x): J0:90/11->1.92m  J1:300/20->11.72m  J2:400/20->20.83m  J3:-250/8->20.35m
+  school  1 (max 5x): J0:90/11->1.92m  J1:180/12->7.03m  J2:15/3->0.20m  J3:780/30->52.81m
+  school  2 (max 5x): J0:90/11->1.92m  J1:450/30->17.58m  J2:600/24->39.06m  J3:600/24->39.06m
+  school  3 (max 5x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school  4 (max 5x): J0:90/11->1.92m  J1:160/8->8.33m  J2:240/7->21.43m  J3:700/36->35.45m
+  school  5 (max 5x): J0:90/11->1.92m  J1:160/6->11.11m  J2:250/12->13.56m  J3:600/20->46.88m
+  school  6 (max 5x): J0:90/11->1.92m  J1:36/4->0.84m  J2:150/7->8.37m  J3:800/36->46.30m
+  school  7 (max 5x): J0:90/11->1.92m  J1:36/4->0.84m  J2:150/7->8.37m  J3:800/36->46.30m
+  school  8 (max 5x): J0:90/11->1.92m  J1:400/10->41.67m  J2:400/25->16.67m  J3:600/12->78.12m
+  school  9 (max 6x): J0:120/11->3.41m  J1:1000/25->104.17m  J2:0/0  J3:600/16->58.59m
+  school 10 (max 4x): J0:90/11->1.92m  J1:80/80->0.21m  J2:80/60->0.28m  J3:-200/20->5.21m
+  school 11 (max 4x): J0:90/11->1.92m  J1:80/80->0.21m  J2:80/60->0.28m  J3:-200/20->5.21m
+  school 12 (max 11x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 13 (max 11x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 14 (max 11x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 15 (max 8x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 16 (max 8x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 17 (max 15x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 18 (max 14x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 19 (max 15x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 20 (max 13x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 21 (max 13x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+  school 22 (max 6x): J0:90/11->1.92m  J1:400/25->16.67m  J2:300/13->18.03m  J3:700/36->35.45m
+
+== 4. fall behavior ==
+  drop    5 m:  13.2 frames (0.88 s), v_end   145 u/f ( 11.4 m/s)
+  drop   10 m:  18.7 frames (1.25 s), v_end   206 u/f ( 16.1 m/s)
+  drop   30 m:  32.4 frames (2.16 s), v_end   356 u/f ( 27.8 m/s)
+  drop  100 m:  59.1 frames (3.94 s), v_end   650 u/f ( 50.8 m/s)
+
+  frames to reach Sprint.tab dive cap 900 u/f at g=11: 900/11 = 82 frames (5.5 s, 192 m fallen) -> cap only matters on long dives
+
+== 5. Sprint.tab caps in SI units ==
+  school 0: XY 10..120 u/f = 0.78..9.38 m/s;  Z 8..900 u/f = 0.62..70.31 m/s
+  school 1: XY 10..120 u/f = 0.78..9.38 m/s;  Z 8..900 u/f = 0.62..70.31 m/s
+  school 2: XY 10..120 u/f = 0.78..9.38 m/s;  Z 8..900 u/f = 0.62..70.31 m/s
+  hard clamps in code: XY <= 127 u/f (9.92 m/s), Z in [-2048, 2047] u/f (159.92 m/s)
+
+== result ==
+  all checks reproduce the in-game expectations; the model in
+  docs/JX3_GRAVITY_RESEARCH.md §3 is self-consistent and complete

@@ -1,0 +1,47 @@
+# JX3ClientX64.exe xrefs to 0x1403addc0
+
+## ref @ 0x1403a98d4 -> 0x1403addc0
+  0x1403a9898: pushfq   
+  0x1403a9899: hlt      
+  0x1403a989a: insd     dword ptr [rdi], dx
+  0x1403a989b: add      byte ptr [rax - 0x73], cl
+  0x1403a989e: add      eax, 0xffcfb7dd
+  0x1403a98a3: mov      qword ptr [rip + 0x6df496], rax
+  0x1403a98aa: lea      rax, [rip - 0x304831]
+  0x1403a98b1: mov      qword ptr [rip + 0x6df498], rax
+  0x1403a98b8: lea      rax, [rip + 0x6441]
+  0x1403a98bf: mov      qword ptr [rip + 0x6df492], rax
+  0x1403a98c6: lea      rax, [rip + 0x38c3]
+  0x1403a98cd: mov      qword ptr [rip + 0x6df48c], rax
+  0x1403a98d4: lea      rax, [rip + 0x44e5]
+  0x1403a98db: mov      qword ptr [rip + 0x6df486], rax
+  0x1403a98e2: lea      rax, [rip + 0x1467]
+  0x1403a98e9: mov      qword ptr [rip + 0x6df490], rax
+  0x1403a98f0: lea      rax, [rip + 0x3699]
+  0x1403a98f7: mov      qword ptr [rip + 0x6df48a], rax
+  0x1403a98fe: lea      rax, [rip - 0x304885]
+  0x1403a9905: mov      qword ptr [rip + 0x6df4a4], rax
+  0x1403a990c: lea      rax, [rip + 0x279d]
+  0x1403a9913: mov      qword ptr [rip + 0x6df4be], rax
+  0x1403a991a: lea      rax, [rip + 0x488f]
+  0x1403a9921: mov      qword ptr [rip + 0x6df4b8], rax
+  0x1403a9928: lea      rax, [rip + 0x45e1]
+  0x1403a992f: mov      qword ptr [rip + 0x6df4b2], rax
+  0x1403a9936: lea      rax, [rip + 0x42c3]
+  0x1403a993d: mov      qword ptr [rip + 0x6df4ac], rax
+  0x1403a9944: lea      rax, [rip + 0x5b45]
+  0x1403a994b: mov      qword ptr [rip + 0x6df4a6], rax
+  0x1403a9952: lea      rax, [rip + 0x31a7]
+  0x1403a9959: mov      qword ptr [rip + 0x6df4a0], rax
+  0x1403a9960: lea      rax, [rip + 0x11d9]
+  0x1403a9967: mov      qword ptr [rip + 0x6df49a], rax
+  0x1403a996e: lea      rax, [rip + 0xf1b]
+  0x1403a9975: mov      qword ptr [rip + 0x6df494], rax
+  0x1403a997c: lea      rax, [rip + 0x2add]
+  0x1403a9983: mov      qword ptr [rip + 0x6df4b6], rax
+  0x1403a998a: lea      rax, [rip + 0x190f]
+  0x1403a9991: mov      qword ptr [rip + 0x6df4f0], rax
+  0x1403a9998: .byte    0x48
+  0x1403a9999: .byte    0x8d
+  0x1403a999a: .byte    0x05
+  0x1403a999b: .byte    0x01

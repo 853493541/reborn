@@ -1,0 +1,1253 @@
+TurningEpsilon = 0.02 --默认
+AnimationBlendTime = 190 --默认
+KeepTurningFrame = 30 --默认
+
+ZhiKongQingGong:1 = -- 滞空轻功1号，【长歌】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg长歌门滞空b.ani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		FrontAnimaiton = data\source\player\M2\动作\M2bqg长歌门滞空bF.ani
+		LeftFrontAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bL.ani
+		LeftAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bL.ani
+		LeftRearAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bL.ani
+		RearAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bD.ani
+		RightReardAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bR.ani
+		RightAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bR.ani
+		RightFrontAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bR.ani
+
+		--PlayTurnAnimation = true
+		--TurnLeftAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bL.ani --左右转表现参数，通过DragLimit 控制开启与否
+		--TurnRightAnimation = data\source\player\M2\动作\M2bqg长歌门滞空bR.ani
+
+		--DragLimit = true --是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		--SuspendCameraMaxDragSpeed = 0.0025
+
+		--IsSuspendCameraRoll = true
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg长歌门滞空b.ani
+		FrontAnimaiton = data\source\player\F2\动作\F2bqg长歌门滞空bF.ani
+		LeftFrontAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bL.ani
+		LeftAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bL.ani
+		LeftRearAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bL.ani
+		RearAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bD.ani
+		RightReardAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bR.ani
+		RightAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bR.ani
+		RightFrontAnimation = data\source\player\F2\动作\F2bqg长歌门滞空bR.ani
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg长歌门滞空b.ani
+		FrontAnimaiton = data\source\player\M1\动作\M1bqg长歌门滞空bF.ani
+		LeftFrontAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bL.ani
+		LeftAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bL.ani
+		LeftRearAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bL.ani
+		RearAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bD.ani
+		RightReardAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bR.ani
+		RightAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bR.ani
+		RightFrontAnimation = data\source\player\M1\动作\M1bqg长歌门滞空bR.ani
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+	6 = -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg长歌门滞空b.ani
+		FrontAnimaiton = data\source\player\F1\动作\F1bqg长歌门滞空bF.ani
+		LeftFrontAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bL.ani
+		LeftAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bL.ani
+		LeftRearAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bL.ani
+		RearAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bD.ani
+		RightReardAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bR.ani
+		RightAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bR.ani
+		RightFrontAnimation = data\source\player\F1\动作\F1bqg长歌门滞空bR.ani
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+	
+}
+
+ZhiKongQingGong:2 = -- 滞空轻功2号，【万花】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg万花加强滞空_01.tani
+		
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg万花加强滞空_01.tani
+		
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F2\动作\F2bqg加速跑02c_水_刹车.tani--data\source\player\F2\动作\F2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F2\动作\F2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg万花加强滞空_01.tani
+		
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M1\动作\M1bqg加速跑02c_水_刹车.tani--data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	6 = -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg万花加强滞空_01.tani
+		
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F1\动作\F1bqg加速跑02c_水_刹车.tani--data\source\player\F1\动作\F1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F1\动作\F1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	
+}
+
+ZhiKongQingGong:3 = -- 滞空轻功3号，【唐门】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg唐门加强一段跳b.tani
+		
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\M2\动作\M2bqg唐门加强一段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\M2\动作\M2bqg唐门加强一段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 220 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 600		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 600 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd唐门握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd唐门握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg唐门加速跑02a_水.ani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\M2bqg唐门加速跑02a_水.ani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+
+	}
+	2 = -- stander famale
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg唐门加强一段跳b.tani
+		
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\F2\动作\F2bqg唐门加强一段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\F2\动作\F2bqg唐门加强一段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 220 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 600		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 600 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd唐门握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd唐门握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F2\动作\F2bqg唐门加速跑02a_水.ani--data\source\player\F2\动作\F2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F2\动作\F2bqg唐门加速跑02a_水.ani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+
+	}
+	5 =  -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg唐门加强一段跳b.tani
+		
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\M1\动作\M1bqg唐门加强一段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\M1\动作\M1bqg唐门加强一段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 220 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 600		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 600 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M1\动作\M1bqg加速跑02c_水_刹车.tani--data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+
+	}
+	6 =  -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg唐门加强一段跳b.tani
+		
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\F1\动作\F1bqg唐门加强一段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\F1\动作\F1bqg唐门加强一段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 220 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 600		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 600 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd唐门握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd唐门握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F1\动作\F1bqg唐门加速跑02a_水.ani--data\source\player\F1\动作\F1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F1\动作\F1bqg唐门加速跑02a_水.ani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+
+	}
+}
+
+ZhiKongQingGong:4 = -- 滞空轻功4号，【唐门】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg唐门加强三段跳b.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\M2\动作\M2bqg唐门加强三段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\M2\动作\M2bqg唐门加强三段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 190 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 800		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 800 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+	}
+	2 = -- 
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg唐门加强三段跳b.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\F2\动作\F2bqg唐门加强三段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\F2\动作\F2bqg唐门加强三段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 190 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 800		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 800 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F2\动作\F2bqg加速跑02c_水_刹车.tani--data\source\player\F2\动作\F2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F2\动作\F2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+	}
+	
+	5 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg唐门加强三段跳b.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\M1\动作\M1bqg唐门加强三段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\M1\动作\M1bqg唐门加强三段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 190 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 800		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 800 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M1\动作\M1bqg加速跑02c_水_刹车.tani--data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+	}
+	
+	6 = --
+	{
+		StayAnimaiton = data\source\player\f1\动作\f1bqg唐门加强三段跳b.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\f1\动作\f1bqg唐门加强三段跳b_L_turn.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\f1\动作\f1bqg唐门加强三段跳b_R_turn.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 190 		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 800		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 800 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/f1/动作/f1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/f1/动作/f1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02c_水_刹车.tani--data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0020
+
+		--IsSuspendCameraRoll = true --镜头倾斜
+	}
+}
+
+ZhiKongQingGong:5 = -- 滞空轻功5号，【七秀】使用
+{
+1 = -- stander male
+	{
+		--StayAnimaiton = data\source\player\M2\动作\M2bqg七秀加强二段跳b.tani
+
+		AnimationBlendTime = 0 		--动作融合时间，此模块里所有的动作的融合时间
+
+		StaySerialAnimation = --多序列循环触发动作
+		{
+			1 = data\source\player\M2\动作\M2bqg七秀加强二段跳b.tani
+			2 = data\source\player\M2\动作\M2bqg七秀加强二段跳b.tani
+			3 = data\source\player\M2\动作\M2bqg七秀加强二段跳b.tani
+			Count = 3 --传说中四十多亿个上限，展鸿说的。如果谁写超过上限了，请联络此人，有惊喜。
+		}
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M2/动作/M2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M2/动作/M2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	
+	2 = -- stander female
+	{
+		--StayAnimaiton = data\source\player\F2\动作\F2bqg七秀加强二段跳b.tani
+
+		AnimationBlendTime = 0 		--动作融合时间，此模块里所有的动作的融合时间
+
+		StaySerialAnimation = --多序列循环触发动作
+		{
+			1 = data\source\player\F2\动作\F2bqg七秀加强二段跳b.tani
+			2 = data\source\player\F2\动作\F2bqg七秀加强二段跳b.tani
+			3 = data\source\player\F2\动作\F2bqg七秀加强二段跳b.tani
+			Count = 3 --传说中四十多亿个上限，展鸿说的。如果谁写超过上限了，请联络此人，有惊喜。
+		}
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = --  little boy
+	{
+		--StayAnimaiton = data\source\player\M1\动作\M1bqg七秀加强二段跳b.tani
+
+		AnimationBlendTime = 0 		--动作融合时间，此模块里所有的动作的融合时间
+
+		StaySerialAnimation = --多序列循环触发动作
+		{
+			1 = data\source\player\M1\动作\M1bqg七秀加强二段跳b.tani
+			2 = data\source\player\M1\动作\M1bqg七秀加强二段跳b.tani
+			3 = data\source\player\M1\动作\M1bqg七秀加强二段跳b.tani
+			Count = 3 --传说中四十多亿个上限，展鸿说的。如果谁写超过上限了，请联络此人，有惊喜。
+		}
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/M1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	
+	6 = --  little girl
+	{
+		--StayAnimaiton = data\source\player\F1\动作\F1bqg七秀加强二段跳b.tani
+
+		AnimationBlendTime = 0 		--动作融合时间，此模块里所有的动作的融合时间
+
+		StaySerialAnimation = --多序列循环触发动作
+		{
+			1 = data\source\player\F1\动作\F1bqg七秀加强二段跳b.tani
+			2 = data\source\player\F1\动作\F1bqg七秀加强二段跳b.tani
+			3 = data\source\player\F1\动作\F1bqg七秀加强二段跳b.tani
+			Count = 3 --传说中四十多亿个上限，展鸿说的。如果谁写超过上限了，请联络此人，有惊喜。
+		}
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F1\动作\F1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F1/动作/F1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/F1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+}
+
+ZhiKongQingGong:6 = -- 滞空轻功7号，【五毒】使用
+{
+	1 = -- 
+	{
+		StayAnimaiton = data\source\player\m2\动作\m2bqg五毒加强三段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/m2/动作/m2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/m2/动作/m2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/m2/动作/m2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/m2/动作/m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	2 = -- 
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg五毒加强三段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	
+		5 = -- 
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg五毒加强三段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M1\动作\M1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/M1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+		6 = -- 
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg五毒加强三段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F1\动作\F1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F1/动作/F1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/F1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+}
+
+ZhiKongQingGong:7 = -- 滞空轻功8号，【五毒】使用
+{
+	1 = -- 
+	{
+		StayAnimaiton = data\source\player\m2\动作\m2bqg五毒加强四段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/m2/动作/m2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/m2/动作/m2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/m2/动作/m2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/m2/动作/m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg五毒加强四段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- 
+	{
+		StayAnimaiton = data\source\player\m1\动作\m1bqg五毒加强四段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/m1/动作/m1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/m1/动作/m1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/m1/动作/m1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/m1/动作/m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	6 = -- 
+	{
+		StayAnimaiton = data\source\player\f1\动作\f1bqg五毒加强四段跳b_01.tani
+
+		DragLimit = true--是否打开镜头速度限制
+		SuspendCameraMaxDragSpeed = 0.0030
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/f1/动作/f1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/f1/动作/f1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/f1/动作/f1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/f1/动作/f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+}
+
+
+ZhiKongQingGong:8 = -- 滞空轻功8号，【蓬莱】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg蓬莱加强滑翔段01_hd.tani
+		StaySwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段01_轻功hd.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data/source/player/M2/动作/M2bqg蓬莱加强滑翔段L01_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnLeftSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段l01_轻功hd.tani
+		TurnRightAnimation = data/source/player/M2/动作/M2bqg蓬莱加强滑翔段R01_hd.tani
+		TurnRightSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段r01_轻功hd.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+	    IsSuspendCameraRoll = true --镜头倾斜
+	}
+	
+	2 = -- stander famale
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg蓬莱加强滑翔段01_hd.tani
+		StaySwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段01_轻功hd.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data/source/player/F2/动作/F2bqg蓬莱加强滑翔段L01_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnLeftSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段l01_轻功hd.tani
+		TurnRightAnimation = data/source/player/F2/动作/F2bqg蓬莱加强滑翔段R01_hd.tani
+		TurnRightSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段r01_轻功hd.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F2\动作\F2bqg加速跑02c_水_刹车.tani--data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+	    IsSuspendCameraRoll = true --镜头倾斜
+	}
+	5 =  -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg蓬莱加强滑翔段01_hd.tani
+		StaySwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段01_轻功hd.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data/source/player/M1/动作/M1bqg蓬莱加强滑翔段L01_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnLeftSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段l01_轻功hd.tani
+		TurnRightAnimation = data/source/player/M1/动作/M1bqg蓬莱加强滑翔段R01_hd.tani
+		TurnRightSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段r01_轻功hd.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M1\动作\M1bqg加速跑02c_水_刹车.tani--data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+	    IsSuspendCameraRoll = true --镜头倾斜
+	}
+	6 =  -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg蓬莱加强滑翔段01_hd.tani
+		StaySwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段01_轻功hd.tani
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data/source/player/F1/动作/F1bqg蓬莱加强滑翔段L01_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnLeftSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段l01_轻功hd.tani
+		TurnRightAnimation = data/source/player/F1/动作/F1bqg蓬莱加强滑翔段R01_hd.tani
+		TurnRightSwingAnimation = data\source\NPC_source\Eagle\动作\eagle_pl加强滑翔段r01_轻功hd.tani
+
+		TurningEpsilon = 0.02 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\F1\动作\F1bqg加速跑02c_水_刹车.tani--data\source\player\F1\动作\F1bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\F1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+		DragLimit = true--是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+	    IsSuspendCameraRoll = true --镜头倾斜
+
+	}
+}
+
+
+ZhiKongQingGong:9 = -- 滞空轻功9号，【凌雪阁】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg凌雪阁加强_豹形跑_hd.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\M2\动作\M2bqg凌雪阁加强_豹形左跑_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\M2\动作\M2bqg凌雪阁加强_豹形右跑_hd.tani
+		
+		TurningEpsilon = 0.05 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		DragLimit = true --是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+		--IsSuspendCameraRoll = true
+
+		FallDownHeightFloor = 10	-- 轻功高度差
+		FallDownAdjustFloor = 0	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 200	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg凌雪阁加强_豹形跑_hd.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\F2\动作\F2bqg凌雪阁加强_豹形左跑_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\F2\动作\F2bqg凌雪阁加强_豹形右跑_hd.tani
+		
+		TurningEpsilon = 0.05 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		DragLimit = true --是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+		--IsSuspendCameraRoll = true
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg凌雪阁加强_豹形跑_hd.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\M1\动作\M1bqg凌雪阁加强_豹形左跑_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\M1\动作\M1bqg凌雪阁加强_豹形右跑_hd.tani
+		
+		TurningEpsilon = 0.05 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		DragLimit = true --是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+		--IsSuspendCameraRoll = true
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+	6 = -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg凌雪阁加强_豹形跑_hd.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		PlayTurnAnimation = true
+		TurnLeftAnimation = data\source\player\F1\动作\F1bqg凌雪阁加强_豹形左跑_hd.tani --左右转表现参数，通过DragLimit 控制开启与否
+		TurnRightAnimation = data\source\player\F1\动作\F1bqg凌雪阁加强_豹形右跑_hd.tani
+		
+		TurningEpsilon = 0.05 			--转向超过这个角度，才会触发，弧度制。大概1度
+		AnimationBlendTime = 500		--动作融合时间，此模块里所有的动作的融合时间
+		KeepTurningFrame = 30 			--保持这么长时间的偏转的话，就突破了TurningEpsilon 的限制，持续转向
+		
+		TurnAnimationBlendTime = 500		--从中间到左右的动作融合时间，若没有则读取AnimationBlendTime 
+		ResetTurnAnimationBlendTime = 500 	--从左右回位到中间的融合时间，若没有则读取AnimationBlendTime 
+
+		DragLimit = true --是否打开镜头速度限制和启用左右转动作表现，如果不填或FALSE则无镜头速度限制 
+		SuspendCameraMaxDragSpeed = 0.0010
+
+		--IsSuspendCameraRoll = true
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+}
+
+ZhiKongQingGong:10 = -- 滞空轻功10号，【凌雪阁】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg凌雪阁加强_豹人跑_HD.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		FallDownHeightFloor = 10	-- 轻功高度差
+		FallDownAdjustFloor = 0	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 200	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg凌雪阁加强_豹人跑_HD.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg凌雪阁加强_豹人跑_HD.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+	6 = -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg凌雪阁加强_豹人跑_HD.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+}
+
+ZhiKongQingGong:11 = -- 滞空轻功11号，【新大侠轻功】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg大侠轻功02b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		FallDownHeightFloor = 10	-- 轻功高度差
+		FallDownAdjustFloor = 0	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 200	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg大侠轻功02b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg大侠轻功02b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+	6 = -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg大侠轻功02b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+}
+
+ZhiKongQingGong:12 = -- 滞空轻功12号，【新大侠轻功】使用
+{
+	1 = -- stander male
+	{
+		StayAnimaiton = data\source\player\M2\动作\M2bqg大侠轻功04b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		FallDownHeightFloor = 10	-- 轻功高度差
+		FallDownAdjustFloor = 0	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M2/动作/M2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 200	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\M2\动作\M2bqg加速跑02c_水_刹车.tani--data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 落水默认动作
+		FallWaterGoForwardAnimation = data\source\player\m2\动作\m2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+
+	}
+	2 = -- stander female
+	{
+		StayAnimaiton = data\source\player\F2\动作\F2bqg大侠轻功04b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F2/动作/F2b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f2\动作\f2bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/F2/动作/F2b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F2/动作/f2bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	}
+	5 = -- little boy
+	{
+		StayAnimaiton = data\source\player\M1\动作\M1bqg大侠轻功04b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+		
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/M1/动作/M1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\m1\动作\m1bqg加速跑02a_水_跳出水瞬间.tani--data/source/player/M1/动作/M1b02yd握拳小跳b.ani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/M1/动作/m1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+	6 = -- little girl
+	{
+		StayAnimaiton = data\source\player\F1\动作\F1bqg大侠轻功04b_悟.tani  --必填，其他的方向速度表现参数可以不填，不填不会触发
+
+		FallDownHeightFloor = 500	-- 轻功高度差
+		FallDownAdjustFloor = 50	-- 落地高度
+	
+		FallFloorAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani		-- 落地默认动作
+		FallFloorGoForwardAnimation = data/source/player/F1/动作/F1b02yd握拳小跳c.ani	-- 行进状态落地动作
+
+		FallDownHeightWater = 500	-- 轻功高度差
+		FallDownAdjustWater = 50	-- 落水高度
+
+		FallWaterAnimation = data\source\player\f1\动作\f1bqg加速跑02a_水_跳出水瞬间.tani		-- 落水默认动作
+		FallWaterGoForwardAnimation = data/source/player/F1/动作/f1bqg加速跑02a_水_跳出水瞬间.tani	-- 行进状态落水动作
+	
+	}
+}

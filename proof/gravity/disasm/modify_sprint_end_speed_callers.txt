@@ -1,0 +1,113 @@
+# JX3ClientX64.exe xrefs to 0x1403140a0
+
+## ref @ 0x140182874 -> 0x1403140a0
+  0x140182838: add      byte ptr [rax], al
+  0x14018283a: test     ecx, ecx
+  0x14018283c: jne      0x14018284f
+  0x14018283e: cmp      dword ptr [rbx + 0x2f4], r12d
+  0x140182845: je       0x14018284f
+  0x140182847: mov      rcx, rbx
+  0x14018284a: call     0x14031c800
+  0x14018284f: mov      eax, dword ptr [rbx + 0x1f4]
+  0x140182855: cmp      eax, 4
+  0x140182858: je       0x14018285f
+  0x14018285a: cmp      eax, 0x1a
+  0x14018285d: jne      0x14018288a
+  0x14018285f: cmp      dword ptr [rbx + 0x1f8], r12d
+  0x140182866: jne      0x14018288a
+  0x140182868: cmp      dword ptr [rbx + 0x330], 1
+  0x14018286f: jl       0x14018288a
+  0x140182871: mov      rcx, rbx
+  0x140182874: call     0x1403140a0
+  0x140182879: mov      dword ptr [rbx + 0xc08], r15d
+  0x140182880: mov      dword ptr [rbx + 0x330], 1
+  0x14018288a: test     rdi, rdi
+  0x14018288d: je       0x140182894
+  0x14018288f: mov      rax, qword ptr [rdi]
+  0x140182892: jmp      0x140182897
+  0x140182894: mov      rax, r15
+  0x140182897: mov      rcx, qword ptr [rax + 0x10]
+  0x14018289b: mov      rax, qword ptr [rax + 8]
+  0x14018289f: dec      rcx
+  0x1401828a2: and      rcx, rsi
+  0x1401828a5: mov      rcx, qword ptr [rax + rcx*8]
+  0x1401828a9: cmp      byte ptr [rcx + 0x1b], r12b
+  0x1401828ad: je       0x140182918
+  0x1401828af: test     rdi, rdi
+  0x1401828b2: je       0x1401828b9
+  0x1401828b4: mov      rax, qword ptr [rdi]
+  0x1401828b7: jmp      0x1401828bc
+  0x1401828b9: mov      rax, r15
+  0x1401828bc: mov      rcx, qword ptr [rax + 0x10]
+  0x1401828c0: mov      rax, qword ptr [rax + 8]
+  0x1401828c4: dec      rcx
+  0x1401828c7: and      rcx, rsi
+  0x1401828ca: mov      rcx, qword ptr [rax + rcx*8]
+  0x1401828ce: cmp      byte ptr [rcx + 0x1b], 1
+  0x1401828d2: je       0x1401828dc
+  0x1401828d4: mov      rcx, rbx
+  0x1401828d7: call     0x140315e40
+  0x1401828dc: test     rdi, rdi
+  0x1401828df: je       0x1401828e6
+  0x1401828e1: mov      rax, qword ptr [rdi]
+  0x1401828e4: jmp      0x1401828e9
+  0x1401828e6: mov      rax, r15
+  0x1401828e9: .byte    0x48
+  0x1401828ea: .byte    0x8b
+  0x1401828eb: .byte    0x48
+
+## ref @ 0x14036317a -> 0x1403140a0
+  0x14036313e: sti      
+  0x14036313f: dec      dword ptr [rcx + 0x2ccae]
+  0x140363145: add      byte ptr [rcx], bh
+  0x140363147: scasb    al, byte ptr [rdi]
+  0x140363148: hlt      
+  0x140363149: add      al, byte ptr [rax]
+  0x14036314b: add      byte ptr [rax + rcx + 0x48], dh
+  0x14036314f: mov      ecx, esi
+  0x140363151: call     0x14031c800
+  0x140363156: mov      eax, dword ptr [rsi + 0x1f4]
+  0x14036315c: cmp      eax, 4
+  0x14036315f: je       0x140363166
+  0x140363161: cmp      eax, 0x1a
+  0x140363164: jne      0x14036318f
+  0x140363166: cmp      dword ptr [rsi + 0x1f8], ebp
+  0x14036316c: jne      0x14036318f
+  0x14036316e: cmp      dword ptr [rsi + 0x330], 1
+  0x140363175: jl       0x14036318f
+  0x140363177: mov      rcx, rsi
+  0x14036317a: call     0x1403140a0
+  0x14036317f: mov      dword ptr [rsi + 0xc08], ebp
+  0x140363185: mov      dword ptr [rsi + 0x330], 1
+  0x14036318f: test     r14, r14
+  0x140363192: je       0x140363199
+  0x140363194: mov      rax, qword ptr [r14]
+  0x140363197: jmp      0x14036319c
+  0x140363199: mov      rax, rbp
+  0x14036319c: mov      rcx, qword ptr [rax + 0x10]
+  0x1403631a0: mov      rax, qword ptr [rax + 8]
+  0x1403631a4: dec      rcx
+  0x1403631a7: and      rcx, r15
+  0x1403631aa: mov      rcx, qword ptr [rax + rcx*8]
+  0x1403631ae: cmp      byte ptr [rcx + 0x1b], bpl
+  0x1403631b2: je       0x14036322b
+  0x1403631b4: test     r14, r14
+  0x1403631b7: je       0x1403631be
+  0x1403631b9: mov      rax, qword ptr [r14]
+  0x1403631bc: jmp      0x1403631c1
+  0x1403631be: mov      rax, rbp
+  0x1403631c1: mov      rcx, qword ptr [rax + 0x10]
+  0x1403631c5: mov      rax, qword ptr [rax + 8]
+  0x1403631c9: dec      rcx
+  0x1403631cc: and      rcx, r15
+  0x1403631cf: mov      rcx, qword ptr [rax + rcx*8]
+  0x1403631d3: cmp      byte ptr [rcx + 0x1b], 1
+  0x1403631d7: je       0x1403631e1
+  0x1403631d9: mov      rcx, rsi
+  0x1403631dc: call     0x140315e40
+  0x1403631e1: test     r14, r14
+  0x1403631e4: je       0x1403631eb
+  0x1403631e6: mov      rax, qword ptr [r14]
+  0x1403631e9: jmp      0x1403631ee
+  0x1403631eb: mov      rax, rbp
+  0x1403631ee: mov      rcx, qword ptr [rax + 0x10]

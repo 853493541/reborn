@@ -1,0 +1,158 @@
+# JX3RepresentX64.dll xrefs to 0x18109a928
+
+## ref @ 0x180a9c6c4 -> 0x18109a928
+  0x180a9c688: int3     
+  0x180a9c689: int3     
+  0x180a9c68a: int3     
+  0x180a9c68b: int3     
+  0x180a9c68c: int3     
+  0x180a9c68d: int3     
+  0x180a9c68e: int3     
+  0x180a9c68f: int3     
+  0x180a9c690: int3     
+  0x180a9c691: int3     
+  0x180a9c692: int3     
+  0x180a9c693: int3     
+  0x180a9c694: int3     
+  0x180a9c695: int3     
+  0x180a9c696: int3     
+  0x180a9c697: int3     
+  0x180a9c698: int3     
+  0x180a9c699: int3     
+  0x180a9c69a: int3     
+  0x180a9c69b: int3     
+  0x180a9c69c: int3     
+  0x180a9c69d: int3     
+  0x180a9c69e: int3     
+  0x180a9c69f: int3     
+  0x180a9c6a0: int3     
+  0x180a9c6a1: int3     
+  0x180a9c6a2: int3     
+  0x180a9c6a3: int3     
+  0x180a9c6a4: int3     
+  0x180a9c6a5: int3     
+  0x180a9c6a6: int3     
+  0x180a9c6a7: int3     
+  0x180a9c6a8: int3     
+  0x180a9c6a9: int3     
+  0x180a9c6aa: int3     
+  0x180a9c6ab: int3     
+  0x180a9c6ac: int3     
+  0x180a9c6ad: int3     
+  0x180a9c6ae: int3     
+  0x180a9c6af: int3     
+  0x180a9c6b0: add      rcx, 0x18
+  0x180a9c6b4: jmp      0x1800175b2
+  0x180a9c6b9: int3     
+  0x180a9c6ba: int3     
+  0x180a9c6bb: int3     
+  0x180a9c6bc: int3     
+  0x180a9c6bd: int3     
+  0x180a9c6be: int3     
+  0x180a9c6bf: int3     
+  0x180a9c6c0: mov      rcx, qword ptr [rcx + 0x60]
+  0x180a9c6c4: jmp      qword ptr [rip + 0x5fe25d]
+  0x180a9c6cb: int3     
+  0x180a9c6cc: int3     
+  0x180a9c6cd: int3     
+  0x180a9c6ce: int3     
+  0x180a9c6cf: int3     
+  0x180a9c6d0: mov      rcx, qword ptr [rcx + 0x60]
+  0x180a9c6d4: test     rcx, rcx
+  0x180a9c6d7: je       0x180a9c6e0
+  0x180a9c6d9: jmp      qword ptr [rip + 0x5fe290]
+  0x180a9c6e0: ret      
+  0x180a9c6e1: int3     
+  0x180a9c6e2: int3     
+  0x180a9c6e3: int3     
+  0x180a9c6e4: int3     
+  0x180a9c6e5: int3     
+  0x180a9c6e6: int3     
+  0x180a9c6e7: int3     
+  0x180a9c6e8: int3     
+  0x180a9c6e9: int3     
+  0x180a9c6ea: int3     
+  0x180a9c6eb: int3     
+  0x180a9c6ec: int3     
+  0x180a9c6ed: int3     
+  0x180a9c6ee: int3     
+  0x180a9c6ef: int3     
+  0x180a9c6f0: mov      rcx, qword ptr [rcx + 0x60]
+  0x180a9c6f4: jmp      qword ptr [rip + 0x5fe225]
+  0x180a9c6fb: int3     
+  0x180a9c6fc: int3     
+  0x180a9c6fd: int3     
+  0x180a9c6fe: int3     
+  0x180a9c6ff: int3     
+  0x180a9c700: mov      rcx, qword ptr [rcx + 0x60]
+  0x180a9c704: jmp      qword ptr [rip + 0x5fe20d]
+  0x180a9c70b: int3     
+  0x180a9c70c: int3     
+  0x180a9c70d: int3     
+  0x180a9c70e: int3     
+  0x180a9c70f: int3     
+  0x180a9c710: mov      rcx, qword ptr [rcx + 0x60]
+  0x180a9c714: jmp      qword ptr [rip + 0x5fe1f5]
+  0x180a9c71b: int3     
+  0x180a9c71c: int3     
+  0x180a9c71d: int3     
+  0x180a9c71e: int3     
+  0x180a9c71f: int3     
+  0x180a9c720: add      rcx, 0x18
+  0x180a9c724: jmp      0x180014187
+  0x180a9c729: int3     
+  0x180a9c72a: int3     
+  0x180a9c72b: int3     
+  0x180a9c72c: int3     
+  0x180a9c72d: int3     
+  0x180a9c72e: int3     
+  0x180a9c72f: int3     
+  0x180a9c730: mov      rcx, qword ptr [rcx + 0x60]
+  0x180a9c734: test     rcx, rcx
+  0x180a9c737: je       0x180a9c740
+  0x180a9c739: .byte    0x48
+  0x180a9c73a: .byte    0xff
+  0x180a9c73b: .byte    0x25
+
+## ref @ 0x180b4e1b6 -> 0x18109a928
+  0x180b4e17a: jmp      qword ptr [rip + 0x54c8f8]
+  0x180b4e180: jmp      qword ptr [rip + 0x54c8ea]
+  0x180b4e186: jmp      qword ptr [rip + 0x54c8dc]
+  0x180b4e18c: jmp      qword ptr [rip + 0x54c8ce]
+  0x180b4e192: jmp      qword ptr [rip + 0x54c8c0]
+  0x180b4e198: jmp      qword ptr [rip + 0x54c8b2]
+  0x180b4e19e: jmp      qword ptr [rip + 0x54c8a4]
+  0x180b4e1a4: jmp      qword ptr [rip + 0x54c896]
+  0x180b4e1aa: jmp      qword ptr [rip + 0x54c7d8]
+  0x180b4e1b0: jmp      qword ptr [rip + 0x54c77a]
+  0x180b4e1b6: jmp      qword ptr [rip + 0x54c76c]
+  0x180b4e1bc: jmp      qword ptr [rip + 0x54c75e]
+  0x180b4e1c2: jmp      qword ptr [rip + 0x54c750]
+  0x180b4e1c8: jmp      qword ptr [rip + 0x54c742]
+  0x180b4e1ce: jmp      qword ptr [rip + 0x54c76c]
+  0x180b4e1d4: jmp      qword ptr [rip + 0x54c75e]
+  0x180b4e1da: jmp      qword ptr [rip + 0x54c768]
+  0x180b4e1e0: jmp      qword ptr [rip + 0x54c79a]
+  0x180b4e1e6: jmp      qword ptr [rip + 0x54c78c]
+  0x180b4e1ec: jmp      qword ptr [rip + 0x54c77e]
+  0x180b4e1f2: jmp      qword ptr [rip + 0x54c770]
+  0x180b4e1f8: jmp      qword ptr [rip + 0x54c762]
+  0x180b4e1fe: jmp      qword ptr [rip + 0x54c754]
+  0x180b4e204: jmp      qword ptr [rip + 0x54c746]
+  0x180b4e20a: int3     
+  0x180b4e20b: int3     
+  0x180b4e20c: int3     
+  0x180b4e20d: int3     
+  0x180b4e20e: int3     
+  0x180b4e20f: int3     
+  0x180b4e210: push     rbx
+  0x180b4e212: push     rsi
+  0x180b4e213: push     rdi
+  0x180b4e214: push     r12
+  0x180b4e216: push     r13
+  0x180b4e218: push     r14
+  0x180b4e21a: push     r15
+  0x180b4e21c: sub      rsp, 0x40
+  0x180b4e220: mov      qword ptr [rsp + 0x38], 0xfffffffffffffffe
+  0x180b4e229: movzx    ebx, r9b
+  0x180b4e22d: .byte    0x4d

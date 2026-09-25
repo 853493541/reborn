@@ -1,0 +1,11 @@
+RoleType	SkillID	Time	SocketName	AnimationFile	AniSpeed	DefaultHeight
+0	0	0			1	1000
+2	18587	600		data\source\player\F2\动作\F2s05qx剑技能28第一段_HD.tani	2	1000
+2	18588	550		data\source\player\F2\动作\F2s05qx剑技能28第二段_HD.tani	2	1000
+2	18589	1100		data\source\player\F2\动作\F2s05qx剑技能28第三段_HD.tani	1	1000
+5	18587	600		data\source\player\M1\动作\M1s05qx剑技能28第一段_HD.tani	2	1000
+5	18588	550		data\source\player\M1\动作\M1s05qx剑技能28第二段_HD.tani	2	1000
+5	18589	1100		data\source\player\M1\动作\M1s05qx剑技能28第三段_HD.tani	1	1000
+6	18587	600		data\source\player\F1\动作\F1s05qx剑技能28第一段_HD.tani	2	1000
+6	18588	550		data\source\player\F1\动作\F1s05qx剑技能28第二段_HD.tani	2	1000
+6	18589	1100		data\source\player\F1\动作\F1s05qx剑技能28第三段_HD.tani	1	1000

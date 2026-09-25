@@ -1,0 +1,1823 @@
+# JX3RepresentX64.dll xrefs for 'RagdollTime'
+# image base 0x180000000
+
+## xref @ 0x1808591ab -> 0x180ccfab8 'RagdollTime'  fn start 0x180857df0
+  0x180857df0: mov      qword ptr [rsp + 8], rbx
+  0x180857df5: mov      qword ptr [rsp + 0x10], rbp
+  0x180857dfa: mov      qword ptr [rsp + 0x18], rsi
+  0x180857dff: push     rdi
+  0x180857e00: sub      rsp, 0x30
+  0x180857e04: mov      rbx, rdx
+  0x180857e07: mov      rdi, rcx
+  0x180857e0a: xor      bpl, bpl
+  0x180857e0d: call     qword ptr [rip + 0x842cbd]  ; SemanticX64.dll!CreateRLFile
+  0x180857e13: mov      rsi, rax
+  0x180857e16: test     rax, rax
+  0x180857e19: jne      0x180857e49
+  0x180857e1b: lea      rcx, [rip + 0x476a2e]  ; 'sLoadNumberFromFile'
+  0x180857e22: mov      r9d, 0x129
+  0x180857e28: mov      qword ptr [rsp + 0x20], rcx
+  0x180857e2d: lea      r8, [rip + 0x443cc4]  ; 'pFile'
+  0x180857e34: lea      ecx, [rax + 3]
+  0x180857e37: lea      rdx, [rip + 0x428d12]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180857e3e: call     qword ptr [rip + 0x8421bc]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180857e44: jmp      0x1808591f7
+  0x180857e49: mov      rax, qword ptr [rax]
+  0x180857e4c: mov      r9d, 1
+  0x180857e52: mov      r8d, r9d
+  0x180857e55: mov      rdx, rbx
+  0x180857e58: mov      rcx, rsi
+  0x180857e5b: call     qword ptr [rax + 0x10]
+  0x180857e5e: mov      rbx, rax
+  0x180857e61: test     rax, rax
+  0x180857e64: jne      0x180857e96
+  0x180857e66: mov      r9d, 0x12c
+  0x180857e6c: lea      r8, [rip + 0x45a479]  ; 'Table'
+  0x180857e73: lea      rcx, [rip + 0x4769d6]  ; 'sLoadNumberFromFile'
+  0x180857e7a: mov      qword ptr [rsp + 0x20], rcx
+  0x180857e7f: lea      rdx, [rip + 0x428cca]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180857e86: mov      ecx, 3
+  0x180857e8b: call     qword ptr [rip + 0x84216f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180857e91: jmp      0x1808591ee
+  0x180857e96: mov      rax, qword ptr [rax]
+  0x180857e99: lea      rdx, [rip + 0x4769c8]  ; 'CaptionFloorSpace'
+  0x180857ea0: movss    xmm2, dword ptr [rdi]
+  0x180857ea4: mov      rcx, rbx
+  0x180857ea7: call     qword ptr [rax + 0x50]
+  0x180857eaa: movss    xmm2, dword ptr [rdi + 4]
+  0x180857eaf: lea      rdx, [rip + 0x4769ca]  ; 'CaptionFloorSpaceDist'
+  0x180857eb6: movss    dword ptr [rdi], xmm0
+  0x180857eba: mov      rcx, rbx
+  0x180857ebd: mov      rax, qword ptr [rbx]
+  0x180857ec0: call     qword ptr [rax + 0x50]
+  0x180857ec3: movss    xmm2, dword ptr [rdi + 8]
+  0x180857ec8: lea      rdx, [rip + 0x4769d1]  ; 'CaptionFloorSpaceMax'
+  0x180857ecf: movss    dword ptr [rdi + 4], xmm0
+  0x180857ed4: mov      rcx, rbx
+  0x180857ed7: mov      rax, qword ptr [rbx]
+  0x180857eda: call     qword ptr [rax + 0x50]
+  0x180857edd: movss    xmm2, dword ptr [rdi + 0xc]
+  0x180857ee2: lea      rdx, [rip + 0x4769d7]  ; 'CaptionFloorSpaceMaxDist'
+  0x180857ee9: movss    dword ptr [rdi + 8], xmm0
+  0x180857eee: mov      rcx, rbx
+  0x180857ef1: mov      rax, qword ptr [rbx]
+  0x180857ef4: call     qword ptr [rax + 0x50]
+  0x180857ef7: movss    xmm2, dword ptr [rdi + 0x10]
+  0x180857efc: lea      rdx, [rip + 0x4769dd]  ; 'CaptionLifeHeight'
+  0x180857f03: movss    dword ptr [rdi + 0xc], xmm0
+  0x180857f08: mov      rcx, rbx
+  0x180857f0b: mov      rax, qword ptr [rbx]
+  0x180857f0e: call     qword ptr [rax + 0x50]
+  0x180857f11: movss    xmm2, dword ptr [rdi + 0x14]
+  0x180857f16: lea      rdx, [rip + 0x4769db]  ; 'CaptionTongHeight'
+  0x180857f1d: movss    dword ptr [rdi + 0x10], xmm0
+  0x180857f22: mov      rcx, rbx
+  0x180857f25: mov      rax, qword ptr [rbx]
+  0x180857f28: call     qword ptr [rax + 0x50]
+  0x180857f2b: movss    xmm2, dword ptr [rdi + 0x18]
+  0x180857f30: lea      rdx, [rip + 0x4769d9]  ; 'CaptionTitleHeight'
+  0x180857f37: movss    dword ptr [rdi + 0x14], xmm0
+  0x180857f3c: mov      rcx, rbx
+  0x180857f3f: mov      rax, qword ptr [rbx]
+  0x180857f42: call     qword ptr [rax + 0x50]
+  0x180857f45: movss    xmm2, dword ptr [rdi + 0x1c]
+  0x180857f4a: lea      rdx, [rip + 0x4769d7]  ; 'CaptionSkillBufferHeight'
+  0x180857f51: movss    dword ptr [rdi + 0x18], xmm0
+  0x180857f56: mov      rcx, rbx
+  0x180857f59: mov      rax, qword ptr [rbx]
+  0x180857f5c: call     qword ptr [rax + 0x50]
+  0x180857f5f: movss    xmm2, dword ptr [rdi + 0x20]
+  0x180857f64: lea      rdx, [rip + 0x4769dd]  ; 'CaptionNameHeight'
+  0x180857f6b: movss    dword ptr [rdi + 0x1c], xmm0
+  0x180857f70: mov      rcx, rbx
+  0x180857f73: mov      rax, qword ptr [rbx]
+  0x180857f76: call     qword ptr [rax + 0x50]
+  0x180857f79: movss    xmm2, dword ptr [rdi + 0x24]
+  0x180857f7e: lea      rdx, [rip + 0x4769db]  ; 'CaptionMarkHeight'
+  0x180857f85: movss    dword ptr [rdi + 0x20], xmm0
+  0x180857f8a: mov      rcx, rbx
+  0x180857f8d: mov      rax, qword ptr [rbx]
+  0x180857f90: call     qword ptr [rax + 0x50]
+  0x180857f93: movss    xmm2, dword ptr [rdi + 0x28]
+  0x180857f98: lea      rdx, [rip + 0x4769d9]  ; 'TeamKungFuSpace'
+  0x180857f9f: movss    dword ptr [rdi + 0x24], xmm0
+  0x180857fa4: mov      rcx, rbx
+  0x180857fa7: mov      rax, qword ptr [rbx]
+  0x180857faa: call     qword ptr [rax + 0x50]
+  0x180857fad: movss    xmm2, dword ptr [rdi + 0x2c]
+  0x180857fb2: lea      rdx, [rip + 0x4769d7]  ; 'TeamKungFuDistance'
+  0x180857fb9: movss    dword ptr [rdi + 0x28], xmm0
+  0x180857fbe: mov      rcx, rbx
+  0x180857fc1: mov      rax, qword ptr [rbx]
+  0x180857fc4: call     qword ptr [rax + 0x50]
+  0x180857fc7: movss    xmm2, dword ptr [rdi + 0x30]
+  0x180857fcc: lea      rdx, [rip + 0x4769d5]  ; 'BufferHeightN'
+  0x180857fd3: movss    dword ptr [rdi + 0x2c], xmm0
+  0x180857fd8: mov      rcx, rbx
+  0x180857fdb: mov      rax, qword ptr [rbx]
+  0x180857fde: call     qword ptr [rax + 0x50]
+  0x180857fe1: movss    xmm2, dword ptr [rdi + 0x34]
+  0x180857fe6: lea      rdx, [rip + 0x4769cb]  ; 'BufferHeightY1'
+  0x180857fed: movss    dword ptr [rdi + 0x30], xmm0
+  0x180857ff2: mov      rax, qword ptr [rbx]
+  0x180857ff5: mov      rcx, rbx
+  0x180857ff8: call     qword ptr [rax + 0x50]
+  0x180857ffb: movss    xmm2, dword ptr [rdi + 0x38]
+  0x180858000: lea      rdx, [rip + 0x4769c9]  ; 'CaptionMarkSpaceHeight'
+  0x180858007: movss    dword ptr [rdi + 0x34], xmm0
+  0x18085800c: mov      rcx, rbx
+  0x18085800f: mov      rax, qword ptr [rbx]
+  0x180858012: call     qword ptr [rax + 0x50]
+  0x180858015: movss    xmm2, dword ptr [rdi + 0x3c]
+  0x18085801a: lea      rdx, [rip + 0x4769cf]  ; 'CastSkillResetPeriod'
+  0x180858021: movss    dword ptr [rdi + 0x38], xmm0
+  0x180858026: mov      rcx, rbx
+  0x180858029: mov      rax, qword ptr [rbx]
+  0x18085802c: call     qword ptr [rax + 0x50]
+  0x18085802f: movss    xmm2, dword ptr [rdi + 0x40]
+  0x180858034: lea      rdx, [rip + 0x4769d5]  ; 'SkillEffectResultTimeout'
+  0x18085803b: movss    dword ptr [rdi + 0x3c], xmm0
+  0x180858040: mov      rcx, rbx
+  0x180858043: mov      rax, qword ptr [rbx]
+  0x180858046: call     qword ptr [rax + 0x50]
+  0x180858049: movss    xmm2, dword ptr [rdi + 0x44]
+  0x18085804e: lea      rdx, [rip + 0x4769db]  ; 'NPCLookAtInterpolateTime'
+  0x180858055: movss    dword ptr [rdi + 0x40], xmm0
+  0x18085805a: mov      rcx, rbx
+  0x18085805d: mov      rax, qword ptr [rbx]
+  0x180858060: call     qword ptr [rax + 0x50]
+  0x180858063: movss    xmm2, dword ptr [rdi + 0x48]
+  0x180858068: lea      rdx, [rip + 0x4769e1]  ; 'NPCLookAtDeltaDistance'
+  0x18085806f: movss    dword ptr [rdi + 0x44], xmm0
+  0x180858074: mov      rcx, rbx
+  0x180858077: mov      rax, qword ptr [rbx]
+  0x18085807a: call     qword ptr [rax + 0x50]
+  0x18085807d: movss    xmm2, dword ptr [rdi + 0x4c]
+  0x180858082: lea      rdx, [rip + 0x4769e7]  ; 'CharacterWalkSpeed'
+  0x180858089: movss    dword ptr [rdi + 0x48], xmm0
+  0x18085808e: mov      rcx, rbx
+  0x180858091: mov      rax, qword ptr [rbx]
+  0x180858094: call     qword ptr [rax + 0x50]
+  0x180858097: movss    xmm2, dword ptr [rdi + 0x50]
+  0x18085809c: lea      rdx, [rip + 0x4769e5]  ; 'CharacterRunSpeed'
+  0x1808580a3: movss    dword ptr [rdi + 0x4c], xmm0
+  0x1808580a8: mov      rcx, rbx
+  0x1808580ab: mov      rax, qword ptr [rbx]
+  0x1808580ae: call     qword ptr [rax + 0x50]
+  0x1808580b1: movss    xmm2, dword ptr [rdi + 0x54]
+  0x1808580b6: lea      rdx, [rip + 0x4769e3]  ; 'CharacterSwimSpeed'
+  0x1808580bd: movss    dword ptr [rdi + 0x50], xmm0
+  0x1808580c2: mov      rcx, rbx
+  0x1808580c5: mov      rax, qword ptr [rbx]
+  0x1808580c8: call     qword ptr [rax + 0x50]
+  0x1808580cb: movss    xmm2, dword ptr [rdi + 0x58]
+  0x1808580d0: lea      rdx, [rip + 0x4769e1]  ; 'CharacterYawTurnSpeed'
+  0x1808580d7: movss    dword ptr [rdi + 0x54], xmm0
+  0x1808580dc: mov      rcx, rbx
+  0x1808580df: mov      rax, qword ptr [rbx]
+  0x1808580e2: call     qword ptr [rax + 0x50]
+  0x1808580e5: movss    xmm2, dword ptr [rdi + 0x5c]
+  0x1808580ea: lea      rdx, [rip + 0x4769e7]  ; 'CharacterYawTurnResetSpeed'
+  0x1808580f1: movss    dword ptr [rdi + 0x58], xmm0
+  0x1808580f6: mov      rcx, rbx
+  0x1808580f9: mov      rax, qword ptr [rbx]
+  0x1808580fc: call     qword ptr [rax + 0x50]
+  0x1808580ff: movss    xmm2, dword ptr [rdi + 0x60]
+  0x180858104: lea      rdx, [rip + 0x4769ed]  ; 'CharacterRideWalkSpeed'
+  0x18085810b: movss    dword ptr [rdi + 0x5c], xmm0
+  0x180858110: mov      rcx, rbx
+  0x180858113: mov      rax, qword ptr [rbx]
+  0x180858116: call     qword ptr [rax + 0x50]
+  0x180858119: movss    xmm2, dword ptr [rdi + 0x64]
+  0x18085811e: lea      rdx, [rip + 0x4769f3]  ; 'CharacterRideRunSpeed'
+  0x180858125: movss    dword ptr [rdi + 0x60], xmm0
+  0x18085812a: mov      rcx, rbx
+  0x18085812d: mov      rax, qword ptr [rbx]
+  0x180858130: call     qword ptr [rax + 0x50]
+  0x180858133: movss    xmm2, dword ptr [rdi + 0x68]
+  0x180858138: lea      rdx, [rip + 0x4769f9]  ; 'CharacterRideYawTurnSpeed'
+  0x18085813f: movss    dword ptr [rdi + 0x64], xmm0
+  0x180858144: mov      rcx, rbx
+  0x180858147: mov      rax, qword ptr [rbx]
+  0x18085814a: call     qword ptr [rax + 0x50]
+  0x18085814d: movss    dword ptr [rdi + 0x68], xmm0
+  0x180858152: mov      rax, qword ptr [rbx]
+  0x180858155: lea      rdx, [rip + 0x4769fc]  ; 'CharacterRideYawResetSpeed'
+  0x18085815c: movss    xmm2, dword ptr [rdi + 0x6c]
+  0x180858161: mov      rcx, rbx
+  0x180858164: call     qword ptr [rax + 0x50]
+  0x180858167: movss    xmm2, dword ptr [rdi + 0x70]
+  0x18085816c: lea      rdx, [rip + 0x476a05]  ; 'CharacterVehicleYawTurnSpeed'
+  0x180858173: movss    dword ptr [rdi + 0x6c], xmm0
+  0x180858178: mov      rcx, rbx
+  0x18085817b: mov      rax, qword ptr [rbx]
+  0x18085817e: call     qword ptr [rax + 0x50]
+  0x180858181: movss    xmm2, dword ptr [rdi + 0x74]
+  0x180858186: lea      rdx, [rip + 0x476a13]  ; 'CameraSpeedRatio'
+  0x18085818d: movss    dword ptr [rdi + 0x70], xmm0
+  0x180858192: mov      rcx, rbx
+  0x180858195: mov      rax, qword ptr [rbx]
+  0x180858198: call     qword ptr [rax + 0x50]
+  0x18085819b: movss    xmm2, dword ptr [rdi + 0x78]
+  0x1808581a0: lea      rdx, [rip + 0x476a11]  ; 'CameraRideYawOffset'
+  0x1808581a7: movss    dword ptr [rdi + 0x74], xmm0
+  0x1808581ac: mov      rcx, rbx
+  0x1808581af: mov      rax, qword ptr [rbx]
+  0x1808581b2: call     qword ptr [rax + 0x50]
+  0x1808581b5: movss    xmm2, dword ptr [rdi + 0x7c]
+  0x1808581ba: lea      rdx, [rip + 0x476a0f]  ; 'MissileLiveTime'
+  0x1808581c1: movss    dword ptr [rdi + 0x78], xmm0
+  0x1808581c6: mov      rcx, rbx
+  0x1808581c9: mov      rax, qword ptr [rbx]
+  0x1808581cc: call     qword ptr [rax + 0x50]
+  0x1808581cf: movss    xmm2, dword ptr [rdi + 0x80]
+  0x1808581d7: lea      rdx, [rip + 0x476a0a]  ; 'OptimizationHintFPS'
+  0x1808581de: movss    dword ptr [rdi + 0x7c], xmm0
+  0x1808581e3: mov      rcx, rbx
+  0x1808581e6: mov      rax, qword ptr [rbx]
+  0x1808581e9: call     qword ptr [rax + 0x50]
+  0x1808581ec: movss    xmm2, dword ptr [rdi + 0x84]
+  0x1808581f4: lea      rdx, [rip + 0x476a05]  ; 'OptimizationStartTime'
+  0x1808581fb: movss    dword ptr [rdi + 0x80], xmm0
+  0x180858203: mov      rcx, rbx
+  0x180858206: mov      rax, qword ptr [rbx]
+  0x180858209: call     qword ptr [rax + 0x50]
+  0x18085820c: movss    xmm2, dword ptr [rdi + 0x88]
+  0x180858214: lea      rdx, [rip + 0x476a05]  ; 'OptimizationEvaluationTime'
+  0x18085821b: movss    dword ptr [rdi + 0x84], xmm0
+  0x180858223: mov      rcx, rbx
+  0x180858226: mov      rax, qword ptr [rbx]
+  0x180858229: call     qword ptr [rax + 0x50]
+  0x18085822c: movss    xmm2, dword ptr [rdi + 0x8c]
+  0x180858234: lea      rdx, [rip + 0x476a05]  ; 'RemoteCharacterFramedataDelayTime'
+  0x18085823b: movss    dword ptr [rdi + 0x88], xmm0
+  0x180858243: mov      rcx, rbx
+  0x180858246: mov      rax, qword ptr [rbx]
+  0x180858249: call     qword ptr [rax + 0x50]
+  0x18085824c: movss    xmm2, dword ptr [rdi + 0x90]
+  0x180858254: lea      rdx, [rip + 0x476a0d]  ; 'CameraFollowMode'
+  0x18085825b: movss    dword ptr [rdi + 0x8c], xmm0
+  0x180858263: mov      rcx, rbx
+  0x180858266: mov      rax, qword ptr [rbx]
+  0x180858269: call     qword ptr [rax + 0x50]
+  0x18085826c: movss    xmm2, dword ptr [rdi + 0x94]
+  0x180858274: lea      rdx, [rip + 0x476a05]  ; 'CameraDragSpeed'
+  0x18085827b: movss    dword ptr [rdi + 0x90], xmm0
+  0x180858283: mov      rcx, rbx
+  0x180858286: mov      rax, qword ptr [rbx]
+  0x180858289: call     qword ptr [rax + 0x50]
+  0x18085828c: movss    xmm2, dword ptr [rdi + 0x98]
+  0x180858294: lea      rdx, [rip + 0x4769fd]  ; 'CameraMaxDistance'
+  0x18085829b: movss    dword ptr [rdi + 0x94], xmm0
+  0x1808582a3: mov      rcx, rbx
+  0x1808582a6: mov      rax, qword ptr [rbx]
+  0x1808582a9: call     qword ptr [rax + 0x50]
+  0x1808582ac: movss    xmm2, dword ptr [rdi + 0x9c]
+  0x1808582b4: lea      rdx, [rip + 0x4769f5]  ; 'CameraResetSpeed'
+  0x1808582bb: movss    dword ptr [rdi + 0x98], xmm0
+  0x1808582c3: mov      rcx, rbx
+  0x1808582c6: mov      rax, qword ptr [rbx]
+  0x1808582c9: call     qword ptr [rax + 0x50]
+  0x1808582cc: movss    xmm2, dword ptr [rdi + 0xa0]
+  0x1808582d4: lea      rdx, [rip + 0x4769ed]  ; 'CameraPitchSpeed'
+  0x1808582db: movss    dword ptr [rdi + 0x9c], xmm0
+  0x1808582e3: mov      rax, qword ptr [rbx]
+  0x1808582e6: mov      rcx, rbx
+  0x1808582e9: call     qword ptr [rax + 0x50]
+  0x1808582ec: movss    xmm2, dword ptr [rdi + 0xa4]
+  0x1808582f4: lea      rdx, [rip + 0x4769e5]  ; 'PlayerIdleRandomAnimationTimeIntervalMin'
+  0x1808582fb: movss    dword ptr [rdi + 0xa0], xmm0
+  0x180858303: mov      rcx, rbx
+  0x180858306: mov      rax, qword ptr [rbx]
+  0x180858309: call     qword ptr [rax + 0x50]
+  0x18085830c: movss    xmm2, dword ptr [rdi + 0xa8]
+  0x180858314: lea      rdx, [rip + 0x4769fd]  ; 'PlayerIdleRandomAnimationTimeIntervalMax'
+  0x18085831b: movss    dword ptr [rdi + 0xa4], xmm0
+  0x180858323: mov      rcx, rbx
+  0x180858326: mov      rax, qword ptr [rbx]
+  0x180858329: call     qword ptr [rax + 0x50]
+  0x18085832c: movss    xmm2, dword ptr [rdi + 0xac]
+  0x180858334: lea      rdx, [rip + 0x476a15]  ; 'PlayerIdleRandomSFXTimeIntervalMin'
+  0x18085833b: movss    dword ptr [rdi + 0xa8], xmm0
+  0x180858343: mov      rcx, rbx
+  0x180858346: mov      rax, qword ptr [rbx]
+  0x180858349: call     qword ptr [rax + 0x50]
+  0x18085834c: movss    xmm2, dword ptr [rdi + 0xb0]
+  0x180858354: lea      rdx, [rip + 0x476a25]  ; 'PlayerIdleRandomSFXTimeIntervalMax'
+  0x18085835b: movss    dword ptr [rdi + 0xac], xmm0
+  0x180858363: mov      rcx, rbx
+  0x180858366: mov      rax, qword ptr [rbx]
+  0x180858369: call     qword ptr [rax + 0x50]
+  0x18085836c: movss    xmm2, dword ptr [rdi + 0xb4]
+  0x180858374: lea      rdx, [rip + 0x476a35]  ; 'TitleAdjustHeightMin'
+  0x18085837b: movss    dword ptr [rdi + 0xb0], xmm0
+  0x180858383: mov      rcx, rbx
+  0x180858386: mov      rax, qword ptr [rbx]
+  0x180858389: call     qword ptr [rax + 0x50]
+  0x18085838c: movss    xmm2, dword ptr [rdi + 0xb8]
+  0x180858394: lea      rdx, [rip + 0x476a35]  ; 'TitleAdjustHeightMax'
+  0x18085839b: movss    dword ptr [rdi + 0xb4], xmm0
+  0x1808583a3: mov      rcx, rbx
+  0x1808583a6: mov      rax, qword ptr [rbx]
+  0x1808583a9: call     qword ptr [rax + 0x50]
+  0x1808583ac: movss    xmm2, dword ptr [rdi + 0xbc]
+  0x1808583b4: lea      rdx, [rip + 0x476a35]  ; 'TitleAdjustDistanceMin'
+  0x1808583bb: movss    dword ptr [rdi + 0xb8], xmm0
+  0x1808583c3: mov      rcx, rbx
+  0x1808583c6: mov      rax, qword ptr [rbx]
+  0x1808583c9: call     qword ptr [rax + 0x50]
+  0x1808583cc: movss    xmm2, dword ptr [rdi + 0xc0]
+  0x1808583d4: lea      rdx, [rip + 0x476a35]  ; 'TitleAdjustDistanceMax'
+  0x1808583db: movss    dword ptr [rdi + 0xbc], xmm0
+  0x1808583e3: mov      rcx, rbx
+  0x1808583e6: mov      rax, qword ptr [rbx]
+  0x1808583e9: call     qword ptr [rax + 0x50]
+  0x1808583ec: movss    xmm2, dword ptr [rdi + 0xc4]
+  0x1808583f4: lea      rdx, [rip + 0x476a35]  ; 'TitleAdjustFovMin'
+  0x1808583fb: movss    dword ptr [rdi + 0xc0], xmm0
+  0x180858403: mov      rcx, rbx
+  0x180858406: mov      rax, qword ptr [rbx]
+  0x180858409: call     qword ptr [rax + 0x50]
+  0x18085840c: movss    xmm2, dword ptr [rdi + 0xc8]
+  0x180858414: lea      rdx, [rip + 0x476a2d]  ; 'TitleAdjustFovMax'
+  0x18085841b: movss    dword ptr [rdi + 0xc4], xmm0
+  0x180858423: mov      rcx, rbx
+  0x180858426: mov      rax, qword ptr [rbx]
+  0x180858429: call     qword ptr [rax + 0x50]
+  0x18085842c: movss    xmm2, dword ptr [rdi + 0xcc]
+  0x180858434: lea      rdx, [rip + 0x476a25]  ; 'TitleAdjustFovValue'
+  0x18085843b: movss    dword ptr [rdi + 0xc8], xmm0
+  0x180858443: mov      rcx, rbx
+  0x180858446: mov      rax, qword ptr [rbx]
+  0x180858449: call     qword ptr [rax + 0x50]
+  0x18085844c: movss    xmm2, dword ptr [rdi + 0xd0]
+  0x180858454: lea      rdx, [rip + 0x476a1d]  ; 'SkillRushStateAdjustTime'
+  0x18085845b: movss    dword ptr [rdi + 0xcc], xmm0
+  0x180858463: mov      rcx, rbx
+  0x180858466: mov      rax, qword ptr [rbx]
+  0x180858469: call     qword ptr [rax + 0x50]
+  0x18085846c: movss    xmm2, dword ptr [rdi + 0xd4]
+  0x180858474: lea      rdx, [rip + 0x476a1d]  ; 'SprintCameraAngle'
+  0x18085847b: movss    dword ptr [rdi + 0xd0], xmm0
+  0x180858483: mov      rcx, rbx
+  0x180858486: mov      rax, qword ptr [rbx]
+  0x180858489: call     qword ptr [rax + 0x50]
+  0x18085848c: movss    dword ptr [rdi + 0xd4], xmm0
+  0x180858494: mov      rax, qword ptr [rbx]
+  0x180858497: lea      rdx, [rip + 0x476a12]  ; 'SprintCameraPitch'
+  0x18085849e: movss    xmm2, dword ptr [rdi + 0xd8]
+  0x1808584a6: mov      rcx, rbx
+  0x1808584a9: call     qword ptr [rax + 0x50]
+  0x1808584ac: movss    xmm2, dword ptr [rdi + 0xdc]
+  0x1808584b4: lea      rdx, [rip + 0x476a0d]  ; 'SprintCameraMaxDistance'
+  0x1808584bb: movss    dword ptr [rdi + 0xd8], xmm0
+  0x1808584c3: mov      rcx, rbx
+  0x1808584c6: mov      rax, qword ptr [rbx]
+  0x1808584c9: call     qword ptr [rax + 0x50]
+  0x1808584cc: movss    xmm2, dword ptr [rdi + 0xe0]
+  0x1808584d4: lea      rdx, [rip + 0x476a0d]  ; 'SprintCameraSmoothTime'
+  0x1808584db: movss    dword ptr [rdi + 0xdc], xmm0
+  0x1808584e3: mov      rcx, rbx
+  0x1808584e6: mov      rax, qword ptr [rbx]
+  0x1808584e9: call     qword ptr [rax + 0x50]
+  0x1808584ec: movss    xmm2, dword ptr [rdi + 0xe4]
+  0x1808584f4: lea      rdx, [rip + 0x476a0d]  ; 'SprintCameraSpringTime'
+  0x1808584fb: movss    dword ptr [rdi + 0xe0], xmm0
+  0x180858503: mov      rcx, rbx
+  0x180858506: mov      rax, qword ptr [rbx]
+  0x180858509: call     qword ptr [rax + 0x50]
+  0x18085850c: movss    xmm2, dword ptr [rdi + 0xe8]
+  0x180858514: lea      rdx, [rip + 0x476a0d]  ; 'StrollYOffset'
+  0x18085851b: movss    dword ptr [rdi + 0xe4], xmm0
+  0x180858523: mov      rcx, rbx
+  0x180858526: mov      rax, qword ptr [rbx]
+  0x180858529: call     qword ptr [rax + 0x50]
+  0x18085852c: movss    xmm2, dword ptr [rdi + 0xec]
+  0x180858534: lea      rdx, [rip + 0x4769fd]  ; 'SprintCameraOffset'
+  0x18085853b: movss    dword ptr [rdi + 0xe8], xmm0
+  0x180858543: mov      rcx, rbx
+  0x180858546: mov      rax, qword ptr [rbx]
+  0x180858549: call     qword ptr [rax + 0x50]
+  0x18085854c: movss    xmm2, dword ptr [rdi + 0xf0]
+  0x180858554: lea      rdx, [rip + 0x4769f5]  ; 'SprintCameraOffsetSmoothTime'
+  0x18085855b: movss    dword ptr [rdi + 0xec], xmm0
+  0x180858563: mov      rcx, rbx
+  0x180858566: mov      rax, qword ptr [rbx]
+  0x180858569: call     qword ptr [rax + 0x50]
+  0x18085856c: movss    xmm2, dword ptr [rdi + 0xf4]
+  0x180858574: lea      rdx, [rip + 0x4769fd]  ; 'CarrierCameraPitch'
+  0x18085857b: movss    dword ptr [rdi + 0xf0], xmm0
+  0x180858583: mov      rcx, rbx
+  0x180858586: mov      rax, qword ptr [rbx]
+  0x180858589: call     qword ptr [rax + 0x50]
+  0x18085858c: movss    xmm2, dword ptr [rdi + 0xf8]
+  0x180858594: lea      rdx, [rip + 0x4769f5]  ; 'CarrierCameraYaw'
+  0x18085859b: movss    dword ptr [rdi + 0xf4], xmm0
+  0x1808585a3: mov      rcx, rbx
+  0x1808585a6: mov      rax, qword ptr [rbx]
+  0x1808585a9: call     qword ptr [rax + 0x50]
+  0x1808585ac: movss    xmm2, dword ptr [rdi + 0xfc]
+  0x1808585b4: lea      rdx, [rip + 0x4769ed]  ; 'CarrierCameraMaxDistance'
+  0x1808585bb: movss    dword ptr [rdi + 0xf8], xmm0
+  0x1808585c3: mov      rcx, rbx
+  0x1808585c6: mov      rax, qword ptr [rbx]
+  0x1808585c9: call     qword ptr [rax + 0x50]
+  0x1808585cc: movss    xmm2, dword ptr [rdi + 0x100]
+  0x1808585d4: lea      rdx, [rip + 0x4769ed]  ; 'CarrierCameraDeltaHeight'
+  0x1808585db: movss    dword ptr [rdi + 0xfc], xmm0
+  0x1808585e3: mov      rcx, rbx
+  0x1808585e6: mov      rax, qword ptr [rbx]
+  0x1808585e9: call     qword ptr [rax + 0x50]
+  0x1808585ec: movss    xmm2, dword ptr [rdi + 0x104]
+  0x1808585f4: lea      rdx, [rip + 0x4769ed]  ; 'NearByWallDistance'
+  0x1808585fb: movss    dword ptr [rdi + 0x100], xmm0
+  0x180858603: mov      rcx, rbx
+  0x180858606: mov      rax, qword ptr [rbx]
+  0x180858609: call     qword ptr [rax + 0x50]
+  0x18085860c: movss    xmm2, dword ptr [rdi + 0x108]
+  0x180858614: lea      rdx, [rip + 0x4769e5]  ; 'SprintCameraMaxOffset'
+  0x18085861b: movss    dword ptr [rdi + 0x104], xmm0
+  0x180858623: mov      rcx, rbx
+  0x180858626: mov      rax, qword ptr [rbx]
+  0x180858629: call     qword ptr [rax + 0x50]
+  0x18085862c: movss    xmm2, dword ptr [rdi + 0x10c]
+  0x180858634: lea      rdx, [rip + 0x4769e5]  ; 'AnimationDelayFrame'
+  0x18085863b: movss    dword ptr [rdi + 0x108], xmm0
+  0x180858643: mov      rax, qword ptr [rbx]
+  0x180858646: mov      rcx, rbx
+  0x180858649: call     qword ptr [rax + 0x50]
+  0x18085864c: movss    xmm2, dword ptr [rdi + 0x110]
+  0x180858654: lea      rdx, [rip + 0x4769dd]  ; 'PlayerSwingSchoolID'
+  0x18085865b: movss    dword ptr [rdi + 0x10c], xmm0
+  0x180858663: mov      rcx, rbx
+  0x180858666: mov      rax, qword ptr [rbx]
+  0x180858669: call     qword ptr [rax + 0x50]
+  0x18085866c: movss    xmm2, dword ptr [rdi + 0x114]
+  0x180858674: lea      rdx, [rip + 0x4769d5]  ; 'PlayerSwingWeaponID'
+  0x18085867b: movss    dword ptr [rdi + 0x110], xmm0
+  0x180858683: mov      rcx, rbx
+  0x180858686: mov      rax, qword ptr [rbx]
+  0x180858689: call     qword ptr [rax + 0x50]
+  0x18085868c: movss    xmm2, dword ptr [rdi + 0x118]
+  0x180858694: lea      rdx, [rip + 0x4769cd]  ; 'DeathAnimationTimeout'
+  0x18085869b: movss    dword ptr [rdi + 0x114], xmm0
+  0x1808586a3: mov      rcx, rbx
+  0x1808586a6: mov      rax, qword ptr [rbx]
+  0x1808586a9: call     qword ptr [rax + 0x50]
+  0x1808586ac: movss    xmm2, dword ptr [rdi + 0x11c]
+  0x1808586b4: lea      rdx, [rip + 0x4769cd]  ; 'PauseAnimationTimeout'
+  0x1808586bb: movss    dword ptr [rdi + 0x118], xmm0
+  0x1808586c3: mov      rcx, rbx
+  0x1808586c6: mov      rax, qword ptr [rbx]
+  0x1808586c9: call     qword ptr [rax + 0x50]
+  0x1808586cc: movss    xmm2, dword ptr [rdi + 0x120]
+  0x1808586d4: lea      rdx, [rip + 0x4769cd]  ; 'NavigateEffectID'
+  0x1808586db: movss    dword ptr [rdi + 0x11c], xmm0
+  0x1808586e3: mov      rcx, rbx
+  0x1808586e6: mov      rax, qword ptr [rbx]
+  0x1808586e9: call     qword ptr [rax + 0x50]
+  0x1808586ec: movss    xmm2, dword ptr [rdi + 0x124]
+  0x1808586f4: lea      rdx, [rip + 0x4769c5]  ; 'NavigateInterval'
+  0x1808586fb: movss    dword ptr [rdi + 0x120], xmm0
+  0x180858703: mov      rcx, rbx
+  0x180858706: mov      rax, qword ptr [rbx]
+  0x180858709: call     qword ptr [rax + 0x50]
+  0x18085870c: movss    xmm2, dword ptr [rdi + 0x128]
+  0x180858714: lea      rdx, [rip + 0x4769bd]  ; 'NavigateFadeOut'
+  0x18085871b: movss    dword ptr [rdi + 0x124], xmm0
+  0x180858723: mov      rcx, rbx
+  0x180858726: mov      rax, qword ptr [rbx]
+  0x180858729: call     qword ptr [rax + 0x50]
+  0x18085872c: movss    xmm2, dword ptr [rdi + 0x12c]
+  0x180858734: lea      rdx, [rip + 0x4769b5]  ; 'NavigateOffset'
+  0x18085873b: movss    dword ptr [rdi + 0x128], xmm0
+  0x180858743: mov      rcx, rbx
+  0x180858746: mov      rax, qword ptr [rbx]
+  0x180858749: call     qword ptr [rax + 0x50]
+  0x18085874c: movss    xmm2, dword ptr [rdi + 0x130]
+  0x180858754: lea      rdx, [rip + 0x4769ad]  ; 'SoundPosCoeff'
+  0x18085875b: movss    dword ptr [rdi + 0x12c], xmm0
+  0x180858763: mov      rcx, rbx
+  0x180858766: mov      rax, qword ptr [rbx]
+  0x180858769: call     qword ptr [rax + 0x50]
+  0x18085876c: movss    xmm2, dword ptr [rdi + 0x134]
+  0x180858774: lea      rdx, [rip + 0x47699d]  ; 'RenderLimitRange'
+  0x18085877b: movss    dword ptr [rdi + 0x130], xmm0
+  0x180858783: mov      rcx, rbx
+  0x180858786: mov      rax, qword ptr [rbx]
+  0x180858789: call     qword ptr [rax + 0x50]
+  0x18085878c: movss    xmm2, dword ptr [rdi + 0x138]
+  0x180858794: lea      rdx, [rip + 0x476995]  ; 'PreloadWeight'
+  0x18085879b: movss    dword ptr [rdi + 0x134], xmm0
+  0x1808587a3: mov      rcx, rbx
+  0x1808587a6: mov      rax, qword ptr [rbx]
+  0x1808587a9: call     qword ptr [rax + 0x50]
+  0x1808587ac: movss    xmm2, dword ptr [rdi + 0x13c]
+  0x1808587b4: lea      rdx, [rip + 0x476985]  ; 'RenderInterval'
+  0x1808587bb: movss    dword ptr [rdi + 0x138], xmm0
+  0x1808587c3: mov      rcx, rbx
+  0x1808587c6: mov      rax, qword ptr [rbx]
+  0x1808587c9: call     qword ptr [rax + 0x50]
+  0x1808587cc: movss    xmm2, dword ptr [rdi + 0x140]
+  0x1808587d4: lea      rdx, [rip + 0x47697d]  ; 'FadeNpcLimit'
+  0x1808587db: movss    dword ptr [rdi + 0x13c], xmm0
+  0x1808587e3: mov      rcx, rbx
+  0x1808587e6: mov      rax, qword ptr [rbx]
+  0x1808587e9: call     qword ptr [rax + 0x50]
+  0x1808587ec: movss    dword ptr [rdi + 0x140], xmm0
+  0x1808587f4: mov      rax, qword ptr [rbx]
+  0x1808587f7: lea      rdx, [rip + 0x47696a]  ; 'FadePlayerLimit'
+  0x1808587fe: movss    xmm2, dword ptr [rdi + 0x144]
+  0x180858806: mov      rcx, rbx
+  0x180858809: call     qword ptr [rax + 0x50]
+  0x18085880c: movss    xmm2, dword ptr [rdi + 0x148]
+  0x180858814: lea      rdx, [rip + 0x476965]  ; 'FlightRollTurnResetSpeed'
+  0x18085881b: movss    dword ptr [rdi + 0x144], xmm0
+  0x180858823: mov      rcx, rbx
+  0x180858826: mov      rax, qword ptr [rbx]
+  0x180858829: call     qword ptr [rax + 0x50]
+  0x18085882c: movss    xmm2, dword ptr [rdi + 0x14c]
+  0x180858834: lea      rdx, [rip + 0x476965]  ; 'CorpseLimit'
+  0x18085883b: movss    dword ptr [rdi + 0x148], xmm0
+  0x180858843: mov      rcx, rbx
+  0x180858846: mov      rax, qword ptr [rbx]
+  0x180858849: call     qword ptr [rax + 0x50]
+  0x18085884c: movss    xmm2, dword ptr [rdi + 0x150]
+  0x180858854: lea      rdx, [rip + 0x476955]  ; 'CorpseProtectTime'
+  0x18085885b: movss    dword ptr [rdi + 0x14c], xmm0
+  0x180858863: mov      rcx, rbx
+  0x180858866: mov      rax, qword ptr [rbx]
+  0x180858869: call     qword ptr [rax + 0x50]
+  0x18085886c: movss    xmm2, dword ptr [rdi + 0x154]
+  0x180858874: lea      rdx, [rip + 0x47694d]  ; 'CharacterDialogFadeOut'
+  0x18085887b: movss    dword ptr [rdi + 0x150], xmm0
+  0x180858883: mov      rcx, rbx
+  0x180858886: mov      rax, qword ptr [rbx]
+  0x180858889: call     qword ptr [rax + 0x50]
+  0x18085888c: movss    xmm2, dword ptr [rdi + 0x158]
+  0x180858894: lea      rdx, [rip + 0x47694d]  ; 'SceneObjectBorderThick'
+  0x18085889b: movss    dword ptr [rdi + 0x154], xmm0
+  0x1808588a3: mov      rcx, rbx
+  0x1808588a6: mov      rax, qword ptr [rbx]
+  0x1808588a9: call     qword ptr [rax + 0x50]
+  0x1808588ac: movss    xmm2, dword ptr [rdi + 0x15c]
+  0x1808588b4: lea      rdx, [rip + 0x47694d]  ; 'SceneObjectBorderColor'
+  0x1808588bb: movss    dword ptr [rdi + 0x158], xmm0
+  0x1808588c3: mov      rcx, rbx
+  0x1808588c6: mov      rax, qword ptr [rbx]
+  0x1808588c9: call     qword ptr [rax + 0x50]
+  0x1808588cc: movss    xmm2, dword ptr [rdi + 0x160]
+  0x1808588d4: lea      rdx, [rip + 0x47694d]  ; 'SprintCameraMaxDragSpeed'
+  0x1808588db: movss    dword ptr [rdi + 0x15c], xmm0
+  0x1808588e3: mov      rcx, rbx
+  0x1808588e6: mov      rax, qword ptr [rbx]
+  0x1808588e9: call     qword ptr [rax + 0x50]
+  0x1808588ec: movss    xmm2, dword ptr [rdi + 0x164]
+  0x1808588f4: lea      rdx, [rip + 0x47694d]  ; 'SprintCameraMinTrackBackSpeed'
+  0x1808588fb: movss    dword ptr [rdi + 0x160], xmm0
+  0x180858903: mov      rcx, rbx
+  0x180858906: mov      rax, qword ptr [rbx]
+  0x180858909: call     qword ptr [rax + 0x50]
+  0x18085890c: movss    xmm2, dword ptr [rdi + 0x168]
+  0x180858914: lea      rdx, [rip + 0x476955]  ; 'SprintCameraMaxTrackBackSpeed'
+  0x18085891b: movss    dword ptr [rdi + 0x164], xmm0
+  0x180858923: mov      rcx, rbx
+  0x180858926: mov      rax, qword ptr [rbx]
+  0x180858929: call     qword ptr [rax + 0x50]
+  0x18085892c: movss    xmm2, dword ptr [rdi + 0x16c]
+  0x180858934: lea      rdx, [rip + 0x47695d]  ; 'SprintCameraTrackBackSpeedSlope'
+  0x18085893b: movss    dword ptr [rdi + 0x168], xmm0
+  0x180858943: mov      rcx, rbx
+  0x180858946: mov      rax, qword ptr [rbx]
+  0x180858949: call     qword ptr [rax + 0x50]
+  0x18085894c: movss    xmm2, dword ptr [rdi + 0x170]
+  0x180858954: lea      rdx, [rip + 0x476965]  ; 'DiveCameraRollRange'
+  0x18085895b: movss    dword ptr [rdi + 0x16c], xmm0
+  0x180858963: mov      rcx, rbx
+  0x180858966: mov      rax, qword ptr [rbx]
+  0x180858969: call     qword ptr [rax + 0x50]
+  0x18085896c: movss    xmm2, dword ptr [rdi + 0x174]
+  0x180858974: lea      rdx, [rip + 0x47695d]  ; 'DiveCameraRollTime'
+  0x18085897b: movss    dword ptr [rdi + 0x170], xmm0
+  0x180858983: mov      rcx, rbx
+  0x180858986: mov      rax, qword ptr [rbx]
+  0x180858989: call     qword ptr [rax + 0x50]
+  0x18085898c: movss    xmm2, dword ptr [rdi + 0x178]
+  0x180858994: lea      rdx, [rip + 0x476955]  ; 'CYReflectSfxID'
+  0x18085899b: movss    dword ptr [rdi + 0x174], xmm0
+  0x1808589a3: mov      rax, qword ptr [rbx]
+  0x1808589a6: mov      rcx, rbx
+  0x1808589a9: call     qword ptr [rax + 0x50]
+  0x1808589ac: movss    xmm2, dword ptr [rdi + 0x17c]
+  0x1808589b4: lea      rdx, [rip + 0x47694d]  ; 'CYReflectSoundID'
+  0x1808589bb: movss    dword ptr [rdi + 0x178], xmm0
+  0x1808589c3: mov      rcx, rbx
+  0x1808589c6: mov      rax, qword ptr [rbx]
+  0x1808589c9: call     qword ptr [rax + 0x50]
+  0x1808589cc: movss    dword ptr [rdi + 0x17c], xmm0
+  0x1808589d4: lea      rdx, [rip + 0x476945]  ; 'nNpcAdjustSlipOffsetY'
+  0x1808589db: mov      rax, qword ptr [rbx]
+  0x1808589de: mov      rcx, rbx
+  0x1808589e1: movss    xmm2, dword ptr [rdi + 0x180]
+  0x1808589e9: call     qword ptr [rax + 0x50]
+  0x1808589ec: movss    dword ptr [rdi + 0x180], xmm0
+  0x1808589f4: lea      rdx, [rip + 0x476945]  ; 'nNpcAdjustOffsetY'
+  0x1808589fb: mov      rax, qword ptr [rbx]
+  0x1808589fe: mov      rcx, rbx
+  0x180858a01: movss    xmm2, dword ptr [rdi + 0x184]
+  0x180858a09: call     qword ptr [rax + 0x50]
+  0x180858a0c: movss    dword ptr [rdi + 0x184], xmm0
+  0x180858a14: lea      rdx, [rip + 0x47693d]  ; 'SummitDistance'
+  0x180858a1b: mov      rax, qword ptr [rbx]
+  0x180858a1e: mov      rcx, rbx
+  0x180858a21: movss    xmm2, dword ptr [rdi + 0x188]
+  0x180858a29: call     qword ptr [rax + 0x50]
+  0x180858a2c: movss    dword ptr [rdi + 0x188], xmm0
+  0x180858a34: lea      rdx, [rip + 0x476935]  ; 'SummitFadeTime'
+  0x180858a3b: mov      rax, qword ptr [rbx]
+  0x180858a3e: mov      rcx, rbx
+  0x180858a41: movss    xmm2, dword ptr [rdi + 0x18c]
+  0x180858a49: call     qword ptr [rax + 0x50]
+  0x180858a4c: movss    dword ptr [rdi + 0x18c], xmm0
+  0x180858a54: lea      rdx, [rip + 0x47692d]  ; 'SummitAdjustY'
+  0x180858a5b: mov      rax, qword ptr [rbx]
+  0x180858a5e: mov      rcx, rbx
+  0x180858a61: movss    xmm2, dword ptr [rdi + 0x190]
+  0x180858a69: call     qword ptr [rax + 0x50]
+  0x180858a6c: movss    dword ptr [rdi + 0x190], xmm0
+  0x180858a74: lea      rdx, [rip + 0x47691d]  ; 'NpcLinkFadeTime'
+  0x180858a7b: mov      rax, qword ptr [rbx]
+  0x180858a7e: mov      rcx, rbx
+  0x180858a81: movss    xmm2, dword ptr [rdi + 0x194]
+  0x180858a89: call     qword ptr [rax + 0x50]
+  0x180858a8c: movss    dword ptr [rdi + 0x194], xmm0
+  0x180858a94: lea      rdx, [rip + 0x476915]  ; 'InteractTitleEffectID'
+  0x180858a9b: mov      rax, qword ptr [rbx]
+  0x180858a9e: mov      rcx, rbx
+  0x180858aa1: movss    xmm2, dword ptr [rdi + 0x198]
+  0x180858aa9: call     qword ptr [rax + 0x50]
+  0x180858aac: movss    dword ptr [rdi + 0x198], xmm0
+  0x180858ab4: lea      rdx, [rip + 0x476915]  ; 'InteractTitleFaceAngle'
+  0x180858abb: mov      rax, qword ptr [rbx]
+  0x180858abe: mov      rcx, rbx
+  0x180858ac1: movss    xmm2, dword ptr [rdi + 0x19c]
+  0x180858ac9: call     qword ptr [rax + 0x50]
+  0x180858acc: movss    dword ptr [rdi + 0x19c], xmm0
+  0x180858ad4: lea      rdx, [rip + 0x476915]  ; 'ForceStopSimWorld'
+  0x180858adb: mov      rax, qword ptr [rbx]
+  0x180858ade: mov      rcx, rbx
+  0x180858ae1: movss    xmm2, dword ptr [rdi + 0x1a0]
+  0x180858ae9: call     qword ptr [rax + 0x50]
+  0x180858aec: movss    dword ptr [rdi + 0x1a0], xmm0
+  0x180858af4: lea      rdx, [rip + 0x47690d]  ; 'FootContactGroundDis'
+  0x180858afb: mov      rax, qword ptr [rbx]
+  0x180858afe: mov      rcx, rbx
+  0x180858b01: movss    xmm2, dword ptr [rdi + 0x1a4]
+  0x180858b09: call     qword ptr [rax + 0x50]
+  0x180858b0c: movss    dword ptr [rdi + 0x1a4], xmm0
+  0x180858b14: lea      rdx, [rip + 0x47690d]  ; 'FootprintApplyTimeInterval'
+  0x180858b1b: mov      rax, qword ptr [rbx]
+  0x180858b1e: mov      rcx, rbx
+  0x180858b21: movss    xmm2, dword ptr [rdi + 0x1a8]
+  0x180858b29: call     qword ptr [rax + 0x50]
+  0x180858b2c: movss    dword ptr [rdi + 0x1a8], xmm0
+  0x180858b34: lea      rdx, [rip + 0x47690d]  ; 'FootprintLife'
+  0x180858b3b: mov      rax, qword ptr [rbx]
+  0x180858b3e: mov      rcx, rbx
+  0x180858b41: movss    xmm2, dword ptr [rdi + 0x1ac]
+  0x180858b49: call     qword ptr [rax + 0x50]
+  0x180858b4c: movss    dword ptr [rdi + 0x1ac], xmm0
+  0x180858b54: mov      rax, qword ptr [rbx]
+  0x180858b57: lea      rdx, [rip + 0x4768fa]  ; 'FootprintCount'
+  0x180858b5e: movss    xmm2, dword ptr [rdi + 0x1b0]
+  0x180858b66: mov      rcx, rbx
+  0x180858b69: call     qword ptr [rax + 0x50]
+  0x180858b6c: movss    dword ptr [rdi + 0x1b0], xmm0
+  0x180858b74: lea      rdx, [rip + 0x4768f5]  ; 'RideFootContactGroundDis'
+  0x180858b7b: mov      rax, qword ptr [rbx]
+  0x180858b7e: mov      rcx, rbx
+  0x180858b81: movss    xmm2, dword ptr [rdi + 0x1b4]
+  0x180858b89: call     qword ptr [rax + 0x50]
+  0x180858b8c: movss    dword ptr [rdi + 0x1b4], xmm0
+  0x180858b94: lea      rdx, [rip + 0x4768f5]  ; 'RideFootprintApplyTimeInterval'
+  0x180858b9b: mov      rax, qword ptr [rbx]
+  0x180858b9e: mov      rcx, rbx
+  0x180858ba1: movss    xmm2, dword ptr [rdi + 0x1b8]
+  0x180858ba9: call     qword ptr [rax + 0x50]
+  0x180858bac: movss    dword ptr [rdi + 0x1b8], xmm0
+  0x180858bb4: lea      rdx, [rip + 0x4768fd]  ; 'RideFootprintLife'
+  0x180858bbb: mov      rax, qword ptr [rbx]
+  0x180858bbe: mov      rcx, rbx
+  0x180858bc1: movss    xmm2, dword ptr [rdi + 0x1bc]
+  0x180858bc9: call     qword ptr [rax + 0x50]
+  0x180858bcc: movss    dword ptr [rdi + 0x1bc], xmm0
+  0x180858bd4: lea      rdx, [rip + 0x4768f5]  ; 'GroundEffectDis'
+  0x180858bdb: mov      rax, qword ptr [rbx]
+  0x180858bde: mov      rcx, rbx
+  0x180858be1: movss    xmm2, dword ptr [rdi + 0x1c0]
+  0x180858be9: call     qword ptr [rax + 0x50]
+  0x180858bec: movss    dword ptr [rdi + 0x1c0], xmm0
+  0x180858bf4: lea      rdx, [rip + 0x4768ed]  ; 'LocalPlayerEnvironmentOffset'
+  0x180858bfb: mov      rax, qword ptr [rbx]
+  0x180858bfe: mov      rcx, rbx
+  0x180858c01: movss    xmm2, dword ptr [rdi + 0x1c4]
+  0x180858c09: call     qword ptr [rax + 0x50]
+  0x180858c0c: movss    dword ptr [rdi + 0x1c4], xmm0
+  0x180858c14: lea      rdx, [rip + 0x4768f5]  ; 'EyeLightIntensityMin'
+  0x180858c1b: mov      rax, qword ptr [rbx]
+  0x180858c1e: mov      rcx, rbx
+  0x180858c21: movss    xmm2, dword ptr [rdi + 0x1c8]
+  0x180858c29: call     qword ptr [rax + 0x50]
+  0x180858c2c: movss    dword ptr [rdi + 0x1c8], xmm0
+  0x180858c34: lea      rdx, [rip + 0x4768f5]  ; 'EyeLightIntensityMax'
+  0x180858c3b: mov      rax, qword ptr [rbx]
+  0x180858c3e: mov      rcx, rbx
+  0x180858c41: movss    xmm2, dword ptr [rdi + 0x1cc]
+  0x180858c49: call     qword ptr [rax + 0x50]
+  0x180858c4c: movss    dword ptr [rdi + 0x1cc], xmm0
+  0x180858c54: lea      rdx, [rip + 0x4768f5]  ; 'SocketLOD0Distance'
+  0x180858c5b: mov      rax, qword ptr [rbx]
+  0x180858c5e: mov      rcx, rbx
+  0x180858c61: movss    xmm2, dword ptr [rdi + 0x1d0]
+  0x180858c69: call     qword ptr [rax + 0x50]
+  0x180858c6c: movss    dword ptr [rdi + 0x1d0], xmm0
+  0x180858c74: lea      rdx, [rip + 0x4768ed]  ; 'SocketLOD1Distance'
+  0x180858c7b: mov      rax, qword ptr [rbx]
+  0x180858c7e: mov      rcx, rbx
+  0x180858c81: movss    xmm2, dword ptr [rdi + 0x1d4]
+  0x180858c89: call     qword ptr [rax + 0x50]
+  0x180858c8c: movss    dword ptr [rdi + 0x1d4], xmm0
+  0x180858c94: lea      rdx, [rip + 0x4768e5]  ; 'HitMissAdjustOffset'
+  0x180858c9b: mov      rax, qword ptr [rbx]
+  0x180858c9e: mov      rcx, rbx
+  0x180858ca1: movss    xmm2, dword ptr [rdi + 0x1d8]
+  0x180858ca9: call     qword ptr [rax + 0x50]
+  0x180858cac: movss    dword ptr [rdi + 0x1d8], xmm0
+  0x180858cb4: lea      rdx, [rip + 0x4768dd]  ; 'NpcAutoLookAtDistance'
+  0x180858cbb: mov      rax, qword ptr [rbx]
+  0x180858cbe: mov      rcx, rbx
+  0x180858cc1: movss    xmm2, dword ptr [rdi + 0x1dc]
+  0x180858cc9: call     qword ptr [rax + 0x50]
+  0x180858ccc: movss    dword ptr [rdi + 0x1dc], xmm0
+  0x180858cd4: lea      rdx, [rip + 0x4768dd]  ; 'NpcAutoLookAtAngle'
+  0x180858cdb: mov      rax, qword ptr [rbx]
+  0x180858cde: mov      rcx, rbx
+  0x180858ce1: movss    xmm2, dword ptr [rdi + 0x1e0]
+  0x180858ce9: call     qword ptr [rax + 0x50]
+  0x180858cec: movss    dword ptr [rdi + 0x1e0], xmm0
+  0x180858cf4: lea      rdx, [rip + 0x4768d5]  ; 'AirCombatToSkillMoveCameraDis'
+  0x180858cfb: mov      rax, qword ptr [rbx]
+  0x180858cfe: movss    xmm2, dword ptr [rdi + 0x1e4]
+  0x180858d06: mov      rcx, rbx
+  0x180858d09: call     qword ptr [rax + 0x50]
+  0x180858d0c: movss    dword ptr [rdi + 0x1e4], xmm0
+  0x180858d14: lea      rdx, [rip + 0x4768dd]  ; 'PengLaiEagleLimit'
+  0x180858d1b: mov      rax, qword ptr [rbx]
+  0x180858d1e: mov      rcx, rbx
+  0x180858d21: movss    xmm2, dword ptr [rdi + 0x1e8]
+  0x180858d29: call     qword ptr [rax + 0x50]
+  0x180858d2c: movss    dword ptr [rdi + 0x1e8], xmm0
+  0x180858d34: lea      rdx, [rip + 0x4768d5]  ; 'ChainBladeSmoothTime'
+  0x180858d3b: mov      rax, qword ptr [rbx]
+  0x180858d3e: mov      rcx, rbx
+  0x180858d41: movss    xmm2, dword ptr [rdi + 0x1ec]
+  0x180858d49: call     qword ptr [rax + 0x50]
+  0x180858d4c: movss    dword ptr [rdi + 0x1ec], xmm0
+  0x180858d54: lea      rdx, [rip + 0x4768d5]  ; 'MissileBlockDis'
+  0x180858d5b: mov      rax, qword ptr [rbx]
+  0x180858d5e: mov      rcx, rbx
+  0x180858d61: movss    xmm2, dword ptr [rdi + 0x1f0]
+  0x180858d69: call     qword ptr [rax + 0x50]
+  0x180858d6c: movss    dword ptr [rdi + 0x1f0], xmm0
+  0x180858d74: lea      rdx, [rip + 0x4768cd]  ; 'CharacterCameraSmoothTime'
+  0x180858d7b: mov      rax, qword ptr [rbx]
+  0x180858d7e: mov      rcx, rbx
+  0x180858d81: movss    xmm2, dword ptr [rdi + 0x1f4]
+  0x180858d89: call     qword ptr [rax + 0x50]
+  0x180858d8c: movss    dword ptr [rdi + 0x1f4], xmm0
+  0x180858d94: lea      rdx, [rip + 0x4768cd]  ; 'AutoUpdateLookAtDistance'
+  0x180858d9b: mov      rax, qword ptr [rbx]
+  0x180858d9e: mov      rcx, rbx
+  0x180858da1: movss    xmm2, dword ptr [rdi + 0x1f8]
+  0x180858da9: call     qword ptr [rax + 0x50]
+  0x180858dac: movss    dword ptr [rdi + 0x1f8], xmm0
+  0x180858db4: lea      rdx, [rip + 0x4768cd]  ; 'UpdateAnimationCameraDistance'
+  0x180858dbb: mov      rax, qword ptr [rbx]
+  0x180858dbe: mov      rcx, rbx
+  0x180858dc1: movss    xmm2, dword ptr [rdi + 0x1fc]
+  0x180858dc9: call     qword ptr [rax + 0x50]
+  0x180858dcc: movss    dword ptr [rdi + 0x1fc], xmm0
+  0x180858dd4: lea      rdx, [rip + 0x4768d5]  ; 'FocusFaceExitDisDelta'
+  0x180858ddb: mov      rax, qword ptr [rbx]
+  0x180858dde: mov      rcx, rbx
+  0x180858de1: movss    xmm2, dword ptr [rdi + 0x234]
+  0x180858de9: call     qword ptr [rax + 0x50]
+  0x180858dec: movss    dword ptr [rdi + 0x234], xmm0
+  0x180858df4: lea      rdx, [rip + 0x4768d5]  ; 'FocusFaceExitDuration'
+  0x180858dfb: mov      rax, qword ptr [rbx]
+  0x180858dfe: mov      rcx, rbx
+  0x180858e01: movss    xmm2, dword ptr [rdi + 0x238]
+  0x180858e09: call     qword ptr [rax + 0x50]
+  0x180858e0c: movss    dword ptr [rdi + 0x238], xmm0
+  0x180858e14: lea      rdx, [rip + 0x4768d5]  ; 'FocusFaceZoomFactor'
+  0x180858e1b: mov      rax, qword ptr [rbx]
+  0x180858e1e: mov      rcx, rbx
+  0x180858e21: movss    xmm2, dword ptr [rdi + 0x23c]
+  0x180858e29: call     qword ptr [rax + 0x50]
+  0x180858e2c: movss    dword ptr [rdi + 0x23c], xmm0
+  0x180858e34: lea      rdx, [rip + 0x4768cd]  ; 'FocusFaceFov'
+  0x180858e3b: mov      rax, qword ptr [rbx]
+  0x180858e3e: mov      rcx, rbx
+  0x180858e41: movss    xmm2, dword ptr [rdi + 0x240]
+  0x180858e49: call     qword ptr [rax + 0x50]
+  0x180858e4c: movss    dword ptr [rdi + 0x240], xmm0
+  0x180858e54: lea      rdx, [rip + 0x4768bd]  ; 'EmptyModelCacheLimit'
+  0x180858e5b: mov      rax, qword ptr [rbx]
+  0x180858e5e: mov      rcx, rbx
+  0x180858e61: movss    xmm2, dword ptr [rdi + 0x244]
+  0x180858e69: call     qword ptr [rax + 0x50]
+  0x180858e6c: movss    dword ptr [rdi + 0x244], xmm0
+  0x180858e74: lea      rdx, [rip + 0x4768bd]  ; 'NavFlyVehicleRideID'
+  0x180858e7b: mov      rax, qword ptr [rbx]
+  0x180858e7e: mov      rcx, rbx
+  0x180858e81: mov      r8d, dword ptr [rdi + 0x248]
+  0x180858e88: call     qword ptr [rax + 0x40]
+  0x180858e8b: mov      dword ptr [rdi + 0x248], eax
+  0x180858e91: lea      rdx, [rip + 0x4768b8]  ; 'LocalPlayerEmployeeClipLevel'
+  0x180858e98: mov      rax, qword ptr [rbx]
+  0x180858e9b: mov      rcx, rbx
+  0x180858e9e: mov      r8d, dword ptr [rdi + 0x24c]
+  0x180858ea5: call     qword ptr [rax + 0x40]
+  0x180858ea8: mov      dword ptr [rdi + 0x24c], eax
+  0x180858eae: mov      rax, qword ptr [rbx]
+  0x180858eb1: lea      rdx, [rip + 0x4768c0]  ; 'LocalPlayerAssistedClipLevel'
+  0x180858eb8: mov      r8d, dword ptr [rdi + 0x250]
+  0x180858ebf: mov      rcx, rbx
+  0x180858ec2: call     qword ptr [rax + 0x40]
+  0x180858ec5: mov      dword ptr [rdi + 0x250], eax
+  0x180858ecb: lea      rdx, [rip + 0x4768ce]  ; 'OtherPlayerEmployeeClipLevel'
+  0x180858ed2: mov      rax, qword ptr [rbx]
+  0x180858ed5: mov      rcx, rbx
+  0x180858ed8: mov      r8d, dword ptr [rdi + 0x254]
+  0x180858edf: call     qword ptr [rax + 0x40]
+  0x180858ee2: mov      dword ptr [rdi + 0x254], eax
+  0x180858ee8: lea      rdx, [rip + 0x4768d9]  ; 'OtherPlayerAssistedClipLevel'
+  0x180858eef: mov      rax, qword ptr [rbx]
+  0x180858ef2: mov      rcx, rbx
+  0x180858ef5: mov      r8d, dword ptr [rdi + 0x258]
+  0x180858efc: call     qword ptr [rax + 0x40]
+  0x180858eff: mov      dword ptr [rdi + 0x258], eax
+  0x180858f05: lea      rdx, [rip + 0x4768e4]  ; 'NpcEmployeeClipLevel'
+  0x180858f0c: mov      rax, qword ptr [rbx]
+  0x180858f0f: mov      rcx, rbx
+  0x180858f12: mov      r8d, dword ptr [rdi + 0x25c]
+  0x180858f19: call     qword ptr [rax + 0x40]
+  0x180858f1c: mov      dword ptr [rdi + 0x25c], eax
+  0x180858f22: lea      rdx, [rip + 0x4768e7]  ; 'DoodadClipLevel'
+  0x180858f29: mov      rax, qword ptr [rbx]
+  0x180858f2c: mov      rcx, rbx
+  0x180858f2f: mov      r8d, dword ptr [rdi + 0x260]
+  0x180858f36: call     qword ptr [rax + 0x40]
+  0x180858f39: mov      dword ptr [rdi + 0x260], eax
+  0x180858f3f: lea      rdx, [rip + 0x4768e2]  ; 'DoodadLootClipLevel'
+  0x180858f46: mov      rax, qword ptr [rbx]
+  0x180858f49: mov      rcx, rbx
+  0x180858f4c: mov      r8d, dword ptr [rdi + 0x264]
+  0x180858f53: call     qword ptr [rax + 0x40]
+  0x180858f56: mov      dword ptr [rdi + 0x264], eax
+  0x180858f5c: lea      rdx, [rip + 0x4768dd]  ; 'DoodadQuestClipLevel'
+  0x180858f63: mov      rax, qword ptr [rbx]
+  0x180858f66: mov      rcx, rbx
+  0x180858f69: mov      r8d, dword ptr [rdi + 0x268]
+  0x180858f70: call     qword ptr [rax + 0x40]
+  0x180858f73: mov      dword ptr [rdi + 0x268], eax
+  0x180858f79: lea      rdx, [rip + 0x4768e0]  ; 'LocalPlayerFootprintClipLevel'
+  0x180858f80: mov      rax, qword ptr [rbx]
+  0x180858f83: mov      rcx, rbx
+  0x180858f86: mov      r8d, dword ptr [rdi + 0x26c]
+  0x180858f8d: call     qword ptr [rax + 0x40]
+  0x180858f90: mov      dword ptr [rdi + 0x26c], eax
+  0x180858f96: lea      rdx, [rip + 0x4768eb]  ; 'OtherPlayerFootprintClipLevel'
+  0x180858f9d: mov      rax, qword ptr [rbx]
+  0x180858fa0: mov      rcx, rbx
+  0x180858fa3: mov      r8d, dword ptr [rdi + 0x270]
+  0x180858faa: call     qword ptr [rax + 0x40]
+  0x180858fad: mov      dword ptr [rdi + 0x270], eax
+  0x180858fb3: lea      rdx, [rip + 0x4768f6]  ; 'NpcFootprintClipLevel'
+  0x180858fba: mov      rax, qword ptr [rbx]
+  0x180858fbd: mov      rcx, rbx
+  0x180858fc0: mov      r8d, dword ptr [rdi + 0x274]
+  0x180858fc7: call     qword ptr [rax + 0x40]
+  0x180858fca: mov      dword ptr [rdi + 0x274], eax
+  0x180858fd0: lea      rdx, [rip + 0x4768f9]  ; 'CameraFollowCharacterAction_MinDis'
+  0x180858fd7: mov      rax, qword ptr [rbx]
+  0x180858fda: mov      rcx, rbx
+  0x180858fdd: movss    xmm2, dword ptr [rdi + 0x278]
+  0x180858fe5: call     qword ptr [rax + 0x50]
+  0x180858fe8: movss    dword ptr [rdi + 0x278], xmm0
+  0x180858ff0: lea      rdx, [rip + 0x476909]  ; 'CameraFollowCharacterAction_MaxDis'
+  0x180858ff7: mov      rax, qword ptr [rbx]
+  0x180858ffa: mov      rcx, rbx
+  0x180858ffd: movss    xmm2, dword ptr [rdi + 0x27c]
+  0x180859005: call     qword ptr [rax + 0x50]
+  0x180859008: movss    dword ptr [rdi + 0x27c], xmm0
+  0x180859010: lea      rdx, [rip + 0x476919]  ; 'CameraFollowCharacterAction_Speed'
+  0x180859017: mov      rax, qword ptr [rbx]
+  0x18085901a: mov      rcx, rbx
+  0x18085901d: movss    xmm2, dword ptr [rdi + 0x280]
+  0x180859025: call     qword ptr [rax + 0x50]
+  0x180859028: movss    dword ptr [rdi + 0x280], xmm0
+  0x180859030: lea      rdx, [rip + 0x476921]  ; 'm1PelvisHeight'
+  0x180859037: mov      rax, qword ptr [rbx]
+  0x18085903a: movss    xmm2, dword ptr [rdi + 0x200]
+  0x180859042: mov      rcx, rbx
+  0x180859045: call     qword ptr [rax + 0x50]
+  0x180859048: movss    dword ptr [rdi + 0x200], xmm0
+  0x180859050: lea      rdx, [rip + 0x476919]  ; 'm2PelvisHeight'
+  0x180859057: mov      rax, qword ptr [rbx]
+  0x18085905a: mov      rcx, rbx
+  0x18085905d: movss    xmm2, dword ptr [rdi + 0x204]
+  0x180859065: call     qword ptr [rax + 0x50]
+  0x180859068: movss    dword ptr [rdi + 0x204], xmm0
+  0x180859070: lea      rdx, [rip + 0x476911]  ; 'f1PelvisHeight'
+  0x180859077: mov      rax, qword ptr [rbx]
+  0x18085907a: mov      rcx, rbx
+  0x18085907d: movss    xmm2, dword ptr [rdi + 0x208]
+  0x180859085: call     qword ptr [rax + 0x50]
+  0x180859088: movss    dword ptr [rdi + 0x208], xmm0
+  0x180859090: lea      rdx, [rip + 0x476909]  ; 'f2PelvisHeight'
+  0x180859097: mov      rax, qword ptr [rbx]
+  0x18085909a: mov      rcx, rbx
+  0x18085909d: movss    xmm2, dword ptr [rdi + 0x20c]
+  0x1808590a5: call     qword ptr [rax + 0x50]
+  0x1808590a8: movss    dword ptr [rdi + 0x20c], xmm0
+  0x1808590b0: lea      rdx, [rip + 0x476901]  ; 'ShakeFresnelStrengthTime'
+  0x1808590b7: mov      rax, qword ptr [rbx]
+  0x1808590ba: mov      rcx, rbx
+  0x1808590bd: movss    xmm2, dword ptr [rdi + 0x210]
+  0x1808590c5: call     qword ptr [rax + 0x50]
+  0x1808590c8: comiss   xmm0, dword ptr [rip + 0x440cd1]
+  0x1808590cf: movss    dword ptr [rdi + 0x210], xmm0
+  0x1808590d7: ja       0x1808590eb
+  0x1808590d9: mov      r9d, 0x1c7
+  0x1808590df: lea      r8, [rip + 0x4768f2]  ; 'pNumbers->fShakeFresnelStrengthTime > 0.1f'
+  0x1808590e6: jmp      0x180857e73
+  0x1808590eb: mov      rax, qword ptr [rbx]
+  0x1808590ee: lea      rdx, [rip + 0x47691b]  ; 'ShakeFresnelStrengthHalfPercent'
+  0x1808590f5: movss    xmm2, dword ptr [rdi + 0x214]
+  0x1808590fd: mov      rcx, rbx
+  0x180859100: call     qword ptr [rax + 0x50]
+  0x180859103: movss    dword ptr [rdi + 0x214], xmm0
+  0x18085910b: lea      rdx, [rip + 0x476926]  ; 'FresnelPower'
+  0x180859112: mov      rax, qword ptr [rbx]
+  0x180859115: mov      rcx, rbx
+  0x180859118: movss    xmm2, dword ptr [rdi + 0x218]
+  0x180859120: call     qword ptr [rax + 0x50]
+  0x180859123: movss    dword ptr [rdi + 0x218], xmm0
+  0x18085912b: lea      rdx, [rip + 0x476916]  ; 'MaxFresnelStrength'
+  0x180859132: mov      rax, qword ptr [rbx]
+  0x180859135: mov      rcx, rbx
+  0x180859138: movss    xmm2, dword ptr [rdi + 0x21c]
+  0x180859140: call     qword ptr [rax + 0x50]
+  0x180859143: movss    dword ptr [rdi + 0x21c], xmm0
+  0x18085914b: lea      rdx, [rip + 0x47690e]  ; 'SkillTurningToTargetSpeed'
+  0x180859152: mov      rax, qword ptr [rbx]
+  0x180859155: mov      rcx, rbx
+  0x180859158: movss    xmm2, dword ptr [rdi + 0x220]
+  0x180859160: call     qword ptr [rax + 0x50]
+  0x180859163: movss    dword ptr [rdi + 0x220], xmm0
+  0x18085916b: lea      rdx, [rip + 0x47690e]  ; 'SkillTurningToLogicSpeed'
+  0x180859172: mov      rax, qword ptr [rbx]
+  0x180859175: mov      rcx, rbx
+  0x180859178: movss    xmm2, dword ptr [rdi + 0x224]
+  0x180859180: call     qword ptr [rax + 0x50]
+  0x180859183: movss    dword ptr [rdi + 0x224], xmm0
+  0x18085918b: lea      rdx, [rip + 0x47690e]  ; 'SkillTurningTime'
+  0x180859192: mov      rax, qword ptr [rbx]
+  0x180859195: mov      rcx, rbx
+  0x180859198: movss    xmm2, dword ptr [rdi + 0x228]
+  0x1808591a0: call     qword ptr [rax + 0x50]
+  0x1808591a3: movss    dword ptr [rdi + 0x228], xmm0
+  0x1808591ab: lea      rdx, [rip + 0x476906]  ; 'RagdollTime'
+  0x1808591b2: mov      rax, qword ptr [rbx]
+  0x1808591b5: mov      rcx, rbx
+  0x1808591b8: movss    xmm2, dword ptr [rdi + 0x22c]
+  0x1808591c0: call     qword ptr [rax + 0x50]
+  0x1808591c3: movss    dword ptr [rdi + 0x22c], xmm0
+  0x1808591cb: lea      rdx, [rip + 0x4768f6]  ; 'RagdollBlendWeight'
+  0x1808591d2: mov      rax, qword ptr [rbx]
+  0x1808591d5: mov      rcx, rbx
+  0x1808591d8: movss    xmm2, dword ptr [rdi + 0x230]
+  0x1808591e0: call     qword ptr [rax + 0x50]
+  0x1808591e3: movss    dword ptr [rdi + 0x230], xmm0
+  0x1808591eb: mov      bpl, 1
+  0x1808591ee: mov      rax, qword ptr [rsi]
+  0x1808591f1: mov      rcx, rsi
+  0x1808591f4: call     qword ptr [rax + 8]
+  0x1808591f7: mov      rbx, qword ptr [rsp + 0x40]
+  0x1808591fc: movzx    eax, bpl
+  0x180859200: mov      rbp, qword ptr [rsp + 0x48]
+  0x180859205: mov      rsi, qword ptr [rsp + 0x50]
+  0x18085920a: add      rsp, 0x30
+  0x18085920e: pop      rdi
+  0x18085920f: ret      
+  0x180859210: int3     
+  0x180859211: int3     
+  0x180859212: int3     
+  0x180859213: int3     
+  0x180859214: int3     
+  0x180859215: int3     
+  0x180859216: int3     
+  0x180859217: int3     
+  0x180859218: int3     
+  0x180859219: int3     
+  0x18085921a: int3     
+  0x18085921b: int3     
+  0x18085921c: int3     
+  0x18085921d: int3     
+  0x18085921e: int3     
+  0x18085921f: int3     
+  0x180859220: int3     
+  0x180859221: int3     
+  0x180859222: int3     
+  0x180859223: int3     
+  0x180859224: int3     
+  0x180859225: int3     
+  0x180859226: int3     
+  0x180859227: int3     
+  0x180859228: int3     
+  0x180859229: int3     
+  0x18085922a: int3     
+  0x18085922b: int3     
+  0x18085922c: int3     
+  0x18085922d: int3     
+  0x18085922e: int3     
+  0x18085922f: int3     
+  0x180859230: int3     
+  0x180859231: int3     
+  0x180859232: int3     
+  0x180859233: int3     
+  0x180859234: int3     
+  0x180859235: int3     
+  0x180859236: int3     
+  0x180859237: int3     
+  0x180859238: int3     
+  0x180859239: int3     
+  0x18085923a: int3     
+  0x18085923b: int3     
+  0x18085923c: int3     
+  0x18085923d: int3     
+  0x18085923e: int3     
+  0x18085923f: int3     
+  0x180859240: int3     
+  0x180859241: int3     
+  0x180859242: int3     
+  0x180859243: int3     
+  0x180859244: int3     
+  0x180859245: int3     
+  0x180859246: int3     
+  0x180859247: int3     
+  0x180859248: int3     
+  0x180859249: int3     
+  0x18085924a: int3     
+  0x18085924b: int3     
+  0x18085924c: int3     
+  0x18085924d: int3     
+  0x18085924e: int3     
+  0x18085924f: int3     
+  0x180859250: int3     
+  0x180859251: int3     
+  0x180859252: int3     
+  0x180859253: int3     
+  0x180859254: int3     
+  0x180859255: int3     
+  0x180859256: int3     
+  0x180859257: int3     
+  0x180859258: int3     
+  0x180859259: int3     
+  0x18085925a: int3     
+  0x18085925b: int3     
+  0x18085925c: int3     
+  0x18085925d: int3     
+  0x18085925e: int3     
+  0x18085925f: int3     
+  0x180859260: int3     
+  0x180859261: int3     
+  0x180859262: int3     
+  0x180859263: int3     
+  0x180859264: int3     
+  0x180859265: int3     
+  0x180859266: int3     
+  0x180859267: int3     
+  0x180859268: int3     
+  0x180859269: int3     
+  0x18085926a: int3     
+  0x18085926b: int3     
+  0x18085926c: int3     
+  0x18085926d: int3     
+  0x18085926e: int3     
+  0x18085926f: int3     
+  0x180859270: int3     
+  0x180859271: int3     
+  0x180859272: int3     
+  0x180859273: int3     
+  0x180859274: int3     
+  0x180859275: int3     
+  0x180859276: int3     
+  0x180859277: int3     
+  0x180859278: int3     
+  0x180859279: int3     
+  0x18085927a: int3     
+  0x18085927b: int3     
+  0x18085927c: int3     
+  0x18085927d: int3     
+  0x18085927e: int3     
+  0x18085927f: int3     
+  0x180859280: int3     
+  0x180859281: int3     
+  0x180859282: int3     
+  0x180859283: int3     
+  0x180859284: int3     
+  0x180859285: int3     
+  0x180859286: int3     
+  0x180859287: int3     
+  0x180859288: int3     
+  0x180859289: int3     
+  0x18085928a: int3     
+  0x18085928b: int3     
+  0x18085928c: int3     
+  0x18085928d: int3     
+  0x18085928e: int3     
+  0x18085928f: int3     
+  0x180859290: int3     
+  0x180859291: int3     
+  0x180859292: int3     
+  0x180859293: int3     
+  0x180859294: int3     
+  0x180859295: int3     
+  0x180859296: int3     
+  0x180859297: int3     
+  0x180859298: int3     
+  0x180859299: int3     
+  0x18085929a: int3     
+  0x18085929b: int3     
+  0x18085929c: int3     
+  0x18085929d: int3     
+  0x18085929e: int3     
+  0x18085929f: int3     
+  0x1808592a0: int3     
+  0x1808592a1: int3     
+  0x1808592a2: int3     
+  0x1808592a3: int3     
+  0x1808592a4: int3     
+  0x1808592a5: int3     
+  0x1808592a6: int3     
+  0x1808592a7: int3     
+  0x1808592a8: int3     
+  0x1808592a9: int3     
+  0x1808592aa: int3     
+  0x1808592ab: int3     
+  0x1808592ac: int3     
+  0x1808592ad: int3     
+  0x1808592ae: int3     
+  0x1808592af: int3     
+  0x1808592b0: int3     
+  0x1808592b1: int3     
+  0x1808592b2: int3     
+  0x1808592b3: int3     
+  0x1808592b4: int3     
+  0x1808592b5: int3     
+  0x1808592b6: int3     
+  0x1808592b7: int3     
+  0x1808592b8: int3     
+  0x1808592b9: int3     
+  0x1808592ba: int3     
+  0x1808592bb: int3     
+  0x1808592bc: int3     
+  0x1808592bd: int3     
+  0x1808592be: int3     
+  0x1808592bf: int3     
+  0x1808592c0: int3     
+  0x1808592c1: int3     
+  0x1808592c2: int3     
+  0x1808592c3: int3     
+  0x1808592c4: int3     
+  0x1808592c5: int3     
+  0x1808592c6: int3     
+  0x1808592c7: int3     
+  0x1808592c8: int3     
+  0x1808592c9: int3     
+  0x1808592ca: int3     
+  0x1808592cb: int3     
+  0x1808592cc: int3     
+  0x1808592cd: int3     
+  0x1808592ce: int3     
+  0x1808592cf: int3     
+  0x1808592d0: int3     
+  0x1808592d1: int3     
+  0x1808592d2: int3     
+  0x1808592d3: int3     
+  0x1808592d4: int3     
+  0x1808592d5: int3     
+  0x1808592d6: int3     
+  0x1808592d7: int3     
+  0x1808592d8: int3     
+  0x1808592d9: int3     
+  0x1808592da: int3     
+  0x1808592db: int3     
+  0x1808592dc: int3     
+  0x1808592dd: int3     
+  0x1808592de: int3     
+  0x1808592df: int3     
+  0x1808592e0: int3     
+  0x1808592e1: int3     
+  0x1808592e2: int3     
+  0x1808592e3: int3     
+  0x1808592e4: int3     
+  0x1808592e5: int3     
+  0x1808592e6: int3     
+  0x1808592e7: int3     
+  0x1808592e8: int3     
+  0x1808592e9: int3     
+  0x1808592ea: int3     
+  0x1808592eb: int3     
+  0x1808592ec: int3     
+  0x1808592ed: int3     
+  0x1808592ee: int3     
+  0x1808592ef: int3     
+  0x1808592f0: int3     
+  0x1808592f1: int3     
+  0x1808592f2: int3     
+  0x1808592f3: int3     
+  0x1808592f4: int3     
+  0x1808592f5: int3     
+  0x1808592f6: int3     
+  0x1808592f7: int3     
+  0x1808592f8: int3     
+  0x1808592f9: int3     
+  0x1808592fa: int3     
+  0x1808592fb: int3     
+  0x1808592fc: int3     
+  0x1808592fd: int3     
+  0x1808592fe: int3     
+  0x1808592ff: int3     
+  0x180859300: int3     
+  0x180859301: int3     
+  0x180859302: int3     
+  0x180859303: int3     
+  0x180859304: int3     
+  0x180859305: int3     
+  0x180859306: int3     
+  0x180859307: int3     
+  0x180859308: int3     
+  0x180859309: int3     
+  0x18085930a: int3     
+  0x18085930b: int3     
+  0x18085930c: int3     
+  0x18085930d: int3     
+  0x18085930e: int3     
+  0x18085930f: int3     
+  0x180859310: int3     
+  0x180859311: int3     
+  0x180859312: int3     
+  0x180859313: int3     
+  0x180859314: int3     
+  0x180859315: int3     
+  0x180859316: int3     
+  0x180859317: int3     
+  0x180859318: int3     
+  0x180859319: int3     
+  0x18085931a: int3     
+  0x18085931b: int3     
+  0x18085931c: int3     
+  0x18085931d: int3     
+  0x18085931e: int3     
+  0x18085931f: int3     
+  0x180859320: int3     
+  0x180859321: int3     
+  0x180859322: int3     
+  0x180859323: int3     
+  0x180859324: int3     
+  0x180859325: int3     
+  0x180859326: int3     
+  0x180859327: int3     
+  0x180859328: int3     
+  0x180859329: int3     
+  0x18085932a: int3     
+  0x18085932b: int3     
+  0x18085932c: int3     
+  0x18085932d: int3     
+  0x18085932e: int3     
+  0x18085932f: int3     
+  0x180859330: int3     
+  0x180859331: int3     
+  0x180859332: int3     
+  0x180859333: int3     
+  0x180859334: int3     
+  0x180859335: int3     
+  0x180859336: int3     
+  0x180859337: int3     
+  0x180859338: int3     
+  0x180859339: int3     
+  0x18085933a: int3     
+  0x18085933b: int3     
+  0x18085933c: int3     
+  0x18085933d: int3     
+  0x18085933e: int3     
+  0x18085933f: int3     
+  0x180859340: int3     
+  0x180859341: int3     
+  0x180859342: int3     
+  0x180859343: int3     
+  0x180859344: int3     
+  0x180859345: int3     
+  0x180859346: int3     
+  0x180859347: int3     
+  0x180859348: int3     
+  0x180859349: int3     
+  0x18085934a: int3     
+  0x18085934b: int3     
+  0x18085934c: int3     
+  0x18085934d: int3     
+  0x18085934e: int3     
+  0x18085934f: int3     
+  0x180859350: int3     
+  0x180859351: int3     
+  0x180859352: int3     
+  0x180859353: int3     
+  0x180859354: int3     
+  0x180859355: int3     
+  0x180859356: int3     
+  0x180859357: int3     
+  0x180859358: int3     
+  0x180859359: int3     
+  0x18085935a: int3     
+  0x18085935b: int3     
+  0x18085935c: int3     
+  0x18085935d: int3     
+  0x18085935e: int3     
+  0x18085935f: int3     
+  0x180859360: int3     
+  0x180859361: int3     
+  0x180859362: int3     
+  0x180859363: int3     
+  0x180859364: int3     
+  0x180859365: int3     
+  0x180859366: int3     
+  0x180859367: int3     
+  0x180859368: int3     
+  0x180859369: int3     
+  0x18085936a: int3     
+  0x18085936b: int3     
+  0x18085936c: int3     
+  0x18085936d: int3     
+  0x18085936e: int3     
+  0x18085936f: int3     
+  0x180859370: int3     
+  0x180859371: int3     
+  0x180859372: int3     
+  0x180859373: int3     
+  0x180859374: int3     
+  0x180859375: int3     
+  0x180859376: int3     
+  0x180859377: int3     
+  0x180859378: int3     
+  0x180859379: int3     
+  0x18085937a: int3     
+  0x18085937b: int3     
+  0x18085937c: int3     
+  0x18085937d: int3     
+  0x18085937e: int3     
+  0x18085937f: int3     
+  0x180859380: int3     
+  0x180859381: int3     
+  0x180859382: int3     
+  0x180859383: int3     
+  0x180859384: int3     
+  0x180859385: int3     
+  0x180859386: int3     
+  0x180859387: int3     
+  0x180859388: int3     
+  0x180859389: int3     
+  0x18085938a: int3     
+  0x18085938b: int3     
+  0x18085938c: int3     
+  0x18085938d: int3     
+  0x18085938e: int3     
+  0x18085938f: int3     
+  0x180859390: int3     
+  0x180859391: int3     
+  0x180859392: int3     
+  0x180859393: int3     
+  0x180859394: int3     
+  0x180859395: int3     
+  0x180859396: int3     
+  0x180859397: int3     
+  0x180859398: int3     
+  0x180859399: int3     
+  0x18085939a: int3     
+  0x18085939b: int3     
+  0x18085939c: int3     
+  0x18085939d: int3     
+  0x18085939e: int3     
+  0x18085939f: int3     
+  0x1808593a0: int3     
+  0x1808593a1: int3     
+  0x1808593a2: int3     
+  0x1808593a3: int3     
+  0x1808593a4: int3     
+  0x1808593a5: int3     
+  0x1808593a6: int3     
+  0x1808593a7: int3     
+  0x1808593a8: int3     
+  0x1808593a9: int3     
+  0x1808593aa: int3     
+  0x1808593ab: int3     
+  0x1808593ac: int3     
+  0x1808593ad: int3     
+  0x1808593ae: int3     
+  0x1808593af: int3     
+  0x1808593b0: int3     
+  0x1808593b1: int3     
+  0x1808593b2: int3     
+  0x1808593b3: int3     
+  0x1808593b4: int3     
+  0x1808593b5: int3     
+  0x1808593b6: int3     
+  0x1808593b7: int3     
+  0x1808593b8: int3     
+  0x1808593b9: int3     
+  0x1808593ba: int3     
+  0x1808593bb: int3     
+  0x1808593bc: int3     
+  0x1808593bd: int3     
+  0x1808593be: int3     
+  0x1808593bf: int3     
+  0x1808593c0: int3     
+  0x1808593c1: int3     
+  0x1808593c2: int3     
+  0x1808593c3: int3     
+  0x1808593c4: int3     
+  0x1808593c5: int3     
+  0x1808593c6: int3     
+  0x1808593c7: int3     
+  0x1808593c8: int3     
+  0x1808593c9: int3     
+  0x1808593ca: int3     
+  0x1808593cb: int3     
+  0x1808593cc: int3     
+  0x1808593cd: int3     
+  0x1808593ce: int3     
+  0x1808593cf: int3     
+  0x1808593d0: int3     
+  0x1808593d1: int3     
+  0x1808593d2: int3     
+  0x1808593d3: int3     
+  0x1808593d4: int3     
+  0x1808593d5: int3     
+  0x1808593d6: int3     
+  0x1808593d7: int3     
+  0x1808593d8: int3     
+  0x1808593d9: int3     
+  0x1808593da: int3     
+  0x1808593db: int3     
+  0x1808593dc: int3     
+  0x1808593dd: int3     
+  0x1808593de: int3     
+  0x1808593df: int3     
+  0x1808593e0: int3     
+  0x1808593e1: int3     
+  0x1808593e2: int3     
+  0x1808593e3: int3     
+  0x1808593e4: int3     
+  0x1808593e5: int3     
+  0x1808593e6: int3     
+  0x1808593e7: int3     
+  0x1808593e8: int3     
+  0x1808593e9: int3     
+  0x1808593ea: int3     
+  0x1808593eb: int3     
+  0x1808593ec: int3     
+  0x1808593ed: int3     
+  0x1808593ee: int3     
+  0x1808593ef: int3     
+  0x1808593f0: int3     
+  0x1808593f1: int3     
+  0x1808593f2: int3     
+  0x1808593f3: int3     
+  0x1808593f4: int3     
+  0x1808593f5: int3     
+  0x1808593f6: int3     
+  0x1808593f7: int3     
+  0x1808593f8: int3     
+  0x1808593f9: int3     
+  0x1808593fa: int3     
+  0x1808593fb: int3     
+  0x1808593fc: int3     
+  0x1808593fd: int3     
+  0x1808593fe: int3     
+  0x1808593ff: int3     
+  0x180859400: int3     
+  0x180859401: int3     
+  0x180859402: int3     
+  0x180859403: int3     
+  0x180859404: int3     
+  0x180859405: int3     
+  0x180859406: int3     
+  0x180859407: int3     
+  0x180859408: int3     
+  0x180859409: int3     
+  0x18085940a: int3     
+  0x18085940b: int3     
+  0x18085940c: int3     
+  0x18085940d: int3     
+  0x18085940e: int3     
+  0x18085940f: int3     
+  0x180859410: int3     
+  0x180859411: int3     
+  0x180859412: int3     
+  0x180859413: int3     
+  0x180859414: int3     
+  0x180859415: int3     
+  0x180859416: int3     
+  0x180859417: int3     
+  0x180859418: int3     
+  0x180859419: int3     
+  0x18085941a: int3     
+  0x18085941b: int3     
+  0x18085941c: int3     
+  0x18085941d: int3     
+  0x18085941e: int3     
+  0x18085941f: int3     
+  0x180859420: int3     
+  0x180859421: int3     
+  0x180859422: int3     
+  0x180859423: int3     
+  0x180859424: int3     
+  0x180859425: int3     
+  0x180859426: int3     
+  0x180859427: int3     
+  0x180859428: int3     
+  0x180859429: int3     
+  0x18085942a: int3     
+  0x18085942b: int3     
+  0x18085942c: int3     
+  0x18085942d: int3     
+  0x18085942e: int3     
+  0x18085942f: int3     
+  0x180859430: int3     
+  0x180859431: int3     
+  0x180859432: int3     
+  0x180859433: int3     
+  0x180859434: int3     
+  0x180859435: int3     
+  0x180859436: int3     
+  0x180859437: int3     
+  0x180859438: int3     
+  0x180859439: int3     
+  0x18085943a: int3     
+  0x18085943b: int3     
+  0x18085943c: int3     
+  0x18085943d: int3     
+  0x18085943e: int3     
+  0x18085943f: int3     
+  0x180859440: int3     
+  0x180859441: int3     
+  0x180859442: int3     
+  0x180859443: int3     
+  0x180859444: int3     
+  0x180859445: int3     
+  0x180859446: int3     
+  0x180859447: int3     
+  0x180859448: int3     
+  0x180859449: int3     
+  0x18085944a: int3     
+  0x18085944b: int3     
+  0x18085944c: int3     
+  0x18085944d: int3     
+  0x18085944e: int3     
+  0x18085944f: int3     
+  0x180859450: int3     
+  0x180859451: int3     
+  0x180859452: int3     
+  0x180859453: int3     
+  0x180859454: int3     
+  0x180859455: int3     
+  0x180859456: int3     
+  0x180859457: int3     
+  0x180859458: int3     
+  0x180859459: int3     
+  0x18085945a: int3     
+  0x18085945b: int3     
+  0x18085945c: int3     
+  0x18085945d: int3     
+  0x18085945e: int3     
+  0x18085945f: int3     
+  0x180859460: int3     
+  0x180859461: int3     
+  0x180859462: int3     
+  0x180859463: int3     
+  0x180859464: int3     
+  0x180859465: int3     
+  0x180859466: int3     
+  0x180859467: int3     
+  0x180859468: int3     
+  0x180859469: int3     
+  0x18085946a: int3     
+  0x18085946b: int3     
+  0x18085946c: int3     
+  0x18085946d: int3     
+  0x18085946e: int3     
+  0x18085946f: int3     
+  0x180859470: int3     
+  0x180859471: int3     
+  0x180859472: int3     
+  0x180859473: int3     
+  0x180859474: int3     
+  0x180859475: int3     
+  0x180859476: int3     
+  0x180859477: int3     
+  0x180859478: int3     
+  0x180859479: int3     
+  0x18085947a: int3     
+  0x18085947b: int3     
+  0x18085947c: int3     
+  0x18085947d: int3     
+  0x18085947e: int3     
+  0x18085947f: int3     
+  0x180859480: int3     
+  0x180859481: int3     
+  0x180859482: int3     
+  0x180859483: int3     
+  0x180859484: int3     
+  0x180859485: int3     
+  0x180859486: int3     
+  0x180859487: int3     
+  0x180859488: int3     
+  0x180859489: int3     
+  0x18085948a: int3     
+  0x18085948b: int3     
+  0x18085948c: int3     
+  0x18085948d: int3     
+  0x18085948e: int3     
+  0x18085948f: int3     
+  0x180859490: int3     
+  0x180859491: int3     
+  0x180859492: int3     
+  0x180859493: int3     
+  0x180859494: int3     
+  0x180859495: int3     
+  0x180859496: int3     
+  0x180859497: int3     
+  0x180859498: int3     
+  0x180859499: int3     
+  0x18085949a: int3     
+  0x18085949b: int3     
+  0x18085949c: int3     
+  0x18085949d: int3     
+  0x18085949e: int3     
+  0x18085949f: int3     
+  0x1808594a0: int3     
+  0x1808594a1: int3     
+  0x1808594a2: int3     
+  0x1808594a3: int3     
+  0x1808594a4: int3     
+  0x1808594a5: int3     
+  0x1808594a6: int3     
+  0x1808594a7: int3     
+  0x1808594a8: int3     
+  0x1808594a9: int3     
+  0x1808594aa: int3     
+  0x1808594ab: int3     
+  0x1808594ac: int3     
+  0x1808594ad: int3     
+  0x1808594ae: int3     
+  0x1808594af: int3     
+  0x1808594b0: int3     
+  0x1808594b1: int3     
+  0x1808594b2: int3     
+  0x1808594b3: int3     
+  0x1808594b4: int3     
+  0x1808594b5: int3     
+  0x1808594b6: int3     
+  0x1808594b7: int3     
+  0x1808594b8: int3     
+  0x1808594b9: int3     
+  0x1808594ba: int3     
+  0x1808594bb: int3     
+  0x1808594bc: int3     
+  0x1808594bd: int3     
+  0x1808594be: int3     
+  0x1808594bf: int3     
+  0x1808594c0: int3     
+  0x1808594c1: int3     
+  0x1808594c2: int3     
+  0x1808594c3: int3     
+  0x1808594c4: int3     
+  0x1808594c5: int3     
+  0x1808594c6: int3     
+  0x1808594c7: int3     
+  0x1808594c8: int3     
+  0x1808594c9: int3     
+  0x1808594ca: int3     
+  0x1808594cb: int3     
+  0x1808594cc: int3     
+  0x1808594cd: int3     
+  0x1808594ce: int3     
+  0x1808594cf: int3     
+  0x1808594d0: int3     
+  0x1808594d1: int3     
+  0x1808594d2: int3     
+  0x1808594d3: int3     
+  0x1808594d4: int3     
+  0x1808594d5: int3     
+  0x1808594d6: int3     
+  0x1808594d7: int3     
+  0x1808594d8: int3     
+  0x1808594d9: int3     
+  0x1808594da: int3     
+  0x1808594db: int3     
+  0x1808594dc: int3     
+  0x1808594dd: int3     
+  0x1808594de: int3     
+  0x1808594df: int3     
+  0x1808594e0: int3     
+  0x1808594e1: int3     
+  0x1808594e2: int3     
+  0x1808594e3: int3     
+  0x1808594e4: int3     
+  0x1808594e5: int3     
+  0x1808594e6: int3     
+  0x1808594e7: int3     
+  0x1808594e8: int3     
+  0x1808594e9: int3     
+  0x1808594ea: int3     
+  0x1808594eb: int3     
+  0x1808594ec: int3     
+  0x1808594ed: int3     
+  0x1808594ee: int3     
+  0x1808594ef: int3     
+  0x1808594f0: int3     
+  0x1808594f1: int3     
+  0x1808594f2: int3     
+  0x1808594f3: int3     
+  0x1808594f4: int3     
+  0x1808594f5: int3     
+  0x1808594f6: int3     
+  0x1808594f7: int3     
+  0x1808594f8: int3     
+  0x1808594f9: int3     
+  0x1808594fa: int3     
+  0x1808594fb: int3     
+  0x1808594fc: int3     
+  0x1808594fd: int3     
+  0x1808594fe: int3     
+  0x1808594ff: int3     
+  0x180859500: int3     
+  0x180859501: int3     
+  0x180859502: int3     
+  0x180859503: int3     
+  0x180859504: int3     
+  0x180859505: int3     
+  0x180859506: int3     
+  0x180859507: int3     
+  0x180859508: int3     
+  0x180859509: int3     
+  0x18085950a: int3     
+  0x18085950b: int3     
+  0x18085950c: int3     
+  0x18085950d: int3     
+  0x18085950e: int3     
+  0x18085950f: int3     
+  0x180859510: int3     
+  0x180859511: int3     
+  0x180859512: int3     
+  0x180859513: int3     
+  0x180859514: int3     
+  0x180859515: int3     
+  0x180859516: int3     
+  0x180859517: int3     
+  0x180859518: int3     
+  0x180859519: int3     
+  0x18085951a: int3     
+  0x18085951b: int3     
+  0x18085951c: int3     
+  0x18085951d: int3     
+  0x18085951e: int3     
+  0x18085951f: int3     
+  0x180859520: int3     
+  0x180859521: int3     
+  0x180859522: int3     
+  0x180859523: int3     
+  0x180859524: int3     
+  0x180859525: int3     
+  0x180859526: int3     
+  0x180859527: int3     
+  0x180859528: int3     
+  0x180859529: int3     
+  0x18085952a: int3     
+  0x18085952b: int3     
+  0x18085952c: int3     
+  0x18085952d: int3     
+  0x18085952e: int3     
+

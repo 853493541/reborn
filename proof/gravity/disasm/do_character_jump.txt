@@ -1,0 +1,322 @@
+# JX3ClientX64.exe xrefs for 'KPlayerClient::DoCharacterJump'
+# image base 0x140000000
+
+## xref @ 0x14012b485 -> 0x1407bc1a0 'KPlayerClient::DoCharacterJump'  fn start 0x14012b370
+  0x14012b370: push     rbx
+  0x14012b372: push     rbp
+  0x14012b373: push     rsi
+  0x14012b374: push     rdi
+  0x14012b375: push     r14
+  0x14012b377: sub      rsp, 0x70
+  0x14012b37b: mov      rax, qword ptr [rip + 0x909076]
+  0x14012b382: xor      rax, rsp
+  0x14012b385: mov      qword ptr [rsp + 0x60], rax
+  0x14012b38a: mov      edi, dword ptr [rsp + 0xc0]
+  0x14012b391: mov      r14d, r9d
+  0x14012b394: mov      ebp, r8d
+  0x14012b397: mov      rbx, rdx
+  0x14012b39a: mov      rsi, rcx
+  0x14012b39d: cmp      edi, 0xff
+  0x14012b3a3: ja       0x14012b478
+  0x14012b3a9: test     rdx, rdx
+  0x14012b3ac: je       0x14012b4a3
+  0x14012b3b2: cmp      dword ptr [rdx + 0x44], 0xff
+  0x14012b3b9: ja       0x14012b469
+  0x14012b3bf: mov      rcx, qword ptr [rip + 0x94a1f2]
+  0x14012b3c6: mov      edx, dword ptr [rcx + 4]
+  0x14012b3c9: call     0x140174d10
+  0x14012b3ce: test     rax, rax
+  0x14012b3d1: jne      0x14012b3e5
+  0x14012b3d3: mov      r9d, 0xab2
+  0x14012b3d9: lea      r8, [rip + 0x690c90]  ; 'pClientPlayer'
+  0x14012b3e0: jmp      0x14012b485
+  0x14012b3e5: mov      ecx, dword ptr [rax + 0xf9c]
+  0x14012b3eb: mov      edx, 0xa
+  0x14012b3f0: inc      ecx
+  0x14012b3f2: mov      word ptr [rsp + 0x30], dx
+  0x14012b3f7: mov      dword ptr [rax + 0xf9c], ecx
+  0x14012b3fd: test     r14d, r14d
+  0x14012b400: mov      eax, dword ptr [rax + 8]
+  0x14012b403: mov      dword ptr [rsp + 0x3b], eax
+  0x14012b407: lea      r8d, [rdx + 0x24]
+  0x14012b40b: mov      eax, dword ptr [rbx + 0x320]
+  0x14012b411: lea      rdx, [rsp + 0x30]
+  0x14012b416: mov      dword ptr [rsp + 0x4a], eax
+  0x14012b41a: setne    byte ptr [rsp + 0x3f]
+  0x14012b41f: mov      eax, dword ptr [rbx + 0x340]
+  0x14012b425: mov      dword ptr [rsp + 0x4e], eax
+  0x14012b429: mov      eax, dword ptr [rbx + 0x2fc]
+  0x14012b42f: mov      dword ptr [rsp + 0x46], eax
+  0x14012b433: mov      eax, dword ptr [rbx + 0x10]
+  0x14012b436: mov      dword ptr [rsp + 0x52], eax
+  0x14012b43a: mov      eax, dword ptr [rbx + 0x14]
+  0x14012b43d: mov      dword ptr [rsp + 0x56], eax
+  0x14012b441: mov      eax, dword ptr [rbx + 0x18]
+  0x14012b444: mov      dword ptr [rsp + 0x41], ecx
+  0x14012b448: mov      rcx, rsi
+  0x14012b44b: mov      dword ptr [rsp + 0x5a], eax
+  0x14012b44f: mov      byte ptr [rsp + 0x40], dil
+  0x14012b454: mov      byte ptr [rsp + 0x45], bpl
+  0x14012b459: call     0x140169840
+  0x14012b45e: test     eax, eax
+  0x14012b460: je       0x14012b4a3
+  0x14012b462: mov      eax, 1
+  0x14012b467: jmp      0x14012b4a5
+  0x14012b469: mov      r9d, 0xaaf
+  0x14012b46f: lea      r8, [rip + 0x690d7a]  ; 'pCharacter->m_nFaceDirection >= 0 && pCharacter->m_nFaceDirection <= UCHAR_MAX'
+  0x14012b476: jmp      0x14012b485
+  0x14012b478: mov      r9d, 0xaad
+  0x14012b47e: lea      r8, [rip + 0x690d3b]  ; 'nDirectionXY >= 0 && nDirectionXY <= UCHAR_MAX'
+  0x14012b485: lea      rcx, [rip + 0x690d14]  ; 'KPlayerClient::DoCharacterJump'
+  0x14012b48c: mov      qword ptr [rsp + 0x20], rcx
+  0x14012b491: lea      rdx, [rip + 0x823aa0]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14012b498: mov      ecx, 3
+  0x14012b49d: call     qword ptr [rip + 0x68cfa5]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14012b4a3: xor      eax, eax
+  0x14012b4a5: mov      rcx, qword ptr [rsp + 0x60]
+  0x14012b4aa: xor      rcx, rsp
+  0x14012b4ad: call     0x14079ae80
+  0x14012b4b2: add      rsp, 0x70
+  0x14012b4b6: pop      r14
+  0x14012b4b8: pop      rdi
+  0x14012b4b9: pop      rsi
+  0x14012b4ba: pop      rbp
+  0x14012b4bb: pop      rbx
+  0x14012b4bc: ret      
+  0x14012b4bd: int3     
+  0x14012b4be: int3     
+  0x14012b4bf: int3     
+  0x14012b4c0: push     rbx
+  0x14012b4c2: sub      rsp, 0x40
+  0x14012b4c6: mov      rax, qword ptr [rip + 0x908f2b]
+  0x14012b4cd: xor      rax, rsp
+  0x14012b4d0: mov      qword ptr [rsp + 0x30], rax
+  0x14012b4d5: mov      eax, 0x4e
+  0x14012b4da: mov      dword ptr [rsp + 0x2b], edx
+  0x14012b4de: xor      ebx, ebx
+  0x14012b4e0: mov      word ptr [rsp + 0x20], ax
+  0x14012b4e5: lea      rdx, [rsp + 0x20]
+  0x14012b4ea: lea      r8d, [rbx + 0xf]
+  0x14012b4ee: call     0x140169840
+  0x14012b4f3: test     eax, eax
+  0x14012b4f5: mov      ecx, 1
+  0x14012b4fa: cmovne   ebx, ecx
+  0x14012b4fd: mov      eax, ebx
+  0x14012b4ff: mov      rcx, qword ptr [rsp + 0x30]
+  0x14012b504: xor      rcx, rsp
+  0x14012b507: call     0x14079ae80
+  0x14012b50c: add      rsp, 0x40
+  0x14012b510: pop      rbx
+  0x14012b511: ret      
+  0x14012b512: int3     
+  0x14012b513: int3     
+  0x14012b514: int3     
+  0x14012b515: int3     
+  0x14012b516: int3     
+  0x14012b517: int3     
+  0x14012b518: int3     
+  0x14012b519: int3     
+  0x14012b51a: int3     
+  0x14012b51b: int3     
+  0x14012b51c: int3     
+  0x14012b51d: int3     
+  0x14012b51e: int3     
+  0x14012b51f: int3     
+  0x14012b520: push     rbx
+  0x14012b522: sub      rsp, 0x70
+  0x14012b526: mov      rax, qword ptr [rip + 0x908ecb]
+  0x14012b52d: xor      rax, rsp
+  0x14012b530: mov      qword ptr [rsp + 0x60], rax
+  0x14012b535: inc      dword ptr [rdx + 0xf9c]
+  0x14012b53b: mov      eax, 0xe
+  0x14012b540: mov      word ptr [rsp + 0x20], ax
+  0x14012b545: xor      ebx, ebx
+  0x14012b547: mov      eax, dword ptr [rsp + 0xa0]
+  0x14012b54e: mov      dword ptr [rsp + 0x2f], eax
+  0x14012b552: mov      eax, dword ptr [rdx + 0x44]
+  0x14012b555: mov      dword ptr [rsp + 0x37], eax
+  0x14012b559: mov      eax, dword ptr [rdx + 0x2a0]
+  0x14012b55f: mov      dword ptr [rsp + 0x3b], eax
+  0x14012b563: mov      eax, dword ptr [rdx + 0x2a4]
+  0x14012b569: mov      dword ptr [rsp + 0x3f], eax
+  0x14012b56d: mov      eax, dword ptr [rdx + 0xf9c]
+  0x14012b573: mov      dword ptr [rsp + 0x43], eax
+  0x14012b577: movzx    eax, byte ptr [rsp + 0xa8]
+  0x14012b57f: mov      byte ptr [rsp + 0x47], al
+  0x14012b583: mov      eax, dword ptr [rdx + 0x320]
+  0x14012b589: mov      dword ptr [rsp + 0x4c], eax
+  0x14012b58d: mov      eax, dword ptr [rdx + 0x340]
+  0x14012b593: mov      dword ptr [rsp + 0x50], eax
+  0x14012b597: mov      eax, dword ptr [rdx + 0x2fc]
+  0x14012b59d: mov      dword ptr [rsp + 0x48], eax
+  0x14012b5a1: mov      eax, dword ptr [rdx + 0x10]
+  0x14012b5a4: mov      dword ptr [rsp + 0x54], eax
+  0x14012b5a8: mov      eax, dword ptr [rdx + 0x14]
+  0x14012b5ab: mov      dword ptr [rsp + 0x58], eax
+  0x14012b5af: mov      eax, dword ptr [rdx + 0x18]
+  0x14012b5b2: lea      rdx, [rsp + 0x20]
+  0x14012b5b7: mov      dword ptr [rsp + 0x33], r8d
+  0x14012b5bc: lea      r8d, [rbx + 0x40]
+  0x14012b5c0: mov      dword ptr [rsp + 0x2b], r9d
+  0x14012b5c5: mov      dword ptr [rsp + 0x5c], eax
+  0x14012b5c9: call     0x140169840
+  0x14012b5ce: test     eax, eax
+  0x14012b5d0: mov      ecx, 1
+  0x14012b5d5: cmovne   ebx, ecx
+  0x14012b5d8: mov      eax, ebx
+  0x14012b5da: mov      rcx, qword ptr [rsp + 0x60]
+  0x14012b5df: xor      rcx, rsp
+  0x14012b5e2: call     0x14079ae80
+  0x14012b5e7: add      rsp, 0x70
+  0x14012b5eb: pop      rbx
+  0x14012b5ec: ret      
+  0x14012b5ed: int3     
+  0x14012b5ee: int3     
+  0x14012b5ef: int3     
+  0x14012b5f0: push     rbx
+  0x14012b5f2: sub      rsp, 0x60
+  0x14012b5f6: mov      rax, qword ptr [rip + 0x908dfb]
+  0x14012b5fd: xor      rax, rsp
+  0x14012b600: mov      qword ptr [rsp + 0x50], rax
+  0x14012b605: xor      ebx, ebx
+  0x14012b607: cmp      dword ptr [rdx + 0x44], 0xff
+  0x14012b60e: ja       0x14012b681
+  0x14012b610: inc      dword ptr [rdx + 0xf9c]
+  0x14012b616: mov      eax, 0x12
+  0x14012b61b: mov      word ptr [rsp + 0x20], ax
+  0x14012b620: mov      eax, dword ptr [rdx + 8]
+  0x14012b623: mov      dword ptr [rsp + 0x2b], eax
+  0x14012b627: mov      eax, dword ptr [rdx + 0xf9c]
+  0x14012b62d: mov      dword ptr [rsp + 0x2f], eax
+  0x14012b631: mov      eax, dword ptr [rdx + 0x320]
+  0x14012b637: mov      dword ptr [rsp + 0x38], eax
+  0x14012b63b: mov      eax, dword ptr [rdx + 0x340]
+  0x14012b641: mov      dword ptr [rsp + 0x3c], eax
+  0x14012b645: mov      eax, dword ptr [rdx + 0x2fc]
+  0x14012b64b: mov      dword ptr [rsp + 0x34], eax
+  0x14012b64f: mov      eax, dword ptr [rdx + 0x10]
+  0x14012b652: mov      dword ptr [rsp + 0x40], eax
+  0x14012b656: mov      eax, dword ptr [rdx + 0x14]
+  0x14012b659: mov      dword ptr [rsp + 0x44], eax
+  0x14012b65d: mov      eax, dword ptr [rdx + 0x18]
+  0x14012b660: lea      rdx, [rsp + 0x20]
+  0x14012b665: mov      byte ptr [rsp + 0x33], r8b
+  0x14012b66a: lea      r8d, [rbx + 0x2c]
+  0x14012b66e: mov      dword ptr [rsp + 0x48], eax
+  0x14012b672: call     0x140169840
+  0x14012b677: test     eax, eax
+  0x14012b679: mov      ecx, 1
+  0x14012b67e: cmovne   ebx, ecx
+  0x14012b681: mov      eax, ebx
+  0x14012b683: mov      rcx, qword ptr [rsp + 0x50]
+  0x14012b688: xor      rcx, rsp
+  0x14012b68b: call     0x14079ae80
+  0x14012b690: add      rsp, 0x60
+  0x14012b694: pop      rbx
+  0x14012b695: ret      
+  0x14012b696: int3     
+  0x14012b697: int3     
+  0x14012b698: int3     
+  0x14012b699: int3     
+  0x14012b69a: int3     
+  0x14012b69b: int3     
+  0x14012b69c: int3     
+  0x14012b69d: int3     
+  0x14012b69e: int3     
+  0x14012b69f: int3     
+  0x14012b6a0: push     rbx
+  0x14012b6a2: push     rsi
+  0x14012b6a3: push     rdi
+  0x14012b6a4: sub      rsp, 0x60
+  0x14012b6a8: mov      rax, qword ptr [rip + 0x908d49]
+  0x14012b6af: xor      rax, rsp
+  0x14012b6b2: mov      qword ptr [rsp + 0x58], rax
+  0x14012b6b7: mov      rdi, qword ptr [rsp + 0xa0]
+  0x14012b6bf: mov      rsi, rcx
+  0x14012b6c2: mov      eax, 0x1b
+  0x14012b6c7: mov      dword ptr [rsp + 0x43], edx
+  0x14012b6cb: mov      rcx, rdi
+  0x14012b6ce: mov      word ptr [rsp + 0x38], ax
+  0x14012b6d3: mov      byte ptr [rsp + 0x47], r8b
+  0x14012b6d8: call     0x14023d980
+  0x14012b6dd: mov      ebx, eax
+  0x14012b6df: cmp      eax, 2
+  0x14012b6e2: je       0x14012b758
+  0x14012b6e4: lea      ecx, [rax - 3]
+  0x14012b6e7: cmp      ecx, 2
+  0x14012b6ea: ja       0x14012b774
+  0x14012b6f0: lea      rdx, [rsp + 0x30]
+  0x14012b6f5: mov      qword ptr [rsp + 0x30], 0
+  0x14012b6fe: mov      rcx, rdi
+  0x14012b701: call     0x140241940
+  0x14012b706: test     eax, eax
+  0x14012b708: je       0x14012b729
+  0x14012b70a: mov      rax, qword ptr [rsp + 0x30]
+  0x14012b70f: test     rax, rax
+  0x14012b712: je       0x14012b729
+  0x14012b714: mov      byte ptr [rsp + 0x48], bl
+  0x14012b718: mov      eax, dword ptr [rax + 8]
+  0x14012b71b: mov      dword ptr [rsp + 0x49], eax
+  0x14012b71f: mov      dword ptr [rsp + 0x4d], 0
+  0x14012b727: jmp      0x14012b774
+  0x14012b729: lea      rax, [rip + 0x690b30]  ; 'KPlayerClient::DoCharacterSkill'
+  0x14012b730: mov      r9d, 0xc15
+  0x14012b736: lea      r8, [rip + 0x690b43]  ; 'bRetCode && pSceneObject'
+  0x14012b73d: mov      qword ptr [rsp + 0x20], rax
+  0x14012b742: lea      rdx, [rip + 0x8237ef]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14012b749: mov      ecx, 3
+  0x14012b74e: call     qword ptr [rip + 0x68ccf4]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14012b754: xor      eax, eax
+  0x14012b756: jmp      0x14012b792
+  0x14012b758: lea      r9, [rsp + 0x51]
+  0x14012b75d: mov      byte ptr [rsp + 0x48], 2
+  0x14012b762: lea      r8, [rsp + 0x4d]
+  0x14012b767: mov      rcx, rdi
+  0x14012b76a: lea      rdx, [rsp + 0x49]
+  0x14012b76f: call     0x140241450
+  0x14012b774: mov      r8d, 0x1d
+  0x14012b77a: lea      rdx, [rsp + 0x38]
+  0x14012b77f: mov      rcx, rsi
+  0x14012b782: call     0x140169840
+  0x14012b787: test     eax, eax
+  0x14012b789: jne      0x14012b78d
+  0x14012b78b: jmp      0x14012b792
+  0x14012b78d: mov      eax, 1
+  0x14012b792: mov      rcx, qword ptr [rsp + 0x58]
+  0x14012b797: xor      rcx, rsp
+  0x14012b79a: call     0x14079ae80
+  0x14012b79f: add      rsp, 0x60
+  0x14012b7a3: pop      rdi
+  0x14012b7a4: pop      rsi
+  0x14012b7a5: pop      rbx
+  0x14012b7a6: ret      
+  0x14012b7a7: int3     
+  0x14012b7a8: int3     
+  0x14012b7a9: int3     
+  0x14012b7aa: int3     
+  0x14012b7ab: int3     
+  0x14012b7ac: int3     
+  0x14012b7ad: int3     
+  0x14012b7ae: int3     
+  0x14012b7af: int3     
+  0x14012b7b0: push     rbx
+  0x14012b7b2: push     rdi
+  0x14012b7b3: sub      rsp, 0x68
+  0x14012b7b7: mov      rax, qword ptr [rip + 0x908c3a]
+  0x14012b7be: xor      rax, rsp
+  0x14012b7c1: mov      qword ptr [rsp + 0x50], rax
+  0x14012b7c6: mov      eax, 0xc
+  0x14012b7cb: mov      byte ptr [rsp + 0x30], r8b
+  0x14012b7d0: mov      word ptr [rsp + 0x20], ax
+  0x14012b7d5: test     r9d, r9d
+  0x14012b7d8: mov      rbx, rdx
+  0x14012b7db: mov      r8d, 0x29
+  0x14012b7e1: setne    byte ptr [rsp + 0x2b]
+  0x14012b7e6: mov      edi, r9d
+  0x14012b7e9: inc      dword ptr [rdx + 0xf9c]
+  0x14012b7ef: mov      eax, dword ptr [rdx + 0xf9c]
+  0x14012b7f5: mov      dword ptr [rsp + 0x2c], eax
+  0x14012b7f9: mov      eax, dword ptr [rdx + 0x320]
+  0x14012b7ff: mov      dword ptr [rsp + 0x35], eax
+  0x14012b803: mov      eax, dword ptr [rdx + 0x340]
+

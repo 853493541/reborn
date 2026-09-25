@@ -1,0 +1,1243 @@
+# JX3RepresentX64.dll xrefs for 'FallDownHeightFloor'
+# image base 0x180000000
+
+## xref @ 0x1804b66de -> 0x180caadf8 'FallDownHeightFloor'  fn start 0x1804b65c0
+  0x1804b65c0: mov      qword ptr [rsp + 0x18], rbx
+  0x1804b65c5: push     rbp
+  0x1804b65c6: sub      rsp, 0x40
+  0x1804b65ca: xor      ebp, ebp
+  0x1804b65cc: mov      rbx, rcx
+  0x1804b65cf: cmp      dword ptr [rcx + 0x7c], ebp
+  0x1804b65d2: jne      0x1804b686e
+  0x1804b65d8: cmp      qword ptr [rcx + 0x80], rbp
+  0x1804b65df: je       0x1804b686e
+  0x1804b65e5: cmp      dword ptr [rcx + 0x4c], ebp
+  0x1804b65e8: jne      0x1804b686e
+  0x1804b65ee: cmp      dword ptr [rcx + 8], ebp
+  0x1804b65f1: jle      0x1804b686e
+  0x1804b65f7: cmp      dword ptr [rcx + 0x74], ebp
+  0x1804b65fa: mov      r8d, dword ptr [rcx + 0xb4]
+  0x1804b6601: mov      edx, dword ptr [rcx + 0xb0]
+  0x1804b6607: setne    r9b
+  0x1804b660b: mov      ecx, dword ptr [rcx + 0xac]
+  0x1804b6611: mov      qword ptr [rsp + 0x50], rsi
+  0x1804b6616: call     0x18001252b
+  0x1804b661b: mov      rsi, rax
+  0x1804b661e: test     rax, rax
+  0x1804b6621: jne      0x1804b665e
+  0x1804b6623: lea      rax, [rip + 0x7f479e]  ; 'KRLRushState::IsRoll'
+  0x1804b662a: mov      r9d, 0x6e5
+  0x1804b6630: lea      r8, [rip + 0x7f1569]  ; 'pResParam'
+  0x1804b6637: mov      qword ptr [rsp + 0x20], rax
+  0x1804b663c: lea      rdx, [rip + 0x7ca50d]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1804b6643: lea      ecx, [rbp + 3]
+  0x1804b6646: call     qword ptr [rip + 0xbe39b4]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1804b664c: mov      rsi, qword ptr [rsp + 0x50]
+  0x1804b6651: mov      eax, ebp
+  0x1804b6653: mov      rbx, qword ptr [rsp + 0x60]
+  0x1804b6658: add      rsp, 0x40
+  0x1804b665c: pop      rbp
+  0x1804b665d: ret      
+  0x1804b665e: mov      rcx, qword ptr [rip + 0xa2797b]
+  0x1804b6665: mov      r8d, dword ptr [rbx + 0x20c]
+  0x1804b666c: add      rcx, 0x1a0
+  0x1804b6673: mov      edx, dword ptr [rbx + 0xac]
+  0x1804b6679: mov      qword ptr [rsp + 0x58], rdi
+  0x1804b667e: movaps   xmmword ptr [rsp + 0x30], xmm6
+  0x1804b6683: call     0x180007ba3
+  0x1804b6688: mov      rdi, rax
+  0x1804b668b: mov      rcx, rbx
+  0x1804b668e: cmp      dword ptr [rbx + 0xbc], ebp
+  0x1804b6694: je       0x1804b676c
+  0x1804b669a: call     0x180016bcb
+  0x1804b669f: test     eax, eax
+  0x1804b66a1: je       0x1804b6709
+  0x1804b66a3: mov      r8d, dword ptr [rbx + 0x1f8]
+  0x1804b66aa: test     r8d, r8d
+  0x1804b66ad: je       0x1804b6709
+  0x1804b66af: mov      rcx, qword ptr [rip + 0xa2792a]
+  0x1804b66b6: mov      edx, dword ptr [rbx + 0xac]
+  0x1804b66bc: add      rcx, 0x1a0
+  0x1804b66c3: call     0x1800110a9
+  0x1804b66c8: mov      rdi, rax
+  0x1804b66cb: test     rax, rax
+  0x1804b66ce: jne      0x1804b66db
+  0x1804b66d0: mov      r9d, 0x6ee
+  0x1804b66d6: jmp      0x1804b67ac
+  0x1804b66db: mov      rax, qword ptr [rax]
+  0x1804b66de: lea      rdx, [rip + 0x7f4713]  ; 'FallDownHeightFloor'
+  0x1804b66e5: xorps    xmm2, xmm2
+  0x1804b66e8: mov      rcx, rdi
+  0x1804b66eb: call     qword ptr [rax + 0x50]
+  0x1804b66ee: mov      rax, qword ptr [rdi]
+  0x1804b66f1: lea      rdx, [rip + 0x7f4718]  ; 'FallDownAdjustFloor'
+  0x1804b66f8: xorps    xmm2, xmm2
+  0x1804b66fb: mov      rcx, rdi
+  0x1804b66fe: movaps   xmm6, xmm0
+  0x1804b6701: call     qword ptr [rax + 0x50]
+  0x1804b6704: movaps   xmm1, xmm0
+  0x1804b6707: jmp      0x1804b6730
+  0x1804b6709: test     rdi, rdi
+  0x1804b670c: je       0x1804b6720
+  0x1804b670e: cmp      qword ptr [rdi + 0x30], rbp
+  0x1804b6712: je       0x1804b6720
+  0x1804b6714: movss    xmm6, dword ptr [rdi + 0x28]
+  0x1804b6719: movss    xmm1, dword ptr [rdi + 0x2c]
+  0x1804b671e: jmp      0x1804b6730
+  0x1804b6720: movss    xmm6, dword ptr [rsi + 0xd4]
+  0x1804b6728: movss    xmm1, dword ptr [rsi + 0xd8]
+  0x1804b6730: movss    xmm2, dword ptr [rbx + 0xc4]
+  0x1804b6738: movss    xmm0, dword ptr [rbx + 0xd4]
+  0x1804b6740: subss    xmm0, xmm2
+  0x1804b6744: comiss   xmm0, xmm6
+  0x1804b6747: jbe      0x1804b685f
+  0x1804b674d: movss    xmm0, dword ptr [rbx + 0xec]
+  0x1804b6755: subss    xmm0, xmm2
+  0x1804b6759: comiss   xmm1, xmm0
+  0x1804b675c: jbe      0x1804b685f
+  0x1804b6762: mov      ebp, 1
+  0x1804b6767: jmp      0x1804b685f
+  0x1804b676c: call     0x180016bcb
+  0x1804b6771: test     eax, eax
+  0x1804b6773: je       0x1804b6804
+  0x1804b6779: mov      r8d, dword ptr [rbx + 0x1f8]
+  0x1804b6780: test     r8d, r8d
+  0x1804b6783: je       0x1804b6804
+  0x1804b6785: mov      rcx, qword ptr [rip + 0xa27854]
+  0x1804b678c: mov      edx, dword ptr [rbx + 0xac]
+  0x1804b6792: add      rcx, 0x1a0
+  0x1804b6799: call     0x1800110a9
+  0x1804b679e: mov      rdi, rax
+  0x1804b67a1: test     rax, rax
+  0x1804b67a4: jne      0x1804b67d6
+  0x1804b67a6: mov      r9d, 0x706
+  0x1804b67ac: lea      rax, [rip + 0x7f4615]  ; 'KRLRushState::IsRoll'
+  0x1804b67b3: mov      ecx, 3
+  0x1804b67b8: lea      r8, [rip + 0x7f4629]  ; 'tabCGAni'
+  0x1804b67bf: mov      qword ptr [rsp + 0x20], rax
+  0x1804b67c4: lea      rdx, [rip + 0x7ca385]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1804b67cb: call     qword ptr [rip + 0xbe382f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1804b67d1: jmp      0x1804b685f
+  0x1804b67d6: mov      rax, qword ptr [rax]
+  0x1804b67d9: lea      rdx, [rip + 0x7f4648]  ; 'FallDownHeightWater'
+  0x1804b67e0: xorps    xmm2, xmm2
+  0x1804b67e3: mov      rcx, rdi
+  0x1804b67e6: call     qword ptr [rax + 0x50]
+  0x1804b67e9: mov      rax, qword ptr [rdi]
+  0x1804b67ec: lea      rdx, [rip + 0x7f464d]  ; 'FallDownAdjustWater'
+  0x1804b67f3: xorps    xmm2, xmm2
+  0x1804b67f6: mov      rcx, rdi
+  0x1804b67f9: movaps   xmm6, xmm0
+  0x1804b67fc: call     qword ptr [rax + 0x50]
+  0x1804b67ff: movaps   xmm1, xmm0
+  0x1804b6802: jmp      0x1804b682b
+  0x1804b6804: test     rdi, rdi
+  0x1804b6807: je       0x1804b681b
+  0x1804b6809: cmp      qword ptr [rdi + 0x50], rbp
+  0x1804b680d: je       0x1804b681b
+  0x1804b680f: movss    xmm6, dword ptr [rdi + 0x48]
+  0x1804b6814: movss    xmm1, dword ptr [rdi + 0x4c]
+  0x1804b6819: jmp      0x1804b682b
+  0x1804b681b: movss    xmm6, dword ptr [rsi + 0xe4]
+  0x1804b6823: movss    xmm1, dword ptr [rsi + 0xe8]
+  0x1804b682b: movss    xmm2, dword ptr [rbx + 0xc0]
+  0x1804b6833: movss    xmm0, dword ptr [rbx + 0xd4]
+  0x1804b683b: subss    xmm0, xmm2
+  0x1804b683f: comiss   xmm0, xmm6
+  0x1804b6842: jbe      0x1804b685f
+  0x1804b6844: movss    xmm0, dword ptr [rbx + 0xec]
+  0x1804b684c: mov      ecx, ebp
+  0x1804b684e: mov      ebp, 1
+  0x1804b6853: subss    xmm0, xmm2
+  0x1804b6857: comiss   xmm1, xmm0
+  0x1804b685a: cmova    ecx, ebp
+  0x1804b685d: mov      ebp, ecx
+  0x1804b685f: mov      rdi, qword ptr [rsp + 0x58]
+  0x1804b6864: movaps   xmm6, xmmword ptr [rsp + 0x30]
+  0x1804b6869: mov      rsi, qword ptr [rsp + 0x50]
+  0x1804b686e: mov      rbx, qword ptr [rsp + 0x60]
+  0x1804b6873: mov      eax, ebp
+  0x1804b6875: add      rsp, 0x40
+  0x1804b6879: pop      rbp
+  0x1804b687a: ret      
+  0x1804b687b: int3     
+  0x1804b687c: int3     
+  0x1804b687d: int3     
+  0x1804b687e: int3     
+  0x1804b687f: int3     
+  0x1804b6880: int3     
+  0x1804b6881: int3     
+  0x1804b6882: int3     
+  0x1804b6883: int3     
+  0x1804b6884: int3     
+  0x1804b6885: int3     
+  0x1804b6886: int3     
+  0x1804b6887: int3     
+  0x1804b6888: int3     
+  0x1804b6889: int3     
+  0x1804b688a: int3     
+  0x1804b688b: int3     
+  0x1804b688c: int3     
+  0x1804b688d: int3     
+  0x1804b688e: int3     
+  0x1804b688f: int3     
+  0x1804b6890: int3     
+  0x1804b6891: int3     
+  0x1804b6892: int3     
+  0x1804b6893: int3     
+  0x1804b6894: int3     
+  0x1804b6895: int3     
+  0x1804b6896: int3     
+  0x1804b6897: int3     
+  0x1804b6898: int3     
+  0x1804b6899: int3     
+  0x1804b689a: int3     
+  0x1804b689b: int3     
+  0x1804b689c: int3     
+  0x1804b689d: int3     
+  0x1804b689e: int3     
+  0x1804b689f: int3     
+  0x1804b68a0: int3     
+  0x1804b68a1: int3     
+  0x1804b68a2: int3     
+  0x1804b68a3: int3     
+  0x1804b68a4: int3     
+  0x1804b68a5: int3     
+  0x1804b68a6: int3     
+  0x1804b68a7: int3     
+  0x1804b68a8: int3     
+  0x1804b68a9: int3     
+  0x1804b68aa: int3     
+  0x1804b68ab: int3     
+  0x1804b68ac: int3     
+  0x1804b68ad: int3     
+  0x1804b68ae: int3     
+  0x1804b68af: int3     
+  0x1804b68b0: int3     
+  0x1804b68b1: int3     
+  0x1804b68b2: int3     
+  0x1804b68b3: int3     
+  0x1804b68b4: int3     
+  0x1804b68b5: int3     
+  0x1804b68b6: int3     
+  0x1804b68b7: int3     
+  0x1804b68b8: int3     
+  0x1804b68b9: int3     
+  0x1804b68ba: int3     
+  0x1804b68bb: int3     
+  0x1804b68bc: int3     
+  0x1804b68bd: int3     
+  0x1804b68be: int3     
+  0x1804b68bf: int3     
+  0x1804b68c0: int3     
+  0x1804b68c1: int3     
+  0x1804b68c2: int3     
+  0x1804b68c3: int3     
+  0x1804b68c4: int3     
+  0x1804b68c5: int3     
+  0x1804b68c6: int3     
+  0x1804b68c7: int3     
+  0x1804b68c8: int3     
+  0x1804b68c9: int3     
+  0x1804b68ca: int3     
+  0x1804b68cb: int3     
+  0x1804b68cc: int3     
+  0x1804b68cd: int3     
+  0x1804b68ce: int3     
+  0x1804b68cf: int3     
+  0x1804b68d0: int3     
+  0x1804b68d1: int3     
+  0x1804b68d2: int3     
+  0x1804b68d3: int3     
+  0x1804b68d4: int3     
+  0x1804b68d5: int3     
+  0x1804b68d6: int3     
+  0x1804b68d7: int3     
+  0x1804b68d8: int3     
+  0x1804b68d9: int3     
+  0x1804b68da: int3     
+  0x1804b68db: int3     
+  0x1804b68dc: int3     
+  0x1804b68dd: int3     
+  0x1804b68de: int3     
+  0x1804b68df: int3     
+  0x1804b68e0: int3     
+  0x1804b68e1: int3     
+  0x1804b68e2: int3     
+  0x1804b68e3: int3     
+  0x1804b68e4: int3     
+  0x1804b68e5: int3     
+  0x1804b68e6: int3     
+  0x1804b68e7: int3     
+  0x1804b68e8: int3     
+  0x1804b68e9: int3     
+  0x1804b68ea: int3     
+  0x1804b68eb: int3     
+  0x1804b68ec: int3     
+  0x1804b68ed: int3     
+  0x1804b68ee: int3     
+  0x1804b68ef: int3     
+  0x1804b68f0: int3     
+  0x1804b68f1: int3     
+  0x1804b68f2: int3     
+  0x1804b68f3: int3     
+  0x1804b68f4: int3     
+  0x1804b68f5: int3     
+  0x1804b68f6: int3     
+  0x1804b68f7: int3     
+  0x1804b68f8: int3     
+  0x1804b68f9: int3     
+  0x1804b68fa: int3     
+  0x1804b68fb: int3     
+  0x1804b68fc: int3     
+  0x1804b68fd: int3     
+  0x1804b68fe: int3     
+  0x1804b68ff: int3     
+  0x1804b6900: int3     
+  0x1804b6901: int3     
+  0x1804b6902: int3     
+  0x1804b6903: int3     
+  0x1804b6904: int3     
+  0x1804b6905: int3     
+  0x1804b6906: int3     
+  0x1804b6907: int3     
+  0x1804b6908: int3     
+  0x1804b6909: int3     
+  0x1804b690a: int3     
+  0x1804b690b: int3     
+  0x1804b690c: int3     
+  0x1804b690d: int3     
+  0x1804b690e: int3     
+  0x1804b690f: int3     
+  0x1804b6910: int3     
+  0x1804b6911: int3     
+  0x1804b6912: int3     
+  0x1804b6913: int3     
+  0x1804b6914: int3     
+  0x1804b6915: int3     
+  0x1804b6916: int3     
+  0x1804b6917: int3     
+  0x1804b6918: int3     
+  0x1804b6919: int3     
+  0x1804b691a: int3     
+  0x1804b691b: int3     
+  0x1804b691c: int3     
+  0x1804b691d: int3     
+  0x1804b691e: int3     
+  0x1804b691f: int3     
+  0x1804b6920: int3     
+  0x1804b6921: int3     
+  0x1804b6922: int3     
+  0x1804b6923: int3     
+  0x1804b6924: int3     
+  0x1804b6925: int3     
+  0x1804b6926: int3     
+  0x1804b6927: int3     
+  0x1804b6928: int3     
+  0x1804b6929: int3     
+  0x1804b692a: int3     
+  0x1804b692b: int3     
+  0x1804b692c: int3     
+  0x1804b692d: int3     
+  0x1804b692e: int3     
+  0x1804b692f: int3     
+  0x1804b6930: mov      eax, dword ptr [rcx + 0x30]
+  0x1804b6933: ret      
+  0x1804b6934: int3     
+  0x1804b6935: int3     
+  0x1804b6936: int3     
+  0x1804b6937: int3     
+  0x1804b6938: int3     
+  0x1804b6939: int3     
+  0x1804b693a: int3     
+  0x1804b693b: int3     
+  0x1804b693c: int3     
+  0x1804b693d: int3     
+  0x1804b693e: int3     
+  0x1804b693f: int3     
+  0x1804b6940: push     rbx
+  0x1804b6942: sub      rsp, 0x30
+  0x1804b6946: mov      rbx, r9
+  0x1804b6949: test     r9, r9
+  0x1804b694c: je       0x1804b698d
+  0x1804b694e: cmp      qword ptr [rsp + 0x60], 0
+  0x1804b6954: je       0x1804b698d
+  0x1804b6956: call     0x180022124
+  0x1804b695b: mov      r10, rax
+  0x1804b695e: test     rax, rax
+  0x1804b6961: jne      0x1804b6998
+  0x1804b6963: lea      rax, [rip + 0x7f4746]  ; 'KRLRushState::IsSocketParamChanged'
+  0x1804b696a: mov      r9d, 0x990
+  0x1804b6970: lea      r8, [rip + 0x7f4769]  ; 'pSocketParam'
+  0x1804b6977: mov      qword ptr [rsp + 0x20], rax
+  0x1804b697c: lea      rdx, [rip + 0x7ca1cd]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1804b6983: lea      ecx, [r10 + 3]
+  0x1804b6987: call     qword ptr [rip + 0xbe3673]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1804b698d: mov      eax, 1
+  0x1804b6992: add      rsp, 0x30
+  0x1804b6996: pop      rbx
+  0x1804b6997: ret      
+  0x1804b6998: mov      r9, r10
+  0x1804b699b: sub      rbx, r10
+  0x1804b699e: nop      
+  0x1804b69a0: movzx    r8d, byte ptr [rbx + r9]
+  0x1804b69a5: lea      r9, [r9 + 1]
+  0x1804b69a9: lea      edx, [r8 - 0x41]
+  0x1804b69ad: cmp      dl, 0x19
+  0x1804b69b0: lea      eax, [r8 + 0x20]
+  0x1804b69b4: movzx    ecx, al
+  0x1804b69b7: movsx    eax, byte ptr [r9 - 1]
+  0x1804b69bc: cmova    ecx, r8d
+  0x1804b69c0: movsx    edx, cl
+  0x1804b69c3: cmp      edx, eax
+  0x1804b69c5: jne      0x1804b698d
+  0x1804b69c7: test     eax, eax
+  0x1804b69c9: jne      0x1804b69a0
+  0x1804b69cb: cmp      edx, eax
+  0x1804b69cd: jne      0x1804b698d
+  0x1804b69cf: mov      rcx, qword ptr [rsp + 0x60]
+  0x1804b69d4: lea      rdx, [r10 + 0x10]
+  0x1804b69d8: call     qword ptr [rip + 0xbe4a62]  ; api-ms-win-crt-string-l1-1-0.dll!_stricmp
+  0x1804b69de: test     eax, eax
+  0x1804b69e0: jne      0x1804b698d
+  0x1804b69e2: add      rsp, 0x30
+  0x1804b69e6: pop      rbx
+  0x1804b69e7: ret      
+  0x1804b69e8: int3     
+  0x1804b69e9: int3     
+  0x1804b69ea: int3     
+  0x1804b69eb: int3     
+  0x1804b69ec: int3     
+  0x1804b69ed: int3     
+  0x1804b69ee: int3     
+  0x1804b69ef: int3     
+  0x1804b69f0: int3     
+  0x1804b69f1: int3     
+  0x1804b69f2: int3     
+  0x1804b69f3: int3     
+  0x1804b69f4: int3     
+  0x1804b69f5: int3     
+  0x1804b69f6: int3     
+  0x1804b69f7: int3     
+  0x1804b69f8: int3     
+  0x1804b69f9: int3     
+  0x1804b69fa: int3     
+  0x1804b69fb: int3     
+  0x1804b69fc: int3     
+  0x1804b69fd: int3     
+  0x1804b69fe: int3     
+  0x1804b69ff: int3     
+  0x1804b6a00: int3     
+  0x1804b6a01: int3     
+  0x1804b6a02: int3     
+  0x1804b6a03: int3     
+  0x1804b6a04: int3     
+  0x1804b6a05: int3     
+  0x1804b6a06: int3     
+  0x1804b6a07: int3     
+  0x1804b6a08: int3     
+  0x1804b6a09: int3     
+  0x1804b6a0a: int3     
+  0x1804b6a0b: int3     
+  0x1804b6a0c: int3     
+  0x1804b6a0d: int3     
+  0x1804b6a0e: int3     
+  0x1804b6a0f: int3     
+  0x1804b6a10: int3     
+  0x1804b6a11: int3     
+  0x1804b6a12: int3     
+  0x1804b6a13: int3     
+  0x1804b6a14: int3     
+  0x1804b6a15: int3     
+  0x1804b6a16: int3     
+  0x1804b6a17: int3     
+  0x1804b6a18: int3     
+  0x1804b6a19: int3     
+  0x1804b6a1a: int3     
+  0x1804b6a1b: int3     
+  0x1804b6a1c: int3     
+  0x1804b6a1d: int3     
+  0x1804b6a1e: int3     
+  0x1804b6a1f: int3     
+  0x1804b6a20: cmp      dword ptr [rcx + 0x18], 0
+  0x1804b6a24: je       0x1804b6a32
+  0x1804b6a26: cmp      dword ptr [rcx + 0x24], 0
+  0x1804b6a2a: je       0x1804b6a32
+  0x1804b6a2c: mov      eax, 1
+  0x1804b6a31: ret      
+  0x1804b6a32: xor      eax, eax
+  0x1804b6a34: ret      
+  0x1804b6a35: int3     
+  0x1804b6a36: int3     
+  0x1804b6a37: int3     
+  0x1804b6a38: int3     
+  0x1804b6a39: int3     
+  0x1804b6a3a: int3     
+  0x1804b6a3b: int3     
+  0x1804b6a3c: int3     
+  0x1804b6a3d: int3     
+  0x1804b6a3e: int3     
+  0x1804b6a3f: int3     
+  0x1804b6a40: mov      eax, dword ptr [rcx + 0x198]
+  0x1804b6a46: ret      
+  0x1804b6a47: int3     
+  0x1804b6a48: int3     
+  0x1804b6a49: int3     
+  0x1804b6a4a: int3     
+  0x1804b6a4b: int3     
+  0x1804b6a4c: int3     
+  0x1804b6a4d: int3     
+  0x1804b6a4e: int3     
+  0x1804b6a4f: int3     
+  0x1804b6a50: xor      eax, eax
+  0x1804b6a52: cmp      dword ptr [rcx + 0x190], eax
+  0x1804b6a58: setne    al
+  0x1804b6a5b: ret      
+  0x1804b6a5c: int3     
+  0x1804b6a5d: int3     
+  0x1804b6a5e: int3     
+  0x1804b6a5f: int3     
+  0x1804b6a60: push     rbx
+  0x1804b6a62: sub      rsp, 0x20
+  0x1804b6a66: mov      rbx, rcx
+  0x1804b6a69: call     0x180024c03
+  0x1804b6a6e: mov      edx, dword ptr [rbx + 0x1c8]
+  0x1804b6a74: mov      qword ptr [rbx + 0x194], 0
+  0x1804b6a7f: test     edx, edx
+  0x1804b6a81: je       0x1804b6a9e
+  0x1804b6a83: mov      rcx, qword ptr [rbx + 0x88]
+  0x1804b6a8a: test     rcx, rcx
+  0x1804b6a8d: je       0x1804b6a9e
+  0x1804b6a8f: call     0x180023178
+  0x1804b6a94: mov      dword ptr [rbx + 0x1c8], 0
+  0x1804b6a9e: mov      rcx, rbx
+  0x1804b6aa1: call     0x180010fe6
+  0x1804b6aa6: mov      eax, 1
+  0x1804b6aab: add      rsp, 0x20
+  0x1804b6aaf: pop      rbx
+  0x1804b6ab0: ret      
+  0x1804b6ab1: int3     
+  0x1804b6ab2: int3     
+  0x1804b6ab3: int3     
+  0x1804b6ab4: int3     
+  0x1804b6ab5: int3     
+  0x1804b6ab6: int3     
+  0x1804b6ab7: int3     
+  0x1804b6ab8: int3     
+  0x1804b6ab9: int3     
+  0x1804b6aba: int3     
+  0x1804b6abb: int3     
+  0x1804b6abc: int3     
+  0x1804b6abd: int3     
+  0x1804b6abe: int3     
+  0x1804b6abf: int3     
+  0x1804b6ac0: int3     
+  0x1804b6ac1: int3     
+  0x1804b6ac2: int3     
+  0x1804b6ac3: int3     
+  0x1804b6ac4: int3     
+  0x1804b6ac5: int3     
+  0x1804b6ac6: int3     
+  0x1804b6ac7: int3     
+  0x1804b6ac8: int3     
+  0x1804b6ac9: int3     
+  0x1804b6aca: int3     
+  0x1804b6acb: int3     
+  0x1804b6acc: int3     
+  0x1804b6acd: int3     
+  0x1804b6ace: int3     
+  0x1804b6acf: int3     
+  0x1804b6ad0: mov      r11, rsp
+  0x1804b6ad3: push     rbp
+  0x1804b6ad4: push     rsi
+  0x1804b6ad5: push     rdi
+  0x1804b6ad6: push     r14
+  0x1804b6ad8: push     r15
+  0x1804b6ada: sub      rsp, 0xb0
+  0x1804b6ae1: mov      rax, qword ptr [rip + 0x9e35f0]
+  0x1804b6ae8: xor      rax, rsp
+  0x1804b6aeb: mov      qword ptr [rsp + 0x90], rax
+  0x1804b6af3: movss    xmm0, dword ptr [rip + 0x7cb745]
+  0x1804b6afb: xorps    xmm1, xmm1
+  0x1804b6afe: mov      rdi, qword ptr [rsp + 0x100]
+  0x1804b6b06: mov      rsi, r9
+  0x1804b6b09: mov      qword ptr [r11 - 0x7c], 0
+  0x1804b6b11: mov      r15d, r8d
+  0x1804b6b14: movss    dword ptr [rsp + 0x68], xmm0
+  0x1804b6b1a: xorps    xmm0, xmm0
+  0x1804b6b1d: movdqa   xmmword ptr [rsp + 0x70], xmm0
+  0x1804b6b23: mov      ebp, edx
+  0x1804b6b25: mov      dword ptr [rsp + 0x64], 0
+  0x1804b6b2d: mov      r14, rcx
+  0x1804b6b30: movdqa   xmmword ptr [rsp + 0x40], xmm1
+  0x1804b6b36: mov      qword ptr [rsp + 0x50], 0
+  0x1804b6b3f: mov      dword ptr [rsp + 0x58], 0
+  0x1804b6b47: mov      qword ptr [r11 - 0x58], 0
+  0x1804b6b4f: mov      byte ptr [r11 - 0x50], 0
+  0x1804b6b54: test     r9, r9
+  0x1804b6b57: je       0x1804b6c97
+  0x1804b6b5d: test     rdi, rdi
+  0x1804b6b60: je       0x1804b6c97
+  0x1804b6b66: cmp      byte ptr [r9], 0
+  0x1804b6b6a: mov      qword ptr [r11 - 0x30], rbx
+  0x1804b6b6e: je       0x1804b6c8d
+  0x1804b6b74: cmp      byte ptr [rdi], 0
+  0x1804b6b77: je       0x1804b6c8d
+  0x1804b6b7d: call     0x180018f9d
+  0x1804b6b82: mov      rbx, rax
+  0x1804b6b85: test     rax, rax
+  0x1804b6b88: jne      0x1804b6bde
+  0x1804b6b8a: lea      rcx, [rip + 0x7f456f]  ; 'KRLRushState::LoadSocket'
+  0x1804b6b91: mov      r9d, 0x9af
+  0x1804b6b97: mov      qword ptr [rsp + 0x20], rcx
+  0x1804b6b9c: lea      r8, [rip + 0x7cc46d]  ; 'prlCharacter'
+  0x1804b6ba3: lea      rdx, [rip + 0x7c9fa6]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1804b6baa: mov      ecx, 3
+  0x1804b6baf: call     qword ptr [rip + 0xbe344b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1804b6bb5: xor      eax, eax
+  0x1804b6bb7: mov      rbx, qword ptr [rsp + 0xa8]
+  0x1804b6bbf: mov      rcx, qword ptr [rsp + 0x90]
+  0x1804b6bc7: xor      rcx, rsp
+  0x1804b6bca: call     0x18000bf9b
+  0x1804b6bcf: add      rsp, 0xb0
+  0x1804b6bd6: pop      r15
+  0x1804b6bd8: pop      r14
+  0x1804b6bda: pop      rdi
+  0x1804b6bdb: pop      rsi
+  0x1804b6bdc: pop      rbp
+  0x1804b6bdd: ret      
+  0x1804b6bde: mov      rcx, rbx
+  0x1804b6be1: call     0x180014a9c
+  0x1804b6be6: test     eax, eax
+  0x1804b6be8: jne      0x1804b6c8d
+  0x1804b6bee: movss    xmm0, dword ptr [rsp + 0x108]
+  0x1804b6bf7: mov      edx, r15d
+  0x1804b6bfa: mov      ecx, ebp
+  0x1804b6bfc: movss    dword ptr [rsp + 0x6c], xmm0
+  0x1804b6c02: mov      qword ptr [rsp + 0x30], rsi
+  0x1804b6c07: mov      qword ptr [rsp + 0x38], rdi
+  0x1804b6c0c: call     0x1804b4f70
+  0x1804b6c11: mov      rdx, rax
+  0x1804b6c14: mov      byte ptr [rsp + 0x20], 1
+  0x1804b6c19: lea      rcx, [rbx + 0x38]
+  0x1804b6c1d: xor      r9d, r9d
+  0x1804b6c20: lea      r8, [rsp + 0x30]
+  0x1804b6c25: call     0x18000effc
+  0x1804b6c2a: mov      r8d, r15d
+  0x1804b6c2d: mov      edx, ebp
+  0x1804b6c2f: mov      rcx, r14
+  0x1804b6c32: call     0x180022124
+  0x1804b6c37: mov      rbx, rax
+  0x1804b6c3a: test     rax, rax
+  0x1804b6c3d: jne      0x1804b6c5d
+  0x1804b6c3f: lea      rcx, [rip + 0x7f44ba]  ; 'KRLRushState::LoadSocket'
+  0x1804b6c46: mov      r9d, 0x9bb
+  0x1804b6c4c: mov      qword ptr [rsp + 0x20], rcx
+  0x1804b6c51: lea      r8, [rip + 0x7f4488]  ; 'pSocketParam'
+  0x1804b6c58: jmp      0x1804b6ba3
+  0x1804b6c5d: lea      rcx, [rax + 0x10]
+  0x1804b6c61: mov      r8d, 0x104
+  0x1804b6c67: mov      rdx, rdi
+  0x1804b6c6a: call     qword ptr [rip + 0xbe4768]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1804b6c70: mov      r8d, 0x10
+  0x1804b6c76: mov      byte ptr [rbx + 0x113], 0
+  0x1804b6c7d: mov      rdx, rsi
+  0x1804b6c80: mov      rcx, rbx
+  0x1804b6c83: call     qword ptr [rip + 0xbe474f]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1804b6c89: mov      byte ptr [rbx + 0xf], 0
+  0x1804b6c8d: mov      eax, 1
+  0x1804b6c92: jmp      0x1804b6bb7
+  0x1804b6c97: xor      eax, eax
+  0x1804b6c99: jmp      0x1804b6bbf
+  0x1804b6c9e: int3     
+  0x1804b6c9f: int3     
+  0x1804b6ca0: int3     
+  0x1804b6ca1: int3     
+  0x1804b6ca2: int3     
+  0x1804b6ca3: int3     
+  0x1804b6ca4: int3     
+  0x1804b6ca5: int3     
+  0x1804b6ca6: int3     
+  0x1804b6ca7: int3     
+  0x1804b6ca8: int3     
+  0x1804b6ca9: int3     
+  0x1804b6caa: int3     
+  0x1804b6cab: int3     
+  0x1804b6cac: int3     
+  0x1804b6cad: int3     
+  0x1804b6cae: int3     
+  0x1804b6caf: int3     
+  0x1804b6cb0: int3     
+  0x1804b6cb1: int3     
+  0x1804b6cb2: int3     
+  0x1804b6cb3: int3     
+  0x1804b6cb4: int3     
+  0x1804b6cb5: int3     
+  0x1804b6cb6: int3     
+  0x1804b6cb7: int3     
+  0x1804b6cb8: int3     
+  0x1804b6cb9: int3     
+  0x1804b6cba: int3     
+  0x1804b6cbb: int3     
+  0x1804b6cbc: int3     
+  0x1804b6cbd: int3     
+  0x1804b6cbe: int3     
+  0x1804b6cbf: int3     
+  0x1804b6cc0: int3     
+  0x1804b6cc1: int3     
+  0x1804b6cc2: int3     
+  0x1804b6cc3: int3     
+  0x1804b6cc4: int3     
+  0x1804b6cc5: int3     
+  0x1804b6cc6: int3     
+  0x1804b6cc7: int3     
+  0x1804b6cc8: int3     
+  0x1804b6cc9: int3     
+  0x1804b6cca: int3     
+  0x1804b6ccb: int3     
+  0x1804b6ccc: int3     
+  0x1804b6ccd: int3     
+  0x1804b6cce: int3     
+  0x1804b6ccf: int3     
+  0x1804b6cd0: int3     
+  0x1804b6cd1: int3     
+  0x1804b6cd2: int3     
+  0x1804b6cd3: int3     
+  0x1804b6cd4: int3     
+  0x1804b6cd5: int3     
+  0x1804b6cd6: int3     
+  0x1804b6cd7: int3     
+  0x1804b6cd8: int3     
+  0x1804b6cd9: int3     
+  0x1804b6cda: int3     
+  0x1804b6cdb: int3     
+  0x1804b6cdc: int3     
+  0x1804b6cdd: int3     
+  0x1804b6cde: int3     
+  0x1804b6cdf: int3     
+  0x1804b6ce0: int3     
+  0x1804b6ce1: int3     
+  0x1804b6ce2: int3     
+  0x1804b6ce3: int3     
+  0x1804b6ce4: int3     
+  0x1804b6ce5: int3     
+  0x1804b6ce6: int3     
+  0x1804b6ce7: int3     
+  0x1804b6ce8: int3     
+  0x1804b6ce9: int3     
+  0x1804b6cea: int3     
+  0x1804b6ceb: int3     
+  0x1804b6cec: int3     
+  0x1804b6ced: int3     
+  0x1804b6cee: int3     
+  0x1804b6cef: int3     
+  0x1804b6cf0: int3     
+  0x1804b6cf1: int3     
+  0x1804b6cf2: int3     
+  0x1804b6cf3: int3     
+  0x1804b6cf4: int3     
+  0x1804b6cf5: int3     
+  0x1804b6cf6: int3     
+  0x1804b6cf7: int3     
+  0x1804b6cf8: int3     
+  0x1804b6cf9: int3     
+  0x1804b6cfa: int3     
+  0x1804b6cfb: int3     
+  0x1804b6cfc: int3     
+  0x1804b6cfd: int3     
+  0x1804b6cfe: int3     
+  0x1804b6cff: int3     
+  0x1804b6d00: int3     
+  0x1804b6d01: int3     
+  0x1804b6d02: int3     
+  0x1804b6d03: int3     
+  0x1804b6d04: int3     
+  0x1804b6d05: int3     
+  0x1804b6d06: int3     
+  0x1804b6d07: int3     
+  0x1804b6d08: int3     
+  0x1804b6d09: int3     
+  0x1804b6d0a: int3     
+  0x1804b6d0b: int3     
+  0x1804b6d0c: int3     
+  0x1804b6d0d: int3     
+  0x1804b6d0e: int3     
+  0x1804b6d0f: int3     
+  0x1804b6d10: int3     
+  0x1804b6d11: int3     
+  0x1804b6d12: int3     
+  0x1804b6d13: int3     
+  0x1804b6d14: int3     
+  0x1804b6d15: int3     
+  0x1804b6d16: int3     
+  0x1804b6d17: int3     
+  0x1804b6d18: int3     
+  0x1804b6d19: int3     
+  0x1804b6d1a: int3     
+  0x1804b6d1b: int3     
+  0x1804b6d1c: int3     
+  0x1804b6d1d: int3     
+  0x1804b6d1e: int3     
+  0x1804b6d1f: int3     
+  0x1804b6d20: mov      r11, rsp
+  0x1804b6d23: mov      qword ptr [r11 + 0x10], rbx
+  0x1804b6d27: mov      qword ptr [r11 + 0x18], rdi
+  0x1804b6d2b: push     rbp
+  0x1804b6d2c: lea      rbp, [r11 - 0x28]
+  0x1804b6d30: sub      rsp, 0x120
+  0x1804b6d37: mov      rax, qword ptr [rip + 0x9e339a]
+  0x1804b6d3e: xor      rax, rsp
+  0x1804b6d41: mov      qword ptr [rbp - 0x20], rax
+  0x1804b6d45: xor      edi, edi
+  0x1804b6d47: mov      rbx, rcx
+  0x1804b6d4a: cmp      dword ptr [rcx + 8], edi
+  0x1804b6d4d: jne      0x1804b6f9c
+  0x1804b6d53: cmp      dword ptr [rcx + 0xbc], edi
+  0x1804b6d59: je       0x1804b6f9c
+  0x1804b6d5f: cmp      dword ptr [rcx + 0x24], edi
+  0x1804b6d62: jne      0x1804b6f9c
+  0x1804b6d68: cmp      dword ptr [rcx + 0x4c], edi
+  0x1804b6d6b: jne      0x1804b6f9c
+  0x1804b6d71: movss    xmm1, dword ptr [rip + 0x7d6453]
+  0x1804b6d79: mov      rcx, qword ptr [rcx + 0x80]
+  0x1804b6d80: movaps   xmm0, xmmword ptr [rip + 0x7cca09]
+  0x1804b6d87: movss    dword ptr [rsp + 0x70], xmm1
+  0x1804b6d8d: xorps    xmm1, xmm1
+  0x1804b6d90: mov      qword ptr [rsp + 0x68], rdi
+  0x1804b6d95: mov      qword ptr [rsp + 0x50], rdi
+  0x1804b6d9a: mov      dword ptr [rsp + 0x58], edi
+  0x1804b6d9e: mov      dword ptr [rsp + 0x60], edi
+  0x1804b6da2: movups   xmmword ptr [rbp - 0x60], xmm1
+  0x1804b6da6: movups   xmmword ptr [rbp - 0x50], xmm1
+  0x1804b6daa: movups   xmmword ptr [rbp - 0x40], xmm1
+  0x1804b6dae: movups   xmmword ptr [rbp - 0x30], xmm1
+  0x1804b6db2: movups   xmmword ptr [rbp - 0x78], xmm0
+  0x1804b6db6: test     rcx, rcx
+  0x1804b6db9: je       0x1804b6f9f
+  0x1804b6dbf: mov      rax, qword ptr [rbx + 0x88]
+  0x1804b6dc6: test     rax, rax
+  0x1804b6dc9: je       0x1804b6f9f
+  0x1804b6dcf: cmp      qword ptr [rax + 0xf1978], rdi
+  0x1804b6dd6: je       0x1804b6f9f
+  0x1804b6ddc: lea      rdx, [rbp - 0x78]
+  0x1804b6de0: movaps   xmmword ptr [r11 - 0x38], xmm8
+  0x1804b6de5: call     0x1800197ae
+  0x1804b6dea: mov      rcx, qword ptr [rbx + 0x80]
+  0x1804b6df1: lea      rdx, [rsp + 0x50]
+  0x1804b6df6: call     0x1800154d8
+  0x1804b6dfb: movss    xmm0, dword ptr [rsp + 0x54]
+  0x1804b6e01: lea      rdx, [rbp - 0x78]
+  0x1804b6e05: addss    xmm0, dword ptr [rip + 0x7d63a3]
+  0x1804b6e0d: lea      rcx, [rbp - 0x60]
+  0x1804b6e11: movss    dword ptr [rsp + 0x54], xmm0
+  0x1804b6e17: call     0x18000530d
+  0x1804b6e1c: lea      r8, [rbp - 0x60]
+  0x1804b6e20: lea      rdx, [rsp + 0x68]
+  0x1804b6e25: lea      rcx, [rsp + 0x68]
+  0x1804b6e2a: call     0x18001fc2b
+  0x1804b6e2f: movsd    xmm0, qword ptr [rsp + 0x68]
+  0x1804b6e35: lea      rcx, [rsp + 0x40]
+  0x1804b6e3a: mov      eax, dword ptr [rsp + 0x70]
+  0x1804b6e3e: movsd    qword ptr [rsp + 0x40], xmm0
+  0x1804b6e44: mov      dword ptr [rsp + 0x48], eax
+  0x1804b6e48: call     0x180024a78
+  0x1804b6e4d: movss    xmm8, dword ptr [rsp + 0x44]
+  0x1804b6e54: movaps   xmm0, xmm8
+  0x1804b6e58: andps    xmm0, xmmword ptr [rip + 0x7d63e1]
+  0x1804b6e5f: cvtps2pd xmm1, xmm0
+  0x1804b6e62: movsd    xmm0, qword ptr [rip + 0x7e5726]
+  0x1804b6e6a: comisd   xmm0, xmm1
+  0x1804b6e6e: jbe      0x1804b6f0f
+  0x1804b6e74: movss    xmm0, dword ptr [rip + 0x7d6300]
+  0x1804b6e7c: movaps   xmmword ptr [rsp + 0x110], xmm6
+  0x1804b6e84: movss    xmm6, dword ptr [rip + 0x7ec014]
+  0x1804b6e8c: movaps   xmmword ptr [rsp + 0x100], xmm7
+  0x1804b6e94: movss    xmm7, dword ptr [rsp + 0x40]
+  0x1804b6e9a: mulss    xmm7, xmm6
+  0x1804b6e9e: addss    xmm7, dword ptr [rsp + 0x50]
+  0x1804b6ea4: subss    xmm7, dword ptr [rsp + 0x50]
+  0x1804b6eaa: call     0x180bb83d9
+  0x1804b6eaf: movss    xmm2, dword ptr [rsp + 0x48]
+  0x1804b6eb5: lea      rcx, [rsp + 0x40]
+  0x1804b6eba: mulss    xmm2, xmm6
+  0x1804b6ebe: movaps   xmm3, xmm0
+  0x1804b6ec1: mulss    xmm3, xmm6
+  0x1804b6ec5: addss    xmm2, dword ptr [rsp + 0x58]
+  0x1804b6ecb: mulss    xmm8, xmm6
+  0x1804b6ed0: movss    dword ptr [rsp + 0x40], xmm7
+  0x1804b6ed6: subss    xmm2, dword ptr [rsp + 0x58]
+  0x1804b6edc: addss    xmm8, dword ptr [rsp + 0x54]
+  0x1804b6ee3: movss    dword ptr [rsp + 0x48], xmm2
+  0x1804b6ee9: addss    xmm3, xmm8
+  0x1804b6eee: subss    xmm3, dword ptr [rsp + 0x54]
+  0x1804b6ef4: movss    dword ptr [rsp + 0x44], xmm3
+  0x1804b6efa: call     0x180024a78
+  0x1804b6eff: movaps   xmm7, xmmword ptr [rsp + 0x100]
+  0x1804b6f07: movaps   xmm6, xmmword ptr [rsp + 0x110]
+  0x1804b6f0f: mov      rcx, qword ptr [rip + 0xa270ca]
+  0x1804b6f16: lea      rax, [rsp + 0x78]
+  0x1804b6f1b: movss    xmm3, dword ptr [rip + 0x7f2475]
+  0x1804b6f23: lea      r8, [rsp + 0x40]
+  0x1804b6f28: mov      qword ptr [rsp + 0x30], rax
+  0x1804b6f2d: lea      rdx, [rsp + 0x50]
+  0x1804b6f32: lea      rax, [rsp + 0x60]
+  0x1804b6f37: mov      qword ptr [rsp + 0x78], rdi
+  0x1804b6f3c: mov      qword ptr [rsp + 0x28], rax
+  0x1804b6f41: add      rcx, 0x24ae8
+  0x1804b6f48: mov      dword ptr [rsp + 0x20], 2
+  0x1804b6f50: mov      dword ptr [rbp - 0x80], edi
+  0x1804b6f53: call     0x180004e6c
+  0x1804b6f58: movaps   xmm8, xmmword ptr [rsp + 0xf0]
+  0x1804b6f61: test     eax, eax
+  0x1804b6f63: je       0x1804b6f9f
+  0x1804b6f65: call     0x18001129d
+  0x1804b6f6a: movss    xmm0, dword ptr [rax + 0x104]
+  0x1804b6f72: comiss   xmm0, dword ptr [rsp + 0x60]
+  0x1804b6f77: mov      eax, dword ptr [rbx + 0x54]
+  0x1804b6f7a: jb       0x1804b6f8a
+  0x1804b6f7c: test     eax, eax
+  0x1804b6f7e: jne      0x1804b6f9f
+  0x1804b6f80: mov      edi, 1
+  0x1804b6f85: mov      dword ptr [rbx + 0x54], edi
+  0x1804b6f88: jmp      0x1804b6f9f
+  0x1804b6f8a: test     eax, eax
+  0x1804b6f8c: je       0x1804b6f9f
+  0x1804b6f8e: mov      edi, 1
+  0x1804b6f93: mov      dword ptr [rbx + 0x54], 0
+  0x1804b6f9a: jmp      0x1804b6f9f
+  0x1804b6f9c: mov      dword ptr [rcx + 0x54], edi
+  0x1804b6f9f: mov      eax, edi
+  0x1804b6fa1: mov      rcx, qword ptr [rbp - 0x20]
+  0x1804b6fa5: xor      rcx, rsp
+  0x1804b6fa8: call     0x18000bf9b
+  0x1804b6fad: lea      r11, [rsp + 0x120]
+  0x1804b6fb5: mov      rbx, qword ptr [r11 + 0x18]
+  0x1804b6fb9: mov      rdi, qword ptr [r11 + 0x20]
+  0x1804b6fbd: mov      rsp, r11
+  0x1804b6fc0: pop      rbp
+  0x1804b6fc1: ret      
+  0x1804b6fc2: int3     
+  0x1804b6fc3: int3     
+  0x1804b6fc4: int3     
+  0x1804b6fc5: int3     
+  0x1804b6fc6: int3     
+  0x1804b6fc7: int3     
+  0x1804b6fc8: int3     
+  0x1804b6fc9: int3     
+  0x1804b6fca: int3     
+  0x1804b6fcb: int3     
+  0x1804b6fcc: int3     
+  0x1804b6fcd: int3     
+  0x1804b6fce: int3     
+  0x1804b6fcf: int3     
+  0x1804b6fd0: int3     
+  0x1804b6fd1: int3     
+  0x1804b6fd2: int3     
+  0x1804b6fd3: int3     
+  0x1804b6fd4: int3     
+  0x1804b6fd5: int3     
+  0x1804b6fd6: int3     
+  0x1804b6fd7: int3     
+  0x1804b6fd8: int3     
+  0x1804b6fd9: int3     
+  0x1804b6fda: int3     
+  0x1804b6fdb: int3     
+  0x1804b6fdc: int3     
+  0x1804b6fdd: int3     
+  0x1804b6fde: int3     
+  0x1804b6fdf: int3     
+  0x1804b6fe0: int3     
+  0x1804b6fe1: int3     
+  0x1804b6fe2: int3     
+  0x1804b6fe3: int3     
+  0x1804b6fe4: int3     
+  0x1804b6fe5: int3     
+  0x1804b6fe6: int3     
+  0x1804b6fe7: int3     
+  0x1804b6fe8: int3     
+  0x1804b6fe9: int3     
+  0x1804b6fea: int3     
+  0x1804b6feb: int3     
+  0x1804b6fec: int3     
+  0x1804b6fed: int3     
+  0x1804b6fee: int3     
+  0x1804b6fef: int3     
+  0x1804b6ff0: int3     
+  0x1804b6ff1: int3     
+  0x1804b6ff2: int3     
+  0x1804b6ff3: int3     
+  0x1804b6ff4: int3     
+  0x1804b6ff5: int3     
+  0x1804b6ff6: int3     
+  0x1804b6ff7: int3     
+  0x1804b6ff8: int3     
+  0x1804b6ff9: int3     
+  0x1804b6ffa: int3     
+  0x1804b6ffb: int3     
+  0x1804b6ffc: int3     
+  0x1804b6ffd: int3     
+  0x1804b6ffe: int3     
+  0x1804b6fff: int3     
+  0x1804b7000: int3     
+  0x1804b7001: int3     
+  0x1804b7002: int3     
+  0x1804b7003: int3     
+  0x1804b7004: int3     
+  0x1804b7005: int3     
+  0x1804b7006: int3     
+  0x1804b7007: int3     
+  0x1804b7008: int3     
+  0x1804b7009: int3     
+  0x1804b700a: int3     
+  0x1804b700b: int3     
+  0x1804b700c: int3     
+  0x1804b700d: int3     
+  0x1804b700e: int3     
+  0x1804b700f: int3     
+  0x1804b7010: int3     
+  0x1804b7011: int3     
+  0x1804b7012: int3     
+  0x1804b7013: int3     
+  0x1804b7014: int3     
+  0x1804b7015: int3     
+  0x1804b7016: int3     
+  0x1804b7017: int3     
+  0x1804b7018: int3     
+  0x1804b7019: int3     
+  0x1804b701a: int3     
+  0x1804b701b: int3     
+  0x1804b701c: int3     
+  0x1804b701d: int3     
+  0x1804b701e: int3     
+  0x1804b701f: int3     
+  0x1804b7020: int3     
+  0x1804b7021: int3     
+  0x1804b7022: int3     
+  0x1804b7023: int3     
+  0x1804b7024: int3     
+  0x1804b7025: int3     
+  0x1804b7026: int3     
+  0x1804b7027: int3     
+  0x1804b7028: int3     
+  0x1804b7029: int3     
+  0x1804b702a: int3     
+  0x1804b702b: int3     
+  0x1804b702c: int3     
+  0x1804b702d: int3     
+  0x1804b702e: int3     
+  0x1804b702f: int3     
+  0x1804b7030: int3     
+  0x1804b7031: int3     
+  0x1804b7032: int3     
+  0x1804b7033: int3     
+  0x1804b7034: int3     
+  0x1804b7035: int3     
+  0x1804b7036: int3     
+  0x1804b7037: int3     
+  0x1804b7038: int3     
+  0x1804b7039: int3     
+  0x1804b703a: int3     
+  0x1804b703b: int3     
+  0x1804b703c: int3     
+  0x1804b703d: int3     
+  0x1804b703e: int3     
+  0x1804b703f: int3     
+  0x1804b7040: int3     
+  0x1804b7041: int3     
+  0x1804b7042: int3     
+  0x1804b7043: int3     
+  0x1804b7044: int3     
+  0x1804b7045: int3     
+  0x1804b7046: int3     
+  0x1804b7047: int3     
+  0x1804b7048: int3     
+  0x1804b7049: int3     
+  0x1804b704a: int3     
+  0x1804b704b: int3     
+  0x1804b704c: int3     
+  0x1804b704d: int3     
+  0x1804b704e: int3     
+  0x1804b704f: int3     
+  0x1804b7050: int3     
+  0x1804b7051: int3     
+  0x1804b7052: int3     
+  0x1804b7053: int3     
+  0x1804b7054: int3     
+  0x1804b7055: int3     
+  0x1804b7056: int3     
+  0x1804b7057: int3     
+  0x1804b7058: int3     
+  0x1804b7059: int3     
+  0x1804b705a: int3     
+  0x1804b705b: int3     
+  0x1804b705c: int3     
+  0x1804b705d: int3     
+  0x1804b705e: int3     
+  0x1804b705f: int3     
+  0x1804b7060: int3     
+  0x1804b7061: int3     
+  0x1804b7062: int3     
+  0x1804b7063: int3     
+  0x1804b7064: int3     
+  0x1804b7065: int3     
+  0x1804b7066: int3     
+  0x1804b7067: int3     
+  0x1804b7068: int3     
+  0x1804b7069: int3     
+  0x1804b706a: int3     
+  0x1804b706b: int3     
+  0x1804b706c: int3     
+  0x1804b706d: int3     
+  0x1804b706e: int3     
+  0x1804b706f: int3     
+  0x1804b7070: push     rdi
+  0x1804b7072: sub      rsp, 0x20
+  0x1804b7076: cmp      dword ptr [rcx + 0x194], 0
+  0x1804b707d: mov      rdi, rcx
+  0x1804b7080: je       0x1804b70f3
+  0x1804b7082: mov      rcx, qword ptr [rcx + 0xa0]
+  0x1804b7089: test     rcx, rcx
+  0x1804b708c: je       0x1804b70f3
+  0x1804b708e: mov      qword ptr [rsp + 0x30], rbx
+  0x1804b7093: mov      qword ptr [rsp + 0x38], rsi
+  0x1804b7098: call     0x180007f4a
+  0x1804b709d: mov      rcx, qword ptr [rdi + 0xa0]
+  0x1804b70a4: mov      ebx, eax
+  0x1804b70a6: call     0x1800083fa
+  0x1804b70ab: mov      rcx, qword ptr [rdi + 0xa0]
+  0x1804b70b2: mov      esi, eax
+  0x1804b70b4: call     0x1800208f6
+  0x1804b70b9: cmp      ebx, dword ptr [rdi + 0x1d4]
+  0x1804b70bf: mov      rbx, qword ptr [rsp + 0x30]
+  0x1804b70c4: jne      0x1804b70e3
+  0x1804b70c6: cmp      esi, dword ptr [rdi + 0x1d8]
+  0x1804b70cc: jne      0x1804b70e3
+  0x1804b70ce: cmp      eax, dword ptr [rdi + 0x1dc]
+  0x1804b70d4: jne      0x1804b70e3
+  0x1804b70d6: mov      rsi, qword ptr [rsp + 0x38]
+  0x1804b70db: xor      eax, eax
+  0x1804b70dd: add      rsp, 0x20
+  0x1804b70e1: pop      rdi
+  0x1804b70e2: ret      
+  0x1804b70e3: mov      rsi, qword ptr [rsp + 0x38]
+  0x1804b70e8: mov      eax, 1
+  0x1804b70ed: add      rsp, 0x20
+  0x1804b70f1: pop      rdi
+  0x1804b70f2: ret      
+  0x1804b70f3: xor      eax, eax
+  0x1804b70f5: add      rsp, 0x20
+  0x1804b70f9: pop      rdi
+  0x1804b70fa: ret      
+  0x1804b70fb: int3     
+  0x1804b70fc: int3     
+  0x1804b70fd: int3     
+  0x1804b70fe: int3     
+  0x1804b70ff: int3     
+  0x1804b7100: int3     
+  0x1804b7101: int3     
+  0x1804b7102: int3     
+  0x1804b7103: int3     
+  0x1804b7104: int3     
+  0x1804b7105: int3     
+  0x1804b7106: int3     
+  0x1804b7107: int3     
+  0x1804b7108: int3     
+  0x1804b7109: int3     
+  0x1804b710a: int3     
+  0x1804b710b: int3     
+  0x1804b710c: int3     
+  0x1804b710d: int3     
+  0x1804b710e: int3     
+  0x1804b710f: int3     
+  0x1804b7110: int3     
+  0x1804b7111: int3     
+  0x1804b7112: int3     
+  0x1804b7113: int3     
+  0x1804b7114: int3     
+  0x1804b7115: int3     
+  0x1804b7116: int3     
+  0x1804b7117: int3     
+  0x1804b7118: int3     
+  0x1804b7119: int3     
+  0x1804b711a: int3     
+  0x1804b711b: int3     
+  0x1804b711c: int3     
+  0x1804b711d: int3     
+  0x1804b711e: int3     
+  0x1804b711f: int3     
+  0x1804b7120: push     rbx
+  0x1804b7122: push     rsi
+  0x1804b7123: push     rdi
+  0x1804b7124: push     r12
+  0x1804b7126: push     r13
+  0x1804b7128: sub      rsp, 0x60
+  0x1804b712c: mov      rax, qword ptr [rip + 0x9e2fa5]
+  0x1804b7133: xor      rax, rsp
+  0x1804b7136: mov      qword ptr [rsp + 0x50], rax
+  0x1804b713b: mov      r13d, dword ptr [rsp + 0xb0]
+  0x1804b7143: xor      edi, edi
+  0x1804b7145: mov      rbx, rcx
+  0x1804b7148: mov      qword ptr [rsp + 0x48], rdi
+  0x1804b714d: mov      r12d, edi
+  0x1804b7150: cmp      dword ptr [rsp + 0xb8], edi
+  0x1804b7157: jne      0x1804b7163
+  0x1804b7159: cmp      r13d, dword ptr [rcx + 8]
+  0x1804b715d: je       0x1804b78ba
+  0x1804b7163: cmp      r13d, 0x17
+  0x1804b7167: jle      0x1804b7199
+  0x1804b7169: mov      r9d, 0x28b
+  0x1804b716f: lea      r8, [rip + 0x7f3a62]  ; 'nStep <= CHARACTER_RUSH_STATE_COUNT'
+  0x1804b7176: lea      rsi, [rip + 0x7f3a43]  ; 'KRLRushState::Next'
+  0x1804b717d: lea      rdx, [rip + 0x7c99cc]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1804b7184: mov      qword ptr [rsp + 0x20], rsi
+  0x1804b7189: mov      ecx, 3
+  0x1804b718e: call     qword ptr [rip + 0xbe2e6c]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1804b7194: jmp      0x1804b78bf
+  0x1804b7199: cmp      qword ptr [rcx + 0x88], rdi
+  0x1804b71a0: jne      0x1804b71b1
+  0x1804b71a2: mov      r9d, 0x28c
+  0x1804b71a8: lea      r8, [rip + 0x7efc49]  ; 'm_prlScene'
+  0x1804b71af: jmp      0x1804b7176
+  0x1804b71b1: mov      dword ptr [rcx + 8], r13d
+  0x1804b71b5: mov      dword ptr [rcx + 0xac], edx
+  0x1804b71bb: mov      dword ptr [rcx + 0xb0], r8d
+  0x1804b71c2: mov      dword ptr [rcx + 0xb4], r9d
+  0x1804b71c9: mov      qword ptr [rcx + 0xb18], rdi
+  0x1804b71d0: mov      dword ptr [rcx + 0xb20], edi
+  0x1804b71d6: mov      qword ptr [rcx + 0xb28], rdi
+  0x1804b71dd: mov      dword ptr [rcx + 0xb30], edi
+  0x1804b71e3: mov      dword ptr [rcx + 0x2c], edi
+  0x1804b71e6: mov      dword ptr [rcx + 0x1f4], edi
+  0x1804b71ec: mov      dword ptr [rcx + 0x214], edi
+  0x1804b71f2: mov      qword ptr [rcx + 0xb38], rdi
+  0x1804b71f9: mov      qword ptr [rcx + 0xb40], rdi
+  0x1804b7200: mov      qword ptr [rcx + 0xb48], rdi
+  0x1804b7207: mov      qword ptr [rcx + 0xb50], rdi
+  0x1804b720e: mov      qword ptr [rcx + 0xb58], rdi
+  0x1804b7215: test     r13d, r13d
+  0x1804b7218: jne      0x1804b728d
+  0x1804b721a: mov      dword ptr [rcx + 0xc], 0x17
+  0x1804b7221: mov      dword ptr [rcx + 0x10], 3
+  0x1804b7228: mov      dword ptr [rcx + 0x20c], edi
+  0x1804b722e: mov      qword ptr [rcx + 0x1f8], rdi
+  0x1804b7235: mov      qword ptr [rcx + 0x1a0], rdi
+  0x1804b723c: mov      qword ptr [rcx + 0x1a8], rdi
+  0x1804b7243: mov      dword ptr [rcx + 0xa8], 2
+  0x1804b724d: mov      rcx, qword ptr [rcx + 0x80]
+  0x1804b7254: test     rcx, rcx
+  0x1804b7257: je       0x1804b7367
+  0x1804b725d: mov      edx, 1
+  0x1804b7262: mov      r9d, 0x2dc6c0
+  0x1804b7268: mov      r8d, edx
+  0x1804b726b: call     0x18001c7e7
+  0x1804b7270: mov      rcx, qword ptr [rbx + 0x80]
+  0x1804b7277: lea      r8d, [r13 + 1]
+  0x1804b727b: xor      edx, edx
+  0x1804b727d: mov      r9d, 0x2dc6c0
+  0x1804b7283: call     0x18001c7e7
+  0x1804b7288: jmp      0x1804b7367
+  0x1804b728d: cmp      dword ptr [rcx + 0x74], edi
+  0x1804b7290: lea      eax, [r13 - 1]
+  0x1804b7294: .byte    0x44
+  0x1804b7295: .byte    0x8b
+

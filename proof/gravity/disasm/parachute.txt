@@ -1,0 +1,3 @@
+# JX3ClientX64.exe xrefs for 'bOnParachuteFlag'
+# image base 0x140000000
+

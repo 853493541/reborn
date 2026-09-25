@@ -1,0 +1,183 @@
+# JX3ClientX64.exe xrefs for 'KGJumpList::GetSkillMoveSetting'
+# image base 0x140000000
+
+## xref @ 0x1403a24b5 -> 0x140841df8 'KGJumpList::GetSkillMoveSetting'  fn start 0x1403a2490
+  0x1403a2490: sub      rsp, 0x38
+  0x1403a2494: test     edx, edx
+  0x1403a2496: je       0x1403a24b5
+  0x1403a2498: cmp      edx, dword ptr [rcx + 0x1e3b40]
+  0x1403a249e: ja       0x1403a24b5
+  0x1403a24a0: dec      edx
+  0x1403a24a2: imul     rax, rdx, 0x5ac
+  0x1403a24a9: add      rax, qword ptr [rcx + 0x1e3b48]
+  0x1403a24b0: add      rsp, 0x38
+  0x1403a24b4: ret      
+  0x1403a24b5: lea      rcx, [rip + 0x49f93c]  ; 'KGJumpList::GetSkillMoveSetting'
+  0x1403a24bc: mov      r9d, 0x297
+  0x1403a24c2: mov      qword ptr [rsp + 0x20], rcx
+  0x1403a24c7: lea      r8, [rip + 0x49f94a]  ; 'dwSkillMoveID > 0 && dwSkillMoveID <= m_dwMaxSkillMoveID'
+  0x1403a24ce: mov      ecx, 3
+  0x1403a24d3: lea      rdx, [rip + 0x5aca5e]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1403a24da: call     qword ptr [rip + 0x415f68]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1403a24e0: xor      eax, eax
+  0x1403a24e2: add      rsp, 0x38
+  0x1403a24e6: ret      
+  0x1403a24e7: int3     
+  0x1403a24e8: int3     
+  0x1403a24e9: int3     
+  0x1403a24ea: int3     
+  0x1403a24eb: int3     
+  0x1403a24ec: int3     
+  0x1403a24ed: int3     
+  0x1403a24ee: int3     
+  0x1403a24ef: int3     
+  0x1403a24f0: push     rbx
+  0x1403a24f2: sub      rsp, 0x30
+  0x1403a24f6: xor      edx, edx
+  0x1403a24f8: mov      r8d, 0x1e3940
+  0x1403a24fe: mov      rbx, rcx
+  0x1403a2501: call     0x14079c37a
+  0x1403a2506: xorps    xmm0, xmm0
+  0x1403a2509: lea      rcx, [rbx + 0x1e3a00]
+  0x1403a2510: movups   xmmword ptr [rbx + 0x1e39c0], xmm0
+  0x1403a2517: xor      edx, edx
+  0x1403a2519: mov      r8d, 0x140
+  0x1403a251f: movups   xmmword ptr [rbx + 0x1e39d0], xmm0
+  0x1403a2526: movups   xmmword ptr [rbx + 0x1e39e0], xmm0
+  0x1403a252d: movups   xmmword ptr [rbx + 0x1e39f0], xmm0
+  0x1403a2534: call     0x14079c37a
+  0x1403a2539: lea      rcx, [rbx + 0x1e3b60]
+  0x1403a2540: xor      edx, edx
+  0x1403a2542: mov      r8d, 0x2ea00
+  0x1403a2548: call     0x14079c37a
+  0x1403a254d: mov      rax, qword ptr [rbx + 0x1e3b48]
+  0x1403a2554: mov      rcx, rbx
+  0x1403a2557: mov      qword ptr [rbx + 0x1e3b50], rax
+  0x1403a255e: call     0x1403a25f0
+  0x1403a2563: test     eax, eax
+  0x1403a2565: jne      0x1403a2598
+  0x1403a2567: lea      r9d, [rax + 0x40]
+  0x1403a256b: lea      rcx, [rip + 0x49eede]  ; 'KGJumpList::Init'
+  0x1403a2572: mov      qword ptr [rsp + 0x20], rcx
+  0x1403a2577: lea      r8, [rip + 0x5aef1a]  ; 'bRetCode'
+  0x1403a257e: mov      ecx, 3
+  0x1403a2583: lea      rdx, [rip + 0x5ac9ae]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1403a258a: call     qword ptr [rip + 0x415eb8]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1403a2590: xor      eax, eax
+  0x1403a2592: add      rsp, 0x30
+  0x1403a2596: pop      rbx
+  0x1403a2597: ret      
+  0x1403a2598: mov      rcx, rbx
+  0x1403a259b: call     0x1403a3450
+  0x1403a25a0: test     eax, eax
+  0x1403a25a2: jne      0x1403a25aa
+  0x1403a25a4: lea      r9d, [rax + 0x43]
+  0x1403a25a8: jmp      0x1403a256b
+  0x1403a25aa: mov      rcx, rbx
+  0x1403a25ad: call     0x1403a4880
+  0x1403a25b2: test     eax, eax
+  0x1403a25b4: jne      0x1403a25bc
+  0x1403a25b6: lea      r9d, [rax + 0x46]
+  0x1403a25ba: jmp      0x1403a256b
+  0x1403a25bc: mov      rcx, rbx
+  0x1403a25bf: call     0x1403a3ae0
+  0x1403a25c4: test     eax, eax
+  0x1403a25c6: jne      0x1403a25ce
+  0x1403a25c8: lea      r9d, [rax + 0x49]
+  0x1403a25cc: jmp      0x1403a256b
+  0x1403a25ce: mov      rcx, rbx
+  0x1403a25d1: call     0x1403a4ba0
+  0x1403a25d6: test     eax, eax
+  0x1403a25d8: jne      0x1403a25e0
+  0x1403a25da: lea      r9d, [rax + 0x4c]
+  0x1403a25de: jmp      0x1403a256b
+  0x1403a25e0: mov      eax, 1
+  0x1403a25e5: add      rsp, 0x30
+  0x1403a25e9: pop      rbx
+  0x1403a25ea: ret      
+  0x1403a25eb: int3     
+  0x1403a25ec: int3     
+  0x1403a25ed: int3     
+  0x1403a25ee: int3     
+  0x1403a25ef: int3     
+  0x1403a25f0: push     rbp
+  0x1403a25f2: push     rsi
+  0x1403a25f3: push     r14
+  0x1403a25f5: push     r15
+  0x1403a25f7: lea      rbp, [rsp - 0xf8]
+  0x1403a25ff: sub      rsp, 0x1f8
+  0x1403a2606: mov      rax, qword ptr [rip + 0x691deb]
+  0x1403a260d: xor      rax, rsp
+  0x1403a2610: mov      qword ptr [rbp + 0xe0], rax
+  0x1403a2617: mov      eax, dword ptr [rip + 0x49ee53]  ; 'dXY'
+  0x1403a261d: lea      r9, [rip + 0x46080c]  ; 'settings'
+  0x1403a2624: movsd    xmm0, qword ptr [rip + 0x49ee3c]  ; 'JumpSpeedXY'
+  0x1403a262c: lea      r8, [rip + 0x5b4c6d]  ; '%s/%s'
+  0x1403a2633: mov      dword ptr [rsp + 0x78], eax
+  0x1403a2637: mov      r15, rcx
+  0x1403a263a: xor      eax, eax
+  0x1403a263c: movsd    qword ptr [rsp + 0x70], xmm0
+  0x1403a2642: mov      dword ptr [rbp - 0x74], eax
+  0x1403a2645: xorps    xmm0, xmm0
+  0x1403a2648: movzx    eax, word ptr [rip + 0x49ee31]  ; 'Z'
+  0x1403a264f: xor      esi, esi
+  0x1403a2651: mov      word ptr [rbp - 0x68], ax
+  0x1403a2655: mov      edx, 0x104
+  0x1403a265a: xor      eax, eax
+  0x1403a265c: mov      qword ptr [rsp + 0x38], rcx
+  0x1403a2661: mov      dword ptr [rbp - 0x56], eax
+  0x1403a2664: lea      rcx, [rbp - 0x30]
+  0x1403a2668: mov      word ptr [rbp - 0x52], ax
+  0x1403a266c: movabs   rax, 0x79746976617247
+  0x1403a2676: mov      qword ptr [rbp - 0x50], rax
+  0x1403a267a: xor      eax, eax
+  0x1403a267c: movups   xmmword ptr [rsp + 0x7c], xmm0
+  0x1403a2681: mov      qword ptr [rbp - 0x38], rax
+  0x1403a2685: lea      rax, [rip + 0x49edfc]  ; 'JumpParam.tab'
+  0x1403a268c: movsd    xmm0, qword ptr [rip + 0x49ede4]  ; 'VelocityZ'
+  0x1403a2694: movsd    qword ptr [rbp - 0x70], xmm0
+  0x1403a2699: xorps    xmm0, xmm0
+  0x1403a269c: mov      qword ptr [rsp + 0x20], rax
+  0x1403a26a1: mov      dword ptr [rsp + 0x44], esi
+  0x1403a26a5: movups   xmmword ptr [rbp - 0x66], xmm0
+  0x1403a26a9: movups   xmmword ptr [rbp - 0x48], xmm0
+  0x1403a26ad: call     0x14008d080
+  0x1403a26b2: xor      r8d, r8d
+  0x1403a26b5: mov      byte ptr [rbp + 0xd3], sil
+  0x1403a26bc: xor      edx, edx
+  0x1403a26be: lea      rcx, [rbp - 0x30]
+  0x1403a26c2: call     qword ptr [rip + 0x415c28]  ; Engine_Lua5X64.dll!g_OpenTabFile
+  0x1403a26c8: mov      r14, rax
+  0x1403a26cb: test     rax, rax
+  0x1403a26ce: jne      0x1403a26fc
+  0x1403a26d0: lea      rcx, [rip + 0x49edc1]  ; 'KGJumpList::LoadJumpPrarm'
+  0x1403a26d7: mov      qword ptr [rsp + 0x20], rcx
+  0x1403a26dc: lea      r9d, [rsi + 0x7c]
+  0x1403a26e0: lea      ecx, [rsi + 3]
+  0x1403a26e3: lea      r8, [rip + 0x460756]  ; 'piTabFile'
+  0x1403a26ea: lea      rdx, [rip + 0x5ac847]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1403a26f1: call     qword ptr [rip + 0x415d51]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1403a26f7: jmp      0x1403a32e8
+  0x1403a26fc: mov      rax, qword ptr [rax]
+  0x1403a26ff: mov      rcx, r14
+  0x1403a2702: call     qword ptr [rax + 0x30]
+  0x1403a2705: mov      dword ptr [rsp + 0x40], eax
+  0x1403a2709: cmp      eax, 1
+  0x1403a270c: jge      0x1403a273d
+  0x1403a270e: lea      rcx, [rip + 0x49ed83]  ; 'KGJumpList::LoadJumpPrarm'
+  0x1403a2715: mov      r9d, 0x7f
+  0x1403a271b: mov      qword ptr [rsp + 0x20], rcx
+  0x1403a2720: lea      r8, [rip + 0x4700a9]  ; 'nTabHeight >= 1'
+  0x1403a2727: lea      rdx, [rip + 0x5ac80a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1403a272e: lea      ecx, [r9 - 0x7c]
+  0x1403a2732: call     qword ptr [rip + 0x415d10]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1403a2738: jmp      0x1403a32df
+  0x1403a273d: mov      qword ptr [rsp + 0x228], rbx
+  0x1403a2745: mov      qword ptr [rsp + 0x230], rdi
+  0x1403a274d: mov      qword ptr [rsp + 0x238], r12
+  0x1403a2755: mov      r12d, 2
+  0x1403a275b: mov      qword ptr [rsp + 0x1f0], r13
+  0x1403a2763: mov      dword ptr [rsp + 0x30], r12d
+  0x1403a2768: cmp      eax, r12d
+  0x1403a276b: jl       0x1403a32ba
+
