@@ -32,6 +32,8 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `SKILL_DATA_EXTRACTION.md`, `SKILL_MOTION_METHOD.md` | skill/asset extraction methods |
 | `JX3_CAMERA_RESEARCH.md`, `REBORN_CAMERA_SPEC.md` | camera behaviour research + spec |
 | `JX3_MODE_*.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md` | 绝境 mode loading and loot protocol layouts |
+| `JX3_MODE_MATCH_LIFECYCLE.md` | **full match lifecycle** (queue → accept → load → arrival → loot → combat → phases/revive → endgame), all 绝境 maps, evidence-tagged, incl. the full-pass RE plan |
+| `JX3_MODE_EDGE_SYSTEMS.md` | edge systems: death/ghost/revive, observer, AFK report, disconnect/reconnect, guild league, rooms, rewards |
 | `JX3_MODE_UI_FLOW.md` | **screen-level flow**: queue UI → loading window (art/progress) → first HUD frame → result; per-map loading art extraction + consumer scan |
 | `JX3_DROPS_RESEARCH.md` | **drops session record (audited)**: containers, tables, wire formats, dead ends, confidence |
 | `JX3_MODE_LOOT_SYSTEM.md`, `JX3_MODE_SPAWN_RULES_SEARCH.md` | loot container schema / spawn-rule hunt + dead-end log |

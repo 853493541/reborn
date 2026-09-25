@@ -131,3 +131,31 @@ room create/force-start/side payloads.
 
 Linked docs: `JX3_MODE_LOOT_SYSTEM.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md`,
 `JX3_MODE_LOAD_FLOW.md`, `JX3_MODE_JUEJING_LOGIC.md`, `JX3_PROTOCOL_SPEC.md`.
+
+---
+
+## 11. Update 2026-09-24 — UI corpus + lifecycle consolidation
+
+- **Mode UI is present and partly readable**: 144 PakV4 `ui/Config/Default/*.lua` bytecode
+  files + JX addon packs extracted (`proof/minimap/ui/`, `proof/minimap/addons/JX/`);
+  17 `*.decompiled.lua` files already exist (9 base-UI panels incl. `NewBattleFieldQueue`,
+  `MapQueue`, `DynamicBattleRoyale` (mode skill bar), `BattleField/BattleFieldMap`,
+  `Minimap`, `MiddleMap`, `WorldMap`; 8 addon builds incl. `JX_LootPlus`).
+- **Toolchain caveat**: `tools/netcode/bin/unluac.jar` is a 9-byte `Not Found` placeholder;
+  the committed `*.decompiled.lua` came from a locally built unluac
+  (`MAP_MINIMAP_RESEARCH.md`). Restore it before decompiling more panels;
+  `lua51_dump.py` constants remain the fallback.
+- **New docs**: `JX3_MODE_MATCH_LIFECYCLE.md` (stages 0–8.5, per-map chapters, protocol
+  appendix, unknowns register, full-pass plan) and `JX3_MODE_EDGE_SYSTEMS.md`
+  (death/observer/AFK/reconnect/guild league/rooms/rewards). Screen-level flow is a separate
+  companion already on main: `JX3_MODE_UI_FLOW.md` + `proof/netcode/mode_ui/**`
+  (loading art/progress xrefs; merged in `f82f15a`).
+- **New symbol leads** for previously-unlisted systems: observer (`Btn_Observer`,
+  `UpdateObserverButton`, `OnSetObserverParam`), ghost/death (`ApplyGenModelGhost`,
+  灵魂出窍02 animation), AFK report (C2S **0x1C9**), revive request (C2S **0xB9**),
+  `MaxSwitchMapMoveDistance`, glider camera/carrier wiring, storm art
+  (`Image/MiddleMap/StormLine/*.DDS`).
+- **Top open proof item**: the storm **data source** (server → circle center/radius) —
+  lifecycle §8.1; until proven, the phase/storm chapter stays unwritten.
+- UI corpus was dictionary-extracted (window names) → PakV4 `ui/` enumeration (item 4
+  above) is still recommended before claiming any UI stage complete.
