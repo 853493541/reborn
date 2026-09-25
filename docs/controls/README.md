@@ -15,6 +15,7 @@ state of our own client, so the full control system can be implemented later.
 | `CAMERA_FIX_SUGGESTIONS.md` (repo `docs/`) | post-fix camera analysis: S1–S9 remaining defects with suggested fixes |
 | `CAMERA_CONFORMANCE_CHECKS.md` (repo `docs/`) | notes-vs-code checklist: every item with status, evidence, acceptance |
 | `CAMERA_DISTANCE_FOV_SPEC.md` (repo `docs/`) | implementation spec for 镜头最大距离 + 广角 (read-only settings) |
+| `controls/RESEARCH_RESOLVED_GAPS.md` | 2026-09-25 pass: hotkey override files, rebind UI flow, 广角 mapping, operation modes, movement Lua bridge, action-bar/UI-custom storage |
 | `controls/JX3_HOTKEY_SYSTEM.md` | the hotkey manager, file formats, key encoding, 428 commands, rebinding |
 | `controls/JX3_MOVEMENT_CONTROLS.md` | movement keys and the movement/turn model |
 | `controls/JX3_CAMERA_CONTROLS.md` | camera inputs, drag pipeline, modes, settings, obstruction |

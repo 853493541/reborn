@@ -27,12 +27,24 @@
   `Lua_GetBinding`, `Lua_GetHotKey`.
 - Key format: VK + modifier word (Ctrl 1 / Shift 2 / Alt 4); mouse 1/2/256/257.
 - Per-role overrides saved under `userdata/<account>/<region>/<server>/<role>/`.
+- **Resolved 2026-09-25** (detail `controls/RESEARCH_RESOLVED_GAPS.md` §1–§2):
+  files `hotkey_newlast.txt` (`name context index key`), `hotkey_newbackN.txt`
+  backups, `hotkey.data` manifest; two slots per command; double-press bindings;
+  `bUnchangeable` commands; self/auto-modified row frames; save also to server
+  (`bSaveToServer=true`).
 
 ## 3. Action bars
 
 - Drag skill from skill panel onto a slot; pages switch the whole bar set.
 - Dynamic bars are contextual (vehicles, pets, rogue, BR loot).
 - Bar lock toggle; slot keys bindable like any command.
+- **Resolved 2026-09-25** (detail `controls/RESEARCH_RESOLVED_GAPS.md` §6):
+  layout/anchor custom data `ActionBar.{nPage,bLock,aShowBg,Anchor,ExtendAnchor,
+  AnchorTop,Size,Line}` with default anchors `BOTTOMCENTER` on
+  `Lowest1/MainBarPanel`, `x=26`, `y=-10/-58/-118/-166/-213`;
+  slot contents persist via `StorageServer.SetData('ActionBar',
+  GetActionBarKey(...), …)`, page from `GetMainActionBarPage()`, `_LockPage`;
+  cast entry `ActionBar_ButtonDown/Up` → `ActionBar_Cast`.
 
 ## 4. Window layout (`custom.dat`)
 
@@ -44,6 +56,13 @@
   enables the move/scale layout mode.
 - Window definitions live in `ui/Config/Default/*.ini` + compiled `.lua`
   (253 files found via the `custom.dat` window-name dictionary).
+- **Resolved 2026-09-25** (detail `controls/RESEARCH_RESOLVED_GAPS.md` §7):
+  custom mode = `UICustomModePanel` with anchor custom data
+  `UICustomModePanel.Anchor={s,r,x,y}`; entering fires `ON_ENTER_CUSTOM_UI_MODE`
+  and gives every registered window `EnableDrag`/`SetDragArea`/
+  `SetMousePenetrable` (previous state stored in
+  `__bIsDragableBeforeEnterUICustomMode`); `Btn_Default` fires
+  `CUSTOM_UI_MODE_SET_DEFAULT`. `UpdateCustomModeWindow` is the per-window hook.
 
 ## 5. Settings panels and scopes
 

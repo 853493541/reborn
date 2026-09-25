@@ -1,0 +1,3 @@
+
+===== function 0/0 | line 17-18 | params=1 nups=0 stack=2 =====
+pc=   0 L0     RETURN    A=0   B=1    C=0    

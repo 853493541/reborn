@@ -90,6 +90,13 @@ maps 0/1 yaw 0.5022619 pitch −0.17, map 653 yaw 2.11075783).
   `+0x68` of the caps object (`[[manager]+0xB0] → vt+0x238`).
 - 镜头最大距离 details and our implementation plan:
   `CAMERA_DISTANCE_FOV_SPEC.md`.
+- **广角 slider mapping (resolved 2026-09-25):** the video panel stores
+  `VideoSetting_WidAngle`; the applier clamps **30°–60°**, defaults to **50°**
+  (`50·π/180`) when unset, adds `caps.fMinCameraAngle` (converted to degrees)
+  when the value is below 30, and calls
+  `KG3DEngine.Set3DEngineOption({fCameraAngle = value·π/180})`. Panel defaults:
+  `MouseSpeed=1.2`, `MaxDistance=2000`. Full detail:
+  `controls/RESEARCH_RESOLVED_GAPS.md` §3.
 
 ## 6. Wall obstruction (native)
 

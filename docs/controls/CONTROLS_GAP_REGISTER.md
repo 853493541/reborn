@@ -20,26 +20,29 @@ lands, keep the evidence column pointing at real file:line.
 | S5 | Max-distance clamp on every distance writer | **OPEN** | only `ZoomBy` clamps; F11/sprint bypass; `SetMaxDistance` misnamed | none |
 | S6 | RMB character turn uses the turn-rate model | **OPEN** | instant snap at `RebornClient.cs:929` | movement turn model |
 | S7 | LMB click vs drag (select on click) | **OPEN** | press always locks; no threshold/timestamp | targeting |
-| S8 | 广角/FOV + engine caps | **OPEN** | only `RC_VIEW_ANGLE` probe; caps unprobed | `CAMERA_DISTANCE_FOV_SPEC.md` |
+| S8 | 广角/FOV + engine caps | **OPEN (mapping DONE)** | panel = 30–60°, default 50° → `Set3DEngineOption(fCameraAngle)`; caps unprobed (`RESEARCH_RESOLVED_GAPS.md` §3) | `CAMERA_DISTANCE_FOV_SPEC.md` |
 | S9 | Wall/structure obstruction (camera clips through walls) | **OPEN** | terrain-only march `RebornClient.cs:1058-1080`; native rules in `docs/CAMERA_WALL_OBSTRUCTION.md` | baked bins; native interface optional |
 
 ## Input / hotkeys
 
+Status note: `OPEN (research DONE)` = the real behaviour is fully decoded in
+`RESEARCH_RESOLVED_GAPS.md`; only the client implementation remains.
+
 | ID | Item | Status | Evidence / note | Dependency |
 |---|---|---|---|---|
 | C1 | Hotkey table (`default.txt` + `bindings.ini`) loaded at runtime | **OPEN** | hardcoded `KeyDown/KeyUp` | none |
-| C2 | Key encoding (VK + Ctrl/Shift/Alt + mouse/wheel) | **OPEN** | spec in `JX3_HOTKEY_SYSTEM.md` §3 | C1 |
-| C3 | Rebinding UI + `SetCapture` semantics | **OPEN** | panel is packed Lua **[BLOCKED]** for exact layout | C1 |
-| C4 | Per-role override save/load (`hotkey*.txt`) | **OPEN** | grammar **[MED]** ; site has no sample file | C1 |
-| C5 | Contexts (dynamic/BR/rogue/mobile) | **OPEN** | 7 contexts recovered | C1 |
+| C2 | Key encoding (VK + Ctrl/Shift/Alt + mouse/wheel) | **OPEN (research DONE)** | `JX3_HOTKEY_SYSTEM.md` §3 | C1 |
+| C3 | Rebinding UI + `SetCapture` semantics | **OPEN (research DONE)** | `HotkeyPanel` flow decoded (`RESEARCH_RESOLVED_GAPS.md` §2) | C1 |
+| C4 | Per-role override save/load (`hotkey_newlast.txt` + backups + `hotkey.data`) | **OPEN (research DONE)** | grammar + real files decoded (§1) | C1 |
+| C5 | Contexts (dynamic/BR/rogue/mobile) | **OPEN (research DONE)** | `context` column + `contextgroup` tabs (§1/§2) | C1 |
 | C6 | Key repeat (`EnableKeyDownLoop`) | **OPEN** | API recovered | C1 |
-| C7 | Action bars/pages/dynamic bars + skill assignment | **OPEN** | 288 action-bar commands | C1, targeting |
-| C8 | Targeting (Tab/Ctrl+Tab/F1–F5/target-of-target/filters) | **OPEN** | 11 commands; client-side only | C1 |
-| C9 | Cast input: keydown, `Alt+WASD` direction, ground aim | **OPEN** | cast model in `JX3_COMBAT_CONTROLS.md` §3 | C7/C8 |
-| C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **OPEN** | ~15 movement commands | C1 |
+| C7 | Action bars/pages/dynamic bars + skill assignment | **OPEN (research DONE)** | custom data + `StorageServer('ActionBar')` + anchors (§6) | C1, targeting |
+| C8 | Targeting (Tab/Ctrl+Tab/F1–F5/target-of-target/filters) | **OPEN (partially researched)** | bodies located in `b03/target.lua`, not decoded | C1 |
+| C9 | Cast input: keydown, `Alt+WASD` direction, ground aim | **OPEN (partially researched)** | `CastSkillByKeyDown` defined in `hotkeys.lua`; body pending | C7/C8 |
+| C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **OPEN (research DONE)** | command bodies decoded (§5); engine `ResponseWASDKey` is C-side | C1 |
 | C11 | Integer 15/16 Hz movement model + turn-rate + penalty | **OPEN** | spec complete (`REBORN_JUMP_FALL_SPEC.md`) | C10 |
-| C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **OPEN** | `operationmodebase.lua` | C1 |
-| C13 | UI customization (panels, layout `custom.dat`, settings panels) | **OPEN** | 202 window keys | C1 |
+| C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **OPEN (research DONE)** | `SetOperationMode` + `Camera_EnableControl`/`Scene_EnableFreeMoveControl` (§4) | C1 |
+| C13 | UI customization (panels, layout `custom.dat`, settings panels) | **OPEN (research DONE)** | `UICustomModePanel` + window anchors (§7) | C1 |
 
 ## Combat / netcode (server-owned)
 

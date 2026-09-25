@@ -1,0 +1,147 @@
+# MainBarPanel.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=11
+  strings: 'FORCE_TYPE', 'QI_XIU', 'QiXiuPosture', 'CANG_JIAN', 'CJPosture', 'CHANG_GE', 'ChangGePosture', 'BA_DAO', 'BadaoPosture', 'MainBarPanel', 'DefaultAnchor', 's', 'BOTTOMCENTER', 'r', 'x', 'y', 'DefaultAnchorEdge', 'BOTTOM', 'AnchorEdge', 'bShowActionBar'
+  numbers: 0.0, -12.0
+  globals: =GetMainBarPanelAnchorEdge, =GetMainBarPanelFrame, =GetPing, =HideMainBarPanelFrame, =MainBarPanel, =MainBarPanel_CheckKungfuBar, =MainBarPanel_SetAnchorDefault, =ShowMainBarPanelFrame, =ToggleMobileSkillAuto, FORCE_TYPE, MainBarPanel, MainBarPanel_SetAnchorDefault, RegisterCustomData, RegisterEvent
+  function <?> line 19-23 params=0 ups=0 stack=2
+    strings: 'IsInBattleField', 'IsInArena', 'QuestTraceList', 'IsInCampPQ'
+    globals: IsInArena, IsInBattleField, QuestTraceList
+  function <?> line 25-89 params=0 ups=0 stack=10
+    strings: 'GetClientPlayer', 'this', 'RegisterEvent', 'SKILL_MOUNT_KUNG_FU', 'SKILL_UNMOUNT_KUNG_FU', 'SKILL_UPDATE', 'ON_ACTIONBAR_LOCK', 'ON_OPEN_ACTIONBAR', 'ON_CLOSE_ACTIONBAR', 'ON_SELECT_MAIN_ACTIONBAR_PAGE', 'SYNC_ROLE_DATA_END', 'PLAYER_LEVEL_UPDATE', 'OPEN_VK_SKILL_AUTO', 'UI_SCALED', 'ON_ENTER_CUSTOM_UI_MODE', 'ON_LEAVE_CUSTOM_UI_MODE', 'MAINBAR_PANEL_ANCHOR_CHANGED', 'MAINBAR_PANEL_ANCHOR_EDGE_CHANGED', 'FIRST_LOADING_END', 'LOADING_END'
+    numbers: 2.0
+    globals: GetClientPlayer, GetMainActionBarPage, IsActionBarLocked, IsActionBarOpened, MainBarPanel, MobileSkillGrandPanel, UpdateCustomModeWindow, g_tStrings, this
+  function <?> line 91-105 params=2 ups=0 stack=10
+    strings: 'GetItemCount', 'Lookup', 'SetImageType', 'IMAGE', 'FLIP_VERTICAL', 'SetPosType', 'ITEM_POSITION', 'RIGHT_TOP', 'NORMAL', 'RIGHT_BOTTOM'
+    numbers: 1.0
+    globals: IMAGE, ITEM_POSITION
+  function <?> line 107-161 params=1 ups=1 stack=24
+    strings: 'Lookup', 'CheckBox_Lock', 'CheckBox_UpDown', 'Btn_PageUp', 'Btn_PageDown', 'Btn_setting', '', 'Handle_BG1', 'Handle_BG2/Handle_BgS1', 'Handle_BG2/Handle_BgS2', 'ui/Image/UItimate/UICommon/MainBarPanel.UITex', 'MainBarPanel', 'AnchorEdge', 'TOP', 'SetRelPos', 'SetAnimation', 'GetAbsPos', 'SetAbsPos', 'Animate_KfAni', 'Box_Kungfu'
+    numbers: 80.0, 0.0, 97.0, 37.0, 8.0, 12.0, 11.0, 15.0, 13.0, 9.0, 850.0, 7.0, 30.0, 884.0, 42.0, 44.0, 41.0, 857.0, 21.0, 86.0
+    globals: MainBarPanel
+  function <?> line 163-164 params=0 ups=0 stack=2
+  function <?> line 166-171 params=0 ups=0 stack=4
+    strings: 'MainBarPanel', 'AnchorEdge', 'GetFrameAnchorEdge', 'this', 'VERTICAL', 'FireEvent', 'MAINBAR_PANEL_ANCHOR_EDGE_CHANGED', 'MAINBAR_PANEL_POS_CHANGED'
+    globals: FireEvent, GetFrameAnchorEdge, MainBarPanel, this
+  function <?> line 173-180 params=0 ups=0 stack=5
+    strings: 'this', 'CorrectPos', 'MainBarPanel', 'AnchorEdge', 'GetFrameAnchorEdge', 'VERTICAL', 'FireEvent', 'MAINBAR_PANEL_ANCHOR_EDGE_CHANGED', 'StorageServer', 'SetData', 'OnlineFrameAnchor', 'GetFrameAnchor', 'MAINBAR_PANEL_POS_CHANGED', 'MAINBAR_PANEL_POS_CHANGED_END'
+    globals: FireEvent, GetFrameAnchor, GetFrameAnchorEdge, MainBarPanel, StorageServer, this
+  function <?> line 182-192 params=1 ups=0 stack=10
+    strings: 'StorageServer', 'IsReady', 'GetData', 'OnlineFrameAnchor', 'MainBarPanel', 'DefaultAnchor', 'SetPoint', 's', 'r', 'x', 'y', 'CorrectPos', 'AnchorEdge', 'GetFrameAnchorEdge', 'this', 'VERTICAL', 'FireEvent', 'MAINBAR_PANEL_ANCHOR_EDGE_CHANGED', 'MAINBAR_PANEL_POS_CHANGED'
+    numbers: 0.0
+    globals: FireEvent, GetFrameAnchorEdge, MainBarPanel, StorageServer, this
+  function <?> line 194-221 params=0 ups=0 stack=12
+    strings: 'GetClientPlayer', 'this', 'Lookup', '', 'Box_Kungfu', 'Image_CD', 'IsEmpty', 'Hide', 'GetObjectData', 'Skill_GetCDProgress', 'Show', 'SetPercentage', 'ActionBar_BreatheAutoDownKey'
+    numbers: 0.0, 1.0
+    globals: ActionBar_BreatheAutoDownKey, GetClientPlayer, Skill_GetCDProgress, this
+  function <?> line 223-232 params=1 ups=1 stack=7
+    strings: 'UI_GetPlayerForceID', 'Station', 'Lookup', 'Normal/', 'Show'
+    globals: Station, UI_GetPlayerForceID
+  function <?> line 234-238 params=1 ups=0 stack=11
+    strings: 'Hotkey', 'Get', 'VKACTIONBAR_BUTTON_AUTO', 'MobileSkillActionBar', 'GetKeyShow', 'Lookup', 'CheckBox_Assisant', 'Text_Num', 'SetText'
+    numbers: 1.0
+    globals: GetKeyShow, Hotkey
+  function <?> line 240-268 params=1 ups=0 stack=7
+    strings: 'GetMainBarPanelFrame', 'Lookup', 'CheckBox_Assisant', 'Show', 'FireHelpEvent', 'OnCommontToSomeWhere', 'MOBILE_ASSISTANT', '', 'Handle_BG1', 'Hide', 'Handle_BG2', 'Text_Page', 'CheckBox_UpDown', 'Btn_PageUp', 'Btn_PageDown', 'MainBarPanel', 'UpdateVKAutoHotkey', 'MobileSkillGrandPanel', 'EndAuto'
+    globals: FireHelpEvent, GetMainBarPanelFrame, MainBarPanel, MobileSkillGrandPanel
+  function <?> line 270-303 params=2 ups=0 stack=12
+    strings: 'GetControlPlayer', 'Lookup', '', 'Animate_KfAni', 'Text_Kungfu', 'GetActualKungfuMount', 'Box_Kungfu', 'SetObject', 'UI_OBJECT_SKILL', 'dwSkillID', 'dwLevel', 'SetObjectIcon', 'Table_GetSkillIconID', 'SetAlpha', 'Hide', 'MainBarPanel', 'bShowActionBar', 'MainBarPanel_CheckKungfuBar', 'IsMobileKungfu', 'GetKungfuActionBarPage'
+    numbers: 150.0, 255.0
+    globals: GetControlPlayer, GetKungfuActionBarPage, IsMobileKungfu, MainBarPanel, MainBarPanel_CheckKungfuBar, SelectMainActionBarPage, Table_GetSkillIconID, UI_OBJECT_SKILL
+  function <?> line 305-330 params=1 ups=0 stack=14
+    strings: 'GetClientPlayer', 'IsMobileKungfu', 'Lookup', '', 'Handle_PoZhaos', 'nSurplusPowerValue', 'Handle_PoZhao_', 'IsVisible', 'Show', 'SFX_PoZhao_Open_', 'Play'
+    numbers: 5.0, 1.0
+    globals: GetClientPlayer, IsMobileKungfu
+  function <?> line 332-455 params=1 ups=0 stack=9
+    strings: 'SKILL_MOUNT_KUNG_FU', 'MainBarPanel', 'UpdateKungfu', 'this', 'SKILL_UNMOUNT_KUNG_FU', 'ON_NEW_PROXY_SKILL_LIST_NOTIFY_SUCCEED', 'UpdateState', 'ON_CLEAR_PROXY_SKILL_LIST_NOTIFY_SUCCEED', 'SKILL_UPDATE', 'Lookup', '', 'Box_Kungfu', 'IsEmpty', 'GetObjectData', 'arg0', 'SetObject', 'UI_OBJECT_SKILL', 'arg1', 'SetObjectIcon', 'Table_GetSkillIconID'
+    numbers: 1.0, 0.0, 2.0
+    globals: ActionBar_SetNowHoardSkillID, FORCE_TYPE, FireHelpEvent, GetMainActionBarPage, GetSkill, IsActionBarLocked, IsMobileKungfu, MainBarPanel, MobileSkillGrandPanel, Table_GetSkillIconID, UI_GetClientPlayerID, UI_GetPlayerForceID, UI_OBJECT_SKILL, UpdateCustomModeWindow, arg0, arg1, arg2, arg3, this
+  function <?> line 457-474 params=1 ups=0 stack=8
+    strings: 'GetClientPlayer', 'Kungfu_GetPlayerMountType', 'FORCE_TYPE', 'TIAN_CE', 'bOnHorse', 'bHoldHorse', 'StorageServer', 'GetData', 'BarBind_OnHorse', 'BarBind_UnderHorse', 'Horse', 'SetData', 'GetMainActionBarPage', 'SelectMainActionBarPage'
+    numbers: 0.0
+    globals: FORCE_TYPE, GetClientPlayer, GetMainActionBarPage, Kungfu_GetPlayerMountType, SelectMainActionBarPage, StorageServer
+  function <?> line 476-501 params=0 ups=0 stack=6
+    strings: 'GetClientPlayer', 'nPoseState', 'Kungfu_GetPlayerMountType', 'FORCE_TYPE', 'BA_DAO', 'CANG_YUN', 'DAO_ZONG', 'StorageServer', 'GetData', 'BarBind_Pose1', 'BarBind_Pose2', 'BarBind_Pose', 'SelectMainActionBarPage'
+    numbers: 0.0, 1.0, 3.0, 2.0, 4.0
+    globals: FORCE_TYPE, GetClientPlayer, Kungfu_GetPlayerMountType, SelectMainActionBarPage, StorageServer
+  function <?> line 503-519 params=1 ups=0 stack=7
+    strings: 'GetClientPlayer', 'Kungfu_GetPlayerMountType', 'FORCE_TYPE', 'PENG_LAI', 'StorageServer', 'GetData', 'BarBind_OnParachute', 'BarBind_UnderParachute', 'SetData', 'GetMainActionBarPage', 'SelectMainActionBarPage'
+    numbers: 0.0
+    globals: FORCE_TYPE, GetClientPlayer, GetMainActionBarPage, Kungfu_GetPlayerMountType, SelectMainActionBarPage, StorageServer
+  function <?> line 521-531 params=1 ups=0 stack=5
+    strings: 'StorageServer', 'GetData', 'BarBind_OnPuppet', 'BarBind_UnderPuppet', 'SetData', 'GetMainActionBarPage', 'SelectMainActionBarPage'
+    numbers: 0.0
+    globals: GetMainActionBarPage, SelectMainActionBarPage, StorageServer
+  function <?> line 533-559 params=2 ups=4 stack=4
+    strings: 'IsMobileKungfu', 'Horse', 'PoseState', 'Parachute', 'Puppet'
+    globals: IsMobileKungfu
+  function <?> line 561-570 params=1 ups=0 stack=7
+    strings: 'bControl', 'IsInControlOtherState', 'CanSwitchActionBarPage', 'Lookup', 'CheckBox_UpDown', 'Enable', 'CheckBox_Lock', 'Btn_setting', 'Btn_PageUp', 'Btn_PageDown'
+    globals: CanSwitchActionBarPage, IsInControlOtherState
+  function <?> line 572-588 params=0 ups=0 stack=16
+    strings: 'this', 'GetName', 'GetAbsPos', 'GetSize', 'Box_Kungfu', 'IsEmpty', '<text>text=', 'EncodeComponentsString', 'g_tStrings', 'STR_SKILL_NG', ' font=65 </text><text>text=', 'MAIN_CHOOSE_NG_TIP', ' font=106 </text>', 'OutputTip', 'GetObjectData', 'OutputSkillTip', 'GetParent', 'Lookup', 'Image_HighLight', 'Show'
+    numbers: 400.0, 1.0
+    globals: EncodeComponentsString, OutputSkillTip, OutputTip, g_tStrings, this
+  function <?> line 590-596 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'Box_Kungfu', 'HideTip', 'GetParent', 'Lookup', 'Image_HighLight', 'Hide'
+    globals: HideTip, this
+  function <?> line 598-606 params=0 ups=0 stack=2
+    strings: 'this', 'GetName', 'Box_Kungfu', 'GetRoot', 'bControl', 'OpenOrCloseKungfuList'
+    globals: OpenOrCloseKungfuList, this
+  function <?> line 608-609 params=0 ups=0 stack=2
+  function <?> line 611-612 params=0 ups=0 stack=2
+  function <?> line 614-622 params=0 ups=0 stack=2
+    strings: 'this', 'GetName', 'Box_Kungfu', 'GetRoot', 'bControl', 'OpenOrCloseKungfuList'
+    globals: OpenOrCloseKungfuList, this
+  function <?> line 624-632 params=0 ups=0 stack=2
+    strings: 'this', 'GetName', 'Box_Kungfu', 'GetRoot', 'bControl', 'OpenOrCloseKungfuList'
+    globals: OpenOrCloseKungfuList, this
+  function <?> line 634-635 params=0 ups=0 stack=2
+  function <?> line 637-638 params=0 ups=0 stack=2
+  function <?> line 640-648 params=0 ups=0 stack=2
+    strings: 'this', 'GetName', 'Box_Kungfu', 'GetRoot', 'bControl', 'OpenOrCloseKungfuList'
+    globals: OpenOrCloseKungfuList, this
+  function <?> line 650-682 params=0 ups=0 stack=7
+    strings: 'this', 'GetName', 'Btn_MainBarPanel', 'IsAllMainBarPanelPanelOpened', 'CloseAllMainBarPanelPanel', 'OpenAllMainBarPanelPanel', 'Btn_PageUp', 'CanSwitchActionBarPage', 'SelectMainActionBarPage', 'GetMainActionBarPage', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'Button', 'Btn_PageDown', 'Btn_setting', 'ActionBarBind', 'IsOpened', 'Close'
+    numbers: 1.0
+    globals: ActionBarBind, CanSwitchActionBarPage, CloseAllMainBarPanelPanel, GetMainActionBarPage, IsAllMainBarPanelPanelOpened, MainBarPanel, OpenAllMainBarPanelPanel, PlaySound, SOUND, SelectMainActionBarPage, g_sound, this
+  function <?> line 684-702 params=0 ups=0 stack=14
+    strings: 'this', 'GetName', 'GetAbsPos', 'GetSize', 'CheckBox_Assisant', 'IsCheckBoxChecked', 'GetFormatText', 'g_tStrings', 'STR_MOBILE_SKILL_CLOSE_AUTO', 'OutputTip', 'STR_MOBILE_SKILL_OPEN_AUTO', 'Btn_PageUp', 'Btn_PageDown', 'CanSwitchActionBarPage', 'GetRoot', 'bControl', 'FormatString', 'STR_ACTIONBAR_PAGE_REQUIRED_LEVEL', 'ACTIONBAR_PAGE_MIN_LEVEL'
+    numbers: 400.0
+    globals: ACTIONBAR_PAGE_MIN_LEVEL, CanSwitchActionBarPage, FormatString, GetFormatText, OutputTip, g_tStrings, this
+  function <?> line 704-711 params=0 ups=0 stack=2
+    strings: 'this', 'GetName', 'CheckBox_Assisant', 'HideTip', 'Btn_PageUp', 'Btn_PageDown'
+    globals: HideTip, this
+  function <?> line 713-732 params=0 ups=1 stack=5
+    strings: 'this', 'bDisable', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'Button', 'GetName', 'CheckBox_Lock', 'LockActionBar', 'CheckBox_UpDown', 'OpenActionBar', 'CheckBox_Assisant', 'Lookup', '', 'Handle_Shell', 'Show', 'MobileSkillGrandPanel', 'StartAuto', 'OutputMessage'
+    numbers: 2.0
+    globals: LockActionBar, MobileSkillGrandPanel, OpenActionBar, OutputMessage, PlaySound, SOUND, g_sound, g_tStrings, this
+  function <?> line 734-748 params=0 ups=0 stack=5
+    strings: 'this', 'bDisable', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'Button', 'GetName', 'CheckBox_Lock', 'LockActionBar', 'CheckBox_UpDown', 'CloseActionBar', 'CheckBox_Assisant', 'Lookup', '', 'Handle_Shell', 'Hide', 'MobileSkillGrandPanel', 'EndAuto'
+    numbers: 2.0
+    globals: CloseActionBar, LockActionBar, MobileSkillGrandPanel, PlaySound, SOUND, g_sound, this
+  function <?> line 750-754 params=0 ups=0 stack=3
+    strings: 'GetMainBarPanelFrame', 'Hide', 'ActionBar_ClearAutoDownKey'
+    globals: ActionBar_ClearAutoDownKey, GetMainBarPanelFrame
+  function <?> line 756-763 params=0 ups=0 stack=3
+    strings: 'GetMainBarPanelFrame', 'Show'
+    globals: GetMainBarPanelFrame
+  function <?> line 765-767 params=0 ups=0 stack=2
+    strings: 'Station', 'Lookup', 'Lowest1/MainBarPanel'
+    globals: Station
+  function <?> line 769-771 params=0 ups=0 stack=2
+    strings: 'MainBarPanel', 'AnchorEdge'
+    globals: MainBarPanel
+  function <?> line 773-781 params=0 ups=0 stack=4
+    strings: 'StorageServer', 'SetData', 'OnlineFrameAnchor', 'MainBarPanel', 'DefaultAnchor', 'FireEvent', 'MAINBAR_PANEL_ANCHOR_CHANGED', 'AnchorEdge', 'DefaultAnchorEdge', 'MAINBAR_PANEL_ANCHOR_EDGE_CHANGED', 'MAINBAR_PANEL_POS_CHANGED_END'
+    globals: FireEvent, MainBarPanel, StorageServer
+  function <?> line 785-794 params=0 ups=0 stack=3
+    strings: 'GetMainBarPanelFrame', 'nPingTime', 'math', 'floor', 'GetPingValue'
+    numbers: 2.0
+    globals: GetMainBarPanelFrame, GetPingValue, math
+  function <?> line 796-808 params=0 ups=0 stack=5
+    strings: 'GetMainBarPanelFrame', 'Lookup', 'CheckBox_Assisant', 'IsVisible', 'IsCheckBoxChecked', 'Check'
+    globals: GetMainBarPanelFrame
+  function <?> line 810-844 params=1 ups=1 stack=7
+    strings: 'MainBarPanel', 'bShowActionBar', 'IsMobileKungfu', 'IsActionBarOpened', 'HideActionBar', 'VkActionBar', 'Open', 'ActionBar', 'LoadExtendActionBar', 'UpdateMobileBar', 'ShowActionBar', 'Close', 'CloseActionBar'
+    numbers: 1.0, 2.0, 20.0, 3.0, 4.0
+    globals: ActionBar, CloseActionBar, HideActionBar, IsActionBarOpened, IsMobileKungfu, MainBarPanel, ShowActionBar, VkActionBar

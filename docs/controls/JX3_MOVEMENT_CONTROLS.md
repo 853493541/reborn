@@ -80,6 +80,31 @@ Movement replication: `DoMoveCtrl` (C→S type 7, 49 B) and `DoSyncDirection`
   walk 56, run 5, strafe 6, backpedal 57/58, jumps 16–19
 - no dedicated ground turn clip; fly/suspend/rush have turn clips
 
+## 5b. Lua bridge — resolved 2026-09-25 (detail: `RESEARCH_RESOLVED_GAPS.md` §5)
+
+`ui/script/hotkeys.lua` implements the command wrappers; `ui/script/control.lua`
+defines the control ids (0 forward … 13 down, `CONTROL_CAMERA=6`,
+`CONTROL_OBJECT_STICK_CAMERA=7`, `CONTROL_JUMP=9`, `CONTROL_AUTO_RUN=10`).
+The forward chain is:
+
+```
+MoveForwardStart() → player.HoldW = 1
+                   → SetControl(CONTROL_FORWARD, true)
+                   → ResponseWASDKey('Forward', true, doubleTap)   // engine C
+MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
+                   → SetControl(CONTROL_FORWARD, false)
+```
+
+- `IsKeyDoubleDown()` supplies the double-tap flag (sprint family).
+- Strafe handlers branch on `GetOperationMode() == CLASSICAL_MODE` and
+  `Camera_IsInFreeView` and use `Camera_EnableControl` (classic) vs
+  `Scene_EnableFreeMoveControl` (joystick).
+- Directional skills use `OnUseSkill(3799 forward, 3801 strafe-left,
+  3802 strafe-right, …)` with a `%10 + 1` variant index.
+- `ResponseWASDKey`, `IsKeyDoubleDown`, `Camera_EnableControl`,
+  `Scene_EnableFreeMoveControl`, `GetOperationMode` are engine globals
+  (not defined in the extracted UI Lua).
+
 ## 6. Our client today
 
 `client/RebornClient.cs`: WASD camera-relative with held world direction,

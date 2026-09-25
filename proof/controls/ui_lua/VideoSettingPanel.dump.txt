@@ -1,0 +1,278 @@
+# VideoSettingPanel.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=43
+  strings: 'VideoSettingPanel', 'bCloseGJInJump', 'bCurveCamera', 'bDisableComposition', 'bCameraSmoothing', 'bEyeFollow', 'ChangeSize', 'bWinkAnimation', 'tNewCustomSetting', 'HD', 'BD', 'tCameraSetInfo', 'nReCameraMode', 'bReCloseGJInJump', 'bReCurveCamera', 'bReCameraShake', 'fReDragSpeed', 'fReCameraDistance', 'fReCameraAngle', 'tCameraStatic'
+  numbers: 1.0, 10.0, 41.0, 18.0, 0.0, 5.0, 3.0, -35.0, -12.0, 4.0, -8.0, -420.0, 54.0
+  globals: =CloseVideoSettingPanel, =InitGPUInfo, =InitGameTitle, =IsVideoSettingPanelOpened, =MAX_CUSTOM_SETTING_COUNT, =OpenVideoSettingPanel, =SaveCameraParam, =SetCameraParam, =UI_Camera_SetParams_S, =VideoSettingPanel, =VideoSettingPanel_DisableComposition, =VideoSettingPanel_IsDisableComposition, =VideoSettingPanel_Setting, CONFIGURE_LEVEL, CloseVideoSettingPanel, IsVideoSettingPanelOpened, RENDER_LEVEL, RegisterCustomData, RegisterEvent, RegisterIndePentShowPanel, SM_IsEnable, SaveCameraParam, VideoSettingPanel, g_tStrings
+  function <?> line 39-43 params=2 ups=0 stack=7
+    strings: 'this', 'GetParent', 'Lookup', 'Show'
+    globals: this
+  function <?> line 151-160 params=1 ups=1 stack=5
+    strings: 'nOffset', 'StorageServer', 'GetData', 'szKey'
+    globals: StorageServer
+  function <?> line 162-171 params=1 ups=1 stack=7
+    strings: 'nOffset', 'StorageServer', 'SetData', 'szKey'
+    globals: StorageServer
+  function <?> line 173-189 params=2 ups=1 stack=9
+    strings: 'IsVideoSettingPanelOpened', 'string', 'find', '|', 'sub', 'Lookup'
+    numbers: 1.0
+    globals: IsVideoSettingPanelOpened, string
+  function <?> line 191-195 params=2 ups=0 stack=8
+    strings: 'pairs'
+    globals: pairs
+  function <?> line 197-203 params=4 ups=0 stack=10
+    strings: 'pairs'
+    globals: pairs
+  function <?> line 205-208 params=0 ups=1 stack=4
+    strings: 'KG3DEngine', 'Get3DEngineOption', 'VideoBase_tNowSetting'
+    globals: KG3DEngine, VideoBase_tNowSetting
+  function <?> line 210-219 params=2 ups=0 stack=9
+    strings: 'pairs', 'fScreenSizeLimitedRate', 'type', 'table'
+    globals: pairs, type
+  function <?> line 221-228 params=2 ups=0 stack=9
+    strings: 'GetRelX', 'SetRelX', 'SetAlpha', 'tweenlite', 'to', 'alpha', 'relX', 'complete', 'inOutQuad'
+    numbers: 390.0, 0.0, 710.0, 255.0
+    globals: tweenlite
+    function <?> line 225-227 params=0 ups=1 stack=2
+  function <?> line 230-247 params=1 ups=2 stack=8
+    strings: 'Lookup', 'Btn_Close', 'WndScroll_AllSetting', 'Wnd_BtnList', 'Wnd_FPS'
+    function <?> line 238-243 params=0 ups=1 stack=3
+      strings: 'VideoBase_tNowSetting', 'nRenderLevel', 'RENDER_LEVEL', 'BD', 'Lookup', 'CheckBox_BD', 'IsEnabled', 'VideoSettingDetails', 'Open', 'VideoBase_RenderLevel'
+      globals: RENDER_LEVEL, VideoBase_RenderLevel, VideoBase_tNowSetting, VideoSettingDetails
+  function <?> line 249-268 params=0 ups=1 stack=7
+    strings: 'KG3DEngine', 'IsRTXEnabled', 'Lookup', 'Wnd_Set_Efficiency/Wnd_ScaleUpMode/Btn_ScaleUpMode', 'Enable', 'bEnable', 'Wnd_Set_Efficiency/WndContainer_Scroll/Wnd_ScreenSizeLimite, 'Wnd_Set_Rendering/Btn_Water', 'Wnd_Set_Rendering/Btn_Bake'
+    globals: KG3DEngine
+  function <?> line 270-309 params=0 ups=10 stack=5
+    strings: 'Station', 'EnterShowMode', 'VideoSettingPanel', 'this', 'RegisterEvent', 'UI_SCALED', 'VIDEO_SETTINGS_UPDATE', '3DENGINE_OPTION_UDPATE_PANEL', 'ON_START_SHAPE_SHIFT', 'ON_END_SHAPE_SHIFT', 'SET_CAMERA_PARAM', 'Lookup', 'WndScroll_AllSetting/WndContainer_AllSetting', 'Wnd_SetBase', 'WndContainer_ItemPicLevel', 'WndContainer_ItemCustomLevel', 'Wnd_BtnBase/CheckBox_BaseSet', 'Wnd_BtnPic/CheckBox_PicSet', 'Wnd_HdBd', 'Check'
+    numbers: -1.0
+    globals: InitGPUInfo, InitGameTitle, IsDebugClient, OutputMessage, Station, Table_IsBDInvalid, UI_GetCurrentMapID, VideoBase, VideoBase_tNowSetting, VideoSettingPanel, this
+  function <?> line 311-313 params=0 ups=0 stack=2
+    strings: 'VideoSettingDetails', 'Close'
+    globals: VideoSettingDetails
+  function <?> line 315-331 params=1 ups=0 stack=9
+    strings: 'Lookup', '', 'Image_Title', 'IsPakV4Enabled', 'WG_IsEnable', 'VideoBase', 'IsLeisureClient', 'GetTextureCompresssionRatio', 'SetFrame'
+    numbers: 2.0, 128.0, 3.0, 0.0, 4.0, 5.0
+    globals: IsPakV4Enabled, VideoBase, WG_IsEnable
+  function <?> line 333-362 params=1 ups=0 stack=12
+    strings: 'KG3DEngine', 'GetCurrentVideoCardDesc', 'GetOtherGPUScore', 'GetDisplayCard', 'ipairs', 'GPU', 'Lookup', 'Wnd_FPS/Wnd_VideoCard', '', 'Text_VideoCardTitle', 'Text_VideoCard', 'Image_VideoCardLow', 'SM_IsEnable', 'SetText', 'g_tStrings', 'STR_VIDEO_SETTING_GPU_LOW', 'Show', 'tGPU', 'szVideoCard', 'Hide'
+    numbers: 0.0
+    globals: GetDisplayCard, GetOtherGPUScore, KG3DEngine, SM_IsEnable, g_tStrings, ipairs
+  function <?> line 364-373 params=0 ups=0 stack=7
+    strings: 'this', 'Lookup', 'Wnd_FPS', '', 'Text_FTSValue', 'Get3DEngineFPS', 'MainMessageLine', 'getFPSFont', 'SetText', 'SetFontScheme'
+    globals: Get3DEngineFPS, MainMessageLine, this
+  function <?> line 375-411 params=1 ups=1 stack=12
+    strings: 'VideoBase_tNowSetting', 'bCanEnableComposition', 'CanEnableComposition', 'Lookup', 'CheckBox_EnableComposition', 'Show', 'bIniting', 'bFullScreen', 'FullScreen', 'bPanauision', 'Panauision', 'nWidth', 'Width', 'nHeight', 'Height', 'nRefreshRate', 'RefreshRate', 'GetVideoSettings', 'pairs', 'CheckBox_Bigwin'
+    numbers: 1.0, 2.0
+    globals: CanEnableComposition, GetVideoSettings, VideoBase_tNowSetting, VideoSettingPanel, pairs
+  function <?> line 413-420 params=2 ups=1 stack=8
+    strings: 'IsVideoSettingPanelOpened', 'Lookup', '', 'Text_Size', 'MenuValue', 'SetText', ' X '
+    numbers: 1.0, 2.0
+    globals: IsVideoSettingPanelOpened
+  function <?> line 422-427 params=1 ups=2 stack=2
+    strings: 'bIniting', 'VideoBase', 'Get3DEngineOptionCaps'
+    globals: VideoBase
+  function <?> line 429-452 params=3 ups=1 stack=14
+    strings: 'pairs', 'SETTINGS_CHECK', 'path', 'Enable', 'VideoSettingPanel', 'UpdateCheckSub', 'tSub', 'Check', 'value'
+    numbers: 1.0
+    globals: SETTINGS_CHECK, VideoSettingPanel, pairs
+  function <?> line 454-462 params=2 ups=1 stack=8
+    strings: 'pairs', 'VideoBase_tNowSetting', 'fScreenSizeLimitedRate', 'VideoSettingPanel', 'SetSetting'
+    globals: VideoBase_tNowSetting, VideoSettingPanel, pairs
+  function <?> line 464-483 params=2 ups=0 stack=5
+    strings: 'bIniting', 'nRenderLevel', 'VideoBase_RenderLevel', 'nConfigureLevel', 'VideoBase_Level', 'nOptionLevel', 'VideoBase_OptionLevel', 'RENDER_LEVEL', 'DNC', 'BD', 'VideoSettingPanel', 'CheckRenderLevel', 'CheckLevel', 'CheckCustomLevel', 'VideoSettingDetails', 'Update'
+    globals: RENDER_LEVEL, VideoBase_Level, VideoBase_OptionLevel, VideoBase_RenderLevel, VideoSettingDetails, VideoSettingPanel
+  function <?> line 485-487 params=1 ups=2 stack=4
+  function <?> line 489-511 params=1 ups=1 stack=20
+    strings: 'Normal', 'bEnable', 'Disable', 'VideoBase_tNowSetting', 'nOptionLevel', 'nLevel', 'Apply', 'VideoBase', 'IsInSpecialMap', 'UI_GetCurrentMapID', 'VIDEOBASE_SETTINGS', 'ipairs', 'SH', 'CZ', 'BD', 'Hover', 'Lookup', '', 'string', 'format'
+    globals: UI_GetCurrentMapID, VIDEOBASE_SETTINGS, VideoBase, VideoBase_tNowSetting, g_tStrings, ipairs, string
+  function <?> line 513-537 params=1 ups=0 stack=13
+    strings: 'Lookup', '', 'Handle_IC_Focus', 'Normal', 'bEnable', 'Disable', 'VideoBase_tNowSetting', 'nOptionLevel', 'nLevel', 'Apply', 'bEnter', 'Hover', 'ipairs', 'string', 'format', 'Handle_IC_%s', 'SetVisible', 'bCheck', 'Wnd_Delete'
+    globals: VideoBase_tNowSetting, ipairs, string
+  function <?> line 539-587 params=1 ups=6 stack=15
+    strings: 'Station', 'Lookup', 'Normal/VideoSettingPanel', 'CheckBox_BD', 'IsEnabled', 'RENDER_LEVEL', 'HIGH', 'Check', 'BD', 'CheckBox_HD', 'VideoBase', 'nBDType', 'Wnd_BtnList/Btn_Recommended', 'Enable', 'Clear', 'ipairs', 'AppendContentFromIni', 'Wnd_ItemPicLevel', 'Handle_ItemPicLevel1', 'nLevel'
+    numbers: 0.0, 2.0
+    globals: CONFIGURE_LEVEL, RENDER_LEVEL, Station, VideoBase, VideoSettingPanel, ipairs, select
+  function <?> line 589-601 params=1 ups=2 stack=8
+    strings: 'GetAllContentCount', 'LookupContent', 'bLevelCheck', 'bCheck', 'nLevel'
+    numbers: 0.0, 1.0
+  function <?> line 603-615 params=1 ups=2 stack=8
+    strings: 'GetAllContentCount', 'LookupContent', 'bCustomCheck', 'bCheck', 'nLevel'
+    numbers: 0.0, 1.0
+  function <?> line 617-632 params=1 ups=1 stack=5
+    strings: 'UI_SCALED', 'VideoSettingPanel', 'UpdatePos', 'this', 'VIDEO_SETTINGS_UPDATE', 'InitBaseSetting', 'SetChanged', 'BASE', '3DENGINE_OPTION_UDPATE_PANEL', 'bNotReset', 'SetSetting', 'VideoBase_tNowSetting', 'PIC'
+    globals: VideoBase_tNowSetting, VideoSettingPanel, this
+  function <?> line 641-663 params=1 ups=1 stack=11
+    strings: 'Lookup', 'Btn_Close', 'Btn', 'SetPoint', 's', 'r', 'x', 'y'
+    numbers: 0.0
+  function <?> line 665-728 params=0 ups=1 stack=20
+    strings: 'this', 'GetName', 'GetRoot', 'Btn_Size', 'IsEnabled', 'ipairs', 'aAdapterModes', 'nWidth', 'table', 'insert', 'fnAction', 'szOption', 'X', 'nHeight', 'UserData', 'VideoSettingPanel', 'ChangeSize', 'GetParent', 'Lookup', ''
+    numbers: 640.0
+    globals: IsVideoSettingPanelOpened, PopupMenu, PopupMenuEx, VideoSettingPanel, g_tStrings, ipairs, pairs, table, this
+    function <?> line 675-675 params=0 ups=1 stack=4
+      strings: 'VideoSettingPanel', 'SetChanged', 'BASE'
+      globals: VideoSettingPanel
+    function <?> line 702-711 params=0 ups=1 stack=7
+      strings: 'IsVisible', 'Cursor', 'GetPos', 'GetAbsPos', 'GetSize', 'bIgnor'
+      globals: Cursor
+    function <?> line 712-719 params=2 ups=2 stack=7
+      strings: 'IsVisible', 'Lookup', '', 'Text_Camera', 'SetText', 'szType', 'VideoSettingPanel', 'SetChanged', 'BASE'
+      numbers: 1.0, 2.0
+      globals: VideoSettingPanel
+    function <?> line 720-720 params=0 ups=0 stack=2
+      strings: 'IsVideoSettingPanelOpened'
+      globals: IsVideoSettingPanelOpened
+  function <?> line 730-733 params=0 ups=0 stack=3
+    strings: 'this', 'CorrectPos', 'VideoSettingPanel', 'Anchor', 'GetFrameAnchor'
+    globals: GetFrameAnchor, VideoSettingPanel, this
+  function <?> line 735-772 params=0 ups=6 stack=7
+    strings: 'this', 'GetName', 'GetRoot', 'CheckBox_Bigwin', 'GetParent', 'VideoSettingPanel', 'SetChanged', 'BASE', 'CheckBox_KuanPin', 'CheckBox_EnableComposition', 'CheckBox_QingGong', 'CheckBox_Shake', 'CheckBox_CurveCamera', 'CheckBox_BaseSet', 'Show', 'FormatAllContentPos', 'CheckBox_PicSet', 'Lookup', 'WndContainer_Title1', 'WndContainer_Title2'
+    globals: RENDER_LEVEL, VideoSettingDetails, VideoSettingPanel, this
+  function <?> line 774-794 params=0 ups=5 stack=6
+    strings: 'this', 'GetName', 'GetRoot', 'CheckBox_Bigwin', 'VideoSettingPanel', 'SetChanged', 'BASE', 'CheckBox_KuanPin', 'CheckBox_EnableComposition', 'CheckBox_QingGong', 'CheckBox_Shake', 'CheckBox_CurveCamera', 'CheckBox_BaseSet', 'Hide', 'GetParent', 'FormatAllContentPos', 'CheckBox_PicSet', 'Lookup', 'WndContainer_Title1', 'WndContainer_Title2'
+    globals: VideoSettingPanel, this
+  function <?> line 796-829 params=0 ups=3 stack=22
+    strings: 'this', 'GetName', 'GetParent', 'bLevelCheck', 'GetAbsPos', 'GetSize', 'nRenderLevel', 'nIndex', 'Tip', 'bEnable', 'DisableTip', 'bEnter', 'OutputTip', 'Image_VideoCardLow', 'tGPU', 'GetFormatText', 'g_tStrings', 'STR_VIDEO_SETTING_GPU_TIP', 'pairs', '\n'
+    numbers: 400.0, 1.0, 65.0
+    globals: GetFormatText, OutputTip, g_tStrings, pairs, string, this
+  function <?> line 831-842 params=0 ups=0 stack=21
+    strings: 'this', 'GetName', 'CheckBox_HDModel', 'GetAbsPos', 'GetSize', 'GetFormatText', 'g_tStrings', 'STR_VIDEO_SETTING_HD_TIP1', 'VideoBase', 'IsLeisureClient', '\n', 'STR_VIDEO_SETTING_HD_TIP2', 'OutputTip'
+    numbers: 400.0
+    globals: GetFormatText, OutputTip, VideoBase, g_tStrings, this
+  function <?> line 844-855 params=0 ups=2 stack=4
+    strings: 'HideTip', 'this', 'GetName', 'GetParent', 'bLevelCheck', 'bEnter', 'bCustomCheck'
+    globals: HideTip, this
+  function <?> line 857-935 params=0 ups=6 stack=15
+    strings: 'this', 'GetName', 'GetRoot', 'Btn_Close', 'CloseVideoSettingPanel', 'Btn_Efficiency', 'UISetting', 'Open', 'Efficiency', 'Btn_Recommended', 'VideoBase', 'nRecommendLevel', 'Lookup', 'CheckBox_BD', 'IsCheckBoxChecked', 'nBDRecommendLevel', 'GetLevelSetting', 'VideoBase_tNowSetting', 'nOptionLevel', 'VideoSettingPanel'
+    numbers: 2.0, 180.0
+    globals: Camera_GetParams, CloseVideoSettingPanel, FireUIEvent, FormatString, GetTime, GetVideoSettings, KG3DEngine, MessageBox, Station, UISetting, VideoBase, VideoBase_tNowSetting, VideoSettingDetails, VideoSettingPanel, clone, g_tStrings, this
+    function <?> line 929-929 params=0 ups=1 stack=2
+      strings: 'VideoSettingPanel', 'DelCustomInfo', 'nIndex'
+      globals: VideoSettingPanel
+    function <?> line 931-931 params=0 ups=0 stack=2
+      strings: 'IsVideoSettingPanelOpened'
+      globals: IsVideoSettingPanelOpened
+  function <?> line 937-979 params=0 ups=4 stack=11
+    strings: 'this', 'GetName', 'GetParent', 'GetRoot', 'bLevelCheck', 'bIniting', 'nLevel', 'VideoBase_tNowSetting', 'nOptionLevel', 'VideoBase', 'GetLevelSetting', 'VideoSettingPanel', 'SetSetting', 'SetChanged', 'PIC', 'VideoSettingDetails', 'IsOpened', 'Open', 'nRenderLevel', 'VideoBase_RenderLevel'
+    globals: VideoBase, VideoBase_RenderLevel, VideoBase_tNowSetting, VideoSettingDetails, VideoSettingPanel, this
+  function <?> line 981-988 params=3 ups=1 stack=8
+    strings: 'VideoBase', 'GetRenderLevelName', 'VideoSettingPanel', 'tNewCustomSetting'
+    globals: VideoBase, VideoSettingPanel
+  function <?> line 990-1004 params=2 ups=2 stack=7
+    strings: 'clone', 'VideoBase_tNowSetting', 'szSettingName', 'VideoBase', 'GetRenderLevelName', 'nRenderLevel', 'VideoSettingPanel', 'tNewCustomSetting', 'UpdateCustomLevel', 'CheckLevel', 'nOptionLevel', 'CheckCustomLevel'
+    globals: VideoBase, VideoBase_tNowSetting, VideoSettingPanel, clone
+  function <?> line 1006-1028 params=1 ups=1 stack=8
+    strings: 'VideoBase', 'GetRenderLevelName', 'nRenderLevel', 'VideoSettingPanel', 'tNewCustomSetting', 'VideoBase_tNowSetting', 'OptionLevelToIndex', 'nOptionLevel', 'IndexToOptionLevel', 'VideoBase_SetOptionLevel', 'table', 'remove', 'OutputMessage', 'MSG_ANNOUNCE_YELLOW', 'FormatString', 'g_tStrings', 'STR_DEL_CUSTOM_SETTING2', 'szSettingName', 'SetChanged', 'IsVideoSettingPanelOpened'
+    numbers: 1.0
+    globals: FormatString, IsVideoSettingPanelOpened, OutputMessage, VideoBase, VideoBase_SetOptionLevel, VideoBase_tNowSetting, VideoSettingPanel, g_tStrings, table
+  function <?> line 1030-1067 params=1 ups=4 stack=16
+    strings: 'IsVideoSettingPanelOpened', 'Clear', 'VideoBase', 'GetRenderLevelName', 'VideoSettingPanel', 'tNewCustomSetting', 'ipairs', 'AppendContentFromIni', 'Wnd_ItemCustomLevel', 'FormatString', 'g_tStrings', 'STR_ALL_PARENTHESES', 'STR_VIDEOSETTING_DISPLAY', 'nConfigureLevel', 'szSettingName', '', 'Lookup', 'Text_ItemCustomLevelName', 'SetText', ' '
+    numbers: 1.0, 2.0
+    globals: FormatString, IsVideoSettingPanelOpened, MAX_CUSTOM_SETTING_COUNT, VideoBase, VideoSettingPanel, g_tStrings, ipairs, select
+  function <?> line 1069-1100 params=0 ups=3 stack=6
+    strings: 'GetTime', 'bModal', 'bVisibleWhenHideUI', 'szName', 'VideoSettingPanel_Reset', 'fnCancelAction', 'fnAutoClose', 'szMessage', 'g_tStrings', 'STR_VIDEO_SETTING_RESET', 'szOption', 'STR_HOTKEY_SURE', 'fnAction', 'STR_HOTKEY_RESET', 'nCountDownTime', 'MessageBox'
+    numbers: 10.0
+    globals: GetTime, MessageBox, g_tStrings
+    function <?> line 1070-1081 params=0 ups=3 stack=5
+      strings: 'IsVideoSettingPanelOpened', 'bIniting', 'VideoSettingDetails', 'Close', 'VideoSettingPanel', 'SaveSettings', 'FireUIEvent', '3DENGINE_OPTION_UDPATE_PANEL', 'SetChanged', 'ALL', 'SetSetIndex'
+      numbers: 0.0
+      globals: FireUIEvent, IsVideoSettingPanelOpened, VideoSettingDetails, VideoSettingPanel
+    function <?> line 1089-1089 params=0 ups=1 stack=2
+      strings: 'GetTime'
+      numbers: 10000.0
+      globals: GetTime
+    function <?> line 1092-1096 params=0 ups=0 stack=2
+      strings: 'VideoBase_OnSave3DEngineOption', 'VideoSettingPanel', 'SetSetIndex', 'UISetting_Efficiency', 'SetLeveltoDefault'
+      numbers: 0.0
+      globals: UISetting_Efficiency, VideoBase_OnSave3DEngineOption, VideoSettingPanel
+  function <?> line 1102-1104 params=1 ups=0 stack=2
+    strings: 'VideoSettingPanel', 'nSetIndex'
+    globals: VideoSettingPanel
+  function <?> line 1106-1108 params=0 ups=0 stack=2
+    strings: 'VideoSettingPanel', 'nSetIndex'
+    numbers: 0.0
+    globals: VideoSettingPanel
+  function <?> line 1110-1127 params=3 ups=0 stack=6
+    strings: 'Station', 'Lookup', 'Normal/VideoSettingPanel', 'bIniting', 'PIC', 'bPicChanged', 'BASE', 'bBaseChanged', 'Wnd_BtnList/Btn_Apply', 'Enable'
+    globals: Station
+  function <?> line 1129-1176 params=2 ups=2 stack=10
+    strings: 'VideoBase', 'IsBD', 'VideoBase_Level', 'rlcmd', 'bd enable focus face 0', 'DelayCall', 'vsp_TryEnterForceFace', 'nRenderLevel', 'VideoBase_RenderLevel', 'nConfigureLevel', 'nOptionLevel', 'VideoBase_OptionLevel', 'VideoBase_tNowSetting', 'Level', 'old', 'new', 'VideoBase_SetRenderLevel', 'VideoBase_SetLevel', 'VideoBase_SetOptionLevel', 'VideoSettingPanel'
+    numbers: 0.0
+    globals: DelayCall, VideoBase, VideoBase_Level, VideoBase_OptionLevel, VideoBase_RenderLevel, VideoBase_SaveBasic, VideoBase_SaveRender, VideoBase_SetLevel, VideoBase_SetOptionLevel, VideoBase_SetPerformance, VideoBase_SetRenderLevel, VideoBase_tNowSetting, VideoSettingPanel, rlcmd
+  function <?> line 1178-1200 params=3 ups=1 stack=8
+    strings: 'bDisableComposition', 'bFullScreen', 'Lookup', 'CheckBox_Bigwin', 'IsCheckBoxChecked', 'bPanauision', 'CheckBox_KuanPin', 'CheckBox_EnableComposition', 'VideoSettingPanel_DisableComposition', 'nWidth', 'nHeight', '', 'Text_Size', 'MenuValue', 'VideoSettingPanel', 'ChangeSize', 'bMaximize'
+    numbers: 1.0, 2.0
+    globals: VideoSettingPanel, VideoSettingPanel_DisableComposition
+  function <?> line 1202-1205 params=1 ups=0 stack=3
+    strings: 'VideoSettingPanel', 'bDisableComposition', 'EnableComposition'
+    globals: EnableComposition, VideoSettingPanel
+  function <?> line 1207-1209 params=0 ups=1 stack=2
+  function <?> line 1211-1223 params=1 ups=1 stack=5
+    strings: 'CloseIndePentShowPanels', 'Monopoly_Base', 'IsVideoSettingPanelOpened', 'Wnd', 'OpenWindow', 'VideoSettingPanel', 'Station', 'Lookup', 'Normal/VideoSettingPanel', 'FireHelpEvent', 'OnOpenpanel', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'OpenFrame'
+    globals: CloseIndePentShowPanels, FireHelpEvent, IsVideoSettingPanelOpened, PlaySound, SOUND, Station, Wnd, g_sound
+  function <?> line 1225-1232 params=0 ups=0 stack=2
+    strings: 'Station', 'Lookup', 'Normal/VideoSettingPanel'
+    globals: Station
+  function <?> line 1234-1247 params=1 ups=0 stack=4
+    strings: 'IsVideoSettingPanelOpened', 'Station', 'BackOrExitShowMode', 'Wnd', 'CloseWindow', 'VideoSettingPanel', 'VideoCustomPanel', 'Close', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'CloseFrame'
+    globals: IsVideoSettingPanelOpened, PlaySound, SOUND, Station, VideoCustomPanel, Wnd, g_sound
+  function <?> line 1249-1251 params=0 ups=0 stack=2
+    strings: 'VideoSettingPanel', 'bDisableComposition'
+    globals: VideoSettingPanel
+  function <?> line 1253-1258 params=1 ups=0 stack=6
+    strings: 'VideoBase', 'GetLevelSetting', 'VideoBase_SetSetting', 'nOptionLevel', 'VideoBase_SaveSettings', 'VideoBase_SetOptionLevel'
+    globals: VideoBase, VideoBase_SaveSettings, VideoBase_SetOptionLevel, VideoBase_SetSetting
+  function <?> line 1260-1286 params=0 ups=0 stack=2
+    strings: 'VideoSettingPanel', 'bCloseGJInJump', 'rlcmd', 'close sprint camera', 'open sprint camera', 'bCurveCamera', 'open camera offset', 'close camera offset', 'EnableAnimationCamera', 'bCameraSmoothing', 'bEyeFollow', 'enable auto lookat 1', 'enable auto lookat 0', 'bWinkAnimation', 'enable localeyes animation 1', 'enable localeyes animation 0'
+    globals: EnableAnimationCamera, VideoSettingPanel, rlcmd
+  function <?> line 1288-1301 params=0 ups=0 stack=5
+    strings: 'VideoSettingPanel', 'tNewCustomSetting', 'HD', 'nRenderLevel', 'table', 'remove'
+    numbers: 1.0, 275.0
+    globals: VideoSettingPanel, table
+  function <?> line 1304-1306 params=1 ups=0 stack=3
+    strings: 'EnableAnimationCamera'
+    globals: EnableAnimationCamera
+  function <?> line 1309-1312 params=0 ups=0 stack=3
+    strings: 'VideoSettingPanel', 'GetValue', 'bCameraSmoothing', 'EnableAnimationCamera'
+    globals: EnableAnimationCamera, VideoSettingPanel
+  function <?> line 1315-1317 params=1 ups=0 stack=4
+    strings: 'rlcmd', 'enable auto lookat '
+    globals: rlcmd
+  function <?> line 1320-1327 params=0 ups=0 stack=3
+    strings: 'VideoSettingPanel', 'GetValue', 'bEyeFollow', 'rlcmd', 'enable auto lookat 1', 'enable auto lookat 0'
+    globals: VideoSettingPanel, rlcmd
+  function <?> line 1329-1331 params=1 ups=2 stack=4
+  function <?> line 1334-1378 params=0 ups=4 stack=13
+    strings: 'Camera_GetParams', 'MouseSpeed', 'MaxDistance', 'IsMobileStreamingEnable', 'VideoSettingPanel', 'tCameraStatic', 'fDragSpeed', 'fMaxCameraDistance', 'fSpringResetSpeed', 'fCameraResetSpeed', 'nCameraMode', 'tCameraSetInfo', 'nReCameraMode', 'fDragPitchSpeed', 'SetCameraParam', 'KG3DEngine', 'Get3DEngineOption', 'VideoBase', 'Get3DEngineOptionCaps', 'WidAngle'
+    numbers: 0.0, 1.2, 2000.0, 50.0, 180.0, 30.0, 60.0
+    globals: Camera_GetParams, IsMobileStreamingEnable, KG3DEngine, SetCameraParam, VideoBase, VideoSettingPanel, math
+  function <?> line 1380-1392 params=0 ups=1 stack=8
+    strings: 'StorageServer', 'IsReady', 'Camera_GetParams', 'MouseSpeed', 'MaxDistance', 'VideoSettingPanel', 'tCameraStatic', 'fSpringResetSpeed', 'fCameraResetSpeed', 'nCameraMode', 'fDragSpeed', 'fMaxCameraDistance'
+    globals: Camera_GetParams, StorageServer, VideoSettingPanel
+  function <?> line 1394-1399 params=0 ups=0 stack=6
+    strings: 'StorageServer', 'IsReady', 'UI_Camera_SetParams_S', 'VideoSettingPanel', 'tCameraStatic', 'fDragSpeed', 'fMaxCameraDistance', 'fSpringResetSpeed', 'fCameraResetSpeed', 'nCameraMode'
+    globals: StorageServer, UI_Camera_SetParams_S, VideoSettingPanel
+  function <?> line 1401-1407 params=0 ups=0 stack=5
+    strings: 'VideoSettingPanel', 'tCameraStatic', 'fDragSpeed', 'fMaxCameraDistance', 'fSpringResetSpeed', 'fCameraResetSpeed', 'nCameraMode'
+    globals: VideoSettingPanel
+  function <?> line 1410-1445 params=6 ups=2 stack=19
+    strings: 'VideoSettingPanel', 'tCameraStatic', 'fDragSpeed', 'fMaxCameraDistance', 'fSpringResetSpeed', 'fCameraResetSpeed', 'nCameraMode', 'fDragPitchSpeed', 'Camera_SetParams', 'MouseSpeed', 'Log', 'Set Camera MouseSpeed ', 'MaxDistance', 'Set Camera MaxCameraDistance '
+    globals: Camera_SetParams, Log, VideoSettingPanel
+  function <?> line 1447-1451 params=0 ups=0 stack=2
+    strings: 'arg0', 'UI_GetClientPlayerID', 'SaveCameraParam'
+    globals: SaveCameraParam, UI_GetClientPlayerID, arg0
+  function <?> line 1453-1458 params=0 ups=1 stack=2
+    strings: 'arg0', 'UI_GetClientPlayerID', 'SetCameraParam'
+    globals: SetCameraParam, UI_GetClientPlayerID, arg0
+  function <?> line 1461-1467 params=0 ups=2 stack=2
+    strings: 'Version'
+  function <?> line 1471-1476 params=0 ups=2 stack=2
+    strings: 'arg0', 'Role'
+    globals: arg0
+  function <?> line 1482-1484 params=0 ups=1 stack=2
+    strings: 'arg0'
+    globals: arg0
+  function <?> line 1486-1488 params=2 ups=0 stack=3
+    strings: 'VideoSettingPanel'
+    globals: VideoSettingPanel
+  function <?> line 1490-1492 params=1 ups=0 stack=2
+    strings: 'VideoSettingPanel'
+    globals: VideoSettingPanel

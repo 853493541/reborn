@@ -84,9 +84,19 @@ Hardcoded `KeyDown/KeyUp` if-chain in `client/RebornClient.cs` — no table, no
 contexts, no modifiers, no rebinding, no per-role file. Target design:
 `controls/REBORN_CONTROLS_SPEC.md` §Input.
 
-## 8. Open items
+## 8. Resolved 2026-09-25 (full detail: `RESEARCH_RESOLVED_GAPS.md` §1–§2)
 
-1. Exact per-role override TSV grammar (index = key slot? context?).
-2. Conflict resolution when two commands bind the same key.
-3. `context` switching rules (which UI state activates each context).
-4. Rebind UI panel layout (packed Lua).
+1. **Override grammar (resolved):** `hotkey_newlast.txt` =
+   `name \t context \t index \t key`; `index` = key slot 1|2; empty key =
+   explicitly unbound; only user-modified rows are stored; backups
+   `hotkey_newback N.txt`; manifest `hotkey.data` (`CNDK` + `dwSaveID`,
+   `tSaveDate`, `szFile`); old format `hotkey_last.txt` (`name index key`) is
+   converted by `Hotkey.ConvertFile`.
+2. **Rebind UI (resolved):** `Hotkey.SetCapture(true/false)`, per-row
+   `Hotkey1/Hotkey2` with `nKey`/`bShift`/`bCtrl`/`bAlt`, double-press
+   (`bDoubleKeyDown`/`nDoubleKey`), `bUnchangeable`, self/auto-modified frames,
+   save/restore menu (`STR_RESTORE_HK_DFT`, `STR_RESTORE_HOTKEY`),
+   `bSaveToServer = true`.
+3. **Conflicts:** engine-side, not in Lua (the panel only displays state).
+4. **Contexts:** `contextgroup` tabs in `HotkeyPanel.ini`; `MobileSkillActionBar`
+   etc. select which bindings are shown/applied.

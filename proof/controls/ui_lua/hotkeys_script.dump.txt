@@ -1,0 +1,619 @@
+# hotkeys_script.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=68
+  strings: 'jpg', 'string', 'byte', 'szKey', 'Coures', 'szTrackName', 'fnCondition', 'fnAction', 'QuestionnairePanel', 'OperationRules', 'OperationCenter', 'Cyclopaedia', 'ActivityList', 'EquipInquire', 'TongArena', 'GMPanel', 'ExaminationPanel', 'FishPanel', 'TongFarmPanel', 'PayPathPanel'
+  numbers: 100.0, 59149.0, 37891.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0
+  globals: =ActionBar_PageDown, =ActionBar_PageUp, =ActionBar_YaoZongPlant, =ActionButtonDown, =ActionButtonUp, =AttackTarget, =AutoInteract, =CameraOrSelectOrMoveStart, =CameraOrSelectOrMoveStop, =CameraReset, =CameraSetView, =CameraZoomIn, =CameraZoomOut, =CanUseLeftRightSprint, =CastSkillByKeyDown, =ChangeActionBarPage, =ChangePlayerDisplayMode, =CheckEndSprint, =CloseAllConflictPanels, =CloseIndePentShowPanels, =DownHorse, =EnableCameraZoom, =EndJump, =EndSprint, =EnterOrLeaveCarrier, =EquipKongfu, =FlipCameraYaw, =FollowTarget, =GVCloseMicphone, =GVOpenMicphone, =GetDisplacementSkillSetting, =GetKeyName, =GetKeyShow, =GetKeyValue, =Hotkey_EnableMoveBack, =Hotkey_EnableSprint, =Hotkey_EnableToggleRun, =Hotkey_EnableToggleSheath, =Hotkey_EnableTurnLeft, =Hotkey_EnableTurnRight
+  function <?> line 11-27 params=2 ups=0 stack=5
+    strings: 'bIsParamNeeded', 'szKey'
+  function <?> line 29-36 params=1 ups=0 stack=2
+    strings: 'fnAction'
+  function <?> line 38-54 params=3 ups=1 stack=12
+    strings: 'ipairs_r', 'szKey', 'bIsParamNeeded', 'fnCondition'
+    globals: ipairs_r
+  function <?> line 58-65 params=1 ups=1 stack=8
+    strings: 'ipairs_r', 'fnCondition'
+    globals: ipairs_r
+  function <?> line 67-69 params=2 ups=1 stack=5
+  function <?> line 71-82 params=0 ups=4 stack=7
+    strings: 'ipairs', 'szKey', 'fnAction'
+    globals: ipairs
+  function <?> line 88-88 params=0 ups=0 stack=2
+    strings: 'IsCouresOpened', 'CanCloseCouresPanel'
+    globals: CanCloseCouresPanel, IsCouresOpened
+  function <?> line 89-89 params=0 ups=0 stack=2
+    strings: 'CloseCoures'
+    globals: CloseCoures
+  function <?> line 94-94 params=0 ups=0 stack=2
+    strings: 'IsQuestionnairePanelOpened'
+    globals: IsQuestionnairePanelOpened
+  function <?> line 95-95 params=0 ups=0 stack=2
+    strings: 'CloseQuestionnairePanel'
+    globals: CloseQuestionnairePanel
+  function <?> line 100-100 params=0 ups=0 stack=2
+    strings: 'OperationRules', 'IsOpened'
+    globals: OperationRules
+  function <?> line 101-101 params=0 ups=0 stack=2
+    strings: 'OperationRules', 'Close'
+    globals: OperationRules
+  function <?> line 106-106 params=0 ups=0 stack=2
+    strings: 'OperationCenter', 'IsOpened'
+    globals: OperationCenter
+  function <?> line 107-107 params=0 ups=0 stack=2
+    strings: 'OperationCenter', 'Close'
+    globals: OperationCenter
+  function <?> line 112-112 params=0 ups=0 stack=2
+    strings: 'IsModuleLoaded', 'Cyclopaedia', 'IsOpened'
+    globals: Cyclopaedia, IsModuleLoaded
+  function <?> line 113-113 params=0 ups=0 stack=2
+    strings: 'Cyclopaedia', 'Close'
+    globals: Cyclopaedia
+  function <?> line 118-118 params=0 ups=0 stack=2
+    strings: 'IsModuleLoaded', 'ActivityList', 'IsOpened'
+    globals: ActivityList, IsModuleLoaded
+  function <?> line 119-119 params=0 ups=0 stack=2
+    strings: 'ActivityList', 'Close'
+    globals: ActivityList
+  function <?> line 124-124 params=0 ups=0 stack=2
+    strings: 'IsModuleLoaded', 'EquipInquire', 'IsOpened'
+    globals: EquipInquire, IsModuleLoaded
+  function <?> line 125-125 params=0 ups=0 stack=2
+    strings: 'EquipInquire', 'Close'
+    globals: EquipInquire
+  function <?> line 130-130 params=0 ups=0 stack=2
+    strings: 'IsTongArenaOpened'
+    globals: IsTongArenaOpened
+  function <?> line 131-131 params=0 ups=0 stack=2
+    strings: 'CloseTongArena'
+    globals: CloseTongArena
+  function <?> line 136-136 params=0 ups=0 stack=2
+    strings: 'IsGMPanelOpened'
+    globals: IsGMPanelOpened
+  function <?> line 137-137 params=0 ups=0 stack=2
+    strings: 'CloseGMPanel'
+    globals: CloseGMPanel
+  function <?> line 142-142 params=0 ups=0 stack=2
+    strings: 'ExaminationPanel', 'IsOpened'
+    globals: ExaminationPanel
+  function <?> line 143-143 params=0 ups=0 stack=2
+    strings: 'ExaminationPanel', 'ClosePanel'
+    globals: ExaminationPanel
+  function <?> line 148-148 params=0 ups=0 stack=2
+    strings: 'IsFishPanelOpened'
+    globals: IsFishPanelOpened
+  function <?> line 149-149 params=0 ups=0 stack=2
+    strings: 'CloseFishPanel'
+    globals: CloseFishPanel
+  function <?> line 154-154 params=0 ups=0 stack=2
+    strings: 'IsTongFarmPanelOpened'
+    globals: IsTongFarmPanelOpened
+  function <?> line 155-155 params=0 ups=0 stack=2
+    strings: 'CloseTongFarmPanel'
+    globals: CloseTongFarmPanel
+  function <?> line 160-160 params=0 ups=0 stack=2
+    strings: 'IsPayPathPanelOpened'
+    globals: IsPayPathPanelOpened
+  function <?> line 161-161 params=0 ups=0 stack=2
+    strings: 'ClosePayPathPanel'
+    globals: ClosePayPathPanel
+  function <?> line 166-166 params=0 ups=0 stack=2
+    strings: 'IsGuildListPanelOpened'
+    globals: IsGuildListPanelOpened
+  function <?> line 167-167 params=0 ups=0 stack=2
+    strings: 'CloseGuildListPanel'
+    globals: CloseGuildListPanel
+  function <?> line 172-172 params=0 ups=0 stack=2
+    strings: 'IsGuildMainPanelOpened'
+    globals: IsGuildMainPanelOpened
+  function <?> line 173-173 params=0 ups=0 stack=2
+    strings: 'CloseGuildMainPanel'
+    globals: CloseGuildMainPanel
+  function <?> line 198-206 params=0 ups=0 stack=2
+    strings: 'Hotkey', 'IsKeyDoubleDown', 'GetKeyTimeInterval'
+    numbers: 250.0
+    globals: Hotkey
+  function <?> line 212-228 params=2 ups=0 stack=14
+    strings: 'ipairs', 'pairs'
+    globals: ipairs, pairs
+  function <?> line 230-246 params=2 ups=0 stack=14
+    strings: 'ipairs', 'pairs'
+    globals: ipairs, pairs
+  function <?> line 248-326 params=0 ups=3 stack=28
+    strings: 'GetClientPlayer', 'dwBitOPSchoolID', 'UI_GetPlayerMountKungfuID', 'GetSchoolList', 'pairs', 'GetKungfuList', 'Kungfu_GetSchoolType', 'ilines', 'g_tTable', 'DisplacementHotkeys', 'dwSkillID', 'GetSkill', 'nSkillLevel', 'bHoardSkill', 'szRepresentIDGroups', '', 'SplitString', '|', 'aRepresentIDGroups', 'ipairs'
+    numbers: -1.0, 999.0, 0.0, 1.0, 2.0
+    globals: GetClientPlayer, GetSkill, Kungfu_GetSchoolType, SplitString, UI_GetPlayerMountKungfuID, g_tTable, ilines, ipairs, pairs, table, tonumber
+  function <?> line 328-339 params=2 ups=0 stack=7
+    strings: 'GetClientPlayer', 'Buff_Have'
+    numbers: -1.0
+    globals: Buff_Have, GetClientPlayer
+  function <?> line 342-351 params=0 ups=2 stack=6
+    strings: 'GetClientPlayer', 'bBirdMove', 'BreatheCall', 'KEEP_USING_SKILL', 'nMoveState', 'MOVE_STATE', 'ON_BIRD_FLOAT', 'OnUseSkill', '_vir', 'nSkillLevel'
+    numbers: 10.0, 1.0
+    globals: BreatheCall, GetClientPlayer, MOVE_STATE, OnUseSkill
+  function <?> line 356-358 params=2 ups=1 stack=3
+  function <?> line 360-362 params=1 ups=1 stack=2
+    strings: 'IsMobileKungfu'
+    globals: IsMobileKungfu
+  function <?> line 367-485 params=3 ups=13 stack=42
+    strings: 'GetClientPlayer', 'dwBitOPSchoolID', 'g_tSprintData', 'bCommonMode', 'GetCommonSprintForceID', 'nMoveState', 'MOVE_STATE', 'ON_RUN', 'nJumpCount', 'GetPlayerWeaponType', 'GetBitOPSchoolIDWeaponType', 'bFightState', 'bSprintFlag', 'bSlideSprintFlag', 'GetTarget', 'IsFollowController', 'IsRunOnWater', 'IsPlayerInHang', 'bOnTowerFlag', 'bIgnoreGravity'
+    numbers: 0.0, 1.0, -1.0, 33.0, 2.0, 200.0, 10.0
+    globals: BreatheCall, CLASSICAL_MODE, GetBitOPSchoolIDWeaponType, GetClientPlayer, GetCommonSprintForceID, GetDisplacementSkillSetting, GetOperationMode, GetPlayerWeaponType, IsDebugClient, IsPlayerInHang, Log, MOVE_STATE, OnUseSkill, SprintEx_HasValidTrack, Sprint_IsClimbOverEnable, Sprint_IsGlideEnable, TARGET, g_tSprintData, ipairs, pairs, string
+  function <?> line 487-487 params=1 ups=0 stack=2
+    numbers: 0.0
+  function <?> line 488-565 params=3 ups=1 stack=14
+    strings: 'math', 'max', 'GetClientPlayer', 'bOnTowerFlag', 'gsub', 'Turn', '', 'Strafe', 'upper', 'ResponseDisplacementHotkey', 'Forward', 'Backward', 'TurnLeft', 'StrafeLeft', 'TurnRight', 'StrafeRight', 'MOVE_STOP', 'MOVE_FORWARD', 'MOVE_RIGHTFORWARD', 'MOVE_RIGHT'
+    numbers: 1.0, -1.0, 0.0
+    globals: GetClientPlayer, ResponseDisplacementHotkey, StartSprint, math
+  function <?> line 574-576 params=1 ups=0 stack=2
+    strings: 'g_aDescToVKey'
+    globals: g_aDescToVKey
+  function <?> line 578-583 params=1 ups=0 stack=2
+    strings: '', 'g_aVKeyToDesc'
+    numbers: 0.0
+    globals: g_aVKeyToDesc
+  function <?> line 585-587 params=1 ups=0 stack=2
+    numbers: 8.0
+  function <?> line 589-591 params=1 ups=0 stack=2
+    numbers: 16.0
+  function <?> line 593-595 params=1 ups=0 stack=2
+    numbers: 17.0
+  function <?> line 597-599 params=1 ups=0 stack=2
+    numbers: 18.0
+  function <?> line 601-603 params=0 ups=0 stack=2
+    strings: 'Hotkey', 'IsKeyDown'
+    numbers: 8.0
+    globals: Hotkey
+  function <?> line 605-607 params=0 ups=0 stack=2
+    strings: 'Hotkey', 'IsKeyDown'
+    numbers: 16.0
+    globals: Hotkey
+  function <?> line 609-611 params=0 ups=0 stack=2
+    strings: 'Hotkey', 'IsKeyDown'
+    numbers: 17.0
+    globals: Hotkey
+  function <?> line 613-615 params=0 ups=0 stack=2
+    strings: 'Hotkey', 'IsKeyDown'
+    numbers: 18.0
+    globals: Hotkey
+  function <?> line 617-623 params=1 ups=0 stack=4
+    strings: 'GetKeyValue', 'Hotkey', 'IsKeyDown'
+    numbers: 0.0
+    globals: GetKeyValue, Hotkey
+  function <?> line 626-660 params=5 ups=0 stack=10
+    strings: 'g_tHotKey', 'taVKeyToShowDescShort', '', '+', 'taVKeyToShowDesc'
+    numbers: 17.0, 18.0, 16.0
+    globals: g_tHotKey
+  function <?> line 662-667 params=2 ups=0 stack=12
+    strings: 'Hotkey', 'Get', 'ModifyShield'
+    globals: Hotkey
+  function <?> line 675-677 params=1 ups=1 stack=2
+  function <?> line 679-685 params=2 ups=0 stack=5
+    strings: 'GetOperationMode', 'CLASSICAL_MODE', 'Camera_EnableControl', 'Scene_EnableFreeMoveControl'
+    globals: CLASSICAL_MODE, Camera_EnableControl, GetOperationMode, Scene_EnableFreeMoveControl
+  function <?> line 687-689 params=0 ups=1 stack=2
+    strings: 'Camera_IsClientControlDisabled'
+    globals: Camera_IsClientControlDisabled
+  function <?> line 691-696 params=2 ups=0 stack=5
+    strings: 'IsPlayerInOBDungeon', 'Camera_EnableControl'
+    globals: Camera_EnableControl, IsPlayerInOBDungeon
+  function <?> line 699-701 params=1 ups=1 stack=2
+  function <?> line 703-719 params=0 ups=3 stack=5
+    strings: 'GetClientPlayer', 'HoldW', 'OnUseSkill', 'CONTROL_FORWARD', 'IsKeyDoubleDown', 'ResponseWASDKey', 'Forward'
+    numbers: 1.0, 3799.0, 10.0
+    globals: CONTROL_FORWARD, GetClientPlayer, IsKeyDoubleDown, OnUseSkill, ResponseWASDKey
+  function <?> line 721-730 params=0 ups=1 stack=5
+    strings: 'GetClientPlayer', 'HoldW', 'ResponseWASDKey', 'Forward', 'CheckEndSprint', 'CONTROL_FORWARD'
+    numbers: 0.0
+    globals: CONTROL_FORWARD, CheckEndSprint, GetClientPlayer, ResponseWASDKey
+  function <?> line 732-755 params=0 ups=4 stack=4
+    strings: 'CONTROL_BACKWARD', 'OnUseSkill', 'IsKeyDoubleDown', 'ResponseWASDKey', 'Backward', 'CheckEndSprint'
+    numbers: 3800.0, 10.0, 1.0
+    globals: CONTROL_BACKWARD, CheckEndSprint, IsKeyDoubleDown, OnUseSkill, ResponseWASDKey
+  function <?> line 757-764 params=0 ups=2 stack=4
+    strings: 'CONTROL_BACKWARD', 'ResponseWASDKey', 'Backward'
+    globals: CONTROL_BACKWARD, ResponseWASDKey
+  function <?> line 768-770 params=1 ups=1 stack=2
+  function <?> line 772-774 params=1 ups=1 stack=2
+  function <?> line 776-789 params=0 ups=2 stack=4
+    strings: 'IsKeyDoubleDown', 'ResponseWASDKey', 'TurnLeft', 'CONTROL_TURN_LEFT'
+    globals: CONTROL_TURN_LEFT, IsKeyDoubleDown, ResponseWASDKey
+  function <?> line 791-795 params=0 ups=1 stack=4
+    strings: 'ResponseWASDKey', 'TurnLeft', 'CONTROL_TURN_LEFT'
+    globals: CONTROL_TURN_LEFT, ResponseWASDKey
+  function <?> line 797-810 params=0 ups=2 stack=4
+    strings: 'IsKeyDoubleDown', 'ResponseWASDKey', 'TurnRight', 'CONTROL_TURN_RIGHT'
+    globals: CONTROL_TURN_RIGHT, IsKeyDoubleDown, ResponseWASDKey
+  function <?> line 812-816 params=0 ups=1 stack=4
+    strings: 'ResponseWASDKey', 'TurnRight', 'CONTROL_TURN_RIGHT'
+    globals: CONTROL_TURN_RIGHT, ResponseWASDKey
+  function <?> line 818-823 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'nMoveState', 'MOVE_STATE', 'ON_FLY_JUMP', 'bSprintFlag', 'bOnHorse'
+    globals: GetClientPlayer, MOVE_STATE
+  function <?> line 825-854 params=0 ups=3 stack=4
+    strings: 'GetOperationMode', 'CLASSICAL_MODE', 'CONTROL_STRAFE_LEFT', 'Camera_IsInFreeView', 'TurnLeftStart', 'OnUseSkill', 'IsKeyDoubleDown', 'ResponseWASDKey', 'StrafeLeft', 'Camera_EnableControl'
+    numbers: 3801.0, 10.0, 1.0
+    globals: CLASSICAL_MODE, CONTROL_STRAFE_LEFT, Camera_EnableControl, Camera_IsInFreeView, GetOperationMode, IsKeyDoubleDown, OnUseSkill, ResponseWASDKey, TurnLeftStart
+  function <?> line 856-874 params=0 ups=2 stack=4
+    strings: 'GetOperationMode', 'CLASSICAL_MODE', 'CONTROL_STRAFE_LEFT', 'Camera_IsInFreeView', 'TurnLeftStop', 'ResponseWASDKey', 'StrafeLeft', 'Camera_EnableControl'
+    globals: CLASSICAL_MODE, CONTROL_STRAFE_LEFT, Camera_EnableControl, Camera_IsInFreeView, GetOperationMode, ResponseWASDKey, TurnLeftStop
+  function <?> line 876-904 params=0 ups=3 stack=4
+    strings: 'GetOperationMode', 'CLASSICAL_MODE', 'CONTROL_STRAFE_RIGHT', 'Camera_IsInFreeView', 'TurnRightStart', 'OnUseSkill', 'IsKeyDoubleDown', 'ResponseWASDKey', 'StrafeRight', 'Camera_EnableControl'
+    numbers: 3802.0, 10.0, 1.0
+    globals: CLASSICAL_MODE, CONTROL_STRAFE_RIGHT, Camera_EnableControl, Camera_IsInFreeView, GetOperationMode, IsKeyDoubleDown, OnUseSkill, ResponseWASDKey, TurnRightStart
+  function <?> line 906-924 params=0 ups=2 stack=4
+    strings: 'GetOperationMode', 'CLASSICAL_MODE', 'CONTROL_STRAFE_RIGHT', 'Camera_IsInFreeView', 'TurnRightStop', 'ResponseWASDKey', 'StrafeRight', 'Camera_EnableControl'
+    globals: CLASSICAL_MODE, CONTROL_STRAFE_RIGHT, Camera_EnableControl, Camera_IsInFreeView, GetOperationMode, ResponseWASDKey, TurnRightStop
+  function <?> line 926-928 params=0 ups=0 stack=3
+    strings: 'Camera_EnableControl', 'CONTROL_UP'
+    globals: CONTROL_UP, Camera_EnableControl
+  function <?> line 930-932 params=0 ups=0 stack=3
+    strings: 'Camera_EnableControl', 'CONTROL_UP'
+    globals: CONTROL_UP, Camera_EnableControl
+  function <?> line 934-936 params=0 ups=0 stack=3
+    strings: 'Camera_EnableControl', 'CONTROL_DOWN'
+    globals: CONTROL_DOWN, Camera_EnableControl
+  function <?> line 938-940 params=0 ups=0 stack=3
+    strings: 'Camera_EnableControl', 'CONTROL_DOWN'
+    globals: CONTROL_DOWN, Camera_EnableControl
+  function <?> line 942-1044 params=0 ups=2 stack=11
+    strings: 'OnUseSkill', 'GetClientPlayer', 'nMoveState', 'bOnHorse', 'nFlyFlag', 'bSprintFlag', 'MOVE_STATE', 'ON_DEATH', 'CameraCommon', 'IsWatch', 'Match', 'IsInTreasureBattleFieldMap', 'IsInMobaBattleFieldMap', 'BattleField_Match', 'bBirdMove', 'ResponseDisplacementHotkey', 'SPACE', 'IsKeyDoubleDown', 'GetEquippedHorse', 'dwIndex'
+    numbers: 3779.0, 10.0, 1.0, 0.0, 38699.0, 13951.0, 13618.0, 13784.0, 13148.0, 44565.0, 8.0, 9007.0
+    globals: BattleField_Match, CONTROL_BACKWARD, CONTROL_JUMP, CameraCommon, Camera_EnableControl, Camera_LockControl, FireEvent, GetClientPlayer, IsCharacterMoving, IsInMobaBattleFieldMap, IsInTreasureBattleFieldMap, IsKeyDoubleDown, MOVE_STATE, OnUseSkill, ResponseDisplacementHotkey, Table_GetSpecialHorseOnJump
+  function <?> line 1046-1074 params=0 ups=0 stack=7
+    strings: 'GetClientPlayer', 'GetEquippedHorse', 'IsFollower', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'DIS_NOT_EQUIP_HORSE', 'GetSkillLevel', 'DID_NOT_LEARN_RIDE', 'bOnHorse', 'GetDynamicSkillGroup', 'GetDynamicSkillGroupSkills', 'CanCastSkill', 'OnUseSkill'
+    numbers: 605.0, 1.0, 0.0, 54.0, 33913.0, 10.0, 53.0
+    globals: GetClientPlayer, GetDynamicSkillGroupSkills, OnUseSkill, OutputMessage, g_tStrings
+  function <?> line 1076-1077 params=0 ups=0 stack=2
+  function <?> line 1079-1082 params=0 ups=0 stack=4
+    strings: 'ResponseDisplacementHotkey', 'SPACE', 'Camera_EnableControl', 'CONTROL_JUMP'
+    globals: CONTROL_JUMP, Camera_EnableControl, ResponseDisplacementHotkey
+  function <?> line 1084-1093 params=0 ups=0 stack=2
+    strings: 'MoveForwardStop', 'MoveBackwardStop', 'TurnLeftStop', 'TurnRightStop', 'StrafeLeftStop', 'StrafeRightStop', 'EndJump', 'StopAutoRun'
+    globals: EndJump, MoveBackwardStop, MoveForwardStop, StopAutoRun, StrafeLeftStop, StrafeRightStop, TurnLeftStop, TurnRightStop
+  function <?> line 1095-1097 params=0 ups=0 stack=2
+    strings: 'AutoSearch_Interact'
+    globals: AutoSearch_Interact
+  function <?> line 1099-1101 params=0 ups=0 stack=2
+    strings: 'NewSkillGuidePanel', 'SelfSkillGuideDown'
+    globals: NewSkillGuidePanel
+  function <?> line 1103-1105 params=0 ups=0 stack=2
+    strings: 'NewSkillGuidePanel', 'SelfSkillGuideUp'
+    globals: NewSkillGuidePanel
+  function <?> line 1107-1109 params=0 ups=0 stack=2
+    strings: 'Camera_ToggleControl', 'CONTROL_AUTO_RUN'
+    globals: CONTROL_AUTO_RUN, Camera_ToggleControl
+  function <?> line 1111-1113 params=0 ups=0 stack=3
+    strings: 'Camera_EnableControl', 'CONTROL_AUTO_RUN'
+    globals: CONTROL_AUTO_RUN, Camera_EnableControl
+  function <?> line 1115-1117 params=0 ups=0 stack=2
+    strings: 'Scene_SetMoveControl'
+    globals: Scene_SetMoveControl
+  function <?> line 1119-1121 params=0 ups=0 stack=2
+    strings: 'Scene_SetMoveControl'
+    globals: Scene_SetMoveControl
+  function <?> line 1124-1126 params=1 ups=1 stack=2
+  function <?> line 1128-1156 params=0 ups=1 stack=6
+    strings: 'GetClientPlayer', 'nMoveState', 'MOVE_STATE', 'ON_SIT', 'ON_DEATH', 'bFightState', 'bBirdMove', 'bHoldHorse', 'bOnTowerFlag', 'Player_IsBuffExist', 'bSheathFlag', 'SetSheath', 'GetPlayerWeaponType', 'WEAPON_DETAIL', 'HEPTA_CHORD', 'rlcmd', 'force update sheath ', 'dwID', ' 0'
+    numbers: 10951.0, 1.0, 0.0
+    globals: GetClientPlayer, GetPlayerWeaponType, MOVE_STATE, Player_IsBuffExist, WEAPON_DETAIL, rlcmd
+  function <?> line 1158-1166 params=0 ups=0 stack=5
+    strings: 'GetClientPlayer', 'nMoveState', 'MOVE_STATE', 'ON_SIT', 'Stand', 'OnUseSkill'
+    numbers: 17.0, 10.0, 1.0
+    globals: GetClientPlayer, MOVE_STATE, OnUseSkill
+  function <?> line 1168-1177 params=1 ups=0 stack=6
+    strings: 'CameraStatus_Set', 'mode', 'local camera', 'scale', 'yaw', 'math', 'pi', 'GetClientPlayer', 'nFaceDirection', 'pitch', 'tick'
+    numbers: 1.0, 2.0, 255.0, 180.0, -0.2, 700.0
+    globals: CameraStatus_Set, GetClientPlayer, math
+  function <?> line 1180-1182 params=1 ups=1 stack=2
+  function <?> line 1184-1194 params=0 ups=1 stack=3
+    strings: 'GetClientPlayer', 'bHoldHorse', 'Camera_ToggleControl', 'CONTROL_WALK'
+    globals: CONTROL_WALK, Camera_ToggleControl, GetClientPlayer
+  function <?> line 1196-1198 params=2 ups=0 stack=5
+    strings: 'ActionBar_ButtonDown'
+    globals: ActionBar_ButtonDown
+  function <?> line 1200-1202 params=2 ups=0 stack=5
+    strings: 'ActionBar_ButtonUp'
+    globals: ActionBar_ButtonUp
+  function <?> line 1205-1210 params=1 ups=0 stack=3
+    strings: 'IsMobileKungfu', 'SelectMainActionBarPage'
+    globals: IsMobileKungfu, SelectMainActionBarPage
+  function <?> line 1212-1217 params=0 ups=0 stack=2
+    strings: 'IsMobileKungfu', 'SelectMainActionBarPage', 'GetMainActionBarPage'
+    numbers: 1.0
+    globals: GetMainActionBarPage, IsMobileKungfu, SelectMainActionBarPage
+  function <?> line 1219-1224 params=0 ups=0 stack=2
+    strings: 'IsMobileKungfu', 'SelectMainActionBarPage', 'GetMainActionBarPage'
+    numbers: 1.0
+    globals: GetMainActionBarPage, IsMobileKungfu, SelectMainActionBarPage
+  function <?> line 1226-1232 params=0 ups=0 stack=2
+    strings: 'IsActionBarLocked', 'LockActionBar'
+    globals: IsActionBarLocked, LockActionBar
+  function <?> line 1234-1236 params=1 ups=0 stack=3
+    strings: 'YaoZCultivateBar', 'SelectPlant'
+    globals: YaoZCultivateBar
+  function <?> line 1239-1241 params=1 ups=1 stack=2
+  function <?> line 1243-1252 params=0 ups=1 stack=3
+    strings: 'GetClientPlayer', 'IsInTreasureBattleFieldMap', 'IsInMobaBattleFieldMap', 'nMoveState', 'MOVE_STATE', 'ON_DEATH', 'SelectSelf'
+    numbers: 1.0
+    globals: GetClientPlayer, IsInMobaBattleFieldMap, IsInTreasureBattleFieldMap, MOVE_STATE, SelectSelf
+  function <?> line 1254-1966 params=1 ups=7 stack=8
+    strings: 'OPTION', 'IsModuleLoaded', 'StoryDisplay', 'IsPlaying', 'ExitPlay', 'UIMovie', 'IsUIMovieOpened', 'OnResopneEsc', 'Teaching', 'IsOpened', 'Close', 'ShareStation_Base', 'IsUploadOpened', 'ShareStation', 'OnFrameKeyDown', 'ScreenShotPanel', 'IsShoting', 'End', 'IrrigatePanel', 'frameSelf'
+    numbers: 0.0, 1.0
+    globals: ACC_TreasureFinal, ACC_TreasureHuntFinal, AchievementPanel, ActivityList, ArenaQueue, CURSOR, CampMaps, CastingPanel, CharacterPanel_IsCharacterOpen, CheckEndSprint, CloseAllAchievementTip, CloseAllBagPanel, CloseBattleFieldFinal, CloseCallFriendPannel, CloseCallGuildMemberPannel, CloseCharacterPanel, CloseCraftPanel, CloseCraftReadManagePanel, CloseEmotionManagePanel, CloseEmotionPanel, CloseExitPanel, CloseGMPanel, CloseGetNamePanel, CloseGetNumberPanel, CloseGetPricePanel, CloseGoldTeamLootList, CloseGuildMainPanel, CloseGuildRename, CloseItemBox, CloseLastMessageBox, CloseLinkTipPanel, CloseLootList, CloseManualDropListPanel, CloseMentorPanel, CloseMiddleMap, CloseMiddleMapSimple, CloseNewSkillPanel, CloseOptionAndOptionChildPanel, CloseOptionPanel, ClosePayPathPanel
+  function <?> line 1968-1974 params=1 ups=0 stack=3
+    strings: 'IsBagPanelOpened', 'CloseBagPanel', 'OpenBagPanel'
+    globals: CloseBagPanel, IsBagPanelOpened, OpenBagPanel
+  function <?> line 1976-1982 params=0 ups=0 stack=2
+    strings: 'IsAllBagPanelOpened', 'CloseAllBagPanel', 'OpenAllBagPanel'
+    globals: CloseAllBagPanel, IsAllBagPanelOpened, OpenAllBagPanel
+  function <?> line 1984-1990 params=0 ups=0 stack=2
+    strings: 'ToyBox', 'IsOpened', 'Close', 'Open'
+    globals: ToyBox
+  function <?> line 1992-1998 params=0 ups=0 stack=2
+    strings: 'MainStoryPanel', 'IsOpened', 'Close', 'Open'
+    globals: MainStoryPanel
+  function <?> line 2000-2006 params=0 ups=0 stack=3
+    strings: 'NewBattleFieldQueue', 'IsOpened', 'Close', 'Open'
+    numbers: 5097.0
+    globals: NewBattleFieldQueue
+  function <?> line 2008-2014 params=0 ups=0 stack=2
+    strings: 'GameGuidePanel', 'IsOpened', 'Close', 'Open'
+    globals: GameGuidePanel
+  function <?> line 2016-2027 params=0 ups=2 stack=5
+    strings: 'SM_IsEnable', 'ScreenShot', 'OutputMessage', 'MSG_ANNOUNCE_YELLOW', 'g_tStrings', 'SCREENSHOT', 'SCREENSHOT_MSG', '\n', 'MSG_SYS'
+    globals: OutputMessage, SM_IsEnable, ScreenShot, g_tStrings
+  function <?> line 2029-2032 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:NextView()\n'
+    globals: OutputMessage
+  function <?> line 2034-2037 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:PrevView()\n'
+    globals: OutputMessage
+  function <?> line 2040-2042 params=1 ups=1 stack=2
+  function <?> line 2044-2046 params=0 ups=1 stack=2
+  function <?> line 2049-2053 params=0 ups=1 stack=2
+    strings: 'Camera_Zoom'
+    numbers: 0.9
+    globals: Camera_Zoom
+  function <?> line 2055-2059 params=0 ups=1 stack=2
+    strings: 'Camera_Zoom'
+    numbers: 1.1
+    globals: Camera_Zoom
+  function <?> line 2061-2064 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewInStart()\n'
+    globals: OutputMessage
+  function <?> line 2066-2069 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewInStop()\n'
+    globals: OutputMessage
+  function <?> line 2071-2074 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewOutStart()\n'
+    globals: OutputMessage
+  function <?> line 2076-2079 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewOutStop()\n'
+    globals: OutputMessage
+  function <?> line 2081-2084 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewLeftStart()\n'
+    globals: OutputMessage
+  function <?> line 2086-2089 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewLeftStop()\n'
+    globals: OutputMessage
+  function <?> line 2091-2094 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewRightStart()\n'
+    globals: OutputMessage
+  function <?> line 2096-2099 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewRightStop()\n'
+    globals: OutputMessage
+  function <?> line 2101-2104 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewUpStart()\n'
+    globals: OutputMessage
+  function <?> line 2106-2109 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewUpStop()\n'
+    globals: OutputMessage
+  function <?> line 2111-2114 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewDownStart()\n'
+    globals: OutputMessage
+  function <?> line 2116-2119 params=0 ups=0 stack=3
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:MoveViewDownStop()\n'
+    globals: OutputMessage
+  function <?> line 2121-2124 params=1 ups=0 stack=4
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:SetView()\n'
+    globals: OutputMessage
+  function <?> line 2126-2129 params=1 ups=0 stack=4
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:SaveView()\n'
+    globals: OutputMessage
+  function <?> line 2131-2134 params=1 ups=0 stack=4
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:ResetView()\n'
+    globals: OutputMessage
+  function <?> line 2136-2139 params=1 ups=0 stack=4
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_RED', 'TODO:FlipCameraYaw()\n'
+    globals: OutputMessage
+  function <?> line 2141-2143 params=1 ups=0 stack=3
+    strings: 'Ctrl_CameraOrSelectOrMoveStart'
+    globals: Ctrl_CameraOrSelectOrMoveStart
+  function <?> line 2145-2147 params=1 ups=0 stack=3
+    strings: 'Ctrl_CameraOrSelectOrMoveStop'
+    globals: Ctrl_CameraOrSelectOrMoveStop
+  function <?> line 2149-2161 params=0 ups=0 stack=6
+    strings: 'GetClientPlayer', 'nFaceDirection', 'math', 'pi', 'Camera_SetForceReset'
+    numbers: 64.0, 0.0, 256.0, 2.0, -12.0, 1.0
+    globals: Camera_SetForceReset, GetClientPlayer, math
+  function <?> line 2166-2211 params=0 ups=1 stack=8
+    strings: 'SM_IsEnable', 'OutputMessage', 'MSG_SYS', 'g_tStrings', 'STR_MOVIE_SM_ERROR', 'MSG_ANNOUNCE_RED', 'IsMovieRecord', 'FormatString', 'STR_FINISH_MOVIE_RECORD', 'GetFilePath', 'ScreenShotDir', 'MSG_ANNOUNCE_YELLOW', 'IsModuleLoaded', 'Selfie', 'IsOpened', 'PersonalCard_Base', 'FinishMovieRecord', 'GetFreeDiskSpace', 'math', 'floor'
+    numbers: 1048576.0, 100.0, 2.0
+    globals: ApplyCheckPlayAIAni, FinishMovieRecord, FormatString, GetFilePath, GetFreeDiskSpace, IsModuleLoaded, IsMovieRecord, MessageBox, OutputMessage, PersonalCard_Base, SM_IsEnable, Selfie, Station, g_tStrings, math
+    function <?> line 2205-2205 params=0 ups=0 stack=2
+      strings: 'StartMovieRecord'
+      globals: StartMovieRecord
+    function <?> line 2206-2206 params=0 ups=0 stack=2
+  function <?> line 2213-2216 params=0 ups=0 stack=9
+    strings: 'Hotkey', 'GetCaptureKey', 'HotkeyPanel_SetHotkey'
+    globals: Hotkey, HotkeyPanel_SetHotkey
+  function <?> line 2218-2220 params=0 ups=0 stack=2
+    strings: 'HotkeyPanel_CancelSetHotkey'
+    globals: HotkeyPanel_CancelSetHotkey
+  function <?> line 2222-2269 params=0 ups=1 stack=6
+    strings: 'IsUILockedMode', 'IsModuleLoaded', 'CoinShop', 'CoinShop_Main', 'IsOpened', 'CoinShop_IsModuleFrameShow', 'CoinShop_ModuleFrameShow', 'HLBView_Main', 'ToggleShow', 'Station', 'IsVisible', 'Hide', 'FilterMask', 'bHideUI', 'PVPShowPanel', 'PVPShowFinal', 'DesertStormOB', 'VideoSettingPanel', 'IsVideoSettingPanelOpened', 'BattleFieldAndArenaBase'
+    globals: ACC_TreasureFinal, CoinShop_IsModuleFrameShow, CoinShop_Main, CoinShop_ModuleFrameShow, DesertStormOB, FilterMask, HLBView_Main, IsArenaFinalOpen, IsBattleFieldOpen, IsModuleLoaded, IsUILockedMode, IsVideoSettingPanelOpened, PVPShowFinal, PVPShowPanel, Station, VideoSettingPanel, ipairs_r
+  function <?> line 2272-2286 params=0 ups=0 stack=2
+    strings: 'GooseDuckKillLogic', 'IsInGooseDuckMap', 'IsMiddleMapSimpleOpened', 'CloseMiddleMapSimple', 'IsWorldMapOpend', 'CloseWorldMap', 'IsMiddleMapOpened', 'CloseMiddleMap', 'OpenMiddleMapSimple', 'OpenMiddleMap'
+    globals: CloseMiddleMap, CloseMiddleMapSimple, CloseWorldMap, GooseDuckKillLogic, IsMiddleMapOpened, IsMiddleMapSimpleOpened, IsWorldMapOpend, OpenMiddleMap, OpenMiddleMapSimple
+  function <?> line 2288-2297 params=0 ups=0 stack=2
+    strings: 'IsWorldMapOpend', 'CloseWorldMap', 'IsMiddleMapOpened', 'CloseMiddleMap', 'OpenWorldMap'
+    globals: CloseMiddleMap, CloseWorldMap, IsMiddleMapOpened, IsWorldMapOpend, OpenWorldMap
+  function <?> line 2299-2301 params=0 ups=0 stack=2
+    strings: 'OpenEditBox'
+    globals: OpenEditBox
+  function <?> line 2303-2309 params=0 ups=0 stack=2
+    strings: 'IsMobileKungfu', 'VkActionBar', 'CastCommonSkill'
+    globals: CastCommonSkill, IsMobileKungfu, VkActionBar
+  function <?> line 2311-2316 params=0 ups=0 stack=3
+    strings: 'EditBox', 'GetLastReply', 'EditBox_TalkToSomebody'
+    globals: EditBox, EditBox_TalkToSomebody
+  function <?> line 2318-2335 params=0 ups=0 stack=7
+    strings: 'GetClientPlayer', 'GetTarget', 'TARGET', 'PLAYER', 'IsInPVPField', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'STR_FOLLOW_PLAYER_FIELD_ERROR', 'StartFollow', 'NPC', 'GetNpc', 'dwEmployer'
+    numbers: 0.0
+    globals: GetClientPlayer, GetNpc, IsInPVPField, OutputMessage, StartFollow, TARGET, g_tStrings
+  function <?> line 2337-2348 params=1 ups=0 stack=4
+    strings: 'RemoteCallToServer', 'On_MountKungfu_1'
+    globals: RemoteCallToServer
+  function <?> line 2350-2369 params=1 ups=0 stack=7
+    strings: 'SKILL_CAST_FORWARD', 'SKILL_CAST_BACK', 'SKILL_CAST_LEFT', 'SKILL_CAST_RIGHT', 'GetClientPlayer', 'GetSkillLevel', 'OnUseSkill'
+    numbers: 0.0, 9003.0, 9004.0, 9005.0, 9006.0, 10.0, 1.0
+    globals: GetClientPlayer, OnUseSkill
+  function <?> line 2372-2385 params=1 ups=0 stack=4
+    strings: '_g_HideNPc', 'rlcmd', 'show npc', 'FireUIEvent', 'TOGGLE_NPC', 'hide npc'
+    globals: =_g_HideNPc, FireUIEvent, _g_HideNPc, rlcmd
+  function <?> line 2393-2413 params=2 ups=0 stack=5
+    strings: '_g_HidePlayerType', 'rlcmd', 'show player', 'RemoteCallToServer', 'OnSetOptimizationNetworkFlag', 'FireUIEvent', 'TOGGLE_PLAYER', 'hide player'
+    numbers: 0.0, 1.0
+    globals: =_g_HidePlayerType, FireUIEvent, RemoteCallToServer, _g_HidePlayerType, rlcmd
+  function <?> line 2429-2446 params=1 ups=1 stack=4
+    strings: '_g_HidePartyPlayerType', 'rlcmd', 'show or hide party player 1', 'show relation player ', 'PARTY', 'FireUIEvent', 'TOGGLE_PARTY', 'show or hide party player 0', 'hide relation player '
+    globals: =_g_HidePartyPlayerType, FireUIEvent, _g_HidePartyPlayerType, rlcmd
+  function <?> line 2448-2463 params=2 ups=4 stack=6
+    strings: '_g_HidePlayerType', '_g_HidePartyPlayerType', 'TogglePlayer', 'TogglePartyPlayer'
+    globals: TogglePartyPlayer, TogglePlayer, _g_HidePartyPlayerType, _g_HidePlayerType
+  function <?> line 2465-2467 params=0 ups=0 stack=2
+    strings: 'SetLockPlayerModel'
+    globals: SetLockPlayerModel
+  function <?> line 2478-2521 params=0 ups=1 stack=4
+    strings: 'SelfieStudioBase', 'IsInMap', 'IsModuleLoaded', 'PersonalCard_Base', 'IsOpened', 'GetClientPlayer', '_g_HidePlayerType', 'IsInParty', '_g_HidePartyPlayerType', 'TogglePartyPlayer', 'OutputMessage', 'MSG_SYS', 'g_tStrings', 'STR_MSG_SHOW_PARTY_PLAYER', 'MSG_ANNOUNCE_YELLOW', 'TogglePlayer', 'STR_MSG_HIDEP_ALL_LAYER', 'STR_MSG_SHOW_ALL_LAYER'
+    globals: GetClientPlayer, IsModuleLoaded, OutputMessage, PersonalCard_Base, SelfieStudioBase, TogglePartyPlayer, TogglePlayer, _g_HidePartyPlayerType, _g_HidePlayerType, g_tStrings
+  function <?> line 2524-2539 params=1 ups=0 stack=4
+    strings: '_g_HideSelf', 'rlcmd', 'show self', 'FireUIEvent', 'TOGGLE_SELF', 'hide self'
+    globals: =_g_HideSelf, FireUIEvent, _g_HideSelf, rlcmd
+  function <?> line 2567-2569 params=1 ups=0 stack=3
+    strings: 'OnSuitChangeHotkey'
+    globals: OnSuitChangeHotkey
+  function <?> line 2571-2589 params=0 ups=1 stack=5
+    strings: 'GetClientPlayer', 'bIgnoreGravity', 'dwJumpType', 'SCHOOL_TYPE', 'GAI_BANG', 'OnUseSkill', 'Sprint'
+    numbers: 6754.0, 10.0, 1.0
+    globals: GetClientPlayer, OnUseSkill, SCHOOL_TYPE
+  function <?> line 2591-2596 params=1 ups=1 stack=3
+    strings: 'EndSprint'
+    globals: EndSprint
+  function <?> line 2598-2606 params=1 ups=1 stack=10
+    strings: 'GetClientPlayer', 'bIgnoreGravity', 'SprintGetSummitID', 'SetSprintTopPoint', 'Sprint'
+    globals: GetClientPlayer, SprintGetSummitID
+  function <?> line 2608-2614 params=1 ups=1 stack=9
+    strings: 'ipairs_r', 'szKey', 'table', 'remove'
+    globals: ipairs_r, table
+  function <?> line 2616-2626 params=4 ups=1 stack=7
+    strings: 'UnregisterAutoClose', 'table', 'insert', 'szKey', 'fnCondition', 'fnAction', 'bIsParamNeeded'
+    globals: UnregisterAutoClose, table
+  function <?> line 2628-2634 params=1 ups=1 stack=9
+    strings: 'ipairs_r', 'szKey', 'table', 'remove'
+    globals: ipairs_r, table
+  function <?> line 2636-2645 params=3 ups=1 stack=6
+    strings: 'UnregisterAutoClose_Topmost', 'table', 'insert', 'szKey', 'fnCondition', 'fnAction'
+    globals: UnregisterAutoClose_Topmost, table
+  function <?> line 2647-2653 params=1 ups=1 stack=8
+    strings: 'ipairs_r', 'szKey'
+    globals: ipairs_r
+  function <?> line 2655-2663 params=4 ups=1 stack=8
+    strings: 'UnRegisterIndePentShowPanel', 'table', 'insert', 'szKey', 'fnCondition', 'fnEscAction', 'szGroup'
+    globals: UnRegisterIndePentShowPanel, table
+  function <?> line 2665-2670 params=1 ups=2 stack=6
+    strings: 'table', 'remove'
+    globals: table
+  function <?> line 2672-2679 params=1 ups=1 stack=7
+    strings: 'ipairs_r', 'szGroup', 'fnCondition'
+    globals: ipairs_r
+  function <?> line 2681-2690 params=1 ups=1 stack=7
+    strings: 'ipairs_r', 'szKey', 'fnCondition', 'fnEscAction'
+    globals: ipairs_r
+  function <?> line 2692-2698 params=2 ups=1 stack=9
+    strings: 'ipairs_r', 'szKey', 'szGroup'
+    globals: ipairs_r
+  function <?> line 2700-2708 params=4 ups=1 stack=7
+    strings: 'UnRegisterConflictPanel', 'table', 'insert', 'szKey', 'fnCondition', 'fnEscAction', 'szGroup'
+    globals: UnRegisterConflictPanel, table
+  function <?> line 2710-2715 params=2 ups=2 stack=7
+    strings: 'table', 'remove'
+    globals: table
+  function <?> line 2717-2735 params=1 ups=1 stack=10
+    strings: 'ipairs_r', 'szKey', 'table', 'insert', 'szGroup', 'IsInTable', 'fnCondition', 'fnEscAction'
+    globals: IsInTable, ipairs_r, table
+  function <?> line 2737-2741 params=1 ups=1 stack=2
+    strings: 'CHANGE_CARRIER_STATE', 'arg0'
+    globals: arg0
+  function <?> line 2743-2766 params=1 ups=0 stack=7
+    strings: 'SPECIAL_KEY_MSG', 'arg0', 'arg1', 'IsShiftKey', 'IsPlayerInSprint', 'ResponseDisplacementHotkey', 'SHIFT', 'IsAltKey', 'ALT'
+    globals: IsAltKey, IsPlayerInSprint, IsShiftKey, ResponseDisplacementHotkey, arg0, arg1
+  function <?> line 2768-2776 params=0 ups=0 stack=4
+    strings: 'GVoiceBase_IsInKeySay', 'Player_IsInBanTime', 'OutputMessage', 'MSG_SYS', 'g_tStrings', 'GVOICE_ROOM_MIC_ERROR_CODE', 'VOICE_ROOM_NOTIFY_CODE', 'BAN_JOIN_VOICE', 'GVoiceBase_OpenMic'
+    globals: GVoiceBase_IsInKeySay, GVoiceBase_OpenMic, OutputMessage, Player_IsInBanTime, VOICE_ROOM_NOTIFY_CODE, g_tStrings
+  function <?> line 2778-2782 params=0 ups=0 stack=2
+    strings: 'GVoiceBase_IsInKeySay', 'GVoiceBase_CloseMic'
+    globals: GVoiceBase_CloseMic, GVoiceBase_IsInKeySay
+  function <?> line 2784-2786 params=0 ups=0 stack=4
+    strings: 'FireUIEvent', 'SPECIAL_KEY_MSG'
+    numbers: 93.0
+    globals: FireUIEvent
+  function <?> line 2788-2792 params=1 ups=0 stack=2
+    strings: 'StartSprint'
+    globals: StartSprint
+  function <?> line 2794-2801 params=0 ups=0 stack=2
+    strings: 'GetClientPlayer', 'bSprintFlag'
+    globals: GetClientPlayer
+  function <?> line 2803-2810 params=0 ups=0 stack=2
+    strings: 'GetClientPlayer', 'bHangFlag'
+    globals: GetClientPlayer
+  function <?> line 2812-2824 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'bSprintFlag', 'nMoveState', 'MOVE_STATE', 'ON_RUN', 'IsFollowController', 'dwJumpType', 'SCHOOL_TYPE', 'GAI_BANG'
+    globals: GetClientPlayer, MOVE_STATE, SCHOOL_TYPE
+  function <?> line 2827-2846 params=7 ups=1 stack=18
+    strings: 'Hotkey', 'IsUsed', 'Hotkey_GetBindingFun', 'Hotkey_ModifyBindingFun', 'table', 'insert', 'Occupancy', 'AddBinding', '', 'Set'
+    numbers: 1.0
+    globals: Hotkey, Hotkey_GetBindingFun, Hotkey_ModifyBindingFun, table
+  function <?> line 2848-2874 params=0 ups=1 stack=9
+    strings: 'type', 'string', 'Hotkey', 'GetBindingCount', 'GetCommand', 'PopbackBinding', 'Hotkey_ModifyBindingFun', 'table', 'remove'
+    numbers: 0.0, 1.0, 5.0, 2.0, 3.0, 4.0, 6.0
+    globals: Hotkey, Hotkey_ModifyBindingFun, table, type
+  function <?> line 2877-2902 params=0 ups=1 stack=8
+    strings: 'arg0', 'OccupancyHotkey', 'GetKeyValue', 'MouseWheelDown', '', 'MouseWheelUp', 'RestoreOccupancyHotkey'
+    globals: GetKeyValue, OccupancyHotkey, RestoreOccupancyHotkey, arg0
+    function <?> line 2886-2888 params=0 ups=0 stack=2
+      strings: 'rlcmd', 'set paint scale -0.03'
+      globals: rlcmd
+    function <?> line 2892-2894 params=0 ups=0 stack=2
+      strings: 'rlcmd', 'set paint scale 0.03'
+      globals: rlcmd
+  function <?> line 2904-2904 params=1 ups=0 stack=3
+    strings: 'EnterOrLeaveCarrier'
+    globals: EnterOrLeaveCarrier
+  function <?> line 2905-2905 params=1 ups=0 stack=3
+    strings: 'ResponseSepcialKey'
+    globals: ResponseSepcialKey
+  function <?> line 2910-2933 params=0 ups=1 stack=5
+    strings: 'arg0', 'arg1', 'UI_GetClientPlayerID', 'IsModuleLoaded', 'Selfie', 'IsOpened', 'PersonalCard_Base', 'StartMovieRecord'
+    numbers: 0.0
+    globals: IsModuleLoaded, PersonalCard_Base, Selfie, UI_GetClientPlayerID, arg0, arg1
+  function <?> line 2940-2946 params=1 ups=1 stack=4
+    strings: 'Hotkey', 'GetCurContext', 'SetCurContext', 'table', 'insert'
+    globals: Hotkey, table
+  function <?> line 2948-2970 params=1 ups=1 stack=11
+    strings: '', 'Hotkey', 'GetCurContext', 'table', 'remove', 'SetCurContext'
+    numbers: 0.0, 1.0, -1.0
+    globals: Hotkey, table
+  function <?> line 2972-2975 params=0 ups=1 stack=2
+    strings: 'Hotkey', 'SetCurContext', ''
+    globals: Hotkey
