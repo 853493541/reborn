@@ -168,7 +168,9 @@ namespace MapUiApp.Engine
             HideDynamicLayers(_middleBuild);
             HideSections(_middleBuild,
                 "Wnd_CommandMap",
-                "Handle_Bg_Common",
+                // The window chrome is re-issued in the INI: the *_0 set (Handle_Bg_Common,
+                // right-anchored 974px panel) is the live one, Handle_Bg is the legacy copy.
+                "Handle_Bg",
                 "Image_TrafficBg",
                 "Handle_TipsTitle",
                 "Text_Title", "Text_Title1",
@@ -204,7 +206,7 @@ namespace MapUiApp.Engine
                 Canvas.SetTop(alphaBlock, 772);
             }
             BuildSearchBox();
-            SetAlphaSlider(0.5);
+            SetAlphaSlider(1.0);
             Wire(_middleBuild, "Btn_Close", () => MiddleOpen = false);
         }
 

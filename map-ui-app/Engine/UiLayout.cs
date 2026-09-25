@@ -206,7 +206,7 @@ namespace MapUiApp.Engine
             return section.GetInt("Frame", 0);
         }
 
-        private static void Attach(Canvas parent, IniSection parentSection, FrameworkElement element, IniSection section, HashSet<string> buttonSlots)
+        private static void Attach(Canvas parent, IniSection parentSection, FrameworkElement element, IniSection section, HashSet<string> buttonSlots, double rootWidth, double rootHeight)
         {
             double left = section.GetInt("Left");
             double top = section.GetInt("Top");
@@ -217,6 +217,9 @@ namespace MapUiApp.Engine
 
             switch (section.GetInt("PosType"))
             {
+                case 1: // bottom-aligned in the window (keeps its own Left)
+                    if (rootHeight > 0) top = rootHeight - elementHeight;
+                    break;
                 case 6: // centered on the given point (player markers)
                     left -= elementWidth / 2;
                     top -= elementHeight / 2;
@@ -224,8 +227,12 @@ namespace MapUiApp.Engine
                 case 7: // right-aligned in the parent
                     if (left == 0 && parentWidth > 0) left = parentWidth - elementWidth;
                     break;
-                case 8: // bottom-aligned in the parent
-                    if (top == 0 && parentHeight > 0) top = parentHeight - elementHeight;
+                case 8: // right-aligned in the window (keeps its own Top)
+                    if (rootWidth > 0) left = rootWidth - elementWidth;
+                    break;
+                case 11: // bottom-right aligned in the window
+                    if (rootWidth > 0) left = rootWidth - elementWidth;
+                    if (rootHeight > 0) top = rootHeight - elementHeight;
                     break;
                 case 12: // centered horizontally, bottom-aligned
                     if (parentWidth > 0) left = (parentWidth - elementWidth) / 2;
