@@ -1,0 +1,4 @@
+MapID	CameraYaw	CameraPitch	CameraRoll
+0	0.5022619	-0.17	0
+1	0.5022619	-0.17	0
+653	2.11075783	-0.17	0

@@ -1,0 +1,842 @@
+﻿########## dump StateMachineManager::LoadSceneStateMachineInfoToList
+===== StateMachineManager::LoadSceneStateMachineInfoToList =====
+  IL_0000: newobj mref ?::.ctor
+  IL_0005: stsfld field m_StaticMachineList
+  IL_000A: call meth get_Instance
+  IL_000F: callvirt meth get_PlotData
+  IL_0014: callvirt meth get_MapPath
+  IL_0019: call meth GetDirectory
+  IL_001E: stloc.0
+  IL_001F: call meth get_WorkingDir
+  IL_0024: ldstr str "\"
+  IL_0029: ldloc.0
+  IL_002A: ldstr str "\entities\sceneinfo\"
+  IL_002F: call mref String::Concat
+  IL_0034: ldstr str "*.json"
+  IL_0039: call mref Directory::GetFiles
+  IL_003E: stloc.1
+  IL_003F: ldc.i4.0
+  IL_0040: stloc.2
+  IL_0041: br -> IL_02AD
+  IL_0046: ldloc.1
+  IL_0047: ldloc.2
+  IL_0048: ldelem.ref
+  IL_0049: ldstr str "GB2312"
+  IL_004E: call mref Encoding::GetEncoding
+  IL_0053: newobj mref StreamReader::.ctor
+  IL_0058: stloc.3
+  IL_0059: ldloc.3
+  IL_005A: callvirt mref TextReader::ReadToEnd
+  IL_005F: call mref JObject::Parse
+  IL_0064: ldstr str "worldObjects"
+  IL_0069: callvirt mref JObject::get_Item
+  IL_006E: isinst type JObject
+  IL_0073: stloc.s 4
+  IL_0075: ldloc.s 4
+  IL_0077: brfalse -> IL_029D
+  IL_007C: ldloc.s 4
+  IL_007E: callvirt mref JObject::GetEnumerator
+  IL_0083: stloc.s 5
+  IL_0085: br -> IL_0283
+  IL_008A: ldloc.s 5
+  IL_008C: callvirt mref ?::get_Current
+  IL_0091: stloc.s 6
+  IL_0093: ldloca.s 6
+  IL_0095: call mref ?::get_Value
+  IL_009A: isinst type JObject
+  IL_009F: stloc.s 7
+  IL_00A1: ldloc.s 7
+  IL_00A3: brfalse -> IL_0283
+  IL_00A8: ldloc.s 7
+  IL_00AA: ldstr str "comRender"
+  IL_00AF: callvirt mref JObject::get_Item
+  IL_00B4: dup
+  IL_00B5: brtrue.s -> IL_00BB
+  IL_00B7: pop
+  IL_00B8: ldnull
+  IL_00B9: br.s -> IL_00C5
+  IL_00BB: ldstr str "actorModel"
+  IL_00C0: callvirt mref JToken::get_Item
+  IL_00C5: call mref JToken::op_Explicit
+  IL_00CA: stloc.s 8
+  IL_00CC: ldloc.s 8
+  IL_00CE: brfalse -> IL_0283
+  IL_00D3: ldloc.s 8
+  IL_00D5: ldstr str ".state"
+  IL_00DA: callvirt mref String::EndsWith
+  IL_00DF: brfalse -> IL_0283
+  IL_00E4: ldloc.s 8
+  IL_00E6: ldc.i4.0
+  IL_00E7: ldloc.s 8
+  IL_00E9: callvirt mref String::get_Length
+  IL_00EE: ldstr str ".state"
+  IL_00F3: call mref String::get_Length
+  IL_00F8: sub
+  IL_00F9: callvirt mref String::Substring
+  IL_00FE: ldstr str ".ini"
+  IL_0103: call mref String::Concat
+  IL_0108: stloc.s 8
+  IL_010A: ldloc.s 7
+  IL_010C: ldstr str "comBasic"
+  IL_0111: callvirt mref JObject::get_Item
+  IL_0116: dup
+  IL_0117: brtrue.s -> IL_011D
+  IL_0119: pop
+  IL_011A: ldnull
+  IL_011B: br.s -> IL_0127
+  IL_011D: ldstr str "actorLocalMatrix"
+  IL_0122: callvirt mref JToken::get_Item
+  IL_0127: newobj mref ?::.ctor
+  IL_012C: stloc.s 9
+  IL_012E: callvirt mref ?::GetEnumerator
+  IL_0133: stloc.s 16
+  IL_0135: br.s -> IL_014F
+  IL_0137: ldloc.s 16
+  IL_0139: callvirt mref ?::get_Current
+  IL_013E: call mref JToken::op_Explicit
+  IL_0143: conv.r4
+  IL_0144: stloc.s 17
+  IL_0146: ldloc.s 9
+  IL_0148: ldloc.s 17
+  IL_014A: callvirt mref ?::Add
+  IL_014F: ldloc.s 16
+  IL_0151: callvirt mref IEnumerator::MoveNext
+  IL_0156: brtrue.s -> IL_0137
+  IL_0158: leave.s -> IL_0166
+  IL_015A: ldloc.s 16
+  IL_015C: brfalse.s -> IL_0165
+  IL_015E: ldloc.s 16
+  IL_0160: callvirt mref IDisposable::Dispose
+  IL_0165: endfinally
+  IL_0166: ldloc.s 9
+  IL_0168: ldc.i4.0
+  IL_0169: callvirt mref ?::get_Item
+  IL_016E: ldloc.s 9
+  IL_0170: ldc.i4.1
+  IL_0171: callvirt mref ?::get_Item
+  IL_0176: ldloc.s 9
+  IL_0178: ldc.i4.2
+  IL_0179: callvirt mref ?::get_Item
+  IL_017E: ldloc.s 9
+  IL_0180: ldc.i4.3
+  IL_0181: callvirt mref ?::get_Item
+  IL_0186: ldloc.s 9
+  IL_0188: ldc.i4.4
+  IL_0189: callvirt mref ?::get_Item
+  IL_018E: ldloc.s 9
+  IL_0190: ldc.i4.5
+  IL_0191: callvirt mref ?::get_Item
+  IL_0196: ldloc.s 9
+  IL_0198: ldc.i4.6
+  IL_0199: callvirt mref ?::get_Item
+  IL_019E: ldloc.s 9
+  IL_01A0: ldc.i4.7
+  IL_01A1: callvirt mref ?::get_Item
+  IL_01A6: ldloc.s 9
+  IL_01A8: ldc.i4.8
+  IL_01A9: callvirt mref ?::get_Item
+  IL_01AE: ldloc.s 9
+  IL_01B0: ldc.i4.s 9
+  IL_01B2: callvirt mref ?::get_Item
+  IL_01B7: ldloc.s 9
+  IL_01B9: ldc.i4.s 10
+  IL_01BB: callvirt mref ?::get_Item
+  IL_01C0: ldloc.s 9
+  IL_01C2: ldc.i4.s 11
+  IL_01C4: callvirt mref ?::get_Item
+  IL_01C9: ldloc.s 9
+  IL_01CB: ldc.i4.s 12
+  IL_01CD: callvirt mref ?::get_Item
+  IL_01D2: ldloc.s 9
+  IL_01D4: ldc.i4.s 13
+  IL_01D6: callvirt mref ?::get_Item
+  IL_01DB: ldloc.s 9
+  IL_01DD: ldc.i4.s 14
+  IL_01DF: callvirt mref ?::get_Item
+  IL_01E4: ldloc.s 9
+  IL_01E6: ldc.i4.s 15
+  IL_01E8: callvirt mref ?::get_Item
+  IL_01ED: newobj mref Matrix4x4::.ctor
+  IL_01F2: ldloca.s 10
+  IL_01F4: ldloca.s 11
+  IL_01F6: ldloca.s 12
+  IL_01F8: call mref Matrix4x4::Decompose
+  IL_01FD: pop
+  IL_01FE: ldloc.s 7
+  IL_0200: ldstr str "comBasic"
+  IL_0205: callvirt mref JObject::get_Item
+  IL_020A: dup
+  IL_020B: brtrue.s -> IL_0211
+  IL_020D: pop
+  IL_020E: ldnull
+  IL_020F: br.s -> IL_021B
+  IL_0211: ldstr str "uuid"
+  IL_0216: callvirt mref JToken::get_Item
+  IL_021B: call mref JToken::op_Explicit
+  IL_0220: stloc.s 13
+  IL_0222: ldloc.s 7
+  IL_0224: ldstr str "_tableName"
+  IL_0229: callvirt mref JObject::get_Item
+  IL_022E: call mref JToken::op_Explicit
+  IL_0233: stloc.s 14
+  IL_0235: ldloca.s 18
+  IL_0239: conv.ovf.u1
+  IL_023A: ldarg.1
+  IL_023B: nop
+  IL_023C: ldarg.0
+  IL_023D: ldloca.s 18
+  IL_023F: ldloc.s 13
+  IL_0241: stfld field strUUID
+  IL_0246: ldloca.s 18
+  IL_0248: ldloc.s 14
+  IL_024A: stfld field strActorName
+  IL_024F: ldloca.s 18
+  IL_0251: ldloc.s 8
+  IL_0253: stfld field strStatePath
+  IL_0258: ldloca.s 18
+  IL_025A: ldloc.s 12
+  IL_025C: stfld field trans
+  IL_0261: ldloca.s 18
+  IL_0263: ldloc.s 11
+  IL_0265: stfld field quat
+  IL_026A: ldloca.s 18
+  IL_026C: ldloc.s 10
+  IL_026E: stfld field scale
+  IL_0273: ldloc.s 18
+  IL_0275: stloc.s 15
+  IL_0277: ldsfld field m_StaticMachineList
+  IL_027C: ldloc.s 15
+  IL_027E: callvirt mref ?::Add
+  IL_0283: ldloc.s 5
+  IL_0285: callvirt mref IEnumerator::MoveNext
+  IL_028A: brtrue -> IL_008A
+  IL_028F: leave.s -> IL_02A9
+  IL_0291: ldloc.s 5
+  IL_0293: brfalse.s -> IL_029C
+  IL_0295: ldloc.s 5
+  IL_0297: callvirt mref IDisposable::Dispose
+  IL_029C: endfinally
+  IL_029D: leave.s -> IL_02A9
+  IL_029F: ldloc.3
+  IL_02A0: brfalse.s -> IL_02A8
+  IL_02A2: ldloc.3
+  IL_02A3: callvirt mref IDisposable::Dispose
+  IL_02A8: endfinally
+  IL_02A9: ldloc.2
+  IL_02AA: ldc.i4.1
+  IL_02AB: add
+  IL_02AC: stloc.2
+  IL_02AD: ldloc.2
+  IL_02AE: ldloc.1
+  IL_02AF: ldlen
+  IL_02B0: conv.i4
+  IL_02B1: blt -> IL_0046
+  IL_02B6: ret
+########## dump StateMachineManager::AddRegionStateMachineToScene
+===== StateMachineManager::AddRegionStateMachineToScene =====
+  IL_0000: call meth LoadSceneStateMachineInfoToList
+  IL_0005: ldsfld field m_StaticMachineList
+  IL_000A: callvirt mref ?::GetEnumerator
+  IL_000F: stloc.0
+  IL_0010: br -> IL_0289
+  IL_0015: ldloca.s 0
+  IL_0017: call mref ?::get_Current
+  IL_001C: stloc.1
+  IL_001D: ldloca.s 2
+  IL_001F: ldloc.1
+  IL_0020: ldfld field trans
+  IL_0025: ldfld mref Vector3::X
+  IL_002A: ldloc.1
+  IL_002B: ldfld field trans
+  IL_0030: ldfld mref Vector3::Z
+  IL_0035: call mref PointF::.ctor
+  IL_003A: ldarga.s 0
+  IL_003C: ldloc.2
+  IL_003D: call mref RectangleF::Contains
+  IL_0042: brfalse -> IL_0289
+  IL_0047: newobj mref ?::.ctor
+  IL_004C: stloc.3
+  IL_004D: ldloca.s 4
+  IL_0051: conv.u4
+  IL_0052: break
+  IL_0053: nop
+  IL_0054: break
+  IL_0055: ldloc.1
+  IL_0056: ldfld field quat
+  IL_005B: ldloca.s 4
+  IL_005D: ldflda mref Vector3::X
+  IL_0062: ldloca.s 4
+  IL_0064: ldflda mref Vector3::Y
+  IL_0069: ldloca.s 4
+  IL_006B: ldflda mref Vector3::Z
+  IL_0070: call meth QuaternionToEuler
+  IL_0075: newobj meth .ctor
+  IL_007A: stloc.s 5
+  IL_007C: ldloc.s 5
+  IL_007E: ldloc.1
+  IL_007F: ldfld field trans
+  IL_0084: ldfld mref Vector3::X
+  IL_0089: callvirt meth set_TranX
+  IL_008E: ldloc.s 5
+  IL_0090: ldloc.1
+  IL_0091: ldfld field trans
+  IL_0096: ldfld mref Vector3::Y
+  IL_009B: callvirt meth set_TranY
+  IL_00A0: ldloc.s 5
+  IL_00A2: ldloc.1
+  IL_00A3: ldfld field trans
+  IL_00A8: ldfld mref Vector3::Z
+  IL_00AD: callvirt meth set_TranZ
+  IL_00B2: ldloc.s 5
+  IL_00B4: ldloc.s 4
+  IL_00B6: ldfld mref Vector3::X
+  IL_00BB: callvirt meth set_RotationX
+  IL_00C0: ldloc.s 5
+  IL_00C2: ldloc.s 4
+  IL_00C4: ldfld mref Vector3::Y
+  IL_00C9: callvirt meth set_RotationY
+  IL_00CE: ldloc.s 5
+  IL_00D0: ldloc.s 4
+  IL_00D2: ldfld mref Vector3::Z
+  IL_00D7: callvirt meth set_RotationZ
+  IL_00DC: ldloc.s 5
+  IL_00DE: ldloc.1
+  IL_00DF: ldfld field scale
+  IL_00E4: ldfld mref Vector3::X
+  IL_00E9: callvirt meth set_ScaleX
+  IL_00EE: ldloc.s 5
+  IL_00F0: ldloc.1
+  IL_00F1: ldfld field scale
+  IL_00F6: ldfld mref Vector3::Y
+  IL_00FB: callvirt meth set_ScaleY
+  IL_0100: ldloc.s 5
+  IL_0102: ldloc.1
+  IL_0103: ldfld field scale
+  IL_0108: ldfld mref Vector3::Z
+  IL_010D: callvirt meth set_ScaleZ
+  IL_0112: ldloc.3
+  IL_0113: ldc.i4.4
+  IL_0114: newarr typedef KValue
+  IL_0119: dup
+  IL_011A: ldc.i4.0
+  IL_011B: ldc.i4 453
+  IL_0120: ldstr str "data\editor\MovieModel\controler.Mesh"
+  IL_0125: newobj meth .ctor
+  IL_012A: stelem typedef KValue
+  IL_012F: dup
+  IL_0130: ldc.i4.1
+  IL_0131: ldc.i4 452
+  IL_0136: ldloc.1
+  IL_0137: ldfld field strActorName
+  IL_013C: newobj meth .ctor
+  IL_0141: stelem typedef KValue
+  IL_0146: dup
+  IL_0147: ldc.i4.2
+  IL_0148: ldc.i4.s 125
+  IL_014A: ldloc.s 5
+  IL_014C: newobj meth .ctor
+  IL_0151: stelem typedef KValue
+  IL_0156: dup
+  IL_0157: ldc.i4.3
+  IL_0158: ldc.i4.s 126
+  IL_015A: ldloc.s 5
+  IL_015C: callvirt meth Clone
+  IL_0161: newobj meth .ctor
+  IL_0166: stelem typedef KValue
+  IL_016B: callvirt mref ?::AddRange
+  IL_0170: newobj meth .ctor
+  IL_0175: stloc.s 6
+  IL_0177: ldloc.s 6
+  IL_0179: ldc.i4.m1
+  IL_017A: callvirt meth set_X
+  IL_017F: ldloc.s 6
+  IL_0181: ldc.i4.m1
+  IL_0182: callvirt meth set_Y
+  IL_0187: ldloc.3
+  IL_0188: ldc.i4 474
+  IL_018D: ldloc.s 6
+  IL_018F: newobj meth .ctor
+  IL_0194: callvirt mref ?::Add
+  IL_0199: ldc.i4.m1
+  IL_019A: ldc.i4.m1
+  IL_019B: ldc.i4.0
+  IL_019C: ldstr str "data\editor\MovieModel\controler.Mesh"
+  IL_01A1: ldloc.3
+  IL_01A2: newobj mref ?::.ctor
+  IL_01A7: newobj meth .ctor
+  IL_01AC: stloc.s 7
+  IL_01AE: call meth get_Instance
+  IL_01B3: ldloc.s 7
+  IL_01B5: ldnull
+  IL_01B6: callvirt meth AddNewElement
+  IL_01BB: stloc.s 8
+  IL_01BD: ldloc.s 8
+  IL_01BF: brfalse.s -> IL_01EA
+  IL_01C1: ldloc.s 8
+  IL_01C3: callvirt meth get_ID
+  IL_01C8: stsfld field s_uElementID
+  IL_01CD: call meth get_Instance
+  IL_01D2: ldnull
+  IL_01D3: ldloc.s 8
+  IL_01D5: callvirt meth get_MovieObject
+  IL_01DA: ldc.i4.s 127
+  IL_01DC: ldloc.s 5
+  IL_01DE: callvirt meth Clone
+  IL_01E3: ldc.i4.1
+  IL_01E4: ldc.i4.1
+  IL_01E5: callvirt meth ChangeObjectValue
+  IL_01EA: newobj mref ?::.ctor
+  IL_01EF: stloc.s 9
+  IL_01F1: ldloc.s 9
+  IL_01F3: ldc.i4.1
+  IL_01F4: ldarg.2
+  IL_01F5: ldarg.1
+  IL_01F6: sub
+  IL_01F7: conv.r4
+  IL_01F8: box type Single
+  IL_01FD: newobj meth .ctor
+  IL_0202: callvirt mref ?::Add
+  IL_0207: ldloc.s 9
+  IL_0209: ldc.i4.0
+  IL_020A: ldarg.1
+  IL_020B: box type Int32
+  IL_0210: newobj meth .ctor
+  IL_0215: callvirt mref ?::Add
+  IL_021A: ldloc.s 9
+  IL_021C: ldc.i4 452
+  IL_0221: ldstr str "StateMachine_\u72B6\u6001\u673A_000"
+  IL_0226: newobj meth .ctor
+  IL_022B: callvirt mref ?::Add
+  IL_0230: ldloc.s 9
+  IL_0232: ldc.i4 1250
+  IL_0237: ldloc.1
+  IL_0238: ldfld field strStatePath
+  IL_023D: newobj meth .ctor
+  IL_0242: callvirt mref ?::Add
+  IL_0247: ldloc.1
+  IL_0248: ldfld field strStatePath
+  IL_024D: call meth GetDefaultStateID
+  IL_0252: stloc.s 10
+  IL_0254: ldloc.s 9
+  IL_0256: ldc.i4 1251
+  IL_025B: ldloc.s 10
+  IL_025D: box type Int32
+  IL_0262: newobj meth .ctor
+  IL_0267: callvirt mref ?::Add
+  IL_026C: call meth get_Instance
+  IL_0271: ldloc.s 8
+  IL_0273: callvirt meth get_ID
+  IL_0278: ldc.i4.s 98
+  IL_027A: ldloc.s 9
+  IL_027C: ldsfld mref Guid::Empty
+  IL_0281: ldnull
+  IL_0282: ldc.i4.1
+  IL_0283: callvirt meth AddAction
+  IL_0288: pop
+  IL_0289: ldloca.s 0
+  IL_028B: call mref ?::MoveNext
+  IL_0290: brtrue -> IL_0015
+  IL_0295: leave.s -> IL_02A5
+  IL_0297: ldloca.s 0
+  IL_029B: mkrefany tok6F1B0001
+  IL_02A0: ldc.r4 tokDC0A0000
+  IL_02A5: ret
+########## dump LogicalInfoPresenter::OnTick
+===== LogicalInfoPresenter::OnTick =====
+  IL_0000: ldarg.0
+  IL_0001: ldfld field m_bAsyncAddNpcToScene
+  IL_0006: brfalse -> IL_00DF
+  IL_000B: ldarg.0
+  IL_000C: ldfld field m_view
+  IL_0011: ldc.i4.1
+  IL_0012: callvirt meth EnableProgressBar
+  IL_0017: ldarg.0
+  IL_0018: ldfld field m_view
+  IL_001D: ldc.i4.0
+  IL_001E: callvirt meth EnableAddNpc
+  IL_0023: ldarg.0
+  IL_0024: ldfld field m_view
+  IL_0029: ldstr str "\u6DFB\u52A0npc\u5230\u573A\u666F"
+  IL_002E: callvirt meth UpdateStatusText
+  IL_0033: ldarg.0
+  IL_0034: ldfld field m_nCurNPCAddNum
+  IL_0039: stloc.0
+  IL_003A: br.s -> IL_007A
+  IL_003C: ldarg.0
+  IL_003D: ldarg.0
+  IL_003E: ldfld field m_data
+  IL_0043: callvirt meth get_NpcDataList
+  IL_0048: ldloc.0
+  IL_0049: callvirt mref ?::get_Item
+  IL_004E: call meth AddNpcToScene
+  IL_0053: ldloc.0
+  IL_0054: conv.r4
+  IL_0055: ldarg.0
+  IL_0056: ldfld field m_data
+  IL_005B: callvirt meth get_NpcNum
+  IL_0060: conv.r4
+  IL_0061: div
+  IL_0062: stloc.1
+  IL_0063: ldarg.0
+  IL_0064: ldfld field m_view
+  IL_0069: ldloc.1
+  IL_006A: ldc.r4 tok42C80000
+  IL_006F: mul
+  IL_0070: conv.i4
+  IL_0071: callvirt meth UpdateProgressBar
+  IL_0076: ldloc.0
+  IL_0077: ldc.i4.1
+  IL_0078: add
+  IL_0079: stloc.0
+  IL_007A: ldloc.0
+  IL_007B: ldarg.0
+  IL_007C: ldfld field m_nCurNPCAddNum
+  IL_0081: sub
+  IL_0082: ldc.i4.s 10
+  IL_0084: bge.s -> IL_0094
+  IL_0086: ldloc.0
+  IL_0087: ldarg.0
+  IL_0088: ldfld field m_data
+  IL_008D: callvirt meth get_NpcNum
+  IL_0092: blt.s -> IL_003C
+  IL_0094: ldarg.0
+  IL_0095: ldloc.0
+  IL_0096: stfld field m_nCurNPCAddNum
+  IL_009B: ldloc.0
+  IL_009C: ldarg.0
+  IL_009D: ldfld field m_data
+  IL_00A2: callvirt meth get_NpcNum
+  IL_00A7: blt.s -> IL_00DF
+  IL_00A9: ldarg.0
+  IL_00AA: ldc.i4.0
+  IL_00AB: stfld field m_bAsyncAddNpcToScene
+  IL_00B0: ldarg.0
+  IL_00B1: ldfld field m_view
+  IL_00B6: ldc.i4.0
+  IL_00B7: callvirt meth EnableProgressBar
+  IL_00BC: ldarg.0
+  IL_00BD: ldfld field m_view
+  IL_00C2: ldc.i4.1
+  IL_00C3: callvirt meth EnableAddNpc
+  IL_00C8: ldarg.0
+  IL_00C9: ldfld field m_view
+  IL_00CE: ldstr str "\u6DFB\u52A0npc\u5B8C\u6BD5"
+  IL_00D3: callvirt meth UpdateStatusText
+  IL_00D8: ldarg.0
+  IL_00D9: ldc.i4.0
+  IL_00DA: stfld field m_nCurNPCAddNum
+  IL_00DF: ret
+########## dump LogicalInfoPresenter::AddRegionNpcToScene
+===== LogicalInfoPresenter::AddRegionNpcToScene =====
+  IL_0000: ldarg.0
+  IL_0001: call meth get_NPCSaveDir
+  IL_0006: call mref Directory::Exists
+  IL_000B: brtrue.s -> IL_0019
+  IL_000D: ldarg.0
+  IL_000E: call meth get_NPCSaveDir
+  IL_0013: call mref Directory::CreateDirectory
+  IL_0018: pop
+  IL_0019: ldarg.0
+  IL_001A: call meth get_NPCSaveDir
+  IL_001F: stloc.0
+  IL_0020: ldc.i4.0
+  IL_0021: stloc.1
+  IL_0022: br -> IL_0397
+  IL_0027: ldarg.0
+  IL_0028: ldfld field m_data
+  IL_002D: callvirt meth get_NpcDataList
+  IL_0032: ldloc.1
+  IL_0033: callvirt mref ?::get_Item
+  IL_0038: stloc.2
+  IL_0039: ldloca.s 3
+  IL_003B: ldloc.2
+  IL_003C: ldfld field pos
+  IL_0041: ldfld field x
+  IL_0046: ldloc.2
+  IL_0047: ldfld field pos
+  IL_004C: ldfld field z
+  IL_0051: call mref PointF::.ctor
+  IL_0056: ldarga.s 1
+  IL_0058: ldloc.3
+  IL_0059: call mref RectangleF::Contains
+  IL_005E: brfalse -> IL_0393
+  IL_0063: ldloc.2
+  IL_0064: ldfld field strName
+  IL_0069: ldstr str ""
+  IL_006E: call mref String::op_Equality
+  IL_0073: brtrue -> IL_0393
+  IL_0078: ldstr str "NPC_{0}_{1:D5}.actor"
+  IL_007D: ldloc.2
+  IL_007E: ldfld field strName
+  IL_0083: ldloc.2
+  IL_0084: ldfld field nRepresentID
+  IL_0089: box type Int32
+  IL_008E: call mref String::Format
+  IL_0093: stloc.s 4
+  IL_0095: ldloc.0
+  IL_0096: ldstr str "\"
+  IL_009B: ldloc.s 4
+  IL_009D: call mref String::Concat
+  IL_00A2: stloc.s 5
+  IL_00A4: ldloc.s 5
+  IL_00A6: call mref File::Exists
+  IL_00AB: brfalse.s -> IL_00B5
+  IL_00AD: ldarg.0
+  IL_00AE: call meth get_OverwriteNPC
+  IL_00B3: brfalse.s -> IL_00D2
+  IL_00B5: ldsfld field MainFrm
+  IL_00BA: callvirt meth get_sceneform
+  IL_00BF: callvirt meth get_Scene
+  IL_00C4: ldloc.2
+  IL_00C5: ldfld field nRepresentID
+  IL_00CA: ldloc.s 5
+  IL_00CC: callvirt mref KGSceneCLR::SaveRepresentModel
+  IL_00D1: pop
+  IL_00D2: ldloc.s 5
+  IL_00D4: call mref File::Exists
+  IL_00D9: brfalse -> IL_0393
+  IL_00DE: newobj mref ?::.ctor
+  IL_00E3: stloc.s 6
+  IL_00E5: ldloc.2
+  IL_00E6: ldfld field quat
+  IL_00EB: ldfld field x
+  IL_00F0: ldloc.2
+  IL_00F1: ldfld field quat
+  IL_00F6: ldfld field y
+  IL_00FB: ldloc.2
+  IL_00FC: ldfld field quat
+  IL_0101: ldfld field z
+  IL_0106: ldloc.2
+  IL_0107: ldfld field quat
+  IL_010C: ldfld field w
+  IL_0111: newobj mref Quaternion::.ctor
+  IL_0116: ldloca.s 7
+  IL_011A: conv.u4
+  IL_011B: break
+  IL_011C: nop
+  IL_011D: break
+  IL_011E: ldloca.s 7
+  IL_0120: ldflda mref Vector3::X
+  IL_0125: ldloca.s 7
+  IL_0127: ldflda mref Vector3::Y
+  IL_012C: ldloca.s 7
+  IL_012E: ldflda mref Vector3::Z
+  IL_0133: call meth QuaternionToEuler
+  IL_0138: newobj meth .ctor
+  IL_013D: stloc.s 8
+  IL_013F: ldloc.s 8
+  IL_0141: ldloc.2
+  IL_0142: ldfld field pos
+  IL_0147: ldfld field x
+  IL_014C: callvirt meth set_TranX
+  IL_0151: ldloc.s 8
+  IL_0153: ldloc.2
+  IL_0154: ldfld field pos
+  IL_0159: ldfld field y
+  IL_015E: callvirt meth set_TranY
+  IL_0163: ldloc.s 8
+  IL_0165: ldloc.2
+  IL_0166: ldfld field pos
+  IL_016B: ldfld field z
+  IL_0170: callvirt meth set_TranZ
+  IL_0175: ldloc.s 8
+  IL_0177: ldloc.s 7
+  IL_0179: ldfld mref Vector3::X
+  IL_017E: callvirt meth set_RotationX
+  IL_0183: ldloc.s 8
+  IL_0185: ldloc.s 7
+  IL_0187: ldfld mref Vector3::Y
+  IL_018C: callvirt meth set_RotationY
+  IL_0191: ldloc.s 8
+  IL_0193: ldloc.s 7
+  IL_0195: ldfld mref Vector3::Z
+  IL_019A: callvirt meth set_RotationZ
+  IL_019F: ldloc.s 8
+  IL_01A1: ldc.r4 tok3F800000
+  IL_01A6: callvirt meth set_ScaleX
+  IL_01AB: ldloc.s 8
+  IL_01AD: ldc.r4 tok3F800000
+  IL_01B2: callvirt meth set_ScaleY
+  IL_01B7: ldloc.s 8
+  IL_01B9: ldc.r4 tok3F800000
+  IL_01BE: callvirt meth set_ScaleZ
+  IL_01C3: ldloc.s 5
+  IL_01C5: stloc.s 9
+  IL_01C7: ldstr str "NPC_{0}_{1:D5}"
+  IL_01CC: ldloc.2
+  IL_01CD: ldfld field strName
+  IL_01D2: ldloc.1
+  IL_01D3: box type Int32
+  IL_01D8: call mref String::Format
+  IL_01DD: stloc.s 10
+  IL_01DF: ldloc.s 6
+  IL_01E1: ldc.i4.4
+  IL_01E2: newarr typedef KValue
+  IL_01E7: dup
+  IL_01E8: ldc.i4.0
+  IL_01E9: ldc.i4 453
+  IL_01EE: ldloc.s 9
+  IL_01F0: newobj meth .ctor
+  IL_01F5: stelem typedef KValue
+  IL_01FA: dup
+  IL_01FB: ldc.i4.1
+  IL_01FC: ldc.i4 452
+  IL_0201: ldloc.s 10
+  IL_0203: newobj meth .ctor
+  IL_0208: stelem typedef KValue
+  IL_020D: dup
+  IL_020E: ldc.i4.2
+  IL_020F: ldc.i4.s 125
+  IL_0211: ldloc.s 8
+  IL_0213: newobj meth .ctor
+  IL_0218: stelem typedef KValue
+  IL_021D: dup
+  IL_021E: ldc.i4.3
+  IL_021F: ldc.i4.s 126
+  IL_0221: ldloc.s 8
+  IL_0223: callvirt meth Clone
+  IL_0228: newobj meth .ctor
+  IL_022D: stelem typedef KValue
+  IL_0232: callvirt mref ?::AddRange
+  IL_0237: newobj meth .ctor
+  IL_023C: stloc.s 11
+  IL_023E: ldloc.s 11
+  IL_0240: ldc.i4.m1
+  IL_0241: callvirt meth set_X
+  IL_0246: ldloc.s 11
+  IL_0248: ldc.i4.m1
+  IL_0249: callvirt meth set_Y
+  IL_024E: ldloc.s 6
+  IL_0250: ldc.i4 474
+  IL_0255: ldloc.s 11
+  IL_0257: newobj meth .ctor
+  IL_025C: callvirt mref ?::Add
+  IL_0261: ldc.i4.m1
+  IL_0262: ldc.i4.m1
+  IL_0263: ldc.i4.0
+  IL_0264: ldloc.s 9
+  IL_0266: ldloc.s 6
+  IL_0268: newobj mref ?::.ctor
+  IL_026D: newobj meth .ctor
+  IL_0272: stloc.s 12
+  IL_0274: call meth get_Instance
+  IL_0279: ldloc.s 12
+  IL_027B: ldnull
+  IL_027C: callvirt meth AddNewElement
+  IL_0281: stloc.s 13
+  IL_0283: ldloc.s 13
+  IL_0285: brfalse.s -> IL_02B0
+  IL_0287: ldloc.s 13
+  IL_0289: callvirt meth get_ID
+  IL_028E: stsfld field s_uElementID
+  IL_0293: call meth get_Instance
+  IL_0298: ldarg.0
+  IL_0299: ldloc.s 13
+  IL_029B: callvirt meth get_MovieObject
+  IL_02A0: ldc.i4.s 127
+  IL_02A2: ldloc.s 8
+  IL_02A4: callvirt meth Clone
+  IL_02A9: ldc.i4.1
+  IL_02AA: ldc.i4.1
+  IL_02AB: callvirt meth ChangeObjectValue
+  IL_02B0: newobj mref ?::.ctor
+  IL_02B5: stloc.s 14
+  IL_02B7: ldsfld field MainFrm
+  IL_02BC: callvirt meth get_sceneform
+  IL_02C1: callvirt meth get_Scene
+  IL_02C6: ldloc.2
+  IL_02C7: ldfld field nRepresentID
+  IL_02CC: callvirt mref KGSceneCLR::GetRepresentAniPath
+  IL_02D1: stloc.s 15
+  IL_02D3: ldstr str "Animation_{0}_001"
+  IL_02D8: ldloc.s 15
+  IL_02DA: call mref Path::GetFileNameWithoutExtension
+  IL_02DF: call mref String::Format
+  IL_02E4: stloc.s 16
+  IL_02E6: ldloc.s 15
+  IL_02E8: brfalse -> IL_0393
+  IL_02ED: ldloc.s 16
+  IL_02EF: brfalse -> IL_0393
+  IL_02F4: ldloc.s 14
+  IL_02F6: ldc.i4.s 10
+  IL_02F8: ldloc.s 15
+  IL_02FA: newobj meth .ctor
+  IL_02FF: callvirt mref ?::Add
+  IL_0304: ldloc.s 14
+  IL_0306: ldc.i4.1
+  IL_0307: ldarg.0
+  IL_0308: call meth get_AniEndFrame
+  IL_030D: ldarg.0
+  IL_030E: call meth get_AniStartFrame
+  IL_0313: sub
+  IL_0314: conv.r4
+  IL_0315: box type Single
+  IL_031A: newobj meth .ctor
+  IL_031F: callvirt mref ?::Add
+  IL_0324: ldloc.s 14
+  IL_0326: ldc.i4.s 17
+  IL_0328: ldc.i4.0
+  IL_0329: box type Boolean
+  IL_032E: newobj meth .ctor
+  IL_0333: callvirt mref ?::Add
+  IL_0338: ldloc.s 14
+  IL_033A: ldc.i4.s 12
+  IL_033C: ldc.i4.2
+  IL_033D: box type Int32
+  IL_0342: newobj meth .ctor
+  IL_0347: callvirt mref ?::Add
+  IL_034C: ldloc.s 14
+  IL_034E: ldc.i4.0
+  IL_034F: ldarg.0
+  IL_0350: call meth get_AniStartFrame
+  IL_0355: box type Int32
+  IL_035A: newobj meth .ctor
+  IL_035F: callvirt mref ?::Add
+  IL_0364: ldloc.s 14
+  IL_0366: ldc.i4 452
+  IL_036B: ldloc.s 16
+  IL_036D: newobj meth .ctor
+  IL_0372: callvirt mref ?::Add
+  IL_0377: call meth get_Instance
+  IL_037C: ldloc.s 13
+  IL_037E: callvirt meth get_ID
+  IL_0383: ldc.i4.1
+  IL_0384: ldloc.s 14
+  IL_0386: ldsfld mref Guid::Empty
+  IL_038B: ldarg.0
+  IL_038C: ldc.i4.1
+  IL_038D: callvirt meth AddAction
+  IL_0392: pop
+  IL_0393: ldloc.1
+  IL_0394: ldc.i4.1
+  IL_0395: add
+  IL_0396: stloc.1
+  IL_0397: ldloc.1
+  IL_0398: ldarg.0
+  IL_0399: ldfld field m_data
+  IL_039E: callvirt meth get_NpcNum
+  IL_03A3: blt -> IL_0027
+  IL_03A8: ret
+########## scan StateMachine
+CALL StateMachineManager::LoadAllStateMachineToScene -> AddStateMachineModel
+CALL StateMachineManager::ClearAllStateMachine -> ClearStateMachineModel
+CALL <InitResoucePack>d__51::SetStateMachine -> SetStateMachine
+CALL <button_MotionCaptureGenerate_Click>d__133::SetStateMachine -> SetStateMachine
+CALL <PostMotionCaptureRequestAsync>d__160::SetStateMachine -> SetStateMachine
+CALL <RunServer>d__27::SetStateMachine -> SetStateMachine
+CALL <PreviewImage>d__30::SetStateMachine -> SetStateMachine
+CALL <ProcessRecAiTransfer>d__39::SetStateMachine -> SetStateMachine
+CALL <ButtonItem_StartExport_Click>d__25::SetStateMachine -> SetStateMachine
+CALL <RunTask>d__16::SetStateMachine -> SetStateMachine
+CALL <ChangeAndResaveKmsc>d__23::SetStateMachine -> SetStateMachine
+CALL <KMSCResourceListExportForm_FormClosing>d__44::SetStateMachine -> SetStateMachine
+CALL <InitialGenerateAni>d__34::SetStateMachine -> SetStateMachine
+CALL <ReGenerateAni>d__35::SetStateMachine -> SetStateMachine
+CALL <<buttonX_ExportResourceList_Click>b__0>d::SetStateMachine -> SetStateMachine
+CALL <<buttonX_ExportActorSourceList_Click>b__0>d::SetStateMachine -> SetStateMachine
+CALL <<button_HandelWwise_Click>b__0>d::SetStateMachine -> SetStateMachine
+########## scan MainPlayer
+CALL SceneForm::buttonItem_SetMainPlayer_Click -> SyncMainPlayerPosAttachObj
+CALL SceneForm::buttonItem_SetMainPlayerType_Click -> SetMainPlayerType
+CALL SceneForm::checkBoxItem_DisplayMainPlayerPos_CheckedChanged -> SetMainPlayerPosVisible
+CALL BodyCustomForm::AttachActor -> SetMainPlayerType

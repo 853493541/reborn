@@ -61,3 +61,8 @@ engine_host_spike/map_selector.exe
 proof/minimap/ui/
 proof/minimap/addons/
 proof/minimap/extracted/
+
+# Raw extracted loading-screen images (research scratch, kept local;
+# re-extract with tools/netcode/extract_hpkg_member.py)
+proof/netcode/mode_ui/loading/**/*.png
+proof/netcode/mode_ui/loading/**/*.dds
