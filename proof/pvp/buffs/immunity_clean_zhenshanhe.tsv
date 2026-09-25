@@ -1,0 +1,3 @@
+377	镇山河	lvl=1	atNegativeShield=1 atGlobalBlock=1 atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atImmunity=5
+6000	大明宫_剑圣_镇山河	lvl=1	atNegativeShield= atGlobalBlock=1
+13144	镇山河免控	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atImmunity=5 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024

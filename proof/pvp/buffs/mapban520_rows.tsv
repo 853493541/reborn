@@ -1,0 +1,15 @@
+# MapBanMask=520 samples
+   1175	生活技能_采集BUFF_回血_甘草	Useage=13	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=:
+   1176	生活技能_采集BUFF_回蓝_大黄	Useage=13	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=:
+   1177	生活技能_采集BUFF_吸收伤害	Useage=13	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atGlobalDamageAbsorb:344
+   1178	生活技能_采集BUFF_提升内功AP	Useage=13	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atMagicAttackPowerBase:12
+   1179	生活技能_采集BUFF_提升外功AP	Useage=13	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atPhysicsAttackPowerBase:6
+   1287	心领神会	Useage=25	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atManaReplenish:15
+   1412	屹立不倒回复BUFF	Useage=43	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atCallSubBuff:33086
+   1413	战减少伤害BUFF	Useage=43	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atGlobalResistPercent:102
+   1413	战减少伤害BUFF	Useage=43	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atGlobalResistPercent:102
+   1413	战减少伤害BUFF	Useage=43	FT=	MS=4294967294	MS2=63	MapBan=520	MapInv=	A1=atGlobalResistPercent:102
+   1413	战减少伤害BUFF	Useage=43	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atGlobalResistPercent:102
+   1413	战减少伤害BUFF	Useage=43	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atGlobalResistPercent:512
+   1413	战减少伤害BUFF	Useage=43	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atGlobalResistPercent:204
+   1594	如意饺	Useage=51	FT=	MS=3758030846	MS2=63	MapBan=520	MapInv=	A1=atStrengthBase:5

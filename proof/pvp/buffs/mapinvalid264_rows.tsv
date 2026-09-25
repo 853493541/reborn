@@ -1,0 +1,13 @@
+# MapInvalidMask=264 samples
+    772	回神	Useage=13	FT=	MS=1942090114	MS2=60	MapBan=776	MapInv=264	A1=atNegativeShield:1
+   9153	水枪换动作版本1	Useage=110	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=atExecuteScript:skill/装备/挂件相关/水枪的魔法属性脚本.lua
+   9154	水枪被击中换动作	Useage=110	FT=	MS=18	MS2=60	MapBan=	MapInv=264	A1=:
+   9163	水枪水囊1	Useage=110	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=:
+   9164	水枪水囊2	Useage=110	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=:
+   9165	水枪1	Useage=110	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=:
+   9166	水枪2	Useage=110	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=:
+   9819	水龙滚玩家换动作BUFF	Useage=132	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=atExecuteScript:skill/Quest/黑戈壁/水龙滚判断BUFF.lua
+   9820	持水龙滚表现BUFF	Useage=132	FT=	MS=254	MS2=60	MapBan=	MapInv=264	A1=:
+  10100	炼狱水煮鱼	Useage=109	FT=	MS=4294967295	MS2=63	MapBan=	MapInv=264	A1=atSurplusValueBase:100
+  10100	百炼水煮鱼	Useage=109	FT=	MS=4294967295	MS2=63	MapBan=	MapInv=264	A1=atSurplusValueBase:600
+  10200	水煮鱼副	Useage=109	FT=	MS=4294967295	MS2=63	MapBan=	MapInv=264	A1=atMaxLifePercentAdd:205

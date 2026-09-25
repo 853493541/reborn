@@ -1,0 +1,13 @@
+# GlobalExclude=0 samples
+    103	打坐	Useage=11	FT=	MS=256	MS2=56	MapBan=	MapInv=	A1=atLifeReplenishPercent:33
+    104	浮身	Useage=0	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atJumpSpeedBase:50
+    104	浮身	Useage=0	FT=Normal	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atJumpSpeedBase:50
+    106	加速	Useage=13	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atMoveSpeedPercent:1024
+    107	力量提升	Useage=0	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atStrengthBase:10
+    108	使NPC无法发现自己	Useage=0	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atIgnoreOtherAlarmRange:
+    109	调整NPC警戒范围	Useage=0	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atSelfAlarmRangeRevise:500
+    110	修改NPC警戒范围	Useage=0	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=atOtherAlarmRangeRevise:500
+    113	碧水滔天	Useage=2	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=:
+    113	碧水滔天	Useage=2	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=:
+    115	等待时间	Useage=17	FT=	MS=4294967294	MS2=63	MapBan=	MapInv=	A1=:
+    121	升天	Useage=16	FT=	MS=3758030846	MS2=63	MapBan=	MapInv=	A1=atGravityPercent:-1000
