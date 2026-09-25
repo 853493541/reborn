@@ -221,7 +221,10 @@ The rule above is now implemented in the client:
   `MinDistance = 5` (a practical floor: the native bound is `0.001`).
   While a hit remains the target keeps following the wall (`hit - 18`); a full
   release happens only when the ray is clear to the desired point - releasing
-  on the 100-u threshold early popped the camera through the wall.
+  on the 100-u threshold early popped the camera through the wall. The spring
+  is `v' = +k*e - c*v` (`e = target - distance`); the inverted sign ran away
+  (distance crept in until it reset to desired - the reported "keeps zooming
+  in, then resets" bug).
 - **Camera inside the character:** the native path has no character
   min-distance - with `hit < 18` the camera lands at `anchor + u*(hit-18)`,
   i.e. at/behind the head, and the engine relies on the near clip plane and

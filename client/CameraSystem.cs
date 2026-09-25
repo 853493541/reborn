@@ -593,8 +593,12 @@ public sealed class CameraObstruction
         }
         else if (target > Distance)
         {
+            // damped spring toward the (receding) target: v' = +k*e - c*v.
+            // The opposite sign was a runaway: the distance crept in until it
+            // went negative and the uninitialised guard reset it to desired
+            // (the reported "keeps zooming in, then resets").
             double e = target - Distance;
-            _vel += (-Flex * e - Damp * _vel) * dt;
+            _vel += (Flex * e - Damp * _vel) * dt;
             Distance += _vel * dt;
             if (Distance > target) Distance = target;
             if (Math.Abs(target - Distance) < 0.5 && Math.Abs(_vel) < 1.0)

@@ -164,19 +164,33 @@ internal static class CameraSmoke
         double od2 = obstB.Update(1.0 / 60.0, 600.0, 570.0);
         Check("shallow hit ignored (50 u hysteresis)", !obstB.Obstructed && Math.Abs(od2 - 600.0) < 1e-6,
               string.Format("dist={0:F1}", od2));
-        for (int i = 0; i < 300; i++) od = obstA.Update(1.0 / 60.0, 600.0, -1.0);
+        double minReturn = obstA.Distance;
+        for (int i = 0; i < 900; i++)
+        {
+            double before = obstA.Distance;
+            od = obstA.Update(1.0 / 60.0, 600.0, -1.0);
+            if (obstA.Distance < before - 0.5) minReturn = Math.Min(minReturn, obstA.Distance);
+        }
         Check("camera springs back when clear", !obstA.Obstructed && Math.Abs(od - 600.0) < 1.0,
               string.Format("dist={0:F2}", od));
+        Check("spring return is monotonic (no runaway zoom-in)",
+              minReturn >= 482.0 - 0.5, string.Format("min={0:F1}", minReturn));
         var obstC = new CameraObstruction();
         double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
         Check("obstruction respects min distance", Math.Abs(od3 - 5.0) < 1e-6,
               string.Format("dist={0:F1}", od3));
         var obstD = new CameraObstruction();
-        obstD.Update(1.0 / 60.0, 600.0, 500.0);
-        for (int i = 0; i < 240; i++) obstD.Update(1.0 / 60.0, 600.0, 450.0);
-        Check("camera follows the wall out without releasing",
-              obstD.Obstructed && Math.Abs(obstD.Distance - 432.0) < 1.0,
-              string.Format("dist={0:F1} obst={1}", obstD.Distance, obstD.Obstructed));
+        obstD.Update(1.0 / 60.0, 600.0, 50.0);            // pulled to 32 u
+        double minOut = obstD.Distance;
+        for (int i = 0; i < 900; i++)
+        {
+            double before = obstD.Distance;
+            obstD.Update(1.0 / 60.0, 600.0, 500.0);       // wall recedes
+            if (obstD.Distance < before - 0.5) minOut = Math.Min(minOut, obstD.Distance);
+        }
+        Check("camera springs out along a receding wall (stays in front)",
+              obstD.Obstructed && Math.Abs(obstD.Distance - 482.0) < 1.0 && minOut >= 32.0 - 0.5,
+              string.Format("dist={0:F1} min={1:F1}", obstD.Distance, minOut));
 
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
         Environment.Exit(_fail == 0 ? 0 : 1);
