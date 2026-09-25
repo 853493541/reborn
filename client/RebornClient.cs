@@ -370,6 +370,8 @@ internal static class RebornClient
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
+        bool wSprint = false;    // double-tap W and hold -> sprint (8.5 尺/s)
+        long lastWPress = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -489,7 +491,16 @@ internal static class RebornClient
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) unlockMouse();
-            if (e.KeyCode == Keys.W) pW = true;
+            if (e.KeyCode == Keys.W)
+            {
+                if (!pW)   // new press (auto-repeat keeps pW true)
+                {
+                    long t = Environment.TickCount;
+                    if (t - lastWPress < 350) wSprint = true;
+                    lastWPress = t;
+                }
+                pW = true;
+            }
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
             else if (e.KeyCode == Keys.D) pD = true;
@@ -523,7 +534,7 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) pW = false;
+            if (e.KeyCode == Keys.W) { pW = false; wSprint = false; }
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -545,6 +556,7 @@ internal static class RebornClient
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f, pJumpV = 1350f;
         float pSpeed = 96f, pRun = 320f;
+        float pSprint = 8.5f * 64f;   // double-tap W hold: 8.5 尺/s = 544 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
