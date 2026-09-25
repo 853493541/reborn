@@ -672,7 +672,7 @@ internal static class RebornClient
             // read-back is noisy, and a position read-back is circular (our
             // placement overwrites the position).
             bool dragging = orbitQueue.Count > 0 || (lastOrbitMs != 0 && now - lastOrbitMs < 150);
-            if (dragging ? (now - lastYawSync >= 200) : orbitApplied)
+            if (dragging || orbitApplied)
             {
                 lastYawSync = now;
                 orbitApplied = false;
@@ -691,11 +691,12 @@ internal static class RebornClient
                 pitchAimErrPx = (int)Math.Round((measuredPitch - aimPitchOf(camSys.Pitch)) / 0.00121);
             }
 
-            // spread the yaw correction over the next frames (~0.2 s, gentler
-            // right after the drag so the camera does not visibly adjust)
+            // Low-pass the (per-frame re-measured) yaw correction: fast enough
+            // to keep the character centred at any drag speed, smooth enough
+            // to filter the nudge noise.
             if (yawCorr != 0.0)
             {
-                double ystep = yawCorr * Math.Min(1.0, dt / 0.2);
+                double ystep = yawCorr * (1.0 - Math.Exp(-Math.Min(0.05, dt) / 0.01));
                 camSys.Yaw += ystep;
                 yawCorr -= ystep;
                 if (Math.Abs(yawCorr) < 1e-3) yawCorr = 0.0;
@@ -743,7 +744,8 @@ internal static class RebornClient
                 // right after the drag is the visible "adjustment")
                 if (pitchAimErrPx != 0)
                 {
-                    int apply = (int)Math.Round(pitchAimErrPx * Math.Min(1.0, dt / 0.15));
+                    int apply = (int)Math.Round(pitchAimErrPx *
+                        (1.0 - Math.Exp(-Math.Min(0.05, dt) / 0.01)));
                     if (apply == 0) apply = pitchAimErrPx > 0 ? 1 : -1;
                     oyFF += apply;
                     pitchAimErrPx -= apply;

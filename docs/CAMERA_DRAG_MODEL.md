@@ -104,21 +104,26 @@ camera position (it orbits) instead of rotating in place.
 - `client/CameraSystem.cs CameraSystem.DesiredOffset` matches step 2 - done.
 - Left/right drag = yaw orbit (`Yaw -= ox * 0.0018` while dragging).
 - Up/down drag = pitch (`Pitch += oy * 0.00121`) - same direction as JX3.
-- Host limitation: the engine owns the look direction, so `RebornClient.cs`
-  runs a closed loop:
-  - **aim sync** every 100 ms while dragging (and once after it stops):
-    `measureView()` reads the engine view back; yaw is adopted
-    (`camSys.Yaw = atan2(-viewZ, -viewX)`), the pitch error
-    `measured - aimPitchOf(P)` is stored as pixels.
-  - a single `ROTATE_CAMERA` per frame sends `ox` plus a pitch part
-    `oy + oyFF + pitchAimErrPx`, where `oyFF` makes the engine aim move by
-    `aim(P_new) - aim(P_old)` instead of by the raw drag. Two
-    `ExecAction(30,...)` starts in one frame would drop the first delta, so
-    everything is merged into one action.
+- Speed independence: in JX3 centring cannot lag the drag - one state
+  `(yaw, pitch)` is written by the mouse and **both** the position and the
+  look-at are derived from it in the same frame (`SetCharacterCameraPosition`
+  computes `anchor + offset` and sets the look-at to the anchor). There is no
+  separate aim tracker. Our host splits the two (the engine owns the look), so
+  `RebornClient.cs` closes the loop **every frame while dragging**:
+  - `measureView()` reads the engine view back; the yaw difference is stored
+    in `yawCorr` and applied through a 10 ms low-pass
+    (`1 - exp(-dt/0.01)`, i.e. lag ~= omega * 0.01 s) - fast enough that the
+    character stays centred at any drag speed, smooth enough to filter the
+    nudge noise.
+  - the pitch error `measured - aimPitchOf(P)` is drained with the same
+    low-pass into `oyFF`; `oyFF` also compensates the raw-orbit aim difference
+    of the drag itself.
+  - a single `ROTATE_CAMERA` per frame sends `ox` plus the pitch part (two
+    `ExecAction(30,...)` starts in one frame would drop the first delta).
   - `alignAim()` seeds the aim at startup and on F11/Home/End.
-- Probe (alternating pitch + yaw sweep, `RC_CAM_DEBUG=1`): yaw
-  `max |wrap(yaw-vyaw)| = 0.005 rad`; pitch aim `max 0.013 rad, avg 0.001`;
-  radius matches `|anchor+offset|` exactly. Captures show the character
+- Probe (fast yaw sweep ~1.5 rad/s, `RC_CAM_DEBUG=1`):
+  `max |wrap(yaw-vyaw)| = 0.002 rad` (mean 0.0001); pitch aim `max 0.013`,
+  avg 0.001; radius matches `|anchor+offset|`. Captures show the character
   centred in both sweeps.
 - The real anchor is the head/socket (`Bip01 Head`), not chest+90 u; plan
   Phase 1 switches the anchor and takes `CameraHeight` from the real row data.
