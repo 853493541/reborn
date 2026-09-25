@@ -86,6 +86,7 @@ internal static class RebornClient
         hud.Padding = new Padding(6);
         hud.Location = new System.Drawing.Point(38, 10);
         hud.Text = "loading...";
+        hud.Visible = false;   // info window starts collapsed; "I" toggles it
         panel.Controls.Add(hud);
         // "I" toggle in the top-left corner: expands/collapses the info window
         var infoToggle = new Label();
@@ -368,6 +369,7 @@ internal static class RebornClient
         // ---------------- input ----------------
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
+        bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -378,6 +380,7 @@ internal static class RebornClient
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
         bool cDown = false, teleportToStructure = false;
+        bool divDown = false;
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
         var lockCenter = new System.Drawing.Point(panel.ClientSize.Width / 2, panel.ClientSize.Height / 2);
@@ -494,6 +497,13 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
+            else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
+            {
+                // real TOGGLERUN binding (numpad /), also accept the main "/"
+                divDown = true;
+                walkMode = !walkMode;
+                Log("movement mode: " + (walkMode ? "WALK" : "RUN"));
+            }
             else if (e.KeyCode == Keys.F11)
             {
                 // CameraReset: behind the character, pitch -15 deg, distance 1x
@@ -521,18 +531,20 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
+            else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
         };
         panel.Focus();
 
         // ---------------- main loop ----------------
         // table values converted from 15 logic frames/s into continuous seconds
         // (1 world unit = 1 cm; exact 15 Hz integer model is the next movement pass)
-        // RC_SPEED_MULT is a host-only testing multiplier (default 3x for faster
-        // traversal); set RC_SPEED_MULT=1 for the real 90/300 u/s.
-        float speedMult = 3f;
-        float.TryParse(Env("RC_SPEED_MULT", "3"), out speedMult);
+        // Real table values at the documented gameplay frame rate (GAME_FPS=16,
+        // "16帧等于1秒", UNIT_SCALE...md §2): walk 6 / run 20 u/frame -> 96 / 320
+        // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
+        // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
+        // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f, pJumpV = 1350f;
-        float pSpeed = 90f * speedMult, pRun = 300f * speedMult;
+        float pSpeed = 96f, pRun = 320f;
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
@@ -576,26 +588,32 @@ internal static class RebornClient
         if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
             camSys.Yaw = Math.Atan2(-viewZ, -viewX);
 
-        // The host places the camera at anchor + horizontal offset + CameraHeight
-        // and cannot set the engine's aim, so the engine pitch must be aligned
-        // once to look at the character from there (continuous vertical orbit
-        // deltas break the engine screenshot path, so this is loop-limited).
-        // RC_PITCH_ALIGN=0 skips it (also avoids the 32x32 screenshot bug when
-        // recording/capturing).
-        bool pitchAlign = Env("RC_PITCH_ALIGN", "1") == "1";
-        for (int pass = 0; pitchAlign && pass < 3; pass++)
+        // Camera aim geometry: the placement keeps the engine's aim on the
+        // anchor (camY = anchor.y - tan(pitch) * distance), so the tracked
+        // pitch must match the engine's view pitch. Maps with a real scene row
+        // already got it from the init loop above; maps without one keep the
+        // spawn view direction, so align the engine pitch once to the row
+        // geometry (-atan2(CameraHeight, distance)) and adopt it as tracked
+        // pitch. Loop-limited: continuous vertical orbit deltas break the
+        // engine screenshot path. RC_PITCH_ALIGN=0 skips the alignment.
+        bool pitchAlign = Env("RC_PITCH_ALIGN", "1") == "1" && !applyCamInit;
+        double alignHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+        double alignPitch = -Math.Atan2(alignHeight, Math.Max(1.0, camSys.Distance));
+        if (pitchAlign)
         {
-            measureView();
-            double camH0 = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
-            double desired = -Math.Atan2(camH0, Math.Max(1.0, camSys.Distance));
-            double measured = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-            int dyp = (int)(-(desired - measured) / 0.00121);
-            if (dyp > 200) dyp = 200;
-            if (dyp < -200) dyp = -200;
-            if (dyp > -8 && dyp < 8) break;
-            scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
-            scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X, lockCenter.Y + dyp));
-            Log("camera pitch align: dyp=" + dyp + " pass=" + pass);
+            for (int pass = 0; pass < 3; pass++)
+            {
+                measureView();
+                double measured = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+                int dyp = (int)Math.Round(-(alignPitch - measured) / 0.00121);
+                if (dyp > 200) dyp = 200;
+                if (dyp < -200) dyp = -200;
+                if (dyp > -8 && dyp < 8) break;
+                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X, lockCenter.Y + dyp));
+                Log("camera pitch align: dyp=" + dyp + " pass=" + pass);
+            }
+            camSys.Pitch = alignPitch;
         }
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -624,19 +642,25 @@ internal static class RebornClient
                 if (oy > pitchMaxPx) oy = (int)pitchMaxPx; else if (oy < -pitchMaxPx) oy = (int)-pitchMaxPx;
                 scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
                 scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy));
-                // track yaw ourselves: the engine orbit also moves the camera
-                // position, and a nudge here made the camera flash and glide back
+                // track yaw and pitch ourselves: the engine orbit also moves
+                // the camera position, and a nudge here made the camera flash
+                // and glide back. Pitch tracking keeps the placement geometry
+                // consistent with the engine's aim (see the placement below).
                 camSys.Yaw -= ox * 0.0018f;
                 float twoPi = 2f * (float)Math.PI;
                 if (camSys.Yaw > (float)Math.PI) camSys.Yaw -= twoPi;
                 if (camSys.Yaw < -(float)Math.PI) camSys.Yaw += twoPi;
+                camSys.Pitch -= oy * 0.00121f;
+                double pmax = Math.PI / 2.0 - 0.05;
+                if (camSys.Pitch > pmax) camSys.Pitch = pmax;
+                else if (camSys.Pitch < -pmax) camSys.Pitch = -pmax;
                 lastOrbitMs = now;
             }
 
             if (demo)
             {
                 pW = now >= 2000 && now < 12000;
-                shiftDown = now >= 7000 && now < 12000;
+                walkMode = now >= 7000 && now < 12000;   // demo walk phase
                 pA = now >= 14000 && now < 18000;
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
@@ -669,11 +693,13 @@ internal static class RebornClient
                 if (now >= 2000 && now < 6000)
                 {
                     int px2 = (int)(dt * 1.0f / 0.0035f);
+                    if (px2 < 1) px2 = 1;
                     orbitQueue.Enqueue(new int[] { px2, 0 });
                 }
                 if (now >= 6000 && now < 9000)
                 {
                     int py2 = (int)(dt * 0.5f / 0.0035f);
+                    if (py2 < 1) py2 = 1;
                     orbitQueue.Enqueue(new int[] { 0, py2 });
                 }
             }
@@ -719,8 +745,8 @@ internal static class RebornClient
                 lastCamLog = now;
                 float dbgx = 0f, dbgy = 0f, dbgz = 0f;
                 scene.GetCameraPos(ref dbgx, ref dbgy, ref dbgz);
-                Log(string.Format("camdbg mode={0} yaw={1:F2} dist={2:F0} meas=({3:F2},{4:F2}) cam=({5:F0},{6:F0},{7:F0})",
-                    camSys.Mode, camSys.Yaw, camSys.Distance, viewX, viewZ, dbgx, dbgy, dbgz));
+                Log(string.Format("camdbg mode={0} yaw={1:F2} pitch={2:F2} dist={3:F0} cam=({4:F0},{5:F0},{6:F0})",
+                    camSys.Mode, camSys.Yaw, camSys.Pitch, camSys.Distance, dbgx, dbgy, dbgz));
             }
 
             // movement is camera-relative: forward = camera -> anchor
@@ -761,7 +787,7 @@ internal static class RebornClient
             bool blocked = false;
             if (moving)
             {
-                float sp = (shiftDown ? pRun : pSpeed) / len;
+                float sp = (shiftDown ? pRun * 10f : (walkMode ? pSpeed : pRun)) / len;
                 float step = sp * dt;
                 float ux = dirX / len, uz = dirZ / len;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
@@ -846,7 +872,7 @@ internal static class RebornClient
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded) setClip(vy > 0f ? clipJump : clipFall);
-            else if (moving) setClip(shiftDown ? clipRun : clipWalk);
+            else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
             // model update (only when changed; keeps animation alive)
@@ -897,17 +923,21 @@ internal static class RebornClient
                 double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
                               * cameraSettings.EyeScale;
 
-                // The nudge's vertical component jitters; original camera placement
-                // uses the horizontal measured direction and the configured height.
+                // The nudge's vertical component jitters, so the horizontal
+                // direction comes from the tracked yaw; the height comes from
+                // the tracked pitch: the engine aims at the anchor with pitch P,
+                // so the camera sits at anchor.y - tan(P) * distance (at the
+                // startup pitch -atan2(CameraHeight, distance) this equals the
+                // row CameraHeight, 200 u at 600 u).
                 double vx = hx, vz = hz;
                 double hlen = Math.Sqrt(vx * vx + vz * vz);
                 if (hlen < 1e-6) { vx = 0; vz = 1; hlen = 1; }
                 vx /= hlen; vz /= hlen;
 
-                double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
+                double pitchOffset = Math.Tan(camSys.Pitch);
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
                 double camX = ax2 - vx * dist;
-                double camY = ay2 + camHeight;
+                double camY = ay2 - pitchOffset * dist;
                 double camZ = az2 - vz * dist;
 
                 // obstruction: terrain above the anchor->camera ray
@@ -926,7 +956,7 @@ internal static class RebornClient
                         {
                             double d2 = Math.Max(150.0, t * rayLen - 40.0);
                             camX = ax2 - vx * d2;
-                            camY = ay2 + camHeight;
+                            camY = ay2 - pitchOffset * d2;
                             camZ = az2 - vz * d2;
                             break;
                         }
@@ -947,10 +977,12 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
-                             : moving ? (shiftDown ? "RUN" : "WALK") : "IDLE";
+                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
+                float moveSpeed = shiftDown ? pRun * 10f : (walkMode ? pSpeed : pRun);
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\ncam {7} yaw {8:F2} dist {9:F0}\nclip {10}\nWASD move | Shift run | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
+                    moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip));
             }
