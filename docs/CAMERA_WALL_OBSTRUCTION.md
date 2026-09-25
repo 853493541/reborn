@@ -216,9 +216,21 @@ The rule above is now implemented in the client:
   walls, buildings, props) and foliage instances, triangle-exact through the
   instance matrix (Moller-Trumbore, mesh triangle grid for candidates).
 - `client/CameraSystem.cs CameraObstruction` - the response state machine:
-  18 u clearance, immediate pull-in to `hit - 18`, 50 u / 100 u hysteresis
-  (free / obstructed), spring return with `fFlex = 1.5`, `fDamp = 2.828`,
+  18 u clearance, immediate pull-in to `hit - 18`, 50 u tolerance for shallow
+  hits while free, spring return with `fFlex = 1.5`, `fDamp = 2.828`,
   `MinDistance = 5` (a practical floor: the native bound is `0.001`).
+  While a hit remains the target keeps following the wall (`hit - 18`); a full
+  release happens only when the ray is clear to the desired point - releasing
+  on the 100-u threshold early popped the camera through the wall.
+- **Camera inside the character:** the native path has no character
+  min-distance - with `hit < 18` the camera lands at `anchor + u*(hit-18)`,
+  i.e. at/behind the head, and the engine relies on the near clip plane and
+  backface culling. The client also carries a per-represent
+  `KRLCharacter::SetPlayerControlVisibleState` (0x1804E4150) but the managed
+  host API exposes no visibility/alpha. Host approximation: when the resolved
+  length is below 45 u the dummy model is parked 100000 u below the map and it
+  is restored above 70 u (hysteresis), so the character is not seen from
+  inside when jammed against a wall.
 - `client/RebornClient.cs` placement - 5 probe rays (centre + 4 corners of a
   22 u camera footprint, the engine default mode), terrain sampled as another
   ray on the centre probe; the nearest hit feeds the state machine and the

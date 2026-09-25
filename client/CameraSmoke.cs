@@ -171,6 +171,12 @@ internal static class CameraSmoke
         double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
         Check("obstruction respects min distance", Math.Abs(od3 - 5.0) < 1e-6,
               string.Format("dist={0:F1}", od3));
+        var obstD = new CameraObstruction();
+        obstD.Update(1.0 / 60.0, 600.0, 500.0);
+        for (int i = 0; i < 240; i++) obstD.Update(1.0 / 60.0, 600.0, 450.0);
+        Check("camera follows the wall out without releasing",
+              obstD.Obstructed && Math.Abs(obstD.Distance - 432.0) < 1.0,
+              string.Format("dist={0:F1} obst={1}", obstD.Distance, obstD.Obstructed));
 
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
         Environment.Exit(_fail == 0 ? 0 : 1);

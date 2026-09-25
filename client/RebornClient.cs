@@ -182,6 +182,7 @@ internal static class RebornClient
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
         CameraObstruction camObst = new CameraObstruction();
+        bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
             double sc;
@@ -341,7 +342,7 @@ internal static class RebornClient
         {
             try
             {
-                var pos = new CLRfloat3(); pos.x = x; pos.y = y; pos.z = z;
+                var pos = new CLRfloat3(); pos.x = x; pos.y = playerHidden ? y - 100000f : y; pos.z = z;
                 float half = (yaw + yawOffset) * 0.5f;
                 var rot = new CLRfloat4(); rot.x = 0f; rot.y = (float)Math.Sin(half); rot.z = 0f; rot.w = (float)Math.Cos(half);
                 var scl = new CLRfloat3(); scl.x = scale; scl.y = scale; scl.z = scale;
@@ -1114,6 +1115,21 @@ internal static class RebornClient
                 }
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
+
+                // When the camera is forced inside the character (jammed against
+                // a wall) the native client relies on near-plane clipping; the
+                // host has no visibility API, so park the dummy far below and
+                // restore it with hysteresis on the way out.
+                if (!playerHidden && camLen < 45.0)
+                {
+                    playerHidden = true;
+                    placePlayer(px, py, pz, curYaw);
+                }
+                else if (playerHidden && camLen > 70.0)
+                {
+                    playerHidden = false;
+                    placePlayer(px, py, pz, curYaw);
+                }
                 double s = camLen / offLen;
                 double camX = ax2 + camOff[0] * s;
                 double camY = ay2 + camOff[1] * s;

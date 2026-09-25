@@ -556,7 +556,6 @@ public sealed class CameraObstruction
     public double MinDistance = 5.0;
     public double Clearance = 18.0;
     public double PullThreshold = 50.0;    // while free
-    public double ReleaseThreshold = 100.0; // while obstructed
     public double Flex = 1.5;
     public double Damp = 2.828;
 
@@ -570,17 +569,19 @@ public sealed class CameraObstruction
         {
             double pull = hitDistance - Clearance;
             if (pull < MinDistance) pull = MinDistance;
-            if (!Obstructed)
+            if (!Obstructed && desired - hitDistance > PullThreshold)
+                Obstructed = true;
+            if (Obstructed)
             {
-                if (desired - hitDistance > PullThreshold) Obstructed = true;
+                // stay in front of the wall: as the hit recedes, the target
+                // follows it (the flex spring eases the way out); a full
+                // release only happens when the ray is clear to the desired
+                // point. Releasing earlier popped the camera through the wall.
+                if (hitDistance >= desired) Obstructed = false;
+                else target = pull < desired ? pull : desired;
             }
-            else if (hitDistance - Distance > ReleaseThreshold)
-            {
-                Obstructed = false;
-            }
-            if (Obstructed && pull < target) target = pull;
         }
-        else
+        else if (Obstructed)
         {
             Obstructed = false;
         }
