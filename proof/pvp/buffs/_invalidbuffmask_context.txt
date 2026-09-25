@@ -1,0 +1,52 @@
+﻿=== line 5757 0x00801EA8	ascii	InvalidBuffMask
+0x00801B30	ascii	KPlayerEquipRepresentData::SetMysteryData
+0x00801B60	ascii	KPlayerEquipRepresentData::TranslateFrom
+0x00801B90	ascii	KPlayerEquipRepresentData::TranslateTo
+0x00801D10	ascii	AllScenePlayerInFight
+0x00801D28	ascii	Broadcast
+0x00801D70	ascii	NeedCampBuff
+0x00801E18	ascii	MaxPlayerCount
+0x00801E28	ascii	MaxNeutralPlayerCount
+0x00801E40	ascii	MaxGoodPlayerCount
+0x00801E58	ascii	MaxEvilPlayerCount
+0x00801E80	ascii	MaxFullLevelPlayerCount
+0x00801E98	ascii	BanSkillMask
+0x00801EA8	ascii	InvalidBuffMask
+0x008020B8	ascii	SyncTempData
+0x008024A0	ascii	KMapListFile::GetSubMapPosition
+0x008025F0	ascii	KMapListFile::GetMainMapPosition
+0x00802820	ascii	settings/NpcTemplateList.tab
+0x00802840	ascii	[npc] init
+0x00802850	ascii	KNpcTemplateList::Init
+0x00802868	ascii	Invalid NPC template ID: %u!
+0x00802888	ascii	KNpcTemplateList::LoadFromTemplate
+0x008028B0	ascii	[NpcTemplate] Unload All NPC AI Data. Start ...
+0x008028E0	ascii	[NpcTemplate] Unload All NPC AI Data. Successful.
+0x00802918	ascii	[NpcTemplate] Unload All NPC Template Data. Start ...
+
+=== line 7227 0x0083D740	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+0x0083D4B0	ascii	nRetCode && "[Buff] Get MaxInterval"
+0x0083D4F8	ascii	nRetCode && "[Buff] Get Exclude"
+0x0083D530	ascii	nRetCode && "[Buff] Get GlobalExclude"
+0x0083D568	ascii	nRetCode && "[Buff] Get UniqueTarget"
+0x0083D5A0	ascii	nRetCode && "[Buff] Get CanCancel"
+0x0083D5D8	ascii	nRetCode && "[Buff] Get IsCountable"
+0x0083D600	ascii	nRetCode && "[Buff] Get Save"
+0x0083D630	ascii	nRetCode && "[Buff] Get IsOffLineClock"
+0x0083D668	ascii	nRetCode && "[Buff] Get CanAccumulate"
+0x0083D6A0	ascii	nRetCode && "[Buff] Get ValidByLevel"
+0x0083D6D0	ascii	nRetCode && "[Buff] Get Coexist"
+0x0083D708	ascii	nRetCode && "[Buff] Get CanBeSteal"
+0x0083D740	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+0x0083D780	ascii	nRetCode && "[Buff] Get ShapeShiftInvalid"
+0x0083D7C0	ascii	nRetCode && "[Buff] Get MorphInvalid"
+0x0083D7E8	ascii	NeedSync
+0x0083D7F8	ascii	nRetCode && "[Buff] Need Sync"
+0x0083D818	ascii	nRetCode && "[Buff] Get ScriptFile"
+0x0083D850	ascii	BuffInfo.m_nDecayType < 0 || BuffInfo.m_nDecayType >= MAX_BUFF_DECAY_TYPE
+0x0083D8A0	ascii	KBuffManager::LoadBuffRecipeInfo
+0x0083D8C8	ascii	KBuffManager::LoadBuffRecipeLine
+0x0083D8F0	ascii	nRetCode && dwRecipeID < MAX_SKILL_RECIPE_ID
+0x0083D920	ascii	nRetCode && dwRecipeLevel < MAX_SKILL_RECIPE_LEVEL
+0x0083D958	ascii	nRetCode && "[Recipe] Get BuffID"
+

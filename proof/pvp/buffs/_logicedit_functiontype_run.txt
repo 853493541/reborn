@@ -1,0 +1,90 @@
+﻿0x00784338	ascii	dwSelfMoveStateMaskLow
+0x00784350	ascii	dwSelfMoveStateMaskHigh
+0x00784368	ascii	dwTargetMoveStateMaskLow
+0x00784388	ascii	dwTargetMoveStateMaskHigh
+0x007843B8	ascii	[buff] init
+0x007843C8	ascii	TopBuff.tab
+0x007843D8	ascii	KBuffManager::Init
+0x007843F0	ascii	skill/Buff.tab
+0x00784400	ascii	skill_mobile/Buff.tab
+0x00784418	ascii	skill/BuffRecipe.tab
+0x00784430	ascii	skill/DecayType.tab
+0x00784448	ascii	skill/BuffRelays.tab
+0x00784460	ascii	skill_mobile/BuffRelays.tab
+0x007844D0	ascii	crBuffRecipeKey.nLevel
+0x007844E8	ascii	crBuffRecipeKey.dwID
+0x00784500	ascii	KBuffManager::GetBuff
+0x00784518	ascii	pBuffBaseInfo
+0x00784528	ascii	pBuffRecipe
+0x00784538	ascii	KBuffManager::GetBuffRecipeInfo
+0x00784558	ascii	itRecipe != m_BuffRecipInfoMap.end()
+0x00784580	ascii	[BuffManager] Reload All Buff Start ...
+0x007845A8	ascii	[BuffManager] Reload All Buff Successful.
+0x007845D8	ascii	[BuffManager] Refresh All Buff in Character BuffList ...
+0x00784620	ascii	[BuffManager] Refresh All Buff in Character BuffList Successful.
+0x00784668	ascii	[CACHE] clear cache data [buff],           count:%d
+0x007846E8	ascii	[TopBuff] Unable to open table file "%s"
+0x00784718	ascii	KBuffManager::LoadTopBuffInfo
+0x00784750	ascii	(nRetCode > 0) && "[TopBuff] Get ID ERROR"
+0x00784790	ascii	(nRetCode > 0) && "[TopBuff] Get nShowLevel ERROR"
+0x007847D8	ascii	itInfo == m_TopBuffInfoMap.end()
+0x00784808	ascii	nRetCode && "[TopBuff] Get szDesc ERROR"
+0x00784848	ascii	(nRetCode > 0) && "[TopBuff] Get dwIconFrame1 ERROR"
+0x00784890	ascii	(nRetCode > 0) && "[TopBuff] Get dwIconFrame2 ERROR"
+0x007848D8	ascii	(nRetCode > 0) && "[TopBuff] Get dwIconFrame3 ERROR"
+0x00784920	ascii	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel1 ERROR"
+0x00784968	ascii	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel2 ERROR"
+0x007849B0	ascii	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel3 ERROR"
+0x007849F8	ascii	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame1 ERROR"
+0x00784A40	ascii	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame2 ERROR"
+0x00784A88	ascii	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame3 ERROR"
+0x00784AD0	ascii	(nRetCode > 0) && "[TopBuff] Get nVKPathNum1 ERROR"
+0x00784B18	ascii	(nRetCode > 0) && "[TopBuff] Get nVKPathNum2 ERROR"
+0x00784B60	ascii	(nRetCode > 0) && "[TopBuff] Get nVKPathNum3 ERROR"
+0x00784BE0	ascii	Skill
+0x00784C1C	ascii	Damage
+0x00784C40	ascii	ResistDamage
+0x00784C50	ascii	[Buff] Unable to open table file "%s"
+0x00784C78	ascii	KBuffManager::LoadBuffInfo
+0x00784C98	ascii	(nRetCode > 0) && "[Buff] Get ID"
+0x00784CC0	ascii	nRetCode && "[Buff] Get Level"
+0x00784CE0	ascii	itInfo == m_BuffInfoMap.end()
+0x00784D10	ascii	nRetCode && "[Buff] Get FunctionType"
+0x00784D38	ascii	KSKILL_FUNCTION_TYPE
+0x00784D50	ascii	BuffType
+0x00784D60	ascii	nRetCode && "[Buff] Get BuffType"
+0x00784D88	ascii	KBUFF_TYPE
+0x00784DA8	ascii	nRetCode && "[Buff] Get AppendType"
+0x00784DE0	ascii	nRetCode && "[Buff] Get DetachType"
+0x00784E18	ascii	nRetCode && "[Buff] Get DecayType"
+0x00784E50	ascii	nRetCode && "[Buff] Get RepresentPos"
+0x00784E78	ascii	KBUFF_REPRESENT_POS
+0x00784E90	ascii	nRetCode && "[Buff] Get RepresentID"
+0x00784EB8	ascii	BuffInfo.m_dwRepresentID < MAX_BUFF_REPRESENT_ID
+0x00784EF0	ascii	nRetCode && "[Buff] Get Intensity"
+0x00784F30	ascii	nRetCode && "[Buff] Get IsIntensityStackable"
+0x00784F70	ascii	nRetCode && "[Buff] Get IsStackable"
+0x00784FA8	ascii	nRetCode && "[Buff] Get MaxStackNum"
+0x00784FD0	ascii	BuffInfo.m_nMaxStackNum > 0 && BuffInfo.m_nMaxStackNum <= UCHAR_MAX
+0x00785018	ascii	nRetCode && "[Buff] Get Count"
+0x00785060	ascii	nRetCode && "[Buff] Get Interval"
+0x007850B0	ascii	nRetCode && "[Buff] Get MinInterval"
+0x00785100	ascii	nRetCode && "[Buff] Get MaxInterval"
+0x00785148	ascii	nRetCode && "[Buff] Get Exclude"
+0x00785180	ascii	nRetCode && "[Buff] Get GlobalExclude"
+0x007851B8	ascii	nRetCode && "[Buff] Get UniqueTarget"
+0x007851F0	ascii	nRetCode && "[Buff] Get CanCancel"
+0x00785228	ascii	nRetCode && "[Buff] Get IsCountable"
+0x00785250	ascii	nRetCode && "[Buff] Get Save"
+0x00785280	ascii	nRetCode && "[Buff] Get IsOffLineClock"
+0x007852B8	ascii	nRetCode && "[Buff] Get CanAccumulate"
+0x007852F0	ascii	nRetCode && "[Buff] Get ValidByLevel"
+0x00785320	ascii	nRetCode && "[Buff] Get Coexist"
+0x00785358	ascii	nRetCode && "[Buff] Get CanBeSteal"
+0x00785390	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+0x007853D0	ascii	nRetCode && "[Buff] Get ShapeShiftInvalid"
+0x00785410	ascii	nRetCode && "[Buff] Get MorphInvalid"
+0x00785438	ascii	NeedSync
+0x00785448	ascii	nRetCode && "[Buff] Need Sync"
+0x00785468	ascii	nRetCode && "[Buff] Get ScriptFile"
+0x007854C0	ascii	BuffInfo.m_nDecayType < 0 || BuffInfo.m_nDecayType >= MAX_BUFF_DECAY_TYPE

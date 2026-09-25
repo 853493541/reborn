@@ -1,0 +1,154 @@
+
+===== skill\七秀\七秀_七诀剑气.lua:55
+   53| 	skill.AddAttribute(
+   54| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   55| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   56| 		52, -- 命门BUFF
+   57| 		dwSkillLevel
+   58| 	);
+   59| 
+   60| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   61| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+
+===== skill\明教\明教_圣明佑_月.lua:39
+   37| 	skill.AddAttribute(
+   38| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   39| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   40| 		4,
+   41| 		10000
+   42| 	);
+   43| 	skill.AddAttribute(
+   44| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   45| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+
+===== skill\明教\明教_圣明佑_月.lua:45
+   43| 	skill.AddAttribute(
+   44| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   45| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   46| 		6,
+   47| 		10000
+   48| 	);
+   49| 	skill.AddAttribute(
+   50| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   51| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+
+===== skill\明教\明教_圣明佑_月.lua:51
+   49| 	skill.AddAttribute(
+   50| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   51| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   52| 		8,
+   53| 		10000
+   54| 	);
+   55| 	--skill.AddAttribute(
+   56| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   57| 	--ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+
+===== skill\明教\明教_圣明佑_月.lua:57
+   55| 	--skill.AddAttribute(
+   56| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   57| 	--ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   58| 	--10, 
+   59| 	--10000
+   60| 	--);
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+
+===== skill\明教\明教_圣明佑_月.lua:63
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   64| 		12,
+   65| 		10000
+   66| 	);
+   67| 	skill.AddAttribute(
+   68| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   69| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+
+===== skill\百战异闻录_玩家\通用_驱散混元.lua:41
+   39| 		skill.AddAttribute(
+   40| 			ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   41| 			ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   42| 			5,
+   43| 			10000
+   44| 		);
+   45| 	end
+   46| 	if dwSkillLevel == 3 then
+   47| 		skill.AddAttribute(
+
+===== skill\百战异闻录_玩家\通用_驱散混元.lua:57
+   55| 		skill.AddAttribute(
+   56| 			ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   57| 			ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+   58| 			6,
+   59| 			10000
+   60| 		);
+   61| 	end
+   62| 
+   63| 	----------------- 魔法属性 -------------------------------------------------
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:30
+   28|    	skill.AddAttribute(
+   29|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+   30|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 魔法属性
+   31|    		2,															-- 属性值1
+   32|    		9999															-- 属性值2
+   33|    		);
+   34|    		
+   35|    	skill.AddAttribute(
+   36|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:37
+   35|    	skill.AddAttribute(
+   36|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+   37|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 魔法属性
+   38|    		4,															-- 属性值1
+   39|    		9999															-- 属性值2
+   40|    		);
+   41|    		
+   42|    	skill.AddAttribute(
+   43|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:44
+   42|    	skill.AddAttribute(
+   43|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+   44|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 魔法属性
+   45|    		6,															-- 属性值1
+   46|    		9999															-- 属性值2
+   47|    		);
+   48|    		
+   49|    	skill.AddAttribute(
+   50|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:51
+   49|    	skill.AddAttribute(
+   50|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+   51|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 魔法属性
+   52|    		8,															-- 属性值1
+   53|    		9999															-- 属性值2
+   54|    		);
+   55|    	
+   56|    	skill.AddAttribute(
+   57|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:58
+   56|    	skill.AddAttribute(
+   57|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+   58|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 魔法属性
+   59|    		10,															-- 属性值1
+   60|    		9999															-- 属性值2
+   61|    		);
+   62| 
+   63|    	skill.AddAttribute(
+   64|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:65
+   63|    	skill.AddAttribute(
+   64|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 属性作用模式
+   65|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 魔法属性
+   66|    		12,															-- 属性值1
+   67|    		9999															-- 属性值2
+   68|    		);
+   69|    		
+   70| 	skill.AddAttribute(
+   71| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 

@@ -1,0 +1,89 @@
+0x007FC800	uncList::LuaJudgeNeedApprentice
+0x007FC820	KScriptFuncList::LuaRegisterResetDiamondSlotCostItem
+0x007FC858	KScriptFuncList::LuaGetShapeShiftInfo
+0x007FC880	dwBeginActionID
+0x007FC890	nBeginActionFrame
+0x007FC8A8	nEndActionFrame
+0x007FC8B8	bCanEffectAttribute
+0x007FC8D0	nMoveSpeed
+0x007FC8E0	nJumpSpeed
+0x007FC8F0	nMaxLife
+0x007FC900	nManaType
+0x007FC910	nMaxMana
+0x007FC920	nHitValue
+0x007FC92C	nDodge
+0x007FC938	nShield
+0x007FC940	nAttackPower
+0x007FC950	nCriticalStrikeBaseRate
+0x007FC968	KScriptFuncList::LuaGetCanChangeDiamondDstSlotAttr
+0x007FC9A0	KScriptFuncList::LuaGetCanChangeDiamondSrcSlotAttr
+0x007FC9D8	KScriptFuncList::LuaGetTeamPushList
+0x007FCA00	nParamCount == 0 || nParamCount == 1
+0x007FCA28	nCount < MAX_ROOM_PUSH_ACTIVITY_COUNT
+0x007FCA50	KScriptFuncList::LuaGetTeamPushInfoSingle
+0x007FCA80	KScriptFuncList::LuaRegisterTeamPushInfo
+0x007FCAB0	KScriptFuncList::LuaRegisterTeamPushInfoWithLabelID
+0x007FCAE8	nCount < MAX_TEAM_PUSH_LABEL_COUNT
+0x007FCB10	KScriptFuncList::LuaUnregisterTeamPushInfo
+0x007FCB40	nParamCount == 0
+0x007FCB58	KScriptFuncList::LuaApplyTeamPushList
+0x007FCB80	nCount < MAX_TEAM_PUSH_ACTIVITY_COUNT
+0x007FCBA8	KScriptFuncList::LuaApplyTeamPushSingle
+0x007FCBD0	KScriptFuncList::LuaSyncApplyTeamList
+0x007FCBF8	KScriptFuncList::LuaRegisterApply
+0x007FCC20	KScriptFuncList::LuaUnregisterApply
+0x007FCC48	KScriptFuncList::LuaRespondTeamApply
+0x007FCC70	KScriptFuncList::LuaSyncPlayerApplyList
+0x007FCC98	KScriptFuncList::LuaApplyTeamMemberForceID
+0x007FCCC8	KScriptFuncList::LuaGetGlobalCounterValue
+0x007FCCF8	KScriptFuncList::LuaApplyGlobalActivityCounter
+0x007FCD28	dwCount > 0 && dwCount <= 64
+0x007FCD48	KScriptFuncList::LuaGetGlobalActivityCounterValue
+0x007FCD80	KScriptFuncList::LuaLogAddFriendByRecommend
+0x007FCDB0	dwBeAddedPlayerID != ERROR_ID
+0x007FCDD0	KScriptFuncList::LuaGetRoleAFKState
+0x007FCDF8	KScriptFuncList::LuaGetCenterName
+0x007FCE20	KScriptFuncList::LuaSelectSwitchMapWindow
+0x007FCE50	dwSwitchMapID
+0x007FCE60	bRetCode && "DoSelectSwitchMapWindow"
+0x007FCE88	KScriptFuncList::LuaGetEquipAttributeChangeInfo
+0x007FCEB8	KScriptFuncList::LuaGetEmotionActionInfo
+0x007FCEE8	eRoleType > rtInvalid && eRoleType < rtTotal
+0x007FCF18	pActionInfo
+0x007FCF28	nFrameCount
+0x007FCF38	Frame%d
+0x007FCF40	KScriptFuncList::LuaCheckEmotionActionMoveState
+0x007FCF70	KScriptFuncList::LuaGetCloakChangeColorInfo
+0x007FCFA0	KScriptFuncList::LuaGetSimplePlayerInfo
+0x007FCFC8	KScriptFuncList::LuaGetPlayerIdentitySystemCD
+0x007FCFF8	KScriptFuncList::LuaGetSceneSfxClient
+0x007FD020	KScriptFuncList::LuaVoteCastleFightActivityLow
+0x007FD050	KScriptFuncList::LuaGetArenaRankList
+0x007FD078	nPageIndex >= 0
+0x007FD088	dwBeginIndex >= 0 && dwEndIndex < KARENA_RANK_MAX_SIZE
+0x007FD0C0	KScriptFuncList::LuaGetArenaCorpsInfo
+0x007FD0E8	dwCenterID
+0x007FD0F8	KScriptFuncList::LuaGetBFRankList
+0x007FD120	dwEndIndex < KBATTLE_FIELD_RANK_MAX_SIZE
+0x007FD150	dwBeginIndex <= dwEndIndex
+0x007FD170	KScriptFuncList::LuaGetBFRankRoleInfo
+0x007FD198	uGlobalRoleID
+0x007FD1A8	byForceID
+0x007FD1B4	byType
+0x007FD1C0	nCenterID
+0x007FD1D0	KScriptFuncList::LuaGetBFRankRoleScore
+0x007FD1F8	KScriptFuncList::LuaClearBFRankList
+0x007FD220	KScriptFuncList::LuaApplyTongLeagueRankList
+0x007FD250	nBeginIndex >= 0 && nBeginIndex <= nEndIndex
+0x007FD280	nEndIndex < TONG_LEAGUE_RANK_MAX_SIZE
+0x007FD2A8	nEndIndex - nBeginIndex < TONG_LEAGUE_RANK_PAGE_SIZE
+0x007FD2E0	KScriptFuncList::LuaGetTongLeagueRankInfo
+0x007FD30C	nWin
+0x007FD314	nLose
+0x007FD320	nLastMatchTime
+0x007FD330	KScriptFuncList::LuaGetTongLeagueRank
+0x007FD358	nLocalRank
+0x007FD368	KScriptFuncList::LuaDiamondRepairDurabilitySingle
+0x007FD3A0	KScriptFuncList::LuaCanApplyBFRoleData
+0x007FD3C8	nType >= brdtHistory && nType < brdtEnd
+0x007FD3F0	KScriptFuncList:

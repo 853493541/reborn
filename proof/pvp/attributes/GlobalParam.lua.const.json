@@ -1,0 +1,76 @@
+[
+ {
+  "file": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\logic-skill-out\\scripts\\skill\\GlobalParam.lua",
+  "size": 1127,
+  "consumed": 1127,
+  "error": null,
+  "functions": [
+   {
+    "depth": 0,
+    "source": null,
+    "params": 0,
+    "maxstack": 2,
+    "numbers": [],
+    "strings": [
+     "Load"
+    ]
+   },
+   {
+    "depth": 1,
+    "source": null,
+    "params": 0,
+    "maxstack": 3,
+    "numbers": [
+     0.75,
+     9.985,
+     3.679,
+     1.521,
+     7.644,
+     4.628,
+     5.432,
+     6.734,
+     6.364,
+     11.412,
+     10.61,
+     2.784,
+     8.534,
+     0.525,
+     0.584,
+     10.0,
+     58800.0,
+     0.9,
+     1138.0,
+     757.0
+    ],
+    "strings": [
+     "GetSkillGlobalParam",
+     "fPlayerCriticalCof",
+     "fCriticalStrikeParam",
+     "fCriticalStrikePowerParam",
+     "fDefCriticalStrikeParam",
+     "fDecriticalStrikePowerParam",
+     "fHitValueParam",
+     "fDodgeParam",
+     "fParryParam",
+     "fInsightParam",
+     "fPhysicsShieldParam",
+     "fMagicShieldParam",
+     "fOvercomeParam",
+     "fHasteRate",
+     "fToughnessDecirDamageCof",
+     "fSurplusParam",
+     "fAssistedPowerCof",
+     "fDecriticalDamagePowerToPhysicsAttackPowerCof",
+     "fDecriticalDamagePowerToMagicAttackPowerCof",
+     "fDecriticalDamagePowerToMaxLifeBaseCof",
+     "nMaxDecriticalDamagePowerEableConvert",
+     "fDecriticalDamagePVPCof",
+     "nPhysicsAPToMagicAPCof",
+     "nWeaponToMagicAPCof",
+     "Log",
+     "[Skill]Global Param Init Successful."
+    ]
+   }
+  ]
+ }
+]

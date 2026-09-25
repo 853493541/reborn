@@ -1,0 +1,652 @@
+# MapBanMask bits (skills.tab col 67) with example skills
+bit 0 (value 1): 195 skills
+    53	骑乘	MapBanMask=1
+    605	骑御	MapBanMask=1
+    3904	小白测试用大轻功骑乘	MapBanMask=1
+    4097	骑乘_普通	MapBanMask=1
+    4098	骑乘_轻功	MapBanMask=1
+    4972	天策特殊武器_向前冲刺	MapBanMask=9
+bit 1 (value 2): 54 skills
+    67	任脉·神阙(废弃)	MapBanMask=2
+    68	任脉·水分	MapBanMask=2
+    72	任脉·上脘(废弃)	MapBanMask=2
+    1029	传功(未使用)	MapBanMask=2
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+bit 2 (value 4): 113 skills
+    5228	烟花筒_爆竹	MapBanMask=108
+    7254	缝纫_蹴鞠	MapBanMask=140
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+bit 3 (value 8): 883 skills
+    81	获得传送轻功	MapBanMask=72
+    114	督脉·风府	MapBanMask=40
+    115	督脉·脑户	MapBanMask=40
+    116	督脉·后顶	MapBanMask=40
+    117	督脉·百会	MapBanMask=40
+    153	带脉·光明	MapBanMask=40
+bit 4 (value 16): 116 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+    10516	沙漠风暴	MapBanMask=508
+bit 5 (value 32): 257 skills
+    114	督脉·风府	MapBanMask=40
+    115	督脉·脑户	MapBanMask=40
+    116	督脉·后顶	MapBanMask=40
+    117	督脉·百会	MapBanMask=40
+    153	带脉·光明	MapBanMask=40
+    154	带脉·外丘	MapBanMask=40
+bit 6 (value 64): 194 skills
+    81	获得传送轻功	MapBanMask=72
+    3691	传送增强	MapBanMask=72
+    5228	烟花筒_爆竹	MapBanMask=108
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+bit 7 (value 128): 182 skills
+    7254	缝纫_蹴鞠	MapBanMask=140
+    10516	沙漠风暴	MapBanMask=508
+    14346	攻防载具可建造判断	MapBanMask=424
+    14374	攻防神机车_转战斗形态	MapBanMask=424
+    14375	攻防神机车_转移动形态	MapBanMask=424
+    14376	攻防神机车_箭弩连射	MapBanMask=504
+bit 8 (value 256): 293 skills
+    5210	明教特殊武器_母技能	MapBanMask=264
+    5216	天策特殊武器_判定用	MapBanMask=264
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+bit 9 (value 512): 129 skills
+    17	江湖-防身武艺-打坐	MapBanMask=512
+    139	锋针	MapBanMask=512
+    259	轮回诀	MapBanMask=512
+    551	心鼓弦	MapBanMask=520
+    2220	凤凰蛊	MapBanMask=552
+    2229	涅槃重生	MapBanMask=512
+bit 10 (value 1024): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 11 (value 2048): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 12 (value 4096): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 13 (value 8192): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 14 (value 16384): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 15 (value 32768): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 16 (value 65536): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 17 (value 131072): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 18 (value 262144): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 19 (value 524288): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 20 (value 1048576): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 21 (value 2097152): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 22 (value 4194304): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 23 (value 8388608): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 24 (value 16777216): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 25 (value 33554432): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 26 (value 67108864): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 27 (value 134217728): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 28 (value 268435456): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 29 (value 536870912): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 30 (value 1073741824): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+bit 31 (value 2147483648): 5 skills
+    8672	风雪稻香村_小怪关卡_主角技能_千瞬奇门	MapBanMask=4294967167
+    8673	风雪稻香村_小怪关卡_主角技能_钩爪	MapBanMask=4294967167
+    8674	风雪稻香村_小怪关卡_主角技能_卧龙盘山	MapBanMask=4294967167
+    8675	风雪稻香村_小怪关卡_主角技能_霞月长针	MapBanMask=4294967167
+    8676	风雪稻香村_小怪关卡_主角技能_寒冰真枪	MapBanMask=4294967167
+
+# MapList.tab maps with non-zero BanSkillMask (col 23)
+map 6	扬州	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 8	洛阳	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 14	灵霄峡	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 15	长安	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 17	天工坊	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 18	无盐岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 19	空雾峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 20	天地三才阵	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 26	荻花宫前山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 28	日轮山城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 29	五十级云湖天池	BanSkillMask=256	IsArenaMap=0	IsBattlefield=	Type=2
+map 32	战宝迦兰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 33	天子峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 34	风雨稻香村	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 36	英雄天地三才阵	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 37	英雄天工坊	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 39	四十级云湖天池	BanSkillMask=256	IsArenaMap=0	IsBattlefield=1	Type=2
+map 40	英雄荻花宫前山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 41	英雄无盐岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 42	英雄天子峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 43	英雄空雾峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 44	英雄日轮山城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 45	英雄灵霄峡	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 46	英雄战宝迦兰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 47	英雄风雨稻香村	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 51	剑冢	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 53	邀星坪_夜射天狼	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 55	守株围场_打猎	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 56	困龙岭_梅花桩	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 57	陷空坳_宇文宝藏	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 58	百草园	BanSkillMask=6	IsArenaMap=0	IsBattlefield=	Type=4
+map 60	持国天王殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 61	宫中神武遗迹	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 62	英雄剑冢	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 63	英雄宫中神武遗迹	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 64	25人普通宫中神武遗迹	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 65	25人普通持国天王殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 66	英雄持国天王殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 67	荻花宫后山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 68	荻花圣殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 69	10人英雄荻花圣殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 70	25人普通荻花圣殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 71	仙踪林	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 72	25人英雄荻花圣殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 73	英雄荻花宫后山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 74	帮会领地	BanSkillMask=6	IsArenaMap=0	IsBattlefield=	Type=4
+map 75	毒神殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 106	法王窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 107	无量宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 108	成都	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 109	龙渊泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 110	寂灭厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 111	英雄仙踪林	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 112	英雄毒神殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 113	英雄寂灭厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 114	英雄无量宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 115	英雄法王窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 116	低级仙踪林	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 117	25人英雄龙渊泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 118	25人普通龙渊泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 119	10人英雄龙渊泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 120	荻花洞窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 121	英雄神农洇	BanSkillMask=256	IsArenaMap=0	IsBattlefield=	Type=2
+map 123	低级唐门密室	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 125	唐门密室	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 126	神剑冢	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 127	天山碎冰谷	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 128	乐山大佛窟	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 129	华山之巅	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 130	英雄荻花洞窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 131	持国天王回忆录	BanSkillMask=128	IsArenaMap=	IsBattlefield=	Type=1
+map 133	25人英雄烛龙殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 134	烛龙殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 136	会战唐门	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 137	大漠楼兰	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 138	25人英雄会战唐门	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 140	南诏皇宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 141	光明顶秘道	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 142	低级光明顶秘道	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 143	试炼秘境1	BanSkillMask=32	IsArenaMap=0	IsBattlefield=	Type=1
+map 144	试炼秘境2	BanSkillMask=32	IsArenaMap=0	IsBattlefield=	Type=1
+map 145	试炼秘境3	BanSkillMask=32	IsArenaMap=0	IsBattlefield=	Type=1
+map 146	试炼秘境4	BanSkillMask=32	IsArenaMap=0	IsBattlefield=	Type=1
+map 147	试炼秘境5	BanSkillMask=32	IsArenaMap=0	IsBattlefield=	Type=1
+map 148	英雄持国回忆录	BanSkillMask=128	IsArenaMap=	IsBattlefield=	Type=1
+map 149	帮会约战	BanSkillMask=256	IsArenaMap=0	IsBattlefield=	Type=2
+map 152	大唐监狱	BanSkillMask=64	IsArenaMap=0	IsBattlefield=	Type=0
+map 155	英雄南诏皇宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 157	英雄一线天	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 160	战宝军械库	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 161	华清宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 162	英雄华清宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 163	华清宫回忆录	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 164	大明宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 165	英雄大明宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 167	一线天	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 169	流离岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 170	英雄流离岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 171	英雄战宝军械库	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 172	长安内城	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 173	齐物阁	BanSkillMask=8	IsArenaMap=0	IsBattlefield=	Type=2
+map 174	迷仙引	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 175	血战天策	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 176	英雄血战天策	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 177	风雪稻香村	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 178	英雄风雪稻香村	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 179	直城门	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 181	狼影殿	BanSkillMask=8	IsArenaMap=0	IsBattlefield=	Type=2
+map 182	秦皇陵	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 183	英雄秦皇陵	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 184	墨家秘殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 187	春明门	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 189	寻宝洞_野人谷	BanSkillMask=130	IsArenaMap=0	IsBattlefield=	Type=1
+map 190	寻宝洞_夜狼山	BanSkillMask=130	IsArenaMap=0	IsBattlefield=	Type=1
+map 191	太原之战_夜守孤城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 192	太原之战_逐虎驱狼	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 194	太原	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 195	雁门关之役	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 196	普通雁门关之役	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 198	英雄太原之战_夜守孤城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 199	英雄太原之战_逐虎驱狼	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 200	璨翠海厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 203	天泣林	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 204	阴山圣泉	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 205	挑战太原之战_夜守孤城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 206	挑战太原之战_逐虎驱狼	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 209	梵空禅院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 211	10人挑战太原之战_夜守孤城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 212	10人挑战太原之战_逐虎驱狼	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 218	引仙水榭	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 219	微山书院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 220	永王行宫_仙侣庭园	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 221	永王行宫_花月别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 222	挑战璨翠海厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 224	英雄天泣林	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 225	英雄微山书院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 227	英雄阴山圣泉	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 228	英雄梵空禅院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 229	英雄引仙水榭	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 230	英雄永王行宫_花月别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 231	英雄永王行宫_仙侣庭园	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 232	帮会永王行宫_仙侣庭园	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 233	帮会永王行宫_花月别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 234	10人挑战永王行宫_仙侣庭园	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 235	10人挑战永王行宫_花月别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 236	25人挑战永王行宫_仙侣庭园	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 237	25人挑战永王行宫_花月别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 238	青竹书院	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 240	上阳宫_观风殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 241	上阳宫_双曜亭	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 242	白帝水宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 244	挑战白帝水宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 245	大梦迷境	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 246	星海幻景	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 248	英雄上阳宫_观风殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 249	英雄上阳宫_双曜亭	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 250	帮会上阳宫_观风殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 251	帮会上阳宫_双曜亭	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 256	夕颜阁	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 257	英雄夕颜阁	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 258	素月清秋	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 260	挑战夕颜阁	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 261	天街灯市	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 262	刀轮海厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 263	风雷刀谷_锻刀厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 264	风雷刀谷_千雷殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 270	英雄风雷刀谷_千雷殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 271	英雄风雷刀谷_锻刀厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 272	帮会风雷刀谷_千雷殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 273	帮会风雷刀谷_锻刀厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 274	春节天街灯市	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 275	挑战刀轮海厅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 276	拭剑园	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 277	拭剑台	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 278	拭剑园	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 279	拭剑园	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 280	拭剑园	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 281	拭剑园	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 283	狼牙堡_战兽山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 284	狼牙堡_燕然峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 285	银雾湖	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 286	英雄狼牙堡_战兽山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 287	英雄狼牙堡_燕然峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 288	帮会狼牙堡_战兽山	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 289	帮会狼牙堡_燕然峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 290	挑战银雾湖	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 291	稻香秘事	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 292	英雄稻香秘事	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 293	拭剑园战场	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=1
+map 295	挑战稻香秘事	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 296	龙门寻宝	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 297	龙门寻宝_夜晚	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 298	狼牙堡_辉天堑	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 299	狼牙堡_狼神殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 300	英雄狼牙堡_辉天堑	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 301	英雄狼牙堡_狼神殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 303	历战_空雾峰	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 304	历战_天子峰	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 305	历战_寂灭厅	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 306	历战_毒神殿	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 307	历战_荻花圣殿	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 308	历战_风雷刀谷	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 309	历战_风雨稻香村	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 310	历战_灵霄峡	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 311	历战_南诏皇宫	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 312	历战_日轮山城	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 313	历战_天地三才阵	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 314	历战_无盐岛	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 315	历战_英雄风雨稻香村	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 316	历战_荻花洞窟	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 317	历战_烛龙殿	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 318	历战_持国天王殿	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 321	思过园	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=3
+map 322	洛道_李渡城	BanSkillMask=2	IsArenaMap=0	IsBattlefield=1	Type=2
+map 323	帮会狼牙堡_辉天堑	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 324	帮会狼牙堡_狼神殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 332	侠客岛	BanSkillMask=16	IsArenaMap=0	IsBattlefield=	Type=0
+map 337	洞天福地岛_泥兰洞天	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 339	经首道源岛_大衍盘丝洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 340	龙泉府_镜泊湖	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 341	冰火岛_荒血路	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 342	蓬莱_九辩馆	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 343	英雄侠客岛_迷渊岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 344	浮丘岛	BanSkillMask=8	IsArenaMap=0	IsBattlefield=	Type=1
+map 347	冰火岛_青莲狱	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 348	英雄冰火岛_青莲狱	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 349	挑战冰火岛_青莲狱	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 350	帮会冰火岛_青莲狱	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 354	英雄冰火岛_荒血路	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 355	英雄大衍盘丝洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 356	英雄洞天福地岛_泥兰洞天	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 357	英雄镜泊湖	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 358	侠客岛_迷渊岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 359	英雄蓬莱_九辩馆	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 360	挑战冰火岛_荒血路	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 361	帮会冰火岛_荒血路	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 362	墟海之眼	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 364	尘归海_巨冥湾	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 365	英雄尘归海_巨冥湾	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 366	挑战尘归海_巨冥湾	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 368	尘归海_饕餮洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 369	英雄尘归海_饕餮洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 370	挑战尘归海_饕餮洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 406	鲲鹏岛_周天屿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 407	挑战鲲鹏岛_周天屿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 410	海岛绝境	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 412	列星岛	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 415	野狸岛	BanSkillMask=3	IsArenaMap=0	IsBattlefield=1	Type=2
+map 421	浪客行_悬棺裂谷	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 422	浪客行_草原路	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 423	浪客行_东水寨	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 424	浪客行_竹林路	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 425	浪客行_鬼镇	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 426	敖龙岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 427	25人普通敖龙岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 428	25人英雄敖龙岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 431	凌雪阁_别鹤南墅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 432	英雄凌雪阁_别鹤南墅	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 433	浪客行_客栈	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 434	浪客行_森林路	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 435	浪客行_华清宫回忆录	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 436	浪客行_枫华谷	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 437	浪客行_空雾峰	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 438	浪客行_荻花宫前山	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 439	浪客行_荻花洞窟	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 440	浪客行_黑戈壁	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 441	浪客行_九寨沟	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 442	浪客行_明教	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 443	浪客行_永王行宫_仙侣庭园	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 445	凌雪阁_江南府邸	BanSkillMask=8	IsArenaMap=0	IsBattlefield=	Type=1
+map 446	试炼之地	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 452	范阳夜变	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 453	25人普通范阳夜变	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 454	25人英雄范阳夜变	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 461	浪客行_樱花林	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 467	衍天宗_幻灵境	BanSkillMask=8	IsArenaMap=0	IsBattlefield=	Type=1
+map 468	藏剑山庄_乱世_剑冢惊变	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 469	英雄藏剑山庄_乱世_剑冢惊变	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 476	衍天宗_梦入集真岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 477	七秀_乱世_梧桐山庄	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 478	英雄七秀_乱世_梧桐山庄	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 479	少林_乱世_罗汉门	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 480	英雄少林_乱世_罗汉门	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 481	英雄衍天宗_梦入集真岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 482	少林_乱世_达摩洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 483	25人普通达摩洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 484	25人英雄达摩洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 487	镜花别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 489	万花_乱世_三星望月	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 490	英雄万花_乱世_三星望月	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 512	白龙绝境	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 517	少林_乱世_修罗挑战	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 518	白帝江关	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 519	25人普通白帝江关	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 520	25人英雄白帝江关	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 521	相州_漳水南路	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 522	挑战相州_漳水南路	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 527	浪客行_浮丘岛	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 528	浪客行_桂林	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 529	藏剑武库	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 530	墟海之眼_演武场	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 531	东水寨	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=0
+map 532	天原绝境	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 559	黑山林海_雷域大泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 560	25人普通雷域大泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 561	25人英雄雷域大泽	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 562	百战异闻录	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 563	北天药宗_武氏别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 564	英雄北天药宗_武氏别院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 567	原野奇踪	BanSkillMask=130	IsArenaMap=0	IsBattlefield=	Type=1
+map 573	河阳之战	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 574	25人普通河阳之战	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 575	25人英雄河阳之战	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 586	润扬_西津渡	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 587	25人普通西津渡	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 588	25人英雄西津渡	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 594	剧本杀测试场景02	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 596	烂柯山_沃石院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 597	英雄烂柯山_沃石院	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 598	百溪_镇海阁	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 599	百溪_英雄镇海阁	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 606	刀宗_幽藤馆	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 607	刀宗_英雄幽藤馆	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 620	首领扮演范阳夜变	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 622	楚州_江天夜宴	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 623	英雄楚州_江天夜宴	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 624	沃石火狱	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 629	磐渊_古剑台	BanSkillMask=131	IsArenaMap=0	IsBattlefield=	Type=1
+map 631	沙海迷踪	BanSkillMask=512	IsArenaMap=0	IsBattlefield=	Type=1
+map 636	武狱黑牢	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 637	25人普通武狱黑牢	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 638	25人英雄武狱黑牢	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 639	鹿桥驿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 640	挑战鹿桥驿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 644	相知相遇_黄龙洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 645	洱海绝境	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 648	九老洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 649	25人普通九老洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 650	25人英雄九老洞	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 658	栖灵洞天	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 659	英雄栖灵洞天	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 662	罗小黑建木海	BanSkillMask=130	IsArenaMap=0	IsBattlefield=	Type=1
+map 668	冷龙峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 669	25人普通冷龙峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 670	25人英雄冷龙峰	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 676	龙门寻宝	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 677	龙门寻宝	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 682	南诏段氏_天龙寺	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 683	英雄南诏段氏_天龙寺	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 684	河西瀚漠_冰川宫宝库	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 685	英雄河西瀚漠_冰川宫宝库	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 686	一之窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 687	25人普通一之窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 688	25人英雄一之窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 690	风砂旧垒	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 691	英雄风砂旧垒	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 693	不染窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 694	英雄不染窟	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 696	南诏段氏_红叶泽	BanSkillMask=8	IsArenaMap=1	IsBattlefield=	Type=2
+map 703	联动地图_仙剑一_圣灵挑战	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 704	联动地图_仙剑一_魔界缝隙	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 706	长安_太极宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 707	25人普通太极宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 708	25人英雄太极宫	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 709	林海绝境	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 710	长安_空城殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 711	长安_空城殿_下	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 715	林海绝境	BanSkillMask=512	IsArenaMap=0	IsBattlefield=1	Type=2
+map 716	无相楼_贾府	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 717	无相楼_却月楼	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 719	玄中观地下	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 720	缚罪之渊	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 722	伊丽川_会战弓月城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 723	25人普通会战弓月城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 724	25人英雄会战弓月城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 725	獭山岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 726	英雄獭山岛	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 727	伊丽川_摩罗道_低级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 728	伊丽川_摩罗道_低级2	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 729	伊丽川_踏实力_低级40	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 730	伊丽川_踏实力_中级41	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 731	伊丽川_踏实力_高级45	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 732	伊丽川_诺布众_高级34	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 733	伊丽川_诺布众_低级37	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 734	伊丽川_踏实力_低级44	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 735	伊丽川_踏实力_中级50	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 736	伊丽川_踏实力_低级53	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 737	伊丽川_踏实力_高级63	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 738	伊丽川_踏实力_低级66	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 739	伊丽川_踏实力_低级67	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 740	伊丽川_踏实力_中级68	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 741	伊丽川_诺布众_中级71	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 742	伊丽川_踏实力_中级72	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 743	伊丽川_吐蕃僧_高级73	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 744	伊丽川_吐蕃僧_低级79	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 745	伊丽川_诺布众_低级81	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 746	伊丽川_吐蕃军队_低级82	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 747	伊丽川_吐蕃军队_中级83	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 748	伊丽川_吐蕃军队_中级91	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 749	伊丽川_突骑施_低级100	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 750	伊丽川_踏实力_低级101	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 751	伊丽川_踏实力_中级104	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 752	伊丽川_踏实力_低级105	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 753	伊丽川_吐蕃军队_低级106	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 754	伊丽川_吐蕃军队_中级109	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 755	伊丽川_踏实力_低级111	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 756	伊丽川_踏实力_低级118	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 757	伊丽川_吐蕃军队_高级119	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 758	伊丽川_吐蕃军队_低级132	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 759	伊丽川_星宿派_中级137	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 760	伊丽川_吐蕃军队_低级139	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 761	伊丽川_星宿派_中级151	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 762	伊丽川_踏实力_低级174	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 763	伊丽川_踏实力_中级175	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 764	伊丽川_吐蕃僧_低级178	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 765	伊丽川_吐蕃僧_中级181	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 766	伊丽川_踏实力_高级182	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 767	伊丽川_踏实力_低级184	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 768	伊丽川_踏实力_低级188	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 769	伊丽川_踏实力_中级190	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 770	伊丽川_星宿派_中级192	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 771	伊丽川_突骑施_低级212	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 772	伊丽川_踏实力_低级213	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 773	伊丽川_吐蕃军队_低级215	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 774	伊丽川_突骑施_低级217	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 775	伊丽川_吐蕃僧_中级219	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 776	伊丽川_星宿派_高级225	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 777	伊丽川_吐蕃军队_中级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 778	伊丽川_吐蕃军队_高级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 779	伊丽川_吐蕃军队_低级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 780	伊丽川_摩罗道_中级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 781	伊丽川_摩罗道_高级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 782	伊丽川_突骑施_中级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 783	伊丽川_突骑施_高级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 784	伊丽川_绣骨寺_高级1	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 785	伊丽川_哮蛮谷	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 787	伊丽川_刺客信条_弓月城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 788	昆仑_北茫山营地	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 789	英雄志_唐简_归家	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 790	扬刀大会_擎霄山	BanSkillMask=8	IsArenaMap=0	IsBattlefield=1	Type=2
+map 793	阆风悬城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 794	25人普通阆风悬城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 795	25人英雄阆风悬城	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 799	成都小区域_清明节活动	BanSkillMask=129	IsArenaMap=0	IsBattlefield=	Type=1
+map 804	阆风悬城_元心殿	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 817	阆风悬城_寒刃铸心	BanSkillMask=128	IsArenaMap=0	IsBattlefield=	Type=1
+map 995	八荒衡鉴_仙踪林	BanSkillMask=130	IsArenaMap=0	IsBattlefield=	Type=1

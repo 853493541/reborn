@@ -1,0 +1,31 @@
+﻿101 | 缁涙牕鍨濇妯款吇妞?闂堢偟鈻兼惔蹇涚帛鐠併倛顢? | Normal | Invalid | -1 | 3758030846 | 63 | 1 | 0 | 1 | 0 | 1 |  | 0 |  | 1 | 1 | 0 |  |  | 0 |  | 0 | 0 | 0 | 0 | 1 | 
+103 | 閹垫挸娼?|  |  |  | 256 | 56 | 1 | 0 | 1 | 0 | 1 |  | 0 |  | 1 | 0 | 0 |  |  |  |  |  |  | 0 | 0 | 1 | 
+104 | 濞搭喛闊?|  |  |  | 4294967294 | 63 | 1 | 80 | 1 | 0 | 1 |  | 0 |  | 1 | 0 | 0 |  |  |  |  |  |  | 80 | 80 | 1 | 
+106 | 閸旂娀鈧?13 | 106 | 1 | 4294967294 |  | 480 | 480 | 1 | 1 | 1 | 0 |  | 1 |  | 0 | 0 | 1 |  |  |  |  |  |  | 63 | 1 | 0 | 1:ON_STAND|2:ON_WALK|3:ON_RUN|4:ON_JUMP|5:ON_SWIM_JUMP|6:ON_SWIM|7:ON_FLOAT|8:ON_SIT|9:ON_KNOCKED_DOWN|10:ON_KNOCKED_BACK|11:ON_KNOCKED_OFF|12:ON_SPRINT_BREAK|13:ON_SPRINT_DASH|14:ON_SPRINT_KICK|15:ON_SPRINT_FLASH|16:ON_SKILL_MOVE_SRC|17:ON_SKILL_MOVE_DST|18:ON_SKILL_MOVE_TAIL|19:ON_SKILL_MOVE_DEATH|20:ON_HALT|21:ON_FREEZE|22:ON_ENTRAP|23:ON_AUTO_FLY|24:ON_DEATH|25:ON_DASH|26:ON_PULL|27:ON_REPULSED|28:ON_RISE|29:ON_SKID|30:ON_START_AUTO_FLY|31:ON_FLY
+139 | 閹佃埖鎲為惄缈犵瑐 |  |  |  | 1610547150 | 60 | 1 | 480 | 1 | 0 | 6 |  | 0 |  | 1 | 1 | 0 |  |  |  |  |  |  | 480 | 480 | 1 | 
+244 | 妤犳垳绠?|  |  |  | 3619840030 | 59 | 1 | 0 | 1 | 0 | 100 |  | 0 |  | 1 | 1 | 0 |  |  |  |  | 1 |  | 0 | 0 | 1 | 
+286 | 缁屽搫鍖楅弬浼存处 |  |  |  | 1405095936 | 60 | 1 | 240 | 1 | 0 | 1 |  | 0 |  | 1 | 0 | 0 |  |  |  |  |  |  | 240 | 240 | 1 | 
+406 | 濮樻潙鍤屾稉鍝勫暫 |  |  |  | 3758030334 | 63 | 1 | 320 | 1 | 0 | 1 |  | 0 |  | 1 | 0 | 1 |  |  |  |  |  |  | 320 | 320 | 1 | 
+422 | 閹劖鍎矰EBUFF | Fear | Fear |  | 4294967294 | 63 | 1 | 800 | 1 | 1 | 800 |  | 0 |  | 1 | 1 | 0 |  |  |  |  |  |  | 800 | 800 | 1 | 
+424 | 閸愭煡鏀遍惇鈺傛 | Stun |  |  | 1405095936 | 60 | 1 | 80 | 1 | 0 | 1 |  | 0 |  | 1 | 1 | 0 |  |  |  |  |  |  | 80 | 80 | 1 | 
+445 | 鐏忔垶鐏?濞屽绮?| Silence |  | 5 | 3758030846 | 63 | 1 | 16 | 1 | 0 | 48 |  | 0 | 0 | 1 | 1 | 0 |  |  |  |  |  |  | 16 | 16 | 1 | 
+python : Traceback (most recent call last):
+At line:1 char:1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<string>", line 14, in <module>
+  File "<string>", line 14, in <genexpr>
+IndexError: list index out of range
+450 | 閻滃嫪绔撮弮鐘垫祲_debuff | Slow |  |  | 3758030846 | 63 | 1 | 192 | 1 | 0 | 60 |  | 0 |  | 1 | 1 | 0 |  |  |  |  |  |  | 192 | 192 | 1 | 
+453 | 娑旀繆娴嗚ぐ鎺嶇_閻晜妾?| Daze | Daze |  | 1405095936 | 60 | 1 | 64 | 1 | 0 | 64 |  | 0 |  | 1 | 1 | 0 |  |  |  |  |  |  | 64 | 64 | 1 | 
+455 | 閹峰倻鈹愰幍?0 | 455 | 1 | 1405095936 |  | 32 | 32 | 0 | 1 | 1 | 0 |  | 1 |  | 1 | 0 | 0 |  |  |  |  |  |  | 60 | 1 | 0 | 12:ON_SPRINT_BREAK|22:ON_ENTRAP|23:ON_AUTO_FLY|24:ON_DEATH|25:ON_DASH|28:ON_RISE|30:ON_START_AUTO_FLY
+533 | 婢垛晠婀濈划?14 | 8 | 1 | 1405095936 |  | 80 | 80 | 1 | 1 | 1 | 0 |  | 1 |  | 1 | 0 | 0 |  |  |  | 0 |  |  | 60 | 1 | 0 | 12:ON_SPRINT_BREAK|22:ON_ENTRAP|23:ON_AUTO_FLY|24:ON_DEATH|25:ON_DASH|28:ON_RISE|30:ON_START_AUTO_FLY
+541 | 婢垛晝鐡?閺傤參鐡婇崚?閺冪姵纭剁粔璇插З | Charm |  |  | 1405108224 | 60 | 1 | 32 | 1 | 0 | 32 |  | 0 |  | 1 | 1 | 0 |  |  |  |  |  |  | 32 | 32 | 1 | 
+549 | 婢垛晝鐡?缁?閸戝繘鈧?1 | 2 | 1 | 3757998078 |  | 192 | 192 | 1 | 1 | 1 | 0 |  | 1 |  | 1 | 0 | 0 |  |  |  |  |  |  | 63 | 1 | 0 | 1:ON_STAND|2:ON_WALK|3:ON_RUN|4:ON_JUMP|5:ON_SWIM_JUMP|6:ON_SWIM|7:ON_FLOAT|8:ON_SIT|9:ON_KNOCKED_DOWN|10:ON_KNOCKED_BACK|11:ON_KNOCKED_OFF|12:ON_SPRINT_BREAK|13:ON_SPRINT_DASH|14:ON_SPRINT_KICK|17:ON_SKILL_MOVE_DST|18:ON_SKILL_MOVE_TAIL|19:ON_SKILL_MOVE_DEATH|20:ON_HALT|21:ON_FREEZE|22:ON_ENTRAP|23:ON_AUTO_FLY|24:ON_DEATH|25:ON_DASH|26:ON_PULL|27:ON_REPULSED|28:ON_RISE|30:ON_START_AUTO_FLY|31:ON_FLY
+554 | 婢堆囦壕閺冪姵婀?| Halt |  | 2 | 1405100032 | 60 | 1 | 32 | 1 | 0 | 32 |  | 0 | 0 | 1 | 1 | 0 |  |  |  |  |  |  | 32 | 32 | 1 | 
+556 | 娑撳啯妲﹂幏杈╂喓 | Halt |  | 3 | 1405100032 | 60 | 1 | 16 | 1 | 0 | 400 |  | 0 | 0 | 1 | 1 | 1 |  |  |  |  |  |  | 16 | 16 | 1 | 
+558 | 娑撳澧犻崠鏍晸 | Charm |  | 1 | 1405108224 | 60 | 1 | 32 | 1 | 0 | 48 |  | 0 | 0 | 1 | 1 | 0 |  |  |  |  |  |  | 32 | 32 | 1 | 
+562 | 閸氱偞妫╅張?3 | 562 | 1 | 3758030846 |  | 20 | 20 | 0 | 1 | 1 | 0 |  | 1 |  | 1 | 0 | 0 |  |  |  |  |  |  | 63 | 1 | 0 | 1:ON_STAND|2:ON_WALK|3:ON_RUN|4:ON_JUMP|5:ON_SWIM_JUMP|6:ON_SWIM|7:ON_FLOAT|8:ON_SIT|9:ON_KNOCKED_DOWN|10:ON_KNOCKED_BACK|11:ON_KNOCKED_OFF|12:ON_SPRINT_BREAK|13:ON_SPRINT_DASH|14:ON_SPRINT_KICK|15:ON_SPRINT_FLASH|17:ON_SKILL_MOVE_DST|18:ON_SKILL_MOVE_TAIL|19:ON_SKILL_MOVE_DEATH|20:ON_HALT|21:ON_FREEZE|22:ON_ENTRAP|23:ON_AUTO_FLY|24:ON_DEATH|25:ON_DASH|26:ON_PULL|27:ON_REPULSED|28:ON_RISE|30:ON_START_AUTO_FLY|31:ON_FLY

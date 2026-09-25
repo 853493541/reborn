@@ -1,0 +1,190 @@
+==== Buff.txt term=御劲 in Name ====
+1072 | 0 | 御劲 | 御劲等级提高<BUFF atToughnessBase>点
+1072 | 1 | 御劲 | 御劲等级提高<BUFF atToughnessBase>点
+1444 | 1 | 剑茗 | 增加自身御劲等级
+1444 | 2 | 任侠 | 增加自身御劲等级，并且内力消耗降低20%
+1444 | 3 | 缘风 | 增加自身御劲等级，并且内力消耗降低20%，威胁值增加20%
+1458 | 0 | 进食 | 御劲等级提高<BUFF atToughnessBase>点
+1880 | 1 | 御劲壁垒 | 每层使受到的内功伤害降低20%
+1880 | 2 | 御劲壁垒 | 每层使受到的内功伤害降低10%
+2198 | 1 | 铁壁 | 御劲等级提高20%
+2199 | 1 | 溃甲 | 御劲等级降低20%
+9864 | 1 | 疾如风 | 被会心几率降低30%
+12989 | 1 | 御劲壁垒 | 每层使受到的内功伤害减少20%
+14980 | 1 | 归清 | 御劲提高5%
+20812 | 1 | 慑服 | 御劲率提高5%
+24411 | 1 | 妙手 | 提高5%御劲
+28314 | 0 | 御劲统一 | 击破破绽时会额外造成伤害
+29614 | 0 | 海龙御劲 | 抵挡内功伤害与精神打击，被内功攻击命中时反击周围敌人
+30707 | 1 | 密玉神墟·纵·腰 | 提高自身10800点御劲等级，持续3秒
+30707 | 2 | 密玉神山·纵·腰 | 提高自身4320点御劲等级，持续3秒
+30707 | 3 | 密玉神域·纵·腰 | 提高自身12609点御劲等级，持续3秒
+30707 | 4 | 密玉神阆·纵·腰 | 提高自身5043点御劲等级，持续3秒
+30707 | 5 | 密玉神界·纵·腰 | 提高自身14760点御劲等级，持续3秒
+30707 | 6 | 密玉神峰·纵·腰 | 提高自身5904点御劲等级，持续3秒
+30708 | 1 | 密玉神墟·横·腰 | 每层提高自身120点御劲等级，最多10层
+30708 | 2 | 密玉神山·横·腰 | 每层提高自身48点御劲等级，最多10层
+30708 | 3 | 密玉神域·横·腰 | 每层提高自身140点御劲等级，最多10层
+30708 | 4 | 密玉神阆·横·腰 | 每层提高自身56点御劲等级，最多10层
+30708 | 5 | 密玉神界·横·腰 | 每层提高自身164点御劲等级，最多10层
+30708 | 6 | 密玉神峰·横·腰 | 每层提高自身65点御劲等级，最多10层
+30951 | 0 | 内功御劲 | 能够抵御内功破绽击破
+30952 | 0 | 外功御劲 | 能够抵御外功破绽击破
+33175 | 1 | 积势 | 御劲率提高10%
+---- Desc matches (first 40) ----
+916 | 金刚伏魔四阵 | 每层御劲率提高2%，最多叠加三层
+925 | 九襄地玄四阵 | 每层御劲率提高2%，最多叠加三层
+930 | 三重巧熟 | 阅历提高5%，声望提高5%，外功基础攻击力提高5%，外功破防提高20%，御劲提高5%
+930 | 四重精妙 | 阅历提高5%，声望提高5%，外功基础攻击力提高5%，外功破防提高20%，御劲提高5%，招式会心攻击则使阵眼力道提高1%，最多叠加五层
+930 | 五重游刃 | 阅历提高5%，声望提高5%，外功基础攻击力提高5%，外功破防提高20%，御劲提高5%，招式会心攻击则使阵眼力道提高1%，最多叠加五层，阵眼施展“疾如风”，则外功基础攻击力提高5%
+930 | 六重忘我 | 阅历提高5%，声望提高5%，外功基础攻击力提高5%，外功破防提高20%，御劲提高5%，招式会心攻击则使阵眼力道提高1%，最多叠加五层，阵眼施展“疾如风”，则外功基础攻击力提高5%，若重伤，则阵眼招式必会心
+930 | 七重归一 | 阅历提高5%，声望提高5%，外功基础攻击力提高5%，外功破防提高20%，御劲提高5%，招式会心攻击则使阵眼力道提高1%，最多叠加五层，阵眼施展“疾如风”，则外功基础攻击力提高5%，若重伤，则阵眼招式必会心
+965 | 阵法测试 | 外功，阴性，中性，阳性，毒性破防值提高100点，化劲等级提高100点，御劲等级提高100点，会心攻击力基础值提高100点.
+1444 | 剑茗 | 增加自身御劲等级
+1444 | 任侠 | 增加自身御劲等级，并且内力消耗降低20%
+1444 | 缘风 | 增加自身御劲等级，并且内力消耗降低20%，威胁值增加20%
+1458 | 进食 | 御劲等级提高<BUFF atToughnessBase>点
+1854 | 香梅 | 御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+2198 | 铁壁 | 御劲等级提高20%
+2199 | 溃甲 | 御劲等级降低20%
+2569 | 雄霸江湖 | 化劲等级提高30%，御劲等级提高15%
+2910 | 宴席 | 气血值上限提高<BUFF atMaxLifeAdditional>点，御劲提高<BUFF atToughnessBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，全属性提高<BUFF atBasePotentialAdd>点
+3521 | 阴 | 治疗成效降为0，不受毁天灭地影响。阴极，寒体御劲
+3874 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高6%,御劲等级提高2%
+6158 | 仗剑 | 御劲等级提高10%，外功防御等级提高115点
+6309 | 旗渊 | 御劲率提高8%
+7049 | 天选者 | 携带有铁血宝箱，血量增加至100%，化劲加成0.9倍，御劲加成0.8倍，免疫一切控制，但无法被召请或使用萍踪侠影。侠士死亡、离线、隐身或使用神行时效果消失。同时铁血宝箱会遗落
+7669 | 势如破竹 | 身负据点大旗，无法跳跃，气血最大值提高16倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+7669 | 势如破竹 | 身负据点大旗，无法跳跃，气血最大值提高20倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+7669 | 势如破竹 | 身负据点大旗，无法跳跃，气血最大值提高33倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+7761 | 雄霸江湖·战 | 每层使御劲提高3%，化劲提高3%
+9341 | 石间意 | 御劲率提高9%
+9341 | 石间意 | 御劲率提高18%
+9341 | 石间意 | 御劲率提高9%
+9341 | 石间意 | 御劲率提高18%
+11808 | 星楼月影 | 自身免疫控制(击退和被拉除外)，御劲提高5%
+12120 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+13096 | 护送物资 | 物资运送往任意本阵营据点交给据点大将，可以增强在该据点内的侠士的3%攻守能力。如果该据点位于我方沙盘半场内，则最多可以叠加三层。若被重伤，则该任务也将失败，千万小心。\n该状态下，气血+1300%，化劲+150%，御劲+300%
+13096 | 护送物资 | 物资运送往任意本阵营据点交给据点大将，可以增强在该据点内的侠士的3%攻守能力。如果该据点位于我方沙盘半场内，则最多可以叠加三层。若被重伤，则该任务也将失败，千万小心。\n该状态下，气血+1300%，化劲+150%，御劲+300%
+13209 | 阵营小斗士 | 气血上限+100%，伤害和治疗结果+50%，化劲+350，御劲+200，仅逐鹿中原和阵营攻防活动期间，参与战斗的场景生效
+13218 | 阵营小斗士 | 气血上限+100%，伤害和治疗结果+50%，化劲+350，御劲+200，仅逐鹿中原和阵营攻防活动期间，参与战斗的场景生效
+13255 | 祭天宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+14157 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+14157 | 任侠宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+14157 | 迎客宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+==== Buff.txt term=化劲 in Name ====
+1455 | 0 | 进食 | 化劲等级增加<BUFF atDeCriticalDamagePowerBase>点
+1854 | 0 | 香梅 | 御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+7505 | 1 | 春点 | 化劲降低10%
+11873 | 1 | 穿杨 | 化劲等级降低5%
+11873 | 2 | 穿杨 | 化劲等级降低15%
+13052 | 0 | 大道无术 | 定身并降低15%化劲等级
+13053 | 0 | 大道无术 | 定身并降低15%化劲等级
+13924 | 1 | 遥思 | 化劲等级降低20%
+13939 | 1 | 还璧 | 化劲等级降低15%
+17076 | 1 | 斩火 | 化劲等级降低5%
+18031 | 1 | 灵机卸甲 | 化劲等级降低10%
+24181 | 1 | 雾灭 | 化劲等级降低10%
+24554 | 1 | 灭影追风 | 自身外功破防等级提高5%，化劲等级降低6%
+24554 | 2 | 灭影追风 | 自身外功破防等级提高5%，会心几率提高5%，化劲等级降低6%
+24554 | 3 | 灭影追风 | 自身外功破防等级提高5%，会心几率提高5%，会心效果提高5%，化劲等级降低6%
+24554 | 4 | 灭影追风 | 自身外功破防等级提高10%，会心几率提高10%\n会心效果提高10%，化劲等级降低6%，产生的威胁值降低70%
+24877 | 0 | 真元连闪·化劲 | 每层真元连闪·化劲可吸收200000点伤害
+24877 | 8 | 真元连闪·化劲 | 每层真元连闪·化劲可吸收340000点伤害
+24877 | 9 | 真元连闪·化劲 | 每层真元连闪·化劲可吸收360000点伤害
+24877 | 10 | 真元连闪·化劲 | 每层真元连闪·化劲可吸收400000点伤害
+28807 | 1 | 萌新助威 | 隐元会为防止萌新阵营侠士化劲过低，当侠士装分低于本服对抗类平均装分时且自身化劲低于70%时，为侠士增加额外化劲，该效果每层提高1%化劲（该效果不会在竞技场、绝境战场、列星虚境中生效）
+30059 | 1 | 战·丝路·震 | 化劲降低2756点
+30060 | 1 | 愈·丝路·震 | 化劲提高2756点
+30306 | 1 | 雾灭 | 每层使化劲等级降低5%
+30307 | 1 | 雾灭 | 每层使化劲等级提高5%
+30708 | 1 | 密玉神墟·横·腰 | 每层提高自身120点御劲等级，最多10层
+30708 | 2 | 密玉神山·横·腰 | 每层提高自身48点御劲等级，最多10层
+30708 | 3 | 密玉神域·横·腰 | 每层提高自身140点御劲等级，最多10层
+30708 | 4 | 密玉神阆·横·腰 | 每层提高自身56点御劲等级，最多10层
+30708 | 5 | 密玉神界·横·腰 | 每层提高自身164点御劲等级，最多10层
+30708 | 6 | 密玉神峰·横·腰 | 每层提高自身65点御劲等级，最多10层
+31776 | 1 | 霜解 | 每层减少1%化劲等级
+51856 | 1 | 心怵 | 化劲等级降低6%
+51856 | 2 | 心怵·极 | 化劲等级降低12%
+---- Desc matches (first 40) ----
+711 | 兰摧玉折 | 每3秒受到<BUFF atCallNeutralDamage>点混元性内功伤害并降低15%化劲等级
+711 | 兰摧玉折 | 每3秒受到<BUFF atCallNeutralDamage>点混元性内功伤害并降低15%化劲等级
+711 | 兰摧玉折 | 每3秒受到<BUFF atCallNeutralDamage>点混元性内功伤害并降低15%化劲等级
+965 | 阵法测试 | 外功，阴性，中性，阳性，毒性破防值提高100点，化劲等级提高100点，御劲等级提高100点，会心攻击力基础值提高100点.
+1455 | 进食 | 化劲等级增加<BUFF atDeCriticalDamagePowerBase>点
+1854 | 香梅 | 御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高1.5%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高2%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高2.5%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高3%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高3.5%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高4%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高4.5%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高2%，移动速度提高1%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高3%，移动速度提高1%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高4%，移动速度提高1%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高5%，移动速度提高2%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高6%，移动速度提高2%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高7%，移动速度提高2%
+2125 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高10%，移动速度提高5%
+2474 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高5%，最大气血值提高200点
+2569 | 雄霸江湖 | 化劲等级提高30%，御劲等级提高15%
+2743 | 帮会擂台冠军 | 化劲等级提高10%，移动速度提高10%，在本阵营地图和阵营攻防战使用获得特殊属性
+2744 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高9%，移动速度提高6%，在本阵营地图和阵营攻防战使用获得特殊属性
+2910 | 宴席 | 气血值上限提高<BUFF atMaxLifeAdditional>点，御劲提高<BUFF atToughnessBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，全属性提高<BUFF atBasePotentialAdd>点
+3874 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高6%,御劲等级提高2%
+6268 | 生息 | 化劲等级提高5%
+6806 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高10%，基础气血值提高500%，只有在攻防战期间有效
+6806 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高8%，基础气血值提高400%，只有在攻防战期间有效
+6806 | Buff=1，Debuff=2，Dot=3，Hot=4 | 化劲等级提高5%，基础气血值提高300%，只有在攻防战期间有效
+7049 | 天选者 | 携带有铁血宝箱，血量增加至100%，化劲加成0.9倍，御劲加成0.8倍，免疫一切控制，但无法被召请或使用萍踪侠影。侠士死亡、离线、隐身或使用神行时效果消失。同时铁血宝箱会遗落
+7505 | 春点 | 化劲降低10%
+7669 | 势如破竹 | 身负据点大旗，无法跳跃，气血最大值提高16倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+7669 | 势如破竹 | 身负据点大旗，无法跳跃，气血最大值提高20倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+7669 | 势如破竹 | 身负据点大旗，无法跳跃，气血最大值提高33倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+7678 | 死斗壁立 | 每点化劲转换等额内外攻击力及气血上限，最高有58800点化劲参与转换；可识破40尺内敌人的伪装效果
+7761 | 雄霸江湖·战 | 每层使御劲提高3%，化劲提高3%
+10595 | 雪晶煞气 | 自身全属性增加<BUFF atBasePotentialAdd>点，化劲等级增加<BUFF atDecriticalDamagePowerBase>点，全会心等级增加<BUFF atAllTypeCriticalStrike>点
+10719 | 雪晶煞气 | 自身全属性增加<BUFF atBasePotentialAdd>点，化劲等级增加<BUFF atDecriticalDamagePowerBase>点，治疗成效增加<BUFF atTherapyPowerBase>点
+11873 | 穿杨 | 化劲等级降低5%
+==== Buff.txt term=Toughness in Name ====
+---- Desc matches (first 40) ----
+1072 | 御劲 | 御劲等级提高<BUFF atToughnessBase>点
+1072 | 御劲 | 御劲等级提高<BUFF atToughnessBase>点
+1458 | 进食 | 御劲等级提高<BUFF atToughnessBase>点
+1854 | 香梅 | 御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+2910 | 宴席 | 气血值上限提高<BUFF atMaxLifeAdditional>点，御劲提高<BUFF atToughnessBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，全属性提高<BUFF atBasePotentialAdd>点
+12120 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+13255 | 祭天宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+14157 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+14157 | 任侠宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+14157 | 迎客宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+17362 | 玉露酒 | 御劲等级提高<BUFF atToughnessBase>点
+17363 | 玉露酒·今朝醉 | 御劲等级提高<BUFF atToughnessBase>点
+17364 | 玉露酒·六日醉 | 御劲等级提高<BUFF atToughnessBase>点
+17364 | 玉露酒·旬又三 | 御劲等级提高<BUFF atToughnessBase>点
+18310 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+18310 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+18427 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+24733 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+29284 | 风语·鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+==== Buff.txt term=Decritical in Name ====
+---- Desc matches (first 40) ----
+1854 | 香梅 | 御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+2910 | 宴席 | 气血值上限提高<BUFF atMaxLifeAdditional>点，御劲提高<BUFF atToughnessBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，全属性提高<BUFF atBasePotentialAdd>点
+10595 | 雪晶煞气 | 自身全属性增加<BUFF atBasePotentialAdd>点，化劲等级增加<BUFF atDecriticalDamagePowerBase>点，全会心等级增加<BUFF atAllTypeCriticalStrike>点
+10719 | 雪晶煞气 | 自身全属性增加<BUFF atBasePotentialAdd>点，化劲等级增加<BUFF atDecriticalDamagePowerBase>点，治疗成效增加<BUFF atTherapyPowerBase>点
+12120 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+13255 | 祭天宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+14157 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+14157 | 任侠宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+14157 | 迎客宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+17265 | 刚吃过农家小炒肉 | 化劲值提升<BUFF atDecriticalDamagePowerBase>点
+17267 | 刚吃过米饭 | 化劲值提升<BUFF atDecriticalDamagePowerBase>点
+18310 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+18310 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+18427 | 同袍宴 | 御劲值提升<BUFF atToughnessBase>点，化劲值提升<BUFF atDecriticalDamagePowerBase>点
+24733 | 鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点
+27790 | 刚吃过风语·农家小炒肉 | 化劲值提升<BUFF atDecriticalDamagePowerBase>点
+29284 | 风语·鸿门宴 | 体质提高<BUFF atVitalityBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，御劲提高<BUFF atToughnessBase>点

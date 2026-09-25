@@ -1,0 +1,100 @@
+# special cast-validation flags (skills.tab)
+-- Use3DObstacle[33] {'0': 24066, '1': 17075}
+   0	Default	cast=TargetSingle	script=Default.lua
+   1	TestSkill	cast=TargetSingle	script=test/TestSkill.lua
+   2	空雾峰_1号BOSS_欠债	cast=CasterArea	script=npc\副本BOSS\空雾峰1号欠债.lua
+   3	空雾峰_1号BOSS_还钱	cast=TargetSingle	script=npc\副本BOSS\空雾峰1号还钱.lua
+   4	空雾峰_1号BOSS_金钱漫天	cast=CasterSingle	script=Default.lua
+   7	普通攻击	cast=TargetSingle	script=npc/NPC_attack_wolf1.lua
+   8	天工坊_2号BOSS_平三指_投掷火药_火药爆炸	cast=CasterArea	script=npc\副本BOSS\天工坊_2号BOSS_平三指_投掷火药_火药爆炸.lua
+   9	奇穴·任脉·十宣	cast=TargetSingle	script=经脉\基础系\奇穴_增加治疗能力.lua
+-- CheckReachable[34] {'0': 40940, '1': 201}
+   20	毒牙	cast=TargetSingle	script=npc/NPC_poisonteeth.lua
+   21	击晕	cast=TargetSingle	script=npc/NPC_hittowhirl.lua
+   23	点穴	cast=TargetSingle	script=npc/NPC_hitacupoint(test).lua
+   24	击晕（测试技能）	cast=CasterArea	script=npc/NPC_hittowhirl(test).lua
+   27	粗制绷带	cast=TargetSingle	script=item/ITEM_heal_heal4.lua
+   47	冲锋	cast=TargetSingle	script=test/Dash.lua
+   61	恐惧	cast=TargetSingle	script=test/fear.lua
+   400	天策-穿云	cast=TargetSingle	script=天策\天策_羽林枪法_穿云.lua
+-- IgnorePositiveShield[35] {'1': 25118, '0': 16023}
+   1	TestSkill	cast=TargetSingle	script=test/TestSkill.lua
+   2	空雾峰_1号BOSS_欠债	cast=CasterArea	script=npc\副本BOSS\空雾峰1号欠债.lua
+   3	空雾峰_1号BOSS_还钱	cast=TargetSingle	script=npc\副本BOSS\空雾峰1号还钱.lua
+   4	空雾峰_1号BOSS_金钱漫天	cast=CasterSingle	script=Default.lua
+   5	击倒	cast=TargetSingle	script=test\移动状态测试技能.lua
+   6	击退到	cast=TargetSingle	script=test\移动状态测试技能.lua
+   7	普通攻击	cast=TargetSingle	script=npc/NPC_attack_wolf1.lua
+   8	天工坊_2号BOSS_平三指_投掷火药_火药爆炸	cast=CasterArea	script=npc\副本BOSS\天工坊_2号BOSS_平三指_投掷火药_火药爆炸.lua
+-- IgnoreNegativeShield[36] {'0': 25331, '1': 15810}
+   17	江湖-防身武艺-打坐	cast=CasterSingle	script=江湖\防身武艺_打坐.lua
+   35	 基础环通2传功	cast=TargetSingle	script=经脉\基础系\基础系_传功.lua
+   48	骑乘跳跃用技能	cast=CasterSingle	script=Default.lua
+   52	回春妙手	cast=CasterSingle	script=江湖\混元气_回春妙手.lua
+   53	骑乘	cast=CasterSingle	script=江湖\骑乘.lua
+   54	下马	cast=CasterSingle	script=江湖/下马.lua
+   55	驱散换模BUFF	cast=CasterSingle	script=npc\洛道驱散换模BUFF.lua
+   56	任务AOE技能	cast=CasterArea	script=npc\任务AOE技能.lua
+-- IgnoreCamp[79] {'0': 30077, '': 10841, '1': 223}
+   35	 基础环通2传功	cast=TargetSingle	script=经脉\基础系\基础系_传功.lua
+   4104	双人同骑	cast=TargetSingle	script=江湖\双人同骑.lua
+   5228	烟花筒_爆竹	cast=TargetSingle	script=装备\烟花筒_爆竹.lua
+   5229	烟花筒_爆竹_击飞	cast=TargetSingle	script=装备\烟花筒_爆竹_击飞.lua
+   7154	礼品道具专用	cast=TargetSingle	script=item\item_Present.lua
+   7272	元旦活动_大彩球	cast=TargetSingle	script=Quest\元旦活动_大彩球.lua
+   7606	赛马_快马加鞭	cast=CasterSingle	script=Quest\赛马_快马加鞭.lua
+   7607	赛马_护身罡气	cast=CasterSingle	script=Quest\赛马_护身罡气.lua
+-- IsCheckStealth[81] {'0': 28859, '1': 12282}
+   0	Default	cast=TargetSingle	script=Default.lua
+   1	TestSkill	cast=TargetSingle	script=test/TestSkill.lua
+   3	空雾峰_1号BOSS_还钱	cast=TargetSingle	script=npc\副本BOSS\空雾峰1号还钱.lua
+   5	击倒	cast=TargetSingle	script=test\移动状态测试技能.lua
+   6	击退到	cast=TargetSingle	script=test\移动状态测试技能.lua
+   7	普通攻击	cast=TargetSingle	script=npc/NPC_attack_wolf1.lua
+   9	奇穴·任脉·十宣	cast=TargetSingle	script=经脉\基础系\奇穴_增加治疗能力.lua
+   11	普通攻击-棍攻击	cast=TargetSingle	script=江湖/防身武艺_普通攻击.lua
+-- IgnoreSilence[92] {'': 31606, '0': 5077, '1': 4458}
+   324	破苍穹_气场效果	cast=PointAreaOfCasterTeam	script=纯阳\子技能_气场效果_破苍穹.lua
+   333	碎星辰_气场效果	cast=PointAreaOfCasterTeam	script=纯阳\子技能_气场效果_碎星辰.lua
+   708	吞日月_气场效果_驱散友方Debuff	cast=PointArea	script=纯阳\子技能_气场效果_吞日月_驱散Debuff.lua
+   2449	金蟾吐瑞_治疗子技能	cast=TargetSingle	script=五毒\五毒_金蟾吐瑞_治疗子技能.lua
+   2979	镇派_蛊虫献祭清CD	cast=CasterSingle	script=五毒\镇派_蛊虫献祭清CD.lua
+   3301	天绝地灭_持续效果	cast=PointArea	script=唐门\天绝地灭_持续效果.lua
+   3304	蚀肌弹_吞DOT	cast=TargetSingle	script=唐门\镇派\蚀肌弹_吞DOT.lua
+   3367	千机变_火器伤害	cast=PointAreaFindFirst	script=唐门\千机变_火器伤害.lua
+-- IgnoreRangeBlock[107] {'': 40356, '1': 729, '0': 56}
+   243	拿云式	cast=TargetSingle	script=少林\少林_龙爪功_拿云式.lua
+   265	拿云式段1	cast=TargetSingle	script=少林\少林_拿云式段一.lua
+   266	拿云式段2	cast=TargetSingle	script=少林\少林_拿云式段二.lua
+   267	拿云式段3	cast=TargetSingle	script=少林\少林_拿云式段三.lua
+   336	紫霞功_放气后回复一格气	cast=CasterSingle	script=纯阳\子技能_紫霞功_放气后回气.lua
+   409	天策_子技能_断魂刺_子弹	cast=TargetSingle	script=天策\天策_子技能_断魂刺_子弹.lua
+   418	天策-突	cast=TargetSingle	script=天策\天策_奔雷枪术_突.lua
+   426	天策-破坚阵	cast=TargetSingle	script=天策\天策_游龙骑法_破坚阵.lua
+-- IgnoreImmunityCast[110] {'': 40742, '0': 381, '1': 18}
+   3459	五毒-蛊虫狂暴-转移伤害	cast=TargetSingle	script=五毒\五毒-蛊虫狂暴-转移伤害.lua
+   14287	商_普通dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_商_正常dot效果.lua
+   14288	商_缩短间隔dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_商_缩短间隔dot效果.lua
+   14289	商_效果递增dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_商_伤害效果递增dot效果.lua
+   14290	商_间隔缩短且伤害递增dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_商_伤害效果递增且间隔缩短dot效果.lua
+   14291	角_普通dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_角_正常dot效果.lua
+   14292	角_缩短间隔dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_角_作用间隔缩短dot效果.lua
+   14293	角_效果递增dot	cast=TargetSingle	script=长歌\套路及子技能\长歌_角_效果递增dot效果.lua
+-- IgnoreControl[111] {'': 40884, '0': 169, '1': 88}
+   100	星楼月影	cast=CasterSingle	script=万花\万花_养心决_星楼月影.lua
+   228	太阴指	cast=CasterSingle	script=万花\万花_轻功_震地拔冲.lua
+   257	锻骨诀	cast=CasterSingle	script=少林\少林_达摩武诀_锻骨诀.lua
+   355	凭虚御风	cast=CasterSingle	script=纯阳\坐忘经_凭虚御风.lua
+   371	镇山河	cast=PointArea	script=纯阳\纯阳决_镇山河.lua
+   372	转乾坤	cast=CasterSingle	script=纯阳\纯阳决_转乾坤.lua
+   412	天策-疾如风	cast=CasterSingle	script=天策\天策_虎牙令_疾如风.lua
+   550	鹊踏枝	cast=CasterSingle	script=七秀\剑器浑脱_鹊踏枝.lua
+-- NeedOutOfFight[37] {'0': 39289, '1': 1852}
+   17	江湖-防身武艺-打坐	cast=CasterSingle	script=江湖\防身武艺_打坐.lua
+   26	非战斗状态恢复品1	cast=CasterSingle	script=item/ITEM_heal_heal3.lua
+   139	锋针	cast=TargetSingle	script=万花\万花_太素九针_锋针.lua
+   511	少林_子技能_守缺式_非战斗加点	cast=CasterSingle	script=少林\少林_子技能_守缺式非战斗加点.lua
+   955	打伞	cast=CasterSingle	script=装备\背部挂件-伞-打伞动作.lua
+   1160	草上飞_浩气盟	cast=CasterSingle	script=Default.lua
+   1161	草上飞_恶人谷	cast=CasterSingle	script=江湖\江湖轻功_恶人谷_草上飞.lua
+   1564	蹴鞠击倒效果	cast=TargetSingle	script=item\缝纫_蹴鞠.lua

@@ -1,0 +1,22 @@
+﻿JX3ClientX64_exe_net_strings.txt | 0x0082CEE8	ascii	KBuffList::GetBuffByAppendType
+JX3ClientX64_exe_net_strings.txt | 0x0083D0E0	ascii	nRetCode && "[Buff] Get FunctionType"
+JX3ClientX64_exe_net_strings.txt | 0x0083D120	ascii	BuffType
+JX3ClientX64_exe_net_strings.txt | 0x0083D130	ascii	nRetCode && "[Buff] Get BuffType"
+JX3ClientX64_exe_net_strings.txt | 0x0083D178	ascii	nRetCode && "[Buff] Get AppendType"
+JX3ClientX64_exe_net_strings.txt | 0x0083D1B0	ascii	nRetCode && "[Buff] Get DetachType"
+JX3ClientX64_exe_net_strings.txt | 0x0083D740	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+JX3ClientX64_exe_net_strings.txt | 0x0083DD50	ascii	[Buff] Same 'ID' but different 'AppendType' : (%u, %d) --> (%u, %d).
+JX3ClientX64_exe_net_strings.txt | 0x0083E158	ascii	m_nBuffType
+JX3ClientX64_exe_net_strings.txt | 0x0084AAA8	ascii	KCharacter::LuaGetBuffByAppendType
+JX3ClientX64_exe_net_strings.txt | 0x0084E710	ascii	GetBuffByAppendType
+JX3LogicEditOperation_net_strings.txt | 0x00784D10	ascii	nRetCode && "[Buff] Get FunctionType"
+JX3LogicEditOperation_net_strings.txt | 0x00784D50	ascii	BuffType
+JX3LogicEditOperation_net_strings.txt | 0x00784D60	ascii	nRetCode && "[Buff] Get BuffType"
+JX3LogicEditOperation_net_strings.txt | 0x00784DA8	ascii	nRetCode && "[Buff] Get AppendType"
+JX3LogicEditOperation_net_strings.txt | 0x00784DE0	ascii	nRetCode && "[Buff] Get DetachType"
+JX3LogicEditOperation_net_strings.txt | 0x00785390	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+JX3LogicEditOperation_net_strings.txt | 0x007859D0	ascii	[Buff] Same 'ID' but different 'AppendType' : (%u, %d) --> (%u, %d).
+JX3LogicEditOperation_net_strings.txt | 0x00785DF0	ascii	m_nBuffType
+JX3LogicEditOperation_net_strings.txt | 0x007B48A0	ascii	KBuffList::GetBuffByAppendType
+JX3LogicEditOperation_net_strings.txt | 0x007CC570	ascii	GetBuffByAppendType
+JX3LogicEditOperation_net_strings.txt | 0x00814B60	ascii	KCharacter::LuaGetBuffByAppendType

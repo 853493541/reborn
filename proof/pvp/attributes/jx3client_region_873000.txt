@@ -1,0 +1,1197 @@
+0x00873000	rain
+0x00873008	pFilterXY
+0x00873018	KHLClientRegionObstacle::SaveOriginalTerrain
+0x00873048	KHLClientRegionObstacle::ChangeRegionMapSkin
+0x00873078	pLands
+0x00873080	nMainLandIndex > 0 && nMainLandIndex <= MAX_PRIVATE_LAND_COUNT
+0x008730C0	KHLClientRegionObstacle::Load
+0x008730E0	%s/%s/Demolish/v_%03d/%03d_Region.%s
+0x00873108	pRegionHeader
+0x00873118	pRegionHeader->nVersion == eTerrainDataVersion8
+0x00873148	pRegionHeader->nRegionX == nRegionX
+0x00873170	pRegionHeader->nRegionY == nRegionY
+0x00873198	KHLClientRegionObstacle::LoadSkinOriginalTerrain
+0x008731D0	KHLClientRegionObstacle::LoadLandTerrain
+0x00873200	KHLClientRegionObstacle::Save
+0x00873220	nCellCount > 0
+0x00873230	uWriteLen == piBuffer->GetSize()
+0x00873258	[KHLClientRegionObstacle] Save Error:%u
+0x00873280	KHLClientRegionObstacle::MergeLandObstacle
+0x008732B0	nCellX >= rLand.m_nMinCellX && nCellX < rLand.m_nMaxCellX
+0x008732F0	nCellY >= rLand.m_nMinCellY && nCellY < rLand.m_nMaxCellY
+0x00873330	KHLClientRegionObstacle::ProcessOriginalTerrain
+0x00873360	KHLClientRegionObstacle::LoadOriginalTerrain
+0x00873390	KHLClientRegionObstacle::MergeTmpTerrain
+0x008733C0	KHLClientRegionObstacle::LoadBaseCell
+0x008733F0	ruDataLen >= uBaseCellInfoSize * REGION_GRID_WIDTH * REGION_GRID_HEIGHT
+0x00873438	KHLClientRegionObstacle::LoadExtNormalCell
+0x00873468	prbyData
+0x00873478	ruDataLen >= sizeof(int)
+0x00873498	ruDataLen >= nExtNormalCellCount * uExtNormalCellDataSize
+0x008734DB	@
+0x008734E1	>I@
+0x008734E8	SO3World::CURL_WriteFunc
+0x00873504	ptr
+0x00873508	SO3World::Xferinfo
+0x00873520	SO3World::KCURLTask::Init
+0x00873540	m_pCURL
+0x00873548	__addon_
+0x00873558	gzip, deflate
+0x00873568	SO3World::KCURLTask::Perform
+0x00873588	!m_nARQCount
+0x008735A0	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Common\SO3World\Src\KCURL.cpp
+0x00873608	SO3World::InitLocks
+0x00873620	g_pLockArray
+0x00873630	g_pLockArray[nPos]
+0x00873648	SO3World::UnInitLocks
+0x00873660	SO3World::KCURL::Init
+0x00873678	nMaxTaskCount > 0
+0x00873690	Res == CURLE_OK
+0x008736A0	m_pCRULM
+0x008736AC	CURL
+0x008736B8	SO3World::KCURL::NewTask
+0x008736D8	SO3World::KCURL::PushTask
+0x008736F8	SO3World::KCURL::ARQTask
+0x00873718	SO3World:KCURL
+0x00873728	SO3World::KCURL::WorkMutiTask
+0x00873748	nRetCode == CURLM_OK
+0x00873760	pTask && !pTask->m_bFinish
+0x00873780	PVPField.tab
+0x00873790	KPVPFieldMapInfoList::Init
+0x008737B0	nRetCode == 1 && "GetMapID"
+0x008737D0	BaseInfo.dwMapID < MAX_MAP_ID
+0x008737F0	nRetCode == 1 && "Get CopyIndex"
+0x00873818	BaseInfo.nCopyIndex > 0
+0x00873830	BindCenter
+0x00873840	nRetCode == 1 && "Get BindCenter"
+0x00873868	KSimpleObject::UnInit
+0x00873880	!m_pRegion
+0x00873890	KMovableObstacle::~KMovableObstacle
+0x008738B8	KMovableObstacle::Init
+0x008738D0	m_nRadius > 0
+0x008738E0	settings/MovableObstacle
+0x00873900	%s/%u.mo
+0x00873910	KMovableObstacle::LoadObstacle
+0x00873930	[KMovableObstacle::LoadObstacle] The file of Obstacle is not exist! %s
+0x00873978	uFileSize > sizeof(KMovableObstacleHeader)
+0x008739A8	uLeftSize >= sizeof(WORD) * 3
+0x008739C8	nCellListIndex + i < nBaseCount
+0x008739E8	uLeftSize >= nCellCount * uObstacleDataSize
+0x00873A18	nTotalCellCount > 0
+0x00873A30	pMOCell
+0x00873A38	pMOCell->m_wLowLayer < pMOCell->m_wHighLayer
+0x00873A68	pMOCell->m_BaseInfo.wCellType < ctTotal
+0x00873A90	pCurCell
+0x00873AA0	CharacterAction.tab
+0x00873AB8	KCharacterActionList::Init
+0x00873AD8	CharacterAction.dwID > 0
+0x00873AF8	KCharacterActionList::LoadLine
+0x00873B18	IsLoop
+0x00873B20	AnimationID
+0x00873B30	ScriptFuncName
+0x00873B40	ObjSlotInfo.tab
+0x00873B50	KObjSlotInfoList::Init
+0x00873B68	nFileHeight - 1 < MAX_OBJ_SLOT_ID
+0x00873B8C	SlotID
+0x00873B98	nSlotID > 0 && nSlotID < MAX_OBJ_SLOT_ID
+0x00873BC8	OffsetDistance
+0x00873BE0	Info.nOffsetDistance >= 0 && Info.nOffsetDistance < MAX_OBJ_SLOT_OFFSET_DISTANCE
+0x00873C38	OffsetDirection
+0x00873C50	Info.nOffsetDirection > -DIRECTION_COUNT && Info.nOffsetDirection < DIRECTION_COUNT
+0x00873CA8	OutSkillMoveID
+0x00873CB8	Info.dwOutSkillMoveID <= MAX_SKILL_MOVE_ID
+0x00873CE8	OutOffsetFaceDirection
+0x00873D00	Info.nOutOffsetFaceDirection > -DIRECTION_COUNT && Info.nOutOffsetFaceDirection < DIRECTION_COUNT
+0x00873D68	OwnerMask
+0x00873D78	SubordinateMask
+0x00873D88	KObjSlotInfoList::GetSlotInfo
+0x00873DA8	dwSlotID > 0
+0x00873DB8	dwSlotID < MAX_OBJ_SLOT_ID
+0x00873DD8	KSkillDebug::Init
+0x00873DF0	KSkillDebug::Detach
+0x00873E08	KSkillDebug::OnDetach
+0x00873E20	it != m_OnAttachVector.end()
+0x00873E40	KSkillDebug::DetachAll
+0x00873E5B	@
+0x00873E60	PnI@
+0x00873E68	KFightFlagList::Init
+0x00873E80	m_nSize > 0
+0x00873E90	m_ForceDefault
+0x00873EA0	nId == i
+0x00873EB0	DefaultFlag
+0x00873EC0	DefaultLevel
+0x00873ED0	DefaultRepute
+0x00873EE0	KFightFlagList::GetDefaultRepute
+0x00873F08	dwForceID < (DWORD)m_nSize
+0x00873F28	KCurrency::Init
+0x00873F38	AttractionsInfo.tab
+0x00873F50	KAttractionsInfoList::Init
+0x00873F70	dwID > 0 && dwID < MAX_ATTRACTIONS_ID
+0x00873F98	Info.nScore >= 0
+0x00873FB0	Info.dwMapID > 0
+0x00873FC8	Info.nX >= 0
+0x00873FD8	Info.nY >= 0
+0x00873FE8	Info.nRadius >= 0
+0x00874000	it == m_AttractionsMap.end()
+0x00874020	KAttractionsInfoList::GetInfo
+0x00874040	dwAttactionsID > 0 && dwAttactionsID < MAX_ATTRACTIONS_ID
+0x00874080	KShowCardSettings::Init
+0x00874098	settings/ShowCard/ShowCardConst.ini
+0x008740C0	KShowCardSettings::ReloadConst
+0x008740E0	KShowCardSettings::LoadConstFile
+0x00874108	ConstKeyCount
+0x00874118	SHOW_CARD_DATA
+0x00874128	ConstKeys
+0x00874138	nRetCode == nCount
+0x00874150	MaxDataCount
+0x00874160	m_nMaxDataCount <= SHOW_CARD_DATA_MAX_COUNT
+0x00874190	RequestCD
+0x008741A0	SHOW_CARD_CACHE
+0x008741B0	m_dwRequestCD > 0
+0x008741C8	UploadTimeInterval
+0x008741E0	m_nUploadTimeInterval > 0
+0x00874200	ApplyTimeInterval
+0x00874218	m_nApplyTimeInterval > 0
+0x00874238	MaxCacheCount
+0x00874248	m_nMaxCacheCount > 0
+0x00874260	MobileMaxCacheCount
+0x00874278	m_nMobileMaxCacheCount > 0
+0x00874298	DataCloseFlag
+0x008742A8	SHOW_CARD_FLAG
+0x008742B8	DecorationPresetCloseFlag
+0x008742D8	MobileApplyTimeInterval
+0x008742F0	m_nMobileApplyTimeInterval > 0
+0x00874310	(
+0x00874313	@
+0x00874319	}I@
+0x00874320	KRelationList::Init
+0x00874338	szSettingFile
+0x00874348	nRetCode && nId == i - 2
+0x00874368	nRetCode != 0
+0x00874378	KRelationList::GetRelation
+0x00874398	nA >= 0 && nA < m_nSize
+0x008743B0	nB >= 0 && nB < m_nSize
+0x008743C8	Attrib%d
+0x008743D8	Value%dA
+0x008743E8	Value%dB
+0x008743F8	LoadAdronTabAttribute
+0x00874410	Load NpcAdron.tab Error By AttribIndex %d Type is atExecuteScript at line %d.
+0x00874460	NpcAdron.tab
+0x00874470	KNpcAdronTab::Init
+0x00874488	MapLevel
+0x00874498	Contribution
+0x008744A8	NpcClass.tab
+0x008744B8	KNpcClassList::Init
+0x008744D0	m_NpcClassList
+0x008744E0	ClassName
+0x008744F0	ClassDrop
+0x00874500	ParentClassID
+0x00874510	DoodadClass.tab
+0x00874520	KDoodadClassList::Init
+0x00874538	m_DoodadClassList
+0x0087454C	Drop1
+0x00874554	Count1
+0x0087455C	Drop2
+0x00874564	Count2
+0x0087456C	Drop3
+0x00874574	Count3
+0x0087457C	Drop4
+0x00874584	Count4
+0x00874590	OrderList.tab
+0x008745A0	%s/NpcOrder/%s
+0x008745B0	[KNpcOrderManager] Failed to open tab file: "%s".
+0x008745E8	KNpcOrderManager::Init
+0x00874600	nTableHeight >= 1
+0x00874614	Zoom
+0x00874620	fZoom != 0.0f
+0x00874630	KNpcOrderManager::LoadOrder
+0x00874650	nTableHeight > 1
+0x00874664	Angel
+0x00874670	Node.nAngel < DIRECTION_COUNT
+0x00874693	@
+0x00874697	C
+0x008746A0	ReputeLootBuff.tab
+0x008746B8	KReputeLootBuffList::Init
+0x008746D8	LootBuffID
+0x008746E8	dwBufferID
+0x008746F8	LootReputeID
+0x00874708	OldPendentRepresentID2ItemID.tab
+0x00874730	KPendentOldDataInfoList::Init
+0x00874750	nSubType == estWaistExtend || nSubType == estBackExtend || nSubType == estFaceExtend || nSubType == estLShoulderExtend || nSubType == estRShoulderExtend || nSubType == estBackCloakExtend
+0x00874810	RepresetID
+0x00874820	nRetCode && nRepresentID > 0
+0x00874840	nRetCode && dwItemID > 0
+0x00874860	Load '%s' Failed! unexpected nSubType = %d, Line %d
+0x00874898	KTongConstList::Init
+0x008748B0	bRetCode && "LoadConstListIni"
+0x008748D0	bRetCode && "LoadOperationConfig"
+0x008748F8	settings/TongConstList.ini
+0x00874918	pvp/settings/TongConstList.ini
+0x00874938	KTongConstList::LoadConstListIni
+0x00874960	Cooking
+0x00874968	Tailoring
+0x00874978	Founding
+0x00874988	Medicine
+0x00874998	Recasting
+0x008749A8	TongWarCD
+0x008749B8	TongDiplomacy
+0x008749C8	TongWarSameCampCastDP
+0x008749E0	TongWarDiffCampCastDP
+0x008749F8	TongWarTimes
+0x00874A08	TongContractWarCastDP
+0x00874A20	TongContractWarCastMoney
+0x00874A40	TongContractWarTime
+0x00874A58	TongContractWarWaitTime
+0x00874A70	TongContractWarTimeSegment
+0x00874A90	TongAllyWaitTime
+0x00874AA8	TongAllyRefusedWaitTime
+0x00874AC0	StopAllianceCoolTime
+0x00874AD8	RepairDiscount
+0x00874AE8	Misc
+0x00874AF0	m_nRepairDiscount >= 0 && m_nRepairDiscount <= 100
+0x00874B28	NewMemberLimitTime
+0x00874B40	m_nNewMemberLimitTime >= 0
+0x00874B60	CraftConsumeReduceStamina
+0x00874B80	KTongConstList::LoadCraftTech
+0x00874BA0	nReduceStaminaRate >= 0 && nReduceStaminaRate <= 100
+0x00874BD8	%s/TongOperation.tab
+0x00874BF0	KTongConstList::LoadOperationConfig
+0x00874C18	nHeight == totTotal - 4
+0x00874C30	Operation
+0x00874C40	KTONG_OPERATION_TYPE
+0x00874C60	nOperationIndex >= 0 && nOperationIndex < TONG_BASE_OPERATION_MASK_LEN
+0x00874CB0	nOperationIndex >= 0 && nOperationIndex < TONG_ADVANCE_OPERATION_MASK_LEN
+0x00874D00	m_nOperationIndex[nOperationType] == INVALID_TONG_OPERATION
+0x00874D40	KExterior2PendantList::Init
+0x00874D60	settings/CoinShopSettings/Exterior2Pendant.tab
+0x00874D90	KExterior2PendantList::Reload
+0x00874DB0	KExterior2PendantList::LoadFile
+0x00874DD0	Param.dwExteriorID > 0
+0x00874DE8	PendantID
+0x00874DF8	Param.dwPendantID > 0
+0x00874E10	DeleteExterior
+0x00874E20	KExterior2PendantList dwExteriorID has Existed: nRow%d dwExteriorID = %u
+0x00874E70	KHorseExteriorSettings::Init
+0x00874E90	KHorseExteriorSettings::ReloadTables
+0x00874EB8	settings/HorseExterior/Horse.tab
+0x00874EE0	KHorseExteriorSettings::LoadHorseExteriorTable
+0x00874F10	Info.dwID
+0x00874F20	Info.dwRepresentID
+0x00874F38	InsIndexRet.second
+0x00874F50	KHorseExteriorSettings::LoadHorseExteriorTableLine
+0x00874F88	rInfo.nPrice >= 0
+0x00874FA0	SellStartTime
+0x00874FB0	rInfo.nSellStartTime == -1 || rInfo.nSellStartTime > 0
+0x00874FE8	SellEndTime
+0x00874FF8	rInfo.nSellEndTime == -1 || rInfo.nSellEndTime > 0
+0x00875030	rInfo.nDiscount >= 0 && rInfo.nDiscount <= HORSE_EXTERIOR_PRICE_DISCOUNT_BASE
+0x00875080	rInfo.nDisStartTime == -1 || rInfo.nDisStartTime > 0
+0x008750B8	rInfo.nDisEndTime == -1 || rInfo.nDisEndTime > 0
+0x008750F0	settings/HorseExterior/HorseEquip.tab
+0x00875118	KHorseExteriorSettings::LoadHorseEquipExteriorTable
+0x00875150	Info.nDetailType
+0x00875168	KHorseExteriorSettings::LoadHorseEquipExteriorTableLine
+0x008751A0	rInfo.nDetailType >= 0 && rInfo.nDetailType < edtTotal
+0x008751EC	d
+0x008751F0	KCustomDyeingBase::GetItemCostType
+0x00875218	KCustomDyeingBase::GetColorItemAmountInPackage
+0x00875248	eDyeingType >= 0 && eDyeingType < cdtTotal
+0x00875278	pnPermanentCount
+0x00875290	pnTimeLimitCount
+0x008752A8	KCustomDyeingBase::GetCostColorItemInPackage
+0x008752D8	pdwCostBox
+0x008752E8	pdwCostX
+0x008752FB	@
+0x00875301	X0@
+0x00875308	KTerrainScene::Clean: %.1lfms
+0x00875328	KRecorderSocketStreamRecord::Recv
+0x00875350	KRecorderAsyncSocketStreamRecord::Recv
+0x00875378	KRecorderSocketStreamReplay::SetTimeout
+0x008753A0	KRecorderSocketStreamReplay::Send
+0x008753C8	KRecorderSocketStreamReplay::CheckCanRecv
+0x008753F8	KRecorderSocketStreamReplay::Recv
+0x00875420	piRecvBuffer
+0x00875430	pvBuffer
+0x00875440	KRecorderSocketStreamReplay::IsAlive
+0x00875468	KRecorderAsyncSocketStreamReplay::Send
+0x00875490	KRecorderAsyncSocketStreamReplay::Recv
+0x008754B8	piRecvData
+0x008754C8	KRecorderAsyncSocketStreamReplay::GetRemoteAddress
+0x00875500	g_HomeLandGlobalInit
+0x00875518	eUserType > hut_invalid && eUserType < hut_total
+0x00875550	HomeLandGlobalInit UserType:%d
+0x00875570	DBPU-
+0x00875578	KHSConsumeList::AddFurniture
+0x00875598	nAmount < INT16_MAX && nAmount > INT16_MIN
+0x008755C8	KHSConsumeList::Serialize
+0x008755E8	uDataLen == GetSerializeSize()
+0x00875608	settings/Homeland/HomelandMapList.tab
+0x00875630	KHomelandMapListConfig::Load
+0x00875650	ObstacleVersion
+0x00875660	IsDramaMap
+0x00875670	DramaMetaNum
+0x00875680	Node.nMetaNum >= 0 && Node.nMetaNum < META_MAP_MAX_METAID
+0x008756C0	!bIsDramaMap || !bIsPrivateHomeMap
+0x008756E8	bIsDramaMap || Node.nMetaNum == 0
+0x00875710	!Node.bIsGroupon || (!bIsDramaMap && !bIsPrivateHomeMap)
+0x00875750	HomelandMapList.find(dwMapID) == HomelandMapList.end()
+0x00875788	[KHomelandMapListConfig] Load Settings Failed ! file["%s"]
+0x008757C8	GameCenterRelation.tab
+0x008757E0	KGameCenterRelationConfig::Load
+0x00875800	SrcGameCenterID
+0x00875810	dwSrcID >= 0 && dwSrcID < MAX_GAME_CENTER
+0x00875840	!bLoaded[dwSrcID]
+0x00875858	DestGameCenterID
+0x00875870	dwDestID >= 0 && dwDestID < MAX_GAME_CENTER
+0x008758A0	CenterName
+0x008758B0	nRetCode > 0 && nRetCode < sizeof(szCenterName[dwSrcID])
+0x008758F0	CenterFreshType
+0x00875900	nRetCode && dwFreshID > 0
+0x00875920	dwSrcID
+0x00875928	dwCenterID[dwDestID] == dwDestID
+0x00875950	Load Settings Failed ! file["%s"]
+0x00875978	KGameCenterRelationConfig::GetID
+0x008759A0	dwID >= 0 && dwID < MAX_GAME_CENTER
+0x008759C8	KGameCenterRelationConfig::GetCenterName
+0x008759F8	KGameCenterRelationConfig::GetFreshType
+0x00875A20	PrivateHomeSkin.tab
+0x00875A38	KPrivateHomeSkinConfig::Load
+0x00875A58	SkinInfo.dwMapID < UINT16_MAX
+0x00875A78	SkinInfo.dwSkinID > 0 && SkinInfo.dwSkinID < UINT16_MAX
+0x00875AB0	!m_SkinConfig.count(uMapSkinID)
+0x00875AD0	[KPrivateHomeSkinConfig] Load Settings Failed ! file["%s"]
+0x00875B10	KPrivateHomeSkinConfig::GetSkinInfo
+0x00875B38	itFind != m_SkinConfig.end()
+0x00875B58	KLandIndexConfig::GetLand
+0x00875B78	it != Land.end()
+0x00875B90	KLandIndexConfig::AddLand
+0x00875BB0	nMainLandIndex > 0 && nMainLandIndex < MAX_LAND_COUNT
+0x00875BE8	nSubLandIndex >= 0 && nSubLandIndex < MAX_SUB_LAND_INDEX
+0x00875C28	pszHousePath
+0x00875C38	pszBlackHousePath
+0x00875C50	pszDefaultSDKName
+0x00875C68	nSDKVsersion > 0
+0x00875C80	server_settings/Homeland/DefaultSDK
+0x00875CA8	bRetCode > 0 && bRetCode < sizeof(pLand->szDefaultSDKPath)
+0x00875CE8	KLandIndexConfig::GetLandIndexByXY
+0x00875D10	s_eUserType == hut_client || s_eUserType == hut_landserver
+0x00875D50	pRegionInfo
+0x00875D60	KLandIndexConfig::CheckCellInLand
+0x00875D88	KLandIndexConfig::CalcLandCell
+0x00875DA8	KLandIndexConfig::GetAllMainLandByRegion
+0x00875DD8	KLandIndexConfig::GetAllLandByRegion
+0x00875E00	KLandIndexConfig::GetLandName
+0x00875E20	HaveLand(nRealLandIndex)
+0x00875E40	KLandIndexConfig::GetHousePath
+0x00875E60	KLandIndexConfig::GetMaxSubLandIndex
+0x00875E88	itFind != MaxSubLand.end()
+0x00875EA8	KLandIndexConfig::GetAllLandRegion
+0x00875ED0	KLandIndexConfig::IsPointInMinEnclosingCircle
+0x00875F00	KLandIndexConfig::GetCenterRegion
+0x00875F28	HomelandLevelFurniture.tab
+0x00875F48	KHomelandLevelFurnitureConfig::Load
+0x00875F70	nCategory1 > 0 && nCategory1 < MAX_FURNITURE_CATEGORY_LIMIT
+0x00875FB0	nCategory2 > 0 && nCategory2 < MAX_FURNITURE_CATEGORY_LIMIT
+0x00875FF0	m_HomelandLevelFurnitureConfig.find(uKey) == m_HomelandLevelFurnitureConfig.end()
+0x00876048	LevelLim%d
+0x00876058	nRetCode > 0 && nRetCode < sizeof(szLevel)
+0x00876088	LevelUp%d
+0x008760A0	[KHomelandLevelFurnitureConfig] Load Settings Failed ! file["%s"]
+0x008760E8	HomelandLevelUp.tab
+0x00876100	KHomelandLevelUpConfig::Load
+0x00876120	nLevel >= 1 && nLevel < MAX_HL_LEVEL
+0x00876150	m_HomeLandLevelUpConfig.find(nLevel) == m_HomeLandLevelUpConfig.end()
+0x00876198	Info.nCurrency >= 0
+0x008761B0	Info.nRecord >= 0
+0x008761C8	[KHomelandLevelUpInfo] Load Settings Failed ! file["%s"]
+0x00876208	%s/%s/%s.land
+0x00876218	KHomelandMapInfo::LoadLandIndexConfig
+0x00876240	%s/%s/meta/%s_%d.land
+0x00876258	nTabHeight == piDramaTabFile->GetHeight()
+0x00876288	nDramaLandIndex == nLandIndex
+0x008762A8	X%d
+0x008762AC	Y%d
+0x008762B0	ROTATION
+0x008762C0	DefaultSDKName
+0x008762D0	SDKVersion
+0x008762E0	nSDKVersion > 0
+0x008762F0	HouseLandName
+0x00876300	DefaultHouseName
+0x00876318	bLandIndex[i]
+0x00876328	[KHomelandMapInfo] Load Settings Failed ! file["%s"]
+0x00876360	KHomelandMapInfo::LoadPrivateLandIndexConfig
+0x00876390	eMapType == ehlmt_privatehome
+0x008763B0	%s/%s/%s.pland
+0x008763C0	nMainLandIndex == MAX_PRIVATE_LAND_COUNT
+0x008763F0	SubLandIndex
+0x00876400	bLandIndexInitFlag[i]
+0x00876418	KSDKWarehouseFurnitureData::AddFurniture
+0x00876448	nResAmount >= 0
+0x00876458	KSDKWarehousePlayerData::AddPendant
+0x00876480	!PendantSet.count(nID)
+0x00876498	KSDKWarehouseSumData::AddPendant
+0x008764C0	!PendantMap.count(nID) && uGlobalID > 0
+0x008764E8	KSDKWarehouse::InitSumWarehouse
+0x00876508	KSDKWarehouse::Create
+0x00876520	!Get(uGlobalRoleID)
+0x00876538	KSDKWarehouse::DelPendent
+0x00876558	itFind != m_SumWarehouse.PendantMap.end()
+0x00876588	pPendentOwnerData
+0x008765A0	KSDKWarehouse::GetCount
+0x008765B8	KSDKWarehouse::AddCount
+0x008765D0	nCount == 1 || nCount == -1
+0x008765F0	KSDKWarehouse::SetDigitalBlp
+0x00876610	pszDigitalBlpSN && nSNLen
+0x00876630	KSDKWarehouse::GetLogicData
+0x00876650	uDataLen >= sizeof(KSDKFileHeader)
+0x00876678	uDataLen == uOffsetSize + pFileHeader->nLogicSize
+0x008766B0	KSDKWarehouse::LoadSDK
+0x008766C8	KSDKWarehouse::LoadLogic
+0x008766E8	uDataLen >= sizeof(KSDKLogicHeader)
+0x00876710	KSDKWarehouse::LoadVersion_1
+0x00876730	pWareHouse
+0x00876740	uDataLen >= sizeof(KSDKLogicWareHouse_V1)
+0x00876770	pFilePlayer
+0x00876780	uDataLen >= uOffsetLen
+0x00876798	pHomeItem
+0x008767B0	pHomeItem->byType == eft_furniture || pHomeItem->byType == eft_pendant
+0x008767F8	KSDKWarehouse::LoadVersion_2
+0x00876818	uDataLen >= sizeof(KSDKLogicWareHouse_V2)
+0x0087686B	@
+0x00876870	@
+0x00876873	@
+0x00876878	P
+0x0087687B	@
+0x00876880	p
+0x00876883	@
+0x0087688B	@
+0x00876893	@
+0x0087689B	@
+0x008768A3	@
+0x008768AB	@
+0x008768B3	@
+0x008768B8	0
+0x008768BB	@
+0x008768C0	p@
+0x008768C3	@
+0x008768C8	@
+0x008768CB	@
+0x008768D0	C
+0x008768D2	L
+0x008768D4	S
+0x008768D6	I
+0x008768D8	D
+0x008768DA	\
+0x008768DC	{
+0x008768DE	9
+0x008768E0	B
+0x008768E2	7
+0x008768E4	A
+0x008768E6	9
+0x008768E8	8
+0x008768EA	E
+0x008768EC	C
+0x008768EE	-
+0x008768F0	7
+0x008768F2	E
+0x008768F4	F
+0x008768F6	9
+0x008768F8	-
+0x008768FA	4
+0x008768FC	6
+0x008768FE	8
+0x00876900	c
+0x00876902	-
+0x00876904	A
+0x00876906	C
+0x00876908	C
+0x0087690A	8
+0x0087690C	-
+0x0087690E	3
+0x00876910	7
+0x00876912	C
+0x00876914	7
+0x00876916	9
+0x00876918	3
+0x0087691A	D
+0x0087691C	B
+0x0087691E	D
+0x00876920	7
+0x00876922	E
+0x00876924	0
+0x00876926	}
+0x00876928	\
+0x0087692A	I
+0x0087692C	m
+0x0087692E	p
+0x00876930	l
+0x00876932	e
+0x00876934	m
+0x00876936	e
+0x00876938	n
+0x0087693A	t
+0x0087693C	e
+0x0087693E	d
+0x00876940	 
+0x00876942	C
+0x00876944	a
+0x00876946	t
+0x00876948	e
+0x0087694A	g
+0x0087694C	o
+0x0087694E	r
+0x00876950	i
+0x00876952	e
+0x00876954	s
+0x00876956	\
+0x00876958	{
+0x0087695A	A
+0x0087695C	5
+0x0087695E	F
+0x00876960	7
+0x00876962	1
+0x00876964	4
+0x00876966	0
+0x00876968	E
+0x0087696A	-
+0x0087696C	4
+0x0087696E	3
+0x00876970	1
+0x00876972	1
+0x00876974	-
+0x00876976	4
+0x00876978	e
+0x0087697A	f
+0x0087697C	9
+0x0087697E	-
+0x00876980	A
+0x00876982	A
+0x00876984	B
+0x00876986	C
+0x00876988	-
+0x0087698A	F
+0x0087698C	5
+0x0087698E	5
+0x00876990	9
+0x00876992	4
+0x00876994	1
+0x00876996	B
+0x00876998	5
+0x0087699A	E
+0x0087699C	B
+0x0087699E	E
+0x008769A0	5
+0x008769A2	}
+0x008769A8	i
+0x008769AA	d
+0x008769AC	e
+0x008769AE	x
+0x008769B8	%
+0x008769BA	0
+0x008769BC	5
+0x008769BE	l
+0x008769C0	d
+0x008769C8	%08lX%04X%04x%02X%02X%02X%02X%02X%02X%02X%02X
+0x008769F8	%
+0x008769FA	0
+0x008769FC	3
+0x008769FE	d
+0x00876A00	%
+0x00876A02	0
+0x00876A04	2
+0x00876A06	d
+0x00876A08	%
+0x00876A0A	0
+0x00876A0C	2
+0x00876A0E	d
+0x00876A10	%
+0x00876A12	0
+0x00876A14	4
+0x00876A16	d
+0x00876A18	%
+0x00876A1A	0
+0x00876A1C	2
+0x00876A1E	d
+0x00876A20	%
+0x00876A22	0
+0x00876A24	2
+0x00876A26	d
+0x00876A28	%
+0x00876A2A	0
+0x00876A2C	2
+0x00876A2E	d
+0x00876A38	%
+0x00876A3A	0
+0x00876A3C	2
+0x00876A3E	x
+0x00876A48	%
+0x00876A4A	0
+0x00876A4C	1
+0x00876A4E	0
+0x00876A50	l
+0x00876A52	u
+0x00876A58	\
+0x00876A5A	K
+0x00876A5C	i
+0x00876A5E	n
+0x00876A60	g
+0x00876A62	s
+0x00876A64	o
+0x00876A66	f
+0x00876A68	t
+0x00876A6A	\
+0x00876A6C	K
+0x00876A6E	I
+0x00876A70	S
+0x00876A72	\
+0x00876A78	%
+0x00876A7A	s
+0x00876A80	h
+0x00876A82	g
+0x00876A84	.
+0x00876A86	d
+0x00876A88	a
+0x00876A8A	t
+0x00876A90	\
+0x00876A92	A
+0x00876A94	l
+0x00876A96	l
+0x00876A98	 
+0x00876A9A	U
+0x00876A9C	s
+0x00876A9E	e
+0x00876AA0	r
+0x00876AA2	s
+0x00876AA4	\
+0x00876AA6	A
+0x00876AA8	p
+0x00876AAA	p
+0x00876AAC	l
+0x00876AAE	i
+0x00876AB0	c
+0x00876AB2	a
+0x00876AB4	t
+0x00876AB6	i
+0x00876AB8	o
+0x00876ABA	n
+0x00876ABC	 
+0x00876ABE	D
+0x00876AC0	a
+0x00876AC2	t
+0x00876AC4	a
+0x00876AC8	0
+0x00876AD0	i
+0x00876AD2	d
+0x00876AD4	n
+0x00876AD6	o
+0x00876AE0	%
+0x00876AE2	l
+0x00876AE4	d
+0x00876AE8	u
+0x00876AEA	l
+0x00876AEC	s
+0x00876AEE	t
+0x00876AF8	 
+0x00876AFB	@
+0x00876B01	RJ@
+0x00876B13	@
+0x00876B19	eJ@
+0x00876B20	V
+0x00876B22	y@
+0x00876B2B	@
+0x00876B31	eJ@
+0x00876B3A	J@
+0x00876B43	1
+0x00876B45	7
+0x00876B47	5
+0x00876B4B	;w
+0x00876B4F	?
+0x00876B51	7
+0x00876B53	5G
+0x00876B57	?
+0x00876B68	"
+0x00876B81	P
+0x00876B84	 
+0x00876B90	"
+0x00876B99	P
+0x00876BA9	P
+0x00876BAC	 
+0x00876BB8	"
+0x00876BC1	P
+0x00876BD1	Q
+0x00876BD4	@
+0x00876BE0	"
+0x00876BE8	LQ
+0x00876BF8	`Q
+0x00876BFC	 
+0x00876C08	"
+0x00876C11	Q
+0x00876C20	 R
+0x00876C24	h
+0x00876C30	"
+0x00876C38	xR
+0x00876C4C	 
+0x00876C58	"
+0x00876C61	R
+0x00876C74	 
+0x00876C80	"
+0x00876C89	R
+0x00876C99	R
+0x00876C9C	 
+0x00876CA8	"
+0x00876CB1	R
+0x00876CC1	S
+0x00876CC4	@
+0x00876CD0	"
+0x00876CD8	TS
+0x00876CE8	`S
+0x00876CEC	0
+0x00876CF8	"
+0x00876D01	Q
+0x00876D11	S
+0x00876D14	h
+0x00876D20	"
+0x00876D39	T
+0x00876D3C	 
+0x00876D48	"
+0x00876D51	\
+0x00876D58	 T
+0x00876D60	HT
+0x00876D64	8
+0x00876D70	"
+0x00876D79	R
+0x00876D88	xT
+0x00876D8C	 
+0x00876D98	"
+0x00876DA1	R
+0x00876DB1	T
+0x00876DB4	 
+0x00876DC0	"
+0x00876DC9	T
+0x00876DD1	T
+0x00876DD9	U
+0x00876DDC	8
+0x00876DE8	"
+0x00876DF0	XU
+0x00876E00	`U
+0x00876E04	 
+0x00876E13	@
+0x00876E18	`
+0x00876E1A	J@
+0x00876E20	V
+0x00876E22	y@
+0x00876E28	V
+0x00876E2A	y@
+0x00876E30	V
+0x00876E32	y@
+0x00876E38	V
+0x00876E3A	y@
+0x00876E43	@
+0x00876E48	`
+0x00876E4A	J@
+0x00876E52	J@
+0x00876E5A	J@
+0x00876E60	 
+0x00876E62	J@
+0x00876E6A	J@
+0x00876E70	Comments must start with /
+0x00876E90	Type is not convertible to string
+0x00876EB8	integer out of signed integer range
+0x00876EE0	Real out of signed integer range
+0x00876F08	Type is not convertible to int
+0x00876F28	Negative integer can not be converted to unsigned integer
+0x00876F68	Real out of unsigned integer range
+0x00876F90	Type is not convertible to uint
+0x00876FB0	Type is not convertible to double
+0x00876FDF	A
+0x00876FE8	"
+0x00876FF1	U
+0x00877001	U
+0x00877004	 
+0x00877010	"
+0x00877019	U
+0x00877029	U
+0x0087702C	`
+0x00877038	"
+0x00877041	V
+0x00877050	0V
+0x00877054	H
+0x00877060	"
+0x00877069	V
+0x00877079	W
+0x00877088	"
+0x00877090	pW
+0x008770A1	W
+0x008770A4	X
+0x008770B0	"
+0x008770B9	W
+0x008770C9	X
+0x008770D8	"
+0x008770E0	tX
+0x008770F1	X
+0x008770F4	`
+0x00877100	"
+0x00877109	X
+0x00877119	Y
+0x0087711C	P
+0x00877128	"
+0x00877130	hY
+0x00877140	xY
+0x00877144	X
+0x00877150	"
+0x00877159	Y
+0x00877169	Y
+0x0087716C	@
+0x00877178	"
+0x00877181	Z
+0x00877191	Z
+0x00877194	8
+0x008771A0	"
+0x008771A8	,Z
+0x008771B8	@Z
+0x008771BC	P
+0x008771C8	"
+0x008771D1	[
+0x008771E1	[
+0x008771E4	(
+0x008771F0	A valid JSON document must be either an array or an object value.
+0x00877238	Syntax error: value, object or array expected.
+0x00877268	rue
+0x0087726C	alse
+0x00877274	ull
+0x00877278	Missing ':' after object member name
+0x008772A0	Missing ',' or '}' in object declaration
+0x008772D0	Missing '}' or object member name
+0x008772F8	Missing ',' or ']' in array declaration
+0x00877320	' is not a number.
+0x00877334	'
+0x00877338	%lf
+0x00877340	Empty escape sequence in string
+0x00877360	Bad escape sequence in string
+0x00877380	additional six characters expected to parse unicode surrogate pair.
+0x008773D0	expecting another \u token to begin the second half of a unicode surrogate pair
+0x00877420	Bad unicode escape sequence in string: four digits expected.
+0x00877460	Bad unicode escape sequence in string: hexadecimal digit expected.
+0x008774A8	"
+0x008774B1	\
+0x008774C0	P\
+0x008774C4	0
+0x008774D0	"
+0x008774D9	\
+0x008774E8	@]
+0x008774FB	@
+0x00877502	J@
+0x00877508	V
+0x0087750A	y@
+0x00877510	%#.16g
+0x00877518	"\
+0x00877520	"
+0x00877524	\"
+0x00877528	\\
+0x0087752C	\b
+0x00877530	\f
+0x00877534	\n
+0x00877538	\r
+0x0087753C	\t
+0x00877540	\u
+0x00877544	null
+0x0087754C	[
+0x00877550	]
+0x00877554	{
+0x00877558	:
+0x0087755C	}
+0x00877560	, 
+0x00877568	streaming.dll
+0x00877578	streaming sdk initialized.
+0x00877598	streaming sdk load dll error %lu.
+0x008775C0	InitStreaming
+0x008775D0	streaming dll (%s) does not exist.
+0x008775F8	TickStreaming
+0x00877608	StreamingUpdateGameState
+0x00877628	ExitStreaming
+0x00877638	PeekStreamingMsgInternal
+0x00877658	PushMsgToStreamingInternal
+0x00877678	GetPlatformTypeInternal
+0x00877690	NewStreamingVaribaleMemoryInternal
+0x008776B8	DeleteStreamingVaribaleMemoryInternal
+0x008776E0	boolean setopt(%d) got unsupported argument %ld, treated as %d
+0x00877720	SESS
+0x00877728	FLUSH
+0x00877730	RELOAD
+0x00877738	Set-Cookie:
+0x00877744	SRP
+0x00877748	setopt 0x%x got bad argument
+0x00877768	CONNECT_ONLY is required
+0x00877788	Failed to get recent socket
+0x008777C8	 
+0x008777CA	M@
+0x00877811	EK@
+0x00877831	EK@
+0x00877850	-> [%s]
+0x00877858	increasing xfer table size to %u
+0x00877880	added to multi, mid=%u, running=%u, total=%u
+0x008778B0	multi_done_locked, in use=%u
+0x008778D0	Connection still in use %u, no more multi_done now!
+0x00877910	multi_done, terminating conn #%lld to %s:%d, forbid=%d, close=%d, premature=%d, conn_multiplex=%d
+0x00877980	multi_done, conn #%lld to %s:%d was shutdown by server, not reusing
+0x008779C8	Connection #%lld to host %s:%d left intact
+0x008779F8	multi_done: status: %d prem: %d done: %d
+0x00877A28	removed from multi, mid=%u, running=%u, total=%u
+0x00877A60	multi_getsock: unexpected multi state %d
+0x00877A90	error determining pollset: %d
+0x00877AB0	%s pollset[] has POLLIN, but there is still buffered input to consume -> mark as dirty
+0x00877B08	%s pollset[], timeouts=%zu, paused %d/%d (r/w)
+0x00877B38	IN
+0x00877B40	%s pollset[fd=%qd %s%s], timeouts=%zu
+0x00877B68	%s pollset[fd=%qd %s%s, fd=%qd %s%s], timeouts=%zu
+0x00877BA0	%s pollset[fds=%u], timeouts=%zu
+0x00877BC8	WARNING: no socket in pollset or timer, transfer may stall!
+0x00877C08	multi_wait
+0x00877C18	multi_wait(fds=%d, timeout=%d) tinternal=%ld
+0x00877C48	Resolving timed out after %lld milliseconds
+0x00877C78	Connection timed out after %lld milliseconds
+0x00877CB0	Operation timed out after %lld milliseconds with %lld out of %lld bytes received
+0x00877D10	Operation timed out after %lld milliseconds with %lld bytes received
+0x00877D58	Downgrades to HTTP/1.1
+0x00877D70	operation aborted by pre-request callback
+0x00877D9C	found
+0x00877DA8	missing
+0x00877DB0	Curl_resolv_check() -> %d, %s
+0x00877DD0	multi changed, check CONNECT_PEND queue
+0x00877DF8	sub xfer done for master %u
+0x00877E18	master easy %u without sub_xfer_done callback.
+0x00877E48	master easy %u already gone.
+0x00877E68	multi_perform(running=%u)
+0x00877E88	PENDING handle timeout
+0x00877EA0	multi_cleanup, closing admin handle, done
+0x00877ED0	Curl_multi_will_close fd=%qd
+0x00877EF0	dirty transfer %u no longer found
+0x00877F18	gives multi timeout in %ldms
+0x00877F38	[TIMER] clear
+0x00877F48	[TIMER] set %ldms, none before
+0x00877F68	[TIMER] set %ldms, replace previous
+0x00877F90	set for %lldns
+0x00877FA0	Internal error removing splay node = %d
+0x00877FC8	cleared
+0x00877FD0	Internal error clearing splay node = %d
+0x00877FF8	[TIMEOUT] all cleared
+0x00878010	transfer has no multi handle
+0x00878030	transfer buffer size is 0
+0x00878050	attempt to borrow xfer_buf when already borrowed
+0x00878088	could not allocate xfer_buf of %zu bytes
+0x008780B8	invalid easy handle in xfer table for mid=%u
+0x008780E8	/
+0x008780F0	ignoring failed cookie_init for %s
+0x00878118	localhost
+0x00878124	;
+0x00878128	=
+0x0087812C	;
+0x00878130	cookie contains TAB, dropping
+0x00878150	oversized cookie dropped, name/val %zu + %zu bytes
+0x00878188	__Secure-
+0x00878198	__Host-
+0x008781A0	invalid octets in name/value, cookie dropped
+0x008781D0	secure
+0x008781D8	httponly
+0x008781E4	path
+0x008781EC	domain
+0x008781F8	skipped cookie with bad tailmatch domain: %s
+0x00878228	max-age
+0x00878230	expires
+0x00878238	#HttpOnly_
+0x00878248	TRUE
+0x00878250	FALSE
+0x00878260	cookie '%s' for domain '%s' dropped, would overlay an existing cookie
+0x008782A8	Replaced
+0x008782B4	Added
+0x008782C0	%s cookie %s="%s" for domain %s, path %s, expire %lld
+0x008782F8	WARNING: failed to open cookie file "%s"
+0x00878328	127.0.0.1
+0x00878334	::1
+0x00878338	Included max number of cookies (%zu) in request!
+0x00878370	unknown
+0x00878378	%s%s%s
+0x0087837F	%s
+0x00878382	%s
+0x00878385	%s
+0x00878388	%lld
+0x0087838D	%s
+0x00878390	%s
+0x008783A0	# Netscape HTTP Cookie File
+0x008783BC	# https://curl.se/docs/http-cookies.html
+0x008783E5	# This file was generated by libcurl! Edit at your own risk.
+0x00878428	WARNING: failed to save cookies in %s: %s
+0x00878454	:%u
+0x00878458	Hostname in DNS cache was stale, zapped
+0x00878480	Hostname in DNS cache does not have needed family, zapped
+0x008784C0	Shuffling %i addresses
+0x008784D8	Store negative name resolve for %s:%d
+0x00878500	.onion
+0x00878508	.onion.
+0x00878510	Not resolving .onion address (RFC 7686)
+0x00878538	Hostname %s was found in DNS cache
+0x00878560	localhost.
+0x00878570	.localhost
+0x00878580	.localhost.
+0x00878590	Negative DNS entry
+0x008785A8	Resolve address '%s' found illegal
+0x008785D0	Couldn't parse CURLOPT_RESOLVE entry '%s'
+0x00878600	RESOLVE %.*s:%lld - old addresses discarded
+0x00878630	 (non-permanent)
+0x00878648	Added %.*s:%lld:%s to DNS cache%s
+0x00878670	RESOLVE *:%lld using wildcard
+0x00878690	(none)
+0x00878698	Host %s:%d was resolved.
+0x008786B8	too many IP, cannot show
+0x008786D8	IPv6: %s
+0x008786E8	IPv4: %s
+0x008786F8	Hostname '%s' was found in DNS cache
+0x00878720	host
+0x00878728	proxy
+0x00878730	)
+0x00878734	 (
+0x00878738	Could not resolve %s: %s%s%s%s
+0x00878760	8
+0x00878763	@
+0x00878768	P
+0x0087876A	K@
+0x00878772	K@
+0x00878778	@
+0x0087877B	@
+0x00878780	P
+0x00878782	K@
+0x0087878A	K@
+0x00878790	H
+0x00878793	@
+0x0087879A	K@
+0x008787A2	K@
+0x008787A8	P
+0x008787AB	@
+0x008787B0	@
+0x008787B2	K@
+0x008787BA	K@
+0x008787C0	X
+0x008787C3	@
+0x008787CA	K@
+0x008787D2	K@
+0x008788F0	0123456789ABCDEF
+0x00878908	l
+0x0087890B	@
+0x00878910	p
+0x00878913	@
+0x00878920	t
+0x00878923	@
+0x00878928	|
+0x0087892B	@
+0x00878933	@
+0x00878943	@
+0x0087894B	@
+0x00878953	@
+0x0087895B	@
+0x00878963	@
+0x0087896B	@
+0x00878973	@
+0x0087897B	@
+0x00878983	@
+0x0087898B	@
+0x00878993	@
+0x0087899B	@
+0x008789A3	@
+0x008789AB	@
+0x008789B0	$
+0x008789B3	@
+0x008789BB	@
+0x008789C0	,
+0x008789C3	@
+0x008789C8	8
+0x008789CB	@
+0x008789D0	H
+0x008789D3	@
+0x008789D8	P
+0x008789DB	@
+0x008789E0	`
+0x008789E3	@
+0x008789EA	K@
+0x008789F2	K@
+0x008789FA	K@
+0x00878A00	0
+0x00878A02	K@
+0x00878A08	@
+0x00878A0A	K@
+0x00878A10	P
+0x00878A12	K@
+0x00878A18	@
+0x00878A1A	K@
+0x00878A22	K@
+0x00878A29	y
+0x00878A2B	@
+0x00878A38	binary
+0x00878A40	8bit
+0x00878A48	7bit
+0x00878A50	base64
+0x00878A58	quoted-printable
+0x00878A6C	\\\
+0x00878A70	"\"
+0x00878A74	"%22
+0x00878A7D	%0D
+0x00878A85	%0A
+0x00878A8C	.gif
+0x00878A98	image/gif
+0x00878AA4	.jpg
+0x00878AB0	image/jpeg
+0x00878ABC	.jpeg
+0x00878AC4	.png
+0x00878AD0	image/png
+0x00878ADC	.svg
+0x00878AE8	image/svg+xml
+0x00878AF8	.txt
+0x00878B00	text/plain
+0x00878B0C	.htm
+0x00878B18	text/html
+0x00878B24	.html
+0x00878B2C	.pdf
+0x00878B38	application/pdf
+0x00878B48	.xml
+0x00878B50	application/xml
+0x00878B60	cr-mime
+0x00878B68	Content-Type
+0x00878B7E	--
+0x00878B84	--
+0x00878B90	; boundary=
+0x00878BA0	Content-Type: %s%s%s
+0x00878BB8	multipart/mixed
+0x00878BC8	application/octet-stream
+0x00878BE8	Content-Disposition
+0x00878C00	multipart/
+0x00878C10	attachment
+0x00878C20	; filename="
+0x00878C30	; name="
+0x00878C40	Content-Disposition: %s%s%s%s%s%s%s
+0x00878C68	Content-Transfer-Encoding
+0x00878C88	Content-Transfer-Encoding: %s
+0x00878CA8	multipart/form-data
+0x00878CC0	form-data
+0x00878CD0	cr_mime_read(len=%zu) is errored -> %d, eos=0
+0x00878D00	cr_mime_read(len=%zu) seen eos -> 0, eos=1
+0x00878D30	cr_mime_read(len=%zu), small read, using tmp
+0x00878D60	cr_mime_read(len=%zu), mime_read() -> %zd
+0x00878D90	client mime read EOF fail, only %lld/%lld of needed bytes read
+0x00878DD0	operation aborted by callback
+0x00878DF0	cr_mime_read(len=%zu), paused by callback
+0x00878E20	read error getting mime data
+0x00878E40	read function returned funny value
+0x00878E68	cr_mime_read(len=%zu, total=%lld, read=%lld) -> %d, %zu, %d
+0x00878EA8	Could only read %lld bytes from the mime post
+0x00878ED8	Mime post already completely uploaded
+0x00878F00	Cannot rewind mime/post data
+0x00878F20	----------------if!
+0x00878F34	host!
+0x00878F40	ifhost!
+0x00878F48	TCP
+0x00878F4C	UDP
+0x00878F50	UNIX
+0x00878F58	TCP-ACCEPT
+0x00878F68	Could not set TCP_NODELAY: %s
+0x00878F88	Failed to set SO_KEEPALIVE on fd %qd: errno %d
+0x00878FB8	Failed to set TCP_KEEPIDLE on fd %qd: errno %d
+0x00878FE8	Failed to set TCP_KEEPIN

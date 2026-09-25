@@ -1,0 +1,373 @@
+﻿====================================================================================================
+鍑忕枟 count 55
+   2662 甯細_鎿傚彴_鍑忕枟浼ゆ垚鏁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 2880 | Script= 
+   9420 3鍙穇娓稿嚮_鏀诲叾鏃犲_瀹氳韩鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSilenceAll  | Cnt= 1 Ivl= 0 | Script= 
+   9514 妤氭祹_鍑忕枟40% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -461 | Cnt= 1 Ivl= 32 | Script= 
+   9694 娓呯粷褰辨瓕_npc_40%鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -512 | Cnt= 1 Ivl= 480 | Script= 
+   10243 鐩惧嚮鍑忕枟瀹為檯鏁堟灉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -307 | Cnt= 1 Ivl= 192 | Script= 鑻嶄簯/濂楄矾鍙婂瓙鎶€鑳?鍑忔枡鏁堟灉琚《鏇挎帀.lua
+   10646 2鍙穇鏌崇化鍚沖闂儏_鍑忕枟绂侀瓟绂佽交鍔?| FT=  | Decay=  | MS= 3758030847 | Ban=  | Inv= 0 | A1= atPullRate -2048 | Cnt= 1 Ivl= 36000 | Script= 
+   10850 缁挎灄_闄烽槺鍑忛€熷噺鐤?| FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv= 264 | A1= atMoveSpeedPercent -512 | Cnt= 3 Ivl= 80 | Script= 
+   10893 2鍙穇鍝ヨ垝缈癬钀芥灙_鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -205 | Cnt= 1 Ivl= 36000 | Script= 
+   12283 鐢熷お鏋佸悶鏃ユ湀鍔犲噺鐤楄鍔ㄨ鏁?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 320 | Script= 
+   12423 2鍙穇鑷村懡绌垮埡鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -512 | Cnt= 1 Ivl= 16 | Script= 
+   15033 MOBA鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atBeTherapyCoefficient -512 | Cnt= 1 Ivl= 48 | Script= 
+   15103 MOBA鍑忕枟瑁呭 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSkillEventHandler 1670 | Cnt= 1 Ivl= 160 | Script= 
+   15531 琛€瑕嗛粍娉夊噺鐤楁晥鏋淏UFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atBeTherapyCoefficient -307 | Cnt= 1 Ivl= 320 | Script= 
+   15551 鏃惰景_鍑忕枟 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1= atBeTherapyCoefficient -102 | Cnt= 1 Ivl= 0 | Script= 
+   15661 閫氱敤_鍑忕枟 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1= atBeTherapyCoefficient -10 | Cnt= 1 Ivl= 0 | Script= 
+   15692 椋熺墿鍏嶇柅鏁堟灉_鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 4800 | Script= 
+   15774 鍐呭姛boss閫氱敤鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -51 | Cnt= 1 Ivl= 960 | Script= 
+   16664 鍓戠函瀹為檯鍑忕枟鏁堟灉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atBeTherapyCoefficient -102 | Cnt= 1 Ivl= 192 | Script= 
+   16665 寤惰繜澶勭悊鍑忕枟娣诲姞 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 3 | Script= 绾槼/濂楄矾鍙婂瓙鎶€鑳?寤惰繜鍒犺〃鐜癰uff.lua
+   16967 鏂拌媿浜戠壒娈婃鍣╛鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -5 | Cnt= 1 Ivl= 16 | Script= 
+   17200 鍐呭姛閫氱敤涓嶈劚鎴樺噺鐤?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -51 | Cnt= 1 Ivl= 960 | Script= 
+   17644 绔炴妧鍦?5鏈哄櫒浜哄噺鐤椾慨姝?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -51 | Cnt= 1 Ivl= 16 | Script= 
+   18004 鎸佺画鍑忕枟鏁堟灉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atBeTherapyCoefficient -461 | Cnt= 1 Ivl= 240 | Script= 
+   18038 鍑忕枟鍏嶇柅 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 384 | Script= 
+   18262 4鍙穇鐗规畩鍑忕枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -205 | Cnt= 60 Ivl= 16 | Script= 
+====================================================================================================
+绂佺枟 count 39
+   9172 绂佺枟绗竴娆℃爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 128 | Script= 
+   9173 绂佺枟绗簩娆℃爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 128 | Script= 
+   9174 鐢熸伅绂佺枟寤惰繜buff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 4 | Script= 涓囪姳\涓囪姳_涓塪ot_琚┍鏁ｇ鐤?lua
+   9175 鐢熸伅绂佺枟buff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 9000000 | Cnt= 4 Ivl= 8 | Script= 
+   10332 钘忓墤_绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 9999999 | Cnt= 1 Ivl= 16 | Script= 
+   11488 绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban= 920 | Inv= 408 | A1= atBeTherapyCoefficient -1014 | Cnt= 1 Ivl= 16 | Script= 
+   11733 灞犻緳鍏紡绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -1024 | Cnt= 20 Ivl= 4 | Script= 
+   11805 灞犻緳鍏紡绂佺枟鐩戞帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10000 Ivl= 4 | Script= 
+   12061 鏉ㄩ€搁_鏇查珮鍜屽绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 9000000 | Cnt= 1 Ivl= 240 | Script= 
+   12888 娲涢槼鍩庡寳鐐脊寮曠噧绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -102 | Cnt= 3 Ivl= 16 | Script= 
+   13666 5鍙穇鍦ｆ硶闂ㄦ儵鎴掕€卂绌垮埡鎯╂垝_绂佺枟DEBUFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -1024 | Cnt= 10 Ivl= 16 | Script= 
+   13667 5鍙穇鍦ｈ瘡闂ㄨ瘡浠や娇_琛岃瘡浠绂佺枟debuff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -1024 | Cnt= 10 Ivl= 16 | Script= 
+   13669 5鍙穇绉樻硶闂ㄦ殫琛岃€卂闃村奖瀵嗕护_绂佺枟buff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -1024 | Cnt= 10 Ivl= 16 | Script= 
+   15761 鍙椹辨暎绂佺枟Dot | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 15 Ivl= 48 | Script= 
+   18666 鍦烘櫙閫氱敤绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 9999999 | Cnt= 1 Ivl= 16 | Script= 
+   19138 甯細鑱旇禌绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -4096 | Cnt= 1 Ivl= 960 | Script= 
+   19146 甯細鑱旇禌閫氱敤绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -4096 | Cnt= 1 Ivl= 0 | Script= 
+   19309 璇￠潰鍩嬩紡绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 9000000 | Cnt= 1 Ivl= 48 | Script= 
+   19554 瀹堝崼鍏冲崱_绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atPositiveShield  | Cnt= 1 Ivl= 0 | Script= 
+   20329 鐩楀疂璐肩鐤?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -10240 | Cnt= 1 Ivl= 14400 | Script= 
+   20530 涓€鍒€娴皹_绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -1024 | Cnt= 1 Ivl= 160 | Script= 
+   20728 [20728]绂佺枟鐩惧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atFinalMaxLifeAddPercent 1024 | Cnt= 1 Ivl= 192 | Script= 
+   20970 绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -4096 | Cnt= 1 Ivl= 0 | Script= 
+   21960 绠″鍑忕泭_榫欒懙鑷嫤绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorbBySelfMaxLife 0 | Cnt= 3 Ivl= 16 | Script= 
+   23041 2鍙穇闃块榿璇篲闀挎潌绂佺枟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 21060000 | Cnt= 1 Ivl= 0 | Script= 
+====================================================================================================
+鏃犳晫 count 60
+   160 鏃犳晫 | FT=  | Decay=  | MS= 4294934526 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 32 | Script= 
+   205 鏃犳晫BUFF | FT=  | Decay=  | MS= 4294934526 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 9600 | Script= 
+   778 鎶€鑳芥暀瀛︾敤鏃犳晫 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalBlock 1 | Cnt= 1 Ivl= 80 | Script= 
+   835 NPC鎴樻枟鎶€鑳絖BUFF_鐗规畩_璐熼潰鏁堟灉鏃犳晫鐩綺8 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 128 | Script= 
+   856 閿婚璇€鍐呭姛鏃犳晫鏁堟灉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicBlock 1 | Cnt= 1 Ivl= 64 | Script= 
+   1036 鏃ヨ疆灞卞煄_閫氱敤鏃犳晫 | FT=  | Decay=  | MS= 3757998078 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 0 | Script= 
+   1037 鏃ヨ疆灞卞煄_鍙┍鏁ｆ棤鏁?| FT=  | Decay=  | MS= 3757998078 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 0 | Script= 
+   1366 椋庨洦绋婚鏉慱閫氱敤鏃犳晫 | FT=  | Decay=  | MS= 3757998078 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 0 | Script= 
+   1484 鑻遍泟绌洪浘宄癬闅愰亖(鏃犳晫BUFF) | FT=  | Decay=  | MS= 3757998078 | Ban=  | Inv=  | A1= atGlobalDamageAbsorb 15789474 | Cnt= 1 Ivl= 0 | Script= 
+   1740 2浜哄壇鏈琠鐙╃寧_NPC_鏃犳晫 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atNegativeShield  | Cnt= 1 Ivl= 28800 | Script= 
+   2573 甯細_甯細鏃楀笢_澶╀笅鏃犳晫 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalResistPercent 307 | Cnt= 1 Ivl= 160 | Script= 
+   2946 浜旀瘨_绉樼瑘_鍑ゅ嚢铔奯鐩爣璧疯韩鍚庢棤鏁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalResistPercent 1024 | Cnt= 1 Ivl= 32 | Script= 
+   3090 榫欐笂娉絖鍗楄瘡鍙岄泟_鍒ゆ柇鏃犳晫 | FT=  | Decay=  | MS= 3753836542 | Ban=  | Inv=  | A1=   | Cnt= 999999 Ivl= 32 | Script= 
+   3091 榫欐笂娉絖鍗楄瘡鍙岄泟_鏃犳晫 | FT=  | Decay=  | MS= 3753836542 | Ban=  | Inv=  | A1= atNegativeShield  | Cnt= 1 Ivl= 80 | Script= 
+   3259 涓_澶╃嫍鐖墮_鏃犳晫 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalResistPercent 1024 | Cnt= 1 Ivl= 3840 | Script= 
+   3300 鍞愰棬瀵嗗_鏌虫儕娑沖鏃犳晫 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalResistPercent 1024 | Cnt= 1 Ivl= 0 | Script= 
+   3323 鍑ゅ嚢铔奯鏃犳晫_娲荤潃缁存寔 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atExecuteScript skill\浜旀瘨\绉樼瑘\鍑ゅ嚢铔奯鏃犳晫_娲荤潃缁存寔.lua | Cnt= 1 Ivl= 28800 | Script= 
+   3325 鍑ゅ嚢铔奯鏃犳晫_姝讳骸缁存寔 | FT=  | Decay=  | MS= 1942028288 | Ban=  | Inv=  | A1= atExecuteScript skill\浜旀瘨\绉樼瑘\鍑ゅ嚢铔奯鏃犳晫_姝讳骸缁存寔.lua | Cnt= 1 Ivl= 28800 | Script= 
+   3374 鍞愰棬瀵嗗_鏈虹敳鏃犳晫 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalResistPercent 1024 | Cnt= 1 Ivl= 0 | Script= 
+   3425 鍞愰棬_楝兼枾绁炲伐_鏃犳晫 | FT=  | Decay=  | MS= 3619700990 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 16 | Script= 
+   3486 鍞愰棬_鏈哄叧鏃犳晫BUFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 0 | Script= 
+   3676 鐑涢緳娈縚闆风_鏃犳晫BUFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atGlobalResistPercent 1024 | Cnt= 1 Ivl= 28800 | Script= 
+   3759 鐑涢緳娈縚鏃犳晫BUFF | FT=  | Decay=  | MS= 3757998078 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 0 | Script= 
+   3851 闇囧北娌砡鑷韩鏃犳晫2绉?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 1 Ivl= 32 | Script= 
+   3861 灏戞灄_杞洖璇€_闅愯棌1绉掓棤鏁?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atGlobalBlock 3 | Cnt= 1 Ivl= 32 | Script= 
+====================================================================================================
+鍏嶆帶 count 60
+   2756 澶╃瓥_浠婚┌楠嬪厤鎺?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 8 | Script= 澶╃瓥\澶╃瓥_鏉庢浮鍩庡垽鏂箻楠戠姸鎬?lua
+   2781 杞咕鍧ゅ厤鎺?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 96 | Script= 
+   2847 楣婅笍鏋漘鍏嶆帶_绱犺】 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 24 | Script= 
+   3275 鍞愰棬_娴厜鎺犲奖_鍔犻€熷厤鎺?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 48 | Script= 
+   3279 鍞愰棬_瀛愭瘝鍕綺鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 32 | Script= 
+   3758 鍞愰棬_椋炴槦閬侀殣_鐭殏鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 8 | Script= 
+   3822 浜旀瘨_鐚キ铦磋澏_鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 32 | Script= 
+   4245 鏄庢暀_鏈濆湥瑷€_鑷韩鍑忎激鍏嶆帶 | FT=  | Decay=  | MS= 1400897666 | Ban=  | Inv=  | A1= atGlobalResistPercent 614 | Cnt= 1 Ivl= 16 | Script= 
+   4341 灏忔姝OSS_钘忓墤_椋庢潵鍚村北鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 12 | Script= 
+   4421 鏄庢暀_澶滃弶蹇僟鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 48 | Script= 
+   4439 鏄庢暀_璐瓟浣揰鍑忎激鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atCallSubBuff 33086 | Cnt= 1 Ivl= 16 | Script= 鏄庢暀/鏄庢暀_璐瓟浣?lua
+   4626 灏忔姝OSS_榫欓緹_閲戞棆_鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 16 | Script= 
+   4969 澶ф垬閮悓钀宊鍩烘湰灞炴€鍏嶆帶 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 0 | Script= 
+   5306 涓€绾垮ぉ_涓€鍙峰皬鎬猒鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 16 | Script= 
+   5949 闂ㄦ淳娲诲姩_NPC鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atImmunity 2 | Cnt= 1 Ivl= 16 | Script= 
+   5950 浜旀瘨_铔婅櫕鐚キ閫氱敤鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 6 Ivl= 16 | Script= 
+   5959 澶ф槑瀹玙榛戣壊鍌€鍎鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atImmunity 2 | Cnt= 1 Ivl= 16 | Script= 
+   5963 涓愬府闂ㄦ淳娲诲姩_閫氱敤鍏嶆帶BUFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 0 | Script= 
+   5995 涓愬府_绗戦唹鐙俖鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 16 | Script= 
+   6015 涓愬府_榫欒穬浜庢笂_鍏嶆帶3绉?| FT=  | Decay=  | MS= 2684256254 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 88 | Script= 
+   6087 鍞愰棬_椋炴槦閬佸奖鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 64 | Script= 
+   6192 灏戞灄_鏃犵浉鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atImmunity 2 | Cnt= 1 Ivl= 160 | Script= 
+   6219 浜旀瘨_濂囩┐_瀹犵墿鍔犲厤鎺?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atImmunity 2 | Cnt= 1 Ivl= 0 | Script= 
+   6279 鏄庢暀_璐瓟浣揰鍑忎激鍏嶆帶_璐瓟浼愮姜 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atCallSubBuff 33086 | Cnt= 1 Ivl= 16 | Script= 鏄庢暀/鏄庢暀_璐瓟浣?lua
+   6292 绾槼_鐖嗗悶鏃ユ湀鍏嶆帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atImmunity 2 | Cnt= 1 Ivl= 32 | Script= 
+====================================================================================================
+鍙嶄激 count 21
+   5111 涓€绾垮ぉ_鑻忔竻_鏃犳噲鍙嚮鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLifeReplenishExt 900 | Cnt= 1 Ivl= 16 | Script= 
+   5280 涓€绾垮ぉ_闇归洺_鍑忎激鍙嶄激buff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 1024 | Cnt= 1 Ivl= 16 | Script= 
+   5709 澶ф槑瀹玙鏃犲悕_鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflection 492 | Cnt= 1 Ivl= 16 | Script= 
+   7517 椋庨洩绋婚鏉慱榛戦拱_鎰佽檻鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 100 Ivl= 80 | Script= 
+   7809 椋庨洩绋婚鏉慱榛戦拱_鎰佽檻棰濆鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 100 Ivl= 80 | Script= 
+   11018 1鍙穇蹇冮瓟鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 10 | Cnt= 1 Ivl= 0 | Script= 
+   11912 鏌崇宀砡閲戝弽浼ょ浘 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 100 | Cnt= 1 Ivl= 160 | Script= 
+   14816 4鍙穇鐚村瓙鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atNeutralMagicReflectionPercent 1024 | Cnt= 1 Ivl= 80 | Script= 
+   15755 鍙嶄激鏁堟灉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 512 | Cnt= 6 Ivl= 16 | Script= 
+   15942 鍙嬪杽鍙嶄激鏁堟灉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 307 | Cnt= 10 Ivl= 16 | Script= 
+   17011 鐙肩墮棣栭_鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 512 | Cnt= 8 Ivl= 16 | Script= Quest/ACT_鍦烘櫙棰勭儹/鐙肩墮棣栭_鍙嶄激钃勫姏.lua
+   17596 鍗﹁薄路姘村潕鍥哄畾鍑忎激鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSkillEventHandler 1858 | Cnt= 1 Ivl= 160 | Script= 
+   19969 淇綏鍍P1_鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   20695 涓婃潐鍕囧垁_鏋硶_閾佹灄_鍐呭姛鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 5 | Cnt= 1 Ivl= 16 | Script= 
+   22347 璋簯娴乢绉婚櫎鍙嶄激鐩戞帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 39 Ivl= 4 | Script= 
+   26394 閫氱敤_鐧炬垬鎶€鑳藉弽浼?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   26463 鐗′腹_琛€娑傞鏆確鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atPhysicsReflectionPercent 102 | Cnt= 1 Ivl= 320 | Script= 
+   29649 2鍙穇闊︽煍涓漘澶栧姛鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atSkillEventHandler 2768 | Cnt= 1 Ivl= 0 | Script= 
+   29650 2鍙穇闊︽煍涓漘鍐呭姛鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atSkillEventHandler 2767 | Cnt= 1 Ivl= 0 | Script= 
+   30069 PVP涓婅。鍙嶄激_鍐呯疆CD | FT=  | Decay=  | MS= 3758096382 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 160 | Script= 
+   31393 5鍙穇灏归洩灏榑瀹氭尝鎶垫緶_鍙嶄激 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsReflectionPercent 820 | Cnt= 1 Ivl= 16 | Script= 
+====================================================================================================
+鍙嶅脊 count 43
+   371 鍙嶅脊 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atPhysicsReflection 100 | Cnt= 1 Ivl= 320 | Script= 
+   768 灏戞灄鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsReflection 50 | Cnt= 1 Ivl= 80 | Script= 
+   1078 鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsReflection 50 | Cnt= 1 Ivl= 4800 | Script= 
+   4147 鎴樻枟濉擾浼ゅ鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 102 | Cnt= 1 Ivl= 160 | Script= 
+   4780 闂ㄦ淳娲诲姩_涔濆瓙杩炵幆鍥哄弽寮?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsReflection 98518 | Cnt= 1 Ivl= 16 | Script= 
+   5703 灏戞灄_鏃犵浉璇€_鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 205 | Cnt= 1 Ivl= 160 | Script= 
+   5875 灏戞灄_鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSkillEventHandler 956 | Cnt= 1 Ivl= 16 | Script= 
+   5876 灏戞灄_鍙嶅脊鐪╂檿 | FT= Stun | Decay= 0 | MS= 3758030846 | Ban=  | Inv= 0 | A1= atHalt  | Cnt= 1 Ivl= 32 | Script= 
+   5877 灏戞灄_鍙嶅脊鐪╂檿璁℃椂鍣?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 240 | Script= 
+   5878 灏戞灄_鍙嶅脊鐪╂檿璁℃椂鍣? | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 320 | Script= 
+   6076 棰勭儹鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsReflection 100000 | Cnt= 1 Ivl= 16 | Script= 
+   8090 鑳栧瀛愬弽寮?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atActiveThreatCoefficient 0 | Cnt= 1 Ivl= 16 | Script= 
+   8388 鑻嶄簯鍙嶅脊鎶€鑳絙uff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMirrorShield  | Cnt= 1 Ivl= 160 | Script= 
+   9804 缃楁眽閲戣韩5%鍙嶅脊鍑犵巼瑙ｆ帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 204 | Cnt= 1 Ivl= 16 | Script= 
+   9805 缃楁眽閲戣韩15%鍙嶅脊鍑犵巼瑙ｆ帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 307 | Cnt= 1 Ivl= 16 | Script= 
+   9806 缃楁眽閲戣韩25%鍙嶅脊鍑犵巼瑙ｆ帶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 154 | Cnt= 1 Ivl= 16 | Script= 灏戞灄\閲戣韩缁撴潫.lua
+   9807 缃楁眽閲戣韩_30%鍙嶅脊鍔犲己 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 307 | Cnt= 1 Ivl= 16 | Script= 
+   9808 缃楁眽閲戣韩_45%鍙嶅脊鍔犲己 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 461 | Cnt= 1 Ivl= 16 | Script= 
+   9809 缃楁眽閲戣韩_60%鍙嶅脊鍔犲己 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 230 | Cnt= 1 Ivl= 16 | Script= 灏戞灄\閲戣韩缁撴潫.lua
+   10390 绾槼_鍖楀啣鐩惧弽寮?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atNegativeShield 1 | Cnt= 500 Ivl= 16 | Script= 
+   14233 4鍙穇娌¤棌鍛兼湀_鍙嶅脊娌夐粯 | FT= Silence | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSilenceAll  | Cnt= 1 Ivl= 16 | Script= 
+   16750 鍘屽_鏂╂棤甯稿弽寮?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 10 | Cnt= 1 Ivl= 16 | Script= 
+   17273 5鍙穇瀹夊皬閫鏂у崼鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 512 | Cnt= 1 Ivl= 16 | Script= 
+   19301 鍓?绉掗澶栧弽寮?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarMagicReflectionPercent 205 | Cnt= 1 Ivl= 80 | Script= 
+   19403 2鍙穇鏈哄叧寮╃浼ゅ鍙嶅脊 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarMagicReflectionPercent 1024 | Cnt= 1 Ivl= 160 | Script= 
+====================================================================================================
+鐮撮槻 count 60
+   552 澶╃瓥-鐮撮-鐮撮槻 | FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsShieldBase -7 | Cnt= 1 Ivl= 480 | Script= 
+   703 鍓戞硶路鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsShieldPercent -205 | Cnt= 1 Ivl= 240 | Script= 
+   1394 鑻遍泟绌洪浘宄癬杈呭姪NPC_澶栧姛鏄撲激NPC_鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsDamageCoefficient 2048 | Cnt= 1 Ivl= 48 | Script= 
+   1405 鑻遍泟绌洪浘宄癬杈呭姪NPC_澶栧姛鏄撲激NPC_鐮撮槻(閲婃斁) | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 9600 Ivl= 16 | Script= 
+   2806 涓冪_纰庡啺_鍓戞皵闀挎睙鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarOvercomePercent 51 | Cnt= 1 Ivl= 80 | Script= 
+   3146 鍗楄瘡閾佺埅渚嶅崼_纰庨鍑籣鐮撮槻 | FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsShieldBase -100 | Cnt= 1 Ivl= 160 | Script= 
+   4419 鑺傛棩鐗规畩灏忚嵂澶栧姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv=  | A1= atPhysicsOvercomeBase 265 | Cnt= 1 Ivl= 28800 | Script= 
+   4420 鑺傛棩鐗规畩灏忚嵂鍐呭姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv=  | A1= atMagicOvercome 265 | Cnt= 1 Ivl= 28800 | Script= 
+   5037 鍗楄瘡鐮村啗濂梍鎻愰珮鐮撮槻鍊?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsOvercomeBase 4 | Cnt= 1 Ivl= 96 | Script= 
+   5112 涓€绾垮ぉ_鑻忔竻_鐩捐垶鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsDefenceAdd -102 | Cnt= 10 Ivl= 16 | Script= 
+   5146 姘旂函鐗规畩姝﹀櫒_鍔犵牬闃茬敤buff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1 | Script= 
+   6221 浜旀瘨_濂囩┐_铦庡績鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPoisonOvercomePercent 153 | Cnt= 1 Ivl= 160 | Script= 
+   6343 涓愬府_闃电溂鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 306 | Cnt= 1 Ivl= 80 | Script= 
+   6344 涓愬府_闃电溂鍔犵牬闃睠D | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 320 | Script= 
+   6376 涓愬府_榫欐垬鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 102 | Cnt= 1 Ivl= 160 | Script= 
+   8403 鑻嶄簯鏀诲嚮闃电牬闃叉晥鏋?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsCriticalDamagePowerBaseKiloNumRate 20 | Cnt= 1 Ivl= 480 | Script= 
+   8484 鏀诲嚮闃电鍥涢噸鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 153 | Cnt= 1 Ivl= 80 | Script= 
+   9489 闀挎瓕杈撳嚭闃垫硶鐮撮槻绛夌骇鎻愰珮10% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarOvercomePercent 102 | Cnt= 1 Ivl= 80 | Script= 
+   9596 澶栧姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atPhysicsOvercomeBase 74 | Cnt= 1 Ivl= 28800 | Script= 
+   9597 鍐呭姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atMagicOvercome 74 | Cnt= 1 Ivl= 28800 | Script= 
+   9616 澶栧姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atPhysicsOvercomeBase 111 | Cnt= 1 Ivl= 28800 | Script= 
+   9617 鍐呭姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atMagicOvercome 111 | Cnt= 1 Ivl= 28800 | Script= 
+   9770 鍓戜富澶╁湴灏忛槦5%鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarOvercomePercent 102 | Cnt= 1 Ivl= 192 | Script= 
+   9920 榫欐洸_鐮撮槻5% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 51 | Cnt= 1 Ivl= 480 | Script= 
+   9949 鐜勯棬_5%鐮撮槻鍜屼細蹇?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 204 | Cnt= 1 Ivl= 640 | Script= 
+====================================================================================================
+鍖栧姴 count 35
+   1455 澧炲姞鍖栧姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atDecriticalDamagePowerBase 54 | Cnt= 1 Ivl= 28800 | Script= 
+   1854 钘忓墤_瑗垮瓙鎯卂姊呴殣棣檁棣欐(甯﹀寲鍔? | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 16 | Cnt= 1 Ivl= 48 | Script= 
+   3431 澧炲姞鍖栧姴50鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atDecriticalDamagePowerBase 50 | Cnt= 1 Ivl= 999999 | Script= 
+   3435 鍑忓寲鍔?0鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atDecriticalDamagePowerBase -50 | Cnt= 1 Ivl= 999999 | Script= 
+   7505 鏄ョ偣鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerBaseKiloNumRate -1000 | Cnt= 1 Ivl= 80 | Script= 
+   11873 杩藉懡绠檷浣庣洰鏍囧寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -51 | Cnt= 1 Ivl= 192 | Script= 
+   12597 鍏版懅闄嶄綆鐩爣鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -154 | Cnt= 7 Ivl= 48 | Script= 
+   13052 鏅€氬ぇ閬撴棤鏈噺鍖栧姴 | FT= Halt | Decay= 2 | MS= 1405100032 | Ban=  | Inv=  | A1= atFreeze 0 | Cnt= 1 Ivl= 32 | Script= 
+   13053 寮哄寲澶ч亾鏃犳湳鍑忓寲鍔?| FT= Halt | Decay= 2 | MS= 1405100032 | Ban=  | Inv=  | A1= atFreeze 0 | Cnt= 1 Ivl= 48 | Script= 
+   13924 缈旀瀬纰ц惤闄嶄綆鐩爣鍖栧姴绛夌骇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -205 | Cnt= 1 Ivl= 80 | Script= 
+   13939 杩樼挧鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -154 | Cnt= 1 Ivl= 80 | Script= 
+   17076 鏂╃伀闄嶄綆鐩爣鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -51 | Cnt= 1 Ivl= 240 | Script= 
+   18031 鐧炬绌挎潹鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -103 | Cnt= 1 Ivl= 192 | Script= 
+   22131 涓夋槦涓存棤瑙嗗寲鍔插垽瀹氭爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSkillEventHandler 2153 | Cnt= 1 Ivl= 320 | Script= 
+   22132 涓夋槦涓存棤瑙嗗寲鍔插疄闄呮晥鏋?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSetTalentRecipe 2873 | Cnt= 1 Ivl= 192 | Script= 
+   23071 [23071]闇稿垁涓冨垁鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -102 | Cnt= 1 Ivl= 4 | Script= 
+   24181 瑙︾韬鍑忓皯鐩爣鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -103 | Cnt= 1 Ivl= 16 | Script= 
+   24554 宸插簾寮僟鐏奖杩介棰濆闄嶅寲鍔茬増 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsOvercomePercent 51 | Cnt= 1 Ivl= 4 | Script= 鍒€瀹?濂楄矾鍙婂瓙鎶€鑳?鐏奖缁撴潫澶勭悊.lua
+   24761 鐏奖杩介鍑忓寲鍔茬瓑绾?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -61 | Cnt= 1 Ivl= 176 | Script= 
+   25272 [25272]涓愬府_娓╅厭_鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -359 | Cnt= 1 Ivl= 4 | Script= 
+   27064 鏄庢暀_鍑€鎭剁憰璇涙棤瑙嗗寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -410 | Cnt= 1 Ivl= 4 | Script= 
+   28807 鎻愰珮鍖栧姴 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 520 | A1= atDecriticalDamagePowerBaseKiloNumRate 10 | Cnt= 1 Ivl= 160 | Script= 
+   29195 鏃ョ牬鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -154 | Cnt= 1 Ivl= 4 | Script= 
+   30056 杈撳嚭PVP鎶ゆ墜鍑忓寲鍔瞋鍐呯疆CD | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 480 | Script= 
+   30057 娌荤枟PVP鎶ゆ墜鍔犲寲鍔瞋鍐呯疆CD | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 480 | Script= 
+====================================================================================================
+寰″姴 count 24
+   1072 寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 162 | Cnt= 1 Ivl= 4800 | Script= 
+   1444 T澧炲姞寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 11 | Cnt= 1 Ivl= 960 | Script= 
+   1458 澧炲姞寰″姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atToughnessBase 50 | Cnt= 1 Ivl= 28800 | Script= 
+   1800 钘忓墤_蹇墤40绾у唴鍔焈姊呴殣棣欏鍔犲尽鍔插€?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   1880 25浜哄ぉ鐜嬫_寰″姴澹佸瀿 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarMagicResistPercent 204 | Cnt= 1 Ivl= 0 | Script= 
+   2198 閾佸_鍔?0%寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessPercent 205 | Cnt= 1 Ivl= 192 | Script= 
+   2199 婧冪敳_鍑?0%寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessPercent -205 | Cnt= 1 Ivl= 192 | Script= 
+   3430 澧炲姞寰″姴50鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 50 | Cnt= 1 Ivl= 999999 | Script= 
+   3434 鍑忓尽鍔?0鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase -50 | Cnt= 1 Ivl= 999999 | Script= 
+   9864 椋?0%浼氬績鎹?0%寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 3000 | Cnt= 1 Ivl= 160 | Script= 
+   12989 鎸佸浗澶╃帇娈縚寰″姴澹佸瀿 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarMagicResistPercent 204 | Cnt= 1 Ivl= 0 | Script= 
+   14980 寰″姴鎻愰珮 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 500 | Cnt= 1 Ivl= 128 | Script= 
+   20812 [20812]閾侀濂囩┐_鎱戞湇_寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 512 | Cnt= 1 Ivl= 128 | Script= 
+   24411 绂荤粡_濡欐墜寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 500 | Cnt= 1 Ivl= 240 | Script= 
+   28314 寰″姴缁熶竴 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   29614 娴烽緳寰″姴_鐩戞帶涓庤鍑籦uff | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atSkillEventHandler 2775 | Cnt= 40 Ivl= 4 | Script= 
+   29616 娴烽緳寰″姴_琚嚮璁℃暟 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   29624 缁濆湴鍙嶅嚮_寰″姴缁熶竴cd | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   29776 娴烽緳寰″姴_鏇挎崲鍐呴儴鎶€鑳?| FT=  | Decay=  | MS= 4294967294 | Ban= 0 | Inv= 0 | A1= atNoLimitChangeSkillIcon 28202 | Cnt= 1 Ivl= 0 | Script= 
+   30074 PVP椤归摼鍖栧姴鍔犲尽鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 160 | Cnt= 1 Ivl= 0 | Script= 
+   30515 JJC鎻掓棗澶х帇-寰″姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atToughnessBase 100 | Cnt= 1 Ivl= 5760 | Script= 
+   30707 PVP闄勯瓟1鑵板甫鎷嶅崠_琚嚮鍔犲尽鍔瞋澶瀬绉樺綍 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 10800 | Cnt= 1 Ivl= 48 | Script= 
+   30708 PVP闄勯瓟2鑵板甫鎷嶅崠_鍖栧姴杞尽鍔瞋澶瀬绉樺綍 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 120 | Cnt= 1 Ivl= 0 | Script= 
+   33175 绂荤粡_鏂扮Н鍔縚鐐搁粦寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 1000 | Cnt= 1 Ivl= 16 | Script= 
+====================================================================================================
+鍚嶅墤 count 14
+   6472 鍋胯繕鍚嶅墤甯乢澶╀綉涓崕 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 8640000 Ivl= 16 | Script= 
+   6476 鎵ｉ櫎鍚嶅墤甯侀亾鍏穇澶╀綉涓崕 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 8640000 Ivl= 16 | Script= 
+   7094 鍔犻€焍uff-濞佹湜鍚嶅墤甯? | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1= atAddPrestigePercentForAll 51 | Cnt= 1 Ivl= 960 | Script= 
+   7096 鍔犻€焍uff-鍚嶅墤甯?0 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Script= 
+   11924 JJC鎵ｅ悕鍓戝竵 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 3600 Ivl= 80 | Script= 
+   13211 鍚嶅墤澶т細涓炬姤澶嶆煡buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   17488 鍚嶅墤澶т細姣忓懆浜斿満鑳滃埄鏍囪 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Script= 
+   19008 璁告効鏍懧峰悕鍓戝ぇ浼?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Script= 
+   19265 绂佷护路鍚嶅墤澶т細  | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Script= 
+   19585 绂佽路鍚嶅墤澶т細 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Script= 
+   19906 绂佷功路鍚嶅墤澶т細 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Script= 
+   22939 鍚嶅墤澶т細鑾峰彇濞佹湜涓婇檺璁板綍 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Script= 
+   30633 鍚嶅墤澶т細路瀵瑰眬鐏儹 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGamePlayTherapyFinalCof -71 | Cnt= 1 Ivl= 4800 | Script= 
+   33612 鍚嶅墤路淇濋攱甯?| FT=  | Decay=  | MS= 4294967294 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+====================================================================================================
+绔炴妧 count 60
+   2554 浠诲姟_绔炴妧鍦烘椂闂存帶鍒?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 640 | Script= 
+   3369 绔炴妧鍦篲鍒犺緟鍔╃被椋熷搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3370 绔炴妧鍦篲鍒犲寮虹被椋熷搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3371 绔炴妧鍦篲鍒犲甯?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3372 绔炴妧鍦篲鍒犺緟鍔╃被鑽搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3373 绔炴妧鍦篲鍒犲寮虹被鑽搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3381 绔炴妧鍦篲鎴樻棗A | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 57600 | Script= 
+   3386 绔炴妧鍦篲鎴樻棗B | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 57600 | Script= 
+   3387 绔炴妧鍦篲鍒犳捈濡傞浄 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3388 绔炴妧鍦篲鍒犳竻蹇冮潤姘?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3389 绔炴妧鍦篲鍒犵姘?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3390 绔炴妧鍦篲鍒犻洦闇栭搩 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3391 绔炴妧鍦篲鍒犺埇鑻ヨ瘈 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3392 绔炴妧鍦篲鍒犺嵂鐭虫皵鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3393 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   3394 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   3395 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   3396 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   3397 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   3398 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   3449 绔炴妧鍦篲鏍囪鎴橀樁 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   3602 绔炴妧鍦篲娓呭唴鍔熸爣璁?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 28800 | Script= 
+   3849 绔炴妧鍦篲鍥炶摑鍥炶眴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 60 Ivl= 16 | Script= 
+   3913 绔炴妧鍦篲鍒犵巹姘?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   5015 绔炴妧鍦篲鍙嶉殣褰UFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atCounterStealthRange 1920 | Cnt= 1 Ivl= 16 | Script= 
+====================================================================================================
+鎴樺満 count 60
+   1189 绁炲啘娲嘷鎴樺満BOSS_澶ф瘨灏竉鐙傛毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSkillPhysicsDamage 310000 | Cnt= 1 Ivl= 0 | Script= 
+   3149 鎴樺満涓炬姤_鍋锋噿鑰嶆粦 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 480 | Script= 
+   3150 鎴樺満涓炬姤_鍐呯疆CD | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 480 | Script= 
+   3152 鎴樺満涓炬姤_琚妇鎶ョ殑debuff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 480 | Script= 
+   4122 鎴樺満鏍囪 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 960 | Script= 
+   7551 鎴樺満涓哄府浼氬姞鍒?| FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 9600 | Script= 
+   11614 鎴樺満浠诲姟buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 5 Ivl= 57600 | Script= 
+   11962 鎴樺満棣栬儨buff | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Script= 
+   12009 鎴樺満绂佹鍒囧績娉?| FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv= 0 | A1=   | Cnt= 180 Ivl= 160 | Script= 
+   12015 鎴樺満YY闃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 45 Ivl= 640 | Script= 
+   12203 鎴樺満瑙﹀彂濂囬亣 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 1920 | Script= 
+   12455 浣撻獙鎴樺満鍥炶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 8 | Script= 
+   12456 浣撻獙鎴樺満鐙傛毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsCriticalStrikeBaseRate 6000 | Cnt= 30 Ivl= 16 | Script= 
+   12466 浣撻獙鎴樺満鐩戞帶buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atImmuneSkillMove 1 | Cnt= 1 Ivl= 16 | Script= 
+   12476 闃佃惀鎶纰庣墖鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Script= 
+   12595 浣撻獙鎴樺満鍊掕鏃朵紶閫乥uff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Script= 
+   12800 鎴樺満鎺掗槦鍊掕鏃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atExecuteScript Map/鎴樺満閫氱敤/skill/鎴樺満鎺掗槦閫氱敤.lua | Cnt= 1 Ivl= 16 | Script= 
+   12821 鎴樺満绂佹鎺掗槦 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 15 Ivl= 640 | Script= 
+   13211 鎴樺満涓炬姤澶嶆煡buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   13395 鎴樺満鎻愬墠閫冨嚭澶勭悊 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   14543 绂诲紑鎴樺満鍊掕鏃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   14544 鎴樺満绔炴妧鍦烘帓闃烠D | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 5 Ivl= 16 | Script= 
+   14577 鎴樺満鍒伴挦浣゜uff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   14726 鎴樺満绂佹鐢ㄥ绌存彁绀?| FT=  | Decay=  | MS= 4294901758 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 99999 | Script= 
+   14996 MOBA鎴樺満瑁呭 | FT=  | Decay=  | MS= 3758030786 | Ban=  | Inv= 0 | A1= atFreeze  | Cnt= 1 Ivl= 128 | Script= 涓囪姳\鍗楅鍚愭湀娣诲姞澶櫄.lua
+====================================================================================================
+缁濆 count 60
+   15323 娌ф簾缁濆鍦板浼ゅ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   16586 缁濆鐨勯璧燺灏戞灄 | FT=  | Decay=  | MS= 4294967295 | Ban= 255 | Inv= 0 | A1= atFinalMaxLifeAddPercent 61 | Cnt= 1 Ivl= 57600 | Script= 
+   19590 绂佽路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Script= 
+   19905 绂佷功路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Script= 
+   21124 澶╁師缁濆_婊戠繑缁存寔 | FT=  | Decay=  | MS= 16 | Ban= 255 | Inv= 0 | A1= atIgnoreGravity  | Cnt= 1 Ivl= 160 | Script= 娌欐紶椋庢毚/澶╁師缁濆_婊戠繑缈肩淮鎸?lua
+   21139 澶╁師缁濆_鐏劙琛ㄧ幇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   21142 澶╁師缁濆_鐑熼浘琛ㄧ幇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   21172 澶╁師缁濆_鐕х煶鐐圭噧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Script= 
+   21174 澶╁師缁濆_鐓ф槑寮硅寖鍥存樉绀?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   21175 澶╁師缁濆_娓╁害灞傛暟 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   21181 澶╁師缁濆_瀵掑喎 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atHasteBasePercentAdd -300 | Cnt= 1 Ivl= 0 | Script= 
+   21182 澶╁師缁濆_瀵掑喎闄嶄綆琛€涓婇檺 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMaxLifePercentAdd -30 | Cnt= 1 Ivl= 0 | Script= 
+   21188 澶╁師缁濆_姝﹀楗dot | FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 32 | Script= 
+   21193 澶╁師缁濆_鍓戝畻楗啺鍐荤粨 | FT= Halt | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atFreeze  | Cnt= 1 Ivl= 32 | Script= 
+   21194 澶╁師缁濆_鍓戝畻楗啺鍐呯疆cd | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 160 | Script= 
+   21226 澶╁師缁濆_姗欒儢娆￠檷鏀诲嚮 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsAttackPowerPercent -205 | Cnt= 1 Ivl= 80 | Script= 
+   21409 澶╁師缁濆_鎴樿薄鍐查攱鏍囪 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Script= 
+   21410 澶╁師缁濆_鎴樿薄楠戜箻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDropDefence 512 | Cnt= 999 Ivl= 16 | Script= 娌欐紶椋庢毚/澶╁師鎴樿薄缁存寔.lua
+   21428 澶╁師缁濆_浜烘暟鏄剧ず | FT=  | Decay=  | MS= 1073774592 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   21436 澶╁師缁濆_婊戠储cd | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 720 | Script= 
+   21454 澶╁師缁濆_璋烽闄嶆俯 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMoveSpeedPercent -102 | Cnt= 1 Ivl= 64 | Script= 娌欐紶椋庢毚/澶╁師缁濆璋烽debuff.lua
+   21458 澶╁師缁濆_娓╂殩鍖?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   21589 澶╁師缁濆_鎴樿薄姣忕鎺ㄤ汉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDriftFlag  | Cnt= 12 Ivl= 4 | Script= 
+   25431 绂佷护路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Script= 
+   26073 娲辨捣缁濆鍙娲绘爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 4800 | Script= 娌欐紶椋庢毚/娲辨捣缁濆澶嶆椿buff娑堝け.lua
+====================================================================================================
+娌欐毚 count 7
+   4945 鏄庢暀鍦烘櫙_榛戞矙鏆?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1000000 Ivl= 16 | Script= 
+   5599 澶ф槑瀹玙鐙闂織_娌欐毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 64 | Script= 
+   8369 闆侀棬鍏充箣褰筥鐙闂織_娌欐毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   8479 闆侀棬鍏充箣褰筥鐙闂織_娌欐毚鐪╂檿 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atHalt  | Cnt= 5 Ivl= 16 | Script= 
+   14541 闅愯棌BOSS_娌欐毚鍦堣〃鐜?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   28984 5鍙穇鑻忎粈_娌欐毚淇濇姢 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   29053 5鍙穇鑻忎粈_娌欐毚淇濇姢_閫嗗悜 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+====================================================================================================
+閲嶅垱 count 11
+   5756 閲嶅垱 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMoveSpeedPercent -101 | Cnt= 1 Ivl= 160 | Script= 
+   22249 鍗爾姊椋炰簯鍥炶浆鍒€_閲嶅垱 | FT= Normal | Decay= -1 | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 
+   24355 鐮村啗鏍囪閲嶅垱璁℃暟 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 128 | Script= 
+   24356 鐮村啗閲嶅垱锛堥€氱敤锛?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 9999999 | Cnt= 1 Ivl= 128 | Script= 
+   24357 楣ゅ綊闄勫甫閲嶅垱鏍囪 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 3600 | Script= 
+   24362 寤惰繜鍒犻櫎楣ゅ綊閲嶅垱鏍囪 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 8 | Script= 钘忓墤/寤惰繜鍒犻櫎楣ゅ綊閲嶅垱鏍囪.lua
+   27115 涓囩伒灞卞簞_鍙嶆洸_閲嶅垱 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atGlobalTherapyAbsorb 999999 | Cnt= 1 Ivl= 128 | Script= 
+   29420 鐑熸稕閲嶅垱 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGlobalTherapyAbsorb 999999 | Cnt= 1 Ivl= 80 | Script= 
+   32038 鏃犳剰閲嶅垱 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Script= 
+   32398 閲嶅垱鍦版鐢熸晥闂撮殧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 28 | Script= 
+   32519 鏉庤惣閲嶅垱娴佽 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 32 | Script= 
+====================================================================================================
+杩藉懡绠?count 14
+   3276 鍞愰棬_杩藉懡绠璤鐬彂 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atDirectCastMask 4096 | Cnt= 120 Ivl= 4 | Script= 
+   5782 鍞愰棬_杩藉懡绠璦oe鍒ゅ畾 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   6867 琛€鎴樺ぉ绛朹灞辩嫾_杩藉懡绠缉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 4800 | Script= 
+   7140 琛€鎴樺ぉ绛朹灞辩嫾_25浜鸿拷鍛界鍥炶摑 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   7143 琛€鎴樺ぉ绛朹灞辩嫾_杩藉懡绠姞浼ゅ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSkillPhysicsDamagePercent 102 | Cnt= 1 Ivl= 9600 | Script= 
+   10549 鏇圭値鐑坃杩藉懡绠姞浼ゅ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSkillPhysicsDamagePercent 102 | Cnt= 1 Ivl= 480 | Script= 
+   11520 2016宄板€糭鏇圭値鐑堣拷鍛界绾?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   11521 2016宄板€糭鏇圭値鐑堣拷鍛界钃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Script= 
+   11873 杩藉懡绠檷浣庣洰鏍囧寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -51 | Cnt= 1 Ivl= 192 | Script= 
+   16068 杩藉懡绠噺閫?| FT= Slow | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atMoveSpeedPercent -819 | Cnt= 1 Ivl= 48 | Script= 
+   17226 闅愯韩杩藉懡绠澶栦細蹇?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSetTalentRecipe 5151 | Cnt= 1 Ivl= 8 | Script= 
+   24624 娆℃瀬闃充箤澧炵泭杩藉懡绠?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSetTalentRecipe 3168 | Cnt= 1 Ivl= 999 | Script= 
+   26055 杩藉懡绠?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 30 Ivl= 16 | Script= 
+   28574 缁濆路杩藉懡绠?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Script= 

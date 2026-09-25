@@ -1,0 +1,206 @@
+0x0083C000	presentAgent::UpdateSceneFilter
+0x0083C020	KWorldRepresentAgent::OnUpdateWeakState
+0x0083C048	X
+0x0083C04B	@
+0x0083C051	v8@
+0x0083C058	game.startup.init.logic.settings
+0x0083C080	KWorldSettings::Init
+0x0083C098	RelationCamp.tab
+0x0083C0B0	RelationForce.tab
+0x0083C0C4	T
+0x0083C0C7	>V
+0x0083C0CB	?
+0x0083C0D0	KScriptCenter::Init
+0x0083C0E8	m_piScript
+0x0083C0F8	scripts
+0x0083C100	/ScriptList.tab
+0x0083C110	KScriptCenter::Activate
+0x0083C128	pLuaState
+0x0083C138	KScriptCenter::DoLuaGC
+0x0083C150	KScriptCenter::ReloadAll
+0x0083C170	[Lua] Reload all finished
+0x0083C190	[Lua] Failed to reload all
+0x0083C1B0	[Lua] Failed to reload file "%s" !
+0x0083C1D8	[KScriptCenter::CallFunction] ScriptID:%u Not Exist!
+0x0083C210	KScriptCenter::CallFunction
+0x0083C230	[ScriptCheck] TrapScript:%s is not selfScript
+0x0083C260	[ScriptCheck] TrapScript:%s is not areaScript
+0x0083C290	KScriptCenter::IsScriptExist
+0x0083C2B0	KScriptCenter::IsScriptInTab
+0x0083C2D0	LuaEnvInit\LuaEnvInit.li
+0x0083C2EC	%s\%s
+0x0083C2F8	KScriptCenter::ScriptEnvInit
+0x0083C318	dwScriptIDLoad == dwScriptID
+0x0083C338	LuaEnvInit
+0x0083C348	scripts%s
+0x0083C358	KScriptCenter::LoadScriptList
+0x0083C378	KScriptCenter::CreateScriptHolder
+0x0083C39C	%u:%s
+0x0083C3A8	KScriptCenter::UpdateStatInfo
+0x0083C3C8	ScriptCenterStat
+0x0083C3E0	ScriptCenterStat/ScriptCenterStat_%d%2.2d%2.2d-%2.2d%2.2d%2.2d.txt
+0x0083C428	KScriptCenter::OutputStatInfo
+0x0083C448	Function
+0x0083C451	Time
+0x0083C456	Count
+0x0083C45C	File
+0x0083C464	???
+0x0083C468	%s
+0x0083C46B	%.3f
+0x0083C470	%u
+0x0083C473	%s
+0x0083C480	ScriptCenterStat/ScriptCenterMemoryStat_%d%2.2d%2.2d-%2.2d%2.2d%2.2d.txt
+0x0083C4D0	KScriptCenter::OutputMemoryAlloc
+0x0083C4F8	script
+0x0083C4FF	count
+0x0083C505	size
+0x0083C510	%s
+0x0083C513	%d
+0x0083C516	%u
+0x0083C520	Luna<class KTarget>::index
+0x0083C540	Luna<class KTarget>::newindex
+0x0083C560	Luna<class KSkillGlobalParam>::index
+0x0083C588	Luna<class KSkillGlobalParam>::newindex
+0x0083C5B0	Luna<class KGPQ>::index
+0x0083C5C8	Luna<class KGPQ>::newindex
+0x0083C5E8	Luna<class KTarget>::GetFunArgs
+0x0083C608	Luna<class KSkillGlobalParam>::GetFunArgs
+0x0083C638	Luna<class KGPQ>::GetFunArgs
+0x0083C658	KSkillGlobalParam
+0x0083C670	fCriticalStrikeParam
+0x0083C688	fCriticalStrikePowerParam
+0x0083C6A8	fDefCriticalStrikeParam
+0x0083C6C0	fDecriticalStrikePowerParam
+0x0083C6E0	fHitValueParam
+0x0083C6F0	fDodgeParam
+0x0083C700	fParryParam
+0x0083C710	fInsightParam
+0x0083C720	fPhysicsShieldParam
+0x0083C738	fMagicShieldParam
+0x0083C750	fHasteRate
+0x0083C760	fPlayerCriticalCof
+0x0083C778	fToughnessDecirDamageCof
+0x0083C798	fOvercomeParam
+0x0083C7A8	fSurplusParam
+0x0083C7B8	fAssistedPowerCof
+0x0083C7D0	fDecriticalDamagePowerToPhysicsAttackPowerCof
+0x0083C800	fDecriticalDamagePowerToMagicAttackPowerCof
+0x0083C830	fDecriticalDamagePowerToMaxLifeBaseCof
+0x0083C858	nMaxDecriticalDamagePowerEableConvert
+0x0083C880	fDecriticalDamagePVPCof
+0x0083C898	nPhysicsAPToMagicAPCof
+0x0083C8B0	nWeaponToMagicAPCof
+0x0083C8CB	@
+0x0083C8D2	8@
+0x0083C8D8	[buff] init
+0x0083C8E8	TopBuff.tab
+0x0083C8F8	KBuffManager::Init
+0x0083C910	skill/Buff.tab
+0x0083C920	skill_mobile/Buff.tab
+0x0083C938	skill/BuffRecipe.tab
+0x0083C950	skill/DecayType.tab
+0x0083C968	skill/BuffRelays.tab
+0x0083C980	skill_mobile/BuffRelays.tab
+0x0083C9A0	crBuffRecipeKey.nLevel
+0x0083C9B8	crBuffRecipeKey.dwID
+0x0083C9D0	KBuffManager::GetBuff
+0x0083C9E8	pBuffBaseInfo
+0x0083C9F8	pBuffRecipe
+0x0083CA08	KBuffManager::GetBuffRecipeInfo
+0x0083CA28	itRecipe != m_BuffRecipInfoMap.end()
+0x0083CA50	[BuffManager] Reload All Buff Start ...
+0x0083CA78	[BuffManager] Reload All Buff Successful.
+0x0083CAA8	[BuffManager] Refresh All Buff in Character BuffList ...
+0x0083CAF0	[BuffManager] Refresh All Buff in Character BuffList Successful.
+0x0083CB38	[CACHE] clear cache data [buff],           count:%d
+0x0083CB70	%sAttrib%d
+0x0083CB80	%sValue%dA
+0x0083CB90	%sValue%dB
+0x0083CB9C	nRow
+0x0083CBA8	LoadAttributeEx
+0x0083CBB8	[TopBuff] Unable to open table file "%s"
+0x0083CBE8	KBuffManager::LoadTopBuffInfo
+0x0083CC08	nTabFileHeight >= 2
+0x0083CC20	(nRetCode > 0) && "[TopBuff] Get ID ERROR"
+0x0083CC50	ShowLevel
+0x0083CC60	(nRetCode > 0) && "[TopBuff] Get nShowLevel ERROR"
+0x0083CC98	itInfo == m_TopBuffInfoMap.end()
+0x0083CCC0	nRetCode && "[TopBuff] Get szDesc ERROR"
+0x0083CCF0	(nRetCode > 0) && "[TopBuff] Get dwIconFrame1 ERROR"
+0x0083CD28	(nRetCode > 0) && "[TopBuff] Get dwIconFrame2 ERROR"
+0x0083CD60	(nRetCode > 0) && "[TopBuff] Get dwIconFrame3 ERROR"
+0x0083CD98	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel1 ERROR"
+0x0083CDD0	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel2 ERROR"
+0x0083CE08	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel3 ERROR"
+0x0083CE40	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame1 ERROR"
+0x0083CE78	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame2 ERROR"
+0x0083CEB0	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame3 ERROR"
+0x0083CEE8	(nRetCode > 0) && "[TopBuff] Get nVKPathNum1 ERROR"
+0x0083CF20	(nRetCode > 0) && "[TopBuff] Get nVKPathNum2 ERROR"
+0x0083CF58	(nRetCode > 0) && "[TopBuff] Get nVKPathNum3 ERROR"
+0x0083CF8C	Stun
+0x0083CF94	Daze
+0x0083CF9C	Halt
+0x0083CFA4	Fear
+0x0083CFB0	Trample
+0x0083CFB8	Body
+0x0083CFC0	TopHead
+0x0083CFC8	Boss
+0x0083CFD0	Weapon
+0x0083CFD8	Skill
+0x0083CFE0	Slow
+0x0083CFE8	Silence
+0x0083CFF0	Chaos
+0x0083CFF8	Charm
+0x0083D000	Enmity
+0x0083D008	Blooding
+0x0083D014	Damage
+0x0083D020	[Buff] Unable to open table file "%s"
+0x0083D048	KBuffManager::LoadBuffInfo
+0x0083D068	(nRetCode > 0) && "[Buff] Get ID"
+0x0083D090	nRetCode && "[Buff] Get Level"
+0x0083D0B0	itInfo == m_BuffInfoMap.end()
+0x0083D0D0	FunctionType
+0x0083D0E0	nRetCode && "[Buff] Get FunctionType"
+0x0083D108	KSKILL_FUNCTION_TYPE
+0x0083D120	BuffType
+0x0083D130	nRetCode && "[Buff] Get BuffType"
+0x0083D158	KBUFF_TYPE
+0x0083D168	AppendType
+0x0083D178	nRetCode && "[Buff] Get AppendType"
+0x0083D1A0	DetachType
+0x0083D1B0	nRetCode && "[Buff] Get DetachType"
+0x0083D1D8	DecayType
+0x0083D1E8	nRetCode && "[Buff] Get DecayType"
+0x0083D210	RepresentPos
+0x0083D220	nRetCode && "[Buff] Get RepresentPos"
+0x0083D248	KBUFF_REPRESENT_POS
+0x0083D260	nRetCode && "[Buff] Get RepresentID"
+0x0083D288	BuffInfo.m_dwRepresentID < MAX_BUFF_REPRESENT_ID
+0x0083D2C0	nRetCode && "[Buff] Get Intensity"
+0x0083D2E8	IsIntensityStackable
+0x0083D300	nRetCode && "[Buff] Get IsIntensityStackable"
+0x0083D330	nRetCode && "[Buff] Get IsStackable"
+0x0083D358	MaxStackNum
+0x0083D368	nRetCode && "[Buff] Get MaxStackNum"
+0x0083D390	BuffInfo.m_nMaxStackNum > 0 && BuffInfo.m_nMaxStackNum <= UCHAR_MAX
+0x0083D3D8	nRetCode && "[Buff] Get Count"
+0x0083D3F8	nActiveCount > 0
+0x0083D410	nRetCode && "[Buff] Get Interval"
+0x0083D438	nIntervalFrame >= 0
+0x0083D450	MinInterval
+0x0083D460	nRetCode && "[Buff] Get MinInterval"
+0x0083D488	nMinIntervalFrame >= 0
+0x0083D4A0	MaxInterval
+0x0083D4B0	nRetCode && "[Buff] Get MaxInterval"
+0x0083D4D8	nMaxIntervalFrame >= 0
+0x0083D4F0	Exclude
+0x0083D4F8	nRetCode && "[Buff] Get Exclude"
+0x0083D520	GlobalExclude
+0x0083D530	nRetCode && "[Buff] Get GlobalExclude"
+0x0083D558	UniqueTarget
+0x0083D568	nRetCode && "[Buff] Get UniqueTarget"
+0x0083D590	CanCancel
+0x0083D5A0	nRetCode && "[Buff] Get CanCancel"
+0x0083D5C8	IsCountable
+0x0083D5D8	nRetCode && "[Buff] Get IsCountable"

@@ -1,0 +1,4 @@
+# needle: S2C_SKILL_EFFECT_RESULT
+# string VAs: []
+# xrefs: 0
+(no xref found)

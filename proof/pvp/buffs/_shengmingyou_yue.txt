@@ -1,0 +1,95 @@
+﻿   1| ---------------------------------------------------------------------->
+   2| -- 鑴氭湰鍚嶇О:	scripts/skill/鏄庢暀/鏄庢暀_鍦ｆ槑浣慱鏈?lua
+   3| -- 鏇存柊鏃堕棿:	2013/6/4 1:40:30
+   4| -- 鏇存柊鐢ㄦ埛:	taoli
+   5| -- 鑴氭湰璇存槑:	
+   6| ----------------------------------------------------------------------<
+   7| ------------------------------------------------
+   8| -- 鍒涘缓浜?  :  閮戞捣鏄?
+   9| -- 鍒涘缓鏃堕棿	:  20120613
+  10| -- 鏁堟灉澶囨敞	:  鏄庢暀鎶€鑳?
+  11| ------------------------------------------------
+  12| 
+  13| --------------鑴氭湰鏂囦欢寮€濮?-----------------------------------------------
+  14| Include("scripts/Include/Skill.lh")
+  15| --鎵归噺鏇挎崲skill鑴氭湰Include("scripts/Include/Player.lh")
+  16| 
+  17| tSkillData = 
+  18| {
+  19| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 1
+  20| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 2
+  21| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 3
+  22| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 4
+  23| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 5
+  24| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 6
+  25| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 7
+  26| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 8
+  27| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 9
+  28| 	{nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 10
+  29| };
+  30| 
+  31| --璁剧疆姝﹀姛鎶€鑳界骇鍒浉鍏虫暟鍊?
+  32| function GetSkillLevelData(skill)
+  33| 
+  34| 	local dwSkillLevel = skill.dwLevel;
+  35|     	
+  36| 	----------------- 榄旀硶灞炴€?-------------------------------------------------
+  37| 	skill.AddAttribute(
+  38| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  39| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+  40| 		4,
+  41| 		10000
+  42| 	);
+  43| 	skill.AddAttribute(
+  44| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  45| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+  46| 		6,
+  47| 		10000
+  48| 	);
+  49| 	skill.AddAttribute(
+  50| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  51| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+  52| 		8,
+  53| 		10000
+  54| 	);
+  55| 	--skill.AddAttribute(
+  56| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+  57| 	--ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+  58| 	--10, 
+  59| 	--10000
+  60| 	--);
+  61| 	skill.AddAttribute(
+  62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  63| 		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+  64| 		12,
+  65| 		10000
+  66| 	);
+  67| 	skill.AddAttribute(
+  68| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  69| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  70| 		10,
+  71| 		10000
+  72| 	);
+  73| 	skill.AddAttribute(
+  74| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  75| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  76| 		12,
+  77| 		10000
+  78| 	);
+  79| 	skill.AddAttribute(
+  80| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+  81| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+  82| 		"skill/鏄庢暀/90绾у绌?婊℃湀AOE.lua",
+  83| 		0														
+  84| 	);
+  85| 	skill.BindBuff(1, 4028, dwSkillLevel)
+  86| 	----------------- 鎶€鑳芥柦鏀綛uff闇€姹?---------------------------------------------
+  87| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傝嚜韬獴uff
+  88| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傜洰鏍嘊uff
+  89| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 闇€姹傝嚜韬睘浜庤嚜宸辩殑Buff
+  90| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 闇€姹傜洰鏍囧睘浜庤嚜宸辩殑Buff   
+  91| 
+  92| 	-----------------鎶€鑳芥柦鏀炬妧鑳介渶姹?------------------------------------------
+  93| 	--skill.AddCheckSelfLearntSkill(dwSkillID, dwSkillLevel, LevelCompareFlag);     --妫€鏌ユ瘮杈僀aster鑷繁宸插涔犵殑鎶€鑳絀D鍜岀瓑绾?
+  94| 	----------------- BUFF鐩稿叧 -------------------------------------------------
+  95| 	--skill.BindBuff(1, nBuffID, nBuffLevel);		-- 璁剧疆1鍙蜂綅Buff

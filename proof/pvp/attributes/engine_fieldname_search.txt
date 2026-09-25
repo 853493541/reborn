@@ -1,0 +1,34 @@
+
+######## proof\netcode\engine_strings.txt  (626997 lines)
+
+######## proof\netcode\JX3RepresentX64_all_strings.txt  (827066 lines)
+
+######## proof\netcode\JX3ClientX64_exe_net_strings.txt  (9122 lines)
+
+== term nDecriticalDamagePower: 3 hits
+  line7436 0x0084BB20 0x0084BB20	ascii	nDecriticalDamagePowerBaseKiloNumRate
+  line7437 0x0084BB48 0x0084BB48	ascii	nDecriticalDamagePower
+  line7479 0x0084D0D0 0x0084D0D0	ascii	nDecriticalDamagePowerBase
+
+== term nDamageManaShield: 1 hits
+  line7468 0x0084C3E8 0x0084C3E8	ascii	nPoisonDamageManaShield
+
+== term KiloNumRate: 8 hits
+  line7436 0x0084BB20 0x0084BB20	ascii	nDecriticalDamagePowerBaseKiloNumRate
+  line7442 0x0084BCA8 0x0084BCA8	ascii	nUnlimitCriticalDamagePowerKiloNumRate
+  line7446 0x0084BD80 0x0084BD80	ascii	nPhysicsCriticalDamagePowerBaseKiloNumRate
+  line7451 0x0084BEC8 0x0084BEC8	ascii	nSolarCriticalDamagePowerBaseKiloNumRate
+  line7456 0x0084C030 0x0084C030	ascii	nNeutralCriticalDamagePowerBaseKiloNumRate
+  line7461 0x0084C1A0 0x0084C1A0	ascii	nLunarCriticalDamagePowerBaseKiloNumRate
+  line7466 0x0084C300 0x0084C300	ascii	nPoisonCriticalDamagePowerBaseKiloNumRate
+  line8630 0x0086DC08 0x0086DC08	ascii	CriticalDamagePowerBaseKiloNumRate
+
+######## proof\netcode\KBaseX64_net_strings.txt  (833 lines)
+
+######## proof\netcode\JX3UIX64_net_strings.txt  (2142 lines)
+
+######## proof\netcode\DLBT_net_strings.txt  (3463 lines)
+
+######## proof\netcode\SIMWorldX64_net_strings.txt  (95 lines)
+
+######## proof\netcode\Engine_Lua5X64_net_strings.txt  (461 lines)

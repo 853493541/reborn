@@ -1,0 +1,102 @@
+﻿=== line 6798
+0x0082CD40	ascii	KBUFF_LIST_NODE
+0x0082CD68	ascii	dwSkillSrcID
+0x0082CE00	ascii	KBUFF_LIST_NODE::LuaGetIntervalFrame
+0x0082CE28	ascii	KBUFF_LIST_NODE::LuaGetEndTime
+0x0082CE48	ascii	KBUFF_LIST_NODE::LuaGetIntensity
+0x0082CE70	ascii	KBUFF_LIST_NODE::LuaIsStackable
+0x0082CE90	ascii	KBuffList::CanAddBuff
+0x0082CEA8	ascii	pOldBuff
+0x0082CEB8	ascii	KBuffList::UpdateBuff
+0x0082CED0	ascii	KBuffList::UpdateBuffUI
+0x0082CEE8	ascii	KBuffList::GetBuffByAppendType
+0x0082CF08	ascii	pBuffInfo
+0x0082CF18	ascii	KBuffList::GetOwnerSetByBuffID
+0x0082CF48	ascii	KBuffList::AddBuff
+0x0082CF60	ascii	pNewBuff
+0x0082CF70	ascii	KBuffList::DelGroupBuff
+0x0082CF88	ascii	KBuffList::CleanBuff
+0x0082CFC0	ascii	KBuffList::UpdateBuffData
+0x0082CFE0	ascii	(dwBufferSize % sizeof(KBUFF_TRANSFER_DATA)) == 0
+0x0082D018	ascii	KBuffList::CleanBuffByPersist
+0x0082D078	ascii	KBuffList::UpdateBuffValidity
+0x0082D0B8	ascii	KBuffList::CheckValidity
+0x0082D0D8	ascii	KBuffList::_LuaGetBuff
+0x0082D0F0	ascii	nIndex < nBuffCount
+0x0082D120	ascii	KBuffList::_LuaIsHaveBuff
+0x0082D290	ascii	m_eMoveState == cmsOnAutoFly
+0x0082D398	ascii	KCharacter::PrepareSkill
+0x0082D3B8	ascii	KCharacter::ChannelSkill
+0x0082D3D8	ascii	pSkill->m_pBaseInfo->nCastMode != scmItem
+0x0082D478	ascii	KCharacter::CastSkill
+0x0082D490	ascii	eTargetType == ttNoTarget || eTargetType == ttNpc || eTargetType == ttPlayer || eTargetType == ttDoodad || eTargetType == ttItem
+0x0082D518	ascii	KCharacter::CastSkillXYZ
+0x0082D540	ascii	[KCharacter::CastSkillXYZ] Skill(%u,%u) IsPlayer:%u Map:%u not exist
+0x0082D588	ascii	KCharacter::StartHoardSkill
+0x0082D5A8	ascii	pSkill->m_bHoardSkill
+0x0082D7F0	ascii	m_eMoveState == cmsOnFlyJump
+0x0082D948	ascii	nVelocityXYZ > 0
+0x0082D970	ascii	KCharacter::SkillMove
+0x0082D988	ascii	dwSkillMoveID > 0 && dwSkillMoveID <= MAX_SKILL_MOVE_ID
+0x0082D9C0	ascii	KCharacter::SpecialSkillMove
+0x0082DA28	ascii	KCharacter::MoveTo
+0x0082DAD8	ascii	KCharacter::IsIdentityVisiable
+0x0082DAF8	ascii	pCharacter->m_dwIdentityVisiableID < MAX_IDENTITY_VISIABLE_ID
+0x0082DB38	ascii	pSrc->m_dwIdentityVisiableID < MAX_IDENTITY_VISIABLE_ID
+0x0082DB70	ascii	pDst->m_dwIdentityVisiableID < MAX_IDENTITY_VISIABLE_ID
+0x0082DBA8	ascii	dwSrcID < MAX_IDENTITY_VISIABLE_ID
+0x0082DBD0	ascii	dwDstID < MAX_IDENTITY_VISIABLE_ID
+0x0082DBF8	ascii	KCharacter::IsQuestIdentityVisiable
+0x0082DC20	ascii	KCharacter::CanIdentityAttack
+0x0082DC40	ascii	KCharacter::OnSkillMove
+=== line 6808
+0x0082CEE8	ascii	KBuffList::GetBuffByAppendType
+0x0082CF08	ascii	pBuffInfo
+0x0082CF18	ascii	KBuffList::GetOwnerSetByBuffID
+0x0082CF48	ascii	KBuffList::AddBuff
+0x0082CF60	ascii	pNewBuff
+0x0082CF70	ascii	KBuffList::DelGroupBuff
+0x0082CF88	ascii	KBuffList::CleanBuff
+0x0082CFC0	ascii	KBuffList::UpdateBuffData
+0x0082CFE0	ascii	(dwBufferSize % sizeof(KBUFF_TRANSFER_DATA)) == 0
+0x0082D018	ascii	KBuffList::CleanBuffByPersist
+0x0082D078	ascii	KBuffList::UpdateBuffValidity
+0x0082D0B8	ascii	KBuffList::CheckValidity
+0x0082D0D8	ascii	KBuffList::_LuaGetBuff
+0x0082D0F0	ascii	nIndex < nBuffCount
+0x0082D120	ascii	KBuffList::_LuaIsHaveBuff
+0x0082D290	ascii	m_eMoveState == cmsOnAutoFly
+0x0082D398	ascii	KCharacter::PrepareSkill
+0x0082D3B8	ascii	KCharacter::ChannelSkill
+0x0082D3D8	ascii	pSkill->m_pBaseInfo->nCastMode != scmItem
+0x0082D478	ascii	KCharacter::CastSkill
+0x0082D490	ascii	eTargetType == ttNoTarget || eTargetType == ttNpc || eTargetType == ttPlayer || eTargetType == ttDoodad || eTargetType == ttItem
+0x0082D518	ascii	KCharacter::CastSkillXYZ
+0x0082D540	ascii	[KCharacter::CastSkillXYZ] Skill(%u,%u) IsPlayer:%u Map:%u not exist
+0x0082D588	ascii	KCharacter::StartHoardSkill
+0x0082D5A8	ascii	pSkill->m_bHoardSkill
+0x0082D7F0	ascii	m_eMoveState == cmsOnFlyJump
+0x0082D948	ascii	nVelocityXYZ > 0
+0x0082D970	ascii	KCharacter::SkillMove
+0x0082D988	ascii	dwSkillMoveID > 0 && dwSkillMoveID <= MAX_SKILL_MOVE_ID
+0x0082D9C0	ascii	KCharacter::SpecialSkillMove
+0x0082DA28	ascii	KCharacter::MoveTo
+0x0082DAD8	ascii	KCharacter::IsIdentityVisiable
+0x0082DAF8	ascii	pCharacter->m_dwIdentityVisiableID < MAX_IDENTITY_VISIABLE_ID
+0x0082DB38	ascii	pSrc->m_dwIdentityVisiableID < MAX_IDENTITY_VISIABLE_ID
+0x0082DB70	ascii	pDst->m_dwIdentityVisiableID < MAX_IDENTITY_VISIABLE_ID
+0x0082DBA8	ascii	dwSrcID < MAX_IDENTITY_VISIABLE_ID
+0x0082DBD0	ascii	dwDstID < MAX_IDENTITY_VISIABLE_ID
+0x0082DBF8	ascii	KCharacter::IsQuestIdentityVisiable
+0x0082DC20	ascii	KCharacter::CanIdentityAttack
+0x0082DC40	ascii	KCharacter::OnSkillMove
+0x0082DC58	ascii	m_dwSkillMoveID <= MAX_SKILL_MOVE_ID
+0x0082DC98	ascii	m_dwSkillMoveID <= MAX_PARKOUR_MOVE_ID
+0x0082DCC0	ascii	KCharacter::OnSpecialSkillMove
+0x0082DCE0	ascii	m_dwSpecialSkillMoveID > 0 && m_dwSpecialSkillMoveID <= MAX_SKILL_MOVE_ID
+0x0082DD30	ascii	[KCharacter::DoOTAction] skill:(%u, %u)
+0x0082DD58	ascii	KCharacter::DoSkillHoard
+0x0082DD98	ascii	pProfessionSkill
+0x0082DE08	ascii	IS_PLAYER(m_dwID)
+0x0082DE20	ascii	KCharacter::OnSkillPrepare
+0x0082DE40	ascii	KCharacter::OnSkillChannel

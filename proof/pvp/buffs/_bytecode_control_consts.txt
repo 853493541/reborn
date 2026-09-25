@@ -1,0 +1,316 @@
+
+====================================================================================================
+# FILE C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\万花\万花_养心决_星楼月影.lua size=2215
+====================================================================================================
+# consumed=2215/2215 funcs=6 error=None
+-- fn d0 src=None params=0
+  S Include
+  S scripts/Include/Skill.lh
+  S tSkillData
+  S nDamageBase
+  S nDamageRand
+  S nCostMana
+  S GetSkillLevelData
+  S CanCast
+  S OnSkillLevelUp
+  S Apply
+  S UnApply
+  N 0.0
+  N 286.0
+-- fn d1 src=None params=1
+  S dwLevel
+  S AddAttribute
+  S ATTRIBUTE_EFFECT_MODE
+  S EFFECT_TO_SELF_NOT_ROLLBACK
+  S ATTRIBUTE_TYPE
+  S DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE
+  S CAST_SKILL
+  S EFFECT_TO_DEST_NOT_ROLLBACK
+  S EXECUTE_SCRIPT
+  S skill/万花/万花_养心决_星楼月影.lua
+  S SetNormalCoolDown
+  S SetCheckCoolDown
+  S nCostSprintPower
+  S CONSUME_BASE
+  N 4.0
+  N 10000.0
+  N 8.0
+  N 7.0
+  N 2.0
+  N 7276.0
+  N 1.0
+  N 21144.0
+  N 0.0
+  N 51.0
+  N 5005.0
+  N 444.0
+  N 20.0
+-- fn d1 src=None params=2
+-- fn d1 src=None params=2
+-- fn d1 src=None params=1
+  S GetPlayer
+  S GetSkillLevel
+  S nCurrentQiEnergy
+  S AddBuff
+  S dwID
+  S nLevel
+  S GetKungfuMountID
+  S IsSkillRecipeExist
+  S DelSkillRecipe
+  S wanhuaguNewPower
+  S ModityCDToUI
+  N 44556.0
+  N 1.0
+  N 2000.0
+  N 33219.0
+  N 40249.0
+  N 5.0
+  N 30401.0
+  N 10028.0
+  N 2264.0
+  N 29735.0
+  N 11808.0
+  N 3.0
+  N 17015.0
+  N 2.0
+  N 411.0
+  N 14634.0
+  N 0.0
+  N 20.0
+  N 100.0
+-- fn d1 src=None params=1
+
+====================================================================================================
+# FILE C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\少林\少林_达摩武诀_锻骨诀.lua size=2105
+====================================================================================================
+# consumed=2105/2105 funcs=6 error=None
+-- fn d0 src=None params=0
+  S Include
+  S scripts/Include/Skill.lh
+  S tSkillData
+  S nDamageBase
+  S nDamageRand
+  S nCostMana
+  S GetSkillLevelData
+  S CanCast
+  S OnSkillLevelUp
+  S Apply
+  S UnApply
+  N 0.0
+  N 29.0
+-- fn d1 src=None params=1
+  S dwLevel
+  S AddAttribute
+  S ATTRIBUTE_EFFECT_MODE
+  S EFFECT_TO_SELF_NOT_ROLLBACK
+  S ATTRIBUTE_TYPE
+  S CAST_SKILL
+  S DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE
+  S DETACH_MULTI_GROUP_BUFF
+  S EFFECT_TO_DEST_NOT_ROLLBACK
+  S DEL_SINGLE_BUFF_BY_FUNCTIONTYPE
+  S DEL_SINGLE_BUFF_BY_ID_AND_LEVEL
+  S CAST_SKILL_TARGET_DST
+  S EXECUTE_SCRIPT
+  S skill/少林/少林_达摩武诀_锻骨诀.lua
+  S SetNormalCoolDown
+  S SetCheckCoolDown
+  S nCostSprintPower
+  S CONSUME_BASE
+  N 21144.0
+  N 1.0
+  N 5.0
+  N 2.0
+  N 9999.0
+  N 3.0
+  N 4.0
+  N 6.0
+  N 8.0
+  N 7.0
+  N 10.0
+  N 12.0
+  N 10000.0
+  N 3051.0
+  N 7276.0
+  N 0.0
+  N 63.0
+  N 444.0
+  N 20.0
+-- fn d1 src=None params=2
+-- fn d1 src=None params=2
+-- fn d1 src=None params=1
+  S GetPlayer
+  S AddBuff
+  S dwID
+  S nLevel
+  S GetSkillLevel
+  S ModityCDToUI
+  N 1186.0
+  N 1.0
+  N 16.0
+  N 14795.0
+  N 9835.0
+  N 257.0
+  N 0.0
+-- fn d1 src=None params=1
+
+====================================================================================================
+# FILE C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\长歌\套路及子技能\长歌_影_孤影化双.lua size=4812
+====================================================================================================
+# consumed=4812/4812 funcs=8 error=None
+-- fn d0 src=None params=0
+  S Include
+  S scripts/Include/Skill.lh
+  S scripts/Include/PlayerTempValueName.lh
+  S tSkillData
+  S nDamageBase
+  S nDamageRand
+  S nCostMana
+  S GetSkillLevelData
+  S CanCast
+  S OnSkillLevelUp
+  S OnSkillForgotten
+  S Apply
+  S UnApply
+  S OnTimer
+  N 0.0
+-- fn d1 src=None params=1
+  S dwLevel
+  S AddAttribute
+  S ATTRIBUTE_EFFECT_MODE
+  S EFFECT_TO_SELF_NOT_ROLLBACK
+  S ATTRIBUTE_TYPE
+  S DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE
+  S CAST_SKILL
+  S EXECUTE_SCRIPT
+  S skill/长歌/套路及子技能/长歌_影_孤影化双.lua
+  S AddSlowCheckSelfBuff
+  S BUFF_COMPARE_FLAG
+  S EQUAL
+  S SetNormalCoolDown
+  S SetCheckCoolDown
+  S nMinRadius
+  S LENGTH_BASE
+  S nMaxRadius
+  S nAngleRange
+  S nTargetCountLimit
+  N 2.0
+  N 10000.0
+  N 3.0
+  N 4.0
+  N 6.0
+  N 7.0
+  N 8.0
+  N 7276.0
+  N 1.0
+  N 21144.0
+  N 0.0
+  N 9284.0
+  N 21117.0
+  N 908.0
+  N 988.0
+  N 444.0
+  N 256.0
+-- fn d1 src=None params=2
+-- fn d1 src=None params=2
+-- fn d1 src=None params=2
+-- fn d1 src=None params=2
+  S GetPlayer
+  S GetSkillLevel
+  S AddBuff
+  S dwID
+  S nLevel
+  S RemoteCallToClient
+  S ChangeSkillSurfaceNum
+  S nX
+  S nY
+  S nZ
+  S nFaceDirection
+  S nCurrentLife
+  S nCurrentMana
+  S GetBuff
+  S nCustomValue
+  S ResetSkillCD
+  S BackupCoolDown
+  S SetTimer
+  S scripts/skill/长歌/套路及子技能/长歌_影_孤影化双.lua
+  S scripts/skill/长歌/套路及子技能/长歌_影_孤影化双_回.lua
+  S ModityCDToUI
+  N 14309.0
+  N 1.0
+  N 15948.0
+  N 14163.0
+  N 9284.0
+  N 15.0
+  N 40333.0
+  N 7.0
+  N 14164.0
+  N 31157.0
+  N 17571.0
+  N 0.0
+  N 14162.0
+  N 6.0
+  N 14081.0
+  N 2.0
+  N 33081.0
+  N 64.0
+-- fn d1 src=None params=1
+-- fn d1 src=None params=3
+  S GetScene
+  S GetBuff
+  S GetSkillLevel
+  S CreateNpcWithEmployerID
+  S nX
+  S nY
+  S nZ
+  S nFaceDirection
+  S dwID
+  S dwIdentityVisiableID
+  S nHeight
+  S npc_xiangyi
+  S AddBuff
+  S nLevel
+  S SetTempValue
+  S PLAYER_TEMP_VALUE_CHANGGE_MW
+  S XIANGYI_X
+  S SetNpcCopyRepresentByPlayerID
+  S nMaxLife
+  S nCurrentLife
+  S nCustomValue
+  S CopyPlayerRelatedNpcAttrParam
+  S GetKungfuMount
+  S dwSkillID
+  S CastSkill
+  S PlaySfx
+  S CreateNpc
+  S CopyPlayerSimpleFightAttr
+  S nBattleFieldSide
+  S SetBattleFieldSide
+  S bBirdMove
+  N 9284.0
+  N 1.0
+  N 14163.0
+  N 40333.0
+  N 58852.0
+  N 256.0
+  N 58309.0
+  N 14180.0
+  N 40.0
+  N 0.5
+  N 12339.0
+  N 100.0
+  N 10447.0
+  N 21322.0
+  N 9431.0
+  N 20712.0
+  N 10448.0
+  N 9484.0
+  N 20763.0
+  N 416.0
+  N 9825.0
+  N 60.0
+  N 12587.0
+  N -1.0
+  N 12343.0
+  N 15175.0
+  N 15176.0

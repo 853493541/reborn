@@ -1,0 +1,21 @@
+
+===== skill\绝境战场\绝境_无相诀.lua:46
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+   47| 
+   48| 	----------------- BUFF相关 -------------------------------------------------
+   49| 	--skill.BindBuff(1, 399, dwSkillLevel)			-- 设置Buff
+
+===== skill\绝境战场\绝境_轮回诀.lua:54
+   53| 	--skill.AddSlowCheckSelfBuff(50323, 0, BUFF_COMPARE_FLAG.EQUAL, 2, BUFF_COMPARE_FLAG.LESS);			-- 需求自身Buff
+   54| 	--skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+   55| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   56| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   57| 	skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_镇山河.lua:57
+   56| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   57| 	skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+   58| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   59| 
+   60| 	----------------- BUFF相关 -------------------------------------------------

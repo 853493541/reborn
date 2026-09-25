@@ -1,0 +1,994 @@
+
+===== skill\沙漠风暴\绝境·临时飞爪.lua:47
+   46| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   47| 	--skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   48| 	--skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	--skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有霞流
+   50| 	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+
+===== skill\沙漠风暴\绝境·临时飞爪.lua:50
+   49| 	--skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有霞流
+   50| 	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+   51| 	--skill.AddSlowCheckSelfBuff(562, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL); -- 需求自身Buff -- 吞日月，禁轻功
+   52| 	-- skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   53| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+
+===== skill\沙漠风暴\道具_临时飞爪.lua:47
+   46| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   47| 	--skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   48| 	--skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	--skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有霞流
+   50| 	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+
+===== skill\沙漠风暴\道具_临时飞爪.lua:50
+   49| 	--skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有霞流
+   50| 	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+   51| 	--skill.AddSlowCheckSelfBuff(562, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL); -- 需求自身Buff -- 吞日月，禁轻功
+   52| 	-- skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   53| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+
+===== skill\沙漠风暴\道具_九转归一.lua:71
+   70| 	skill.SetCheckCoolDown(1, 444)
+   71| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   73| 	--skill.SetCheckCoolDown(2, 625)
+   74| 	--破绽段位
+
+===== skill\沙漠风暴\道具_云栖松.lua:84
+   83| 	skill.SetNormalCoolDown(2, 503);--明教
+   84| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   85| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   86| 	----------------- 设置技能消耗 ---------------------------------------------------------------------
+   87| 	--skill.nCostMana	= tSkillData[dwSkillLevel].nCostMana;
+
+===== skill\沙漠风暴\道具_人剑合一母技能.lua:76
+   75| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   76| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   77| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   78| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   79| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\沙漠风暴\道具_人剑合一母技能.lua:93
+   92| 	skill.SetCheckCoolDown(1, 444);
+   93| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   94| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   95| 	skill.SetCheckCoolDown(2, 804);--苍云
+   96| 	skill.SetNormalCoolDown(2, 503);--明教
+
+===== skill\沙漠风暴\道具_任驰骋.lua:70
+   69| --	skill.AddSlowCheckSelfBuff(10802, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 双人秋千监控BUFF，默认禁止骑乘
+   70| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   71| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	skill.SetCheckCoolDown(2, 804);--苍云
+   73| 	skill.SetNormalCoolDown(2, 503);--明教
+
+===== skill\沙漠风暴\道具_伪九霄风雷.lua:49
+   48| 	skill.AddSlowCheckSelfBuff(12483, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+   52| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_剑转流云.lua:78
+   77| 	--CoolDownIndex为CD位(共4个),nCoolDownID为CoolDownList.tab内的CDID
+   78| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   79| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   80| 	skill.SetPublicCoolDown(16);
+   81| 	skill.SetCheckCoolDown(1, 444);						-- 公共CD 1.5秒
+
+===== skill\沙漠风暴\道具_听风吹雪.lua:71
+   70| 	skill.SetNormalCoolDown(1, 950);    --技能普通CD
+   71| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   72| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   73| 	--skill.SetCheckCoolDown(CoolDownIndex, nCoolDownID);    --只检查不走的CD
+   74| 	----------------- 经验升级相关 ---------------------------------------------
+
+===== skill\沙漠风暴\道具_啸如虎.lua:36
+   35| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   36| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   37| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   38| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);    -- 需求自身属于自己的Buff
+   39| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);    -- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_如意法.lua:71
+   70| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   71| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   73| 	skill.AddSlowCheckSelfBuff(6279, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+   74| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, BUFF_COMPARE_FLAG.GREATER_EQUAL, nLevel, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+
+===== skill\沙漠风暴\道具_孤影化双.lua:96
+   95| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   96| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   97| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   98| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   99| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+
+===== skill\沙漠风暴\道具_孤风飒踏.lua:91
+   90| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   91| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   92| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   93| 	--skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有霞流
+   94| 	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+
+===== skill\沙漠风暴\道具_孤风飒踏.lua:94
+   93| 	--skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有霞流
+   94| 	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+   95| 	--skill.AddSlowCheckSelfBuff(562, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL); -- 需求自身Buff -- 吞日月，禁轻功
+   96| 	-- skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   97| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+
+===== skill\沙漠风暴\道具_守如山.lua:57
+   56| 	
+   57| 	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+   58| 	skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 霞流
+   59| 	skill.SetCheckCoolDown(2, 804);--苍云
+   60| 	skill.SetNormalCoolDown(2, 503);--明教
+
+===== skill\沙漠风暴\道具_平沙落雁.lua:52
+   51| 	skill.AddSlowCheckSelfBuff(12651, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 龙门伪装
+   52| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   53| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   54| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+   55| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_幻蛊.lua:35
+   34| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求目标Buff
+   35|     skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   36|     skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   37| 	-----------------技能施放技能需求-------------------------------------------
+   38| 	--skill.AddCheckSelfLearntSkill(dwSkillID, dwSkillLevel, LevelCompareFlag);    --检查比较Caster自己已学习的技能ID和等级
+
+===== skill\沙漠风暴\道具_幻蛊_失传.lua:34
+   33| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求目标Buff
+   34| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   35| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   36| 	-----------------技能施放技能需求-------------------------------------------
+   37| 	--skill.AddCheckSelfLearntSkill(dwSkillID, dwSkillLevel, LevelCompareFlag);    --检查比较Caster自己已学习的技能ID和等级
+
+===== skill\沙漠风暴\道具_应天授命.lua:39
+   38| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   39| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   40| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   41| 	--skill.AddSlowCheckSelfBuff(21474, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求没有三段BUFF
+   42| 	--skill.AddSlowCheckSelfBuff(15430, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求没有三段BUFF
+
+===== skill\沙漠风暴\道具_徐如林.lua:26
+   25| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   26| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   27| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   28| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   29| 	--skill.SetPublicCoolDown(16);		--公共CD
+
+===== skill\沙漠风暴\道具_心诤表现母技能.lua:41
+   40| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   41| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   42| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   43| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);    -- 需求自身属于自己的Buff
+   44| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);    -- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_怖畏暗刑.lua:42
+   41| 	skill.AddSlowCheckSelfBuff(6279, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+   42| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   43| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   44| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, BUFF_COMPARE_FLAG.GREATER_EQUAL, nLevel, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   45| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, BUFF_COMPARE_FLAG.GREATER_EQUAL, nLevel, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求目标Buff
+
+===== skill\沙漠风暴\道具_惊鸿游龙.lua:74
+   73| 	
+   74| 	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+   75| 	skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 霞流
+   76| 	skill.SetCheckCoolDown(2, 804);--苍云
+   77| 	skill.SetNormalCoolDown(2, 503);--明教
+
+===== skill\沙漠风暴\道具_抢珠式.lua:42
+   41| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   42| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   43| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);    -- 需求自身属于自己的Buff
+   45| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);    -- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_捉影式.lua:44
+   43| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 
+   47| 	----------------- BUFF相关 -------------------------------------------------
+
+===== skill\沙漠风暴\道具_斩无常.lua:114
+  113| 	skill.SetNormalCoolDown(2, 503);--明教
+  114| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+  115| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+  116| 	----------------- 经验升级相关 ---------------------------------------------
+  117| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_无间狱.lua:50
+   49| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   50| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   53| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\沙漠风暴\道具_无间狱.lua:91
+   90| 	--skill.SetCheckCoolDown(CoolDownIndex, nCoolDownID);	--只检查不走的CD
+   91| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   92| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   93| 	skill.SetNormalCoolDown(1, 2291);	   
+   94| 	skill.SetCheckCoolDown(1, 444)
+
+===== skill\沙漠风暴\道具_星楼月影.lua:68
+   67| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   68|     skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   69|     skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   70| 	----------------- BUFF相关 -------------------------------------------------
+   71| 	--skill.BindBuff(1, 411, 1)			-- 设置Buff
+
+===== skill\沙漠风暴\道具_春泥护花.lua:55
+   54| 	skill.AddSlowCheckDestBuff(1674, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);
+   55| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   56|     skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   57| 	--------------- BUFF相关 -------------------------------------------------
+   58| 	--skill.BindBuff(1, 20257, 1)			-- 设置Buff
+
+===== skill\沙漠风暴\道具_暗尘弥散.lua:120
+  119| 	skill.SetCheckCoolDown(2, 564);	--惩罚5秒CD
+  120| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+  121|     skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+  122| 	----------------- 经验升级相关 ---------------------------------------------
+  123| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_极乐引.lua:83
+   82| 	skill.SetCheckCoolDown(1, 444);	--后跳公共CD
+   83| 	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+   84| 	skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 霞流
+   85| 	----------------- 经验升级相关 ---------------------------------------------
+   86| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_楚河汉界.lua:88
+   87| 	skill.SetCheckCoolDown(1, 444);	--只检查不走的CD
+   88| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   89| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   90| 	----------------- 经验升级相关 ---------------------------------------------
+   91| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_洗兵雨.lua:42
+   41| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   42| 		skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   43| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求自身Buff
+   45| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求目标Buff
+
+===== skill\沙漠风暴\道具_浮光掠影.lua:78
+   77| 	skill.AddSlowCheckSelfBuff(3203, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+   78| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   79| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   80| 	--skill.AddSlowCheckDestOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求目标属于自己的Buff
+   81| 
+
+===== skill\沙漠风暴\道具_游风飘踪.lua:30
+   29| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   30| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   31| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   32| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   33| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\沙漠风暴\道具_琴音共鸣.lua:81
+   80| 	-- 公共CD
+   81| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   82| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   83| 	skill.SetPublicCoolDown(16);							-- 公共CD 1.5秒
+   84| 	-- 技能CD, CoolDownIndex为CD位(共3个), nCoolDownID为CoolDownList.tab内的CDID
+
+===== skill\沙漠风暴\道具_疾如风.lua:92
+   91| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   92| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   93| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   94| 
+   95| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+
+===== skill\沙漠风暴\道具_盾立.lua:87
+   86| 	skill.SetCheckCoolDown(1, 444);	--只检查不走的CD
+   87| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   88| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);                -- 需求自身Buff
+   89| 	----------------- 经验升级相关 ---------------------------------------------
+   90| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_穹隆化生.lua:44
+   43| 	----------------- 设置Cool down ---------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 霞流
+   46| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   47| 	skill.SetPublicCoolDown(16);
+
+===== skill\沙漠风暴\道具_紫气东来.lua:59
+   58| 	skill.SetCheckCoolDown(1, 444);
+   59| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	----------------- 经验升级相关 ---------------------------------------------
+   62| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_绿野蔓生.lua:75
+   74| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   75| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   76| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   77| 	--skill.AddSlowCheckSelfOwnBuff(15424, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);	-- 需求自身属于自己的Buff
+   78| 	--skill.AddSlowCheckDestOwnBuff(15518, 1, BUFF_COMPARE_FLAG.EQUAL, 1, BUFF_COMPARE_FLAG.EQUAL);	-- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_舍身诀.lua:53
+   52| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   53| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 
+   56| 	----------------- BUFF相关 -------------------------------------------------
+
+===== skill\沙漠风暴\道具_舍身诀子技能.lua:36
+   35| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   36| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   37| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   38| 
+   39| 	----------------- BUFF相关 -------------------------------------------------
+
+===== skill\沙漠风暴\道具_花语酥心.lua:40
+   39| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   40| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   41| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   42| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   43| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\沙漠风暴\道具_蚀心蛊.lua:86
+   85| 	skill.SetCheckCoolDown(1, 444);	--只检查不走的CD
+   86| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   87| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   88| 	--skill.SetCheckCoolDown(2, 804);--苍云
+   89| 	--skill.SetNormalCoolDown(2, 503);--明教
+
+===== skill\沙漠风暴\道具_蝶弄足.lua:76
+   75| 	--skill.SetNormalCoolDown(2, 1268);			--保护CD
+   76| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   77| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   78| 	skill.SetNormalCoolDown(1, 2042)
+   79| 	skill.SetCheckCoolDown(1, 444)
+
+===== skill\沙漠风暴\道具_转乾坤.lua:104
+  103| 
+  104| 	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+  105| 	skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 霞流
+  106| 	----------------- 经验升级相关 ---------------------------------------------
+  107| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_连环弩.lua:66
+   65| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   66| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   67| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   68| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   69| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\沙漠风暴\道具_逐云寒蕊.lua:75
+   74| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   75| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   76| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   77| 	--skill.AddSlowCheckSelfBuff(21474, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求没有三段BUFF
+   78| 	--skill.AddSlowCheckSelfBuff(15430, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求没有三段BUFF
+
+===== skill\沙漠风暴\道具_逐云寒蕊.lua:117
+  116| 	skill.SetCheckCoolDown(1, 444);
+  117| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+  118| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+  119| 	----------------- 经验升级相关 ---------------------------------------------
+  120| 	--注意,虽然这些内容可以在脚本内更改,但一般不做任何改动!
+
+===== skill\沙漠风暴\道具_镇山河.lua:92
+   91| 	--skill.SetNormalCoolDown(1, 170);
+   92| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   93| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   94| 	skill.SetNormalCoolDown(1, 174);
+   95| 	skill.SetCheckCoolDown(1, 444);
+
+===== skill\沙漠风暴\道具_霞流宝石伤害.lua:132
+  131| 	--skill.SetNormalCoolDown(2, 503);--明教
+  132| 	--skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+  133| 	--skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+  134| 
+  135| 	----------------- 设置技能消耗 ---------------------------------------------------------------------
+
+===== skill\沙漠风暴\道具_风来吴山.lua:71
+   70| 	skill.SetNormalCoolDown(2, 503);--明教
+   71| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   73| 	
+   74| 	----------------- 设置技能消耗 ---------------------------------------------------------------------
+
+===== skill\沙漠风暴\道具_飞刃回转.lua:40
+   39| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   40| 	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+   41| 	skill.AddSlowCheckSelfBuff(12321, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 霞流
+   42| 	--skill.AddSlowCheckSelfBuff(15430, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求没有三段BUFF
+   43| 	--skill.AddSlowCheckSelfBuff(18192, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求不在孤风飒踏二段冲刺期间
+
+===== skill\沙漠风暴\道具_飞刃回转.lua:86
+   85| 	skill.SetNormalCoolDown(2, 503);--明教
+   86| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   87| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   88| 	--skill.SetCheckCoolDown(2, 16);	--技能普通CD
+   89| 	----------------- 经验升级相关 ---------------------------------------------
+
+===== skill\沙漠风暴\道具_鹊踏枝.lua:85
+   84| 
+   85| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+   86| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 霞流
+   87| 	skill.SetNormalCoolDown(1, 2041);						--自身CD
+   88| 	skill.SetNormalCoolDown(2, 1269);						--保护CD
+
+===== skill\绝境战场\绝境_七星拱瑞.lua:54
+   53| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   54| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   56| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   57| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_万剑归宗.lua:58
+   57| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   58| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   59| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   61| 	skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_三才化生.lua:60
+   59| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   60| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   62| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   63| 	--skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_三环套月.lua:74
+   73| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   74| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   75| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   76| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   77| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_两仪化形.lua:53
+   52| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   53| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	--skill.AddSlowCheckSelfBuff(3472, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+   56| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_云飞玉皇.lua:58
+   57| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   58| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   59| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   61| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_五方行尽.lua:75
+   74| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   75| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   76| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   77| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   78| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_五蕴皆空.lua:45
+   44| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   45| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47|     --skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   48|     --skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_任驰骋.lua:63
+   62| 	skill.AddSlowCheckSelfBuff(3767, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); --烛龙殿特殊
+   63| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   64| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   65| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   66| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+
+===== skill\绝境战场\绝境_傍花随柳.lua:47
+   46| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   47| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   48| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	--skill.AddSlowCheckSelfBuff(nType, dwBuffID, nStackNum)		-- 需求自身Buff
+   50| 	--skill.AddSlowCheckDestBuff(nType, dwBuffID, nStackNum)		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_兰摧玉折.lua:49
+   48| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_冲阴阳.lua:45
+   44| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   45| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   48| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_净世破魔击.lua:95
+   94| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   95| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   96| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   97| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, BUFF_COMPARE_FLAG.GREATER_EQUAL, nLevel, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   98| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, BUFF_COMPARE_FLAG.GREATER_EQUAL, nLevel, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_凌太虚.lua:43
+   42| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   43| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_剑主天地.lua:63
+   62| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   63| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   64| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   65| 	--skill.AddSlowCheckSelfBuff(3472, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+   66| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_剑转流云.lua:65
+   64| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   65| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   66| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   67| 	--skill.AddSlowCheckSelfBuff(409, 1, 1);		-- 需求自身Buff
+   68| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_剑飞惊天.lua:57
+   56| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   57| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   58| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   59| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   60| 	--skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_吞日月.lua:43
+   42| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   43| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_听雷.lua:50
+   49| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   50| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   53| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_商阳指.lua:45
+   44| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   45| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47|     --skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   48|     --skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_啸如虎.lua:44
+   43| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckSelfBuff(4052, 0, BUFF_COMPARE_FLAG.EQUAL, 1, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(4052, 0, BUFF_COMPARE_FLAG.EQUAL, 3, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+
+===== skill\绝境战场\绝境_回风扫叶.lua:64
+   63| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   64| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   65| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   66|     --SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   67|     skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_圣明佑.lua:30
+   29| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   30| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   31| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   32| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   33| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_坐忘无我.lua:49
+   48| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   52| 	skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_大狮子吼.lua:43
+   42| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   43| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_大道无术.lua:42
+   41| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   42| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   43| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   45| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_天地无极.lua:59
+   58| 	----------------- BUFF相关 -------------------------------------------------
+   59| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	--skill.BindBuff(1, 540, 2);			-- 设置Buff
+   62| 	--skill.BindBuff(2, nBuffID, nBuffLevel);		-- 设置Debuff
+
+===== skill\绝境战场\绝境_太极无极.lua:59
+   58| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   59| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	--skill.AddSlowCheckSelfBuff(2337, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);			-- 需求自身Buff
+   62| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_夺命蛊.lua:35
+   34| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   35| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   36| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   37| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   38| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_少明指.lua:123
+  122| 	----------------- 技能施放Buff需求 ---------------------------------------------
+  123| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+  124| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+  125| 	--skill.AddSlowCheckSelfBuff(nType, dwBuffID, nStackNum)		-- 需求自身Buff
+  126| 	--skill.AddSlowCheckDestBuff(nType, dwBuffID, nStackNum)		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_帝骖龙翔.lua:60
+   59| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   60| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   62| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   63| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_幽月轮.lua:59
+   58| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   59| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   62| 	skill.SetPublicCoolDown(16);		-- 明教公共CD 1秒
+
+===== skill\绝境战场\绝境_捉影式.lua:63
+   62| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   63| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   64| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   65| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   66| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_摩诃无量.lua:51
+   50| 	----------------- BUFF相关 -------------------------------------------------
+   51| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   52| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   53| 	skill.BindBuff(1, 51347, 1);		-- 设置Debuff
+   54| 	--skill.BindBuff(2, 4030, 1)
+
+===== skill\绝境战场\绝境_撼如雷.lua:51
+   50| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   51| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   52| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   53| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   54| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_断魂刺.lua:72
+   71| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   72| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   73| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   74| 	skill.AddSlowCheckSelfBuff(51371, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	
+   75| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+
+===== skill\绝境战场\绝境_无我无剑.lua:53
+   52| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   53| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   56| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_无相诀.lua:44
+   43| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+   47| 
+
+===== skill\绝境战场\绝境_星楼月影.lua:53
+   52| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   53| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   56| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_春泥护花.lua:32
+   31| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   32| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   33| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   34| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   35| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_暗尘弥散.lua:44
+   43| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckSelfBuff(4052, 0, BUFF_COMPARE_FLAG.EQUAL, 1, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(4052, 0, BUFF_COMPARE_FLAG.EQUAL, 3, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+
+===== skill\绝境战场\绝境_枯残蛊.lua:35
+   34| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   35| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   36| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   37| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   38| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_棒打狗头.lua:36
+   35| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   36| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   37| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   38| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   39| 	skill.SetPublicCoolDown(16);
+
+===== skill\绝境战场\绝境_横扫六合.lua:49
+   48| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_沧月.lua:54
+   53| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   54| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   56| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   57| 	skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境_浮光掠影.lua:44
+   43| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckSelfBuff(4052, 0, BUFF_COMPARE_FLAG.EQUAL, 1, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(4052, 0, BUFF_COMPARE_FLAG.EQUAL, 3, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+
+===== skill\绝境战场\绝境_渊.lua:94
+   93| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   94| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   95| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   96| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   97| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_灭.lua:36
+   35| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   36| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   37| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   38| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   39| 	skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境_烈日斩.lua:57
+   56| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   57| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   58| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   59| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   60| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_玉石俱焚.lua:93
+   92| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   93| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   94| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   95| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   96| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_生太极.lua:44
+   43| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   44| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   45| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_生死劫.lua:52
+   51| 	----------------- BUFF相关 -------------------------------------------------
+   52| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   53| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| --	skill.BindBuff(1, 4029, 1)
+   55| --	skill.BindBuff(2, 4030, 1)
+
+===== skill\绝境战场\绝境_疾如风.lua:54
+   53| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   54| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   56| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   57| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_百足.lua:68
+   67| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   68| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   69| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   70| 	--skill.AddSlowCheckSelfBuff(2315, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 女娲补天不能用
+   71| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_破坚阵.lua:77
+   76| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   77| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   78| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   79|     --SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   80|     skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境_破苍穹.lua:45
+   44| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   45| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   48| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_破风.lua:52
+   51| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   52| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   53| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   55| 	skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境_碎星辰.lua:45
+   44| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   45| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   48| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_穿.lua:78
+   77| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   78| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   79| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   80| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   81| 	skill.SetPublicCoolDown(16);	--公共CD
+
+===== skill\绝境战场\绝境_穿心弩.lua:38
+   37| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   38| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   39| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   40| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   41| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_绛唇珠袖.lua:42
+   41| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   42| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   43| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   44| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   45| 	--skill.SetPublicCoolDown(16);	--公共CD1.5秒
+
+===== skill\绝境战场\绝境_芙蓉并蒂.lua:67
+   66| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   67| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   68| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   69| 	--skill.AddSlowCheckSelfBuff(nType, dwBuffID, nStackNum)		-- 需求自身Buff
+   70| 	--skill.AddSlowCheckDestBuff(nType, dwBuffID, nStackNum)		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_蛇影.lua:45
+   44| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   45| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   46| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   47| 	--skill.AddSlowCheckSelfBuff(2315, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 女娲补天不能用
+   48| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_蛊虫献祭.lua:60
+   59| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   60| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   61| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   62| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   63| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_蟾啸.lua:47
+   46| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   47| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   48| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	--skill.AddSlowCheckSelfBuff(2315, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 女娲补天不能用
+   50| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_裂苍穹.lua:76
+   75| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   76| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   77| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   78| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   79| 	skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境_迷心蛊.lua:35
+   34| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   35| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   36| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   37| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   38| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_追命箭.lua:58
+   57| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   58| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   59| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   60| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   61| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_钟林毓秀.lua:49
+   48| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_银月斩.lua:57
+   56| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   57| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   58| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   59| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   60| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_长针.lua:49
+   48| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_雷霆震怒.lua:47
+   46| 	----------------- BUFF相关 -------------------------------------------------
+   47| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   48| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	--skill.BindBuff(1, 682, dwSkillLevel);			-- 设置Buff
+   50| 	--skill.BindBuff(2, nBuffID, nBuffLevel);		-- 设置Debuff
+
+===== skill\绝境战场\绝境_雾暗迷云.lua:48
+   47| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   48| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求自身Buff
+   51| 	skill.AddSlowCheckDestBuff(29898, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+
+===== skill\绝境战场\绝境_韦陀献杵.lua:52
+   51| 	----------------- BUFF相关 -------------------------------------------------
+   52| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   53| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	--skill.BindBuff(1, 4029, 1)
+   55| 	--skill.BindBuff(2, 4030, 1)
+
+===== skill\绝境战场\绝境_风袖低昂.lua:49
+   48| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   49| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   51| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   52| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_驱夜断愁.lua:83
+   82| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   83| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   84| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   85| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   86| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_鹊踏枝.lua:77
+   76| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   77| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   78| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   79| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   80| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_鹤归孤山.lua:70
+   69| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   70| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   71| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   73| 	skill.AddSlowCheckSelfBuff(51371, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	
+
+===== skill\绝境战场\绝境_龙吟.lua:54
+   53| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   54| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   56| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   57| 	skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境_龙牙.lua:67
+   66| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   67| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   68| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   69| 	skill.AddSlowCheckSelfBuff(51371, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	
+   70| 	skill.SetPublicCoolDown(16);		--公共CD1秒
+
+===== skill\绝境战场\绝境·引窍.lua:40
+   39| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   40| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   41| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   42| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求自身Buff
+   43| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求目标Buff
+
+===== skill\绝境战场\绝境·截阳.lua:48
+   47| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   48| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   49| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   50| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求自身Buff
+   51| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求目标Buff

@@ -1,0 +1,42 @@
+﻿engine_strings.txt | 0x00675040	ascii	KPP_Num == ARRAYSIZE(GKPPColorUsageText)
+engine_strings.txt | 0x0067B090	ascii	KG3DSceneOutDoorSpaceMgr_Block::OnTerrainBlockCreate
+engine_strings.txt | 0x0067B0C8	ascii	KG3DSceneOutDoorSpaceMgr_Block::OnTerrainBlockDelete
+engine_strings.txt | 0x0067B100	ascii	KG3DSceneOutDoorSpaceMgr_Block::OnTerrainBlockModified
+engine_strings.txt | 0x0068BA98	ascii	--> ReduceMemUsage=%d. <--
+engine_strings.txt | 0x0068DE24	ascii	Usage
+engine_strings.txt | 0x006CE2F0	ascii	KG3DSceneOutDoorSpaceMgr::OnTerrainInformationModified
+engine_strings.txt | 0x006CF458	ascii	KG3DTerrainBlock::OnTerrainBlockModified
+imports_JX3LogicEditOperation.txt |   CertGetIntendedKeyUsage
+imports_JX3LogicEditOperation.txt |   CertGetEnhancedKeyUsage
+JX3ClientX64_exe_net_strings.txt | 0x007F2668	ascii	GetCpuUsage
+JX3ClientX64_exe_net_strings.txt | 0x00A416B0	ascii	.?AV?$_Func_impl_no_alloc@V?$_Binder@U_Unforced@std@@P8KJX3CpuUsageModule@@EAAHAEAUKSO3ClientBaseEvent@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@HAEAUKSO3ClientBaseEvent@@@std@@
+JX3ClientX64_exe_net_strings.txt | 0x00A417A0	ascii	.?AV?$_Binder@U_Unforced@std@@P8KJX3CpuUsageModule@@EAAHAEAUKSO3ClientBaseEvent@@@ZPEAV3@AEBU?$_Ph@$00@2@@std@@
+JX3ClientX64_exe_net_strings.txt | 0x0083E3A8	ascii	m_bMorphInvalidFlag
+JX3ClientX64_exe_net_strings.txt | 0x00954420	ascii	D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\Sword3\Source\Client\SO3Client\Module\CpuUsageModule.cpp,KJX3CpuUsageModule::BackgroundUpdate:120
+JX3ClientX64_exe_net_strings.txt | 0x007BB468	ascii	KPlayerClient::DoTeamSetFormationLeader
+JX3ClientX64_exe_net_strings.txt | 0x007C0C10	ascii	KPlayerClient::OnTeamSetFormationLeaderNotify
+JX3ClientX64_exe_net_strings.txt | 0x007CB560	ascii	Player "%s" enter scene "%s" (%.2u,%d), Memory usage WorkingSetSize:%dMB, PrivateUsage:%dMB
+JX3ClientX64_exe_net_strings.txt | 0x007CB5E0	ascii	Player(%u) "%s" leave scene "%s" (%.2u,%d), Memory usage WorkingSetSize:%dMB, PrivateUsage:%dMB
+JX3ClientX64_exe_net_strings.txt | 0x00832F40	ascii	pSFXInfo->nRepresentPosition > psrInvalid && pSFXInfo->nRepresentPosition < psrCount
+JX3ClientX64_exe_net_strings.txt | 0x00832F98	ascii	m_dwCurrentSFXID[pSFXInfo->nRepresentPosition] != dwSFXID
+JX3ClientX64_exe_net_strings.txt | 0x00833028	ascii	m_dwCurrentSFXID[pSFXInfo->nRepresentPosition] == dwSFXID
+JX3ClientX64_exe_net_strings.txt | 0x0083D220	ascii	nRetCode && "[Buff] Get RepresentPos"
+JX3ClientX64_exe_net_strings.txt | 0x0083D630	ascii	nRetCode && "[Buff] Get IsOffLineClock"
+JX3ClientX64_exe_net_strings.txt | 0x0083D7C0	ascii	nRetCode && "[Buff] Get MorphInvalid"
+JX3ClientX64_exe_net_strings.txt | 0x0086D5D8	ascii	pSFXInfo && pSFXInfo->nRepresentPosition == psrSurroundBody
+JX3LogicEditOperation_net_strings.txt | 0x007BF880	ascii	GetCpuUsage
+JX3LogicEditOperation_net_strings.txt | 0x00786040	ascii	m_bMorphInvalidFlag
+JX3LogicEditOperation_net_strings.txt | 0x0076A060	ascii	Player "%s" enter scene "%s" (%.2u,%d), Memory usage WorkingSetSize:%dMB, PrivateUsage:%dMB
+JX3LogicEditOperation_net_strings.txt | 0x0076A0E0	ascii	Player(%u) "%s" leave scene "%s" (%.2u,%d), Memory usage WorkingSetSize:%dMB, PrivateUsage:%dMB
+JX3LogicEditOperation_net_strings.txt | 0x0076C758	ascii	KPlayerClient::DoTeamSetFormationLeader
+JX3LogicEditOperation_net_strings.txt | 0x00771D30	ascii	KPlayerClient::OnTeamSetFormationLeaderNotify
+JX3LogicEditOperation_net_strings.txt | 0x00784E50	ascii	nRetCode && "[Buff] Get RepresentPos"
+JX3LogicEditOperation_net_strings.txt | 0x00785280	ascii	nRetCode && "[Buff] Get IsOffLineClock"
+JX3LogicEditOperation_net_strings.txt | 0x00785410	ascii	nRetCode && "[Buff] Get MorphInvalid"
+JX3LogicEditOperation_net_strings.txt | 0x007B8CE0	ascii	pSFXInfo->nRepresentPosition > psrInvalid && pSFXInfo->nRepresentPosition < psrCount
+JX3LogicEditOperation_net_strings.txt | 0x007B8D38	ascii	m_dwCurrentSFXID[pSFXInfo->nRepresentPosition] != dwSFXID
+JX3LogicEditOperation_net_strings.txt | 0x007B8DC8	ascii	m_dwCurrentSFXID[pSFXInfo->nRepresentPosition] == dwSFXID
+JX3RepresentX64_all_strings.txt | 0x00CD93B8	ascii	RepresentPos2SocketIndex
+JX3RepresentX64_net_strings.txt | 0x00CD93B8	ascii	RepresentPos2SocketIndex
+symbols_KPlayerClient.txt | KPlayerClient::DoTeamSetFormationLeader
+symbols_KPlayerClient.txt | KPlayerClient::OnTeamSetFormationLeaderNotify

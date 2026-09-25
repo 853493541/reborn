@@ -1,0 +1,34 @@
+# JX3 control / diminishing-returns catalog
+# sources:
+#   PROBE/logic-skill-prefixed-out/settings/skill/DecayType.tab
+#   PROBE/logic-skill-prefixed-out/settings/skill/Buff.tab
+#   PROBE/ability-matcher/extracted/scripts/skill/**  (DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE args,
+#     player.DelMultiGroupBuffByFunctionType(n), atImmunity n)
+# Frame unit = 1/16 s (160=10s, 320=20s, 96=6s).
+# Columns: DecayType | Name | DecayFrame | ImmunityFrame | seconds | example buffs (ID:Name) | notes
+0	击晕	160	160	10	424:冲锋眩晕 ; 453:九转归一_眩晕 ; 14928:九转碰撞障碍眩晕 ; 2755:七星北斗_眩晕 ; 5876:少林_反弹眩晕 ; 533:天霜粉 ; 464:冲锋、沉重打击眩晕	DecayFrame == ImmunityFrame in this build
+1	冰环	160	160	10	558:三才化生 ; 706:云裳心经_止水_冰环 ; 2289:五方行尽 ; 3466:唐门_暗藏杀机_锁足 ; 679:影痕	DecayFrame == ImmunityFrame in this build
+2	定身	160	160	10	554:大道无术 ; 675:芙蓉并蒂-定身 ; 685:傍花随柳-定身 ; 686:帝骖龙翔 ; 749:紫霞功_定身 ; 13052:普通大道无术减化劲	DecayFrame == ImmunityFrame in this build
+3	七星拱瑞	320	320	20	556:七星拱瑞 ; 852:七星拱瑞_player ; 2832:镇派_七星拱瑞_npc1 ; 2833:镇派_七星拱瑞_player1	DecayFrame == ImmunityFrame in this build
+4	雷霆震怒	320	320	20	682:雷霆震怒	DecayFrame == ImmunityFrame in this build
+5	沉默	160	160	10	445:少林-沉默 ; 534:止息 ; 557:八卦洞玄 ; 726:剑飞惊天_沉默 ; 50379:傍花随柳实际沉默 ; 4053:明教_怖畏暗刑_沉默	DecayFrame == ImmunityFrame in this build
+6	眠蛊	160	160	10	2522:五毒_万蛊真解_眠蛊(对Player) ; 2523:五毒_万蛊真解_眠蛊(对NPC)	DecayFrame == ImmunityFrame in this build
+7	迷神钉	160	160	10	3224:唐门_迷神钉 ; 4871:明教_无明魂锁 ; 9756:无名魂锁_玩家减半	DecayFrame == ImmunityFrame in this build
+8	短暂锁足	96	96	6	749:紫霞功_定身 ; 1931:吐故纳新_锁足 ; 1936:绛唇珠袖_定身 ; 5694:万花_太阴指锁足 ; 51858:绝境_丐帮锁足 ; 2799:七秀_袖手_鹊踏枝闪避后效果	DecayFrame == ImmunityFrame in this build
+9	恐惧	160	160	10	27038:万灵山庄_恐惧 ; 20346:百战异闻录通用恐惧	DecayFrame == ImmunityFrame in this build
+
+# ---- control-category IDs used by atImmunity and DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE ----
+# (numeric enum; NOT the Buff.tab FunctionType string column)
+# id | inferred meaning | confidence | evidence
+2	减速 Slow	HIGH	孤影化双 comment; 少林_被打免疫减速(7173) atImmunity=2; Buff.tab FunctionType Slow
+3	恐惧 Fear	HIGH	无惧(8247) tooltip '免疫恐惧和控制效果' atImmunity={2,3,4,7,8,11}; absent from movement-only sets
+4	定身 Root	HIGH	孤影化双 comment; 冰心诀-冻逝-免疫定身(700) atImmunity=4; Buff.tab FunctionType Halt
+5	沉默 Silence	HIGH	免疫沉默(763) atImmunity=5; 转乾坤/锻骨诀 tooltips (免疫封内)
+6	雷霆震怒 / special	LOW	孤影化双 comment '解除雷霆'; present in 天策 charge/mount immunity sets; 镇山河 actually deletes buff 682 directly
+7	锁足 Root	HIGH	孤影化双 comment; 任驰骋 tooltip '解除自身锁足'; Buff.tab 锁足 buffs FunctionType Charm
+8	眩晕 Stun	HIGH	孤影化双 comment; 短暂免疫眩晕(18246) atImmunity=8; Buff.tab FunctionType Stun/Daze
+9	嘲讽 Taunt	HIGH	NPC通用_免疫嘲讽(4344)/通用_嘲讽免疫(8832) atImmunity=9
+11	击倒 Knockdown	HIGH	摧蕊免疫击倒效果(20704)/风止韧性及免疫击倒(27102) atImmunity=11
+14	unknown (newer)	LOW	月影护盾(17973) {5,14}; 寂灭蛊免疫(24353)/孔雀引免控(24414)
+15/16/17	unknown (newer)	LOW	衍天宗荧惑守心生效效果(26065) per level
+-	击退/被拉 displacement	-	handled by atKnockedBackRate / atRepulsedRate / atPullRate, not atImmunity

@@ -1,0 +1,24 @@
+# needle: KPlayerClient::OnPauseCDTimer
+# string VAs: ['0x180778c00']
+# xrefs: 1
+
+## xref 0x18018b9c0  fn_start 0x18018b9a0
+0x018018b9a0: push	rbx
+0x018018b9a2: sub	rsp, 0x30
+0x018018b9a6: mov	rcx, qword ptr [rip + 0x835973]
+0x018018b9ad: mov	rbx, rdx
+0x018018b9b0: mov	edx, dword ptr [rdx + 7]
+0x018018b9b3: call	0x18012b610
+0x018018b9b8: mov	rcx, rax
+0x018018b9bb: test	rax, rax
+0x018018b9be: jne	0x18018b9f1
+0x018018b9c0: lea	rax, [rip + 0x5ed239]
+0x018018b9c7: mov	r9d, 0x76b0
+0x018018b9cd: lea	r8, [rip + 0x5db364]
+0x018018b9d4: mov	qword ptr [rsp + 0x20], rax
+0x018018b9d9: lea	rdx, [rip + 0x762ac8]
+0x018018b9e0: mov	ecx, 3
+0x018018b9e5: call	qword ptr [rip + 0x5d9875]
+0x018018b9eb: add	rsp, 0x30
+0x018018b9ef: pop	rbx
+0x018018b9f0: ret	

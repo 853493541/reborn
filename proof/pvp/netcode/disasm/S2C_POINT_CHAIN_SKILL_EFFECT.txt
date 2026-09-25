@@ -1,0 +1,4 @@
+# needle: S2C_POINT_CHAIN_SKILL_EFFECT
+# string VAs: []
+# xrefs: 0
+(no xref found)

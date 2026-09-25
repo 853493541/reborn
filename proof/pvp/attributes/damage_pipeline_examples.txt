@@ -1,0 +1,84 @@
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\体验战场机器人\唐门_孔雀翎.lua line 36 ---
+AddAttribute(
+		--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		--ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		--20,
+		--0
+	--);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\一之窟\1号_骆耀阳\1号_骆耀阳_破风.lua line 33 ---
+AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\刀轮海厅\剑破伤害.lua line 32 ---
+AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\刀轮海厅\屠龙六式伤害120面向.lua line 32 ---
+AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\沃石院\1号\1号_大矩形aoe.lua line 32 ---
+AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\流离岛\流离岛-詹素-小怪旋转.lua line 32 ---
+AddAttribute(
+  		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\烛龙殿\巡守普通攻击.lua line 37 ---
+AddAttribute(
+  		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\烛龙殿\烛龙殿_唐门_化血镖.lua line 31 ---
+AddAttribute(
+  		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\烛龙殿\烛龙殿_天策_破风.lua line 31 ---
+AddAttribute(
+  		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\狼牙堡_战兽山\无支祁\暗流涌动.lua line 32 ---
+AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\狼牙堡_战兽山\无支祁\绝命深渊.lua line 32 ---
+AddAttribute(
+		--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		--ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		--GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		--0
+	--);
+--- C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\npc\副本BOSS\狼牙堡_狼神殿\6号_靳空明\千钧横扫.lua line 25 ---
+AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_AND_ROLLBACK,
+		ATTRIBUTE_TYPE.SKILL_PHYSICS_DAMAGE,
+		GetSkillDamageBaseByVersion(skill.dwSkillID, skill.dwLevel),
+		0
+	);

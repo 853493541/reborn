@@ -1,0 +1,189 @@
+﻿---------------------------------------------------------------------->
+
+-- 鑴氭湰鍚嶇О:	scripts/skill/缁濆鎴樺満/缁濆_涓冩槦鎷辩憺player.lua
+
+-- 鏇存柊鏃堕棿:	2023/8/21 15:01:51
+
+-- 鏇存柊鐢ㄦ埛:	xiaxianbo11
+
+-- 鑴氭湰璇存槑:	
+
+----------------------------------------------------------------------<
+
+------------------------------------------------
+
+-- 鏂囦欢鍚?   :  瀛愭妧鑳絖涓冩槦鎷辩憺_player.lua
+
+-- 鍒涘缓浜?   :  kingbeyond	
+
+-- 鍒涘缓鏃堕棿  :  2009-1-15
+
+-- 鐢ㄩ€?妯″潡):  姝﹀姛鎶€鑳?
+-- 姝﹀姛闂ㄦ淳  :  绾槼
+
+-- 姝﹀姛绫诲瀷  :  澶栧姛
+
+-- 姝﹀姛濂楄矾  :  鍖楀啣鍓戞皵
+
+-- 鎶€鑳藉悕绉? :  涓冩槦鎷辩憺
+
+-- 鎶€鑳芥晥鏋? :  鍑绘槒杩峰鎵嬶紙鏁堟灉鏍规嵁姘旂殑鏍兼暟鑰屽畾锛?~30绉掞級锛?
+--				鍙楀埌浼ゅ鎭㈠锛屼竴娆″彧鑳芥湁涓€涓洰鏍囪鏄忥紝鏁堟灉閫掑噺
+
+------------------------------------------------
+
+
+
+--------------鑴氭湰鏂囦欢寮€濮?-----------------------------------------------
+
+Include("scripts/Include/Skill.lh")
+
+Include("scripts/Include/Player.lh")
+
+
+
+tSkillData =
+
+{
+
+	{ nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 1
+
+	{ nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 2
+
+	{ nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 3
+
+	{ nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 4
+
+	{ nDamageBase = 0, nDamageRand = 0, nCostMana = 0}, --level 5
+
+};
+
+
+
+--璁剧疆姝﹀姛鎶€鑳界骇鍒浉鍏虫暟鍊?
+function GetSkillLevelData(skill)
+
+
+
+	local dwSkillLevel = skill.dwLevel;
+
+
+
+	----------------- 榄旀硶灞炴€?-------------------------------------------------
+
+	--skill.AddAttribute(
+
+	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+
+	--ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+
+	--"skill/绾槼/瀛愭妧鑳絖涓冩槦鎷辩憺_player.lua",
+
+	--0
+
+	--);
+
+	----------------- 鎶€鑳芥柦鏀綛uff闇€姹?---------------------------------------------
+
+	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傝嚜韬獴uff
+
+	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傜洰鏍嘊uff
+
+
+
+	----------------- BUFF鐩稿叧 -------------------------------------------------
+
+	--skill.BindBuff(1, nBuffID, nBuffLevel);			-- 璁剧疆Buff
+
+	skill.BindBuff(1, 2835, 1)
+
+	skill.BindBuff(2, 3070, 2)
+
+	--skill.BindBuff(3, nBuffID, nBuffLevel);				-- 璁剧疆Dot
+
+	--skill.BindBuff(4, nBuffID, nBuffLevel);				-- 璁剧疆Hot 
+
+
+
+	----------------- 璁剧疆Cool down --------------------------------------------
+
+	--CoolDownIndex涓篊D浣?鍏?涓?,nCoolDownID涓篊oolDownList.tab鍐呯殑CDID
+
+	--skill.SetPublicCoolDown(16);
+
+
+
+	----------------- 缁忛獙鍗囩骇鐩稿叧 ---------------------------------------------
+
+	--娉ㄦ剰,铏界劧杩欎簺鍐呭鍙互鍦ㄨ剼鏈唴鏇存敼,浣嗕竴鑸笉鍋氫换浣曟敼鍔?
+
+	--skill.dwLevelUpExp	= 0;    				-- 鍗囩骇缁忛獙
+
+	--skill.nExpAddOdds		= 1024;					-- 鎶€鑳界啛缁冨害澧為暱姒傜巼
+
+	--skill.nPlayerLevelLimit	= 0;				-- 瑙掕壊鍙互瀛︿細璇ユ妧鑳芥墍蹇呴』杈惧埌鐨勬渶浣庣瓑绾?
+
+
+	----------------- 鎶€鑳芥秷鑰?-------------------------------------------------
+
+	--skill.nCostLife		= 0;					-- 鎶€鑳芥秷鑰楃敓鍛藉€?
+	--skill.nCostMana = tSkillData[dwSkillLevel].nCostMana;					-- 鎶€鑳芥秷鑰楃殑鍐呭姏
+
+	--skill.nCostRage		= 0;					-- 鎶€鑳芥秷鑰楃殑鎬掓皵
+
+	--skill.nCostStamina	= 0;					-- 鎶€鑳芥秷鑰楃殑浣撳姏
+
+	--skill.nCostItemType	= 0;					-- 鎶€鑳芥秷鑰楃殑鐗╁搧绫诲瀷
+
+	--skill.nCostItemIndex	= 0;					-- 鎶€鑳芥秷鑰楃殑鐗╁搧绱㈠紩ID
+
+
+
+	----------------- 鑱氭皵鐩稿叧 -------------------------------------------------
+
+	--skill.bIsAccumulate	= false;				-- 鎶€鑳芥槸鍚﹂渶瑕佽仛姘?
+	--skill.SetSubsectionSkill(nBeginInterval, nEndInterval, dwSkillID, dwSkillLevel)
+
+
+
+	----------------- 閾剧姸鎶€鑳界浉鍏?---------------------------------------------
+
+	--skill.nChainBranch	= 1;					--閾剧姸鎶€鑳藉垎鏀暟
+
+	--skill.nChainDepth		= 3;					--閾剧姸鎶€鑳藉眰鏁?
+	--閾剧姸鎶€鑳界殑瀛愭妧鑳界敤skill.SetSubsectionSkill()璁惧畾
+
+
+
+	----------------- 鏂芥斁璺濈 -------------------------------------------------
+
+	--skill.nMinRadius		= 0;					-- 鎶€鑳芥柦鏀剧殑鏈€灏忚窛绂?
+
+	skill.nMaxRadius = 26 * LENGTH_BASE;					-- 鎶€鑳芥柦鏀剧殑鏈€澶ц窛绂?
+
+
+
+	----------------- 浣滅敤鑼冨洿 -------------------------------------------------
+
+	skill.nAngleRange = 128;					-- 鏀诲嚮鑼冨洿鐨勬墖褰㈣搴﹁寖鍥?
+
+	--skill.nAreaRadius		= 0 * LENGTH_BASE;		-- 鎶€鑳戒綔鐢ㄥ崐寰?
+
+	--skill.nTargetCountLimit	= 2;				-- 鎶€鑳戒綔鐢ㄧ洰鏍囨暟閲忛檺鍒?(灏忎簬0 浠ｈ〃鐩爣鏁伴噺涓嶉檺鍒? 
+
+
+
+	----------------- 鏃堕棿鐩稿叧 -------------------------------------------------
+
+	--skill.nPrepareFrames  		= 0;				-- 鍚熷敱甯ф暟
+
+	--skill.nChannelInterval	= 0; 				-- 閫氶亾鎶€闂撮殧鏃堕棿 
+
+	--skill.nChannelFrame		= 0;	 			-- 閫氶亾鎶€鎸佺画鏃堕棿锛屽崟浣嶅抚鏁?
+
+	--skill.nBulletVelocity		= 0;				-- 瀛愬脊閫熷害锛屽崟浣?鐐?甯?
+
+
+	----------------- 闃垫硶鐩稿叧 -------------------------------------------------
+
+	--sk

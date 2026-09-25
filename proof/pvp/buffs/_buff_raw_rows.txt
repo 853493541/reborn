@@ -1,0 +1,19 @@
+﻿LINE 0 'ID\tName\tUseage\tFunctionType\tRepresentPos\tRepresentID\tAppendType\tDetachType\tBuffType\tLevel\tIntensity\tIsStackable\tMaxStackNum\tCount\tInterval\tHide\tExclude\tSave\tOnManaShield\tOnFight\tOnHorse\tOnTerrain\tFormationLeader\tScriptFile\tGlobalExclude\tUniqueTarget\tCanCancel\tBeginAttrib1\tBeginValue1A\tBeginValue1B\tBeginAttrib2\tBeginValue2A\tBeginValue2B\tBeginAttrib3\tBeginValue3A\tBeginValue3B\tBeginAttrib4\tBeginValue'
+LINE 1 '101\t绛栧垝榛樿椤?闈炵▼搴忛粯璁よ)\t0\tNormal\tBody\t0\t101\t0\tInvalid\t1\t1\t0\t1\t1\t0\t0\t1\t1\tNone\tAny\tAny\tAny\t0\t\t1\t0\t1\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t-1\t3758030846\t0\t0\t0\t0\t\tAny\tAny\t\t0\t\t0\t\t63\t1\t0\t1\t0\t1\tAny\t\tAny\t\tAny\t\t\t\t\t'
+LINE 2 '103\t鎵撳潗\t11\t\tBody\t0\t103\t0\t\t1\t1\t0\t1\t1\t0\t0\t1\t0\t\tNotFight\t\t\t\t\t0\t0\t1\tatLifeReplenishPercent\t33\t0\tatManaReplenishPercent\t102\t0\tatExecuteScript\tskill\\姹熸箹\\闃茶韩姝﹁壓_鎵撳潗.lua\t0\tatLifeReplenish\t5\t\tatAddSprintPowerRevive\t167\t\tatLifeReplenish\t30\t\tatManaReplenish\t30\t\tatAddHorseSprintPowerRevive\t167\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t256\t\t\t\t\t\t\t\t\t\t\t0\t\t56\t1\t0\t1\t0\t1\t\t\t\t\t\t\t\t\t\t'
+LINE 3 '104\t娴韩\t0\t\tTrample\t10001\t104\t0\t\t1\t1\t0\t1\t1\t80\t0\t1\t0\t\t\t\t\t\t\t0\t0\t1\tatJumpSpeedBase\t50\t0\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t4294967294\t\t\t\t\t\t\t\t\t\t\t80\t\t63\t1\t80\t1\t0\t1\t\t\t\t\t\t\t\t\t\t'
+...
+101 | 101 | 绛栧垝榛樿椤?闈炵▼搴忛粯璁よ) | 0 | Normal | Body | 0 | 101 | 0 | Invalid | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | None | Any | Any | Any | 0 |  | 1 | 0 | 1 |  |  | 
+103 | 103 | 鎵撳潗 | 11 |  | Body | 0 | 103 | 0 |  | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 |  | NotFight |  |  |  |  | 0 | 0 | 1 | atLifeReplenishPercent | 33 | 0
+112 | 112 | 娓呭績闈欐皵 | 2 |  | Body | 0 | 112 | 5 |  | 1 | 65 | 0 | 1 | 1 | 28800 | 0 | 1 | 1 |  |  |  |  |  |  | 1 | 0 | 1 | atMaxLifePercentAdd | 15 | 0
+122 | 122 | 鏄ユ偿鎶よ姳 | 2 | ResistDamage | TopHead | 10050 | 2251 | 5 |  | 1 | 28 | 1 | 8 | 1 | 320 | 0 | 1 | 0 |  |  |  |  |  | 涓囪姳/闈炲脊姊︽槬娉ユ秷澶?lua | 1 | 0 | 1 | atSkillEventHandler | 174 | 
+131 | 131 | 鍓戝啿闃撮槼 | 3 |  | Body | 0 | 131 | 0 |  | 1 | 1 | 0 | 1 | 1 | 28800 | 0 | 1 | 1 |  |  |  |  |  |  | 0 | 0 | 1 | atSkillEventHandler | 42 | 0
+418 | 418 | 缁峰甫Debuff | 15 | Damage | Body | 0 | 418 | 0 |  | 1 | 1 | 1 | 1 | 1 | 160 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 |  |  | 
+424 | 424 | 鍐查攱鐪╂檿 | 0 | Stun | TopHead | 20007 | 424 | 0 |  | 1 | 1 | 0 | 1 | 1 | 80 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atHalt |  | 
+445 | 445 | 灏戞灄-娌夐粯 | 5 | Silence | Body | 10002 | 5 | 4 |  | 1 | 48 | 0 | 1 | 1 | 16 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atSilence | 2 | 
+453 | 453 | 涔濊浆褰掍竴_鐪╂檿 | 3 | Daze | TopHead | 0 | 11 | 0 | Daze | 1 | 64 | 0 | 1 | 1 | 64 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atHalt | 1 | 0
+455 | 455 | 鎷傜┐鎵?| 0 | Halt | Body | 0 | 455 | 0 | Halt | 1 | 1 | 0 | 1 | 1 | 32 | 0 | 0 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atHalt |  | 
+533 | 533 | 澶╅湝绮?| 14 | Stun | TopHead | 20007 | 8 | 16 |  | 1 | 80 | 0 | 1 | 1 | 80 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atHalt | 0 | 0
+554 | 554 | 澶ч亾鏃犳湳 | 3 | Halt | Trample | 10004 | 4 | 0 |  | 1 | 32 | 0 | 1 | 1 | 32 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atFreeze | 0 | 0
+556 | 556 | 涓冩槦鎷辩憺 | 3 | Halt | Trample | 10004 | 4 | 0 |  | 1 | 400 | 0 | 1 | 1 | 16 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 1 | 0 | atFreeze | 1 | 0
+558 | 558 | 涓夋墠鍖栫敓 | 3 | Charm | Trample | 10010 | 12 | 10 |  | 1 | 48 | 0 | 1 | 1 | 32 | 0 | 1 | 0 |  |  |  |  |  |  | 1 | 0 | 0 | atEntrap | 1 | 0

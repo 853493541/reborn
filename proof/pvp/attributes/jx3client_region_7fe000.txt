@@ -1,0 +1,20 @@
+0x007FE000	Percent
+0x007FE008	nStrainRate
+0x007FE018	nAttackPowerBase
+0x007FE030	nTherapyPowerBase
+0x007FE048	nCriticalDamageBaseRate
+0x007FE060	nPhysicsShieldBase
+0x007FE078	nMagicShield
+0x007FE088	nToughnessBase
+0x007FE098	nAllTypeOvercomeBase
+0x007FE0B0	nGlobalDamageFixedAdd
+0x007FE0C8	nAssistedPowerExtAdd
+0x007FE0E0	nAllShieldIgnoreAdd
+0x007FE0F8	KScriptFuncList::LuaGetNpcAssistedStagePointInfo
+0x007FE130	Stage%d
+0x007FE138	KScriptFuncList::LuaGetNpcAssistedTemplateRepresentID
+0x007FE170	KScriptFuncList::LuaIsNpcAssistedTryOut
+0x007FE198	KScriptFuncList::LuaGetSkillSkinByGroupID
+0x007FE1C8	dwGroupID
+0x007FE1D8	trigger crash
+0x007FE1E8	KScriptFuncList::LuaIsTr

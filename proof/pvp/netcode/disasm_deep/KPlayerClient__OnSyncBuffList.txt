@@ -1,0 +1,22 @@
+# needle: KPlayerClient::OnSyncBuffList
+# string VAs: ['0x180772b40']
+# xrefs: 1
+
+## xref 0x180195026  fn_start 0x180195010
+0x0180195010: push	rdi
+0x0180195012: sub	rsp, 0x30
+0x0180195016: movzx	eax, word ptr [rdx + 0x15]
+0x018019501a: mov	rdi, rdx
+0x018019501d: add	rax, 0x17
+0x0180195021: cmp	r8, rax
+0x0180195024: je	0x180195057
+0x0180195026: lea	rax, [rip + 0x5ddb13]
+0x018019502d: mov	r9d, 0x41d5
+0x0180195033: lea	r8, [rip + 0x5ddb26]
+0x018019503a: mov	qword ptr [rsp + 0x20], rax
+0x018019503f: lea	rdx, [rip + 0x759462]
+0x0180195046: mov	ecx, 3
+0x018019504b: call	qword ptr [rip + 0x5d020f]
+0x0180195051: add	rsp, 0x30
+0x0180195055: pop	rdi
+0x0180195056: ret	

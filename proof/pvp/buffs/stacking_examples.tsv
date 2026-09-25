@@ -1,0 +1,226 @@
+ID	Name	FunctionType	BuffType	DecayType	IsStackable	MaxStackNum	IsCountable	CanAccumulate	IsIntensityStackable	Intensity	Count	Interval	MinInterval	MaxInterval	ActiveCoefficient	CostSingleStack	BeginAttrib1	BeginValue1A	BeginValue1B	ScriptFile
+103	打坐				0	1				1	1	0	0	0	1		atLifeReplenishPercent	33	0	
+104	浮身				0	1				1	1	80	80	80	1		atJumpSpeedBase	50	0	
+104	浮身	Normal	Invalid	-1	0	1				1	1	80	80	80	1		atJumpSpeedBase	50	0	
+122	春泥护花	ResistDamage			1	8	1			28	1	320	320	320	1		atSkillEventHandler	174		万花/非弹梦春泥消失.lua
+122	春泥护花	ResistDamage			1	8	1			30	1	320	320	320	1		atBeatBackRate	-1024		万花/非弹梦春泥消失.lua
+122	春泥护花	ResistDamage			1	8	1			32	1	320	320	320	1		atBeatBackRate	-1024		万花/非弹梦春泥消失.lua
+122	春泥护花	ResistDamage			1	8	1			34	1	320	320	320	1		atBeatBackRate	-1024		万花/非弹梦春泥消失.lua
+122	春泥护花	ResistDamage			1	8	1			36	1	320	320	320	1		atBeatBackRate	-1024		万花/非弹梦春泥消失.lua
+122	春泥护花	ResistDamage			1	8	1			38	1	320	320	320	1		atBeatBackRate	-1024		万花/非弹梦春泥消失.lua
+122	春泥护花	ResistDamage			1	8	1			55	1	320	320	320	1		atBeatBackRate	-1024		万花/非弹梦春泥消失.lua
+139	扶摇直上				0	1				6	1	480	480	480	1		atJumpSpeedBase	250		
+139	扶摇直上				0	1				7	1	480	480	480	1		atJumpSpeedBase	252		
+139	扶摇直上				0	1				8	1	480	480	480	1		atJumpSpeedBase	254		
+139	扶摇直上				0	1				9	1	480	480	480	1		atJumpSpeedBase	256		
+139	扶摇直上				0	1				10	1	480	480	480	1		atJumpSpeedBase	258		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	260		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	262		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	264		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	266		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	270		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	290		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	294		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	298		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	302		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	306		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	310		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	314		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	318		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	322		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	326		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	330		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	350		
+139	扶摇直上				0	1				11	1	480	480	480	1		atJumpSpeedBase	370		纯阳\替换二段.lua
+203	天策-啸如虎-傲血战意				0	1				2	5	32	32	32	1		atBeTherapyCoefficient	20		天策\虎加护盾.lua
+203	天策-啸如虎-傲血战意				0	1				3	5	32	32	32	1		atBeTherapyCoefficient	41		天策\虎加护盾.lua
+203	天策-啸如虎-傲血战意				0	1				4	5	32	32	32	1		atBeTherapyCoefficient	61		天策\虎加护盾.lua
+203	天策-啸如虎-傲血战意				0	1				5	5	32	32	32	1		atBeTherapyCoefficient	82		天策\虎加护盾.lua
+203	天策-啸如虎-傲血战意				0	1				6	5	32	32	32	1		atBeTherapyCoefficient	204		天策\虎加护盾.lua
+203	天策-啸如虎-傲血战意				0	1				7	1	160	160	160	1		atPhysicsAttackPowerBase	240	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘				0	1				101	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				101	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				101	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				101	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				101	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_飞翼马车				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_儿童节坐骑				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘_赛艇				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_停云雪霁				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	停云雪霁·终宵				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	停云雪霁·凌霜				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	停云雪霁·揽梦				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	原PQ雪橇已废弃				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘_设定集船				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_恶人谷指挥车				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘_恶人谷指挥车				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘_雪橇犬				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘_雪橇犬_场景				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	3600	4	4	4	1		atRideHorse	0	0	npc/副本BOSS/尘归海_巨冥湾/2号_前置关卡/下飞行器解除锁足.lua
+244	骑乘_高跷				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_瑶境宸游				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_西山拂雪				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_阴山野驴				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_龙门双峰驼				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_八卦龟				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_骁齿				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_熊猫拉车				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_轮椅				0	1				100	1	16	16	16	1		atRideHorse	0	0	
+244	骑乘_鹏鹏				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	[00244]骑乘				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	[00244]骑乘				0	1				100	9999999	8	8	8	1		atRideHorse	0	0	
+244	骑乘_捷信				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_霸刀车				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_手推车				0	1				100	1	16	16	16	1		atRideHorse	0	0	
+244	骑乘_舞象联翩				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_冲浪板				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_鹿车·春草				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_血瞳吞煞				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_嚼骨凶罴				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_苍山雪狮				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_啸岭白猊				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_共潮生·海小一				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_漫漫香罗				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_望月归				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	日行千里				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_紫微金阙交椅				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_金枫抱月				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_乌云雪狰				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_羊驼				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_马儿跳跳				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_雪覆寒原				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_冷山茸客				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_不愁				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_随沧浪				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_庆舞良宵				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_哒哒				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_红红女王号				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_葫芦鸭				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_哼哼将军				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_此道枯荣·繁生				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_烟波流光				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_雪域华光				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_奔腾不休盆盆船				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_八卦龟				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_红罗舸				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_渡情				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+244	骑乘_叶驰的飞霞骠				0	1				100	1	16	16	16	1		atRideHorse	0	0	
+244	骑乘_卯舆月驾				0	1				100	1	0	0	0	1		atRideHorse	0	0	
+367	天策-守如山	ResistDamage			0	1				80	8	16	16	16	1		atSkillEventHandler	84	0	
+399	无相诀	ResistDamage			0	1				35	1	16	16	16	1		atCallSubBuff	33086	35	少林\无相诀_自身减速.lua
+399	无相诀	ResistDamage			0	1				40	1	16	16	16	1		atCallSubBuff	33086	40	少林\无相诀_自身减速.lua
+399	无相诀	ResistDamage			0	1				45	1	16	16	16	1		atCallSubBuff	33086	45	少林\无相诀_自身减速.lua
+399	无相诀	ResistDamage			0	1				50	1	16	16	16	1		atCallSubBuff	33086	55	少林\无相诀_自身减速.lua
+418	绷带Debuff	Damage			1	1				1	1	160	160	160	1					
+422	恐惧DEBUFF	Fear	Fear		1	1				800	1	800	800	800	1		atFear	640	0	
+445	少林-沉默	Silence		5	0	1				48	1	16	16	16	1		atSilence	2		
+445	少林-沉默	Silence		5	0	1				56	1	32	32	32	1		atSilence	2		
+445	少林-沉默	Silence		5	0	1				64	1	48	48	48	1		atSilence	2		
+445	少林-沉默	Silence		5	0	1				72	1	64	64	64	1		atSilence	2		
+554	大道无术	Halt		2	0	1				32	1	32	32	32	1		atFreeze	0	0	
+554	大道无术	Halt		2	0	1				48	1	48	48	48	1		atFreeze	0	0	
+554	大道无术	Halt		2	0	1				64	1	64	64	64	1		atFreeze	0	0	
+554	大道无术	Halt		2	0	1				80	1	80	80	80	1		atFreeze	0	0	
+554	大道无术	Halt		2	0	1				96	1	96	96	96	1		atFreeze	0	0	
+556	七星拱瑞	Halt		3	0	1				400	1	16	16	16	1		atFreeze	1	0	
+556	七星拱瑞	Halt		3	0	1				480	1	16	16	16	1		atFreeze	1	0	
+556	七星拱瑞	Halt		3	0	1				560	1	16	16	16	1		atFreeze	1	0	
+556	七星拱瑞	Halt		3	0	1				640	1	16	16	16	1		atFreeze	1	0	
+556	七星拱瑞	Halt		3	0	1				720	1	16	16	16	1		atFreeze	1	0	
+558	三才化生	Charm		1	0	1				48	1	32	32	32	1		atEntrap	1	0	
+558	三才化生	Charm		1	0	1				72	1	48	48	48	1		atEntrap	1	0	
+558	三才化生	Charm		1	0	1				96	1	64	64	64	1		atEntrap	1	0	
+558	三才化生	Charm		1	0	1				120	1	80	80	80	1		atEntrap	1	0	
+558	三才化生	Charm		1	0	1				144	1	96	96	96	1		atEntrap	1	0	
+631	握针	Hot			0	1				1	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				2	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				3	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				4	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				5	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				6	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				7	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				8	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+631	握针	Hot			0	1				9	6	48	1	48	1		atExecuteScript	skill\万花\万花_太素九针_握针驱散疗伤提高.lua		万花/握针完整跳后恢复墨意.lua
+655	流血	Blooding			0	3				1	5	48	48	48	1					
+655	流血	Damage			0	3				2	5	48	48	48	1					
+655	流血	Damage			0	3				3	5	48	48	48	1					
+655	流血	Damage			0	3				4	5	48	48	48	1					
+655	流血	Damage			0	3				5	5	48	48	48	1					
+655	流血	Damage			0	3				6	5	48	48	48	1					
+655	流血	Damage			0	3				7	5	48	48	48	1					
+655	流血	Damage			0	3				8	5	48	48	48	1					
+655	流血	Damage			0	3				9	5	48	48	48	1					
+655	流血	Damage			0	3				10	5	48	48	48	1					
+655	流血	Damage			0	1				11	5	48	48	48	1					
+655	流血	Damage			0	3				12	5	48	48	48	1					
+655	流血	Damage			0	3				13	5	48	48	48	1					
+655	流血	Damage			0	3				14	5	48	48	48	1					
+655	流血	Damage			0	3				15	5	48	48	48	1					
+682	雷霆震怒	Stun		4	0	1				144	1	16	16	16	1		atHalt	0	0	
+682	雷霆震怒	Stun		4	0	1				64	1	16	16	16	1		atHalt	0	0	
+682	雷霆震怒	Stun		4	0	1				288	1	144	144	144	1		atHalt	0	0	
+682	雷霆震怒	Stun		4	0	1				320	1	160	160	160	1		atHalt	0	0	
+682	雷霆震怒	Stun		4	0	1				144	1	16	16	16	1		atHalt	0	0	
+2522	五毒_万蛊真解_眠蛊(对Player)	Stun		6	0	1				1	1	40	40	40	1		atHalt			
+2522	五毒_万蛊真解_眠蛊(对Player)	Stun		6	0	1				2	1	48	48	48	1		atHalt			
+2522	五毒_万蛊真解_眠蛊(对Player)	Stun		6	0	1				3	1	56	56	56	1		atHalt			
+2522	五毒_万蛊真解_眠蛊(对Player)	Stun		6	0	1				4	1	64	64	64	1		atHalt			
+2522	五毒_万蛊真解_眠蛊(对Player)	Stun		6	0	1				5	1	72	72	72	1		atHalt			
+2522	五毒_万蛊真解_眠蛊(对Player)	Stun		6	0	1				6	1	80	80	80	1		atHalt			
+3224	唐门_迷神钉	Stun		7	0	1		0		64	6	16	16	16	1		atHalt			
+3224	唐门_迷神钉_前3秒不被打醒	Stun		7	0	1		0		48	6	16	16	16	1		atHalt			
+3224	唐门_迷神钉_后3秒无递减	Stun		7	0	1		0		3	1	48	48	48	1		atHalt			
+3466	唐门_暗藏杀机_锁足	Charm		1	0	3		1		32	1	80	80	80	1		atEntrap	1	0	
+8067	缴械Buff	Disarm			0	1		0		1	1	48	48	48	1		atDisarm			
+11605	燃烛	Chaos			0	1		0		1	10	32	32	32	1					
+12465	千斤坠冲刺维持				0	1		0		1	1	1	1	1	1		atExecuteScript	skill\少林\千斤坠释放眩晕.lua		
+14928	九转碰撞障碍眩晕	Stun		0	0	1				64	1	16	16	16	1		atHalt			
+14928	九转碰撞障碍眩晕	Stun		0	0	1				80	1	16	16	16	1		atHalt			
+27038	万灵山庄_恐惧			9	0	1		0		1	1	48	48	48	1		atSilenceAll			

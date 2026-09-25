@@ -1,0 +1,4 @@
+# needle: S2C_RESET_COOLDOWN
+# string VAs: []
+# xrefs: 0
+(no xref found)

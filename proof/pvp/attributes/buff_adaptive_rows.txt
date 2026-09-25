@@ -1,0 +1,14 @@
+#### atSetAdaptiveSkillType
+ID=26578 Name=八荒衡鉴切心法屏蔽被动_外功自适应 Useage=333 :: atSetAdaptiveSkillType(1)
+ID=26578 Name=八荒衡鉴切心法屏蔽被动_阳性自适应 Useage=333 :: atSetAdaptiveSkillType(2)
+ID=26578 Name=八荒衡鉴切心法屏蔽被动_中性自适应 Useage=333 :: atSetAdaptiveSkillType(3)
+ID=26578 Name=八荒衡鉴切心法屏蔽被动_阴性自适应 Useage=333 :: atSetAdaptiveSkillType(4)
+ID=26578 Name=八荒衡鉴切心法屏蔽被动_毒性自适应 Useage=333 :: atSetAdaptiveSkillType(5)
+ID=26578 Name=八荒衡鉴切心法屏蔽被动_田螺专用自适应 Useage=333 :: atSetAdaptiveSkillType(1)
+# 6
+#### atNoAdaptPhysicsAttackPowerBase
+# 0
+#### atCallAdaptiveDamage
+# 0
+#### atSkillAdaptiveDamage
+# 0

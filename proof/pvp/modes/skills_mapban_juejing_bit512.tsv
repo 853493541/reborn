@@ -1,0 +1,15 @@
+SkillName	SkillID	BelongSchool	KindType	FunctionType	MapBanMask	IgnoreCamp
+江湖-防身武艺-打坐	17	0	None	Normal	512	
+锋针	139	2	NeutralMagic	Normal	512	
+轮回诀	259	5	SolarMagic	Normal	512	
+涅槃重生	2229	9	Poison	Normal	512	
+妙舞神扬	3003	4	LunarMagic	Normal	512	
+杯水留影	14084	19	LunarMagic	Normal	512	
+歌尽影生	15092	19	LunarMagic	Normal	512	
+打坐	20379	13	None	Normal	512	
+静心参悟	20599	13	None	Normal	512	
+浮游天地非战斗释放	20681	21	Physics	Normal	512	
+灵素还生	27634	24	Poison	Normal	512	
+妙舞神扬子技能	29568	4	LunarMagic	Normal	512	
+秒舞神扬小附魔子技能	29569	4	LunarMagic	Normal	512	
+红尘之历_打坐	39058	13	None	Normal	512	

@@ -1,0 +1,55 @@
+﻿  16| --璁剧疆姝﹀姛鎶€鑳界骇鍒浉鍏虫暟鍊?
+  17| function GetSkillLevelData(skill)
+  18| 
+  19| 	local dwSkillLevel = skill.dwLevel;
+  20| 
+  21| 	----------------- 榄旀硶灞炴€?-------------------------------------------------
+  22| 	skill.AddAttribute(
+  23| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  24| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  25| 		2,
+  26| 		10000
+  27| 	);
+  28| 	skill.AddAttribute(
+  29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  31| 		4,
+  32| 		10000
+  33| 	);
+  34| 	skill.AddAttribute(
+  35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  37| 		8,
+  38| 		10000
+  39| 	);
+  40| 	skill.AddAttribute(
+  41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+  42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  43| 		7,
+  44| 		10000
+  45| 	);
+  46| 	skill.AddAttribute(
+  47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+  48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+  49| 		7276,
+  50| 		1
+  51| 	);
+  52| 	skill.AddAttribute(
+  53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+  54| 		ATTRIBUTE_TYPE.CAST_SKILL,
+  55| 		21144,
+  56| 		1
+  57| 	);
+  58| 	skill.AddAttribute(
+  59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+  60| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+  61| 		"skill/鍒€瀹?濂楄矾鍙婂瓙鎶€鑳?娓搁椋樿釜瑙ｆ帶瀛愭妧鑳?lua",
+  62| 		0
+  63| 	);
+  64| 	----------------- 鎶€鑳芥柦鏀綛uff闇€姹?---------------------------------------------
+  65| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 闇€姹傝嚜韬獴uff
+  66| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傜洰鏍嘊uff
+  67| 
+  68| 	----------------- BUFF鐩稿叧 -------------------------------------------------
+  69| 	--skill.BindBuff(1, 411, 1)			-- 璁剧疆Buff
+  70| 	--skill.BindBuff(2, nBuffID, nBuffLevel);		-- 璁剧疆Debuff

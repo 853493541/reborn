@@ -1,0 +1,5 @@
+﻿== adapter_strings.txt 1
+   163801 Normal 0x0024BB04	ascii	Normal
+== JX3RepresentX64_all_strings.txt 2
+   738335 Normal 0x00C96FDC	ascii	Normal
+   762047 Halt 0x00CD885C	ascii	Halt

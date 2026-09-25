@@ -1,0 +1,802 @@
+{
+ "file": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\extracted\\scripts\\Include\\Skill.lh",
+ "globals": [
+  {
+   "name": "GAME_FPS",
+   "value": "GLOBAL.GAME_FPS",
+   "kind": "T",
+   "func": "main",
+   "pc": 11
+  },
+  {
+   "name": "LENGTH_BASE",
+   "value": 64.0,
+   "kind": "K",
+   "func": "main",
+   "pc": 13
+  },
+  {
+   "name": "HEIGHT_BASE",
+   "value": 512.0,
+   "kind": "K",
+   "func": "main",
+   "pc": 15
+  },
+  {
+   "name": "PERCENT_BASE",
+   "value": 1024.0,
+   "kind": "K",
+   "func": "main",
+   "pc": 17
+  },
+  {
+   "name": "CONSUME_BASE",
+   "value": 100.0,
+   "kind": "K",
+   "func": "main",
+   "pc": 19
+  },
+  {
+   "name": "PRE_FRAMES",
+   "value": 80.0,
+   "kind": "K",
+   "func": "main",
+   "pc": 21
+  },
+  {
+   "name": "MELEE_ATTACK_DISTANCE",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 24
+  },
+  {
+   "name": "DISTANCE_DIS",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27
+  },
+  {
+   "name": "BangHuiYueZhanDamageRate",
+   "value": 0.2,
+   "kind": "K",
+   "func": "main",
+   "pc": 29
+  },
+  {
+   "name": "tQichangNpcID",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 40
+  },
+  {
+   "name": "tYinYuNpcID",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 47
+  },
+  {
+   "name": "tXuanMenNpcID",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 74
+  },
+  {
+   "name": "tKungfuFind",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 148
+  },
+  {
+   "name": "tFlySkill",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 218
+  },
+  {
+   "name": "tRetreatData",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 399
+  },
+  {
+   "name": "tSchoolInfo",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 613
+  },
+  {
+   "name": "tSkillCoefficient",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 945
+  },
+  {
+   "name": "SettFlySkillSkill",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 947
+  },
+  {
+   "name": "SettlanternSkill",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 949
+  },
+  {
+   "name": "SettlanternSkill_Mobile",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 951
+  },
+  {
+   "name": "SetRetreatSkill",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 953
+  },
+  {
+   "name": "StopFly",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 955
+  },
+  {
+   "name": "UseObstacleXY",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 957
+  },
+  {
+   "name": "DzUseObstacleXY",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 959
+  },
+  {
+   "name": "UpdataQichangNpc",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 961
+  },
+  {
+   "name": "Rank",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 963
+  },
+  {
+   "name": "ForgetSkillPanel",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 965
+  },
+  {
+   "name": "ForgetSkillPanelCost",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 967
+  },
+  {
+   "name": "GetDestinationPoint",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 969
+  },
+  {
+   "name": "GetSourceAndDestinationPoint",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 971
+  },
+  {
+   "name": "PiontToDir",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 973
+  },
+  {
+   "name": "CDTransfer",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 975
+  },
+  {
+   "name": "sRecoveryChain",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 977
+  },
+  {
+   "name": "sRecoveryRelatedChain",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 979
+  },
+  {
+   "name": "PCustomTherapy",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1031
+  },
+  {
+   "name": "PCustomTherapy2",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1034
+  },
+  {
+   "name": "PCustomTherapyBuff",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1036
+  },
+  {
+   "name": "PCustomTherapyBuff2",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1038
+  },
+  {
+   "name": "ProcessPlayerSkillNpc",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1040
+  },
+  {
+   "name": "ProcessPlayerSkillNpcCanBeHit",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1042
+  },
+  {
+   "name": "ProcessPlayerSkillSelfNpcCanBeHit",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1044
+  },
+  {
+   "name": "SkillGetParry",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1046
+  },
+  {
+   "name": "CostAllDamageAbsorbShieldByPercent",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1068
+  },
+  {
+   "name": "CostAllDamageAbsorbShieldByValue",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1071
+  },
+  {
+   "name": "CostAllDamageAbsorbShieldBSelf",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1074
+  },
+  {
+   "name": "SkillIsSpecialBuffExist",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1162
+  },
+  {
+   "name": "SkillIsSpecialOnlyNegativeBuffExist",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1165
+  },
+  {
+   "name": "tSpecialControlForbidBuff",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1192
+  },
+  {
+   "name": "SpecialControlCheck",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1194
+  },
+  {
+   "name": "SkillKungfuType",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1255
+  },
+  {
+   "name": "SkillAddHaoZhen",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1257
+  },
+  {
+   "name": "GbRageChange",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1259
+  },
+  {
+   "name": "ModityCDToUI",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1261
+  },
+  {
+   "name": "AdditionalAttribute",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1263
+  },
+  {
+   "name": "tAllPenetrationBuffID",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1637
+  },
+  {
+   "name": "SkillPenetration",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1639
+  },
+  {
+   "name": "tAllPunctureBuffID",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1832
+  },
+  {
+   "name": "SkillPuncture",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 1834
+  },
+  {
+   "name": "tSkillPanelAll",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 4946
+  },
+  {
+   "name": "tSkillRealization",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 24531
+  },
+  {
+   "name": "tSkillSeries",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 25832
+  },
+  {
+   "name": "tExp",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 26677
+  },
+  {
+   "name": "tSkillRealizationForDelete",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27271
+  },
+  {
+   "name": "tSkillSeriesForDelete",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27519
+  },
+  {
+   "name": "tImbaSkillAdapt",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27602
+  },
+  {
+   "name": "tImbaKungfuTypeList",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27676
+  },
+  {
+   "name": "Imba_GetPlayerDmg",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27678
+  },
+  {
+   "name": "ResetPlayerHeight",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27694
+  },
+  {
+   "name": "wanhuaguNewPower",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27696
+  },
+  {
+   "name": "LimitOfCwUseLevel",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27698
+  },
+  {
+   "name": "HongChenXiaYing_AddAssistedLiXingYunPower",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27700
+  },
+  {
+   "name": "WanHuaRandom",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27702
+  },
+  {
+   "name": "tWanHuatagelist",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27714
+  },
+  {
+   "name": "SetDelaySubSkillTimeline",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27716
+  },
+  {
+   "name": "AddOverDraftCoolDown",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27718
+  },
+  {
+   "name": "GetHDKungfuMountID",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27720
+  },
+  {
+   "name": "GetBuffStackNum",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27722
+  },
+  {
+   "name": "ClearCharacterMoveStateClient",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27728
+  },
+  {
+   "name": "DetachBuffByMask",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27736
+  },
+  {
+   "name": "DetachDebuffByMask",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27740
+  },
+  {
+   "name": "GetPlayerCDListBySkillRecipeTagMask",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27742
+  },
+  {
+   "name": "GetCharacter",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27744
+  },
+  {
+   "name": "HDJueJingSkillCoe_130",
+   "value": 1.2,
+   "kind": "K",
+   "func": "main",
+   "pc": 27746
+  },
+  {
+   "name": "HDJueJingSkillCoe",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27750
+  },
+  {
+   "name": "HDJueJingSkillCoe_Heal",
+   "value": 8.399999999999999,
+   "kind": "K",
+   "func": "main",
+   "pc": 27752
+  },
+  {
+   "name": "Skill_AddZhongChuang",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27754
+  },
+  {
+   "name": "Skill_SuperCustomDamageToPlayer",
+   "value": null,
+   "kind": "?",
+   "func": "main",
+   "pc": 27756
+  }
+ ],
+ "calls": {
+  "AddOverDraftCoolDown": [],
+  "SetOverDraftCoolDown": [
+   {
+    "func": "main/?#1092",
+    "pc": 36,
+    "args": [],
+    "callee": "None.SetOverDraftCoolDown"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 69,
+    "args": [],
+    "callee": "None.SetOverDraftCoolDown"
+   },
+   {
+    "func": "main/?#4801",
+    "pc": 30,
+    "args": [
+     null,
+     null
+    ],
+    "callee": "None.SetOverDraftCoolDown"
+   }
+  ],
+  "GetOverDraftCoolDown": [
+   {
+    "func": "main/?#1092",
+    "pc": 17,
+    "args": [
+     null
+    ],
+    "callee": "None.GetOverDraftCoolDown"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 25,
+    "args": [
+     null
+    ],
+    "callee": "None.GetOverDraftCoolDown"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 52,
+    "args": [
+     null
+    ],
+    "callee": "None.GetOverDraftCoolDown"
+   },
+   {
+    "func": "main/?#4801",
+    "pc": 2,
+    "args": [
+     null
+    ],
+    "callee": "?.GetOverDraftCoolDown"
+   }
+  ],
+  "AddCDTime": [
+   {
+    "func": "main/?#1092",
+    "pc": 61,
+    "args": [
+     null,
+     "None.GetCDInterval"
+    ],
+    "callee": "None.AddCDTime"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 80,
+    "args": [
+     null,
+     null
+    ],
+    "callee": "None.AddCDTime"
+   },
+   {
+    "func": "main/?#4801",
+    "pc": 26,
+    "args": [
+     null,
+     "None.GetSkillCDInterval"
+    ],
+    "callee": "None.AddCDTime"
+   }
+  ],
+  "ModifyCoolDown": [
+   {
+    "func": "main/?#1092",
+    "pc": 46,
+    "args": [
+     null,
+     null
+    ],
+    "callee": "None.ModifyCoolDown"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 75,
+    "args": [
+     null,
+     null
+    ],
+    "callee": "None.ModifyCoolDown"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 89,
+    "args": [
+     null,
+     null
+    ],
+    "callee": "None.ModifyCoolDown"
+   }
+  ],
+  "GetCDLeft": [
+   {
+    "func": "main/?#1092",
+    "pc": 2,
+    "args": [
+     null
+    ],
+    "callee": "?.GetCDLeft"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 5,
+    "args": [
+     null
+    ],
+    "callee": "?.GetCDLeft"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 39,
+    "args": [
+     null
+    ],
+    "callee": "None.GetCDLeft"
+   },
+   {
+    "func": "main/?#1092",
+    "pc": 84,
+    "args": [
+     null
+    ],
+    "callee": "None.GetCDLeft"
+   }
+  ],
+  "GetCDInterval": [
+   {
+    "func": "main/?#1092",
+    "pc": 57,
+    "args": [
+     null
+    ],
+    "callee": "None.GetCDInterval"
+   }
+  ],
+  "SetNormalCoolDown": [],
+  "SetPublicCoolDown": [],
+  "SetCheckCoolDown": [],
+  "CDTransfer": [],
+  "ResetCD": [
+   {
+    "func": "main/?#1092",
+    "pc": 20,
+    "args": [
+     null
+    ],
+    "callee": "None.ResetCD"
+   }
+  ],
+  "GetSkillCDInterval": [
+   {
+    "func": "main/?#4801",
+    "pc": 16,
+    "args": [
+     null,
+     "None.GetSkillLevel",
+     null
+    ],
+    "callee": "None.GetSkillCDInterval"
+   }
+  ]
+ }
+}

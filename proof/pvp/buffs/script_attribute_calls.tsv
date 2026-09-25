@@ -1,0 +1,209 @@
+skill\npc\副本BOSS\太原之战_逐虎驱狼\安雨_冰球冷雨.lua:30	DEL_SINGLE_BUFF_BY_ID	--360, --i --);
+skill\npc\副本BOSS\太原之战_逐虎驱狼\安雨_冰球冷雨.lua:38	DEL_SINGLE_BUFF_BY_ID	--856, --1 --);
+skill\npc\副本BOSS\太原之战_逐虎驱狼\安雨_冰球冷雨.lua:46	DEL_SINGLE_BUFF_BY_ID	--203, --i --);
+skill\npc\副本BOSS\无量宫\无量宫_多多_斗转星移.lua:29	CALL_BUFF	2356, dwSkillLevel ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\npc\副本BOSS\永王行宫_仙侣庭院\1号_屈焰阳\1号_屈焰阳_连斩_伤害.lua:45	DEL_SINGLE_BUFF_BY_ID	203, i end
+skill\npc\副本BOSS\白帝江关\7号_宫傲\甘霖子.lua:108	CALL_BUFF	18943, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\npc\副本BOSS\达摩洞\1号_血斗士\1号_血斗士盾冲过程伤害.lua:69	CALL_BUFF	14209, 1 skill.AddSlowCheckDestBuff(14209, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL)
+skill\npc\少林\五蕴皆空.lua:41	CALL_BUFF	191, dwSkillLevel --设置cool down------
+skill\Quest\ACT_四月洛阳\陈月_商阳指.lua:80	DEL_SINGLE_BUFF_BY_ID	2726, -- 属性值1 1																	-- 属性值2 --]]
+skill\Quest\乱世藏剑阵营日常\天策_渊_动作.lua:46	CALL_BUFF	18531, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:36	CALL_BUFF	2790, 1 --]]
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:44	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:50	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:56	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:62	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:83	CALL_BUFF	18522, 1 --自身AP加层,这里给npc加的，就沿用原来的了
+skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:90	CALL_BUFF	2779, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\Quest\赛马_以假乱真.lua:33	DEL_SINGLE_BUFF_BY_ID	4096,																-- 属性值1 1																	-- 属性值2 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\七秀\七秀_七诀剑气.lua:55	DETACH_MULTI_GROUP_BUFF	52, -- 命门BUFF dwSkillLevel ----------------- 设置CoolDown ---------------------------------------------------------------------
+skill\七秀\七秀_绛唇珠袖_伤害效果.lua:56	DEL_SINGLE_BUFF_BY_ID	535, dwSkillLevel skill.AddAttribute(
+skill\丐帮\6395_落水打狗_伤害2.lua:74	DEL_SINGLE_BUFF_BY_ID	6153,											-- 属性值1 1											-- 属性值2 skill.AddAttribute(
+skill\丐帮\6395_落水打狗_伤害2.lua:80	DEL_SINGLE_BUFF_BY_ID	6153,											-- 属性值1 2											-- 属性值2 --]]
+skill\丐帮\6396_落水打狗_伤害3.lua:70	DEL_SINGLE_BUFF_BY_ID	--6153, --1 --);
+skill\丐帮\6396_落水打狗_伤害3.lua:82	DEL_SINGLE_BUFF_BY_ID	--6153,											-- 属性值1 --1											-- 属性值2 --);
+skill\丐帮\6396_落水打狗_伤害3.lua:88	DEL_SINGLE_BUFF_BY_ID	--6153,											-- 属性值1 --2											-- 属性值2 --);
+skill\丐帮\亢龙6.lua:49	CALL_BUFF	6393, 1 skill.AddAttribute(
+skill\丐帮\亢龙6.lua:101	DEL_SINGLE_BUFF_BY_ID	17077, -- 属性值1 1															-- 属性值2 end
+skill\五毒\五毒_毒蛊触发_蝎心迷心.lua:60	CALL_BUFF	4678, 1 skill.AddAttribute(
+skill\八荒衡鉴\肉鸽门派技能\世界技能_凝夜.lua:26	CALL_BUFF	50692, 1 skill.AddAttribute(
+skill\八荒衡鉴\肉鸽门派技能\世界技能_凝夜.lua:33	CALL_BUFF	50693, 1 skill.AddAttribute(
+skill\八荒衡鉴\肉鸽门派技能\藏剑_4段母技能.lua:44	DEL_SINGLE_BUFF_BY_ID	50810, 1 --skill.AddSlowCheckSelfBuff(50810, 1, BUFF_COMPARE_FLAG.EQUAL, 1, BUFF_COMPARE_FLAG.EQUAL);        -- 需求自身Buff
+skill\凌雪阁\套路及子技能\孤风飒踏冲刺.lua:47	CALL_BUFF	15992, 1 skill.AddAttribute(
+skill\唐门\连环弩_子技能_1级.lua:54	CALL_BUFF	3200, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\唐门\连环弩_子技能_2级.lua:54	CALL_BUFF	3200, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\天策\天策_子技能_守如山_傲血战意.lua:33	CALL_BUFF	367, 1 ----------------- 设置CoolDown ---------------------------------------------------------------------
+skill\天策\天策_子技能_守如山_铁牢律.lua:40	CALL_BUFF	--		10228, --		1 --	);
+skill\天策\天策_技能事件_龙城铁壁_驱散.lua:34	DEL_SINGLE_BUFF_BY_ID	2778, 1 skill.AddAttribute(
+skill\少林\子技能_少林_智拳印段3.lua:41	CALL_BUFF	--  		1092,							--属性值1 --  		dwSkillLevel							--属性值2 --  		);
+skill\少林\少林_六合棍挂buff判定.lua:39	CALL_BUFF	3868, 1 skill.AddAttribute(
+skill\少林\少林_子技能_智拳印段1.lua:40	CALL_BUFF	--   		1090,							--属性值1 --   		dwSkillLevel							--属性值2 --   		);
+skill\少林\少林_子技能_智拳印段2.lua:30	CALL_BUFF	--   		1091,							--属性值1 --   		dwSkillLevel							--属性值2 --   		);
+skill\明教\明教_圣明佑_月.lua:39	DETACH_MULTI_GROUP_BUFF	4, 10000 skill.AddAttribute(
+skill\明教\明教_圣明佑_月.lua:45	DETACH_MULTI_GROUP_BUFF	6, 10000 skill.AddAttribute(
+skill\明教\明教_圣明佑_月.lua:51	DETACH_MULTI_GROUP_BUFF	8, 10000 --skill.AddAttribute(
+skill\明教\明教_圣明佑_月.lua:57	DETACH_MULTI_GROUP_BUFF	--10, --10000 --);
+skill\明教\明教_圣明佑_月.lua:63	DETACH_MULTI_GROUP_BUFF	12, 10000 skill.AddAttribute(
+skill\明教\明教_圣明佑_月.lua:69	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	10, 10000 skill.AddAttribute(
+skill\明教\明教_圣明佑_月.lua:75	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	12, 10000 skill.AddAttribute(
+skill\沙漠风暴\天原绝境战象下车.lua:34	DEL_SINGLE_BUFF_BY_ID	21410,											-- 属性值1 1											-- 属性值2 --]]
+skill\沙漠风暴\道具_人剑合一伤害.lua:100	CALL_BUFF	--5651, --1 --);  --命中次数记录
+skill\沙漠风暴\道具_任驰骋.lua:36	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_任驰骋.lua:43	CALL_BUFF	244, 1 --skill.AddAttribute(
+skill\沙漠风暴\道具_任驰骋.lua:49	CALL_BUFF	--2756, --2 --);
+skill\沙漠风暴\道具_伪九霄风雷加速.lua:40	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_伪九霄风雷加速.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_伪九霄风雷加速.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_伪九霄风雷加速.lua:58	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_凌然天风.lua:40	CALL_BUFF	22311,											-- 属性值1 1 skill.AddAttribute(
+skill\沙漠风暴\道具_凌然天风·前.lua:40	DEL_SINGLE_BUFF_BY_ID	22285,											-- 属性值1 1 skill.AddAttribute(
+skill\沙漠风暴\道具_凌然天风·前.lua:46	CALL_BUFF	22311,											-- 属性值1 1 skill.AddAttribute(
+skill\沙漠风暴\道具_十方玄机_破伪装.lua:32	DEL_SINGLE_BUFF_BY_ID	20293, -- 15717属性值1 1											-- 属性值2 ----------------- 魔法属性 -------------------------------------------------
+skill\沙漠风暴\道具_唐门车装填.lua:47	CALL_BUFF	--3453, --1 --);
+skill\沙漠风暴\道具_如意法.lua:41	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_如意法.lua:47	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_如意法.lua:53	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_如意法.lua:59	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 --标记连击通用
+skill\沙漠风暴\道具_孤影化双.lua:35	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_孤影化双.lua:41	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	3, 10000 --解除定身
+skill\沙漠风暴\道具_孤影化双.lua:48	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 --解除雷霆
+skill\沙漠风暴\道具_孤影化双.lua:55	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	6, 10000 --解除锁足
+skill\沙漠风暴\道具_孤影化双.lua:63	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 --解除眩晕
+skill\沙漠风暴\道具_孤影化双.lua:70	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 --解除击倒
+skill\沙漠风暴\道具_孤风飒踏.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_孤风飒踏.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_孤风飒踏.lua:58	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_孤风飒踏.lua:64	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_孤风飒踏冲刺.lua:47	CALL_BUFF	--15992, --1 --);
+skill\沙漠风暴\道具_散流霞.lua:40	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_散流霞.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_散流霞.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_散流霞.lua:58	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 --[[
+skill\沙漠风暴\道具_斩无常.lua:65	DEL_SINGLE_BUFF_BY_ID	--16531,											-- 属性值1 --1 --);
+skill\沙漠风暴\道具_星楼月影.lua:25	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_星楼月影.lua:31	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_星楼月影.lua:37	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_星楼月影.lua:43	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_春泥护花_被击后驱散.lua:32	DEL_SINGLE_BUFF_BY_ID	20257, -- 属性值1 i															-- 属性值2 end
+skill\沙漠风暴\道具_暗尘弥散.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_暗尘弥散.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_暗尘弥散.lua:58	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_暗尘弥散.lua:64	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_浮光掠影.lua:45	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_浮光掠影.lua:51	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_浮光掠影.lua:57	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_浮光掠影.lua:63	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:24	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:30	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:36	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:42	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_烟雨行.lua:34	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_烟雨行.lua:40	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_烟雨行.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_烟雨行.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_疾如风.lua:30	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_疾如风.lua:36	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	3, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_疾如风.lua:42	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_疾如风.lua:48	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	6, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_疾如风.lua:54	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_疾如风.lua:60	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 9999 --skill.AddAttribute(
+skill\沙漠风暴\道具_禁断长生伤害子技能.lua:55	CALL_BUFF	--18943, --1 --);
+skill\沙漠风暴\道具_绛唇珠袖技能事件效果.lua:49	DEL_SINGLE_BUFF_BY_ID	23968, 1 skill.AddAttribute(
+skill\沙漠风暴\道具_绿野蔓生.lua:34	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_绿野蔓生.lua:40	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_绿野蔓生.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_绿野蔓生.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:47	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:53	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	3, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:59	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:65	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	6, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:71	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:77	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 9999 ----------------- 设置CoolDown ---------------------------------------------------------------------
+skill\沙漠风暴\道具_蝶弄足.lua:42	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_蝶弄足.lua:48	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_蝶弄足.lua:54	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_蝶弄足.lua:60	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_跃潮斩波.lua:50	CALL_BUFF	13596, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\沙漠风暴\道具_踏星行.lua:25	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_踏星行.lua:31	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_转乾坤.lua:40	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_转乾坤.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	3, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_转乾坤.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_转乾坤.lua:58	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	6, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_转乾坤.lua:64	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_转乾坤.lua:70	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 9999 skill.AddAttribute(
+skill\沙漠风暴\道具_连环弩子技能1.lua:57	CALL_BUFF	3200, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\沙漠风暴\道具_连环弩子技能2.lua:57	CALL_BUFF	3200, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\沙漠风暴\道具_逐云寒蕊.lua:34	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_逐云寒蕊.lua:40	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_逐云寒蕊.lua:46	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_逐云寒蕊.lua:52	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_镇山河.lua:46	CALL_BUFF	3851, -- 属性值1 1															-- 属性值2 --skill.AddAttribute(
+skill\沙漠风暴\道具_鹊踏枝.lua:35	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_鹊踏枝.lua:41	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_鹊踏枝.lua:47	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\沙漠风暴\道具_鹊踏枝.lua:53	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\百战异闻录_玩家\通用_驱散混元.lua:41	DETACH_MULTI_GROUP_BUFF	5, 10000 end
+skill\百战异闻录_玩家\通用_驱散混元.lua:57	DETACH_MULTI_GROUP_BUFF	6, 10000 end
+skill\纯阳\子技能_镇山河驱散自己.lua:30	DETACH_MULTI_GROUP_BUFF	2,															-- 属性值1 9999															-- 属性值2 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:37	DETACH_MULTI_GROUP_BUFF	4,															-- 属性值1 9999															-- 属性值2 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:44	DETACH_MULTI_GROUP_BUFF	6,															-- 属性值1 9999															-- 属性值2 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:51	DETACH_MULTI_GROUP_BUFF	8,															-- 属性值1 9999															-- 属性值2 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:58	DETACH_MULTI_GROUP_BUFF	10,															-- 属性值1 9999															-- 属性值2 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:65	DETACH_MULTI_GROUP_BUFF	12,															-- 属性值1 9999															-- 属性值2 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:72	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:78	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:84	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:90	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 for i = 1,4 do
+skill\纯阳\子技能_镇山河驱散自己.lua:98	DEL_SINGLE_BUFF_BY_ID	682, i end
+skill\纯阳\子技能_镇山河驱散自己.lua:105	DEL_SINGLE_BUFF_BY_ID	737, 1 skill.AddAttribute(
+skill\纯阳\子技能_镇山河驱散自己.lua:111	DEL_SINGLE_BUFF_BY_ID	740, 1 skill.AddAttribute(
+skill\绝境战场\绝境_五方行尽.lua:70	CALL_BUFF	28998, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\绝境战场\绝境_任驰骋.lua:34	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 9999 skill.AddAttribute(
+skill\绝境战场\绝境_任驰骋.lua:41	CALL_BUFF	244, 1 --监控buff，用来加马匹的增益效果
+skill\绝境战场\绝境_任驰骋.lua:48	CALL_BUFF	8475, 1 skill.AddAttribute(
+skill\绝境战场\绝境_净世破魔击.lua:40	CALL_BUFF	4528, 1 skill.AddAttribute(
+skill\绝境战场\绝境_净世破魔击.lua:62	CALL_BUFF	51341, 1 skill.AddAttribute(
+skill\绝境战场\绝境_坐忘无我.lua:43	CALL_BUFF	51391, -- 属性值1 1															-- 属性值2 ----------------- 设置CoolDown ---------------------------------------------------------------------
+skill\绝境战场\绝境_大狮子吼.lua:37	CALL_BUFF	--  		1098,							--属性值1 --  		dwSkillLevel							--属性值2 --  		);
+skill\绝境战场\绝境_太阴指.lua:41	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 9999 skill.AddAttribute(
+skill\绝境战场\绝境_捉影式.lua:51	DEL_SINGLE_BUFF_BY_ID	854, 1 skill.AddAttribute(
+skill\绝境战场\绝境_捕风式.lua:68	CALL_BUFF	--854, --1 --);
+skill\绝境战场\绝境_断魂刺.lua:52	CALL_BUFF	541, 1 skill.AddAttribute(
+skill\绝境战场\绝境_星楼月影.lua:24	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_星楼月影.lua:30	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_星楼月影.lua:36	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_星楼月影.lua:42	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_横扫六合AOE.lua:72	CALL_BUFF	--		3868, --		1 --	);
+skill\绝境战场\绝境_横扫六合单体.lua:72	CALL_BUFF	--		3868, --		1 --	);
+skill\绝境战场\绝境_渊.lua:35	CALL_BUFF	2790, 1 --skill.AddAttribute(
+skill\绝境战场\绝境_渊.lua:42	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	--4, --10000 --);
+skill\绝境战场\绝境_渊.lua:48	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	--8, --10000 --);
+skill\绝境战场\绝境_渊.lua:54	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	--7, --10000 --);
+skill\绝境战场\绝境_渊.lua:60	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	--2, --10000 --);
+skill\绝境战场\绝境_渊.lua:81	CALL_BUFF	--2778, --1 --);
+skill\绝境战场\绝境_渊.lua:88	CALL_BUFF	--2779, --1 --);
+skill\绝境战场\绝境_渊冲刺.lua:40	CALL_BUFF	2790, 1 skill.AddAttribute(
+skill\绝境战场\绝境_渊触发技能事件.lua:34	DEL_SINGLE_BUFF_BY_ID	51367, 1 --设置cool down------
+skill\绝境战场\绝境_疾如风.lua:23	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_疾如风.lua:29	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_疾如风.lua:35	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_疾如风.lua:41	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_破坚阵.lua:62	CALL_BUFF	994, 5 skill.AddAttribute(
+skill\绝境战场\绝境_破坚阵.lua:69	CALL_BUFF	51368, 1 ----------------- 设置CoolDown ---------------------------------------------------------------------
+skill\绝境战场\绝境_蛊虫献祭.lua:24	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_蛊虫献祭.lua:30	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_蛊虫献祭.lua:36	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_蛊虫献祭.lua:42	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_裂苍穹.lua:68	CALL_BUFF	51371, 1 --skill.BindBuff(1, 788, 1);	-- 减速95%Buff
+skill\绝境战场\绝境_镇山河.lua:37	CALL_BUFF	3851, -- 属性值1 1															-- 属性值2 skill.AddAttribute(
+skill\绝境战场\绝境_鸟翔碧空.lua:39	DEL_SINGLE_BUFF_BY_ID	1298, 1 skill.AddAttribute(
+skill\绝境战场\绝境_鸟翔碧空.lua:46	DEL_SINGLE_BUFF_BY_ID	1299, 1 ----------------- 技能施放Buff需求 ---------------------------------------------
+skill\绝境战场\绝境_鹊踏枝.lua:41	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	4, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_鹊踏枝.lua:47	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	8, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_鹊踏枝.lua:53	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	7, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_鹊踏枝.lua:59	DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE	2, 10000 skill.AddAttribute(
+skill\绝境战场\绝境_鹤归孤山.lua:50	CALL_BUFF	51335, 1 skill.AddAttribute(
+skill\绝境战场\绝境_鹤归孤山.lua:57	CALL_BUFF	1695, 1 skill.AddAttribute(
+skill\绝境战场\绝境_鹤归孤山.lua:64	CALL_BUFF	1953, 1 ----------------- 设置CoolDown ---------------------------------------------------------------------
+skill\阵法\少林攻击阵法第五重.lua:28	CALL_BUFF	--        920,		--BUFFID --        1		-- --    );

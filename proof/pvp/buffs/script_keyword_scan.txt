@@ -1,0 +1,543 @@
+# root=C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts lua_files=1177
+
+================================================================================
+# GROUP decay_dr
+================================================================================
+skill\丐帮\丐帮_龙跃于渊.lua	[BC d1]	[免控]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/丐帮/丐帮_龙跃于渊.lua | EFFECT_TO_SELF_NOT_ROLLBACK | CAST_SKILL | EFFECT_TO_SELF_AND_ROLLBACK | skill/丐帮/龙跃免控添加.lua | skill/丐帮/丐帮_龙跃于渊_伤害命中触发相关.lua | skill/丐帮/苍龙戾天标记伤害触发.lua | SetPublicCoolDown | SetCheckCoolDown | SetNormalCoolDown | nCostManaMaxPercent | nCostSprintPower | CONSUME
+skill\沙漠风暴\道具_游风飘踪.lua:166	[免控]	--实际免控
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:2	[解控]	-- 脚本名称:	scripts/skill/刀宗/套路及子技能/游风飘踪解控子技能.lua
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:61	[解控]	"skill/刀宗/套路及子技能/游风飘踪解控子技能.lua",
+skill\沙漠风暴\道具_疾如风.lua:144	[免控]	--免控
+skill\沙漠风暴\道具_笑醉狂.lua:204	[免控]	--免控
+skill\沙漠风暴\道具_舍身诀.lua:39	[解控]	---舍身解控效果
+skill\沙漠风暴\道具_舍身诀解控子技能.lua:2	[解控]	-- 脚本名称:	scripts/skill/沙漠风暴/道具_舍身诀解控子技能.lua
+skill\沙漠风暴\道具_蝶弄足.lua:36	[免疫]	503,								--蝶弄足解定身和免疫定身BUFF
+skill\绝境战场\绝境_七星拱瑞.lua:17	[递减]	--				受到伤害恢复，一次只能有一个目标被昏，效果递减
+skill\绝境战场\绝境_七星拱瑞npc.lua:17	[递减]	--				受到伤害恢复，一次只能有一个目标被昏，效果递减
+skill\绝境战场\绝境_七星拱瑞player.lua:17	[递减]	--				受到伤害恢复，一次只能有一个目标被昏，效果递减
+skill\绝境战场\绝境_千蝶吐瑞.lua:143	[免控]	--添加千蝶免控buff
+skill\绝境战场\绝境_破风.lua:116	[免疫]	--目标免疫击倒
+skill\绝境战场\绝境_笑醉狂.lua:177	[免控]	--免控	--减伤
+skill\绝境战场\绝境_笑醉狂.lua:202	[免控]	--免控	--减伤
+skill\衍天\套路及子技能\天机_斗转星移_被拉免疫.lua	[BC d1]	[免疫]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/衍天/套路及子技能/天机_斗转星移_被拉免疫.lua | AddSlowCheckSelfBuff | BUFF_COMPARE_FLAG | EQUAL | AddCheckSelfLearntSkill | SKILL_COMPARE_FLAG | SetNormalCoolDown | SetCheckCoolDown | nMinRadius | LENGTH_BASE | nMaxRadius | nAngleRange
+
+================================================================================
+# GROUP dispel
+================================================================================
+skill\唐门\套路及子技能\孔雀翎转移标记.lua:2	[转移]	-- 脚本名称:	scripts/skill/唐门/套路及子技能/孔雀翎转移标记.lua
+skill\唐门\套路及子技能\孔雀翎转移标记.lua:31	[转移]	"skill/唐门/套路及子技能/孔雀翎转移标记.lua",
+skill\唐门\套路及子技能\孔雀翎转移标记.lua:231	[转移]	--通过周围的目标转移标记层数给目标
+skill\唐门\追命箭群攻实际伤害_外功.lua:82	[驱散]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK, -- 驱散追命箭瞬发BUFF
+skill\天策\天策_技能事件_龙城铁壁_驱散.lua:2	[驱散]	-- 脚本名称:	scripts/skill/天策/天策_技能事件_龙城铁壁_驱散.lua
+skill\天策\天策_技能事件_龙城铁壁_驱散.lua:8	[驱散]	-- 文件名    :  天策_技能事件_御_驱散御.lua
+skill\天策\天策_技能事件_龙城铁壁_驱散.lua:16	[驱散]	-- 技能效果  :  被击打后,驱散御效果,
+skill\天策\天策_技能事件_龙城铁壁_驱散.lua:41	[驱散]	"skill/天策/天策_技能事件_龙城铁壁_驱散.lua", -- 属性值1
+skill\沙漠风暴\道具_剑转流云.lua:41	[驱散]	-- 2级多驱散一个debuff
+skill\沙漠风暴\道具_春泥护花_被击后驱散.lua:26	[驱散]	"skill/沙漠风暴/道具_春泥护花_被击后驱散.lua", -- 属性值1
+skill\沙漠风暴\道具_梯云纵_战斗状态.lua:36	[驱散]	ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 驱散掉瞬发buff
+skill\沙漠风暴\道具_梯云纵_非战斗状态.lua:36	[驱散]	ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 驱散掉瞬发buff
+skill\沙漠风暴\道具_舍身诀子技能.lua:40	[转移]	skill.BindBuff(1, 20255, 1);			-- 伤害转移
+skill\沙漠风暴\道具_镇山河.lua:223	[驱散]	player.CastSkillXYZ(28050, 1, nX, nY, nZ) --目标无敌驱散
+skill\沙漠风暴\道具_霞流宝石伤害.lua:97	[驱散]	--驱散效果取消
+skill\百战异闻录_玩家\通用_驱散混元.lua:2	[驱散]	-- 脚本名称:	scripts/skill/百战异闻录_玩家/通用_驱散混元.lua
+skill\纯阳\子技能_三才化生_10点气.lua:94	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_1点气.lua:87	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_2点气.lua:88	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_3点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_4点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_5点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_6点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_7点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_8点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_三才化生_9点气.lua:89	[吞噬]	"skill/纯阳/正气吞噬破苍穹.lua", -- 属性值1
+skill\纯阳\子技能_镇山河驱散自己.lua:2	[驱散]	-- 文件名    :  子技能_镇山河_驱散Debuff.lua
+skill\绝境战场\绝境_剑转流云.lua:16	[驱散]	-- 技能效果  :  1级驱散掉对方1个阴性内功气劲，需要剑舞状态，2级驱散三种内功各一个
+skill\绝境战场\绝境_少明指.lua:16	[驱散]	-- 技能效果  :  远程中性内功伤害及驱散buff
+skill\绝境战场\绝境_少明指.lua:87	[驱散]	--2009年6月27日修改成能驱散2个BUFF   CBG
+skill\绝境战场\绝境_技能爆急曲.lua:39	[吞噬]	ATTRIBUTE_TYPE.CONSUME_BUFF, -- 吞噬
+skill\绝境战场\绝境_断魂刺.lua:40	[驱散]	--添加执行脚本,DelMultiGroupBuffByFunctionType驱散各类移动限制
+skill\绝境战场\绝境_江海凝光.lua:16	[转移]	-- 技能效果  :  造成小量伤害，将一定比例的伤害转成内力转移给队友
+skill\绝境战场\绝境_渊触发技能事件.lua:2	[驱散]	-- 脚本名称:	scripts/skill/天策/天策_技能事件_龙城铁壁_驱散.lua
+skill\绝境战场\绝境_渊触发技能事件.lua:8	[驱散]	-- 文件名    :  天策_技能事件_御_驱散御.lua
+skill\绝境战场\绝境_渊触发技能事件.lua:16	[驱散]	-- 技能效果  :  被击打后,驱散御效果,
+skill\绝境战场\绝境_玉石俱焚.lua:59	[吞噬]	ATTRIBUTE_TYPE.CONSUME_BUFF, -- 吞噬Buff
+skill\绝境战场\绝境_玉石俱焚.lua:66	[吞噬]	ATTRIBUTE_TYPE.CONSUME_BUFF, -- 吞噬Buff
+skill\绝境战场\绝境_玉石俱焚.lua:73	[吞噬]	ATTRIBUTE_TYPE.CONSUME_BUFF, -- 吞噬Buff
+skill\绝境战场\绝境_玉石俱焚.lua:80	[吞噬]	ATTRIBUTE_TYPE.CONSUME_BUFF, -- 吞噬Buff
+skill\绝境战场\绝境_玉石俱焚.lua:87	[吞噬]	ATTRIBUTE_TYPE.CONSUME_BUFF, -- 吞噬Buff
+skill\藏剑\藏剑_灵峰剑式_子技能_霞流宝石近距离.lua:65	[驱散]	--驱散效果取消
+skill\藏剑\藏剑_灵峰剑式_子技能_霞流宝石远距离.lua:50	[驱散]	--驱散效果取消
+skill\藏剑\藏剑_灵峰剑式_霞流宝石.lua:66	[驱散]	skill.AddAttribute(									--驱散效果子技能
+
+================================================================================
+# GROUP control
+================================================================================
+skill\npc\副本BOSS\刀轮海厅\屠龙六式打击二击退.lua:2	[击退]	-- 脚本名称:	scripts/skill/npc/副本BOSS/刀轮海厅/屠龙六式打击二击退.lua
+skill\npc\副本BOSS\刀轮海厅\屠龙六式打击二击退.lua:47	[击退]	"skill/npc/副本BOSS/刀轮海厅/屠龙六式打击二击退.lua",
+skill\npc\副本BOSS\天子峰\天子峰_4号BOSS_玄悲_捉影式.lua:48	[击倒]	--增加击倒率/击退率/被抓 几率 100%
+skill\npc\副本BOSS\沃石院\1号\1号_击退30尺.lua:2	[击退]	-- 脚本名称:	scripts/skill/npc/副本BOSS/沃石院/1号/1号_击退35尺.lua
+skill\npc\副本BOSS\狼牙堡_辉天堑\周边\潜龙勿用.lua:2	[击退]	-- 脚本名称:	scripts/skill/npc/副本BOSS/刀轮海厅/屠龙六式打击二击退.lua
+skill\npc\副本BOSS\百战异闻录\罗翼\罗翼_猎犬_低吠_实际作用.lua:284	[恐惧]	if nRound and nRound >= 5 and nSpirit < nSpiritLimt * 0.2 then --是5阶段，则添加恐惧buff  & 玩家精神低于<20%
+skill\npc\副本BOSS\百战异闻录\罗翼\罗翼_猎犬_低吠_实际作用.lua:285	[击倒]	--特判如果击倒状态，return
+skill\npc\副本BOSS\百战异闻录\罗翼\罗翼_猎犬_低吠_实际作用.lua:293	[恐惧]	player.AddBuff(npc.dwID, npc.nLevel, 20346, 1, nBuffTime)--：恐惧buff
+skill\npc\副本BOSS\风雨稻香村\风雨稻香村_小怪_叛军骑兵长_断魂刺(伤害眩晕).lua:2	[眩晕]	-- 文件名    :  风雨稻香村_小怪_叛军骑兵长_断魂刺(伤害眩晕).lua
+skill\npc\副本BOSS\风雨稻香村\风雨稻香村_小怪_叛军骑兵长_断魂刺(伤害眩晕).lua:9	[眩晕]	-- 技能名称  :  断魂刺(伤害眩晕)
+skill\npc\门派掌门\陆危楼_缴械AOE伤害.lua:2	[缴械]	-- 脚本名称:	scripts/skill/npc/门派掌门/陆危楼_缴械AOE伤害.lua
+skill\Quest\七夕活动_剑主天地.lua:48	[减速]	skill.BindBuff(1,3108,1)--减速
+skill\Quest\通用解除击倒.lua:2	[击倒]	-- 脚本名称:	scripts/skill/Quest/通用解除击倒.lua
+skill\Quest\通用解除击倒.lua:55	[击倒]	"skill/Quest/通用解除击倒.lua",
+skill\万花\万花_子技能_傍花随柳_施技定身.lua:2	[定身]	-- 脚本名称:	scripts/skill/万花/万花_子技能_傍花随柳_施技定身.lua
+skill\万花\万花_子技能_傍花随柳_施技定身.lua:8	[定身]	-- 文件名    :  万花_子技能_傍花随柳_施技定身.lua
+skill\万花\万花_子技能_傍花随柳_施技定身.lua:16	[定身]	-- 技能效果  :  施技定身
+skill\万花\万花_子技能_傍花随柳_施技定身.lua:50	[定身]	"skill/万花/万花_子技能_傍花随柳_施技定身.lua", -- 属性值1
+skill\万花\万花_子技能_傍花随柳_施技定身.lua:144	[定身]	Caster.CastSkill(14653,1)	--成功定身降低5秒调息时间
+skill\凌雪阁\套路及子技能\孤风飒踏冲刺.lua:210	[眩晕]	--player.AddBuff(0, 99, 8505, 1, 600) --冲刺状态结束放眩晕
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:2	[击倒]	-- 脚本名称:	scripts/skill/刀宗/套路及子技能/游风飘踪击倒子技能.lua
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:31	[击倒]	"skill/刀宗/套路及子技能/游风飘踪击倒子技能.lua",
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:101	[击倒]	--击倒
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:113	[眩晕]	--眩晕
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:123	[定身]	--定身
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:133	[锁足]	--锁足
+skill\刀宗\套路及子技能\游风飘踪击倒子技能.lua:142	[减速]	--减速
+skill\北天药宗\套路及子技能\北天药宗_游泽目标点群定身伤害子技能.lua:2	[定身]	-- 脚本名称:	scripts/skill/北天药宗/套路及子技能/北天药宗_游泽目标点群定身伤害子技能.lua
+skill\唐门\唐门_机关_飞星发动天绝地灭.lua:201	[锁足]	npc.AddBuff(player.dwID, player.nLevel, 12311, 1) -- 锁足、拉人
+skill\天策\天策_奔雷枪术_穿.lua:10	[减速]	-- 技能效果  :  前方范围减速
+skill\天策\天策_奔雷枪术_穿.lua:71	[减速]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,			---单体目标的更强减速
+skill\少林\优化眩晕延迟触发.lua:2	[眩晕]	-- 脚本名称:	scripts/skill/少林/优化眩晕延迟触发.lua
+skill\少林\少林_龙爪功_抱残式.lua:10	[减速]	-- 技能效果  :  对单体目标造成阳性内功伤害，并使其减速50%，持续12秒
+skill\少林\少林_龙爪功_捉影式.lua	[BC d1]	[减速]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_AND_ROLLBACK | ATTRIBUTE_TYPE | KNOCKED_BACK_RATE | EFFECT_TO_SELF_NOT_ROLLBACK | ACCUMULATE | EFFECT_TO_DEST_NOT_ROLLBACK | EXECUTE_SCRIPT | skill/少林/捉影式减速.lua | skill/少林/少林_龙爪功_捉影式.lua | CAST_SKILL_TARGET_DST | BindBuff | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE | nMinRadius | LENGTH_BASE | nMaxRadi
+skill\少林\少林_龙爪功_捉影式.lua	[BC d1]	[眩晕]	 :: GetPlayer | GetSkillLevel | DelBuff | IsSkillRecipeActive | IsHaveBuff | AddAccumulateValue | IsPlayer | GetNpc | GetAltitude | GetBuffByOwner | dwID | AddBuff | nLevel | SetBuffNextActiveFrame | nIndex | nNextActiveFrame | nStackNum | DelMultiGroupBuffByID | RemoteCallToClient | ChangeSkillSurfaceNum | CastSkill | dwFirstAttackPlayer | AddFirstAttackKillPoint | math | max | floor | GetCharact
+skill\少林\捉影式减速.lua:2	[减速]	-- 脚本名称:	scripts/skill/少林/捉影式减速.lua
+skill\少林\镇派\千斤坠_冲刺过程.lua:202	[眩晕]	player.AddBuff(player.dwID, player.nLevel, 12465, 1, 600) --冲刺状态结束放眩晕
+skill\明教\秘笈\明教_秘籍_怖畏暗刑隐身锁足.lua	[BC d1]	[锁足]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/明教/秘笈/明教_秘籍_怖畏暗刑隐身锁足.lua | nMinRadius | LENGTH_BASE | nMaxRadius | nAngleRange
+skill\沙漠风暴\绝境·临时飞爪.lua:50	[缴械]	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+skill\沙漠风暴\道具_临时飞爪.lua:50	[缴械]	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+skill\沙漠风暴\道具_九转归一.lua:144	[眩晕]	--触发眩晕
+skill\沙漠风暴\道具_九转归一.lua:145	[眩晕]	target.AddBuff(player.dwID, player.nLevel, 14928, 1, 1)   --实际眩晕
+skill\沙漠风暴\道具_九转归一.lua:201	[眩晕]	--触发眩晕
+skill\沙漠风暴\道具_九转归一.lua:202	[眩晕]	target.AddBuff(player.dwID, player.nLevel, 14928, 1, 1)   --实际眩晕
+skill\沙漠风暴\道具_人剑合一对自己.lua:178	[定身]	--定身效果
+skill\沙漠风暴\道具_伪九霄风雷加速.lua:64	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_剑转流云.lua:78	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_啸如虎.lua:36	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_孤影化双.lua:32	[减速]	--解除减速
+skill\沙漠风暴\道具_孤影化双.lua:45	[定身]	--解除定身
+skill\沙漠风暴\道具_孤影化双.lua:60	[锁足]	--解除锁足
+skill\沙漠风暴\道具_孤影化双.lua:67	[眩晕]	--解除眩晕
+skill\沙漠风暴\道具_孤影化双.lua:75	[击倒]	--解除击倒
+skill\沙漠风暴\道具_孤影化双.lua:96	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_孤风飒踏.lua:69	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_孤风飒踏.lua:94	[缴械]	--skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 需求没有缴械
+skill\沙漠风暴\道具_孤风飒踏冲刺.lua:210	[眩晕]	--player.AddBuff(0, 99, 8505, 1, 600) --冲刺状态结束放眩晕
+skill\沙漠风暴\道具_守如山.lua:57	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+skill\沙漠风暴\道具_平沙落雁.lua:52	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_怖畏暗刑.lua:42	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_惊鸿游龙.lua:74	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+skill\沙漠风暴\道具_捉影式.lua:29	[击倒]	--增加击倒率/击退率/被抓 几率 100%
+skill\沙漠风暴\道具_散流霞.lua:72	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_斩无常.lua:114	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_无间狱.lua:91	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_星楼月影.lua:48	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_暗尘弥散.lua:69	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_极乐引.lua:83	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+skill\沙漠风暴\道具_洗兵雨.lua:2	[缴械]	-- 脚本名称:	scripts/skill/刀宗/套路及子技能/洗兵雨缴械.lua
+skill\沙漠风暴\道具_浮光掠影.lua:69	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_游风飘踪解控子技能.lua:47	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_琴音共鸣.lua:81	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_疾如风.lua:73	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --解除击倒
+skill\沙漠风暴\道具_疾如风.lua:92	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_穹隆化生.lua:44	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+skill\沙漠风暴\道具_绿野蔓生.lua:57	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_绿野蔓生击退目标子技能.lua:2	[击退]	-- 脚本名称:	scripts/skill/北天药宗/套路及子技能/北天药宗_绿野蔓生击退目标子技能.lua
+skill\沙漠风暴\道具_绿野蔓生击退目标子技能.lua:58	[击退]	"skill/沙漠风暴/道具_绿野蔓生击退目标子技能.lua",				-- 属性值1
+skill\沙漠风暴\道具_绿野蔓生通知主人击退目标子技能.lua:2	[击退]	-- 脚本名称:	scripts/skill/北天药宗/套路及子技能/北天药宗_绿野蔓生击退目标子技能.lua
+skill\沙漠风暴\道具_翔极碧落打断后带沉默.lua:2	[沉默]	-- 脚本名称:	scripts/skill/沙漠风暴/道具_翔极碧落打断后带沉默.lua
+skill\沙漠风暴\道具_舍身诀.lua:16	[击倒]	-- 技能效果  :  对目标造成伤害，击倒，并减少一定护甲
+skill\沙漠风暴\道具_舍身诀.lua:61	[击倒]	--skill.BindBuff(2,994,2);		-- 设置2号位Buff(击倒计时2秒BUFF)
+skill\沙漠风暴\道具_蝶弄足.lua:36	[定身]	503,								--蝶弄足解定身和免疫定身BUFF
+skill\沙漠风暴\道具_蝶弄足.lua:76	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_踏星行.lua:225	[沉默]	player.DelBuffByID(22303) --删除沉默效果
+skill\沙漠风暴\道具_转乾坤.lua:75	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --解除击倒
+skill\沙漠风暴\道具_转乾坤.lua:104	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+skill\沙漠风暴\道具_连环弩子技能4击退.lua:2	[击退]	-- 脚本名称:	scripts/skill/沙漠风暴/道具_连环弩子技能4击退.lua
+skill\沙漠风暴\道具_逐云寒蕊.lua:57	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_霞流宝石伤害.lua:95	[缴械]	--新增缴械效果
+skill\沙漠风暴\道具_霞流宝石伤害.lua:182	[缴械]	--缴械
+skill\沙漠风暴\道具_飞刃回转.lua:40	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); -- 缴械
+skill\沙漠风暴\道具_飞刃回转.lua:86	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\沙漠风暴\道具_鹊踏枝.lua:58	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\沙漠风暴\道具_鹊踏枝.lua:85	[缴械]	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 缴械
+skill\百战异闻录_玩家\冯度\花钱消灾_单体嘲讽.lua:33	[嘲讽]	"skill/百战异闻录_玩家/冯度/花钱消灾_单体嘲讽.lua", --属性值1
+skill\纯阳\90级奇穴\万剑归宗锁足.lua:2	[锁足]	-- 脚本名称:	scripts/skill/纯阳/90级奇穴/万剑归宗锁足.lua
+skill\纯阳\子技能_九转归一伤害触发.lua:10	[定身]	-- 效果备注	:  四象轮回子技能_在目标非定身时施放成功
+skill\纯阳\子技能_镇山河驱散自己.lua:116	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,	--解除击倒
+skill\绝境战场\绝境_五蕴皆空.lua:138	[减速]	player.AddBuff(dwSkillSrcID, player.nLevel, 51354, 1) -- 聂云减速
+skill\绝境战场\绝境_亢龙有悔.lua:77	[锁足]	--skill.BindBuff(1, 51227, 1);		-- 锁足
+skill\绝境战场\绝境_傍花随柳.lua:16	[定身]	-- 技能效果  :  对方若5秒内使用任何技能，将被定身6秒，并造成内力损失
+skill\绝境战场\绝境_傍花随柳触发.lua:187	[沉默]	target.AddBuff(player.dwID, player.nLevel, 50379, 1) --沉默
+skill\绝境战场\绝境_孔雀翎实际伤害.lua:181	[减速]	--孔雀减速和多次伤害
+skill\绝境战场\绝境_帝骖龙翔.lua:16	[定身]	-- 技能效果  :  自身范围定身6秒
+skill\绝境战场\绝境_抱残式.lua:16	[减速]	-- 技能效果  :  对单体目标造成阳性内功伤害，并使其减速50%，持续12秒
+skill\绝境战场\绝境_捉影式.lua:35	[击倒]	--增加击倒率/击退率/被抓 几率 100%
+skill\绝境战场\绝境_捕风式.lua:78	[减速]	skill.BindBuff(1, 51276, 1)  --减速
+skill\绝境战场\绝境_断魂刺伤害.lua:16	[击倒]	-- 技能效果  :  伴随断魂刺Dash,造成伤害和击倒,子弹飞行速度和Dash速度相同
+skill\绝境战场\绝境_星楼月影.lua:47	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\绝境战场\绝境_棒打狗头.lua:107	[锁足]	target.AddBuff(player.dwID, player.nLevel, 51858, 1) --锁足
+skill\绝境战场\绝境_棒打狗头伤害.lua:82	[锁足]	--skill.BindBuff(1, 51227, 1);		-- 锁足
+skill\绝境战场\绝境_沧月.lua:16	[击倒]	-- 技能效果  :  当前目标击倒,并击退周围目标20米
+skill\绝境战场\绝境_沧月.lua:46	[击退]	--施放 子技能_群体击退
+skill\绝境战场\绝境_沧月击退.lua:2	[击退]	-- 脚本名称:	scripts/skill/绝境战场/绝境_沧月击退.lua
+skill\绝境战场\绝境_沧月击退.lua:47	[减速]	--skill.BindBuff(1, 790, 1);	-- 减速95%Buff
+skill\绝境战场\绝境_疾.lua:16	[眩晕]	-- 技能效果  :  向前冲刺一段距离，同时对行进路径上的敌人造成伤害并附带眩晕效果
+skill\绝境战场\绝境_疾如风.lua:46	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\绝境战场\绝境_疾实际伤害.lua:8	[眩晕]	-- 文件名    :  天策_子技能_疾_伤害眩晕.lua
+skill\绝境战场\绝境_疾实际伤害.lua:16	[眩晕]	-- 技能效果  :  向前冲刺一段距离，同时对行进路径上的敌人造成伤害并附带眩晕效果
+skill\绝境战场\绝境_破风.lua:116	[击倒]	--目标免疫击倒
+skill\绝境战场\绝境_穿.lua:16	[减速]	-- 技能效果  :  前方范围减速
+skill\绝境战场\绝境_穿.lua:69	[减速]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, ---单体目标的更强减速
+skill\绝境战场\绝境_芙蓉并蒂.lua:16	[定身]	-- 技能效果  :  远程中性内功伤害，能使目标被点穴定身3秒
+skill\绝境战场\绝境_蛊虫献祭.lua:47	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\绝境战场\绝境_裂苍穹.lua:16	[击退]	-- 技能效果  :  单体击退目标15米
+skill\绝境战场\绝境_裂苍穹.lua:73	[减速]	--skill.BindBuff(1, 788, 1);	-- 减速95%Buff
+skill\绝境战场\绝境_雷霆震怒.lua:16	[定身]	-- 技能效果  :  将目标定身，并且无敌
+skill\绝境战场\绝境_雾暗迷云.lua:286	[沉默]	if target.nSkillPlatformType == SKILL_PLATFORM_TYPE.MOBILE then --手机变成沉默
+skill\绝境战场\绝境_鹊踏枝.lua:64	[击倒]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+skill\绝境战场\绝境_龙战于野.lua:62	[锁足]	--skill.BindBuff(1, 51227, 1);		-- 锁足
+skill\藏剑\藏剑_灵峰剑式_子技能_霞流宝石近距离.lua:63	[缴械]	--新增缴械效果
+skill\藏剑\藏剑_灵峰剑式_子技能_霞流宝石远距离.lua:48	[缴械]	--新增缴械效果
+skill\藏剑\藏剑_灵峰剑式_子技能_霞流宝石远距离.lua:138	[缴械]	--缴械
+skill\藏剑\藏剑_灵峰剑式_霞流宝石.lua:58	[缴械]	skill.AddAttribute(									--缴械效果子技能
+
+================================================================================
+# GROUP immunity_buffs
+================================================================================
+skill\七秀\西河剑器_天地低昂.lua	[BC d1]	[天地低昂]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/七秀/西河剑器_天地低昂.lua | SetPublicCoolDown | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE | nMinRadius | nMaxRadius | LENGTH_BASE | nAngleRange | nPrepareFrames | nBulletVelocity
+skill\七秀\霓裳羽衣_风袖低昂.lua	[BC d1]	[风袖低昂]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | CAST_SKILL_TARGET_DST | EFFECT_TO_DEST_NOT_ROLLBACK | EXECUTE_SCRIPT | skill/七秀/霓裳羽衣_风袖低昂.lua | EFFECT_TO_SELF_AND_ROLLBACK | SKILL_THERAPY | tSkillData | nTherapy | SKILL_THERAPY_RAND | nTherapyRand | CALL_THERAPY | AddSlowCheckSelfBuff | BUFF_COMPARE_FLAG | EQUAL | SetPublicCoolDown | SetNormalCoo
+skill\万花\万花_养心决_星楼月影.lua	[BC d1]	[星楼月影]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE | CAST_SKILL | EFFECT_TO_DEST_NOT_ROLLBACK | EXECUTE_SCRIPT | skill/万花/万花_养心决_星楼月影.lua | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE
+skill\丐帮\丐帮_龙跃于渊.lua	[BC d1]	[免控]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/丐帮/丐帮_龙跃于渊.lua | EFFECT_TO_SELF_NOT_ROLLBACK | CAST_SKILL | EFFECT_TO_SELF_AND_ROLLBACK | skill/丐帮/龙跃免控添加.lua | skill/丐帮/丐帮_龙跃于渊_伤害命中触发相关.lua | skill/丐帮/苍龙戾天标记伤害触发.lua | SetPublicCoolDown | SetCheckCoolDown | SetNormalCoolDown | nCostManaMaxPercent | nCostSprintPower | CONSUME
+skill\丐帮\笑醉狂.lua	[BC d1]	[笑醉狂]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/丐帮/笑醉狂.lua | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE | nMinRadius | LENGTH_BASE | nMaxRadius | nAngleRange | nAreaRadius | nChannelInterval | nChannelFrame | nBeatBackRate | PERCENT_BASE | nBrokenRate | nWeaponDamagePercent
+skill\唐门\唐门_诡道_惊鸿游龙.lua:2	[惊鸿游龙]	-- 脚本名称:	scripts/skill/唐门/唐门_诡道_惊鸿游龙.lua
+skill\唐门\唐门_诡道_惊鸿游龙.lua:48	[惊鸿游龙]	"skill/唐门/唐门_诡道_惊鸿游龙.lua", --属性值1
+skill\天策\天策_子技能_守如山_傲血战意.lua:2	[守如山]	-- 文件名    :  天策_子技能_守如山_傲血战意.lua
+skill\天策\天策_子技能_守如山_傲血战意.lua:9	[守如山]	-- 技能名称  :  子技能_守如山_傲血战意
+skill\天策\天策_子技能_守如山_铁牢律.lua:2	[守如山]	-- 文件名    :  天策_子技能_守如山_铁牢律.lua
+skill\天策\天策_子技能_守如山_铁牢律.lua:9	[守如山]	-- 技能名称  :  子技能_守如山_铁牢律
+skill\天策\天策_子技能_守如山_铁牢律.lua:10	[守如山]	-- 技能效果  : 守如山减免所有伤害80%,反击一击攻击,铁牢律6级下,回血600点
+skill\天策\天策_虎牙令_守如山.lua	[BC d1]	[守如山]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/天策/天策_虎牙令_守如山.lua | CAST_SKILL_TARGET_DST | SetPublicCoolDown | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE | nMinRadius | nMaxRadius | MELEE_ATTACK_DISTANCE | nAngleRange | nPrepareFrames | nBulletVelocity | nBreakRate
+skill\少林\少林_达摩武诀_无相诀.lua	[BC d1]	[无相诀]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/少林/少林_达摩武诀_无相诀.lua | AddCheckSelfLearntSkill | SKILL_COMPARE_FLAG | EQUAL | SetPublicCoolDown | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE | nAngleRange | nAreaRadius | LENGTH_BASE
+skill\沙漠风暴\道具_啸如虎.lua:31	[啸如虎]	"skill/沙漠风暴/道具_啸如虎.lua", -- 属性值1
+skill\沙漠风暴\道具_守如山.lua:2	[守如山]	-- 脚本名称:	scripts/skill/天策/天策_虎牙令_守如山.lua
+skill\沙漠风暴\道具_守如山.lua:8	[守如山]	-- 文件名    :  天策_虎牙令-守如山.lua
+skill\沙漠风暴\道具_守如山.lua:15	[守如山]	-- 技能名称  :  守如山
+skill\沙漠风暴\道具_守如山.lua:36	[守如山]	----添加傲血战意下的守如山施放
+skill\沙漠风暴\道具_守如山.lua:43	[守如山]	--添加铁牢律下的守如山施放
+skill\沙漠风暴\道具_惊鸿游龙.lua:2	[惊鸿游龙]	-- 脚本名称:	scripts/skill/唐门/唐门_诡道_惊鸿游龙.lua
+skill\沙漠风暴\道具_惊鸿游龙.lua:48	[惊鸿游龙]	"skill/沙漠风暴/道具_惊鸿游龙.lua", --属性值1
+skill\沙漠风暴\道具_星楼月影.lua:2	[星楼月影]	-- 脚本名称:	scripts/skill/沙漠风暴/道具_星楼月影.lua
+skill\沙漠风暴\道具_星楼月影.lua:62	[星楼月影]	"skill/沙漠风暴/道具_星楼月影.lua",
+skill\沙漠风暴\道具_游风飘踪.lua:166	[免控]	--实际免控
+skill\沙漠风暴\道具_生太极.lua:2	[生太极]	-- 脚本名称:	scripts/skill/纯阳/纯阳决_生太极.lua
+skill\沙漠风暴\道具_生太极.lua:8	[生太极]	-- 文件名    :  纯阳决_生太极.lua
+skill\沙漠风暴\道具_生太极.lua:15	[生太极]	-- 技能名称  :  生太极
+skill\沙漠风暴\道具_生太极.lua:38	[生太极]	"skill/沙漠风暴/道具_生太极.lua", --属性值1
+skill\沙漠风暴\道具_生太极.lua:174	[生太极]	--是否已经存在生太极
+skill\沙漠风暴\道具_生太极.lua:307	[生太极]	player.SetTimer(1, "scripts/skill/沙漠风暴/道具_生太极.lua", npc.dwID, 0)
+skill\沙漠风暴\道具_生太极减益释放.lua:2	[生太极]	-- 脚本名称:	scripts/skill/纯阳/子技能_气场效果_生太极_减益.lua
+skill\沙漠风暴\道具_生太极减益释放.lua:8	[生太极]	-- 文件名    :  子技能_气场效果_生太极_减益.lua
+skill\沙漠风暴\道具_生太极减益释放.lua:38	[生太极]	"skill/沙漠风暴/道具_生太极减益释放.lua", -- 属性值1
+skill\沙漠风暴\道具_疾如风.lua:87	[疾如风]	"skill/沙漠风暴/道具_疾如风.lua", -- 属性值1
+skill\沙漠风暴\道具_疾如风.lua:144	[免控]	--免控
+skill\沙漠风暴\道具_疾电叱羽承伤AOE.lua:8	[生太极]	-- 文件名    :  子技能_气场效果_生太极_增益.lua
+skill\沙漠风暴\道具_穹隆化生_瞬发太极.lua:2	[生太极]	-- 脚本名称:	scripts/skill/纯阳/纯阳决_生太极.lua
+skill\沙漠风暴\道具_穹隆化生_瞬发太极.lua:8	[生太极]	-- 文件名    :  纯阳决_生太极.lua
+skill\沙漠风暴\道具_穹隆化生_瞬发太极.lua:15	[生太极]	-- 技能名称  :  生太极
+skill\沙漠风暴\道具_穹隆化生_瞬发太极.lua:38	[生太极]	"skill/沙漠风暴/道具_生太极.lua", --属性值1
+skill\沙漠风暴\道具_穹隆化生_瞬发太极.lua:244	[生太极]	player.SetTimer(1, "scripts/skill/沙漠风暴/道具_生太极.lua", npc.dwID, 0)
+skill\沙漠风暴\道具_笑醉狂.lua:2	[笑醉狂]	-- 脚本名称:	scripts/skill/沙漠风暴/道具_笑醉狂.lua
+skill\沙漠风暴\道具_笑醉狂.lua:35	[笑醉狂]	"skill/沙漠风暴/道具_笑醉狂.lua", -- 属性值1
+skill\沙漠风暴\道具_笑醉狂.lua:204	[免控]	--免控
+skill\沙漠风暴\道具_笑醉狂.lua:209	[笑醉狂]	--笑醉狂期间被击回血标记buff
+skill\沙漠风暴\道具_笑醉狂.lua:223	[笑醉狂]	--删除笑醉狂期间被击回血标记buff
+skill\纯阳\子技能_气场效果_凌太虚加强.lua:149	[生太极]	--生太极中额外提高会心会效
+skill\纯阳\纯阳决_生太极.lua	[BC d1]	[生太极]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_AND_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/纯阳/纯阳决_生太极.lua | skill/纯阳/90级奇穴/气场通用瞬发.lua | SetPublicCoolDown | SetNormalCoolDown | SetCheckCoolDown | nCostSprintPower | CONSUME_BASE | nMaxRadius | LENGTH_BASE | nAngleRange | nMinPrepareFrames | nPrepareFrames | nBrokenRate | PERCENT_BASE
+skill\纯阳\纯阳决_生太极.lua	[BC d1]	[生太极]	 :: GetPlayer | scene | GetScene | GetSkillLevel | GetGas | GetBuff | nNextActiveFrame | dwTemplateID | IsSkillRecipeActive | IsTreasureBattleFieldMap | GetMapID | GetKungfuMountID | bFightState | ModifyCoolDown | npcqc | dwNPCID | dwID | nEndTime | RemoteCallToClient | OnUpdateCYGas | CreateGas | SetBuffNextActiveFrame | nIndex | bBirdMove | AddBuff | nLevel | CastSkill | GetCurrentTime | SetTime
+skill\绝境战场\绝境_千蝶吐瑞.lua:143	[免控]	--添加千蝶免控buff
+skill\绝境战场\绝境_天地低昂.lua:2	[天地低昂]	-- 脚本名称:	scripts/skill/绝境战场/绝境_天地低昂.lua
+skill\绝境战场\绝境_天地低昂.lua:36	[天地低昂]	"skill/绝境战场/绝境_天地低昂.lua",
+skill\绝境战场\绝境_夺命蛊.lua:8	[星楼月影]	-- 文件名    :  万花_养心决_星楼月影.lua
+skill\绝境战场\绝境_夺命蛊.lua:15	[星楼月影]	-- 技能名称  :  星楼月影
+skill\绝境战场\绝境_无相诀.lua:2	[无相诀]	-- 脚本名称:	scripts/skill/绝境战场/绝境_无相诀.lua
+skill\绝境战场\绝境_无相诀.lua:39	[无相诀]	"skill/绝境战场/绝境_无相诀.lua",
+skill\绝境战场\绝境_星楼月影.lua:2	[星楼月影]	-- 脚本名称:	scripts/skill/绝境战场/绝境_星楼月影.lua
+skill\绝境战场\绝境_枯残蛊.lua:8	[星楼月影]	-- 文件名    :  万花_养心决_星楼月影.lua
+skill\绝境战场\绝境_枯残蛊.lua:15	[星楼月影]	-- 技能名称  :  星楼月影
+skill\绝境战场\绝境_生太极.lua:2	[生太极]	-- 脚本名称:	scripts/skill/绝境战场/绝境_生太极.lua
+skill\绝境战场\绝境_生太极.lua:39	[生太极]	"skill/绝境战场/绝境_生太极.lua", -- 属性值1
+skill\绝境战场\绝境_生太极.lua:154	[生太极]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_生太极.lua", npc.dwID, 0)
+skill\绝境战场\绝境_疾如风.lua:2	[疾如风]	-- 脚本名称:	scripts/skill/绝境战场/绝境_疾如风.lua
+skill\绝境战场\绝境_笑醉狂.lua:2	[笑醉狂]	-- 脚本名称:	scripts/skill/绝境战场/绝境_笑醉狂.lua
+skill\绝境战场\绝境_笑醉狂.lua:41	[笑醉狂]	"skill/绝境战场/绝境_笑醉狂.lua", -- 属性值1
+skill\绝境战场\绝境_笑醉狂.lua:177	[免控]	--免控	--减伤
+skill\绝境战场\绝境_笑醉狂.lua:202	[免控]	--免控	--减伤
+skill\绝境战场\绝境_迷心蛊.lua:8	[星楼月影]	-- 文件名    :  万花_养心决_星楼月影.lua
+skill\绝境战场\绝境_迷心蛊.lua:15	[星楼月影]	-- 技能名称  :  星楼月影
+skill\绝境战场\绝境_风袖低昂.lua:2	[风袖低昂]	-- 脚本名称:	scripts/skill/绝境战场/绝境_风袖低昂.lua
+skill\绝境战场\绝境_风袖低昂.lua:45	[风袖低昂]	"skill/绝境战场/绝境_风袖低昂.lua",
+
+================================================================================
+# GROUP pvp_modes
+================================================================================
+skill\npc\体验战场机器人\万花_商阳指.lua:2	[战场]	-- 脚本名称:	scripts/skill/npc/体验战场机器人/万花_商阳指.lua
+skill\npc\体验战场机器人\万花_商阳指.lua:10	[战场]	Include("scripts/skill/npc/体验战场机器人/体验战场伤害头文件.lua")
+skill\npc\体验战场机器人\万花_商阳指.lua:59	[战场]	"skill/npc/体验战场机器人/万花_商阳指.lua",				--属性值1
+skill\npc\体验战场机器人\体验战场伤害头文件.lua:2	[战场]	-- 脚本名称:	scripts/skill/npc/体验战场机器人/体验战场伤害头文件.lua
+skill\npc\体验战场机器人\体验战场伤害头文件.lua:25	[追命箭]	[18454] = {0.21648, 0.21648, damageType = SKILL_RESULT_TYPE.PHYSICS_DAMAGE}, --唐门_追命箭
+skill\npc\体验战场机器人\唐门_孔雀翎.lua:2	[战场]	-- 脚本名称:	scripts/skill/npc/体验战场机器人/唐门_孔雀翎.lua
+skill\npc\体验战场机器人\唐门_孔雀翎.lua:10	[战场]	Include("scripts/skill/npc/体验战场机器人/体验战场伤害头文件.lua")
+skill\npc\体验战场机器人\唐门_孔雀翎.lua:59	[战场]	"skill/npc/体验战场机器人/唐门_孔雀翎.lua",				--属性值1
+skill\Quest\ACT_四月洛阳\山狼_追命箭.lua:2	[追命箭]	-- 脚本名称:	scripts/skill/Quest/ACT_四月洛阳/山狼_追命箭.lua
+skill\Quest\ACT_四月洛阳\山狼_追命箭.lua:34	[追命箭]	"skill/Quest/ACT_四月洛阳/山狼_追命箭.lua",								--属性值1
+skill\丐帮\烟雨行.lua:164	[战场]	--战场Skillmove 速度衰减
+skill\唐门\追命箭群攻实际伤害_外功.lua:2	[追命箭]	-- 脚本名称:	scripts/skill/唐门/追命箭群攻实际伤害_外功.lua
+skill\唐门\追命箭群攻实际伤害_外功.lua:82	[追命箭]	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK, -- 驱散追命箭瞬发BUFF
+skill\唐门\追命箭群攻实际伤害_外功.lua:84	[追命箭]	"skill/唐门/追命箭群攻实际伤害_外功.lua",
+skill\唐门\追命额外伤害5-10.lua:2	[追命箭]	-- 脚本名称:	scripts/skill/唐门/追命箭群攻实际伤害_外功.lua
+skill\唐门\镇派\追命箭_额外伤害.lua:2	[追命箭]	-- 脚本名称:	scripts/skill/唐门/镇派/追命箭_额外伤害.lua
+skill\唐门\镇派\鸟翔碧空二段技能.lua:100	[追命箭]	local ZMJLv = player.GetSkillLevel(3096)    --学习追命箭箭
+skill\江湖\林海绝境脱战.lua	[BC d1]	[绝境]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/江湖/林海绝境脱战.lua
+skill\江湖\林海绝境进战.lua	[BC d1]	[绝境]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/江湖/林海绝境进战.lua
+skill\江湖\江湖轻功_扶摇直上绝境专用.lua	[BC d1]	[绝境]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_DEST_NOT_ROLLBACK | ATTRIBUTE_TYPE | EXECUTE_SCRIPT | skill/江湖/江湖轻功_扶摇直上绝境专用.lua | AddSlowCheckSelfBuff | BUFF_COMPARE_FLAG | EQUAL | GREATER_EQUAL | EFFECT_TO_SELF_NOT_ROLLBACK | DEL_SINGLE_BUFF_BY_ID_AND_LEVEL | skill/江湖/基础特殊基础CD.lua | SetPublicCoolDown | SetNormalCoolDown | SetCheckCoolDown | nPrepareFrames | nBulletVelocity | nBrea
+skill\江湖\江湖轻功_蹑云逐月绝境专用.lua	[BC d1]	[绝境]	 :: dwLevel | AddAttribute | ATTRIBUTE_EFFECT_MODE | EFFECT_TO_SELF_NOT_ROLLBACK | ATTRIBUTE_TYPE | DASH_FORWARD | tSkillData | nDashFrame | EFFECT_TO_DEST_NOT_ROLLBACK | EXECUTE_SCRIPT | skill/江湖/江湖轻功_蹑云逐月绝境专用.lua | skill/江湖/基础特殊基础CD.lua | AddSlowCheckSelfBuff | BUFF_COMPARE_FLAG | EQUAL | GREATER_EQUAL | SetPublicCoolDown | SetNormalCoolDown | SetCheckCoolDown | BindBuff | nPrepareFrames | nBull
+skill\江湖\绝境战场_移动端_扶摇.lua:2	[战场]	-- 脚本名称:	scripts/skill/江湖/绝境战场_移动端_扶摇.lua
+skill\江湖\绝境战场_移动端_扶摇.lua:69	[战场]	"skill/江湖/绝境战场_移动端_扶摇.lua",
+skill\江湖\绝境战场_移动端_蹑云逐月.lua:2	[战场]	-- 脚本名称:	scripts/skill/江湖/绝境战场_移动端_蹑云逐月.lua
+skill\江湖\绝境战场_移动端_蹑云逐月.lua:24	[战场]	"skill/江湖/绝境战场_移动端_蹑云逐月.lua",
+skill\江湖\绝境战场_移动端_蹑云逐月.lua:82	[战场]	"skill/江湖/绝境战场_移动端_蹑云逐月.lua",
+skill\沙漠风暴\绝境·临时飞爪.lua:41	[绝境]	"skill/沙漠风暴/绝境·临时飞爪.lua",
+skill\沙漠风暴\绝境·临时飞爪.lua:253	[绝境]	player.SetTimer(5, "scripts/skill/沙漠风暴/绝境·临时飞爪.lua", player.dwID, npc.dwID)
+skill\沙漠风暴\道具_生太极减益释放.lua:45	[竞技]	skill.AddSlowCheckDestBuff(13598, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL); --不对竞技场破坏NPC生效
+skill\绝境战场\撼如雷自身加Buff.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/撼如雷自身加Buff.lua
+skill\绝境战场\绝境_一段守缺.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_一段守缺.lua
+skill\绝境战场\绝境_七星拱瑞.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_七星拱瑞.lua
+skill\绝境战场\绝境_七星拱瑞npc.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_七星拱瑞npc.lua
+skill\绝境战场\绝境_七星拱瑞player.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_七星拱瑞player.lua
+skill\绝境战场\绝境_万剑归宗.lua:53	[战场]	"skill/绝境战场/绝境_万剑归宗.lua", -- 属性值1
+skill\绝境战场\绝境_三才化生.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_三才化生.lua
+skill\绝境战场\绝境_三环套月.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_三环套月.lua
+skill\绝境战场\绝境_三环套月.lua:69	[战场]	"skill/绝境战场/绝境_三环套月.lua",
+skill\绝境战场\绝境_三环套月额外伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_三环套月额外伤害.lua
+skill\绝境战场\绝境_两仪化形.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_两仪化形.lua
+skill\绝境战场\绝境_二段守缺.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_二段守缺.lua
+skill\绝境战场\绝境_云飞玉皇.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_云飞玉皇.lua
+skill\绝境战场\绝境_云飞玉皇.lua:53	[战场]	"skill/绝境战场/绝境_云飞玉皇.lua",
+skill\绝境战场\绝境_云飞玉皇额外伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_云飞玉皇额外伤害.lua
+skill\绝境战场\绝境_五方行尽.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_五方行尽.lua
+skill\绝境战场\绝境_五蕴皆空.lua:40	[战场]	"skill/绝境战场/绝境_五蕴皆空.lua",
+skill\绝境战场\绝境_亢龙有悔.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_亢龙有悔.lua
+skill\绝境战场\绝境_亢龙有悔.lua:46	[战场]	"skill/绝境战场/绝境_亢龙有悔.lua", -- 属性值1
+skill\绝境战场\绝境_亢龙有悔.lua:78	[化劲]	--skill.BindBuff(2, 51228, 1);		-- 减化劲
+skill\绝境战场\绝境_任驰骋.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_任驰骋.lua
+skill\绝境战场\绝境_任驰骋.lua:56	[战场]	"skill/绝境战场/绝境_任驰骋.lua",
+skill\绝境战场\绝境_傍花随柳.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_傍花随柳.lua
+skill\绝境战场\绝境_傍花随柳.lua:42	[战场]	"skill/绝境战场/绝境_傍花随柳.lua",
+skill\绝境战场\绝境_傍花随柳伤害触发.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_傍花随柳伤害触发.lua
+skill\绝境战场\绝境_傍花随柳触发.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_傍花随柳触发.lua
+skill\绝境战场\绝境_傍花随柳触发.lua:40	[战场]	"skill/绝境战场/绝境_傍花随柳触发.lua",
+skill\绝境战场\绝境_兰摧子技能.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_兰摧子技能.lua
+skill\绝境战场\绝境_兰摧玉折.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_钟林毓秀.lua
+skill\绝境战场\绝境_冲阴阳.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_冲阴阳.lua
+skill\绝境战场\绝境_冲阴阳.lua:40	[战场]	"skill/绝境战场/绝境_冲阴阳.lua", -- 属性值1
+skill\绝境战场\绝境_冲阴阳.lua:154	[战场]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_冲阴阳.lua", npc.dwID, 0)
+skill\绝境战场\绝境_净世破魔击.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_净世破魔击.lua
+skill\绝境战场\绝境_凌太虚.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_凌太虚.lua
+skill\绝境战场\绝境_凌太虚.lua:38	[战场]	"skill/绝境战场/绝境_凌太虚.lua", -- 属性值1
+skill\绝境战场\绝境_凌太虚.lua:153	[战场]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_凌太虚.lua", npc.dwID, 0)
+skill\绝境战场\绝境_凌太虚子技能.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_凌太虚子技能.lua
+skill\绝境战场\绝境_剑主天地.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_剑主天地.lua
+skill\绝境战场\绝境_剑主天地.lua:59	[战场]	"skill/绝境战场/绝境_剑主天地.lua",
+skill\绝境战场\绝境_剑转流云.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_剑转流云.lua
+skill\绝境战场\绝境_剑飞惊天.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_剑飞惊天.lua
+skill\绝境战场\绝境_剑飞惊天.lua:51	[战场]	"skill/绝境战场/绝境_剑飞惊天.lua",
+skill\绝境战场\绝境_化血镖.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_破风.lua
+skill\绝境战场\绝境_化血镖.lua:37	[战场]	--"skill/绝境战场/绝境_破风.lua",
+skill\绝境战场\绝境_千蝶吐瑞.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_千蝶吐瑞.lua
+skill\绝境战场\绝境_千蝶吐瑞.lua:51	[战场]	"skill/绝境战场/绝境_千蝶吐瑞.lua",
+skill\绝境战场\绝境_吞日月.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_吞日月.lua
+skill\绝境战场\绝境_吞日月.lua:38	[战场]	"skill/绝境战场/绝境_吞日月.lua", -- 属性值1
+skill\绝境战场\绝境_吞日月.lua:153	[战场]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_吞日月.lua", npc.dwID, 0)
+skill\绝境战场\绝境_听雷.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_听雷.lua
+skill\绝境战场\绝境_听雷.lua:46	[战场]	"skill/绝境战场/绝境_听雷.lua",
+skill\绝境战场\绝境_商阳子技能.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_商阳子技能.lua
+skill\绝境战场\绝境_啸如虎.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_暗尘弥散.lua
+skill\绝境战场\绝境_啸如虎.lua:40	[战场]	--"skill/绝境战场/隐身表现延迟处理.lua",
+skill\绝境战场\绝境_四象轮回.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_四象轮回.lua
+skill\绝境战场\绝境_圣明佑.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_圣明佑.lua
+skill\绝境战场\绝境_圣明佑.lua:26	[战场]	"skill/绝境战场/绝境_圣明佑.lua",
+skill\绝境战场\绝境_坐忘无我.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_坐忘无我.lua
+skill\绝境战场\绝境_夕照雷锋伤害子技能.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_夕照雷锋伤害子技能.lua
+skill\绝境战场\绝境_大狮子吼.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_大狮子吼.lua
+skill\绝境战场\绝境_大道无术.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_大道无术.lua
+skill\绝境战场\绝境_天地低昂.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_天地低昂.lua
+skill\绝境战场\绝境_天地低昂.lua:36	[战场]	"skill/绝境战场/绝境_天地低昂.lua",
+skill\绝境战场\绝境_天地无极.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_天地无极.lua
+skill\绝境战场\绝境_天地无极.lua:55	[战场]	"skill/绝境战场/绝境_天地无极.lua",
+skill\绝境战场\绝境_太极无极.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_太极无极.lua
+skill\绝境战场\绝境_太极无极.lua:55	[战场]	"skill/绝境战场/绝境_太极无极.lua",
+skill\绝境战场\绝境_太阴指.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_太阴指.lua
+skill\绝境战场\绝境_夺命蛊.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_夺命蛊.lua
+skill\绝境战场\绝境_夺魄箭.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_夺魄箭.lua
+skill\绝境战场\绝境_女娲补天.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_蛊虫献祭.lua
+skill\绝境战场\绝境_女娲补天.lua:25	[战场]	--"skill/绝境战场/绝境_蛊虫献祭.lua",
+skill\绝境战场\绝境_孔雀翎.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_孔雀翎.lua
+skill\绝境战场\绝境_孔雀翎实际伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_孔雀翎实际伤害.lua
+skill\绝境战场\绝境_孔雀翎实际伤害.lua:55	[战场]	"skill/绝境战场/绝境_孔雀翎实际伤害.lua",
+skill\绝境战场\绝境_孔雀翎技能事件触发伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_孔雀翎技能事件触发伤害.lua
+skill\绝境战场\绝境_孔雀翎技能事件触发伤害.lua:58	[战场]	"skill/绝境战场/绝境_孔雀翎技能事件触发伤害.lua",
+skill\绝境战场\绝境_守缺式.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_守缺式.lua
+skill\绝境战场\绝境_守缺式.lua:46	[战场]	"skill/绝境战场/绝境_守缺式.lua",
+skill\绝境战场\绝境_少明指.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_少明指.lua
+skill\绝境战场\绝境_帝骖龙翔.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_帝骖龙翔.lua
+skill\绝境战场\绝境_技能挂急曲.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_技能挂急曲.lua
+skill\绝境战场\绝境_技能爆急曲.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_技能挂急曲.lua
+skill\绝境战场\绝境_抱残式.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_抱残式.lua
+skill\绝境战场\绝境_抱残式.lua:45	[战场]	"skill/绝境战场/绝境_抱残式.lua",
+skill\绝境战场\绝境_拿云式.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_拿云式.lua
+skill\绝境战场\绝境_拿云式.lua:63	[战场]	"skill/绝境战场/绝境_拿云式.lua",
+skill\绝境战场\绝境_捉影式.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_捉影式.lua
+skill\绝境战场\绝境_捉影式.lua:59	[战场]	"skill/绝境战场/绝境_捉影式.lua",
+skill\绝境战场\绝境_捕风式.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_捕风式.lua
+skill\绝境战场\绝境_摩诃无量.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_摩诃无量.lua
+skill\绝境战场\绝境_撼如雷.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_撼如雷.lua
+skill\绝境战场\绝境_撼如雷.lua:38	[战场]	"skill/绝境战场/绝境_撼如雷.lua",
+skill\绝境战场\绝境_撼如雷.lua:46	[战场]	"skill/绝境战场/撼如雷自身加Buff.lua",
+skill\绝境战场\绝境_断魂刺.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_断魂刺.lua
+skill\绝境战场\绝境_断魂刺.lua:44	[战场]	"skill/绝境战场/绝境_断魂刺.lua",
+skill\绝境战场\绝境_断魂刺伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_断魂刺伤害.lua
+skill\绝境战场\绝境_施放技能通用显形.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_施放技能通用显形.lua
+skill\绝境战场\绝境_施放技能通用显形.lua:34	[战场]	"skill/绝境战场/绝境_施放技能通用显形.lua",
+skill\绝境战场\绝境_无我无剑.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_无我无剑.lua
+skill\绝境战场\绝境_无相诀.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_无相诀.lua
+skill\绝境战场\绝境_无相诀.lua:39	[战场]	"skill/绝境战场/绝境_无相诀.lua",
+skill\绝境战场\绝境_无相诀.lua:46	[竞技]	--skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+skill\绝境战场\绝境_日月交替.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_日月交替.lua
+skill\绝境战场\绝境_星楼月影.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_星楼月影.lua
+skill\绝境战场\绝境_春泥护花.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_春泥护花.lua
+skill\绝境战场\绝境_普渡四方.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_普渡四方.lua
+skill\绝境战场\绝境_暗尘弥散.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_暗尘弥散.lua
+skill\绝境战场\绝境_暗尘弥散.lua:40	[战场]	"skill/绝境战场/隐身表现延迟处理.lua",
+skill\绝境战场\绝境_月破伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_月破伤害.lua
+skill\绝境战场\绝境_枯残蛊.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_迷心蛊.lua
+skill\绝境战场\绝境_棒打狗头.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_棒打狗头.lua
+skill\绝境战场\绝境_棒打狗头.lua:32	[战场]	"skill/绝境战场/绝境_棒打狗头.lua", -- 属性值1
+skill\绝境战场\绝境_棒打狗头伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_棒打狗头伤害.lua
+skill\绝境战场\绝境_棒打狗头伤害.lua:53	[战场]	"skill/绝境战场/绝境_棒打狗头伤害.lua", -- 属性值1
+skill\绝境战场\绝境_棒打狗头伤害.lua:83	[化劲]	--skill.BindBuff(2, 51228, 1);		-- 减化劲
+skill\绝境战场\绝境_棒打狗头冲刺.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_棒打狗头冲刺.lua
+skill\绝境战场\绝境_棒打狗头冲刺.lua:34	[战场]	"skill/绝境战场/绝境_棒打狗头冲刺.lua", -- 属性值1
+skill\绝境战场\绝境_横扫六合.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_横扫六合.lua
+skill\绝境战场\绝境_横扫六合.lua:44	[战场]	"skill/绝境战场/绝境_横扫六合.lua", -- 属性值1
+skill\绝境战场\绝境_江海凝光.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_江海凝光.lua
+skill\绝境战场\绝境_沧月.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_沧月.lua
+skill\绝境战场\绝境_沧月击退.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_沧月击退.lua
+skill\绝境战场\绝境_浮光掠影.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_浮光掠影.lua
+skill\绝境战场\绝境_浮光掠影.lua:40	[战场]	"skill/绝境战场/隐身表现延迟处理.lua",
+skill\绝境战场\绝境_渊.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_渊.lua
+skill\绝境战场\绝境_渊冲刺.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_渊冲刺.lua
+skill\绝境战场\绝境_渊冲刺.lua:56	[战场]	"skill/绝境战场/绝境_渊.lua",
+skill\绝境战场\绝境_灭.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_灭.lua
+skill\绝境战场\绝境_灭.lua:31	[战场]	"skill/绝境战场/绝境_灭.lua",
+skill\绝境战场\绝境_灭低血量目标.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_灭低血量目标.lua
+skill\绝境战场\绝境_灭高血量目标.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_灭高血量目标.lua
+skill\绝境战场\绝境_烈日斩.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_烈日斩.lua
+skill\绝境战场\绝境_烈日斩.lua:53	[战场]	"skill/绝境战场/绝境_烈日斩.lua",
+skill\绝境战场\绝境_狂龙乱舞.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_狂龙乱舞.lua
+skill\绝境战场\绝境_狂龙乱舞.lua:37	[战场]	"skill/绝境战场/绝境_狂龙乱舞.lua",
+skill\绝境战场\绝境_玉石俱焚.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_玉石俱焚.lua
+skill\绝境战场\绝境_玉石俱焚.lua:32	[战场]	"skill/绝境战场/绝境_玉石俱焚.lua", -- 属性值1
+skill\绝境战场\绝境_生太极.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_生太极.lua
+skill\绝境战场\绝境_生太极.lua:39	[战场]	"skill/绝境战场/绝境_生太极.lua", -- 属性值1
+skill\绝境战场\绝境_生太极.lua:154	[战场]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_生太极.lua", npc.dwID, 0)
+skill\绝境战场\绝境_生死劫.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_生死劫.lua
+skill\绝境战场\绝境_生死劫.lua:48	[战场]	"skill/绝境战场/绝境_生死劫.lua",
+skill\绝境战场\绝境_疾.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_疾.lua
+skill\绝境战场\绝境_疾如风.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_疾如风.lua
+skill\绝境战场\绝境_疾实际伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_疾实际伤害.lua
+skill\绝境战场\绝境_百足.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_百足.lua
+skill\绝境战场\绝境_百足二次攻击.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_百足二次攻击.lua
+skill\绝境战场\绝境_破苍穹.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_破苍穹.lua
+skill\绝境战场\绝境_破苍穹.lua:40	[战场]	"skill/绝境战场/绝境_破苍穹.lua", -- 属性值1
+skill\绝境战场\绝境_破苍穹.lua:154	[战场]	player.SetTimer(1, "scripts/skill/绝境战场/绝境_破苍穹.lua", npc.dwID, 0)
+skill\绝境战场\绝境_破风.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_破风.lua
+skill\绝境战场\绝境_破风.lua:37	[战场]	"skill/绝境战场/绝境_破风.lua",
+skill\绝境战场\绝境_破风普通流血.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_破风普通流血.lua
+skill\绝境战场\绝境_破风额外流血.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_破风额外流血.lua
+skill\绝境战场\绝境_碎星辰.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_碎星辰.lua
+skill\绝境战场\绝境_碎星辰.lua:40	[战场]	"skill/绝境战场/绝境_碎星辰.lua", -- 属性值1
+skill\绝境战场\绝境_碎星辰.lua:157	[战场]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_碎星辰.lua", npc.dwID, 0)
+skill\绝境战场\绝境_穿.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_穿.lua
+skill\绝境战场\绝境_穿云.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_穿云.lua
+skill\绝境战场\绝境_穿心弩.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_穿心弩.lua
+skill\绝境战场\绝境_笑醉狂.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_笑醉狂.lua
+skill\绝境战场\绝境_笑醉狂.lua:41	[战场]	"skill/绝境战场/绝境_笑醉狂.lua", -- 属性值1
+skill\绝境战场\绝境_绛唇珠袖.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_绛唇珠袖.lua
+skill\绝境战场\绝境_绛唇珠袖触发伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_绛唇珠袖触发伤害.lua
+skill\绝境战场\绝境_绛唇珠袖触发伤害.lua:62	[战场]	"skill/绝境战场/绝境_绛唇珠袖触发伤害.lua", -- 属性值1
+skill\绝境战场\绝境_绝境龙牙冲刺技能.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_绝境龙牙冲刺技能.lua
+skill\绝境战场\绝境_芙蓉并蒂.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_芙蓉并蒂.lua
+skill\绝境战场\绝境_芙蓉并蒂.lua:62	[战场]	"skill/绝境战场/绝境_芙蓉并蒂.lua",
+skill\绝境战场\绝境_蛇影.lua:41	[战场]	"skill/绝境战场/绝境_蛇影.lua",
+skill\绝境战场\绝境_蛊虫献祭.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_蛊虫献祭.lua
+skill\绝境战场\绝境_蛊虫献祭.lua:55	[战场]	"skill/绝境战场/绝境_蛊虫献祭.lua",
+skill\绝境战场\绝境_蝎心.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_蝎心.lua
+skill\绝境战场\绝境_蟾啸.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_蟾啸.lua
+skill\绝境战场\绝境_蟾啸.lua:43	[战场]	"skill/绝境战场/绝境_蟾啸.lua",
+skill\绝境战场\绝境_裂苍穹.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_裂苍穹.lua
+skill\绝境战场\绝境_轮回诀.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_轮回诀.lua
+skill\绝境战场\绝境_轮回诀.lua:46	[战场]	"skill/绝境战场/绝境_轮回诀.lua",
+skill\绝境战场\绝境_轮回诀.lua:54	[竞技]	--skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+skill\绝境战场\绝境_迷心蛊.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_迷心蛊.lua
+skill\绝境战场\绝境_追命箭.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_追命箭.lua
+skill\绝境战场\绝境_追命箭.lua:53	[战场]	"skill/绝境战场/绝境_追命箭.lua",
+skill\绝境战场\绝境_追命箭额外伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_追命箭.lua
+skill\绝境战场\绝境_钟林子技能.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_钟林毓秀.lua
+skill\绝境战场\绝境_钟林毓秀.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_钟林毓秀.lua
+skill\绝境战场\绝境_银月斩.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_银月斩.lua
+skill\绝境战场\绝境_银月斩.lua:53	[战场]	"skill/绝境战场/绝境_银月斩.lua",
+skill\绝境战场\绝境_镇山河.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_镇山河.lua
+skill\绝境战场\绝境_镇山河.lua:45	[战场]	"skill/绝境战场/绝境_镇山河.lua", -- 属性值1
+skill\绝境战场\绝境_镇山河.lua:57	[竞技]	skill.AddSlowCheckSelfBuff(51010, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);	-- 1V1竞技场禁手
+skill\绝境战场\绝境_镇山河.lua:170	[战场]	--		player.SetTimer(1, "scripts/skill/绝境战场/绝境_镇山河.lua", npc.dwID, 0)
+skill\绝境战场\绝境_长针.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_长针.lua
+skill\绝境战场\绝境_长针.lua:45	[战场]	"skill/绝境战场/绝境_长针.lua",
+skill\绝境战场\绝境_长针正常治疗.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_长针正常治疗.lua
+skill\绝境战场\绝境_长针毒圈减疗.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_长针毒圈减疗.lua
+skill\绝境战场\绝境_阳明指.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_阳明指.lua
+skill\绝境战场\绝境_雷霆震怒.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_雷霆震怒.lua
+skill\绝境战场\绝境_雷霆震怒.lua:38	[战场]	"skill/绝境战场/绝境_雷霆震怒.lua",
+skill\绝境战场\绝境_雷震子.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_雷震子.lua
+skill\绝境战场\绝境_雾暗迷云.lua:44	[战场]	"skill/绝境战场/绝境_雾暗迷云.lua",
+skill\绝境战场\绝境_韦陀献杵.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_韦陀献杵.lua
+skill\绝境战场\绝境_韦陀献杵.lua:47	[战场]	"skill/绝境战场/绝境_韦陀献杵.lua",
+skill\绝境战场\绝境_风袖低昂.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_风袖低昂.lua
+skill\绝境战场\绝境_风袖低昂.lua:45	[战场]	"skill/绝境战场/绝境_风袖低昂.lua",
+skill\绝境战场\绝境_风袖减疗治疗.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_长针正常治疗.lua
+skill\绝境战场\绝境_风袖正常治疗.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_长针正常治疗.lua
+skill\绝境战场\绝境_驱夜断愁.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_驱夜断愁.lua
+skill\绝境战场\绝境_鸟翔碧空.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_鸟翔碧空.lua
+skill\绝境战场\绝境_鹊踏枝.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_鹊踏枝.lua
+skill\绝境战场\绝境_鹤归孤山.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_鹤归孤山.lua
+skill\绝境战场\绝境_龙吟.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_龙吟.lua
+skill\绝境战场\绝境_龙战于野.lua:63	[化劲]	--skill.BindBuff(2, 51228, 1);		-- 减化劲
+skill\绝境战场\绝境_龙战于野拉.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_龙战于野拉.lua
+skill\绝境战场\绝境_龙战于野拉.lua:60	[战场]	"skill/绝境战场/绝境_龙战于野拉.lua", -- 属性值1
+skill\绝境战场\绝境_龙牙.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_龙牙.lua
+skill\绝境战场\绝境·引窍.lua:36	[战场]	"skill/绝境战场/绝境·引窍.lua",
+skill\绝境战场\绝境·截阳.lua:44	[战场]	"skill/绝境战场/绝境·截阳.lua",
+skill\绝境战场\绝境·风流云散.lua:47	[战场]	"skill/绝境战场/绝境·风流云散.lua",
+skill\绝境战场\绝境玉石额外伤害.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/绝境_玉石俱焚.lua
+skill\绝境战场\隐身表现延迟处理.lua:2	[战场]	-- 脚本名称:	scripts/skill/绝境战场/隐身表现延迟处理.lua
+skill\绝境战场\隐身表现延迟处理.lua:174	[战场]	player.SetTimer(8, "scripts/skill/绝境战场/隐身表现延迟处理.lua", 0, 0)
+skill\蓬莱\套路及子技能\蓬莱_子技能_翔极碧落_实际伤害.lua:247	[化劲]	--翔极碧落降低化劲
+Tong\include\帮战相关.lua:62	[战场]	--检查当前场景是否是player的帮战场景
+
+# plaintext=4395 bytecode=1490

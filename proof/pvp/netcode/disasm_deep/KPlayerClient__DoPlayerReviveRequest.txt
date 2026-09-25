@@ -1,0 +1,30 @@
+# needle: KPlayerClient::DoPlayerReviveRequest
+# string VAs: ['0x18076ed78']
+# xrefs: 1
+
+## xref 0x180176ac5  fn_start 0x180176a90
+0x0180176a90: sub	rsp, 0x58
+0x0180176a94: mov	rax, qword ptr [rip + 0x83f785]
+0x0180176a9b: xor	rax, rsp
+0x0180176a9e: mov	qword ptr [rsp + 0x40], rax
+0x0180176aa3: mov	eax, 0xb9
+0x0180176aa8: mov	dword ptr [rsp + 0x3b], edx
+0x0180176aac: lea	rdx, [rsp + 0x30]
+0x0180176ab1: mov	word ptr [rsp + 0x30], ax
+0x0180176ab6: mov	r8d, 0xf
+0x0180176abc: call	0x1801acda0
+0x0180176ac1: test	eax, eax
+0x0180176ac3: jne	0x180176b02
+0x0180176ac5: lea	rcx, [rip + 0x5f82ac]
+0x0180176acc: mov	r9d, 0x1acd
+0x0180176ad2: mov	qword ptr [rsp + 0x20], rcx
+0x0180176ad7: lea	r8, [rip + 0x77980a]
+0x0180176ade: lea	ecx, [rax + 3]
+0x0180176ae1: lea	rdx, [rip + 0x7779c0]
+0x0180176ae8: call	qword ptr [rip + 0x5ee772]
+0x0180176aee: xor	eax, eax
+0x0180176af0: mov	rcx, qword ptr [rsp + 0x40]
+0x0180176af5: xor	rcx, rsp
+0x0180176af8: call	0x18073aa10
+0x0180176afd: add	rsp, 0x58
+0x0180176b01: ret	

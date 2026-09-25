@@ -1,0 +1,27 @@
+﻿29 | 浜斿崄绾т簯婀栧ぉ姹?| InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+38 | 绁炲啘娲?| InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+39 | 鍥涘崄绾т簯婀栧ぉ姹?| InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+50 | 涓濈桓涔嬭矾 | InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+52 | 涓冨崄绾т簯婀栧ぉ姹?| InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+121 | 鑻遍泟绁炲啘娲?| InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+127 | 澶╁北纰庡啺璋?| InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 1 | CanJoinBF= 0 | IsBF= 
+128 | 涔愬北澶т經绐?| InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 1 | CanJoinBF= 0 | IsBF= 
+129 | 鍗庡北涔嬪穮 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 1 | CanJoinBF= 0 | IsBF= 
+135 | 涓夊浗鍙ゆ垬鍦?| InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+137 | 澶ф紶妤煎叞 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 1 | CanJoinBF= 0 | IsBF= 
+143 | 璇曠偧绉樺1 | InvalidBuffMask= 32 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+144 | 璇曠偧绉樺2 | InvalidBuffMask= 32 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+145 | 璇曠偧绉樺3 | InvalidBuffMask= 32 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+146 | 璇曠偧绉樺4 | InvalidBuffMask= 32 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+147 | 璇曠偧绉樺5 | InvalidBuffMask= 32 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+149 | 甯細绾︽垬 | InvalidBuffMask= 256 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+173 | 榻愮墿闃?| InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+181 | 鐙煎奖娈?| InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+259 | 绔炴妧澶у笀_鍗庡北涔嬪穮 | InvalidBuffMask= 0 | CanJoinArena= 1 | IsArenaMap= 0 | CanJoinBF= 1 | IsBF= 
+293 | 鎷墤鍥垬鍦?| InvalidBuffMask= 16 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 
+410 | 娴峰矝缁濆 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+512 | 鐧介緳缁濆 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+532 | 澶╁師缁濆 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+645 | 娲辨捣缁濆 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+709 | 鏋楁捣缁濆 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1
+715 | 鏋楁捣缁濆 | InvalidBuffMask= 8 | CanJoinArena= 0 | IsArenaMap= 0 | CanJoinBF= 0 | IsBF= 1

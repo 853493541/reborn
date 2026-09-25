@@ -1,0 +1,4 @@
+﻿JX3ClientX64_exe_net_strings.txt 5046 | 0x007DC010	ascii	ResistDamage
+JX3ClientX64_exe_net_strings.txt 7196 | 0x0083D0E0	ascii	nRetCode && "[Buff] Get FunctionType"
+JX3LogicEditOperation_net_strings.txt 4747 | 0x00784C40	ascii	ResistDamage
+JX3LogicEditOperation_net_strings.txt 4753 | 0x00784D10	ascii	nRetCode && "[Buff] Get FunctionType"

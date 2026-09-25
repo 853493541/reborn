@@ -1,0 +1,13 @@
+﻿python : # shown 5/686
+At line:1 char:367
++ ... rows 5---"; python tools\pvp\tab.py ROWS "C:\SeasunGame\Game\JX3\bin\ ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (# shown 5/686:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+EffectResultID	EffectType	EffectID	Note
+0	0	0	
+1	0	70	
+1	10	70	
+2	0	2	
+2	10	2	

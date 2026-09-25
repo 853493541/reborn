@@ -1,0 +1,695 @@
+attribute	chinese_label	in_Attribute_txt	in_Buff_tab	in_engine_enum	GeneratedBase	GeneratedMagic	PreviewBase	PreviewMagic	HorseBase	HorseMagic	buff_ui_context	buff_tab_refs
+atInvalid		Y		Y								0
+atActiveThreatCoefficient	招式产生威胁	Y	Y	Y		招式产生威胁{D1<0?降低~D1/(-1024)*100#1:提高~D1/1024*100#1}%		招式产生威胁{D3>0?提高~D3/1024*100#1:降低~D3/(-1024)*100#1}%	招式产生威胁{D1>0?提高~D1/1024*100#1:降低~D1/(-1024)*100#1}%	招式产生威胁{D3>0?提高~D3/1024*100#1:降低~D3/(-1024)*100#1}%		414
+atAddHorseSprintPowerCost	马术气力值每秒消耗速度降低	Y	Y	Y		马术气力值每秒消耗速度降低{-D0/19*3}点		马术气力值每秒消耗速度降低{D0=D1?-D0/19*3:-D0/19*3~\-~-D1/19*3}点		马术气力值每秒消耗速度降低{-D0/19*3}点		9
+atAddHorseSprintPowerMax	马术气力值上限提高	Y	Y	Y		马术气力值上限提高{D0/100}点		马术气力值上限提高{D0=D1?D0/100:D0/100~\-~D1/100}点		马术气力值上限提高{D0/100}点		2
+atAddHorseSprintPowerRevive	马术气力值每秒恢复速度提高	Y	Y	Y		马术气力值每秒恢复速度提高{D0/20*3}点		马术气力值每秒恢复速度提高{D0=D1?D0/20*3:D0/20*3~\-~D1/20*3}点		马术气力值每秒恢复速度提高{D0/20*3}点		19
+atAddSprintPowerCost	气力值每秒消耗速度降低	Y	Y	Y		气力值每秒消耗速度降低{-D0/19*3}点		气力值每秒消耗速度降低{D0=D1?-D0/19*3:-D0/19*3~\-~-D1/19*3}点		气力值每秒消耗速度降低{-D0/19*3}点		35
+atAddSprintPowerMax	气力值上限提高	Y	Y	Y		气力值上限提高{D0/100}点		气力值上限提高{D0=D1?D0/100:D0/100~\-~D1/100}点		气力值上限提高{D0/100}点		8
+atAddSprintPowerRevive	气力值每秒恢复速度提高	Y	Y	Y		气力值每秒恢复速度提高{D0/20*3}点		气力值每秒恢复速度提高{D0=D1?D0/20*3:D0/20*3~\-~D1/20*3}点		气力值每秒恢复速度提高{D0/20*3}点		60
+atAdjustProfessionLevel	烹饪技艺等级提高	Y		Y		烹饪技艺等级提高{D1}级		烹饪技艺等级提高{D1=D2?D1:D1~\-~D2}级				0
+atAgilityBase	身法提高	Y	Y	Y		身法提高{D0}		身法提高{D0=D1?D0:D0~\-~D1}			身法提高	226
+atAgilityBasePercentAdd	身法提高	Y	Y	Y		身法提高{D0/1024*100}%		身法提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%				42
+atAllTypeCriticalDamagePowerBase	全会心效果等级提高	Y	Y	Y	全会心效果等级提高{D0}	全会心效果等级提高{D0}	全会心效果等级提高{D0=D1?D0:D0~\-~D1}	全会心效果等级提高{D0=D1?D0:D0~\-~D1}				56
+atAllTypeCriticalStrike	全会心等级提高	Y	Y	Y	全会心等级提高{D0}	全会心等级提高{D0}	全会心等级提高{D0=D1?D0:D0~\-~D1}	全会心等级提高{D0=D1?D0:D0~\-~D1}			会心等级提高	477
+atAllTypeHitValue	全命中等级提高	Y	Y	Y		全命中等级提高{D0}		全命中等级提高{D0=D1?D0:D0~\-~D1}				35
+atBasePotentialAdd	全属性提高	Y	Y	Y		全属性提高{D0}点		全属性提高{D0=D1?D0:D0~\-~D1}点			全属性提高	271
+atBeTherapyCoefficient	被治疗效果提高	Y	Y	Y		被治疗效果提高{D0/1024*100}%		被治疗效果提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%			被治疗的成效降低	717
+atCurrentLife	恢复当前气血	Y	Y	Y		恢复当前气血{D0}		恢复当前气血{D0=D1?D0:D0~\-~D1}			没3秒受到	22
+atCurrentMana	恢复当前内力	Y	Y	Y		恢复当前内力{D0}		恢复当前内力{D0=D1?D0:D0~\-~D1}			rapy>点，内力值恢复	71
+atCurrentStamina	恢复当前体力	Y		Y		恢复当前体力{D0}		恢复当前体力{D0=D1?D0:D0~\-~D1}				0
+atDamageToLifeForSelf	偷取目标所受伤害	Y	Y	Y		偷取目标所受伤害{D0}%的气血		偷取目标所受伤害{D0=D1?D0:D0~\-~D1}%的气血			造成伤害的	56
+atDamageToManaForSelf	命中后偷取目标所受伤害	Y	Y	Y		命中后偷取目标所受伤害{D0}%的内力		命中后偷取目标所受伤害{D0=D1?D0:D0~\-~D1}%的内力				26
+atDecriticalDamagePowerBase	化劲等级提高	Y	Y	Y		化劲等级提高{D0}		化劲等级提高{D0=D1?D0:D0~\-~D1}			ase>点，化劲等级提高	161
+atDecriticalDamagePowerPercent	化劲等级修正值提高	Y	Y	Y		化劲等级修正值提高{D0}		化劲等级修正值提高提高{D0=D1?D0:D0~\-~D1}				88
+atDivingFrameBase	水下呼吸时间提高	Y	Y	Y		水下呼吸时间提高{D0/16}秒		水下呼吸时间提高{D0=D1?D0/16:D0/16~\-~D1/16}秒				24
+atDodge	闪避等级提高	Y	Y	Y		闪避等级提高{D0}		闪避等级提高{D0=D1?D0:D0~\-~D1}			闪避等级提高	88
+atDropDefence	抗摔系数提高	Y	Y	Y		抗摔系数提高{D0}点		抗摔系数提高{D0=D1?D0:D0~\-~D1}点	抗摔系数提高{D0}点	抗摔系数提高{D0}点		349
+atEnableDoubleRide		Y		Y		{D0=0?不可:可}双人同骑		{D0=0?不可:可}双人同骑		{D0=0?不可:可}双人同骑		0
+atGlobalResistPercent	受到的所有伤害降低	Y	Y	Y		受到的所有伤害降低{D0/1024*100}%		受到的所有伤害降低{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%			使其受到伤害降低	1164
+atHasteBase	加速等级提高	Y	Y	Y		加速等级提高{D0}		加速等级提高{D0=D1?D0:D0~\-~D1}			急速值提高	112
+atHorseCanSwim		Y	Y	Y		{D0=1?可:不可}载人凫水		{D0=1?可:不可}载人凫水	{D0=1?可:不可}载人凫水	{D0=1?可:不可}载人凫水		30
+atLifeReplenishExt	每秒气血恢复提升	Y	Y	Y		每秒气血恢复提升{D0}		每秒气血恢复提升{D0=D1?D0:D0~\-~D1}			点，每秒恢复的气血值提高	66
+atLifeReplenishPercent	每秒气血恢复提升	Y	Y	Y		每秒气血恢复提升{D0}成		每秒气血恢复提升{D0=D1?D0:D0~\-~D1}成			每秒恢复的气血值提高	234
+atLunarAttackPowerBase	阴性内功攻击增加	Y	Y	Y		阴性内功攻击增加{D0}		阴性内功攻击增加{D0=D1?D0:D0~\-~D1}			阴性内功攻击提高	159
+atLunarCriticalDamagePowerBase	阴性内功会心效果等级提高	Y		Y		阴性内功会心效果等级提高{D0}		阴性内功会心效果等级提高{D0=D1?D0:D0~\-~D1}				0
+atLunarCriticalDamagePowerPercent	阴性内功会心效果等级修正值提高	Y		Y		阴性内功会心效果等级修正值提高{D0}		阴性内功会心效果等级修正值提高{D0=D1?D0:D0~\-~D1}				0
+atLunarCriticalStrike	阴性内功会心等级提高	Y	Y	Y		阴性内功会心等级提高{D0}		阴性内功会心等级提高{D0=D1?D0:D0~\-~D1}				1
+atLunarCriticalStrikeBaseRate	阴性内功会心几率提高	Y	Y	Y		阴性内功会心几率提高{D0/100}%		阴性内功会心几率提高{D0=D1?D0/100:D0/100~\-~D1/100}%				193
+atLunarHitValue	阴性内功命中等级提高	Y	Y	Y		阴性内功命中等级提高{D0}		阴性内功命中等级提高{D0=D1?D0:D0~\-~D1}			命中等级提高	4
+atLunarMagicShieldBase	阴性内功防御等级提高	Y	Y	Y		阴性内功防御等级提高{D0}		阴性内功防御等级提高{D0=D1?D0:D0~\-~D1}			阴性内功防御等级提高	85
+atLunarOvercomeBase	阴性内功破防等级提高	Y	Y	Y		阴性内功破防等级提高{D0}		阴性内功破防等级提高{D0=D1?D0:D0~\-~D1}				16
+atMagicAttackPowerBase	内功攻击提高	Y	Y	Y		内功攻击提高{D0}		内功攻击提高{D0=D1?D0:D0~\-~D1}			内功攻击提高	500
+atMagicCriticalDamagePowerBase	内功会心效果等级提高	Y	Y	Y		内功会心效果等级提高{D0}		内功会心效果等级提高{D0=D1?D0:D0~\-~D1}			内功会心效果等级提高	15
+atMagicCriticalDamagePowerPercent	内功会心效果等级修正值提高	Y	Y	Y		内功会心效果等级修正值提高{D0}		内功会心效果等级修正值提高{D0=D1?D0:D0~\-~D1}				1
+atMagicCriticalStrike	内功会心等级提高	Y	Y	Y		内功会心等级提高{D0}		内功会心等级提高{D0=D1?D0:D0~\-~D1}			内功会心等级提高	73
+atMagicHitValue	内功命中等级提高	Y	Y	Y		内功命中等级提高{D0}		内功命中等级提高{D0=D1?D0:D0~\-~D1}				1
+atMagicOvercome	内功破防等级提高	Y	Y	Y		内功破防等级提高{D0}		内功破防等级提高{D0=D1?D0:D0~\-~D1}			ike>点，内功破防提高	96
+atMagicShield	内功防御等级提高	Y	Y	Y	内功防御等级提高{D0}	内功防御等级提高{D0}	内功防御等级提高{D0=D1?D0:D0~\-~D1}	内功防御等级提高{D0=D1?D0:D0~\-~D1}			e>点，内功防御等级提高	461
+atManaReplenishExt	每秒内力恢复提升	Y	Y	Y		每秒内力恢复提升{D0}		每秒内力恢复提升{D0=D1?D0:D0~\-~D1}			每秒恢复的内力值提高	75
+atManaReplenishPercent	每秒内力恢复提升	Y	Y	Y		每秒内力恢复提升{D0}成		每秒内力恢复提升{D0=D1?D0:D0~\-~D1}成				121
+atMaxLifeAdditional	额外提高气血上限	Y	Y	Y		额外提高气血上限{D0}		额外提高气血上限{D0=D1?D0:D0~\-~D1}			基础气血最大值提高	485
+atMaxLifeBase	气血上限提高	Y	Y	Y	气血上限提高{D0}	气血上限提高{D0}	气血上限提高{D0=D1?D0:D0~\-~D1}	气血上限提高{D0=D1?D0:D0~\-~D1}			气血最大值提高	611
+atMaxLifePercentAdd	气血上限提高	Y	Y	Y		气血上限提高{D0}成		气血上限提高{D0=D1?D0:D0~\-~D1}成			气血最大值降低	673
+atMaxManaAdditional	额外提高内力上限	Y	Y	Y		额外提高内力上限{D0}		额外提高内力上限{D0=D1?D0:D0~\-~D1}			al>点，内力最大值提高	45
+atMaxManaBase	内力上限提高	Y	Y	Y		内力上限提高{D0}		内力上限提高{D0=D1?D0:D0~\-~D1}			内力最大值提高	23
+atMaxManaPercentAdd	内力上限提高	Y	Y	Y		内力上限提高{D0}成		内力上限提高{D0=D1?D0:D0~\-~D1}成				17
+atMeleeWeaponAttackSpeedAdditional	武器攻速提高	Y		Y		武器攻速提高{D0#1}		武器攻速提高{D0=D1?D0#1:D0#1~\-~D1#1}				0
+atMeleeWeaponAttackSpeedBase	速度	Y	Y	Y	速度{D0#1}	武器速度{D0#1}	速度{D0=D1?D0#1:D0#1~\-~D1#1}	速度{D0=D1?D0#1:D0#1~\-~D1#1}				1
+atMeleeWeaponDamageBase	武器伤害提高	Y	Y	Y	武器伤害提高{D0=D1?D0:D0~\-~D1}	武器伤害提高{D0=D1?D0:D0~\-~D1}	武器伤害{D0=D1?D0:D0~\-~D1}-{D2=D3?D2:D2~\-~D3}	武器伤害提高{D0=D1?D0:D0~\-~D1}-{D2=D3?D2:D2~\-~D3}			武器伤害提高	1491
+atModifyCostManaPercent	招式内力消耗	Y	Y	Y		招式内力消耗{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}		招式内力消耗{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}				116
+atMoveSpeedPercent	移动速度	Y	Y	Y	移动速度{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}	移动速度{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}	移动速度{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}	移动速度{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}	移动速度{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}	移动速度{D0>0?提高~D0*100/1024~\%:降低~D0*100/(-1024)~\%}	移动速度降低	2690
+atNeutralAttackPowerBase	混元性内功攻击提高	Y	Y	Y		混元性内功攻击提高{D0}		混元性内功攻击增加{D0=D1?D0:D0~\-~D1}			混元性内功攻击提高	101
+atNeutralCriticalDamagePowerBase	混元性内功会心效果等级提高	Y		Y		混元性内功会心效果等级提高{D0}		混元性内功会心效果等级提高{D0=D1?D0:D0~\-~D1}				0
+atNeutralCriticalDamagePowerPercent	混元性内功会心效果等级修正值提高	Y		Y		混元性内功会心效果等级修正值提高{D0}		混元性内功会心效果等级修正值提高{D0=D1?D0:D0~\-~D1}				0
+atNeutralCriticalStrike	混元性内功会心等级提高	Y	Y	Y		混元性内功会心等级提高{D0}		混元性内功会心等级提高{D0=D1?D0:D0~\-~D1}			混元内功会心等级提高	1
+atNeutralCriticalStrikeBaseRate	混元性内功会心几率提高	Y	Y	Y		混元性内功会心几率提高{D0/100}%		混元性内功会心几率提高{D0=D1?D0/100:D0/100~\-~D1/100}%				190
+atNeutralHitValue	混元性内功命中等级提高	Y	Y	Y		混元性内功命中等级提高{D0}		混元性内功命中等级提高{D0=D1?D0:D0~\-~D1}				5
+atNeutralMagicShieldBase	混元性内功防御等级提高	Y	Y	Y		混元性内功防御等级提高{D0}		混元性内功防御等级提高{D0=D1?D0:D0~\-~D1}			混元性内功抗性提高	55
+atNeutralOvercomeBase	混元性内功破防等级提高	Y	Y	Y		混元性内功破防等级提高{D0}		混元性内功破防等级提高{D0=D1?D0:D0~\-~D1}				18
+atNeutralOvercomePercent	混元性内功破防修正值提高	Y	Y	Y		混元性内功破防修正值提高{D0}		混元性内功破防修正值提高{D0=D1?D0:D0~\-~D1}				85
+atParryBase	招架等级提高	Y	Y	Y		招架等级提高{D0}		招架等级提高{D0=D1?D0:D0~\-~D1}			onal>点，拆招值提高	80
+atParryPercent	招架等级修正值提高	Y		Y		招架等级修正值提高{D0}		招架等级修正值提高{D0=D1?D0:D0~\-~D1}				0
+atParryValueBase	拆招值提高	Y	Y	Y		拆招值提高{D0}		拆招值提高{D0=D1?D0:D0~\-~D1}			ase>点，招架等级提高	110
+atParryValuePercent	拆招修正值提高	Y	Y	Y		拆招修正值提高{D0}		拆招修正值提高{D0=D1?D0:D0~\-~D1}				4
+atPhysicsAttackPowerBase	外功攻击提高	Y	Y	Y		外功攻击提高{D0}		外功攻击提高{D0=D1?D0:D0~\-~D1}			外功攻击力提高	705
+atPhysicsCriticalDamagePowerBase	外功会心效果等级提高	Y	Y	Y		外功会心效果等级提高{D0}		外功会心效果等级提高{D0=D1?D0:D0~\-~D1}			外功会心效果等级提高	15
+atPhysicsCriticalDamagePowerPercent	外功会心效果等级修正值提高	Y		Y		外功会心效果等级修正值提高{D0}		外功会心效果等级修正值提高{D0=D1?D0:D0~\-~D1}				0
+atPhysicsCriticalStrike	外功会心等级提高	Y	Y	Y		外功会心等级提高{D0}		外功会心等级提高{D0=D1?D0:D0~\-~D1}			外功会心等级提高	70
+atPhysicsDefenceAdd	外功防御等级提高	Y	Y	Y		外功防御等级提高{D0}		外功防御等级提高{D0=D1?D0:D0~\-~D1}				2
+atPhysicsHitValue	外功命中等级提高	Y	Y	Y		外功命中等级提高{D0}		外功命中等级提高{D0=D1?D0:D0~\-~D1}			外功命中值降低	47
+atPhysicsOvercomeBase	外功破防等级提高	Y	Y	Y		外功破防等级提高{D0}		外功破防等级提高{D0=D1?D0:D0~\-~D1}			外功破防值提高	121
+atPhysicsShieldAdditional	外功防御等级额外提高	Y	Y	Y		外功防御等级额外提高{D0}		外功防御等级额外提高{D0=D1?D0:D0~\-~D1}			外功防御等级提高	321
+atPhysicsShieldBase	外功防御等级提高	Y	Y	Y	外功防御等级提高{D0}	外功防御等级提高{D0}	外功防御等级提高{D0=D1?D0:D0~\-~D1}	外功防御等级提高{D0=D1?D0:D0~\-~D1}			外功防御等级提高	537
+atPhysicsShieldPercent	外功防御等级提高	Y	Y	Y		外功防御等级提高{D0}成		外功防御等级提高{D0=D1?D0:D0~\-~D1}成			内外功防御等级提高	214
+atPoisonAttackPowerBase	毒性内功攻击提高	Y	Y	Y		毒性内功攻击提高{D0}		毒性内功攻击提高{D0=D1?D0:D0~\-~D1}			e>点，毒性内功攻击提高	79
+atPoisonCriticalDamagePowerBase	毒性内功会心效果等级提高	Y		Y		毒性内功会心效果等级提高{D0}		毒性内功会心效果等级提高{D0=D1?D0:D0~\-~D1}				0
+atPoisonCriticalDamagePowerPercent	毒性内功会心效果等级修正值提高	Y		Y		毒性内功会心效果等级修正值提高{D0}		毒性内功会心效果等级修正值提高{D0=D1?D0:D0~\-~D1}				0
+atPoisonCriticalStrike	毒性内功会心等级提高	Y		Y		毒性内功会心等级提高{D0}		毒性内功会心等级提高{D0=D1?D0:D0~\-~D1}				0
+atPoisonCriticalStrikeBaseRate	毒性内功会心几率提高	Y	Y	Y		毒性内功会心几率提高{D0/100}%		毒性内功会心几率提高{D0=D1?D0/100:D0/100~\-~D1/100}%				167
+atPoisonHitValue	毒性内功命中等级提高	Y	Y	Y		毒性内功命中等级提高{D0}		毒性内功命中等级提高{D0=D1?D0:D0~\-~D1}				3
+atPoisonMagicShieldBase	毒性内功防御等级提高	Y	Y	Y		毒性内功防御等级提高{D0}		毒性内功防御等级提高{D0=D1?D0:D0~\-~D1}			毒性防御等级提高	60
+atPoisonOvercomeBase	毒性内功破防等级提高	Y	Y	Y		毒性内功破防等级提高{D0}		毒性内功破防等级提高{D0=D1?D0:D0~\-~D1}			克性值提高	23
+atRageReplenish	每秒剑气恢复提高	Y	Y	Y		每秒剑气恢复提高{D0}		每秒剑气恢复提高{D0=D1?D0:D0~\-~D1}				11
+atRangeWeaponAttackSpeedBase	速度	Y		Y	速度{D0#1}	暗器速度{D0#1}	速度{D0=D1?D0#1:D0#1~\-~D1#1}	速度{D0=D1?D0#1:D0#1~\-~D1#1}				0
+atRangeWeaponDamageBase	暗器伤害提高	Y	Y	Y	暗器伤害提高{D0=D1?D0:D0~\-~D1}	暗器伤害提高{D0=D1?D0:D0~\-~D1}	暗器伤害提高{D0=D1?D0:D0~\-~D1}-{D2=D3?D2:D2~\-~D3}	暗器伤害提高{D0=D1?D0:D0~\-~D1}-{D2=D3?D2:D2~\-~D3}				151
+atSkillLunarDamage	阴性内功招式伤害提高	Y	Y	Y		阴性内功招式伤害提高{D0}		阴性内功招式伤害提高{D0=D1?D0:D0~\-~D1}				1
+atSkillLunarDamagePercent	阴性内功招式伤害提高	Y	Y	Y		阴性内功招式伤害提高{D0}成		阴性内功招式伤害提高{D0=D1?D0:D0~\-~D1}成			完成次数影响，攻击力提高	285
+atSkillNeutralDamage	混元性内功招式伤害提高	Y	Y	Y		混元性内功招式伤害提高{D0}		混元性内功招式伤害提高{D0=D1?D0:D0~\-~D1}				3
+atSkillNeutralDamagePercent	混元性内功招式伤害提高	Y	Y	Y		混元性内功招式伤害提高{D0}成		混元性内功招式伤害提高{D0=D1?D0:D0~\-~D1}成				265
+atSkillPhysicsDamage	外功招式伤害提高	Y	Y	Y		外功招式伤害提高{D0}成		外功招式伤害提高{D0=D1?D0:D0~\-~D1}成			使自身招式伤害提高	82
+atSkillPhysicsDamagePercent	外功招式伤害提高	Y	Y	Y		外功招式伤害提高{D0}成		外功招式伤害提高{D0=D1?D0:D0~\-~D1}成				722
+atSkillPoisonDamage	毒性内功招式伤害提高	Y		Y		毒性内功招式伤害提高{D0}		毒性内功招式伤害提高{D0=D1?D0:D0~\-~D1}				0
+atSkillPoisonDamagePercent	毒性内功招式伤害提高	Y	Y	Y		毒性内功招式伤害提高{D0}成		毒性内功招式伤害提高{D0=D1?D0:D0~\-~D1}成				243
+atSkillSolarDamage	阳性内功招式伤害提高	Y		Y		阳性内功招式伤害提高{D0}		阳性内功招式伤害提高{D0=D1?D0:D0~\-~D1}			每秒造成阳性内功伤害	0
+atSkillSolarDamagePercent	阳性内功招式伤害提高	Y	Y	Y		阳性内功招式伤害提高{D0}成		阳性内功招式伤害提高{D0=D1?D0:D0~\-~D1}成				333
+atSolarAndLunarAttackPowerBase	阴阳内功攻击提高	Y		Y		阴阳内功攻击提高{D0}		阴阳内功攻击提高{D0=D1?D0:D0~\-~D1}				0
+atSolarAndLunarCriticalDamagePowerBase	阴阳内功会心效果等级提高	Y		Y		阴阳内功会心效果等级提高{D0}		阴阳内功会心效果等级提高{D0=D1?D0:D0~\-~D1}				0
+atSolarAndLunarCriticalStrike	阴阳内功会心等级提高	Y		Y		阴阳内功会心等级提高{D0}		阴阳内功会心等级提高{D0=D1?D0:D0~\-~D1}				0
+atSolarAndLunarHitValue	阴阳内功命中等级提高	Y		Y		阴阳内功命中等级提高{D0}		阴阳性内功命中等级提高{D0=D1?D0:D0~\-~D1}				0
+atSolarAndLunarOvercomeBase	阴阳内功破防等级提高	Y	Y	Y		阴阳内功破防等级提高{D0}		阴阳内功破防等级提高{D0=D1?D0:D0~\-~D1}				2
+atSolarAttackPowerBase	阳性内功攻击提高	Y	Y	Y		阳性内功攻击提高{D0}		阳性内功攻击提高{D0=D1?D0:D0~\-~D1}			阳性内功攻击提高	60
+atSolarCriticalDamagePowerBase	阳性内功会心效果等级提高	Y		Y		阳性内功会心效果等级提高{D0}		阳性内功会心效果等级提高{D0=D1?D0:D0~\-~D1}				0
+atSolarCriticalDamagePowerPercent	阳性内功会心效果等级修正值提高	Y		Y		阳性内功会心效果等级修正值提高{D0}		阳性内功会心效果等级修正值提高{D0=D1?D0:D0~\-~D1}				0
+atSolarCriticalStrike	阳性内功会心等级提高	Y		Y		阳性内功会心等级提高{D0}		阳性内功会心等级提高{D0=D1?D0:D0~\-~D1}			内功会心等级提高	0
+atSolarCriticalStrikeBaseRate	阳性内功会心几率提高	Y	Y	Y		阳性内功会心几率提高{D0/100}%		阳性内功会心几率提高{D0=D1?D0/100:D0/100~\-~D1/100}%				166
+atSolarHitValue	阳性内功命中等级提高	Y	Y	Y		阳性内功命中等级提高{D0}		阳性内功命中等级提高{D0=D1?D0:D0~\-~D1}				4
+atSolarMagicShieldBase	阳性内功防御等级提高	Y	Y	Y		阳性内功防御等级提高{D0}		阳性内功防御等级提高{D0=D1?D0:D0~\-~D1}			内功防御等级提高	59
+atSolarOvercomeBase	阳性内功破防等级提高	Y	Y	Y		阳性内功破防等级提高{D0}		阳性内功破防等级提高{D0=D1?D0:D0~\-~D1}				9
+atSpiritBase	根骨提高	Y	Y	Y		根骨提高{D0}		根骨提高{D0=D1?D0:D0~\-~D1}			根骨提高	271
+atSpiritBasePercentAdd	根骨提高	Y	Y	Y		根骨提高{D0/1024*100}%		根骨提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%				53
+atSpunkBase	元气提高	Y	Y	Y		元气提高{D0}		元气提高{D0=D1?D0:D0~\-~D1}			元气提高	227
+atSpunkBasePercentAdd	元气提高	Y	Y	Y		元气提高{D0/1024*100}%		元气提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%				33
+atStrainBase	无双等级提高	Y	Y	Y		无双等级提高{D0}		无双等级提高{D0=D1?D0:D0~\-~D1}			wer>点，无双等级提高	174
+atStrainPercent	无双等级修正值提高	Y	Y	Y		无双等级修正值提高{D0}		无双等级修正值提高{D0=D1?D0:D0~\-~D1}			ent>%，无双等级提高	50
+atStrengthBase	力道提高	Y	Y	Y		力道提高{D0}		力道提高{D0=D1?D0:D0~\-~D1}			力道提高	306
+atStrengthBasePercentAdd	力道提高	Y	Y	Y		力道提高{D0/1024*100}%		力道提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%				42
+atSurplusValueBase	破招值提高	Y	Y	Y		破招值提高{D0}		破招值提高{D0=D1?D0:D0~\-~D1}			ase>点，破招等级提高	159
+atTherapyCoefficient	治疗效果提高	Y	Y	Y		治疗效果提高{D0/1024*100}%		治疗效果提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%				46
+atTherapyPowerBase	治疗成效提高	Y	Y	Y	治疗成效提高{D0}	治疗成效提高{D0}	治疗成效提高{D0=D1?D0:D0~\-~D1}	治疗成效提高{D0=D1?D0:D0~\-~D1}			hExt>，疗伤成效提高	385
+atToughnessBase	御劲等级提高	Y	Y	Y	御劲等级提高{D0}	御劲等级提高{D0}	御劲等级提高{D0=D1?D0:D0~\-~D1}	御劲等级提高{D0=D1?D0:D0~\-~D1}			御劲等级提高	124
+atToughnessPercent	御劲等级修正值提高	Y	Y	Y		御劲等级修正值提高{D0}		御劲等级修正值提高{D0=D1?D0:D0~\-~D1}				20
+atVitalityBase	体质提高	Y	Y	Y		体质提高{D0}		体质提高{D0=D1?D0:D0~\-~D1}			体质提高	435
+atVitalityBasePercentAdd	体质提高	Y	Y	Y		体质提高{D0/1024*100}%		体质提高{D0=D1?D0/1024*100:D0/1024*100~\-~D1/1024*100}%				57
+atAllTypeAttackPowerBase	全攻击提高	Y	Y	Y	全攻击提高{D0}	全攻击提高{D0}	全攻击提高{D0=D1?D0:D0~\-~D1}	全攻击提高{D0=D1?D0:D0~\-~D1}			hExt>点，全攻击提高	214
+atAllTypeOvercomeBase	全破防等级提高	Y	Y	Y	全破防等级提高{D0}	全破防等级提高{D0}	全破防等级提高{D0=D1?D0:D0~\-~D1}	全破防等级提高{D0=D1?D0:D0~\-~D1}			erBase>点、全破防	168
+atGlobalDamageFixedAdd	技能伤害提高	Y	Y	Y	技能伤害提高{D0}	技能伤害提高{D0}	技能伤害提高{D0=D1?D0:D0~\-~D1}	技能伤害提高{D0=D1?D0:D0~\-~D1}				6
+atAllShieldIgnoreAdd	无视防御等级提高	Y	Y	Y	无视防御等级提高{D0}	无视防御等级提高{D0}	无视防御等级提高{D0=D1?D0:D0~\-~D1}	无视防御等级提高{D0=D1?D0:D0~\-~D1}				6
+atAssistedPowerExtAdd	凝神等级提高	Y		Y	凝神等级提高{D0}	凝神等级提高{D0}	凝神等级提高{D0=D1?D0:D0~\-~D1}	凝神等级提高{D0=D1?D0:D0~\-~D1}				0
+atPVXAllRound	全能等级提高	Y	Y	Y	全能等级提高{D0}	全能等级提高{D0}	全能等级提高{D0=D1?D0:D0~\-~D1}	全能等级提高{D0=D1?D0:D0~\-~D1}				1
+atAccelerateCDTimer			Y	Y								34
+atAccumulate			Y	Y								51
+atActivityDamageFinalCof			Y	Y								11
+atActivityTherapyFinalCof			Y	Y								7
+atAddContributionPercentForAll			Y	Y								12
+atAddDamageByDstMoveState			Y	Y								12
+atAddEnforceWaterFloatCof			Y	Y								9
+atAddExpPercent			Y	Y								224
+atAddExpPercentByQuest			Y	Y								5
+atAddFellowshipAttraction			Y	Y							每2秒增加双方好感度	6
+atAddFlySprintPowerCost			Y	Y								1
+atAddGlobalAbsorbShieldByParryValue			Y	Y								1
+atAddGlobalAbsorbShieldRecordEvilOnly			Y	Y								1
+atAddGlobalAbsorbShieldRecordGoodOnly			Y	Y								1
+atAddGlobalAbsorbShieldRecordOnly			Y	Y								89
+atAddGlobalAbsorbShieldRecordOnlyBySelfMaxLife			Y	Y								35
+atAddGlobalAbsorbShieldRecordTherapyOnly			Y	Y								9
+atAddGlobalAbsorbShieldRecordTherapyOnlyBySelfMaxLife			Y	Y								2
+atAddJusticePercent			Y	Y								20
+atAddPrestigePercent			Y	Y								4
+atAddPrestigePercentForAll			Y	Y							威名获取速度提高	50
+atAddQuestReputationPercent			Y	Y								3
+atAddReputationPercent			Y	Y								304
+atAddSprintPowerCostOnWall			Y	Y								3
+atAddSwimWaterLineCof			Y	Y								9
+atAddTrainPercent			Y	Y								13
+atAddTransparencyValue			Y	Y								235
+atAgilityToParryCof			Y	Y								3
+atAgilityToParryValueCof			Y	Y								1
+atAllDamageAddPercent			Y	Y							造成的伤害降低	1105
+atAllMagicDamageAddPercent			Y	Y							降低80%，内功伤害提高	24
+atAllPhysicsDamageAddPercent			Y	Y							>%受到的伤害，伤害提升	43
+atAllShieldIgnorePercent			Y	Y							招式无视目标	66
+atAllTherapyAddPercent			Y	Y								3
+atAssistVenationCof			Y	Y								6
+atBanSkillMove			Y	Y								1
+atBaseVenationCof			Y	Y								7
+atBeImmunisedStealthEnable			Y	Y								8
+atBeatBackRate			Y	Y								90
+atBlockLongRange			Y	Y								9
+atBuffFunctionDecay			Y	Y								114
+atCallAdaptiveDamage			Y	Y							每3秒受到	30
+atCallBuff			Y	Y								683
+atCallBuffStack8			Y	Y								2
+atCallKnockedDown			Y	Y								13
+atCallKnockedOffParabola			Y	Y								2
+atCallLunarDamage			Y	Y							每3秒受到阴性内功伤害	1381
+atCallNeutralDamage			Y	Y							每3秒受到	334
+atCallPhysicsDamage			Y	Y							不止，每3秒受到外功伤害	1966
+atCallPoisonDamage			Y	Y							中毒，每3秒受到毒伤害	1428
+atCallSolarDamage			Y	Y							每2秒受到阳性内功伤害	876
+atCallSubBuff			Y	Y								505
+atCallTherapy			Y	Y							疗伤成效提高	973
+atCastSkill			Y	Y								237
+atCastSkillNoTarget			Y	Y								17
+atCastSkillTargetDst			Y	Y								443
+atCastSkillTargetSrc			Y	Y								50
+atChangeCaptionIconType			Y	Y								3
+atChangeCaptionRightIconType			Y	Y								1
+atChangeForceFightState			Y	Y								2
+atChangePoseState			Y	Y								32
+atChangeSkillIcon			Y	Y								52
+atClearCoolDown			Y	Y								108
+atControlTransToSlow			Y	Y								2
+atCopyDamage			Y	Y								1
+atCopyDamageForSrc			Y	Y							基于受到效果来源伤害的	6
+atCopyEffectiveTherapy			Y	Y								11
+atCounterStealth			Y	Y								28
+atCounterStealthRange			Y	Y								28
+atCurrentMoonEnergy			Y	Y								3
+atCurrentRage			Y	Y								1
+atCurrentSunEnergy			Y	Y								3
+atDamageAbsorbShieldCoefficient			Y	Y								11
+atDamageFeedbackPercent			Y	Y								2
+atDamagePercentForSrc			Y	Y							添加该效果的目标伤害降低	12
+atDamageToLifeCof			Y	Y								4
+atDamageToSprintPowerForDst			Y	Y								11
+atDamageToTherapy			Y	Y								5
+atDashBlock			Y	Y								3
+atDecayAllTypeResistPercent			Y	Y								4
+atDecriticalDamagePowerBaseKiloNumRate			Y	Y								11
+atDeflect			Y	Y								1
+atDelSingleBuffByIDAndLevel			Y	Y								21
+atDelSingleGroupBuffByIDAndLevel			Y	Y								4
+atDirectCastMask			Y	Y								117
+atDisableAcquirePKTitlePoint			Y	Y								2
+atDisableAcquireTitlePoint			Y	Y								1
+atDisableAutoSelect			Y	Y								14
+atDisableMoveCtrl			Y	Y								843
+atDisableRevive			Y	Y								45
+atDisableSelectTarget			Y	Y								2
+atDisableSpoof			Y	Y								17
+atDisableSprintFlag			Y	Y								1180
+atDisableSprintPowerCost			Y	Y								29
+atDisableTalentSet			Y	Y								9
+atDisableTeamwork			Y	Y								11
+atDisableVauleBySelfMaxLife			Y	Y								2
+atDisarm			Y	Y								156
+atDivingFramePercent			Y	Y								21
+atDodgeBaseRate			Y	Y								159
+atDriftFlag			Y	Y								19
+atDstNpcDamageCoefficient			Y	Y								89
+atEmployerCastSkillTargetDest			Y	Y								7
+atEmployerCastSkillTargetSelf			Y	Y								210
+atEnableDecriticalDamagePowerConvert			Y	Y								1
+atEnergyReplenish			Y	Y							每秒恢复	9
+atEntrap			Y	Y								482
+atEqualDivisionDamage			Y	Y								2
+atEqualDivisionTeamDamage			Y	Y								4
+atEqualDivisionTeamTherapy			Y	Y								3
+atEqualDivisionTherapy			Y	Y								2
+atExcessLifeChangeDiscount			Y	Y								3
+atExecuteScript			Y	Y								13451
+atExecuteScriptWithParam			Y	Y								94
+atFear			Y	Y								19
+atFinalMaxLifeAddPercent			Y	Y							最大气血值提高	380
+atFixedDamageReduceValue			Y	Y								4
+atFlyFlag			Y	Y								17
+atFormationEffect			Y	Y								179
+atFreeze			Y	Y								695
+atFullAnglePlayer			Y	Y								1
+atGamePlayDamageFinalCof			Y	Y								54
+atGamePlayTherapyFinalCof			Y	Y								39
+atGlobalBlock			Y	Y								272
+atGlobalDamageAbsorb			Y	Y							躲在硬壳中，化解	749
+atGlobalDamageAbsorbBySelfAgility			Y	Y								39
+atGlobalDamageAbsorbBySelfMaxLife			Y	Y								221
+atGlobalDamageAbsorbBySelfSpirit			Y	Y								47
+atGlobalDamageAbsorbBySelfVitality			Y	Y								1
+atGlobalDamageFactor			Y	Y								122
+atGlobalDamageManaShield			Y	Y								2
+atGlobalTherapyAbsorb			Y	Y							吸收	231
+atGlobalTherapyAbsorbBySelfMaxLife			Y	Y								31
+atGravityBase			Y	Y							重力增加	225
+atGravityPercent			Y	Y								56
+atHalt			Y	Y								1405
+atHasteBasePercentAdd			Y	Y								58
+atHeight			Y	Y								9
+atHoldHorse			Y	Y								1
+atHorseJumpSpeedAdditional			Y	Y								3
+atHorseRunType			Y	Y								1
+atIgnoreGravity			Y	Y								91
+atIgnoreOtherAlarmRange			Y	Y								54
+atImmortal			Y	Y								161
+atImmuneSkillMove			Y	Y								574
+atImmuniseStealthCircleActive			Y	Y								1
+atImmunity			Y	Y								2800
+atImmunityBeatBreak			Y	Y								104
+atImmunityCastID			Y	Y								4
+atImmunityCombo			Y	Y								30
+atImmunityComboAll			Y	Y								20
+atImmunityComboExceptPullPush			Y	Y								7
+atInvalidPassiveSkill			Y	Y								62
+atIsolated			Y	Y								10
+atJumpSpeedBase			Y	Y							起跳高度提高	230
+atJumpSpeedPercent			Y	Y								20
+atKnockDownTimeRate			Y	Y								8
+atKnockedBackRate			Y	Y								412
+atKnockedDownRate			Y	Y								556
+atKnockedOffRate			Y	Y								182
+atLifeReplenish			Y	Y							e>点，生命回复每秒提高	79
+atLockTransTherapy			Y	Y								3
+atLockedFace			Y	Y								34
+atLunarAttackPowerPercent			Y	Y							所有基础攻击力提高	216
+atLunarAttackPowerToTherapyPowerCof			Y	Y								3
+atLunarCriticalDamagePowerBaseKiloNumRate			Y	Y								12
+atLunarDamageAbsorb			Y	Y							化解阴性内功伤害	91
+atLunarDamageCoefficient			Y	Y								1127
+atLunarDamageManaShield			Y	Y								6
+atLunarHitBaseRate			Y	Y								58
+atLunarMagicBlock			Y	Y								12
+atLunarMagicReflection			Y	Y							反弹点数提高	15
+atLunarMagicReflectionPercent			Y	Y								222
+atLunarMagicResistPercent			Y	Y							受到阴性伤害降低	145
+atLunarMagicShieldPercent			Y	Y								110
+atLunarOvercomePercent			Y	Y								82
+atMagicAttackPowerPercent			Y	Y							永久提升自身内功攻击	499
+atMagicCriticalDamagePowerBaseKiloNumRate			Y	Y							每层使内功会心效果提高	98
+atMagicDamageAbsorb			Y	Y								1
+atMagicHitBaseRate			Y	Y								14
+atMagicVenationCof			Y	Y								7
+atManaReplenish			Y	Y							e>点，内力回复每秒提高	29
+atMarkedBustupByGuard			Y	Y								1
+atMaxAccumulateValue			Y	Y								1
+atMaxDamageToLifeValue			Y	Y								3
+atMaxEnergy			Y	Y								2
+atMaxFollowVelocity			Y	Y								2
+atMaxJumpCount			Y	Y								1215
+atMaxLifeToAttackPowerCof			Y	Y								4
+atMaxRage			Y	Y							剑气最大值提高	28
+atMaxRunSpeed			Y	Y								80
+atMaxSkillRadiusAdd			Y	Y								26
+atMaxSkillRadiusPercent			Y	Y								14
+atMaxTrainValue			Y	Y								62
+atMazeCast			Y	Y								4
+atMeleeWeaponAttackSpeedPercentAdd			Y	Y								12
+atMeleeWeaponDamagePercent			Y	Y								99
+atMeleeWeaponDamageRandPercent			Y	Y								26
+atMinRunSpeed			Y	Y								12
+atMirrorShield			Y	Y								4
+atModifyCoolDown			Y	Y								12
+atModifyCostEnergyPercent			Y	Y								26
+atModifyCostRagePercent			Y	Y								23
+atModifyCostSunEnergyPercent			Y	Y								8
+atModifyDivingCount			Y	Y								8
+atModifyReflectionPercent			Y	Y								2
+atModifySkillMoveVelocityXY			Y	Y								1
+atMoonEnergyAddPercent			Y	Y								6
+atMountingRate			Y	Y								31
+atNegativeShield			Y	Y								483
+atNeutralAttackPowerPercent			Y	Y								201
+atNeutralAttackPowerToTherapyPowerCof			Y	Y								6
+atNeutralCriticalDamagePowerBaseKiloNumRate			Y	Y								6
+atNeutralDamageAbsorb			Y	Y							化解混元性内功伤害	70
+atNeutralDamageCoefficient			Y	Y							受到伤害增加	1030
+atNeutralHitBaseRate			Y	Y								58
+atNeutralMagicBlock			Y	Y								8
+atNeutralMagicReflection			Y	Y								13
+atNeutralMagicReflectionPercent			Y	Y								223
+atNeutralMagicResistPercent			Y	Y							受到混元性伤害降低	134
+atNeutralMagicShieldPercent			Y	Y								109
+atNoLimitChangeSkillIcon			Y	Y								1030
+atNotIgnore			Y	Y								11
+atNotifyBuffSrc			Y	Y								1
+atOnParachuteFlag			Y	Y								18
+atOtherAlarmRangeRevise			Y	Y								1
+atParryBaseRate			Y	Y								17
+atParryValueToMagicShieldCof			Y	Y								1
+atPauseCDTimer			Y	Y								6
+atPhysicsAttackPowerPercent			Y	Y							外功基础攻击力提高	714
+atPhysicsBlock			Y	Y								13
+atPhysicsCriticalDamagePowerBaseKiloNumRate			Y	Y								128
+atPhysicsCriticalStrikeBaseRate			Y	Y							外功会心等级提高	335
+atPhysicsDamageAbsorb			Y	Y							化解外功伤害	103
+atPhysicsDamageCoefficient			Y	Y								1262
+atPhysicsDamageManaShield			Y	Y							增加自身	13
+atPhysicsHitBaseRate			Y	Y								77
+atPhysicsOvercomePercent			Y	Y								129
+atPhysicsReflection			Y	Y							ase>点，外功反弹提高	20
+atPhysicsReflectionPercent			Y	Y								214
+atPhysicsResistPercent			Y	Y							受外功伤害降低	107
+atPhysicsVenationCof			Y	Y								7
+atPoisonAttackPowerPercent			Y	Y							内功基础攻击力提高	201
+atPoisonAttackPowerToTherapyPowerCof			Y	Y								2
+atPoisonCriticalDamagePowerBaseKiloNumRate			Y	Y								3
+atPoisonDamageAbsorb			Y	Y							化解毒性伤害	76
+atPoisonDamageCoefficient			Y	Y							每层使受到的伤害提高	1032
+atPoisonDamageManaShield			Y	Y								5
+atPoisonHitBaseRate			Y	Y								58
+atPoisonMagicBlock			Y	Y								12
+atPoisonMagicReflection			Y	Y							提高15%，反弹远程伤害	16
+atPoisonMagicReflectionPercent			Y	Y								258
+atPoisonMagicResistPercent			Y	Y							受到毒性伤害降低	135
+atPoisonMagicShieldPercent			Y	Y								106
+atPoisonOvercomePercent			Y	Y								86
+atPositiveShield			Y	Y								66
+atPreDieExecuteScript			Y	Y								15
+atPrinkForce			Y	Y								87
+atPrinkModel			Y	Y								429
+atPullRate			Y	Y								550
+atQiEnergyReplenish			Y	Y								1
+atQiEnergyReplenishPercent			Y	Y								10
+atRangeAngleShield			Y	Y								5
+atRangeWeaponDamagePercent			Y	Y								38
+atRangeWeaponDamageRandPercent			Y	Y								18
+atRecoveryShield			Y	Y								3
+atReduceAOEDamagePercent			Y	Y								22
+atReduceDamageWhenLifeChanged			Y	Y								2
+atReduceDamageWhenLifeLow			Y	Y								1
+atRepulsedRate			Y	Y								454
+atResetCoolDown			Y	Y								1
+atResistCriticalStrikeRate			Y	Y								9
+atRideHorse			Y	Y								151
+atRunSpeedBase			Y	Y							跑步速度提高	81
+atSelfAlarmRangeRevise			Y	Y								3
+atSense			Y	Y								4
+atSetAdaptiveSkillType			Y	Y								6
+atSetDisableSkillCastOnEntrapFlag			Y	Y								3
+atSetDisableTitlePointProduceFlag			Y	Y								2
+atSetEquipmentRecipe			Y	Y								6
+atSetHitReduceRate			Y	Y								31
+atSetImmuniseStealthCircle			Y	Y								1
+atSetIncomeLimitFlag			Y	Y								1
+atSetJumpCount			Y	Y								1
+atSetPlayerUncontrollable			Y	Y								118
+atSetRelationAllEnemyExceptTeam			Y	Y								6
+atSetSaleLimitFlag			Y	Y								1
+atSetSelectableType			Y	Y								70
+atSetTalentRecipe			Y	Y								1426
+atShieldTransfer			Y	Y								2
+atSilence			Y	Y								1553
+atSilenceAll			Y	Y								1376
+atSit			Y	Y								1
+atSkillDamageFinalCof			Y	Y								8
+atSkillEventHandler			Y	Y								2100
+atSkillMagicDamage			Y	Y							内功招式伤害降低	43
+atSkillMove			Y	Y								81
+atSkillTherapy			Y	Y								2
+atSkillTherapyPercent			Y	Y								26
+atSolarAttackPowerPercent			Y	Y								184
+atSolarCriticalDamagePowerBaseKiloNumRate			Y	Y								6
+atSolarDamageAbsorb			Y	Y							化解阳性内功伤害	69
+atSolarDamageCoefficient			Y	Y							受到伤害提升	1124
+atSolarDamageManaShield			Y	Y								1
+atSolarHitBaseRate			Y	Y								58
+atSolarMagicBlock			Y	Y								8
+atSolarMagicReflection			Y	Y								16
+atSolarMagicReflectionPercent			Y	Y								221
+atSolarMagicResistPercent			Y	Y							受到阳性伤害降低	136
+atSolarMagicShieldPercent			Y	Y								110
+atSolarOvercomePercent			Y	Y								95
+atSpecialSkillMove			Y	Y								8
+atSpoof			Y	Y								1
+atSprintPowerAddPercent			Y	Y								4
+atStealth			Y	Y								193
+atStop			Y	Y								9
+atStopXYZ			Y	Y								3
+atStrainRate			Y	Y								53
+atSunEnergyAddPercent			Y	Y								6
+atSurplusValueAddPercent			Y	Y							破招提高	12
+atTherapyPVXAllRound			Y	Y								1
+atTherapyPowerPercent			Y	Y								106
+atTherapyPowerToMagicAttackPowerCof			Y	Y								9
+atTherapyPowerToPhysicsAttackPowerCof			Y	Y								1
+atTopThreat			Y	Y								78
+atToughnessBaseRate			Y	Y								35
+atTransferDamage			Y	Y								50
+atTransferLife			Y	Y								8
+atTransferMana			Y	Y								1
+atTransferTherapy			Y	Y								4
+atTransferThreat			Y	Y								3
+atTransform			Y	Y								3
+atTransmission			Y	Y								175
+atUnarm			Y	Y								10
+atUnlimitCriticalDamagePowerKiloNumRate			Y	Y								29
+atUnlimitHasteBasePercentAdd			Y	Y								87
+atValidBlockRange			Y	Y								3
+atValidDamageRange			Y	Y								9
+atVitalityToLunarAttackPowerCof			Y	Y								10
+atVitalityToMagicCriticalStrikeCof			Y	Y								4
+atVitalityToMagicOverComeCof			Y	Y								16
+atVitalityToParryValueCof			Y	Y								23
+atVitalityToPhysicsAttackPowerCof			Y	Y								18
+atVitalityToPhysicsOverComeCof			Y	Y								18
+atVitalityToSolarAttackPowerCof			Y	Y								21
+atWalkMoveOnly			Y	Y								1
+atWaterFloat			Y	Y								33
+atWaterFlyAbility			Y	Y								13
+atOnTowerFlag				Y								0
+atHorseAttribute				Y								0
+atCanNotJump				Y								0
+atTransmitTrain				Y								0
+atLifeReplenishCoefficient				Y								0
+atManaPercentAdd				Y								0
+atManaReplenishCoefficient				Y								0
+atDisbleScriptSetEnergy				Y								0
+atCurrentEnergy				Y								0
+atSunPowerValue				Y								0
+atMoonPowerValue				Y								0
+atMaxSunEnergy				Y								0
+atSunEnergyReplenish				Y								0
+atSunEnergyFallOff				Y								0
+atStopMakeSunPower				Y								0
+atMaxMoonEnergy				Y								0
+atMoonEnergyReplenish				Y								0
+atMoonEnergyFallOff				Y								0
+atStopMakeMoonPower				Y								0
+atNaturePowerValue				Y								0
+atNaturePowerMaxGrid				Y								0
+atMaxQiEnergy				Y								0
+atCurrentQiEnergy				Y								0
+atMaxQiControlCount				Y								0
+atCurrentQiControlCount				Y								0
+atStopMakeQiControlCancel				Y								0
+atCurrentQiSPByScript				Y								0
+atMaxPosture				Y								0
+atCurrentPosture				Y								0
+atPostureReplenish				Y								0
+atMaxStamina				Y								0
+atCurrentThew				Y								0
+atMaxThew				Y								0
+atPassiveThreatCoefficient				Y								0
+atMaxDamageToManaValue				Y								0
+atMeleeWeaponDamageRand				Y								0
+atRangeWeaponDamageRand				Y								0
+atSkillPhysicsDamageRand				Y								0
+atPhysicsDefenceMax				Y								0
+atSkillSolarDamageRand				Y								0
+atSkillNeutralDamageRand				Y								0
+atNeutralDamageManaShield				Y								0
+atSkillLunarDamageRand				Y								0
+atSkillPoisonDamageRand				Y								0
+atSkillTherapyRand				Y								0
+atOverflowTherapyIntelligentTransfer				Y								0
+atSkillAdaptiveDamage				Y								0
+atSkillAdaptiveDamageRand				Y								0
+atNoneWeaponAttackSpeedBase				Y								0
+atRangeWeaponAttackSpeedPercentAdd				Y								0
+atRangeWeaponAttackSpeedAdditional				Y								0
+atDash				Y								0
+atDashToPoint				Y								0
+atDashForward				Y								0
+atDashBackward				Y								0
+atDashLeft				Y								0
+atDashRight				Y								0
+atDashToDstBack				Y								0
+atCatchPlayer				Y								0
+atRevive				Y								0
+atCallKnockedBackExhale				Y								0
+atCallKnockedBackConvergence				Y								0
+atCallKnockedBackRandom				Y								0
+atCallKnockedBackSrcFace				Y								0
+atCallAddKnockedDownFrame				Y								0
+atCallRepulsed				Y								0
+atCallSurplusPhysicsDamage				Y								0
+atCallSurplusSolarDamage				Y								0
+atCallSurplusNeutralDamage				Y								0
+atCallSurplusLunarDamage				Y								0
+atCallSurplusPoisonDamage				Y								0
+atCallRechargeableAbsorbShieldByTherapy				Y								0
+atSetNextBuffCount				Y								0
+atCallBuffStack2				Y								0
+atCallBuffStack3				Y								0
+atCallBuffStack4				Y								0
+atCallBuffStack5				Y								0
+atCallBuffStack6				Y								0
+atCallBuffStack7				Y								0
+atCallBuffAccordingToAttraction				Y								0
+atDetachSingleBuff				Y								0
+atDetachMultiGroupBuff				Y								0
+atDelSingleBuffByFunctionType				Y								0
+atDelMultiGroupBuffByFunctionType				Y								0
+atDelMultiGroupBuffByID				Y								0
+atModifyThreat				Y								0
+atModifyAllThreaten				Y								0
+atModifyThreatPercent				Y								0
+atModifyAllThreatenPercent				Y								0
+atAddWeak				Y								0
+atModifySkillCastFlag				Y								0
+atExecuteScriptSetup				Y								0
+atExecuteScriptBulletToSelf				Y								0
+atExecuteScriptBulletToDestAndRollback				Y								0
+atExecuteScriptBulletToDest				Y								0
+atPrinkRepresentID				Y								0
+atDoAction				Y								0
+atAddExpPercentByScript				Y								0
+atAddCoolDownInterval				Y								0
+atTransferDamageToManaPercent				Y								0
+atPull				Y								0
+atPullZ				Y								0
+atTurnToSrc				Y								0
+atConsumeBuff				Y								0
+atZeroThreat				Y								0
+atTurnToSkillTarget				Y								0
+atBanTransferTherapy				Y								0
+atCallHelp				Y								0
+atCallRequest				Y								0
+atCatchCharacter				Y								0
+atVitalityToMaxLifeCof				Y								0
+atVitalityToNeutralAttackPowerCof				Y								0
+atVitalityToPoisonAttackPowerCof				Y								0
+atVitalityToTherapyPowerCof				Y								0
+atVitalityToPhysicsShieldCof				Y								0
+atVitalityToDodgeCof				Y								0
+atVitalityToParryCof				Y								0
+atVitalityToMagicShieldCof				Y								0
+atVitalityToMaxManaCof				Y								0
+atSpiritToMaxManaCof				Y								0
+atSpiritToManaReplenishCof				Y								0
+atSpiritToTherapyPowerCof				Y								0
+atSpiritToPhysicsAttackPowerCof				Y								0
+atSpiritToSolarAttackPowerCof				Y								0
+atSpiritToLunarAttackPowerCof				Y								0
+atSpiritToNeutralAttackPowerCof				Y								0
+atSpiritToPoisonAttackPowerCof				Y								0
+atSpiritToPhysicsCriticalStrikeCof				Y								0
+atSpiritToSolarCriticalStrikeCof				Y								0
+atSpiritToLunarCriticalStrikeCof				Y								0
+atSpiritToNeutralCriticalStrikeCof				Y								0
+atSpiritToPoisonCriticalStrikeCof				Y								0
+atSpiritToPhysicsCriticalDamagePowerCof				Y								0
+atSpiritToSolarCriticalDamagePowerCof				Y								0
+atSpiritToLunarCriticalDamagePowerCof				Y								0
+atSpiritToNeutralCriticalDamagePowerCof				Y								0
+atSpiritToPoisonCriticalDamagePowerCof				Y								0
+atSpiritToSolarMagicShieldCof				Y								0
+atSpiritToLunarMagicShieldCof				Y								0
+atSpiritToNeutralMagicShieldCof				Y								0
+atSpiritToPoisonMagicShieldCof				Y								0
+atSpiritToPoisonOvercomeCof				Y								0
+atSpunkToManaReplenishCof				Y								0
+atSpunkToPhysicsAttackPowerCof				Y								0
+atSpunkToSolarAttackPowerCof				Y								0
+atSpunkToLunarAttackPowerCof				Y								0
+atSpunkToNeutralAttackPowerCof				Y								0
+atSpunkToPoisonAttackPowerCof				Y								0
+atSpunkToSolarAndLunarAttackPowerCof				Y								0
+atSpunkToSolarCriticalStrikeCof				Y								0
+atSpunkToSolarCriticalDamagePowerCof				Y								0
+atSpunkToSolarAndLunarCriticalStrikeCof				Y								0
+atSpunkToSolarAndLunarCriticalDamagePowerCof				Y								0
+atSpunkToPhysicsCriticalStrikeCof				Y								0
+atSpunkToPhysicsCriticalDamagePowerCof				Y								0
+atSpunkToNeutralOvercomeCof				Y								0
+atSpunkToNeutralCriticalStrikeCof				Y								0
+atStrengthToPhysicsCriticalStrikeCof				Y								0
+atStrengthToPhysicsAttackPowerCof				Y								0
+atStrengthToPhysicsCriticalDamagePowerCof				Y								0
+atStrengthToSolarAttackPowerCof				Y								0
+atStrengthToLunarAttackPowerCof				Y								0
+atStrengthToNeutralAttackPowerCof				Y								0
+atStrengthToPoisonAttackPowerCof				Y								0
+atStrengthToPhysicsOvercomeCof				Y								0
+atAgilityToPhysicsCriticalStrikeCof				Y								0
+atAgilityToPhysicsCriticalDamagePowerCof				Y								0
+atAgilityToPoisonCriticalStrikeCof				Y								0
+atAgilityToPhysicsAttackPowerCof				Y								0
+atAgilityToSolarAndLunarAttackPowerCof				Y								0
+atAgilityToPhysicsOvercomeCof				Y								0
+atAgilityToDodgeCof				Y								0
+atAutoSelectTarget				Y								0
+atCallMentorBuff				Y								0
+atMentorFormationEffect				Y								0
+atSetUseBigSwordFlag				Y								0
+atChangeCarrierState				Y								0
+atAutoSelectTargetByLifeless				Y								0
+atCastSubSkill				Y								0
+atCastSkillTargetSelf				Y								0
+atAddScale				Y								0
+atCatchDash				Y								0
+atAddGlobalAbsorbShieldByParry				Y								0
+atStealBuff				Y								0
+atCopyBuff				Y								0
+atDamageToManaForDst				Y								0
+atDecayVelocity				Y								0
+atTransferBuff				Y								0
+atStealSolarLunarNeutralPosionBuff				Y								0
+atMagicShieldToAttackPowerCof				Y								0
+atPhysicsShieldToAttackPowerCof				Y								0
+atRecordOutputDamage				Y								0
+atSyncCumulativeOutputDamage				Y								0
+atSrcCallCommonDetachBuffScript				Y								0
+atDstCallCommonDetachBuffScript				Y								0
+atSurplusToDstNpcDamageCoefficient				Y								0
+atKungfuType				Y								0
+atExtraThreatCoefficient				Y								0
+atSkillTherapyFinalCof				Y								0
+atAgilityToLunarCriticalStrikeCof				Y								0
+atAgilityToLunarAttackPowerCof				Y								0
+atAgilityToLunarOvercomeCof				Y								0
+atAdaptAttributeType				Y								0
+atNoAdaptPhysicsAttackPowerBase				Y								0
+atNoAdaptPhysicsCriticalStrikeBase				Y								0
+atNoAdaptPhysicsCriticalDamagePowerBase				Y								0
+atNoAdaptPhysicsOvercomeBase				Y								0
+atCustomInteractRange				Y								0

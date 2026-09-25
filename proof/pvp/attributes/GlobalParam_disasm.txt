@@ -1,0 +1,34 @@
+﻿--- proto None params 0 ncode 3
+  0: op36 A=0 B=0 C=0 Bx=0
+  1: SETGLOBAL R0 K0='Load'
+  2: RETURN R0 n=0
+--- proto None params 0 ncode 29
+  0: GETGLOBAL R0 K0='GetSkillGlobalParam'
+  1: op28 A=0 B=1 C=2 Bx=514
+  2: op9 A=0 B=257 C=258 Bx=131842
+  3: op9 A=0 B=259 C=260 Bx=132868
+  4: op9 A=0 B=261 C=262 Bx=133894
+  5: op9 A=0 B=263 C=260 Bx=134916
+  6: op9 A=0 B=264 C=265 Bx=135433
+  7: op9 A=0 B=266 C=267 Bx=136459
+  8: op9 A=0 B=268 C=269 Bx=137485
+  9: op9 A=0 B=270 C=271 Bx=138511
+ 10: op9 A=0 B=272 C=273 Bx=139537
+ 11: op9 A=0 B=274 C=275 Bx=140563
+ 12: op9 A=0 B=276 C=275 Bx=141587
+ 13: op9 A=0 B=277 C=278 Bx=142102
+ 14: op9 A=0 B=279 C=280 Bx=143128
+ 15: op9 A=0 B=281 C=282 Bx=144154
+ 16: op9 A=0 B=283 C=284 Bx=145180
+ 17: op9 A=0 B=285 C=260 Bx=146180
+ 18: op9 A=0 B=286 C=287 Bx=146719
+ 19: op9 A=0 B=288 C=289 Bx=147745
+ 20: op9 A=0 B=290 C=291 Bx=148771
+ 21: op9 A=0 B=292 C=293 Bx=149797
+ 22: op9 A=0 B=294 C=295 Bx=150823
+ 23: op9 A=0 B=296 C=297 Bx=151849
+ 24: op9 A=0 B=298 C=299 Bx=152875
+ 25: GETGLOBAL R1 K44='Log'
+ 26: LOADK R2 K45='[Skill]Global Param Init Successful.'
+ 27: op28 A=1 B=2 C=1 Bx=1025
+ 28: RETURN R0 n=0

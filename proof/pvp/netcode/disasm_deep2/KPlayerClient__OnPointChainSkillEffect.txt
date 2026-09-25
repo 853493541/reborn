@@ -1,0 +1,73 @@
+# needle: KPlayerClient::OnPointChainSkillEffect
+# string VAs: ['0x180772ac0']
+# xrefs: 1
+
+## xref 0x18018c17b  fn_start 0x18018c160
+0x018018c160: push	rbx
+0x018018c162: sub	rsp, 0x40
+0x018018c166: mov	rbx, rdx
+0x018018c169: test	rdx, rdx
+0x018018c16c: jne	0x18018c19f
+0x018018c16e: mov	r9d, 0x41bc
+0x018018c174: lea	r8, [rip + 0x5e696d]
+0x018018c17b: lea	rax, [rip + 0x5e693e]
+0x018018c182: mov	ecx, 3
+0x018018c187: lea	rdx, [rip + 0x76231a]
+0x018018c18e: mov	qword ptr [rsp + 0x20], rax
+0x018018c193: call	qword ptr [rip + 0x5d90c7]
+0x018018c199: add	rsp, 0x40
+0x018018c19d: pop	rbx
+0x018018c19e: ret	
+0x018018c19f: movsxd	rcx, dword ptr [rdx + 0x25]
+0x018018c1a3: lea	rax, [rcx*4 + 0x29]
+0x018018c1ab: cmp	r8, rax
+0x018018c1ae: je	0x18018c1bf
+0x018018c1b0: mov	r9d, 0x41bd
+0x018018c1b6: lea	r8, [rip + 0x5e6933]
+0x018018c1bd: jmp	0x18018c17b
+0x018018c1bf: cmp	dword ptr [rdx + 9], 0
+0x018018c1c3: je	0x18018c227
+0x018018c1c5: mov	qword ptr [rsp + 0x58], rdi
+0x018018c1ca: xor	edi, edi
+0x018018c1cc: test	ecx, ecx
+0x018018c1ce: jle	0x18018c21c
+0x018018c1d0: mov	qword ptr [rsp + 0x50], rsi
+0x018018c1d5: lea	rsi, [rdx + 0x29]
+0x018018c1d9: nop	dword ptr [rax]
+0x018018c1e0: call	0x18012b9d0
+0x018018c1e5: mov	r9d, dword ptr [rbx + 0x15]
+0x018018c1e9: mov	rcx, rax
+0x018018c1ec: mov	eax, dword ptr [rsi]
+0x018018c1ee: mov	r8d, dword ptr [rbx + 0x11]
+0x018018c1f2: mov	edx, dword ptr [rbx + 0xd]
+0x018018c1f5: mov	dword ptr [rsp + 0x30], eax
+0x018018c1f9: mov	eax, dword ptr [rbx + 0x1d]
+0x018018c1fc: mov	dword ptr [rsp + 0x28], eax
+0x018018c200: mov	eax, dword ptr [rbx + 0x19]
+0x018018c203: mov	dword ptr [rsp + 0x20], eax
+0x018018c207: call	0x1802d2130
+0x018018c20c: inc	edi
+0x018018c20e: lea	rsi, [rsi + 4]
+0x018018c212: cmp	edi, dword ptr [rbx + 0x25]
+0x018018c215: jl	0x18018c1e0
+0x018018c217: mov	rsi, qword ptr [rsp + 0x50]
+0x018018c21c: mov	rdi, qword ptr [rsp + 0x58]
+0x018018c221: add	rsp, 0x40
+0x018018c225: pop	rbx
+0x018018c226: ret	
+0x018018c227: call	0x18012b9d0
+0x018018c22c: mov	r9d, dword ptr [rbx + 0x21]
+0x018018c230: mov	rcx, rax
+0x018018c233: mov	r8d, dword ptr [rbx + 0x11]
+0x018018c237: mov	edx, dword ptr [rbx + 0xd]
+0x018018c23a: add	rsp, 0x40
+0x018018c23e: pop	rbx
+0x018018c23f: jmp	0x1802d2120
+0x018018c244: int3	
+0x018018c245: int3	
+0x018018c246: int3	
+0x018018c247: int3	
+0x018018c248: int3	
+0x018018c249: int3	
+0x018018c24a: int3	
+0x018018c24b: int3	

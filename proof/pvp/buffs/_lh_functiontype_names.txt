@@ -1,0 +1,52 @@
+﻿== Halt 0
+== Stun 0
+== Daze 0
+== Charm 0
+== Disarm 0
+== Silence 0
+== Fear 0
+== Slow 0
+== Chaos 0
+== Fly 6
+    30 S tFlySkill
+    118 S SettFlySkillSkill
+    122 S StopFly
+    1746 S tFlySkill
+    1878 S StopBirdFly
+    2879 S StopBirdFly
+== Blooding 0
+== Enmity 0
+== ResistDamage 0
+== Shield 7
+    149 S CostAllDamageAbsorbShieldByPercent
+    150 S CostAllDamageAbsorbShieldByValue
+    151 S CostAllDamageAbsorbShieldBSelf
+    2174 S CostAbsorbShieldValue
+    2176 S GetAbsorbShieldLeftValue
+    2187 S CostAbsorbShieldValue
+    2200 S CostAbsorbShieldValue
+== Hot 0
+== Damage 33
+    20 S BangHuiYueZhanDamageRate
+    108 S GbAddDamage
+    109 S KyAddDamage
+    149 S CostAllDamageAbsorbShieldByPercent
+    150 S CostAllDamageAbsorbShieldByValue
+    151 S CostAllDamageAbsorbShieldBSelf
+    223 S Skill_SuperCustomDamageToPlayer
+    1604 S GbAddDamage
+    1619 S GbAddDamage
+    1634 S GbAddDamage
+    1645 S GbAddDamage
+    1649 S GbAddDamage
+== Normal 3
+    104 S WanHuaDotDmgFactor_Normal
+    2498 S GetNormalCooldownCount
+    2499 S GetNormalCooldownID
+== FunctionType 0
+== FUNCTION 1
+    2323 S DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE
+== BUFF_TYPE 0
+== BuffType 0
+== DecayType 0
+== Decay 0

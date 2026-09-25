@@ -1,0 +1,28 @@
+# needle: KPlayerClient::OnSetCamp
+# string VAs: ['0x180775f68']
+# xrefs: 1
+
+## xref 0x18018dced  fn_start 0x18018dcc0
+0x018018dcc0: push	rbx
+0x018018dcc2: sub	rsp, 0x30
+0x018018dcc6: mov	rcx, qword ptr [rip + 0x833653]
+0x018018dccd: mov	rbx, rdx
+0x018018dcd0: mov	edx, dword ptr [rdx + 7]
+0x018018dcd3: call	0x18012b610
+0x018018dcd8: test	rax, rax
+0x018018dcdb: je	0x18018dd18
+0x018018dcdd: movzx	edx, byte ptr [rbx + 0xb]
+0x018018dce1: mov	rcx, rax
+0x018018dce4: call	0x1802c2970
+0x018018dce9: test	eax, eax
+0x018018dceb: jne	0x18018dd18
+0x018018dced: lea	rax, [rip + 0x5e8274]
+0x018018dcf4: mov	r9d, 0x605b
+0x018018dcfa: lea	r8, [rip + 0x7625e7]
+0x018018dd01: mov	qword ptr [rsp + 0x20], rax
+0x018018dd06: lea	rdx, [rip + 0x76079b]
+0x018018dd0d: mov	ecx, 3
+0x018018dd12: call	qword ptr [rip + 0x5d7548]
+0x018018dd18: add	rsp, 0x30
+0x018018dd1c: pop	rbx
+0x018018dd1d: ret	

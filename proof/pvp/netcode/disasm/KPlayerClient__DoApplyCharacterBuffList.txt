@@ -1,0 +1,37 @@
+# needle: KPlayerClient::DoApplyCharacterBuffList
+# string VAs: ['0x18076d818']
+# xrefs: 1
+
+## xref 0x18016b70b  fn_start 0x18016b6f0
+0x018016b6f0: push	rbx
+0x018016b6f2: sub	rsp, 0x50
+0x018016b6f6: mov	rax, qword ptr [rip + 0x84ab23]
+0x018016b6fd: xor	rax, rsp
+0x018016b700: mov	qword ptr [rsp + 0x40], rax
+0x018016b705: xor	ebx, ebx
+0x018016b707: test	edx, edx
+0x018016b709: jne	0x18016b736
+0x018016b70b: lea	rax, [rip + 0x602106]
+0x018016b712: mov	r9d, 0xd36
+0x018016b718: lea	r8, [rip + 0x7893a1]
+0x018016b71f: mov	qword ptr [rsp + 0x20], rax
+0x018016b724: lea	rdx, [rip + 0x782d7d]
+0x018016b72b: lea	ecx, [rbx + 3]
+0x018016b72e: call	qword ptr [rip + 0x5f9b2c]
+0x018016b734: jmp	0x18016b75c
+0x018016b736: mov	eax, 0x20
+0x018016b73b: mov	dword ptr [rsp + 0x3b], edx
+0x018016b73f: lea	rdx, [rsp + 0x30]
+0x018016b744: mov	word ptr [rsp + 0x30], ax
+0x018016b749: lea	r8d, [rax - 0x11]
+0x018016b74d: call	0x1801acda0
+0x018016b752: test	eax, eax
+0x018016b754: mov	ecx, 1
+0x018016b759: cmovne	ebx, ecx
+0x018016b75c: mov	eax, ebx
+0x018016b75e: mov	rcx, qword ptr [rsp + 0x40]
+0x018016b763: xor	rcx, rsp
+0x018016b766: call	0x18073aa10
+0x018016b76b: add	rsp, 0x50
+0x018016b76f: pop	rbx
+0x018016b770: ret	

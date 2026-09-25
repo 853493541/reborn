@@ -1,0 +1,149 @@
+﻿==========================================================================================
+# skill\姹熸箹\闃茶韩姝﹁壓_鎵撳潗.lua
+==========================================================================================
+ERR [Errno 2] No such file or directory: 'C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\extracted\\scripts\\\\skill\\姹熸箹\\闃茶韩姝﹁壓_鎵撳潗.lua'
+==========================================================================================
+# skill\缁濆鎴樺満\缁濆_鏄熸ゼ鏈堝奖.lua
+==========================================================================================
+---------------------------------------------------------------------->
+-- 锟脚憋拷锟斤拷锟斤拷:	scripts/skill/锟斤拷锟斤拷战锟斤拷/锟斤拷锟斤拷_锟斤拷楼锟斤拷影.lua
+-- 锟斤拷锟斤拷时锟斤拷:	2023/8/15 23:33:04
+-- 锟斤拷锟斤拷锟矫伙拷:	xiaxianbo11
+-- 锟脚憋拷说锟斤拷:	
+----------------------------------------------------------------------<
+--------------锟脚憋拷锟侥硷拷锟斤拷始------------------------------------------------
+Include("scripts/Include/Skill.lh")
+Include("scripts/Include/Player.lh")
+
+tSkillData =
+{
+	{nDamageBase = 0, nDamageRand = 0, nCostMana = 286}, --level 1
+};
+
+--锟斤拷锟斤拷锟戒功锟斤拷锟杰硷拷锟斤拷锟斤拷锟斤拷锟街?
+function GetSkillLevelData(skill)
+
+	local dwSkillLevel = skill.dwLevel;
+
+	----------------- 魔锟斤拷锟斤拷锟斤拷 -------------------------------------------------
+		skill.AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+		4,
+		10000
+	);
+	skill.AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+		8,
+		10000
+	);
+	skill.AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+		7,
+		10000
+	);
+	skill.AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+		2,
+		10000
+	);
+	skill.AddAttribute(
+		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 锟斤拷锟斤拷锟斤拷锟?
+		ATTRIBUTE_TYPE.CAST_SKILL,
+		7276,
+		1
+	);
+	----------------- 锟斤拷锟斤拷施锟斤拷Buff锟斤拷锟斤拷 ---------------------------------------------
+	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 锟斤拷锟斤拷锟斤拷锟斤拷Buff
+	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 锟斤拷锟斤拷锟斤拷锟斤拷Buff
+	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 锟斤拷锟斤拷锟斤拷锟斤拷Buff
+	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 锟斤拷锟斤拷目锟斤拷Buff
+
+	----------------- BUFF锟斤拷锟?-------------------------------------------------
+	  skill.BindBuff(1, 51358, 1)			-- 锟斤拷锟斤拷Buff
+	--skill.BindBuff(2, nBuffID, nBuffLevel);		-- 锟斤拷锟斤拷Debuff
+	--skill.BindBuff(3, nBuffID, nBuffLevel);				-- 锟斤拷锟斤拷Dot
+	--skill.BindBuff(4, nBuffID, nBuffLevel);				-- 锟斤拷锟斤拷Hot 
+
+	----------------- 锟斤拷锟斤拷Cool down --------------------------------------------
+	--CoolDownIndex为CD位(锟斤拷4锟斤拷),nCoolDownID为CoolDownList.tab锟节碉拷CDID
+	--skill.SetPublicCoolDown(16);
+	skill.SetNormalCoolDown(1, 7121);
+	skill.SetCheckCoolDown(1, 444)
+	----------------- 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟?---------------------------------------------
+	--注锟斤拷,锟斤拷然锟斤拷些锟斤拷锟捷匡拷锟斤拷锟节脚憋拷锟节革拷锟斤拷,锟斤拷一锟姐不锟斤拷锟轿何改讹拷!
+	--skill.dwLevelUpExp	= 0;    				-- 锟斤拷锟斤拷锟斤拷锟斤拷
+	--skill.nExpAddOdds		= 1024;					-- 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
+	--skill.nPlayerLevelLimit	= 0;				-- 锟斤拷色锟斤拷锟斤拷学锟斤拷眉锟斤拷锟斤拷锟斤拷锟斤拷锟斤到锟斤拷锟斤拷偷燃锟?
+
+	----------------- 锟斤拷锟斤拷锟斤拷锟斤拷 -------------------------------------------------
+	--skill.nCostLife		= 0;					-- 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷值
+	--skill.nCostMana      	= 476;					-- 锟斤拷锟斤拷锟斤拷锟侥碉拷锟斤拷锟斤拷
+	--skill.nCostRage		= 0;					-- 锟斤拷锟斤拷锟斤拷锟侥碉拷怒锟斤拷
+	--skill.nCostStamina	= 0;					-- 锟斤拷锟斤拷锟斤拷锟侥碉拷锟斤拷锟斤拷
+	--skill.nCostItemType	= 0;					-- 锟斤拷锟斤拷锟斤拷锟侥碉拷锟斤拷品锟斤拷锟斤拷
+	--skill.nCostItemIndex	= 0;					-- 锟斤拷锟斤拷锟斤拷锟侥碉拷锟斤拷品锟斤拷锟斤拷ID
+	--skill.nCostManaBasePercent = 134;	-- 锟斤拷锟斤拷锟斤拷锟侥碉拷锟斤拷锟斤拷
+	----------------- 锟斤拷锟斤拷锟斤拷锟?-------------------------------------------------
+	--skill.bIsAccumulate	= false;				-- 锟斤拷锟斤拷锟角凤拷锟斤拷要锟斤拷锟斤拷
+	--skill.SetSubsectionSkill(nBeginInterval, nEndInterval, dwSkillID, dwSkillLevel)
+
+	----------------- 锟斤拷状锟斤拷锟斤拷锟斤拷锟?---------------------------------------------
+	--skill.nChainBranch	= 1;					--锟斤拷状锟斤拷锟杰凤拷支锟斤拷
+	--skill.nChainDepth		= 3;					--锟斤拷状锟斤拷锟杰诧拷锟斤拷
+	--锟斤拷状锟斤拷锟杰碉拷锟接硷拷锟斤拷锟斤拷skill.SetSubsectionSkill()锟借定
+
+	----------------- 施锟脚撅拷锟斤拷 -------------------------------------------------
+	--skill.nMinRadius		= 0;					-- 锟斤拷锟斤拷施锟脚碉拷锟斤拷小锟斤拷锟斤拷 
+	--skill.nMaxRadius		= 0;					-- 锟斤拷锟斤拷施锟脚碉拷锟斤拷锟斤拷锟斤拷 
+
+	----------------- 锟斤拷锟矫凤拷围 -------------------------------------------------
+	--skill.nAngleRange		= 256;					-- 锟斤拷锟斤拷锟斤拷围锟斤拷锟斤拷锟轿角度凤拷围 
+	--skill.nAreaRadius		= 0 * LENGTH_BASE;		-- 锟斤拷锟斤拷锟斤拷锟矫半径 
+	--skill.nTargetCountLimit	= 2;				-- 锟斤拷锟斤拷锟斤拷锟斤拷目锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷,(小锟斤拷0 锟斤拷锟斤拷目锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷) 
+
+	----------------- 时锟斤拷锟斤拷锟?-------------------------------------------------
+	--skill.nPrepareFrames  	= 0;				-- 锟斤拷锟斤拷帧锟斤拷
+	--skill.nChannelInterval	= 0; 				-- 通锟斤拷锟斤拷锟斤拷锟绞憋拷锟?
+	--skill.nChannelFrame		= 0;	 			-- 通锟斤拷锟斤拷锟斤拷锟斤拷时锟戒，锟斤拷位帧锟斤拷 
+	--skill.nBulletVelocity		= 0;				-- 锟接碉拷锟劫度ｏ拷锟斤拷位 锟斤拷/帧
+
+	----------------- 锟斤拷锟斤拷锟?-------------------------------------------------
+	--skill.bIsFormationSkill	= false;			-- 锟角凤拷锟斤拷锟桔硷拷锟斤拷
+	--skill.nFormationRange		= 0 * LENGTH_BASE;	-- 锟斤拷锟斤拷姆锟轿?
+	--skill.nLeastFormationPopulation	= 2;		-- 锟斤拷锟斤拷姆锟轿э拷锟斤拷锟斤拷俣锟皆憋拷锟斤拷锟斤拷锟斤拷锟斤拷映锟斤拷锟?
+
+	----------------- 锟斤拷锟斤拷锟斤拷 -------------------------------------------------
+	--skill.nBrokenRate         = 0.3 * PERCENT_BASE;	-- 锟斤拷锟杰憋拷锟斤拷系母锟斤拷锟?锟斤拷锟斤拷1024
+	--skill.nBreakRate		= 0;					-- 锟斤拷锟侥匡拷锟绞╋拷锟斤拷母锟斤拷锟?锟斤拷锟斤拷1024
+	----------------- 目锟斤拷血锟斤拷锟斤拷锟?---------------------------------------------
+	--skill.nTargetLifePercentMax    =  100; --目锟斤拷血锟斤拷锟斤拷锟斤拷锟睫ｏ拷0-100
+	--skill.nTargetLifePercentMin    =  0  ; --目锟斤拷血锟斤拷锟斤拷锟斤拷锟斤拷
+
+	----------------- 锟斤拷锟斤拷锟剿猴拷锟斤拷锟?---------------------------------------------
+	--nWeaponDamagePercent		= 0;				-- 锟斤拷锟斤拷锟剿猴拷锟劫分憋拷,锟斤拷锟解功锟剿猴拷锟斤拷锟矫★拷锟斤拷0锟斤拷示锟剿达拷锟解功锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟剿猴拷,1024为100%
+
+	return true;
+end
+
+--锟皆硷拷锟斤拷执锟叫碉拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷椋拷煤锟斤拷锟斤拷锟斤拷锟斤拷诳锟绞际╋拷偶锟斤拷艿锟绞憋拷虮坏锟斤拷茫锟斤拷锟饺凤拷锟斤拷欠锟斤拷锟斤拷施锟脚该伙拷锟斤拷
+-- Player: 锟斤拷锟斤拷施锟斤拷锟斤拷, nPreResult: 锟斤拷锟斤拷锟斤拷锟芥按锟斤拷一锟斤拷锟斤拷锟斤拷锟叫断的斤拷锟?
+-- 注锟解，锟斤拷锟斤拷锟皆脚憋拷锟斤拷锟截的斤拷锟轿?
+function CanCast(player, nPreResult)    --锟叫讹拷锟斤拷业锟阶刺拷锟斤拷锟斤拷卸锟斤拷欠锟斤拷锟皆凤拷锟斤拷锟斤拷锟斤拷
+	return nPreResult;
+end
+
+function OnSkillLevelUp(skill, player)
+end
+
+--魔锟斤拷锟斤拷锟斤拷应锟斤拷时锟斤拷执锟叫猴拷锟斤拷,dwCharacterID锟斤拷魔锟斤拷锟斤拷锟斤拷锟斤拷锟矫碉拷目锟斤拷ID
+function Apply(dwCharacterID)
+end
+
+--魔锟斤拷锟斤拷锟皆凤拷应锟斤拷时锟斤拷执锟叫猴拷锟斤拷,dwCharacterID锟斤拷魔锟斤拷锟斤拷锟斤拷锟斤拷锟矫碉拷目锟斤拷ID
+function UnApply(dwCharacterID)
+end
+
