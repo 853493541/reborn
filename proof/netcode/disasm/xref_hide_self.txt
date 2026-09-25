@@ -1,0 +1,677 @@
+# JX3RepresentX64.dll xrefs for 'hide self'
+# image base 0x180000000
+
+## xref @ 0x180310f64 -> 0x180ca7180 'hide self'  fn start 0x1803103a0
+  0x1803103a0: push     rbp
+  0x1803103a2: lea      rbp, [rsp - 0x58a0]
+  0x1803103aa: mov      eax, 0x59a0
+  0x1803103af: call     0x180009732
+  0x1803103b4: sub      rsp, rax
+  0x1803103b7: lea      rax, [rip + 0x99a3ba]
+  0x1803103be: mov      dword ptr [rip + 0xbe7aac], 0
+  0x1803103c8: mov      qword ptr [rsp + 0x20], rax
+  0x1803103cd: lea      r8, [rsp + 0x20]
+  0x1803103d2: lea      rax, [rip + 0x20337]
+  0x1803103d9: mov      dword ptr [rip + 0xbe7ac5], 0
+  0x1803103e3: mov      qword ptr [rsp + 0x28], rax
+  0x1803103e8: lea      rdx, [rip + 0x9968f1]  ; 'trace msg'
+  0x1803103ef: lea      rax, [rsp + 0x20]
+  0x1803103f4: mov      dword ptr [rip + 0xbe7aae], 0
+  0x1803103fe: lea      rcx, [rip + 0xbe7a73]
+  0x180310405: mov      qword ptr [rsp + 0x58], rax
+  0x18031040a: mov      dword ptr [rip + 0xbe7a9c], 0
+  0x180310414: mov      dword ptr [rip + 0xbe7a96], 0
+  0x18031041e: mov      dword ptr [rip + 0xbe7a90], 0
+  0x180310428: call     0x18000ac22
+  0x18031042d: lea      rax, [rip + 0x99a344]
+  0x180310434: mov      qword ptr [rsp + 0x20], rax
+  0x180310439: lea      r8, [rsp + 0x20]
+  0x18031043e: lea      rax, [rip + 0x202eb]
+  0x180310445: mov      qword ptr [rsp + 0x28], rax
+  0x18031044a: lea      rdx, [rip + 0x99689f]  ; 'trace sound'
+  0x180310451: lea      rax, [rsp + 0x20]
+  0x180310456: lea      rcx, [rip + 0xbe7a1b]
+  0x18031045d: mov      qword ptr [rsp + 0x58], rax
+  0x180310462: call     0x18000ac22
+  0x180310467: lea      rax, [rip + 0x99a30a]
+  0x18031046e: mov      qword ptr [rsp + 0x20], rax
+  0x180310473: lea      r8, [rsp + 0x20]
+  0x180310478: lea      rax, [rip + 0x20271]
+  0x18031047f: mov      qword ptr [rsp + 0x28], rax
+  0x180310484: lea      rdx, [rip + 0x996875]  ; 'trace lock control'
+  0x18031048b: lea      rax, [rsp + 0x20]
+  0x180310490: lea      rcx, [rip + 0xbe79e1]
+  0x180310497: mov      qword ptr [rsp + 0x58], rax
+  0x18031049c: call     0x18000ac22
+  0x1803104a1: lea      rax, [rip + 0x99a2d0]
+  0x1803104a8: mov      qword ptr [rsp + 0x20], rax
+  0x1803104ad: lea      r8, [rsp + 0x20]
+  0x1803104b2: lea      rax, [rip + 0x1c187]
+  0x1803104b9: mov      qword ptr [rsp + 0x28], rax
+  0x1803104be: lea      rdx, [rip + 0x996853]  ; 'sfx lod error'
+  0x1803104c5: lea      rax, [rsp + 0x20]
+  0x1803104ca: lea      rcx, [rip + 0xbe79a7]
+  0x1803104d1: mov      qword ptr [rsp + 0x58], rax
+  0x1803104d6: call     0x18000ac22
+  0x1803104db: lea      rax, [rip + 0x99a296]
+  0x1803104e2: mov      qword ptr [rsp + 0x20], rax
+  0x1803104e7: lea      r8, [rsp + 0x20]
+  0x1803104ec: lea      rax, [rip + 0x2025d]
+  0x1803104f3: mov      qword ptr [rsp + 0x28], rax
+  0x1803104f8: lea      rdx, [rip + 0x996829]  ; 'trace statistic'
+  0x1803104ff: lea      rax, [rsp + 0x20]
+  0x180310504: lea      rcx, [rip + 0xbe796d]
+  0x18031050b: mov      qword ptr [rsp + 0x58], rax
+  0x180310510: call     0x18000ac22
+  0x180310515: lea      rax, [rip + 0x99a25c]
+  0x18031051c: mov      qword ptr [rsp + 0x20], rax
+  0x180310521: lea      r8, [rsp + 0x20]
+  0x180310526: lea      rax, [rip + 0x13b63]
+  0x18031052d: mov      qword ptr [rsp + 0x28], rax
+  0x180310532: lea      rdx, [rip + 0x996807]  ; 'reset statistic'
+  0x180310539: lea      rax, [rsp + 0x20]
+  0x18031053e: lea      rcx, [rip + 0xbe7933]
+  0x180310545: mov      qword ptr [rsp + 0x58], rax
+  0x18031054a: call     0x18000ac22
+  0x18031054f: lea      rax, [rip + 0x99a222]
+  0x180310556: mov      qword ptr [rsp + 0x20], rax
+  0x18031055b: lea      r8, [rsp + 0x20]
+  0x180310560: lea      rax, [rip + 0x8829]
+  0x180310567: mov      qword ptr [rsp + 0x28], rax
+  0x18031056c: lea      rdx, [rip + 0x9967e5]  ; 'clear trace'
+  0x180310573: lea      rax, [rsp + 0x20]
+  0x180310578: lea      rcx, [rip + 0xbe78f9]
+  0x18031057f: mov      qword ptr [rsp + 0x58], rax
+  0x180310584: call     0x18000ac22
+  0x180310589: lea      rax, [rip + 0x99a1e8]
+  0x180310590: mov      qword ptr [rsp + 0x20], rax
+  0x180310595: lea      rax, [rip + 0x87f4]
+  0x18031059c: mov      qword ptr [rsp + 0x28], rax
+  0x1803105a1: lea      rax, [rsp + 0x20]
+  0x1803105a6: lea      r8, [rsp + 0x20]
+  0x1803105ab: mov      qword ptr [rsp + 0x58], rax
+  0x1803105b0: lea      rdx, [rip + 0x9967b1]  ; 'cls trace'
+  0x1803105b7: lea      rcx, [rip + 0xbe78ba]
+  0x1803105be: call     0x18000ac22
+  0x1803105c3: lea      rax, [rip + 0x99a1ae]
+  0x1803105ca: mov      qword ptr [rsp + 0x20], rax
+  0x1803105cf: lea      r8, [rsp + 0x20]
+  0x1803105d4: lea      rax, [rip + 0x9eb5]
+  0x1803105db: mov      qword ptr [rsp + 0x28], rax
+  0x1803105e0: lea      rdx, [rip + 0x996791]  ; 'disable all animation'
+  0x1803105e7: lea      rax, [rsp + 0x20]
+  0x1803105ec: lea      rcx, [rip + 0xbe7885]
+  0x1803105f3: mov      qword ptr [rsp + 0x58], rax
+  0x1803105f8: call     0x18000ac22
+  0x1803105fd: lea      rax, [rip + 0x99a174]
+  0x180310604: mov      qword ptr [rsp + 0x20], rax
+  0x180310609: lea      r8, [rsp + 0x20]
+  0x18031060e: lea      rax, [rip + 0xa03b]
+  0x180310615: mov      qword ptr [rsp + 0x28], rax
+  0x18031061a: lea      rdx, [rip + 0x996777]  ; 'disable idle random animation'
+  0x180310621: lea      rax, [rsp + 0x20]
+  0x180310626: lea      rcx, [rip + 0xbe784b]
+  0x18031062d: mov      qword ptr [rsp + 0x58], rax
+  0x180310632: call     0x18000ac22
+  0x180310637: lea      rax, [rip + 0x99a13a]
+  0x18031063e: mov      qword ptr [rsp + 0x20], rax
+  0x180310643: lea      r8, [rsp + 0x20]
+  0x180310648: lea      rax, [rip + 0xa171]
+  0x18031064f: mov      qword ptr [rsp + 0x28], rax
+  0x180310654: lea      rdx, [rip + 0x996765]  ; 'disable remote character interpolate'
+  0x18031065b: lea      rax, [rsp + 0x20]
+  0x180310660: lea      rcx, [rip + 0xbe7811]
+  0x180310667: mov      qword ptr [rsp + 0x58], rax
+  0x18031066c: call     0x18000ac22
+  0x180310671: lea      rax, [rip + 0x99a100]
+  0x180310678: mov      qword ptr [rsp + 0x20], rax
+  0x18031067d: lea      r8, [rsp + 0x20]
+  0x180310682: lea      rax, [rip + 0x12de7]
+  0x180310689: mov      qword ptr [rsp + 0x28], rax
+  0x18031068e: lea      rdx, [rip + 0x99675b]  ; 'reload table'
+  0x180310695: lea      rax, [rsp + 0x20]
+  0x18031069a: lea      rcx, [rip + 0xbe77d7]
+  0x1803106a1: mov      qword ptr [rsp + 0x58], rax
+  0x1803106a6: call     0x18000ac22
+  0x1803106ab: lea      rax, [rip + 0x99a0c6]
+  0x1803106b2: mov      qword ptr [rsp + 0x20], rax
+  0x1803106b7: lea      r8, [rsp + 0x20]
+  0x1803106bc: lea      rax, [rip + 0x1404d]
+  0x1803106c3: mov      qword ptr [rsp + 0x28], rax
+  0x1803106c8: lea      rdx, [rip + 0x996731]  ; 'dink'
+  0x1803106cf: lea      rax, [rsp + 0x20]
+  0x1803106d4: lea      rcx, [rip + 0xbe779d]
+  0x1803106db: mov      qword ptr [rsp + 0x58], rax
+  0x1803106e0: call     0x18000ac22
+  0x1803106e5: lea      rax, [rip + 0x99a08c]
+  0x1803106ec: mov      qword ptr [rsp + 0x20], rax
+  0x1803106f1: lea      r8, [rsp + 0x20]
+  0x1803106f6: lea      rax, [rip + 0x123a3]
+  0x1803106fd: mov      qword ptr [rsp + 0x28], rax
+  0x180310702: lea      rdx, [rip + 0x9966ff]  ; 'character dink'
+  0x180310709: lea      rax, [rsp + 0x20]
+  0x18031070e: lea      rcx, [rip + 0xbe7763]
+  0x180310715: mov      qword ptr [rsp + 0x58], rax
+  0x18031071a: call     0x18000ac22
+  0x18031071f: lea      rax, [rip + 0x99a052]
+  0x180310726: mov      qword ptr [rsp + 0x20], rax
+  0x18031072b: lea      r8, [rsp + 0x20]
+  0x180310730: lea      rax, [rip + 0xd619]
+  0x180310737: mov      qword ptr [rsp + 0x28], rax
+  0x18031073c: lea      rdx, [rip + 0x9966dd]  ; 'hand link'
+  0x180310743: lea      rax, [rsp + 0x20]
+  0x180310748: lea      rcx, [rip + 0xbe7729]
+  0x18031074f: mov      qword ptr [rsp + 0x58], rax
+  0x180310754: call     0x18000ac22
+  0x180310759: lea      rax, [rip + 0x99a018]
+  0x180310760: mov      qword ptr [rsp + 0x20], rax
+  0x180310765: lea      rax, [rip + 0xb3c4]
+  0x18031076c: mov      qword ptr [rsp + 0x28], rax
+  0x180310771: lea      rax, [rsp + 0x20]
+  0x180310776: mov      qword ptr [rsp + 0x58], rax
+  0x18031077b: lea      r8, [rsp + 0x20]
+  0x180310780: lea      rdx, [rip + 0x9966a9]  ; 'enable intersect'
+  0x180310787: lea      rcx, [rip + 0xbe76ea]
+  0x18031078e: call     0x18000ac22
+  0x180310793: lea      rax, [rip + 0x999fde]
+  0x18031079a: mov      qword ptr [rsp + 0x20], rax
+  0x18031079f: lea      r8, [rsp + 0x20]
+  0x1803107a4: lea      rax, [rip + 0x208d5]
+  0x1803107ab: mov      qword ptr [rsp + 0x28], rax
+  0x1803107b0: lea      rdx, [rip + 0x996691]  ; 'use dynamicbones'
+  0x1803107b7: lea      rax, [rsp + 0x20]
+  0x1803107bc: lea      rcx, [rip + 0xbe76b5]
+  0x1803107c3: mov      qword ptr [rsp + 0x58], rax
+  0x1803107c8: call     0x18000ac22
+  0x1803107cd: lea      rax, [rip + 0x999fa4]
+  0x1803107d4: mov      qword ptr [rsp + 0x20], rax
+  0x1803107d9: lea      r8, [rsp + 0x20]
+  0x1803107de: lea      rax, [rip + 0x175bb]
+  0x1803107e5: mov      qword ptr [rsp + 0x28], rax
+  0x1803107ea: lea      rdx, [rip + 0x99666f]  ; 'set gas field'
+  0x1803107f1: lea      rax, [rsp + 0x20]
+  0x1803107f6: lea      rcx, [rip + 0xbe767b]
+  0x1803107fd: mov      qword ptr [rsp + 0x58], rax
+  0x180310802: call     0x18000ac22
+  0x180310807: lea      rax, [rip + 0x999f6a]
+  0x18031080e: mov      qword ptr [rsp + 0x20], rax
+  0x180310813: lea      r8, [rsp + 0x20]
+  0x180310818: lea      rax, [rip + 0x1d651]
+  0x18031081f: mov      qword ptr [rsp + 0x28], rax
+  0x180310824: lea      rdx, [rip + 0x996645]  ; 'switch top buffer'
+  0x18031082b: lea      rax, [rsp + 0x20]
+  0x180310830: lea      rcx, [rip + 0xbe7641]
+  0x180310837: mov      qword ptr [rsp + 0x58], rax
+  0x18031083c: call     0x18000ac22
+  0x180310841: lea      rax, [rip + 0x999f30]
+  0x180310848: mov      qword ptr [rsp + 0x20], rax
+  0x18031084d: lea      r8, [rsp + 0x20]
+  0x180310852: lea      rax, [rip + 0x19cc7]
+  0x180310859: mov      qword ptr [rsp + 0x28], rax
+  0x18031085e: lea      rdx, [rip + 0x996623]  ; 'set performance level'
+  0x180310865: lea      rax, [rsp + 0x20]
+  0x18031086a: lea      rcx, [rip + 0xbe7607]
+  0x180310871: mov      qword ptr [rsp + 0x58], rax
+  0x180310876: call     0x18000ac22
+  0x18031087b: lea      rax, [rip + 0x999ef6]
+  0x180310882: mov      qword ptr [rsp + 0x20], rax
+  0x180310887: lea      r8, [rsp + 0x20]
+  0x18031088c: lea      rax, [rip + 0xa57d]
+  0x180310893: mov      qword ptr [rsp + 0x28], rax
+  0x180310898: lea      rdx, [rip + 0x996609]  ; 'enable animation shadow'
+  0x18031089f: lea      rax, [rsp + 0x20]
+  0x1803108a4: lea      rcx, [rip + 0xbe75cd]
+  0x1803108ab: mov      qword ptr [rsp + 0x58], rax
+  0x1803108b0: call     0x18000ac22
+  0x1803108b5: lea      rax, [rip + 0x999ebc]
+  0x1803108bc: mov      qword ptr [rsp + 0x20], rax
+  0x1803108c1: lea      r8, [rsp + 0x20]
+  0x1803108c6: lea      rax, [rip + 0x201c3]
+  0x1803108cd: mov      qword ptr [rsp + 0x28], rax
+  0x1803108d2: lea      rdx, [rip + 0x9965ef]  ; 'uniform optimization on'
+  0x1803108d9: lea      rax, [rsp + 0x20]
+  0x1803108de: lea      rcx, [rip + 0xbe7593]
+  0x1803108e5: mov      qword ptr [rsp + 0x58], rax
+  0x1803108ea: call     0x18000ac22
+  0x1803108ef: lea      rax, [rip + 0x999e82]
+  0x1803108f6: mov      qword ptr [rsp + 0x20], rax
+  0x1803108fb: lea      r8, [rsp + 0x20]
+  0x180310900: lea      rax, [rip + 0x20159]
+  0x180310907: mov      qword ptr [rsp + 0x28], rax
+  0x18031090c: lea      rdx, [rip + 0x9965d5]  ; 'uniform optimization off'
+  0x180310913: lea      rax, [rsp + 0x20]
+  0x180310918: lea      rcx, [rip + 0xbe7559]
+  0x18031091f: mov      qword ptr [rsp + 0x58], rax
+  0x180310924: call     0x18000ac22
+  0x180310929: lea      rax, [rip + 0x999e48]
+  0x180310930: mov      qword ptr [rsp + 0x20], rax
+  0x180310935: lea      r8, [rsp + 0x20]
+  0x18031093a: lea      rax, [rip + 0x1402f]
+  0x180310941: mov      qword ptr [rsp + 0x28], rax
+  0x180310946: lea      rax, [rsp + 0x20]
+  0x18031094b: mov      qword ptr [rsp + 0x58], rax
+  0x180310950: lea      rdx, [rip + 0x9965b1]  ; 'rides optimization on'
+  0x180310957: lea      rcx, [rip + 0xbe751a]
+  0x18031095e: call     0x18000ac22
+  0x180310963: lea      rax, [rip + 0x999e0e]
+  0x18031096a: mov      qword ptr [rsp + 0x20], rax
+  0x18031096f: lea      r8, [rsp + 0x20]
+  0x180310974: lea      rax, [rip + 0x13fd5]
+  0x18031097b: mov      qword ptr [rsp + 0x28], rax
+  0x180310980: lea      rdx, [rip + 0x9965a1]  ; 'rides optimization off'
+  0x180310987: lea      rax, [rsp + 0x20]
+  0x18031098c: lea      rcx, [rip + 0xbe74e5]
+  0x180310993: mov      qword ptr [rsp + 0x58], rax
+  0x180310998: call     0x18000ac22
+  0x18031099d: lea      rax, [rip + 0x999dd4]
+  0x1803109a4: mov      qword ptr [rsp + 0x20], rax
+  0x1803109a9: lea      r8, [rsp + 0x20]
+  0x1803109ae: lea      rax, [rip + 0xf5db]
+  0x1803109b5: mov      qword ptr [rsp + 0x28], rax
+  0x1803109ba: lea      rdx, [rip + 0x996587]  ; 'npc filter on'
+  0x1803109c1: lea      rax, [rsp + 0x20]
+  0x1803109c6: lea      rcx, [rip + 0xbe74ab]
+  0x1803109cd: mov      qword ptr [rsp + 0x58], rax
+  0x1803109d2: call     0x18000ac22
+  0x1803109d7: lea      rax, [rip + 0x999d9a]
+  0x1803109de: mov      qword ptr [rsp + 0x20], rax
+  0x1803109e3: lea      r8, [rsp + 0x20]
+  0x1803109e8: lea      rax, [rip + 0xf421]
+  0x1803109ef: mov      qword ptr [rsp + 0x28], rax
+  0x1803109f4: lea      rdx, [rip + 0x99655d]  ; 'npc filter off'
+  0x1803109fb: lea      rax, [rsp + 0x20]
+  0x180310a00: lea      rcx, [rip + 0xbe7471]
+  0x180310a07: mov      qword ptr [rsp + 0x58], rax
+  0x180310a0c: call     0x18000ac22
+  0x180310a11: lea      rax, [rip + 0x999d60]
+  0x180310a18: mov      qword ptr [rsp + 0x20], rax
+  0x180310a1d: lea      r8, [rsp + 0x20]
+  0x180310a22: lea      rax, [rip + 0xd5f7]
+  0x180310a29: mov      qword ptr [rsp + 0x28], rax
+  0x180310a2e: lea      rdx, [rip + 0x99653b]  ; 'hide player'
+  0x180310a35: lea      rax, [rsp + 0x20]
+  0x180310a3a: lea      rcx, [rip + 0xbe7437]
+  0x180310a41: mov      qword ptr [rsp + 0x58], rax
+  0x180310a46: call     0x18000ac22
+  0x180310a4b: lea      rax, [rip + 0x999d26]
+  0x180310a52: mov      qword ptr [rsp + 0x20], rax
+  0x180310a57: lea      r8, [rsp + 0x20]
+  0x180310a5c: lea      rax, [rip + 0x1bd0d]
+  0x180310a63: mov      qword ptr [rsp + 0x28], rax
+  0x180310a68: lea      rdx, [rip + 0x996511]  ; 'show player'
+  0x180310a6f: lea      rax, [rsp + 0x20]
+  0x180310a74: lea      rcx, [rip + 0xbe73fd]
+  0x180310a7b: mov      qword ptr [rsp + 0x58], rax
+  0x180310a80: call     0x18000ac22
+  0x180310a85: lea      rax, [rip + 0x999cec]
+  0x180310a8c: mov      qword ptr [rsp + 0x20], rax
+  0x180310a91: lea      r8, [rsp + 0x20]
+  0x180310a96: lea      rax, [rip + 0x147c3]
+  0x180310a9d: mov      qword ptr [rsp + 0x28], rax
+  0x180310aa2: lea      rdx, [rip + 0x9964e7]  ; 'player selectable'
+  0x180310aa9: lea      rax, [rsp + 0x20]
+  0x180310aae: lea      rcx, [rip + 0xbe73c3]
+  0x180310ab5: mov      qword ptr [rsp + 0x58], rax
+  0x180310aba: call     0x18000ac22
+  0x180310abf: lea      rax, [rip + 0x999cb2]
+  0x180310ac6: mov      qword ptr [rsp + 0x20], rax
+  0x180310acb: lea      r8, [rsp + 0x20]
+  0x180310ad0: lea      rax, [rip + 0x147f9]
+  0x180310ad7: mov      qword ptr [rsp + 0x28], rax
+  0x180310adc: lea      rdx, [rip + 0x9964c5]  ; 'player unselectable'
+  0x180310ae3: lea      rax, [rsp + 0x20]
+  0x180310ae8: lea      rcx, [rip + 0xbe7389]
+  0x180310aef: mov      qword ptr [rsp + 0x58], rax
+  0x180310af4: call     0x18000ac22
+  0x180310af9: lea      rax, [rip + 0x999c78]
+  0x180310b00: mov      qword ptr [rsp + 0x20], rax
+  0x180310b05: lea      r8, [rsp + 0x20]
+  0x180310b0a: lea      rax, [rip + 0x1c24f]
+  0x180310b11: mov      qword ptr [rsp + 0x28], rax
+  0x180310b16: lea      rdx, [rip + 0x9964a3]  ; 'show or hide party player'
+  0x180310b1d: lea      rax, [rsp + 0x20]
+  0x180310b22: mov      qword ptr [rsp + 0x58], rax
+  0x180310b27: lea      rcx, [rip + 0xbe734a]
+  0x180310b2e: call     0x18000ac22
+  0x180310b33: lea      rax, [rip + 0x999c3e]
+  0x180310b3a: mov      qword ptr [rsp + 0x20], rax
+  0x180310b3f: lea      r8, [rsp + 0x20]
+  0x180310b44: lea      rax, [rip + 0x1c155]
+  0x180310b4b: mov      qword ptr [rsp + 0x28], rax
+  0x180310b50: lea      rdx, [rip + 0x996489]  ; 'show or hide other player'
+  0x180310b57: lea      rax, [rsp + 0x20]
+  0x180310b5c: lea      rcx, [rip + 0xbe7315]
+  0x180310b63: mov      qword ptr [rsp + 0x58], rax
+  0x180310b68: call     0x18000ac22
+  0x180310b6d: lea      rax, [rip + 0x999c04]
+  0x180310b74: mov      qword ptr [rsp + 0x20], rax
+  0x180310b79: lea      r8, [rsp + 0x20]
+  0x180310b7e: lea      rax, [rip + 0xd44b]
+  0x180310b85: mov      qword ptr [rsp + 0x28], rax
+  0x180310b8a: lea      rdx, [rip + 0x99290f]  ; 'hide npc'
+  0x180310b91: lea      rax, [rsp + 0x20]
+  0x180310b96: lea      rcx, [rip + 0xbe72db]
+  0x180310b9d: mov      qword ptr [rsp + 0x58], rax
+  0x180310ba2: call     0x18000ac22
+  0x180310ba7: lea      rax, [rip + 0x999bca]
+  0x180310bae: mov      qword ptr [rsp + 0x20], rax
+  0x180310bb3: lea      r8, [rsp + 0x20]
+  0x180310bb8: lea      rax, [rip + 0x1bb61]
+  0x180310bbf: mov      qword ptr [rsp + 0x28], rax
+  0x180310bc4: lea      rdx, [rip + 0x9928f5]  ; 'show npc'
+  0x180310bcb: lea      rax, [rsp + 0x20]
+  0x180310bd0: lea      rcx, [rip + 0xbe72a1]
+  0x180310bd7: mov      qword ptr [rsp + 0x58], rax
+  0x180310bdc: call     0x18000ac22
+  0x180310be1: lea      rax, [rip + 0x999b90]
+  0x180310be8: mov      qword ptr [rsp + 0x20], rax
+  0x180310bed: lea      r8, [rsp + 0x20]
+  0x180310bf2: lea      rax, [rip + 0xd977]
+  0x180310bf9: mov      qword ptr [rsp + 0x28], rax
+  0x180310bfe: lea      rdx, [rip + 0x9963fb]  ; 'hide npc title'
+  0x180310c05: lea      rax, [rsp + 0x20]
+  0x180310c0a: lea      rcx, [rip + 0xbe7267]
+  0x180310c11: mov      qword ptr [rsp + 0x58], rax
+  0x180310c16: call     0x18000ac22
+  0x180310c1b: lea      rax, [rip + 0x999b56]
+  0x180310c22: mov      qword ptr [rsp + 0x20], rax
+  0x180310c27: lea      r8, [rsp + 0x20]
+  0x180310c2c: lea      rax, [rip + 0xda6d]
+  0x180310c33: mov      qword ptr [rsp + 0x28], rax
+  0x180310c38: lea      rdx, [rip + 0x9963d9]  ; 'hide player title'
+  0x180310c3f: lea      rax, [rsp + 0x20]
+  0x180310c44: lea      rcx, [rip + 0xbe722d]
+  0x180310c4b: mov      qword ptr [rsp + 0x58], rax
+  0x180310c50: call     0x18000ac22
+  0x180310c55: lea      rax, [rip + 0x999b1c]
+  0x180310c5c: mov      qword ptr [rsp + 0x20], rax
+  0x180310c61: lea      r8, [rsp + 0x20]
+  0x180310c66: lea      rax, [rip + 0x1be43]
+  0x180310c6d: mov      qword ptr [rsp + 0x28], rax
+  0x180310c72: lea      rdx, [rip + 0x9963b7]  ; 'show npc title'
+  0x180310c79: lea      rax, [rsp + 0x20]
+  0x180310c7e: lea      rcx, [rip + 0xbe71f3]
+  0x180310c85: mov      qword ptr [rsp + 0x58], rax
+  0x180310c8a: call     0x18000ac22
+  0x180310c8f: lea      rax, [rip + 0x999ae2]
+  0x180310c96: mov      qword ptr [rsp + 0x20], rax
+  0x180310c9b: lea      r8, [rsp + 0x20]
+  0x180310ca0: lea      rax, [rip + 0x1c199]
+  0x180310ca7: mov      qword ptr [rsp + 0x28], rax
+  0x180310cac: lea      rdx, [rip + 0x996395]  ; 'show player title'
+  0x180310cb3: lea      rax, [rsp + 0x20]
+  0x180310cb8: lea      rcx, [rip + 0xbe71b9]
+  0x180310cbf: mov      qword ptr [rsp + 0x58], rax
+  0x180310cc4: call     0x18000ac22
+  0x180310cc9: lea      rax, [rip + 0x999aa8]
+  0x180310cd0: mov      qword ptr [rsp + 0x20], rax
+  0x180310cd5: lea      r8, [rsp + 0x20]
+  0x180310cda: lea      rax, [rip + 0x1c48f]
+  0x180310ce1: mov      qword ptr [rsp + 0x28], rax
+  0x180310ce6: lea      rdx, [rip + 0x996373]  ; 'smart sh npc'
+  0x180310ced: lea      rax, [rsp + 0x20]
+  0x180310cf2: mov      qword ptr [rsp + 0x58], rax
+  0x180310cf7: lea      rcx, [rip + 0xbe717a]
+  0x180310cfe: call     0x18000ac22
+  0x180310d03: lea      rax, [rip + 0x999a6e]
+  0x180310d0a: mov      qword ptr [rsp + 0x20], rax
+  0x180310d0f: lea      r8, [rsp + 0x20]
+  0x180310d14: lea      rax, [rip + 0x1c5d5]
+  0x180310d1b: mov      qword ptr [rsp + 0x28], rax
+  0x180310d20: lea      rdx, [rip + 0x996349]  ; 'smart sh player'
+  0x180310d27: lea      rax, [rsp + 0x20]
+  0x180310d2c: lea      rcx, [rip + 0xbe7145]
+  0x180310d33: mov      qword ptr [rsp + 0x58], rax
+  0x180310d38: call     0x18000ac22
+  0x180310d3d: lea      rax, [rip + 0x999a34]
+  0x180310d44: mov      qword ptr [rsp + 0x20], rax
+  0x180310d49: lea      r8, [rsp + 0x20]
+  0x180310d4e: lea      rax, [rip + 0xd92b]
+  0x180310d55: mov      qword ptr [rsp + 0x28], rax
+  0x180310d5a: lea      rdx, [rip + 0x996327]  ; 'hide player bird float title'
+  0x180310d61: lea      rax, [rsp + 0x20]
+  0x180310d66: lea      rcx, [rip + 0xbe710b]
+  0x180310d6d: mov      qword ptr [rsp + 0x58], rax
+  0x180310d72: call     0x18000ac22
+  0x180310d77: lea      rax, [rip + 0x9999fa]
+  0x180310d7e: mov      qword ptr [rsp + 0x20], rax
+  0x180310d83: lea      r8, [rsp + 0x20]
+  0x180310d88: lea      rax, [rip + 0x1c091]
+  0x180310d8f: mov      qword ptr [rsp + 0x28], rax
+  0x180310d94: lea      rdx, [rip + 0x996315]  ; 'show player bird float title'
+  0x180310d9b: lea      rax, [rsp + 0x20]
+  0x180310da0: lea      rcx, [rip + 0xbe70d1]
+  0x180310da7: mov      qword ptr [rsp + 0x58], rax
+  0x180310dac: call     0x18000ac22
+  0x180310db1: lea      rax, [rip + 0x9999c0]
+  0x180310db8: mov      qword ptr [rsp + 0x20], rax
+  0x180310dbd: lea      r8, [rsp + 0x20]
+  0x180310dc2: lea      rax, [rip + 0xd407]
+  0x180310dc9: mov      qword ptr [rsp + 0x28], rax
+  0x180310dce: lea      rdx, [rip + 0x996303]  ; 'hide character'
+  0x180310dd5: lea      rax, [rsp + 0x20]
+  0x180310dda: lea      rcx, [rip + 0xbe7097]
+  0x180310de1: mov      qword ptr [rsp + 0x58], rax
+  0x180310de6: call     0x18000ac22
+  0x180310deb: lea      rax, [rip + 0x999986]
+  0x180310df2: mov      qword ptr [rsp + 0x20], rax
+  0x180310df7: lea      r8, [rsp + 0x20]
+  0x180310dfc: lea      rax, [rip + 0x7dcd]
+  0x180310e03: mov      qword ptr [rsp + 0x28], rax
+  0x180310e08: lea      rdx, [rip + 0x9962e1]  ; 'clear hidden characters'
+  0x180310e0f: lea      rax, [rsp + 0x20]
+  0x180310e14: lea      rcx, [rip + 0xbe705d]
+  0x180310e1b: mov      qword ptr [rsp + 0x58], rax
+  0x180310e20: call     0x18000ac22
+  0x180310e25: lea      rax, [rip + 0x99994c]
+  0x180310e2c: mov      qword ptr [rsp + 0x20], rax
+  0x180310e31: lea      r8, [rsp + 0x20]
+  0x180310e36: lea      rax, [rip + 0x18c43]
+  0x180310e3d: mov      qword ptr [rsp + 0x28], rax
+  0x180310e42: lea      rdx, [rip + 0x9962c7]  ; 'set npc fight idle ani id'
+  0x180310e49: lea      rax, [rsp + 0x20]
+  0x180310e4e: lea      rcx, [rip + 0xbe7023]
+  0x180310e55: mov      qword ptr [rsp + 0x58], rax
+  0x180310e5a: call     0x18000ac22
+  0x180310e5f: lea      rax, [rip + 0x999912]
+  0x180310e66: mov      qword ptr [rsp + 0x20], rax
+  0x180310e6b: lea      r8, [rsp + 0x20]
+  0x180310e70: lea      rax, [rip + 0xe3e9]
+  0x180310e77: mov      qword ptr [rsp + 0x28], rax
+  0x180310e7c: lea      rdx, [rip + 0x9962ad]  ; 'lock npc'
+  0x180310e83: lea      rax, [rsp + 0x20]
+  0x180310e88: lea      rcx, [rip + 0xbe6fe9]
+  0x180310e8f: mov      qword ptr [rsp + 0x58], rax
+  0x180310e94: call     0x18000ac22
+  0x180310e99: lea      rax, [rip + 0x9998d8]
+  0x180310ea0: mov      qword ptr [rsp + 0x20], rax
+  0x180310ea5: lea      r8, [rsp + 0x20]
+  0x180310eaa: lea      rax, [rip + 0x1880f]
+  0x180310eb1: mov      qword ptr [rsp + 0x28], rax
+  0x180310eb6: lea      rdx, [rip + 0x996283]  ; 'set npc animation'
+  0x180310ebd: lea      rax, [rsp + 0x20]
+  0x180310ec2: lea      rcx, [rip + 0xbe6faf]
+  0x180310ec9: mov      qword ptr [rsp + 0x58], rax
+  0x180310ece: call     0x18000ac22
+  0x180310ed3: lea      rax, [rip + 0x99989e]
+  0x180310eda: mov      qword ptr [rsp + 0x20], rax
+  0x180310edf: lea      r8, [rsp + 0x20]
+  0x180310ee4: lea      rax, [rip + 0x1fd65]
+  0x180310eeb: mov      qword ptr [rsp + 0x28], rax
+  0x180310ef0: lea      rdx, [rip + 0x996261]  ; 'unlock npc'
+  0x180310ef7: lea      rax, [rsp + 0x20]
+  0x180310efc: lea      rcx, [rip + 0xbe6f75]
+  0x180310f03: mov      qword ptr [rsp + 0x58], rax
+  0x180310f08: call     0x18000ac22
+  0x180310f0d: lea      rax, [rip + 0x999864]
+  0x180310f14: mov      qword ptr [rsp + 0x20], rax
+  0x180310f19: lea      r8, [rsp + 0x20]
+  0x180310f1e: lea      rax, [rip + 0xeb4b]
+  0x180310f25: mov      qword ptr [rsp + 0x28], rax
+  0x180310f2a: lea      rdx, [rip + 0x996237]  ; 'set npc lookat'
+  0x180310f31: lea      rax, [rsp + 0x20]
+  0x180310f36: lea      rcx, [rip + 0xbe6f3b]
+  0x180310f3d: mov      qword ptr [rsp + 0x58], rax
+  0x180310f42: call     0x18000ac22
+  0x180310f47: lea      rax, [rip + 0x99982a]
+  0x180310f4e: mov      qword ptr [rsp + 0x20], rax
+  0x180310f53: lea      r8, [rsp + 0x20]
+  0x180310f58: lea      rax, [rip + 0xd8f1]
+  0x180310f5f: mov      qword ptr [rsp + 0x28], rax
+  0x180310f64: lea      rdx, [rip + 0x996215]  ; 'hide self'
+  0x180310f6b: lea      rax, [rsp + 0x20]
+  0x180310f70: lea      rcx, [rip + 0xbe6f01]
+  0x180310f77: mov      qword ptr [rsp + 0x58], rax
+  0x180310f7c: call     0x18000ac22
+  0x180310f81: lea      rax, [rip + 0x9997f0]
+  0x180310f88: mov      qword ptr [rsp + 0x20], rax
+  0x180310f8d: lea      r8, [rsp + 0x20]
+  0x180310f92: lea      rax, [rip + 0x1c147]
+  0x180310f99: mov      qword ptr [rsp + 0x28], rax
+  0x180310f9e: lea      rdx, [rip + 0x9961eb]  ; 'show self'
+  0x180310fa5: lea      rax, [rsp + 0x20]
+  0x180310faa: lea      rcx, [rip + 0xbe6ec7]
+  0x180310fb1: mov      qword ptr [rsp + 0x58], rax
+  0x180310fb6: call     0x18000ac22
+  0x180310fbb: lea      rax, [rip + 0x9997b6]
+  0x180310fc2: mov      qword ptr [rsp + 0x20], rax
+  0x180310fc7: lea      r8, [rsp + 0x20]
+  0x180310fcc: lea      rax, [rip + 0xd7bd]
+  0x180310fd3: mov      qword ptr [rsp + 0x28], rax
+  0x180310fd8: lea      rdx, [rip + 0x9961c1]  ; 'hide relation player'
+  0x180310fdf: lea      rax, [rsp + 0x20]
+  0x180310fe4: lea      rcx, [rip + 0xbe6e8d]
+  0x180310feb: mov      qword ptr [rsp + 0x58], rax
+  0x180310ff0: call     0x18000ac22
+  0x180310ff5: lea      rax, [rip + 0x99977c]
+  0x180310ffc: mov      qword ptr [rsp + 0x20], rax
+  0x180311001: lea      r8, [rsp + 0x20]
+  0x180311006: lea      rax, [rip + 0x1bf23]
+  0x18031100d: mov      qword ptr [rsp + 0x28], rax
+  0x180311012: lea      rdx, [rip + 0x9961a7]  ; 'show relation player'
+  0x180311019: lea      rax, [rsp + 0x20]
+  0x18031101e: lea      rcx, [rip + 0xbe6e53]
+  0x180311025: mov      qword ptr [rsp + 0x58], rax
+  0x18031102a: call     0x18000ac22
+  0x18031102f: lea      rax, [rip + 0x999742]
+  0x180311036: mov      qword ptr [rsp + 0x20], rax
+  0x18031103b: lea      r8, [rsp + 0x20]
+  0x180311040: lea      rax, [rip + 0xd689]
+  0x180311047: mov      qword ptr [rsp + 0x28], rax
+  0x18031104c: lea      rdx, [rip + 0x99618d]  ; 'hide relation npc'
+  0x180311053: lea      rax, [rsp + 0x20]
+  0x180311058: lea      rcx, [rip + 0xbe6e19]
+  0x18031105f: mov      qword ptr [rsp + 0x58], rax
+  0x180311064: call     0x18000ac22
+  0x180311069: lea      rax, [rip + 0x999708]
+  0x180311070: mov      qword ptr [rsp + 0x20], rax
+  0x180311075: lea      r8, [rsp + 0x20]
+  0x18031107a: lea      rax, [rip + 0x1bdef]
+  0x180311081: mov      qword ptr [rsp + 0x28], rax
+  0x180311086: lea      rdx, [rip + 0x99616b]  ; 'show relation npc'
+  0x18031108d: lea      rax, [rsp + 0x20]
+  0x180311092: lea      rcx, [rip + 0xbe6ddf]
+  0x180311099: mov      qword ptr [rsp + 0x58], rax
+  0x18031109e: call     0x18000ac22
+  0x1803110a3: lea      rax, [rip + 0x9996ce]
+  0x1803110aa: mov      qword ptr [rsp + 0x20], rax
+  0x1803110af: lea      r8, [rsp + 0x20]
+  0x1803110b4: lea      rax, [rip + 0xb4a5]
+  0x1803110bb: mov      qword ptr [rsp + 0x28], rax
+  0x1803110c0: lea      rdx, [rip + 0x996149]  ; 'enable skill animation uniform'
+  0x1803110c7: lea      rax, [rsp + 0x20]
+  0x1803110cc: lea      rcx, [rip + 0xbe6da5]
+  0x1803110d3: mov      qword ptr [rsp + 0x58], rax
+  0x1803110d8: call     0x18000ac22
+  0x1803110dd: lea      rax, [rip + 0x999694]
+  0x1803110e4: mov      qword ptr [rsp + 0x20], rax
+  0x1803110e9: lea      r8, [rsp + 0x20]
+  0x1803110ee: lea      rax, [rip + 0x96eb]
+  0x1803110f5: mov      qword ptr [rsp + 0x28], rax
+  0x1803110fa: lea      rdx, [rip + 0x996137]  ; 'disable skill animation uniform'
+  0x180311101: lea      rax, [rsp + 0x20]
+  0x180311106: lea      rcx, [rip + 0xbe6d6b]
+  0x18031110d: mov      qword ptr [rsp + 0x58], rax
+  0x180311112: call     0x18000ac22
+  0x180311117: lea      rax, [rip + 0x99965a]
+  0x18031111e: mov      qword ptr [rsp + 0x20], rax
+  0x180311123: lea      r8, [rsp + 0x20]
+  0x180311128: lea      rax, [rip + 0x9cc1]
+  0x18031112f: mov      qword ptr [rsp + 0x28], rax
+  0x180311134: lea      rdx, [rip + 0x996125]  ; 'enable animation blend'
+  0x18031113b: lea      rax, [rsp + 0x20]
+  0x180311140: lea      rcx, [rip + 0xbe6d31]
+  0x180311147: mov      qword ptr [rsp + 0x58], rax
+  0x18031114c: call     0x18000ac22
+  0x180311151: lea      rax, [rip + 0x999620]
+  0x180311158: mov      qword ptr [rsp + 0x20], rax
+  0x18031115d: lea      r8, [rsp + 0x20]
+  0x180311162: lea      rax, [rip + 0x9347]
+  0x180311169: mov      qword ptr [rsp + 0x28], rax
+  0x18031116e: lea      rdx, [rip + 0x99610b]  ; 'disable animation blend'
+  0x180311175: lea      rax, [rsp + 0x20]
+  0x18031117a: lea      rcx, [rip + 0xbe6cf7]
+  0x180311181: mov      qword ptr [rsp + 0x58], rax
+  0x180311186: call     0x18000ac22
+  0x18031118b: lea      rax, [rip + 0x9995e6]
+  0x180311192: mov      qword ptr [rsp + 0x20], rax
+  0x180311197: lea      r8, [rsp + 0x20]
+  0x18031119c: lea      rax, [rip + 0xaa3d]
+  0x1803111a3: mov      qword ptr [rsp + 0x28], rax
+  0x1803111a8: lea      rdx, [rip + 0x9960f1]  ; 'enable lod level'
+  0x1803111af: lea      rax, [rsp + 0x20]
+  0x1803111b4: lea      rcx, [rip + 0xbe6cbd]
+  0x1803111bb: mov      qword ptr [rsp + 0x58], rax
+  0x1803111c0: call     0x18000ac22
+  0x1803111c5: lea      rax, [rip + 0x9995ac]
+  0x1803111cc: mov      qword ptr [rsp + 0x20], rax
+  0x1803111d1: lea      r8, [rsp + 0x20]
+  0x1803111d6: lea      rax, [rip + 0x9493]
+  0x1803111dd: mov      qword ptr [rsp + 0x28], rax
+  0x1803111e2: lea      rdx, [rip + 0x9960cf]  ; 'disable lod level'
+  0x1803111e9: lea      rax, [rsp + 0x20]
+  0x1803111ee: lea      rcx, [rip + 0xbe6c83]
+  0x1803111f5: mov      qword ptr [rsp + 0x58], rax
+  0x1803111fa: call     0x18000ac22
+  0x1803111ff: lea      rax, [rip + 0x999572]
+  0x180311206: mov      qword ptr [rsp + 0x20], rax
+  0x18031120b: lea      r8, [rsp + 0x20]
+  0x180311210: lea      rax, [rip + 0xd1d9]
+  0x180311217: mov      qword ptr [rsp + 0x28], rax
+  0x18031121c: lea      rdx, [rip + 0x9960ad]  ; 'hide doodad'
+  0x180311223: lea      rax, [rsp + 0x20]
+  0x180311228: lea      rcx, [rip + 0xbe6c49]
+  0x18031122f: mov      qword ptr [rsp + 0x58], rax
+  0x180311234: call     0x18000ac22
+  0x180311239: lea      rax, [rip + 0x999538]
+  0x180311240: mov      qword ptr [rsp + 0x20], rax
+  0x180311245: lea      r8, [rsp + 0x20]
+  0x18031124a: lea      rax, [rip + 0x1b66f]
+  0x180311251: mov      qword ptr [rsp + 0x28], rax
+  0x180311256: lea      rdx, [rip + 0x996083]  ; 'show doodad'
+  0x18031125d: lea      rax, [rsp + 0x20]
+  0x180311262: lea      rcx, [rip + 0xbe6c0f]
+  0x180311269: mov      qword ptr [rsp + 0x58], rax
+  0x18031126e: call     0x18000ac22
+  0x180311273: lea      rax, [rip + 0x9994fe]
+  0x18031127a: mov      qword ptr [rsp + 0x20], rax
+  0x18031127f: lea      rax, [rip + 0xd15a]
+  0x180311286: mov      qword ptr [rsp + 0x28], rax
+  0x18031128b: lea      r8, [rsp + 0x20]
+  0x180311290: lea      rax, [rsp + 0x20]
+  0x180311295: lea      rdx, [rip + 0x996054]  ; 'hide corpse'
+  0x18031129c: mov      qword ptr [rsp + 0x58], rax
+  0x1803112a1: lea      rcx, [rip + 0xbe6bd0]
+  0x1803112a8: call     0x18000ac22
+  0x1803112ad: lea      rax, [rip + 0x9994c4]
+  0x1803112b4: mov      qword ptr [rsp + 0x20], rax
+  0x1803112b9: lea      r8, [rsp + 0x20]
+  0x1803112be: lea      rax, [rip + 0x1b5eb]
+  0x1803112c5: mov      qword ptr [rsp + 0x28], rax
+  0x1803112ca: lea      rdx, [rip + 0x99602f]  ; 'show corpse'
+  0x1803112d1: lea      rax, [rsp + 0x20]
+  0x1803112d6: lea      rcx, [rip + 0xbe6b9b]
+  0x1803112dd: mov      qword ptr [rsp + 0x58], rax
+  0x1803112e2: call     0x18000ac22
+  0x1803112e7: .byte    0x48
+

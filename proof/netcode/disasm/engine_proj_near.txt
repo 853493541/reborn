@@ -1,0 +1,98 @@
+
+==== 0x1800f8c60 .. 0x1800f8e40 (.text)
+  0x1800f8c60: mov      ecx, edi
+  0x1800f8c62: movss    xmm0, dword ptr [rdi + 0x88]
+  0x1800f8c6a: movss    xmm1, dword ptr [rdi + 0x8c]
+  0x1800f8c72: movss    dword ptr [rsp + 0x60], xmm0
+  0x1800f8c78: movss    xmm0, dword ptr [rdi + 0x90]
+  0x1800f8c80: movss    dword ptr [rsp + 0x64], xmm1
+  0x1800f8c86: movss    dword ptr [rsp + 0x68], xmm0
+  0x1800f8c8c: call     0x1800f7a90
+  0x1800f8c91: movss    xmm1, dword ptr [rdi + 0xd8]
+  0x1800f8c99: movss    xmm2, dword ptr [rdi + 0x5c]
+  0x1800f8c9e: movaps   xmm6, xmm0
+  0x1800f8ca1: mulss    xmm1, dword ptr [rip + 0x58d443]  ; 0x1806860ec
+  0x1800f8ca9: movss    dword ptr [rbp - 0x6c], xmm2
+  0x1800f8cae: movss    xmm2, dword ptr [rdi + 0x68]
+  0x1800f8cb3: mulss    xmm6, xmm1
+  0x1800f8cb7: movss    xmm1, dword ptr [rdi + 0x58]
+  0x1800f8cbc: movss    dword ptr [rsp + 0x70], xmm2
+  0x1800f8cc2: movss    dword ptr [rbp - 0x70], xmm1
+  0x1800f8cc7: movss    xmm1, dword ptr [rdi + 0x60]
+  0x1800f8ccc: movss    dword ptr [rbp - 0x68], xmm1
+  0x1800f8cd1: movss    xmm1, dword ptr [rdi + 0x6c]
+  0x1800f8cd6: movss    dword ptr [rsp + 0x74], xmm1
+  0x1800f8cdc: movss    xmm0, dword ptr [rdi + 0x70]
+  0x1800f8ce1: movss    xmm1, dword ptr [rdi + 0x78]
+  0x1800f8ce6: lea      rcx, [rip + 0x775fd3]  ; 0x18086ecc0
+  0x1800f8ced: movss    dword ptr [rsp + 0x78], xmm0
+  0x1800f8cf3: movss    xmm0, dword ptr [rdi + 0x7c]
+  0x1800f8cf8: movss    dword ptr [rbp - 0x80], xmm1
+  0x1800f8cfd: movss    xmm1, dword ptr [rdi + 0x80]
+  0x1800f8d05: movss    dword ptr [rbp - 0x7c], xmm0
+  0x1800f8d0a: movss    dword ptr [rbp - 0x78], xmm1
+  0x1800f8d0f: call     0x1801433e0
+  0x1800f8d14: mov      dword ptr [rsp + 0x40], esi
+  0x1800f8d18: mov      dword ptr [rsp + 0x48], esi
+  0x1800f8d1c: mov      rbx, rax
+  0x1800f8d1f: mov      dword ptr [rsp + 0x4c], esi
+  0x1800f8d23: mov      dword ptr [rsp + 0x44], esi
+  0x1800f8d27: mov      r10, qword ptr [rax]
+  0x1800f8d2a: lea      rax, [rsp + 0x44]
+  0x1800f8d2f: lea      r9, [rsp + 0x4c]
+  0x1800f8d34: lea      r8, [rsp + 0x48]
+  0x1800f8d39: lea      rdx, [rsp + 0x40]
+  0x1800f8d3e: mov      rcx, rbx
+  0x1800f8d41: mov      qword ptr [rsp + 0x20], rax
+  0x1800f8d46: call     qword ptr [r10 + 0xa8]
+  0x1800f8d4d: movss    xmm0, dword ptr [rbx + 8]
+  0x1800f8d52: movss    xmm1, dword ptr [rbx + 0xc]
+  0x1800f8d57: movss    xmm2, dword ptr [rbx + 0x10]
+  0x1800f8d5c: subss    xmm0, dword ptr [rsp + 0x60]
+  0x1800f8d62: subss    xmm1, dword ptr [rsp + 0x64]
+  0x1800f8d68: subss    xmm2, dword ptr [rsp + 0x68]
+  0x1800f8d6e: mulss    xmm0, xmm0
+  0x1800f8d72: mulss    xmm1, xmm1
+  0x1800f8d76: mulss    xmm2, xmm2
+  0x1800f8d7a: addss    xmm0, xmm1
+  0x1800f8d7e: addss    xmm0, xmm2
+  0x1800f8d82: call     0x180633c66
+  0x1800f8d87: movss    xmm3, dword ptr [rsp + 0x4c]
+  0x1800f8d8d: movss    xmm2, dword ptr [rsp + 0x48]
+  0x1800f8d93: lea      rcx, [rbp - 0x20]
+  0x1800f8d97: movss    xmm1, dword ptr [rsp + 0x40]
+  0x1800f8d9d: movss    dword ptr [rsp + 0x44], xmm0
+  0x1800f8da3: movss    dword ptr [rsp + 0x20], xmm0
+  0x1800f8da9: call     0x18055e704
+  0x1800f8dae: mov      rcx, qword ptr [rip + 0x775bab]  ; 0x18086e960
+  0x1800f8db5: lea      r8, [rbp + 0x60]
+  0x1800f8db9: mov      rax, qword ptr [rcx]
+  0x1800f8dbc: lea      edx, [rsi + 3]
+  0x1800f8dbf: call     qword ptr [rax + 0x168]
+  0x1800f8dc5: mov      rax, qword ptr [rbx]
+  0x1800f8dc8: mov      rcx, rbx
+  0x1800f8dcb: call     qword ptr [rax + 0x50]
+  0x1800f8dce: mov      rbx, qword ptr [rsp + 0x3f8]
+  0x1800f8dd6: test     eax, eax
+  0x1800f8dd8: je       0x1800f8df1
+  0x1800f8dda: mov      rcx, qword ptr [rip + 0x775b7f]  ; 0x18086e960
+  0x1800f8de1: lea      r8, [rbp - 0x20]
+  0x1800f8de5: lea      edx, [rsi + 3]
+  0x1800f8de8: mov      rax, qword ptr [rcx]
+  0x1800f8deb: call     qword ptr [rax + 0x160]
+  0x1800f8df1: movaps   xmm3, xmm6
+  0x1800f8df4: lea      r8, [rsp + 0x70]
+  0x1800f8df9: lea      rdx, [rsp + 0x60]
+  0x1800f8dfe: lea      rcx, [rip + 0x775ebb]  ; 0x18086ecc0
+  0x1800f8e05: cmp      dword ptr [rdi + 0x20], esi
+  0x1800f8e08: jne      0x1800f8e14
+  0x1800f8e0a: mov      dword ptr [rsp + 0x20], 0xfff2d900
+  0x1800f8e12: jmp      0x1800f8e1c
+  0x1800f8e14: mov      dword ptr [rsp + 0x20], 0xffc80000
+  0x1800f8e1c: call     0x18013c410
+  0x1800f8e21: cmp      dword ptr [rdi + 0x20], 1
+  0x1800f8e25: movaps   xmm3, xmm6
+  0x1800f8e28: lea      r8, [rbp - 0x70]
+  0x1800f8e2c: lea      rdx, [rsp + 0x60]
+  0x1800f8e31: lea      rcx, [rip + 0x775e88]  ; 0x18086ecc0
+  0x1800f8e38: jne      0x1800f8e44

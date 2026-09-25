@@ -1223,15 +1223,17 @@ internal static class RebornClient
                 dbgEffDist = dist;
 
                 // When the camera is forced inside the character (jammed against
-                // a wall) the native client relies on near-plane clipping; the
+                // a wall) the native client relies on view near-plane clipping
+                // (value not shipped; see CAMERA_CLOSE_RANGE_RESEARCH.md). The
                 // host has no visibility API, so park the dummy far below and
-                // restore it with hysteresis on the way out.
-                if (!playerHidden && camLen < 45.0)
+                // restore it only when the camera is clearly clear of the body
+                // (60/120 u hysteresis - host approximation, not a game value).
+                if (!playerHidden && camLen < 60.0)
                 {
                     playerHidden = true;
                     placePlayer(px, py, pz, curYaw);
                 }
-                else if (playerHidden && camLen > 70.0)
+                else if (playerHidden && camLen > 120.0)
                 {
                     playerHidden = false;
                     placePlayer(px, py, pz, curYaw);

@@ -614,24 +614,38 @@ public sealed class CameraObstruction
 
         if (target < Distance)
         {
-            Distance = target;   // pull in immediately (no clipping)
+            Distance = target;   // pull in immediately (engine applies the hit point directly)
+            _vel = 0.0;
+            return Distance;
+        }
+        if (target == Distance)
+        {
+            _vel = 0.0;
+            return Distance;
+        }
+
+        // Engine flex (KG3DEngineX64 0x1804C0E84): E = current - reference,
+        // S += (-fFlex*E - fDamp*S)*dt, X = current + S*dt; the 0.05 rad guard
+        // (0x180674314) snaps to the target and drops the state when the move
+        // direction leaves the desired direction.
+        double e = Distance - target;
+        _vel += (-Flex * e - Damp * _vel) * dt;
+        double x = Distance + _vel * dt;
+        bool sameDir = (x - Distance) * (target - Distance) >= 0.0;
+        double angle = sameDir ? 0.0 : Math.PI;
+        if (angle <= 0.05)
+        {
+            Distance = x;
+        }
+        else
+        {
+            Distance = target;
             _vel = 0.0;
         }
-        else if (target > Distance)
+        if (Math.Abs(target - Distance) < 0.5 && Math.Abs(_vel) < 1.0)
         {
-            // damped spring toward the (receding) target: v' = +k*e - c*v.
-            // The opposite sign was a runaway: the distance crept in until it
-            // went negative and the uninitialised guard reset it to desired
-            // (the reported "keeps zooming in, then resets").
-            double e = target - Distance;
-            _vel += (Flex * e - Damp * _vel) * dt;
-            Distance += _vel * dt;
-            if (Distance > target) Distance = target;
-            if (Math.Abs(target - Distance) < 0.5 && Math.Abs(_vel) < 1.0)
-            {
-                Distance = target;
-                _vel = 0.0;
-            }
+            Distance = target;
+            _vel = 0.0;
         }
         return Distance;
     }

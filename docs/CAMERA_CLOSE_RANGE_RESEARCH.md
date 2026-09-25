@@ -1,0 +1,86 @@
+# Close-range camera + obstruction return - engine research (2026-09-24)
+
+Question: (a) how fast should the camera return after leaving a wall, and
+(b) what makes the character disappear when the camera gets close?
+Evidence: `KG3DEngineX64.dll` (game build), disasm in `proof/netcode/disasm/`
+(`engine_trackcam_update.txt`, `engine_loader_flex.txt`,
+`engine_trackcam_ctor.txt`, `xref_perspective*.txt`, `engine_proj_*.txt`).
+
+## 1. The engine's camera update, in order
+
+`KG3DTrackCamera` frame update (around `0x1804C0DD6`):
+
+1. **Flex (position follower)** `0x1804C0E84..0x1804C10F7` - runs only when
+   `+0x1C4 != 0` (flex initialised) and `+0x208 != 0` (`bUseFlexibilitySys`):
+   ```
+   E   = current(+0x170) - reference(+0x17C)     ; current minus target
+   S  += ( -fFlex*E - fDamp*S ) * dt             ; S at +0x1B8/1BC/1C0
+   X   = current + S * dt
+   if angle( current->X , current->reference ) <= 0.05 rad (const @0x180674314):
+        current = X                               ; accept, +0x1DC |= 1
+   else:
+        current = reference ; +0x1C4 = 0          ; snap + disable flex
+   ```
+   `fFlex`/`fDamp` are copied from the parsed `[Camera]` settings into the camera
+   by the loader (`0x1804C18B9..0x1804C18C5`): `[cam+0x1FC] = fFlexCoefficient`,
+   `[cam+0x200] = fDampCoefficient`. Settings defaults: **fFlex 1.5**,
+   **fDamp 2.828** (constructor fallbacks differ per camera class: 1.5/1.5 and
+   0.8/0.7; the ini/loader values win).
+2. **Obstruction** `0x1804C10FD..0x1804C1312` - only when `+0x204 != 0`
+   (`bObstructdAvert`): calls the probe helper `0x1804C1B40` with the candidate
+   position. If the helper returns it unchanged (no hit) the state is cleared
+   (`+0x1CC = 0`, `+0x1DC &= ~4`).
+3. On a hit the helper returns `C' = A + u*max(0.001, minHit)`; the caller
+   applies the **18 u** clearance `0x1806ED3F0`:
+   `final = C' + normalize(A - C') * 18`.
+   The new position is applied when either
+   - `|A - C'| < |A - current|` (the candidate shortens the anchor ray), or
+   - `|C' - ref|^2 < T^2` with `T = 50` (`0x180678E14`) while free and
+     `T = 100` (`0x18067117C`) while `+0x1CC != 0` (already obstructed).
+   On apply: `+0x170 = final`, flex state `S = 0` (`+0x1B8/1BC/1C0`),
+   `+0x1C4 = 1`, `+0x1CC = 1`, `+0x1DC |= 0xC`.
+4. Engine camera setters (vtable `+0x28`, `+0x88`, `+0x18`, `+0x20`) with the
+   final position, the anchor/look-at at `+0x1AC/0x1B0/0x1B4`.
+
+So the *return* after a wall is: flex state was reset to 0 on the pull; once
+the helper reports no hit the state clears and the flex moves the position
+toward the reference (the desired chase position) with the same fFlex/fDamp
+spring - **no separate zoom-out rate exists**, and `fDisZoomRate` (`+0x38`),
+`fFlexRate` (`+0x3C`) are read by the loader but **not used** in this update
+path. `fChaseRate` is used by the key-rotation path only.
+
+## 2. No character-hide/fade in the camera path
+
+The track camera update never touches model visibility. Searches run:
+
+- `FadeStartDis/FadeReferDis/FadeReferCof/FadeTime` in `KG3DEngineX64.dll` -
+  belong to `caption.ini` nameplate fading (`NewHPBar/FontConfig` loader
+  `0x1802D5DE0`), not the character.
+- `SetSmallCullNear`, `KG3DModel::GetCameraNearRayIntersect` - dev command /
+  distance query; no visibility switch.
+- `KRLCharacter::SetPlayerControlVisibleState` (`0x1804E4150`),
+  `SetRepresentHideFlag` (`0x180502E80`), `KRLMovie::UpdateCharacterVisible`
+  (`0x180597E80`) in `JX3RepresentX64.dll` - per-represent/control-state hides
+  driven by gameplay, not by camera distance.
+
+The projection path (`D3DXMatrixPerspectiveFovLH` call `0x180379CD0`) takes
+**zn from the view object** (vtable `+0xA8` slot 3) and zf as an argument -
+i.e. the near plane is a view setting, not a camera-obstruction rule. The
+official "character disappears when the camera is close" is therefore a
+**near-plane/clipping effect of the game's view**, not an explicit hide call.
+The local install does not ship the value (view setup comes from the engine at
+runtime); `MovieEngineCLR.dll` exposes a native `KMovieActionCameraNearPlane`
+(`fNearPlane`) for movie actions but there is **no managed API** to set or read
+the near plane from the host.
+
+## 3. What this means for the host
+
+| Aspect | Engine | Host now | Action |
+|---|---|---|---|
+| Return rate | fFlex 1.5 / fDamp 2.828 position spring; snap when the move direction leaves the 0.05 rad guard; flex disabled after a guard trip until the next obstacle | same constants on the distance scalar; no guard/snap | **add the guard form** (`v += (-k*E - c*v)*dt`, `X = current + v*dt`, snap on direction failure); behaviour equals the engine for collinear returns |
+| Obstruction apply | candidate shorter OR within 50/100 u of the reference | pull to hit-18 while a hit exists; release 100 u past desired | close for the shortening case; document the candidate-based threshold |
+| Character near camera | view near-plane clipping (value not shipped) | park the dummy model below the map (<45 u, restore >70 u) | raise the restore threshold so the model reappears only when the camera is clear of the body; exact game value is not obtainable from the local data |
+
+Open item for the native-interface recon: read/set the view near plane
+(vtable slot at `view+0xA8` slot 3) so the host can reproduce the official
+clipping instead of the park-below hack.
