@@ -1,0 +1,259 @@
+# KGUIX64.dll 0x1801d5200 (+0x400)
+  0x1801d5200: push     rdi
+  0x1801d5202: sub      rsp, 0x50
+  0x1801d5206: mov      rdi, rcx
+  0x1801d5209: call     0x180233300
+  0x1801d520e: cmp      eax, 5
+  0x1801d5211: je       0x1801d5246
+  0x1801d5213: lea      rax, [rip + 0x4088d6]  ; 'UI::KWndClassScriptTable::LuaMinimap_UpdateSelfPos'
+  0x1801d521a: mov      r9d, 0x28aa
+  0x1801d5220: lea      r8, [rip + 0x3fb0b1]  ; 'lua_gettop(L) == 5'
+  0x1801d5227: mov      qword ptr [rsp + 0x20], rax
+  0x1801d522c: lea      rdx, [rip + 0x3d4645]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801d5233: mov      ecx, 3
+  0x1801d5238: call     qword ptr [rip + 0x311fda]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801d523e: xor      eax, eax
+  0x1801d5240: add      rsp, 0x50
+  0x1801d5244: pop      rdi
+  0x1801d5245: ret      
+  0x1801d5246: mov      r8d, 1
+  0x1801d524c: mov      qword ptr [rsp + 0x68], rsi
+  0x1801d5251: mov      rdx, rdi
+  0x1801d5254: lea      rcx, [rip + 0x3dc045]  ; 'WndMinimap'
+  0x1801d525b: call     0x1801be5c0
+  0x1801d5260: mov      rsi, rax
+  0x1801d5263: test     rax, rax
+  0x1801d5266: jne      0x1801d529e
+  0x1801d5268: lea      rax, [rip + 0x408881]  ; 'UI::KWndClassScriptTable::LuaMinimap_UpdateSelfPos'
+  0x1801d526f: mov      r9d, 0x28ad
+  0x1801d5275: lea      r8, [rip + 0x3d8014]  ; 'pWnd'
+  0x1801d527c: mov      qword ptr [rsp + 0x20], rax
+  0x1801d5281: lea      rdx, [rip + 0x3d45f0]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801d5288: lea      ecx, [rsi + 3]
+  0x1801d528b: call     qword ptr [rip + 0x311f87]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801d5291: mov      rsi, qword ptr [rsp + 0x68]
+  0x1801d5296: xor      eax, eax
+  0x1801d5298: add      rsp, 0x50
+  0x1801d529c: pop      rdi
+  0x1801d529d: ret      
+  0x1801d529e: mov      qword ptr [rsp + 0x60], rbx
+  0x1801d52a3: mov      edx, 2
+  0x1801d52a8: movaps   xmmword ptr [rsp + 0x40], xmm6
+  0x1801d52ad: mov      rcx, rdi
+  0x1801d52b0: movaps   xmmword ptr [rsp + 0x30], xmm7
+  0x1801d52b5: call     0x180234320
+  0x1801d52ba: mov      edx, 3
+  0x1801d52bf: mov      rcx, rdi
+  0x1801d52c2: cvttsd2si rbx, xmm0
+  0x1801d52c7: call     0x180234320
+  0x1801d52cc: mov      edx, 4
+  0x1801d52d1: mov      rcx, rdi
+  0x1801d52d4: xorps    xmm6, xmm6
+  0x1801d52d7: cvtsd2ss xmm6, xmm0
+  0x1801d52db: call     0x180234320
+  0x1801d52e0: mov      edx, 5
+  0x1801d52e5: mov      rcx, rdi
+  0x1801d52e8: xorps    xmm7, xmm7
+  0x1801d52eb: cvtsd2ss xmm7, xmm0
+  0x1801d52ef: call     0x180234320
+  0x1801d52f4: mov      dword ptr [rsi + 0xd54], ebx
+  0x1801d52fa: xor      eax, eax
+  0x1801d52fc: mov      rbx, qword ptr [rsp + 0x60]
+  0x1801d5301: mov      dword ptr [rsi + 0xd88], 1
+  0x1801d530b: movss    xmm2, dword ptr [rsi + 0xbfc]
+  0x1801d5313: xorps    xmm1, xmm1
+  0x1801d5316: cvtsd2ss xmm1, xmm0
+  0x1801d531a: movaps   xmm0, xmm2
+  0x1801d531d: mulss    xmm2, xmm7
+  0x1801d5321: mulss    xmm1, dword ptr [rip + 0x410e43]
+  0x1801d5329: addss    xmm2, dword ptr [rsi + 0xc08]
+  0x1801d5331: movaps   xmm7, xmmword ptr [rsp + 0x30]
+  0x1801d5336: divss    xmm1, dword ptr [rip + 0x410e8e]
+  0x1801d533e: mulss    xmm0, xmm6
+  0x1801d5342: movaps   xmm6, xmmword ptr [rsp + 0x40]
+  0x1801d5347: movss    dword ptr [rsi + 0xd50], xmm1
+  0x1801d534f: addss    xmm0, dword ptr [rsi + 0xc04]
+  0x1801d5357: movss    dword ptr [rsi + 0xc34], xmm2
+  0x1801d535f: movss    dword ptr [rsi + 0xc30], xmm0
+  0x1801d5367: mov      rsi, qword ptr [rsp + 0x68]
+  0x1801d536c: add      rsp, 0x50
+  0x1801d5370: pop      rdi
+  0x1801d5371: ret      
+  0x1801d5372: int3     
+  0x1801d5373: int3     
+  0x1801d5374: int3     
+  0x1801d5375: int3     
+  0x1801d5376: int3     
+  0x1801d5377: int3     
+  0x1801d5378: int3     
+  0x1801d5379: int3     
+  0x1801d537a: int3     
+  0x1801d537b: int3     
+  0x1801d537c: int3     
+  0x1801d537d: int3     
+  0x1801d537e: int3     
+  0x1801d537f: int3     
+  0x1801d5380: push     rbx
+  0x1801d5382: sub      rsp, 0x30
+  0x1801d5386: mov      rbx, rcx
+  0x1801d5389: call     0x180233300
+  0x1801d538e: cmp      eax, 1
+  0x1801d5391: je       0x1801d53c6
+  0x1801d5393: mov      r9d, 0x28bf
+  0x1801d5399: lea      r8, [rip + 0x3ecea0]  ; 'lua_gettop(L) == 1'
+  0x1801d53a0: lea      rax, [rip + 0x408719]  ; 'UI::KWndClassScriptTable::LuaMinimap_Clear'
+  0x1801d53a7: mov      ecx, 3
+  0x1801d53ac: lea      rdx, [rip + 0x3d44c5]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801d53b3: mov      qword ptr [rsp + 0x20], rax
+  0x1801d53b8: call     qword ptr [rip + 0x311e5a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801d53be: xor      eax, eax
+  0x1801d53c0: add      rsp, 0x30
+  0x1801d53c4: pop      rbx
+  0x1801d53c5: ret      
+  0x1801d53c6: mov      r8d, 1
+  0x1801d53cc: lea      rcx, [rip + 0x3dbecd]  ; 'WndMinimap'
+  0x1801d53d3: mov      rdx, rbx
+  0x1801d53d6: call     0x1801be5c0
+  0x1801d53db: test     rax, rax
+  0x1801d53de: jne      0x1801d53ef
+  0x1801d53e0: mov      r9d, 0x28c2
+  0x1801d53e6: lea      r8, [rip + 0x3d7ea3]  ; 'pWnd'
+  0x1801d53ed: jmp      0x1801d53a0
+  0x1801d53ef: mov      rcx, rax
+  0x1801d53f2: call     0x180138b10
+  0x1801d53f7: xor      eax, eax
+  0x1801d53f9: add      rsp, 0x30
+  0x1801d53fd: pop      rbx
+  0x1801d53fe: ret      
+  0x1801d53ff: int3     
+  0x1801d5400: mov      qword ptr [rsp + 8], rbx
+  0x1801d5405: mov      qword ptr [rsp + 0x10], rsi
+  0x1801d540a: push     rdi
+  0x1801d540b: sub      rsp, 0x30
+  0x1801d540f: xor      edi, edi
+  0x1801d5411: mov      rbx, rcx
+  0x1801d5414: mov      esi, edi
+  0x1801d5416: call     0x180233300
+  0x1801d541b: cmp      eax, 1
+  0x1801d541e: je       0x1801d544d
+  0x1801d5420: mov      r9d, 0x28d2
+  0x1801d5426: lea      r8, [rip + 0x3ece13]  ; 'lua_gettop(L) == 1'
+  0x1801d542d: lea      rax, [rip + 0x40865c]  ; 'UI::KWndClassScriptTable::LuaMinimap_GetOverObj'
+  0x1801d5434: mov      ecx, 3
+  0x1801d5439: lea      rdx, [rip + 0x3d4438]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801d5440: mov      qword ptr [rsp + 0x20], rax
+  0x1801d5445: call     qword ptr [rip + 0x311dcd]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801d544b: jmp      0x1801d5482
+  0x1801d544d: mov      r8d, 1
+  0x1801d5453: lea      rcx, [rip + 0x3dbe46]  ; 'WndMinimap'
+  0x1801d545a: mov      rdx, rbx
+  0x1801d545d: call     0x1801be5c0
+  0x1801d5462: test     rax, rax
+  0x1801d5465: jne      0x1801d5476
+  0x1801d5467: mov      r9d, 0x28d5
+  0x1801d546d: lea      r8, [rip + 0x3d7e1c]  ; 'pWnd'
+  0x1801d5474: jmp      0x1801d542d
+  0x1801d5476: mov      edi, dword ptr [rax + 0xd9c]
+  0x1801d547c: mov      esi, dword ptr [rax + 0xda0]
+  0x1801d5482: mov      eax, edi
+  0x1801d5484: xorps    xmm1, xmm1
+  0x1801d5487: mov      rcx, rbx
+  0x1801d548a: cvtsi2sd xmm1, rax
+  0x1801d548f: call     0x1802339b0
+  0x1801d5494: mov      eax, esi
+  0x1801d5496: xorps    xmm1, xmm1
+  0x1801d5499: mov      rcx, rbx
+  0x1801d549c: cvtsi2sd xmm1, rax
+  0x1801d54a1: call     0x1802339b0
+  0x1801d54a6: mov      rbx, qword ptr [rsp + 0x40]
+  0x1801d54ab: mov      eax, 2
+  0x1801d54b0: mov      rsi, qword ptr [rsp + 0x48]
+  0x1801d54b5: add      rsp, 0x30
+  0x1801d54b9: pop      rdi
+  0x1801d54ba: ret      
+  0x1801d54bb: int3     
+  0x1801d54bc: int3     
+  0x1801d54bd: int3     
+  0x1801d54be: int3     
+  0x1801d54bf: int3     
+  0x1801d54c0: push     rbx
+  0x1801d54c2: sub      rsp, 0x50
+  0x1801d54c6: movaps   xmmword ptr [rsp + 0x40], xmm6
+  0x1801d54cb: mov      rbx, rcx
+  0x1801d54ce: movaps   xmmword ptr [rsp + 0x30], xmm7
+  0x1801d54d3: xorps    xmm6, xmm6
+  0x1801d54d6: xorps    xmm7, xmm7
+  0x1801d54d9: call     0x180233300
+  0x1801d54de: cmp      eax, 1
+  0x1801d54e1: je       0x1801d5510
+  0x1801d54e3: mov      r9d, 0x28e7
+  0x1801d54e9: lea      r8, [rip + 0x3ecd50]  ; 'lua_gettop(L) == 1'
+  0x1801d54f0: lea      rax, [rip + 0x408569]  ; 'UI::KWndClassScriptTable::LuaMinimap_GetSendPos'
+  0x1801d54f7: mov      ecx, 3
+  0x1801d54fc: lea      rdx, [rip + 0x3d4375]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801d5503: mov      qword ptr [rsp + 0x20], rax
+  0x1801d5508: call     qword ptr [rip + 0x311d0a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801d550e: jmp      0x1801d5549
+  0x1801d5510: mov      r8d, 1
+  0x1801d5516: lea      rcx, [rip + 0x3dbd83]  ; 'WndMinimap'
+  0x1801d551d: mov      rdx, rbx
+  0x1801d5520: call     0x1801be5c0
+  0x1801d5525: test     rax, rax
+  0x1801d5528: jne      0x1801d5539
+  0x1801d552a: mov      r9d, 0x28ea
+  0x1801d5530: lea      r8, [rip + 0x3d7d59]  ; 'pWnd'
+  0x1801d5537: jmp      0x1801d54f0
+  0x1801d5539: movss    xmm6, dword ptr [rax + 0xd80]
+  0x1801d5541: movss    xmm7, dword ptr [rax + 0xd84]
+  0x1801d5549: cvtps2pd xmm1, xmm6
+  0x1801d554c: mov      rcx, rbx
+  0x1801d554f: call     0x1802339b0
+  0x1801d5554: cvtps2pd xmm1, xmm7
+  0x1801d5557: mov      rcx, rbx
+  0x1801d555a: call     0x1802339b0
+  0x1801d555f: movaps   xmm6, xmmword ptr [rsp + 0x40]
+  0x1801d5564: mov      eax, 2
+  0x1801d5569: movaps   xmm7, xmmword ptr [rsp + 0x30]
+  0x1801d556e: add      rsp, 0x50
+  0x1801d5572: pop      rbx
+  0x1801d5573: ret      
+  0x1801d5574: int3     
+  0x1801d5575: int3     
+  0x1801d5576: int3     
+  0x1801d5577: int3     
+  0x1801d5578: int3     
+  0x1801d5579: int3     
+  0x1801d557a: int3     
+  0x1801d557b: int3     
+  0x1801d557c: int3     
+  0x1801d557d: int3     
+  0x1801d557e: int3     
+  0x1801d557f: int3     
+  0x1801d5580: mov      qword ptr [rsp + 0x10], rbx
+  0x1801d5585: mov      qword ptr [rsp + 0x18], rbp
+  0x1801d558a: mov      qword ptr [rsp + 0x20], rsi
+  0x1801d558f: push     rdi
+  0x1801d5590: sub      rsp, 0x370
+  0x1801d5597: mov      rax, qword ptr [rip + 0x47a70a]
+  0x1801d559e: xor      rax, rsp
+  0x1801d55a1: mov      qword ptr [rsp + 0x360], rax
+  0x1801d55a9: mov      rbx, rcx
+  0x1801d55ac: call     0x180233300
+  0x1801d55b1: mov      esi, eax
+  0x1801d55b3: cmp      eax, 2
+  0x1801d55b6: jge      0x1801d55ca
+  0x1801d55b8: mov      r9d, 0x2900
+  0x1801d55be: lea      r8, [rip + 0x3f3043]  ; 'nParamCount >= 2'
+  0x1801d55c5: jmp      0x1801d5791
+  0x1801d55ca: mov      r8d, 1
+  0x1801d55d0: mov      rdx, rbx
+  0x1801d55d3: lea      rcx, [rip + 0x3dbd16]  ; 'WndWebPage'
+  0x1801d55da: call     0x1801be5c0
+  0x1801d55df: mov      rbp, rax
+  0x1801d55e2: test     rax, rax
+  0x1801d55e5: jne      0x1801d55f9
+  0x1801d55e7: mov      r9d, 0x2903
+  0x1801d55ed: lea      r8, [rip + 0x3d7c9c]  ; 'pWnd'
+  0x1801d55f4: jmp      0x1801d5791
+  0x1801d55f9: xor      r8d, r8d
+  0x1801d55fc: lea      edx, [r8 + 2]

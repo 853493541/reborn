@@ -1,0 +1,257 @@
+# JX3RepresentX64.dll 0x1805bea80 (+0x300)
+  0x1805bea80: push     rsi
+  0x1805bea82: sub      rsp, 0x50
+  0x1805bea86: mov      rax, qword ptr [rip + 0x8db64b]
+  0x1805bea8d: xor      rax, rsp
+  0x1805bea90: mov      qword ptr [rsp + 0x40], rax
+  0x1805bea95: mov      rsi, rcx
+  0x1805bea98: mov      qword ptr [rsp + 0x30], 0
+  0x1805beaa1: mov      dword ptr [rsp + 0x38], 0
+  0x1805beaa9: call     0x180026819
+  0x1805beaae: cmp      eax, 3
+  0x1805beab1: je       0x1805beac2
+  0x1805beab3: mov      r9d, 0x689
+  0x1805beab9: lea      r8, [rip + 0x6dee88]  ; 'nTopIndex == 3'
+  0x1805beac0: jmp      0x1805beb31
+  0x1805beac2: mov      qword ptr [rsp + 0x68], rbx
+  0x1805beac7: mov      edx, 1
+  0x1805beacc: mov      rcx, rsi
+  0x1805beacf: mov      qword ptr [rsp + 0x70], rdi
+  0x1805bead4: call     0x1800175d0
+  0x1805bead9: mov      edx, 2
+  0x1805beade: mov      rcx, rsi
+  0x1805beae1: cvttsd2si edi, xmm0
+  0x1805beae5: call     0x1800175d0
+  0x1805beaea: mov      edx, 3
+  0x1805beaef: mov      rcx, rsi
+  0x1805beaf2: cvttsd2si ebx, xmm0
+  0x1805beaf6: call     0x1800175d0
+  0x1805beafb: lea      r9, [rsp + 0x30]
+  0x1805beb00: mov      edx, ebx
+  0x1805beb02: mov      ecx, edi
+  0x1805beb04: mov      dword ptr [rsp + 0x20], 0
+  0x1805beb0c: cvttsd2si r8d, xmm0
+  0x1805beb11: call     0x180009912
+  0x1805beb16: mov      rdi, qword ptr [rsp + 0x70]
+  0x1805beb1b: mov      rbx, qword ptr [rsp + 0x68]
+  0x1805beb20: test     eax, eax
+  0x1805beb22: jne      0x1805beb4f
+  0x1805beb24: mov      r9d, 0x690
+  0x1805beb2a: lea      r8, [rip + 0x6c2057]  ; 'nRetCode'
+  0x1805beb31: lea      rax, [rip + 0x7003f8]  ; 'LuaGameWorldPositionToScenePosition'
+  0x1805beb38: mov      ecx, 3
+  0x1805beb3d: lea      rdx, [rip + 0x6c200c]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1805beb44: mov      qword ptr [rsp + 0x20], rax
+  0x1805beb49: call     qword ptr [rip + 0xadb4b1]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1805beb4f: movss    xmm1, dword ptr [rsp + 0x30]
+  0x1805beb55: mov      rcx, rsi
+  0x1805beb58: cvtps2pd xmm1, xmm1
+  0x1805beb5b: call     0x180024dde
+  0x1805beb60: movss    xmm1, dword ptr [rsp + 0x34]
+  0x1805beb66: mov      rcx, rsi
+  0x1805beb69: cvtps2pd xmm1, xmm1
+  0x1805beb6c: call     0x180024dde
+  0x1805beb71: movss    xmm1, dword ptr [rsp + 0x38]
+  0x1805beb77: mov      rcx, rsi
+  0x1805beb7a: cvtps2pd xmm1, xmm1
+  0x1805beb7d: call     0x180024dde
+  0x1805beb82: mov      eax, 3
+  0x1805beb87: mov      rcx, qword ptr [rsp + 0x40]
+  0x1805beb8c: xor      rcx, rsp
+  0x1805beb8f: call     0x18000bf9b
+  0x1805beb94: add      rsp, 0x50
+  0x1805beb98: pop      rsi
+  0x1805beb99: ret      
+  0x1805beb9a: int3     
+  0x1805beb9b: int3     
+  0x1805beb9c: int3     
+  0x1805beb9d: int3     
+  0x1805beb9e: int3     
+  0x1805beb9f: int3     
+  0x1805beba0: int3     
+  0x1805beba1: int3     
+  0x1805beba2: int3     
+  0x1805beba3: int3     
+  0x1805beba4: int3     
+  0x1805beba5: int3     
+  0x1805beba6: int3     
+  0x1805beba7: int3     
+  0x1805beba8: int3     
+  0x1805beba9: int3     
+  0x1805bebaa: int3     
+  0x1805bebab: int3     
+  0x1805bebac: int3     
+  0x1805bebad: int3     
+  0x1805bebae: int3     
+  0x1805bebaf: int3     
+  0x1805bebb0: int3     
+  0x1805bebb1: int3     
+  0x1805bebb2: int3     
+  0x1805bebb3: int3     
+  0x1805bebb4: int3     
+  0x1805bebb5: int3     
+  0x1805bebb6: int3     
+  0x1805bebb7: int3     
+  0x1805bebb8: int3     
+  0x1805bebb9: int3     
+  0x1805bebba: int3     
+  0x1805bebbb: int3     
+  0x1805bebbc: int3     
+  0x1805bebbd: int3     
+  0x1805bebbe: int3     
+  0x1805bebbf: int3     
+  0x1805bebc0: int3     
+  0x1805bebc1: int3     
+  0x1805bebc2: int3     
+  0x1805bebc3: int3     
+  0x1805bebc4: int3     
+  0x1805bebc5: int3     
+  0x1805bebc6: int3     
+  0x1805bebc7: int3     
+  0x1805bebc8: int3     
+  0x1805bebc9: int3     
+  0x1805bebca: int3     
+  0x1805bebcb: int3     
+  0x1805bebcc: int3     
+  0x1805bebcd: int3     
+  0x1805bebce: int3     
+  0x1805bebcf: int3     
+  0x1805bebd0: int3     
+  0x1805bebd1: int3     
+  0x1805bebd2: int3     
+  0x1805bebd3: int3     
+  0x1805bebd4: int3     
+  0x1805bebd5: int3     
+  0x1805bebd6: int3     
+  0x1805bebd7: int3     
+  0x1805bebd8: int3     
+  0x1805bebd9: int3     
+  0x1805bebda: int3     
+  0x1805bebdb: int3     
+  0x1805bebdc: int3     
+  0x1805bebdd: int3     
+  0x1805bebde: int3     
+  0x1805bebdf: int3     
+  0x1805bebe0: push     rbx
+  0x1805bebe2: sub      rsp, 0x30
+  0x1805bebe6: mov      rbx, rcx
+  0x1805bebe9: test     rcx, rcx
+  0x1805bebec: jne      0x1805bec1f
+  0x1805bebee: lea      rcx, [rip + 0x7005e3]  ; 'LuaGetCharacterSheathState'
+  0x1805bebf5: mov      r9d, 0x839
+  0x1805bebfb: mov      qword ptr [rsp + 0x20], rcx
+  0x1805bec00: lea      r8, [rip + 0x6de279]  ; 'L'
+  0x1805bec07: lea      ecx, [rbx + 3]
+  0x1805bec0a: lea      rdx, [rip + 0x6c1f3f]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1805bec11: call     qword ptr [rip + 0xadb3e9]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1805bec17: xor      eax, eax
+  0x1805bec19: add      rsp, 0x30
+  0x1805bec1d: pop      rbx
+  0x1805bec1e: ret      
+  0x1805bec1f: call     0x180026819
+  0x1805bec24: cmp      eax, 1
+  0x1805bec27: je       0x1805bec5c
+  0x1805bec29: lea      rcx, [rip + 0x7005a8]  ; 'LuaGetCharacterSheathState'
+  0x1805bec30: mov      r9d, 0x83c
+  0x1805bec36: mov      qword ptr [rsp + 0x20], rcx
+  0x1805bec3b: lea      r8, [rip + 0x6df4b6]  ; 'nParamCount == 1'
+  0x1805bec42: mov      ecx, 3
+  0x1805bec47: lea      rdx, [rip + 0x6c1f02]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1805bec4e: call     qword ptr [rip + 0xadb3ac]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1805bec54: xor      eax, eax
+  0x1805bec56: add      rsp, 0x30
+  0x1805bec5a: pop      rbx
+  0x1805bec5b: ret      
+  0x1805bec5c: mov      edx, 1
+  0x1805bec61: mov      rcx, rbx
+  0x1805bec64: call     0x18001f703
+  0x1805bec69: test     eax, eax
+  0x1805bec6b: jne      0x1805bec9e
+  0x1805bec6d: lea      rcx, [rip + 0x700564]  ; 'LuaGetCharacterSheathState'
+  0x1805bec74: mov      r9d, 0x83d
+  0x1805bec7a: mov      qword ptr [rsp + 0x20], rcx
+  0x1805bec7f: lea      r8, [rip + 0x6e0e9a]  ; 'lua_isnumber(L, 1)'
+  0x1805bec86: lea      ecx, [rax + 3]
+  0x1805bec89: lea      rdx, [rip + 0x6c1ec0]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1805bec90: call     qword ptr [rip + 0xadb36a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1805bec96: xor      eax, eax
+  0x1805bec98: add      rsp, 0x30
+  0x1805bec9c: pop      rbx
+  0x1805bec9d: ret      
+  0x1805bec9e: mov      edx, 1
+  0x1805beca3: mov      qword ptr [rsp + 0x40], rdi
+  0x1805beca8: mov      rcx, rbx
+  0x1805becab: call     0x1800175d0
+  0x1805becb0: mov      rcx, qword ptr [rip + 0x91f329]
+  0x1805becb7: cvttsd2si rdi, xmm0
+  0x1805becbc: call     0x18001f9dd
+  0x1805becc1: test     rax, rax
+  0x1805becc4: jne      0x1805becfc
+  0x1805becc6: lea      rcx, [rip + 0x70050b]  ; 'LuaGetCharacterSheathState'
+  0x1805beccd: mov      r9d, 0x842
+  0x1805becd3: mov      qword ptr [rsp + 0x20], rcx
+  0x1805becd8: lea      r8, [rip + 0x6c3259]  ; 'pRLScene'
+  0x1805becdf: lea      ecx, [rax + 3]
+  0x1805bece2: lea      rdx, [rip + 0x6c1e67]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1805bece9: call     qword ptr [rip + 0xadb311]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1805becef: mov      rdi, qword ptr [rsp + 0x40]
+  0x1805becf4: xor      eax, eax
+  0x1805becf6: add      rsp, 0x30
+  0x1805becfa: pop      rbx
+  0x1805becfb: ret      
+  0x1805becfc: mov      edx, edi
+  0x1805becfe: mov      rcx, rax
+  0x1805bed01: call     0x18000a8f8
+  0x1805bed06: test     rax, rax
+  0x1805bed09: jne      0x1805bed41
+  0x1805bed0b: lea      rcx, [rip + 0x7004c6]  ; 'LuaGetCharacterSheathState'
+  0x1805bed12: mov      r9d, 0x845
+  0x1805bed18: mov      qword ptr [rsp + 0x20], rcx
+  0x1805bed1d: lea      r8, [rip + 0x6c241c]  ; 'pRLCharacter'
+  0x1805bed24: lea      ecx, [rax + 3]
+  0x1805bed27: lea      rdx, [rip + 0x6c1e22]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1805bed2e: call     qword ptr [rip + 0xadb2cc]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1805bed34: mov      rdi, qword ptr [rsp + 0x40]
+  0x1805bed39: xor      eax, eax
+  0x1805bed3b: add      rsp, 0x30
+  0x1805bed3f: pop      rbx
+  0x1805bed40: ret      
+  0x1805bed41: mov      rcx, rax
+  0x1805bed44: call     0x18001f7ad
+  0x1805bed49: mov      edx, eax
+  0x1805bed4b: mov      rcx, rbx
+  0x1805bed4e: call     0x180004651
+  0x1805bed53: mov      rdi, qword ptr [rsp + 0x40]
+  0x1805bed58: mov      eax, 1
+  0x1805bed5d: add      rsp, 0x30
+  0x1805bed61: pop      rbx
+  0x1805bed62: ret      
+  0x1805bed63: int3     
+  0x1805bed64: int3     
+  0x1805bed65: int3     
+  0x1805bed66: int3     
+  0x1805bed67: int3     
+  0x1805bed68: int3     
+  0x1805bed69: int3     
+  0x1805bed6a: int3     
+  0x1805bed6b: int3     
+  0x1805bed6c: int3     
+  0x1805bed6d: int3     
+  0x1805bed6e: int3     
+  0x1805bed6f: int3     
+  0x1805bed70: int3     
+  0x1805bed71: int3     
+  0x1805bed72: int3     
+  0x1805bed73: int3     
+  0x1805bed74: int3     
+  0x1805bed75: int3     
+  0x1805bed76: int3     
+  0x1805bed77: int3     
+  0x1805bed78: int3     
+  0x1805bed79: int3     
+  0x1805bed7a: int3     
+  0x1805bed7b: int3     
+  0x1805bed7c: int3     
+  0x1805bed7d: int3     
+  0x1805bed7e: int3     
+  0x1805bed7f: int3     

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101713">
+  <title>JX3 Map UI Explorer</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark">JX3</div>
+      <div class="brand-copy">
+        <div class="eyebrow">STATIC REVERSE-ENGINEERING WORKSPACE</div>
+        <h1>Map UI Explorer</h1>
+      </div>
+      <div class="topbar-meta">
+        <span class="status-dot"></span><span>PakV4 evidence</span>
+        <span class="branch-chip">branch: main</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <div class="side-label">BATTLE MAPS</div>
+        <div id="map-list" class="map-list"></div>
+        <div class="sidebar-note">
+          <span class="mini-led"></span>
+          <div><b>Evidence-first</b><small>Extracted client assets and static RE notes</small></div>
+        </div>
+      </aside>
+
+      <section class="main-area">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow" id="map-kicker">MAP DATA</div>
+            <h2 id="map-title">Loading map…</h2>
+            <p id="map-subtitle">Reading extracted resource catalog</p>
+          </div>
+          <div class="map-id-chip" id="map-id"></div>
+        </div>
+
+        <nav class="tabs" aria-label="Map views">
+          <button class="tab active" data-view="overview">Overview</button>
+          <button class="tab" data-view="middlemap">M · MiddleMap</button>
+          <button class="tab" data-view="minimap">Top-right · Minimap</button>
+          <button class="tab" data-view="battlefield">Draggable · Battlefield</button>
+          <button class="tab" data-view="assets">UI atlases</button>
+          <button class="tab" data-view="components">Components</button>
+        </nav>
+
+        <div id="view-root" class="view-root" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Close">×</button>
+    <img id="lightbox-image" alt="Expanded extracted map asset">
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+  </div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

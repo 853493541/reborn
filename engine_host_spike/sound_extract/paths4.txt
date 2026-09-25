@@ -1,0 +1,3 @@
+data\Wwiseaudio\GeneratedSoundBanks\Windows\skillremake.bnk
+data\Wwiseaudio\GeneratedSoundBanks\Windows\Base\161340541.wem
+data\Wwiseaudio\GeneratedSoundBanks\Windows\skillremake.txt

@@ -1,0 +1,4 @@
+data\Wwiseaudio\skillremake.bnk
+data\Wwiseaudio\CangJian.bnk
+data\Wwiseaudio\JX3_Skill.bnk
+data\Wwiseaudio\jian3_skill_short.bnk

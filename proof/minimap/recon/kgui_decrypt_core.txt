@@ -1,0 +1,188 @@
+# KGUIX64.dll 0x180172670 (+0x300)
+  0x180172670: push     rbp
+  0x180172672: push     rbx
+  0x180172673: push     rsi
+  0x180172674: push     rdi
+  0x180172675: push     r14
+  0x180172677: push     r15
+  0x180172679: lea      rbp, [rsp - 0x2e8]
+  0x180172681: sub      rsp, 0x3e8
+  0x180172688: mov      rax, qword ptr [rip + 0x4dd619]
+  0x18017268f: xor      rax, rsp
+  0x180172692: mov      qword ptr [rbp + 0x2d0], rax
+  0x180172699: mov      ebx, 0xf0
+  0x18017269e: mov      rsi, r8
+  0x1801726a1: cmp      rdx, rbx
+  0x1801726a4: mov      rdi, rcx
+  0x1801726a7: mov      r15, r9
+  0x1801726aa: cmovb    rbx, rdx
+  0x1801726ae: mov      rdx, rcx
+  0x1801726b1: mov      r8, rbx
+  0x1801726b4: lea      rcx, [rbp - 0x70]
+  0x1801726b8: call     0x1804db186
+  0x1801726bd: mov      r8, rbx
+  0x1801726c0: lea      rdx, [rbp - 0x70]
+  0x1801726c4: lea      rcx, [rbp + 0x90]
+  0x1801726cb: call     0x1804db186
+  0x1801726d0: lea      rcx, [rbp + 0x90]
+  0x1801726d7: add      rcx, rbx
+  0x1801726da: lea      r8, [rip + 0x44fa07]  ; '2RSDGFGDSGH34SFS'
+  0x1801726e1: lea      rdx, [rip + 0x43dc74]  ; '%s'
+  0x1801726e8: call     0x1800f55c0
+  0x1801726ed: movzx    ecx, byte ptr [rbp + 0x90]
+  0x1801726f4: mov      r14d, eax
+  0x1801726f7: test     cl, cl
+  0x1801726f9: je       0x180172717
+  0x1801726fb: lea      rdx, [rbp + 0x90]
+  0x180172702: cmp      cl, 0x41
+  0x180172705: jle      0x18017270c
+  0x180172707: sub      cl, 2
+  0x18017270a: mov      byte ptr [rdx], cl
+  0x18017270c: movzx    ecx, byte ptr [rdx + 1]
+  0x180172710: inc      rdx
+  0x180172713: test     cl, cl
+  0x180172715: jne      0x180172702
+  0x180172717: lea      rcx, [rsp + 0x20]
+  0x18017271c: call     qword ptr [rip + 0x374a0e]  ; 'vxd'
+  0x180172722: lea      r8d, [rbx + r14]
+  0x180172726: lea      rdx, [rbp + 0x90]
+  0x18017272d: lea      rcx, [rsp + 0x20]
+  0x180172732: call     qword ptr [rip + 0x3749f0]  ; Engine_Lua5X64.dll!md5_append
+  0x180172738: lea      rdx, [rbp - 0x80]
+  0x18017273c: lea      rcx, [rsp + 0x20]
+  0x180172741: call     qword ptr [rip + 0x374a19]  ; Engine_Lua5X64.dll!md5_finish
+  0x180172747: movups   xmm0, xmmword ptr [rbp - 0x80]
+  0x18017274b: mov      r8, rbx
+  0x18017274e: lea      rcx, [rbp - 0x60]
+  0x180172752: mov      rdx, rdi
+  0x180172755: movups   xmmword ptr [rsi], xmm0
+  0x180172758: call     0x1804db186
+  0x18017275d: lea      r14, [rbp + 0x1b0]
+  0x180172764: mov      edi, 0xa
+  0x180172769: add      r14, rbx
+  0x18017276c: nop      dword ptr [rax]
+  0x180172770: movups   xmm0, xmmword ptr [rbp - 0x80]
+  0x180172774: mov      r8, rbx
+  0x180172777: lea      rdx, [rbp - 0x70]
+  0x18017277b: lea      rcx, [rbp + 0x1b0]
+  0x180172782: movaps   xmmword ptr [rbp - 0x70], xmm0
+  0x180172786: call     0x1804db186
+  0x18017278b: lea      r8, [rip + 0x44f956]  ; '2RSDGFGDSGH34SFS'
+  0x180172792: mov      rcx, r14
+  0x180172795: lea      rdx, [rip + 0x43dbc0]  ; '%s'
+  0x18017279c: call     0x1800f55c0
+  0x1801727a1: movzx    ecx, byte ptr [rbp + 0x1b0]
+  0x1801727a8: mov      esi, eax
+  0x1801727aa: test     cl, cl
+  0x1801727ac: je       0x1801727ca
+  0x1801727ae: lea      rdx, [rbp + 0x1b0]
+  0x1801727b5: cmp      cl, 0x41
+  0x1801727b8: jle      0x1801727bf
+  0x1801727ba: sub      cl, 2
+  0x1801727bd: mov      byte ptr [rdx], cl
+  0x1801727bf: movzx    ecx, byte ptr [rdx + 1]
+  0x1801727c3: inc      rdx
+  0x1801727c6: test     cl, cl
+  0x1801727c8: jne      0x1801727b5
+  0x1801727ca: lea      rcx, [rsp + 0x20]
+  0x1801727cf: call     qword ptr [rip + 0x37495b]  ; 'vxd'
+  0x1801727d5: lea      r8d, [rbx + rsi]
+  0x1801727d9: lea      rdx, [rbp + 0x1b0]
+  0x1801727e0: lea      rcx, [rsp + 0x20]
+  0x1801727e5: call     qword ptr [rip + 0x37493d]  ; Engine_Lua5X64.dll!md5_append
+  0x1801727eb: lea      rdx, [rbp - 0x80]
+  0x1801727ef: lea      rcx, [rsp + 0x20]
+  0x1801727f4: call     qword ptr [rip + 0x374966]  ; Engine_Lua5X64.dll!md5_finish
+  0x1801727fa: sub      rdi, 1
+  0x1801727fe: jne      0x180172770
+  0x180172804: movups   xmm0, xmmword ptr [rbp - 0x80]
+  0x180172808: movups   xmmword ptr [r15], xmm0
+  0x18017280c: lea      eax, [rdi + 1]
+  0x18017280f: mov      rcx, qword ptr [rbp + 0x2d0]
+  0x180172816: xor      rcx, rsp
+  0x180172819: call     0x1804ca600
+  0x18017281e: add      rsp, 0x3e8
+  0x180172825: pop      r15
+  0x180172827: pop      r14
+  0x180172829: pop      rdi
+  0x18017282a: pop      rsi
+  0x18017282b: pop      rbx
+  0x18017282c: pop      rbp
+  0x18017282d: ret      
+  0x18017282e: int3     
+  0x18017282f: int3     
+  0x180172830: mov      qword ptr [rsp + 8], rbx
+  0x180172835: mov      qword ptr [rsp + 0x10], rbp
+  0x18017283a: mov      qword ptr [rsp + 0x18], rsi
+  0x18017283f: push     rdi
+  0x180172840: sub      rsp, 0x50
+  0x180172844: mov      rsi, rcx
+  0x180172847: mov      rdi, r8
+  0x18017284a: mov      rcx, r8
+  0x18017284d: mov      rbp, rdx
+  0x180172850: call     0x1804cb9e0
+  0x180172855: mov      rbx, rax
+  0x180172858: test     rax, rax
+  0x18017285b: jne      0x18017288b
+  0x18017285d: lea      rax, [rip + 0x44f964]  ; 'UI::KByteScriptTable::NewUserData'
+  0x180172864: lea      r9d, [rbx + 0x2f]
+  0x180172868: mov      qword ptr [rsp + 0x20], rax
+  0x18017286d: lea      r8, [rip + 0x44fa64]  ; 'szBuffer'
+  0x180172874: lea      rdx, [rip + 0x436ffd]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18017287b: lea      ecx, [rbx + 3]
+  0x18017287e: call     qword ptr [rip + 0x374994]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180172884: xor      eax, eax
+  0x180172886: jmp      0x180172956
+  0x18017288b: mov      r8, rdi
+  0x18017288e: mov      rdx, rbp
+  0x180172891: mov      rcx, rbx
+  0x180172894: call     0x1804db186
+  0x180172899: mov      edx, 0x18
+  0x18017289e: mov      dword ptr [rsp + 0x30], 0x1b4244
+  0x1801728a6: mov      rcx, rsi
+  0x1801728a9: mov      qword ptr [rsp + 0x38], rdi
+  0x1801728ae: mov      qword ptr [rsp + 0x40], rbx
+  0x1801728b3: call     0x180233550
+  0x1801728b8: test     rax, rax
+  0x1801728bb: jne      0x18017291d
+  0x1801728bd: mov      r9d, 0x3a
+  0x1801728c3: lea      rax, [rip + 0x44fc6e]  ; 'UI::TNewUserDataEx'
+  0x1801728ca: lea      r8, [rip + 0x44fc57]  ; 'pUserData'
+  0x1801728d1: mov      qword ptr [rsp + 0x20], rax
+  0x1801728d6: lea      rdx, [rip + 0x436f9b]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801728dd: lea      ecx, [r9 - 0x37]
+  0x1801728e1: call     qword ptr [rip + 0x374931]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801728e7: mov      r9d, 0x33
+  0x1801728ed: lea      rax, [rip + 0x44f8d4]  ; 'UI::KByteScriptTable::NewUserData'
+  0x1801728f4: lea      r8, [rip + 0x44f995]  ; 'TNewUserDataEx(L, KByteData{ BYTE_MAGIC, nLen, szBuffer }, "KByteData")'
+  0x1801728fb: mov      qword ptr [rsp + 0x20], rax
+  0x180172900: lea      rdx, [rip + 0x436f71]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180172907: lea      ecx, [r9 - 0x30]
+  0x18017290b: call     qword ptr [rip + 0x374907]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180172911: mov      rcx, rbx
+  0x180172914: call     0x1804cc300
+  0x180172919: xor      eax, eax
+  0x18017291b: jmp      0x180172956
+  0x18017291d: movups   xmm0, xmmword ptr [rsp + 0x30]
+  0x180172922: lea      r8, [rip + 0x44f86f]  ; 'KByteData'
+  0x180172929: mov      edx, 0xffffd8f0
+  0x18017292e: movsd    xmm1, qword ptr [rsp + 0x40]
+  0x180172934: mov      rcx, rsi
+  0x180172937: movups   xmmword ptr [rax], xmm0
+  0x18017293a: movsd    qword ptr [rax + 0x10], xmm1
+  0x18017293f: call     0x180233200
+  0x180172944: mov      edx, 0xfffffffe
+  0x180172949: mov      rcx, rsi
+  0x18017294c: call     0x180233f80
+  0x180172951: mov      eax, 1
+  0x180172956: mov      rbx, qword ptr [rsp + 0x60]
+  0x18017295b: mov      rbp, qword ptr [rsp + 0x68]
+  0x180172960: mov      rsi, qword ptr [rsp + 0x70]
+  0x180172965: add      rsp, 0x50
+  0x180172969: pop      rdi
+  0x18017296a: ret      
+  0x18017296b: int3     
+  0x18017296c: int3     
+  0x18017296d: int3     
+  0x18017296e: int3     
+  0x18017296f: int3     

@@ -1,0 +1,13 @@
+{
+	"Version": 0,
+	"RegionVersion": 0,
+	"RegionSize": 512,
+	"LeafNodeSize": 64,
+	"WorldOrigin.x": -102400.0,
+	"WorldOrigin.y": -102400.0,
+	"UnitSize": 100.0,
+	"RegionTableSize.x": 8,
+	"RegionTableSize.y": 8,
+	"Flags": 0,
+	"FoliageAbsPosition": 1
+}

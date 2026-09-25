@@ -1,0 +1,81 @@
+# KGUIX64.dll 0x1801348e0 (+0x180)
+  0x1801348e0: test     dword ptr [rip - 0x7effffff], edx
+  0x1801348e6: jmp      0x1801348e9
+  0x1801348e8: add      al, byte ptr [rax]
+  0x1801348ea: add      byte ptr [rbx + rdi - 0x7f], dh
+  0x1801348ee: jmp      0x1801348f5
+  0x1801348f0: add      eax, dword ptr [rax]
+  0x1801348f2: add      byte ptr [rsp - 0x7d], dh
+  0x1801348f6: sti      
+  0x1801348f7: add      dword ptr [rax + rdx + 0x48], esi
+  0x1801348fb: mov      ebx, dword ptr [rsp + 0x40]
+  0x1801348ff: mov      rsi, qword ptr [rsp + 0x48]
+  0x180134904: add      rsp, 0x30
+  0x180134908: pop      rdi
+  0x180134909: ret      
+  0x18013490a: mov      dword ptr [rdi + 0xd8c], 0
+  0x180134914: jmp      0x1801349fa
+  0x180134919: mov      dword ptr [rdi + 0xd8c], 1
+  0x180134923: jmp      0x1801349fa
+  0x180134928: movss    xmm5, dword ptr [rdi + 0xbfc]
+  0x180134930: comiss   xmm5, dword ptr [rip + 0x4b16d1]
+  0x180134937: jbe      0x1801349fa
+  0x18013493d: mov      rcx, qword ptr [rip + 0x539f0c]
+  0x180134944: lea      r8, [rip + 0x483365]  ; 'OnMinimapSendInfo'
+  0x18013494b: movss    xmm0, dword ptr [rdi + 0x2c]
+  0x180134950: xorps    xmm2, xmm2
+  0x180134953: mulss    xmm0, dword ptr [rip + 0x4b1701]
+  0x18013495b: xor      r9d, r9d
+  0x18013495e: mov      rdx, rdi
+  0x180134961: movsx    eax, si
+  0x180134964: movss    xmm4, dword ptr [rdi + 0xc14]
+  0x18013496c: divss    xmm4, dword ptr [rcx + 0xcb18]
+  0x180134974: add      rcx, 0x6020
+  0x18013497b: shr      rsi, 0x10
+  0x18013497f: mov      qword ptr [rsp + 0x20], 0
+  0x180134988: movss    xmm3, dword ptr [rdi + 0x30]
+  0x18013498d: mulss    xmm3, dword ptr [rip + 0x4b16c7]
+  0x180134995: cvtsi2ss xmm2, eax
+  0x180134999: movsx    eax, si
+  0x18013499c: addss    xmm3, dword ptr [rdi + 0x28]
+  0x1801349a1: subss    xmm2, dword ptr [rdi + 0x24]
+  0x1801349a6: subss    xmm2, xmm0
+  0x1801349aa: xorps    xmm0, xmm0
+  0x1801349ad: cvtsi2ss xmm0, eax
+  0x1801349b1: mulss    xmm2, xmm4
+  0x1801349b5: subss    xmm3, xmm0
+  0x1801349b9: addss    xmm2, dword ptr [rdi + 0xc30]
+  0x1801349c1: mulss    xmm3, xmm4
+  0x1801349c5: subss    xmm2, dword ptr [rdi + 0xc04]
+  0x1801349cd: addss    xmm3, dword ptr [rdi + 0xc34]
+  0x1801349d5: divss    xmm2, xmm5
+  0x1801349d9: subss    xmm3, dword ptr [rdi + 0xc08]
+  0x1801349e1: movss    dword ptr [rdi + 0xd80], xmm2
+  0x1801349e9: divss    xmm3, xmm5
+  0x1801349ed: movss    dword ptr [rdi + 0xd84], xmm3
+  0x1801349f5: call     0x1801b1b90
+  0x1801349fa: mov      rbx, qword ptr [rsp + 0x40]
+  0x1801349ff: mov      eax, 1
+  0x180134a04: mov      rsi, qword ptr [rsp + 0x48]
+  0x180134a09: add      rsp, 0x30
+  0x180134a0d: pop      rdi
+  0x180134a0e: ret      
+  0x180134a0f: int3     
+  0x180134a10: mov      rax, rsp
+  0x180134a13: push     rbp
+  0x180134a14: push     rsi
+  0x180134a15: push     r12
+  0x180134a17: push     r13
+  0x180134a19: push     r15
+  0x180134a1b: lea      rbp, [rsp - 0x60]
+  0x180134a20: sub      rsp, 0x160
+  0x180134a27: cmp      dword ptr [rcx + 0xd88], 0
+  0x180134a2e: mov      rsi, rcx
+  0x180134a31: movaps   xmmword ptr [rax - 0x38], xmm6
+  0x180134a35: movaps   xmmword ptr [rax - 0x48], xmm7
+  0x180134a39: movaps   xmmword ptr [rax - 0x58], xmm8
+  0x180134a3e: movaps   xmmword ptr [rax - 0x68], xmm9
+  0x180134a43: movaps   xmmword ptr [rax - 0x78], xmm10
+  0x180134a48: movaps   xmmword ptr [rax - 0x88], xmm11
+  0x180134a50: movaps   xmmword ptr [rax - 0x98], xmm12
+  0x180134a58: movaps   xmmword ptr [rax - 0xa8], xmm13

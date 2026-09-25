@@ -1,0 +1,173 @@
+# KGUIX64.dll 0x180231230 (+0x300)
+  0x180231230: mov      qword ptr [rsp + 8], rbx
+  0x180231235: push     rbp
+  0x180231236: push     rsi
+  0x180231237: push     rdi
+  0x180231238: push     r12
+  0x18023123a: push     r13
+  0x18023123c: push     r14
+  0x18023123e: push     r15
+  0x180231240: sub      rsp, 0x30
+  0x180231244: movzx    eax, byte ptr [rdx]
+  0x180231247: lea      rsi, [rip - 0x23124e]
+  0x18023124e: mov      byte ptr [rcx], al
+  0x180231250: mov      r10d, 4
+  0x180231256: movzx    eax, byte ptr [rdx + 1]
+  0x18023125a: mov      byte ptr [rcx + 1], al
+  0x18023125d: movzx    eax, byte ptr [rdx + 2]
+  0x180231261: mov      byte ptr [rcx + 2], al
+  0x180231264: lea      r11d, [r10 + 2]
+  0x180231268: movzx    eax, byte ptr [rdx + 3]
+  0x18023126c: mov      byte ptr [rcx + 3], al
+  0x18023126f: movzx    eax, byte ptr [rdx + 4]
+  0x180231273: mov      byte ptr [rcx + 4], al
+  0x180231276: movzx    eax, byte ptr [rdx + 5]
+  0x18023127a: mov      byte ptr [rcx + 5], al
+  0x18023127d: movzx    eax, byte ptr [rdx + 6]
+  0x180231281: mov      byte ptr [rcx + 6], al
+  0x180231284: movzx    eax, byte ptr [rdx + 7]
+  0x180231288: mov      byte ptr [rcx + 7], al
+  0x18023128b: movzx    eax, byte ptr [rdx + 8]
+  0x18023128f: mov      byte ptr [rcx + 8], al
+  0x180231292: movzx    eax, byte ptr [rdx + 9]
+  0x180231296: mov      byte ptr [rcx + 9], al
+  0x180231299: movzx    eax, byte ptr [rdx + 0xa]
+  0x18023129d: mov      byte ptr [rcx + 0xa], al
+  0x1802312a0: movzx    eax, byte ptr [rdx + 0xb]
+  0x1802312a4: mov      byte ptr [rcx + 0xb], al
+  0x1802312a7: movzx    eax, byte ptr [rdx + 0xc]
+  0x1802312ab: mov      byte ptr [rcx + 0xc], al
+  0x1802312ae: movzx    eax, byte ptr [rdx + 0xd]
+  0x1802312b2: mov      byte ptr [rcx + 0xd], al
+  0x1802312b5: movzx    eax, byte ptr [rdx + 0xe]
+  0x1802312b9: mov      byte ptr [rcx + 0xe], al
+  0x1802312bc: movzx    eax, byte ptr [rdx + 0xf]
+  0x1802312c0: mov      byte ptr [rcx + 0xf], al
+  0x1802312c3: nop      dword ptr [rax]
+  0x1802312c7: nop      word ptr [rax + rax]
+  0x1802312d0: lea      r8d, [r10*4 - 4]
+  0x1802312d8: mov      eax, r8d
+  0x1802312db: add      rax, rcx
+  0x1802312de: mov      qword ptr [rsp + 8], rax
+  0x1802312e3: movzx    r9d, byte ptr [rax]
+  0x1802312e7: lea      eax, [r8 + 1]
+  0x1802312eb: add      rax, rcx
+  0x1802312ee: mov      qword ptr [rsp + 0x10], rax
+  0x1802312f3: movzx    ebx, byte ptr [rax]
+  0x1802312f6: lea      eax, [r8 + 2]
+  0x1802312fa: add      rax, rcx
+  0x1802312fd: movzx    r14d, bl
+  0x180231301: mov      qword ptr [rsp + 0x18], rax
+  0x180231306: movzx    edi, byte ptr [rax]
+  0x180231309: lea      eax, [r8 + 3]
+  0x18023130d: add      rax, rcx
+  0x180231310: mov      qword ptr [rsp + 0x20], rax
+  0x180231315: movzx    r12d, byte ptr [rax]
+  0x180231319: mov      eax, r10d
+  0x18023131c: and      eax, 3
+  0x18023131f: mov      dword ptr [rsp], eax
+  0x180231322: jne      0x180231363
+  0x180231324: movzx    r14d, byte ptr [rdi + rsi + 0x5a96c0]
+  0x18023132d: lea      rdx, [r11 - 2]
+  0x180231331: movzx    edi, byte ptr [r12 + rsi + 0x5a96c0]
+  0x18023133a: mov      eax, ebx
+  0x18023133c: movzx    r12d, byte ptr [r9 + rsi + 0x5a96c0]
+  0x180231345: lea      rbx, [rip - 0x23134c]
+  0x18023134c: shr      rdx, 2
+  0x180231350: movzx    r9d, byte ptr [rdx + rbx + 0x5a97c0]
+  0x180231359: xor      r9b, byte ptr [rax + rbx + 0x5a96c0]
+  0x180231361: jmp      0x18023136a
+  0x180231363: lea      rbx, [rip - 0x23136a]
+  0x18023136a: lea      r8d, [r10*4 - 0x10]
+  0x180231372: movzx    esi, byte ptr [r8 + rcx]
+  0x180231377: lea      eax, [r8 + 1]
+  0x18023137b: xor      sil, r9b
+  0x18023137e: lea      r9d, [r10*4]
+  0x180231386: mov      byte ptr [r9 + rcx], sil
+  0x18023138a: movzx    edx, sil
+  0x18023138e: movzx    ebp, byte ptr [rax + rcx]
+  0x180231392: lea      eax, [r9 + 1]
+  0x180231396: xor      bpl, r14b
+  0x180231399: mov      byte ptr [rax + rcx], bpl
+  0x18023139d: lea      eax, [r8 + 2]
+  0x1802313a1: movzx    r14d, byte ptr [rax + rcx]
+  0x1802313a6: lea      eax, [r9 + 2]
+  0x1802313aa: xor      r14b, dil
+  0x1802313ad: mov      byte ptr [rax + rcx], r14b
+  0x1802313b1: lea      eax, [r8 + 3]
+  0x1802313b5: movzx    r15d, byte ptr [rax + rcx]
+  0x1802313ba: lea      eax, [r9 + 3]
+  0x1802313be: xor      r15b, r12b
+  0x1802313c1: mov      byte ptr [rsp + 0x80], r14b
+  0x1802313c9: mov      byte ptr [rax + rcx], r15b
+  0x1802313cd: movzx    r12d, bpl
+  0x1802313d1: lea      eax, [r10 + 1]
+  0x1802313d5: mov      byte ptr [rsp + 0x88], r15b
+  0x1802313dd: test     al, 3
+  0x1802313df: jne      0x18023142f
+  0x1802313e1: movzx    eax, r14b
+  0x1802313e5: lea      rdx, [r11 - 1]
+  0x1802313e9: shr      rdx, 2
+  0x1802313ed: movzx    r12d, byte ptr [rax + rbx + 0x5a96c0]
+  0x1802313f6: movzx    edx, byte ptr [rdx + rbx + 0x5a97c0]
+  0x1802313fe: movzx    eax, r15b
+  0x180231402: movzx    eax, byte ptr [rax + rbx + 0x5a96c0]
+  0x18023140a: mov      byte ptr [rsp + 0x80], al
+  0x180231411: movzx    eax, sil
+  0x180231415: movzx    eax, byte ptr [rax + rbx + 0x5a96c0]
+  0x18023141d: mov      byte ptr [rsp + 0x88], al
+  0x180231424: movzx    eax, bpl
+  0x180231428: xor      dl, byte ptr [rax + rbx + 0x5a96c0]
+  0x18023142f: lea      eax, [r9 + 4]
+  0x180231433: lea      r8d, [r10*4 - 0xc]
+  0x18023143b: movzx    edi, byte ptr [r8 + rcx]
+  0x180231440: xor      dil, dl
+  0x180231443: mov      byte ptr [rax + rcx], dil
+  0x180231447: lea      eax, [r8 + 1]
+  0x18023144b: movzx    ebx, byte ptr [rax + rcx]
+  0x18023144f: lea      eax, [r9 + 5]
+  0x180231453: xor      bl, r12b
+  0x180231456: mov      byte ptr [rax + rcx], bl
+  0x180231459: lea      eax, [r8 + 2]
+  0x18023145d: movzx    r12d, byte ptr [rax + rcx]
+  0x180231462: lea      eax, [r9 + 6]
+  0x180231466: xor      r12b, byte ptr [rsp + 0x80]
+  0x18023146e: mov      byte ptr [rax + rcx], r12b
+  0x180231472: lea      eax, [r8 + 3]
+  0x180231476: movzx    r8d, byte ptr [rax + rcx]
+  0x18023147b: lea      eax, [r9 + 7]
+  0x18023147f: xor      r8b, byte ptr [rsp + 0x88]
+  0x180231487: mov      byte ptr [rax + rcx], r8b
+  0x18023148b: lea      eax, [r10 - 2]
+  0x18023148f: mov      byte ptr [rsp + 0x88], r8b
+  0x180231497: mov      byte ptr [rsp + 0x80], bl
+  0x18023149e: test     al, 3
+  0x1802314a0: jne      0x180231504
+  0x1802314a2: movzx    eax, r12b
+  0x1802314a6: mov      rdx, r11
+  0x1802314a9: lea      r12, [rip - 0x2314b0]
+  0x1802314b0: shr      rdx, 2
+  0x1802314b4: movzx    eax, byte ptr [rax + r12 + 0x5a96c0]
+  0x1802314bd: mov      byte ptr [rsp + 0x80], al
+  0x1802314c4: movzx    eax, r8b
+  0x1802314c8: lea      r8, [rip - 0x2314cf]
+  0x1802314cf: movzx    r12d, byte ptr [rax + r8 + 0x5a96c0]
+  0x1802314d8: movzx    eax, dil
+  0x1802314dc: movzx    edi, byte ptr [rdx + r8 + 0x5a97c0]
+  0x1802314e5: movzx    eax, byte ptr [rax + r8 + 0x5a96c0]
+  0x1802314ee: mov      byte ptr [rsp + 0x88], al
+  0x1802314f5: movzx    eax, bl
+  0x1802314f8: xor      dil, byte ptr [rax + r8 + 0x5a96c0]
+  0x180231500: lea      eax, [r10 - 2]
+  0x180231504: lea      r8d, [rax*4]
+  0x18023150c: movzx    ebx, byte ptr [r8 + rcx]
+  0x180231511: lea      eax, [r10*4 + 8]
+  0x180231519: xor      bl, dil
+  0x18023151c: mov      byte ptr [rax + rcx], bl
+  0x18023151f: lea      eax, [r8 + 1]
+  0x180231523: movzx    edi, byte ptr [rax + rcx]
+  0x180231527: lea      eax, [r9 + 9]
+  0x18023152b: .byte    0x40
+  0x18023152c: .byte    0x32
+  0x18023152d: .byte    0xbc
+  0x18023152e: and      al, 0x80

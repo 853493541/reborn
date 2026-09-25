@@ -1,0 +1,2 @@
+data\public\sound.ini
+data\public\WwiseSetting.ini

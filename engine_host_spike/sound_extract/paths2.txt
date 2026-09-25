@@ -1,0 +1,2 @@
+data\Wwiseaudio\PreLoadBankList.txt
+data\Wwiseaudio\Init.bnk
