@@ -1,0 +1,191 @@
+Camera input controls - raw evidence (2026-09-23)
+=================================================
+Companion to docs/CAMERA_INPUT_CONTROLS.md.
+
+1. ui/hotkey/default.txt (extracted from the client pak)
+--------------------------------------------------------
+Camera-related rows (name <tab> context <tab> key1 <tab> key2):
+
+CAMERAZOOMIN		256
+CAMERAZOOMOUT		257
+CAMERAORSELECTORMOVE		1
+CAMERAORSELECTORMOVESTICKY		2
+CAMERARESET		122
+CAMERA_SET_VIEW_1		36
+CAMERA_SET_VIEW_2		35
+
+Key codes: 1 = LMB, 2 = RMB, 256 = wheel up, 257 = wheel down, 122 = F11,
+36 = Home, 35 = End.
+
+2. ui/hotkey/bindings.ini (camera sections)
+-------------------------------------------
+[CAMERAZOOMIN]
+desc=推进镜头
+down=CameraZoomIn();
+
+[CAMERAZOOMOUT]
+desc=拉远镜头
+down=CameraZoomOut();
+
+[CAMERAORSELECTORMOVE]
+desc=镜头旋转
+unchangeable=1
+down=CameraOrSelectOrMoveStart(0);
+up=CameraOrSelectOrMoveStop(0);
+
+[CAMERAORSELECTORMOVESTICKY]
+desc=镜头和人物旋转
+unchangeable=1
+down=CameraOrSelectOrMoveStart(1);
+up=CameraOrSelectOrMoveStop(1);
+
+[CAMERAUP]
+desc=镜头向上旋转
+down=MoveUpStart();
+up=MoveUpStop();
+
+[CAMERADOWN]
+desc=镜头向下旋转
+down=MoveDownStart();
+up=MoveDownStop();
+
+[CAMERARESET]
+desc=重置镜头
+down=CameraReset();
+
+[CAMERA_SET_VIEW_1]
+desc=镜头切换到脑(后)
+down=CameraSetView(0)
+
+[CAMERA_SET_VIEW_2]
+desc=镜头切换到脑(前)
+down=CameraSetView(180)
+
+3. ui/script/control.lua (decompiled, full)
+-------------------------------------------
+local L0_1, L1_1
+L0_1 = 0
+CONTROL_FORWARD = L0_1
+L0_1 = 1
+CONTROL_BACKWARD = L0_1
+L0_1 = 2
+CONTROL_TURN_LEFT = L0_1
+L0_1 = 3
+CONTROL_TURN_RIGHT = L0_1
+L0_1 = 4
+CONTROL_STRAFE_LEFT = L0_1
+L0_1 = 5
+CONTROL_STRAFE_RIGHT = L0_1
+L0_1 = 6
+CONTROL_CAMERA = L0_1
+L0_1 = 7
+CONTROL_OBJECT_STICK_CAMERA = L0_1
+L0_1 = 8
+CONTROL_WALK = L0_1
+L0_1 = 9
+CONTROL_JUMP = L0_1
+L0_1 = 10
+CONTROL_AUTO_RUN = L0_1
+L0_1 = 11
+CONTROL_FOLLOW = L0_1
+L0_1 = 12
+CONTROL_UP = L0_1
+L0_1 = 13
+CONTROL_DOWN = L0_1
+
+function L0_1(A0_2)
+  local L1_2
+end
+Ctrl_CameraOrSelectOrMoveStart = L0_1
+
+function L0_1(A0_2)
+  local L1_2
+end
+Ctrl_CameraOrSelectOrMoveStop = L0_1
+
+(=> the Ctrl_* handlers are stubs in control.lua; the per-frame mouse->camera
+math lives in the represent DLL, section 5.)
+
+4. ui/script/hotkeys.lua (decompiled camera functions)
+------------------------------------------------------
+-- wheel zoom: multiplicative, gated by IsCameraZoomEnabled
+function CameraZoomIn()
+  if IsCameraZoomEnabled then Camera_Zoom(0.9) end
+end
+function CameraZoomOut()
+  if IsCameraZoomEnabled then Camera_Zoom(1.1) end
+end
+
+-- LMB / RMB drag entry points (mode 0 = camera, mode 1 = camera+character)
+function CameraOrSelectOrMoveStart(A0_2)
+  Ctrl_CameraOrSelectOrMoveStart(A0_2)
+end
+function CameraOrSelectOrMoveStop(A0_2)
+  Ctrl_CameraOrSelectOrMoveStop(A0_2)
+end
+
+-- F11 reset: camera behind the character, pitch -15 deg
+function CameraReset()
+  local L0_2 = GetClientPlayer()
+  if not L0_2 then return end
+  local L1_2 = L0_2.nFaceDirection - 64
+  if L1_2 < 0 then L1_2 = L1_2 + 256 end
+  local L2_2 = 256 - L1_2
+  L2_2 = L2_2 / 256
+  local L3_2 = math.pi
+  L2_2 = L2_2 * L3_2
+  L1_2 = L2_2 * 2
+  Camera_SetForceReset(L1_2, math.pi / -12, 1)
+end
+
+-- CameraSetView(deg) stores a view preset (0 / 180 from bindings)
+function L44_1(A0_2)
+  L43_1 = A0_2
+end
+CameraSetView = L43_1
+
+Other camera-related calls in hotkeys.lua:
+  Camera_ToggleControl(CONTROL_AUTO_RUN)   -- auto-run toggle
+  Camera_ToggleControl(CONTROL_WALK)       -- walk toggle
+  Camera_LockControl(8)                    -- CONTROL_WALK lock while moving back
+  Camera_EnableControl(CONTROL_*, bool)    -- enable/disable a control
+  Camera_IsClientControlDisabled(), Camera_IsInFreeView()
+
+5. JX3RepresentX64.dll - mouse -> camera functions (strings)
+------------------------------------------------------------
+ComputeMouseMoveDelta
+ApplyMouse
+MouseMove
+MouseMoveCamera
+ClampMouse
+ClampMouseForSprintCamera
+ClampMouseForCarrierCamera
+ClampMouseForGliderCamera
+IsMouseLeftButtonPressed
+IsMouseRightButtonPressed
+MouseControlMoveEnable
+EnableMouseControlMove
+HandleMouseMoveEnable
+GetRLCursorPos / SetRLCursorPos / GetRLCursorScenePos
+
+ApplyMouse (fn containing the "ApplyMouse" assert @ 0x180b36f11):
+  0x180b36fd4  movss xmm1, [rsi]          ; delta.x
+  0x180b36fd8  movss xmm2, [rsi+4]        ; delta.y
+  0x180b36fdd  mulss xmm1, [0x180cb9f34]  ; * 6.2831855 (2*pi)
+  0x180b36fe5  mulss xmm2, [0x180cb9f34]  ; * 2*pi
+  ... row params [r15+0x20], [r15+0x24] passed to ClampMouse (0x180b37770)
+
+ClampMouse (0x180b37770) resolves the controller by name:
+  "camera", "camera controller", "sprint camera controller",
+  "carrier camera controller", "glider camera controller",
+  "npc dialog camera controller"
+
+6. Reproduce
+------------
+- Extract UI files: tools/netcode/extract_pak_paths.py with a candidates list
+  (ui/module_info.xml, ui/hotkey/default.txt, ui/hotkey/bindings.ini,
+  ui/script/hotkeys.lua, ui/script/control.lua,
+  ui/script/operationmodebase.lua, ui/script/cameracommon.lua).
+- Bytecode dump: tools/netcode/lua51_dump.py FILE --code
+- Decompile: java -jar unluac.jar FILE > out.lua   (unluac_2023_12_24.jar)
+- Represent disasm: tools/dump_va.py JX3RepresentX64.dll 0x180b36e80 0x180b37060

@@ -1,0 +1,330 @@
+# JX3 native wall-obstruction research: selected evidence
+# Date: 2026-09-23
+# Engine: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KG3DEngineX64.dll
+# Image base: 0x180000000
+# SHA-256: 891a625a4053ff5214386f0dde7424696716c5c577e608edf092edc45f94b049
+# Existing full loader/update material: disasm/engine_obstruct.txt
+
+## 1. Nested [Camera] defaults
+
+KG3DTrackCamera constructor 0x1804c04c0 sets rbx = this + 0x298, the nested
+settings block. The following stores are direct compiled defaults before ini
+loading:
+
+```asm
+0x1804c053c: lea      rbx, [rdi + 0x298]
+0x1804c0545: mov      dword ptr [rbx + 0x18], 2          ; nChaseType
+0x1804c054c: mov      dword ptr [rbx + 0x10], 1          ; bObstructdAvert
+0x1804c0553: mov      dword ptr [rbx + 0x14], 1          ; bUseFlexibilitySys
+0x1804c055a: mov      dword ptr [rbx + 0x1c], 0x40490fdb ; fChaseRate = pi
+0x1804c0561: mov      qword ptr [rbx + 0x20], 0x457a0000 ; max=4000.0, min=0
+0x1804c0569: mov      dword ptr [rbx + 0x28], 0x3fc90fdb ; max angle = pi/2
+0x1804c0570: mov      dword ptr [rbx + 0x2c], 0xbf5f66f3 ; min angle = -50 deg
+0x1804c0577: mov      dword ptr [rbx + 0x30], 0x3bcde32e ; horizontal rate
+0x1804c057e: mov      dword ptr [rbx + 0x34], 0x3bcde32e ; vertical rate
+0x1804c0585: mov      dword ptr [rbx + 8], 0x3fc00000   ; fFlexCoefficient=1.5
+0x1804c058c: movss    xmm0, dword ptr [rip + 0x1b0bd0]  ; 0x180671164 = 2.0
+0x1804c0594: call     0x180633c66                     ; sqrtf
+0x1804c0599: mulss    xmm0, dword ptr [rip + 0x1b0bc7]  ; 2.0 * sqrt(2)
+0x1804c05a1: movss    dword ptr [rbx + 0xc], xmm0      ; fDampCoefficient
+0x1804c05a6: mov      dword ptr [rbx + 0x38], 0x42480000 ; fDisZoomRate=50
+0x1804c05ad: mov      dword ptr [rbx + 0x3c], 0x43fa0000 ; fFlexRate=500
+```
+
+The loader at `0x1804c1660` reads `bObstructdAvert` from nested `+0x10` and
+copies it to parent `+0x204`; `bUseFlexibilitySys` from nested `+0x14` goes
+to parent `+0x208`:
+
+```asm
+0x1804c16d5: lea      r8, [rip + ...] ; "bObstructdAvert"
+0x1804c16cd: mov      r9d, dword ptr [rdi + 0x10]
+0x1804c18cb: mov      eax, dword ptr [rsi] ; rsi = nested + 0x10
+0x1804c18d0: mov      dword ptr [rcx + 0x204], eax
+0x1804c18d9: mov      eax, dword ptr [r12] ; r12 = nested + 0x14
+0x1804c18dd: mov      dword ptr [rcx + 0x208], eax ; bUseFlexibilitySys
+```
+
+The frame update checks parent `+0x204` before calling the obstruction helper:
+
+```asm
+0x1804c10fd: cmp      dword ptr [rbx + 0x204], 0
+0x1804c1104: je       0x1804c1312
+...
+0x1804c1154: call     0x1804c1b40
+```
+
+## 2. Five-ray and nine-ray sets
+
+The helper starts at `0x1804c1b40` and receives the desired camera point in
+`rdx`, anchor/look-at point in `r8`, and output point in `r9`. Its ray-query
+scene is `[this + 0x118]`.
+
+```asm
+0x1804c1bb0: cmp      dword ptr [rcx + 0x15c], 0
+0x1804c1c06: je       0x1804c1fba ; default five-ray branch
+```
+
+Base-camera constructor `0x180447770` zeroes `+0x15c` as part of the qword
+store at `+0x158`, so the default is the five-ray branch. That branch builds
+one center pair and four corner pairs from the two camera-basis offset vectors
+and uses a five-iteration query loop:
+
+```asm
+0x1804c1fba: call     0x180633e30
+... ; center endpoints and four +/- basis-corner endpoints are built
+0x1804c22ba: mov      rbx, edi
+0x1804c22bc: lea      r15d, [rdi + 5]
+...
+0x1804c2370: dec      r15
+0x1804c2373: jne      0x1804c22c0
+```
+
+When `+0x15c != 0`, the helper builds a center pair first, then eight
+perimeter pairs. `r14d` advances by 2; angle generation multiplies by pi and
+1/8, producing 0, 45, …, 315 degrees. `r15d=9` then queries the center plus
+those eight points:
+
+```asm
+0x1804c1cb8: mulss    xmm6, dword ptr [rip + ...] ; pi
+0x1804c1cc0: mulss    xmm6, dword ptr [rip + ...] ; 0.125
+0x1804c1cfd: add      r14d, 2
+0x1804c1d0c: add      rbx, 0xc
+...
+0x1804c1e35: mov      r15d, 9
+```
+
+## 3. Ray direction and hit response
+
+For each pair, the helper subtracts the anchor-side point from the camera-side
+point, normalizes the direction from anchor toward camera, and calls scene
+query wrapper `0x180475800` with the anchor-side point as origin. The maximum
+distance is the segment length and the output begins at `FLT_MAX`:
+
+```asm
+0x1804c1e40: movss    xmm2, dword ptr [rsp + rbx + 0x60] ; camera-side x
+0x1804c1e52: subss    xmm0, dword ptr [rbp + rbx - 0x2c]
+0x1804c1e58: subss    xmm2, dword ptr [rbp + rbx - 0x30]
+0x1804c1e8a: call     0x180633c66                     ; segment length
+0x1804c1ea2: call     0x18055e650                     ; normalize direction
+0x1804c1ebb: mov      rdx, r14                        ; anchor-side origin
+0x1804c1ec3: mov      dword ptr [rsp + 0x30], 0x7f7fffff
+0x1804c1ecb: call     0x180475800
+```
+
+Successful query distances are reduced to the nearest hit. The minimum output
+distance is floored to 0.001 u. When a hit exists, the helper normalizes the
+center line and writes `anchor + normalize(candidateCamera - anchor) * nearestHit`;
+with no hit, it returns the candidate unchanged:
+
+```asm
+0x1804c1ef5: comiss   xmm12, xmm6                    ; xmm12 = 0.001
+0x1804c1eff: test     edi, edi                       ; any probe hit?
+...
+0x1804c1f46: call     0x18055e650                    ; normalize center line
+0x1804c1f7b: mulss    xmm0, xmm6                     ; direction * nearest hit
+0x1804c1f7f: addss    xmm0, dword ptr [rbp - 0x30]   ; anchor origin + offset
+...
+0x1804c2446: mov      dword ptr [r12], eax           ; output x
+0x1804c244e: mov      dword ptr [r12 + 4], eax       ; output y
+0x1804c2457: mov      dword ptr [r12 + 8], ecx       ; output z
+```
+
+## 4. Scene query option
+
+`0x180475800` obtains the `KG3DEngineXRepresentLogic` singleton and dispatches
+its slot-0 ray query. The camera helper supplies option `1`. That option maps
+to filter mask `0x301` in `0x180446920`; the mask is passed to lower scene
+query function `0x18032ea40`:
+
+```asm
+; 0x180475800
+0x180475854: mov      dword ptr [rsp + 0x28], 1
+0x18047585a: call     qword ptr [r10]
+
+; 0x180446920, option bit 0 -> internal query mask
+0x180446945: and      r10d, 1
+0x180446949: mov      ecx, 0
+0x18044694c: mov      edx, 0x301
+0x180446954: cmovne   ecx, edx
+...
+0x180446a28: mov      dword ptr [rsp + 0x40], ecx
+0x180446a5b: call     0x18032ea40
+```
+
+The lower dispatcher evaluates several query backends enabled by mask bits
+8/9 and the additional query argument, then keeps the closest positive hit.
+The symbolic meanings of those mask bits/backends are not recovered.
+
+## 5. Separate model near-ray evidence
+
+```asm
+; KG3DModel::GetCameraNearRayIntersect @ 0x1801ef000
+0x1801ef135: test     dword ptr [rax + 0xb0], 0x20000
+...
+0x1801f3e38: call     0x180376be0 ; IsRayIntersectBoneBox inner test
+```
+
+`JX3RepresentX64.dll` mesh-property loader `0x180267360` reads
+`[Display] bObscatleCamera` into a mesh property field. A direct mapping from
+that boolean to the `+0xb0` bit or to the chase-camera `bObstructdAvert`
+position-correction gate has not been proven.
+
+## 6. Host comparison points
+
+- `reborn-merge/client/RebornClient.cs`: terrain-only 14-sample heightfield
+  check, 20-u margin, inward correction `max(150, t*rayLength-40)`, terrain
+  +30-u clamp. Current worktree also has a separate uncommitted pitch/smoothing
+  change; do not overwrite it.
+- `reborn-camera/engine_host_spike/MapSpike.cs`: terrain-only 14-sample check;
+  correction writes anchor height because its `vy` is zero, then terrain clamp.
+- Represent config contains `NearByWallDistance=800` (`CommonNumber`, loader
+  field `+0x104`). Its consumer is not established here; it is not the max
+  distance passed to the native chase-camera segment rays.
+
+## 7. Camera filter selection, RTTI and methods
+
+The query wrapper 0x180446920 picks the intersection filter from option bit 0.
+Option 1 (the camera path) selects the static FilterCamera object; option 2
+selects FilterLogic:
+
+  0x180946678 -> vtable 0x1806dda58 -> COL 0x18073f8b8
+      '?AUFilterCamera@?A0x573b9fc1@@'
+  0x180946688 -> vtable 0x1806dda88 -> COL 0x18073f9b8
+      '?AUFilterLogic@?A0x573b9fc1@@'
+
+  0x1804469fc: test r10d, r10d            ; option & 1
+  0x1804469ff: je   0x180446a0a
+  0x180446a01: lea  rax, [0x180946678]    ; FilterCamera
+  0x180446a08: jmp  0x180446a18
+  0x180446a0a: lea  rax, [0x180946688]    ; FilterLogic
+  0x180446a11: test r9d, r9d              ; option & 2
+  0x180446a14: cmove rax, r8              ; (r8 = 0)
+  0x180446a28: mov  [rsp+0x40], ecx       ; mask (0x301 for option 1)
+  0x180446a2c: mov  [rsp+0x38], rax       ; filter object
+  0x180446a5b: call 0x18032ea40
+
+Filter slot 0 (identical in both filters) calls 0x180254080 and tests +4,
+i.e. the KG3DMesh bObscatleCamera bool:
+
+  0x180446560: sub  rsp, 0x28
+  0x180446564: mov  rcx, rdx
+  0x180446567: call 0x180254080
+  0x18044656c: xor  edx, edx
+  0x18044656e: mov  ecx, 0x80004005
+  0x180446573: cmp  dword ptr [rax+4], edx
+  0x180446576: cmovne ecx, edx            ; S_OK when bObscatleCamera != 0
+
+FilterCamera slot 1 (0x1804465c0) returns E_FAIL unconditionally; slot 2
+(0x180446580) calls [obj vt+0xad8] and [obj vt+0x38] and special-cases type
+0x3f. FilterLogic slots 1/2 (0x180446600, 0x1804465f0) return S_OK
+unconditionally. The COM-style contract (which return value means "skip") has
+not been confirmed from the visitor call sites.
+
+## 8. KG3DMesh [Display] block and its default
+
+  0x180254080: lea rax, [rcx+0x194]
+  0x180254087: ret
+
+KG3DMesh constructor 0x180250430 (vtable 0x1806ac128, RTTI '?AVKG3DMesh@@'):
+
+  0x1802504e7: mov dword ptr [rsi+0x194], 1   ; bAutoProduceObstacle
+  0x1802504f1: mov dword ptr [rsi+0x198], 1   ; bObscatleCamera
+  0x1802504fb: mov dword ptr [rsi+0x19c], 1   ; bSelectable
+  0x180250505: mov dword ptr [rsi+0x1a0], 1   ; bHeightTest
+  0x18025050f: mov qword ptr [rsi+0x1a4], 1   ; bOccluder = 1
+
+The [Display] property loaders write this block from the ini keys
+(0x1802674b0; the sibling 0x180267360 writes a different class's copy at
++0xe0). The save path 0x180257340 writes the keys back.
+
+Model-iteration gates (skip models whose mesh has bObscatleCamera == 0):
+
+  0x18016d41d: call 0x180254080
+  0x18016d422: cmp  dword ptr [rax+4], 0
+  0x18016d426: je   0x18016d46b          ; skip model
+
+  0x1805457fd: call 0x180254080
+  0x180545802: cmp  dword ptr [rax+4], 0
+  0x180545806: je   0x18054584a          ; skip model
+
+Extracted content samples (mesh inis under _HttpFileForDebug_/source):
+  bObscatleCamera=1: st_rubble*, wj_cactus*, wj_brick*, NPC and player body
+      meshes.
+  bObscatleCamera=0: selected small-wood/plant meshes, altar/tomb decoration
+      meshes and similar (the camera is allowed to pass through them).
+
+## 9. Obstruction response: 18-u clearance and hysteresis
+
+Track-camera update 0x1804c0dd6 after calling the helper at 0x1804c1b40:
+
+  0x1804c127d: movss xmm0, [0x1806ed3f0]   ; 18.0
+  0x1804c1285: movss xmm1, [rsp+0x30]      ; normalized A-C' x
+  0x1804c128b: movss xmm2, [rsp+0x34]
+  0x1804c1299: movss xmm3, [rsp+0x38]
+  0x1804c129f: addss xmm1, xmm9            ; + hit x
+  0x1804c12a4: addss xmm2, xmm8            ; + hit y
+  0x1804c12ad: addss xmm3, xmm7            ; + hit z
+  0x1804c12ba: movss [rbx+0x170], xmm1     ; final camera position
+  0x1804c12cb: mov qword ptr [rbx+0x1c4], 1
+  0x1804c12d6: mov dword ptr [rbx+0x1cc], 1   ; "obstructed" state
+  0x1804c12b3: or  dword ptr [rbx+0x1dc], 0xc
+  0x1804c1304: and dword ptr [rbx+0x1dc], 0xfffffffb  ; clear
+  0x1804c130b: mov dword ptr [rbx+0x1cc], 0
+
+Hysteresis thresholds:
+
+  0x1804c1214: movss xmm0, [0x180678e14]   ; 50.0
+  0x1804c121c: cmp  dword ptr [rbx+0x1cc], 0
+  0x1804c1223: je   0x1804c122d
+  0x1804c1225: movss xmm0, [0x18067117c]   ; 100.0 when already obstructed
+  0x1804c125c: comiss xmm0, xmm11
+  0x1804c1260: seta sil                    ; apply only when within threshold
+
+## 10. Render-entity backend name
+
+  0x1804a1a44: lea r8, [rip+0x2491bd]  ; "KG3DSceneSceneEditor::RayIntersectRenderEntity"
+  0x1804a1a72: lea r8, [rip+0x2484af]  ; "Scene\KG3DSceneSceneEditor.cpp"
+  0x1804a1aa4: add r14, 0x7000
+  0x1804a1aab: mov rbx, [r14]              ; entity list head
+  0x1804a1b1e: call qword ptr [rax+0x930]  ; per-entity ray test
+
+## 11. Represent CommonNumber struct
+
+  0x180338bf0: mov rax, [0x180eddfe0]; add rax, 0x24c14; ret   ; accessor
+  0x180836571: mov rcx, [0x180eddfe0]; add rcx, 0x24c14
+  0x180836582: call 0x180857df0        ; sLoadNumberFromFile
+
+  NearByWallDistance is stored at struct+0x104 = RL+0x24d18 (one xref to
+  0x24c14 in code; +0x104 access exists in the loader). No direct reader of
+  the field was located in JX3RepresentX64's camera-controller region, and
+  the struct accessor 0x180338bf0 has no callers or qword refs, so the field
+  appears to be legacy/unused in this build.
+
+## 12. Engine track-camera field usage
+
+FOV block get/set (camera vtable +0x60 / +0x68):
+
+  0x180448410: copies [rcx+0x48..+0x54] to four out-pointers
+  0x180448d10: stores xmm1..xmm3 + stack float to [rbx+0x48..+0x54] and fires
+               a settings-change event (GetTickCount + event helper)
+  The [Camera] loader seeds the block from the live camera via vt+0x60 and
+  applies fFovy plus three more floats via vt+0x68 (0x1804c1a69..0x1804c1ae1).
+
+Key-rotation path (0x1804c3090..0x1804c31c2):
+
+  0x1804c30cc: cmp dword ptr [rbx+0x2b0], 2       ; nChaseType
+  0x1804c30e7: cmp dword ptr [rbx+0x2b0], edi     ; vs 0
+  0x1804c317f: movss xmm1, dword ptr [rbx+0x2b4]  ; fChaseRate
+  0x1804c3191: mulss xmm1, xmm0                   ; * direction (-1/0/+1)
+  0x1804c3195: mulss xmm1, xmm9                   ; * dt
+  0x1804c319a: addss xmm1, dword ptr [rbx+0x26c]  ; angle accumulator
+  0x1804c31b8: mov dword ptr [rbx+0x26c], 0       ; reset when wrapped
+  0x1804c312f..0x1804c3165: wrap by the 2-pi const 0x180671380
+  => nChaseType selects the camera-key mode; fChaseRate is the key-rotation
+     rate (default pi rad/s).
+
+Other fields:
+
+  0x1804c26fe: movss xmm0, dword ptr [rcx+0x2b8]  ; fMaxDistance (nested +0x20)
+  0x2d4 (nested +0x3c fFlexRate): no readers in 0x1804c0000-0x1804d0000.
+  BindScene 0x1804c0bc0 stores the bound scene at +0x118.

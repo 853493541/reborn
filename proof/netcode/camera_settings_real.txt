@@ -71,3 +71,26 @@ Also: "AdjustEyeScale", "InitCameraEyeScaleEnable", "InitEyeScale"
   1 engine unit = 1 cm, 1 m = 100 u (adult male mesh 181.64 u = 1.816 m).
   fMaxCameraDistance = 2000 u = 20 m. The host's old UnitsPerMeter = 192 was
   wrong (would make the adult 0.95 m).
+
+7. Correction (2026-09-24)
+--------------------------
+The caps slots in section 3 are one off: the option-dump routine in
+JX3UIX64.dll (0x180090b50, same binding family) reads them at
++0x50 fMinCameraDistance, +0x58 fMaxCameraDistance, +0x60 fMinCameraAngle,
++0x68 fMaxCameraAngle; +0x40/+0x48 return nMinTextureScale/nMaxTextureScale.
+The values above are unaffected.
+
+8. User settings path (2026-09-24)
+----------------------------------
+custom.dat VideoSettingPanel.tCameraStatic -> represent Lua bindings
+(SetCameraMaxDistance/SetCameraDragSpeed/SetCameraSpringResetSpeed/
+SetCameraResetSpeed/SetCameraFollowMode/SwitchCameraMode) -> camera node
+type 0xD, classic pair +0x6C..+0x80 / joystick pair +0x84..+0x98:
+  drag X/Y    +0x6C/+0x70 | +0x84/+0x88   clamp [0.01, 10]
+  max dist    +0x74       | +0x8C         clamp [1, 2000]
+  spring rst  +0x78       | +0x90         clamp [0.01, 10]
+  camera rst  +0x7C       | +0x94         clamp [0.01, 10]
+  follow mode +0x80 (int) | +0x98 (int)   clamp [0, 3]
+Node selector [node+0x34] picks the pair. Video panel FOV slider writes
+engine option fCameraAngle (config.default.ini [KG3DENGINE] CammeraAngle =
+0.837757). Details: docs/CAMERA_CONFIG_FILES.md section 7.
