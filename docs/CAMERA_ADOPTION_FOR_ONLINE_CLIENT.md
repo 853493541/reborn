@@ -95,8 +95,9 @@ runtime:
 ```
 JX3RepresentX64.dll EnterCarrier path:
   manager [[0x180f06a50] + 0xB0] -> vtable [vt + 0x238]  => caps object
-  caps vtable +0x48 / +0x50 / +0x58 / +0x60
+  caps vtable +0x50 / +0x58 / +0x60 / +0x68
     = fMinCameraDistance / fMaxCameraDistance / fMinCameraAngle / fMaxCameraAngle
+  (corrected 2026-09-24; the earlier +0x48..+0x60 list was one slot early)
 ```
 
 ## 7. Still missing (do not invent)

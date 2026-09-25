@@ -171,14 +171,20 @@ setter clamps its value to `[0.001 (0x180ca1918), 1.0 (0x180ca1280)]`.
 
 ## 6. Engine camera caps (per graphics option level)
 
-`Lua3DEngine_Get3DEngineOptionCaps` (`JX3UIX64.dll 0x18000682e`) exposes:
+The option-dump routine in `JX3UIX64.dll` (`0x180090b50`; the
+`Lua3DEngine_Get3DEngineOptionCaps` binding is `0x18000682e`) reads the caps
+object through these slots. Corrected 2026-09-24: the earlier `+0x48..+0x60`
+mapping was one slot early.
 
 | Cap | vtable slot |
 |---|---|
-| `fMinCameraDistance` | +0x48 |
-| `fMaxCameraDistance` | +0x50 |
-| `fMinCameraAngle` | +0x58 |
-| `fMaxCameraAngle` | +0x60 |
+| `fMinCameraDistance` | +0x50 |
+| `fMaxCameraDistance` | +0x58 |
+| `fMinCameraAngle` | +0x60 |
+| `fMaxCameraAngle` | +0x68 |
+
+(The two slots before them, `+0x40`/`+0x48`, return `nMinTextureScale` /
+`nMaxTextureScale`.)
 
 Only `fMaxCameraDistance = 2000` is confirmed (`JX3RepresentX64.dll` const
 blob `0x180d2af90 = 44fa0000`, next to `-1.56298 / 1.0 / 0`; and the settings
@@ -188,7 +194,7 @@ default). The other three are compiled per option level.
 engine host — the engine is already loaded there. Path used by `EnterCarrier`
 (`JX3RepresentX64.dll`): manager `[[0x180f06a50] + 0xB0]` -> vtable call
 `[vt + 0x238]` returns the caps object; the caps' own vtable holds the four
-getters at +0x48/+0x50/+0x58/+0x60.
+getters at +0x50/+0x58/+0x60/+0x68 (corrected 2026-09-24).
 
 ---
 
