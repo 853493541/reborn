@@ -1,0 +1,86 @@
+CATS	ID	Name	DisplayName	Type	MaxCopyCount	MinPlayerCount	MaxPlayerCount	KeepTime	ReviveInSitu	RevieCycle	BanSkillMask	BattleRelationMask	CampType	FightList	NeedCampBuff	bCanTongWar	CanJoinBattleField	BanUseItemMask	CanJoinArena	IsArenaMap	NewCampFight	CanJoinTongBattlefield	InvalidBuffMask	BanChangeTalent	CanSprint	QueueForSwitchWhenFull	CampQueue	IsTongWarMap	IsBattlefield	OperationMask	IsTongLeagueMap	bCanPK	bCanDuel	ResourcePath	ScriptFile
+CAMPFIGHT,TONGWAR_CAN	9	洛道	洛道	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\洛道\洛道.jsonmap	
+TONGWAR_CAN	10	寇岛	寇岛	0	1	1	1024	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\寇岛\寇岛.jsonmap	
+TONGWAR_CAN	12	枫华谷	枫华谷	0	1	1	1024	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\枫华谷\枫华谷.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	13	金水镇	金水镇	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	1	0	0	1	1	1					1	1	data\source\maps\金水镇\金水镇.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	21	巴陵县	巴陵县	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\巴陵县\巴陵县.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	22	南屏山	南屏山	0	1	1	1000	10	1	0	0	0	5	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\南屏山\南屏山.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	23	龙门荒漠	龙门荒漠	0	1	1	1200	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\龙门荒漠\龙门荒漠.jsonmap	
+CAMPFIGHT	25	浩气盟	浩气盟	0	10	1	1400	10	1	0	0	0	5	0	1	0	1	16	1	0	1	0	0	0	1	1	1					0	1	data\source\maps\浩气盟\浩气盟.jsonmap	
+CAMPFIGHT	27	恶人谷	恶人谷	0	10	1	1400	10	1	0	0	0	5	0	1	0	1	16	1	0	1	0	0	0	1	1	1					0	1	data\source\maps\恶人谷\恶人谷.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	30	昆仑	昆仑	0	1	1	1000	10	1	0	0	0	5	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\昆仑\昆仑.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	35	瞿塘峡	瞿塘峡	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\瞿塘峡\瞿塘峡.jsonmap	
+BF	38	神农洇	神农洇	2	512	1	34	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\神农洇\神农洇.jsonmap	
+BF	39	四十级云湖天池	四十级云湖天池	2	512	1	24	2	0	160	256	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\四十级云湖天池\四十级云湖天池.map	
+BF	48	珍珑棋谷	珍珑棋谷	2	512	1	54	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\珍珑棋谷\珍珑棋谷.jsonmap	
+BF	50	丝绸之路	丝绸之路	2	512	1	54	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\丝绸之路\丝绸之路.jsonmap	
+BF	52	七十级云湖天池	七十级云湖天池	2	512	1	24	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\七十级云湖天池\七十级云湖天池.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	100	白龙口	白龙口	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\白龙口\白龙口.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	101	无量山	无量山	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\无量山\无量山.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	103	融天岭	融天岭	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\融天岭\融天岭.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	104	黑龙沼	黑龙沼	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\黑龙沼\黑龙沼.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	105	苍山洱海	苍山洱海	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\苍山洱海\苍山洱海.jsonmap	
+ARENA	127	天山碎冰谷	天山碎冰谷	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\天山碎冰谷\天山碎冰谷.jsonmap	
+ARENA	128	乐山大佛窟	乐山大佛窟	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\乐山大佛窟\乐山大佛窟.jsonmap	
+ARENA	129	华山之巅	华山之巅	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\华山之巅\华山之巅.jsonmap	
+BF	135	三国古战场	三国古战场	2	512	1	34	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\三国古战场\三国古战场.jsonmap	
+ARENA	137	大漠楼兰	大漠楼兰	2	2048	1	1024	2	0	0	8	2	4	1	0	0	0	1	0	1	0	0	8	1	0	1	0			7		0	0	data\source\maps\大漠楼兰\大漠楼兰.map	
+CAMPFIGHT,TONGWAR_CAN	139	枫华谷_安史之乱	枫华谷·战乱	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\枫华谷_安史之乱\枫华谷_安史之乱.jsonmap	
+TONGWAR	149	帮会约战	雪原争锋	2	2048	1	54	2	0	160	256	216	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0	1		7		0	0	data\source\maps\帮会约战\帮会约战.jsonmap	
+TONGWAR_CAN	151	洛阳_安史之乱	洛阳·战乱	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\洛阳_安史之乱\洛阳_安史之乱.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	153	马嵬驿	马嵬驿	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	1	0	0	1	1	1					1	1	data\source\maps\马嵬驿\马嵬驿.jsonmap	
+TONGWAR_CAN	156	长安_安史之乱	长安·战乱	0	1	1	1800	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\长安_安史之乱\长安_安史之乱.jsonmap	
+BF	186	冷香丘	浮香丘	2	512	1	34	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	1	1	0		1	7		0	0	data\source\maps\冷香丘\冷香丘.jsonmap	
+TONGWAR_CAN	214	五台山	五台山	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\五台山\五台山.jsonmap	
+TONGWAR_CAN	215	千岛湖	千岛湖	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\千岛湖\千岛湖.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	216	阴山大草原	阴山大草原	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\阴山大草原\阴山大草原.jsonmap	
+TONGWAR_CAN	217	黑戈壁	黑戈壁	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\黑戈壁\黑戈壁.jsonmap	
+ARENA	238	青竹书院	青竹书院	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\青竹书院\青竹书院.jsonmap	
+TONGWAR_CAN	239	洛阳城北	洛阳城	0	1	1	1100	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\洛阳城北\洛阳城北.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	259	竞技大师_华山之巅	竞技大师_华山之巅	0	1	1	200	10	1	0	0	0	1	0	0	1	1	16	1	0	1	1	0	0	0	1	0			7		0	1	data\source\maps\竞技大师_华山之巅\竞技大师_华山之巅.jsonmap	
+ARENA	277	拭剑台	拭剑台	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\拭剑台\拭剑台.jsonmap	
+BF	296	龙门寻宝	龙门绝境	2	512	1	118	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\龙门寻宝\龙门寻宝.jsonmap	
+BF	297	龙门寻宝_夜晚	龙门绝境·夜	2	512	1	118	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\龙门寻宝_夜晚\龙门寻宝_夜晚.jsonmap	
+BF	322	洛道_李渡城	李渡鬼域	2	1024	1	100	2	0	160	2	2	5	0	0	0	0	16	0	0	0	0	256	0	0	1	0		1	7		0	0	data\source\maps\洛道_李渡城\洛道_李渡城.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	325	洞天福地岛	洞天福地岛	0	1	1	1900	10	1	0	0	0	1	0	0	1	1	16	1	0	1	0	0	0	1	1	0					1	1	data\source\maps\洞天福地岛\洞天福地岛.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	330	龙泉府	龙泉府	0	1	1	1100	10	1	0	0	0	4	0	0	1	1	16	1	0	1	0	0	0	1	1	1					1	1	data\source\maps\龙泉府\龙泉府.jsonmap	
+TONGWAR_CAN	334	经首道源岛	经首道源岛	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\经首道源岛\经首道源岛.jsonmap	
+ARENA	362	墟海之眼	墟海之眼	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\墟海之眼\墟海之眼.jsonmap	
+BF	410	海岛绝境	沧溟绝境	2	512	1	118	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\海岛绝境\海岛绝境.jsonmap	
+BF	412	列星岛	列星岛	2	1024	1	14	2	0	160	512	2	5	0	0	0	0	1	0	0	0	0	8	0	0	1	0		1	7		0	0	data\source\maps\列星岛\列星岛.jsonmap	
+BF	415	野狸岛	野狸岛	2	512	1	24	2	0	0	3	1	5	0	0	0	0	4	0	0	0	0	256	1	0	1	0		1	7		0	0	data\source\maps\野狸岛\野狸岛.jsonmap	
+TONGWAR_CAN	444	蔷薇列岛	蔷薇列岛	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\蔷薇列岛\蔷薇列岛.jsonmap	
+TONGWAR_CAN	473	万花_乱世	万花·乱世	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\万花_乱世\万花_乱世.jsonmap	
+TONGWAR_CAN	474	七秀_乱世	七秀·乱世	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\七秀_乱世\七秀_乱世.jsonmap	
+TONGWAR_CAN	475	少林_乱世	少林·乱世	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\少林_乱世\少林_乱世.jsonmap	
+TONGWAR_CAN	488	藏剑山庄_乱世	藏剑山庄·乱世	0	1	1	1000	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	1					1	1	data\source\maps\藏剑山庄_乱世\藏剑山庄_乱世.jsonmap	
+BF	512	白龙绝境	白龙绝境	2	512	1	118	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\白龙绝境\白龙绝境.jsonmap	
+TONGWAR_CAN	525	黑山林海	黑山林海	0	1	1	1600	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\黑山林海\黑山林海.jsonmap	
+ARENA	529	藏剑武库	藏剑武库	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\藏剑武库\藏剑武库.jsonmap	
+ARENA	530	墟海之眼_演武场	墟海之眼·演武场	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\墟海之眼_演武场\墟海之眼_演武场.jsonmap	
+BF	532	天原绝境	天原绝境	2	512	1	118	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\天原绝境\天原绝境.jsonmap	
+TONGWAR_CAN	579	百溪	百溪	0	10	1	1500	10	1	0	0	0	1	0	0	1	1	16	1	0	0	0	0	0	1	1						1	1	data\source\maps\百溪\百溪.jsonmap	
+TONGWAR_CAN	580	烂柯山	烂柯山	0	1	1	1500	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1						1	1	data\source\maps\烂柯山\烂柯山.jsonmap	
+TONGWAR_CAN	581	楚州	楚州	0	1	1	1500	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1						1	1	data\source\maps\楚州\楚州.jsonmap	
+TONGWAR_CAN	582	润扬	晟江	0	1	1	1500	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1						1	1	data\source\maps\润扬\润扬.jsonmap	
+BF	589	羊村	羊村大作战	2	512	1	5	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	0	1	0		1	7		0	0	data\source\maps\羊村\羊村.jsonmap	
+ARENA	624	沃石火狱	沃石火狱	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\沃石火狱\沃石火狱.jsonmap	
+TONGWAR_CAN	627	跨服_烂柯山	跨服·烂柯山	0	100	1	1600	10	1	0	0	0	4	0	0	1	0	16	0	0	0	0	0	0	1	1	0			7		1	1	data\source\maps\烂柯山\烂柯山.jsonmap	
+BF	645	洱海绝境	洱海绝境	2	1024	1	108	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\洱海绝境\洱海绝境.jsonmap	
+TONGWAR_CAN	647	银霜口	银霜口	0	1	1	1600	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\银霜口\银霜口.jsonmap	
+CAMPFIGHT,TONGWAR_CAN	656	阴山大草原_攻防分线	阴山大草原·分线	0	9	1	1000	10	1	0	0	0	4	0	0	1	0	16	0	0	1	0	0	0	1	1	0					1	1	data\source\maps\阴山大草原\阴山大草原.jsonmap	
+TONGWAR_CAN	673	河西瀚漠	河西瀚漠	0	2	1	1200	10	1	0	0	0	1	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\河西瀚漠\河西瀚漠.jsonmap	
+BF	676	龙门寻宝	龙门绝境	2	512	1	108	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\龙门寻宝\龙门寻宝.jsonmap	
+BF	677	龙门寻宝	龙门绝境	2	512	1	108	2	0	160	512	2	5	0	0	0	0	4	0	0	0	0	8	1	1	1	0		1	7		0	0	data\source\maps\龙门寻宝\龙门寻宝.jsonmap	
+BF,TONGLEAGUE	689	帮会联赛_2024	九素云峰	2	2048	1	210	120	0	160	0	2	5	0	0	0	0	8	0	0	0	0	256	0	0	1	0		1	7	1	0	0	data\source\maps\帮会联赛_2024\帮会联赛_2024.jsonmap	
+ARENA	696	南诏段氏_红叶泽	红叶泽	2	2048	1	1024	2	0	0	8	2	4	0	0	0	0	1	0	1	0	0	8	0	0	1	0			7		0	0	data\source\maps\南诏段氏_红叶泽\南诏段氏_红叶泽.jsonmap	
+TONGWAR_CAN	697	河西瀚漠_跨服	跨服·河西瀚漠	0	100	1	1600	10	1	0	0	0	4	0	0	1	0	16	0	0	0	0	0	0	1	1	0			7		1	1	data\source\maps\河西瀚漠_跨服\河西瀚漠_跨服.jsonmap	
+TONGWAR_CAN	701	长安_皇城	皇城	0	1	1	1200	10	1	0	0	0	1	0	0	1	1	16	1	0	0	0	0	0	1	1						1	1	data\source\maps\长安_皇城\长安_皇城.jsonmap	
+BF	709	林海绝境	林海绝境	2	512	1	118	2	0	160	512	2	5	0	0	0	0	32	0	0	0	0	8	1	0	1	0		1	7		0	0	data\source\maps\林海绝境\林海绝境.jsonmap	
+BF	712	雪域关城	雪域关城	2	512	1	34	2	0	160	0	2	5	0	0	0	0	16	0	0	0	0	256	0	0	1	0		1	7		0	0	data\source\maps\雪域关城\雪域关城.jsonmap	
+TONGWAR_CAN	713	伊丽川	伊丽川	0	2	1	1200	10	1	0	0	0	4	0	0	1	1	16	1	0	0	0	0	0	1	1	0					1	1	data\source\maps\伊丽川\伊丽川.jsonmap	
+BF	715	林海绝境	林海绝境·纷争	2	512	1	118	2	0	160	512	2	5	0	0	0	0	32	0	0	0	0	8	1	0	1	0		1	7		0	0	data\source\maps\林海绝境\林海绝境.jsonmap	
+BF	790	扬刀大会_擎霄山	扬刀大会·擎霄山	2	2048	1	10	2	0	0	8	2	4	0	0	0	0	1	0	0	0	0	8	0	0	1	0		1	7		0	0	data\source\maps\扬刀大会_擎霄山\扬刀大会_擎霄山.jsonmap	
+BF	801	ACT_大富翁	大富翁	2	1024	1	4	1	0	160	0	0	5	0	0	0	0	16	0	0	0	0	256	0	0	1	0		1	7		0	0	data\source\maps\ACT_大富翁\ACT_大富翁.jsonmap	
+TONGWAR_CAN	806	洛阳城西	洛阳城西	0	1	1	1200	10	1	0	0	0	1	0	0	1	1	16	1	0	0	0	0	0	1	1						1	1	data\source\maps\洛阳城西\洛阳城西.jsonmap	scripts/Map/洛阳城西/洛阳城西.lua
+BF	807	欢乐谷	鹅鸭大游园	2	1024	1	10	1	0	160	0	2	1	1	0	0	0	16	0	0	0	0	128	0	0	1			1			0	0	data\source\maps\欢乐谷\欢乐谷.jsonmap	scripts/Map/ACT_三方杀/ACT_三方杀.lua

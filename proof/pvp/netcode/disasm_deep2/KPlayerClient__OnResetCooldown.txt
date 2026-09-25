@@ -1,0 +1,47 @@
+# needle: KPlayerClient::OnResetCooldown
+# string VAs: ['0x1807728e8']
+# xrefs: 1
+
+## xref 0x18018d4ed  fn_start 0x18018d4d0
+0x018018d4d0: push	rbx
+0x018018d4d2: sub	rsp, 0x30
+0x018018d4d6: mov	rcx, qword ptr [rip + 0x833e43]
+0x018018d4dd: mov	rbx, rdx
+0x018018d4e0: mov	edx, dword ptr [rdx + 7]
+0x018018d4e3: call	0x18012b610
+0x018018d4e8: test	rax, rax
+0x018018d4eb: jne	0x18018d51e
+0x018018d4ed: lea	rax, [rip + 0x5e53f4]
+0x018018d4f4: mov	r9d, 0x3f03
+0x018018d4fa: lea	r8, [rip + 0x5d9837]
+0x018018d501: mov	qword ptr [rsp + 0x20], rax
+0x018018d506: lea	rdx, [rip + 0x760f9b]
+0x018018d50d: mov	ecx, 3
+0x018018d512: call	qword ptr [rip + 0x5d7d48]
+0x018018d518: add	rsp, 0x30
+0x018018d51c: pop	rbx
+0x018018d51d: ret	
+0x018018d51e: mov	edx, dword ptr [rbx + 0xf]
+0x018018d521: lea	rcx, [rax + 0xb930]
+0x018018d528: cmp	edx, -1
+0x018018d52b: jne	0x18018d53a
+0x018018d52d: mov	edx, dword ptr [rbx + 0xb]
+0x018018d530: add	rsp, 0x30
+0x018018d534: pop	rbx
+0x018018d535: jmp	0x180314050
+0x018018d53a: mov	r9d, dword ptr [rax + 0xb924]
+0x018018d541: mov	r8d, dword ptr [rbx + 0x13]
+0x018018d545: add	r9d, edx
+0x018018d548: mov	edx, dword ptr [rbx + 0xb]
+0x018018d54b: call	0x1803143f0
+0x018018d550: add	rsp, 0x30
+0x018018d554: pop	rbx
+0x018018d555: ret	
+0x018018d556: int3	
+0x018018d557: int3	
+0x018018d558: int3	
+0x018018d559: int3	
+0x018018d55a: int3	
+0x018018d55b: int3	
+0x018018d55c: int3	
+0x018018d55d: int3	

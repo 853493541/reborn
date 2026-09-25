@@ -1,0 +1,31 @@
+# needle: KPlayerClient::DoSyncBattlefieldCompetitorSkillCDStateRequest
+# string VAs: ['0x180770b30']
+# xrefs: 1
+
+## xref 0x18017ab18  fn_start 0x18017aae0
+0x018017aae0: sub	rsp, 0x58
+0x018017aae4: mov	rax, qword ptr [rip + 0x83b735]
+0x018017aaeb: xor	rax, rsp
+0x018017aaee: mov	qword ptr [rsp + 0x40], rax
+0x018017aaf3: mov	eax, 0x161
+0x018017aaf8: mov	r8d, 0xf
+0x018017aafe: mov	word ptr [rsp + 0x30], ax
+0x018017ab03: mov	eax, dword ptr [rdx + 8]
+0x018017ab06: lea	rdx, [rsp + 0x30]
+0x018017ab0b: mov	dword ptr [rsp + 0x3b], eax
+0x018017ab0f: call	0x1801acda0
+0x018017ab14: test	eax, eax
+0x018017ab16: jne	0x18017ab55
+0x018017ab18: lea	rcx, [rip + 0x5f6011]
+0x018017ab1f: mov	r9d, 0x2900
+0x018017ab25: mov	qword ptr [rsp + 0x20], rcx
+0x018017ab2a: lea	r8, [rip + 0x7757b7]
+0x018017ab31: lea	ecx, [rax + 3]
+0x018017ab34: lea	rdx, [rip + 0x77396d]
+0x018017ab3b: call	qword ptr [rip + 0x5ea71f]
+0x018017ab41: xor	eax, eax
+0x018017ab43: mov	rcx, qword ptr [rsp + 0x40]
+0x018017ab48: xor	rcx, rsp
+0x018017ab4b: call	0x18073aa10
+0x018017ab50: add	rsp, 0x58
+0x018017ab54: ret	

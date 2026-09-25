@@ -1,0 +1,5 @@
+# proof\netcode\engine_strings.txt total 0
+# proof\netcode\JX3RepresentX64_all_strings.txt total 0
+# proof\netcode\JX3UIX64_net_strings.txt total 0
+# proof\netcode\JX3ClientX64_exe_net_strings.txt total 0
+# proof\netcode\DLBT_net_strings.txt total 0

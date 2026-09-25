@@ -1,0 +1,5 @@
+﻿# rows=686 cols=4
+0	EffectResultID
+1	EffectType
+2	EffectID
+3	Note

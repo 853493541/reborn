@@ -1,0 +1,2331 @@
+
+===== skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:44
+   40| 	--]]
+   41| 		
+   42| 	skill.AddAttribute(
+   43| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   44| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   45| 		4,
+   46| 		10000
+   47| 	);
+   48| 	skill.AddAttribute(
+   49| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   50| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   51| 		8,
+   52| 		10000
+   53| 	);
+   54| 	skill.AddAttribute(
+   55| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   56| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   57| 		7,
+   58| 		10000
+
+===== skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:50
+   46| 		10000
+   47| 	);
+   48| 	skill.AddAttribute(
+   49| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   50| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   51| 		8,
+   52| 		10000
+   53| 	);
+   54| 	skill.AddAttribute(
+   55| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   56| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   57| 		7,
+   58| 		10000
+   59| 	);
+   60| 	skill.AddAttribute(
+   61| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   62| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   63| 		2,
+   64| 		10000
+
+===== skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:56
+   52| 		10000
+   53| 	);
+   54| 	skill.AddAttribute(
+   55| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   56| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   57| 		7,
+   58| 		10000
+   59| 	);
+   60| 	skill.AddAttribute(
+   61| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   62| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   63| 		2,
+   64| 		10000
+   65| 	);
+   66| 
+   67| 	skill.AddAttribute(
+   68| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   69| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+   70| 		25793,
+
+===== skill\Quest\乱世藏剑阵营日常\天策弟子_渊.lua:62
+   58| 		10000
+   59| 	);
+   60| 	skill.AddAttribute(
+   61| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   62| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   63| 		2,
+   64| 		10000
+   65| 	);
+   66| 
+   67| 	skill.AddAttribute(
+   68| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   69| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+   70| 		25793,
+   71| 		1
+   72| 	);
+   73| 
+   74| 	--[[ skill.AddAttribute(
+   75| 			ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   76| 			ATTRIBUTE_TYPE.DASH,
+
+===== skill\明教\明教_圣明佑_月.lua:69
+   65| 		10000
+   66| 	);
+   67| 	skill.AddAttribute(
+   68| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   69| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   70| 		10,
+   71| 		10000
+   72| 	);
+   73| 	skill.AddAttribute(
+   74| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   75| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   76| 		12,
+   77| 		10000
+   78| 	);
+   79| 	skill.AddAttribute(
+   80| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   81| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   82| 		"skill/明教/90级奇穴/满月AOE.lua",
+   83| 		0														
+
+===== skill\明教\明教_圣明佑_月.lua:75
+   71| 		10000
+   72| 	);
+   73| 	skill.AddAttribute(
+   74| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   75| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   76| 		12,
+   77| 		10000
+   78| 	);
+   79| 	skill.AddAttribute(
+   80| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   81| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   82| 		"skill/明教/90级奇穴/满月AOE.lua",
+   83| 		0														
+   84| 	);
+   85| 	skill.BindBuff(1, 4028, dwSkillLevel)
+   86| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   87| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   88| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   89| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+
+===== skill\沙漠风暴\道具_任驰骋.lua:36
+   32| 	local dwSkillLevel = skill.dwLevel;
+   33| 
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		9999
+   39| 	);
+   40| 
+   41| 	skill.AddAttribute(
+   42| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   43| 		ATTRIBUTE_TYPE.CALL_BUFF,
+   44| 		244,
+   45| 		1
+   46| 	);
+   47| 	--skill.AddAttribute(
+   48| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   49| 	--ATTRIBUTE_TYPE.CALL_BUFF,
+   50| 	--2756,
+
+===== skill\沙漠风暴\道具_伪九霄风雷加速.lua:40
+   36| 		1
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		4,
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		8,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		7,
+   54| 		10000
+
+===== skill\沙漠风暴\道具_伪九霄风雷加速.lua:46
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		8,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		7,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		2,
+   60| 		10000
+
+===== skill\沙漠风暴\道具_伪九霄风雷加速.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		7,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		2,
+   60| 		10000
+   61| 	);
+   62| 
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   65| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   66| 		7276,
+
+===== skill\沙漠风暴\道具_伪九霄风雷加速.lua:58
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		2,
+   60| 		10000
+   61| 	);
+   62| 
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   65| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   66| 		7276,
+   67| 		1
+   68| 	);
+   69| 
+   70| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   71| 	skill.AddSlowCheckSelfBuff(20355, 1, BUFF_COMPARE_FLAG.EQUAL, 1, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);        -- 需求目标Buff
+
+===== skill\沙漠风暴\道具_如意法.lua:41
+   37| 	);
+   38| 
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		4,
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		8,
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		7,
+   55| 		10000
+
+===== skill\沙漠风暴\道具_如意法.lua:47
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		8,
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		7,
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		2,
+   61| 		10000
+
+===== skill\沙漠风暴\道具_如意法.lua:53
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		7,
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		2,
+   61| 		10000
+   62| 	);
+   63| 	--标记连击通用
+   64| 	--skill.AddAttribute(
+   65| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   66| 	--ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   67| 	--"skill/明教/明教通用删buff.lua",
+
+===== skill\沙漠风暴\道具_如意法.lua:59
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		2,
+   61| 		10000
+   62| 	);
+   63| 	--标记连击通用
+   64| 	--skill.AddAttribute(
+   65| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   66| 	--ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   67| 	--"skill/明教/明教通用删buff.lua",
+   68| 	--0
+   69| 	--);
+   70| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   71| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   72| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   73| 	skill.AddSlowCheckSelfBuff(6279, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+
+===== skill\沙漠风暴\道具_孤影化双.lua:35
+   31| 	----------------- 魔法属性 -------------------------------------------------
+   32| 	--解除减速
+   33| 	skill.AddAttribute(
+   34| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   35| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   36| 		2,
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		3,
+   43| 		10000
+   44| 	);
+   45| 	--解除定身
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		4,
+
+===== skill\沙漠风暴\道具_孤影化双.lua:41
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		3,
+   43| 		10000
+   44| 	);
+   45| 	--解除定身
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		4,
+   50| 		10000
+   51| 	);
+   52| 	--解除雷霆
+   53| 	skill.AddAttribute(
+   54| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   55| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+
+===== skill\沙漠风暴\道具_孤影化双.lua:48
+   44| 	);
+   45| 	--解除定身
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		4,
+   50| 		10000
+   51| 	);
+   52| 	--解除雷霆
+   53| 	skill.AddAttribute(
+   54| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   55| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   56| 		6,
+   57| 		10000
+   58| 	);
+   59| 
+   60| 	--解除锁足
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+
+===== skill\沙漠风暴\道具_孤影化双.lua:55
+   51| 	);
+   52| 	--解除雷霆
+   53| 	skill.AddAttribute(
+   54| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   55| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   56| 		6,
+   57| 		10000
+   58| 	);
+   59| 
+   60| 	--解除锁足
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   64| 		7,
+   65| 		10000
+   66| 	);
+   67| 	--解除眩晕
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+
+===== skill\沙漠风暴\道具_孤影化双.lua:63
+   59| 
+   60| 	--解除锁足
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   64| 		7,
+   65| 		10000
+   66| 	);
+   67| 	--解除眩晕
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   70| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   71| 		8,
+   72| 		10000
+   73| 	);
+   74| 
+   75| 	--解除击倒
+   76| 	skill.AddAttribute(
+   77| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+
+===== skill\沙漠风暴\道具_孤影化双.lua:70
+   66| 	);
+   67| 	--解除眩晕
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   70| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   71| 		8,
+   72| 		10000
+   73| 	);
+   74| 
+   75| 	--解除击倒
+   76| 	skill.AddAttribute(
+   77| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   78| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   79| 		7276,
+   80| 		1
+   81| 	);
+   82| 	skill.AddAttribute(
+   83| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击落
+   84| 		ATTRIBUTE_TYPE.CAST_SKILL,
+
+===== skill\沙漠风暴\道具_孤风飒踏.lua:46
+   42| 		1
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		4,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		8,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		7,
+   60| 		10000
+
+===== skill\沙漠风暴\道具_孤风飒踏.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		8,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		7,
+   60| 		10000
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		2,
+   66| 		10000
+
+===== skill\沙漠风暴\道具_孤风飒踏.lua:58
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		7,
+   60| 		10000
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		2,
+   66| 		10000
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   70| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   71| 		7276,
+   72| 		1
+
+===== skill\沙漠风暴\道具_孤风飒踏.lua:64
+   60| 		10000
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		2,
+   66| 		10000
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   70| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   71| 		7276,
+   72| 		1
+   73| 	);
+   74| 	skill.AddAttribute(
+   75| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   76| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   77| 		"skill/沙漠风暴/道具_孤风飒踏.lua",
+   78| 		0
+
+===== skill\沙漠风暴\道具_散流霞.lua:40
+   36| 		1
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		8,
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		4,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		7,
+   54| 		10000
+
+===== skill\沙漠风暴\道具_散流霞.lua:46
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		4,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		7,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		2,
+   60| 		10000
+
+===== skill\沙漠风暴\道具_散流霞.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		7,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		2,
+   60| 		10000
+   61| 	);
+   62| 	--[[
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   65| 		ATTRIBUTE_TYPE.SKILL_MOVE,
+   66| 		264,
+
+===== skill\沙漠风暴\道具_散流霞.lua:58
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		2,
+   60| 		10000
+   61| 	);
+   62| 	--[[
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   65| 		ATTRIBUTE_TYPE.SKILL_MOVE,
+   66| 		264,
+   67| 		1						--1是自己，0是目标
+   68| 		);
+   69| 	--]]
+   70| 
+   71| 	skill.AddAttribute(
+   72| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+
+===== skill\沙漠风暴\道具_星楼月影.lua:25
+   21| 
+   22| 	----------------- 魔法属性 -------------------------------------------------
+   23| 	skill.AddAttribute(
+   24| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   25| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   26| 		4,
+   27| 		10000
+   28| 	);
+   29| 	skill.AddAttribute(
+   30| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   31| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   32| 		8,
+   33| 		10000
+   34| 	);
+   35| 	skill.AddAttribute(
+   36| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   37| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   38| 		7,
+   39| 		10000
+
+===== skill\沙漠风暴\道具_星楼月影.lua:31
+   27| 		10000
+   28| 	);
+   29| 	skill.AddAttribute(
+   30| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   31| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   32| 		8,
+   33| 		10000
+   34| 	);
+   35| 	skill.AddAttribute(
+   36| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   37| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   38| 		7,
+   39| 		10000
+   40| 	);
+   41| 	skill.AddAttribute(
+   42| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   43| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   44| 		2,
+   45| 		10000
+
+===== skill\沙漠风暴\道具_星楼月影.lua:37
+   33| 		10000
+   34| 	);
+   35| 	skill.AddAttribute(
+   36| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   37| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   38| 		7,
+   39| 		10000
+   40| 	);
+   41| 	skill.AddAttribute(
+   42| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   43| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   44| 		2,
+   45| 		10000
+   46| 	);
+   47| 	skill.AddAttribute(
+   48| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   49| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   50| 		7276,
+   51| 		1
+
+===== skill\沙漠风暴\道具_星楼月影.lua:43
+   39| 		10000
+   40| 	);
+   41| 	skill.AddAttribute(
+   42| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   43| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   44| 		2,
+   45| 		10000
+   46| 	);
+   47| 	skill.AddAttribute(
+   48| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   49| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   50| 		7276,
+   51| 		1
+   52| 	);
+   53| 	skill.AddAttribute(
+   54| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击落
+   55| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   56| 		21144,
+   57| 		1
+
+===== skill\沙漠风暴\道具_暗尘弥散.lua:46
+   42| 		1
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		4,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		8,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		7,
+   60| 		10000
+
+===== skill\沙漠风暴\道具_暗尘弥散.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		8,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		7,
+   60| 		10000
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		2,
+   66| 		10000
+
+===== skill\沙漠风暴\道具_暗尘弥散.lua:58
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		7,
+   60| 		10000
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		2,
+   66| 		10000
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   70| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   71| 		7276,
+   72| 		1
+
+===== skill\沙漠风暴\道具_暗尘弥散.lua:64
+   60| 		10000
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		2,
+   66| 		10000
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   70| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   71| 		7276,
+   72| 		1
+   73| 	);
+   74| 
+   75| 	--[[
+   76| 	--隐身走切换武器和饰品的CD
+   77| 	skill.AddAttribute(
+   78| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+
+===== skill\沙漠风暴\道具_浮光掠影.lua:45
+   41| 		1
+   42| 	);
+   43| 	skill.AddAttribute(
+   44| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   45| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   46| 		4,
+   47| 		10000
+   48| 	);
+   49| 	skill.AddAttribute(
+   50| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   51| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   52| 		8,
+   53| 		10000
+   54| 	);
+   55| 	skill.AddAttribute(
+   56| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   57| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   58| 		7,
+   59| 		10000
+
+===== skill\沙漠风暴\道具_浮光掠影.lua:51
+   47| 		10000
+   48| 	);
+   49| 	skill.AddAttribute(
+   50| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   51| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   52| 		8,
+   53| 		10000
+   54| 	);
+   55| 	skill.AddAttribute(
+   56| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   57| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   58| 		7,
+   59| 		10000
+   60| 	);
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   64| 		2,
+   65| 		10000
+
+===== skill\沙漠风暴\道具_浮光掠影.lua:57
+   53| 		10000
+   54| 	);
+   55| 	skill.AddAttribute(
+   56| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   57| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   58| 		7,
+   59| 		10000
+   60| 	);
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   64| 		2,
+   65| 		10000
+   66| 	);
+   67| 	
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   70| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   71| 		7276,
+
+===== skill\沙漠风暴\道具_浮光掠影.lua:63
+   59| 		10000
+   60| 	);
+   61| 	skill.AddAttribute(
+   62| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   63| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   64| 		2,
+   65| 		10000
+   66| 	);
+   67| 	
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   70| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   71| 		7276,
+   72| 		1
+   73| 	);
+   74| 
+   75| 	--]]
+   76| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   77| 	skill.AddSlowCheckSelfBuff(3203, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);
+
+===== skill\沙漠风暴\道具_游风飘踪解控子技能.lua:24
+   20| 
+   21| 	----------------- 魔法属性 -------------------------------------------------
+   22| 	skill.AddAttribute(
+   23| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   24| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   25| 		2,
+   26| 		10000
+   27| 	);
+   28| 	skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		4,
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		8,
+   38| 		10000
+
+===== skill\沙漠风暴\道具_游风飘踪解控子技能.lua:30
+   26| 		10000
+   27| 	);
+   28| 	skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		4,
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		8,
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		7,
+   44| 		10000
+
+===== skill\沙漠风暴\道具_游风飘踪解控子技能.lua:36
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		8,
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		7,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   49| 		7276,
+   50| 		1
+
+===== skill\沙漠风暴\道具_游风飘踪解控子技能.lua:42
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		7,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   49| 		7276,
+   50| 		1
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击落
+   54| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   55| 		21144,
+   56| 		1
+
+===== skill\沙漠风暴\道具_烟雨行.lua:34
+   30| 
+   31| 	----------------- 魔法属性 -------------------------------------------------
+   32| --[[	skill.AddAttribute(
+   33| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   34| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   35| 		8,
+   36| 		10000
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		4,
+   42| 		10000
+   43| 	);]]--
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+
+===== skill\沙漠风暴\道具_烟雨行.lua:40
+   36| 		10000
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		4,
+   42| 		10000
+   43| 	);]]--
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+
+===== skill\沙漠风暴\道具_烟雨行.lua:46
+   42| 		10000
+   43| 	);]]--
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.SKILL_MOVE,
+   59| 		43,
+   60| 		1						--1是自己，0是目标
+
+===== skill\沙漠风暴\道具_烟雨行.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.SKILL_MOVE,
+   59| 		43,
+   60| 		1						--1是自己，0是目标
+   61| 	);
+   62| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   63| 	skill.AddSlowCheckSelfBuff(562, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);
+   64| 	--skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求自身Buff
+   65| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+   66| 	--skill.AddSlowCheckSelfOwnBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);	-- 需求自身属于自己的Buff
+
+===== skill\沙漠风暴\道具_疾如风.lua:30
+   26| 	----------------- 魔法属性 -------------------------------------------------
+   27| 
+   28| 		skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		2, 
+   32| 		9999
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		3, 
+   38| 		9999
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		4, 
+   44| 		9999
+
+===== skill\沙漠风暴\道具_疾如风.lua:36
+   32| 		9999
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		3, 
+   38| 		9999
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		4, 
+   44| 		9999
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		6, 
+   50| 		9999
+
+===== skill\沙漠风暴\道具_疾如风.lua:42
+   38| 		9999
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		4, 
+   44| 		9999
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		6, 
+   50| 		9999
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   54| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 		8, 
+   56| 		9999
+
+===== skill\沙漠风暴\道具_疾如风.lua:48
+   44| 		9999
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		6, 
+   50| 		9999
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   54| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 		8, 
+   56| 		9999
+   57| 	);
+   58| 	skill.AddAttribute(
+   59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   60| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 		7, 
+   62| 		9999
+
+===== skill\沙漠风暴\道具_疾如风.lua:54
+   50| 		9999
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   54| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 		8, 
+   56| 		9999
+   57| 	);
+   58| 	skill.AddAttribute(
+   59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   60| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 		7, 
+   62| 		9999
+   63| 	);
+   64| 	
+   65| 	--skill.AddAttribute(
+   66| 		--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   67| 		--ATTRIBUTE_TYPE.CAST_SKILL_TARGET_SRC,
+   68| 		--705,
+
+===== skill\沙漠风暴\道具_疾如风.lua:60
+   56| 		9999
+   57| 	);
+   58| 	skill.AddAttribute(
+   59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   60| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 		7, 
+   62| 		9999
+   63| 	);
+   64| 	
+   65| 	--skill.AddAttribute(
+   66| 		--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   67| 		--ATTRIBUTE_TYPE.CAST_SKILL_TARGET_SRC,
+   68| 		--705,
+   69| 		--1
+   70| 	--);
+   71| 	
+   72| 	skill.AddAttribute(					
+   73| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --解除击倒
+   74| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+
+===== skill\沙漠风暴\道具_绿野蔓生.lua:34
+   30| 
+   31| 	----------------- 魔法属性 -------------------------------------------------
+   32| 	skill.AddAttribute(
+   33| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   34| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   35| 		4,
+   36| 		10000
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		8,
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+
+===== skill\沙漠风暴\道具_绿野蔓生.lua:40
+   36| 		10000
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		8,
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+
+===== skill\沙漠风暴\道具_绿野蔓生.lua:46
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   58| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   59| 		7276,
+   60| 		1
+
+===== skill\沙漠风暴\道具_绿野蔓生.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   58| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   59| 		7276,
+   60| 		1
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击落
+   64| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   65| 		21144,
+   66| 		1
+
+===== skill\沙漠风暴\道具_舍身诀解控子技能.lua:47
+   43| 	local dwSkillLevel = skill.dwLevel;
+   44| 
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		2,
+   49| 		9999
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		3,
+   55| 		9999
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		4,
+   61| 		9999
+
+===== skill\沙漠风暴\道具_舍身诀解控子技能.lua:53
+   49| 		9999
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		3,
+   55| 		9999
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		4,
+   61| 		9999
+   62| 	);
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   65| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   66| 		6,
+   67| 		9999
+
+===== skill\沙漠风暴\道具_舍身诀解控子技能.lua:59
+   55| 		9999
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		4,
+   61| 		9999
+   62| 	);
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   65| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   66| 		6,
+   67| 		9999
+   68| 	);
+   69| 	skill.AddAttribute(
+   70| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   71| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   72| 		8,
+   73| 		9999
+
+===== skill\沙漠风暴\道具_舍身诀解控子技能.lua:65
+   61| 		9999
+   62| 	);
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   65| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   66| 		6,
+   67| 		9999
+   68| 	);
+   69| 	skill.AddAttribute(
+   70| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   71| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   72| 		8,
+   73| 		9999
+   74| 	);
+   75| 	skill.AddAttribute(
+   76| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   77| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   78| 		7,
+   79| 		9999
+
+===== skill\沙漠风暴\道具_舍身诀解控子技能.lua:71
+   67| 		9999
+   68| 	);
+   69| 	skill.AddAttribute(
+   70| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   71| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   72| 		8,
+   73| 		9999
+   74| 	);
+   75| 	skill.AddAttribute(
+   76| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   77| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   78| 		7,
+   79| 		9999
+   80| 	);
+   81| 
+   82| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   83| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   84| 	--skill.SetPublicCoolDown(16);		
+   85| 	--skill.SetNormalCoolDown(1, 346);
+
+===== skill\沙漠风暴\道具_舍身诀解控子技能.lua:77
+   73| 		9999
+   74| 	);
+   75| 	skill.AddAttribute(
+   76| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   77| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   78| 		7,
+   79| 		9999
+   80| 	);
+   81| 
+   82| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   83| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   84| 	--skill.SetPublicCoolDown(16);		
+   85| 	--skill.SetNormalCoolDown(1, 346);
+   86| 	----------------- 设置技能消耗 ---------------------------------------------------------------------
+   87| 	--skill.nCostMana	= tSkillData[dwSkillLevel].nCostMana;
+   88| 	--skill.nCostRage	= tSkillData[dwSkillLevel].nCostRage;
+   89| 	----------------- 设置杂项参数 ----------------------------------------------------------------------
+   90|    
+   91| 	--skill.dwLevelUpExp      	= tSkillData[dwSkillLevel].nLevelUpExp;	--升级经验
+
+===== skill\沙漠风暴\道具_蝶弄足.lua:42
+   38|     );--]]
+   39| 
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		4,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		8,
+   50| 		10000
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   54| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 		7,
+   56| 		10000
+
+===== skill\沙漠风暴\道具_蝶弄足.lua:48
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   48| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 		8,
+   50| 		10000
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   54| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 		7,
+   56| 		10000
+   57| 	);
+   58| 	skill.AddAttribute(
+   59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   60| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 		2,
+   62| 		10000
+
+===== skill\沙漠风暴\道具_蝶弄足.lua:54
+   50| 		10000
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   54| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 		7,
+   56| 		10000
+   57| 	);
+   58| 	skill.AddAttribute(
+   59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   60| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 		2,
+   62| 		10000
+   63| 	);
+   64| 	skill.AddAttribute(
+   65| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 属性作用模式
+   66| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 魔法属性
+   67| 		"skill/沙漠风暴/道具_蝶弄足.lua", -- 属性值1
+   68| 		0														-- 属性值2
+
+===== skill\沙漠风暴\道具_蝶弄足.lua:60
+   56| 		10000
+   57| 	);
+   58| 	skill.AddAttribute(
+   59| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   60| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 		2,
+   62| 		10000
+   63| 	);
+   64| 	skill.AddAttribute(
+   65| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 属性作用模式
+   66| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 魔法属性
+   67| 		"skill/沙漠风暴/道具_蝶弄足.lua", -- 属性值1
+   68| 		0														-- 属性值2
+   69| 	);
+   70| 
+   71| 	----------------- 设置CoolDown ---------------------------------------------------------------------
+   72| 	--SetPublicCoolDown(id)设置公共CD，SetNormalCoolDown(posi, id)设置技能CD，其中posi为CoolDown位(共3位)，id需要查CoolDownList.tab
+   73| 	--skill.SetPublicCoolDown(16);				--公共CD1.5秒
+   74| 	--skill.SetNormalCoolDown(1, 120);			--自身CD
+
+===== skill\沙漠风暴\道具_踏星行.lua:25
+   21| 
+   22| 	----------------- 魔法属性 -------------------------------------------------
+   23| 	skill.AddAttribute(
+   24| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   25| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   26| 		2,
+   27| 		10000
+   28| 	);
+   29| 	skill.AddAttribute(
+   30| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   31| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   32| 		7,
+   33| 		10000
+   34| 	);
+   35| 	skill.AddAttribute(
+   36| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 属性作用模式
+   37| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 魔法属性
+   38| 		"skill/沙漠风暴/道具_踏星行.lua", -- 属性值1
+   39| 		0														-- 属性值2
+
+===== skill\沙漠风暴\道具_踏星行.lua:31
+   27| 		10000
+   28| 	);
+   29| 	skill.AddAttribute(
+   30| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   31| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   32| 		7,
+   33| 		10000
+   34| 	);
+   35| 	skill.AddAttribute(
+   36| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 属性作用模式
+   37| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 魔法属性
+   38| 		"skill/沙漠风暴/道具_踏星行.lua", -- 属性值1
+   39| 		0														-- 属性值2
+   40| 	);
+   41| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   42| 	skill.AddSlowCheckSelfBuff(562, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff--吞日月，禁轻功
+   43| 	--skill.AddSlowCheckSelfBuff(15430, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求没有三段BUFF
+   44| 	--skill.AddSlowCheckSelfOwnBuff(15424, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);	-- 需求自身属于自己的Buff
+   45| 	--skill.AddSlowCheckDestOwnBuff(16014, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);	-- 需求目标属于自己的Buff
+
+===== skill\沙漠风暴\道具_转乾坤.lua:40
+   36| 		0															-- 属性值2
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		2,
+   42| 		9999
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		3,
+   48| 		9999
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		4,
+   54| 		9999
+
+===== skill\沙漠风暴\道具_转乾坤.lua:46
+   42| 		9999
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		3,
+   48| 		9999
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		4,
+   54| 		9999
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		6,
+   60| 		9999
+
+===== skill\沙漠风暴\道具_转乾坤.lua:52
+   48| 		9999
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		4,
+   54| 		9999
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		6,
+   60| 		9999
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		8,
+   66| 		9999
+
+===== skill\沙漠风暴\道具_转乾坤.lua:58
+   54| 		9999
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   58| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   59| 		6,
+   60| 		9999
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		8,
+   66| 		9999
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   70| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   71| 		7,
+   72| 		9999
+
+===== skill\沙漠风暴\道具_转乾坤.lua:64
+   60| 		9999
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   64| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   65| 		8,
+   66| 		9999
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   70| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   71| 		7,
+   72| 		9999
+   73| 	);
+   74| 	skill.AddAttribute(					
+   75| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --解除击倒
+   76| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+   77| 		7276,
+   78| 		1
+
+===== skill\沙漠风暴\道具_转乾坤.lua:70
+   66| 		9999
+   67| 	);
+   68| 	skill.AddAttribute(
+   69| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   70| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   71| 		7,
+   72| 		9999
+   73| 	);
+   74| 	skill.AddAttribute(					
+   75| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --解除击倒
+   76| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+   77| 		7276,
+   78| 		1
+   79| 		);
+   80| 	skill.AddAttribute(												
+   81| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击落
+   82| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   83| 		21144,
+   84| 		1									
+
+===== skill\沙漠风暴\道具_逐云寒蕊.lua:34
+   30| 
+   31| 	----------------- 魔法属性 -------------------------------------------------
+   32| 	skill.AddAttribute(
+   33| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   34| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   35| 		4,
+   36| 		10000
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		8,
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+
+===== skill\沙漠风暴\道具_逐云寒蕊.lua:40
+   36| 		10000
+   37| 	);
+   38| 	skill.AddAttribute(
+   39| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   40| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   41| 		8,
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+
+===== skill\沙漠风暴\道具_逐云寒蕊.lua:46
+   42| 		10000
+   43| 	);
+   44| 	skill.AddAttribute(
+   45| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   46| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   47| 		7,
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   58| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   59| 		7276,
+   60| 		1
+
+===== skill\沙漠风暴\道具_逐云寒蕊.lua:52
+   48| 		10000
+   49| 	);
+   50| 	skill.AddAttribute(
+   51| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   52| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   53| 		2,
+   54| 		10000
+   55| 	);
+   56| 	skill.AddAttribute(
+   57| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   58| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   59| 		7276,
+   60| 		1
+   61| 	);
+   62| 	skill.AddAttribute(
+   63| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击落
+   64| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   65| 		21144,
+   66| 		1
+
+===== skill\沙漠风暴\道具_鹊踏枝.lua:35
+   31| 		1
+   32| 	);
+   33| 	skill.AddAttribute(
+   34| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   35| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   36| 		4,
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		8,
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		7,
+   49| 		10000
+
+===== skill\沙漠风暴\道具_鹊踏枝.lua:41
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		8,
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		7,
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		2,
+   55| 		10000
+
+===== skill\沙漠风暴\道具_鹊踏枝.lua:47
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		7,
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		2,
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   59| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   60| 		7276,
+   61| 		1
+
+===== skill\沙漠风暴\道具_鹊踏枝.lua:53
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		2,
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   59| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   60| 		7276,
+   61| 		1
+   62| 	);
+   63| 
+   64| 	skill.AddAttribute(
+   65| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 属性作用模式
+   66| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT, -- 魔法属性
+   67| 		"skill/沙漠风暴/道具_鹊踏枝.lua", -- 属性值1
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:72
+   68|    		);
+   69|    		
+   70| 	skill.AddAttribute(
+   71| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   72| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   73| 		4, 
+   74| 		10000
+   75| 	);
+   76| 	skill.AddAttribute(
+   77| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   78| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   79| 		8, 
+   80| 		10000
+   81| 	);
+   82| 	skill.AddAttribute(
+   83| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   84| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   85| 		7, 
+   86| 		10000
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:78
+   74| 		10000
+   75| 	);
+   76| 	skill.AddAttribute(
+   77| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   78| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   79| 		8, 
+   80| 		10000
+   81| 	);
+   82| 	skill.AddAttribute(
+   83| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   84| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   85| 		7, 
+   86| 		10000
+   87| 	);
+   88| 	skill.AddAttribute(
+   89| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   90| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   91| 		2, 
+   92| 		10000
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:84
+   80| 		10000
+   81| 	);
+   82| 	skill.AddAttribute(
+   83| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   84| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   85| 		7, 
+   86| 		10000
+   87| 	);
+   88| 	skill.AddAttribute(
+   89| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   90| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   91| 		2, 
+   92| 		10000
+   93| 	);
+   94| 
+   95| 	for i = 1,4 do
+   96|    	skill.AddAttribute(
+   97|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 删除雷霆震怒
+   98|    		ATTRIBUTE_TYPE.DEL_SINGLE_BUFF_BY_ID_AND_LEVEL,						
+
+===== skill\纯阳\子技能_镇山河驱散自己.lua:90
+   86| 		10000
+   87| 	);
+   88| 	skill.AddAttribute(
+   89| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   90| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   91| 		2, 
+   92| 		10000
+   93| 	);
+   94| 
+   95| 	for i = 1,4 do
+   96|    	skill.AddAttribute(
+   97|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 删除雷霆震怒
+   98|    		ATTRIBUTE_TYPE.DEL_SINGLE_BUFF_BY_ID_AND_LEVEL,						
+   99|    		682,																
+  100|    		i																	
+  101|    		);
+  102|    	end
+  103|    	skill.AddAttribute(
+  104|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 中注
+
+===== skill\绝境战场\绝境_任驰骋.lua:34
+   30| 	local dwSkillLevel = skill.dwLevel;
+   31| 
+   32| 	skill.AddAttribute(
+   33| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   34| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   35| 		7,
+   36| 		9999
+   37| 	);
+   38| 
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.CALL_BUFF,
+   42| 		244,
+   43| 		1
+   44| 	);
+   45| 	--监控buff，用来加马匹的增益效果
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   48| 		ATTRIBUTE_TYPE.CALL_BUFF,
+
+===== skill\绝境战场\绝境_太阴指.lua:41
+   37| 	local bRetCode = false;
+   38| 
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		7,
+   43| 		9999
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DASH_BACKWARD,
+   48| 		16,
+   49| 		tSkillData[dwSkillLevel].nSpeed
+   50| 	);
+   51| 
+   52| 	skill.BindBuff(1, 1104, 1)--换动作隐藏BUFF
+   53| 	skill.BindBuff(2, 51465, 1)--换动作隐藏BUFF
+   54| 
+   55| 	skill.AddSlowCheckSelfBuff(562, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff--吞日月，禁轻功
+
+===== skill\绝境战场\绝境_星楼月影.lua:24
+   20| 
+   21| 	----------------- 魔法属性 -------------------------------------------------
+   22| 		skill.AddAttribute(
+   23| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   24| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   25| 		4,
+   26| 		10000
+   27| 	);
+   28| 	skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		8,
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		10000
+
+===== skill\绝境战场\绝境_星楼月影.lua:30
+   26| 		10000
+   27| 	);
+   28| 	skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		8,
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		2,
+   44| 		10000
+
+===== skill\绝境战场\绝境_星楼月影.lua:36
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		2,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   49| 		7276,
+   50| 		1
+
+===== skill\绝境战场\绝境_星楼月影.lua:42
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		2,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   49| 		7276,
+   50| 		1
+   51| 	);
+   52| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   53| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   54| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	--skill.AddSlowCheckSelfBuff(2719, 0, BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.GREATER_EQUAL);		-- 需求自身Buff
+   56| 	--skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 需求目标Buff
+
+===== skill\绝境战场\绝境_渊.lua:42
+   38| 	);--添加换动作用隐藏Buff--]]
+   39| 
+   40| 	--skill.AddAttribute(
+   41| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   42| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 	--4, 
+   44| 	--10000
+   45| 	--);
+   46| 	--skill.AddAttribute(
+   47| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   48| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 	--8, 
+   50| 	--10000
+   51| 	--);
+   52| 	--skill.AddAttribute(
+   53| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   54| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 	--7, 
+   56| 	--10000
+
+===== skill\绝境战场\绝境_渊.lua:48
+   44| 	--10000
+   45| 	--);
+   46| 	--skill.AddAttribute(
+   47| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   48| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   49| 	--8, 
+   50| 	--10000
+   51| 	--);
+   52| 	--skill.AddAttribute(
+   53| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   54| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 	--7, 
+   56| 	--10000
+   57| 	--);
+   58| 	--skill.AddAttribute(
+   59| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   60| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 	--2, 
+   62| 	--10000
+
+===== skill\绝境战场\绝境_渊.lua:54
+   50| 	--10000
+   51| 	--);
+   52| 	--skill.AddAttribute(
+   53| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   54| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   55| 	--7, 
+   56| 	--10000
+   57| 	--);
+   58| 	--skill.AddAttribute(
+   59| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   60| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 	--2, 
+   62| 	--10000
+   63| 	--);
+   64| 
+   65| 	skill.AddAttribute(
+   66| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   67| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+   68| 		65122,
+
+===== skill\绝境战场\绝境_渊.lua:60
+   56| 	--10000
+   57| 	--);
+   58| 	--skill.AddAttribute(
+   59| 	--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+   60| 	--ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   61| 	--2, 
+   62| 	--10000
+   63| 	--);
+   64| 
+   65| 	skill.AddAttribute(
+   66| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   67| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+   68| 		65122,
+   69| 		1
+   70| 	);
+   71| 
+   72| 	--[[ skill.AddAttribute(
+   73| 			ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,
+   74| 			ATTRIBUTE_TYPE.DASH,
+
+===== skill\绝境战场\绝境_疾如风.lua:23
+   19| 	local dwSkillLevel = skill.dwLevel;
+   20| 
+   21| 	skill.AddAttribute(
+   22| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   23| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   24| 		4,
+   25| 		10000
+   26| 	);
+   27| 	skill.AddAttribute(
+   28| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   29| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   30| 		8,
+   31| 		10000
+   32| 	);
+   33| 	skill.AddAttribute(
+   34| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   35| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   36| 		7,
+   37| 		10000
+
+===== skill\绝境战场\绝境_疾如风.lua:29
+   25| 		10000
+   26| 	);
+   27| 	skill.AddAttribute(
+   28| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   29| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   30| 		8,
+   31| 		10000
+   32| 	);
+   33| 	skill.AddAttribute(
+   34| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   35| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   36| 		7,
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		2,
+   43| 		10000
+
+===== skill\绝境战场\绝境_疾如风.lua:35
+   31| 		10000
+   32| 	);
+   33| 	skill.AddAttribute(
+   34| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   35| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   36| 		7,
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		2,
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   47| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   48| 		7276,
+   49| 		1
+
+===== skill\绝境战场\绝境_疾如风.lua:41
+   37| 		10000
+   38| 	);
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		2,
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   47| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   48| 		7276,
+   49| 		1
+   50| 	);
+   51| 	
+   52| 	----------------- 魔法属性 -------------------------------------------------
+   53| 	----------------- 技能施放Buff需求 ---------------------------------------------
+   54| 	skill.AddSlowCheckSelfBuff(4053, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+   55| 	skill.AddSlowCheckSelfBuff(12321, 0,  BUFF_COMPARE_FLAG.EQUAL, 0, BUFF_COMPARE_FLAG.EQUAL);		-- 需求自身Buff
+
+===== skill\绝境战场\绝境_蛊虫献祭.lua:24
+   20| 
+   21| 	----------------- 魔法属性 -------------------------------------------------
+   22| 	skill.AddAttribute(
+   23| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   24| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   25| 		4,
+   26| 		10000
+   27| 	);
+   28| 	skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		8,
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		10000
+
+===== skill\绝境战场\绝境_蛊虫献祭.lua:30
+   26| 		10000
+   27| 	);
+   28| 	skill.AddAttribute(
+   29| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   30| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   31| 		8,
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		2,
+   44| 		10000
+
+===== skill\绝境战场\绝境_蛊虫献祭.lua:36
+   32| 		10000
+   33| 	);
+   34| 	skill.AddAttribute(
+   35| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   36| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   37| 		7,
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		2,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   49| 		7276,
+   50| 		1
+
+===== skill\绝境战场\绝境_蛊虫献祭.lua:42
+   38| 		10000
+   39| 	);
+   40| 	skill.AddAttribute(
+   41| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   42| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   43| 		2,
+   44| 		10000
+   45| 	);
+   46| 	skill.AddAttribute(
+   47| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   48| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   49| 		7276,
+   50| 		1
+   51| 	);
+   52| 	skill.AddAttribute(
+   53| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   54| 		ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   55| 		"skill/绝境战场/绝境_蛊虫献祭.lua",
+   56| 		0
+
+===== skill\绝境战场\绝境_鹊踏枝.lua:41
+   37| 	----------------- 魔法属性 -------------------------------------------------
+   38| 
+   39| 	skill.AddAttribute(
+   40| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   41| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   42| 		4,
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		8,
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		7,
+   55| 		10000
+
+===== skill\绝境战场\绝境_鹊踏枝.lua:47
+   43| 		10000
+   44| 	);
+   45| 	skill.AddAttribute(
+   46| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   47| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   48| 		8,
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		7,
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		2,
+   61| 		10000
+
+===== skill\绝境战场\绝境_鹊踏枝.lua:53
+   49| 		10000
+   50| 	);
+   51| 	skill.AddAttribute(
+   52| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   53| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   54| 		7,
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		2,
+   61| 		10000
+   62| 	);
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   65| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   66| 		7276,
+   67| 		1
+
+===== skill\绝境战场\绝境_鹊踏枝.lua:59
+   55| 		10000
+   56| 	);
+   57| 	skill.AddAttribute(
+   58| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   59| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+   60| 		2,
+   61| 		10000
+   62| 	);
+   63| 	skill.AddAttribute(
+   64| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 解除击倒
+   65| 		ATTRIBUTE_TYPE.CAST_SKILL,
+   66| 		7276,
+   67| 		1
+   68| 	);
+   69| 
+   70| 	--skill.AddAttribute(
+   71| 		--ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,
+   72| 		--ATTRIBUTE_TYPE.EXECUTE_SCRIPT,
+   73| 		--"skill/七秀/剑器浑脱_鹊踏枝.lua",

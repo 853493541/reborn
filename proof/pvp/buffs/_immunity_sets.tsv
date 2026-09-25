@@ -1,0 +1,40 @@
+﻿364	鎶楀嚮閫€	lvl=1	atKnockedBackRate=-2048 atRepulsedRate=-1024
+374	鐢熷お鏋乢涓嶅彈鎺у埗	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+377	闀囧北娌?lvl=1	atNegativeShield=1 atGlobalBlock=1 atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atImmunity=5
+384	杞咕鍧?lvl=1	atImmunity=5
+411	鏄熸ゼ鏈堝奖	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+677	楣婅笍鏋?lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+677	楣婅笍鏋?lvl=8	atKnockedDownRate=-1024 atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8
+730	鑷敱琛屽姩	lvl=1	atImmunity=2 atImmunity=4 atImmunity=8 atImmunity=11 atImmunity=6 atImmunity=7 atKnockedDownRate=-1024
+763	鍏嶇柅娌夐粯	lvl=1	atImmunity=5
+855	澶╃瓥-鍔涙嫈	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024
+1903	钘忓墤_鍟告棩_鍏嶇柅鎺у埗	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+2315	浜旀瘨_琛ュぉ蹇冪粡_濂冲ú琛ュぉ	lvl=1	atImmunity=7
+2315	浜旀瘨_琛ュぉ蹇冪粡_濂冲ú琛ュぉ	lvl=4	atImmunity=7 atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+2756	澶╃瓥_浠婚┌楠嬪厤鎺?lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024
+2756	澶╃瓥_浠婚┌楠嬪厤鎺?lvl=2	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+3743	娴嬭瘯鍏嶇柅	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atImmunity=5
+3822	浜旀瘨_鐚キ铦磋澏_鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+4053	鏄庢暀_鎬栫晱鏆楀垜_娌夐粯	lvl=1	atDisarm=
+4245	鏄庢暀_鏈濆湥瑷€_鑷韩鍑忎激鍏嶆帶	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024 atPullRate=-1024 atRepulsedRate=-1024 atImmunity=5
+4344	NPC閫氱敤_鍏嶇柅鍢茶	lvl=1	atImmunity=9
+5950	浜旀瘨_铔婅櫕鐚キ閫氱敤鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+5995	涓愬府_绗戦唹鐙俖鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+6015	涓愬府_榫欒穬浜庢笂_鍏嶆帶3绉?lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024
+6087	鍞愰棬_椋炴槦閬佸奖鍏嶆帶	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+6192	灏戞灄_鏃犵浉鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024
+6292	绾槼_鐖嗗悶鏃ユ湀鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024
+8832	閫氱敤_鍢茶鍏嶇柅	lvl=1	atImmunity=9
+12321	闇炴祦瀹濈煶缂存鐩爣	lvl=1	atDisarm=
+12506	椋庡鎵夸激	lvl=1	atImmunity=12
+17973	鏈堝奖鎶ょ浘	lvl=1	atImmunity=5 atImmunity=14 atKnockedBackRate=-1024
+20307	浼婂褰辫惫buff	lvl=1	atImmunity=9
+24353	瀵傜伃铔婂厤鎺?lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atPullRate=-1024 atRepulsedRate=-1024 atImmunity=5 atImmunity=14
+24414	瀛旈泙寮曞厤鎺uff	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024 atImmunity=5 atImmunity=14
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=1	atImmunity=17
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=2	atImmunity=16
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=3	atImmunity=15
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=4	atImmunity=16 atImmunity=17
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=5	atImmunity=15 atImmunity=17
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=6	atImmunity=15 atImmunity=16
+26065	琛嶅ぉ瀹楄崸鎯戝畧蹇冪敓鏁堟晥鏋?lvl=7	atImmunity=15 atImmunity=16 atImmunity=17

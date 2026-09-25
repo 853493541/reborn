@@ -1,0 +1,2 @@
+﻿plaintext 881 distinct at* tokens 1
+137	atMaxSkillRadiusAdd

@@ -1,0 +1,66 @@
+﻿== SelfMoveStateMask distinct 566
+    2214609150 22661
+    3758030846 1670
+    2 1628
+    3963617278 1579
+    4294967295 1288
+    2352906238 1127
+    2214740222 1071
+    3758030847 636
+    4294901758 577
+    16514 564
+    2621341694 493
+    2411741438 453
+== TargetMoveStateMask distinct 507
+    2621341694 21799
+    2214609150 4658
+    2684256254 2158
+    4232052734 1554
+    2 1507
+    2483044606 1104
+    3695116286 1079
+    3758030846 1040
+    4294967295 705
+    3758030847 445
+    2411741438 441
+    1010728958 216
+== SelfMoveStateMask2 distinct 21
+    63 29375
+    56 7696
+    60 2682
+    7 792
+    0 263
+    20 113
+    4 39
+    16 33
+    59 29
+    57 29
+    24 24
+    23 20
+== TargetMoveStateMask2 distinct 17
+    63 38503
+    60 1788
+    7 629
+    0 88
+    56 46
+    4 32
+    24 24
+    59 13
+    23 5
+    61 3
+    16 2
+    57 2
+
+100 鏄熸ゼ鏈堝奖 | SelfMS= 2621209342 | TargetMS= 2621209342 | SelfMS2= 63 | IgnoreControl= 1 | IgnoreImmunityCast= 
+412 澶╃瓥-鐤惧椋?| SelfMS= 2620292862 | TargetMS= 2620292862 | SelfMS2= 63 | IgnoreControl= 1 | IgnoreImmunityCast= 
+433 澶╃瓥-浠婚┌楠?| SelfMS= 16398 | TargetMS= 16398 | SelfMS2= 4 | IgnoreControl=  | IgnoreImmunityCast= 
+326 闀囧北娌砡姘斿満鏁堟灉 | SelfMS= 3221225470 | TargetMS= 2684289023 | SelfMS2= 63 | IgnoreControl=  | IgnoreImmunityCast= 
+5270 绗戦唹鐙?| SelfMS= 473724670 | TargetMS= 473724670 | SelfMS2= 20 | IgnoreControl= 1 | IgnoreImmunityCast= 
+550 楣婅笍鏋?| SelfMS= 2621210366 | TargetMS= 2621210366 | SelfMS2= 63 | IgnoreControl= 1 | IgnoreImmunityCast= 
+261 鏃犵浉璇€ | SelfMS= 2214609150 | TargetMS= 2621341694 | SelfMS2= 63 | IgnoreControl=  | IgnoreImmunityCast= 
+257 閿婚璇€ | SelfMS= 2620159742 | TargetMS= 2620159742 | SelfMS2= 63 | IgnoreControl= 1 | IgnoreImmunityCast= 
+372 杞咕鍧?| SelfMS= 2621341438 | TargetMS= 2621341438 | SelfMS2= 63 | IgnoreControl= 1 | IgnoreImmunityCast= 
+304 鐢熷お鏋乢姘斿満鏁堟灉_澧炵泭 | SelfMS= 2352906238 | TargetMS= 2621341694 | SelfMS2= 63 | IgnoreControl=  | IgnoreImmunityCast= 
+558 闆烽渾闇囨€?| SelfMS= 2214609150 | TargetMS= 2483057150 | SelfMS2= 63 | IgnoreControl=  | IgnoreImmunityCast= 
+366 澶ч亾鏃犳湳 | SelfMS= 2214609150 | TargetMS= 2621341694 | SelfMS2= 63 | IgnoreControl=  | IgnoreImmunityCast= 
+369 涓冩槦鎷辩憺 | SelfMS= 16514 | TargetMS= 2621341694 | SelfMS2= 52 | IgnoreControl=  | IgnoreImmunityCast= 

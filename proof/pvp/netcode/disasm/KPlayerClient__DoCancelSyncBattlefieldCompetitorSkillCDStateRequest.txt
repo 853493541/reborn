@@ -1,0 +1,29 @@
+# needle: KPlayerClient::DoCancelSyncBattlefieldCompetitorSkillCDStateRequest
+# string VAs: ['0x180770b70']
+# xrefs: 1
+
+## xref 0x1801700d1  fn_start 0x1801700a0
+0x01801700a0: sub	rsp, 0x58
+0x01801700a4: mov	rax, qword ptr [rip + 0x846175]
+0x01801700ab: xor	rax, rsp
+0x01801700ae: mov	qword ptr [rsp + 0x40], rax
+0x01801700b3: mov	eax, 0x162
+0x01801700b8: lea	rdx, [rsp + 0x30]
+0x01801700bd: mov	r8d, 0xb
+0x01801700c3: mov	word ptr [rsp + 0x30], ax
+0x01801700c8: call	0x1801acda0
+0x01801700cd: test	eax, eax
+0x01801700cf: jne	0x18017010e
+0x01801700d1: lea	rcx, [rip + 0x600a98]
+0x01801700d8: mov	r9d, 0x2910
+0x01801700de: mov	qword ptr [rsp + 0x20], rcx
+0x01801700e3: lea	r8, [rip + 0x7801fe]
+0x01801700ea: lea	ecx, [rax + 3]
+0x01801700ed: lea	rdx, [rip + 0x77e3b4]
+0x01801700f4: call	qword ptr [rip + 0x5f5166]
+0x01801700fa: xor	eax, eax
+0x01801700fc: mov	rcx, qword ptr [rsp + 0x40]
+0x0180170101: xor	rcx, rsp
+0x0180170104: call	0x18073aa10
+0x0180170109: add	rsp, 0x58
+0x018017010d: ret	

@@ -1,0 +1,117 @@
+==== Buff.tab rows (all) for target IDs ====
+ID=1455 Name=增加化劲 Level=1 Useage=14 MaxStack=1 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=54,0
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Level=1 Useage=6 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=16, | atStrainBase=22, | atDecriticalDamagePowerBase=27,
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Level=2 Useage=6 MaxStack=1 Count=1 Intensity=2 :: atToughnessBase=20, | atStrainBase=28, | atDecriticalDamagePowerBase=34,
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Level=3 Useage=6 MaxStack=1 Count=1 Intensity=3 :: atToughnessBase=25, | atStrainBase=36, | atDecriticalDamagePowerBase=42,
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Level=4 Useage=6 MaxStack=1 Count=1 Intensity=4 :: atToughnessBase=30, | atStrainBase=43, | atDecriticalDamagePowerBase=50,
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Level=5 Useage=6 MaxStack=1 Count=1 Intensity=5 :: atToughnessBase=34, | atStrainBase=50, | atDecriticalDamagePowerBase=58,
+ID=2198 Name=铁壁_加20%御劲 Level=1 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessPercent=205,
+ID=2199 Name=溃甲_减20%御劲 Level=1 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessPercent=-205,
+ID=3431 Name=增加化劲50点 Level=1 Useage=0 MaxStack=100 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=50,
+ID=3435 Name=减化劲50点 Level=1 Useage=0 MaxStack=100 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=-50,
+ID=6309 Name=天策_留侯加威胁值 Level=1 Useage=1 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=800,
+ID=7505 Name=春点减化劲 Level=1 Useage=116 MaxStack=1 Count=1 Intensity=1 :: atDecriticalDamagePowerBaseKiloNumRate=-1000,
+ID=8402 Name=苍云攻击阵前三重效果 Level=1 Useage=139 MaxStack=1 Count=1 Intensity=1 :: atFormationEffect=13274,6 | atAddExpPercent=50, | atAddReputationPercent=50, | atPhysicsCriticalStrikeBaseRate=300, | atStrainRate=20, | atDecriticalDamagePowerBaseKiloNumRate=31,0 | atSkillEventHandler=1214, | atSkillEventHandler=1215,
+ID=9341 Name=月露_梅花三弄期间会心10% Level=1 Useage=120 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=900,
+ID=9341 Name=月露_梅花三弄期间会心10% Level=2 Useage=120 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=1800,
+ID=9341 Name=月露_梅花三弄期间会心10% Level=3 Useage=120 MaxStack=1 Count=6 Intensity=1 :: atToughnessBaseRate=900,
+ID=9341 Name=月露_梅花三弄期间会心10% Level=4 Useage=120 MaxStack=1 Count=6 Intensity=1 :: atToughnessBaseRate=1800,
+ID=9864 Name=风20%会心换20%御劲 Level=1 Useage=1 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=3000,
+ID=11873 Name=追命箭降低目标化劲 Level=1 Useage=7 MaxStack=1 Count=1 Intensity=15 :: atDecriticalDamagePowerPercent=-51,
+ID=11873 Name=追命箭降低目标化劲 Level=2 Useage=7 MaxStack=1 Count=1 Intensity=16 :: atDecriticalDamagePowerPercent=-154,
+ID=12597 Name=兰摧降低目标化劲 Level=1 Useage=2 MaxStack=1 Count=7 Intensity=16 :: atDecriticalDamagePowerPercent=-154,
+ID=12597 Name=兰摧降低目标化劲 Level=2 Useage=2 MaxStack=1 Count=7 Intensity=16 :: atDecriticalDamagePowerPercent=-154,
+ID=12597 Name=兰摧降低目标化劲 Level=3 Useage=2 MaxStack=1 Count=7 Intensity=21 :: atDecriticalDamagePowerPercent=-154, | atMagicAttackPowerPercent=-205, | atPhysicsAttackPowerPercent=-205,
+ID=12597 Name=兰摧降低目标化劲 Level=4 Useage=2 MaxStack=1 Count=7 Intensity=21 :: atDecriticalDamagePowerPercent=-154, | atMagicAttackPowerPercent=-205, | atPhysicsAttackPowerPercent=-205,
+ID=13924 Name=翔极碧落降低目标化劲等级 Level=1 Useage=201 MaxStack=1 Count=1 Intensity=20 :: atDecriticalDamagePowerPercent=-205,
+ID=14980 Name=御劲提高 Level=1 Useage=8 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=500,
+ID=18031 Name=百步穿杨减化劲 Level=1 Useage=7 MaxStack=2 Count=1 Intensity=1 :: atDecriticalDamagePowerPercent=-103,
+ID=20812 Name=[20812]铁骨奇穴_慑服_御劲 Level=1 Useage=139 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=512,
+ID=21647 Name=百锻持续 Level=1 Useage=6 MaxStack=5 Count=5 Intensity=1 :: 
+ID=21647 Name=百锻持续 Level=2 Useage=6 MaxStack=5 Count=1 Intensity=1 :: atDecriticalDamagePowerPercent=-10, | atToughnessBaseRate=-50,
+ID=21647 Name=百锻持续 Level=3 Useage=6 MaxStack=5 Count=5 Intensity=1 :: 
+ID=21647 Name=百锻持续 Level=4 Useage=6 MaxStack=5 Count=5 Intensity=1 :: 
+ID=21647 Name=百锻持续 Level=5 Useage=6 MaxStack=5 Count=5 Intensity=1 :: 
+ID=22999 Name=百锻内功降御化 Level=1 Useage=6 MaxStack=5 Count=1 Intensity=5 :: atDecriticalDamagePowerPercent=-10, | atToughnessBaseRate=-100,
+ID=24168 Name=灭影追风 Level=1 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsOvercomePercent=51,
+ID=24168 Name=灭影追风 Level=2 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsOvercomePercent=51, | atPhysicsCriticalStrikeBaseRate=500,
+ID=24168 Name=灭影追风 Level=3 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsCriticalDamagePowerBaseKiloNumRate=51, | atPhysicsCriticalStrikeBaseRate=500, | atPhysicsOvercomePercent=51,
+ID=24168 Name=灭影追风（只使用到4级，其他废弃） Level=4 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsCriticalDamagePowerBaseKiloNumRate=100, | atPhysicsCriticalStrikeBaseRate=1000, | atPhysicsOvercomePercent=102, | atActiveThreatCoefficient=0,-717
+ID=24168 Name=灭影追风 Level=5 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsCriticalDamagePowerBaseKiloNumRate=50, | atPhysicsCriticalStrikeBaseRate=500, | atPhysicsOvercomePercent=51, | atDecriticalDamagePowerBaseKiloNumRate=-358,
+ID=24168 Name=灭影追风 Level=6 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsCriticalDamagePowerBaseKiloNumRate=100, | atPhysicsCriticalStrikeBaseRate=1000, | atPhysicsOvercomePercent=102, | atDecriticalDamagePowerBaseKiloNumRate=-358,
+ID=24168 Name=灭影追风 Level=7 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsCriticalDamagePowerBaseKiloNumRate=100, | atPhysicsCriticalStrikeBaseRate=1000, | atPhysicsOvercomePercent=102, | atDecriticalDamagePowerBaseKiloNumRate=-358,
+ID=24168 Name=灭影追风 Level=8 Useage=315 MaxStack=1 Count=1 Intensity=1 :: atPhysicsCriticalDamagePowerBaseKiloNumRate=200, | atPhysicsCriticalStrikeBaseRate=2000, | atPhysicsOvercomePercent=205, | atDecriticalDamagePowerBaseKiloNumRate=-358,
+ID=24761 Name=灭影追风减化劲等级 Level=1 Useage=315 MaxStack=1 Count=1 Intensity=15 :: atDecriticalDamagePowerPercent=-61,
+ID=28496 Name=木桩心法属性 Level=1 Useage=13 MaxStack=1 Count=1 Intensity=1 :: atMaxLifeBase=2849050,0 | atDecriticalDamagePowerBase=49183, | atPhysicsShieldBase=16000,0 | atMagicShield=16000,0 | atDecriticalDamagePowerBaseKiloNumRate=102, | atToughnessBase=3957,
+ID=28807 Name=提高化劲 Level=1 Useage=13 MaxStack=15 Count=1 Intensity=1 :: atDecriticalDamagePowerBaseKiloNumRate=10,
+ID=30059 Name=输出PVP护手减化劲 Level=1 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=-2756,
+ID=30060 Name=治疗PVP护手加化劲 Level=1 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=2756,
+ID=30074 Name=PVP项链化劲加御劲 Level=1 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=160,
+ID=30121 Name=蛊神的诅咒 Level=1 Useage=187 MaxStack=1 Count=1 Intensity=1 :: atSetRelationAllEnemyExceptTeam=, | atMagicShield=2850, | atPhysicsShieldBase=2850, | atMaxLifeAdditional=1800000, | atMaxManaAdditional=120000, | atDropDefence=20000, | atPVXAllRound=4527, | atMagicAttackPowerBase=5400, | atAllTypeAttackPowerBase=27000, | atAllTypeCriticalStrike=59311, | atAllTypeOvercomeBase=67787, | atBeatBackRate=-819, | atMaxLifePercentAdd=245, | atDecriticalDamagePowerBaseKiloNumRate=102,
+ID=30515 Name=JJC插旗大王-御劲 Level=1 Useage=42 MaxStack=100 Count=1 Intensity=1 :: atToughnessBase=100,
+ID=30515 Name=JJC插旗大王-御劲 Level=2 Useage=42 MaxStack=100 Count=1 Intensity=1 :: atToughnessBase=-100,
+ID=30516 Name=JJC插旗大王-化劲 Level=1 Useage=42 MaxStack=100 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=1000,
+ID=30516 Name=JJC插旗大王-化劲 Level=2 Useage=42 MaxStack=100 Count=1 Intensity=1 :: atDecriticalDamagePowerBase=-1000,
+ID=30707 Name=PVP附魔1腰带拍卖_被击加御劲_太极秘录 Level=1 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=10800,
+ID=30707 Name=PVP附魔1腰带战阶_被击加御劲_太极秘录 Level=2 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=4320,
+ID=30707 Name=PVP附魔1腰带拍卖_被击加御劲_山海源流 Level=3 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=12609,
+ID=30707 Name=PVP附魔1腰带战阶_被击加御劲_山海源流 Level=4 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=5043,
+ID=30707 Name=PVP附魔1腰带拍卖_被击加御劲_暗影千机 Level=5 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=14760,
+ID=30707 Name=PVP附魔1腰带战阶_被击加御劲_暗影千机 Level=6 Useage=39 MaxStack=1 Count=1 Intensity=1 :: atToughnessBase=5904,
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_太极秘录 Level=1 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=120,
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_太极秘录 Level=2 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=48,
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_山海源流 Level=3 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=140,
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_山海源流 Level=4 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=56,
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_暗影千机 Level=5 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=164,
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_暗影千机 Level=6 Useage=39 MaxStack=10 Count=1 Intensity=1 :: atToughnessBase=65,
+ID=33175 Name=离经_新积势_炸黑御劲 Level=1 Useage=2 MaxStack=1 Count=1 Intensity=1 :: atToughnessBaseRate=1000,
+
+==== Buff.txt rows for target IDs ====
+ID=1455 Lv=0 Name=进食 Desc=化劲等级增加<BUFF atDeCriticalDamagePowerBase>点
+ID=1854 Lv=0 Name=香梅 Desc=御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+ID=2198 Lv=1 Name=铁壁 Desc=御劲等级提高20%
+ID=2199 Lv=1 Name=溃甲 Desc=御劲等级降低20%
+ID=6309 Lv=1 Name=旗渊 Desc=御劲率提高8%
+ID=7505 Lv=1 Name=春点 Desc=化劲降低10%
+ID=9341 Lv=1 Name=石间意 Desc=御劲率提高9%
+ID=9341 Lv=2 Name=石间意 Desc=御劲率提高18%
+ID=9341 Lv=3 Name=石间意 Desc=御劲率提高9%
+ID=9341 Lv=4 Name=石间意 Desc=御劲率提高18%
+ID=9864 Lv=1 Name=疾如风 Desc=被会心几率降低30%
+ID=11873 Lv=1 Name=穿杨 Desc=化劲等级降低5%
+ID=11873 Lv=2 Name=穿杨 Desc=化劲等级降低15%
+ID=13924 Lv=1 Name=遥思 Desc=化劲等级降低20%
+ID=14980 Lv=1 Name=归清 Desc=御劲提高5%
+ID=18031 Lv=1 Name=灵机卸甲 Desc=化劲等级降低10%
+ID=20812 Lv=1 Name=慑服 Desc=御劲率提高5%
+ID=21647 Lv=1 Name=炽炎 Desc=每2秒受到一次外功伤害
+ID=21647 Lv=2 Name=履冰 Desc=每层降低1%的御劲和化劲等级
+ID=21647 Lv=3 Name=空青 Desc=每2秒获得一次治疗效果
+ID=21647 Lv=4 Name=空青 Desc=每2秒获得一次治疗效果
+ID=21647 Lv=5 Name=空青 Desc=每2秒获得一次治疗效果
+ID=22999 Lv=1 Name=履冰 Desc=每层降低1%的御劲率和化劲等级
+ID=24168 Lv=1 Name=灭影追风 Desc=自身外功破防等级提高5%，化劲等级降低6%
+ID=24168 Lv=2 Name=灭影追风 Desc=自身外功破防等级提高5%，会心几率提高5%，化劲等级降低6%
+ID=24168 Lv=3 Name=灭影追风 Desc=自身外功破防等级提高5%，会心几率提高5%，会心效果提高5%，化劲等级降低6%
+ID=24168 Lv=4 Name=灭影追风 Desc=自身外功破防等级提高10%，会心几率提高10%，会心效果提高10%，化劲等级降低6%，产生的威胁值降低70%
+ID=24168 Lv=5 Name=灭影追风 Desc=自身外功破防等级提高5%，会心几率提高5%，会心效果提高5%，化劲等级降低35%
+ID=24168 Lv=6 Name=灭影追风 Desc=自身外功破防等级提高10%，会心几率提高10%，会心效果提高10%，化劲等级降低35%
+ID=24168 Lv=7 Name=灭影追风 Desc=自身外功破防等级提高15%，会心几率提高15%，会心效果提高15%，化劲等级降低35%
+ID=24168 Lv=8 Name=灭影追风 Desc=自身外功破防等级提高20%，会心几率提高20%，会心效果提高20%，化劲等级降低35%
+ID=28807 Lv=1 Name=萌新助威 Desc=隐元会为防止萌新阵营侠士化劲过低，当侠士装分低于本服对抗类平均装分时且自身化劲低于70%时，为侠士增加额外化劲，该效果每层提高1%化劲（该效果不会在竞技场、绝境战场、列星虚境中生效）
+ID=30059 Lv=1 Name=战·丝路·震 Desc=化劲降低2756点
+ID=30060 Lv=1 Name=愈·丝路·震 Desc=化劲提高2756点
+ID=30121 Lv=1 Name=蛊神的诅咒 Desc=与除队友外的所有人敌对，无法恢复气力值，免疫摔伤；\n气血提升1800000点；内力值提高120000点；全能等级提高4527；外功基础攻击力提升27000点；内功基础攻击力提升32400点；会心等级提升59311，破防等级提升67787。
+ID=30707 Lv=1 Name=密玉神墟·纵·腰 Desc=提高自身10800点御劲等级，持续3秒
+ID=30707 Lv=2 Name=密玉神山·纵·腰 Desc=提高自身4320点御劲等级，持续3秒
+ID=30707 Lv=3 Name=密玉神域·纵·腰 Desc=提高自身12609点御劲等级，持续3秒
+ID=30707 Lv=4 Name=密玉神阆·纵·腰 Desc=提高自身5043点御劲等级，持续3秒
+ID=30707 Lv=5 Name=密玉神界·纵·腰 Desc=提高自身14760点御劲等级，持续3秒
+ID=30707 Lv=6 Name=密玉神峰·纵·腰 Desc=提高自身5904点御劲等级，持续3秒
+ID=30708 Lv=1 Name=密玉神墟·横·腰 Desc=每层提高自身120点御劲等级，最多10层
+ID=30708 Lv=2 Name=密玉神山·横·腰 Desc=每层提高自身48点御劲等级，最多10层
+ID=30708 Lv=3 Name=密玉神域·横·腰 Desc=每层提高自身140点御劲等级，最多10层
+ID=30708 Lv=4 Name=密玉神阆·横·腰 Desc=每层提高自身56点御劲等级，最多10层
+ID=30708 Lv=5 Name=密玉神界·横·腰 Desc=每层提高自身164点御劲等级，最多10层
+ID=30708 Lv=6 Name=密玉神峰·横·腰 Desc=每层提高自身65点御劲等级，最多10层
+ID=33175 Lv=1 Name=积势 Desc=御劲率提高10%

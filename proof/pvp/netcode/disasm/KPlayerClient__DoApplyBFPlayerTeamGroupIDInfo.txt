@@ -1,0 +1,29 @@
+# needle: KPlayerClient::DoApplyBFPlayerTeamGroupIDInfo
+# string VAs: ['0x180770b00']
+# xrefs: 1
+
+## xref 0x18016b231  fn_start 0x18016b200
+0x018016b200: sub	rsp, 0x58
+0x018016b204: mov	rax, qword ptr [rip + 0x84b015]
+0x018016b20b: xor	rax, rsp
+0x018016b20e: mov	qword ptr [rsp + 0x40], rax
+0x018016b213: mov	eax, 0x160
+0x018016b218: lea	rdx, [rsp + 0x30]
+0x018016b21d: mov	r8d, 0xb
+0x018016b223: mov	word ptr [rsp + 0x30], ax
+0x018016b228: call	0x1801acda0
+0x018016b22d: test	eax, eax
+0x018016b22f: jne	0x18016b26e
+0x018016b231: lea	rcx, [rip + 0x6058c8]
+0x018016b238: mov	r9d, 0x28ef
+0x018016b23e: mov	qword ptr [rsp + 0x20], rcx
+0x018016b243: lea	r8, [rip + 0x78509e]
+0x018016b24a: lea	ecx, [rax + 3]
+0x018016b24d: lea	rdx, [rip + 0x783254]
+0x018016b254: call	qword ptr [rip + 0x5fa006]
+0x018016b25a: xor	eax, eax
+0x018016b25c: mov	rcx, qword ptr [rsp + 0x40]
+0x018016b261: xor	rcx, rsp
+0x018016b264: call	0x18073aa10
+0x018016b269: add	rsp, 0x58
+0x018016b26d: ret	

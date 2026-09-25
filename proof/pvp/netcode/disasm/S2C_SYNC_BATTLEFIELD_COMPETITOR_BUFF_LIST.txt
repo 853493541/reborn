@@ -1,0 +1,4 @@
+# needle: S2C_SYNC_BATTLEFIELD_COMPETITOR_BUFF_LIST
+# string VAs: []
+# xrefs: 0
+(no xref found)

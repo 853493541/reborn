@@ -1,0 +1,51 @@
+# needle: KPlayerClient::DoSyncSubSkillPosition
+# string VAs: ['0x18076fa68']
+# xrefs: 1
+
+## xref 0x18017b2a5  fn_start 0x18017b0f0
+0x018017b0f0: push	rbx
+0x018017b0f2: sub	rsp, 0x80
+0x018017b0f9: mov	rax, qword ptr [rip + 0x83b120]
+0x018017b100: xor	rax, rsp
+0x018017b103: mov	qword ptr [rsp + 0x70], rax
+0x018017b108: mov	r10, qword ptr [rsp + 0xb8]
+0x018017b110: mov	eax, 0x71
+0x018017b115: mov	word ptr [rsp + 0x30], ax
+0x018017b11a: xorps	xmm0, xmm0
+0x018017b11d: mov	eax, dword ptr [rsp + 0xb0]
+0x018017b124: mov	rbx, rcx
+0x018017b127: mov	dword ptr [rsp + 0x47], eax
+0x018017b12b: mov	dword ptr [rsp + 0x3b], edx
+0x018017b12f: mov	dword ptr [rsp + 0x3f], r8d
+0x018017b134: mov	dword ptr [rsp + 0x43], r9d
+0x018017b139: movups	xmmword ptr [rsp + 0x4b], xmm0
+0x018017b13e: movups	xmmword ptr [rsp + 0x5b], xmm0
+0x018017b143: test	r10, r10
+0x018017b146: je	0x18017b161
+0x018017b148: mov	r8d, 0x20
+0x018017b14e: lea	rcx, [rsp + 0x4b]
+0x018017b153: mov	rdx, r10
+0x018017b156: call	qword ptr [rip + 0x5eb1b4]
+0x018017b15c: mov	byte ptr [rsp + 0x6a], 0
+0x018017b161: mov	r8d, 0x3b
+0x018017b167: lea	rdx, [rsp + 0x30]
+0x018017b16c: mov	rcx, rbx
+0x018017b16f: call	0x1801acda0
+0x018017b174: test	eax, eax
+0x018017b176: jne	0x18017b1a5
+0x018017b178: lea	rcx, [rip + 0x5f3291]
+0x018017b17f: mov	r9d, 0x14dc
+0x018017b185: mov	qword ptr [rsp + 0x20], rcx
+0x018017b18a: lea	r8, [rip + 0x775157]
+0x018017b191: lea	ecx, [rax + 3]
+0x018017b194: lea	rdx, [rip + 0x77330d]
+0x018017b19b: call	qword ptr [rip + 0x5ea0bf]
+0x018017b1a1: xor	eax, eax
+0x018017b1a3: jmp	0x18017b1aa
+0x018017b1a5: mov	eax, 1
+0x018017b1aa: mov	rcx, qword ptr [rsp + 0x70]
+0x018017b1af: xor	rcx, rsp
+0x018017b1b2: call	0x18073aa10
+0x018017b1b7: add	rsp, 0x80
+0x018017b1be: pop	rbx
+0x018017b1bf: ret	

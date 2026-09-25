@@ -1,0 +1,20 @@
+# needle: KPlayerClient::OnPointChainSkillEffect
+# string VAs: ['0x180772ac0']
+# xrefs: 1
+
+## xref 0x18018c17b  fn_start 0x18018c160
+0x018018c160: push	rbx
+0x018018c162: sub	rsp, 0x40
+0x018018c166: mov	rbx, rdx
+0x018018c169: test	rdx, rdx
+0x018018c16c: jne	0x18018c19f
+0x018018c16e: mov	r9d, 0x41bc
+0x018018c174: lea	r8, [rip + 0x5e696d]
+0x018018c17b: lea	rax, [rip + 0x5e693e]
+0x018018c182: mov	ecx, 3
+0x018018c187: lea	rdx, [rip + 0x76231a]
+0x018018c18e: mov	qword ptr [rsp + 0x20], rax
+0x018018c193: call	qword ptr [rip + 0x5d90c7]
+0x018018c199: add	rsp, 0x40
+0x018018c19d: pop	rbx
+0x018018c19e: ret	

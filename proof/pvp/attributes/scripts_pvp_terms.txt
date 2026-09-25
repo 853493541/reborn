@@ -1,0 +1,34 @@
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\沙漠风暴\道具_游风飘踪.lua :: ['免控']
+   L166: --实际免控
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\沙漠风暴\道具_游风飘踪解控子技能.lua :: ['解控']
+   L2: -- 脚本名称:	scripts/skill/刀宗/套路及子技能/游风飘踪解控子技能.lua
+   L61: "skill/刀宗/套路及子技能/游风飘踪解控子技能.lua",
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\沙漠风暴\道具_疾如风.lua :: ['免控']
+   L144: --免控
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\沙漠风暴\道具_笑醉狂.lua :: ['免控']
+   L204: --免控
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\沙漠风暴\道具_舍身诀.lua :: ['解控']
+   L39: ---舍身解控效果
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\沙漠风暴\道具_舍身诀解控子技能.lua :: ['解控']
+   L2: -- 脚本名称:	scripts/skill/沙漠风暴/道具_舍身诀解控子技能.lua
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_七星拱瑞.lua :: ['递减']
+   L17: --				受到伤害恢复，一次只能有一个目标被昏，效果递减
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_七星拱瑞npc.lua :: ['递减']
+   L17: --				受到伤害恢复，一次只能有一个目标被昏，效果递减
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_七星拱瑞player.lua :: ['递减']
+   L17: --				受到伤害恢复，一次只能有一个目标被昏，效果递减
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_亢龙有悔.lua :: ['化劲']
+   L78: --skill.BindBuff(2, 51228, 1);		-- 减化劲
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_千蝶吐瑞.lua :: ['免控']
+   L143: --添加千蝶免控buff
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_棒打狗头伤害.lua :: ['化劲']
+   L83: --skill.BindBuff(2, 51228, 1);		-- 减化劲
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_笑醉狂.lua :: ['免控']
+   L177: --免控	--减伤
+   L202: --免控	--减伤
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_长针毒圈减疗.lua :: ['减疗']
+   L2: -- 脚本名称:	scripts/skill/绝境战场/绝境_长针毒圈减疗.lua
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\绝境战场\绝境_龙战于野.lua :: ['化劲']
+   L63: --skill.BindBuff(2, 51228, 1);		-- 减化劲
+## C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\ability-matcher\extracted\scripts\skill\蓬莱\套路及子技能\蓬莱_子技能_翔极碧落_实际伤害.lua :: ['化劲']
+   L247: --翔极碧落降低化劲

@@ -1,0 +1,20 @@
+﻿===== proof\netcode\engine_strings.txt
+===== proof\netcode\JX3ClientX64_exe_net_strings.txt
+2433: 0x0083C7D0	ascii	fDecriticalDamagePowerToPhysicsAttackPowerCof
+2434: 0x0083C800	ascii	fDecriticalDamagePowerToMagicAttackPowerCof
+7143: 0x0083C778	ascii	fToughnessDecirDamageCof
+7144: 0x0083C7D0	ascii	fDecriticalDamagePowerToPhysicsAttackPowerCof
+7145: 0x0083C800	ascii	fDecriticalDamagePowerToMagicAttackPowerCof
+7146: 0x0083C830	ascii	fDecriticalDamagePowerToMaxLifeBaseCof
+7147: 0x0083C858	ascii	nMaxDecriticalDamagePowerEableConvert
+7436: 0x0084BB20	ascii	nDecriticalDamagePowerBaseKiloNumRate
+7437: 0x0084BB48	ascii	nDecriticalDamagePower
+7442: 0x0084BCA8	ascii	nUnlimitCriticalDamagePowerKiloNumRate
+7446: 0x0084BD80	ascii	nPhysicsCriticalDamagePowerBaseKiloNumRate
+7451: 0x0084BEC8	ascii	nSolarCriticalDamagePowerBaseKiloNumRate
+7456: 0x0084C030	ascii	nNeutralCriticalDamagePowerBaseKiloNumRate
+7461: 0x0084C1A0	ascii	nLunarCriticalDamagePowerBaseKiloNumRate
+7466: 0x0084C300	ascii	nPoisonCriticalDamagePowerBaseKiloNumRate
+7479: 0x0084D0D0	ascii	nDecriticalDamagePowerBase
+8630: 0x0086DC08	ascii	CriticalDamagePowerBaseKiloNumRate
+===== proof\netcode\JX3RepresentX64_all_strings.txt

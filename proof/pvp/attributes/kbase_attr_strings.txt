@@ -1,0 +1,1 @@
+0x00292267	?LocateWithPercent@BezierPath@NSKMath@@QEAAPEAUKBezierStep@2@MPEAUKVec3@2@@Z

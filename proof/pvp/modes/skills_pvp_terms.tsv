@@ -1,0 +1,556 @@
+SkillName	SkillID	KindType	FunctionType	BelongKungfu	BelongSchool	IgnoreCamp	MapBanMask	ScriptFile	Design_Effect
+阵营攻防战_若神_子技能	2167	None	Normal	10133	12			npc\副本BOSS\浩气盟\阵营攻防战_若神_子技能.lua	直接伤害技能
+GM用_死亡无名剑	2925	None	Normal	10209	11		0	test\GM用_死亡无名剑.lua	直接伤害技能
+阵营攻防_弩箭	3779	Physics	Damage	10133	12		0	npc\副本BOSS\浩气盟\阵营攻防_弩箭.lua	直接伤害技能
+阵营攻防_投石	3780	Physics	Damage	10133	12		0	npc\副本BOSS\浩气盟\阵营攻防_投石.lua	直接伤害技能
+90级阵营_牛车AOE	5517	None	Normal	10133	12	0	0	npc\副本BOSS\浩气盟\90级阵营_牛车AOE.lua	直接伤害技能
+90级阵营_突复制	5551	Physics	Damage	10133	12	0	0	npc\副本BOSS\浩气盟\90级阵营_突复制.lua	直接伤害技能
+神农洇_战场BOSS_大毒尸_普通攻击	7184	Physics	Damage	10123	13		0	Quest\神农洇_战场BOSS_大毒尸_普通攻击.lua	直接伤害技能
+神农洇_战场BOSS_大毒尸_狂暴	7186	Physics	Normal	10123	13		0	Quest\神农洇_战场BOSS_大毒尸_狂暴.lua	直接伤害技能
+神农洇_战场BOSS_大毒尸_剧毒喷溅	7187	Poison	Damage	10123	13		0	Quest\神农洇_战场BOSS_大毒尸_剧毒喷溅.lua	直接伤害技能
+神农洇_战场NPC_前锋_AOE	7214	Physics	Damage	10123	13		0	Quest\神农洇_战场NPC_前锋_AOE.lua	直接伤害技能
+无名剑清除传功限制技能	7325	None	Normal	10006	13		0	test\清楚传功限制.lua	直接伤害技能
+神农洇_战场NPC_守卫_击退	7334	Physics	Normal	10123	13		0	Quest\神农洇_战场NPC_守卫_击退.lua	直接伤害技能
+神农洇_战场BOSS_大将_AOE	7335	Physics	Normal	10123	13		0	Quest\神农洇_战场BOSS_大将_AOE.lua	直接伤害技能
+攻防战＿远程范围AOE	7431	Physics	Damage	10211	13		0	Quest\攻防战＿远程范围AOE.lua	直接伤害技能
+清除CD和BUFF	7525	Physics	Normal	10231	13		0	Quest\竞技场_清除CD和BUFF.lua	直接伤害技能
+出场清CD	7547	Physics	Normal	10231	13		0	Quest\竞技场_出场清CD.lua	直接伤害技能
+血战天策_保护清雅牧场_狼牙据点_挂邪心毒	8315	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_保护青雅牧场_狼牙据点_添加邪心毒.lua	直接伤害技能
+血战天策_保护清雅牧场_狼牙据点_挂灼烧	8316	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_保护清雅牧场_狼牙据点_挂灼烧.lua	直接伤害技能
+血战天策_狼牙据点_横扫千军	8318	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_横扫千军.lua	直接伤害技能
+血战天策_狼牙据点_横扫千军_AOE	8319	NeutralMagic	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_横扫千军_AOE.lua	直接伤害技能
+血战天策_狼牙据点_删除骨折	8320	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_删除骨折.lua	直接伤害技能
+血战天策_狼牙据点_蚀心引	8321	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_蚀心引.lua	直接伤害技能
+血战天策_狼牙据点_蚀心引_治疗	8322	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_蚀心引_治疗.lua	直接伤害技能
+血战天策_狼牙据点_飞镖	8323	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_飞镖.lua	直接伤害技能
+血战天策_狼牙据点_爆炸1	8324	SolarMagic	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_爆炸1.lua	直接伤害技能
+血战天策_狼牙据点_爆炸2	8325	SolarMagic	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_爆炸2.lua	直接伤害技能
+血战天策_狼牙据点_左转大炮	8326	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_左转大炮.lua	直接伤害技能
+血战天策_狼牙据点_右转大炮	8327	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_右转大炮.lua	直接伤害技能
+血战天策_狼牙据点_开炮轰击	8328	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_开炮轰击.lua	直接伤害技能
+血战天策_狼牙据点_减少射程	8329	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_减少射程.lua	直接伤害技能
+血战天策_狼牙据点_增加射程	8330	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_增加射程.lua	直接伤害技能
+血战天策_狼牙据点_邪心毒	8331	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_邪心毒.lua	直接伤害技能
+血战天策_狼牙据点_链状表现	8332	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_链状表现.lua	直接伤害技能
+血战天策_狼牙据点_普通炮击	8376	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_普通炮击.lua	直接伤害技能
+血战天策_狼牙据点_普通炮击伤害	8381	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_普通炮击伤害.lua	直接伤害技能
+(8395) 血战天策_狼牙据点_横扫千军	8395	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策-狼牙据点-横扫千军.lua	直接伤害技能
+血战天策_狼牙据点_蚀心引_被打断	8463	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_蚀心引_被打断.lua	直接伤害技能
+血战天策_狼牙据点_炮击成就	8596	Physics	Normal	10303	12	0	0	npc\副本BOSS\血战天策\血战天策_狼牙据点_炮击成就.lua	直接伤害技能
+秦皇陵_安禄山_战场绞肉机	8731	Physics	Normal	10310	12	0	0	npc/副本BOSS/秦皇陵/秦皇陵_安禄山_战场绞肉机.lua	直接伤害技能
+据点羿卫普通攻击	8839	NeutralMagic	Damage	10311	13	0	0	Quest\逐鹿中原\据点羿卫普通攻击.lua	直接伤害技能
+攻防战	10211	Physics	Normal	0	13		0	Default.lua	直接伤害技能
+竞技场任务	10231	Physics	Normal	0	13		0	Default.lua	直接伤害技能
+逐鹿中原据点争夺战	10311	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+战场任务	10502	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+体验战场机器人	10515	Physics	Normal	0	12	0	0	Default.lua	直接伤害技能
+阵营祭天	10527	Physics	Normal	0	12	0	0	Default.lua	直接伤害技能
+竞技场障碍破坏	10551	Physics	Normal	0	12	0	0	Default.lua	直接伤害技能
+攻防boss前置	10554	Physics	Normal	0	12	0	0	Default.lua	直接伤害技能
+经首道源岛阵营日常	10556	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+MOBA战场	10582	Physics	Normal	0	12	0	0	Default.lua	直接伤害技能
+蔷薇列岛阵营日常	10600	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+攻防载具可建造判断	14346	None	Normal	10315	13	0	424	Carrier/攻防载具可建造AOE.lua	直接伤害技能
+攻防神机车_转战斗形态	14374	None	Normal	10315	13	0	424	Carrier/攻防神机车_转战斗形态.lua	直接伤害技能
+攻防神机车_转移动形态	14375	None	Normal	10315	13	0	424	Carrier/攻防神机车_转移动形态.lua	直接伤害技能
+攻防神机车_箭弩连射	14376	None	Normal	10315	13	0	504	Carrier/攻防神机车_箭弩连射.lua	直接伤害技能
+攻防神机车_箭弩连射子技能	14377	None	Normal	10315	13	0	504	Carrier/攻防神机车_箭弩连射子技能.lua	直接伤害技能
+攻防神机车_燃火箭	14378	None	Normal	10315	13	0	504	Carrier/攻防神机车_燃火箭.lua	直接伤害技能
+攻防神机车_燃火箭子技能低伤	14379	None	Damage	10315	13	0	504	Carrier/攻防神机车_燃火箭子技能低伤.lua	直接伤害技能
+攻防神机车_过热	14380	None	Normal	10315	13	0	504	Carrier/攻防神机车_过热.lua	直接伤害技能
+攻防神机车_过热子技能低伤	14381	None	Damage	10315	13	0	504	Carrier/攻防神机车_过热子技能低伤.lua	直接伤害技能
+攻防神机台_穿心弩	14382	None	Normal	10315	13	0	504	Carrier/攻防神机台_穿心弩.lua	直接伤害技能
+攻防神机台_穿心弩子技能	14383	None	Normal	10315	13	0	504	Carrier/攻防神机台_穿心弩子技能.lua	直接伤害技能
+攻防神机台_扫射	14387	None	Normal	10315	13	0	504	Carrier/攻防神机台_扫射.lua	直接伤害技能
+攻防神机台_扫射子技能低伤	14388	None	Damage	10315	13	0	504	Carrier/攻防神机台_扫射子技能低伤.lua	直接伤害技能
+攻防神机台_扫射子技能高伤	14404	None	Damage	10315	13	0	504	Carrier/攻防神机台_扫射子技能高伤.lua	直接伤害技能
+攻防神机车_箭弩连射子技能低伤	14475	None	Normal	10315	13	0	504	Carrier/攻防神机车_箭弩连射子技能低伤.lua	直接伤害技能
+攻防神机车_箭弩连射子技能高伤	14476	None	Normal	10315	13	0	504	Carrier/攻防神机车_箭弩连射子技能高伤.lua	直接伤害技能
+攻防神机车_燃火箭子技能高伤	14477	None	Damage	10315	13	0	504	Carrier/攻防神机车_燃火箭子技能高伤.lua	直接伤害技能
+攻防神机车_过热子技能高伤	14478	None	Damage	10315	13	0	504	Carrier/攻防神机车_过热子技能高伤.lua	直接伤害技能
+攻防神机台_穿心弩子技能低伤	14479	None	Normal	10315	13	0	504	Carrier/攻防神机台_穿心弩子技能低伤.lua	直接伤害技能
+攻防神机台_穿心弩子技能高伤	14480	None	Normal	10315	13	0	504	Carrier/攻防神机台_穿心弩子技能高伤.lua	直接伤害技能
+攻防神机台_穿心弩子技能低火伤	14481	None	Normal	10315	13	0	504	Carrier/攻防神机台_穿心弩子技能低火伤.lua	直接伤害技能
+攻防神机台_穿心弩子技能高火伤	14483	None	Normal	10315	13	0	504	Carrier/攻防神机台_穿心弩子技能高火伤.lua	直接伤害技能
+攻防神机台_扫射子技能低火伤	14484	None	Damage	10315	13	0	504	Carrier/攻防神机台_扫射子技能低火伤.lua	直接伤害技能
+攻防神机台_扫射子技能高火伤	14485	None	Damage	10315	13	0	504	Carrier/攻防神机台_扫射子技能高火伤.lua	直接伤害技能
+地刺	14558	Physics	Normal	10455	12	0	0	npc\战场\齐物阁_地刺.lua	直接伤害技能
+落石aoe	14559	Physics	Normal	10455	12	0	0	npc\战场\齐物阁_落石.lua	直接伤害技能
+龙卷风	14560	Physics	Normal	10455	12	0	0	npc\战场\齐物阁_龙卷风.lua	直接伤害技能
+龙卷风拉人	14562	Physics	Normal	10455	12	0	0	npc\战场\齐物阁_龙卷风拉人.lua	直接伤害技能
+攻防神机雷	14564	None	Normal	10315	13	0	424	Carrier/攻防神机雷.lua	直接伤害技能
+攻防神机雷子技能低伤	14565	None	Normal	10315	13	0	0	Carrier/攻防神机雷子技能低伤.lua	直接伤害技能
+攻防神机雷子技能高伤	14566	None	Normal	10315	13	0	0	Carrier/攻防神机雷子技能高伤.lua	直接伤害技能
+火焰	14567	SolarMagic	Normal	10455	12	0	0	npc\战场\齐物阁_火焰.lua	直接伤害技能
+攻防摧城车_转战斗形态	14682	None	Normal	10315	13	0	0	Carrier\攻防摧城车_转战斗状态.lua	直接伤害技能
+攻防摧城车_转移动形态	14683	None	Normal	10315	13	0	0	Carrier\攻防摧城车_转移动状态.lua	直接伤害技能
+攻防摧城车_投石	14684	None	Normal	10315	13	0	0	Carrier\攻防摧城车_投石.lua	直接伤害技能
+攻防摧城车_裂火石	14685	None	Normal	10315	13	0	0	Carrier\攻防摧城车_裂火石.lua	直接伤害技能
+攻防摧城车_冲撞	14686	None	Normal	10315	13	0	0	Carrier\攻防摧城车_冲撞.lua	直接伤害技能
+攻防摧城车_投石子技能	14687	None	Normal	10315	13	0	0	Carrier\攻防摧城车_投石子技能.lua	直接伤害技能
+攻防摧城车_投石子技能高伤	14688	None	Normal	10315	13	0	0	Carrier\攻防摧城车_投石子技能高伤.lua	直接伤害技能
+攻防摧城车_冲撞子技能	14689	None	Normal	10315	13	0	0	Carrier\攻防摧城车_冲撞子技能.lua	直接伤害技能
+攻防摧城车_冲撞子技能高伤	14690	None	Normal	10315	13	0	0	Carrier\攻防摧城车_冲撞子技能高伤.lua	直接伤害技能
+攻防摧城车_裂火石子技能	14691	None	Normal	10315	13	0	0	Carrier\攻防摧城车_裂火石子技能.lua	直接伤害技能
+攻防摧城车_裂火石子技能高伤	14692	None	Normal	10315	13	0	0	Carrier\攻防摧城车_裂火石子技能高伤.lua	直接伤害技能
+攻防神机车_十矢俱发	14786	None	Normal	10315	13	0	504	Carrier\攻防神机车_十矢俱发.lua	直接伤害技能
+攻防神机车_十矢俱发子技能	14787	None	Normal	10315	13	0	504	Carrier/攻防神机车_十矢俱发子技能.lua	直接伤害技能
+攻防神机车_十矢俱发子技能低伤	14788	None	Normal	10315	13	0	504	Carrier/攻防神机车_十矢俱发子技能低伤.lua	直接伤害技能
+攻防神机车_十矢俱发子技能高伤	14789	None	Normal	10315	13	0	504	Carrier/攻防神机车_十矢俱发子技能高伤.lua	直接伤害技能
+攻防载具建造中假读条	14901	None	Normal	10315	13	0	0	Carrier/攻防载具建造中假读条.lua	直接伤害技能
+攻防神机台_火油箭	14978	None	Normal	10315	13	0	504	Carrier/攻防神机台_火油箭.lua	直接伤害技能
+攻防神机台_火油箭子技能低伤	14980	None	Normal	10315	13	0	504	Carrier/攻防神机台_火油箭子技能低伤.lua	直接伤害技能
+攻防神机台_火油箭子技能高伤	14981	None	Normal	10315	13	0	504	Carrier/攻防神机台_火油箭子技能高伤.lua	直接伤害技能
+攻防摧城车_石爆	14982	None	Normal	10315	13	0	0	Carrier\攻防摧城车_石爆.lua	直接伤害技能
+攻防摧城车_石爆子技能低伤	14983	None	Normal	10315	13	0	0	Carrier\攻防摧城车_石爆子技能低伤.lua	直接伤害技能
+攻防摧城车_石爆子技能高伤	14984	None	Normal	10315	13	0	0	Carrier\攻防摧城车_石爆子技能高伤.lua	直接伤害技能
+95级阵营-黑戈壁矿车AOE	15038	Physics	Normal	10133	12	0	0	npc/副本BOSS/浩气盟/95级阵营_黑戈壁矿车AOE.lua	直接伤害技能
+攻防箭塔死亡范围加成就	15159	None	Normal	10315	13	0	0	Carrier/攻防箭塔死亡范围加成就.lua	直接伤害技能
+名剑山庄挑战npc完成aoe	17491	Physics	Normal	10158	13	0	0	Quest/藏剑重置/名剑山庄挑战npc完成aoe.lua	直接伤害技能
+天策_龙牙	18389	Physics	Damage	10515	12			npc/体验战场机器人/天策_龙牙.lua	直接伤害技能
+天策_战八方	18390	Physics	Damage	10515	12			npc/体验战场机器人/天策_战八方.lua	直接伤害技能
+天策_穿云	18391	Physics	Damage	10515	12			npc/体验战场机器人/天策_穿云.lua	直接伤害技能
+天策_突	18392	Physics	Damage	10515	12			npc/体验战场机器人/天策_突.lua	直接伤害技能
+少林_摩柯无量	18395	SolarMagic	Damage	10515	12			npc/体验战场机器人/少林_摩柯无量.lua	直接伤害技能
+少林_横扫六合	18396	SolarMagic	Damage	10515	12			npc/体验战场机器人/少林_横扫六合.lua	直接伤害技能
+少林_捉影	18397	SolarMagic	Damage	10515	12			npc/体验战场机器人/少林_捉影.lua	直接伤害技能
+少林_韦陀献杵	18398	SolarMagic	Damage	10515	12			npc/体验战场机器人/少林_韦陀献杵.lua	直接伤害技能
+七秀_江海凝光	18399	LunarMagic	Damage	10515	12			npc/体验战场机器人/七秀_江海凝光.lua	直接伤害技能
+七秀_剑气长江	18400	LunarMagic	Damage	10515	12			npc/体验战场机器人/七秀_剑气长江.lua	直接伤害技能
+七秀_帝骖龙翔	18401	LunarMagic	Damage	10515	12			npc/体验战场机器人/七秀_帝骖龙翔.lua	直接伤害技能
+七秀_玳弦急曲	18402	LunarMagic	Normal	10515	12	0	0	npc/体验战场机器人/七秀_玳弦急曲.lua	直接伤害技能
+万花_阳明指	18403	NeutralMagic	Damage	10515	12			npc/体验战场机器人/万花_阳明指.lua	直接伤害技能
+万花_商阳指	18404	NeutralMagic	Damage	10515	12			npc/体验战场机器人/万花_商阳指.lua	直接伤害技能
+万花_快雪时晴	18405	NeutralMagic	Normal	10515	12	0	0	npc/体验战场机器人/万花_快雪时晴.lua	直接伤害技能
+万花_芙蓉并蒂	18406	NeutralMagic	Damage	10515	12			npc/体验战场机器人/万花_芙蓉并蒂.lua	直接伤害技能
+纯阳_四象轮回	18407	NeutralMagic	Damage	10515	12			npc/体验战场机器人/纯阳_四象轮回.lua	直接伤害技能
+纯阳_两仪化形	18408	NeutralMagic	Damage	10515	12			npc/体验战场机器人/纯阳_两仪化形.lua	直接伤害技能
+纯阳_六合独尊	18409	NeutralMagic	Damage	10515	12			npc/体验战场机器人/纯阳_六合独尊.lua	直接伤害技能
+纯阳_太极无极	18410	NeutralMagic	Damage	10515	12			npc/体验战场机器人/纯阳_太极无极.lua	直接伤害技能
+唐门_夺魄箭	18453	Physics	Damage	10515	12			npc/体验战场机器人/唐门_夺魄箭.lua	直接伤害技能
+唐门_追命箭	18454	Physics	Damage	10515	12			npc/体验战场机器人/唐门_追命箭.lua	直接伤害技能
+唐门_孔雀翎	18455	Physics	Damage	10515	12			npc/体验战场机器人/唐门_孔雀翎.lua	直接伤害技能
+苍云_撼地	18456	Physics	Damage	10515	12			npc/体验战场机器人/苍云_撼地.lua	直接伤害技能
+苍云_绝刀	18457	Physics	Damage	10515	12			npc/体验战场机器人/苍云_绝刀.lua	直接伤害技能
+苍云_盾舞	18458	Physics	Damage	10515	12			npc/体验战场机器人/苍云_盾舞.lua	直接伤害技能
+明教_银月斩	18459	LunarMagic	Damage	10515	12			npc/体验战场机器人/明教_银月斩.lua	直接伤害技能
+明教_烈日斩	18460	SolarMagic	Damage	10515	12			npc/体验战场机器人/明教_烈日斩.lua	直接伤害技能
+明教_净世破魔击	18461	SolarMagic	Damage	10515	12			npc/体验战场机器人/明教_净世破魔击.lua	直接伤害技能
+纯阳_生太极	18469	NeutralMagic	Normal	10515	12			npc/体验战场机器人/纯阳_生太极.lua	直接伤害技能
+生太极AOE减速	18472	NeutralMagic	Normal	10515	12	0	0	npc/体验战场机器人/生太极AOE减速.lua	直接伤害技能
+轻功_聂云	18473	Leap	Fly	10515	12		264	npc/体验战场机器人/轻功_聂云.lua	轻功
+轻功_后跳	18474	Leap	Fly	10515	12		264	npc/体验战场机器人/轻功_后跳.lua	轻功
+长歌_宫	18512	LunarMagic	Damage	10515	12			npc/体验战场机器人/长歌_宫.lua	直接伤害技能
+长歌_商	18513	LunarMagic	Damage	10515	12			npc/体验战场机器人/长歌_商.lua	直接伤害技能
+长歌_音域	18514	LunarMagic	Normal	10515	12			npc/体验战场机器人/长歌_音域.lua	直接伤害技能
+音域减伤	18515	LunarMagic	Normal	10515	12	0	0	npc/体验战场机器人/音域减伤.lua	直接伤害技能
+青竹书院房子倒塌击飞	20069	Physics	Normal	10551	12	0	0	Quest/竞技场障碍破坏/青竹书院房屋倒塌击飞.lua	直接伤害技能
+丐帮_蜀犬吠日	20111	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_蜀犬吠日.lua	直接伤害技能
+丐帮_蜀犬吠日戳	20112	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_蜀犬吠日戳.lua	直接伤害技能
+丐帮_蜀犬吠日伤害	20114	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_蜀犬吠日伤害.lua	直接伤害技能
+丐帮_亢龙有悔	20122	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_亢龙有悔.lua	直接伤害技能
+丐帮_亢龙DOT	20123	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_亢龙DOT.lua	直接伤害技能
+丐帮_亢龙叠加DOT	20124	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_亢龙叠加DOT.lua	直接伤害技能
+丐帮_时乘六龙	20136	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_时乘六龙.lua	直接伤害技能
+丐帮_时乘六龙伤害	20137	Physics	Damage	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮_时乘六龙伤害.lua	直接伤害技能
+投石车投石	20158	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/投石车投石.lua	直接伤害技能
+月弄痕_刀墙	20162	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/月弄痕_刀墙.lua	直接伤害技能
+爆炸	20170	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/投石车石头爆炸.lua	直接伤害技能
+千机变_毒刹	20171	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/千机变_毒刹.lua	直接伤害技能
+千机变_连弩	20179	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/千机变_连弩.lua	直接伤害技能
+张桎辕_生太极	20180	NeutralMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/张桎辕_生太极.lua	直接伤害技能
+玩家被击溅射状态机	20181	Physics	Normal	10551	12	0	0	Quest/竞技场障碍破坏/玩家被击溅射AOE.lua	直接伤害技能
+张桎辕_飞剑	20188	NeutralMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/张桎辕_飞剑.lua	直接伤害技能
+释放爆弹矿车	20198	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/释放爆弹矿车.lua	直接伤害技能
+爆弹矿车检测周围人数	20199	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/爆弹矿车检测人数AOE.lua	直接伤害技能
+爆弹矿车爆炸	20201	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/爆弹矿车爆炸.lua	直接伤害技能
+爆炸	20215	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/爆炸伤害.lua	直接伤害技能
+丐帮_酒中仙	20218	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/丐帮弟子_酒中仙.lua	直接伤害技能
+可人_剑气伤害	20242	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/可人_剑气伤害.lua	直接伤害技能
+可人_剑意落石	20248	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/可人_剑意落石.lua	直接伤害技能
+可人_剑意落石子技能	20254	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/可人_剑意落石子技能.lua	直接伤害技能
+月弄痕_刀墙障碍	20270	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/月弄痕_刀墙障碍.lua	直接伤害技能
+月弄痕_删除障碍	20272	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/月弄痕_删除障碍.lua	直接伤害技能
+明教_净世破魔击_日	20325	SolarMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/明教_净世破魔击_日.lua	直接伤害技能
+明教_净世破魔击_月	20378	LunarMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/明教_净世破魔击_月.lua	直接伤害技能
+极乐引	20380	SolarMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/明教_极乐引.lua	直接伤害技能
+海龟_喷水	20406	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/海龟喷水.lua	直接伤害技能
+海龟_拍地	20407	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/海龟拍地.lua	直接伤害技能
+海龟_旋转	20408	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/海龟旋转.lua	直接伤害技能
+海龟_旋转伤害	20412	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/海龟旋转伤害.lua	直接伤害技能
+海龟_狂躁	20423	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/海龟狂躁.lua	直接伤害技能
+肖药儿_环纹赤蛇爆炸	20432	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/肖药儿_环纹赤蛇爆炸.lua	直接伤害技能
+肖药儿_细鳞蜥爆炸	20433	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/肖药儿_细鳞蜥爆炸.lua	直接伤害技能
+肖药儿_食腐鸟虚弱	20436	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/肖药儿_食腐鸟虚弱.lua	直接伤害技能
+米丽古丽_极乐引	20448	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/米丽古丽_极乐引.lua	直接伤害技能
+黑无常_判-喋血	20458	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/黑无常_判-喋血.lua	直接伤害技能
+黑无常_判-嗜血	20462	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/黑无常_判-嗜血.lua	直接伤害技能
+白无常_判-散魄	20463	SolarMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/白无常_判-散魄.lua	直接伤害技能
+白无常_判-招魂	20464	SolarMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/白无常_判-招魂.lua	直接伤害技能
+机甲人_暗器内圈	20470	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/机甲人_暗器内圈.lua	直接伤害技能
+机甲人_飓风	20472	Poison	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/机甲人_飓风.lua	直接伤害技能
+米丽古丽_链状表现	20526	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/米丽古丽_链状表现.lua	直接伤害技能
+黑白无常球AOE	20682	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/黑白无常球AOE.lua	直接伤害技能
+召唤_可人	20731	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_可人.lua	直接伤害技能
+通用_召唤boss增益	20766	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/通用_召唤增益.lua	直接伤害技能
+投掷蓝晶髓	20775	LunarMagic	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/投掷蓝晶髓.lua	直接伤害技能
+蓝晶髓AOE	20776	None	Damage	10556	13	0	0	Quest/经首道源岛阵营日常/蓝晶髓AOE.lua	直接伤害技能
+蓝晶髓AOE2	20777	None	Damage	10556	13	0	0	Quest/经首道源岛阵营日常/蓝晶髓AOE2.lua	直接伤害技能
+通用_召唤boss增益防守方版	20783	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/通用_召唤增益防守方版.lua	直接伤害技能
+召唤_月弄痕	20791	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_月弄痕.lua	直接伤害技能
+召唤_张桎辕	20792	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_张桎辕.lua	直接伤害技能
+召唤_司空仲平	20794	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_司空仲平.lua	直接伤害技能
+召唤_影	20795	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_影.lua	直接伤害技能
+召唤_莫雨	20796	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_莫雨.lua	直接伤害技能
+召唤_肖药儿	20797	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_肖药儿.lua	直接伤害技能
+召唤_米丽古丽	20798	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_米丽古丽.lua	直接伤害技能
+召唤_陶寒亭	20799	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_陶寒亭.lua	直接伤害技能
+召唤_烟	20800	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_烟.lua	直接伤害技能
+气场_六合独尊	20845	NeutralMagic	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/张桎辕_六合独尊.lua	直接伤害技能
+气场_六合独尊母技能	20846	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/张桎辕_六合独尊母技能.lua	直接伤害技能
+张桎辕_剑出鸿蒙	20847	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/张桎辕_剑出鸿蒙.lua	直接伤害技能
+防守方死守增益	20848	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/防守方死守增益.lua	直接伤害技能
+通用_成就技能	20948	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/通用_成就技能.lua	直接伤害技能
+乐山大佛窟落石	20965	Physics	Normal	10551	12	0	0	Quest/竞技场障碍破坏/乐山落石击飞.lua	直接伤害技能
+拭剑台鼓撞击	20971	Physics	Normal	10551	12	0	0	Quest/竞技场障碍破坏/拭剑台鼓撞击.lua	直接伤害技能
+乐山大佛落石小	21016	Physics	Normal	10551	12	0	0	Quest/竞技场障碍破坏/乐山落石小.lua	直接伤害技能
+奶妈加战阶技能	21065	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/奶妈加战阶技能.lua	直接伤害技能
+气灵珠	21067	Physics	Normal	10554	12	0	0	Carrier/攻防_气灵珠.lua	直接伤害技能
+乐山柱子矩形AOE	21072	Physics	Normal	10551	12	0	0	Quest/竞技场障碍破坏/乐山柱子倒塌矩形AOE.lua	直接伤害技能
+月弄痕_刀墙击退	21115	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/月弄痕_刀墙击退.lua	直接伤害技能
+阵营烟花_浩气	21121	Physics	Normal	10324	13	0	0	江湖/烟花技能_阵营浩气.lua	直接伤害技能
+防守方死守增益删除	21142	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/防守方死守增益删除.lua	直接伤害技能
+阵营烟花_浩气分线	21146	Physics	Normal	10324	13	0	0	江湖/烟花技能_浩气分线.lua	直接伤害技能
+阵营烟花_中立转浩气	21147	Physics	Normal	10324	13	0	0	江湖/烟花技能_中立转浩气.lua	直接伤害技能
+阵营烟花_恶人分线	21148	Physics	Normal	10324	13	0	0	江湖/烟花技能_恶人分线.lua	直接伤害技能
+阵营烟花_中立转恶人	21149	Physics	Normal	10324	13	0	0	江湖/烟花技能_中立转恶人.lua	直接伤害技能
+阵营烟花_恶人	21150	Physics	Normal	10324	13	0	0	江湖/烟花技能_阵营恶人.lua	直接伤害技能
+MOBA战场装备	21762	None	Normal	10254	16	0	8	装备/MOBA战场装备.lua	直接伤害技能
+召唤boss存在时给友方加增益效果	21778	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤Boss存在时给友方增益效果.lua	直接伤害技能
+召唤boss存在时给友方删除增益	21807	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤Boss存在时给友方删除增益.lua	直接伤害技能
+召唤boss存在时给友方加增益复制版	21808	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤boss存在时给友方加增益复制版.lua	直接伤害技能
+召唤boss给新来的加增益	21809	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤boss给新来的加增益.lua	直接伤害技能
+分川手	22229	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/莫雨分川手.lua	直接伤害技能
+龙影剑	22270	Physics	Normal	10556	13	0	0	Quest/经首道源岛阵营日常/毛毛龙影剑.lua	直接伤害技能
+召唤boss存在时给超弱友方加增益效果	22556	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤boss存在时给超弱友方加增益效果.lua	直接伤害技能
+月轮	22673	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/月轮.lua	直接伤害技能
+冲刺	22682	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/冲刺.lua	直接伤害技能
+伤害加击飞	22692	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/伤害加击飞.lua	直接伤害技能
+技能吟唱	22693	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/技能吟唱.lua	直接伤害技能
+据点争夺改良型神机雷	22711	None	Normal	10311	13	0	424	Carrier/据点争夺改良神机雷.lua	直接伤害技能
+据点争夺改良型神机雷低伤	22734	None	Damage	10311	13	0	0	Carrier\据点争夺改良神机雷低伤.lua	直接伤害技能
+据点争夺改良型神机雷高伤	22735	None	Damage	10311	13	0	0	Carrier\据点争夺改良神机雷高伤.lua	直接伤害技能
+月轮蓄力	22747	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/月轮蓄力.lua	直接伤害技能
+杀NPC用的	22748	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/杀NPC用.lua	直接伤害技能
+单体杀NPC用的	22749	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/单体杀NPC用的.lua	直接伤害技能
+一死方休	22790	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/一死方休.lua	直接伤害技能
+震地AOE击飞	22791	Physics	Damage	10600	13	0	0	Quest/蔷薇列岛阵营日常/震地AOE击飞.lua	直接伤害技能
+隐身显形	22817	Physics	Normal	10600	13		0	Quest/蔷薇列岛阵营日常/隐身显形.lua	直接伤害技能
+蔷薇列岛神机台_追星	22842	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_追星.lua	直接伤害技能
+蔷薇列岛神机台_追星子技能	22843	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_追星子技能.lua	直接伤害技能
+蔷薇列岛神机台_追星技能伤害	22845	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_追星技能伤害.lua	直接伤害技能
+蔷薇列岛神机台_箭雨	22846	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_箭雨.lua	直接伤害技能
+蔷薇列岛神机台_箭雨子技能	22847	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_箭雨子技能.lua	直接伤害技能
+蔷薇列岛神机台_箭雨技能伤害	22848	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_箭雨技能伤害.lua	直接伤害技能
+蔷薇列岛神机台_扫射	22861	None	Normal	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_扫射.lua	直接伤害技能
+蔷薇列岛神机台_扫射技能伤害	22862	None	Damage	10600	13	0	504	Quest/蔷薇列岛阵营日常/蔷薇列岛神机台_扫射技能伤害.lua	直接伤害技能
+召唤boss存在时给友方删除增益复制版	23013	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤Boss存在时给友方删除增益复制版.lua	直接伤害技能
+毒王杖·挥	23060	Physics	Normal	10600	13	0	0	Quest/蔷薇列岛阵营日常/毒王杖·挥_肖药儿.lua	直接伤害技能
+毒王杖·爆	23061	Physics	Normal	10600	13	0	0	Quest/蔷薇列岛阵营日常/毒王杖·爆_肖药儿.lua	直接伤害技能
+剑流星·挥	23065	Physics	Normal	10600	13	0	0	Quest/蔷薇列岛阵营日常/剑流星·挥_可人.lua	直接伤害技能
+剑流星	23066	Physics	Normal	10600	13	0	0	Quest/蔷薇列岛阵营日常/剑流星_可人.lua	直接伤害技能
+乱世藏剑阵营日常	24921	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+和藏剑弟子的连线表现	24922	Physics	Normal	24921	13	0	1023	Quest/乱世藏剑阵营日常/藏剑弟子连线表现.lua	直接伤害技能
+藏剑弟子_九溪弥烟	24926	Physics	Damage	24921	13		0	Quest/乱世藏剑阵营日常/藏剑弟子_九溪弥烟.lua	直接伤害技能
+藏剑弟子_风来吴山	24927	Physics	Normal	24921	13		0	Quest/乱世藏剑阵营日常/藏剑弟子_风来吴山.lua	直接伤害技能
+藏剑弟子_探梅	24928	Physics	Normal	24921	13			Quest/乱世藏剑阵营日常/藏剑弟子_探梅.lua	直接伤害技能
+24929 藏剑弟子_自己打自己	24929	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/藏剑弟子_自己打自己.lua	直接伤害技能
+藏剑弟子_风来吴山_伤害子技能	24933	Physics	Damage	24921	13		0	Quest/乱世藏剑阵营日常/藏剑弟子_风来吴山_伤害.lua	直接伤害技能
+藏剑弟子_探梅_对人	24937	Physics	Normal	24921	13		0	Quest/乱世藏剑阵营日常/藏剑弟子_探梅_对人.lua	直接伤害技能
+藏剑弟子_探梅_解控	24938	Physics	Normal	24921	13		0	Quest/乱世藏剑阵营日常/藏剑弟子_探梅_解控.lua	直接伤害技能
+藏剑弟子_受到治疗记录	24963	None	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/藏剑弟子_受到治疗记录.lua	直接伤害技能
+小怪_普通攻击	24967	Physics	Damage	24921	13			Quest/乱世藏剑阵营日常/小怪_普通攻击.lua	直接伤害技能
+玩家_受到小怪攻击呼救	24968	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_受到小怪攻击呼救.lua	直接伤害技能
+藏剑弟子_查看附近小怪数量	24998	Physics	Damage	24921	13		0	Quest/乱世藏剑阵营日常/藏剑弟子_查看附近小怪数量.lua	直接伤害技能
+玩家_加速冲浪	25012	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_加速冲浪.lua	直接伤害技能
+玩家_加速冲浪结束	25024	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_加速冲浪结束.lua	直接伤害技能
+玩家_下冲浪板	25041	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_下冲浪板.lua	直接伤害技能
+玩家_冲浪板击退	25045	NeutralMagic	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_冲浪板击退.lua	直接伤害技能
+玩家_水枪气泡	25049	None	Normal	24921	13		0	Quest/乱世藏剑阵营日常/玩家_水枪气泡.lua	直接伤害技能
+玩家_水枪水弹	25050	NeutralMagic	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_水枪水弹.lua	直接伤害技能
+玩家_水枪AOE	25051	NeutralMagic	Normal	24921	13			Quest/乱世藏剑阵营日常/玩家_水枪AOE.lua	直接伤害技能
+玩家_水枪气泡子技能	25057	Physics	Normal	24921	13	1	0	Quest/乱世藏剑阵营日常/玩家_水枪气泡子技能.lua	直接伤害技能
+玩家_水枪AOE子技能	25064	NeutralMagic	Damage	24921	13		0	Quest/乱世藏剑阵营日常/玩家_水枪AOE子技能.lua	直接伤害技能
+竞技场用轰炸	25102	Physics	Normal	10516	13	0	0	沙漠风暴/竞技场用轰炸圈.lua	直接伤害技能
+竞技场_AOE拉进战斗	25103	Physics	Normal	10516	13	0	0	沙漠风暴/乱斗_全场拉进战斗.lua	直接伤害技能
+竞技场_毒圈	25104	Physics	Normal	10516	13	0	0	沙漠风暴/乱斗_毒圈.lua	直接伤害技能
+玩家_退出泉眼状态	25105	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_退出泉眼技能.lua	直接伤害技能
+玩家_喷泉落地击退AOE	25112	NeutralMagic	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_喷泉落地击退AOE.lua	直接伤害技能
+玩家_选择喷射点	25127	NeutralMagic	Normal	24921	13			Quest/乱世藏剑阵营日常/玩家_选择喷射点.lua	直接伤害技能
+玩家_水枪水量查看	25164	None	Normal	24921	13		0	Quest/乱世藏剑阵营日常/玩家_水枪水量查看.lua	直接伤害技能
+玩家_水枪加水	25165	None	Normal	24921	13		0	Quest/乱世藏剑阵营日常/玩家_水枪加水.lua	直接伤害技能
+藏剑弟子_受攻击记录血量	25211	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/通用_收到小怪攻击记录血量.lua	直接伤害技能
+矿车AOE	25241	Physics	Normal	24921	13	0	0	npc/副本BOSS/浩气盟/95级阵营_黑戈壁矿车AOE.lua	直接伤害技能
+玩家_进入泉眼空技能	25247	None	Normal	24921	13		0	Quest/乱世藏剑阵营日常/玩家_进入泉眼空技能.lua	直接伤害技能
+竞技场用轰炸_母技能	25388	Physics	Normal	10516	13	0	0	沙漠风暴/乱斗_轰炸圈母技能.lua	直接伤害技能
+玩家_解除隐身技能	25478	Physics	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_解除隐身.lua	直接伤害技能
+花海战场_俞长生_箭雨	25564	Physics	Normal	25090	13	0	0	Quest/万花_乱世/花海战场_俞长生_箭雨.lua	直接伤害技能
+花海战场_俞长生_破竹势	25565	Physics	Normal	25090	13	0	0	Quest/万花_乱世/花海战场_俞长生_破竹势.lua	直接伤害技能
+花海战场_俞长生_破竹势伤害	25566	Physics	Normal	25090	13	0	0	Quest/万花_乱世/花海战场_俞长生_破竹势伤害.lua	直接伤害技能
+花海战场_俞长生_远程放箭	25567	Physics	Normal	25090	13	0	0	Quest/万花_乱世/花海战场_俞长生_远程放箭.lua	直接伤害技能
+天策弟子_战八方	25709	Physics	Normal	24921	13			Quest/乱世藏剑阵营日常/天策弟子_战八方.lua	直接伤害技能
+天策弟子_战八方伤害	25786	Physics	Damage	24921	13	0	0	Quest/乱世藏剑阵营日常/天策弟子_战八方伤害.lua	直接伤害技能
+天策弟子_灭	25787	Physics	Damage	24921	13			Quest/乱世藏剑阵营日常/天策弟子_灭.lua	直接伤害技能
+天策弟子_渊	25791	Physics	Normal	24921	13		0	Quest/乱世藏剑阵营日常/天策弟子_渊.lua	直接伤害技能
+天策弟子_渊_动作	25793	Physics	Normal	24921	13		0	Quest/乱世藏剑阵营日常/天策_渊_动作.lua	直接伤害技能
+天策弟子_渊_删除	25798	Physics	Damage	24921	13			Quest\乱世藏剑阵营日常\天策弟子_删除渊技能.lua	直接伤害技能
+玩家_水枪气泡母技能	25846	NeutralMagic	Normal	24921	13			Quest/乱世藏剑阵营日常/玩家_水枪气泡母技能.lua	直接伤害技能
+玩家_水枪气泡子技能	25847	NeutralMagic	Normal	24921	13	0	0	Quest/乱世藏剑阵营日常/玩家_水枪气泡子技能.lua	直接伤害技能
+玩家_下冲浪板	25898	None	Normal	24921	13		0	Quest/乱世藏剑阵营日常/玩家_下马.lua	直接伤害技能
+骑乘_2020阵营坐骑_浩气_空格	26120	None	Normal	10005	0	0	0	江湖/骑乘_2020阵营坐骑_浩气_空格.lua	直接伤害技能
+骑乘_2020阵营坐骑_恶人_空格	26121	None	Normal	10005	0	0	0	江湖/骑乘_2020阵营坐骑_恶人_空格.lua	直接伤害技能
+据点_范围判断	26214	Physics	Normal	26213	12	0	0	npc/副本BOSS/相州_漳水南路/据点/据点_范围判断.lua	直接伤害技能
+据点_地方判断	26615	Physics	Normal	26213	12	0	0	npc/副本BOSS/相州_漳水南路/据点/据点_地方判断.lua	直接伤害技能
+通用阵营boss普攻	28993	Physics	Normal	10132	12		0	npc/副本BOSS/浩气盟/通用boss普攻.lua	直接伤害技能
+天原绝境_滑翔翼	29021	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_滑翔翼.lua	直接伤害技能
+天原绝境_照明火把释放	29043	None	Damage	10516	13			沙漠风暴/天原绝境_照明火把释放.lua	直接伤害技能
+天原绝境_照明火把实际效果	29044	None	Damage	10516	13			沙漠风暴/照明火把实际效果.lua	直接伤害技能
+天原绝境_燧石单体	29051	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_燧石点燃技能.lua	直接伤害技能
+天原绝境_冰雹aoe	29055	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_冰雹aoe.lua	直接伤害技能
+天原绝境_剑宗深寒	29056	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_剑宗深寒.lua	直接伤害技能
+天原绝境_武家炽血	29061	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_剑宗炽血.lua	直接伤害技能
+天原绝境_橙色下装被击降攻击	29068	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_橙胖次降攻击.lua	直接伤害技能
+天原绝境_战象践踏	29146	None	Damage	10516	13			沙漠风暴/天原绝境战象践踏.lua	直接伤害技能
+天原绝境_战象冲锋	29264	None	Damage	10516	13			沙漠风暴/天原绝境战象冲刺.lua	直接伤害技能
+天原绝境_战象下车	29267	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境战象下车.lua	直接伤害技能
+天原绝境_战象践踏母技能	29283	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境战象践踏母技能.lua	直接伤害技能
+召唤_小七	29332	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_小七.lua	直接伤害技能
+召唤_游驹	29333	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_游驹.lua	直接伤害技能
+召唤_司徒一一	29334	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_司徒.lua	直接伤害技能
+召唤_白某	29335	None	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/召唤_白某.lua	直接伤害技能
+天原绝境_极寒掉血	29342	Physics	Normal	10516	13	0	0	Default.lua	直接伤害技能
+天原绝境_战象推人母技能	29476	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境战象推人母技能.lua	直接伤害技能
+天原绝境_天玄冰	29637	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境_天玄冰.lua	直接伤害技能
+冬奥会踩圈AOE	30148	None	Normal	10516	13	1	0	沙漠风暴/天原绝境_冬奥踩圈AOE.lua	直接伤害技能
+冬奥会空模AOE	30153	None	Normal	10516	13		0	沙漠风暴/天原绝境_冬奥空模AOE.lua	直接伤害技能
+阵营首领掉血加战阶技能	30429	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/阵营boss掉血加战阶.lua	直接伤害技能
+杀鸡_退出战场	31269	Physics	Normal	10433	13	0	0	Quest/羊村/杀鸡_退出战场.lua	直接伤害技能
+降落途中加速	31463	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境飞机加速.lua	直接伤害技能
+恢复降落速度	31472	Physics	Normal	10516	13	0	0	沙漠风暴/天原绝境飞机加速.lua	直接伤害技能
+天原绝境_冰封复活	31507	Physics	Normal	10516	13	0	0	沙漠风暴/天原主动复活.lua	直接伤害技能
+长空浩荡	32352	None	Normal	10179	13	0	0	江湖/阵营喷绘_浩气.lua	直接伤害技能
+逍遥无羁	32353	None	Normal	10179	13	0	0	江湖/阵营喷绘_恶人.lua	直接伤害技能
+春泥护花_绝境战场	33285	NeutralMagic	Normal	10018	2			万花\万花_养心决_春泥护花.lua	直接伤害技能
+洱海绝境_脱战附近aoe	35149	Physics	Normal	10516	13	0	0	沙漠风暴/洱海绝境脱战烫人.lua	直接伤害技能
+绘影·穆玄英	35386	None	Normal	10179	13	0	0	江湖/阵营喷绘_穆玄英.lua	直接伤害技能
+绘影·莫雨	35387	None	Normal	10179	13	0	0	江湖/阵营喷绘_莫雨.lua	直接伤害技能
+绝境·扶摇直上	37681	Leap	Fly	64888	13			江湖/江湖轻功_扶摇直上.lua	轻功
+绝境·蹑云逐月	37682	Leap	Fly	64888	13			江湖\江湖轻功_蹑云逐月.lua	轻功
+绝境·凌霄揽胜	37683	Leap	Fly	64888	13			江湖\江湖轻功_凌霄揽胜.lua	轻功
+绝境·瑶台枕鹤	37684	Leap	Fly	64888	13			江湖\江湖轻功_瑶台枕鹤.lua	轻功
+绝境·迎风回浪	37685	Leap	Fly	64888	13			江湖\江湖轻功_迎风回浪.lua	轻功
+绝境·后撤	37686	Leap	Fly	64888	13			江湖\后撤.lua	轻功
+绝境·回风扫叶	37687	Adaptive	Damage	64888	13			绝境战场/绝境_回风扫叶.lua	直接伤害技能
+绝境渊被击	37717	Physics	Damage	64902	13			绝境战场/绝境_渊触发技能事件.lua	直接伤害技能
+绝境·骑乘	37746	None	Damage	64888	13		1	江湖\骑乘.lua	直接伤害技能
+道具_临时飞爪_皆传	37923	Physics	Normal	64888	13	0	0	沙漠风暴/绝境·临时飞爪.lua	直接伤害技能
+攻防BOSS检测周围敌对人数AOE	38252	Physics	Normal	10554	12	0	0	npc/副本BOSS/攻防boss前置/攻防boss检测周围敌对玩家人数.lua	直接伤害技能
+绝境·扶摇直上·悟	38381	Leap	Fly	64888	13			江湖/绝境战场_移动端_扶摇.lua	轻功
+绝境·蹑云逐月·悟	38382	Leap	Fly	64888	13			江湖/绝境战场_移动端_蹑云逐月.lua	轻功
+玉石俱焚额外伤害	38644	Adaptive	Damage	64902	13			绝境战场/绝境玉石额外伤害.lua	直接伤害技能
+绝境·雾暗迷云	39483	Adaptive	Normal	64888	13	0	0	绝境战场/绝境_雾暗迷云.lua	直接伤害技能
+绝境·截阳	39492	Adaptive	Normal	64888	13	0	0	绝境战场/绝境·截阳.lua	直接伤害技能
+绝境·引窍	39493	Adaptive	Normal	64888	13	0	0	绝境战场/绝境·引窍.lua	直接伤害技能
+绝境·风流云散	39494	Leap	Normal	64888	13	0	0	绝境战场/绝境·风流云散.lua	直接伤害技能
+绝境截阳实际伤害子技能	39526	Adaptive	Damage	64902	13			绝境战场/绝境截阳伤害子技能.lua	直接伤害技能
+绝境引窍伤害子技能	39527	Adaptive	Damage	64902	13			绝境战场/绝境引窍伤害子技能.lua	直接伤害技能
+绝境绝脉层数消除后造成伤害子技能	39528	Adaptive	Damage	64902	13			绝境战场/绝境绝脉爆炸伤害.lua	直接伤害技能
+绝境·扶摇直上·林海	41281	Leap	Fly	64888	13			江湖/江湖轻功_扶摇直上绝境专用.lua	轻功
+绝境·蹑云逐月·林海	41282	Leap	Fly	64888	13			江湖\江湖轻功_蹑云逐月绝境专用.lua	轻功
+绝境·扶摇直上·悟·林海	41283	Leap	Fly	64888	13			江湖/绝境战场_移动端_扶摇.lua	轻功
+绝境·蹑云逐月·悟·林海	41284	Leap	Fly	64888	13			江湖/绝境战场_移动端_蹑云逐月.lua	轻功
+林海绝境进战	41291	Physics	Normal	64888	13	0	0	江湖/林海绝境进战.lua	直接伤害技能
+林海绝境脱战	41292	Physics	Normal	64888	13	0	0	江湖/林海绝境脱战.lua	直接伤害技能
+新攻防前置boss死亡人数检测	43084	None	Normal	10211	13	0	0	Quest/新攻防前置boss死亡.lua	直接伤害技能
+攻防载具死亡范围加成就	45089	None	Normal	10315	13	0	0	Carrier/攻防载具死亡范围加成就.lua	直接伤害技能
+绝境战场技能	64888	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+绝境_四象轮回（武器初始）	64889	Adaptive	Damage	64888	13			绝境战场\绝境_四象轮回.lua	直接伤害技能
+绝境_穿云（武器初始）	64890	Adaptive	Damage	64888	13			绝境战场\绝境_穿云.lua	瞬间刺出多枪，随着等级提升，次数变化。直接伤害技能
+绝境_普渡四方（武器初始）	64891	Adaptive	Damage	64888	13			绝境战场\绝境_普渡四方.lua	直接伤害技能
+绝境_夺魄箭（武器初始）	64892	Adaptive	Damage	64888	13		0	绝境战场\绝境_夺魄箭.lua	直接伤害技能
+绝境_夕照雷锋（武器初始）	64893	Adaptive	Damage	64888	13		0	绝境战场\绝境_夕照雷锋.lua	直接伤害技能
+绝境_阳明指（武器初始）	64894	Adaptive	Damage	64888	13			绝境战场\绝境_阳明指.lua	直接伤害技能
+绝境_蝎心（武器初始）	64895	Adaptive	Normal	64888	13		0	绝境战场\绝境_蝎心.lua	直接伤害技能
+绝境_赤日轮（武器初始）	64896	Adaptive	Damage	64888	13		0	绝境战场\绝境_赤日轮.lua	直接伤害技能
+绝境_江海凝光（武器初始）	64897	Adaptive	Damage	64888	13			绝境战场\绝境_江海凝光.lua	直接伤害技能
+绝境_横扫六合	64898	Adaptive	Normal	64888	13			绝境战场\绝境_横扫六合.lua	直接伤害技能
+绝境_捕风式	64899	Adaptive	Damage	64888	13			绝境战场\绝境_捕风式.lua	直接伤害技能
+绝境_抱残式	64900	SolarMagic	Damage	64888	13			绝境战场\绝境_抱残式.lua	直接伤害技能
+绝境_守缺式	64901	SolarMagic	Damage	64888	13			绝境战场\绝境_守缺式.lua	直接伤害技能
+绝境战场子技能	64902	Physics	Normal	0	13	0	0	Default.lua	直接伤害技能
+绝境_夕照雷锋伤害子技能	64903	Adaptive	Normal	64902	13	0	0	绝境战场\绝境_夕照雷锋伤害子技能.lua	直接伤害技能
+赤日轮一段子技能	64983	Adaptive	Damage	64902	13		0	绝境战场\绝境_赤日轮一段.lua	直接伤害技能
+赤日轮二段子技能	64984	Adaptive	Damage	64902	13		0	绝境战场\绝境_赤日轮二段.lua	直接伤害技能
+赤日轮三段子技能	64985	Adaptive	Damage	64902	13		0	绝境战场\绝境_赤日轮三段.lua	直接伤害技能
+绝境自动轮判断技能	64986	None	Normal	64902	13	0	0	绝境战场\绝境_赤日轮自动释放.lua	直接伤害技能
+横扫六合单体伤害	64987	Adaptive	Damage	64902	13			绝境战场\绝境_横扫六合单体.lua	直接伤害技能
+横扫六合AOE伤害	64988	Adaptive	Damage	64902	13			绝境战场\绝境_横扫六合AOE.lua	直接伤害技能
+绝境守缺式一段	64989	Adaptive	Damage	64902	13			绝境战场\绝境_一段守缺.lua	直接伤害技能
+绝境守缺式二段	64990	Adaptive	Damage	64902	13			绝境战场\绝境_二段守缺.lua	直接伤害技能
+绝境_拿云式	64991	Adaptive	Damage	64888	13			绝境战场\绝境_拿云式.lua	直接伤害技能
+绝境_长针	64992	None	Normal	64888	13			绝境战场\绝境_长针.lua	直接伤害技能
+绝境_商阳指	64993	Adaptive	Damage	64888	13			绝境战场\绝境_商阳指.lua	直接伤害技能
+绝境_钟林毓秀	64994	Adaptive	Damage	64888	13			绝境战场\绝境_钟林毓秀.lua	直接伤害技能
+绝境·兰摧玉折	64995	Adaptive	Damage	64888	13			绝境战场\绝境_兰摧玉折.lua	直接伤害技能
+绝境_破风	64996	Adaptive	Damage	64888	13			绝境战场\绝境_破风.lua	给予目标一个流血效果，可以反复叠加，加深伤害，达到5次后每次造成固定伤害并刷新，同时该技能有很大仇恨
+破风额外流血	65019	Adaptive	Damage	64902	13			绝境战场\绝境_破风额外流血.lua	给予目标一个流血效果，可以反复叠加，加深伤害，达到5次后每次造成固定伤害并刷新，同时该技能有很大仇恨
+破风普通流血	65020	Adaptive	Damage	64902	13			绝境战场\绝境_破风普通流血.lua	给予目标一个流血效果，可以反复叠加，加深伤害，达到5次后每次造成固定伤害并刷新，同时该技能有很大仇恨
+绝境_穿	65022	Adaptive	Damage	64888	13			绝境战场\绝境_穿.lua	直接伤害技能
+穿当前目标减速	65023	None	Slow	64902	13		0	绝境战场\绝境_穿当前减速.lua	直接伤害技能
+绝境_太极无极	65024	Adaptive	Damage	64888	13			绝境战场\绝境_太极无极.lua	直接伤害技能
+绝境_三环套月	65026	Adaptive	Damage	64888	13			绝境战场\绝境_三环套月.lua	瞬间刺出多枪，随着等级提升，次数变化。直接伤害技能
+三环套月额外触发伤害	65027	Adaptive	Damage	64902	13			绝境战场\绝境_三环套月额外伤害.lua	直接伤害技能
+绝境_剑飞惊天	65028	Adaptive	Damage	64888	13			绝境战场\绝境_剑飞惊天.lua	直接伤害技能
+绝境_龙牙	65029	Adaptive	Damage	64888	13			绝境战场\绝境_龙牙.lua	直接伤害技能
+绝境龙牙冲刺技能	65030	Physics	Damage	64902	13			绝境战场\绝境_绝境龙牙冲刺技能.lua	直接伤害技能
+绝境_龙吟	65036	Adaptive	Damage	64888	13			绝境战场\绝境_龙吟.lua	直接伤害技能
+绝境龙吟重置CD	65037	None	Normal	64902	13		0	绝境战场\绝境_龙吟重置CD.lua	直接伤害技能
+绝境_灭	65038	Adaptive	Damage	64888	13			绝境战场\绝境_灭.lua	直接伤害技能
+绝境·灭低血量目标伤害	65039	Adaptive	Damage	64902	13			绝境战场\绝境_灭低血量目标.lua	直接伤害技能
+绝境·灭高血量目标伤害	65040	Adaptive	Damage	64902	13			绝境战场\绝境_灭高血量目标.lua	直接伤害技能
+绝境_蛇影	65046	Adaptive	Damage	64888	13		0	绝境战场\绝境_蛇影.lua	直接伤害技能
+绝境_蟾啸	65047	Adaptive	Damage	64888	13		0	绝境战场\绝境_蟾啸.lua	直接伤害技能
+绝境_夺命蛊	65048	None	Normal	64888	13			绝境战场\绝境_夺命蛊.lua	直接伤害技能
+绝境_迷心蛊	65049	None	Normal	64888	13			绝境战场\绝境_迷心蛊.lua	直接伤害技能
+绝境_枯残蛊	65050	None	Normal	64888	13			绝境战场\绝境_枯残蛊.lua	直接伤害技能
+绝境_化血镖	65053	Adaptive	Damage	64888	13			绝境战场\绝境_化血镖.lua	给予目标一个流血效果，可以反复叠加，加深伤害，达到5次后每次造成固定伤害并刷新，同时该技能有很大仇恨
+绝境_孔雀翎	65054	Physics	Damage	64888	13		0	绝境战场\绝境_孔雀翎.lua	直接伤害技能
+绝境_孔雀翎实际伤害	65055	Adaptive	Damage	64902	13		0	绝境战场\绝境_孔雀翎实际伤害.lua	直接伤害技能
+绝境_孔雀翎技能事件触发伤害	65056	Adaptive	Damage	64902	13			绝境战场\绝境_孔雀翎技能事件触发伤害.lua	直接伤害技能
+绝境_玉石俱焚	65058	Adaptive	Damage	64888	13			绝境战场\绝境_玉石俱焚.lua	直接伤害技能
+绝境_两仪化形	65059	Adaptive	Damage	64888	13			绝境战场\绝境_两仪化形.lua	直接伤害技能
+绝境_无我无剑	65060	Adaptive	Damage	64888	13			绝境战场\绝境_无我无剑.lua	直接伤害技能
+绝境_万剑归宗	65061	Adaptive	Damage	64888	13			绝境战场\绝境_万剑归宗.lua	直接伤害技能
+绝境_天地无极	65062	Adaptive	Damage	64888	13			绝境战场\绝境_天地无极.lua	直接伤害技能
+绝境_隐身通用施放显形	65063	None	Normal	64902	13		0	绝境战场\绝境_施放技能通用显形.lua	直接伤害技能
+绝境_剑主天地	65065	Adaptive	Damage	64888	13			绝境战场\绝境_剑主天地.lua	直接伤害技能
+绝境_技能挂急曲	65066	Adaptive	Normal	64902	13		0	绝境战场\绝境_技能挂急曲.lua	直接伤害技能
+绝境_技能爆急曲	65067	Adaptive	Normal	64902	13		0	绝境战场\绝境_技能爆急曲.lua	直接伤害技能
+绝境_百足	65068	Adaptive	Damage	64888	13		0	绝境战场\绝境_百足.lua	直接伤害技能
+绝境_百足Dot	65069	Adaptive	Damage	64902	13		0	绝境战场\绝境_百足DOT添加.lua	直接伤害技能
+绝境_百足二次攻击	65070	Adaptive	Damage	64902	13		0	绝境战场\绝境_百足二次攻击.lua	直接伤害技能
+绝境_追命箭	65071	Adaptive	Damage	64888	13		0	绝境战场\绝境_追命箭.lua	直接伤害技能
+绝境_追命箭额外伤害	65072	Adaptive	Damage	64902	13			绝境战场\绝境_追命箭额外伤害.lua	直接伤害技能
+绝境_穿心弩	65074	Adaptive	Damage	64888	13		0	绝境战场\绝境_穿心弩.lua	直接伤害技能
+绝境_听雷	65075	Adaptive	Damage	64888	13			绝境战场\绝境_听雷.lua	直接伤害技能
+绝境_云飞玉皇	65076	Adaptive	Damage	64888	13		0	绝境战场\绝境_云飞玉皇.lua	直接伤害技能
+绝境_云飞玉皇额外伤害	65077	Adaptive	Damage	64902	13			绝境战场\绝境_云飞玉皇额外伤害.lua	直接伤害技能
+绝境_鹤归孤山	65078	Adaptive	Normal	64888	13		0	绝境战场\绝境_鹤归孤山.lua	直接伤害技能
+绝境鹤归释放	65079	Physics	Normal	64902	13			绝境战场\绝境_鹤归孤山技能释放.lua	直接伤害技能
+绝境鹤归远距离	65080	Adaptive	Stun	64902	13			绝境战场\绝境_鹤归孤山远距离.lua	直接伤害技能
+绝境鹤归近距离	65081	Adaptive	Normal	64902	13			绝境战场\绝境_鹤归孤山近距离.lua	直接伤害技能
+绝境_幽月轮	65083	Adaptive	Damage	64888	13		0	绝境战场\绝境_幽月轮.lua	直接伤害技能
+幽月轮第一段子技能	65084	Adaptive	Damage	64902	13		0	绝境战场\绝境_幽月轮一段.lua	直接伤害技能
+幽月轮第二段子技能	65085	Adaptive	Damage	64902	13		0	绝境战场\绝境_幽月轮二段.lua	直接伤害技能
+幽月轮第三段子技能	65086	Adaptive	Damage	64902	13		0	绝境战场\绝境_幽月轮三段.lua	直接伤害技能
+绝境_净世破魔击	65087	Adaptive	Damage	64888	13		0	绝境战场\绝境_净世破魔击.lua	直接伤害技能
+绝境_月破伤害	65088	Adaptive	Damage	64902	13		0	绝境战场\绝境_月破伤害.lua	直接伤害技能
+绝境_烈日斩	65089	Adaptive	Damage	64888	13		0	绝境战场\绝境_烈日斩.lua	直接伤害技能
+绝境_银月斩	65090	Adaptive	Damage	64888	13		0	绝境战场\绝境_银月斩.lua	直接伤害技能
+日月交替触发子技能	65091	Adaptive	Damage	64902	13		0	绝境战场\绝境_日月交替.lua	直接伤害技能
+绝境_圣明佑	65092	None	Normal	64888	13			绝境战场\绝境_圣明佑.lua	直接伤害技能
+绝境_生死劫	65095	Adaptive	Damage	64888	13			绝境战场\绝境_生死劫.lua	直接伤害技能
+绝境_驱夜断愁	65096	Adaptive	Normal	64888	13		0	绝境战场\绝境_驱夜断愁.lua	直接伤害技能
+绝境_韦陀献杵	65097	Adaptive	Damage	64888	13			绝境战场\绝境_韦陀献杵.lua	直接伤害技能
+绝境_摩诃无量	65098	Adaptive	Damage	64888	13			绝境战场\绝境_摩诃无量.lua	直接伤害技能
+绝境_捉影式	65100	Adaptive	Damage	64888	13			绝境战场\绝境_捉影式.lua	直接伤害技能
+绝境_五蕴皆空	65101	Adaptive	Damage	64888	13			绝境战场\绝境_五蕴皆空.lua	直接伤害技能
+绝境_大狮子吼	65103	None	Damage	64888	13			绝境战场\绝境_大狮子吼.lua	直接伤害技能
+绝境_无相诀	65104	None	Normal	64888	13			绝境战场\绝境_无相诀.lua	直接伤害技能
+绝境_春泥护花	65105	None	Normal	64888	13			绝境战场\绝境_春泥护花.lua	直接伤害技能
+春泥被击消除	65106	None	Damage	64902	13			绝境战场\绝境_春泥被击消除.lua	直接伤害技能
+绝境_星楼月影	65107	None	Normal	64888	13			绝境战场\绝境_星楼月影.lua	直接伤害技能
+绝境_少明指	65108	Adaptive	Damage	64888	13		0	绝境战场\绝境_少明指.lua	直接伤害技能
+绝境_芙蓉并蒂	65109	Adaptive	Damage	64888	13		0	绝境战场\绝境_芙蓉并蒂.lua	直接伤害技能
+绝境_商阳子技能	65110	Adaptive	Damage	64902	13		0	绝境战场\绝境_商阳子技能.lua	直接伤害技能
+绝境_兰摧子技能	65111	Adaptive	Damage	64902	13		0	绝境战场\绝境_兰摧子技能.lua	直接伤害技能
+绝境_钟林子技能	65112	Adaptive	Damage	64902	13		0	绝境战场\绝境_钟林子技能.lua	直接伤害技能
+绝境_傍花随柳	65113	Adaptive	Damage	64888	13		0	绝境战场\绝境_傍花随柳.lua	直接伤害技能
+傍花触发效果	65114	Adaptive	Damage	64902	13			绝境战场\绝境_傍花随柳触发.lua	直接伤害技能
+傍花触发伤害	65115	Adaptive	Damage	64902	13			绝境战场\绝境_傍花随柳伤害触发.lua	直接伤害技能
+绝境_沧月	65116	Adaptive	Daze	64888	13			绝境战场\绝境_沧月.lua	直接伤害技能
+绝境·沧月击退	65117	Adaptive	Damage	64902	13			绝境战场\绝境_沧月击退.lua	直接伤害技能
+绝境_疾如风	65118	None	Normal	64888	13			绝境战场\绝境_疾如风.lua	直接伤害技能
+绝境_撼如雷	65119	Adaptive	Damage	64888	13			绝境战场\绝境_撼如雷.lua	直接伤害技能
+绝境_渊	65120	Adaptive	Normal	64888	13		0	绝境战场\绝境_渊.lua	直接伤害技能
+渊结束击飞	65121	Adaptive	Normal	64902	13			绝境战场\绝境_渊击飞.lua	直接伤害技能
+渊冲刺换动作	65122	Physics	Normal	64902	13		0	绝境战场\绝境_渊冲刺.lua	直接伤害技能
+绝境_破坚阵	65123	Adaptive	Daze	64888	13			绝境战场\绝境_破坚阵.lua	直接伤害技能
+绝境_裂苍穹	65124	Adaptive	Damage	64888	13			绝境战场\绝境_裂苍穹.lua	直接伤害技能
+绝境·断魂刺	65125	Physics	Damage	64888	13			绝境战场\绝境_断魂刺.lua	直接伤害技能
+断魂刺子技能	65126	Adaptive	Daze	64902	13			绝境战场\绝境_断魂刺伤害.lua	直接伤害技能
+绝境·冲阴阳	65127	None	Normal	64888	13			绝境战场\绝境_冲阴阳.lua	直接伤害技能
+冲阴阳实际子技能	65129	None	Normal	64902	13			绝境战场\绝境_冲阴阳子技能.lua	直接伤害技能
+绝境·碎星辰	65133	None	Normal	64888	13			绝境战场\绝境_碎星辰.lua	直接伤害技能
+碎星辰实际效果	65134	None	Normal	64902	13			绝境战场\绝境_碎星辰子技能.lua	直接伤害技能
+绝境·破苍穹	65136	None	Normal	64888	13			绝境战场\绝境_破苍穹.lua	直接伤害技能
+破苍穹技能释放	65137	None	Normal	64902	13			绝境战场\绝境_破苍穹子技能.lua	直接伤害技能
+绝境·凌太虚	65138	None	Normal	64888	13			绝境战场\绝境_凌太虚.lua	直接伤害技能
+凌太虚技能释放	65139	None	Normal	64902	13			绝境战场\绝境_凌太虚子技能.lua	直接伤害技能
+绝境_吞日月	65140	None	Normal	64888	13			绝境战场\绝境_吞日月.lua	直接伤害技能
+吞日月技能释放	65141	None	Damage	64902	13			绝境战场\绝境_吞日月子技能.lua	直接伤害技能
+绝境_生太极	65142	None	Normal	64888	13			绝境战场\绝境_生太极.lua	直接伤害技能
+生太极技能释放	65143	None	Normal	64902	13			绝境战场\绝境_生太极子技能.lua	直接伤害技能
+绝境_任驰骋	65144	None	Normal	64888	13			绝境战场\绝境_任驰骋.lua	直接伤害技能
+绝境_三才化生	65145	Adaptive	Damage	64888	13			绝境战场\绝境_三才化生.lua	直接伤害技能
+绝境_七星拱瑞	65146	Adaptive	Stun	64888	13			绝境战场\绝境_七星拱瑞.lua	直接伤害技能
+七星拱瑞npc	65147	NeutralMagic	Stun	64902	13			绝境战场\绝境_七星拱瑞npc.lua	直接伤害技能
+七星拱瑞player	65148	NeutralMagic	Stun	64902	13			绝境战场\绝境_七星拱瑞player.lua	直接伤害技能
+绝境_五方行尽	65149	Adaptive	Charm	64888	13			绝境战场\绝境_五方行尽.lua	直接伤害技能
+绝境_人剑合一	65150	Adaptive	Normal	64888	13			沙漠风暴/道具_人剑合一母技能.lua	直接伤害技能
+人剑合一敌人气场	65151	Adaptive	Normal	64902	13			绝境战场\绝境_引爆敌人气场.lua	直接伤害技能
+人剑合一自身气场	65152	Physics	Normal	64902	13			绝境战场\绝境_引爆自身气场.lua	直接伤害技能
+绝境_大道无术	65153	Adaptive	Stun	64888	13			绝境战场\绝境_大道无术.lua	直接伤害技能
+绝境_坐忘无我	65154	Adaptive	Normal	64888	13			绝境战场\绝境_坐忘无我.lua	直接伤害技能
+绝境_剑转流云	65155	Adaptive	Damage	64888	13			绝境战场\绝境_剑转流云.lua	直接伤害技能
+绝境_雷霆震怒	65156	Adaptive	Stun	64888	13			绝境战场\绝境_雷霆震怒.lua	直接伤害技能
+绝境_绛唇珠袖	65157	Adaptive	Damage	64888	13			绝境战场\绝境_绛唇珠袖.lua	直接伤害技能
+绛唇珠袖触发伤害	65158	Adaptive	Damage	64902	13			绝境战场\绝境_绛唇珠袖触发伤害.lua	直接伤害技能
+绝境_帝骖龙翔	65159	Adaptive	Halt	64888	13			绝境战场\绝境_帝骖龙翔.lua	直接伤害技能
+绝境_天地低昂	65160	Adaptive	Normal	64888	13			绝境战场\绝境_天地低昂.lua	直接伤害技能
+绝境_鹊踏枝	65161	Adaptive	Normal	64888	13			绝境战场\绝境_鹊踏枝.lua	直接伤害技能
+绝境_蛊虫献祭	65162	None	Normal	64888	13			绝境战场\绝境_蛊虫献祭.lua	直接伤害技能
+绝境_女娲补天	65163	None	Normal	64888	13			绝境战场\绝境_女娲补天.lua	直接伤害技能
+绝境·雷震子	65165	Adaptive	Stun	64888	13		0	绝境战场\绝境_雷震子.lua	直接伤害技能
+绝境·轮回诀	65166	Adaptive	Normal	64888	13		0	绝境战场\绝境_轮回诀.lua	直接伤害技能
+绝境_镇山河	65167	None	Normal	64888	13			绝境战场\绝境_镇山河.lua	直接伤害技能
+镇山河实际效果	65168	None	Normal	64902	13			绝境战场\绝境_镇山河效果.lua	直接伤害技能
+镇山河驱散效果	65169	None	Normal	64902	13			绝境战场\绝境_镇山河驱散.lua	直接伤害技能
+长针正常治疗	65174	None	Normal	64902	13			绝境战场\绝境_长针正常治疗.lua	直接伤害技能
+长针毒圈减疗	65175	None	Normal	64902	13			绝境战场\绝境_长针毒圈减疗.lua	直接伤害技能
+绝境_疾	65240	Leap	Damage	64888	13			绝境战场\绝境_疾.lua	轻功
+绝境_鸟翔碧空	65241	Leap	Normal	64888	13		0	绝境战场\绝境_鸟翔碧空.lua	直接伤害技能
+绝境_太阴指	65242	Leap	Damage	64888	13			绝境战场\绝境_太阴指.lua	直接伤害技能
+绝境_暗尘弥散	65243	Adaptive	Normal	64888	13		0	绝境战场\绝境_暗尘弥散.lua	直接伤害技能
+绝境_浮光掠影	65244	Adaptive	Normal	64888	13		0	绝境战场\绝境_浮光掠影.lua	直接伤害技能
+疾伤害效果	65249	Adaptive	Damage	64902	13			绝境战场\绝境_疾实际伤害.lua	直接伤害技能
+绝境_啸如虎	65250	Adaptive	Normal	64888	13			绝境战场\绝境_啸如虎.lua	直接伤害技能
+绝境_风袖低昂	65251	None	Normal	64888	13			绝境战场\绝境_风袖低昂.lua	直接伤害技能
+风袖正常治疗	65252	None	Normal	64902	13			绝境战场\绝境_风袖正常治疗.lua	直接伤害技能
+风袖毒圈减疗	65253	None	Normal	64902	13			绝境战场\绝境_风袖减疗治疗.lua	直接伤害技能
+绝境_千蝶吐瑞	65254	Adaptive	Normal	64888	13		0	绝境战场\绝境_千蝶吐瑞.lua	直接伤害技能
+千蝶治疗正常子技能	65255	Poison	Normal	64902	13		0	绝境战场\绝境_千蝶减疗治疗.lua	直接伤害技能
+千蝶治疗毒圈减疗子技能	65256	Poison	Normal	64902	13		0	绝境战场\绝境_千蝶正常治疗.lua	直接伤害技能
+绝境_亢龙有悔	65667	Adaptive	Damage	64888	13	0	0	绝境战场\绝境_亢龙有悔.lua	直接伤害技能
+绝境_狂龙乱舞	65668	Adaptive	Normal	64888	13	0	0	绝境战场\绝境_狂龙乱舞.lua	直接伤害技能
+绝境_龙战于野	65669	Adaptive	Normal	64888	13	0	0	绝境战场\绝境_龙战于野.lua	直接伤害技能
+绝境_潜龙勿用	65670	None	Normal	64888	13			绝境战场\绝境_潜龙勿用.lua	直接伤害技能
+绝境_棒打狗头	65671	Adaptive	Normal	64888	13			绝境战场\绝境_棒打狗头.lua	直接伤害技能
+绝境_笑醉狂	65672	Adaptive	Normal	64888	13	0	0	绝境战场\绝境_笑醉狂.lua	直接伤害技能
+亢龙有悔伤害和DOT	65673	Adaptive	Damage	64902	13	0	0	绝境战场\绝境_亢龙有悔伤害和DOT.lua	直接伤害技能
+绝境_狂龙乱舞伤害	65674	Adaptive	Damage	64902	13			绝境战场\绝境_狂龙乱舞伤害.lua	直接伤害技能
+绝境_龙战于野拉	65675	Adaptive	Damage	64902	13	0	0	绝境战场\绝境_龙战于野拉.lua	直接伤害技能
+绝境_潜龙勿用范围伤害	65676	Adaptive	Damage	64902	13	0	0	绝境战场\绝境_潜龙勿用范围伤害.lua	直接伤害技能
+绝境_棒打狗头冲刺	65677	Physics	Damage	64902	13			绝境战场\绝境_棒打狗头冲刺.lua	直接伤害技能
+绝境_棒打狗头伤害	65678	Adaptive	Damage	64902	13			绝境战场\绝境_棒打狗头伤害.lua	直接伤害技能
+# matched 554 (limit 800)

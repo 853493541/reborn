@@ -1,0 +1,43 @@
+﻿0x0083D300	ascii	nRetCode && "[Buff] Get IsIntensityStackable"
+0x0083D330	ascii	nRetCode && "[Buff] Get IsStackable"
+0x0083D368	ascii	nRetCode && "[Buff] Get MaxStackNum"
+0x007C67B8	ascii	KPlayerClient::OnChangeImmunityCastIDNotify
+0x007C90A8	ascii	KPlayerClient::OnChangeMultiImmunityCastIDNotify
+0x007FAF90	ascii	dwSkillImmunity
+0x0080CF18	ascii	IgnoreImmunityCast
+0x0080FEE8	ascii	bIgnoreImmunityCastID
+0x0083C950	ascii	skill/DecayType.tab
+0x0083D068	ascii	(nRetCode > 0) && "[Buff] Get ID"
+0x0083D090	ascii	nRetCode && "[Buff] Get Level"
+0x0083D0E0	ascii	nRetCode && "[Buff] Get FunctionType"
+0x0083D130	ascii	nRetCode && "[Buff] Get BuffType"
+0x0083D178	ascii	nRetCode && "[Buff] Get AppendType"
+0x0083D1B0	ascii	nRetCode && "[Buff] Get DetachType"
+0x0083D1E8	ascii	nRetCode && "[Buff] Get DecayType"
+0x0083D220	ascii	nRetCode && "[Buff] Get RepresentPos"
+0x0083D260	ascii	nRetCode && "[Buff] Get RepresentID"
+0x0083D2C0	ascii	nRetCode && "[Buff] Get Intensity"
+0x0083D300	ascii	nRetCode && "[Buff] Get IsIntensityStackable"
+0x0083D330	ascii	nRetCode && "[Buff] Get IsStackable"
+0x0083D368	ascii	nRetCode && "[Buff] Get MaxStackNum"
+0x0083D3D8	ascii	nRetCode && "[Buff] Get Count"
+0x0083D410	ascii	nRetCode && "[Buff] Get Interval"
+0x0083D460	ascii	nRetCode && "[Buff] Get MinInterval"
+0x0083D4B0	ascii	nRetCode && "[Buff] Get MaxInterval"
+0x0083D4F8	ascii	nRetCode && "[Buff] Get Exclude"
+0x0083D530	ascii	nRetCode && "[Buff] Get GlobalExclude"
+0x0083D568	ascii	nRetCode && "[Buff] Get UniqueTarget"
+0x0083D5A0	ascii	nRetCode && "[Buff] Get CanCancel"
+0x0083D5D8	ascii	nRetCode && "[Buff] Get IsCountable"
+0x0083D600	ascii	nRetCode && "[Buff] Get Save"
+0x0083D630	ascii	nRetCode && "[Buff] Get IsOffLineClock"
+0x0083D668	ascii	nRetCode && "[Buff] Get CanAccumulate"
+0x0083D6A0	ascii	nRetCode && "[Buff] Get ValidByLevel"
+0x0083D6D0	ascii	nRetCode && "[Buff] Get Coexist"
+0x0083D708	ascii	nRetCode && "[Buff] Get CanBeSteal"
+0x0083D740	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+0x0083D780	ascii	nRetCode && "[Buff] Get ShapeShiftInvalid"
+0x0083D7C0	ascii	nRetCode && "[Buff] Get MorphInvalid"
+0x0083D818	ascii	nRetCode && "[Buff] Get ScriptFile"
+0x0083D850	ascii	BuffInfo.m_nDecayType < 0 || BuffInfo.m_nDecayType >= MAX_BUFF_DECAY_TYPE
+0x0083DB30	ascii	dwTmpDecayType >= 0 && dwTmpDecayType < MAX_BUFF_DECAY_TYPE

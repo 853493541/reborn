@@ -1,0 +1,25 @@
+﻿Skill FunctionType distinct 15
+'Normal' 33060
+'Damage' 7447
+'Stun' 120
+'Daze' 94
+'Fly' 93
+'Slow' 87
+'Halt' 71
+'Enmity' 68
+'Silence' 36
+'Charm' 34
+'Blooding' 19
+'Heal' 7
+'Fear' 3
+'Blow' 1
+'Disarm' 1
+KindType distinct 8
+K 'Physics' 22867
+K 'None' 8544
+K 'LunarMagic' 2952
+K 'SolarMagic' 2174
+K 'NeutralMagic' 2102
+K 'Poison' 1806
+K 'Adaptive' 437
+K 'Leap' 259

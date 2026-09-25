@@ -1,0 +1,861 @@
+Keyword	ID	Name	FunctionType	DecayType	MoveStateMask	MoveStateMask2	MapBanMask	MapInvalidMask	BeginAttrib1	BeginValue1A	Count	Interval	MaxStackNum	ScriptFile
+减疗	2662	帮会_擂台_减疗伤成效			3758030846	63					1	2880	1	
+减疗	9420	3号_游击_攻其无备_定身减疗			3758030846	63		0	atSilenceAll		1	0	1	
+减疗	9514	楚济_减疗40%			3758030846	63		0	atBeTherapyCoefficient	-461	1	32	1	
+减疗	9694	清绝影歌_npc_40%减疗			3758030846	63		0	atBeTherapyCoefficient	-512	1	480	1	
+减疗	10243	盾击减疗实际效果			3758030846	63		0	atBeTherapyCoefficient	-307	1	192	1	苍云/套路及子技能/减料效果被顶替掉.lua
+减疗	10646	2号_柳绯君_问情_减疗禁魔禁轻功			3758030847	63		0	atPullRate	-2048	1	36000	1	
+减疗	10850	绿林_陷阱减速减疗	Damage		3758030846	63		264	atMoveSpeedPercent	-512	3	80	1	
+减疗	10893	2号_哥舒翰_落枪_减疗			3758030846	63		0	atBeTherapyCoefficient	-205	1	36000	1	
+减疗	12283	生太极吞日月加减疗被动计数			4294967294	63		0			1	320	4	
+减疗	12423	2号_致命穿刺减疗			3758030846	63		0	atBeTherapyCoefficient	-512	1	16	1	
+减疗	15033	MOBA减疗			3758030846	63			atBeTherapyCoefficient	-512	1	48	1	
+减疗	15103	MOBA减疗装备			3758030846	63		0	atSkillEventHandler	1670	1	160	1	
+减疗	15531	血覆黄泉减疗效果BUFF			3758030846	63			atBeTherapyCoefficient	-307	1	320	1	
+减疗	15551	时辰_减疗			4294967295	63	0	0	atBeTherapyCoefficient	-102	1	0	10	
+减疗	15661	通用_减疗			4294967295	63	0	0	atBeTherapyCoefficient	-10	1	0	100	
+减疗	15692	食物免疫效果_减疗			3758030846	63	0	0			1	4800	1	
+减疗	15774	内功boss通用减疗			3758030846	63		0	atBeTherapyCoefficient	-51	1	960	50	
+减疗	16664	剑纯实际减疗效果			3758030846	63			atBeTherapyCoefficient	-102	1	192	1	
+减疗	16665	延迟处理减疗添加			3758030846	63		0			1	3	1	纯阳/套路及子技能/延迟删表现buff.lua
+减疗	16967	新苍云特殊武器_减疗			3758030846	63		0	atBeTherapyCoefficient	-5	1	16	100	
+减疗	17200	内功通用不脱战减疗			3758030846	63		0	atBeTherapyCoefficient	-51	1	960	50	
+减疗	17644	竞技场55机器人减疗修正			3758030846	63		0	atBeTherapyCoefficient	-51	1	16	10	
+减疗	18004	持续减疗效果			3758030846	63			atBeTherapyCoefficient	-461	1	240	1	
+减疗	18038	减疗免疫			3758030846	63					1	384	1	
+减疗	18262	4号_特殊减疗			3758030846	63		0	atBeTherapyCoefficient	-205	60	16	99	
+减疗	18333	周边_受伤的万花弟子减疗			3758030846	63		0	atBeTherapyCoefficient	-51	1	960	50	
+减疗	18823	伪·万剑归宗减疗			3758030846	63			atBeTherapyCoefficient	-205	1	240	1	
+减疗	19968	修罗僧_P1_减疗			3758030846	63		0	atBeTherapyCoefficient	-51	1	0	100	
+减疗	21831	用于NPC延迟删除减疗表现			3758030846	63					1	2	1	纯阳/NPC减疗被转移处理.lua
+减疗	21977	系统_精神对应减疗			4294967294	63		0	atBeTherapyCoefficient	-10	1	0	100	
+减疗	23642	1号_吴添明_狂刀势·问心_减疗			3758030846	63		0	atBeTherapyCoefficient	-102	1	160	1	
+减疗	24019	选牌系统_免除易伤和减疗			3758096382	63		0			1	16	1	
+减疗	24223	减疗减盾吸收			3758030846	63			atBeTherapyCoefficient	-512	1	16	1	
+减疗	24306	[24306]共潮生减疗debuff			3758030846	63		0	atAllDamageAddPercent	-25	1	8	24	
+减疗	24324	苍云_分山劲_决死减疗			3758030846	63		0	atBeTherapyCoefficient	-307	1	48	1	
+减疗	24477	绿涤实际减疗			3758030846	63		0	atBeTherapyCoefficient	-512	8	16	1	
+减疗	24838	左旋右转减疗标记			3758030846	63		0			1	96	1	
+减疗	24854	6号_李重茂_恨_减疗效果			3758096382	63		0	atBeTherapyCoefficient	-51	1	0	200	
+减疗	25359	开山将减疗			3758030846	63		0	atBeTherapyCoefficient	-205	1	320	3	
+减疗	26477	NPC精神减疗			4294967294	63		0	atBeTherapyCoefficient	-10	1	0	100	
+减疗	26950	6号_月泉淮_月泉淮月崩击分身减疗			3758030846	63	0	0	atBeTherapyCoefficient	-102	8	16	10	
+减疗	27053	万灵山庄_召唤兽减疗			3758030846	63	0	0	atBeTherapyCoefficient	-512	10	16	1	
+减疗	29244	百会_爆绝脉减疗			3758030846	63	0	0	atBeTherapyCoefficient	-51	1	192	15	
+减疗	30427	丐帮减疗			3758030846	63			atBeTherapyCoefficient	-563	1	16	1	
+减疗	30478	不愧君减疗			3758030846	63		0	atBeTherapyCoefficient	-512	16	16	1	
+减疗	31700	奇穴_勾线减疗			3758030846	63		0	atBeTherapyCoefficient	-512	1	48	1	
+减疗	31920	寻宝_道具减疗			3758030846	63	0	0	atBeTherapyCoefficient	-460	1	16	99	
+减疗	31931	流血战狼减疗			3758030846	63			atBeTherapyCoefficient	-307	9	16	1	
+减疗	32138	提线减疗			3758030846	63		0	atBeTherapyCoefficient	-614	1	96	1	
+减疗	32623	雪山温泉_沈舟客_减疗			3758030846	63		0	atBeTherapyCoefficient	-512	20	16	1	
+减疗	33281	水领域减疗			3758030846	63	0	0	atBeTherapyCoefficient	-205	1	16	1	
+减疗	33421	木_木灵珠减疗			3758030846	63	0	0	atBeTherapyCoefficient	-102	20	16	1	
+减疗	33459	土遁_减疗			3758030846	63	0	0	atBeTherapyCoefficient	-614	1	160	1	
+减疗	33527	5号_唐怀仁_落星炙炎减疗			3758030846	63	0	0	atBeTherapyCoefficient	-819	1	20	1	
+减疗	51331	穿心弩减疗	Normal	-1	4294901758	7	0		atBeTherapyCoefficient	-512	6	48	1	
+禁疗	9172	禁疗第一次标记			3758030846	63		0			1	128	1	
+禁疗	9173	禁疗第二次标记			3758030846	63		0			1	128	1	
+禁疗	9174	生息禁疗延迟buff			3758030846	63		0			1	4	3	万花\万花_三dot_被驱散禁疗.lua
+禁疗	9175	生息禁疗buff			3758030846	63		0	atGlobalTherapyAbsorb	9000000	4	8	1	
+禁疗	10332	藏剑_禁疗			3758030846	63		0	atGlobalTherapyAbsorb	9999999	1	16	1	
+禁疗	11488	禁疗			3758030846	63	920	408	atBeTherapyCoefficient	-1014	1	16	1	
+禁疗	11733	屠龙六式禁疗			3758030846	63		0	atBeTherapyCoefficient	-1024	20	4	5	
+禁疗	11805	屠龙六式禁疗监控			3758030846	63		0			10000	4	1	
+禁疗	12061	杨逸飞_曲高和寡禁疗			3758030846	63		0	atGlobalTherapyAbsorb	9000000	1	240	1	
+禁疗	12888	洛阳城北炮弹引燃禁疗			3758030846	63		0	atBeTherapyCoefficient	-102	3	16	10	
+禁疗	13666	5号_圣法门惩戒者_穿刺惩戒_禁疗DEBUFF			3758030846	63		0	atBeTherapyCoefficient	-1024	10	16	1	
+禁疗	13667	5号_圣诏门诏令使_行诏令_禁疗debuff			3758030846	63		0	atBeTherapyCoefficient	-1024	10	16	1	
+禁疗	13669	5号_秘法门暗行者_阴影密令_禁疗buff			3758030846	63		0	atBeTherapyCoefficient	-1024	10	16	1	
+禁疗	15761	可被驱散禁疗Dot			3758030846	63		0			15	48	1	
+禁疗	18666	场景通用禁疗			3758030846	63		0	atGlobalTherapyAbsorb	9999999	1	16	1	
+禁疗	19138	帮会联赛禁疗			3758030846	63		0	atBeTherapyCoefficient	-4096	1	960	1	
+禁疗	19146	帮会联赛通用禁疗			3758030846	63		0	atBeTherapyCoefficient	-4096	1	0	1	
+禁疗	19309	诡面埋伏禁疗			3758030846	63		0	atGlobalTherapyAbsorb	9000000	1	48	1	
+禁疗	19554	守卫关卡_禁疗			3758030846	63	0	0	atPositiveShield		1	0	1	
+禁疗	20329	盗宝贼禁疗			3758030846	63		0	atBeTherapyCoefficient	-10240	1	14400	1	
+禁疗	20530	一刀浮尘_禁疗			3758030846	63		0	atBeTherapyCoefficient	-1024	1	160	1	
+禁疗	20728	[20728]禁疗盾壁			3758030846	63			atFinalMaxLifeAddPercent	1024	1	192	1	
+禁疗	20970	禁疗			3758030846	63		0	atBeTherapyCoefficient	-4096	1	0	1	
+禁疗	21960	管家减益_龙葵自苦禁疗			3758030846	63		0	atGlobalTherapyAbsorbBySelfMaxLife	0	3	16	1	
+禁疗	23041	2号_阿阁诺_长杆禁疗			3758030846	63		0	atGlobalTherapyAbsorb	21060000	1	0	1	
+禁疗	23177	河阳之战副本禁疗相关buff			3758030846	63		0	atMaxDamageToLifeValue	0	10	16	1	
+禁疗	25360	开山将禁疗			3758030846	63		0	atGlobalTherapyAbsorb	99999999	1	80	1	
+禁疗	25502	少林周六门派事件boss禁疗			3758030846	63		0	atBeTherapyCoefficient	-4096	1	16	1	
+禁疗	25873	6号_翁幼之_残魂禁疗			3758030846	63		0	atGlobalTherapyAbsorb	14580000	1	0	1	
+禁疗	28893	挑战萧武宗_禁疗效果			3758030846	63	0	0	atBeTherapyCoefficient	-4096	1	16	1	
+禁疗	29266	列宿游禁疗			3758030846	63			atGlobalTherapyAbsorb	9000000	1	192	1	
+禁疗	29964	2号_许灵素_噬心咒可驱散禁疗			3758030846	63	0	0	atBeTherapyCoefficient	-4096	1	16	1	npc/副本BOSS/太极宫/2号_许灵素/2号_许灵素_噬心咒可驱散禁疗.lua
+禁疗	30431	新祭血关山_禁疗			3758030846	63	0	0	atLockTransTherapy		1	192	1	
+禁疗	31633	寄线奇穴禁疗			3758030846	63	0	0	atGlobalTherapyAbsorb	999999999	1	32	1	
+禁疗	31998	营地_通用_禁疗禁吸血			4294967294	63	0	0	atDamageToLifeCof	-1024	1	0	1	
+禁疗	32408	1号_阿里曼幻身_出界禁疗效果			3758030846	63	0	0	atBeTherapyCoefficient	-4096	1	20	1	
+禁疗	32545	肖红_忘忧绝命散_减速禁疗沉默			3758096382	63	0	0	atMoveSpeedPercent	-2048	1	5	1	
+禁疗	33463	3号_柳公子_内功武器禁疗			3758096382	63	0	0	atBeTherapyCoefficient	-1024	15	16	1	
+禁疗	33538	2号_千机源枢_通用沉默禁疗			3758096382	63	0	0	atDamageToLifeCof	-1024	1	16	1	
+减伤	368	天策-守如山-铁牢律-减伤			3758030846	63			atCallSubBuff	33086	1	192	1	
+减伤	1986	西风古道_减伤			4294967294	63			atGlobalResistPercent	1024	1	115200	1	
+减伤	2232	荻花圣殿_7号BOSS_沙利亚_碧土毒花葬_施放减伤			3758030846	63					3	16	1	
+减伤	2251	春泥护花秘籍_加5%减伤	ResistDamage		3758030846	63			atGlobalResistPercent	51	1	320	1	
+减伤	2716	血龙出渊_宇文敌_霸皇诀_减伤80%			3758030846	63			atGlobalResistPercent	512	1	160	1	
+减伤	2717	万花_渐催_长针减伤			3758030846	63			atPhysicsResistPercent	31	1	240	1	
+减伤	2718	万花_欢心_提针减伤			3758030846	63			atLunarMagicResistPercent	10	1	160	3	
+减伤	2805	七秀_玉骨_内功减伤	ResistDamage		3758030846	63			atCallSubBuff	33086	6	16	1	
+减伤	2849	镇派_千蝶减伤	ResistDamage		3758030846	63			atCallSubBuff	33086	1	96	1	
+减伤	2983	镇派_无我_减伤效果	ResistDamage		3758030846	63			atCallSubBuff	33086	1	9600	1	
+减伤	3068	镇派_雾体减伤			3758030846	63			atCallSubBuff	33086	1	320	1	
+减伤	3157	回风兽_减伤			3758030846	63			atGlobalResistPercent	819	1	960	1	
+减伤	3274	唐门_浮光掠影_减伤			1472200718	60			atCallSubBuff	33086	99999	8	1	
+减伤	3315	唐门_扬威天下_减伤			3758030846	63			atBuffFunctionDecay	4	1	160	1	
+减伤	3376	唐莲_减伤			3758030846	63			atGlobalResistPercent	973	1	0	1	
+减伤	3556	五毒_宠物_隐藏减伤			3758030846	63					1	0	1	
+减伤	4245	明教_朝圣言_自身减伤免控			1400897666	60			atGlobalResistPercent	614	1	16	1	
+减伤	4307	南诏皇宫_萧杀_迦楼罗炎劲_自身减伤			3758030846	63			atNeutralMagicResistPercent	813	1	0	1	
+减伤	4439	明教_贪魔体_减伤免控			3758030846	63			atCallSubBuff	33086	1	16	1	明教/明教_贪魔体.lua
+减伤	4479	明教_寒月耀煌日照_击中减伤			3758030846	63			atGlobalResistPercent	51	1	16	1	
+减伤	4781	门派活动_九子连环牢减伤			3758030846	63			atGlobalResistPercent	810	1	0	1	
+减伤	5144	南诏皇宫_6号_李倓_龙铁牢锁_减伤			3758030846	63			atGlobalResistPercent	512	1	16	1	
+减伤	5280	一线天_霹雳_减伤反伤buff			3758030846	63			atLunarMagicReflectionPercent	1024	1	16	10	
+减伤	5543	90级阵营_减伤			3758030846	63		0	atGlobalResistPercent	819	1	16	1	
+减伤	5626	大明宫_傀儡·天_减伤			3758030846	63		0	atLunarMagicResistPercent	612	1	0	1	
+减伤	5627	大明宫_傀儡·人_减伤			3758030846	63		0	atLunarMagicResistPercent	612	1	0	1	
+减伤	5628	大明宫_傀儡·修罗_减伤			3758030846	63		0	atLunarMagicResistPercent	612	1	0	1	
+减伤	5629	大明宫_傀儡·饿鬼_减伤			3758030846	63		0	atPhysicsResistPercent	612	1	0	1	
+减伤	5630	大明宫_傀儡·地狱_减伤			3758030846	63		0	atLunarMagicResistPercent	306	1	0	1	
+减伤	5641	天策_突_减伤			3758030846	63		0	atCallSubBuff	33086	1	128	1	
+减伤	5673	大明宫_无名_减伤护盾			3758030846	63		0	atGlobalResistPercent	819	1	0	1	
+减伤	5705	少林_舍身诀_减伤	ResistDamage		3758030846	63		0	atCallSubBuff	33086	1	160	1	
+减伤	5708	少林_横扫六合_减伤害			3758030846	63			atSkillLunarDamagePercent	-31	1	16	1	
+减伤	5722	少林_万佛_加减伤			3758030846	63		0	atGlobalResistPercent	102	1	128	5	
+减伤	5725	藏剑_探梅_减伤			3758030846	63		0	atGlobalResistPercent	205	1	64	1	
+减伤	5726	藏剑_探梅_减伤debuff			3758030846	63		0			1	320	1	
+减伤	5744	明教_贪魔体_2秒减伤			3758030846	63		0	atCallSubBuff	33086	1	64	1	
+减伤	5746	明教_流光囚影_减伤			3758030846	63		0	atCallSubBuff	33086	1	80	1	
+减伤	5750	明教_归寂道_减伤			3758030846	63		0	atCallSubBuff	33086	1	128	1	
+减伤	5752	明教_极乐引_减伤			3758030846	63		0	atCallSubBuff	33086	1	80	5	
+减伤	5770	五毒_宠物死亡减伤			3758030846	63		0			1	160	1	
+减伤	5806	少林_韦陀献杵_减伤			3758030846	63		0	atCallSubBuff	33086	1	96	2	
+减伤	5952	大明宫_白傀儡_减伤			3758030846	63		0	atGlobalResistPercent	307	1	16	1	
+减伤	5996	丐帮_笑醉狂_减伤	ResistDamage		3758030846	63		0	atCallSubBuff	33086	1	160	1	
+减伤	6058	大明宫_小怪_自爆_减伤			3758030846	63		0	atSolarMagicResistPercent	512	1	96	1	
+减伤	6113	唐门_千机变范围加减伤			3758030846	63		0	atGlobalResistPercent	154	1	1920	1	
+减伤	6118	大明宫_傀儡·畜生_减伤			3758030846	63		0	atPhysicsResistPercent	612	1	0	1	
+减伤	6160	天策_雷心_减伤			3758030846	63		0	atCallSubBuff	33086	1	80	1	
+减伤	6166	纯阳_坐忘无我延时加减伤			3758030846	63		0			1	2	1	
+减伤	6200	丐帮_龙啸九天_减伤	ResistDamage		3758030846	63		0	atCallSubBuff	33086	1	16	1	
+减伤	6216	五毒_奇穴_宠物加减伤			3758030846	63		0	atActiveThreatCoefficient	0	1	0	1	
+减伤	6228	七秀_剑舞减伤			3758030846	63		0	atCallSubBuff	33086	1	16	1	
+减伤	6237	五毒_奇穴_宠物存在时减伤			3758030846	63		0	atGlobalResistPercent	102	999999	32	1	
+减伤	6238	五毒_奇穴_宠物存在时减伤_监控			3758030846	63		0	atExecuteScript	skill\五毒\删除主人减伤.lua	999999	32	1	
+减伤	6262	万花_太阴指减伤	ResistDamage		3758030846	63		0	atCallSubBuff	33086	1	80	1	
+减伤	6279	明教_贪魔体_减伤免控_贪魔伐罪			3758030846	63		0	atCallSubBuff	33086	1	16	1	明教/明教_贪魔体.lua
+减伤	6294	纯阳_爆凌太虚减伤			3758030846	63		0	atCallSubBuff	33086	1	128	3	
+减伤	6306	明教_光明相减伤			3758030846	63		0	atCallSubBuff	33086	1	128	1	
+减伤	6315	万花_零落_减伤			3758030846	63		0	atCallSubBuff	33086	1	48	1	
+减伤	6540	藏剑_鹤归秘籍_减伤	ResistDamage		3758030846	63		0	atGlobalResistPercent	51	1	80	1	
+无敌	160	无敌			4294934526	63			atNegativeShield	1	1	32	1	
+无敌	205	无敌BUFF			4294934526	63			atNegativeShield	1	1	9600	1	
+无敌	778	技能教学用无敌			3758030846	63			atGlobalBlock	1	1	80	1	
+无敌	835	NPC战斗技能_BUFF_特殊_负面效果无敌盾_8			3758030846	63			atNegativeShield	1	1	128	1	
+无敌	856	锻骨诀内功无敌效果			3758030846	63			atLunarMagicBlock	1	1	64	1	
+无敌	1036	日轮山城_通用无敌			3757998078	63			atNegativeShield	1	1	0	1	
+无敌	1037	日轮山城_可驱散无敌			3757998078	63			atNegativeShield	1	1	0	1	
+无敌	1366	风雨稻香村_通用无敌			3757998078	63			atNegativeShield	1	1	0	1	
+无敌	1484	英雄空雾峰_隐遁(无敌BUFF)			3757998078	63			atGlobalDamageAbsorb	15789474	1	0	1	
+无敌	1740	2人副本_狩猎_NPC_无敌			3758030846	63			atNegativeShield		1	28800	1	
+无敌	2573	帮会_帮会旗帜_天下无敌			3758030846	63			atGlobalResistPercent	307	1	160	1	
+无敌	2946	五毒_秘笈_凤凰蛊_目标起身后无敌			3758030846	63			atGlobalResistPercent	1024	1	32	1	
+无敌	3090	龙渊泽_南诏双雄_判断无敌			3753836542	63					999999	32	1	
+无敌	3091	龙渊泽_南诏双雄_无敌			3753836542	63			atNegativeShield		1	80	1	
+无敌	3259	中秋_天狗爪牙_无敌			3758030846	63			atGlobalResistPercent	1024	1	3840	1	
+无敌	3300	唐门密室_柳惊涛_无敌			3758030846	63			atGlobalResistPercent	1024	1	0	1	
+无敌	3323	凤凰蛊_无敌_活着维持			3758030846	63			atExecuteScript	skill\五毒\秘笈\凤凰蛊_无敌_活着维持.lua	1	28800	1	
+无敌	3325	凤凰蛊_无敌_死亡维持			1942028288	60			atExecuteScript	skill\五毒\秘笈\凤凰蛊_无敌_死亡维持.lua	1	28800	1	
+无敌	3374	唐门密室_机甲无敌			3758030846	63			atGlobalResistPercent	1024	1	0	1	
+无敌	3425	唐门_鬼斧神工_无敌			3619700990	63			atNegativeShield	1	1	16	1	
+无敌	3486	唐门_机关无敌BUFF			3758030846	63			atNegativeShield	1	1	0	1	
+无敌	3676	烛龙殿_雷神_无敌BUFF			3758030846	63			atGlobalResistPercent	1024	1	28800	1	
+无敌	3759	烛龙殿_无敌BUFF			3757998078	63			atNegativeShield	1	1	0	1	
+无敌	3851	震山河_自身无敌2秒			3758030846	63			atNegativeShield	1	1	32	1	
+无敌	3861	少林_轮回诀_隐藏1秒无敌			4294967294	63			atGlobalBlock	3	1	32	1	
+无敌	3973	烛龙殿_乌蒙贵_无敌			3758030846	63			atNegativeShield	1	1	0	3	
+无敌	4352	南诏皇宫_2号_无敌			3758030846	63			atGlobalBlock		1	16	3	
+无敌	5087	南诏皇宫_6号_李倓_镜中胧月_无敌			3758030846	63			atGlobalBlock	1	1	16	1	
+无敌	5339	一线天_二号小怪_被击无敌buff			3758030846	63		0	atLunarDamageCoefficient	-1024	1	16	1	
+无敌	5535	大明宫_剑圣_无敌			3758030846	63		0	atGlobalBlock	1	1	16	1	
+无敌	5613	活动用通用无敌			2	60		0	atNegativeShield		1	16	1	
+无敌	5748	90级阵营_无敌定身buff			3758030846	63		0	atFreeze		1	16	1	
+无敌	5834	神剑冢_炙狱邪龙_无敌			3758030846	63		0	atGlobalBlock	1	1	96	1	
+无敌	6089	唐门_飞星遁影无敌			3758030846	63		0	atGlobalBlock	1	1	32	1	
+无敌	6182	七秀_假死无敌			3758030846	63		0	atDodgeBaseRate	10000	1	48	1	
+无敌	6213	少林_无相诀定身无敌			3758030846	63		0	atGlobalBlock	1	1	48	1	
+无敌	6500	暗杀用无敌			4294901758	63		0	atNegativeShield		1	160	1	
+无敌	6580	阿史那从礼_无敌buff			3758030846	63		0	atNegativeShield		1	9600	1	
+无敌	6621	无敌反潜沉默			3758030846	63		0	atNegativeShield		1	16	1	
+无敌	6643	军官无敌			3758030846	63		0			1	16	1	
+无敌	6842	守卫无敌			3758030846	63		0	atPositiveShield		1	0	1	
+无敌	7123	五毒_化蝶延时加无敌			3758030846	63		0	atJumpSpeedBase	80	1	8	1	
+无敌	7124	五毒_化蝶无敌			3758030846	63		0	atNegativeShield		1	16	1	
+无敌	7159	血战天策_八阵图_无敌			3758030846	63		0	atNegativeShield	1	1	0	1	
+无敌	7199	血战天策_保护青骓牧场_狼牙战俘营_负面无敌盾			3758030846	63		0	atNegativeShield		1	0	1	
+无敌	7459	二号雷麒麟自我修复无敌buff			3758030846	63		0	atNegativeShield		1	0	1	
+无敌	7574	三号圣女_无敌buff			3758030846	63		0	atNegativeShield		1	0	1	
+无敌	7765	帮会_天下无敌·战			3758030846	63		0	atGlobalResistPercent	31	1	160	10	
+无敌	7929	无敌			3758030846	63		0	atNegativeShield	1	1	1440	1	
+无敌	8371	无敌			3758030846	63			atNegativeShield	1	1	0	1	
+无敌	8374	牛车无敌			3758030846	63		0	atNegativeShield	1	1	960	1	
+无敌	8624	无敌			3758030846	63		0	atNegativeShield	1	1	32	1	
+无敌	8669	松树无敌			4294967294	63		0	atGlobalBlock	1	1	480	1	
+无敌	9037	索魂灯_无敌亮			4294967295	63		0			1	0	1	
+无敌	9106	寻宝_无敌			4294967295	63		0	atNegativeShield	1	1	0	1	
+无敌	9111	剧情锁足_沉默无敌不隐身	Charm		3758030846	63		0	atEntrap		1	16	1	
+无敌	9121	黑白路_眩晕无敌			3758030846	63		0	atEntrap		1	16	1	
+无敌	9125	微山书院-试炼弟子-无敌			3757998078	63			atNegativeShield	1	1	0	1	
+无敌	9128	黑白路_无敌			3758030846	63		0	atNegativeShield		1	16	1	
+无敌	9158	4号_无敌			3758030846	63		0			1	9999	1	
+免伤	1187	万佛朝宗_减免伤害			3758030846	63			atCallSubBuff	33086	1	128	1	
+免伤	1802	藏剑_快剑70级内功_梦泉虎跑免伤	ResistDamage		3758030846	63			atCallSubBuff	33086	1	112	1	
+免伤	4227	明教密道_狂暴免伤			3758030846	63			atGlobalBlock	1	1	4	1	
+免伤	7155	血战天策_黑齿元佑_全局免伤盾			3758030846	63		0	atGlobalResistPercent	1024	1	0	1	
+免伤	7484	三号圣女火舞蓝色气劲免伤buff			3758030846	63		0	atLunarDamageCoefficient	-819	60	16	1	
+免伤	7879	严庄_挟持人质免伤			3758030846	63		0	atGlobalDamageAbsorb	200000000	1	0	1	
+免伤	10895	2号_哥舒翰_落枪_免伤无敌			3758030846	63		0	atGlobalResistPercent	1024	1	36000	1	
+免伤	12126	2号_李令霞_地_物理免伤			3758030846	63		0	atPhysicsDamageCoefficient	-306	1	160	1	
+免伤	12127	2号_李令霞_地_毒性免伤			3758030846	63		0	atPoisonDamageCoefficient	-306	1	160	1	
+免伤	12128	2号_李令霞_地_阳性免伤			3758030846	63		0	atSolarDamageCoefficient	-306	1	160	1	
+免伤	12309	3号_傀儡免伤			3758030846	63		0	atGlobalResistPercent	512	1	0	10	
+免伤	12964	阵营日常新手免伤			4294967294	63		264	atGlobalResistPercent	102	9999	160	1	
+免伤	14115	经首道源岛新手免伤			4294967294	63		264	atGlobalResistPercent	102	9999	160	1	
+免伤	14708	曹庆军_标记免伤			3758030846	63		0			1	8	1	
+免伤	14832	MOBA箭塔无小兵时免伤			3758030846	63		0	atGlobalResistPercent	1004	3600	16	1	
+免伤	16007	蔷薇列岛新手免伤			4294967294	63		264	atGlobalResistPercent	102	9999	160	1	
+免伤	18762	乱世藏剑新手免伤			4294967294	63		264	atGlobalResistPercent	103	9999	160	1	
+免伤	20694	上杉勇刀_枪法_铁林_外功免伤			3758030846	63		0	atPhysicsResistPercent	51	1	16	10	
+免伤	24429	孔雀引免伤+百分比回血buff			3758030846	63		0	atGlobalResistPercent	1024	90	16	1	
+免伤	24462	2号_秘三花_藤原佑野免伤			3758030846	63		0	atGlobalResistPercent	1024	1	0	1	
+免伤	25101	万花金创药_耐力免伤			3758030846	63		0			8	16	1	
+免伤	26496	万花金创药_耐力免伤50%			3758030846	63		0			8	16	1	
+免伤	26598	6号_月泉淮_五行技_土免伤	Normal	-1	3758030846	63	0	0			1	16	1	
+免伤	26607	6号_月泉淮_五行技_金免伤	Normal	-1	3758030846	63	0	0			1	16	1	
+免伤	31992	3号_图南子_鹏程功免伤			3758030846	63	0	0	atGlobalDamageAbsorb	999999999	1	0	1	
+免伤	32033	明教_内劲_贪魔体不可移动且免伤			3758030846	63	0	0			1	160	1	
+免伤	32878	斗气免伤			3758030846	63	0	0	atGlobalBlock	1	1	48	1	
+免伤	33493	守护星使范围队友免伤			3758030846	63	0	0	atGlobalBlock	1	1	48	1	
+免控	2756	天策_任驰骋免控			3758030846	63			atImmunity	2	1	8	1	天策\天策_李渡城判断乘骑状态.lua
+免控	2781	转乾坤免控			3758030846	63			atImmunity	2	1	96	1	
+免控	2847	鹊踏枝_免控_素衿			3758030846	63			atImmunity	2	1	24	1	
+免控	3275	唐门_浮光掠影_加速免控			3758030846	63			atImmunity	2	1	48	1	
+免控	3279	唐门_子母勾_免控			3758030846	63			atImmunity	2	1	32	1	
+免控	3758	唐门_飞星遁隐_短暂免控			3758030846	63			atImmunity	2	1	8	1	
+免控	3822	五毒_献祭蝴蝶_免控			3758030846	63			atImmunity	2	1	32	1	
+免控	4245	明教_朝圣言_自身减伤免控			1400897666	60			atGlobalResistPercent	614	1	16	1	
+免控	4341	小橙武BOSS_藏剑_风来吴山免控			3758030846	63			atImmunity	2	1	12	1	
+免控	4421	明教_夜叉心_免控			3758030846	63			atImmunity	2	1	48	1	
+免控	4439	明教_贪魔体_减伤免控			3758030846	63			atCallSubBuff	33086	1	16	1	明教/明教_贪魔体.lua
+免控	4626	小橙武BOSS_龙龟_金旋_免控			3758030846	63			atImmunity	2	1	16	1	
+免控	4969	大战郭萌萌_基本属性_免控			4294967294	63			atImmunity	2	1	0	1	
+免控	5306	一线天_一号小怪_免控			3758030846	63			atImmunity	2	1	16	1	
+免控	5949	门派活动_NPC免控			3758030846	63		0	atImmunity	2	1	16	1	
+免控	5950	五毒_蛊虫献祭通用免控			3758030846	63			atImmunity	2	6	16	1	
+免控	5959	大明宫_黑色傀儡_免控			3758030846	63		0	atImmunity	2	1	16	1	
+免控	5963	丐帮门派活动_通用免控BUFF			3758030846	63			atImmunity	2	1	0	1	
+免控	5995	丐帮_笑醉狂_免控			3758030846	60			atImmunity	2	1	16	1	
+免控	6015	丐帮_龙跃于渊_免控3秒			2684256254	63			atImmunity	2	1	88	1	
+免控	6087	唐门_飞星遁影免控			3758030846	63			atImmunity	2	1	64	1	
+免控	6192	少林_无相免控			3758030846	63			atImmunity	2	1	160	1	
+免控	6219	五毒_奇穴_宠物加免控			3758030846	63		0	atImmunity	2	1	0	1	
+免控	6279	明教_贪魔体_减伤免控_贪魔伐罪			3758030846	63		0	atCallSubBuff	33086	1	16	1	明教/明教_贪魔体.lua
+免控	6292	纯阳_爆吞日月免控			3758030846	63		0	atImmunity	2	1	32	1	
+免控	6314	万花_零落_免控			3758030846	63			atImmunity	2	1	48	1	
+免控	6361	天策_突免控2秒			3758030846	63			atImmunity	2	1	48	1	
+免控	6369	丐帮_酒中仙免控			2621341694	63			atImmunity	2	1	80	1	
+免控	6373	丐帮_龙跃于渊免控			2621341694	63			atImmunity	2	1	80	1	
+免控	6459	丐帮_烟雨行免控			67108864	60			atImmunity	2	1	16	1	
+免控	6489	小橙武BOSS_丐帮_免控			3758030846	63			atImmunity	2	1	0	1	
+免控	7508	哑运加速免控			3758030846	63		0	atMoveSpeedPercent	512	1	160	1	
+免控	7687	二号麒麟_免控BUFF			3758030846	63		0	atImmuneSkillMove	1	1	0	1	
+免控	7699	藏剑_梦泉虎跑免控			3758030846	63			atImmunity	2	7	16	1	
+免控	8293	千险免控效果			3758030846	63			atImmunity	2	1	128	1	
+免控	8302	盾墙消失减伤和免控	ResistDamage		3758030846	63			atLunarDamageCoefficient	-307	1	80	1	
+免控	8449	血怒免控			3758030846	63			atImmunity	2	1	64	1	苍云\劫化生结束.lua
+免控	8458	水月免控			3758030846	63			atImmuneSkillMove	1	1	96	1	
+免控	8483	盾毅免控			67108864	63		0	atImmunity	2	1	80	1	
+免控	8716	盾墙队友免控			3758030846	63		0	atImmuneSkillMove	1	1	18	1	
+免控	8742	鹊踏枝_免控加强版本			3758030846	63			atImmunity	2	1	128	1	
+免控	8864	千碟_免控buff			147634	60			atImmunity	2	1	16	1	五毒/镇派/千蝶结束.lua
+免控	9059	太阴免控			3758030846	63			atImmunity	2	1	64	1	
+免控	9068	拿云免控			3758030846	63			atImmunity	2	1	80	1	
+免控	9107	太阴延迟加免控			1407582208	60			atExecuteScript	skill/万花/太阴延迟加免控.lua	1	48	1	
+免控	9293	孤影化双_残影减伤免控			3758030846	63		0	atCallSubBuff	33086	1	128	1	
+免控	9294	孤影化双_残影免控			3758030846	63		0	atImmunity	2	1	128	1	
+免控	9342	石间意_梅花三弄期间免控免封内			3758030846	63		0	atImmunity	2	1	16	1	
+免控	9354	捣衣_羽免控效果			3758030846	63			atImmunity	2	1	48	1	
+免控	9511	青霄飞羽秘籍免控			3758030846	63		0	atSetTalentRecipe	2217	1	8	1	
+免控	9848	探梅免控			3758030846	63			atImmunity	2	1	64	1	
+免控	9855	蝶弄足3秒免控			3758030846	63			atImmunity	2	1	16	1	
+免控	9999	捣衣_疏影横斜免控相知			3758030846	63			atImmunity	2	1	80	1	
+免控	10245	破重围3秒免控			3758030846	63			atImmunity	2	1	63	1	
+免控	10514	节日花朝节_BOSS免控			3758030846	63			atImmunity	2	1	0	1	
+免控	10748	免控全			4294967294	63			atImmunity	2	1	57600	1	
+免控	11204	封渊震煞免控Buff			3758030846	63			atImmunity	2	1	16	1	
+免控	11205	封渊震煞免控监控Buff			67108864	63		0	atExecuteScript	skill/霸刀/监控封渊震煞添加免控.lua	1	48	1	
+免控	11310	封渊震煞后翻免控			67108864	63			atImmunity	2	1	24	1	
+免控	11319	跑墙免控无操作			3758030846	63			atImmunity	2	1	37	1	
+反伤	5111	一线天_苏清_无懈可击反伤			3758030846	63			atLifeReplenishExt	900	1	16	10	
+反伤	5280	一线天_霹雳_减伤反伤buff			3758030846	63			atLunarMagicReflectionPercent	1024	1	16	10	
+反伤	5709	大明宫_无名_反伤			3758030846	63		0	atLunarMagicReflection	492	1	16	1	
+反伤	7517	风雪稻香村_黑鹰_愁虑反伤			3758030846	63		0			100	80	25	
+反伤	7809	风雪稻香村_黑鹰_愁虑额外反伤			3758030846	63		0			100	80	1	
+反伤	11018	1号_心魔反伤			3758030846	63		0	atLunarMagicReflectionPercent	10	1	0	4	
+反伤	11912	柳秀岳_金反伤盾			3758030846	63		0	atLunarMagicReflectionPercent	100	1	160	25	
+反伤	14816	4号_猴子反伤			3758030846	63		0	atNeutralMagicReflectionPercent	1024	1	80	1	
+反伤	15755	反伤效果			3758030846	63		0	atLunarMagicReflectionPercent	512	6	16	1	
+反伤	15942	友善反伤效果			3758030846	63		0	atLunarMagicReflectionPercent	307	10	16	1	
+反伤	17011	狼牙首领_反伤			3758030846	63		0	atLunarMagicReflectionPercent	512	8	16	1	Quest/ACT_场景预热/狼牙首领_反伤蓄力.lua
+反伤	17596	卦象·水坎固定减伤反伤			3758030846	63			atSkillEventHandler	1858	1	160	4	
+反伤	19969	修罗僧_P1_反伤			3758030846	63		0			1	0	100	
+反伤	20695	上杉勇刀_枪法_铁林_内功反伤			3758030846	63		0	atLunarMagicReflectionPercent	5	1	16	10	
+反伤	22347	谢云流_移除反伤监控			3758030846	63		0			39	4	1	
+反伤	26394	通用_百战技能反伤			3758030846	63		0			1	16	100	
+反伤	26463	牡丹_血涂风暴_反伤			3758030846	63	0	0	atPhysicsReflectionPercent	102	1	320	1	
+反伤	29649	2号_韦柔丝_外功反伤			3758030846	63	0	0	atSkillEventHandler	2768	1	0	1	
+反伤	29650	2号_韦柔丝_内功反伤			3758030846	63	0	0	atSkillEventHandler	2767	1	0	1	
+反伤	30069	PVP上衣反伤_内置CD			3758096382	63	0	0			1	160	1	
+反伤	31393	5号_尹雪尘_定波抵澜_反伤			3758030846	63		0	atPhysicsReflectionPercent	820	1	16	1	
+反弹	371	反弹			4294967294	63			atPhysicsReflection	100	1	320	1	
+反弹	768	少林反弹			3758030846	63			atPhysicsReflection	50	1	80	1	
+反弹	1078	反弹			3758030846	63			atPhysicsReflection	50	1	4800	1	
+反弹	4147	战斗塔_伤害反弹			3758030846	63			atLunarMagicReflectionPercent	102	1	160	1	
+反弹	4780	门派活动_九子连环固反弹			3758030846	63			atPhysicsReflection	98518	1	16	1	
+反弹	5703	少林_无相诀_反弹			3758030846	63		0	atLunarMagicReflectionPercent	205	1	160	1	
+反弹	5875	少林_反弹			3758030846	63		0	atSkillEventHandler	956	1	16	5	
+反弹	5876	少林_反弹眩晕	Stun	0	3758030846	63		0	atHalt		1	32	1	
+反弹	5877	少林_反弹眩晕计时器			3758030846	63		0			1	240	1	
+反弹	5878	少林_反弹眩晕计时器2			3758030846	63		0			1	320	1	
+反弹	6076	预热反弹			3758030846	63		0	atPhysicsReflection	100000	1	16	1	
+反弹	8090	胖妹子反弹			3758030846	63		0	atActiveThreatCoefficient	0	1	16	1	
+反弹	8388	苍云反弹技能buff			3758030846	63		0	atMirrorShield		1	160	1	
+反弹	9804	罗汉金身5%反弹几率解控			3758030846	63			atLunarMagicReflectionPercent	204	1	16	1	
+反弹	9805	罗汉金身15%反弹几率解控			3758030846	63			atLunarMagicReflectionPercent	307	1	16	1	
+反弹	9806	罗汉金身25%反弹几率解控			3758030846	63			atLunarMagicReflectionPercent	154	1	16	1	少林\金身结束.lua
+反弹	9807	罗汉金身_30%反弹加强			3758030846	63			atLunarMagicReflectionPercent	307	1	16	1	
+反弹	9808	罗汉金身_45%反弹加强			3758030846	63			atLunarMagicReflectionPercent	461	1	16	1	
+反弹	9809	罗汉金身_60%反弹加强			3758030846	63			atLunarMagicReflectionPercent	230	1	16	1	少林\金身结束.lua
+反弹	10390	纯阳_北冥盾反弹			3758030846	63		0	atNegativeShield	1	500	16	1	
+反弹	14233	4号_没藏呼月_反弹沉默	Silence		3758030846	63		0	atSilenceAll		1	16	1	
+反弹	16750	厌夜_斩无常反弹			3758030846	63			atLunarMagicReflectionPercent	10	1	16	1	
+反弹	17273	5号_安小逢_斧卫反弹			3758030846	63			atLunarMagicReflectionPercent	512	1	16	1	
+反弹	19301	前5秒额外反弹			3758030846	63			atLunarMagicReflectionPercent	205	1	80	1	
+反弹	19403	2号_机关弩箭伤害反弹			3758030846	63		0	atLunarMagicReflectionPercent	1024	1	160	1	
+反弹	19533	神器_蓄力猛击_减伤反弹buff			16590	63	0	0	atGlobalResistPercent	819	40	4	1	
+反弹	23217	邵烨霖_打断反弹			3758030846	63			atLunarMagicReflectionPercent	512	5	16	1	
+反弹	24269	无可证被击反弹			3758030846	63		0			1	80	5	
+反弹	24361	游风飘踪反弹减速	Slow		3757998078	63			atMoveSpeedPercent	-102	1	80	1	
+反弹	25729	3号_反弹			3758030846	63		0	atAllDamageAddPercent	-102	5	16	1	
+反弹	27119	万灵山庄_上岩反弹			3758030846	63	0	0	atDamageFeedbackPercent	81	4	8	1	
+反弹	27464	大乌龟反弹			3758030846	63		0	atSkillEventHandler	2567	1	24	1	
+反弹	28017	3号_喜雅_诺布心诀·炽烈伤害反弹与伤害吸收盾			3758030846	63	0	0	atSkillEventHandler	2593	1	192	1	
+反弹	28330	剑舞反弹_监控与被击buff			3758030846	63	0	0	atSkillEventHandler	2616	16	4	1	
+反弹	28331	剑舞反弹_护盾			3758030846	63		0	atPhysicsDamageAbsorb	2000000	1	80	5	
+反弹	28351	剑舞反弹_单体延时			3758030846	63	0	0			1	8	1	
+反弹	28500	剑舞反弹_替换内部技能			4294967294	63		0	atNoLimitChangeSkillIcon	28202	1	0	1	
+反弹	28954	剑舞反弹_反弹颜色标记用buff			3758030846	63	0	0			1	16	1	
+反弹	29091	水晶共鸣反弹伤害			3758030846	63			atLunarMagicReflectionPercent	21	1	16	1	
+反弹	30768	转乾坤反弹内置			3758030846	63		0			1	4	1	
+反弹	31721	营地_诺布众_NPC反弹			3758030846	63	0	0	atLunarMagicReflectionPercent	512	1	16	1	
+反弹	32533	营地_通用_反弹			4294967294	63	0	0	atSkillEventHandler	3037	1	28800	1	
+反弹	32535	营地_通用_反弹CD			3758030846	63	0	0			1	80	1	
+破防	552	天策-破风-破防	Damage		3758030846	63			atPhysicsShieldBase	-7	1	480	5	
+破防	703	剑法·破防			3758030846	63			atPhysicsShieldPercent	-205	1	240	1	
+破防	1394	英雄空雾峰_辅助NPC_外功易伤NPC_破防			3758030846	63			atPhysicsDamageCoefficient	2048	1	48	1	
+破防	1405	英雄空雾峰_辅助NPC_外功易伤NPC_破防(释放)			3758030846	63					9600	16	1	
+破防	2806	七秀_碎冰_剑气长江加破防			3758030846	63			atSolarOvercomePercent	51	1	80	1	
+破防	3146	南诏铁爪侍卫_碎骨击_破防	Damage		3758030846	63			atPhysicsShieldBase	-100	1	160	5	
+破防	4419	节日特殊小药外功破防			4294967294	63	520		atPhysicsOvercomeBase	265	1	28800	1	
+破防	4420	节日特殊小药内功破防			4294967294	63	520		atMagicOvercome	265	1	28800	1	
+破防	5037	南诏破军套_提高破防值			3758030846	63			atPhysicsOvercomeBase	4	1	96	10	
+破防	5112	一线天_苏清_盾舞破防			3758030846	63			atPhysicsDefenceAdd	-102	10	16	1	
+破防	5146	气纯特殊武器_加破防用buff			3758030846	63					1	1	1	
+破防	6221	五毒_奇穴_蝎心破防			3758030846	63		0	atPoisonOvercomePercent	153	1	160	2	
+破防	6343	丐帮_阵眼加破防			3758030846	63		0	atPhysicsOvercomePercent	306	1	80	1	
+破防	6344	丐帮_阵眼加破防CD			3758030846	63					1	320	1	
+破防	6376	丐帮_龙战加破防			3758030846	63		0	atPhysicsOvercomePercent	102	1	160	1	
+破防	8403	苍云攻击阵破防效果			3758030846	63		0	atPhysicsCriticalDamagePowerBaseKiloNumRate	20	1	480	5	
+破防	8484	攻击阵第四重破防			3758030846	63		0	atPhysicsOvercomePercent	153	1	80	1	
+破防	9489	长歌输出阵法破防等级提高10%			3758030846	63		0	atLunarOvercomePercent	102	1	80	1	
+破防	9596	外功破防			4294967294	63		0	atPhysicsOvercomeBase	74	1	28800	1	
+破防	9597	内功破防			4294967294	63		0	atMagicOvercome	74	1	28800	1	
+破防	9616	外功破防			4294967294	63		0	atPhysicsOvercomeBase	111	1	28800	1	
+破防	9617	内功破防			4294967294	63		0	atMagicOvercome	111	1	28800	1	
+破防	9770	剑主天地小队5%破防			3758030846	63		0	atLunarOvercomePercent	102	1	192	1	
+破防	9920	龙曲_破防5%			3758030846	63		0	atPhysicsOvercomePercent	51	1	480	2	
+破防	9949	玄门_5%破防和会心			3758030846	63		0	atPhysicsOvercomePercent	204	1	640	3	
+破防	10216	阳春白雪破防加层表现			3758030846	63		0	atExecuteScript	skill/长歌/套路及子技能/阳春白雪标记buff消失删除实际效果.lua	1	96	3	
+破防	12574	小队破防加速			3758030846	63		0	atUnlimitHasteBasePercentAdd	3	1	20	1	
+破防	12939	3号_铁狱机关阵_破防			3758030846	63		0	atMoveSpeedPercent	-307	1	160	1	
+破防	14100	翼绝云天加小队破防			3758030846	63		0	atPhysicsOvercomePercent	31	1	192	5	
+破防	14309	血怒外功破防加15%			3758030846	63		0	atPhysicsAttackPowerPercent	154	30	16	1	
+破防	14941	MOBA光环BUFF—破防			3758030846	63			atAllTypeOvercomeBase	102	1	16	1	
+破防	14942	MOBA破防光环			4294967294	63		0			10	16	1	
+破防	15436	破防等级提高			3758030846	63		0	atAllTypeOvercomeBase	207	1	480	1	
+破防	17851	破防增益			3758030846	63		380	atNeutralOvercomeBase	11162	10	16	1	
+破防	18214	修罗暗度内功破防等级			3758030846	63		0	atMagicOvercome	300	1	16	125	
+破防	18459	测试用外功破防			3758030846	63			atPhysicsOvercomeBase	500	1	3600	99	
+破防	18460	测试用混元破防			3758030846	63			atNeutralOvercomeBase	500	1	3600	99	
+破防	18461	测试用阴性破防			3758030846	63			atLunarOvercomeBase	500	1	3600	99	
+破防	18462	测试用阳性破防			3758030846	63			atSolarOvercomeBase	500	1	3600	99	
+破防	18463	测试用毒性破防			3758030846	63			atPoisonOvercomeBase	500	1	3600	99	
+破防	20699	养荣千枝绽蕊加破防			3758030846	63		0	atPoisonOvercomePercent	256	1	16	1	
+破防	25472	破防增益			3758030846	63		380	atAllTypeOvercomeBase	6400	15	16	1	
+破防	29504	助战npc未满级破防特殊处理			3758030846	63	0	0	atPhysicsOvercomePercent	-830	1	0	1	
+破防	29505	助战npc未满级破防特殊处理（李星云）			3758030846	63	0	0	atPhysicsOvercomePercent	-1079	1	0	1	
+破防	29526	黄字鞋子加破防_低品			3758030846	63		8	atAllTypeOvercomeBase	4218	1	160	1	
+破防	29536	黄字腰坠破防			3758030846	63		8	atAllTypeOvercomeBase	270	1	192	5	
+破防	29636	测试用加会心减破防			3758030846	63	0	0	atAllTypeCriticalStrike	500	1	0	99	
+破防	29637	测试用减会心加破防			3758030846	63	0	0	atAllTypeCriticalStrike	-500	1	0	99	
+破防	29642	测试用减破防加破招			3758030846	63	0	0	atSurplusValueBase	500	1	0	99	
+破防	29643	测试用加破防减破招			3758030846	63	0	0	atSurplusValueBase	-500	1	0	99	
+破防	29644	测试用加破防减加速			3758030846	63	0	0	atHasteBase	-500	1	0	99	
+破防	29645	测试用减破防加加速			3758030846	63	0	0	atHasteBase	500	1	0	99	
+破防	30511	JJC插旗大王-破防			4294967294	63		0	atAllTypeOvercomeBase	1000	1	5760	100	
+破防	30743	精简腰带提高属性_高级版_破防			3758030846	63		8	atAllTypeOvercomeBase	8506	1	320	1	
+破防	30749	精简下装适应之力破防_高级版			3758030846	63		8	atAllTypeOvercomeBase	12152	1	0	1	
+破防	30752	精简下装适应之力破防_循环判定_山海源流			3758030846	63		8			3333	16	1	
+破防	30755	精简戒指1加破防			3758030846	63		8	atAllTypeOvercomeBase	1412	1	160	1	
+破防	31367	破防			3758030846	63	0	0	atLunarMagicShieldPercent	-307	1	480	1	
+破防	50678	被动技能_破防提升			4294901758	7	0		atAllTypeOvercomeBase	202	3600	16	1	
+破防	50718	衰减的破防			4294901758	7	0		atAllDamageAddPercent	102	1	40	5	
+化劲	1455	增加化劲			4294967294	63			atDecriticalDamagePowerBase	54	1	28800	1	
+化劲	1854	藏剑_西子情_梅隐香_香梅(带化劲)			3758030846	63			atToughnessBase	16	1	48	1	
+化劲	3431	增加化劲50点			3758030846	63			atDecriticalDamagePowerBase	50	1	999999	100	
+化劲	3435	减化劲50点			3758030846	63			atDecriticalDamagePowerBase	-50	1	999999	100	
+化劲	7505	春点减化劲			3758030846	63		0	atDecriticalDamagePowerBaseKiloNumRate	-1000	1	80	1	
+化劲	11873	追命箭降低目标化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-51	1	192	1	
+化劲	12597	兰摧降低目标化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-154	7	48	1	
+化劲	13052	普通大道无术减化劲	Halt	2	1405100032	60			atFreeze	0	1	32	1	
+化劲	13053	强化大道无术减化劲	Halt	2	1405100032	60			atFreeze	0	1	48	1	
+化劲	13924	翔极碧落降低目标化劲等级			3758030846	63		0	atDecriticalDamagePowerPercent	-205	1	80	1	
+化劲	13939	还璧减化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-154	1	80	1	
+化劲	17076	斩火降低目标化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-51	1	240	3	
+化劲	18031	百步穿杨减化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-103	1	192	2	
+化劲	22131	三星临无视化劲判定标记			3758030846	63			atSkillEventHandler	2153	1	320	1	
+化劲	22132	三星临无视化劲实际效果			3758030846	63		0	atSetTalentRecipe	2873	1	192	1	
+化劲	23071	[23071]霸刀七刀无视化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-102	1	4	1	
+化劲	24181	触碰身行减少目标化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-103	1	16	1	
+化劲	24554	已废弃_灭影追风额外降化劲版			3758030846	63			atPhysicsOvercomePercent	51	1	4	1	刀宗/套路及子技能/灭影结束处理.lua
+化劲	24761	灭影追风减化劲等级			3758030846	63		0	atDecriticalDamagePowerPercent	-61	1	176	1	
+化劲	25272	[25272]丐帮_温酒_无视化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-359	1	4	1	
+化劲	27064	明教_净恶瑕诛无视化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-410	1	4	1	
+化劲	28807	提高化劲			4294967295	63		520	atDecriticalDamagePowerBaseKiloNumRate	10	1	160	15	
+化劲	29195	日破无视化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-154	1	4	1	
+化劲	30056	输出PVP护手减化劲_内置CD			3758030846	63	0	0			1	480	1	
+化劲	30057	治疗PVP护手加化劲_内置CD			3758030846	63	0	0			1	480	1	
+化劲	30059	输出PVP护手减化劲			3758030846	63		8	atDecriticalDamagePowerBase	-2756	1	160	1	
+化劲	30060	治疗PVP护手加化劲			3758030846	63		8	atDecriticalDamagePowerBase	2756	1	160	1	
+化劲	30074	PVP项链化劲加御劲			3758030846	63		8	atToughnessBase	160	1	0	10	
+化劲	30306	奇穴_雾灭_降低化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-51	1	16	2	
+化劲	30307	奇穴_雾灭_提高化劲			3758030846	63		0	atDecriticalDamagePowerPercent	51	1	16	2	
+化劲	30516	JJC插旗大王-化劲			4294967294	63		0	atDecriticalDamagePowerBase	1000	1	5760	100	
+化劲	30708	PVP附魔2腰带拍卖_化劲转御劲_太极秘录			3758030846	63		8	atToughnessBase	120	1	0	10	
+化劲	31776	七情减化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-11	8	8	99	
+化劲	33182	孤锋破浪无视化劲			3758030846	63	0	0	atDecriticalDamagePowerPercent	-256	1	4	1	
+化劲	51856	绝境_丐帮棒打降低化劲	Normal	-1	3758030846	63		0	atDecriticalDamagePowerPercent	-62	1	120	1	
+御劲	1072	御劲			3758030846	63			atToughnessBase	162	1	4800	1	
+御劲	1444	T增加御劲			3758030846	63			atToughnessBase	11	1	960	1	
+御劲	1458	增加御劲			4294967294	63			atToughnessBase	50	1	28800	1	
+御劲	1800	藏剑_快剑40级内功_梅隐香增加御劲值			3758030846	63					1	0	1	
+御劲	1880	25人天王殿_御劲壁垒			3758030846	63			atSolarMagicResistPercent	204	1	0	5	
+御劲	2198	铁壁_加20%御劲			3758030846	63			atToughnessPercent	205	1	192	1	
+御劲	2199	溃甲_减20%御劲			3758030846	63			atToughnessPercent	-205	1	192	1	
+御劲	3430	增加御劲50点			3758030846	63			atToughnessBase	50	1	999999	100	
+御劲	3434	减御劲50点			3758030846	63			atToughnessBase	-50	1	999999	100	
+御劲	9864	风20%会心换20%御劲			3758030846	63		0	atToughnessBaseRate	3000	1	160	1	
+御劲	12989	持国天王殿_御劲壁垒			3758030846	63			atSolarMagicResistPercent	204	1	0	5	
+御劲	14980	御劲提高			3758030846	63		0	atToughnessBaseRate	500	1	128	1	
+御劲	20812	[20812]铁骨奇穴_慑服_御劲			3758030846	63		0	atToughnessBaseRate	512	1	128	1	
+御劲	24411	离经_妙手御劲			3758030846	63		0	atToughnessBaseRate	500	1	240	1	
+御劲	28314	御劲统一			3758030846	63	0	0			1	16	20	
+御劲	29614	海龙御劲_监控与被击buff			3758030846	63	0	0	atSkillEventHandler	2775	40	4	1	
+御劲	29616	海龙御劲_被击计数			3758030846	63	0	0			1	16	10	
+御劲	29624	绝地反击_御劲统一cd			3758030846	63	0	0			1	16	1	
+御劲	29776	海龙御劲_替换内部技能			4294967294	63	0	0	atNoLimitChangeSkillIcon	28202	1	0	1	
+御劲	30074	PVP项链化劲加御劲			3758030846	63		8	atToughnessBase	160	1	0	10	
+御劲	30515	JJC插旗大王-御劲			4294967294	63		0	atToughnessBase	100	1	5760	100	
+御劲	30707	PVP附魔1腰带拍卖_被击加御劲_太极秘录			3758030846	63		8	atToughnessBase	10800	1	48	1	
+御劲	30708	PVP附魔2腰带拍卖_化劲转御劲_太极秘录			3758030846	63		8	atToughnessBase	120	1	0	10	
+御劲	33175	离经_新积势_炸黑御劲			3758030846	63		0	atToughnessBaseRate	1000	1	16	1	
+名剑	6472	偿还名剑币_天佑中华			4294967294	63					8640000	16	1	
+名剑	6476	扣除名剑币道具_天佑中华			4294967294	63					8640000	16	1	
+名剑	7094	加速buff-威望名剑币5			4294967295	63		0	atAddPrestigePercentForAll	51	1	960	1	
+名剑	7096	加速buff-名剑币10			4294967295	63		0			1	960	1	
+名剑	11924	JJC扣名剑币			4294967294	63		0			3600	80	1	
+名剑	13211	名剑大会举报复查buff			4294967294	63		0			1	0	1	
+名剑	17488	名剑大会每周五场胜利标记			4294967295	63		0			1	57600	1	
+名剑	19008	许愿树·名剑大会			4294967294	63		0			1	960	1	
+名剑	19265	禁令·名剑大会 			4294967294	63					1	9676800	14	
+名剑	19585	禁行·名剑大会			4294967294	63					1	9676800	14	
+名剑	19906	禁书·名剑大会			4294967294	63					1	9676800	14	
+名剑	22939	名剑大会获取威望上限记录			4294967295	63		0			1	960	1	
+名剑	30633	名剑大会·对局火热			3758030846	63		0	atGamePlayTherapyFinalCof	-71	1	4800	10	
+名剑	33612	名剑·保锋帖			4294967294	63	0	0			1	16	1	
+竞技	2554	任务_竞技场时间控制			3758030846	63					1	640	1	
+竞技	3369	竞技场_删辅助类食品			3758030846	63					1	16	1	
+竞技	3370	竞技场_删增强类食品			3758030846	63					1	16	1	
+竞技	3371	竞技场_删宴席			3758030846	63					1	16	1	
+竞技	3372	竞技场_删辅助类药品			3758030846	63					1	16	1	
+竞技	3373	竞技场_删增强类药品			3758030846	63					1	16	1	
+竞技	3381	竞技场_战旗A			4294967294	63					1	57600	1	
+竞技	3386	竞技场_战旗B			4294967294	63					1	57600	1	
+竞技	3387	竞技场_删撼如雷			3758030846	63					1	16	1	
+竞技	3388	竞技场_删清心静气			3758030846	63					1	16	1	
+竞技	3389	竞技场_删秀气			3758030846	63					1	16	1	
+竞技	3390	竞技场_删雨霖铃			3758030846	63					1	16	1	
+竞技	3391	竞技场_删般若诀			3758030846	63					1	16	1	
+竞技	3392	竞技场_删药石气劲			3758030846	63					1	16	1	
+竞技	3393	竞技场_删BUFF用I			3758030846	63					1	0	1	
+竞技	3394	竞技场_删BUFF用I			3758030846	63					1	0	1	
+竞技	3395	竞技场_删BUFF用I			3758030846	63					1	0	1	
+竞技	3396	竞技场_删BUFF用I			3758030846	63					1	0	1	
+竞技	3397	竞技场_删BUFF用I			3758030846	63					1	0	1	
+竞技	3398	竞技场_删BUFF用I			3758030846	63					1	0	1	
+竞技	3449	竞技场_标记战阶			4294967294	63					1	16	1	
+竞技	3602	竞技场_清内功标记			4294967294	63					1	28800	1	
+竞技	3849	竞技场_回蓝回豆			3758030846	63					60	16	1	
+竞技	3913	竞技场_删玄水			3758030846	63					1	16	1	
+竞技	5015	竞技场_反隐形BUFF			3758030846	63			atCounterStealthRange	1920	1	16	1	
+竞技	7869	记录竞技场周结算buff			4294967295	63		0			1	960	1	
+竞技	8547	竞技场精英赛			4294967295	63		0			1	16	10	
+竞技	10274	竞技场周常			4294967294	63		0			1	57600	1	
+竞技	11837	竞技场禁止换心法			4294967294	63	520	0			15	32	1	
+竞技	11839	竞技场准备时间_可奇穴切换			4294967294	63		0	atSetSelectableType	2	1	16	1	Quest\竞技场_切奇穴.lua
+竞技	11840	竞技场倒计时_无法切换奇穴			4294967294	63		0			1	16	1	
+竞技	11878	竞技场排队标记			4294967294	63		0			16	32	1	世界规则/名剑大会监控是否完成对局.lua
+竞技	11880	竞技场惩罚			4294967294	63		0			5	960	1	
+竞技	11881	竞技场三层			4294967294	63		0			1	57600	3	
+竞技	12476	阵营披风碎片竞技场			4294967294	63		0			1	960	1	
+竞技	12855	女生竞技场			4294967294	63		0			48	57600	1	
+竞技	13120	竞技场_赛点标记			3758030846	63		0			1	16	1	
+竞技	13479	进入竞技场标记			4294967294	63		0			1	0	1	
+竞技	13597	竞技场状态机无敌buff			4294967294	63			atNegativeShield	1	400	48	1	
+竞技	13598	竞技场状态机减伤buff			4294967294	63			atRepulsedRate	-1024	40000	48	1	
+竞技	13695	竞技场状态机附近打斗破坏buff			4294967294	63	1014	0	atSkillEventHandler	1523	192	80	1	
+竞技	13698	竞技场状态机溅射cdBuff			3758030846	63		0			1	16	1	
+竞技	14326	竞技场延时释放冲击波技能			3758030846	63					1	4	1	Quest/竞技场障碍破坏/通用延时AOE.lua
+竞技	14390	竞技场延时设置血量10%			3758030846	63					1	4	1	Quest/竞技场障碍破坏/通用延时设置血量10%.lua
+竞技	14544	战场竞技场排队CD			4294967294	63		0			5	16	1	
+竞技	15011	记录竞技场房间号			4294967295	63		0			1	80	1	Quest/竞技场_开房间访客buff.lua
+竞技	15088	记录竞技场房间类型			3758030846	63		0			1	160	1	
+竞技	16654	竞技场能力修正			3758030846	63		0	atBeTherapyCoefficient	-41	1	960	33	
+竞技	17644	竞技场55机器人减疗修正			3758030846	63		0	atBeTherapyCoefficient	-51	1	16	10	
+竞技	17678	竞技场OB防被打	Stun		4294967295	63			atIgnoreGravity		1	0	1	
+竞技	18024	竞技场场中标记			3758030846	63		0	atDisableSprintFlag		1	16	1	
+竞技	19548	竞技场练习机器人标记			4294967294	63		0			10080	960	1	
+竞技	20116	竞技场--赛季段位继承			4294967295	63		0			1	480	1	Quest/竞技场_赛季结算buff.lua
+竞技	21847	凌云梯_竞技场出来后尝试触发			4294967295	63		0			1	16	1	
+竞技	23137	竞技场每周记录拭剑宝箱数量			4294967295	63		0			1	16	20	
+竞技	23239	竞技场最高分记录			4294967295	63		0			1	0	1	
+竞技	23240	竞技场最高分记录2			4294967295	63		0			1	0	1	
+竞技	23242	竞技对局			4294967295	63		0			1	960	1	
+竞技	24086	2号竞技场存档点判定buff			3758096382	63		0			1	0	1	
+竞技	24087	1号竞技场存档点判定buff			3758096382	63		0			1	0	1	
+战场	1189	神农洇_战场BOSS_大毒尸_狂暴			3758030846	63			atSkillPhysicsDamage	310000	1	0	1	
+战场	3149	战场举报_偷懒耍滑			4294967294	63					1	480	1	
+战场	3150	战场举报_内置CD			4294967294	63					1	480	1	
+战场	3152	战场举报_被举报的debuff			4294967294	63					1	480	25	
+战场	4122	战场标记			4294967294	63					1	960	5	
+战场	7551	战场为帮会加分			4294967295	63		0			1	9600	1	
+战场	11614	战场任务buff			4294967294	63		0			5	57600	1	
+战场	11962	战场首胜buff			4294967295	63		0			1	960	1	
+战场	12009	战场禁止切心法			4294967294	63	520	0			180	160	1	
+战场	12015	战场YY队			4294967294	63		0			45	640	1	
+战场	12203	战场触发奇遇			4294967294	63		0			1	1920	1	
+战场	12455	体验战场回血			3758030846	63					1	8	1	
+战场	12456	体验战场狂暴			3758030846	63			atPhysicsCriticalStrikeBaseRate	6000	30	16	1	
+战场	12466	体验战场监控buff			4294967294	63		0	atImmuneSkillMove	1	1	16	1	
+战场	12476	阵营披风碎片战场			4294967294	63		0			1	960	1	
+战场	12595	体验战场倒计时传送buff			4294967294	63		0			10	16	1	
+战场	12800	战场排队倒计时			4294967294	63		0	atExecuteScript	Map/战场通用/skill/战场排队通用.lua	1	16	1	
+战场	12821	战场禁止排队			4294967294	63		0			15	640	1	
+战场	13211	战场举报复查buff			4294967294	63		0			1	0	1	
+战场	13395	战场提前逃出处理			4294967294	63		0			1	16	1	
+战场	14543	离开战场倒计时			4294967294	63		0			1	16	1	
+战场	14544	战场竞技场排队CD			4294967294	63		0			5	16	1	
+战场	14577	战场到钦佩buff			4294967294	63		0			1	0	1	
+战场	14726	战场禁止用奇穴提示			4294901758	63		0			1	99999	1	
+战场	14996	MOBA战场装备			3758030786	63		0	atFreeze		1	128	1	万花\南风吐月添加太虚.lua
+战场	15111	战场组排标记			4294967294	63		0			960	5	1	
+战场	15189	战场师父标记			4294967295	63		0			1	57600	1	
+战场	15190	战场徒弟标记			4294967295	63		0			1	57600	1	
+战场	15193	战场徒弟标记2			4294967295	63		0			1	57600	1	
+战场	15194	战场徒弟标记3			4294967295	63		0			1	57600	1	
+战场	15319	师徒活动_共同战场标记			4294967295	63		0			1	96000	1	
+战场	19009	许愿树·驰骋战场			4294967294	63		0			1	960	1	
+战场	19264	禁令·阵营战场			4294967294	63					1	9676800	14	
+战场	19404	战场本周双倍威望			4294967295	63		0			1	960	1	
+战场	19582	战场领10000威望触发黑白路标记			4294967295	63		0			1	960	10	
+战场	19584	禁行·阵营战场			4294967294	63					1	1382400	14	
+战场	19590	禁行·绝境战场			4294967294	63					1	1382400	14	
+战场	19621	江湖行记记录战场每周发奖次数			4294967294	63		0			1	960	8	
+战场	19652	战场站旗时长统计			4294967294	63		0			1800	32	20	
+战场	19905	禁书·绝境战场			4294967294	63					1	1382400	14	
+战场	22024	徒弟和师父一起战场结算的标记buff			4294967295	63		0			1	57600	1	
+战场	22469	战场入场时已结束标记			4294967294	63		0			720	960	1	
+战场	23353	羊村战场禁止排队惩罚			4294967294	63		0			1	960	1	
+战场	23936	专注·战场			4294967295	63		0			1	16	1	
+战场	25164	战场共战玩家玩家数量			4294967294	63		0			360	160	5	
+战场	25431	禁令·绝境战场			4294967294	63					1	1382400	14	
+战场	25668	战场积极行为积分			4294967294	63		0			3600	16	1	
+战场	25786	战场开旗通用扣盾buff			4294967294	63		0			1	16	1	
+战场	25880	战场开旗背箱时间计时			4294967294	63		0			1	16	1	
+战场	26041	战场机器人能力修正			4294967294	63		0	atAllDamageAddPercent	-31	1	960	20	
+战场	26077	战场结算标记			4294967294	63		0			1	960	1	
+战场	26193	战场站旗范围提示buff特效浩气蓝			3758030846	63		0			60	16	1	
+战场	26200	战场站旗范围提示buff特效恶人红			3758030846	63		0			60	16	1	
+战场	26201	战场站旗范围提示buff特效中立白			3758030846	63		0			60	16	1	
+战场	27456	绝境战场任务buff			4294967294	63		0			1	960	1	
+战场	27852	逍遥剑歌战场吃鸡pve			4294967294	63		0			1	960	1	
+战场	27914	体验战场机器人减伤			3758030846	63	0	0	atGlobalResistPercent	51	3600	16	20	
+战场	27915	体验战场每日计数			4294967294	63	0	0			1	960	3	
+战场	28075	逍遥剑歌战场展示buff			4294967294	63		0			1	960	10	
+战场	28202	robot标记战场			4294967294	63		0			1	0	1	
+绝境	15323	沧溟绝境地宫伤害			3758030846	63		0			1	16	1	
+绝境	16586	绝境的馈赠_少林			4294967295	63	255	0	atFinalMaxLifeAddPercent	61	1	57600	1	
+绝境	19590	禁行·绝境战场			4294967294	63					1	1382400	14	
+绝境	19905	禁书·绝境战场			4294967294	63					1	1382400	14	
+绝境	21124	天原绝境_滑翔维持			16	63	255	0	atIgnoreGravity		1	160	1	沙漠风暴/天原绝境_滑翔翼维持.lua
+绝境	21139	天原绝境_火焰表现			3758030846	63		0			1	0	1	
+绝境	21142	天原绝境_烟雾表现			3758030846	63		0			1	0	1	
+绝境	21172	天原绝境_燧石点燃			3758030846	63		0			10	16	1	
+绝境	21174	天原绝境_照明弹范围显示			3758030846	63		0			1	0	1	
+绝境	21175	天原绝境_温度层数			4294967295	63		0			1	0	100	
+绝境	21181	天原绝境_寒冷			3758030846	63		0	atHasteBasePercentAdd	-300	1	0	1	
+绝境	21182	天原绝境_寒冷降低血上限			3758030846	63		0	atMaxLifePercentAdd	-30	1	0	20	
+绝境	21188	天原绝境_武家饮血dot	Damage		3758030846	63		0			10	32	1	
+绝境	21193	天原绝境_剑宗饮冰冻结	Halt		3758030846	63		0	atFreeze		1	32	1	
+绝境	21194	天原绝境_剑宗饮冰内置cd			3758030846	63		0			1	160	1	
+绝境	21226	天原绝境_橙胖次降攻击			3758030846	63		0	atPhysicsAttackPowerPercent	-205	1	80	1	
+绝境	21409	天原绝境_战象冲锋标记			3758030846	63		0			10	16	1	
+绝境	21410	天原绝境_战象骑乘			3758030846	63		0	atDropDefence	512	999	16	1	沙漠风暴/天原战象维持.lua
+绝境	21428	天原绝境_人数显示			1073774592	63		0			1	0	110	
+绝境	21436	天原绝境_滑索cd			3758030846	63		0			1	720	1	
+绝境	21454	天原绝境_谷风降温			3758030846	63		0	atMoveSpeedPercent	-102	1	64	1	沙漠风暴/天原绝境谷风debuff.lua
+绝境	21458	天原绝境_温暖区			3758030846	63		0			1	0	1	
+绝境	21589	天原绝境_战象每秒推人			3758030846	63		0	atDriftFlag		12	4	1	
+绝境	25431	禁令·绝境战场			4294967294	63					1	1382400	14	
+绝境	26073	洱海绝境可复活标记			3758030846	63		0			1	4800	1	沙漠风暴/洱海绝境复活buff消失.lua
+绝境	26074	洱海绝境复活计时			4294967295	63		0			1	32	1	沙漠风暴/洱海绝境复活.lua
+绝境	26147	绝境的纷扰·少林			4294967295	63	255	0	atFinalMaxLifeAddPercent	164	1	57600	1	
+绝境	26178	洱海绝境死斗结束前等待			3758030846	63		0	atNegativeShield		1	320	1	
+绝境	26179	洱海绝境死斗结束后不吃毒			3758030846	63		0	atMoveSpeedPercent	307	1	16	1	
+绝境	26378	洱海绝境击杀叠伤害			4294967295	63		0	atMagicAttackPowerBase	228	1	0	10	
+绝境	27421	绝境狂怒			3758030846	63	472	0	atAllDamageAddPercent	103	1	24	1	
+绝境	27456	绝境战场任务buff			4294967294	63		0			1	960	1	
+绝境	28508	绝境_圣明佑			3758030846	63			atSetHitReduceRate	2000	1	160	1	
+绝境	28541	绝境_大道定身	Halt	2	1405100032	60			atFreeze	0	1	96	1	
+绝境	28542	绝境·横扫六合			4294967295	63	0	0			1	0	1	
+绝境	28543	绝境·捕风式			4294967295	63	0	0			1	0	1	
+绝境	28544	绝境·抱残式			4294967295	63	0	0			1	0	1	
+绝境	28545	绝境·守缺式			4294967295	63	0	0			1	0	1	
+绝境	28546	绝境·捉影式			4294967295	63	0	0			1	0	1	
+绝境	28547	绝境·拿云式			4294967295	63	0	0			1	0	1	
+绝境	28548	绝境·长针			4294967295	63	0	0			1	0	1	
+绝境	28549	绝境·商阳指			4294967295	63	0	0			1	0	1	
+绝境	28550	绝境·钟林毓秀			4294967295	63	0	0			1	0	1	
+绝境	28551	绝境·兰摧玉折			4294967295	63	0	0			1	0	1	
+绝境	28552	绝境·破风			4294967295	63	0	0			1	0	1	
+绝境	28553	绝境·穿			4294967295	63	0	0			1	0	1	
+绝境	28554	绝境·太极无极			4294967295	63	0	0			1	0	1	
+绝境	28555	绝境·三环套月			4294967295	63	0	0			1	0	1	
+绝境	28556	绝境·剑飞惊天			4294967295	63	0	0			1	0	1	
+绝境	28557	绝境·龙牙			4294967295	63	0	0			1	0	1	
+绝境	28558	绝境·龙吟			4294967295	63	0	0			1	0	1	
+绝境	28559	绝境·灭			4294967295	63	0	0			1	0	1	
+绝境	28560	绝境·蛇影			4294967295	63	0	0			1	0	1	
+绝境	28561	绝境·蟾啸			4294967295	63	0	0			1	0	1	
+绝境	28562	绝境·夺命蛊			4294967295	63	0	0			1	0	1	
+绝境	28563	绝境·迷心蛊			4294967295	63	0	0			1	0	1	
+绝境	28564	绝境·枯残蛊			4294967295	63	0	0			1	0	1	
+绝境	28565	绝境·化血镖			4294967295	63	0	0			1	0	1	
+绝境	28566	绝境·孔雀翎			4294967295	63	0	0			1	0	1	
+绝境	28567	绝境·玉石俱焚			4294967295	63	0	0			1	0	1	
+沙暴	4945	明教场景_黑沙暴			3758030846	63					1000000	16	1	
+沙暴	5599	大明宫_独孤问俗_沙暴			3758030846	63		0			1	64	1	
+沙暴	8369	雁门关之役_独孤问俗_沙暴			3758030846	63		0			1	16	1	
+沙暴	8479	雁门关之役_独孤问俗_沙暴眩晕			3758030846	63		0	atHalt		5	16	1	
+沙暴	14541	隐藏BOSS_沙暴圈表现			3758030846	63		0			1	0	1	
+沙暴	28984	5号_苏什_沙暴保护			3758030846	63	0	0			1	16	1	
+沙暴	29053	5号_苏什_沙暴保护_逆向			3758030846	63	0	0			1	16	1	
+追命箭	3276	唐门_追命箭_瞬发			3758030846	63			atDirectCastMask	4096	120	4	1	
+追命箭	5782	唐门_追命箭aoe判定			3758030846	63		0			1	16	1	
+追命箭	6867	血战天策_山狼_追命箭弩			3758030846	63		0			1	4800	99	
+追命箭	7140	血战天策_山狼_25人追命箭回蓝			3758030846	63		0			1	16	1	
+追命箭	7143	血战天策_山狼_追命箭加伤害			3758030846	63		0	atSkillPhysicsDamagePercent	102	1	9600	10	
+追命箭	10549	曹炎烈_追命箭加伤害			3758030846	63		0	atSkillPhysicsDamagePercent	102	1	480	2	
+追命箭	11520	2016峰值_曹炎烈追命箭红			3758030846	63		0			1	16	1	
+追命箭	11521	2016峰值_曹炎烈追命箭蓝			3758030846	63		0			1	16	1	
+追命箭	11873	追命箭降低目标化劲			3758030846	63		0	atDecriticalDamagePowerPercent	-51	1	192	1	
+追命箭	16068	追命箭减速	Slow		3758030846	63			atMoveSpeedPercent	-819	1	48	1	
+追命箭	17226	隐身追命箭额外会心			3758030846	63		0	atSetTalentRecipe	5151	1	8	1	
+追命箭	24624	次极阳乌增益追命箭			3758030846	63		0	atSetTalentRecipe	3168	1	999	1	
+追命箭	26055	追命箭			3758030846	63		0			30	16	1	
+追命箭	28574	绝境·追命箭			4294967295	63	0	0			1	0	1	
+重创	5756	重创			3758030846	63		0	atMoveSpeedPercent	-101	1	160	5	
+重创	22249	卫栖梧_飞云回转刀_重创	Normal	-1	3758030846	63		0			1	0	8	
+重创	24355	破军标记重创计数			3758030846	63		0			1	128	6	
+重创	24356	破军重创（通用）			3758030846	63		0	atGlobalTherapyAbsorb	9999999	1	128	3	
+重创	24357	鹤归附带重创标记			3758030846	63		0			1	3600	1	
+重创	24362	延迟删除鹤归重创标记			3758030846	63		0			1	8	1	藏剑/延迟删除鹤归重创标记.lua
+重创	27115	万灵山庄_反曲_重创			3758030846	63	0	0	atGlobalTherapyAbsorb	999999	1	128	1	
+重创	29420	烟涛重创			3758030846	63		0	atGlobalTherapyAbsorb	999999	1	80	2	
+重创	32038	无意重创			3758030846	63	0	0			10	16	2	
+重创	32398	重创地毯生效间隔			3758030846	63		0			1	28	1	
+重创	32519	李萼重创流血			3758030846	63		0			10	32	3	
+伤情	15593	伤情丹			4294967295	63	0	0	atMagicAttackPowerPercent	512	1	480	1	
+疗伤	957	万花治疗伤害阵法第六重			4294967294	63					1	128	1	
+疗伤	1076	疗伤			3758030846	63			atTherapyPowerBase	800	1	4800	1	
+疗伤	1526	英雄日轮_4号BOSS_胧丈_疗伤			3758030846	63					10	16	1	
+疗伤	2662	帮会_擂台_减疗伤成效			3758030846	63					1	2880	1	
+疗伤	2960	天策-将威-加疗伤成效			3758030846	63			atBeTherapyCoefficient	154	1	160	1	
+疗伤	4503	明教_秘籍_渡厄力_加被疗伤成效			3758030846	63			atBeTherapyCoefficient	204	1	48	1	
+疗伤	5036	监狱_运功疗伤			3758030846	63			atNegativeShield		1	57600	1	
+疗伤	5527	被疗伤			3758030846	63		0			1	0	1	
+疗伤	8341	苍云防御被疗伤成效提高10%			3758030846	63		0	atBeTherapyCoefficient	102	1	320	1	
+疗伤	8418	激昂被疗伤成效			3758030846	63		0	atParryValueBase	166	1	16	100	
+疗伤	9594	疗伤成效			4294967294	63		0	atTherapyPowerBase	58	1	28800	1	
+疗伤	9611	疗伤成效			4294967294	63		0	atTherapyPowerBase	87	1	28800	1	
+疗伤	10210	运功疗伤			3758030846	63		0			1	80	1	
+疗伤	11320	气血越低疗伤越高判定buff			4294967295	63		0			6666	8	1	
+疗伤	11404	疗伤			4294967294	63		0	atTherapyPowerBase	80	1	28800	1	
+疗伤	11428	疗伤			4294967294	63		0	atTherapyPowerBase	120	1	28800	1	
+疗伤	14315	洞天福地_BOSS疗伤CD			4294967294	63		0			1	160	1	
+疗伤	21533	npc进入疗伤_标识			3758030846	63		0			9999	16	1	
+疗伤	21567	进入疗伤_buff			3758030846	63		0	atDisableMoveCtrl		200	16	1	npc/副本BOSS/雷域大泽/雷域大泽_装备任务/取消buff_任务失败事件.lua
+疗伤	23829	躲藏QTE_疗伤			3758030846	63		0	atExecuteScript	skill/Quest/润扬任务/躲藏QTE_疗伤BUFF.lua	1	0	1	
+疗伤	24877	通用_EX治疗伤害吸收盾			3758030846	63		0	atGlobalDamageAbsorb	200000	900	16	10	
+疗伤	27316	莫雨疗伤表现buff			3758030846	63		0			10	16	1	
+疗伤	28083	王校疗伤表现buff			3758030846	63		0			10	16	1	
+疗伤	28242	简单疗伤			3758030846	63		0	atMoveSpeedPercent	-2048	1	960	1	
+疗伤	31359	神秘侠客疗伤buff			3758030846	63	0	0			1	16	1	沙漠风暴/寻宝_神秘侠客疗伤buff.lua
+疗伤	33597	玩家疗伤			3758030846	63	0	0			1	16	1	
+疗伤	33598	玩家疗伤_吃药			3758030846	63	0	0			1	16	1	
+疗伤	33599	玩家疗伤_运气			3758030846	63	0	0			1	16	1	
+命中	1068	命中			3758030846	63			atPhysicsHitValue	196	1	4800	1	
+命中	1960	百草园_命中+6%			4294967294	63	520		atStrainRate	61	1	115200	1	
+命中	1965	百草园_命中+3%			4294967294	63	520		atStrainRate	30	1	115200	1	
+命中	2713	血龙出渊_恶人谷叛逃者小头领_秘制闪光雷_减命中			3758030846	63			atPhysicsHitBaseRate	-2000	1	192	1	
+命中	2890	香辣蹄髈(加命中)			3758030846	63			atLunarHitValue	26	1	14400	1	
+命中	3608	烛龙殿_火箭弹_减命中			3758030846	63					1	0	1	
+命中	4052	明教_暗尘弥散_减被命中			3620864254	63			atAddTransparencyValue	-70	1	16	1	明教/明教_暗尘弥散_持续效果.lua
+命中	4416	节日特殊小药命中			4294967294	63	520		atPhysicsHitBaseRate	800	1	28800	1	
+命中	4490	明教_秘籍_银月斩_减命中			3758030846	63			atAllMagicDamageAddPercent	-51	1	80	1	
+命中	5651	纯阳_90级奇穴_人剑合一命中次数记录			3758030846	63		0			1	16	2	
+命中	6395	试炼之地_命中			4294967294	63	520		atPhysicsHitBaseRate	250	1	16	40	
+命中	6469	七秀90级橙武剑破命中buff			3758030846	63		0			1	4	1	
+命中	6990	直城门_判断技能命中			3758030846	63		0			1	160	1	
+命中	8736	天泣林_2号_命中降低			3758030846	63		0	atPhysicsHitBaseRate	-5000	1	16	1	
+命中	8816	3号_千击_剑气命中			3758030846	63		0			1	99999	1	
+命中	9243	2号_月剑_徊_命中计数			3758030846	63		0			1	36000	1	
+命中	9720	龙啸九天命中目标降低调息时间			3758030846	63		0			1	16	10	
+命中	9795	横少命中多目标增加伤害			3758030846	63		0	atSetTalentRecipe	2294	1	24	1	
+命中	9843	夺魄箭首次命中目标标记			3758030846	63		0			1	160	1	
+命中	9844	夺魄箭多次命中同一目标效果			3758030846	63		0	atPhysicsCriticalDamagePowerBaseKiloNumRate	80	1	80	1	
+命中	10645	2号_柳绯君_问情_判断_命中数			3758030847	63		0	atPhysicsDamageCoefficient	512	10	48	5	
+命中	11241	上将军印连续命中伤害提高			3758030846	63		0			1	35	6	
+命中	11318	蔽日_擒龙六斩降低10%命中几率			3758030846	63		0	atLunarHitBaseRate	-1000	1	0	6	
+命中	12079	陆危楼_月斩降低命中			3758030846	63			atPhysicsHitBaseRate	-3000	1	160	1	
+命中	12733	沙漠风暴降低命中几率			3758030846	63		0	atSetHitReduceRate	5000	1	80	1	
+命中	12796	风来吴山命中多个目标伤害递减			3758030846	63		0			1	16	10	
+命中	12802	六合独尊命中目标标记Buff			3758030846	63		0			1	20	6	
+命中	12803	六合独尊命中多人实际伤害递减			3758030846	63		0			1	10	1	
+命中	12894	2号_月华_点名AOE命中记录			3758030846	63		0			99999	16	1	
+命中	13712	1号_康疑_猎魂曲命中			3758030846	63		0			1	16	1	
+命中	13788	驰风震域降命中效果			3758030846	63					1	16	1	
+命中	13870	兰摧玉折命中定身锁足加35%			3758030846	63		0	atNeutralCriticalStrikeBaseRate	3500	1	4	1	
+命中	13888	3号_蒹葭_成就命中计数			3758030846	63		0			1	0	1	
+命中	13913	翼绝云天攻击目标命中降低			3758030846	63			atPhysicsHitBaseRate	-3000	1	32	1	
+命中	14084	溟海御波被命中几率			131072	63			atGlobalResistPercent	256	1	16	1	
+命中	14344	气纯空战降低命中			3758030846	63			atPhysicsHitBaseRate	-3000	1	64	1	
+命中	14664	相依命中玩家目标BUFF1			3758030846	63		0			1	80	1	
+命中	14665	相依命中玩家目标BUFF2			3758030846	63		0			1	80	1	
+命中	14932	夺魄箭连续命中标记			3758030846	63		0			1	112	1	
+命中	14933	夺魄箭连续命中眩晕			3758030846	63		0			1	96	1	
+命中	15071	万世不竭二段命中标记			3758030846	63		0			1	32	1	
+命中	15092	无重光飞剑命中目标一标记			3758030846	63		0			1	40	1	
+命中	15093	无重光飞剑命中目标二标记			3758030846	63		0			1	40	1	
+命中	15094	无重光飞剑命中目标三标记			3758030846	63		0			1	40	1	
+命中	15095	无重光飞剑命中目标四标记			3758030846	63		0			1	40	1	
+命中	15096	无重光飞剑命中目标五标记			3758030846	63		0			1	40	1	
+命中	15234	自身被命中几率降低			3758030846	63		0	atSetHitReduceRate	3500	1	20	1	
+命中	15687	时辰_减命中			4294967294	63	0	0	atPhysicsHitBaseRate	-102	1	0	10	
+命中	15709	浪客行命中补偿			4294967295	63	0	0	atLunarHitBaseRate	1500	1	0	1	
+命中	15807	上将军印命中标记			3758030846	63		0			1	80	1	
+命中	15833	乱天狼连续命中			3758030846	63		0			1	12	3	
+命中	15845	天堑乱天狼命中加速			3758030846	63			atMeleeWeaponDamagePercent	512	1	96	1	
+命中	16261	天策特殊武器_命中条件			3758030846	63		0			1	160	5	
+命中	16731	天地根飞剑连续命中伤害递增			3758030846	63		0	atSetTalentRecipe	5104	1	0	1	
+命中	16755	酒减命中			4294967294	63	0	0	atStrainBase	500	1	640	5	
+命中	17123	连续命中目标标记			3758030846	63		0			1	48	1	
+命中	17124	连续命中目标标记2			3758030846	63		0			1	48	1	
+命中	17544	2号_刀片命中标记			3758030846	63		0			1	1280	10	
+命中	17892	琅秋持续命中标记			3758030846	63		0			4	16	1	
+命中	17957	回雪飘摇连续命中标记			3758030846	63		0			1	32	6	
+闪避	822	NPC战斗技能_BUFF_生存增强_闪避几率_120			3758030846	63			atDodgeBaseRate	3000	1	1920	1	
+闪避	857	闪避			3758030846	63			atDodgeBaseRate	1000	1	80	1	
+闪避	2799	七秀_袖手_鹊踏枝闪避后效果	Charm	8	3757998078	63			atEntrap		1	16	1	
+闪避	2892	水煮肉片(闪避)			3758030846	63			atDodge	9	1	14400	1	
+闪避	3310	唐门内功阵法第五重_闪避加20%			3758030846	63		0	atLunarCriticalStrikeBaseRate	500	1	64	1	
+闪避	4028	明教_圣明佑_月_加闪避			3758030846	63			atMoveSpeedPercent	408	1	160	1	
+闪避	4485	明教_闪避招架后回血_内置CD			3758030846	63					1	16	1	
+闪避	4532	明教_镇派_闪避招架后回血			3758030846	63					1	8	1	
+闪避	4691	南诏皇宫_血眼龙王_QTE_闪避			3758030846	63					1	16	1	
+闪避	4695	南诏皇宫_血眼龙王_QTE_标识_闪避			3758030846	63					1	16	1	
+闪避	5668	藏剑_风吹荷_闪避			3758030846	63		0	atDodgeBaseRate	10000	1	48	3	
+闪避	6142	藏剑_泉凝月加闪避			3758030846	63		0	atDodgeBaseRate	2000	1	480	1	
+闪避	6146	藏剑_啸日闪避			3758030846	63		0	atDodgeBaseRate	3000	1	48	1	
+闪避	6174	七秀_低血量闪避			3758030846	63		0	atDodgeBaseRate	4000	1	80	1	
+闪避	6175	七秀_低血量闪避cd			4294967295	63		0			55	16	1	
+闪避	6289	明教_慈悲愿加闪避			3758030846	63		0	atDodgeBaseRate	1000	1	128	1	
+闪避	6299	纯阳_凭虚御风加闪避			3758030846	63		0	atSetHitReduceRate	5000	1	80	1	
+闪避	6302	明教_被击加闪避			3758030846	63		0	atDodgeBaseRate	50	1	320	5	
+闪避	6353	藏剑_闪避回血计数			4294967295	63		0			1	400	7	
+闪避	8866	鹊踏枝强化版本闪避			3758030846	63			atDodgeBaseRate	5000	1	160	1	
+闪避	9736	80%闪避持续4秒			3758030846	63		0	atDodgeBaseRate	6000	1	48	1	
+闪避	9783	鹊大闪避			3758030846	63			atDodgeBaseRate	4500	1	144	1	
+闪避	10014	清绝影歌_影子长歌减伤80%闪避80%			3758030846	63		0	atLunarDamageCoefficient	-819	1	0	1	
+闪避	10465	唐门_鸟翔碧空闪避			3758030846	63		0	atGlobalResistPercent	52	1	160	1	
+闪避	10617	雾雨闪避			3758030846	63		0	atDodgeBaseRate	1000	6	16	4	
+闪避	11201	碎江天闪避效果			3758030846	63		0	atDodgeBaseRate	10000	1	32	1	
+闪避	11273	闪避回剑舞1秒内置CD			3758030846	63		0			1	16	1	
+闪避	12566	冰天_闪避触发瞬发效果			3758030846	63			atDirectCastMask	131072	1	80	1	
+闪避	12580	逐星箭自身闪避			3758030846	63		0	atCallSubBuff	33086	1	96	1	
+闪避	12652	增加闪避			3758030846	63		0	atDodgeBaseRate	9000	1	16	1	
+闪避	14067	奇穴逸尘步虚闪避	ResistDamage		3758030846	63		0	atCallSubBuff	33086	1	80	1	
+闪避	14276	玉泉鱼跃闪避一切			3758030846	63			atSetHitReduceRate	10000	1	40	1	
+闪避	15688	酒闪避			3758030846	63	0		atDodgeBaseRate	3000	1	1920	1	
+闪避	15804	木武童新手无视闪避			3758030846	63		0	atDodgeBaseRate	-10000	1	0	1	
+闪避	15805	走兔株新手无视闪避			3758030846	63		0	atDodgeBaseRate	-10000	1	0	1	
+闪避	15961	凌雪阁阵法五重加闪避			3758030846	63			atPhysicsAttackPowerPercent	102	1	80	1	
+闪避	16159	凌雪阁铁马冰河未被闪避标记			3758030846	63		0			1	4	1	
+闪避	16626	剑纯特殊武器任务_闪避			3758030846	63		0			1	4	1	
+闪避	17563	明教_缓慢回血并闪避			3758030846	63		0	atDodgeBaseRate	4000	1	16	1	
+闪避	17585	行实际闪避免控			1073676286	63		0	atPrinkModel	72837	1	80	1	衍天/套路及子技能/行效果结束清除沉默.lua
+闪避	18071	隐身二段闪避			3758030846	63			atSetHitReduceRate	1000	8	16	8	
+闪避	18088	共醉闪避			3758030846	63		0	atDodgeBaseRate	4500	1	96	1	
+闪避	18399	蝙蝠帮_闪避			3758030846	63		0	atDodgeBaseRate	10000	1	0	1	
+闪避	18466	测试用闪避			3758030846	63			atDodge	500	1	3600	99	
+闪避	18798	节日冬至陆三喵闪避			3758030846	63		0	atDodgeBaseRate	5000	1	20	1	
+闪避	18799	节日冬至陆三喵微妙风闪避			3758030846	63		0	atDodgeBaseRate	5000	1	36	1	
+闪避	18829	地鼠门开山将闪避			3758030846	63		0			1	0	1	
+闪避	18830	地鼠门开山将闪避			3758030846	63		0	atDodgeBaseRate	5000	1	128	1	
+闪避	19580	戒指任务_闪避的无敌判断			3758030846	63		0			1	4	1	
+闪避	22076	鹿武童新手无视闪避			3758030846	63		0	atDodgeBaseRate	-10000	1	0	1	
+闪避	22302	道具_踏星行闪避			1073676286	63		0	atPrinkModel	72837	1	80	1	沙漠风暴/道具_踏星行.lua
+闪避	22327	卫栖梧_八手夺刃闪避成功5s暴击			3758030846	63		0	atLunarCriticalStrikeBaseRate	10000	1	80	1	
+闪避	23339	NPC战斗闪避通用无敌帧			3758030846	63		0	atNegativeShield	1	1	8	1	
+闪避	23637	唐小柯闪避技能成功判定			3758030846	63		0	atSkillEventHandler	2318	1	8	1	
+闪避	23647	唐小珂闪避增益			3758030846	63		0	atPhysicsCriticalStrikeBaseRate	500	1	64	1	
+闪避	23648	唐小珂闪避成功增益			3758030846	63		0	atPhysicsCriticalStrikeBaseRate	500	1	64	1	
+闪避	24126	木狸狸新手无视闪避			3758030846	63		0	atDodgeBaseRate	-10000	1	0	1	
+闪避	24348	鹊踏不闪避计数			3758030846	63		0			1	96	3	
+闪避	26045	闻踪闪避			3758030846	63		0	atExecuteScript	skill/藏剑/飞来剑阵闪避效果.lua	10	16	1	藏剑/飞来剑阵闪避效果.lua
+闪避	26047	飞来闪避			3758030846	63		0	atPhysicsCriticalDamagePowerBaseKiloNumRate	150	1	16	1	

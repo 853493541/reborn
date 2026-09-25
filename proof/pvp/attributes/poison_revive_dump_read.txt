@@ -1,0 +1,54 @@
+﻿len 9308
+Poison 0x007F67A8 larCriticalStrike.....NeutralCriticalStrike...LunarCriticalStrike.....PoisonCriticalStrike....NoneWeaponAttackSpeedBase.......MaxPhysicsDefence.......MaxContrib
+Poison 0x007F6C03 age........MaxNeutralDamage........MinLunarDamage..MaxLunarDamage..MinPoisonDamage.MaxPoisonDamage.MinTherapy......MaxTherapy......KScriptFuncList::LuaGetSkillI
+Poison 0x007F6C13 utralDamage........MinLunarDamage..MaxLunarDamage..MinPoisonDamage.MaxPoisonDamage.MinTherapy......MaxTherapy......KScriptFuncList::LuaGetSkillInfo........KScri
+Poison 0x00802ED0 larMagicDefence.......NeutralMagicDefence.....LunarMagicDefence.......PoisonMagicDefence..AIType......AIParamTemplateID.......CorpseDoodadID..DropClassID.....Fo
+Poison 0x00803531 larCriticalStrike....nNeutralCriticalStrike..nLunarCriticalStrike....nPoisonCriticalStrike...nPhysicsDefenceMax......nSolarMagicDefence......nNeutralMagicDefenc
+Poison 0x008035A9 larMagicDefence......nNeutralMagicDefence....nLunarMagicDefence......nPoisonMagicDefence.....dwAIType........nAIParamTemplateID......nCorpseDoodadID.nDropClassI
+Poison 0x0080D004 :LoadSkillData....Physics.SolarMagic......NeutralMagic....LunarMagic..Poison..Leap....None........Adaptive....Any.Horse...NotHorse....Ignore......EquipSpecialHo
+Poison 0x00838FF8 ackPowerBase..NeutralCriticalDamagePowerBase..NeutralOvercomeBase.....PoisonAttackPowerBase...PoisonCriticalDamagePowerBase...PoisonOvercomeBase......AllTypeAtt
+Poison 0x00839010 ticalDamagePowerBase..NeutralOvercomeBase.....PoisonAttackPowerBase...PoisonCriticalDamagePowerBase...PoisonOvercomeBase......AllTypeAttackPowerBase..AllTypeCri
+Poison 0x00839030 rcomeBase.....PoisonAttackPowerBase...PoisonCriticalDamagePowerBase...PoisonOvercomeBase......AllTypeAttackPowerBase..AllTypeCriticalStrike...AllTypeCriticalDam
+Poison 0x0084C2A1 ReflectionPercent....nLunarMagicBlock........nLunarDamageManaShield..nPoisonAttackPower......nPoisonHitValue.nPoisonHitBaseRate......nPoisonCriticalStrikeBaseRa
+Poison 0x0084C2B9 narMagicBlock........nLunarDamageManaShield..nPoisonAttackPower......nPoisonHitValue.nPoisonHitBaseRate......nPoisonCriticalStrikeBaseRate...nPoisonCriticalDama
+Poison 0x0084C2C9 .....nLunarDamageManaShield..nPoisonAttackPower......nPoisonHitValue.nPoisonHitBaseRate......nPoisonCriticalStrikeBaseRate...nPoisonCriticalDamagePowerBaseKiloN
+Poison 0x0084C2E1 eld..nPoisonAttackPower......nPoisonHitValue.nPoisonHitBaseRate......nPoisonCriticalStrikeBaseRate...nPoisonCriticalDamagePowerBaseKiloNumRate.......nPoisonCrit
+Poison 0x0084C301 isonHitValue.nPoisonHitBaseRate......nPoisonCriticalStrikeBaseRate...nPoisonCriticalDamagePowerBaseKiloNumRate.......nPoisonCriticalDamagePower......nPoisonOver
+Poison 0x0084C331 icalStrikeBaseRate...nPoisonCriticalDamagePowerBaseKiloNumRate.......nPoisonCriticalDamagePower......nPoisonOvercome.nPoisonMagicShield......nPoisonMagicResistP
+Poison 0x0084C351 icalDamagePowerBaseKiloNumRate.......nPoisonCriticalDamagePower......nPoisonOvercome.nPoisonMagicShield......nPoisonMagicResistPercent.......nPoisonMagicReflect
+Poison 0x0084C361 aseKiloNumRate.......nPoisonCriticalDamagePower......nPoisonOvercome.nPoisonMagicShield......nPoisonMagicResistPercent.......nPoisonMagicReflection..nPoisonMagi
+Poison 0x0084C379 isonCriticalDamagePower......nPoisonOvercome.nPoisonMagicShield......nPoisonMagicResistPercent.......nPoisonMagicReflection..nPoisonMagicReflectionPercent...nPo
+Poison 0x0084C399 isonOvercome.nPoisonMagicShield......nPoisonMagicResistPercent.......nPoisonMagicReflection..nPoisonMagicReflectionPercent...nPoisonMagicBlock.......nPoisonDama
+Poison 0x0084C3B1 cShield......nPoisonMagicResistPercent.......nPoisonMagicReflection..nPoisonMagicReflectionPercent...nPoisonMagicBlock.......nPoisonDamageManaShield.nTherapyPow
+Poison 0x0084C3D1 ercent.......nPoisonMagicReflection..nPoisonMagicReflectionPercent...nPoisonMagicBlock.......nPoisonDamageManaShield.nTherapyPower...nSkillTherapy...nBeTherapyC
+Poison 0x0084C3E9 cReflection..nPoisonMagicReflectionPercent...nPoisonMagicBlock.......nPoisonDamageManaShield.nTherapyPower...nSkillTherapy...nBeTherapyCoefficient...nOverflowTh
+Poison 0x0084D059 larAttackPowerBase...nNeutralAttackPowerBase.nLunarAttackPowerBase...nPoisonAttackPowerBase..nSolarMagicShieldBase...nNeutralMagicShieldBase.nLunarMagicShieldBa
+Poison 0x0084D0B9 larMagicShieldBase...nNeutralMagicShieldBase.nLunarMagicShieldBase...nPoisonMagicShieldBase..nDecriticalDamagePowerBase......nParryBase......nParryValueBase.nSt
+Poison 0x0084D181 larOvercomeBase......nNeutralOvercomeBase....nLunarOvercomeBase......nPoisonOvercomeBase.....nDecayAllTypeResistPercent......nRestoreCount...nAdvanceRestoreCoun
+Poison 0x008AA93A cts.CT Precertificate SCTs..ct_precert_poison.......CT Precertificate Poison........ct_precert_signer.......CT Precertificate Signer........ct_cert_scts....CT C
+Revive 0x007BC7B7 FuncNameSize <= sizeof(pLuaCall->szFunction)...KPlayerClient::DoPlayerReviveRequest....KPlayerClient::DoApplyAchievementDataRequest....KPlayerClient::DoQueryPro
+Revive 0x00801E08 ......MapDrop.ResourcePath....MiniMapResourcePath.....ScriptFile......ReviveInSitu....MaxPlayerCount..MaxNeutralPlayerCount...MaxGoodPlayerCount......MaxEvilPla
+Revive 0x00802CF8 dth:%d shouldn't greater than 0 at the same time......Intensity.......ReviveTime......DynamicReviveMinTime....Npc (%u) ReviveMinTime:%d should not greater than 
+Revive 0x00802D0F r than 0 at the same time......Intensity.......ReviveTime......DynamicReviveMinTime....Npc (%u) ReviveMinTime:%d should not greater than ReviveTime:%d.........I
+Revive 0x00802D29 .....Intensity.......ReviveTime......DynamicReviveMinTime....Npc (%u) ReviveMinTime:%d should not greater than ReviveTime:%d.........IsSelectable....CanSeeLifeB
+Revive 0x00802D52 micReviveMinTime....Npc (%u) ReviveMinTime:%d should not greater than ReviveTime:%d.........IsSelectable....CanSeeLifeBar...CanSeeLifeNum...CanSeeName......Walk
+Revive 0x00803391 ight.dwMoveMode......nTouchRange.....nTouchWidth.....nIntensity......nReviveTime.....nReviveMinTime..bSelectable.....bCanSeeLifeBar..bCanSeeLifeNum..bCanSeeName
+Revive 0x008033A1 .....nTouchRange.....nTouchWidth.....nIntensity......nReviveTime.....nReviveMinTime..bSelectable.....bCanSeeLifeBar..bCanSeeLifeNum..bCanSeeName.....nLifeReplen
+Revive 0x00803A30 ul....KDoodadTemplateList::LoadDoodadTemplate.ClassID.RemoveDelay.....ReviveDelay.....CanOperateEach..CanPick.OpenPrepareFrame........CraftID.OverLootFrame...Dy
+Revive 0x00805013 Ext........MaxAssistTimes..SprintPowerMax..SprintPowerCost.SprintPowerRevive.......HorseSprintPowerMax.....HorseSprintPowerCost....HorseSprintPowerRevive..Sprin
+Revive 0x00805060 ......HorseSprintPowerMax.....HorseSprintPowerCost....HorseSprintPowerRevive..SprintPowerCostOnWall...SprintPowerCostRunOnWallExtra...SprintPowerCostStandOnWall
+Revive 0x0080653B etAchievement......QueryRankThreshold......CallScriptCoolDownID....NpcReviveTimeReduceThreshold....NpcReviveTimeIncreaseThreshold..NpcReviveTimeReduceRate.NpcRe
+Revive 0x0080655B shold......CallScriptCoolDownID....NpcReviveTimeReduceThreshold....NpcReviveTimeIncreaseThreshold..NpcReviveTimeReduceRate.NpcReviveTimeIncreaseRate.......MaxPl
+Revive 0x0080657B ...NpcReviveTimeReduceThreshold....NpcReviveTimeIncreaseThreshold..NpcReviveTimeReduceRate.NpcReviveTimeIncreaseRate.......MaxPlayerBynameIndex....FreeForAll...
+Revive 0x00806593 reshold....NpcReviveTimeIncreaseThreshold..NpcReviveTimeReduceRate.NpcReviveTimeIncreaseRate.......MaxPlayerBynameIndex....FreeForAll......BINDONTIMELIMITATION.
+Revive 0x00840446 ........MinFlashDistance........SprintFlashStartCost....SprintFlashEndRevive....OnFlyCost.......OnFlyFloatCost..OnFlyJumpCost...OnFlyStandCost..OnFlyJumpInSprin
+Revive 0x00841EB5 PowerMax >= 0....ProcessAddSprintPowerCost.......ProcessAddSprintPowerRevive.....ProcessAddSprintPowerCostOnWall.nSprintPowerCostOnWall >= 0.....ProcessAddSprin
+Revive 0x0084205A tPowerMax...ProcessAddHorseSprintPowerCost..ProcessAddHorseSprintPowerRevive........nSprintPowerRevive >= 0.ProcessChangeSkillIcon..nValue1 != nValue2......Proc
+Revive 0x00842074 eSprintPowerCost..ProcessAddHorseSprintPowerRevive........nSprintPowerRevive >= 0.ProcessChangeSkillIcon..nValue1 != nValue2......ProcessNoLimitChangeSkillIcon.
+Revive 0x0084CA85 .nCurrentKillPoint.......bHuntingFlag....bHunterQualification....bOnlyReviveInSitu.......bCannotDialogWithNPC....bRedName........dwKillCount.....dwBestAssistKil
+Revive 0x0084CE94 erateEndTime......nSprintPower....nSprintPowerCost........nSprintPowerRevive......nSprintPowerMax.nHorseSprintPower.......nHorseSprintPowerCost...nHorseSprintPo
+Revive 0x0084CEF1 rMax.nHorseSprintPower.......nHorseSprintPowerCost...nHorseSprintPowerRevive.nHorseSprintPowerMax....nFlyFlag........nJumpCount......bIgnoreGravity..bHangFlag..
+Revive 0x00866919 ht...GetXYZMax.......szDisplayName...nMapLevel.......nSceneState.....bReviveInSitu...nInFightPlayerCount.....nCampType.......bIsArenaMap.....nHeightAvg......Get
+Revive 0x00867561 ene::LuaGetLootMoney.KScene::LuaGetBattlefieldCompetitorsList........nReviveFrame....KScene::LuaHaveRemoteData.......dwID > csdtRemoteDataBegin && dwID < csdtRe
+Revive 0x0086B6B9 .....KRewardsShop::LuaCanPlayerHaveItem......eRetCode != otInvalid...nReviveDelay....dwOpenPrepareFrame......bCanOperateEach.KDoodadTemplate.GetDyeingExteriorIn
+

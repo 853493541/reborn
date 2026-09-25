@@ -1,0 +1,59 @@
+# needle: KPlayerClient::OnSyncBattlefieldCompetitorCDState
+# string VAs: ['0x18077a460']
+# xrefs: 1
+
+## xref 0x1801944c1  fn_start 0x180194490
+0x0180194490: mov	qword ptr [rsp + 8], rbx
+0x0180194495: push	rdi
+0x0180194496: sub	rsp, 0x30
+0x018019449a: mov	rcx, qword ptr [rip + 0x82ce7f]
+0x01801944a1: mov	rdi, rdx
+0x01801944a4: mov	edx, dword ptr [rdx + 7]
+0x01801944a7: call	0x18012b610
+0x01801944ac: mov	rbx, rax
+0x01801944af: test	rax, rax
+0x01801944b2: jne	0x1801944ea
+0x01801944b4: mov	r9d, 0x7fa3
+0x01801944ba: lea	r8, [rip + 0x5d2877]
+0x01801944c1: lea	rax, [rip + 0x5e5f98]
+0x01801944c8: mov	ecx, 3
+0x01801944cd: lea	rdx, [rip + 0x759fd4]
+0x01801944d4: mov	qword ptr [rsp + 0x20], rax
+0x01801944d9: call	qword ptr [rip + 0x5d0d81]
+0x01801944df: mov	rbx, qword ptr [rsp + 0x40]
+0x01801944e4: add	rsp, 0x30
+0x01801944e8: pop	rdi
+0x01801944e9: ret	
+0x01801944ea: cmp	qword ptr [rax + 0x60], 0
+0x01801944ef: jne	0x180194500
+0x01801944f1: mov	r9d, 0x7fa4
+0x01801944f7: lea	r8, [rip + 0x5d682a]
+0x01801944fe: jmp	0x1801944c1
+0x0180194500: mov	rcx, qword ptr [rip + 0x82ce19]
+0x0180194507: mov	edx, dword ptr [rcx + 4]
+0x018019450a: call	0x18012b610
+0x018019450f: test	rax, rax
+0x0180194512: jne	0x180194523
+0x0180194514: mov	r9d, 0x7fa7
+0x018019451a: lea	r8, [rip + 0x5e516f]
+0x0180194521: jmp	0x1801944c1
+0x0180194523: mov	eax, dword ptr [rdi + 0xb]
+0x0180194526: mov	dword ptr [rbx + 0xb920], eax
+0x018019452c: mov	eax, dword ptr [rdi + 0xf]
+0x018019452f: mov	dword ptr [rbx + 0xb924], eax
+0x0180194535: mov	eax, dword ptr [rdi + 0x13]
+0x0180194538: mov	dword ptr [rbx + 0x9f40], eax
+0x018019453e: mov	eax, dword ptr [rdi + 0x17]
+0x0180194541: mov	dword ptr [rbx + 0x9f44], eax
+0x0180194547: mov	rbx, qword ptr [rsp + 0x40]
+0x018019454c: add	rsp, 0x30
+0x0180194550: pop	rdi
+0x0180194551: ret	
+0x0180194552: int3	
+0x0180194553: int3	
+0x0180194554: int3	
+0x0180194555: int3	
+0x0180194556: int3	
+0x0180194557: int3	
+0x0180194558: int3	
+0x0180194559: int3	

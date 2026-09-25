@@ -1,0 +1,7 @@
+﻿skill\npc\鍓湰BOSS\鐧炬垬寮傞椈褰昞缃楃考\缃楃考_鐚庣姮_浣庡悹_瀹為檯浣滅敤.lua:284	if nRound and nRound >= 5 and nSpirit < nSpiritLimt * 0.2 then --鏄?闃舵锛屽垯娣诲姞鎭愭儳buff  & 鐜╁绮剧浣庝簬<20%
+skill\npc\鍓湰BOSS\鐧炬垬寮傞椈褰昞缃楃考\缃楃考_鐚庣姮_浣庡悹_瀹為檯浣滅敤.lua:293	player.AddBuff(npc.dwID, npc.nLevel, 20346, 1, nBuffTime)--锛氭亹鎯uff
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:52	--瑙ｉ櫎闆烽渾
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:97	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 鍒犻櫎闆烽渾闇囨€?
+skill\缁濆鎴樺満\缁濆_闆烽渾闇囨€?lua:2	-- 鑴氭湰鍚嶇О:	scripts/skill/缁濆鎴樺満/缁濆_闆烽渾闇囨€?lua
+skill\缁濆鎴樺満\缁濆_闆烽渾闇囨€?lua:8	-- 鏂囦欢鍚?   :  涓冪_瑗挎渤鍓戝櫒_闆烽渾闇囨€?
+skill\缁濆鎴樺満\缁濆_闆烽渾闇囨€?lua:15	-- 鎶€鑳藉悕绉? :  闆烽渾闇囨€?

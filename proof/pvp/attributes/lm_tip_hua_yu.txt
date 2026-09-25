@@ -1,0 +1,72 @@
+=== b'\xbb\xaf\xbe\xa2' @0x9CE ===
+pirit']    = "根骨",
+	['spunk']     = "元气",
+	['agility']   = "身法",
+
+	['look pet'] = "观宠",
+
+	['attack value'] = "攻击力",
+	['attack']       = "攻击",
+	['critical strike level'] = "会心等级",
+	['critical strike']       = "会心",
+	['critical damage base']  = "会心伤害",
+	['critical damage base effect'] = "会心效果",
+	['overcome']                    = "破防",
+	['toughness']                   = "化劲",
+	['decritical damage base']      = "御劲",
+	['dodge']                       = "闪避",
+	['parry']                       = "格挡",
+	['strain']                      = "招架",
+	['physics shield']              = "内功防御",
+	['magic shield']                = "外功防御",
+	['haste']                       = "急速",
+	['healing value']               = "治疗量",
+	['healing effect']              = "疗伤成效",
+
+	['[unlearned]']  = "[未学]",
+	['[learned]']    = "[已学]",
+
+	['have'] = "已拥有",
+	['not have'] = "未拥有",
+
+	['acquired'] = "已获得",
+	['not acquired'] = "未获得",
+
+	['value compared:'] = "
+
+=== b'\xd3\xf9\xbe\xa2' @0x9F9 ===
+",
+	['agility']   = "身法",
+
+	['look pet'] = "观宠",
+
+	['attack value'] = "攻击力",
+	['attack']       = "攻击",
+	['critical strike level'] = "会心等级",
+	['critical strike']       = "会心",
+	['critical damage base']  = "会心伤害",
+	['critical damage base effect'] = "会心效果",
+	['overcome']                    = "破防",
+	['toughness']                   = "化劲",
+	['decritical damage base']      = "御劲",
+	['dodge']                       = "闪避",
+	['parry']                       = "格挡",
+	['strain']                      = "招架",
+	['physics shield']              = "内功防御",
+	['magic shield']                = "外功防御",
+	['haste']                       = "急速",
+	['healing value']               = "治疗量",
+	['healing effect']              = "疗伤成效",
+
+	['[unlearned]']  = "[未学]",
+	['[learned]']    = "[已学]",
+
+	['have'] = "已拥有",
+	['not have'] = "未拥有",
+
+	['acquired'] = "已获得",
+	['not acquired'] = "未获得",
+
+	['value compared:'] = "装备对比:",
+	['unknown price']    = "未知价
+

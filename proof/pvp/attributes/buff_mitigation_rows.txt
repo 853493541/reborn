@@ -1,0 +1,155 @@
+
+#### atPositiveShield
+ID=342 Name=交通 UiName=马车 Desc=千里一日还 Useage=13 :: atIgnoreOtherAlarmRange(0) atPositiveShield(1) atNegativeShield(1)
+ID=682 Name=雷霆震怒 UiName=雷霆震怒 Desc=眩晕，不受任何增益和伤害效果影响 Useage=4 :: atHalt(0) atGlobalBlock(1) atPositiveShield(1) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua)
+ID=682 Name=雷霆震怒 UiName=雷霆震怒 Desc=眩晕，不受任何增益和伤害效果影响 Useage=4 :: atHalt(0) atPositiveShield(1)
+ID=682 Name=雷霆震怒 UiName=雷霆震怒 Desc=眩晕，不受任何增益和伤害效果影响 Useage=4 :: atHalt(0) atGlobalBlock(1) atPositiveShield(1) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua)
+# 4
+
+#### atNegativeShield
+ID=159 Name=玄甲 UiName= Desc= Useage=19 :: atNegativeShield(1)
+ID=160 Name=无敌 UiName=无敌 Desc=无敌 Useage=19 :: atNegativeShield(1)
+ID=205 Name=无敌BUFF UiName=无敌 Desc=无敌 Useage=22 :: atNegativeShield(1)
+ID=342 Name=交通 UiName=马车 Desc=千里一日还 Useage=13 :: atIgnoreOtherAlarmRange(0) atPositiveShield(1) atNegativeShield(1)
+# 4
+
+#### atGlobalBlock
+ID=360 Name=天策-御 UiName=御 Desc=每层化解一次内外功伤害 Useage=1 :: atGlobalBlock(1) atSkillEventHandler(81) atExecuteScript(skill\天策\天策_奔雷枪术_御减血.lua)
+ID=360 Name=天策-御 UiName=御 Desc=每层化解一次内外功伤害 Useage=1 :: atGlobalBlock(1) atSkillEventHandler(163) atExecuteScript(skill\天策\天策_奔雷枪术_御减血.lua)
+ID=360 Name=天策-御 UiName=御 Desc=每层化解一次内外功伤害 Useage=1 :: atGlobalBlock(1) atSkillEventHandler(164) atExecuteScript(skill\天策\天策_奔雷枪术_御减血.lua)
+ID=360 Name=天策-御 UiName=御 Desc=每层化解一次内外功伤害 Useage=1 :: atGlobalBlock(1) atSkillEventHandler(165) atExecuteScript(skill\天策\天策_奔雷枪术_御减血.lua)
+# 4
+
+#### atMirrorShield
+ID=8303 Name=盾立效果 UiName=盾立 Desc=自身不受伤害，反弹敌方对自身释放的所有招式的伤害及效果 Useage=139 :: atPullRate(-2048) atMirrorShield() atImmunity(2) atImmunity(3) atImmunity(4) atImmunity(7) atImmunity(8) atImmunity(11)
+ID=8388 Name=苍云反弹技能buff UiName=苍云盾立 Desc=反弹 Useage=108 :: atMirrorShield()
+ID=8438 Name=盾立 UiName=盾立 Desc=反弹招式伤害和效果，击退技能除外 Useage=139 :: atMirrorShield()
+ID=20230 Name=道具盾立_原8303 UiName=盾立 Desc=自身不受伤害，反弹敌方对自身释放的所有招式的伤害及效果 Useage=187 :: atPullRate(-2048) atMirrorShield() atImmunity(2) atImmunity(3) atImmunity(4) atImmunity(7) atImmunity(8) atImmunity(11)
+# 4
+
+#### atGlobalDamageManaShield
+ID=6786 Name=血战天策_黑齿元佑_法力护盾 UiName=海纳百川 Desc=以自身内力的消耗来抵挡受到的伤害 Useage=99 :: atGlobalDamageManaShield(99999999)
+ID=31942 Name=无咎_内力抵消伤害 UiName=无咎 Desc=受到的伤害由内力承担 Useage=82 :: atGlobalDamageManaShield(99999999)
+# 2
+
+#### atPhysicsDamageManaShield
+ID=16325 Name=七秀特殊武器_高昂 UiName=高昂 Desc=外功吸收盾 Useage=39 :: atPhysicsDamageManaShield(32000)
+ID=16325 Name=七秀特殊武器_高昂 UiName=高昂 Desc=外功吸收盾 Useage=39 :: atPhysicsDamageManaShield(12000)
+ID=16325 Name=七秀特殊武器_高昂 UiName=高昂 Desc=外功吸收盾 Useage=39 :: atPhysicsDamageManaShield(100000)
+ID=16325 Name=七秀特殊武器_高昂 UiName=高昂 Desc=外功吸收盾 Useage=39 :: atPhysicsDamageManaShield(37500)
+# 4
+
+#### atPhysicsReflection
+ID=371 Name=反弹 UiName=金钟罩 Desc=反弹外功伤害 Useage=20 :: atPhysicsReflection(100)
+ID=768 Name=少林反弹 UiName= Desc= Useage=32 :: atPhysicsReflection(50)
+ID=1078 Name=反弹 UiName=反弹 Desc=反弹点数提高<BUFF atLunarMagicReflection>点 Useage=42 :: atPhysicsReflection(50) atSolarMagicReflection(50) atNeutralMagicReflection(50) atLunarMagicReflection(50)
+ID=1078 Name=反弹 UiName=反弹 Desc=反弹点数提高<BUFF atLunarMagicReflection>点 Useage=42 :: atPhysicsReflection(40) atSolarMagicReflection(40) atNeutralMagicReflection(40) atLunarMagicReflection(40)
+# 4
+
+#### atPhysicsReflectionPercent
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+# 4
+
+#### atSolarMagicReflectionPercent
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+ID=388 Name=罗汉金身段1 UiName=罗汉金身 Desc=伤害反弹13.3% Useage=5 :: atLunarMagicReflectionPercent(136) atSolarMagicReflectionPercent(136) atPhysicsReflectionPercent(136) atNeutralMagicReflectionPercent(136) atPoisonMagicReflectionPercent(136)
+# 4
+
+#### atGlobalDamageAbsorb
+ID=177 Name=龟缩 UiName=龟缩术 Desc=躲在硬壳中，化解<BUFF atGlobalDamageAbsorb>点伤害 Useage=12 :: atGlobalDamageAbsorb(7)
+ID=177 Name=龟缩 UiName=龟缩术 Desc=躲在硬壳中，化解<BUFF atGlobalDamageAbsorb>点伤害 Useage=12 :: atGlobalDamageAbsorb(12)
+ID=177 Name=龟缩 UiName=龟缩术 Desc=躲在硬壳中，化解<BUFF atGlobalDamageAbsorb>点伤害 Useage=12 :: atGlobalDamageAbsorb(17)
+ID=177 Name=龟缩 UiName=龟缩术 Desc=躲在硬壳中，化解<BUFF atGlobalDamageAbsorb>点伤害 Useage=12 :: atGlobalDamageAbsorb(34)
+# 4
+
+#### atAllShieldIgnorePercent
+ID=375 Name=破苍穹[375] UiName=破苍穹 Desc=内功会心率提高3%，内功会心效果提高6% Useage=3 :: atPoisonCriticalStrikeBaseRate(500) atSolarCriticalStrikeBaseRate(500) atNeutralCriticalStrikeBaseRate(500) atLunarCriticalStrikeBaseRate(500) atMagicCriticalDamagePowerBaseKiloNumRate(100) atActiveThreatCoefficient(0) atAllShieldIgnorePercent(615)
+ID=375 Name=破苍穹[375] UiName=破苍穹 Desc=内功会心率提高3%，内功会心效果提高6% Useage=3 :: atPoisonCriticalStrikeBaseRate(1000) atSolarCriticalStrikeBaseRate(1000) atNeutralCriticalStrikeBaseRate(1000) atLunarCriticalStrikeBaseRate(1000) atMagicCriticalDamagePowerBaseKiloNumRate(204) atActiveThreatCoefficient(0) atAllShieldIgnorePercent(615)
+ID=378 Name=碎星辰 UiName=碎星辰 Desc=外功基础攻击力提高1.8%，伤害招式会心后减少对目标的威胁值 Useage=3 :: atPhysicsCriticalDamagePowerBaseKiloNumRate(100) atPhysicsCriticalStrikeBaseRate(500) atActiveThreatCoefficient(0) atAllShieldIgnorePercent(614)
+ID=378 Name=碎星辰 UiName=碎星辰 Desc=外功基础攻击力提高1.8%，伤害招式会心后减少对目标的威胁值 Useage=3 :: atPhysicsCriticalDamagePowerBaseKiloNumRate(204) atPhysicsCriticalStrikeBaseRate(1000) atActiveThreatCoefficient(0) atAllShieldIgnorePercent(614)
+# 4
+
+#### atAllShieldIgnoreAdd
+ID=27897 Name=试用侠缘属性修正_阮归云 UiName= Desc= Useage=309 :: atMaxLifeAdditional(374275) atMagicAttackPowerBase(24024) atPoisonCriticalStrikeBaseRate(3212) atAllTypeOvercomeBase(25253) atGlobalDamageFixedAdd(5852) atAllShieldIgnoreAdd(21296) atMagicShield(12888) atPhysicsShieldBase(17184)
+ID=27897 Name=试用侠缘属性修正_年小鹿 UiName= Desc= Useage=309 :: atMaxLifeAdditional(374275) atMagicAttackPowerBase(24024) atPoisonCriticalStrikeBaseRate(3212) atAllTypeOvercomeBase(25253) atGlobalDamageFixedAdd(5852) atAllShieldIgnoreAdd(21296) atMagicShield(12888) atPhysicsShieldBase(17184)
+ID=27897 Name=试用侠缘属性修正_鲤素 UiName= Desc= Useage=309 :: atMaxLifeAdditional(374275) atMagicAttackPowerBase(24024) atLunarCriticalStrikeBaseRate(3212) atAllTypeOvercomeBase(25253) atGlobalDamageFixedAdd(5852) atAllShieldIgnoreAdd(21296) atMagicShield(12888) atPhysicsShieldBase(17184)
+ID=27897 Name=试用侠缘属性修正_沈剑心 UiName= Desc= Useage=309 :: atMaxLifeAdditional(374275) atPhysicsAttackPowerBase(24024) atPhysicsCriticalStrikeBaseRate(3212) atAllTypeOvercomeBase(25253) atGlobalDamageFixedAdd(5852) atAllShieldIgnoreAdd(21296) atMagicShield(12888) atPhysicsShieldBase(17184)
+# 4
+
+#### atParryBase
+ID=218 Name=昆仑禁食 UiName=进食 Desc=气血上限提高<BUFF atMaxLifeAdditional>点，拆招值提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>点，外功防御等级提高<BUFF atPhysicsShieldAdditional>点 Useage=14 :: atMaxLifeAdditional(87) atParryBase(6) atParryValueBase(108) atPhysicsShieldAdditional(6)
+ID=220 Name=美味的昆仑禁食 UiName=进食 Desc=气血最大值提高<BUFF atMaxLifeAdditional>点，拆招值提高<BUFF atParryValueBase>点，招架等级提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>，外功防御等级提高<BUFF atPhysicsShieldAdditional>点 Useage=14 :: atMaxLifeAdditional(87) atParryBase(6) atParryValueBase(108) atPhysicsShieldAdditional(5)
+ID=363 Name=天策-御-拆招 UiName=防 Desc=拆招值提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>点 Useage=1 :: atParryBase(15) atParryValueBase(15)
+ID=363 Name=天策-御-拆招 UiName=防 Desc=拆招值提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>点 Useage=1 :: atParryBase(20) atParryValueBase(20)
+# 4
+
+#### atParryValueBase
+ID=218 Name=昆仑禁食 UiName=进食 Desc=气血上限提高<BUFF atMaxLifeAdditional>点，拆招值提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>点，外功防御等级提高<BUFF atPhysicsShieldAdditional>点 Useage=14 :: atMaxLifeAdditional(87) atParryBase(6) atParryValueBase(108) atPhysicsShieldAdditional(6)
+ID=220 Name=美味的昆仑禁食 UiName=进食 Desc=气血最大值提高<BUFF atMaxLifeAdditional>点，拆招值提高<BUFF atParryValueBase>点，招架等级提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>，外功防御等级提高<BUFF atPhysicsShieldAdditional>点 Useage=14 :: atMaxLifeAdditional(87) atParryBase(6) atParryValueBase(108) atPhysicsShieldAdditional(5)
+ID=363 Name=天策-御-拆招 UiName=防 Desc=拆招值提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>点 Useage=1 :: atParryBase(15) atParryValueBase(15)
+ID=363 Name=天策-御-拆招 UiName=防 Desc=拆招值提高<BUFF atParryBase>点，招架等级提高<BUFF atParryValueBase>点 Useage=1 :: atParryBase(20) atParryValueBase(20)
+# 4
+
+#### atParryBaseRate
+ID=923 Name=天策防御阵法 UiName=一重粗识 Desc=阅历提高5%，声望提高5%，体质提高3% Useage=1 :: atFormationEffect(504) atVitalityBasePercentAdd(30) atAddReputationPercent(50) atAddExpPercent(50) atParryBaseRate(600)
+ID=923 Name=天策防御阵法 UiName=一重粗识 Desc=阅历提高5%，声望提高5%，体质提高3% Useage=1 :: atFormationEffect(504) atVitalityBasePercentAdd(30) atAddReputationPercent(50) atAddExpPercent(50) atParryValuePercent(512) atParryBaseRate(600)
+ID=923 Name=天策防御阵法 UiName=一重粗识 Desc=阅历提高5%，声望提高5%，体质提高3% Useage=1 :: atFormationEffect(504) atVitalityBasePercentAdd(30) atAddReputationPercent(50) atAddExpPercent(50) atParryValuePercent(512) atParryBaseRate(600) atSkillEventHandler(191)
+ID=923 Name=天策防御阵法 UiName=一重粗识 Desc=阅历提高5%，声望提高5%，体质提高3% Useage=1 :: atFormationEffect(504) atVitalityBasePercentAdd(30) atAddReputationPercent(50) atAddExpPercent(50) atParryValuePercent(512) atParryBaseRate(600) atSkillEventHandler(191)
+# 4
+
+#### atDodge
+ID=143 Name=忍术·荒武刀 UiName=忍术·荒武刀 Desc=提高自身闪避率，每次成功闪避攻击后对目标进行一次强力反击 Useage=0 :: atDodge(173) atSkillEventHandler(5)
+ID=181 Name=鼠头鼠脑 UiName=鼠头鼠脑 Desc=闪避等级提高<BUFF atDodge>点 Useage=12 :: atDodge(2)
+ID=181 Name=鼠头鼠脑 UiName=鼠头鼠脑 Desc=闪避等级提高<BUFF atDodge>点 Useage=12 :: atDodge(4)
+ID=181 Name=鼠头鼠脑 UiName=鼠头鼠脑 Desc=闪避等级提高<BUFF atDodge>点 Useage=12 :: atDodge(5)
+# 4
+
+#### atDodgeBaseRate
+ID=372 Name=凭虚御风 UiName=凭虚御风 Desc=施展招式不产生威胁值，闪避几率提高50% Useage=3 :: atActiveThreatCoefficient(0) atDodgeBaseRate(1500)
+ID=677 Name=鹊踏枝 UiName=鹊踏枝 Desc=闪避几率提高30%，不受招式控制效果影响(击退和被拉除外) Useage=4 :: atDodgeBaseRate(3000) atSkillEventHandler(1239) atImmunity(2) atImmunity(4) atImmunity(7) atImmunity(8) atKnockedDownRate(-1024) atImmuneSkillMove(1)
+ID=677 Name=鹊踏枝 UiName=鹊踏枝 Desc=闪避几率提高30%，不受招式控制效果影响(击退和被拉除外) Useage=4 :: atDodgeBaseRate(3500) atSkillEventHandler(1239) atImmunity(2) atImmunity(4) atImmunity(7) atImmunity(8) atKnockedDownRate(-1024) atImmuneSkillMove(1)
+ID=677 Name=鹊踏枝 UiName=鹊踏枝 Desc=闪避几率提高30%，不受招式控制效果影响(击退和被拉除外) Useage=4 :: atDodgeBaseRate(4000) atSkillEventHandler(1239) atImmunity(2) atImmunity(4) atImmunity(7) atImmunity(8) atKnockedDownRate(-1024) atImmuneSkillMove(1)
+# 4
+
+#### atSetHitReduceRate
+ID=4052 Name=明教_暗尘弥散_减被命中 UiName=暗尘弥散 Desc=不会被敌方察觉。结束后清除自身所有移动限制(击退和被拉除外)。\n被伤害招式命中，主动施展伤害、控制类招式或被击退、拉拽时会立即结束该效果 Useage=8 :: atAddTransparencyValue(-70) atExecuteScript(skill/明教/明教_暗尘弥散_持续效果.lua) atSetHitReduceRate(10000) atSkillEventHandler(696) atImmunityComboExceptPullPush() atMoveSpeedPercent(410)
+ID=6299 Name=纯阳_凭虚御风加闪避 UiName=御风而行 Desc=施展招式不产生威胁值，闪避几率提高50% Useage=3 :: atSetHitReduceRate(5000) atActiveThreatCoefficient(0) atSkillEventHandler(1593)
+ID=6299 Name=纯阳_凭虚御风加闪避 UiName=御风而行 Desc=施展招式不产生威胁值，闪避几率提高50% Useage=3 :: atSetHitReduceRate(6500) atActiveThreatCoefficient(0) atSkillEventHandler(1593)
+ID=6299 Name=纯阳_凭虚御风加闪避（剑纯加强版） UiName=御风而行 Desc=施展招式不产生威胁值，闪避几率提高50% Useage=3 :: atSetHitReduceRate(6000) atActiveThreatCoefficient(0) atSkillEventHandler(1593)
+# 4
+
+#### atGlobalResistPercent
+ID=176 Name=坚硬 UiName=坚硬 Desc=坚硬的外壳，减免受到的伤害 Useage=12 :: atGlobalResistPercent(102)
+ID=176 Name=坚硬 UiName=坚硬 Desc=坚硬的外壳，减免受到的伤害 Useage=12 :: atGlobalResistPercent(153)
+ID=176 Name=坚硬 UiName=坚硬 Desc=坚硬的外壳，减免受到的伤害 Useage=12 :: atGlobalResistPercent(204)
+ID=176 Name=坚硬 UiName=坚硬 Desc=坚硬的外壳，减免受到的伤害 Useage=12 :: atGlobalResistPercent(255)
+# 4
+
+#### atDecayAllTypeResistPercent
+ID=24582 Name=五重阵法无视目标减伤 UiName=横云破锋阵 Desc=无视目标10%减伤效果 Useage=315 :: atDecayAllTypeResistPercent(-102)
+ID=24986 Name=孤峰破浪无视免控 UiName= Desc= Useage=315 :: atDecayAllTypeResistPercent(-31)
+ID=25345 Name=木桥恶汉强化七叠无视减伤 UiName= Desc= Useage=51 :: atDecayAllTypeResistPercent(-102)
+ID=30814 Name=孤锋破浪_无视减伤_基础 UiName= Desc= Useage=315 :: atDecayAllTypeResistPercent(-102)
+# 4
+
+#### atDamageAbsorbShieldCoefficient
+ID=2774 Name=天策_羽林枪法_霹雳 UiName=霹雳 Desc=受到的疗伤成效降低50%以及受到的护盾效果降低50% Useage=1 :: atBeTherapyCoefficient(-512) atDamageAbsorbShieldCoefficient(-512)
+ID=15774 Name=内功boss通用减疗 UiName=精神匮乏 Desc=在与首领的战斗中受到重创，每层使获得疗效、获得护盾、吸血效果、降低5% Useage=220 :: atBeTherapyCoefficient(-51) atDamageAbsorbShieldCoefficient(-51) atDamageToLifeCof(-51)
+ID=16586 Name=绝境的馈赠_万灵山庄 UiName=绝境的纷扰·少林 Desc=最大气血值提高6%，造成的伤害提高5%，移动速度提高15%。“藏识众境”伤害降低20% Useage=187 :: atDamageAbsorbShieldCoefficient(-512)
+ID=21977 Name=系统_精神对应减疗 UiName=精神受损 Desc=精神受损，每层使获得疗效降低1%，护盾效果降低1%，吸血效果降低1% Useage=290 :: atBeTherapyCoefficient(-10) atDamageAbsorbShieldCoefficient(-10) atDamageToLifeCof(-10)
+# 4
+
+#### atGlobalDamageAbsorbBySelfMaxLife
+ID=2542 Name=五毒_蛊虫献祭_蟾蜍 UiName=玉蟾献祭 Desc=化解伤害 Useage=9 :: atGlobalDamageAbsorbBySelfMaxLife()
+ID=3311 Name=唐门内功阵法第六重_移速加50% UiName=飞遁 Desc=移动速度提高50%，化解自身气血最大值50%伤害 Useage=7 :: atMoveSpeedPercent(512) atGlobalDamageAbsorbBySelfMaxLife(0)
+ID=4244 Name=明教_渡厄力_吸收盾 UiName=渡厄 Desc=化解伤害 Useage=8 :: atGlobalDamageAbsorbBySelfMaxLife(851)
+ID=4244 Name=明教_渡厄力_吸收盾 UiName=渡厄 Desc=化解伤害 Useage=8 :: atGlobalDamageAbsorbBySelfMaxLife(1345)
+# 4
+
+#### atRechargeableAbsorbShieldValue
+# 0

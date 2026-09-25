@@ -1,0 +1,491 @@
+
+######## Buff.tab Name contains 化劲 ########
+ID=1455 Name=增加化劲 Useage=14 Script= :: atDecriticalDamagePowerBase(54,0)
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Useage=6 Script= :: atToughnessBase(16,) atStrainBase(22,) atDecriticalDamagePowerBase(27,)
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Useage=6 Script= :: atToughnessBase(20,) atStrainBase(28,) atDecriticalDamagePowerBase(34,)
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Useage=6 Script= :: atToughnessBase(25,) atStrainBase(36,) atDecriticalDamagePowerBase(42,)
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Useage=6 Script= :: atToughnessBase(30,) atStrainBase(43,) atDecriticalDamagePowerBase(50,)
+ID=1854 Name=藏剑_西子情_梅隐香_香梅(带化劲) Useage=6 Script= :: atToughnessBase(34,) atStrainBase(50,) atDecriticalDamagePowerBase(58,)
+ID=3431 Name=增加化劲50点 Useage=0 Script= :: atDecriticalDamagePowerBase(50,)
+ID=3435 Name=减化劲50点 Useage=0 Script= :: atDecriticalDamagePowerBase(-50,)
+ID=7505 Name=春点减化劲 Useage=116 Script= :: atDecriticalDamagePowerBaseKiloNumRate(-1000,)
+ID=11873 Name=追命箭降低目标化劲 Useage=7 Script= :: atDecriticalDamagePowerPercent(-51,)
+ID=11873 Name=追命箭降低目标化劲 Useage=7 Script= :: atDecriticalDamagePowerPercent(-154,)
+ID=12597 Name=兰摧降低目标化劲 Useage=2 Script= :: atDecriticalDamagePowerPercent(-154,)
+ID=12597 Name=兰摧降低目标化劲 Useage=2 Script= :: atDecriticalDamagePowerPercent(-154,)
+ID=12597 Name=兰摧降低目标化劲 Useage=2 Script= :: atDecriticalDamagePowerPercent(-154,) atMagicAttackPowerPercent(-205,) atPhysicsAttackPowerPercent(-205,)
+ID=12597 Name=兰摧降低目标化劲 Useage=2 Script= :: atDecriticalDamagePowerPercent(-154,) atMagicAttackPowerPercent(-205,) atPhysicsAttackPowerPercent(-205,)
+ID=13052 Name=普通大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua,) atDecriticalDamagePowerPercent(-154,)
+ID=13052 Name=普通大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua,) atDecriticalDamagePowerPercent(-154,)
+ID=13052 Name=普通大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua,) atDecriticalDamagePowerPercent(-154,)
+ID=13052 Name=普通大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua,) atDecriticalDamagePowerPercent(-154,)
+ID=13052 Name=普通大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atExecuteScript(skill/长歌/套路及子技能/沁心_友方气场范围内成员控制附带调息暂停效果.lua,) atDecriticalDamagePowerPercent(-154,)
+ID=13053 Name=强化大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atDecriticalDamagePowerPercent(-154,)
+ID=13053 Name=强化大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atDecriticalDamagePowerPercent(-154,)
+ID=13053 Name=强化大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atDecriticalDamagePowerPercent(-154,)
+ID=13053 Name=强化大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atDecriticalDamagePowerPercent(-154,)
+ID=13053 Name=强化大道无术减化劲 Useage=3 Script= :: atFreeze(0,0) atDecriticalDamagePowerPercent(-154,)
+ID=13924 Name=翔极碧落降低目标化劲等级 Useage=201 Script= :: atDecriticalDamagePowerPercent(-205,)
+ID=13939 Name=还璧减化劲 Useage=163 Script= :: atDecriticalDamagePowerPercent(-154,)
+ID=17076 Name=斩火降低目标化劲 Useage=8 Script= :: atDecriticalDamagePowerPercent(-51,)
+ID=18031 Name=百步穿杨减化劲 Useage=7 Script= :: atDecriticalDamagePowerPercent(-103,)
+ID=22131 Name=三星临无视化劲判定标记 Useage=260 Script= :: atSkillEventHandler(2153,0)
+ID=22132 Name=三星临无视化劲实际效果 Useage=260 Script= :: atSetTalentRecipe(2873,1)
+ID=23071 Name=[23071]霸刀七刀无视化劲 Useage=163 Script= :: atDecriticalDamagePowerPercent(-102,)
+ID=24181 Name=触碰身行减少目标化劲 Useage=315 Script= :: atDecriticalDamagePowerPercent(-103,)
+ID=24554 Name=已废弃_灭影追风额外降化劲版 Useage=315 Script=刀宗/套路及子技能/灭影结束处理.lua :: atPhysicsOvercomePercent(51,)
+ID=24554 Name=灭影追风额外降化劲版 Useage=315 Script=刀宗/套路及子技能/灭影结束处理.lua :: atPhysicsOvercomePercent(51,) atPhysicsCriticalStrikeBaseRate(500,)
+ID=24554 Name=灭影追风额外降化劲版 Useage=315 Script=刀宗/套路及子技能/灭影结束处理.lua :: atPhysicsCriticalDamagePowerBaseKiloNumRate(51,) atPhysicsCriticalStrikeBaseRate(500,) atPhysicsOvercomePercent(51,)
+ID=24554 Name=灭影追风额外降化劲版 Useage=315 Script=刀宗/套路及子技能/灭影结束处理.lua :: atPhysicsCriticalDamagePowerBaseKiloNumRate(100,) atPhysicsCriticalStrikeBaseRate(1000,) atPhysicsOvercomePercent(102,) atActiveThreatCoefficient(0,-717)
+ID=24761 Name=灭影追风减化劲等级 Useage=315 Script= :: atDecriticalDamagePowerPercent(-61,)
+ID=25272 Name=[25272]丐帮_温酒_无视化劲 Useage=82 Script= :: atDecriticalDamagePowerPercent(-359,)
+ID=27064 Name=明教_净恶瑕诛无视化劲 Useage=8 Script= :: atDecriticalDamagePowerPercent(-410,)
+ID=28807 Name=提高化劲 Useage=13 Script= :: atDecriticalDamagePowerBaseKiloNumRate(10,)
+ID=29195 Name=日破无视化劲 Useage=8 Script= :: atDecriticalDamagePowerPercent(-154,)
+ID=30056 Name=输出PVP护手减化劲_内置CD Useage=39 Script= :: 
+ID=30057 Name=治疗PVP护手加化劲_内置CD Useage=39 Script= :: 
+ID=30059 Name=输出PVP护手减化劲 Useage=39 Script= :: atDecriticalDamagePowerBase(-2756,)
+ID=30060 Name=治疗PVP护手加化劲 Useage=39 Script= :: atDecriticalDamagePowerBase(2756,)
+ID=30074 Name=PVP项链化劲加御劲 Useage=39 Script= :: atToughnessBase(160,)
+ID=30306 Name=奇穴_雾灭_降低化劲 Useage=315 Script= :: atDecriticalDamagePowerPercent(-51,)
+ID=30307 Name=奇穴_雾灭_提高化劲 Useage=315 Script= :: atDecriticalDamagePowerPercent(51,)
+ID=30516 Name=JJC插旗大王-化劲 Useage=42 Script= :: atDecriticalDamagePowerBase(1000,)
+ID=30516 Name=JJC插旗大王-化劲 Useage=42 Script= :: atDecriticalDamagePowerBase(-1000,)
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_太极秘录 Useage=39 Script= :: atToughnessBase(120,)
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_太极秘录 Useage=39 Script= :: atToughnessBase(48,)
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_山海源流 Useage=39 Script= :: atToughnessBase(140,)
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_山海源流 Useage=39 Script= :: atToughnessBase(56,)
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_暗影千机 Useage=39 Script= :: atToughnessBase(164,)
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_暗影千机 Useage=39 Script= :: atToughnessBase(65,)
+ID=31776 Name=七情减化劲 Useage=282 Script= :: atDecriticalDamagePowerPercent(-11,)
+ID=33182 Name=孤锋破浪无视化劲 Useage=315 Script= :: atDecriticalDamagePowerPercent(-256,)
+ID=51856 Name=绝境_丐帮棒打降低化劲 Useage=187 Script= :: atDecriticalDamagePowerPercent(-62,)
+# shown 60
+
+######## Buff.tab Name contains 御劲 ########
+ID=1072 Name=御劲 Useage=42 Script= :: atToughnessBase(162,)
+ID=1072 Name=御劲 Useage=42 Script= :: atToughnessBase(124,)
+ID=1444 Name=T增加御劲 Useage=39 Script= :: atToughnessBase(11,) atSkillEventHandler(299,)
+ID=1444 Name=T增加御劲 Useage=39 Script= :: atToughnessBase(5,) atModifyCostManaPercent(-102,) atSkillEventHandler(299,)
+ID=1444 Name=T增加御劲 Useage=39 Script= :: atToughnessBase(3,) atModifyCostManaPercent(-68,) atActiveThreatCoefficient(0,67) atSkillEventHandler(299,)
+ID=1458 Name=增加御劲 Useage=14 Script= :: atToughnessBase(50,0)
+ID=1800 Name=藏剑_快剑40级内功_梅隐香增加御劲值 Useage=6 Script= :: 
+ID=1880 Name=25人天王殿_御劲壁垒 Useage=30 Script= :: atSolarMagicResistPercent(204,) atLunarMagicResistPercent(204,) atNeutralMagicResistPercent(204,)
+ID=1880 Name=25人天王殿_御劲壁垒 Useage=30 Script= :: atSolarMagicResistPercent(102,) atLunarMagicResistPercent(102,) atNeutralMagicResistPercent(102,) atPoisonMagicResistPercent(102,)
+ID=2198 Name=铁壁_加20%御劲 Useage=39 Script= :: atToughnessPercent(205,)
+ID=2199 Name=溃甲_减20%御劲 Useage=39 Script= :: atToughnessPercent(-205,)
+ID=3430 Name=增加御劲50点 Useage=0 Script= :: atToughnessBase(50,)
+ID=3434 Name=减御劲50点 Useage=0 Script= :: atToughnessBase(-50,)
+ID=9864 Name=风20%会心换20%御劲 Useage=1 Script= :: atToughnessBaseRate(3000,)
+ID=12989 Name=持国天王殿_御劲壁垒 Useage=190 Script= :: atSolarMagicResistPercent(204,) atLunarMagicResistPercent(204,) atNeutralMagicResistPercent(204,)
+ID=14980 Name=御劲提高 Useage=8 Script= :: atToughnessBaseRate(500,)
+ID=20812 Name=[20812]铁骨奇穴_慑服_御劲 Useage=139 Script= :: atToughnessBaseRate(512,)
+ID=24411 Name=离经_妙手御劲 Useage=2 Script= :: atToughnessBaseRate(500,)
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=28314 Name=御劲统一 Useage=290 Script= :: 
+ID=29614 Name=海龙御劲_监控与被击buff Useage=290 Script= :: atSkillEventHandler(2775,) atSkillEventHandler(2776,) atSkillEventHandler(2777,) atSkillEventHandler(2778,) atSkillEventHandler(2734,) atSetPlayerUncontrollable(,) atDisableMoveCtrl(,) atDisableSprintFlag(,)
+ID=29616 Name=海龙御劲_被击计数 Useage=290 Script= :: 
+ID=29624 Name=绝地反击_御劲统一cd Useage=290 Script= :: 
+ID=29776 Name=海龙御劲_替换内部技能 Useage=290 Script= :: atNoLimitChangeSkillIcon(28202,39099)
+ID=29776 Name=海龙御劲_替换内部技能 Useage=290 Script= :: atNoLimitChangeSkillIcon(28212,39099)
+ID=29776 Name=海龙御劲_替换内部技能 Useage=290 Script= :: atNoLimitChangeSkillIcon(28213,39099)
+ID=30074 Name=PVP项链化劲加御劲 Useage=39 Script= :: atToughnessBase(160,)
+ID=30515 Name=JJC插旗大王-御劲 Useage=42 Script= :: atToughnessBase(100,)
+ID=30515 Name=JJC插旗大王-御劲 Useage=42 Script= :: atToughnessBase(-100,)
+ID=30707 Name=PVP附魔1腰带拍卖_被击加御劲_太极秘录 Useage=39 Script= :: atToughnessBase(10800,)
+ID=30707 Name=PVP附魔1腰带战阶_被击加御劲_太极秘录 Useage=39 Script= :: atToughnessBase(4320,)
+ID=30707 Name=PVP附魔1腰带拍卖_被击加御劲_山海源流 Useage=39 Script= :: atToughnessBase(12609,)
+ID=30707 Name=PVP附魔1腰带战阶_被击加御劲_山海源流 Useage=39 Script= :: atToughnessBase(5043,)
+ID=30707 Name=PVP附魔1腰带拍卖_被击加御劲_暗影千机 Useage=39 Script= :: atToughnessBase(14760,)
+ID=30707 Name=PVP附魔1腰带战阶_被击加御劲_暗影千机 Useage=39 Script= :: atToughnessBase(5904,)
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_太极秘录 Useage=39 Script= :: atToughnessBase(120,)
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_太极秘录 Useage=39 Script= :: atToughnessBase(48,)
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_山海源流 Useage=39 Script= :: atToughnessBase(140,)
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_山海源流 Useage=39 Script= :: atToughnessBase(56,)
+ID=30708 Name=PVP附魔2腰带拍卖_化劲转御劲_暗影千机 Useage=39 Script= :: atToughnessBase(164,)
+ID=30708 Name=PVP附魔2腰带战阶_化劲转御劲_暗影千机 Useage=39 Script= :: atToughnessBase(65,)
+ID=33175 Name=离经_新积势_炸黑御劲 Useage=2 Script= :: atToughnessBaseRate(1000,)
+# shown 50
+
+######## Buff.tab Name contains 减疗 ########
+ID=2662 Name=帮会_擂台_减疗伤成效 Useage=55 Script= :: 
+ID=2662 Name=帮会_擂台_减疗伤成效 Useage=55 Script= :: atBeTherapyCoefficient(-512,)
+ID=2662 Name=帮会_擂台_减疗伤成效 Useage=55 Script= :: atBeTherapyCoefficient(-1536,)
+ID=9420 Name=3号_游击_攻其无备_定身减疗 Useage=117 Script= :: atSilenceAll(,) atBeTherapyCoefficient(-1024,)
+ID=9514 Name=楚济_减疗40% Useage=120 Script= :: atBeTherapyCoefficient(-461,)
+ID=9694 Name=清绝影歌_npc_40%减疗 Useage=120 Script= :: atBeTherapyCoefficient(-512,)
+ID=10243 Name=盾击减疗实际效果 Useage=139 Script=苍云/套路及子技能/减料效果被顶替掉.lua :: atBeTherapyCoefficient(-307,0)
+ID=10243 Name=盾击减疗实际效果 Useage=139 Script=苍云/套路及子技能/减料效果被顶替掉.lua :: atBeTherapyCoefficient(-614,0)
+ID=10243 Name=盾击减疗实际效果 Useage=139 Script=苍云/套路及子技能/减料效果被顶替掉.lua :: atBeTherapyCoefficient(-614,0)
+ID=10646 Name=2号_柳绯君_问情_减疗禁魔禁轻功 Useage=156 Script= :: atPullRate(-2048,) atSilenceAll(,) atBeTherapyCoefficient(-1024,) atMoveSpeedPercent(-256,) atSilence(6,) atMaxRunSpeed(20,) atPositiveShield(,)
+ID=10646 Name=2号_柳绯君_问情_减疗禁魔禁轻功 Useage=156 Script= :: atPullRate(-2048,) atSilenceAll(,) atBeTherapyCoefficient(-1024,) atMoveSpeedPercent(-308,) atSilence(6,) atMaxRunSpeed(17,) atPositiveShield(,)
+ID=10850 Name=绿林_陷阱减速减疗 Useage=164 Script= :: atMoveSpeedPercent(-512,) atBeTherapyCoefficient(-512,)
+ID=10893 Name=2号_哥舒翰_落枪_减疗 Useage=158 Script= :: atBeTherapyCoefficient(-205,)
+ID=10893 Name=2号_哥舒翰_落枪_减疗 Useage=158 Script= :: atBeTherapyCoefficient(-307,)
+ID=12283 Name=生太极吞日月加减疗被动计数 Useage=3 Script= :: 
+ID=12423 Name=2号_致命穿刺减疗 Useage=180 Script= :: atBeTherapyCoefficient(-512,)
+ID=12423 Name=2号_致命穿刺减疗 Useage=180 Script= :: atBeTherapyCoefficient(-819,)
+ID=15033 Name=MOBA减疗 Useage=42 Script= :: atBeTherapyCoefficient(-512,)
+ID=15103 Name=MOBA减疗装备 Useage=42 Script= :: atSkillEventHandler(1670,)
+ID=15531 Name=血覆黄泉减疗效果BUFF Useage=232 Script= :: atBeTherapyCoefficient(-307,0)
+ID=15531 Name=血覆黄泉减疗效果BUFF50 Useage=232 Script= :: atBeTherapyCoefficient(-512,0)
+ID=15551 Name=时辰_减疗 Useage=233 Script= :: atBeTherapyCoefficient(-102,)
+ID=15661 Name=通用_减疗 Useage=233 Script= :: atBeTherapyCoefficient(-10,)
+ID=15692 Name=食物免疫效果_减疗 Useage=233 Script= :: 
+ID=15774 Name=内功boss通用减疗 Useage=220 Script= :: atBeTherapyCoefficient(-51,0) atDamageAbsorbShieldCoefficient(-51,) atDamageToLifeCof(-51,)
+ID=16664 Name=剑纯实际减疗效果 Useage=3 Script= :: atBeTherapyCoefficient(-102,0)
+ID=16664 Name=剑纯实际减疗效果 Useage=3 Script= :: atBeTherapyCoefficient(-102,0)
+ID=16664 Name=剑纯实际减疗效果 Useage=3 Script= :: atBeTherapyCoefficient(-102,0)
+ID=16664 Name=剑纯实际减疗效果 Useage=3 Script= :: atBeTherapyCoefficient(-102,0)
+ID=16664 Name=剑纯实际减疗效果 Useage=3 Script= :: atBeTherapyCoefficient(-102,0)
+ID=16665 Name=延迟处理减疗添加 Useage=3 Script=纯阳/套路及子技能/延迟删表现buff.lua :: 
+ID=16967 Name=新苍云特殊武器_减疗 Useage=39 Script= :: atBeTherapyCoefficient(-5,)
+ID=17200 Name=内功通用不脱战减疗 Useage=220 Script= :: atBeTherapyCoefficient(-51,0)
+ID=17644 Name=竞技场55机器人减疗修正 Useage=13 Script= :: atBeTherapyCoefficient(-51,0)
+ID=18004 Name=持续减疗效果 Useage=260 Script= :: atBeTherapyCoefficient(-461,)
+ID=18038 Name=减疗免疫 Useage=260 Script= :: 
+ID=18262 Name=4号_特殊减疗 Useage=252 Script= :: atBeTherapyCoefficient(-205,)
+ID=18262 Name=4号_特殊减疗 Useage=252 Script= :: atBeTherapyCoefficient(-307,)
+ID=18262 Name=4号_特殊减疗 Useage=252 Script= :: atBeTherapyCoefficient(-410,)
+ID=18333 Name=周边_受伤的万花弟子减疗 Useage=258 Script= :: atBeTherapyCoefficient(-51,0)
+ID=18823 Name=伪·万剑归宗减疗 Useage=51 Script= :: atBeTherapyCoefficient(-205,)
+ID=19968 Name=修罗僧_P1_减疗 Useage=270 Script= :: atBeTherapyCoefficient(-51,0)
+ID=21831 Name=用于NPC延迟删除减疗表现 Useage=3 Script=纯阳/NPC减疗被转移处理.lua :: 
+ID=21977 Name=系统_精神对应减疗 Useage=290 Script= :: atBeTherapyCoefficient(-10,0) atDamageAbsorbShieldCoefficient(-10,) atDamageToLifeCof(-10,)
+ID=23642 Name=1号_吴添明_狂刀势·问心_减疗 Useage=314 Script= :: atBeTherapyCoefficient(-102,)
+ID=24019 Name=选牌系统_免除易伤和减疗 Useage=289 Script= :: 
+ID=24223 Name=减疗减盾吸收 Useage=315 Script= :: atBeTherapyCoefficient(-512,) atDamageAbsorbShieldCoefficient(-512,)
+ID=24306 Name=[24306]共潮生减疗debuff Useage=120 Script= :: atAllDamageAddPercent(-25,)
+ID=24324 Name=苍云_分山劲_决死减疗 Useage=139 Script= :: atBeTherapyCoefficient(-307,)
+ID=24477 Name=绿涤实际减疗 Useage=282 Script= :: atBeTherapyCoefficient(-512,) atDamageAbsorbShieldCoefficient(-512,)
+ID=24838 Name=左旋右转减疗标记 Useage=4 Script= :: 
+ID=24854 Name=6号_李重茂_恨_减疗效果 Useage=304 Script= :: atBeTherapyCoefficient(-51,)
+ID=25359 Name=开山将减疗 Useage=51 Script= :: atBeTherapyCoefficient(-205,)
+ID=26477 Name=NPC精神减疗 Useage=290 Script= :: atBeTherapyCoefficient(-10,0) atDamageAbsorbShieldCoefficient(-10,)
+ID=26950 Name=6号_月泉淮_月泉淮月崩击分身减疗 Useage=341 Script= :: atBeTherapyCoefficient(-102,)
+ID=27053 Name=万灵山庄_召唤兽减疗 Useage=343 Script= :: atBeTherapyCoefficient(-512,)
+ID=29244 Name=百会_爆绝脉减疗 Useage=431 Script= :: atBeTherapyCoefficient(-51,)
+ID=30427 Name=丐帮减疗 Useage=82 Script= :: atBeTherapyCoefficient(-563,)
+ID=30478 Name=不愧君减疗 Useage=120 Script= :: atBeTherapyCoefficient(-512,)
+ID=31700 Name=奇穴_勾线减疗 Useage=450 Script= :: atBeTherapyCoefficient(-512,)
+# shown 60
+
+######## Buff.tab Name contains 减伤 ########
+ID=368 Name=天策-守如山-铁牢律-减伤 Useage=1 Script= :: atCallSubBuff(33086,80)
+ID=1986 Name=西风古道_减伤 Useage=42 Script= :: atGlobalResistPercent(1024,)
+ID=2232 Name=荻花圣殿_7号BOSS_沙利亚_碧土毒花葬_施放减伤 Useage=30 Script= :: 
+ID=2232 Name=荻花圣殿_7号BOSS_沙利亚_碧土毒花葬_施放减伤 Useage=30 Script= :: 
+ID=2232 Name=荻花圣殿_7号BOSS_沙利亚_碧土毒花葬_施放减伤 Useage=30 Script= :: 
+ID=2232 Name=荻花圣殿_7号BOSS_沙利亚_碧土毒花葬_施放减伤 Useage=30 Script= :: 
+ID=2251 Name=春泥护花秘籍_加5%减伤 Useage=2 Script= :: atGlobalResistPercent(51,)
+ID=2716 Name=血龙出渊_宇文敌_霸皇诀_减伤80% Useage=12 Script= :: atGlobalResistPercent(512,)
+ID=2717 Name=万花_渐催_长针减伤 Useage=2 Script= :: atPhysicsResistPercent(31,)
+ID=2717 Name=万花_渐催_长针减伤 Useage=2 Script= :: atPhysicsResistPercent(61,)
+ID=2718 Name=万花_欢心_提针减伤 Useage=2 Script= :: atLunarMagicResistPercent(10,) atNeutralMagicResistPercent(10,) atSolarMagicResistPercent(10,) atPoisonMagicResistPercent(10,)
+ID=2718 Name=万花_欢心_提针减伤 Useage=2 Script= :: atLunarMagicResistPercent(20,) atNeutralMagicResistPercent(20,) atSolarMagicResistPercent(20,) atPoisonMagicResistPercent(20,)
+ID=2805 Name=七秀_玉骨_内功减伤 Useage=4 Script= :: atCallSubBuff(33086,20)
+ID=2805 Name=七秀_玉骨_内功减伤 Useage=4 Script= :: atCallSubBuff(33086,50)
+ID=2805 Name=七秀_玉骨_内功减伤 Useage=4 Script= :: atCallSubBuff(33086,50)
+ID=2849 Name=镇派_千蝶减伤 Useage=9 Script= :: atCallSubBuff(33086,35)
+ID=2849 Name=镇派_千蝶减伤 Useage=9 Script= :: atCallSubBuff(33086,35)
+ID=2983 Name=镇派_无我_减伤效果 Useage=3 Script= :: atCallSubBuff(33086,20)
+ID=2983 Name=镇派_无我_减伤效果 Useage=3 Script= :: atCallSubBuff(33086,50) atBuffFunctionDecay(4,-307) atBuffFunctionDecay(7,-307) atBuffFunctionDecay(8,-307) atBuffFunctionDecay(11,-307) atKnockDownTimeRate(-307,0)
+ID=3068 Name=镇派_雾体减伤 Useage=9 Script= :: atCallSubBuff(33086,25) atMoveSpeedPercent(154,) atModifyCostManaPercent(-154,)
+ID=3068 Name=镇派_雾体减伤 Useage=9 Script= :: atCallSubBuff(33086,50) atMoveSpeedPercent(308,) atModifyCostManaPercent(-308,)
+ID=3068 Name=镇派_雾体减伤_秘籍延长 Useage=9 Script= :: atCallSubBuff(33086,25) atMoveSpeedPercent(154,) atModifyCostManaPercent(-154,)
+ID=3068 Name=镇派_雾体减伤_秘籍延长 Useage=9 Script= :: atCallSubBuff(33086,50) atMoveSpeedPercent(308,) atModifyCostManaPercent(-308,)
+ID=3157 Name=回风兽_减伤 Useage=61 Script= :: atGlobalResistPercent(819,)
+ID=3274 Name=唐门_浮光掠影_减伤 Useage=7 Script= :: atCallSubBuff(33086,20)
+ID=3274 Name=唐门_浮光掠影_减伤 Useage=7 Script= :: atCallSubBuff(33086,40)
+ID=3315 Name=唐门_扬威天下_减伤 Useage=7 Script= :: atBuffFunctionDecay(4,-410) atBuffFunctionDecay(7,-410) atBuffFunctionDecay(8,-410) atCallSubBuff(33086,40)
+ID=3315 Name=唐门_扬威天下_减伤 Useage=7 Script= :: atBuffFunctionDecay(4,-410) atBuffFunctionDecay(7,-410) atBuffFunctionDecay(8,-410) atCallSubBuff(33086,40)
+ID=3376 Name=唐莲_减伤 Useage=62 Script= :: atGlobalResistPercent(973,)
+ID=3556 Name=五毒_宠物_隐藏减伤 Useage=9 Script= :: 
+ID=4245 Name=明教_朝圣言_自身减伤免控 Useage=8 Script= :: atGlobalResistPercent(614,) atImmunity(2,0) atImmunity(4,0) atImmunity(7,0) atImmunity(8,0) atKnockedDownRate(-1024,) atPullRate(-1024,) atRepulsedRate(-1024,) atImmuneSkillMove(1,) atImmunity(5,)
+ID=4307 Name=南诏皇宫_萧杀_迦楼罗炎劲_自身减伤 Useage=64 Script= :: atNeutralMagicResistPercent(813,) atPoisonMagicResistPercent(813,)
+ID=4439 Name=明教_贪魔体_减伤免控 Useage=8 Script=明教/明教_贪魔体.lua :: atCallSubBuff(33086,50) atImmunityCombo(,)
+ID=4439 Name=明教_贪魔体_减伤免控 Useage=8 Script=明教/明教_贪魔体.lua :: atCallSubBuff(33086,55) atImmunityCombo(,)
+ID=4439 Name=明教_贪魔体_减伤免控 Useage=8 Script=明教/明教_贪魔体.lua :: atCallSubBuff(33086,60) atImmunityCombo(,)
+ID=4439 Name=明教_贪魔体_减伤免控 Useage=8 Script=明教/明教_贪魔体.lua :: atCallSubBuff(33086,65) atImmunityCombo(,)
+ID=4439 Name=明教_贪魔体_减伤免控 Useage=8 Script=明教/明教_贪魔体.lua :: atCallSubBuff(33086,70) atImmunityCombo(,)
+ID=4439 Name=明教_贪魔体_减伤免控 Useage=8 Script=明教/明教_贪魔体.lua :: atCallSubBuff(33086,80) atImmunityCombo(,)
+ID=4479 Name=明教_寒月耀煌日照_击中减伤 Useage=8 Script= :: atGlobalResistPercent(51,)
+ID=4479 Name=明教_寒月耀煌日照_击中减伤 Useage=8 Script= :: atGlobalResistPercent(102,)
+ID=4781 Name=门派活动_九子连环牢减伤 Useage=51 Script= :: atGlobalResistPercent(810,)
+ID=4781 Name=门派活动_九子连环牢减伤 Useage=51 Script= :: atGlobalResistPercent(810,)
+ID=5144 Name=南诏皇宫_6号_李倓_龙铁牢锁_减伤 Useage=64 Script= :: atGlobalResistPercent(512,)
+ID=5280 Name=一线天_霹雳_减伤反伤buff Useage=67 Script= :: atLunarMagicReflectionPercent(1024,) atNeutralMagicReflectionPercent(1024,) atPhysicsReflectionPercent(1024,) atPoisonMagicReflectionPercent(1024,) atSolarMagicReflectionPercent(1024,) atLunarDamageCoefficient(-1024,) atNeutralDamageCoefficient(-1024,) atPhysicsDamageCoefficient(-1024,) atPoisonDamageCoefficient(-1024,) atSolarDamageCoefficient(-1024,)
+ID=5543 Name=90级阵营_减伤 Useage=53 Script= :: atGlobalResistPercent(819,)
+ID=5626 Name=大明宫_傀儡·天_减伤 Useage=79 Script= :: atLunarMagicResistPercent(612,) atNeutralMagicResistPercent(612,) atPoisonMagicResistPercent(612,) atPhysicsResistPercent(612,)
+ID=5627 Name=大明宫_傀儡·人_减伤 Useage=79 Script= :: atLunarMagicResistPercent(612,) atSolarMagicResistPercent(612,) atPoisonMagicResistPercent(612,) atPhysicsResistPercent(612,)
+ID=5628 Name=大明宫_傀儡·修罗_减伤 Useage=79 Script= :: atLunarMagicResistPercent(612,) atSolarMagicResistPercent(612,) atPoisonMagicResistPercent(612,) atNeutralMagicResistPercent(612,)
+ID=5629 Name=大明宫_傀儡·饿鬼_减伤 Useage=79 Script= :: atPhysicsResistPercent(612,) atSolarMagicResistPercent(612,) atPoisonMagicResistPercent(612,) atNeutralMagicResistPercent(612,)
+ID=5630 Name=大明宫_傀儡·地狱_减伤 Useage=79 Script= :: atLunarMagicResistPercent(306,) atSolarMagicResistPercent(306,) atPoisonMagicResistPercent(306,) atNeutralMagicResistPercent(306,) atPhysicsResistPercent(306,)
+ID=5641 Name=天策_突_减伤 Useage=1 Script= :: atCallSubBuff(33086,30)
+ID=5673 Name=大明宫_无名_减伤护盾 Useage=79 Script= :: atGlobalResistPercent(819,)
+ID=5673 Name=大明宫_无名_减伤护盾 Useage=79 Script= :: atGlobalResistPercent(307,)
+ID=5705 Name=少林_舍身诀_减伤 Useage=5 Script= :: atCallSubBuff(33086,50)
+ID=5708 Name=少林_横扫六合_减伤害 Useage=5 Script= :: atSkillLunarDamagePercent(-31,) atSkillSolarDamagePercent(-31,) atSkillNeutralDamagePercent(-31,) atSkillPoisonDamagePercent(-31,) atSkillPhysicsDamagePercent(-31,) atPhysicsAttackPowerPercent(-31,) atLunarAttackPowerPercent(-31,) atSolarAttackPowerPercent(-31,) atNeutralAttackPowerPercent(-31,) atPoisonAttackPowerPercent(-31,) atMeleeWeaponDamagePercent(-31,) atRangeWeaponDamagePercent(-31,) atMeleeWeaponDamageRandPercent(-31,) atRangeWeaponDamageRandPercent(-31,)
+ID=5722 Name=少林_万佛_加减伤 Useage=5 Script= :: atGlobalResistPercent(102,)
+ID=5725 Name=藏剑_探梅_减伤 Useage=6 Script= :: atGlobalResistPercent(205,)
+ID=5726 Name=藏剑_探梅_减伤debuff Useage=6 Script= :: 
+ID=5744 Name=明教_贪魔体_2秒减伤 Useage=8 Script= :: atCallSubBuff(33086,40)
+ID=5746 Name=明教_流光囚影_减伤 Useage=8 Script= :: atCallSubBuff(33086,20)
+# shown 60
+
+######## Buff.tab Name contains 名剑 ########
+ID=6472 Name=偿还名剑币_天佑中华 Useage=53 Script= :: 
+ID=6476 Name=扣除名剑币道具_天佑中华 Useage=53 Script= :: 
+ID=7094 Name=加速buff-威望名剑币5 Useage=108 Script= :: atAddPrestigePercentForAll(51,)
+ID=7096 Name=加速buff-名剑币10 Useage=108 Script= :: 
+ID=11924 Name=JJC扣名剑币 Useage=51 Script= :: 
+ID=13211 Name=名剑大会举报复查buff Useage=42 Script= :: 
+ID=17488 Name=名剑大会每周五场胜利标记 Useage=42 Script= :: 
+ID=19008 Name=许愿树·名剑大会 Useage=247 Script= :: 
+ID=19265 Name=禁令·名剑大会  Useage=13 Script= :: 
+ID=19265 Name=禁令·名剑大会  Useage=13 Script= :: 
+ID=19265 Name=禁令·名剑大会  Useage=13 Script= :: 
+ID=19585 Name=禁行·名剑大会 Useage=13 Script= :: 
+ID=19585 Name=禁行·名剑大会 Useage=13 Script= :: 
+ID=19585 Name=禁行·名剑大会 Useage=13 Script= :: 
+ID=19906 Name=禁书·名剑大会 Useage=13 Script= :: 
+ID=19906 Name=禁书·名剑大会 Useage=13 Script= :: 
+ID=19906 Name=禁书·名剑大会 Useage=13 Script= :: 
+ID=22939 Name=名剑大会获取威望上限记录 Useage=42 Script= :: 
+ID=30633 Name=名剑大会·对局火热 Useage=13 Script= :: atGamePlayTherapyFinalCof(-71,)
+ID=33612 Name=名剑·保锋帖 Useage=88 Script= :: 
+# shown 20
+
+######## Buff.tab Name contains 竞技 ########
+ID=2554 Name=任务_竞技场时间控制 Useage=54 Script= :: 
+ID=3369 Name=竞技场_删辅助类食品 Useage=42 Script= :: 
+ID=3370 Name=竞技场_删增强类食品 Useage=42 Script= :: 
+ID=3371 Name=竞技场_删宴席 Useage=42 Script= :: 
+ID=3372 Name=竞技场_删辅助类药品 Useage=42 Script= :: 
+ID=3373 Name=竞技场_删增强类药品 Useage=42 Script= :: 
+ID=3381 Name=竞技场_战旗A Useage=42 Script= :: 
+ID=3386 Name=竞技场_战旗B Useage=42 Script= :: 
+ID=3387 Name=竞技场_删撼如雷 Useage=42 Script= :: 
+ID=3388 Name=竞技场_删清心静气 Useage=42 Script= :: 
+ID=3389 Name=竞技场_删秀气 Useage=42 Script= :: 
+ID=3390 Name=竞技场_删雨霖铃 Useage=42 Script= :: 
+ID=3391 Name=竞技场_删般若诀 Useage=42 Script= :: 
+ID=3392 Name=竞技场_删药石气劲 Useage=42 Script= :: 
+ID=3393 Name=竞技场_删BUFF用I Useage=42 Script= :: 
+ID=3394 Name=竞技场_删BUFF用I Useage=42 Script= :: 
+ID=3395 Name=竞技场_删BUFF用I Useage=42 Script= :: 
+ID=3396 Name=竞技场_删BUFF用I Useage=42 Script= :: 
+ID=3397 Name=竞技场_删BUFF用I Useage=42 Script= :: 
+ID=3398 Name=竞技场_删BUFF用I Useage=42 Script= :: 
+ID=3449 Name=竞技场_标记战阶 Useage=42 Script= :: 
+ID=3602 Name=竞技场_清内功标记 Useage=42 Script= :: 
+ID=3849 Name=竞技场_回蓝回豆 Useage=42 Script= :: 
+ID=3913 Name=竞技场_删玄水 Useage=42 Script= :: 
+ID=5015 Name=竞技场_反隐形BUFF Useage=13 Script= :: atCounterStealthRange(1920,) atCounterStealth(,)
+ID=7869 Name=记录竞技场周结算buff Useage=116 Script= :: 
+ID=8547 Name=竞技场精英赛 Useage=42 Script= :: 
+ID=10274 Name=竞技场周常 Useage=13 Script= :: 
+ID=11837 Name=竞技场禁止换心法 Useage=13 Script= :: 
+ID=11839 Name=竞技场准备时间_可奇穴切换 Useage=13 Script=Quest\竞技场_切奇穴.lua :: atSetSelectableType(2,)
+ID=11840 Name=竞技场倒计时_无法切换奇穴 Useage=13 Script= :: 
+ID=11878 Name=竞技场排队标记 Useage=13 Script=世界规则/名剑大会监控是否完成对局.lua :: 
+ID=11880 Name=竞技场惩罚 Useage=13 Script= :: 
+ID=11880 Name=竞技场惩罚 Useage=13 Script= :: 
+ID=11881 Name=竞技场三层 Useage=13 Script= :: 
+ID=12476 Name=阵营披风碎片竞技场 Useage=51 Script= :: 
+ID=12855 Name=女生竞技场 Useage=51 Script= :: 
+ID=13120 Name=竞技场_赛点标记 Useage=42 Script= :: 
+ID=13479 Name=进入竞技场标记 Useage=13 Script= :: 
+ID=13597 Name=竞技场状态机无敌buff Useage=13 Script= :: atNegativeShield(1,) atGlobalBlock(1,0)
+ID=13598 Name=竞技场状态机减伤buff Useage=13 Script= :: atRepulsedRate(-1024,) atPullRate(-1024,) atKnockedOffRate(-1024,) atKnockedBackRate(-1024,) atGlobalResistPercent(1004,)
+ID=13598 Name=竞技场状态机无敌buff Useage=13 Script= :: atNegativeShield(1,) atGlobalBlock(1,0)
+ID=13695 Name=竞技场状态机附近打斗破坏buff Useage=13 Script= :: atSkillEventHandler(1523,)
+ID=13698 Name=竞技场状态机溅射cdBuff Useage=13 Script= :: 
+ID=14326 Name=竞技场延时释放冲击波技能 Useage=13 Script=Quest/竞技场障碍破坏/通用延时AOE.lua :: 
+ID=14326 Name=竞技场延时释放冲击波技能 Useage=13 Script=Quest/竞技场障碍破坏/通用延时AOE.lua :: 
+ID=14326 Name=竞技场延时释放冲击波技能 Useage=13 Script=Quest/竞技场障碍破坏/通用延时AOE.lua :: 
+ID=14390 Name=竞技场延时设置血量10% Useage=13 Script=Quest/竞技场障碍破坏/通用延时设置血量10%.lua :: 
+ID=14544 Name=战场竞技场排队CD Useage=42 Script= :: 
+ID=15011 Name=记录竞技场房间号 Useage=13 Script=Quest/竞技场_开房间访客buff.lua :: 
+ID=15088 Name=记录竞技场房间类型 Useage=13 Script= :: 
+ID=16654 Name=竞技场能力修正 Useage=13 Script= :: atBeTherapyCoefficient(-41,0) atAllDamageAddPercent(-31,) atLunarDamageCoefficient(31,) atNeutralDamageCoefficient(31,) atPhysicsDamageCoefficient(31,) atPoisonDamageCoefficient(31,) atSolarDamageCoefficient(31,)
+ID=16654 Name=竞技场能力修正 Useage=13 Script= :: atBeTherapyCoefficient(31,0) atAllDamageAddPercent(31,) atLunarDamageCoefficient(-31,) atNeutralDamageCoefficient(-31,) atPhysicsDamageCoefficient(-31,) atPoisonDamageCoefficient(-31,) atSolarDamageCoefficient(-31,)
+ID=17644 Name=竞技场55机器人减疗修正 Useage=13 Script= :: atBeTherapyCoefficient(-51,0)
+ID=17678 Name=竞技场OB防被打 Useage=13 Script= :: atIgnoreGravity(,) atSetSelectableType(2,) atImmunity(2,0) atImmunity(3,0) atImmunity(4,0) atImmunity(7,0) atImmunity(8,0) atImmuneSkillMove(1,) atKnockedBackRate(-1024,) atRepulsedRate(-1024,) atPullRate(-1024,) atPrinkModel(39074,)
+ID=18024 Name=竞技场场中标记 Useage=187 Script= :: atDisableSprintFlag(,)
+ID=19548 Name=竞技场练习机器人标记 Useage=13 Script= :: 
+ID=20116 Name=竞技场--赛季段位继承 Useage=13 Script=Quest/竞技场_赛季结算buff.lua :: 
+ID=21847 Name=凌云梯_竞技场出来后尝试触发 Useage=109 Script= :: 
+ID=23137 Name=竞技场每周记录拭剑宝箱数量 Useage=13 Script= :: 
+# shown 60
+
+######## Buff.tab Name contains 战场 ########
+ID=1189 Name=神农洇_战场BOSS_大毒尸_狂暴 Useage=44 Script= :: atSkillPhysicsDamage(310000,)
+ID=3149 Name=战场举报_偷懒耍滑 Useage=42 Script= :: 
+ID=3150 Name=战场举报_内置CD Useage=42 Script= :: 
+ID=3152 Name=战场举报_被举报的debuff Useage=42 Script= :: 
+ID=4122 Name=战场标记 Useage=51 Script= :: 
+ID=7551 Name=战场为帮会加分 Useage=108 Script= :: 
+ID=11614 Name=战场任务buff Useage=42 Script= :: 
+ID=11962 Name=战场首胜buff Useage=42 Script= :: 
+ID=12009 Name=战场禁止切心法 Useage=13 Script= :: 
+ID=12015 Name=战场YY队 Useage=146 Script= :: 
+ID=12203 Name=战场触发奇遇 Useage=109 Script= :: 
+ID=12455 Name=体验战场回血 Useage=12 Script= :: 
+ID=12456 Name=体验战场狂暴 Useage=12 Script= :: atPhysicsCriticalStrikeBaseRate(6000,) atSolarCriticalStrikeBaseRate(6000,) atNeutralCriticalStrikeBaseRate(6000,) atLunarCriticalStrikeBaseRate(6000,) atPoisonCriticalStrikeBaseRate(6000,)
+ID=12466 Name=体验战场监控buff Useage=12 Script= :: atImmuneSkillMove(1,) atImmunity(2,0) atImmunity(4,0) atImmunity(7,0) atImmunity(8,0) atImmunity(3,0) atImmunity(11,0)
+ID=12476 Name=阵营披风碎片战场 Useage=51 Script= :: 
+ID=12595 Name=体验战场倒计时传送buff Useage=12 Script= :: 
+ID=12800 Name=战场排队倒计时 Useage=42 Script= :: atExecuteScript(Map/战场通用/skill/战场排队通用.lua,)
+ID=12800 Name=战场排队倒计时 Useage=42 Script= :: 
+ID=12821 Name=战场禁止排队 Useage=42 Script= :: 
+ID=13211 Name=战场举报复查buff Useage=42 Script= :: 
+ID=13211 Name=战场举报复查buff Useage=42 Script= :: 
+ID=13395 Name=战场提前逃出处理 Useage=13 Script= :: 
+ID=14543 Name=离开战场倒计时 Useage=42 Script= :: 
+ID=14544 Name=战场竞技场排队CD Useage=42 Script= :: 
+ID=14577 Name=战场到钦佩buff Useage=44 Script= :: 
+ID=14726 Name=战场禁止用奇穴提示 Useage=201 Script= :: 
+ID=14996 Name=MOBA战场装备 Useage=39 Script=万花\南风吐月添加太虚.lua :: atFreeze(,) atGlobalBlock(1,) atNegativeShield(1,) atSilenceAll(,) atImmunity(2,0) atImmunity(4,0) atImmunity(7,0) atImmunity(8,0)
+ID=15111 Name=战场组排标记 Useage=146 Script= :: 
+ID=15189 Name=战场师父标记 Useage=13 Script= :: 
+ID=15190 Name=战场徒弟标记 Useage=13 Script= :: 
+ID=15193 Name=战场徒弟标记2 Useage=13 Script= :: 
+ID=15194 Name=战场徒弟标记3 Useage=13 Script= :: 
+ID=15319 Name=师徒活动_共同战场标记 Useage=51 Script= :: 
+ID=19009 Name=许愿树·驰骋战场 Useage=247 Script= :: 
+ID=19264 Name=禁令·阵营战场 Useage=13 Script= :: 
+ID=19264 Name=禁令·阵营战场 Useage=13 Script= :: 
+ID=19264 Name=禁令·阵营战场 Useage=13 Script= :: 
+ID=19404 Name=战场本周双倍威望 Useage=42 Script= :: 
+ID=19582 Name=战场领10000威望触发黑白路标记 Useage=42 Script= :: 
+ID=19584 Name=禁行·阵营战场 Useage=13 Script= :: 
+ID=19590 Name=禁行·绝境战场 Useage=13 Script= :: 
+ID=19621 Name=江湖行记记录战场每周发奖次数 Useage=42 Script= :: 
+ID=19652 Name=战场站旗时长统计 Useage=12 Script= :: 
+ID=19905 Name=禁书·绝境战场 Useage=13 Script= :: 
+ID=22024 Name=徒弟和师父一起战场结算的标记buff Useage=13 Script= :: 
+ID=22469 Name=战场入场时已结束标记 Useage=13 Script= :: 
+ID=23353 Name=羊村战场禁止排队惩罚 Useage=306 Script= :: 
+ID=23936 Name=专注·战场 Useage=42 Script= :: 
+ID=25164 Name=战场共战玩家玩家数量 Useage=13 Script= :: 
+ID=25164 Name=战场共战玩家玩家数量 Useage=13 Script= :: 
+ID=25431 Name=禁令·绝境战场 Useage=13 Script= :: 
+ID=25668 Name=战场积极行为积分 Useage=13 Script= :: 
+ID=25786 Name=战场开旗通用扣盾buff Useage=42 Script= :: 
+ID=25880 Name=战场开旗背箱时间计时 Useage=13 Script= :: 
+ID=26041 Name=战场机器人能力修正 Useage=13 Script= :: atAllDamageAddPercent(-31,) atBeTherapyCoefficient(-31,) atLunarDamageCoefficient(31,) atNeutralDamageCoefficient(31,) atPhysicsDamageCoefficient(31,) atPoisonDamageCoefficient(31,) atSolarDamageCoefficient(31,)
+ID=26077 Name=战场结算标记 Useage=42 Script= :: 
+ID=26193 Name=战场站旗范围提示buff特效浩气蓝 Useage=42 Script= :: 
+ID=26200 Name=战场站旗范围提示buff特效恶人红 Useage=42 Script= :: 
+ID=26201 Name=战场站旗范围提示buff特效中立白 Useage=42 Script= :: 
+ID=27456 Name=绝境战场任务buff Useage=187 Script= :: 
+# shown 60
+
+######## Buff.tab Name contains 绝境 ########
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=15323 Name=沧溟绝境地宫伤害 Useage=187 Script= :: 
+ID=16586 Name=绝境的馈赠_少林 Useage=187 Script= :: atFinalMaxLifeAddPercent(61,) atAllDamageAddPercent(51,) atMoveSpeedPercent(154,) atSetTalentRecipe(6240,1) atSetTalentRecipe(6241,1)
+ID=16586 Name=绝境的馈赠_天策 Useage=187 Script= :: atFinalMaxLifeAddPercent(184,) atAllDamageAddPercent(96,)
+ID=16586 Name=绝境的馈赠_纯阳 Useage=187 Script= :: atMoveSpeedPercent(154,) atFinalMaxLifeAddPercent(287,) atAllDamageAddPercent(307,)
+ID=16586 Name=绝境的馈赠_藏剑 Useage=187 Script= :: atFinalMaxLifeAddPercent(92,) atAllDamageAddPercent(92,)
+ID=16586 Name=绝境的馈赠_丐帮 Useage=187 Script= :: atFinalMaxLifeAddPercent(154,) atAllDamageAddPercent(154,)
+ID=16586 Name=绝境的馈赠_苍云 Useage=187 Script= :: atSetTalentRecipe(5573,1) atAllDamageAddPercent(-102,)
+ID=16586 Name=绝境的馈赠_五毒 Useage=187 Script= :: atMoveSpeedPercent(103,) atFinalMaxLifeAddPercent(184,) atAllDamageAddPercent(184,)
+ID=16586 Name=绝境的馈赠_明教 Useage=187 Script= :: atFinalMaxLifeAddPercent(51,) atAllDamageAddPercent(51,) atSetTalentRecipe(3303,1)
+ID=16586 Name=绝境的馈赠_凌雪 Useage=187 Script= :: atFinalMaxLifeAddPercent(102,) atSetTalentRecipe(6239,1) atAllDamageAddPercent(51,)
+ID=16586 Name=绝境的馈赠_衍天 Useage=187 Script= :: atFinalMaxLifeAddPercent(0,) atAllDamageAddPercent(0,) atAllTherapyAddPercent(0,) atSetTalentRecipe(6426,1)
+ID=16586 Name=绝境的馈赠_长歌 Useage=187 Script= :: atFinalMaxLifeAddPercent(184,) atAllDamageAddPercent(0,) atSetTalentRecipe(3191,1) atSetTalentRecipe(3192,1) atSetTalentRecipe(3193,1) atSetTalentRecipe(3195,1) atSetTalentRecipe(3196,1) atSetTalentRecipe(6259,1) atSetTalentRecipe(6423,1) atSetTalentRecipe(6424,1)
+ID=16586 Name=绝境的馈赠_唐门 Useage=187 Script= :: atFinalMaxLifeAddPercent(184,) atSetTalentRecipe(5769,1)
+ID=16586 Name=绝境的馈赠_七秀 Useage=187 Script= :: atSetTalentRecipe(6242,1) atExecuteScript(skill/沙漠风暴/吃鸡步生花检测.lua,)
+ID=16586 Name=绝境的馈赠_万花 Useage=187 Script= :: atFinalMaxLifeAddPercent(0,) atAllDamageAddPercent(102,) atSetTalentRecipe(3197,1)
+ID=16586 Name=绝境的馈赠_药宗 Useage=187 Script= :: atFinalMaxLifeAddPercent(184,) atAllDamageAddPercent(266,) atSetTalentRecipe(3302,1)
+ID=16586 Name=绝境的馈赠_霸刀 Useage=187 Script= :: atFinalMaxLifeAddPercent(154,)
+ID=16586 Name=绝境的馈赠_蓬莱 Useage=187 Script= :: 
+ID=16586 Name=绝境的馈赠_刀宗 Useage=187 Script= :: atFinalMaxLifeAddPercent(287,) atAllDamageAddPercent(287,)
+ID=16586 Name=绝境的馈赠_唐门天罗诡道 Useage=187 Script= :: atFinalMaxLifeAddPercent(184,) atAllDamageAddPercent(82,) atSetTalentRecipe(6243,1)
+ID=16586 Name=绝境的馈赠_纯阳太虚剑意 Useage=187 Script= :: atMoveSpeedPercent(256,) atFinalMaxLifeAddPercent(287,) atAllDamageAddPercent(256,)
+ID=16586 Name=绝境的馈赠_万灵山庄 Useage=187 Script= :: atDamageAbsorbShieldCoefficient(-512,)
+ID=16586 Name=绝境的馈赠_段氏 Useage=187 Script= :: atFinalMaxLifeAddPercent(51,) atAllDamageAddPercent(51,)
+ID=16586 Name=绝境的馈赠_无相楼 Useage=187 Script= :: atFinalMaxLifeAddPercent(51,) atAllDamageAddPercent(51,) atSetTalentRecipe(6229,1) atExecuteScript(skill/无相楼/子技能/无相楼吃鸡buff改cd显示.lua,)
+ID=19590 Name=禁行·绝境战场 Useage=13 Script= :: 
+ID=19905 Name=禁书·绝境战场 Useage=13 Script= :: 
+ID=21124 Name=天原绝境_滑翔维持 Useage=187 Script=沙漠风暴/天原绝境_滑翔翼维持.lua :: atIgnoreGravity(,) atDriftFlag(,) atExecuteScript(skill/沙漠风暴/天原绝境_滑翔翼维持.lua,) atSilenceAll(,) atDisableSprintFlag(,) atImmunity(2,) atImmunity(3,) atImmunity(4,) atImmunity(7,) atImmunity(8,) atImmunity(11,) atKnockedDownRate(-1024,) atKnockedBackRate(-1024,) atRepulsedRate(-1024,) atImmuneSkillMove(1,)
+ID=21139 Name=天原绝境_火焰表现 Useage=187 Script= :: 
+ID=21142 Name=天原绝境_烟雾表现 Useage=187 Script= :: 
+ID=21172 Name=天原绝境_燧石点燃 Useage=187 Script= :: 
+ID=21174 Name=天原绝境_照明弹范围显示 Useage=187 Script= :: 
+ID=21175 Name=天原绝境_温度层数 Useage=187 Script= :: 
+ID=21181 Name=天原绝境_寒冷 Useage=187 Script= :: atHasteBasePercentAdd(-300,)
+ID=21181 Name=天原绝境_极寒 Useage=187 Script= :: atHasteBasePercentAdd(-500,)
+ID=21182 Name=天原绝境_寒冷降低血上限 Useage=187 Script= :: atMaxLifePercentAdd(-30,)
+ID=21188 Name=天原绝境_武家饮血dot Useage=187 Script= :: 
+ID=21193 Name=天原绝境_剑宗饮冰冻结 Useage=187 Script= :: atFreeze(,)
+ID=21194 Name=天原绝境_剑宗饮冰内置cd Useage=187 Script= :: 
+ID=21226 Name=天原绝境_橙胖次降攻击 Useage=187 Script= :: atPhysicsAttackPowerPercent(-205,) atMagicAttackPowerPercent(-205,)
+ID=21409 Name=天原绝境_战象冲锋标记 Useage=187 Script= :: 
+ID=21410 Name=天原绝境_战象骑乘 Useage=187 Script=沙漠风暴/天原战象维持.lua :: atDropDefence(512,) atDisableSprintFlag(,) atKnockedDownRate(-1024,) atRepulsedRate(-1024,) atMoveSpeedPercent(1024,) atImmuneSkillMove(1,) atPullRate(-1024,) atImmunity(2,0) atImmunity(4,0) atImmunity(7,0) atImmunity(8,0) atMaxJumpCount(-1,)
+ID=21428 Name=天原绝境_人数显示 Useage=187 Script= :: 
+ID=21436 Name=天原绝境_滑索cd Useage=187 Script= :: 
+ID=21454 Name=天原绝境_谷风降温 Useage=187 Script=沙漠风暴/天原绝境谷风debuff.lua :: atMoveSpeedPercent(-102,)
+ID=21458 Name=天原绝境_温暖区 Useage=187 Script= :: 
+ID=21589 Name=天原绝境_战象每秒推人 Useage=187 Script= :: atDriftFlag(,)
+ID=25431 Name=禁令·绝境战场 Useage=13 Script= :: 
+ID=26073 Name=洱海绝境可复活标记 Useage=187 Script=沙漠风暴/洱海绝境复活buff消失.lua :: 
+ID=26074 Name=洱海绝境复活计时 Useage=187 Script=沙漠风暴/洱海绝境复活.lua :: 
+ID=26147 Name=绝境的纷扰·少林 Useage=187 Script= :: atFinalMaxLifeAddPercent(164,) atAllDamageAddPercent(246,) atSetTalentRecipe(3296,1)
+ID=26147 Name=绝境的纷扰·天策 Useage=187 Script= :: atFinalMaxLifeAddPercent(195,) atSetTalentRecipe(3295,1) atAllDamageAddPercent(31,)
+ID=26147 Name=绝境的纷扰·纯阳·紫霞功 Useage=187 Script= :: atFinalMaxLifeAddPercent(236,) atAllDamageAddPercent(236,)
+ID=26147 Name=绝境的纷扰·藏剑 Useage=187 Script= :: atFinalMaxLifeAddPercent(195,) atAllDamageAddPercent(92,)
+# shown 60
+
+######## Buff.txt tooltips for key IDs ########
+ID=1072 Lv=0 Name=御劲 Desc=御劲等级提高<BUFF atToughnessBase>点
+ID=1072 Lv=1 Name=御劲 Desc=御劲等级提高<BUFF atToughnessBase>点
+ID=1455 Lv=0 Name=进食 Desc=化劲等级增加<BUFF atDeCriticalDamagePowerBase>点
+ID=1458 Lv=0 Name=进食 Desc=御劲等级提高<BUFF atToughnessBase>点
+ID=1854 Lv=0 Name=香梅 Desc=御劲等级提高<BUFF atToughnessBase>点，化劲等级提高<BUFF atDecriticalDamagePowerBase>点，无双等级提高<BUFF atStrainBase>点
+ID=2198 Lv=1 Name=铁壁 Desc=御劲等级提高20%
+ID=2199 Lv=1 Name=溃甲 Desc=御劲等级降低20%
+ID=2910 Lv=0 Name=宴席 Desc=气血值上限提高<BUFF atMaxLifeAdditional>点，御劲提高<BUFF atToughnessBase>点，化劲提高<BUFF atDecriticalDamagePowerBase>点，全属性提高<BUFF atBasePotentialAdd>点
+ID=3874 Lv=0 Name=Buff=1，Debuff=2，Dot=3，Hot=4 Desc=化劲等级提高6%,御劲等级提高2%
+ID=6309 Lv=1 Name=旗渊 Desc=御劲率提高8%
+ID=7049 Lv=1 Name=天选者 Desc=携带有铁血宝箱，血量增加至100%，化劲加成0.9倍，御劲加成0.8倍，免疫一切控制，但无法被召请或使用萍踪侠影。侠士死亡、离线、隐身或使用神行时效果消失。同时铁血宝箱会遗落
+ID=7505 Lv=1 Name=春点 Desc=化劲降低10%
+ID=7669 Lv=1 Name=势如破竹 Desc=身负据点大旗，无法跳跃，气血最大值提高16倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+ID=7669 Lv=2 Name=势如破竹 Desc=身负据点大旗，无法跳跃，气血最大值提高20倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+ID=7669 Lv=3 Name=势如破竹 Desc=身负据点大旗，无法跳跃，气血最大值提高33倍，化劲等级提高1.2倍，御劲等级提高1.5倍，受到的疗伤效果降低15%
+ID=9341 Lv=1 Name=石间意 Desc=御劲率提高9%
+ID=9341 Lv=2 Name=石间意 Desc=御劲率提高18%
+ID=9341 Lv=3 Name=石间意 Desc=御劲率提高9%
+ID=9341 Lv=4 Name=石间意 Desc=御劲率提高18%
+ID=9864 Lv=1 Name=疾如风 Desc=被会心几率降低30%
+ID=13209 Lv=1 Name=阵营小斗士 Desc=气血上限+100%，伤害和治疗结果+50%，化劲+350，御劲+200，仅逐鹿中原和阵营攻防活动期间，参与战斗的场景生效
+ID=14980 Lv=1 Name=归清 Desc=御劲提高5%
+ID=20087 Lv=1 Name=青川濯莲 Desc=攻击目标持续回血
+ID=20087 Lv=2 Name=青川濯莲 Desc=攻击目标持续回血，御劲率提高20%，化劲等级提高10%
+ID=20812 Lv=1 Name=慑服 Desc=御劲率提高5%
+ID=21647 Lv=1 Name=炽炎 Desc=每2秒受到一次外功伤害
+ID=21647 Lv=2 Name=履冰 Desc=每层降低1%的御劲和化劲等级
+ID=21647 Lv=3 Name=空青 Desc=每2秒获得一次治疗效果
+ID=21647 Lv=4 Name=空青 Desc=每2秒获得一次治疗效果
+ID=21647 Lv=5 Name=空青 Desc=每2秒获得一次治疗效果
+ID=22999 Lv=1 Name=履冰 Desc=每层降低1%的御劲率和化劲等级
+ID=24185 Lv=1 Name=亘绝 Desc=御劲提高100%
+ID=28807 Lv=1 Name=萌新助威 Desc=隐元会为防止萌新阵营侠士化劲过低，当侠士装分低于本服对抗类平均装分时且自身化劲低于70%时，为侠士增加额外化劲，该效果每层提高1%化劲（该效果不会在竞技场、绝境战场、列星虚境中生效）
+ID=30121 Lv=1 Name=蛊神的诅咒 Desc=与除队友外的所有人敌对，无法恢复气力值，免疫摔伤；\n气血提升1800000点；内力值提高120000点；全能等级提高4527；外功基础攻击力提升27000点；内功基础攻击力提升32400点；会心等级提升59311，破防等级提升67787。
+ID=33175 Lv=1 Name=积势 Desc=御劲率提高10%

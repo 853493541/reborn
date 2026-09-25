@@ -1,0 +1,113 @@
+Column	Value	Count
+CanBeSteal	'0'	60092
+CanBeSteal	'1'	1434
+CanBeSteal	''	29
+CanTransfer	''	59918
+CanTransfer	'1'	1326
+CanTransfer	'0'	311
+Exclude	'1'	57618
+Exclude	'0'	3937
+GlobalExclude	'1'	56013
+GlobalExclude	'0'	5542
+UniqueTarget	'0'	61317
+UniqueTarget	'1'	237
+UniqueTarget	''	1
+Coexist	''	61475
+Coexist	'0'	51
+Coexist	'1'	29
+CanAccumulate	'0'	48540
+CanAccumulate	''	12548
+CanAccumulate	'1'	467
+CostSingleStack	''	61473
+CostSingleStack	'1'	57
+CostSingleStack	'0'	25
+Save	'1'	47471
+Save	'0'	14084
+OnFight	''	55400
+OnFight	'Fight'	3778
+OnFight	'Any'	1248
+OnFight	'NotFight'	1129
+
+# CanBeSteal=1 samples
+112	清心静气			
+112	清心静气			
+112	清心静气			
+112	清心静气			
+112	清心静气			
+112	清心静气			
+112	清心静气			
+112	清心静气			
+112	清心静气			
+113	碧水滔天			
+113	碧水滔天			
+122	春泥护花	ResistDamage		
+122	春泥护花	ResistDamage		
+122	春泥护花	ResistDamage		
+122	春泥护花	ResistDamage		
+122	春泥护花	ResistDamage		
+122	春泥护花	ResistDamage		
+122	春泥护花	ResistDamage		
+124	花语酥心			
+126	毫针			
+126	毫针			
+126	毫针			
+126	毫针			
+126	毫针			
+126	毫针			
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐望无我	Shield		
+134	坐望无我	Shield		
+134	坐望无我	Shield		
+134	坐望无我	Shield		
+134	坐望无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+134	坐忘无我	Shield		
+
+# CanTransfer=1 samples
+549	天策-穿-减速	Slow	
+549	天策-穿-减速	Slow	
+549	天策-穿-减速	Slow	
+549	天策-穿-减速	Slow	
+549	天策-穿-减速	Slow	
+549	天策-穿-减速	Slow	
+549	天策-穿-减速	Slow	
+566	立地成佛3		
+566	外缚印段3		
+566	外缚印段3		
+566	外缚印段3		
+566	外缚印段3		
+566	立地成佛3		
+576	恒河劫沙（原拿云式效果）		
+576	恒河劫沙（原拿云式效果）		
+576	恒河劫沙（原拿云式效果）		
+576	恒河劫沙（原拿云式效果）		
+576	恒河劫沙（原拿云式效果）		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		
+661	天策-破风		

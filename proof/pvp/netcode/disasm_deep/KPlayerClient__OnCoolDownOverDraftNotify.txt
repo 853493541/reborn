@@ -1,0 +1,39 @@
+# needle: KPlayerClient::OnCoolDownOverDraftNotify
+# string VAs: ['0x180772908']
+# xrefs: 1
+
+## xref 0x1801841d7  fn_start 0x180184170
+0x0180184170: push	rbx
+0x0180184172: sub	rsp, 0x30
+0x0180184176: mov	rcx, qword ptr [rip + 0x83d1a3]
+0x018018417d: mov	rbx, rdx
+0x0180184180: mov	edx, dword ptr [rdx + 7]
+0x0180184183: call	0x18012b610
+0x0180184188: test	rax, rax
+0x018018418b: jne	0x18018419c
+0x018018418d: mov	r9d, 0x3f1a
+0x0180184193: lea	r8, [rip + 0x5e2b9e]
+0x018018419a: jmp	0x1801841d7
+0x018018419c: mov	r8d, dword ptr [rbx + 0xf]
+0x01801841a0: lea	rcx, [rax + 0xb930]
+0x01801841a7: mov	edx, dword ptr [rbx + 0xb]
+0x01801841aa: cmp	r8d, -1
+0x01801841ae: jne	0x1801841c1
+0x01801841b0: call	0x180314130
+0x01801841b5: test	eax, eax
+0x01801841b7: jne	0x1801841f5
+0x01801841b9: mov	r9d, 0x3f1f
+0x01801841bf: jmp	0x1801841d0
+0x01801841c1: call	0x180314460
+0x01801841c6: test	eax, eax
+0x01801841c8: jne	0x1801841f5
+0x01801841ca: mov	r9d, 0x3f24
+0x01801841d0: lea	r8, [rip + 0x76c111]
+0x01801841d7: lea	rax, [rip + 0x5ee72a]
+0x01801841de: mov	ecx, 3
+0x01801841e3: lea	rdx, [rip + 0x76a2be]
+0x01801841ea: mov	qword ptr [rsp + 0x20], rax
+0x01801841ef: call	qword ptr [rip + 0x5e106b]
+0x01801841f5: add	rsp, 0x30
+0x01801841f9: pop	rbx
+0x01801841fa: ret	

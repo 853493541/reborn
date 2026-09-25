@@ -1,0 +1,80 @@
+﻿  61|    		);
+  62| 
+  63|    	skill.AddAttribute(
+  64|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_DEST_NOT_ROLLBACK,			-- 灞炴€т綔鐢ㄦā寮?
+  65|    		ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+  66|    		12,															-- 灞炴€у€?
+  67|    		9999															-- 灞炴€у€?
+  68|    		);
+  69|    		
+  70| 	skill.AddAttribute(
+  71| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+  72| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  73| 		4, 
+  74| 		10000
+  75| 	);
+  76| 	skill.AddAttribute(
+  77| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+  78| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  79| 		8, 
+  80| 		10000
+  81| 	);
+  82| 	skill.AddAttribute(
+  83| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+  84| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  85| 		7, 
+  86| 		10000
+  87| 	);
+  88| 	skill.AddAttribute(
+  89| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, 
+  90| 		ATTRIBUTE_TYPE.DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE,
+  91| 		2, 
+  92| 		10000
+  93| 	);
+  94| 
+  95| 	for i = 1,4 do
+  96|    	skill.AddAttribute(
+  97|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 鍒犻櫎闆烽渾闇囨€?
+  98|    		ATTRIBUTE_TYPE.DEL_SINGLE_BUFF_BY_ID_AND_LEVEL,						
+  99|    		682,																
+ 100|    		i																	
+ 101|    		);
+ 102|    	end
+ 103|    	skill.AddAttribute(
+ 104|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 涓敞
+ 105|    		ATTRIBUTE_TYPE.DEL_SINGLE_BUFF_BY_ID_AND_LEVEL,						
+ 106|    		737,																
+ 107|    		1																	
+ 108|    		);
+ 109|    	skill.AddAttribute(
+ 110|    		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,					-- 瀹岄
+ 111|    		ATTRIBUTE_TYPE.DEL_SINGLE_BUFF_BY_ID_AND_LEVEL,						
+ 112|    		740,																
+ 113|    		1																	
+ 114|    		);
+ 115| 	skill.AddAttribute(					
+ 116| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,	--瑙ｉ櫎鍑诲€?
+ 117| 		ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST,
+ 118| 		7276,										
+ 119| 		1
+ 120| 		);
+ 121| 	skill.AddAttribute(												
+ 122| 		ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+ 123| 		ATTRIBUTE_TYPE.CAST_SKILL,
+ 124| 		21144,
+ 125| 		1									
+ 126| 	);
+ 127| 	----------------- 鎶€鑳芥柦鏀綛uff闇€姹?---------------------------------------------
+ 128|     --skill.AddSlowCheckSelfBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傝嚜韬獴uff
+ 129|     --skill.AddSlowCheckDestBuff(dwBuffID, nStackNum, eCompareFlag, nLevel, eLevelCompareFlag);		-- 闇€姹傜洰鏍嘊uff
+ 130|     
+ 131| 	----------------- BUFF鐩稿叧 -------------------------------------------------
+ 132|     --skill.BindBuff(1, nBuffID, nBuffLevel);		-- 璁剧疆1鍙蜂綅Buff
+ 133| 	--skill.BindBuff(2, nBuffID, nBuffLevel);		-- 璁剧疆2鍙蜂綅Buff
+ 134| 	--skill.BindBuff(3, nBuffID, nBuffLevel);		-- 璁剧疆3鍙蜂綅Buff
+ 135| 	--skill.BindBuff(4, nBuffID, nBuffLevel);		-- 璁剧疆4鍙蜂綅Buff
+ 136| 
+ 137|     ----------------- 璁剧疆Cool down --------------------------------------------
+ 138|     -- 鍏叡CD
+ 139|     --skill.SetPublicCoolDown(16);							-- 鍏叡CD 1.5绉?
+ 140|     -- 鎶€鑳紺D, CoolDownIndex涓篊D浣?鍏?涓?, nCoolDownID涓篊oolDownList.tab鍐呯殑CDID

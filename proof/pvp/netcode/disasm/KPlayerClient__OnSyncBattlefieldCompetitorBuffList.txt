@@ -1,0 +1,41 @@
+# needle: KPlayerClient::OnSyncBattlefieldCompetitorBuffList
+# string VAs: ['0x18077a498']
+# xrefs: 2
+
+## xref 0x1801943a6  fn_start 0x180194390
+0x0180194390: push	rdi
+0x0180194392: sub	rsp, 0x30
+0x0180194396: movzx	eax, word ptr [rdx + 0x15]
+0x018019439a: mov	rdi, rdx
+0x018019439d: add	rax, 0x17
+0x01801943a1: cmp	r8, rax
+0x01801943a4: je	0x1801943d7
+0x01801943a6: lea	rax, [rip + 0x5e60eb]
+0x01801943ad: mov	r9d, 0x7fb7
+0x01801943b3: lea	r8, [rip + 0x5e6116]
+0x01801943ba: mov	qword ptr [rsp + 0x20], rax
+0x01801943bf: lea	rdx, [rip + 0x75a0e2]
+0x01801943c6: mov	ecx, 3
+0x01801943cb: call	qword ptr [rip + 0x5d0e8f]
+0x01801943d1: add	rsp, 0x30
+0x01801943d5: pop	rdi
+0x01801943d6: ret	
+
+## xref 0x1801943f3  fn_start 0x180194390
+0x0180194390: push	rdi
+0x0180194392: sub	rsp, 0x30
+0x0180194396: movzx	eax, word ptr [rdx + 0x15]
+0x018019439a: mov	rdi, rdx
+0x018019439d: add	rax, 0x17
+0x01801943a1: cmp	r8, rax
+0x01801943a4: je	0x1801943d7
+0x01801943a6: lea	rax, [rip + 0x5e60eb]
+0x01801943ad: mov	r9d, 0x7fb7
+0x01801943b3: lea	r8, [rip + 0x5e6116]
+0x01801943ba: mov	qword ptr [rsp + 0x20], rax
+0x01801943bf: lea	rdx, [rip + 0x75a0e2]
+0x01801943c6: mov	ecx, 3
+0x01801943cb: call	qword ptr [rip + 0x5d0e8f]
+0x01801943d1: add	rsp, 0x30
+0x01801943d5: pop	rdi
+0x01801943d6: ret	

@@ -1,0 +1,71 @@
+# needle: KPlayerClient::DoCharacterSkill
+# string VAs: ['0x18076d760']
+# xrefs: 1
+
+## xref 0x180170bb9  fn_start 0x180170b30
+0x0180170b30: push	rbx
+0x0180170b32: push	rsi
+0x0180170b33: push	rdi
+0x0180170b34: sub	rsp, 0x60
+0x0180170b38: mov	rax, qword ptr [rip + 0x8456e1]
+0x0180170b3f: xor	rax, rsp
+0x0180170b42: mov	qword ptr [rsp + 0x58], rax
+0x0180170b47: mov	rdi, qword ptr [rsp + 0xa0]
+0x0180170b4f: mov	rsi, rcx
+0x0180170b52: mov	eax, 0x1b
+0x0180170b57: mov	dword ptr [rsp + 0x43], edx
+0x0180170b5b: mov	rcx, rdi
+0x0180170b5e: mov	word ptr [rsp + 0x38], ax
+0x0180170b63: mov	byte ptr [rsp + 0x47], r8b
+0x0180170b68: call	0x180149490
+0x0180170b6d: mov	ebx, eax
+0x0180170b6f: cmp	eax, 2
+0x0180170b72: je	0x180170be8
+0x0180170b74: lea	ecx, [rax - 3]
+0x0180170b77: cmp	ecx, 2
+0x0180170b7a: ja	0x180170c04
+0x0180170b80: lea	rdx, [rsp + 0x30]
+0x0180170b85: mov	qword ptr [rsp + 0x30], 0
+0x0180170b8e: mov	rcx, rdi
+0x0180170b91: call	0x1801dbf50
+0x0180170b96: test	eax, eax
+0x0180170b98: je	0x180170bb9
+0x0180170b9a: mov	rax, qword ptr [rsp + 0x30]
+0x0180170b9f: test	rax, rax
+0x0180170ba2: je	0x180170bb9
+0x0180170ba4: mov	byte ptr [rsp + 0x48], bl
+0x0180170ba8: mov	eax, dword ptr [rax + 8]
+0x0180170bab: mov	dword ptr [rsp + 0x49], eax
+0x0180170baf: mov	dword ptr [rsp + 0x4d], 0
+0x0180170bb7: jmp	0x180170c04
+0x0180170bb9: lea	rax, [rip + 0x5fcba0]
+0x0180170bc0: mov	r9d, 0xc15
+0x0180170bc6: lea	r8, [rip + 0x5fcbb3]
+0x0180170bcd: mov	qword ptr [rsp + 0x20], rax
+0x0180170bd2: lea	rdx, [rip + 0x77d8cf]
+0x0180170bd9: mov	ecx, 3
+0x0180170bde: call	qword ptr [rip + 0x5f467c]
+0x0180170be4: xor	eax, eax
+0x0180170be6: jmp	0x180170c22
+0x0180170be8: lea	r9, [rsp + 0x51]
+0x0180170bed: mov	byte ptr [rsp + 0x48], 2
+0x0180170bf2: lea	r8, [rsp + 0x4d]
+0x0180170bf7: mov	rcx, rdi
+0x0180170bfa: lea	rdx, [rsp + 0x49]
+0x0180170bff: call	0x1801dba60
+0x0180170c04: mov	r8d, 0x1d
+0x0180170c0a: lea	rdx, [rsp + 0x38]
+0x0180170c0f: mov	rcx, rsi
+0x0180170c12: call	0x1801acda0
+0x0180170c17: test	eax, eax
+0x0180170c19: jne	0x180170c1d
+0x0180170c1b: jmp	0x180170c22
+0x0180170c1d: mov	eax, 1
+0x0180170c22: mov	rcx, qword ptr [rsp + 0x58]
+0x0180170c27: xor	rcx, rsp
+0x0180170c2a: call	0x18073aa10
+0x0180170c2f: add	rsp, 0x60
+0x0180170c33: pop	rdi
+0x0180170c34: pop	rsi
+0x0180170c35: pop	rbx
+0x0180170c36: ret	

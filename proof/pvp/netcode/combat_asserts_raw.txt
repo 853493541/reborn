@@ -1,0 +1,236 @@
+# combat asserts / protocol / struct strings (auto-extracted)
+# source dumps: JX3ClientX64_exe_net_strings.txt, JX3LogicEditOperation_net_strings.txt, JX3RepresentX64_net_strings.txt
+
+## JX3ClientX64.exe
+JX3ClientX64.exe	0x007C0300	KPlayerClient::OnSkillChannel
+JX3ClientX64.exe	0x0082DE40	KCharacter::OnSkillChannel
+JX3ClientX64.exe	0x0082DF28	KCharacter::OnSkillChannelOTActionEnd
+JX3ClientX64.exe	0x0082DF50	[KCharacter::OnSkillChannelOTActionEnd] m_bOnOTActionEnd skill:(%u, %u)
+JX3ClientX64.exe	0x007BB5C0	uPakSize < MAX_EXTERNAL_PACKAGE_SIZE
+JX3ClientX64.exe	0x007BB610	uSize < MAX_EXTERNAL_PACKAGE_SIZE
+JX3ClientX64.exe	0x007BBC68	uPakSize <= MAX_EXTERNAL_PACKAGE_SIZE
+JX3ClientX64.exe	0x007C0710	KPlayerClient::OnSkillBeatBack
+JX3ClientX64.exe	0x008205C0	KVideoReplayer::OnResetCooldown
+JX3ClientX64.exe	0x00820638	KVideoReplayer::OnCoolDownOverDraftNotify
+JX3ClientX64.exe	0x008206D0	KVideoReplayer::OnSyncArenaCompetitorCDState
+JX3ClientX64.exe	0x00820778	KVideoReplayer::OnPauseCDTimer
+JX3ClientX64.exe	0x008207F0	KVideoReplayer::OnAccelerateCDTimer
+JX3ClientX64.exe	0x00820880	KVideoReplayer::OnSyncArenaCompetitorList
+JX3ClientX64.exe	0x00820D30	KVideoReplayer::OnSyncBattlefieldStatistics
+JX3ClientX64.exe	0x0081BE80	uDataLen == m_nProtocolSize[nProtocolID]
+JX3ClientX64.exe	0x0081E548	uDataSize == m_nProtocolSize[dwProtocolID]
+JX3ClientX64.exe	0x0081F9B0	uDataSize == m_nProtocolSize[nProtocolID]
+JX3ClientX64.exe	0x00820438	nSize >= m_nProtocolSize[nProtocol]
+JX3ClientX64.exe	0x008205E0	pNotify->byProtocolID == s2c_reset_cooldown
+JX3ClientX64.exe	0x00820668	pNotify->byProtocolID == s2c_cooldown_over_draft_notify
+JX3ClientX64.exe	0x00820700	pSync->byProtocolID == s2c_sync_arena_competitior_cd_state
+JX3ClientX64.exe	0x00820798	pPause->byProtocolID == s2c_pause_cd_timer
+JX3ClientX64.exe	0x00820818	pAccelerate->byProtocolID == s2c_accelerate_cd_timer
+JX3ClientX64.exe	0x00821538	m_nProtocolSize[dwProtocolID] == uDataLen
+JX3ClientX64.exe	0x00829B20	m_nProtocolSize[nProtocol] == uDataLen
+JX3ClientX64.exe	0x00847800	m_nProtocolSize[nSubProtocolID] <= uDataLen
+JX3ClientX64.exe	0x007BB060	KPlayerClient::DoCharacterSkill
+JX3ClientX64.exe	0x007BB118	KPlayerClient::DoApplyCharacterBuffList
+JX3ClientX64.exe	0x007BB780	KPlayerClient::DoCastProfessionSkill
+JX3ClientX64.exe	0x007BC7A0	KPlayerClient::DoPlayerReviveRequest
+JX3ClientX64.exe	0x007BD470	KPlayerClient::DoStartHoardSkill
+JX3ClientX64.exe	0x007BD498	KPlayerClient::DoCastHoardSkill
+JX3ClientX64.exe	0x007BD4B8	KPlayerClient::DoSyncSubSkillPosition
+JX3ClientX64.exe	0x007BE288	KPlayerClient::DoSyncOBCompetitorSkillList
+JX3ClientX64.exe	0x007BE5A0	KPlayerClient::DoSyncBattlefieldCompetitorSkillCDStateRequest
+JX3ClientX64.exe	0x007BE5E0	KPlayerClient::DoCancelSyncBattlefieldCompetitorSkillCDStateRequest
+JX3ClientX64.exe	0x007BE628	KPlayerClient::DoSyncBattlefieldCompetitorsListRequest
+JX3ClientX64.exe	0x007BFF10	KPlayerClient::OnCharacterDeath
+JX3ClientX64.exe	0x007C02E0	KPlayerClient::OnSkillPrepare
+JX3ClientX64.exe	0x007C0300	KPlayerClient::OnSkillChannel
+JX3ClientX64.exe	0x007C0350	KPlayerClient::OnSkillCast
+JX3ClientX64.exe	0x007C03C8	KPlayerClient::OnResetCooldown
+JX3ClientX64.exe	0x007C03E8	KPlayerClient::OnCoolDownOverDraftNotify
+JX3ClientX64.exe	0x007C0418	KPlayerClient::OnSkillChainEffect
+JX3ClientX64.exe	0x007C0440	KPlayerClient::OnSkillRayEffect
+JX3ClientX64.exe	0x007C0460	KPlayerClient::OnSkillEffectResult
+JX3ClientX64.exe	0x007C0488	nSize >= sizeof(S2C_SKILL_EFFECT_RESULT)
+JX3ClientX64.exe	0x007C04C0	nSize == sizeof(S2C_SKILL_EFFECT_RESULT) + sizeof(S2C_SKILL_EFFECT_RESULT::KSKILL_RESULT) * pSkillResult->cResultCount
+JX3ClientX64.exe	0x007C0538	pSkillResult->cResultCount < MAX_UI_SKILL_RESULT_TYPE_COUNT
+JX3ClientX64.exe	0x007C05A0	KPlayerClient::OnPointChainSkillEffect
+JX3ClientX64.exe	0x007C05D0	nSize == sizeof(S2C_POINT_CHAIN_SKILL_EFFECT) + sizeof(DWORD) * pPak->nCount
+JX3ClientX64.exe	0x007C0620	KPlayerClient::OnSyncBuffList
+JX3ClientX64.exe	0x007C0640	nSize == sizeof(S2C_SYNC_BUFF_LIST) + pSyncBuff->wDataSize
+JX3ClientX64.exe	0x007C0680	KPlayerClient::OnSyncBuffSingle
+JX3ClientX64.exe	0x007C0710	KPlayerClient::OnSkillBeatBack
+JX3ClientX64.exe	0x007C1FF8	KPlayerClient::OnSetForce
+JX3ClientX64.exe	0x007C2018	KPlayerClient::OnSetBattleFieldSide
+JX3ClientX64.exe	0x007C2CC0	nSize == sizeof(S2C_SYNC_CAMP_INFO) + pSyncCampInfo->byCampNpcCount * sizeof(KSYNC_CAMP_NPC_INFO)
+JX3ClientX64.exe	0x007C3A88	KPlayerClient::OnSetCamp
+JX3ClientX64.exe	0x007C5BF8	KPlayerClient::OnStartHoardSkill
+JX3ClientX64.exe	0x007C60A0	nSize == sizeof(S2C_SYNC_FELLOWSHIP_PREFER_OR_PUSH_LIST) + pPak->nCount * sizeof(KFELLOWSHIP_PUSH_DATA_INFO)
+JX3ClientX64.exe	0x007C6208	KPlayerClient::OnSyncSceneCampTypeToPlayer
+JX3ClientX64.exe	0x007C63F8	KPlayerClient::OnSyncArenaCompetitorList
+JX3ClientX64.exe	0x007C6428	KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList
+JX3ClientX64.exe	0x007C6468	KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList
+JX3ClientX64.exe	0x007C6750	KPlayerClient::OnPauseCDTimer
+JX3ClientX64.exe	0x007C6790	KPlayerClient::OnAccelerateCDTimer
+JX3ClientX64.exe	0x007C67B8	KPlayerClient::OnChangeImmunityCastIDNotify
+JX3ClientX64.exe	0x007C71B0	KPlayerClient::OnSyncArenaCompetitorCDState
+JX3ClientX64.exe	0x007C77B0	KPlayerClient::OnSyncStealthCharacter
+JX3ClientX64.exe	0x007C7D70	KPlayerClient::OnSyncRelationAllEnemyExceptTeam
+JX3ClientX64.exe	0x007C7FB0	KPlayerClient::OnSyncBattlefieldCompetitorCDState
+JX3ClientX64.exe	0x007C7FE8	KPlayerClient::OnSyncBattlefieldCompetitorBuffList
+JX3ClientX64.exe	0x007C8020	nSize == sizeof(S2C_SYNC_BATTLEFIELD_COMPETITOR_BUFF_LIST) + pSync->wDataSize
+JX3ClientX64.exe	0x007C90A8	KPlayerClient::OnChangeMultiImmunityCastIDNotify
+JX3ClientX64.exe	0x007D4510	MOVE_STATE_ERROR
+JX3ClientX64.exe	0x007D6360	IMMUNE_SKILL_MOVED
+JX3ClientX64.exe	0x007D8E08	ADD_DAMAGE_BY_DST_MOVE_STATE
+JX3ClientX64.exe	0x007D9FC8	CAST_SKILL_NO_TARGET
+JX3ClientX64.exe	0x007DB900	DST_MOVE_STATE_ERROR
+JX3ClientX64.exe	0x007E1180	QUEUE_COOLDOWN
+JX3ClientX64.exe	0x007E4840	YOU_MOVE_STATE_WRONG
+JX3ClientX64.exe	0x007E4858	TARGET_MOVE_STATE_WRONG
+JX3ClientX64.exe	0x007EB098	QUERY_IN_COOLDOWN
+JX3ClientX64.exe	0x007EBBD0	IN_COOLDOWN
+JX3ClientX64.exe	0x007ED298	MOVE_STATE_INVALID
+JX3ClientX64.exe	0x007FAF90	dwSkillImmunity
+JX3ClientX64.exe	0x0080CF18	IgnoreImmunityCast
+JX3ClientX64.exe	0x0080FEE8	bIgnoreImmunityCastID
+JX3ClientX64.exe	0x008134F0	KPlayerBattleStat::AddData
+JX3ClientX64.exe	0x00813510	KPlayerBattleStat::ReportBattleStat
+JX3ClientX64.exe	0x008205C0	KVideoReplayer::OnResetCooldown
+JX3ClientX64.exe	0x008205E0	pNotify->byProtocolID == s2c_reset_cooldown
+JX3ClientX64.exe	0x00820610	nSize == sizeof(S2C_RESET_COOLDOWN)
+JX3ClientX64.exe	0x00820638	KVideoReplayer::OnCoolDownOverDraftNotify
+JX3ClientX64.exe	0x00820668	pNotify->byProtocolID == s2c_cooldown_over_draft_notify
+JX3ClientX64.exe	0x008206A0	nSize == sizeof(S2C_COOLDOWN_OVER_DRAFT_NOTIFY)
+JX3ClientX64.exe	0x008206D0	KVideoReplayer::OnSyncArenaCompetitorCDState
+JX3ClientX64.exe	0x00820700	pSync->byProtocolID == s2c_sync_arena_competitior_cd_state
+JX3ClientX64.exe	0x00820740	sizeof(S2C_SYNC_ARENA_COMPETITIOR_CD_STATE) == nSize
+JX3ClientX64.exe	0x00820778	KVideoReplayer::OnPauseCDTimer
+JX3ClientX64.exe	0x008207F0	KVideoReplayer::OnAccelerateCDTimer
+JX3ClientX64.exe	0x00820880	KVideoReplayer::OnSyncArenaCompetitorList
+JX3ClientX64.exe	0x00820D30	KVideoReplayer::OnSyncBattlefieldStatistics
+JX3ClientX64.exe	0x00821960	pRespond->byCount * sizeof(KARENA_PLAYER_RECORD_INFO) + sizeof(KV2C_SYNC_ARENA_RECORD_INFO_LIST_RESPOND) == uDataSize
+JX3ClientX64.exe	0x00823FE0	KBattlefieldCache::AddNextSyncTime
+JX3ClientX64.exe	0x0082DE20	KCharacter::OnSkillPrepare
+JX3ClientX64.exe	0x0082DE40	KCharacter::OnSkillChannel
+JX3ClientX64.exe	0x0082DF28	KCharacter::OnSkillChannelOTActionEnd
+JX3ClientX64.exe	0x0082DF50	[KCharacter::OnSkillChannelOTActionEnd] m_bOnOTActionEnd skill:(%u, %u)
+JX3ClientX64.exe	0x0083BB58	KWorldRepresentAgent::OnSkillEffectResult
+JX3ClientX64.exe	0x00859560	m_pScene->m_BattlefieldCompetitorInfoMap.find(dwPlayerID) != m_pScene->m_BattlefieldCompetitorInfoMap.end()
+JX3ClientX64.exe	0x00859640	m_pScene->m_DungeonCompetitorInfoMap.find(dwPlayerID) != m_pScene->m_DungeonCompetitorInfoMap.end()
+JX3ClientX64.exe	0x00866C90	GetBattlefieldPlayersPosInfo
+JX3ClientX64.exe	0x00867360	nIndex < (int)m_ArenaPlayerInfoVector.size()
+JX3ClientX64.exe	0x00869B40	KSkill::LuaCheckSilence
+## JX3LogicEditOperationX64.dll
+JX3LogicEditOperationX64.dll	0x00771420	KPlayerClient::OnSkillChannel
+JX3LogicEditOperationX64.dll	0x007A5328	KCharacter::OnSkillChannelOTActionEnd
+JX3LogicEditOperationX64.dll	0x007A5350	[KCharacter::OnSkillChannelOTActionEnd] m_bOnOTActionEnd skill:(%u, %u)
+JX3LogicEditOperationX64.dll	0x0076C8B0	uPakSize < MAX_EXTERNAL_PACKAGE_SIZE
+JX3LogicEditOperationX64.dll	0x0076C8D8	uSize < MAX_EXTERNAL_PACKAGE_SIZE
+JX3LogicEditOperationX64.dll	0x0076CEA8	uPakSize <= MAX_EXTERNAL_PACKAGE_SIZE
+JX3LogicEditOperationX64.dll	0x00771830	KPlayerClient::OnSkillBeatBack
+JX3LogicEditOperationX64.dll	0x007B2918	KVideoReplayer::OnResetCooldown
+JX3LogicEditOperationX64.dll	0x007B2990	KVideoReplayer::OnCoolDownOverDraftNotify
+JX3LogicEditOperationX64.dll	0x007B2A28	KVideoReplayer::OnSyncArenaCompetitorCDState
+JX3LogicEditOperationX64.dll	0x007B2AD0	KVideoReplayer::OnPauseCDTimer
+JX3LogicEditOperationX64.dll	0x007B2B48	KVideoReplayer::OnAccelerateCDTimer
+JX3LogicEditOperationX64.dll	0x007B2BD8	KVideoReplayer::OnSyncArenaCompetitorList
+JX3LogicEditOperationX64.dll	0x007B3090	KVideoReplayer::OnSyncBattlefieldStatistics
+JX3LogicEditOperationX64.dll	0x00793198	uDataLen == m_nProtocolSize[nProtocolID]
+JX3LogicEditOperationX64.dll	0x00795258	uDataSize == m_nProtocolSize[dwProtocolID]
+JX3LogicEditOperationX64.dll	0x00795C48	uDataSize == m_nProtocolSize[nProtocolID]
+JX3LogicEditOperationX64.dll	0x00796E98	m_nProtocolSize[dwProtocolID] == uDataLen
+JX3LogicEditOperationX64.dll	0x0079C180	m_nProtocolSize[nSubProtocolID] <= uDataLen
+JX3LogicEditOperationX64.dll	0x007A25A0	m_nProtocolSize[nProtocol] == uDataLen
+JX3LogicEditOperationX64.dll	0x007B2790	nSize >= m_nProtocolSize[nProtocol]
+JX3LogicEditOperationX64.dll	0x007B2938	pNotify->byProtocolID == s2c_reset_cooldown
+JX3LogicEditOperationX64.dll	0x007B29C0	pNotify->byProtocolID == s2c_cooldown_over_draft_notify
+JX3LogicEditOperationX64.dll	0x007B2A58	pSync->byProtocolID == s2c_sync_arena_competitior_cd_state
+JX3LogicEditOperationX64.dll	0x007B2AF0	pPause->byProtocolID == s2c_pause_cd_timer
+JX3LogicEditOperationX64.dll	0x007B2B70	pAccelerate->byProtocolID == s2c_accelerate_cd_timer
+JX3LogicEditOperationX64.dll	0x0076C360	KPlayerClient::DoCharacterSkill
+JX3LogicEditOperationX64.dll	0x0076C418	KPlayerClient::DoApplyCharacterBuffList
+JX3LogicEditOperationX64.dll	0x0076C9C0	KPlayerClient::DoCastProfessionSkill
+JX3LogicEditOperationX64.dll	0x0076D978	KPlayerClient::DoPlayerReviveRequest
+JX3LogicEditOperationX64.dll	0x0076E620	KPlayerClient::DoStartHoardSkill
+JX3LogicEditOperationX64.dll	0x0076E648	KPlayerClient::DoCastHoardSkill
+JX3LogicEditOperationX64.dll	0x0076E668	KPlayerClient::DoSyncSubSkillPosition
+JX3LogicEditOperationX64.dll	0x0076F420	KPlayerClient::DoSyncOBCompetitorSkillList
+JX3LogicEditOperationX64.dll	0x0076F730	KPlayerClient::DoSyncBattlefieldCompetitorSkillCDStateRequest
+JX3LogicEditOperationX64.dll	0x0076F770	KPlayerClient::DoCancelSyncBattlefieldCompetitorSkillCDStateRequest
+JX3LogicEditOperationX64.dll	0x0076F7B8	KPlayerClient::DoSyncBattlefieldCompetitorsListRequest
+JX3LogicEditOperationX64.dll	0x00771030	KPlayerClient::OnCharacterDeath
+JX3LogicEditOperationX64.dll	0x00771400	KPlayerClient::OnSkillPrepare
+JX3LogicEditOperationX64.dll	0x00771420	KPlayerClient::OnSkillChannel
+JX3LogicEditOperationX64.dll	0x00771470	KPlayerClient::OnSkillCast
+JX3LogicEditOperationX64.dll	0x007714E8	KPlayerClient::OnResetCooldown
+JX3LogicEditOperationX64.dll	0x00771508	KPlayerClient::OnCoolDownOverDraftNotify
+JX3LogicEditOperationX64.dll	0x00771538	KPlayerClient::OnSkillChainEffect
+JX3LogicEditOperationX64.dll	0x00771560	KPlayerClient::OnSkillRayEffect
+JX3LogicEditOperationX64.dll	0x00771580	KPlayerClient::OnSkillEffectResult
+JX3LogicEditOperationX64.dll	0x007715A8	nSize >= sizeof(S2C_SKILL_EFFECT_RESULT)
+JX3LogicEditOperationX64.dll	0x007715E0	nSize == sizeof(S2C_SKILL_EFFECT_RESULT) + sizeof(S2C_SKILL_EFFECT_RESULT::KSKILL_RESULT) * pSkillResult->cResultCount
+JX3LogicEditOperationX64.dll	0x00771658	pSkillResult->cResultCount < MAX_UI_SKILL_RESULT_TYPE_COUNT
+JX3LogicEditOperationX64.dll	0x007716C0	KPlayerClient::OnPointChainSkillEffect
+JX3LogicEditOperationX64.dll	0x007716F0	nSize == sizeof(S2C_POINT_CHAIN_SKILL_EFFECT) + sizeof(DWORD) * pPak->nCount
+JX3LogicEditOperationX64.dll	0x00771740	KPlayerClient::OnSyncBuffList
+JX3LogicEditOperationX64.dll	0x00771760	nSize == sizeof(S2C_SYNC_BUFF_LIST) + pSyncBuff->wDataSize
+JX3LogicEditOperationX64.dll	0x007717A0	KPlayerClient::OnSyncBuffSingle
+JX3LogicEditOperationX64.dll	0x00771830	KPlayerClient::OnSkillBeatBack
+JX3LogicEditOperationX64.dll	0x007730D8	KPlayerClient::OnSetForce
+JX3LogicEditOperationX64.dll	0x007730F8	KPlayerClient::OnSetBattleFieldSide
+JX3LogicEditOperationX64.dll	0x00773DA0	nSize == sizeof(S2C_SYNC_CAMP_INFO) + pSyncCampInfo->byCampNpcCount * sizeof(KSYNC_CAMP_NPC_INFO)
+JX3LogicEditOperationX64.dll	0x00774B68	KPlayerClient::OnSetCamp
+JX3LogicEditOperationX64.dll	0x00776CB8	KPlayerClient::OnStartHoardSkill
+JX3LogicEditOperationX64.dll	0x00777160	nSize == sizeof(S2C_SYNC_FELLOWSHIP_PREFER_OR_PUSH_LIST) + pPak->nCount * sizeof(KFELLOWSHIP_PUSH_DATA_INFO)
+JX3LogicEditOperationX64.dll	0x007772C8	KPlayerClient::OnSyncSceneCampTypeToPlayer
+JX3LogicEditOperationX64.dll	0x007774A8	KPlayerClient::OnSyncArenaCompetitorList
+JX3LogicEditOperationX64.dll	0x007774D8	KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList
+JX3LogicEditOperationX64.dll	0x00777518	KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList
+JX3LogicEditOperationX64.dll	0x00777800	KPlayerClient::OnPauseCDTimer
+JX3LogicEditOperationX64.dll	0x00777840	KPlayerClient::OnAccelerateCDTimer
+JX3LogicEditOperationX64.dll	0x00777868	KPlayerClient::OnChangeImmunityCastIDNotify
+JX3LogicEditOperationX64.dll	0x00778260	KPlayerClient::OnSyncArenaCompetitorCDState
+JX3LogicEditOperationX64.dll	0x00778860	KPlayerClient::OnSyncStealthCharacter
+JX3LogicEditOperationX64.dll	0x00778E20	KPlayerClient::OnSyncRelationAllEnemyExceptTeam
+JX3LogicEditOperationX64.dll	0x00779060	KPlayerClient::OnSyncBattlefieldCompetitorCDState
+JX3LogicEditOperationX64.dll	0x00779098	KPlayerClient::OnSyncBattlefieldCompetitorBuffList
+JX3LogicEditOperationX64.dll	0x007790D0	nSize == sizeof(S2C_SYNC_BATTLEFIELD_COMPETITOR_BUFF_LIST) + pSync->wDataSize
+JX3LogicEditOperationX64.dll	0x0077A158	KPlayerClient::OnChangeMultiImmunityCastIDNotify
+JX3LogicEditOperationX64.dll	0x00781028	IgnoreImmunityCast
+JX3LogicEditOperationX64.dll	0x00784148	bIgnoreImmunityCastID
+JX3LogicEditOperationX64.dll	0x0078A9C0	KPlayerBattleStat::AddData
+JX3LogicEditOperationX64.dll	0x007972F0	pRespond->byCount * sizeof(KARENA_PLAYER_RECORD_INFO) + sizeof(KV2C_SYNC_ARENA_RECORD_INFO_LIST_RESPOND) == uDataSize
+JX3LogicEditOperationX64.dll	0x0079D5C8	KBattlefieldCache::AddNextSyncTime
+JX3LogicEditOperationX64.dll	0x007A5328	KCharacter::OnSkillChannelOTActionEnd
+JX3LogicEditOperationX64.dll	0x007A5350	[KCharacter::OnSkillChannelOTActionEnd] m_bOnOTActionEnd skill:(%u, %u)
+JX3LogicEditOperationX64.dll	0x007A7B50	KWorldRepresentAgent::OnSkillEffectResult
+JX3LogicEditOperationX64.dll	0x007B2918	KVideoReplayer::OnResetCooldown
+JX3LogicEditOperationX64.dll	0x007B2938	pNotify->byProtocolID == s2c_reset_cooldown
+JX3LogicEditOperationX64.dll	0x007B2968	nSize == sizeof(S2C_RESET_COOLDOWN)
+JX3LogicEditOperationX64.dll	0x007B2990	KVideoReplayer::OnCoolDownOverDraftNotify
+JX3LogicEditOperationX64.dll	0x007B29C0	pNotify->byProtocolID == s2c_cooldown_over_draft_notify
+JX3LogicEditOperationX64.dll	0x007B29F8	nSize == sizeof(S2C_COOLDOWN_OVER_DRAFT_NOTIFY)
+JX3LogicEditOperationX64.dll	0x007B2A28	KVideoReplayer::OnSyncArenaCompetitorCDState
+JX3LogicEditOperationX64.dll	0x007B2A58	pSync->byProtocolID == s2c_sync_arena_competitior_cd_state
+JX3LogicEditOperationX64.dll	0x007B2A98	sizeof(S2C_SYNC_ARENA_COMPETITIOR_CD_STATE) == nSize
+JX3LogicEditOperationX64.dll	0x007B2AD0	KVideoReplayer::OnPauseCDTimer
+JX3LogicEditOperationX64.dll	0x007B2B48	KVideoReplayer::OnAccelerateCDTimer
+JX3LogicEditOperationX64.dll	0x007B2BD8	KVideoReplayer::OnSyncArenaCompetitorList
+JX3LogicEditOperationX64.dll	0x007B3090	KVideoReplayer::OnSyncBattlefieldStatistics
+JX3LogicEditOperationX64.dll	0x007C7510	dwSkillImmunity
+JX3LogicEditOperationX64.dll	0x007CEDB8	KSkill::LuaCheckSilence
+JX3LogicEditOperationX64.dll	0x007DC100	GetBattlefieldPlayersPosInfo
+JX3LogicEditOperationX64.dll	0x007DC8C8	nIndex < (int)m_ArenaPlayerInfoVector.size()
+JX3LogicEditOperationX64.dll	0x007E9D40	m_pScene->m_BattlefieldCompetitorInfoMap.find(dwPlayerID) != m_pScene->m_BattlefieldCompetitorInfoMap.end()
+JX3LogicEditOperationX64.dll	0x007E9E20	m_pScene->m_DungeonCompetitorInfoMap.find(dwPlayerID) != m_pScene->m_DungeonCompetitorInfoMap.end()
+JX3LogicEditOperationX64.dll	0x007F2770	MOVE_STATE_ERROR
+JX3LogicEditOperationX64.dll	0x007F4590	IMMUNE_SKILL_MOVED
+JX3LogicEditOperationX64.dll	0x007F7038	ADD_DAMAGE_BY_DST_MOVE_STATE
+JX3LogicEditOperationX64.dll	0x007F81F8	CAST_SKILL_NO_TARGET
+JX3LogicEditOperationX64.dll	0x007F9B30	DST_MOVE_STATE_ERROR
+JX3LogicEditOperationX64.dll	0x007FF360	QUEUE_COOLDOWN
+JX3LogicEditOperationX64.dll	0x008029E0	YOU_MOVE_STATE_WRONG
+JX3LogicEditOperationX64.dll	0x008029F8	TARGET_MOVE_STATE_WRONG
+JX3LogicEditOperationX64.dll	0x00809078	QUERY_IN_COOLDOWN
+JX3LogicEditOperationX64.dll	0x00809BB0	IN_COOLDOWN
+JX3LogicEditOperationX64.dll	0x0080B278	MOVE_STATE_INVALID
+## JX3RepresentX64.dll

@@ -1,0 +1,32 @@
+# needle: KPlayerClient::DoApplyBFRoleData
+# string VAs: ['0x1807708d0']
+# xrefs: 1
+
+## xref 0x18016b2cf  fn_start 0x18016b290
+0x018016b290: sub	rsp, 0x58
+0x018016b294: mov	rax, qword ptr [rip + 0x84af85]
+0x018016b29b: xor	rax, rsp
+0x018016b29e: mov	qword ptr [rsp + 0x48], rax
+0x018016b2a3: mov	eax, 0x153
+0x018016b2a8: mov	dword ptr [rsp + 0x3b], edx
+0x018016b2ac: mov	dword ptr [rsp + 0x3f], r8d
+0x018016b2b1: lea	rdx, [rsp + 0x30]
+0x018016b2b6: mov	r8d, 0x17
+0x018016b2bc: mov	word ptr [rsp + 0x30], ax
+0x018016b2c1: mov	dword ptr [rsp + 0x43], r9d
+0x018016b2c6: call	0x1801acda0
+0x018016b2cb: test	eax, eax
+0x018016b2cd: jne	0x18016b30c
+0x018016b2cf: lea	rcx, [rip + 0x6055fa]
+0x018016b2d6: mov	r9d, 0x2824
+0x018016b2dc: mov	qword ptr [rsp + 0x20], rcx
+0x018016b2e1: lea	r8, [rip + 0x785000]
+0x018016b2e8: lea	ecx, [rax + 3]
+0x018016b2eb: lea	rdx, [rip + 0x7831b6]
+0x018016b2f2: call	qword ptr [rip + 0x5f9f68]
+0x018016b2f8: xor	eax, eax
+0x018016b2fa: mov	rcx, qword ptr [rsp + 0x48]
+0x018016b2ff: xor	rcx, rsp
+0x018016b302: call	0x18073aa10
+0x018016b307: add	rsp, 0x58
+0x018016b30b: ret	

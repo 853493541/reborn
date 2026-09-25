@@ -1,0 +1,4 @@
+﻿JX3ClientX64_exe_net_strings.txt | 0x00801EA8	ascii	InvalidBuffMask
+JX3ClientX64_exe_net_strings.txt | 0x0083D740	ascii	nRetCode && "[Buff] Get MapInvalidMask"
+JX3LogicEditOperation_net_strings.txt | 0x0077BDE8	ascii	InvalidBuffMask
+JX3LogicEditOperation_net_strings.txt | 0x00785390	ascii	nRetCode && "[Buff] Get MapInvalidMask"

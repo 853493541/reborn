@@ -1,0 +1,160 @@
+﻿=== line 214
+  S tImbaKungfuTypeList
+  S Imba_GetPlayerDmg
+  S ResetPlayerHeight
+  S wanhuaguNewPower
+  S LimitOfCwUseLevel
+  S HongChenXiaYing_AddAssistedLiXingYunPower
+  S WanHuaRandom
+  S tWanHuatagelist
+  S nLen
+  S tList
+  S SetDelaySubSkillTimeline
+  S AddOverDraftCoolDown
+  S GetHDKungfuMountID
+  S GetBuffStackNum
+  S IsClient
+  S ClearCharacterMoveStateClient
+  S DetachBuffByMask
+  S DetachDebuffByMask
+  S GetPlayerCDListBySkillRecipeTagMask
+  S GetCharacter
+  S HDJueJingSkillCoe_130
+  S HDJueJingSkillCoe
+  S HDJueJingSkillCoe_Heal
+  S Skill_AddZhongChuang
+  S Skill_SuperCustomDamageToPlayer
+  N 64.0
+  N 512.0
+  N 1024.0
+  N 100.0
+  N 80.0
+
+=== line 2477
+  N 1.0
+-- fn d1 src=None params=1
+  S GetKungfuMount
+  S nPlatformType
+  S SKILL_PLATFORM_TYPE
+  S MOBILE
+  S dwSkillID
+  S GetHDKungfuID
+-- fn d1 src=None params=4
+  S GetBuffByOwner
+  S GetBuff
+  S nStackNum
+  N 0.0
+-- fn d1 src=None params=1
+  S nMoveState
+  S MOVE_STATE
+  S ON_KNOCKED_OFF
+  S ON_PULL
+  S ON_KNOCKED_DOWN
+  S ON_KNOCKED_BACK
+  S ON_REPULSED
+  S ON_SKILL_MOVE_DEATH
+  S ON_SKILL_MOVE_DST
+  S ON_SKILL_MOVE_SRC
+  S ON_SKILL_MOVE_TAIL
+  S ON_FREEZE
+  S Stop
+  S UpdateRLCharacterImmediately
+-- fn d1 src=None params=3
+  S DetachBuffByMask
+
+=== line 4361
+  S nStackNum
+  N 0.0
+-- fn d1 src=None params=5
+  S tSkillCoefficientYDDH
+  S Skill_ElementsTherapyToPlayer
+  S damage
+  N 1.0
+-- fn d1 src=None params=1
+  S GetScene
+  S GetAllPlayer
+  S pairs
+  S GetPlayer
+  S IsEnemy
+  S dwID
+  S nMoveState
+  S MOVE_STATE
+  S ON_DEATH
+  S table
+  S insert
+  S Random
+  S CastSkillXYZ
+  S nX
+  S nY
+  S nZ
+  N 0.0
+  N 1.0
+  N 44797.0
+-- fn d1 src=None params=1
+  S GetPlayer
+  S GetSkillLevel
+
+=== line 4845
+  N 8.0
+  N 133061.0
+  N 960.0
+  N 4.0
+  N 512.0
+  N 12.0
+  N 31258.0
+  N 2.0
+-- fn d1 src=None params=1
+  S CastSkill
+  S GetPet
+  S Stand
+  S GetControlPetState
+  S EndControlPet
+  S nMoveState
+  S MOVE_STATE
+  S ON_JUMP
+  S ON_SKILL_MOVE_SRC
+  S StopXYZ
+  S DelBuff
+  N 42248.0
+  N 1.0
+  N 31213.0
+-- fn d1 src=None params=3
+  S GetSkillLevel
+  S GetBuffByOwner
+  S dwID
+  S MOVE_STATE
+  S ON_FREEZE
+  S CastSkill
+
+=== line 4857
+  S GetControlPetState
+  S EndControlPet
+  S nMoveState
+  S MOVE_STATE
+  S ON_JUMP
+  S ON_SKILL_MOVE_SRC
+  S StopXYZ
+  S DelBuff
+  N 42248.0
+  N 1.0
+  N 31213.0
+-- fn d1 src=None params=3
+  S GetSkillLevel
+  S GetBuffByOwner
+  S dwID
+  S MOVE_STATE
+  S ON_FREEZE
+  S CastSkill
+  S AddBuff
+  S nLevel
+  S ON_KNOCKED_DOWN
+  S nMoveState
+  S IsHaveBuff
+  S nStackNum
+  S ClearCDTime
+  N 5.0
+  N 42123.0
+  N 1.0
+  N 3.0
+  N 6.0
+

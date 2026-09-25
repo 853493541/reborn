@@ -1,0 +1,48 @@
+﻿skill\Quest\閫氱敤瑙ｉ櫎鍑诲€?lua:2	-- 鑴氭湰鍚嶇О:	scripts/skill/Quest/閫氱敤瑙ｉ櫎鍑诲€?lua
+skill\娌欐紶椋庢毚\閬撳叿_浼節闇勯闆峰姞閫?lua:33	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_浼節闇勯闆峰姞閫?lua:64	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:32	--瑙ｉ櫎鍑忛€?
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:45	--瑙ｉ櫎瀹氳韩
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:52	--瑙ｉ櫎闆烽渾
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:60	--瑙ｉ櫎閿佽冻
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:67	--瑙ｉ櫎鐪╂檿
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:75	--瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_瀛ゅ奖鍖栧弻.lua:83	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_瀛ら椋掕笍.lua:39	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_瀛ら椋掕笍.lua:69	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇?lua:33	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇?lua:72	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇瀇瑙ｉ櫎涓嶅彲閫変腑鏁堟灉.lua:2	-- 鑴氭湰鍚嶇О:	scripts/skill/娌欐紶椋庢毚/閬撳叿_鏁ｆ祦闇瀇瑙ｉ櫎涓嶅彲閫変腑鏁堟灉.lua
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇瀇瑙ｉ櫎涓嶅彲閫変腑鏁堟灉.lua:36	"skill/娌欐紶椋庢毚/閬撳叿_鏁ｆ祦闇瀇瑙ｉ櫎涓嶅彲閫変腑鏁堟灉.lua", -- 灞炴€у€?
+skill\娌欐紶椋庢毚\閬撳叿_鏄熸ゼ鏈堝奖.lua:48	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_鏄熸ゼ鏈堝奖.lua:54	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_鏆楀皹寮ユ暎.lua:39	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_鏆楀皹寮ユ暎.lua:69	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_娴厜鎺犲奖.lua:38	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_娴厜鎺犲奖.lua:69	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_娓搁椋樿釜.lua:163	--瑙ｉ櫎鎺у埗
+skill\娌欐紶椋庢毚\閬撳叿_娓搁椋樿釜瑙ｆ帶瀛愭妧鑳?lua:47	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_娓搁椋樿釜瑙ｆ帶瀛愭妧鑳?lua:53	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_鐤惧椋?lua:73	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_鐤惧椋?lua:79	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_缁块噹钄撶敓.lua:57	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_缁块噹钄撶敓.lua:63	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_鑸嶈韩璇€瑙ｆ帶瀛愭妧鑳?lua:8	-- 鏂囦欢鍚?   :  钘忓墤_鍚涘瓙椋巁鎺㈡_瀛愬脊_瑙ｉ櫎鎺у埗.lua
+skill\娌欐紶椋庢毚\閬撳叿_璺冩疆鏂╂尝.lua:267	player.SetPassiveVelocityZ(0)  --琚姩閫熷害鎻愬墠瑙ｉ櫎
+skill\娌欐紶椋庢毚\閬撳叿_璺冩疆鏂╂尝.lua:268	player.SetPassiveVelocityXY(0)	--琚姩閫熷害鎻愬墠瑙ｉ櫎
+skill\娌欐紶椋庢毚\閬撳叿_杞咕鍧?lua:75	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, --瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_杞咕鍧?lua:81	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_閫愪簯瀵掕晩.lua:57	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\娌欐紶椋庢毚\閬撳叿_閫愪簯瀵掕晩.lua:63	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_楣婅笍鏋?lua:28	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\娌欐紶椋庢毚\閬撳叿_楣婅笍鏋?lua:58	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:116	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK,	--瑙ｉ櫎鍑诲€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:122	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑昏惤
+skill\缁濆鎴樺満\缁濆_澶哄懡铔?lua:16	-- 鎶€鑳芥晥鏋? :  浣胯嚜宸卞湪10绉掑唴涓嶅彈鐗╃悊鎺у埗鎶€鑳藉奖鍝嶏紝骞惰В闄ゅ叏閮ㄦ帶鍒?
+skill\缁濆鎴樺満\缁濆_鏂瓊鍒?lua:16	-- 鎶€鑳芥晥鏋? :  瑙ｉ櫎涓€鍒囩Щ鍔ㄩ檺鍒?蹇€熷啿鍚戞晫浜?瀵瑰叾閫犳垚浼ゅ骞跺皢鍏跺嚮鏅?
+skill\缁濆鎴樺満\缁濆_鏄熸ゼ鏈堝奖.lua:47	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\缁濆鎴樺満\缁濆_鏋畫铔?lua:16	-- 鎶€鑳芥晥鏋? :  浣胯嚜宸卞湪10绉掑唴涓嶅彈鐗╃悊鎺у埗鎶€鑳藉奖鍝嶏紝骞惰В闄ゅ叏閮ㄦ帶鍒?
+skill\缁濆鎴樺満\缁濆_鐤惧椋?lua:46	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\缁濆鎴樺満\缁濆_铔婅櫕鐚キ.lua:47	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?
+skill\缁濆鎴樺満\缁濆_杩峰績铔?lua:16	-- 鎶€鑳芥晥鏋? :  浣胯嚜宸卞湪10绉掑唴涓嶅彈鐗╃悊鎺у埗鎶€鑳藉奖鍝嶏紝骞惰В闄ゅ叏閮ㄦ帶鍒?
+skill\缁濆鎴樺満\缁濆_楣婅笍鏋?lua:64	ATTRIBUTE_EFFECT_MODE.EFFECT_TO_SELF_NOT_ROLLBACK, -- 瑙ｉ櫎鍑诲€?

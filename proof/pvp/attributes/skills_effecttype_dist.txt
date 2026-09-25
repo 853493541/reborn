@@ -1,0 +1,4 @@
+﻿EffectType values:
+22894	'Neutral'
+14779	'Harmful'
+3468	'Beneficial'

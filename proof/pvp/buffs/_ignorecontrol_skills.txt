@@ -1,0 +1,74 @@
+﻿player-ish skills IgnoreControl=1: 73
+100 鏄熸ゼ鏈堝奖 | school= 2 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+228 澶槾鎸?| school= 2 | FT= Damage | SelfMS= 2617262334 | SelfMS2= 63
+257 閿婚璇€ | school= 5 | FT= Normal | SelfMS= 2620159742 | SelfMS2= 63
+355 鍑櫄寰￠ | school= 3 | FT= Normal | SelfMS= 2621207294 | SelfMS2= 63
+371 闀囧北娌?| school= 3 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+372 杞咕鍧?| school= 3 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+412 澶╃瓥-鐤惧椋?| school= 1 | FT= Normal | SelfMS= 2620292862 | SelfMS2= 63
+550 楣婅笍鏋?| school= 4 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+705 澶╃瓥_瀛愭妧鑳絖鐤惧椋巁鍌茶鎴樻剰 | school= 1 | FT= Normal | SelfMS= 2621341694 | SelfMS2= 63
+1093 灏戞灄_瀛愭妧鑳絖閿婚鍐砡鏄撶瓔缁?| school= 5 | FT= Normal | SelfMS= 3426680830 | SelfMS2= 63
+1656 鍟告棩 | school= 6 | FT= Normal | SelfMS= 2352905982 | SelfMS2= 63
+1658 钘忓墤_鍚涘瓙椋巁瀛愭妧鑳絖闂按璇€_鍟告棩 | school= 6 | FT= Normal | SelfMS= 3695116030 | SelfMS2= 63
+1903 钘忓墤_鍚涘瓙椋巁瀛愭妧鑳絖闂按璇€_鍟告棩_鍒囨崲姝﹀櫒 | school= 6 | FT= Normal | SelfMS= 3426680574 | SelfMS2= 63
+2226 铔婅櫕鐚キ | school= 9 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+2227 铔婅櫕鐙傛毚 | school= 9 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+2519 浜旀瘨_铔婅櫕鐚キ_铚堣殻 | school= 9 | FT= Normal | SelfMS= 2352906238 | SelfMS2= 63
+2628 澶╃瓥-娓?| school= 1 | FT= Normal | SelfMS= 2214609150 | SelfMS2= 63
+2903 闀囧北娌抽┍鏁ｈ嚜宸?| school= 3 | FT= Normal | SelfMS= 3695116030 | SelfMS2= 63
+2986 瀛愭妧鑳絖铔婅櫕鐙傛毚_鑷繁 | school= 9 | FT= Normal | SelfMS= 4294967294 | SelfMS2= 63
+2987 瀛愭妧鑳絖铔婅櫕鐙傛毚_瀹犵墿 | school= 9 | FT= Normal | SelfMS= 2352906238 | SelfMS2= 63
+2999 闀囨淳_濂冲ú琛ュぉ_娓呮帶鍒?| school= 9 | FT= Normal | SelfMS= 2352906238 | SelfMS2= 63
+3023 铔婅櫕鐚キ_瑙ｆ帶 | school= 9 | FT= Normal | SelfMS= 2352906238 | SelfMS2= 63
+3112 娴厜鎺犲奖 | school= 10 | FT= Normal | SelfMS= 402682574 | SelfMS2= 60
+3117 瀛愭瘝椋炵埅涔嬫瘝鐖?| school= 10 | FT= Normal | SelfMS= 2214592766 | SelfMS2= 63
+3292 娴厜鎺犲奖_鍏嶆帶 | school= 10 | FT= Normal | SelfMS= 2352906238 | SelfMS2= 63
+3974 鏆楀皹寮ユ暎 | school= 8 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+5265 瑙侀緳鍦ㄧ敯 | school= 7 | FT= Damage | SelfMS= 2617275134 | SelfMS2= 63
+5270 绗戦唹鐙?| school= 7 | FT= Normal | SelfMS= 473724670 | SelfMS2= 20
+6911 闀囧北娌冲姞寮?| school= 3 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+9027 钘忓墤_闂按璇€_鍟告棩鍒囬噸鍓戝厤鎺?| school= 6 | FT= Normal | SelfMS= 3695116030 | SelfMS2= 63
+13042 鏃犳儳 | school= 18 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+14077 鏂楀鏃犲皹 | school= 19 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+14081 瀛ゅ奖鍖栧弻 | school= 19 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+14162 瀛ゅ奖鍖栧弻_鍥?| school= 19 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+14708 鍋囨瑙﹀彂瑙ｆ帶 | school= 4 | FT= Normal | SelfMS= 4294967295 | SelfMS2= 63
+14965 鍗楅鍚愭湀 | school= 2 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+15039 鐤忓奖妯枩_浼犻€? | school= 19 | FT= Normal | SelfMS= 3757998079 | SelfMS2= 63
+15040 鐤忓奖妯枩_浼犻€? | school= 19 | FT= Normal | SelfMS= 3757998079 | SelfMS2= 63
+15041 鐤忓奖妯枩_浼犻€? | school= 19 | FT= Normal | SelfMS= 3757998079 | SelfMS2= 63
+15042 鐤忓奖妯枩_浼犻€? | school= 19 | FT= Normal | SelfMS= 3757998079 | SelfMS2= 63
+15043 鐤忓奖妯枩_浼犻€? | school= 19 | FT= Normal | SelfMS= 3757998079 | SelfMS2= 63
+15044 鐤忓奖妯枩_浼犻€? | school= 19 | FT= Normal | SelfMS= 3757998079 | SelfMS2= 63
+15165 浜屼笟渚濈紭 | school= 5 | FT= Normal | SelfMS= 2617262334 | SelfMS2= 63
+15166 琚堣 | school= 5 | FT= Normal | SelfMS= 2617262334 | SelfMS2= 63
+16043 瀛愮埅瀵瑰弸鏂?| school= 10 | FT= Normal | SelfMS= 2214609150 | SelfMS2= 63
+16608 鏉剧儫绔归浘_鏁ｆ祦闇?| school= 20 | FT= Normal | SelfMS= 473726718 | SelfMS2= 63
+17571 瀛ゅ奖鍖栧弻鏃犺娌夐粯_鍥?| school= 19 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+17587 椋炴槦閬佸奖_鍥? | school= 10 | FT= Normal | SelfMS= 2352905982 | SelfMS2= 63
+17588 椋炴槦閬佸奖_鍥? | school= 10 | FT= Normal | SelfMS= 2352905982 | SelfMS2= 63
+17589 椋炴槦閬佸奖_鍥?瀹為檯鏁堟灉 | school= 10 | FT= Normal | SelfMS= 2352905982 | SelfMS2= 63
+18585 姘存Ν鑺辩泩瀵圭洰鏍囬噴鏀?| school= 4 | FT= Normal | SelfMS= 2348842750 | SelfMS2= 63
+18587 姘存Ν鑺辩泩1娈?| school= 4 | FT= Normal | SelfMS= 2348842750 | SelfMS2= 63
+18588 姘存Ν鑺辩泩2娈?| school= 4 | FT= Normal | SelfMS= 2214609150 | SelfMS2= 63
+18589 姘存Ν鑺辩泩3娈?| school= 4 | FT= Normal | SelfMS= 2348842750 | SelfMS2= 63
+18633 骞诲厜姝瑙ｉ櫎鎺у埗 | school= 8 | FT= Fly | SelfMS= 2550165758 | SelfMS2= 63
+19984 椹窘楠嬮 | school= 21 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+21772 椹窘楠嬮濂囩┐浣嶇Щ | school= 21 | FT= Normal | SelfMS= 2348842750 | SelfMS2= 63
+22614 瀛ら椋掕笍 | school= 22 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+22707 鍗佹柟鐜勬満瑙ｆ帶 | school= 22 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+24380 杩旈棴鎯婇瓊 | school= 23 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+25032 瀹犵墿_锜惧櫖 | school= 9 | FT= Normal | SelfMS= 2214609150 | SelfMS2= 63
+25033 瀹犵墿_锜惧櫖澶嶅埗 | school= 9 | FT= Normal | SelfMS= 2214609150 | SelfMS2= 63
+25185 瑙侀緳鍦ㄧ敯_鏃犻渶鐮寸唤 | school= 7 | FT= Damage | SelfMS= 2617275134 | SelfMS2= 63
+25303 鍗佹柟鐜勬満鑷韩鑼冨洿 | school= 22 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+25319 鏆楀害路鍗楅鍚愭湀 | school= 22 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+25340 鏆楀害路灏佹笂闇囩厼 | school= 22 | FT= Normal | SelfMS= 2550166270 | SelfMS2= 63
+27897 缁块噹钄撶敓 | school= 24 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+28429 缁块噹钄撶敓瀵归槦鍙?| school= 24 | FT= Normal | SelfMS= 2621209342 | SelfMS2= 63
+28561 姹傚嚢_濂冲ú瑙ｉ櫎鎺у埗 | school= 9 | FT= Normal | SelfMS= 2621341438 | SelfMS2= 63
+29003 鐘规寜鍓?| school= 19 | FT= Normal | SelfMS= 2348839678 | SelfMS2= 63
+29156 29156 鍋囨瑙ｆ帶 | school= 21 | FT= Normal | SelfMS= 2617409278 | SelfMS2= 63
+29162 鍗佹柟鐜勬満鏂版笂绉樻瘝鎶€鑳?| school= 22 | FT= Normal | SelfMS= 2621210366 | SelfMS2= 63
+29947 娓婄鍗佹柟妫€娴嬪懆鍥翠汉鏁?| school= 22 | FT= Normal | SelfMS= 4294967294 | SelfMS2= 63

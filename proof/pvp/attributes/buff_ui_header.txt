@@ -1,0 +1,19 @@
+﻿# rows=26453 cols=18
+0	BuffID
+1	Level
+2	IconID
+3	Sparking
+4	ShowTime
+5	Show
+6	Remark
+7	Name
+8	Desc
+9	IsAddPeriod
+10	TypeIconID
+11	MbSpecialShow
+12	MbSpecialShowPriority
+13	MbCantRebirth
+14	MbIsShow
+15	bCollapse
+16	nMbUIListPriority
+17	nUIBuffType

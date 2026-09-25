@@ -1,0 +1,530 @@
+SkillName	SkillID	BelongSchool	KindType	FunctionType	MapBanMask	IgnoreCamp
+傲血战意_重置疾如风	1830	16	Physics	Normal	8	
+铁牢律_重置掠如火	1831	16	Physics	Normal	8	
+傲血战意_加buff	1850	16	None	Normal	8	
+铁牢律_加buff	1851	16	None	Normal	8	
+太虚剑意_加buff	1852	16	None	Normal	8	
+紫霞功_加buff	1853	16	None	Normal	8	
+易筋经_加buff	1854	16	None	Normal	8	
+洗髓经_加buff	1855	16	None	Normal	8	
+花间游_加buff	1856	16	None	Normal	8	
+离经易道_上春泥	1857	16	NeutralMagic	Normal	8	
+冰心诀_加BUFF	1858	16	LunarMagic	Normal	8	
+云裳心经_翔莺舞柳AOE	1859	16	LunarMagic	Normal	8	
+问水诀_加buff	1881	16	None	Normal	8	
+山居剑意_加buff	1882	16	None	Normal	8	
+毒经_加BUFF	3065	16	Poison	Normal	8	
+补天_治疗AOE	3066	16	Poison	Normal	8	
+荻花圣殿_藏剑武器特效_起跳	3352	16	Physics	Normal	8	
+荻花圣殿_藏剑武器特效_AOE	3353	16	Physics	Damage	8	
+惊羽诀_加BUFF	3476	16	None	Normal	8	
+天罗诡道_加BUFF	3477	16	None	Normal	8	
+荻花圣殿_少林特殊武器开始读条	4099	16	LunarMagic	Normal	8	
+烛龙殿_五毒特殊武器母技能	4111	16	None	Normal	8	
+唐门特殊武器_惊羽读条3秒	4131	16	Physics	Normal	8	0
+唐门特殊武器_天罗读条4秒	4132	16	Physics	Normal	8	0
+雷(2级)	4876	16	None	Normal	8	0
+水(2级)	4877	16	None	Normal	8	0
+破(2级)	4878	16	None	Normal	8	0
+风(2级)	4879	16	None	Normal	8	0
+疾减益	4880	16	None	Normal	8	0
+疾加血	4881	16	None	Normal	8	0
+疾(2级)	4882	16	None	Normal	8	0
+橙武_明教dps_加BUFF	4940	16	Physics	Normal	8	
+橙武_明教T_加BUFF	4941	16	Physics	Normal	8	
+气纯特殊武器_白鹤腾空	5130	16	NeutralMagic	Normal	8	0
+剑纯特殊武器_画影残月	5209	16	Physics	Damage	8	0
+天策特殊武器_向前冲刺副本内	5215	16	Physics	Normal	8	0
+剑纯特殊武器_斩杀小怪用	5218	16	Physics	Damage	8	0
+明教特殊武器_非战斗召唤npc	5244	16	LunarMagic	Normal	8	0
+剑纯特殊武器_画影残月关卡调用	5248	16	Physics	Damage	8	0
+风府	6215	0	None	Normal	8	
+百会	6216	0	None	Normal	8	
+外丘	6217	0	None	Normal	8	
+太乙	6218	0	None	Charm	8	0
+脑户	6219	0	None	Normal	8	
+风（2级）	6800	16	None	Normal	8	0
+丐帮_橙武_挂buff	6950	7	Physics	Normal	8	0
+咸鱼挂件起始技能	8561	11	None	Normal	8	1
+苍云橙武加buff	13410	16	None	Normal	8	
+莫问加buff	15183	16	LunarMagic	Normal	8	
+相知加buff	15184	16	LunarMagic	Normal	8	
+长歌门特殊武器_萧琴剑	15501	16	LunarMagic	Normal	8	0
+苍云特殊武器_使用武器出特殊技能栏	15988	16	Physics	Normal	8	0
+北傲诀_破釜沉舟无CD和能量消耗	16984	16	None	Normal	8	
+丐帮特殊武器_起手扶摇跳	17030	16	Physics	Normal	8	0
+橙武_云裳_无限风袖	18977	16	LunarMagic	Normal	8	
+周围的队友喊话支持	19440	12	None	Normal	8	0
+凌海诀_木落无CD_溟海无CD	21185	16	None	Normal	8	
+画影残月（剑纯）	21317	16	Physics	Damage	8	0
+白鹤腾空（气纯）	21318	16	NeutralMagic	Normal	8	0
+MOBA战场装备	21762	16	None	Normal	8	0
+鲲鹏岛_增伤	22008	16	None	Normal	8	0
+鲲鹏岛_爆发	22009	16	None	Normal	8	0
+鲲鹏岛_反击	22010	16	Physics	Normal	8	0
+鲲鹏岛_反击_外功伤害	22011	16	Physics	Normal	8	0
+鲲鹏岛_反击_阳性内功伤害	22012	16	SolarMagic	Normal	8	0
+蝮蛇出洞（藏剑）	22289	16	Physics	Damage	8	
+春日竹叶吟（藏剑）	22334	16	Physics	Damage	8	
+秋松金环戴（藏剑）	22338	16	Physics	Damage	8	
+金蛇出洞（藏剑）	22373	16	Physics	Damage	8	
+水特效	23230	13	None	Normal	8	0
+风特效	23231	13	None	Normal	8	0
+少林特殊武器_黑天金刚铃（夜叉）	23362	16	LunarMagic	Normal	8	0
+橙武_凌雪阁_金戈回澜寂洪荒无CD	23396	16	None	Normal	8	
+蔷薇列岛_反击	23461	16	Physics	Normal	8	0
+元旦活动_龙门飞剑_总技能	23588	13	None	Normal	8	0
+元旦活动_龙门飞剑_护盾	23589	13	Physics	Normal	8	0
+元旦活动_龙门飞剑_旋风	23590	13	Physics	Normal	8	0
+元旦活动_龙门飞剑_旋风外功伤害	23591	13	Physics	Normal	8	0
+元旦活动_龙门飞剑_旋风击飞	23592	13	Physics	Normal	8	0
+元旦活动_龙门飞剑_旋风混元伤害	23593	13	NeutralMagic	Normal	8	0
+元旦活动_龙门飞剑_旋风阴性伤害	23594	13	LunarMagic	Normal	8	0
+元旦活动_龙门飞剑_旋风阳性伤害	23595	13	SolarMagic	Normal	8	0
+元旦活动_龙门飞剑_旋风毒性伤害	23596	13	Poison	Normal	8	0
+110级历程装备_衣服_护盾	25248	16	None	Normal	8	0
+110历程装备_武器_AP	25249	16	None	Normal	8	0
+110历程装备_护腕_hot	25250	16	None	Normal	8	0
+110历程装备_腰坠_破招	25251	16	None	Normal	8	0
+橙武_冰心诀_无限剑气长江带dot	25757	16	LunarMagic	Normal	8	
+衍天宗橙武特效触发	25831	16	None	Normal	8	
+龙门飞剑武器_输出_被动	26013	16	None	Normal	8	0
+龙门飞剑武器_输出_被动_伤害_外功	26021	16	Physics	Damage	8	0
+龙门飞剑武器_输出_主动	26060	16	None	Normal	8	0
+龙门飞剑武器_buff被击	26087	16	None	Normal	8	0
+龙门飞剑武器_输出_被动_子弹	26091	16	None	Normal	8	0
+龙门飞剑武器_输出_被动_伤害_混元	26109	16	NeutralMagic	Damage	8	0
+龙门飞剑武器_输出_被动_伤害_阴性	26110	16	LunarMagic	Damage	8	0
+龙门飞剑武器_输出_被动_伤害_阳性	26111	16	SolarMagic	Damage	8	0
+龙门飞剑武器_输出_被动_伤害_毒性	26112	16	Poison	Damage	8	0
+龙门飞剑武器_治疗_被动	26116	16	None	Normal	8	0
+龙门飞剑武器_治疗_被动_奶量	26128	16	None	Normal	8	0
+龙门飞剑武器_治疗_主动	26129	16	None	Normal	8	0
+龙门飞剑武器_防御_被动	26140	16	None	Normal	8	0
+龙门飞剑武器_防御_主动	26141	16	None	Normal	8	0
+橙武_霸刀_破釜沉舟带dot	26934	16	Physics	Normal	8	
+橙武_蓬莱_溟海御波带dot	26935	16	Physics	Normal	8	
+橙武_凌雪阁_金戈回澜带dot	26980	16	Physics	Normal	8	
+背挂_闲摇羽扇_主动表现	27442	16	None	Normal	8	0
+背挂_闲摇羽扇_被动表现	27443	16	Physics	Normal	8	0
+背挂_闲摇羽扇_退出	27444	16	None	Normal	8	0
+背挂_伞_外装169七夕伞	27572	16	None	Normal	8	0
+背挂_伞_外装169七夕伞_开合	27573	16	None	Normal	8	0
+背挂_伞_外装169七夕伞_表现	27574	16	None	Normal	8	0
+外装179_捞月_ab	28499	16	None	Normal	8	0
+28518 背挂_二胡	28518	16	None	Normal	8	0
+28520 背挂_二胡_退出	28520	16	None	Normal	8	0
+外装179_捞月_cd	28521	16	None	Normal	8	0
+外装179_捞月_ef	28522	16	None	Normal	8	0
+外装179_捞月_g	28523	16	None	Normal	8	0
+外装179_捞月_退出	28524	16	None	Normal	8	0
+外装179_挂件_笛子进入	28577	16	None	Normal	8	0
+外装179_挂件_笛子吹笛	28579	16	None	Normal	8	0
+外装179_挂件_笛子退出	28580	16	None	Normal	8	0
+外装179_挂件_笛子嬉戏	28584	16	None	Normal	8	0
+外装_179_挂件_笛子上月亮	28662	16	None	Normal	8	0
+外装184_登高_ab	29285	16	None	Normal	8	0
+外装184_登高_cd	29286	16	None	Normal	8	0
+外装184_登高_ef	29287	16	None	Normal	8	0
+外装184_登高_g	29288	16	None	Normal	8	0
+外装184_登高_退出	29289	16	None	Normal	8	0
+背挂_马扎_进入	29326	16	None	Normal	8	0
+背挂_马扎_吃瓜	29327	16	None	Normal	8	0
+背挂_马扎_嗑瓜子	29328	16	None	Normal	8	0
+背挂_马扎_退出	29329	16	None	Normal	8	0
+北天药宗无方橙武特效触发	29694	16	None	Normal	8	
+北天药宗灵素橙武特效触发	29696	16	Poison	Normal	8	
+龙门飞剑武器_输出_被动_自适应伤害	29919	16	Adaptive	Damage	8	0
+外装189_水袖_ab	29920	16	None	Normal	8	0
+背挂_伞_外装190_进入	29927	16	None	Normal	8	0
+背挂_琵琶01	30111	16	None	Normal	8	0
+背挂_琵琶01_退出	30112	16	None	Normal	8	0
+表情 举高高	30220	13	None	Normal	8	0
+外装194_冬至_ab	30306	16	None	Normal	8	0
+外装194_冬至_cd	30307	16	None	Normal	8	0
+外装194_冬至_ef	30308	16	None	Normal	8	0
+外装194_冬至_g	30309	16	None	Normal	8	0
+外装194_冬至_退出	30310	16	None	Normal	8	0
+外装196_花滑_ab	30373	16	None	Normal	8	0
+外装196_花滑_cd	30374	16	None	Normal	8	0
+外装196_花滑_ef	30375	16	None	Normal	8	0
+外装196_花滑_g	30376	16	None	Normal	8	0
+外装196_花滑_退出	30377	16	None	Normal	8	0
+外装196_花滑_判定	30378	16	None	Normal	8	0
+背挂_火盆_摆放	30392	16	None	Normal	8	0
+外装204_花朝_ab	30472	16	None	Normal	8	0
+外装204_花朝_cd	30473	16	None	Normal	8	0
+外装204_花朝_ef	30474	16	None	Normal	8	0
+外装204_花朝_g	30475	16	None	Normal	8	0
+外装204_花朝_退出	30476	16	None	Normal	8	0
+背挂_古琴	30651	16	None	Normal	8	0
+背挂_古琴_退出	30652	16	None	Normal	8	0
+外装208_星辰_ab	30993	16	None	Normal	8	0
+外装208_星辰_cd	30994	16	None	Normal	8	0
+外装208_星辰_ef	30995	16	None	Normal	8	0
+外装208_星辰_g	30996	16	None	Normal	8	0
+外装208_星辰_退出	30997	16	None	Normal	8	0
+背挂_依牟鲀	31068	16	None	Normal	8	0
+背挂_君子意	31070	16	None	Normal	8	0
+喜灰退出变身	31257	13	None	Normal	8	0
+背挂_箜篌	31524	16	None	Normal	8	0
+背挂_箜篌退出	31525	16	None	Normal	8	0
+外装211_冲浪_ab	31956	16	None	Normal	8	0
+外装211_冲浪_cd	31957	16	None	Normal	8	0
+外装211_冲浪_ef	31958	16	None	Normal	8	0
+外装211_冲浪_g	31959	16	None	Normal	8	0
+外装211_冲浪_退出	31960	16	None	Normal	8	0
+外装212_唐刀_ab	32207	16	None	Normal	8	0
+外装212_唐刀_cd	32208	16	None	Normal	8	0
+外装212_唐刀_ef	32209	16	None	Normal	8	0
+外装212_唐刀_g	32210	16	None	Normal	8	0
+外装212_唐刀_退出	32211	16	None	Normal	8	0
+外装214_皓月_ab	32364	16	None	Normal	8	0
+外装214_皓月_cd	32365	16	None	Normal	8	0
+外装214_皓月_ef	32366	16	None	Normal	8	0
+外装214_皓月_g	32367	16	None	Normal	8	0
+外装214_皓月_退出	32368	16	None	Normal	8	0
+外装221_绣球花_ab	33000	16	None	Normal	8	0
+外装221_绣球花_cd	33001	16	None	Normal	8	0
+外装221_绣球花_ef	33002	16	None	Normal	8	0
+外装221_绣球花_g	33003	16	None	Normal	8	0
+外装221_绣球花_退出	33004	16	None	Normal	8	0
+刀宗橙武特效触发	33238	16	None	Normal	8	
+外装202_彩虹_ab	33275	16	None	Normal	8	0
+外装202_彩虹_cd	33276	16	None	Normal	8	0
+外装202_彩虹_ef	33277	16	None	Normal	8	0
+外装202_彩虹_g	33278	16	None	Normal	8	0
+外装202_彩虹_退出	33279	16	None	Normal	8	0
+外装212_弓舞_ab	33550	16	None	Normal	8	0
+外装212_弓舞_cd	33551	16	None	Normal	8	0
+外装212_弓舞_ef	33552	16	None	Normal	8	0
+外装212_弓舞_g	33553	16	None	Normal	8	0
+外装212_弓舞_退出	33554	16	None	Normal	8	0
+背挂_铃鼓	33675	16	None	Normal	8	0
+背挂_铃鼓_退出	33676	16	None	Normal	8	0
+外装246_金龙_ab	33886	16	None	Normal	8	0
+外装246_金龙_cd	33887	16	None	Normal	8	0
+外装246_金龙_ef	33888	16	None	Normal	8	0
+外装246_金龙_g	33889	16	None	Normal	8	0
+外装246_金龙_退出	33890	16	None	Normal	8	0
+外装241_纨素_ab	34036	16	None	Normal	8	0
+外装241_纨素_cd	34037	16	None	Normal	8	0
+外装241_纨素_ef	34038	16	None	Normal	8	0
+外装241_纨素_g	34039	16	None	Normal	8	0
+外装241_退出	34040	16	None	Normal	8	0
+外装242_不良人_ab	34173	16	None	Normal	8	0
+外装242_不良人_cd	34174	16	None	Normal	8	0
+外装242_不良人_ef	34175	16	None	Normal	8	0
+外装242_不良人_g	34176	16	None	Normal	8	0
+外装242_不良人_退出	34177	16	None	Normal	8	0
+外装_不良人_进入	34179	16	None	Normal	8	0
+外装245_晶钻_ab	34250	16	None	Normal	8	0
+外装245_晶钻_cd	34251	16	None	Normal	8	0
+外装245_晶钻_ef	34252	16	None	Normal	8	0
+外装245_晶钻_g	34253	16	None	Normal	8	0
+外装245_晶钻_退出	34254	16	None	Normal	8	0
+外装247_竖琴_ab	34461	16	None	Normal	8	0
+外装247_竖琴_cd	34462	16	None	Normal	8	0
+外装247_竖琴_ef	34463	16	None	Normal	8	0
+外装247_竖琴_g	34464	16	None	Normal	8	0
+外装247_竖琴_退出	34465	16	None	Normal	8	0
+背挂_蘑菇	34821	16	None	Normal	8	0
+外装243_鱼灯_ab	34963	16	None	Normal	8	0
+外装243_鱼灯_cd	34964	16	None	Normal	8	0
+外装243_鱼灯_ef	34965	16	None	Normal	8	0
+外装243_鱼灯_g	34966	16	None	Normal	8	0
+外装243_鱼灯_退出	34967	16	None	Normal	8	0
+外装250_洛丽塔_ab	35242	16	None	Normal	8	0
+外装250_洛丽塔_cd	35243	16	None	Normal	8	0
+外装250_洛丽塔_ef	35244	16	None	Normal	8	0
+外装250_洛丽塔_g	35245	16	None	Normal	8	0
+外装250_洛丽塔_退出	35246	16	None	Normal	8	0
+外装260_敦煌_ab	35309	16	None	Normal	8	0
+外装260_敦煌_cd	35310	16	None	Normal	8	0
+外装260_敦煌_ef	35311	16	None	Normal	8	0
+外装260_敦煌_g	35312	16	None	Normal	8	0
+外装260_敦煌_退出	35313	16	None	Normal	8	0
+外装250_洛丽塔_进入	35336	16	None	Normal	8	0
+外装259_中秋_ab	35394	16	None	Normal	8	0
+外装259_中秋_cd	35395	16	None	Normal	8	0
+外装259_中秋_ef	35396	16	None	Normal	8	0
+外装259_中秋_g	35397	16	None	Normal	8	0
+外装259_中秋_退出	35398	16	None	Normal	8	0
+外装_西游01_进入	35779	16	None	Normal	8	0
+外装263_弦月_ab	36224	16	None	Normal	8	0
+外装263_弦月_cd	36225	16	None	Normal	8	0
+外装263_弦月_ef	36226	16	None	Normal	8	0
+外装263_弦月_g	36227	16	None	Normal	8	0
+外装263_弦月_退出	36228	16	None	Normal	8	0
+外装248_蒲公英_ab	36458	16	None	Normal	8	0
+外装248_蒲公英_cd	36459	16	None	Normal	8	0
+外装248_蒲公英_ef	36460	16	None	Normal	8	0
+外装248_蒲公英_g	36461	16	None	Normal	8	0
+外装248_蒲公英_退出	36462	16	None	Normal	8	0
+解心语_变狼_退出	36488	13	None	Normal	8	0
+万灵山庄橙武特效触发	36578	16	None	Normal	8	
+外装266_水_ab	36621	16	None	Normal	8	0
+外装266_水_cd	36622	16	None	Normal	8	0
+外装266_水_ef	36623	16	None	Normal	8	0
+外装266_水_g	36624	16	None	Normal	8	0
+外装266_水_退出	36625	16	None	Normal	8	0
+外装269_星辰_ab	36805	16	None	Normal	8	0
+外装269_星辰_cd	36806	16	None	Normal	8	0
+外装269_星辰_ef	36807	16	None	Normal	8	0
+外装269_星辰_g	36808	16	None	Normal	8	0
+外装269_星辰_退出	36809	16	None	Normal	8	0
+外装268_画九_ab	36816	16	None	Normal	8	0
+外装268_画九_cd	36817	16	None	Normal	8	0
+外装268_画九_ef	36818	16	None	Normal	8	0
+外装268_画九_g	36819	16	None	Normal	8	0
+外装268_画九_退出	36820	16	None	Normal	8	0
+刀宗cw加DOT	36851	16	Physics	Normal	8	
+背挂_龙灯01_进入	37155	16	None	Normal	8	0
+背挂_龙灯01_表现	37156	16	None	Normal	8	0
+背挂_龙灯01_退出	37158	16	None	Normal	8	0
+外装271_云山_ab	37159	16	None	Normal	8	0
+外装271_云山_cd	37160	16	None	Normal	8	0
+外装271_云山_ef	37161	16	None	Normal	8	0
+外装271_云山_g	37162	16	None	Normal	8	0
+外装271_云山_退出	37163	16	None	Normal	8	0
+外装276_九色鹿_ab	37277	16	None	Normal	8	0
+外装276_九色鹿_cd	37278	16	None	Normal	8	0
+外装276_九色鹿_ef	37279	16	None	Normal	8	0
+外装276_九色鹿_g	37280	16	None	Normal	8	0
+外装276_九色鹿_退出	37281	16	None	Normal	8	0
+背挂_镂空灯_进入	37282	16	None	Normal	8	0
+背挂_镂空灯_表现	37283	16	None	Normal	8	0
+背挂_镂空灯_退出	37285	16	None	Normal	8	0
+背挂_长鼓01_退出	37291	16	None	Normal	8	0
+背挂_长鼓01_表现	37292	16	None	Normal	8	0
+背挂_长鼓01_进入	37293	16	None	Normal	8	0
+背挂_包子铺_进入	37312	16	None	Normal	8	0
+背挂_包子铺_表现1	37313	16	None	Normal	8	0
+背挂_包子铺_表现2	37314	16	None	Normal	8	0
+背挂_包子铺_退出	37315	16	None	Normal	8	0
+外装293_弦月_进入	37432	16	None	Normal	8	0
+外装293_弦月_pst01	37433	16	None	Normal	8	0
+外装293_弦月_pst02	37434	16	None	Normal	8	0
+外装293_弦月_退出	37435	16	None	Normal	8	0
+背挂_箜篌_进入	37511	16	None	Normal	8	0
+背挂_箜篌_表现	37522	16	None	Normal	8	0
+背挂_箜篌_退出	37524	16	None	Normal	8	0
+背挂_咖啡杯_进入	37612	16	None	Normal	8	0
+背挂_咖啡杯_表现	37613	16	None	Normal	8	0
+背挂_咖啡杯_退出	37614	16	None	Normal	8	0
+表情动作_退出	37622	16	None	Normal	8	0
+外装286_唐歌_ab	37631	16	None	Normal	8	0
+外装286_唐歌_cd	37632	16	None	Normal	8	0
+外装286_唐歌_ef	37633	16	None	Normal	8	0
+外装286_唐歌_g	37634	16	None	Normal	8	0
+外装286_唐歌_退出	37635	16	None	Normal	8	0
+外装282_月轮_ab	37841	16	None	Normal	8	0
+外装282_月轮_cd	37842	16	None	Normal	8	0
+外装282_月轮_ef	37843	16	None	Normal	8	0
+外装282_月轮_g	37844	16	None	Normal	8	0
+外装282_月轮_退出	37845	16	None	Normal	8	0
+外装296_兰陵王_ab	37899	16	None	Normal	8	0
+外装296_兰陵王_cd	37900	16	None	Normal	8	0
+外装296_兰陵王_ef	37901	16	None	Normal	8	0
+外装296_兰陵王_g	37902	16	None	Normal	8	0
+外装296_兰陵王_退出	37903	16	None	Normal	8	0
+背挂287_折扇_进入	38195	16	None	Normal	8	0
+背挂287_折扇_表现	38196	16	None	Normal	8	0
+背挂287_折扇_退出	38197	16	None	Normal	8	0
+外装281_ab	38342	16	None	Normal	8	0
+外装281_cd	38343	16	None	Normal	8	0
+外装281_ef	38344	16	None	Normal	8	0
+外装281_g	38345	16	None	Normal	8	0
+外装281_退出	38346	16	None	Normal	8	0
+背挂264_灯笼_进入	38559	16	None	Normal	8	0
+背挂264_灯笼_表现	38560	16	None	Normal	8	0
+背挂264_灯笼_退出	38561	16	None	Normal	8	0
+130级治疗防御风	38574	16	None	Normal	8	0
+130级dps风	38578	16	None	Normal	8	0
+背挂304_皮影	38626	16	None	Normal	8	0
+背挂304_皮影_表现	38652	16	None	Normal	8	0
+背挂304_皮影_退出	38653	16	None	Normal	8	0
+背挂301_镰刀_进入	38780	16	None	Normal	8	0
+背挂301_镰刀_表现	38781	16	None	Normal	8	0
+背挂301_镰刀_退出	38782	16	None	Normal	8	0
+130级治疗特效腰坠	38784	16	None	Normal	8	0
+外装301_镰刀_ab	38829	16	None	Normal	8	0
+外装301_镰刀_cd	38830	16	None	Normal	8	0
+外装301_镰刀_ef	38831	16	None	Normal	8	0
+外装301_镰刀_g	38832	16	None	Normal	8	0
+外装301_镰刀_退出	38833	16	None	Normal	8	0
+背挂_步枪_进入	38836	16	None	Normal	8	0
+背挂_步枪_pst01	38837	16	None	Normal	8	0
+背挂_步枪_pst02	38838	16	None	Normal	8	0
+130级治疗特效腰坠治疗	38853	16	None	Normal	8	0
+黄字帽子适应之力	38934	16	None	Normal	8	
+黄字鞋子加会心	38939	16	None	Normal	8	
+黄字鞋子加破防	38944	16	None	Normal	8	
+黄字项链会心加会效	38945	16	None	Normal	8	
+黄字项链破防加攻击	38946	16	None	Normal	8	
+黄字腰坠加破防	38948	16	None	Normal	8	
+黄字腰坠加会效	38949	16	None	Normal	8	
+黄字暗器	38950	16	Adaptive	Normal	8	0
+黄字暗器子技能	38966	16	Adaptive	Normal	8	0
+段氏橙武特效触发	39078	16	None	Normal	8	
+130级CW风	39088	16	None	Normal	8	0
+外装290_白莲_ab	39216	16	None	Normal	8	0
+外装290_白莲_cd	39217	16	None	Normal	8	0
+外装290_白莲_ef	39218	16	None	Normal	8	0
+外装290_白莲_g	39219	16	None	Normal	8	0
+外装290_白莲_退出	39220	16	None	Normal	8	0
+背挂290_白莲_进入	39223	16	None	Normal	8	0
+背挂290_白莲_表现	39224	16	None	Normal	8	0
+背挂290_白莲_退出	39225	16	None	Normal	8	0
+背挂_萧_进入	39272	16	None	Normal	8	0
+背挂_萧_退出	39273	16	None	Normal	8	0
+外装300_冬至_ab	39329	16	None	Normal	8	0
+外装300_冬至_cd	39330	16	None	Normal	8	0
+外装300_冬至_ef	39331	16	None	Normal	8	0
+外装300_冬至_g	39332	16	None	Normal	8	0
+外装300_冬至_退出	39333	16	None	Normal	8	0
+背挂300_朱柿_进入	39334	16	None	Normal	8	0
+背挂300_朱柿_表现	39335	16	None	Normal	8	0
+背挂300_朱柿_退出	39336	16	None	Normal	8	0
+外装305_金蛇_ab	39750	16	None	Normal	8	0
+外装305_金蛇_cd	39751	16	None	Normal	8	0
+外装305_金蛇_ef	39752	16	None	Normal	8	0
+外装305_金蛇_g	39753	16	None	Normal	8	0
+外装305_金蛇_退出	39754	16	None	Normal	8	0
+输出PVP护手减化劲	39829	16	None	Normal	8	
+治疗PVP护手加化劲	39830	16	None	Normal	8	
+输出PVP上衣反伤	39842	16	Adaptive	Normal	8	0
+治疗PVP上衣受击治疗	39843	16	None	Normal	8	
+输出PVP裤子加攻击	39844	16	None	Normal	8	
+治疗PVP裤子加治疗	39852	16	None	Normal	8	
+PVP鞋子被击加移速	39856	16	None	Normal	8	
+PVP项链化劲加御劲	39857	16	None	Normal	8	
+PVP戒指加主属性	39858	16	None	Normal	8	
+输出PVP暗器三环	39861	16	Adaptive	Normal	8	0
+治疗PVP暗器三环	39862	16	None	Normal	8	
+背挂310_快板_进入	39863	16	None	Normal	8	0
+背挂310_快板_表现	39864	16	None	Normal	8	0
+背挂310_快板_退出	39865	16	None	Normal	8	0
+输出PVP帽子额外伤害	39869	16	Adaptive	Normal	8	0
+治疗PVP帽子额外治疗	39870	16	None	Normal	8	
+PVP腰带护盾监控buff添加	39883	16	None	Normal	8	
+外装303_猫咪_进入	39931	16	None	Normal	8	0
+外装303_猫咪_pst01	39932	16	None	Normal	8	0
+外装303_猫咪_pst02	39933	16	None	Normal	8	0
+外装303_猫咪_退出	39934	16	None	Normal	8	0
+背挂303_猫猫_进入	39942	16	None	Normal	8	0
+背挂303_猫猫_表现	39943	16	None	Normal	8	0
+背挂303_猫猫_退出	39944	16	None	Normal	8	0
+背挂316_天蛇杖_进入	40146	16	None	Normal	8	0
+背挂316_天蛇杖_退出	40147	16	None	Normal	8	0
+背挂316_天蛇杖_表现	40148	16	None	Normal	8	0
+新治疗大附魔_鞋子会心加疗效	40511	16	None	Normal	8	
+新t大附魔_鞋子加内外防	40512	16	None	Normal	8	
+外装305_灯笼_ab	40698	16	None	Normal	8	0
+外装305_灯笼_cd	40699	16	None	Normal	8	0
+外装305_灯笼_ef	40701	16	None	Normal	8	0
+外装305_灯笼_g	40703	16	None	Normal	8	0
+外装305_灯笼_退出	40705	16	None	Normal	8	0
+PVP附魔2护手_会心提高	40727	16	None	Normal	8	
+PVP附魔1腰带_被击加御劲	40728	16	None	Normal	8	
+PVP附魔2腰带_化劲转御劲	40729	16	None	Normal	8	
+PVP附魔1帽子_效果添加	40730	16	None	Normal	8	0
+PVP附魔2帽子_三环	40731	16	Adaptive	Normal	8	0
+PVP附魔1帽子_治疗子技能	40735	16	None	Normal	8	
+PVP附魔2帽子_治疗子技能	40736	16	None	Normal	8	
+PVP附魔1上衣_生命回复	40737	16	None	Normal	8	
+PVP附魔2上衣_护盾	40738	16	None	Normal	8	
+PVP附魔1上衣_实际回复子技能	40739	16	None	Normal	8	
+PVP附魔1鞋子_水特效	40740	16	None	Normal	8	0
+PVP附魔2鞋子_雷特效	40741	16	None	Normal	8	0
+背挂318_灯笼_进入	40766	16	None	Normal	8	0
+背挂318_灯笼_退出	40767	16	None	Normal	8	0
+背挂318_灯笼_表现	40768	16	None	Normal	8	0
+PVP附魔1帽子_伤害/治疗触发	40773	16	Adaptive	Normal	8	0
+精简护手特效伤害	40788	16	Adaptive	Normal	8	0
+精简腰带提高属性_正常版	40790	16	None	Normal	8	
+精简腰带提高属性_高级版	40791	16	None	Normal	8	
+精简下装提高无双_正常版	40793	16	None	Normal	8	
+精简下装适应之力_高级版	40794	16	None	Normal	8	
+精简戒指1加破防	40802	16	None	Normal	8	
+精简戒指2加会心	40803	16	None	Normal	8	
+精简戒指3加破招	40804	16	None	Normal	8	
+130级问水诀主动技能	40806	16	None	Normal	8	
+130级山居剑意主动技能	40807	16	None	Normal	8	
+苍云橙武主动效果	40808	16	None	Normal	8	
+背挂305_羽扇_进入	40818	16	None	Normal	8	0
+背挂305_羽扇_退出	40819	16	None	Normal	8	0
+背挂305_羽扇_表现	40820	16	None	Normal	8	0
+披风002_雷神	40827	16	None	Normal	8	0
+背挂308_团扇_进入	40916	16	None	Normal	8	0
+背挂308_团扇_退出	40917	16	None	Normal	8	0
+背挂308_团扇_表现	40918	16	None	Normal	8	0
+外装308_屏风_ab	40950	16	None	Normal	8	0
+外装308_屏风_cd	40951	16	None	Normal	8	0
+外装308_屏风_ef	40952	16	None	Normal	8	0
+外装308_屏风_g	40953	16	None	Normal	8	0
+外装308_屏风_退出	40954	16	None	Normal	8	0
+治疗护手特效AOE治疗	41058	16	None	Normal	8	
+治疗腰带特效加双抗	41059	16	None	Normal	8	
+治疗下装特效加治疗	41060	16	None	Normal	8	
+治疗戒指特效加治疗	41061	16	None	Normal	8	
+防御护手特效伤害	41062	16	Adaptive	Normal	8	0
+防御腰带特效加破招	41063	16	None	Normal	8	
+防御下装特效叠层伤害	41064	16	Adaptive	Damage	8	0
+防御戒指特效加血	41065	16	None	Normal	8	
+防御护手特效伤害子技能	41069	16	Adaptive	Damage	8	0
+防御下装特效伤害子技能	41073	16	Adaptive	Damage	8	0
+治疗护手特效实际治疗	41075	16	None	Normal	8	
+背挂321_有兽焉_进入	41125	16	None	Normal	8	0
+有兽焉奶茶挂件	41140	16	None	Normal	8	0
+背挂321_有兽焉_退出	41142	16	None	Normal	8	0
+背挂321_有兽焉_表现	41143	16	None	Normal	8	0
+背挂_滚灯_进入	41173	16	None	Normal	8	0
+背挂_滚灯_退出	41174	16	None	Normal	8	0
+背挂_滚灯_表现	41175	16	None	Normal	8	0
+背挂_滚灯_偏色_进入	41176	16	None	Normal	8	0
+背挂_滚灯_偏色_退出	41299	16	None	Normal	8	0
+背挂_滚灯_偏色_表现	41300	16	None	Normal	8	0
+外装317_洛神	41301	16	None	Normal	8	0
+外装317_洛神_退出	41302	16	None	Normal	8	0
+外装317_洛神2	41336	16	None	Normal	8	0
+背挂323_三并鼓_退出	41466	16	None	Normal	8	0
+背挂_小熊傀儡_进入	41566	16	None	Normal	8	0
+背挂_小熊傀儡_退出	41567	16	None	Normal	8	0
+背挂_小熊傀儡_表现	41568	16	None	Normal	8	0
+外装324_傀儡_进入	41588	16	None	Normal	8	0
+外装324_傀儡_表现	41589	16	None	Normal	8	0
+外装324_傀儡_退出	41590	16	None	Normal	8	0
+外装314_千手_进入	41614	16	None	Normal	8	0
+外装314_千手_表现	41615	16	None	Normal	8	0
+外装314_千手_退出	41616	16	None	Normal	8	0
+背挂314_佛珠_进入	41732	16	None	Normal	8	0
+背挂325_虫灯_表现	41733	16	None	Normal	8	0
+背挂325_虫灯_退出	41734	16	None	Normal	8	0
+外装326_画布	41815	16	None	Normal	8	0
+背挂325_虫灯_进入	42220	16	None	Normal	8	0
+背挂326_冲销	42553	16	None	Normal	8	0
+背挂326_桂树枝_进入	42634	16	None	Normal	8	0
+背挂326_桂树枝_退出	42635	16	None	Normal	8	0
+背挂326_桂树枝_表现	42636	16	None	Normal	8	0
+精简护手腰带加速DOT触发	42767	16	Adaptive	Normal	8	0
+防御护手特效加护盾	42895	16	None	Normal	8	
+防御护手特效反击	42897	16	Adaptive	Normal	8	0
+防御护手特效反击伤害子技能	42898	16	Adaptive	Damage	8	0
+背挂306_蔷薇	42906	16	None	Normal	8	0
+背挂306_蔷薇_表现	42907	16	None	Normal	8	0
+背挂306_蔷薇_退出	42908	16	None	Normal	8	0
+130无相楼橙武主动效果	43080	16	LunarMagic	Normal	8	
+背挂_笛子317_表现	43352	16	None	Normal	8	0
+外装330_水花_进入	43353	16	None	Normal	8	0
+外装330_水花_表现	43354	16	None	Normal	8	0
+外装330_水花_退出	43355	16	None	Normal	8	0
+外装332_魔镜_表现	43548	16	None	Normal	8	0
+外装332_魔镜_退出	43601	16	None	Normal	8	0
+背挂332_魔镜_进入	43624	16	None	Normal	8	0
+背挂332_魔镜_退出	43625	16	None	Normal	8	0
+背挂332_魔镜_表现	43626	16	None	Normal	8	0
+外装332_魔镜_进入	43715	16	None	Normal	8	0
+背挂337_刺客_进入	43793	16	None	Normal	8	0
+背挂337_刺客_表现	43794	16	None	Normal	8	0
+背挂337_刺客_退出	43795	16	None	Normal	8	0

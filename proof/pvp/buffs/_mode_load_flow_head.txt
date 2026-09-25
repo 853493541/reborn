@@ -1,0 +1,138 @@
+﻿# How JX3 loads the 缁濆鎴樺満 mode 鈥?client-side flow
+
+**Branch:** `research/jx3-netcode`
+**Date:** 2026-09-21
+**Method:** static client analysis + PakV4 config extraction (`settings\` tables).
+**Evidence:** `proof/netcode/mode_juejing/*` (tables, disassembly, symbol scans).
+
+This answers "how does the game load the mode" from the client's side: the queue 鈫?
+scene-transfer 鈫?map-load pipeline, the config table that parameterises the mode,
+and the runtime machinery that only exists while the mode is active.
+
+---
+
+## 1. Where the mode is defined: `settings\MapList.tab` (HIGH)
+
+The client ships its own map/scene table 鈥?extractable from PakV4 with the
+`settings\` prefix (case-insensitive):
+
+```powershell
+python tools\netcode\extract_pak_paths.py --list <paths.txt> --out-dir <dir>
+# path: settings\MapList.tab
+```
+
+`MapList.tab`: 678 rows 脳 **77 columns**. Ten 缁濆 rows:
+
+| ID | Name | DisplayName | ResourcePath |
+|---|---|---|---|
+| 296 | 榫欓棬瀵诲疂 | **榫欓棬缁濆** | `data\source\maps\榫欓棬瀵诲疂\榫欓棬瀵诲疂.jsonmap` |
+| 297 | 榫欓棬瀵诲疂_澶滄櫄 | 榫欓棬缁濆路澶?| `...\榫欓棬瀵诲疂_澶滄櫄\...` |
+| 410 | 娴峰矝缁濆 | **娌ф簾缁濆** | `...\娴峰矝缁濆\...` |
+| 512 | 鐧介緳缁濆 | 鐧介緳缁濆 | `...\鐧介緳缁濆\...` |
+| 532 | 澶╁師缁濆 | 澶╁師缁濆 | `...\澶╁師缁濆\...` |
+| 645 | 娲辨捣缁濆 | 娲辨捣缁濆 | `...\娲辨捣缁濆\...` |
+| 676 / 677 | 榫欓棬瀵诲疂 | 榫欓棬缁濆 | (alternate copy configs) |
+| 709 | 鏋楁捣缁濆 | 鏋楁捣缁濆 | `...\鏋楁捣缁濆\...` |
+| 715 | 鏋楁捣缁濆 | 鏋楁捣缁濆路绾蜂簤 | `...\鏋楁捣缁濆\...` |
+
+Full per-row config (`proof/netcode/mode_juejing/juejing_maplist_rows.txt`). Mode flags
+that are identical across the BR maps:
+
+| Column | Value | Meaning (inferred) |
+|---|---|---|
+| `IsBattlefield` | **1** | scene is a battlefield-type map |
+| `CampType` | **5** | camp/team scheme used by the mode |
+| `Type` | 2 | instance type |
+| `MaxPlayerCount` | **118** (娲辨捣/榫欓棬鍓湰 108) | players per copy |
+| `MaxCopyCount` | 512 / 1024 | room copies |
+| `MinPlayerCount` | 1 | |
+| `BanSkillMask` | 512 | banned skill group (mode-restricted skills) |
+| `BanUseItemMask` | 4 (鏋楁捣 32) | banned item groups |
+| `ReviveInSitu` | 0 | revive at corpse disabled |
+| `RevieCycle` | 160 | revive cycle value |
+| `InvalidBuffMask` | 8 | buffs invalidated in mode |
+| `QueueForSwitchWhenFull` | 1 | queue instead of refusing when full |
+| `BanChangeTalent` | 1 | talent changes disabled |
+| `CanSprint` | 1 (鏋楁捣 0) | sprint allowed |
+| `OperationMask` | 7 | allowed operations mask |
+| `BanTradeItemMask` / `CanTradeMoney` | 4 / 0 | economy restrictions |
+| `BanEquipItemMask` / `CanExistItemMask` | 2 / 1 | equipment restrictions |
+| `MaxLootRange` | 5 | loot range |
+| `ScriptFile` | *(empty)* | **no client map script for 缁濆 maps** 鈥?mode logic is server-driven |
+
+Contrast: 70 other maps (e.g. 浼婁附宸?camps) do set `ScriptFile`
+(`scripts/Map/...lua`). The BR maps do not, so their rules are not client-scripted.
+
+**Related mode content tables** (also extractable, see earlier mode doc):
+`Doodad\娌欐紶椋庢毚.tab` (tier 1-3 loot props), `娌欐紶椋庢毚_瀵诲疂妯″紡.tab` (disguises/stealth box),
+`settings\DoodadTemplate.tab`, `settings\NpcTemplateList.tab`, `settings\CharacterAction.tab`.
+
+## 2. Entry: queue 鈫?confirm 鈫?transfer (HIGH)
+
+Client-side entry API surface (from `JX3ClientX64.exe` strings):
+
+```
+JoinBattleFieldQueue / LeaveBattleFieldQueue / AcceptJoinBattleField / LeaveBattleField
+JoinTongBattleFieldQueue / LeaveTongBattleFieldQueue / AcceptJoinTongBattleField
+BF_QUEUE_COUNTDOWN_BUFF                    鈫?countdown buff while queued
+DoQueryMapQueueInfo 鈥?OnSyncMapQueueInfo   (gateway: queue state/ETA)
+DoComfirmEnterQueueMap                     鈫?user confirms entry
+DoLeaveMapQueue / OnSyncMapQueueInfo       (leave queue)
+GetBattleFieldPQInfo                       鈫?queue info for UI
+KGPQ::LuaGetScene                          鈫?queue hands the scene to the client
+```
+
+Protocol (from disassembly of `KPlayerClient::DoComfirmEnterQueueMap`, logic `0x180171740`):
+
+```
+C鈫扴  protocol 0x116, 19 bytes: u32 @+0xB, u32 @+0xF   (map/queue params)
+```
+
+## 3. Scene transfer and load pipeline (HIGH)
+
+Server鈫抍lient `KPlayerClient::OnSwitchMap` (logic `0x1801911F0`) reads the packet fields:
+
+| Packet offset | Use |
+|---|---|
+| `+0x07` | map id (stored to `dwSwitchMapID` global) |
+| `+0x0B`, `+0x0F`, `+0x13`, `+0x17` | transfer values (position/heading/copy) |
+| `+0x1B` | scene-related id (stored at player+0xAB0) |
+
+then marks `SwitchMapBegin`, resets scene state, and drives the scene loader.
+
+Client鈫抯erver confirmations (protocol IDs recovered from builders):
+
+| Message | Protocol | Size | Payload |
+|---|---|---|---|
+| `DoClientConfirmReady` | **2** | 11 B | none |
+| `DoApplyEnterScene` | **3** | 15 B | u32 @+0xB = scene id (`pScene+0x788`) |
+| `DoComfirmEnterQueueMap` | 0x116 | 19 B | u32 @+0xB, u32 @+0xF |
+
+Loading-progress handshake: `ComfirmSyncMapProgress` / `CancelSyncMapProgress`
+(Lua: `LuaComfirmSyncMapProgress`), plus `DoComfirmOrCancelSyncMapProgess`.
+
+Loading stack (symbols in `JX3ClientX64.exe` / `JX3LogicEditOperationX64.dll`):
+
+```
+SwitchMapBegin / SwitchMapEnd
+KRecorderSceneLoaderNormal / Record / Replay  (CreateSceneLoader factory)
+LoadScene / LoadSceneData / LoadSceneSfxClient / LoadMapBaseInfo
+KJX3LoadingModule (SetLoadingProgress, LoadingComplete, NotifyEndLoading, PostLoadingScene)
+PakV4PrefetchManager_OnPrepareEnterScene / _OnEnterScene
+```
+
+Map metadata: `settings\SubMapInfo.tab` (66 rows: `SubMapID, MainMapID, MainPosX,
+MainPosY, SubRegionWidth, SubRegionHeight`) is the sub-region table used with
+`KMapListFile::LoadSubMapInfo`; scene ids there (e.g. 788) are the values passed in
+protocol 3.
+
+## 4. Mode runtime machinery (active only while the mode is loaded) (HIGH)
+
+- Scene owner type: `pqotBattleField` (vs `pqotQueuedDungeon`) in `KGPQ`.
+- Teams/sides: `ApplyBFPlayerTeamGroupID` / `GetAllBFPlayerTeamGroupID`,
+  `KCharacter::SetBattleFieldSide` (`INVALID_BATTLE_SIDE < side < MAX_BATTLE_SIDE`),
+  nameplate field `nBattleFieldSide`.
+- Competitor state: `KBattlefieldCache` + periodic `AddNextSyncTime`;
+  `DoSyncBattlefieldCompetitorsListRequest`,
+  `OnSyncBaseInfoFromBattlefieldCompetitorList`,
+  `OnSyncVariableInfoFromBattlefieldCo

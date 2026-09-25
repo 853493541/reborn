@@ -1,0 +1,327 @@
+﻿====================================================================================================
+鐮撮槻 count 60
+   552 澶╃瓥-鐮撮-鐮撮槻 | FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsShieldBase -7 | Cnt= 1 Ivl= 480 | Stack= 5
+   703 鍓戞硶路鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsShieldPercent -205 | Cnt= 1 Ivl= 240 | Stack= 1
+   1394 鑻遍泟绌洪浘宄癬杈呭姪NPC_澶栧姛鏄撲激NPC_鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsDamageCoefficient 2048 | Cnt= 1 Ivl= 48 | Stack= 1
+   2806 涓冪_纰庡啺_鍓戞皵闀挎睙鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarOvercomePercent 51 | Cnt= 1 Ivl= 80 | Stack= 1
+   3146 鍗楄瘡閾佺埅渚嶅崼_纰庨鍑籣鐮撮槻 | FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsShieldBase -100 | Cnt= 1 Ivl= 160 | Stack= 5
+   4419 鑺傛棩鐗规畩灏忚嵂澶栧姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv=  | A1= atPhysicsOvercomeBase 265 | Cnt= 1 Ivl= 28800 | Stack= 1
+   4420 鑺傛棩鐗规畩灏忚嵂鍐呭姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv=  | A1= atMagicOvercome 265 | Cnt= 1 Ivl= 28800 | Stack= 1
+   5037 鍗楄瘡鐮村啗濂梍鎻愰珮鐮撮槻鍊?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsOvercomeBase 4 | Cnt= 1 Ivl= 96 | Stack= 10
+   5112 涓€绾垮ぉ_鑻忔竻_鐩捐垶鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsDefenceAdd -102 | Cnt= 10 Ivl= 16 | Stack= 1
+   5146 姘旂函鐗规畩姝﹀櫒_鍔犵牬闃茬敤buff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1 | Stack= 1
+   6221 浜旀瘨_濂囩┐_铦庡績鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPoisonOvercomePercent 153 | Cnt= 1 Ivl= 160 | Stack= 2
+   6343 涓愬府_闃电溂鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 306 | Cnt= 1 Ivl= 80 | Stack= 1
+   6344 涓愬府_闃电溂鍔犵牬闃睠D | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 320 | Stack= 1
+   6376 涓愬府_榫欐垬鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 102 | Cnt= 1 Ivl= 160 | Stack= 1
+   8403 鑻嶄簯鏀诲嚮闃电牬闃叉晥鏋?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsCriticalDamagePowerBaseKiloNumRate 20 | Cnt= 1 Ivl= 480 | Stack= 5
+   8484 鏀诲嚮闃电鍥涢噸鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 153 | Cnt= 1 Ivl= 80 | Stack= 1
+   9489 闀挎瓕杈撳嚭闃垫硶鐮撮槻绛夌骇鎻愰珮10% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarOvercomePercent 102 | Cnt= 1 Ivl= 80 | Stack= 1
+   9596 澶栧姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atPhysicsOvercomeBase 74 | Cnt= 1 Ivl= 28800 | Stack= 1
+   9597 鍐呭姛鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atMagicOvercome 74 | Cnt= 1 Ivl= 28800 | Stack= 1
+   9770 鍓戜富澶╁湴灏忛槦5%鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atLunarOvercomePercent 102 | Cnt= 1 Ivl= 192 | Stack= 1
+   9920 榫欐洸_鐮撮槻5% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 51 | Cnt= 1 Ivl= 480 | Stack= 2
+   9949 鐜勯棬_5%鐮撮槻鍜屼細蹇?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 204 | Cnt= 1 Ivl= 640 | Stack= 3
+   10216 闃虫槬鐧介洩鐮撮槻鍔犲眰琛ㄧ幇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atExecuteScript skill/闀挎瓕/濂楄矾鍙婂瓙鎶€鑳?闃虫槬鐧介洩鏍囪buff娑堝け鍒犻櫎瀹為檯鏁堟灉.lua | Cnt= 1 Ivl= 96 | Stack= 3
+   12574 灏忛槦鐮撮槻鍔犻€?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atUnlimitHasteBasePercentAdd 3 | Cnt= 1 Ivl= 20 | Stack= 1
+   12939 3鍙穇閾佺嫳鏈哄叧闃礯鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMoveSpeedPercent -307 | Cnt= 1 Ivl= 160 | Stack= 1
+   14100 缈肩粷浜戝ぉ鍔犲皬闃熺牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsOvercomePercent 31 | Cnt= 1 Ivl= 192 | Stack= 5
+   14309 琛€鎬掑鍔熺牬闃插姞15% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsAttackPowerPercent 154 | Cnt= 30 Ivl= 16 | Stack= 1
+   14941 MOBA鍏夌幆BUFF鈥旂牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atAllTypeOvercomeBase 102 | Cnt= 1 Ivl= 16 | Stack= 1
+   14942 MOBA鐮撮槻鍏夌幆 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Stack= 1
+   15436 鐮撮槻绛夌骇鎻愰珮 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atAllTypeOvercomeBase 207 | Cnt= 1 Ivl= 480 | Stack= 1
+   17851 鐮撮槻澧炵泭 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 380 | A1= atNeutralOvercomeBase 11162 | Cnt= 10 Ivl= 16 | Stack= 1
+   18214 淇綏鏆楀害鍐呭姛鐮撮槻绛夌骇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMagicOvercome 300 | Cnt= 1 Ivl= 16 | Stack= 125
+   18459 娴嬭瘯鐢ㄥ鍔熺牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsOvercomeBase 500 | Cnt= 1 Ivl= 3600 | Stack= 99
+   18460 娴嬭瘯鐢ㄦ贩鍏冪牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atNeutralOvercomeBase 500 | Cnt= 1 Ivl= 3600 | Stack= 99
+   18461 娴嬭瘯鐢ㄩ槾鎬х牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atLunarOvercomeBase 500 | Cnt= 1 Ivl= 3600 | Stack= 99
+   18462 娴嬭瘯鐢ㄩ槼鎬х牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarOvercomeBase 500 | Cnt= 1 Ivl= 3600 | Stack= 99
+   18463 娴嬭瘯鐢ㄦ瘨鎬х牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPoisonOvercomeBase 500 | Cnt= 1 Ivl= 3600 | Stack= 99
+   20699 鍏昏崳鍗冩灊缁借晩鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPoisonOvercomePercent 256 | Cnt= 1 Ivl= 16 | Stack= 1
+   29504 鍔╂垬npc鏈弧绾х牬闃茬壒娈婂鐞?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atPhysicsOvercomePercent -830 | Cnt= 1 Ivl= 0 | Stack= 1
+   29505 鍔╂垬npc鏈弧绾х牬闃茬壒娈婂鐞嗭紙鏉庢槦浜戯級 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atPhysicsOvercomePercent -1079 | Cnt= 1 Ivl= 0 | Stack= 1
+   29526 榛勫瓧闉嬪瓙鍔犵牬闃瞋浣庡搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atAllTypeOvercomeBase 4218 | Cnt= 1 Ivl= 160 | Stack= 1
+   29536 榛勫瓧鑵板潬鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atAllTypeOvercomeBase 270 | Cnt= 1 Ivl= 192 | Stack= 5
+   29636 娴嬭瘯鐢ㄥ姞浼氬績鍑忕牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atAllTypeCriticalStrike 500 | Cnt= 1 Ivl= 0 | Stack= 99
+   29637 娴嬭瘯鐢ㄥ噺浼氬績鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atAllTypeCriticalStrike -500 | Cnt= 1 Ivl= 0 | Stack= 99
+   29642 娴嬭瘯鐢ㄥ噺鐮撮槻鍔犵牬鎷?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atSurplusValueBase 500 | Cnt= 1 Ivl= 0 | Stack= 99
+   29643 娴嬭瘯鐢ㄥ姞鐮撮槻鍑忕牬鎷?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atSurplusValueBase -500 | Cnt= 1 Ivl= 0 | Stack= 99
+   29644 娴嬭瘯鐢ㄥ姞鐮撮槻鍑忓姞閫?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atHasteBase -500 | Cnt= 1 Ivl= 0 | Stack= 99
+   29645 娴嬭瘯鐢ㄥ噺鐮撮槻鍔犲姞閫?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atHasteBase 500 | Cnt= 1 Ivl= 0 | Stack= 99
+   30511 JJC鎻掓棗澶х帇-鐮撮槻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atAllTypeOvercomeBase 1000 | Cnt= 1 Ivl= 5760 | Stack= 100
+   30743 绮剧畝鑵板甫鎻愰珮灞炴€楂樼骇鐗坃鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atAllTypeOvercomeBase 8506 | Cnt= 1 Ivl= 320 | Stack= 1
+   30749 绮剧畝涓嬭閫傚簲涔嬪姏鐮撮槻_楂樼骇鐗?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atAllTypeOvercomeBase 12152 | Cnt= 1 Ivl= 0 | Stack= 1
+   30752 绮剧畝涓嬭閫傚簲涔嬪姏鐮撮槻_寰幆鍒ゅ畾_灞辨捣婧愭祦 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1=   | Cnt= 3333 Ivl= 16 | Stack= 1
+   30755 绮剧畝鎴掓寚1鍔犵牬闃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atAllTypeOvercomeBase 1412 | Cnt= 1 Ivl= 160 | Stack= 1
+   31367 鐮撮槻 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atLunarMagicShieldPercent -307 | Cnt= 1 Ivl= 480 | Stack= 1
+   50678 琚姩鎶€鑳絖鐮撮槻鎻愬崌 | FT=  | Decay=  | MS= 4294901758 | Ban= 0 | Inv=  | A1= atAllTypeOvercomeBase 202 | Cnt= 3600 Ivl= 16 | Stack= 1
+   50718 琛板噺鐨勭牬闃?| FT=  | Decay=  | MS= 4294901758 | Ban= 0 | Inv=  | A1= atAllDamageAddPercent 102 | Cnt= 1 Ivl= 40 | Stack= 5
+====================================================================================================
+鍖栧姴 count 35
+   1455 澧炲姞鍖栧姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atDecriticalDamagePowerBase 54 | Cnt= 1 Ivl= 28800 | Stack= 1
+   1854 钘忓墤_瑗垮瓙鎯卂姊呴殣棣檁棣欐(甯﹀寲鍔? | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 16 | Cnt= 1 Ivl= 48 | Stack= 1
+   3431 澧炲姞鍖栧姴50鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atDecriticalDamagePowerBase 50 | Cnt= 1 Ivl= 999999 | Stack= 100
+   3435 鍑忓寲鍔?0鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atDecriticalDamagePowerBase -50 | Cnt= 1 Ivl= 999999 | Stack= 100
+   7505 鏄ョ偣鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerBaseKiloNumRate -1000 | Cnt= 1 Ivl= 80 | Stack= 1
+   11873 杩藉懡绠檷浣庣洰鏍囧寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -51 | Cnt= 1 Ivl= 192 | Stack= 1
+   12597 鍏版懅闄嶄綆鐩爣鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -154 | Cnt= 7 Ivl= 48 | Stack= 1
+   13052 鏅€氬ぇ閬撴棤鏈噺鍖栧姴 | FT= Halt | Decay= 2 | MS= 1405100032 | Ban=  | Inv=  | A1= atFreeze 0 | Cnt= 1 Ivl= 32 | Stack= 1
+   13053 寮哄寲澶ч亾鏃犳湳鍑忓寲鍔?| FT= Halt | Decay= 2 | MS= 1405100032 | Ban=  | Inv=  | A1= atFreeze 0 | Cnt= 1 Ivl= 48 | Stack= 1
+   13924 缈旀瀬纰ц惤闄嶄綆鐩爣鍖栧姴绛夌骇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -205 | Cnt= 1 Ivl= 80 | Stack= 1
+   13939 杩樼挧鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -154 | Cnt= 1 Ivl= 80 | Stack= 1
+   17076 鏂╃伀闄嶄綆鐩爣鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -51 | Cnt= 1 Ivl= 240 | Stack= 3
+   18031 鐧炬绌挎潹鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -103 | Cnt= 1 Ivl= 192 | Stack= 2
+   22131 涓夋槦涓存棤瑙嗗寲鍔插垽瀹氭爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSkillEventHandler 2153 | Cnt= 1 Ivl= 320 | Stack= 1
+   22132 涓夋槦涓存棤瑙嗗寲鍔插疄闄呮晥鏋?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atSetTalentRecipe 2873 | Cnt= 1 Ivl= 192 | Stack= 1
+   23071 [23071]闇稿垁涓冨垁鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -102 | Cnt= 1 Ivl= 4 | Stack= 1
+   24181 瑙︾韬鍑忓皯鐩爣鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -103 | Cnt= 1 Ivl= 16 | Stack= 1
+   24554 宸插簾寮僟鐏奖杩介棰濆闄嶅寲鍔茬増 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsOvercomePercent 51 | Cnt= 1 Ivl= 4 | Stack= 1
+   24761 鐏奖杩介鍑忓寲鍔茬瓑绾?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -61 | Cnt= 1 Ivl= 176 | Stack= 1
+   25272 [25272]涓愬府_娓╅厭_鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -359 | Cnt= 1 Ivl= 4 | Stack= 1
+   27064 鏄庢暀_鍑€鎭剁憰璇涙棤瑙嗗寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -410 | Cnt= 1 Ivl= 4 | Stack= 1
+   28807 鎻愰珮鍖栧姴 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 520 | A1= atDecriticalDamagePowerBaseKiloNumRate 10 | Cnt= 1 Ivl= 160 | Stack= 15
+   29195 鏃ョ牬鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -154 | Cnt= 1 Ivl= 4 | Stack= 1
+   30056 杈撳嚭PVP鎶ゆ墜鍑忓寲鍔瞋鍐呯疆CD | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 480 | Stack= 1
+   30057 娌荤枟PVP鎶ゆ墜鍔犲寲鍔瞋鍐呯疆CD | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 480 | Stack= 1
+   30059 杈撳嚭PVP鎶ゆ墜鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atDecriticalDamagePowerBase -2756 | Cnt= 1 Ivl= 160 | Stack= 1
+   30060 娌荤枟PVP鎶ゆ墜鍔犲寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atDecriticalDamagePowerBase 2756 | Cnt= 1 Ivl= 160 | Stack= 1
+   30074 PVP椤归摼鍖栧姴鍔犲尽鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 160 | Cnt= 1 Ivl= 0 | Stack= 10
+   30306 濂囩┐_闆剧伃_闄嶄綆鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -51 | Cnt= 1 Ivl= 16 | Stack= 2
+   30307 濂囩┐_闆剧伃_鎻愰珮鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent 51 | Cnt= 1 Ivl= 16 | Stack= 2
+   30516 JJC鎻掓棗澶х帇-鍖栧姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerBase 1000 | Cnt= 1 Ivl= 5760 | Stack= 100
+   30708 PVP闄勯瓟2鑵板甫鎷嶅崠_鍖栧姴杞尽鍔瞋澶瀬绉樺綍 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 120 | Cnt= 1 Ivl= 0 | Stack= 10
+   31776 涓冩儏鍑忓寲鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -11 | Cnt= 8 Ivl= 8 | Stack= 99
+   33182 瀛ら攱鐮存氮鏃犺鍖栧姴 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atDecriticalDamagePowerPercent -256 | Cnt= 1 Ivl= 4 | Stack= 1
+   51856 缁濆_涓愬府妫掓墦闄嶄綆鍖栧姴 | FT= Normal | Decay= -1 | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDecriticalDamagePowerPercent -62 | Cnt= 1 Ivl= 120 | Stack= 1
+====================================================================================================
+寰″姴 count 24
+   1072 寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 162 | Cnt= 1 Ivl= 4800 | Stack= 1
+   1444 T澧炲姞寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 11 | Cnt= 1 Ivl= 960 | Stack= 1
+   1458 澧炲姞寰″姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atToughnessBase 50 | Cnt= 1 Ivl= 28800 | Stack= 1
+   1800 钘忓墤_蹇墤40绾у唴鍔焈姊呴殣棣欏鍔犲尽鍔插€?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   1880 25浜哄ぉ鐜嬫_寰″姴澹佸瀿 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarMagicResistPercent 204 | Cnt= 1 Ivl= 0 | Stack= 5
+   2198 閾佸_鍔?0%寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessPercent 205 | Cnt= 1 Ivl= 192 | Stack= 1
+   2199 婧冪敳_鍑?0%寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessPercent -205 | Cnt= 1 Ivl= 192 | Stack= 1
+   3430 澧炲姞寰″姴50鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase 50 | Cnt= 1 Ivl= 999999 | Stack= 100
+   3434 鍑忓尽鍔?0鐐?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atToughnessBase -50 | Cnt= 1 Ivl= 999999 | Stack= 100
+   9864 椋?0%浼氬績鎹?0%寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 3000 | Cnt= 1 Ivl= 160 | Stack= 1
+   12989 鎸佸浗澶╃帇娈縚寰″姴澹佸瀿 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSolarMagicResistPercent 204 | Cnt= 1 Ivl= 0 | Stack= 5
+   14980 寰″姴鎻愰珮 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 500 | Cnt= 1 Ivl= 128 | Stack= 1
+   20812 [20812]閾侀濂囩┐_鎱戞湇_寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 512 | Cnt= 1 Ivl= 128 | Stack= 1
+   24411 绂荤粡_濡欐墜寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 500 | Cnt= 1 Ivl= 240 | Stack= 1
+   28314 寰″姴缁熶竴 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 20
+   29614 娴烽緳寰″姴_鐩戞帶涓庤鍑籦uff | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atSkillEventHandler 2775 | Cnt= 40 Ivl= 4 | Stack= 1
+   29616 娴烽緳寰″姴_琚嚮璁℃暟 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 10
+   29624 缁濆湴鍙嶅嚮_寰″姴缁熶竴cd | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   29776 娴烽緳寰″姴_鏇挎崲鍐呴儴鎶€鑳?| FT=  | Decay=  | MS= 4294967294 | Ban= 0 | Inv= 0 | A1= atNoLimitChangeSkillIcon 28202 | Cnt= 1 Ivl= 0 | Stack= 1
+   30074 PVP椤归摼鍖栧姴鍔犲尽鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 160 | Cnt= 1 Ivl= 0 | Stack= 10
+   30515 JJC鎻掓棗澶х帇-寰″姴 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atToughnessBase 100 | Cnt= 1 Ivl= 5760 | Stack= 100
+   30707 PVP闄勯瓟1鑵板甫鎷嶅崠_琚嚮鍔犲尽鍔瞋澶瀬绉樺綍 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 10800 | Cnt= 1 Ivl= 48 | Stack= 1
+   30708 PVP闄勯瓟2鑵板甫鎷嶅崠_鍖栧姴杞尽鍔瞋澶瀬绉樺綍 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 8 | A1= atToughnessBase 120 | Cnt= 1 Ivl= 0 | Stack= 10
+   33175 绂荤粡_鏂扮Н鍔縚鐐搁粦寰″姴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atToughnessBaseRate 1000 | Cnt= 1 Ivl= 16 | Stack= 1
+====================================================================================================
+鍚嶅墤 count 14
+   6472 鍋胯繕鍚嶅墤甯乢澶╀綉涓崕 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 8640000 Ivl= 16 | Stack= 1
+   6476 鎵ｉ櫎鍚嶅墤甯侀亾鍏穇澶╀綉涓崕 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 8640000 Ivl= 16 | Stack= 1
+   7094 鍔犻€焍uff-濞佹湜鍚嶅墤甯? | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1= atAddPrestigePercentForAll 51 | Cnt= 1 Ivl= 960 | Stack= 1
+   7096 鍔犻€焍uff-鍚嶅墤甯?0 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   11924 JJC鎵ｅ悕鍓戝竵 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 3600 Ivl= 80 | Stack= 1
+   13211 鍚嶅墤澶т細涓炬姤澶嶆煡buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   17488 鍚嶅墤澶т細姣忓懆浜斿満鑳滃埄鏍囪 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   19008 璁告効鏍懧峰悕鍓戝ぇ浼?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   19265 绂佷护路鍚嶅墤澶т細  | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Stack= 14
+   19585 绂佽路鍚嶅墤澶т細 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Stack= 14
+   19906 绂佷功路鍚嶅墤澶т細 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Stack= 14
+   22939 鍚嶅墤澶т細鑾峰彇濞佹湜涓婇檺璁板綍 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   30633 鍚嶅墤澶т細路瀵瑰眬鐏儹 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atGamePlayTherapyFinalCof -71 | Cnt= 1 Ivl= 4800 | Stack= 10
+   33612 鍚嶅墤路淇濋攱甯?| FT=  | Decay=  | MS= 4294967294 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+====================================================================================================
+绔炴妧 count 60
+   2554 浠诲姟_绔炴妧鍦烘椂闂存帶鍒?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 640 | Stack= 1
+   3369 绔炴妧鍦篲鍒犺緟鍔╃被椋熷搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3370 绔炴妧鍦篲鍒犲寮虹被椋熷搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3371 绔炴妧鍦篲鍒犲甯?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3372 绔炴妧鍦篲鍒犺緟鍔╃被鑽搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3373 绔炴妧鍦篲鍒犲寮虹被鑽搧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3381 绔炴妧鍦篲鎴樻棗A | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   3386 绔炴妧鍦篲鎴樻棗B | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   3387 绔炴妧鍦篲鍒犳捈濡傞浄 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3388 绔炴妧鍦篲鍒犳竻蹇冮潤姘?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3389 绔炴妧鍦篲鍒犵姘?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3390 绔炴妧鍦篲鍒犻洦闇栭搩 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3391 绔炴妧鍦篲鍒犺埇鑻ヨ瘈 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3392 绔炴妧鍦篲鍒犺嵂鐭虫皵鍔?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3393 绔炴妧鍦篲鍒燘UFF鐢↖ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   3449 绔炴妧鍦篲鏍囪鎴橀樁 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   3602 绔炴妧鍦篲娓呭唴鍔熸爣璁?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 28800 | Stack= 1
+   3849 绔炴妧鍦篲鍥炶摑鍥炶眴 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 60 Ivl= 16 | Stack= 1
+   3913 绔炴妧鍦篲鍒犵巹姘?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   5015 绔炴妧鍦篲鍙嶉殣褰UFF | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atCounterStealthRange 1920 | Cnt= 1 Ivl= 16 | Stack= 1
+   7869 璁板綍绔炴妧鍦哄懆缁撶畻buff | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   8547 绔炴妧鍦虹簿鑻辫禌 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 10
+   10274 绔炴妧鍦哄懆甯?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   11837 绔炴妧鍦虹姝㈡崲蹇冩硶 | FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv= 0 | A1=   | Cnt= 15 Ivl= 32 | Stack= 1
+   11839 绔炴妧鍦哄噯澶囨椂闂確鍙绌村垏鎹?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atSetSelectableType 2 | Cnt= 1 Ivl= 16 | Stack= 1
+   11840 绔炴妧鍦哄€掕鏃禵鏃犳硶鍒囨崲濂囩┐ | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   11878 绔炴妧鍦烘帓闃熸爣璁?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 16 Ivl= 32 | Stack= 1
+   11880 绔炴妧鍦烘儵缃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 5 Ivl= 960 | Stack= 1
+   11881 绔炴妧鍦轰笁灞?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 3
+   12476 闃佃惀鎶纰庣墖绔炴妧鍦?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   12855 濂崇敓绔炴妧鍦?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 48 Ivl= 57600 | Stack= 1
+   13120 绔炴妧鍦篲璧涚偣鏍囪 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   13479 杩涘叆绔炴妧鍦烘爣璁?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   13597 绔炴妧鍦虹姸鎬佹満鏃犳晫buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atNegativeShield 1 | Cnt= 400 Ivl= 48 | Stack= 1
+   13598 绔炴妧鍦虹姸鎬佹満鍑忎激buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1= atRepulsedRate -1024 | Cnt= 40000 Ivl= 48 | Stack= 1
+   13695 绔炴妧鍦虹姸鎬佹満闄勮繎鎵撴枟鐮村潖buff | FT=  | Decay=  | MS= 4294967294 | Ban= 1014 | Inv= 0 | A1= atSkillEventHandler 1523 | Cnt= 192 Ivl= 80 | Stack= 1
+   13698 绔炴妧鍦虹姸鎬佹満婧呭皠cdBuff | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   14326 绔炴妧鍦哄欢鏃堕噴鏀惧啿鍑绘尝鎶€鑳?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 4 | Stack= 1
+   14390 绔炴妧鍦哄欢鏃惰缃閲?0% | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 4 | Stack= 1
+   14544 鎴樺満绔炴妧鍦烘帓闃烠D | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 5 Ivl= 16 | Stack= 1
+   15011 璁板綍绔炴妧鍦烘埧闂村彿 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 80 | Stack= 1
+   15088 璁板綍绔炴妧鍦烘埧闂寸被鍨?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 160 | Stack= 1
+   16654 绔炴妧鍦鸿兘鍔涗慨姝?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -41 | Cnt= 1 Ivl= 960 | Stack= 33
+   17644 绔炴妧鍦?5鏈哄櫒浜哄噺鐤椾慨姝?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atBeTherapyCoefficient -51 | Cnt= 1 Ivl= 16 | Stack= 10
+   17678 绔炴妧鍦篛B闃茶鎵?| FT= Stun | Decay=  | MS= 4294967295 | Ban=  | Inv=  | A1= atIgnoreGravity  | Cnt= 1 Ivl= 0 | Stack= 1
+   18024 绔炴妧鍦哄満涓爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDisableSprintFlag  | Cnt= 1 Ivl= 16 | Stack= 1
+   19548 绔炴妧鍦虹粌涔犳満鍣ㄤ汉鏍囪 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 10080 Ivl= 960 | Stack= 1
+   20116 绔炴妧鍦?-璧涘娈典綅缁ф壙 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 480 | Stack= 1
+   21847 鍑屼簯姊痏绔炴妧鍦哄嚭鏉ュ悗灏濊瘯瑙﹀彂 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   23137 绔炴妧鍦烘瘡鍛ㄨ褰曟嫮鍓戝疂绠辨暟閲?| FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 20
+   23239 绔炴妧鍦烘渶楂樺垎璁板綍 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   23240 绔炴妧鍦烘渶楂樺垎璁板綍2 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   23242 绔炴妧瀵瑰眬 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   24086 2鍙风珵鎶€鍦哄瓨妗ｇ偣鍒ゅ畾buff | FT=  | Decay=  | MS= 3758096382 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   24087 1鍙风珵鎶€鍦哄瓨妗ｇ偣鍒ゅ畾buff | FT=  | Decay=  | MS= 3758096382 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+====================================================================================================
+鎴樺満 count 60
+   1189 绁炲啘娲嘷鎴樺満BOSS_澶ф瘨灏竉鐙傛毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSkillPhysicsDamage 310000 | Cnt= 1 Ivl= 0 | Stack= 1
+   3149 鎴樺満涓炬姤_鍋锋噿鑰嶆粦 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 480 | Stack= 1
+   3150 鎴樺満涓炬姤_鍐呯疆CD | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 480 | Stack= 1
+   3152 鎴樺満涓炬姤_琚妇鎶ョ殑debuff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 480 | Stack= 25
+   4122 鎴樺満鏍囪 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 960 | Stack= 5
+   7551 鎴樺満涓哄府浼氬姞鍒?| FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 9600 | Stack= 1
+   11614 鎴樺満浠诲姟buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 5 Ivl= 57600 | Stack= 1
+   11962 鎴樺満棣栬儨buff | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   12009 鎴樺満绂佹鍒囧績娉?| FT=  | Decay=  | MS= 4294967294 | Ban= 520 | Inv= 0 | A1=   | Cnt= 180 Ivl= 160 | Stack= 1
+   12015 鎴樺満YY闃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 45 Ivl= 640 | Stack= 1
+   12203 鎴樺満瑙﹀彂濂囬亣 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 1920 | Stack= 1
+   12455 浣撻獙鎴樺満鍥炶 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 8 | Stack= 1
+   12456 浣撻獙鎴樺満鐙傛毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atPhysicsCriticalStrikeBaseRate 6000 | Cnt= 30 Ivl= 16 | Stack= 1
+   12466 浣撻獙鎴樺満鐩戞帶buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atImmuneSkillMove 1 | Cnt= 1 Ivl= 16 | Stack= 1
+   12476 闃佃惀鎶纰庣墖鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   12595 浣撻獙鎴樺満鍊掕鏃朵紶閫乥uff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Stack= 1
+   12800 鎴樺満鎺掗槦鍊掕鏃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atExecuteScript Map/鎴樺満閫氱敤/skill/鎴樺満鎺掗槦閫氱敤.lua | Cnt= 1 Ivl= 16 | Stack= 1
+   12821 鎴樺満绂佹鎺掗槦 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 15 Ivl= 640 | Stack= 1
+   13211 鎴樺満涓炬姤澶嶆煡buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   13395 鎴樺満鎻愬墠閫冨嚭澶勭悊 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   14543 绂诲紑鎴樺満鍊掕鏃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   14544 鎴樺満绔炴妧鍦烘帓闃烠D | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 5 Ivl= 16 | Stack= 1
+   14577 鎴樺満鍒伴挦浣゜uff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   14726 鎴樺満绂佹鐢ㄥ绌存彁绀?| FT=  | Decay=  | MS= 4294901758 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 99999 | Stack= 1
+   14996 MOBA鎴樺満瑁呭 | FT=  | Decay=  | MS= 3758030786 | Ban=  | Inv= 0 | A1= atFreeze  | Cnt= 1 Ivl= 128 | Stack= 1
+   15111 鎴樺満缁勬帓鏍囪 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 960 Ivl= 5 | Stack= 1
+   15189 鎴樺満甯堢埗鏍囪 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   15190 鎴樺満寰掑紵鏍囪 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   15193 鎴樺満寰掑紵鏍囪2 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   15194 鎴樺満寰掑紵鏍囪3 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   15319 甯堝緬娲诲姩_鍏卞悓鎴樺満鏍囪 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 96000 | Stack= 1
+   19009 璁告効鏍懧烽┌楠嬫垬鍦?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   19264 绂佷护路闃佃惀鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 9676800 | Stack= 14
+   19404 鎴樺満鏈懆鍙屽€嶅▉鏈?| FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   19582 鎴樺満棰?0000濞佹湜瑙﹀彂榛戠櫧璺爣璁?| FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 10
+   19584 绂佽路闃佃惀鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   19590 绂佽路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   19621 姹熸箹琛岃璁板綍鎴樺満姣忓懆鍙戝娆℃暟 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 8
+   19652 鎴樺満绔欐棗鏃堕暱缁熻 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1800 Ivl= 32 | Stack= 20
+   19905 绂佷功路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   22024 寰掑紵鍜屽笀鐖朵竴璧锋垬鍦虹粨绠楃殑鏍囪buff | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 57600 | Stack= 1
+   22469 鎴樺満鍏ュ満鏃跺凡缁撴潫鏍囪 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 720 Ivl= 960 | Stack= 1
+   23353 缇婃潙鎴樺満绂佹鎺掗槦鎯╃綒 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   23936 涓撴敞路鎴樺満 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   25164 鎴樺満鍏辨垬鐜╁鐜╁鏁伴噺 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 360 Ivl= 160 | Stack= 5
+   25431 绂佷护路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   25668 鎴樺満绉瀬琛屼负绉垎 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 3600 Ivl= 16 | Stack= 1
+   25786 鎴樺満寮€鏃楅€氱敤鎵ｇ浘buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   25880 鎴樺満寮€鏃楄儗绠辨椂闂磋鏃?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   26041 鎴樺満鏈哄櫒浜鸿兘鍔涗慨姝?| FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1= atAllDamageAddPercent -31 | Cnt= 1 Ivl= 960 | Stack= 20
+   26077 鎴樺満缁撶畻鏍囪 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   26193 鎴樺満绔欐棗鑼冨洿鎻愮ずbuff鐗规晥娴╂皵钃?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 60 Ivl= 16 | Stack= 1
+   26200 鎴樺満绔欐棗鑼冨洿鎻愮ずbuff鐗规晥鎭朵汉绾?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 60 Ivl= 16 | Stack= 1
+   26201 鎴樺満绔欐棗鑼冨洿鎻愮ずbuff鐗规晥涓珛鐧?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 60 Ivl= 16 | Stack= 1
+   27456 缁濆鎴樺満浠诲姟buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   27852 閫嶉仴鍓戞瓕鎴樺満鍚冮浮pve | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   27914 浣撻獙鎴樺満鏈哄櫒浜哄噺浼?| FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1= atGlobalResistPercent 51 | Cnt= 3600 Ivl= 16 | Stack= 20
+   27915 浣撻獙鎴樺満姣忔棩璁℃暟 | FT=  | Decay=  | MS= 4294967294 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 3
+   28075 閫嶉仴鍓戞瓕鎴樺満灞曠ずbuff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 10
+   28202 robot鏍囪鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+====================================================================================================
+缁濆 count 60
+   15323 娌ф簾缁濆鍦板浼ゅ | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   16586 缁濆鐨勯璧燺灏戞灄 | FT=  | Decay=  | MS= 4294967295 | Ban= 255 | Inv= 0 | A1= atFinalMaxLifeAddPercent 61 | Cnt= 1 Ivl= 57600 | Stack= 1
+   19590 绂佽路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   19905 绂佷功路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   21124 澶╁師缁濆_婊戠繑缁存寔 | FT=  | Decay=  | MS= 16 | Ban= 255 | Inv= 0 | A1= atIgnoreGravity  | Cnt= 1 Ivl= 160 | Stack= 1
+   21139 澶╁師缁濆_鐏劙琛ㄧ幇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   21142 澶╁師缁濆_鐑熼浘琛ㄧ幇 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   21172 澶╁師缁濆_鐕х煶鐐圭噧 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Stack= 1
+   21174 澶╁師缁濆_鐓ф槑寮硅寖鍥存樉绀?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   21175 澶╁師缁濆_娓╁害灞傛暟 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 100
+   21181 澶╁師缁濆_瀵掑喎 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atHasteBasePercentAdd -300 | Cnt= 1 Ivl= 0 | Stack= 1
+   21182 澶╁師缁濆_瀵掑喎闄嶄綆琛€涓婇檺 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMaxLifePercentAdd -30 | Cnt= 1 Ivl= 0 | Stack= 20
+   21188 澶╁師缁濆_姝﹀楗dot | FT= Damage | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 32 | Stack= 1
+   21193 澶╁師缁濆_鍓戝畻楗啺鍐荤粨 | FT= Halt | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atFreeze  | Cnt= 1 Ivl= 32 | Stack= 1
+   21194 澶╁師缁濆_鍓戝畻楗啺鍐呯疆cd | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 160 | Stack= 1
+   21226 澶╁師缁濆_姗欒儢娆￠檷鏀诲嚮 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atPhysicsAttackPowerPercent -205 | Cnt= 1 Ivl= 80 | Stack= 1
+   21409 澶╁師缁濆_鎴樿薄鍐查攱鏍囪 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 10 Ivl= 16 | Stack= 1
+   21410 澶╁師缁濆_鎴樿薄楠戜箻 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDropDefence 512 | Cnt= 999 Ivl= 16 | Stack= 1
+   21428 澶╁師缁濆_浜烘暟鏄剧ず | FT=  | Decay=  | MS= 1073774592 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 110
+   21436 澶╁師缁濆_婊戠储cd | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 720 | Stack= 1
+   21454 澶╁師缁濆_璋烽闄嶆俯 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMoveSpeedPercent -102 | Cnt= 1 Ivl= 64 | Stack= 1
+   21458 澶╁師缁濆_娓╂殩鍖?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   21589 澶╁師缁濆_鎴樿薄姣忕鎺ㄤ汉 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atDriftFlag  | Cnt= 12 Ivl= 4 | Stack= 1
+   25431 绂佷护路缁濆鎴樺満 | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv=  | A1=   | Cnt= 1 Ivl= 1382400 | Stack= 14
+   26073 娲辨捣缁濆鍙娲绘爣璁?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 4800 | Stack= 1
+   26074 娲辨捣缁濆澶嶆椿璁℃椂 | FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 32 | Stack= 1
+   26147 缁濆鐨勭悍鎵奥峰皯鏋?| FT=  | Decay=  | MS= 4294967295 | Ban= 255 | Inv= 0 | A1= atFinalMaxLifeAddPercent 164 | Cnt= 1 Ivl= 57600 | Stack= 1
+   26178 娲辨捣缁濆姝绘枟缁撴潫鍓嶇瓑寰?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atNegativeShield  | Cnt= 1 Ivl= 320 | Stack= 1
+   26179 娲辨捣缁濆姝绘枟缁撴潫鍚庝笉鍚冩瘨 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atMoveSpeedPercent 307 | Cnt= 1 Ivl= 16 | Stack= 1
+   26378 娲辨捣缁濆鍑绘潃鍙犱激瀹?| FT=  | Decay=  | MS= 4294967295 | Ban=  | Inv= 0 | A1= atMagicAttackPowerBase 228 | Cnt= 1 Ivl= 0 | Stack= 10
+   27421 缁濆鐙傛€?| FT=  | Decay=  | MS= 3758030846 | Ban= 472 | Inv= 0 | A1= atAllDamageAddPercent 103 | Cnt= 1 Ivl= 24 | Stack= 1
+   27456 缁濆鎴樺満浠诲姟buff | FT=  | Decay=  | MS= 4294967294 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 960 | Stack= 1
+   28508 缁濆_鍦ｆ槑浣?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1= atSetHitReduceRate 2000 | Cnt= 1 Ivl= 160 | Stack= 1
+   28541 缁濆_澶ч亾瀹氳韩 | FT= Halt | Decay= 2 | MS= 1405100032 | Ban=  | Inv=  | A1= atFreeze 0 | Cnt= 1 Ivl= 96 | Stack= 1
+   28542 缁濆路妯壂鍏悎 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28543 缁濆路鎹曢寮?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28544 缁濆路鎶辨畫寮?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28545 缁濆路瀹堢己寮?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28546 缁濆路鎹夊奖寮?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28547 缁濆路鎷夸簯寮?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28548 缁濆路闀块拡 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28549 缁濆路鍟嗛槼鎸?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28550 缁濆路閽熸灄姣撶 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28551 缁濆路鍏版懅鐜夋姌 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28552 缁濆路鐮撮 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28553 缁濆路绌?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28554 缁濆路澶瀬鏃犳瀬 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28555 缁濆路涓夌幆濂楁湀 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28556 缁濆路鍓戦鎯婂ぉ | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28557 缁濆路榫欑墮 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28558 缁濆路榫欏悷 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28559 缁濆路鐏?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28560 缁濆路铔囧奖 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28561 缁濆路锜惧暩 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28562 缁濆路澶哄懡铔?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28563 缁濆路杩峰績铔?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28564 缁濆路鏋畫铔?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28565 缁濆路鍖栬闀?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28566 缁濆路瀛旈泙缈?| FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28567 缁濆路鐜夌煶淇辩剼 | FT=  | Decay=  | MS= 4294967295 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+====================================================================================================
+娌欐毚 count 7
+   4945 鏄庢暀鍦烘櫙_榛戞矙鏆?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv=  | A1=   | Cnt= 1000000 Ivl= 16 | Stack= 1
+   5599 澶ф槑瀹玙鐙闂織_娌欐毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 64 | Stack= 1
+   8369 闆侀棬鍏充箣褰筥鐙闂織_娌欐毚 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   8479 闆侀棬鍏充箣褰筥鐙闂織_娌欐毚鐪╂檿 | FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1= atHalt  | Cnt= 5 Ivl= 16 | Stack= 1
+   14541 闅愯棌BOSS_娌欐毚鍦堣〃鐜?| FT=  | Decay=  | MS= 3758030846 | Ban=  | Inv= 0 | A1=   | Cnt= 1 Ivl= 0 | Stack= 1
+   28984 5鍙穇鑻忎粈_娌欐毚淇濇姢 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1
+   29053 5鍙穇鑻忎粈_娌欐毚淇濇姢_閫嗗悜 | FT=  | Decay=  | MS= 3758030846 | Ban= 0 | Inv= 0 | A1=   | Cnt= 1 Ivl= 16 | Stack= 1

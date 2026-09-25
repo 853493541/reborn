@@ -1,0 +1,26 @@
+﻿855	澶╃瓥-鍔涙嫈	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024
+2756	澶╃瓥_浠婚┌楠嬪厤鎺?lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024
+2756	澶╃瓥_浠婚┌楠嬪厤鎺?lvl=2	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+3279	鍞愰棬_瀛愭瘝鍕綺鍏嶆帶	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+3339	鍞愰棬瀵嗗_琛ㄧ幇_鍏嶇柅鍑婚€€	lvl=1	atKnockedBackRate=-1024 atRepulsedRate=-1024
+3871	鐑涢緳娈縚鍏嶇柅鍑婚€€	lvl=1	atRepulsedRate=-1024
+4354	鍗楄瘡鐨囧_2鍙穇鍏嶇柅琚媺	lvl=1	atPullRate=-1024
+5775	闃叉媺	lvl=1	atImmunity=9
+5950	浜旀瘨_铔婅櫕鐚キ閫氱敤鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+5995	涓愬府_绗戦唹鐙俖鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+6015	涓愬府_榫欒穬浜庢笂_鍏嶆帶3绉?lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024
+6087	鍞愰棬_椋炴槦閬佸奖鍏嶆帶	lvl=1	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atKnockedDownRate=-1024
+6131	澶╃瓥_闈掗槼	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=6 atImmunity=8 atImmunity=11 atImmunity=7 atKnockedDownRate=-1024 atKnockedBackRate=-1024
+7508	鍝戣繍鍔犻€熷厤鎺?lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+7918	鍏嶇柅鎺у埗	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedBackRate=-1024 atKnockedDownRate=-1024 atPullRate=-2048 atRepulsedRate=-1024
+8247	鏃犳儳	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+8458	姘存湀鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=5 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+8458	姘存湀鍏嶆帶	lvl=2	atImmunity=2 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024
+8483	鐩炬瘏鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024
+8716	鐩惧闃熷弸鍏嶆帶	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024
+8864	鍗冪_鍏嶆帶buff	lvl=1	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atPullRate=-1024 atImmunity=5
+8864	鍗冪_鍏嶆帶buff	lvl=2	atKnockedDownRate=-1024 atKnockedBackRate=-1024 atImmunity=5 atImmunity=3
+8864	鍗冪_鍏嶆帶buff	lvl=3	atImmunity=2 atImmunity=3 atImmunity=4 atImmunity=7 atImmunity=8 atImmunity=11 atKnockedDownRate=-1024 atKnockedBackRate=-1024 atRepulsedRate=-1024 atImmunity=5
+8864	鍗冪_鍏嶆帶buff	lvl=4	atKnockedDownRate=-1024 atKnockedBackRate=-1024 atImmunity=5 atImmunity=3 atEntrap=
+20346	鐧炬垬寮傞椈褰曢€氱敤鎭愭儳	lvl=1	atSilenceAll=
+27038	涓囩伒灞卞簞_鎭愭儳	lvl=1	atSilenceAll=

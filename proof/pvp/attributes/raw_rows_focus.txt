@@ -1,0 +1,608 @@
+ID=176 Name=坚硬 Lv=1 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=102
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=2 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=153
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=3 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=204
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=4 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=255
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=5 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=306
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=6 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=356
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=7 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=409
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=8 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=460
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=9 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=512
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=10 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=564
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=11 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=620
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=12 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=678
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=13 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=679
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=14 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atPhysicsShieldAdditional
+   col28(BeginValue1A)=34
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=176 Name=坚硬 Lv=15 Useage=12
+   col0(ID)=176
+   col1(Name)=坚硬
+   col27(BeginAttrib1)=atPhysicsShieldAdditional
+   col28(BeginValue1A)=35
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=800
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=800
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=1 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=51
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=2 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=102
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=3 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=153
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=4 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=204
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=5 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=255
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=6 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=306
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=7 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=357
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=8 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=408
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=9 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=459
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=10 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=510
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=11 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=561
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=12 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=612
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=13 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=663
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=14 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=714
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=15 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=765
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=16 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=765
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=17 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=765
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=18 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=765
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=19 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=765
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=193 Name=五行术·土盾 Lv=20 Useage=12
+   col0(ID)=193
+   col1(Name)=五行术·土盾
+   col27(BeginAttrib1)=atGlobalResistPercent
+   col28(BeginValue1A)=765
+   col29(BeginValue1B)=0
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=240
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=240
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=2198 Name=铁壁_加20%御劲 Lv=1 Useage=39
+   col0(ID)=2198
+   col1(Name)=铁壁_加20%御劲
+   col27(BeginAttrib1)=atToughnessPercent
+   col28(BeginValue1A)=205
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=192
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=192
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=7505 Name=春点减化劲 Lv=1 Useage=116
+   col0(ID)=7505
+   col1(Name)=春点减化劲
+   col27(BeginAttrib1)=atDecriticalDamagePowerBaseKiloNumRate
+   col28(BeginValue1A)=-1000
+   col86(MoveStateMask)=3758030846
+   col89(CanAccumulate)=0
+   col90(SrcDistance)=0
+   col95(MapInvalidMask)=0
+   col97(MinInterval)=80
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=80
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=24582 Name=五重阵法无视目标减伤 Lv=1 Useage=315
+   col0(ID)=24582
+   col1(Name)=五重阵法无视目标减伤
+   col27(BeginAttrib1)=atDecayAllTypeResistPercent
+   col28(BeginValue1A)=-102
+   col86(MoveStateMask)=3758030846
+   col97(MinInterval)=128
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=128
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+ID=24986 Name=孤峰破浪无视免控 Lv=1 Useage=315
+   col0(ID)=24986
+   col1(Name)=孤峰破浪无视免控
+   col27(BeginAttrib1)=atDecayAllTypeResistPercent
+   col28(BeginValue1A)=-31
+   col86(MoveStateMask)=3758030846
+   col89(CanAccumulate)=0
+   col90(SrcDistance)=0
+   col95(MapInvalidMask)=0
+   col97(MinInterval)=4
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=4
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=0
+   col110(MorphInvalid)=0
+ID=25345 Name=木桥恶汉强化七叠无视减伤 Lv=1 Useage=51
+   col0(ID)=25345
+   col1(Name)=木桥恶汉强化七叠无视减伤
+   col27(BeginAttrib1)=atDecayAllTypeResistPercent
+   col28(BeginValue1A)=-102
+   col86(MoveStateMask)=3758030846
+   col89(CanAccumulate)=0
+   col90(SrcDistance)=0
+   col95(MapInvalidMask)=0
+   col97(MinInterval)=8
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=8
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=1
+   col110(MorphInvalid)=0
+ID=30814 Name=孤锋破浪_无视减伤_基础 Lv=1 Useage=315
+   col0(ID)=30814
+   col1(Name)=孤锋破浪_无视减伤_基础
+   col27(BeginAttrib1)=atDecayAllTypeResistPercent
+   col28(BeginValue1A)=-102
+   col86(MoveStateMask)=3758030846
+   col89(CanAccumulate)=0
+   col90(SrcDistance)=0
+   col95(MapInvalidMask)=0
+   col97(MinInterval)=4
+   col99(MoveStateMask2)=63
+   col100(ShapeShiftInvalid)=1
+   col101(MaxInterval)=4
+   col102(ActiveCoefficient)=1
+   col103(CanBeSteal)=0
+   col104(NeedSync)=0
+   col110(MorphInvalid)=0
+
+==== Buff.txt descs ====
+ID=176 Lv=0 Name=坚硬 Desc=坚硬的外壳，减免受到的伤害
+ID=193 Lv=1 Name=五行术·土盾 Desc=受到的伤害减免5%
+ID=193 Lv=2 Name=五行术·土盾 Desc=受到的伤害减免10%
+ID=193 Lv=3 Name=五行术·土盾 Desc=受到的伤害减免15%
+ID=193 Lv=4 Name=五行术·土盾 Desc=受到的伤害减免20%
+ID=193 Lv=5 Name=五行术·土盾 Desc=受到的伤害减免25%
+ID=193 Lv=6 Name=五行术·土盾 Desc=受到的伤害减免30%
+ID=193 Lv=7 Name=五行术·土盾 Desc=受到的伤害减免35%
+ID=193 Lv=8 Name=五行术·土盾 Desc=受到的伤害减免40%
+ID=193 Lv=9 Name=五行术·土盾 Desc=受到的伤害减免45%
+ID=193 Lv=10 Name=五行术·土盾 Desc=受到的伤害减免50%
+ID=193 Lv=11 Name=五行术·土盾 Desc=受到的伤害减免55%
+ID=193 Lv=12 Name=五行术·土盾 Desc=受到的伤害减免60%
+ID=193 Lv=13 Name=五行术·土盾 Desc=受到的伤害减免65%
+ID=193 Lv=14 Name=五行术·土盾 Desc=受到的伤害减免70%
+ID=193 Lv=15 Name=五行术·土盾 Desc=受到的伤害减免75%
+ID=193 Lv=16 Name=五行术·土盾 Desc=受到的伤害减免75%
+ID=193 Lv=17 Name=五行术·土盾 Desc=受到的伤害减免75%
+ID=193 Lv=18 Name=五行术·土盾 Desc=受到的伤害减免75%
+ID=193 Lv=19 Name=五行术·土盾 Desc=受到的伤害减免75%
+ID=193 Lv=20 Name=五行术·土盾 Desc=受到的伤害减免75%
+ID=7505 Lv=1 Name=春点 Desc=化劲降低10%
+ID=24582 Lv=1 Name=横云破锋阵 Desc=无视目标10%减伤效果

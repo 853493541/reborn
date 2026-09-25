@@ -1,0 +1,24 @@
+ID	Name	DisplayName	Type	MinPlayerCount	MaxPlayerCount	BanSkillMask	BanUseItemMask	InvalidBuffMask	CampType	FightList	NeedCampBuff	CanJoinBattleField	CanJoinArena	IsArenaMap	IsBattlefield	NewCampFight	CanJoinTongBattlefield	IsTongWarMap	IsTongLeagueMap	ReviveInSitu	RevieCycle	OperationMask	QueueForSwitchWhenFull	CampQueue	MaxNeutralPlayerCount	MaxGoodPlayerCount	MaxEvilPlayerCount	BattleRelationMask	KeepTime	MaxCopyCount	ResourcePath
+29	五十级云湖天池	五十级云湖天池	2	1	24	256	16	256	5	0	0	0	0	0		0	0			0	160	7	1	0	0	0	0	2	10	512	data\source\maps\五十级云湖天池\五十级云湖天池.map
+38	神农洇	神农洇	2	1	34	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\神农洇\神农洇.jsonmap
+39	四十级云湖天池	四十级云湖天池	2	1	24	256	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\四十级云湖天池\四十级云湖天池.map
+48	珍珑棋谷	珍珑棋谷	2	1	54	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\珍珑棋谷\珍珑棋谷.jsonmap
+50	丝绸之路	丝绸之路	2	1	54	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\丝绸之路\丝绸之路.jsonmap
+52	七十级云湖天池	七十级云湖天池	2	1	24	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\七十级云湖天池\七十级云湖天池.jsonmap
+121	英雄神农洇	英雄神农洇	2	1	34	256	16	256	5	0	0	0	0	0		0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\英雄神农洇\英雄神农洇.map
+135	三国古战场	三国古战场	2	1	34	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\三国古战场\三国古战场.jsonmap
+186	冷香丘	浮香丘	2	1	34	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\冷香丘\冷香丘.jsonmap
+276	拭剑园	拭剑园	0	1	1200	16	16	16	1	0	0	0	1	0		0	0			1	0	5	1	0	0	0	0	0	10	1	data\source\maps\拭剑园\拭剑园.jsonmap
+277	拭剑台	拭剑台	2	1	1024	8	1	8	4	0	0	0	0	1		0	0			0	0	7	1	0	0	0	0	2	2	2048	data\source\maps\拭剑台\拭剑台.jsonmap
+278	拭剑园	拭剑园	0	1	1200	16	16	16	1	0	0	0	1	0		0	0			1	0	5	1	0	0	0	0	0	10	1	data\source\maps\拭剑园\拭剑园.jsonmap
+279	拭剑园	拭剑园	0	1	1200	16	16	16	1	0	0	0	1	0		0	0			1	0	5	1	0	0	0	0	0	10	1	data\source\maps\拭剑园\拭剑园.jsonmap
+280	拭剑园	拭剑园	0	1	1200	16	16	16	1	0	0	0	1	0		0	0			1	0	5	1	0	0	0	0	0	10	1	data\source\maps\拭剑园\拭剑园.jsonmap
+281	拭剑园	拭剑园	0	1	1200	16	16	16	1	0	0	0	1	0		0	0			1	0	5	1	0	0	0	0	0	10	1	data\source\maps\拭剑园\拭剑园.jsonmap
+293	拭剑园战场	拭剑园战场	1	1	1	16	16	16	1	0	0	0	0	0		0	0			0	0	5	1	0	0	0	0	0	1	4096	data\source\maps\拭剑园战场\拭剑园战场.jsonmap
+322	洛道_李渡城	李渡鬼域	2	1	100	2	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	1024	data\source\maps\洛道_李渡城\洛道_李渡城.jsonmap
+412	列星岛	列星岛	2	1	14	512	1	8	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	1024	data\source\maps\列星岛\列星岛.jsonmap
+589	羊村	羊村大作战	2	1	5	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\羊村\羊村.jsonmap
+590	羊村_世界	羊村	0	1	1200	0	16	0	1	0	0	1	0	0		0	0			1	0		1	0	0	0	0	0	10	1	data\source\maps\羊村\羊村.jsonmap
+664	个人家园_李渡城	个人家园_李渡城	0	1	1200	0	16	0	1	0	0	0	0	0		0	0			1	0		1	0	0	0	0	0	10	1	data\source\maps\个人家园_李渡城\个人家园_李渡城.jsonmap
+712	雪域关城	雪域关城	2	1	34	0	16	256	5	0	0	0	0	0	1	0	0			0	160	7	1	0	0	0	0	2	2	512	data\source\maps\雪域关城\雪域关城.jsonmap
+# matched 22 (limit 60)

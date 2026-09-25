@@ -1,0 +1,77 @@
+﻿CONSTANTS:
+  K0: 'GetSkillGlobalParam'
+  K1: 'fPlayerCriticalCof'
+  K2: 0.75
+  K3: 'fCriticalStrikeParam'
+  K4: 9.985
+  K5: 'fCriticalStrikePowerParam'
+  K6: 3.679
+  K7: 'fDefCriticalStrikeParam'
+  K8: 'fDecriticalStrikePowerParam'
+  K9: 1.521
+  K10: 'fHitValueParam'
+  K11: 7.644
+  K12: 'fDodgeParam'
+  K13: 4.628
+  K14: 'fParryParam'
+  K15: 5.432
+  K16: 'fInsightParam'
+  K17: 6.734
+  K18: 'fPhysicsShieldParam'
+  K19: 6.364
+  K20: 'fMagicShieldParam'
+  K21: 'fOvercomeParam'
+  K22: 11.412
+  K23: 'fHasteRate'
+  K24: 10.61
+  K25: 'fToughnessDecirDamageCof'
+  K26: 2.784
+  K27: 'fSurplusParam'
+  K28: 8.534
+  K29: 'fAssistedPowerCof'
+  K30: 'fDecriticalDamagePowerToPhysicsAttackPowerCof'
+  K31: 0.525
+  K32: 'fDecriticalDamagePowerToMagicAttackPowerCof'
+  K33: 0.584
+  K34: 'fDecriticalDamagePowerToMaxLifeBaseCof'
+  K35: 10.0
+  K36: 'nMaxDecriticalDamagePowerEableConvert'
+  K37: 58800.0
+  K38: 'fDecriticalDamagePVPCof'
+  K39: 0.9
+  K40: 'nPhysicsAPToMagicAPCof'
+  K41: 1138.0
+  K42: 'nWeaponToMagicAPCof'
+  K43: 757.0
+  K44: 'Log'
+  K45: '[Skill]Global Param Init Successful.'
+CODE:
+    0: GETGLOBAL R0 'GetSkillGlobalParam'
+    1: CALL R0 nargs=0 nres=1
+    2: SETTABLE R0[K1('fPlayerCriticalCof')] = K2(0.75)
+    3: SETTABLE R0[K3('fCriticalStrikeParam')] = K4(9.985)
+    4: SETTABLE R0[K5('fCriticalStrikePowerParam')] = K6(3.679)
+    5: SETTABLE R0[K7('fDefCriticalStrikeParam')] = K4(9.985)
+    6: SETTABLE R0[K8('fDecriticalStrikePowerParam')] = K9(1.521)
+    7: SETTABLE R0[K10('fHitValueParam')] = K11(7.644)
+    8: SETTABLE R0[K12('fDodgeParam')] = K13(4.628)
+    9: SETTABLE R0[K14('fParryParam')] = K15(5.432)
+   10: SETTABLE R0[K16('fInsightParam')] = K17(6.734)
+   11: SETTABLE R0[K18('fPhysicsShieldParam')] = K19(6.364)
+   12: SETTABLE R0[K20('fMagicShieldParam')] = K19(6.364)
+   13: SETTABLE R0[K21('fOvercomeParam')] = K22(11.412)
+   14: SETTABLE R0[K23('fHasteRate')] = K24(10.61)
+   15: SETTABLE R0[K25('fToughnessDecirDamageCof')] = K26(2.784)
+   16: SETTABLE R0[K27('fSurplusParam')] = K28(8.534)
+   17: SETTABLE R0[K29('fAssistedPowerCof')] = K4(9.985)
+   18: SETTABLE R0[K30('fDecriticalDamagePowerToPhysicsAttackPowerCof')] = K31(0.525)
+   19: SETTABLE R0[K32('fDecriticalDamagePowerToMagicAttackPowerCof')] = K33(0.584)
+   20: SETTABLE R0[K34('fDecriticalDamagePowerToMaxLifeBaseCof')] = K35(10.0)
+   21: SETTABLE R0[K36('nMaxDecriticalDamagePowerEableConvert')] = K37(58800.0)
+   22: SETTABLE R0[K38('fDecriticalDamagePVPCof')] = K39(0.9)
+   23: SETTABLE R0[K40('nPhysicsAPToMagicAPCof')] = K41(1138.0)
+   24: SETTABLE R0[K42('nWeaponToMagicAPCof')] = K43(757.0)
+   25: GETGLOBAL R1 'Log'
+   26: LOADK R2 '[Skill]Global Param Init Successful.'
+   27: CALL R1 nargs=1 nres=0
+   28: RETURN R0 n=0

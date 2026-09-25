@@ -1,0 +1,36 @@
+# needle: KPlayerClient::DoCastHoardSkill
+# string VAs: ['0x18076fa48']
+# xrefs: 1
+
+## xref 0x180170215  fn_start 0x1801701c0
+0x01801701c0: sub	rsp, 0x68
+0x01801701c4: mov	rax, qword ptr [rip + 0x846055]
+0x01801701cb: xor	rax, rsp
+0x01801701ce: mov	qword ptr [rsp + 0x50], rax
+0x01801701d3: mov	eax, 0x104
+0x01801701d8: mov	dword ptr [rsp + 0x3b], edx
+0x01801701dc: mov	word ptr [rsp + 0x30], ax
+0x01801701e1: lea	rdx, [rsp + 0x30]
+0x01801701e6: mov	eax, dword ptr [rsp + 0x90]
+0x01801701ed: mov	dword ptr [rsp + 0x47], eax
+0x01801701f1: mov	eax, dword ptr [rsp + 0x98]
+0x01801701f8: mov	dword ptr [rsp + 0x3f], r8d
+0x01801701fd: mov	r8d, 0x1f
+0x0180170203: mov	dword ptr [rsp + 0x4b], eax
+0x0180170207: mov	dword ptr [rsp + 0x43], r9d
+0x018017020c: call	0x1801acda0
+0x0180170211: test	eax, eax
+0x0180170213: jne	0x180170252
+0x0180170215: lea	rcx, [rip + 0x5ff82c]
+0x018017021c: mov	r9d, 0x21c8
+0x0180170222: mov	qword ptr [rsp + 0x20], rcx
+0x0180170227: lea	r8, [rip + 0x7800ba]
+0x018017022e: lea	ecx, [rax + 3]
+0x0180170231: lea	rdx, [rip + 0x77e270]
+0x0180170238: call	qword ptr [rip + 0x5f5022]
+0x018017023e: xor	eax, eax
+0x0180170240: mov	rcx, qword ptr [rsp + 0x50]
+0x0180170245: xor	rcx, rsp
+0x0180170248: call	0x18073aa10
+0x018017024d: add	rsp, 0x68
+0x0180170251: ret	

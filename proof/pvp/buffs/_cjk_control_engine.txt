@@ -1,0 +1,5 @@
+﻿== ui_skill_text_hits.txt 4
+   4281 C:\SeasunGame\Game\JX3\bin\zhcn_hd\interface\MY#DATA\306244774682961996@zhcn_hd\userdata\fight_stat\2026-02-24-14-12-16_鍗庨工鐐巁118.fstt.jx3dat	0x1BD2	gbk	浼氬績	,2,21214,25},["1,28266,10"]={"涓€闂ぉ璇涳細浼氬績",false,1
+   6129 C:\SeasunGame\Game\JX3\bin\zhcn_hd\interface\MY#DATA\306244774686480511@zhcn_hd\userdata\fight_stat\2026-02-10-06-23-17_鍗庨工鐐巁78.fstt.jx3dat	0x181E	gbk	浼氬績	,1,40236,28},["1,28266,10"]={"涓€闂ぉ璇涳細浼氬績",false,1,
+   8585 C:\SeasunGame\Game\JX3\bin\zhcn_hd\interface\MY#DATA\432345564257350298@zhcn_hd\userdata\fight_stat\2026-01-23-13-54-59_绋嬫矏鍗巁61.fstt.jx3dat	0x2014	gbk	浼ゅ	娌夐粯",false,2,71293,1},["2,70173,30"]={"浼ゅ鍖栬В",fal
+   9634 C:\SeasunGame\Game\JX3\bin\zhcn_hd\interface\MY#DATA\432345564261119114@zhcn_hd\userdata\fight_stat\2026-02-06-10-54-32_闊︽煍涓漘19.fstt.jx3dat	0x11A2	gbk	浼ゅ	娌夐粯",false,2,71293,1},["2,70173,30"]={"浼ゅ鍖栬В",fal

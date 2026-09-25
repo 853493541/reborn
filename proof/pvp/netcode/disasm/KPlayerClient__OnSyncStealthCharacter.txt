@@ -1,0 +1,35 @@
+# needle: KPlayerClient::OnSyncStealthCharacter
+# string VAs: ['0x180779c60']
+# xrefs: 1
+
+## xref 0x1801a7359  fn_start 0x1801a7310
+0x01801a7310: mov	qword ptr [rsp + 8], rbx
+0x01801a7315: push	rdi
+0x01801a7316: sub	rsp, 0x40
+0x01801a731a: lea	rbx, [rdx + 7]
+0x01801a731e: mov	rdi, rcx
+0x01801a7321: mov	edx, dword ptr [rbx]
+0x01801a7323: mov	rcx, qword ptr [rip + 0x819ff6]
+0x01801a732a: bt	edx, 0x1e
+0x01801a732e: jb	0x1801a7337
+0x01801a7330: call	0x18012b610
+0x01801a7335: jmp	0x1801a733c
+0x01801a7337: call	0x18012b5b0
+0x01801a733c: test	rax, rax
+0x01801a733f: jne	0x1801a73d1
+0x01801a7345: mov	rcx, qword ptr [rip + 0x819fd4]
+0x01801a734c: mov	edx, dword ptr [rcx + 4]
+0x01801a734f: call	0x18012b610
+0x01801a7354: test	rax, rax
+0x01801a7357: jne	0x1801a738f
+0x01801a7359: lea	rax, [rip + 0x5d2900]
+0x01801a7360: mov	r9d, 0x7d30
+0x01801a7366: lea	r8, [rip + 0x5bf8db]
+0x01801a736d: mov	qword ptr [rsp + 0x20], rax
+0x01801a7372: lea	rdx, [rip + 0x74712f]
+0x01801a7379: mov	ecx, 3
+0x01801a737e: call	qword ptr [rip + 0x5bdedc]
+0x01801a7384: mov	rbx, qword ptr [rsp + 0x50]
+0x01801a7389: add	rsp, 0x40
+0x01801a738d: pop	rdi
+0x01801a738e: ret	

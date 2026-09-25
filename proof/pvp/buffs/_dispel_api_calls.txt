@@ -1,0 +1,181 @@
+﻿skill\npc\鍓湰BOSS\鍒€杞捣鍘匼鍓戠牬浼ゅ.lua:223	npcTarget.DelBuff(11723, 1)
+skill\npc\鍓湰BOSS\鍒€杞捣鍘匼灞犻緳鍏紡浼ゅ120闈㈠悜.lua:223	player.DelBuff(11733, 1)		--绂佺枟
+skill\npc\鍓湰BOSS\澧ㄥ瀵嗘\澧ㄥ瀵嗘_涓夊彿_鐜╁鍓嶅啿鐪?lua:190	player.DelBuff(7607, 1)
+skill\npc\鍓湰BOSS\澧ㄥ瀵嗘\澧ㄥ瀵嗘_涓夊彿_鐜╁鍙崇炕鐪?lua:192	player.DelBuff(7607, 1)
+skill\npc\鍓湰BOSS\澧ㄥ瀵嗘\澧ㄥ瀵嗘_涓夊彿_鐜╁宸︾炕鐪?lua:190	player.DelBuff(7607, 1)
+skill\Quest\ACT_浠欏墤涓€鑱斿姩\浠欏墤QTE_鎶€鑳?.lua:73	player.DelBuff(tChinesePal_QTE.Buff_QTESkill, 2)
+skill\Quest\ACT_鍥涙湀娲涢槼\闄堟湀_鍟嗛槼鎸?lua:180	--player.DelBuff(8597, 1)
+skill\Quest\鑺傛棩鍐嚦\椋庣湢_鏃犻棿鐙辨瘡璺抽噴鏀?lua:224	npc.DelBuff(18788, 1)
+skill\Quest\鑺傛棩鍐嚦\椋庣湢_鏃犻棿鐙辨瘡璺抽噴鏀?lua:225	npc.DelBuff(18789, 1)
+skill\Quest\鑺傛棩鍐嚦\椋庣湢闂ㄥ淇＄墿鏃犻棿鐙?lua:231	npc.DelBuff(22237, 1)
+skill\Quest\鑺傛棩鍐嚦\椋庣湢闂ㄥ淇＄墿鏃犻棿鐙?lua:232	npc.DelBuff(22238, 1)
+skill\Quest\闀垮畨_鐨囧煄\璺熻釜瑕佸憳_涓嬭溅.lua:60	player.DelBuff(30594, 1)--鎵掗┈杞?
+skill\test\鍥涜薄.lua:193	npc.DelBuff(7227,1)
+skill\涓冪\涓冪_涓冭瘈鍓戞皵.lua:55	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\涓冪\涓冪_涓冭瘈鍓戞皵.lua:112	player.DelBuff(14931,1)
+skill\涓囪姳\闀块拡鎷涘紡鎻愬墠鍒ゅ畾.lua:34	player.DelMultiGroupBuffByID(30282)
+skill\涓愬府\涓愬府_椋為緳鍦ㄥぉ路鍥涙.lua:279	--player.DelBuff(24662, 1)--鍒犻櫎棰濆浼ゅ璁℃暟
+skill\涓愬府\涓愬府_椋為緳鍦ㄥぉ路鍥涙.lua:310	player.DelBuff(24662, 1)--鍒犻櫎棰濆浼ゅ璁℃暟
+skill\涓愬府\浜㈤緳6.lua:240	player.DelBuff(7118, 1)
+skill\涓愬府\浜㈤緳6.lua:241	player.DelBuff(17077, 1)
+skill\涓愬府\浜㈤緳6.lua:261	player.DelBuff(12677, 1)
+skill\鍒€瀹梊濂楄矾鍙婂瓙鎶€鑳絓鐮寸唤浜х敓.lua:276	player_Dz.DelBuff(t[1].dwID, 1)
+skill\鍒€瀹梊濂楄矾鍙婂瓙鎶€鑳絓鐮寸唤浜х敓.lua:307	player.DelBuff(25973, 1)
+skill\鍖楀ぉ鑽畻\鍖楀ぉ鑽畻濂囩┐濂楄矾\鍖楀ぉ鑽畻_鏈ㄩ€歘娓╂€у瘨鎬х姸鎬佸姞寮?lua:175	player.DelBuffByID(20870)
+skill\鍖楀ぉ鑽畻\鍖楀ぉ鑽畻濂囩┐濂楄矾\鍖楀ぉ鑽畻_鏈ㄩ€歘娓╂€у瘨鎬х姸鎬佸姞寮?lua:187	player.DelBuffByID(20870)
+skill\鍞愰棬\鍞愰棬_骞藉奖搴旂_棰濆鑼冨洿瀛旈泙缈?lua:160	player.DelBuff(24322,1)
+skill\鍞愰棬\鍞愰棬_骞藉奖搴旂_棰濆鑼冨洿闆烽渿瀛?lua:159	player.DelBuff(24322,1)
+skill\鍞愰棬\鍞愰棬_璇￠亾_鎯婇缚娓搁緳.lua:168	player.DelBuff(3274, 2) --闅愯韩鏃舵柦灞曟儕楦匡紝鍏堝垹闄ら殣韬噺浼uff
+skill\澶╃瓥\澶╃瓥_鎶€鑳戒簨浠禵澶氭AOE鐮撮.lua:138	target.DelBuff(8003, 1)
+skill\澶╃瓥\澶╃瓥_鎶€鑳戒簨浠禵鐏懡涓悗鍒锋柊鐮撮鎸侱OT3鐩爣.lua:138	target.DelBuff(8003, 1)
+skill\澶╃瓥\澶╃瓥_鎶€鑳戒簨浠禵榫欏煄閾佸_椹辨暎.lua:97	player.DelBuff(6810,1)
+skill\瀹跺洯绯荤粺\璺虫ゼ鏈篭璺虫ゼ鏈篲杞﹀ご涓嬭溅.lua:230	player.DelBuff(31009, 1)
+skill\灏戞灄\灏戞灄_榫欑埅鍔焈鎹ｈ櫄寮?50%.lua:146	player.DelBuff(3880, 1)
+skill\灏戞灄\灏戞灄_榫欑埅鍔焈鎹ｈ櫄寮?50%.lua:147	player.DelBuff(3880, 1)
+skill\灏戞灄\鎹夊奖寮忓噺閫?lua:28	player.DelBuff(8417, 1)
+skill\灏戞灄\鎹夊奖寮忓噺閫?lua:29	player.DelBuff(8747, 1)
+skill\灏戞灄\鎹夊奖寮忓噺閫?lua:34	player.DelBuff(8417, 1)
+skill\鏄庢暀\鏄庢暀_鍦ｆ槑浣慱鏈?lua:39	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\鏄庢暀\鏄庢暀_鍦ｆ槑浣慱鏈?lua:45	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\鏄庢暀\鏄庢暀_鍦ｆ槑浣慱鏈?lua:51	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\鏄庢暀\鏄庢暀_鍦ｆ槑浣慱鏈?lua:57	--ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\鏄庢暀\鏄庢暀_鍦ｆ槑浣慱鏈?lua:63	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\鏄庢暀\鏄庢暀閫氱敤鍒燽uff.lua:16	player.DelBuffByID(4025);
+skill\鏄庢暀\鏄庢暀閫氱敤鍒燽uff.lua:17	player.DelBuffByID(4019);
+skill\娌欐紶椋庢毚\閬撳叿_浠婚┌楠?lua:250	player.DelBuffByID(6121)
+skill\娌欐紶椋庢毚\閬撳叿_浠婚┌楠?lua:265	player.DelBuff(13817,1)
+skill\娌欐紶椋庢毚\閬撳叿_浼節闇勯闆?lua:176	cPlayer.DelBuff(3479, 1)  --鍒犻鏄熻〃鐜?
+skill\娌欐紶椋庢毚\閬撳叿_浼節闇勯闆蜂笅杞?lua:208	player.DelBuff(20355, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍌嶈姳闅忔煶.lua:142	--player.DelBuff(412, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍌嶈姳闅忔煶.lua:145	--player.DelBuff(932, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍑岀劧澶╅.lua:209	player.DelBuff(20098, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍑岀劧澶╅.lua:211	player.DelBuff(20863, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍑岀劧澶╅.lua:212	player.DelBuff(20883, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍑岀劧澶╅.lua:213	player.DelBuff(21112, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍑岀劧澶╅.lua:214	player.DelBuff(21650, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍑岀劧澶╅.lua:216	player.DelBuff(22156, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍖栬澏.lua:146	player.DelMultiGroupBuffByID(139)
+skill\娌欐紶椋庢毚\閬撳叿_鍖栬澏.lua:147	player.DelMultiGroupBuffByID(19197)
+skill\娌欐紶椋庢毚\閬撳叿_鍖栬澏.lua:148	player.DelMultiGroupBuffByID(20193)
+skill\娌欐紶椋庢毚\閬撳叿_鍖栬澏.lua:149	player.DelMultiGroupBuffByID(20198)
+skill\娌欐紶椋庢毚\閬撳叿_鍖栬澏.lua:150	player.DelMultiGroupBuffByID(1900)
+skill\娌欐紶椋庢毚\閬撳叿_鍖栬澏.lua:157	player.DelBuff(208, lv)
+skill\娌欐紶椋庢毚\閬撳叿_鍗佹柟鐜勬満.lua:219	player.DelBuff(13986, 1)		--鍒犻櫎鏃犳动
+skill\娌欐紶椋庢毚\閬撳叿_鍞愰棬杞﹁濉?lua:161	cPlayer.DelBuff(20359, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鍞愰棬杞﹁濉?lua:162	cPlayer.DelBuff(20354, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:228	player.DelBuff(961, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:232	player.DelBuff(7746, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:236	player.DelBuff(772, 2)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:237	player.DelBuff(12186, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:268	player.DelBuff(10791, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:298	player.DelBuff(14630, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:301	player.DelBuff(14631, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:305	player.DelBuff(3203, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:308	player.DelBuff(3443, 1)
+skill\娌欐紶椋庢毚\閬撳叿_骞虫矙钀介泚.lua:315	player.DelBuff(961, 1)
+skill\娌欐紶椋庢毚\閬撳叿_蹇冭瀹為檯鎶€鑳?lua:199	player.DelBuff(22370, 1)
+skill\娌欐紶椋庢毚\閬撳叿_鎯婇缚娓搁緳.lua:166	player.DelBuff(3274, 2) --闅愯韩鏃舵柦灞曟儕楦匡紝鍏堝垹闄ら殣韬噺浼uff
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇?lua:246	player.DelBuff(20259, 1)--11151
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇?lua:249	player.DelBuff(13986, 1)		--鍒犻櫎鏃犳动
+skill\娌欐紶椋庢毚\閬撳叿_鏁ｆ祦闇瀇瑙ｉ櫎涓嶅彲閫変腑鏁堟灉.lua:191	player.DelBuff(20259, 1)--11151
+skill\娌欐紶椋庢毚\閬撳叿_鏆楀皹寮ユ暎鎶€鑳戒簨浠禵鍒燽uff.lua:150	player.DelBuffByID(20297)
+skill\娌欐紶椋庢毚\閬撳叿_妤氭渤姹夌晫.lua:198	player.DelBuff(961, 1)
+skill\娌欐紶椋庢毚\閬撳叿_妤氭渤姹夌晫.lua:199	player.DelBuff(12186, 1)
+skill\娌欐紶椋庢毚\閬撳叿_娲楀叺闆?lua:235	target.DelBuff(28529, 1)
+skill\娌欐紶椋庢毚\閬撳叿_娲楀叺闆?lua:236	target.DelBuff(25569, 1)
+skill\娌欐紶椋庢毚\閬撳叿_绗戦唹鐙?lua:173	player.DelMultiGroupBuffByFunctionType(2)
+skill\娌欐紶椋庢毚\閬撳叿_绗戦唹鐙?lua:174	player.DelMultiGroupBuffByFunctionType(3)
+skill\娌欐紶椋庢毚\閬撳叿_绗戦唹鐙?lua:175	player.DelMultiGroupBuffByFunctionType(4)
+skill\娌欐紶椋庢毚\閬撳叿_绗戦唹鐙?lua:176	player.DelMultiGroupBuffByFunctionType(8)
+skill\娌欐紶椋庢毚\閬撳叿_绗戦唹鐙?lua:177	player.DelMultiGroupBuffByFunctionType(7)
+skill\娌欐紶椋庢毚\閬撳叿_绗戦唹鐙?lua:178	player.DelMultiGroupBuffByFunctionType(11)
+skill\娌欐紶椋庢毚\閬撳叿_铓€蹇冭泭.lua:245	target.DelBuff(12713, 1)
+skill\娌欐紶椋庢毚\閬撳叿_韪忔槦琛?lua:225	player.DelBuffByID(22303) --鍒犻櫎娌夐粯鏁堟灉
+skill\娌欐紶椋庢毚\閬撳叿_韪忔槦琛?lua:226	player.DelBuff(19189,1)
+skill\娌欐紶椋庢毚\閬撳叿_閫愪簯瀵掕晩.lua:248	player.DelBuff(22410, 1)
+skill\娌欐紶椋庢毚\閬撳叿_閫愪簯瀵掕晩鐮撮殣涓€鍑?lua:211	player.DelBuff(21633, 1)
+skill\娌欐紶椋庢毚\閬撳叿_閫愪簯瀵掕晩鐮撮殣涓€鍑?lua:220	player.DelBuff(22404, 1)
+skill\鐧炬垬寮傞椈褰昣鐜╁\閫氱敤_椹辨暎娣峰厓.lua:41	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\鐧炬垬寮傞椈褰昣鐜╁\閫氱敤_椹辨暎娣峰厓.lua:57	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,
+skill\绾槼\瀛愭妧鑳絖涔濊浆褰掍竴浼ゅ瑙﹀彂.lua:165	target.DelBuff(22544, 1)
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:30	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:37	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:44	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:51	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:58	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+skill\绾槼\瀛愭妧鑳絖闀囧北娌抽┍鏁ｈ嚜宸?lua:65	ATTRIBUTE_TYPE.DETACH_MULTI_GROUP_BUFF,						-- 榄旀硶灞炴€?
+skill\绾槼\濂楄矾鍙婂瓙鎶€鑳絓鑷寲鐖嗘皵绔?lua:120	target.DelBuff(14292, 1)
+skill\缁濆鎴樺満\缁濆_鍌嶈姳闅忔煶瑙﹀彂.lua:190	target.DelBuff(buff.dwID, 1)
+skill\缁濆鎴樺満\缁濆_澶曠収闆烽攱.lua:92	--	player.DelMultiGroupBuffByFunctionType(4);
+skill\缁濆鎴樺満\缁濆_澶曠収闆烽攱.lua:93	--	player.DelMultiGroupBuffByFunctionType(6);
+skill\缁濆鎴樺満\缁濆_澶曠収闆烽攱.lua:94	--	player.DelMultiGroupBuffByFunctionType(8);
+skill\缁濆鎴樺満\缁濆_澶曠収闆烽攱.lua:95	--	player.DelMultiGroupBuffByFunctionType(7);
+skill\缁濆鎴樺満\缁濆_瀛旈泙缈庢妧鑳戒簨浠惰Е鍙戜激瀹?lua:164	target.DelBuff(51318,1)
+skill\缁濆鎴樺満\缁濆_鎾煎闆?lua:154	target.DelBuffByID(51325)
+skill\缁濆鎴樺満\缁濆_鎾煎闆?lua:157	target.DelBuffByID(51466)
+skill\缁濆鎴樺満\缁濆_鎾煎闆?lua:160	target.DelBuffByID(51467)
+skill\缁濆鎴樺満\缁濆_鏂瓊鍒?lua:40	--娣诲姞鎵ц鑴氭湰,DelMultiGroupBuffByFunctionType椹辨暎鍚勭被绉诲姩闄愬埗
+skill\缁濆鎴樺満\缁濆_鏂芥斁鎶€鑳介€氱敤鏄惧舰.lua:146	player.DelBuff(51325, 1)
+skill\缁濆鎴樺満\缁濆_鏂芥斁鎶€鑳介€氱敤鏄惧舰.lua:148	player.DelBuffByID(51466)
+skill\缁濆鎴樺満\缁濆_鏂芥斁鎶€鑳介€氱敤鏄惧舰.lua:149	player.DelBuffByID(51467)
+skill\缁濆鎴樺満\缁濆_娓婅Е鍙戞妧鑳戒簨浠?lua:91	player.DelBuff(6810,1)
+skill\缁濆鎴樺満\缁濆_绗戦唹鐙?lua:170	player.DelMultiGroupBuffByFunctionType(2)
+skill\缁濆鎴樺満\缁濆_绗戦唹鐙?lua:171	player.DelMultiGroupBuffByFunctionType(3)
+skill\缁濆鎴樺満\缁濆_绗戦唹鐙?lua:172	player.DelMultiGroupBuffByFunctionType(4)
+skill\缁濆鎴樺満\缁濆_绗戦唹鐙?lua:173	player.DelMultiGroupBuffByFunctionType(8)
+skill\缁濆鎴樺満\缁濆_绗戦唹鐙?lua:174	player.DelMultiGroupBuffByFunctionType(7)
+skill\缁濆鎴樺満\缁濆_绗戦唹鐙?lua:175	player.DelMultiGroupBuffByFunctionType(11)
+skill\缁濆鎴樺満\缁濆_杞洖璇€.lua:101	player.DelBuff(108,1)
+skill\缁濆鎴樺満\缁濆_榫欏悷.lua:114	player.DelBuff(51300,1)
+skill\缁濆鎴樺満\缁濆路寮曠獚.lua:232	player.DelBuffByID(29273)
+skill\鑻嶄簯\濂楄矾鍙婂瓙鎶€鑳絓鑻嶄簯_鑻嶉洩鍒€_闅愬垁浼ゅ.lua:218	player.DelBuff(8284, 1)
+skill\鑻嶄簯\濂楄矾鍙婂瓙鎶€鑳絓鑻嶄簯_鑻嶉洩鍒€_闅愬垁浼ゅ.lua:225	player.DelBuff(8270, 1)
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬浼ゅ.lua:105	--	player.DelMultiGroupBuffByFunctionType(4);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬浼ゅ.lua:106	--	player.DelMultiGroupBuffByFunctionType(6);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬浼ゅ.lua:107	--	player.DelMultiGroupBuffByFunctionType(8);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬浼ゅ.lua:108	--	player.DelMultiGroupBuffByFunctionType(7);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬椹辨暎.lua:112	--	player.DelMultiGroupBuffByFunctionType(4);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬椹辨暎.lua:113	--	player.DelMultiGroupBuffByFunctionType(6);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬椹辨暎.lua:114	--	player.DelMultiGroupBuffByFunctionType(8);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶璺宠穬椹辨暎.lua:115	--	player.DelMultiGroupBuffByFunctionType(7);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶杩戣窛绂?lua:140	--	player.DelMultiGroupBuffByFunctionType(4);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶杩戣窛绂?lua:141	--	player.DelMultiGroupBuffByFunctionType(6);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶杩戣窛绂?lua:142	--	player.DelMultiGroupBuffByFunctionType(8);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_瀛愭妧鑳絖闇炴祦瀹濈煶杩戣窛绂?lua:143	--	player.DelMultiGroupBuffByFunctionType(7);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_闇炴祦瀹濈煶.lua:128	--	player.DelMultiGroupBuffByFunctionType(4);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_闇炴祦瀹濈煶.lua:129	--	player.DelMultiGroupBuffByFunctionType(6);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_闇炴祦瀹濈煶.lua:130	--	player.DelMultiGroupBuffByFunctionType(8);
+skill\钘忓墤\钘忓墤_鐏靛嘲鍓戝紡_闇炴祦瀹濈煶.lua:131	--	player.DelMultiGroupBuffByFunctionType(7);
+skill\钘忓墤\钘忓墤_瑗垮瓙鎯卂鍒ゅ畾鍓戞皵澧炲姞浜戦浼ゅ.lua:203	player.DelBuffByID(9903)
+skill\瑁呭\鍏呭€间紴.lua:182	player.DelBuff(1575, buff.nLevel)
+skill\瑁呭\闈㈠叿鑸炶箞201503鏈?lua:194	player.DelBuff(1575, buff_san.nLevel)
+skill\瑁呭\鎸備欢鐩稿叧\鍒嗘澶栬閫氱敤_g.lua:102	player.DelBuff(tWZInfo[twzSkillID].wz_buffID[1], 1)
+skill\瑁呭\鎸備欢鐩稿叧\鍒嗘澶栬閫氱敤_閫€鍑?lua:70	player.DelBuff(tWZInfo[twzSkillID].wz_buffID[1], 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬211_鍐叉氮_g.lua:82	player.DelBuff(23752, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬211_鍐叉氮_閫€鍑?lua:63	player.DelBuff(23752, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬212_鍞愬垁_g.lua:78	player.DelBuff(23940, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬212_鍞愬垁_閫€鍑?lua:63	player.DelBuff(23940, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬212_寮撹垶_g.lua:78	player.DelBuff(25018, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬212_寮撹垶_閫€鍑?lua:63	player.DelBuff(25018, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬221_缁ｇ悆_g.lua:74	player.DelBuff(tSkillBuffInfo[tSkillSectionInfo[nParam1]], 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬221_缁ｇ悆_閫€鍑?lua:63	player.DelBuff(tSkillBuffInfo[tSkillSectionInfo[nSkillID]], 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲ab.lua:94	player.DelBuff(25586, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲ab.lua:97	--player.DelBuff(25610, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲g.lua:79	player.DelBuff(25578, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲閫€鍑?lua:64	player.DelBuff(25580, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲閫€鍑?lua:65	player.DelBuff(25579, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲閫€鍑?lua:67	player.DelBuff(25578, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲閫€鍑?lua:70	player.DelBuff(25583, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬242_涓嶈壇浜篲閫€鍑?lua:71	player.DelBuff(25610, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬243_楸肩伅_g.lua:126	player.DelBuff(26182, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬243_楸肩伅_g.lua:127	player.DelBuff(26184, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬243_楸肩伅_g.lua:128	player.DelBuff(26185, 1)
+skill\瑁呭\鎸備欢鐩稿叧\澶栬243_楸肩伅_閫€鍑?lua:63	player.DelBuff(26182, 1)
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇1鍙穇澶?lua:234	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇2鍙穇瀛?lua:235	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇3鍙穇鑺?lua:235	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇4鍙穇铦?lua:235	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇5鍙穇閲?lua:235	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇6鍙穇鐜?lua:235	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇_鎶_铦舵ⅵ缁堥渼.lua:119	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎
+skill\瑁呭\鎸備欢鐩稿叧\琛ㄧ幇_姣旂考鐩告€?lua:234	player.DelBuff(9320, 1) --闃虫槬鐧介洩鍒犻櫎

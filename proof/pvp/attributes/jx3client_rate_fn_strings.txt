@@ -1,0 +1,150 @@
+0x007CD980	ATTRIBUTE_TYPE
+0x007D2C10	struct std::pair<char const *,unsigned int> __cdecl EnumReflect::GetName<enum KVOICE_ROOM_NOTIFY_CODE,vrncLevelLimit>(void) noexcept
+0x007DAFB8	ADAPT_ATTRIBUTE_TYPE
+0x007F2260	GetLevelUpData
+0x007F3218	GetMaxPlayerLevel
+0x007F3318	GetDiamondUpdateRate
+0x007F3478	GetMaxChangeColorDiamondLevel
+0x007F3498	GetMaxUpdateColorDiamondLevel
+0x007F3A18	GetFreeMaxLevel
+0x007F3A58	GetFullLevelByFullMeasure
+0x007F3A78	GetWeakCoefByFullLevel
+0x007F3A90	GetCostFullMeasureRateBase
+0x007F4350	GetChangeTalentLevelLimit
+0x007F4CF0	GetRepairGlobalDiscountRate
+0x007F52C8	GetNpcAssistedMaxLevel
+0x007F5300	GetNpcAssistedLevelUpData
+0x007F5648	GetPurpleEquipLevel
+0x007F6238	[Skill] Failed to GetSkill: Skill: %u, Level: %u
+0x007F6330	[Skill] Failed to GetPlayerSkill: Skill: %u, Level: %u, PlayerID: %u
+0x007F6630	KScriptFuncList::LuaGetLevelUpData
+0x007F6F70	pszGetAttributeName
+0x007F9B00	KScriptFuncList::LuaGetDiamondUpdateRate
+0x007FA0A8	nColorDiamondLevel <= rConstList.nMaxUpdateColorDiamondLevel
+0x007FB2C8	KScriptFuncList::LuaGetFullLevelByFullMeasure
+0x007FB328	KScriptFuncList::LuaGetWeakCoefByFullLevel
+0x007FB388	KScriptFuncList::LuaGetCostFullMeasureRateBase
+0x007FDF80	KScriptFuncList::LuaGetNpcAssistedLevelUpData
+0x007FF5B0	GetShopItemReputeLevel
+0x007FFA98	KScriptFuncList::LuaGetShopItemReputeLevel
+0x00804E90	KLevelUpList::GetLevelUpData
+0x00804EC8	[KLevelUpList] Get level up data(%d, %d) failed !
+0x00806970	MaxUpdateColorDiamondLevel
+0x00806990	nMaxUpdateColorDiamondLevel >= 0 && nMaxUpdateColorDiamondLevel < MAX_COLOR_DIAMOND_LEVEL
+0x00808860	GetChatGiftPlayerLevelLimit
+0x0080A030	KProfessionManager::GetLevelProficiency
+0x0080A3D8	nRetCode && "Get MinLevel"
+0x0080A3F8	nRetCode && "Get MaxLevel"
+0x0080AEB8	GetSkillLevelData
+0x0080BFF0	nRetCode && "Get MountRequestDetailLevel"
+0x0080C260	nRetCode && "Get AbradeEquipRate"
+0x0080E430	nRetCode && "Get SkillLevel"
+0x0080E498	nRetCode && "Get RequirePlayerLevel"
+0x0080E840	nRetCode && "Get ReputationLevel"
+0x00810400	GetClientTeamMemberLevel
+0x00810EC0	KTeamClient::LuaGetClientTeamMemberLevel
+0x00811498	KCampInfo::GetMoneyPercent
+0x008114F0	KCampInfo::GetReputePercent
+0x00811510	KCampInfo::GetPrestigePercent
+0x00811558	KCampInfo::GetDamagePercent
+0x00811578	KCampInfo::GetShieldPercent
+0x00812038	KTongClient::GetCraftTechConsumeReduceStaminaRate
+0x0082D2F8	KCharacter::GetCurrentLifePercent
+0x0082E8A0	KProfessionList::GetProfessionLevel
+0x0082E8C8	KProfessionList::GetProfessionMaxLevel
+0x00830F30	itFind != m_SetAttributeInfoMap.end()
+0x00832000	KReputation::GetReputeLevel
+0x00839228	KPlayer::GetAttributeString
+0x00839248	KPlayer::GetAttributeValue
+0x00839288	m_eAdaptAttributeType == paatPuppet
+0x008395B0	KPlayer::GetQuestDiffcultyLevel
+0x00839818	KPlayer::GetRankPointPercentage
+0x0083CC60	(nRetCode > 0) && "[TopBuff] Get nShowLevel ERROR"
+0x0083CD98	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel1 ERROR"
+0x0083CDD0	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel2 ERROR"
+0x0083CE08	(nRetCode > 0) && "[TopBuff] Get nStrengthLevel3 ERROR"
+0x0083CE40	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame1 ERROR"
+0x0083CE78	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame2 ERROR"
+0x0083CEB0	(nRetCode > 0) && "[TopBuff] Get dwLevelFrame3 ERROR"
+0x0083D090	nRetCode && "[Buff] Get Level"
+0x0083D6A0	nRetCode && "[Buff] Get ValidByLevel"
+0x0083D980	nRetCode && "[Recipe] Get BuffLevel"
+0x0083DA60	nRetCode && "[Recipe] Get DamageAddPercent"
+0x0083DBF0	bRetCode && "[BuffRelays] Get Level"
+0x0083F250	KDiamondManager::GetStrengthEquipSuccessRate
+0x0083F478	KDiamondManager::GetStrengthEquipBoxSuccessRate
+0x0083F500	KDiamondManager::GetColorDiamondUpdateRate
+0x0083F700	KDiamondManager::GetStrengthEquipSuccessRateSingle
+0x0083F748	KDiamondManager::GetDefaultEquipBoxStrengthCof
+0x0083F778	KDiamondManager::GetDefaultEquipBoxEnchantCof
+0x0083F7A8	KDiamondManager::GetDiamondUpdateRateSingle
+0x0083F7D8	nUpdateLevel == 1 || nUpdateLevel == 2
+0x0083F800	KDiamondManager::GetColorDiamondUpdateRateSingle
+0x0083F8E0	KDiamondManager::GetStrengthEquipBoxSuccessRateSingle
+0x0083F938	KDiamondManager::CalculateCofOfEquipLevelAndQuality
+0x0083F990	KDiamondManager::CalculateCofOfEquipLevelAndQualityForUnStrength
+0x008425D0	ProcessAdaptAttributeType
+0x008425F0	[slot=%s, attr=AdaptAttributeType, bApply=%d, nValue=%d] in %s
+0x0084AAF8	KCharacter::LuaGetBuffIDLevelList
+0x0084DF78	GetProfessionLevel
+0x0084DF90	GetProfessionAdjustLevel
+0x0084DFB0	GetProfessionMaxLevel
+0x0084E070	GetCollectionSkillLevel
+0x0084E3A0	GetSkillLevel
+0x0084E740	GetBuffIDLevelList
+0x0084E7F8	GetReputeLevel
+0x0084EBA8	GetQuestDiffcultyLevel
+0x0084F7C8	GetRankPointPercentage
+0x0084F9A8	GetCorpsLevel
+0x0084F9B8	GetCorpsRoleLevel
+0x00850050	GetStaminRateByProfessionID
+0x00852DE8	KPlayer::LuaGetProfessionLevel
+0x00852E08	KPlayer::LuaGetProfessionAdjustLevel
+0x00852E30	KPlayer::LuaGetProfessionMaxLevel
+0x00852FA0	KPlayer::LuaGetCollectionSkillLevel
+0x00853D90	KPlayer::LuaGetSkillLevel
+0x00854540	KPlayer::LuaGetReputeLevel
+0x008553F8	KPlayer::LuaGetQuestDiffcultyLevel
+0x00856930	KPlayer::LuaGetRankPointPercentage
+0x00856CE0	KPlayer::LuaGetCorpsLevel
+0x00856D00	KPlayer::LuaGetCorpsRoleLevel
+0x008577F8	KPlayer::LuaGetStaminRateByProfessionID
+0x0085B620	GetLevelFurnitureConfig
+0x0085B638	GetLevelUpConfig
+0x0085D870	KHomelandMgr::LuaGetLevelFurnitureConfig
+0x0085D8B0	KHomelandMgr::LuaGetLevelUpConfig
+0x0085E948	GetLevelScore
+0x0085E958	GetMoneyPercent
+0x0085E968	GetReputePercent
+0x0085E980	GetPrestigePercent
+0x0085E9B8	GetDamagePercent
+0x0085E9D0	GetShieldPercent
+0x0085EA20	KCampInfo::LuaGetLevelScore
+0x0085EA70	KCampInfo::LuaGetMoneyPercent
+0x0085EAC0	KCampInfo::LuaGetReputePercent
+0x0085EAE0	KCampInfo::LuaGetPrestigePercent
+0x0085EB30	KCampInfo::LuaGetDamagePercent
+0x0085EB50	KCampInfo::LuaGetShieldPercent
+0x00863A20	GetGroupWageRate
+0x00863CA8	GetTechNodeLevel
+0x00863E00	GetRepairDiscountRate
+0x00864140	KTongClient::LuaGetGroupWageRate
+0x00868F28	GetAttribute
+0x00869730	KSkill::LuaGetAttribute
+0x0086D738	KNpcAssistedSettings::GetNpcAssistedLevelUpData
+0x0086F448	GetLevelProficiency
+0x0086F460	KProfession::LuaGetLevelProficiency
+0x008704D8	KProfession::GetLevelProficiency
+0x008A7418	pilotAttributeType
+0x008A76D0	pilotAttributeType27
+0x0094F5B8	KGGMEVoiceCore::GetSpeakerLevel
+0x0094F5D8	KGGMEVoiceCore::GetMicLevel
+0x00950168	KGGMEMainVoiceCore::PTT_GetMicLevel
+0x009501E0	KGGMEMainVoiceCore::PTT_GetSpeakerLevel
+0x009531B8	App_GetBatteryPercentage
+0x00953268	KGLog_GetLevel
+0x0095A250	GME_GetSpeakerLevel
+0x0095A268	GME_GetMicLevel
+0x0095A4D0	GME_PTT_GetMicLevel
+0x0095A638	GME_PTT_GetSpeakerLevel
+0x0095DD48	GetProcAddress(TrackRoleLevelUp) fail
