@@ -57,11 +57,15 @@ internal static class RebornClient
 
         outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
         Directory.CreateDirectory(outDir);
+        // keep a per-run log (overwrite-safe for parallel sessions) and the
+        // stable reborn.log used by the analysis scripts
+        string runLog = Path.Combine(outDir, "reborn_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
         var logLines = new System.Collections.Generic.List<string>();
         Log = delegate(string s)
         {
-            try { File.AppendAllText(Path.Combine(outDir, "reborn.log"), DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n"); }
-            catch { }
+            string line = DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n";
+            try { File.AppendAllText(Path.Combine(outDir, "reborn.log"), line); } catch { }
+            try { File.AppendAllText(runLog, line); } catch { }
             Console.WriteLine(s);
             lock (logLines)
             {
@@ -503,14 +507,24 @@ internal static class RebornClient
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
-            if (!lmbDown && !rmbDown && mouseLocked) unlockMouse();
+            // joystick mode keeps the cursor locked between drags
+            if (!lmbDown && !rmbDown && mouseLocked && cameraSettings.CameraMode != 1) unlockMouse();
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
-            if ((!lmbDown && !rmbDown) || !dragArmed) return;
+            bool joystick = cameraSettings.CameraMode == 1;
+            if ((!lmbDown && !rmbDown) && !joystick) return;
+            if (!joystick && !dragArmed) return;
             System.Drawing.Point p = panelPoint(s, e);
             if (!mouseLocked)
             {
+                if (joystick)
+                {
+                    // operation mode 1 (joystick): Scene_LockMouseRotation -
+                    // mouse movement rotates without holding a button
+                    lockMouse();
+                    return;
+                }
                 int mdx = p.X - pressPoint.X, mdy = p.Y - pressPoint.Y;
                 if (mdx * mdx + mdy * mdy < 16) return;   // 4 px dead zone
                 lockMouse();
@@ -630,7 +644,7 @@ internal static class RebornClient
         bool orbitApplied = false;
         float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
         bool dbgIntSet = false;
-        double dbgHit = -1.0, dbgLen = 0.0;
+        double dbgHit = -1.0, dbgLen = 0.0, dbgEffDist = 0.0;
         bool dbgObst = false;
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
@@ -922,9 +936,9 @@ internal static class RebornClient
                 measureView();
                 double vyaw = Math.Atan2(-viewZ, -viewX);
                 double vpitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0}",
+                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0} eff={13:F0} clamp={14}",
                     camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz,
-                    dbgObst ? 1 : 0, dbgHit, dbgLen));
+                    dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1));
                 if (col != null)
                 {
                     float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
@@ -1206,6 +1220,7 @@ internal static class RebornClient
                 }
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
+                dbgEffDist = dist;
 
                 // When the camera is forced inside the character (jammed against
                 // a wall) the native client relies on near-plane clipping; the
