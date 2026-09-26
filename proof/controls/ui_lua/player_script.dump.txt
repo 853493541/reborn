@@ -1,0 +1,373 @@
+# player_script.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=50
+  strings: 'table', 'insert', 'concat', 'math', 'max', 'min', 'floor', 'ceil', 'pi', 'UI_GetClientPlayerID', 'UI_GetClientPlayerGlobalID', 'UI_GetClientPlayerCenterID', 'UI_GetPlayerMountKungfuID', 'UI_GetPlayerActualMountKungfuID', 'UI_GetPlayerForceID', 'UI_GetCurrentMapID', 'UI_GetCurrentScene', 'UI_GetClientPlayerName', 'UI_GetClientPlayerCamp', 'UI_GetClientPlayerBelongSchoolName'
+  numbers: 0.0, 60.0, 8.0, 6.0, 4.0, 16168.0, 16169.0, 16166.0, 100.0, 450.0, 10.0, 1.0, 2.0, 3.0, 7.0, 9.0, 30723.0, 31602.0, 31444.0, 9284.0
+  globals: =CanSelectPlayer, =ChangeCursorWhenOverPlayer, =CheckCardCanPeek, =CheckInControlOtherState, =CheckPlayerIsInFake, =CheckPlayerIsRemote, =CheckShieldPanel, =ClientPlayer_UpdateProperty, =EnableControlOther, =EnableWXControlOther, =GetActualControlPlayer, =GetControlPlayer, =GetControlPlayerID, =GetOtherPlayerDecoration, =GetPlayerDesignation, =GetPlayerDesignationBy, =InteractPlayer, =IsInControlOtherState, =IsInFight, =IsLimitAccount, =IsNoPayAccount, =IsRoleFemale, =IsRoleInFakeState, =IsRoleMale, =NeedHighlightPlayerWhenOver, =NeedHightlightPlayer, =OnCheckOpenPersonalCard, =OnPeekPlayerCardBaseDataRespond, =OnPeekPlayerCardDecorationRespond, =OnPeekPlayerPersonalCardRespond, =OnViewInviteToPlayerRespond, =OnViewPartnerInviteToPlayerRespond, =OutputPlayerTip, =PeekPlayerPersonalCard, =PeekPlayerTableCard, =PlayerEnergyUI_ChangeStyle, =PlayerEnergyUI_GetUpdateFunc, =PlayerEnergyUI_Update, =PlayerQiEnergy_Update, =Player_CheckCurrentBelongSchool
+  function <?> line 8-16 params=0 ups=1 stack=3
+    strings: 'dwPlayerID', 'GetClientPlayer', 'dwID'
+    globals: GetClientPlayer
+  function <?> line 18-26 params=0 ups=1 stack=3
+    strings: 'dwGlobalID', 'GetClientPlayer', 'GetGlobalID'
+    globals: GetClientPlayer
+  function <?> line 29-31 params=0 ups=0 stack=2
+    strings: 'FriendDataMgr', 'GetRoleEntryInfo', 'UI_GetClientPlayerGlobalID', 'dwCenterID'
+    globals: FriendDataMgr, UI_GetClientPlayerGlobalID
+  function <?> line 33-45 params=0 ups=1 stack=3
+    strings: 'dwMountKungfuID', 'GetClientPlayer', 'GetKungfuMount', 'dwSkillID'
+    numbers: 0.0
+    globals: GetClientPlayer
+  function <?> line 47-59 params=0 ups=1 stack=3
+    strings: 'dwActualMountKungfuID', 'GetClientPlayer', 'GetActualKungfuMountID'
+    numbers: 0.0
+    globals: GetClientPlayer
+  function <?> line 61-76 params=1 ups=1 stack=4
+    strings: 'UI_GetClientPlayerBelongSchoolID', 'Table_SchoolToForce', 'dwForceID', 'GetClientPlayer'
+    globals: GetClientPlayer, Table_SchoolToForce, UI_GetClientPlayerBelongSchoolID
+  function <?> line 78-89 params=0 ups=1 stack=4
+    strings: 'dwMapID', 'dwMapType', 'GetClientPlayer', 'GetMapID', '_', 'GetMapParams'
+    globals: =_, GetClientPlayer, GetMapParams
+  function <?> line 91-96 params=0 ups=1 stack=2
+    strings: 'GetClientScene'
+    globals: GetClientScene
+  function <?> line 98-108 params=0 ups=1 stack=3
+    strings: 'szName', 'GetClientPlayer'
+    globals: GetClientPlayer
+  function <?> line 110-120 params=0 ups=1 stack=3
+    strings: 'nCamp', 'GetClientPlayer'
+    globals: GetClientPlayer
+  function <?> line 122-126 params=0 ups=0 stack=3
+    strings: 'UI_GetClientPlayerBelongSchoolID', 'Table_GetSkillSchoolName'
+    globals: Table_GetSkillSchoolName, UI_GetClientPlayerBelongSchoolID
+  function <?> line 128-139 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'GetKungfuMount', 'dwBelongSchool'
+    numbers: 0.0
+    globals: GetClientPlayer
+  function <?> line 141-156 params=1 ups=0 stack=6
+    strings: 'GetClientPlayer', 'UI_GetPlayerMountKungfuID', 'UI_GetPlayerForceID', 'GetSkillLevel', 'Kungfu_GetTypeEx', 'IsNoneSchoolKungfu'
+    numbers: 0.0
+    globals: GetClientPlayer, IsNoneSchoolKungfu, Kungfu_GetTypeEx, UI_GetPlayerForceID, UI_GetPlayerMountKungfuID
+  function <?> line 158-161 params=1 ups=0 stack=3
+    strings: 'UI_GetClientPlayerBelongSchoolID'
+    globals: UI_GetClientPlayerBelongSchoolID
+  function <?> line 163-178 params=0 ups=0 stack=16
+    strings: 'GetClientPlayer', 'GetSchoolList', 'pairs', 'GetKungfuList', 'Player_CheckForceOrNoneSchool', 'table', 'insert'
+    globals: GetClientPlayer, Player_CheckForceOrNoneSchool, pairs, table
+  function <?> line 180-182 params=0 ups=1 stack=2
+    strings: 'bInFight'
+  function <?> line 185-187 params=2 ups=1 stack=3
+  function <?> line 189-199 params=0 ups=1 stack=3
+    strings: 'nBanEndTime', 'GetClientPlayer'
+    numbers: 0.0
+    globals: GetClientPlayer
+  function <?> line 201-204 params=0 ups=0 stack=2
+    strings: 'Player_GetBanEndTime', 'GetCurrentTime'
+    globals: GetCurrentTime, Player_GetBanEndTime
+  function <?> line 206-209 params=1 ups=1 stack=3
+    strings: 'nBanEndTime', 'FireUIEvent', 'ON_BAN_INFO_UPDATE'
+    globals: FireUIEvent
+  function <?> line 213-215 params=0 ups=1 stack=2
+  function <?> line 217-223 params=1 ups=2 stack=4
+    strings: 'OutputMessage', 'MSG_ANNOUNCE_YELLOW', 'MSG_SYS'
+    globals: OutputMessage
+  function <?> line 225-229 params=1 ups=0 stack=3
+    strings: 'CheckInControlOtherState'
+    globals: CheckInControlOtherState
+  function <?> line 232-237 params=0 ups=0 stack=2
+    strings: 'GetClientPlayer', 'GetProxySkillCharacter'
+    globals: GetClientPlayer
+  function <?> line 241-247 params=0 ups=1 stack=2
+    strings: 'dwID'
+    numbers: 0.0
+  function <?> line 252-261 params=1 ups=3 stack=2
+    strings: 'GetControlPlayerID', 'GetControlPlayer', 'UI_GetClientPlayerID', 'GetClientPlayer'
+    globals: =GetControlPlayer, =GetControlPlayerID, GetClientPlayer, UI_GetClientPlayerID
+  function <?> line 263-265 params=1 ups=1 stack=2
+  function <?> line 267-272 params=0 ups=0 stack=2
+    strings: 'GetClientPlayer', 'GetControlMoveCharacter'
+    globals: GetClientPlayer
+  function <?> line 274-279 params=0 ups=2 stack=2
+    strings: 'GetControlPlayer'
+    globals: GetControlPlayer
+  function <?> line 283-287 params=0 ups=1 stack=7
+    strings: 'pairs', 'UpdatePlayerTitleEffect'
+    globals: UpdatePlayerTitleEffect, pairs
+  function <?> line 289-341 params=1 ups=1 stack=12
+    strings: 'GetPlayer', 'GetClientPlayer', 'GetScene', 'TITLE_EFFECT_NONE', 'IsOnSlay', 'bIsArenaMap', 'Table_IsBattleFieldMap', 'dwMapID', 'nType', 'MAP_TYPE', 'NORMAL_MAP', 'dwID', 'UISetting', 'bShowSelfWantedEffect', 'bShowOtherWantedEffect', 'GetNumberBit', 'nWantedTypeMask', 'WANTED_TYPE_CODE', 'PUBLIC', 'PRIVATE'
+    numbers: 50.0, 1.0, 47.0, 223.0, 0.0
+    globals: GetClientPlayer, GetNumberBit, GetPlayer, IsPlayerInOBDungeon, MAP_TYPE, PARTY_TITLE_MARK_EFFECT_LIST, SceneObject_SetTitleEffect, TARGET, TITLE_EFFECT_NONE, Table_GetCaptionIconToTitleEffect, Table_IsBattleFieldMap, TeamClient_GetMarkIndex, UISetting, WANTED_TYPE_CODE
+  function <?> line 343-345 params=0 ups=0 stack=2
+    strings: 'UpdatePlayerTitleEffect', 'arg0'
+    globals: UpdatePlayerTitleEffect, arg0
+  function <?> line 348-415 params=2 ups=2 stack=18
+    strings: 'GetPlayer', 'GetClientPlayer', 'IsCursorInExclusiveMode', 'dwID', 'GetForceFontColor', '', 'GetFormatText', 'FormatString', 'g_tStrings', 'STR_NAME_PLAYER', 'szName', 'szTitle', '<', '>\n', 'dwTongID', 'GetTongClient', 'ApplyGetTongName', '[', ']\n', 'nLevel'
+    numbers: 80.0, 0.0, 1.0, 10.0, 82.0, 163.0, 102.0, 345.0
+    globals: FormatString, GetClientPlayer, GetClientTeam, GetForceFontColor, GetFormatText, GetPlayer, GetTongClient, IsCtrlKeyDown, IsCursorInExclusiveMode, IsParty, OutputTip, Table_GetMapName, Table_GetReputationForceInfo, g_tStrings, var2str
+  function <?> line 418-425 params=1 ups=0 stack=5
+    strings: 'GetClientPlayer', 'dwID', 'IsEnemy'
+    globals: GetClientPlayer, IsEnemy
+  function <?> line 428-431 params=1 ups=0 stack=2
+  function <?> line 434-442 params=1 ups=0 stack=3
+    strings: 'GetClientPlayer', 'dwID'
+    globals: GetClientPlayer
+  function <?> line 444-466 params=1 ups=0 stack=6
+    strings: 'GetClientPlayer', 'dwID', 'IsCursorInExclusiveMode', 'Cursor', 'Switch', 'CURSOR', 'NORMAL', 'IsFakeAlly', 'IsEnemy', 'ATTACK', 'GetPlayer', 'IsParty', 'IsAlly'
+    globals: CURSOR, Cursor, GetClientPlayer, GetPlayer, IsAlly, IsCursorInExclusiveMode, IsEnemy, IsFakeAlly, IsParty
+  function <?> line 468-473 params=1 ups=0 stack=2
+    strings: 'UI_GetClientPlayerID'
+    globals: UI_GetClientPlayerID
+  function <?> line 475-498 params=1 ups=0 stack=9
+    strings: 'GetPlayer', 'GetClientPlayer', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'STR_ERROR_TRADING_TARGET_NOT_IN_GAME', 'CanDialog', 'STR_ERROR_TRADING_TOO_FAR', 'IsEnemy', 'dwID', 'STR_TRADING_ENEMY', 'CheckHaveLocked', 'SAFE_LOCK_EFFECT_TYPE', 'TRADE', 'TradingInviteRequest', 'MSG_ANNOUNCE_YELLOW', 'FormatString', 'STR_TRADING_INVITE2', 'szName'
+    globals: CheckHaveLocked, FormatString, GetClientPlayer, GetPlayer, IsEnemy, OutputMessage, SAFE_LOCK_EFFECT_TYPE, g_tStrings
+  function <?> line 502-518 params=4 ups=1 stack=7
+    strings: 'UI_GetClientPlayerID', 'UI_GetClientPlayerGlobalID', 'PeekOtherPlayerByGlobalID', 'PeekOtherPlayer'
+    numbers: 0.0
+    globals: PeekOtherPlayer, PeekOtherPlayerByGlobalID, UI_GetClientPlayerGlobalID, UI_GetClientPlayerID
+  function <?> line 521-538 params=4 ups=1 stack=7
+    strings: 'UI_GetClientPlayerID', 'UI_GetClientPlayerGlobalID', 'PeekOtherPlayerByGlobalID', 'PeekOtherPlayer'
+    numbers: 0.0
+    globals: PeekOtherPlayer, PeekOtherPlayerByGlobalID, UI_GetClientPlayerGlobalID, UI_GetClientPlayerID
+  function <?> line 540-571 params=2 ups=2 stack=8
+    strings: 'PEEK_OTHER_PLAYER_RESPOND', 'SUCCESS', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'tPeekOtherPlayerRespond', 'MSG_SYS', 'GetPlayer', 'GetGlobalID', 'BossCondition_0', 'OpenPlayerView', 'dwPlayerID', 'szGlobalID', 'PeekPlayerPersonalCard', 'CheckBaiZhanInfo', 'Open'
+    numbers: 0.0
+    globals: BossCondition_0, CheckBaiZhanInfo, GetPlayer, OpenPlayerView, OutputMessage, PEEK_OTHER_PLAYER_RESPOND, PeekPlayerPersonalCard, g_tStrings
+  function <?> line 574-581 params=3 ups=1 stack=7
+    strings: 'Partner_IsLevelCanOpen', 'PeekOtherPlayerNpcAssistedSimpleList'
+    globals: Partner_IsLevelCanOpen, PeekOtherPlayerNpcAssistedSimpleList
+  function <?> line 583-593 params=1 ups=1 stack=7
+    strings: 'GetPlayer', 'GetGlobalID', 'Partner', 'Open'
+    globals: GetPlayer, Partner
+  function <?> line 601-613 params=3 ups=3 stack=6
+    strings: 'szGlobalID', 'CheckCardCanPeek', 'bOtherWnd', 'GetShowCardCacheManager', 'ApplyShowCardData'
+    globals: CheckCardCanPeek, GetShowCardCacheManager
+  function <?> line 615-623 params=2 ups=0 stack=11
+    strings: 'ipairs', 'CheckCardCanPeek', 'table', 'insert', 'GetShowCardCacheManager', 'ApplyShowCardData'
+    globals: CheckCardCanPeek, GetShowCardCacheManager, ipairs, table
+  function <?> line 625-633 params=1 ups=2 stack=5
+    strings: 'bCardData', 'OnCheckOpenPersonalCard'
+    globals: OnCheckOpenPersonalCard
+  function <?> line 635-643 params=1 ups=2 stack=5
+    strings: 'bDecoration', 'OnCheckOpenPersonalCard'
+    globals: OnCheckOpenPersonalCard
+  function <?> line 645-653 params=1 ups=2 stack=5
+    strings: 'bBaseData', 'OnCheckOpenPersonalCard'
+    globals: OnCheckOpenPersonalCard
+  function <?> line 655-666 params=2 ups=2 stack=5
+    strings: 'bCardData', 'bDecoration', 'bBaseData', 'bOtherWnd', 'PersonalCard_ShowData', 'OpenPage', 'Open'
+    globals: PersonalCard_ShowData
+  function <?> line 668-673 params=1 ups=1 stack=2
+    strings: 'tDecoration'
+  function <?> line 675-680 params=1 ups=0 stack=3
+    strings: 'GDAPI_CanPeekPersonalCard'
+    globals: GDAPI_CanPeekPersonalCard
+  function <?> line 682-684 params=0 ups=0 stack=2
+    strings: 'OnPeekPlayerPersonalCardRespond', 'arg0'
+    globals: OnPeekPlayerPersonalCardRespond, arg0
+  function <?> line 687-689 params=0 ups=0 stack=2
+    strings: 'OnPeekPlayerCardDecorationRespond', 'arg0'
+    globals: OnPeekPlayerCardDecorationRespond, arg0
+  function <?> line 692-694 params=0 ups=0 stack=2
+    strings: 'OnPeekPlayerCardBaseDataRespond', 'arg0'
+    globals: OnPeekPlayerCardBaseDataRespond, arg0
+  function <?> line 697-734 params=1 ups=0 stack=12
+    strings: 'nPrefix', 'nPostfix', 'nGeneration', 'nCharacter', 'bShow', 'dwForceID', '', 'Table_GetDesignationPrefixByID', 'szName', 'g_tTable', 'Designation_Postfix', 'Search', 'Designation_Generation', 'szCharacter'
+    numbers: 0.0
+    globals: Table_GetDesignationPrefixByID, g_tTable
+  function <?> line 736-752 params=1 ups=0 stack=5
+    strings: 'GetPlayer', '', 'nPrefix', 'GetCurrentDesignationPrefix', 'nPostfix', 'GetCurrentDesignationPostfix', 'nGeneration', 'GetDesignationGeneration', 'nCharacter', 'GetDesignationByname', 'bShow', 'GetDesignationBynameDisplayFlag', 'dwForceID', 'GetPlayerDesignationBy'
+    globals: GetPlayer, GetPlayerDesignationBy
+  function <?> line 754-759 params=1 ups=0 stack=2
+    strings: 'ROLE_TYPE', 'STANDARD_MALE', 'STRONG_MALE', 'LITTLE_BOY'
+    globals: ROLE_TYPE
+  function <?> line 761-766 params=1 ups=0 stack=2
+    strings: 'ROLE_TYPE', 'STANDARD_FEMALE', 'SEXY_FEMALE', 'LITTLE_GIRL'
+    globals: ROLE_TYPE
+  function <?> line 768-785 params=2 ups=0 stack=6
+    strings: 'g_tStrings', 'STR_REMOTE_NOT_TIP', 'GetClientPlayer', 'dwID', 'IsRemotePlayer', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'MSG_SYS', '\n'
+    globals: GetClientPlayer, IsRemotePlayer, OutputMessage, g_tStrings
+  function <?> line 788-796 params=1 ups=0 stack=2
+    strings: 'GetClientPlayer', 'dwFakePlayerID'
+    numbers: 0.0
+    globals: GetClientPlayer
+  function <?> line 798-805 params=0 ups=0 stack=3
+    strings: 'IsRoleInFakeState', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'FAKEING_STATE_ERROR'
+    globals: IsRoleInFakeState, OutputMessage, g_tStrings
+  function <?> line 814-820 params=1 ups=0 stack=4
+    strings: 'nRoleType', 'IsRoleInFakeState', 'nFakeRoleType'
+    globals: IsRoleInFakeState
+  function <?> line 822-855 params=0 ups=0 stack=11
+    strings: 'GetClientPlayer', 'GetForceImage', 'dwForceID', 'dwID', 'isfree', 'szF1Image', 'nF1ImgFrame', 'szF2Image', 'nF2ImgFrame', 'szF3Image', 'nF3ImgFrame', 'szM1Image', 'nM1ImgFrame', 'szM2Image', 'nM2ImgFrame', 'szM3Image', 'nM3ImgFrame', 'bAnimate', 'Table_GetRoleAvatarInfo', 'pairs'
+    numbers: 0.0
+    globals: GetClientPlayer, GetForceImage, Table_GetRoleAvatarInfo, pairs
+  function <?> line 857-859 params=0 ups=0 stack=2
+    strings: 'Table_ReloadRoleAvatarList'
+    globals: Table_ReloadRoleAvatarList
+  function <?> line 868-882 params=1 ups=0 stack=5
+    strings: 'GetClientPlayer', 'GetFreeMaxLevel', 'Login_GetExtPoint', 'nLevel', 'bFreeLimitFlag'
+    numbers: 0.0
+    globals: GetClientPlayer, GetFreeMaxLevel, Login_GetExtPoint
+  function <?> line 885-898 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'Login_GetExtPoint', 'bFreeLimitFlag'
+    numbers: 0.0
+    globals: GetClientPlayer, Login_GetExtPoint
+  function <?> line 903-905 params=0 ups=1 stack=2
+    strings: 'arg0'
+    globals: arg0
+  function <?> line 909-971 params=2 ups=0 stack=18
+    strings: 'GetControlPlayer', 'Lookup', 'Image_Rang', 'Text_Rang', 'nMaxRage', 'nCurrentRage', 'SetFrame', 'SetPercentage', 'IsShowSelfStateValueByPercentage', 'SetText', 'string', 'format', '%d%%', '/', 'SFX_Rang', 'SetVisible', '', 'Image_Sword', 'nPoseState', 'POSE_TYPE'
+    numbers: 0.0, 2.0, 1.0, 100.0, 40.0, 0.8, 0.1
+    globals: GetControlPlayer, IsShowSelfStateValueByPercentage, POSE_TYPE, string
+  function <?> line 973-1020 params=2 ups=0 stack=15
+    strings: 'GetControlPlayer', 'Lookup', 'Image_Short', 'Text_Short', 'Animate_Short', 'Image_Long', 'Text_Long', 'Animate_Long', 'nMaxRage', 'Hide', 'Show', 'Long', 'Short', 'nCurrentRage', 'Image_', 'SetPercentage', 'IsShowSelfStateValueByPercentage', 'Text_', 'SetText', 'string'
+    numbers: 100.0, 0.0
+    globals: GetControlPlayer, IsShowSelfStateValueByPercentage, string
+  function <?> line 1023-1099 params=2 ups=1 stack=23
+    strings: 'Lookup', 'Text_Energy', 'Image_Strip', 'Image_Frame', 'Handle_ACSJ', 'GetControlPlayer', 'nMaxEnergy', 'nCurrentEnergy', 'SetPercentage', 'IsShowSelfStateValueByPercentage', 'SetText', 'string', 'format', '%d%%', '/', '', 'Table_GetCustomBuffList', 'ipairs', 'IsHaveBuff', 'Buffer_GetByID'
+    numbers: 1.0, 0.0, 100.0, 2.0, 3600.0, 60.0, 10224.0, 3399.0, 3276.0
+    globals: Buff_Have, Buffer_GetByID, Buffer_GetLeftFrame, GetControlPlayer, GetTimeToHourMinuteSecondTenthSec, IsShowSelfStateValueByPercentage, Table_GetCustomBuffList, ipairs, string, tostring
+  function <?> line 1101-1146 params=2 ups=0 stack=13
+    strings: 'GetControlPlayer', 'Lookup', 'Image_SunEnergy', 'Image_MoonEnergy', 'nCurrentSunEnergy', 'nCurrentMoonEnergy', 'nMaxSunEnergy', 'nMaxMoonEnergy', 'SetPercentage', 'Text_Sun', 'Show', 'nSunPowerValue', 'math', 'modf', 'SetText', 'tostring', 'Text_Moon', 'nMoonPowerValue', 'Image_MingJiaoBG2', 'Image_SunCao'
+    numbers: 0.0, 10000.0, 100.0
+    globals: GetControlPlayer, math, tostring
+  function <?> line 1148-1166 params=2 ups=0 stack=14
+    strings: 'GetControlPlayer', 'nAccumulateValue', 'math', 'max', 'Player_IsBuffExist', 'SL', 'min', 'Lookup', '_', 'SetVisible', 'Image_Bg0'
+    numbers: 0.0, 33074.0, 1.0, 6.0, 3.0
+    globals: GetControlPlayer, Player_IsBuffExist, math
+  function <?> line 1168-1170 params=1 ups=0 stack=5
+    strings: 'Buff_Have'
+    numbers: 409.0, 21.0
+    globals: Buff_Have
+  function <?> line 1172-1174 params=1 ups=0 stack=5
+    strings: 'Buff_Have'
+    numbers: 30661.0, 1.0
+    globals: Buff_Have
+  function <?> line 1176-1222 params=2 ups=0 stack=16
+    strings: 'GetControlPlayer', 'nAccumulateValue', 'math', 'max', 'min', 'Lookup', 'Text_Layer', 'Image_QX_Btn', 'bQuJing', 'QX_IsInJIanWu', 'SetText', 'Show', 'bChecked', 'QX_IsInQuZhong', 'Hide', 'bClickDown', 'SetFrame', 'bInside', 'QX', '_'
+    numbers: 5.0, 0.0, 90.0, 86.0, 85.0, 88.0, 89.0, 1.0
+    globals: GetControlPlayer, QX_IsInJIanWu, QX_IsInQuZhong, math
+  function <?> line 1224-1346 params=2 ups=0 stack=18
+    strings: 'GetControlPlayer', 'nAccumulateValue', 'math', 'max', 'min', 'floor', '0', '1', 'Lookup', 'CY_', 'Show', 'Handle_NewSkill', 'nCurrentEnergy', 'nMaxEnergy', 'Hide', 'Image_SkillEg', 'SFXSkillEgBar', 'GetAbsPos', 'GetSize', 'SetPercentage'
+    numbers: 16.0, 0.0, 1.0, 2.0, 10015.0, 29204.0
+    globals: GetControlPlayer, Player_IsBuffExist, math
+  function <?> line 1348-1426 params=2 ups=0 stack=21
+    strings: 'GetControlPlayer', 'nMaxMana', 'nCurrentMana', 'Lookup', 'Handle_GbBgBar/Image_GBBar', 'SetPercentage', 'Handle_DefenseShieldLight', 'Image_DefenseShieldLight', 'GetW', 'SetRelX', 'FormatAllItemPos', 'Show', 'Hide', 'Text_GBMpNum', 'SetText', 'string', 'format', '%.0f', '%', 'nCurrentRage'
+    numbers: 0.0, 1.0, 2.0, 100.0, 30334.0, 3.0
+    globals: Buffer_GetByID, Buffer_GetLeftFrame, GetControlPlayer, GetTimeToHourMinuteSecondTenthSec, string
+  function <?> line 1430-1512 params=2 ups=1 stack=23
+    strings: 'GetControlPlayer', 'Lookup', 'Handle_WSS', 'nCurrentEnergy', 'Handle_FiveStone', 'Handle_S', '/Image_SOn', 'Show', '/SFX_S', 'nLastEnergy', 'SFX_FiveStone', 'Play', 'SFX_FiveBurst', 'Hide', 'nNowPlayFrame', 'nCurrentMoonEnergy', 'nLastMoonEnergy', 'GetActualKungfuMountID', 'PlayerKungfuName', ''
+    numbers: 5.0, 0.0, 1.0, 32058.0
+    globals: Buff_Have, GetControlPlayer, GetNumberBit, PlayerKungfuName, ipairs
+  function <?> line 1515-1636 params=2 ups=1 stack=23
+    strings: 'GetControlPlayer', 'nNaturePowerValue', 'nMaxNaturePowerGrid', 'math', 'max', 'min', 'Lookup', 'Handle_Hot', 'Handle_Cold', 'nLastNaturePower', 'SFX_Cold', '_0', '_1', 'Play', 'Hide', 'SFX_Hot', 'Show', 'GetRoot', 'GetName', 'Playerbar'
+    numbers: 100.0, 1.0, -1.0, 0.0, 20075.0
+    globals: Buff_Have, GetControlPlayer, YaoZongSkillHint, math, string
+  function <?> line 1638-1644 params=2 ups=0 stack=3
+    numbers: 1.0, 0.0
+  function <?> line 1646-1652 params=1 ups=0 stack=2
+    strings: 'POSE_TYPE', 'SINGLEKNIFE', 'SINGLEKNIFEIN', 'DOUBLEKNIFE', 'DOUBLEKNIFEIN'
+    numbers: 1.0, 2.0
+    globals: POSE_TYPE
+  function <?> line 1654-1707 params=2 ups=2 stack=18
+    strings: 'GetControlPlayer', 'nPoseState', 'Lookup', 'Handle_Switch_DZ', 'GetItemCount', 'Show', 'GetType', 'SFX', 'Play', 'Text_Num_DZ', 'Handle_SingleHand', 'Handle_BothHand', 'Hide', 'Handle_ProgressDZ_S/Image_ProgressDZ_S', 'Handle_ProgressDZ_B/Image_ProgressDZ_B', 'Handle_Progress_SFX', 'Handle_Full', 'nCurrentEnergy', 'nMaxEnergy', 'SetRange'
+    numbers: 0.0, 1.0, 2.0
+    globals: GetControlPlayer
+  function <?> line 1719-1735 params=3 ups=1 stack=17
+    strings: 'pairs', 'Lookup', 'Handle_Arrow', 'Show', '/SFX_Arrow', 'In', 'Play', 'Hide', 'ARROW_ENERGY_STATE', 'INVALID', 'Image_BG', 'nLastState'
+    globals: ARROW_ENERGY_STATE, pairs
+  function <?> line 1737-1828 params=2 ups=5 stack=23
+    strings: 'GetControlPlayer', 'nArrowNum', 'nLastArrow', 'Lookup', 'Handle_Arrow', 'SFX_ArrowMore', 'Show', 'Play', 'SFX_ArrowOne', 'Hide', 'nLastState', 'pairs', 'SFX_Arrow', 'Out', 'GetArrowState', 'ARROW_ENERGY_STATE', 'INVALID', 'nCurrentMoonEnergy', 'Handle_GraveYard', 'Handle_Beast'
+    numbers: 0.0, 1.0, 26944.0
+    globals: ARROW_ENERGY_STATE, GetControlPlayer, Player_IsBuffExist, pairs
+  function <?> line 1830-1923 params=2 ups=0 stack=21
+    strings: 'GetControlPlayer', 'Lookup', 'Handle_RM', 'Handle_DM', 'nMaxSunEnergy', 'nCurrentSunEnergy', 'nMaxMoonEnergy', 'nCurrentMoonEnergy', 'Text_RM', 'SetText', '/', 'Image_RMEnergy', 'SetPercentage', 'Text_DM', 'Image_DMEnergy', 'GetAbsX', 'GetW', 'SFX_RM_Line', 'Show', 'SetAbsX'
+    numbers: 0.0, 1.0, 0.5, 3.0, 28968.0, 29212.0, 2.0, 3600.0, 60.0
+    globals: Buff_Have, Buffer_GetByID, Buffer_GetLeftFrame, GetControlPlayer, GetTimeToHourMinuteSecondTenthSec
+  function <?> line 1925-2007 params=2 ups=0 stack=23
+    strings: 'GetControlPlayer', 'nCurrentEnergy', 'nMaxEnergy', 'IsHaveBuff', 'Lookup', 'Handle_Puppet_Normal', 'Show', 'Handle_Puppet_Possess', '', 'Handle_Wxl', 'Hide', 'Handle_Wxl_S', '_S', 'Handle_Wx_Normal', 'Handle_Wx_StNum', 'Handle_Wx_StTime', 'Image_Wx_StOne', 'SetPercentage', 'SFX_Wx_StOne', 'SFX_Wx_StOne_Full'
+    numbers: 0.0, 31374.0, 1.0, 31213.0, 31372.0, 31373.0, 3600.0, 60.0
+    globals: Buffer_GetByID, Buffer_GetLeftFrame, GetControlPlayer, GetTimeToHourMinuteSecond
+  function <?> line 2009-2024 params=3 ups=0 stack=4
+    numbers: 1.0
+  function <?> line 2027-2175 params=2 ups=5 stack=45
+    strings: 'GetControlPlayer', 'nCurrentEnergy', 'Lookup', 'Handle_NewQiXue', 'Handle_Mh', 'Show', 'GetItemCount', 'Buffer_GetByID', 'nStackNum', 'Text_Num_0', 'SetText', 'nLastNum', 'SFX_MhOn', 'Play', 'SFX_MhDelete', 'Hide', 'nCurrentSunEnergy', 'nCurrentMoonEnergy', 'GetRoot', 'GetName'
+    numbers: 1.0, 28107.0, 0.0, 20.0, 3.0, 5.0, 24245.0, 24538.0
+    globals: Buffer_GetByID, Buffer_GetLeftFrame, Buffer_GetTimeData, GLOBAL, GetControlPlayer, GetTickCount, UI_GetClientPlayerID, XuanSuQingMaiMonitor
+    function <?> line 2030-2038 params=3 ups=0 stack=6
+      strings: 'Lookup', 'Hide', 'Show'
+      numbers: 0.0, 2.0
+  function <?> line 2206-2279 params=2 ups=4 stack=13
+    strings: 'GetControlPlayer', 'nPoseState', 'Lookup', 'Show', 'Play', 'nPoseDelay', 'GetTime', 'Handle_Default', 'SetVisible', 'Handle_BigKnife', 'POSE_TYPE', 'BROADSWORD', 'Handle_BigKnife/Handle_ProgressB', 'Handle_BigKnife/Handle_BigTime', 'Handle_QiaoKnife', 'SHEATH_KNIFE', 'Handle_QiaoKnife/Handle_ProgressQ', 'Handle_QiaoKnife/Handle_QiaoTime', 'Handle_DoubleKnife', 'DOUBLE_BLADE'
+    numbers: 4.0, 0.0, 1.5, 255.0, 2.0, 1.0
+    globals: BadaoPosture, GetControlPlayer, GetPercent, GetTime, POSE_TYPE, math
+  function <?> line 2293-2339 params=2 ups=0 stack=12
+    strings: 'GetControlPlayer', 'Lookup', 'SFX_TC3', 'Hide', 'Image_TC', 'GetRelPos', 'GetSize', 'nCurrentRage', 'nMaxRage', 'Show', 'Text_TC', 'SetRange', ' / ', 'SetPercentage', 'FormatAllItemPos'
+    numbers: 0.0, 1.0
+    globals: GetControlPlayer
+  function <?> line 2342-2401 params=2 ups=1 stack=26
+    strings: 'nCurrentRage', 'nMaxRage', 'nPoseState', 'Normal', 'POSE_TYPE', 'TIANRENHEYI', 'Therapy', 'Lookup', 'FormatString', 'Handle_<D0>', 'Text_YZNum_<D0>', 'SetText', '/', 'Handle_Line_<D0>', 'SFX_Line_<D0>_<D1>', 'Show', 'SetW', 'math', 'floor', 'GetW'
+    numbers: 0.0, 2.0, 1.0
+    globals: FormatString, POSE_TYPE, math
+    function <?> line 2355-2362 params=2 ups=0 stack=10
+      strings: 'IsVisible', 'GetItemCount', 'Lookup', 'Hide'
+      numbers: 0.0, 1.0
+  function <?> line 2403-2410 params=4 ups=1 stack=8
+  function <?> line 2412-2414 params=1 ups=1 stack=2
+  function <?> line 2433-2461 params=1 ups=0 stack=2
+    strings: 'OnItemMouseEnter', 'OnItemMouseLeave'
+    function <?> line 2438-2456 params=0 ups=0 stack=24
+      strings: 'this', 'playerId', 'buffId', 'GetPlayer', 'GetBuffCount', 'Buffer_Get', 'dwID', 'GetSize', 'GetAbsPos', 'math', 'floor', 'nLeftFrame', 'nEndFrame', 'GetLogicFrameCount', 'OutputBuffTip', 'nLevel', 'nStackNum', 'Table_BuffNeedShowTime'
+      numbers: 1.0, 16.0
+      globals: Buffer_Get, GetLogicFrameCount, GetPlayer, OutputBuffTip, Table_BuffNeedShowTime, math, this
+    function <?> line 2458-2460 params=0 ups=0 stack=2
+      strings: 'HideTip'
+      globals: HideTip
+  function <?> line 2463-2468 params=1 ups=1 stack=10
+    strings: 'ipairs', 'FORCE_TYPE', 'CHANG_GE', 'Lookup', 'Handle_', 'Hide'
+    globals: FORCE_TYPE, ipairs
+  function <?> line 2472-2536 params=4 ups=3 stack=18
+    strings: 'FORCE_TYPE', 'CHANG_GE', 'ipairs', 'Buffer_GetByID', 'nStackNum', 'math', 'max', 'Lookup', 'Handle_', 'SFX_QDJZ_', 'Show', 'm_bIsPlayFull', 'Play', 'Hide', 'Handle_Dots_', 'mowen', 'GetItemCount', 'm_nLastStackNum', 'Text_Num_CG_F', 'dwID'
+    numbers: 0.0, 1.0, 6.0
+    globals: Buffer_GetByID, Buffer_GetLeftFrame, FORCE_TYPE, GetTimeToHourMinuteSecondTenthSec, ipairs, math
+  function <?> line 2539-2594 params=3 ups=7 stack=15
+    strings: 'GetClientPlayer', 'GetKungfuMount', 'PlayerKungfuName', 'dwSkillID', '', 'mowen', 'bHide', 'Hide', 'Show', 'FORCE_TYPE', 'CHANG_GE', 'Lookup', 'Handle_', 'm_nLastShowFrame', 'FromUITex', 'pairs', 'g_tUIConfig', 'CGStateBuff', 'playerId', 'dwID'
+    numbers: 0.0, 1.0, 2.0
+    globals: FORCE_TYPE, GetClientPlayer, PlayerKungfuName, g_tUIConfig, pairs
+  function <?> line 2596-2608 params=1 ups=0 stack=5
+    strings: 'GetClientPlayer', 'GetActualKungfuMount', 'IsMobileSkill', 'dwSkillID', 'dwLevel'
+    globals: GetClientPlayer, IsMobileSkill
+  function <?> line 2610-2625 params=4 ups=2 stack=9
+    strings: 'Hide', 'Show', 'PlayerEnergyUI_Update'
+    globals: PlayerEnergyUI_Update
+  function <?> line 2627-2655 params=2 ups=1 stack=14
+    strings: 'Hide', 'Show', 'GetControlPlayer', 'nCurrentQiRedSP', 'nCurrentQiSP', 'Lookup', 'Handle_QiControlList', 'GetItemCount', 'FormatAllItemPos', 'nLastTotalQi'
+    numbers: 0.0, 1.0
+    globals: GetControlPlayer
+  function <?> line 2658-2667 params=2 ups=0 stack=5
+    strings: 'rlcmd', 'switch sim world 1', 'ik count ', 'ik count 0', 'switch sim world 0'
+    numbers: 60.0
+    globals: rlcmd
+  function <?> line 2669-2672 params=1 ups=0 stack=4
+    strings: 'rlcmd', 'ik count '
+    numbers: 60.0
+    globals: rlcmd
+  function <?> line 2674-2680 params=1 ups=0 stack=3
+    strings: 'rlcmd', 'enable animation blend', 'disable animation blend'
+    globals: rlcmd
+  function <?> line 2682-2686 params=0 ups=2 stack=3
+    strings: 'dwMapID', 'arg0', '_', 'dwMapType', 'GetMapParams'
+    globals: =_, GetMapParams, arg0
+  function <?> line 2689-2695 params=0 ups=0 stack=4
+    strings: 'GetClientPlayer', 'dwID', 'arg0', 'ClientPlayer_UpdateProperty', 'dwPlayerID', 'bInFight'
+    globals: ClientPlayer_UpdateProperty, GetClientPlayer, arg0
+  function <?> line 2698-2705 params=0 ups=1 stack=3
+    strings: 'GetClientPlayer', 'dwMountKungfuID', 'GetKungfuMountID', 'dwActualMountKungfuID', 'GetActualKungfuMountID'
+    globals: GetClientPlayer
+  function <?> line 2712-2723 params=0 ups=1 stack=4
+    strings: 'GetClientPlayer', 'IsHaveBuff'
+    numbers: 1.0
+    globals: GetClientPlayer
+  function <?> line 2725-2737 params=2 ups=0 stack=6
+    strings: 'UI_CheckPlayerInSingleFB', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'STR_CANNOT_JOINTEAM_IN_SINGLEFB', 'nType', 'nParam', 'GetClientTeam', 'InviteJoinTeam'
+    globals: GetClientTeam, OutputMessage, UI_CheckPlayerInSingleFB, g_tStrings
+  function <?> line 2739-2748 params=2 ups=0 stack=5
+    strings: 'UI_CheckPlayerInSingleFB', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'STR_CANNOT_JOINTEAM_IN_SINGLEFB', 'GetClientTeam', 'RespondTeamInvite'
+    globals: GetClientTeam, OutputMessage, UI_CheckPlayerInSingleFB, g_tStrings

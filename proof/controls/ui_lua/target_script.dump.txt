@@ -1,0 +1,127 @@
+# target_script.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=21
+  strings: 'g_nSearchAlliesIndex', 'g_nSearchEnemyIndex', 'g_nLastTabDownFrame', 'g_nTabPlayerPriority', 'g_bPetControlState', 'ENMEY', 'Enmey', 'ALLY', 'Ally', 'EYASHA', 'nVersion', 'bOnlyPlayer', 'bPlayerFirst', 'bOnlyNearDis', 'bWeakness', 'bMidAxisFirst', 'bSureTarget', 'nCoolTime', 'bRedFirst', 'tArea'
+  numbers: 0.0, 256.0, 2.0, 16.0, 1.0, 2560.0, 15.0, 3.0, 512.0, 85.0, 1280.0, 114.0
+  globals: =CalHorizontalDistance, =GetAreaTargetNum, =GetFitObject, =GetSearchTargetPlayer, =GetTargetLevelFontColor, =GetTargetName, =InteractTarget, =IsPlayerPriority, =SearchAllies, =SearchAlliesVer1, =SearchEYaShaTargets, =SearchEnemy, =SearchEnemyVer2, =SearchForEnemy, =SearchNextTarget, =SearchTarget_IsOldVerion, =SearchTarget_SetAreaSettting, =SearchTarget_SetOtherSettting, =SearchTarget_SetSettings, =SearchTarget_SwitchOnlyPlayer, =SelectPrevTarget, =SetPetControlState, =SetPlayerPriority, =g_bPetControlState, =g_nLastTabDownFrame, =g_nSearchAlliesIndex, =g_nSearchEnemyIndex, =g_nTabPlayerPriority
+  function <?> line 84-89 params=2 ups=0 stack=2
+  function <?> line 91-93 params=1 ups=1 stack=2
+  function <?> line 95-101 params=1 ups=0 stack=2
+    strings: 'g_bPetControlState'
+    numbers: 1.0
+    globals: =g_bPetControlState
+  function <?> line 103-109 params=3 ups=0 stack=6
+    strings: 'g_bPetControlState', 'SearchForPetEnemy', 'SearchForEnemy'
+    globals: g_bPetControlState
+  function <?> line 111-117 params=0 ups=0 stack=2
+    strings: 'GetControlPlayer', 'g_bPetControlState', 'GetPet'
+    globals: GetControlPlayer, g_bPetControlState
+  function <?> line 119-132 params=1 ups=0 stack=7
+    strings: 'IsPlayer', 'GetPlayer', 'GetNpc', 'GetSearchTargetPlayer', 'nX', 'nY'
+    globals: GetNpc, GetPlayer, GetSearchTargetPlayer, IsPlayer
+  function <?> line 134-146 params=1 ups=0 stack=7
+    strings: 'IsPlayer', 'GetPlayer', 'GetNpc', 'GetSearchTargetPlayer', 'nX', 'nY', 'nZ'
+    numbers: 64.0
+    globals: GetNpc, GetPlayer, GetSearchTargetPlayer, IsPlayer
+  function <?> line 148-174 params=1 ups=0 stack=11
+    strings: 'GetSearchTargetPlayer', 'nX', 'nY', 'math', 'atan2', 'pi', 'nFaceDirection', 'abs', 'sqrt', 'sin'
+    numbers: 0.0, 2.0, 255.0, 3.0, 4.0
+    globals: GetSearchTargetPlayer, math
+  function <?> line 176-206 params=2 ups=1 stack=6
+    strings: 'IsPlayer', 'CanSelectPlayer', 'GetPlayer', 'CanSelectNpc', 'GetNpc', 'nSelectableType', 'SELECTABLE_TYPE', 'SELECTABLE_NONE', 'SELECTABLE_NOT_ENEMY', 'ENMEY'
+    globals: CanSelectNpc, CanSelectPlayer, GetNpc, GetPlayer, IsPlayer, SELECTABLE_TYPE
+  function <?> line 207-219 params=2 ups=1 stack=11
+    strings: 'ipairs', 'table', 'insert'
+    globals: ipairs, table
+  function <?> line 221-278 params=2 ups=2 stack=5
+    strings: 'bPlayerFirst', 'bPlayer', 'bIsInScreen', 'g_nTabPlayerPriority', 'bPet', 'bOnlyNearDis', 'nDis', 'bRedFirst', 'nRed', 'bWeakness', 'nLife', 'nSelLevel', 'bMidAxisFirst', 'nAxisDis', 'nCount', 'nIndex'
+    globals: g_nTabPlayerPriority
+  function <?> line 281-289 params=1 ups=2 stack=8
+    strings: 'pairs'
+    globals: pairs
+  function <?> line 291-304 params=0 ups=2 stack=6
+    strings: 'GetClientPlayer', 'GetTarget', 'TARGET', 'NO_TARGET'
+    numbers: 0.0
+    globals: GetClientPlayer, TARGET
+  function <?> line 306-308 params=1 ups=2 stack=4
+    strings: 'table', 'insert'
+    globals: table
+  function <?> line 310-320 params=1 ups=3 stack=5
+    strings: 'table', 'remove'
+    numbers: 0.0
+    globals: table
+  function <?> line 323-352 params=1 ups=4 stack=12
+    strings: 'GetClientPlayer', 'GetTarget', 'TARGET', 'NO_TARGET', 'dwID', 'bSureTarget', 'GetLogicFrameCount', 'g_nLastTabDownFrame', 'nCoolTime', 'ipairs'
+    numbers: 1.0, 2.0
+    globals: GetClientPlayer, GetLogicFrameCount, TARGET, g_nLastTabDownFrame, ipairs
+  function <?> line 356-370 params=2 ups=0 stack=4
+    strings: 'TARGET', 'PLAYER', 'InteractPlayer', 'NPC', 'InteractNpc', 'DOODAD', 'InteractDoodad', 'FURNITURE', 'InteractLandObject', 'DUMMY', 'InteractDummyObject'
+    globals: InteractDoodad, InteractDummyObject, InteractLandObject, InteractNpc, InteractPlayer, TARGET
+  function <?> line 374-418 params=1 ups=0 stack=10
+    strings: 'pairs', 'Type', 'TARGET', 'DOODAD', 'IsCorpseAndCanLoot', 'ID', 'TemplateID', 'NPC', 'GetNpc', 'g_nTabPlayerPriority', 'CanSelectNpc', 'dwEmployer', 'FURNITURE', 'DUMMY', 'PLAYER', 'CanSelectPlayer', 'NO_TARGET'
+    numbers: 0.0
+    globals: CanSelectNpc, CanSelectPlayer, GetNpc, IsCorpseAndCanLoot, TARGET, g_nTabPlayerPriority, pairs
+  function <?> line 420-444 params=2 ups=0 stack=7
+    strings: 'TARGET', 'NPC', 'GetNpc', 'szName', 'DOODAD', 'GetDoodad', 'Table_GetDoodadName', 'dwTemplateID', 'dwNpcTemplateID', 'ITEM', 'GetItem', 'GetItemNameByItem', 'PLAYER', 'GetPlayer'
+    globals: GetDoodad, GetItem, GetItemNameByItem, GetNpc, GetPlayer, TARGET, Table_GetDoodadName
+  function <?> line 447-503 params=0 ups=0 stack=12
+    strings: 'GetLogicFrameCount', 'GetControlPlayer', 'SearchForAllies', 'g_nLastTabDownFrame', 'g_nSearchAlliesIndex', 'GetClientPlayer', 'GetTarget', 'TARGET', 'NO_TARGET', 'IsPlayer', 'SelectTarget', 'PLAYER', 'NPC'
+    numbers: 0.0, 1920.0, 42.0, 640.0, -42.0, 32.0, 1.0
+    globals: =g_nLastTabDownFrame, =g_nSearchAlliesIndex, GetClientPlayer, GetControlPlayer, GetLogicFrameCount, IsPlayer, SelectTarget, TARGET, g_nLastTabDownFrame, g_nSearchAlliesIndex
+  function <?> line 505-569 params=0 ups=2 stack=12
+    strings: 'GetLogicFrameCount', 'GetControlPlayer', 'SearchForEnemy', 'ENMEY', 'g_nLastTabDownFrame', 'g_nSearchEnemyIndex', 'GetClientPlayer', 'GetTarget', 'TARGET', 'NO_TARGET', 'IsPlayer', 'SelectTarget', 'PLAYER', 'NPC'
+    numbers: 0.0, 1920.0, 42.0, 640.0, -42.0, 32.0, 1.0
+    globals: =g_nLastTabDownFrame, =g_nSearchEnemyIndex, GetClientPlayer, GetControlPlayer, GetLogicFrameCount, IsPlayer, SearchForEnemy, SelectTarget, TARGET, g_nLastTabDownFrame, g_nSearchEnemyIndex
+  function <?> line 571-712 params=1 ups=8 stack=30
+    strings: 'GetLogicFrameCount', 'GetClientPlayer', 'GetClientTeam', 'pairs', 'nLevel', 'tTarget', 'ipairs', 'IsPlayer', 'bOnlyPlayer', 'bTeammate', 'IsPlayerInTeam', 'GetCastingSkill', 'GetOperationMode', 'CLASSICAL_MODE', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'MaxRadius', 'CalHorizontalDistance', 'GetPlayer'
+    numbers: 0.0, 1.0, 2.0
+    globals: =g_nLastTabDownFrame, CLASSICAL_MODE, CalHorizontalDistance, FireUIEvent, GetCastingSkill, GetClientPlayer, GetClientTeam, GetLogicFrameCount, GetNpc, GetOperationMode, GetPlayer, GetSkillInfoEx, IsEnemy, IsMobileStreamingEnable, IsPlayer, Scene_GameWorldPositionListToScreenPointList, SelectTarget, Station, TARGET, g_nLastTabDownFrame, g_nTabPlayerPriority, ipairs, pairs, table
+  function <?> line 714-738 params=2 ups=4 stack=15
+    strings: 'GetControlPlayer', 'pairs', 'tArea', 'ENMEY', 'bBirdMove', 'nFlyFlag', 'GetOperationMode', 'JOYSTICK_MODE', 'SearchForEnemy', 'nRadius', 'nAngle', 'ALLY', 'EYASHA', 'SearchForAllies', 'table', 'insert', 'nLevel', 'nSelLevel', 'tTarget'
+    numbers: 0.0
+    globals: GetControlPlayer, GetOperationMode, JOYSTICK_MODE, SearchForEnemy, pairs, table
+  function <?> line 740-747 params=1 ups=1 stack=6
+    strings: 'GetControlPlayer', 'SearchForEnemy'
+    numbers: 0.0
+    globals: GetControlPlayer, SearchForEnemy
+  function <?> line 749-770 params=0 ups=6 stack=5
+    strings: 'g_tAutoChooseData', 'bChoose', 'GetClientPlayer', 'bSprintFlag', 'AimAtSprintDashTarget', 'ENMEY', 'nVersion'
+    numbers: 1920.0, 1.0, 2.0
+    globals: GetClientPlayer, g_tAutoChooseData
+  function <?> line 772-776 params=1 ups=4 stack=4
+    strings: 'ENMEY'
+  function <?> line 778-788 params=0 ups=5 stack=4
+    strings: 'ALLY', 'nVersion', 'SearchAlliesVer1'
+    numbers: 1.0, 2.0
+    globals: SearchAlliesVer1
+  function <?> line 790-794 params=0 ups=4 stack=3
+    strings: 'ENMEY', 'EYASHA'
+  function <?> line 796-802 params=0 ups=0 stack=2
+    strings: 'GooseDuckKillLogic', 'IsInGooseDuckMap', 'SearchEYaShaTargets', 'SearchEnemy'
+    globals: GooseDuckKillLogic, SearchEYaShaTargets, SearchEnemy
+  function <?> line 804-819 params=0 ups=4 stack=5
+    strings: 'nVersion', 'IsPlayer', 'SelectTarget', 'TARGET', 'PLAYER', 'NPC', 'g_nLastTabDownFrame', 'GetLogicFrameCount'
+    numbers: 2.0, 0.0
+    globals: =g_nLastTabDownFrame, GetLogicFrameCount, IsPlayer, SelectTarget, TARGET
+  function <?> line 822-837 params=5 ups=3 stack=15
+    strings: 'ENMEY', 'pairs', 'tArea', 'szArea', 'nRadius', 'nAngle', 'nSelLevel'
+    globals: pairs
+  function <?> line 839-847 params=0 ups=2 stack=5
+    strings: 'SearchTarget_IsOldVerion', 'ENMEY', 'StorageServer', 'SetData', 'UISetting_BoolValues2', 'TAB_PLAYER', 'bOnlyPlayer', 'SearchTarget_SetSettings', 'OnlyPlayer', 'FireUIEvent', 'UI_SearchTarget_SwitchOnlyPlayer'
+    globals: FireUIEvent, SearchTarget_IsOldVerion, SearchTarget_SetSettings, StorageServer
+  function <?> line 849-865 params=3 ups=0 stack=7
+    strings: 'SearchTarget_IsOldVerion', 'OnlyPlayer', 'OutputMessage', 'MSG_SYS', 'g_tStrings', 'WRENCH_OPEN_TAB_PLAYER', 'WRENCH_CLOSE_TAB_PLAYER', 'SearchTarget_SetOtherSettting', 'Enmey', 'Ally'
+    globals: OutputMessage, SearchTarget_IsOldVerion, SearchTarget_SetOtherSettting, g_tStrings
+  function <?> line 867-904 params=3 ups=3 stack=7
+    strings: 'ENMEY', 'OnlyPlayer', 'bOnlyPlayer', 'PlayerFirst', 'bPlayerFirst', 'Weakness', 'bWeakness', 'MidAxisFirst', 'bMidAxisFirst', 'OnlyNearDis', 'bOnlyNearDis', 'nVersion', 'CoolTime', 'nCoolTime', 'SureTarget', 'bSureTarget', 'RedFirst', 'bRedFirst', 'ALLY', 'Teammate'
+  function <?> line 906-908 params=0 ups=2 stack=2
+    strings: 'ENMEY', 'nVersion'
+    numbers: 1.0
+  function <?> line 910-912 params=0 ups=0 stack=2
+    strings: 'g_nTabPlayerPriority'
+    globals: g_nTabPlayerPriority
+  function <?> line 914-916 params=1 ups=0 stack=2
+    strings: 'g_nTabPlayerPriority'
+    globals: =g_nTabPlayerPriority
+  function <?> line 918-932 params=1 ups=0 stack=2
+    strings: 'yellow2', 'red2', 'orange2', 'green2', 'gray2'
+    numbers: 4.0, 2.0, -3.0, -6.0

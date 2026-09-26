@@ -16,6 +16,8 @@ state of our own client, so the full control system can be implemented later.
 | `CAMERA_CONFORMANCE_CHECKS.md` (repo `docs/`) | notes-vs-code checklist: every item with status, evidence, acceptance |
 | `CAMERA_DISTANCE_FOV_SPEC.md` (repo `docs/`) | implementation spec for 镜头最大距离 + 广角 (read-only settings) |
 | `controls/RESEARCH_RESOLVED_GAPS.md` | 2026-09-25 pass: hotkey override files, rebind UI flow, 广角 mapping, operation modes, movement Lua bridge, action-bar/UI-custom storage |
+| `controls/HOTKEY_SYSTEM_FULL.md` | **full specification of the hotkey/input system** (the top topic), with complete decoded annexes |
+| `GAME_SYSTEMS_RESEARCH_MAP.md` (repo `docs/`) | all game systems + research backlog and priorities |
 | `controls/JX3_HOTKEY_SYSTEM.md` | the hotkey manager, file formats, key encoding, 428 commands, rebinding |
 | `controls/JX3_MOVEMENT_CONTROLS.md` | movement keys and the movement/turn model |
 | `controls/JX3_CAMERA_CONTROLS.md` | camera inputs, drag pipeline, modes, settings, obstruction |

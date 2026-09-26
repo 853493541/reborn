@@ -27,6 +27,9 @@ lands, keep the evidence column pointing at real file:line.
 
 Status note: `OPEN (research DONE)` = the real behaviour is fully decoded in
 `RESEARCH_RESOLVED_GAPS.md`; only the client implementation remains.
+The whole input layer is fully specified in `HOTKEY_SYSTEM_FULL.md`
+(architecture, formats, encoding, 428-command registry, rebind flow,
+persistence, bridges) with complete decoded annexes.
 
 | ID | Item | Status | Evidence / note | Dependency |
 |---|---|---|---|---|
