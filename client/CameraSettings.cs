@@ -13,6 +13,7 @@ internal sealed class CameraSettings
     public double DragSpeed = 1.0;
     public double DragPitchSpeed = 1.0;
     public double EyeScale = 1.0;
+    public double WidAngleDeg = 0.0;        // 广角 VideoSetting_WidAngle (deg, 0=unset)
     public double SpringResetSpeed = 1.0;   // fSpringResetSpeed (read-only for now)
     public double CameraResetSpeed = 1.0;   // fCameraResetSpeed (read-only for now)
     public int CameraMode = 0;              // nCameraMode: 0 classic, 1 joystick
@@ -35,8 +36,12 @@ internal sealed class CameraSettings
         string initPath = Path.Combine(appDir, "scene_init_param.txt");
         LoadSceneInit(initPath, result.MapId, result);
 
+        // the real client always reads the user's per-role custom.dat; do the
+        // same by default (latest file) with RC_CUSTOM_DAT as an override and
+        // RC_LOAD_CUSTOM_DAT=0 to opt out
         string customPath = Environment.GetEnvironmentVariable("RC_CUSTOM_DAT");
-        if (string.IsNullOrEmpty(customPath) && Environment.GetEnvironmentVariable("RC_LOAD_CUSTOM_DAT") == "1")
+        bool loadDefault = Environment.GetEnvironmentVariable("RC_LOAD_CUSTOM_DAT") != "0";
+        if (string.IsNullOrEmpty(customPath) && loadDefault)
             customPath = FindLatestCustomDat(Path.Combine(@"C:\SeasunGame\Game\JX3\bin\zhcn_hd", "userdata"));
         if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
         {
@@ -155,6 +160,10 @@ internal sealed class CameraSettings
         }
         if (TryNumber(runtimeBlock, "fCameraToObjectEyeScale", out value) && value > 0)
             settings.EyeScale = value;
+        // 广角: the video panel value (degrees, 30..60, default 50)
+        string uiBlock = FindSection(text, "UIVideoSetting");
+        if (TryNumber(uiBlock, "VideoSetting_WidAngle", out value) && value > 0)
+            settings.WidAngleDeg = value;
         if (TryNumber(staticBlock, "fSpringResetSpeed", out value))
             settings.SpringResetSpeed = value;
         if (TryNumber(staticBlock, "fCameraResetSpeed", out value))

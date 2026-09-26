@@ -21,11 +21,19 @@ internal static class VideoSettings
 
     // Returns the SetViewAngleFactor value (angle / default) and logs the
     // source. RC_VIEW_ANGLE still overrides for testing.
-    public static float ViewAngleFactor(string editorRoot, Action<string> log)
+    public static float ViewAngleFactor(string editorRoot, double userWidAngleDeg, Action<string> log)
     {
         double angleDeg = PanelDefaultDeg;   // game panel default: 50 deg
         string src = "panel-default";
-        try
+        if (userWidAngleDeg > 0.0)
+        {
+            // per-user panel value from custom.dat; the game adds the engine
+            // fMinCameraAngle when the raw value is below 30 (cap not available
+            // in the host), then clamps to 30..60
+            angleDeg = userWidAngleDeg < PanelMinDeg ? PanelMinDeg : userWidAngleDeg;
+            src = "custom.dat";
+        }
+        else try
         {
             string[] candidates = new string[]
             {

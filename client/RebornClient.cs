@@ -220,7 +220,7 @@ internal static class RebornClient
             // character look smaller (open item: the game's fFovy is missing),
             // so it can be tuned for testing with RC_VIEW_ANGLE.
             Log("view angle factor=" + scene.GetViewAngleFactor());
-            float va = VideoSettings.ViewAngleFactor(editorRoot, Log);
+            float va = VideoSettings.ViewAngleFactor(editorRoot, cameraSettings.WidAngleDeg, Log);
             float vaTest;
             if (float.TryParse(Env("RC_VIEW_ANGLE", ""), out vaTest) && vaTest > 0f)
             {
