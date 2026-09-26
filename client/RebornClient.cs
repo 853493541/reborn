@@ -957,9 +957,12 @@ internal static class RebornClient
                 // getter (0x1801433E0) deadlocks the engine even from a worker
                 // thread (see EngineRay.ProbeNearPlane) - it can only run in the
                 // engine's own frame context, which needs a native shim.
+                int vhr0;
+                float vh0 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr0);
                 if (col != null)
                 {
                     float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
+                    Log(string.Format("vertprobe h={0:F0}(hr={1}) at player", vh0, vhr0));
                         float hS = col.Raycast(px, py + 90f, pz, px, py + 90f, pz + 2000f);
                         float hE = col.Raycast(px, py + 90f, pz, px + 2000f, py + 90f, pz);
                         float hW = col.Raycast(px, py + 90f, pz, px - 2000f, py + 90f, pz);
@@ -1277,7 +1280,7 @@ internal static class RebornClient
                     double t = (double)i / 14.0;
                     int vhr;
                     float hv = engineRay.RayVerticalHeight(
-                        (float)(ax2 + camOff[0] * t), (float)(az2 + camOff[2] * t), 8000f, out vhr);
+                        (float)(ax2 + camOff[0] * t), 10000f, (float)(az2 + camOff[2] * t), 30000f, out vhr);
                     if (hv > 0f && hv + 20.0 > ay2 + camOff[1] * t)
                     {
                         double vh = t * offLen;

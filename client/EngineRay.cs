@@ -277,12 +277,12 @@ internal sealed class EngineRay
     // Vertical backend: height of the first geometry hit on a vertical line at
     // (x, z) within range; -1 when nothing is hit. This is the game mask's
     // vertical probe (cliffs, terrain-baked walls).
-    public float RayVerticalHeight(float x, float z, float range, out int hr)
+    public float RayVerticalHeight(float x, float y, float z, float range, out int hr)
     {
         hr = -1;
         if (!EnsureReady() || _verticalRay == null || _spaceObj == IntPtr.Zero) return -1f;
         SatisfyGuard();
-        var p = new float[] { x, z };
+        var p = new float[] { x, y, z };
         float h;
         try
         {
