@@ -13,6 +13,9 @@ internal sealed class EngineRay
 {
     const int RVA_RAY_TERRAIN = 0x976260;   // 0x180976260 - image base
     const int RVA_RAY_SCENE = 0x975EE0;     // 0x180975EE0 - image base
+    const int RVA_SPACE_RAY = 0xA5E4C0;     // 0x180A5E4C0 - the space manager
+                                            // ray the scene's RayIntersection
+                                            // calls (0x1809760EC)
 
     [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
     static extern IntPtr GetModuleHandleA(string name);
@@ -31,11 +34,20 @@ internal sealed class EngineRay
     delegate int RayTerrainFn(IntPtr scene, float[] pos, float[] dir, float maxDist,
                               IntPtr unused, out float retDist, out int retIntersect);
 
+    // The engine's terrain ray ultimately calls the terrain object itself:
+    //   terrain->vt[+0xB8](pos, dir, maxDist, float* outDist)  (0x1809763C6)
+    // Calling it directly is exactly what the game camera's terrain backend
+    // does and skips the scene-level guard that rejects external calls.
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int TerrainVtFn(IntPtr terrain, float[] pos, float[] dir, float maxDist, out float outDist);
+
     Action<string> _log;
     IntPtr _module = IntPtr.Zero;
     IntPtr _getWindow = IntPtr.Zero, _getScene = IntPtr.Zero;
     IntPtr _scene = IntPtr.Zero;
     RayTerrainFn _terrain, _sceneRay;
+    TerrainVtFn _terrainVt, _spaceRay;
+    IntPtr _terrainObj = IntPtr.Zero, _spaceObj = IntPtr.Zero;
     long _nextTry = 0;
 
     public int LastHr, LastHit;
@@ -101,12 +113,28 @@ internal sealed class EngineRay
             long t1 = 0, t2 = 0;
             try
             {
-                t1 = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0x950)).ToInt64();
+                _terrainObj = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0x950));
+                t1 = _terrainObj.ToInt64();
                 t2 = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0xA28)).ToInt64();
+                if (_terrainObj != IntPtr.Zero)
+                {
+                    IntPtr vt = Marshal.ReadIntPtr(_terrainObj);
+                    IntPtr fn = Marshal.ReadIntPtr(new IntPtr(vt.ToInt64() + 0xB8));
+                    _terrainVt = (TerrainVtFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(TerrainVtFn));
+                }
+                // entity/scene-node ray: [scene+0x910] -> +8 is the space
+                // object the scene ray forwards to (0x1809760B7..0xE8)
+                IntPtr spaceMgr = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0x910));
+                if (spaceMgr != IntPtr.Zero)
+                {
+                    _spaceObj = Marshal.ReadIntPtr(new IntPtr(spaceMgr.ToInt64() + 8));
+                    _spaceRay = (TerrainVtFn)Marshal.GetDelegateForFunctionPointer(
+                        new IntPtr(_module.ToInt64() + RVA_SPACE_RAY), typeof(TerrainVtFn));
+                }
             }
             catch { }
-            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X}",
-                _scene.ToInt64(), t1, t2));
+            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5}",
+                _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null));
             return true;
         }
         catch (Exception e)
@@ -144,14 +172,61 @@ internal sealed class EngineRay
     // Nearest terrain hit of the segment A->B; -1 when nothing is hit.
     public float RayTerrain(float ax, float ay, float az, float bx, float by, float bz)
     {
-        if (!EnsureReady()) return -1f;
-        return Cast(_terrain, ax, ay, az, bx, by, bz);
+        if (!EnsureReady() || _terrainVt == null) return -1f;
+        return Cast(_terrainVt, ax, ay, az, bx, by, bz);
     }
 
-    // General scene ray (KG3D_Scene::RayIntersection - entities/scene nodes).
+    float Cast(TerrainVtFn fn, float ax, float ay, float az, float bx, float by, float bz)
+    {
+        if (fn == null || _terrainObj == IntPtr.Zero) return -1f;
+        float dx = bx - ax, dy = by - ay, dz = bz - az;
+        float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        if (len < 1e-3f) return -1f;
+        var pos = new float[] { ax, ay, az };
+        var dir = new float[] { dx / len, dy / len, dz / len };
+        float dist;
+        try
+        {
+            LastHr = fn(_terrainObj, pos, dir, len, out dist);
+            LastDist = dist;
+            LastHit = LastHr != 0 ? 1 : 0;
+            if (LastHr == 0) return -1f;
+            if (dist < 0f || dist > len + 1f) return -1f;
+            return dist;
+        }
+        catch
+        {
+            return -1f;
+        }
+    }
+
+    // General scene ray (entities/scene nodes). The scene-level
+    // RayIntersection is guarded, so call the space manager it forwards to
+    // (0x180A5E4C0) directly - the same call the engine makes.
     public float RayScene(float ax, float ay, float az, float bx, float by, float bz)
     {
         if (!EnsureReady()) return -1f;
-        return Cast(_sceneRay, ax, ay, az, bx, by, bz);
+        if (_spaceRay == null || _spaceObj == IntPtr.Zero)
+            return Cast(_sceneRay, ax, ay, az, bx, by, bz);
+        float dx = bx - ax, dy = by - ay, dz = bz - az;
+        float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        if (len < 1e-3f) return -1f;
+        var pos = new float[] { ax, ay, az };
+        var dir = new float[] { dx / len, dy / len, dz / len };
+        float dist;
+        try
+        {
+            int hr = _spaceRay(_spaceObj, pos, dir, len, out dist);
+            LastHr = hr;
+            LastDist = dist;
+            LastHit = hr != 0 ? 1 : 0;
+            if (hr == 0) return -1f;
+            if (dist < 0f || dist > len + 1f) return -1f;
+            return dist;
+        }
+        catch
+        {
+            return -1f;
+        }
     }
 }

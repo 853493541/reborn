@@ -949,15 +949,16 @@ internal static class RebornClient
                         float hS = col.Raycast(px, py + 90f, pz, px, py + 90f, pz + 2000f);
                         float hE = col.Raycast(px, py + 90f, pz, px + 2000f, py + 90f, pz);
                         float hW = col.Raycast(px, py + 90f, pz, px - 2000f, py + 90f, pz);
+                        float tD = engineRay.RayTerrain(px, py + 90f, pz, px, py - 600f, pz);
                         float tN = engineRay.RayTerrain(px, py + 90f, pz, px, py + 90f, pz - 2000f);
                         int tHr = engineRay.LastHr, tHit = engineRay.LastHit;
                         float sN = engineRay.RayScene(px, py + 90f, pz, px, py + 90f, pz - 2000f);
                         int sHr = engineRay.LastHr, sHit = engineRay.LastHit;
                         float tE = engineRay.RayTerrain(px, py + 90f, pz, px + 2000f, py + 90f, pz);
                         float sE = engineRay.RayScene(px, py + 90f, pz, px + 2000f, py + 90f, pz);
-                        Log(string.Format("obstprobe N={0:F0} S={1:F0} E={2:F0} W={3:F0} inst={4} ray={5} terrN={6:F0}(hr={7},hit={8}) terrE={9:F0} sceneN={10:F0}(hr={11},hit={12}) sceneE={13:F0}",
+                        Log(string.Format("obstprobe N={0:F0} S={1:F0} E={2:F0} W={3:F0} inst={4} ray={5} terrD={6:F0} terrN={7:F0}(hr={8},hit={9}) terrE={10:F0} sceneN={11:F0}(hr={12},hit={13}) sceneE={14:F0}",
                             hN, hS, hE, hW, col.InstanceCount, engineRay.Available ? 1 : 0,
-                            tN, tHr, tHit, tE, sN, sHr, sHit, sE));
+                            tD, tN, tHr, tHit, tE, sN, sHr, sHit, sE));
                 }
             }
 
@@ -1210,10 +1211,12 @@ internal static class RebornClient
                         float qy2 = (float)(ay2 + oy2 + uy * offLen);
                         float qz2 = (float)(az2 + oz2 + uz * offLen);
                         float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2);
-                        // engine terrain ray: the game's camera mask 0x301 includes
-                        // the terrain backend, which our baked set cannot cover
+                        // engine rays: the game's camera mask 0x301 covers terrain
+                        // and scene entities, which the baked set cannot fully cover
                         float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);
                         if (th > 0f && (h <= 0f || th < h)) h = th;
+                        float sh = engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2);
+                        if (sh > 0f && (h <= 0f || sh < h)) h = sh;
                         if (h > 0f && (hitDist < 0.0 || h < hitDist)) hitDist = h;
                     }
                 }
@@ -1290,8 +1293,16 @@ internal static class RebornClient
                 double pd = Math.Sqrt((abx - dbgIntX) * (abx - dbgIntX) +
                                       (aby - dbgIntY) * (aby - dbgIntY) +
                                       (abz - dbgIntZ) * (abz - dbgIntZ));
-                Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1}",
-                    dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd));
+                // ray guard probe: called AFTER FrameMove/Render (inside the
+                // engine frame) - tests whether the engine ray requires that
+                float rdx = abx - px, rdy = aby - (py + 90f), rdz = abz - pz;
+                float rl = (float)Math.Sqrt(rdx * rdx + rdy * rdy + rdz * rdz);
+                float rr = -1f;
+                if (rl > 1f)
+                    rr = engineRay.RayTerrain(px, py + 90f, pz,
+                        px + rdx / rl * 600f, py + 90f + rdy / rl * 600f, pz + rdz / rl * 600f);
+                Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1} rayPost={7:F0}(hr={8},hit={9})",
+                    dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd, rr, engineRay.LastHr, engineRay.LastHit));
             }
 
             if (now - lastHud >= 250)
