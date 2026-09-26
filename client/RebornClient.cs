@@ -703,6 +703,8 @@ internal static class RebornClient
                 camSys.Yaw, camSys.Pitch, geometricAimPitch()));
             alignAim();
         }
+        // startup distance must respect the user/engine caps (latent item 8)
+        camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -784,7 +786,7 @@ internal static class RebornClient
                 // model-driven camera motion (move-pitch / yaw-follow) is fed to
                 // the engine as orbit pixels: no raw drag counterpart exists, so
                 // the full delta is synthesised
-                ox += adjYawPx; adjYawPx = 0;
+                int oxSend = ox + adjYawPx; adjYawPx = 0;
                 // row per-frame clamps (CameraMaxDeltaYaw/Pitch, row speeds in
                 // CAMERA_REAL_VALUES.md) converted through the measured engine
                 // orbit sensitivity: 0.0018 rad/px yaw, 0.00121 rad/px pitch
@@ -841,7 +843,7 @@ internal static class RebornClient
                 // one combined orbit per frame (a second ROTATE_CAMERA start
                 // without a FrameMove would drop the first delta)
                 scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
-                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + ox, lockCenter.Y + oy + oyFF));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + oxSend, lockCenter.Y + oy + oyFF));
                 orbitApplied = true;
                 lastOrbitMs = now;
             }
@@ -1186,14 +1188,19 @@ internal static class RebornClient
                     double aimAdj = aimPitchOf(camSys.Pitch) - aimPitchOf(pitchPreAdj);
                     adjPitchPx = (int)Math.Round(-aimAdj / 0.00121);
                 }
-                if (sprinting)
+                // the automatic character/sprint mode logic must not override a
+                // forced test mode (RC_CAM_MODE)
+                if (camMode.Length == 0)
                 {
-                    if (camSys.Mode != CameraSystem.MODE_SPRINT)
-                        camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
-                }
-                else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
-                {
-                    camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
+                    if (sprinting)
+                    {
+                        if (camSys.Mode != CameraSystem.MODE_SPRINT)
+                            camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
+                    }
+                    else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
+                    {
+                        camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
+                    }
                 }
                 double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
                               * cameraSettings.EyeScale;

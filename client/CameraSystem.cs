@@ -474,17 +474,23 @@ public sealed class CameraSystem
             // SprintCameraMaxDistance is a pull-back delta (60 u), not an
             // absolute 60 m target. The exact engine consumer/unit remains an
             // open RE item; use the observed world-unit delta conservatively.
+            // per-mode distance: the active mode row owns TargetDistance (the
+            // engine reads the mode row); fall back to the character row when
+            // the mode row does not carry the key
+            double baseDist = row.F("TargetDistance",
+                Rows[MODE_CHARACTER].F("TargetDistance", 6.0));
             double target = ClampDistanceUnits(
-                Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters +
-                row.F("SprintCameraMaxDistance", 60.0));
+                baseDist * meters + row.F("SprintCameraMaxDistance", 60.0));
             double st = Math.Max(row.F("SprintCameraSmoothTime", 0.5), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         else
         {
-            double target = ClampDistanceUnits(
-                Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters);
-            double st = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
+            double baseDist = row.F("TargetDistance",
+                Rows[MODE_CHARACTER].F("TargetDistance", 6.0));
+            double target = ClampDistanceUnits(baseDist * meters);
+            double st = Math.Max(row.F("SmoothTime",
+                Rows[MODE_CHARACTER].F("SmoothTime", 0.06)), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         return Distance;
