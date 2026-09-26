@@ -30,6 +30,14 @@ internal sealed class EngineRay
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr EngineMethodFn(IntPtr self);
 
+    // ?GetSceneView@KG3D_Window@@UEBAPEAUIKG3D_SceneView@@H@Z(window, index)
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr GetSceneViewFn(IntPtr self, int index);
+
+    // projection getter (vt+0xA8): out fov, aspect, znear, zfar
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int ProjFn(IntPtr view, out float fov, out float aspect, out float znear, out float zfar);
+
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int RayTerrainFn(IntPtr scene, float[] pos, float[] dir, float maxDist,
                               IntPtr unused, out float retDist, out int retIntersect);
@@ -135,6 +143,25 @@ internal sealed class EngineRay
             catch { }
             _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5}",
                 _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null));
+            // view projection (near plane) for the close-camera question
+            IntPtr getView = GetProcAddress(_module, "?GetSceneView@KG3D_Window@@UEBAPEAUIKG3D_SceneView@@H@Z");
+            if (getView != IntPtr.Zero)
+            {
+                var viewFn = (GetSceneViewFn)Marshal.GetDelegateForFunctionPointer(getView, typeof(GetSceneViewFn));
+                IntPtr view = viewFn(window, 0);
+                if (view != IntPtr.Zero)
+                {
+                    IntPtr vt = Marshal.ReadIntPtr(view);
+                    IntPtr proj = Marshal.ReadIntPtr(new IntPtr(vt.ToInt64() + 0xA8));
+                    var projFn = (ProjFn)Marshal.GetDelegateForFunctionPointer(proj, typeof(ProjFn));
+                    float fov, aspect, zn, zf;
+                    int hr = projFn(view, out fov, out aspect, out zn, out zf);
+                    _log(string.Format("EngineRay: view=0x{0:X} proj hr={1} fov={2:F3} aspect={3:F3} near={4:F2} far={5:F0}",
+                        view.ToInt64(), hr, fov, aspect, zn, zf));
+                }
+                else _log("EngineRay: GetSceneView(0) null");
+            }
+            else _log("EngineRay: GetSceneView export missing");
             return true;
         }
         catch (Exception e)
