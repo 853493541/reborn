@@ -84,3 +84,43 @@ the near plane from the host.
 Open item for the native-interface recon: read/set the view near plane
 (vtable slot at `view+0xA8` slot 3) so the host can reproduce the official
 clipping instead of the park-below hack.
+
+## 4. Host engine vs game engine (measured 2026-09-24)
+
+The running client does **not** load the game engine that the rules above come
+from. Loaded modules of `reborn_client.exe`:
+
+```
+MovieEngineCLR.dll, KG_EngineEditorX64.dll, KG3DEngineDX11EX64.dll,
+kg3d_objectX64.dll, kg3d_DataCenterX64.dll, PhysicsEngineX64.dll,
+PhysX3_x64.dll, X3DEngine.dll, ...
+```
+
+i.e. the **editor/DX11 engine** (`KG3DEngineDX11EX64.dll`), not the game's
+`KG3DEngineX64.dll`. The obstruction/flex/near-plane addresses in sections 1-2
+are the game engine; the editor engine is a different build and the managed
+host exposes only `SetCameraPos` / `ExecAction` / `SetViewAngleFactor`. The
+official camera rules cannot be invoked through the managed wrapper.
+
+## 5. Why walls are still see-through: measured coverage
+
+`structure_collision.bin` (the camera ray source) was parsed directly:
+
+- FCOL v2: 695 meshes, 4957 instances.
+- Bake coverage of the map's world objects: **4963 / 4965** actors kept
+  (`.mesh` 4777, `.srt` 186) - the bake is not the problem.
+- Around the spawn point the nearest baked instance is **1425 u away**
+  (`23334,24224`), while the screenshots show buildings right there. Those
+  buildings are **terrain / subscene geometry**, not `worldObjects`, so they
+  have no camera ray data. The game engine's camera probes include terrain
+  (`RayIntersectionTerrain` backend of mask `0x301`); the host only has a
+  heightfield `TerrainSampler`, which cannot see vertical terrain surfaces or
+  terrain-baked buildings.
+
+Path to exact behaviour:
+
+1. Bake the map **terrain mesh** (landscape render geometry) into the camera
+   collision set - pragmatic, matches the game's terrain ray; or
+2. Recon the host engine / PhysX scene (`KG3DEngineDX11EX64.dll` +
+   `PhysicsEngineX64.dll`) for a native scene ray, which would hit everything
+   the renderer draws (the same idea as the game's mask `0x301`).
