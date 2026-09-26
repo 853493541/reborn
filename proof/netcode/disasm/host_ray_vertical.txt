@@ -1,0 +1,401 @@
+# KG3DEngineDX11EX64.dll xrefs for 'KG3D_SpaceManager::RayIntersectionVertical'
+# image base 0x180000000
+
+## xref @ 0x180a5e494 -> 0x1821db000 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_SpaceManager.cpp,KG3D_SpaceManager::RayIntersectionVertical:446'  fn start 0x180a5e1d0
+  0x180a5e1d0: mov      rax, rsp
+  0x180a5e1d3: push     rbx
+  0x180a5e1d4: push     rbp
+  0x180a5e1d5: push     rsi
+  0x180a5e1d6: push     rdi
+  0x180a5e1d7: push     r12
+  0x180a5e1d9: push     r13
+  0x180a5e1db: push     r14
+  0x180a5e1dd: push     r15
+  0x180a5e1df: sub      rsp, 0xa8
+  0x180a5e1e6: movaps   xmmword ptr [rax - 0x58], xmm6
+  0x180a5e1ea: movaps   xmmword ptr [rax - 0x68], xmm7
+  0x180a5e1ee: mov      rax, qword ptr [rip + 0x1b210eb]
+  0x180a5e1f5: xor      rax, rsp
+  0x180a5e1f8: mov      qword ptr [rsp + 0x78], rax
+  0x180a5e1fd: mov      rbp, r9
+  0x180a5e200: mov      qword ptr [rsp + 0x48], r9
+  0x180a5e205: movaps   xmm7, xmm2
+  0x180a5e208: mov      qword ptr [rsp + 0x38], rdx
+  0x180a5e20d: mov      rdi, rcx
+  0x180a5e210: mov      r8d, dword ptr [rip + 0x1bf64ad]
+  0x180a5e217: mov      rax, qword ptr gs:[0x58]
+  0x180a5e220: mov      ecx, 0x89b0
+  0x180a5e225: mov      r13, qword ptr [rax + r8*8]
+  0x180a5e229: mov      eax, dword ptr [rcx + r13]
+  0x180a5e22d: cmp      dword ptr [rip + 0x22fa8f9], eax
+  0x180a5e233: jg       0x180a5e474
+  0x180a5e239: mov      ebx, dword ptr [rip + 0x1ba6531]  ; '\t'
+  0x180a5e23f: mov      dword ptr [rsp + 0x30], ebx
+  0x180a5e243: mov      dword ptr [rsp + 0x50], ebx
+  0x180a5e247: mov      rsi, qword ptr [rip + 0x1ba6512]
+  0x180a5e24e: mov      qword ptr [rsp + 0x40], rsi
+  0x180a5e253: mov      qword ptr [rsp + 0x58], rsi
+  0x180a5e258: call     qword ptr [rip + 0x11b70a2]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180a5e25e: test     al, al
+  0x180a5e260: je       0x180a5e274
+  0x180a5e262: xor      r9d, r9d
+  0x180a5e265: xor      r8d, r8d
+  0x180a5e268: mov      rdx, rsi
+  0x180a5e26b: mov      ecx, ebx
+  0x180a5e26d: call     qword ptr [rip + 0x11b7085]  ; PerfAnalyzerX64.dll!BeginSample
+  0x180a5e273: nop      
+  0x180a5e274: xor      r15d, r15d
+  0x180a5e277: movss    xmm6, dword ptr [rip + 0x185a5d5]
+  0x180a5e27f: test     rbp, rbp
+  0x180a5e282: jne      0x180a5e2b2
+  0x180a5e284: lea      rax, [rip + 0x177ce4d]  ; 'KG3D_SpaceManager::RayIntersectionVertical'
+  0x180a5e28b: mov      qword ptr [rsp + 0x20], rax
+  0x180a5e290: mov      r9d, 0x1c2
+  0x180a5e296: lea      r8, [rip + 0x17634c3]  ; 'pRetHeight'
+  0x180a5e29d: lea      rdx, [rip + 0x150e9fc]  ; 'KGLOG_ASSERT_EXIT(%s) at line %u in %s'
+  0x180a5e2a4: lea      ecx, [rbp + 3]
+  0x180a5e2a7: call     qword ptr [rip + 0x11b6aa3]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180a5e2ad: jmp      0x180a5e3c3
+  0x180a5e2b2: mov      rbx, qword ptr [rdi]
+  0x180a5e2b5: mov      r12, qword ptr [rdi + 8]
+  0x180a5e2b9: cmp      rbx, r12
+  0x180a5e2bc: je       0x180a5e3ba
+  0x180a5e2c2: lea      rdi, [rip + 0x177cfa7]  ; 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_SpaceNode.cpp,KG3D_SpaceNode::RayIntersectionVertical:764'
+  0x180a5e2c9: nop      dword ptr [rax]
+  0x180a5e2d0: mov      r14, qword ptr [rbx]
+  0x180a5e2d3: test     r14, r14
+  0x180a5e2d6: je       0x180a5e3a3
+  0x180a5e2dc: mov      dword ptr [rsp + 0x70], 0x7f7fffff
+  0x180a5e2e4: mov      eax, 0x89b0
+  0x180a5e2e9: mov      eax, dword ptr [rax + r13]
+  0x180a5e2ed: cmp      dword ptr [rip + 0x22fa869], eax
+  0x180a5e2f3: jg       0x180a5e412
+  0x180a5e2f9: mov      esi, dword ptr [rip + 0x1ba6591]  ; '\t'
+  0x180a5e2ff: mov      dword ptr [rsp + 0x60], esi
+  0x180a5e303: mov      rbp, qword ptr [rip + 0x1ba6576]
+  0x180a5e30a: mov      qword ptr [rsp + 0x68], rbp
+  0x180a5e30f: call     qword ptr [rip + 0x11b6feb]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180a5e315: test     al, al
+  0x180a5e317: je       0x180a5e32b
+  0x180a5e319: xor      r9d, r9d
+  0x180a5e31c: xor      r8d, r8d
+  0x180a5e31f: mov      rdx, rbp
+  0x180a5e322: mov      ecx, esi
+  0x180a5e324: call     qword ptr [rip + 0x11b6fce]  ; PerfAnalyzerX64.dll!BeginSample
+  0x180a5e32a: nop      
+  0x180a5e32b: xor      edi, edi
+  0x180a5e32d: mov      rax, qword ptr [r14 + 0x138]
+  0x180a5e334: test     rax, rax
+  0x180a5e337: je       0x180a5e366
+  0x180a5e339: mov      rcx, qword ptr [rax + 0x268]
+  0x180a5e340: test     rcx, rcx
+  0x180a5e343: je       0x180a5e366
+  0x180a5e345: lea      r9, [rsp + 0x70]
+  0x180a5e34a: movaps   xmm2, xmm7
+  0x180a5e34d: mov      rdx, qword ptr [rsp + 0x38]
+  0x180a5e352: call     0x180937230
+  0x180a5e357: cmp      eax, 1
+  0x180a5e35a: mov      r14d, 1
+  0x180a5e360: cmove    edi, r14d
+  0x180a5e364: jmp      0x180a5e36c
+  0x180a5e366: mov      r14d, 1
+  0x180a5e36c: call     qword ptr [rip + 0x11b6f8e]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180a5e372: test     al, al
+  0x180a5e374: je       0x180a5e387
+  0x180a5e376: xor      r9d, r9d
+  0x180a5e379: xor      r8d, r8d
+  0x180a5e37c: mov      rdx, rbp
+  0x180a5e37f: mov      ecx, esi
+  0x180a5e381: call     qword ptr [rip + 0x11b6f89]  ; PerfAnalyzerX64.dll!EndSample
+  0x180a5e387: test     edi, edi
+  0x180a5e389: lea      rdi, [rip + 0x177cee0]  ; 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_SpaceNode.cpp,KG3D_SpaceNode::RayIntersectionVertical:764'
+  0x180a5e390: je       0x180a5e3a3
+  0x180a5e392: movss    xmm0, dword ptr [rsp + 0x70]
+  0x180a5e398: comiss   xmm6, xmm0
+  0x180a5e39b: jbe      0x180a5e3a3
+  0x180a5e39d: mov      r15d, r14d
+  0x180a5e3a0: movaps   xmm6, xmm0
+  0x180a5e3a3: add      rbx, 8
+  0x180a5e3a7: cmp      rbx, r12
+  0x180a5e3aa: jne      0x180a5e2d0
+  0x180a5e3b0: mov      rsi, qword ptr [rsp + 0x40]
+  0x180a5e3b5: mov      rbp, qword ptr [rsp + 0x48]
+  0x180a5e3ba: movss    dword ptr [rbp], xmm6
+  0x180a5e3bf: mov      ebx, dword ptr [rsp + 0x30]
+  0x180a5e3c3: call     qword ptr [rip + 0x11b6f37]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180a5e3c9: test     al, al
+  0x180a5e3cb: je       0x180a5e3de
+  0x180a5e3cd: xor      r9d, r9d
+  0x180a5e3d0: xor      r8d, r8d
+  0x180a5e3d3: mov      rdx, rsi
+  0x180a5e3d6: mov      ecx, ebx
+  0x180a5e3d8: call     qword ptr [rip + 0x11b6f32]  ; PerfAnalyzerX64.dll!EndSample
+  0x180a5e3de: mov      eax, r15d
+  0x180a5e3e1: mov      rcx, qword ptr [rsp + 0x78]
+  0x180a5e3e6: xor      rcx, rsp
+  0x180a5e3e9: call     0x1818c7940
+  0x180a5e3ee: movaps   xmm6, xmmword ptr [rsp + 0x90]
+  0x180a5e3f6: movaps   xmm7, xmmword ptr [rsp + 0x80]
+  0x180a5e3fe: add      rsp, 0xa8
+  0x180a5e405: pop      r15
+  0x180a5e407: pop      r14
+  0x180a5e409: pop      r13
+  0x180a5e40b: pop      r12
+  0x180a5e40d: pop      rdi
+  0x180a5e40e: pop      rsi
+  0x180a5e40f: pop      rbp
+  0x180a5e410: pop      rbx
+  0x180a5e411: ret      
+  0x180a5e412: lea      rcx, [rip + 0x22fa743]
+  0x180a5e419: call     0x1818c7ca8
+  0x180a5e41e: cmp      dword ptr [rip + 0x22fa737], -1
+  0x180a5e425: jne      0x180a5e2f9
+  0x180a5e42b: mov      qword ptr [rip + 0x1ba645a], 9  ; '\t'
+  0x180a5e436: mov      qword ptr [rip + 0x1ba643f], 0
+  0x180a5e441: mov      qword ptr [rip + 0x1ba6440], rdi
+  0x180a5e448: xor      r9d, r9d
+  0x180a5e44b: lea      r8, [r9 - 1]
+  0x180a5e44f: mov      rdx, rdi
+  0x180a5e452: lea      ecx, [r9 + 9]
+  0x180a5e456: call     qword ptr [rip + 0x11b6e94]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x180a5e45c: mov      qword ptr [rip + 0x1ba641d], rax
+  0x180a5e463: lea      rcx, [rip + 0x22fa6f2]
+  0x180a5e46a: call     0x1818c7c48
+  0x180a5e46f: jmp      0x180a5e2f9
+  0x180a5e474: lea      rcx, [rip + 0x22fa6b1]
+  0x180a5e47b: call     0x1818c7ca8
+  0x180a5e480: cmp      dword ptr [rip + 0x22fa6a5], -1
+  0x180a5e487: jne      0x180a5e239
+  0x180a5e48d: xor      r9d, r9d
+  0x180a5e490: lea      r8, [r9 - 1]
+  0x180a5e494: lea      rdx, [rip + 0x177cb65]  ; 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_SpaceManager.cpp,KG3D_SpaceManager::RayIntersectionVertical:446'
+  0x180a5e49b: lea      ecx, [r9 + 9]
+  0x180a5e49f: call     qword ptr [rip + 0x11b6e4b]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x180a5e4a5: mov      qword ptr [rip + 0x1ba62b4], rax
+  0x180a5e4ac: lea      rcx, [rip + 0x22fa679]
+  0x180a5e4b3: call     0x1818c7c48
+  0x180a5e4b8: jmp      0x180a5e239
+  0x180a5e4bd: int3     
+  0x180a5e4be: int3     
+  0x180a5e4bf: int3     
+  0x180a5e4c0: mov      rax, rsp
+  0x180a5e4c3: push     rbx
+  0x180a5e4c4: push     rbp
+  0x180a5e4c5: push     rsi
+  0x180a5e4c6: push     rdi
+  0x180a5e4c7: push     r12
+  0x180a5e4c9: push     r14
+  0x180a5e4cb: push     r15
+  0x180a5e4cd: sub      rsp, 0xb0
+  0x180a5e4d4: movaps   xmmword ptr [rax - 0x48], xmm6
+  0x180a5e4d8: movaps   xmmword ptr [rax - 0x58], xmm7
+  0x180a5e4dc: movaps   xmmword ptr [rax - 0x68], xmm8
+  0x180a5e4e1: movaps   xmmword ptr [rax - 0x78], xmm9
+  0x180a5e4e6: mov      rax, qword ptr [rip + 0x1b20df3]
+  0x180a5e4ed: xor      rax, rsp
+  0x180a5e4f0: mov      qword ptr [rsp + 0x68], rax
+  0x180a5e4f5: movaps   xmm7, xmm3
+  0x180a5e4f8: mov      r12, r8
+  0x180a5e4fb: mov      rsi, rdx
+  0x180a5e4fe: mov      rbx, rcx
+  0x180a5e501: mov      r15, qword ptr [rsp + 0x110]
+  0x180a5e509: mov      r9d, dword ptr [rip + 0x1bf61b4]
+  0x180a5e510: mov      rax, qword ptr gs:[0x58]
+  0x180a5e519: mov      ecx, 0x89b0
+  0x180a5e51e: mov      rax, qword ptr [rax + r9*8]
+  0x180a5e522: mov      r8d, dword ptr [rcx + rax]
+  0x180a5e526: cmp      dword ptr [rip + 0x22fa603], r8d
+  0x180a5e52d: jg       0x180a5e6c9
+  0x180a5e533: mov      ebp, dword ptr [rip + 0x1ba624f]  ; '\t'
+  0x180a5e539: mov      dword ptr [rsp + 0x30], ebp
+  0x180a5e53d: mov      r14, qword ptr [rip + 0x1ba6234]
+  0x180a5e544: mov      qword ptr [rsp + 0x38], r14
+  0x180a5e549: call     qword ptr [rip + 0x11b6db1]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180a5e54f: test     al, al
+  0x180a5e551: je       0x180a5e565
+  0x180a5e553: xor      r9d, r9d
+  0x180a5e556: xor      r8d, r8d
+  0x180a5e559: mov      rdx, r14
+  0x180a5e55c: mov      ecx, ebp
+  0x180a5e55e: call     qword ptr [rip + 0x11b6d94]  ; PerfAnalyzerX64.dll!BeginSample
+  0x180a5e564: nop      
+  0x180a5e565: xor      edi, edi
+  0x180a5e567: movss    xmm6, dword ptr [rip + 0x185a2e5]
+  0x180a5e56f: movss    xmm0, dword ptr [rsi + 8]
+  0x180a5e574: movsd    xmm9, qword ptr [rsi]
+  0x180a5e579: movlhps  xmm9, xmm0
+  0x180a5e57d: movss    xmm0, dword ptr [r12 + 8]
+  0x180a5e584: movsd    xmm8, qword ptr [r12]
+  0x180a5e58a: movlhps  xmm8, xmm0
+  0x180a5e58e: movaps   xmm3, xmm8
+  0x180a5e592: mulps    xmm3, xmm8
+  0x180a5e596: movaps   xmm0, xmm3
+  0x180a5e599: shufps   xmm0, xmm3, 0x99
+  0x180a5e59d: addss    xmm3, xmm0
+  0x180a5e5a1: shufps   xmm0, xmm0, 0x55
+  0x180a5e5a5: addss    xmm3, xmm0
+  0x180a5e5a9: shufps   xmm3, xmm3, 0
+  0x180a5e5ad: sqrtps   xmm1, xmm3
+  0x180a5e5b0: xorps    xmm0, xmm0
+  0x180a5e5b3: movaps   xmm2, xmm1
+  0x180a5e5b6: cmpneqps xmm2, xmm0
+  0x180a5e5ba: cmpneqps xmm3, xmmword ptr [rip + 0x168edce]
+  0x180a5e5c2: divps    xmm8, xmm1
+  0x180a5e5c6: andps    xmm8, xmm2
+  0x180a5e5ca: movaps   xmm0, xmm3
+  0x180a5e5cd: andnps   xmm0, xmmword ptr [rip + 0x168edcc]
+  0x180a5e5d4: andps    xmm8, xmm3
+  0x180a5e5d8: orps     xmm8, xmm0
+  0x180a5e5dc: test     r15, r15
+  0x180a5e5df: jne      0x180a5e60c
+  0x180a5e5e1: lea      rax, [rip + 0x177c9e8]  ; 'KG3D_SpaceManager::RayIntersection'
+  0x180a5e5e8: mov      qword ptr [rsp + 0x20], rax
+  0x180a5e5ed: mov      r9d, 0x1df
+  0x180a5e5f3: lea      r8, [rip + 0x1763166]  ; 'pRetHeight'
+  0x180a5e5fa: lea      rdx, [rip + 0x150e69f]  ; 'KGLOG_ASSERT_EXIT(%s) at line %u in %s'
+  0x180a5e601: lea      ecx, [rdi + 3]
+  0x180a5e604: call     qword ptr [rip + 0x11b6746]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180a5e60a: jmp      0x180a5e675
+  0x180a5e60c: mov      rsi, qword ptr [rbx + 8]
+  0x180a5e610: mov      rbx, qword ptr [rbx]
+  0x180a5e613: cmp      rbx, rsi
+  0x180a5e616: je       0x180a5e670
+  0x180a5e618: mov      rcx, qword ptr [rbx]
+  0x180a5e61b: test     rcx, rcx
+  0x180a5e61e: je       0x180a5e667
+  0x180a5e620: mov      dword ptr [rsp + 0x60], 0x7f7fffff
+  0x180a5e628: movaps   xmmword ptr [rsp + 0x40], xmm8
+  0x180a5e62e: movaps   xmmword ptr [rsp + 0x50], xmm9
+  0x180a5e634: lea      rax, [rsp + 0x60]
+  0x180a5e639: mov      qword ptr [rsp + 0x20], rax
+  0x180a5e63e: movaps   xmm3, xmm7
+  0x180a5e641: lea      r8, [rsp + 0x40]
+  0x180a5e646: lea      rdx, [rsp + 0x50]
+  0x180a5e64b: call     0x180a61300
+  0x180a5e650: test     eax, eax
+  0x180a5e652: je       0x180a5e667
+  0x180a5e654: movss    xmm0, dword ptr [rsp + 0x60]
+  0x180a5e65a: comiss   xmm6, xmm0
+  0x180a5e65d: jbe      0x180a5e667
+  0x180a5e65f: movaps   xmm6, xmm0
+  0x180a5e662: mov      edi, 1
+  0x180a5e667: add      rbx, 8
+  0x180a5e66b: cmp      rbx, rsi
+  0x180a5e66e: jne      0x180a5e618
+  0x180a5e670: movss    dword ptr [r15], xmm6
+  0x180a5e675: call     qword ptr [rip + 0x11b6c85]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180a5e67b: test     al, al
+  0x180a5e67d: je       0x180a5e690
+  0x180a5e67f: xor      r9d, r9d
+  0x180a5e682: xor      r8d, r8d
+  0x180a5e685: mov      rdx, r14
+  0x180a5e688: mov      ecx, ebp
+  0x180a5e68a: call     qword ptr [rip + 0x11b6c80]  ; PerfAnalyzerX64.dll!EndSample
+  0x180a5e690: mov      eax, edi
+  0x180a5e692: mov      rcx, qword ptr [rsp + 0x68]
+  0x180a5e697: xor      rcx, rsp
+  0x180a5e69a: call     0x1818c7940
+  0x180a5e69f: lea      r11, [rsp + 0xb0]
+  0x180a5e6a7: movaps   xmm6, xmmword ptr [r11 - 0x10]
+  0x180a5e6ac: movaps   xmm7, xmmword ptr [r11 - 0x20]
+  0x180a5e6b1: movaps   xmm8, xmmword ptr [r11 - 0x30]
+  0x180a5e6b6: movaps   xmm9, xmmword ptr [r11 - 0x40]
+  0x180a5e6bb: mov      rsp, r11
+  0x180a5e6be: pop      r15
+  0x180a5e6c0: pop      r14
+  0x180a5e6c2: pop      r12
+  0x180a5e6c4: pop      rdi
+  0x180a5e6c5: pop      rsi
+  0x180a5e6c6: pop      rbp
+  0x180a5e6c7: pop      rbx
+  0x180a5e6c8: ret      
+  0x180a5e6c9: lea      rcx, [rip + 0x22fa460]
+  0x180a5e6d0: call     0x1818c7ca8
+  0x180a5e6d5: cmp      dword ptr [rip + 0x22fa454], -1
+  0x180a5e6dc: jne      0x180a5e533
+  0x180a5e6e2: xor      r9d, r9d
+  0x180a5e6e5: lea      r8, [r9 - 1]
+  0x180a5e6e9: lea      rdx, [rip + 0x177c810]  ; 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_SpaceManager.cpp,KG3D_SpaceManager::RayIntersection:472'
+  0x180a5e6f0: lea      ecx, [r9 + 9]
+  0x180a5e6f4: call     qword ptr [rip + 0x11b6bf6]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x180a5e6fa: mov      qword ptr [rip + 0x1ba6077], rax
+  0x180a5e701: lea      rcx, [rip + 0x22fa428]
+  0x180a5e708: call     0x1818c7c48
+  0x180a5e70d: jmp      0x180a5e533
+  0x180a5e712: int3     
+  0x180a5e713: int3     
+  0x180a5e714: int3     
+  0x180a5e715: int3     
+  0x180a5e716: int3     
+  0x180a5e717: int3     
+  0x180a5e718: int3     
+  0x180a5e719: int3     
+  0x180a5e71a: int3     
+  0x180a5e71b: int3     
+  0x180a5e71c: int3     
+  0x180a5e71d: int3     
+  0x180a5e71e: int3     
+  0x180a5e71f: int3     
+  0x180a5e720: sub      rsp, 0x28
+  0x180a5e724: call     0x180a5e8c0
+  0x180a5e729: add      rsp, 0x28
+  0x180a5e72d: ret      
+  0x180a5e72e: int3     
+  0x180a5e72f: int3     
+  0x180a5e730: push     rbx
+  0x180a5e732: push     rdi
+  0x180a5e733: sub      rsp, 0x38
+  0x180a5e737: mov      rdi, qword ptr [rcx]
+  0x180a5e73a: mov      rbx, rcx
+  0x180a5e73d: mov      ecx, edx
+  0x180a5e73f: mov      rdx, qword ptr [rbx + 8]
+  0x180a5e743: sub      rdx, rdi
+  0x180a5e746: sar      rdx, 3
+  0x180a5e74a: cmp      rcx, rdx
+  0x180a5e74d: jb       0x180a5e786
+  0x180a5e74f: lea      rcx, [rip + 0x177c292]  ; 'KG3D_SpaceManager::DelSpaceNode'
+  0x180a5e756: mov      r9d, 0x229
+  0x180a5e75c: mov      qword ptr [rsp + 0x20], rcx
+  0x180a5e761: lea      r8, [rip + 0x177c2a0]  ; 'nSpaceNodeId < m_vecSpaceNode.size()'
+  0x180a5e768: mov      ecx, 3
+  0x180a5e76d: lea      rdx, [rip + 0x150e3c4]  ; 'KGLOG_PROCESS_ERROR(%s) at line %u in %s'
+  0x180a5e774: call     qword ptr [rip + 0x11b65d6]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180a5e77a: mov      eax, 0x80004005
+  0x180a5e77f: add      rsp, 0x38
+  0x180a5e783: pop      rdi
+  0x180a5e784: pop      rbx
+  0x180a5e785: ret      
+  0x180a5e786: mov      qword ptr [rsp + 0x30], r14
+  0x180a5e78b: lea      r14, [rcx*8]
+  0x180a5e793: mov      rdi, qword ptr [r14 + rdi]
+  0x180a5e797: test     rdi, rdi
+  0x180a5e79a: je       0x180a5e8a3
+  0x180a5e7a0: mov      qword ptr [rsp + 0x60], rsi
+  0x180a5e7a5: mov      rsi, qword ptr [rdi + 0x140]
+  0x180a5e7ac: test     rsi, rsi
+  0x180a5e7af: je       0x180a5e7f5
+  0x180a5e7b1: mov      rcx, qword ptr [rsi + 0x148]
+  0x180a5e7b8: mov      rax, qword ptr [rsi + 0x150]
+  0x180a5e7bf: cmp      rcx, rax
+  0x180a5e7c2: je       0x180a5e7f5
+  0x180a5e7c4: lea      rdx, [rcx + 8]
+  0x180a5e7c8: cmp      qword ptr [rcx], rdi
+  0x180a5e7cb: je       0x180a5e7d7
+  0x180a5e7cd: mov      rcx, rdx
+  0x180a5e7d0: cmp      rdx, rax
+  0x180a5e7d3: jne      0x180a5e7c4
+  0x180a5e7d5: jmp      0x180a5e7f5
+  0x180a5e7d7: mov      r8, rax
+  0x180a5e7da: sub      r8, rdx
+  0x180a5e7dd: call     0x181a3bc21
+  0x180a5e7e2: add      qword ptr [rsi + 0x150], -8
+  0x180a5e7ea: mov      qword ptr [rdi + 0x140], 0
+  0x180a5e7f5: mov      rax, qword ptr [rbx + 0x168]
+  0x180a5e7fc: lea      rdx, [rdi + 0x250]
+  0x180a5e803: mov      rcx, qword ptr [rbx + 0x160]
+  0x180a5e80a: mov      rsi, qword ptr [rsp + 0x60]
+  0x180a5e80f: cmp      rcx, rax
+  0x180a5e812: je       0x180a5e83d
+  0x180a5e814: cmp      qword ptr [rcx], rdx
+  0x180a5e817: .byte    0x74
+
