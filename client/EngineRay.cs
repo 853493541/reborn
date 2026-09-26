@@ -24,6 +24,13 @@ internal sealed class EngineRay
     [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
     static extern IntPtr GetProcAddress(IntPtr module, string name);
 
+    [DllImport("kernel32.dll")]
+    static extern IntPtr TlsGetValue(int dwTlsIndex);
+
+    [DllImport("ntdll.dll")]
+    static extern int NtQueryInformationThread(IntPtr threadHandle, int infoClass,
+                                               IntPtr buffer, int bufferLength, out int returnLength);
+
     // KG3D_GetEngine2 returns g_pEngine directly
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr GetEngine2Fn();
@@ -48,6 +55,10 @@ internal sealed class EngineRay
     RayTerrainFn _sceneRay;
     TerrainVtFn _spaceRay, _entityRay;
     IntPtr _terrainObj = IntPtr.Zero, _spaceObj = IntPtr.Zero, _entityObj = IntPtr.Zero;
+    // scene-ray guard: cmp [global], tls+0x89B0; jg skip. A per-thread cell we
+    // can raise by hand so the guarded KG3D_Scene::RayIntersection runs.
+    IntPtr _guardCell = IntPtr.Zero;
+    IntPtr _guardA = IntPtr.Zero, _guardB = IntPtr.Zero;
     long _nextTry = 0;
 
     public int LastHr, LastHit;
@@ -138,9 +149,35 @@ internal sealed class EngineRay
                             new IntPtr(_module.ToInt64() + RVA_ENTITY_RAY), typeof(TerrainVtFn));
                 }
             }
-            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5} entity=0x{6:X} entityRay={7} entCount={8}",
+            // guard cell for the scene-level ray (TLS index 0x1826546C4,
+            // cell +0x89B0; globals 0x182D58298 / 0x182D5829C). Read the TLS
+            // array from the TEB (gs:[0x58]) so no TLS API is needed.
+            try
+            {
+                _guardA = new IntPtr(_module.ToInt64() + 0x2D58298);
+                _guardB = new IntPtr(_module.ToInt64() + 0x2D5829C);
+                IntPtr teb = IntPtr.Zero;
+                IntPtr buf = Marshal.AllocHGlobal(0x30);
+                try
+                {
+                    int ret;
+                    if (NtQueryInformationThread(new IntPtr(-2), 0, buf, 0x30, out ret) == 0)
+                        teb = Marshal.ReadIntPtr(buf, 8);   // TebBaseAddress
+                }
+                finally { Marshal.FreeHGlobal(buf); }
+                if (teb != IntPtr.Zero)
+                {
+                    int tlsIndex = Marshal.ReadInt32(new IntPtr(_module.ToInt64() + 0x26546C4));
+                    IntPtr tlsArray = Marshal.ReadIntPtr(new IntPtr(teb.ToInt64() + 0x58));
+                    IntPtr slot = Marshal.ReadIntPtr(new IntPtr(tlsArray.ToInt64() + tlsIndex * 8));
+                    if (slot != IntPtr.Zero)
+                        _guardCell = new IntPtr(slot.ToInt64() + 0x89B0);
+                }
+            }
+            catch { }
+            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5} entity=0x{6:X} entityRay={7} entCount={8} guardCell=0x{9:X}",
                 _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null,
-                _entityObj.ToInt64(), _entityRay != null, entCount));
+                _entityObj.ToInt64(), _entityRay != null, entCount, _guardCell.ToInt64()));
             return true;
         }
         catch (Exception e)
@@ -200,6 +237,22 @@ internal sealed class EngineRay
         return CastVt(_terrainVt, _terrainObj, ax, ay, az, bx, by, bz);
     }
 
+    // Raise the per-thread guard cell so the engine's own guard passes
+    // (pass condition: [global] <= tls+0x89B0).
+    void SatisfyGuard()
+    {
+        if (_guardCell == IntPtr.Zero) return;
+        try
+        {
+            int a = Marshal.ReadInt32(_guardA);
+            int b = Marshal.ReadInt32(_guardB);
+            int need = a > b ? a : b;
+            int cur = Marshal.ReadInt32(_guardCell);
+            if (need > cur) Marshal.WriteInt32(_guardCell, need);
+        }
+        catch { }
+    }
+
     // The scene-level KG3D_Scene::RayIntersection (guarded). Used to test
     // whether the guard passes when called inside the engine frame.
     public float RaySceneLevel(float ax, float ay, float az, float bx, float by, float bz)
@@ -221,8 +274,10 @@ internal sealed class EngineRay
             float d = CastVt(_entityRay, _entityObj, ax, ay, az, bx, by, bz);
             if (d > 0f && (best < 0f || d < best)) best = d;
         }
-        if (best < 0f && _sceneRay != null)
-            best = CastScene(_sceneRay, ax, ay, az, bx, by, bz);
+        // full scene query (all backends + filters) once the guard is raised
+        SatisfyGuard();
+        float gl = CastScene(_sceneRay, ax, ay, az, bx, by, bz);
+        if (gl > 0f && (best < 0f || gl < best)) best = gl;
         return best;
     }
 }
