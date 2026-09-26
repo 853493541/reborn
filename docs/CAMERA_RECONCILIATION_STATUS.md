@@ -37,4 +37,17 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 | `CameraShake`, `SetFollowAction`, `TrackCamera` triggers | no gameplay hook in the host (model classes exist) | completion plan Phase 6 |
 | `IKG3D_Camera` / `KG3DCameraProxy` (look-at, FOV, engine obstruction) | never reconned | `CAMERA_STATUS.md` next step / Phase 0 |
 | `MinCameraDistance = 100 u` | engine cap unprobed (placeholder) | live caps probe |
-| Character visibility when the camera is inside (park-below-map hack) | no visibility/alpha in the managed API | native camera interface; per-represent `KRLCharacter::SetPlayerControlVisibleState` (`0x1804E4150`) exists in the DLL |
+| Character visibility when the camera is inside (park-below-map hack) | no visibility/alpha in the managed API | **mitigated**: hide/show now keyed on the real post-clamp camera->anchor distance (90/150 u) and the model re-attaches on every handle change; inside-character views are gone in testing (user-confirmed). Still a host approximation of the game's near-plane clipping. |
+
+## Progress after this doc (latest commits)
+
+| Item | State |
+|---|---|
+| Engine terrain + entity rays (the game's camera backends) | **done** - `EngineRay` calls `terrain->vt[+0xB8]` and the space-manager ray `0x180A5E4C0` directly (guard bypass); live `terrD=91`, `sceneE=1865`; wired into the 5 obstruction probes |
+| Close-character view | **fixed** - real camera->anchor distance hide (90/150) + per-frame re-attach |
+| Distance caps | **done** - `SetTargetDistance` + `ClampDistanceUnits` on the character-row caps for wheel/F11/sprint (min and max); game max default 2000 u |
+| 广角 / FOV | **done** - `VideoSettings` reads `config.ini` CammeraAngle (48 deg here) and applies the game panel semantics (30-60 deg, default 50) as `SetViewAngleFactor`; projection-only |
+| Pitch limit / sprint trigger / body-turn rate / S3-S5 over-claims | **done** - engine limit pi/2-0.0157, `wSprint`, pi rad/s fallback, caps row + aimDirty |
+| Engine caps probe (`fMinCameraDistance`, `fMinCameraAngle`, `fMaxCameraAngle`) | **blocked by design** - the caps provider `JX3UIX64.dll` is present in `bin64` but **not loaded** by the host, so no in-process caps object exists; the 100 u min stays a placeholder and the documented defaults are used |
+| Host near-plane read | **blocked** - the engine view-manager singleton getter (`0x1801433E0`) blocks on the client thread (froze the app); needs an engine-context callback with a thread guard; near-plane setting API likewise unexposed |
+| Remaining audit items (obstruction release exact rule, `CameraSystem.Mouse` clamp, 9-ray/bObscatleCamera, mode cameras, shake/follow-action/track, operation-mode engine coupling, settings write path, controls C1-C13) | open - each needs its own pass |
