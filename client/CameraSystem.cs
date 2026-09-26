@@ -576,7 +576,9 @@ public sealed class CameraObstruction
 {
     public bool Obstructed;
     public double Distance = -1.0;     // current (possibly pulled) length
-    public double MinDistance = 5.0;
+    // native bound is max(0.001, hit) - 18; keep a tiny host epsilon so the
+    // camera reaches ~1 u from the anchor at a 19 u wall like the engine does
+    public double MinDistance = 0.1;
     public double Clearance = 18.0;
     public double PullThreshold = 50.0;     // free-side entry hysteresis
     public double ReleaseThreshold = 100.0; // obstructed-side release hysteresis

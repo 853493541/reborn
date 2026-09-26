@@ -168,23 +168,27 @@ shim (`KG3D_GetEngine` -> window -> scene) plus an RVA delegate for
 game uses, and the existing `structure_collision.bin` raycast covers the
 entity/props backend.
 
-### Shim status (2026-09-24, `client/EngineRay.cs`)
+### Shim status - SOLVED (2026-09-24, `client/EngineRay.cs`, commit `08a59e5`)
 
-Implemented and live-tested: the shim resolves `KG3D_GetEngine2()` (returns
-`g_pEngine` directly - `KG3D_GetEngine` takes an out pointer, unlike the first
-guess), then `GetActiveWindow2` -> `Get3DScene2` and reaches a real scene
-(`scene=0x101DEEFE0` in the client). Both `RayIntersection` and
-`RayIntersectionTerrain` currently return `0x80004005` with `hit=0`:
+The scene-level `RayIntersection*` functions reject external calls through an
+internal guard (`cmp [global], tls+0x89B0` at `0x1809762BC`), independent of
+frame timing. The engine itself forwards to the concrete backends, so the shim
+now calls those directly - the exact calls the engine makes:
 
-- the argument layout used is `(scene, float3 pos, float3 dir, float maxDist,
-  r9=0, float* retDist, int* retIntersect)` which matches the two stack reads
-  in the terrain prolog, but the call still takes the function's assert/fail
-  path - the 4th/5th slot mapping (float in xmm3 + which parameter owns r9)
-  needs one more pass, and/or the editor scene's terrain object
-  (`scene+0x950` / `scene+0xA28` in this build) is null in the editor host.
-- next step: find a concrete call site of `0x180975EE0` / `0x180976260` in any
-  loaded module (the functions are otherwise only reached through the scene
-  vtable, `.rdata 0x1821C5708`) and copy its register setup exactly.
+- **terrain**: `terrain = [scene+0x950]`, then `terrain->vt[+0xB8](pos, dir,
+  maxDist, float* outDist)` (`0x1809763C6`).
+- **entities / scene nodes**: `this = [[scene+0x910]+8]`, then
+  `0x180A5E4C0(pos, dir, maxDist, float* outDist)` (`0x1809760EC`).
 
-The ray is wired into the 5 camera probes but returns `-1` while failing, so
-client behaviour is unchanged (`ray=1` shows the shim is live in `obstprobe`).
+Live proof in the client: downward terrain ray `terrD = 91 u` (ground below
+the anchor); entity ray `sceneE = 1865 u` on a building that our baked ray
+reports at `1866 u`. Both are wired into the 5 camera obstruction probes next
+to the baked structure/foliage raycast (`RebornClient.cs`), so the probes now
+run the game's terrain + entity backends.
+
+Close-camera handling: the pull floor now matches the native
+`max(0.001, hit) - 18` (host epsilon 0.1 u instead of 5 u), and the dummy
+re-attach runs on every handle change (including while stationary), so the
+park-below visibility hack cannot leave the animated model attached to a stale
+dummy. The park-below thresholds remain a host approximation because the game
+relies on the view near plane, which the host API does not expose.

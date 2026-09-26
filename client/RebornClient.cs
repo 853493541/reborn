@@ -1107,12 +1107,16 @@ internal static class RebornClient
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
                 placePlayer(px, py, pz, curYaw);
-                if (handle != attachedHandle)
-                {
-                    model.AttachModel(handle);
-                    attachedHandle = handle;
-                }
                 lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
+            }
+            // re-attach whenever the dummy handle changes, including while
+            // stationary (the hide/show path re-adds the dummy; without this
+            // the animated model stays on the old handle and can remain visible
+            // while the camera is inside the character)
+            if (handle != attachedHandle)
+            {
+                model.AttachModel(handle);
+                attachedHandle = handle;
             }
 
             if (!string.IsNullOrEmpty(fixedCam))
