@@ -167,3 +167,24 @@ shim (`KG3D_GetEngine` -> window -> scene) plus an RVA delegate for
 `RayIntersectionTerrain` gives the camera probes the same terrain backend the
 game uses, and the existing `structure_collision.bin` raycast covers the
 entity/props backend.
+
+### Shim status (2026-09-24, `client/EngineRay.cs`)
+
+Implemented and live-tested: the shim resolves `KG3D_GetEngine2()` (returns
+`g_pEngine` directly - `KG3D_GetEngine` takes an out pointer, unlike the first
+guess), then `GetActiveWindow2` -> `Get3DScene2` and reaches a real scene
+(`scene=0x101DEEFE0` in the client). Both `RayIntersection` and
+`RayIntersectionTerrain` currently return `0x80004005` with `hit=0`:
+
+- the argument layout used is `(scene, float3 pos, float3 dir, float maxDist,
+  r9=0, float* retDist, int* retIntersect)` which matches the two stack reads
+  in the terrain prolog, but the call still takes the function's assert/fail
+  path - the 4th/5th slot mapping (float in xmm3 + which parameter owns r9)
+  needs one more pass, and/or the editor scene's terrain object
+  (`scene+0x950` / `scene+0xA28` in this build) is null in the editor host.
+- next step: find a concrete call site of `0x180975EE0` / `0x180976260` in any
+  loaded module (the functions are otherwise only reached through the scene
+  vtable, `.rdata 0x1821C5708`) and copy its register setup exactly.
+
+The ray is wired into the 5 camera probes but returns `-1` while failing, so
+client behaviour is unchanged (`ray=1` shows the shim is live in `obstprobe`).

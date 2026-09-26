@@ -179,6 +179,10 @@ internal static class RebornClient
         }
         catch (Exception e) { Log("FoliageCollision ex: " + e.Message); }
 
+        // native terrain ray through the host engine (same backend as the game
+        // camera probes; blocks terrain-baked walls the baked set misses)
+        EngineRay engineRay = new EngineRay(Log);
+
         // ---------------- player ----------------
         float px = 0f, py = 0f, pz = 0f, vy = 0f;
         float viewX = 0f, viewY = 0f, viewZ = 1f;   // spawn orientation (measured once)
@@ -941,12 +945,19 @@ internal static class RebornClient
                     dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1));
                 if (col != null)
                 {
-                    float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
-                    float hS = col.Raycast(px, py + 90f, pz, px, py + 90f, pz + 2000f);
-                    float hE = col.Raycast(px, py + 90f, pz, px + 2000f, py + 90f, pz);
-                    float hW = col.Raycast(px, py + 90f, pz, px - 2000f, py + 90f, pz);
-                    Log(string.Format("obstprobe N={0:F0} S={1:F0} E={2:F0} W={3:F0} inst={4}",
-                        hN, hS, hE, hW, col.InstanceCount));
+                        float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
+                        float hS = col.Raycast(px, py + 90f, pz, px, py + 90f, pz + 2000f);
+                        float hE = col.Raycast(px, py + 90f, pz, px + 2000f, py + 90f, pz);
+                        float hW = col.Raycast(px, py + 90f, pz, px - 2000f, py + 90f, pz);
+                        float tN = engineRay.RayTerrain(px, py + 90f, pz, px, py + 90f, pz - 2000f);
+                        int tHr = engineRay.LastHr, tHit = engineRay.LastHit;
+                        float sN = engineRay.RayScene(px, py + 90f, pz, px, py + 90f, pz - 2000f);
+                        int sHr = engineRay.LastHr, sHit = engineRay.LastHit;
+                        float tE = engineRay.RayTerrain(px, py + 90f, pz, px + 2000f, py + 90f, pz);
+                        float sE = engineRay.RayScene(px, py + 90f, pz, px + 2000f, py + 90f, pz);
+                        Log(string.Format("obstprobe N={0:F0} S={1:F0} E={2:F0} W={3:F0} inst={4} ray={5} terrN={6:F0}(hr={7},hit={8}) terrE={9:F0} sceneN={10:F0}(hr={11},hit={12}) sceneE={13:F0}",
+                            hN, hS, hE, hW, col.InstanceCount, engineRay.Available ? 1 : 0,
+                            tN, tHr, tHit, tE, sN, sHr, sHit, sE));
                 }
             }
 
@@ -1194,10 +1205,15 @@ internal static class RebornClient
                         else if (p == 2) { ox2 = -rx * foot; oz2 = -rz * foot; }
                         else if (p == 3) { ox2 = fx * foot; oy2 = fy * foot; oz2 = fz * foot; }
                         else if (p == 4) { ox2 = -fx * foot; oy2 = -fy * foot; oz2 = -fz * foot; }
-                        float h = col.Raycast((float)(ax2 + ox2), (float)(ay2 + oy2), (float)(az2 + oz2),
-                                              (float)(ax2 + ox2 + ux * offLen),
-                                              (float)(ay2 + oy2 + uy * offLen),
-                                              (float)(az2 + oz2 + uz * offLen));
+                        float px2 = (float)(ax2 + ox2), py2 = (float)(ay2 + oy2), pz2 = (float)(az2 + oz2);
+                        float qx2 = (float)(ax2 + ox2 + ux * offLen);
+                        float qy2 = (float)(ay2 + oy2 + uy * offLen);
+                        float qz2 = (float)(az2 + oz2 + uz * offLen);
+                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2);
+                        // engine terrain ray: the game's camera mask 0x301 includes
+                        // the terrain backend, which our baked set cannot cover
+                        float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);
+                        if (th > 0f && (h <= 0f || th < h)) h = th;
                         if (h > 0f && (hitDist < 0.0 || h < hitDist)) hitDist = h;
                     }
                 }
