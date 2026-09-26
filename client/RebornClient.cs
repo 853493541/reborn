@@ -1358,12 +1358,19 @@ internal static class RebornClient
                 // engine frame) - tests whether the engine ray requires that
                 float rdx = abx - px, rdy = aby - (py + 90f), rdz = abz - pz;
                 float rl = (float)Math.Sqrt(rdx * rdx + rdy * rdy + rdz * rdz);
-                float rr = -1f;
+                float rr = -1f, sl = -1f;
+                int slHr = 0, slHit = 0;
                 if (rl > 1f)
+                {
                     rr = engineRay.RayTerrain(px, py + 90f, pz,
                         px + rdx / rl * 600f, py + 90f + rdy / rl * 600f, pz + rdz / rl * 600f);
-                Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1} rayPost={7:F0}(hr={8},hit={9})",
-                    dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd, rr, engineRay.LastHr, engineRay.LastHit));
+                    sl = engineRay.RaySceneLevel(px, py + 90f, pz,
+                        px + rdx / rl * 600f, py + 90f + rdy / rl * 600f, pz + rdz / rl * 600f);
+                    slHr = engineRay.LastHr; slHit = engineRay.LastHit;
+                }
+                Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1} rayPost={7:F0}(hr={8},hit={9}) sceneLevel={10:F0}(hr={11},hit={12})",
+                    dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd, rr, engineRay.LastHr, engineRay.LastHit,
+                    sl, slHr, slHit));
             }
 
             if (now - lastHud >= 250)

@@ -15,6 +15,8 @@ internal sealed class EngineRay
     const int RVA_RAY_TERRAIN = 0x976260;   // KG3D_Scene::RayIntersectionTerrain
     const int RVA_RAY_SCENE = 0x975EE0;     // KG3D_Scene::RayIntersection
     const int RVA_SPACE_RAY = 0xA5E4C0;     // space-manager ray (0x1809760EC)
+    const int RVA_ENTITY_RAY = 0x53CB80;    // scene-node backend the scene ray
+                                            // calls at 0x180976144
 
     [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
     static extern IntPtr GetModuleHandleA(string name);
@@ -44,8 +46,8 @@ internal sealed class EngineRay
     IntPtr _scene = IntPtr.Zero;
     TerrainVtFn _terrainVt;
     RayTerrainFn _sceneRay;
-    TerrainVtFn _spaceRay;
-    IntPtr _terrainObj = IntPtr.Zero, _spaceObj = IntPtr.Zero;
+    TerrainVtFn _spaceRay, _entityRay;
+    IntPtr _terrainObj = IntPtr.Zero, _spaceObj = IntPtr.Zero, _entityObj = IntPtr.Zero;
     long _nextTry = 0;
 
     public int LastHr, LastHit;
@@ -121,8 +123,24 @@ internal sealed class EngineRay
                 _spaceRay = (TerrainVtFn)Marshal.GetDelegateForFunctionPointer(
                     new IntPtr(_module.ToInt64() + RVA_SPACE_RAY), typeof(TerrainVtFn));
             }
-            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5}",
-                _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null));
+            // third backend: [scene+0xAD8] -> +0x5F8 -> value (0x180976105)
+            IntPtr holder = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0xAD8));
+            int entCount = 0;
+            if (holder != IntPtr.Zero)
+            {
+                entCount = Marshal.ReadInt32(new IntPtr(holder.ToInt64() + 0x600));
+                if (entCount > 0)
+                {
+                    IntPtr list = Marshal.ReadIntPtr(new IntPtr(holder.ToInt64() + 0x5F8));
+                    if (list != IntPtr.Zero) _entityObj = Marshal.ReadIntPtr(list);
+                    if (_entityObj != IntPtr.Zero)
+                        _entityRay = (TerrainVtFn)Marshal.GetDelegateForFunctionPointer(
+                            new IntPtr(_module.ToInt64() + RVA_ENTITY_RAY), typeof(TerrainVtFn));
+                }
+            }
+            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5} entity=0x{6:X} entityRay={7} entCount={8}",
+                _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null,
+                _entityObj.ToInt64(), _entityRay != null, entCount));
             return true;
         }
         catch (Exception e)
@@ -182,13 +200,29 @@ internal sealed class EngineRay
         return CastVt(_terrainVt, _terrainObj, ax, ay, az, bx, by, bz);
     }
 
+    // The scene-level KG3D_Scene::RayIntersection (guarded). Used to test
+    // whether the guard passes when called inside the engine frame.
+    public float RaySceneLevel(float ax, float ay, float az, float bx, float by, float bz)
+    {
+        if (!EnsureReady()) return -1f;
+        return CastScene(_sceneRay, ax, ay, az, bx, by, bz);
+    }
+
     // Entity/scene-node hit. The scene-level ray is guarded, so call the space
     // manager the scene forwards to; fall back to the scene ray if absent.
     public float RayScene(float ax, float ay, float az, float bx, float by, float bz)
     {
         if (!EnsureReady()) return -1f;
+        float best = -1f;
         if (_spaceRay != null && _spaceObj != IntPtr.Zero)
-            return CastVt(_spaceRay, _spaceObj, ax, ay, az, bx, by, bz);
-        return CastScene(_sceneRay, ax, ay, az, bx, by, bz);
+            best = CastVt(_spaceRay, _spaceObj, ax, ay, az, bx, by, bz);
+        if (_entityRay != null && _entityObj != IntPtr.Zero)
+        {
+            float d = CastVt(_entityRay, _entityObj, ax, ay, az, bx, by, bz);
+            if (d > 0f && (best < 0f || d < best)) best = d;
+        }
+        if (best < 0f && _sceneRay != null)
+            best = CastScene(_sceneRay, ax, ay, az, bx, by, bz);
+        return best;
     }
 }
