@@ -1266,7 +1266,7 @@ internal static class RebornClient
                         float qx2 = (float)(ax2 + ox2 + ux * offLen);
                         float qy2 = (float)(ay2 + oy2 + uy * offLen);
                         float qz2 = (float)(az2 + oz2 + uz * offLen);
-                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2);
+                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, true);
                         // engine rays: the game's camera mask 0x301 covers terrain
                         // and scene entities, which the baked set cannot fully cover
                         float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);

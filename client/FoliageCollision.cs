@@ -41,6 +41,7 @@ public sealed class FoliageCollision
     sealed class Instance
     {
         public MeshData mesh;
+        public bool fromFoliage;
         public float[] l2w;   // 16, row-major, row-vector: w = l * M
         public float[] w2l;   // 16, inverse
         public float m00, m01, m02, m10, m11, m12, m20, m21, m22; // 3x3 for world deltas
@@ -69,10 +70,11 @@ public sealed class FoliageCollision
     // ---- loading ----
 
     void AddInstance(MeshData md, float[] m, float bminX, float bminY, float bminZ,
-                     float bmaxX, float bmaxY, float bmaxZ)
+                     float bmaxX, float bmaxY, float bmaxZ, bool foliage = false)
     {
         var it = new Instance();
         it.mesh = md;
+        it.fromFoliage = foliage;
         it.l2w = m;
         it.w2l = Invert4x4(m);
         it.m00 = m[0]; it.m01 = m[1]; it.m02 = m[2];
@@ -216,7 +218,7 @@ public sealed class FoliageCollision
                 float ez = Math.Max(Math.Abs(md.minZ), Math.Abs(md.maxZ));
                 float rad = (float)Math.Sqrt(ex * ex + ez * ez) * s;
                 AddInstance(md, m, x - rad, y + md.minY * s, z - rad,
-                            x + rad, y + md.maxY * s, z + rad);
+                            x + rad, y + md.maxY * s, z + rad, true);
             }
         }
     }
@@ -404,7 +406,7 @@ public sealed class FoliageCollision
     // Nearest world-space hit of the segment A->B against the structure and
     // foliage instances (camera obstruction). Returns the distance from A
     // along A->B in world units, or -1 when nothing is hit.
-    public float Raycast(float ax, float ay, float az, float bx, float by, float bz)
+    public float Raycast(float ax, float ay, float az, float bx, float by, float bz, bool structuresOnly = false)
     {
         float dx = bx - ax, dy = by - ay, dz = bz - az;
         float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
@@ -418,6 +420,7 @@ public sealed class FoliageCollision
         for (int ci = 0; ci < _cand.Count; ci++)
         {
             Instance it = _inst[_cand[ci]];
+            if (structuresOnly && it.fromFoliage) continue;
             if (it.maxY < minY || it.minY > maxY) continue;
             if (it.maxX < minX || it.minX > maxX) continue;
             if (it.maxZ < minZ || it.minZ > maxZ) continue;
