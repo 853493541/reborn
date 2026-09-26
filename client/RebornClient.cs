@@ -190,6 +190,7 @@ internal static class RebornClient
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
         CameraObstruction camObst = new CameraObstruction();
+        CameraShake camShake = new CameraShake();
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
@@ -388,6 +389,8 @@ internal static class RebornClient
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
+        bool nineRay = Env("RC_CAM_9RAY", "0") == "1";      // alternate 9-ray probe set
+        string camMode = Env("RC_CAM_MODE", "");            // force a camera mode row
         bool demoTeleport = Env("RC_COL_TELEPORT", "0") == "1";
         float demoDirX = 0f, demoDirZ = 0f;
         {
@@ -985,6 +988,9 @@ internal static class RebornClient
                 skillUntil = now + skillMs;
                 curClip = null;
                 setClip(clipSkill);
+                // camera shake on the cast (host default; per-skill shake rows
+                // are data-gated)
+                camShake.Start(2.0, 0.5, 0.8, 3);
                 Log("skill cast");
             }
 
@@ -1158,6 +1164,13 @@ internal static class RebornClient
                 // sprint camera mode follows the real trigger: double-tap W
                 // (wSprint), not the Shift test-speed modifier
                 bool sprinting = movingNow && wSprint;
+                // mode harness: activate a mode row for testing (carrier /
+                // air_combat / npc_dialog / god). The real gameplay triggers
+                // (mount, dialog, air combat, spectate) do not exist in the
+                // host yet, so this is the test path until they do.
+                if (camMode.Length > 0 && camSys.Mode != camMode)
+                    camSys.SwitchMode(camMode, false);
+
                 // move-reactive camera (B6): row-gated; the real move-pitch
                 // table is 0.0 in this build, so it stays opt-in until the
                 // per-mode rows arrive. Any change is synthesised back to the
@@ -1219,13 +1232,23 @@ internal static class RebornClient
                     rx /= rl; rz /= rl;
                     double fx = uy * rz, fy = uz * rx - ux * rz, fz = -uy * rx;
                     const double foot = 22.0;
-                    for (int p = 0; p < 5; p++)
+                    // game probe sets: default 5 rays (centre + 4 corners =
+                    // perimeter 0/90/180/270), alternate 9 rays (centre + 8
+                    // perimeter at 45 deg). The +0x15c trigger that selects the
+                    // 9-ray mode is not recovered, so it stays opt-in.
+                    int probeCount = nineRay ? 9 : 5;
+                    for (int p = 0; p < probeCount; p++)
                     {
                         double ox2 = 0, oy2 = 0, oz2 = 0;
-                        if (p == 1) { ox2 = rx * foot; oz2 = rz * foot; }
-                        else if (p == 2) { ox2 = -rx * foot; oz2 = -rz * foot; }
-                        else if (p == 3) { ox2 = fx * foot; oy2 = fy * foot; oz2 = fz * foot; }
-                        else if (p == 4) { ox2 = -fx * foot; oy2 = -fy * foot; oz2 = -fz * foot; }
+                        if (p > 0)
+                        {
+                            double a = nineRay ? (p - 1) * Math.PI / 4.0
+                                               : (p - 1) * Math.PI / 2.0;
+                            double ca = Math.Cos(a), sa = Math.Sin(a);
+                            ox2 = (rx * ca + fx * sa) * foot;
+                            oy2 = (fy * sa) * foot;
+                            oz2 = (rz * ca + fz * sa) * foot;
+                        }
                         float px2 = (float)(ax2 + ox2), py2 = (float)(ay2 + oy2), pz2 = (float)(az2 + oz2);
                         float qx2 = (float)(ax2 + ox2 + ux * offLen);
                         float qy2 = (float)(ay2 + oy2 + uy * offLen);
@@ -1282,6 +1305,10 @@ internal static class RebornClient
                         aimDirty = true;
                     }
                 }
+                camShake.Update(dt);
+                camX += camShake.Offset[0];
+                camY += camShake.Offset[1];
+                camZ += camShake.Offset[2];
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
 
