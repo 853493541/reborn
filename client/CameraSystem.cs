@@ -301,8 +301,11 @@ public sealed class CameraSystem
     // client's F11 reset all go through this.
     public double ClampDistanceUnits(double units)
     {
-        double min = Row.F("MinCameraDistance", 100.0);
-        double max = Row.F("MaxCameraDistance", 2000.0);
+        // the user/engine caps are stored on the character row (only that row
+        // is written from custom.dat), so read them there instead of the
+        // current mode row which may not carry them (S5)
+        double min = Rows[MODE_CHARACTER].F("MinCameraDistance", 100.0);
+        double max = Rows[MODE_CHARACTER].F("MaxCameraDistance", 2000.0);
         if (units < min) units = min;
         if (units > max) units = max;
         return units;

@@ -12,15 +12,16 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 | A W5 15 fps speed basis | fixed (16 Hz -> 96/320 u/s) | `CAMERA_REAL_VALUES.md` §7 #4, `CAMERA_ADOPTION...` §1 |
 | B S2 `EyeScale` missing from the aim math | done | `RebornClient.cs geometricAimPitch`/`aimPitchOf` use `Distance * EyeScale` (`52cca8f`) |
 | B S1 aim re-pin after zoom/sprint/EyeScale | done | `aimDirty` on distance change (`52cca8f`) |
-| B S3 ground-clamp aim guard | done | `aimPitchOverride` aims at the anchor from the clamped point (`52cca8f`) |
+| B S3 ground-clamp aim guard | done (over-claim corrected) | `aimPitchOverride` aims at the anchor from the clamped point **and marks `aimDirty`** so the aim sync consumes it (`52cca8f` + this batch) |
 | B S4 pitch correction deadband | done | 1 px deadband in the orbit block (`52cca8f`) |
-| B S5 one distance clamp | done | `CameraSystem.ClampDistanceUnits` (ZoomBy, sprint upper bound, F11 reset) (`52cca8f`) |
+| B S5 one distance clamp | done (over-claim corrected) | `ClampDistanceUnits` reads the caps from the **character row** (only that row is written from custom.dat); ZoomBy + F11 + sprint max go through it |
 | B obstruction 100 u obstructed-side hysteresis | done | release only 100 u past desired or fully clear (`6e1d1b2`) |
-| B S6 RMB instant body turn | done | rate-limited turn (`RotationSpeed` row, 10 rad/s default) (`6e1d1b2`) |
+| B S6 RMB instant body turn | done (over-claim corrected) | `RotationSpeed` rows are engine int speeds (0.00314); values < 1 rad/s fall back to the engine key-rotation default `fChaseRate` = pi rad/s (~180 deg/s) |
 | B S7 LMB click vs drag | done | 4 px dead zone; cursor locks only once the drag starts (`6e1d1b2`) |
 | B move-reactive camera (`CameraMovePitch*`, `CameraAdjustYawWhenMoveTurn`) | mechanism done, opt-in | `CameraSystem.AdjustPitch` + `FollowYaw`, fed to the engine; `RC_MOVE_PITCH=1` because the current build's real table is 0.0 (`6e1d1b2`) |
 | B remaining settings (reset speeds, `nCameraMode`, smoothing/curve/eye-follow) | read + joystick mode applied | `CameraSettings.cs`; reset-speed/curve/eye-follow semantics remain read-only (`11b2168`) |
-| B verification (S1/S2/S5 smoke, per-run logs, camdbg fields) | done | clamp smoke check; `reborn_<timestamp>.log`; `camdbg ... eff= clamp=` (`11b2168`) |
+| B verification (S1/S2/S5 smoke, per-run logs, camdbg fields) | partial, stated honestly | only the **S5 clamp helper** is smoke-covered; S1/S2 (EyeScale/re-pin) are client-side and have no unit test; per-run logs + `camdbg eff=/clamp=` exist (`11b2168`) |
+| B pitch limit + sprint trigger | done | orbit pitch clamp is the engine's pi/2 - 0.0157 (was -0.05); sprint camera mode follows `wSprint` (double-tap W), not the Shift test-speed modifier |
 
 ## Still open (data-gated or native-interface work)
 

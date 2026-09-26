@@ -30,9 +30,11 @@ internal sealed class EngineRay
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr EngineMethodFn(IntPtr self);
 
-    // ?GetSceneView@KG3D_Window@@UEBAPEAUIKG3D_SceneView@@H@Z(window, index)
+    // the engine's view-manager singleton getter (0x1801433E0) takes the
+    // address of a global (0x18086ECC0) and returns the object whose
+    // vt+0xA8 returns fov/aspect/near/far (see 0x180379CD0)
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    delegate IntPtr GetSceneViewFn(IntPtr self, int index);
+    delegate IntPtr MgrGetterFn(IntPtr globalAddr);
 
     // projection getter (vt+0xA8): out fov, aspect, znear, zfar
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
@@ -143,25 +145,27 @@ internal sealed class EngineRay
             catch { }
             _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5}",
                 _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null));
-            // view projection (near plane) for the close-camera question
-            IntPtr getView = GetProcAddress(_module, "?GetSceneView@KG3D_Window@@UEBAPEAUIKG3D_SceneView@@H@Z");
-            if (getView != IntPtr.Zero)
+            // view projection (near plane) for the close-camera question: the
+            // engine's own path is the view-manager singleton getter
+            // (0x1801433E0(&global 0x18086ECC0)) then vt+0xA8
+            try
             {
-                var viewFn = (GetSceneViewFn)Marshal.GetDelegateForFunctionPointer(getView, typeof(GetSceneViewFn));
-                IntPtr view = viewFn(window, 0);
-                if (view != IntPtr.Zero)
+                var mgrFn = (MgrGetterFn)Marshal.GetDelegateForFunctionPointer(
+                    new IntPtr(_module.ToInt64() + 0x1433E0), typeof(MgrGetterFn));
+                IntPtr mgr = mgrFn(new IntPtr(_module.ToInt64() + 0x86ECC0));
+                if (mgr != IntPtr.Zero)
                 {
-                    IntPtr vt = Marshal.ReadIntPtr(view);
+                    IntPtr vt = Marshal.ReadIntPtr(mgr);
                     IntPtr proj = Marshal.ReadIntPtr(new IntPtr(vt.ToInt64() + 0xA8));
                     var projFn = (ProjFn)Marshal.GetDelegateForFunctionPointer(proj, typeof(ProjFn));
                     float fov, aspect, zn, zf;
-                    int hr = projFn(view, out fov, out aspect, out zn, out zf);
-                    _log(string.Format("EngineRay: view=0x{0:X} proj hr={1} fov={2:F3} aspect={3:F3} near={4:F2} far={5:F0}",
-                        view.ToInt64(), hr, fov, aspect, zn, zf));
+                    int hr = projFn(mgr, out fov, out aspect, out zn, out zf);
+                    _log(string.Format("EngineRay: viewmgr=0x{0:X} proj hr={1} fov={2:F3} aspect={3:F3} near={4:F2} far={5:F0}",
+                        mgr.ToInt64(), hr, fov, aspect, zn, zf));
                 }
-                else _log("EngineRay: GetSceneView(0) null");
+                else _log("EngineRay: view-manager singleton null");
             }
-            else _log("EngineRay: GetSceneView export missing");
+            catch (Exception e) { _log("EngineRay proj ex: " + e.Message); }
             return true;
         }
         catch (Exception e)

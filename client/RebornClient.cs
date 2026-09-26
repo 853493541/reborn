@@ -803,7 +803,8 @@ internal static class RebornClient
 
                 double pOld = camSys.Pitch;
                 camSys.Pitch += oy * 0.00121;
-                double pmax = Math.PI / 2.0 - 0.05;
+                // engine hard pitch limit (const 1.5550884 = pi/2 - 0.0157)
+                double pmax = Math.PI / 2.0 - 0.0157;
                 if (camSys.Pitch > pmax) camSys.Pitch = pmax;
                 else if (camSys.Pitch < -pmax) camSys.Pitch = -pmax;
                 double pNew = camSys.Pitch;
@@ -1029,8 +1030,12 @@ internal static class RebornClient
                 float d = targetYaw - curYaw;
                 while (d > Math.PI) d -= 2f * (float)Math.PI;
                 while (d < -Math.PI) d += 2f * (float)Math.PI;
+                // RotationSpeed row values are engine int speeds (0.00314 in
+                // the host rows), not rad/s; the engine's key-rotation default
+                // fChaseRate is pi rad/s, so use a rad/s value only when the row
+                // is clearly one, else pi (S6: 0.00314 was ~0.18 deg/s).
                 float rate = (float)camSys.Row.F("RotationSpeed", 0.0);
-                if (rate <= 0f) rate = 10f;   // host default rad/s
+                if (rate < 1f) rate = (float)Math.PI;
                 float step = rate * (float)dt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
@@ -1141,7 +1146,9 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
-                bool sprinting = movingNow && shiftDown;
+                // sprint camera mode follows the real trigger: double-tap W
+                // (wSprint), not the Shift test-speed modifier
+                bool sprinting = movingNow && wSprint;
                 // move-reactive camera (B6): row-gated; the real move-pitch
                 // table is 0.0 in this build, so it stays opt-in until the
                 // per-mode rows arrive. Any change is synthesised back to the
@@ -1257,10 +1264,13 @@ internal static class RebornClient
                     {
                         camY = camGround;
                         // the clamp moved the camera off the orbit line: the
-                        // view must aim at the anchor from the clamped point
+                        // view must aim at the anchor from the clamped point.
+                        // Mark the aim dirty so the aim-sync block actually
+                        // consumes the override (S3 gap).
                         double gh = Math.Sqrt((camX - ax2) * (camX - ax2) +
                                               (camZ - az2) * (camZ - az2));
                         aimPitchOverride = -Math.Atan2(camY - ay2, Math.Max(1e-3, gh));
+                        aimDirty = true;
                     }
                 }
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
