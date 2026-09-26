@@ -29,6 +29,9 @@ internal static class CameraSmoke
         double DEG = CameraSystem.DEG;
         var cam = new CameraSystem();
         cam.UnitsPerMeter = 1.0;
+        // the reference model uses metre-scaled numbers; the user/engine caps
+        // are exercised separately by the clamp helper check
+        cam.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
         cam.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam.Pitch = cam.Row.F("InitCameraPitch", -20.0 * DEG);
         cam.Distance = cam.Row.F("InitCameraDistance", 6.0);
@@ -46,6 +49,7 @@ internal static class CameraSmoke
         // JX3 sphere offset; it must not scale the distance with tan(pitch).
         var cam3 = new CameraSystem();
         cam3.UnitsPerMeter = 1.0;
+        cam3.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
         cam3.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam3.Distance = 6.0;
         double[] pitches = { -40.0 * DEG, -20.0 * DEG, 0.0, 25.0 * DEG, 40.0 * DEG };
@@ -135,6 +139,7 @@ internal static class CameraSmoke
 
         var cam2 = new CameraSystem();
         cam2.UnitsPerMeter = 1.0;
+        cam2.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
         cam2.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam2.Pitch = cam2.Row.F("InitCameraPitch", -20.0 * DEG);
         cam2.Distance = cam2.Row.F("InitCameraDistance", 6.0);
@@ -156,12 +161,13 @@ internal static class CameraSmoke
 
         // native wall obstruction state machine (18 u clearance, 50/100
         // hysteresis, spring return) - docs/CAMERA_WALL_OBSTRUCTION.md
+        var clampCam = new CameraSystem();
         Check("shared distance clamp helper (S5)",
-              Math.Abs(cam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
-              Math.Abs(cam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&
-              Math.Abs(cam.ClampDistanceUnits(600.0) - 600.0) < 1e-9,
-              string.Format("{0:F0}/{1:F0}/{2:F0}", cam.ClampDistanceUnits(50.0),
-                  cam.ClampDistanceUnits(5000.0), cam.ClampDistanceUnits(600.0)));
+              Math.Abs(clampCam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
+              Math.Abs(clampCam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&
+              Math.Abs(clampCam.ClampDistanceUnits(600.0) - 600.0) < 1e-9,
+              string.Format("{0:F0}/{1:F0}/{2:F0}", clampCam.ClampDistanceUnits(50.0),
+                  clampCam.ClampDistanceUnits(5000.0), clampCam.ClampDistanceUnits(600.0)));
 
         var obstA = new CameraObstruction();
         double od = obstA.Update(1.0 / 60.0, 600.0, 500.0);

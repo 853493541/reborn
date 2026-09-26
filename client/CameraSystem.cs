@@ -294,7 +294,13 @@ public sealed class CameraSystem
         if (row.Has("InitCameraDistance")) Distance = row.F("InitCameraDistance", 6.0) * UnitsPerMeter;
     }
 
-    public void SetMaxDistance(double meters) { Rows[MODE_CHARACTER].Set("TargetDistance", meters); }
+    public void SetTargetDistance(double meters)
+    {
+        Rows[MODE_CHARACTER].Set("TargetDistance", meters);
+    }
+
+    // kept for the reference smoke tests; the real name is SetTargetDistance
+    public void SetMaxDistance(double meters) { SetTargetDistance(meters); }
 
     // One clamp for every distance writer (S5): [MinCameraDistance,
     // MaxCameraDistance] in world units. ZoomBy, the sprint pull-back and the
@@ -320,7 +326,7 @@ public sealed class CameraSystem
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
         td *= (direction > 0.0) ? 1.1 : 0.9;
-        SetMaxDistance(ClampDistanceUnits(td) / UnitsPerMeter);
+        SetTargetDistance(ClampDistanceUnits(td) / UnitsPerMeter);
     }
     public void SetDragSpeed(double v) { Rows[MODE_CHARACTER].Set("MaxDragSpeed", v); }
     public void SetFollowMode(string mode) { SwitchMode(mode); }
@@ -468,18 +474,16 @@ public sealed class CameraSystem
             // SprintCameraMaxDistance is a pull-back delta (60 u), not an
             // absolute 60 m target. The exact engine consumer/unit remains an
             // open RE item; use the observed world-unit delta conservatively.
-            double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters +
-                            row.F("SprintCameraMaxDistance", 60.0);
-            double maxU = row.F("MaxCameraDistance", 2000.0);
-            if (target > maxU) target = maxU;   // shared caps, upper bound only
+            double target = ClampDistanceUnits(
+                Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters +
+                row.F("SprintCameraMaxDistance", 60.0));
             double st = Math.Max(row.F("SprintCameraSmoothTime", 0.5), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         else
         {
-            double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters;
-            double maxU = Rows[MODE_CHARACTER].F("MaxCameraDistance", 2000.0);
-            if (target > maxU) target = maxU;
+            double target = ClampDistanceUnits(
+                Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters);
             double st = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
