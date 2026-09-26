@@ -124,3 +124,46 @@ Path to exact behaviour:
 2. Recon the host engine / PhysX scene (`KG3DEngineDX11EX64.dll` +
    `PhysicsEngineX64.dll`) for a native scene ray, which would hit everything
    the renderer draws (the same idea as the game's mask `0x301`).
+
+## 6. The host engine contains the same ray family (found 2026-09-24)
+
+`KG3DEngineDX11EX64.dll` (the engine the client actually loads) has the game's
+ray backends under the same names:
+
+- `KG3D_Scene::RayIntersection` @ `0x180975EE0`
+- `KG3D_Scene::RayIntersectionTerrain` @ `0x180976260`
+- `KG3D_Landscape::_RayIntersectImp`, `KG3D_SpaceManager::RayIntersection`,
+  `KG3D_SpaceNode::RayIntersection` ...
+
+Exports to reach the objects (so no vtable guessing is needed):
+
+```
+KG3D_GetEngine()                                      -> KG3D_Engine*
+?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ(engine) -> window
+?Get3DScene2@KG3D_Window@@UEAAPEAVKG3D_Scene@@XZ(window)       -> scene
+```
+
+`RayIntersectionTerrain` contract from the disasm
+(`proof/netcode/disasm/host_ray_terrain_fn.txt`):
+
+```
+rcx = scene
+rdx = pPos   (float[3], ray origin)
+r8  = pDir   (float[3], ray direction)
+xmm3 = fMaxDist (float)
+stack arg 5 = pRetMinDistanceRet (float*)
+stack arg 6 = pbRetIntersect (int*)
+```
+
+It forwards to the terrain object's vtable (`+0xB8` / `+0xD8`) and returns the
+nearest terrain hit distance + bool. The scene-vtable entry for
+`RayIntersection` sits at `.rdata 0x1821C5708`; `RayIntersection` itself takes
+the same shape plus one more argument slot (stack args at `+0x20/+0x28`
+relative to the caller frame) - that extra slot (filter/mask) is the remaining
+contract detail to pin down before wiring the shim.
+
+So the exact game terrain ray is callable from the host: a small C# P/Invoke
+shim (`KG3D_GetEngine` -> window -> scene) plus an RVA delegate for
+`RayIntersectionTerrain` gives the camera probes the same terrain backend the
+game uses, and the existing `structure_collision.bin` raycast covers the
+entity/props backend.

@@ -1,0 +1,365 @@
+# KG3DEngineDX11EX64.dll xrefs for 'KG3D_Scene::RayIntersectionTerrain'
+# image base 0x180000000
+
+## xref @ 0x1809764ae -> 0x1821c1200 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_Scene.cpp,KG3D_Scene::RayIntersectionTerrain:1746'  fn start 0x180976260
+  0x180976260: push     rbx
+  0x180976262: push     rbp
+  0x180976263: push     rsi
+  0x180976264: push     rdi
+  0x180976265: push     r12
+  0x180976267: push     r13
+  0x180976269: push     r14
+  0x18097626b: push     r15
+  0x18097626d: sub      rsp, 0x68
+  0x180976271: movaps   xmmword ptr [rsp + 0x50], xmm6
+  0x180976276: mov      rax, qword ptr [rip + 0x1c09063]
+  0x18097627d: xor      rax, rsp
+  0x180976280: mov      qword ptr [rsp + 0x48], rax
+  0x180976285: movaps   xmm6, xmm3
+  0x180976288: mov      r12, r8
+  0x18097628b: mov      r13, rdx
+  0x18097628e: mov      rbp, rcx
+  0x180976291: mov      r14, qword ptr [rsp + 0xd0]
+  0x180976299: mov      r15, qword ptr [rsp + 0xd8]
+  0x1809762a1: mov      edx, dword ptr [rip + 0x1cde41d]
+  0x1809762a7: mov      rax, qword ptr gs:[0x58]
+  0x1809762b0: mov      ecx, 0x89b0
+  0x1809762b5: mov      rax, qword ptr [rax + rdx*8]
+  0x1809762b9: mov      edx, dword ptr [rcx + rax]
+  0x1809762bc: cmp      dword ptr [rip + 0x23e1fda], edx
+  0x1809762c2: jg       0x18097648e
+  0x1809762c8: mov      edi, dword ptr [rip + 0x1c8ccd2]  ; '\t'
+  0x1809762ce: mov      dword ptr [rsp + 0x38], edi
+  0x1809762d2: mov      rsi, qword ptr [rip + 0x1c8ccb7]
+  0x1809762d9: mov      qword ptr [rsp + 0x40], rsi
+  0x1809762de: call     qword ptr [rip + 0x129f01c]  ; PerfAnalyzerX64.dll!GetRunState
+  0x1809762e4: test     al, al
+  0x1809762e6: je       0x1809762fa
+  0x1809762e8: xor      r9d, r9d
+  0x1809762eb: xor      r8d, r8d
+  0x1809762ee: mov      rdx, rsi
+  0x1809762f1: mov      ecx, edi
+  0x1809762f3: call     qword ptr [rip + 0x129efff]  ; PerfAnalyzerX64.dll!BeginSample
+  0x1809762f9: nop      
+  0x1809762fa: cmp      dword ptr [rip + 0x238188b], 0
+  0x180976301: je       0x18097631e
+  0x180976303: lea      r9, [rip + 0x184b446]  ; 'FTT_3DSCENE'
+  0x18097630a: lea      r8, [rip + 0x184addf]  ; 'FTT_RAY_INTERSECTION'
+  0x180976311: mov      edx, 2
+  0x180976316: lea      ecx, [rdx + 0x1b]
+  0x180976319: call     0x180b39300
+  0x18097631e: mov      ebx, 0x80004005
+  0x180976323: xor      eax, eax
+  0x180976325: movss    xmm0, dword ptr [rip + 0x1942527]
+  0x18097632d: movss    dword ptr [rsp + 0x30], xmm0
+  0x180976333: test     r13, r13
+  0x180976336: jne      0x180976368
+  0x180976338: mov      r9d, 0x6d9
+  0x18097633e: lea      r8, [rip + 0x17d7e83]  ; 'pPos'
+  0x180976345: lea      rax, [rip + 0x184b2ac]  ; 'KG3D_Scene::RayIntersectionTerrain'
+  0x18097634c: mov      qword ptr [rsp + 0x20], rax
+  0x180976351: lea      rdx, [rip + 0x15f6948]  ; 'KGLOG_ASSERT_EXIT(%s) at line %u in %s'
+  0x180976358: mov      ecx, 3
+  0x18097635d: call     qword ptr [rip + 0x129e9ed]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180976363: jmp      0x18097640a
+  0x180976368: test     r12, r12
+  0x18097636b: jne      0x18097637c
+  0x18097636d: mov      r9d, 0x6da
+  0x180976373: lea      r8, [rip + 0x184ae56]  ; 'pDir'
+  0x18097637a: jmp      0x180976345
+  0x18097637c: test     r14, r14
+  0x18097637f: jne      0x180976390
+  0x180976381: mov      r9d, 0x6db
+  0x180976387: lea      r8, [rip + 0x17d5fd2]  ; 'pRetMinDistanceRet'
+  0x18097638e: jmp      0x180976345
+  0x180976390: test     r15, r15
+  0x180976393: jne      0x1809763a4
+  0x180976395: mov      r9d, 0x6dc
+  0x18097639b: lea      r8, [rip + 0x184af26]  ; 'pbRetIntersect'
+  0x1809763a2: jmp      0x180976345
+  0x1809763a4: mov      rcx, qword ptr [rbp + 0x950]
+  0x1809763ab: test     rcx, rcx
+  0x1809763ae: je       0x1809763ce
+  0x1809763b0: mov      rax, qword ptr [rcx]
+  0x1809763b3: lea      rdx, [rsp + 0x30]
+  0x1809763b8: mov      qword ptr [rsp + 0x20], rdx
+  0x1809763bd: movaps   xmm3, xmm6
+  0x1809763c0: mov      r8, r12
+  0x1809763c3: mov      rdx, r13
+  0x1809763c6: call     qword ptr [rax + 0xb8]
+  0x1809763cc: jmp      0x1809763f6
+  0x1809763ce: mov      rcx, qword ptr [rbp + 0xa28]
+  0x1809763d5: test     rcx, rcx
+  0x1809763d8: je       0x1809763f6
+  0x1809763da: mov      rax, qword ptr [rcx]
+  0x1809763dd: lea      rdx, [rsp + 0x30]
+  0x1809763e2: mov      qword ptr [rsp + 0x20], rdx
+  0x1809763e7: movaps   xmm3, xmm6
+  0x1809763ea: mov      r8, r12
+  0x1809763ed: mov      rdx, r13
+  0x1809763f0: call     qword ptr [rax + 0xd8]
+  0x1809763f6: mov      dword ptr [r15], eax
+  0x1809763f9: test     eax, eax
+  0x1809763fb: je       0x180976408
+  0x1809763fd: movss    xmm0, dword ptr [rsp + 0x30]
+  0x180976403: movss    dword ptr [r14], xmm0
+  0x180976408: xor      ebx, ebx
+  0x18097640a: cmp      dword ptr [rip + 0x238177b], 0
+  0x180976411: je       0x18097644e
+  0x180976413: lea      rcx, [rsp + 0x38]
+  0x180976418: call     qword ptr [rip + 0x129e652]  ; KERNEL32.dll!QueryPerformanceCounter
+  0x18097641e: mov      rax, qword ptr [rsp + 0x38]
+  0x180976423: sub      rax, qword ptr [rip + 0x238f966]
+  0x18097642a: xorps    xmm0, xmm0
+  0x18097642d: cvtsi2ss xmm0, rax
+  0x180976432: mulss    xmm0, dword ptr [rip + 0x238bc7a]
+  0x18097643a: movss    xmm1, dword ptr [rip + 0x238f95e]
+  0x180976442: addss    xmm1, xmm0
+  0x180976446: movss    dword ptr [rip + 0x238f952], xmm1
+  0x18097644e: call     qword ptr [rip + 0x129eeac]  ; PerfAnalyzerX64.dll!GetRunState
+  0x180976454: test     al, al
+  0x180976456: je       0x180976469
+  0x180976458: xor      r9d, r9d
+  0x18097645b: xor      r8d, r8d
+  0x18097645e: mov      rdx, rsi
+  0x180976461: mov      ecx, edi
+  0x180976463: call     qword ptr [rip + 0x129eea7]  ; PerfAnalyzerX64.dll!EndSample
+  0x180976469: mov      eax, ebx
+  0x18097646b: mov      rcx, qword ptr [rsp + 0x48]
+  0x180976470: xor      rcx, rsp
+  0x180976473: call     0x1818c7940
+  0x180976478: movaps   xmm6, xmmword ptr [rsp + 0x50]
+  0x18097647d: add      rsp, 0x68
+  0x180976481: pop      r15
+  0x180976483: pop      r14
+  0x180976485: pop      r13
+  0x180976487: pop      r12
+  0x180976489: pop      rdi
+  0x18097648a: pop      rsi
+  0x18097648b: pop      rbp
+  0x18097648c: pop      rbx
+  0x18097648d: ret      
+  0x18097648e: lea      rcx, [rip + 0x23e1e07]
+  0x180976495: call     0x1818c7ca8
+  0x18097649a: cmp      dword ptr [rip + 0x23e1dfb], -1
+  0x1809764a1: jne      0x1809762c8
+  0x1809764a7: xor      r9d, r9d
+  0x1809764aa: lea      r8, [r9 - 1]
+  0x1809764ae: lea      rdx, [rip + 0x184ad4b]  ; 'D:\\qb\\buildagent\\workspace\\root\\JX3\\MakeMovieEditorPatch_hd\\DataStores\\Sword3\\Source\\KG3DEngineDX11\\KG3DEngineE\\Internal\\Module\\KG3DEngineDX11E\\KG3D_Scene.cpp,KG3D_Scene::RayIntersectionTerrain:1746'
+  0x1809764b5: lea      ecx, [r9 + 9]
+  0x1809764b9: call     qword ptr [rip + 0x129ee31]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x1809764bf: mov      qword ptr [rip + 0x1c8caca], rax
+  0x1809764c6: lea      rcx, [rip + 0x23e1dcf]
+  0x1809764cd: call     0x1818c7c48
+  0x1809764d2: jmp      0x1809762c8
+  0x1809764d7: int3     
+  0x1809764d8: int3     
+  0x1809764d9: int3     
+  0x1809764da: int3     
+  0x1809764db: int3     
+  0x1809764dc: int3     
+  0x1809764dd: int3     
+  0x1809764de: int3     
+  0x1809764df: int3     
+  0x1809764e0: sub      rsp, 0x38
+  0x1809764e4: mov      rcx, qword ptr [rcx + 0xa10]
+  0x1809764eb: test     rcx, rcx
+  0x1809764ee: je       0x180976506
+  0x1809764f0: mov      rax, qword ptr [rsp + 0x60]
+  0x1809764f5: mov      qword ptr [rsp + 0x20], rax
+  0x1809764fa: call     0x1807f13d0
+  0x1809764ff: xor      eax, eax
+  0x180976501: add      rsp, 0x38
+  0x180976505: ret      
+  0x180976506: mov      eax, 0x80004005
+  0x18097650b: add      rsp, 0x38
+  0x18097650f: ret      
+  0x180976510: sub      rsp, 0x68
+  0x180976514: mov      r10, rcx
+  0x180976517: test     rdx, rdx
+  0x18097651a: jne      0x180976551
+  0x18097651c: mov      r9d, 0x70e
+  0x180976522: lea      r8, [rip + 0x184b0ff]  ; 'pRayOrignPos'
+  0x180976529: lea      rcx, [rip + 0x184b0a0]  ; 'KG3D_Scene::GetSelectableActorList'
+  0x180976530: mov      qword ptr [rsp + 0x20], rcx
+  0x180976535: lea      rdx, [rip + 0x15f6764]  ; 'KGLOG_ASSERT_EXIT(%s) at line %u in %s'
+  0x18097653c: mov      ecx, 3
+  0x180976541: call     qword ptr [rip + 0x129e809]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180976547: mov      eax, 0x80004005
+  0x18097654c: add      rsp, 0x68
+  0x180976550: ret      
+  0x180976551: test     r8, r8
+  0x180976554: jne      0x180976565
+  0x180976556: mov      r9d, 0x70f
+  0x18097655c: lea      r8, [rip + 0x184b0bd]  ; 'pRayDir'
+  0x180976563: jmp      0x180976529
+  0x180976565: mov      rax, qword ptr [rsp + 0xa0]
+  0x18097656d: test     rax, rax
+  0x180976570: jne      0x180976581
+  0x180976572: mov      r9d, 0x710
+  0x180976578: lea      r8, [rip + 0x184b0d1]  ; 'puRetActorCount'
+  0x18097657f: jmp      0x180976529
+  0x180976581: mov      rcx, qword ptr [rsp + 0x98]
+  0x180976589: test     rcx, rcx
+  0x18097658c: jne      0x18097659d
+  0x18097658e: mov      r9d, 0x711
+  0x180976594: lea      r8, [rip + 0x184b09d]  ; 'piRetActorArrary'
+  0x18097659b: jmp      0x180976529
+  0x18097659d: movsd    xmm2, qword ptr [r8]
+  0x1809765a2: movss    xmm0, dword ptr [r8 + 8]
+  0x1809765a8: lea      r8, [rsp + 0x40]
+  0x1809765ad: movlhps  xmm2, xmm0
+  0x1809765b0: movss    xmm0, dword ptr [rdx + 8]
+  0x1809765b5: mov      qword ptr [rsp + 0x30], rax
+  0x1809765ba: mov      eax, dword ptr [rsp + 0x90]
+  0x1809765c1: movaps   xmmword ptr [rsp + 0x40], xmm2
+  0x1809765c6: movsd    xmm2, qword ptr [rdx]
+  0x1809765ca: lea      rdx, [rsp + 0x50]
+  0x1809765cf: mov      qword ptr [rsp + 0x28], rcx
+  0x1809765d4: mov      rcx, qword ptr [r10 + 0x910]
+  0x1809765db: movlhps  xmm2, xmm0
+  0x1809765de: movaps   xmmword ptr [rsp + 0x50], xmm2
+  0x1809765e3: mov      dword ptr [rsp + 0x20], eax
+  0x1809765e7: call     0x180a45b60
+  0x1809765ec: test     eax, eax
+  0x1809765ee: jns      0x180976621
+  0x1809765f0: lea      rcx, [rip + 0x184afd9]  ; 'KG3D_Scene::GetSelectableActorList'
+  0x1809765f7: mov      r9d, 0x717
+  0x1809765fd: mov      qword ptr [rsp + 0x20], rcx
+  0x180976602: lea      rdx, [rip + 0x15f660f]  ; 'KGLOG_COM_PROCESS_ERROR(0x%X) at line %u in %s'
+  0x180976609: mov      ecx, 3
+  0x18097660e: mov      r8d, eax
+  0x180976611: call     qword ptr [rip + 0x129e739]  ; KGCommonX64.dll!KG_PrintfLog
+  0x180976617: mov      eax, 0x80004005
+  0x18097661c: add      rsp, 0x68
+  0x180976620: ret      
+  0x180976621: xor      eax, eax
+  0x180976623: add      rsp, 0x68
+  0x180976627: ret      
+  0x180976628: int3     
+  0x180976629: int3     
+  0x18097662a: int3     
+  0x18097662b: int3     
+  0x18097662c: int3     
+  0x18097662d: int3     
+  0x18097662e: int3     
+  0x18097662f: int3     
+  0x180976630: push     rbx
+  0x180976632: push     rbp
+  0x180976633: push     rsi
+  0x180976634: push     rdi
+  0x180976635: push     r12
+  0x180976637: push     r13
+  0x180976639: push     r14
+  0x18097663b: push     r15
+  0x18097663d: sub      rsp, 0x208
+  0x180976644: mov      rax, qword ptr [rip + 0x1c08c95]
+  0x18097664b: xor      rax, rsp
+  0x18097664e: mov      qword ptr [rsp + 0x1f0], rax
+  0x180976656: mov      qword ptr [rsp + 0x70], r9
+  0x18097665b: mov      r12, r8
+  0x18097665e: mov      r14, rdx
+  0x180976661: mov      rsi, rcx
+  0x180976664: mov      qword ptr [rsp + 0x58], rcx
+  0x180976669: mov      ecx, dword ptr [rip + 0x1cde055]
+  0x18097666f: mov      rax, qword ptr gs:[0x58]
+  0x180976678: mov      edx, 0x89b0
+  0x18097667d: mov      rax, qword ptr [rax + rcx*8]
+  0x180976681: mov      ecx, dword ptr [rdx + rax]
+  0x180976684: cmp      dword ptr [rip + 0x23e1c16], ecx
+  0x18097668a: jg       0x1809769dc
+  0x180976690: mov      ebx, dword ptr [rip + 0x1c8c922]  ; '\t'
+  0x180976696: mov      dword ptr [rsp + 0x50], ebx
+  0x18097669a: mov      dword ptr [rsp + 0x78], ebx
+  0x18097669e: mov      rdi, qword ptr [rip + 0x1c8c903]
+  0x1809766a5: mov      qword ptr [rsp + 0x68], rdi
+  0x1809766aa: mov      qword ptr [rsp + 0x80], rdi
+  0x1809766b2: call     qword ptr [rip + 0x129ec48]  ; PerfAnalyzerX64.dll!GetRunState
+  0x1809766b8: test     al, al
+  0x1809766ba: je       0x1809766ce
+  0x1809766bc: xor      r9d, r9d
+  0x1809766bf: xor      r8d, r8d
+  0x1809766c2: mov      rdx, rdi
+  0x1809766c5: mov      ecx, ebx
+  0x1809766c7: call     qword ptr [rip + 0x129ec2b]  ; PerfAnalyzerX64.dll!BeginSample
+  0x1809766cd: nop      
+  0x1809766ce: mov      r13d, 0x80004005
+  0x1809766d4: mov      rax, qword ptr [r14]
+  0x1809766d7: mov      rcx, r14
+  0x1809766da: call     qword ptr [rax + 0x708]
+  0x1809766e0: test     eax, eax
+  0x1809766e2: je       0x180976714
+  0x1809766e4: lea      rax, [rip + 0x184af75]  ; 'KG3D_Scene::AddActor'
+  0x1809766eb: mov      qword ptr [rsp + 0x20], rax
+  0x1809766f0: mov      r9d, 0x726
+  0x1809766f6: lea      r8, [rip + 0x184ad73]  ; '!piActor->IsBinded()'
+  0x1809766fd: lea      rdx, [rip + 0x15f6434]  ; 'KGLOG_PROCESS_ERROR(%s) at line %u in %s'
+  0x180976704: mov      ecx, 3
+  0x180976709: call     qword ptr [rip + 0x129e641]  ; KGCommonX64.dll!KG_PrintfLog
+  0x18097670f: jmp      0x18097699a
+  0x180976714: mov      rax, qword ptr [r14 + 0x20]
+  0x180976718: movsxd   rcx, dword ptr [rax + 4]
+  0x18097671c: add      rcx, 0x20
+  0x180976720: add      rcx, r14
+  0x180976723: mov      rax, qword ptr [rcx]
+  0x180976726: mov      edx, 1
+  0x18097672b: call     qword ptr [rax + 0x70]
+  0x18097672e: test     r12b, 0x20
+  0x180976732: je       0x180976745
+  0x180976734: mov      rax, qword ptr [r14]
+  0x180976737: mov      edx, 1
+  0x18097673c: mov      rcx, r14
+  0x18097673f: call     qword ptr [rax + 0x420]
+  0x180976745: mov      rax, qword ptr [r14]
+  0x180976748: mov      r8, qword ptr [rax + 0x428]
+  0x18097674f: mov      rcx, r14
+  0x180976752: test     r12b, 2
+  0x180976756: je       0x18097675f
+  0x180976758: mov      edx, 1
+  0x18097675d: jmp      0x180976761
+  0x18097675f: xor      edx, edx
+  0x180976761: call     r8
+  0x180976764: mov      rax, qword ptr [r14 + 0x20]
+  0x180976768: movsxd   rcx, dword ptr [rax + 4]
+  0x18097676c: add      rcx, 0x20
+  0x180976770: add      rcx, r14
+  0x180976773: mov      rax, qword ptr [rcx]
+  0x180976776: test     r12b, 1
+  0x18097677a: je       0x180976783
+  0x18097677c: mov      edx, 1
+  0x180976781: jmp      0x180976785
+  0x180976783: xor      edx, edx
+  0x180976785: call     qword ptr [rax + 0x138]
+  0x18097678b: test     r12b, r12b
+  0x18097678e: jns      0x180976947
+  0x180976794: mov      rax, qword ptr [rip + 0x23b163d]
+  0x18097679b: mov      qword ptr [rsp + 0x60], rax
+  0x1809767a0: test     rax, rax
+  0x1809767a3: je       0x180976947
+  0x1809767a9: xor      edx, edx
+  0x1809767ab: mov      r8d, 0x100
+  0x1809767b1: lea      rcx, [rsp + 0xf0]
+  0x1809767b9: call     0x181a3bc15
+  0x1809767be: mov      dword ptr [rsp + 0xa0], 0
+  0x1809767c9: mov      rax, qword ptr [r14]
+  0x1809767cc: lea      r9, [rsp + 0xf0]
+  0x1809767d4: lea      r8, [rsp + 0xa0]
+  0x1809767dc: mov      edx, 0x20
+  0x1809767e1: mov      rcx, r14
+  0x1809767e4: call     qword ptr [rax + 0x330]
+  0x1809767ea: xor      ebp, ebp
+  0x1809767ec: mov      eax, dword ptr [rsp + 0xa0]
+  0x1809767f3: test     eax, eax
+  0x1809767f5: je       0x180976947
+  0x1809767fb: nop      dword ptr [rax + rax]
+  0x180976800: mov      rbx, qword ptr [rsp + rbp*8 + 0xf0]
+  0x180976808: test     rbx, rbx
+  0x18097680b: je       0x180976934
+  0x180976811: mov      dword ptr [rsp + 0x20], 0
+  0x180976819: lea      r9, [rip + 0x1c978f8]
+  0x180976820: lea      r8, [rip + 0x1c97919]
+  0x180976827: xor      edx, edx
+  0x180976829: mov      rcx, rbx
+  0x18097682c: call     0x181a3bc39
+  0x180976831: .byte    0x48
+
