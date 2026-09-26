@@ -1,0 +1,245 @@
+# KGUIX64.dll xrefs for 'LoadUITexFile'
+# image base 0x180000000
+
+## xref @ 0x1800e92ba -> 0x1805afea0 'UI::KImageInfoMgr::LoadUITexFile'  fn start 0x1800e9240
+  0x1800e9240: push     rbp
+  0x1800e9242: push     rbx
+  0x1800e9243: push     rsi
+  0x1800e9244: push     rdi
+  0x1800e9245: push     r12
+  0x1800e9247: push     r13
+  0x1800e9249: push     r14
+  0x1800e924b: push     r15
+  0x1800e924d: lea      rbp, [rsp - 0x358]
+  0x1800e9255: sub      rsp, 0x458
+  0x1800e925c: mov      rax, qword ptr [rip + 0x566a45]
+  0x1800e9263: xor      rax, rsp
+  0x1800e9266: mov      qword ptr [rbp + 0x340], rax
+  0x1800e926d: mov      dword ptr [rsp + 0x4c], r9d
+  0x1800e9272: mov      dword ptr [rsp + 0x48], r8d
+  0x1800e9277: mov      rdi, rdx
+  0x1800e927a: mov      qword ptr [rsp + 0x58], rdx
+  0x1800e927f: mov      rsi, rcx
+  0x1800e9282: mov      rax, qword ptr [rbp + 0x3c8]
+  0x1800e9289: mov      qword ptr [rsp + 0x70], rax
+  0x1800e928e: xor      ecx, ecx
+  0x1800e9290: mov      r15d, ecx
+  0x1800e9293: mov      dword ptr [rsp + 0x44], ecx
+  0x1800e9297: lea      r12, [rcx - 1]
+  0x1800e929b: mov      ebx, ecx
+  0x1800e929d: mov      dword ptr [rsp + 0x40], ecx
+  0x1800e92a1: mov      r14d, ecx
+  0x1800e92a4: mov      dword ptr [rsp + 0x54], ecx
+  0x1800e92a8: test     rdx, rdx
+  0x1800e92ab: jne      0x1800e92dd
+  0x1800e92ad: mov      r9d, 0x255
+  0x1800e92b3: lea      r8, [rip + 0x4c60de]  ; 'szFileName'
+  0x1800e92ba: lea      rax, [rip + 0x4c6bdf]  ; 'UI::KImageInfoMgr::LoadUITexFile'
+  0x1800e92c1: mov      qword ptr [rsp + 0x20], rax
+  0x1800e92c6: lea      rdx, [rip + 0x4c05ab]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800e92cd: mov      ecx, 3
+  0x1800e92d2: call     qword ptr [rip + 0x3fdf40]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800e92d8: jmp      0x1800e9b33
+  0x1800e92dd: cmp      byte ptr [rdx], cl
+  0x1800e92df: jne      0x1800e92f0
+  0x1800e92e1: mov      r9d, 0x256
+  0x1800e92e7: lea      r8, [rip + 0x4c60ba]  ; "szFileName[0] != '\\0'"
+  0x1800e92ee: jmp      0x1800e92ba
+  0x1800e92f0: test     rax, rax
+  0x1800e92f3: jne      0x1800e9304
+  0x1800e92f5: mov      r9d, 0x257
+  0x1800e92fb: lea      r8, [rip + 0x4c692a]  ; 'puID'
+  0x1800e9302: jmp      0x1800e92ba
+  0x1800e9304: mov      rax, r12
+  0x1800e9307: inc      rax
+  0x1800e930a: cmp      byte ptr [rdx + rax], cl
+  0x1800e930d: jne      0x1800e9307
+  0x1800e930f: cmp      eax, 5
+  0x1800e9312: jle      0x1800e9b33
+  0x1800e9318: cdqe     
+  0x1800e931a: lea      rcx, [rdx - 6]
+  0x1800e931e: add      rcx, rax
+  0x1800e9321: lea      rdx, [rip + 0x4c6738]  ; '.uitex'
+  0x1800e9328: call     qword ptr [rip + 0x3ff07a]  ; api-ms-win-crt-string-l1-1-0.dll!_stricmp
+  0x1800e932e: test     eax, eax
+  0x1800e9330: jne      0x1800e9b33
+  0x1800e9336: cmp      byte ptr [rdi], 0x5c
+  0x1800e9339: je       0x1800e9346
+  0x1800e933b: mov      word ptr [rbp + 0x120], 0x5c
+  0x1800e9344: jmp      0x1800e934c
+  0x1800e9346: mov      byte ptr [rbp + 0x120], bl
+  0x1800e934c: mov      r8, rdi
+  0x1800e934f: mov      edx, 0x104
+  0x1800e9354: lea      rcx, [rbp + 0x120]
+  0x1800e935b: call     qword ptr [rip + 0x3ff00f]  ; api-ms-win-crt-string-l1-1-0.dll!strcat_s
+  0x1800e9361: test     eax, eax
+  0x1800e9363: je       0x1800e9377
+  0x1800e9365: mov      r9d, 0x26c
+  0x1800e936b: lea      r8, [rip + 0x4c2bfe]  ; 'nRetCode == 0'
+  0x1800e9372: jmp      0x1800e92ba
+  0x1800e9377: lea      r8, [rbp + 0x120]
+  0x1800e937e: mov      edx, 0x104
+  0x1800e9383: lea      rcx, [rbp + 0x230]
+  0x1800e938a: call     0x1800e2330
+  0x1800e938f: test     eax, eax
+  0x1800e9391: jne      0x1800e93a5
+  0x1800e9393: mov      r9d, 0x26f
+  0x1800e9399: lea      r8, [rip + 0x4c0560]  ; 'nRetCode'
+  0x1800e93a0: jmp      0x1800e92ba
+  0x1800e93a5: cmp      byte ptr [rbp + 0x230], bl
+  0x1800e93ab: je       0x1800e93ea
+  0x1800e93ad: lea      rcx, [rbp + 0x230]
+  0x1800e93b4: call     qword ptr [rip + 0x3fddc6]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1800e93ba: test     eax, eax
+  0x1800e93bc: je       0x1800e93ea
+  0x1800e93be: xor      r8d, r8d
+  0x1800e93c1: xor      edx, edx
+  0x1800e93c3: lea      rcx, [rbp + 0x230]
+  0x1800e93ca: call     qword ptr [rip + 0x3fddd8]  ; '@wd'
+  0x1800e93d0: mov      r13, rax
+  0x1800e93d3: test     rax, rax
+  0x1800e93d6: jne      0x1800e9416
+  0x1800e93d8: mov      r9d, 0x274
+  0x1800e93de: lea      r8, [rip + 0x4c0917]  ; 'pFile'
+  0x1800e93e5: jmp      0x1800e92ba
+  0x1800e93ea: xor      r8d, r8d
+  0x1800e93ed: xor      edx, edx
+  0x1800e93ef: lea      rcx, [rbp + 0x120]
+  0x1800e93f6: call     qword ptr [rip + 0x3fddac]  ; '@wd'
+  0x1800e93fc: mov      r13, rax
+  0x1800e93ff: test     rax, rax
+  0x1800e9402: jne      0x1800e9416
+  0x1800e9404: mov      r9d, 0x279
+  0x1800e940a: lea      r8, [rip + 0x4c08eb]  ; 'pFile'
+  0x1800e9411: jmp      0x1800e92ba
+  0x1800e9416: mov      rax, qword ptr [r13]
+  0x1800e941a: mov      r8d, 0x58
+  0x1800e9420: lea      rdx, [rbp - 0x50]
+  0x1800e9424: mov      rcx, r13
+  0x1800e9427: call     qword ptr [rax]
+  0x1800e9429: cmp      eax, 0x58
+  0x1800e942c: je       0x1800e945e
+  0x1800e942e: mov      r9d, 0x27d
+  0x1800e9434: lea      r8, [rip + 0x4c6a8d]  ; 'dwReadIn == sizeof(UITEXFILEHEADER)'
+  0x1800e943b: lea      rax, [rip + 0x4c6a5e]  ; 'UI::KImageInfoMgr::LoadUITexFile'
+  0x1800e9442: mov      qword ptr [rsp + 0x20], rax
+  0x1800e9447: lea      rdx, [rip + 0x4c042a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800e944e: mov      ecx, 3
+  0x1800e9453: call     qword ptr [rip + 0x3fddbf]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800e9459: jmp      0x1800e9a83
+  0x1800e945e: mov      r15d, dword ptr [rbp - 0x50]
+  0x1800e9462: shr      r15d, 0x10
+  0x1800e9466: mov      dword ptr [rsp + 0x68], r15d
+  0x1800e946b: cmp      dword ptr [rbp - 0x44], 0x1000
+  0x1800e9472: jl       0x1800e9483
+  0x1800e9474: mov      r9d, 0x281
+  0x1800e947a: lea      r8, [rip + 0x4c6a6f]  ; 'FileHeader.nFrameCount < MAX_FRMAE_COUNT'
+  0x1800e9481: jmp      0x1800e943b
+  0x1800e9483: cmp      dword ptr [rbp - 0x40], 0x1000
+  0x1800e948a: jl       0x1800e949b
+  0x1800e948c: mov      r9d, 0x282
+  0x1800e9492: lea      r8, [rip + 0x4c6a87]  ; 'FileHeader.nAnimateCount < MAX_ANI_COUNT'
+  0x1800e9499: jmp      0x1800e943b
+  0x1800e949b: mov      edx, 0x5c
+  0x1800e94a0: lea      rcx, [rbp + 0x120]
+  0x1800e94a7: call     qword ptr [rip + 0x3fe7ab]  ; VCRUNTIME140.dll!strrchr
+  0x1800e94ad: test     rax, rax
+  0x1800e94b0: jne      0x1800e94c4
+  0x1800e94b2: mov      r9d, 0x285
+  0x1800e94b8: lea      r8, [rip + 0x4c6a91]  ; 'pszTail'
+  0x1800e94bf: jmp      0x1800e943b
+  0x1800e94c4: mov      byte ptr [rax + 1], bl
+  0x1800e94c7: mov      byte ptr [rbp + 7], bl
+  0x1800e94ca: cmp      dword ptr [rbp - 0x4c], ebx
+  0x1800e94cd: jg       0x1800e94e1
+  0x1800e94cf: mov      r9d, 0x289
+  0x1800e94d5: lea      r8, [rip + 0x4c6a7c]  ; 'FileHeader.nWidth > 0'
+  0x1800e94dc: jmp      0x1800e943b
+  0x1800e94e1: cmp      dword ptr [rbp - 0x48], ebx
+  0x1800e94e4: jg       0x1800e94f8
+  0x1800e94e6: mov      r9d, 0x28a
+  0x1800e94ec: lea      r8, [rip + 0x4c6a7d]  ; 'FileHeader.nHeight > 0'
+  0x1800e94f3: jmp      0x1800e943b
+  0x1800e94f8: lea      r8, [rbp - 0x38]
+  0x1800e94fc: mov      edx, 0x104
+  0x1800e9501: lea      rcx, [rbp + 0x120]
+  0x1800e9508: call     qword ptr [rip + 0x3fee62]  ; api-ms-win-crt-string-l1-1-0.dll!strcat_s
+  0x1800e950e: test     eax, eax
+  0x1800e9510: je       0x1800e9524
+  0x1800e9512: mov      r9d, 0x28d
+  0x1800e9518: lea      r8, [rip + 0x4c2a51]  ; 'nRetCode == 0'
+  0x1800e951f: jmp      0x1800e943b
+  0x1800e9524: lea      rdx, [rbp + 0x120]
+  0x1800e952b: mov      rax, qword ptr [rip + 0x58531e]
+  0x1800e9532: mov      rcx, qword ptr [rax + 0xdb50]
+  0x1800e9539: cmp      dword ptr [rcx + 0x218], ebx
+  0x1800e953f: mov      ebx, 0xfde9
+  0x1800e9544: jne      0x1800e9550
+  0x1800e9546: mov      ebx, dword ptr [rcx + 0x918]
+  0x1800e954c: nop      dword ptr [rax]
+  0x1800e9550: movzx    ecx, byte ptr [rdx]
+  0x1800e9553: test     cl, cl
+  0x1800e9555: je       0x1800e9581
+  0x1800e9557: cmp      cl, 0x2f
+  0x1800e955a: jne      0x1800e9561
+  0x1800e955c: mov      byte ptr [rdx], 0x5c
+  0x1800e955f: mov      cl, 0x5c
+  0x1800e9561: lea      eax, [rcx - 0x41]
+  0x1800e9564: cmp      al, 0x19
+  0x1800e9566: ja       0x1800e956d
+  0x1800e9568: add      cl, 0x20
+  0x1800e956b: mov      byte ptr [rdx], cl
+  0x1800e956d: xor      r8d, r8d
+  0x1800e9570: movzx    ecx, bx
+  0x1800e9573: call     qword ptr [rip + 0x3fe6af]  ; USER32.dll!CharNextExA
+  0x1800e9579: mov      rdx, rax
+  0x1800e957c: test     rax, rax
+  0x1800e957f: jne      0x1800e9550
+  0x1800e9581: cmp      dword ptr [rbp + 0x3c0], r14d
+  0x1800e9588: je       0x1800e9932
+  0x1800e958e: cmp      dword ptr [rbp - 0x44], 1
+  0x1800e9592: jne      0x1800e9932
+  0x1800e9598: mov      rax, qword ptr [r13]
+  0x1800e959c: mov      r8d, 0x14
+  0x1800e95a2: lea      rdx, [rsp + 0x78]
+  0x1800e95a7: mov      rcx, r13
+  0x1800e95aa: call     qword ptr [rax]
+  0x1800e95ac: cmp      eax, 0x14
+  0x1800e95af: je       0x1800e95c3
+  0x1800e95b1: mov      r9d, 0x298
+  0x1800e95b7: lea      r8, [rip + 0x4c69ca]  ; 'dwReadIn == sizeof(UITEXFRAMEDATASTRUCTURE)'
+  0x1800e95be: jmp      0x1800e9a61
+  0x1800e95c3: mov      ecx, dword ptr [rbp - 0x7c]
+  0x1800e95c6: cmp      ecx, 0x30
+  0x1800e95c9: jg       0x1800e97cf
+  0x1800e95cf: mov      eax, dword ptr [rbp - 0x78]
+  0x1800e95d2: cmp      eax, 0x30
+  0x1800e95d5: jg       0x1800e97cf
+  0x1800e95db: xor      edx, edx
+  0x1800e95dd: lea      r15d, [rdx + 1]
+  0x1800e95e1: mov      dword ptr [rsp + 0x50], edx
+  0x1800e95e5: mov      qword ptr [rbp - 0x70], rdx
+  0x1800e95e9: mov      dword ptr [rbp - 0x68], ecx
+  0x1800e95ec: mov      dword ptr [rbp - 0x64], eax
+  0x1800e95ef: mov      r8d, 0x104
+  0x1800e95f5: lea      rdx, [rbp + 0x120]
+  0x1800e95fc: lea      rcx, [rbp + 0x10]
+  0x1800e9600: call     qword ptr [rip + 0x3fea2a]  ; api-ms-win-crt-multibyte-l1-1-0.dll!_mbsnbcpy
+  0x1800e9606: lea      rax, [rbp + 0x10]
+  0x1800e960a: mov      rbx, r12
+  0x1800e960d: nop      dword ptr [rax]
+  0x1800e9610: inc      rbx
+  0x1800e9613: cmp      byte ptr [rax + rbx], r14b
+  0x1800e9617: jne      0x1800e9610
+  0x1800e9619: cmp      ebx, 3
+  0x1800e961c: jle      0x1800e96d7
+  0x1800e9622: movsxd   rdi, ebx
+  0x1800e9625: lea      rcx, [rbp + rdi + 0xc]
+  0x1800e962a: lea      rdx, [rip + 0x4c5f03]  ; '.tga'
+  0x1800e9631: call     qword ptr [rip + 0x3fea11]  ; api-ms-win-crt-multibyte-l1-1-0.dll!_mbsicmp
+  0x1800e9637: test     eax, eax
+  0x1800e9639: .byte    0x0f
+  0x1800e963a: .byte    0x85
+  0x1800e963b: xchg     ebx, eax
+  0x1800e963c: add      byte ptr [rax], al
+

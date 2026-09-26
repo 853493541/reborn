@@ -1,0 +1,83 @@
+<box>
+	<CoolDown id="0">
+		<Info image="UI\Image\Common\Box.UITex" frame="6" animation="false" />
+	</CoolDown>
+
+	<Sparking>
+		<Info image="UI\Image\Common\Animate.UITex" frame="1" animation="true" />
+	</Sparking>
+
+	<InUse>
+		<Info image="UI\Image\Common\Animate.UITex" frame="2" animation="true" />
+	</InUse>
+
+	<Staring>
+		<Info image="UI\Image\Common\Animate.UITex" frame="0" animation="true" />
+	</Staring>
+
+	<Selected>
+		<Info image="UI\Image\Common\Box.UITex" frame="7" animation="false" />
+	</Selected>
+
+	<UnEquipable>
+		<Info image="UI\Image\Common\Box.UITex" frame="5" animation="false" />
+	</UnEquipable>
+
+	<Disable>
+		<Info image="UI\Image\Common\Box.UITex" frame="6" animation="false" />
+	</Disable>
+
+	<NoObjectMouseOver>
+		<Info image="UI\Image\Common\Box.UITex" frame="3" animation="false" />
+	</NoObjectMouseOver>
+
+	<MouseOver>
+		<Info image="UI\Image\Common\Box.UITex" frame="3" animation="false" />
+	</MouseOver>
+
+	<Pressed>
+		<Info image="UI\Image\Common\Box.UITex" frame="4" animation="false" />
+	</Pressed>
+</box>
+
+<CicleBox>
+	<CoolDown id="0">
+		<Info image="UI\Image\Common\Box.UITex" frame="99" animation="false" />
+	</CoolDown>
+
+	<Sparking>
+		<Info image="UI\Image\Common\Box.UITex" frame="95" animation="true" />
+	</Sparking>
+
+	<InUse>
+		<Info image="UI\Image\Common\Box.UITex" frame="96" animation="true" />
+	</InUse>
+
+	<Staring>
+		<Info image="UI\Image\Common\Box.UITex" frame="97" animation="true" />
+	</Staring>
+
+	<Selected>
+		<Info image="UI\Image\Common\Box.UITex" frame="100" animation="false" />
+	</Selected>
+
+	<UnEquipable>
+		<Info image="UI\Image\Common\Box.UITex" frame="98" animation="false" />
+	</UnEquipable>
+
+	<Disable>
+		<Info image="UI\Image\Common\Box.UITex" frame="99" animation="false" />
+	</Disable>
+
+	<NoObjectMouseOver>
+		<Info image="UI\Image\Common\Box.UITex" frame="102" animation="false" />
+	</NoObjectMouseOver>
+
+	<MouseOver>
+		<Info image="UI\Image\Common\Box.UITex" frame="102" animation="false" />
+	</MouseOver>
+
+	<Pressed>
+		<Info image="UI\Image\Common\Box.UITex" frame="101" animation="false" />
+	</Pressed>
+</CicleBox>

@@ -1,0 +1,43 @@
+id	path	desc
+0		
+1	\ui\Animation\line.xml	
+2	\ui\Animation\bcurve.xml	
+3	\ui\Animation\shake.xml	
+4	\ui\Animation\shake1.xml	
+5	\ui\Animation\shake2.xml	
+6	\ui\Animation\back_forth.xml	
+7	\ui\Animation\forth_back.xml	
+8	\ui\Animation\panelopen.xml	
+9	\ui\Animation\toptobottom.xml	
+10	\ui\Animation\lineslowend.xml	
+11	\ui\Animation\zoomin_line.xml	
+12	\ui\Animation\line_avg.xml	
+13	\ui\Animation\震动.xml	
+14	\ui\Animation\zoombsb.xml	放大缩小还原
+15	\ui\Animation\disapare.xml	
+16	\ui\Animation\左上角放大出现.xml	
+17	\ui\Animation\曲线_左_中_上.xml	
+18	\ui\Animation\左上角缩小消失.xml	
+19	\ui\Animation\百分比出现.xml	
+20	\ui\Animation\百分比消失.xml	
+21	\ui\Animation\line_fadeout.xml	
+22	\ui\Animation\抛物线缩小消失.xml	
+23	\ui\Animation\从左到右展开.xml	
+24	\ui\Animation\从左到右收起.xml	
+25	\ui\Animation\从右到左展开.xml	
+26	\ui\Animation\从右到左收起.xml	
+27	\ui\Animation\从中心缩小消失.xml	
+28	\ui\Animation\曲线放大直线缩小.xml	
+29	\ui\Animation\enter_leave_2Image.xml	
+30	\ui\Animation\缓慢移动.xml	
+31	\ui\Animation\从小到大渐亮出现.xml	
+32	\ui\Animation\从大到小渐隐缩小.xml	
+33	\ui\Animation\zoomout_line.xml	
+34	\ui\Animation\先缓慢缩小再快速缩到最小.xml	
+35	\ui\Animation\震动从右往左.xml	
+36	\ui\Animation\从上到下匀速下降.xml	
+37	\ui\Animation\渐隐消失.xml	
+38	\ui\Animation\渐亮出现.xml	
+39	\ui\Animation\渐亮出现_时间延长.xml	
+40	\ui\Animation\直线渐隐缩小.xml	
+41	\ui\Animation\从大到小渐隐缩小PVPSET.xml	

@@ -1,0 +1,15 @@
+<Animation name="animation" totaltime="295">
+	<Layer totaltime="295" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="100" h="50" onlyeditor="true"/>
+		<KeyFrames/>
+		<State type="0" totaltime="0.00">
+			<Point type="Pos" inherit="false" x="69" y="352"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="2" totaltime="295">
+			<Point type="Line" inherit="false" x="623" y="352" velocity="1" accelertion="6"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+

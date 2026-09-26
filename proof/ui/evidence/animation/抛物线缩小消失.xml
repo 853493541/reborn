@@ -1,0 +1,25 @@
+<Animation name="animation" totaltime="555" verdistance="1">
+	<Layer totaltime="555" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="100" h="50" onlyeditor="true"/>
+		<KeyFrames>
+			<KeyFrame time="0">
+				<ActionZoom scale="1"/>
+			</KeyFrame>
+			<KeyFrame time="555">
+				<ActionZoom scale="0.1"/>
+			</KeyFrame>
+		</KeyFrames>
+		<State type="0" totaltime="0.00">
+			<Point type="Pos" inherit="false" x="274" y="374"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="2" totaltime="555">
+			<Point type="BCurve" inherit="false" x="618" y="356" coff="0.0018">
+				<Control1 x="355" y="306"/>
+				<Control2 x="525" y="247"/>
+			</Point>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+

@@ -1,0 +1,27 @@
+<Animation name="animation" totaltime="255" verdistance="1">
+	<Layer totaltime="255" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="400" h="160" onlyeditor="true"/>
+		<KeyFrames/>
+		<State type="1" totaltime="0.00">
+			<Point type="Pos" inherit="false" x="573" y="441"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="1" totaltime="255">
+			<Point type="Line" inherit="false" x="573" y="281" velocity="0.5" accelertion="1"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+	<Layer totaltime="239" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="400" h="160" onlyeditor="true"/>
+		<KeyFrames/>
+		<State type="0" totaltime="0">
+			<Point type="Pos" inherit="true" x="573" y="589"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="1" totaltime="239">
+			<Point type="Line" inherit="false" x="573" y="441" velocity="0.5" accelertion="1"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+
