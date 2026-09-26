@@ -653,6 +653,7 @@ internal static class RebornClient
         bool dbgIntSet = false;
         double dbgHit = -1.0, dbgLen = 0.0, dbgEffDist = 0.0;
         bool dbgObst = false;
+        bool nearProbed = false;
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
         double yawCorr = 0.0;
@@ -948,9 +949,13 @@ internal static class RebornClient
                 Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0} eff={13:F0} clamp={14}",
                     camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz,
                     dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1));
+                // NOTE: do NOT probe the near plane here. The view-manager
+                // getter (0x1801433E0) deadlocks the engine even from a worker
+                // thread (see EngineRay.ProbeNearPlane) - it can only run in the
+                // engine's own frame context, which needs a native shim.
                 if (col != null)
                 {
-                        float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
+                    float hN = col.Raycast(px, py + 90f, pz, px, py + 90f, pz - 2000f);
                         float hS = col.Raycast(px, py + 90f, pz, px, py + 90f, pz + 2000f);
                         float hE = col.Raycast(px, py + 90f, pz, px + 2000f, py + 90f, pz);
                         float hW = col.Raycast(px, py + 90f, pz, px - 2000f, py + 90f, pz);

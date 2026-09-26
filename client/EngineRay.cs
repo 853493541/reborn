@@ -184,6 +184,41 @@ internal sealed class EngineRay
         }
     }
 
+    // Near-plane probe on a worker thread with a timeout: the view-manager
+    // getter blocked the client thread, so it must never run inline.
+    public void ProbeNearPlane(int timeoutMs, Action<string> log)
+    {
+        float fov = 0, aspect = 0, zn = 0, zf = 0;
+        int hr = -1;
+        IntPtr mgr = IntPtr.Zero;
+        var th = new System.Threading.Thread(delegate()
+        {
+            try
+            {
+                var mgrFn = (MgrGetterFn)Marshal.GetDelegateForFunctionPointer(
+                    new IntPtr(_module.ToInt64() + 0x1433E0), typeof(MgrGetterFn));
+                mgr = mgrFn(new IntPtr(_module.ToInt64() + 0x86ECC0));
+                if (mgr != IntPtr.Zero)
+                {
+                    IntPtr vt = Marshal.ReadIntPtr(mgr);
+                    IntPtr proj = Marshal.ReadIntPtr(new IntPtr(vt.ToInt64() + 0xA8));
+                    var projFn = (ProjFn)Marshal.GetDelegateForFunctionPointer(proj, typeof(ProjFn));
+                    hr = projFn(mgr, out fov, out aspect, out zn, out zf);
+                }
+            }
+            catch { }
+        });
+        th.IsBackground = true;
+        th.Start();
+        if (!th.Join(timeoutMs))
+        {
+            log("EngineRay near probe: TIMEOUT (view-manager getter needs engine context)");
+            return;
+        }
+        log(string.Format("EngineRay near probe: mgr=0x{0:X} hr={1} fov={2:F3} aspect={3:F3} near={4:F3} far={5:F0}",
+            mgr.ToInt64(), hr, fov, aspect, zn, zf));
+    }
+
     // Nearest terrain hit of the segment A->B; -1 when nothing is hit.
     public float RayTerrain(float ax, float ay, float az, float bx, float by, float bz)
     {
