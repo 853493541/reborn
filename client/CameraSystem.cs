@@ -602,18 +602,24 @@ public sealed class CameraObstruction
         {
             double pull = hitDistance - Clearance;
             if (pull < MinDistance) pull = MinDistance;
-            if (!Obstructed && desired - hitDistance > PullThreshold)
-                Obstructed = true;
-            if (Obstructed)
+            if (pull < Distance)
             {
-                // stay in front of the wall: as the hit recedes, the target
-                // follows it (the flex spring eases the way out). Release uses
-                // the larger obstructed-side hysteresis (100 u past the desired
-                // point); a fully clear ray (hitDistance <= 0) releases at once
-                // in the branch below. Releasing earlier popped the camera
-                // through the wall.
-                if (hitDistance >= desired + ReleaseThreshold) Obstructed = false;
-                else target = pull < desired ? pull : desired;
+                // engine rule: a hit that shortens the anchor ray applies
+                // immediately, with no threshold (0x1804C1208: |A-C'| < |A-cur|
+                // -> apply)
+                Obstructed = true;
+                target = pull;
+            }
+            else
+            {
+                // not a shortening: apply only while the hit stays within the
+                // free (50) / obstructed (100) window of the reference; outside
+                // it the state clears (engine: threshold^2 > |C'-ref|^2)
+                double window = Obstructed ? ReleaseThreshold : PullThreshold;
+                if (Math.Abs(hitDistance - desired) < window)
+                    target = pull < desired ? pull : desired;
+                else
+                    Obstructed = false;
             }
         }
         else if (Obstructed)

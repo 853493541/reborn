@@ -175,7 +175,8 @@ internal static class CameraSmoke
               string.Format("dist={0:F1}", od));
         var obstB = new CameraObstruction();
         double od2 = obstB.Update(1.0 / 60.0, 600.0, 570.0);
-        Check("shallow hit ignored (50 u hysteresis)", !obstB.Obstructed && Math.Abs(od2 - 600.0) < 1e-6,
+        Check("shortening hit pulls immediately (engine rule)",
+              obstB.Obstructed && Math.Abs(od2 - 552.0) < 1e-6,
               string.Format("dist={0:F1}", od2));
         double minReturn = obstA.Distance;
         for (int i = 0; i < 900; i++)
@@ -192,6 +193,12 @@ internal static class CameraSmoke
         double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
         Check("obstruction respects min distance", Math.Abs(od3 - 0.1) < 1e-6,
               string.Format("dist={0:F1}", od3));
+        var obstE = new CameraObstruction();
+        obstE.Update(1.0 / 60.0, 600.0, 50.0);            // obstructed at 32 u
+        obstE.Update(1.0 / 60.0, 600.0, 760.0);           // 160 u past desired
+        Check("non-shortening hit outside the window releases", !obstE.Obstructed,
+              string.Format("obst={0}", obstE.Obstructed));
+
         var obstH = new CameraObstruction();
         obstH.Update(1.0 / 60.0, 600.0, 500.0);           // obstructed, pulled to 482
         for (int i = 0; i < 900; i++) obstH.Update(1.0 / 60.0, 600.0, 620.0);
@@ -209,11 +216,11 @@ internal static class CameraSmoke
         for (int i = 0; i < 900; i++)
         {
             double before = obstD.Distance;
-            obstD.Update(1.0 / 60.0, 600.0, 500.0);       // wall recedes
-            if (obstD.Distance < before - 0.5) minOut = Math.Min(minOut, obstD.Distance);
+            obstD.Update(1.0 / 60.0, 600.0, 550.0);       // wall recedes, still
+            if (obstD.Distance < before - 0.5) minOut = Math.Min(minOut, obstD.Distance); // inside the 100 u window
         }
         Check("camera springs out along a receding wall (stays in front)",
-              obstD.Obstructed && Math.Abs(obstD.Distance - 482.0) < 1.0 && minOut >= 32.0 - 0.5,
+              obstD.Obstructed && Math.Abs(obstD.Distance - 532.0) < 1.0 && minOut >= 32.0 - 0.5,
               string.Format("dist={0:F1} min={1:F1}", obstD.Distance, minOut));
 
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
