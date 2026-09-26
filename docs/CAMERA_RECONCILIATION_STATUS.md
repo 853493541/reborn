@@ -50,4 +50,11 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 | Pitch limit / sprint trigger / body-turn rate / S3-S5 over-claims | **done** - engine limit pi/2-0.0157, `wSprint`, pi rad/s fallback, caps row + aimDirty |
 | Engine caps probe (`fMinCameraDistance`, `fMinCameraAngle`, `fMaxCameraAngle`) | **blocked by design** - the caps provider `JX3UIX64.dll` is present in `bin64` but **not loaded** by the host, so no in-process caps object exists; the 100 u min stays a placeholder and the documented defaults are used |
 | Host near-plane read | **blocked** - the engine view-manager singleton getter (`0x1801433E0`) blocks on the client thread (froze the app); needs an engine-context callback with a thread guard; near-plane setting API likewise unexposed |
-| Remaining audit items (obstruction release exact rule, `CameraSystem.Mouse` clamp, 9-ray/bObscatleCamera, mode cameras, shake/follow-action/track, operation-mode engine coupling, settings write path, controls C1-C13) | open - each needs its own pass |
+| Item 2 - 9-ray probe set | **done (opt-in)** - centre + 8 perimeter at 45 deg matches the game's alternate mode; the `+0x15c` trigger is not recovered, so `RC_CAM_9RAY=1` (default remains the 5-ray set) |
+| Item 2 - `bObscatleCamera` per-mesh gate | **blocked (data)** - the mesh-property inis are not in the extracted collision bake |
+| Item 3 - mode cameras | **harness done** - `RC_CAM_MODE=<row>` activates carrier/air_combat/npc_dialog/god rows; the gameplay triggers (mount, dialog, air combat, spectate) do not exist in the host |
+| Item 3 - shake / follow-action / track | **shake done** (fires on the skill cast, host amplitude, per-skill rows data-gated); follow-action and track have no trigger in the host |
+| Item 4 - operation-mode engine coupling (`Camera_EnableControl`, `Scene_LockMouseRotation`, `Camera_SetResetSpeed`, `Camera_UseFullAngle`) | **blocked (API)** - these live in the represent/UI layer; the managed host wrapper exposes no equivalent |
+| Item 4 - settings write path | **blocked (no UI)** - nothing in the host changes the settings; the read path (custom.dat) is done |
+| Item 4 - controls C1-C13 | **blocked (data)** - the gap-register contents live in the notes worktree (`control-system-notes`) not in this repo |
+| Obstruction apply exact rule | **done** - shortening applies immediately; 50/100 window only for receding candidates; outside it clears (engine `0x1804C1208`) |

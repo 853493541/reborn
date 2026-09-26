@@ -656,7 +656,6 @@ internal static class RebornClient
         bool dbgIntSet = false;
         double dbgHit = -1.0, dbgLen = 0.0, dbgEffDist = 0.0;
         bool dbgObst = false;
-        bool nearProbed = false;
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
         double yawCorr = 0.0;
