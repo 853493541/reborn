@@ -95,7 +95,18 @@ internal sealed class EngineRay
             var sceneFn = (EngineMethodFn)Marshal.GetDelegateForFunctionPointer(_getScene, typeof(EngineMethodFn));
             _scene = sceneFn(window);
             if (_scene == IntPtr.Zero) return false;
-            _log("EngineRay: ready scene=0x" + _scene.ToString("X"));
+            // the terrain object paths inside the scene, per the game-engine
+            // disasm; if both are null the active window's scene is not the
+            // map scene (or this build stores the terrain elsewhere)
+            long t1 = 0, t2 = 0;
+            try
+            {
+                t1 = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0x950)).ToInt64();
+                t2 = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0xA28)).ToInt64();
+            }
+            catch { }
+            _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X}",
+                _scene.ToInt64(), t1, t2));
             return true;
         }
         catch (Exception e)
