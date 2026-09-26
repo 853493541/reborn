@@ -1245,22 +1245,6 @@ internal static class RebornClient
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
                 dbgEffDist = dist;
 
-                // When the camera is forced inside the character (jammed against
-                // a wall) the native client relies on view near-plane clipping
-                // (value not shipped; see CAMERA_CLOSE_RANGE_RESEARCH.md). The
-                // host has no visibility API, so park the dummy far below and
-                // restore it only when the camera is clearly clear of the body
-                // (60/120 u hysteresis - host approximation, not a game value).
-                if (!playerHidden && camLen < 60.0)
-                {
-                    playerHidden = true;
-                    placePlayer(px, py, pz, curYaw);
-                }
-                else if (playerHidden && camLen > 120.0)
-                {
-                    playerHidden = false;
-                    placePlayer(px, py, pz, curYaw);
-                }
                 double s = camLen / offLen;
                 double camX = ax2 + camOff[0] * s;
                 double camY = ay2 + camOff[1] * s;
@@ -1281,6 +1265,27 @@ internal static class RebornClient
                 }
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
+
+                // Character visibility near the camera: the native client relies
+                // on view near-plane clipping (value not shipped, see
+                // CAMERA_CLOSE_RANGE_RESEARCH.md). The host has no visibility
+                // API, so hide the dummy while the REAL camera->anchor distance
+                // (after the ground clamp) is inside the character's volume and
+                // restore it once clearly outside - conservative radius and
+                // hysteresis (host approximation, not a game value).
+                double camDist = Math.Sqrt((camX - ax2) * (camX - ax2) +
+                                           (camY - ay2) * (camY - ay2) +
+                                           (camZ - az2) * (camZ - az2));
+                if (!playerHidden && camDist < 90.0)
+                {
+                    playerHidden = true;
+                    placePlayer(px, py, pz, curYaw);
+                }
+                else if (playerHidden && camDist > 150.0)
+                {
+                    playerHidden = false;
+                    placePlayer(px, py, pz, curYaw);
+                }
                 }
             }
             catch (Exception e) { Log("camera system ex: " + e.Message); }
