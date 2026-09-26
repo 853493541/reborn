@@ -64,7 +64,14 @@ internal static class VideoSettings
             }
         }
         catch (Exception e) { log("VideoSettings ex: " + e.Message); }
-        // game panel clamp: 30..60 deg, default 50
+        // no per-user panel value: default to the panel MAXIMUM (60 deg) as
+        // requested (the install config.ini value is informational only then)
+        if (userWidAngleDeg <= 0.0)
+        {
+            angleDeg = PanelMaxDeg;
+            src = "max-default";
+        }
+        // game panel clamp: 30..60 deg
         if (angleDeg < PanelMinDeg) angleDeg = PanelMinDeg;
         if (angleDeg > PanelMaxDeg) angleDeg = PanelMaxDeg;
         double angle = angleDeg * Math.PI / 180.0;

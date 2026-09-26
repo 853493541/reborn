@@ -703,8 +703,12 @@ internal static class RebornClient
                 camSys.Yaw, camSys.Pitch, geometricAimPitch()));
             alignAim();
         }
-        // startup distance must respect the user/engine caps (latent item 8)
-        camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
+        // default to the maximum allowed distance (user request): both the
+        // follow target and the current distance start at the cap
+        // (2000 u engine default / the user's custom.dat value)
+        double maxUnits = camSys.Rows[CameraSystem.MODE_CHARACTER].F("MaxCameraDistance", 2000.0);
+        camSys.SetTargetDistance(camSys.ClampDistanceUnits(maxUnits) / camSys.UnitsPerMeter);
+        camSys.Distance = camSys.ClampDistanceUnits(maxUnits);
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
