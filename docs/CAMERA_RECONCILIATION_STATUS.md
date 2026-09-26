@@ -58,3 +58,23 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 | Item 4 - settings write path | **blocked (no UI)** - nothing in the host changes the settings; the read path (custom.dat) is done |
 | Item 4 - controls C1-C13 | **blocked (data)** - the gap-register contents live in the notes worktree (`control-system-notes`) not in this repo |
 | Obstruction apply exact rule | **done** - shortening applies immediately; 50/100 window only for receding candidates; outside it clears (engine `0x1804C1208`) |
+
+## Audit follow-up (latest; corrects the over-claims above)
+
+Fixed: `RC_CAM_MODE` is no longer overridden by the automatic character/sprint
+switch; `UpdateDistance` uses the active mode row's `TargetDistance`/`SmoothTime`
+(carrier verified live at 700 u); `EngineRay.ProbeNearPlane` and the view-manager
+delegates are deleted (the getter deadlocks the engine even on a worker thread);
+the move-pitch yaw double-apply is fixed (engine feed uses `oxSend`, model
+integration uses the drag `ox`); the startup `camSys.Distance` is clamped; the
+obstruction apply rule above is accurate.
+
+Still open, stated plainly: no self-hit (own-body) filtering or watchdog on the
+native rays (raw calls per frame, hardcoded RVAs); `CameraSystem.Mouse` pitch
+clamp is unused/no-op; 广角 does not read the panel `VideoSetting_WidAngle`, the
+raw<30 `+fMinCameraAngle` rule is not applied and `SetViewAngleFactor` <-> FOV is
+unverified; the 9-ray perimeter is a 22 u circle, not the engine's FOV/aspect
+basis; `bObscatleCamera` and the engine caps stay blocked (data/provider); the
+operation-mode engine coupling and controls C1-C13 are **not implemented here**
+(not a data blocker); the `control-system-notes` camera pages are still the
+pre-correction versions.
