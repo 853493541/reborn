@@ -145,27 +145,11 @@ internal sealed class EngineRay
             catch { }
             _log(string.Format("EngineRay: ready scene=0x{0:X} terrain+950=0x{1:X} terrain+A28=0x{2:X} vtB8={3} space=0x{4:X} spaceRay={5}",
                 _scene.ToInt64(), t1, t2, _terrainVt != null, _spaceObj.ToInt64(), _spaceRay != null));
-            // view projection (near plane) for the close-camera question: the
-            // engine's own path is the view-manager singleton getter
-            // (0x1801433E0(&global 0x18086ECC0)) then vt+0xA8
-            try
-            {
-                var mgrFn = (MgrGetterFn)Marshal.GetDelegateForFunctionPointer(
-                    new IntPtr(_module.ToInt64() + 0x1433E0), typeof(MgrGetterFn));
-                IntPtr mgr = mgrFn(new IntPtr(_module.ToInt64() + 0x86ECC0));
-                if (mgr != IntPtr.Zero)
-                {
-                    IntPtr vt = Marshal.ReadIntPtr(mgr);
-                    IntPtr proj = Marshal.ReadIntPtr(new IntPtr(vt.ToInt64() + 0xA8));
-                    var projFn = (ProjFn)Marshal.GetDelegateForFunctionPointer(proj, typeof(ProjFn));
-                    float fov, aspect, zn, zf;
-                    int hr = projFn(mgr, out fov, out aspect, out zn, out zf);
-                    _log(string.Format("EngineRay: viewmgr=0x{0:X} proj hr={1} fov={2:F3} aspect={3:F3} near={4:F2} far={5:F0}",
-                        mgr.ToInt64(), hr, fov, aspect, zn, zf));
-                }
-                else _log("EngineRay: view-manager singleton null");
-            }
-            catch (Exception e) { _log("EngineRay proj ex: " + e.Message); }
+            // NOTE: the view-manager singleton path (0x1801433E0(&global
+            // 0x18086ECC0) -> vt+0xA8) blocks when called from the client
+            // thread (the client froze right after this call), so the
+            // near-plane read is left to a future pass from an engine-context
+            // callback. Do not re-add it here without a timeout/thread guard.
             return true;
         }
         catch (Exception e)

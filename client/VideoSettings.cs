@@ -11,14 +11,20 @@ using System.Text.RegularExpressions;
 
 internal static class VideoSettings
 {
-    public const double DefaultAngle = 0.837757; // rad, config.ini default
+    // config.ini CammeraAngle = 0.837757 rad (~48 deg): the install default
+    // and the divisor for the SetViewAngleFactor.
+    public const double DefaultAngle = 0.837757;
+    // game panel 广角: slider 30..60 deg, default 50 deg when unset
+    public const double PanelMinDeg = 30.0;
+    public const double PanelMaxDeg = 60.0;
+    public const double PanelDefaultDeg = 50.0;
 
     // Returns the SetViewAngleFactor value (angle / default) and logs the
     // source. RC_VIEW_ANGLE still overrides for testing.
     public static float ViewAngleFactor(string editorRoot, Action<string> log)
     {
-        double angle = DefaultAngle;
-        string src = "default";
+        double angleDeg = PanelDefaultDeg;   // game panel default: 50 deg
+        string src = "panel-default";
         try
         {
             string[] candidates = new string[]
@@ -39,15 +45,24 @@ internal static class VideoSettings
                         System.Globalization.NumberStyles.Float,
                         System.Globalization.CultureInfo.InvariantCulture, out v) && v > 0.1)
                 {
-                    angle = v;
-                    src = Path.GetFileName(p);
+                    double deg = v * 180.0 / Math.PI;
+                    if (deg >= PanelMinDeg && deg <= PanelMaxDeg)
+                    {
+                        angleDeg = deg;
+                        src = Path.GetFileName(p);
+                    }
                 }
                 break;
             }
         }
         catch (Exception e) { log("VideoSettings ex: " + e.Message); }
+        // game panel clamp: 30..60 deg, default 50
+        if (angleDeg < PanelMinDeg) angleDeg = PanelMinDeg;
+        if (angleDeg > PanelMaxDeg) angleDeg = PanelMaxDeg;
+        double angle = angleDeg * Math.PI / 180.0;
         double factor = angle / DefaultAngle;
-        log(string.Format("fov source={0} angle={1:F4} rad factor={2:F4}", src, angle, factor));
+        log(string.Format("fov source={0} angle={1:F2} deg ({2:F4} rad) factor={3:F4} [panel 30-60, default 50]",
+            src, angleDeg, angle, factor));
         return (float)factor;
     }
 }

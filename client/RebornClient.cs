@@ -875,11 +875,12 @@ internal static class RebornClient
             }
             if (camDemo)
             {
-                // engine ROTATE_CAMERA mapping: 0.0035 rad/px (MAP_CAMERA_SENS)
+                // engine ROTATE_CAMERA mapping measured on this host:
+                // 0.0018 rad/px yaw, 0.00121 rad/px pitch (RC_ORBIT_TEST)
                 if (now >= 2000 && now < 6000)
                 {
                     // fast yaw sweep (~1.5 rad/s) to stress the smoothness
-                    int px2 = (int)(dt * 3.0f / 0.0035f);
+                    int px2 = (int)(dt * 3.0f / 0.0018f);
                     if (px2 < 1) px2 = 1;
                     orbitQueue.Enqueue(new int[] { px2, 0 });
                 }
