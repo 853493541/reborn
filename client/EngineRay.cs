@@ -17,6 +17,8 @@ internal sealed class EngineRay
     const int RVA_SPACE_RAY = 0xA5E4C0;     // space-manager ray (0x1809760EC)
     const int RVA_ENTITY_RAY = 0x53CB80;    // scene-node backend the scene ray
                                             // calls at 0x180976144
+    const int RVA_VERTICAL_RAY = 0xA5E1D0;  // KG3D_SpaceManager::RayIntersectionVertical
+                                            // (this, posXZ, range, float* pRetHeight)
 
     [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
     static extern IntPtr GetModuleHandleA(string name);
@@ -47,6 +49,10 @@ internal sealed class EngineRay
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int TerrainVtFn(IntPtr terrain, float[] pos, float[] dir, float maxDist, out float outDist);
 
+    // vertical backend: fn(this, float[2] posXZ, float range, float* pRetHeight)
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int VertFn(IntPtr self, float[] posXZ, float range, out float height);
+
     Action<string> _log;
     IntPtr _module = IntPtr.Zero;
     IntPtr _getWindow = IntPtr.Zero, _getScene = IntPtr.Zero;
@@ -54,11 +60,12 @@ internal sealed class EngineRay
     TerrainVtFn _terrainVt;
     RayTerrainFn _sceneRay;
     TerrainVtFn _spaceRay, _entityRay;
+    VertFn _verticalRay;
     IntPtr _terrainObj = IntPtr.Zero, _spaceObj = IntPtr.Zero, _entityObj = IntPtr.Zero;
-    // scene-ray guard: cmp [global], tls+0x89B0; jg skip. A per-thread cell we
-    // can raise by hand so the guarded KG3D_Scene::RayIntersection runs.
+    // backend guards: cmp [global], tls+0x89B0; jg skip. A per-thread cell we
+    // can raise by hand so the guarded scene/vertical rays run.
     IntPtr _guardCell = IntPtr.Zero;
-    IntPtr _guardA = IntPtr.Zero, _guardB = IntPtr.Zero;
+    IntPtr _guardA = IntPtr.Zero, _guardB = IntPtr.Zero, _guardC = IntPtr.Zero;
     long _nextTry = 0;
 
     public int LastHr, LastHit;
@@ -144,10 +151,13 @@ internal sealed class EngineRay
                 {
                     IntPtr list = Marshal.ReadIntPtr(new IntPtr(holder.ToInt64() + 0x5F8));
                     if (list != IntPtr.Zero) _entityObj = Marshal.ReadIntPtr(list);
-                    if (_entityObj != IntPtr.Zero)
-                        _entityRay = (TerrainVtFn)Marshal.GetDelegateForFunctionPointer(
-                            new IntPtr(_module.ToInt64() + RVA_ENTITY_RAY), typeof(TerrainVtFn));
-                }
+                if (_entityObj != IntPtr.Zero)
+                    _entityRay = (TerrainVtFn)Marshal.GetDelegateForFunctionPointer(
+                        new IntPtr(_module.ToInt64() + RVA_ENTITY_RAY), typeof(TerrainVtFn));
+            }
+            if (_spaceObj != IntPtr.Zero)
+                _verticalRay = (VertFn)Marshal.GetDelegateForFunctionPointer(
+                    new IntPtr(_module.ToInt64() + RVA_VERTICAL_RAY), typeof(VertFn));
             }
             // guard cell for the scene-level ray (TLS index 0x1826546C4,
             // cell +0x89B0; globals 0x182D58298 / 0x182D5829C). Read the TLS
@@ -156,6 +166,7 @@ internal sealed class EngineRay
             {
                 _guardA = new IntPtr(_module.ToInt64() + 0x2D58298);
                 _guardB = new IntPtr(_module.ToInt64() + 0x2D5829C);
+                _guardC = new IntPtr(_module.ToInt64() + 0x2D58B2C);
                 IntPtr teb = IntPtr.Zero;
                 IntPtr buf = Marshal.AllocHGlobal(0x30);
                 try
@@ -246,7 +257,9 @@ internal sealed class EngineRay
         {
             int a = Marshal.ReadInt32(_guardA);
             int b = Marshal.ReadInt32(_guardB);
+            int c = Marshal.ReadInt32(_guardC);
             int need = a > b ? a : b;
+            if (c > need) need = c;
             int cur = Marshal.ReadInt32(_guardCell);
             if (need > cur) Marshal.WriteInt32(_guardCell, need);
         }
@@ -259,6 +272,25 @@ internal sealed class EngineRay
     {
         if (!EnsureReady()) return -1f;
         return CastScene(_sceneRay, ax, ay, az, bx, by, bz);
+    }
+
+    // Vertical backend: height of the first geometry hit on a vertical line at
+    // (x, z) within range; -1 when nothing is hit. This is the game mask's
+    // vertical probe (cliffs, terrain-baked walls).
+    public float RayVerticalHeight(float x, float z, float range, out int hr)
+    {
+        hr = -1;
+        if (!EnsureReady() || _verticalRay == null || _spaceObj == IntPtr.Zero) return -1f;
+        SatisfyGuard();
+        var p = new float[] { x, z };
+        float h;
+        try
+        {
+            hr = _verticalRay(_spaceObj, p, range, out h);
+            if (hr == 0) return -1f;
+            return h;
+        }
+        catch { hr = -1; return -1f; }
     }
 
     // Entity/scene-node hit. The scene-level ray is guarded, so call the space

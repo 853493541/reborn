@@ -1269,6 +1269,22 @@ internal static class RebornClient
                         if (h > 0f && (hitDist < 0.0 || h < hitDist)) hitDist = h;
                     }
                 }
+                // engine vertical backend: the game mask's vertical probe.
+                // Sampling it along the camera line catches vertical/cliff
+                // geometry no horizontal ray reports.
+                for (int i = 2; i <= 14; i++)
+                {
+                    double t = (double)i / 14.0;
+                    int vhr;
+                    float hv = engineRay.RayVerticalHeight(
+                        (float)(ax2 + camOff[0] * t), (float)(az2 + camOff[2] * t), 8000f, out vhr);
+                    if (hv > 0f && hv + 20.0 > ay2 + camOff[1] * t)
+                    {
+                        double vh = t * offLen;
+                        if (hitDist < 0.0 || vh < hitDist) hitDist = vh;
+                        break;
+                    }
+                }
                 // terrain read as another obstruction ray (center probe march)
                 if (sampler != null)
                 {
