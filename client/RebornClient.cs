@@ -668,6 +668,9 @@ internal static class RebornClient
         double aimPitchOverride = double.NaN;   // set when the ground clamp moves the camera
         int adjYawPx = 0, adjPitchPx = 0;       // CameraMovePitch*/FollowYaw feed (RC_MOVE_PITCH)
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
+        // M0 knob: disable the park-below character hide so the engine's own
+        // near-plane clipping can be bracketed with the clearance ladder
+        bool hideNear = Env("RC_PLAYER_HIDE", "1") == "1";
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
         long rotTestStart = 0;
@@ -675,6 +678,7 @@ internal static class RebornClient
         bool fixedCamSet = false;
         long frames = 0, fpsAt = 0, fps = 0;
         int shotIdx = 0;
+        long lastSetLog = 0;
         long[] shots = ParseShots(Env("RC_SHOTS", "3000,8000,15000,30000"));
 
         // Initialize the model yaw/pitch from the real scene_init_param row (or
@@ -1376,8 +1380,25 @@ internal static class RebornClient
                         camZ = az2 + (camZ - az2) * gs;
                     }
                 }
+                // bKeepY semantics (measured, M1): false = the host clamps Y
+                // up to the engine surface at the camera xz (cliff spot:
+                // intent 727 -> 1463); true = keeps the engine's current Y and
+                // ignores ours. The managed API cannot force an absolute Y;
+                // native camera path is the exit (host deviations register).
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
+                if (camDebug && now - lastSetLog >= 500)
+                {
+                    lastSetLog = now;
+                    float sx = 0f, sy = 0f, sz = 0f;
+                    scene.GetCameraPos(ref sx, ref sy, ref sz);
+                    double sd = Math.Sqrt((sx - camX) * (sx - camX) +
+                                          (sy - camY) * (sy - camY) +
+                                          (sz - camZ) * (sz - camZ));
+                    if (sd > 1.0)
+                        Log(string.Format("setdbg moved={0:F1} intended=({1:F0},{2:F0},{3:F0}) actual=({4:F0},{5:F0},{6:F0})",
+                            sd, camX, camY, camZ, sx, sy, sz));
+                }
 
                 // Character visibility near the camera: the native client relies
                 // on view near-plane clipping (value not shipped, see
@@ -1389,15 +1410,18 @@ internal static class RebornClient
                 double camDist = Math.Sqrt((camX - ax2) * (camX - ax2) +
                                            (camY - ay2) * (camY - ay2) +
                                            (camZ - az2) * (camZ - az2));
-                if (!playerHidden && camDist < 90.0)
+                if (hideNear)
                 {
-                    playerHidden = true;
-                    placePlayer(px, py, pz, curYaw);
-                }
-                else if (playerHidden && camDist > 150.0)
-                {
-                    playerHidden = false;
-                    placePlayer(px, py, pz, curYaw);
+                    if (!playerHidden && camDist < 90.0)
+                    {
+                        playerHidden = true;
+                        placePlayer(px, py, pz, curYaw);
+                    }
+                    else if (playerHidden && camDist > 150.0)
+                    {
+                        playerHidden = false;
+                        placePlayer(px, py, pz, curYaw);
+                    }
                 }
                 }
             }

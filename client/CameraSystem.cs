@@ -271,9 +271,14 @@ public sealed class CameraSystem
         var row = Row;
         if (!row.B("ForbidRotation", false)) Yaw -= dx * sens;
         Yaw = (Yaw + Math.PI) % (2 * Math.PI) - Math.PI;
-        double maxPitch = row.F("CameraMaxDeltaPitch", 0.35);
-        Pitch = Math.Max(-Math.PI / 2 + 0.05, Math.Min(Math.PI / 2 - 0.05, Pitch - dy * sens));
-        Pitch = Math.Max(Pitch - maxPitch, Math.Min(Pitch + maxPitch, Pitch));
+        // per-call delta clamp (the row value is the engine's per-frame delta
+        // bound); the old code clamped the absolute Pitch around itself, which
+        // was a no-op and left the real clamp to the live drag path
+        double maxPitchDelta = row.F("CameraMaxDeltaPitch", 0.35);
+        double dp = dy * sens;
+        if (dp > maxPitchDelta) dp = maxPitchDelta;
+        if (dp < -maxPitchDelta) dp = -maxPitchDelta;
+        Pitch = Math.Max(-Math.PI / 2 + 0.05, Math.Min(Math.PI / 2 - 0.05, Pitch - dp));
     }
 
     public void SwitchMode(string mode) { SwitchMode(mode, true); }
@@ -589,9 +594,8 @@ public sealed class CameraObstruction
 {
     public bool Obstructed;
     public double Distance = -1.0;     // current (possibly pulled) length
-    // native bound is max(0.001, hit) - 18; keep a tiny host epsilon so the
-    // camera reaches ~1 u from the anchor at a 19 u wall like the engine does
-    public double MinDistance = 0.1;   // kept for reference; signed pull is used
+    // native bound is max(0.001, hit) - 18 (signed; T1.4 landed, the old
+    // MinDistance floor is gone - no field references it)
     bool _init;
     public double Clearance = 18.0;
     public double PullThreshold = 50.0;     // free-side entry hysteresis

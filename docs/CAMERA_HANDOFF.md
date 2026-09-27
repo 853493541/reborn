@@ -13,13 +13,14 @@
 
 - Repo `C:\Users\Zhibin Ren\Desktop\reborn` (main, clean, pushed), worktree
   `C:\Users\Zhibin Ren\Desktop\reborn-camara-fix`, branch **`camara-fix`**.
-- Committed tip: **`45f8ae5`**. The `camara-fix` branch adds **41 commits over
-  `main`** (`a8471b4`..`45f8ae5`: drag model + aim closed loop, sphere offset,
-  wall obstruction, engine rays, FOV, modes).
-- **Uncommitted (M0+M1)**: `docs/CAMERA_HOST_DEVIATIONS.md`,
-  `RC_CAM_CLEARANCE` override, `betweendbg` telemetry, signed pull in
-  `CameraObstruction`, final-camera wall gate, smoke test rename. Build passes,
-  smoke 25/25, live run clean.
+- Committed tip: the batch commit on top of **`1b7d23e`** (M0+M1 set + corrected
+  docs; `camara-fix` adds 41 commits over `main`, `a8471b4`..). The M0+M1 set
+  (`RC_CAM_CLEARANCE`, `betweendbg`, signed pull, wall gate, smoke rename) is
+  committed in `1b7d23e`.
+- This batch (big-batch commit): `setdbg` read-back probe,
+  `RC_PLAYER_HIDE=0` knob, `Mouse` delta-clamp fix, dead `MinDistance` removal,
+  Step B results + near-plane measurement in the docs/register. Build passes,
+  smoke 25/25.
 - Build: `client\build_client.cmd` (uses `csc` v4.0.30319) -> writes
   `C:\SeasunGame\MovieEditor\bin64\reborn_client.exe` and `camera_smoke.exe`.
 - No C++ toolchain on the machine (no cl/g++/clang, no VS, no Windows SDK);
@@ -118,9 +119,65 @@ Measured offline (this session, correcting the old text):
 
 Run Step B before any bake work.
 
+### Step B first pass - result (2026-09-26, current tip + setdbg probe)
+
+Controlled wall: inst 262's north face, spawn `(18097, 500, 22171)`, wall
+z~21971, default camera line crosses it at ~200 u.
+
+| Clearance | bake hit | pull len | postdbg move | frames |
+|---|---|---|---|---|
+| 18 | 206 u | 188 | 0.0 | clean, no holes (`stepb_clr18`) |
+| 40 | 206 u | 166 | 0.0 | clean (`stepb_clr40`) |
+| 80 | 206 u | 126 | 0.0 | clean (`stepb_clr80`) |
+
+- Engine space ray agrees with the bake (`obstprobe sceneN=204`).
+- `betweendbg` clear while unobstructed; no host Y move; no near-plane hole.
+- => this wall is **fully covered** and the 18 u rule is exact. No H1 at a
+  drawn building wall, no H2 at 18 u. Do not bake on this evidence.
+
+Found instead (new, measured): `SetCameraPos` (`MovieEngineCLR.KGSceneCLR`,
+4th parameter is `bKeepY`, not "aim") **cannot set an absolute Y**:
+
+- `bKeepY=false` (current call) clamps Y **up to the render surface at the
+  camera xz**. At the cliff pit `(18284, 500, 26095)` (spawn inside the
+  inst503 rock formation) the intent 727 became 1463 while the PhysX terrain
+  object reports 622 - the clamp is scene geometry, not the heightfield.
+  `setdbg moved=735.6` proves it happens at set time, not in FrameMove.
+- `bKeepY=true` keeps the engine's current Y (6405 at that spawn) and ignores
+  ours.
+- The clamped camera leaves the anchor->camera line and can sit inside the
+  rock (inside-geometry frames, `setdbg`/`postdbg` telemetry). Registered as
+  host deviations B6; exit = native camera path (Step C).
+
+### Step B near-plane ladder - result (2026-09-26)
+
+Same wall (hit = 206 u), `RC_CAM_DEBUG=1 RC_PLAYER_HIDE=0`, camLen = hit - C:
+
+| Clearance | camLen | character in frame |
+|---|---|---|
+| 18 | 188 | full |
+| 60 | 146 | full |
+| 90 | 116 | full |
+| 110 | 96 | full (back fills the frame) |
+| 125 | 81 | back cut open, interior/front visible |
+| 140 | 66 | mostly gone (skirt fragment only) |
+| 170 | 36 | gone |
+| 190 | 16 | gone |
+
+- Host view near plane **N ~= 60-70 u (0.6-0.7 m)** - roughly 4x the game's
+  18 u wall clearance.
+- **H2 is real**: any surface in front of the camera within ~N gets clipped.
+  The building-wall tests stayed clean only because the wall that pulls the
+  camera sits *behind* it; the user's see-through shows up when front geometry
+  (corners, wall grazing, the character itself) is within ~N.
+- The game's 18 u rule cannot prevent this; the only exact exit is a native
+  near-plane setter (Step C). Evidence: `reborn_out\stepb_np*`,
+  `stepb_np2_*`.
+
 ## 5. What to do next (corrected order - classify before baking)
 
-**Step B - classify at a drawn wall (one run per rung, do this FIRST).**
+**Step B - classification (first pass DONE 2026-09-26: result in §4; the recipe
+below is reusable for other spots).**
 At a wall that is visibly drawn (e.g. the spawn-east building i0013, or a
 楼兰三间房 wall), run with `RC_CAM_DEBUG=1` and a `RC_CAM_CLEARANCE` ladder
 (18 -> 40 -> 80 u) plus a screenshot per rung:
@@ -161,17 +218,28 @@ and the exact terrain ray. If a bake is required:
 4. Verify: nearest baked instance at the wall ~0; `betweendbg` hits; the camera
    pulls with the 18 u rule.
 
-**Step C - native bridge (stays deferred).** Only after A/B are exhausted.
-Install VS Build Tools (MSVC + Windows SDK, ~2-4 GB), then write a single
-version-checked `camera_shim.dll` exposing `SetLookAt`, near-plane get/set
-(view `vt+0xA8`), and the `FilterCamera`/mask `0x301` scene query. That deletes
-the aim band-aids (A1-A7) and gives exact wall clipping. It is brittle and
-needs the toolchain; do not start before B (and A only if B proves a gap).
+**Step C - native bridge (deferred, requirements now measured).** Install VS
+Build Tools (MSVC + Windows SDK, ~2-4 GB), then write one version-checked
+`camera_shim.dll`. It must cover, in priority order:
+
+1. **View near plane get/set** (`view vt+0xA8`): the host N is ~60-70 u
+   (measured), the game's 18 u clearance can never work until N is small
+   (C7/B1/B6 exit).
+2. **Absolute camera Y / look-at**: `KGSceneCLR.SetCameraPos` cannot set Y
+   (`bKeepY=false` clamps to the render surface, `true` keeps the engine's
+   stale Y) and has no look-at; the shim sets pos + look-at directly on the
+   engine camera (A1-A9, B6, D3 exit).
+3. **`FilterCamera` / mask `0x301` scene query** with the real filter object
+   (D1/D4/D5 exit; removes the raw-RVA backends and the vertical no-hits).
+
+Acceptance: camera Y round-trips exactly; near plane visible in A/B
+screenshots; the guarded scene ray returns hits. Brittle: version-check the
+engine module before any vtable/RVA use.
 
 ## 6. Deviations register / docs
 
-- `docs/CAMERA_HOST_DEVIATIONS.md` - all 31 host-vs-game items with exit
-  criteria (M0, uncommitted).
+- `docs/CAMERA_HOST_DEVIATIONS.md` - all 37 host-vs-game items with exit
+  criteria (A1-A11, B1-B6, C1-C9, D1-D5, E1-E7), current as of the Step B pass.
 - `docs/CAMERA_RECONCILIATION_STATUS.md` - fix status per audit item.
 - `docs/CAMERA_DRAG_MODEL.md`, `docs/CAMERA_CLOSE_RANGE_RESEARCH.md`,
   `docs/CAMERA_WALL_OBSTRUCTION.md` - proven game behaviour + evidence.
@@ -182,9 +250,11 @@ needs the toolchain; do not start before B (and A only if B proves a gap).
 
 - `RC_CAM_DEBUG=1` -> `camdbg` (yaw/pitch/dist/r/obst/hit/len/eff/clamp),
   `obstprobe` (bake + engine ray hits), `betweendbg` (camera->anchor invariant),
-  `postdbg` (whether the engine moved our placed camera).
+  `setdbg` (host moved the camera after placement; B6), `postdbg` (whether the
+  engine moved our placed camera after FrameMove).
 - `RC_CAM_CLEARANCE=<u>` (obstruction clearance), `RC_CAM_MODE=<row>`,
   `RC_CAM_9RAY=1`, `RC_MOVE_PITCH=1`, `RC_VIEW_ANGLE=<factor>`,
+  `RC_PLAYER_HIDE=0` (disable the park-below hack for near-plane ladders),
   `RC_CUSTOM_DAT=<path>`, `RC_LOAD_CUSTOM_DAT=0`, `RC_ORBIT_TEST=1`,
   `RC_DEMO=1`, `RC_DEMO_COLLIDE=1`+`RC_COL_TELEPORT=1`, `RC_SHOTS=...`.
 - Logs: `bin64\reborn_out\reborn.log` and per-run `reborn_<timestamp>.log`.
