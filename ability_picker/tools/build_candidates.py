@@ -48,6 +48,18 @@ def flatten_names(items) -> list[str]:
     return out
 
 
+def flatten_wems(items) -> list[str]:
+    out = []
+    for it in items or []:
+        if isinstance(it, dict):
+            v = it.get("id") or it.get("wem") or it.get("wwid")
+            if v:
+                out.append(str(v))
+        else:
+            out.append(str(it))
+    return out
+
+
 def tani_paths(entry) -> list[str]:
     out = []
     for t in entry.get("taniResults") or []:
@@ -109,6 +121,335 @@ MANUAL = [
 ]
 
 
+# zhenchuan ability IDs (client skill ids the user supplied), id -> ability name
+ZC_IDS = [
+    # batch 2 - 绝境
+    ("65161", "鹊踏枝"), ("65165", "雷震子"), ("65097", "韦陀献杵"), ("65048", "夺命蛊"),
+    ("65159", "帝骖龙翔"), ("65154", "坐忘无我"), ("65107", "星楼月影"), ("65162", "蛊虫献祭"),
+    ("64992", "长针"), ("65060", "无我无剑"), ("65105", "春泥护花"), ("65092", "圣明佑"),
+    ("65061", "万剑归宗"), ("65242", "太阴指"), ("65156", "雷霆震怒"), ("65146", "七星拱瑞"),
+    ("65160", "天地低昂"), ("65074", "穿心弩"), ("65149", "五方行尽"), ("65145", "三才化生"),
+    ("65046", "蛇影"), ("64993", "商阳指"), ("65250", "啸如虎"), ("65078", "鹤归孤山"),
+    ("65667", "亢龙有悔"), ("65090", "银月斩"), ("64898", "横扫六合"), ("65671", "棒打狗头"),
+    ("65022", "穿"), ("65109", "芙蓉并蒂"), ("65100", "捉影式"), ("65153", "大道无术"),
+    ("65101", "五蕴皆空"), ("65104", "无相诀"), ("65113", "傍花随柳"), ("65058", "玉石俱焚"),
+    ("65065", "剑主天地"), ("65089", "烈日斩"), ("65024", "太极无极"), ("64994", "钟林毓秀"),
+    ("64995", "兰摧玉折"), ("65087", "净世破魔击"), ("65059", "两仪化形"), ("65038", "灭"),
+    ("65096", "驱夜断愁"), ("64899", "捕风式"), ("65116", "沧月"), ("65049", "迷心蛊"),
+    ("65050", "枯残蛊"), ("64900", "抱残式"), ("64996", "破风"), ("65075", "听雷"),
+    ("65083", "幽月轮"), ("65669", "龙战于野"), ("65108", "少明指"), ("65155", "剑转流云"),
+    ("64991", "拿云式"), ("65157", "绛唇珠袖"), ("65127", "冲阴阳"), ("65140", "吞日月"),
+    ("65138", "凌太虚"), ("65142", "生太极"), ("65028", "剑飞惊天"), ("64901", "守缺式"),
+    ("65670", "潜龙勿用"), ("39494", "风流云散"), ("39493", "引窍"), ("65133", "碎星辰"),
+    ("65136", "破苍穹"), ("65119", "撼如雷"), ("65036", "龙吟"), ("65150", "人剑合一"),
+    ("65120", "渊"), ("39483", "雾暗迷云"), ("65053", "化血镖"), ("65054", "孔雀翎"),
+    ("65076", "云飞玉皇"), ("65668", "狂龙乱舞"), ("65071", "追命箭"), ("65672", "笑醉狂"),
+    ("65244", "浮光掠影"), ("65062", "天地无极"), ("65241", "鸟翔碧空"), ("65240", "疾"),
+    ("65029", "龙牙"), ("65118", "疾如风"), ("65026", "三环套月"), ("65098", "摩诃无量"),
+    ("65095", "生死劫"), ("65047", "蟾啸"), ("65243", "暗尘弥散"), ("65103", "大狮子吼"),
+    ("65251", "风袖低昂"), ("65254", "千蝶吐瑞"), ("65068", "百足"), ("39492", "截阳"),
+    ("65163", "女娲补天"), ("65144", "任驰骋"), ("65167", "镇山河"),
+    # batch 1 - 道具/伪传
+    ("27967", "风来吴山"), ("30261", "无间狱"), ("30226", "心诤"), ("30257", "剑破虚空"),
+    ("27903", "散流霞"), ("30082", "踏星行"), ("32245", "花语酥心"), ("30025", "转乾坤"),
+    ("30023", "锻骨诀"), ("27846", "云栖松"), ("27878", "孤风飒踏"), ("27905", "跃潮斩波"),
+    ("30024", "守如山"), ("27869", "烟雨行"), ("30243", "龙啸九天"), ("27926", "九转归一"),
+    ("27872", "撼地"), ("27969", "孤影化双"), ("30081", "极乐引"), ("30234", "鸿蒙天禁"),
+    ("30276", "逐云寒蕊"), ("30231", "疾电叱羽"), ("36501", "应天授命"), ("27906", "斩无常"),
+    ("27874", "十方玄机"), ("30029", "惊鸿游龙"), ("30235", "天绝地灭"), ("32300", "连环弩"),
+    ("27902", "楚河汉界"), ("30262", "振翅图南"), ("30233", "飞刃回转"), ("27904", "翔极碧落"),
+    ("28046", "魂压怒涛"), ("28045", "洞烛机微"), ("27863", "怖畏暗刑"), ("27888", "舍身诀"),
+    ("30123", "凌然天风"), ("27850", "紫气东来"), ("27875", "斗转星移"), ("34594", "洗兵雨"),
+    ("27847", "霞流宝石"), ("27890", "抢珠式"), ("27892", "九霄风雷"), ("28031", "临时飞爪"),
+    ("27857", "琴音共鸣"), ("34591", "游风飘踪"), ("32287", "徐如林"), ("27862", "梯云纵"),
+    ("36500", "乘黄之威"), ("27871", "盾立"), ("30301", "绿野蔓生"), ("32247", "如意法"),
+    ("30247", "驭羽骋风"), ("27924", "蚀心蛊"), ("27855", "蝶弄足"), ("30239", "穹隆化生"),
+    ("27844", "听风吹雪"), ("30238", "玄水蛊"), ("27895", "化蝶"),
+]
+
+
+# identified tani per ability (verified during the animation research).
+# value = list of filename substrings, tried in order against the candidates.
+RESOLVE = {
+    "风来吴山": ["s07cj重剑技能15_风来吴山HD"],
+    "剑破虚空": ["s05qx剑技能13_剑破虚空HD"],
+    "龙牙": ["s04tc技能13_龙牙hd"],
+    "龙吟": ["s04tc技能12_龙吟HD"],
+    "灭": ["s04tc技能17_灭HD"],
+    "银月斩": ["smj10双刀攻击04_月斩"],
+    "烈日斩": ["smj10组合刀攻击04_日斩"],
+    "春泥护花": ["s01wh技能15_春泥HD"],
+    "长针": ["s01wh针灸13b长针hd"],
+    "星楼月影": ["s01wh技能12_星楼月影hd"],
+    "帝骖龙翔": ["s05qx剑技能23_帝骖龙翔HD"],
+    "雷霆震怒": ["s05qx剑技能25_雷霆震怒hd"],
+    "百足": ["swd08毒攻击03_百足"],
+    "蛇影": ["swd08毒攻击02_蛇影"],
+    "三环套月": ["s03cy剑技能11b_三环HD"],
+    "万剑归宗": ["s03cy剑技能13_万剑HD"],
+    "人剑合一": ["s03cy剑技能15_人剑合一hd"],
+    "五方行尽": ["s03cy气技能13_五方HD"],
+    "九转归一": ["scy03气攻击01_九转HD"],
+    "听雷": ["s07cj内功重剑12_听雷HD"],
+    "天地低昂": ["s05qx剑技能20_天地低昂hd"],
+    "大狮子吼": ["ssl04技能06_hd01"],
+    "韦陀献杵": ["s04sl棍技能12_hd02"],
+    "心诤": ["s04sl棍技能18a_扫击蓄力01"],
+    "摩诃无量": ["s04sl棍技能14_hd03"],
+    "捕风式": ["s04sl爪技能11_hd01"],
+    "抢珠式": ["F1s04sl爪技能12"],
+    "拿云式": ["s04sl爪技能13_hd01"],
+    "捉影式": ["s04sl爪技能14a_hd01"],
+    "守缺式": ["s04sl爪技能15a_hd01"],
+    "撼如雷": ["s04tc技能22_撼HD"],
+    "穹隆化生": ["s03cy气技能15a_穹窿化生01_悟", "s03cy气技能15b_穹窿化生01_悟"],
+    "斗转星移": ["s17ytz星相技01_斗转星"],
+    "九霄风雷": ["h唐门弩车001b_技能02a_HD"],
+    "洞烛机微": ["h唐门弩车001b_技能02a_HD"],
+    "魂压怒涛": ["h唐门弩车001b_技能02a_HD"],
+    "临时飞爪": ["s16lxg链技能03_释放HD", "s16lxg链技能03_HD"],
+    "花语酥心": ["swh01辅助技能03"],
+    "天地无极": ["s03cy剑技能11c"],
+    "破风": ["s04tc技能11b_穿云hd"],
+    "怖畏暗刑": ["smj10双刀攻击07a"],
+    "驱夜断愁": ["smj10双刀攻击10连杀"],
+    "极乐引": ["smj10圣火诀buff02"],
+    "云飞玉皇": ["s07cj重剑技能11a_云飞HD"],
+    "天绝地灭": ["stm09机关攻击03七煞毒"],
+    "云栖松": ["s07cj内功重剑18_云栖松hd"],
+    "追命箭": ["stm09弩攻击03夺命01"],
+    "凌然天风": ["s18yz凌然天风01.tani"],
+    "舍身诀": ["F1s04sl技能11"],
+    "无相诀": ["F1s04sl技能12"],
+    "锻骨诀": ["F1s04sl技能16"],
+    "横扫六合": ["F1s04sl棍技能13"],
+    "十方玄机": ["F1s16lxg技能02a"],
+}
+
+F1_DIR = r"data\source\player\f1\动作"
+TANI_RT = r"C:\SeasunGame\MovieEditor\ResourcePack\Tani.rt"
+BAD_TOKENS = {"技能", "攻击", "武器", "普通", "待机", "行走", "奔跑", "死亡"}
+
+
+def load_catalog_f1() -> list:
+    """all f1 tani filenames from the movie editor catalog (real casing)"""
+    names = []
+    try:
+        for ln in open(TANI_RT, encoding="gb18030", errors="replace").read().splitlines():
+            c = ln.split("\t")
+            if len(c) >= 3 and c[1].lower().endswith(".tani") and "\\player\\f1\\" in c[2].lower():
+                names.append(c[1])
+    except Exception:
+        pass
+    return names
+
+
+def catalog_find(pref: str, catalog: list) -> str:
+    hits = [fn for fn in catalog if pref.lower() in fn.lower()]
+    if not hits:
+        return ""
+    hits.sort(key=lambda fn: (1 if "_悟" in fn else 0, len(fn)))
+    return hits[0]
+
+
+def load_tables(base: str):
+    rows = [r.split("\t") for r in
+            open(os.path.join(base, "ad-desc-probe-out", "settings", "skill", "skills.tab"),
+                 encoding="gb18030", errors="replace").read().splitlines()[1:]
+            if len(r.split("\t")) > 99]
+    tag: dict[str, list] = {}
+    for ln in open(os.path.join(base, "skill-tables-out", "Represent", "skill", "skill_tag.txt"),
+                   encoding="gb18030", errors="replace").read().splitlines()[1:]:
+        c = ln.split("\t")
+        if len(c) >= 3:
+            tag.setdefault(c[0], []).append(c[1])
+    anim: dict[str, list] = {}
+    for ln in open(os.path.join(base, "player-animation-out", "Represent", "player", "player_animation_f1.txt"),
+                   encoding="gb18030", errors="replace").read().splitlines()[1:]:
+        c = ln.split("\t")
+        if len(c) >= 7 and c[0] and c[6]:
+            anim.setdefault(c[0], []).append(c[6].replace("/", "\\").split("\\")[-1])
+    return rows, tag, anim
+
+
+def tag_match(name: str, rows, tag, anim) -> str:
+    """skill_tag exact layer: a skills.tab row related to the ability whose
+    tagged animation filename shares a distinctive token with the ability."""
+    ids = set()
+    for r in rows:
+        n = r[0]
+        if n.startswith(("道具_", "道具·", "绝境_", "绝境·", "伪传_", "伪传·")):
+            continue
+        if n == name or (name in n and len(n) <= len(name) + 12):
+            ids.add(r[1])
+    toks = {name[i:i + 2] for i in range(len(name) - 1)} - BAD_TOKENS
+    best = ""
+    for i in ids:
+        for a in tag.get(i, []):
+            for f in anim.get(a, []):
+                if any(t in f for t in toks) and ("\\f1\\" in f.lower() or f.lower().lstrip("_").startswith("f1")):
+                    if not best or len(f) < len(best):
+                        best = f
+    return best
+
+
+def name_match(name: str, tanis: list) -> str:
+    """conservative fallback: only when the ability name itself is in an f1
+    filename; prefers plain over 皮肤/悟 and the lowest phase number."""
+    cands = [t for t in tanis if "\\f1\\" in t.lower()]
+    named = [t for t in cands if name in t.replace("/", "\\").split("\\")[-1]]
+    if not named:
+        return ""
+    def score(t: str):
+        fn = t.replace("/", "\\").split("\\")[-1]
+        s = 0
+        if "_悟" in fn:
+            s += 100
+        if "皮肤" in fn:
+            s += 50
+        m = re.search(r"(\d{2})", fn)
+        s += int(m.group(1)) if m else 20
+        return (s, len(fn))
+    named.sort(key=score)
+    return named[0]
+
+
+def body_match(name: str, tanis: list) -> str:
+    """named clip on another body (borrow to f1, per the locked rule).
+    conservative: name must be in the filename; skips demo/皮肤, prefers non-悟
+    and the smallest body/phase."""
+    cands = [t for t in tanis if name in t.replace("/", "\\").split("\\")[-1] and "演武" not in t]
+    if not cands:
+        return ""
+    def score(t: str):
+        low = t.lower()
+        fn = t.replace("/", "\\").split("\\")[-1]
+        s = 0
+        if "_悟" in fn:
+            s += 100
+        if "皮肤" in fn:
+            s += 50
+        if "\\m1\\" in low:
+            s += 1
+        elif "\\m2\\" in low:
+            s += 2
+        elif "\\f2\\" in low:
+            s += 3
+        m = re.search(r"(\d{2})", fn)
+        s += int(m.group(1)) if m else 20
+        return (s, len(fn))
+    cands.sort(key=score)
+    return cands[0]
+
+
+def resolve_matched(name: str, tanis: list, rows, tag, anim, catalog: list) -> tuple[str, str]:
+    for pref in RESOLVE.get(name, []):
+        for t in tanis:
+            if pref.lower() in t.lower():
+                return t, "dig"
+        fn = catalog_find(pref, catalog)
+        if fn:
+            return F1_DIR + "\\" + fn, "dig-cat"
+    f = tag_match(name, rows, tag, anim)
+    if f:
+        for t in tanis:
+            if t.lower().endswith(f.lower()):
+                return t, "tag"
+        fn = catalog_find(f[:-5] if f.lower().endswith(".tani") else f, catalog) or f
+        return F1_DIR + "\\" + fn, "tag"
+    t = name_match(name, tanis)
+    if t:
+        return t, "name"
+    t = body_match(name, tanis)
+    if t:
+        return t, "body"
+    return "", ""
+
+
+def attach_matched(all_entries: list, cache_path: str) -> int:
+    base = os.path.dirname(os.path.dirname(cache_path))
+    try:
+        rows, tag, anim = load_tables(base)
+    except Exception as exc:
+        print("resolve: tables unavailable (" + str(exc) + ")")
+        rows, tag, anim = [], {}, {}
+    catalog = load_catalog_f1()
+    resolved = 0
+    for e in all_entries:
+        e.setdefault("matched", "")
+        e.setdefault("matchSource", "")
+        if not e["ids"]:
+            continue
+        m, src = resolve_matched(e["name"], e["tanis"], rows, tag, anim, catalog)
+        if not m:
+            continue
+        have = {t.lower() for t in e["tanis"]}
+        if m.lower() not in have:
+            e["tanis"].insert(0, m)
+        e["matched"] = m
+        e["matchSource"] = src
+        resolved += 1
+    return resolved
+
+
+def merge_review_wems(all_entries: list, cache_path: str) -> int:
+    """merge human-confirmed Wwise wem ids from ability-tani-sound-review.json"""
+    rp = os.path.join(os.path.dirname(cache_path), "ability-tani-sound-review.json")
+    if not os.path.exists(rp):
+        return 0
+    try:
+        review = json.load(open(rp, encoding="utf-8"))
+    except Exception:
+        return 0
+    ents = review.get("entries") or {}
+    bykey = {}
+    for e in all_entries:
+        bykey[e.get("key", "")] = e
+        bykey[str(e.get("prefix", "")) + ":" + str(e.get("id", "")) + ":" + str(e.get("kind", ""))] = e
+    merged = 0
+    for k, v in ents.items():
+        e = bykey.get(k)
+        if e is None:
+            continue
+        have = {w.lower() for w in e["wems"]}
+        for w in v.get("confirmedWems") or []:
+            wid = str(w.get("id") or "")
+            if wid and wid.lower() not in have:
+                e["wems"].append(wid)
+                have.add(wid.lower())
+                merged += 1
+    return merged
+
+
+def attach_zc_ids(all_entries: list) -> tuple[int, int]:
+    """Point zhenchuan ability ids at their entries (by id, else by name)."""
+    for e in all_entries:
+        e.setdefault("ids", [])
+    by_id = {e["id"]: e for e in all_entries if e.get("id")}
+    by_name: dict[str, list] = {}
+    for e in all_entries:
+        by_name.setdefault(e["name"], []).append(e)
+    attached = 0
+    for sid, nm in ZC_IDS:
+        nm = norm_name(nm)
+        e = by_id.get(sid)
+        if e is None:
+            cands = by_name.get(nm, [])
+            e = max(cands, key=lambda x: len(x["tanis"])) if cands else None
+        if e is None:
+            e = {
+                "key": "zc:" + sid, "id": sid, "prefix": "阵船", "kind": "skill",
+                "name": nm, "rawName": nm, "status": "zc", "tanis": [], "events": [],
+                "wems": [], "notes": "zc id (no cache entry)", "ids": [],
+            }
+            all_entries.append(e)
+            by_name.setdefault(nm, []).append(e)
+        if sid not in e["ids"]:
+            e["ids"].append(sid)
+            attached += 1
+    return attached, len(ZC_IDS)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", default=os.environ.get("AP_CACHE", DEFAULT_CACHE))
@@ -143,8 +484,10 @@ def main() -> int:
             "rawName": raw,
             "status": e.get("status") or "",
             "tanis": tani_paths(e),
-            "sounds": flatten_names(e.get("events")) + flatten_names(e.get("wems")),
+            "events": flatten_names(e.get("events")),
+            "wems": flatten_wems(e.get("wems")),
             "notes": "cache",
+            "ids": [],
         }
 
     # merge manual dig mappings into matching cache entries (by normalized name)
@@ -161,8 +504,8 @@ def main() -> int:
         else:
             g = manual_group.setdefault(name, {
                 "key": "dig:" + name, "id": "", "prefix": "手工映射", "kind": "skill",
-                "name": name, "rawName": name, "status": "dig", "tanis": [], "sounds": [],
-                "notes": note,
+                "name": name, "rawName": name, "status": "dig", "tanis": [], "events": [],
+                "wems": [], "notes": note, "ids": [],
             })
             have = {p.lower() for p in g["tanis"]}
             for p in paths:
@@ -170,6 +513,9 @@ def main() -> int:
                     g["tanis"].append(p)
 
     all_entries = list(abilities.values()) + list(manual_group.values())
+    attached, total_ids = attach_zc_ids(all_entries)
+    resolved = attach_matched(all_entries, args.cache)
+    merged_wems = merge_review_wems(all_entries, args.cache)
     all_entries.sort(key=lambda a: (a["prefix"], a["name"]))
 
     out = {
@@ -177,12 +523,19 @@ def main() -> int:
         "cache": args.cache,
         "count": len(all_entries),
         "withTanis": sum(1 for a in all_entries if a["tanis"]),
+        "withIds": sum(1 for a in all_entries if a["ids"]),
+        "attachedIds": attached,
+        "totalIds": total_ids,
+        "resolved": resolved,
         "abilities": all_entries,
     }
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=1)
-    print(f"wrote {args.out}: {out['count']} abilities, {out['withTanis']} with tani candidates")
+    print(f"wrote {args.out}: {out['count']} abilities, {out['withTanis']} with tani candidates, "
+          f"{out['withIds']} with ids ({attached}/{total_ids} ids attached), "
+          f"{resolved} with an identified matched tani, "
+          f"{merged_wems} confirmed wems merged")
     return 0
 
 

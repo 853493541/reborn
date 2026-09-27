@@ -32,7 +32,11 @@ internal static class AbilityPicker
         public string Status;
         public string Notes;
         public List<string> Tanis = new List<string>();
-        public List<string> Sounds = new List<string>();
+        public List<string> Events = new List<string>();
+        public List<string> Wems = new List<string>();
+        public List<string> Ids = new List<string>();
+        public string Matched = "";
+        public string MatchSource = "";
     }
 
     internal class ReviewItem
@@ -43,6 +47,7 @@ internal static class AbilityPicker
     }
 
     static readonly List<Ability> abilities = new List<Ability>();
+    static readonly HashSet<string> matchedTanis = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     static readonly Dictionary<string, ReviewItem> review = new Dictionary<string, ReviewItem>();
     static readonly List<string> catalogPaths = new List<string>();
     static readonly List<string> catalogFiltered = new List<string>();
@@ -52,14 +57,22 @@ internal static class AbilityPicker
     static string startupPath;
     static string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
     static string actorPath;
-    static string dataPath, reviewPath, outDir;
+    static string dataPath, reviewPath, outDir, soundDir;
     static Action<string> Log;
+    static readonly HashSet<string> soundMissLogged = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    [System.Runtime.InteropServices.DllImport("winmm.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+    static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
+    const uint SND_ASYNC = 0x0001;
+    const uint SND_NODEFAULT = 0x0002;
+    const uint SND_FILENAME = 0x00020000;
 
     static Form form;
+    static SplitContainer mainSplit, rightSplit;
     static Panel viewport;
     static TreeView tree;
-    static TextBox searchBox, addPathBox, catalogSearch, noteBox;
-    static CheckBox onlyUnresolved, autoPlay;
+    static TextBox searchBox, addPathBox, catalogSearch, noteBox, restartBox;
+    static CheckBox onlyUnresolved, autoPlay, restartChk, tracedChk, soundChk;
     static ComboBox speedBox;
     static ListBox catalogList;
     static Label lblAbility, lblCurrent, lblSounds, statusLabel;
@@ -70,7 +83,10 @@ internal static class AbilityPicker
     static Timer frameTimer;
 
     static string curClip = "";
+    static string lastPlayPath = "";
+    static long lastPlayStart;
     static float speed = 1f;
+    static bool userSplit;
     static string selectedAbilityKey = "";
     static string selectedTani = "";
     static bool smoke;
@@ -89,6 +105,8 @@ internal static class AbilityPicker
         reviewPath = Env("AP_REVIEW", Path.Combine(baseDir, "ability_picker", "review.json"));
         outDir = Env("AP_OUT", Path.Combine(baseDir, "ability_picker", "out"));
         Directory.CreateDirectory(outDir);
+        soundDir = Env("AP_SOUND_DIR", Path.Combine(baseDir, "ability_picker", "sound"));
+        Directory.CreateDirectory(soundDir);
         Log = delegate(string s)
         {
             try { File.AppendAllText(Path.Combine(outDir, "ability_picker.log"), DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n"); }
@@ -147,7 +165,15 @@ internal static class AbilityPicker
 
         model = new KGModelCLR();
         model.AttachModel(handle);
-        SetStatus("engine ready - select a candidate to play");
+        int withIds = 0, matched = 0, withSound = 0;
+        foreach (Ability a in abilities)
+        {
+            if (a.Ids.Count > 0) withIds++;
+            if (a.Matched != "") matched++;
+            if (HasSound(a)) withSound++;
+        }
+        SetStatus("engine ready - " + abilities.Count + " abilities, " + withIds + " with ids, "
+            + matched + " with identified tani, " + withSound + " with sound");
 
         frameTimer = new Timer();
         frameTimer.Interval = 15;
@@ -161,6 +187,24 @@ internal static class AbilityPicker
     // ---------- frame ----------
     static void Frame()
     {
+        // review mode: restart the clip when the repeat interval elapses so the
+        // move plays again from frame 0 (MovieEditor loops seamlessly instead)
+        if (restartChk != null && restartChk.Checked && lastPlayPath != "")
+        {
+            int ms;
+            if (int.TryParse(restartBox.Text.Trim(), out ms) && ms >= 300
+                && Environment.TickCount - lastPlayStart >= ms)
+            {
+                lastPlayStart = Environment.TickCount;
+                try
+                {
+                    model.PlayAnimation(lastPlayPath, 0, speed, 0);
+                    PlayCue(FindAbility(selectedAbilityKey));
+                    Log("restart -> " + Short(lastPlayPath));
+                }
+                catch (Exception e) { Log("restart ex: " + e.Message); }
+            }
+        }
         try
         {
             while (pending.Count > 0)
@@ -199,9 +243,18 @@ internal static class AbilityPicker
                 }
                 if (pick != null && pick.Tanis.Count > 0)
                 {
-                    selectedAbilityKey = pick.Key;
-                    Log("smoke pick: " + pick.Name + " -> " + pick.Tanis[0]);
-                    PlayTani(pick.Tanis[0], true);
+                    TreeNode leaf = FindLeaf(pick);
+                    if (leaf != null)
+                    {
+                        Log("smoke pick (tree click path): " + pick.Name + " -> " + leaf.Text);
+                        tree.SelectedNode = leaf;
+                    }
+                    else
+                    {
+                        selectedAbilityKey = pick.Key;
+                        Log("smoke pick: " + pick.Name + " -> " + pick.Tanis[0]);
+                        PlayTani(pick.Tanis[0], true);
+                    }
                 }
             }
             if (!smokeResetCam && el > 3500)
@@ -216,6 +269,19 @@ internal static class AbilityPicker
                 form.Close();
             }
         }
+    }
+
+    static TreeNode FindLeaf(Ability ab)
+    {
+        if (tree == null) return null;
+        foreach (TreeNode g in tree.Nodes)
+            foreach (TreeNode a in g.Nodes)
+            {
+                Ability x = a.Tag as Ability;
+                if (x != null && x.Key == ab.Key && a.Nodes.Count > 0)
+                    return a.Nodes[0];
+            }
+        return null;
     }
 
     // ---------- data ----------
@@ -239,9 +305,25 @@ internal static class AbilityPicker
             ab.Status = Str(d, "status");
             ab.Notes = Str(d, "notes");
             ab.Tanis = StrList(d, "tanis");
-            ab.Sounds = StrList(d, "sounds");
+            ab.Events = StrList(d, "events");
+            ab.Wems = StrList(d, "wems");
+            ab.Ids = StrList(d, "ids");
+            ab.Matched = Str(d, "matched");
+            ab.MatchSource = Str(d, "matchSource");
             abilities.Add(ab);
         }
+        RebuildMatched();
+    }
+
+    // the identified tani per ability id (single file) -> shown green in the lists
+    static void RebuildMatched()
+    {
+        matchedTanis.Clear();
+        foreach (Ability a in abilities)
+        {
+            if (a.Matched != "") matchedTanis.Add(a.Matched);
+        }
+        Log("identified matched tani files: " + matchedTanis.Count);
     }
 
     static void LoadReview()
@@ -330,21 +412,24 @@ internal static class AbilityPicker
             if (e.Control && e.KeyCode == Keys.S) { SaveReview(); e.Handled = true; }
         };
 
-        var main = new SplitContainer();
+        mainSplit = new SplitContainer();
+        var main = mainSplit;
         main.Dock = DockStyle.Fill;
         main.Orientation = Orientation.Vertical;
         main.SplitterDistance = 470;
         main.Panel1MinSize = 320;
+        main.SplitterMoved += delegate { userSplit = true; };
         form.Controls.Add(main);
 
         // left: filters
         var top = new Panel();
         top.Dock = DockStyle.Top;
-        top.Height = 62;
+        top.Height = 88;
         top.Controls.Add(MkLabel("Find", 6, 9));
         searchBox = new TextBox();
         searchBox.Location = new Point(52, 6);
         searchBox.Width = 180;
+        searchBox.Text = Env("AP_FIND", "");
         searchBox.TextChanged += delegate { BuildTree(); };
         top.Controls.Add(searchBox);
         onlyUnresolved = new CheckBox();
@@ -372,6 +457,31 @@ internal static class AbilityPicker
             if (speed <= 0f) speed = 1f;
         };
         top.Controls.Add(speedBox);
+        top.Controls.Add(MkLabel("Restart (ms)", 6, 58));
+        restartBox = new TextBox();
+        restartBox.Location = new Point(84, 55);
+        restartBox.Width = 60;
+        restartBox.Text = Env("AP_RESTART_MS", "2000");
+        top.Controls.Add(restartBox);
+        restartChk = new CheckBox();
+        restartChk.Text = "restart on repeat";
+        restartChk.Location = new Point(152, 58);
+        restartChk.AutoSize = true;
+        restartChk.Checked = Env("AP_RESTART", "1") == "1";
+        top.Controls.Add(restartChk);
+        tracedChk = new CheckBox();
+        tracedChk.Text = "traced tani";
+        tracedChk.Location = new Point(282, 58);
+        tracedChk.AutoSize = true;
+        tracedChk.Checked = Env("AP_TRACED", "1") == "1";
+        tracedChk.CheckedChanged += delegate { BuildTree(); FilterCatalog(); };
+        top.Controls.Add(tracedChk);
+        soundChk = new CheckBox();
+        soundChk.Text = "sound";
+        soundChk.Location = new Point(382, 30);
+        soundChk.AutoSize = true;
+        soundChk.Checked = Env("AP_SOUND", "1") == "1";
+        top.Controls.Add(soundChk);
         main.Panel1.Controls.Add(top);
 
         // left: tools
@@ -416,6 +526,10 @@ internal static class AbilityPicker
             else if (e.Node.Tag is string)
             {
                 selectedTani = (string)e.Node.Tag;
+                // clicking a leaf must also bind its parent ability so the
+                // sound lookup works without selecting the ability row first
+                if (e.Node.Parent != null && e.Node.Parent.Tag is Ability)
+                    selectedAbilityKey = ((Ability)e.Node.Parent.Tag).Key;
                 if (autoPlay.Checked) PlayTani(selectedTani, true);
                 else ShowTani(selectedTani);
             }
@@ -428,11 +542,13 @@ internal static class AbilityPicker
         tree.BringToFront();
 
         // right split: viewport + tabs
-        var right = new SplitContainer();
+        rightSplit = new SplitContainer();
+        var right = rightSplit;
         right.Dock = DockStyle.Fill;
         right.Orientation = Orientation.Horizontal;
         right.SplitterDistance = 700;
         right.Panel1MinSize = 300;
+        right.SplitterMoved += delegate { userSplit = true; };
         main.Panel2.Controls.Add(right);
 
         viewport = new Panel();
@@ -478,6 +594,20 @@ internal static class AbilityPicker
         tabCatalog.Controls.Add(catBottom);
         catalogList = new ListBox();
         catalogList.Dock = DockStyle.Fill;
+        catalogList.DrawMode = DrawMode.OwnerDrawFixed;
+        catalogList.ItemHeight = 16;
+        catalogList.DrawItem += delegate(object s, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            if (e.Index >= 0 && e.Index < catalogFiltered.Count)
+            {
+                bool matched = matchedTanis.Contains(catalogFiltered[e.Index]);
+                Color c = matched ? Color.FromArgb(0, 130, 0) : e.ForeColor;
+                using (SolidBrush b = new SolidBrush(c))
+                    e.Graphics.DrawString(catalogList.Items[e.Index].ToString(), e.Font, b, e.Bounds);
+            }
+            e.DrawFocusRectangle();
+        };
         catalogList.DoubleClick += delegate
         {
             if (catalogList.SelectedIndex >= 0 && catalogList.SelectedIndex < catalogFiltered.Count)
@@ -510,7 +640,26 @@ internal static class AbilityPicker
         noteBox.BringToFront();
         tabs.TabPages.Add(tabDetails);
 
+        form.Shown += delegate { ApplyViewportSplit(); };
+        form.Resize += delegate { if (!userSplit) ApplyViewportSplit(); };
+
         BuildTree();
+    }
+
+    // viewport gets ~70% width / ~72% height by default so it is at least half
+    // of the window; once the user drags a splitter we stop auto-laying out
+    static void ApplyViewportSplit()
+    {
+        try
+        {
+            int w = form.ClientSize.Width;
+            int h = form.ClientSize.Height;
+            if (w > 0 && mainSplit != null)
+                mainSplit.SplitterDistance = Math.Max(mainSplit.Panel1MinSize, (int)(w * 0.30));
+            if (h > 0 && rightSplit != null && rightSplit.Height > 0)
+                rightSplit.SplitterDistance = Math.Max(rightSplit.Panel1MinSize, (int)(rightSplit.Height * 0.72));
+        }
+        catch (Exception e) { Log("split ex: " + e.Message); }
     }
 
     static Label MkLabel(string text, int x, int y)
@@ -551,9 +700,15 @@ internal static class AbilityPicker
         {
             string chosen = review.ContainsKey(ab.Key) ? review[ab.Key].chosen : "";
             if (onlyUnresolved.Checked && !string.IsNullOrEmpty(chosen)) continue;
+            // traced filter: keep zhenchuan abilities (with ids); entries with no
+            // ids and no traced match are legacy extras -> hidden
+            if (tracedChk.Checked && ab.Ids.Count == 0 && ab.Matched == "") continue;
             if (q.Length > 0)
             {
                 bool hit = ab.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (!hit)
+                    foreach (string id in ab.Ids)
+                        if (id.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0) { hit = true; break; }
                 if (!hit)
                     foreach (string t in ab.Tanis)
                         if (t.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0) { hit = true; break; }
@@ -566,21 +721,23 @@ internal static class AbilityPicker
                 groups[gname] = g;
                 tree.Nodes.Add(g);
             }
-            string label = ab.Name + "   [" + ab.Tanis.Count + "]";
+            string idLabel = ab.Ids.Count > 0 ? string.Join("/", ab.Ids.ToArray()) : ab.Id;
+            string label = ab.Name + (idLabel != "" ? ("  [" + idLabel + "]") : "") + "   (" + ab.Tanis.Count + ")";
             if (!string.IsNullOrEmpty(chosen))
                 label += "  ->  " + Short(chosen);
             TreeNode node = new TreeNode(label);
             node.Tag = ab;
-            if (!string.IsNullOrEmpty(chosen)) node.ForeColor = Color.FromArgb(0, 130, 0);
             foreach (string t in ab.Tanis)
             {
+                // traced filter: a resolved ability shows only its green file;
+                // an unresolved one shows all its candidates for review
+                if (tracedChk.Checked && ab.Matched != "" && !matchedTanis.Contains(t)) continue;
                 TreeNode leaf = new TreeNode(Short(t));
                 leaf.Tag = t;
+                // green = this tani file is matched by an ability id
+                if (matchedTanis.Contains(t)) leaf.ForeColor = Color.FromArgb(0, 130, 0);
                 if (string.Equals(chosen, t, StringComparison.OrdinalIgnoreCase))
-                {
-                    leaf.ForeColor = Color.FromArgb(0, 130, 0);
                     leaf.Text = "* " + leaf.Text;
-                }
                 if (string.Equals(selectedTani, t, StringComparison.OrdinalIgnoreCase))
                     leaf.BackColor = Color.FromArgb(210, 230, 255);
                 node.Nodes.Add(leaf);
@@ -603,6 +760,7 @@ internal static class AbilityPicker
         foreach (string p in catalogPaths)
         {
             if (q.Length > 0 && p.IndexOf(q, StringComparison.OrdinalIgnoreCase) < 0) continue;
+            if (tracedChk.Checked && !matchedTanis.Contains(p)) continue;
             catalogFiltered.Add(p);
             catalogList.Items.Add(Short(p));
             n++;
@@ -620,9 +778,12 @@ internal static class AbilityPicker
         {
             int pr = model.PlayAnimation(path, 0, speed, 0);
             curClip = path;
-            Log("play -> " + path + " (result " + pr + ")");
+            lastPlayPath = path;
+            lastPlayStart = Environment.TickCount;
+            string snd = PlayCue(FindAbility(selectedAbilityKey));
+            Log("play -> " + path + " (result " + pr + ")" + snd);
             ShowTani(path);
-            SetStatus("playing (result " + pr + "): " + Short(path));
+            SetStatus("playing: " + Short(path) + snd);
         }
         catch (Exception e)
         {
@@ -635,6 +796,37 @@ internal static class AbilityPicker
     {
         if (selectedTani == "") return;
         PlayTani(selectedTani, true);
+    }
+
+    // play the ability's confirmed wav (decoded from wem) if available
+    static string PlayCue(Ability ab)
+    {
+        if (ab == null || soundChk == null || !soundChk.Checked) return "";
+        foreach (string wem in ab.Wems)
+        {
+            string wav = Path.Combine(soundDir, wem + ".wav");
+            if (File.Exists(wav))
+            {
+                try
+                {
+                    PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
+                    Log("sound -> " + wav);
+                    return " | sound " + wem;
+                }
+                catch (Exception e) { Log("sound ex: " + e.Message); return ""; }
+            }
+        }
+        string missKey = ab.Key + ":" + ab.Wems.Count;
+        if (ab.Ids.Count > 0 && soundMissLogged.Add(missKey))
+            Log("sound: no decoded wav for " + ab.Name + " (wems " + ab.Wems.Count + "), run tools\\fetch_sounds.py");
+        return ab.Wems.Count > 0 ? " | sound not fetched" : " | no sound data";
+    }
+
+    static bool HasSound(Ability ab)
+    {
+        foreach (string wem in ab.Wems)
+            if (File.Exists(Path.Combine(soundDir, wem + ".wav"))) return true;
+        return false;
     }
 
     static void AddCandidate(string path)
@@ -651,6 +843,7 @@ internal static class AbilityPicker
             if (string.Equals(t, path, StringComparison.OrdinalIgnoreCase)) { SetStatus("already in list"); return; }
         ab.Tanis.Add(path);
         selectedTani = path;
+        RebuildMatched();
         BuildTree();
         SetStatus("added to " + ab.Name + ": " + Short(path));
         if (autoPlay.Checked) PlayTani(path, true);
@@ -691,8 +884,9 @@ internal static class AbilityPicker
 
     static void ShowAbility(Ability ab)
     {
-        lblAbility.Text = "ability: " + ab.Name + "   key=" + ab.Key + "   id=" + ab.Id + "   status=" + ab.Status
-            + (ab.Notes != "" ? ("   notes=" + ab.Notes) : "");
+        lblAbility.Text = "ability: " + ab.Name + "   ids=" + (ab.Ids.Count > 0 ? string.Join("/", ab.Ids.ToArray()) : "-")
+            + "   status=" + ab.Status
+            + "   matched=" + (ab.Matched != "" ? (Short(ab.Matched) + " (" + ab.MatchSource + ")") : "-");
         noteBox.Text = review.ContainsKey(ab.Key) ? review[ab.Key].note : "";
     }
 
@@ -702,10 +896,11 @@ internal static class AbilityPicker
         if (ab != null)
             lblAbility.Text = "ability: " + ab.Name + "   key=" + ab.Key + "   candidates=" + ab.Tanis.Count;
         lblCurrent.Text = "candidate: " + path;
-        if (ab != null && ab.Sounds.Count > 0)
-            lblSounds.Text = "sounds: " + string.Join(", ", ab.Sounds.GetRange(0, Math.Min(6, ab.Sounds.Count)).ToArray());
+        if (ab != null && ab.Wems.Count > 0)
+            lblSounds.Text = "wems: " + string.Join(", ", ab.Wems.GetRange(0, Math.Min(5, ab.Wems.Count)).ToArray())
+                + "   events: " + string.Join(", ", ab.Events.GetRange(0, Math.Min(3, ab.Events.Count)).ToArray());
         else
-            lblSounds.Text = "sounds: -";
+            lblSounds.Text = "wems: -";
     }
 
     static Ability FindAbility(string key)
