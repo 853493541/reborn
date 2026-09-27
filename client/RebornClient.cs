@@ -191,6 +191,10 @@ internal static class RebornClient
         CameraSystem camSys = new CameraSystem();
         CameraObstruction camObst = new CameraObstruction();
         CameraShake camShake = new CameraShake();
+        // near-plane ladder knob: clearance used by the obstruction response
+        double clearanceOverride;
+        if (double.TryParse(Env("RC_CAM_CLEARANCE", ""), out clearanceOverride) && clearanceOverride > 0.0)
+            camObst.Clearance = clearanceOverride;
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
@@ -959,6 +963,16 @@ internal static class RebornClient
                 // getter (0x1801433E0) deadlocks the engine even from a worker
                 // thread (see EngineRay.ProbeNearPlane) - it can only run in the
                 // engine's own frame context, which needs a native shim.
+                // between= invariant: cast from the placed camera to the anchor;
+                // a hit very close to the camera while unobstructed means the
+                // camera is on the wrong side of a wall
+                if (engineRay.Available)
+                {
+                    float bb = col != null ? col.Raycast(dbgx, dbgy, dbgz, px, py + 90f, pz) : -1f;
+                    float bt = engineRay.RayTerrain(dbgx, dbgy, dbgz, px, py + 90f, pz);
+                    float bs = engineRay.RayScene(dbgx, dbgy, dbgz, px, py + 90f, pz);
+                    Log(string.Format("betweendbg cam->anchor bake={0:F0} terr={1:F0} scene={2:F0}", bb, bt, bs));
+                }
                 int vhr0;
                 float vh0 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr0);
                 if (col != null)
@@ -1336,6 +1350,32 @@ internal static class RebornClient
                 camX += camShake.Offset[0];
                 camY += camShake.Offset[1];
                 camZ += camShake.Offset[2];
+                // final-camera wall gate (T1.5): the camera->anchor segment must
+                // be clear; if any wall sits between, retract along that line so
+                // the camera can never sit on the far side of geometry
+                if (engineRay.Available)
+                {
+                    float g1 = col != null ? col.Raycast((float)camX, (float)camY, (float)camZ,
+                        (float)ax2, (float)ay2, (float)az2, true) : -1f;
+                    float g2 = engineRay.RayTerrain((float)camX, (float)camY, (float)camZ,
+                        (float)ax2, (float)ay2, (float)az2);
+                    float g3 = engineRay.RayScene((float)camX, (float)camY, (float)camZ,
+                        (float)ax2, (float)ay2, (float)az2);
+                    float gg = -1f;
+                    if (g1 > 0f && (gg < 0f || g1 < gg)) gg = g1;
+                    if (g2 > 0f && (gg < 0f || g2 < gg)) gg = g2;
+                    if (g3 > 0f && (gg < 0f || g3 < gg)) gg = g3;
+                    double fullLen = Math.Sqrt((camX - ax2) * (camX - ax2) +
+                                               (camY - ay2) * (camY - ay2) +
+                                               (camZ - az2) * (camZ - az2));
+                    if (gg > 0f && fullLen > 1.0 && gg < fullLen - 30.0)
+                    {
+                        double gs = Math.Max(1.0, gg - 25.0) / fullLen;
+                        camX = ax2 + (camX - ax2) * gs;
+                        camY = ay2 + (camY - ay2) * gs;
+                        camZ = az2 + (camZ - az2) * gs;
+                    }
+                }
                 scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
 

@@ -191,7 +191,7 @@ internal static class CameraSmoke
               minReturn >= 482.0 - 0.5, string.Format("min={0:F1}", minReturn));
         var obstC = new CameraObstruction();
         double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
-        Check("obstruction respects min distance", Math.Abs(od3 - 0.1) < 1e-6,
+        Check("signed pull goes behind the anchor (native rule)", Math.Abs(od3 - (-8.0)) < 1e-6,
               string.Format("dist={0:F1}", od3));
         var obstE = new CameraObstruction();
         obstE.Update(1.0 / 60.0, 600.0, 50.0);            // obstructed at 32 u

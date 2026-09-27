@@ -591,7 +591,8 @@ public sealed class CameraObstruction
     public double Distance = -1.0;     // current (possibly pulled) length
     // native bound is max(0.001, hit) - 18; keep a tiny host epsilon so the
     // camera reaches ~1 u from the anchor at a 19 u wall like the engine does
-    public double MinDistance = 0.1;
+    public double MinDistance = 0.1;   // kept for reference; signed pull is used
+    bool _init;
     public double Clearance = 18.0;
     public double PullThreshold = 50.0;     // free-side entry hysteresis
     public double ReleaseThreshold = 100.0; // obstructed-side release hysteresis
@@ -602,12 +603,17 @@ public sealed class CameraObstruction
 
     public double Update(double dt, double desired, double hitDistance)
     {
-        if (Distance < 0.0) Distance = desired;
+        if (!_init)
+        {
+            Distance = desired;
+            _init = true;
+        }
         double target = desired;
         if (hitDistance > 0.0)
         {
-            double pull = hitDistance - Clearance;
-            if (pull < MinDistance) pull = MinDistance;
+            // native signed pull: C' = A + u*max(0.001, hit), then the 18 u
+            // clearance -> the camera may sit behind the anchor (T1.4)
+            double pull = Math.Max(0.001, hitDistance) - Clearance;
             if (pull < Distance)
             {
                 // engine rule: a hit that shortens the anchor ray applies
