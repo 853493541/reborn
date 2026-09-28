@@ -406,8 +406,18 @@ public sealed class FoliageCollision
     // Nearest world-space hit of the segment A->B against the structure and
     // foliage instances (camera obstruction). Returns the distance from A
     // along A->B in world units, or -1 when nothing is hit.
-    public float Raycast(float ax, float ay, float az, float bx, float by, float bz, bool structuresOnly = false)
+    // frontFacesOnly (camera probes): skip back-facing hits. A probe whose
+    // origin sits inside a mesh only finds that mesh's exit faces; treating
+    // those as walls produced a phantom hit inches behind the anchor and a
+    // negative (crossing) pull. The game's render-entity ray sees the drawn
+    // front surface, so front faces are the faithful set.
+    public int LastInst = -1;
+    public int LastTri = -1;
+
+    public float Raycast(float ax, float ay, float az, float bx, float by, float bz,
+                         bool structuresOnly = false, bool frontFacesOnly = false)
     {
+        LastInst = -1;
         float dx = bx - ax, dy = by - ay, dz = bz - az;
         float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
         if (len < 1e-3f) return -1f;
@@ -417,6 +427,7 @@ public sealed class FoliageCollision
         GatherCandidates((minX + maxX) * 0.5f, (minZ + maxZ) * 0.5f,
                          Math.Max(maxX - minX, maxZ - minZ) * 0.5f, _cand);
         float bestT = float.MaxValue;
+        int bestInst = -1, bestTri = -1;
         for (int ci = 0; ci < _cand.Count; ci++)
         {
             Instance it = _inst[_cand[ci]];
@@ -453,22 +464,34 @@ public sealed class FoliageCollision
                     for (int k = s0; k < s1; k++)
                     {
                         float t;
+                        bool front;
                         if (!RayTri(md.verts, md.tris, md.cellTri[k],
-                                    lAx, lAy, lAz, ldx, ldy, ldz, out t)) continue;
-                        if (t < bestT) bestT = t;
+                                    lAx, lAy, lAz, ldx, ldy, ldz, out t, out front)) continue;
+                        if (frontFacesOnly && !front) continue;
+                        if (t < bestT)
+                        {
+                            bestT = t;
+                            bestInst = _cand[ci];
+                            bestTri = md.cellTri[k];
+                        }
                     }
                 }
             }
         }
+        LastInst = bestInst;
+        LastTri = bestTri;
         return bestT == float.MaxValue ? -1f : bestT * len;
     }
 
-    // Moller-Trumbore; t in [0,1] along O + t*D.
+    // Moller-Trumbore; t in [0,1] along O + t*D. `front` is true for a hit on
+    // the face's front side (ray travels against the triangle normal;
+    // d.n = -det, so det > 0 is a front hit).
     static bool RayTri(float[] v, int[] tris, int tri,
                        float ox, float oy, float oz,
-                       float dx, float dy, float dz, out float t)
+                       float dx, float dy, float dz, out float t, out bool front)
     {
         t = 0f;
+        front = false;
         int i0 = tris[tri * 3] * 3, i1 = tris[tri * 3 + 1] * 3, i2 = tris[tri * 3 + 2] * 3;
         float e1x = v[i1] - v[i0], e1y = v[i1 + 1] - v[i0 + 1], e1z = v[i1 + 2] - v[i0 + 2];
         float e2x = v[i2] - v[i0], e2y = v[i2 + 1] - v[i0 + 1], e2z = v[i2 + 2] - v[i0 + 2];
@@ -487,6 +510,7 @@ public sealed class FoliageCollision
         float w = (dx * qx + dy * qy + dz * qz) * inv;
         if (w < 0f || u + w > 1f) return false;
         t = (e2x * qx + e2y * qy + e2z * qz) * inv;
+        front = det > 0f;
         return t >= 0f && t <= 1f;
     }
 

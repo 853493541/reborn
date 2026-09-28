@@ -164,14 +164,17 @@ Same wall (hit = 206 u), `RC_CAM_DEBUG=1 RC_PLAYER_HIDE=0`, camLen = hit - C:
 | 170 | 36 | gone |
 | 190 | 16 | gone |
 
-- Host view near plane **N ~= 60-70 u (0.6-0.7 m)** - roughly 4x the game's
-  18 u wall clearance.
-- **H2 is real**: any surface in front of the camera within ~N gets clipped.
-  The building-wall tests stayed clean only because the wall that pulls the
-  camera sits *behind* it; the user's see-through shows up when front geometry
-  (corners, wall grazing, the character itself) is within ~N.
-- The game's 18 u rule cannot prevent this; the only exact exit is a native
-  near-plane setter (Step C). Evidence: `reborn_out\stepb_np*`,
+- ~~Host view near plane N ~= 60-70 u~~ **corrected 2026-09-27**: the model
+  fade motions above are the **engine's own model culling/fade** when the
+  camera is inside/very close to the character (game anti-clip behaviour), not
+  the view near plane. The `stepb_clr18/40/80` wall frames show sand within
+  60 u in front of the camera is never clipped, so the near plane is NOT large.
+- **H2 as framed is therefore unproven/disproven**; no wall-clip holes were
+  observed at 18 u. A definitive wall-distance test still needs a working
+  fixed-camera harness (`RC_FIXED_CAM` only sets once and the engine overrides
+  it).
+- The character fade threshold (~90 u) roughly matches the park-below hack, so
+  B1's host approximation stays for now. Evidence: `reborn_out\stepb_np*`,
   `stepb_np2_*`.
 
 ## 5. What to do next (corrected order - classify before baking)
@@ -235,6 +238,177 @@ Build Tools (MSVC + Windows SDK, ~2-4 GB), then write one version-checked
 Acceptance: camera Y round-trips exactly; near plane visible in A/B
 screenshots; the guarded scene ray returns hits. Brittle: version-check the
 engine module before any vtable/RVA use.
+
+### Step C status (2026-09-27, uncommitted)
+
+- Toolchain installed: VS 2022 Build Tools 17.14.41, MSVC 14.44.35207,
+  Windows SDK 10.0.26100. Build: `native\build_shim.cmd` -> `camera_shim.dll`
+  in bin64 (version-guarded on the engine PE timestamp/size).
+- `client/CameraShim.cs` loads/self-tests it with a managed fallback;
+  `RC_CAM_IL`, `RC_CAM_SCAN`, `RC_CAM_POKE`, `RC_CAM_NATIVE` are the probe
+  switches (all off by default; default behaviour is unchanged).
+- Recon results: host classes + vtable RVAs - `KG3D_Camera` 0x21EF6E0 /
+  0x21EF6F0, `KG3D_SceneView` 0x21D4970 / 0x21D4DE8, `KG3D_Window` 0x21E1970,
+  `KG3D_Scene` 0x21C5598; SceneView ctor at 0x1809CBB50; live instances found
+  by `RC_Probe_Deep` (SceneView at `scene+0x18C8`, camera records in the
+  object at `scene+0x910`*); the active camera holds the live position at
+  +0x28/+0x30 with target at +0x10 after.
+- **Blocker:** writes to those camera/snapshot fields do not drive the render
+  (the render reads a snapshot the managed path writes through an untraced
+  route). Managed entry-point thunks were dumped with `RC_CAM_IL`; the next
+  step is to follow the thunk target and map `SetCameraPos/GetCameraPos` to
+  the engine camera call, then re-test the absolute-Y write.
+- Differential scans (`RC_CAM_DIFF`, `RC_CAM_DIFF2`):
+  - the managed `SetCameraPos` X/Z input lands at `[engine+0x1F58]+0x630`
+    (transient - consumed within a frame);
+  - after a frame the position/target/direction records live at
+    `[scene+0x910]+0xF68/0x11A0/0x1988/0x1998/0x1BC0/0x1BCC` and
+    `[scene+0x918]+0x98/0x3F0` (position + target + direction);
+  - writing the model's exact placement into those records between
+    `FrameMove` and `Render` did **not** move the render (evidence
+    `reborn_out\pre_idx{0,1,7}`) - the renderer appears to consume a
+    view/projection matrix rebuilt during `FrameMove`.
+  - Next: locate that matrix (or the function that builds it) and write the
+    exact camera there, or hook the matrix build.
+- Near-plane setter: deferred pending the wall test (see §4 correction).
+  Filtered ray: query wrapper `0x180446920` still to be disassembled.
+- **2026-09-27 late findings.** `RC_CAM_OBSTDBG=1`: at the user spot the
+  winning hit is `probe1 off=(-22,0,0) bake=11.4` - the west footprint corner
+  starts inside the post (face 21 u west) and returns its exit distance
+  (C2 artifact) -> pull -7 -> camera 6.6 u in front of the head; the
+  between-segment is clear and the character is engine-culled (proved with
+  `RC_PLAYER_HIDE=0`, frame identical). `RC_CAM_OBSTDBG` also shows the
+  vertical ladder false-firing at 85.6 u from a roof 9045 u overhead.
+  `RC_CAM_CLR_SEQ` ladder (inst 262, clearances 18..2) is clean - the wall is
+  behind the camera at every rung, no forward clip (`proof/nearplane_ladder.png`).
+  `RC_CAM_LOOKPACK=1` turns the view (partial, ~2.43 rad) and was validated on
+  the user spot (`proof/lookpack_ab.png`). Default behaviour byte-identical to
+  the user repro (mean 0.48/255). No shippable fix yet; the look-at and the
+  footprint basis are the two measured roots.
+
+### Step C plan (re-prioritized 2026-09-27)
+
+**Recon vs fix line.** Calls into engine functions (even undocumented) =
+allowed. Writing engine memory/records/matrices as the shipped fix = host
+bypass; register it in the deviations list; never default-on. Default client
+behaviour stays unchanged while the probes are env-gated.
+
+**1. Near plane first (the visible cliff cut / close-surface clipping).**
+- Status: SceneView `+0x88`/`+0x98` (values ~20.67) were poked safely to 5.0
+  one at a time (`RC_CAM_POKE`); the frame did not change, so they are not the
+  near plane. `+0x444` (0.1, next to the FOV factor at `+0x44C`) was poked to
+  0.02 (per-frame) at the user spot - **no pixel change** (no visible geometry
+  lies between 2 cm and the old value there); `0.005` crashes `Render`, so the
+  field is live but remains unidentified. The `RC_CAM_CLR_SEQ` ladder at inst
+  262 (wall 18..2 u in front of the camera, `proof/nearplane_ladder.png`)
+  shows the forward view intact at every rung - no clip in front within 18 u.
+- Conclusion so far (2026-09-27): the user's repro frame is **not** a
+  near-plane cut. The camera is 6.6 u in *front* of the head (signed pull -7
+  from a corner probe that starts inside the wooden post, C2) and the engine
+  view still points the old way (no look-at, D3), so the render shows the
+  scene from inside the character (see item 2).
+- Next: if a near plane is still needed, the projection block must be found in
+  the host engine (the game-DLL RVA `0x180446920`/`0x180473...` family does
+  not map to `KG3DEngineDX11EX64.dll`, which lacks `FilterCamera` and
+  `bObscatleCamera` entirely).
+
+**2. Camera transport (absolute Y / look-at).**
+- Tested and refuted first per the plan: the engine input field
+  `[engine+0x1F58]` does not carry Y - after `SetCameraPos(x, 12345, z)` no
+  Y value appears in the dump, so the clamp is downstream. Writing the input
+  field cannot set an absolute Y.
+- Post-process records (`[scene+0x910]+...`, `[scene+0x918]+0x98`) written
+  between `FrameMove` and `Render` did not move the render.
+- **Look-at (2026-09-27, experiment only, default OFF).** The host view
+  direction never follows the camera position, so a signed pull that crosses
+  the anchor makes the render look *away* from it (D3) - that is the user's
+  see-through, not clipping (clearance ladder 2-18 u in front: clean, and the
+  signed pull is legitimate: the anchor sits inside the rock mesh, the cavity
+  wall is ~11 u behind the head - C2 correction). `RC_CAM_LOOKPACK=1` turns
+  the engine orbit 180 deg when crossed (mirrored pitch) via
+  `ExecAction(1,...)` in <=200 px steps with a spaced `measureView` closed
+  loop (host clamps a burst; converges to 0.005 rad). It fixes the stationary
+  repro (`proof/lookpack_ab.png`) but the host engine AVed when it fired while
+  moving (D6, 3 logs), so the flip is **off by default** and, when enabled,
+  only engages while `!movingNow`. The C2 "phantom hit" that was expected to
+  make the crossing disappear does not exist (real geometry); the crossing
+  persists while moving by design of the native signed pull.
+- P1 hygiene landed with this batch: camera probe rays are front-face only
+  (`Raycast(..., frontFacesOnly: true)`; render rays see front faces) and the
+  vertical ladder is windowed (a 9045 u roof overhead no longer pulls the
+  camera to ~68 u). Controlled wall still exact: hit 206 -> len 188. The C2
+  premise correction (11.4 hit is real rock-cavity geometry, anchor inside the
+  rock mesh) is in the deviations register.
+- P2 status: the orbit route is rate-sensitive, not movement-sensitive. A
+  single 600 px (1.08 rad) orbit event AVs the host in the shader parser
+  (`+0xA6C75A`) even at an open spawn; a rate-limited turn (<=1.5 rad/s,
+  <=20 px/event, the engine's fMaxAngelVel) ran 20 s clean, and the flip now
+  uses that rate (full 180 deg ~3.5 s) and converges (measured 1.575 vs
+  1.571). It stays an experiment, default OFF, stationary-only.
+- P2/T3 result (2026-09-27 late): **the moving flip cannot be made safe.**
+  T1 confirmed rate safety in isolation (aim frozen, <=20 px/event, ~17 rad
+  over 10 s clean), but the T3 test - rate-limited flip enabled while walking
+  (11 flips, clearance-200 crossing injection) - AVed at the D6 DataStore
+  offset `+0x11D03B6`. The moving view therefore keeps the old direction by
+  design; the stationary flip stays an experiment (default OFF). The yaw-diff
+  probe (`RC_CAM_YAWFDIFF`, rate-limited) remains for the route-1 recon; its
+  first run also hit an engine AV (`+0x9DD289`, prologue push, possible stack
+  exhaustion under shim scan + rotation).
+- P3 acceptance (default-env walking run, no crash, clean F9 A/B) is **not
+  met**: by default the moving view still crosses with no look-at, and the
+  moving look-at is blocked by D6. This is a host-engine limitation, not a
+  remaining camera-rule gap: with the installed editor engine, any moving
+  view change into unloaded content can AV (missing build-machine DataStores).
+- **Crash found (2026-09-27, D6).** With the flip default-on the app AVed
+  three times (`KG3DEngineDX11EX64+0x11D03B6`, material DataStore null deref),
+  each within ~0.2 s of a flip firing **while moving**; stationary flips never
+  crashed (minutes of runs) and no-flip roaming did not crash (~8 runs).
+  Mitigation shipped: the flip engages/keeps only while `!movingNow`, so the
+  stationary repro (the user's F9 case) still flips and the moving case keeps
+  the old (unflipped) view. 3x60 s moving demo runs after the guard: clean
+  (0 flips, no AV). Root is a host-engine hole, tracked as D6.
+- Next (exit for D3): native look-at / view-matrix write via the shim and
+  delete the orbit-flip approximation; for D6, isolate the content whose
+  material store is missing (crash dump / first-render trace).
+
+### Engine camera API contract - Phase 1 done (2026-09-27 late)
+
+`proof/netcode/engine_camera_contract.txt` has the full evidence. The managed
+`KGSceneCLR::SetCameraPos` IL (MovieEngineCLR.dll, RVA 0x2728AC, decoded with
+dncil) shows the engine's own contract:
+
+```
+camera = scene->vt[+0x50](scene)             ; scene = this.m_pScene
+camera->vt[+0x48](&pos)  camera->vt[+0x50](pos, 0)
+camera->vt[+0x60](&tgt)  camera->vt[+0x58](tgt, 0)   ; look-at setter
+scene->vt[+0x70](&pos, &clampedY)            ; then if (clampedY > pos.y)
+                                               pos.y = clampedY  <- the B6 clamp
+```
+
+The managed API then translates the target by the same delta as the position,
+which is exactly why the view keeps its direction when the pull crosses the
+anchor; the `vt+0x58` setter is the game's look-at path (fixes D3 and the B6
+clamp at the same time).
+
+**Phase 2 blocked (no fix landed).** The native `m_pScene` behind the managed
+wrapper is not reachable from outside: (a) the `Get3DScene2` scene's vt+0x50 is
+not get-camera (returns 0); (b) the wrapper's fields (address via `__makeref`
+and via weak-GCHandle deref, same value) expose no engine-vtable pointers;
+(c) the object scanner's `KG3D_Camera` has vt+0x50/0x58 pointing into
+mid-function code - calling them AVs the engine (observed). The shim exports
+`RC_CamUseScene`/`RC_CamUseClr`/`RC_CamUseObj`/`RC_CamSetVt2`/`RC_DumpClr`
+exist but are **not called by the client** (the call path was removed to keep
+the default build safe). Next routes: hook the managed SetCameraPos call site,
+or a C++/CLI helper with the real headers. The default app is unchanged
+(P0/P1 state, `camera_smoke` 25/25, default spot run clean).
+
+**3. Repro protocol.** Use `F9` (USERREPRO: `rc_user_<ms>.png` + full
+camera/ray dump) at the reported spot; every fix is validated against that
+frame, not against invented walls.
+
+**4. Stop-list.** `RC_CAM_SNAPGUARD`, proximity/wall gates stay registered
+band-aids (B5/B7) until a game-path replacement lands; no new default-on
+approximations.
 
 ## 6. Deviations register / docs
 

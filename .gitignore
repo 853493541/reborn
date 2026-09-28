@@ -66,3 +66,6 @@ proof/minimap/extracted/
 # re-extract with tools/netcode/extract_hpkg_member.py)
 proof/netcode/mode_ui/loading/**/*.png
 proof/netcode/mode_ui/loading/**/*.dds
+
+# Native camera shim build output (MSVC)
+native/obj/

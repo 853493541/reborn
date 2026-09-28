@@ -53,10 +53,28 @@ internal sealed class EngineRay
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int VertFn(IntPtr self, float[] posXZ, float range, out float height);
 
+    // engine camera object contract (recovered from MovieEngineCLR KGSceneCLR
+    // SetCameraPos IL 2026-09-27): scene->vt[+0x50]() returns the camera
+    // object; cam->vt[+0x48](float[3]) reads its position; cam->vt[+0x50]
+    // (float[3],0) sets position; cam->vt[+0x58](float[3],0) sets the
+    // look-at target; cam->vt[+0x60](float[3]) reads the target. The managed
+    // API translates the target by the position delta (keeps the old view);
+    // calling the target setter is the game's look-at path.
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr GetCamFn(IntPtr self);
+
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate void SetVecFn(IntPtr self, float[] v, int flag);
+
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate void GetVecFn(IntPtr self, float[] v);
+
     Action<string> _log;
     IntPtr _module = IntPtr.Zero;
     IntPtr _getWindow = IntPtr.Zero, _getScene = IntPtr.Zero;
     IntPtr _scene = IntPtr.Zero;
+    IntPtr _camObj = IntPtr.Zero;
+    long _modBase, _modEnd;   // engine module range, guards the vtable calls
     TerrainVtFn _terrainVt;
     RayTerrainFn _sceneRay;
     TerrainVtFn _spaceRay, _entityRay;
@@ -123,6 +141,14 @@ internal sealed class EngineRay
             var sceneFn = (EngineMethodFn)Marshal.GetDelegateForFunctionPointer(_getScene, typeof(EngineMethodFn));
             _scene = sceneFn(window);
             if (_scene == IntPtr.Zero) return false;
+            try
+            {
+                _modBase = _module.ToInt64();
+                int lfanew = Marshal.ReadInt32(new IntPtr(_module.ToInt64() + 0x3C));
+                int sizeOfImage = Marshal.ReadInt32(new IntPtr(_module.ToInt64() + lfanew + 0x50));
+                _modEnd = _modBase + sizeOfImage;
+            }
+            catch { _modBase = 0; _modEnd = 0; }
 
             long t1 = 0, t2 = 0;
             _terrainObj = Marshal.ReadIntPtr(new IntPtr(_scene.ToInt64() + 0x950));
@@ -291,6 +317,107 @@ internal sealed class EngineRay
             return h;
         }
         catch { hr = -1; return -1f; }
+    }
+
+    // Engine camera object (recovered from MovieEngineCLR KGSceneCLR IL):
+    // scene->vt[+0x50]() -> camera; cam->vt[+0x50](pos,0) sets position;
+    // cam->vt[+0x58](target,0) sets the look-at target. The vtable pointers
+    // are checked to lie inside the engine module before any call.
+    bool InModule(IntPtr p)
+    {
+        long v = p.ToInt64();
+        return _modBase != 0 && v >= _modBase && v < _modEnd;
+    }
+
+    // The scene object KGSceneCLR actually drives is its private m_pScene
+    // pointer, not necessarily the Get3DScene2 result. Bind it from the CLR
+    // object so the vtable slots are the same ones the managed camera API uses.
+    public void BindSceneObject(object sceneClr)
+    {
+        try
+        {
+            Type t = sceneClr.GetType();
+            var f = t.GetField("m_pScene",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (f == null) { _log("EngineCam: m_pScene field not found"); return; }
+            var h = System.Runtime.InteropServices.GCHandle.Alloc(
+                sceneClr, System.Runtime.InteropServices.GCHandleType.Pinned);
+            try
+            {
+                long fieldOff = Marshal.OffsetOf(t, "m_pScene").ToInt64();
+                IntPtr p = Marshal.ReadIntPtr(
+                    new IntPtr(h.AddrOfPinnedObject().ToInt64() + fieldOff));
+                if (p != IntPtr.Zero)
+                {
+                    _scene = p;
+                    _camObj = IntPtr.Zero;
+                    _log(string.Format("EngineCam: bound m_pScene=0x{0:X}", p.ToInt64()));
+                }
+                else _log("EngineCam: m_pScene is null");
+            }
+            finally { h.Free(); }
+        }
+        catch (Exception e) { _log("EngineCam bind ex: " + e.Message); }
+    }
+
+    IntPtr GetEngineCamera()
+    {
+        if (!EnsureReady() || _scene == IntPtr.Zero) return IntPtr.Zero;
+        if (_camObj != IntPtr.Zero) return _camObj;
+        try
+        {
+            IntPtr vt = Marshal.ReadIntPtr(_scene);
+            IntPtr fn = Marshal.ReadIntPtr(new IntPtr(vt.ToInt64() + 0x50));
+            if (!InModule(fn)) { _log("EngineCam: scene vt+0x50 outside module"); return IntPtr.Zero; }
+            var getCam = (GetCamFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(GetCamFn));
+            IntPtr cam = getCam(_scene);
+            if (cam == IntPtr.Zero) return IntPtr.Zero;
+            _camObj = cam;
+            _log(string.Format("EngineCam: scene=0x{0:X} cam=0x{1:X}", _scene.ToInt64(), cam.ToInt64()));
+            return cam;
+        }
+        catch (Exception e) { _log("EngineCam ex: " + e.Message); return IntPtr.Zero; }
+    }
+
+    // Sets the engine camera position and look-at target directly (the game's
+    // own two calls; no Y clamp, no target translation).
+    bool _engineSetLogged = false;
+    int _engineFailLog = 0;
+
+    public bool SetCameraEngine(float px, float py, float pz, float tx, float ty, float tz)
+    {
+        if (!_engineSetLogged)
+        {
+            _engineSetLogged = true;
+            _log(string.Format("EngineCam: call scene={0} ready={1}", _scene.ToInt64(),
+                _terrainVt != null));
+        }
+        IntPtr cam = GetEngineCamera();
+        if (cam == IntPtr.Zero)
+        {
+            if (_engineFailLog < 3) { _engineFailLog++; _log("EngineCam: no camera object"); }
+            return false;
+        }
+        try
+        {
+            IntPtr camVt = Marshal.ReadIntPtr(cam);
+            IntPtr setPos = Marshal.ReadIntPtr(new IntPtr(camVt.ToInt64() + 0x50));
+            IntPtr setTgt = Marshal.ReadIntPtr(new IntPtr(camVt.ToInt64() + 0x58));
+            if (!InModule(setPos) || !InModule(setTgt))
+            {
+                _log(string.Format("EngineCam: setter outside module pos={0} tgt={1}",
+                    InModule(setPos), InModule(setTgt)));
+                return false;
+            }
+            var fPos = (SetVecFn)Marshal.GetDelegateForFunctionPointer(setPos, typeof(SetVecFn));
+            var fTgt = (SetVecFn)Marshal.GetDelegateForFunctionPointer(setTgt, typeof(SetVecFn));
+            float[] p = { px, py, pz };
+            float[] t = { tx, ty, tz };
+            fPos(cam, p, 0);
+            fTgt(cam, t, 0);
+            return true;
+        }
+        catch (Exception e) { _log("EngineCam set ex: " + e.Message); return false; }
     }
 
     // Entity/scene-node hit. The scene-level ray is guarded, so call the space

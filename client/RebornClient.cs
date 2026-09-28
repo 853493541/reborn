@@ -139,6 +139,47 @@ internal static class RebornClient
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 0);
         Log("winId=" + winId);
 
+        // CLR scene-proxy route: read the managed KGSceneCLR.m_pScene field by
+        // reflection (the byte-scan of the wrapper could not) and hand it to
+        // the shim, which calls the engine camera getters SEH-guarded.
+        if (Env("RC_CAM_CLR", "0") == "1" || Env("RC_CAM_ENGINESET", "0") == "1")
+        {
+            try
+            {
+                var fld = typeof(KGSceneCLR).GetField("m_pScene",
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Instance);
+                IntPtr sp = IntPtr.Zero;
+                if (fld == null) Log("clr: m_pScene field not found");
+                else
+                {
+                    object pv = fld.GetValue(scene);
+                    if (pv != null) unsafe { sp = (IntPtr)System.Reflection.Pointer.Unbox(pv); }
+                    Log("clr m_pScene=0x" + sp.ToInt64().ToString("X") + " " + CameraShim.ModuleOf(sp));
+                    if (sp != IntPtr.Zero)
+                    {
+                        IntPtr vt = CameraShim.ReadP(sp);
+                        Log("clr scene.vt=0x" + vt.ToInt64().ToString("X") + " " + CameraShim.ModuleOf(vt));
+                        Log("clr scene: " + CameraShim.DumpObj(sp));
+                        IntPtr cam = CameraShim.SceneCam(sp);
+                        Log("clr sceneCam=0x" + cam.ToInt64().ToString("X") + " " + CameraShim.ModuleOf(cam));
+                        if (cam != IntPtr.Zero)
+                        {
+                            CameraShim.EngineCam = cam;   // engine-faithful set path
+                            Log("clr cam: " + CameraShim.DumpObj(cam));
+                            float[] pos = new float[3], tgt = new float[3];
+                            int rc = CameraShim.CamGetVt(cam, pos, tgt);
+                            float gx = 0f, gy = 0f, gz = 0f;
+                            try { scene.GetCameraPos(ref gx, ref gy, ref gz); } catch { }
+                            Log(string.Format("clr camGet rc={0} pos=({1:F1},{2:F1},{3:F1}) tgt=({4:F1},{5:F1},{6:F1}) managed=({7:F1},{8:F1},{9:F1})",
+                                rc, pos[0], pos[1], pos[2], tgt[0], tgt[1], tgt[2], gx, gy, gz));
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { Log("clr ex: " + e.Message); }
+        }
+
         TerrainSampler sampler = null;
         try
         {
@@ -182,6 +223,121 @@ internal static class RebornClient
         // native terrain ray through the host engine (same backend as the game
         // camera probes; blocks terrain-baked walls the baked set misses)
         EngineRay engineRay = new EngineRay(Log);
+        try { engineRay.BindSceneObject(scene); } catch { }
+
+        // Step C native bridge (optional, version-checked): near plane /
+        // absolute camera Y / FilterCamera ray; managed fallback if absent
+        CameraShim.TryLoad(Log);
+
+        // NOTE (2026-09-27): the engine camera contract is recovered (see
+        // EngineRay comments: scene vt+0x50 -> camera, cam vt+0x50/+0x58
+        // position/look-at setters) but the *native m_pScene pointer behind
+        // the managed KGSceneCLR wrapper is not reachable from outside: the
+        // weak-handle/__makeref object dump exposes no engine pointers, the
+        // Get3DScene2 scene's vt+0x50 is not get-camera (returns 0), and the
+        // object scanner's KG3D_Camera slot +0x50/+0x58 are not the setters
+        // (mid-function pointers; calling them AVs the engine). The direct
+        // engine set is therefore disabled until the wrapper is resolved
+        // (hook inside the managed call or a C++/CLI helper with the headers).
+        if (Env("RC_CAM_TRACE", "0") == "1")
+        {
+            var mods = System.Diagnostics.Process.GetCurrentProcess().Modules;
+            foreach (string mn in new string[] { "SetCameraPos", "GetCameraPos", "SetViewAngleFactor", "ResetCameraPosLookAtUp" })
+            {
+                try
+                {
+                    var mi = scene.GetType().GetMethod(mn);
+                    if (mi == null) { Log("trace " + mn + ": no method"); continue; }
+                    IntPtr fp = mi.MethodHandle.GetFunctionPointer();
+                    for (int depth = 0; depth < 8; depth++)
+                    {
+                        byte[] b = new byte[5];
+                        System.Runtime.InteropServices.Marshal.Copy(fp, b, 0, 5);
+                        if (b[0] != 0xE8 && b[0] != 0xE9) break;
+                        int rel = BitConverter.ToInt32(b, 1);
+                        IntPtr next = new IntPtr(fp.ToInt64() + 5 + rel);
+                        Log(string.Format("trace {0} d{1} {2:X} -> {3:X}", mn, depth,
+                            fp.ToInt64(), next.ToInt64()));
+                        fp = next;
+                    }
+                    string mod = "dynamic/heap";
+                    foreach (System.Diagnostics.ProcessModule pm in mods)
+                    {
+                        long mb = pm.BaseAddress.ToInt64(), me = mb + pm.ModuleMemorySize;
+                        if (fp.ToInt64() >= mb && fp.ToInt64() < me)
+                        {
+                            mod = pm.ModuleName + "+0x" + (fp.ToInt64() - mb).ToString("X");
+                            break;
+                        }
+                    }
+                    byte[] dump = new byte[96];
+                    System.Runtime.InteropServices.Marshal.Copy(fp, dump, 0, dump.Length);
+                    Log(string.Format("trace {0} final={1:X} {2} bytes={3}", mn,
+                        fp.ToInt64(), mod, BitConverter.ToString(dump).Replace("-", " ")));
+                }
+                catch (Exception e) { Log("trace " + mn + " ex: " + e.Message); }
+            }
+        }
+        if (Env("RC_CAM_IL", "0") == "1")
+        {
+            foreach (string mn in new string[] { "SetCameraPos", "GetCameraPos", "SetViewAngleFactor", "ResetCameraPosLookAtUp" })
+            {
+                try
+                {
+                    var mi = scene.GetType().GetMethod(mn);
+                    if (mi == null) { Log("il " + mn + ": no method"); continue; }
+                    IntPtr fp = mi.MethodHandle.GetFunctionPointer();
+                    byte[] buf = new byte[64];
+                    System.Runtime.InteropServices.Marshal.Copy(fp, buf, 0, buf.Length);
+                    Log(string.Format("il {0} fp=0x{1:X} bytes={2}",
+                        mn, fp.ToInt64(), BitConverter.ToString(buf).Replace("-", " ")));
+                }
+                catch (Exception e) { Log("il " + mn + " ex: " + e.Message); }
+            }
+        }
+
+        if (Env("RC_CAM_DIFF", "0") == "1")
+        {
+            try
+            {
+                float cx = 0f, cy = 0f, cz = 0f;
+                scene.GetCameraPos(ref cx, ref cy, ref cz);
+                Log(string.Format("diff base=({0:F1},{1:F1},{2:F1})", cx, cy, cz));
+                scene.SetCameraPos(cx + 500f, cy, cz + 500f, false);
+                Log("diff A: " + CameraShim.FindAll(cx + 500f, cz + 500f));
+                for (int i = 0; i < CameraShim.ObjectCount() && i < 4; i++)
+                {
+                    IntPtr so = CameraShim.Object(i);
+                    for (uint off = 0x5C0; off <= 0x6C0; off += 0x40)
+                        Log(string.Format("diff dump {0}@{1:X}+0x{2:X}: {3}",
+                            CameraShim.ObjectClass(i), so.ToInt64(), off,
+                            CameraShim.DumpF(so, off, 16)));
+                    Log(string.Format("diff q {0}@{1:X}+0x5C0: {2}",
+                        CameraShim.ObjectClass(i), so.ToInt64(), CameraShim.DumpQ(so, 0x5C0)));
+                }
+                scene.SetCameraPos(cx + 900f, cy, cz + 900f, false);
+                Log("diff B: " + CameraShim.FindAll(cx + 900f, cz + 900f));
+                scene.SetCameraPos(cx, cy, cz, false);
+            }
+            catch (Exception e) { Log("diff ex: " + e.Message); }
+        }
+
+        if (Env("RC_CAM_INPUT", "0") == "1")
+        {
+            try
+            {
+                IntPtr ip = CameraShim.InputPtr();
+                Log(string.Format("input ptr={0:X}", ip.ToInt64()));
+                float ix = 0f, iy = 0f, iz = 0f;
+                scene.GetCameraPos(ref ix, ref iy, ref iz);
+                scene.SetCameraPos(ix, 12345.0f, iz, false);
+                for (uint off = 0x5C0; off <= 0x680; off += 0x40)
+                    Log(string.Format("input dump +0x{0:X}: {1}", off,
+                        CameraShim.DumpF(ip, off, 16)));
+                scene.SetCameraPos(ix, iy, iz, false);
+            }
+            catch (Exception e) { Log("input ex: " + e.Message); }
+        }
 
         // ---------------- player ----------------
         float px = 0f, py = 0f, pz = 0f, vy = 0f;
@@ -290,7 +446,8 @@ internal static class RebornClient
                 float ax = 0f, ay = 0f, az = 0f;
                 scene.GetCameraPos(ref ax, ref ay, ref az);
                 scene.SetCamareMoveState(1, 1);
-                for (int i = 0; i < 3; i++) { engine.FrameMove(); engine.Render(); Application.DoEvents(); }
+                for (int i = 0; i < 3; i++) {             engine.FrameMove();
+            engine.Render(); Application.DoEvents(); }
                 scene.SetCamareMoveState(1, 0);
                 float bx = 0f, by = 0f, bz = 0f;
                 scene.GetCameraPos(ref bx, ref by, ref bz);
@@ -386,6 +543,10 @@ internal static class RebornClient
 
         // ---------------- input ----------------
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
+        bool userShot = false, forceDiag = false;
+        long f9At = 0;
+        bool f9Fired = false;
+        long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
@@ -472,6 +633,9 @@ internal static class RebornClient
         // model pitch (alignEngineCamera would overwrite it with the view pitch).
         Action alignAim = delegate()
         {
+            // engine-faithful set path owns the view (look-at); the orbit
+            // alignment emulation must not run there.
+            if (Env("RC_CAM_ENGINESET", "0") == "1") return;
             double modelPitch = camSys.Pitch;
             alignEngineCamera(camSys.Yaw, geometricAimPitch());
             camSys.Pitch = modelPitch;
@@ -610,6 +774,11 @@ internal static class RebornClient
                 alignAim();
                 Log("camera reset: behind character, pitch -15deg");
             }
+            else if (e.KeyCode == Keys.F9)
+            {
+                // user repro capture: screenshot + full camera/ray diagnostics
+                userShot = true;
+            }
             else if (e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
             {
                 // CameraSetView(0) / (180): yaw preset relative to facing
@@ -660,6 +829,7 @@ internal static class RebornClient
         bool dbgIntSet = false;
         double dbgHit = -1.0, dbgLen = 0.0, dbgEffDist = 0.0;
         bool dbgObst = false;
+        long lastObstLog = 0;
         long lastYawSync = 0;
         int pitchAimErrPx = 0;
         double yawCorr = 0.0;
@@ -671,11 +841,82 @@ internal static class RebornClient
         // M0 knob: disable the park-below character hide so the engine's own
         // near-plane clipping can be bracketed with the clearance ladder
         bool hideNear = Env("RC_PLAYER_HIDE", "1") == "1";
+        // late object scan (initialized scene view/camera) when RC_CAM_SCAN=1
+        bool camScan = Env("RC_CAM_SCAN", "0") == "1", camScanDone = false;
+        // Step C capability 2: write the engine camera object directly
+        // (absolute Y / look-at); bind once the live camera exists
+        bool nativeCam = Env("RC_CAM_NATIVE", "0") == "1", camBound = false;
+        // engine-faithful set: position + look-at through the engine camera
+        // object (EngineRay.SetCameraEngine) instead of the managed
+        // SetCameraPos target-translation; no Y clamp, no orbit events
+        bool engineSetCam = Env("RC_CAM_ENGINESET", "0") == "1";
+        uint vtgtSlot = 0;
+        {
+            string vs = Env("RC_CAM_VTGT_SLOT", "");
+            if (vs.Length > 0) uint.TryParse(vs, System.Globalization.NumberStyles.HexNumber, null, out vtgtSlot);
+        }
+        bool camSetTarget = Env("RC_CAM_SET_TARGET", "0") == "1";
+        bool camSnapGuard = Env("RC_CAM_SNAPGUARD", "0") == "1";
+        bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
+        // native look-at approximation (default ON 2026-09-27 late, kill switch
+        // RC_CAM_LOOKPACK=0, registered D3). When the resolved obstruction
+        // length crosses the anchor the engine orbit is rotated 180 deg (yaw +
+        // mirrored pitch) through the normal orbit input, rate-limited to the
+        // engine's own fMaxAngelVel (~1.5 rad/s, <=20 px/event). It engages and
+        // holds only while stationary: the moving case AVs the host engine
+        // (D6 - content loading on instant view changes), so movement keeps the
+        // old view. This fixes the reported see-through for the stationary
+        // repro; the engine-direct path (position setter works, target setter
+        // still blocked) is the full-fix route.
+        bool lookPack = Env("RC_CAM_LOOKPACK", "0") == "1";
+        bool viewFlipped = false;
+        int flipPxTarget = 0, flipPxDelivered = 0;
+        int flipPitchTarget = 0, flipPitchDelivered = 0;
+        int flipVerifyPass = 0;
+        long lastFlipVerify = 0;
+        long flipBusyUntil = 0;   // aim sync stays frozen while the flip settles
+        int yawDiffState = 0;
+        long yawDiffSent = 0;
+        IntPtr yawDiffObj = IntPtr.Zero;
+        int yawDiffPx = 0, yawDiffDone = 0;
+        int.TryParse(Env("RC_CAM_YAWFDIFF", "0"), out yawDiffPx);   // 0 = off (kill switch)
+        float yawSpeedTest = 0f;
+        float.TryParse(Env("RC_CAM_YAWSPEED", ""), out yawSpeedTest);
+        long yawTestLast = 0, yawTestLog = 0;
+        double yawTestAccum = 0.0;
+        bool camDiff2 = Env("RC_CAM_DIFF2", "0") == "1", camDiff2Done = false;
+        int camPreIdx = -1;
+        int.TryParse(Env("RC_CAM_PRE_IDX", ""), out camPreIdx);
+        float preX = 0f, preY = 0f, preZ = 0f, preAX = 0f, preAY = 0f, preAZ = 0f;
+        bool preSet = false;
+        string[] pokeSpecs = null;
         bool rotTest = Env("RC_ROT_TEST", "0") == "1";
         int rotTestStep = -1;
         long rotTestStart = 0;
         string fixedCam = Env("RC_FIXED_CAM", "");
         bool fixedCamSet = false;
+        // timed clearance ladder: "ms:value,ms:value,..." drives the obstruction
+        // clearance so one run brackets the host near plane at a known wall
+        long[] clrSeqAt = new long[0];
+        double[] clrSeqVal = new double[0];
+        int clrSeqIdx = 0;
+        string clrSeqEnv = Env("RC_CAM_CLR_SEQ", "");
+        if (clrSeqEnv.Length > 0)
+        {
+            string[] items = clrSeqEnv.Split(',');
+            var ats = new System.Collections.Generic.List<long>();
+            var vals = new System.Collections.Generic.List<double>();
+            foreach (string it in items)
+            {
+                string[] kv2 = it.Split(':');
+                long ta2; double cv2;
+                if (kv2.Length == 2 && long.TryParse(kv2[0], out ta2) &&
+                    double.TryParse(kv2[1], System.Globalization.NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out cv2) && cv2 > 0.0)
+                { ats.Add(ta2); vals.Add(cv2); }
+            }
+            clrSeqAt = ats.ToArray(); clrSeqVal = vals.ToArray();
+        }
         long frames = 0, fpsAt = 0, fps = 0;
         int shotIdx = 0;
         long lastSetLog = 0;
@@ -705,7 +946,7 @@ internal static class RebornClient
 
         // One-time engine aim alignment (loop-limited: continuous vertical
         // orbit deltas break the engine screenshot path). RC_PITCH_ALIGN=0 skips.
-        if (Env("RC_PITCH_ALIGN", "1") == "1")
+        if (Env("RC_PITCH_ALIGN", "1") == "1" && Env("RC_CAM_ENGINESET", "0") != "1")
         {
             Log(string.Format("camera aim align: yaw={0:F3} modelPitch={1:F3} aimPitch={2:F3}",
                 camSys.Yaw, camSys.Pitch, geometricAimPitch()));
@@ -727,6 +968,12 @@ internal static class RebornClient
             if (dt > 0.05f) dt = 0.05f;
             frames++;
             if (now - fpsAt >= 1000) { fps = frames * 1000 / (now - fpsAt); frames = 0; fpsAt = now; }
+            if (clrSeqIdx < clrSeqAt.Length && now >= clrSeqAt[clrSeqIdx])
+            {
+                camObst.Clearance = clrSeqVal[clrSeqIdx];
+                Log(string.Format("clrseq t={0} clearance={1}", now, clrSeqVal[clrSeqIdx]));
+                clrSeqIdx++;
+            }
 
             // Aim sync: every 100 ms while dragging (plus once right after it
             // stops) read the engine view back with the nudge probe. Yaw is
@@ -735,12 +982,24 @@ internal static class RebornClient
             // read-back is noisy, and a position read-back is circular (our
             // placement overwrites the position).
             bool dragging = orbitQueue.Count > 0 || (lastOrbitMs != 0 && now - lastOrbitMs < 150);
+            // When the engine set path owns position + look-at (camera object
+            // from m_pScene), the aim emulation must not run: it exists only to
+            // compensate for the missing look-at and would fight the engine.
+            bool engineSetActive = engineSetCam && CameraShim.EngineCam != IntPtr.Zero;
+            if (engineSetActive)
+            {
+                yawCorr = 0.0;
+                pitchAimErrPx = 0;
+                orbitApplied = false;
+            }
             // Near a wall with no input the aim probe is unreliable (the camera
             // sits at/around the anchor and any tiny yaw change swings the
             // obstruction ray), and a correction loop there kept creeping the
             // camera in until the wall cleared. Freeze the aim loops while
             // obstructed and idle; the drag path still runs normally.
-            bool aimFrozen = camObst.Obstructed && !dragging;
+            bool aimFrozen = (camObst.Obstructed && !dragging) ||
+                             (lookPack && (viewFlipped || now < flipBusyUntil)) ||
+                             (yawSpeedTest > 0f && now >= 2000 && now < 12000);
             if (aimFrozen)
             {
                 yawCorr = 0.0;
@@ -748,7 +1007,7 @@ internal static class RebornClient
                 orbitApplied = false;
                 aimDirty = true;   // re-pin once the obstruction clears
             }
-            else if (dragging || orbitApplied || aimDirty)
+            else if (!engineSetActive && (dragging || orbitApplied || aimDirty))
             {
                 lastYawSync = now;
                 orbitApplied = false;
@@ -789,7 +1048,8 @@ internal static class RebornClient
                 if (camSys.Yaw < -Math.PI) camSys.Yaw += twoPiY;
             }
 
-            if (orbitQueue.Count > 0 || pitchAimErrPx != 0 || adjYawPx != 0 || adjPitchPx != 0)
+            if (orbitQueue.Count > 0 || pitchAimErrPx != 0 || adjYawPx != 0 || adjPitchPx != 0 ||
+                flipPxDelivered != flipPxTarget || flipPitchDelivered != flipPitchTarget)
             {
                 int ox = 0, oy = 0;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
@@ -850,12 +1110,88 @@ internal static class RebornClient
                 }
                 if (oyFF > 400) oyFF = 400; else if (oyFF < -400) oyFF = -400;
 
+                // look-at flip delivery: the host clamps the cursor to the
+                // window, so the 180 deg flip is fed over frames (a fresh
+                // action-30 reference each frame, <=500 px per step); it never
+                // touches camSys.Yaw/Pitch - the placement must not rotate
+                int flipStepX = 0, flipStepY = 0;
+                if (flipPxDelivered != flipPxTarget)
+                {
+                    int diff = flipPxTarget - flipPxDelivered;
+                    // rate-limit to the engine's own fMaxAngelVel (~pi/2 rad/s):
+                    // an instant 180 deg burst AVed the host (shader parser,
+                    // D6), while <=1.5 rad/s turned for 20 s without a crash
+                    int maxStep = (int)Math.Round(1.5 * dt / 0.0018);
+                    if (maxStep < 1) maxStep = 1;
+                    if (maxStep > 20) maxStep = 20;
+                    flipStepX = Math.Sign(diff) * Math.Min(Math.Abs(diff), maxStep);
+                    flipPxDelivered += flipStepX;
+                }
+                if (flipPitchDelivered != flipPitchTarget)
+                {
+                    int diff = flipPitchTarget - flipPitchDelivered;
+                    int maxStepY = (int)Math.Round(1.5 * dt / 0.00121);
+                    if (maxStepY < 1) maxStepY = 1;
+                    if (maxStepY > 12) maxStepY = 12;
+                    flipStepY = Math.Sign(diff) * Math.Min(Math.Abs(diff), maxStepY);
+                    flipPitchDelivered += flipStepY;
+                }
+
                 // one combined orbit per frame (a second ROTATE_CAMERA start
-                // without a FrameMove would drop the first delta)
-                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
-                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + oxSend, lockCenter.Y + oy + oyFF));
-                orbitApplied = true;
-                lastOrbitMs = now;
+                // without a FrameMove would drop the first delta). With the
+                // engine set path the view comes from look-at, so no orbit is
+                // sent; the model yaw/pitch integration above still runs.
+                if (!engineSetActive)
+                {
+                    scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                    scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + oxSend + flipStepX,
+                                                         lockCenter.Y + oy + oyFF + flipStepY));
+                    orbitApplied = true;
+                    lastOrbitMs = now;
+                }
+            }
+
+            // look-at flip closed loop: the host clamps cursor moves, so the
+            // exact delivered pixels are unknown; after a flip (or flip back)
+            // settles, measure the engine view and feed the residual to the
+            // targets so the render really aims at the anchor when crossed
+            if (lookPack && flipVerifyPass > 0 && now - lastFlipVerify >= 700 &&
+                flipPxDelivered == flipPxTarget && flipPitchDelivered == flipPitchTarget)
+            {
+                lastFlipVerify = now;
+                flipVerifyPass--;
+                measureView();
+                float vcx = 0f, vcy = 0f, vcz = 0f;
+                scene.GetCameraPos(ref vcx, ref vcy, ref vcz);
+                double wantYaw, wantPitch;
+                if (viewFlipped)
+                {
+                    double dx3 = px - vcx, dy3 = (py + 90.0) - vcy, dz3 = pz - vcz;
+                    double dl3 = Math.Sqrt(dx3 * dx3 + dy3 * dy3 + dz3 * dz3);
+                    if (dl3 < 1e-3) dl3 = 1e-3;
+                    wantYaw = Math.Atan2(-dz3 / dl3, -dx3 / dl3);
+                    wantPitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, dy3 / dl3)));
+                }
+                else
+                {
+                    wantYaw = camSys.Yaw;
+                    wantPitch = aimPitchOf(camSys.Pitch);
+                }
+                double measYaw = Math.Atan2(-viewZ, -viewX);
+                double dYaw = wantYaw - measYaw;
+                while (dYaw > Math.PI) dYaw -= 2.0 * Math.PI;
+                while (dYaw < -Math.PI) dYaw += 2.0 * Math.PI;
+                double dPitch = wantPitch - Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
+                if (Math.Abs(dYaw) > 0.02 || Math.Abs(dPitch) > 0.02)
+                {
+                    // the host clamps each orbit burst, so the delivered pixels
+                    // do not equal the requested ones; feed the measured
+                    // residual back (bounded passes, spaced by the caller)
+                    flipPxTarget += (int)Math.Round(-dYaw / 0.0018);
+                    flipPitchTarget += (int)Math.Round(-dPitch / 0.00121);
+                }
+                Log(string.Format("lookpack verify flip={0} dYaw={1:F3} dPitch={2:F3} measuredYaw={3:F3} pxTarget={4}",
+                    viewFlipped, dYaw, dPitch, measYaw, flipPxTarget));
             }
 
             if (demo)
@@ -937,7 +1273,9 @@ internal static class RebornClient
 
             // drift correction: measure the engine view direction only while the
             // mouse is idle (the nudge moves the camera, so keep it rare)
-            if (!camObst.Obstructed && now - lastCamMeasure >= 1000 && now - lastOrbitMs > 400)
+            if (!camObst.Obstructed && !engineSetActive &&
+                !(lookPack && (viewFlipped || now < flipBusyUntil)) &&
+                now - lastCamMeasure >= 1000 && now - lastOrbitMs > 400)
             {
                 lastCamMeasure = now;
                 measureView();
@@ -950,9 +1288,28 @@ internal static class RebornClient
                     yawCorr = d;
                 }
             }
-            if (camDebug && now - lastCamLog >= 500)
+            if ((camDebug || forceDiag) && now - lastCamLog >= 500)
             {
                 lastCamLog = now;
+                if (forceDiag) Log("USERREPRO state follows");
+                if (forceDiag && col != null)
+                {
+                    float cvx = 0f, cvy = 0f, cvz = 0f;
+                    scene.GetCameraPos(ref cvx, ref cvy, ref cvz);
+                    float vl2 = (float)Math.Sqrt(viewX * viewX + viewY * viewY + viewZ * viewZ);
+                    if (vl2 > 1e-4f)
+                    {
+                        float qx2 = cvx + viewX / vl2 * 60f;
+                        float qy2 = cvy + viewY / vl2 * 60f;
+                        float qz2 = cvz + viewZ / vl2 * 60f;
+                        float vb = col.Raycast(cvx, cvy, cvz, qx2, qy2, qz2);
+                        float vt2 = engineRay.RayTerrain(cvx, cvy, cvz, qx2, qy2, qz2);
+                        float vs2 = engineRay.RayScene(cvx, cvy, cvz, qx2, qy2, qz2);
+                        Log(string.Format("viewray60 bake={0:F1} terr={1:F1} scene={2:F1} cam=({3:F0},{4:F0},{5:F0}) dir=({6:F2},{7:F2},{8:F2})",
+                            vb, vt2, vs2, cvx, cvy, cvz,
+                            viewX / vl2, viewY / vl2, viewZ / vl2));
+                    }
+                }
                 float dbgx = 0f, dbgy = 0f, dbgz = 0f;
                 scene.GetCameraPos(ref dbgx, ref dbgy, ref dbgz);
                 double rdx = dbgx - px, rdy = dbgy - (py + 90.0), rdz = dbgz - pz;
@@ -997,6 +1354,7 @@ internal static class RebornClient
                             hN, hS, hE, hW, col.InstanceCount, engineRay.Available ? 1 : 0,
                             tD, tN, tHr, tHit, tE, sN, sHr, sHit, sE));
                 }
+                forceDiag = false;
             }
 
             // movement is camera-relative: forward = camera -> anchor
@@ -1253,6 +1611,8 @@ internal static class RebornClient
                 // and terrain; then 18 u clearance + 50/100 u hysteresis + flex
                 // return (docs/CAMERA_WALL_OBSTRUCTION.md).
                 double hitDist = -1.0;
+                string hitSrc = "";
+                bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
                 if (col != null)
                 {
                     double rx = uz, rz = -ux;
@@ -1282,14 +1642,23 @@ internal static class RebornClient
                         float qx2 = (float)(ax2 + ox2 + ux * offLen);
                         float qy2 = (float)(ay2 + oy2 + uy * offLen);
                         float qz2 = (float)(az2 + oz2 + uz * offLen);
-                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, true);
+                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, true, true);
+                        float bh = h;
                         // engine rays: the game's camera mask 0x301 covers terrain
                         // and scene entities, which the baked set cannot fully cover
                         float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);
                         if (th > 0f && (h <= 0f || th < h)) h = th;
                         float sh = engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2);
                         if (sh > 0f && (h <= 0f || sh < h)) h = sh;
-                        if (h > 0f && (hitDist < 0.0 || h < hitDist)) hitDist = h;
+                        if (h > 0f && (hitDist < 0.0 || h < hitDist))
+                        {
+                            hitDist = h;
+                            hitSrc = string.Format("probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F0} terr={5:F0} scene={6:F0}",
+                                p, ox2, oy2, oz2, bh, th, sh);
+                        }
+                        if (obstDbg && h > 0f && h < 700f && now - lastObstLog >= 500)
+                            Log(string.Format("obstdbg probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F1}(inst={8},tri={9}) terr={5:F1} scene={6:F1} h={7:F1}",
+                                p, ox2, oy2, oz2, bh, th, sh, h, col.LastInst, col.LastTri));
                     }
                 }
                 // engine vertical backend: the game mask's vertical probe.
@@ -1301,10 +1670,20 @@ internal static class RebornClient
                     int vhr;
                     float hv = engineRay.RayVerticalHeight(
                         (float)(ax2 + camOff[0] * t), 10000f, (float)(az2 + camOff[2] * t), 30000f, out vhr);
-                    if (hv > 0f && hv + 20.0 > ay2 + camOff[1] * t)
+                    // window: a surface that belongs to a wall/ledge ahead is
+                    // near the line; a distant roof overhead (e.g. the user
+                    // spot: first surface 9045 u up) is not a wall and used to
+                    // fire this ladder everywhere (false pull to ~68 u)
+                    double lineY = ay2 + camOff[1] * t;
+                    if (hv > 0f && hv + 20.0 > lineY && hv - lineY < 1500.0)
                     {
                         double vh = t * offLen;
-                        if (hitDist < 0.0 || vh < hitDist) hitDist = vh;
+                        if (hitDist < 0.0 || vh < hitDist)
+                        {
+                            hitDist = vh;
+                            hitSrc = string.Format("vert i={0} hv={1:F0} t={2:F3}", i, hv, t);
+                        }
+                        if (obstDbg && now - lastObstLog >= 500) Log(string.Format("obstdbg vert i={0} hv={1:F0} t={2:F3} vh={3:F1}", i, hv, t, vh));
                         break;
                     }
                 }
@@ -1320,7 +1699,12 @@ internal static class RebornClient
                         if (g + margin > ay2 + camOff[1] * t)
                         {
                             double th = t * offLen;
-                            if (hitDist < 0.0 || th < hitDist) hitDist = th;
+                            if (hitDist < 0.0 || th < hitDist)
+                            {
+                                hitDist = th;
+                                hitSrc = string.Format("samp i={0} g={1:F0} t={2:F3}", i, g, t);
+                            }
+                            if (obstDbg && now - lastObstLog >= 500) Log(string.Format("obstdbg samp i={0} g={1:F0} t={2:F3} th={3:F1}", i, g, t, th));
                             break;
                         }
                     }
@@ -1328,6 +1712,37 @@ internal static class RebornClient
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
                 dbgEffDist = dist;
+                // look-at experiment: the engine view does not follow the camera
+                // position (no managed look-at), so when the pull crosses the
+                // anchor the render points away from it. Rotate the engine orbit
+                // 180 deg so the view keeps aiming at the anchor (native chase
+                // camera semantics) while crossed.
+                if (lookPack && !engineSetCam)
+                {
+                    // safety: the D6 host AV fires when the view turns into
+                    // unloaded content while moving, even at the safe rate
+                    // (T3: 11 rate-limited flips while walking -> AV). The flip
+                    // therefore engages/keeps only while stationary.
+                    bool wantFlip = !movingNow &&
+                                    (viewFlipped ? camLen < 5.0 : camLen < -2.0);
+                    if (wantFlip != viewFlipped)
+                    {
+                        viewFlipped = wantFlip;
+                        flipBusyUntil = now + 5000;
+                        flipPxTarget = wantFlip ? -(int)Math.Round(Math.PI / 0.0018) : 0;
+                        flipPitchTarget = wantFlip
+                            ? (int)Math.Round(2.0 * camSys.Pitch / 0.00121) : 0;
+                        flipVerifyPass = 6;
+                        Log(string.Format("lookpack flip={0} camLen={1:F1} pitch={2:F3} pxTarget={3} pitchTarget={4}",
+                            viewFlipped, camLen, camSys.Pitch, flipPxTarget, flipPitchTarget));
+                    }
+                }
+                if (obstDbg && hitDist > 0.0 && hitDist < 80.0 && now - lastObstLog >= 500)
+                {
+                    lastObstLog = now;
+                    Log(string.Format("obstdbg min={0:F1} src=[{1}] offLen={2:F1} camLen={3:F1}",
+                        hitDist, hitSrc, offLen, camLen));
+                }
 
                 double s = camLen / offLen;
                 double camX = ax2 + camOff[0] * s;
@@ -1360,7 +1775,7 @@ internal static class RebornClient
                 if (engineRay.Available)
                 {
                     float g1 = col != null ? col.Raycast((float)camX, (float)camY, (float)camZ,
-                        (float)ax2, (float)ay2, (float)az2, true) : -1f;
+                        (float)ax2, (float)ay2, (float)az2, true, true) : -1f;
                     float g2 = engineRay.RayTerrain((float)camX, (float)camY, (float)camZ,
                         (float)ax2, (float)ay2, (float)az2);
                     float g3 = engineRay.RayScene((float)camX, (float)camY, (float)camZ,
@@ -1385,8 +1800,147 @@ internal static class RebornClient
                 // intent 727 -> 1463); true = keeps the engine's current Y and
                 // ignores ours. The managed API cannot force an absolute Y;
                 // native camera path is the exit (host deviations register).
-                scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                bool usedNativeCam = false;
+                if (engineSetCam && CameraShim.EngineCam != IntPtr.Zero)
+                {
+                    // Direct engine-faithful path: the camera object resolved
+                    // through the CLR scene proxy (m_pScene -> vt[+0x50]) gets
+                    // the managed IL's own calls - position setter vt[+0x50]
+                    // (no managed Y clamp) and look-at setter vt[+0x58] with the
+                    // anchor as target. SEH-guarded in the shim.
+                    int drc = CameraShim.CamSetVt3(CameraShim.EngineCam,
+                        (float)camX, (float)camY, (float)camZ,
+                        (float)ax2, (float)ay2, (float)az2);
+                    if (drc == 0)
+                    {
+                        // verify: if the engine camera did not take the position
+                        // this is not the camera object - never skip the
+                        // managed path on an unverified set (shaking bug)
+                        float rx = 0f, ry = 0f, rz = 0f;
+                        try { scene.GetCameraPos(ref rx, ref ry, ref rz); } catch { }
+                        double rmove = Math.Sqrt((rx - camX) * (rx - camX) +
+                                                 (ry - camY) * (ry - camY) +
+                                                 (rz - camZ) * (rz - camZ));
+                        usedNativeCam = rmove <= 1.0;
+                        if (!usedNativeCam)
+                        {
+                            CameraShim.EngineCam = IntPtr.Zero;   // drop the bad object
+                            if (camDebug && now - lastSetLog >= 500)
+                            {
+                                lastSetLog = now;
+                                Log("engineSet direct no effect (moved=" + rmove.ToString("F1") +
+                                    "), dropped cam, falling back");
+                            }
+                        }
+                    }
+                    if (camDebug && now - lastSetLog >= 500)
+                    {
+                        lastSetLog = now;
+                        Log("engineSet direct rc=" + drc + " native=" + usedNativeCam +
+                            " cam=" + CameraShim.ModuleOf(CameraShim.EngineCam));
+                    }
+                }
+                else if (engineSetCam)
+                {
+                    // Engine-faithful look-at without knowing the target setter:
+                    //  - the managed SetCameraPos translates the target by the
+                    //    same delta as the position (view direction preserved)
+                    //  - the engine position setter (shim RC_CamPosOnly) moves
+                    //    the camera WITHOUT touching the target
+                    // So: measure the current view direction D and distance to
+                    // the anchor k, place the camera at A - D*k via the managed
+                    // call (target becomes ~A), then put the camera at the real
+                    // orbit position with the native setter -> the view aims at
+                    // the anchor from the crossed position (no orbit events).
+                    float cvx = 0f, cvy = 0f, cvz = 0f;
+                    try { scene.GetCameraPos(ref cvx, ref cvy, ref cvz); } catch { }
+                    measureView();
+                    double k = Math.Sqrt((ax2 - cvx) * (ax2 - cvx) +
+                                         (ay2 - cvy) * (ay2 - cvy) +
+                                         (az2 - cvz) * (az2 - cvz));
+                    if (k > 1.0 && (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f))
+                    {
+                        scene.SetCameraPos((float)(ax2 - viewX * k),
+                                           (float)(ay2 - viewY * k),
+                                           (float)(az2 - viewZ * k), false);
+                        int prc = CameraShim.CamPosOnly((float)camX, (float)camY, (float)camZ);
+                        if (prc == 0)
+                        {
+                            float rx = 0f, ry = 0f, rz = 0f;
+                            try { scene.GetCameraPos(ref rx, ref ry, ref rz); } catch { }
+                            double rmove = Math.Sqrt((rx - camX) * (rx - camX) +
+                                                     (ry - camY) * (ry - camY) +
+                                                     (rz - camZ) * (rz - camZ));
+                            usedNativeCam = rmove <= 1.0;
+                            if (camDebug && now - lastSetLog >= 500)
+                            {
+                                lastSetLog = now;
+                                float mrx = 0f, mry = 0f, mrz = 0f;
+                                Log(string.Format("enginelook rc=0 moved={0:F1} native={1} k={2:F0}",
+                                    rmove, usedNativeCam, k));
+                            }
+                        }
+                        else if (camDebug && now - lastSetLog >= 500)
+                        {
+                            lastSetLog = now;
+                            Log("enginelook camposonly rc=" + prc + ", falling back");
+                        }
+                    }
+                }
+                else if (nativeCam && CameraShim.Bound)
+                {
+                    int brc = CameraShim.CamSet((float)camX, (float)camY, (float)camZ,
+                        (float)ax2, (float)ay2, (float)az2, camSetTarget);
+                    usedNativeCam = brc == 0;
+                    if (!usedNativeCam && camDebug && now - lastSetLog >= 500)
+                    {
+                        lastSetLog = now;
+                        Log("camset native failed rc=" + brc + ", falling back");
+                    }
+                }
+                if (!usedNativeCam)
+                {
+                    // B7 (experimental, opt-in RC_CAM_SNAPGUARD=1): SetCameraPos
+                    // lifts the camera to the render surface at its xz when the
+                    // point lies under it. Retract along the anchor line until
+                    // the host stops moving the camera; unsatisfiable pits keep
+                    // the host position. Off by default - unproven as a default
+                    // behaviour (see the deviations register).
+                    int snapGuard = 0;
+                    while (true)
+                    {
+                        scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                        if (!camSnapGuard) break;
+                        float sx = 0f, sy = 0f, sz = 0f;
+                        scene.GetCameraPos(ref sx, ref sy, ref sz);
+                        double mv = Math.Sqrt((sx - camX) * (sx - camX) +
+                                              (sy - camY) * (sy - camY) +
+                                              (sz - camZ) * (sz - camZ));
+                        if (mv <= 1.0) break;
+                        if (++snapGuard > 4) break;
+                        double sl = Math.Sqrt((camX - ax2) * (camX - ax2) +
+                                              (camY - ay2) * (camY - ay2) +
+                                              (camZ - az2) * (camZ - az2));
+                        if (sl < 12.0) break;
+                        double next = Math.Max(12.0, sl * 0.6);
+                        double rs = next / sl;
+                        camX = ax2 + (camX - ax2) * rs;
+                        camY = ay2 + (camY - ay2) * rs;
+                        camZ = az2 + (camZ - az2) * rs;
+                    }
+                    if (snapGuard > 0 && camDebug && now - lastSetLog >= 500)
+                    {
+                        lastSetLog = now;
+                        Log(string.Format("snapguard retracts={0} finalLen={1:F0}",
+                            snapGuard,
+                            Math.Sqrt((camX - ax2) * (camX - ax2) +
+                                      (camY - ay2) * (camY - ay2) +
+                                      (camZ - az2) * (camZ - az2))));
+                    }
+                }
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
+                preX = (float)camX; preY = (float)camY; preZ = (float)camZ;
+                preAX = (float)ax2; preAY = (float)ay2; preAZ = (float)az2; preSet = true;
                 if (camDebug && now - lastSetLog >= 500)
                 {
                     lastSetLog = now;
@@ -1428,6 +1982,11 @@ internal static class RebornClient
             catch (Exception e) { Log("camera system ex: " + e.Message); }
 
             engine.FrameMove();
+            // Step C test: write the model's exact placement into a post-process
+            // camera record BETWEEN FrameMove and Render (bypasses the clamp)
+            if (camPreIdx >= 0 && preSet && CameraShim.Available &&
+                CameraShim.ObjectCount() > camPreIdx)
+                CameraShim.CamSetIndex(camPreIdx, preX, preY, preZ, preAX, preAY, preAZ);
             engine.Render();
             Application.DoEvents();
 
@@ -1456,6 +2015,235 @@ internal static class RebornClient
                 Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1} rayPost={7:F0}(hr={8},hit={9}) sceneLevel={10:F0}(hr={11},hit={12})",
                     dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd, rr, engineRay.LastHr, engineRay.LastHit,
                     sl, slHr, slHit));
+            }
+
+            if ((nativeCam || engineSetCam) && !camBound && now >= 1500 && CameraShim.Available)
+            {
+                camBound = true;
+                float bx = 0f, by = 0f, bz = 0f;
+                try { scene.GetCameraPos(ref bx, ref by, ref bz); } catch { }
+                int brc = CameraShim.CamBind(bx, by, bz);
+                Log(string.Format("camBind rc={0} pos=({1:F1},{2:F1},{3:F1}) {4}",
+                    brc, bx, by, bz, CameraShim.CamInfo()));
+                if (engineSetCam)
+                {
+                    Log("camObjDump: " + CameraShim.DumpObj(CameraShim.CamObject()));
+                    Log("slot50: " + CameraShim.SlotBytes(0x50, 24));
+                    Log("slot58: " + CameraShim.SlotBytes(0x58, 24));
+                    Log("slot60: " + CameraShim.SlotBytes(0x60, 24));
+                    Log("slot68: " + CameraShim.SlotBytes(0x68, 24));
+                }
+            }
+            if (camDiff2 && !camDiff2Done && now >= 1200 && CameraShim.Available)
+            {
+                camDiff2Done = true;
+                string dp = Env("RC_CAM_DIFF2_POS", "");
+                string[] dpv = dp.Split(',');
+                float dux = 0f, duz = 0f;
+                if (dpv.Length == 2)
+                {
+                    float.TryParse(dpv[0], out dux);
+                    float.TryParse(dpv[1], out duz);
+                }
+                else
+                {
+                    float gx = 0f, gy = 0f, gz = 0f;
+                    try { scene.GetCameraPos(ref gx, ref gy, ref gz); } catch { }
+                    dux = gx; duz = gz;
+                }
+                Log(string.Format("diff2 scan({0:F1},{1:F1}): {2}", dux, duz,
+                    CameraShim.FindAll(dux, duz)));
+                for (int i = 0; i < CameraShim.ObjectCount() && i < 8; i++)
+                {
+                    IntPtr o = CameraShim.Object(i);
+                    int off = CameraShim.ObjectOff(i);
+                    if (off < 0) continue;
+                    uint d0 = (uint)Math.Max(0, off - 0x40);
+                    for (uint d = d0; d <= off + 0x60; d += 0x40)
+                        Log(string.Format("diff2 dump {0}@{1:X} off=0x{2:X} +0x{3:X}: {4}",
+                            CameraShim.ObjectClass(i), o.ToInt64(), off, d,
+                            CameraShim.DumpF(o, d, 16)));
+                }
+            }
+
+            if (Env("RC_CAM_FOVDIFF", "0") == "1" && !camScanDone && now >= 1500 && CameraShim.Available)
+            {
+                camScanDone = true;
+                CameraShim.Deep(0x20000);
+                IntPtr sv = IntPtr.Zero, rc = IntPtr.Zero;
+                for (int i = 0; i < CameraShim.ObjectCount(); i++)
+                {
+                    string cl = CameraShim.ObjectClass(i);
+                    if (cl == "SceneView" && sv == IntPtr.Zero) sv = CameraShim.Object(i);
+                    if (cl == "Camera" && rc == IntPtr.Zero) rc = CameraShim.Object(i);
+                }
+                float f0 = scene.GetViewAngleFactor();
+                Log(string.Format("fovdiff objects sv={0:X} cam={1:X} factor={2:F3}",
+                    sv.ToInt64(), rc.ToInt64(), f0));
+                if (sv != IntPtr.Zero)
+                {
+                    CameraShim.Snap(sv, 0x800);
+                    scene.SetViewAngleFactor(f0 * 0.8f);
+                    Log("fovdiff sv f0->0.8f0: " + CameraShim.SnapDiff());
+                }
+                if (rc != IntPtr.Zero)
+                {
+                    CameraShim.Snap(rc, 0x800);
+                    scene.SetViewAngleFactor(f0);
+                    Log("fovdiff cam 0.8f0->f0: " + CameraShim.SnapDiff());
+                }
+                scene.SetViewAngleFactor(f0);
+            }
+
+            // P2 guarded protocol test: rotate the engine view at a controlled
+            // rate (rad/s) with small orbit steps; the instant 600 px jump
+            // crashed in the shader parser (D6), this measures whether a slow
+            // rotation lets the host's content loading keep up
+            if (yawSpeedTest > 0f && now >= 2000 && now < 12000)
+            {
+                if (yawTestLast == 0) yawTestLast = now;
+                double dt2 = (now - yawTestLast) / 1000.0;
+                if (dt2 < 0.005) dt2 = 0.005;
+                int pxYaw = (int)Math.Round(yawSpeedTest * dt2 / 0.0018);
+                if (pxYaw > 20) pxYaw = 20;
+                if (pxYaw < 1) pxYaw = 1;
+                pxYaw = -pxYaw;
+                scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + pxYaw, lockCenter.Y));
+                yawTestAccum += -pxYaw * 0.0018;
+                yawTestLast = now;
+                if (now - yawTestLog >= 2000)
+                {
+                    yawTestLog = now;
+                    Log(string.Format("yawspeed t={0} rad={1:F2}", now, yawTestAccum));
+                }
+            }
+
+            // yaw/pitch diff probe (P2 groundwork): rotate the engine view by a
+            // known orbit delta and diff the SceneView/Camera objects to find
+            // where the engine stores the view angles. State: 0 wait, 1 armed
+            // (sent, waiting for the engine frame), 2 done.
+            if (yawDiffPx != 0 && CameraShim.Available)
+            {
+                if (yawDiffState == 0 && now >= 1500)
+                {
+                    yawDiffState = 1;
+                    CameraShim.Deep(0x20000);
+                    for (int i = 0; i < CameraShim.ObjectCount(); i++)
+                    {
+                        string cl = CameraShim.ObjectClass(i);
+                        if (cl == "SceneView" && yawDiffObj == IntPtr.Zero) yawDiffObj = CameraShim.Object(i);
+                    }
+                    if (yawDiffObj != IntPtr.Zero) CameraShim.Snap(yawDiffObj, 0x800);
+                    Log(string.Format("yawdiff armed sv={0:X} targetPx={1}", yawDiffObj.ToInt64(), yawDiffPx));
+                }
+                else if (yawDiffState == 1)
+                {
+                    if (yawDiffDone != yawDiffPx)
+                    {
+                        // rate-limited delivery (T1): instant delta AVed at
+                        // +0xA6C75A; <=20 px/event, ~1.5 rad/s is the safe rate
+                        int maxStep = (int)Math.Round(1.5 * dt / 0.0018);
+                        if (maxStep < 1) maxStep = 1;
+                        if (maxStep > 20) maxStep = 20;
+                        int step = Math.Sign(yawDiffPx - yawDiffDone) *
+                                   Math.Min(Math.Abs(yawDiffPx - yawDiffDone), maxStep);
+                        yawDiffDone += step;
+                        scene.ExecAction(30, 1, 0, makeLParam(lockCenter.X, lockCenter.Y));
+                        scene.ExecAction(1, 1, 0, makeLParam(lockCenter.X + step, lockCenter.Y));
+                    }
+                    else
+                    {
+                        yawDiffSent = now;
+                        yawDiffState = 2;
+                    }
+                }
+                else if (yawDiffState == 2 && now >= yawDiffSent + 400)
+                {
+                    yawDiffState = 3;
+                    if (yawDiffObj != IntPtr.Zero)
+                        Log("yawdiff sv: " + CameraShim.SnapDiff());
+                }
+            }
+
+            if (camScan && !camScanDone && now >= 2500 && CameraShim.Available)
+            {
+                camScanDone = true;
+                Log("camscan: " + CameraShim.FindObjects(0x20000));
+                Log("camscan-deep: " + CameraShim.Deep(0x20000));
+                float scx = 0f, scy = 0f, scz = 0f;
+                try { scene.GetCameraPos(ref scx, ref scy, ref scz); } catch { }
+                Log(string.Format("camscan-pos=({0:F2},{1:F2},{2:F2}) objects={3}",
+                    scx, scy, scz, CameraShim.ObjectCount()));
+                for (int i = 0; i < CameraShim.ObjectCount() && i < 32; i++)
+                {
+                    IntPtr o = CameraShim.Object(i);
+                    string cls = CameraShim.ObjectClass(i);
+                    string tri = CameraShim.FindTriple(o, 0x2000, scx, scy, scz);
+                    Log(string.Format("camscan-obj {0} {1} @{2:X} {3}", i, cls, o.ToInt64(), tri));
+                    if (cls == "SceneView")
+                    {
+                        for (uint off = 0; off <= 0x700; off += 0x40)
+                            Log(string.Format("camscan-q {0}+0x{1:X}: {2}",
+                                cls, off, CameraShim.DumpQ(o, off)));
+                        for (uint off = 0; off <= 0x700; off += 0x40)
+                            Log(string.Format("camscan-f {0}+0x{1:X}: {2}",
+                                cls, off, CameraShim.DumpF(o, off, 16)));
+                    }
+                    else if (cls == "Camera" &&
+                             tri.IndexOf("none", StringComparison.Ordinal) < 0)
+                    {
+                        for (uint off = 0; off <= 0x400; off += 0x40)
+                            Log(string.Format("camscan-f {0}+0x{1:X}: {2}",
+                                cls, off, CameraShim.DumpF(o, off, 16)));
+                    }
+                }
+                string poke = Env("RC_CAM_POKE", "");
+                if (poke.Length > 0)
+                {
+                    foreach (string spec in poke.Split(';'))
+                    {
+                        string[] pp = spec.Split(':');
+                        string[] kv = pp.Length == 2 ? pp[1].Split('=') : new string[0];
+                        uint poff; float pv;
+                        if (kv.Length != 2 ||
+                            !uint.TryParse(kv[0], System.Globalization.NumberStyles.HexNumber,
+                                           System.Globalization.CultureInfo.InvariantCulture, out poff) ||
+                            !float.TryParse(kv[1], System.Globalization.NumberStyles.Float,
+                                            System.Globalization.CultureInfo.InvariantCulture, out pv))
+                        {
+                            Log("campoke: bad format '" + spec + "' (want Class:hexoff=value)");
+                            continue;
+                        }
+                        for (int i = 0; i < CameraShim.ObjectCount(); i++)
+                        {
+                            if (CameraShim.ObjectClass(i) != pp[0]) continue;
+                            IntPtr o = CameraShim.Object(i);
+                            int rc = CameraShim.WriteF(o, poff, pv);
+                            Log(string.Format("campoke {0}@{1:X}+0x{2:X}={3} rc={4} now: {5}",
+                                pp[0], o.ToInt64(), poff, pv, rc, CameraShim.DumpF(o, poff, 4)));
+                        }
+                    }
+                }
+                // per-frame re-apply (the renderer may rewrite the field)
+                pokeSpecs = poke.Length > 0 ? poke.Split(';') : null;
+            }
+            if (pokeSpecs != null && !camPokeOnce && now >= 2400 && CameraShim.Available)
+            {
+                for (int s = 0; s < pokeSpecs.Length; s++)
+                {
+                    string[] pp = pokeSpecs[s].Split(':');
+                    string[] kv = pp.Length == 2 ? pp[1].Split('=') : new string[0];
+                    uint poff; float pv;
+                    if (kv.Length != 2 ||
+                        !uint.TryParse(kv[0], System.Globalization.NumberStyles.HexNumber,
+                                       System.Globalization.CultureInfo.InvariantCulture, out poff) ||
+                        !float.TryParse(kv[1], System.Globalization.NumberStyles.Float,
+                                        System.Globalization.CultureInfo.InvariantCulture, out pv)) continue;
+                    for (int i = 0; i < CameraShim.ObjectCount(); i++)
+                        if (CameraShim.ObjectClass(i) == pp[0])
+                            CameraShim.WriteF(CameraShim.Object(i), poff, pv);
+                }
             }
 
             if (now - lastHud >= 250)
@@ -1510,6 +2298,28 @@ internal static class RebornClient
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     curSpd, moveMode));
             }
+            if (f9At > 0 && !f9Fired && now >= f9At)
+            {
+                f9Fired = true;
+                userShot = true;
+            }
+            if (userShot)
+            {
+                userShot = false;
+                try
+                {
+                    string png = Path.Combine(outDir,
+                        string.Format("rc_user_{0}ms.png", now));
+                    scene.SetScreenShot(png, 2);
+                    scene.DoScreenShotImmediate();
+                    Log("USERREPRO shot -> " + png);
+                }
+                catch (Exception e) { Log("USERREPRO shot ex: " + e.Message); }
+                forceDiag = true;
+                lastCamLog = 0;
+                lastPostLog = 0;
+            }
+
             while (shotIdx < shots.Length && now >= shots[shotIdx])
             {
                 try
