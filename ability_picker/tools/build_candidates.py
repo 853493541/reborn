@@ -171,6 +171,14 @@ ZC_IDS = [
 # identified tani per ability (verified during the animation research).
 # value = list of filename substrings, tried in order against the candidates.
 RESOLVE = {
+    # IP research pass replacements (new primary picks, user to verify)
+    "疾": ["s04tc技能16_疾HD"],
+    "蝶弄足": ["s05qx扇技能18_蝶弄足HD"],
+    "净世破魔击": ["smj10双刀攻击06b_净世破魔击_月_悟"],
+    "渊": ["s04tc技能18a_渊HD"],
+    "听雷": ["s07cj内功轻剑12_听雷HD"],
+    "穿": ["s04tc技能11a_穿云hd"],
+    "孔雀翎": ["stm09针攻击02_孔雀翎_悟"],
     "风来吴山": ["s07cj重剑技能15_风来吴山HD"],
     "剑破虚空": ["s05qx剑技能13_剑破虚空HD"],
     "龙牙": ["s04tc技能13_龙牙hd"],
@@ -190,7 +198,7 @@ RESOLVE = {
     "人剑合一": ["s03cy剑技能15_人剑合一hd"],
     "五方行尽": ["s03cy气技能13_五方HD"],
     "九转归一": ["scy03气攻击01_九转HD"],
-    "听雷": ["s07cj内功重剑12_听雷HD"],
+    "听雷_legacy": ["s07cj内功重剑12_听雷HD"],
     "天地低昂": ["s05qx剑技能20_天地低昂hd"],
     "大狮子吼": ["ssl04技能06_hd01"],
     "韦陀献杵": ["s04sl棍技能12_hd02"],
@@ -219,12 +227,161 @@ RESOLVE = {
     "云栖松": ["s07cj内功重剑18_云栖松hd"],
     "追命箭": ["stm09弩攻击03夺命01"],
     "凌然天风": ["s18yz凌然天风01.tani"],
+    "无间狱": ["s16lxg链技能08_hd"],
+    "剑主天地": ["F1sqx05双剑攻击04"],
+    "龙战于野": ["F1sgb11掌法攻击05b"],
+    "抱残式": ["F1ssl04爪攻击02"],
+    "五蕴皆空": ["F1ssl04袈裟攻击05"],
+    "雾暗迷云": ["F1s21ds技能04b"],
+    "踏星行": ["F1s17ytz乘灯01"],
+    "圣明佑": ["F1smj10乾坤大法buff01"],
+    "翔极碧落": ["F1s15pl伞技能空04c"],
+    "徐如林": ["F1stc04技能01-02"],
+    "凌太虚": ["F1scy03技能05-05"],
+    "傍花随柳": ["F1s01wh点穴13a_兰摧玉折hd"],
+    "如意法": ["F1smj10双刀buff04_清净心01"],
+    "散流霞": ["F1s14bd双刀技能08_01"],
     "舍身诀": ["F1s04sl技能11"],
     "无相诀": ["F1s04sl技能12"],
     "锻骨诀": ["F1s04sl技能16"],
     "横扫六合": ["F1s04sl棍技能13"],
     "十方玄机": ["F1s16lxg技能02a"],
 }
+
+# no in-data animation binding found; best shared/sibling-slot suggestion
+# (shown orange in the picker, needs engine-scrub confirmation)
+DEDUCE = {}
+
+# user-flagged "in progress" abilities (IP checkbox in the picker filters to these)
+IP = {
+    "乘黄之威": "断魂刺 match wrong; player beat = generic leap, then pet A393 (summon/roar) + sounds needed",
+    "九霄风雷": "needs more improvement (parked by user)",
+    "徐如林": "it is a phase-active animation, not the active animation",
+    "心诤": "missing 扫击 phase (18b 扫击释放 added as extra match)",
+    "散流霞": "use normal version, not 悟 (now F1s14bd双刀技能08_01)",
+    "无间狱": "missing the big ghost appearing behind the back when active (animation itself OK)",
+    "琴音共鸣": "wrong; marked no-animation",
+    "盾立": "no player animation in data; wrong sound removed; boss P081 sk02b is the only 盾立 anim",
+    "穹隆化生": "using wrong one (15a vs 15b)",
+    "蝶弄足": "wrong one",
+    "跃潮斩波": "wrong (03a vs 03b)",
+    "踏星行": "maybe wrong; look for more options",
+    "驭羽骋风": "wrong but related",
+    "龙啸九天": "animation correct; sound wrong",
+    "两仪化形": "animation maybe wrong; sound 100% wrong",
+    "云飞玉皇": "missing cast-success (sound)",
+    "冲阴阳": "wrong; 剑冲阴阳 is a different ability",
+    "净世破魔击": "wrong; it is the moon (月) version, current one is the sun (日) version",
+    "化血镖": "good, but relist all 化血镖 variants (the many version)",
+    "千蝶吐瑞": "missing; it is only an active animation",
+    "听雷": "seems wrong",
+    "夺命蛊": "two different entries, actually the same",
+    "孔雀翎": "wrong",
+    "截阳": "using wrong one",
+    "春泥护花": "candidate list contained 太阴指 (removed, not needed)",
+    "暗尘弥散": "wrong",
+    "浮光掠影": "maybe wrong version (HD vs 悟); animation correct",
+    "渊": "wrong",
+    "生死劫": "maybe wrong",
+    "疾": "completely wrong",
+    "穿": "wrong",
+    "追命箭": "missing channel phase",
+    "风流云散": "wrong",
+}
+
+# abilities with no animation binding at all (shown as "(no animation)")
+NOANIM = {"琴音共鸣"}
+
+# wrong binding must not be kept as the green match (candidates only)
+NO_MATCH = {"冲阴阳"}
+
+# extra phase clips that belong to an already matched ability; all shown green
+MATCHED_EXTRA = {
+    "心诤": ["F1s04sl棍技能18b_扫击释放01"],
+    "追命箭": ["F1stm09弩蓄力03夺命01_追命箭_悟"],
+}
+
+# replacement candidates found during the IP research pass (appended for scrub)
+ADD = {
+    "乘黄之威": ["s20wl弓技能01a_骑乘", "s20wl弓技能01b_骑乘", "s20wl升空01", "s20wl风尽浮沉01a_b", "F1HA393_start01"],
+    "九霄风雷": ["唐门弩车001b_上车01_HD", "唐门弩车001b_下车01_hd", "唐门弩车001b_技能02a_悟", "唐门弩车001b_下车01_悟"],
+    "徐如林": ["stc04技能01-01", "stc04技能01-03", "stc04技能01-04", "stc04技能01-05", "stc04技能02-01", "stc04技能02-02"],
+    "盾立": ["scy12刀盾buff01_01", "scy12刀盾buff01盾壁01", "scy12刀盾buff01_苍云盾护01", "sqg12cy刀盾buff01_盾壁HD", "scy12刀盾buff01_盾壁_悟", "scy12盾墙01a_盾墙释放01", "scy12盾墙01a_盾墙_悟"],
+    "穹隆化生": ["s03cy气技能15b_穹窿化生01_悟"],
+    "蝶弄足": ["sqg05qx扇技能18_蝶弄足hd"],
+    "跃潮斩波": ["s15pl掌技能空03b_跃潮斩波_悟"],
+    "踏星行": ["s17ytz星相技01_HD", "s17ytz星相技02_HD", "s17ytz星相技02_解_HD", "s17ytz星相技04皆字_HD", "s17ytz星相技05_HD", "s17ytz星相技06_HD", "s17ytz占卜技04", "s17ytz占卜技05"],
+    "驭羽骋风": ["s15pl姿态切换01_驭羽骋风HD", "s15pl姿态切换01_奇穴_驭羽骋风hd", "s15pl姿态切换01_驭羽骋风_悟", "s15pl姿态切换04_驭羽骋风hd", "s15pl雕技能空02_驭羽骋风HD"],
+    "两仪化形": ["s03cy气技能11a_两仪HD", "s03cy气技能11_两仪HD", "s03cy气技能11b_悟_两仪化形_悟", "scy03纯阳技能18_两仪化形_贰式_悟"],
+    "云飞玉皇": ["s07cj重剑技能11_奇穴_云飞HD", "s07cj重剑技能11b_云飞HD", "s07cj重剑技能11a_云飞_悟", "s07cj重剑技能11_奇穴_云飞_悟"],
+    "冲阴阳": ["s03cy技能16b_生太极HD", "s03cy技能13a_生太极hd"],
+    "化血镖": ["stm09针攻击01_化血镖_悟", "stm09针攻击01毒芒针"],
+    "千蝶吐瑞": ["swd08治疗03_金蝉吐瑞", "swd08治疗03_金蝉吐瑞空战", "swd08治疗03_千蝶皮肤", "swd08治疗03_千蝶皮肤空战"],
+    "听雷": ["s07cj内功轻剑12_听雷_悟", "s07cj内功轻剑21_悟_听雷_悟", "s07cj内功重剑12_听雷_悟"],
+    "夺命蛊": ["swd08蛊攻击01_枯残蛊", "swd08蛊攻击01_迷心蛊"],
+    "孔雀翎": ["sqg09tm针攻击02_孔雀翎HD", "stm09针攻击02孔雀"],
+    "截阳": ["s21ds指法15_悟_破穴贰式01_悟", "s21ds指法14_悟_破穴01_悟", "s21ds指法13_悟_断脉01_悟", "s21ds指法12_悟_锁神01_悟"],
+    "春泥护花": ["s01wh技能15_春泥护花_悟"],
+    "暗尘弥散": ["smj10双刀buff03_暗尘弥散_悟", "smj10双刀buff03_暗尘弥散hd", "smj10双刀buff03隐匿"],
+    "浮光掠影": ["sqg09tm伪装01_浮光HD"],
+    "渊": ["s04tc技能18b_渊HD", "sqg04tc技能18a_渊hd", "sqg04tc技能18b_渊hd"],
+    "生死劫": ["smj10乾坤大法buff04_生死劫_悟", "smj10圣火诀buff02a_生死劫_悟"],
+    "疾": ["s04tc技能16_疾01_悟", "sqg04tc技能16_疾hd"],
+    "穿": ["s04tc技能11b_穿云hd"],
+    "追命箭": ["stm09弩蓄力03夺命01_追命箭_悟"],
+    "风流云散": ["s21ds步法01_b", "s21ds步法01_f"],
+}
+
+# replacement wem ids (prepended so they are tried/played first)
+WEM_ADD = {
+    "龙啸九天": ["206378928"],
+    "两仪化形": ["28700397", "252763356", "101880340", "533720938"],
+    "云飞玉皇": ["315695614", "93452115", "90745220", "578379755"],
+}
+
+# candidate-list hygiene (substring filters on tani filenames)
+EXCLUDE = {
+    "春泥护花": ["太阴指"],
+    "盾立": ["丐帮笑醉狂"],
+}
+
+# wrong wem ids merged from cache/review (never play these)
+WEM_EXCLUDE = {
+    "盾立": ["128409036"],
+}
+
+
+def apply_overrides(all_entries: list) -> None:
+    """IP marks, no-anim flags, extra phase matches, candidate/wem hygiene."""
+    catalog = load_catalog_f1()
+    for e in all_entries:
+        name = e["name"]
+        for frag in EXCLUDE.get(name, []):
+            e["tanis"] = [t for t in e["tanis"] if frag not in t]
+        for wid in WEM_EXCLUDE.get(name, []):
+            e["wems"] = [w for w in e["wems"] if str(w) != wid]
+            e["confirmedWems"] = [w for w in (e.get("confirmedWems") or []) if str(w) != wid]
+        for pref in ADD.get(name, []):
+            fn = catalog_find(pref, catalog)
+            if not fn:
+                continue
+            p = F1_DIR + "\\" + fn
+            if p.lower() not in {t.lower() for t in e["tanis"]}:
+                e["tanis"].append(p)
+        for wid in WEM_ADD.get(name, []):
+            if str(wid) not in {str(w) for w in e["wems"]}:
+                e["wems"].insert(0, str(wid))
+        extra = []
+        for pref in MATCHED_EXTRA.get(name, []):
+            fn = catalog_find(pref, catalog)
+            p = F1_DIR + "\\" + fn if fn else F1_DIR + "\\" + pref
+            if p.lower() not in {t.lower() for t in e["tanis"]}:
+                e["tanis"].append(p)
+            extra.append(p)
+        e["matchedExtra"] = extra
+        e["noAnim"] = name in NOANIM
+        e["ip"] = name in IP
+        e["ipNote"] = IP.get(name, "")
 
 F1_DIR = r"data\source\player\f1\动作"
 TANI_RT = r"C:\SeasunGame\MovieEditor\ResourcePack\Tani.rt"
@@ -250,6 +407,19 @@ def catalog_find(pref: str, catalog: list) -> str:
         return ""
     hits.sort(key=lambda fn: (1 if "_悟" in fn else 0, len(fn)))
     return hits[0]
+
+
+WEMS_INDEX = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\log\wwise-soundbank-index.json"
+
+
+def load_wems_index() -> dict:
+    """wwise wem id -> source wav name (the name mirrors the tani clip stem)"""
+    if not os.path.exists(WEMS_INDEX):
+        return {}
+    try:
+        return json.load(open(WEMS_INDEX, encoding="utf-8")).get("wems") or {}
+    except Exception:
+        return {}
 
 
 def load_tables(base: str):
@@ -342,7 +512,28 @@ def body_match(name: str, tanis: list) -> str:
     return cands[0]
 
 
-def resolve_matched(name: str, tanis: list, rows, tag, anim, catalog: list) -> tuple[str, str]:
+def wem_stem_match(name: str, confirmed: list, wems_idx: dict, catalog: list) -> str:
+    """a human-confirmed wem whose source name is a tani clip stem proves the
+    animation (e.g. F1s16lxglianjineng08_hd.wav -> F1s16lxg链技能08_hd.tani)"""
+    if not wems_idx or not confirmed:
+        return ""
+    for wem in confirmed:
+        info = wems_idx.get(str(wem)) or {}
+        src = (info.get("name") or "").replace("/", "\\").split("\\")[-1]
+        if not src.lower().endswith(".wav"):
+            continue
+        stem = src[:-4]
+        if not stem:
+            continue
+        fn = catalog_find(stem, catalog)
+        if fn:
+            return F1_DIR + "\\" + fn
+    return ""
+
+
+def resolve_matched(name: str, tanis: list, rows, tag, anim, catalog: list, wems_idx: dict, confirmed: list) -> tuple[str, str]:
+    if name in NO_MATCH:
+        return "", ""
     for pref in RESOLVE.get(name, []):
         for t in tanis:
             if pref.lower() in t.lower():
@@ -350,6 +541,12 @@ def resolve_matched(name: str, tanis: list, rows, tag, anim, catalog: list) -> t
         fn = catalog_find(pref, catalog)
         if fn:
             return F1_DIR + "\\" + fn, "dig-cat"
+    w = wem_stem_match(name, confirmed, wems_idx, catalog)
+    if w:
+        for t in tanis:
+            if t.lower().endswith(w.lower().split("\\")[-1]):
+                return t, "wem"
+        return w, "wem"
     f = tag_match(name, rows, tag, anim)
     if f:
         for t in tanis:
@@ -374,21 +571,33 @@ def attach_matched(all_entries: list, cache_path: str) -> int:
         print("resolve: tables unavailable (" + str(exc) + ")")
         rows, tag, anim = [], {}, {}
     catalog = load_catalog_f1()
+    wems_idx = load_wems_index()
     resolved = 0
     for e in all_entries:
         e.setdefault("matched", "")
         e.setdefault("matchSource", "")
+        e.setdefault("deduced", "")
+        e.setdefault("deduceNote", "")
         if not e["ids"]:
             continue
-        m, src = resolve_matched(e["name"], e["tanis"], rows, tag, anim, catalog)
-        if not m:
+        m, src = resolve_matched(e["name"], e["tanis"], rows, tag, anim, catalog, wems_idx, e.get("confirmedWems") or [])
+        if m:
+            have = {t.lower() for t in e["tanis"]}
+            if m.lower() not in have:
+                e["tanis"].insert(0, m)
+            e["matched"] = m
+            e["matchSource"] = src
+            resolved += 1
             continue
-        have = {t.lower() for t in e["tanis"]}
-        if m.lower() not in have:
-            e["tanis"].insert(0, m)
-        e["matched"] = m
-        e["matchSource"] = src
-        resolved += 1
+        spec = DEDUCE.get(e["name"])
+        if spec:
+            fn = catalog_find(spec[0], catalog)
+            path = F1_DIR + "\\" + fn if fn else F1_DIR + "\\" + spec[0]
+            have = {t.lower() for t in e["tanis"]}
+            if path.lower() not in have:
+                e["tanis"].insert(0, path)
+            e["deduced"] = path
+            e["deduceNote"] = spec[1]
     return resolved
 
 
@@ -417,6 +626,7 @@ def merge_review_wems(all_entries: list, cache_path: str) -> int:
             if wid and wid.lower() not in have:
                 e["wems"].append(wid)
                 have.add(wid.lower())
+                e.setdefault("confirmedWems", []).append(wid)
                 merged += 1
     return merged
 
@@ -440,7 +650,7 @@ def attach_zc_ids(all_entries: list) -> tuple[int, int]:
             e = {
                 "key": "zc:" + sid, "id": sid, "prefix": "阵船", "kind": "skill",
                 "name": nm, "rawName": nm, "status": "zc", "tanis": [], "events": [],
-                "wems": [], "notes": "zc id (no cache entry)", "ids": [],
+                "wems": [], "notes": "zc id (no cache entry)", "ids": [], "confirmedWems": [],
             }
             all_entries.append(e)
             by_name.setdefault(nm, []).append(e)
@@ -488,6 +698,7 @@ def main() -> int:
             "wems": flatten_wems(e.get("wems")),
             "notes": "cache",
             "ids": [],
+            "confirmedWems": [],
         }
 
     # merge manual dig mappings into matching cache entries (by normalized name)
@@ -505,7 +716,7 @@ def main() -> int:
             g = manual_group.setdefault(name, {
                 "key": "dig:" + name, "id": "", "prefix": "手工映射", "kind": "skill",
                 "name": name, "rawName": name, "status": "dig", "tanis": [], "events": [],
-                "wems": [], "notes": note, "ids": [],
+                "wems": [], "notes": note, "ids": [], "confirmedWems": [],
             })
             have = {p.lower() for p in g["tanis"]}
             for p in paths:
@@ -514,8 +725,9 @@ def main() -> int:
 
     all_entries = list(abilities.values()) + list(manual_group.values())
     attached, total_ids = attach_zc_ids(all_entries)
-    resolved = attach_matched(all_entries, args.cache)
     merged_wems = merge_review_wems(all_entries, args.cache)
+    resolved = attach_matched(all_entries, args.cache)
+    apply_overrides(all_entries)
     all_entries.sort(key=lambda a: (a["prefix"], a["name"]))
 
     out = {

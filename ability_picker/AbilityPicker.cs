@@ -37,6 +37,12 @@ internal static class AbilityPicker
         public List<string> Ids = new List<string>();
         public string Matched = "";
         public string MatchSource = "";
+        public string Deduced = "";
+        public string DeduceNote = "";
+        public List<string> MatchedExtra = new List<string>();
+        public bool Ip;
+        public string IpNote = "";
+        public bool NoAnim;
     }
 
     internal class ReviewItem
@@ -72,7 +78,7 @@ internal static class AbilityPicker
     static Panel viewport;
     static TreeView tree;
     static TextBox searchBox, addPathBox, catalogSearch, noteBox, restartBox;
-    static CheckBox onlyUnresolved, autoPlay, restartChk, tracedChk, soundChk;
+    static CheckBox onlyUnresolved, autoPlay, restartChk, tracedChk, soundChk, ipChk;
     static ComboBox speedBox;
     static ListBox catalogList;
     static Label lblAbility, lblCurrent, lblSounds, statusLabel;
@@ -210,6 +216,7 @@ internal static class AbilityPicker
             while (pending.Count > 0)
             {
                 int[] a = pending.Dequeue();
+                if (a[0] == 31) { scene.ExecAction(31, 1, a[1], 1); continue; }
                 if (a[0] == 100 || a[0] == 101 || a[0] == 102 || a[0] == 103)
                 {
                     float x = 0f, y = 0f, z = 0f;
@@ -310,6 +317,12 @@ internal static class AbilityPicker
             ab.Ids = StrList(d, "ids");
             ab.Matched = Str(d, "matched");
             ab.MatchSource = Str(d, "matchSource");
+            ab.Deduced = Str(d, "deduced");
+            ab.DeduceNote = Str(d, "deduceNote");
+            ab.MatchedExtra = StrList(d, "matchedExtra");
+            ab.Ip = Str(d, "ip").Equals("true", StringComparison.OrdinalIgnoreCase);
+            ab.IpNote = Str(d, "ipNote");
+            ab.NoAnim = Str(d, "noAnim").Equals("true", StringComparison.OrdinalIgnoreCase);
             abilities.Add(ab);
         }
         RebuildMatched();
@@ -322,6 +335,8 @@ internal static class AbilityPicker
         foreach (Ability a in abilities)
         {
             if (a.Matched != "") matchedTanis.Add(a.Matched);
+            foreach (string m in a.MatchedExtra)
+                if (m != "") matchedTanis.Add(m);
         }
         Log("identified matched tani files: " + matchedTanis.Count);
     }
@@ -482,6 +497,12 @@ internal static class AbilityPicker
         soundChk.AutoSize = true;
         soundChk.Checked = Env("AP_SOUND", "1") == "1";
         top.Controls.Add(soundChk);
+        ipChk = new CheckBox();
+        ipChk.Text = "IP";
+        ipChk.Location = new Point(452, 58);
+        ipChk.AutoSize = true;
+        ipChk.CheckedChanged += delegate { BuildTree(); };
+        top.Controls.Add(ipChk);
         main.Panel1.Controls.Add(top);
 
         // left: tools
@@ -700,6 +721,7 @@ internal static class AbilityPicker
         {
             string chosen = review.ContainsKey(ab.Key) ? review[ab.Key].chosen : "";
             if (onlyUnresolved.Checked && !string.IsNullOrEmpty(chosen)) continue;
+            if (ipChk.Checked && !ab.Ip) continue;
             // traced filter: keep zhenchuan abilities (with ids); entries with no
             // ids and no traced match are legacy extras -> hidden
             if (tracedChk.Checked && ab.Ids.Count == 0 && ab.Matched == "") continue;
@@ -725,17 +747,32 @@ internal static class AbilityPicker
             string label = ab.Name + (idLabel != "" ? ("  [" + idLabel + "]") : "") + "   (" + ab.Tanis.Count + ")";
             if (!string.IsNullOrEmpty(chosen))
                 label += "  ->  " + Short(chosen);
+            if (ab.Ip) label = "[IP] " + label;
             TreeNode node = new TreeNode(label);
             node.Tag = ab;
+            if (ab.Ip) node.ForeColor = Color.FromArgb(140, 60, 170);
+            if (ab.NoAnim)
+            {
+                TreeNode na = new TreeNode("(no animation)");
+                na.Tag = "";
+                na.ForeColor = Color.FromArgb(120, 120, 120);
+                node.Nodes.Add(na);
+            }
+            else
             foreach (string t in ab.Tanis)
             {
-                // traced filter: a resolved ability shows only its green file;
-                // an unresolved one shows all its candidates for review
-                if (tracedChk.Checked && ab.Matched != "" && !matchedTanis.Contains(t)) continue;
-                TreeNode leaf = new TreeNode(Short(t));
+                // traced filter: a resolved ability shows only its green files
+                // (all phases); an unresolved one shows all candidates for review
+                if (tracedChk.Checked && ab.Matched != "" && !IsMatch(ab, t)) continue;
+                bool isMatch = IsMatch(ab, t);
+                bool deduced = ab.Deduced != "" && string.Equals(t, ab.Deduced, StringComparison.OrdinalIgnoreCase);
+                TreeNode leaf = new TreeNode(deduced ? "~ " + Short(t) : Short(t));
                 leaf.Tag = t;
-                // green = this tani file is matched by an ability id
-                if (matchedTanis.Contains(t)) leaf.ForeColor = Color.FromArgb(0, 130, 0);
+                // green = evidence match for this ability or a known matched file;
+                // orange = suggested (deduced, unverified) for this ability
+                if (isMatch) leaf.ForeColor = Color.FromArgb(0, 130, 0);
+                else if (deduced) leaf.ForeColor = Color.FromArgb(200, 110, 0);
+                else if (matchedTanis.Contains(t)) leaf.ForeColor = Color.FromArgb(0, 130, 0);
                 if (string.Equals(chosen, t, StringComparison.OrdinalIgnoreCase))
                     leaf.Text = "* " + leaf.Text;
                 if (string.Equals(selectedTani, t, StringComparison.OrdinalIgnoreCase))
@@ -747,6 +784,15 @@ internal static class AbilityPicker
         tree.EndUpdate();
         tree.ExpandAll();
         rebuilding = false;
+    }
+
+    // an ability can match several clips (multi-phase skills); all are green
+    static bool IsMatch(Ability ab, string t)
+    {
+        if (ab.Matched != "" && string.Equals(t, ab.Matched, StringComparison.OrdinalIgnoreCase)) return true;
+        foreach (string m in ab.MatchedExtra)
+            if (string.Equals(t, m, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
     }
 
     static void FilterCatalog()
@@ -886,7 +932,11 @@ internal static class AbilityPicker
     {
         lblAbility.Text = "ability: " + ab.Name + "   ids=" + (ab.Ids.Count > 0 ? string.Join("/", ab.Ids.ToArray()) : "-")
             + "   status=" + ab.Status
-            + "   matched=" + (ab.Matched != "" ? (Short(ab.Matched) + " (" + ab.MatchSource + ")") : "-");
+            + "   matched=" + (ab.Matched != "" ? (Short(ab.Matched) + " (" + ab.MatchSource + ")") : "-")
+            + (ab.MatchedExtra.Count > 0 ? ("   +phases=" + ab.MatchedExtra.Count) : "")
+            + (ab.Deduced != "" ? ("   suggested=" + Short(ab.Deduced) + " (unverified: " + ab.DeduceNote + ")") : "")
+            + (ab.NoAnim ? "   [no animation]" : "")
+            + (ab.Ip ? ("   [IP] " + ab.IpNote) : "");
         noteBox.Text = review.ContainsKey(ab.Key) ? review[ab.Key].note : "";
     }
 

@@ -1,12 +1,12 @@
 {
- "generatedAt": "2026-09-27T15:25:02",
+ "generatedAt": "2026-09-27T20:01:40",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
- "withTanis": 288,
+ "withTanis": 300,
  "withIds": 158,
  "attachedIds": 158,
  "totalIds": 158,
- "resolved": 142,
+ "resolved": 154,
  "abilities": [
   {
    "key": "伪传:28684:buff",
@@ -27,8 +27,17 @@
    "ids": [
     "28031"
    ],
+   "confirmedWems": [
+    "62588785"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s16lxg链技能03_释放HD.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28718:buff",
@@ -38,7 +47,13 @@
    "name": "乘黄之威",
    "rawName": "伪传·乘黄之威",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s20wl弓技能01a_骑乘.tani",
+    "data\\source\\player\\f1\\动作\\F1s20wl弓技能01b_骑乘.tani",
+    "data\\source\\player\\f1\\动作\\F1s20wl升空01.tani",
+    "data\\source\\player\\f1\\动作\\F1s20wl风尽浮沉01a_b.tani",
+    "data\\source\\player\\f1\\动作\\F1HA393_start01.tani"
+   ],
    "events": [],
    "wems": [
     "382642492",
@@ -48,8 +63,18 @@
    "ids": [
     "36500"
    ],
+   "confirmedWems": [
+    "382642492",
+    "457495140"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "断魂刺 match wrong; player beat = generic leap, then pet A393 (summon/roar) + sounds needed"
   },
   {
    "key": "伪传:28651:buff",
@@ -77,8 +102,15 @@
    "ids": [
     "27926"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1scy03气攻击01_九转HD.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28663:buff",
@@ -91,7 +123,9 @@
    "tanis": [
     "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani",
     "data\\source\\player\\f1\\动作\\F1H唐门弩车001b_上车01_HD.tani",
-    "data\\source\\player\\f1\\动作\\F1h唐门弩车001b_下车01_悟.tani"
+    "data\\source\\player\\f1\\动作\\F1h唐门弩车001b_下车01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1H唐门弩车001b_下车01_hd.tani",
+    "data\\source\\player\\f1\\动作\\F1h唐门弩车001b_技能02a_悟.tani"
    ],
    "events": [],
    "wems": [
@@ -101,8 +135,17 @@
    "ids": [
     "27892"
    ],
+   "confirmedWems": [
+    "217082779"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "needs more improvement (parked by user)"
   },
   {
    "key": "伪传:28664:buff",
@@ -131,8 +174,15 @@
    "ids": [
     "27846"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18_云栖松hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28652:buff",
@@ -157,8 +207,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28647:buff",
@@ -185,8 +242,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28711:buff",
@@ -201,8 +265,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28713:buff",
@@ -217,8 +288,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28685:buff",
@@ -247,8 +325,15 @@
    "ids": [
     "30123"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28694:buff",
@@ -276,8 +361,15 @@
    "ids": [
     "30257"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13_剑破虚空hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28656:buff",
@@ -302,8 +394,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28660:buff",
@@ -327,8 +426,15 @@
    "ids": [
     "27895"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08小跳a化蝶.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28682:buff",
@@ -354,8 +460,15 @@
    "ids": [
     "27874"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s16lxg技能02a_hd.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28646:buff",
@@ -382,8 +495,15 @@
    "ids": [
     "27844"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s01wh针灸16_听风HD.tani",
-   "matchSource": "tag"
+   "matchSource": "tag",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28648:buff",
@@ -410,8 +530,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28696:buff",
@@ -441,8 +568,15 @@
    "ids": [
     "30235"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1stm09机关攻击03七煞毒.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28708:buff",
@@ -458,7 +592,9 @@
     "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\f2\\动作\\f2swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\m1\\动作\\m1swd08蛊攻击01_夺命蛊.tani",
-    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani"
+    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_枯残蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_迷心蛊.tani"
    ],
    "events": [
     "WuDu_WuDu_gugongji01_duominggu",
@@ -533,8 +669,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "two different entries, actually the same"
   },
   {
    "key": "伪传:28715:buff",
@@ -544,7 +687,9 @@
    "name": "如意法",
    "rawName": "伪传·如意法",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1smj10双刀buff04_清净心01.tani"
+   ],
    "events": [],
    "wems": [
     "75054615"
@@ -553,8 +698,17 @@
    "ids": [
     "32247"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "75054615"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1smj10双刀buff04_清净心01.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28673:buff",
@@ -581,8 +735,15 @@
    "ids": [
     "27969"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s13cg琴技能11a_孤影化双_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28680:buff",
@@ -607,8 +768,17 @@
    "ids": [
     "27878"
    ],
+   "confirmedWems": [
+    "62588785"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s16lxg链技能03_悟_孤风飒踏01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28686:buff",
@@ -637,8 +807,15 @@
    "ids": [
     "30024"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能23_守如山hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28675:buff",
@@ -662,8 +839,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28661:buff",
@@ -753,8 +937,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28710:buff",
@@ -844,8 +1035,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28719:buff",
@@ -873,8 +1071,15 @@
    "ids": [
     "36501"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s20wlbuff03_应天授命_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28712:buff",
@@ -884,7 +1089,15 @@
    "name": "徐如林",
    "rawName": "伪传·徐如林",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1stc04技能01-02.tani",
+    "data\\source\\player\\f1\\动作\\F1stc04技能01-01.tani",
+    "data\\source\\player\\f1\\动作\\F1stc04技能01-03.tani",
+    "data\\source\\player\\f1\\动作\\F1stc04技能01-04.tani",
+    "data\\source\\player\\f1\\动作\\F1stc04技能01-05.tani",
+    "data\\source\\player\\f1\\动作\\F1stc04技能02-01.tani",
+    "data\\source\\player\\f1\\动作\\F1stc04技能02-02.tani"
+   ],
    "events": [],
    "wems": [
     "307459863"
@@ -893,8 +1106,17 @@
    "ids": [
     "32287"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "307459863"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1stc04技能01-02.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "it is a phase-active animation, not the active animation"
   },
   {
    "key": "伪传:28692:buff",
@@ -917,8 +1139,20 @@
    "ids": [
     "30226"
    ],
+   "confirmedWems": [
+    "337850833",
+    "205006700"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl棍技能18a_扫击蓄力01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [
+    "data\\source\\player\\f1\\动作\\F1s04sl棍技能18b_扫击释放01.tani"
+   ],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing 扫击 phase (18b 扫击释放 added as extra match)"
   },
   {
    "key": "伪传:28670:buff",
@@ -939,8 +1173,17 @@
    "ids": [
     "27863"
    ],
+   "confirmedWems": [
+    "695637316"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击07a.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28689:buff",
@@ -966,8 +1209,15 @@
    "ids": [
     "30029"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09buff01_惊鸿游龙_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28643:buff",
@@ -992,8 +1242,15 @@
    "ids": [
     "27890"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl爪技能12_hd01.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28700:buff",
@@ -1019,8 +1276,15 @@
    "ids": [
     "30262"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s15pl雕技能03_振翅图南_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28642:buff",
@@ -1114,8 +1378,15 @@
    ],
    "notes": "cache; dig: M1 named 爪技能14a 捉影式",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28672:buff",
@@ -1142,8 +1413,15 @@
    "ids": [
     "27872"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sqg12cy刀盾攻击12_撼地hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28677:buff",
@@ -1154,6 +1432,7 @@
    "rawName": "伪传·散流霞",
    "status": "sound-yes",
    "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s14bd双刀技能08_01.tani",
     "data\\source\\player\\f1\\动作\\f1s14bd双刀技能08_散流霞_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s14bd双刀技能08_散流霞_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s14bd双刀技能08_散流霞_悟.tani",
@@ -1171,8 +1450,15 @@
    "ids": [
     "27903"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1s14bd双刀技能08_散流霞_悟.tani",
-   "matchSource": "name"
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\F1s14bd双刀技能08_01.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "use normal version, not 悟 (now F1s14bd双刀技能08_01)"
   },
   {
    "key": "伪传:28683:buff",
@@ -1193,8 +1479,17 @@
    "ids": [
     "27875"
    ],
+   "confirmedWems": [
+    "735859637"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s17ytz星相技01_斗转星_悟.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28681:buff",
@@ -1228,8 +1523,15 @@
    "ids": [
     "27906"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s16lxg鞭技能04_悟_斩无常01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28702:buff",
@@ -1239,7 +1541,9 @@
    "name": "无间狱",
    "rawName": "伪传·无间狱",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s16lxg链技能08_hd.tani"
+   ],
    "events": [],
    "wems": [
     "340506192",
@@ -1249,8 +1553,18 @@
    "ids": [
     "30261"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "340506192",
+    "87003602"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s16lxg链技能08_hd.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing the big ghost appearing behind the back when active (animation itself OK)"
   },
   {
    "key": "伪传:28645:buff",
@@ -1275,8 +1589,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28644:buff",
@@ -1287,13 +1608,10 @@
    "rawName": "伪传·春泥护花",
    "status": "sound-yes",
    "tanis": [
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_太阴指_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2s01wh点穴19_太阴指_悟.tani",
     "data\\source\\player\\f1\\动作\\f1s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_悟_太阴指_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani"
    ],
    "events": [
     "skillremake_wanhua_skill_s01whjineneg15_chunniHD",
@@ -1305,8 +1623,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
   },
   {
    "key": "伪传:28669:buff",
@@ -1321,7 +1646,8 @@
     "data\\source\\player\\f2\\动作\\f2smj10双刀攻击13_暗尘弥散hd.tani",
     "data\\source\\player\\f1\\动作\\f1smj10双刀buff03_暗尘弥散hd.tani",
     "data\\source\\player\\f1\\动作\\f1smj10双刀buff03_暗尘弥散_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2smj10双刀buff03_暗尘弥散_悟.tani"
+    "data\\source\\player\\f2\\动作\\f2smj10双刀buff03_暗尘弥散_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1smj10双刀buff03隐匿.tani"
    ],
    "events": [
     "skillremake_20201029_JG_1029JG_QX_MJ_m2smj10ShuangDaoGongJi13_AnChenMiSanhd",
@@ -1334,8 +1660,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "413330263"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "伪传:28690:buff",
@@ -1362,8 +1697,15 @@
    "ids": [
     "30081"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1smj10圣火诀buff02.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28707:buff",
@@ -1456,8 +1798,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28655:buff",
@@ -1488,8 +1837,15 @@
    "ids": [
     "27862"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能12a_梯云纵hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28676:buff",
@@ -1520,8 +1876,15 @@
    "ids": [
     "27902"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sqg14bd拔刀技能07_楚河汉界hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28716:buff",
@@ -1548,8 +1911,17 @@
    "ids": [
     "34594"
    ],
+   "confirmedWems": [
+    "836145145"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s18dz擒拿02_洗兵雨01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28662:buff",
@@ -1563,7 +1935,8 @@
     "data\\source\\player\\f1\\动作\\f1stm09伪装01_浮光掠影_悟.tani",
     "data\\source\\player\\f2\\动作\\f2stm09伪装01_浮光掠影_悟.tani",
     "data\\source\\player\\m1\\动作\\m1stm09伪装01_浮光掠影_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2stm09伪装01_浮光掠影_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2stm09伪装01_浮光掠影_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg09tm伪装01_浮光HD.tani"
    ],
    "events": [
     "TangMen_TangMen_Skill_fuguanglueying"
@@ -1573,8 +1946,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "maybe wrong version (HD vs 悟); animation correct"
   },
   {
    "key": "伪传:28717:buff",
@@ -1600,8 +1980,15 @@
    "ids": [
     "34591"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s18dz身法04_单_游风飘踪01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28668:buff",
@@ -1628,8 +2015,15 @@
    "ids": [
     "27869"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11前冲刺01_悟_烟雨行_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28695:buff",
@@ -1720,8 +2114,15 @@
    "ids": [
     "30238"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sqg08wd蛊攻击01_玄水蛊hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28674:buff",
@@ -1738,8 +2139,15 @@
    "ids": [
     "27857"
    ],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": true,
+   "ip": true,
+   "ipNote": "wrong; marked no-animation"
   },
   {
    "key": "伪传:28654:buff",
@@ -1766,8 +2174,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28649:buff",
@@ -1794,8 +2209,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28698:buff",
@@ -1828,8 +2250,15 @@
    "ids": [
     "30231"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s15pl雕技能04a_疾电叱羽护盾01hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28671:buff",
@@ -1840,16 +2269,18 @@
    "rawName": "伪传·盾立",
    "status": "sound-yes",
    "tanis": [
-    "data\\source\\player\\f1\\动作\\f1sgb11buff01_丐帮笑醉狂01.tani",
-    "data\\source\\player\\f2\\动作\\f2sgb11buff01_丐帮笑醉狂01.tani",
-    "data\\source\\player\\m1\\动作\\m1sgb11buff01_丐帮笑醉狂01.tani",
-    "data\\source\\player\\m2\\动作\\m2sgb11buff01_丐帮笑醉狂01.tani"
+    "data\\source\\player\\f1\\动作\\F1scy12刀盾buff01_01.tani",
+    "data\\source\\player\\f1\\动作\\F1scy12刀盾buff01盾壁01.tani",
+    "data\\source\\player\\f1\\动作\\F1scy12刀盾buff01_苍云盾护01.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg12cy刀盾buff01_盾壁HD.tani",
+    "data\\source\\player\\f1\\动作\\F1scy12刀盾buff01_盾壁_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1scy12盾墙01a_盾墙释放01.tani",
+    "data\\source\\player\\f1\\动作\\F1scy12盾墙01a_盾墙_悟.tani"
    ],
    "events": [
     "skillremake_20211028_JG_20211028gb_sgb11buff01_gaibangxiaozuikuang01"
    ],
    "wems": [
-    "128409036",
     "916951452",
     "697798714"
    ],
@@ -1857,8 +2288,18 @@
    "ids": [
     "27871"
    ],
+   "confirmedWems": [
+    "916951452",
+    "697798714"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "no player animation in data; wrong sound removed; boss P081 sk02b is the only 盾立 anim"
   },
   {
    "key": "伪传:28693:buff",
@@ -1881,8 +2322,18 @@
    "ids": [
     "30239"
    ],
+   "confirmedWems": [
+    "16601009",
+    "34175499"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy气技能15a_穹窿化生01_悟.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "using wrong one (15a vs 15b)"
   },
   {
    "key": "伪传:28667:buff",
@@ -1906,8 +2357,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28650:buff",
@@ -1999,8 +2457,15 @@
    "ids": [
     "27850"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能19_紫气东来hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28709:buff",
@@ -2024,8 +2489,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28705:buff",
@@ -2053,8 +2525,15 @@
    "ids": [
     "30301"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s18yz植物系03_绿野蔓生.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28678:buff",
@@ -2064,7 +2543,9 @@
    "name": "翔极碧落",
    "rawName": "伪传·翔极碧落",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s15pl伞技能空04c_人雕合一HD.tani"
+   ],
    "events": [],
    "wems": [
     "390961829"
@@ -2073,8 +2554,17 @@
    "ids": [
     "27904"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "390961829"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s15pl伞技能空04c_人雕合一HD.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28641:buff",
@@ -2174,8 +2664,17 @@
    "ids": [
     "27888"
    ],
+   "confirmedWems": [
+    "43553148"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl技能11_hd01.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28706:buff",
@@ -2196,8 +2695,17 @@
    "ids": [
     "32245"
    ],
+   "confirmedWems": [
+    "306672272"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1swh01辅助技能03.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28659:buff",
@@ -2285,8 +2793,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28658:buff",
@@ -2314,8 +2829,15 @@
    "ids": [
     "27855"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1bqg猛冲01_蝶弄足.tani",
-   "matchSource": "name"
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18_蝶弄足hd.tani",
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong one"
   },
   {
    "key": "伪传:28679:buff",
@@ -2345,8 +2867,17 @@
    "ids": [
     "27905"
    ],
+   "confirmedWems": [
+    "897349988"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s15pl掌技能空03a_跃潮斩波_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong (03a vs 03b)"
   },
   {
    "key": "伪传:28691:buff",
@@ -2356,7 +2887,17 @@
    "name": "踏星行",
    "rawName": "伪传·踏星行",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s17ytz乘灯01.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz星相技01_HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz星相技02_HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz星相技02_解_HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz星相技04皆字_HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz星相技05_HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz星相技06_HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz占卜技04.tani",
+    "data\\source\\player\\f1\\动作\\F1s17ytz占卜技05.tani"
+   ],
    "events": [],
    "wems": [
     "901987144"
@@ -2365,8 +2906,17 @@
    "ids": [
     "30082"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "901987144"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s17ytz乘灯01.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "maybe wrong; look for more options"
   },
   {
    "key": "伪传:28688:buff",
@@ -2392,8 +2942,15 @@
    "ids": [
     "30025"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy剑技能16_转乾坤_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28714:buff",
@@ -2419,8 +2976,15 @@
    "ids": [
     "32300"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09通道02连环弩.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28704:buff",
@@ -2448,8 +3012,15 @@
    "ids": [
     "30276"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s18yz植物系03_逐云寒蕊.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28687:buff",
@@ -2474,8 +3045,15 @@
    "ids": [
     "30023"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl技能16_hd01.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28653:buff",
@@ -2502,8 +3080,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28665:buff",
@@ -2531,8 +3116,15 @@
    "ids": [
     "27847"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能17_霞流宝石hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28666:buff",
@@ -2561,8 +3153,15 @@
    "ids": [
     "27967"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15_风来吴山hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28701:buff",
@@ -2588,8 +3187,15 @@
    "ids": [
     "30233"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s16lxg链技能10_飞刃回转01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28699:buff",
@@ -2604,7 +3210,8 @@
     "data\\source\\player\\f1\\动作\\f1s15pl雕技能空02_驭羽骋风hd.tani",
     "data\\source\\player\\f1\\动作\\f1s15pl姿态切换01_驭羽骋风hd.tani",
     "data\\source\\player\\f1\\动作\\f1s15pl姿态切换01_奇穴_驭羽骋风hd.tani",
-    "data\\source\\player\\f1\\动作\\f1s15pl姿态切换01_驭羽骋风_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1s15pl姿态切换01_驭羽骋风_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s15pl姿态切换04_驭羽骋风hd.tani"
    ],
    "events": [
     "skillremake_kongzhanfeitian_panglaikongzhan_m2s15plzitaiqiehuan01_qixue_yuyuchengfenghd",
@@ -2619,8 +3226,17 @@
    "ids": [
     "30247"
    ],
+   "confirmedWems": [
+    "226536459"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s15pl雕技能02_驭羽骋风hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong but related"
   },
   {
    "key": "伪传:28703:buff",
@@ -2651,8 +3267,15 @@
    "ids": [
     "30234"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s17ytz星相技03_鸿蒙天禁hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28657:buff",
@@ -2677,8 +3300,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "伪传:28697:buff",
@@ -2761,8 +3391,15 @@
    "ids": [
     "30243"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击06_悟_龙啸九天_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "animation correct; sound wrong"
   },
   {
    "key": "dig:洞烛机微",
@@ -2781,8 +3418,15 @@
    "ids": [
     "28045"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "dig:魂压怒涛",
@@ -2801,8 +3445,15 @@
    "ids": [
     "28046"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65146:skill",
@@ -2833,8 +3484,15 @@
    "ids": [
     "65146"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy气技能15a_七星拱瑞01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28612:buff",
@@ -2863,8 +3521,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65061:skill",
@@ -2893,8 +3558,15 @@
    "ids": [
     "65061"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy剑技能13_万剑HD.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28570:buff",
@@ -2920,8 +3592,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51324:buff",
@@ -2936,8 +3615,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65145:skill",
@@ -2964,8 +3650,15 @@
    "ids": [
     "65145"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy气技能18_三才hd.tani",
-   "matchSource": "tag"
+   "matchSource": "tag",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28611:buff",
@@ -2989,8 +3682,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65026:skill",
@@ -3022,8 +3722,15 @@
    "ids": [
     "65026"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11b_三环HD.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28555:buff",
@@ -3052,8 +3759,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51857:buff",
@@ -3068,8 +3782,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51856:buff",
@@ -3084,8 +3805,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51858:buff",
@@ -3100,8 +3828,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65059:skill",
@@ -3116,12 +3851,17 @@
     "data\\source\\player\\f1\\动作\\f1s03cy气技能11b_悟_两仪化形_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy气技能11a_悟_两仪化形_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy气技能11b_悟_两仪化形_悟.tani",
-    "data\\source\\player\\f1\\动作\\f1scy03纯阳技能18_两仪化形_贰式_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1scy03纯阳技能18_两仪化形_贰式_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy气技能11a_两仪HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy气技能11_两仪HD.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_LiangYiHuaXing"
    ],
    "wems": [
+    "533720938",
+    "101880340",
+    "28700397",
     "46951115",
     "252763356"
    ],
@@ -3129,8 +3869,17 @@
    "ids": [
     "65059"
    ],
+   "confirmedWems": [
+    "252763356"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy气技能11a_悟_两仪化形_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "animation maybe wrong; sound 100% wrong"
   },
   {
    "key": "绝境:28568:buff",
@@ -3145,18 +3894,31 @@
     "data\\source\\player\\f1\\动作\\f1s03cy气技能11b_悟_两仪化形_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy气技能11a_悟_两仪化形_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy气技能11b_悟_两仪化形_悟.tani",
-    "data\\source\\player\\f1\\动作\\f1scy03纯阳技能18_两仪化形_贰式_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1scy03纯阳技能18_两仪化形_贰式_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy气技能11a_两仪HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy气技能11_两仪HD.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_LiangYiHuaXing"
    ],
    "wems": [
+    "533720938",
+    "101880340",
+    "252763356",
+    "28700397",
     "46951115"
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "animation maybe wrong; sound 100% wrong"
   },
   {
    "key": "绝境:65076:skill",
@@ -3167,10 +3929,16 @@
    "rawName": "绝境_云飞玉皇",
    "status": "sound-no",
    "tanis": [
-    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞HD.tani"
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11_奇穴_云飞HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11b_云飞HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11_奇穴_云飞_悟.tani"
    ],
    "events": [],
    "wems": [
+    "578379755",
+    "315695614",
     "93452115",
     "90745220"
    ],
@@ -3178,8 +3946,18 @@
    "ids": [
     "65076"
    ],
+   "confirmedWems": [
+    "93452115",
+    "90745220"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞HD.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing cast-success (sound)"
   },
   {
    "key": "绝境:28577:buff",
@@ -3189,13 +3967,30 @@
    "name": "云飞玉皇",
    "rawName": "绝境·云飞玉皇",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11_奇穴_云飞HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11b_云飞HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11_奇穴_云飞_悟.tani"
+   ],
    "events": [],
-   "wems": [],
+   "wems": [
+    "578379755",
+    "90745220",
+    "93452115",
+    "315695614"
+   ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing cast-success (sound)"
   },
   {
    "key": "绝境:65077:skill",
@@ -3210,8 +4005,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28998:buff",
@@ -3226,8 +4028,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65149:skill",
@@ -3257,8 +4066,15 @@
    "ids": [
     "65149"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy气技能13_五方HD.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28613:buff",
@@ -3285,8 +4101,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65101:skill",
@@ -3296,7 +4119,9 @@
    "name": "五蕴皆空",
    "rawName": "绝境_五蕴皆空",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1ssl04袈裟攻击05.tani"
+   ],
    "events": [],
    "wems": [
     "157383905"
@@ -3305,8 +4130,17 @@
    "ids": [
     "65101"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "157383905"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1ssl04袈裟攻击05.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28589:buff",
@@ -3321,8 +4155,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65667:skill",
@@ -3411,8 +4252,15 @@
    "ids": [
     "65667"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击18a01_亢龙有悔.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28635:buff",
@@ -3499,8 +4347,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65150:skill",
@@ -3527,8 +4382,15 @@
    "ids": [
     "65150"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15_人剑合一hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28614:buff",
@@ -3553,8 +4415,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65144:skill",
@@ -3583,8 +4452,15 @@
    "ids": [
     "65144"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能28_任驰骋hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28610:buff",
@@ -3611,8 +4487,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51359:buff",
@@ -3627,8 +4510,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65113:skill",
@@ -3638,7 +4528,9 @@
    "name": "傍花随柳",
    "rawName": "绝境_傍花随柳",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani"
+   ],
    "events": [],
    "wems": [
     "7390771"
@@ -3647,8 +4539,17 @@
    "ids": [
     "65113"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "7390771"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28596:buff",
@@ -3663,8 +4564,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65111:skill",
@@ -3679,8 +4587,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64995:skill",
@@ -3709,8 +4624,15 @@
    "ids": [
     "64995"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴13a_兰摧玉折hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28551:buff",
@@ -3737,8 +4659,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51282:buff",
@@ -3765,8 +4694,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65127:skill",
@@ -3781,7 +4717,9 @@
     "data\\source\\player\\f1\\动作\\f1s03cy剑技能17b_剑冲阴阳hd.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy剑技能17a_剑冲阴阳hd.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy剑技能17b_剑冲阴阳hd.tani",
-    "data\\source\\player\\m1\\动作\\m1s03cy剑技能17a_剑冲阴阳hd.tani"
+    "data\\source\\player\\m1\\动作\\m1s03cy剑技能17a_剑冲阴阳hd.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy技能16b_生太极HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy技能13a_生太极HD.tani"
    ],
    "events": [
     "skillremake_chunyang_skill_s03cyjianjineng17a_jianchongyinyangHD",
@@ -3795,8 +4733,15 @@
    "ids": [
     "65127"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1s03cy剑技能17a_剑冲阴阳hd.tani",
-   "matchSource": "name"
+   "confirmedWems": [],
+   "matched": "",
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong; 剑冲阴阳 is a different ability"
   },
   {
    "key": "绝境:28604:buff",
@@ -3811,7 +4756,9 @@
     "data\\source\\player\\f1\\动作\\f1s03cy剑技能17b_剑冲阴阳hd.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy剑技能17a_剑冲阴阳hd.tani",
     "data\\source\\player\\f2\\动作\\f2s03cy剑技能17b_剑冲阴阳hd.tani",
-    "data\\source\\player\\m1\\动作\\m1s03cy剑技能17a_剑冲阴阳hd.tani"
+    "data\\source\\player\\m1\\动作\\m1s03cy剑技能17a_剑冲阴阳hd.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy技能16b_生太极HD.tani",
+    "data\\source\\player\\f1\\动作\\F1s03cy技能13a_生太极HD.tani"
    ],
    "events": [
     "skillremake_chunyang_skill_s03cyjianjineng17a_jianchongyinyangHD",
@@ -3823,8 +4770,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong; 剑冲阴阳 is a different ability"
   },
   {
    "key": "绝境:65087:skill",
@@ -3855,8 +4809,15 @@
    "ids": [
     "65087"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1smj10组合刀攻击06_净世破魔击日_悟.tani",
-   "matchSource": "name"
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b_净世破魔击_月_悟.tani",
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong; it is the moon (月) version, current one is the sun (日) version"
   },
   {
    "key": "绝境:28580:buff",
@@ -3885,8 +4846,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong; it is the moon (月) version, current one is the sun (日) version"
   },
   {
    "key": "绝境:65138:skill",
@@ -3896,7 +4864,9 @@
    "name": "凌太虚",
    "rawName": "绝境·凌太虚",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1scy03技能05-05.tani"
+   ],
    "events": [],
    "wems": [
     "45472664",
@@ -3906,8 +4876,18 @@
    "ids": [
     "65138"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "45472664",
+    "34175499"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1scy03技能05-05.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28607:buff",
@@ -3922,8 +4902,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:37683:skill",
@@ -3940,8 +4927,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "239862510"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65065:skill",
@@ -3952,6 +4948,7 @@
    "rawName": "绝境_剑主天地",
    "status": "sound-no",
    "tanis": [
+    "data\\source\\player\\f1\\动作\\F1sqx05双剑攻击04.tani",
     "data\\source\\player\\f2\\动作\\f2sqx05剑主天地演武01.tani",
     "data\\source\\player\\m1\\动作\\m1sqx05剑主天地演武01.tani"
    ],
@@ -3963,8 +4960,17 @@
    "ids": [
     "65065"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "370997661"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1sqx05双剑攻击04.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28572:buff",
@@ -3982,8 +4988,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65155:skill",
@@ -4010,8 +5023,15 @@
    "ids": [
     "65155"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能14_剑转流云hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28617:buff",
@@ -4036,8 +5056,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65028:skill",
@@ -4071,8 +5098,15 @@
    "ids": [
     "65028"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy剑技能12_剑飞惊天.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28556:buff",
@@ -4104,8 +5138,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65053:skill",
@@ -4122,7 +5163,8 @@
     "data\\source\\player\\f1\\动作\\f1stm09针攻击01_化血镖_悟.tani",
     "data\\source\\player\\f2\\动作\\f2stm09针攻击01_化血镖_悟.tani",
     "data\\source\\player\\m1\\动作\\m1stm09针攻击01_化血镖_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2stm09针攻击01_化血镖_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2stm09针攻击01_化血镖_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1stm09针攻击01毒芒针.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_TangMen_HuaXueBiao"
@@ -4134,8 +5176,15 @@
    "ids": [
     "65053"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09针攻击01_林海化血镖.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "good, but relist all 化血镖 variants (the many version)"
   },
   {
    "key": "绝境:51316:buff",
@@ -4152,7 +5201,8 @@
     "data\\source\\player\\f1\\动作\\f1stm09针攻击01_化血镖_悟.tani",
     "data\\source\\player\\f2\\动作\\f2stm09针攻击01_化血镖_悟.tani",
     "data\\source\\player\\m1\\动作\\m1stm09针攻击01_化血镖_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2stm09针攻击01_化血镖_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2stm09针攻击01_化血镖_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1stm09针攻击01毒芒针.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_TangMen_HuaXueBiao"
@@ -4162,8 +5212,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "good, but relist all 化血镖 variants (the many version)"
   },
   {
    "key": "绝境:28565:buff",
@@ -4180,7 +5237,8 @@
     "data\\source\\player\\f1\\动作\\f1stm09针攻击01_化血镖_悟.tani",
     "data\\source\\player\\f2\\动作\\f2stm09针攻击01_化血镖_悟.tani",
     "data\\source\\player\\m1\\动作\\m1stm09针攻击01_化血镖_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2stm09针攻击01_化血镖_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2stm09针攻击01_化血镖_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1stm09针攻击01毒芒针.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_TangMen_HuaXueBiao"
@@ -4190,8 +5248,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "good, but relist all 化血镖 variants (the many version)"
   },
   {
    "key": "绝境:65254:skill",
@@ -4205,7 +5270,11 @@
     "data\\source\\player\\f1\\动作\\f1swd08治疗03_千蝶吐瑞_悟.tani",
     "data\\source\\player\\f2\\动作\\f2swd08治疗03_千蝶吐瑞_悟.tani",
     "data\\source\\player\\m1\\动作\\m1swd08治疗03_千蝶吐瑞_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2swd08治疗03_千蝶吐瑞_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2swd08治疗03_千蝶吐瑞_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_金蝉吐瑞.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_金蝉吐瑞空战.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_千蝶皮肤.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_千蝶皮肤空战.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_WuDu_QianDieTuRui",
@@ -4281,8 +5350,15 @@
    "ids": [
     "65254"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08治疗03_千蝶吐瑞_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing; it is only an active animation"
   },
   {
    "key": "绝境:28634:buff",
@@ -4296,7 +5372,11 @@
     "data\\source\\player\\f1\\动作\\f1swd08治疗03_千蝶吐瑞_悟.tani",
     "data\\source\\player\\f2\\动作\\f2swd08治疗03_千蝶吐瑞_悟.tani",
     "data\\source\\player\\m1\\动作\\m1swd08治疗03_千蝶吐瑞_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2swd08治疗03_千蝶吐瑞_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2swd08治疗03_千蝶吐瑞_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_金蝉吐瑞.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_金蝉吐瑞空战.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_千蝶皮肤.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08治疗03_千蝶皮肤空战.tani"
    ],
    "events": [
     "JianWang3_Fmod_untitled_WuDu_QianDieTuRui",
@@ -4370,8 +5450,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing; it is only an active animation"
   },
   {
    "key": "绝境:37686:skill",
@@ -4388,8 +5475,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "438970123"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65140:skill",
@@ -4423,8 +5519,17 @@
    "ids": [
     "65140"
    ],
+   "confirmedWems": [
+    "45472664"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能18b_吞日月hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28608:buff",
@@ -4455,8 +5560,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65075:skill",
@@ -4489,8 +5601,15 @@
    "ids": [
     "65075"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑12_听雷hd.tani",
-   "matchSource": "dig"
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12_听雷hd.tani",
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "seems wrong"
   },
   {
    "key": "绝境:28576:buff",
@@ -4521,8 +5640,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "seems wrong"
   },
   {
    "key": "绝境:65110:skill",
@@ -4537,8 +5663,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64993:skill",
@@ -4565,8 +5698,15 @@
    "ids": [
     "64993"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴12_商阳指hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51280:buff",
@@ -4591,8 +5731,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28549:buff",
@@ -4617,8 +5764,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65250:skill",
@@ -4647,8 +5801,15 @@
    "ids": [
     "65250"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能25_啸如虎01.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51468:buff",
@@ -4675,8 +5836,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28632:buff",
@@ -4703,8 +5871,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64889:skill",
@@ -4719,8 +5894,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:37687:skill",
@@ -4737,8 +5919,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "684427138"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65092:skill",
@@ -4748,7 +5939,9 @@
    "name": "圣明佑",
    "rawName": "绝境_圣明佑",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1smj10乾坤大法buff01_01.tani"
+   ],
    "events": [],
    "wems": [
     "75054615"
@@ -4757,8 +5950,17 @@
    "ids": [
     "65092"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "75054615"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1smj10乾坤大法buff01_01.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28508:buff",
@@ -4773,8 +5975,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28583:buff",
@@ -4789,8 +5998,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65154:skill",
@@ -4821,8 +6037,15 @@
    "ids": [
     "65154"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能11_坐忘无我_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28616:buff",
@@ -4851,8 +6074,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64903:skill",
@@ -4867,8 +6097,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64893:skill",
@@ -4883,8 +6120,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65103:skill",
@@ -4920,8 +6164,15 @@
    "ids": [
     "65103"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1ssl04技能06_hd01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28590:buff",
@@ -4955,8 +6206,15 @@
    ],
    "notes": "cache; dig: M1/M2 named ssl04技能06 大狮子吼",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28541:buff",
@@ -4971,8 +6229,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65153:skill",
@@ -4999,8 +6264,15 @@
    "ids": [
     "65153"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1scy03纯阳技能11_大道无术hd.tani",
-   "matchSource": "tag"
+   "matchSource": "tag",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28615:buff",
@@ -5025,8 +6297,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65160:skill",
@@ -5053,8 +6332,15 @@
    "ids": [
     "65160"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20_天地低昂hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28621:buff",
@@ -5079,8 +6365,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65062:skill",
@@ -5101,8 +6394,17 @@
    "ids": [
     "65062"
    ],
+   "confirmedWems": [
+    "252612285"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11c.ani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28571:buff",
@@ -5119,8 +6421,15 @@
    "wems": [],
    "notes": "cache; dig: skill_tag row 309",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65024:skill",
@@ -5147,8 +6456,15 @@
    "ids": [
     "65024"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy气技能17_太极无极01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28554:buff",
@@ -5173,8 +6489,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51293:buff",
@@ -5189,8 +6512,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65242:skill",
@@ -5217,8 +6547,15 @@
    "ids": [
     "65242"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴19_太阴指_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28629:buff",
@@ -5243,8 +6580,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65048:skill",
@@ -5260,7 +6604,9 @@
     "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\f2\\动作\\f2swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\m1\\动作\\m1swd08蛊攻击01_夺命蛊.tani",
-    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani"
+    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_枯残蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_迷心蛊.tani"
    ],
    "events": [
     "WuDu_WuDu_gugongji01_duominggu",
@@ -5337,8 +6683,15 @@
    "ids": [
     "65048"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_夺命蛊.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "two different entries, actually the same"
   },
   {
    "key": "绝境:51309:buff",
@@ -5354,7 +6707,9 @@
     "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\f2\\动作\\f2swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\m1\\动作\\m1swd08蛊攻击01_夺命蛊.tani",
-    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani"
+    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_枯残蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_迷心蛊.tani"
    ],
    "events": [
     "WuDu_WuDu_gugongji01_duominggu",
@@ -5429,8 +6784,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "two different entries, actually the same"
   },
   {
    "key": "绝境:28562:buff",
@@ -5446,7 +6808,9 @@
     "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\f2\\动作\\f2swd08蛊攻击01_夺命蛊.tani",
     "data\\source\\player\\m1\\动作\\m1swd08蛊攻击01_夺命蛊.tani",
-    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani"
+    "data\\source\\player\\m2\\动作\\m2swd08蛊攻击01_夺命蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_枯残蛊.tani",
+    "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_迷心蛊.tani"
    ],
    "events": [
     "WuDu_WuDu_gugongji01_duominggu",
@@ -5521,8 +6885,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "two different entries, actually the same"
   },
   {
    "key": "绝境:64892:skill",
@@ -5537,8 +6908,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65163:skill",
@@ -5567,8 +6945,15 @@
    "ids": [
     "65163"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08变身02_女娲补天.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28624:buff",
@@ -5595,8 +6980,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65054:skill",
@@ -5611,7 +7003,8 @@
     "data\\source\\player\\f2\\动作\\f2sqg09tm针攻击02_孔雀翎hd.tani",
     "data\\source\\player\\f1\\动作\\f1b01ty披风展示02_孔雀翎.tani",
     "data\\source\\player\\f2\\动作\\f2b05ty披风展示02_孔雀翎.tani",
-    "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1stm09针攻击02孔雀.tani"
    ],
    "events": [
     "ChunYangQingGong_outfit_pifengzhanshi6_kongqueling",
@@ -5687,8 +7080,15 @@
    "ids": [
     "65054"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1b01ty披风展示02_孔雀翎.tani",
-   "matchSource": "name"
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani",
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:51317:buff",
@@ -5703,7 +7103,8 @@
     "data\\source\\player\\f2\\动作\\f2sqg09tm针攻击02_孔雀翎hd.tani",
     "data\\source\\player\\f1\\动作\\f1b01ty披风展示02_孔雀翎.tani",
     "data\\source\\player\\f2\\动作\\f2b05ty披风展示02_孔雀翎.tani",
-    "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1stm09针攻击02孔雀.tani"
    ],
    "events": [
     "ChunYangQingGong_outfit_pifengzhanshi6_kongqueling",
@@ -5778,8 +7179,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "958073438"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:28566:buff",
@@ -5794,7 +7204,8 @@
     "data\\source\\player\\f2\\动作\\f2sqg09tm针攻击02_孔雀翎hd.tani",
     "data\\source\\player\\f1\\动作\\f1b01ty披风展示02_孔雀翎.tani",
     "data\\source\\player\\f2\\动作\\f2b05ty披风展示02_孔雀翎.tani",
-    "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1stm09针攻击02孔雀.tani"
    ],
    "events": [
     "ChunYangQingGong_outfit_pifengzhanshi6_kongqueling",
@@ -5868,8 +7279,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:51319:buff",
@@ -5884,8 +7302,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65055:skill",
@@ -5900,8 +7325,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65056:skill",
@@ -5916,8 +7348,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51318:buff",
@@ -5932,8 +7371,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51278:buff",
@@ -5948,8 +7394,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64901:skill",
@@ -5978,8 +7431,15 @@
    "ids": [
     "64901"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl爪技能15a_hd01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28545:buff",
@@ -6006,8 +7466,15 @@
    ],
    "notes": "cache; dig: M1 named 爪技能15a 守缺式",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51360:buff",
@@ -6034,8 +7501,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65108:skill",
@@ -6064,8 +7538,15 @@
    "ids": [
     "65108"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴21a_少明指hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28594:buff",
@@ -6092,8 +7573,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65159:skill",
@@ -6120,8 +7608,15 @@
    "ids": [
     "65159"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23_帝骖龙翔hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28620:buff",
@@ -6146,8 +7641,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65083:skill",
@@ -6178,8 +7680,15 @@
    "ids": [
     "65083"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击01_幽月轮1段_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28579:buff",
@@ -6208,8 +7717,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:39493:skill",
@@ -6234,8 +7750,17 @@
    "ids": [
     "39493"
    ],
+   "confirmedWems": [
+    "866782677"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s21ds指法11a_悟_引窍01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29852:buff",
@@ -6256,8 +7781,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:39492:skill",
@@ -6271,7 +7803,11 @@
     "data\\source\\player\\f1\\动作\\f1s21ds指法16_悟_截阳01_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s21ds指法16_悟_截阳01_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s21ds指法16_悟_截阳01_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s21ds指法16_悟_截阳01_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s21ds指法16_悟_截阳01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法15_悟_破穴贰式01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法14_悟_破穴01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法13_悟_断脉01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法12_悟_锁神01_悟.tani"
    ],
    "events": [],
    "wems": [
@@ -6281,8 +7817,17 @@
    "ids": [
     "39492"
    ],
+   "confirmedWems": [
+    "668699640"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s21ds指法16_悟_截阳01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "using wrong one"
   },
   {
    "key": "绝境:29851:buff",
@@ -6296,14 +7841,25 @@
     "data\\source\\player\\f1\\动作\\f1s21ds指法16_悟_截阳01_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s21ds指法16_悟_截阳01_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s21ds指法16_悟_截阳01_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s21ds指法16_悟_截阳01_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s21ds指法16_悟_截阳01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法15_悟_破穴贰式01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法14_悟_破穴01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法13_悟_断脉01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds指法12_悟_锁神01_悟.tani"
    ],
    "events": [],
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "using wrong one"
   },
   {
    "key": "绝境:37681:skill",
@@ -6323,8 +7879,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:38381:skill",
@@ -6339,8 +7902,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:41283:skill",
@@ -6364,8 +7934,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:41281:skill",
@@ -6389,8 +7966,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65066:skill",
@@ -6405,8 +7989,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65067:skill",
@@ -6421,8 +8012,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64900:skill",
@@ -6433,6 +8031,7 @@
    "rawName": "绝境_抱残式",
    "status": "sound-no",
    "tanis": [
+    "data\\source\\player\\f1\\动作\\F1ssl04爪攻击02.tani",
     "data\\source\\player\\f1\\动作\\F1s04sl爪技能12_hd01.tani"
    ],
    "events": [],
@@ -6443,8 +8042,17 @@
    "ids": [
     "64900"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "718779610"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1ssl04爪攻击02.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51277:buff",
@@ -6461,8 +8069,15 @@
    "wems": [],
    "notes": "cache; dig: only unnamed claw slot left",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28544:buff",
@@ -6479,8 +8094,15 @@
    "wems": [],
    "notes": "cache; dig: only unnamed claw slot left",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64991:skill",
@@ -6505,8 +8127,15 @@
    "ids": [
     "64991"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl爪技能13_hd01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28547:buff",
@@ -6529,8 +8158,15 @@
    ],
    "notes": "cache; dig: M1 named 爪技能13 拿云式",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65100:skill",
@@ -6626,8 +8262,15 @@
    "ids": [
     "65100"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl爪技能14a_hd01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28546:buff",
@@ -6721,8 +8364,15 @@
    ],
    "notes": "cache; dig: M1 named 爪技能14a 捉影式",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28588:buff",
@@ -6816,8 +8466,15 @@
    ],
    "notes": "cache; dig: M1 named 爪技能14a 捉影式",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64899:skill",
@@ -6911,8 +8568,15 @@
    "ids": [
     "64899"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl爪技能11_hd01.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28543:buff",
@@ -7004,8 +8668,15 @@
    ],
    "notes": "cache; dig: M1 named 爪技能11 捕风式",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65098:skill",
@@ -7030,8 +8701,15 @@
    "ids": [
     "65098"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl棍技能14_hd03.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28587:buff",
@@ -7054,8 +8732,15 @@
    ],
    "notes": "cache; dig: M1/M2 named 棍技能14",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65119:skill",
@@ -7076,8 +8761,17 @@
    "ids": [
     "65119"
    ],
+   "confirmedWems": [
+    "22651465"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s04tc技能22_撼HD.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28599:buff",
@@ -7094,8 +8788,15 @@
    "wems": [],
    "notes": "cache; dig: event hanhd02 + 技能22 撼",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51365:buff",
@@ -7110,8 +8811,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65125:skill",
@@ -7138,8 +8846,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28603:buff",
@@ -7166,8 +8881,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51369:buff",
@@ -7182,8 +8904,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65060:skill",
@@ -7212,8 +8941,15 @@
    "ids": [
     "65060"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s03cy剑技能14_无我无剑HD.tani",
-   "matchSource": "tag"
+   "matchSource": "tag",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28569:buff",
@@ -7239,8 +8975,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65104:skill",
@@ -7265,8 +9008,15 @@
    "ids": [
     "65104"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl技能12_hd01.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28591:buff",
@@ -7288,8 +9038,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51356:buff",
@@ -7304,8 +9061,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65107:skill",
@@ -7332,8 +9096,15 @@
    "ids": [
     "65107"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh技能12_星楼月影hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51358:buff",
@@ -7358,8 +9129,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28593:buff",
@@ -7384,8 +9162,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65105:skill",
@@ -7397,13 +9182,10 @@
    "status": "sound-yes",
    "tanis": [
     "data\\source\\player\\f1\\动作\\F1s01wh技能15_春泥HD.tani",
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_太阴指_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2s01wh点穴19_太阴指_悟.tani",
     "data\\source\\player\\f1\\动作\\f1s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_悟_太阴指_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani"
    ],
    "events": [
     "skillremake_wanhua_skill_s01whjineneg15_chunniHD",
@@ -7417,8 +9199,15 @@
    "ids": [
     "65105"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s01wh技能15_春泥HD.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
   },
   {
    "key": "绝境:28592:buff",
@@ -7429,13 +9218,10 @@
    "rawName": "绝境·春泥护花",
    "status": "sound-yes",
    "tanis": [
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_太阴指_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2s01wh点穴19_太阴指_悟.tani",
     "data\\source\\player\\f1\\动作\\f1s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_悟_太阴指_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani"
    ],
    "events": [
     "skillremake_wanhua_skill_s01whjineneg15_chunniHD",
@@ -7447,8 +9233,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
   },
   {
    "key": "绝境:51357:buff",
@@ -7459,13 +9252,10 @@
    "rawName": "绝境·春泥护花",
    "status": "sound-yes",
    "tanis": [
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_太阴指_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2s01wh点穴19_太阴指_悟.tani",
     "data\\source\\player\\f1\\动作\\f1s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s01wh技能15_春泥护花_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani",
-    "data\\source\\player\\f1\\动作\\f1s01wh点穴19_悟_太阴指_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s01wh技能15_春泥护花_悟.tani"
    ],
    "events": [
     "skillremake_wanhua_skill_s01whjineneg15_chunniHD",
@@ -7477,8 +9267,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
   },
   {
    "key": "绝境:64891:skill",
@@ -7493,8 +9290,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65243:skill",
@@ -7509,7 +9313,8 @@
     "data\\source\\player\\f2\\动作\\f2smj10双刀攻击13_暗尘弥散hd.tani",
     "data\\source\\player\\f1\\动作\\f1smj10双刀buff03_暗尘弥散hd.tani",
     "data\\source\\player\\f1\\动作\\f1smj10双刀buff03_暗尘弥散_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2smj10双刀buff03_暗尘弥散_悟.tani"
+    "data\\source\\player\\f2\\动作\\f2smj10双刀buff03_暗尘弥散_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1smj10双刀buff03隐匿.tani"
    ],
    "events": [
     "skillremake_20201029_JG_1029JG_QX_MJ_m2smj10ShuangDaoGongJi13_AnChenMiSanhd",
@@ -7523,8 +9328,15 @@
    "ids": [
     "65243"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击13_暗尘弥散hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:28630:buff",
@@ -7539,7 +9351,8 @@
     "data\\source\\player\\f2\\动作\\f2smj10双刀攻击13_暗尘弥散hd.tani",
     "data\\source\\player\\f1\\动作\\f1smj10双刀buff03_暗尘弥散hd.tani",
     "data\\source\\player\\f1\\动作\\f1smj10双刀buff03_暗尘弥散_悟.tani",
-    "data\\source\\player\\f2\\动作\\f2smj10双刀buff03_暗尘弥散_悟.tani"
+    "data\\source\\player\\f2\\动作\\f2smj10双刀buff03_暗尘弥散_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1smj10双刀buff03隐匿.tani"
    ],
    "events": [
     "skillremake_20201029_JG_1029JG_QX_MJ_m2smj10ShuangDaoGongJi13_AnChenMiSanhd",
@@ -7551,8 +9364,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:51466:buff",
@@ -7567,8 +9387,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65088:skill",
@@ -7583,8 +9410,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65050:skill",
@@ -7679,8 +9513,15 @@
    "ids": [
     "65050"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_枯残蛊.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51311:buff",
@@ -7773,8 +9614,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28564:buff",
@@ -7867,8 +9715,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65671:skill",
@@ -7960,8 +9815,15 @@
    "ids": [
     "65671"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11棒法攻击01b_悟_棒打狗头_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28639:buff",
@@ -8051,8 +9913,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65678:skill",
@@ -8067,8 +9936,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65677:skill",
@@ -8083,8 +9959,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51848:buff",
@@ -8099,8 +9982,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64898:skill",
@@ -8125,8 +10015,15 @@
    "ids": [
     "64898"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl棍技能13_hd01.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28542:buff",
@@ -8148,8 +10045,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64897:skill",
@@ -8164,8 +10068,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65116:skill",
@@ -8198,8 +10109,15 @@
    "ids": [
     "65116"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能20_沧月hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28597:buff",
@@ -8230,8 +10148,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65117:skill",
@@ -8246,8 +10171,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65244:skill",
@@ -8261,7 +10193,8 @@
     "data\\source\\player\\f1\\动作\\f1stm09伪装01_浮光掠影_悟.tani",
     "data\\source\\player\\f2\\动作\\f2stm09伪装01_浮光掠影_悟.tani",
     "data\\source\\player\\m1\\动作\\m1stm09伪装01_浮光掠影_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2stm09伪装01_浮光掠影_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2stm09伪装01_浮光掠影_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg09tm伪装01_浮光HD.tani"
    ],
    "events": [
     "TangMen_TangMen_Skill_fuguanglueying"
@@ -8273,8 +10206,15 @@
    "ids": [
     "65244"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09伪装01_浮光掠影_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "maybe wrong version (HD vs 悟); animation correct"
   },
   {
    "key": "绝境:28631:buff",
@@ -8288,7 +10228,8 @@
     "data\\source\\player\\f1\\动作\\f1stm09伪装01_浮光掠影_悟.tani",
     "data\\source\\player\\f2\\动作\\f2stm09伪装01_浮光掠影_悟.tani",
     "data\\source\\player\\m1\\动作\\m1stm09伪装01_浮光掠影_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2stm09伪装01_浮光掠影_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2stm09伪装01_浮光掠影_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg09tm伪装01_浮光HD.tani"
    ],
    "events": [
     "TangMen_TangMen_Skill_fuguanglueying"
@@ -8298,8 +10239,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "maybe wrong version (HD vs 悟); animation correct"
   },
   {
    "key": "绝境:51467:buff",
@@ -8314,8 +10262,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65120:skill",
@@ -8331,7 +10286,9 @@
     "data\\source\\player\\f1\\动作\\f1b02yd持伞待机_戏鱼渊hd.tani",
     "data\\source\\player\\f1\\动作\\f1b02yd持伞待机_戏鱼渊.tani",
     "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击17_龙跃于渊.tani",
-    "data\\source\\player\\f1\\动作\\f1s16lxg麒王逐魂03_麟驹过渊.tani"
+    "data\\source\\player\\f1\\动作\\f1s16lxg麒王逐魂03_麟驹过渊.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg04tc技能18a_渊hd.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg04tc技能18b_渊hd.tani"
    ],
    "events": [
     "skillremake_tiance_skill_s04tcjineng18a_yuanHD",
@@ -8345,8 +10302,15 @@
    "ids": [
     "65120"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1b02yd持伞待机_戏鱼渊.tani",
-   "matchSource": "name"
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能18a_渊hd.tani",
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:28600:buff",
@@ -8362,7 +10326,9 @@
     "data\\source\\player\\f1\\动作\\f1b02yd持伞待机_戏鱼渊hd.tani",
     "data\\source\\player\\f1\\动作\\f1b02yd持伞待机_戏鱼渊.tani",
     "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击17_龙跃于渊.tani",
-    "data\\source\\player\\f1\\动作\\f1s16lxg麒王逐魂03_麟驹过渊.tani"
+    "data\\source\\player\\f1\\动作\\f1s16lxg麒王逐魂03_麟驹过渊.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg04tc技能18a_渊hd.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg04tc技能18b_渊hd.tani"
    ],
    "events": [
     "skillremake_tiance_skill_s04tcjineng18a_yuanHD",
@@ -8374,8 +10340,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:51366:buff",
@@ -8390,8 +10363,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51367:buff",
@@ -8406,8 +10386,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65670:skill",
@@ -8433,8 +10420,15 @@
    "ids": [
     "65670"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击08_潜龙勿用hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28638:buff",
@@ -8458,8 +10452,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65676:skill",
@@ -8474,8 +10475,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65038:skill",
@@ -8504,8 +10512,15 @@
    "ids": [
     "65038"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能17_灭hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28559:buff",
@@ -8532,8 +10547,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65039:skill",
@@ -8548,8 +10570,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65040:skill",
@@ -8564,8 +10593,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65089:skill",
@@ -8597,8 +10633,15 @@
    "ids": [
     "65089"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1smj10组合刀攻击04_日斩.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28581:buff",
@@ -8627,8 +10670,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65668:skill",
@@ -8650,8 +10700,15 @@
    "ids": [
     "65668"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击15_狂龙乱舞.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51847:buff",
@@ -8673,8 +10730,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "358607853"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28636:buff",
@@ -8694,8 +10760,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65674:skill",
@@ -8710,8 +10783,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65058:skill",
@@ -8740,8 +10820,15 @@
    "ids": [
     "65058"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴15_玉石俱焚hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28567:buff",
@@ -8768,8 +10855,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:37684:skill",
@@ -8786,8 +10880,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "239862510"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65142:skill",
@@ -8816,8 +10919,15 @@
    "ids": [
     "65142"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能13a_生太极hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28609:buff",
@@ -8844,8 +10954,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65095:skill",
@@ -8875,8 +10992,17 @@
    "ids": [
     "65095"
    ],
+   "confirmedWems": [
+    "927639305"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1smj10圣火诀buff02a_生死劫.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "maybe wrong"
   },
   {
    "key": "绝境:28584:buff",
@@ -8903,8 +11029,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "maybe wrong"
   },
   {
    "key": "绝境:65240:skill",
@@ -8915,11 +11048,14 @@
    "rawName": "绝境_疾",
    "status": "sound-yes",
    "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾HD.tani",
     "data\\source\\player\\f1\\动作\\f1bqg丐帮疾前冲.tani",
     "data\\source\\player\\f1\\动作\\f1b01ty疾突01.tani",
     "data\\source\\player\\f1\\动作\\f1bqg丐帮疾轻功烟尘.tani",
     "data\\source\\player\\f1\\动作\\f1bqg丐帮疾右闪地面.tani",
-    "data\\source\\player\\f1\\动作\\f1bqg丐帮疾水面加速跑.tani"
+    "data\\source\\player\\f1\\动作\\f1bqg丐帮疾水面加速跑.tani",
+    "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg04tc技能16_疾hd.tani"
    ],
    "events": [
     "ChunYangQingGong_gaibang_jiqianchong",
@@ -8947,8 +11083,17 @@
    "ids": [
     "65240"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1b01ty疾突01.tani",
-   "matchSource": "name"
+   "confirmedWems": [
+    "678228934"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾HD.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "completely wrong"
   },
   {
    "key": "绝境:28627:buff",
@@ -8963,7 +11108,9 @@
     "data\\source\\player\\f1\\动作\\f1s15pl雕技能04b_疾电叱羽击飞01hd.tani",
     "data\\source\\player\\f1\\动作\\f1s15pl雕技能空04a_疾电叱羽护盾01hd.tani",
     "data\\source\\player\\f1\\动作\\f1s15pl雕技能空04b_疾电叱羽击飞01hd.tani",
-    "data\\source\\player\\f1\\动作\\f1s15pl雕技能04a_疾电叱羽_皮肤04.tani"
+    "data\\source\\player\\f1\\动作\\f1s15pl雕技能04a_疾电叱羽_皮肤04.tani",
+    "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1sqg04tc技能16_疾hd.tani"
    ],
    "events": [
     "skillremake_penglaibaba_denglujiemian_penglai_M2s15PL_sanjineng01b_jishui_hd",
@@ -8979,8 +11126,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "completely wrong"
   },
   {
    "key": "绝境:65118:skill",
@@ -9009,8 +11163,15 @@
    "ids": [
     "65118"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能24_疾如风hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28598:buff",
@@ -9037,8 +11198,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51362:buff",
@@ -9053,8 +11221,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65068:skill",
@@ -9147,8 +11322,17 @@
    "ids": [
     "65068"
    ],
+   "confirmedWems": [
+    "482646056"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08毒攻击03_百足.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28573:buff",
@@ -9238,8 +11422,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51328:buff",
@@ -9329,8 +11520,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65069:skill",
@@ -9345,8 +11543,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65070:skill",
@@ -9361,8 +11566,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51329:buff",
@@ -9377,8 +11589,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65123:skill",
@@ -9403,8 +11622,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28601:buff",
@@ -9429,8 +11655,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51368:buff",
@@ -9445,8 +11678,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65136:skill",
@@ -9474,8 +11714,18 @@
    "ids": [
     "65136"
    ],
+   "confirmedWems": [
+    "45472664",
+    "34175499"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能15b_破苍穹hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28606:buff",
@@ -9499,8 +11749,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64996:skill",
@@ -9521,8 +11778,17 @@
    "ids": [
     "64996"
    ],
+   "confirmedWems": [
+    "780764483"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s04tc技能11b_穿云hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28552:buff",
@@ -9539,8 +11805,15 @@
    "wems": [],
    "notes": "cache; dig: shared thrust (verify)",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65133:skill",
@@ -9568,8 +11841,17 @@
    "ids": [
     "65133"
    ],
+   "confirmedWems": [
+    "45472664"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能17b_碎星辰hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28605:buff",
@@ -9594,8 +11876,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51364:buff",
@@ -9610,8 +11899,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65022:skill",
@@ -9626,7 +11922,8 @@
     "data\\source\\player\\f1\\动作\\f1s04tc技能11a_骑乘_穿云hd.tani",
     "data\\source\\player\\f1\\动作\\f1b02ty穿云箭01玩家.tani",
     "data\\source\\player\\f1\\动作\\f1lz02_掌法攻击09b_韦柔丝_三阳穿心掌.tani",
-    "data\\source\\player\\f1\\动作\\f1s04tc技能11b_穿云_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1s04tc技能11b_穿云_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s04tc技能11b_穿云hd.tani"
    ],
    "events": [
     "skillremake_xinfuben_wurenkuilei_XLSF01_liehuoliaokong_HD",
@@ -9706,8 +12003,17 @@
    "ids": [
     "65022"
    ],
-   "matched": "data\\source\\player\\f1\\动作\\f1b02ty穿云箭01玩家.tani",
-   "matchSource": "name"
+   "confirmedWems": [
+    "39771509"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能11a_穿云hd.tani",
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:28553:buff",
@@ -9722,7 +12028,8 @@
     "data\\source\\player\\f1\\动作\\f1s04tc技能11a_骑乘_穿云hd.tani",
     "data\\source\\player\\f1\\动作\\f1b02ty穿云箭01玩家.tani",
     "data\\source\\player\\f1\\动作\\f1lz02_掌法攻击09b_韦柔丝_三阳穿心掌.tani",
-    "data\\source\\player\\f1\\动作\\f1s04tc技能11b_穿云_悟.tani"
+    "data\\source\\player\\f1\\动作\\f1s04tc技能11b_穿云_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s04tc技能11b_穿云hd.tani"
    ],
    "events": [
     "skillremake_xinfuben_wurenkuilei_XLSF01_liehuoliaokong_HD",
@@ -9799,8 +12106,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:64890:skill",
@@ -9815,8 +12129,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65074:skill",
@@ -9847,8 +12168,18 @@
    "ids": [
     "65074"
    ],
+   "confirmedWems": [
+    "934807344",
+    "87135144"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09飞天攻击03a_穿心弩hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28575:buff",
@@ -9877,8 +12208,18 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "87135144",
+    "934807344"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65672:skill",
@@ -9904,8 +12245,15 @@
    "ids": [
     "65672"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sgb11buff01_丐帮笑醉狂01.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28640:buff",
@@ -9929,8 +12277,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51849:buff",
@@ -9945,8 +12300,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65157:skill",
@@ -9972,8 +12334,15 @@
    "ids": [
     "65157"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能26_绛唇珠袖hd.tani",
-   "matchSource": "tag"
+   "matchSource": "tag",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29020:buff",
@@ -9997,8 +12366,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28619:buff",
@@ -10022,8 +12398,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29897:buff",
@@ -10038,8 +12421,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51354:buff",
@@ -10054,8 +12444,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65109:skill",
@@ -10082,8 +12479,15 @@
    "ids": [
     "65109"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴20_芙蓉并蒂hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28595:buff",
@@ -10108,8 +12512,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29158:buff",
@@ -10199,8 +12610,15 @@
    "ids": [
     "27924"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sqg08wd蛊攻击01_蚀心蛊hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65046:skill",
@@ -10227,8 +12645,15 @@
    "ids": [
     "65046"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08毒攻击02_蛇影.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28560:buff",
@@ -10253,8 +12678,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29150:buff",
@@ -10269,8 +12701,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65162:skill",
@@ -10297,8 +12736,15 @@
    "ids": [
     "65162"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1sqg08wd牺牲01_蛊虫献祭hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28623:buff",
@@ -10323,8 +12769,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64895:skill",
@@ -10339,8 +12792,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65047:skill",
@@ -10367,8 +12827,15 @@
    "ids": [
     "65047"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08毒攻击02_蟾啸.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28561:buff",
@@ -10393,8 +12860,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29149:buff",
@@ -10409,8 +12883,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65124:skill",
@@ -10425,8 +12906,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51371:buff",
@@ -10441,8 +12929,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28602:buff",
@@ -10457,8 +12952,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51355:buff",
@@ -10473,8 +12975,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64896:skill",
@@ -10489,8 +12998,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:37682:skill",
@@ -10507,8 +13023,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "400132680"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:38382:skill",
@@ -10523,8 +13048,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:41284:skill",
@@ -10548,8 +13080,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:41282:skill",
@@ -10573,8 +13112,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65166:skill",
@@ -10589,8 +13135,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:37685:skill",
@@ -10607,8 +13160,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [
+    "438970123"
+   ],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65049:skill",
@@ -10702,8 +13264,15 @@
    "ids": [
     "65049"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01_迷心蛊.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51310:buff",
@@ -10795,8 +13364,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28563:buff",
@@ -10888,8 +13464,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65071:skill",
@@ -10918,8 +13501,17 @@
    "ids": [
     "65071"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03夺命01_追命箭_悟.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [
+    "data\\source\\player\\f1\\动作\\F1stm09弩蓄力03夺命01_追命箭_悟.tani"
+   ],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing channel phase"
   },
   {
    "key": "绝境:28574:buff",
@@ -10946,8 +13538,17 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [
+    "data\\source\\player\\f1\\动作\\F1stm09弩蓄力03夺命01_追命箭_悟.tani"
+   ],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "missing channel phase"
   },
   {
    "key": "绝境:65072:skill",
@@ -10962,8 +13563,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65112:skill",
@@ -10978,8 +13586,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64994:skill",
@@ -11008,8 +13623,15 @@
    "ids": [
     "64994"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s01wh点穴14a_钟林毓秀hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51281:buff",
@@ -11036,8 +13658,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28550:buff",
@@ -11064,8 +13693,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65090:skill",
@@ -11097,8 +13733,15 @@
    "ids": [
     "65090"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击04_月斩.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28582:buff",
@@ -11127,8 +13770,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65167:skill",
@@ -11157,8 +13807,15 @@
    "ids": [
     "65167"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s03cy技能13b_镇山河.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28626:buff",
@@ -11185,8 +13842,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64992:skill",
@@ -11225,8 +13889,17 @@
    "ids": [
     "64992"
    ],
+   "confirmedWems": [
+    "342270609"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\F1s01wh针灸13b长针hd.tani",
-   "matchSource": "dig-cat"
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28548:buff",
@@ -11261,8 +13934,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:64894:skill",
@@ -11277,8 +13957,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65063:skill",
@@ -11293,8 +13980,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65156:skill",
@@ -11321,8 +14015,15 @@
    "ids": [
     "65156"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25_雷霆震怒hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28618:buff",
@@ -11347,8 +14048,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65165:skill",
@@ -11375,8 +14083,15 @@
    "ids": [
     "65165"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09控制03雷震子.tani",
-   "matchSource": "tag"
+   "matchSource": "tag",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28625:buff",
@@ -11401,8 +14116,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:39483:skill",
@@ -11412,7 +14134,9 @@
    "name": "雾暗迷云",
    "rawName": "绝境·雾暗迷云",
    "status": "sound-no",
-   "tanis": [],
+   "tanis": [
+    "data\\source\\player\\f1\\动作\\F1s21ds技能04b.tani"
+   ],
    "events": [],
    "wems": [
     "170046962"
@@ -11421,8 +14145,17 @@
    "ids": [
     "39483"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [
+    "170046962"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s21ds技能04b.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29850:buff",
@@ -11437,8 +14170,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:29898:buff",
@@ -11453,8 +14193,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65097:skill",
@@ -11484,8 +14231,15 @@
    "ids": [
     "65097"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1s04sl棍技能12_hd02.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28586:buff",
@@ -11513,8 +14267,15 @@
    ],
    "notes": "cache; dig: M1/M2 named 棍技能12 韦陀献杵",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:39494:skill",
@@ -11528,7 +14289,9 @@
     "data\\source\\player\\f1\\动作\\f1s21ds步法03a_悟_风流云散01_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s21ds步法03a_悟_风流云散01_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s21ds步法03a_悟_风流云散01_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s21ds步法03a_悟_风流云散01_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s21ds步法03a_悟_风流云散01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds步法01_b.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds步法01_f.tani"
    ],
    "events": [],
    "wems": [
@@ -11538,8 +14301,17 @@
    "ids": [
     "39494"
    ],
+   "confirmedWems": [
+    "455851133"
+   ],
    "matched": "data\\source\\player\\f1\\动作\\f1s21ds步法03a_悟_风流云散01_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:29853:buff",
@@ -11553,14 +14325,23 @@
     "data\\source\\player\\f1\\动作\\f1s21ds步法03a_悟_风流云散01_悟.tani",
     "data\\source\\player\\f2\\动作\\f2s21ds步法03a_悟_风流云散01_悟.tani",
     "data\\source\\player\\m1\\动作\\m1s21ds步法03a_悟_风流云散01_悟.tani",
-    "data\\source\\player\\m2\\动作\\m2s21ds步法03a_悟_风流云散01_悟.tani"
+    "data\\source\\player\\m2\\动作\\m2s21ds步法03a_悟_风流云散01_悟.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds步法01_b.tani",
+    "data\\source\\player\\f1\\动作\\F1s21ds步法01_f.tani"
    ],
    "events": [],
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": true,
+   "ipNote": "wrong"
   },
   {
    "key": "绝境:65251:skill",
@@ -11585,8 +14366,15 @@
    "ids": [
     "65251"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx扇技能12_风袖低昂_悟.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28633:buff",
@@ -11609,8 +14397,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65096:skill",
@@ -11637,8 +14432,15 @@
    "ids": [
     "65096"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击10连杀.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28585:buff",
@@ -11663,8 +14465,15 @@
    ],
    "notes": "cache; dig: skill_tag row 3979",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:37746:skill",
@@ -11691,8 +14500,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65241:skill",
@@ -11716,8 +14532,15 @@
    "ids": [
     "65241"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1stm09_鸟翔碧空01a.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51464:buff",
@@ -11739,8 +14562,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28628:buff",
@@ -11762,8 +14592,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65161:skill",
@@ -11790,8 +14627,15 @@
    "ids": [
     "65161"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s05qx剑技能22_鹊踏枝hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28622:buff",
@@ -11816,8 +14660,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65078:skill",
@@ -11847,8 +14698,15 @@
    "ids": [
     "65078"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14_鹤归孤山hd.tani",
-   "matchSource": "name"
+   "matchSource": "name",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28578:buff",
@@ -11876,8 +14734,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65036:skill",
@@ -11908,8 +14773,15 @@
    "ids": [
     "65036"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能12_龙吟hd.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28558:buff",
@@ -11938,8 +14810,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:51300:buff",
@@ -11954,8 +14833,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65669:skill",
@@ -11966,6 +14852,7 @@
    "rawName": "绝境_龙战于野",
    "status": "sound-yes",
    "tanis": [
+    "data\\source\\player\\f1\\动作\\F1sgb11掌法攻击05b.tani",
     "data\\source\\player\\f2\\动作\\f2sgb11掌法攻击05b_亢龙有悔_悟.tani"
    ],
    "events": [
@@ -11978,8 +14865,15 @@
    "ids": [
     "65669"
    ],
-   "matched": "",
-   "matchSource": ""
+   "confirmedWems": [],
+   "matched": "data\\source\\player\\f1\\动作\\F1sgb11掌法攻击05b.tani",
+   "matchSource": "dig-cat",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28637:buff",
@@ -12000,8 +14894,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65675:skill",
@@ -12016,8 +14917,15 @@
    "wems": [],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:65029:skill",
@@ -12046,8 +14954,15 @@
    "ids": [
     "65029"
    ],
+   "confirmedWems": [],
    "matched": "data\\source\\player\\f1\\动作\\f1s04tc技能13_龙牙hd_狼皮肤.tani",
-   "matchSource": "dig"
+   "matchSource": "dig",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   },
   {
    "key": "绝境:28557:buff",
@@ -12074,8 +14989,15 @@
    ],
    "notes": "cache",
    "ids": [],
+   "confirmedWems": [],
    "matched": "",
-   "matchSource": ""
+   "matchSource": "",
+   "deduced": "",
+   "deduceNote": "",
+   "matchedExtra": [],
+   "noAnim": false,
+   "ip": false,
+   "ipNote": ""
   }
  ]
 }
