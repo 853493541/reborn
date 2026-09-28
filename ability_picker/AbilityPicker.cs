@@ -43,6 +43,20 @@ internal static class AbilityPicker
         public bool Ip;
         public string IpNote = "";
         public bool NoAnim;
+        public string Mech = "";
+        public List<ProcStep> Process = new List<ProcStep>();
+    }
+
+    internal class ProcStep
+    {
+        public int T;
+        public string Kind = "";
+        public string V = "";
+        public string N = "";
+        public string K = "";
+        public float X, Y, Z;
+        public float S = 1f;
+        public float SX, SY, SZ;
     }
 
     internal class ReviewItem
@@ -77,7 +91,22 @@ internal static class AbilityPicker
     static SplitContainer mainSplit, rightSplit;
     static Panel viewport;
     static TreeView tree;
-    static TextBox searchBox, addPathBox, catalogSearch, noteBox, restartBox;
+    static TextBox searchBox, addPathBox, catalogSearch, noteBox, restartBox, mechBox;
+    static Panel processPanel;
+    static Label processStatus;
+    static Button processPlayBtn;
+    static TabControl tabsCtl;
+    static TabPage tabProcessPage;
+    static ListView processList;
+    static Ability processAbility;
+    static List<ProcStep> runSteps = new List<ProcStep>();
+    static int runIndex;
+    static int runLastT;
+    static long runStart;
+    static bool runActive;
+    static string autoProcessName = "";
+    static int camOutFrames;
+    static int smokeShotMs = -1;
     static CheckBox onlyUnresolved, autoPlay, restartChk, tracedChk, soundChk, ipChk;
     static ComboBox speedBox;
     static ListBox catalogList;
@@ -171,6 +200,10 @@ internal static class AbilityPicker
 
         model = new KGModelCLR();
         model.AttachModel(handle);
+        try { Log("represent path 70025 -> [" + scene.GetRepresentModelPath(70025) + "]"); }
+        catch (Exception e) { Log("represent probe ex: " + e.Message); }
+        autoProcessName = Env("AP_PROCESS", "");
+        int.TryParse(Env("AP_SHOT_MS", ""), out smokeShotMs);
         int withIds = 0, matched = 0, withSound = 0;
         foreach (Ability a in abilities)
         {
@@ -185,6 +218,26 @@ internal static class AbilityPicker
         frameTimer.Interval = 15;
         frameTimer.Tick += delegate { Frame(); };
         frameTimer.Start();
+
+        if (autoProcessName != "")
+        {
+            foreach (Ability a in abilities)
+            {
+                if (a.Name == autoProcessName)
+                {
+                    TreeNode node = null;
+                    foreach (TreeNode g in tree.Nodes)
+                        foreach (TreeNode an in g.Nodes)
+                        {
+                            Ability x = an.Tag as Ability;
+                            if (x != null && x.Name == autoProcessName) { node = an; break; }
+                        }
+                    if (node != null) tree.SelectedNode = node;
+                    StartProcess(a);
+                    break;
+                }
+            }
+        }
 
         if (smoke) smokeStart = Environment.TickCount;
         Application.Run(form);
@@ -210,6 +263,22 @@ internal static class AbilityPicker
                 }
                 catch (Exception e) { Log("restart ex: " + e.Message); }
             }
+        }
+        if (camOutFrames > 0)
+        {
+            try { scene.ExecAction(31, 1, 0, 1); } catch { }
+            camOutFrames--;
+        }
+        if (runActive)
+        {
+            long el = Environment.TickCount - runStart;
+            while (runIndex < runSteps.Count && runSteps[runIndex].T <= el)
+            {
+                RunStep(runSteps[runIndex]);
+                runIndex++;
+            }
+            if (processPanel != null) processPanel.Invalidate();
+            if (el > runLastT + 600) StopProcess();
         }
         try
         {
@@ -269,7 +338,8 @@ internal static class AbilityPicker
                 smokeResetCam = true;
                 try { scene.ResetCameraPosLookAtUp(); } catch { }
             }
-            if (!smokeDone && el > 6000)
+            int shotAt = smokeShotMs > 0 ? smokeShotMs : (autoProcessName != "" ? 3200 : 6000);
+            if (!smokeDone && el > shotAt)
             {
                 smokeDone = true;
                 Shot("smoke");
@@ -323,6 +393,37 @@ internal static class AbilityPicker
             ab.Ip = Str(d, "ip").Equals("true", StringComparison.OrdinalIgnoreCase);
             ab.IpNote = Str(d, "ipNote");
             ab.NoAnim = Str(d, "noAnim").Equals("true", StringComparison.OrdinalIgnoreCase);
+            ab.Mech = Str(d, "mech");
+            object po;
+            if (d.TryGetValue("process", out po))
+            {
+                object[] parr = po as object[];
+                if (parr != null)
+                {
+                    foreach (object po2 in parr)
+                    {
+                        var pd = po2 as Dictionary<string, object>;
+                        if (pd == null) continue;
+                        var st = new ProcStep();
+                        int t;
+                        int.TryParse(Str(pd, "t"), out t);
+                        st.T = t;
+                        st.Kind = Str(pd, "kind");
+                        st.V = Str(pd, "v");
+                        st.N = Str(pd, "n");
+                        st.K = Str(pd, "k");
+                        float f;
+                        if (float.TryParse(Str(pd, "x"), out f)) st.X = f;
+                        if (float.TryParse(Str(pd, "y"), out f)) st.Y = f;
+                        if (float.TryParse(Str(pd, "z"), out f)) st.Z = f;
+                        if (float.TryParse(Str(pd, "s"), out f) && f > 0f) st.S = f;
+                        if (float.TryParse(Str(pd, "sx"), out f) && f > 0f) st.SX = f;
+                        if (float.TryParse(Str(pd, "sy"), out f) && f > 0f) st.SY = f;
+                        if (float.TryParse(Str(pd, "sz"), out f) && f > 0f) st.SZ = f;
+                        ab.Process.Add(st);
+                    }
+                }
+            }
             abilities.Add(ab);
         }
         RebuildMatched();
@@ -495,7 +596,7 @@ internal static class AbilityPicker
         soundChk.Text = "sound";
         soundChk.Location = new Point(382, 30);
         soundChk.AutoSize = true;
-        soundChk.Checked = Env("AP_SOUND", "1") == "1";
+        soundChk.Checked = Env("AP_SOUND", "0") == "1";
         top.Controls.Add(soundChk);
         ipChk = new CheckBox();
         ipChk.Text = "IP";
@@ -541,8 +642,16 @@ internal static class AbilityPicker
             if (rebuilding || e.Node == null) return;
             if (e.Node.Tag is Ability)
             {
-                selectedAbilityKey = ((Ability)e.Node.Tag).Key;
-                ShowAbility((Ability)e.Node.Tag);
+                Ability sel = (Ability)e.Node.Tag;
+                selectedAbilityKey = sel.Key;
+                ShowAbility(sel);
+                // clicking an ability with a process plays the whole ability
+                // and brings the Process pane to the front
+                if (sel.Process.Count > 0)
+                {
+                    if (tabsCtl != null && tabProcessPage != null) tabsCtl.SelectedTab = tabProcessPage;
+                    StartProcess(sel);
+                }
             }
             else if (e.Node.Tag is string)
             {
@@ -639,6 +748,58 @@ internal static class AbilityPicker
         FilterCatalog();
         tabs.TabPages.Add(tabCatalog);
 
+        var tabMech = new TabPage("Mechanism");
+        mechBox = new TextBox();
+        mechBox.Multiline = true;
+        mechBox.ReadOnly = true;
+        mechBox.ScrollBars = ScrollBars.Vertical;
+        mechBox.Dock = DockStyle.Fill;
+        mechBox.BackColor = Color.FromArgb(250, 250, 245);
+        mechBox.Text = "(select an ability in the tree - its full mechanism appears here)";
+        tabMech.Controls.Add(mechBox);
+        tabs.TabPages.Add(tabMech);
+
+        var tabProcess = new TabPage("Process");
+        tabProcessPage = tabProcess;
+        tabsCtl = tabs;
+        processPanel = new Panel();
+        processPanel.Dock = DockStyle.Fill;
+        processPanel.BackColor = Color.White;
+        processPanel.Paint += delegate(object s, PaintEventArgs e) { DrawProcess(e.Graphics); };
+        processPanel.Resize += delegate { processPanel.Invalidate(); };
+        tabProcess.Controls.Add(processPanel);
+        processList = new ListView();
+        processList.View = View.Details;
+        processList.FullRowSelect = true;
+        processList.GridLines = true;
+        processList.Dock = DockStyle.Bottom;
+        processList.Height = 210;
+        processList.Columns.Add("t (ms)", 55);
+        processList.Columns.Add("kind", 60);
+        processList.Columns.Add("asset / value", 330);
+        processList.Columns.Add("note", 330);
+        processList.Columns.Add("status", 90);
+        processList.DoubleClick += delegate
+        {
+            if (processAbility != null) StartProcess(processAbility);
+        };
+        tabProcess.Controls.Add(processList);
+        var procBar = new Panel();
+        procBar.Dock = DockStyle.Top;
+        procBar.Height = 30;
+        processPlayBtn = MkButton("play process", 4, 3, 100, delegate
+        {
+            if (runActive) StopProcess();
+            else if (processAbility != null) StartProcess(processAbility);
+        });
+        procBar.Controls.Add(processPlayBtn);
+        procBar.Controls.Add(MkButton("copy", 108, 3, 56, delegate { CopyProcess(); }));
+        processStatus = MkLabel("select an ability", 172, 8);
+        procBar.Controls.Add(processStatus);
+        tabProcess.Controls.Add(procBar);
+        procBar.BringToFront();
+        tabs.TabPages.Add(tabProcess);
+
         var tabDetails = new TabPage("Details");
         var info = new Panel();
         info.Dock = DockStyle.Top;
@@ -715,6 +876,23 @@ internal static class AbilityPicker
         rebuilding = true;
         tree.BeginUpdate();
         tree.Nodes.Clear();
+        // featured: abilities with a staged process (click = play the full ability)
+        var procList = new List<Ability>();
+        foreach (Ability ab in abilities)
+            if (ab.Process.Count > 0) procList.Add(ab);
+        if (procList.Count > 0)
+        {
+            TreeNode pg = new TreeNode("★ 流程 Process (click to play)");
+            pg.ForeColor = Color.FromArgb(0, 90, 160);
+            foreach (Ability ab in procList)
+            {
+                TreeNode pn = new TreeNode(ab.Name + "  (" + ab.Process.Count + " steps)");
+                pn.Tag = ab;
+                pn.ForeColor = Color.FromArgb(0, 90, 160);
+                pg.Nodes.Add(pn);
+            }
+            tree.Nodes.Add(pg);
+        }
         string q = searchBox.Text.Trim();
         var groups = new Dictionary<string, TreeNode>();
         foreach (Ability ab in abilities)
@@ -784,6 +962,230 @@ internal static class AbilityPicker
         tree.EndUpdate();
         tree.ExpandAll();
         rebuilding = false;
+    }
+
+    // ---------- ability process (staged playback + timeline) ----------
+    static string FindTani(Ability ab, string needle)
+    {
+        if (string.IsNullOrEmpty(needle)) return "";
+        if (ab != null)
+            foreach (string t in ab.Tanis)
+                if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
+        foreach (string p in catalogPaths)
+            if (p.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0)
+                return @"data\source\player\f1\动作\" + p;
+        return "";
+    }
+
+    static void StartProcess(Ability ab)
+    {
+        if (ab == null || ab.Process.Count == 0)
+        {
+            SetStatus("no process defined for " + (ab != null ? ab.Name : "-"));
+            return;
+        }
+        StopProcess();
+        processAbility = ab;
+        runSteps = ab.Process;
+        runIndex = 0;
+        runLastT = 0;
+        foreach (ProcStep s in runSteps) if (s.T > runLastT) runLastT = s.T;
+        runStart = Environment.TickCount;
+        runActive = true;
+        selectedAbilityKey = ab.Key;
+        if (processPlayBtn != null) processPlayBtn.Text = "stop";
+        SetStatus("process: " + ab.Name + " - " + runSteps.Count + " steps");
+        if (processPanel != null) processPanel.Invalidate();
+    }
+
+    static void StopProcess()
+    {
+        if (scene != null)
+        {
+            try { scene.RemoveDummyModel("proc_anchor"); } catch { }
+        }
+        runActive = false;
+        // stop the restart-on-repeat loop that would otherwise keep replaying
+        // the last process animation + sound forever
+        lastPlayPath = "";
+        if (processPlayBtn != null) processPlayBtn.Text = "play process";
+        if (processPanel != null) processPanel.Invalidate();
+    }
+
+    static void RunStep(ProcStep s)
+    {
+        try
+        {
+            if (s.Kind == "anim")
+            {
+                string path = FindTani(processAbility, s.V);
+                if (path != "")
+                {
+                    model.PlayAnimation(path, 0, speed, 0);
+                    curClip = path;
+                    lastPlayPath = path;
+                    lastPlayStart = Environment.TickCount;
+                }
+                Log("proc anim -> " + s.V + " = " + path);
+            }
+            else if (s.Kind == "sound")
+            {
+                string wav = Path.Combine(soundDir, s.V + ".wav");
+                if (soundChk != null && soundChk.Checked && File.Exists(wav))
+                    PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
+                Log("proc sound -> " + wav + (soundChk != null && soundChk.Checked ? "" : " (sound off)"));
+            }
+            else if (s.Kind == "chain" || s.Kind == "move" || s.Kind == "action")
+            {
+                // known step of the real ability, not staged yet (visual listed
+                // on the timeline in red): chain PSS render / pull movement / DoAction
+                Log("proc " + s.Kind + " (not staged) -> " + s.V + " - " + s.N);
+            }
+            else if (s.Kind == "dummy")
+            {
+                var pos = new CLRfloat3();
+                pos.x = s.X; pos.y = s.Y; pos.z = s.Z;
+                var quat = new CLRfloat4();
+                quat.w = 1f;
+                var sc = new CLRfloat3();
+                sc.x = s.SX > 0f ? s.SX : s.S;
+                sc.y = s.SY > 0f ? s.SY : s.S;
+                sc.z = s.SZ > 0f ? s.SZ : s.S;
+                string key = s.K != "" ? s.K : "proc_anchor";
+                long dh = scene.AddDummyModel(key, s.V, pos, quat, sc);
+                Log("proc dummy -> " + key + " handle=" + dh + " @ " + s.X + "," + s.Y + "," + s.Z + " " + s.V);
+            }
+            else if (s.Kind == "remove")
+            {
+                scene.RemoveDummyModel(s.V != "" ? s.V : "proc_anchor");
+                Log("proc remove -> " + s.V);
+            }
+            else if (s.Kind == "camera")
+            {
+                if (s.V.StartsWith("out:"))
+                {
+                    int n;
+                    if (!int.TryParse(s.V.Substring(4), out n)) n = 3;
+                    scene.ResetCameraPosLookAtUp();
+                    camOutFrames = n * 3;
+                }
+                else if (s.V == "reset")
+                {
+                    scene.ResetCameraPosLookAtUp();
+                }
+                Log("proc camera -> " + s.V);
+            }
+        }
+        catch (Exception e) { Log("proc step ex (" + s.Kind + "): " + e.Message); }
+    }
+
+    static bool IsUnsolvedStep(ProcStep s)
+    {
+        return s.Kind == "chain" || s.Kind == "move" || s.Kind == "action";
+    }
+
+    static void CopyProcess()
+    {
+        var sb = new StringBuilder();
+        foreach (Ability a in abilities)
+        {
+            if (a.Process.Count == 0) continue;
+            sb.AppendLine("## " + a.Name
+                + (a.Ids.Count > 0 ? (" [" + string.Join("/", a.Ids.ToArray()) + "]") : "")
+                + "  process (" + a.Process.Count + " steps)");
+            foreach (ProcStep s in a.Process)
+                sb.AppendLine(string.Format("t={0,5}ms  {1,-8} {2,-42} {3}{4}",
+                    s.T, s.Kind, s.V, s.N, IsUnsolvedStep(s) ? "  [UNSOLVED - not staged]" : ""));
+            if (a.Mech != "") sb.AppendLine("mechanism: " + a.Mech);
+            sb.AppendLine();
+        }
+        if (sb.Length == 0) { SetStatus("no process to copy"); return; }
+        try
+        {
+            Clipboard.SetText(sb.ToString());
+            SetStatus("process copied to clipboard (" + sb.Length + " chars)");
+        }
+        catch (Exception e) { Log("copy ex: " + e.Message); }
+    }
+
+    static void FillProcessList()
+    {
+        if (processList == null) return;
+        processList.BeginUpdate();
+        processList.Items.Clear();
+        if (processAbility != null)
+        {
+            foreach (ProcStep s in processAbility.Process)
+            {
+                var it = new ListViewItem(s.T.ToString());
+                it.SubItems.Add(s.Kind);
+                it.SubItems.Add(s.V);
+                it.SubItems.Add(s.N);
+                it.SubItems.Add(IsUnsolvedStep(s) ? "UNSOLVED" : "staged");
+                if (IsUnsolvedStep(s)) it.ForeColor = Color.FromArgb(200, 0, 0);
+                else if (s.Kind == "dummy") it.ForeColor = Color.FromArgb(140, 60, 170);
+                else if (s.Kind == "sound") it.ForeColor = Color.FromArgb(170, 100, 0);
+                processList.Items.Add(it);
+            }
+        }
+        processList.EndUpdate();
+    }
+
+    static void DrawProcess(Graphics g)
+    {
+        g.Clear(Color.White);
+        using (Font f = new Font("Microsoft YaHei", 8.5f))
+        {
+            Ability ab = processAbility;
+            if (ab == null || ab.Process.Count == 0)
+            {
+                g.DrawString("no process defined for this ability yet", f, Brushes.Gray, 12, 12);
+                return;
+            }
+            int w = processPanel.ClientSize.Width;
+            int baseY = 140;
+            int total = runLastT;
+            if (ab != processAbility) { }
+            foreach (ProcStep s in ab.Process) if (s.T > total) total = s.T;
+            if (total < 1000) total = 1000;
+            total += 200;
+            int x0 = 30, x1 = Math.Max(x0 + 50, w - 30);
+            using (Pen axis = new Pen(Color.FromArgb(180, 180, 180)))
+                g.DrawLine(axis, x0, baseY, x1, baseY);
+            for (int t = 0; t <= total; t += 200)
+            {
+                int x = x0 + (int)((long)(x1 - x0) * t / total);
+                g.DrawLine(Pens.LightGray, x, baseY - 4, x, baseY + 4);
+                g.DrawString((t / 1000.0).ToString("0.0") + "s", f, Brushes.Gray, x - 8, baseY + 6);
+            }
+            int row = 0;
+            foreach (ProcStep s in ab.Process)
+            {
+                int x = x0 + (int)((long)(x1 - x0) * s.T / total);
+                Color c = s.Kind == "anim" ? Color.FromArgb(0, 130, 0) :
+                          s.Kind == "sound" ? Color.FromArgb(200, 110, 0) :
+                          s.Kind == "dummy" ? Color.FromArgb(140, 60, 170) :
+                          s.Kind == "remove" ? Color.FromArgb(150, 150, 150) :
+                          (s.Kind == "chain" || s.Kind == "move") ? Color.FromArgb(200, 0, 0) : Color.DimGray;
+                int y = baseY - 30 - (row % 4) * 26;
+                using (SolidBrush b = new SolidBrush(c))
+                using (Pen p = new Pen(c))
+                {
+                    g.FillEllipse(b, x - 5, baseY - 5, 10, 10);
+                    g.DrawLine(p, x, baseY - 5, x, y + 14);
+                    string label = s.T + "ms [" + s.Kind + "] " + (s.N != "" ? s.N : Short(s.V));
+                    g.DrawString(label, f, b, x + 6, y);
+                }
+                row++;
+            }
+            if (runActive)
+            {
+                long el = Environment.TickCount - runStart;
+                int x = x0 + (int)Math.Min(x1 - x0, (long)(x1 - x0) * el / total);
+                using (Pen ph = new Pen(Color.Red, 2))
+                    g.DrawLine(ph, x, 20, x, baseY + 16);
+            }
+        }
     }
 
     // an ability can match several clips (multi-phase skills); all are green
@@ -938,13 +1340,25 @@ internal static class AbilityPicker
             + (ab.NoAnim ? "   [no animation]" : "")
             + (ab.Ip ? ("   [IP] " + ab.IpNote) : "");
         noteBox.Text = review.ContainsKey(ab.Key) ? review[ab.Key].note : "";
+        if (mechBox != null) mechBox.Text = ab.Mech != "" ? ab.Mech : "(no mechanism notes yet)";
+        processAbility = ab;
+        if (processStatus != null)
+            processStatus.Text = ab.Process.Count > 0
+                ? (ab.Process.Count + " steps - double-click a row or press play (red=unsolved)")
+                : "no process defined";
+        if (processPanel != null) processPanel.Invalidate();
+        FillProcessList();
     }
 
     static void ShowTani(string path)
     {
         Ability ab = FindAbility(selectedAbilityKey);
         if (ab != null)
+        {
             lblAbility.Text = "ability: " + ab.Name + "   key=" + ab.Key + "   candidates=" + ab.Tanis.Count;
+            if (mechBox != null) mechBox.Text = ab.Mech != "" ? ab.Mech : "(no mechanism notes yet)";
+            processAbility = ab;
+        }
         lblCurrent.Text = "candidate: " + path;
         if (ab != null && ab.Wems.Count > 0)
             lblSounds.Text = "wems: " + string.Join(", ", ab.Wems.GetRange(0, Math.Min(5, ab.Wems.Count)).ToArray())

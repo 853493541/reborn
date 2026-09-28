@@ -339,6 +339,78 @@ WEM_ADD = {
     "云飞玉皇": ["315695614", "93452115", "90745220", "578379755"],
 }
 
+# playable process steps per ability (visual timeline + staged playback in the picker)
+# step = {t: ms, kind: anim|sound|dummy|remove, v: value, n: note, x/y/z: world offset}
+PROCESS = {
+    "临时飞爪": [
+        {"t": 0, "kind": "action", "v": "DoAction(0,140022)", "n": "施法者动作 140022/140023"},
+        {"t": 0, "kind": "anim", "v": "s16lxg链技能03_释放HD", "n": "投掷 (链技能03 释放)"},
+        {"t": 0, "kind": "sound", "v": "62588785", "n": "链音效"},
+        {"t": 0, "kind": "dummy", "v": r"data\source\npc_source\a021\模型\a021b.mdl", "k": "proc_a",
+         "n": "装置NPC 70025=a021b (落点8尺)", "x": 0, "y": 60, "z": 100, "s": 2.5},
+        {"t": 0, "kind": "dummy", "v": r"data\source\NPC_source\WJ_lxg交通钩爪001_001\模型\WJ_lxg交通钩爪001_001_HD.mdl", "k": "proc_b",
+         "n": "替代造型 凌雪钩爪 (远点)", "x": 0, "y": 60, "z": 170, "s": 2.5},
+        {"t": 83, "kind": "chain", "v": "s_锁链01.pss", "n": "链状表现 28032: S_rh->S_fxmid 运行时两点渲染器 (不能静态摆放)"},
+        {"t": 83, "kind": "move", "v": "DASH_TO_POINT(120)", "n": "牵引 28033: 冲向落点 (移动未表现)"},
+        {"t": 450, "kind": "sound", "v": "697798714", "n": "命中/固定音"},
+        {"t": 600, "kind": "anim", "v": "s16lxg链技能03_缓冲_HD", "n": "牵引/落地缓冲"},
+        {"t": 2700, "kind": "remove", "v": "proc_a", "n": "装置消失 (160帧寿命)"},
+        {"t": 2710, "kind": "remove", "v": "proc_b", "n": "清理"},
+    ],
+}
+
+# full ability mechanism write-ups (shown in the Mechanism tab of the picker)
+MECH = {
+    "临时飞爪": (
+        "临时飞爪 (道具技能 28031, 地面点, 最大 40 尺, CD 30s, 非战斗返还部分CD)\n"
+        "1) 在落点生成隐形装置 NPC (模板 67816, 寿命 160 帧), SetModelID(70025)=爪锚; buff 12363 隐藏+无敌, 12343 悬停\n"
+        "2) 施法者 DoAction(0, 140022/140023)\n"
+        "3) 5 帧后 OnTimer: CastSkill(28032 链状表现) + CastSkillXYZ(28033 道具_孤风飒踏冲刺)\n"
+        "4) 链条: skill_chain 28032 = 起点 S_rh(右手) -> 终点 S_fxmid, 特效 s_锁链01.pss\n"
+        "   贴图: t_铁链02(链环) + s_链状_闪电01(光效) + l_流光01(流光); 已提取 bin64\\ability_picker\\chains\\\n"
+        "5) 牵引: 28033 = DASH_TO_POINT(120,0) 把玩家拉向落点\n"
+        "6) 动画: F1s16lxg链技能03_释放HD (孤风飒踏系); 落地 F1s16lxg链技能03_缓冲_HD\n"
+        "7) 声音: wem 62588785 = s16lxglianjineng01_HD.wav (凌雪阁链音效)\n"
+        "已解(引擎代码): 爪锚模型 70025 = data\\source\\npc_source\\a021\\模型\\a021b.mdl (GetRepresentModelPath)\n"
+        "技能层链条 = KRLSfx 实例 + 两点绑定 (从二进制解析):\n"
+        "  - ApplyBindChainSfx -> KRLSfx::Init(this, pcszFile=FilePath(s_锁链01.pss)) 加载资源 -> handle@sfx+0x98, path@+0x20\n"
+        "  - 绑定子对象 @sfx+0x48: 起点=施法者 S_rh, 终点=装置NPC S_fxmid; 偏移vec3@+0x1b4..1bc, scale@+0x1c8, Millisecond(float)@+0x1e0\n"
+        "  - _CreatePublicChain: 按 ID 解析 pSrcCharacter/pDstCharacter, nLinkType 1..4 (rpclt_Total=5), 创建后每帧 UpdateSkillChain 由插槽重绑\n"
+        "  - 触发: 服务器包 S2C_POINT_CHAIN_SKILL_EFFECT -> OnCharacterSkillChainDisplay\n"
+        "  => 实现配方: 用 FilePath 建 SFX; 双点绑定到 S_rh 与装置 S_fxmid; 设 Millisecond=1000/旋转/偏移; 每帧从插槽更新\n"
+        "动画层链条 (已忠实): tani 自带 l_凌雪阁出链带01/出链02/链技能03_3, 播放 tanis 时引擎自动触发\n"
+        "未解: DoAction(0,140022/140023) 不在客户端动画表内 (服务器侧动作触发); DASH_TO_POINT 牵引移动 (引擎无 actor 位移 API)"
+    ),
+    "乘黄之威": (
+        "乘黄之威 (道具 36500)\n"
+        "1) 道具脚本 = DASH_FORWARD(8,110) 向前跳跃; 玩家自身无专属动画(通用冲刺)\n"
+        "2) buff 27453 冲刺维持 + 26952 游雾乘云检测 (脚本头来自 万灵山庄_游雾乘云跳跃)\n"
+        "3) 乘黄宠物 A393: 召唤 A393_start01_召唤_乘黄01_悟 (召唤传送门+召唤跳 PSS, a393_birth01b 音); 咆哮 a393_sk03 (c_乘黄吼_01.pss + a393_sk03.wav); 冲刺 a393_rush01_冲刺_悟\n"
+        "4) 音效: 382642492 骑乘断魂刺(手动) + 457495140 a393_birth01b; A393 全套 15 音已抓\n"
+        "5) 玩家配对动作: F1HA393_start01.tani"
+    ),
+    "盾立": (
+        "盾立 (道具 27871 / 本体 13067)\n"
+        "1) 脚本仅 EXECUTE_SCRIPT (SKILL_MOVE 104 注释掉) -> 玩家无骨骼动画\n"
+        "2) 表现都在 buff: 8303 盾立效果 -> C_苍云盾挡02.pss; 20230 -> C_苍云盾墙01.pss; 20231 释放 Sfx -> 事件 CangYun/tex/dunlibuff -> wem 916951452 dunlibuff01\n"
+        "3) 被击音 wem 697798714 zhandou_jineng_beiji_behit_dunli\n"
+        "4) 唯一同名动画在 BOSS 长孙忘情 P081: sk02a 吟唱 / sk02b 释放(c_苍云盾立01) / sk02c,d 状态\n"
+        "   已存 bin64\\ability_picker\\npc_clips\\P081-dunli\\"
+    ),
+    "琴音共鸣": (
+        "琴音共鸣 (道具 27857)\n"
+        "1) 脚本仅 STEAL_BUFF x2 (偷取目标 2 个增益); 无动画 无音效 无特效 (评审: 无需声音)\n"
+        "2) 需求 buff 21117 相知切剑持续\n"
+        "3) 全部 9248 个 f1 tani 无任何 共鸣/琴音共鸣 tag -> 判定无动画"
+    ),
+    "如意法": (
+        "如意法 (道具 32247)\n"
+        "1) 脚本: EXECUTE_SCRIPT + DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE x4 (清除移动限制组) + BindBuff 4421 (明教_夜叉心_免控)\n"
+        "2) 动画 = F1smj10双刀buff04_清净心01 (免控姿态, m_明教清净心01.pss)\n"
+        "3) 音效 wem 75054615 = riyuejiaohui.wav"
+    ),
+}
+
 # candidate-list hygiene (substring filters on tani filenames)
 EXCLUDE = {
     "春泥护花": ["太阴指"],
@@ -382,6 +454,8 @@ def apply_overrides(all_entries: list) -> None:
         e["noAnim"] = name in NOANIM
         e["ip"] = name in IP
         e["ipNote"] = IP.get(name, "")
+        e["mech"] = MECH.get(name, "")
+        e["process"] = PROCESS.get(name, [])
 
 F1_DIR = r"data\source\player\f1\动作"
 TANI_RT = r"C:\SeasunGame\MovieEditor\ResourcePack\Tani.rt"

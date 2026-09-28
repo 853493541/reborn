@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T20:01:40",
+ "generatedAt": "2026-09-28T15:06:05",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 300,
@@ -37,7 +37,86 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "临时飞爪 (道具技能 28031, 地面点, 最大 40 尺, CD 30s, 非战斗返还部分CD)\n1) 在落点生成隐形装置 NPC (模板 67816, 寿命 160 帧), SetModelID(70025)=爪锚; buff 12363 隐藏+无敌, 12343 悬停\n2) 施法者 DoAction(0, 140022/140023)\n3) 5 帧后 OnTimer: CastSkill(28032 链状表现) + CastSkillXYZ(28033 道具_孤风飒踏冲刺)\n4) 链条: skill_chain 28032 = 起点 S_rh(右手) -> 终点 S_fxmid, 特效 s_锁链01.pss\n   贴图: t_铁链02(链环) + s_链状_闪电01(光效) + l_流光01(流光); 已提取 bin64\\ability_picker\\chains\\\n5) 牵引: 28033 = DASH_TO_POINT(120,0) 把玩家拉向落点\n6) 动画: F1s16lxg链技能03_释放HD (孤风飒踏系); 落地 F1s16lxg链技能03_缓冲_HD\n7) 声音: wem 62588785 = s16lxglianjineng01_HD.wav (凌雪阁链音效)\n已解(引擎代码): 爪锚模型 70025 = data\\source\\npc_source\\a021\\模型\\a021b.mdl (GetRepresentModelPath)\n技能层链条 = KRLSfx 实例 + 两点绑定 (从二进制解析):\n  - ApplyBindChainSfx -> KRLSfx::Init(this, pcszFile=FilePath(s_锁链01.pss)) 加载资源 -> handle@sfx+0x98, path@+0x20\n  - 绑定子对象 @sfx+0x48: 起点=施法者 S_rh, 终点=装置NPC S_fxmid; 偏移vec3@+0x1b4..1bc, scale@+0x1c8, Millisecond(float)@+0x1e0\n  - _CreatePublicChain: 按 ID 解析 pSrcCharacter/pDstCharacter, nLinkType 1..4 (rpclt_Total=5), 创建后每帧 UpdateSkillChain 由插槽重绑\n  - 触发: 服务器包 S2C_POINT_CHAIN_SKILL_EFFECT -> OnCharacterSkillChainDisplay\n  => 实现配方: 用 FilePath 建 SFX; 双点绑定到 S_rh 与装置 S_fxmid; 设 Millisecond=1000/旋转/偏移; 每帧从插槽更新\n动画层链条 (已忠实): tani 自带 l_凌雪阁出链带01/出链02/链技能03_3, 播放 tanis 时引擎自动触发\n未解: DoAction(0,140022/140023) 不在客户端动画表内 (服务器侧动作触发); DASH_TO_POINT 牵引移动 (引擎无 actor 位移 API)",
+   "process": [
+    {
+     "t": 0,
+     "kind": "action",
+     "v": "DoAction(0,140022)",
+     "n": "施法者动作 140022/140023"
+    },
+    {
+     "t": 0,
+     "kind": "anim",
+     "v": "s16lxg链技能03_释放HD",
+     "n": "投掷 (链技能03 释放)"
+    },
+    {
+     "t": 0,
+     "kind": "sound",
+     "v": "62588785",
+     "n": "链音效"
+    },
+    {
+     "t": 0,
+     "kind": "dummy",
+     "v": "data\\source\\npc_source\\a021\\模型\\a021b.mdl",
+     "k": "proc_a",
+     "n": "装置NPC 70025=a021b (落点8尺)",
+     "x": 0,
+     "y": 60,
+     "z": 100,
+     "s": 2.5
+    },
+    {
+     "t": 0,
+     "kind": "dummy",
+     "v": "data\\source\\NPC_source\\WJ_lxg交通钩爪001_001\\模型\\WJ_lxg交通钩爪001_001_HD.mdl",
+     "k": "proc_b",
+     "n": "替代造型 凌雪钩爪 (远点)",
+     "x": 0,
+     "y": 60,
+     "z": 170,
+     "s": 2.5
+    },
+    {
+     "t": 83,
+     "kind": "chain",
+     "v": "s_锁链01.pss",
+     "n": "链状表现 28032: S_rh->S_fxmid 运行时两点渲染器 (不能静态摆放)"
+    },
+    {
+     "t": 83,
+     "kind": "move",
+     "v": "DASH_TO_POINT(120)",
+     "n": "牵引 28033: 冲向落点 (移动未表现)"
+    },
+    {
+     "t": 450,
+     "kind": "sound",
+     "v": "697798714",
+     "n": "命中/固定音"
+    },
+    {
+     "t": 600,
+     "kind": "anim",
+     "v": "s16lxg链技能03_缓冲_HD",
+     "n": "牵引/落地缓冲"
+    },
+    {
+     "t": 2700,
+     "kind": "remove",
+     "v": "proc_a",
+     "n": "装置消失 (160帧寿命)"
+    },
+    {
+     "t": 2710,
+     "kind": "remove",
+     "v": "proc_b",
+     "n": "清理"
+    }
+   ]
   },
   {
    "key": "伪传:28718:buff",
@@ -74,7 +153,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "断魂刺 match wrong; player beat = generic leap, then pet A393 (summon/roar) + sounds needed"
+   "ipNote": "断魂刺 match wrong; player beat = generic leap, then pet A393 (summon/roar) + sounds needed",
+   "mech": "乘黄之威 (道具 36500)\n1) 道具脚本 = DASH_FORWARD(8,110) 向前跳跃; 玩家自身无专属动画(通用冲刺)\n2) buff 27453 冲刺维持 + 26952 游雾乘云检测 (脚本头来自 万灵山庄_游雾乘云跳跃)\n3) 乘黄宠物 A393: 召唤 A393_start01_召唤_乘黄01_悟 (召唤传送门+召唤跳 PSS, a393_birth01b 音); 咆哮 a393_sk03 (c_乘黄吼_01.pss + a393_sk03.wav); 冲刺 a393_rush01_冲刺_悟\n4) 音效: 382642492 骑乘断魂刺(手动) + 457495140 a393_birth01b; A393 全套 15 音已抓\n5) 玩家配对动作: F1HA393_start01.tani",
+   "process": []
   },
   {
    "key": "伪传:28651:buff",
@@ -110,7 +191,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28663:buff",
@@ -145,7 +228,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "needs more improvement (parked by user)"
+   "ipNote": "needs more improvement (parked by user)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28664:buff",
@@ -182,7 +267,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28652:buff",
@@ -215,7 +302,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28647:buff",
@@ -250,7 +339,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28711:buff",
@@ -273,7 +364,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28713:buff",
@@ -296,7 +389,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28685:buff",
@@ -333,7 +428,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28694:buff",
@@ -369,7 +466,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28656:buff",
@@ -402,7 +501,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28660:buff",
@@ -434,7 +535,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28682:buff",
@@ -468,7 +571,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28646:buff",
@@ -503,7 +608,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28648:buff",
@@ -538,7 +645,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28696:buff",
@@ -576,7 +685,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28708:buff",
@@ -677,7 +788,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "two different entries, actually the same"
+   "ipNote": "two different entries, actually the same",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28715:buff",
@@ -708,7 +821,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "如意法 (道具 32247)\n1) 脚本: EXECUTE_SCRIPT + DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE x4 (清除移动限制组) + BindBuff 4421 (明教_夜叉心_免控)\n2) 动画 = F1smj10双刀buff04_清净心01 (免控姿态, m_明教清净心01.pss)\n3) 音效 wem 75054615 = riyuejiaohui.wav",
+   "process": []
   },
   {
    "key": "伪传:28673:buff",
@@ -743,7 +858,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28680:buff",
@@ -778,7 +895,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28686:buff",
@@ -815,7 +934,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28675:buff",
@@ -847,7 +968,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28661:buff",
@@ -945,7 +1068,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28710:buff",
@@ -1043,7 +1168,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28719:buff",
@@ -1079,7 +1206,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28712:buff",
@@ -1116,7 +1245,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "it is a phase-active animation, not the active animation"
+   "ipNote": "it is a phase-active animation, not the active animation",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28692:buff",
@@ -1152,7 +1283,9 @@
    ],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing 扫击 phase (18b 扫击释放 added as extra match)"
+   "ipNote": "missing 扫击 phase (18b 扫击释放 added as extra match)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28670:buff",
@@ -1183,7 +1316,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28689:buff",
@@ -1217,7 +1352,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28643:buff",
@@ -1250,7 +1387,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28700:buff",
@@ -1284,7 +1423,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28642:buff",
@@ -1386,7 +1527,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28672:buff",
@@ -1421,7 +1564,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28677:buff",
@@ -1458,7 +1603,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "use normal version, not 悟 (now F1s14bd双刀技能08_01)"
+   "ipNote": "use normal version, not 悟 (now F1s14bd双刀技能08_01)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28683:buff",
@@ -1489,7 +1636,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28681:buff",
@@ -1531,7 +1680,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28702:buff",
@@ -1564,7 +1715,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing the big ghost appearing behind the back when active (animation itself OK)"
+   "ipNote": "missing the big ghost appearing behind the back when active (animation itself OK)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28645:buff",
@@ -1597,7 +1750,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28644:buff",
@@ -1631,7 +1786,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28669:buff",
@@ -1670,7 +1827,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28690:buff",
@@ -1705,7 +1864,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28707:buff",
@@ -1806,7 +1967,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28655:buff",
@@ -1845,7 +2008,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28676:buff",
@@ -1884,7 +2049,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28716:buff",
@@ -1921,7 +2088,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28662:buff",
@@ -1954,7 +2123,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "maybe wrong version (HD vs 悟); animation correct"
+   "ipNote": "maybe wrong version (HD vs 悟); animation correct",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28717:buff",
@@ -1988,7 +2159,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28668:buff",
@@ -2023,7 +2196,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28695:buff",
@@ -2122,7 +2297,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28674:buff",
@@ -2147,7 +2324,9 @@
    "matchedExtra": [],
    "noAnim": true,
    "ip": true,
-   "ipNote": "wrong; marked no-animation"
+   "ipNote": "wrong; marked no-animation",
+   "mech": "琴音共鸣 (道具 27857)\n1) 脚本仅 STEAL_BUFF x2 (偷取目标 2 个增益); 无动画 无音效 无特效 (评审: 无需声音)\n2) 需求 buff 21117 相知切剑持续\n3) 全部 9248 个 f1 tani 无任何 共鸣/琴音共鸣 tag -> 判定无动画",
+   "process": []
   },
   {
    "key": "伪传:28654:buff",
@@ -2182,7 +2361,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28649:buff",
@@ -2217,7 +2398,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28698:buff",
@@ -2258,7 +2441,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28671:buff",
@@ -2299,7 +2484,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "no player animation in data; wrong sound removed; boss P081 sk02b is the only 盾立 anim"
+   "ipNote": "no player animation in data; wrong sound removed; boss P081 sk02b is the only 盾立 anim",
+   "mech": "盾立 (道具 27871 / 本体 13067)\n1) 脚本仅 EXECUTE_SCRIPT (SKILL_MOVE 104 注释掉) -> 玩家无骨骼动画\n2) 表现都在 buff: 8303 盾立效果 -> C_苍云盾挡02.pss; 20230 -> C_苍云盾墙01.pss; 20231 释放 Sfx -> 事件 CangYun/tex/dunlibuff -> wem 916951452 dunlibuff01\n3) 被击音 wem 697798714 zhandou_jineng_beiji_behit_dunli\n4) 唯一同名动画在 BOSS 长孙忘情 P081: sk02a 吟唱 / sk02b 释放(c_苍云盾立01) / sk02c,d 状态\n   已存 bin64\\ability_picker\\npc_clips\\P081-dunli\\",
+   "process": []
   },
   {
    "key": "伪传:28693:buff",
@@ -2333,7 +2520,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "using wrong one (15a vs 15b)"
+   "ipNote": "using wrong one (15a vs 15b)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28667:buff",
@@ -2365,7 +2554,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28650:buff",
@@ -2465,7 +2656,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28709:buff",
@@ -2497,7 +2690,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28705:buff",
@@ -2533,7 +2728,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28678:buff",
@@ -2564,7 +2761,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28641:buff",
@@ -2674,7 +2873,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28706:buff",
@@ -2705,7 +2906,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28659:buff",
@@ -2801,7 +3004,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28658:buff",
@@ -2837,7 +3042,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong one"
+   "ipNote": "wrong one",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28679:buff",
@@ -2877,7 +3084,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong (03a vs 03b)"
+   "ipNote": "wrong (03a vs 03b)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28691:buff",
@@ -2916,7 +3125,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "maybe wrong; look for more options"
+   "ipNote": "maybe wrong; look for more options",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28688:buff",
@@ -2950,7 +3161,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28714:buff",
@@ -2984,7 +3197,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28704:buff",
@@ -3020,7 +3235,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28687:buff",
@@ -3053,7 +3270,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28653:buff",
@@ -3088,7 +3307,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28665:buff",
@@ -3124,7 +3345,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28666:buff",
@@ -3161,7 +3384,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28701:buff",
@@ -3195,7 +3420,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28699:buff",
@@ -3236,7 +3463,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong but related"
+   "ipNote": "wrong but related",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28703:buff",
@@ -3275,7 +3504,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28657:buff",
@@ -3308,7 +3539,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "伪传:28697:buff",
@@ -3399,7 +3632,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "animation correct; sound wrong"
+   "ipNote": "animation correct; sound wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "dig:洞烛机微",
@@ -3426,7 +3661,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "dig:魂压怒涛",
@@ -3453,7 +3690,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65146:skill",
@@ -3492,7 +3731,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28612:buff",
@@ -3529,7 +3770,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65061:skill",
@@ -3566,7 +3809,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28570:buff",
@@ -3600,7 +3845,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51324:buff",
@@ -3623,7 +3870,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65145:skill",
@@ -3658,7 +3907,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28611:buff",
@@ -3690,7 +3941,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65026:skill",
@@ -3730,7 +3983,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28555:buff",
@@ -3767,7 +4022,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51857:buff",
@@ -3790,7 +4047,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51856:buff",
@@ -3813,7 +4072,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51858:buff",
@@ -3836,7 +4097,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65059:skill",
@@ -3879,7 +4142,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "animation maybe wrong; sound 100% wrong"
+   "ipNote": "animation maybe wrong; sound 100% wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28568:buff",
@@ -3918,7 +4183,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "animation maybe wrong; sound 100% wrong"
+   "ipNote": "animation maybe wrong; sound 100% wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65076:skill",
@@ -3957,7 +4224,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing cast-success (sound)"
+   "ipNote": "missing cast-success (sound)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28577:buff",
@@ -3990,7 +4259,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing cast-success (sound)"
+   "ipNote": "missing cast-success (sound)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65077:skill",
@@ -4013,7 +4284,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28998:buff",
@@ -4036,7 +4309,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65149:skill",
@@ -4074,7 +4349,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28613:buff",
@@ -4109,7 +4386,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65101:skill",
@@ -4140,7 +4419,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28589:buff",
@@ -4163,7 +4444,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65667:skill",
@@ -4260,7 +4543,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28635:buff",
@@ -4355,7 +4640,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65150:skill",
@@ -4390,7 +4677,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28614:buff",
@@ -4423,7 +4712,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65144:skill",
@@ -4460,7 +4751,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28610:buff",
@@ -4495,7 +4788,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51359:buff",
@@ -4518,7 +4813,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65113:skill",
@@ -4549,7 +4846,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28596:buff",
@@ -4572,7 +4871,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65111:skill",
@@ -4595,7 +4896,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64995:skill",
@@ -4632,7 +4935,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28551:buff",
@@ -4667,7 +4972,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51282:buff",
@@ -4702,7 +5009,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65127:skill",
@@ -4741,7 +5050,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong; 剑冲阴阳 is a different ability"
+   "ipNote": "wrong; 剑冲阴阳 is a different ability",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28604:buff",
@@ -4778,7 +5089,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong; 剑冲阴阳 is a different ability"
+   "ipNote": "wrong; 剑冲阴阳 is a different ability",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65087:skill",
@@ -4817,7 +5130,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong; it is the moon (月) version, current one is the sun (日) version"
+   "ipNote": "wrong; it is the moon (月) version, current one is the sun (日) version",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28580:buff",
@@ -4854,7 +5169,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong; it is the moon (月) version, current one is the sun (日) version"
+   "ipNote": "wrong; it is the moon (月) version, current one is the sun (日) version",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65138:skill",
@@ -4887,7 +5204,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28607:buff",
@@ -4910,7 +5229,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37683:skill",
@@ -4937,7 +5258,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65065:skill",
@@ -4970,7 +5293,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28572:buff",
@@ -4996,7 +5321,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65155:skill",
@@ -5031,7 +5358,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28617:buff",
@@ -5064,7 +5393,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65028:skill",
@@ -5106,7 +5437,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28556:buff",
@@ -5146,7 +5479,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65053:skill",
@@ -5184,7 +5519,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "good, but relist all 化血镖 variants (the many version)"
+   "ipNote": "good, but relist all 化血镖 variants (the many version)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51316:buff",
@@ -5220,7 +5557,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "good, but relist all 化血镖 variants (the many version)"
+   "ipNote": "good, but relist all 化血镖 variants (the many version)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28565:buff",
@@ -5256,7 +5595,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "good, but relist all 化血镖 variants (the many version)"
+   "ipNote": "good, but relist all 化血镖 variants (the many version)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65254:skill",
@@ -5358,7 +5699,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing; it is only an active animation"
+   "ipNote": "missing; it is only an active animation",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28634:buff",
@@ -5458,7 +5801,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing; it is only an active animation"
+   "ipNote": "missing; it is only an active animation",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37686:skill",
@@ -5485,7 +5830,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65140:skill",
@@ -5529,7 +5876,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28608:buff",
@@ -5568,7 +5917,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65075:skill",
@@ -5609,7 +5960,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "seems wrong"
+   "ipNote": "seems wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28576:buff",
@@ -5648,7 +6001,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "seems wrong"
+   "ipNote": "seems wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65110:skill",
@@ -5671,7 +6026,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64993:skill",
@@ -5706,7 +6063,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51280:buff",
@@ -5739,7 +6098,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28549:buff",
@@ -5772,7 +6133,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65250:skill",
@@ -5809,7 +6172,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51468:buff",
@@ -5844,7 +6209,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28632:buff",
@@ -5879,7 +6246,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64889:skill",
@@ -5902,7 +6271,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37687:skill",
@@ -5929,7 +6300,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65092:skill",
@@ -5960,7 +6333,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28508:buff",
@@ -5983,7 +6358,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28583:buff",
@@ -6006,7 +6383,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65154:skill",
@@ -6045,7 +6424,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28616:buff",
@@ -6082,7 +6463,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64903:skill",
@@ -6105,7 +6488,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64893:skill",
@@ -6128,7 +6513,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65103:skill",
@@ -6172,7 +6559,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28590:buff",
@@ -6214,7 +6603,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28541:buff",
@@ -6237,7 +6628,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65153:skill",
@@ -6272,7 +6665,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28615:buff",
@@ -6305,7 +6700,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65160:skill",
@@ -6340,7 +6737,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28621:buff",
@@ -6373,7 +6772,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65062:skill",
@@ -6404,7 +6805,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28571:buff",
@@ -6429,7 +6832,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65024:skill",
@@ -6464,7 +6869,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28554:buff",
@@ -6497,7 +6904,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51293:buff",
@@ -6520,7 +6929,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65242:skill",
@@ -6555,7 +6966,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28629:buff",
@@ -6588,7 +7001,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65048:skill",
@@ -6691,7 +7106,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "two different entries, actually the same"
+   "ipNote": "two different entries, actually the same",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51309:buff",
@@ -6792,7 +7209,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "two different entries, actually the same"
+   "ipNote": "two different entries, actually the same",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28562:buff",
@@ -6893,7 +7312,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "two different entries, actually the same"
+   "ipNote": "two different entries, actually the same",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64892:skill",
@@ -6916,7 +7337,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65163:skill",
@@ -6953,7 +7376,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28624:buff",
@@ -6988,7 +7413,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65054:skill",
@@ -7088,7 +7515,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51317:buff",
@@ -7189,7 +7618,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28566:buff",
@@ -7287,7 +7718,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51319:buff",
@@ -7310,7 +7743,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65055:skill",
@@ -7333,7 +7768,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65056:skill",
@@ -7356,7 +7793,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51318:buff",
@@ -7379,7 +7818,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51278:buff",
@@ -7402,7 +7843,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64901:skill",
@@ -7439,7 +7882,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28545:buff",
@@ -7474,7 +7919,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51360:buff",
@@ -7509,7 +7956,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65108:skill",
@@ -7546,7 +7995,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28594:buff",
@@ -7581,7 +8032,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65159:skill",
@@ -7616,7 +8069,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28620:buff",
@@ -7649,7 +8104,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65083:skill",
@@ -7688,7 +8145,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28579:buff",
@@ -7725,7 +8184,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:39493:skill",
@@ -7760,7 +8221,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29852:buff",
@@ -7789,7 +8252,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:39492:skill",
@@ -7827,7 +8292,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "using wrong one"
+   "ipNote": "using wrong one",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29851:buff",
@@ -7859,7 +8326,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "using wrong one"
+   "ipNote": "using wrong one",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37681:skill",
@@ -7887,7 +8356,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:38381:skill",
@@ -7910,7 +8381,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:41283:skill",
@@ -7942,7 +8415,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:41281:skill",
@@ -7974,7 +8449,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65066:skill",
@@ -7997,7 +8474,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65067:skill",
@@ -8020,7 +8499,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64900:skill",
@@ -8052,7 +8533,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51277:buff",
@@ -8077,7 +8560,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28544:buff",
@@ -8102,7 +8587,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64991:skill",
@@ -8135,7 +8622,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28547:buff",
@@ -8166,7 +8655,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65100:skill",
@@ -8270,7 +8761,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28546:buff",
@@ -8372,7 +8865,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28588:buff",
@@ -8474,7 +8969,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64899:skill",
@@ -8576,7 +9073,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28543:buff",
@@ -8676,7 +9175,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65098:skill",
@@ -8709,7 +9210,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28587:buff",
@@ -8740,7 +9243,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65119:skill",
@@ -8771,7 +9276,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28599:buff",
@@ -8796,7 +9303,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51365:buff",
@@ -8819,7 +9328,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65125:skill",
@@ -8854,7 +9365,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28603:buff",
@@ -8889,7 +9402,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51369:buff",
@@ -8912,7 +9427,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65060:skill",
@@ -8949,7 +9466,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28569:buff",
@@ -8983,7 +9502,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65104:skill",
@@ -9016,7 +9537,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28591:buff",
@@ -9046,7 +9569,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51356:buff",
@@ -9069,7 +9594,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65107:skill",
@@ -9104,7 +9631,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51358:buff",
@@ -9137,7 +9666,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28593:buff",
@@ -9170,7 +9701,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65105:skill",
@@ -9207,7 +9740,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28592:buff",
@@ -9241,7 +9776,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51357:buff",
@@ -9275,7 +9812,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "candidate list contained 太阴指 (removed, not needed)"
+   "ipNote": "candidate list contained 太阴指 (removed, not needed)",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64891:skill",
@@ -9298,7 +9837,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65243:skill",
@@ -9336,7 +9877,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28630:buff",
@@ -9372,7 +9915,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51466:buff",
@@ -9395,7 +9940,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65088:skill",
@@ -9418,7 +9965,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65050:skill",
@@ -9521,7 +10070,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51311:buff",
@@ -9622,7 +10173,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28564:buff",
@@ -9723,7 +10276,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65671:skill",
@@ -9823,7 +10378,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28639:buff",
@@ -9921,7 +10478,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65678:skill",
@@ -9944,7 +10503,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65677:skill",
@@ -9967,7 +10528,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51848:buff",
@@ -9990,7 +10553,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64898:skill",
@@ -10023,7 +10588,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28542:buff",
@@ -10053,7 +10620,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64897:skill",
@@ -10076,7 +10645,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65116:skill",
@@ -10117,7 +10688,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28597:buff",
@@ -10156,7 +10729,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65117:skill",
@@ -10179,7 +10754,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65244:skill",
@@ -10214,7 +10791,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "maybe wrong version (HD vs 悟); animation correct"
+   "ipNote": "maybe wrong version (HD vs 悟); animation correct",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28631:buff",
@@ -10247,7 +10826,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "maybe wrong version (HD vs 悟); animation correct"
+   "ipNote": "maybe wrong version (HD vs 悟); animation correct",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51467:buff",
@@ -10270,7 +10851,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65120:skill",
@@ -10310,7 +10893,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28600:buff",
@@ -10348,7 +10933,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51366:buff",
@@ -10371,7 +10958,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51367:buff",
@@ -10394,7 +10983,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65670:skill",
@@ -10428,7 +11019,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28638:buff",
@@ -10460,7 +11053,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65676:skill",
@@ -10483,7 +11078,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65038:skill",
@@ -10520,7 +11117,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28559:buff",
@@ -10555,7 +11154,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65039:skill",
@@ -10578,7 +11179,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65040:skill",
@@ -10601,7 +11204,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65089:skill",
@@ -10641,7 +11246,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28581:buff",
@@ -10678,7 +11285,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65668:skill",
@@ -10708,7 +11317,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51847:buff",
@@ -10740,7 +11351,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28636:buff",
@@ -10768,7 +11381,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65674:skill",
@@ -10791,7 +11406,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65058:skill",
@@ -10828,7 +11445,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28567:buff",
@@ -10863,7 +11482,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37684:skill",
@@ -10890,7 +11511,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65142:skill",
@@ -10927,7 +11550,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28609:buff",
@@ -10962,7 +11587,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65095:skill",
@@ -11002,7 +11629,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "maybe wrong"
+   "ipNote": "maybe wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28584:buff",
@@ -11037,7 +11666,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "maybe wrong"
+   "ipNote": "maybe wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65240:skill",
@@ -11093,7 +11724,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "completely wrong"
+   "ipNote": "completely wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28627:buff",
@@ -11134,7 +11767,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "completely wrong"
+   "ipNote": "completely wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65118:skill",
@@ -11171,7 +11806,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28598:buff",
@@ -11206,7 +11843,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51362:buff",
@@ -11229,7 +11868,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65068:skill",
@@ -11332,7 +11973,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28573:buff",
@@ -11430,7 +12073,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51328:buff",
@@ -11528,7 +12173,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65069:skill",
@@ -11551,7 +12198,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65070:skill",
@@ -11574,7 +12223,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51329:buff",
@@ -11597,7 +12248,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65123:skill",
@@ -11630,7 +12283,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28601:buff",
@@ -11663,7 +12318,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51368:buff",
@@ -11686,7 +12343,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65136:skill",
@@ -11725,7 +12384,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28606:buff",
@@ -11757,7 +12418,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64996:skill",
@@ -11788,7 +12451,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28552:buff",
@@ -11813,7 +12478,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65133:skill",
@@ -11851,7 +12518,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28605:buff",
@@ -11884,7 +12553,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51364:buff",
@@ -11907,7 +12578,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65022:skill",
@@ -12013,7 +12686,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28553:buff",
@@ -12114,7 +12789,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64890:skill",
@@ -12137,7 +12814,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65074:skill",
@@ -12179,7 +12858,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28575:buff",
@@ -12219,7 +12900,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65672:skill",
@@ -12253,7 +12936,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28640:buff",
@@ -12285,7 +12970,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51849:buff",
@@ -12308,7 +12995,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65157:skill",
@@ -12342,7 +13031,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29020:buff",
@@ -12374,7 +13065,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28619:buff",
@@ -12406,7 +13099,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29897:buff",
@@ -12429,7 +13124,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51354:buff",
@@ -12452,7 +13149,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65109:skill",
@@ -12487,7 +13186,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28595:buff",
@@ -12520,7 +13221,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29158:buff",
@@ -12618,7 +13321,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65046:skill",
@@ -12653,7 +13358,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28560:buff",
@@ -12686,7 +13393,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29150:buff",
@@ -12709,7 +13418,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65162:skill",
@@ -12744,7 +13455,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28623:buff",
@@ -12777,7 +13490,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64895:skill",
@@ -12800,7 +13515,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65047:skill",
@@ -12835,7 +13552,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28561:buff",
@@ -12868,7 +13587,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29149:buff",
@@ -12891,7 +13612,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65124:skill",
@@ -12914,7 +13637,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51371:buff",
@@ -12937,7 +13662,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28602:buff",
@@ -12960,7 +13687,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51355:buff",
@@ -12983,7 +13712,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64896:skill",
@@ -13006,7 +13737,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37682:skill",
@@ -13033,7 +13766,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:38382:skill",
@@ -13056,7 +13791,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:41284:skill",
@@ -13088,7 +13825,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:41282:skill",
@@ -13120,7 +13859,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65166:skill",
@@ -13143,7 +13884,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37685:skill",
@@ -13170,7 +13913,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65049:skill",
@@ -13272,7 +14017,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51310:buff",
@@ -13372,7 +14119,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28563:buff",
@@ -13472,7 +14221,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65071:skill",
@@ -13511,7 +14262,9 @@
    ],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing channel phase"
+   "ipNote": "missing channel phase",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28574:buff",
@@ -13548,7 +14301,9 @@
    ],
    "noAnim": false,
    "ip": true,
-   "ipNote": "missing channel phase"
+   "ipNote": "missing channel phase",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65072:skill",
@@ -13571,7 +14326,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65112:skill",
@@ -13594,7 +14351,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64994:skill",
@@ -13631,7 +14390,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51281:buff",
@@ -13666,7 +14427,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28550:buff",
@@ -13701,7 +14464,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65090:skill",
@@ -13741,7 +14506,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28582:buff",
@@ -13778,7 +14545,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65167:skill",
@@ -13815,7 +14584,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28626:buff",
@@ -13850,7 +14621,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64992:skill",
@@ -13899,7 +14672,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28548:buff",
@@ -13942,7 +14717,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:64894:skill",
@@ -13965,7 +14742,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65063:skill",
@@ -13988,7 +14767,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65156:skill",
@@ -14023,7 +14804,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28618:buff",
@@ -14056,7 +14839,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65165:skill",
@@ -14091,7 +14876,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28625:buff",
@@ -14124,7 +14911,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:39483:skill",
@@ -14155,7 +14944,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29850:buff",
@@ -14178,7 +14969,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29898:buff",
@@ -14201,7 +14994,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65097:skill",
@@ -14239,7 +15034,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28586:buff",
@@ -14275,7 +15072,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:39494:skill",
@@ -14311,7 +15110,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:29853:buff",
@@ -14341,7 +15142,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": true,
-   "ipNote": "wrong"
+   "ipNote": "wrong",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65251:skill",
@@ -14374,7 +15177,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28633:buff",
@@ -14405,7 +15210,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65096:skill",
@@ -14440,7 +15247,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28585:buff",
@@ -14473,7 +15282,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:37746:skill",
@@ -14508,7 +15319,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65241:skill",
@@ -14540,7 +15353,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51464:buff",
@@ -14570,7 +15385,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28628:buff",
@@ -14600,7 +15417,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65161:skill",
@@ -14635,7 +15454,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28622:buff",
@@ -14668,7 +15489,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65078:skill",
@@ -14706,7 +15529,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28578:buff",
@@ -14742,7 +15567,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65036:skill",
@@ -14781,7 +15608,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28558:buff",
@@ -14818,7 +15647,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:51300:buff",
@@ -14841,7 +15672,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65669:skill",
@@ -14873,7 +15706,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28637:buff",
@@ -14902,7 +15737,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65675:skill",
@@ -14925,7 +15762,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:65029:skill",
@@ -14962,7 +15801,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   },
   {
    "key": "绝境:28557:buff",
@@ -14997,7 +15838,9 @@
    "matchedExtra": [],
    "noAnim": false,
    "ip": false,
-   "ipNote": ""
+   "ipNote": "",
+   "mech": "",
+   "process": []
   }
  ]
 }
