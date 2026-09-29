@@ -358,18 +358,22 @@ internal static class RebornClient
                     if (!engineInitInFlight) break;
                     foreach (System.Diagnostics.Process p1 in System.Diagnostics.Process.GetProcesses())
                     {
-                        string n1;
-                        try { n1 = p1.ProcessName.ToLowerInvariant(); } catch { continue; }
-                        if (p1.Id == meInit || known.Contains(p1.Id)) continue;
-                        foreach (string pre in engPrefixes)
+                        try
                         {
-                            if (n1.StartsWith(pre) || n1 == pre)
+                            int id1 = p1.Id;
+                            if (id1 == meInit || known.Contains(id1)) continue;
+                            string n1 = p1.ProcessName.ToLowerInvariant();
+                            foreach (string pre in engPrefixes)
                             {
-                                Log("yield: engine client " + p1.ProcessName + "(" + p1.Id + ") started during our init - yielding (we win/lose the race, you win)");
-                                try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { }
-                                return;
+                                if (n1.StartsWith(pre) || n1 == pre)
+                                {
+                                    Log("yield: engine client " + p1.ProcessName + "(" + id1 + ") started during our init - yielding (you win)");
+                                    try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { }
+                                    return;
+                                }
                             }
                         }
+                        catch { }
                     }
                 }
             });
@@ -1104,6 +1108,7 @@ internal static class RebornClient
         float feiPX = 0f, feiPY = 0f, feiPZ = 0f, feiDist = 0f;
         float lastMarkerX = 1e9f, lastMarkerZ = 1e9f;
         long lastPullLogMs = 0;
+        float roofHoldX = 1e9f, roofHoldZ = 1e9f, roofHoldY = -1e9f;
         long lastAimMs = 0;
         float lastVhX = 1e9f, lastVhZ = 1e9f, lastVhY = -1f;
         long lastVhMs = 0;
@@ -1933,25 +1938,14 @@ internal static class RebornClient
                 {
                     int vhr2;
                     float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
-                    // scene ray too: buildings are scene geometry (the terrain
-                    // probe alone does not see roofs). Vertical segment from
-                    // above the head down past the feet; nearest hit = the
-                    // surface under/near the feet.
-                    try
-                    {
-                        float hs = engineRay.RayScene(px, py + 1200f, pz, px, py - 900f, pz);
-                        if (hs > 0f)
-                        {
-                            float ys = (py + 1200f) - hs;
-                            if (ys > vh2) vh2 = ys;
-                        }
-                    }
-                    catch { }
                     lastVhY = vh2;
                 }
                 catch { lastVhY = -1f; }
             }
             if (lastVhY > ground && lastVhY <= py + 90f) ground = lastVhY;
+            if (roofHoldY > ground
+                && Math.Abs(px - roofHoldX) <= 300f && Math.Abs(pz - roofHoldZ) <= 300f
+                && roofHoldY <= py + 90f) ground = roofHoldY;
             bool blocked = false;
             if (moving)
             {
@@ -1994,6 +1988,10 @@ internal static class RebornClient
                     feiPull = false;
                     feiBuffered = true;
                     grounded = true; vy = 0f;
+                    // roof hold: the pull target came from the aim ray - treat
+                    // its height as the floor near the landing spot (no extra
+                    // native probe calls; expires when walking off)
+                    roofHoldX = feiPX; roofHoldZ = feiPZ; roofHoldY = feiPY;
                     curClip = null;
                     setClip(resolveTani("s16lxg链技能03_缓冲_HD"));
                     Log("feizhua landed at (" + (int)px + "," + (int)py + "," + (int)pz + ")");
