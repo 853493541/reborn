@@ -890,19 +890,62 @@ is **not backed by any dump in the repository**: no `PxController`, `PxCCT`, or
   half-height, slope limit, step offset, contact offset/skin is unidentified** (gap G-1).
   This path may serve the editor/cinematic avatar rather than the online character.
 
-**Resolved constants (2026-09-28, `proof/collision/disasm/physics_controller_setup.txt`):** the
-multipliers are exactly `0.01`, `0.025`, `0.2`, `0.04` applied to scale components (x for
-three of them, z for one) plus the constant `0.4`; the same function (`PhysicsScene::_InitPhysXScene`
-`0x180018990`) builds the scene description with gravity from the caller's vector or
-`(0, -9.81, 0)`, a default filter shader fallback `0x1800169A9`, scene flags
-`eENABLE_ACTIVETRANSFORMS (0x2)` always plus `eENABLE_CCD (0x4)` when `[params+0x20]` and
-`eREQUIRE_RW_LOCK (0x1000)` when `[params+0x21]`, creates the controller manager via
-`PxCreateControllerManager(scene, 0)` and stores it at `PhysicsScene+0x10`; the fixed-step tick
-(`0x180018C60`) accumulates dt/1000 into `+0x34` against `+0x30` with a 20 ms step and calls
-scene vt[`0x318`], vt[`0x1B0`], vt[`0x1D0`], vt[`0x320`]. **Which product maps to radius,
-half-height, slope limit, step offset and skin is still unproven** — the honest state of G-1.
-The named shape library (`physic_shape_param.krl.txt`, capsule r50/l50 at index 6) is a
-separate per-object shape table, not the player body.
+**Constants corrected (2026-09-28, third pass).** The multipliers `0.01`, `0.025`, `0.2`, `0.04`
+applied to a caller scale vector are **PhysX `PxSceneDesc` tolerance defaults**, not character
+controller parameters:
+
+| Product | PhysX 3.3/3.4 default it matches |
+|---|---|
+| `0.2 × scale.speed` | `bounceThresholdVelocity = 0.2 · tolerances.speed` |
+| `0.04 × scale.length` | `frictionOffsetThreshold = 0.04 · tolerances.length` |
+| `0.025 × scale.length` | `contactCorrelationDistance = 0.025 · tolerances.length` |
+| `0.01 × scale.length` | scene/actor tolerance (exact field not yet pinned) |
+| `0.4` constant | still unidentified (scene/actor material or solver default) |
+
+The same function (`PhysicsScene::_InitPhysXScene` `0x180018990`) builds the scene description
+with gravity from the caller's vector or `(0, -9.81, 0)`, a default filter shader fallback
+`0x1800169A9`, scene flags `eENABLE_ACTIVETRANSFORMS (0x2)` always plus `eENABLE_CCD (0x4)`
+when `[params+0x20]` and `eREQUIRE_RW_LOCK (0x1000)` when `[params+0x21]`, creates the
+controller manager via `PxCreateControllerManager(scene, 0)` stored at `PhysicsScene+0x10`;
+the fixed-step tick (`0x180018C60`) accumulates dt/1000 into `+0x34` against `+0x30` with a
+20 ms step and calls scene vt[`0x318`], vt[`0x1B0`], vt[`0x1D0`], vt[`0x320`].
+
+**Desc layout recovered** by matching the compiled `PxControllerDesc::isValid`
+(`proof/collision/disasm/pxcontrollerdesc_defaults.txt`) against the public PhysX 3.3/3.4
+headers and the CharacterKinematic ABI shim
+(`proof/collision/disasm/px_createcontroller.txt`, string "createController prototype has
+changed"):
+
+| Offset | Field | isValid check in the game binary |
+|---|---|---|
+| `+0x00` | vptr | — |
+| `+0x08` | `position` (PxExtendedVec3, 3×f64) | — |
+| `+0x20` | `upDirection` (PxVec3) | — |
+| `+0x2c` | `slopeLimit` (cos, default 0.707) | `≥ 0` |
+| `+0x30` | `invisibleWallHeight` | — |
+| `+0x34` | `maxJumpHeight` | — |
+| `+0x38` | `contactOffset` (default 0.1) | `> 0` (strict) |
+| `+0x3c` | `stepOffset` (default 0.5) | `≥ 0` |
+| `+0x40` | `density` (default 10) | `≥ 0` |
+| `+0x44` | `scaleCoeff` (default 0.8) | `≥ 0` |
+| `+0x48` | `volumeGrowth` (default 1.5) | `≥ 1` |
+| `+0x50` | `callback` (deprecated alias) | shim copies `+0x58` into it when null |
+| `+0x58` | `reportCallback` | — |
+| `+0x60` | `behaviorCallback` | — |
+| `+0x68` | `nonWalkableMode` | — |
+| `+0x70` | `material` | `!= null` |
+| `+0x78` | `registerDeletionListener` / padding | — |
+| `+0x80` | `userData` | — |
+| `+0x88` | derived: capsule `radius` | — |
+| `+0x8c` | derived: capsule `height` | — |
+| `+0x90` | derived: capsule `climbingMode` | desc size `0x98` (via dealloc in the isValid tail) |
+
+So the **desc format is reproduction-ready**; what remains of G-1 is only where the gameplay
+character's radius/height values come from (SIMWorld semantic keys `capsules radius` /
+`capsules length`, fed by the Represent character setup — likely model-derived; no config
+found in `physic_character_param.krl.txt`). The named shape library
+(`physic_shape_param.krl.txt`, capsule r50/l50 at index 6) is a separate per-object shape
+table, not the player body.
 
 Further G-1 evidence (2026-09-28): `PhysicsEngineX64.dll` really does construct PhysX
 characters — RTTI strings for `.?AVPxCapsuleControllerDesc@physx@@`,
@@ -2068,7 +2111,7 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/SIMWorldX64_exports.txt` / `_strings.txt` | re-verified SIMWorld export surface |
 | `proof/collision/missile/*` | extracted missile/bullet/phase/controller tables (2026-09-28) + decoded `buff_bullet_header_utf8.txt` |
 | `proof/collision/physic/*` | engine physic configs (file/folder white/black lists, shape/rigid/conveyor params) + UTF-8 copies + `audit_lists.txt` |
-| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`/IO helpers/text parser, `PxControllerDesc::isValid` |
+| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`/IO helpers/text parser, `PxControllerDesc::isValid` + CharacterKinematic `createController` shim |
 | `proof/collision/recon/NAVX64_all_strings.txt` | every ASCII string in NAVX64 (error texts, factory names) |
 | `proof/collision/ui_scripts/*.utf8.lua` | unluac decompilation of `Target.lua` / `target.lua` / `skill.lua` (client targeting model) |
 | `proof/collision/recon/PhysicsEngineX64_strings.txt` | RTTI + `_CreateCapsule` + PhysX controller-desc strings |
@@ -2122,7 +2165,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 
 | ID | Gap | Method |
 |---|---|---|
-| G-1 | character solver/controller field labels — **constants resolved 2026-09-28** (0.01/0.025/0.2/0.04/0.4, scene flags, gravity, step tick; `proof/collision/disasm/physics_controller_setup.txt`); field mapping still open | locate the `createController(desc)` call site and the SIMWorld solver key consumers; label fields against the PhysX 3.3.4 `PxCapsuleControllerDesc` layout |
+| G-1 | character controller — **desc layout fully mapped 2026-09-28** (offsets `+0x2c..+0x90`, size `0x98`, scene-tolerance correction; `proof/collision/disasm/pxcontrollerdesc_defaults.txt`, `px_createcontroller.txt`); **only the player's capsule radius/height source remains** | trace the SIMWorld `capsules radius`/`capsules length` writers in Represent; confirm whether values are model-derived |
 | G-29 | projectile/missile system — **client data model recovered 2026-09-28** (`proof/collision/missile/`, §22.2); server simulation and tick-base fitting still open | disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor`; fit velocity tick base from captures |
 | G-25 | navmesh + `QueryPath` + obstacles + `bAutoPathing` — **decoded 2026-09-28**: 4-file set (p0 binary 12-byte header + stream payload; p1/p2 binary overlays; p3 text), loaded by the `LoadLibraryA` shim `Init(path)`; **no client module references NAVX64/PathEngine**, so this is the server/standalone stack and the data lives outside the pak | remaining: locate the server data files/naming and the client-side `KNavMeshQuery` mesh source |
 | G-21 | `KG3DSceneResponse` semantics — **partial 2026-09-28**: the plugin has just 2 exports (`GetSceneResponse`, `GetStateFileInfo`) and no flag literals; the map state file `<map>.SRScene` (magic `SRS`) is empty on 龙门寻宝; the static gate is the physic lists (§8.4); `bUnitWalkable`/`bUnitCanPass`/`bBullet*`/`bAutoPathing` consumers still unreversed | disassemble `GetStateFileInfo` consumers and the engine unit-template readers around `KG3DEngineX64!0x541388-0x541401` |
