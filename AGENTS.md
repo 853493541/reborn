@@ -94,6 +94,12 @@ State check before work: `git status`, `git log -5 --oneline`, confirm the branc
 
 - Game client `C:\SeasunGame\Game\JX3\bin\zhcn_hd` is the true resource. For any problem or
   question, look here first (`bin64` DLLs, IL, shipped tables/paks). Read-only, always.
+- **Research = copy & analyze, never affect**: the client and MovieEditor installs may be
+  copied out (into ignored dirs) and analyzed offline (parsers, scanners, disassemblers on
+  the copies), and observed while running. Never write, rename, delete, patch, or inject
+  into the installs or their running processes — on disk or in memory. The only writes
+  under `C:\SeasunGame` are our documented build outputs into `MovieEditor\bin64` (§8);
+  those are our binaries, not the client's.
 - MovieEditor `C:\SeasunGame\MovieEditor` is the canonical engine/resource host.
   Client-bundled `...\zhcn_hd\MovieEditor` is an older build (2026-04-28).
 - Evidence hierarchy: repo docs → game client code/IL → MovieEditor behavior/IL → raw
@@ -131,8 +137,10 @@ This supersedes the stricter wording in `SFX_GROUND_RULES.md` for resources only
 
 ## 8. Locked constraints
 
-- Game installs are read-only. The only writes allowed under `C:\SeasunGame` are the
-  documented build outputs into `C:\SeasunGame\MovieEditor\bin64` (see the `.cmd` scripts).
+- Game installs are read-only. Research may copy files out and analyze them, but must
+  never affect the install itself (no writes, renames, patches, or injection — on disk or
+  in memory). The only writes allowed under `C:\SeasunGame` are the documented build
+  outputs into `C:\SeasunGame\MovieEditor\bin64` (see the `.cmd` scripts).
 - No real-client hijack, no packet capture, no protocol RE (`PLAN_REBORN_ONLINE.md`).
 - Never redistribute game assets; keep them in ignored dirs.
 

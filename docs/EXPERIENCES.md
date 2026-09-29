@@ -118,3 +118,13 @@ solved it, and what is still open. **Newest at the bottom.**
   both loaded terrain, no crash; `build exit=0` for all three builds.
 - Outcome: solved. Shared engine-root writes (ShaderListUpload/dxvk) remain the known
   caveat; root isolation broke init (`d8268d2`).
+
+### 2026-09-29 — repo — Rule: research = copy & analyze, never affect installs
+- Did: added the copy-and-analyze rule — `AGENTS.md` §4 (allowed: copy files out into
+  ignored dirs, analyze offline, observe running; forbidden: writes, renames, deletes,
+  patches, injection — on disk or in memory) and §8 (installs read-only; documented
+  `MovieEditor\bin64` build outputs are the only exception). Mirrored in
+  `tools/netcode/AGENTS.md` and `native/AGENTS.md` (no in-memory patching; the broken
+  `RC_PatchD6` trampoline is cited as the cautionary example).
+- Evidence: `AGENTS.md` §4/§8, `tools/netcode/AGENTS.md`, `native/AGENTS.md`.
+- Outcome: solved.
