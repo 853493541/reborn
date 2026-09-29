@@ -95,6 +95,8 @@ internal static class RebornClient
         var feiTanis = new List<string>();
         string feiMatched = "";
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
+        bool feiAiming = false, feiConfirm = false, feiCancel = false;
+        bool autoSkillConfirmDone = false;
         Action loadFeiZhua = delegate
         {
             try
@@ -831,8 +833,13 @@ internal static class RebornClient
         };
         MouseEventHandler onMouseUp = delegate(object s, MouseEventArgs e)
         {
-            // S7: a press that never moved never locked the cursor - that press
-            // was a click and the camera was not rotated.
+            // a press that never moved never locked the cursor -> it is a CLICK
+            // (the game's CAMERAORSELECTORMOVE semantics: LMB click = select/ground cast)
+            if (!mouseLocked && feiAiming)
+            {
+                if (e.Button == MouseButtons.Left) feiConfirm = true;
+                else if (e.Button == MouseButtons.Right) feiCancel = true;
+            }
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
@@ -887,7 +894,11 @@ internal static class RebornClient
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) unlockMouse();
+            if (e.KeyCode == Keys.Escape)
+            {
+                if (feiAiming) { feiCancel = true; e.Handled = true; }
+                unlockMouse();
+            }
             if (e.KeyCode == Keys.W)
             {
                 long t = Environment.TickCount;
@@ -988,7 +999,8 @@ internal static class RebornClient
         bool feiBuffered = false;
         bool feiHitSounded = false;
         long feiSeqStart = 0;
-        float feiPX = 0f, feiPZ = 0f;
+        float feiPX = 0f, feiPY = 0f, feiPZ = 0f, feiDist = 0f;
+        float lastMarkerX = 1e9f, lastMarkerZ = 1e9f;
         bool orbitApplied = false;
         float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
         bool dbgIntSet = false;
@@ -1121,6 +1133,107 @@ internal static class RebornClient
         // is only the cap the wheel can zoom out to (starting at the cap made
         // the camera pump when walls passed in/out of range)
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
+
+        // ---- 临时飞爪 (28031): PointArea target ray + cast action ----
+        const string FEI_RANGE_UI = @"data\source\other\特效\技能\MESH\释放\释放_范围选择01.Mesh";
+        Func<float[]> computeFeiTarget = delegate
+        {
+            try
+            {
+                float cx0 = 0f, cy0 = 0f, cz0 = 0f;
+                scene.GetCameraPos(ref cx0, ref cy0, ref cz0);
+                float fx = (float)viewX, fy = (float)viewY, fz = (float)viewZ;
+                float fl = (float)Math.Sqrt(fx * fx + fy * fy + fz * fz);
+                if (fl < 1e-4f) return null;
+                fx /= fl; fy /= fl; fz /= fl;
+                float rgx = fz, rgz = -fx;                    // screen right = worldUp x forward
+                float rgl = (float)Math.Sqrt(rgx * rgx + rgz * rgz);
+                if (rgl < 1e-4f) { rgx = 1f; rgz = 0f; rgl = 1f; }
+                rgx /= rgl; rgz /= rgl;
+                float ux5 = -fx * fy, uy5 = 1f - fy * fy, uz5 = -fz * fy;   // up = Y - F*(Y.F)
+                float vl = (float)Math.Sqrt(ux5 * ux5 + uy5 * uy5 + uz5 * uz5);
+                if (vl < 1e-4f) { ux5 = 0f; uy5 = 1f; uz5 = 0f; vl = 1f; }
+                ux5 /= vl; uy5 /= vl; uz5 /= vl;
+                int pw = Math.Max(1, panel.ClientSize.Width), ph = Math.Max(1, panel.ClientSize.Height);
+                System.Drawing.Point mp = lastMousePt;
+                if (mp.X == 0 && mp.Y == 0) mp = new System.Drawing.Point(pw / 2, ph / 2);
+                float nx = (mp.X - pw * 0.5f) / (pw * 0.5f);
+                float ny = (ph * 0.5f - mp.Y) / (ph * 0.5f);
+                float aimTestX;
+                if (float.TryParse(Env("SB_AIM_NDC_X", ""), out aimTestX)) nx = aimTestX;
+                double tanY = Math.Tan(50.0 * Math.PI / 180.0 * 0.5);
+                double tanX = tanY * ((double)pw / ph);
+                float dx3 = fx + rgx * (float)(nx * tanX) + ux5 * (float)(ny * tanY);
+                float dy3 = fy + uy5 * (float)(ny * tanY);
+                float dz3 = fz + rgz * (float)(nx * tanX) + uz5 * (float)(ny * tanY);
+                float dl3 = (float)Math.Sqrt(dx3 * dx3 + dy3 * dy3 + dz3 * dz3);
+                dx3 /= dl3; dy3 /= dl3; dz3 /= dl3;
+                float hit = -1f;
+                try { hit = engineRay.RayTerrain(cx0, cy0, cz0, cx0 + dx3 * 4000f, cy0 + dy3 * 4000f, cz0 + dz3 * 4000f); }
+                catch { }
+                float hitX, hitY, hitZ;
+                if (hit > 0f) { hitX = cx0 + dx3 * hit; hitY = cy0 + dy3 * hit; hitZ = cz0 + dz3 * hit; }
+                else { hitX = cx0 + dx3 * 1500f; hitY = cy0 + dy3 * 1500f; hitZ = cz0 + dz3 * 1500f; }
+                float mdx = hitX - px, mdz = hitZ - pz;
+                float mdl = (float)Math.Sqrt(mdx * mdx + mdz * mdz);
+                const float FEI_MAX_RANGE = 40f * 64f;
+                if (mdl > FEI_MAX_RANGE)
+                {
+                    float kk = FEI_MAX_RANGE / mdl;
+                    hitX = px + mdx * kk; hitZ = pz + mdz * kk;
+                    hitY = sampler != null ? sampler.Sample(hitX, hitZ) : hitY;
+                }
+                return new float[] { hitX, hitY, hitZ, mdl };
+            }
+            catch { return null; }
+        };
+        Action<long> doFeiCast = delegate(long nowMs)
+        {
+            float gy = sampler != null ? sampler.Sample(feiPX, feiPZ) : feiPY;
+            feiSeqActive = true; feiSeqStart = nowMs;
+            feiPull = false; feiBuffered = false; feiHitSounded = false;
+            float estSec = feiDist / (120f * 15f);
+            skillUntil = nowMs + (long)(estSec * 1000.0) + 700;
+            curClip = null;
+            setClip(resolveTani("s16lxg链技能03_释放HD"));
+            if (soundOn)
+            {
+                string wav = Path.Combine(soundDir, "62588785.wav");
+                if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
+            }
+            Log("skill cast: 临时飞爪 -> target (" + (int)feiPX + "," + (int)gy + "," + (int)feiPZ
+                + ") dist=" + (int)feiDist + "u range=2560u(40尺) pullMs=" + (int)(estSec * 1000)
+                + " device=67816/70025(hidden)");
+        };
+
+        // SB_PROBE_MESHES=1: ground-mesh probe (find which candidate renders as a range ring)
+        if (Env("SB_PROBE_MESHES", "0") == "1")
+        {
+            string[] probeMeshes = new string[]
+            {
+                @"data\source\other\特效\技能\MESH\释放\释放_范围选择01.Mesh",
+                @"data\source\other\新特效\技能\Mesh\发招\Y_圆形1.Mesh",
+                @"data\source\other\HD特效\技能\Mesh\发招\y_圆环01_hd.Mesh",
+                @"data\source\other\HD特效\技能\Mesh\发招\D_单兵圈01.Mesh".Replace("HD特效","新特效"),
+                @"data\source\other\HD特效\技能\Mesh\发招\F_范围圈270度.Mesh",
+                @"data\source\other\HD特效\技能\Mesh\状态\Y_圆环01.Mesh"
+            };
+            for (int mi = 0; mi < probeMeshes.Length; mi++)
+            {
+                try
+                {
+                    var pp = new CLRfloat3();
+                    pp.x = px;
+                    pp.z = pz + 300f + mi * 450f;   // ordered by distance: 0 = nearest
+                    pp.y = (sampler != null ? sampler.Sample(pp.x, pp.z) : py) + 8f;
+                    var pr = new CLRfloat4(); pr.w = 1f;
+                    var psc = new CLRfloat3(); psc.x = 1f; psc.y = 1f; psc.z = 1f;
+                    long h = scene.AddDummyModel("probe_" + mi, probeMeshes[mi], pp, pr, psc);
+                    Log("probe mesh " + mi + " handle=" + h + " -> " + probeMeshes[mi]);
+                }
+                catch (Exception e) { Log("probe ex " + mi + ": " + e.Message); }
+            }
+        }
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -1528,95 +1641,82 @@ internal static class RebornClient
             float hx = (float)cfx;
             float hz = (float)cfz;
 
-            // auto-cast (smoke/test): SB_CAST_MS
+            // auto-cast (smoke/test): SB_CAST_MS (feizhua: aim then auto-confirm)
             if (autoSkillMs > 0 && !autoSkillDone && now >= autoSkillMs)
             {
                 autoSkillDone = true;
                 skillPressed = true;
+            }
+            if (autoSkillMs > 0 && autoSkillDone && !autoSkillConfirmDone
+                && feiAiming && now >= autoSkillMs + 600)
+            {
+                autoSkillConfirmDone = true;
+                feiConfirm = true;
             }
 
             // skill
             if (skillPressed)
             {
                 skillPressed = false;
-                skillUntil = now + skillMs;
-                curClip = null;
                 if (abilitySel == "feizhua")
                 {
-                    // ---- ground target under the cursor -> pull point ----
-                    float cx0 = 0f, cy0 = 0f, cz0 = 0f;
-                    try { scene.GetCameraPos(ref cx0, ref cy0, ref cz0); } catch { }
-                    float fx = (float)viewX, fy = (float)viewY, fz = (float)viewZ;
-                    float fl = (float)Math.Sqrt(fx * fx + fy * fy + fz * fz);
-                    if (fl < 1e-4f) { fx = 0f; fy = 0f; fz = -1f; fl = 1f; }
-                    fx /= fl; fy /= fl; fz /= fl;
-                    float rgx = -fz, rgz = fx;                       // right = forward x up
-                    float rgl = (float)Math.Sqrt(rgx * rgx + rgz * rgz);
-                    if (rgl < 1e-4f) { rgx = 1f; rgz = 0f; rgl = 1f; }
-                    rgx /= rgl; rgz /= rgl;
-                    float ux0 = 0f * fz - rgz * fy;                  // up = right x forward (y-comp)
-                    float uy0 = rgz * fx - rgx * fz;
-                    float uz0 = rgx * fy - 0f * fx;
-                    int pw = Math.Max(1, panel.ClientSize.Width), ph = Math.Max(1, panel.ClientSize.Height);
-                    System.Drawing.Point mp = lastMousePt;
-                    if (mp.X == 0 && mp.Y == 0) mp = new System.Drawing.Point(pw / 2, ph / 2);
-                    float nx = (mp.X - pw * 0.5f) / (pw * 0.5f);
-                    float ny = (ph * 0.5f - mp.Y) / (ph * 0.5f);
-                    double tanY = Math.Tan(50.0 * Math.PI / 180.0 * 0.5);   // engine view FOV ~50 deg
-                    double tanX = tanY * ((double)pw / ph);
-                    float dx3 = fx + rgx * (float)(nx * tanX) + ux0 * (float)(ny * tanY);
-                    float dy3 = fy + uy0 * (float)(ny * tanY);
-                    float dz3 = fz + rgz * (float)(nx * tanX) + uz0 * (float)(ny * tanY);
-                    float dl3 = (float)Math.Sqrt(dx3 * dx3 + dy3 * dy3 + dz3 * dz3);
-                    dx3 /= dl3; dy3 /= dl3; dz3 /= dl3;
-                    float hit = -1f;
-                    try
+                    // PointArea: first press enters the targeting phase, the
+                    // second press (or a ground click) confirms at the marker
+                    if (!feiAiming)
                     {
-                        hit = engineRay.RayTerrain(cx0, cy0, cz0,
-                            cx0 + dx3 * 4000f, cy0 + dy3 * 4000f, cz0 + dz3 * 4000f);
+                        feiAiming = true; feiConfirm = false; feiCancel = false;
+                        Log("feizhua aiming: move the mouse to mark the point, LMB click to cast, Esc/right-click cancel");
                     }
-                    catch { }
-                    float hitX, hitY, hitZ;
-                    if (hit > 0f) { hitX = cx0 + dx3 * hit; hitY = cy0 + dy3 * hit; hitZ = cz0 + dz3 * hit; }
-                    else { hitX = cx0 + dx3 * 1500f; hitY = cy0 + dy3 * 1500f; hitZ = cz0 + dz3 * 1500f; }
-                    // clamp to the 40尺 range (1尺 = 64 u)
-                    float mdx = hitX - px, mdz = hitZ - pz;
-                    float mdl = (float)Math.Sqrt(mdx * mdx + mdz * mdz);
-                    const float FEI_MAX_RANGE = 40f * 64f;
-                    if (mdl > FEI_MAX_RANGE)
+                    else
                     {
-                        float kk = FEI_MAX_RANGE / mdl;
-                        hitX = px + mdx * kk; hitZ = pz + mdz * kk;
-                        hitY = sampler != null ? sampler.Sample(hitX, hitZ) : hitY;
+                        feiConfirm = true;
                     }
-                    feiPX = hitX; feiPZ = hitZ;
-                    float gy = sampler != null ? sampler.Sample(hitX, hitZ) : hitY;
-                    // device NPC (template 67816, model 70025=a021b) exists at the
-                    // point but the engine HIDES it (buff 12363 气场隐藏且无敌 +
-                    // 12343 悬停) - it only provides the S_fxmid socket for the
-                    // skill chain 28032. Nothing visible is spawned here.
-                    feiSeqActive = true; feiSeqStart = now;
-                    feiPull = false; feiBuffered = false; feiHitSounded = false;
-                    float estSec = mdl / (120f * 15f);
-                    skillUntil = now + (long)(estSec * 1000.0) + 700;   // only the pull+landing locks input
-                    curClip = null;
-                    setClip(resolveTani("s16lxg链技能03_释放HD"));
-                    if (soundOn)
-                    {
-                        string wav = Path.Combine(soundDir, "62588785.wav");
-                        if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
-                    }
-                    Log("skill cast: 临时飞爪 -> target (" + (int)hitX + "," + (int)gy + "," + (int)hitZ
-                        + ") dist=" + (int)mdl + "u range=2560u(40尺) pullMs=" + (int)(estSec * 1000)
-                        + " device=67816/70025(hidden)");
                 }
                 else
                 {
+                    skillUntil = now + skillMs;
+                    curClip = null;
                     setClip(clipSkill);
                     // camera shake on the cast (host default; per-skill shake rows
                     // are data-gated)
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     Log("skill cast: 风来吴山");
+                }
+            }
+
+            // 临时飞爪 targeting phase: marker at the ground point under the cursor
+            if (feiAiming)
+            {
+                if (feiCancel)
+                {
+                    feiCancel = false; feiAiming = false;
+                    try { scene.RemoveDummyModel("fei_marker"); } catch { }
+                    Log("feizhua aiming cancelled");
+                }
+                else if (feiConfirm)
+                {
+                    feiConfirm = false; feiAiming = false;
+                    try { scene.RemoveDummyModel("fei_marker"); } catch { }
+                    if (feiDist > 0f) doFeiCast(now);
+                }
+                else
+                {
+                    float[] tgt = computeFeiTarget();
+                    if (tgt != null)
+                    {
+                        feiPX = tgt[0]; feiPY = tgt[1]; feiPZ = tgt[2]; feiDist = tgt[3];
+                        if (Math.Abs(feiPX - lastMarkerX) > 16f || Math.Abs(feiPZ - lastMarkerZ) > 16f)
+                        {
+                            lastMarkerX = feiPX; lastMarkerZ = feiPZ;
+                            var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 20f; mpos.z = feiPZ;
+                            var mrot = new CLRfloat4(); mrot.w = 1f;
+                            var mscl = new CLRfloat3(); mscl.x = 2f; mscl.y = 2f; mscl.z = 2f;
+                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
+                            Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPZ + ") d=" + (int)feiDist
+                                + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
+                                + " handle=" + mh);
+                        }
+                    }
                 }
             }
 
