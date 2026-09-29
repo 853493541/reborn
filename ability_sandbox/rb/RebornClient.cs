@@ -337,6 +337,8 @@ internal static class RebornClient
         // other app always wins, we kill ourselves before we can disturb it.
         // SB_YIELD_INIT=0 disables.
         bool engineInitInFlight = true;
+        int meInit = System.Diagnostics.Process.GetCurrentProcess().Id;
+        string[] engPrefixes = new string[] { "reborn_", "spike_host", "map_spike", "movieditor", "qseasuneditor", "qmodeleditor" };
         if (Env("SB_YIELD_INIT", "1") == "1")
         {
             var known = new System.Collections.Generic.HashSet<int>();
@@ -344,8 +346,8 @@ internal static class RebornClient
             {
                 string n0;
                 try { n0 = p0.ProcessName.ToLowerInvariant(); } catch { continue; }
-                if (p0.Id == me) continue;
-                foreach (string pre in enginePrefixes)
+                if (p0.Id == meInit) continue;
+                foreach (string pre in engPrefixes)
                 { if (n0.StartsWith(pre) || n0 == pre) { known.Add(p0.Id); break; } }
             }
             var wt = new System.Threading.Thread(delegate()
@@ -358,8 +360,8 @@ internal static class RebornClient
                     {
                         string n1;
                         try { n1 = p1.ProcessName.ToLowerInvariant(); } catch { continue; }
-                        if (p1.Id == me || known.Contains(p1.Id)) continue;
-                        foreach (string pre in enginePrefixes)
+                        if (p1.Id == meInit || known.Contains(p1.Id)) continue;
+                        foreach (string pre in engPrefixes)
                         {
                             if (n1.StartsWith(pre) || n1 == pre)
                             {
