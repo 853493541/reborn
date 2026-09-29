@@ -331,11 +331,55 @@ internal static class RebornClient
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
         Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
 
+        // YIELD WATCHDOG: while OUR engine init is in flight, if another engine
+        // client STARTS (its cold init would contend with ours; verified in the
+        // logs: whichever inits overlap, one dies), we yield immediately - the
+        // other app always wins, we kill ourselves before we can disturb it.
+        // SB_YIELD_INIT=0 disables.
+        bool engineInitInFlight = true;
+        if (Env("SB_YIELD_INIT", "1") == "1")
+        {
+            var known = new System.Collections.Generic.HashSet<int>();
+            foreach (System.Diagnostics.Process p0 in System.Diagnostics.Process.GetProcesses())
+            {
+                string n0;
+                try { n0 = p0.ProcessName.ToLowerInvariant(); } catch { continue; }
+                if (p0.Id == me) continue;
+                foreach (string pre in enginePrefixes)
+                { if (n0.StartsWith(pre) || n0 == pre) { known.Add(p0.Id); break; } }
+            }
+            var wt = new System.Threading.Thread(delegate()
+            {
+                while (engineInitInFlight)
+                {
+                    System.Threading.Thread.Sleep(700);
+                    if (!engineInitInFlight) break;
+                    foreach (System.Diagnostics.Process p1 in System.Diagnostics.Process.GetProcesses())
+                    {
+                        string n1;
+                        try { n1 = p1.ProcessName.ToLowerInvariant(); } catch { continue; }
+                        if (p1.Id == me || known.Contains(p1.Id)) continue;
+                        foreach (string pre in enginePrefixes)
+                        {
+                            if (n1.StartsWith(pre) || n1 == pre)
+                            {
+                                Log("yield: engine client " + p1.ProcessName + "(" + p1.Id + ") started during our init - yielding (we win/lose the race, you win)");
+                                try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { }
+                                return;
+                            }
+                        }
+                    }
+                }
+            });
+            wt.IsBackground = true;
+            wt.Start();
+        }
         int err = 1;
         int ok = 0;
         try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1}", ok, err));
+        engineInitInFlight = false;
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
