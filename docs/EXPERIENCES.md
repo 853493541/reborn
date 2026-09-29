@@ -133,3 +133,17 @@ solved it, and what is still open. **Newest at the bottom.**
   (0)`; reject n=3), runs B/D (tani wrapper AV 0xC0000005). Doc §1/§4/§5 updated.
 - Outcome: solved provisionally; re-open when the `ModifySprintEndSpeed` trigger
   is decoded (then use J1 burst + End triple instead of the J0 re-use).
+
+### 2026-09-29 — movement — 二段跳 unit calibration: RC_JUMP_SCALE=0.52
+- Did: user still reported the flip jump as "way too high" and asked to make the
+  unit research work. Per `UNIT_SCALE_AND_CHARACTER_SIZE.md` / `JX3_COLLISION_SYSTEM.md`
+  G-0 (canonical 1 u = 1 cm), the raw `J0` triple gives a 368 u = 3.68 m apex,
+  ~2x the spec's in-game 1.92 m (`REBORN_JUMP_FALL_SPEC.md`; MapSpike used
+  `703 u/s`, `1289 u/s^2`). Added `RC_JUMP_SCALE` (default 0.52 = 100/192)
+  scaling takeoff AND gravity together, so `J0` realises 1.92 m with the 1.09 s
+  air time; applies to flip and chain modes.
+- Evidence: `proof/gravity/double_jump_reborn_run.txt` run F (exit 0):
+  `jump: mode=flip school=0 scale=0.520 (apex 191u)`; press n=2 at y=835 after
+  press n=1 at y=646 (191 u = 1.91 m); double-jump apex ~3.8 m. Client log line
+  added at startup.
+- Outcome: solved. Raw-table mode still available with `RC_JUMP_SCALE=1`.

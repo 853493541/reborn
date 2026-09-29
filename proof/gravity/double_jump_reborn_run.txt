@@ -85,3 +85,14 @@ full logs (untracked): C:\SeasunGame\MovieEditor\bin64\reborn_out\<file>
    14:16:31.741 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22063,1024,26180
    14:16:33.044 djb land n=2 pos=22063,672,26180 vy=-1885
    14:16:38.321 DONE
+
+== F: unit-calibrated flip mode (RC_JUMP_SCALE=0.52, the 1.92 m spec jump)
+   log: reborn_20260929_144022.log    process exit=0 (clean)
+   apex per jump 191 u = 1.91 m (1 u = 1 cm); double-jump apex ~382 u = 3.8 m
+   14:40:22.205 build=reborn_client_double_jump.exe 2026-09-29 14:40:16 git=3de70c3 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   14:40:22.997 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   14:40:51.312 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+   14:41:03.816 djb press n=1 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,646,26300
+   14:41:04.317 djb press n=2 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,835,26300
+   14:41:05.628 djb land n=2 pos=23234,646,26300 vy=-989
+   14:41:16.318 DONE

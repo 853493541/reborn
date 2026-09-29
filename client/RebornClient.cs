@@ -13,6 +13,7 @@
 //   RC_SCALE=1                    player model scale
 //   RC_DJUMP=flip                二段跳 mode: flip (one extra jump, default) |
 //                                chain (raw 轻功 J1..MaxJumpCount chain) | 0 (off)
+//   RC_JUMP_SCALE=0.52            jump takeoff+gravity scale (100/192 unit calibration)
 //   RC_JUMP_SCHOOL=0              settings/JumpParam.tab school row (0..22)
 //   RC_CLIP_DJUMP=<vfs path>      二段跳 clip (default: f1b02yd二段跳a.ani)
 //   RC_DJUMP_LOG=1                log every press / land / reject (djb lines)
@@ -952,6 +953,14 @@ internal static class RebornClient
         //           until the J1 burst/End phase trigger is decoded)
         //   chain = the raw J1..MaxJumpCount 轻功 rows (ballistic shortcut, high)
         string djumpMode = Env("RC_DJUMP", "flip");
+        // Unit calibration (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md): 1 u = 1 cm,
+        // and the movement spec's in-game jump is apex 192 u / 1.09 s air
+        // (REBORN_JUMP_FALL_SPEC.md; MapSpike used 703 u/s, 1289 u/s^2). The raw table
+        // triple (90/11 u/frame) gives 368 u = 3.7 m - ~2x too high. Scaling takeoff
+        // AND gravity by 100/192 keeps the 1.09 s air time and realises 1.92 m.
+        float jumpScale = 0.52f;
+        float.TryParse(Env("RC_JUMP_SCALE", "0.52"), out jumpScale);
+        if (jumpScale <= 0f) jumpScale = 1f;
         int jumpSchool = 0;
         int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
         if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
@@ -962,6 +971,8 @@ internal static class RebornClient
         bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
         int jumpCount = 0;
         float curJumpGravity = -pGravity;
+        Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
+            djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
         float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
@@ -1727,9 +1738,9 @@ internal static class RebornClient
                 if (trip != null)
                 {
                     jumpCount = nextJump;
-                    vy = trip[1] * 15f;
+                    vy = trip[1] * 15f * jumpScale;
                     int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
-                    curJumpGravity = gc * 225f;
+                    curJumpGravity = gc * 225f * jumpScale;
                     grounded = false;
                     if (djumpLog) Log(string.Format(
                         "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",

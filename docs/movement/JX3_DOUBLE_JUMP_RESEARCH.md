@@ -88,20 +88,23 @@ Full chain: `python tools/gravity/parse_jump_tables.py --chain`.
 
 - `…End` triples: schools 0 → `60,90,11`; schools 1–22 → `125,−140,12`
   (a fast forward dive) — these are the post-segment flight, not reproduced. (HIGH)
-- Convert with the verified units: `1 m = 192 u`, tick = 1/15 s →
-  `v[m/s] = vz × 15/192`, `g[m/s²] = g × 225/192`. (HIGH, `REBORN_JUMP_FALL_SPEC.md` §1)
+- Convert with the canonical unit research: **1 u = 1 cm**
+  (`UNIT_SCALE_AND_CHARACTER_SIZE.md`; `JX3_COLLISION_SYSTEM.md` G-0) — the older
+  `1 m = 192 u` label in the gravity docs is a metric artifact and does not change
+  the integer physics. Raw `J0` apex = 368 u (3.68 m); the spec's in-game jump is
+  192 u (1.92 m) / 1.09 s air (`REBORN_JUMP_FALL_SPEC.md`; MapSpike `703 u/s`,
+  `1289 u/s²`), realised by the client's `RC_JUMP_SCALE=0.52` (below). (HIGH)
 - Clamps apply: gravity `[0,31]` (matters: school 10/11 `g=80` → 31), `|vz| ≤ 2047`,
   `xy ≤ 127`. (HIGH)
 - Schools 10/11 additionally ship authored `JumpFrameParam.tab` curves (81 frames)
   that override velocity per air frame — not reproduced. (HIGH data / OPEN trigger)
 
 Worked example, school 0 chain-mode 二段跳 (`J1 = 30,300,20`):
-`v0 = 300×15/192 = 23.44 m/s`, `g = 20×225/192 = 23.44 m/s²`, ballistic apex
-`v0²/2g = 11.7 m`, air time `2·v0/g = 2.0 s` (continuous; the exact per-frame
-integer integration is in `verification.txt` §6). **Do not ship this as the plain
-二段跳** — it is the 轻功 chain row applied ballistically, i.e. the takeoff burst
-stretched over the whole arc (user feedback 2026-09-29: “way too high”; the game
-caps it via the segment phase, whose trigger is still open).
+raw apex `v²/2g = 300²/40 = 2250 u` (22.5 m) — with the client's 0.52 calibration
+11.7 m, air time 2.0 s. **Do not ship this as the plain 二段跳** — it is the 轻功
+chain row applied ballistically, i.e. the takeoff burst stretched over the whole
+arc (user feedback 2026-09-29: “way too high”; the game caps it via the segment
+phase, whose trigger is still open).
 
 ## 4. Reborn client reproduction
 
@@ -109,8 +112,11 @@ caps it via the segment phase, whose trigger is still open).
 --csharp-out client/JumpTable.cs`) + the jump block in `client/RebornClient.cs`.
 
 Default `RC_DJUMP=flip` — the plain 二段跳:
-- press 1 from ground → `J0` triple (identical to the old constants
-  `vy = 1350 u/s`, `g = 2475 u/s²`; single-jump behavior unchanged);
+- press 1 from ground → `J0` triple (raw `vy = 1350 u/s`, `g = 2475 u/s²`, scaled
+  by `RC_JUMP_SCALE`);
+- `RC_JUMP_SCALE=0.52` (default, 100/192): scales **takeoff and gravity together**
+  so `J0` realises the spec's 1.92 m apex / 1.09 s air (raw triple = 3.68 m, ~2×
+  the game; user feedback). `1.0` = raw table;
 - air press 2 → the **J0 takeoff triple again** (one extra normal-strength jump,
   max 2), and the clip switches to the authored `f1b02yd二段跳a.ani` flip;
 - third press → rejected (logged); landing → `jumpCount = 0`;
@@ -129,13 +135,15 @@ Default `RC_DJUMP=flip` — the plain 二段跳:
 
 Verified in-engine (2026-09-29, curated in
 `proof/gravity/double_jump_reborn_run.txt`):
-- flip mode (run E, exit 0): `djb press n=1 mode=flip triple=40,90,11` →
-  `djb press n=2 mode=flip triple=40,90,11` at y 1008 (first-jump apex) →
-  `clip -> ...f1b02yd二段跳a.ani (0)` → `djb reject n=3 max=2` → `djb land n=2
-  y 646` → `DONE`. Net extra height ≈ 1.9 m (ground-to-ground ≈ 3.6 m).
+- flip mode, unit-calibrated (run F, exit 0): `jump: mode=flip school=0 scale=0.520
+  (apex 191u)` → `djb press n=1` at y 646 → `djb press n=2` at y 835 (first apex,
+  1.91 m) → `clip -> ...f1b02yd二段跳a.ani (0)` → `djb land n=2` at y 646.
+  First jump ≈ 1.9 m; double-jump apex ≈ 3.8 m.
+- flip mode pre-calibration (run E, exit 0): same structure with the raw 3.7 m
+  apex (the "way too high" run).
 - chain mode (runs A/C): `triple=30,300,20` ballistic (documented above).
 - `.tani` wrapper (runs B/D) reproduces the 0xC0000005 AV; the underlying
-  `.ani` plays cleanly (run E) — the flip action is available without the
+  `.ani` plays cleanly (runs E/F) — the flip action is available without the
   composite wrapper.
 Isolation verified in every run: `ns=reborn_client_double_jump.memory`.
 
@@ -169,8 +177,8 @@ client\build_client.cmd
 $env:RC_DEMO="1"; $env:RC_DJUMP_LOG="1"; $env:RC_AUTORUN="25000"
 $p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
 $p.WaitForExit(); $p.ExitCode
-# expect exit 0 and: djb press n=1 mode=flip (40,90,11) -> djb press n=2
-# mode=flip (40,90,11) + clip -> ...f1b02yd二段跳a.ani -> djb land n=2 -> DONE
-# ns=reborn_client_double_jump.memory in the init line
+# expect exit 0 and: jump: mode=flip school=0 scale=0.520 (apex 191u) ->
+# djb press n=1 -> djb press n=2 at ~191u above n=1 + clip -> ...二段跳a.ani
+# -> djb land n=2 -> DONE; ns=reborn_client_double_jump.memory in the init line
 # research chain mode: add $env:RC_DJUMP="chain"
 ```
