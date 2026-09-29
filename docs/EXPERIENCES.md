@@ -155,3 +155,23 @@ double-sided probes cause over-pulling somewhere (kill switch `RC_CAM_BACKFACE=0
 `docs/camera/HOST_DEVIATIONS.md` B11/B14; logs `reborn_20260929_122635`
 (before) and `_123534`/`_123619`/`_123704`/`_123851`/`_123947` (after) in
 `bin64\reborn_out`.
+
+### 2026-09-29 — camera — client-truth max defaults (follow distance 2000 u, 广角 60°)
+- Did: user decision "default both to true max = client truth": the character
+  follow distance default moved from the invented 6 m placeholder to **2000 u
+  (20 m)** - the client's own maximum (`VideoSettingPanel.fMaxCameraDistance`
+  default 2000, engine cap 2000, `JX3RepresentX64` const blob `0x180d2af90`);
+  广角 default stays the client's panel maximum **60°** (log source renamed
+  `client-max-default`; the engine `fMaxCameraAngle` cap is not recoverable in
+  this install). Also carried the session build tag (`Camera Pen v3`) and the
+  `obstdbg` instance/flag logging.
+- Evidence: `client/camera.json` character row, `CameraSystem.cs:101/129/142`,
+  `RebornClient.cs:488/889`, `VideoSettings.cs`,
+  `docs/camera/HOST_DEVIATIONS.md` C6/C10;
+  `camera_smoke_wallclip.exe` **ALL PASS (26 checks**, incl. the new
+  "distance default = client max 2000 u"); live log
+  `reborn_20260929_162023.log`: `CameraSystem ready: ... dist=2000u`,
+  `fov source=... angle=60.00`.
+- Outcome: solved. Committed on `agent/camera-wall-clip`; **not pushed** (new
+  main rule `ff67fff`: never push unless explicitly asked). The per-slug test
+  client picks the config from `bin64\reborn_campen_v3\camera.json`.

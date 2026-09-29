@@ -44,10 +44,11 @@ N=native bypass, H=harness. Status updated as items land.
 | C3 | `fMinCameraDistance` engine cap | 100 u placeholder | P | caps provider (blocked: JX3UIX64 not loaded) |
 | C4 | carrier/air/npc/god rows from CDN .krl | host placeholders | P | CDN data |
 | C5 | sprint camera extras (`Offset`, `SpringTime`, track-back, sprintSpeed arg) | unused; `SprintCameraMaxDistance=60` unit unresolved | P | row data + unit |
-| C6 | panel `VideoSetting_WidAngle` (30-60, default 50), raw<30 `+fMinCameraAngle` | reads custom.dat WidAngle else config.ini; no raw<30 rule; defaults to 60 (max) - **user-requested deviation** (`1d5368e`); game panel default is 50 | P-partial | caps + rule |
+| C6 | panel `VideoSetting_WidAngle` (30-60, default 50), raw<30 `+fMinCameraAngle` | reads custom.dat WidAngle else config.ini; no raw<30 rule; defaults to 60 (**user decision 2026-09-29: default = client-truth max = the client's own slider max**, log source `client-max-default`; the install config.ini 48 deg is informational only); game panel default is 50 | P-partial | caps + rule |
 | C7 | view near plane | never read (getter deadlocks). The earlier N ~= 60-70 u estimate came from the *character model* fading at camLen 66-96; the `stepb_clr18/40/80` wall frames show sand within 60 u in front of the camera is never clipped, so that fade is engine-side model culling, not the view near plane. A wall-distance test is still pending (the `RC_FIXED_CAM` harness only sets the camera once and the engine overrides it) | P | native near-plane setter (Step C), if the wall test shows a problem |
 | C8 | streamed `[Camera]` ini values | flex 1.5/2.828 and 18 u hardcoded (ctor defaults) | P | streamed ini data |
 | C9 | per-mode caps + `fCameraToObjectEyeScale` inside the clamp | `SwitchMode(...,false)` does not re-clamp `Distance` to the new mode's caps; `ClampDistanceUnits` reads only the character row; EyeScale is applied after the clamp, so the effective distance can exceed `MaxCameraDistance` | P | per-mode rows + caps provider |
+| C10 | the real per-mode follow distance rows (`Represent/camera/config.ini`, CDN-only) | **character default follow distance = the client-truth max, 2000 u (20 m), user decision 2026-09-29** (`camera.json` character row + `CameraSystem` fallbacks; the 6 m value was an invented placeholder). The user's `fMaxCameraDistance` still clamps lower roles (760/1125/1245) at runtime. Other mode rows stay placeholders | P-partial | CDN per-mode rows (C4) |
 
 ## D. Native bypasses of the game filter path
 

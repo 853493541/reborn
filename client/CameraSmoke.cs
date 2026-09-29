@@ -32,9 +32,12 @@ internal static class CameraSmoke
         // the reference model uses metre-scaled numbers; the user/engine caps
         // are exercised separately by the clamp helper check
         cam.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        // reference model in metres; Update tracks the row TargetDistance, so
+        // pin it here (the client-truth max default is checked further down)
+        cam.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
         cam.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam.Pitch = cam.Row.F("InitCameraPitch", -20.0 * DEG);
-        cam.Distance = cam.Row.F("InitCameraDistance", 6.0);
+        cam.Distance = 6.0;
 
         double[] anchor = { 0, 0, 0 };
         for (int i = 0; i < 60; i++) cam.Update(1.0 / 60.0, anchor);
@@ -50,6 +53,7 @@ internal static class CameraSmoke
         var cam3 = new CameraSystem();
         cam3.UnitsPerMeter = 1.0;
         cam3.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        cam3.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
         cam3.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam3.Distance = 6.0;
         double[] pitches = { -40.0 * DEG, -20.0 * DEG, 0.0, 25.0 * DEG, 40.0 * DEG };
@@ -140,9 +144,10 @@ internal static class CameraSmoke
         var cam2 = new CameraSystem();
         cam2.UnitsPerMeter = 1.0;
         cam2.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        cam2.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
         cam2.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam2.Pitch = cam2.Row.F("InitCameraPitch", -20.0 * DEG);
-        cam2.Distance = cam2.Row.F("InitCameraDistance", 6.0);
+        cam2.Distance = 6.0;   // reference model in metres (obstruction case)
         for (int i = 0; i < 60; i++) cam2.Update(1.0 / 60.0, anchor);
         Func<double[], double[], double?> obst = delegate(double[] a, double[] pos)
         {
@@ -162,6 +167,16 @@ internal static class CameraSmoke
         // native wall obstruction state machine (18 u clearance, 50/100
         // hysteresis, spring return) - docs/camera/WALL_OBSTRUCTION.md
         var clampCam = new CameraSystem();
+        // user decision 2026-09-29: both settings default to the client-truth
+        // max - follow distance 2000 u (panel fMaxCameraDistance / engine cap)
+        // and FOV 60 deg (panel 30..60 max, see VideoSettings.PanelMaxDeg)
+        Check("distance default = client max 2000 u",
+              Math.Abs(clampCam.Row.F("InitCameraDistance", 0.0) - 20.0) < 1e-9 &&
+              Math.Abs(clampCam.Row.F("TargetDistance", 0.0) - 20.0) < 1e-9 &&
+              Math.Abs(clampCam.Row.F("MaxCameraDistance", 0.0) - 2000.0) < 1e-9,
+              string.Format("init={0:F0}m target={1:F0}m max={2:F0}u",
+                  clampCam.Row.F("InitCameraDistance", 0.0), clampCam.Row.F("TargetDistance", 0.0),
+                  clampCam.Row.F("MaxCameraDistance", 0.0)));
         Check("shared distance clamp helper (S5)",
               Math.Abs(clampCam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
               Math.Abs(clampCam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&

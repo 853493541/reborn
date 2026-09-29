@@ -98,7 +98,7 @@ public sealed class CameraSystem
         Rows[MODE_NPC_DIALOG] = DefaultRow(MODE_NPC_DIALOG);
         Rows[MODE_GOD] = DefaultRow(MODE_GOD);
         Pitch = Rows[MODE_CHARACTER].F("InitCameraPitch", -20.0 * DEG);
-        Distance = Rows[MODE_CHARACTER].F("InitCameraDistance", 6.0) * UnitsPerMeter;
+        Distance = Rows[MODE_CHARACTER].F("InitCameraDistance", 20.0) * UnitsPerMeter;
     }
 
     public CameraParams Row { get { return Rows[Mode]; } }
@@ -126,7 +126,10 @@ public sealed class CameraSystem
         {
             case MODE_CHARACTER:
                 p.Set("CameraHeight", 2.0);
-                p.Set("TargetDistance", 6.0);
+                // default follow distance = the client-truth max: user panel
+                // fMaxCameraDistance clamps at 2000 u (20 m) and the engine cap
+                // is 2000; user decision 2026-09-29 (see HOST_DEVIATIONS C10).
+                p.Set("TargetDistance", 20.0);
                 // real zoom limits, world units (NOT meters). The client's
                 // VideoSettingPanel.tCameraStatic default fMaxCameraDistance is
                 // 2000 (userdata/<account>/<role>/custom.dat, 68/92 roles;
@@ -139,7 +142,7 @@ public sealed class CameraSystem
                 p.Set("MaxDragSpeed", 0.00314);             // verified loader default
                 p.Set("RotationSpeed", 0.00314);            // verified loader default
                 p.Set("InitCameraPitch", -0.35);        // real client default (custom.dat)
-                p.Set("InitCameraDistance", 6.0);
+                p.Set("InitCameraDistance", 20.0);      // client-truth max (2000 u)
                 // Host placeholders (docs/camera/REAL_VALUES.md §7/§8 item 6):
                 // the real per-mode move-pitch rows are CDN-only. The DLL
                 // loader defaults are 0, but the model needs non-zero pivots

@@ -2,7 +2,7 @@
   "character": {
     "CameraMaxDeltaYaw": 6.283185,
     "CameraMaxDeltaPitch": 1.56,
-    "TargetDistance": 6,
+    "TargetDistance": 20,
     "MaxCameraDistance": 2000,
     "MinCameraDistance": 100,
     "SmoothTime": 0.06,
@@ -22,7 +22,7 @@
     "CameraHeight": 2,
     "MaxDragSpeed": 0.00314,
     "RotationSpeed": 0.00314,
-    "InitCameraDistance": 6,
+    "InitCameraDistance": 20,
     "CameraMovePitchSmoothTime": 0.25,
     "CameraMovePitchAdjustMaxPitch": -0.785398
   },

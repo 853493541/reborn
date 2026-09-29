@@ -134,7 +134,7 @@ internal static class RebornClient
         Log("start map=" + mapPath);
 
         var form = new Form();
-        form.Text = "JX3";
+        form.Text = "Camera Pen v3";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -485,7 +485,7 @@ internal static class RebornClient
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             camSys.Pitch = cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
-            camSys.Distance = camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter;
+            camSys.Distance = camSys.Row.F("InitCameraDistance", 20.0) * camSys.UnitsPerMeter;
             Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
                 camSys.Mode, camSys.Distance,
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
@@ -886,7 +886,7 @@ internal static class RebornClient
             {
                 // Camera reset: behind the character, model pitch -15 deg, distance 1x
                 camSys.SetMaxDistance(camSys.ClampDistanceUnits(
-                    camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
+                    camSys.Row.F("InitCameraDistance", 20.0) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
                 camSys.Pitch = -Math.PI / 12.0;
                 alignAim();
@@ -1897,8 +1897,8 @@ internal static class RebornClient
                                 p, ox2, oy2, oz2, bh, th, sh);
                         }
                         if (obstDbg && h > 0f && h < 700f && now - lastObstLog >= 500)
-                            Log(string.Format("obstdbg probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F1}(inst={8},tri={9}) terr={5:F1} scene={6:F1} h={7:F1}",
-                                p, ox2, oy2, oz2, bh, th, sh, h, col.LastInst, col.LastTri));
+                            Log(string.Format("obstdbg probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F1}(inst={8},tri={9},blk={10},fol={11}) terr={5:F1} scene={6:F1} h={7:F1}",
+                                p, ox2, oy2, oz2, bh, th, sh, h, bInst, bTri, bBlk ? 1 : 0, bFol ? 1 : 0));
                         if (penDbg)
                             penCur.Append(string.Format(" p{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F0}(i={5},t={6},blk={7},fol={8}) terr={9:F0} scene={10:F0} h={11:F0}",
                                 p, ox2, oy2, oz2, bh, bInst, bTri, bBlk ? 1 : 0, bFol ? 1 : 0, th, sh, h));
