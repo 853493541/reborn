@@ -39,6 +39,7 @@ public sealed class FoliageCollision
         // game KG3DMesh [Display] bObscatleCamera (default 1); the camera
         // obstruction query skips meshes with false
         public bool blocksCamera = true;
+        public int meshIndex = -1;
     }
 
     sealed class Instance
@@ -60,6 +61,7 @@ public sealed class FoliageCollision
     public int InstanceCount { get { return _inst.Count; } }
     public int MeshCount { get; private set; }
     int _cameraFlagZero;
+    string[] _meshPaths;   // optional mesh-index -> source model path sidecar
 
     public FoliageCollision(string foliagePath, string structurePath = null, float cellSize = 800f)
     {
@@ -244,7 +246,28 @@ public sealed class FoliageCollision
             int instCount = r.ReadInt32();
             MeshCount += meshCount;
             var meshes = new MeshData[meshCount];
-            for (int i = 0; i < meshCount; i++) meshes[i] = ReadMesh(r, 2);
+            for (int i = 0; i < meshCount; i++) { meshes[i] = ReadMesh(r, 2); meshes[i].meshIndex = i; }
+            // optional sidecar from tools/export_structure_collision.py:
+            // mesh index -> source model path (diagnostics / named blockers)
+            string mf = path + ".meshes.txt";
+            if (File.Exists(mf))
+            {
+                try
+                {
+                    string[] lines = File.ReadAllLines(mf);
+                    _meshPaths = new string[meshCount];
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        string ln = lines[i];
+                        int tab = ln.IndexOf('\t');
+                        if (tab <= 0) continue;
+                        int mi;
+                        if (int.TryParse(ln.Substring(0, tab), out mi) && mi >= 0 && mi < meshCount)
+                            _meshPaths[mi] = ln.Substring(tab + 1);
+                    }
+                }
+                catch { }
+            }
             // per-mesh bObscatleCamera sidecar written by
             // tools/export_structure_collision.py (game default = 1)
             string cf = path + ".cflags";
@@ -957,6 +980,19 @@ public sealed class FoliageCollision
         minX = it.minX; minY = it.minY; minZ = it.minZ;
         maxX = it.maxX; maxY = it.maxY; maxZ = it.maxZ;
         return true;
+    }
+
+    // diagnostics: source model path of the mesh behind an instance/mesh index
+    public int GetInstanceMesh(int idx)
+    {
+        if (idx < 0 || idx >= _inst.Count) return -1;
+        return _inst[idx].mesh.meshIndex;
+    }
+
+    public string GetMeshPath(int meshIndex)
+    {
+        if (_meshPaths == null || meshIndex < 0 || meshIndex >= _meshPaths.Length) return null;
+        return _meshPaths[meshIndex];
     }
 
     public string Describe()

@@ -984,6 +984,7 @@ internal static class RebornClient
         // the extracted .hlb files (proof/collision/terrain_extra)
         string holeDumpDir = Env("RC_HOLE_DUMP", "");
         int lastHoleIx = int.MinValue, lastHoleIz = int.MinValue;
+        int lastBlkInstLogged = -1;
         // collision profile (RC_COL_PROF=1): per-frame collision cost and the
         // deepest contact that last blocked the move
         bool colProf = Env("RC_COL_PROF", "0") == "1";
@@ -2772,6 +2773,17 @@ internal static class RebornClient
             if (now - lastLog >= 2000)
             {
                 lastLog = now;
+                // name the first blocker of each new contact (evidence: which
+                // source model blocks the player, from the .meshes.txt sidecar)
+                if (col != null && blocked && col.LastBlockedInst >= 0 &&
+                    col.LastBlockedInst != lastBlkInstLogged)
+                {
+                    lastBlkInstLogged = col.LastBlockedInst;
+                    int bmi = col.GetInstanceMesh(col.LastBlockedInst);
+                    string bmp = col.GetMeshPath(bmi);
+                    Log(string.Format("blocked by inst={0} mesh={1} {2}",
+                        col.LastBlockedInst, bmi, bmp == null ? "(no name sidecar)" : bmp));
+                }
                 if (holeDumpDir.Length > 0 && sampler != null && sampler.HasHoles &&
                     (sampler.HoleRegionX != lastHoleIx || sampler.HoleRegionZ != lastHoleIz))
                 {

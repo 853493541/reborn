@@ -377,6 +377,15 @@ def main():
     dest.write_bytes(out)
     print('wrote %s (%d bytes, %d meshes, %d instances)' % (dest, len(out), len(mesh_index), written))
 
+    # Mesh-index -> source model path sidecar (runtime diagnostics: names the
+    # exact model that blocks the player, so selection rules can be checked
+    # against the live game instead of guessing).
+    names = '\n'.join('%d\t%s' % (mesh_index[p], p) for p in sorted(mesh_index)) + '\n'
+    Path(str(dest) + '.meshes.txt').write_text(names, encoding='utf-8')
+    if args.copy_to:
+        Path(str(Path(args.copy_to) / dest.name) + '.meshes.txt').write_text(names, encoding='utf-8')
+    print('wrote %s.meshes.txt (%d entries)' % (dest.name, len(mesh_index)))
+
     # Per-mesh camera flag sidecar (game: KG3DMesh [Display] bObscatleCamera,
     # default 1). The runtime gates camera obstruction rays on it.
     cflags = bytearray()
