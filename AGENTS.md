@@ -105,10 +105,9 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 
 | Item | Why |
 |---|---|
-| Root player-era docs: `HANDOFF*.md`, `STATUS_REPORT.md`, `STOP_SUMMARY.md`, `PLAN_PATH_C.md`, `PATH_C_*.md`, `B1_*.md`, `HUALUO_*.md`, `COLOR_FIX_NOTES.md`, `P0_MIDCLIP_FIX.md`, `DESKTOP_VIEWPORT.md`, `SFX_RUNTIME_STATUS.md`, `REPORT_SFX_MOVIEEDITOR_PATH.md`, `S1_MAPVIEWER_SFX_SMOKE.md`, `Start JX3 Ani Player.bat` | Player-era (2026-09-21); several reference files no longer in the tree |
+| Root player-era docs: `HANDOFF*.md`, `STATUS_REPORT.md`, `STOP_SUMMARY.md`, `PLAN_PATH_C.md`, `PATH_C_*.md`, `B1_*.md`, `HUALUO_*.md`, `COLOR_FIX_NOTES.md`, `P0_MIDCLIP_FIX.md`, `DESKTOP_VIEWPORT.md`, `SFX_RUNTIME_STATUS.md`, `REPORT_SFX_MOVIEEDITOR_PATH.md`, `S1_MAPVIEWER_SFX_SMOKE.md` | Player-era (2026-09-21); several reference files no longer in the tree |
 | Root player-era Python: `mina.py`, `min2.py`, `tani.py`, `mesh.py`, `pss*.py`, `catalog*.py`, `transport.py`, `resolve_playable.py`, `sfx_runtime.py`, `transport.py`, `smoke_sfx_runtime.py`, etc. | Frozen; new code must not import them — port needed logic into `tools/<area>/` |
 | Root scratch: tracked `_*` PSS/probe files (27, e.g. `_pss_*.py`, `_pss_check.txt`, `_alpha_probe.py`) | One-off probes; frozen (see §13) |
-| `app/README.md` | References removed hosts (`engine_host_spike\SpikeHost.cs`, `run_map.cmd`) |
 | `ui-process-app/README.md` | "shared UiLayout renderer from map-ui-app" phrasing — map-ui-app retired |
 | `proof/gt_mapviewer_*` | Player-era map-viewer captures; GT is client/MovieEditor only |
 | Local runtime state: `perf_config.ini`, `log/`, `launch_out.txt`, `launch_err.txt` | Untracked local state; do not commit, delete, or overwrite |
@@ -199,7 +198,6 @@ Claims currently sourced from `interface\` addon/user data; annotate on touch:
 - `docs/netcode/JX3_MODE_JUEJING.md` — interface scan command; output reused as evidence.
 - `proof/pvp/attributes_and_damage.md` — already flags an addon contradiction (LOW); generalize.
 - `proof/gt_mapviewer_*` — relabel as player-era, not GT.
-- `app/README.md` — fix when touched (§9).
 
 ## 15. Response guidelines
 

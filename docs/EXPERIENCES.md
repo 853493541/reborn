@@ -55,3 +55,20 @@ solved it, and what is still open. **Newest at the bottom.**
   `engine_host_spike/`, `client/`, `tools/netcode/`, `ui-process-app/`, `native/`.
 - Evidence: `AGENTS.md`, this file, commits on `cleanup/repo-tidy`.
 - Outcome: solved
+
+### 2026-09-29 — repo — Consolidation + cleanup (merge, naming, launcher, Desktop)
+- Did: merged all 8 branches into `main` (union-resolved the anim-picker/ability-sandbox
+  split; pushed `30d9178`). On `cleanup/repo-tidy`: removed the web viewer and probes
+  (`map-ui-explorer`, `web/`, Playwright/three.js leftovers), `_port_from_mapviewer`/
+  `_ref_chrome`, unused `ability_sandbox/cam`, legacy `engine_host_spike` hosts and the
+  actor-map spike; retired `map-ui-app` (text assets → `ui-process-app/Data/text`);
+  renamed `reborn_camfp.exe` → `reborn_client.exe` and rebuilt; repurposed `app/`
+  launcher to start `reborn_client.exe` (+`RC_MAP` picker) and fixed its Desktop
+  shortcut; removed dead JX3 Ani Player leftovers (`player.py` gone since `17385ae`);
+  untracked generated per-map structure bins; dropped the redundant 90 MB samples zip;
+  consolidated the Desktop to one folder (`_backup/` moved inside, ignored); untracked
+  local runtime state (`perf_config.ini`, `launch_*.txt`) per AGENTS.md §9.
+- Evidence: commits `30d9178`, `4816d46`..`12d1a81`; `git status` clean; rebuilt
+  `bin64\reborn_client.exe` (build_info git id); `_backup\reborn-all-refs.bundle`.
+- Outcome: solved. `cleanup/repo-tidy` is ahead of `main`, not merged yet.
+- Re-open: merge `cleanup/repo-tidy` → `main` and push; delete `_backup/` after.
