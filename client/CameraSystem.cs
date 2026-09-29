@@ -593,6 +593,13 @@ public sealed class TrackCamera
 public sealed class CameraObstruction
 {
     public bool Obstructed;
+    // Host crossing guard (registered, default OFF in this class; the client
+    // enables it): the native rule may place the camera behind the anchor when
+    // hit < 18, and the look-at then flips the view 180 deg. With a chattering
+    // hit set (our bake) that flips several times per second - nausea. When
+    // NoCross is set the pull floors at 0 (camera reaches the anchor, never
+    // passes it). Exit: stable render-entity hit set (P4).
+    public bool NoCross;
     public double Distance = -1.0;     // current (possibly pulled) length
     // native bound is max(0.001, hit) - 18 (signed; T1.4 landed, the old
     // MinDistance floor is gone - no field references it)
@@ -618,6 +625,7 @@ public sealed class CameraObstruction
             // native signed pull: C' = A + u*max(0.001, hit), then the 18 u
             // clearance -> the camera may sit behind the anchor (T1.4)
             double pull = Math.Max(0.001, hitDistance) - Clearance;
+            if (NoCross && pull < 0.0) pull = 0.0;   // host crossing guard
             if (pull < Distance)
             {
                 // engine rule: a hit that shortens the anchor ray applies

@@ -90,3 +90,20 @@ Next routes (not attempted):
      KG3D_Camera scanner object) and call them.
   3. A C++/CLI helper compiled against the engine headers with access to
      KGSceneCLR/IGK3D_Camera (no signatures to guess).
+
+P2 footprint recon (2026-09-28, KG3DEngineX64.dll 2026-09-27 build):
+  Base-camera ctor 0x180447770 initializes the probe-basis block used by the
+  obstruction helper (proof: camera_wall_obstruction.txt sections 2/3):
+    +0x12c..+0x134 = (500, 0, 0)
+    +0x138..+0x140 = (0, 0, 500)
+    +0x144..+0x14c = (0, 500, 0)
+  i.e. the camera axes scaled by 500.0 (constant @ 0x18068064C; xmm1 = -1000.0
+  goes to +0x10; the rest zeroed). The ctor also zeroes +0x15c (5-ray mode).
+  Writers of +0x12c/+0x144 found by full .text store scan: 0x1802c1f8f,
+  0x1802c2d73, 0x180474528, 0x18048540e, 0x1804a5343, 0x1804d11c7,
+  0x1804d3538/0x1804d3571 - disassembly shows these are struct copy/serialize
+  blocks (write +0xf0..+0x158 from spill slots), not the per-frame footprint
+  projection. The exact transform from camera basis to the corner offsets
+  (how 500 is scaled per frame) was not located.
+  Result: host keeps foot = 22 u (registered C2 approximation); the ctor
+  evidence is recorded for a future session.

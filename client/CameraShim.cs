@@ -345,6 +345,22 @@ internal static class CameraShim
         try { return RC_CamObject(); } catch { return IntPtr.Zero; }
     }
 
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_PatchD6();
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr RC_PatchD6Info();
+
+    public static int PatchD6()
+    {
+        try { return RC_PatchD6(); } catch { return -99; }
+    }
+
+    public static string PatchD6Info()
+    {
+        try { return Str(RC_PatchD6Info()); } catch { return "?"; }
+    }
+
     public static string FindAll(float x, float z)
     {
         try { return Str(RC_Probe_FindAll(x, z)); }

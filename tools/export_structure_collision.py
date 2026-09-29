@@ -171,6 +171,9 @@ def main():
                                          'engine_host_spike' / 'collision_data' / 'structure_collision.bin'))
     ap.add_argument('--copy-to', default=r'C:\SeasunGame\MovieEditor\bin64\collision_data')
     ap.add_argument('--work', default=r'C:\jx3tmp\struct_meshes')
+    ap.add_argument('--flags', default=str(Path(__file__).resolve().parent.parent /
+                                           'engine_host_spike' / 'collision_data' / 'camera_mesh_flags.json'),
+                    help='per-mesh bObscatleCamera map (export_camera_flags.py)')
     args = ap.parse_args()
 
     objs = load_objects(args.regions)
@@ -291,6 +294,32 @@ def main():
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_bytes(out)
     print('wrote %s (%d bytes, %d meshes, %d instances)' % (dest, len(out), len(mesh_index), written))
+
+    # Per-mesh camera flag sidecar (game: KG3DMesh [Display] bObscatleCamera,
+    # default 1). The runtime gates camera obstruction rays on it.
+    cflags = bytearray()
+    if args.flags and Path(args.flags).is_file():
+        fmap = json.loads(Path(args.flags).read_text(encoding='utf-8'))
+        zeros = 0
+        for key in sorted(all_meshes):
+            if '#trunk' in key:
+                base = visual_of.get(key.split('#', 1)[0], '')
+                f = int(fmap.get(base.replace('/', '\\').lower(), 1))
+            else:
+                f = int(fmap.get(key.replace('/', '\\').lower(), 1))
+            if f == 0:
+                zeros += 1
+            cflags.append(f)
+        cdest = Path(str(dest) + '.cflags')
+        cdest.write_bytes(struct.pack('<II', 0x474C4643, len(cflags)) + bytes(cflags))  # 'CFLG'
+        print('wrote %s (%d bytes, %d zero-flag meshes)' % (cdest, 8 + len(cflags), zeros))
+        if args.copy_to:
+            c2 = Path(args.copy_to) / (dest.name + '.cflags')
+            c2.write_bytes(cdest.read_bytes())
+            print('copied to %s' % c2)
+    else:
+        print('no flags map at %s - skipping .cflags' % args.flags)
+
     if args.copy_to:
         d2 = Path(args.copy_to) / dest.name
         d2.parent.mkdir(parents=True, exist_ok=True)

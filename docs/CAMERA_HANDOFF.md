@@ -449,3 +449,17 @@ approximations.
   `CAMERA_CLOSE_RANGE_RESEARCH.md` §3 and the host section of
   `CAMERA_WALL_OBSTRUCTION.md` predate the current tip; treat this file and
   `CAMERA_HOST_DEVIATIONS.md` as current.
+
+## 2026-09-28: engine-faithful camera path landed (D3/B6 closed)
+
+Recovered and wired: the managed `KGSceneCLR` holds the engine scene proxy in
+`m_pScene` (`IKG3DSceneProxy*`); it is reachable from C# by reflection
+(`FieldInfo` + `Pointer.Unbox`) - the proxy/camera vtables live in
+`KG_EngineEditorX64.dll`, which is why the engine-module-only guards rejected
+every previous scan. The shim calls the managed IL's own setters
+(`+0x50` position, `+0x58` look-at) with SEH guards; absolute Y and
+look-at-at-the-anchor are live. Evidence: 2026-09-28 logs
+`reborn_20260928_140358` (stationary), `_140659` (drag sweep),
+`_140838` (movement demo): `engineSet direct rc=0`, view tracks the anchor,
+`postdbg 0.0`, `DONE`, exit 0. Default on; `RC_CAM_ENGINESET=0` opts out.
+The orbit-flip/aim-emulation band-aids are obsolete (register updated).

@@ -36,6 +36,9 @@ public sealed class FoliageCollision
         public int[] cellStart;
         public int[] cellTri;
         public float minX, minY, minZ, maxX, maxY, maxZ;
+        // game KG3DMesh [Display] bObscatleCamera (default 1); the camera
+        // obstruction query skips meshes with false
+        public bool blocksCamera = true;
     }
 
     sealed class Instance
@@ -56,6 +59,7 @@ public sealed class FoliageCollision
 
     public int InstanceCount { get { return _inst.Count; } }
     public int MeshCount { get; private set; }
+    int _cameraFlagZero;
 
     public FoliageCollision(string foliagePath, string structurePath = null, float cellSize = 800f)
     {
@@ -196,6 +200,10 @@ public sealed class FoliageCollision
                 float sceneScale = r.ReadSingle();
                 meshes[pattern] = ReadMesh(r, 1);
                 meshes[pattern].gcell = meshes[pattern].gcell; // no-op
+                // bObscatleCamera from the game's mesh property inis (2026-09-28
+                // extraction): rock patterns 6/7 ship =0 (the camera ignores
+                // them); deadwood/cactus (4/5) have no ini -> ctor default 1
+                meshes[pattern].blocksCamera = !(pattern == 6 || pattern == 7);
                 _v1Scale[pattern] = sceneScale;
             }
             for (int i = 0; i < instCount; i++)
@@ -237,6 +245,29 @@ public sealed class FoliageCollision
             MeshCount += meshCount;
             var meshes = new MeshData[meshCount];
             for (int i = 0; i < meshCount; i++) meshes[i] = ReadMesh(r, 2);
+            // per-mesh bObscatleCamera sidecar written by
+            // tools/export_structure_collision.py (game default = 1)
+            string cf = path + ".cflags";
+            if (File.Exists(cf))
+            {
+                try
+                {
+                    using (var cf2 = new BinaryReader(File.OpenRead(cf)))
+                    {
+                        if (cf2.ReadUInt32() == 0x474C4643)
+                        {
+                            int n = cf2.ReadInt32();
+                            for (int i = 0; i < n && i < meshCount; i++)
+                            {
+                                bool b = cf2.ReadByte() != 0;
+                                meshes[i].blocksCamera = b;
+                                if (!b) _cameraFlagZero++;
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
             for (int i = 0; i < instCount; i++)
             {
                 int mi = r.ReadInt32();
@@ -415,7 +446,8 @@ public sealed class FoliageCollision
     public int LastTri = -1;
 
     public float Raycast(float ax, float ay, float az, float bx, float by, float bz,
-                         bool structuresOnly = false, bool frontFacesOnly = false)
+                         bool structuresOnly = false, bool frontFacesOnly = false,
+                         bool cameraGate = false)
     {
         LastInst = -1;
         float dx = bx - ax, dy = by - ay, dz = bz - az;
@@ -432,6 +464,9 @@ public sealed class FoliageCollision
         {
             Instance it = _inst[_cand[ci]];
             if (structuresOnly && it.fromFoliage) continue;
+            // game camera query: FilterCamera skips meshes whose
+            // bObscatleCamera is 0 (KG3DMesh display block)
+            if (cameraGate && !it.mesh.blocksCamera) continue;
             if (it.maxY < minY || it.minY > maxY) continue;
             if (it.maxX < minX || it.minX > maxX) continue;
             if (it.maxZ < minZ || it.minZ > maxZ) continue;
@@ -741,6 +776,7 @@ public sealed class FoliageCollision
 
     public string Describe()
     {
-        return string.Format("instances={0} meshes={1}", _inst.Count, MeshCount);
+        return string.Format("instances={0} meshes={1} camflag0={2}",
+            _inst.Count, MeshCount, _cameraFlagZero);
     }
 }

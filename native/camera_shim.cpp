@@ -540,6 +540,54 @@ SHIM_EXPORT int RC_CamSet(float x, float y, float z, float tx, float ty, float t
     return 0;
 }
 
+// D6 crash guard (registered host bypass, kill switch RC_PATCH_D6=0).
+// KG3DEngineDX11EX64+0x11D03B6 dereferences a null material-store pointer
+// (the editor install lacks the build-machine DataStores): at 0x11D03B6
+//   mov rbx,[rsi] / mov rcx,[rsp+0x78] / ...
+// The trampoline only changes the rsi==0 case: it returns E_FAIL through the
+// function epilogue (0x11D0840) instead of dereferencing null. The non-null
+// path executes the original two instructions and resumes at 0x11D03BE.
+static void* g_d6cave = NULL;
+
+SHIM_EXPORT int RC_PatchD6()
+{
+    if (RC_Shim_Init() != 0) return -1;
+    BYTE* site = g_base + 0x11D03B6;
+    const BYTE expect[8] = { 0x48, 0x8B, 0x1E, 0x48, 0x8B, 0x4C, 0x24, 0x78 };
+    if (memcmp(site, expect, 8) != 0) return -2;   // version guard
+    if (g_d6cave == NULL)
+    {
+        g_d6cave = VirtualAlloc(NULL, 64, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+        if (g_d6cave == NULL) return -3;
+    }
+    BYTE* c = (BYTE*)g_d6cave;
+    BYTE* resume = g_base + 0x11D03BE;
+    BYTE* epilogue = g_base + 0x11D0840;
+    int i = 0;
+    c[i++] = 0x48; c[i++] = 0x85; c[i++] = 0xF6;             // test rsi,rsi
+    c[i++] = 0x74; c[i++] = 0x0D;                             // jz +13 -> bail
+    c[i++] = 0x48; c[i++] = 0x8B; c[i++] = 0x1E;              // mov rbx,[rsi]
+    c[i++] = 0x48; c[i++] = 0x8B; c[i++] = 0x4C; c[i++] = 0x24; c[i++] = 0x78; // mov rcx,[rsp+0x78]
+    c[i++] = 0xE9; *(int*)(c + i) = (int)(resume - (c + i + 4)); i += 4;
+    c[i++] = 0xB8; *(int*)(c + i) = 0x80004005; i += 4;       // mov eax,E_FAIL
+    c[i++] = 0xE9; *(int*)(c + i) = (int)(epilogue - (c + i + 4)); i += 4;
+    DWORD old;
+    if (!VirtualProtect(site, 5, PAGE_EXECUTE_READWRITE, &old)) return -4;
+    site[0] = 0xE9;
+    *(int*)(site + 1) = (int)(c - (site + 5));
+    VirtualProtect(site, 5, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), site, 5);
+    return 0;
+}
+
+SHIM_EXPORT const char* RC_PatchD6Info()
+{
+    if (g_base == NULL) { sprintf_s(g_status, "engine not init"); return g_status; }
+    BYTE* site = g_base + 0x11D03B6;
+    sprintf_s(g_status, "site=%p byte0=%02X cave=%p", site, site[0], g_d6cave);
+    return g_status;
+}
+
 SHIM_EXPORT void* RC_CamObject()
 {
     return g_camObj;

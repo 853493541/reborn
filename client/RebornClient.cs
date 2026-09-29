@@ -25,6 +25,31 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
+        // Single-instance guard: concurrent clients share the engine/GPU/D3D
+        // device and destabilize each other (observed: three overlapping runs
+        // 18:19/18:25/18:30 with a BEX64 crash in one). Blocks any known
+        // client process (including the fork's builds) unless RC_ALLOW_MULTI=1.
+        if (Env("RC_ALLOW_MULTI", "0") != "1")
+        {
+            try
+            {
+                var me = System.Diagnostics.Process.GetCurrentProcess();
+                string[] known = { "reborn_camfp", "reborn_client", "ability_sandbox", "asset_sandbox" };
+                foreach (string name in known)
+                {
+                    foreach (var other in System.Diagnostics.Process.GetProcessesByName(name))
+                    {
+                        if (other.Id == me.Id) continue;
+                        System.Windows.Forms.MessageBox.Show(
+                            name + " is already running (pid " + other.Id +
+                            "). Close it first or set RC_ALLOW_MULTI=1.",
+                            "reborn_camfp");
+                        return;
+                    }
+                }
+            }
+            catch { }
+        }
         string editorRoot = @"C:\SeasunGame\MovieEditor";
         string startupPath = Path.Combine(editorRoot, "bin64");
         string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
@@ -73,6 +98,36 @@ internal static class RebornClient
                 if (logLines.Count > 200) logLines.RemoveRange(0, logLines.Count - 200);
             }
         };
+        // Build fingerprint (camera workstream logs are the camFP=True set):
+        // exe name + mtime + build_info git hash + the active camera flag
+        // defaults. Ends "which build/flags produced this log" ambiguity.
+        {
+            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string exeName = Path.GetFileName(exePath);
+            string exeMtime = ""; string git = "?"; string dirty = "?";
+            try { exeMtime = File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss"); } catch { }
+            try
+            {
+                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
+                if (File.Exists(bi))
+                {
+                    foreach (string ln in File.ReadAllLines(bi))
+                    {
+                        if (ln.StartsWith("git=")) git = ln.Substring(4);
+                        else if (ln.StartsWith("dirty=")) dirty = ln.Substring(6);
+                    }
+                }
+            }
+            catch { }
+            Log(string.Format(
+                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13})",
+                exeName, exeMtime, git, dirty,
+                Env("RC_CAM_ENGINESET", "1"), Env("RC_CAM_LOOKPACK", "0"),
+                Env("RC_CAM_RATECAP", "0"), Env("RC_CAM_LOADPACE", "1"),
+                Env("RC_FULLLOAD", "0"), Env("RC_PATCH_D6", "0"),
+                Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
+                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0")));
+        }
         Log("start map=" + mapPath);
 
         var form = new Form();
@@ -132,7 +187,20 @@ internal static class RebornClient
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
         var scene = new KGSceneCLR();
+        // D6 mitigation: ask the engine to fully load the scene up front so the
+        // lazy material/shader loader (missing build-machine DataStores -> AV)
+        // is not raced while running through the map. Env-gated for A/B first.
+        bool fullLoad = Env("RC_FULLLOAD", "0") == "1";
         int loadResult = scene.LoadMap(mapPath, false);
+        if (fullLoad)
+        {
+            try
+            {
+                int fr = scene.SetSceneFullLoading(true);
+                Log("fullload rc=" + fr + " progress=" + scene.GetLoadingProgress().ToString("F3"));
+            }
+            catch (Exception e) { Log("fullload ex: " + e.Message); }
+        }
         Log("LoadMap result=" + loadResult);
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
         scene.SetActiveEnvironment();
@@ -142,7 +210,7 @@ internal static class RebornClient
         // CLR scene-proxy route: read the managed KGSceneCLR.m_pScene field by
         // reflection (the byte-scan of the wrapper could not) and hand it to
         // the shim, which calls the engine camera getters SEH-guarded.
-        if (Env("RC_CAM_CLR", "0") == "1" || Env("RC_CAM_ENGINESET", "0") == "1")
+        if (Env("RC_CAM_CLR", "0") == "1" || Env("RC_CAM_ENGINESET", "1") != "0")
         {
             try
             {
@@ -228,6 +296,18 @@ internal static class RebornClient
         // Step C native bridge (optional, version-checked): near plane /
         // absolute camera Y / FilterCamera ray; managed fallback if absent
         CameraShim.TryLoad(Log);
+
+        // D6 crash guard (registered host bypass, now OPT-IN): make the
+        // engine's null material-store deref return E_FAIL instead of AVing.
+        // Version-guarded in the shim. NOT default-on: a session with it active
+        // produced a BEX64 jump-to-data (18:28:14, three overlapping instances
+        // running) - the skipped cleanup may corrupt state later, so it needs
+        // A/B evidence before it can ship. Enable with RC_PATCH_D6=1.
+        if (CameraShim.Available && Env("RC_PATCH_D6", "0") == "1")
+        {
+            int prc = CameraShim.PatchD6();
+            Log("patchD6 rc=" + prc + " " + CameraShim.PatchD6Info());
+        }
 
         // NOTE (2026-09-27): the engine camera contract is recovered (see
         // EngineRay comments: scene vt+0x50 -> camera, cam vt+0x50/+0x58
@@ -351,6 +431,19 @@ internal static class RebornClient
         double clearanceOverride;
         if (double.TryParse(Env("RC_CAM_CLEARANCE", ""), out clearanceOverride) && clearanceOverride > 0.0)
             camObst.Clearance = clearanceOverride;
+        // crossing guard (registered host stabilizer, on by default): with our
+        // chattering bake hit the signed pull oscillates across the anchor and
+        // the engine look-at flips the view 180 deg per flip (nausea). Floor
+        // the pull at the anchor; RC_CAM_CROSS=1 restores the native crossing.
+        camObst.NoCross = Env("RC_CAM_CROSS", "0") != "1";
+        // degenerate-hit guard threshold (u); 0 disables (native behaviour)
+        double hitMinDist;
+        if (!double.TryParse(Env("RC_CAM_HITMIN", "3.0"), out hitMinDist) || hitMinDist < 0.0)
+            hitMinDist = 0.0;
+        // B5 final-camera wall gate: host band-aid, off by default (it can fire
+        // at wall edges and adds a jump of its own; the pull + crossing guard
+        // already keep the camera on the near side). RC_CAM_WALLGATE=1 restores.
+        bool wallGate = Env("RC_CAM_WALLGATE", "0") == "1";
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
@@ -635,7 +728,7 @@ internal static class RebornClient
         {
             // engine-faithful set path owns the view (look-at); the orbit
             // alignment emulation must not run there.
-            if (Env("RC_CAM_ENGINESET", "0") == "1") return;
+            if (Env("RC_CAM_ENGINESET", "1") != "0") return;
             double modelPitch = camSys.Pitch;
             alignEngineCamera(camSys.Yaw, geometricAimPitch());
             camSys.Pitch = modelPitch;
@@ -824,6 +917,12 @@ internal static class RebornClient
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
+        double[] camOffSmooth = new double[3];
+        bool camOffInit = false;
+        bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
+        int shakePrevSign = 0;
+        long shakeLastLog = 0;
+        var shakeFlips = new System.Collections.Generic.List<long>();
         bool orbitApplied = false;
         float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
         bool dbgIntSet = false;
@@ -849,7 +948,21 @@ internal static class RebornClient
         // engine-faithful set: position + look-at through the engine camera
         // object (EngineRay.SetCameraEngine) instead of the managed
         // SetCameraPos target-translation; no Y clamp, no orbit events
-        bool engineSetCam = Env("RC_CAM_ENGINESET", "0") == "1";
+        bool engineSetCam = Env("RC_CAM_ENGINESET", "1") != "0";   // engine-faithful default; RC_CAM_ENGINESET=0 opts out
+        // D6 host pacing: while the scene reports incomplete loading, scale the
+        // orbit/view deltas so the engine cannot be asked to show content whose
+        // material/shader is still loading (the editor engine AVs there).
+        // Registered host pacing (bends feel while loading); RC_CAM_LOADPACE=0
+        // disables, RC_CAM_LOADDBG=1 logs the progress signal.
+        bool loadPace = Env("RC_CAM_LOADPACE", "1") != "0";
+        bool loadDbg = Env("RC_CAM_LOADDBG", "0") == "1";
+        float loadProg = 1f;
+        long lastLoadLog = 0;
+        // D6 pacing experiment, now OPT-IN (RC_CAM_RATECAP=1): cap orbit deltas
+        // at 1.5 rad/s. Default off - it bends drag feel (rotation rate), which
+        // the user noticed as broken controls, and it did not prevent the D6
+        // crash anyway.
+        bool rateCap = Env("RC_CAM_RATECAP", "0") == "1";
         uint vtgtSlot = 0;
         {
             string vs = Env("RC_CAM_VTGT_SLOT", "");
@@ -858,16 +971,11 @@ internal static class RebornClient
         bool camSetTarget = Env("RC_CAM_SET_TARGET", "0") == "1";
         bool camSnapGuard = Env("RC_CAM_SNAPGUARD", "0") == "1";
         bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
-        // native look-at approximation (default ON 2026-09-27 late, kill switch
-        // RC_CAM_LOOKPACK=0, registered D3). When the resolved obstruction
-        // length crosses the anchor the engine orbit is rotated 180 deg (yaw +
-        // mirrored pitch) through the normal orbit input, rate-limited to the
-        // engine's own fMaxAngelVel (~1.5 rad/s, <=20 px/event). It engages and
-        // holds only while stationary: the moving case AVs the host engine
-        // (D6 - content loading on instant view changes), so movement keeps the
-        // old view. This fixes the reported see-through for the stationary
-        // repro; the engine-direct path (position setter works, target setter
-        // still blocked) is the full-fix route.
+        // legacy look-at approximation: experiment only, default OFF. The
+        // engine-faithful path (m_pScene -> cam vt+0x50 pos / vt+0x58 look-at,
+        // see EngineRay/CameraShim) now owns the look-at; this orbit-flip was
+        // the pre-engine fallback and is kept only for A/B (enable with
+        // RC_CAM_LOOKPACK=1). Rate-limited to ~1.5 rad/s and stationary-only.
         bool lookPack = Env("RC_CAM_LOOKPACK", "0") == "1";
         bool viewFlipped = false;
         int flipPxTarget = 0, flipPxDelivered = 0;
@@ -946,7 +1054,7 @@ internal static class RebornClient
 
         // One-time engine aim alignment (loop-limited: continuous vertical
         // orbit deltas break the engine screenshot path). RC_PITCH_ALIGN=0 skips.
-        if (Env("RC_PITCH_ALIGN", "1") == "1" && Env("RC_CAM_ENGINESET", "0") != "1")
+        if (Env("RC_PITCH_ALIGN", "1") == "1" && Env("RC_CAM_ENGINESET", "1") == "0")
         {
             Log(string.Format("camera aim align: yaw={0:F3} modelPitch={1:F3} aimPitch={2:F3}",
                 camSys.Yaw, camSys.Pitch, geometricAimPitch()));
@@ -968,6 +1076,15 @@ internal static class RebornClient
             if (dt > 0.05f) dt = 0.05f;
             frames++;
             if (now - fpsAt >= 1000) { fps = frames * 1000 / (now - fpsAt); frames = 0; fpsAt = now; }
+            if (loadPace || loadDbg)
+            {
+                try { loadProg = scene.GetLoadingProgress(); } catch { loadProg = 1f; }
+                if (loadDbg && now - lastLoadLog >= 1000)
+                {
+                    lastLoadLog = now;
+                    Log("loadprog=" + loadProg.ToString("F3"));
+                }
+            }
             if (clrSeqIdx < clrSeqAt.Length && now >= clrSeqAt[clrSeqIdx])
             {
                 camObst.Clearance = clrSeqVal[clrSeqIdx];
@@ -1053,6 +1170,24 @@ internal static class RebornClient
             {
                 int ox = 0, oy = 0;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
+                if (loadPace && loadProg < 0.999f)
+                {
+                    // D6 host pacing: the engine is still loading content; move
+                    // the view at a quarter rate instead of racing the loader
+                    ox /= 4; oy /= 4;
+                }
+                if (rateCap)
+                {
+                    // D6 view-rate cap (registered host pacing)
+                    double maxYawPx2 = 1.5 * dt / 0.0018;
+                    if (maxYawPx2 < 1.0) maxYawPx2 = 1.0;
+                    if (ox > maxYawPx2) ox = (int)maxYawPx2;
+                    else if (ox < -maxYawPx2) ox = (int)-maxYawPx2;
+                    double maxPitchPx2 = 1.5 * dt / 0.00121;
+                    if (maxPitchPx2 < 1.0) maxPitchPx2 = 1.0;
+                    if (oy > maxPitchPx2) oy = (int)maxPitchPx2;
+                    else if (oy < -maxPitchPx2) oy = (int)-maxPitchPx2;
+                }
                 // model-driven camera motion (move-pitch / yaw-follow) is fed to
                 // the engine as orbit pixels: no raw drag counterpart exists, so
                 // the full delta is synthesised
@@ -1602,6 +1737,32 @@ internal static class RebornClient
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
                 double[] camOff = new double[3];
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
+                // game per-axis dead-zone + SmoothTime (SetCharacterCameraPosition
+                // @ 0x180B0F2BA..0x180B0F3A6, state +0x1B8/0x1BC/0x1C0; spec
+                // docs/CAMERA_FIX_SPEC.md, reference tools/netcode/reference/
+                // camera_model.py): current += delta*dt/SmoothTime per axis, snap
+                // when the step covers the delta. The host engine has no camera
+                // smoothing of its own, so without this the orbit is raw.
+                if (!camOffInit)
+                {
+                    camOffSmooth[0] = camOff[0]; camOffSmooth[1] = camOff[1];
+                    camOffSmooth[2] = camOff[2]; camOffInit = true;
+                }
+                bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
+                                Env("RC_CAM_NOSMOOTH", "0") != "1";
+                double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
+                for (int i = 0; i < 3; i++)
+                {
+                    double d3 = camOff[i] - camOffSmooth[i];
+                    if (doSmooth && Math.Abs(d3) > 1e-6 &&
+                        Math.Abs(d3) > Math.Abs(d3) * dt / stime)
+                        camOffSmooth[i] += d3 * dt / stime;
+                    else
+                        camOffSmooth[i] = camOff[i];
+                }
+                camOff[0] = camOffSmooth[0];
+                camOff[1] = camOffSmooth[1];
+                camOff[2] = camOffSmooth[2];
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
@@ -1642,7 +1803,10 @@ internal static class RebornClient
                         float qx2 = (float)(ax2 + ox2 + ux * offLen);
                         float qy2 = (float)(ay2 + oy2 + uy * offLen);
                         float qz2 = (float)(az2 + oz2 + uz * offLen);
-                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, true, true);
+                        // game camera class set: every instance passes through
+                        // the per-mesh bObscatleCamera gate (cflags sidecars);
+                        // front faces only
+                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, false, true, true);
                         float bh = h;
                         // engine rays: the game's camera mask 0x301 covers terrain
                         // and scene entities, which the baked set cannot fully cover
@@ -1650,6 +1814,20 @@ internal static class RebornClient
                         if (th > 0f && (h <= 0f || th < h)) h = th;
                         float sh = engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2);
                         if (sh > 0f && (h <= 0f || sh < h)) h = sh;
+                        // degenerate-hit guard (registered, RC_CAM_HITMIN=0
+                        // disables): a hit a few units from the probe origin is
+                        // the raw scene backend's self/exit/grazing face (bake
+                        // clear, scene 0.1-2.3 u in the T1 sweep), not a wall
+                        // between anchor and camera - a wall that close to the
+                        // head would floor the pull at the anchor anyway, so
+                        // ignoring it only removes the false teleport.
+                        if (h > 0f && h < hitMinDist)
+                        {
+                            if (obstDbg && now - lastObstLog >= 500)
+                                Log(string.Format("obstdbg degenerate probe{0} off=({1:F0},{2:F0},{3:F0}) h={4:F1} (bake={5:F1} terr={6:F1} scene={7:F1}) ignored",
+                                    p, ox2, oy2, oz2, h, bh, th, sh));
+                            h = -1f;
+                        }
                         if (h > 0f && (hitDist < 0.0 || h < hitDist))
                         {
                             hitDist = h;
@@ -1712,6 +1890,26 @@ internal static class RebornClient
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
                 dbgEffDist = dist;
+                // shake detector (RC_CAM_SHAKEDBG=1): the nausea case is the
+                // signed pull oscillating across the anchor (view flips pi).
+                // Count sign flips in a rolling 2 s window and log bursts.
+                if (shakeDbg)
+                {
+                    int sign = camLen < 0 ? -1 : (camLen > 0 ? 1 : 0);
+                    if (shakePrevSign != 0 && sign != 0 && sign != shakePrevSign)
+                    {
+                        shakeFlips.Add(now);
+                    }
+                    if (sign != 0) shakePrevSign = sign;
+                    while (shakeFlips.Count > 0 && now - shakeFlips[0] > 2000) shakeFlips.RemoveAt(0);
+                    if (shakeFlips.Count >= 3 && now - shakeLastLog >= 1000)
+                    {
+                        shakeLastLog = now;
+                        Log(string.Format("shakedbg flips={0}/2s camLen={1:F1} hit={2:F0} yaw={3:F3} pitch={4:F3} obst={5}",
+                            shakeFlips.Count, camLen, hitDist, camSys.Yaw, camSys.Pitch,
+                            camObst.Obstructed ? 1 : 0));
+                    }
+                }
                 // look-at experiment: the engine view does not follow the camera
                 // position (no managed look-at), so when the pull crosses the
                 // anchor the render points away from it. Rotate the engine orbit
@@ -1772,10 +1970,11 @@ internal static class RebornClient
                 // final-camera wall gate (T1.5): the camera->anchor segment must
                 // be clear; if any wall sits between, retract along that line so
                 // the camera can never sit on the far side of geometry
-                if (engineRay.Available)
+                if (wallGate && engineRay.Available)
                 {
+                    // same camera gate as the probes
                     float g1 = col != null ? col.Raycast((float)camX, (float)camY, (float)camZ,
-                        (float)ax2, (float)ay2, (float)az2, true, true) : -1f;
+                        (float)ax2, (float)ay2, (float)az2, false, true, true) : -1f;
                     float g2 = engineRay.RayTerrain((float)camX, (float)camY, (float)camZ,
                         (float)ax2, (float)ay2, (float)az2);
                     float g3 = engineRay.RayScene((float)camX, (float)camY, (float)camZ,
