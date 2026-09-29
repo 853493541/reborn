@@ -144,13 +144,14 @@ internal static class RebornClient
             }
             catch { }
             Log(string.Format(
-                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17})",
+                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17},BACKFACE={18},HITWIN={19})",
                 exeName, exeMtime, git, dirty,
                 Env("RC_CAM_ENGINESET", "1"), Env("RC_CAM_LOOKPACK", "0"),
                 Env("RC_CAM_RATECAP", "0"), Env("RC_CAM_LOADPACE", "1"),
                 Env("RC_FULLLOAD", "0"), Env("RC_PATCH_D6", "0"),
                 Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
-                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80")));
+                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80"),
+                Env("RC_CAM_BACKFACE", "1"), Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0"))));
         }
         Log("start map=" + mapPath);
 
@@ -469,6 +470,16 @@ internal static class RebornClient
         // at wall edges and adds a jump of its own; the pull + crossing guard
         // already keep the camera on the near side). RC_CAM_WALLGATE=1 restores.
         bool wallGate = Env("RC_CAM_WALLGATE", "0") == "1";
+        // double-sided camera probes, default on (RC_CAM_BACKFACE=0 restores
+        // the old front-only rule). The penetration recorder showed the
+        // resolved camera on the far side of surfaces whose front faces point
+        // at the camera (T1 sweep: reverse cast hit 1-11 u from the camera,
+        // forward front-only probes blind), i.e. front-only can strand the
+        // camera outside the obstruction set. A/B 2026-09-29: T1 sweep 192
+        // event-frames -> 0; T2 hit=206 len=188 and T4 hit=186 len=168 exact;
+        // 0 shake events. Registered host fix; exits with the real
+        // FilterCamera pass (D1) once its winding rule is proven.
+        bool probeFrontOnly = Env("RC_CAM_BACKFACE", "1") != "1";
         // raw scene backend in the camera probes (game mask 0x301 includes it).
         // D1/D4: unfiltered - it hits the player's own model (57 u at the user
         // spot -> camera slammed to 39) and exit/grazing faces near the origin.
@@ -1964,8 +1975,9 @@ internal static class RebornClient
                         float qz2 = (float)(az2 + oz2 + uz * offLen);
                         // game camera class set: every instance passes through
                         // the per-mesh bObscatleCamera gate (cflags sidecars);
-                        // front faces only
-                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, false, true, true);
+                        // front faces only unless the double-sided experiment
+                        // (RC_CAM_BACKFACE=1) is on
+                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, false, probeFrontOnly, true);
                         float bh = h;
                         int bInst = col.LastInst, bTri = col.LastTri;
                         bool bBlk = col.LastBlocksCamera, bFol = col.LastFromFoliage;
