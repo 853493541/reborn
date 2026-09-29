@@ -941,11 +941,14 @@ changed"):
 | `+0x90` | derived: capsule `climbingMode` | desc size `0x98` (via dealloc in the isValid tail) |
 
 So the **desc format is reproduction-ready**; what remains of G-1 is only where the gameplay
-character's radius/height values come from (SIMWorld semantic keys `capsules radius` /
-`capsules length`, fed by the Represent character setup — likely model-derived; no config
-found in `physic_character_param.krl.txt`). The named shape library
-(`physic_shape_param.krl.txt`, capsule r50/l50 at index 6) is a separate per-object shape
-table, not the player body.
+character's radius/height values come from. The SIMWorld keys `capsules radius` /
+`capsules length` are interned through tiny Represent accessors
+(`proof/collision/disasm/represent_capsules_writer.txt`: each is
+`lea rcx, key; call SemanticX64!cstr_string; mov [global], rax`), i.e. the values live in the
+**Semantic key/value table** consumed by `PhysicScene::_AddCapsules`; the source table/loader
+that populates them is still unidentified (no radius/height in
+`physic_character_param.krl.txt`; the named shape library `physic_shape_param.krl.txt`
+capsule r50/l50 at index 6 is a per-object shape, not the player body).
 
 Further G-1 evidence (2026-09-28): `PhysicsEngineX64.dll` really does construct PhysX
 characters — RTTI strings for `.?AVPxCapsuleControllerDesc@physx@@`,
@@ -2111,7 +2114,7 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/SIMWorldX64_exports.txt` / `_strings.txt` | re-verified SIMWorld export surface |
 | `proof/collision/missile/*` | extracted missile/bullet/phase/controller tables (2026-09-28) + decoded `buff_bullet_header_utf8.txt` |
 | `proof/collision/physic/*` | engine physic configs (file/folder white/black lists, shape/rigid/conveyor params) + UTF-8 copies + `audit_lists.txt` |
-| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`/IO helpers/text parser, `PxControllerDesc::isValid` + CharacterKinematic `createController` shim |
+| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`/IO helpers/text parser, `PxControllerDesc::isValid` + CharacterKinematic `createController` shim, Represent `capsules` key accessors |
 | `proof/collision/recon/NAVX64_all_strings.txt` | every ASCII string in NAVX64 (error texts, factory names) |
 | `proof/collision/ui_scripts/*.utf8.lua` | unluac decompilation of `Target.lua` / `target.lua` / `skill.lua` (client targeting model) |
 | `proof/collision/recon/PhysicsEngineX64_strings.txt` | RTTI + `_CreateCapsule` + PhysX controller-desc strings |
