@@ -448,6 +448,12 @@ public sealed class FoliageCollision
     // whether the camera gate would have skipped it (cflags=0 foliage)
     public bool LastBlocksCamera = true;
     public bool LastFromFoliage = false;
+    // blocked-contact recorder (RC_COL_PROF): the deepest side contact that
+    // produced a push-out / blocked result in the last Resolve.
+    public int LastBlockedInst = -1;
+    public float LastBlockedDepth, LastBlockedNx, LastBlockedNy, LastBlockedNz, LastBlockedPy;
+    // profiling counters (always counted; cheap int adds)
+    public long ProfInstTouches, ProfTriTests;
 
     public float Raycast(float ax, float ay, float az, float bx, float by, float bz,
                          bool structuresOnly = false, bool frontFacesOnly = false,
@@ -640,6 +646,7 @@ public sealed class FoliageCollision
     {
         float[] w2l = it.w2l;
         if (w2l == null) return false;
+        ProfInstTouches++;
         // world -> local for capsule endpoints
         float lAx = px * w2l[0] + py * w2l[4] + pz * w2l[8] + w2l[12];
         float lAy = px * w2l[1] + py * w2l[5] + pz * w2l[9] + w2l[13];
@@ -673,6 +680,7 @@ public sealed class FoliageCollision
                 for (int k = s0; k < s1; k++)
                 {
                     int tri = md.cellTri[k];
+                    ProfTriTests++;
                     int i0 = md.tris[tri * 3] * 3, i1 = md.tris[tri * 3 + 1] * 3, i2 = md.tris[tri * 3 + 2] * 3;
                     // closest pair, local space (pair and both points are
                     // committed together or not at all)
@@ -819,7 +827,14 @@ public sealed class FoliageCollision
                 py += best.ny * best.depth;
                 pz += best.nz * best.depth;
                 float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
-                if (horiz > 0.5f) blocked = true;
+                if (horiz > 0.5f)
+                {
+                    blocked = true;
+                    LastBlockedInst = bestIdx;
+                    LastBlockedDepth = best.depth;
+                    LastBlockedNx = best.nx; LastBlockedNy = best.ny; LastBlockedNz = best.nz;
+                    LastBlockedPy = best.py;
+                }
             }
             if (best.ny > 0.55f && best.py > ground && best.py <= py + 60f)
             {
