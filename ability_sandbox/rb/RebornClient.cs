@@ -1136,6 +1136,7 @@ internal static class RebornClient
 
         // ---- 临时飞爪 (28031): PointArea target ray + cast action ----
         const string FEI_RANGE_UI = @"data\source\other\特效\技能\MESH\释放\释放_范围选择01.Mesh";
+        const string FEI_RANGE_SFX = @"data\source\other\特效\技能\SFX\释放\释放_范围选择01.Sfx";
         Func<float[]> computeFeiTarget = delegate
         {
             try
@@ -1168,11 +1169,15 @@ internal static class RebornClient
                 float dz3 = fz + rgz * (float)(nx * tanX) + uz5 * (float)(ny * tanY);
                 float dl3 = (float)Math.Sqrt(dx3 * dx3 + dy3 * dy3 + dz3 * dz3);
                 dx3 /= dl3; dy3 /= dl3; dz3 /= dl3;
-                float hit = -1f;
-                try { hit = engineRay.RayTerrain(cx0, cy0, cz0, cx0 + dx3 * 4000f, cy0 + dy3 * 4000f, cz0 + dz3 * 4000f); }
-                catch { }
+                // aim ray: nearest of terrain / scene / scene-level (buildings
+                // and props are scene geometry, so roofs are hittable)
+                float bx4 = cx0 + dx3 * 4000f, by4 = cy0 + dy3 * 4000f, bz4 = cz0 + dz3 * 4000f;
+                float best = -1f;
+                try { float h1 = engineRay.RayTerrain(cx0, cy0, cz0, bx4, by4, bz4); if (h1 > 0f) best = h1; } catch { }
+                try { float h2 = engineRay.RayScene(cx0, cy0, cz0, bx4, by4, bz4); if (h2 > 0f && (best < 0f || h2 < best)) best = h2; } catch { }
+                try { float h3 = engineRay.RaySceneLevel(cx0, cy0, cz0, bx4, by4, bz4); if (h3 > 0f && (best < 0f || h3 < best)) best = h3; } catch { }
                 float hitX, hitY, hitZ;
-                if (hit > 0f) { hitX = cx0 + dx3 * hit; hitY = cy0 + dy3 * hit; hitZ = cz0 + dz3 * hit; }
+                if (best > 0f) { hitX = cx0 + dx3 * best; hitY = cy0 + dy3 * best; hitZ = cz0 + dz3 * best; }
                 else { hitX = cx0 + dx3 * 1500f; hitY = cy0 + dy3 * 1500f; hitZ = cz0 + dz3 * 1500f; }
                 float mdx = hitX - px, mdz = hitZ - pz;
                 float mdl = (float)Math.Sqrt(mdx * mdx + mdz * mdz);
@@ -1708,10 +1713,12 @@ internal static class RebornClient
                         if (Math.Abs(feiPX - lastMarkerX) > 16f || Math.Abs(feiPZ - lastMarkerZ) > 16f)
                         {
                             lastMarkerX = feiPX; lastMarkerZ = feiPZ;
-                            var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 20f; mpos.z = feiPZ;
+                            var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 8f; mpos.z = feiPZ;
                             var mrot = new CLRfloat4(); mrot.w = 1f;
-                            var mscl = new CLRfloat3(); mscl.x = 2f; mscl.y = 2f; mscl.z = 2f;
-                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
+                            var mscl = new CLRfloat3(); mscl.x = 1.3f; mscl.y = 1.3f; mscl.z = 1.3f;
+                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_SFX, mpos, mrot, mscl);
+                            if (mh == 0 || mh == -1)
+                                mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
                             Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
                                 + " handle=" + mh);
@@ -1767,8 +1774,16 @@ internal static class RebornClient
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
 
-            // horizontal move + slope blocking (map-host rules)
+            // floor: terrain + vertical scene probe (lets you stand on roofs
+            // and ledges the terrain sampler does not know about)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
+            try
+            {
+                int vhr2;
+                float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
+                if (vh2 > ground && vh2 <= py + 90f) ground = vh2;
+            }
+            catch { }
             bool blocked = false;
             if (moving)
             {
@@ -1792,28 +1807,33 @@ internal static class RebornClient
                 curYaw = (float)Math.Atan2(ux, uz);
             }
 
-            // 临时飞爪 pull: DASH_TO_POINT(120) = 120 u/frame at 15 logic fps
+            // 临时飞爪 pull: DASH_TO_POINT(120) = 120 u/frame at 15 logic fps,
+            // full 3D - the pull climbs to the target height (roofs included)
             if (feiPull)
             {
-                float pdx = feiPX - px, pdz = feiPZ - pz;
+                float pdx = feiPX - px, pdz = feiPZ - pz, pdy = feiPY - py;
                 float pdl = (float)Math.Sqrt(pdx * pdx + pdz * pdz);
                 float pstep = 120f * 15f * dt;
-                if (pdl <= Math.Max(pstep, 8f))
+                if (pdl <= Math.Max(pstep, 8f) && Math.Abs(pdy) <= Math.Max(pstep, 8f))
                 {
-                    px = feiPX; pz = feiPZ;
+                    px = feiPX; pz = feiPZ; py = feiPY;
                     feiPull = false;
                     feiBuffered = true;
+                    grounded = true; vy = 0f;
                     curClip = null;
                     setClip(resolveTani("s16lxg链技能03_缓冲_HD"));
-                    Log("feizhua landed at (" + (int)px + "," + (int)pz + ")");
+                    Log("feizhua landed at (" + (int)px + "," + (int)py + "," + (int)pz + ")");
                 }
                 else
                 {
-                    float ux3 = pdx / pdl, uz3 = pdz / pdl;
-                    float tryX = px + ux3 * pstep, tryZ = pz + uz3 * pstep;
-                    float gh2 = sampler != null ? sampler.Sample(tryX, tryZ) : py;
-                    if (gh2 - ground <= 70f) { px = tryX; pz = tryZ; }
-                    else { feiPull = false; feiBuffered = true; Log("feizhua pull blocked"); }
+                    float ux3 = pdl > 1e-3f ? pdx / pdl : 0f;
+                    float uz3 = pdl > 1e-3f ? pdz / pdl : 0f;
+                    px += ux3 * pstep;
+                    pz += uz3 * pstep;
+                    float dyStep = Math.Sign(pdy) * Math.Min(Math.Abs(pdy), pstep);
+                    py += dyStep;
+                    if (py < ground) py = ground;
+                    grounded = true; vy = 0f;
                     curYaw = (float)Math.Atan2(ux3, uz3);
                 }
             }
