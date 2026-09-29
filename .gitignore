@@ -70,3 +70,6 @@ proof/collision/**/_work/
 # Generated per-map collision bins (regenerate with tools/bake_map_collision.py;
 # runtime copies live in bin64/collision_data)
 engine_host_spike/collision_data/*structure_collision.bin
+
+# Local merge/ref backup bundle (moved off the Desktop; delete after cleanup merge)
+_backup/
