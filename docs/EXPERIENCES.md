@@ -119,3 +119,17 @@ solved it, and what is still open. **Newest at the bottom.**
   jump clip); commits `e261499`, `c937973`.
 - Outcome: solved. Open: segment-end End-triple trigger, JumpFrameParam curves,
   fly-state re-press path, tani AV.
+
+### 2026-09-29 — movement — 二段跳 corrected: flip mode (user feedback), tani vs ani
+- Did: user reported the chain-mode double jump (J1 ballistic, 11.7 m) as "way
+  too high / wrong action". Confirmed via MIN2 that the jump clips are in-place
+  (bip01 Y=0 all frames), so the arc is physics; the J1 row is the 轻功 flight
+  chain and its takeoff-burst/End-phase trigger is still undecoded. Implemented
+  the plain 二段跳 as `RC_DJUMP=flip` (provisional): the air press re-uses the
+  J0 triple (one extra normal jump, max 2) and plays the authored
+  `f1b02yd二段跳a.ani`; kept the raw table chain as `RC_DJUMP=chain` for research.
+- Evidence: `proof/gravity/double_jump_reborn_run.txt` run E (exit 0; press n=2
+  at first-jump apex y=1008 -> land y=646, ~1.9 m extra; `clip -> ...二段跳a.ani
+  (0)`; reject n=3), runs B/D (tani wrapper AV 0xC0000005). Doc §1/§4/§5 updated.
+- Outcome: solved provisionally; re-open when the `ModifySprintEndSpeed` trigger
+  is decoded (then use J1 burst + End triple instead of the J0 re-use).

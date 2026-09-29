@@ -11,9 +11,10 @@
 //   RC_SKILL_MS=8000              skill clip duration before returning to state clip
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
-//   RC_DJUMP=1                    mid-air jump chain (二段跳) on/off
+//   RC_DJUMP=flip                二段跳 mode: flip (one extra jump, default) |
+//                                chain (raw 轻功 J1..MaxJumpCount chain) | 0 (off)
 //   RC_JUMP_SCHOOL=0              settings/JumpParam.tab school row (0..22)
-//   RC_CLIP_DJUMP=<vfs path>      二段跳 clip (default: reuse RC_CLIP_JUMP)
+//   RC_CLIP_DJUMP=<vfs path>      二段跳 clip (default: f1b02yd二段跳a.ani)
 //   RC_DJUMP_LOG=1                log every press / land / reject (djb lines)
 //   RC_MEM_NS=<name>              engine memory namespace override
 using System;
@@ -947,14 +948,16 @@ internal static class RebornClient
         // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
         // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
         // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
-        bool djumpEnabled = Env("RC_DJUMP", "1") != "0";
+        //   flip  = one extra jump with the J0 profile (the real 二段跳; provisional
+        //           until the J1 burst/End phase trigger is decoded)
+        //   chain = the raw J1..MaxJumpCount 轻功 rows (ballistic shortcut, high)
+        string djumpMode = Env("RC_DJUMP", "flip");
         int jumpSchool = 0;
         int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
         if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
-        // Authored f1b02yd二段跳a.tani loads (rc=0) but AVs this host within ~1 s
-        // (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md §4), so the default reuses
-        // RC_CLIP_JUMP; opt in with RC_CLIP_DJUMP=<vfs path>.
-        string clipDJump = Env("RC_CLIP_DJUMP", "");
+        // Authored f1b02yd二段跳a.tani resolves but AVs the host (documented);
+        // the underlying .ani is the flip pose the client plays instead.
+        string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.ani");
         if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
         bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
         int jumpCount = 0;
@@ -1704,19 +1707,23 @@ internal static class RebornClient
                 else if (ground - py <= 70f) py = ground;
             }
 
-            // jump chain (二段跳): press 1 = J0, press 2 (airborne) = J1, ...
-            // up to MaxJumpCount[school]; further presses are rejected
-            // (client gate: jumpCount >= MaxJumpCount, KCharacter::Jump 0x140313B19)
+            // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
+            // extra normal-strength jump) or chain mode (raw J1.. table rows)
             if (jumpPressed)
             {
                 jumpPressed = false;
                 if (grounded) jumpCount = 0;
                 int nextJump = jumpCount + 1;
+                bool chainMode = djumpMode == "chain";
+                bool djumpOn = djumpMode != "0";
+                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
                 int[] trip = null;
-                if (nextJump <= JumpTable.MaxJumpCount[jumpSchool] &&
-                    nextJump <= JumpTable.Triples[jumpSchool].Length &&
-                    (nextJump == 1 || djumpEnabled))
-                    trip = JumpTable.Triples[jumpSchool][nextJump - 1];
+                if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
+                    (nextJump == 1 || djumpOn))
+                {
+                    // chain mode reads the pressed row; flip mode reuses J0
+                    trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
+                }
                 if (trip != null)
                 {
                     jumpCount = nextJump;
@@ -1725,12 +1732,12 @@ internal static class RebornClient
                     curJumpGravity = gc * 225f;
                     grounded = false;
                     if (djumpLog) Log(string.Format(
-                        "djb press n={0} triple={1},{2},{3} vy={4:F0} g={5:F0} pos={6:F0},{7:F0},{8:F0}",
-                        jumpCount, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
+                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
                 }
                 else if (djumpLog) Log(string.Format(
-                    "djb reject n={0} max={1} grounded={2} enabled={3}",
-                    nextJump, JumpTable.MaxJumpCount[jumpSchool], grounded ? 1 : 0, djumpEnabled ? 1 : 0));
+                    "djb reject n={0} max={1} grounded={2} mode={3}",
+                    nextJump, maxJump, grounded ? 1 : 0, djumpMode));
             }
 
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)

@@ -2,13 +2,14 @@
 
 **Status:** press semantics + per-school data verified; reproduced in the Reborn client
 (`client/JumpTable.cs`, `client/RebornClient.cs`), feature build
-`reborn_client_double_jump.exe`. The segment-end phase (End triples) and the
-per-frame curves stay **open** (trigger frame still undecoded); the reproduced
-model is the ballistics of the verified takeoff triples.
+`reborn_client_double_jump.exe`. The plain 二段跳 ships as a **provisional**
+one-extra-jump model (`RC_DJUMP=flip`) because the game's `J1 takeoff burst +
+End-triple flight` phase trigger is still undecoded (§5.1); `RC_DJUMP=chain`
+keeps the literal table chain for research.
 **Sources:** `JX3_GRAVITY_RESEARCH.md`, `REBORN_JUMP_FALL_SPEC.md`,
 `proof/gravity/JumpParam.tab`, `proof/gravity/disasm/kcharacter_jump.txt`,
 `proof/gravity/JX3RepresentX64_strings.txt`.
-**Last verified:** 2026-09-29 (table extraction + disasm re-read).
+**Last verified:** 2026-09-29 (table extraction + disasm re-read + flip-mode run).
 
 ## 1. What the game does
 
@@ -18,7 +19,7 @@ ignored (unlike most MMOs of its era) — it advances a per-character **jump cha
 | Press | Row | Meaning | Conf |
 |---|---|---|---|
 | 1 (grounded) | `J0` | 跳跃 | HIGH |
-| 2 (airborne) | `J1` | **二段跳** — the big launch, per 门派 | HIGH |
+| 2 (airborne) | `J1` | **二段跳** — flip + extra jump; the raw row is the 轻功 launch, phase-shaped | HIGH |
 | 3+ (airborne) | `J2`, `J3`, … | further 轻功 chain presses up to `MaxJumpCount[school]` | HIGH |
 | beyond `MaxJumpCount` | — | rejected (no jump) | HIGH |
 
@@ -26,13 +27,13 @@ ignored (unlike most MMOs of its era) — it advances a per-character **jump cha
   `0x00CBD028`, next to `JUMP` `0x00CBD020`) and a dedicated
   `KRLCharacterFrameData::GetDoubleJumpEndOffset` (`0x00CCC928`) — the animation
   side treats 二段跳 as its own state, not as 跳跃 again. (HIGH)
-- Shipped animation `f1b02yd二段跳a.tani` (extracted; see
-  `REBORN_JUMP_FALL_SPEC.md` §6). It resolves through the VFS and loads with
-  `PlayAnimation` rc=0, but the host AVs (0xC0000005) within ~1 s of playing it
-  in both the default and opt-in runs — so the client's default reuses the jump
-  clip and the tani stays opt-in (`RC_CLIP_DJUMP=<path>`). (HIGH, evidence
-  `proof/gravity/double_jump_reborn_run.txt` runs B/D; re-open when the anim
-  path is fixed)
+- Shipped animation `f1b02yd二段跳a.tani` (GATA wrapper, extracted): the wrapper
+  resolves and loads (`rc=0`) but **AVs the host** (0xC0000005) within ~1 s; the
+  underlying `f1b02yd二段跳a.ani` plays cleanly and is what the client uses.
+  (HIGH, `proof/gravity/double_jump_reborn_run.txt` runs B/D vs E)
+- The jump clips are **in-place** (no root motion): `f1b02yd小跳b.ani` bip01 Y = 0
+  on every frame — the arc is pure movement physics. (HIGH, MIN2 read of the
+  staged clip, 2026-09-29)
 - Landing resets the chain: `ProcessVerticalMove` zeroes `[char+0x330]`/`[+0x338]`
   when within 64 u of the cell top (`0x14031A25E`). (HIGH)
 
@@ -94,34 +95,49 @@ Full chain: `python tools/gravity/parse_jump_tables.py --chain`.
 - Schools 10/11 additionally ship authored `JumpFrameParam.tab` curves (81 frames)
   that override velocity per air frame — not reproduced. (HIGH data / OPEN trigger)
 
-Worked example, school 0 二段跳 (`J1 = 30,300,20`):
+Worked example, school 0 chain-mode 二段跳 (`J1 = 30,300,20`):
 `v0 = 300×15/192 = 23.44 m/s`, `g = 20×225/192 = 23.44 m/s²`, ballistic apex
 `v0²/2g = 11.7 m`, air time `2·v0/g = 2.0 s` (continuous; the exact per-frame
-integer integration is in `verification.txt` §6). Compare first jump: `v0 = 7.03 m/s`,
-apex 1.9–2.2 m. The 二段跳 is the “real jump” of the game — exactly why it exists.
+integer integration is in `verification.txt` §6). **Do not ship this as the plain
+二段跳** — it is the 轻功 chain row applied ballistically, i.e. the takeoff burst
+stretched over the whole arc (user feedback 2026-09-29: “way too high”; the game
+caps it via the segment phase, whose trigger is still open).
 
 ## 4. Reborn client reproduction
 
 `client/JumpTable.cs` (generated: `python tools/gravity/parse_jump_tables.py
---csharp-out client/JumpTable.cs`) + the jump block in `client/RebornClient.cs`:
+--csharp-out client/JumpTable.cs`) + the jump block in `client/RebornClient.cs`.
 
-- first press from ground → `J0` triple (identical to the old constants
+Default `RC_DJUMP=flip` — the plain 二段跳:
+- press 1 from ground → `J0` triple (identical to the old constants
   `vy = 1350 u/s`, `g = 2475 u/s²`; single-jump behavior unchanged);
-- air press while `jumpCount < MaxJumpCount` → next triple, `vy := vz×15`,
-  `g := clamp(g,0,31)×225`, `grounded = false`;
-- landing → `jumpCount = 0`; count-limit press → rejected (logged);
-- `RC_JUMP_SCHOOL` selects the row (default 0 = weaponless/default character);
-  `RC_DJUMP=0` disables the mid-air chain for A/B; `RC_CLIP_DJUMP` plays the real
-  `f1b02yd二段跳a.tani` when set (default: reuse `RC_CLIP_JUMP`; see §1);
-- `RC_DJUMP_LOG=1` emits `djb press/land/reject` lines for a numeric fingerprint.
+- air press 2 → the **J0 takeoff triple again** (one extra normal-strength jump,
+  max 2), and the clip switches to the authored `f1b02yd二段跳a.ani` flip;
+- third press → rejected (logged); landing → `jumpCount = 0`;
+- **provisional** (root AGENTS §6): the exact game arc is `J1 takeoff burst +
+  End-triple flight`; the burst/phase trigger is undecoded (§5.1), so re-using
+  the J0 triple is the closest data-anchored, non-ballistic behavior. Re-open
+  when the trigger is decoded.
 
-Verified in-engine (2026-09-29, logs curated in
-`proof/gravity/double_jump_reborn_run.txt`): run A/C (clean, exit 0)
-`djb press n=1 triple=40,90,11 vy=1350 g=2475` → `djb press n=2
-triple=30,300,20 vy=4500 g=4500` (mid-air, y 1009 ← 646) → `djb land n=2
-vy=-4833` → `DONE`; run B/D (tani opt-in) reproduce the 0xC0000005 AV right
-after `clip -> ...f1b02yd二段跳a.tani (0)`. Isolation verified in every run:
-`ns=reborn_client_double_jump.memory`.
+`RC_DJUMP=chain` keeps the literal table chain for research: air press n reads
+`J1..` (`vy := vz×15`, `g := clamp(g,0,31)×225`) up to `MaxJumpCount` — the
+11.7 m / 104 m launches are expected here, that is the 轻功 flight entry.
+`RC_DJUMP=0` disables the mid-air jump. `RC_JUMP_SCHOOL` selects the row
+(default 0). `RC_CLIP_DJUMP` overrides the flip clip (default the real
+`f1b02yd二段跳a.ani`; `0` reuses `RC_CLIP_JUMP`). `RC_DJUMP_LOG=1` emits
+`djb press/land/reject` lines.
+
+Verified in-engine (2026-09-29, curated in
+`proof/gravity/double_jump_reborn_run.txt`):
+- flip mode (run E, exit 0): `djb press n=1 mode=flip triple=40,90,11` →
+  `djb press n=2 mode=flip triple=40,90,11` at y 1008 (first-jump apex) →
+  `clip -> ...f1b02yd二段跳a.ani (0)` → `djb reject n=3 max=2` → `djb land n=2
+  y 646` → `DONE`. Net extra height ≈ 1.9 m (ground-to-ground ≈ 3.6 m).
+- chain mode (runs A/C): `triple=30,300,20` ballistic (documented above).
+- `.tani` wrapper (runs B/D) reproduces the 0xC0000005 AV; the underlying
+  `.ani` plays cleanly (run E) — the flip action is available without the
+  composite wrapper.
+Isolation verified in every run: `ns=reborn_client_double_jump.memory`.
 
 Not reproduced (documented, not invented): segment-end End triple, `JumpFrameParam`
 curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
@@ -130,15 +146,15 @@ curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
 ## 5. Open items
 
 1. Trigger frame of `ModifySprintEndSpeed` (the End phase) — needs the call-site
-   guard traced through `0x140182874` / `0x14036317A`.
+   guard traced through `0x140182874` / `0x14036317A`; blocks replacing the
+   provisional `flip` model with the real `J1 burst + End` arc.
 2. `JumpFrameParam` curve application start index (`TotalFrame[row-1] − airFrame`)
    phase alignment for schools 10/11.
 3. Whether fly states `0x1A/0x1B` re-press (the `[+0x1F8]==0` path at
    `0x140313C22`) is a separate abort/advance, distinct from the normal chain.
 4. Wall-jump (`jumpCount < 4`) and horse-jump (`< 1`) triples — data present.
-5. `f1b02yd二段跳a.tani` engine AV (crash before the clip's first update);
-   re-open when the animation asset pipeline is fixed — the chain itself is
-   clip-independent (runs A/C pass with the jump clip).
+5. `f1b02yd二段跳a.tani` wrapper AV (the underlying `.ani` is fine); re-open when
+   the composite tani path is fixed.
 
 ## Reproduce
 
@@ -153,6 +169,8 @@ client\build_client.cmd
 $env:RC_DEMO="1"; $env:RC_DJUMP_LOG="1"; $env:RC_AUTORUN="25000"
 $p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
 $p.WaitForExit(); $p.ExitCode
-# expect exit 0 and: djb press n=1 (40,90,11) -> djb press n=2 (30,300,20)
-# -> djb land n=2 -> DONE; ns=reborn_client_double_jump.memory in the init line
+# expect exit 0 and: djb press n=1 mode=flip (40,90,11) -> djb press n=2
+# mode=flip (40,90,11) + clip -> ...f1b02yd二段跳a.ani -> djb land n=2 -> DONE
+# ns=reborn_client_double_jump.memory in the init line
+# research chain mode: add $env:RC_DJUMP="chain"
 ```

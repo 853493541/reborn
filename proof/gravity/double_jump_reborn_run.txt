@@ -65,3 +65,23 @@ full logs (untracked): C:\SeasunGame\MovieEditor\bin64\reborn_out\<file>
    13:51:38.479 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1034,25552
    13:51:38.481 clip -> data\source\player\f1\动作\f1b02yd二段跳a.tani (0)
 
+== E: flip mode (default), authored .ani flip clip (non-ballistic 二段跳)
+   log: reborn_20260929_141544.log    process exit=0 (clean)
+   RC_DJUMP/RC_CLIP_DJUMP unset -> flip mode + f1b02yd二段跳a.ani
+   14:15:44.370 build=reborn_client_double_jump.exe 2026-09-29 14:15:38 git=d3441fe dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   14:15:45.106 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   14:16:25.822 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23334,646,26299
+   14:16:26.318 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23334,1008,26299
+   14:16:26.319 clip -> data\source\player\f1\动作\f1b02yd二段跳a.ani (0)
+   14:16:26.689 djb reject n=3 max=2 grounded=0 mode=flip
+   14:16:27.625 djb land n=2 pos=23235,646,26290 vy=-1897
+   14:16:27.679 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23217,646,26288
+   14:16:28.110 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23081,996,26276
+   14:16:29.410 djb land n=2 pos=22669,666,26237 vy=-1858
+   14:16:29.464 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22652,667,26235
+   14:16:29.752 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22560,953,26227
+   14:16:31.014 djb land n=2 pos=22158,673,26189 vy=-1783
+   14:16:31.302 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22067,672,26181
+   14:16:31.741 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22063,1024,26180
+   14:16:33.044 djb land n=2 pos=22063,672,26180 vy=-1885
+   14:16:38.321 DONE
