@@ -203,7 +203,9 @@ internal static class RebornClient
                 + " pid=" + System.Diagnostics.Process.GetCurrentProcess().Id;
             Log(fp);
         }
-        // NO LIMITS: multiple instances may run; we never block anything.
+        // NO LIMITS: multiple instances and other engine clients may run
+        // together. We never block anything. Separation is by resources
+        // (own engine memory namespace, own runtime dir), not by exclusion.
         {
             bool haveMutex = false;
             try
@@ -215,7 +217,107 @@ internal static class RebornClient
             if (!haveMutex)
                 Log("note: another ability_sandbox instance is running - continuing (no limit)");
         }
-            int err = 1;
+        loadFeiZhua();
+
+        var form = new Form();
+        form.Text = "JX3";
+        form.StartPosition = FormStartPosition.CenterScreen;
+        form.ClientSize = new System.Drawing.Size(1280, 720);
+        var panel = new Panel();
+        panel.Dock = DockStyle.Fill;
+        form.Controls.Add(panel);
+        var hud = new Label();
+        hud.AutoSize = true;
+        hud.ForeColor = System.Drawing.Color.White;
+        hud.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+        hud.Font = new System.Drawing.Font("Consolas", 10f);
+        hud.Padding = new Padding(6);
+        hud.Location = new System.Drawing.Point(38, 10);
+        hud.Text = "loading...";
+        hud.Visible = false;   // info window starts collapsed; "I" toggles it
+        panel.Controls.Add(hud);
+        // "I" toggle in the top-left corner: expands/collapses the info window
+        var infoToggle = new Label();
+        infoToggle.AutoSize = false;
+        infoToggle.Size = new System.Drawing.Size(22, 22);
+        infoToggle.Location = new System.Drawing.Point(10, 10);
+        infoToggle.Text = "I";
+        infoToggle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+        infoToggle.ForeColor = System.Drawing.Color.White;
+        infoToggle.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+        infoToggle.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
+        infoToggle.Cursor = Cursors.Hand;
+        infoToggle.MouseClick += delegate { hud.Visible = !hud.Visible; };
+        panel.Controls.Add(infoToggle);
+
+        // ---- ability panel (P): select what key "1" casts ----
+        var abilityBtn = new Label();
+        abilityBtn.AutoSize = false;
+        abilityBtn.Size = new System.Drawing.Size(140, 22);
+        abilityBtn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+        abilityBtn.ForeColor = System.Drawing.Color.White;
+        abilityBtn.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+        abilityBtn.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
+        abilityBtn.Cursor = Cursors.Hand;
+        var abilityPanel = new Panel();
+        abilityPanel.Size = new System.Drawing.Size(224, 96);
+        abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
+        abilityPanel.Visible = false;
+        var abilityList = new ListBox();
+        abilityList.Items.Add("风来吴山 (flws)");
+        abilityList.Items.Add("临时飞爪 (feizhua)");
+        abilityList.SelectedIndex = abilitySel == "feizhua" ? 1 : 0;
+        abilityList.Location = new System.Drawing.Point(6, 6);
+        abilityList.Size = new System.Drawing.Size(212, 60);
+        abilityList.SelectedIndexChanged += delegate
+        {
+            abilitySel = abilityList.SelectedIndex == 1 ? "feizhua" : "flws";
+            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
+            Log("ability selected: " + abilitySel);
+        };
+        abilityPanel.Controls.Add(abilityList);
+        var soundBox = new CheckBox();
+        soundBox.Text = "sound";
+        soundBox.ForeColor = System.Drawing.Color.White;
+        soundBox.Checked = soundOn;
+        soundBox.Location = new System.Drawing.Point(6, 70);
+        soundBox.AutoSize = true;
+        soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
+        abilityPanel.Controls.Add(soundBox);
+        panel.Controls.Add(abilityPanel);
+        abilityBtn.MouseClick += delegate
+        {
+            abilityPanel.Visible = !abilityPanel.Visible;
+            if (abilityPanel.Visible) abilityPanel.BringToFront();
+        };
+        Action placeAbilityUi = delegate
+        {
+            abilityBtn.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 150), 10);
+            abilityPanel.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 236), 36);
+            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
+        };
+        panel.Resize += delegate { placeAbilityUi(); };
+        panel.Controls.Add(abilityBtn);
+        placeAbilityUi();
+
+        form.Show();
+        Application.DoEvents();
+
+        var baselib = new KGBaseCLR();
+        var engine = new KGEngineCLR();
+        var editor = new KGMovieEditorCLR();
+        var sound = new KG3DSoundCLR();
+
+        engine.SetRootPath(workingDir);
+        try { baselib.InitConsoleLog(); } catch (Exception e) { Log("InitConsoleLog: " + e.Message); }
+        Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
+        int r1 = 0, r2 = 0, r3 = 0;
+        try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
+        try { r2 = baselib.InitMemory("AbilitySandbox.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
+        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
+
+        int err = 1;
         int ok = 0;
         // engine root = OUR dir: the engine writes its own files (ShaderList.txt,
         // BuildDXVKCache, ...) relative to this root - it must never be the
@@ -225,7 +327,7 @@ internal static class RebornClient
         try { ok = engine.Init3DEngine(engineRoot, engineRoot, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1}", ok, err));
-       if (ok == 0) { Log("FATAL: engine init failed"); return; }
+        if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
