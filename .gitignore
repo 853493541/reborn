@@ -69,3 +69,6 @@ proof/netcode/mode_ui/loading/**/*.dds
 
 # Native camera shim build output (MSVC)
 native/obj/
+
+# collision extractor scratch (PakV4 out dir)
+proof/collision/**/_work/
