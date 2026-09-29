@@ -210,12 +210,10 @@ internal static class RebornClient
                 {
                     if (pn.StartsWith(pre) || pn == pre)
                     {
-                        Log("engine client already running: " + pr2.ProcessName + " (pid " + pr2.Id + ") - refusing to start a second engine client");
-                        if (Env("SB_NOLOCK_UI", "0") != "1")
-                        {
-                            try { System.Windows.Forms.MessageBox.Show("Another engine client (" + pr2.ProcessName + ", pid " + pr2.Id + ") is running. Close it first.", "Ability Sandbox"); } catch { }
-                        }
-                        return;
+                        // isolated now (own engine memory namespace + own runtime
+                        // dirs): warn, do not block. If the GPU/driver still
+                        // dislikes two engine clients, that is outside our reach.
+                        Log("note: another engine client is running: " + pr2.ProcessName + " (pid " + pr2.Id + ") - continuing (isolated memory " + "AbilitySandbox.memory" + ")");
                     }
                 }
             }
@@ -316,7 +314,7 @@ internal static class RebornClient
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("MovieEditor.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        try { r2 = baselib.InitMemory("AbilitySandbox.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
         Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
 
