@@ -375,3 +375,30 @@ These were validated against the shipped data while building the WPF renderer:
     PakV4SfxExtract on this install (the surrounding modules and string tables
     do). Rendering that panel needs its INI + Lua from a full client (or a
     downloaded r2d bundle).
+23. **Labels use the shipped fonts, and VAlign centres the font's line box.**
+    `fontlist.ini` maps each scheme's `FontID` to a font file
+    (`\UI\Font\fzht_GBK.ttf` 方正黑体, `fzxk.ttf` 行楷, `fzjz.ttf` 剪纸,
+    `FangZhengKaiTi-GBK.ttf` 楷体; the files ship loose in the client's
+    `ui/font`). The renderer now loads them per scheme (WPF `FontFamily` from
+    the file with the font's internal family name, e.g. `FZHei-B01`) instead of
+    Microsoft YaHei UI — that fixes both the letterforms and the ~1.5-2px
+    vertical offset every label had. The text decoder stores `VAlign` at
+    item+0x5c4 and the engine centres the font's ascent+descent line box in the
+    item, so CJK ink lands slightly *above* the box centre (the descent hangs
+    below); pinning WPF's `LineHeight` to the box height instead drags the ink
+    ~3px down. The renderer now positions the measured block in a canvas host
+    (`offsetY=(boxH-textH)/2`, HAlign offsets from the measured width). Verified
+    against the live screenshot: title, tabs, 个人评分, 随机地图, 飞沙令 and
+    单场奖励 all land within ~1.5px; the bottom button labels differ only by the
+    screenshot's window-size/scale offset (the live window is ~975x624, not the
+    authored 960x624, so its absolute pixel positions are ~1.5% larger).
+24. **Lua-formatted labels are replayed through the inventory `texts`.** The
+    飞沙令 row's second line is `FormatString(STR_GAME_GUIDE_WEEK_REMAIN, n)`
+    (NewBattleFieldQueue lua), which reads `(本周还可获得：N)` in the live
+    client; the INI's authored `STR_WEIMINGDIAN_GET` renders as
+    `本周还可获得<1010>` (inline icon) before the script runs. The inventory
+    overrides `Text_FeiShaLingAvailable[_K/_S/_T]` with the formatted sample so
+    the static render matches the reference. The tab badges
+    (`Image_AnniversaryIcon1/2/3`) are left hidden: `UpdateAnniversaryTabIcon`
+    sets their atlas+frame from live activity data (the reference shows 赛季 art,
+    the INI default is 周年).
