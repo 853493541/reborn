@@ -183,9 +183,9 @@ internal static class RebornClient
                 + " pid=" + System.Diagnostics.Process.GetCurrentProcess().Id;
             Log(fp);
         }
-        // one engine client at a time: the engine/D3D device cannot be shared
-        // between concurrently running clients (verified: overlapping clients
-        // destabilize both processes)
+        // NO LIMITS: multiple instances and other engine clients may run
+        // together. We never block anything. Separation is by resources
+        // (own engine memory namespace, own runtime dir), not by exclusion.
         {
             bool haveMutex = false;
             try
@@ -195,10 +195,7 @@ internal static class RebornClient
             }
             catch { haveMutex = true; }
             if (!haveMutex)
-            {
-                Log("another ability_sandbox instance is already running - exiting");
-                return;
-            }
+                Log("note: another ability_sandbox instance is running - continuing (no limit)");
             string[] enginePrefixes = new string[] { "reborn_", "spike_host", "map_spike", "movieditor", "qseasuneditor", "qmodeleditor" };
             int me = System.Diagnostics.Process.GetCurrentProcess().Id;
             foreach (System.Diagnostics.Process pr2 in System.Diagnostics.Process.GetProcesses())
@@ -1044,6 +1041,7 @@ internal static class RebornClient
         long feiSeqStart = 0;
         float feiPX = 0f, feiPY = 0f, feiPZ = 0f, feiDist = 0f;
         float lastMarkerX = 1e9f, lastMarkerZ = 1e9f;
+        long lastPullLogMs = 0;
         long lastAimMs = 0;
         float lastVhX = 1e9f, lastVhZ = 1e9f, lastVhY = -1f;
         long lastVhMs = 0;
@@ -1187,6 +1185,27 @@ internal static class RebornClient
         {
             try
             {
+                // scripted aim (tests): SB_AIM_WX/WZ replace the cursor ray with a
+                // fixed world column; Y comes from the same standable-surface probe
+                float awx, awz;
+                if (float.TryParse(Env("SB_AIM_WX", ""), out awx) && float.TryParse(Env("SB_AIM_WZ", ""), out awz))
+                {
+                    float ahy = sampler != null ? sampler.Sample(awx, awz) : py;
+                    try
+                    {
+                        // scene hit first (buildings included - same backend the
+                        // real cursor ray uses), vertical segment downward
+                        float shs = engineRay.RayScene(awx, 10000f, awz, awx, -2000f, awz);
+                        if (shs > 0f)
+                        {
+                            float ays = 10000f - shs;
+                            if (ays > ahy && ays - py <= 1200f) ahy = ays;
+                        }
+                    }
+                    catch { }
+                    float addx = awx - px, addz = awz - pz;
+                    return new float[] { awx, ahy, awz, (float)Math.Sqrt(addx * addx + addz * addz) };
+                }
                 float cx0 = 0f, cy0 = 0f, cz0 = 0f;
                 scene.GetCameraPos(ref cx0, ref cy0, ref cz0);
                 float fx = (float)viewX, fy = (float)viewY, fz = (float)viewZ;
@@ -1911,8 +1930,16 @@ internal static class RebornClient
                     pz += uz3 * pstep;
                     float dyStep = Math.Sign(pdy) * Math.Min(Math.Abs(pdy), pstep);
                     py += dyStep;
-                    if (py < ground) py = ground;
+                    // dash state: no ground glue while the pull is in flight
+                    // (the client's DASH_TO_POINT move-state suspends it too);
+                    // the floor re-engages on landing
                     grounded = true; vy = 0f;
+                    if (now - lastPullLogMs >= 100)
+                    {
+                        lastPullLogMs = now;
+                        Log("feizhua pull t=" + (now - feiSeqStart) + "ms pos=(" + (int)px + "," + (int)py + "," + (int)pz
+                            + ") d3=" + (int)Math.Sqrt(pdx * pdx + pdz * pdz + pdy * pdy));
+                    }
                     // only turn while there is real horizontal travel (tiny
                     // directions flipped the model left/right every frame)
                     if (pdl > 40f) curYaw = (float)Math.Atan2(ux3, uz3);
@@ -1940,7 +1967,8 @@ internal static class RebornClient
             }
 
             // object/foliage collision (walls, buildings, rocks, trees)
-            if (col != null)
+            // (skipped during a pull: the dash move-state owns the motion)
+            if (col != null && !feiPull)
             {
                 float stepGround = col.SupportHeight(px, pz, py - 20f, py + 70f);
                 if (moving)
@@ -1972,7 +2000,9 @@ internal static class RebornClient
             }
 
             // grounded / ledge / step (map-host rules)
-            if (grounded)
+            // (skipped during a pull - otherwise this glue snaps the climbing
+            //  py straight back to the floor every frame: no Z pull)
+            if (grounded && !feiPull)
             {
                 if (py - ground > 150f) { grounded = false; vy = 0f; }
                 else if (py > ground) py = ground;
@@ -1987,7 +2017,7 @@ internal static class RebornClient
             }
 
             // gravity
-            if (!grounded)
+            if (!grounded && !feiPull)
             {
                 vy += pGravity * dt;
                 py += vy * dt;
