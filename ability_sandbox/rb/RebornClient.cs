@@ -156,7 +156,7 @@ internal static class RebornClient
             return f1 + "F1" + needle + ".tani";
         };
 
-        outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
+        outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_sandbox", "out");
         Directory.CreateDirectory(outDir);
         // keep a per-run log (overwrite-safe for parallel sessions) and the
         // stable reborn.log used by the analysis scripts
@@ -509,7 +509,7 @@ internal static class RebornClient
         {
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "camera.json");
+            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_sandbox", "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
@@ -1020,7 +1020,7 @@ internal static class RebornClient
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
         // M0 knob: disable the park-below character hide so the engine's own
         // near-plane clipping can be bracketed with the clearance ladder
-        bool hideNear = Env("RC_PLAYER_HIDE", "1") == "1";
+        bool hideNear = Env("RC_PLAYER_HIDE", "0") == "1";   // sandbox: off (model re-add caused visible switching)
         // late object scan (initialized scene view/camera) when RC_CAM_SCAN=1
         bool camScan = Env("RC_CAM_SCAN", "0") == "1", camScanDone = false;
         // Step C capability 2: write the engine camera object directly
@@ -1191,6 +1191,15 @@ internal static class RebornClient
                     hitX = px + mdx * kk; hitZ = pz + mdz * kk;
                     hitY = sampler != null ? sampler.Sample(hitX, hitZ) : hitY;
                 }
+                // standable surface at the target column (roof/ground): if the
+                // horizontal ray hit a wall face, pull to the surface on top of it
+                try
+                {
+                    int vhrT;
+                    float vhT = engineRay.RayVerticalHeight(hitX, 10000f, hitZ, 30000f, out vhrT);
+                    if (vhT > 0f && Math.Abs(vhT - hitY) < 400f) hitY = vhT;
+                }
+                catch { }
                 return new float[] { hitX, hitY, hitZ, mdl };
             }
             catch { return null; }
@@ -1829,6 +1838,12 @@ internal static class RebornClient
             // full 3D - the pull climbs to the target height (roofs included)
             if (feiPull)
             {
+                if (now - feiSeqStart > 3500)
+                {
+                    feiPull = false; feiBuffered = true;
+                    grounded = true; vy = 0f;
+                    Log("feizhua pull timeout (target unreachable)");
+                }
                 float pdx = feiPX - px, pdz = feiPZ - pz, pdy = feiPY - py;
                 float pdl = (float)Math.Sqrt(pdx * pdx + pdz * pdz);
                 float pstep = 120f * 15f * dt;
@@ -1852,7 +1867,9 @@ internal static class RebornClient
                     py += dyStep;
                     if (py < ground) py = ground;
                     grounded = true; vy = 0f;
-                    curYaw = (float)Math.Atan2(ux3, uz3);
+                    // only turn while there is real horizontal travel (tiny
+                    // directions flipped the model left/right every frame)
+                    if (pdl > 40f) curYaw = (float)Math.Atan2(ux3, uz3);
                 }
             }
 

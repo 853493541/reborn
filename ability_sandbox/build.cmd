@@ -9,8 +9,11 @@ set BIN=C:\SeasunGame\MovieEditor\bin64
   ability_sandbox\rb\CameraSystem.cs ability_sandbox\rb\CameraSettings.cs ability_sandbox\rb\EngineRay.cs ^
   ability_sandbox\rb\CameraShim.cs ability_sandbox\rb\VideoSettings.cs
 if errorlevel 1 goto :fail
-copy /y ability_sandbox\rb\camera.json "%BIN%\camera.json" >nul
-copy /y ability_sandbox\rb\scene_init_param.txt "%BIN%\scene_init_param.txt" >nul
+rem isolated runtime dir: never overwrite the shared bin64 root files the
+rem other processes (reborn_client etc.) use
+mkdir "%BIN%\ability_sandbox\out" 2>nul
+copy /y ability_sandbox\rb\camera.json "%BIN%\ability_sandbox\camera.json" >nul
+copy /y ability_sandbox\rb\scene_init_param.txt "%BIN%\ability_sandbox\scene_init_param.txt" >nul
 echo build OK
 goto :eof
 :fail
