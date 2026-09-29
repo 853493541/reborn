@@ -593,7 +593,7 @@ internal static class RebornClient
         var model = new KGModelCLR();
         string curClip = null;
         float curYaw = 0f;
-        float lastModelX = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
+        float lastModelX = float.MaxValue, lastModelZ = float.MaxValue, lastModelY = float.MaxValue, lastModelYaw = float.MaxValue;
 
         Action<string> setClip = delegate(string path)
         {
@@ -2006,11 +2006,11 @@ internal static class RebornClient
             else setClip(clipIdle);
 
             // model update (only when changed; keeps animation alive)
-            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(pz - lastModelZ) > 0.5f ||
-                Math.Abs(curYaw - lastModelYaw) > 0.01f)
+            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(py - lastModelY) > 0.5f ||
+                Math.Abs(pz - lastModelZ) > 0.5f || Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
                 placePlayer(px, py, pz, curYaw);
-                lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
+                lastModelX = px; lastModelY = py; lastModelZ = pz; lastModelYaw = curYaw;
             }
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
