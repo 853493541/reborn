@@ -564,6 +564,77 @@ public sealed class FoliageCollision
         return t >= 0f && t <= 1f;
     }
 
+    // Closest point on segment AB to point P.
+    static void ClosestPointOnSegment(float ax, float ay, float az, float bx, float by, float bz,
+                                      float px, float py, float pz,
+                                      out float qx, out float qy, out float qz)
+    {
+        float dx = bx - ax, dy = by - ay, dz = bz - az;
+        float dd = dx * dx + dy * dy + dz * dz;
+        float t = 0f;
+        if (dd > 1e-12f)
+        {
+            t = ((px - ax) * dx + (py - ay) * dy + (pz - az) * dz) / dd;
+            if (t < 0f) t = 0f;
+            else if (t > 1f) t = 1f;
+        }
+        qx = ax + dx * t; qy = ay + dy * t; qz = az + dz * t;
+    }
+
+    // Closest points between segments P1Q1 and P2Q2 (Ericson, RTCD 5.1.9);
+    // returns the squared distance; c1/c2 receive the closest points.
+    static float ClosestPtSegmentSegment(
+        float p1x, float p1y, float p1z, float q1x, float q1y, float q1z,
+        float p2x, float p2y, float p2z, float q2x, float q2y, float q2z,
+        out float c1x, out float c1y, out float c1z,
+        out float c2x, out float c2y, out float c2z)
+    {
+        float d1x = q1x - p1x, d1y = q1y - p1y, d1z = q1z - p1z;
+        float d2x = q2x - p2x, d2y = q2y - p2y, d2z = q2z - p2z;
+        float rx = p1x - p2x, ry = p1y - p2y, rz = p1z - p2z;
+        float a = d1x * d1x + d1y * d1y + d1z * d1z;
+        float e = d2x * d2x + d2y * d2y + d2z * d2z;
+        float f = d2x * rx + d2y * ry + d2z * rz;
+        float s, t;
+        if (a <= 1e-12f && e <= 1e-12f) { s = t = 0f; }
+        else if (a <= 1e-12f) { s = 0f; t = f / e; if (t < 0f) t = 0f; else if (t > 1f) t = 1f; }
+        else
+        {
+            float c = d1x * rx + d1y * ry + d1z * rz;
+            if (e <= 1e-12f) { t = 0f; s = -c / a; if (s < 0f) s = 0f; else if (s > 1f) s = 1f; }
+            else
+            {
+                float b = d1x * d2x + d1y * d2y + d1z * d2z;
+                float denom = a * e - b * b;
+                s = denom > 1e-12f ? (b * f - c * e) / denom : 0f;
+                if (s < 0f) s = 0f; else if (s > 1f) s = 1f;
+                t = (b * s + f) / e;
+                if (t < 0f)
+                {
+                    t = 0f;
+                    s = -c / a;
+                    if (s < 0f) s = 0f; else if (s > 1f) s = 1f;
+                }
+                else if (t > 1f)
+                {
+                    t = 1f;
+                    s = (b - c) / a;
+                    if (s < 0f) s = 0f; else if (s > 1f) s = 1f;
+                }
+            }
+        }
+        c1x = p1x + d1x * s; c1y = p1y + d1y * s; c1z = p1z + d1z * s;
+        c2x = p2x + d2x * t; c2y = p2y + d2y * t; c2z = p2z + d2z * t;
+        float dx = c1x - c2x, dy = c1y - c2y, dz = c1z - c2z;
+        return dx * dx + dy * dy + dz * dz;
+    }
+
+    // Exact capsule-axis (segment A->B) vs triangle contact. The closest pair
+    // is found in local space (endpoint/face, vertex/segment, edge/edge, plus
+    // a segment-triangle crossing test); the distance is then measured in
+    // world space through the instance 3x3, so anisotropic scales stay exact.
+    // Replaces the former 6-point axis sampling, which missed surfaces that
+    // sit between two sample heights (e.g. railings at 15 u).
     bool InstanceContact(Instance it, float px, float py, float pz,
                          float radius, float height, ref Contact best)
     {
@@ -579,67 +650,122 @@ public sealed class FoliageCollision
         float lBz = lAz + (0f * w2l[2] + hTop * w2l[6] + 0f * w2l[10]);
 
         MeshData md = it.mesh;
-        int samples = 6;
         bool found = false;
         float rLocal = radius * it.maxLocalFromWorld * 1.05f;
-        for (int s = 0; s < samples; s++)
+        // candidate cells around the whole segment
+        float mnx = Math.Min(lAx, lBx) - rLocal, mxx = Math.Max(lAx, lBx) + rLocal;
+        float mnz = Math.Min(lAz, lBz) - rLocal, mxz = Math.Max(lAz, lBz) + rLocal;
+        int cx0 = (int)((mnx - md.gx0) / md.gcell);
+        int cx1 = (int)((mxx - md.gx0) / md.gcell);
+        int cz0 = (int)((mnz - md.gz0) / md.gcell);
+        int cz1 = (int)((mxz - md.gz0) / md.gcell);
+        if (cx0 < 0) cx0 = 0; if (cz0 < 0) cz0 = 0;
+        if (cx1 >= md.gx) cx1 = md.gx - 1; if (cz1 >= md.gz) cz1 = md.gz - 1;
+        if (cx0 > cx1 || cz0 > cz1) return false;
+        float segDx = lBx - lAx, segDy = lBy - lAy, segDz = lBz - lAz;
+        for (int cz = cz0; cz <= cz1; cz++)
         {
-            float tt = samples == 1 ? 0f : (float)s / (samples - 1);
-            float qx = lAx + (lBx - lAx) * tt;
-            float qy = lAy + (lBy - lAy) * tt;
-            float qz = lAz + (lBz - lAz) * tt;
-            // triangle grid lookup
-            int cx0 = (int)((qx - rLocal - md.gx0) / md.gcell);
-            int cx1 = (int)((qx + rLocal - md.gx0) / md.gcell);
-            int cz0 = (int)((qz - rLocal - md.gz0) / md.gcell);
-            int cz1 = (int)((qz + rLocal - md.gz0) / md.gcell);
-            if (cx0 < 0) cx0 = 0; if (cz0 < 0) cz0 = 0;
-            if (cx1 >= md.gx) cx1 = md.gx - 1; if (cz1 >= md.gz) cz1 = md.gz - 1;
-            if (cx0 > cx1 || cz0 > cz1) continue;
-            for (int cz = cz0; cz <= cz1; cz++)
+            int rowBase = cz * md.gx;
+            for (int cx = cx0; cx <= cx1; cx++)
             {
-                int rowBase = cz * md.gx;
-                for (int cx = cx0; cx <= cx1; cx++)
+                int c = rowBase + cx;
+                int s0 = md.cellStart[c], s1 = md.cellStart[c + 1];
+                for (int k = s0; k < s1; k++)
                 {
-                    int c = rowBase + cx;
-                    int s0 = md.cellStart[c], s1 = md.cellStart[c + 1];
-                    for (int k = s0; k < s1; k++)
+                    int tri = md.cellTri[k];
+                    int i0 = md.tris[tri * 3] * 3, i1 = md.tris[tri * 3 + 1] * 3, i2 = md.tris[tri * 3 + 2] * 3;
+                    // closest pair, local space (pair and both points are
+                    // committed together or not at all)
+                    float cpx = 0f, cpy = 0f, cpz = 0f, qx = 0f, qy = 0f, qz = 0f;
+                    float bestSq = float.MaxValue;
+                    // segment endpoints vs triangle
                     {
-                        int tri = md.cellTri[k];
-                        float cpx, cpy, cpz;
-                        ClosestPointOnTri(md.verts, md.tris, tri, qx, qy, qz,
-                                          out cpx, out cpy, out cpz);
-                        float dx = qx - cpx, dy = qy - cpy, dz = qz - cpz;
-                        // measure the distance in world space
-                        float wx = dx * it.m00 + dy * it.m10 + dz * it.m20;
-                        float wy = dx * it.m01 + dy * it.m11 + dz * it.m21;
-                        float wz = dx * it.m02 + dy * it.m12 + dz * it.m22;
-                        float dist = (float)Math.Sqrt(wx * wx + wy * wy + wz * wz);
-                        if (dist >= radius) continue;
-                        float depth = radius - dist;
-                        float nx, ny, nz;
-                        if (dist > 1e-5f) { nx = wx / dist; ny = wy / dist; nz = wz / dist; }
-                        else
+                        float tx, ty, tz;
+                        ClosestPointOnTri(md.verts, md.tris, tri, lAx, lAy, lAz, out tx, out ty, out tz);
+                        float ax = lAx - tx, ay = lAy - ty, az = lAz - tz;
+                        float dd = ax * ax + ay * ay + az * az;
+                        if (dd < bestSq) { bestSq = dd; qx = lAx; qy = lAy; qz = lAz; cpx = tx; cpy = ty; cpz = tz; }
+                        ClosestPointOnTri(md.verts, md.tris, tri, lBx, lBy, lBz, out tx, out ty, out tz);
+                        ax = lBx - tx; ay = lBy - ty; az = lBz - tz;
+                        dd = ax * ax + ay * ay + az * az;
+                        if (dd < bestSq) { bestSq = dd; qx = lBx; qy = lBy; qz = lBz; cpx = tx; cpy = ty; cpz = tz; }
+                    }
+                    // triangle vertices vs segment
+                    for (int v = 0; v < 3; v++)
+                    {
+                        int iv = md.tris[tri * 3 + v] * 3;
+                        float tx, ty, tz;
+                        ClosestPointOnSegment(lAx, lAy, lAz, lBx, lBy, lBz,
+                            md.verts[iv], md.verts[iv + 1], md.verts[iv + 2],
+                            out tx, out ty, out tz);
+                        float ax = tx - md.verts[iv], ay = ty - md.verts[iv + 1], az = tz - md.verts[iv + 2];
+                        float dd = ax * ax + ay * ay + az * az;
+                        if (dd < bestSq)
                         {
-                            int i0 = md.tris[tri * 3] * 3, i1 = md.tris[tri * 3 + 1] * 3, i2 = md.tris[tri * 3 + 2] * 3;
-                            float abx = md.verts[i1] - md.verts[i0], aby = md.verts[i1 + 1] - md.verts[i0 + 1], abz = md.verts[i1 + 2] - md.verts[i0 + 2];
-                            float acx = md.verts[i2] - md.verts[i0], acy = md.verts[i2 + 1] - md.verts[i0 + 1], acz = md.verts[i2 + 2] - md.verts[i0 + 2];
-                            nx = aby * acz - abz * acy; ny = abz * acx - abx * acz; nz = abx * acy - aby * acx;
-                            float wnx = nx * it.m00 + ny * it.m10 + nz * it.m20;
-                            float wny = nx * it.m01 + ny * it.m11 + nz * it.m21;
-                            float wnz = nx * it.m02 + ny * it.m12 + nz * it.m22;
-                            float nl = (float)Math.Sqrt(wnx * wnx + wny * wny + wnz * wnz);
-                            if (nl < 1e-9f) continue;
-                            nx = wnx / nl; ny = wny / nl; nz = wnz / nl;
+                            bestSq = dd;
+                            qx = tx; qy = ty; qz = tz;
+                            cpx = md.verts[iv]; cpy = md.verts[iv + 1]; cpz = md.verts[iv + 2];
                         }
-                        if (!found || depth > best.depth)
+                    }
+                    // triangle edges vs segment
+                    for (int e = 0; e < 3; e++)
+                    {
+                        int ea = md.tris[tri * 3 + e] * 3;
+                        int eb = md.tris[tri * 3 + (e + 1) % 3] * 3;
+                        float tx, ty, tz, ex, ey, ez;
+                        float sd2 = ClosestPtSegmentSegment(
+                            lAx, lAy, lAz, lBx, lBy, lBz,
+                            md.verts[ea], md.verts[ea + 1], md.verts[ea + 2],
+                            md.verts[eb], md.verts[eb + 1], md.verts[eb + 2],
+                            out tx, out ty, out tz, out ex, out ey, out ez);
+                        if (sd2 < bestSq)
                         {
-                            best.nx = nx; best.ny = ny; best.nz = nz;
-                            best.depth = depth;
-                            best.py = cpy * it.m01 + cpx * it.m00 + cpz * it.m02 + it.l2w[13] * 0f; // placeholder, fixed below
-                            best.py = cpx * it.l2w[1] + cpy * it.l2w[5] + cpz * it.l2w[9] + it.l2w[13];
-                            found = true;
+                            bestSq = sd2;
+                            qx = tx; qy = ty; qz = tz;
+                            cpx = ex; cpy = ey; cpz = ez;
                         }
+                    }
+                    // segment crossing the triangle face: distance 0
+                    float ht;
+                    bool hfront;
+                    if (RayTri(md.verts, md.tris, tri, lAx, lAy, lAz, segDx, segDy, segDz, out ht, out hfront))
+                    {
+                        bestSq = 0f;
+                        qx = lAx + segDx * ht; qy = lAy + segDy * ht; qz = lAz + segDz * ht;
+                        cpx = qx; cpy = qy; cpz = qz;
+                    }
+                    // world-space distance through the instance 3x3
+                    float dx = qx - cpx, dy = qy - cpy, dz = qz - cpz;
+                    float wx = dx * it.m00 + dy * it.m10 + dz * it.m20;
+                    float wy = dx * it.m01 + dy * it.m11 + dz * it.m21;
+                    float wz = dx * it.m02 + dy * it.m12 + dz * it.m22;
+                    float dist = (float)Math.Sqrt(wx * wx + wy * wy + wz * wz);
+                    if (dist >= radius) continue;
+                    float depth = radius - dist;
+                    float nx, ny, nz;
+                    if (dist > 1e-5f) { nx = wx / dist; ny = wy / dist; nz = wz / dist; }
+                    else
+                    {
+                        float abx = md.verts[i1] - md.verts[i0], aby = md.verts[i1 + 1] - md.verts[i0 + 1], abz = md.verts[i1 + 2] - md.verts[i0 + 2];
+                        float acx = md.verts[i2] - md.verts[i0], acy = md.verts[i2 + 1] - md.verts[i0 + 1], acz = md.verts[i2 + 2] - md.verts[i0 + 2];
+                        nx = aby * acz - abz * acy; ny = abz * acx - abx * acz; nz = abx * acy - aby * acx;
+                        float wnx = nx * it.m00 + ny * it.m10 + nz * it.m20;
+                        float wny = nx * it.m01 + ny * it.m11 + nz * it.m21;
+                        float wnz = nx * it.m02 + ny * it.m12 + nz * it.m22;
+                        float nl = (float)Math.Sqrt(wnx * wnx + wny * wny + wnz * wnz);
+                        if (nl < 1e-9f) continue;
+                        nx = wnx / nl; ny = wny / nl; nz = wnz / nl;
+                        // orient toward the capsule axis midpoint
+                        float amx = (lAx + lBx) * 0.5f, amy = (lAy + lBy) * 0.5f, amz = (lAz + lBz) * 0.5f;
+                        float ox = amx - cpx, oy = amy - cpy, oz = amz - cpz;
+                        if (nx * ox + ny * oy + nz * oz < 0f) { nx = -nx; ny = -ny; nz = -nz; }
+                    }
+                    if (!found || depth > best.depth)
+                    {
+                        best.nx = nx; best.ny = ny; best.nz = nz;
+                        best.depth = depth;
+                        best.py = cpx * it.l2w[1] + cpy * it.l2w[5] + cpz * it.l2w[9] + it.l2w[13];
+                        found = true;
                     }
                 }
             }
@@ -701,6 +827,33 @@ public sealed class FoliageCollision
                 if (py <= ground + 2f) grounded = true;
             }
             if (stepUp) break;
+        }
+        return blocked;
+    }
+
+    // Moves the capsule by (dx,dz) in substeps of at most maxSubStep,
+    // resolving contacts after each substep, so a move longer than the
+    // capsule radius cannot tunnel through a thin collider. Terrain ground
+    // and slope decisions stay with the caller; ref ground/grounded follow
+    // the same Resolve semantics. Returns true when any substep was blocked.
+    public bool MoveResolved(ref float px, ref float py, ref float pz,
+                             float dx, float dz, float radius, float height,
+                             float maxSubStep, ref float ground, ref bool grounded)
+    {
+        float len = (float)Math.Sqrt(dx * dx + dz * dz);
+        int n = 1;
+        if (maxSubStep > 0.01f && len > maxSubStep)
+        {
+            n = (int)Math.Ceiling(len / maxSubStep);
+            if (n > 64) n = 64;
+        }
+        bool blocked = false;
+        for (int i = 0; i < n; i++)
+        {
+            px += dx / n;
+            pz += dz / n;
+            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded))
+                blocked = true;
         }
         return blocked;
     }
