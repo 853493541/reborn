@@ -206,6 +206,8 @@ namespace MapUiApp.Engine
             _assets = assets;
         }
 
+        public AssetResolver Assets => _assets;
+
         private static bool IsRawImage(string path)
         {
             var ext = System.IO.Path.GetExtension(path);

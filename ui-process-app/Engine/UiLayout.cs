@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -520,7 +521,7 @@ namespace MapUiApp.Engine
                 var block = new TextBlock
                 {
                     Text = text.Replace("\\n", "\n").Replace("\\t", "\t"),
-                    FontFamily = new FontFamily("Microsoft YaHei UI"),
+                    FontFamily = ResolveFontFamily(section, textures.Assets),
                     FontSize = fontSize,
                     Foreground = foreground,
                 };
@@ -540,24 +541,34 @@ namespace MapUiApp.Engine
                 var vAlign = section.GetInt("VAlign");
                 if (hAlign == 1) block.TextAlignment = TextAlignment.Center;
                 else if (hAlign == 2) block.TextAlignment = TextAlignment.Right;
-                if (vAlign == 1 && height > 0 && !block.Text.Contains("\n"))
-                {
-                    block.LineHeight = height;
-                    block.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
-                }
                 if (Wireframe) block.ToolTip = section.Name;
 
-                // The engine draws glyphs even when they outgrow the authored box.
-                // A fixed WPF Width would clip them, so labels that overflow modestly
-                // get a sized canvas host and are allowed to spill; long marquee/tip
-                // strings keep their authored box.
+                // The engine (KItemText) lays the text with the shipped font's own
+                // line metrics: VAlign=1 centers the ascent+descent line box in the
+                // item, so the ink lands slightly above the box center (the descent
+                // hangs below). Pinning WPF's LineHeight to the box instead drags the
+                // ink down ~3px, so position the block explicitly in a canvas host.
                 double textWidth = MeasureTextWidth(block, text, fontSize);
-                if (width > 0 && textWidth > width + 0.5 && textWidth <= width * 1.6)
+                double textHeight = MeasureTextHeight(block, text, fontSize);
+                double offsetY = 0;
+                if (height > 0)
                 {
-                    var box = new Canvas { Width = width, Height = height > 0 ? height : 0 };
-                    double offset = hAlign == 1 ? (width - textWidth) / 2
+                    if (vAlign == 1) offsetY = (height - textHeight) / 2;
+                    else if (vAlign == 2) offsetY = height - textHeight;
+                }
+                bool overflowing = width > 0 && textWidth > width + 0.5 && textWidth <= width * 1.6;
+                bool needsHost = overflowing || width > 0 && (hAlign == 1 || hAlign == 2) || height > 0 && offsetY != 0;
+                if (needsHost)
+                {
+                    var box = new Canvas
+                    {
+                        Width = width > 0 ? width : textWidth,
+                        Height = height > 0 ? height : textHeight,
+                    };
+                    double offsetX = hAlign == 1 ? (width - textWidth) / 2
                         : hAlign == 2 ? width - textWidth : 0;
-                    Canvas.SetLeft(block, offset);
+                    Canvas.SetLeft(block, offsetX);
+                    Canvas.SetTop(block, offsetY);
                     box.Children.Add(block);
                     return box;
                 }
@@ -568,6 +579,41 @@ namespace MapUiApp.Engine
 
             // Unknown control type: keep it as an empty container when it has children.
             return isParent ? CreateFallbackContainer(section, true) : null;
+        }
+
+        private static readonly Dictionary<string, FontFamily> FontFamilies = new Dictionary<string, FontFamily>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// The engine renders every label with the shipped font of the scheme's
+        /// FontID (fontlist.ini `File=`, e.g. 方正黑体 fzht_GBK.ttf): glyph shapes and
+        /// the ascent/descent used by VAlign centering come from that file, not from
+        /// a system font. Falls back to a system family when the file is absent.
+        /// </summary>
+        private static FontFamily ResolveFontFamily(IniSection section, AssetResolver assets)
+        {
+            if (!UiProcessApp.Engine.Fonts.TryGetFontFile(section.GetInt("FontScheme", 212), out var file))
+                return new FontFamily("Microsoft YaHei UI");
+            if (FontFamilies.TryGetValue(file, out var cached)) return cached;
+            FontFamily family = null;
+            var path = assets?.Resolve("ui/Font/" + file);
+            if (path != null && File.Exists(path))
+            {
+                try
+                {
+                    // A file-based family only resolves when the fragment names the
+                    // font's internal family (WPF ignores the file otherwise).
+                    var glyph = new GlyphTypeface(new Uri(path));
+                    var familyName = glyph.FamilyNames.Values.FirstOrDefault() ?? Path.GetFileNameWithoutExtension(path);
+                    family = new FontFamily(new Uri(Path.GetDirectoryName(path) + Path.DirectorySeparatorChar),
+                                            "./" + Path.GetFileName(path) + "#" + familyName);
+                    var probe = new Typeface(family, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                    if (!probe.TryGetGlyphTypeface(out _)) family = null;
+                }
+                catch { family = null; }
+            }
+            if (family == null) family = new FontFamily("Microsoft YaHei UI");
+            FontFamilies[file] = family;
+            return family;
         }
 
         private static double MeasureTextWidth(TextBlock block, string text, double fontSize)
@@ -588,6 +634,27 @@ namespace MapUiApp.Engine
             catch
             {
                 return 0;
+            }
+        }
+
+        private static double MeasureTextHeight(TextBlock block, string text, double fontSize)
+        {
+            try
+            {
+                var typeface = new Typeface(block.FontFamily, block.FontStyle, block.FontWeight, block.FontStretch);
+                var formatted = new FormattedText(
+                    text,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    typeface,
+                    fontSize,
+                    Brushes.Black,
+                    1.0);
+                return formatted.Height;
+            }
+            catch
+            {
+                return fontSize;
             }
         }
 

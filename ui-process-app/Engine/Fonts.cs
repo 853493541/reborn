@@ -25,6 +25,9 @@ namespace UiProcessApp.Engine
 
         private static readonly Dictionary<int, Scheme> Schemes = new Dictionary<int, Scheme>();
         private static readonly Dictionary<int, int> FontSizes = new Dictionary<int, int>();
+
+        /// <summary>FontID -> shipped font file (fontlist.ini `File=`, e.g. \UI\Font\fzht_GBK.ttf).</summary>
+        private static readonly Dictionary<int, string> FontFiles = new Dictionary<int, string>();
         private static readonly Dictionary<string, Color> Colors = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
 
         public static bool Loaded { get; private set; }
@@ -37,8 +40,10 @@ namespace UiProcessApp.Engine
             {
                 foreach (var (section, values) in ReadIni(fontListIni))
                 {
-                    if (int.TryParse(section, out var id))
-                        FontSizes[id] = ParseInt(values, "Size", 20);
+                    if (!int.TryParse(section, out var id)) continue;
+                    FontSizes[id] = ParseInt(values, "Size", 20);
+                    var file = Get(values, "File", null);
+                    if (!string.IsNullOrWhiteSpace(file)) FontFiles[id] = file;
                 }
             }
 
@@ -84,6 +89,20 @@ namespace UiProcessApp.Engine
         {
             color = default;
             return !string.IsNullOrWhiteSpace(name) && Colors.TryGetValue(name.Trim(), out color);
+        }
+
+        /// <summary>
+        /// File name of the shipped font for a scheme (fontlist FontID -> File), e.g.
+        /// "fzht_GBK.ttf" for scheme 18. The engine renders every label with these
+        /// fonts, so the glyph shapes and vertical metrics must come from them.
+        /// </summary>
+        public static bool TryGetFontFile(int schemeId, out string fileName)
+        {
+            fileName = null;
+            if (!Schemes.TryGetValue(schemeId, out var scheme)) return false;
+            if (!FontFiles.TryGetValue(scheme.FontId, out var file) || string.IsNullOrWhiteSpace(file)) return false;
+            fileName = Path.GetFileName(file.Replace('\\', '/'));
+            return !string.IsNullOrWhiteSpace(fileName);
         }
 
         private static void LoadColors(string path)

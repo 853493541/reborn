@@ -31,13 +31,13 @@
               "CheckBox_DesertStorm_Skill"
             ]
           },
-          "show": [
-            "Image_AnniversaryIcon1",
-            "Image_AnniversaryIcon2",
-            "Image_AnniversaryIcon3"
-          ],
+          "show": [],
           "texts": [
-            { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" }
+            { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" },
+            { "section": "Text_FeiShaLingAvailable", "text": "(本周还可获得：1010)" },
+            { "section": "Text_FeiShaLingAvailable_K", "text": "(本周还可获得：1010)" },
+            { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
+            { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
           ],
           "summary": "1,129 sections. The mode tab strip is not authored as a strip: ShowModeTabs (NewBattleFieldQueue.decompiled.lua:4374-4451) hides every tab, then shows only the battlefield ids bound to the entry point and pins them at SetRelX(18 + i*100). InitWndBattleField (lua:4713-4744) drops modes whose IsActivityOn is false, which is why the live queue window shows 五人模式/单人模式/寻宝模式/自定义模式 (乱武模式 676 is off). Visibility follows the engine's LockShowAndHide flag (KGUI decoder clears the visible flag of locked sections; the window script is the only thing that shows them), so locked state widgets stay hidden and the script-shown ones (tabs, activity badges) are listed. The 五人模式 tab handler also sets Text_SkillTitle to STR_DESERTSTORM_TITLE (lua:4477-4488) and Text_TIP_DSTime to the schedule (lua:4350-4372).",
           "evidence": [

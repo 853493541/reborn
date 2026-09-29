@@ -35,6 +35,12 @@ namespace UiProcessApp
                 Shutdown(exit);
                 return;
             }
+            if (e.Args.Contains("--fonttest"))
+            {
+                var exit = RunFontTest(e.Args);
+                Shutdown(exit);
+                return;
+            }
             if (e.Args.Contains("--audit"))
             {
                 var exit = RunAudit(e.Args);
@@ -280,6 +286,68 @@ namespace UiProcessApp
                 catch { }
             }
             return (Math.Max(0, l), Math.Max(0, t), Math.Max(0, r), Math.Max(0, b));
+        }
+
+        /// <summary>
+        /// Debug: render the same label with the shipped font file and the system
+        /// fallback side by side to verify font resolution.
+        ///   UiProcessApp.exe --fonttest [--out file.png]
+        /// </summary>
+        private static int RunFontTest(string[] args)
+        {
+            try
+            {
+                string outPath = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--out") outPath = args[i + 1];
+                Paths.Locate();
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var path = assets.Resolve("ui/Font/fzht_GBK.ttf") ?? assets.Resolve("ui/Font/fzxk.ttf");
+                var report = new StringBuilder();
+                FontFamily fileFamily = null;
+                if (path != null)
+                {
+                    var glyph = new GlyphTypeface(new Uri(path));
+                    var name = glyph.FamilyNames.Values.FirstOrDefault() ?? "?";
+                    fileFamily = new FontFamily(new Uri(Path.GetDirectoryName(path) + Path.DirectorySeparatorChar),
+                                                "./" + Path.GetFileName(path) + "#" + name);
+                    var tf = new Typeface(fileFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                    bool ok = tf.TryGetGlyphTypeface(out var g);
+                    report.AppendLine($"font={path} family={name} resolved={ok} uri={g?.FontUri}");
+                }
+                else report.AppendLine("font file not found");
+
+                var stack = new StackPanel { Background = Brushes.Black };
+                foreach (var family in new[] { fileFamily, new FontFamily("Microsoft YaHei UI") })
+                {
+                    stack.Children.Add(new TextBlock
+                    {
+                        Text = "绝境战场",
+                        FontSize = 15,
+                        Foreground = Brushes.White,
+                        FontFamily = family ?? new FontFamily("Microsoft YaHei UI"),
+                    });
+                }
+                var host = new Border { Width = 260, Height = 60, Child = stack };
+                host.Measure(new Size(260, 60));
+                host.Arrange(new Rect(0, 0, 260, 60));
+                host.UpdateLayout();
+                var bitmap = new RenderTargetBitmap(260, 60, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(host);
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                outPath ??= Path.Combine(AppContext.BaseDirectory, "font_test.png");
+                using (var stream = File.Create(outPath)) encoder.Save(stream);
+                report.AppendLine("saved " + outPath);
+                File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "font_test.txt"), report.ToString());
+                Console.WriteLine(report.ToString());
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("fonttest failed: " + ex.Message);
+                return 1;
+            }
         }
 
         /// <summary>
