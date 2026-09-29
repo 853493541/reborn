@@ -84,9 +84,11 @@ and unresolved string ids are hidden instead of shown raw.
   `tools/prepare_ui_text.py`) plus the global `g_tStrings` table decoded from
   `ui/String/string.lua` (`tools/ui/extract_lua_string_table.py`).
 - `assets/` — git-ignored local extraction: `ui/Config/**` KGUI layouts,
-  `ui/Scheme/Case/**`, `ui/Font/**` shipped fonts, `pak/` settlement INIs and the
-  flat `uitex/` atlases pulled from PakV4. Fall back to `proof/minimap/ui` (and
-  `UIPROC_UI_ROOT`) for art.
+  `ui/Scheme/Case/**`, `ui/Font/**` shipped fonts, `ui/Loading/**` per-map
+  loading art (CDN `_mb` PNGs via `tools/netcode/extract_hpkg_member.py`),
+  `pak/` settlement INIs and the flat `uitex/` atlases pulled from PakV4. Fall
+  back to `proof/minimap/ui` (and `UIPROC_UI_ROOT`) for art. Textures decode as
+  TGA/DDS (custom) or PNG/BMP (WPF).
 
 ## Notes
 

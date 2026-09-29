@@ -174,6 +174,25 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved. Open: an `AnchorDst` whose target is attached later in INI
   order still falls back to the parent anchor.
 
+### 2026-09-29 — UI — Loading screen: per-map background + state replay
+- Did: the `loading-window` (LoadingPanel) render was empty because (a) the
+  Carriage/CharButton progress chrome and the per-map loading art were missing
+  from the local extraction, and (b) `TextureLoader` only decoded DDS/TGA even
+  though `IsRawImage` claimed `.png` (the CDN `_mb` art and the native loading
+  BMPs are PNG/BMP). Extracted `ui/Image/login/{Carriage,CharButton}.{UITex,Tga}`
+  from PakV4, added PNG/BMP decoding (WPF `BitmapFrame`, magic-sniffed), pulled
+  the 龙门绝境 loading art `loadinglmxb.png` from the CDN hpkg
+  (`105/dhirli24xvjuv.hpkg` via `tools/netcode/extract_hpkg_member.py`), and
+  replayed `LoadingPanel.lua`'s normal map-load state: `Image_Bg` ← the map's
+  minimap `config.ini [loading] image=` art, letterboxed 1280x720 in the
+  1280x960 design canvas; `Handle_Traffic` hidden (the `ShowProgress` proto /26
+  shows the traffic bar only while `IsTrafficState()`).
+- Evidence: `--audit` loading-window placeholders 13 → 0, unresolved 0;
+  `--selftest` 20 rendered / 0 failed; queue-panel render byte-identical; render
+  `proof/ui/evidence/loading_panel_render.png`; this commit.
+- Outcome: solved. Open: the native GDI `KWindowsLoadingWnd` composition
+  (`ui/Loading/background{1..18}.bmp`, 600x333) is still not shown by the viewer.
+
 ### 2026-09-29 — UI — Viewer chrome: Chinese-only names, layout-first tabs, page labels
 - Did: app UX pass on `ui-process-app`. Left tree and right header now show the
   window's Chinese name only (English id moved to the tooltip), the stage list

@@ -178,15 +178,27 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/LoadingPanel.ini",
-          "summary": "Located in PakV4 as ui/Config/Default/LoadingPanel.ini (39 sections). Shows the per-map loading art (Carriage/CharButton atlases) with progress widgets; complements KWindowsLoadingWnd in X3DEngine.dll.",
+          "hide": "Handle_Traffic",
+          "images": [
+            { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝minimap_mb/loadinglmxb.png" }
+          ],
+          "adjust": [
+            { "section": "Image_Bg", "width": 1280, "height": 720, "left": 0, "top": 120 }
+          ],
+          "summary": "Located in PakV4 as ui/Config/Default/LoadingPanel.ini (39 sections). Full-screen loading overlay: the script sets Image_Bg from the destination map's loading art (LoadingPanel.lua GetLoadingImage reads the map's minimap config [loading] image=..., e.g. 龙门寻宝minimap loadinglmxb.dds 1920x1080; the _mb PNG variant is used here) and CorrectShow fits it to the canvas; ShowProgress (proto /26) shows Handle_Traffic+Image_ProgressT while IsTrafficState() (download in progress) or Handle_Nor+Image_Progress for a normal map load. The progress-bar chrome is Carriage/CharButton (frames 20-24 / 18-19), the traffic bar also draws Handle_Nodes markers with Text_PointName. This viewer renders the normal map-load state for 龙门绝境 (296): Handle_Traffic hidden, background art letterboxed 1280x720 in the 1280x960 design canvas. Complements the native GDI KWindowsLoadingWnd (ui/Loading/loading.ini, 18 random 600x333 backgrounds + progress.bmp/sprite.bmp) documented in JX3_MODE_UI_FLOW.md §4.",
           "evidence": [
             "ui/Config/Default/LoadingPanel.ini",
             "ui/Image/login/Carriage.UITex + CharButton.UITex",
+            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / SetLoadingBg / CorrectShow / ShowProgress)",
+            "data/source/maps/龙门寻宝minimap_mb/config.ini [loading] image=loadinglmxb.dds width=1920 height=1080",
+            "CDN hpkg 105/dhirli24xvjuv.hpkg (loadinglmxb.png, extracted with tools/netcode/extract_hpkg_member.py)",
             "docs/netcode/JX3_MODE_UI_FLOW.md 4"
           ],
           "elements": [
-            "Background art (per-map loading story)",
-            "Progress bar + spinner",
+            "Background art (per-map loading image from the map's minimap config)",
+            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
+            "Traffic bar Handle_Traffic/Image_ProgressT + node markers (download state)",
+            "PakV4 download tips (Handle_PakV4Msg)",
             "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
           ],
           "labels": []
