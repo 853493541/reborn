@@ -1,0 +1,293 @@
+# UISetting_Operation_Switch.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=16
+  strings: 'module', 'UISetting_Operation_Switch', 'ExportExternalLib', 'bSearchEnemy', 'RegisterCustomData', 'UISetting_Operation_Switch.bSearchEnemy', 'Weakness', 'key', 'TAB_BWEAKNESS', 'value', 'OnlyNearDis', 'TAB_NEARDIS', 'MidAxisFirst', 'TAB_MIDAXISFIRST', 'GetIsChooseSearchEnemy', 'SetIsChooseSearchEnemy', 'WndContainer_Operation_Switch/WndContainer_WRban/CheckBox_B, 'WndContainer_Operation_Switch/WndContainer_WRban/CheckBox_A, 'WndContainer_Operation_Switch/WndContainer_WRban/CheckBox_A, 'WndContainer_Operation_Switch/WndContainer_WRban/CheckBox_Q
+  numbers: 17.0, 7.0, 14.0, 4.0, 3.0, 1.0
+  globals: =GetIsChooseSearchEnemy, =Init, =InitSetting, =SetIsChooseSearchEnemy, =SetSearchTargetLock, ExportExternalLib, InitSetting, IsAutoFellowShipByIP, LootList_SetOpenPosNearMouse, LootList_SetRButtonPickupAll, RegisterCustomData, RegisterEvent, SetAutoFellowShipByIP, SetAutoTraceQuest, SetMouseMove, SetSelfCastSkill, SetShowLoginTip, SwapMouseButton, UISetting, UISetting_Operation_Switch, module
+  function <?> line 19-21 params=1 ups=0 stack=3
+    strings: 'SetAutoTarget'
+    globals: SetAutoTarget
+  function <?> line 23-25 params=0 ups=0 stack=2
+    strings: 'bSearchEnemy'
+    globals: bSearchEnemy
+  function <?> line 27-29 params=1 ups=0 stack=2
+    strings: 'bSearchEnemy'
+    globals: =bSearchEnemy
+  function <?> line 46-59 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'PARTY_INVITE_REQUEST', 'PARTY_APPLY_REQUEST', 'PLAYER_BE_ADD_FELLOWSHIP', 'EMOTION_ACTION_REQUEST', 'FOLLOW_INVITE', 'TRADING_INVITE', 'INVITE_JOIN_TONG_REQUEST', 'APPLY_DUEL', 'GLOBAL_ROOM_JOIN_REQUEST', 'IsFilterOperateEnable', 'OnQueryMentor', 'OnQueryApprentice', 'INVITE_ARENA_CORPS'
+    globals: GlobalEventHandler, IsFilterOperateEnable
+  function <?> line 61-63 params=2 ups=0 stack=5
+    strings: 'FireUIEvent'
+    globals: FireUIEvent
+  function <?> line 65-68 params=1 ups=0 stack=10
+    strings: 'Hotkey', 'Get', 'GetKeyShow'
+    globals: GetKeyShow, Hotkey
+  function <?> line 111-111 params=0 ups=1 stack=4
+    strings: 'FormatString', 'g_tStrings', 'WRENCH_TOGGLE_NPC', 'TOGGLE_NPC'
+    globals: FormatString, g_tStrings
+  function <?> line 113-117 params=1 ups=0 stack=2
+    strings: '_g_HideNPc', 'ToggleNpc'
+    globals: ToggleNpc, _g_HideNPc
+  function <?> line 118-118 params=0 ups=0 stack=2
+    strings: '_g_HideNPc'
+    globals: _g_HideNPc
+  function <?> line 123-123 params=0 ups=1 stack=4
+    strings: 'FormatString', 'g_tStrings', 'WRENCH_TOGGLE_UI', 'TOGGLE_UI'
+    globals: FormatString, g_tStrings
+  function <?> line 126-130 params=1 ups=0 stack=2
+    strings: 'FilterMask', 'bHideUI', 'ToggleUI'
+    globals: FilterMask, ToggleUI
+  function <?> line 131-131 params=0 ups=0 stack=2
+    strings: 'FilterMask', 'bHideUI'
+    globals: FilterMask
+  function <?> line 144-151 params=1 ups=0 stack=4
+    strings: 'SetOperationMode', 'CLASSICAL_MODE', 'UISetting_Comprehensive', 'nCameraModeInClassicMode', 'SetCameraMode'
+    globals: CLASSICAL_MODE, SetOperationMode, UISetting_Comprehensive
+  function <?> line 152-152 params=0 ups=0 stack=2
+    strings: 'GetOperationMode', 'CLASSICAL_MODE'
+    globals: CLASSICAL_MODE, GetOperationMode
+  function <?> line 162-169 params=1 ups=0 stack=4
+    strings: 'SetOperationMode', 'JOYSTICK_MODE', 'UISetting_Comprehensive', 'nCameraModeInJoystickMode', 'SetCameraMode'
+    globals: JOYSTICK_MODE, SetOperationMode, UISetting_Comprehensive
+  function <?> line 170-170 params=0 ups=0 stack=2
+    strings: 'GetOperationMode', 'JOYSTICK_MODE'
+    globals: GetOperationMode, JOYSTICK_MODE
+  function <?> line 178-178 params=1 ups=0 stack=3
+    strings: 'NewSkillGuidePanel', 'SetSelfOpen'
+    globals: NewSkillGuidePanel
+  function <?> line 185-185 params=1 ups=0 stack=3
+    strings: 'ActionBar_SetAutoDownEnable'
+    globals: ActionBar_SetAutoDownEnable
+  function <?> line 197-197 params=1 ups=0 stack=3
+    strings: 'ActionBar_SetAutoPressEnable'
+    globals: ActionBar_SetAutoPressEnable
+  function <?> line 204-204 params=1 ups=0 stack=3
+    strings: 'ActionBar_SetAutoWhenTruce'
+    globals: ActionBar_SetAutoWhenTruce
+  function <?> line 211-211 params=1 ups=0 stack=2
+    numbers: 2.0
+  function <?> line 211-211 params=1 ups=0 stack=2
+    numbers: 2.0
+  function <?> line 212-212 params=1 ups=0 stack=3
+    strings: 'SetPointAreaCastSetting'
+    numbers: 2.0
+    globals: SetPointAreaCastSetting
+  function <?> line 217-217 params=1 ups=0 stack=2
+    numbers: 1.0
+  function <?> line 217-217 params=1 ups=0 stack=2
+    numbers: 1.0
+  function <?> line 218-218 params=1 ups=0 stack=3
+    strings: 'SetPointAreaCastSetting'
+    numbers: 1.0
+    globals: SetPointAreaCastSetting
+  function <?> line 224-224 params=1 ups=0 stack=2
+    numbers: 0.0
+  function <?> line 224-224 params=1 ups=0 stack=2
+    numbers: 0.0
+  function <?> line 225-225 params=1 ups=0 stack=3
+    strings: 'SetPointAreaCastSetting'
+    numbers: 0.0
+    globals: SetPointAreaCastSetting
+  function <?> line 231-231 params=1 ups=0 stack=3
+    strings: 'SetSkillTipPanel'
+    globals: SetSkillTipPanel
+  function <?> line 237-237 params=1 ups=0 stack=3
+    strings: 'SkillTip_EnableSFX'
+    globals: SkillTip_EnableSFX
+  function <?> line 242-250 params=1 ups=0 stack=5
+    strings: 'SearchTarget_SetOtherSettting', 'nVersion', 'Enmey', 'Ally'
+    numbers: 2.0, 1.0
+    globals: SearchTarget_SetOtherSettting
+  function <?> line 262-264 params=1 ups=0 stack=3
+    strings: 'Scene_LockTarget'
+    globals: Scene_LockTarget
+  function <?> line 269-269 params=1 ups=0 stack=3
+    strings: 'SetPlayerPriority'
+    globals: SetPlayerPriority
+  function <?> line 275-275 params=1 ups=0 stack=4
+    strings: 'SearchTarget_SetSettings', 'PlayerFirst'
+    globals: SearchTarget_SetSettings
+  function <?> line 282-288 params=0 ups=1 stack=4
+    strings: 'SELECT_ONLYPLAYER', '', '(', ')', 'g_tStrings', 'WRENCH_TAB_PLAYER'
+    globals: g_tStrings
+  function <?> line 289-289 params=1 ups=0 stack=4
+    strings: 'SearchTarget_SetSettings', 'OnlyPlayer'
+    globals: SearchTarget_SetSettings
+  function <?> line 297-300 params=0 ups=2 stack=3
+    strings: 'Weakness', 'value', 'StorageServer', 'GetData', 'UISetting_BoolValues2', 'TAB_BWEAKNESS'
+    globals: StorageServer
+  function <?> line 301-301 params=1 ups=0 stack=4
+    strings: 'SearchTarget_SetSettings', 'Weakness'
+    globals: SearchTarget_SetSettings
+  function <?> line 302-302 params=0 ups=1 stack=2
+  function <?> line 308-311 params=0 ups=2 stack=3
+    strings: 'OnlyNearDis', 'value', 'StorageServer', 'GetData', 'UISetting_BoolValues2', 'TAB_NEARDIS'
+    globals: StorageServer
+  function <?> line 312-312 params=1 ups=0 stack=4
+    strings: 'SearchTarget_SetSettings', 'OnlyNearDis'
+    globals: SearchTarget_SetSettings
+  function <?> line 313-313 params=0 ups=1 stack=2
+  function <?> line 318-321 params=0 ups=2 stack=3
+    strings: 'MidAxisFirst', 'value', 'StorageServer', 'GetData', 'UISetting_BoolValues2', 'TAB_MIDAXISFIRST'
+    globals: StorageServer
+  function <?> line 322-322 params=1 ups=0 stack=4
+    strings: 'SearchTarget_SetSettings', 'MidAxisFirst'
+    globals: SearchTarget_SetSettings
+  function <?> line 323-323 params=0 ups=1 stack=2
+  function <?> line 329-343 params=0 ups=0 stack=2
+  function <?> line 344-344 params=0 ups=1 stack=2
+  function <?> line 351-353 params=1 ups=1 stack=4
+    strings: 'ENABLE_PARTY_INVITE_REQUEST'
+  function <?> line 354-354 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'PARTY_INVITE_REQUEST'
+    globals: GlobalEventHandler
+  function <?> line 360-362 params=1 ups=1 stack=4
+    strings: 'ENABLE_PARTY_APPLY_REQUEST'
+  function <?> line 363-363 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'PARTY_APPLY_REQUEST'
+    globals: GlobalEventHandler
+  function <?> line 369-371 params=1 ups=1 stack=4
+    strings: 'ENABLE_PLAYER_BE_ADD_FELLOWSHIP'
+  function <?> line 372-372 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'PLAYER_BE_ADD_FELLOWSHIP'
+    globals: GlobalEventHandler
+  function <?> line 378-383 params=1 ups=0 stack=10
+    strings: 'OnQueryMentor', 'OnQueryDirectMentor', 'pairs', 'EnableFilterOperate'
+    globals: EnableFilterOperate, pairs
+  function <?> line 384-384 params=0 ups=0 stack=2
+    strings: 'IsFilterOperateEnable', 'OnQueryMentor'
+    globals: IsFilterOperateEnable
+  function <?> line 390-395 params=1 ups=0 stack=10
+    strings: 'OnQueryApprentice', 'OnQueryDirectApprentice', 'pairs', 'EnableFilterOperate'
+    globals: EnableFilterOperate, pairs
+  function <?> line 396-396 params=0 ups=0 stack=2
+    strings: 'IsFilterOperateEnable', 'OnQueryApprentice'
+    globals: IsFilterOperateEnable
+  function <?> line 402-404 params=1 ups=1 stack=4
+    strings: 'ENABLE_EMOTION_ACTION_REQUEST'
+  function <?> line 405-405 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'EMOTION_ACTION_REQUEST'
+    globals: GlobalEventHandler
+  function <?> line 411-413 params=1 ups=1 stack=4
+    strings: 'ENABLE_FOLLOW_INVITE'
+  function <?> line 414-414 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'FOLLOW_INVITE'
+    globals: GlobalEventHandler
+  function <?> line 420-422 params=1 ups=1 stack=4
+    strings: 'ENABLE_TRADING_INVITE'
+  function <?> line 423-423 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'TRADING_INVITE'
+    globals: GlobalEventHandler
+  function <?> line 429-431 params=1 ups=1 stack=4
+    strings: 'ENABLE_INVITE_JOIN_TONG_REQUEST'
+  function <?> line 432-432 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'INVITE_JOIN_TONG_REQUEST'
+    globals: GlobalEventHandler
+  function <?> line 438-440 params=1 ups=1 stack=4
+    strings: 'ENABLE_APPLY_DUEL'
+  function <?> line 441-441 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'APPLY_DUEL'
+    globals: GlobalEventHandler
+  function <?> line 447-449 params=1 ups=0 stack=4
+    strings: 'EnableFilterOperate', 'INVITE_ARENA_CORPS'
+    globals: EnableFilterOperate
+  function <?> line 450-450 params=0 ups=0 stack=2
+    strings: 'IsFilterOperateEnable', 'INVITE_ARENA_CORPS'
+    globals: IsFilterOperateEnable
+  function <?> line 456-458 params=1 ups=1 stack=4
+    strings: 'ENABLE_GLOBAL_ROOM_JOIN_REQUEST'
+  function <?> line 459-459 params=0 ups=0 stack=2
+    strings: 'GlobalEventHandler', 'IsRegisterEvent', 'GLOBAL_ROOM_JOIN_REQUEST'
+    globals: GlobalEventHandler
+  function <?> line 467-477 params=1 ups=0 stack=2
+    strings: '_g_HidePlayerType', 'TogglePlayer', '_g_HidePartyPlayerType', 'TogglePartyPlayer'
+    globals: TogglePartyPlayer, TogglePlayer, _g_HidePartyPlayerType, _g_HidePlayerType
+  function <?> line 478-478 params=0 ups=0 stack=2
+    strings: '_g_HidePlayerType'
+    globals: _g_HidePlayerType
+  function <?> line 479-481 params=0 ups=0 stack=2
+    strings: 'SelfieStudioBase', 'IsInMap'
+    globals: SelfieStudioBase
+  function <?> line 489-499 params=1 ups=0 stack=2
+    strings: '_g_HidePlayerType', 'TogglePlayer', '_g_HidePartyPlayerType', 'TogglePartyPlayer'
+    globals: TogglePartyPlayer, TogglePlayer, _g_HidePartyPlayerType, _g_HidePlayerType
+  function <?> line 500-500 params=0 ups=0 stack=2
+    strings: '_g_HidePlayerType', '_g_HidePartyPlayerType'
+    globals: _g_HidePartyPlayerType, _g_HidePlayerType
+  function <?> line 501-503 params=0 ups=0 stack=2
+    strings: 'SelfieStudioBase', 'IsInMap'
+    globals: SelfieStudioBase
+  function <?> line 511-521 params=1 ups=0 stack=2
+    strings: '_g_HidePlayerType', 'TogglePlayer', '_g_HidePartyPlayerType', 'TogglePartyPlayer'
+    globals: TogglePartyPlayer, TogglePlayer, _g_HidePartyPlayerType, _g_HidePlayerType
+  function <?> line 522-522 params=0 ups=0 stack=2
+    strings: '_g_HidePlayerType', '_g_HidePartyPlayerType'
+    globals: _g_HidePartyPlayerType, _g_HidePlayerType
+  function <?> line 523-532 params=0 ups=0 stack=2
+    strings: 'SelfieStudioBase', 'IsInMap', 'GetClientPlayer', 'IsInParty'
+    globals: GetClientPlayer, SelfieStudioBase
+  function <?> line 544-551 params=1 ups=0 stack=3
+    strings: 'SetIsChooseSearchEnemy'
+    globals: SetIsChooseSearchEnemy
+  function <?> line 552-552 params=0 ups=0 stack=2
+    strings: 'GetIsChooseSearchEnemy'
+    globals: GetIsChooseSearchEnemy
+  function <?> line 559-566 params=1 ups=0 stack=3
+    strings: 'SetIsChooseSearchEnemy'
+    globals: SetIsChooseSearchEnemy
+  function <?> line 567-567 params=0 ups=0 stack=2
+    strings: 'GetIsChooseSearchEnemy'
+    globals: GetIsChooseSearchEnemy
+  function <?> line 572-628 params=0 ups=1 stack=3
+    strings: 'AssistNewbieBase', 'CanSubscribe', 'GetSubscribeType', 'RemoteCallToServer', 'On_Help_GetType', 'CheckBox_NoMatter', 'path', 'WndContainer_Operation_Switch/WndContainer_AssistNewbie/Che, 'default', 'comboid', 'AssistNewbie', 'disable', 'set', 'get', 'CheckBox_NotBeHelper', 'WndContainer_Operation_Switch/WndContainer_AssistNewbie/Che, 'CheckBox_NotMaxLevel', 'WndContainer_Operation_Switch/WndContainer_AssistNewbie/Che, 'CheckBox_MaxLevel', 'WndContainer_Operation_Switch/WndContainer_AssistNewbie/Che
+    globals: AssistNewbieBase, RemoteCallToServer
+    function <?> line 584-584 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'CanSubscribe'
+      globals: AssistNewbieBase
+    function <?> line 585-589 params=1 ups=0 stack=3
+      strings: 'AssistNewbieBase', 'DoModifySubscribe', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'NO_MATTER'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 590-590 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'GetSubscribeType', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'NO_MATTER'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 596-596 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'CanSubscribe'
+      globals: AssistNewbieBase
+    function <?> line 597-601 params=1 ups=0 stack=3
+      strings: 'AssistNewbieBase', 'DoModifySubscribe', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'NOT_BE_HELPER'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 602-602 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'GetSubscribeType', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'NOT_BE_HELPER'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 608-608 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'CanSubscribe'
+      globals: AssistNewbieBase
+    function <?> line 609-613 params=1 ups=0 stack=3
+      strings: 'AssistNewbieBase', 'DoModifySubscribe', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'NOT_MAX_LEVEL'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 614-614 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'GetSubscribeType', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'NOT_MAX_LEVEL'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 620-620 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'CanSubscribe'
+      globals: AssistNewbieBase
+    function <?> line 621-625 params=1 ups=0 stack=3
+      strings: 'AssistNewbieBase', 'DoModifySubscribe', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'MAX_LEVEL'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+    function <?> line 626-626 params=0 ups=0 stack=2
+      strings: 'AssistNewbieBase', 'GetSubscribeType', 'ASSIST_NEWBIE_FAVOR_LEVEL_TYPE', 'MAX_LEVEL'
+      globals: ASSIST_NEWBIE_FAVOR_LEVEL_TYPE, AssistNewbieBase
+  function <?> line 632-639 params=1 ups=1 stack=8
+    strings: 'Lookup', 'WndContainer_Operation_Switch/Wnd_Facecut', 'Text_Resolution', 'SetText', 'FormatString', 'g_tStrings', 'WRENCH_SWITCH_PLAYER_SHOW_MODE', 'TOGGLE_PLAYER', 'IsVersionTW', 'WndContainer_Operation_Switch/WndContainer_WRban/CheckBox_R, 'Hide'
+    globals: FormatString, IsVersionTW, g_tStrings
+  function <?> line 647-650 params=0 ups=0 stack=2
+    strings: 'UISetting', 'HidePanel', 'OperationMode', 'Open', 'ShowPanel'
+    globals: OperationMode, UISetting
+  function <?> line 656-659 params=0 ups=0 stack=2
+    strings: 'UISetting', 'Close', 'OpenVideoSettingPanel'
+    globals: OpenVideoSettingPanel, UISetting
+  function <?> line 674-692 params=2 ups=2 stack=11
+    strings: 'pairs', 'SearchTarget_SetSettings', 'value', 'StorageServer', 'GetData', 'UISetting_BoolValues2', 'key'
+    globals: SearchTarget_SetSettings, StorageServer, pairs
+  function <?> line 694-698 params=0 ups=1 stack=2
+    strings: 'SetSearchTargetLock'
+    globals: SetSearchTargetLock

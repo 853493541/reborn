@@ -1,0 +1,1061 @@
+
+===== function 0/2 | line 142-158 | params=8 nups=0 stack=15 =====
+pc=   0 L0     SELF      A=8   B=0    C=256  R0 K0('IsEmpty')
+pc=   1 L0     CALL      A=8   B=2    C=2    args=1 ret=1
+pc=   2 L0     TEST      A=8   B=0    C=0    
+pc=   3 L0     JMP       A=0   B=256  C=5    to pc 10
+pc=   4 L0     GETGLOBAL A=8   B=0    C=1    'StorageServer'
+pc=   5 L0     GETTABLE  A=8   B=8    C=258  R8 K2('SetData')
+pc=   6 L0     GETTABLE  A=9   B=0    C=259  R0 K3('data_key')
+pc=   7 L0     GETTABLE  A=10  B=0    C=260  R0 K4('nIndex')
+pc=   8 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc=   9 L0     JMP       A=0   B=256  C=45   to pc 56
+pc=  10 L0     EQ        A=0   B=1    C=261  R1 K5(None)
+pc=  11 L0     JMP       A=0   B=256  C=8    to pc 21
+pc=  12 L0     SELF      A=8   B=0    C=262  R0 K6('GetObject')
+pc=  13 L0     CALL      A=8   B=2    C=8    args=1 ret=7
+pc=  14 L0     MOVE      A=7   B=14   C=0    
+pc=  15 L0     MOVE      A=6   B=13   C=0    
+pc=  16 L0     MOVE      A=5   B=12   C=0    
+pc=  17 L0     MOVE      A=4   B=11   C=0    
+pc=  18 L0     MOVE      A=3   B=10   C=0    
+pc=  19 L0     MOVE      A=2   B=9    C=0    
+pc=  20 L0     MOVE      A=1   B=8    C=0    
+pc=  21 L0     GETGLOBAL A=8   B=0    C=7    'UI_OBJECT_ITEM_INFO'
+pc=  22 L0     EQ        A=0   B=1    C=8    R1 R8
+pc=  23 L0     JMP       A=0   B=256  C=9    to pc 34
+pc=  24 L0     GETGLOBAL A=8   B=0    C=1    'StorageServer'
+pc=  25 L0     GETTABLE  A=8   B=8    C=258  R8 K2('SetData')
+pc=  26 L0     GETTABLE  A=9   B=0    C=259  R0 K3('data_key')
+pc=  27 L0     GETTABLE  A=10  B=0    C=260  R0 K4('nIndex')
+pc=  28 L0     MOVE      A=11  B=1    C=0    
+pc=  29 L0     MOVE      A=12  B=3    C=0    
+pc=  30 L0     MOVE      A=13  B=4    C=0    
+pc=  31 L0     MOVE      A=14  B=5    C=0    
+pc=  32 L0     CALL      A=8   B=7    C=1    args=6 ret=0
+pc=  33 L0     JMP       A=0   B=256  C=21   to pc 56
+pc=  34 L0     GETGLOBAL A=8   B=0    C=8    'UI_OBJECT_ITEM'
+pc=  35 L0     EQ        A=0   B=1    C=8    R1 R8
+pc=  36 L0     JMP       A=0   B=256  C=9    to pc 47
+pc=  37 L0     GETGLOBAL A=8   B=0    C=1    'StorageServer'
+pc=  38 L0     GETTABLE  A=8   B=8    C=258  R8 K2('SetData')
+pc=  39 L0     GETTABLE  A=9   B=0    C=259  R0 K3('data_key')
+pc=  40 L0     GETTABLE  A=10  B=0    C=260  R0 K4('nIndex')
+pc=  41 L0     MOVE      A=11  B=1    C=0    
+pc=  42 L0     MOVE      A=12  B=3    C=0    
+pc=  43 L0     MOVE      A=13  B=4    C=0    
+pc=  44 L0     MOVE      A=14  B=5    C=0    
+pc=  45 L0     CALL      A=8   B=7    C=1    args=6 ret=0
+pc=  46 L0     JMP       A=0   B=256  C=8    to pc 56
+pc=  47 L0     GETGLOBAL A=8   B=0    C=1    'StorageServer'
+pc=  48 L0     GETTABLE  A=8   B=8    C=258  R8 K2('SetData')
+pc=  49 L0     GETTABLE  A=9   B=0    C=259  R0 K3('data_key')
+pc=  50 L0     GETTABLE  A=10  B=0    C=260  R0 K4('nIndex')
+pc=  51 L0     MOVE      A=11  B=1    C=0    
+pc=  52 L0     MOVE      A=12  B=2    C=0    
+pc=  53 L0     MOVE      A=13  B=3    C=0    
+pc=  54 L0     MOVE      A=14  B=4    C=0    
+pc=  55 L0     CALL      A=8   B=7    C=1    args=6 ret=0
+pc=  56 L0     RETURN    A=0   B=1    C=0    
+
+===== function 0/21 | line 469-582 | params=1 nups=1 stack=35 =====
+pc=   0 L0     SELF      A=1   B=0    C=256  R0 K0('Lookup')
+pc=   1 L0     LOADK     A=3   B=0    C=1    ''
+pc=   2 L0     LOADK     A=4   B=0    C=1    ''
+pc=   3 L0     CALL      A=1   B=4    C=2    args=3 ret=1
+pc=   4 L0     SELF      A=2   B=1    C=256  R1 K0('Lookup')
+pc=   5 L0     LOADK     A=4   B=0    C=2    'Handle_Bg'
+pc=   6 L0     CALL      A=2   B=3    C=2    args=2 ret=1
+pc=   7 L0     SELF      A=3   B=1    C=256  R1 K0('Lookup')
+pc=   8 L0     LOADK     A=5   B=0    C=3    'Handle_Box'
+pc=   9 L0     CALL      A=3   B=3    C=2    args=2 ret=1
+pc=  10 L0     SELF      A=4   B=1    C=256  R1 K0('Lookup')
+pc=  11 L0     LOADK     A=6   B=0    C=4    'Handle_Text'
+pc=  12 L0     CALL      A=4   B=3    C=2    args=2 ret=1
+pc=  13 L0     SELF      A=5   B=1    C=256  R1 K0('Lookup')
+pc=  14 L0     LOADK     A=7   B=0    C=5    'Handle_Cool'
+pc=  15 L0     CALL      A=5   B=3    C=2    args=2 ret=1
+pc=  16 L0     SELF      A=6   B=1    C=256  R1 K0('Lookup')
+pc=  17 L0     LOADK     A=8   B=0    C=6    'Handle_Num'
+pc=  18 L0     CALL      A=6   B=3    C=2    args=2 ret=1
+pc=  19 L0     SELF      A=7   B=1    C=256  R1 K0('Lookup')
+pc=  20 L0     LOADK     A=9   B=0    C=7    'Handle_Animate'
+pc=  21 L0     CALL      A=7   B=3    C=2    args=2 ret=1
+pc=  22 L0     SELF      A=8   B=2    C=264  R2 K8('Clear')
+pc=  23 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc=  24 L0     SELF      A=8   B=3    C=264  R3 K8('Clear')
+pc=  25 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc=  26 L0     SELF      A=8   B=4    C=264  R4 K8('Clear')
+pc=  27 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc=  28 L0     SELF      A=8   B=5    C=264  R5 K8('Clear')
+pc=  29 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc=  30 L0     SELF      A=8   B=6    C=264  R6 K8('Clear')
+pc=  31 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc=  32 L0     SELF      A=8   B=7    C=264  R7 K8('Clear')
+pc=  33 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc=  34 L0     LOADK     A=8   B=0    C=9    1.0
+pc=  35 L0     GETTABLE  A=9   B=0    C=266  R0 K10('nGroup')
+pc=  36 L0     EQ        A=1   B=9    C=265  R9 K9(1.0)
+pc=  37 L0     JMP       A=0   B=256  C=2    to pc 41
+pc=  38 L0     GETTABLE  A=9   B=0    C=266  R0 K10('nGroup')
+pc=  39 L0     EQ        A=0   B=9    C=267  R9 K11(2.0)
+pc=  40 L0     JMP       A=0   B=256  C=11   to pc 53
+pc=  41 L0     GETGLOBAL A=9   B=0    C=12   'StorageServer'
+pc=  42 L0     GETTABLE  A=9   B=9    C=269  R9 K13('GetData')
+pc=  43 L0     LOADK     A=10  B=0    C=14   'ActionBar'
+pc=  44 L0     GETTABLE  A=11  B=0    C=266  R0 K10('nGroup')
+pc=  45 L0     LOADK     A=12  B=0    C=15   '_LockPage'
+pc=  46 L0     CONCAT    A=10  B=10   C=12   
+pc=  47 L0     CALL      A=9   B=2    C=2    args=1 ret=1
+pc=  48 L0     TEST      A=9   B=0    C=1    
+pc=  49 L0     JMP       A=0   B=256  C=2    to pc 53
+pc=  50 L0     GETGLOBAL A=9   B=0    C=16   'GetMainActionBarPage'
+pc=  51 L0     CALL      A=9   B=1    C=2    args=0 ret=1
+pc=  52 L0     MOVE      A=8   B=9    C=0    
+pc=  53 L0     GETGLOBAL A=9   B=0    C=12   'StorageServer'
+pc=  54 L0     GETTABLE  A=9   B=9    C=273  R9 K17('GetActionBarKey')
+pc=  55 L0     GETTABLE  A=10  B=0    C=266  R0 K10('nGroup')
+pc=  56 L0     MOVE      A=11  B=8    C=0    
+pc=  57 L0     CALL      A=9   B=3    C=2    args=2 ret=1
+pc=  58 L0     GETGLOBAL A=10  B=0    C=14   'ActionBar'
+pc=  59 L0     GETTABLE  A=10  B=10   C=274  R10 K18('Size')
+pc=  60 L0     GETTABLE  A=11  B=0    C=266  R0 K10('nGroup')
+pc=  61 L0     GETTABLE  A=10  B=10   C=11   R10 R11
+pc=  62 L0     GETGLOBAL A=11  B=0    C=14   'ActionBar'
+pc=  63 L0     GETTABLE  A=11  B=11   C=275  R11 K19('Line')
+pc=  64 L0     GETTABLE  A=12  B=0    C=266  R0 K10('nGroup')
+pc=  65 L0     GETTABLE  A=11  B=11   C=12   R11 R12
+pc=  66 L0     EQ        A=0   B=11   C=276  R11 K20(0.0)
+pc=  67 L0     JMP       A=0   B=256  C=0    to pc 69
+pc=  68 L0     LOADK     A=11  B=0    C=9    1.0
+pc=  69 L0     GETGLOBAL A=12  B=0    C=21   'math'
+pc=  70 L0     GETTABLE  A=12  B=12   C=278  R12 K22('ceil')
+pc=  71 L0     DIV       A=13  B=10   C=11   R10 R11
+pc=  72 L0     CALL      A=12  B=2    C=2    args=1 ret=1
+pc=  73 L0     LOADK     A=13  B=0    C=20   0.0
+pc=  74 L0     LOADK     A=14  B=0    C=20   0.0
+pc=  75 L0     LOADK     A=15  B=0    C=9    1.0
+pc=  76 L0     LOADK     A=16  B=0    C=9    1.0
+pc=  77 L0     MOVE      A=17  B=11   C=0    
+pc=  78 L0     LOADK     A=18  B=0    C=9    1.0
+pc=  79 L0     FORPREP   A=16  B=256  C=229  to pc 310
+pc=  80 L0     GETGLOBAL A=20  B=0    C=23   'IsMobileStreamingEnable'
+pc=  81 L0     CALL      A=20  B=1    C=2    args=0 ret=1
+pc=  82 L0     TEST      A=20  B=0    C=1    
+pc=  83 L0     JMP       A=0   B=256  C=15   to pc 100
+pc=  84 L0     SELF      A=20  B=2    C=280  R2 K24('AppendItemFromString')
+pc=  85 L0     LOADK     A=22  B=0    C=25   '<image>path="ui/Image/Minimap/Minimap.UITex" frame=145 w=2 h='
+pc=  86 L0     GETUPVAL  A=23  B=0    C=0    
+pc=  87 L0     ADD       A=23  B=23   C=282  R23 K26(4.0)
+pc=  88 L0     LOADK     A=24  B=0    C=27   ' lockshowhide=1 </image>'
+pc=  89 L0     CONCAT    A=22  B=22   C=24   
+pc=  90 L0     CALL      A=20  B=3    C=1    args=2 ret=0
+pc=  91 L0     SELF      A=20  B=2    C=256  R2 K0('Lookup')
+pc=  92 L0     SELF      A=22  B=2    C=284  R2 K28('GetItemCount')
+pc=  93 L0     CALL      A=22  B=2    C=2    args=1 ret=1
+pc=  94 L0     SUB       A=22  B=22   C=265  R22 K9(1.0)
+pc=  95 L0     CALL      A=20  B=3    C=2    args=2 ret=1
+pc=  96 L0     SELF      A=21  B=20   C=285  R20 K29('SetRelPos')
+pc=  97 L0     MOVE      A=23  B=13   C=0    
+pc=  98 L0     MOVE      A=24  B=14   C=0    
+pc=  99 L0     CALL      A=21  B=4    C=1    args=3 ret=0
+pc= 100 L0     ADD       A=13  B=13   C=267  R13 K11(2.0)
+pc= 101 L0     LOADK     A=20  B=0    C=9    1.0
+pc= 102 L0     MOVE      A=21  B=12   C=0    
+pc= 103 L0     LOADK     A=22  B=0    C=9    1.0
+pc= 104 L0     FORPREP   A=20  B=256  C=175  to pc 281
+pc= 105 L0     LT        A=0   B=10   C=15   R10 R15
+pc= 106 L0     JMP       A=0   B=256  C=0    to pc 108
+pc= 107 L0     JMP       A=0   B=256  C=173  to pc 282
+pc= 108 L0     GETGLOBAL A=24  B=0    C=23   'IsMobileStreamingEnable'
+pc= 109 L0     CALL      A=24  B=1    C=2    args=0 ret=1
+pc= 110 L0     TEST      A=24  B=0    C=0    
+pc= 111 L0     JMP       A=0   B=256  C=10   to pc 123
+pc= 112 L0     SELF      A=24  B=2    C=280  R2 K24('AppendItemFromString')
+pc= 113 L0     LOADK     A=26  B=0    C=30   '<image>path="ui/Traits/mobilestreaming/Image/Cloud/MainInterfaceX2_2.UITex" w='
+pc= 114 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 115 L0     ADD       A=27  B=27   C=267  R27 K11(2.0)
+pc= 116 L0     LOADK     A=28  B=0    C=31   ' h='
+pc= 117 L0     GETUPVAL  A=29  B=0    C=0    
+pc= 118 L0     ADD       A=29  B=29   C=282  R29 K26(4.0)
+pc= 119 L0     LOADK     A=30  B=0    C=32   ' frame=81 </image>'
+pc= 120 L0     CONCAT    A=26  B=26   C=30   
+pc= 121 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 122 L0     JMP       A=0   B=256  C=9    to pc 133
+pc= 123 L0     SELF      A=24  B=2    C=280  R2 K24('AppendItemFromString')
+pc= 124 L0     LOADK     A=26  B=0    C=33   '<image>path="ui/Image/Minimap/Minimap.UITex" w='
+pc= 125 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 126 L0     ADD       A=27  B=27   C=267  R27 K11(2.0)
+pc= 127 L0     LOADK     A=28  B=0    C=31   ' h='
+pc= 128 L0     GETUPVAL  A=29  B=0    C=0    
+pc= 129 L0     ADD       A=29  B=29   C=282  R29 K26(4.0)
+pc= 130 L0     LOADK     A=30  B=0    C=34   ' frame=135 </image>'
+pc= 131 L0     CONCAT    A=26  B=26   C=30   
+pc= 132 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 133 L0     SELF      A=24  B=3    C=280  R3 K24('AppendItemFromString')
+pc= 134 L0     LOADK     A=26  B=0    C=35   '<box>w='
+pc= 135 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 136 L0     LOADK     A=28  B=0    C=31   ' h='
+pc= 137 L0     GETUPVAL  A=29  B=0    C=0    
+pc= 138 L0     LOADK     A=30  B=0    C=36   ' eventid=525311 lockshowhide=1 </box>'
+pc= 139 L0     CONCAT    A=26  B=26   C=30   
+pc= 140 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 141 L0     SELF      A=24  B=4    C=280  R4 K24('AppendItemFromString')
+pc= 142 L0     LOADK     A=26  B=0    C=37   '<text>w='
+pc= 143 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 144 L0     LOADK     A=28  B=0    C=38   ' h=20 lockshowhide=1 font=15</text>'
+pc= 145 L0     CONCAT    A=26  B=26   C=28   
+pc= 146 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 147 L0     SELF      A=24  B=4    C=280  R4 K24('AppendItemFromString')
+pc= 148 L0     LOADK     A=26  B=0    C=37   '<text>w='
+pc= 149 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 150 L0     LOADK     A=28  B=0    C=39   ' h=20 halign=2 valign=2 lockshowhide=1 font=15</text>'
+pc= 151 L0     CONCAT    A=26  B=26   C=28   
+pc= 152 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 153 L0     SELF      A=24  B=5    C=280  R5 K24('AppendItemFromString')
+pc= 154 L0     LOADK     A=26  B=0    C=37   '<text>w='
+pc= 155 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 156 L0     LOADK     A=28  B=0    C=31   ' h='
+pc= 157 L0     GETUPVAL  A=29  B=0    C=0    
+pc= 158 L0     LOADK     A=30  B=0    C=40   ' halign=1 valign=1 font=23</text>'
+pc= 159 L0     CONCAT    A=26  B=26   C=30   
+pc= 160 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 161 L0     SELF      A=24  B=6    C=280  R6 K24('AppendItemFromString')
+pc= 162 L0     LOADK     A=26  B=0    C=37   '<text>w='
+pc= 163 L0     GETUPVAL  A=27  B=0    C=0    
+pc= 164 L0     LOADK     A=28  B=0    C=31   ' h='
+pc= 165 L0     GETUPVAL  A=29  B=0    C=0    
+pc= 166 L0     LOADK     A=30  B=0    C=41   ' halign=2 valign=2 font=23</text>'
+pc= 167 L0     CONCAT    A=26  B=26   C=30   
+pc= 168 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 169 L0     SELF      A=24  B=7    C=280  R7 K24('AppendItemFromString')
+pc= 170 L0     LOADK     A=26  B=0    C=42   '<animate>path="ui/Image/Common/Animate.UITex" group=2 </animate>'
+pc= 171 L0     CALL      A=24  B=3    C=1    args=2 ret=0
+pc= 172 L0     SELF      A=24  B=2    C=256  R2 K0('Lookup')
+pc= 173 L0     SELF      A=26  B=2    C=284  R2 K28('GetItemCount')
+pc= 174 L0     CALL      A=26  B=2    C=2    args=1 ret=1
+pc= 175 L0     SUB       A=26  B=26   C=265  R26 K9(1.0)
+pc= 176 L0     CALL      A=24  B=3    C=2    args=2 ret=1
+pc= 177 L0     SELF      A=25  B=3    C=256  R3 K0('Lookup')
+pc= 178 L0     SELF      A=27  B=3    C=284  R3 K28('GetItemCount')
+pc= 179 L0     CALL      A=27  B=2    C=2    args=1 ret=1
+pc= 180 L0     SUB       A=27  B=27   C=265  R27 K9(1.0)
+pc= 181 L0     CALL      A=25  B=3    C=2    args=2 ret=1
+pc= 182 L0     SELF      A=26  B=4    C=256  R4 K0('Lookup')
+pc= 183 L0     SELF      A=28  B=4    C=284  R4 K28('GetItemCount')
+pc= 184 L0     CALL      A=28  B=2    C=2    args=1 ret=1
+pc= 185 L0     SUB       A=28  B=28   C=267  R28 K11(2.0)
+pc= 186 L0     CALL      A=26  B=3    C=2    args=2 ret=1
+pc= 187 L0     SELF      A=27  B=4    C=256  R4 K0('Lookup')
+pc= 188 L0     SELF      A=29  B=4    C=284  R4 K28('GetItemCount')
+pc= 189 L0     CALL      A=29  B=2    C=2    args=1 ret=1
+pc= 190 L0     SUB       A=29  B=29   C=265  R29 K9(1.0)
+pc= 191 L0     CALL      A=27  B=3    C=2    args=2 ret=1
+pc= 192 L0     SELF      A=28  B=5    C=256  R5 K0('Lookup')
+pc= 193 L0     SELF      A=30  B=5    C=284  R5 K28('GetItemCount')
+pc= 194 L0     CALL      A=30  B=2    C=2    args=1 ret=1
+pc= 195 L0     SUB       A=30  B=30   C=265  R30 K9(1.0)
+pc= 196 L0     CALL      A=28  B=3    C=2    args=2 ret=1
+pc= 197 L0     SELF      A=29  B=6    C=256  R6 K0('Lookup')
+pc= 198 L0     SELF      A=31  B=6    C=284  R6 K28('GetItemCount')
+pc= 199 L0     CALL      A=31  B=2    C=2    args=1 ret=1
+pc= 200 L0     SUB       A=31  B=31   C=265  R31 K9(1.0)
+pc= 201 L0     CALL      A=29  B=3    C=2    args=2 ret=1
+pc= 202 L0     SELF      A=30  B=7    C=256  R7 K0('Lookup')
+pc= 203 L0     SELF      A=32  B=7    C=284  R7 K28('GetItemCount')
+pc= 204 L0     CALL      A=32  B=2    C=2    args=1 ret=1
+pc= 205 L0     SUB       A=32  B=32   C=265  R32 K9(1.0)
+pc= 206 L0     CALL      A=30  B=3    C=2    args=2 ret=1
+pc= 207 L0     SELF      A=31  B=24   C=299  R24 K43('SetName')
+pc= 208 L0     MOVE      A=33  B=15   C=0    
+pc= 209 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 210 L0     SELF      A=31  B=25   C=299  R25 K43('SetName')
+pc= 211 L0     MOVE      A=33  B=15   C=0    
+pc= 212 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 213 L0     SELF      A=31  B=26   C=299  R26 K43('SetName')
+pc= 214 L0     MOVE      A=33  B=15   C=0    
+pc= 215 L0     LOADK     A=34  B=0    C=44   'Key'
+pc= 216 L0     CONCAT    A=33  B=33   C=34   
+pc= 217 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 218 L0     SELF      A=31  B=27   C=299  R27 K43('SetName')
+pc= 219 L0     MOVE      A=33  B=15   C=0    
+pc= 220 L0     LOADK     A=34  B=0    C=45   'Num'
+pc= 221 L0     CONCAT    A=33  B=33   C=34   
+pc= 222 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 223 L0     SELF      A=31  B=30   C=299  R30 K43('SetName')
+pc= 224 L0     MOVE      A=33  B=15   C=0    
+pc= 225 L0     LOADK     A=34  B=0    C=46   'Animate'
+pc= 226 L0     CONCAT    A=33  B=33   C=34   
+pc= 227 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 228 L0     SETTABLE  A=25  B=303  C=15   K47('nIndex') R15
+pc= 229 L0     GETTABLE  A=31  B=0    C=266  R0 K10('nGroup')
+pc= 230 L0     SETTABLE  A=25  B=266  C=31   K10('nGroup') R31
+pc= 231 L0     SETTABLE  A=25  B=304  C=9    K48('data_key') R9
+pc= 232 L0     SELF      A=31  B=24   C=285  R24 K29('SetRelPos')
+pc= 233 L0     MOVE      A=33  B=13   C=0    
+pc= 234 L0     MOVE      A=34  B=14   C=0    
+pc= 235 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 236 L0     SELF      A=31  B=25   C=285  R25 K29('SetRelPos')
+pc= 237 L0     ADD       A=33  B=13   C=265  R13 K9(1.0)
+pc= 238 L0     ADD       A=34  B=14   C=267  R14 K11(2.0)
+pc= 239 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 240 L0     SELF      A=31  B=28   C=285  R28 K29('SetRelPos')
+pc= 241 L0     ADD       A=33  B=13   C=267  R13 K11(2.0)
+pc= 242 L0     ADD       A=34  B=14   C=305  R14 K49(3.0)
+pc= 243 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 244 L0     SELF      A=31  B=29   C=299  R29 K43('SetName')
+pc= 245 L0     MOVE      A=33  B=15   C=0    
+pc= 246 L0     LOADK     A=34  B=0    C=45   'Num'
+pc= 247 L0     CONCAT    A=33  B=33   C=34   
+pc= 248 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 249 L0     SELF      A=31  B=29   C=285  R29 K29('SetRelPos')
+pc= 250 L0     ADD       A=33  B=13   C=265  R13 K9(1.0)
+pc= 251 L0     ADD       A=34  B=14   C=267  R14 K11(2.0)
+pc= 252 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 253 L0     SELF      A=31  B=30   C=285  R30 K29('SetRelPos')
+pc= 254 L0     MOVE      A=33  B=13   C=0    
+pc= 255 L0     MOVE      A=34  B=14   C=0    
+pc= 256 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 257 L0     SELF      A=31  B=26   C=285  R26 K29('SetRelPos')
+pc= 258 L0     ADD       A=33  B=13   C=265  R13 K9(1.0)
+pc= 259 L0     ADD       A=34  B=14   C=267  R14 K11(2.0)
+pc= 260 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 261 L0     SELF      A=31  B=27   C=285  R27 K29('SetRelPos')
+pc= 262 L0     ADD       A=33  B=13   C=265  R13 K9(1.0)
+pc= 263 L0     GETUPVAL  A=34  B=0    C=0    
+pc= 264 L0     ADD       A=34  B=14   C=34   R14 R34
+pc= 265 L0     SUB       A=34  B=34   C=306  R34 K50(20.0)
+pc= 266 L0     ADD       A=34  B=34   C=282  R34 K26(4.0)
+pc= 267 L0     CALL      A=31  B=4    C=1    args=3 ret=0
+pc= 268 L0     GETUPVAL  A=31  B=0    C=0    
+pc= 269 L0     ADD       A=31  B=13   C=31   R13 R31
+pc= 270 L0     ADD       A=31  B=31   C=267  R31 K11(2.0)
+pc= 271 L0     ADD       A=15  B=15   C=265  R15 K9(1.0)
+pc= 272 L0     MOVE      A=13  B=31   C=0    
+pc= 273 L0     GETGLOBAL A=31  B=0    C=23   'IsMobileStreamingEnable'
+pc= 274 L0     CALL      A=31  B=1    C=2    args=0 ret=1
+pc= 275 L0     TEST      A=31  B=0    C=0    
+pc= 276 L0     JMP       A=0   B=256  C=3    to pc 281
+pc= 277 L0     CLOSURE   A=31  B=0    C=0    proto 0
+pc= 278 L0     SETTABLE  A=25  B=307  C=31   K51('OnItemMouseEnter') R31
+pc= 279 L0     CLOSURE   A=31  B=0    C=1    proto 1
+pc= 280 L0     SETTABLE  A=25  B=308  C=31   K52('OnItemRefreshTip') R31
+pc= 281 L0     FORLOOP   A=20  B=255  C=334  to pc 105
+pc= 282 L0     GETGLOBAL A=20  B=0    C=23   'IsMobileStreamingEnable'
+pc= 283 L0     CALL      A=20  B=1    C=2    args=0 ret=1
+pc= 284 L0     TEST      A=20  B=0    C=1    
+pc= 285 L0     JMP       A=0   B=256  C=15   to pc 302
+pc= 286 L0     SELF      A=20  B=2    C=280  R2 K24('AppendItemFromString')
+pc= 287 L0     LOADK     A=22  B=0    C=53   '<image>path="ui/Image/Minimap/Minimap.UITex" frame=143 w=2 h='
+pc= 288 L0     GETUPVAL  A=23  B=0    C=0    
+pc= 289 L0     ADD       A=23  B=23   C=282  R23 K26(4.0)
+pc= 290 L0     LOADK     A=24  B=0    C=54   'lockshowhide=1 </image>'
+pc= 291 L0     CONCAT    A=22  B=22   C=24   
+pc= 292 L0     CALL      A=20  B=3    C=1    args=2 ret=0
+pc= 293 L0     SELF      A=20  B=2    C=256  R2 K0('Lookup')
+pc= 294 L0     SELF      A=22  B=2    C=284  R2 K28('GetItemCount')
+pc= 295 L0     CALL      A=22  B=2    C=2    args=1 ret=1
+pc= 296 L0     SUB       A=22  B=22   C=265  R22 K9(1.0)
+pc= 297 L0     CALL      A=20  B=3    C=2    args=2 ret=1
+pc= 298 L0     SELF      A=21  B=20   C=285  R20 K29('SetRelPos')
+pc= 299 L0     MOVE      A=23  B=13   C=0    
+pc= 300 L0     MOVE      A=24  B=14   C=0    
+pc= 301 L0     CALL      A=21  B=4    C=1    args=3 ret=0
+pc= 302 L0     LOADK     A=20  B=0    C=20   0.0
+pc= 303 L0     GETUPVAL  A=21  B=0    C=0    
+pc= 304 L0     ADD       A=21  B=14   C=21   R14 R21
+pc= 305 L0     ADD       A=14  B=21   C=282  R21 K26(4.0)
+pc= 306 L0     MOVE      A=13  B=20   C=0    
+pc= 307 L0     LT        A=0   B=10   C=15   R10 R15
+pc= 308 L0     JMP       A=0   B=256  C=0    to pc 310
+pc= 309 L0     JMP       A=0   B=256  C=0    to pc 311
+pc= 310 L0     FORLOOP   A=16  B=255  C=280  to pc 80
+pc= 311 L0     SELF      A=16  B=2    C=311  R2 K55('SetSize')
+pc= 312 L0     LOADK     A=18  B=0    C=56   10000.0
+pc= 313 L0     LOADK     A=19  B=0    C=56   10000.0
+pc= 314 L0     CALL      A=16  B=4    C=1    args=3 ret=0
+pc= 315 L0     SELF      A=16  B=2    C=313  R2 K57('FormatAllItemPos')
+pc= 316 L0     CALL      A=16  B=2    C=1    args=1 ret=0
+pc= 317 L0     SELF      A=16  B=2    C=314  R2 K58('GetAllItemSize')
+pc= 318 L0     CALL      A=16  B=2    C=3    args=1 ret=2
+pc= 319 L0     SELF      A=18  B=2    C=311  R2 K55('SetSize')
+pc= 320 L0     MOVE      A=20  B=16   C=0    
+pc= 321 L0     MOVE      A=21  B=17   C=0    
+pc= 322 L0     CALL      A=18  B=4    C=1    args=3 ret=0
+pc= 323 L0     SELF      A=18  B=3    C=311  R3 K55('SetSize')
+pc= 324 L0     MOVE      A=20  B=16   C=0    
+pc= 325 L0     MOVE      A=21  B=17   C=0    
+pc= 326 L0     CALL      A=18  B=4    C=1    args=3 ret=0
+pc= 327 L0     SELF      A=18  B=4    C=311  R4 K55('SetSize')
+pc= 328 L0     MOVE      A=20  B=16   C=0    
+pc= 329 L0     MOVE      A=21  B=17   C=0    
+pc= 330 L0     CALL      A=18  B=4    C=1    args=3 ret=0
+pc= 331 L0     SELF      A=18  B=1    C=311  R1 K55('SetSize')
+pc= 332 L0     MOVE      A=20  B=16   C=0    
+pc= 333 L0     MOVE      A=21  B=17   C=0    
+pc= 334 L0     CALL      A=18  B=4    C=1    args=3 ret=0
+pc= 335 L0     SELF      A=18  B=0    C=311  R0 K55('SetSize')
+pc= 336 L0     MOVE      A=20  B=16   C=0    
+pc= 337 L0     MOVE      A=21  B=17   C=0    
+pc= 338 L0     CALL      A=18  B=4    C=1    args=3 ret=0
+pc= 339 L0     SELF      A=18  B=3    C=313  R3 K57('FormatAllItemPos')
+pc= 340 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 341 L0     SELF      A=18  B=4    C=313  R4 K57('FormatAllItemPos')
+pc= 342 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 343 L0     SELF      A=18  B=5    C=313  R5 K57('FormatAllItemPos')
+pc= 344 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 345 L0     SELF      A=18  B=6    C=313  R6 K57('FormatAllItemPos')
+pc= 346 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 347 L0     SELF      A=18  B=7    C=313  R7 K57('FormatAllItemPos')
+pc= 348 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 349 L0     GETGLOBAL A=18  B=0    C=14   'ActionBar'
+pc= 350 L0     GETTABLE  A=18  B=18   C=315  R18 K59('UpdateHotkey')
+pc= 351 L0     MOVE      A=19  B=0    C=0    
+pc= 352 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 353 L0     GETGLOBAL A=18  B=0    C=14   'ActionBar'
+pc= 354 L0     GETTABLE  A=18  B=18   C=316  R18 K60('UpdateBgShow')
+pc= 355 L0     MOVE      A=19  B=0    C=0    
+pc= 356 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 357 L0     GETGLOBAL A=18  B=0    C=14   'ActionBar'
+pc= 358 L0     GETTABLE  A=18  B=18   C=317  R18 K61('LoadGroupSave')
+pc= 359 L0     MOVE      A=19  B=0    C=0    
+pc= 360 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 361 L0     GETGLOBAL A=18  B=0    C=14   'ActionBar'
+pc= 362 L0     GETTABLE  A=18  B=18   C=318  R18 K62('UpdateAnchor')
+pc= 363 L0     MOVE      A=19  B=0    C=0    
+pc= 364 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 365 L0     GETGLOBAL A=18  B=0    C=14   'ActionBar'
+pc= 366 L0     GETTABLE  A=18  B=18   C=319  R18 K63('UpdateCustomModeWindow')
+pc= 367 L0     MOVE      A=19  B=0    C=0    
+pc= 368 L0     CALL      A=18  B=2    C=1    args=1 ret=0
+pc= 369 L0     RETURN    A=0   B=1    C=0    
+
+===== function 0/22 | line 584-598 | params=1 nups=0 stack=12 =====
+pc=   0 L0     SELF      A=1   B=0    C=256  R0 K0('Lookup')
+pc=   1 L0     LOADK     A=3   B=0    C=1    ''
+pc=   2 L0     LOADK     A=4   B=0    C=2    'Handle_Box'
+pc=   3 L0     CALL      A=1   B=4    C=2    args=3 ret=1
+pc=   4 L0     SELF      A=2   B=1    C=259  R1 K3('GetItemCount')
+pc=   5 L0     CALL      A=2   B=2    C=2    args=1 ret=1
+pc=   6 L0     SUB       A=2   B=2    C=260  R2 K4(1.0)
+pc=   7 L0     LOADK     A=3   B=0    C=4    1.0
+pc=   8 L0     GETTABLE  A=4   B=0    C=261  R0 K5('nGroup')
+pc=   9 L0     EQ        A=1   B=4    C=260  R4 K4(1.0)
+pc=  10 L0     JMP       A=0   B=256  C=2    to pc 14
+pc=  11 L0     GETTABLE  A=4   B=0    C=261  R0 K5('nGroup')
+pc=  12 L0     EQ        A=0   B=4    C=262  R4 K6(2.0)
+pc=  13 L0     JMP       A=0   B=256  C=11   to pc 26
+pc=  14 L0     GETGLOBAL A=4   B=0    C=7    'StorageServer'
+pc=  15 L0     GETTABLE  A=4   B=4    C=264  R4 K8('GetData')
+pc=  16 L0     LOADK     A=5   B=0    C=9    'ActionBar'
+pc=  17 L0     GETTABLE  A=6   B=0    C=261  R0 K5('nGroup')
+pc=  18 L0     LOADK     A=7   B=0    C=10   '_LockPage'
+pc=  19 L0     CONCAT    A=5   B=5    C=7    
+pc=  20 L0     CALL      A=4   B=2    C=2    args=1 ret=1
+pc=  21 L0     TEST      A=4   B=0    C=1    
+pc=  22 L0     JMP       A=0   B=256  C=2    to pc 26
+pc=  23 L0     GETGLOBAL A=4   B=0    C=11   'GetMainActionBarPage'
+pc=  24 L0     CALL      A=4   B=1    C=2    args=0 ret=1
+pc=  25 L0     MOVE      A=3   B=4    C=0    
+pc=  26 L0     GETGLOBAL A=4   B=0    C=7    'StorageServer'
+pc=  27 L0     GETTABLE  A=4   B=4    C=268  R4 K12('GetActionBarKey')
+pc=  28 L0     GETTABLE  A=5   B=0    C=261  R0 K5('nGroup')
+pc=  29 L0     MOVE      A=6   B=3    C=0    
+pc=  30 L0     CALL      A=4   B=3    C=2    args=2 ret=1
+pc=  31 L0     LOADK     A=5   B=0    C=13   0.0
+pc=  32 L0     MOVE      A=6   B=2    C=0    
+pc=  33 L0     LOADK     A=7   B=0    C=4    1.0
+pc=  34 L0     FORPREP   A=5   B=256  C=3    to pc 39
+pc=  35 L0     SELF      A=9   B=1    C=256  R1 K0('Lookup')
+pc=  36 L0     MOVE      A=11  B=8    C=0    
+pc=  37 L0     CALL      A=9   B=3    C=2    args=2 ret=1
+pc=  38 L0     SETTABLE  A=9   B=270  C=4    K14('data_key') R4
+pc=  39 L0     FORLOOP   A=5   B=255  C=506  to pc 35
+pc=  40 L0     RETURN    A=0   B=1    C=0    
+
+===== function 0/76 | line 1978-2191 | params=3 nups=8 stack=22 =====
+pc=   0 L0     SELF      A=3   B=0    C=256  R0 K0('ClearObject')
+pc=   1 L0     CALL      A=3   B=2    C=1    args=1 ret=0
+pc=   2 L0     SETTABLE  A=0   B=257  C=258  K1('__bFixedTip') K2(True)
+pc=   3 L0     LOADNIL   A=3   B=6    C=0    
+pc=   4 L0     TEST      A=2   B=0    C=0    
+pc=   5 L0     JMP       A=0   B=256  C=46   to pc 53
+pc=   6 L0     GETGLOBAL A=7   B=0    C=3    'StorageServer'
+pc=   7 L0     GETTABLE  A=7   B=7    C=260  R7 K4('GetData')
+pc=   8 L0     GETTABLE  A=8   B=0    C=261  R0 K5('data_key')
+pc=   9 L0     GETTABLE  A=9   B=0    C=262  R0 K6('nIndex')
+pc=  10 L0     CALL      A=7   B=3    C=2    args=2 ret=1
+pc=  11 L0     TEST      A=7   B=0    C=0    
+pc=  12 L0     JMP       A=0   B=256  C=9    to pc 23
+pc=  13 L0     GETGLOBAL A=7   B=0    C=3    'StorageServer'
+pc=  14 L0     GETTABLE  A=7   B=7    C=260  R7 K4('GetData')
+pc=  15 L0     GETTABLE  A=8   B=0    C=261  R0 K5('data_key')
+pc=  16 L0     GETTABLE  A=9   B=0    C=262  R0 K6('nIndex')
+pc=  17 L0     CALL      A=7   B=3    C=5    args=2 ret=4
+pc=  18 L0     MOVE      A=6   B=10   C=0    
+pc=  19 L0     MOVE      A=5   B=9    C=0    
+pc=  20 L0     MOVE      A=4   B=8    C=0    
+pc=  21 L0     MOVE      A=3   B=7    C=0    
+pc=  22 L0     JMP       A=0   B=256  C=38   to pc 62
+pc=  23 L0     GETGLOBAL A=7   B=0    C=7    'Table_GetLocalActionBarParam'
+pc=  24 L0     GETTABLE  A=8   B=0    C=261  R0 K5('data_key')
+pc=  25 L0     GETTABLE  A=9   B=0    C=262  R0 K6('nIndex')
+pc=  26 L0     CALL      A=7   B=3    C=2    args=2 ret=1
+pc=  27 L0     GETUPVAL  A=8   B=0    C=0    
+pc=  28 L0     MOVE      A=9   B=7    C=0    
+pc=  29 L0     CALL      A=8   B=2    C=2    args=1 ret=1
+pc=  30 L0     GETTABLE  A=9   B=8    C=264  R8 K8(1.0)
+pc=  31 L0     EQ        A=0   B=9    C=265  R9 K9(0.0)
+pc=  32 L0     JMP       A=0   B=256  C=11   to pc 45
+pc=  33 L0     GETUPVAL  A=9   B=1    C=0    
+pc=  34 L0     GETTABLE  A=10  B=8    C=266  R8 K10(2.0)
+pc=  35 L0     GETTABLE  A=11  B=8    C=267  R8 K11(3.0)
+pc=  36 L0     CALL      A=9   B=3    C=3    args=2 ret=2
+pc=  37 L0     GETTABLE  A=11  B=8    C=264  R8 K8(1.0)
+pc=  38 L0     MOVE      A=12  B=9    C=0    
+pc=  39 L0     MOVE      A=13  B=10   C=0    
+pc=  40 L0     LOADK     A=6   B=0    C=9    0.0
+pc=  41 L0     MOVE      A=5   B=13   C=0    
+pc=  42 L0     MOVE      A=4   B=12   C=0    
+pc=  43 L0     MOVE      A=3   B=11   C=0    
+pc=  44 L0     JMP       A=0   B=256  C=16   to pc 62
+pc=  45 L0     GETGLOBAL A=9   B=0    C=12   'unpack'
+pc=  46 L0     MOVE      A=10  B=8    C=0    
+pc=  47 L0     CALL      A=9   B=2    C=5    args=1 ret=4
+pc=  48 L0     MOVE      A=6   B=12   C=0    
+pc=  49 L0     MOVE      A=5   B=11   C=0    
+pc=  50 L0     MOVE      A=4   B=10   C=0    
+pc=  51 L0     MOVE      A=3   B=9    C=0    
+pc=  52 L0     JMP       A=0   B=256  C=8    to pc 62
+pc=  53 L0     GETGLOBAL A=7   B=0    C=3    'StorageServer'
+pc=  54 L0     GETTABLE  A=7   B=7    C=260  R7 K4('GetData')
+pc=  55 L0     GETTABLE  A=8   B=0    C=261  R0 K5('data_key')
+pc=  56 L0     GETTABLE  A=9   B=0    C=262  R0 K6('nIndex')
+pc=  57 L0     CALL      A=7   B=3    C=5    args=2 ret=4
+pc=  58 L0     MOVE      A=6   B=10   C=0    
+pc=  59 L0     MOVE      A=5   B=9    C=0    
+pc=  60 L0     MOVE      A=4   B=8    C=0    
+pc=  61 L0     MOVE      A=3   B=7    C=0    
+pc=  62 L0     GETGLOBAL A=7   B=0    C=13   'UI_OBJECT_ITEM_INFO'
+pc=  63 L0     EQ        A=0   B=3    C=7    R3 R7
+pc=  64 L0     JMP       A=0   B=256  C=49   to pc 115
+pc=  65 L0     MOVE      A=7   B=5    C=0    
+pc=  66 L0     MOVE      A=8   B=6    C=0    
+pc=  67 L0     GETGLOBAL A=9   B=0    C=14   'GetItemInfo'
+pc=  68 L0     MOVE      A=10  B=7    C=0    
+pc=  69 L0     MOVE      A=11  B=8    C=0    
+pc=  70 L0     CALL      A=9   B=3    C=2    args=2 ret=1
+pc=  71 L0     TEST      A=9   B=0    C=0    
+pc=  72 L0     JMP       A=0   B=256  C=498  to pc 572
+pc=  73 L0     GETUPVAL  A=10  B=2    C=0    
+pc=  74 L0     MOVE      A=11  B=0    C=0    
+pc=  75 L0     GETGLOBAL A=12  B=0    C=13   'UI_OBJECT_ITEM_INFO'
+pc=  76 L0     GETTABLE  A=13  B=9    C=271  R9 K15('nUiId')
+pc=  77 L0     LOADK     A=14  B=0    C=9    0.0
+pc=  78 L0     MOVE      A=15  B=7    C=0    
+pc=  79 L0     MOVE      A=16  B=8    C=0    
+pc=  80 L0     CALL      A=10  B=7    C=1    args=6 ret=0
+pc=  81 L0     SELF      A=10  B=0    C=272  R0 K16('SetObjectIcon')
+pc=  82 L0     GETGLOBAL A=12  B=0    C=17   'Table_GetItemIconID'
+pc=  83 L0     GETTABLE  A=13  B=9    C=271  R9 K15('nUiId')
+pc=  84 L0     CALL      A=12  B=2    C=0    args=1 ret=-1
+pc=  85 L0     CALL      A=10  B=0    C=1    args=-1 ret=0
+pc=  86 L0     GETUPVAL  A=10  B=3    C=0    
+pc=  87 L0     MOVE      A=11  B=7    C=0    
+pc=  88 L0     MOVE      A=12  B=8    C=0    
+pc=  89 L0     CALL      A=10  B=3    C=2    args=2 ret=1
+pc=  90 L0     SETGLOBAL A=10  B=0    C=18   'nAccount'
+pc=  91 L0     GETGLOBAL A=10  B=0    C=19   'ActionBar'
+pc=  92 L0     GETTABLE  A=10  B=10   C=276  R10 K20('UpdateBoxNum')
+pc=  93 L0     MOVE      A=11  B=0    C=0    
+pc=  94 L0     GETGLOBAL A=12  B=0    C=18   'nAccount'
+pc=  95 L0     CALL      A=10  B=3    C=1    args=2 ret=0
+pc=  96 L0     SELF      A=10  B=0    C=277  R0 K21('EnableObject')
+pc=  97 L0     GETGLOBAL A=12  B=0    C=18   'nAccount'
+pc=  98 L0     LT        A=1   B=265  C=12   K9(0.0) R12
+pc=  99 L0     JMP       A=0   B=256  C=0    to pc 101
+pc= 100 L0     LOADBOOL  A=12  B=0    C=1    
+pc= 101 L0     LOADBOOL  A=12  B=1    C=0    
+pc= 102 L0     CALL      A=10  B=3    C=1    args=2 ret=0
+pc= 103 L0     GETGLOBAL A=10  B=0    C=19   'ActionBar'
+pc= 104 L0     GETTABLE  A=10  B=10   C=278  R10 K22('UpdateBoxShow')
+pc= 105 L0     MOVE      A=11  B=0    C=0    
+pc= 106 L0     CALL      A=10  B=2    C=1    args=1 ret=0
+pc= 107 L0     GETGLOBAL A=10  B=0    C=23   'UpdateItemBoxExtend'
+pc= 108 L0     MOVE      A=11  B=0    C=0    
+pc= 109 L0     GETTABLE  A=12  B=9    C=280  R9 K24('nGenre')
+pc= 110 L0     GETTABLE  A=13  B=9    C=281  R9 K25('nQuality')
+pc= 111 L0     LOADNIL   A=14  B=15   C=0    
+pc= 112 L0     CALL      A=10  B=6    C=1    args=5 ret=0
+pc= 113 L0     RETURN    A=0   B=1    C=0    
+pc= 114 L0     JMP       A=0   B=256  C=456  to pc 572
+pc= 115 L0     GETGLOBAL A=7   B=0    C=26   'UI_OBJECT_ITEM'
+pc= 116 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 117 L0     JMP       A=0   B=256  C=82   to pc 201
+pc= 118 L0     GETUPVAL  A=7   B=4    C=0    
+pc= 119 L0     TEST      A=7   B=0    C=1    
+pc= 120 L0     JMP       A=0   B=256  C=0    to pc 122
+pc= 121 L0     RETURN    A=0   B=1    C=0    
+pc= 122 L0     MOVE      A=7   B=4    C=0    
+pc= 123 L0     MOVE      A=8   B=5    C=0    
+pc= 124 L0     MOVE      A=9   B=6    C=0    
+pc= 125 L0     GETGLOBAL A=10  B=0    C=27   'GetClientPlayer'
+pc= 126 L0     CALL      A=10  B=1    C=2    args=0 ret=1
+pc= 127 L0     GETGLOBAL A=11  B=0    C=28   'GetPlayerItem'
+pc= 128 L0     MOVE      A=12  B=10   C=0    
+pc= 129 L0     MOVE      A=13  B=7    C=0    
+pc= 130 L0     MOVE      A=14  B=8    C=0    
+pc= 131 L0     CALL      A=11  B=4    C=2    args=3 ret=1
+pc= 132 L0     LOADK     A=12  B=0    C=9    0.0
+pc= 133 L0     GETGLOBAL A=13  B=0    C=29   'INVENTORY_INDEX'
+pc= 134 L0     GETTABLE  A=13  B=13   C=286  R13 K30('EQUIP')
+pc= 135 L0     EQ        A=0   B=7    C=13   R7 R13
+pc= 136 L0     JMP       A=0   B=256  C=9    to pc 147
+pc= 137 L0     GETGLOBAL A=13  B=0    C=31   'GetLogicEquipPos'
+pc= 138 L0     MOVE      A=14  B=9    C=0    
+pc= 139 L0     CALL      A=13  B=2    C=2    args=1 ret=1
+pc= 140 L0     MOVE      A=12  B=13   C=0    
+pc= 141 L0     GETGLOBAL A=13  B=0    C=28   'GetPlayerItem'
+pc= 142 L0     MOVE      A=14  B=10   C=0    
+pc= 143 L0     MOVE      A=15  B=12   C=0    
+pc= 144 L0     MOVE      A=16  B=8    C=0    
+pc= 145 L0     CALL      A=13  B=4    C=2    args=3 ret=1
+pc= 146 L0     MOVE      A=11  B=13   C=0    
+pc= 147 L0     TEST      A=11  B=0    C=0    
+pc= 148 L0     JMP       A=0   B=256  C=422  to pc 572
+pc= 149 L0     GETTABLE  A=13  B=11   C=280  R11 K24('nGenre')
+pc= 150 L0     GETGLOBAL A=14  B=0    C=32   'ITEM_GENRE'
+pc= 151 L0     GETTABLE  A=14  B=14   C=289  R14 K33('EQUIPMENT')
+pc= 152 L0     EQ        A=0   B=13   C=14   R13 R14
+pc= 153 L0     JMP       A=0   B=256  C=417  to pc 572
+pc= 154 L0     GETUPVAL  A=13  B=2    C=0    
+pc= 155 L0     MOVE      A=14  B=0    C=0    
+pc= 156 L0     GETGLOBAL A=15  B=0    C=26   'UI_OBJECT_ITEM'
+pc= 157 L0     GETTABLE  A=16  B=11   C=271  R11 K15('nUiId')
+pc= 158 L0     MOVE      A=17  B=7    C=0    
+pc= 159 L0     MOVE      A=18  B=8    C=0    
+pc= 160 L0     MOVE      A=19  B=9    C=0    
+pc= 161 L0     GETTABLE  A=20  B=11   C=290  R11 K34('dwTabType')
+pc= 162 L0     GETTABLE  A=21  B=11   C=291  R11 K35('dwIndex')
+pc= 163 L0     CALL      A=13  B=9    C=1    args=8 ret=0
+pc= 164 L0     SELF      A=13  B=0    C=272  R0 K16('SetObjectIcon')
+pc= 165 L0     GETGLOBAL A=15  B=0    C=17   'Table_GetItemIconID'
+pc= 166 L0     GETTABLE  A=16  B=11   C=271  R11 K15('nUiId')
+pc= 167 L0     CALL      A=15  B=2    C=0    args=1 ret=-1
+pc= 168 L0     CALL      A=13  B=0    C=1    args=-1 ret=0
+pc= 169 L0     GETGLOBAL A=13  B=0    C=36   'IsEquipBoxNumShow'
+pc= 170 L0     GETTABLE  A=14  B=11   C=293  R11 K37('nSub')
+pc= 171 L0     CALL      A=13  B=2    C=2    args=1 ret=1
+pc= 172 L0     TEST      A=13  B=0    C=0    
+pc= 173 L0     JMP       A=0   B=256  C=5    to pc 180
+pc= 174 L0     GETGLOBAL A=13  B=0    C=19   'ActionBar'
+pc= 175 L0     GETTABLE  A=13  B=13   C=276  R13 K20('UpdateBoxNum')
+pc= 176 L0     MOVE      A=14  B=0    C=0    
+pc= 177 L0     GETTABLE  A=15  B=11   C=294  R11 K38('nStackNum')
+pc= 178 L0     CALL      A=13  B=3    C=1    args=2 ret=0
+pc= 179 L0     JMP       A=0   B=256  C=4    to pc 185
+pc= 180 L0     GETGLOBAL A=13  B=0    C=19   'ActionBar'
+pc= 181 L0     GETTABLE  A=13  B=13   C=276  R13 K20('UpdateBoxNum')
+pc= 182 L0     MOVE      A=14  B=0    C=0    
+pc= 183 L0     LOADK     A=15  B=0    C=39   ''
+pc= 184 L0     CALL      A=13  B=3    C=1    args=2 ret=0
+pc= 185 L0     GETGLOBAL A=13  B=0    C=19   'ActionBar'
+pc= 186 L0     GETTABLE  A=13  B=13   C=278  R13 K22('UpdateBoxShow')
+pc= 187 L0     MOVE      A=14  B=0    C=0    
+pc= 188 L0     CALL      A=13  B=2    C=1    args=1 ret=0
+pc= 189 L0     GETGLOBAL A=13  B=0    C=40   'IsItem_MaxStrengthLevel'
+pc= 190 L0     MOVE      A=14  B=11   C=0    
+pc= 191 L0     CALL      A=13  B=2    C=2    args=1 ret=1
+pc= 192 L0     GETGLOBAL A=14  B=0    C=23   'UpdateItemBoxExtend'
+pc= 193 L0     MOVE      A=15  B=0    C=0    
+pc= 194 L0     GETTABLE  A=16  B=11   C=280  R11 K24('nGenre')
+pc= 195 L0     GETTABLE  A=17  B=11   C=281  R11 K25('nQuality')
+pc= 196 L0     MOVE      A=18  B=13   C=0    
+pc= 197 L0     LOADNIL   A=19  B=19   C=0    
+pc= 198 L0     CALL      A=14  B=6    C=1    args=5 ret=0
+pc= 199 L0     RETURN    A=0   B=1    C=0    
+pc= 200 L0     JMP       A=0   B=256  C=370  to pc 572
+pc= 201 L0     GETGLOBAL A=7   B=0    C=41   'UI_OBJECT_SKILL'
+pc= 202 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 203 L0     JMP       A=0   B=256  C=120  to pc 325
+pc= 204 L0     GETGLOBAL A=7   B=0    C=42   'g_tUIConfig'
+pc= 205 L0     GETTABLE  A=7   B=7    C=299  R7 K43('ActionbarClear')
+pc= 206 L0     GETTABLE  A=7   B=7    C=4    R7 R4
+pc= 207 L0     TEST      A=7   B=0    C=0    
+pc= 208 L0     JMP       A=0   B=256  C=4    to pc 214
+pc= 209 L0     GETGLOBAL A=7   B=0    C=19   'ActionBar'
+pc= 210 L0     GETTABLE  A=7   B=7    C=300  R7 K44('ClearABox')
+pc= 211 L0     MOVE      A=8   B=0    C=0    
+pc= 212 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 213 L0     RETURN    A=0   B=1    C=0    
+pc= 214 L0     SELF      A=7   B=0    C=301  R0 K45('GetRoot')
+pc= 215 L0     CALL      A=7   B=2    C=2    args=1 ret=1
+pc= 216 L0     LOADBOOL  A=8   B=0    C=0    
+pc= 217 L0     GETTABLE  A=9   B=7    C=302  R7 K46('bResetSkillIcon')
+pc= 218 L0     TEST      A=9   B=0    C=1    
+pc= 219 L0     JMP       A=0   B=256  C=3    to pc 224
+pc= 220 L0     GETGLOBAL A=9   B=0    C=19   'ActionBar'
+pc= 221 L0     GETTABLE  A=9   B=9    C=303  R9 K47('bLoading')
+pc= 222 L0     TEST      A=9   B=0    C=0    
+pc= 223 L0     JMP       A=0   B=256  C=8    to pc 233
+pc= 224 L0     GETTABLE  A=9   B=1    C=4    R1 R4
+pc= 225 L0     TEST      A=9   B=0    C=0    
+pc= 226 L0     JMP       A=0   B=256  C=5    to pc 233
+pc= 227 L0     GETUPVAL  A=9   B=5    C=0    
+pc= 228 L0     MOVE      A=10  B=4    C=0    
+pc= 229 L0     GETTABLE  A=11  B=1    C=4    R1 R4
+pc= 230 L0     CALL      A=9   B=3    C=2    args=2 ret=1
+pc= 231 L0     MOVE      A=4   B=9    C=0    
+pc= 232 L0     LOADBOOL  A=8   B=1    C=0    
+pc= 233 L0     GETGLOBAL A=9   B=0    C=27   'GetClientPlayer'
+pc= 234 L0     CALL      A=9   B=1    C=2    args=0 ret=1
+pc= 235 L0     MOVE      A=10  B=4    C=0    
+pc= 236 L0     GETGLOBAL A=11  B=0    C=48   'IsCommonSkill'
+pc= 237 L0     MOVE      A=12  B=10   C=0    
+pc= 238 L0     CALL      A=11  B=2    C=3    args=1 ret=2
+pc= 239 L0     GETTABLE  A=13  B=9    C=305  R9 K49('GetSkillLevel')
+pc= 240 L0     MOVE      A=14  B=10   C=0    
+pc= 241 L0     CALL      A=13  B=2    C=2    args=1 ret=1
+pc= 242 L0     GETGLOBAL A=14  B=0    C=50   'GetSkill'
+pc= 243 L0     MOVE      A=15  B=10   C=0    
+pc= 244 L0     LOADK     A=16  B=0    C=8    1.0
+pc= 245 L0     CALL      A=14  B=3    C=2    args=2 ret=1
+pc= 246 L0     GETGLOBAL A=15  B=0    C=51   'Table_GetSkill'
+pc= 247 L0     MOVE      A=16  B=10   C=0    
+pc= 248 L0     LOADK     A=17  B=0    C=8    1.0
+pc= 249 L0     CALL      A=15  B=3    C=2    args=2 ret=1
+pc= 250 L0     TEST      A=14  B=0    C=1    
+pc= 251 L0     JMP       A=0   B=256  C=4    to pc 257
+pc= 252 L0     GETGLOBAL A=16  B=0    C=19   'ActionBar'
+pc= 253 L0     GETTABLE  A=16  B=16   C=300  R16 K44('ClearABox')
+pc= 254 L0     MOVE      A=17  B=0    C=0    
+pc= 255 L0     CALL      A=16  B=2    C=1    args=1 ret=0
+pc= 256 L0     RETURN    A=0   B=1    C=0    
+pc= 257 L0     TEST      A=11  B=0    C=0    
+pc= 258 L0     JMP       A=0   B=256  C=3    to pc 263
+pc= 259 L0     GETTABLE  A=16  B=9    C=308  R9 K52('GetCommonSkill')
+pc= 260 L0     MOVE      A=17  B=12   C=0    
+pc= 261 L0     CALL      A=16  B=2    C=2    args=1 ret=1
+pc= 262 L0     MOVE      A=10  B=16   C=0    
+pc= 263 L0     TEST      A=15  B=0    C=1    
+pc= 264 L0     JMP       A=0   B=256  C=5    to pc 271
+pc= 265 L0     GETGLOBAL A=16  B=0    C=3    'StorageServer'
+pc= 266 L0     GETTABLE  A=16  B=16   C=309  R16 K53('SetData')
+pc= 267 L0     GETTABLE  A=17  B=0    C=261  R0 K5('data_key')
+pc= 268 L0     GETTABLE  A=18  B=0    C=262  R0 K6('nIndex')
+pc= 269 L0     CALL      A=16  B=3    C=1    args=2 ret=0
+pc= 270 L0     RETURN    A=0   B=1    C=0    
+pc= 271 L0     TEST      A=11  B=0    C=1    
+pc= 272 L0     JMP       A=0   B=256  C=12   to pc 286
+pc= 273 L0     GETTABLE  A=16  B=14   C=310  R14 K54('bIsInstinct')
+pc= 274 L0     TEST      A=16  B=0    C=1    
+pc= 275 L0     JMP       A=0   B=256  C=9    to pc 286
+pc= 276 L0     GETTABLE  A=16  B=15   C=311  R15 K55('IsHotkeyExitWhenForget')
+pc= 277 L0     TEST      A=16  B=0    C=1    
+pc= 278 L0     JMP       A=0   B=256  C=6    to pc 286
+pc= 279 L0     LE        A=0   B=13   C=265  R13 K9(0.0)
+pc= 280 L0     JMP       A=0   B=256  C=4    to pc 286
+pc= 281 L0     GETGLOBAL A=16  B=0    C=19   'ActionBar'
+pc= 282 L0     GETTABLE  A=16  B=16   C=300  R16 K44('ClearABox')
+pc= 283 L0     MOVE      A=17  B=0    C=0    
+pc= 284 L0     CALL      A=16  B=2    C=1    args=1 ret=0
+pc= 285 L0     RETURN    A=0   B=1    C=0    
+pc= 286 L0     EQ        A=0   B=13   C=265  R13 K9(0.0)
+pc= 287 L0     JMP       A=0   B=256  C=0    to pc 289
+pc= 288 L0     LOADK     A=13  B=0    C=8    1.0
+pc= 289 L0     TEST      A=10  B=0    C=0    
+pc= 290 L0     JMP       A=0   B=256  C=280  to pc 572
+pc= 291 L0     EQ        A=1   B=10   C=265  R10 K9(0.0)
+pc= 292 L0     JMP       A=0   B=256  C=278  to pc 572
+pc= 293 L0     TEST      A=8   B=0    C=0    
+pc= 294 L0     JMP       A=0   B=256  C=6    to pc 302
+pc= 295 L0     GETUPVAL  A=16  B=6    C=0    
+pc= 296 L0     MOVE      A=17  B=0    C=0    
+pc= 297 L0     GETGLOBAL A=18  B=0    C=41   'UI_OBJECT_SKILL'
+pc= 298 L0     MOVE      A=19  B=10   C=0    
+pc= 299 L0     MOVE      A=20  B=13   C=0    
+pc= 300 L0     CALL      A=16  B=5    C=1    args=4 ret=0
+pc= 301 L0     JMP       A=0   B=256  C=5    to pc 308
+pc= 302 L0     GETUPVAL  A=16  B=2    C=0    
+pc= 303 L0     MOVE      A=17  B=0    C=0    
+pc= 304 L0     GETGLOBAL A=18  B=0    C=41   'UI_OBJECT_SKILL'
+pc= 305 L0     MOVE      A=19  B=10   C=0    
+pc= 306 L0     MOVE      A=20  B=13   C=0    
+pc= 307 L0     CALL      A=16  B=5    C=1    args=4 ret=0
+pc= 308 L0     SELF      A=16  B=0    C=272  R0 K16('SetObjectIcon')
+pc= 309 L0     GETGLOBAL A=18  B=0    C=56   'Table_GetSkillIconID'
+pc= 310 L0     MOVE      A=19  B=10   C=0    
+pc= 311 L0     MOVE      A=20  B=13   C=0    
+pc= 312 L0     CALL      A=18  B=3    C=0    args=2 ret=-1
+pc= 313 L0     CALL      A=16  B=0    C=1    args=-1 ret=0
+pc= 314 L0     GETGLOBAL A=16  B=0    C=19   'ActionBar'
+pc= 315 L0     GETTABLE  A=16  B=16   C=276  R16 K20('UpdateBoxNum')
+pc= 316 L0     MOVE      A=17  B=0    C=0    
+pc= 317 L0     LOADK     A=18  B=0    C=39   ''
+pc= 318 L0     CALL      A=16  B=3    C=1    args=2 ret=0
+pc= 319 L0     GETGLOBAL A=16  B=0    C=19   'ActionBar'
+pc= 320 L0     GETTABLE  A=16  B=16   C=278  R16 K22('UpdateBoxShow')
+pc= 321 L0     MOVE      A=17  B=0    C=0    
+pc= 322 L0     CALL      A=16  B=2    C=1    args=1 ret=0
+pc= 323 L0     RETURN    A=0   B=1    C=0    
+pc= 324 L0     JMP       A=0   B=256  C=246  to pc 572
+pc= 325 L0     GETGLOBAL A=7   B=0    C=57   'UI_OBJECT_CRAFT'
+pc= 326 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 327 L0     JMP       A=0   B=256  C=39   to pc 368
+pc= 328 L0     MOVE      A=7   B=4    C=0    
+pc= 329 L0     MOVE      A=8   B=5    C=0    
+pc= 330 L0     MOVE      A=9   B=6    C=0    
+pc= 331 L0     EQ        A=1   B=7    C=265  R7 K9(0.0)
+pc= 332 L0     JMP       A=0   B=256  C=32   to pc 366
+pc= 333 L0     GETGLOBAL A=10  B=0    C=58   'IsCustomCraft'
+pc= 334 L0     MOVE      A=11  B=9    C=0    
+pc= 335 L0     CALL      A=10  B=2    C=2    args=1 ret=1
+pc= 336 L0     TEST      A=10  B=0    C=1    
+pc= 337 L0     JMP       A=0   B=256  C=5    to pc 344
+pc= 338 L0     GETGLOBAL A=10  B=0    C=59   'GetCraft'
+pc= 339 L0     MOVE      A=11  B=9    C=0    
+pc= 340 L0     CALL      A=10  B=2    C=2    args=1 ret=1
+pc= 341 L0     TEST      A=10  B=0    C=1    
+pc= 342 L0     JMP       A=0   B=256  C=0    to pc 344
+pc= 343 L0     RETURN    A=0   B=1    C=0    
+pc= 344 L0     GETUPVAL  A=10  B=2    C=0    
+pc= 345 L0     MOVE      A=11  B=0    C=0    
+pc= 346 L0     GETGLOBAL A=12  B=0    C=57   'UI_OBJECT_CRAFT'
+pc= 347 L0     MOVE      A=13  B=7    C=0    
+pc= 348 L0     MOVE      A=14  B=8    C=0    
+pc= 349 L0     MOVE      A=15  B=9    C=0    
+pc= 350 L0     CALL      A=10  B=6    C=1    args=5 ret=0
+pc= 351 L0     SELF      A=10  B=0    C=272  R0 K16('SetObjectIcon')
+pc= 352 L0     GETGLOBAL A=12  B=0    C=60   'Table_GetCraftIconID'
+pc= 353 L0     MOVE      A=13  B=7    C=0    
+pc= 354 L0     MOVE      A=14  B=9    C=0    
+pc= 355 L0     CALL      A=12  B=3    C=0    args=2 ret=-1
+pc= 356 L0     CALL      A=10  B=0    C=1    args=-1 ret=0
+pc= 357 L0     GETGLOBAL A=10  B=0    C=19   'ActionBar'
+pc= 358 L0     GETTABLE  A=10  B=10   C=276  R10 K20('UpdateBoxNum')
+pc= 359 L0     MOVE      A=11  B=0    C=0    
+pc= 360 L0     LOADK     A=12  B=0    C=39   ''
+pc= 361 L0     CALL      A=10  B=3    C=1    args=2 ret=0
+pc= 362 L0     GETGLOBAL A=10  B=0    C=19   'ActionBar'
+pc= 363 L0     GETTABLE  A=10  B=10   C=278  R10 K22('UpdateBoxShow')
+pc= 364 L0     MOVE      A=11  B=0    C=0    
+pc= 365 L0     CALL      A=10  B=2    C=1    args=1 ret=0
+pc= 366 L0     RETURN    A=0   B=1    C=0    
+pc= 367 L0     JMP       A=0   B=256  C=203  to pc 572
+pc= 368 L0     GETGLOBAL A=7   B=0    C=61   'UI_OBJECT_MACRO'
+pc= 369 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 370 L0     JMP       A=0   B=256  C=24   to pc 396
+pc= 371 L0     MOVE      A=7   B=4    C=0    
+pc= 372 L0     GETUPVAL  A=8   B=2    C=0    
+pc= 373 L0     MOVE      A=9   B=0    C=0    
+pc= 374 L0     GETGLOBAL A=10  B=0    C=61   'UI_OBJECT_MACRO'
+pc= 375 L0     MOVE      A=11  B=7    C=0    
+pc= 376 L0     CALL      A=8   B=4    C=1    args=3 ret=0
+pc= 377 L0     GETGLOBAL A=8   B=0    C=62   'GetMacroIcon'
+pc= 378 L0     MOVE      A=9   B=7    C=0    
+pc= 379 L0     CALL      A=8   B=2    C=2    args=1 ret=1
+pc= 380 L0     TEST      A=8   B=0    C=0    
+pc= 381 L0     JMP       A=0   B=256  C=2    to pc 385
+pc= 382 L0     SELF      A=9   B=0    C=272  R0 K16('SetObjectIcon')
+pc= 383 L0     MOVE      A=11  B=8    C=0    
+pc= 384 L0     CALL      A=9   B=3    C=1    args=2 ret=0
+pc= 385 L0     GETGLOBAL A=9   B=0    C=19   'ActionBar'
+pc= 386 L0     GETTABLE  A=9   B=9    C=276  R9 K20('UpdateBoxNum')
+pc= 387 L0     MOVE      A=10  B=0    C=0    
+pc= 388 L0     LOADK     A=11  B=0    C=39   ''
+pc= 389 L0     CALL      A=9   B=3    C=1    args=2 ret=0
+pc= 390 L0     GETGLOBAL A=9   B=0    C=19   'ActionBar'
+pc= 391 L0     GETTABLE  A=9   B=9    C=278  R9 K22('UpdateBoxShow')
+pc= 392 L0     MOVE      A=10  B=0    C=0    
+pc= 393 L0     CALL      A=9   B=2    C=1    args=1 ret=0
+pc= 394 L0     RETURN    A=0   B=1    C=0    
+pc= 395 L0     JMP       A=0   B=256  C=175  to pc 572
+pc= 396 L0     GETGLOBAL A=7   B=0    C=63   'UI_OBJECT'
+pc= 397 L0     GETTABLE  A=7   B=7    C=320  R7 K64('EMOTION_ACTION')
+pc= 398 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 399 L0     JMP       A=0   B=256  C=24   to pc 425
+pc= 400 L0     GETUPVAL  A=7   B=2    C=0    
+pc= 401 L0     MOVE      A=8   B=0    C=0    
+pc= 402 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 403 L0     MOVE      A=7   B=4    C=0    
+pc= 404 L0     TEST      A=7   B=0    C=0    
+pc= 405 L0     JMP       A=0   B=256  C=3    to pc 410
+pc= 406 L0     GETGLOBAL A=8   B=0    C=65   'UpdateEmotionActionBoxObject'
+pc= 407 L0     MOVE      A=9   B=0    C=0    
+pc= 408 L0     MOVE      A=10  B=7    C=0    
+pc= 409 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 410 L0     GETUPVAL  A=8   B=7    C=0    
+pc= 411 L0     MOVE      A=9   B=0    C=0    
+pc= 412 L0     LOADBOOL  A=10  B=1    C=0    
+pc= 413 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 414 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 415 L0     GETTABLE  A=8   B=8    C=276  R8 K20('UpdateBoxNum')
+pc= 416 L0     MOVE      A=9   B=0    C=0    
+pc= 417 L0     LOADK     A=10  B=0    C=39   ''
+pc= 418 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 419 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 420 L0     GETTABLE  A=8   B=8    C=278  R8 K22('UpdateBoxShow')
+pc= 421 L0     MOVE      A=9   B=0    C=0    
+pc= 422 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc= 423 L0     RETURN    A=0   B=1    C=0    
+pc= 424 L0     JMP       A=0   B=256  C=146  to pc 572
+pc= 425 L0     GETGLOBAL A=7   B=0    C=66   'UI_OBJECT_PENDANT'
+pc= 426 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 427 L0     JMP       A=0   B=256  C=30   to pc 459
+pc= 428 L0     MOVE      A=7   B=4    C=0    
+pc= 429 L0     MOVE      A=8   B=5    C=0    
+pc= 430 L0     GETUPVAL  A=9   B=2    C=0    
+pc= 431 L0     MOVE      A=10  B=0    C=0    
+pc= 432 L0     GETGLOBAL A=11  B=0    C=66   'UI_OBJECT_PENDANT'
+pc= 433 L0     MOVE      A=12  B=7    C=0    
+pc= 434 L0     MOVE      A=13  B=8    C=0    
+pc= 435 L0     CALL      A=9   B=5    C=1    args=4 ret=0
+pc= 436 L0     GETGLOBAL A=9   B=0    C=14   'GetItemInfo'
+pc= 437 L0     GETGLOBAL A=10  B=0    C=67   'ITEM_TABLE_TYPE'
+pc= 438 L0     GETTABLE  A=10  B=10   C=324  R10 K68('CUST_TRINKET')
+pc= 439 L0     MOVE      A=11  B=8    C=0    
+pc= 440 L0     CALL      A=9   B=3    C=2    args=2 ret=1
+pc= 441 L0     TEST      A=9   B=0    C=0    
+pc= 442 L0     JMP       A=0   B=256  C=4    to pc 448
+pc= 443 L0     SELF      A=10  B=0    C=272  R0 K16('SetObjectIcon')
+pc= 444 L0     GETGLOBAL A=12  B=0    C=17   'Table_GetItemIconID'
+pc= 445 L0     GETTABLE  A=13  B=9    C=271  R9 K15('nUiId')
+pc= 446 L0     CALL      A=12  B=2    C=0    args=1 ret=-1
+pc= 447 L0     CALL      A=10  B=0    C=1    args=-1 ret=0
+pc= 448 L0     GETGLOBAL A=10  B=0    C=19   'ActionBar'
+pc= 449 L0     GETTABLE  A=10  B=10   C=276  R10 K20('UpdateBoxNum')
+pc= 450 L0     MOVE      A=11  B=0    C=0    
+pc= 451 L0     LOADK     A=12  B=0    C=39   ''
+pc= 452 L0     CALL      A=10  B=3    C=1    args=2 ret=0
+pc= 453 L0     GETGLOBAL A=10  B=0    C=19   'ActionBar'
+pc= 454 L0     GETTABLE  A=10  B=10   C=278  R10 K22('UpdateBoxShow')
+pc= 455 L0     MOVE      A=11  B=0    C=0    
+pc= 456 L0     CALL      A=10  B=2    C=1    args=1 ret=0
+pc= 457 L0     RETURN    A=0   B=1    C=0    
+pc= 458 L0     JMP       A=0   B=256  C=112  to pc 572
+pc= 459 L0     GETGLOBAL A=7   B=0    C=69   'UI_OBJECT_PET'
+pc= 460 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 461 L0     JMP       A=0   B=256  C=24   to pc 487
+pc= 462 L0     MOVE      A=7   B=4    C=0    
+pc= 463 L0     GETUPVAL  A=8   B=2    C=0    
+pc= 464 L0     MOVE      A=9   B=0    C=0    
+pc= 465 L0     GETGLOBAL A=10  B=0    C=69   'UI_OBJECT_PET'
+pc= 466 L0     MOVE      A=11  B=7    C=0    
+pc= 467 L0     CALL      A=8   B=4    C=1    args=3 ret=0
+pc= 468 L0     GETGLOBAL A=8   B=0    C=70   'Table_GetFellowPet'
+pc= 469 L0     MOVE      A=9   B=7    C=0    
+pc= 470 L0     CALL      A=8   B=2    C=2    args=1 ret=1
+pc= 471 L0     TEST      A=8   B=0    C=0    
+pc= 472 L0     JMP       A=0   B=256  C=11   to pc 485
+pc= 473 L0     SELF      A=9   B=0    C=272  R0 K16('SetObjectIcon')
+pc= 474 L0     GETTABLE  A=11  B=8    C=327  R8 K71('nIconID')
+pc= 475 L0     CALL      A=9   B=3    C=1    args=2 ret=0
+pc= 476 L0     GETGLOBAL A=9   B=0    C=19   'ActionBar'
+pc= 477 L0     GETTABLE  A=9   B=9    C=276  R9 K20('UpdateBoxNum')
+pc= 478 L0     MOVE      A=10  B=0    C=0    
+pc= 479 L0     LOADK     A=11  B=0    C=39   ''
+pc= 480 L0     CALL      A=9   B=3    C=1    args=2 ret=0
+pc= 481 L0     GETGLOBAL A=9   B=0    C=19   'ActionBar'
+pc= 482 L0     GETTABLE  A=9   B=9    C=278  R9 K22('UpdateBoxShow')
+pc= 483 L0     MOVE      A=10  B=0    C=0    
+pc= 484 L0     CALL      A=9   B=2    C=1    args=1 ret=0
+pc= 485 L0     RETURN    A=0   B=1    C=0    
+pc= 486 L0     JMP       A=0   B=256  C=84   to pc 572
+pc= 487 L0     GETGLOBAL A=7   B=0    C=72   'UI_OBJECT_TOY'
+pc= 488 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 489 L0     JMP       A=0   B=256  C=24   to pc 515
+pc= 490 L0     GETUPVAL  A=7   B=2    C=0    
+pc= 491 L0     MOVE      A=8   B=0    C=0    
+pc= 492 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 493 L0     MOVE      A=7   B=4    C=0    
+pc= 494 L0     TEST      A=7   B=0    C=0    
+pc= 495 L0     JMP       A=0   B=256  C=3    to pc 500
+pc= 496 L0     GETGLOBAL A=8   B=0    C=73   'UpdateToyBoxObject'
+pc= 497 L0     MOVE      A=9   B=0    C=0    
+pc= 498 L0     MOVE      A=10  B=4    C=0    
+pc= 499 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 500 L0     GETUPVAL  A=8   B=7    C=0    
+pc= 501 L0     MOVE      A=9   B=0    C=0    
+pc= 502 L0     LOADBOOL  A=10  B=1    C=0    
+pc= 503 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 504 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 505 L0     GETTABLE  A=8   B=8    C=276  R8 K20('UpdateBoxNum')
+pc= 506 L0     MOVE      A=9   B=0    C=0    
+pc= 507 L0     LOADK     A=10  B=0    C=39   ''
+pc= 508 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 509 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 510 L0     GETTABLE  A=8   B=8    C=278  R8 K22('UpdateBoxShow')
+pc= 511 L0     MOVE      A=9   B=0    C=0    
+pc= 512 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc= 513 L0     RETURN    A=0   B=1    C=0    
+pc= 514 L0     JMP       A=0   B=256  C=56   to pc 572
+pc= 515 L0     GETGLOBAL A=7   B=0    C=63   'UI_OBJECT'
+pc= 516 L0     GETTABLE  A=7   B=7    C=330  R7 K74('BRIGHT_MARK')
+pc= 517 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 518 L0     JMP       A=0   B=256  C=24   to pc 544
+pc= 519 L0     GETUPVAL  A=7   B=2    C=0    
+pc= 520 L0     MOVE      A=8   B=0    C=0    
+pc= 521 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 522 L0     MOVE      A=7   B=4    C=0    
+pc= 523 L0     TEST      A=7   B=0    C=0    
+pc= 524 L0     JMP       A=0   B=256  C=3    to pc 529
+pc= 525 L0     GETGLOBAL A=8   B=0    C=75   'UpdateBrightMarkBoxObject'
+pc= 526 L0     MOVE      A=9   B=0    C=0    
+pc= 527 L0     MOVE      A=10  B=4    C=0    
+pc= 528 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 529 L0     GETUPVAL  A=8   B=7    C=0    
+pc= 530 L0     MOVE      A=9   B=0    C=0    
+pc= 531 L0     LOADBOOL  A=10  B=1    C=0    
+pc= 532 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 533 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 534 L0     GETTABLE  A=8   B=8    C=276  R8 K20('UpdateBoxNum')
+pc= 535 L0     MOVE      A=9   B=0    C=0    
+pc= 536 L0     LOADK     A=10  B=0    C=39   ''
+pc= 537 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 538 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 539 L0     GETTABLE  A=8   B=8    C=278  R8 K22('UpdateBoxShow')
+pc= 540 L0     MOVE      A=9   B=0    C=0    
+pc= 541 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc= 542 L0     RETURN    A=0   B=1    C=0    
+pc= 543 L0     JMP       A=0   B=256  C=27   to pc 572
+pc= 544 L0     GETGLOBAL A=7   B=0    C=63   'UI_OBJECT'
+pc= 545 L0     GETTABLE  A=7   B=7    C=332  R7 K76('FACE_MOTION')
+pc= 546 L0     EQ        A=0   B=3    C=7    R3 R7
+pc= 547 L0     JMP       A=0   B=256  C=23   to pc 572
+pc= 548 L0     GETUPVAL  A=7   B=2    C=0    
+pc= 549 L0     MOVE      A=8   B=0    C=0    
+pc= 550 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 551 L0     MOVE      A=7   B=4    C=0    
+pc= 552 L0     TEST      A=7   B=0    C=0    
+pc= 553 L0     JMP       A=0   B=256  C=3    to pc 558
+pc= 554 L0     GETGLOBAL A=8   B=0    C=77   'UpdateFaceMotionBoxObject'
+pc= 555 L0     MOVE      A=9   B=0    C=0    
+pc= 556 L0     MOVE      A=10  B=7    C=0    
+pc= 557 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 558 L0     GETUPVAL  A=8   B=7    C=0    
+pc= 559 L0     MOVE      A=9   B=0    C=0    
+pc= 560 L0     LOADBOOL  A=10  B=1    C=0    
+pc= 561 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 562 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 563 L0     GETTABLE  A=8   B=8    C=276  R8 K20('UpdateBoxNum')
+pc= 564 L0     MOVE      A=9   B=0    C=0    
+pc= 565 L0     LOADK     A=10  B=0    C=39   ''
+pc= 566 L0     CALL      A=8   B=3    C=1    args=2 ret=0
+pc= 567 L0     GETGLOBAL A=8   B=0    C=19   'ActionBar'
+pc= 568 L0     GETTABLE  A=8   B=8    C=278  R8 K22('UpdateBoxShow')
+pc= 569 L0     MOVE      A=9   B=0    C=0    
+pc= 570 L0     CALL      A=8   B=2    C=1    args=1 ret=0
+pc= 571 L0     RETURN    A=0   B=1    C=0    
+pc= 572 L0     GETUPVAL  A=7   B=2    C=0    
+pc= 573 L0     MOVE      A=8   B=0    C=0    
+pc= 574 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 575 L0     GETGLOBAL A=7   B=0    C=19   'ActionBar'
+pc= 576 L0     GETTABLE  A=7   B=7    C=276  R7 K20('UpdateBoxNum')
+pc= 577 L0     MOVE      A=8   B=0    C=0    
+pc= 578 L0     LOADK     A=9   B=0    C=39   ''
+pc= 579 L0     CALL      A=7   B=3    C=1    args=2 ret=0
+pc= 580 L0     GETGLOBAL A=7   B=0    C=19   'ActionBar'
+pc= 581 L0     GETTABLE  A=7   B=7    C=278  R7 K22('UpdateBoxShow')
+pc= 582 L0     MOVE      A=8   B=0    C=0    
+pc= 583 L0     CALL      A=7   B=2    C=1    args=1 ret=0
+pc= 584 L0     RETURN    A=0   B=1    C=0    

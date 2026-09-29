@@ -1,0 +1,459 @@
+# skill_script.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=68
+  strings: 'TRADITION', 'MOUSE', 'TARGET', 'ALT_KEY_VALID_INTERVAL', 'g_bMoreSkillInfo', 'RegisterCustomData', 'pairs', 'g_tUIConfig', 'SkillQiChang', 'type', 'ids', 'table', 'ipairs', 'DESC_CONTEXT_SOURCE', 'SKILL', 'skill', 'BUFF', 'buff', 'NOUN', 'noun'
+  numbers: 2.0, 0.0, 31.0, 61.0, 101.0, 100.0, 47.0, 177.0, 49.0, 106.0, 7.421, 1.0, 36274.0, 1000.0, 4.0, 11.0, 285.0, 3.0, 286.0
+  globals: =ALT_KEY_VALID_INTERVAL, =AnalyzeTipEx, =CheckBlackListAddOnUseSkill, =CheckCastSkillResult, =CloneDescContext, =ConvertRadius, =CreateBuffDescContext, =CreateSkillDescContext, =DESC_CONTEXT_MODE, =DESC_CONTEXT_SOURCE, =EnsureDescContext, =FormatCastCost, =FormatCastRadius, =FormatCastTime, =FormatCooldown, =FormatHasteValue, =FormatNextLevelDesc, =FormatRecipeList, =FormatSkillTip, =FormatSkillTipByRecipeKey, =GetCastingSkill, =GetMultiStageSkillCanCastID, =GetPlayerTalentInfo, =GetPointAreaCastSetting, =GetQixueList, =GetQuotedGlossaryName, =GetRadioSubSkillDesc, =GetSkillByRecipe, =GetSkillDesc, =GetSkillInfoEx, =GetSkillOTActionState, =GetSkillSkinQuiltyInfo, =GetSkillTipEx, =GetSkillkeyDesc, =GetSkillkeyDescEx, =GetSubSkillDesc, =GetSurplus, =IsAutoTarget, =IsBuffPlainDescContext, =IsMobileKungfu
+  function <?> line 66-71 params=1 ups=0 stack=3
+    strings: 'clone'
+    globals: clone
+  function <?> line 74-92 params=8 ups=0 stack=10
+    strings: 'CloneDescContext', 'sourceType', 'DESC_CONTEXT_SOURCE', 'SKILL', 'displayMode', 'DESC_CONTEXT_MODE', 'GLOSSARY', 'player', 'GetClientPlayer', 'ownerID', 'ownerLevel', 'skillkey', 'skillInfo'
+    globals: CloneDescContext, DESC_CONTEXT_MODE, DESC_CONTEXT_SOURCE, GetClientPlayer
+  function <?> line 95-99 params=1 ups=0 stack=3
+    strings: 'sourceType', 'DESC_CONTEXT_SOURCE', 'BUFF', 'displayMode', 'DESC_CONTEXT_MODE', 'GLOSSARY'
+    globals: DESC_CONTEXT_MODE, DESC_CONTEXT_SOURCE
+  function <?> line 102-108 params=2 ups=0 stack=4
+    strings: 'tonumber'
+    numbers: 0.0
+    globals: tonumber
+  function <?> line 111-113 params=1 ups=0 stack=4
+    strings: '“', '', '”'
+  function <?> line 116-127 params=6 ups=0 stack=15
+    strings: 'EnsureDescContext', 'DESC_CONTEXT_SOURCE', 'SKILL', 'DESC_CONTEXT_MODE', 'GLOSSARY'
+    globals: DESC_CONTEXT_MODE, DESC_CONTEXT_SOURCE, EnsureDescContext
+  function <?> line 130-143 params=4 ups=0 stack=12
+    strings: 'DESC_CONTEXT_MODE', 'PLAIN', 'displayMode', 'EnsureDescContext', 'DESC_CONTEXT_SOURCE', 'BUFF'
+    globals: DESC_CONTEXT_MODE, DESC_CONTEXT_SOURCE, EnsureDescContext
+  function <?> line 146-156 params=5 ups=0 stack=16
+    strings: 'GetClientPlayer', '', 'ResolveDescLevel', 'ownerLevel', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'CreateSkillDescContext', 'GetSkillDesc'
+    globals: CreateSkillDescContext, GetClientPlayer, GetSkillDesc, GetSkillInfoEx, ResolveDescLevel
+  function <?> line 159-174 params=5 ups=0 stack=19
+    strings: 'GetClientPlayer', 'string', 'match', '(%d+)?(%d+)_(%d+);(%d+)_(%d+)', 'tonumber', 'GetSkillLevel', 'GetSubSkillDesc'
+    numbers: 0.0
+    globals: GetClientPlayer, GetSubSkillDesc, string, tonumber
+  function <?> line 177-199 params=2 ups=0 stack=14
+    strings: 'tDescCtx', 'IsBuffPlainDescContext', '', 'tonumber', 'Table_GetSkillNouns', 'szDesc', 'sourceType', 'DESC_CONTEXT_SOURCE', 'BUFF', 'ParseBuffDesc', 'ownerID', 'dwSkillID', 'ownerLevel', 'dwSkillLevel', 'ParseSkillDesc', 'skillkey', 'skillInfo', 'bShort', 'player'
+    globals: DESC_CONTEXT_SOURCE, IsBuffPlainDescContext, ParseBuffDesc, ParseSkillDesc, Table_GetSkillNouns, tonumber
+  function <?> line 201-203 params=1 ups=1 stack=2
+  function <?> line 205-219 params=3 ups=0 stack=16
+    strings: 'tRepresentID', 'ipairs', 'rlcmd', 'set gas field ', ' ', 'tSFXID'
+    numbers: 1.0, 0.0
+    globals: ipairs, rlcmd
+  function <?> line 222-230 params=2 ups=1 stack=8
+    strings: 'type', 'table', 'pairs'
+    globals: pairs, type
+  function <?> line 232-236 params=1 ups=1 stack=2
+    numbers: 101.0
+  function <?> line 238-248 params=1 ups=3 stack=3
+  function <?> line 251-253 params=0 ups=1 stack=2
+  function <?> line 255-257 params=1 ups=1 stack=2
+  function <?> line 260-262 params=0 ups=1 stack=2
+  function <?> line 264-266 params=1 ups=1 stack=2
+  function <?> line 268-270 params=0 ups=1 stack=2
+  function <?> line 272-274 params=1 ups=1 stack=2
+  function <?> line 276-278 params=0 ups=1 stack=2
+  function <?> line 280-282 params=1 ups=1 stack=2
+  function <?> line 284-293 params=2 ups=0 stack=5
+    strings: 'GetSkill', 'nPlatformType', 'SKILL_PLATFORM_TYPE', 'MOBILE'
+    numbers: 0.0, 1.0
+    globals: GetSkill, SKILL_PLATFORM_TYPE
+  function <?> line 295-300 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'nSkillPlatformType', 'SKILL_PLATFORM_TYPE', 'MOBILE'
+    globals: GetClientPlayer, SKILL_PLATFORM_TYPE
+  function <?> line 303-325 params=1 ups=0 stack=12
+    strings: 'GetTalentInfo', 'ipairs', 'nType', 'TALENT_SELECTION_TYPE', 'MIXED', 'table', 'insert', 'sort'
+    numbers: 0.0, 1.0
+    globals: TALENT_SELECTION_TYPE, ipairs, table
+    function <?> line 315-315 params=2 ups=0 stack=4
+      strings: 'nSelectIndex'
+  function <?> line 327-376 params=3 ups=0 stack=10
+    strings: 'GetClientPlayer', 'dwForceID', 'GetActualKungfuMount', 'dwSkillID', 'GetTalentCurrentSet', 'GetPlayerTalentInfo', 'table', 'sort'
+    numbers: 0.0, -1.0
+    globals: GetClientPlayer, GetPlayerTalentInfo, table
+    function <?> line 361-370 params=2 ups=0 stack=4
+      strings: 'nRequireLevel', 'nType', 'TALENT_SELECTION_TYPE', 'MIXED', 'nSelectIndex', 'dwPointID'
+      globals: TALENT_SELECTION_TYPE
+  function <?> line 379-384 params=0 ups=2 stack=3
+    strings: 'SetTarget'
+    globals: SetTarget
+  function <?> line 386-393 params=3 ups=0 stack=5
+    strings: 'GetClientPlayer', 'GetCDMaxCount'
+    numbers: 1.0
+    globals: GetClientPlayer
+  function <?> line 397-404 params=3 ups=0 stack=8
+    strings: '_'
+    numbers: 1.0
+  function <?> line 406-420 params=0 ups=3 stack=18
+    strings: 'GetClientPlayer', 'GetAllSkillList', 'pairs', 'Skill_GetCongNengCDID', 'Skill_GetCDProgress'
+    globals: GetClientPlayer, Skill_GetCDProgress, Skill_GetCongNengCDID, pairs
+  function <?> line 422-425 params=0 ups=2 stack=2
+  function <?> line 428-443 params=4 ups=3 stack=9
+    strings: 'unpack', 'GetClientPlayer', 'GetSkillCDProgress'
+    globals: GetClientPlayer, unpack
+  function <?> line 445-475 params=3 ups=0 stack=19
+    strings: 'GetClientPlayer', 'GetSkillLevel', 'GetCDMaxCount', 'GetCDMaxOverDraftCount', 'Skill_GetCDProgress', 'GetCDLeft', 'GetOverDraftCoolDown'
+    numbers: 1.0, 0.0
+    globals: GetClientPlayer, Skill_GetCDProgress
+  function <?> line 477-493 params=2 ups=0 stack=12
+    strings: 'nCostQi', 'nMaxQiEnergy', 'nQiEnergyReplenish', 'nQiEnergyReplenishPercent', 'math', 'floor', 'min', 'nCurrentQiEnergy', 'ceil'
+    numbers: 0.0, 1024.0
+    globals: math
+  function <?> line 495-501 params=2 ups=0 stack=4
+    strings: 'GetControlPlayerID', 'GetSkillInfoByProxy', 'GetSkillInfo'
+    globals: GetControlPlayerID, GetSkillInfo, GetSkillInfoByProxy
+  function <?> line 504-509 params=4 ups=0 stack=9
+    strings: 'Table_IsBlackListSkill', 'OnAddOnUseSkill'
+    globals: OnAddOnUseSkill, Table_IsBlackListSkill
+  function <?> line 512-543 params=4 ups=1 stack=16
+    strings: 'GetClientPlayer', 'GetTarget', 'TARGET', 'NO_TARGET', 'dwID', 'nSkillLevel', 'IsMobileKungfu', 'VkActionBar', 'IsSkillShow', 'MobileSkillGrandPanel', 'TryCastSkill', 'SKILL_RESULT_CODE', 'SUCCESS', 'Skill_GetOptType', 'self', 'OnUseSkill', 'hoard', 'target'
+    numbers: 0.0, 4.0, 10.0, 1.0
+    globals: GetClientPlayer, IsMobileKungfu, MobileSkillGrandPanel, OnUseSkill, SKILL_RESULT_CODE, Skill_GetOptType, TARGET, VkActionBar
+  function <?> line 545-564 params=1 ups=0 stack=8
+    strings: 'IsSelfCastSkill', 'nCastMode', 'SKILL_CAST_MODE', 'TARGET_SINGLE', 'TARGET_CHAIN', 'TARGET_TEAM_AREA', 'nEffectType', 'SKILL_CAST_EFFECT_TYPE', 'BENEFICIAL', 'Target_GetTargetData', 'GetControlPlayerID', 'TARGET', 'NPC', 'PLAYER', 'IsEnemy'
+    globals: GetControlPlayerID, IsEnemy, IsSelfCastSkill, SKILL_CAST_EFFECT_TYPE, SKILL_CAST_MODE, TARGET, Target_GetTargetData
+  function <?> line 567-569 params=1 ups=1 stack=4
+    strings: 'table', 'insert'
+    globals: table
+  function <?> line 571-578 params=1 ups=1 stack=9
+    strings: 'ipairs', 'table', 'remove'
+    globals: ipairs, table
+  function <?> line 581-583 params=0 ups=3 stack=3
+    strings: 'arg0', 'arg1', 'arg2'
+    globals: arg0, arg1, arg2
+  function <?> line 585-587 params=0 ups=3 stack=3
+  function <?> line 593-595 params=0 ups=1 stack=2
+  function <?> line 599-610 params=2 ups=1 stack=5
+    strings: 'GetSkill', 'bHoardSkill', 'hoard', 'bKeyDownSkill', 'keydown', 'bKeyUpSkill', 'keyup', 'bKeyDownAndUpSkill', 'onlykeyup'
+    globals: GetSkill
+  function <?> line 612-618 params=2 ups=0 stack=4
+    strings: 'KUNFU2TYPE_LIST'
+    globals: KUNFU2TYPE_LIST
+  function <?> line 620-652 params=3 ups=0 stack=9
+    strings: 'MobileSkill', 'GetUISkillInfo', 'bForbidSelectTarget', 'GetActualKungfuMount', 'KungfuFit', 'dwSkillID', 'PLAYER_ARENA_TYPE', 'THERAPY', 'GetTarget', 'bAllyTarget', 'SearchAllies', 'SearchEnemy'
+    numbers: 0.0
+    globals: KungfuFit, MobileSkill, PLAYER_ARENA_TYPE, SearchAllies, SearchEnemy
+  function <?> line 654-661 params=2 ups=0 stack=6
+    strings: 'GetPlayerSkill', 'GetClientPlayer', 'dwID', 'GetSkill'
+    globals: GetClientPlayer, GetPlayerSkill, GetSkill
+  function <?> line 664-666 params=0 ups=2 stack=2
+  function <?> line 668-681 params=3 ups=0 stack=6
+    strings: 'IsEnemy', 'dwID', 'nCastMode', 'SKILL_CAST_MODE', 'TARGET_SINGLE', 'TARGET_CHAIN', 'TARGET_AREA', 'nEffectType', 'SKILL_CAST_EFFECT_TYPE', 'HARMFUL'
+    numbers: 0.0
+    globals: IsEnemy, SKILL_CAST_EFFECT_TYPE, SKILL_CAST_MODE
+  function <?> line 683-697 params=5 ups=3 stack=10
+    strings: 'GetOperationMode', 'JOYSTICK_MODE', 'Table_GetSkill', 'bAutoSelectTarget', 'SearchEnemy'
+    globals: GetOperationMode, JOYSTICK_MODE, SearchEnemy, Table_GetSkill
+  function <?> line 699-713 params=3 ups=0 stack=5
+    strings: 'bBirdMove', 'nFlyFlag', 'nCastMode', 'SKILL_CAST_MODE', 'TARGET_SINGLE', 'TARGET_CHAIN', 'TARGET_AREA', 'nEffectType', 'SKILL_CAST_EFFECT_TYPE', 'BENEFICIAL', 'IsRelationEnemy', 'SearchEnemy'
+    numbers: 0.0
+    globals: SKILL_CAST_EFFECT_TYPE, SKILL_CAST_MODE, SearchEnemy
+  function <?> line 715-721 params=4 ups=2 stack=12
+    strings: 'GetTarget'
+  function <?> line 723-745 params=4 ups=3 stack=8
+    strings: 'TARGET', 'MOUSE', 'TRADITION', 'bRangePutOpti'
+    numbers: 102.0
+  function <?> line 747-754 params=1 ups=0 stack=5
+    strings: 'Target_GetTargetData', 'TARGET', 'PLAYER', 'GetClientPlayer', 'dwID'
+    globals: GetClientPlayer, TARGET, Target_GetTargetData
+  function <?> line 756-762 params=3 ups=0 stack=9
+    strings: 'Skill_GetCongNengCDID', 'Skill_GetCDProgress'
+    numbers: 0.0
+    globals: Skill_GetCDProgress, Skill_GetCongNengCDID
+  function <?> line 764-770 params=2 ups=0 stack=5
+    strings: 'IsMobileSkill', 'Selection_ShowSFX'
+    numbers: 100019.0, 1.0
+    globals: IsMobileSkill, Selection_ShowSFX
+  function <?> line 772-895 params=9 ups=6 stack=38
+    strings: 'GetSkill', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'UITestCast', 'IsSkillCastMyself', 'SKILL_RESULT_CODE', 'SUCCESS', 'IsSkillCastToMe', 'IsQiChangSkill', 'GetAbsoluteCoordinate', 'MOUSE', 'Cursor', 'GetPos', 'PostThreadCall', 'Scene_SelectRayGround', 'MaxRadius', 'Scene_SelectGround', 'TARGET', 'NPC'
+    numbers: 1.0, 128.0, 8.0, 0.01, 512.0
+    globals: Cursor, GetNpc, GetPlayer, GetSkill, GetSkillInfoEx, IsMobileSkill, IsQiChangSkill, IsSkillCastMyself, IsSkillCastToMe, PostThreadCall, SKILL_RESULT_CODE, TARGET, UserSelect, math
+    function <?> line 777-779 params=0 ups=0 stack=2
+      strings: 'Selection_HideSFX'
+      globals: Selection_HideSFX
+    function <?> line 781-799 params=3 ups=6 stack=9
+      strings: 'CheckDistance', 'dwID', 'SKILL_RESULT_CODE', 'SUCCESS', 'Selection_HideSFX', 'Selection_ShowSFX', 'SKILL_SELECT_POINT_UNNORMAL', 'nSkillID', 'nLevel'
+      globals: SKILL_RESULT_CODE, SKILL_SELECT_POINT_UNNORMAL, Selection_HideSFX, Selection_ShowSFX
+    function <?> line 824-830 params=3 ups=2 stack=7
+      strings: 'Selection_HideSFX'
+      globals: Selection_HideSFX
+  function <?> line 897-936 params=7 ups=1 stack=17
+    strings: 'GetSkill', 'UserSelect', 'CancelSelect', 'IsSkillCastMyself', 'IsCommonSkill', 'CastCommonSkill', 'CheckCastSkillResult', 'bHoardSkill', 'Skill_NotInCountDown', 'StartHoardSkill', 'TARGET', 'PLAYER', 'dwID', 'SKILL_RESULT_CODE', 'SUCCESS', 'FireUIEvent', 'SYS_MSG_UI_OME_SKILL_RESPOND', 'CastHoardSkill', 'IsSkillCastToMe'
+    globals: CastCommonSkill, CheckCastSkillResult, FireUIEvent, GetSkill, IsCommonSkill, IsSkillCastMyself, IsSkillCastToMe, SKILL_RESULT_CODE, Skill_NotInCountDown, TARGET, UserSelect
+  function <?> line 938-1030 params=10 ups=5 stack=28
+    strings: 'GetSkill', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'UserSelect', 'CancelSelect', 'UITestCast', 'IsSkillCastMyself', 'SKILL_RESULT_CODE', 'SUCCESS', 'Skill_NotInCountDown', 'StartHoardSkill', 'TARGET', 'PLAYER', 'FireUIEvent', 'SYS_MSG_UI_OME_SKILL_RESPOND', 'SelectPoint', 'START_AREAPOINT_HOARDSKILL', 'IsSkillCastToMe', 'GetAbsoluteCoordinate'
+    numbers: 1.0
+    globals: Cursor, FireUIEvent, GetNpc, GetPlayer, GetSkill, GetSkillInfoEx, IsSkillCastMyself, IsSkillCastToMe, PostThreadCall, SKILL_RESULT_CODE, Skill_NotInCountDown, TARGET, UserSelect
+    function <?> line 956-979 params=4 ups=6 stack=10
+      strings: 'CheckDistance', 'dwID', 'SKILL_RESULT_CODE', 'SUCCESS', 'Selection_HideSFX', 'Target_GetTargetID', 'Selection_ShowSFX', 'SKILL_SELECT_POINT_UNNORMAL', 'nSkillID', 'nLevel'
+      globals: SKILL_RESULT_CODE, SKILL_SELECT_POINT_UNNORMAL, Selection_HideSFX, Selection_ShowSFX, Target_GetTargetID
+    function <?> line 986-986 params=0 ups=0 stack=2
+    function <?> line 986-986 params=0 ups=0 stack=2
+      strings: 'Selection_HideSFX'
+      globals: Selection_HideSFX
+    function <?> line 986-986 params=3 ups=3 stack=9
+      strings: 'TARGET'
+    function <?> line 1015-1021 params=3 ups=2 stack=7
+      strings: 'Selection_HideSFX'
+      globals: Selection_HideSFX
+  function <?> line 1032-1057 params=8 ups=1 stack=19
+    strings: 'GetSkill', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'UITestCast', 'IsSkillCastMyself', 'SKILL_RESULT_CODE', 'SUCCESS', 'IsSkillCastToMe', 'GetAbsoluteCoordinate', 'math', 'pi', 'nFaceDirection', 'GLOBAL', 'DIRECTION_COUNT', 'cos', 'MaxRadius', 'sin'
+    numbers: 2.0, 32.0
+    globals: GLOBAL, GetSkill, GetSkillInfoEx, IsSkillCastMyself, IsSkillCastToMe, SKILL_RESULT_CODE, math
+  function <?> line 1059-1084 params=3 ups=0 stack=8
+    strings: 'GetSkillLevel', 'nSkillLevel', '_vir', 'IsEmpty', 'GetObjectData', 'IsPendantSub', 'GetPendentSkill', 'dwLevel'
+    numbers: 0.0, 1.0
+    globals: GetPendentSkill, IsPendantSub
+  function <?> line 1086-1093 params=1 ups=0 stack=2
+    strings: 'RideHorse'
+    numbers: 605.0
+    globals: RideHorse
+  function <?> line 1095-1107 params=1 ups=0 stack=5
+    strings: 'IsInPVPField', 'LeavePVPField', 'IsInGlobalRoomDungeon', 'ConfirmLeaveRoomScene', 'OpenWorldMap'
+    numbers: 81.0, 0.0
+    globals: ConfirmLeaveRoomScene, IsInGlobalRoomDungeon, IsInPVPField, LeavePVPField, OpenWorldMap
+  function <?> line 1109-1117 params=2 ups=1 stack=10
+    strings: 'ipairs'
+    globals: ipairs
+  function <?> line 1119-1200 params=7 ups=11 stack=26
+    strings: 'SpecialSettings', 'ChangeJianwuStatus', 'GetControlPlayer', 'GetSkill', 'bIsPassiveSkill', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'IsMobileSkill', 'FireHelpEvent', 'OnUseSkill', 'nCastMode', 'SKILL_CAST_MODE', 'POINT_AREA', 'dwShapeShiftID', 'getShootPoint', 'POINT', 'bHoardSkill', 'POINT_RECTANGLE'
+    numbers: 0.0
+    globals: FireHelpEvent, GetControlPlayer, GetSkill, GetSkillInfoEx, IsMobileSkill, SKILL_CAST_MODE, SpecialSettings, getShootPoint
+    function <?> line 1157-1181 params=3 ups=6 stack=9
+      strings: 'Selection_HideSFX', 'bHoardSkill', 'CastHoardSkillXYZ', 'SKILL_RESULT_CODE', 'SUCCESS', 'CastSkillXYZ', 'CastSkill', 'g_tTable', 'PengLaiSkillCallIDList', 'Search', 'bSheathFlag', 'SetSheath', 'CheckCastSkillResult'
+      numbers: 0.0
+      globals: CastSkill, CastSkillXYZ, CheckCastSkillResult, SKILL_RESULT_CODE, Selection_HideSFX, g_tTable
+  function <?> line 1202-1206 params=2 ups=0 stack=4
+    strings: 'bPetActionBar', 'SKILL_RESULT_CODE', 'SUCCESS', 'PetActionBar_UpdateBoxState'
+    globals: PetActionBar_UpdateBoxState, SKILL_RESULT_CODE
+  function <?> line 1208-1216 params=2 ups=0 stack=10
+    strings: 'IsEmpty', 'GetObjectData', 'GetPendentSkill', 'UpdataTheSkillCDProgress'
+    globals: GetPendentSkill, UpdataTheSkillCDProgress
+  function <?> line 1217-1221 params=3 ups=0 stack=12
+    strings: 'GetObjectData', 'GetSkill', 'UpdataTheSkillCDProgress'
+    globals: GetSkill, UpdataTheSkillCDProgress
+  function <?> line 1225-1251 params=1 ups=0 stack=8
+    strings: '', 'GetTimeToHourMinuteSecond', 'h', 'm'
+    numbers: 0.0, 2.0, 1.0, 5.0, 3.0
+    globals: GetTimeToHourMinuteSecond
+  function <?> line 1253-1380 params=5 ups=2 stack=23
+    strings: 'EnableObject', 'ClearExtentLayer', 'SetOverText', '', 'IsObjectCoolDown', 'SetObjectCoolDown', 'SetCoolDownPercentage', 'dwSkillID', 'dwLevel', 'bIsPassiveSkill', 'Table_IsSkillFormation', 'UITestCast', 'dwID', 'IsSkillCastMyself', 'SKILL_RESULT_CODE', 'SUCCESS', 'GetObjectData', 'ExteriorView_GetRepresentSub', 'GetItemInfo', 'ITEM_TABLE_TYPE'
+    numbers: 2.0, 3.0, 1.0, 0.0, 135.0, 180.0, 15.0, 4.0, 5.0, 235.0, 23.0
+    globals: CongNeng_GetBg, CongNeng_GetPerImage, ExteriorView_GetRepresentSub, GLOBAL, GetItemInfo, IMAGE, ITEM_POSITION, ITEM_TABLE_TYPE, IsActionBarCoolDownShow, IsCommonSkill, IsSkillCastMyself, SKILL_RESULT_CODE, Skill_GetCDProgress, Table_IsSkillFormation, g_bCastCommonSkill, math
+  function <?> line 1382-1398 params=2 ups=0 stack=10
+    strings: 'GetObjectData', 'Skill_GetCDProgress', 'IsObjectCoolDown', 'SetObjectCoolDown', 'SetObjectSparking', 'SetCoolDownPercentage'
+    numbers: 0.0, 1.0
+    globals: Skill_GetCDProgress
+  function <?> line 1400-1406 params=1 ups=1 stack=5
+    strings: 'GetClientPlayer', 'math', 'floor', 'nSurplusValue'
+    numbers: 0.0
+    globals: GetClientPlayer, math
+  function <?> line 1408-1459 params=5 ups=0 stack=23
+    strings: 'GetClientPlayer', 'SplitString', ';', 'pairs', 'string', 'match', '(%d+)_(%d+)', 'tonumber', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'BuffDurationFrame', 'GLOBAL', 'GAME_FPS', 'DebuffDurationFrame', 'Dot', 'DotCount', 'DotIntervalFrame', 'DotDamage', 'Hot'
+    numbers: 0.0
+    globals: FormatString, GLOBAL, GetClientPlayer, GetSkillInfoEx, SplitString, g_tStrings, math, pairs, string, tonumber
+  function <?> line 1461-1483 params=2 ups=0 stack=8
+    strings: '', 'BuffDurationFrame', 'GLOBAL', 'GAME_FPS', 'DebuffDurationFrame', 'Dot', 'FormatString', 'g_tStrings', 'STR_DOT_TIP_DAMAGE', 'DotCount', 'DotIntervalFrame', 'DotDamage', 'Hot', 'STR_HOT_TIP_THERAPY', 'HotCount', 'HotIntervalFrame', 'HotTherapy', 'Min', 'Max', 'math'
+    globals: FormatString, GLOBAL, g_tStrings, math
+  function <?> line 1485-1618 params=3 ups=0 stack=11
+    strings: 'GetClientPlayer', 'MaxLife', 'nMaxLife', 'tonumber', 'MaxMana', 'nMaxMana', 'MaxLifeBase', 'nMaxLifeBase', 'MaxManaBase', 'nMaxManaBase', 'CurrentAgility', 'nCurrentAgility', 'AgilityBase', 'nAgilityBase', 'CurrentSpirit', 'nCurrentSpirit', 'SpiritBase', 'nSpiritBase', 'CurrentVitality', 'nCurrentVitality'
+    globals: GetClientPlayer, string, tonumber
+    function <?> line 1533-1539 params=1 ups=2 stack=5
+      strings: 'Therapy', 'n', 'Power', 'tonumber', 'AttackPower'
+      globals: tonumber
+    function <?> line 1548-1554 params=1 ups=2 stack=5
+      strings: 'Therapy', 'n', 'PowerBase', 'tonumber', 'AttackPowerBase'
+      globals: tonumber
+    function <?> line 1563-1590 params=2 ups=2 stack=18
+      strings: 'SplitString', ';', 'pairs', 'string', 'match', '(%d+)_(%d+)', 'tonumber', 'dwLevel', 'GetSkill', 'dwWeaponRequest', 'Physics', 'math', 'max', 'nChannelInterval', 'nPrepareFrames', 'n', 'AttackPower', 'Therapy', 'Power'
+      numbers: 0.0, 1.0, 16.0, 10.0, 12.0
+      globals: GetSkill, SplitString, math, pairs, string, tonumber
+    function <?> line 1599-1615 params=1 ups=2 stack=8
+      strings: 'dwWeaponRequest', 'Physics', 'math', 'max', 'nChannelInterval', 'nPrepareFrames', 'n', 'AttackPower', 'Therapy', 'Power'
+      numbers: 0.0, 1.0, 16.0, 10.0, 12.0
+      globals: math
+  function <?> line 1620-1640 params=3 ups=0 stack=15
+    strings: 'tSplit', 'SplitString', ',', 'ipairs', 'string', 'find', ' ', 'gsub', '{(.-) (.-)}', '{(.-)}', 'table', 'insert', 'tonumber', 'FormatString', 'unpack'
+    globals: =tSplit, FormatString, SplitString, ipairs, string, tSplit, table, tonumber, unpack
+    function <?> line 1628-1628 params=2 ups=0 stack=6
+      strings: 'AnalyzeTipEx', '_'
+      globals: AnalyzeTipEx, _
+    function <?> line 1630-1630 params=1 ups=1 stack=4
+      strings: 'AnalyzeTipEx'
+      globals: AnalyzeTipEx
+  function <?> line 1642-1703 params=2 ups=0 stack=29
+    strings: 'tDescCtx', 'player', 'string', 'find', '<SUB_NOUN (%d+) (%d+) (.-)>', '<BUFF_NOUN (%d+) (%d+) (.-)>', '<NounID (%d+)>', 'table', 'insert', 'sub', 'len', 'concat'
+    numbers: 1.0
+    globals: string, table
+    function <?> line 1655-1657 params=0 ups=5 stack=6
+      strings: 'SkillGlossary', 'AppendSkillGlossaryEntry'
+      globals: SkillGlossary
+    function <?> line 1664-1666 params=0 ups=5 stack=6
+      strings: 'SkillGlossary', 'AppendBuffGlossaryEntry'
+      globals: SkillGlossary
+    function <?> line 1674-1681 params=0 ups=4 stack=10
+      strings: 'Table_GetSkillNouns', 'tonumber', 'IsBuffPlainDescContext', 'GetQuotedGlossaryName', 'szName', '', 'SkillGlossary', 'AppendSkillNouns', 'dwSkillID', 'dwSkillLevel', 'skillkey', 'skillInfo', 'bShort', '{', '}'
+      globals: GetQuotedGlossaryName, IsBuffPlainDescContext, SkillGlossary, Table_GetSkillNouns, tonumber
+  function <?> line 1706-1756 params=9 ups=1 stack=16
+    strings: 'GetClientPlayer', 'CreateSkillDescContext', 'dwSkillID', 'dwSkillLevel', 'skillkey', 'skillInfo', 'bShort', 'player', 'tDescCtx', '', 'string', 'gsub', '<NOUN_DESC (%d+)>', '<SKILL_%[(.-)%] (.-)>', '<SKILL (.-)>', '<SUB (%d+) (%d+)>', '<SUB_RADIO %[(.-)%]>', '<BUFF (%d+) (%d+) (%w+)>', '<BINDBUFF (%d+) (%d+) (%d+) (%w+)>', '<SKILLEx ({.-}) (.-)>'
+    globals: CreateSkillDescContext, GetClientPlayer, string
+    function <?> line 1720-1720 params=1 ups=1 stack=4
+      strings: 'ParseNounDescText'
+      globals: ParseNounDescText
+    function <?> line 1721-1721 params=2 ups=3 stack=8
+      strings: 'GetSkillkeyDescEx'
+      globals: GetSkillkeyDescEx
+    function <?> line 1722-1722 params=1 ups=1 stack=4
+      strings: 'GetSkillkeyDesc'
+      globals: GetSkillkeyDesc
+    function <?> line 1723-1729 params=2 ups=4 stack=8
+      strings: 'ResolveDescLevel', 'IsBuffPlainDescContext', '', 'GetSubSkillDesc'
+      globals: GetSubSkillDesc, IsBuffPlainDescContext, ResolveDescLevel
+    function <?> line 1730-1730 params=1 ups=4 stack=7
+      strings: 'GetRadioSubSkillDesc'
+      globals: GetRadioSubSkillDesc
+    function <?> line 1731-1738 params=3 ups=3 stack=9
+      strings: 'ResolveDescLevel', 'IsBuffPlainDescContext', 'desc', '', 'CreateBuffDescContext', 'displayMode', 'GetBuffDesc'
+      globals: CreateBuffDescContext, GetBuffDesc, IsBuffPlainDescContext, ResolveDescLevel
+    function <?> line 1739-1745 params=4 ups=3 stack=10
+      strings: 'ResolveDescLevel', 'IsBuffPlainDescContext', 'desc', '', 'GetBindBuffDesc'
+      globals: GetBindBuffDesc, IsBuffPlainDescContext, ResolveDescLevel
+    function <?> line 1746-1746 params=2 ups=1 stack=6
+      strings: 'GetSkillTipEx'
+      globals: GetSkillTipEx
+    function <?> line 1747-1747 params=1 ups=0 stack=3
+      strings: 'KeepTwoByteFloat', 'GetPlayerParryValue'
+      globals: GetPlayerParryValue, KeepTwoByteFloat
+    function <?> line 1748-1748 params=1 ups=1 stack=4
+      strings: 'nCurrent'
+    function <?> line 1749-1753 params=2 ups=2 stack=7
+      strings: 'GDAPI_GetMonsterSkillInfo', 'tonumber', 'FormatNumberToTenK', '<Mons', '>'
+      numbers: 2.0
+      globals: FormatNumberToTenK, GDAPI_GetMonsterSkillInfo, tonumber
+    function <?> line 1754-1754 params=1 ups=0 stack=3
+      strings: 'GetSurplus'
+      globals: GetSurplus
+  function <?> line 1759-1842 params=7 ups=0 stack=22
+    strings: 'GetClientPlayer', 'CreateSkillDescContext', '', 'GetSkill', 'Table_GetSkillShortDesc', 'Table_GetSkillDesc', 'ParseSkillDescCommonTokens', 'string', 'gsub', '<KUNGFU (%d+) (%d+) (.-)>', '<TALENT (%d+) (%d+) (.-)>', '<EnchantID (%d+) (.-)>', '<TALENT_CORE (%d+) (%d+)>'
+    numbers: 0.0
+    globals: CreateSkillDescContext, GetClientPlayer, GetSkill, ParseSkillDescCommonTokens, Table_GetSkillDesc, Table_GetSkillShortDesc, string
+    function <?> line 1783-1789 params=3 ups=2 stack=7
+      strings: 'GetKungfuMount', 'dwSkillID', 'tonumber', 'dwLevel', '\n', ''
+      globals: tonumber
+    function <?> line 1794-1803 params=3 ups=6 stack=17
+      strings: 'tonumber', 'GetSkillLevel', 'Table_GetSkillDesc', 'ParseSkillDesc', '\n', ''
+      numbers: 1.0
+      globals: ParseSkillDesc, Table_GetSkillDesc, tonumber
+    function <?> line 1808-1824 params=2 ups=2 stack=7
+      strings: 'tonumber', 'Task_EquipedItem', '\n', ''
+      globals: Task_EquipedItem, tonumber
+      function <?> line 1811-1817 params=1 ups=3 stack=3
+        strings: 'dwTemporaryEnchantID', 'IsTempEnchantValid', 'dwPermanentEnchantID'
+    function <?> line 1830-1839 params=2 ups=2 stack=10
+      strings: 'tonumber', 'Table_GetSkillName', 'GetSkillLevel', 'g_tStrings', 'STR_TALENT_CORE', '\n', ''
+      numbers: 1.0, 0.0
+      globals: Table_GetSkillName, g_tStrings, tonumber
+  function <?> line 1845-1903 params=8 ups=0 stack=21
+    strings: 'GetClientPlayer', 'CreateSkillDescContext', '', 'GetSkill', 'ParseSkillDescCommonTokens', 'string', 'gsub', '<TALENT_CORE (%d+) (%d+)>', '<KUNGFU (%d+) (%d+) (.-)>', '<TALENT (%d+) (%d+) (.-)>', '<EnchantID (%d+) (.-)>'
+    numbers: 0.0
+    globals: CreateSkillDescContext, GetClientPlayer, GetSkill, ParseSkillDescCommonTokens, string
+    function <?> line 1854-1854 params=0 ups=0 stack=2
+      strings: ''
+    function <?> line 1859-1865 params=3 ups=2 stack=7
+      strings: 'GetKungfuMount', 'dwSkillID', 'tonumber', 'dwLevel', '\n', ''
+      globals: tonumber
+    function <?> line 1870-1879 params=3 ups=6 stack=17
+      strings: 'tonumber', 'GetSkillLevel', 'Table_GetSkillDesc', 'ParseSkillDesc', '\n', ''
+      numbers: 1.0
+      globals: ParseSkillDesc, Table_GetSkillDesc, tonumber
+    function <?> line 1884-1900 params=2 ups=2 stack=7
+      strings: 'tonumber', 'Task_EquipedItem', '\n', ''
+      globals: Task_EquipedItem, tonumber
+      function <?> line 1887-1893 params=1 ups=3 stack=3
+        strings: 'dwTemporaryEnchantID', 'IsTempEnchantValid', 'dwPermanentEnchantID'
+  function <?> line 1904-2108 params=7 ups=6 stack=35
+    strings: 'GetClientPlayer', '', 'skill_id', 'skill_level', 'GetSkillInfoEx', 'dwID', 'clone', 'recipe', 'Table_GetSkill', 'GetSkill', 'nMinPrepareFrames', 'GetFormatText', 'szName', 'GetTickCount', 'IsAltKeyDown', 'ALT_KEY_VALID_INTERVAL', 'g_bMoreSkillInfo', 'szSimpleDesc', 'dwBelongKungfu', 'nUIType'
+    numbers: 1.0, 12.0, 0.0, 9999.0, 2.0, 106.0, 102.0, 605.0, 3.0
+    globals: =g_bMoreSkillInfo, ALT_KEY_VALID_INTERVAL, FormatCastCost, FormatCastRadius, FormatCastTime, FormatCooldown, FormatNextLevelDesc, FormatRecipeList, FormatString, GetClientPlayer, GetFormatText, GetSkill, GetSkillDesc, GetSkillInfoEx, GetTickCount, IsAltKeyDown, IsCtrlKeyDown, NumberToChinese, SKILL_RESULT_CODE, SkillGlossary, Table_GetSkill, Table_GetSkillIconID, Table_GetSkillName, Table_GetSkillSchoolName, Table_GetSkillSkinGroup, Table_GetSkillSkinInfo, clone, g_bMoreSkillInfo, g_tStrings, tostring
+  function <?> line 2110-2120 params=8 ups=0 stack=17
+    strings: 'GetClientPlayer', '', 'GetSkillRecipeKey', 'FormatSkillTipByRecipeKey'
+    globals: FormatSkillTipByRecipeKey, GetClientPlayer
+  function <?> line 2122-2146 params=5 ups=1 stack=25
+    strings: 'GetClientPlayer', '', 'FormatSkillTip', 'GetSkillList', 'pairs', 'Table_GetSkillSortOrder', 'table', 'insert', 'dwID', 'dwLevel', 'fSort', 'sort', 'Table_IsSkillShow'
+    numbers: 37.0, 31.0
+    globals: FormatSkillTip, GetClientPlayer, Table_GetSkillSortOrder, Table_IsSkillShow, pairs, table
+    function <?> line 2134-2134 params=2 ups=0 stack=4
+      strings: 'fSort'
+  function <?> line 2148-2208 params=11 ups=1 stack=26
+    strings: 'Table_GetSkill', 'GetSkill', 'IsMobileSkill', 'MobileSkillTip', 'Open', 'SkillGlossary', 'BeginGlossaryCapture', 'GetClientPlayer', '', 'dwBelongKungfu', 'nUIType', 'FormatSkillTip', 'EndGlossaryCapture', 'szSourceTitle', 'Table_GetSkillName', 'szName', 'skill', 'x', 'Rect', 'bLink'
+    numbers: 0.0, 2.0, 2048.0, 400.0
+    globals: FormatSkillTip, GetClientPlayer, GetShiftGlossaryTip, GetSkill, GetTipHandle, IsMobileSkill, MobileSkillTip, OutputTipEx, SkillGlossary, Table_GetSkill, Table_GetSkillName, clone
+  function <?> line 2210-2253 params=8 ups=0 stack=17
+    strings: 'tonumber', 'FixFloat', 'GetTimeText', 'GetFormatText', '(', '-', '+', 'math', 'abs', ')'
+    numbers: 0.0, 166.0, 165.0
+    globals: FixFloat, GetFormatText, GetTimeText, math, tonumber
+  function <?> line 2255-2257 params=1 ups=0 stack=3
+    strings: 'GLOBAL', 'CELL_LENGTH', 'LOGICAL_CELL_CM_LENGTH'
+    numbers: 100.0
+    globals: GLOBAL
+  function <?> line 2259-2282 params=4 ups=1 stack=15
+    strings: 'SKILL_CAST_MODE', 'TARGET_AREA', 'POINT_AREA', 'TARGET_SINGLE', 'POINT', 'TARGET_CHAIN', 'TARGET_TEAM_AREA', 'FormatHandle', 'GetFormatText', 'g_tStrings', 'STR_SKILL_H_CAST_DIS_NO', 'STR_SKILL_H_CAST_MAX_DIS1', 'MinRadius', 'ConvertRadius', ' - ', 'MaxRadius', 'STR_METER'
+    numbers: 106.0, 0.0, 1.0
+    globals: ConvertRadius, FormatHandle, GetFormatText, SKILL_CAST_MODE, g_tStrings
+  function <?> line 2284-2314 params=4 ups=1 stack=14
+    strings: 'CostMana', 'GetFormatText', 'g_tStrings', 'STR_SKILL_H_MANA_COST', 'GetClientPlayer', 'tonumber', 'FixFloat', 'FormatString', 'STR_SKILL_PERCENT_MANA', 'CostLife', 'STR_SKILL_H_LIFE_COST', '', 'FormatHandle'
+    numbers: 0.0, 106.0, 165.0
+    globals: FixFloat, FormatHandle, FormatString, GetClientPlayer, GetFormatText, g_tStrings, tonumber
+  function <?> line 2316-2324 params=4 ups=1 stack=15
+    strings: 'CastTime', 'FormatHandle', 'GetFormatText', 'g_tStrings', 'STR_SKILL_H_CAST_IMMIDIATLY', 'STR_SKILL_H_CAST_TIME'
+    numbers: 0.0, 106.0, 1.0
+    globals: FormatHandle, GetFormatText, g_tStrings
+  function <?> line 2326-2416 params=6 ups=1 stack=31
+    strings: 'nCurrentHasteRate', 'CoolDown', 'CheckCoolDown', 'MinCoolDown', 'MaxCoolDown', 'math', 'min', 'FormatHasteValue', 'max', 'GetCDMaxCount', 'GetFormatText', 'g_tStrings', 'STR_SKILL_NEED_CN_UNIT', 'STR_SKILL_NEED_REST_UNIT', 'GetCDMaxOverDraftCount', 'Skill_GetCDProgress', 'dwLevel', 'GetCDInterval', 'GetCDLeft', 'GetOverDraftCoolDown'
+    numbers: 0.0, 1.0, 3.0, 24.0, 40.0, 106.0, 102.0
+    globals: FormatHandle, FormatHasteValue, FormatString, GetFormatText, GetTimeText, Skill_GetCDProgress, dwLevel, g_tStrings, math
+  function <?> line 2418-2450 params=4 ups=0 stack=22
+    strings: 'dwSkillID', 'dwLevel', '', 'dwMaxLevel', 'GetFormatText', 'g_tStrings', 'STR_SKILL_H_TOP_LEAVEL', 'GetClientPlayer', 'GetSkillRecipeKey', 'GetSkillInfoEx', 'dwID', 'clone', 'recipe', 'GetSkillExp', 'dwLevelUpExp', 'FormatString', 'STR_SKILL_H_NEXT_LEVEL_EXP', '\t', 'FormatCastCost', 'nCostManaBasePercent'
+    numbers: 106.0, 1.0, 12.0, 0.0, 100.0
+    globals: FormatCastCost, FormatString, GetClientPlayer, GetFormatText, GetSkillDesc, GetSkillInfoEx, clone, g_tStrings
+  function <?> line 2452-2486 params=1 ups=0 stack=26
+    strings: '', 'SkillRecipeKeyToIDAndLevel', 'recipe', 'Table_GetSkillRecipe', 'g_tTable', 'SkillRecipeType', 'Search', 'dwTypeID', 'nAddToTip', 'ParseSkillDesc', 'szDesc', 'SkillGlossary', 'FormatSkillSpecialNoun', '\n', 'this.OnItemLButtonDown = function() ', 'local x, y = this:GetAbsPos();', 'local w, h = this:GetSize();', 'OutputSkillRecipeTip(', ', ', ', {x, y, w, h}, true);'
+    numbers: 1.0, 12.0, 0.0, 165.0, 100.0, 106.0
+    globals: GetFormatText, GetSkillRecipeBaseInfo, ParseSkillDesc, SKILL_RECIPE_TYPE, SkillGlossary, SkillRecipeKeyToIDAndLevel, Table_GetSkillRecipe, g_tStrings, g_tTable
+  function <?> line 2488-2491 params=2 ups=0 stack=5
+    strings: 'math', 'floor'
+    numbers: 1024.0
+    globals: math
+  function <?> line 2493-2510 params=2 ups=0 stack=9
+    strings: 'FormatSkillTipByRecipeKey', 'Table_GetSkill', 'skill_id', 'skill_level', 'skill', 'x', 'Rect', 'bLink', 'szLink', 'bSkillTip', 'bFormation', 'nWidth', 'OutputTipEx'
+    numbers: 0.0, 1000.0, 400.0
+    globals: FormatSkillTipByRecipeKey, OutputTipEx, Table_GetSkill
+  function <?> line 2512-2593 params=5 ups=0 stack=22
+    strings: 'Table_GetSkillRecipe', '', 'szName', 'szDesc', 'IsTipVisible', 'GetTipFrame', 'bShiftStay', 'IsShiftKeyDown', 'MobileSkillTip', 'IsOpened', 'SkillGlossary', 'BeginGlossaryCapture', 'MobileSkill', 'ClearNounList', 'GetFormatText', '\n', 'GetSkillRecipeBaseInfo', 'Table_GetSkillName', 'ParseSkillDesc', 'FormatSkillSpecialNoun'
+    numbers: 31.0, 0.0, 162.0, 100.0, 161.0, 185.0, 196.0, 366.0, 102.0, 400.0
+    globals: FormatString, GetFormatText, GetShiftGlossaryTip, GetSkillRecipeBaseInfo, GetTipFrame, IsCtrlKeyDown, IsEmpty, IsShiftKeyDown, IsTipVisible, MAX_SKILL_REICPE_COUNT, MobileSkill, MobileSkillTip, OutputTipEx, ParseSkillDesc, SkillGlossary, Table_GetSkillName, Table_GetSkillRecipe, g_tStrings, string
+  function <?> line 2602-2604 params=1 ups=1 stack=3
+    strings: 'nFont', 'nFame'
+  function <?> line 2606-2631 params=4 ups=0 stack=15
+    strings: 'Table_GetSkillSkinInfo', 'GetSkillSkinQuiltyInfo', 'nQuilty', 'GetFormatText', 'szName', '\n', 'szDesc', 'szSource', 'bHave', 'bActive', 'g_tStrings', 'STR_SKILL_SKIN_ACTIVE', 'STR_SKILL_SKIN_NOT_ACTIVE_TIP', 'STR_SKILL_SKIN_NOT_HAVE', 'IsCtrlKeyDown', 'DEBUG_INFO_ITEM_TIP', 'ID：      ', 'OutputTip', 'skillskin'
+    numbers: 100.0, 161.0, 185.0, 196.0, 102.0, 400.0
+    globals: GetFormatText, GetSkillSkinQuiltyInfo, IsCtrlKeyDown, OutputTip, Table_GetSkillSkinInfo, g_tStrings
+  function <?> line 2634-2660 params=2 ups=0 stack=29
+    strings: 'GetClientPlayer', 'GetSchoolList', 'pairs', 'GetKungfuList', 'GetSkillList', 'GetSkillRecipeList', 'ipairs', 'recipe_id', 'recipe_level'
+    globals: GetClientPlayer, ipairs, pairs
+  function <?> line 2662-2669 params=1 ups=0 stack=11
+    strings: 'GetSkillOTActionState', 'CHARACTER_OTACTION_TYPE', 'ACTION_SKILL_PREPARE', 'ACTION_SKILL_CHANNEL', 'ACTION_SKILL_HOARD'
+    globals: CHARACTER_OTACTION_TYPE
+  function <?> line 2671-2677 params=2 ups=1 stack=4
+    strings: 'type', 'table'
+    globals: type
+  function <?> line 2681-2711 params=2 ups=1 stack=11
+    strings: 'GetClientPlayer', 'GetSkillChangeTableList', 'CanUIShowSkill', 'ipairs'
+    globals: GetClientPlayer, GetSkillChangeTableList, ipairs
+  function <?> line 2714-2773 params=0 ups=3 stack=13
+    strings: 'IsMobileKungfu', 'GetClientPlayer', 'Player_CheckCurrentBelongSchool', 'BELONG_SCHOOL_TYPE', 'PENG_LAI', 'bBirdMove', 'nMoveState', 'MOVE_STATE', 'ON_BIRD_FLOAT', 'bOnParachuteFlag', 'IsHaveBuff', 'GetAltitude', 'OnUseSkill'
+    numbers: 20219.0, 19974.0, 10.0, 4.0, -40.0, 16.0, 0.0, 1.0, 14029.0, 8.0, 64.0
+    globals: BELONG_SCHOOL_TYPE, GetClientPlayer, IsMobileKungfu, MOVE_STATE, OnUseSkill, Player_CheckCurrentBelongSchool
+  function <?> line 2777-2782 params=1 ups=0 stack=4
+    strings: 'GetSkill', 'dwBelongSchool'
+    numbers: 1.0
+    globals: GetSkill

@@ -1,17 +1,19 @@
-# Camera fix suggestions — after the JX3 drag model (commit `733b131`)
+# Camera fix suggestions — after the JX3 drag model (`00f1237`)
 
-**Branch:** `camara-fix` · **Date:** 2026-09-24
-**Basis:** `client/RebornClient.cs` + `client/CameraSystem.cs` at `733b131`
-(commits `a8471b4` "JX3-exact drag model + host aim closed loop", `733b131`
-"spread aim corrections over frames"), plus the uncommitted local tuning in the
-worktree (aim sync 60 → **200 ms** while dragging, correction spread
-60 ms → **0.2 s**), the run captures `rc_00..rc_03` from the 22:10 build, and
-the earlier 21:34 debug log.
-**Verdict:** the drag *feel* is now correct — constant-radius sphere orbit, yaw
-follow, pitch feed-forward. What is still wrong is **aim (centring) after
-anything that changes the distance** (wheel zoom, sprint, `EyeScale`),
-**obstruction/ground-clamp edge behaviour**, and the still-missing control
-features (max distance cap, RMB turn model, LMB select, 广角/FOV, caps).
+**Branch:** `camara-fix` · **Updated:** 2026-09-25 (notes mirror in
+`control-system-notes`)
+**Basis:** `client/RebornClient.cs` + `client/CameraSystem.cs` at `00f1237`
+(commits `a8471b4` sphere offset + drag model, `733b131`/`436345e` correction
+smoothing, **`00f1237` per-frame aim sync**), the run captures `rc_00..rc_03`,
+the 21:34 debug log, and the wall report.
+**Verdict:** drag *feel* is now correct at any speed — constant-radius sphere
+orbit, per-frame yaw/pitch aim loop (probe: yaw ≤0.002 rad, pitch ≤0.013), and
+the fast-drag off-centre problem is fixed (`00f1237`).
+**Still wrong:** aim goes stale after distance changes (wheel zoom/sprint/
+`EyeScale`, S1/S2), ground-clamp edge behaviour (S3), the distance cap is not
+enforced everywhere (S5), RMB turn/LMB select fidelity (S6/S7), 广角/FOV + caps
+(S8), and **the camera passes through walls/structures — no obstruction query
+(S9, new)**.
 
 ---
 
@@ -23,18 +25,18 @@ features (max distance cap, RMB turn model, LMB select, 广角/FOV, caps).
 | `rc_03` 30 s (after the player moved) | camera low/close near a building/slope, horizon absent; character only slightly left of centre. Consistent with terrain clamp + a stale aim, but no telemetry to prove it — see §5 |
 | 21:34 debug log (pre-`a8471b4`) | `pitch=-0.566` vs measured `vpitch=+0.515`, anchor aim ≈ +0.23 rad → the aim mismatch the two new commits address |
 | 22:12 run log | **overwritten, 2 lines only** — the 22:10 run has no camera telemetry. Fix this first (§5) |
+| `00f1237` commit probe | per-frame sync: fast 1.5 rad/s sweep → yaw err ≤0.002 rad, pitch aim ≤0.013 rad |
+| user report (2026-09-24) | newest build feels good; remaining visible problem: **camera goes through walls with no response** |
 
 ## 2. What is working (do not touch)
 
 - `CameraSystem.DesiredOffset` is the proven JX3 sphere offset
   (`docs/CAMERA_DRAG_MODEL.md`); the radius-invariant smoke checks pass.
 - Drag mapping: mouse X → yaw, Y → pitch; pitch `+= dy`; clamps, engine orbit as
-  the actuator; smoothed yaw correction (`yawCorr`) instead of a snap.
-  **Uncommitted tuning:** sync every 200 ms while dragging, correction spread
-  over 0.2 s — gentler, but it tracks the engine aim more slowly; keep an eye
-  on S1/S4 with this timing.
-- Pitch closed loop: `pitchAimErrPx` residual combined into the next orbit
-  (`RebornClient.cs:691`, `:741`).
+  the actuator; smoothed yaw correction (`yawCorr`, τ=10 ms) instead of a snap.
+- **Per-frame aim sync** (`00f1237`): `measureView()` each frame while dragging;
+  yaw correction low-passed τ=10 ms; pitch residual applied fractionally τ=10 ms
+  (`RebornClient.cs:675`, `:699`, `:745-752`). Fast-drag centring confirmed.
 - No engine override of our placed position (`postdbg moved=0.0`).
 
 ---
@@ -143,17 +145,54 @@ cursor capture; drag still rotates.
   `MinCameraDistance` guess (`CameraSettings.cs:12`).
 - Full spec: `docs/CAMERA_DISTANCE_FOV_SPEC.md` (this worktree).
 
+### S9 [P0] Camera goes through walls — no structure obstruction
+
+**Symptom:** the camera passes through buildings, rocks, trees and other scene
+geometry with no pull-in and no response at all.
+**Mechanism:** our obstruction is **terrain-only**: `RebornClient.cs:1058-1080`
+march-samples `TerrainSampler` at 14 points (20 u margin) and clamps `camY`
+above terrain+30 u. `FoliageCollision` — which holds the real wall/building/
+rock/tree triangle meshes and world matrices — is used only for the player
+capsule (`:934-957`) and debug (`:1127-1134`); the camera path never queries it.
+`docs/CAMERA_WALL_OBSTRUCTION.md` confirms the host cannot hit structures with
+the heightfield alone and does not test the per-mesh `bObscatleCamera` gate.
+**Real rules to match** (`docs/CAMERA_WALL_OBSTRUCTION.md`):
+`bObstructdAvert` default on; **5-ray** default probe set (center + 4 corners;
+9-ray alternate); nearest hit along anchor→camera; final
+`C'' = C' + normalize(A − C')·18 u`; hysteresis **50 u** clear / **100 u**
+obstructed; flex return `S += (−1.5·E − 2.828·S)·dt`, accept ≤0.05 rad;
+per-mesh `bObscatleCamera` (default 1; some decorative props 0);
+`NearByWallDistance=800` is **not** a wall rule.
+**Fix options:**
+- **A (immediate, managed):** add `RaycastSegment(origin, target, out hit)` to
+  `FoliageCollision` (candidate grid → ray-vs-AABB → ray-vs-triangle), apply
+  18 u clearance + 50/100 u hysteresis + flex return in the camera block.
+  Caveat: the bake does **not** store `bObscatleCamera`; include all structure
+  instances first, or filter by size; real gating needs the mesh-property inis.
+- **B (native):** once the host camera interface exists
+  (`CAMERA_COMPLETION_PLAN.md` Phase 0), `bObstructdAvert` handles it
+  (5/9 probes, `FilterCamera` mask `0x301`, per-mesh gate). Verify that our
+  `SetCameraPos` does not bypass/race the native update (open item in the wall
+  doc).
+- **C:** hybrid (native obstruction + managed follow) is the Phase 6 target.
+**Acceptance:** with a wall/building between camera and character the camera
+shortens to hit−18 u on the same view line, holds with hysteresis, eases back
+with the flex curve; no clip-through; terrain behaviour unchanged; pure-math
+smoke case for clearance/hysteresis; test near known collision (`C` teleport
+debug or `RC_DEMO_COLLIDE=1 RC_SPAWN=15007,398,25400`).
+
 ---
 
 ## 4. Suggested order
 
 | Priority | Item | Why |
 |---|---|---|
-| 1 | S1 + S2 | most visible: off-centre after zoom/sprint; two-line helper change |
-| 2 | S3 + S4 | stability near terrain and no controller hunting |
-| 3 | S5 | correctness of the user setting (镜头最大距离) |
-| 4 | S6 + S7 | control fidelity (turn model, click-select) |
-| 5 | S8 | 广角 + caps |
+| 1 | S1 + S2 | most visible: off-centre after zoom/sprint; small helper change |
+| 2 | S9 | walls are the last big visible camera defect; managed ray is self-contained |
+| 3 | S3 + S4 | stability near terrain and no controller hunting |
+| 4 | S5 | correctness of the user setting (镜头最大距离) |
+| 5 | S6 + S7 | control fidelity (turn model, click-select) |
+| 6 | S8 | 广角 + caps |
 
 ## 5. Verification hygiene (do this with S1)
 
@@ -177,4 +216,8 @@ cursor capture; drag still rotates.
 | `docs/CAMERA_CLIENT_AUDIT.md` | implemented / partial / missing inventory |
 | `docs/CAMERA_COMPLETION_PLAN.md` | Phase 0–6 (native interface, obstruction, modes, settings) |
 | `docs/CAMERA_DISTANCE_FOV_SPEC.md` | 镜头最大距离 + 广角 implementation spec |
+| `docs/CAMERA_CONFORMANCE_CHECKS.md` | this list as a live notes-vs-code checklist |
+| `docs/CAMERA_WALL_OBSTRUCTION.md` | native wall obstruction rules (S9) |
 | `docs/PLAYER_CONTROLS_FINDINGS.md` | the full control surface this camera serves |
+| `docs/controls/CONTROLS_GAP_REGISTER.md` | the master gap register |
+| `docs/controls/README.md` | index of this notes set |

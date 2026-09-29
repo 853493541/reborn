@@ -1,0 +1,10 @@
+== calls Set3DEngineOption: 2
+   main/?#1334 pc=120 args=[None] callee=KG3DEngine.Set3DEngineOption
+   main/?#1334 pc=154 args=[None] callee=KG3DEngine.Set3DEngineOption
+== calls Get3DEngineOption: 3
+   main/?#205 pc=2 args=[] callee=KG3DEngine.Get3DEngineOption
+   main/?#857 pc=94 args=[] callee=KG3DEngine.Get3DEngineOption
+   main/?#1334 pc=95 args=[] callee=KG3DEngine.Get3DEngineOption
+== calls Get3DEngineOptionCaps: 2
+   main/?#422 pc=5 args=[] callee=VideoBase.Get3DEngineOptionCaps
+   main/?#1334 pc=98 args=[] callee=VideoBase.Get3DEngineOptionCaps

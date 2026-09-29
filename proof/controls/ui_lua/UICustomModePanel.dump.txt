@@ -1,0 +1,47 @@
+# UICustomModePanel.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=2
+  strings: 'UICustomModePanel', 'bCustomMode', 'Anchor', 's', 'TOPCENTER', 'r', 'x', 'y', 'RegisterCustomData', 'UICustomModePanel.Anchor', 'OnFrameCreate', 'OnEvent', 'OnFrameBreathe', 'OnLButtonClick', 'OnFrameDrag', 'OnFrameDragSetPosEnd', 'OnFrameDragEnd', 'OpenUICustomModePanel', 'CloseUICustomModePanel', 'IsUICustomModePanelOpened'
+  numbers: 0.0, 450.0
+  globals: =CloseUICustomModePanel, =IsInUICustomMode, =IsUICustomModePanelOpened, =OpenUICustomModePanel, =UICustomModePanel, =UpdateCustomModeWindow, RegisterCustomData, UICustomModePanel
+  function <?> line 9-15 params=0 ups=0 stack=3
+    strings: 'this', 'RegisterEvent', 'UI_SCALED', 'CUSTOM_UI_MODE_ANCHOR_LOADED', 'CUSTOM_DATA_LOADED', 'UICustomModePanel', 'OnEvent'
+    globals: UICustomModePanel, this
+  function <?> line 17-25 params=1 ups=0 stack=9
+    strings: 'UI_SCALED', 'CUSTOM_UI_MODE_ANCHOR_LOADED', 'this', 'SetPoint', 'UICustomModePanel', 'Anchor', 's', 'r', 'x', 'y', 'CorrectPos', 'CUSTOM_DATA_LOADED'
+    numbers: 0.0
+    globals: UICustomModePanel, this
+  function <?> line 27-29 params=0 ups=0 stack=2
+    strings: 'this', 'BringToTop'
+    globals: this
+  function <?> line 31-38 params=0 ups=0 stack=3
+    strings: 'this', 'GetName', 'Btn_Sure', 'CloseUICustomModePanel', 'Btn_Default', 'FireEvent', 'CUSTOM_UI_MODE_SET_DEFAULT'
+    globals: CloseUICustomModePanel, FireEvent, this
+  function <?> line 40-41 params=0 ups=0 stack=2
+  function <?> line 43-44 params=0 ups=0 stack=2
+  function <?> line 46-49 params=0 ups=0 stack=3
+    strings: 'this', 'CorrectPos', 'UICustomModePanel', 'Anchor', 'GetFrameAnchor'
+    globals: GetFrameAnchor, UICustomModePanel, this
+  function <?> line 51-65 params=1 ups=0 stack=5
+    strings: 'IsUICustomModePanelOpened', 'Wnd', 'OpenWindow', 'UICustomModePanel', 'Show', 'BringToTop', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'OpenFrame', 'bCustomMode', 'FireEvent', 'ON_ENTER_CUSTOM_UI_MODE'
+    globals: FireEvent, IsUICustomModePanelOpened, PlaySound, SOUND, UICustomModePanel, Wnd, g_sound
+  function <?> line 67-78 params=1 ups=0 stack=4
+    strings: 'IsUICustomModePanelOpened', 'Wnd', 'CloseWindow', 'UICustomModePanel', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'CloseFrame', 'bCustomMode', 'FireEvent', 'ON_LEAVE_CUSTOM_UI_MODE'
+    globals: FireEvent, IsUICustomModePanelOpened, PlaySound, SOUND, UICustomModePanel, Wnd, g_sound
+  function <?> line 80-86 params=0 ups=0 stack=3
+    strings: 'Station', 'Lookup', 'Topmost2/UICustomModePanel', 'IsVisible'
+    globals: Station
+  function <?> line 88-90 params=0 ups=0 stack=2
+    strings: 'UICustomModePanel', 'bCustomMode'
+    globals: UICustomModePanel
+  function <?> line 92-153 params=5 ups=0 stack=18
+    strings: 'Lookup', 'Wnd_CustomMode', 'Hide', 'IsInUICustomMode', '', 'Image_CMNormal', 'Image_CMOver', 'Text_CMName', 'GetSize', 'SetSize', 'UpdateState', 'OnItemMouseEnter', 'OnItemMouseLeave', 'SetText', '__bIsDragableBeforeEnterUICustomMode', 'IsDragable', 'Show', 'EnableDrag', 'SetDragArea', 'SetMousePenetrable'
+    numbers: 0.0
+    globals: IsInUICustomMode
+    function <?> line 105-113 params=1 ups=0 stack=4
+      strings: 'bOver', 'Lookup', 'Image_CMNormal', 'Hide', 'Image_CMOver', 'Show'
+    function <?> line 114-117 params=0 ups=0 stack=2
+      strings: 'this', 'bOver', 'UpdateState'
+      globals: this
+    function <?> line 118-121 params=0 ups=0 stack=2
+      strings: 'this', 'bOver', 'UpdateState'
+      globals: this

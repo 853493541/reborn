@@ -1,0 +1,590 @@
+# ActionBar.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=60
+  strings: 'ActionBar', 'nPage', 'bLock', 'aShowBg', 'DefaultAnchor', 's', 'BOTTOMCENTER', 'rw', 'Lowest1/MainBarPanel', 'r', 'x', 'y', 'Anchor', 'ExtendAnchor', 'AnchorTop', 'TOPCENTER', 'Size', 'Line', 'tSkillIDToBox', 'tSkillIDToShowNum'
+  numbers: 1.0, 26.0, -10.0, -58.0, -118.0, -166.0, 9.0, -213.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, -69.0
+  globals: =ActionBar, =ActionBar1, =ActionBar10, =ActionBar11, =ActionBar12, =ActionBar13, =ActionBar14, =ActionBar15, =ActionBar16, =ActionBar17, =ActionBar18, =ActionBar19, =ActionBar2, =ActionBar20, =ActionBar21, =ActionBar22, =ActionBar23, =ActionBar3, =ActionBar4, =ActionBar9, =ActionBar_AddAutoDownKey, =ActionBar_BreatheAutoDownKey, =ActionBar_ButtonDown, =ActionBar_ButtonUp, =ActionBar_Cast, =ActionBar_CheckAutoPress, =ActionBar_ClearAutoDownKey, =ActionBar_EnableUpSkillEffect, =ActionBar_GetBox, =ActionBar_GetData, =ActionBar_GetTextNum, =ActionBar_HideUpSkillEffect, =ActionBar_IsAutoDownEnable, =ActionBar_IsAutoDownKey, =ActionBar_IsAutoPressEnable, =ActionBar_IsAutoWhenTruce, =ActionBar_IsKeyAutoPressing, =ActionBar_OnBoxChanged, =ActionBar_PlayerLevelUp, =ActionBar_RemoveAutoDownKey
+  function <?> line 114-122 params=1 ups=1 stack=8
+    strings: 'pairs'
+    globals: pairs
+  function <?> line 124-140 params=8 ups=0 stack=15
+    strings: 'IsEmpty', 'ActionBar', 'tCloudActionBarData', 'nGroup', 'nIndex', 'GetObject', 'UI_OBJECT_ITEM_INFO', 'UI_OBJECT_ITEM'
+    globals: ActionBar, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO
+  function <?> line 142-158 params=8 ups=0 stack=15
+    strings: 'IsEmpty', 'StorageServer', 'SetData', 'data_key', 'nIndex', 'GetObject', 'UI_OBJECT_ITEM_INFO', 'UI_OBJECT_ITEM'
+    globals: StorageServer, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO
+  function <?> line 160-183 params=2 ups=0 stack=18
+    strings: 'GetClientPlayer', 'IsInTreasureHuntMap', 'BigBagPanel', 'nCount', 'BagIndexToInventoryIndex', 'GetBoxSize', 'CheckBoxCanUse', 'GetPlayerItem', 'dwTabType', 'dwIndex', 'nStackNum', 'GetItemAmount'
+    numbers: 0.0, 1.0
+    globals: BigBagPanel, GetClientPlayer, GetPlayerItem, IsInTreasureHuntMap
+  function <?> line 185-207 params=2 ups=0 stack=17
+    strings: 'GetClientPlayer', 'IsInTreasureHuntMap', 'BigBagPanel', 'nCount', 'BagIndexToInventoryIndex', 'GetBoxSize', 'CheckBoxCanUse', 'GetPlayerItem', 'dwTabType', 'dwIndex', 'GetItemPos'
+    numbers: 1.0, 0.0
+    globals: BigBagPanel, GetClientPlayer, GetPlayerItem, IsInTreasureHuntMap
+  function <?> line 209-224 params=8 ups=3 stack=14
+    strings: 'keydown', 'GetClientPlayer', 'StopChannelSkill', 'ActionBar_HideUpSkillEffect', 'UI_OBJECT', 'SKILL', 'UpdateSkillBoxObject'
+    globals: ActionBar_HideUpSkillEffect, GetClientPlayer, UI_OBJECT, UpdateSkillBoxObject
+  function <?> line 226-256 params=2 ups=3 stack=21
+    strings: 'IsEmpty', 'GetObject', 'EnableObject', 'IsMobileStreamingEnable', 'FloatingActionBar', 'nGroup', 'GetNowGroup', 'ActionBar_OnBoxChanged'
+    numbers: 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0
+    globals: ActionBar_OnBoxChanged, FloatingActionBar, IsMobileStreamingEnable
+  function <?> line 258-287 params=9 ups=1 stack=25
+    strings: 'ClearExtentImage', 'ClearExtentAnimate', 'SetOverText', '', 'dwTarget', 'IsEmpty', 'GetObject', 'UI_OBJECT_SKILL', 'ActionBar', 'tSkillIDToBox', 'Clear', 'ClearObject', 'UpdateSkillBoxObject', 'SetObject'
+    numbers: 0.0, 1.0
+    globals: ActionBar, UI_OBJECT_SKILL, UpdateSkillBoxObject
+  function <?> line 289-291 params=8 ups=1 stack=18
+  function <?> line 293-298 params=1 ups=1 stack=5
+    numbers: 1.0, 2.0, 3.0
+  function <?> line 300-313 params=2 ups=1 stack=10
+    strings: 'nX', 'nY', 'SetAbsPos', 'SetSize'
+    numbers: 0.5, 2.0, 0.2, 0.0, 1.0
+  function <?> line 315-325 params=0 ups=0 stack=11
+    strings: 'g_tTable', 'SkillReplace', 'GetRowCount', 'GetRow', 'dwSrcSkillId'
+    numbers: 2.0, 1.0
+    globals: g_tTable
+  function <?> line 327-343 params=2 ups=0 stack=6
+    strings: 'szNum', '', 'SetText', 'SetFontScheme'
+    numbers: 0.0, 23.0
+  function <?> line 345-347 params=1 ups=0 stack=2
+    strings: 'ActionBar', 'tSkillIDToBox'
+    globals: ActionBar
+  function <?> line 349-351 params=1 ups=0 stack=2
+    strings: 'ActionBar', 'tSkillIDToShowNum'
+    globals: ActionBar
+  function <?> line 353-415 params=0 ups=0 stack=17
+    strings: 'this', 'RegisterEvent', 'BAG_ITEM_UPDATE', 'BANK_ITEM_UPDATE', 'SOLD_ITEM_UPDATE', 'SKILL_UPDATE', 'CRAFT_REMOVE', 'HOT_KEY_RELOADED', 'EQUIP_ITEM_UPDATE', 'DESTROY_ITEM', 'EXCHANGE_ITEM', 'LOADING_END', 'FIRST_LOADING_END', 'ON_ACTIONBAR_BG_SHOW', 'ON_SELECT_MAIN_ACTIONBAR_PAGE', 'ON_SET_ACTIONBAR_COUNT', 'ON_SET_ACTIONBAR_LINE', 'HAND_PICK_OBJECT', 'HAND_CLEAR_OBJECT', 'OPEN_SKILL_PANEL'
+    numbers: 1.0, 0.0
+    globals: ActionBar, GetClientPlayer, this
+  function <?> line 417-418 params=0 ups=0 stack=2
+  function <?> line 420-421 params=0 ups=0 stack=2
+  function <?> line 423-430 params=0 ups=1 stack=4
+    strings: 'this', 'CorrectPos', 'nGroup', 'SetExtendActionBarAnchor', 'GetFrameAnchor', 'SetActionBarAnchor'
+    globals: GetFrameAnchor, SetActionBarAnchor, SetExtendActionBarAnchor, this
+  function <?> line 432-455 params=1 ups=2 stack=12
+    strings: 'nGroup', 'GetMainBarPanelAnchorEdge', 'TOP', 'ActionBar', 'AnchorTop', 'SetPoint', 's', 'rw', 'r', 'x', 'y', 'Anchor', 'MainBar_CommonSkill', 'CorrectActionBarPos', 'FloatingActionBar', 'GetNowGroup', 'ExtendAnchor', 'CorrectPos'
+    numbers: 1.0, 2.0, 0.0
+    globals: ActionBar, FloatingActionBar, GetMainBarPanelAnchorEdge, MainBar_CommonSkill
+  function <?> line 457-467 params=1 ups=1 stack=6
+    strings: 'nGroup', 'UpdateCustomModeWindow', 'g_tStrings', 'ACTIONBAR3', 'ACTIONBAR4', 'ACTIONBAREXTEND'
+    numbers: 3.0, 4.0
+    globals: UpdateCustomModeWindow, g_tStrings
+  function <?> line 469-582 params=1 ups=1 stack=35
+    strings: 'Lookup', '', 'Handle_Bg', 'Handle_Box', 'Handle_Text', 'Handle_Cool', 'Handle_Num', 'Handle_Animate', 'Clear', 'nGroup', 'StorageServer', 'GetData', 'ActionBar', '_LockPage', 'GetMainActionBarPage', 'GetActionBarKey', 'Size', 'Line', 'math', 'ceil'
+    numbers: 1.0, 2.0, 0.0, 4.0, 3.0, 20.0, 10000.0
+    globals: ActionBar, GetMainActionBarPage, IsMobileStreamingEnable, StorageServer, math
+    function <?> line 550-550 params=0 ups=0 stack=2
+    function <?> line 551-551 params=0 ups=0 stack=2
+  function <?> line 584-598 params=1 ups=0 stack=12
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'nGroup', 'StorageServer', 'GetData', 'ActionBar', '_LockPage', 'GetMainActionBarPage', 'GetActionBarKey', 'data_key'
+    numbers: 1.0, 2.0, 0.0
+    globals: GetMainActionBarPage, StorageServer
+  function <?> line 600-607 params=1 ups=0 stack=7
+    strings: 'GetRoot', 'Lookup', '', 'SFX_Skill_Down', 'SetAbsX', 'GetAbsX', 'SetAbsY', 'GetAbsY', 'Play', 'Show'
+    numbers: 30.0
+  function <?> line 611-650 params=0 ups=1 stack=9
+    strings: 'this', 'bDisableClick', 'IsCtrlKeyDown', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_ITEM', 'GetObjectData', 'IsGMPanelReceiveItem', 'GMPanel_LinkItem', 'EditBox_AppendLinkItem', 'UI_OBJECT_ITEM_INFO', 'GMPanel_LinkItemInfo', 'EditBox_AppendLinkItemInfo', 'UI_OBJECT_CRAFT', 'Hand_IsEmpty', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'normal', 'mouse_down', 'IsMobileStreamingEnable'
+    numbers: 1.0
+    globals: ActionBar_Cast, EditBox_AppendLinkItem, EditBox_AppendLinkItemInfo, GMPanel_LinkItem, GMPanel_LinkItemInfo, Hand_IsEmpty, IsCtrlKeyDown, IsGMPanelReceiveItem, IsMobileStreamingEnable, UI_OBJECT_CRAFT, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_SKILL, this
+  function <?> line 652-663 params=0 ups=0 stack=4
+    strings: 'this', 'SetObjectPressed', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'normal', 'mouse_up', 'UI_OBJECT_ITEM'
+    numbers: 0.0
+    globals: ActionBar_Cast, UI_OBJECT_ITEM, UI_OBJECT_SKILL, this
+  function <?> line 665-696 params=0 ups=0 stack=5
+    strings: 'Hand_IsEmpty', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'SRT_ERROR_DROP_HAND_OBJ_WHEN_DRAG', 'PlayTipSound', '001', 'IsMobileStreamingEnable', 'ActionBar', 'bLock', 'IsShiftKeyDown', 'SRT_ERROR_LOCK_ACTIONBAR_WHEN_DRAG', '008', 'SRT_ERROR_LOCK_ACTIONBAR_WHEN_DRAG_Mobile', 'this', 'IsEmpty', 'IsCursorInExclusiveMode', 'SRT_ERROR_CANCEL_CURSOR_STATE', '010', 'Hand_Pick'
+    globals: ActionBar, Hand_IsEmpty, Hand_Pick, HideTip, IsCursorInExclusiveMode, IsMobileStreamingEnable, IsShiftKeyDown, OutputMessage, PlayTipSound, UI_BOX_TYPE, g_tStrings, this
+  function <?> line 698-715 params=0 ups=0 stack=4
+    strings: 'this', 'bDisableClick', 'Hand_IsEmpty', 'IsMobileStreamingEnable', 'GetRoot', 'PtInWindow', 'Station', 'GetDragFingerPos', 'ActionBar', 'OnChangeHandAndBoxInSM', 'DropHandItem', 'PtInItem', 'Cursor', 'GetPos', 'OnChangeHandAndBoxItem'
+    globals: ActionBar, Cursor, Hand_IsEmpty, IsMobileStreamingEnable, Station, this
+  function <?> line 717-733 params=0 ups=0 stack=4
+    strings: 'this', 'bDisableClick', 'Hand_IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'normal', 'click', 'UI_OBJECT', 'EMOTION_ACTION', 'UI_OBJECT_TOY', 'ActionBar', 'OnUseActionBarObject', 'OnChangeHandAndBoxItem'
+    globals: ActionBar, ActionBar_Cast, Hand_IsEmpty, UI_OBJECT, UI_OBJECT_SKILL, UI_OBJECT_TOY, this
+  function <?> line 735-749 params=0 ups=0 stack=4
+    strings: 'this', 'bDisableClick', 'Hand_IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'normal', 'click', 'UI_OBJECT', 'EMOTION_ACTION', 'UI_OBJECT_TOY', 'ActionBar', 'OnUseActionBarObject'
+    globals: ActionBar, ActionBar_Cast, Hand_IsEmpty, UI_OBJECT, UI_OBJECT_SKILL, UI_OBJECT_TOY, this
+  function <?> line 751-753 params=0 ups=0 stack=2
+    strings: 'ActionBar', 'OnItemLButtonClick'
+    globals: ActionBar
+  function <?> line 755-757 params=0 ups=0 stack=2
+    strings: 'ActionBar', 'ExtendActionBarButtonClick'
+    globals: ActionBar
+  function <?> line 760-771 params=0 ups=0 stack=4
+    strings: 'Hand_IsEmpty', 'this', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'normal', 'mouse_down', 'UI_OBJECT_ITEM', 'SetObjectPressed', 'SetObjectStaring'
+    numbers: 1.0
+    globals: ActionBar_Cast, Hand_IsEmpty, UI_OBJECT_ITEM, UI_OBJECT_SKILL, this
+  function <?> line 773-781 params=0 ups=0 stack=4
+    strings: 'this', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'normal', 'mouse_up', 'UI_OBJECT_ITEM'
+    numbers: 0.0
+    globals: ActionBar_Cast, UI_OBJECT_ITEM, UI_OBJECT_SKILL, this
+  function <?> line 783-803 params=0 ups=0 stack=5
+    strings: 'this', 'IsEmpty', 'SetInputModule', 'ActionBar', 'GetObjectType', 'UI_OBJECT_SKILL', 'IsShiftKeyDown', 'GetObjectData', 'NewSkillPanel_LinkRecipe', 'ActionBar_Cast', 'normal', 'click', 'UI_OBJECT', 'EMOTION_ACTION', 'UI_OBJECT_TOY', 'OnUseActionBarObject'
+    globals: ActionBar, ActionBar_Cast, IsShiftKeyDown, NewSkillPanel_LinkRecipe, SetInputModule, UI_OBJECT, UI_OBJECT_SKILL, UI_OBJECT_TOY, this
+  function <?> line 805-807 params=0 ups=0 stack=2
+    strings: 'ActionBar', 'OnItemRButtonClick'
+    globals: ActionBar
+  function <?> line 809-880 params=1 ups=2 stack=14
+    strings: 'IsEmpty', 'SetObjectStaring', 'GetClientPlayer', 'UI_OBJECT_ITEM_INFO', 'OnUseItem', 'UI_OBJECT_ITEM', 'INVENTORY_INDEX', 'EQUIP', 'GetPlayerItem', 'nSub', 'EQUIPMENT_SUB', 'PACKAGE', 'IsBagPanelOpened', 'EquipIndexToBagPanelIndex', 'CloseBagPanel', 'OpenBagPanel', 'GetEquipIDArray', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings'
+    numbers: 1.0, 2.0, 3.0, 4.0, 5.0, 0.0, 10.0
+    globals: Box_ExecuteCommonEvent, CanUseMacro, CloseBagPanel, EQUIPMENT_SUB, EquipIndexToBagPanelIndex, ExcuteMacroByID, GetClientPlayer, GetPendentSkill, GetPlayerItem, INVENTORY_INDEX, ITEM_GENRE, IsBagPanelOpened, OnUseCraft, OnUseEquip, OnUseItem, OnUseSkill, OpenBagPanel, OutputMessage, PlayTipSound, UI_OBJECT_CRAFT, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_MACRO, UI_OBJECT_PENDANT, UI_OBJECT_PET, g_tStrings
+  function <?> line 882-927 params=1 ups=0 stack=22
+    strings: 'Lookup', '', 'Handle_Box', 'Handle_Text', 'nGroup', 'ACTIONBAR', 'GetItemCount', 'Hotkey', 'Get', '_BUTTON', 'MobileSkillActionBar', 'Key', 'SetText', 'GetKeyShow'
+    numbers: 10.0, 9.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 21.0, 22.0, 23.0, 1.0, 20.0
+    globals: GetKeyShow, Hotkey
+  function <?> line 929-931 params=0 ups=0 stack=2
+    strings: 'ActionBar', 'OnItemMouseEnter'
+    globals: ActionBar
+  function <?> line 933-942 params=0 ups=0 stack=3
+    strings: 'this', 'GetType', 'Box', 'SetObjectMouseOver', 'IsMobileStreamingEnable', 'HideTip', 'ActionBar', 'ActionBarShowTip'
+    numbers: 1.0
+    globals: ActionBar, HideTip, IsMobileStreamingEnable, this
+  function <?> line 944-974 params=1 ups=0 stack=22
+    strings: 'this', 'GetAbsPos', 'GetSize', 'GetObjectType', 'UI_OBJECT_ITEM', 'GetObjectData', 'IsSuitEquipPos', 'GetLogicEquipPos', 'OutputItemTip', 'UI_OBJECT_ITEM_INFO', 'UI_OBJECT_SKILL', 'OutputSkillTip', 'UI_OBJECT_CRAFT', 'OutputCraftTip', 'UI_OBJECT_MACRO', 'OutputMacroTip', 'UI_OBJECT_PENDANT', 'OutputPendantTip', 'UI_OBJECT_PET', 'OutputPetTip'
+    numbers: 1.0
+    globals: GetLogicEquipPos, IsSuitEquipPos, OutputCraftTip, OutputItemTip, OutputMacroTip, OutputPendantTip, OutputPetTip, OutputSkillTip, UI_OBJECT_CRAFT, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_MACRO, UI_OBJECT_PENDANT, UI_OBJECT_PET, UI_OBJECT_SKILL, this
+  function <?> line 976-981 params=0 ups=0 stack=3
+    strings: 'this', 'GetType', 'Box', 'SetObjectMouseOver', 'HideTip'
+    numbers: 0.0
+    globals: HideTip, this
+  function <?> line 983-993 params=1 ups=0 stack=6
+    strings: 'Hand_Get', 'IsEmpty', 'szType', 'UI_BOX_TYPE', 'ACTION_BAR', 'ActionBar', 'OnChangeBoxItem', 'hOrgBox', 'Hand_Clear'
+    globals: ActionBar, Hand_Clear, Hand_Get, UI_BOX_TYPE
+  function <?> line 996-1004 params=0 ups=0 stack=4
+    strings: 'Hand_Get', 'GetObjectType', 'UI_OBJECT_ITEM', 'OnDestroyItem', 'Hand_Clear'
+    globals: Hand_Clear, Hand_Get, OnDestroyItem, UI_OBJECT_ITEM
+  function <?> line 1006-1015 params=1 ups=0 stack=6
+    strings: 'IsEmpty', 'ActionBar', 'bLock', 'IsShiftKeyDown', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'SRT_ERROR_LOCK_ACTIONBAR_WHEN_DRAG', 'PlayTipSound', '008', 'Hand_Get', 'OnChangeBoxItem'
+    globals: ActionBar, Hand_Get, IsShiftKeyDown, OutputMessage, PlayTipSound, g_tStrings
+  function <?> line 1017-1094 params=3 ups=3 stack=21
+    strings: 'GetClientPlayer', 'GetObject', 'GetObjectIcon', 'UI_OBJECT_ITEM', 'GetPlayerItem', 'nGenre', 'ITEM_GENRE', 'EQUIPMENT', 'UI_OBJECT_ITEM_INFO', 'UI_OBJECT_ITEM_ONLY_ID', 'UI_OBJECT_MOBA_ITEM', 'UI_OBJECT_SKILL', 'IsMobileSkill', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'g_tStrings', 'STR_ERROR_MAINBAR_MOBILE_SKILL_WHEN_DRAG', 'IsEmpty', 'Hand_Clear', 'Hand_Pick'
+    numbers: 0.0
+    globals: ActionBar, FireHelpEvent, GetClientPlayer, GetItemInfo, GetPlayerItem, Hand_Clear, Hand_Pick, ITEM_GENRE, IsEquipBoxNumShow, IsItem_MaxStrengthLevel, IsMobileSkill, OutputMessage, SetBoxDefaultExtent, UI_OBJECT, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_ITEM_ONLY_ID, UI_OBJECT_MACRO, UI_OBJECT_MOBA_ITEM, UI_OBJECT_SKILL, UI_OBJECT_TOY, UpdateBrightMarkBoxObject, UpdateEmotionActionBoxObject, UpdateFaceMotionBoxObject, UpdateItemBoxExtend, UpdateSkillBoxObject, UpdateToyBoxObject, g_tStrings
+  function <?> line 1096-1122 params=1 ups=0 stack=8
+    strings: '', 'GetTimeToHourMinuteSecond', 'h', 'm'
+    numbers: 0.0, 2.0, 1.0, 5.0, 3.0
+    globals: GetTimeToHourMinuteSecond
+  function <?> line 1124-1164 params=2 ups=1 stack=11
+    strings: 'szTime', '', 'math', 'floor', 'SetText', 'SetFontColor', 'nSpark', 'bSpark'
+    numbers: 16.0, 0.0, 1.0, 255.0, 2.0, 7.0, 3.0
+    globals: math
+  function <?> line 1166-1254 params=0 ups=3 stack=26
+    strings: 'GetClientPlayer', 'this', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'Handle_Cool', 'Handle_Num', 'Handle_Animate', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_ITEM', 'GetObjectData', 'UpdataItemCDProgress', 'UI_OBJECT_ITEM_INFO', 'UI_OBJECT_SKILL', 'GetMultiStageSkillCanCastID', 'GetSkillLevel', 'ActionBar', 'ReplaceSkill'
+    numbers: 1.0, 0.0
+    globals: ActionBar, ActionBar_IsAutoPressEnable, ActionBar_IsKeyAutoPressing, GetClientPlayer, GetMultiStageSkillCanCastID, IsActionBarCoolDownShow, OnUpdateCraftState, ShowSkillSurfaceNum, Table_GetSkill, UI_OBJECT, UI_OBJECT_CRAFT, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_MACRO, UI_OBJECT_PENDANT, UI_OBJECT_SKILL, UI_OBJECT_TOY, UpdataItemCDProgress, UpdataPendantSkillCDProgress, UpdateBrightMarkBoxObject, UpdateMacroCDProgress, UpdateSkillBoxObject, UpdateToyBoxObject, this
+  function <?> line 1256-1286 params=1 ups=0 stack=8
+    strings: 'ActionBar', 'tSkillIDAutoShowNum', 'GetTickCount', 'nStartTime', 'nRateTime', 'nStart', 'nAdd', 'nEnd', 'FireUIEvent', 'CHANGE_SKILL_SURFACE_NUM'
+    numbers: 0.0
+    globals: ActionBar, FireUIEvent, GetTickCount
+  function <?> line 1288-1420 params=1 ups=0 stack=7
+    strings: 'EQUIP_ITEM_UPDATE', 'arg1', 'EQUIPMENT_INVENTORY', 'MELEE_WEAPON', 'ActionBar', 'UpdataCommonSkillInActionBar', 'this', 'RANGE_WEAPON', 'ARROW', 'UpdataItem', 'arg0', 'IsInMobaBattleFieldMap', 'GetPlayerItem', 'GetClientPlayer', 'UpdataItemInActionBar', 'nVersion', 'dwTabType', 'dwIndex', 'UpdateSkillCDID', 'BAG_ITEM_UPDATE'
+    numbers: 0.0, 1.0, 2.0
+    globals: ActionBar, ActionBar_CheckAutoPress, EQUIPMENT_INVENTORY, GetClientPlayer, GetPlayerItem, INVENTORY_INDEX, IsInMobaBattleFieldMap, MainBar_ModeSwitch, SaveActionBarSetting, ShowCloudActionBar, arg0, arg1, arg2, arg3, arg4, this
+  function <?> line 1422-1434 params=2 ups=0 stack=13
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObject', 'UI_OBJECT_MACRO', 'ActionBar', 'ClearABox'
+    numbers: 1.0, 0.0
+    globals: ActionBar, UI_OBJECT_MACRO
+  function <?> line 1436-1449 params=2 ups=0 stack=15
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObject', 'UI_OBJECT_MACRO', 'SetObjectIcon', 'GetMacroIcon', 'SetBoxDefaultExtent'
+    numbers: 1.0, 0.0
+    globals: GetMacroIcon, SetBoxDefaultExtent, UI_OBJECT_MACRO
+  function <?> line 1451-1494 params=1 ups=0 stack=16
+    strings: 'Lookup', '', 'Handle_Bg', 'ActionBar', 'aShowBg', 'nGroup', 'Hand_IsEmpty', 'IsNewSkillPanelOpened', 'SetDummyWnd', 'IsVisible', 'Show', 'Handle_Box', 'Handle_Text', 'GetItemCount', 'Hide', 'IsEmpty', 'nIndex', 'Num', 'Key'
+    numbers: 20.0, 2.0, 1.0, 0.0
+    globals: ActionBar, Hand_IsEmpty, IsNewSkillPanelOpened
+  function <?> line 1496-1518 params=1 ups=0 stack=9
+    strings: 'GetRoot', 'tSkillEffectState', 'GetObjectType', 'UI_OBJECT_SKILL', 'UpdateSkillBoxObject', 'GetParent', 'Lookup', 'Handle_Bg', 'IsVisible', 'IsEmpty', 'Show', 'Handle_Text/', 'nIndex', 'Num', 'Key', 'Hide'
+    globals: UI_OBJECT_SKILL, UpdateSkillBoxObject
+  function <?> line 1520-1524 params=2 ups=0 stack=4
+    strings: 'IsSuitEquipPos'
+    globals: IsSuitEquipPos
+  function <?> line 1526-1583 params=5 ups=2 stack=32
+    strings: 'GetClientPlayer', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'GetObjectType', 'UI_OBJECT_ITEM', 'IsEmpty', 'GetObjectData', 'GetEquipIDArray', 'INVENTORY_INDEX', 'EQUIP', 'SetObject', 'INVALID', 'SOLD_LIST', 'ActionBar', 'ClearABox', 'GetPlayerItem', 'SetObjectIcon', 'Table_GetItemIconID'
+    numbers: 1.0, 0.0
+    globals: ActionBar, GetClientPlayer, GetPlayerItem, INVENTORY_INDEX, IsEquipBoxNumShow, IsItem_MaxStrengthLevel, Table_GetItemIconID, UI_OBJECT_ITEM, UpdateItemBoxExtend
+  function <?> line 1586-1634 params=5 ups=1 stack=29
+    strings: 'GetClientPlayer', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_ITEM', 'GetObjectData', 'GetEquipIDArray', 'INVENTORY_INDEX', 'EQUIP', 'INVALID', 'SOLD_LIST', 'ActionBar', 'ClearABox', 'GetPlayerItem', 'nGenre', 'ITEM_GENRE', 'EQUIPMENT'
+    numbers: 1.0, 0.0
+    globals: ActionBar, GetClientPlayer, GetPlayerItem, INVENTORY_INDEX, ITEM_GENRE, IsEquipBoxNumShow, IsItem_MaxStrengthLevel, Table_GetItemIconID, UI_OBJECT_ITEM, UpdateItemBoxExtend
+  function <?> line 1636-1662 params=3 ups=0 stack=18
+    strings: 'GetPlayerItem', 'GetClientPlayer', 'nGenre', 'ITEM_GENRE', 'EQUIPMENT', 'IsEquipBoxNumShow', 'nSub', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_ITEM', 'GetObjectData', 'ActionBar', 'UpdateBoxNum', 'nStackNum', 'UpdataItemInActionBar', 'nVersion'
+    numbers: 1.0, 0.0
+    globals: ActionBar, GetClientPlayer, GetPlayerItem, ITEM_GENRE, IsEquipBoxNumShow, UI_OBJECT_ITEM
+  function <?> line 1664-1679 params=2 ups=0 stack=14
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT', 'EMOTION_ACTION', 'GetObjectData', 'UpdateEmotionActionBoxObject'
+    numbers: 1.0, 0.0
+    globals: UI_OBJECT, UpdateEmotionActionBoxObject
+  function <?> line 1681-1683 params=2 ups=0 stack=7
+    strings: 'GetParent', 'Lookup', 'Handle_Text/', 'nIndex', 'Num', 'SetText'
+  function <?> line 1686-1699 params=3 ups=2 stack=11
+    strings: 'GetItemInfo', 'UI_OBJECT_ITEM_INFO', 'nUiId', 'SetObjectIcon', 'Table_GetItemIconID', 'ActionBar', 'UpdateBoxNum', 'EnableObject', 'UpdateBoxShow', 'UpdateItemBoxExtend', 'nGenre', 'nQuality'
+    numbers: 0.0
+    globals: ActionBar, GetItemInfo, Table_GetItemIconID, UI_OBJECT_ITEM_INFO, UpdateItemBoxExtend
+  function <?> line 1701-1710 params=4 ups=0 stack=10
+    strings: 'Lookup', '', 'Handle_Box', 'ActionBar', 'UpdateItemInfoBox'
+    numbers: 1.0
+    globals: ActionBar
+  function <?> line 1713-1733 params=4 ups=1 stack=20
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_ITEM_INFO', 'GetObjectData', 'ActionBar', 'UpdateBoxNum', 'EnableObject'
+    numbers: 1.0, 0.0
+    globals: ActionBar, UI_OBJECT_ITEM_INFO
+  function <?> line 1735-1759 params=2 ups=1 stack=20
+    strings: 'Lookup', '', 'Handle_Box', 'GetClientPlayer', 'GetCommonSkill', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'GetObjectData', 'IsCommonSkill', 'SetObjectIcon', 'Table_GetSkillIconID', 'SetBoxDefaultExtent'
+    numbers: 0.0, 1.0
+    globals: GetClientPlayer, IsCommonSkill, SetBoxDefaultExtent, Table_GetSkillIconID, UI_OBJECT_SKILL
+  function <?> line 1761-1789 params=3 ups=1 stack=20
+    strings: 'GetClientPlayer', 'GetSkillLevel', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'GetObjectData', 'SetObjectIcon', 'Table_GetSkillIconID', 'ActionBar', 'UpdateBoxShow', 'Skill_GetCDProgress', '_CDId', 'nX', 'nY', 'GetAbsPos', 'nStep'
+    numbers: 1.0, 0.0, 0.5, 4.0
+    globals: ActionBar, GetClientPlayer, Skill_GetCDProgress, Table_GetSkillIconID, UI_OBJECT_SKILL
+  function <?> line 1791-1817 params=3 ups=1 stack=19
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'GetObjectData', 'Table_GetSkill', 'UpdateSkillBoxObject', 'IsHotkeyExitWhenForget', 'ActionBar', 'ClearABox', 'math', 'max', 'SetObjectIcon', 'Table_GetSkillIconID', 'SetBoxDefaultExtent'
+    numbers: 1.0, 0.0
+    globals: ActionBar, SetBoxDefaultExtent, Table_GetSkill, Table_GetSkillIconID, UI_OBJECT_SKILL, UpdateSkillBoxObject, math
+  function <?> line 1819-1831 params=3 ups=0 stack=12
+    strings: 'Table_GetSkillEffectByBuff', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'UpdateSkillBoxObject'
+    numbers: 1.0, 0.0
+    globals: Table_GetSkillEffectByBuff, UI_OBJECT_SKILL, UpdateSkillBoxObject
+  function <?> line 1833-1848 params=2 ups=0 stack=15
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_CRAFT', 'GetObjectData', 'ActionBar', 'ClearABox'
+    numbers: 1.0, 0.0
+    globals: ActionBar, UI_OBJECT_CRAFT
+  function <?> line 1850-1866 params=1 ups=0 stack=16
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_CRAFT', 'GetObjectData', 'IsCustomCraft', 'GetCraft', 'CraftType', 'ALL_CRAFT_TYPE', 'RADAR', 'SetObjectSelected'
+    numbers: 1.0, 0.0
+    globals: ALL_CRAFT_TYPE, GetCraft, IsCustomCraft, UI_OBJECT_CRAFT
+  function <?> line 1868-1879 params=2 ups=0 stack=5
+    strings: 'dwConditionId', 'dwDstSkillId2', 'dwDstSkillId1', 'GetClientPlayer', 'GetSkillLevel', 'CorrectSkillName'
+    numbers: 0.0
+    globals: CorrectSkillName, GetClientPlayer
+  function <?> line 1892-1899 params=1 ups=0 stack=5
+    strings: '', 'loadstring', 'return ', 'setfenv'
+    globals: loadstring, setfenv
+  function <?> line 1901-1914 params=2 ups=1 stack=18
+    strings: 'GetClientPlayer', 'pairs', 'GetBoxSize', 'GetPlayerItem', 'dwTabType', 'dwIndex'
+    numbers: 1.0, 0.0
+    globals: GetClientPlayer, GetPlayerItem, pairs
+  function <?> line 1916-1925 params=1 ups=0 stack=10
+    strings: 'string', 'gmatch', '%d+', 'tonumber', 'table', 'insert'
+    globals: string, table, tonumber
+  function <?> line 1928-1960 params=1 ups=2 stack=20
+    strings: 'IsMobileStreamingEnable', 'm_ExtendActionBarIndex', 'ActionBar', '_Page1', 'Table_GetLocalActionBarData', 'IsEmpty', 'ExtendAnchor', 'SetExtendActionBarAnchor', 'SetExtendActionBarCount', 'SetActionBarLine', 'ShowActionBarBg', 'OpenActionBar', 'GetActionBarFrame', 'bNotLoadingFresh', 'Lookup', '', 'Wnd_Container', 'AppendContentFromIni', 'ui/Config/Default/ActionBarResetBtn.ini', 'Wnd_Reset'
+    numbers: 36.0
+    globals: =m_ExtendActionBarIndex, ActionBar, FloatingActionBar, GetActionBarFrame, IsEmpty, IsMobileStreamingEnable, OpenActionBar, SetActionBarLine, SetExtendActionBarAnchor, SetExtendActionBarCount, ShowActionBarBg, Table_GetLocalActionBarData
+    function <?> line 1951-1951 params=0 ups=1 stack=2
+      strings: 'ResetLocalDataActionBar'
+      globals: ResetLocalDataActionBar
+  function <?> line 1962-1970 params=1 ups=0 stack=16
+    strings: 'ipairs', 'unpack', 'IsActionBarOpened', 'FireUIEvent', 'ON_SWITCH_ITEM'
+    globals: FireUIEvent, IsActionBarOpened, ipairs, unpack
+  function <?> line 1978-2191 params=3 ups=8 stack=22
+    strings: 'ClearObject', '__bFixedTip', 'StorageServer', 'GetData', 'data_key', 'nIndex', 'Table_GetLocalActionBarParam', 'unpack', 'UI_OBJECT_ITEM_INFO', 'GetItemInfo', 'nUiId', 'SetObjectIcon', 'Table_GetItemIconID', 'nAccount', 'ActionBar', 'UpdateBoxNum', 'EnableObject', 'UpdateBoxShow', 'UpdateItemBoxExtend', 'nGenre'
+    numbers: 1.0, 0.0, 2.0, 3.0
+    globals: =nAccount, ActionBar, GetClientPlayer, GetCraft, GetItemInfo, GetLogicEquipPos, GetMacroIcon, GetPlayerItem, GetSkill, INVENTORY_INDEX, ITEM_GENRE, ITEM_TABLE_TYPE, IsCommonSkill, IsCustomCraft, IsEquipBoxNumShow, IsItem_MaxStrengthLevel, StorageServer, Table_GetCraftIconID, Table_GetFellowPet, Table_GetItemIconID, Table_GetLocalActionBarParam, Table_GetSkill, Table_GetSkillIconID, UI_OBJECT, UI_OBJECT_CRAFT, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_MACRO, UI_OBJECT_PENDANT, UI_OBJECT_PET, UI_OBJECT_SKILL, UI_OBJECT_TOY, UpdateBrightMarkBoxObject, UpdateEmotionActionBoxObject, UpdateFaceMotionBoxObject, UpdateItemBoxExtend, UpdateToyBoxObject, g_tUIConfig, nAccount, unpack
+  function <?> line 2193-2209 params=1 ups=2 stack=12
+    strings: 'nGroup', 'bNotLoadingFresh', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'ActionBar', 'LoadSave', 'CheckReplaceSkillAllPage'
+    numbers: 1.0, 0.0
+    globals: ActionBar
+  function <?> line 2211-2233 params=3 ups=1 stack=22
+    strings: 'bResetSkillIcon', 'nGroup', 'GetMainActionBarPage', 'StorageServer', 'GetActionBarKey', 'GetData', 'UI_OBJECT_SKILL', 'SetData'
+    numbers: 1.0, 2.0, 5.0
+    globals: GetMainActionBarPage, StorageServer, UI_OBJECT_SKILL
+  function <?> line 2235-2241 params=4 ups=0 stack=15
+    strings: 'Lookup', '', 'Handle_Box', 'GetItemCount', 'ActionBar', 'ReplaceSkill'
+    numbers: 1.0, 0.0
+    globals: ActionBar
+  function <?> line 2243-2269 params=2 ups=0 stack=16
+    strings: 'GetClientPlayer', 'Player_CheckCurrentBelongSchool', 'BELONG_SCHOOL_TYPE', 'CANG_YUN', 'Lookup', '', 'Handle_Box', 'GetItemCount', 'IsEmpty', '_CDId', 'GetObject', 'UI_OBJECT_SKILL', 'GetCDMaxCount'
+    numbers: 1.0, 0.0
+    globals: BELONG_SCHOOL_TYPE, GetClientPlayer, Player_CheckCurrentBelongSchool, UI_OBJECT_SKILL
+  function <?> line 2271-2291 params=4 ups=1 stack=11
+    strings: 'GetActionBarBox', 'GetSkill', 'UI_OBJECT_SKILL', 'SetObjectIcon', 'Table_GetSkillIconID', 'ActionBar', 'UpdateBoxNum', '', 'UpdateBoxShow'
+    numbers: 1.0, 0.0
+    globals: ActionBar, GetActionBarBox, GetSkill, Table_GetSkillIconID, UI_OBJECT_SKILL
+  function <?> line 2293-2328 params=4 ups=1 stack=14
+    strings: 'GetClientPlayer', 'GetObject', 'UI_OBJECT_SKILL', 'GetSkill', 'SetObjectIcon', 'Table_GetSkillIconID', 'ActionBar', 'UpdateBoxNum', '', 'UpdateBoxShow', 'Skill_GetCDProgress', '_CDId', 'nX', 'nY', 'GetAbsPos', 'nStep'
+    numbers: 1.0, 0.0, 0.5, 4.0
+    globals: ActionBar, GetClientPlayer, GetSkill, Skill_GetCDProgress, Table_GetSkillIconID, UI_OBJECT_SKILL
+  function <?> line 2330-2354 params=0 ups=0 stack=2
+    strings: 'OnFrameCreate', 'ActionBar', 'OnItemLButtonDown', 'OnItemLButtonUp', 'OnItemLButtonDrag', 'OnItemLButtonDragEnd', 'OnItemLButtonClick', 'OnItemLButtonDBClick', 'OnItemRButtonDown', 'OnItemRButtonUp', 'OnItemRButtonClick', 'OnItemRButtonDBClick', 'OnItemMouseEnter', 'OnItemRefreshTip', 'OnItemMouseLeave', 'OnFrameBreathe', 'OnEvent', 'OnFrameDrag', 'OnFrameDragSetPosEnd', 'OnFrameDragEnd'
+    globals: ActionBar
+  function <?> line 2376-2381 params=1 ups=0 stack=4
+    strings: '_G', 'ActionBar', 'OnItemLButtonDrag', 'OnItemLButtonDragEnd', 'OnItemLButtonClick', 'ExtendActionBarButtonClick', 'OnItemLButtonDBClick', 'ExtendActionBarButtonDBClick'
+    globals: ActionBar, _G
+  function <?> line 2383-2406 params=2 ups=1 stack=6
+    strings: 'IsMobileStreamingEnable', 'FloatingActionBar', 'GetNowGroup', 'IsActionBarOpened', 'StorageServer', 'SetData', 'OpenActionBar', 'Wnd', 'OpenWindow', 'ActionBar', 'nGroup', 'Init', 'FireUIEvent', 'ON_OPEN_ACTIONBAR', 'OnCheckAddAchievement', 'Open_Quick_Launch', 'IsMobileKungfu', 'HideActionBar'
+    numbers: 1.0, 1006.0, 2.0
+    globals: ActionBar, FireUIEvent, FloatingActionBar, HideActionBar, IsActionBarOpened, IsMobileKungfu, IsMobileStreamingEnable, OnCheckAddAchievement, StorageServer, Wnd
+  function <?> line 2408-2423 params=1 ups=1 stack=5
+    strings: 'Station', 'Lookup', 'Lowest/ActionBar', 'Normal/ActionBar', 'IsVisible'
+    numbers: 1.0, 2.0
+    globals: Station
+  function <?> line 2425-2439 params=1 ups=2 stack=5
+    strings: 'Station', 'Lookup', 'Lowest/ActionBar', 'Normal/ActionBar', 'Lowest2/ActionBar'
+    numbers: 1.0, 2.0
+    globals: Station
+  function <?> line 2441-2450 params=1 ups=0 stack=12
+    strings: 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'SetObjectPressed', 'Hide'
+    numbers: 0.0, 1.0
+    globals: GetActionBarCount, GetActionBarFrame
+  function <?> line 2452-2462 params=1 ups=1 stack=4
+    strings: 'GetActionBarFrame', 'IsMobileStreamingEnable', 'FloatingActionBar', 'GetNowGroup', 'Show'
+    globals: FloatingActionBar, GetActionBarFrame, IsMobileStreamingEnable
+  function <?> line 2464-2479 params=2 ups=0 stack=6
+    strings: 'IsActionBarOpened', 'StorageServer', 'SetData', 'OpenActionBar', 'FloatingActionBar', 'GetNowGroup', 'Close', 'Wnd', 'CloseWindow', 'ActionBar', 'FireUIEvent', 'ON_CLOSE_ACTIONBAR'
+    numbers: 1.0
+    globals: FireUIEvent, FloatingActionBar, IsActionBarOpened, StorageServer, Wnd
+  function <?> line 2481-2485 params=1 ups=0 stack=3
+    strings: 'ActionBar', 'bLock', 'SaveActionBarSetting', 'FireEvent', 'ON_ACTIONBAR_LOCK'
+    globals: ActionBar, FireEvent, SaveActionBarSetting
+  function <?> line 2487-2489 params=0 ups=0 stack=2
+    strings: 'ActionBar', 'bLock'
+    globals: ActionBar
+  function <?> line 2491-2494 params=2 ups=0 stack=5
+    strings: 'ActionBar', 'aShowBg', 'FireUIEvent', 'ON_ACTIONBAR_BG_SHOW'
+    globals: ActionBar, FireUIEvent
+  function <?> line 2496-2498 params=1 ups=0 stack=2
+    strings: 'ActionBar', 'aShowBg'
+    globals: ActionBar
+  function <?> line 2500-2502 params=0 ups=0 stack=2
+    strings: 'ActionBar', 'nPage'
+    globals: ActionBar
+  function <?> line 2504-2510 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'nLevel', 'ACTIONBAR_PAGE_MIN_LEVEL'
+    globals: ACTIONBAR_PAGE_MIN_LEVEL, GetClientPlayer
+  function <?> line 2512-2528 params=1 ups=0 stack=4
+    strings: 'CanSwitchActionBarPage', 'ActionBar', 'nPage', 'SaveActionBarSetting', 'FireUIEvent', 'ON_SELECT_MAIN_ACTIONBAR_PAGE'
+    numbers: 1.0, 5.0
+    globals: ActionBar, CanSwitchActionBarPage, FireUIEvent, SaveActionBarSetting
+  function <?> line 2530-2534 params=2 ups=0 stack=5
+    strings: 'ActionBar', 'Size', 'FireUIEvent', 'ON_SET_ACTIONBAR_COUNT'
+    globals: ActionBar, FireUIEvent
+  function <?> line 2536-2540 params=2 ups=0 stack=5
+    strings: 'ActionBar', 'Size', 'FireUIEvent', 'ON_SET_ACTIONBAR_COUNT'
+    globals: ActionBar, FireUIEvent
+  function <?> line 2542-2544 params=1 ups=0 stack=2
+    strings: 'ActionBar', 'Size'
+    globals: ActionBar
+  function <?> line 2546-2550 params=2 ups=0 stack=5
+    strings: 'ActionBar', 'Line', 'FireUIEvent', 'ON_SET_ACTIONBAR_LINE'
+    globals: ActionBar, FireUIEvent
+  function <?> line 2552-2554 params=1 ups=0 stack=2
+    strings: 'ActionBar', 'Line'
+    globals: ActionBar
+  function <?> line 2556-2558 params=1 ups=0 stack=2
+    strings: 'ActionBar', 'Anchor'
+    globals: ActionBar
+  function <?> line 2560-2564 params=2 ups=0 stack=5
+    strings: 'ActionBar', 'ExtendAnchor', 'SaveActionBarSetting', 'FireUIEvent', 'ACTIONBAR_ANCHOR_CHANGED'
+    globals: ActionBar, FireUIEvent, SaveActionBarSetting
+  function <?> line 2566-2570 params=2 ups=0 stack=5
+    strings: 'ActionBar', 'Anchor', 'SaveActionBarSetting', 'FireUIEvent', 'ACTIONBAR_ANCHOR_CHANGED'
+    globals: ActionBar, FireUIEvent, SaveActionBarSetting
+  function <?> line 2572-2625 params=2 ups=1 stack=12
+    strings: 'GetClientPlayer', 'IdentityDynamicBar', 'IsOpened', 'GetBox', 'identity_dynamic', 'GetDynamicSkillGroup', 'DynamicActionBar', 'CanCastskill', 'IsSpecialContext', 'DynamicActionBar_Base', 'dynamic', 'GetWeaponSkillGroup', 'WeaponSkillBar', 'GetProxySkillCharacter', 'MindControlActionBar', 'control', 'Station', 'Lookup', 'Lowest/ActionBar', 'IsVisible'
+    numbers: 1.0, 2.0, 0.0, 5.0, 6.0, 8.0, 9.0, 20.0, 10.0, 11.0
+    globals: DynamicActionBar, DynamicActionBar_Base, GetCallUpPetActionBarBox, GetClientPlayer, GetPetActionBarBox, GetPuppetActionBarBox, IdentityDynamicBar, MindControlActionBar, PLActionBar, Station, WeaponSkillBar, pairs
+  function <?> line 2628-2630 params=2 ups=1 stack=5
+  function <?> line 2632-2666 params=2 ups=1 stack=4
+    strings: 'normal', 'dynamic', 'DynamicActionBar_Base', 'GetData', 'vkskill', 'VkActionBar', 'control', 'MindControlActionBar', 'pet', 'GetPetActionBarData', 'puppet', 'GetPuppetActionBarData', 'skill_dynamic', 'DynamicSkillBar', 'identity_dynamic', 'IdentityDynamicBar', 'identity_DynBar', 'IdentityDynActBar', 'callPet', 'penglai'
+    globals: DynamicActionBar_Base, DynamicSkillBar, GetPetActionBarData, GetPuppetActionBarData, IdentityDynActBar, IdentityDynamicBar, MainBar_SimpleActionBar, MindControlActionBar, PLActionBar, VkActionBar
+  function <?> line 2668-2682 params=1 ups=1 stack=9
+    strings: 'INVENTORY_INDEX', 'EQUIP', 'GetItemInfo', 'dwSkillID', 'dwLevel', 'dwSkillLevel', 'Skill_GetOptType', 'hoard'
+    numbers: 3.0, 6.0, 7.0, 0.0
+    globals: =dwLevel, =dwSkillID, GetItemInfo, INVENTORY_INDEX, Skill_GetOptType, dwLevel, dwSkillID
+  function <?> line 2684-2686 params=1 ups=1 stack=2
+  function <?> line 2688-2690 params=1 ups=1 stack=2
+  function <?> line 2692-2694 params=1 ups=1 stack=2
+  function <?> line 2696-2698 params=0 ups=2 stack=2
+  function <?> line 2700-2702 params=1 ups=1 stack=2
+  function <?> line 2704-2706 params=0 ups=1 stack=2
+  function <?> line 2721-2740 params=1 ups=2 stack=4
+    strings: 'GetClientPlayer', 'GetScene', 'dwMapID', 'nType', 'MAP_TYPE', 'DUNGEON', 'HOMELAND'
+    globals: GetClientPlayer, MAP_TYPE
+  function <?> line 2742-2748 params=2 ups=1 stack=8
+    strings: 'ipairs', 'nGroupID', 'nIndex', 'bAutoPress'
+    globals: ipairs
+  function <?> line 2750-2752 params=0 ups=1 stack=2
+  function <?> line 2754-2802 params=0 ups=5 stack=19
+    strings: 'GetClientPlayer', 'ActionBar_IsAutoDownEnable', 'GetTickCount', 'ipairs', 'nStartDown', 'bKeyDowning', 'bAutoPress', 'Hotkey', 'Get', 'ACTIONBAR', 'nGroupID', '_BUTTON', 'nIndex', 'FormatString', 'g_tStrings', 'STR_ACTIONBAR_AUTODOWN_OPEN', 'GetKeyShow', 'OutputMessage', 'MSG_ANNOUNCE_YELLOW', 'MSG_SYS'
+    numbers: 0.0, 1.0, -1.0
+    globals: ActionBar_ButtonDown, ActionBar_ButtonUp, ActionBar_IsAutoDownEnable, ActionBar_IsAutoDownKey, CHARACTER_OTACTION_TYPE, FormatString, GetClientPlayer, GetKeyShow, GetTickCount, Hotkey, OutputMessage, g_tStrings, ipairs, table
+  function <?> line 2804-2819 params=2 ups=1 stack=9
+    strings: 'ipairs', 'nGroupID', 'nIndex', 'nStartDown', 'GetTickCount', 'bKeyDowning', 'bAutoPress', 'table', 'insert'
+    numbers: 0.0
+    globals: GetTickCount, ipairs, table
+  function <?> line 2821-2836 params=2 ups=1 stack=9
+    strings: 'ipairs', 'nGroupID', 'nIndex', 'bKeyDowning', 'bAutoPress', 'table', 'remove'
+    numbers: 0.0
+    globals: ipairs, table
+  function <?> line 2838-2847 params=0 ups=2 stack=7
+    strings: 'IsInFight', 'ipairs', 'bAutoPress'
+    globals: IsInFight, ipairs
+  function <?> line 2849-2908 params=1 ups=4 stack=15
+    strings: 'bKeyDowning', 'bAutoPress', 'nGroupID', 'nIndex', 'normal', 'GetClientPlayer', 'GetObjectType', 'UI_OBJECT_SKILL', 'GetOTActionState', 'Skill_GetOptType', 'hoard', 'keyup', 'onlykeyup', 'UI_OBJECT_MACRO'
+    numbers: 9.0
+    globals: GetClientPlayer, Skill_GetOptType, UI_OBJECT_MACRO, UI_OBJECT_SKILL
+  function <?> line 2910-2952 params=3 ups=3 stack=11
+    strings: 'GetClientPlayer', 'ActionBar_AddAutoDownKey', 'IsInControlOtherState', 'Player_CheckCurrentBelongSchool', 'BELONG_SCHOOL_TYPE', 'YAN_TIAN', 'YanTianZongSoullamp', 'ReleaseLampSkill', 'ChangGeShadow', 'ReleaseShadowSkill', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'down', 'UI_OBJECT_ITEM', 'ActionBar', 'OnUseActionBarObject', 'normal', 'identity_dynamic'
+    numbers: 1.0, 7.0
+    globals: ActionBar, ActionBar_AddAutoDownKey, ActionBar_Cast, BELONG_SCHOOL_TYPE, ChangGeShadow, GetClientPlayer, IdentityDynamicBar, IsInControlOtherState, Player_CheckCurrentBelongSchool, UI_OBJECT_ITEM, UI_OBJECT_SKILL, YanTianZongSoullamp
+  function <?> line 2954-2975 params=3 ups=3 stack=10
+    strings: 'ActionBar_RemoveAutoDownKey', 'IsInControlOtherState', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'up', 'UI_OBJECT_ITEM'
+    numbers: 1.0, 0.0
+    globals: ActionBar_Cast, ActionBar_RemoveAutoDownKey, IsInControlOtherState, UI_OBJECT_ITEM, UI_OBJECT_SKILL
+  function <?> line 2977-3002 params=1 ups=0 stack=9
+    strings: 'GetClientPlayer', 'DynamicOriginalActionBar', 'ButtonDown', 'DynamicActionBar', 'IsOpened', 'DynamicActionBar_Base', 'GetBox', 'GetFrame', 'dynamic', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'down'
+    numbers: 1.0
+    globals: ActionBar_Cast, DynamicActionBar, DynamicActionBar_Base, DynamicOriginalActionBar, GetClientPlayer, UI_OBJECT_SKILL
+  function <?> line 3004-3024 params=1 ups=0 stack=8
+    strings: 'DynamicOriginalActionBar', 'ButtonUp', 'DynamicActionBar', 'IsOpened', 'DynamicActionBar_Base', 'GetBox', 'GetFrame', 'dynamic', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'up'
+    numbers: 0.0
+    globals: ActionBar_Cast, DynamicActionBar, DynamicActionBar_Base, DynamicOriginalActionBar, UI_OBJECT_SKILL
+  function <?> line 3026-3047 params=1 ups=0 stack=9
+    strings: 'GetClientPlayer', 'VkActionBar', 'IsOpened', 'GetBox', 'vkskill', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'down'
+    numbers: 1.0
+    globals: ActionBar_Cast, GetClientPlayer, UI_OBJECT_SKILL, VkActionBar
+  function <?> line 3049-3068 params=1 ups=0 stack=8
+    strings: 'DynamicOriginalActionBar', 'ButtonUp', 'VkActionBar', 'IsOpened', 'GetBox', 'vkskill', 'SetObjectPressed', 'GetObjectType', 'UI_OBJECT_SKILL', 'ActionBar_Cast', 'up'
+    numbers: 0.0
+    globals: ActionBar_Cast, DynamicOriginalActionBar, UI_OBJECT_SKILL, VkActionBar
+  function <?> line 3070-3103 params=1 ups=0 stack=10
+    strings: 'GetClientPlayer', 'GetSkillLevel', 'GetSkillRecipeKey', 'dwID', 'GetControlPlayerID', 'tSkillInfo', 'GetSkillInfoByProxy', 'GetSkillInfo', 'MaxRadius', 'Table_GetUpSkillEffect', 'dwConditionSkill', 'IsSkillRecipeActive', 'dwMiJiID', 'dwQiXueAndMiJiEffectID', 'dwReplaceEffectID', 'dwMiJiEffectID', 'dwEffectID', 'bIsShowSFX'
+    numbers: 0.0, 1.0
+    globals: =tSkillInfo, GetClientPlayer, GetControlPlayerID, GetSkillInfo, GetSkillInfoByProxy, Table_GetUpSkillEffect, tSkillInfo
+  function <?> line 3105-3133 params=2 ups=1 stack=11
+    strings: 'ActionBar', 'bShowUpSkillEffect', 'GetClientPlayer', 'GetSkill', 'UITestCast', 'dwID', 'IsSkillCastMyself', 'SKILL_RESULT_CODE', 'SUCCESS', 'Selection_ShowSFX', 'rlcmd', 'play local origin sfx ', ' '
+    globals: ActionBar, GetClientPlayer, GetSkill, IsSkillCastMyself, SKILL_RESULT_CODE, Selection_ShowSFX, rlcmd
+  function <?> line 3135-3148 params=1 ups=1 stack=7
+    strings: 'ActionBar', 'bShowUpSkillEffect', 'Selection_HideSFX', 'rlcmd', 'stop local origin sfx ', 'pairs'
+    globals: ActionBar, Selection_HideSFX, pairs, rlcmd
+  function <?> line 3150-3282 params=4 ups=5 stack=21
+    strings: 'GetPlayer', 'UI_GetClientPlayerID', 'GetObjectType', 'UI_OBJECT_SKILL', 'UI_OBJECT_ITEM_INFO', 'ActionBar_GetData', 'UI_OBJECT_ITEM', 'GetItemInfo', 'dwSkillID', 'dwSkillLevel', 'down', 'mouse_down', 'Jump', 'up', 'mouse_up', 'EndJump', 'GetCDMaxCount', 'SpecialSettings', 'ChangeMultiStageSkill', 'GetCDLeft'
+    numbers: 6.0, 7.0, 0.0, 101937.0, 1.0, 10.0, 4.0
+    globals: ActionBar, ActionBar_GetData, ActionBar_HideUpSkillEffect, ActionBar_IsAutoDownEnable, ActionBar_ShowUpSkillEffect, CongNeng_GetCostImage, EndJump, FORCE_TYPE, GetClientPlayer, GetItemInfo, GetPlayer, GetSkill, Jump, Kungfu_GetPlayerMountType, OnUseSkill, OutputMessage, PetActionBar_UpdateBoxState, SKILL_RESULT_CODE, Skill_GetOptType, SpecialSettings, UI_GetClientPlayerID, UI_OBJECT_ITEM, UI_OBJECT_ITEM_INFO, UI_OBJECT_SKILL, g_tStrings
+  function <?> line 3284-3293 params=1 ups=1 stack=9
+    strings: 'pairs', 'rlcmd', 'stop local origin sfx ', 'Selection_HideSFX', 'ActionBar', 'bShowUpSkillEffect'
+    globals: ActionBar, Selection_HideSFX, pairs, rlcmd
+  function <?> line 3295-3321 params=0 ups=0 stack=8
+    strings: 'ActionBar', 'Anchor', 's', 'DefaultAnchor', 'r', 'rw', 'x', 'y', 'arg0', 'FireEvent', 'ACTIONBAR_ANCHOR_CHANGED', 'pairs', 'ExtendAnchor', 'i'
+    numbers: 1.0
+    globals: =arg0, ActionBar, FireEvent, arg0, i, pairs
+  function <?> line 3323-3346 params=1 ups=0 stack=16
+    strings: 'IsActionBarOpened', 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_SKILL', 'GetObjectData'
+    numbers: 1.0, 4.0, 0.0
+    globals: GetActionBarCount, GetActionBarFrame, IsActionBarOpened, UI_OBJECT_SKILL
+  function <?> line 3349-3368 params=0 ups=0 stack=14
+    strings: 'GetClientPlayer', 'dwSelectKungfuIndex', 'Table_GetFirstLoginSkill', 'StorageServer', 'GetActionBarKey', 'dwSkillID', 'SetData', 'UI_OBJECT_SKILL'
+    numbers: 1.0, 16.0, 0.0
+    globals: GetClientPlayer, StorageServer, Table_GetFirstLoginSkill, UI_OBJECT_SKILL
+  function <?> line 3370-3378 params=0 ups=0 stack=13
+    strings: 'StorageServer', 'GetActionBarKey', 'g_tUIConfig', 'FirstLoginItem', 'SetData', 'UI_OBJECT_ITEM_INFO'
+    numbers: 1.0, 16.0, 0.0, 2.0
+    globals: StorageServer, UI_OBJECT_ITEM_INFO, g_tUIConfig
+  function <?> line 3380-3397 params=0 ups=0 stack=10
+    strings: 'GetClientPlayer', 'GetKungfuMount', 'Table_GetMapListByKungfu', 'dwSkillID', 'dwMapID', 'SetMapHighPriority'
+    numbers: 1.0, -1.0
+    globals: =dwMapID, GetClientPlayer, SetMapHighPriority, Table_GetMapListByKungfu, dwMapID
+  function <?> line 3399-3465 params=0 ups=0 stack=9
+    strings: 'ActionBar', 'bLoading', 'bLoaded', 'LockActionBar', 'StorageServer', 'GetData', 'MainActionBarPage', 'CanSwitchActionBarPage', 'SelectMainActionBarPage', 'ActionBar3_Anchor', 'SetActionBarAnchor', 'ActionBar4_Anchor', 'NotFirstEnterGame', 'SetData', 'InitFirstLoginSkill', 'InitFirstLoginItem', 'UpdateFirstLoginMapPriority', 'OpenActionBar', 'CloseActionBar', 'IsMobileKungfu'
+    numbers: 1.0, 0.0, 3.0, 4.0, 2.0
+    globals: ActionBar, CanSwitchActionBarPage, CloseActionBar, FireUIEvent, HideActionBar, InitFirstLoginItem, InitFirstLoginSkill, IsActionBarOpened, IsMobileKungfu, IsMobileStreamingEnable, LoadCloudActionBar, LockActionBar, MainBar_ConisePattern, MainBar_PageturnPanel, MainBar_SimpleActionBar, MainBar_SprintPanel, MainBar_TabPanel, OpenActionBar, SelectMainActionBarPage, SetActionBarAnchor, StorageServer, UpdateFirstLoginMapPriority
+  function <?> line 3467-3479 params=0 ups=0 stack=3
+    strings: 'ActionBar', 'bLoading', 'bLoaded', 'StorageServer', 'SetData', 'LockActionBar', 'IsActionBarLocked', 'MainActionBarPage', 'GetMainActionBarPage', 'ActionBar3_Anchor', 'Anchor', 'ActionBar4_Anchor'
+    numbers: 3.0, 4.0
+    globals: ActionBar, GetMainActionBarPage, IsActionBarLocked, StorageServer
+  function <?> line 3481-3483 params=0 ups=0 stack=2
+    strings: 'g_bActionBar_CoolDownShow'
+    globals: g_bActionBar_CoolDownShow
+  function <?> line 3485-3487 params=1 ups=0 stack=2
+    strings: 'g_bActionBar_CoolDownShow'
+    globals: =g_bActionBar_CoolDownShow
+  function <?> line 3491-3502 params=0 ups=0 stack=3
+    strings: 'GetClientPlayer', 'arg0', 'dwID', 'nLevel', 'OpenActionBar'
+    numbers: 30.0, 2.0
+    globals: GetClientPlayer, OpenActionBar, arg0
+  function <?> line 3504-3520 params=0 ups=0 stack=6
+    strings: 'arg0', 'arg1', 'CorrectSkillName', 'StorageServer', 'ActionAarTask', 'ActionBar_ReplaceCursorSkillIcon'
+    globals: ActionBar_ReplaceCursorSkillIcon, CorrectSkillName, StorageServer, arg0, arg1
+    function <?> line 3510-3516 params=4 ups=2 stack=9
+      strings: 'UI_OBJECT_SKILL', 'StorageServer', 'SetData'
+      globals: StorageServer, UI_OBJECT_SKILL
+  function <?> line 3522-3539 params=2 ups=0 stack=13
+    strings: 'GetClientPlayer', 'Hand_Get', 'GetObjectIcon', 'GetObject', 'UI_OBJECT_SKILL', 'GetSkillLevel', 'SetObject', 'SetObjectIcon', 'Table_GetSkillIconID', 'SetBoxDefaultExtent', 'Cursor', 'Switch', 'CURSOR', 'HAND_OBJECT'
+    globals: CURSOR, Cursor, GetClientPlayer, Hand_Get, SetBoxDefaultExtent, Table_GetSkillIconID, UI_OBJECT_SKILL
+  function <?> line 3546-3550 params=0 ups=0 stack=6
+    strings: 'ClearActionBar'
+    numbers: 1.0, 4.0
+    globals: ClearActionBar
+  function <?> line 3552-3566 params=1 ups=0 stack=11
+    strings: 'IsActionBarOpened', 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'hBox', 'IsEmpty', 'ActionBar', 'ClearABox'
+    numbers: 0.0, 1.0
+    globals: =hBox, ActionBar, GetActionBarCount, GetActionBarFrame, IsActionBarOpened, hBox
+  function <?> line 3568-3588 params=1 ups=2 stack=14
+    strings: 'IsActionBarOpened', 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'IsEmpty', 'ActionBar', 'ClearABox', 'LoadSave'
+    numbers: 0.0, 1.0
+    globals: ActionBar, GetActionBarCount, GetActionBarFrame, IsActionBarOpened
+  function <?> line 3590-3609 params=0 ups=0 stack=13
+    strings: 'ActionBar', 'tSkillIDToShowNum', 'arg0', 'arg1', 'ActionBar_GetBox', 'IsEmpty', 'GetParent', 'Lookup', 'Handle_Num/', 'nIndex', 'Num', 'ShowSkillSurfaceNum', 'GetAbsPos', 'GetSize', 'uiani_play'
+    numbers: 14.0, 0.5
+    globals: ActionBar, ActionBar_GetBox, ShowSkillSurfaceNum, arg0, arg1, uiani_play
+  function <?> line 3612-3622 params=0 ups=0 stack=5
+    strings: 'nStart', 'arg1', 'nEnd', 'arg2', 'nAdd', 'arg3', 'nRateTime', 'arg4', 'nStartTime', 'GetTickCount', 'ActionBar', 'tSkillIDAutoShowNum', 'arg0', 'FireUIEvent', 'CHANGE_SKILL_SURFACE_NUM'
+    globals: ActionBar, FireUIEvent, GetTickCount, arg0, arg1, arg2, arg3, arg4
+  function <?> line 3625-3628 params=0 ups=1 stack=2
+    strings: 'FireUIEvent', 'REFRESH_EQUIP_ITEM'
+    globals: FireUIEvent
+  function <?> line 3630-3633 params=0 ups=1 stack=2
+    strings: 'RemoteCallToServer', 'OnSyncEquipIDArray'
+    globals: RemoteCallToServer
+  function <?> line 3637-3646 params=0 ups=0 stack=9
+    strings: 'GetClientPlayer', 'IsActionBarOpened', 'GetActionBarFrame', 'ActionBar', 'UpdataSkillInActionBar', 'UpdateSkillCDID'
+    numbers: 1.0, 4.0
+    globals: ActionBar, GetActionBarFrame, GetClientPlayer, IsActionBarOpened
+  function <?> line 3649-3683 params=0 ups=1 stack=5
+    strings: 'arg0', 'arg1', 'arg2', 'DynamicOriginalActionBar', 'IsOpened', 'Close', 'DynamicActionBar', 'IsOriginalActionBar', 'Open', 'WeaponSkillBar'
+    numbers: 0.0, 1.0
+    globals: DynamicActionBar, DynamicOriginalActionBar, WeaponSkillBar, arg0, arg1, arg2
+  function <?> line 3686-3705 params=0 ups=0 stack=5
+    strings: 'GetClientPlayer', 'GetDynamicSkillGroup', 'DynamicActionBar', 'Open', 'IsModuleLoaded', 'Close', 'GetWeaponSkillGroup', 'WeaponSkillBar', 'IsOpened'
+    numbers: 0.0
+    globals: DynamicActionBar, GetClientPlayer, IsModuleLoaded, WeaponSkillBar
+  function <?> line 3708-3718 params=3 ups=0 stack=11
+    strings: 'ActionBar_GetBox', 'SetExtentLayer', 'ActionBar', 'szAnimate', 'nAnimateGroup', 'ClearExtentLayer'
+    numbers: -1.0, 7.0
+    globals: ActionBar, ActionBar_GetBox
+  function <?> line 3721-3723 params=0 ups=0 stack=2
+    strings: 'ShowCloudActionBar', 'MainBar_ModeSwitch', 'IsSkillMacroMode'
+    globals: MainBar_ModeSwitch, ShowCloudActionBar
+  function <?> line 3725-3752 params=0 ups=4 stack=9
+    strings: 'RegisterEvent', 'MOBILE_SKILL_MODE_MODIFY', 'IsActionBarOpened', 'HideActionBar', 'HideMainBarPanelFrame', 'MainBar_CommonSkill', 'Open', 'ActionBar', 'tCloudActionBarData', 'Anchor', 's', 'BOTTOMRIGHT', 'r', 'x', 'y', '_G', 'tostring', 'New', 'ShowActionBarBg', 'SetExtendActionBarCount'
+    numbers: 1.0, 4.0, 52.0, 58.0, -20.0, -13.0, 10.0, 2.0
+    globals: ActionBar, HideActionBar, HideMainBarPanelFrame, IsActionBarOpened, MainBar_CommonSkill, OpenActionBar, RegisterEvent, SetActionBarLine, SetExtendActionBarCount, ShowActionBarBg, _G, tostring
+  function <?> line 3754-3760 params=1 ups=2 stack=4
+    strings: 'ShowActionBar', 'HideActionBar'
+    globals: HideActionBar, ShowActionBar
+  function <?> line 3762-3779 params=1 ups=3 stack=6
+    strings: 'HideActionBar', 'ShowActionBar', 'GetActionBarFrame', 'Lookup', '', 'SFX_Skill_Down', 'Hide'
+    numbers: 1.0, 0.0
+    globals: GetActionBarFrame, HideActionBar, ShowActionBar
+  function <?> line 3781-3785 params=1 ups=1 stack=4
+    strings: 'ActionBar', 'UpdateBoxShow', 'UpdateBoxNum', ''
+    globals: ActionBar
+  function <?> line 3787-3811 params=0 ups=2 stack=19
+    strings: 'type1', 'type2', 'type3', 'IsActionBarOpened', 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'IsEmpty', 'table', 'insert', 'GetObjectData'
+    numbers: 0.0, 1.0
+    globals: GetActionBarCount, GetActionBarFrame, IsActionBarOpened, table
+  function <?> line 3813-3832 params=1 ups=2 stack=18
+    strings: 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'IsEmpty'
+    numbers: 0.0, 1.0
+    globals: GetActionBarCount, GetActionBarFrame
+  function <?> line 3834-3861 params=2 ups=2 stack=19
+    strings: 'GetActionBarFrame', 'GetActionBarCount', 'Lookup', '', 'Handle_Box', 'IsEmpty', 'GetObjectType', 'UI_OBJECT_MACRO', 'GetObjectData'
+    numbers: 0.0, 1.0
+    globals: GetActionBarCount, GetActionBarFrame, UI_OBJECT_MACRO
+  function <?> line 3863-3874 params=0 ups=0 stack=2
+    strings: 'IsMobileStreamingEnable', 'ActionBar', 'tCloud', 'CURRENT_VERSION', 'nVersion', 'MainBar_SimpleDodge', 'SetFirstLogin'
+    numbers: 1.0
+    globals: ActionBar, IsMobileStreamingEnable, MainBar_SimpleDodge
+  function <?> line 3876-3882 params=0 ups=0 stack=2
+    strings: 'arg0', 'Role'
+    globals: arg0
+  function <?> line 3886-3920 params=0 ups=3 stack=8
+    strings: 'GetActionBarFrame', 'BringToTop', 'Station', 'Lookup', 'Normal/ActionBar', 'Lowest2/ActionBar', 'Topmost/OTActionBar', 'Topmost/OTPetActionBar'
+    numbers: 1.0, 23.0
+    globals: GetActionBarFrame, Station

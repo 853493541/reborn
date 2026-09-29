@@ -1,0 +1,231 @@
+# HotkeyPanel.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=19
+  strings: 'HotkeyPanel', 'nNormalFrame', 'nMouseOverFrame', 'nDownFrame', 'nDisableFrame', 'nAutoModifiedFrame', 'nSelfModifiedFrame', 'nSelFrame', 'nUnchangeableFrame', 'bSaveToServer', 'nVersion', 'dwSaveID', 'tSaveDate', 'RegisterCustomData', 'HotkeyPanel.nVersion', 'SKILL_YYX_FORWARD', 'MOVEFORWARD', 'SKILL_YYX_BACK', 'MOVEBACKWARD', 'SKILL_YYX_LEFT'
+  numbers: 28.0, 29.0, 30.0, 31.0, 0.0, 5.0, 1.0, 200.0
+  globals: =CloseHotkeyPanel, =HotkeyPanel, =HotkeyPanel_CancelSetHotkey, =HotkeyPanel_SetHotkey, =Hotkey_MsgBox, =IsHotkeyPanelOpened, =OpenHotkeyPanel, HotkeyPanel, Hotkey_MsgBox, RegisterCustomData
+  function <?> line 38-63 params=2 ups=1 stack=12
+    strings: 'Hotkey1', 'bDoubleKeyDown', 'Hotkey2', 'ipairs', 'Hotkey', 'Get', 'nKey', 'nDoubleKey'
+    numbers: 1.0, 0.0, 2.0
+    globals: Hotkey, ipairs
+  function <?> line 65-76 params=0 ups=0 stack=3
+    strings: 'this', 'RegisterEvent', 'UI_SCALED', 'PLAYER_LEVEL_UPDATE', 'HotkeyPanel', 'Init', 'LoadConfig', 'InitMenu', 'SetChanged', 'OnEvent'
+    globals: HotkeyPanel, this
+  function <?> line 78-84 params=1 ups=0 stack=3
+    strings: 'UI_SCALED', 'UpdateOptionPanelAnchor', 'this', 'PLAYER_LEVEL_UPDATE', 'HotkeyPanel', 'Init'
+    globals: HotkeyPanel, UpdateOptionPanelAnchor, this
+  function <?> line 86-89 params=0 ups=0 stack=3
+    strings: 'this', 'CorrectPos', 'SetOptionPanelAnchor', 'GetFrameAnchor'
+    globals: GetFrameAnchor, SetOptionPanelAnchor, this
+  function <?> line 91-94 params=2 ups=0 stack=5
+    strings: 'bChanged', 'Lookup', 'Btn_Apply', 'Enable'
+  function <?> line 96-105 params=1 ups=0 stack=5
+    strings: '', 'key', 'value', 'unpack', 'SplitString', ':', '/'
+    numbers: 1.0
+    globals: =key, =value, SplitString, key, unpack, value
+  function <?> line 107-124 params=1 ups=1 stack=6
+    strings: 'UISetting', 'type', 'string', 'SelfSkillGuide', 'StorageServer', 'GetData', 'UISetting_BoolValues2', 'ActionBarPage', 'CanSwitchActionBarPage'
+    globals: CanSwitchActionBarPage, StorageServer, type
+  function <?> line 126-154 params=2 ups=2 stack=12
+    strings: 'UISetting', 'SplitString', '|', 'nForceID', 'tonumber', 'GetClientPlayer', 'dwForceID'
+    numbers: 1.0
+    globals: GetClientPlayer, SplitString, tonumber
+  function <?> line 156-167 params=1 ups=0 stack=9
+    strings: 'pairs', 'uContextHash', 'nIndex', 'nContextIndex'
+    numbers: 0.0, 1.0
+    globals: pairs
+  function <?> line 169-217 params=2 ups=3 stack=20
+    strings: 'Lookup', '', 'Handle_List', 'Handle_Hotkey', 'Hotkey', 'GetBinding', 'table', 'sort', 'HotkeyPanel', 'tInitKeys', 'clone', 'pairs', 'szHeader', 'szCondition', 'szContext', 'MobileSkillActionBar', 'MobileSkill', 'bShowMobile', 'insert', 'name'
+    numbers: 0.0
+    globals: Hotkey, HotkeyPanel, MobileSkill, StorageServer, clone, pairs, table
+    function <?> line 179-185 params=2 ups=0 stack=4
+      strings: 'nContextIndex', 'nIndex'
+  function <?> line 219-229 params=1 ups=0 stack=12
+    strings: 'CPath', 'GetFileList', 'ipairs', 'SplitString', '.', 'txt', 'string', 'find', 'hotkey_newback', 'hotkey_back', 'table', 'insert'
+    numbers: 2.0, 1.0
+    globals: CPath, SplitString, ipairs, string, table
+  function <?> line 231-273 params=1 ups=3 stack=22
+    strings: 'GetUserDataPath', 'dwSaveID', 'tSaveDate', 'table', 'insert', 'szOption', 'g_tStrings', 'STR_RESTORE_HK_DFT', 'ipairs', 'szDate', 'szFile', 'STR_RESTORE_HOTKEY', 'UserData', '\\', 'pairs', 'value', 'HotkeyPanel', 'tMenu'
+    numbers: 0.0, -1.0, 1.0
+    globals: GetUserDataPath, HotkeyPanel, g_tStrings, ipairs, pairs, table
+    function <?> line 249-256 params=1 ups=2 stack=7
+      strings: 'pairs'
+      globals: pairs
+  function <?> line 275-285 params=0 ups=1 stack=4
+    strings: 'HotkeyPanel', 'bLoadData', 'LoadLUAData', 'GetUserDataPath', '\\', 'hotkey.data'
+    globals: GetUserDataPath, HotkeyPanel, LoadLUAData
+  function <?> line 288-298 params=0 ups=0 stack=6
+    strings: 'GetUserDataPath', '\\', 'hotkey_last.txt', 'hotkey_newlast.txt', 'Tab', 'Open', 'Hotkey', 'ConvertFile', 'Close'
+    globals: GetUserDataPath, Hotkey, Tab
+  function <?> line 300-349 params=0 ups=3 stack=14
+    strings: 'GetUserDataPath', 'TimeToDate', 'GetCurrentTime', 'year', '_', 'month', 'day', 'dwSaveID', 'tSaveDate', 'szDate', '\\', 'hotkey_newlast.txt', 'Tab', 'Open', 'Hotkey', 'SaveAsAdd', 'hotkey_newback', '.txt', 'szFile', 'Save'
+    numbers: 0.0, 1.0
+    globals: GetCurrentTime, GetUserDataPath, Hotkey, SaveLUAData, Tab, TimeToDate
+  function <?> line 351-372 params=1 ups=0 stack=11
+    strings: 'Clear', 'UI/Config/default/HotkeyPanel.ini', 'ipairs', 'HotkeyPanel', 'aGroup', 'contextgroup', '', 'bIsShow', 'AppendItemFromIni', 'Handle_ContextGroup', 'bContextGroup', 'Lookup', 'Text_ContextName', 'SetText', 'Expand', 'Handle_Group', 'bListGroup', 'nGroupIndex', 'szGroup', 'Text_Group'
+    numbers: 1.0
+    globals: HotkeyPanel, ipairs
+  function <?> line 374-391 params=1 ups=0 stack=11
+    strings: 'FormatAllItemPos', 'GetAllItemSize', 'GetSize', 'GetParent', 'Lookup', 'Scroll_List', 'math', 'ceil', 'SetStepCount', 'SetScrollPos', 'WNDEVENT_FIRETYPE', 'FORCE', 'Show', 'Btn_UpList', 'Btn_DownList', 'Hide'
+    numbers: 10.0, 0.0
+    globals: WNDEVENT_FIRETYPE, math
+  function <?> line 393-410 params=1 ups=0 stack=11
+    strings: 'FormatAllItemPos', 'GetAllItemSize', 'GetSize', 'GetParent', 'Lookup', 'Scroll_Key', 'math', 'ceil', 'SetStepCount', 'SetScrollPos', 'WNDEVENT_FIRETYPE', 'FORCE', 'Show', 'Btn_Up', 'Btn_Down', 'Hide'
+    numbers: 10.0, 0.0
+    globals: WNDEVENT_FIRETYPE, math
+  function <?> line 413-435 params=1 ups=0 stack=11
+    strings: 'bSel', 'GetParent', 'GetItemCount', 'Lookup', 'IsOver', 'Image_Sel', 'SetAlpha', 'Show', 'Hide', 'HotkeyPanel', 'UpdateContent', 'Handle_Hotkey', 'nGroupIndex'
+    numbers: 1.0, 0.0, 128.0, 255.0
+    globals: HotkeyPanel
+  function <?> line 437-476 params=2 ups=1 stack=24
+    strings: 'Hotkey', 'SetCapture', 'Clear', 'nGroupIndex', 'HotkeyPanel', 'aGroup', 'UI/Config/default/HotkeyPanel.ini', 'AppendItemFromIni', 'Text_GroupName', 'Lookup', 'SetText', 'name', 'bGroup', 'ipairs', 'key', 'bHide', 'Handle_Binding', 'bBinding', 'nIndex', 'szTip'
+    numbers: 0.0, 1.0, 2.0
+    globals: GetKeyShow, Hotkey, HotkeyPanel, g_tStrings, ipairs
+  function <?> line 478-500 params=0 ups=0 stack=3
+    strings: 'this', 'bListGroup', 'HotkeyPanel', 'bList', 'SelGroup', 'bKey', 'bDown', 'UpdateBtnState', 'GetName', 'Handle_List', 'bContextGroup', 'IsExpand', 'Collapse', 'Expand', 'GetParent', 'FormatAllItemPos'
+    globals: HotkeyPanel, this
+  function <?> line 502-507 params=0 ups=0 stack=2
+    strings: 'this', 'bKey', 'bDown', 'HotkeyPanel', 'UpdateBtnState'
+    globals: HotkeyPanel, this
+  function <?> line 509-528 params=1 ups=0 stack=6
+    strings: 'HotkeyPanel', 'aGroup', 'GetParent', 'nGroupIndex', 'key', 'nIndex', 'Hotkey', 'bUnchangeable', 'Lookup', 'Image_Key', 'SetFrame', 'nUnchangeableFrame', 'bDown', 'nDownFrame', 'bRDown', 'bSel', 'nSelFrame', 'bOver', 'nMouseOverFrame', 'bChange'
+    globals: HotkeyPanel
+  function <?> line 530-538 params=0 ups=0 stack=3
+    strings: 'this', 'bKey', 'bUnchangeable', 'HotkeyPanel', 'CancelSetHotkey', 'GetParent', 'bSel', 'UpdateBtnState', 'Hotkey', 'SetCapture', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'Button'
+    globals: Hotkey, HotkeyPanel, PlaySound, SOUND, g_sound, this
+  function <?> line 540-542 params=0 ups=0 stack=2
+    strings: 'HotkeyPanel', 'OnItemLButtonClick'
+    globals: HotkeyPanel
+  function <?> line 545-550 params=0 ups=0 stack=2
+    strings: 'this', 'bKey', 'bRDown', 'HotkeyPanel', 'UpdateBtnState'
+    globals: HotkeyPanel, this
+  function <?> line 552-557 params=1 ups=0 stack=3
+    strings: 'this', 'bKey', 'bRDown', 'HotkeyPanel', 'UpdateBtnState'
+    globals: HotkeyPanel, this
+  function <?> line 559-576 params=0 ups=0 stack=5
+    strings: 'this', 'bKey', 'bUnchangeable', 'bSel', 'HotkeyPanel', 'aGroup', 'GetParent', 'nGroupIndex', 'key', 'nIndex', 'Hotkey', 'nKey', 'bChange', 'bAlt', 'bCtrl', 'bShift', 'Lookup', 'Text_Key', 'SetText', ''
+    numbers: 0.0
+    globals: HotkeyPanel, PlaySound, SOUND, g_sound, this
+  function <?> line 578-580 params=0 ups=0 stack=2
+    strings: 'HotkeyPanel', 'OnItemRButtonClick'
+    globals: HotkeyPanel
+  function <?> line 582-594 params=0 ups=0 stack=4
+    strings: 'this', 'bListGroup', 'bOver', 'bSel', 'Lookup', 'Image_Sel', 'SetAlpha', 'Show', 'bKey', 'HotkeyPanel', 'UpdateBtnState'
+    numbers: 128.0
+    globals: HotkeyPanel, this
+  function <?> line 596-606 params=0 ups=0 stack=3
+    strings: 'this', 'bListGroup', 'bOver', 'bSel', 'Lookup', 'Image_Sel', 'Hide', 'bKey', 'HotkeyPanel', 'UpdateBtnState'
+    globals: HotkeyPanel, this
+  function <?> line 608-633 params=0 ups=0 stack=8
+    strings: 'this', 'GetName', 'Scroll_Key', 'GetParent', 'Lookup', '', 'Handle_Hotkey', 'Btn_Up', 'Btn_Down', 'Handle_List', 'Btn_UpList', 'Btn_DownList', 'GetScrollPos', 'Enable', 'GetStepCount', 'SetItemStartRelPos'
+    numbers: 0.0, 1.0, -10.0
+    globals: this
+  function <?> line 635-637 params=0 ups=0 stack=2
+    strings: 'HotkeyPanel', 'OnLButtonHold'
+    globals: HotkeyPanel
+  function <?> line 639-650 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'Btn_Up', 'GetParent', 'Lookup', 'Scroll_Key', 'ScrollPrev', 'Btn_Down', 'ScrollNext', 'Btn_UpList', 'Scroll_List', 'Btn_DownList'
+    numbers: 1.0
+    globals: this
+  function <?> line 652-686 params=0 ups=0 stack=5
+    strings: 'this', 'GetName', 'Btn_Close', 'Btn_Cancel', 'Hotkey', 'SetCapture', 'CloseHotkeyPanel', 'Btn_Default', 'Hotkey_MsgBox', 'Open', 'bDisableSound', 'Btn_Clear', 'GetRoot', 'Lookup', '', 'Handle_Hotkey', 'HotkeyPanel', 'ClearCurrentSelKey', 'PlaySound', 'SOUND'
+    globals: CloseHotkeyPanel, Hotkey, HotkeyPanel, Hotkey_MsgBox, OpenOptionPanel, PlaySound, SOUND, UISetting, bDisableSound, g_sound, this
+  function <?> line 688-695 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'CheckBox_NewMode', 'bDisable', 'HotkeyPanel', 'SetChanged', 'GetParent'
+    globals: HotkeyPanel, this
+  function <?> line 697-704 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'CheckBox_NewMode', 'bDisable', 'HotkeyPanel', 'SetChanged', 'GetParent'
+    globals: HotkeyPanel, this
+  function <?> line 706-753 params=1 ups=1 stack=16
+    strings: 'GetRoot', 'GetItemCount', 'Lookup', 'bBinding', 'Handle_Key1', 'bSel', 'HotkeyPanel', 'aGroup', 'nGroupIndex', 'key', 'szCommand', 'nIndex', 'Hotkey', 'nKey', 'bChange', 'bAlt', 'bCtrl', 'bShift', 'Text_Key', 'SetText'
+    numbers: 1.0, 0.0
+    globals: HotkeyPanel
+  function <?> line 755-766 params=0 ups=1 stack=11
+    strings: 'Hotkey', 'SaveToLuaAsAdd', 'OutputMessage', 'MSG_ANNOUNCE_RED', 'FormatString', 'g_tStrings', 'HOT_KEY_TO_LIMIT', 'StorageServer', 'SetData', 'Hotkey_Count'
+    numbers: 1.0, 2.0
+    globals: FormatString, Hotkey, OutputMessage, StorageServer, g_tStrings
+  function <?> line 768-795 params=1 ups=0 stack=20
+    strings: 'Lookup', 'CheckBox_NewMode', 'IsCheckBoxChecked', 'StorageServer', 'SetData', 'Hotkey_NewMode', 'Hotkey_EnableNewMode', 'Hotkey', 'Clear', 'ipairs', 'HotkeyPanel', 'aGroup', 'key', 'Hotkey1', 'nKey', 'Set', 'szCommand', 'bShift', 'bCtrl', 'bAlt'
+    numbers: 0.0, 1.0, 2.0
+    globals: GetUserDataPath, Hotkey, HotkeyPanel, Hotkey_EnableNewMode, StorageServer, ipairs
+  function <?> line 797-815 params=0 ups=0 stack=5
+    strings: 'Station', 'GetMessageWheelDelta', 'HotkeyPanel', 'bList', 'this', 'GetRoot', 'Lookup', 'Scroll_List', 'IsVisible', 'ScrollNext', 'Scroll_Key'
+    numbers: 1.0
+    globals: HotkeyPanel, Station, this
+  function <?> line 817-819 params=2 ups=0 stack=6
+    strings: 'GetRoot', 'Lookup', '', 'Text_Tip', 'SetText'
+  function <?> line 821-834 params=1 ups=0 stack=15
+    strings: 'GetItemCount', 'Lookup', 'bBinding', 'Handle_Key', 'bSel'
+    numbers: 1.0, 0.0, 2.0
+  function <?> line 836-906 params=5 ups=1 stack=37
+    strings: 'GetRoot', 'HotkeyPanel', 'GetSelHotkey', 'GetParent', 'aGroup', 'nGroupIndex', 'key', 'nIndex', 'Hotkey', 'ipairs', 'nKey', 'bShift', 'bCtrl', 'bAlt', 'uContextHash', 'bUnchangeable', 'Tip', 'FormatString', 'g_tStrings', 'STR_HOTKEY_UNCHANGEDABLE'
+    numbers: 1.0, 2.0, 0.0
+    globals: FormatString, GetKeyShow, Hotkey, HotkeyPanel, g_tStrings, ipairs
+  function <?> line 908-928 params=1 ups=0 stack=11
+    strings: 'Hotkey', 'SetCapture', 'GetItemCount', 'Lookup', 'bBinding', 'Handle_Key1', 'bSel', 'HotkeyPanel', 'UpdateBtnState', 'Handle_Key2'
+    numbers: 1.0, 0.0
+    globals: Hotkey, HotkeyPanel
+  function <?> line 930-939 params=2 ups=0 stack=10
+    strings: 'GetItemCount', 'Lookup', 'szGroup'
+    numbers: 0.0, 1.0
+  function <?> line 945-950 params=4 ups=0 stack=11
+    strings: 'Station', 'Lookup', 'Topmost/HotkeyPanel', 'IsVisible', 'HotkeyPanel', 'SetCurrentHotkey', '', 'Handle_Hotkey'
+    numbers: 0.0
+    globals: HotkeyPanel, Station
+  function <?> line 952-957 params=0 ups=0 stack=6
+    strings: 'Station', 'Lookup', 'Topmost/HotkeyPanel', 'IsVisible', 'HotkeyPanel', 'CancelSetHotkey', '', 'Handle_Hotkey'
+    globals: HotkeyPanel, Station
+  function <?> line 959-983 params=3 ups=1 stack=11
+    strings: 'IsHotkeyPanelOpened', 'Wnd', 'OpenWindow', 'HotkeyPanel', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'OpenFrame', 'Lookup', '', 'Handle_List', 'type', 'string', 'GetGroup', 'ExecuteWithThis', 'OnItemLButtonDown', 'Scroll_List', 'ScrollToSelect'
+    globals: ExecuteWithThis, HotkeyPanel, IsHotkeyPanelOpened, PlaySound, SOUND, ScrollToSelect, Wnd, g_sound, type
+  function <?> line 985-1007 params=1 ups=1 stack=5
+    strings: 'Hotkey', 'SetCapture', 'IsHotkeyPanelOpened', 'FireDataAnalysisEvent', 'FIRST_SET_SHOTCUT', 'HotkeyPanel', 'tInitKeys', 'Wnd', 'CloseWindow', 'Hotkey_MsgBox', 'IsOpened', 'Close', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'CloseFrame'
+    globals: FireDataAnalysisEvent, Hotkey, HotkeyPanel, Hotkey_MsgBox, IsHotkeyPanelOpened, PlaySound, SOUND, Wnd, g_sound
+  function <?> line 1009-1015 params=0 ups=0 stack=3
+    strings: 'Station', 'Lookup', 'Topmost/HotkeyPanel', 'IsVisible'
+    globals: Station
+  function <?> line 1017-1027 params=0 ups=0 stack=14
+    strings: 'StorageServer', 'GetData', 'Hotkey_Count', 'Hotkey', 'table', 'insert', 'ConvertLoadFromLua'
+    numbers: 0.0, 1.0
+    globals: Hotkey, StorageServer, table
+  function <?> line 1029-1047 params=2 ups=0 stack=14
+    strings: 'ipairs', 'GetKeyValue', 'szKey', 'Hotkey', 'IsSavedInAdd', 'szCommand', 'nKeyIndex', 'Set', 'HotkeyPanel', 'SaveToServer'
+    globals: GetKeyValue, Hotkey, HotkeyPanel, ipairs
+  function <?> line 1049-1064 params=2 ups=1 stack=8
+    strings: 'StorageServer', 'GetData', 'Hotkey_Version', 'szCommand', 'TURNLEFT', 'nKeyIndex', 'szKey', 'A', 'TURNRIGHT', 'D', 'STRAFELEFT', 'Q', 'STRAFERIGHT', 'E', 'HotkeyPanel', 'CheckAndSaveOldHotkey', 'SetData'
+    numbers: 1.0
+    globals: HotkeyPanel, StorageServer
+  function <?> line 1066-1095 params=0 ups=1 stack=7
+    strings: 'HotkeyPanel', 'nVersion', 'SaveConfig', 'Hotkey', 'Get', 'AUTOINTERACT', 'Set', 'GetKeyValue', 'F', 'SaveToServer', 'StorageServer', 'SetData', 'Hotkey_NewMode', 'ExchangeToContext'
+    numbers: 0.0, 1.0, 2.0, 4.0, 5.0
+    globals: GetKeyValue, Hotkey, HotkeyPanel, StorageServer
+  function <?> line 1097-1104 params=1 ups=0 stack=5
+    strings: 'GetUserDataPath', '\\hotkey_add.txt', 'IsFileExist', 'Hotkey', 'ConvertLoadFromFile'
+    globals: GetUserDataPath, Hotkey, IsFileExist
+  function <?> line 1106-1136 params=1 ups=3 stack=15
+    strings: 'Hotkey', 'LoadDefault', 'HotkeyPanel', 'bSaveToServer', 'GetUserDataPath', '\\hotkey_newadd.txt', 'IsFileExist', 'LoadAsAdd', 'StorageServer', 'GetData', 'Hotkey_Count', 'math', 'min', 'SaveToServer', 'table', 'insert', 'LoadFromLuaAsAdd'
+    numbers: 0.0, 1.0
+    globals: GetUserDataPath, Hotkey, HotkeyPanel, IsFileExist, StorageServer, math, table
+  function <?> line 1138-1143 params=0 ups=1 stack=3
+    strings: 'UnRegisterEvent', 'FIRST_LOADING_END', 'OnLoadingEnd', 'HotkeyPanel', 'LoadSetting', 'Log', 'HotkeyPanel Initialize end'
+    globals: HotkeyPanel, Log, OnLoadingEnd, UnRegisterEvent
+  function <?> line 1149-1153 params=0 ups=0 stack=4
+    strings: 'this', 'RegisterEvent', 'UI_SCALED', 'Hotkey_MsgBox', 'UpdateAnchor', 'Lookup', '', 'Text_Back', 'SetText', 'g_tStrings', 'STR_RESTORE_HK_DFT'
+    globals: Hotkey_MsgBox, g_tStrings, this
+  function <?> line 1155-1159 params=1 ups=0 stack=3
+    strings: 'UI_SCALED', 'Hotkey_MsgBox', 'UpdateAnchor', 'this'
+    globals: Hotkey_MsgBox, this
+  function <?> line 1161-1164 params=1 ups=0 stack=9
+    strings: 'SetPoint', 'CENTER', 'CorrectPos'
+    numbers: 0.0, -100.0
+  function <?> line 1166-1190 params=0 ups=0 stack=7
+    strings: 'this', 'GetName', 'Btn_Option1', 'Station', 'Lookup', 'Topmost/HotkeyPanel', 'IsVisible', 'GetRoot', '', 'Text_Back', 'MenuValue', 'HotkeyPanel', 'Init', 'Hotkey', 'LoadDefault', 'LoadAsAdd', 'LoadSetting', 'SetChanged', 'Wnd', 'CloseWindow'
+    globals: Hotkey, HotkeyPanel, Hotkey_MsgBox, PopupMenuEx, Station, Wnd, this
+  function <?> line 1192-1201 params=1 ups=0 stack=4
+    strings: 'Hotkey_MsgBox', 'IsOpened', 'Wnd', 'OpenWindow', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'OpenFrame'
+    globals: Hotkey_MsgBox, PlaySound, SOUND, Wnd, g_sound
+  function <?> line 1203-1208 params=1 ups=0 stack=4
+    strings: 'Wnd', 'CloseWindow', 'Hotkey_MsgBox', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'CloseFrame'
+    globals: PlaySound, SOUND, Wnd, g_sound
+  function <?> line 1210-1215 params=0 ups=0 stack=3
+    strings: 'Station', 'Lookup', 'Topmost/Hotkey_MsgBox', 'IsVisible'
+    globals: Station

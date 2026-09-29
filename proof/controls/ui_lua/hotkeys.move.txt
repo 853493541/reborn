@@ -1,0 +1,933 @@
+
+===== function 0 | line 0-0 | params=0 nups=0 stack=68 =====
+pc=   0 L0     LOADK     A=0   B=0    C=0    100.0
+pc=   1 L0     LOADK     A=1   B=0    C=1    'jpg'
+pc=   2 L0     NEWTABLE  A=2   B=0    C=0    
+pc=   3 L0     NEWTABLE  A=3   B=0    C=0    
+pc=   4 L0     NEWTABLE  A=4   B=0    C=0    
+pc=   5 L0     NEWTABLE  A=5   B=0    C=0    
+pc=   6 L0     LOADNIL   A=6   B=6    C=0    
+pc=   7 L0     GETGLOBAL A=7   B=0    C=2    'string'
+pc=   8 L0     GETTABLE  A=7   B=7    C=259  R7 K3('byte')
+pc=   9 L0     LOADK     A=8   B=0    C=4    59149.0
+pc=  10 L0     LOADK     A=9   B=0    C=5    37891.0
+pc=  11 L0     CLOSURE   A=10  B=0    C=0    proto 0
+pc=  12 L0     CLOSURE   A=11  B=0    C=1    proto 1
+pc=  13 L0     CLOSURE   A=12  B=0    C=2    proto 2
+pc=  14 L0     MOVE      A=0   B=10   C=0    
+pc=  15 L0     LOADNIL   A=13  B=13   C=0    
+pc=  16 L0     CLOSURE   A=14  B=0    C=3    proto 3
+pc=  17 L0     MOVE      A=0   B=11   C=0    
+pc=  18 L0     CLOSURE   A=15  B=0    C=4    proto 4
+pc=  19 L0     MOVE      A=0   B=12   C=0    
+pc=  20 L0     CLOSURE   A=16  B=0    C=5    proto 5
+pc=  21 L0     MOVE      A=0   B=13   C=0    
+pc=  22 L0     MOVE      A=0   B=12   C=0    
+pc=  23 L0     MOVE      A=0   B=2    C=0    
+pc=  24 L0     MOVE      A=0   B=14   C=0    
+pc=  25 L0     NEWTABLE  A=17  B=15   C=0    
+pc=  26 L0     NEWTABLE  A=18  B=0    C=4    
+pc=  27 L0     SETTABLE  A=18  B=262  C=263  K6('szKey') K7('Coures')
+pc=  28 L0     SETTABLE  A=18  B=264  C=263  K8('szTrackName') K7('Coures')
+pc=  29 L0     CLOSURE   A=19  B=0    C=6    proto 6
+pc=  30 L0     SETTABLE  A=18  B=265  C=19   K9('fnCondition') R19
+pc=  31 L0     CLOSURE   A=19  B=0    C=7    proto 7
+pc=  32 L0     SETTABLE  A=18  B=266  C=19   K10('fnAction') R19
+pc=  33 L0     NEWTABLE  A=19  B=0    C=4    
+pc=  34 L0     SETTABLE  A=19  B=262  C=267  K6('szKey') K11('QuestionnairePanel')
+pc=  35 L0     SETTABLE  A=19  B=264  C=267  K8('szTrackName') K11('QuestionnairePanel')
+pc=  36 L0     CLOSURE   A=20  B=0    C=8    proto 8
+pc=  37 L0     SETTABLE  A=19  B=265  C=20   K9('fnCondition') R20
+pc=  38 L0     CLOSURE   A=20  B=0    C=9    proto 9
+pc=  39 L0     SETTABLE  A=19  B=266  C=20   K10('fnAction') R20
+pc=  40 L0     NEWTABLE  A=20  B=0    C=4    
+pc=  41 L0     SETTABLE  A=20  B=262  C=268  K6('szKey') K12('OperationRules')
+pc=  42 L0     SETTABLE  A=20  B=264  C=268  K8('szTrackName') K12('OperationRules')
+pc=  43 L0     CLOSURE   A=21  B=0    C=10   proto 10
+pc=  44 L0     SETTABLE  A=20  B=265  C=21   K9('fnCondition') R21
+pc=  45 L0     CLOSURE   A=21  B=0    C=11   proto 11
+pc=  46 L0     SETTABLE  A=20  B=266  C=21   K10('fnAction') R21
+pc=  47 L0     NEWTABLE  A=21  B=0    C=4    
+pc=  48 L0     SETTABLE  A=21  B=262  C=269  K6('szKey') K13('OperationCenter')
+pc=  49 L0     SETTABLE  A=21  B=264  C=269  K8('szTrackName') K13('OperationCenter')
+pc=  50 L0     CLOSURE   A=22  B=0    C=12   proto 12
+pc=  51 L0     SETTABLE  A=21  B=265  C=22   K9('fnCondition') R22
+pc=  52 L0     CLOSURE   A=22  B=0    C=13   proto 13
+pc=  53 L0     SETTABLE  A=21  B=266  C=22   K10('fnAction') R22
+pc=  54 L0     NEWTABLE  A=22  B=0    C=4    
+pc=  55 L0     SETTABLE  A=22  B=262  C=270  K6('szKey') K14('Cyclopaedia')
+pc=  56 L0     SETTABLE  A=22  B=264  C=270  K8('szTrackName') K14('Cyclopaedia')
+pc=  57 L0     CLOSURE   A=23  B=0    C=14   proto 14
+pc=  58 L0     SETTABLE  A=22  B=265  C=23   K9('fnCondition') R23
+pc=  59 L0     CLOSURE   A=23  B=0    C=15   proto 15
+pc=  60 L0     SETTABLE  A=22  B=266  C=23   K10('fnAction') R23
+pc=  61 L0     NEWTABLE  A=23  B=0    C=4    
+pc=  62 L0     SETTABLE  A=23  B=262  C=271  K6('szKey') K15('ActivityList')
+pc=  63 L0     SETTABLE  A=23  B=264  C=271  K8('szTrackName') K15('ActivityList')
+pc=  64 L0     CLOSURE   A=24  B=0    C=16   proto 16
+pc=  65 L0     SETTABLE  A=23  B=265  C=24   K9('fnCondition') R24
+pc=  66 L0     CLOSURE   A=24  B=0    C=17   proto 17
+pc=  67 L0     SETTABLE  A=23  B=266  C=24   K10('fnAction') R24
+pc=  68 L0     NEWTABLE  A=24  B=0    C=4    
+pc=  69 L0     SETTABLE  A=24  B=262  C=272  K6('szKey') K16('EquipInquire')
+pc=  70 L0     SETTABLE  A=24  B=264  C=272  K8('szTrackName') K16('EquipInquire')
+pc=  71 L0     CLOSURE   A=25  B=0    C=18   proto 18
+pc=  72 L0     SETTABLE  A=24  B=265  C=25   K9('fnCondition') R25
+pc=  73 L0     CLOSURE   A=25  B=0    C=19   proto 19
+pc=  74 L0     SETTABLE  A=24  B=266  C=25   K10('fnAction') R25
+pc=  75 L0     NEWTABLE  A=25  B=0    C=4    
+pc=  76 L0     SETTABLE  A=25  B=262  C=273  K6('szKey') K17('TongArena')
+pc=  77 L0     SETTABLE  A=25  B=264  C=273  K8('szTrackName') K17('TongArena')
+pc=  78 L0     CLOSURE   A=26  B=0    C=20   proto 20
+pc=  79 L0     SETTABLE  A=25  B=265  C=26   K9('fnCondition') R26
+pc=  80 L0     CLOSURE   A=26  B=0    C=21   proto 21
+pc=  81 L0     SETTABLE  A=25  B=266  C=26   K10('fnAction') R26
+pc=  82 L0     NEWTABLE  A=26  B=0    C=4    
+pc=  83 L0     SETTABLE  A=26  B=262  C=274  K6('szKey') K18('GMPanel')
+pc=  84 L0     SETTABLE  A=26  B=264  C=274  K8('szTrackName') K18('GMPanel')
+pc=  85 L0     CLOSURE   A=27  B=0    C=22   proto 22
+pc=  86 L0     SETTABLE  A=26  B=265  C=27   K9('fnCondition') R27
+pc=  87 L0     CLOSURE   A=27  B=0    C=23   proto 23
+pc=  88 L0     SETTABLE  A=26  B=266  C=27   K10('fnAction') R27
+pc=  89 L0     NEWTABLE  A=27  B=0    C=4    
+pc=  90 L0     SETTABLE  A=27  B=262  C=275  K6('szKey') K19('ExaminationPanel')
+pc=  91 L0     SETTABLE  A=27  B=264  C=275  K8('szTrackName') K19('ExaminationPanel')
+pc=  92 L0     CLOSURE   A=28  B=0    C=24   proto 24
+pc=  93 L0     SETTABLE  A=27  B=265  C=28   K9('fnCondition') R28
+pc=  94 L0     CLOSURE   A=28  B=0    C=25   proto 25
+pc=  95 L0     SETTABLE  A=27  B=266  C=28   K10('fnAction') R28
+pc=  96 L0     NEWTABLE  A=28  B=0    C=4    
+pc=  97 L0     SETTABLE  A=28  B=262  C=276  K6('szKey') K20('FishPanel')
+pc=  98 L0     SETTABLE  A=28  B=264  C=276  K8('szTrackName') K20('FishPanel')
+pc=  99 L0     CLOSURE   A=29  B=0    C=26   proto 26
+pc= 100 L0     SETTABLE  A=28  B=265  C=29   K9('fnCondition') R29
+pc= 101 L0     CLOSURE   A=29  B=0    C=27   proto 27
+pc= 102 L0     SETTABLE  A=28  B=266  C=29   K10('fnAction') R29
+pc= 103 L0     NEWTABLE  A=29  B=0    C=4    
+pc= 104 L0     SETTABLE  A=29  B=262  C=277  K6('szKey') K21('TongFarmPanel')
+pc= 105 L0     SETTABLE  A=29  B=264  C=277  K8('szTrackName') K21('TongFarmPanel')
+pc= 106 L0     CLOSURE   A=30  B=0    C=28   proto 28
+pc= 107 L0     SETTABLE  A=29  B=265  C=30   K9('fnCondition') R30
+pc= 108 L0     CLOSURE   A=30  B=0    C=29   proto 29
+pc= 109 L0     SETTABLE  A=29  B=266  C=30   K10('fnAction') R30
+pc= 110 L0     NEWTABLE  A=30  B=0    C=4    
+pc= 111 L0     SETTABLE  A=30  B=262  C=278  K6('szKey') K22('PayPathPanel')
+pc= 112 L0     SETTABLE  A=30  B=264  C=278  K8('szTrackName') K22('PayPathPanel')
+pc= 113 L0     CLOSURE   A=31  B=0    C=30   proto 30
+pc= 114 L0     SETTABLE  A=30  B=265  C=31   K9('fnCondition') R31
+pc= 115 L0     CLOSURE   A=31  B=0    C=31   proto 31
+pc= 116 L0     SETTABLE  A=30  B=266  C=31   K10('fnAction') R31
+pc= 117 L0     NEWTABLE  A=31  B=0    C=4    
+pc= 118 L0     SETTABLE  A=31  B=262  C=279  K6('szKey') K23('GuildListPanel')
+pc= 119 L0     SETTABLE  A=31  B=264  C=279  K8('szTrackName') K23('GuildListPanel')
+pc= 120 L0     CLOSURE   A=32  B=0    C=32   proto 32
+pc= 121 L0     SETTABLE  A=31  B=265  C=32   K9('fnCondition') R32
+pc= 122 L0     CLOSURE   A=32  B=0    C=33   proto 33
+pc= 123 L0     SETTABLE  A=31  B=266  C=32   K10('fnAction') R32
+pc= 124 L0     NEWTABLE  A=32  B=0    C=4    
+pc= 125 L0     SETTABLE  A=32  B=262  C=280  K6('szKey') K24('GuildMainPanel')
+pc= 126 L0     SETTABLE  A=32  B=264  C=280  K8('szTrackName') K24('GuildMainPanel')
+pc= 127 L0     CLOSURE   A=33  B=0    C=34   proto 34
+pc= 128 L0     SETTABLE  A=32  B=265  C=33   K9('fnCondition') R33
+pc= 129 L0     CLOSURE   A=33  B=0    C=35   proto 35
+pc= 130 L0     SETTABLE  A=32  B=266  C=33   K10('fnAction') R33
+pc= 131 L0     SETLIST   A=17  B=15   C=1    
+pc= 132 L0     MOVE      A=13  B=17   C=0    
+pc= 133 L0     NEWTABLE  A=17  B=49   C=0    
+pc= 134 L0     LOADK     A=18  B=0    C=26   'LButton'
+pc= 135 L0     LOADK     A=19  B=0    C=27   'RButton'
+pc= 136 L0     LOADK     A=20  B=0    C=28   'Cancel'
+pc= 137 L0     LOADK     A=21  B=0    C=29   'MButton'
+pc= 138 L0     LOADK     A=22  B=0    C=30   'XButton1'
+pc= 139 L0     LOADK     A=23  B=0    C=31   'XButton2'
+pc= 140 L0     LOADK     A=24  B=0    C=32   ''
+pc= 141 L0     LOADK     A=25  B=0    C=33   'Backspace'
+pc= 142 L0     LOADK     A=26  B=0    C=34   'Tab'
+pc= 143 L0     LOADK     A=27  B=0    C=32   ''
+pc= 144 L0     LOADK     A=28  B=0    C=32   ''
+pc= 145 L0     LOADK     A=29  B=0    C=35   'Clear'
+pc= 146 L0     LOADK     A=30  B=0    C=36   'Enter'
+pc= 147 L0     LOADK     A=31  B=0    C=32   ''
+pc= 148 L0     LOADK     A=32  B=0    C=32   ''
+pc= 149 L0     LOADK     A=33  B=0    C=37   'Shift'
+pc= 150 L0     LOADK     A=34  B=0    C=38   'Ctrl'
+pc= 151 L0     LOADK     A=35  B=0    C=39   'Alt'
+pc= 152 L0     LOADK     A=36  B=0    C=40   'Pause'
+pc= 153 L0     LOADK     A=37  B=0    C=41   'CapLock'
+pc= 154 L0     LOADK     A=38  B=0    C=42   'Hanguel'
+pc= 155 L0     LOADK     A=39  B=0    C=32   ''
+pc= 156 L0     LOADK     A=40  B=0    C=43   'Junja'
+pc= 157 L0     LOADK     A=41  B=0    C=44   'Final'
+pc= 158 L0     LOADK     A=42  B=0    C=45   'Kanji'
+pc= 159 L0     LOADK     A=43  B=0    C=32   ''
+pc= 160 L0     LOADK     A=44  B=0    C=46   'Esc'
+pc= 161 L0     LOADK     A=45  B=0    C=47   'Convert'
+pc= 162 L0     LOADK     A=46  B=0    C=48   'NonConvert'
+pc= 163 L0     LOADK     A=47  B=0    C=49   'Accept'
+pc= 164 L0     LOADK     A=48  B=0    C=50   'ModeChange'
+pc= 165 L0     LOADK     A=49  B=0    C=51   'Space'
+pc= 166 L0     LOADK     A=50  B=0    C=52   'PageUp'
+pc= 167 L0     LOADK     A=51  B=0    C=53   'PageDown'
+pc= 168 L0     LOADK     A=52  B=0    C=54   'End'
+pc= 169 L0     LOADK     A=53  B=0    C=55   'Home'
+pc= 170 L0     LOADK     A=54  B=0    C=56   'Left'
+pc= 171 L0     LOADK     A=55  B=0    C=57   'Up'
+pc= 172 L0     LOADK     A=56  B=0    C=58   'Right'
+pc= 173 L0     LOADK     A=57  B=0    C=59   'Down'
+pc= 174 L0     LOADK     A=58  B=0    C=60   'Select'
+pc= 175 L0     LOADK     A=59  B=0    C=61   'Print'
+pc= 176 L0     LOADK     A=60  B=0    C=62   'Execute'
+pc= 177 L0     LOADK     A=61  B=0    C=63   'PrintScreen'
+pc= 178 L0     LOADK     A=62  B=0    C=64   'Insert'
+pc= 179 L0     LOADK     A=63  B=0    C=65   'Delete'
+pc= 180 L0     LOADK     A=64  B=0    C=66   'Help'
+pc= 181 L0     LOADK     A=65  B=0    C=67   '0'
+pc= 182 L0     LOADK     A=66  B=0    C=68   '1'
+pc= 183 L0     LOADK     A=67  B=0    C=69   '2'
+pc= 184 L0     SETLIST   A=17  B=50   C=1    
+pc= 185 L0     LOADK     A=18  B=0    C=70   '3'
+pc= 186 L0     LOADK     A=19  B=0    C=71   '4'
+pc= 187 L0     LOADK     A=20  B=0    C=72   '5'
+pc= 188 L0     LOADK     A=21  B=0    C=73   '6'
+pc= 189 L0     LOADK     A=22  B=0    C=74   '7'
+pc= 190 L0     LOADK     A=23  B=0    C=75   '8'
+pc= 191 L0     LOADK     A=24  B=0    C=76   '9'
+pc= 192 L0     LOADK     A=25  B=0    C=32   ''
+pc= 193 L0     LOADK     A=26  B=0    C=32   ''
+pc= 194 L0     LOADK     A=27  B=0    C=32   ''
+pc= 195 L0     LOADK     A=28  B=0    C=32   ''
+pc= 196 L0     LOADK     A=29  B=0    C=32   ''
+pc= 197 L0     LOADK     A=30  B=0    C=32   ''
+pc= 198 L0     LOADK     A=31  B=0    C=32   ''
+pc= 199 L0     LOADK     A=32  B=0    C=77   'A'
+pc= 200 L0     LOADK     A=33  B=0    C=78   'B'
+pc= 201 L0     LOADK     A=34  B=0    C=79   'C'
+pc= 202 L0     LOADK     A=35  B=0    C=80   'D'
+pc= 203 L0     LOADK     A=36  B=0    C=81   'E'
+pc= 204 L0     LOADK     A=37  B=0    C=82   'F'
+pc= 205 L0     LOADK     A=38  B=0    C=83   'G'
+pc= 206 L0     LOADK     A=39  B=0    C=84   'H'
+pc= 207 L0     LOADK     A=40  B=0    C=85   'I'
+pc= 208 L0     LOADK     A=41  B=0    C=86   'J'
+pc= 209 L0     LOADK     A=42  B=0    C=87   'K'
+pc= 210 L0     LOADK     A=43  B=0    C=88   'L'
+pc= 211 L0     LOADK     A=44  B=0    C=89   'M'
+pc= 212 L0     LOADK     A=45  B=0    C=90   'N'
+pc= 213 L0     LOADK     A=46  B=0    C=91   'O'
+pc= 214 L0     LOADK     A=47  B=0    C=92   'P'
+pc= 215 L0     LOADK     A=48  B=0    C=93   'Q'
+pc= 216 L0     LOADK     A=49  B=0    C=94   'R'
+pc= 217 L0     LOADK     A=50  B=0    C=95   'S'
+pc= 218 L0     LOADK     A=51  B=0    C=96   'T'
+pc= 219 L0     LOADK     A=52  B=0    C=97   'U'
+pc= 220 L0     LOADK     A=53  B=0    C=98   'V'
+pc= 221 L0     LOADK     A=54  B=0    C=99   'W'
+pc= 222 L0     LOADK     A=55  B=0    C=100  'X'
+pc= 223 L0     LOADK     A=56  B=0    C=101  'Y'
+pc= 224 L0     LOADK     A=57  B=0    C=102  'Z'
+pc= 225 L0     LOADK     A=58  B=0    C=103  'LWin'
+pc= 226 L0     LOADK     A=59  B=0    C=104  'RWin'
+pc= 227 L0     LOADK     A=60  B=0    C=105  'Apps'
+pc= 228 L0     LOADK     A=61  B=0    C=32   ''
+pc= 229 L0     LOADK     A=62  B=0    C=32   ''
+pc= 230 L0     LOADK     A=63  B=0    C=106  'Num0'
+pc= 231 L0     LOADK     A=64  B=0    C=107  'Num1'
+pc= 232 L0     LOADK     A=65  B=0    C=108  'Num2'
+pc= 233 L0     LOADK     A=66  B=0    C=109  'Num3'
+pc= 234 L0     LOADK     A=67  B=0    C=110  'Num4'
+pc= 235 L0     SETLIST   A=17  B=50   C=2    
+pc= 236 L0     LOADK     A=18  B=0    C=111  'Num5'
+pc= 237 L0     LOADK     A=19  B=0    C=112  'Num6'
+pc= 238 L0     LOADK     A=20  B=0    C=113  'Num7'
+pc= 239 L0     LOADK     A=21  B=0    C=114  'Num8'
+pc= 240 L0     LOADK     A=22  B=0    C=115  'Num9'
+pc= 241 L0     LOADK     A=23  B=0    C=116  'Multiply'
+pc= 242 L0     LOADK     A=24  B=0    C=117  'Add'
+pc= 243 L0     LOADK     A=25  B=0    C=118  'Separator'
+pc= 244 L0     LOADK     A=26  B=0    C=119  'Subtract'
+pc= 245 L0     LOADK     A=27  B=0    C=120  'Decimal'
+pc= 246 L0     LOADK     A=28  B=0    C=121  'Divide'
+pc= 247 L0     LOADK     A=29  B=0    C=122  'F1'
+pc= 248 L0     LOADK     A=30  B=0    C=123  'F2'
+pc= 249 L0     LOADK     A=31  B=0    C=124  'F3'
+pc= 250 L0     LOADK     A=32  B=0    C=125  'F4'
+pc= 251 L0     LOADK     A=33  B=0    C=126  'F5'
+pc= 252 L0     LOADK     A=34  B=0    C=127  'F6'
+pc= 253 L0     LOADK     A=35  B=0    C=128  'F7'
+pc= 254 L0     LOADK     A=36  B=0    C=129  'F8'
+pc= 255 L0     LOADK     A=37  B=0    C=130  'F9'
+pc= 256 L0     LOADK     A=38  B=0    C=131  'F10'
+pc= 257 L0     LOADK     A=39  B=0    C=132  'F11'
+pc= 258 L0     LOADK     A=40  B=0    C=133  'F12'
+pc= 259 L0     LOADK     A=41  B=0    C=134  'F13'
+pc= 260 L0     LOADK     A=42  B=0    C=135  'F14'
+pc= 261 L0     LOADK     A=43  B=0    C=136  'F15'
+pc= 262 L0     LOADK     A=44  B=0    C=137  'F16'
+pc= 263 L0     LOADK     A=45  B=0    C=138  'F17'
+pc= 264 L0     LOADK     A=46  B=0    C=139  'F18'
+pc= 265 L0     LOADK     A=47  B=0    C=140  'F19'
+pc= 266 L0     LOADK     A=48  B=0    C=141  'F20'
+pc= 267 L0     LOADK     A=49  B=0    C=142  'F21'
+pc= 268 L0     LOADK     A=50  B=0    C=143  'F22'
+pc= 269 L0     LOADK     A=51  B=0    C=144  'F23'
+pc= 270 L0     LOADK     A=52  B=0    C=145  'F24'
+pc= 271 L0     LOADK     A=53  B=0    C=32   ''
+pc= 272 L0     LOADK     A=54  B=0    C=32   ''
+pc= 273 L0     LOADK     A=55  B=0    C=32   ''
+pc= 274 L0     LOADK     A=56  B=0    C=32   ''
+pc= 275 L0     LOADK     A=57  B=0    C=32   ''
+pc= 276 L0     LOADK     A=58  B=0    C=32   ''
+pc= 277 L0     LOADK     A=59  B=0    C=32   ''
+pc= 278 L0     LOADK     A=60  B=0    C=32   ''
+pc= 279 L0     LOADK     A=61  B=0    C=146  'NumLock'
+pc= 280 L0     LOADK     A=62  B=0    C=147  'ScrollLock'
+pc= 281 L0     LOADK     A=63  B=0    C=32   ''
+pc= 282 L0     LOADK     A=64  B=0    C=32   ''
+pc= 283 L0     LOADK     A=65  B=0    C=32   ''
+pc= 284 L0     LOADK     A=66  B=0    C=32   ''
+pc= 285 L0     LOADK     A=67  B=0    C=32   ''
+pc= 286 L0     SETLIST   A=17  B=50   C=3    
+pc= 287 L0     LOADK     A=18  B=0    C=32   ''
+pc= 288 L0     LOADK     A=19  B=0    C=32   ''
+pc= 289 L0     LOADK     A=20  B=0    C=32   ''
+pc= 290 L0     LOADK     A=21  B=0    C=32   ''
+pc= 291 L0     LOADK     A=22  B=0    C=32   ''
+pc= 292 L0     LOADK     A=23  B=0    C=32   ''
+pc= 293 L0     LOADK     A=24  B=0    C=32   ''
+pc= 294 L0     LOADK     A=25  B=0    C=32   ''
+pc= 295 L0     LOADK     A=26  B=0    C=32   ''
+pc= 296 L0     LOADK     A=27  B=0    C=32   ''
+pc= 297 L0     LOADK     A=28  B=0    C=32   ''
+pc= 298 L0     LOADK     A=29  B=0    C=32   ''
+pc= 299 L0     LOADK     A=30  B=0    C=32   ''
+pc= 300 L0     LOADK     A=31  B=0    C=32   ''
+pc= 301 L0     LOADK     A=32  B=0    C=32   ''
+pc= 302 L0     LOADK     A=33  B=0    C=148  'BrowserBack'
+pc= 303 L0     LOADK     A=34  B=0    C=149  'BrowserForward'
+pc= 304 L0     LOADK     A=35  B=0    C=150  'BrowserRefresh'
+pc= 305 L0     LOADK     A=36  B=0    C=151  'BrowserStop'
+pc= 306 L0     LOADK     A=37  B=0    C=152  'BrowserSearch'
+pc= 307 L0     LOADK     A=38  B=0    C=153  'BrowserFavorites'
+pc= 308 L0     LOADK     A=39  B=0    C=154  'BrowserHome'
+pc= 309 L0     LOADK     A=40  B=0    C=155  'VolumeMute'
+pc= 310 L0     LOADK     A=41  B=0    C=156  'VolumeDown'
+pc= 311 L0     LOADK     A=42  B=0    C=157  'VolumeUp'
+pc= 312 L0     LOADK     A=43  B=0    C=158  'MediaNextTrack'
+pc= 313 L0     LOADK     A=44  B=0    C=159  'MediaPrevTrack'
+pc= 314 L0     LOADK     A=45  B=0    C=160  'MediaStop'
+pc= 315 L0     LOADK     A=46  B=0    C=161  'MediaPlayPause'
+pc= 316 L0     LOADK     A=47  B=0    C=162  'LaunchMail'
+pc= 317 L0     LOADK     A=48  B=0    C=163  'LaunchMediaSelect'
+pc= 318 L0     LOADK     A=49  B=0    C=164  'LaunchApp1'
+pc= 319 L0     LOADK     A=50  B=0    C=165  'LaunchApp2'
+pc= 320 L0     LOADK     A=51  B=0    C=32   ''
+pc= 321 L0     LOADK     A=52  B=0    C=32   ''
+pc= 322 L0     LOADK     A=53  B=0    C=166  'OEM1'
+pc= 323 L0     LOADK     A=54  B=0    C=167  'OEMPlus'
+pc= 324 L0     LOADK     A=55  B=0    C=168  'OEMComma'
+pc= 325 L0     LOADK     A=56  B=0    C=169  'OEMMinus'
+pc= 326 L0     LOADK     A=57  B=0    C=170  'OEMPeriod'
+pc= 327 L0     LOADK     A=58  B=0    C=171  'OEM2'
+pc= 328 L0     LOADK     A=59  B=0    C=172  'OEM3'
+pc= 329 L0     LOADK     A=60  B=0    C=32   ''
+pc= 330 L0     LOADK     A=61  B=0    C=32   ''
+pc= 331 L0     LOADK     A=62  B=0    C=32   ''
+pc= 332 L0     LOADK     A=63  B=0    C=32   ''
+pc= 333 L0     LOADK     A=64  B=0    C=32   ''
+pc= 334 L0     LOADK     A=65  B=0    C=32   ''
+pc= 335 L0     LOADK     A=66  B=0    C=32   ''
+pc= 336 L0     LOADK     A=67  B=0    C=32   ''
+pc= 337 L0     SETLIST   A=17  B=50   C=4    
+pc= 338 L0     LOADK     A=18  B=0    C=32   ''
+pc= 339 L0     LOADK     A=19  B=0    C=32   ''
+pc= 340 L0     LOADK     A=20  B=0    C=32   ''
+pc= 341 L0     LOADK     A=21  B=0    C=32   ''
+pc= 342 L0     LOADK     A=22  B=0    C=32   ''
+pc= 343 L0     LOADK     A=23  B=0    C=32   ''
+pc= 344 L0     LOADK     A=24  B=0    C=32   ''
+pc= 345 L0     LOADK     A=25  B=0    C=32   ''
+pc= 346 L0     LOADK     A=26  B=0    C=32   ''
+pc= 347 L0     LOADK     A=27  B=0    C=32   ''
+pc= 348 L0     LOADK     A=28  B=0    C=32   ''
+pc= 349 L0     LOADK     A=29  B=0    C=32   ''
+pc= 350 L0     LOADK     A=30  B=0    C=32   ''
+pc= 351 L0     LOADK     A=31  B=0    C=32   ''
+pc= 352 L0     LOADK     A=32  B=0    C=32   ''
+pc= 353 L0     LOADK     A=33  B=0    C=32   ''
+pc= 354 L0     LOADK     A=34  B=0    C=32   ''
+pc= 355 L0     LOADK     A=35  B=0    C=32   ''
+pc= 356 L0     LOADK     A=36  B=0    C=173  '['
+pc= 357 L0     LOADK     A=37  B=0    C=174  '\\'
+pc= 358 L0     LOADK     A=38  B=0    C=175  ']'
+pc= 359 L0     LOADK     A=39  B=0    C=176  "'"
+pc= 360 L0     LOADK     A=40  B=0    C=32   ''
+pc= 361 L0     LOADK     A=41  B=0    C=32   ''
+pc= 362 L0     LOADK     A=42  B=0    C=32   ''
+pc= 363 L0     LOADK     A=43  B=0    C=32   ''
+pc= 364 L0     LOADK     A=44  B=0    C=32   ''
+pc= 365 L0     LOADK     A=45  B=0    C=32   ''
+pc= 366 L0     LOADK     A=46  B=0    C=32   ''
+pc= 367 L0     LOADK     A=47  B=0    C=32   ''
+pc= 368 L0     LOADK     A=48  B=0    C=32   ''
+pc= 369 L0     LOADK     A=49  B=0    C=32   ''
+pc= 370 L0     LOADK     A=50  B=0    C=32   ''
+pc= 371 L0     LOADK     A=51  B=0    C=32   ''
+pc= 372 L0     LOADK     A=52  B=0    C=32   ''
+pc= 373 L0     LOADK     A=53  B=0    C=32   ''
+pc= 374 L0     LOADK     A=54  B=0    C=32   ''
+pc= 375 L0     LOADK     A=55  B=0    C=32   ''
+pc= 376 L0     LOADK     A=56  B=0    C=32   ''
+pc= 377 L0     LOADK     A=57  B=0    C=32   ''
+pc= 378 L0     LOADK     A=58  B=0    C=32   ''
+pc= 379 L0     LOADK     A=59  B=0    C=32   ''
+pc= 380 L0     LOADK     A=60  B=0    C=32   ''
+pc= 381 L0     LOADK     A=61  B=0    C=32   ''
+pc= 382 L0     LOADK     A=62  B=0    C=32   ''
+pc= 383 L0     LOADK     A=63  B=0    C=32   ''
+pc= 384 L0     LOADK     A=64  B=0    C=32   ''
+pc= 385 L0     LOADK     A=65  B=0    C=32   ''
+pc= 386 L0     LOADK     A=66  B=0    C=32   ''
+pc= 387 L0     LOADK     A=67  B=0    C=32   ''
+pc= 388 L0     SETLIST   A=17  B=50   C=5    
+pc= 389 L0     LOADK     A=18  B=0    C=32   ''
+pc= 390 L0     LOADK     A=19  B=0    C=32   ''
+pc= 391 L0     LOADK     A=20  B=0    C=32   ''
+pc= 392 L0     LOADK     A=21  B=0    C=32   ''
+pc= 393 L0     LOADK     A=22  B=0    C=32   ''
+pc= 394 L0     LOADK     A=23  B=0    C=177  'MouseWheelUp'
+pc= 395 L0     LOADK     A=24  B=0    C=178  'MouseWheelDown'
+pc= 396 L0     LOADK     A=25  B=0    C=179  'MouseHover'
+pc= 397 L0     LOADK     A=26  B=0    C=32   ''
+pc= 398 L0     SETLIST   A=17  B=9    C=6    
+pc= 399 L0     SETGLOBAL A=17  B=0    C=25   'g_aVKeyToDesc'
+pc= 400 L0     CLOSURE   A=17  B=0    C=36   proto 36
+pc= 401 L0     SETGLOBAL A=17  B=0    C=180  'IsKeyDoubleDown'
+pc= 402 L0     LOADNIL   A=17  B=19   C=0    
+pc= 403 L0     CLOSURE   A=20  B=0    C=37   proto 37
+pc= 404 L0     CLOSURE   A=21  B=0    C=38   proto 38
+pc= 405 L0     CLOSURE   A=22  B=0    C=39   proto 39
+pc= 406 L0     MOVE      A=0   B=17   C=0    
+pc= 407 L0     MOVE      A=0   B=18   C=0    
+pc= 408 L0     MOVE      A=0   B=19   C=0    
+pc= 409 L0     CLOSURE   A=23  B=0    C=40   proto 40
+pc= 410 L0     LOADNIL   A=24  B=25   C=0    
+pc= 411 L0     CLOSURE   A=26  B=0    C=41   proto 41
+pc= 412 L0     MOVE      A=0   B=24   C=0    
+pc= 413 L0     MOVE      A=0   B=25   C=0    
+pc= 414 L0     NEWTABLE  A=27  B=1    C=0    
+pc= 415 L0     GETGLOBAL A=28  B=0    C=181  'bForbidCastYCBX'
+pc= 416 L0     SETLIST   A=27  B=1    C=1    
+pc= 417 L0     CLOSURE   A=28  B=0    C=42   proto 42
+pc= 418 L0     MOVE      A=0   B=27   C=0    
+pc= 419 L0     SETGLOBAL A=28  B=0    C=182  'SetDisplacementSkillSetting'
+pc= 420 L0     CLOSURE   A=28  B=0    C=43   proto 43
+pc= 421 L0     MOVE      A=0   B=27   C=0    
+pc= 422 L0     SETGLOBAL A=28  B=0    C=183  'GetDisplacementSkillSetting'
+pc= 423 L0     NEWTABLE  A=28  B=0    C=1    
+pc= 424 L0     SETTABLE  A=28  B=440  C=441  K184('_vir') K185(True)
+pc= 425 L0     LOADNIL   A=29  B=29   C=0    
+pc= 426 L0     NEWTABLE  A=30  B=0    C=0    
+pc= 427 L0     CLOSURE   A=31  B=0    C=44   proto 44
+pc= 428 L0     MOVE      A=0   B=30   C=0    
+pc= 429 L0     MOVE      A=0   B=22   C=0    
+pc= 430 L0     MOVE      A=0   B=29   C=0    
+pc= 431 L0     MOVE      A=0   B=18   C=0    
+pc= 432 L0     MOVE      A=0   B=19   C=0    
+pc= 433 L0     MOVE      A=0   B=7    C=0    
+pc= 434 L0     MOVE      A=0   B=23   C=0    
+pc= 435 L0     MOVE      A=0   B=20   C=0    
+pc= 436 L0     MOVE      A=0   B=21   C=0    
+pc= 437 L0     MOVE      A=0   B=24   C=0    
+pc= 438 L0     MOVE      A=0   B=25   C=0    
+pc= 439 L0     MOVE      A=0   B=26   C=0    
+pc= 440 L0     MOVE      A=0   B=28   C=0    
+pc= 441 L0     SETGLOBAL A=31  B=0    C=186  'ResponseDisplacementHotkey'
+pc= 442 L0     GETGLOBAL A=31  B=0    C=187  'setmetatable'
+pc= 443 L0     NEWTABLE  A=32  B=0    C=0    
+pc= 444 L0     NEWTABLE  A=33  B=0    C=1    
+pc= 445 L0     CLOSURE   A=34  B=0    C=45   proto 45
+pc= 446 L0     SETTABLE  A=33  B=444  C=34   K188('__index') R34
+pc= 447 L0     CALL      A=31  B=3    C=2    args=2 ret=1
+pc= 448 L0     CLOSURE   A=32  B=0    C=46   proto 46
+pc= 449 L0     MOVE      A=0   B=31   C=0    
+pc= 450 L0     SETGLOBAL A=32  B=0    C=189  'ResponseWASDKey'
+pc= 451 L0     NEWTABLE  A=32  B=0    C=1    
+pc= 452 L0     SETTABLE  A=32  B=288  C=447  K32('') K191(0.0)
+pc= 453 L0     SETGLOBAL A=32  B=0    C=190  'g_aDescToVKey'
+pc= 454 L0     GETGLOBAL A=32  B=0    C=192  'pairs'
+pc= 455 L0     GETGLOBAL A=33  B=0    C=25   'g_aVKeyToDesc'
+pc= 456 L0     CALL      A=32  B=2    C=4    args=1 ret=3
+pc= 457 L0     JMP       A=0   B=256  C=3    to pc 462
+pc= 458 L0     EQ        A=1   B=36   C=288  R36 K32('')
+pc= 459 L0     JMP       A=0   B=256  C=1    to pc 462
+pc= 460 L0     GETGLOBAL A=37  B=0    C=190  'g_aDescToVKey'
+pc= 461 L0     SETTABLE  A=37  B=36   C=35   R36 R35
+pc= 462 L0     TFORLOOP  A=32  B=0    C=2    
+pc= 463 L0     JMP       A=0   B=255  C=505  to pc 458
+pc= 464 L0     CLOSURE   A=32  B=0    C=47   proto 47
+pc= 465 L0     SETGLOBAL A=32  B=0    C=193  'GetKeyValue'
+pc= 466 L0     CLOSURE   A=32  B=0    C=48   proto 48
+pc= 467 L0     SETGLOBAL A=32  B=0    C=194  'GetKeyName'
+pc= 468 L0     CLOSURE   A=32  B=0    C=49   proto 49
+pc= 469 L0     SETGLOBAL A=32  B=0    C=195  'IsSpaceKey'
+pc= 470 L0     CLOSURE   A=32  B=0    C=50   proto 50
+pc= 471 L0     SETGLOBAL A=32  B=0    C=196  'IsShiftKey'
+pc= 472 L0     CLOSURE   A=32  B=0    C=51   proto 51
+pc= 473 L0     SETGLOBAL A=32  B=0    C=197  'IsCtrlKey'
+pc= 474 L0     CLOSURE   A=32  B=0    C=52   proto 52
+pc= 475 L0     SETGLOBAL A=32  B=0    C=198  'IsAltKey'
+pc= 476 L0     CLOSURE   A=32  B=0    C=53   proto 53
+pc= 477 L0     SETGLOBAL A=32  B=0    C=199  'IsSpaceKeyDown'
+pc= 478 L0     CLOSURE   A=32  B=0    C=54   proto 54
+pc= 479 L0     SETGLOBAL A=32  B=0    C=200  'IsShiftKeyDown'
+pc= 480 L0     CLOSURE   A=32  B=0    C=55   proto 55
+pc= 481 L0     SETGLOBAL A=32  B=0    C=201  'IsCtrlKeyDown'
+pc= 482 L0     CLOSURE   A=32  B=0    C=56   proto 56
+pc= 483 L0     SETGLOBAL A=32  B=0    C=202  'IsAltKeyDown'
+pc= 484 L0     CLOSURE   A=32  B=0    C=57   proto 57
+pc= 485 L0     SETGLOBAL A=32  B=0    C=203  'IsKeyDown'
+pc= 486 L0     CLOSURE   A=32  B=0    C=58   proto 58
+pc= 487 L0     SETGLOBAL A=32  B=0    C=204  'GetKeyShow'
+pc= 488 L0     CLOSURE   A=32  B=0    C=59   proto 59
+pc= 489 L0     SETGLOBAL A=32  B=0    C=205  'sheild_hotkey'
+pc= 490 L0     GETGLOBAL A=32  B=0    C=205  'sheild_hotkey'
+pc= 491 L0     SETGLOBAL A=32  B=0    C=206  'shield_hotkey'
+pc= 492 L0     LOADBOOL  A=32  B=0    C=0    
+pc= 493 L0     LOADBOOL  A=33  B=0    C=0    
+pc= 494 L0     LOADBOOL  A=34  B=1    C=0    
+pc= 495 L0     CLOSURE   A=35  B=0    C=60   proto 60
+pc= 496 L0     MOVE      A=0   B=34   C=0    
+pc= 497 L0     SETGLOBAL A=35  B=0    C=207  'Hotkey_EnableSprint'
+pc= 498 L0     CLOSURE   A=35  B=0    C=61   proto 61
+pc= 499 L0     CLOSURE   A=36  B=0    C=62   proto 62
+pc= 500 L0     MOVE      A=0   B=34   C=0    
+pc= 501 L0     CLOSURE   A=37  B=0    C=63   proto 63
+pc= 502 L0     LOADBOOL  A=38  B=1    C=0    
+pc= 503 L0     CLOSURE   A=39  B=0    C=64   proto 64
+pc= 504 L0     MOVE      A=0   B=38   C=0    
+pc= 505 L0     SETGLOBAL A=39  B=0    C=208  'Hotkey_EnableMoveBack'
+pc= 506 L0     CLOSURE   A=39  B=0    C=65   proto 65
+pc= 507 L0     MOVE      A=0   B=33   C=0    
+pc= 508 L0     MOVE      A=0   B=35   C=0    
+pc= 509 L0     MOVE      A=0   B=36   C=0    
+pc= 510 L0     SETGLOBAL A=39  B=0    C=209  'MoveForwardStart'
+pc= 511 L0     CLOSURE   A=39  B=0    C=66   proto 66
+pc= 512 L0     MOVE      A=0   B=35   C=0    
+pc= 513 L0     SETGLOBAL A=39  B=0    C=210  'MoveForwardStop'
+pc= 514 L0     CLOSURE   A=39  B=0    C=67   proto 67
+pc= 515 L0     MOVE      A=0   B=38   C=0    
+pc= 516 L0     MOVE      A=0   B=37   C=0    
+pc= 517 L0     MOVE      A=0   B=33   C=0    
+pc= 518 L0     MOVE      A=0   B=35   C=0    
+pc= 519 L0     SETGLOBAL A=39  B=0    C=211  'MoveBackwardStart'
+pc= 520 L0     CLOSURE   A=39  B=0    C=68   proto 68
+pc= 521 L0     MOVE      A=0   B=37   C=0    
+pc= 522 L0     MOVE      A=0   B=35   C=0    
+pc= 523 L0     SETGLOBAL A=39  B=0    C=212  'MoveBackwardStop'
+pc= 524 L0     LOADBOOL  A=39  B=1    C=0    
+pc= 525 L0     LOADBOOL  A=40  B=1    C=0    
+pc= 526 L0     CLOSURE   A=41  B=0    C=69   proto 69
+pc= 527 L0     MOVE      A=0   B=39   C=0    
+pc= 528 L0     SETGLOBAL A=41  B=0    C=213  'Hotkey_EnableTurnLeft'
+pc= 529 L0     CLOSURE   A=41  B=0    C=70   proto 70
+pc= 530 L0     MOVE      A=0   B=40   C=0    
+pc= 531 L0     SETGLOBAL A=41  B=0    C=214  'Hotkey_EnableTurnRight'
+pc= 532 L0     CLOSURE   A=41  B=0    C=71   proto 71
+pc= 533 L0     MOVE      A=0   B=39   C=0    
+pc= 534 L0     MOVE      A=0   B=35   C=0    
+pc= 535 L0     SETGLOBAL A=41  B=0    C=215  'TurnLeftStart'
+pc= 536 L0     CLOSURE   A=41  B=0    C=72   proto 72
+pc= 537 L0     MOVE      A=0   B=35   C=0    
+pc= 538 L0     SETGLOBAL A=41  B=0    C=216  'TurnLeftStop'
+pc= 539 L0     CLOSURE   A=41  B=0    C=73   proto 73
+pc= 540 L0     MOVE      A=0   B=40   C=0    
+pc= 541 L0     MOVE      A=0   B=35   C=0    
+pc= 542 L0     SETGLOBAL A=41  B=0    C=217  'TurnRightStart'
+pc= 543 L0     CLOSURE   A=41  B=0    C=74   proto 74
+pc= 544 L0     MOVE      A=0   B=35   C=0    
+pc= 545 L0     SETGLOBAL A=41  B=0    C=218  'TurnRightStop'
+pc= 546 L0     CLOSURE   A=41  B=0    C=75   proto 75
+pc= 547 L0     CLOSURE   A=42  B=0    C=76   proto 76
+pc= 548 L0     MOVE      A=0   B=37   C=0    
+pc= 549 L0     MOVE      A=0   B=33   C=0    
+pc= 550 L0     MOVE      A=0   B=41   C=0    
+pc= 551 L0     SETGLOBAL A=42  B=0    C=219  'StrafeLeftStart'
+pc= 552 L0     CLOSURE   A=42  B=0    C=77   proto 77
+pc= 553 L0     MOVE      A=0   B=37   C=0    
+pc= 554 L0     MOVE      A=0   B=41   C=0    
+pc= 555 L0     SETGLOBAL A=42  B=0    C=220  'StrafeLeftStop'
+pc= 556 L0     CLOSURE   A=42  B=0    C=78   proto 78
+pc= 557 L0     MOVE      A=0   B=37   C=0    
+pc= 558 L0     MOVE      A=0   B=33   C=0    
+pc= 559 L0     MOVE      A=0   B=41   C=0    
+pc= 560 L0     SETGLOBAL A=42  B=0    C=221  'StrafeRightStart'
+pc= 561 L0     CLOSURE   A=42  B=0    C=79   proto 79
+pc= 562 L0     MOVE      A=0   B=37   C=0    
+pc= 563 L0     MOVE      A=0   B=41   C=0    
+pc= 564 L0     SETGLOBAL A=42  B=0    C=222  'StrafeRightStop'
+pc= 565 L0     CLOSURE   A=42  B=0    C=80   proto 80
+pc= 566 L0     SETGLOBAL A=42  B=0    C=223  'MoveUpStart'
+pc= 567 L0     CLOSURE   A=42  B=0    C=81   proto 81
+pc= 568 L0     SETGLOBAL A=42  B=0    C=224  'MoveUpStop'
+pc= 569 L0     CLOSURE   A=42  B=0    C=82   proto 82
+pc= 570 L0     SETGLOBAL A=42  B=0    C=225  'MoveDownStart'
+pc= 571 L0     CLOSURE   A=42  B=0    C=83   proto 83
+pc= 572 L0     SETGLOBAL A=42  B=0    C=226  'MoveDownStop'
+pc= 573 L0     CLOSURE   A=42  B=0    C=84   proto 84
+pc= 574 L0     MOVE      A=0   B=33   C=0    
+pc= 575 L0     MOVE      A=0   B=6    C=0    
+pc= 576 L0     SETGLOBAL A=42  B=0    C=227  'Jump'
+pc= 577 L0     CLOSURE   A=42  B=0    C=85   proto 85
+pc= 578 L0     SETGLOBAL A=42  B=0    C=228  'RideHorse'
+pc= 579 L0     CLOSURE   A=42  B=0    C=86   proto 86
+pc= 580 L0     SETGLOBAL A=42  B=0    C=229  'DownHorse'
+pc= 581 L0     CLOSURE   A=42  B=0    C=87   proto 87
+pc= 582 L0     SETGLOBAL A=42  B=0    C=230  'EndJump'
+pc= 583 L0     CLOSURE   A=42  B=0    C=88   proto 88
+pc= 584 L0     SETGLOBAL A=42  B=0    C=231  'MoveAction_StopAll'
+pc= 585 L0     CLOSURE   A=42  B=0    C=89   proto 89
+pc= 586 L0     SETGLOBAL A=42  B=0    C=232  'AutoInteract'
+pc= 587 L0     CLOSURE   A=42  B=0    C=90   proto 90
+pc= 588 L0     SETGLOBAL A=42  B=0    C=233  'SelfSkillGuideDown'
+pc= 589 L0     CLOSURE   A=42  B=0    C=91   proto 91
+pc= 590 L0     SETGLOBAL A=42  B=0    C=234  'SelfSkillGuideUp'
+pc= 591 L0     CLOSURE   A=42  B=0    C=92   proto 92
+pc= 592 L0     SETGLOBAL A=42  B=0    C=235  'ToggleAutoRun'
+pc= 593 L0     CLOSURE   A=42  B=0    C=93   proto 93
+pc= 594 L0     SETGLOBAL A=42  B=0    C=236  'StopAutoRun'
+pc= 595 L0     CLOSURE   A=42  B=0    C=94   proto 94
+pc= 596 L0     SETGLOBAL A=42  B=0    C=237  'MoveControlStart'
+pc= 597 L0     CLOSURE   A=42  B=0    C=95   proto 95
+pc= 598 L0     SETGLOBAL A=42  B=0    C=238  'MoveControlStop'
+pc= 599 L0     LOADBOOL  A=42  B=1    C=0    
+pc= 600 L0     CLOSURE   A=43  B=0    C=96   proto 96
+pc= 601 L0     MOVE      A=0   B=42   C=0    
+pc= 602 L0     SETGLOBAL A=43  B=0    C=239  'Hotkey_EnableToggleSheath'
+pc= 603 L0     CLOSURE   A=43  B=0    C=97   proto 97
+pc= 604 L0     MOVE      A=0   B=42   C=0    
+pc= 605 L0     SETGLOBAL A=43  B=0    C=240  'ToggleSheath'
+pc= 606 L0     CLOSURE   A=43  B=0    C=98   proto 98
+pc= 607 L0     SETGLOBAL A=43  B=0    C=241  'ToggleSitDown'
+pc= 608 L0     CLOSURE   A=43  B=0    C=99   proto 99
+pc= 609 L0     SETGLOBAL A=43  B=0    C=242  'CameraSetView'
+pc= 610 L0     LOADBOOL  A=43  B=1    C=0    
+pc= 611 L0     CLOSURE   A=44  B=0    C=100  proto 100
+pc= 612 L0     MOVE      A=0   B=43   C=0    
+pc= 613 L0     SETGLOBAL A=44  B=0    C=243  'Hotkey_EnableToggleRun'
+pc= 614 L0     CLOSURE   A=44  B=0    C=101  proto 101
+pc= 615 L0     MOVE      A=0   B=43   C=0    
+pc= 616 L0     SETGLOBAL A=44  B=0    C=244  'ToggleRun'
+pc= 617 L0     CLOSURE   A=44  B=0    C=102  proto 102
+pc= 618 L0     SETGLOBAL A=44  B=0    C=245  'ActionButtonDown'
+pc= 619 L0     CLOSURE   A=44  B=0    C=103  proto 103
+pc= 620 L0     SETGLOBAL A=44  B=0    C=246  'ActionButtonUp'
+pc= 621 L0     CLOSURE   A=44  B=0    C=104  proto 104
+pc= 622 L0     SETGLOBAL A=44  B=0    C=247  'ChangeActionBarPage'
+pc= 623 L0     CLOSURE   A=44  B=0    C=105  proto 105
+pc= 624 L0     SETGLOBAL A=44  B=0    C=248  'ActionBar_PageDown'
+pc= 625 L0     CLOSURE   A=44  B=0    C=106  proto 106
+pc= 626 L0     SETGLOBAL A=44  B=0    C=249  'ActionBar_PageUp'
+pc= 627 L0     CLOSURE   A=44  B=0    C=107  proto 107
+pc= 628 L0     SETGLOBAL A=44  B=0    C=250  'LockOrUnlockActionBar'
+pc= 629 L0     CLOSURE   A=44  B=0    C=108  proto 108
+pc= 630 L0     SETGLOBAL A=44  B=0    C=251  'ActionBar_YaoZongPlant'
+pc= 631 L0     LOADNIL   A=44  B=44   C=0    
+pc= 632 L0     CLOSURE   A=45  B=0    C=109  proto 109
+pc= 633 L0     MOVE      A=0   B=44   C=0    
+pc= 634 L0     SETGLOBAL A=45  B=0    C=252  'SetForbidSelectPlayer'
+pc= 635 L0     CLOSURE   A=45  B=0    C=110  proto 110
+pc= 636 L0     MOVE      A=0   B=44   C=0    
+pc= 637 L0     SETGLOBAL A=45  B=0    C=253  'SelectPlayer'
+pc= 638 L0     CLOSURE   A=45  B=0    C=111  proto 111
+pc= 639 L0     MOVE      A=0   B=15   C=0    
+pc= 640 L0     MOVE      A=0   B=4    C=0    
+pc= 641 L0     MOVE      A=0   B=2    C=0    
+pc= 642 L0     MOVE      A=0   B=3    C=0    
+pc= 643 L0     MOVE      A=0   B=16   C=0    
+pc= 644 L0     MOVE      A=0   B=31   C=0    
+pc= 645 L0     MOVE      A=0   B=8    C=0    
+pc= 646 L0     SETGLOBAL A=45  B=0    C=254  'TogglePanel'
+pc= 647 L0     CLOSURE   A=45  B=0    C=112  proto 112
+pc= 648 L0     SETGLOBAL A=45  B=0    C=255  'ToggleBag'
+pc= 649 L0     CLOSURE   A=45  B=0    C=113  proto 113
+pc= 650 L0     SETGLOBAL A=45  B=0    C=256  'OpenOrCloseAllBags'
+pc= 651 L0     CLOSURE   A=45  B=0    C=114  proto 114
+pc= 652 L0     SETGLOBAL A=45  B=0    C=257  'ToggleToyBox'
+pc= 653 L0     CLOSURE   A=45  B=0    C=115  proto 115
+pc= 654 L0     SETGLOBAL A=45  B=0    C=258  'ToggleMainStoryPanel'
+pc= 655 L0     CLOSURE   A=45  B=0    C=116  proto 116
+pc= 656 L0     SETGLOBAL A=45  B=0    C=259  'ToggleBattleFieldPanel'
+pc= 657 L0     CLOSURE   A=45  B=0    C=117  proto 117
+pc= 658 L0     SETGLOBAL A=45  B=0    C=260  'ToggleGameGuidePanel'
+pc= 659 L0     CLOSURE   A=45  B=0    C=118  proto 118
+pc= 660 L0     MOVE      A=0   B=1    C=0    
+pc= 661 L0     MOVE      A=0   B=0    C=0    
+pc= 662 L0     SETGLOBAL A=45  B=0    C=261  'TakeScreenshot'
+pc= 663 L0     CLOSURE   A=45  B=0    C=119  proto 119
+pc= 664 L0     SETGLOBAL A=45  B=0    C=262  'NextView'
+pc= 665 L0     CLOSURE   A=45  B=0    C=120  proto 120
+pc= 666 L0     SETGLOBAL A=45  B=0    C=263  'PrevView'
+pc= 667 L0     LOADBOOL  A=45  B=1    C=0    
+pc= 668 L0     CLOSURE   A=46  B=0    C=121  proto 121
+pc= 669 L0     MOVE      A=0   B=45   C=0    
+pc= 670 L0     SETGLOBAL A=46  B=0    C=264  'EnableCameraZoom'
+pc= 671 L0     CLOSURE   A=46  B=0    C=122  proto 122
+pc= 672 L0     MOVE      A=0   B=45   C=0    
+pc= 673 L0     SETGLOBAL A=46  B=0    C=265  'IsCameraZoomEnabled'
+pc= 674 L0     CLOSURE   A=46  B=0    C=123  proto 123
+pc= 675 L0     MOVE      A=0   B=45   C=0    
+pc= 676 L0     SETGLOBAL A=46  B=0    C=266  'CameraZoomIn'
+pc= 677 L0     CLOSURE   A=46  B=0    C=124  proto 124
+pc= 678 L0     MOVE      A=0   B=45   C=0    
+pc= 679 L0     SETGLOBAL A=46  B=0    C=267  'CameraZoomOut'
+pc= 680 L0     CLOSURE   A=46  B=0    C=125  proto 125
+pc= 681 L0     SETGLOBAL A=46  B=0    C=268  'MoveViewInStart'
+pc= 682 L0     CLOSURE   A=46  B=0    C=126  proto 126
+pc= 683 L0     SETGLOBAL A=46  B=0    C=269  'MoveViewInStop'
+pc= 684 L0     CLOSURE   A=46  B=0    C=127  proto 127
+pc= 685 L0     SETGLOBAL A=46  B=0    C=270  'MoveViewOutStart'
+pc= 686 L0     CLOSURE   A=46  B=0    C=128  proto 128
+pc= 687 L0     SETGLOBAL A=46  B=0    C=271  'MoveViewOutStop'
+pc= 688 L0     CLOSURE   A=46  B=0    C=129  proto 129
+pc= 689 L0     SETGLOBAL A=46  B=0    C=272  'MoveViewLeftStart'
+pc= 690 L0     CLOSURE   A=46  B=0    C=130  proto 130
+pc= 691 L0     SETGLOBAL A=46  B=0    C=273  'MoveViewLeftStop'
+pc= 692 L0     CLOSURE   A=46  B=0    C=131  proto 131
+pc= 693 L0     SETGLOBAL A=46  B=0    C=274  'MoveViewRightStart'
+pc= 694 L0     CLOSURE   A=46  B=0    C=132  proto 132
+pc= 695 L0     SETGLOBAL A=46  B=0    C=275  'MoveViewRightStop'
+pc= 696 L0     CLOSURE   A=46  B=0    C=133  proto 133
+pc= 697 L0     SETGLOBAL A=46  B=0    C=276  'MoveViewUpStart'
+pc= 698 L0     CLOSURE   A=46  B=0    C=134  proto 134
+pc= 699 L0     SETGLOBAL A=46  B=0    C=277  'MoveViewUpStop'
+pc= 700 L0     CLOSURE   A=46  B=0    C=135  proto 135
+pc= 701 L0     SETGLOBAL A=46  B=0    C=278  'MoveViewDownStart'
+pc= 702 L0     CLOSURE   A=46  B=0    C=136  proto 136
+pc= 703 L0     SETGLOBAL A=46  B=0    C=279  'MoveViewDownStop'
+pc= 704 L0     CLOSURE   A=46  B=0    C=137  proto 137
+pc= 705 L0     SETGLOBAL A=46  B=0    C=280  'SetView'
+pc= 706 L0     CLOSURE   A=46  B=0    C=138  proto 138
+pc= 707 L0     SETGLOBAL A=46  B=0    C=281  'SaveView'
+pc= 708 L0     CLOSURE   A=46  B=0    C=139  proto 139
+pc= 709 L0     SETGLOBAL A=46  B=0    C=282  'ResetView'
+pc= 710 L0     CLOSURE   A=46  B=0    C=140  proto 140
+pc= 711 L0     SETGLOBAL A=46  B=0    C=283  'FlipCameraYaw'
+pc= 712 L0     CLOSURE   A=46  B=0    C=141  proto 141
+pc= 713 L0     SETGLOBAL A=46  B=0    C=284  'CameraOrSelectOrMoveStart'
+pc= 714 L0     CLOSURE   A=46  B=0    C=142  proto 142
+pc= 715 L0     SETGLOBAL A=46  B=0    C=285  'CameraOrSelectOrMoveStop'
+pc= 716 L0     CLOSURE   A=46  B=0    C=143  proto 143
+pc= 717 L0     SETGLOBAL A=46  B=0    C=286  'CameraReset'
+pc= 718 L0     LOADBOOL  A=46  B=0    C=0    
+pc= 719 L0     CLOSURE   A=47  B=0    C=144  proto 144
+pc= 720 L0     MOVE      A=0   B=46   C=0    
+pc= 721 L0     SETGLOBAL A=47  B=0    C=287  'TakeKinescope'
+pc= 722 L0     CLOSURE   A=47  B=0    C=145  proto 145
+pc= 723 L0     SETGLOBAL A=47  B=0    C=288  'OnCaptureHotkey'
+pc= 724 L0     CLOSURE   A=47  B=0    C=146  proto 146
+pc= 725 L0     SETGLOBAL A=47  B=0    C=289  'OnCancelHotkeySetting'
+pc= 726 L0     CLOSURE   A=47  B=0    C=147  proto 147
+pc= 727 L0     MOVE      A=0   B=4    C=0    
+pc= 728 L0     SETGLOBAL A=47  B=0    C=290  'ToggleUI'
+pc= 729 L0     CLOSURE   A=47  B=0    C=148  proto 148
+pc= 730 L0     SETGLOBAL A=47  B=0    C=291  'ToggleMiddleMap'
+pc= 731 L0     CLOSURE   A=47  B=0    C=149  proto 149
+pc= 732 L0     SETGLOBAL A=47  B=0    C=292  'ToggleWorldMap'
+pc= 733 L0     CLOSURE   A=47  B=0    C=150  proto 150
+pc= 734 L0     SETGLOBAL A=47  B=0    C=293  'OpenChatEditBox'
+pc= 735 L0     CLOSURE   A=47  B=0    C=151  proto 151
+pc= 736 L0     SETGLOBAL A=47  B=0    C=294  'AttackTarget'
+pc= 737 L0     CLOSURE   A=47  B=0    C=152  proto 152
+pc= 738 L0     SETGLOBAL A=47  B=0    C=295  'ShortCutReply'
+pc= 739 L0     CLOSURE   A=47  B=0    C=153  proto 153
+pc= 740 L0     SETGLOBAL A=47  B=0    C=296  'FollowTarget'
+pc= 741 L0     CLOSURE   A=47  B=0    C=154  proto 154
+pc= 742 L0     SETGLOBAL A=47  B=0    C=297  'EquipKongfu'
+pc= 743 L0     CLOSURE   A=47  B=0    C=155  proto 155
+pc= 744 L0     SETGLOBAL A=47  B=0    C=298  'CastSkillByKeyDown'
+pc= 745 L0     LOADBOOL  A=47  B=0    C=0    
+pc= 746 L0     SETGLOBAL A=47  B=0    C=299  '_g_HideNPc'
+pc= 747 L0     CLOSURE   A=47  B=0    C=156  proto 156
+pc= 748 L0     SETGLOBAL A=47  B=0    C=300  'ToggleNpc'
+pc= 749 L0     LOADBOOL  A=47  B=0    C=0    
+pc= 750 L0     LOADBOOL  A=48  B=0    C=0    
+pc= 751 L0     LOADBOOL  A=49  B=1    C=0    
+pc= 752 L0     LOADBOOL  A=50  B=0    C=0    
+pc= 753 L0     LOADBOOL  A=51  B=0    C=0    
+pc= 754 L0     SETGLOBAL A=51  B=0    C=301  '_g_HidePlayerType'
+pc= 755 L0     CLOSURE   A=51  B=0    C=157  proto 157
+pc= 756 L0     SETGLOBAL A=51  B=0    C=302  'TogglePlayer'
+pc= 757 L0     NEWTABLE  A=51  B=0    C=8    
+pc= 758 L0     LOADK     A=52  B=0    C=303  'FOE'
+pc= 759 L0     LOADK     A=53  B=0    C=304  1.0
+pc= 760 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 761 L0     LOADK     A=52  B=0    C=305  'ENEMY'
+pc= 762 L0     LOADK     A=53  B=0    C=306  2.0
+pc= 763 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 764 L0     LOADK     A=52  B=0    C=307  'NEUTRALITY'
+pc= 765 L0     LOADK     A=53  B=0    C=308  3.0
+pc= 766 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 767 L0     LOADK     A=52  B=0    C=309  'PARTY'
+pc= 768 L0     LOADK     A=53  B=0    C=310  4.0
+pc= 769 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 770 L0     LOADK     A=52  B=0    C=311  'ALLY'
+pc= 771 L0     LOADK     A=53  B=0    C=312  5.0
+pc= 772 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 773 L0     LOADK     A=52  B=0    C=313  'SELF'
+pc= 774 L0     LOADK     A=53  B=0    C=314  6.0
+pc= 775 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 776 L0     LOADK     A=52  B=0    C=315  'NONE'
+pc= 777 L0     LOADK     A=53  B=0    C=316  7.0
+pc= 778 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 779 L0     LOADK     A=52  B=0    C=317  'ALL'
+pc= 780 L0     LOADK     A=53  B=0    C=318  8.0
+pc= 781 L0     SETTABLE  A=51  B=52   C=53   R52 R53
+pc= 782 L0     LOADBOOL  A=52  B=1    C=0    
+pc= 783 L0     SETGLOBAL A=52  B=0    C=319  '_g_HidePartyPlayerType'
+pc= 784 L0     CLOSURE   A=52  B=0    C=158  proto 158
+pc= 785 L0     MOVE      A=0   B=51   C=0    
+pc= 786 L0     SETGLOBAL A=52  B=0    C=320  'TogglePartyPlayer'
+pc= 787 L0     CLOSURE   A=52  B=0    C=159  proto 159
+pc= 788 L0     MOVE      A=0   B=47   C=0    
+pc= 789 L0     MOVE      A=0   B=49   C=0    
+pc= 790 L0     MOVE      A=0   B=50   C=0    
+pc= 791 L0     MOVE      A=0   B=48   C=0    
+pc= 792 L0     SETGLOBAL A=52  B=0    C=321  'SetLockPlayerModel'
+pc= 793 L0     CLOSURE   A=52  B=0    C=160  proto 160
+pc= 794 L0     GETGLOBAL A=53  B=0    C=322  'RegisterEvent'
+pc= 795 L0     LOADK     A=54  B=0    C=323  'LOADING_BEGIN'
+pc= 796 L0     MOVE      A=55  B=52   C=0    
+pc= 797 L0     CALL      A=53  B=3    C=1    args=2 ret=0
+pc= 798 L0     CLOSURE   A=53  B=0    C=161  proto 161
+pc= 799 L0     MOVE      A=0   B=47   C=0    
+pc= 800 L0     SETGLOBAL A=53  B=0    C=324  'ChangePlayerDisplayMode'
+pc= 801 L0     LOADBOOL  A=53  B=0    C=0    
+pc= 802 L0     SETGLOBAL A=53  B=0    C=325  '_g_HideSelf'
+pc= 803 L0     CLOSURE   A=53  B=0    C=162  proto 162
+pc= 804 L0     SETGLOBAL A=53  B=0    C=326  'ToggleSelf'
+pc= 805 L0     GETGLOBAL A=53  B=0    C=327  'rlcmd'
+pc= 806 L0     LOADK     A=54  B=0    C=328  'show npc'
+pc= 807 L0     CALL      A=53  B=2    C=1    args=1 ret=0
+pc= 808 L0     GETGLOBAL A=53  B=0    C=327  'rlcmd'
+pc= 809 L0     LOADK     A=54  B=0    C=329  'show player'
+pc= 810 L0     CALL      A=53  B=2    C=1    args=1 ret=0
+pc= 811 L0     GETGLOBAL A=53  B=0    C=327  'rlcmd'
+pc= 812 L0     LOADK     A=54  B=0    C=330  'show self'
+pc= 813 L0     CALL      A=53  B=2    C=1    args=1 ret=0
+pc= 814 L0     GETGLOBAL A=53  B=0    C=327  'rlcmd'
+pc= 815 L0     LOADK     A=54  B=0    C=331  'show allies'
+pc= 816 L0     CALL      A=53  B=2    C=1    args=1 ret=0
+pc= 817 L0     GETGLOBAL A=53  B=0    C=327  'rlcmd'
+pc= 818 L0     LOADK     A=54  B=0    C=332  'show or hide party player 0'
+pc= 819 L0     CALL      A=53  B=2    C=1    args=1 ret=0
+pc= 820 L0     CLOSURE   A=53  B=0    C=163  proto 163
+pc= 821 L0     SETGLOBAL A=53  B=0    C=333  'PlayerChangeSuit'
+pc= 822 L0     CLOSURE   A=53  B=0    C=164  proto 164
+pc= 823 L0     MOVE      A=0   B=32   C=0    
+pc= 824 L0     SETGLOBAL A=53  B=0    C=334  'StartSprint'
+pc= 825 L0     CLOSURE   A=53  B=0    C=165  proto 165
+pc= 826 L0     MOVE      A=0   B=32   C=0    
+pc= 827 L0     SETGLOBAL A=53  B=0    C=335  'CheckEndSprint'
+pc= 828 L0     CLOSURE   A=53  B=0    C=166  proto 166
+pc= 829 L0     MOVE      A=0   B=32   C=0    
+pc= 830 L0     SETGLOBAL A=53  B=0    C=336  'EndSprint'
+pc= 831 L0     CLOSURE   A=53  B=0    C=167  proto 167
+pc= 832 L0     MOVE      A=0   B=2    C=0    
+pc= 833 L0     SETGLOBAL A=53  B=0    C=337  'UnregisterAutoClose'
+pc= 834 L0     CLOSURE   A=53  B=0    C=168  proto 168
+pc= 835 L0     MOVE      A=0   B=2    C=0    
+pc= 836 L0     SETGLOBAL A=53  B=0    C=338  'RegisterAutoClose'
+pc= 837 L0     CLOSURE   A=53  B=0    C=169  proto 169
+pc= 838 L0     MOVE      A=0   B=3    C=0    
+pc= 839 L0     SETGLOBAL A=53  B=0    C=339  'UnregisterAutoClose_Topmost'
+pc= 840 L0     CLOSURE   A=53  B=0    C=170  proto 170
+pc= 841 L0     MOVE      A=0   B=3    C=0    
+pc= 842 L0     SETGLOBAL A=53  B=0    C=340  'RegisterAutoClose_Topmost'
+pc= 843 L0     CLOSURE   A=53  B=0    C=171  proto 171
+pc= 844 L0     MOVE      A=0   B=4    C=0    
+pc= 845 L0     CLOSURE   A=54  B=0    C=172  proto 172
+pc= 846 L0     MOVE      A=0   B=4    C=0    
+pc= 847 L0     SETGLOBAL A=54  B=0    C=341  'RegisterIndePentShowPanel'
+pc= 848 L0     CLOSURE   A=54  B=0    C=173  proto 173
+pc= 849 L0     MOVE      A=0   B=53   C=0    
+pc= 850 L0     MOVE      A=0   B=4    C=0    
+pc= 851 L0     SETGLOBAL A=54  B=0    C=342  'UnRegisterIndePentShowPanel'
+pc= 852 L0     CLOSURE   A=54  B=0    C=174  proto 174
+pc= 853 L0     MOVE      A=0   B=4    C=0    
+pc= 854 L0     SETGLOBAL A=54  B=0    C=343  'IsIndePentShowPanelsOpen'
+pc= 855 L0     CLOSURE   A=54  B=0    C=175  proto 175
+pc= 856 L0     MOVE      A=0   B=4    C=0    
+pc= 857 L0     SETGLOBAL A=54  B=0    C=344  'CloseIndePentShowPanels'
+pc= 858 L0     CLOSURE   A=54  B=0    C=176  proto 176
+pc= 859 L0     MOVE      A=0   B=5    C=0    
+pc= 860 L0     CLOSURE   A=55  B=0    C=177  proto 177
+pc= 861 L0     MOVE      A=0   B=5    C=0    
+pc= 862 L0     SETGLOBAL A=55  B=0    C=345  'RegisterConflictPanel'
+pc= 863 L0     CLOSURE   A=55  B=0    C=178  proto 178
+pc= 864 L0     MOVE      A=0   B=54   C=0    
+pc= 865 L0     MOVE      A=0   B=5    C=0    
+pc= 866 L0     SETGLOBAL A=55  B=0    C=346  'UnRegisterConflictPanel'
+pc= 867 L0     CLOSURE   A=55  B=0    C=179  proto 179
+pc= 868 L0     MOVE      A=0   B=5    C=0    
+pc= 869 L0     SETGLOBAL A=55  B=0    C=347  'CloseAllConflictPanels'
+pc= 870 L0     CLOSURE   A=55  B=0    C=180  proto 180
+pc= 871 L0     MOVE      A=0   B=33   C=0    
+pc= 872 L0     SETGLOBAL A=55  B=0    C=348  'EnterOrLeaveCarrier'
+pc= 873 L0     CLOSURE   A=55  B=0    C=181  proto 181
+pc= 874 L0     SETGLOBAL A=55  B=0    C=349  'ResponseSepcialKey'
+pc= 875 L0     CLOSURE   A=55  B=0    C=182  proto 182
+pc= 876 L0     SETGLOBAL A=55  B=0    C=350  'GVOpenMicphone'
+pc= 877 L0     CLOSURE   A=55  B=0    C=183  proto 183
+pc= 878 L0     SETGLOBAL A=55  B=0    C=351  'GVCloseMicphone'
+pc= 879 L0     CLOSURE   A=55  B=0    C=184  proto 184
+pc= 880 L0     SETGLOBAL A=55  B=0    C=352  'ShowUIMessage'
+pc= 881 L0     CLOSURE   A=55  B=0    C=185  proto 185
+pc= 882 L0     SETGLOBAL A=55  B=0    C=353  'OnThreadStartSprint'
+pc= 883 L0     CLOSURE   A=55  B=0    C=186  proto 186
+pc= 884 L0     SETGLOBAL A=55  B=0    C=354  'IsPlayerInSprint'
+pc= 885 L0     CLOSURE   A=55  B=0    C=187  proto 187
+pc= 886 L0     SETGLOBAL A=55  B=0    C=355  'IsPlayerInHang'
+pc= 887 L0     CLOSURE   A=55  B=0    C=188  proto 188
+pc= 888 L0     SETGLOBAL A=55  B=0    C=356  'CanUseLeftRightSprint'
+pc= 889 L0     NEWTABLE  A=55  B=0    C=0    
+pc= 890 L0     CLOSURE   A=56  B=0    C=189  proto 189
+pc= 891 L0     MOVE      A=0   B=55   C=0    
+pc= 892 L0     SETGLOBAL A=56  B=0    C=357  'OccupancyHotkey'
+pc= 893 L0     CLOSURE   A=56  B=0    C=190  proto 190
+pc= 894 L0     MOVE      A=0   B=55   C=0    
+pc= 895 L0     SETGLOBAL A=56  B=0    C=358  'RestoreOccupancyHotkey'
+pc= 896 L0     LOADNIL   A=56  B=56   C=0    
+pc= 897 L0     CLOSURE   A=57  B=0    C=191  proto 191
+pc= 898 L0     MOVE      A=0   B=56   C=0    
+pc= 899 L0     GETGLOBAL A=58  B=0    C=322  'RegisterEvent'
+pc= 900 L0     LOADK     A=59  B=0    C=359  'CHANGE_CARRIER_STATE'
+pc= 901 L0     CLOSURE   A=60  B=0    C=192  proto 192
+pc= 902 L0     CALL      A=58  B=3    C=1    args=2 ret=0
+pc= 903 L0     GETGLOBAL A=58  B=0    C=322  'RegisterEvent'
+pc= 904 L0     LOADK     A=59  B=0    C=360  'SPECIAL_KEY_MSG'
+pc= 905 L0     CLOSURE   A=60  B=0    C=193  proto 193
+pc= 906 L0     CALL      A=58  B=3    C=1    args=2 ret=0
+pc= 907 L0     GETGLOBAL A=58  B=0    C=322  'RegisterEvent'
+pc= 908 L0     LOADK     A=59  B=0    C=361  'NOTIFY_PAINTING'
+pc= 909 L0     MOVE      A=60  B=57   C=0    
+pc= 910 L0     CALL      A=58  B=3    C=1    args=2 ret=0
+pc= 911 L0     GETGLOBAL A=58  B=0    C=322  'RegisterEvent'
+pc= 912 L0     LOADK     A=59  B=0    C=362  'CHECK_IS_PLAYING_AI_ANIMATION'
+pc= 913 L0     CLOSURE   A=60  B=0    C=194  proto 194
+pc= 914 L0     MOVE      A=0   B=46   C=0    
+pc= 915 L0     CALL      A=58  B=3    C=1    args=2 ret=0
+pc= 916 L0     NEWTABLE  A=58  B=0    C=0    
+pc= 917 L0     CLOSURE   A=59  B=0    C=195  proto 195
+pc= 918 L0     MOVE      A=0   B=58   C=0    
+pc= 919 L0     SETGLOBAL A=59  B=0    C=363  'Hotkey_EnterContext'
+pc= 920 L0     CLOSURE   A=59  B=0    C=196  proto 196
+pc= 921 L0     MOVE      A=0   B=58   C=0    
+pc= 922 L0     SETGLOBAL A=59  B=0    C=364  'Hotkey_ExitContext'
+pc= 923 L0     CLOSURE   A=59  B=0    C=197  proto 197
+pc= 924 L0     MOVE      A=0   B=58   C=0    
+pc= 925 L0     SETGLOBAL A=59  B=0    C=365  'Hotkey_ResetContext'
+pc= 926 L0     GETGLOBAL A=59  B=0    C=322  'RegisterEvent'
+pc= 927 L0     LOADK     A=60  B=0    C=366  'FIRST_LOADING_END'
+pc= 928 L0     GETGLOBAL A=61  B=0    C=365  'Hotkey_ResetContext'
+pc= 929 L0     CALL      A=59  B=3    C=1    args=2 ret=0
+pc= 930 L0     RETURN    A=0   B=1    C=0    
