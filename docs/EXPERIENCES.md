@@ -125,3 +125,33 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `git merge-base --is-ancestor 3fd31b4 main` -> true;
   `client/RebornClient.cs:429,1854,1941`; `client/FoliageCollision.cs:452`.
 - Outcome: partial (research done, fix queue defined, drifts not yet fixed).
+
+### 2026-09-29 — camera — T1 penetration root cause: front-only probes; double-sided fix landed
+**Problem:** after the engine look-at/guard work the user still reported wall
+penetration. The Step-1 recorder had never been run over the T1 sweep, and the
+T1 cavity (`18985,682,24515`) is the original user spot.
+**Tried:** built the workstream client `reborn_client_camclip.exe` (and first
+fixed `client/build_client.cmd` to honor the AGENTS §2 `RC_CLIENT_EXE`
+contract it claimed to implement), re-ran the T1 demo sweep with
+`RC_CAM_PENDBG=1`, then A/B'd the front-only probe filter and the hit window.
+**Outcome:** solved (fix landed, default on).
+**Why:** main-tip defaults produced 18 event lines / 192 event-frames at T1:
+the resolved camera sat on the far side of rock shell inst 897 (reverse bake
+hit 1-2 u from the camera) and of scene-only geometry (reverse scene hit 6-11 u,
+bake clear) while the forward front-face-only probes were blind - once the
+camera slips past a surface whose front faces it, the forward query can never
+see it again and the spring returns through the geometry. A/B: front-only
+192 frames; front-only + hit-window(0.25 s) 118; **double-sided 0**.
+`RC_CAM_BACKFACE` now defaults on (`=0` restores front-only), registered as
+B14 with the real `FilterCamera` (D1) winding rule as the exit. Exact
+regressions: T2 `hit=206 len=188`, T4 `hit=186 len=168`, T1 `hit=11 len=0`,
+userspot idle pull 155 (`hit=173`) 0 jumps, 45 s route 0 events/jumps,
+camera_smoke ALL PASS, exit 0/DONE.
+Also corrected a doc/code drift: B11 hit stabilization is opt-in on main
+(`RC_CAM_HITWIN` default 0), not the C1d "shipped 0.25".
+**Re-open criteria:** the native `FilterCamera` winding rule is recovered, or
+double-sided probes cause over-pulling somewhere (kill switch `RC_CAM_BACKFACE=0`).
+**Links:** `docs/camera/PENETRATION_PLAN.md` progress log 2026-09-29 (camclip);
+`docs/camera/HOST_DEVIATIONS.md` B11/B14; logs `reborn_20260929_122635`
+(before) and `_123534`/`_123619`/`_123704`/`_123851`/`_123947` (after) in
+`bin64\reborn_out`.

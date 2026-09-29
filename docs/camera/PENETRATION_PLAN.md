@@ -434,3 +434,42 @@ Controls (test exe, T-spots):
   spot (the F9 shot agrees: wall on the near side).
 - Recorder reverse casts use frontFacesOnly=false: the forward probe sees the
   front face, the reverse cast meets its back - front-only skipped every wall.
+
+### 2026-09-29 (camclip) - T1 sweep penetration root + double-sided probes (landed)
+
+Workstream build `reborn_client_camclip.exe` (`RC_CLIENT_EXE`; the build script
+now honors the AGENTS §2 feature-build contract: unique exe, `build_info_<exe>.txt`,
+no shared config writes, smoke only with `RC_SMOKE_EXE`).
+
+P0 re-measure on the main tip (T1 `18985,682,24515`, `RC_CAM_DEMO` sweep,
+`RC_CAM_PENDBG`): **18 event lines / 192 event-frames** with the defaults.
+Two classes, same root:
+- `dcam` 23-42 u: reverse bake hit 1-2 u from the camera (rock shell inst
+  897, `blk=1`) while the forward winner is a corner probe at 213 u - the
+  camera is on the far side of the shell the forward rays already cleared;
+- `dcam` 65-68 u: reverse scene hit 6-11 u, bake clear (`gated=-1`) - the
+  same blind spot over scene geometry the bake lacks (P4 class).
+
+Root: the forward probes are front-face-only, so once the resolved camera
+slips past a surface whose front faces the camera, the forward query goes
+blind and the spring returns the camera through the geometry.
+
+A/B at T1 (16 s each): front-only 18 lines/192 frames; front-only +
+`RC_CAM_HITWIN=0.25` 4/118; **double-sided 0/0** (also 0 with HITWIN=0).
+
+Landed: `RC_CAM_BACKFACE` default **on** (`=0` restores front-only); probes
+accept both windings. Registered as B14 (host fix; exit = real `FilterCamera`
+winding rule, D1). Fingerprint logs `BACKFACE=` and `HITWIN=`.
+
+Acceptance (final build, `RC_CAM_PENDBG`+`SHAKEDBG`):
+- T2 demo sweep `hit=206 len=188` exact, T4 `hit=186 len=168`, T1 `hit=11
+  len=0`; all three sweeps **0 events, 0 jumps**, exit 0.
+- userspot `18755,657,24539` idle 14 s: 0 events, 0 jumps, pull stable 155
+  (`hit=173`).
+- 45 s `RC_DEMO_COLLIDE` route: 0 events, 0 jumps (player blocked in place
+  after 4 s - route quality unchanged from the old scripts).
+- `camera_smoke` ALL PASS (class contract untouched).
+
+Drift corrected: main tip's `RC_CAM_HITWIN`/`RC_CAM_HITWINDOW` default is 0
+(B11 opt-in), not the C1d "shipped 0.25"; with B14 the flicker spots show 0
+jumps at HITWIN=0, so the default stays off.
