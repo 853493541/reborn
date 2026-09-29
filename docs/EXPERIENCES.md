@@ -102,3 +102,26 @@ solved it, and what is still open. **Newest at the bottom.**
   reorganization.
 - Evidence: merge commit `085daa7`; `origin/main` updated in the same session.
 - Outcome: solved.
+
+### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
+- Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
+  `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
+  `FIX_SUGGESTIONS`, `CONFORMANCE_CHECKS`), the camera git history
+  (`bdfb586`..`3fd31b4`), and the live code camera block (`RebornClient.cs`,
+  `CameraSystem.CameraObstruction`, `FoliageCollision.Raycast`). Confirmed main
+  carries the engine look-at/absolute-Y path (D3/B6 closed), 5/9 probes with
+  the per-mesh `.cflags` gate, NoCross/scene-min/degenerate-hit guards and the
+  `RC_CAM_PENDBG` recorder. Drifts found: (1) the live default
+  `RC_CAM_HITWIN`/`RC_CAM_HITWINDOW` is `0`, so B11 hit stabilization is OFF on
+  main although `PENETRATION_PLAN` C1d and `HOST_DEVIATIONS` B11 say 0.25 s
+  default-on (all added in the `3fd31b4` WIP checkpoint); (2) `docs/controls/
+  CONTROLS_GAP_REGISTER.md` S9 and `docs/camera/CONFORMANCE_CHECKS.md` still
+  describe the pre-obstruction state; (3) generated foliage bins + `.cflags`
+  remain tracked under `engine_host_spike/collision_data`.
+- Side-job queue (from `PENETRATION_PLAN`): P0 recorder audit on T1-T4 with the
+  current build; P4 missing drawn classes (landscape/bd/subscene -> camera-only
+  FCOL); P2 probe footprint (blocked, live host recon); P5 band-aid removal
+  after the audit.
+- Evidence: `git merge-base --is-ancestor 3fd31b4 main` -> true;
+  `client/RebornClient.cs:429,1854,1941`; `client/FoliageCollision.cs:452`.
+- Outcome: partial (research done, fix queue defined, drifts not yet fixed).
