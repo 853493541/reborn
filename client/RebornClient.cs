@@ -1594,11 +1594,17 @@ internal static class RebornClient
             bool moving = len > 0.01f && skillUntil <= now;
 
             // horizontal move + slope blocking (map-host rules); terrain holes
-            // (real LoadHoleRegion data) carry no ground at all
+            // (real LoadHoleRegion data) carry no ground at all. Long moves are
+            // split into substeps so a step cannot tunnel a thin collider, and
+            // the climb check uses a fixed 40 u look-ahead so the slope limit
+            // does not depend on speed/framerate (map-host rule, C-3/C-4).
             float ground = py;
             bool groundOk = true;
             if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
             bool blocked = false;
+            float mvx = 0f, mvz = 0f;
+            float subStep = 0f;
+            int subCount = 1;
             if (moving)
             {
                 float sp = (shiftDown ? pRun * 10f
@@ -1606,23 +1612,72 @@ internal static class RebornClient
                             : wSprint ? pSprint
                             : pRun) / len;
                 float step = sp * dt;
-                float ux = dirX / len, uz = dirZ / len;
-                float tryX = px + ux * step, tryZ = pz + uz * step;
-                float gh = ground;
-                bool ghOk = false;
-                if (sampler != null) ghOk = sampler.SampleGround(tryX, tryZ, out gh);
-                if (groundOk && ghOk && gh - ground > 70f)
-                {
-                    blocked = true;
-                    float gx2 = ground, gz2 = ground;
-                    bool okX = sampler != null && sampler.SampleGround(tryX, pz, out gx2);
-                    bool okZ = sampler != null && sampler.SampleGround(px, tryZ, out gz2);
-                    if (!okX || gx2 - ground <= 70f) { px = tryX; }
-                    else if (!okZ || gz2 - ground <= 70f) { pz = tryZ; }
-                }
-                else { px = tryX; pz = tryZ; }
-                curYaw = (float)Math.Atan2(ux, uz);
+                mvx = dirX / len; mvz = dirZ / len;
+                if (step > 20f) subCount = (int)Math.Ceiling(step / 20f);
+                if (subCount > 64) subCount = 64;
+                subStep = step / subCount;
             }
+            float look = subStep > 40f ? subStep : 40f;
+            for (int si = 0; si < subCount; si++)
+            {
+                float sdx = 0f, sdz = 0f;
+                if (moving)
+                {
+                    sdx = mvx * subStep;
+                    sdz = mvz * subStep;
+                    float pgh = ground;
+                    bool pghOk = false;
+                    if (sampler != null) pghOk = sampler.SampleGround(px + mvx * look, pz + mvz * look, out pgh);
+                    if (groundOk && pghOk && pgh - ground > 70f)
+                    {
+                        blocked = true;
+                        float gx2 = ground, gz2 = ground;
+                        bool okX = sampler != null && sampler.SampleGround(px + mvx * look, pz, out gx2);
+                        bool okZ = sampler != null && sampler.SampleGround(px, pz + mvz * look, out gz2);
+                        if (!okX || gx2 - ground <= 70f) { sdz = 0f; }
+                        else if (!okZ || gz2 - ground <= 70f) { sdx = 0f; }
+                        else { sdx = 0f; sdz = 0f; }
+                    }
+                }
+                px += sdx;
+                pz += sdz;
+                if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+
+                // object/foliage collision (walls, buildings, rocks, trees)
+                if (col != null)
+                {
+                    float stepGround = col.SupportHeight(px, pz, py - 20f, py + 70f);
+                    if (moving)
+                    {
+                        for (int k = 1; k <= 3; k++)
+                        {
+                            float sd = playerRadius + k * 25f;
+                            float sh2 = col.SupportHeight(px + mvx * sd, pz + mvz * sd, py - 20f, py + 70f);
+                            if (sh2 > stepGround) stepGround = sh2;
+                        }
+                    }
+                    if (stepGround > ground)
+                    {
+                        ground = stepGround;
+                        groundOk = true;   // standing on a structure
+                    }
+                    else
+                    {
+                        colCalls++;
+                        float gBefore = ground;
+                        bool sBlocked = col.Resolve(ref px, ref py, ref pz,
+                            playerRadius, playerHeight, ref ground, ref grounded);
+                        if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                        if (ground > gBefore + 0.01f) groundOk = true;   // structure support
+                        if (grounded)
+                        {
+                            float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
+                            if (sh > ground) { ground = sh; groundOk = true; }
+                        }
+                    }
+                }
+            }
+            if (moving) curYaw = (float)Math.Atan2(mvx, mvz);
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
             // camera direction; LMB drag rotates the camera only. The turn is
@@ -1642,44 +1697,6 @@ internal static class RebornClient
                 float step = rate * (float)dt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
-            }
-
-            // terrain ground at the new position (hole => no ground at all)
-            if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-
-            // object/foliage collision (walls, buildings, rocks, trees)
-            if (col != null)
-            {
-                float stepGround = col.SupportHeight(px, pz, py - 20f, py + 70f);
-                if (moving)
-                {
-                    float ux2 = dirX / len, uz2 = dirZ / len;
-                    for (int si = 1; si <= 3; si++)
-                    {
-                        float sd = playerRadius + si * 25f;
-                        float sh2 = col.SupportHeight(px + ux2 * sd, pz + uz2 * sd, py - 20f, py + 70f);
-                        if (sh2 > stepGround) stepGround = sh2;
-                    }
-                }
-                if (stepGround > ground)
-                {
-                    ground = stepGround;
-                    groundOk = true;   // standing on a structure
-                }
-                else
-                {
-                    colCalls++;
-                    float gBefore = ground;
-                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
-                        playerRadius, playerHeight, ref ground, ref grounded);
-                    if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
-                    if (ground > gBefore + 0.01f) groundOk = true;   // structure support
-                    if (grounded)
-                    {
-                        float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
-                        if (sh > ground) { ground = sh; groundOk = true; }
-                    }
-                }
             }
 
             // grounded / ledge / step (map-host rules)
