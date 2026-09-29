@@ -1001,6 +1001,9 @@ internal static class RebornClient
         long feiSeqStart = 0;
         float feiPX = 0f, feiPY = 0f, feiPZ = 0f, feiDist = 0f;
         float lastMarkerX = 1e9f, lastMarkerZ = 1e9f;
+        long lastAimMs = 0;
+        float lastVhX = 1e9f, lastVhZ = 1e9f, lastVhY = -1f;
+        long lastVhMs = 0;
         bool orbitApplied = false;
         float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
         bool dbgIntSet = false;
@@ -1169,13 +1172,13 @@ internal static class RebornClient
                 float dz3 = fz + rgz * (float)(nx * tanX) + uz5 * (float)(ny * tanY);
                 float dl3 = (float)Math.Sqrt(dx3 * dx3 + dy3 * dy3 + dz3 * dz3);
                 dx3 /= dl3; dy3 /= dl3; dz3 /= dl3;
-                // aim ray: nearest of terrain / scene / scene-level (buildings
-                // and props are scene geometry, so roofs are hittable)
+                // aim ray: nearest of terrain / scene (buildings are scene
+                // geometry). RaySceneLevel is a guarded test backend - not used
+                // here (native AV risk when sweeping over unloaded content).
                 float bx4 = cx0 + dx3 * 4000f, by4 = cy0 + dy3 * 4000f, bz4 = cz0 + dz3 * 4000f;
                 float best = -1f;
                 try { float h1 = engineRay.RayTerrain(cx0, cy0, cz0, bx4, by4, bz4); if (h1 > 0f) best = h1; } catch { }
                 try { float h2 = engineRay.RayScene(cx0, cy0, cz0, bx4, by4, bz4); if (h2 > 0f && (best < 0f || h2 < best)) best = h2; } catch { }
-                try { float h3 = engineRay.RaySceneLevel(cx0, cy0, cz0, bx4, by4, bz4); if (h3 > 0f && (best < 0f || h3 < best)) best = h3; } catch { }
                 float hitX, hitY, hitZ;
                 if (best > 0f) { hitX = cx0 + dx3 * best; hitY = cy0 + dy3 * best; hitZ = cz0 + dz3 * best; }
                 else { hitX = cx0 + dx3 * 1500f; hitY = cy0 + dy3 * 1500f; hitZ = cz0 + dz3 * 1500f; }
@@ -1706,7 +1709,14 @@ internal static class RebornClient
                 }
                 else
                 {
-                    float[] tgt = computeFeiTarget();
+                    // native aim ray at ~10 Hz only (per-frame sweeping AVs the
+                    // engine when the ray crosses unloaded content)
+                    float[] tgt = null;
+                    if (now - lastAimMs >= 100)
+                    {
+                        lastAimMs = now;
+                        tgt = computeFeiTarget();
+                    }
                     if (tgt != null)
                     {
                         feiPX = tgt[0]; feiPY = tgt[1]; feiPZ = tgt[2]; feiDist = tgt[3];
@@ -1716,9 +1726,10 @@ internal static class RebornClient
                             var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 8f; mpos.z = feiPZ;
                             var mrot = new CLRfloat4(); mrot.w = 1f;
                             var mscl = new CLRfloat3(); mscl.x = 1.3f; mscl.y = 1.3f; mscl.z = 1.3f;
-                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_SFX, mpos, mrot, mscl);
-                            if (mh == 0 || mh == -1)
-                                mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
+                            // NOTE: the .Sfx wrapper must NOT be fed to AddDummyModel -
+                            // it returns a handle but AVs the engine later (verified).
+                            // Only the raw mesh is placeable in this host.
+                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
                             Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
                                 + " handle=" + mh);
@@ -1774,16 +1785,23 @@ internal static class RebornClient
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
 
-            // floor: terrain + vertical scene probe (lets you stand on roofs
-            // and ledges the terrain sampler does not know about)
+            // floor: terrain + throttled vertical scene probe (stand on roofs /
+            // ledges the terrain sampler does not know about; native ray is
+            // re-run only when the player moved or every 300 ms)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
-            try
+            if (Math.Abs(px - lastVhX) > 120f || Math.Abs(pz - lastVhZ) > 120f
+                || now - lastVhMs > 300)
             {
-                int vhr2;
-                float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
-                if (vh2 > ground && vh2 <= py + 90f) ground = vh2;
+                lastVhX = px; lastVhZ = pz; lastVhMs = now;
+                try
+                {
+                    int vhr2;
+                    float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
+                    lastVhY = vh2;
+                }
+                catch { lastVhY = -1f; }
             }
-            catch { }
+            if (lastVhY > ground && lastVhY <= py + 90f) ground = lastVhY;
             bool blocked = false;
             if (moving)
             {
