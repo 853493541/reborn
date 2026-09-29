@@ -166,6 +166,24 @@ internal static class CollisionSelfTest
                 string.Format("blocked={0} px={1:F2}", blocked, px));
         }
 
+        // 7. step budget (recovered engine stepOffset, passed by the client):
+        //    a 35 u step is climbed with a 50 u budget and blocks below it
+        {
+            MeshBuilder m = new MeshBuilder();
+            m.AddBox(30f, -10f, -200f, 300f, 35f, 200f);
+            string p = WriteBin("step", new MeshBuilder[] { m }, new float[][] { M(0f, 0f, 0f) });
+            FoliageCollision col = new FoliageCollision(null, p);
+            float px = 31f, py = 0f, pz = 0f, ground = 0f;
+            bool grounded = false;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            Check("step_up_50u_budget", !blocked && grounded && Math.Abs(ground - 35f) < 0.05f,
+                string.Format("blocked={0} ground={1:F2}", blocked, ground));
+            px = 29.9f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 30f);
+            Check("step_blocks_over_budget", blocked && ground <= 0.05f,
+                string.Format("blocked={0} ground={1:F2}", blocked, ground));
+        }
+
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"
             + (_fail > 0 ? " failed=" + string.Join(",", _failed.ToArray()) : ""));
         Environment.Exit(_fail == 0 ? 0 : 1);

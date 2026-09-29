@@ -949,6 +949,12 @@ internal static class RebornClient
         float playerRadius = 17f, playerHeight = 116f;
         float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
         float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
+        // Character step budget: the engine's own PxControllerDesc default
+        // stepOffset = 0.5 m = 50 u (recovered at PhysicsEngineX64 RVA
+        // 0x18000e910, metric PhysX scene; docs/movement/
+        // JX3_STEP_FORGIVENESS_RESEARCH.md). RC_STEP_HEIGHT overrides.
+        float stepHeight = 50f;
+        float.TryParse(Env("RC_STEP_HEIGHT", "50"), out stepHeight);
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
@@ -1684,13 +1690,13 @@ internal static class RebornClient
                 // object/foliage collision (walls, buildings, rocks, trees)
                 if (col != null)
                 {
-                    float stepGround = col.SupportHeight(px, pz, py - 20f, py + 70f);
+                    float stepGround = col.SupportHeight(px, pz, py - 20f, py + stepHeight);
                     if (moving)
                     {
                         for (int k = 1; k <= 3; k++)
                         {
                             float sd = playerRadius + k * 25f;
-                            float sh2 = col.SupportHeight(px + mvx * sd, pz + mvz * sd, py - 20f, py + 70f);
+                            float sh2 = col.SupportHeight(px + mvx * sd, pz + mvz * sd, py - 20f, py + stepHeight);
                             if (sh2 > stepGround) stepGround = sh2;
                         }
                     }
@@ -1704,7 +1710,7 @@ internal static class RebornClient
                         colCalls++;
                         float gBefore = ground;
                         bool sBlocked = col.Resolve(ref px, ref py, ref pz,
-                            playerRadius, playerHeight, ref ground, ref grounded);
+                            playerRadius, playerHeight, ref ground, ref grounded, stepHeight);
                         if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
                         if (ground > gBefore + 0.01f) groundOk = true;   // structure support
                         if (grounded)
@@ -1750,7 +1756,7 @@ internal static class RebornClient
             {
                 if (!groundOk || py - ground > 150f) { grounded = false; vy = 0f; }
                 else if (py > ground) py = ground;
-                else if (ground - py <= 70f) py = ground;
+                else if (ground - py <= stepHeight) py = ground;
             }
 
             // jump

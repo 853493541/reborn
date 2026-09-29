@@ -106,3 +106,18 @@ settle the gameplay step value until the server/nav layer is reproducible).
 - `proof/collision/disasm/pxcontrollerdesc_defaults.txt` — `isValid` checks
 - `docs/movement/JX3_COLLISION_SYSTEM.md` §3.9, §11.1, §24.4, G-1/G-13/G-25
 - `C:\SeasunGame\Game\JX3\bin\zhcn_hd\config\EngineStaticConfig.ini` `[KG3DENGINE]`
+
+## 8. Applied to the host (2026-09-29)
+
+Per the decision to use the real engine values, `client/RebornClient.cs` now uses the
+recovered PhysX CCT default:
+
+- object step budget **50 u (0.5 m)** (`RC_STEP_HEIGHT` overrides), used by the
+  structure `SupportHeight` windows, the ground snap and `FoliageCollision.Resolve`;
+- `FoliageCollision.Resolve` / `MoveResolved` take the budget as a parameter
+  (default 70 keeps old self-test semantics);
+- terrain slope rule is **unchanged** (calibrated 40 u look-ahead / 70 u rise, ~60°):
+  terrain in JX3 follows the `ProcessDropSpeed` slope model, not the CCT, and the
+  calibrated value is the documented host reference.
+
+Self-test: `step_up_50u_budget` PASS, `step_blocks_over_budget` PASS (11/11 total).

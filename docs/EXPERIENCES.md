@@ -173,3 +173,14 @@ solved it, and what is still open. **Newest at the bottom.**
   70 u rule, and a live-measured value is pending a choice.
 - Re-open: a live observation of a walked-over object's height, or decoder work on
   `KCharacter::AdjustPosZ` / server nav semantics.
+
+### 2026-09-29 — movement — Adopt recovered engine step budget (0.5 m)
+- Did: applied the real engine value to the host per user decision: object step budget
+  50 u (recovered PxControllerDesc default 0.5 m, metric scene), env `RC_STEP_HEIGHT`;
+  `FoliageCollision.Resolve`/`MoveResolved` take the budget as a parameter. Terrain
+  slope rule left calibrated (different subsystem: ProcessDropSpeed, not CCT).
+- Evidence: `docs/movement/JX3_STEP_FORGIVENESS_RESEARCH.md` §8; selftest 11/11
+  (`step_up_50u_budget`, `step_blocks_over_budget`).
+- Outcome: solved (adopted).
+- Re-open: a live-measured gameplay step height or server/nav decoding could replace
+  the CCT default with the online value.

@@ -783,7 +783,8 @@ public sealed class FoliageCollision
 
     public bool Resolve(ref float px, ref float py, ref float pz,
                         float radius, float height,
-                        ref float ground, ref bool grounded)
+                        ref float ground, ref bool grounded,
+                        float stepHeight = 70f)
     {
         bool blocked = false;
         for (int iter = 0; iter < 3; iter++)
@@ -810,7 +811,7 @@ public sealed class FoliageCollision
             {
                 Instance bi = _inst[bestIdx];
                 float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
-                if (horiz > 0.5f && bi.maxY > ground && bi.maxY <= py + 70f)
+                if (horiz > 0.5f && bi.maxY > ground && bi.maxY <= py + stepHeight)
                 {
                     float sh = SupportHeight(px, pz, py - 30f, bi.maxY + 5f);
                     if (sh > ground)
@@ -853,7 +854,8 @@ public sealed class FoliageCollision
     // the same Resolve semantics. Returns true when any substep was blocked.
     public bool MoveResolved(ref float px, ref float py, ref float pz,
                              float dx, float dz, float radius, float height,
-                             float maxSubStep, ref float ground, ref bool grounded)
+                             float maxSubStep, ref float ground, ref bool grounded,
+                             float stepHeight = 70f)
     {
         float len = (float)Math.Sqrt(dx * dx + dz * dz);
         int n = 1;
@@ -867,7 +869,7 @@ public sealed class FoliageCollision
         {
             px += dx / n;
             pz += dz / n;
-            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded))
+            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded, stepHeight))
                 blocked = true;
         }
         return blocked;
