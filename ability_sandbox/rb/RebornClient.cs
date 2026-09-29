@@ -599,6 +599,12 @@ internal static class RebornClient
         catch (Exception e) { Log("view angle: " + e.Message); }
         float worldDirX = 0f, worldDirZ = 0f;
         int lastKeySig = -1;
+        // SB_SCAN=1: one-time grid scan with the engine's own vertical probe
+        // (find columns with a raised standable surface near the spawn) -
+        // engine-driven target discovery, no guessing. One row per frame.
+        bool scanOn = Env("SB_SCAN", "0") == "1";
+        int scanRow = -9;
+        long loopStartMs = 0;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
@@ -1731,6 +1737,19 @@ internal static class RebornClient
                 forceDiag = false;
             }
 
+            // scripted look-at (tests): face a world point so the engine
+            // streams that area (streaming follows the camera view)
+            {
+                float lwx, lwz;
+                if (float.TryParse(Env("SB_CAM_LOOKAT_WX", ""), out lwx)
+                    && float.TryParse(Env("SB_CAM_LOOKAT_WZ", ""), out lwz))
+                {
+                    double dx2 = lwx - px, dz2 = lwz - pz;
+                    if (Math.Abs(dx2) + Math.Abs(dz2) > 1.0)
+                        camSys.Yaw = Math.Atan2(-dz2, -dx2);
+                }
+            }
+
             // movement is camera-relative: forward = camera -> anchor
             double cfx, cfz;
             camSys.Forward(out cfx, out cfz);
@@ -1744,7 +1763,8 @@ internal static class RebornClient
                 skillPressed = true;
             }
             if (autoSkillMs > 0 && autoSkillDone && !autoSkillConfirmDone
-                && feiAiming && now >= autoSkillMs + 600)
+                && feiAiming && now >= autoSkillMs + 600
+                && Env("SB_AIM_HOLD", "0") != "1")
             {
                 autoSkillConfirmDone = true;
                 feiConfirm = true;
@@ -2047,6 +2067,34 @@ internal static class RebornClient
                     py = ground;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                }
+            }
+
+            if (scanOn)
+            {
+                if (loopStartMs == 0) loopStartMs = now;
+                if (now - loopStartMs >= 8000 && scanRow <= 9)
+                {
+                    if (scanRow == -9) { scanRow = -9; }
+                    if (scanRow <= 9)
+                    {
+                        float dz = scanRow * 300f;
+                        for (int sx = -4; sx <= 4; sx++)
+                        {
+                            float dx = sx * 300f;
+                            try
+                            {
+                                int hr3;
+                                float vh3 = engineRay.RayVerticalHeight(px + dx, 10000f, pz + dz, 30000f, out hr3);
+                                if (vh3 > py + 100f && vh3 - py <= 1200f)
+                                    Log("scan candidate (" + (int)(px + dx) + "," + (int)vh3 + "," + (int)(pz + dz)
+                                        + ") rise=" + (int)(vh3 - py) + " hr=" + hr3);
+                            }
+                            catch { }
+                        }
+                        scanRow++;
+                        if (scanRow > 9) Log("scan done");
+                    }
                 }
             }
 
