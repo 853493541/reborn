@@ -14,6 +14,10 @@ namespace MapUiApp.Engine
         public int GetInt(string key, int fallback = 0)
             => int.TryParse(Get(key), out var value) ? value : fallback;
 
+        public double GetDouble(string key, double fallback = 0)
+            => double.TryParse(Get(key), System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var value) ? value : fallback;
+
         public bool GetBool(string key, bool fallback = false)
             => int.TryParse(Get(key), out var value) ? value != 0 : fallback;
     }

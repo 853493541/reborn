@@ -23,8 +23,12 @@
             "show": [
               "CheckBox_DesertStorm",
               "CheckBox_DesertStorm_Single",
+              "CheckBox_DesertStorm_Skill",
               "CheckBox_DesertStorm_Takov",
               "CheckBox_CustomizeBattlefield"
+            ],
+            "gated": [
+              "CheckBox_DesertStorm_Skill"
             ]
           },
           "show": [

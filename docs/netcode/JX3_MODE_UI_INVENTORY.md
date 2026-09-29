@@ -352,3 +352,26 @@ These were validated against the shipped data while building the WPF renderer:
     `Image_innerPower` are filled at runtime from player data, and Minimap's
     slide-out panels are authored parked at negative X until the module
     animates them in.
+21. **State-driven art keys the renderer honours.** `CheckedWhenCreate=1` makes a
+    checkbox paint its `CheckAndEnable` frame group instead of the unchecked one:
+    in `Button4.UITex` group 14 (unchecked) is a 30x30 *empty* frame while group
+    20 (checked) is the 124x30 tab plate. The live queue window shows exactly
+    that — 五人模式/单人模式/寻宝模式 are created checked (plates), 自定义模式 is
+    not — and the reference screenshot confirms it. The renderer also checks the
+    tab of the rendered page when it was authored unchecked (radio tabs check on
+    click), and activity-gated tabs (`tabs.gated`, e.g. 乱武模式 676) only get a
+    slot in the strip when the rendered page *is* that tab — which is why the
+    五人模式 render keeps four tabs while the 乱武模式 render shows five with the
+    寻宝/自定义 tabs shifted to slots 3/4 (ShowModeTabs advances the index only
+    for shown tabs). `FontColor=<color.txt name>` overrides the font scheme's
+    fill (the engine decoder reads it as a string); `Title_EveryWin_Reward_1` is
+    white in scheme 18 but `yellow2` in the INI — the live client's 单场奖励
+    label is yellow. `ImagePercent` scales the element's opacity (the
+    随机地图/单场奖励 flourishes are 0.35, old-skin chrome 1.0).
+22. **技能预览 (DesertWeaponSkill) is not in the local client's pak index.**
+    `Btn_DesertStormSkills` opens the `DesertWeaponSkill` module (title
+    `STR_SKILLSINTRODYCTION` 绝境武学), but neither `ui/Config/Default/
+    DesertWeaponSkill.ini|.lua` nor any plausible path resolves through
+    PakV4SfxExtract on this install (the surrounding modules and string tables
+    do). Rendering that panel needs its INI + Lua from a full client (or a
+    downloaded r2d bundle).

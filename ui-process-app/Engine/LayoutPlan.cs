@@ -40,6 +40,13 @@ namespace UiProcessApp.Engine
         public double X0 { get; set; } = 18;
         public double Step { get; set; } = 100;
         public List<string> Show { get; set; }
+
+        /// <summary>
+        /// Tabs the client hides while their activity is off (InitWndBattleField drops
+        /// modes whose IsActivityOn is false). They only get a slot in the strip when
+        /// the rendered page itself is that tab (i.e. the player is on it).
+        /// </summary>
+        public List<string> Gated { get; set; }
     }
 
     /// <summary>
@@ -327,13 +334,28 @@ namespace UiProcessApp.Engine
 
         /// <summary>
         /// Mirrors ShowModeTabs: hide every tab checkbox of the page set, then show
-        /// only the listed modes and pin each one at x0 + index * step. The pinned
+        /// only the listed modes and pin each one at x0 + index*step. The pinned
         /// sections carry TabFixed so the WndPageSet auto-flow leaves them alone.
+        /// Activity-gated tabs (strip.Gated) stay off unless the rendered page is
+        /// that tab; radio tabs check on click, so the rendered page's tab is the
+        /// checked one (its CheckedWhenCreate is forced on, siblings off).
         /// </summary>
-        public static void ApplyTabs(IniFile filtered, TabStrip strip)
+        public static void ApplyTabs(IniFile filtered, TabStrip strip, string selectedPage = null)
         {
             if (strip == null || string.IsNullOrWhiteSpace(strip.Parent) || strip.Show == null) return;
-            var wanted = new List<string>(strip.Show);
+            var gated = new HashSet<string>(strip.Gated ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+            string TabForPage(string page) => string.IsNullOrWhiteSpace(page) || !page.StartsWith("Page_", StringComparison.OrdinalIgnoreCase)
+                ? null
+                : "CheckBox_" + page.Substring("Page_".Length);
+
+            var wanted = new List<string>();
+            foreach (var name in strip.Show)
+            {
+                if (gated.Contains(name) &&
+                    !string.Equals(name, TabForPage(selectedPage), StringComparison.OrdinalIgnoreCase))
+                    continue;
+                wanted.Add(name);
+            }
             var wantedSet = new HashSet<string>(wanted, StringComparer.OrdinalIgnoreCase);
             bool IsTab(IniSection section) =>
                 string.Equals(section.Get("._Parent"), strip.Parent, StringComparison.OrdinalIgnoreCase) &&
@@ -366,11 +388,22 @@ namespace UiProcessApp.Engine
                 }
             }
 
+            var selectedTab = TabForPage(selectedPage);
             for (int i = 0; i < wanted.Count; i++)
             {
                 if (!filtered.ByName.TryGetValue(wanted[i], out var section)) continue;
                 section.Values["Left"] = (strip.X0 + i * strip.Step).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 section.Values["TabFixed"] = "1";
+            }
+
+            if (selectedTab != null && wantedSet.Contains(selectedTab) &&
+                filtered.ByName.TryGetValue(selectedTab, out var selectedSection) &&
+                selectedSection.GetInt("CheckedWhenCreate") == 0)
+            {
+                foreach (var name in wanted)
+                    if (filtered.ByName.TryGetValue(name, out var tab))
+                        tab.Values["CheckedWhenCreate"] = "0";
+                selectedSection.Values["CheckedWhenCreate"] = "1";
             }
         }
 

@@ -356,11 +356,14 @@ namespace MapUiApp.Engine
                 var imagePath = section.Get("Image");
                 var width = section.GetInt("Width");
                 var height = section.GetInt("Height");
+                // A checkbox created checked (CheckedWhenCreate=1, e.g. the queue mode
+                // tabs) paints its checked state frame group, not the unchecked one.
+                var isChecked = type == "WndCheckBox" && section.GetInt("CheckedWhenCreate") == 1;
                 var frame = type switch
                 {
                     // Buttons render their normal-state frame group; Frame is only a fallback.
                     "WndButton" => FrameOrGroup(section, "NormalGroup", textures, imagePath),
-                    "WndCheckBox" => FrameOrGroup(section, "UnCheckAndEnable", textures, imagePath),
+                    "WndCheckBox" => FrameOrGroup(section, isChecked ? "CheckAndEnable" : "UnCheckAndEnable", textures, imagePath),
                     // Frame=-1 is authored for state/runtime-driven frames; default to 0.
                     _ => Math.Max(0, section.GetInt("Frame", 0)),
                 };
@@ -458,6 +461,12 @@ namespace MapUiApp.Engine
                     visual = image;
                 }
 
+                // ImagePercent scales the frame's opacity (the 随机地图 flourishes are
+                // authored 0.35, the old-skin chrome 1.0).
+                var imagePercent = section.GetDouble("ImagePercent");
+                if (imagePercent > 0 && imagePercent < 1)
+                    visual.Opacity = imagePercent;
+
                 // Buttons and checkboxes own child handles/texts; host them in a canvas so
                 // the INI hierarchy (and its offsets) survives.
                 if (type == "WndButton" || type == "WndCheckBox")
@@ -503,6 +512,11 @@ namespace MapUiApp.Engine
                     foreground = new SolidColorBrush(schemeColor);
                     borderColor = schemeBorder;
                 }
+                // The engine's text decoder reads FontColor as a color name and
+                // overrides the scheme's fill (e.g. Title_EveryWin_Reward_1 =
+                // yellow2 while its scheme is white).
+                if (UiProcessApp.Engine.Fonts.TryGetColor(section.Get("FontColor"), out var fontColor))
+                    foreground = new SolidColorBrush(fontColor);
                 var block = new TextBlock
                 {
                     Text = text.Replace("\\n", "\n").Replace("\\t", "\t"),

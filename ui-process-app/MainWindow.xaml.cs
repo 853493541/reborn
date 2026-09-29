@@ -390,7 +390,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyHide(plan.Filtered, HideBox.Text);
                 LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                 LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
-                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, CurrentPage() ?? window.Page);
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, App.LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, App.ScriptShown(window));
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);

@@ -76,6 +76,16 @@ namespace UiProcessApp.Engine
             return true;
         }
 
+        /// <summary>
+        /// Resolves a named color from the shipped color.txt (the engine's
+        /// `FontColor` key overrides the font scheme's fill color with one of these).
+        /// </summary>
+        public static bool TryGetColor(string name, out Color color)
+        {
+            color = default;
+            return !string.IsNullOrWhiteSpace(name) && Colors.TryGetValue(name.Trim(), out color);
+        }
+
         private static void LoadColors(string path)
         {
             if (!File.Exists(path)) return;

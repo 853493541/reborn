@@ -155,7 +155,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyHide(plan.Filtered, hide ?? window.Hide);
                 LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                 LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
-                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, effectivePage);
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                 LayoutPlanBuilder.ApplyOnly(plan.Filtered, only);
@@ -322,7 +322,7 @@ namespace UiProcessApp
                         LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                         LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                         LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
-                        LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                        LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
                         LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                         LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                         LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
@@ -461,7 +461,7 @@ namespace UiProcessApp
                             LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
-                            LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
                             LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                             LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
