@@ -1,0 +1,298 @@
+# KGUIX64.dll xrefs for 'NormalGroup'
+# image base 0x180000000
+
+## xref @ 0x1800ce596 -> 0x1805ad7a8 'NormalGroup'  fn start 0x1800ce400
+  0x1800ce400: push     rbp
+  0x1800ce402: push     rbx
+  0x1800ce403: push     rsi
+  0x1800ce404: push     rdi
+  0x1800ce405: push     r12
+  0x1800ce407: push     r14
+  0x1800ce409: push     r15
+  0x1800ce40b: lea      rbp, [rsp - 0xb0]
+  0x1800ce413: sub      rsp, 0x1b0
+  0x1800ce41a: movaps   xmmword ptr [rsp + 0x1a0], xmm6
+  0x1800ce422: mov      rax, qword ptr [rip + 0x58187f]
+  0x1800ce429: xor      rax, rsp
+  0x1800ce42c: mov      qword ptr [rbp + 0x70], rax
+  0x1800ce430: xor      r14d, r14d
+  0x1800ce433: mov      dword ptr [rsp + 0x54], 0xffffffff
+  0x1800ce43b: mov      dword ptr [rsp + 0x30], r14d
+  0x1800ce440: mov      r12d, r9d
+  0x1800ce443: mov      dword ptr [rsp + 0x40], r14d
+  0x1800ce448: mov      rsi, r8
+  0x1800ce44b: mov      dword ptr [rsp + 0x3c], r14d
+  0x1800ce450: mov      rdi, rdx
+  0x1800ce453: mov      dword ptr [rsp + 0x38], r14d
+  0x1800ce458: mov      rbx, rcx
+  0x1800ce45b: mov      dword ptr [rsp + 0x34], r14d
+  0x1800ce460: xorps    xmm6, xmm6
+  0x1800ce463: mov      dword ptr [rsp + 0x4c], r14d
+  0x1800ce468: xor      r15b, r15b
+  0x1800ce46b: mov      dword ptr [rsp + 0x50], r14d
+  0x1800ce470: mov      dword ptr [rsp + 0x44], r14d
+  0x1800ce475: mov      dword ptr [rsp + 0x48], r14d
+  0x1800ce47a: call     0x1800cc700
+  0x1800ce47f: test     eax, eax
+  0x1800ce481: je       0x1800cea5b
+  0x1800ce487: mov      rax, qword ptr [rdi]
+  0x1800ce48a: lea      rcx, [rsp + 0x30]
+  0x1800ce48f: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce494: lea      r8, [rip + 0x4df2bd]  ; 'ButtonDisable'
+  0x1800ce49b: mov      rcx, rdi
+  0x1800ce49e: movaps   xmmword ptr [rsp + 0x190], xmm7
+  0x1800ce4a6: xor      r9d, r9d
+  0x1800ce4a9: movaps   xmmword ptr [rsp + 0x180], xmm8
+  0x1800ce4b2: mov      rdx, rsi
+  0x1800ce4b5: call     qword ptr [rax + 0x50]
+  0x1800ce4b8: cmp      dword ptr [rsp + 0x30], r14d
+  0x1800ce4bd: mov      edx, 2
+  0x1800ce4c2: mov      rcx, rbx
+  0x1800ce4c5: sete     r14b
+  0x1800ce4c9: mov      r8d, r14d
+  0x1800ce4cc: call     0x180125f00
+  0x1800ce4d1: mov      rax, qword ptr [rdi]
+  0x1800ce4d4: lea      rcx, [rsp + 0x30]
+  0x1800ce4d9: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce4de: lea      r8, [rip + 0x4dd3eb]  ; 'AnimateType'
+  0x1800ce4e5: mov      rcx, rdi
+  0x1800ce4e8: xor      r9d, r9d
+  0x1800ce4eb: mov      rdx, rsi
+  0x1800ce4ee: call     qword ptr [rax + 0x50]
+  0x1800ce4f1: mov      eax, dword ptr [rsp + 0x30]
+  0x1800ce4f5: lea      rcx, [rsp + 0x40]
+  0x1800ce4fa: mov      dword ptr [rbx + 0xb70], eax
+  0x1800ce500: lea      r8, [rip + 0x4df261]  ; 'NormalFont'
+  0x1800ce507: mov      rax, qword ptr [rdi]
+  0x1800ce50a: mov      r9d, 0xffffffff
+  0x1800ce510: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce515: mov      rdx, rsi
+  0x1800ce518: mov      rcx, rdi
+  0x1800ce51b: call     qword ptr [rax + 0x50]
+  0x1800ce51e: mov      rax, qword ptr [rdi]
+  0x1800ce521: lea      rcx, [rsp + 0x3c]
+  0x1800ce526: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce52b: lea      r8, [rip + 0x4df246]  ; 'MouseOverFont'
+  0x1800ce532: mov      rcx, rdi
+  0x1800ce535: mov      r9d, 0xffffffff
+  0x1800ce53b: mov      rdx, rsi
+  0x1800ce53e: call     qword ptr [rax + 0x50]
+  0x1800ce541: mov      rax, qword ptr [rdi]
+  0x1800ce544: lea      rcx, [rsp + 0x38]
+  0x1800ce549: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce54e: lea      r8, [rip + 0x4df233]  ; 'MouseDownFont'
+  0x1800ce555: mov      rcx, rdi
+  0x1800ce558: mov      r9d, 0xffffffff
+  0x1800ce55e: mov      rdx, rsi
+  0x1800ce561: call     qword ptr [rax + 0x50]
+  0x1800ce564: mov      rax, qword ptr [rdi]
+  0x1800ce567: lea      rcx, [rsp + 0x34]
+  0x1800ce56c: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce571: lea      r8, [rip + 0x4df220]  ; 'DisableFont'
+  0x1800ce578: mov      rcx, rdi
+  0x1800ce57b: mov      r9d, 0xffffffff
+  0x1800ce581: mov      rdx, rsi
+  0x1800ce584: call     qword ptr [rax + 0x50]
+  0x1800ce587: mov      eax, dword ptr [rsp + 0x40]
+  0x1800ce58b: lea      rcx, [rsp + 0x40]
+  0x1800ce590: mov      dword ptr [rbx + 0xa00], eax
+  0x1800ce596: lea      r8, [rip + 0x4df20b]  ; 'NormalGroup'
+  0x1800ce59d: mov      eax, dword ptr [rsp + 0x3c]
+  0x1800ce5a1: xor      r9d, r9d
+  0x1800ce5a4: mov      dword ptr [rbx + 0xa04], eax
+  0x1800ce5aa: mov      rdx, rsi
+  0x1800ce5ad: mov      eax, dword ptr [rsp + 0x38]
+  0x1800ce5b1: mov      dword ptr [rbx + 0xa08], eax
+  0x1800ce5b7: mov      eax, dword ptr [rsp + 0x34]
+  0x1800ce5bb: mov      dword ptr [rbx + 0xa0c], eax
+  0x1800ce5c1: mov      rax, qword ptr [rdi]
+  0x1800ce5c4: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce5c9: mov      rcx, rdi
+  0x1800ce5cc: call     qword ptr [rax + 0x50]
+  0x1800ce5cf: mov      rax, qword ptr [rdi]
+  0x1800ce5d2: lea      rcx, [rsp + 0x3c]
+  0x1800ce5d7: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce5dc: lea      r8, [rip + 0x4df1d5]  ; 'MouseOverGroup'
+  0x1800ce5e3: mov      rcx, rdi
+  0x1800ce5e6: xor      r9d, r9d
+  0x1800ce5e9: mov      rdx, rsi
+  0x1800ce5ec: call     qword ptr [rax + 0x50]
+  0x1800ce5ef: mov      rax, qword ptr [rdi]
+  0x1800ce5f2: lea      rcx, [rsp + 0x38]
+  0x1800ce5f7: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce5fc: lea      r8, [rip + 0x4df1c5]  ; 'MouseDownGroup'
+  0x1800ce603: mov      rcx, rdi
+  0x1800ce606: xor      r9d, r9d
+  0x1800ce609: mov      rdx, rsi
+  0x1800ce60c: call     qword ptr [rax + 0x50]
+  0x1800ce60f: mov      rax, qword ptr [rdi]
+  0x1800ce612: lea      rcx, [rsp + 0x34]
+  0x1800ce617: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce61c: lea      r8, [rip + 0x4df1b5]  ; 'DisableGroup'
+  0x1800ce623: mov      rcx, rdi
+  0x1800ce626: xor      r9d, r9d
+  0x1800ce629: mov      rdx, rsi
+  0x1800ce62c: call     qword ptr [rax + 0x50]
+  0x1800ce62f: mov      rax, qword ptr [rdi]
+  0x1800ce632: lea      rcx, [rsp + 0x60]
+  0x1800ce637: mov      dword ptr [rsp + 0x28], 0x104
+  0x1800ce63f: lea      r9, [rip + 0x4db1d2]
+  0x1800ce646: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce64b: lea      r8, [rip + 0x4e2b8a]  ; 'Image'
+  0x1800ce652: mov      rcx, rdi
+  0x1800ce655: mov      rdx, rsi
+  0x1800ce658: call     qword ptr [rax + 0x48]
+  0x1800ce65b: mov      rax, qword ptr [rip + 0x5a01ee]
+  0x1800ce662: lea      rdx, [rsp + 0x60]
+  0x1800ce667: mov      r14d, 0xfde9
+  0x1800ce66d: mov      rcx, qword ptr [rax + 0xdb50]
+  0x1800ce674: cmp      dword ptr [rcx + 0x218], 0
+  0x1800ce67b: jne      0x1800ce684
+  0x1800ce67d: mov      r14d, dword ptr [rcx + 0x918]
+  0x1800ce684: movzx    ecx, byte ptr [rdx]
+  0x1800ce687: test     cl, cl
+  0x1800ce689: je       0x1800ce6b6
+  0x1800ce68b: cmp      cl, 0x2f
+  0x1800ce68e: jne      0x1800ce695
+  0x1800ce690: mov      byte ptr [rdx], 0x5c
+  0x1800ce693: mov      cl, 0x5c
+  0x1800ce695: lea      eax, [rcx - 0x41]
+  0x1800ce698: cmp      al, 0x19
+  0x1800ce69a: ja       0x1800ce6a1
+  0x1800ce69c: add      cl, 0x20
+  0x1800ce69f: mov      byte ptr [rdx], cl
+  0x1800ce6a1: xor      r8d, r8d
+  0x1800ce6a4: movzx    ecx, r14w
+  0x1800ce6a8: call     qword ptr [rip + 0x41957a]  ; USER32.dll!CharNextExA
+  0x1800ce6ae: mov      rdx, rax
+  0x1800ce6b1: test     rax, rax
+  0x1800ce6b4: jne      0x1800ce684
+  0x1800ce6b6: mov      r9d, dword ptr [rsp + 0x38]
+  0x1800ce6bb: lea      rax, [rsp + 0x60]
+  0x1800ce6c0: mov      r8d, dword ptr [rsp + 0x3c]
+  0x1800ce6c5: mov      rcx, rbx
+  0x1800ce6c8: mov      edx, dword ptr [rsp + 0x40]
+  0x1800ce6cc: mov      qword ptr [rsp + 0x28], rax
+  0x1800ce6d1: mov      eax, dword ptr [rsp + 0x34]
+  0x1800ce6d5: mov      dword ptr [rsp + 0x20], eax
+  0x1800ce6d9: call     0x1801249b0
+  0x1800ce6de: mov      rax, qword ptr [rdi]
+  0x1800ce6e1: lea      rcx, [rsp + 0x60]
+  0x1800ce6e6: mov      dword ptr [rsp + 0x28], 0x104
+  0x1800ce6ee: lea      r9, [rip + 0x4db123]
+  0x1800ce6f5: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce6fa: lea      r8, [rip + 0x4df0e7]  ; 'SfxNormal'
+  0x1800ce701: mov      rcx, rdi
+  0x1800ce704: mov      rdx, rsi
+  0x1800ce707: call     qword ptr [rax + 0x48]
+  0x1800ce70a: cmp      byte ptr [rsp + 0x60], r15b
+  0x1800ce70f: je       0x1800ce747
+  0x1800ce711: lea      rcx, [rbx + 0xa18]
+  0x1800ce718: mov      r8d, 0x3f
+  0x1800ce71e: lea      rdx, [rsp + 0x60]
+  0x1800ce723: call     qword ptr [rip + 0x419c1f]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1800ce729: mov      byte ptr [rbx + 0xa57], r15b
+  0x1800ce730: mov      byte ptr [rbx + 0xa60], r15b
+  0x1800ce737: cmp      byte ptr [rbx + 0xc50], 3
+  0x1800ce73e: jge      0x1800ce747
+  0x1800ce740: mov      byte ptr [rbx + 0xc50], 3
+  0x1800ce747: mov      rax, qword ptr [rdi]
+  0x1800ce74a: lea      rcx, [rsp + 0x60]
+  0x1800ce74f: mov      dword ptr [rsp + 0x28], 0x104
+  0x1800ce757: lea      r9, [rip + 0x4db0ba]
+  0x1800ce75e: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce763: lea      r8, [rip + 0x4df08e]  ; 'SfxMouseOver'
+  0x1800ce76a: mov      rcx, rdi
+  0x1800ce76d: mov      rdx, rsi
+  0x1800ce770: call     qword ptr [rax + 0x48]
+  0x1800ce773: cmp      byte ptr [rsp + 0x60], r15b
+  0x1800ce778: je       0x1800ce7b0
+  0x1800ce77a: lea      rcx, [rbx + 0xa68]
+  0x1800ce781: mov      r8d, 0x3f
+  0x1800ce787: lea      rdx, [rsp + 0x60]
+  0x1800ce78c: call     qword ptr [rip + 0x419bb6]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1800ce792: mov      byte ptr [rbx + 0xaa7], r15b
+  0x1800ce799: mov      byte ptr [rbx + 0xab0], r15b
+  0x1800ce7a0: cmp      byte ptr [rbx + 0xc50], 3
+  0x1800ce7a7: jge      0x1800ce7b0
+  0x1800ce7a9: mov      byte ptr [rbx + 0xc50], 3
+  0x1800ce7b0: mov      rax, qword ptr [rdi]
+  0x1800ce7b3: lea      rcx, [rsp + 0x60]
+  0x1800ce7b8: mov      dword ptr [rsp + 0x28], 0x104
+  0x1800ce7c0: lea      r9, [rip + 0x4db051]
+  0x1800ce7c7: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce7cc: lea      r8, [rip + 0x4df035]  ; 'SfxMouseDown'
+  0x1800ce7d3: mov      rcx, rdi
+  0x1800ce7d6: mov      rdx, rsi
+  0x1800ce7d9: call     qword ptr [rax + 0x48]
+  0x1800ce7dc: cmp      byte ptr [rsp + 0x60], r15b
+  0x1800ce7e1: je       0x1800ce819
+  0x1800ce7e3: lea      rcx, [rbx + 0xab8]
+  0x1800ce7ea: mov      r8d, 0x3f
+  0x1800ce7f0: lea      rdx, [rsp + 0x60]
+  0x1800ce7f5: call     qword ptr [rip + 0x419b4d]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1800ce7fb: mov      byte ptr [rbx + 0xaf7], r15b
+  0x1800ce802: mov      byte ptr [rbx + 0xb00], r15b
+  0x1800ce809: cmp      byte ptr [rbx + 0xc50], 3
+  0x1800ce810: jge      0x1800ce819
+  0x1800ce812: mov      byte ptr [rbx + 0xc50], 3
+  0x1800ce819: mov      rax, qword ptr [rdi]
+  0x1800ce81c: lea      rcx, [rsp + 0x60]
+  0x1800ce821: mov      dword ptr [rsp + 0x28], 0x104
+  0x1800ce829: lea      r9, [rip + 0x4dafe8]
+  0x1800ce830: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce835: lea      r8, [rip + 0x4defdc]  ; 'SfxDisable'
+  0x1800ce83c: mov      rcx, rdi
+  0x1800ce83f: mov      rdx, rsi
+  0x1800ce842: call     qword ptr [rax + 0x48]
+  0x1800ce845: cmp      byte ptr [rsp + 0x60], r15b
+  0x1800ce84a: je       0x1800ce882
+  0x1800ce84c: lea      rcx, [rbx + 0xb08]
+  0x1800ce853: mov      r8d, 0x3f
+  0x1800ce859: lea      rdx, [rsp + 0x60]
+  0x1800ce85e: call     qword ptr [rip + 0x419ae4]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1800ce864: mov      byte ptr [rbx + 0xb47], r15b
+  0x1800ce86b: mov      byte ptr [rbx + 0xb50], r15b
+  0x1800ce872: cmp      byte ptr [rbx + 0xc50], 3
+  0x1800ce879: jge      0x1800ce882
+  0x1800ce87b: mov      byte ptr [rbx + 0xc50], 3
+  0x1800ce882: mov      rax, qword ptr [rdi]
+  0x1800ce885: lea      rcx, [rsp + 0x4c]
+  0x1800ce88a: movss    xmm7, dword ptr [rbx + 0x2c]
+  0x1800ce88f: lea      r8, [rip + 0x4def92]  ; 'ImageRelX'
+  0x1800ce896: movss    xmm8, dword ptr [rbx + 0x30]
+  0x1800ce89c: movaps   xmm3, xmm6
+  0x1800ce89f: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce8a4: mov      rdx, rsi
+  0x1800ce8a7: mov      rcx, rdi
+  0x1800ce8aa: call     qword ptr [rax + 0x70]
+  0x1800ce8ad: mov      rax, qword ptr [rdi]
+  0x1800ce8b0: lea      rcx, [rsp + 0x50]
+  0x1800ce8b5: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce8ba: lea      r8, [rip + 0x4def77]  ; 'ImageRelY'
+  0x1800ce8c1: mov      rcx, rdi
+  0x1800ce8c4: movaps   xmm3, xmm6
+  0x1800ce8c7: mov      rdx, rsi
+  0x1800ce8ca: call     qword ptr [rax + 0x70]
+  0x1800ce8cd: mov      rax, qword ptr [rdi]
+  0x1800ce8d0: lea      rcx, [rsp + 0x44]
+  0x1800ce8d5: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce8da: lea      r8, [rip + 0x4def67]  ; 'ImageWidth'
+  0x1800ce8e1: mov      rcx, rdi
+  0x1800ce8e4: movaps   xmm3, xmm6
+  0x1800ce8e7: mov      rdx, rsi
+  0x1800ce8ea: call     qword ptr [rax + 0x70]
+  0x1800ce8ed: mov      rax, qword ptr [rdi]
+  0x1800ce8f0: lea      rcx, [rsp + 0x48]
+  0x1800ce8f5: mov      qword ptr [rsp + 0x20], rcx
+  0x1800ce8fa: lea      r8, [rip + 0x4def57]  ; 'ImageHeight'
+  0x1800ce901: mov      rcx, rdi
+  0x1800ce904: movaps   xmm3, xmm6
+  0x1800ce907: mov      rdx, rsi
+  0x1800ce90a: call     qword ptr [rax + 0x70]
+  0x1800ce90d: movss    xmm3, dword ptr [rsp + 0x44]
+  0x1800ce913: comiss   xmm6, xmm3
+  0x1800ce916: jb       0x1800ce923
+  0x1800ce918: .byte    0xf3
+  0x1800ce919: .byte    0x0f
+

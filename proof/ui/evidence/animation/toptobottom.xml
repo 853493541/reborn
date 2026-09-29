@@ -1,0 +1,18 @@
+<Animation name="animation" totaltime="500">
+	<Layer totaltime="500" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="100" h="50" onlyeditor="true"/>
+		<KeyFrames>
+			<KeyFrame time="0">
+				<ActionRotate type="3" angle="0"/>
+			</KeyFrame>
+			<KeyFrame time="500">
+				<ActionRotate type="3" angle="1"/>
+			</KeyFrame>
+		</KeyFrames>
+		<State type="1" totaltime="500">
+			<Point type="Pos" inherit="false" x="357" y="345"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+

@@ -1,0 +1,11 @@
+[0]
+Name=黑体
+File=\UI\Font\fzht_GBK.ttf
+
+[1]
+Name=行楷
+File=\UI\Font\fzxk.ttf
+
+[2]
+Name=剪纸
+File=\UI\Font\fzjz.ttf

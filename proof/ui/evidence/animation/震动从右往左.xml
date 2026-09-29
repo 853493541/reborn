@@ -1,0 +1,26 @@
+<Animation name="animation" totaltime="371" verdistance="1">
+	<Layer totaltime="371" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="189" h="410" onlyeditor="true"/>
+		<KeyFrames>
+			<KeyFrame time="0">
+				<ActionFade type="1" alpha="0"/>
+			</KeyFrame>
+			<KeyFrame time="360">
+				<ActionFade type="1" alpha="1"/>
+			</KeyFrame>
+		</KeyFrames>
+		<State type="0" totaltime="0">
+			<Point type="Line" inherit="false" x="558" y="320" velocity="1" accelertion="2"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="1" totaltime="224">
+			<Point type="Line" inherit="false" x="421" y="320" velocity="0.5" accelertion="1"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="2" totaltime="147">
+			<Point type="Line" inherit="false" x="437" y="320" velocity="0.15" accelertion="0.1"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+

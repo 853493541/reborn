@@ -1,0 +1,28 @@
+<Animation name="animation" totaltime="487" verdistance="1">
+	<Layer totaltime="487" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="300" h="200" onlyeditor="true"/>
+		<KeyFrames>
+			<KeyFrame time="0">
+				<ActionZoom scale="1"/>
+				<ActionFade type="1" alpha="1"/>
+			</KeyFrame>
+			<KeyFrame time="210">
+				<ActionZoom scale="0.5"/>
+				<ActionFade type="1" alpha="0.5"/>
+			</KeyFrame>
+			<KeyFrame time="435">
+				<ActionZoom scale="0.3"/>
+				<ActionFade type="1" alpha="0.1"/>
+			</KeyFrame>
+		</KeyFrames>
+		<State type="0" totaltime="0">
+			<Point type="Line" inherit="false" x="208" y="306" velocity="1" accelertion="4"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="2" totaltime="487">
+			<Point type="Line" inherit="false" x="676" y="414" velocity="0.5" accelertion="2"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+

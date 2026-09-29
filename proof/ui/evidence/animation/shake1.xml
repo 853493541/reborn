@@ -1,0 +1,30 @@
+<Animation name="animation" totaltime="378">
+	<Layer totaltime="378" offsettime="0">
+		<Image file="config/Î´ÃüÃû.jpg" frame="-1" w="100" h="50" onlyeditor="true"/>
+		<KeyFrames>
+			<KeyFrame time="0">
+				<ActionZoom scale="5"/>
+			</KeyFrame>
+			<KeyFrame time="240">
+				<ActionZoom scale="1"/>
+			</KeyFrame>
+		</KeyFrames>
+		<State type="0" totaltime="250">
+			<Point type="Pos" inherit="false" x="168" y="202"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="2" totaltime="42">
+			<Point type="Line" inherit="false" x="223" y="133" velocity="2" accelertion="5"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="1" totaltime="63">
+			<Point type="Line" inherit="false" x="149" y="245" velocity="2" accelertion="5"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+		<State type="1" totaltime="23">
+			<Point type="Line" inherit="false" x="168" y="202" velocity="2" accelertion="10"/>
+			<PosPercent perx="0.5" pery="0.5"/>
+		</State>
+	</Layer>
+</Animation>
+
