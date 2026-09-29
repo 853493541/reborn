@@ -102,3 +102,20 @@ solved it, and what is still open. **Newest at the bottom.**
   reorganization.
 - Evidence: merge commit `085daa7`; `origin/main` updated in the same session.
 - Outcome: solved.
+
+### 2026-09-29 — movement — 二段跳 research + client jump chain (reborn_client_double_jump)
+- Did: decoded the double-jump press model from `KCharacter::Jump` (chain gate
+  `jumpCount >= MaxJumpCount[school]` 0x140313B19, row = current count at
+  0x140313B20, Represent `DOUBLE_JUMP` state + `GetDoubleJumpEndOffset`),
+  extracted the full per-school chain (`--chain`; J0 invariant 40,90,11, J1 is
+  the 二段跳 signature, gravity clamp 0..31 matters for schools 10/11),
+  reproduced it in `client/JumpTable.cs` + RebornClient (J0 unchanged, J1+ per
+  press, landing reset, reject log), and added isolated feature-build naming
+  (`RC_CLIENT_EXE`, own memory namespace + guard, per-exe build_info).
+- Evidence: `tools/gravity/parse_jump_tables.py --chain`; verify_model §6;
+  in-engine runs in `proof/gravity/double_jump_reborn_run.txt` (A/C clean:
+  `djb press n=2` -> `djb land n=2` -> DONE; B/D reproduce the
+  `f1b02yd二段跳a.tani` AV, so the tani is opt-in and the client defaults to the
+  jump clip); commits `e261499`, `c937973`.
+- Outcome: solved. Open: segment-end End-triple trigger, JumpFrameParam curves,
+  fly-state re-press path, tani AV.

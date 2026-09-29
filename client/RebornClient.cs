@@ -951,7 +951,11 @@ internal static class RebornClient
         int jumpSchool = 0;
         int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
         if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
-        string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.tani");
+        // Authored f1b02yd二段跳a.tani loads (rc=0) but AVs this host within ~1 s
+        // (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md §4), so the default reuses
+        // RC_CLIP_JUMP; opt in with RC_CLIP_DJUMP=<vfs path>.
+        string clipDJump = Env("RC_CLIP_DJUMP", "");
+        if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
         bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
         int jumpCount = 0;
         float curJumpGravity = -pGravity;

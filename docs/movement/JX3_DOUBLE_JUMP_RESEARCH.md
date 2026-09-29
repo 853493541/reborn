@@ -27,8 +27,12 @@ ignored (unlike most MMOs of its era) — it advances a per-character **jump cha
   `KRLCharacterFrameData::GetDoubleJumpEndOffset` (`0x00CCC928`) — the animation
   side treats 二段跳 as its own state, not as 跳跃 again. (HIGH)
 - Shipped animation `f1b02yd二段跳a.tani` (extracted; see
-  `REBORN_JUMP_FALL_SPEC.md` §6). Not loose in the install — the VFS/pak owns it,
-  so the client takes it as an env override (`RC_CLIP_DJUMP`). (MED)
+  `REBORN_JUMP_FALL_SPEC.md` §6). It resolves through the VFS and loads with
+  `PlayAnimation` rc=0, but the host AVs (0xC0000005) within ~1 s of playing it
+  in both the default and opt-in runs — so the client's default reuses the jump
+  clip and the tani stays opt-in (`RC_CLIP_DJUMP=<path>`). (HIGH, evidence
+  `proof/gravity/double_jump_reborn_run.txt` runs B/D; re-open when the anim
+  path is fixed)
 - Landing resets the chain: `ProcessVerticalMove` zeroes `[char+0x330]`/`[+0x338]`
   when within 64 u of the cell top (`0x14031A25E`). (HIGH)
 
@@ -108,8 +112,16 @@ apex 1.9–2.2 m. The 二段跳 is the “real jump” of the game — exactly w
 - landing → `jumpCount = 0`; count-limit press → rejected (logged);
 - `RC_JUMP_SCHOOL` selects the row (default 0 = weaponless/default character);
   `RC_DJUMP=0` disables the mid-air chain for A/B; `RC_CLIP_DJUMP` plays the real
-  `f1b02yd二段跳a.tani` when set;
+  `f1b02yd二段跳a.tani` when set (default: reuse `RC_CLIP_JUMP`; see §1);
 - `RC_DJUMP_LOG=1` emits `djb press/land/reject` lines for a numeric fingerprint.
+
+Verified in-engine (2026-09-29, logs curated in
+`proof/gravity/double_jump_reborn_run.txt`): run A/C (clean, exit 0)
+`djb press n=1 triple=40,90,11 vy=1350 g=2475` → `djb press n=2
+triple=30,300,20 vy=4500 g=4500` (mid-air, y 1009 ← 646) → `djb land n=2
+vy=-4833` → `DONE`; run B/D (tani opt-in) reproduce the 0xC0000005 AV right
+after `clip -> ...f1b02yd二段跳a.tani (0)`. Isolation verified in every run:
+`ns=reborn_client_double_jump.memory`.
 
 Not reproduced (documented, not invented): segment-end End triple, `JumpFrameParam`
 curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
@@ -124,6 +136,9 @@ curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
 3. Whether fly states `0x1A/0x1B` re-press (the `[+0x1F8]==0` path at
    `0x140313C22`) is a separate abort/advance, distinct from the normal chain.
 4. Wall-jump (`jumpCount < 4`) and horse-jump (`< 1`) triples — data present.
+5. `f1b02yd二段跳a.tani` engine AV (crash before the clip's first update);
+   re-open when the animation asset pipeline is fixed — the chain itself is
+   clip-independent (runs A/C pass with the jump clip).
 
 ## Reproduce
 
@@ -134,6 +149,10 @@ curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
 # feature client (isolated name/namespace):
 set RC_CLIENT_EXE=reborn_client_double_jump.exe
 client\build_client.cmd
-C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe   # cwd = MovieEditor
-# automated double-jump fingerprint (engine, ~1 min): RC_DEMO=1 RC_DJUMP_LOG=1 RC_AUTORUN=25000
+# automated fingerprint run (engine, ~1 min; cwd must be MovieEditor):
+$env:RC_DEMO="1"; $env:RC_DJUMP_LOG="1"; $env:RC_AUTORUN="25000"
+$p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
+$p.WaitForExit(); $p.ExitCode
+# expect exit 0 and: djb press n=1 (40,90,11) -> djb press n=2 (30,300,20)
+# -> djb land n=2 -> DONE; ns=reborn_client_double_jump.memory in the init line
 ```

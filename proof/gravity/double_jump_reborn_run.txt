@@ -1,0 +1,67 @@
+Reborn client double-jump verification runs (curated excerpts)
+capture: 2026-09-29, exe C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe
+cwd C:\SeasunGame\MovieEditor, RC_DEMO=1 RC_DJUMP_LOG=1 RC_AUTORUN=25000
+full logs (untracked): C:\SeasunGame\MovieEditor\bin64\reborn_out\<file>
+
+== A: final default build, RC_CLIP_DJUMP unset (reuse jump clip)
+   log: reborn_20260929_135508.log    process exit=0 (clean)
+   13:55:08.900 build=reborn_client_double_jump.exe 2026-09-29 13:55:08 git=c937973 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:55:09.560 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:55:37.548 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:55:40.081 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:55:45.078 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:55:50.080 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:55:50.580 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,646,26299
+   13:55:50.581 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:55:51.080 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1009,26299
+   13:55:52.076 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+   13:55:53.158 djb land n=2 pos=22990,650,26299 vy=-4833
+   13:55:53.158 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:55:56.080 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:55:56.579 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+   13:56:03.082 DONE
+
+== B: same final build, RC_CLIP_DJUMP=<authored tani> explicit
+   log: reborn_20260929_135616.log    process exit=0xC0000005 (AV, no DONE)
+   13:56:16.118 build=reborn_client_double_jump.exe 2026-09-29 13:55:08 git=c937973 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:56:16.583 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:56:44.559 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:56:47.065 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:56:52.064 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:56:57.066 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:56:57.567 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,646,26301
+   13:56:57.568 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:56:58.064 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1009,26301
+   13:56:58.065 clip -> data\source\player\f1\动作\f1b02yd二段跳a.tani (0)
+
+== C: RC_CLIP_DJUMP=0 (reuse jump clip)
+   log: reborn_20260929_135347.log    process exit=0 (clean)
+   13:53:47.313 build=reborn_client_double_jump.exe 2026-09-29 13:53:46 git=c937973 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:53:47.982 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:54:15.761 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:54:18.291 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:54:23.291 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:54:28.292 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:54:28.792 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,646,26300
+   13:54:28.793 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:54:29.290 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1009,26300
+   13:54:30.289 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+   13:54:31.367 djb land n=2 pos=22991,650,26300 vy=-4829
+   13:54:31.368 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:54:34.290 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:54:34.790 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+   13:54:41.292 DONE
+
+== D: pre-toggle build, default tani
+   log: reborn_20260929_135055.log    process exit=0xC0000005 (AV, no DONE)
+   13:50:55.611 build=reborn_client_double_jump.exe 2026-09-29 13:43:42 git=48ee9a6 dirty=8 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:50:56.055 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:51:24.949 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:51:27.479 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:51:34.340 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:51:37.477 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:51:37.975 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,672,25552
+   13:51:37.976 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:51:38.479 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1034,25552
+   13:51:38.481 clip -> data\source\player\f1\动作\f1b02yd二段跳a.tani (0)
+
