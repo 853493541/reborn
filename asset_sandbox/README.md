@@ -54,6 +54,23 @@ host resolves that ID space to actors/NPCs (the game's doodad table
 `represent/doodad/doodad.txt` is loaded by `JX3DoodadRepresent` in the game
 logic), so the result is a different model.
 
+## Scale
+
+Spawns use the game's own represent-table values, so they match the map's world
+scale: item = `ModelScale`, glow = `EffectScale` (`AS_GLOW_SCALE` overrides).
+World units are centimetres (the game's movement/actor scale; `Ref` spawns the
+~1.7 m actor for comparison).
+
+Ground truth from HD `.mesh` vertex bounds (file units = cm), cross-checked on
+the map:
+
+| mesh | file bbox (cm) | ModelScale | world size |
+|---|---|---|---|
+| 白龙宝箱 `WJ_blk宝箱001_001A_HD` | 211 × 148 × 144 | 1.0 | ~1.5 m tall |
+| 剑匣 `xwj_cj剑匣001_002_HD` | 194 × 27 × 57 | 0.6 | ~1.2 m long (lying) |
+| 海岛物什箱 `WJ_hdjj物什箱001_001_HD` | 55 × 44 × 79 | 1.0 | ~0.45 m |
+| 龙门箱 `WJ_xn加沙室内箱子001_HD` | 97 × 85 × 102 | 0.6 | ~0.5 m |
+
 ## Env
 
 | var | meaning |
@@ -66,6 +83,9 @@ logic), so the result is a different model.
 | `AS_REPRESENT=1` | use the host represent API (actor space) |
 | `AS_SPACING` | stage grid spacing, world units |
 | `AS_GLOW_SCALE` | multiplier on the table `EffectScale` for the glow PSS |
+| `AS_REF=1` | spawn the 花萝 actor (~1.7 m) as a scale reference |
+| `AS_FLAT=1` | keep the stage y for all spawns (flat pad, no per-item terrain) |
+| `AS_CAM_DIST` / `AS_CAM_UP` | initial camera distance / height (default 1100/350) |
 | `AS_STAGE=x,y,z` | explicit stage center |
 
 Smoke example:
