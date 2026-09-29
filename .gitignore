@@ -50,9 +50,6 @@ proof/netcode/mode_juejing/pak_drop3/
 proof/netcode/mode_juejing/pak_logic/
 proof/netcode/mode_juejing/cache_maps/
 
-# Standalone map app build output
-map-ui-app/bin/
-map-ui-app/obj/
 
 # Built map selector (research, kept local)
 engine_host_spike/map_selector.exe
