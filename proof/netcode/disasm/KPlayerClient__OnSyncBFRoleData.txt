@@ -1,0 +1,43 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncBFRoleData'
+# image base 0x180000000
+
+## xref @ 0x180193add -> 0x180779d90 'KPlayerClient::OnSyncBFRoleData'  fn start 0x180193aa8
+  0x180193aa8: mov      ecx, 3
+  0x180193aad: call     qword ptr [rip + 0x5d17ad]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180193ab3: add      rsp, 0x30
+  0x180193ab7: pop      rbx
+  0x180193ab8: ret      
+  0x180193ab9: int3     
+  0x180193aba: int3     
+  0x180193abb: int3     
+  0x180193abc: int3     
+  0x180193abd: int3     
+  0x180193abe: int3     
+  0x180193abf: int3     
+  0x180193ac0: push     rbx
+  0x180193ac2: sub      rsp, 0x30
+  0x180193ac6: mov      rcx, qword ptr [rip + 0x82d853]
+  0x180193acd: mov      rbx, rdx
+  0x180193ad0: mov      edx, dword ptr [rdx + 0xf]
+  0x180193ad3: call     0x18012b610
+  0x180193ad8: test     rax, rax
+  0x180193adb: jne      0x180193b0e
+  0x180193add: lea      rax, [rip + 0x5e62ac]  ; 'KPlayerClient::OnSyncBFRoleData'
+  0x180193ae4: mov      r9d, 0x7db3
+  0x180193aea: lea      r8, [rip + 0x5d3247]  ; 'pPlayer'
+  0x180193af1: mov      qword ptr [rsp + 0x20], rax
+  0x180193af6: lea      rdx, [rip + 0x75a9ab]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180193afd: mov      ecx, 3
+  0x180193b02: call     qword ptr [rip + 0x5d1758]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180193b08: add      rsp, 0x30
+  0x180193b0c: pop      rbx
+  0x180193b0d: ret      
+  0x180193b0e: mov      rcx, qword ptr [rip + 0x82d80b]
+  0x180193b15: lea      r8, [rbx + 0x17]
+  0x180193b19: movzx    r9d, byte ptr [rbx + 0x6f]
+  0x180193b1e: add      rcx, 0x2831f8
+  0x180193b25: mov      rdx, qword ptr [rax + 0xec8]
+  0x180193b2c: mov      qword ptr [rsp + 0x40], rdi
+  0x180193b31: call     0x18028a620
+  0x180193b36: .byte    0x48
+

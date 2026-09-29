@@ -1,0 +1,39 @@
+# KGUIX64.dll xrefs to 0x180150720
+
+## ref @ 0x180159980 -> 0x180150720
+  0x180159944: add      byte ptr fs:[rax], al
+  0x180159947: mulss    xmm2, xmm0
+  0x18015994b: cvtdq2ps xmm3, xmm3
+  0x18015994e: cvtdq2ps xmm1, xmm1
+  0x180159951: mulss    xmm3, xmm0
+  0x180159955: mulss    xmm1, xmm0
+  0x180159959: cvtdq2ps xmm4, xmm4
+  0x18015995c: mulss    xmm4, xmm0
+  0x180159960: test     ebx, ebx
+  0x180159962: je       0x18015999b
+  0x180159964: movss    dword ptr [rsp + 0x38], xmm4
+  0x18015996a: mov      edx, r15d
+  0x18015996d: movss    dword ptr [rsp + 0x30], xmm1
+  0x180159973: mov      dword ptr [rsp + 0x28], r12d
+  0x180159978: mov      qword ptr [rsp + 0x20], rcx
+  0x18015997d: mov      rcx, r14
+  0x180159980: call     0x180150720
+  0x180159985: test     al, al
+  0x180159987: mov      r14d, 0
+  0x18015998d: cmove    esi, r14d
+  0x180159991: jmp      0x18015999e
+  0x180159993: xor      r14d, r14d
+  0x180159996: mov      esi, r14d
+  0x180159999: jmp      0x18015999e
+  0x18015999b: xor      r14d, r14d
+  0x18015999e: mov      r9, qword ptr [rdi]
+  0x1801599a1: lea      r8, [rbp - 0x69]
+  0x1801599a5: lea      rdx, [rbp - 0x69]
+  0x1801599a9: mov      rcx, rdi
+  0x1801599ac: call     qword ptr [r9 + 0x18]
+  0x1801599b0: test     eax, eax
+  0x1801599b2: jne      0x180159750
+  0x1801599b8: .byte    0x4c
+  0x1801599b9: .byte    0x8b
+  0x1801599ba: movsb    byte ptr [rdi], byte ptr [rsi]
+  0x1801599bb: .byte    0x24

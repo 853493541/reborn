@@ -1,0 +1,52 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncBattlefieldCompetitorCDState'
+# image base 0x180000000
+
+## xref @ 0x1801944c1 -> 0x18077a460 'KPlayerClient::OnSyncBattlefieldCompetitorCDState'  fn start 0x180194478
+  0x180194478: or       bh, bh
+  0x18019447a: nop      
+  0x18019447b: sbb      byte ptr [rdx], dl
+  0x18019447d: add      byte ptr [rax], al
+  0x18019447f: mov      rbx, qword ptr [rsp + 0x40]
+  0x180194484: add      rsp, 0x30
+  0x180194488: pop      rdi
+  0x180194489: ret      
+  0x18019448a: int3     
+  0x18019448b: int3     
+  0x18019448c: int3     
+  0x18019448d: int3     
+  0x18019448e: int3     
+  0x18019448f: int3     
+  0x180194490: mov      qword ptr [rsp + 8], rbx
+  0x180194495: push     rdi
+  0x180194496: sub      rsp, 0x30
+  0x18019449a: mov      rcx, qword ptr [rip + 0x82ce7f]
+  0x1801944a1: mov      rdi, rdx
+  0x1801944a4: mov      edx, dword ptr [rdx + 7]
+  0x1801944a7: call     0x18012b610
+  0x1801944ac: mov      rbx, rax
+  0x1801944af: test     rax, rax
+  0x1801944b2: jne      0x1801944ea
+  0x1801944b4: mov      r9d, 0x7fa3
+  0x1801944ba: lea      r8, [rip + 0x5d2877]  ; 'pPlayer'
+  0x1801944c1: lea      rax, [rip + 0x5e5f98]  ; 'KPlayerClient::OnSyncBattlefieldCompetitorCDState'
+  0x1801944c8: mov      ecx, 3
+  0x1801944cd: lea      rdx, [rip + 0x759fd4]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801944d4: mov      qword ptr [rsp + 0x20], rax
+  0x1801944d9: call     qword ptr [rip + 0x5d0d81]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801944df: mov      rbx, qword ptr [rsp + 0x40]
+  0x1801944e4: add      rsp, 0x30
+  0x1801944e8: pop      rdi
+  0x1801944e9: ret      
+  0x1801944ea: cmp      qword ptr [rax + 0x60], 0
+  0x1801944ef: jne      0x180194500
+  0x1801944f1: mov      r9d, 0x7fa4
+  0x1801944f7: lea      r8, [rip + 0x5d682a]  ; 'pPlayer->m_pScene'
+  0x1801944fe: jmp      0x1801944c1
+  0x180194500: mov      rcx, qword ptr [rip + 0x82ce19]
+  0x180194507: mov      edx, dword ptr [rcx + 4]
+  0x18019450a: call     0x18012b610
+  0x18019450f: test     rax, rax
+  0x180194512: jne      0x180194523
+  0x180194514: mov      r9d, 0x7fa7
+  0x18019451a: .byte    0x4c
+

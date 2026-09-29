@@ -1,0 +1,97 @@
+﻿
+==== 0x1801091cc .. 0x1801093e0 (.text)
+  0x1801091cc: movss    xmm7, dword ptr [rdi + 0x30c]
+  0x1801091d4: movss    xmm6, dword ptr [rdi + 0x308]
+  0x1801091dc: addss    xmm7, dword ptr [rdi + 0x24]
+  0x1801091e1: addss    xmm6, dword ptr [rdi + 0x28]
+  0x1801091e6: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x1801091ec: addss    xmm7, dword ptr [rbx + 0x1c]
+  0x1801091f1: addss    xmm6, dword ptr [rbx + 0x20]
+  0x1801091f6: jmp      0x1801093d1
+  0x1801091fb: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x180109201: movss    xmm7, dword ptr [r8 + 0x24]
+  0x180109207: subss    xmm7, xmm9
+  0x18010920c: movss    xmm6, dword ptr [r8 + 0x30]
+  0x180109212: addss    xmm6, dword ptr [r8 + 0x28]
+  0x180109218: movss    xmm8, dword ptr [rbx + 0x30]
+  0x18010921e: subss    xmm6, xmm8
+  0x180109223: jmp      0x1801093d7
+  0x180109228: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x18010922e: movss    xmm7, dword ptr [r8 + 0x24]
+  0x180109234: movss    xmm6, dword ptr [r8 + 0x28]
+  0x18010923a: subss    xmm7, xmm9
+  0x18010923f: jmp      0x1801093d1
+  0x180109244: movss    xmm6, dword ptr [r8 + 0x30]
+  0x18010924a: mulss    xmm6, dword ptr [rip + 0x4dce0a]  ; 0x1805e605c
+  0x180109252: movss    xmm8, dword ptr [rbx + 0x30]
+  0x180109258: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x18010925e: movaps   xmm0, xmm8
+  0x180109262: addss    xmm6, dword ptr [r8 + 0x28]
+  0x180109268: mulss    xmm0, dword ptr [rip + 0x4dcdec]  ; 0x1805e605c
+  0x180109270: movss    xmm7, dword ptr [r8 + 0x24]
+  0x180109276: subss    xmm7, xmm9
+  0x18010927b: subss    xmm6, xmm0
+  0x18010927f: jmp      0x1801093d7
+  0x180109284: movss    xmm8, dword ptr [rbx + 0x30]
+  0x18010928a: movss    xmm6, dword ptr [r8 + 0x28]
+  0x180109290: movss    xmm7, dword ptr [r8 + 0x24]
+  0x180109296: subss    xmm6, xmm8
+  0x18010929b: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x1801092a1: jmp      0x1801093d7
+  0x1801092a6: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x1801092ac: addss    xmm7, dword ptr [r8 + 0x24]
+  0x1801092b2: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x1801092b8: movss    xmm8, dword ptr [rbx + 0x30]
+  0x1801092be: movss    xmm6, dword ptr [r8 + 0x28]
+  0x1801092c4: subss    xmm6, xmm8
+  0x1801092c9: subss    xmm7, xmm9
+  0x1801092ce: jmp      0x1801093d7
+  0x1801092d3: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x1801092d9: mulss    xmm7, dword ptr [rip + 0x4dcd7b]  ; 0x1805e605c
+  0x1801092e1: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x1801092e7: movss    xmm8, dword ptr [rbx + 0x30]
+  0x1801092ed: movaps   xmm0, xmm9
+  0x1801092f1: addss    xmm7, dword ptr [r8 + 0x24]
+  0x1801092f7: mulss    xmm0, dword ptr [rip + 0x4dcd5d]  ; 0x1805e605c
+  0x1801092ff: movss    xmm6, dword ptr [r8 + 0x28]
+  0x180109305: subss    xmm6, xmm8
+  0x18010930a: subss    xmm7, xmm0
+  0x18010930e: jmp      0x1801093d7
+  0x180109313: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x180109319: addss    xmm7, dword ptr [r8 + 0x24]
+  0x18010931f: movss    xmm6, dword ptr [r8 + 0x28]
+  0x180109325: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x18010932b: jmp      0x1801093d1
+  0x180109330: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x180109336: addss    xmm7, dword ptr [r8 + 0x24]
+  0x18010933c: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x180109342: jmp      0x18010920c
+  0x180109347: movss    xmm6, dword ptr [r8 + 0x30]
+  0x18010934d: mulss    xmm6, dword ptr [rip + 0x4dcd07]  ; 0x1805e605c
+  0x180109355: movss    xmm8, dword ptr [rbx + 0x30]
+  0x18010935b: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x180109361: movaps   xmm0, xmm8
+  0x180109365: addss    xmm6, dword ptr [r8 + 0x28]
+  0x18010936b: mulss    xmm0, dword ptr [rip + 0x4dcce9]  ; 0x1805e605c
+  0x180109373: addss    xmm7, dword ptr [r8 + 0x24]
+  0x180109379: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x18010937f: subss    xmm6, xmm0
+  0x180109383: jmp      0x1801093d7
+  0x180109385: movss    xmm7, dword ptr [r8 + 0x24]
+  0x18010938b: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x180109391: jmp      0x1801093c5
+  0x180109393: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x180109399: jmp      0x1801093a9
+  0x18010939b: movss    xmm7, dword ptr [r8 + 0x2c]
+  0x1801093a1: mulss    xmm7, dword ptr [rip + 0x4dccb3]  ; 0x1805e605c
+  0x1801093a9: movss    xmm9, dword ptr [rbx + 0x2c]
+  0x1801093af: addss    xmm7, dword ptr [r8 + 0x24]
+  0x1801093b5: movaps   xmm0, xmm9
+  0x1801093b9: mulss    xmm0, dword ptr [rip + 0x4dcc9b]  ; 0x1805e605c
+  0x1801093c1: subss    xmm7, xmm0
+  0x1801093c5: movss    xmm6, dword ptr [r8 + 0x30]
+  0x1801093cb: addss    xmm6, dword ptr [r8 + 0x28]
+  0x1801093d1: movss    xmm8, dword ptr [rbx + 0x30]
+  0x1801093d7: mov      rax, qword ptr [rbx]
+  0x1801093da: movaps   xmm2, xmm6
+  0x1801093dd: movaps   xmm1, xmm7

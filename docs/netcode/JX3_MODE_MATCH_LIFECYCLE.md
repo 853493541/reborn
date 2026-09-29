@@ -134,7 +134,7 @@ matchmaking numbers (SERVER); solo→squad auto-forming (SERVER); room queue rul
 |---|---|---|
 | `+0x07` | map id | → `dwSwitchMapID` + manager/global fields (`0x1801913a5-0x1801913b3`) |
 | `+0x0B` | u32 | → global field (`0x1801913b3-0x1801913be`) |
-| `+0x0F/+0x13/+0x17` | three u32 | → **client player object** `+0x10/+0x14/+0x18` (`0x1801913c1-0x1801913d3`) |
+| `+0x0F/+0x13/+0x17` | three u32 | → **client player object** `+0x10/+0x14/+0x18` (`0x1801913c1-0x1801913d3`); these are the character's **world position x/y/z** — proven by `JX3_CHARACTER_MOVEMENT_RESEARCH.md` §3.1 (`MoveTo` writes the same fields; 1 unit = 1 cm) |
 | `+0x1B` | scene-related id | → player `+0xAB0` (`0x1801913ee-0x1801913f2`) |
 
 The handler also zeroes player `+0xf88`, `+0xf98`, `+0x2bc`, `+0x2c8` (state reset,
@@ -179,13 +179,18 @@ progress handshake payloads; `DoSelectSwitchMapWindow` / `LuaSelectSwitchMapWind
 
 This is the question that started this document. What the client proves:
 
-1. **Placement is server-assigned.** The only client-side position input at entry is the
-   `OnSwitchMap` transfer block stored on the player object (`CODE`, Stage 2 table). There
-   is **no client spawn/anchor table** for the BR maps: `AnchorPointList.tab`,
-   `CustomObject.tab`, `MapReviveList.tab`, `DoodadReviveList.tab`, `.land/.pland` were
-   probed in every local store — 0 hits (`DOC` `JX3_MODE_SPAWN_RULES_SEARCH.md` §0-§3,
-   marked CLOSED dead end). Exact per-map coordinates are therefore SERVER-only
-   (`UNPROVEN`).
+1. **Placement is server-assigned, as world x/y/z.** The `OnSwitchMap` transfer block
+   (`+0x0F/+0x13/+0x17`) is written into the character object's position fields
+   `+0x10/+0x14/+0x18`, which the movement research proves are world position x/y/z in
+   centimetres (`CODE` Stage 2 table; `JX3_CHARACTER_MOVEMENT_RESEARCH.md` §3.1, `MoveTo`
+   `0x140314230`). So on entry the client places the player at the server-sent x/y/z — the
+   "before the match starts" position is exactly this packet. There is **no client
+   spawn/anchor table** for the BR maps: `AnchorPointList.tab`, `CustomObject.tab`,
+   `MapReviveList.tab`, `DoodadReviveList.tab`, `.land/.pland` were probed in every local
+   store — 0 hits (`DOC` `JX3_MODE_SPAWN_RULES_SEARCH.md` §0-§3, CLOSED dead end), and none
+   of the 77 `MapList` columns carries a position. The **values** per map/copy are
+   SERVER-only; get them by capturing `OnSwitchMap` on entry (capture decoder route,
+   §8.3/§11) or from server map logic.
 2. **A mode-specific idle/pose set ships for this mode** (`DATA`): `Ani.rt` contains
    `F1/F2/M1/M2` × `b02ty龙门绝境_站姿01..05` (20 files,
    `proof/netcode/mode_juejing/editor_assets_juejing.txt:2-21`). A mode-only stance set is
@@ -194,11 +199,32 @@ This is the question that started this document. What the client proves:
 3. **A countdown UI asset ships** (`DATA`): `UI_黑山绝境_倒计时通用底框.pss`
    (`editor_assets_juejing.txt:72-77`; `JX3_MODE_JUEJING.md` §3.3). The settlement
    counterpart `UI_黑山结算_折戟沉沙.pss` exists too (`gbk_juejing_editor.txt:41`).
-4. **Phase / objective APIs** are the candidate countdown sources, none yet proven to be
-   the BR phase: `KQuestList::GetQuestPhase` (`CODE` exe `0x0082F608`),
-   `KPlayer::LuaGetQuestPhase` (`0x008531B0`), used by `MiddleMap.decompiled.lua:24127,
-   24356,25026`; `GetBattleFieldObjective` / `LuaGetBattleFieldObjective` (`CODE` strings);
-   `OnSyncBattleStatFlag` (Stage 8).
+3b. **Pre-match countdown is officially rendered from a server-written end time
+   (duration STATIC-pending).** The official UI panel computes its clock from an engine
+   getter: `BattleFieldMap.UpdateTime` calls `GetBattleFieldPQInfo()`, keeps its **4th
+   return value as an absolute end time**, and prints `endTime - GetCurrentTime()` as
+   h:m:s (`UI` `BattleFieldMap.decompiled.lua:1322-1325,1581-1625`; asset
+   `proof/minimap/ui/Config/Default/BattleField/BattleFieldMap.lua` exists as shipped
+   bytecode). The engine getter `KScriptFuncList::LuaGetBattleFieldPQInfo` returns four
+   ints read straight from the client cache struct at
+   `+0x1b480/+0x1b484/+0x1b488/+0x1b490` (`CODE`,
+   `proof/netcode/disasm/LuaGetBattleFieldPQInfo.txt`). **How long the wait is and what
+   starts it are server values — no official local file contains the duration.**
+3c. **When the countdown reaches zero there is no client-side "battle start" event.**
+   The official timer just stops updating (`BattleFieldMap.UpdateTime` returns when
+   `endTime - now < 0`, `BattleFieldMap.decompiled.lua:1592-1593`). Match start is a server
+   state change; what the client then reflects is the sync/overlay machinery: competitor
+   list pull `0x164` + CD/buff/stat subscriptions (`DOC` `JX3_MODE_LOAD_FLOW.md` §8), the
+   16-int objective cache (`+0x1b498..`), the stat-recording flag (`OnSyncBattleStatFlag`,
+   Stage 8), and the storm overlay events (Stage 7). The only events the official mode
+   skill-bar module registers are `UI_SCALED`, `HOT_KEY_RELOADED`, `LOADING_BEGIN`
+   (`DynamicBattleRoyale.decompiled.lua:432-445`) — no start hook.
+4. **Phase / objective APIs** (`CODE`): the panel clock is proven to come from
+   `GetBattleFieldPQInfo` (see 3b). The phase/storm data is the **16-int objective array**
+   from `LuaGetBattleFieldObjective` (`proof/netcode/disasm/LuaGetBattleFieldObjective.txt`),
+   still unlabelled. Other candidate phase values: `KQuestList::GetQuestPhase` (exe
+   `0x0082F608`; used by `MiddleMap.decompiled.lua:24127,24356,25026`), `OnSyncBattleStatFlag`
+   (Stage 8).
 5. **Side/camp/relation plumbing** (`CODE` strings + `DATA` flags): `OnSetBattleFieldSide`,
    `SetBattleFieldSide`, `BattleFieldSide`, `DoUpdateBattlefieldSide`, nameplate field
    `nBattleFieldSide`; MapList `CampType=5`, `BattleRelationMask=2`,
@@ -303,10 +329,69 @@ entities and their handlers.
   `Image/MiddleMap/StormLine/*.DDS` (41), battlefield map window
   `UI/Config/Default/BattleField/BattleFieldMap.ini` + `.lua`, minimap storm/airdrop
   `KMapMark` types, `MiddleMap`/`WorldMap` drivers (`MAP_MINIMAP_RESEARCH.md` §UI inventory).
-- **Gap (gate):** the **data source** for circle center/radius is not identified. Candidates
-  to check in the RE pass: `GetBattleFieldObjective` payload, `OnSyncSceneHeatMap`
-  (heat map — likely not the storm), `BattleFieldStatFlag`, UI `GetQuestPhase` usage.
-  Until this link is proven, the storm chapter cannot be written (`UNPROVEN`).
+- **HUD labels for the phase exist (official UI strings).**
+  `proof/minimap/ui/Scheme/Case/string.txt` (GBK; PakV4 `ui/Scheme/Case/string.txt`):
+  `STR_TIMEDESERT` = 风暴倒计时： (line 2425), `STR_LEFTPEPLE` = 剩余人数： (2426),
+  `STR_STORM`/`STR_STORM2` = 风暴/风暴状态 (2427/2429), `STR_SETTING210` =
+  小地图增加风暴圈范围提示 (2251). No shipped Lua in the extracted corpus references these
+  ids (the renderer is a not-yet-extracted mode panel) — PakV4 `ui/` enumeration item.
+- **Official phase/economy data model** (`CODE`): `LuaGetBattleFieldObjective` returns a
+  **16-int array** read from the client cache (`+0x1b498 .. +0x1b4d8`, 4-byte stride;
+  `proof/netcode/disasm/LuaGetBattleFieldObjective.txt`); `LuaGetBattleFieldStatistics`
+  walks a statistics list exposing `Name`, `ForceID`, `BattleFieldSide`,
+  `ClientVersionType`, `GlobalID` and **25 qword stat values** per record
+  (`proof/netcode/disasm/LuaGetBattleFieldStatistics.txt`). The objective array is the
+  prime candidate for storm/phase state, but its **field semantics are not yet labelled** —
+  that is the remaining static work for this chapter.
+- **Storm overlay is official UI and map-gated** (`UI`): `BattleFieldMap` registers
+  `ON_BATTLE_FIELD_MAKR_DATA_NOTIFY`, `ON_BATTLE_FIELD_GAIN_DATA_NOTIFY`,
+  `ON_BATTLE_FIELD_SFX_DATA_NOTIFY` and `LOADING_END`
+  (`BattleFieldMap.decompiled.lua:9362-9405`), and when `IsInTreasureBattleFieldMap()` is
+  true it shows `Handle_Map/Handle_StormLine` and registers `MapCircle` + `SFX_CircleNew`
+  (`:5303, 5316-5341`). So storm lines/circles are drawn on the battlefield map panel from
+  server notify events; the **notify payload layouts / engine producers are the missing
+  piece** (candidates: the `OnSync...` families, not yet decoded).
+- **Safe-zone shrink schedule is NOT in any official local file** (re-verified 2026-09-24):
+  `Buff.tab` / `TopBuff.tab` / `Activity.tab` / `CoolDownList.tab` contain **0** entries
+  matching 风暴/缩圈/沙暴/安全区/风沙/全毒 (GBK scan); `MapList` carries no schedule field
+  (`RefreshCycle=0` on all 绝境 rows); the five ids referenced by
+  `CheckTreasureBattleFieldMap.lua` (22495–22497, 22622–22623) resolve to **skills**
+  (kungfu 10597/10572/10592), not zone config; mode scripts/logical maps are absent from
+  the client pak (748-path probe = 0). The client only *receives* the schedule: objective
+  arrays (`+0x1b498/+0x1b4b8`) and PQ end time (`+0x1b490`) written by the S2C handlers
+  below, ring art drawn from `StormLine`/`MapCircle`/`SFX_CircleNew`, and outside-zone
+  warnings `STR_SAFEZONE` (安全区, string.txt:2428) + `STR_SETTING262`
+  (小地图安全区外警告闪烁及距离提示, :2796). **Timing values are capture/server-only.**
+- **The objective/phase cache writer is recovered** (`CODE`, 2026-09-24). The cache struct
+  (`0x1809C1320` base) is filled by two S2C paths:
+  - **incremental objective update** at `0x180193FD0`: packet = `u8 index` (<8) + two `u32`
+    values → stored to `+0x1b498 + index*4` and `+0x1b4b8 + index*4`, then a UI vtable
+    notify (`+0x918`);
+  - **PQ block writer** at `0x180194020`: sets `+0x1b480/+0x1b484` (u32), `+0x1b488`
+    (qword), `+0x1b490` (qword = the absolute end time the UI clock reads) and fires a UI
+    notify.
+  Neighbouring handlers in the same code block: `OnSyncBaseInfoFromBattlefieldCompetitorList`
+  (`0x180193BA8`), `OnSyncVariableInfoFromBattlefieldCompetitorList` (`0x1801A9468`),
+  `OnSyncBattlefieldCompetitorCDState` (`0x180194488`); the full-sync path at `0x180193E30`
+  (size assert **0x7C** = `S2C_SYNC_BASE_INFO_FROM_DUNGEON_PLAYER_LIST`) also writes the
+  shared cache. Proof: `proof/netcode/disasm/bf_cache_writers.txt`,
+  `proof/netcode/disasm/bf_runtime_writers.txt`.
+- **Protocol IDs + payloads recovered (CODE, 2026-09-24).** The KPlayerClient S2C dispatch
+  table was parsed from its registration function (`0x180163540`–`0x180168280`; handler base
+  `this+0x16460`, size base `this+0x17F28`; calibration: arena competitor CD state `0x22A`).
+  Mode-relevant packets:
+  - **`0x11A` `OnSyncBFObjectiveIncrement`, 16 B** — `u8 index (<8)`, `u32 A`, `u32 B` →
+    `cache[+0x1b498+idx*4]=A`, `cache[+0x1b4b8+idx*4]=B`, then UI notify. Two 8-slot arrays.
+  - **`0x11B` `OnSyncBFPQInfo`, 23 B** — `u32 A → +0x1b480`, `u32 B → +0x1b484`,
+    `s32 startOffset → +0x1b488 = (clientNow + serverOffset) − startOffset`,
+    `s32 duration → +0x1b490 = base + duration` (`-1` ⇒ 0 = no timer). **This is the official
+    phase/countdown clock**: the server sends offsets/durations; the client converts them to
+    the absolute end time that `GetBattleFieldPQInfo` returns and the UI counts down.
+  - **`0x119` `OnSyncBattlefieldStatistics` (264 B fixed)** — builds the statistics records
+    (id/force/side/name/global-id/version + 25 qword stats).
+  - **Remaining gap:** the index→meaning mapping for the two 8-slot objective arrays (which
+    slot is phase / storm countdown / center / radius). Values are server-sent; capture one
+    match with opcodes `0x11A`/`0x11B` and the labels fall out.
 - **Poison damage strings** `MinPoisonDamage` / `MaxPoisonDamage` (exe `0x007F6C00`/`0x007F6C10`)
   sit next to `LuaGetSkillInfo` in the string dump (`poison_revive_strings.txt:2`) — likely
   skill/tooltip stat names rather than the BR zone; xref pending (`UNPROVEN`).
@@ -334,8 +419,29 @@ spectate at all is `UNPROVEN` (observer UI exists but may be non-BR — see edge
   `STR_BF_KILL1` 协助击伤, `STR_BF_KILL2` 击伤, `STR_BF_DEAD` 受重伤, `STR_BF_DAMAGE` 伤害量,
   `STR_BF_HEALTH` 治疗量, `STR_BF_INJURED` 受伤量, `STR_BF_PRESTAGE` 威望,
   `STR_BF_REWARD/MONEY/EXP` 奖励/奖励金钱/奖励经验.
-- Settlement art exists (`DATA`): `UI_黑山结算_折戟沉沙.pss`; the settlement screen's Lua/ini
-  has not been located in the extracted corpus yet (`UNPROVEN`; may need PakV4 `ui/` enumeration).
+- **Statistics record layout recovered** (`CODE`): the handler at `0x1801940A0` builds
+  0x128-byte records inserted into the list at cache `+0x1b470`: `+0x20` id, `+0x100`
+  force id, `+0x104` battle-field side, `+0x30` qword global id, `+0x28` client-version
+  byte, `+0x108` name (`strncpy` 0x20), `+0x38..` 25–26 qword stat values — exactly what
+  `LuaGetBattleFieldStatistics` and `PVPShowPanel` read
+  (`proof/netcode/disasm/bf_runtime_writers.txt`).
+- **Statistics panel is official and recovered** (`UI`): `PVPShowPanel.lua` consumes
+  `GetBattleFieldStatistics` with `PQ_STATISTICS_INDEX` slices `INJURY` / `HARM_OUTPUT` /
+  `TREAT_OUTPUT` and the `BATTLE_FIELD_SYNC_STATISTICS` event
+  (`proof/netcode/ui/PVPShowPanel.dump.txt:40,70-72`). `ReportBattleStat` posts telemetry
+  (`eventId=battle_stat`, `JX3ClientX64_exe_net_strings.txt`); its lifecycle (when stat
+  recording starts) is carried by `OnSyncBattleStatFlag` (Stage 3c).
+- **Settlement panel located and partly decoded (official UI, 2026-09-24):**
+  `ui/Config/Default/PVPShowFinal.lua` + `PVPShowFinalL/R.ini`, extracted to
+  `proof/netcode/ui/pak_candidates/` (dump `proof/netcode/ui/PVPShowFinal.dump.txt`).
+  It registers `BATTLE_FIELD_SYNC_STATISTICS` → `OnSyncPQ` → `GetBattleFieldStatistics`
+  with `PQ_STATISTICS_INDEX` slices `DECAPITATE_COUNT` / `HARM_OUTPUT` / `TREAT_OUTPUT` /
+  `SPECIAL_OP_7`, then `MergeData` / `UpdateList` / `UpdateOneSideList`; opens with
+  `ApplyBattleFieldStatistics`; per-player rows use `Text_Name` / `Text_Kill` /
+  `Text_Damage` / `Text_Health` / `Text_NearDeathNum` and the labels
+  `STR_FBLIST_DUIYUANMINGZI`, `STR_BF_DAMAGE/HEALTH/KILL2`, `STR_NEAR_DEATH`
+  (`string_PVPAcount.txt`, GB18030; UTF-8 copy in `proof/netcode/ui/`). The mode-specific
+  settlement art remains `UI_黑山结算_折戟沉沙.pss`.
 - Leave flow UI is proven (`UI` `NewBattleFieldQueue.decompiled.lua`: `LEAVE_BATTLE_FIELD`,
   `LEAVE_BATTLE_FIELD_QUEUE`); `LeaveBattleField` / `LuaLeaveBattleField` (`CODE` strings).
 - 吃鸡 markers (`DATA`/`CODE`): `Tool_GetChickenMapItem` (CheckTreasure bytecode),
@@ -460,6 +566,39 @@ max payload 0x8000 (`DOC` `JX3_PROTOCOL_SPEC.md`, `JX3_NETCODE_RESEARCH.md` item
 | 0x1C9 | C→S | `DoReportAutoBattle` | pending | `c2s_protocol_catalog.tsv:299` |
 | 0x6E | C→S | routine sync | size-prefixed | `JX3_PROTOCOL_SPEC.md` |
 
+### S→C protocol IDs (recovered 2026-09-24)
+
+Method: parse the KPlayerClient protocol registration function (logic DLL
+`0x180163540`–`0x180168280`). For each entry the function does
+`lea rax, <handler>` / `mov [this+0x16460+id*8], rax` / `mov dword [this+0x17F28+id*4], size`
+(`-1` = variable length). IDs were calibrated against the arena competitor CD assert
+(`s2c_sync_arena_competitior_cd_state` = `0x22A`, emitted as an immediate in the handler).
+Tool: `tools/netcode/parse_protocol_registration.py`; full table:
+`proof/netcode/protocol_table_s2c_annotated.tsv` (810 handlers).
+
+| ID | Handler (registered VA) | Size | Role |
+|---|---|---|---|
+| `0x08` | `OnSwitchMap` `0x1801911F0` | 31 | map id + 5 params (x/y/z placement, scene) |
+| `0x0C` | `OnSyncNewDoodad` `0x18019D510` | 68 | container/object spawn |
+| `0x10` | `OnSyncDoodadState` `0x1801975F0` | 14 | container state |
+| `0x19` | `OnSyncMoveState` `0x18019CF90` | 52 | movement state |
+| `0x82` | `OnSyncLootList` `0x18019BA60` | var | rolled loot contents |
+| `0xAA` | `OnSetBattleFieldSide` `0x18018DC50` | 15 | side/camp assignment |
+| `0x119` | `OnSyncBattlefieldStatistics` `0x1801940A0` | 264 | statistics record |
+| `0x11A` | `OnSyncBFObjectiveIncrement` `0x180193FD0` | 16 | objective array update |
+| `0x11B` | `OnSyncBFPQInfo` `0x180194020` | 23 | phase clock (start/end offsets) |
+| `0x22A` | `OnSyncArenaCompetitorCDState` `0x180192EE0` | 27 | calibration anchor |
+| `0x245` | `OnSyncBFRoleData` `0x180193AC0` | 112 | BR role data |
+| `0x25B` | `OnGetBFRankRespond` `0x180187800` | var | rank response |
+| `0x25F` | `OnSyncBaseInfoFromBattlefieldCompetitorList` `0x180193BB0` | var | competitor base |
+| `0x260` | `OnSyncVariableInfoFromBattlefieldCompetitorList` `0x1801A9470` | var | competitor vars |
+| `0x261` | `OnSyncBattlefieldCompetitorCDState` `0x180194490` | 27 | competitor cooldowns |
+| `0x262` | `OnSyncBattlefieldCompetitorBuffList` `0x180194390` | var | competitor buffs |
+| `0x323` | `OnCreateBattlefieldRoomRespond` `0x180184480` | 27 | room create |
+| `0x324` | `OnForceStartBattleFieldChaosFightRespond` `0x180186C90` | 19 | force start |
+| `0x330` | `OnSyncBattleStatFlag` `0x180194310` | 15 | stat flag |
+| `0x34C` | `OnSyncBaseInfoFromDungeonPlayerList` `0x180193E30` | 124 | shared full-sync path |
+
 Recovered S→C layouts (offsets HIGH, labels MED) live in `JX3_MODE_LOAD_FLOW.md` §3/§8
 (`OnSwitchMap`, `OnSyncBFRoleData`) and `JX3_LOOT_PROTOCOL_LAYOUTS.md` §1–3
 (`OnSyncNewDoodad`, `OnSyncDoodadState`, `OnSyncLootList`). Handler symbol groups per stage:
@@ -470,11 +609,16 @@ Recovered S→C layouts (offsets HIGH, labels MED) live in `JX3_MODE_LOAD_FLOW.m
 
 ## 7. UI corpus relevant to the mode (new finding, 2026-09-24)
 
+- **Stage-by-stage UI inventory:** `JX3_MODE_UI_INVENTORY.md` (all windows/labels per
+  stage, evidence, and the missing-renderer hunt list, incl. the storm HUD panel).
 - **Screen-level companion:** `JX3_MODE_UI_FLOW.md` (merged to main, commit `f82f15a`)
   covers the queue panel tabs/states, custom-room lobby, the X3DEngine loading window with
   per-map loading art (`proof/netcode/mode_ui/loading/*`, maps 296/297/410/512/532/645/709),
   progress handshake xrefs (`proof/netcode/mode_ui/xref/*`), and the first HUD frame. This
   document references it instead of duplicating those details.
+- **Evidence rule for this corpus:** only the PakV4-shipped `ui/...` entries are used as
+  evidence. The JX addon builds (`proof/minimap/addons/JX/**`, sourced from the `interface\`
+  addon tree) are listed for inventory context only and are **excluded as evidence**.
 - 144 base-UI Lua bytecode files were extracted from PakV4 into
   `proof/minimap/ui/Config/Default/` as part of the minimap research
   (`DOC` `MAP_MINIMAP_RESEARCH.md` §203-259), plus JX addon packs under
@@ -484,6 +628,9 @@ Recovered S→C layouts (offsets HIGH, labels MED) live in `JX3_MODE_LOAD_FLOW.m
   `BattleField/BattleFieldMap`, `BattleField/MobaEnemyPanel`, `MiddleMap`, `Minimap`,
   `WorldMap`, `MainBarPanel`; addons `JX`, `JX.UI`, `JX.XGUI`, `JX_LootPlus`,
   `JX_MiddleMapMark`, `JX_Moba`.
+- **Newly extracted panels (2026-09-24):** `PVPShowFinal.lua` + `PVPShowFinalL/R.ini` +
+  `string_PVPAcount.txt` (`proof/netcode/ui/`), recovered by PakV4 candidate extraction —
+  the settlement panel was missing from the 144-file dictionary corpus.
 - **Toolchain caveat:** `tools/netcode/bin/unluac.jar` is a **9-byte "Not Found"
   placeholder** in every worktree (verified 2026-09-24); the committed `*.decompiled.lua`
   came from a locally-built unluac (per `MAP_MINIMAP_RESEARCH.md` §432). Restoring/building
@@ -504,7 +651,7 @@ Recovered S→C layouts (offsets HIGH, labels MED) live in `JX3_MODE_LOAD_FLOW.m
 
 | Item | Target |
 |---|---|
-| `OnSwitchMap` transfer-value semantics | consumers of player `+0x10/+0x14/+0x18`, `+0xAB0` |
+| `OnSwitchMap` transfer-value semantics | **resolved for `+0x0F/+0x13/+0x17` = world x/y/z** (movement research §3.1); `+0x0B` global and `+0x1B`→`+0xAB0` scene id remain open |
 | `MaxSwitchMapMoveDistance` | xref + rule decode |
 | `0xD9` vs `0x116` confirm paths | disasm both builders |
 | Staging pose trigger | who selects `龙门绝境_站姿01..05` |
@@ -522,15 +669,35 @@ Recovered S→C layouts (offsets HIGH, labels MED) live in `JX3_MODE_LOAD_FLOW.m
 
 ### 8.2 Server-only (not observable locally)
 
+**Pre-match spawn/staging position** — the exact entry location is a server value delivered
+in `OnSwitchMap` (`+0x0F/+0x13/+0x17` → world x/y/z, cm). No client table or map file
+carries it; stated explicitly because it is a common question.
+
+**Countdown value and start gate** — the client only receives an absolute end time
+(`GetBattleFieldPQInfo` 4th value, client cache `+0x1b490`) and renders `end - now`; the
+duration and what starts the countdown are server logic and not in any client file.
+
 Matchmaking/copy assignment, start threshold, phase durations + shrink schedule, storm
 damage curve, scoring/placement/kill credit, spawn anchors, drop-table rows/rates, revive
 point tables, AFK thresholds, reward formulas.
 
-### 8.3 Runtime-capture route
+### 8.3 Runtime-capture route (decoders ready, 2026-09-24)
 
-`tools/netcode/loot/capture.py` already decodes spawn positions and rolled loot from
-`OnSyncNewDoodad`/`OnSyncDoodadState`/`OnSyncLootList`; extend the same pattern to the
-unresolved S→C families (storm/objective, revive, statistics) once a capture bridge exists.
+Both decoders consume the same JSONL format
+(`{"dir":"S2C","opcode":<dec>,"buf":"<hex>"}`):
+
+- `tools/netcode/loot/capture.py` — spawns / loot / takes (`0x0C`, `0x10`, `0x82`,
+  takes `0x4D`/`0x51`).
+- `tools/netcode/mode/capture.py` — mode state keyed on the recovered opcodes:
+  `0x08` switch map (placement x/y/z cm + scene), `0xAA` side, `0x11A` objective
+  increments (index + two values), `0x11B` phase clock (state A/B, start offset,
+  duration), `0x119` statistics records (name/side/25 stats), `0x330` stat flag,
+  `0x245` BR role data, plus hex logs for `0x25B/0x25F/0x260/0x261/0x262/0x323/0x324`.
+  Selftest 7/7; synthetic end-to-end decode verified.
+
+Only a live capture bridge is missing (`REBORN_SERVER_SPEC.md` model); one capture of
+`0x11A`/`0x11B` labels the objective-array indices and yields the actual phase/zone
+schedule values.
 
 ---
 
@@ -548,6 +715,22 @@ docs/MAP_MINIMAP_RESEARCH.md                  # UI corpus, storm/battlefield map
 docs/JX3_GRAVITY_RESEARCH.md                  # parachute partial, fly/glide states
 docs/netcode/JX3_CAMERA_RESEARCH.md           # GliderCamera/carrier camera
 proof/netcode/mode_ui/**                      # loading art/progress xrefs, string scans
+proof/minimap/ui/Scheme/Case/string.txt       # official UI strings: STR_TIMEDESERT/STR_LEFTPEPLE/STR_SETTING210 (GBK, lines 2251/2425-2429)
+proof/netcode/disasm/LuaGetBattleFieldPQInfo.txt      # 4-int panel clock (+0x1b480..90), 4th = absolute end time
+proof/netcode/disasm/LuaGetBattleFieldObjective.txt   # 16-int objective array (+0x1b498..4d8)
+proof/netcode/disasm/LuaGetBattleFieldStatistics.txt  # statistics list records (name/side/25 qwords)
+proof/netcode/disasm/OnSyncBattleStatFlag.txt         # stat-flag handler stores 2 packet u32s
+proof/netcode/disasm/bf_cache_writers.txt     # xref trace: all code refs to the BF cache base (0x1809C1320)
+proof/netcode/disasm/bf_runtime_writers.txt   # writer handlers: objective update, PQ clock, statistics record builder
+proof/netcode/protocol_table_s2c_annotated.tsv  # 810 KPlayerClient S2C handlers with IDs+sizes (annotated)
+proof/netcode/protocol_names_s2c.tsv            # VA→name map used for annotation
+tools/netcode/parse_protocol_registration.py    # parser: registration function → ID/size/handler table
+proof/netcode/ui/pak_candidates/PVPShowFinal.lua       # settlement panel driver (PakV4)
+proof/netcode/ui/pak_candidates/PVPShowFinalL/R.ini     # settlement panel layouts
+proof/netcode/ui/PVPShowFinal.dump.txt                  # constants dump of PVPShowFinal.lua
+proof/netcode/ui/string_PVPAcount.utf8.txt              # settlement/result string table (UTF-8 copy)
+tools/netcode/mode/capture.py                 # mode-state capture decoder (recovered opcodes) + selftest 7/7
+proof/netcode/ui/PVPShowPanel.dump.txt        # stats panel bytecode constants (GetBattleFieldStatistics + PQ_STATISTICS_INDEX)
 proof/netcode/disasm/onswitchmap.txt          # OnSwitchMap + OnSwitchIdentityRespond
 proof/netcode/disasm/client_ready.txt         # proto 2 builder
 proof/netcode/disasm/apply_enter_scene.txt    # proto 3 builder
@@ -574,6 +757,18 @@ airborne/glider entry and a pre-match safe staging countdown; player-visible sto
 count; "organizer weapon" starting kit. Everything in §3–§7 above is local evidence or
 explicitly tagged.
 
+**Excluded evidence (2026-09-24):** the 30 s/20 s/10 s start announcements, the
+"起飞倒计时" timer, and the storm/bandit/chest/ice schedule previously read from a
+team-monitor addon's userdata (`interface\MY#DATA\...\userdata\team_mon\remote\*.jx3dat`)
+are **player-side addon configuration, not official code or data**. They were removed from
+the stage text and the extracted file `proof/netcode/mode_juejing/addon_monitor_juejing.txt`
+was deleted. If kept anywhere, they are hypotheses only, to be tested against a packet
+capture — never cited.
+
+Research rule going forward: evidence comes from client binaries, PakV4-shipped assets
+(`ui/...`, tables, scripts), or server protocol only. The `interface\` addon/userdata tree
+is out of scope.
+
 ---
 
 ## 11. Full-pass RE plan (gap-closing order)
@@ -583,7 +778,8 @@ PakV4 `ui/` for missing panels (settlement, BR HUD); extract `Buff.tab`, `Charac
 full MapList rows, targeted `string.txt` entries.
 
 **Entry pipeline (stages 0–4)** — `OnSwitchMap` consumers + `MaxSwitchMapMoveDistance`;
-0xD9/0x116; staging pose/phase/countdown sources; glide/parachute/carrier conditions;
+0xD9/0x116; staging pose; **the packet writer that fills `+0x1b480..0x1b4d8`**
+(panel end time + 16-int objective array); glide/parachute/carrier conditions;
 starting-kit routine.
 
 **Match runtime (5–7)** — death-bag channel; self/competitor combat layouts; **storm

@@ -1,0 +1,497 @@
+﻿
+==== 0x1800e9400 .. 0x1800e9c00 (.text)
+  0x1800e9400: test     eax, eax
+  0x1800e9402: jne      0x1800e9416
+  0x1800e9404: mov      r9d, 0x279
+  0x1800e940a: lea      r8, [rip + 0x4c08eb]  ; "pFile"
+  0x1800e9411: jmp      0x1800e92ba
+  0x1800e9416: mov      rax, qword ptr [r13]
+  0x1800e941a: mov      r8d, 0x58
+  0x1800e9420: lea      rdx, [rbp - 0x50]
+  0x1800e9424: mov      rcx, r13
+  0x1800e9427: call     qword ptr [rax]
+  0x1800e9429: cmp      eax, 0x58
+  0x1800e942c: je       0x1800e945e
+  0x1800e942e: mov      r9d, 0x27d
+  0x1800e9434: lea      r8, [rip + 0x4c6a8d]  ; "dwReadIn == sizeof(UITEXFILEHEADER)"
+  0x1800e943b: lea      rax, [rip + 0x4c6a5e]  ; "UI::KImageInfoMgr::LoadUITexFile"
+  0x1800e9442: mov      qword ptr [rsp + 0x20], rax
+  0x1800e9447: lea      rdx, [rip + 0x4c042a]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800e944e: mov      ecx, 3
+  0x1800e9453: call     qword ptr [rip + 0x3fddbf]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800e9459: jmp      0x1800e9a83
+  0x1800e945e: mov      r15d, dword ptr [rbp - 0x50]
+  0x1800e9462: shr      r15d, 0x10
+  0x1800e9466: mov      dword ptr [rsp + 0x68], r15d
+  0x1800e946b: cmp      dword ptr [rbp - 0x44], 0x1000
+  0x1800e9472: jl       0x1800e9483
+  0x1800e9474: mov      r9d, 0x281
+  0x1800e947a: lea      r8, [rip + 0x4c6a6f]  ; "FileHeader.nFrameCount < MAX_FRMAE_COUNT"
+  0x1800e9481: jmp      0x1800e943b
+  0x1800e9483: cmp      dword ptr [rbp - 0x40], 0x1000
+  0x1800e948a: jl       0x1800e949b
+  0x1800e948c: mov      r9d, 0x282
+  0x1800e9492: lea      r8, [rip + 0x4c6a87]  ; "FileHeader.nAnimateCount < MAX_ANI_COUNT"
+  0x1800e9499: jmp      0x1800e943b
+  0x1800e949b: mov      edx, 0x5c
+  0x1800e94a0: lea      rcx, [rbp + 0x120]
+  0x1800e94a7: call     qword ptr [rip + 0x3fe7ab]  ; VCRUNTIME140.dll!strrchr
+  0x1800e94ad: test     rax, rax
+  0x1800e94b0: jne      0x1800e94c4
+  0x1800e94b2: mov      r9d, 0x285
+  0x1800e94b8: lea      r8, [rip + 0x4c6a91]  ; "pszTail"
+  0x1800e94bf: jmp      0x1800e943b
+  0x1800e94c4: mov      byte ptr [rax + 1], bl
+  0x1800e94c7: mov      byte ptr [rbp + 7], bl
+  0x1800e94ca: cmp      dword ptr [rbp - 0x4c], ebx
+  0x1800e94cd: jg       0x1800e94e1
+  0x1800e94cf: mov      r9d, 0x289
+  0x1800e94d5: lea      r8, [rip + 0x4c6a7c]  ; "FileHeader.nWidth > 0"
+  0x1800e94dc: jmp      0x1800e943b
+  0x1800e94e1: cmp      dword ptr [rbp - 0x48], ebx
+  0x1800e94e4: jg       0x1800e94f8
+  0x1800e94e6: mov      r9d, 0x28a
+  0x1800e94ec: lea      r8, [rip + 0x4c6a7d]  ; "FileHeader.nHeight > 0"
+  0x1800e94f3: jmp      0x1800e943b
+  0x1800e94f8: lea      r8, [rbp - 0x38]
+  0x1800e94fc: mov      edx, 0x104
+  0x1800e9501: lea      rcx, [rbp + 0x120]
+  0x1800e9508: call     qword ptr [rip + 0x3fee62]  ; api-ms-win-crt-string-l1-1-0.dll!strcat_s
+  0x1800e950e: test     eax, eax
+  0x1800e9510: je       0x1800e9524
+  0x1800e9512: mov      r9d, 0x28d
+  0x1800e9518: lea      r8, [rip + 0x4c2a51]  ; "nRetCode == 0"
+  0x1800e951f: jmp      0x1800e943b
+  0x1800e9524: lea      rdx, [rbp + 0x120]
+  0x1800e952b: mov      rax, qword ptr [rip + 0x58531e]  ; 0x18066e850
+  0x1800e9532: mov      rcx, qword ptr [rax + 0xdb50]
+  0x1800e9539: cmp      dword ptr [rcx + 0x218], ebx
+  0x1800e953f: mov      ebx, 0xfde9
+  0x1800e9544: jne      0x1800e9550
+  0x1800e9546: mov      ebx, dword ptr [rcx + 0x918]
+  0x1800e954c: nop      dword ptr [rax]
+  0x1800e9550: movzx    ecx, byte ptr [rdx]
+  0x1800e9553: test     cl, cl
+  0x1800e9555: je       0x1800e9581
+  0x1800e9557: cmp      cl, 0x2f
+  0x1800e955a: jne      0x1800e9561
+  0x1800e955c: mov      byte ptr [rdx], 0x5c
+  0x1800e955f: mov      cl, 0x5c
+  0x1800e9561: lea      eax, [rcx - 0x41]
+  0x1800e9564: cmp      al, 0x19
+  0x1800e9566: ja       0x1800e956d
+  0x1800e9568: add      cl, 0x20
+  0x1800e956b: mov      byte ptr [rdx], cl
+  0x1800e956d: xor      r8d, r8d
+  0x1800e9570: movzx    ecx, bx
+  0x1800e9573: call     qword ptr [rip + 0x3fe6af]  ; USER32.dll!CharNextExA
+  0x1800e9579: mov      rdx, rax
+  0x1800e957c: test     rax, rax
+  0x1800e957f: jne      0x1800e9550
+  0x1800e9581: cmp      dword ptr [rbp + 0x3c0], r14d
+  0x1800e9588: je       0x1800e9932
+  0x1800e958e: cmp      dword ptr [rbp - 0x44], 1
+  0x1800e9592: jne      0x1800e9932
+  0x1800e9598: mov      rax, qword ptr [r13]
+  0x1800e959c: mov      r8d, 0x14
+  0x1800e95a2: lea      rdx, [rsp + 0x78]
+  0x1800e95a7: mov      rcx, r13
+  0x1800e95aa: call     qword ptr [rax]
+  0x1800e95ac: cmp      eax, 0x14
+  0x1800e95af: je       0x1800e95c3
+  0x1800e95b1: mov      r9d, 0x298
+  0x1800e95b7: lea      r8, [rip + 0x4c69ca]  ; "dwReadIn == sizeof(UITEXFRAMEDATASTRUCTURE)"
+  0x1800e95be: jmp      0x1800e9a61
+  0x1800e95c3: mov      ecx, dword ptr [rbp - 0x7c]
+  0x1800e95c6: cmp      ecx, 0x30
+  0x1800e95c9: jg       0x1800e97cf
+  0x1800e95cf: mov      eax, dword ptr [rbp - 0x78]
+  0x1800e95d2: cmp      eax, 0x30
+  0x1800e95d5: jg       0x1800e97cf
+  0x1800e95db: xor      edx, edx
+  0x1800e95dd: lea      r15d, [rdx + 1]
+  0x1800e95e1: mov      dword ptr [rsp + 0x50], edx
+  0x1800e95e5: mov      qword ptr [rbp - 0x70], rdx
+  0x1800e95e9: mov      dword ptr [rbp - 0x68], ecx
+  0x1800e95ec: mov      dword ptr [rbp - 0x64], eax
+  0x1800e95ef: mov      r8d, 0x104
+  0x1800e95f5: lea      rdx, [rbp + 0x120]
+  0x1800e95fc: lea      rcx, [rbp + 0x10]
+  0x1800e9600: call     qword ptr [rip + 0x3fea2a]  ; api-ms-win-crt-multibyte-l1-1-0.dll!_mbsnbcpy
+  0x1800e9606: lea      rax, [rbp + 0x10]
+  0x1800e960a: mov      rbx, r12
+  0x1800e960d: nop      dword ptr [rax]
+  0x1800e9610: inc      rbx
+  0x1800e9613: cmp      byte ptr [rax + rbx], r14b
+  0x1800e9617: jne      0x1800e9610
+  0x1800e9619: cmp      ebx, 3
+  0x1800e961c: jle      0x1800e96d7
+  0x1800e9622: movsxd   rdi, ebx
+  0x1800e9625: lea      rcx, [rbp + rdi + 0xc]
+  0x1800e962a: lea      rdx, [rip + 0x4c5f03]  ; ".tga"
+  0x1800e9631: call     qword ptr [rip + 0x3fea11]  ; api-ms-win-crt-multibyte-l1-1-0.dll!_mbsicmp
+  0x1800e9637: test     eax, eax
+  0x1800e9639: jne      0x1800e96d2
+  0x1800e963f: mov      byte ptr [rbp + rdi + 0xd], r14b
+  0x1800e9644: lea      rcx, [rbp + 0x10]
+  0x1800e9648: dec      rcx
+  0x1800e964b: nop      dword ptr [rax + rax]
+  0x1800e9650: lea      rcx, [rcx + 1]
+  0x1800e9654: cmp      byte ptr [rcx], r14b
+  0x1800e9657: jne      0x1800e9650
+  0x1800e9659: mov      eax, dword ptr [rip + 0x4c5edd]  ; "dds_0"
+  0x1800e965f: mov      dword ptr [rcx], eax
+  0x1800e9661: movzx    eax, word ptr [rip + 0x4c5ed8]  ; "0"
+  0x1800e9668: mov      word ptr [rcx + 4], ax
+  0x1800e966c: lea      rcx, [rbp + 0x10]
+  0x1800e9670: call     qword ptr [rip + 0x3fdb0a]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1800e9676: test     eax, eax
+  0x1800e9678: jne      0x1800e96cc
+  0x1800e967a: mov      byte ptr [rbp + rdi + 0xd], r14b
+  0x1800e967f: lea      rcx, [rbp + 0x10]
+  0x1800e9683: dec      rcx
+  0x1800e9686: lea      rcx, [rcx + 1]
+  0x1800e968a: cmp      byte ptr [rcx], r14b
+  0x1800e968d: jne      0x1800e9686
+  0x1800e968f: mov      eax, dword ptr [rip + 0x4c5eaf]  ; "dds"
+  0x1800e9695: mov      dword ptr [rcx], eax
+  0x1800e9697: lea      rcx, [rbp + 0x10]
+  0x1800e969b: call     qword ptr [rip + 0x3fdadf]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1800e96a1: test     eax, eax
+  0x1800e96a3: jne      0x1800e96c4
+  0x1800e96a5: mov      byte ptr [rbp + rdi + 0xd], r14b
+  0x1800e96aa: lea      rcx, [rbp + 0x10]
+  0x1800e96ae: dec      rcx
+  0x1800e96b1: lea      rcx, [rcx + 1]
+  0x1800e96b5: cmp      byte ptr [rcx], r14b
+  0x1800e96b8: jne      0x1800e96b1
+  0x1800e96ba: mov      eax, dword ptr [rip + 0x4c5e88]  ; "tga"
+  0x1800e96c0: mov      dword ptr [rcx], eax
+  0x1800e96c2: jmp      0x1800e96d2
+  0x1800e96c4: mov      r15d, 2
+  0x1800e96ca: jmp      0x1800e96d2
+  0x1800e96cc: mov      r15d, 3
+  0x1800e96d2: mov      rdi, qword ptr [rsp + 0x58]
+  0x1800e96d7: movsxd   rcx, ebx
+  0x1800e96da: test     ebx, ebx
+  0x1800e96dc: jle      0x1800e96f4
+  0x1800e96de: xor      eax, eax
+  0x1800e96e0: cmp      byte ptr [rbp + rax + 0x10], 0x2f
+  0x1800e96e5: jne      0x1800e96ec
+  0x1800e96e7: mov      byte ptr [rbp + rax + 0x10], 0x5c
+  0x1800e96ec: inc      rax
+  0x1800e96ef: cmp      rax, rcx
+  0x1800e96f2: jl       0x1800e96e0
+  0x1800e96f4: cmp      r15d, 2
+  0x1800e96f8: jne      0x1800e97ca
+  0x1800e96fe: lea      rax, [rbp - 0x60]
+  0x1800e9702: mov      qword ptr [rsp + 0x38], rax
+  0x1800e9707: lea      rax, [rsp + 0x50]
+  0x1800e970c: mov      qword ptr [rsp + 0x30], rax
+  0x1800e9711: lea      rax, [rsp + 0x54]
+  0x1800e9716: mov      qword ptr [rsp + 0x28], rax
+  0x1800e971b: mov      dword ptr [rsp + 0x20], 4
+  0x1800e9723: mov      r9d, dword ptr [rsp + 0x48]
+  0x1800e9728: mov      r8d, dword ptr [rbp - 0x78]
+  0x1800e972c: mov      edx, dword ptr [rbp - 0x7c]
+  0x1800e972f: mov      rcx, rsi
+  0x1800e9732: call     0x1800e8d50
+  0x1800e9737: test     eax, eax
+  0x1800e9739: jne      0x1800e974d
+  0x1800e973b: mov      r9d, 0x2ac
+  0x1800e9741: lea      r8, [rip + 0x4c01b8]  ; "nRetCode"
+  0x1800e9748: jmp      0x1800e9a61
+  0x1800e974d: mov      rax, qword ptr [rip + 0x5850fc]  ; 0x18066e850
+  0x1800e9754: mov      rcx, qword ptr [rax + 0xda40]
+  0x1800e975b: mov      rax, qword ptr [rcx]
+  0x1800e975e: mov      edx, dword ptr [rsp + 0x4c]
+  0x1800e9762: mov      dword ptr [rsp + 0x28], edx
+  0x1800e9766: lea      rdx, [rbp - 0x60]
+  0x1800e976a: mov      qword ptr [rsp + 0x20], rdx
+  0x1800e976f: lea      r9, [rbp - 0x70]
+  0x1800e9773: lea      r8, [rbp + 0x10]
+  0x1800e9777: mov      edx, dword ptr [rsp + 0x50]
+  0x1800e977b: call     qword ptr [rax + 0x58]
+  0x1800e977e: mov      r8d, eax
+  0x1800e9781: test     eax, eax
+  0x1800e9783: jns      0x1800e97ae
+  0x1800e9785: lea      rax, [rip + 0x4c6714]  ; "UI::KImageInfoMgr::LoadUITexFile"
+  0x1800e978c: mov      qword ptr [rsp + 0x20], rax
+  0x1800e9791: mov      r9d, 0x2b0
+  0x1800e9797: lea      rdx, [rip + 0x4c65d2]  ; "KGLOG_COM_PROCESS_ERROR(0x%X) at line %d in %s
+"
+  0x1800e979e: mov      ecx, 3
+  0x1800e97a3: call     qword ptr [rip + 0x3fda6f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800e97a9: jmp      0x1800e9a7f
+  0x1800e97ae: mov      eax, dword ptr [rsp + 0x54]
+  0x1800e97b2: mov      ebx, dword ptr [rsp + 0x40]
+  0x1800e97b6: mov      rcx, qword ptr [rsp + 0x70]
+  0x1800e97bb: mov      dword ptr [rcx], eax
+  0x1800e97bd: mov      dword ptr [rsp + 0x44], 1
+  0x1800e97c5: jmp      0x1800e9a83
+  0x1800e97ca: mov      r15d, dword ptr [rsp + 0x68]
+  0x1800e97cf: xorps    xmm0, xmm0
+  0x1800e97d2: movups   xmmword ptr [rsp + 0x58], xmm0
+  0x1800e97d7: lea      rcx, [rsi + 0x48]
+  0x1800e97db: mov      r8d, dword ptr [rsp + 0x48]
+  0x1800e97e0: lea      rdx, [rsp + 0x58]
+  0x1800e97e5: call     0x1800eb090
+  0x1800e97ea: movsxd   r12, eax
+  0x1800e97ed: test     eax, eax
+  0x1800e97ef: js       0x1800e9927
+  0x1800e97f5: mov      rcx, qword ptr [rsi + 0x58]
+  0x1800e97f9: mov      rax, qword ptr [rsi + 0x60]
+  0x1800e97fd: sub      rax, rcx
+  0x1800e9800: sar      rax, 4
+  0x1800e9804: cmp      r12d, eax
+  0x1800e9807: jge      0x1800e9927
+  0x1800e980d: mov      rbx, r12
+  0x1800e9810: mov      rax, qword ptr [rsi + 0xa0]
+  0x1800e9817: cmp      word ptr [rax + r12*2], r14w
+  0x1800e981c: je       0x1800e9927
+  0x1800e9822: shl      rbx, 4
+  0x1800e9826: add      rbx, rcx
+  0x1800e9829: je       0x1800e9927
+  0x1800e982f: lea      rcx, [rip + 0x569fa2]  ; 0x1806537d8
+  0x1800e9836: call     0x1801eb630
+  0x1800e983b: mov      qword ptr [rsp + 0x58], rax
+  0x1800e9840: test     rax, rax
+  0x1800e9843: je       0x1800e9852
+  0x1800e9845: mov      rcx, rax
+  0x1800e9848: call     0x1800e68e0
+  0x1800e984d: mov      r14, rax
+  0x1800e9850: jmp      0x1800e9855
+  0x1800e9852: xor      r14d, r14d
+  0x1800e9855: test     r14, r14
+  0x1800e9858: jne      0x1800e986c
+  0x1800e985a: mov      r9d, 0x2bd
+  0x1800e9860: lea      r8, [rip + 0x4c5f79]  ; "pImageInfo"
+  0x1800e9867: jmp      0x1800e9a61
+  0x1800e986c: inc      word ptr [r14 + 0x60]
+  0x1800e9871: mov      qword ptr [rbx + 8], r14
+  0x1800e9875: mov      ecx, dword ptr [rbp - 0x48]
+  0x1800e9878: mov      eax, dword ptr [rbp - 0x4c]
+  0x1800e987b: mov      dword ptr [r14 + 8], eax
+  0x1800e987f: mov      dword ptr [r14 + 0xc], ecx
+  0x1800e9883: lea      rcx, [r14 + 0x10]
+  0x1800e9887: mov      edx, 1
+  0x1800e988c: call     0x1800e71f0
+  0x1800e9891: mov      eax, dword ptr [rsp + 0x78]
+  0x1800e9895: mov      dword ptr [rsp + 0x30], eax
+  0x1800e9899: mov      eax, dword ptr [rbp - 0x78]
+  0x1800e989c: mov      dword ptr [rsp + 0x28], eax
+  0x1800e98a0: mov      eax, dword ptr [rbp - 0x7c]
+  0x1800e98a3: mov      dword ptr [rsp + 0x20], eax
+  0x1800e98a7: mov      r9d, dword ptr [rbp - 0x80]
+  0x1800e98ab: mov      r8d, dword ptr [rsp + 0x7c]
+  0x1800e98b0: xor      edx, edx
+  0x1800e98b2: mov      rcx, r14
+  0x1800e98b5: call     0x1800e70d0
+  0x1800e98ba: test     eax, eax
+  0x1800e98bc: jne      0x1800e98d0
+  0x1800e98be: mov      r9d, 0x2c8
+  0x1800e98c4: lea      r8, [rip + 0x4c0035]  ; "nRetCode"
+  0x1800e98cb: jmp      0x1800e9a61
+  0x1800e98d0: mov      r9d, dword ptr [rbp - 0x44]
+  0x1800e98d4: mov      r8d, r15d
+  0x1800e98d7: mov      rdx, r13
+  0x1800e98da: mov      rcx, r14
+  0x1800e98dd: call     0x1800ea510
+  0x1800e98e2: test     eax, eax
+  0x1800e98e4: jne      0x1800e98f8
+  0x1800e98e6: mov      r9d, 0x2cb
+  0x1800e98ec: lea      r8, [rip + 0x4c000d]  ; "nRetCode"
+  0x1800e98f3: jmp      0x1800e9a61
+  0x1800e98f8: lea      r8, [rsp + 0x40]
+  0x1800e98fd: mov      edx, dword ptr [rsp + 0x4c]
+  0x1800e9901: lea      rcx, [rbp + 0x120]
+  0x1800e9908: call     0x1800ea180
+  0x1800e990d: test     eax, eax
+  0x1800e990f: jne      0x1800e9a38
+  0x1800e9915: mov      r9d, 0x2ce
+  0x1800e991b: lea      r8, [rip + 0x4bffde]  ; "nRetCode"
+  0x1800e9922: jmp      0x1800e9a61
+  0x1800e9927: mov      r9d, 0x2ba
+  0x1800e992d: jmp      0x1800e9a5a
+  0x1800e9932: xorps    xmm0, xmm0
+  0x1800e9935: movups   xmmword ptr [rbp - 0x60], xmm0
+  0x1800e9939: lea      rcx, [rsi + 0x48]
+  0x1800e993d: mov      r8d, dword ptr [rsp + 0x48]
+  0x1800e9942: lea      rdx, [rbp - 0x60]
+  0x1800e9946: call     0x1800eb090
+  0x1800e994b: movsxd   r12, eax
+  0x1800e994e: test     eax, eax
+  0x1800e9950: js       0x1800e9a54
+  0x1800e9956: mov      rcx, qword ptr [rsi + 0x58]
+  0x1800e995a: mov      rax, qword ptr [rsi + 0x60]
+  0x1800e995e: sub      rax, rcx
+  0x1800e9961: sar      rax, 4
+  0x1800e9965: cmp      r12d, eax
+  0x1800e9968: jge      0x1800e9a54
+  0x1800e996e: mov      rbx, r12
+  0x1800e9971: mov      rax, qword ptr [rsi + 0xa0]
+  0x1800e9978: cmp      word ptr [rax + r12*2], r14w
+  0x1800e997d: je       0x1800e9a54
+  0x1800e9983: shl      rbx, 4
+  0x1800e9987: add      rbx, rcx
+  0x1800e998a: je       0x1800e9a54
+  0x1800e9990: lea      rcx, [rip + 0x569e41]  ; 0x1806537d8
+  0x1800e9997: call     0x1801eb630
+  0x1800e999c: mov      qword ptr [rsp + 0x58], rax
+  0x1800e99a1: test     rax, rax
+  0x1800e99a4: je       0x1800e99b3
+  0x1800e99a6: mov      rcx, rax
+  0x1800e99a9: call     0x1800e68e0
+  0x1800e99ae: mov      r14, rax
+  0x1800e99b1: jmp      0x1800e99b6
+  0x1800e99b3: xor      r14d, r14d
+  0x1800e99b6: test     r14, r14
+  0x1800e99b9: jne      0x1800e99cd
+  0x1800e99bb: mov      r9d, 0x2db
+  0x1800e99c1: lea      r8, [rip + 0x4c5e18]  ; "pImageInfo"
+  0x1800e99c8: jmp      0x1800e9a61
+  0x1800e99cd: inc      word ptr [r14 + 0x60]
+  0x1800e99d2: mov      qword ptr [rbx + 8], r14
+  0x1800e99d6: mov      ecx, dword ptr [rbp - 0x48]
+  0x1800e99d9: mov      eax, dword ptr [rbp - 0x4c]
+  0x1800e99dc: mov      dword ptr [r14 + 8], eax
+  0x1800e99e0: mov      dword ptr [r14 + 0xc], ecx
+  0x1800e99e4: mov      eax, dword ptr [rbp - 0x40]
+  0x1800e99e7: mov      dword ptr [rsp + 0x20], eax
+  0x1800e99eb: mov      r9d, dword ptr [rbp - 0x44]
+  0x1800e99ef: mov      r8d, r15d
+  0x1800e99f2: mov      rdx, r13
+  0x1800e99f5: mov      rcx, r14
+  0x1800e99f8: call     0x1800eaa00
+  0x1800e99fd: test     eax, eax
+  0x1800e99ff: jne      0x1800e9a10
+  0x1800e9a01: mov      r9d, 0x2e3
+  0x1800e9a07: lea      r8, [rip + 0x4bfef2]  ; "nRetCode"
+  0x1800e9a0e: jmp      0x1800e9a61
+  0x1800e9a10: lea      r8, [rsp + 0x40]
+  0x1800e9a15: mov      edx, dword ptr [rsp + 0x4c]
+  0x1800e9a19: lea      rcx, [rbp + 0x120]
+  0x1800e9a20: call     0x1800ea180
+  0x1800e9a25: test     eax, eax
+  0x1800e9a27: jne      0x1800e9a38
+  0x1800e9a29: mov      r9d, 0x2e6
+  0x1800e9a2f: lea      r8, [rip + 0x4bfeca]  ; "nRetCode"
+  0x1800e9a36: jmp      0x1800e9a61
+  0x1800e9a38: mov      ebx, dword ptr [rsp + 0x40]
+  0x1800e9a3c: mov      eax, r12d
+  0x1800e9a3f: mov      dword ptr [r14 + 0x58], ebx
+  0x1800e9a43: mov      rcx, qword ptr [rsp + 0x70]
+  0x1800e9a48: mov      dword ptr [rcx], eax
+  0x1800e9a4a: mov      dword ptr [rsp + 0x44], 1
+  0x1800e9a52: jmp      0x1800e9a83
+  0x1800e9a54: mov      r9d, 0x2d8
+  0x1800e9a5a: lea      r8, [rip + 0x4c036f]  ; "pData"
+  0x1800e9a61: lea      rax, [rip + 0x4c6438]  ; "UI::KImageInfoMgr::LoadUITexFile"
+  0x1800e9a68: mov      qword ptr [rsp + 0x20], rax
+  0x1800e9a6d: lea      rdx, [rip + 0x4bfe04]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x1800e9a74: mov      ecx, 3
+  0x1800e9a79: call     qword ptr [rip + 0x3fd799]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800e9a7f: mov      ebx, dword ptr [rsp + 0x40]
+  0x1800e9a83: mov      rax, qword ptr [r13]
+  0x1800e9a87: mov      rcx, r13
+  0x1800e9a8a: call     qword ptr [rax + 0x60]
+  0x1800e9a8d: mov      eax, dword ptr [rsp + 0x44]
+  0x1800e9a91: test     eax, eax
+  0x1800e9a93: jne      0x1800e9b4b
+  0x1800e9a99: test     ebx, ebx
+  0x1800e9a9b: je       0x1800e9ab3
+  0x1800e9a9d: mov      rax, qword ptr [rip + 0x584dac]  ; 0x18066e850
+  0x1800e9aa4: mov      rcx, qword ptr [rax + 0xda40]
+  0x1800e9aab: mov      rax, qword ptr [rcx]
+  0x1800e9aae: mov      edx, ebx
+  0x1800e9ab0: call     qword ptr [rax + 0x60]
+  0x1800e9ab3: test     r12d, r12d
+  0x1800e9ab6: js       0x1800e9b1c
+  0x1800e9ab8: mov      rax, qword ptr [rsi + 0x60]
+  0x1800e9abc: sub      rax, qword ptr [rsi + 0x58]
+  0x1800e9ac0: sar      rax, 4
+  0x1800e9ac4: cmp      r12d, eax
+  0x1800e9ac7: jge      0x1800e9b1c
+  0x1800e9ac9: movsxd   rax, r12d
+  0x1800e9acc: lea      r8, [rax + rax]
+  0x1800e9ad0: mov      rcx, qword ptr [rsi + 0xa0]
+  0x1800e9ad7: cmp      word ptr [rcx + r8], 0
+  0x1800e9add: je       0x1800e9b1c
+  0x1800e9adf: mov      rax, qword ptr [rsi + 0x88]
+  0x1800e9ae6: cmp      word ptr [r8 + rax], 0
+  0x1800e9aec: je       0x1800e9afd
+  0x1800e9aee: mov      rax, qword ptr [rsi + 0x70]
+  0x1800e9af2: cmp      word ptr [r8 + rax], 0
+  0x1800e9af8: jne      0x1800e9afd
+  0x1800e9afa: dec      dword ptr [rsi + 0x54]
+  0x1800e9afd: xor      edx, edx
+  0x1800e9aff: mov      word ptr [rcx + r8], dx
+  0x1800e9b04: mov      rax, qword ptr [rsi + 0x70]
+  0x1800e9b08: mov      word ptr [r8 + rax], dx
+  0x1800e9b0d: mov      rax, qword ptr [rsi + 0x88]
+  0x1800e9b14: mov      word ptr [r8 + rax], dx
+  0x1800e9b19: dec      dword ptr [rsi + 0x50]
+  0x1800e9b1c: test     r14, r14
+  0x1800e9b1f: je       0x1800e9b2e
+  0x1800e9b21: mov      rax, qword ptr [r14]
+  0x1800e9b24: mov      edx, 1
+  0x1800e9b29: mov      rcx, r14
+  0x1800e9b2c: call     qword ptr [rax]
+  0x1800e9b2e: mov      r15d, dword ptr [rsp + 0x44]
+  0x1800e9b33: mov      r8, rdi
+  0x1800e9b36: lea      rdx, [rip + 0x4c647b]  ; "KGUI KImageInfo::LoadUITexFile(%s)
+"
+  0x1800e9b3d: mov      ecx, 3
+  0x1800e9b42: call     qword ptr [rip + 0x3fd6d0]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800e9b48: mov      eax, r15d
+  0x1800e9b4b: mov      rcx, qword ptr [rbp + 0x340]
+  0x1800e9b52: xor      rcx, rsp
+  0x1800e9b55: call     0x1804ca730
+  0x1800e9b5a: add      rsp, 0x458
+  0x1800e9b61: pop      r15
+  0x1800e9b63: pop      r14
+  0x1800e9b65: pop      r13
+  0x1800e9b67: pop      r12
+  0x1800e9b69: pop      rdi
+  0x1800e9b6a: pop      rsi
+  0x1800e9b6b: pop      rbx
+  0x1800e9b6c: pop      rbp
+  0x1800e9b6d: ret      
+  0x1800e9b6e: int3     
+  0x1800e9b6f: int3     
+  0x1800e9b70: movss    dword ptr [rsp + 0x20], xmm3
+  0x1800e9b76: mov      r11, rsp
+  0x1800e9b79: push     rsi
+  0x1800e9b7a: sub      rsp, 0x120
+  0x1800e9b81: mov      r9d, dword ptr [rsp + 0x168]
+  0x1800e9b89: xor      esi, esi
+  0x1800e9b8b: movss    xmm2, dword ptr [rip + 0x4fc4e1]  ; 0x1805e6074
+  0x1800e9b93: mov      eax, r9d
+  0x1800e9b96: shr      eax, 0x10
+  0x1800e9b99: and      edx, 0x3fffff
+  0x1800e9b9f: movzx    eax, al
+  0x1800e9ba2: movaps   xmmword ptr [r11 - 0x48], xmm6
+  0x1800e9ba7: xorps    xmm6, xmm6
+  0x1800e9baa: movaps   xmmword ptr [r11 - 0x68], xmm8
+  0x1800e9baf: xorps    xmm8, xmm8
+  0x1800e9bb3: movaps   xmmword ptr [r11 - 0x78], xmm9
+  0x1800e9bb8: xorps    xmm9, xmm9
+  0x1800e9bbc: movd     xmm0, eax
+  0x1800e9bc0: mov      eax, r9d
+  0x1800e9bc3: cvtdq2ps xmm0, xmm0
+  0x1800e9bc6: shr      eax, 8
+  0x1800e9bc9: movzx    eax, al
+  0x1800e9bcc: mulss    xmm0, xmm2
+  0x1800e9bd0: movss    dword ptr [rsp + 0x40], xmm0
+  0x1800e9bd6: movd     xmm0, eax
+  0x1800e9bda: cvtdq2ps xmm0, xmm0
+  0x1800e9bdd: movzx    eax, r9b
+  0x1800e9be1: shr      r9d, 0x18
+  0x1800e9be5: movd     xmm1, eax
+  0x1800e9be9: mov      rax, qword ptr [rcx + 0x60]
+  0x1800e9bed: mulss    xmm0, xmm2
+  0x1800e9bf1: cvtdq2ps xmm1, xmm1
+  0x1800e9bf4: movss    dword ptr [rsp + 0x44], xmm0
+  0x1800e9bfa: movd     xmm0, r9d

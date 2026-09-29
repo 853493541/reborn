@@ -1,0 +1,75 @@
+# PVPShowFinal.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=11
+  strings: 'module', 'PVPShowFinal', 'ExportExternalLib', 'SFX', 'SFX_L', 'List', 'Handle_FinalListL', 'IniPath', 'ui/Config/Default/PVPShowFinalL.ini', 'Name', 'Text_NameL', 'Score', 'Image_ScoreL', 'ScoreFrame', 'SFX_R', 'Handle_FinalListR', 'ui/Config/Default/PVPShowFinalR.ini', 'Text_NameR', 'Image_ScoreR', 'OnFrameCreate'
+  numbers: 0.0, 1.0, 2.0, 13.0, 12.0, 17.0, 3.0, 18.0, 4.0, 30.0, 5.0, 29.0, 11.0, 16.0, 14.0, 15.0, 28.0, 27.0
+  globals: =Close, =Init, =InitPanel, =IsOpened, =MergeData, =OnEvent, =OnFrameBreathe, =OnFrameCreate, =OnFrameKeyDown, =OnLButtonClick, =OnSyncArena, =OnSyncPQ, =Open, =OpenAnimation, =SetVisibleWhenHideUI, =UpdateList, =UpdateOneSideList, ExportExternalLib, PVPShowFinal, RegisterIndePentShowPanel, module
+  function <?> line 16-25 params=1 ups=0 stack=7
+    strings: 'pairs'
+    globals: pairs
+  function <?> line 27-37 params=0 ups=0 stack=3
+    strings: 'Station', 'Hide', 'this', 'RegisterEvent', 'BATTLE_FIELD_SYNC_STATISTICS', 'SYNC_ARENA_STATISTICS', 'SYS_MSG', 'UI_SCALED', 'PLAYER_ENTER_SCENE', 'OnEvent'
+    globals: OnEvent, Station, this
+  function <?> line 39-51 params=0 ups=0 stack=9
+    strings: 'this', 'Lookup', '', 'Handle_Bg/Text_WarningTime', 'GetTickCount', 'nBanishTime', 'math', 'floor', 'SetText', 'FormatString', 'g_tStrings', 'STR_JJC_BANISH', 'STR_BUFF_H_TIME_S', 'Show', 'Hide'
+    numbers: 1000.0
+    globals: FormatString, GetTickCount, g_tStrings, math, this
+  function <?> line 53-76 params=1 ups=0 stack=9
+    strings: 'UI_SCALED', 'this', 'SetPoint', 'CENTER', 'BATTLE_FIELD_SYNC_STATISTICS', 'OnSyncPQ', 'SYNC_ARENA_STATISTICS', 'OnSyncArena', 'SYS_MSG', 'arg0', 'UI_OME_BANISH_PLAYER', 'arg1', 'BANISH_CODE', 'MAP_REFRESH', 'NOT_IN_MAP_OWNER_PARTY', 'nBanishTime', 'arg2', 'GetTickCount', 'CANCEL_BANISH', 'PLAYER_ENTER_SCENE'
+    numbers: 0.0, -100.0, 1000.0
+    globals: BANISH_CODE, Close, GetClientPlayer, GetTickCount, IsInArena, OnSyncArena, OnSyncPQ, arg0, arg1, arg2, this
+  function <?> line 78-83 params=0 ups=0 stack=2
+    strings: 'this', 'GetName', 'Btn_Leave', 'Close'
+    globals: Close, this
+  function <?> line 85-87 params=1 ups=0 stack=3
+    strings: 'UpdateList'
+    globals: UpdateList
+  function <?> line 89-103 params=1 ups=1 stack=8
+    strings: 'GetArenaStatistics', 'pairs', 'nKillCount', 'PVPShowFinal', 'tArenaStat', 'UpdateList'
+    numbers: 0.0
+    globals: GetArenaStatistics, PVPShowFinal, UpdateList, pairs
+  function <?> line 105-127 params=1 ups=1 stack=10
+    strings: 'GetBattleFieldStatistics', 'PVPShowFinal', 'tPQStat', 'pairs', 'PQ_STATISTICS_INDEX', 'DECAPITATE_COUNT', 'HARM_OUTPUT', 'TREAT_OUTPUT', 'bErgodic', 'table', 'insert', 'MergeData'
+    globals: GetBattleFieldStatistics, MergeData, PQ_STATISTICS_INDEX, PVPShowFinal, pairs, table
+  function <?> line 129-154 params=1 ups=0 stack=10
+    strings: 'PVPShowFinal', 'tArenaStat', 'tPQStat', 'pairs', 'dwRoleID', 'bErgodic', 'dwForceID', 'GetArenaPlayerForce', 'nKillCount', 'PQ_STATISTICS_INDEX', 'DECAPITATE_COUNT', 'nDamge', 'HARM_OUTPUT', 'nHealth', 'TREAT_OUTPUT', 'nNearDeath', 'SPECIAL_OP_7', 'UpdateList'
+    globals: GetArenaPlayerForce, PQ_STATISTICS_INDEX, PVPShowFinal, UpdateList, pairs
+  function <?> line 156-173 params=1 ups=2 stack=8
+    strings: 'PVPShowFinal', 'tArenaStat', 'table', 'sort', 'Lookup', '', 'UpdateOneSideList'
+    globals: PVPShowFinal, UpdateOneSideList, table
+    function <?> line 157-163 params=2 ups=0 stack=4
+      strings: 'nKillCount'
+  function <?> line 175-181 params=1 ups=0 stack=6
+    strings: 'type', 'number', 'FormatString', 'g_tStrings', 'MPNEY_TENTHOUSAND', 'KeepDecimalPoint'
+    numbers: 10000.0, 1.0
+    globals: FormatString, KeepDecimalPoint, g_tStrings, type
+  function <?> line 183-238 params=3 ups=3 stack=19
+    strings: 'GetRoot', 'Lookup', 'List', 'Clear', 'PVPShowFinal', 'tInfo', 'pairs', 'nGroupID', 'AppendItemFromIni', 'IniPath', 'Handle_Player', 'Image_School', 'FromUITex', 'GetForceImage', 'dwForceID', 'Text_Name', 'SetText', 'szPlayerName', 'Text_Kill', 'nKillCount'
+    numbers: 1.0, 0.0, 2.0
+    globals: GetForceImage, PVPShowFinal, Table_GetPath, g_tStrings, pairs
+  function <?> line 240-251 params=1 ups=3 stack=8
+    strings: 'Lookup', '', 'List', 'relX', 'GetRelX', 'SetRelX', 'GetW', 'tweenlite', 'to', 'outExpo'
+    numbers: 500.0
+    globals: tweenlite
+  function <?> line 253-270 params=1 ups=1 stack=15
+    strings: 'Lookup', '', 'Handle_Bg', 'Image_ScoreL', 'Image_ScoreR', 'Handle_Title', 'Show', 'GetItemCount', 'GetName', 'Image_Title_Master', 'nMode'
+    numbers: 1.0, 0.0
+  function <?> line 272-276 params=2 ups=1 stack=4
+    strings: 'Danmaku', 'SetVisibleWhenHideUI'
+    globals: Danmaku
+  function <?> line 278-305 params=5 ups=0 stack=9
+    strings: 'IsInArena', 'Wnd', 'OpenWindow', 'PVPShowFinal', 'ShowWhenUIHide', 'PVPLogo', 'Replace', 'nMode', 'CloseArenaFinal', 'SetVisibleWhenHideUI', 'InitPanel', 'tArenaStat', 'tPQStat', 'tInfo', 'tName', 'ApplyArenaStatistics', 'ApplyBattleFieldStatistics', 'OpenAnimation', 'Arena_GetOBIndex', 'DelayCall'
+    numbers: 3000.0
+    globals: ApplyArenaStatistics, ApplyBattleFieldStatistics, Arena_GetOBIndex, CloseArenaFinal, DelayCall, InitPanel, IsInArena, OpenAnimation, PVPLogo, PVPShowFinal, PlaySound, SOUND, SetVisibleWhenHideUI, Wnd, g_sound
+    function <?> line 300-300 params=0 ups=0 stack=2
+      strings: 'Close'
+      globals: Close
+  function <?> line 307-314 params=0 ups=0 stack=2
+    strings: 'Station', 'Lookup', 'Normal/PVPShowFinal'
+    globals: Station
+  function <?> line 316-333 params=1 ups=0 stack=5
+    strings: 'IsOpened', 'SetVisibleWhenHideUI', 'nMode', 'PVPShowPanel', 'SetCemeraToMyself', 'IsInArena', 'LogOutArena', 'Wnd', 'CloseWindow', 'PVPShowFinal', 'PlaySound', 'SOUND', 'UI_SOUND', 'g_sound', 'CloseFrame'
+    globals: IsInArena, IsOpened, LogOutArena, PVPShowPanel, PlaySound, SOUND, SetVisibleWhenHideUI, Wnd, g_sound
+  function <?> line 335-342 params=0 ups=0 stack=3
+    strings: 'Station', 'GetMessageKey', 'GetKeyName', 'Esc'
+    numbers: 1.0, 0.0
+    globals: GetKeyName, Station

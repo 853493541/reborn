@@ -1,0 +1,98 @@
+# JX3LogicEditOperationX64.dll xrefs for 'LuaGetBattleFieldPQInfo'
+# image base 0x180000000
+
+## xref @ 0x180356aa2 -> 0x1807c7150 'KScriptFuncList::LuaGetBattleFieldPQInfo'  fn start 0x180356a70
+  0x180356a70: jl       0x180356a96
+  0x180356a72: xor      byte ptr [rax + 1], bh
+  0x180356a78: movaps   xmm6, xmmword ptr [rsp + 0x40]
+  0x180356a7d: mov      rdi, qword ptr [rsp + 0x68]
+  0x180356a82: mov      rsi, qword ptr [rsp + 0x60]
+  0x180356a87: add      rsp, 0x50
+  0x180356a8b: pop      rbx
+  0x180356a8c: ret      
+  0x180356a8d: int3     
+  0x180356a8e: int3     
+  0x180356a8f: int3     
+  0x180356a90: push     rbx
+  0x180356a92: sub      rsp, 0x30
+  0x180356a96: mov      rbx, rcx
+  0x180356a99: call     0x1807497c0
+  0x180356a9e: test     eax, eax
+  0x180356aa0: je       0x180356ad8
+  0x180356aa2: lea      rax, [rip + 0x4706a7]  ; 'KScriptFuncList::LuaGetBattleFieldPQInfo'
+  0x180356aa9: mov      r9d, 0x2ded
+  0x180356aaf: lea      r8, [rip + 0x43156a]  ; 'nTopIndex == 0'
+  0x180356ab6: mov      qword ptr [rsp + 0x20], rax
+  0x180356abb: lea      rdx, [rip + 0x5979e6]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180356ac2: mov      ecx, 3
+  0x180356ac7: call     qword ptr [rip + 0x40e793]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180356acd: mov      eax, 4
+  0x180356ad2: add      rsp, 0x30
+  0x180356ad6: pop      rbx
+  0x180356ad7: ret      
+  0x180356ad8: mov      rax, qword ptr [rip + 0x66a841]
+  0x180356adf: xorps    xmm1, xmm1
+  0x180356ae2: mov      ecx, dword ptr [rax + 0x1b480]
+  0x180356ae8: cvtsi2sd xmm1, rcx
+  0x180356aed: mov      rcx, rbx
+  0x180356af0: call     0x180749c00
+  0x180356af5: mov      rax, qword ptr [rip + 0x66a824]
+  0x180356afc: xorps    xmm1, xmm1
+  0x180356aff: mov      ecx, dword ptr [rax + 0x1b484]
+  0x180356b05: cvtsi2sd xmm1, rcx
+  0x180356b0a: mov      rcx, rbx
+  0x180356b0d: call     0x180749c00
+  0x180356b12: mov      rax, qword ptr [rip + 0x66a807]
+  0x180356b19: mov      rcx, rbx
+  0x180356b1c: movd     xmm1, dword ptr [rax + 0x1b488]
+  0x180356b24: cvtdq2pd xmm1, xmm1
+  0x180356b28: call     0x180749c00
+  0x180356b2d: mov      rax, qword ptr [rip + 0x66a7ec]
+  0x180356b34: mov      rcx, rbx
+  0x180356b37: movd     xmm1, dword ptr [rax + 0x1b490]
+  0x180356b3f: cvtdq2pd xmm1, xmm1
+  0x180356b43: call     0x180749c00
+  0x180356b48: mov      eax, 4
+  0x180356b4d: add      rsp, 0x30
+  0x180356b51: pop      rbx
+  0x180356b52: ret      
+  0x180356b53: int3     
+  0x180356b54: int3     
+  0x180356b55: int3     
+  0x180356b56: int3     
+  0x180356b57: int3     
+  0x180356b58: int3     
+  0x180356b59: int3     
+  0x180356b5a: int3     
+  0x180356b5b: int3     
+  0x180356b5c: int3     
+  0x180356b5d: int3     
+  0x180356b5e: int3     
+  0x180356b5f: int3     
+  0x180356b60: push     rsi
+  0x180356b62: sub      rsp, 0x70
+  0x180356b66: mov      rax, qword ptr [rip + 0x65f6b3]
+  0x180356b6d: xor      rax, rsp
+  0x180356b70: mov      qword ptr [rsp + 0x50], rax
+  0x180356b75: mov      rsi, rcx
+  0x180356b78: call     0x1807497c0
+  0x180356b7d: test     eax, eax
+  0x180356b7f: je       0x180356bb1
+  0x180356b81: lea      rax, [rip + 0x470530]  ; 'KScriptFuncList::LuaGetBattleFieldStatistics'
+  0x180356b88: mov      r9d, 0x2d90
+  0x180356b8e: lea      r8, [rip + 0x43148b]  ; 'nTopIndex == 0'
+  0x180356b95: mov      qword ptr [rsp + 0x20], rax
+  0x180356b9a: lea      rdx, [rip + 0x597907]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180356ba1: mov      ecx, 3
+  0x180356ba6: call     qword ptr [rip + 0x40e6b4]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180356bac: jmp      0x180356df2
+  0x180356bb1: mov      qword ptr [rsp + 0x88], rbx
+  0x180356bb9: xor      r8d, r8d
+  0x180356bbc: xor      edx, edx
+  0x180356bbe: mov      qword ptr [rsp + 0x60], r14
+  0x180356bc3: mov      rcx, rsi
+  0x180356bc6: call     0x1807494f0
+  0x180356bcb: .byte    0x48
+  0x180356bcc: .byte    0x8b
+  0x180356bcd: .byte    0x05
+
