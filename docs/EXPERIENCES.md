@@ -118,3 +118,23 @@ solved it, and what is still open. **Newest at the bottom.**
   both loaded terrain, no crash; `build exit=0` for all three builds.
 - Outcome: solved. Shared engine-root writes (ShaderListUpload/dxvk) remain the known
   caveat; root isolation broke init (`d8268d2`).
+
+### 2026-09-29 — client — Collision improvement pass (holes, capsule, slope, substeps)
+- Did: gap audit + fixes on the main client (`docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md`).
+  (1) Terrain holes: `TerrainSampler` now calls the loader's `LoadHoleRegion` (vt[4]) and
+  exposes `SampleGround` (no ground over a hole); the client falls through caves instead of
+  standing on them. (2) `FoliageCollision.InstanceContact` replaced 6-point axis sampling
+  with exact segment/triangle closest pairs (a thin rail at 15 u between former samples now
+  blocks). (3) Slope rule uses a fixed 40 u look-ahead (speed/framerate independent).
+  (4) Long horizontal moves are substepped (≤20 u) so they cannot tunnel thin colliders.
+  (5) Offline gate `collision_selftest.exe` (9 checks) wired into `client\build_client.cmd`.
+- Evidence: selftest 9/9 PASS; engine A/B on 海岛绝境 region 0,0 — engine mask == decoded
+  `.hlb` after the **row-flip in Z** (`tools/collision/check_hole_mask.py`); live fall
+  (`py=-4434`, `vy=-4952`, `grounded=False` at t=2 s); 龙门寻宝 cactus regression blocked at
+  z=53288 (264 events). Proof: `proof/collision/client_holes/`. Commits `4d46810`, `ec72490`,
+  `a7b653c`, `e59234b`, `9ca8549`, `7334772`, `c6d0af1` (push blocked: credential manager
+  hung; local only at session end).
+- Outcome: solved (C-1..C-5). Known limitation: no cave meshes under holes → a fall is
+  bottomless until geometry is baked beneath (no invented floor).
+- Re-open: cave-bake availability; engine A/B for holes beyond region 0,0 once other maps
+  with holes are baked.

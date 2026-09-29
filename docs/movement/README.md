@@ -12,3 +12,12 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `REAL_CLIENT_MAP_COLLISION.md` | Real client map collision — recon + working host probe |
 | `REBORN_JUMP_FALL_SPEC.md` | REBORN — JX3 jump & fall reproduction spec |
 | `STRUCTURE_COLLISION_RESEARCH.md` | Structure collision research — how the game handles houses/walls |
+
+## Tools
+
+| Tool | Purpose |
+|---|---|
+| `tools/collision/check_hole_mask.py` | Convert an extracted `.hlb` hole mask (flip rule applied) and A/B it against a client `RC_HOLE_DUMP` engine dump |
+| `client/collision_selftest.cs` | Offline FoliageCollision gate (9 checks, no engine/assets); built as `bin64\collision_selftest.exe` by `client\build_client.cmd` |
+| `tools/bake_map_collision.py` | Bake per-map foliage/structure collision bins from the pak |
+| `tools/gravity/verify_model.py` | Jump/fall integer model verification |

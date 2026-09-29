@@ -27,7 +27,7 @@ The runtime rules the client follows are the calibrated host rules documented in
 
 ## 2. Missing parts (priority order)
 
-### C-1 [MISSING] Terrain holes (cave voids) are solid ground
+### C-1 [FIXED 2026-09-29] Terrain holes (cave voids) are solid ground
 The game loader exposes `LoadHoleRegion` (loader vt[4] `0x180032540`): it opens
 `<dir>\hole\<map>_%03u_%03u.hlb` (`.png` fallback) and packs a 1-bit-per-cell hole mask
 (`RegionSize²/8` bytes) used by `_CreatePxActor`. `TerrainSampler` never calls it, so on
@@ -42,14 +42,14 @@ row = Z, col = X; a **cell** `(x,z)` is a hole only when **all four** corner sam
 Confidence: HIGH for the converter math (disasm), MED for row/col orientation until the
 engine A/B in §4-F2.
 
-### C-2 [WEAK] Capsule contact is 6-point sampled
+### C-2 [FIXED 2026-09-29] Capsule contact was 6-point sampled
 `FoliageCollision.InstanceContact` (`client/FoliageCollision.cs:567-648`) samples 6 points
 along the 116 u axis (23.2 u apart). A thin wall/pole/railing between samples is missed or
 mis-penetrated, and the reported depth is a sample approximation. The exact primitive is
 segment (capsule axis) vs triangle: segment endpoint→triangle face, triangle vertex→segment,
 and segment↔triangle edge pairs. Evidence: `JX3_COLLISION_SYSTEM.md` §9.5.
 
-### C-3 [WEAK] Slope rule is speed/framerate dependent
+### C-3 [FIXED 2026-09-29] Slope rule was speed/framerate dependent
 `gh - ground > 70` compares the rise across the **whole per-frame step**
 (`RebornClient.cs:1585-1596`), so the effective slope limit depends on speed and frame time:
 at walk (96 u/s, 16 ms) a ~86° rise blocks, at Shift-10x (3200 u/s) a ~24° rise blocks.
@@ -57,13 +57,13 @@ The map-host rule is a fixed 40 u look-ahead with a 70 u rise budget (≈60°); 
 supposed to use the same (`REAL_CLIENT_MAP_COLLISION.md` §Object / steep-terrain collision).
 Evidence: `JX3_COLLISION_SYSTEM.md` §12.4 (host rule), G-13 (exact CCT offset unknown).
 
-### C-4 [WEAK] Discrete Resolve → tunneling at large steps
+### C-4 [FIXED 2026-09-29] Discrete Resolve → tunneling at large steps
 Horizontal motion teleports then pushes out (`RebornClient.cs:1587-1651`). A move larger
 than the capsule radius (Shift-10x testing speed ≈ 51 u/frame, future dash/flash moves) can
 cross a thin collider before any contact test runs. Fix: subdivide the move to
 ≤ radius/2 per substep and resolve each substep.
 
-### C-5 [TOOL] No offline verification for collision
+### C-5 [FIXED 2026-09-29] No offline verification for collision
 `camera_smoke.exe` covers the camera only. Every collision check today needs a live engine
 run (`RC_COL_DEBUG`, teleport key `C`). The repo requires a reproduce/verify command per fix
 (AGENTS §13), so the collision library needs a deterministic self-test executable that runs
@@ -128,3 +128,41 @@ Commit per fix: `Client: ...`. Docs: this file + `docs/movement/README.md` index
 ```
 
 The converter is called from `LoadHoleRegion` (`engine_host_spike/recon_loader_methods.txt:391`).
+
+## 6. Results and proof (2026-09-29, branch `agent/collision-improvement`)
+
+All five fixes landed and were verified:
+
+| Fix | Verify | Result |
+|---|---|---|
+| C-5 offline gate | `bin64\collision_selftest.exe` | 9/9 PASS (wall/rail/support/ray/substep) |
+| C-2 exact capsule | selftest `rail_between_samples` | thin rail at 15 u (between former sample heights) now blocks; push-out exact |
+| C-4 substepping | selftest `substep_no_tunnel` + client | 100 u move through a wall stops at the wall |
+| C-3 slope look-ahead | code (`RebornClient` fixed 40 u probe) | slope limit no longer scales with speed/frame time |
+| C-1 terrain holes | engine A/B + live fall | mask identical to the decoded `.hlb`; player falls through the void with the fall clip |
+
+### C-1 A/B (the decisive check)
+
+- Run: `reborn_client_colimp.exe` (isolation build; `ns=reborn_client_colimp.memory`),
+  map `海岛绝境`, `RC_SPAWN=22850,0,30450` (a decoded hole cell of region 0,0),
+  `RC_HOLE_DUMP=<tmp>`.
+- Engine dump vs `proof/collision/terrain_extra/海岛绝境_000_000.hlb`:
+  `PASS: dump region (0,0) mask identical (32768 bytes)`; engine hole set = 234/234
+  cells. Script: `tools/collision/check_hole_mask.py`.
+- **Mask orientation discovery:** the engine's packed mask is **row-flipped in Z**
+  relative to the raw `.hlb` (engine cell z = n-1-z_file). 234/234 cells match with the
+  flip, 0/234 without. `TerrainSampler.SampleGround` and the checker apply the flip.
+- Live result: at t=2 s the player is at `py=-4434`, `vy=-4952`, `grounded=False`,
+  fall clip playing (was grounded at spawn before the fix).
+- Proof: `proof/collision/client_holes/` (run logs, screenshots, engine dump,
+  checker output).
+- Known limitation (provisional, re-open when cave geometry is available): the client
+  has no cave meshes under holes, so a fall is bottomless until something is baked
+  beneath it. No invented floor is added (AGENTS §6).
+
+### Structure regression (substep + slope change)
+
+- Run: 龙门寻宝, spawn (62724,53206), `RC_DEMO_COLLIDE=1`, walk +Z into the cactus:
+  blocked at z=53288 with 264 blocked events (documented pre-change stop: z≈53278 with
+  the old 25 u capsule; client capsule is 17 u), `grounded=True`, exit 0.
+- Proof: `proof/collision/client_holes/cactus_regression_longmen_20260929_135203.log`.
