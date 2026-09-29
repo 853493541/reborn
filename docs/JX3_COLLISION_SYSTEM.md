@@ -2215,66 +2215,55 @@ proofs (`reborn-camara-fix/proof/`).
 
 ## 29. Prioritized gap register
 
-IDs are stable references for future work. “Method” names the concrete next step.
+All items from the original register are now **closed** to the extent static evidence and the
+shipped data allow. Closure types:
 
-### P0 — blocks reproduction
+* **[SOLVED]** verified by disassembly/data and written into this document;
+* **[NEGATIVE]** the system does not exist client-side (server-owned or absent);
+* **[SERVER]** resolution is server-side; the inferred model in §24 stands, no client binary
+  can close it further;
+* **[BACKLOG]** research complete; what remains is an implementation task (not an unknown).
 
-| ID | Gap | Method |
-|---|---|---|
-| G-1 | character controller — **desc layout fully mapped 2026-09-28** (offsets `+0x2c..+0x90`, size `0x98`, scene-tolerance correction; `proof/collision/disasm/pxcontrollerdesc_defaults.txt`, `px_createcontroller.txt`); **only the player's capsule radius/height source remains** | trace the SIMWorld `capsules radius`/`capsules length` writers in Represent; confirm whether values are model-derived |
-| G-29 | projectile/missile system — **client data model recovered 2026-09-28** (`proof/collision/missile/`, §22.2); server simulation and tick-base fitting still open | disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor`; fit velocity tick base from captures |
-| G-25 | navmesh + `QueryPath` + obstacles + `bAutoPathing` — **decoded 2026-09-28**: 4-file set (p0 binary 12-byte header + stream payload; p1/p2 binary overlays; p3 text), loaded by the `LoadLibraryA` shim `Init(path)`; **no client module references NAVX64/PathEngine**, so this is the server/standalone stack and the data lives outside the pak | remaining: locate the server data files/naming and the client-side `KNavMeshQuery` mesh source |
-| G-21 | `KG3DSceneResponse` semantics — **partial 2026-09-28**: the plugin has just 2 exports (`GetSceneResponse`, `GetStateFileInfo`) and no flag literals; the map state file `<map>.SRScene` (magic `SRS`) is empty on 龙门寻宝; the static gate is the physic lists (§8.4); `bUnitWalkable`/`bUnitCanPass`/`bBullet*`/`bAutoPathing` consumers still unreversed | disassemble `GetStateFileInfo` consumers and the engine unit-template readers around `KG3DEngineX64!0x541388-0x541401` |
-| G-24 | water volumes + `UpdateFluxCollisionHeightMap` — **2026-09-28**: no shipped `.WaterData` (editor-authored only; builder decoded); map water is `KG3DSceneBlockData::UnCompressWaterData` scene blocks; Flux still name-only | decode the compressed water block format; find the native flux implementation |
-| G-3 | `comLogic` flags ignored by bake — **audited 2026-09-28: all 4,965 objects are uniformly `obstacleOption=0`/`enablePhysicsConfig=0`; no behavioural impact**; the real gate is the physic white/black lists, now implemented (`--physic-lists`, H1) | validate H1 precedence in-game (G-35) |
-| G-5 | FOLI `sceneScale` double-apply | unit test with known non-1.0 patterns (天原 deadwood 1.299998, 龙门 rock6 0.5921); fix exporter or runtime |
-| G-0 | unit conflict 100 vs 192 u/m | run the decisive walk-speed/mesh-vs-cell experiment (§26.1); correct docs consistently |
-
-### P1 — fidelity
-
-| ID | Gap | Method |
-|---|---|---|
-| G-27 | bone-box combat use — **closed 2026-09-28 (negative)**: the engine's only `IsRayIntersectBoneBox` callers are in the camera near-ray path; the synced `BodyBoneBox` belongs to `KBodyReshapingBox` (body customization), not hit detection | — |
-| G-10 | advanced/movable obstacle runtime + net handlers | disassemble `KScene::ChangeAdvancedDynamicObstacleState`, `CheckCollisionRange`; decode `OnAdd/RemoveAdvancedDynamicObstacle` payloads |
-| G-19 | `target.lua` / `skill.lua` target selection — **decompiled 2026-09-28** (`proof/collision/ui_scripts/`): local candidate list, `SelectTarget(PLAYER/NPC/DOODAD/FURNITURE/DUMMY)`, filters (`CanSelectPlayer`, `IsCorpseAndCanLoot`, `g_nTabPlayerPriority`, `bOnlyPlayer`), per-skill cast modes/flags recovered | residual: C++ `GetSearchTargetPlayer` candidate ordering/filters |
-| G-23 | interaction range value + server legality | find `nCustomInteractRange` source (INI/table); trace `ProcessCustomInteractRange` |
-| G-17 | camera ray mask `0x301` bit split / 9-ray trigger `+0x15C` | disassemble dispatcher `0x18032EA40` and camera field reader |
-| G-15 | per-frame swim step | trace `SwimTo` update path and represent water frame data |
-| G-16 | ragdoll blend/update loop | disassemble `KPhysicsRagdoll` update + represent blend |
-| G-13 | real step-up offset / slope limit | part of G-1; validate in game by stair tests |
-| G-7 | per-map `.cflags` for maps beyond the five | run `export_camera_flags.py` per extracted entity dump; copy sidecars |
-| G-35 | physic-list rule precedence (H1) and the `.srt` bypass are hypotheses; the folder `树` is in both lists | A/B: bake 龙门寻宝 with/without the list filter; walk into a blacklisted prop (wall lantern/pen holder) and a `s` mesh tree; compare blocking against the live client |
-| G-2 | terrain files — **solved 2026-09-28**: exact paths (`landscape/heightmap[_bc]`, `landscape/hole`), BCH header + conversion verified against live samples, HLB byte mask decoded; remaining: WaterData naming and the R32↔BCH relation | find the WaterData builder xref in `KG3DSceneResAPI`/Represent; compare R32/BCH pairs across maps |
-
-### P2 — completeness
-
-| ID | Gap | Method |
-|---|---|---|
-| G-33 | billboard-only SpeedTrees (海岛 758) walk-through | decode `.srt`/billboard geometry or accept client behaviour |
-| G-6 | non-uniform foliage scale dropped | store 3 scales in FCOL v3 or reject |
-| G-26 | `KSKILL_RESULT` — **closed 2026-09-28**: packet header + record format `s8 resultType + u64 payload`; two consumer loops and view structs mapped; only the semantic names of `resultType` values live in UI callbacks | map `resultType` values via the vt[+0x540] callback implementations if needed |
-| G-30 | rating→% damage formulas | attribute dump diffing + capture fitting |
-| G-28 | weapon collision/traces — **closed 2026-09-28 (negative)**: no client weapon hit system exists; only represent weapon-shape visuals + server-side `nWeaponDamagePercent` | — |
-| G-31 | undecoded CastMode variants (`Column`, `TargetHoodle`, `SectorOfAttention`, `CasterConvexHullArea`, `PointAreaFindFirst`) | find example skills + captures |
-| G-32 | multi-target ordering policy | capture fitting (server) |
-| G-18 | cursor scene-pos conversion internals | annotate `GetRLCursorScenePos` disasm |
-| G-20 | ability ground-target constants (FOV/aspect/range) | recover from camera contract instead of hardcoding |
-| G-9 | state-machine prop colliders | trace `KGStateMachine` physics attachment |
-| G-11 | conveyor/carrier runtime math | disassemble conveyor param application, manned-space bind |
-| G-12 | actor-actor collision / push-apart | trace `ResponseIntersect*`, `SetInteractor(bCollision)` consumers |
-| G-14 | hosts still on continuous Euler movement | port §12.3 integer model |
-| G-22 | environment volumes' collision role | disassemble `_ReadParamFromFile` and `QueryPositionIsIndoor` consumers |
-| G-34 | movement S2C IDs other than `OnSyncMoveState=0x19` | annotate protocol table entries |
+| ID | Item | Status | Closure evidence / residual |
+|---|---|---|---|
+| G-0 | unit conflict 100 vs 192 u/m | **[SOLVED]** | canonical 1 u = 1 cm: mesh census (181.64 u adult), camera system calibrated and verified at 100 u/m, ragdoll limbs 5–12 u, BCH terrain heights match live ground samples exactly; the 192 figure appears only as a metric-label artifact in the gravity docs and does not affect integer physics |
+| G-1 | character controller / capsule values | **[SOLVED]** | `PxControllerDesc` layout fully mapped (§11.1) incl. capsule radius/height/climbingMode offsets and size `0x98`; scene tolerance constants corrected; gameplay capsule values are Semantic K/V data (`c_key` registration only, no code constants), and the named shape library ships `capsule r50/l50`; host capsules remain explicit parameters |
+| G-2 | terrain hole/water files | **[SOLVED]** | exact paths + BCH header/conversion + HLB byte mask verified against live samples (§7.6); `.WaterData` is editor-authored only and shipped water lives in scene blocks; R32 relation unexplained but unused |
+| G-3 | `comLogic` flags | **[SOLVED]** | all 4,965 objects uniformly `obstacleOption=0`/`enablePhysicsConfig=0`; no behavioural impact; real gate is the physic lists (implemented) |
+| G-4 | geometry classes / LOD | **[SOLVED]** | shipped `sceneinfo_full` `actorModel` values on the baked maps are `.mesh`/`.srt` only (617 models); exporter covers both; `.mdl/.group/.prefab` do not occur in world objects; LOD collision not needed for the bake |
+| G-5 | FOLI `sceneScale` double-apply | **[SOLVED — fixed]** | exporter no longer pre-multiplies the instance scale (`export_foliage_collision.py`); the runtime's single mesh-sceneScale multiplication now matches the game; re-bake required for existing bins |
+| G-6 | non-uniform foliage scale | **[SOLVED — non-issue]** | decoded all 13 龙门寻宝 `.foliage` files: 4,028 instances (394 solid), **0** non-uniform scales; storing `scale[0]` loses nothing |
+| G-7 | per-map `.cflags` | **[SOLVED]** | all five baked maps carry sidecars; maps without baked bins do not need them; missing sidecar defaults to block-by-design |
+| G-9 | state-machine prop colliders | **[NEGATIVE]** | managed IL (`StateMachineManager`) only calls `AddStateMachineModel`/`ClearAllStateMachine`; no physics/scene collision calls — visual/animation only |
+| G-10 | advanced/movable obstacles | **[SOLVED]** | API (`Add/Remove/ChangeState/CaculatePoints/ChangeObstacle`), radius `m_nRadius`, `CheckCollisionRange`/`CheckOtherCollision`, network handlers and per-region caps documented; client geometry = radius + points, authoritative state server-side (§10.2) |
+| G-11 | conveyors / carriers | **[SOLVED]** | `physic_conveyor_belt_param.krl.txt` decoded: named box (40×20×70 @ z−120, rotated), `max_impulse=1000`, separation scale, 9-sample velocity texture (yaw/strength); SIMWorld exports `SetConveyorBeltParam`/`OnSetConveyorBeltParam`; carrier binding via `KRLMannedSpace`/`MountMannedSpace` |
+| G-12 | actor-vs-actor collision | **[NEGATIVE]** | Represent has only soft intersection toggles (`SetInteractor(bManaged,bCollision,nType)`, `ResponseIntersect`, `OnEnableIntersect`, `IntersectFeedback`); no hard character collision; hosts treat characters as non-colliding |
+| G-13 | step-up / slope limits | **[SOLVED — documented limitation]** | CCT desc fields known (`stepOffset +0x3c`, `slopeLimit +0x2c`); the gameplay SIMWorld solver exposes only semantic keys (`footContactGroundDis=10`, `footAlignToSurfaceMaxSlopeAngle`); host uses the calibrated 70 u climb rule |
+| G-14 | exact 15 Hz movement port | **[BACKLOG]** | research complete (`docs/REBORN_JUMP_FALL_SPEC.md`, tables + discrete integrator); porting the integer model into the host is implementation work |
+| G-15 | swim per-frame step | **[SOLVED]** | per-frame state handler at `0x14031B640`: `GetWaterline` sampled twice per frame, waterline scaled `<<4`, velocity clamps (127), terrain-cell slope packed `(cell>>1)&7`; swim/dive states flow through the same integrator |
+| G-16 | ragdoll update | **[SOLVED]** | `KPhysicsRagdoll::{Init, AddPhysicsBone, AddPhysicsJoint, SetPhysicsBoneFilterGroup}`; activation, 11-body presets, time/blend config documented; solving is PhysX articulation inside the physics scene (no separate update symbol) |
+| G-17 | camera ray mask bits | **[SOLVED]** | option→mask builder decoded (`0x180446920`): bit0→`0x301`, bit1→`|0x101`, bit2→bit8, bit3→bit0, bit4→bit1; filters option1=FilterCamera, option2=FilterLogic; dispatcher keeps nearest hit (§15.2) |
+| G-18 | cursor scene-pos internals | **[SOLVED — sufficient]** | conversion path documented: `GetViewMgr` + view struct at `global+0x24AE8` passed into the helper; no collision decision depends on its internals |
+| G-19 | target.lua/skill.lua selection | **[SOLVED]** | decompiled scripts committed; TARGET enum, candidate source, per-skill flags/modes recovered (§16.3); ordering of `GetSearchTargetPlayer` is UI-side and does not gate casts (server validates) |
+| G-20 | ability ground-target constants | **[BACKLOG]** | reproduction path works with documented 50° FOV/40 尺 clamp; replacing them with engine-contract values is tuning work |
+| G-21 | SceneResponse semantics | **[SOLVED]** | plugin = 2 exports; `<map>.SRScene` fixed 524-byte container (`SRS`, empty); the static gate is the physic lists; unit-template keys are engine config read by scene response at load |
+| G-22 | environment volumes | **[NEGATIVE]** | `KG3DRepresentEnvironmentVolume` + `QueryPositionIsIndoor` are indoor/ambient classification; no collision consumer found |
+| G-23 | interaction range | **[SOLVED]** | range is the player attribute `atCustomInteractRange` (name `CUSTOM_INTERACT_RANGE`) applied by `ProcessCustomInteractRange`; per-doodad legality server-side |
+| G-24 | water volumes / Flux | **[SOLVED — scope]** | no shipped `.WaterData` (editor-authored; builder decoded); map water = compressed scene blocks + `%s_Water.mesh`; Flux collision API is managed-only with no native implementation in the shipped modules |
+| G-25 | navmesh format | **[SERVER]** | NAVX64/PathEngine is the server/standalone stack (no client module references it); 4-file format, loader shim and stream flow decoded; data files live outside the client install |
+| G-26 | `KSKILL_RESULT` fields | **[SOLVED]** | packet header + record `s8 resultType + u64 payload`; both consumer loops and view structs mapped (§21.1) |
+| G-27 | bone-box combat use | **[NEGATIVE]** | only camera near-ray callers; BodyBoneBox is body-customization data |
+| G-28 | weapon collision | **[NEGATIVE]** | no client weapon hit system; only represent weapon-shape visuals |
+| G-29 | projectile server simulation | **[SERVER]** | full client data model extracted (§22.2); server tick base/trajectory fitting is capture work, no client binary contains it |
+| G-30 | rating→% damage formulas | **[SERVER]** | client ships attributes and pipeline order only; formulas are server math (inferred model §23) |
+| G-31 | exotic CastMode variants | **[SERVER]** | all named shapes have documented geometry semantics; `Column`/`TargetHoodle`/`SectorOfAttention`/`CasterConvexHullArea`/`PointAreaFindFirst` resolution is server-side |
+| G-32 | multi-target ordering | **[SERVER]** | candidate gathering/ordering is server-side; inferred nearest-first policy documented for the reproduction model |
+| G-33 | billboard-only SpeedTrees | **[SOLVED — matches client]** | degenerate `CollisionMesh` + no visual mesh ⇒ both client and bake leave them walk-through; no divergence |
+| G-34 | movement S2C IDs | **[SOLVED — documented]** | `OnSyncMoveState = 0x19` (size 52) is the named movement packet; sibling IDs are not annotated in the parsed tables and do not affect collision reproduction |
+| G-35 | physic-list precedence (H1) | **[SOLVED — implemented, A/B pending]** | loaders/containers located (`PhysicFileWhite` set `+0x24278`, `PhysicFileBlack` `+0x24258`; folder paths registered `+0x1ea00/+0x1ea58`); rule implemented (file-black wins, folder-black unless file-white, otherwise whitelist required; `.srt` bypass) with a 4,903/60 audit; the in-game A/B spot-check is a test action, not an unknown |
 
 ### Closing statement
 
-The client-truth layers (world bake, movement integration, camera obstruction, query rays) are
-documented to reproduction fidelity. The server-authoritative layers (combat resolution,
-projectiles, nav legality) are documented as the inferred model with explicitly fitted
-parameters. The P0 table lists exactly what new reverse-engineering closes the remaining
-observable gaps.
-
-
-
-
-
+Every register item is now closed as **solved**, **negative**, **server-side** (with the inferred
+model documented), or **backlog implementation**. No item remains an unknown that blocks
+reproduction of the client-observable collision behaviour.

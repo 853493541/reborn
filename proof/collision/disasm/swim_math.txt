@@ -1,0 +1,55 @@
+0031b830  bae01e7208             mov     edx, 0x8721ee0
+0031b835  488bcb                 mov     rcx, rbx
+0031b838  e873040500             call    0x14036bcb0
+0031b83d  413bf4                 cmp     esi, r12d
+0031b840  410f4ff4               cmovg   esi, r12d
+0031b844  8b4c2430               mov     ecx, dword ptr [rsp + 0x30]
+0031b848  85f6                   test    esi, esi
+0031b84a  b87f000000             mov     eax, 0x7f
+0031b84f  8bef                   mov     ebp, edi
+0031b851  0f49ee                 cmovns  ebp, esi
+0031b854  443bf0                 cmp     r14d, eax
+0031b857  440f4ff0               cmovg   r14d, eax
+0031b85b  8bc7                   mov     eax, edi
+0031b85d  4585f6                 test    r14d, r14d
+0031b860  410f49c6               cmovns  eax, r14d
+0031b864  413bcc                 cmp     ecx, r12d
+0031b867  7f0e                   jg      0x14031b877
+0031b869  ba00f8ffff             mov     edx, 0xfffff800
+0031b86e  448be1                 mov     r12d, ecx
+0031b871  3bca                   cmp     ecx, edx
+0031b873  440f4ce2               cmovl   r12d, edx
+0031b877  8b4c2440               mov     ecx, dword ptr [rsp + 0x40]
+0031b87b  898ba0020000           mov     dword ptr [rbx + 0x2a0], ecx
+0031b881  8b4c2438               mov     ecx, dword ptr [rsp + 0x38]
+0031b885  898ba4020000           mov     dword ptr [rbx + 0x2a4], ecx
+0031b88b  89bba8020000           mov     dword ptr [rbx + 0x2a8], edi
+0031b891  8983f8020000           mov     dword ptr [rbx + 0x2f8], eax
+0031b897  4489a370020000         mov     dword ptr [rbx + 0x270], r12d
+0031b89e  39bb60020000           cmp     dword ptr [rbx + 0x260], edi
+0031b8a4  746d                   je      0x14031b913
+0031b8a6  488b5350               mov     rdx, qword ptr [rbx + 0x50]
+0031b8aa  8b02                   mov     eax, dword ptr [rdx]
+0031b8ac  a801                   test    al, 1
+0031b8ae  7440                   je      0x14031b8f0
+0031b8b0  488b4b58               mov     rcx, qword ptr [rbx + 0x58]
+0031b8b4  4533c0                 xor     r8d, r8d
+0031b8b7  e8f4ab0b00             call    0x1403d64b0
+0031b8bc  4885c0                 test    rax, rax
+0031b8bf  752d                   jne     0x14031b8ee
+0031b8c1  488d0550305100         lea     rax, [rip + 0x513050]
+0031b8c8  41b940120000           mov     r9d, 0x1240
+0031b8ce  4c8d059f0b4b00         lea     r8, [rip + 0x4b0b9f]
+0031b8d5  4889442420             mov     qword ptr [rsp + 0x20], rax
+0031b8da  488d1557366300         lea     rdx, [rip + 0x633657]
+0031b8e1  b903000000             mov     ecx, 3
+0031b8e6  ff155ccb4900           call    qword ptr [rip + 0x49cb5c]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+0031b8ec  eb37                   jmp     0x14031b925
+0031b8ee  8b00                   mov     eax, dword ptr [rax]
+0031b8f0  d1e8                   shr     eax, 1
+0031b8f2  83e007                 and     eax, 7
+0031b8f5  c1e008                 shl     eax, 8
+0031b8f8  c1e803                 shr     eax, 3
+0031b8fb  85ed                   test    ebp, ebp
+0031b8fd  7521                   jne     0x14031b920
+0031b8ff  8b                     .byte   0x8b

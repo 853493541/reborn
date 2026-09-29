@@ -1,0 +1,299 @@
+0086e7b0  895110                 mov     dword ptr [rcx + 0x10], edx
+0086e7b3  b801000000             mov     eax, 1
+0086e7b8  44894114               mov     dword ptr [rcx + 0x14], r8d
+0086e7bc  c3                     ret     
+0086e7bd  cc                     int3    
+0086e7be  cc                     int3    
+0086e7bf  cc                     int3    
+0086e7c0  4055                   push    rbp
+0086e7c2  56                     push    rsi
+0086e7c3  57                     push    rdi
+0086e7c4  4154                   push    r12
+0086e7c6  4155                   push    r13
+0086e7c8  4156                   push    r14
+0086e7ca  4157                   push    r15
+0086e7cc  4883ec70               sub     rsp, 0x70
+0086e7d0  33ed                   xor     ebp, ebp
+0086e7d2  458be9                 mov     r13d, r9d
+0086e7d5  458bf0                 mov     r14d, r8d
+0086e7d8  488bf9                 mov     rdi, rcx
+0086e7db  448be5                 mov     r12d, ebp
+0086e7de  83fa02                 cmp     edx, 2
+0086e7e1  7732                   ja      0x18086e815
+0086e7e3  4863c2                 movsxd  rax, edx
+0086e7e6  4c8d6770               lea     r12, [rdi + 0x70]
+0086e7ea  488db780000000         lea     rsi, [rdi + 0x80]
+0086e7f1  4c8dbf88000000         lea     r15, [rdi + 0x88]
+0086e7f8  488d9798000000         lea     rdx, [rdi + 0x98]
+0086e7ff  488d0c40               lea     rcx, [rax + rax*2]
+0086e803  48c1e104               shl     rcx, 4
+0086e807  4c03e1                 add     r12, rcx
+0086e80a  4803f1                 add     rsi, rcx
+0086e80d  4c03f9                 add     r15, rcx
+0086e810  4803d1                 add     rdx, rcx
+0086e813  eb37                   jmp     0x18086e84c
+0086e815  488d0524c94600         lea     rax, [rip + 0x46c924]
+0086e81c  41b9ea040000           mov     r9d, 0x4ea
+0086e822  4c8d0517c14600         lea     r8, [rip + 0x46c117]
+0086e829  4889442420             mov     qword ptr [rsp + 0x20], rax
+0086e82e  488d151b234100         lea     rdx, [rip + 0x41231b]
+0086e835  b903000000             mov     ecx, 3
+0086e83a  ff15c0b78200           call    qword ptr [rip + 0x82b7c0]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+0086e840  be10000000             mov     esi, 0x10
+0086e845  8d5618                 lea     edx, [rsi + 0x18]
+0086e848  448d7e08               lea     r15d, [rsi + 8]
+0086e84c  488b4f18               mov     rcx, qword ptr [rdi + 0x18]
+0086e850  4885c9                 test    rcx, rcx
+0086e853  7530                   jne     0x18086e885
+0086e855  41b9fa010000           mov     r9d, 0x1fa
+0086e85b  4c8d0566c04600         lea     r8, [rip + 0x46c066]
+0086e862  488d05cfc24600         lea     rax, [rip + 0x46c2cf]
+0086e869  b903000000             mov     ecx, 3
+0086e86e  488d15db224100         lea     rdx, [rip + 0x4122db]
+0086e875  4889442420             mov     qword ptr [rsp + 0x20], rax
+0086e87a  ff1580b78200           call    qword ptr [rip + 0x82b780]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+0086e880  e983010000             jmp     0x18086ea08
+0086e885  4d85e4                 test    r12, r12
+0086e888  750f                   jne     0x18086e899
+0086e88a  41b9fb010000           mov     r9d, 0x1fb
+0086e890  4c8d0549c14600         lea     r8, [rip + 0x46c149]
+0086e897  ebc9                   jmp     0x18086e862
+0086e899  488b06                 mov     rax, qword ptr [rsi]
+0086e89c  4885c0                 test    rax, rax
+0086e89f  750f                   jne     0x18086e8b0
+0086e8a1  41b9fc010000           mov     r9d, 0x1fc
+0086e8a7  4c8d05a2c14600         lea     r8, [rip + 0x46c1a2]
+0086e8ae  ebb2                   jmp     0x18086e862
+0086e8b0  49392f                 cmp     qword ptr [r15], rbp
+0086e8b3  750f                   jne     0x18086e8c4
+0086e8b5  41b9fd010000           mov     r9d, 0x1fd
+0086e8bb  4c8d05a6c14600         lea     r8, [rip + 0x46c1a6]
+0086e8c2  eb9e                   jmp     0x18086e862
+0086e8c4  488b12                 mov     rdx, qword ptr [rdx]
+0086e8c7  4885d2                 test    rdx, rdx
+0086e8ca  750f                   jne     0x18086e8db
+0086e8cc  41b9fe010000           mov     r9d, 0x1fe
+0086e8d2  4c8d0587c24600         lea     r8, [rip + 0x46c287]
+0086e8d9  eb87                   jmp     0x18086e862
+0086e8db  48895c2468             mov     qword ptr [rsp + 0x68], rbx
+0086e8e0  4585f6                 test    r14d, r14d
+0086e8e3  0f88ef000000           js      0x18086e9d8
+0086e8e9  8b5f10                 mov     ebx, dword ptr [rdi + 0x10]
+0086e8ec  443bf3                 cmp     r14d, ebx
+0086e8ef  0f8de3000000           jge     0x18086e9d8
+0086e8f5  4585ed                 test    r13d, r13d
+0086e8f8  0f88cb000000           js      0x18086e9c9
+0086e8fe  448b4f14               mov     r9d, dword ptr [rdi + 0x14]
+0086e902  453be9                 cmp     r13d, r9d
+0086e905  0f8dbe000000           jge     0x18086e9c9
+0086e90b  452bcd                 sub     r9d, r13d
+0086e90e  41ffc9                 dec     r9d
+0086e911  410fafd9               imul    ebx, r9d
+0086e915  4103de                 add     ebx, r14d
+0086e918  39ac24d8000000         cmp     dword ptr [rsp + 0xd8], ebp
+0086e91f  7458                   je      0x18086e979
+0086e921  488b01                 mov     rax, qword ptr [rcx]
+0086e924  4c8d8424d0000000       lea     r8, [rsp + 0xd0]
+0086e92c  c744245001000000       mov     dword ptr [rsp + 0x50], 1
+0086e934  c744244801000000       mov     dword ptr [rsp + 0x48], 1
+0086e93c  896c2440               mov     dword ptr [rsp + 0x40], ebp
+0086e940  4c89442438             mov     qword ptr [rsp + 0x38], r8
+0086e945  4533c0                 xor     r8d, r8d
+0086e948  c744243001000000       mov     dword ptr [rsp + 0x30], 1
+0086e950  c744242801000000       mov     dword ptr [rsp + 0x28], 1
+0086e958  4489742420             mov     dword ptr [rsp + 0x20], r14d
+0086e95d  ff90a8020000           call    qword ptr [rax + 0x2a8]
+0086e963  85c0                   test    eax, eax
+0086e965  750f                   jne     0x18086e976
+0086e967  41b90b020000           mov     r9d, 0x20b
+0086e96d  4c8d05e4e84100         lea     r8, [rip + 0x41e8e4]
+0086e974  eb6f                   jmp     0x18086e9e5
+0086e976  488b06                 mov     rax, qword ptr [rsi]
+0086e979  440fb68c24d0000000     movzx   r9d, byte ptr [rsp + 0xd0]
+0086e982  498bd4                 mov     rdx, r12
+0086e985  4863db                 movsxd  rbx, ebx
+0086e988  488bcf                 mov     rcx, rdi
+0086e98b  440fb60403             movzx   r8d, byte ptr [rbx + rax]
+0086e990  e836cd7aff             call    0x18001b6cb
+0086e995  0fb68424d0000000       movzx   eax, byte ptr [rsp + 0xd0]
+0086e99d  bd01000000             mov     ebp, 1
+0086e9a2  488b0e                 mov     rcx, qword ptr [rsi]
+0086e9a5  88040b                 mov     byte ptr [rbx + rcx], al
+0086e9a8  0fb68424d0000000       movzx   eax, byte ptr [rsp + 0xd0]
+0086e9b0  660f6ec0               movd    xmm0, eax
+0086e9b4  498b07                 mov     rax, qword ptr [r15]
+0086e9b7  0f5bc0                 cvtdq2ps xmm0, xmm0
+0086e9ba  f30f5e05fee74100       divss   xmm0, dword ptr [rip + 0x41e7fe]  ; =255
+0086e9c2  f30f110498             movss   dword ptr [rax + rbx*4], xmm0
+0086e9c7  eb3a                   jmp     0x18086ea03
+0086e9c9  41b900020000           mov     r9d, 0x200
+0086e9cf  4c8d05e2c14600         lea     r8, [rip + 0x46c1e2]
+0086e9d6  eb0d                   jmp     0x18086e9e5
+0086e9d8  41b9ff010000           mov     r9d, 0x1ff
+0086e9de  4c8d059bc14600         lea     r8, [rip + 0x46c19b]
+0086e9e5  488d054cc14600         lea     rax, [rip + 0x46c14c]
+0086e9ec  b903000000             mov     ecx, 3
+0086e9f1  488d1558214100         lea     rdx, [rip + 0x412158]
+0086e9f8  4889442420             mov     qword ptr [rsp + 0x20], rax
+0086e9fd  ff15fdb58200           call    qword ptr [rip + 0x82b5fd]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+0086ea03  488b5c2468             mov     rbx, qword ptr [rsp + 0x68]
+0086ea08  8bc5                   mov     eax, ebp
+0086ea0a  4883c470               add     rsp, 0x70
+0086ea0e  415f                   pop     r15
+0086ea10  415e                   pop     r14
+0086ea12  415d                   pop     r13
+0086ea14  415c                   pop     r12
+0086ea16  5f                     pop     rdi
+0086ea17  5e                     pop     rsi
+0086ea18  5d                     pop     rbp
+0086ea19  c3                     ret     
+0086ea1a  cc                     int3    
+0086ea1b  cc                     int3    
+0086ea1c  cc                     int3    
+0086ea1d  cc                     int3    
+0086ea1e  cc                     int3    
+0086ea1f  cc                     int3    
+0086ea20  cc                     int3    
+0086ea21  cc                     int3    
+0086ea22  cc                     int3    
+0086ea23  cc                     int3    
+0086ea24  cc                     int3    
+0086ea25  cc                     int3    
+0086ea26  cc                     int3    
+0086ea27  cc                     int3    
+0086ea28  cc                     int3    
+0086ea29  cc                     int3    
+0086ea2a  cc                     int3    
+0086ea2b  cc                     int3    
+0086ea2c  cc                     int3    
+0086ea2d  cc                     int3    
+0086ea2e  cc                     int3    
+0086ea2f  cc                     int3    
+0086ea30  cc                     int3    
+0086ea31  cc                     int3    
+0086ea32  cc                     int3    
+0086ea33  cc                     int3    
+0086ea34  cc                     int3    
+0086ea35  cc                     int3    
+0086ea36  cc                     int3    
+0086ea37  cc                     int3    
+0086ea38  cc                     int3    
+0086ea39  cc                     int3    
+0086ea3a  cc                     int3    
+0086ea3b  cc                     int3    
+0086ea3c  cc                     int3    
+0086ea3d  cc                     int3    
+0086ea3e  cc                     int3    
+0086ea3f  cc                     int3    
+0086ea40  cc                     int3    
+0086ea41  cc                     int3    
+0086ea42  cc                     int3    
+0086ea43  cc                     int3    
+0086ea44  cc                     int3    
+0086ea45  cc                     int3    
+0086ea46  cc                     int3    
+0086ea47  cc                     int3    
+0086ea48  cc                     int3    
+0086ea49  cc                     int3    
+0086ea4a  cc                     int3    
+0086ea4b  cc                     int3    
+0086ea4c  cc                     int3    
+0086ea4d  cc                     int3    
+0086ea4e  cc                     int3    
+0086ea4f  cc                     int3    
+0086ea50  cc                     int3    
+0086ea51  cc                     int3    
+0086ea52  cc                     int3    
+0086ea53  cc                     int3    
+0086ea54  cc                     int3    
+0086ea55  cc                     int3    
+0086ea56  cc                     int3    
+0086ea57  cc                     int3    
+0086ea58  cc                     int3    
+0086ea59  cc                     int3    
+0086ea5a  cc                     int3    
+0086ea5b  cc                     int3    
+0086ea5c  cc                     int3    
+0086ea5d  cc                     int3    
+0086ea5e  cc                     int3    
+0086ea5f  cc                     int3    
+0086ea60  cc                     int3    
+0086ea61  cc                     int3    
+0086ea62  cc                     int3    
+0086ea63  cc                     int3    
+0086ea64  cc                     int3    
+0086ea65  cc                     int3    
+0086ea66  cc                     int3    
+0086ea67  cc                     int3    
+0086ea68  cc                     int3    
+0086ea69  cc                     int3    
+0086ea6a  cc                     int3    
+0086ea6b  cc                     int3    
+0086ea6c  cc                     int3    
+0086ea6d  cc                     int3    
+0086ea6e  cc                     int3    
+0086ea6f  cc                     int3    
+0086ea70  cc                     int3    
+0086ea71  cc                     int3    
+0086ea72  cc                     int3    
+0086ea73  cc                     int3    
+0086ea74  cc                     int3    
+0086ea75  cc                     int3    
+0086ea76  cc                     int3    
+0086ea77  cc                     int3    
+0086ea78  cc                     int3    
+0086ea79  cc                     int3    
+0086ea7a  cc                     int3    
+0086ea7b  cc                     int3    
+0086ea7c  cc                     int3    
+0086ea7d  cc                     int3    
+0086ea7e  cc                     int3    
+0086ea7f  cc                     int3    
+0086ea80  cc                     int3    
+0086ea81  cc                     int3    
+0086ea82  cc                     int3    
+0086ea83  cc                     int3    
+0086ea84  cc                     int3    
+0086ea85  cc                     int3    
+0086ea86  cc                     int3    
+0086ea87  cc                     int3    
+0086ea88  cc                     int3    
+0086ea89  cc                     int3    
+0086ea8a  cc                     int3    
+0086ea8b  cc                     int3    
+0086ea8c  cc                     int3    
+0086ea8d  cc                     int3    
+0086ea8e  cc                     int3    
+0086ea8f  cc                     int3    
+0086ea90  cc                     int3    
+0086ea91  cc                     int3    
+0086ea92  cc                     int3    
+0086ea93  cc                     int3    
+0086ea94  cc                     int3    
+0086ea95  cc                     int3    
+0086ea96  cc                     int3    
+0086ea97  cc                     int3    
+0086ea98  cc                     int3    
+0086ea99  cc                     int3    
+0086ea9a  cc                     int3    
+0086ea9b  cc                     int3    
+0086ea9c  cc                     int3    
+0086ea9d  cc                     int3    
+0086ea9e  cc                     int3    
+0086ea9f  cc                     int3    
+0086eaa0  cc                     int3    
+0086eaa1  cc                     int3    
+0086eaa2  cc                     int3    
+0086eaa3  cc                     int3    
+0086eaa4  cc                     int3    
+0086eaa5  cc                     int3    
+0086eaa6  cc                     int3    
+0086eaa7  cc                     int3    
+0086eaa8  cc                     int3    
+0086eaa9  cc                     int3    
+0086eaaa  cc                     int3    
+0086eaab  cc                     int3    
+0086eaac  cc                     int3    
+0086eaad  cc                     int3    
+0086eaae  cc                     int3    
+0086eaaf  cc                     int3    

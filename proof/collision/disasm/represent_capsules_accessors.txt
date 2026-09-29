@@ -1,0 +1,72 @@
+00036f20  cc                     int3    
+00036f21  cc                     int3    
+00036f22  cc                     int3    
+00036f23  cc                     int3    
+00036f24  cc                     int3    
+00036f25  cc                     int3    
+00036f26  cc                     int3    
+00036f27  cc                     int3    
+00036f28  cc                     int3    
+00036f29  cc                     int3    
+00036f2a  cc                     int3    
+00036f2b  cc                     int3    
+00036f2c  cc                     int3    
+00036f2d  cc                     int3    
+00036f2e  cc                     int3    
+00036f2f  cc                     int3    
+00036f30  4883ec28               sub     rsp, 0x28
+00036f34  488d0dbd94c400         lea     rcx, [rip + 0xc494bd]
+00036f3b  ff15e73b0601           call    qword ptr [rip + 0x1063be7]  ; imp:SemanticX64.dll!cstr_string
+00036f41  48890560ffe800         mov     qword ptr [rip + 0xe8ff60], rax
+00036f48  4883c428               add     rsp, 0x28
+00036f4c  c3                     ret     
+00036f4d  cc                     int3    
+00036f4e  cc                     int3    
+00036f4f  cc                     int3    
+00036f50  cc                     int3    
+00036f51  cc                     int3    
+00036f52  cc                     int3    
+00036f53  cc                     int3    
+00036f54  cc                     int3    
+00036f55  cc                     int3    
+00036f56  cc                     int3    
+00036f57  cc                     int3    
+00036f58  cc                     int3    
+00036f59  cc                     int3    
+00036f5a  cc                     int3    
+00036f5b  cc                     int3    
+00036f5c  cc                     int3    
+00036f5d  cc                     int3    
+00036f5e  cc                     int3    
+00036f5f  cc                     int3    
+00036f60  4883ec28               sub     rsp, 0x28
+00036f64  488d0d7594c400         lea     rcx, [rip + 0xc49475]
+00036f6b  ff15b73b0601           call    qword ptr [rip + 0x1063bb7]  ; imp:SemanticX64.dll!cstr_string
+00036f71  48890528ffe800         mov     qword ptr [rip + 0xe8ff28], rax
+00036f78  4883c428               add     rsp, 0x28
+00036f7c  c3                     ret     
+00036f7d  cc                     int3    
+00036f7e  cc                     int3    
+00036f7f  cc                     int3    
+00036f80  cc                     int3    
+00036f81  cc                     int3    
+00036f82  cc                     int3    
+00036f83  cc                     int3    
+00036f84  cc                     int3    
+00036f85  cc                     int3    
+00036f86  cc                     int3    
+00036f87  cc                     int3    
+00036f88  cc                     int3    
+00036f89  cc                     int3    
+00036f8a  cc                     int3    
+00036f8b  cc                     int3    
+00036f8c  cc                     int3    
+00036f8d  cc                     int3    
+00036f8e  cc                     int3    
+00036f8f  cc                     int3    
+00036f90  4883ec28               sub     rsp, 0x28
+00036f94  488d0db98fc400         lea     rcx, [rip + 0xc48fb9]
+00036f9b  ff                     .byte   0xff
+00036f9c  15                     .byte   0x15
+00036f9d  873b                   xchg    dword ptr [rbx], edi
+00036f9f  06                     .byte   0x06
