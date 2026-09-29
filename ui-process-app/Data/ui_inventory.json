@@ -498,7 +498,10 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MiddleMap.ini",
-          "summary": "Full-screen map window (M), shared by every scene type: Wnd_NormalMap (world map: region list/quest/NPC search), Wnd_CommandMap (war-sandbox command map), explore panels and the battlefield layers under Handle_Total (storm line, camp counts, events) plus WndContainer_GFInfo/HeatMapDetail. The default hide list renders the 绝境战场 state: normal-map and command-map subtrees are suppressed, contested-area heat map stays.",
+          "images": [
+            { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" }
+          ],
+          "summary": "Full-screen map window (M) with the 龙门绝境 sample map art (data/source/maps/龙门寻宝minimap_mb/middlemap.png, extracted from the CDN pack) drawn into Image_Map; shared by every scene type: Wnd_NormalMap (world map: region list/quest/NPC search), Wnd_CommandMap (war-sandbox command map), explore panels and the battlefield layers under Handle_Total (storm line, camp counts, events) plus WndContainer_GFInfo/HeatMapDetail. The default hide list renders the 绝境战场 state: normal-map and command-map subtrees are suppressed, contested-area heat map stays.",
           "evidence": [
             "ui/Config/Default/MiddleMap.ini",
             "proof/minimap/ui/Config/Default/decompiled/MiddleMap.decompiled.lua"
@@ -518,7 +521,13 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MiniMap.ini",
-          "summary": "Top-right lens with the battlefield button, observer button, storm circle range hint and outside-safe-zone warning options.",
+          "adjust": [
+            { "section": "Wnd_Corner", "left": 27, "top": 0 },
+            { "section": "Wnd_Minimap", "left": 0, "top": 32 },
+            { "section": "CheckBox_Switch", "left": 205, "top": -2 },
+            { "section": "Image_Coner", "left": 153, "top": 0 }
+          ],
+          "summary": "Top-right lens with the battlefield button, observer button, storm circle range hint and outside-safe-zone warning options. The INI parks the lens at Left=-200 (the slide-in start); the module's UpdateAnchorCorner (Minimap.decompiled.lua:1542-1770) sets the TOPRIGHT corner layout: Wnd_Corner (27,0), Wnd_Minimap (0,32), CheckBox_Switch (205,-2), Image_Coner (153,0) — replayed in `adjust`. The slide-out side panels stay parked at negative X (their module animates them in).",
           "evidence": [
             "ui/Config/Default/MiniMap.ini",
             "proof/minimap/ui/Config/Default/decompiled/Minimap.decompiled.lua",
@@ -543,7 +552,10 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/BattleField/BattleFieldMap.ini",
-          "summary": "Draggable M-map panel. When IsInTreasureBattleFieldMap() it shows Handle_StormLine and registers MapCircle/SFX_CircleNew; heat map toggle; mark/gain/sfx notify events.",
+          "images": [
+            { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" }
+          ],
+          "summary": "Draggable M-map panel with the 龙门绝境 sample map art (same extracted middlemap.png) in Image_Map. When IsInTreasureBattleFieldMap() it shows Handle_StormLine and registers MapCircle/SFX_CircleNew; heat map toggle; mark/gain/sfx notify events.",
           "evidence": [
             "ui/Config/Default/BattleField/BattleFieldMap.ini",
             "proof/minimap/ui/Config/Default/BattleField/BattleFieldMap.decompiled.lua:5303,5316-5341,9362-9405",

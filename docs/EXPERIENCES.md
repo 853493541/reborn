@@ -225,3 +225,25 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `--selftest` 20 rendered / 0 failed; build 0 errors; page labels
   cross-checked against `string_ArenaCorpsPanel.txt`; this commit.
 - Outcome: solved.
+
+### 2026-09-29 — UI — In-match HUD / death / settlement pass (art + strings + state)
+- Did: worked through the remaining inventory windows. Extracted the missing
+  atlases from PakV4 (`RougeLike/NewRougeSkillBar`, `PVPUI1/2/3/4/5/16`,
+  `PVPWatch`, `SystemButton`, `Box`, `BlackMarket1`, `JYUi_06`, `TeachingPanel7`,
+  `TargetBg`, `Player`, `AssistNewbie`, `DesertStorm3`, `RevivePanel`, `Target`,
+  `TopMenu`, `RaidTotal`, `RoomPanel`, `RaidRelated`, `Voice1`) and the
+  per-window `StringTable=` files the labels needed (`String_Comman` for
+  MiddleMap, `string_PVP` for PVPShowPanel, `string_Novice` for
+  RevivePanel/Teammate, `String_RougeLike` for DynamicBattleRoyale,
+  `string_TeachingPanel`), committed as UTF-8 copies under
+  `Data/text/ui/Scheme/Case/`. Replayed the minimap TOPRIGHT lens layout from
+  `Minimap.UpdateAnchorCorner` (Wnd_Corner 27,0 / Wnd_Minimap 0,32 /
+  CheckBox_Switch 205,-2), wired the extracted `middlemap.png` sample into the
+  MiddleMap/BattleFieldMap `Image_Map` elements, and made raw textures ignore
+  the authored `Frame` (MiddleMap's Image_Map is Frame=1).
+- Evidence: `--audit` placeholders 153 → 15 (all authored `Image no Image`
+  runtime-filled), unresolved 8 → 0; `--selftest` 26 rendered / 0 failed;
+  render sheet `proof/ui/evidence/hud_windows_render.png`; this commit.
+- Outcome: solved. Open: Teammate's five `PosType=10` slots overlap (the
+  stacking rule is not decoded; PosType 10 semantics are unknown per
+  `UI_SYSTEM_REPORT.md` §4.4).

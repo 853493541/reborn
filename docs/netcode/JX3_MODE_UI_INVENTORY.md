@@ -144,6 +144,30 @@ frames 20-24 (track) and `CharButton.UITex` frames 18/19 (fill). The viewer repl
 | observer button | `Btn_Observer` + `UpdateObserverButton` (`Minimap.ini`, `Minimap.decompiled.lua:635,3654,7452`) | OPEN (BR gating unknown) |
 | mount/skill buttons from items | dynamic bar handles item skills (133 道具 scripts) | PARTIAL |
 
+**Viewer state (2026-09-29):** every HUD window renders with its shipped art after
+extracting the missing atlases from PakV4 (`RougeLike/NewRougeSkillBar`,
+`PVPUI1/2/3/4/5/16`, `PVPWatch`, `SystemButton`, `Box`, `BlackMarket1`, `JYUi_06`,
+`TeachingPanel7`, `TargetBg`, `Player`, `AssistNewbie`, `DesertStorm3`,
+`RevivePanel`, `Target`, `TopMenu`, `RaidTotal`, `RoomPanel`, `RaidRelated`,
+`Voice1`). The per-window `StringTable=` files the labels need were missing from
+the local extraction and are now committed as UTF-8 copies under
+`ui-process-app/Data/text/ui/Scheme/Case/`: `String_Comman.txt` (MiddleMap),
+`string_PVP.txt` (PVPShowPanel), `string_Novice.txt` (RevivePanel/Teammate),
+`String_RougeLike.txt` (DynamicBattleRoyale), `string_TeachingPanel.txt`.
+State/layout replays: the minimap lens is parked at `Left=-200` in the INI and
+`Minimap.UpdateAnchorCorner` (Minimap.decompiled.lua:1542-1770) puts the TOPRIGHT
+layout at `Wnd_Corner (27,0)` / `Wnd_Minimap (0,32)` / `CheckBox_Switch (205,-2)`
+(inventory `adjust`); the MiddleMap and BattleFieldMap `Image_Map` elements are
+filled by the engine's map renderer, so the viewer draws the extracted
+`data/source/maps/龙门寻宝minimap_mb/middlemap.png` sample (inventory `images`;
+raw textures ignore the authored `Frame`). Render sheet:
+`proof/ui/evidence/hud_windows_render.png`. Audit after the pass: 15
+placeholders — all authored `Image no Image` elements filled at runtime from
+player/engine data (`Image_Map`, `Image_School`, `Image_NPCMark`,
+`Image_innerPower`, `Image_inSchool*`) — and 0 unresolved ids. Open: the
+Teammate slot stack (five `PosType=10` frames at one spot; the stacking rule is
+not decoded yet).
+
 ## 7. Death / revive / settlement / exit
 
 | UI | evidence | status |

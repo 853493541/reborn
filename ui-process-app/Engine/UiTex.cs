@@ -249,7 +249,7 @@ namespace MapUiApp.Engine
         {
             var file = _assets.Resolve(uitPath);
             if (file != null && IsRawImage(file))
-                return frame == 0 ? GetRaw(file) : null;
+                return GetRaw(file); // a raw texture has a single frame; the authored Frame is ignored
             var tex = Get(uitPath);
             return tex?.GetFrame(frame);
         }
