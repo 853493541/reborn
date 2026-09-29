@@ -1,0 +1,380 @@
+0x001372c8 ascii   Base Class Array'
+0x001386b8 ascii  resource unavailable try again
+0x00139028 ascii  ..\..\code\MeshBase\CompiledBoundaries.cpp
+0x001395c0 ascii  Could not make connection, connection is not reciprocated or vertices do not match across the connection. This connection will be skipped. Only one connection error reported per mesh.
+0x00139690 ascii  Could not make connection, target edge is already connected. This connection will be skipped. Only one connection error reported per mesh.
+0x00139720 ascii  Could not make connection, no matching vertices on target face. This connection will be skipped. Only one connection error reported per mesh.
+0x00139860 ascii  ..\..\code\MeshPathfindSpace\CornerRayCaster.cpp
+0x00139a68 ascii  C:\PathEngine\sdk\code\common/Search/AbortCallBack.h
+0x00139e38 ascii  _array.
+0x00139e40 ascii  _charArray.
+0x00139f18 ascii  isArray
+0x00139f28 ascii  !_currentArrayIsCharArray
+0x00139f48 ascii  _currentArrayIsCharArray
+0x0013a298 ascii  reached buffer end while skipping array special case.
+0x0013a600 ascii  reached buffer end while reading array.
+0x0013a960 ascii  ..\..\code\common\PointMesh\EdgeCircuitForOverlappingFace.cpp
+0x0013aab8 ascii  ..\..\code\common\StaticMesh\StrippedMesh.cpp
+0x0013aae8 ascii  reorderedMesh.empty()
+0x0013aba0 ascii  Pinned shape is not valid. Obstacle will not be placed.
+0x0013ae28 ascii  ..\..\code\libs\Content_Processing\BuildFaceVertexMeshCopy.cpp
+0x0013b6f0 ascii  The cut for a building portal connection would exit or touch the edge of the mesh or another portal cut. The portal will not be connected.
+0x0013b8b8 ascii  !IsValid(mesh.twin(eVertex))
+0x0013b9b8 ascii  meshPart
+0x0013b9e0 ascii  Building mesh from content: Vertex is outside allowed range. Failed to build, returning null pointer.
+0x0013baf0 ascii  Building mesh from content: Resulting mesh would be empty. Failed to build, returning null pointer.
+0x0013bb60 ascii  Building mesh from content: No ground left after removal of obstructed fragments. Failed to build, returning null pointer.
+0x0013bbe0 ascii  Building mesh from content: No ground left after optimising external vertices. Failed to build, returning null pointer.
+0x0013bc60 ascii  Mesh Validation: Mesh must contain at least one polygon. Validation fails.
+0x0013bcb0 ascii  Mesh Validation: Vertex is outside allowed range. Validation Fails.
+0x0013bd10 ascii  Mesh Validation: Mesh is non-manifold (faces spin around an internal vertex). Validation Fails.
+0x0013bd70 ascii  Mesh Validation: Face has zero area or is not clockwise (as seen from above). Validation Fails.
+0x0013bfe0 ascii  A face is marked as a portal, but does not contain a vertical edge. The face will be treated as a non-portal face. (Note that only the first such face per mesh object is reported.)
+0x0013c0b0 ascii  A face marked as a portal has zero size after approximation. The face will be treated as a non-portal face. (Note that only the first such face per mesh object is reported.)
+0x0013c160 ascii  Badly formed portal. Portals must connect to external shape geometry. Badly formed portals will be skipped, with only the first badly formed portal per mesh object reported.
+0x0013c220 ascii  Non-manifold connections at a vertex pair could not be resolved. All edges connecting to this vertex pair will be disconnected. (Note that only the first such vertex pair per mesh object is reported.)
+0x0013c2f0 ascii  Badly formed portal. Portal connections to external shape geometry and internal ground must go in the same direction. Badly formed portals will be skipped, with only the first badly formed portal per mesh object reported.
+0x0013c420 ascii  Non-manifold connection at a vertex pair in an external shape. All edges connecting to this vertex pair will be disconnected. (Note that only the first such vertex pair per mesh object is reported.)
+0x0013c4f0 ascii  A face is marked as a connecting edge, but does not contain a vertical edge. The face will be treated as if it was not marked as a connecting edge. (Note that only the first such face per mesh object is reported.)
+0x0013c5d0 ascii  At least one face is marked as an external shape but doesnt connect to a (valid) portal. (Reported once per mesh object.)
+0x0013c650 ascii  Vertical face does not have vertical edges, and will not be collapsed. The resulting mesh will not connect across this face. (Note that only the first such face per mesh object is reported.)
+0x0013c710 ascii  Badly formed connecting edge marker. The marker should connect to a single mesh edge. Badly formed markers will be skipped. (Note that only the first such marker per mesh object is reported.)
+0x0013ce70 ascii  ..\..\code\libs\PathEngine_Core\AStarHeapPool.cpp
+0x0013d128 ascii  ..\..\code\libs\PathEngine_Core\CombinedCircuits.cpp
+0x0013d318 ascii  faceIndex >= 0 && faceIndex < _facesInMesh
+0x0013d350 ascii  C:\PathEngine\sdk\code\libs/PathEngine_Core/LocalisedShapeSet.h
+0x0013d5c8 ascii  ..\..\code\libs\PathEngine_Core\OptimiseUnobstructedSpace.cpp
+0x0013d720 ascii  pathfindPreprocess
+0x0013d740 ascii  Pathfind preprocess persistent data version is incompatible. Load aborted.
+0x0013d7e8 ascii  asArray
+0x0013d7f0 ascii  Loading pathfind preprocess - unobstructed space checksum does not match saved checksum. Load aborted.
+0x0013d860 ascii  C:\PathEngine\sdk\code\libs/PathEngine_Core/Graph.h
+0x0013d918 ascii  ..\..\code\libs\PathEngine_Core\RebuildDirtyRegion.cpp
+0x0013e300 ascii  ..\..\code\libs\PathEngine_Core\UnobstructedSpaceGenerationOptions.cpp
+0x0013e390 ascii  buildTileMeshFromContent() - Non-terrain portals are not allowed. Aborting, returning zero.
+0x0013e3f0 ascii  buildTileMeshFromContent() - Content chunk instance encountered with sectionID set to 0. This value is reserved for terrain stand-in geometry. Aborting, returning zero.
+0x0013e4a0 ascii  buildTileMeshFromContent() - Content chunk instance sectionID values are not unique. Aborting, returning zero.
+0x0013e510 ascii  buildTileMeshFromContent() - Terrain stand-in geometry is generated by this method, and should not be passed in. Aborting, returning zero.
+0x0013e5a0 ascii  buildTileMeshFromContent() - Content chunk instance encountered with sectionID set to -1. Aborting, returning zero.
+0x0013e620 ascii  'optimiseWithThreshold' attribute ignored in iMeshFederation::buildTileMeshFromContent()
+0x0013e690 ascii  'filterFacesWithSlopeAbove' attribute ignored in iMeshFederation::buildTileMeshFromContent()
+0x0013e6f0 ascii  'removeObstructedFragmentsWithShape' attribute ignored in iMeshFederation::buildTileMeshFromContent()
+0x0013e760 ascii  'explicitlyManagedEdgeConnections' attribute forced to true iMeshFederation::buildTileMeshFromContent()
+0x0013e7d0 ascii  'numberOfTerrainLayers' attribute forced to 1 iMeshFederation::buildTileMeshFromContent()
+0x0013e830 ascii  'processConnections' attribute ignored in iMeshFederation::buildTileMeshFromContent()
+0x0013e8a0 ascii  Building a federation tile mesh from 2D content - Attribute name is not recognised as either a 2D content processing or mesh loading option. This attribute will be ignored.
+0x0013eb40 ascii  iPathEngine::buildMeshAroundObstructionBoundaries() - Boundary segments intersect or touch.
+0x0013ed50 ascii  ..\..\code\libs\PathEngine_Interface\BuildMeshAroundTiledObstructions.cpp
+0x0013eda0 ascii  tilesInY >= 1
+0x0013edb0 ascii  tilesInX >= 1
+0x0013edc0 ascii  tileSize >= 1
+0x0013edd0 ascii  Tiling parameters in cPathEngine::buildMeshAroundTiledObstructions() put vertices out of pathfinding world range (-1500000 to 1500000).
+0x0013ee60 ascii  The buffer size passed in to cPathEngine::buildMeshAroundTiledObstructions() does not match values in tilesInX and tilesInY.
+0x0013eef0 ascii  baseObstacles
+0x0013ef10 ascii  obstacle
+0x0013ef60 ascii  ..\..\code\libs\PathEngine_Interface\Mesh2DTranslation.cpp
+0x0013f158 ascii  Ground mesh validation failed.
+0x0013f1a0 ascii  partitionByObstacleCentres
+0x0013f218 ascii  allowCollisionWithoutPreprocess
+0x0013f238 ascii  packMesh3D
+0x0013f250 ascii  Negative 'partitionWithGridSize' mesh loading attribute forced to zero.
+0x0013f298 ascii  tileIndex
+0x0013f2d0 ascii  indexInTile
+0x0013f2f8 ascii  tileSize
+0x0013f320 ascii  endTileX
+0x0013f330 ascii  beginTileX
+0x0013f340 ascii  startFacePerTile
+0x0013f358 ascii  beginTileY
+0x0013f378 ascii  iAgent::testCollisionTo() - invalid position
+0x0013f3a8 ascii  invalid position passed in to iAgent::testCollisionAt()
+0x0013f408 ascii  ..\..\code\libs\PathEngine_Interface\cAgent.cpp
+0x0013f440 ascii  iAgent::findClosestUnobstructedPoint() cannot be called on this agent - this agent is a '2D' obstacle, and does not have a position
+0x0013f4d0 ascii  iAgent::findClosestUnobstructedPoint() cannot be called on this agent - agent is non-moveable or collision preprocess has not been generated for this agent's shape
+0x0013f580 ascii  iAgent::firstCollisionTo() cannot be called on this agent - this agent is a '2D' obstacle, and does not have a position
+0x0013f600 ascii  iAgent::firstCollisionTo() cannot be called on this agent - agent is non-moveable or collision preprocess has not been generated for this agent's shape
+0x0013f6a0 ascii  iAgent::findShortestPathTo_WithQueryCallBack() cannot be called on this agent - this agent is a '2D' obstacle, and does not have a position
+0x0013f730 ascii  iAgent::findShortestPathTo_WithQueryCallBack() cannot be called on this agent - agent is non-moveable or pathfind preprocess has not been generated for this agent's shape
+0x0013f7e0 ascii  iAgent::findShortestPathTo() cannot be called on this agent - this agent is a '2D' obstacle, and does not have a position
+0x0013f860 ascii  iAgent::findShortestPathTo() cannot be called on this agent - agent is non-moveable or pathfind preprocess has not been generated for this agent's shape
+0x0013f900 ascii  iAgent::findPathAway_WithQueryCallBack() cannot be called on this agent - this agent is a '2D' obstacle, and does not have a position
+0x0013f990 ascii  iAgent::findPathAway_WithQueryCallBack() cannot be called on this agent - agent is non-moveable or pathfind preprocess has not been generated for this agent's shape
+0x0013fa40 ascii  iAgent::findPathAway() cannot be called on this agent - this agent is a '2D' obstacle, and does not have a position
+0x0013fac0 ascii  iAgent::findPathAway() cannot be called on this agent - agent is non-moveable or pathfind preprocess has not been generated for this agent's shape
+0x0013fdb0 ascii  iCollisionContext::addObstacleSet - This collision context already has one obstacle set that is marked for preprocessing. Only one such set is permitted per collision context. The set will not be added.
+0x0013fe80 ascii  iCollisionContext::setSurfaceTypeTraverseCost() - invalid surface type.
+0x0013fec8 ascii  _mesh->shapeCanCollide(shape)
+0x0013fee8 ascii  ..\..\code\libs\PathEngine_Interface\cCollisionContext.cpp
+0x0013ff30 ascii  iObstacleSet::removeObstacleSet() - The set passed in is not added to this context.
+0x0013ff90 ascii  iCollisionContext::setSurfaceTypeTraverseCostDirection() - invalid surface type.
+0x0013fff0 ascii  iCollisionContext::setSurfaceTypeTraverseCostDirection() called with vector y component outside allowed range.
+0x00140060 ascii  iCollisionContext::setSurfaceTypeTraverseCostDirection() called with vector x component outside allowed range.
+0x001400d0 ascii  iCollisionContext::setSurfaceTypeTraverseCost() - cost must be == -1.f or >= 0.f.
+0x001401a8 ascii  iCollisionContext::setQueryBounds() - endY must be >= startY.
+0x001401e8 ascii  iCollisionContext::setQueryBounds() - endX must be >= startX.
+0x00140228 ascii  Pathfind query called without pathfind preprocess
+0x00140280 ascii  connectionIndex >= 0 && connectionIndex < numberOfOffMeshConnections
+0x001405c0 ascii  ..\..\code\libs\PathEngine_Interface\cContentChunk.cpp
+0x001406c0 ascii  Content chunk being loaded has more than one mesh element. Looks like the more general 'content snapshot' format. This will be loaded, but meshes after the first will be ignored.
+0x00140ad0 ascii  ..\..\code\libs\PathEngine_Interface\cContentChunkInstance.cpp
+0x00140b80 ascii  expanded2DObstacles
+0x00140b98 ascii  ..\..\code\libs\PathEngine_Interface\cExpanded2DObstacles.cpp
+0x00140c10 ascii  Bad obstacles data passed in to cExpanded2DObstacles construction
+0x00140c58 ascii  numberOfObstacles >= 0
+0x00140c70 ascii  The value passed in to cExpanded2DObstacles constructor for optimiseHorizontalRange is too large for the given expansion shape.
+0x00140cf0 ascii  obstacles_BufferEntries > 0
+0x00140d10 ascii  A parse error occurred while loading iExpanded2DObstacles from persistence.
+0x00140d60 ascii  Bad obstacles data passed in to cExpanded2DObstacles construction (obstacle data left over after parsing)
+0x00141548 ascii  C:\PathEngine\sdk\code\common/FileOutputStream.h
+0x00141618 ascii  mesh2DPartitioning
+0x00141630 ascii  mesh3DPartitioning
+0x00141644 ascii  mesh3D
+0x001416b0 ascii  ..\..\code\libs\PathEngine_Interface\cMesh.cpp
+0x001416f8 ascii  offMeshConnections
+0x00141710 ascii  tiledCPFaceIndexTranslator2
+0x00141730 ascii  federationTileIndex
+0x00141748 ascii  meshCheckSum
+0x00141770 ascii  namedObstacles
+0x00141790 ascii  The 'partitionWithGridSize' attribute has been set for mesh loading, but a mapping to 2D is already present. The attribute will be ignored.
+0x00141820 ascii  The 'useIdentityMapping' attribute has been set for mesh loading, but a mapping to 2D is already present. The attribute will be ignored.
+0x001418f0 ascii  Failed to load 3D ground mesh data.
+0x00141920 ascii  A parse error occurred while reading mesh file, some data may not be loaded.
+0x00141970 ascii  The 'partitionWithGridSize' mesh loading attribute cannot be used together with the 'useIdentityMapping' mesh loading attribute. The 'partitionWithGridSize' attribute will be ignored.
+0x00141a28 ascii  !_tiledCPFaceIndexTranslator2
+0x00141b00 ascii  iMesh::get3DFaceAtPosition() called with invalid position
+0x00141b40 ascii  !_obstacleSetByIndex.indexIsInUse(i)
+0x00141b68 ascii  iMesh::getSectionID() called with invalid position
+0x00141ba0 ascii  cMesh::get3DFaceAttribute() - attribute used only during content processing.
+0x00141bf0 ascii  cMesh::get3DFaceAttribute() - unknown attribute index.
+0x00141c90 ascii  iMesh::storeAnchor() called with invalid position
+0x00141d18 ascii  index >= 0 && index < getNumberOfNamedObstacles()
+0x00141d50 ascii  iMesh::storeNamedObstacle() - id already used
+0x00141e20 ascii  InWorldRange(horizontalQueryRegion.maxY)
+0x00141e50 ascii  InWorldRange(horizontalQueryRegion.maxX)
+0x00141e80 ascii  InWorldRange(horizontalQueryRegion.minY)
+0x00141eb0 ascii  InWorldRange(horizontalQueryRegion.minX)
+0x00141f18 ascii  RangeContainsPoint_NonInclusive(horizontalQueryRegion, x, y)
+0x00141f80 ascii  iMesh::getCellForEndOfLine() called with invalid position
+0x00141fc0 ascii  iMesh::heightAtPositionWithPrecision() called with invalid position
+0x00142008 ascii  iMesh::heightAtPositionF() called with invalid position
+0x00142040 ascii  iMesh::setTerrainCallBack() called with invalid terrain layer
+0x00142080 ascii  iMesh::burnContextIntoMesh called for a context with obstacle sets added. These obstacle sets will be ignored.
+0x001420f0 ascii  &context->refMesh() == this
+0x00142130 ascii  toEndPoint >= 0 && toEndPoint < _offMeshConnections->numberOfEndPoints()
+0x00142180 ascii  fromEndPoint >= 0 && fromEndPoint < _offMeshConnections->numberOfEndPoints()
+0x001421d0 ascii  iMesh::addMeshConnection() - penalty must be in the range 0 to 10000.
+0x00142240 ascii  Unobstructed space optimisation is being used with a federation tile mesh. This means that query results will no longer be guaranteed to match across federation tile overlaps.
+0x001423a0 ascii  iMesh::addMeshConnection() - a connection with the supplied start and end endpoint is already present on this mesh.
+0x00142478 ascii  isSquareMesh
+0x00142550 ascii  Generating unobstructed space - The expansion shape for an iExpanded2DObstacles instance passed in does not match the shape parameter.
+0x001425d8 ascii  obstacles != nullptr
+0x00142608 ascii  &cc->refMesh() == this
+0x00142620 ascii  Generating pathfind preprocess - Attribute name is not recognised as pathfind preprocess generation option. This attribute will be ignored.
+0x00142710 ascii  cMesh::loadUnobstructedSpaceFor() - Shape does not match saved shape. Not loaded.
+0x00142770 ascii  cMesh::loadUnobstructedSpaceFor() - Mesh checksum does not match saved checksum. Not loaded.
+0x00142818 ascii  shapeCanPathfind(shape, 0)
+0x00142840 ascii  cMesh::loadConnectedRegionPreprocessFor() - Unobstructed space checksum does not match saved checksum. Not loaded.
+0x00142948 ascii  iMesh::testLineCollision() - invalid position
+0x00142978 ascii  iMesh::testPointCollision() - invalid position
+0x001429a8 ascii  iMesh::placeAgent() called with invalid position
+0x001429e0 ascii  !shapeCanPathfind(shape, 0)
+0x00142a18 ascii  iMesh::firstCollision() - no preprocess for this shape
+0x00142a50 ascii  iMesh::firstCollision() - invalid position
+0x00142a80 ascii  iMesh::testLineCollision_XY() - invalid position
+0x00142ac0 ascii  iMesh::findClosestUnobstructedPositionEx() - no connected region preprocess present for this shape (required when a connectivity constraint is being supplied)
+0x00142b60 ascii  iMesh::findClosestUnobstructedPositionEx() - no preprocess for this shape
+0x00142bb0 ascii  iMesh::findClosestUnobstructedPoint() - no preprocess for this shape
+0x00142bf8 ascii  iMesh::findClosestUnobstructedPoint() - invalid position
+0x00142c38 ascii  InWorldRange(queryRegion.maxY)
+0x00142c58 ascii  InWorldRange(queryRegion.maxX)
+0x00142c78 ascii  InWorldRange(queryRegion.minY)
+0x00142c98 ascii  InWorldRange(queryRegion.minX)
+0x00142cb8 ascii  iMesh::getAllAgentsOverlapped() - no preprocess for this shape
+0x00142cf8 ascii  iMesh::getAllAgentsOverlapped() - invalid position
+0x00142d60 ascii  Shortest path query - no pathfind preprocess for this shape
+0x00142da0 ascii  Shortest path query - invalid end position
+0x00142dd0 ascii  Shortest path query - invalid start position
+0x00142e00 ascii  &cc.refMesh() == this
+0x00142e30 ascii  iMesh::findPathAway() - no pathfind preprocess for this shape
+0x00142e70 ascii  iMesh::findPathAway() - invalid position
+0x00142ea0 ascii  findShortestPath_WithQueryCallBack - start position is obstructed by base mesh or pinned shapes
+0x00142f10 ascii  iMesh::reversePath() must not be called with a path with off mesh connections.
+0x00143030 ascii  Saved path data version is incompatible. Returning failed path.
+0x00143070 ascii  cMesh::loadPath() - mesh checksum does not match saved checksum.
+0x00143100 ascii  pathEngine().shapeIsValid(shapeCoordinates_Buffer, shapeCoordinates_BufferEntries)
+0x001431d0 ascii  pathEngine().largeStaticObstacleShapeIsValid(shapeCoordinates_Buffer, shapeCoordinates_BufferEntries, position.x, position.y)
+0x00143420 ascii  vertexIndex >= 0 && vertexIndex < getBurntInObstacleVertices(obstacleIndex)
+0x00143470 ascii  index >= 0 && index < getNumberOfBurntInObstacles()
+0x001434b0 ascii  iMesh::saveGround() cannot be called after iMesh::preprocessGenerationCompleted(). Returning with no effect.
+0x00143520 ascii  &FromI(context)->refMesh() == this
+0x00143548 ascii  shapeCanPathfind(shape, context)
+0x00143570 ascii  iMesh::findShortestPath_MultipleStartPositions() - invalid start position
+0x001435c0 ascii  iMesh::findShortestPath_MultipleStartPositions() - bad value for positionBufferSize
+0x00143620 ascii  iMesh::findShortestPath_MultipleStartPositions() - too many start positions
+0x001436f0 ascii  findShortestPath_MultipleStartPositions - no pathfind preprocess for this shape
+0x00143740 ascii  findShortestPath_MultipleStartPositions - invalid end position
+0x00143780 ascii  findShortestPath_MultipleStartPositions - start position is obstructed by base mesh or pinned shapes
+0x00143930 ascii  PathfindMesh.tok
+0x00143950 ascii  Generating pathfind preprocess (6) - Attribute name is not recognised as pathfind preprocess generation option. This attribute will be ignored.
+0x001439e0 ascii  savePathfindMesh
+0x00143a00 ascii  pathEngine().largeStatic2DObstacleShapeIsValid(shapeCoordinates_Buffer, shapeCoordinates_BufferEntries)
+0x00143a68 ascii  i < SizeL(_queryContexts)
+0x00143a88 ascii  _allowCollisionWithoutPreprocess
+0x00143ab0 ascii  Shortest path query - start position is obstructed by base mesh or pinned shapes
+0x00143b10 ascii  Shortest path query - no pathfind preprocess for this shape (pathfind5 preprocess required for dynamic obstacles)
+0x00143b90 ascii  pointMesh
+0x00143ba8 ascii  tileStep
+0x00143bd0 ascii  The mesh federation persistent data being loaded is not compatible with this version of the SDK.
+0x00143c40 ascii  buildMeshFederation_FromWorldMesh() called with a world mesh with burnt-in 'surface-type traversal costs'.  These are not currently supported by the tile mesh generation process, and will not be copied through to the generated tile meshes.
+0x00143d30 ascii  buildMeshFederation_FromWorldMesh() called with a world mesh with off-mesh connections.  These are not currently supported by the tile mesh generation process, and will not be copied through to the generated tile meshes.
+0x00143e28 ascii  toMesh
+0x00143e30 ascii  fromMesh
+0x00143e40 ascii  ..\..\code\libs\PathEngine_Interface\cMeshFederation.cpp
+0x00143ec0 ascii  iMeshFederation::translatePosition() the source mesh overlap info does not match the destination mesh overlap info. Tile mesh creation methods cannot be mixed within a federation.
+0x00143f78 ascii  fromMesh->positionIsValid(fromPosition)
+0x00143fa0 ascii  toMeshIndex >= 0 && toMeshIndex < _tiling.numberOfTiles()
+0x00143fe0 ascii  fromMeshIndex >= 0 && fromMeshIndex < _tiling.numberOfTiles()
+0x00144020 ascii  iMeshFederation::buildTileMeshFromLocalGroundTiles() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x001440c0 ascii  meshes_BufferEntries == getNumberOfGroundTilesOverlapped(tileIndex, tiling)
+0x00144110 ascii  iMeshFederation::translatePosition() - Bad overlap. Translation failed. Returning an explicitly invalid position.
+0x00144190 ascii  The mesh passed into iMeshFederation::translatePosition() doesn't look like it was generated as a federation tile mesh.
+0x00144208 ascii  federationTile doesn't appear to be a federation tile mesh
+0x00144248 ascii  federationTile
+0x00144258 ascii  sourceTile->positionIsValid(fromPosition)
+0x00144288 ascii  sourceTile
+0x001442a0 ascii  iMeshFederation::translatePositionFromSourceTile() - Bad overlap. Translation failed. Returning an explicitly invalid position.
+0x00144320 ascii  sourceTile is not in sourceTiling
+0x00144350 ascii  federationTile was not built with buildTileMeshFromLocalGroundTiles
+0x00144398 ascii  tile index for federationTile is too high for this federation
+0x001443e0 ascii  iMeshFederation::build2DTileMesh() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x00144460 ascii  federationTile->positionIsValid(fromPosition)
+0x00144490 ascii  federationTileIndex >= 0 && federationTileIndex < size()
+0x001446a0 ascii  Obstacle set construction - Attribute name is not recognised as an unobstructed space or preprocess generation option. This attribute will be ignored.
+0x00144740 ascii  The warnOnImplicitStateChanges obstacle set creation attribute is obsolete and will be ignored.
+0x001447f0 ascii  iObstacleSet::removeAgent() - agent is not in set
+0x00144828 ascii  ..\..\code\libs\PathEngine_Interface\cObstacleSet.cpp
+0x00144860 ascii  iObstacleSet::addAgent() - agent is already in set
+0x001448a0 ascii  The 'markForPreprocessing' and 'markForPreprocessing_ConnectedRegionsOnly' obstacle set creation attributes should not both be set for the same obstacle set. The 'markForPreprocessing_ConnectedRegionsOnly' attribute will be ignored.
+0x00144990 ascii  cObstacleSet::loadPathfindPreprocessFor() - Pathfind preprocess was already valid.
+0x00144a00 ascii  iObstacleSet::savePathfindPreprocessFor() not currently supported with 'markedForPreprocessing_ConnectedRegionsOnly'.
+0x00144a80 ascii  iObstacleSet::removeAgent() - agent cannot be removed while flagged as temporarily ignored
+0x00144ae0 ascii  iObstacleSet::temporarilyIgnoreAgent() - not supported on obstacle sets created with the markForPreprocessing or markedForPreprocessing_ConnectedRegionsOnly creation attributes.
+0x00144ba0 ascii  _mesh->positionIsValid(p)
+0x00144c08 ascii  _mesh->shapeCanCollide(i)
+0x00144c30 ascii  iObstacleSet::restoreTemporarilyIgnoredAgent() - agent has not been marked as ignored
+0x00144c90 ascii  iObstacleSet::restoreTemporarilyIgnoredAgent() - agent is not in set
+0x00144cd8 ascii  iObstacleSet::temporarilyIgnoreAgent() - agent is not in set
+0x00144d60 ascii  ..\..\code\libs\PathEngine_Interface\cPath.cpp
+0x00144e78 ascii  pathfind_preprocess_minor_version
+0x00144ea0 ascii  pathfind_preprocess_major_version
+0x00144ec8 ascii  collision_preprocess_minor_version
+0x00144ef0 ascii  collision_preprocess_major_version
+0x00144f20 ascii  iPathEngine::newShape() failed - shape must have at least 3 vertices. Returning zero.
+0x00144f78 ascii  pointsPerPath >= 0
+0x00144f90 ascii  ..\..\code\libs\PathEngine_Interface\cPathEngine.cpp
+0x00144fc8 ascii  pathsPooled >= 0
+0x00144fe0 ascii  iPathEngine::newShape() failed - shape is not convex. Returning zero.
+0x00145030 ascii  iPathEngine::newShape() failed - vertex coordinate exceeds allowed range. Returning zero.
+0x00145090 ascii  iPathEngine::newShape() failed - shape must have and even number of coordinate values. Returning zero.
+0x00145100 ascii  iPathEngine::newShape() failed - shape must have less than 100 vertices. Returning zero.
+0x00145160 ascii  iPathEngine::loadMeshFromBuffer() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x001451e0 ascii  loadMeshFromBuffer(): unrecognised format, returning 0
+0x00145220 ascii  iPathEngine::newShape() failed - shape does not contain the origin. Returning zero.
+0x00145280 ascii  Unexpected format for data buffer passed in to iPathEngine::connectionRegionPreprocessVersionIsCompatible(), returning false.
+0x00145300 ascii  collisionPreprocess
+0x00145320 ascii  iPathEngine::saveContentData() is depreciated, and will be removed in a future release. Use iPathEngine::save2DContentSnapshot() instead (which also saves out the processing options).
+0x001453e0 ascii  iPathEngine::buildMeshFromContent() - Attribute name is not recognised as either a 2D content processing or mesh loading option. This attribute will be ignored.
+0x001454e0 ascii  Unexpected format for data buffer passed in to iPathEngine::pathfindPreprocessVersionIsCompatible(), returning false.
+0x00145558 ascii  obstacleSetPathfindPreprocess
+0x00145578 ascii  tileSize > 0
+0x00145610 ascii  iPathEngine::buildMeshFromGroundTiles() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x00145698 ascii  meshes_BufferEntries == tiling->size()
+0x001456c0 ascii  !mesh.hasDeadEntries()
+0x001456e0 ascii  iPathEngine::buildMeshAroundTiledObstructions() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x00145780 ascii  iPathEngine::buildMeshByCopyingConnectedGround() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x00145810 ascii  iPathEngine::buildMeshAroundObstructionBoundaries() - Invalid boundaries, returning null pointer.
+0x00145890 ascii  iPathEngine::buildMeshAroundObstructionBoundaries() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x00145930 ascii  iPathEngine::buildUnobstructedSpaceGround() - Attribute name is not recognised as a mesh loading option. This attribute will be ignored.
+0x00145d48 ascii  ..\..\code\libs\PathEngine_Interface\cSourceTiling.cpp
+0x00145d80 ascii  This build of the PathEngine DLL does not support automatic query logging.
+0x00145dd0 ascii  Obtaining the PathEngine DLL entrypoint by name with "_DllExport_GetIPathEngine@4" is depreciated. Use "_DLLExport_GetIPathEngine@4" (different capitalisation) or get the entrypoint by index instead,e.g. GetProcAddress(hInstance, (LPCSTR)1).
+0x00145ed0 ascii  PathEngine_SetQueryAllocator() can only be called before initialisation
+0x00145f20 ascii  PathEngine_SetDefaultAllocator() can only be called before initialisation
+0x00145f90 ascii  There are outstanding (un-released) API refs when unloading PathEngine DLL. (Using any of these outstanding refs will cause bad things to happen.)
+0x00146448 ascii  C:\PathEngine\sdk\build\x64\Release\dll\PathEngine.pdb
+0x0015d8a2 ascii  QueryPerformanceCounter
+0x0015da3a ascii  PathEngine.dll
+0x0015da49 ascii  DLLExport_GetIPathEngine
+0x0015da9c ascii  DLLExport_SetQueryAllocator
+0x0015dab8 ascii  DllExport_GetIPathEngine
+0x0015f3d0 ascii  .?AViPointCollisionTester@@
+0x0015f430 ascii  .?AViLineCollisionTester@@
+0x0015f488 ascii  .?AV?$cVertPointContext@VcPolyMesh@@@@
+0x0015f4c0 ascii  .?AViIndexMesh@@
+0x0015f520 ascii  .?AV?$cIndexMesh_InterfaceAdapter@VcPolyMesh@@ViIndexMesh@@@@
+0x0015f648 ascii  .?AVcMeshCollisionTester@@
+0x0015f678 ascii  .?AViCollisionTester@@
+0x0015f6a8 ascii  .?AVcCornerRayCaster@@
+0x0015f6d0 ascii  .?AViCornerRayCaster@@
+0x0015f6f8 ascii  .?AV?$cSIFaceElementResolution@VcPolyMesh@@@@
+0x0015f7c0 ascii  .?AV?$cIndexMesh_InterfaceAdapter@VcDynamicMesh@@ViIndexMesh@@@@
+0x0015f818 ascii  .?AV?$cVertPointContext@VcDynamicMesh@@@@
+0x0015f8b0 ascii  .?AVcMeshPathfindSpace@@
+0x0015f8e0 ascii  .?AVcElementTranslatorToPathfindMesh@@
+0x0015f920 ascii  .?AVcPathfindPreprocess6@@
+0x0015f950 ascii  .?AViPathfindDynamicObstacles@@
+0x0015f980 ascii  .?AVcNullPathfindDynamicObstacles@@
+0x0015fb38 ascii  .?AV?$cVertPointContext@VcTriMesh@@@@
+0x0015fb70 ascii  .?AV?$cIndexMesh_InterfaceAdapter@VcTriMesh@@ViIndexMesh@@@@
+0x0015fc10 ascii  .?AVcNullCollisionTester@@
+0x0015fc40 ascii  .?AV?$cVertPointContext@VcStrippedMesh@@@@
+0x0015fc80 ascii  .?AV?$cIndexMesh_InterfaceAdapter@VcStrippedMesh@@ViIndexMesh@@@@
+0x0015fdd0 ascii  .?AViFaceVertexMesh@@
+0x0015fe10 ascii  .?AV?$cMeshAndData@VcDynamicMesh@@U?$pair@V?$cMeshIndex@VcMeshIndex_Face_Tag@@@@V1@@std@@MVcPoint@@@@
+0x0015fe88 ascii  .?AViDynamicMesh@@
+0x0015ff50 ascii  .?AV?$cMeshAndData@VcDynamicMesh@@HMVcPoint@@@@
+0x001601e8 ascii  .?AVcInstancedFaceVertexMesh@@
+0x00160218 ascii  .?AVcInstancedFaceVertexMesh_Float@@
+0x00160250 ascii  .?AVcLoadedFaceVertexMesh@@
+0x00160280 ascii  .?AVbDynamicObstacles@@
+0x001602a8 ascii  .?AVcBoundaryDynamicObstacles@@
+0x00160350 ascii  .?AVcContextPathfindInfo@@
+0x00160380 ascii  .?AViDynamicStateForPathfinding@@
+0x00160418 ascii  .?AVcContextPathfindPreprocess@@
+0x00160478 ascii  .?AVcContextPathfindState@@
+0x001604b0 ascii  .?AV?$cMeshAndData@VcDynamicMesh@@V?$cMeshIndex@VcMeshIndex_Face_Tag@@@@MVcPoint@@@@
+0x00160550 ascii  .?AVcBoundariesAndObstaclesCollisionTester@@
+0x00160620 ascii  .?AVcManagedSoftObstacleExpansions@@
+0x00160658 ascii  .?AVcMeshAndObstaclesCollisionTester@@
+0x00160748 ascii  .?AViMeshTranslator@@
+0x00160770 ascii  .?AVcPathfindPreprocess@@
+0x001607f0 ascii  .?AV?$cSimpleTranslator@V?$cVertPointContext@VcPolyMesh@@@@V1@VcLookupTranslationToOverlapped@@@@
+0x001608d8 ascii  .?AVcCollisionTester@?A0xf8bf4490@@
+0x00160910 ascii  .?AVcShapeCollisionPreprocess@@
+0x001609a0 ascii  .?AVcCombinedDynamicObstacles@@
+0x001609d0 ascii  .?AVcNullDynamicStateForPathfinding@@
+0x00160b70 ascii  .?AV?$cSimpleTranslator@V?$cVertPointContext@VcPolyMesh@@@@V?$cVertPointContext@VcStrippedMesh@@@@VcTraversalTranslationToOverlapped@@@@
+0x00160c10 ascii  .?AV?$cElementTranslator@V?$cVertPointContext@VcPolyMesh@@@@V?$cVertPointContext@VcStrippedMesh@@@@VcLookupTranslationToOverlapped@@@@
+0x00160cb0 ascii  .?AV?$cElementTranslator@V?$cVertPointContext@VcPolyMesh@@@@V?$cVertPointContext@VcStrippedMesh@@@@VcTraversalTranslationToOverlapped@@@@
+0x00160d50 ascii  .?AV?$cSimpleTranslator@V?$cVertPointContext@VcStrippedMesh@@@@V?$cVertPointContext@VcPolyMesh@@@@VcTraversalTranslationToOverlapped@@@@
+0x00160df0 ascii  .?AV?$cSimpleTranslator@V?$cVertPointContext@VcPolyMesh@@@@V?$cVertPointContext@VcStrippedMesh@@@@VcLookupTranslationToOverlapped@@@@
+0x00160e90 ascii  .?AV?$cSimpleTranslator@V?$cVertPointContext@VcPolyMesh@@@@V?$cVertPointContext@VcStrippedMesh@@@@VcBSPTranslationToOverlapped@@@@
+0x00160f30 ascii  .?AV?$cElementTranslator@V?$cVertPointContext@VcStrippedMesh@@@@V?$cVertPointContext@VcPolyMesh@@@@VcTraversalTranslationToOverlapped@@@@
+0x00160fd0 ascii  .?AV?$cSimpleTranslator@V?$cVertPointContext@VcStrippedMesh@@@@V?$cVertPointContext@VcPolyMesh@@@@VcLookupTranslationToOverlapped@@@@
+0x00161070 ascii  .?AV?$cElementTranslator@V?$cVertPointContext@VcStrippedMesh@@@@V?$cVertPointContext@VcPolyMesh@@@@VcLookupTranslationToOverlapped@@@@
+0x001611b0 ascii  .?AVcShapePathfindPreprocess@@
+0x001611f0 ascii  .?AVcCollisionContext@@
+0x00161248 ascii  .?AViCollisionContext@@
+0x001613c0 ascii  .?AVcExpanded2DObstacles@@
+0x001613f8 ascii  .?AVcCollisionTester@?A0x23fbbb5e@@
+0x001614d8 ascii  .?AViExpanded2DObstacles@@
+0x00161720 ascii  .?AVcMesh@@
+0x001618c8 ascii  .?AViMesh@@
+0x00161a20 ascii  .?AV?$iArrayReceiver@H@@
+0x00161a70 ascii  .?AViMeshFederation@@
+0x00161ac8 ascii  .?AVcMeshFederation@@
+0x00161af8 ascii  .?AViObstacleSet@@
+0x00161b38 ascii  .?AVcObstacleSet@@
+0x00161bd8 ascii  .?AViPath@@
+0x00161bf8 ascii  .?AVcPath@@
+0x00161c38 ascii  .?AViPathEngine@@
+0x00161ca0 ascii  .?AVcPathEngine@@

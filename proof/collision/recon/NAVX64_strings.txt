@@ -1,0 +1,33 @@
+0x000074a0 ascii  bad array new length
+0x000074f8 ascii  Can't load nav mesh from %s
+0x00007b6c ascii  d:\qb\buildagent\workspace\root\JX3\zhcn_bvt\DataStores\Sword3\Source\Common\NAV\x64\Release_2019\NAVX64.pdb
+0x00008e36 ascii  NAVX64.dll
+0x00008e41 ascii  ??0PathEngineNavi@@QEAA@$$QEAV0@@Z
+0x00008e64 ascii  ??0PathEngineNavi@@QEAA@AEBV0@@Z
+0x00008e85 ascii  ??0PathEngineNavi@@QEAA@XZ
+0x00008ea0 ascii  ??1PathEngineNavi@@QEAA@XZ
+0x00008ebb ascii  ??4PathEngineNavi@@QEAAAEAV0@$$QEAV0@@Z
+0x00008ee3 ascii  ??4PathEngineNavi@@QEAAAEAV0@AEBV0@@Z
+0x00008f09 ascii  ?AddObstacle@PathEngineNavi@@QEAA_JAEAV?$vector@HV?$allocator@H@std@@@std@@_NMMM@Z
+0x00008f5c ascii  ?EnableObstacle@PathEngineNavi@@QEAA_N_J_N@Z
+0x00008f89 ascii  ?FindCurvedPath@PathEngineNavi@@QEAA_NMMMMMMHMMHM@Z
+0x00008fbd ascii  ?FindNearestWayPointWithRadius@PathEngineNavi@@QEAA_JMMMM@Z
+0x00008ff9 ascii  ?FindPath@PathEngineNavi@@QEAA_NMMMMMMM@Z
+0x00009023 ascii  ?FindPathNow@PathEngineNavi@@AEAAPEAViPath@@MMMMMM@Z
+0x00009058 ascii  ?FindPathWithWayPoint@PathEngineNavi@@QEAA_NMMMMMMMMH@Z
+0x00009090 ascii  ?FindWayPointPath@PathEngineNavi@@QEAA_N_J0@Z
+0x000090be ascii  ?GetPathPoint@PathEngineNavi@@QEBAAEBV?$vector@MV?$allocator@M@std@@@std@@XZ
+0x0000910b ascii  ?GetPathPointCount@PathEngineNavi@@QEBA_KXZ
+0x00009137 ascii  ?GetWayPointCount@PathEngineNavi@@QEBA_KXZ
+0x00009162 ascii  ?GetWayPoints@PathEngineNavi@@QEBAAEBV?$vector@MV?$allocator@M@std@@@std@@XZ
+0x000091af ascii  ?Init@PathEngineNavi@@QEAA_NPEBD@Z
+0x000091d2 ascii  ?LoadPathFromIPath@PathEngineNavi@@AEAAXPEAViPath@@@Z
+0x00009208 ascii  ?LoadPathFromIPath@PathEngineNavi@@AEAAXPEAViPath@@M@Z
+0x0000923f ascii  ?LoadSceneData@PathEngineNavi@@AEAA_KPEBD@Z
+0x0000926b ascii  ?LoadSceneNaviMesh@PathEngineNavi@@QEAA_NPEBD000@Z
+0x0000929e ascii  ?Release@PathEngineNavi@@QEAAXXZ
+0x000092bf ascii  ?ReleaseSceneNaviMesh@PathEngineNavi@@AEAAXXZ
+0x000092ed ascii  ?RemoveObstacle@PathEngineNavi@@QEAA_N_J@Z
+0x00009318 ascii  CreateNAV
+0x000096ec ascii  QueryPerformanceCounter
+0x00009c58 ascii  .?AVbad_array_new_length@std@@
