@@ -969,6 +969,34 @@ internal static class RebornClient
         // the extracted .hlb files (proof/collision/terrain_extra)
         string holeDumpDir = Env("RC_HOLE_DUMP", "");
         int lastHoleIx = int.MinValue, lastHoleIz = int.MinValue;
+        // collision profile (RC_COL_PROF=1): per-frame collision cost and the
+        // deepest contact that last blocked the move
+        bool colProf = Env("RC_COL_PROF", "0") == "1";
+        var colSw = new System.Diagnostics.Stopwatch();
+        double colMsSum = 0, colMsMax = 0;
+        long colProfFrames = 0, colCallsPrev = 0;
+        var camSw = new System.Diagnostics.Stopwatch();
+        double camMsSum = 0, camMsMax = 0;
+        long camProfFrames = 0;
+        // camera obstruction query cadence: the native ray set costs ~1.3-2.4 ms
+        // per query and up to ~10 ms on stall frames next to large buildings
+        // (RC_COL_PROF: nat+vert), which halved the frame rate at the 玉门关
+        // building (122 vs 240 fps). The game's camera runs at its render
+        // cadence; the host caps the managed query set to 20 Hz (env
+        // RC_CAM_OBSTHZ, 0 = every frame); placement smoothing/hysteresis still
+        // run every frame on the last hit. PROVISIONAL host policy - re-open
+        // when the engine's own camera query cadence is recovered.
+        double camQueryHz = 20.0;
+        {
+            double cv;
+            if (double.TryParse(Env("RC_CAM_OBSTHZ", "20"), out cv)) camQueryHz = cv;
+        }
+        double camQueryAcc = 0, lastCamHit = -1.0;
+        var bakeSw = new System.Diagnostics.Stopwatch();
+        var natSw = new System.Diagnostics.Stopwatch();
+        var vertSw = new System.Diagnostics.Stopwatch();
+        var sampSw = new System.Diagnostics.Stopwatch();
+        double bakeMsSum = 0, natMsSum = 0, vertMsSum = 0, sampMsSum = 0;
         var penRing = new System.Collections.Generic.List<string>();
         var penCur = new System.Text.StringBuilder();
         long penLastLog = 0, penLastSummary = 0;
@@ -1618,6 +1646,7 @@ internal static class RebornClient
                 subStep = step / subCount;
             }
             float look = subStep > 40f ? subStep : 40f;
+            if (colProf) colSw.Restart();
             for (int si = 0; si < subCount; si++)
             {
                 float sdx = 0f, sdz = 0f;
@@ -1676,6 +1705,14 @@ internal static class RebornClient
                         }
                     }
                 }
+            }
+            if (colProf)
+            {
+                colSw.Stop();
+                double msProf = colSw.Elapsed.TotalMilliseconds;
+                colMsSum += msProf;
+                colProfFrames++;
+                if (msProf > colMsMax) colMsMax = msProf;
             }
             if (moving) curYaw = (float)Math.Atan2(mvx, mvz);
 
@@ -1868,7 +1905,16 @@ internal static class RebornClient
                 double hitDist = -1.0;
                 string hitSrc = "";
                 bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
-                if (col != null)
+                if (colProf) camSw.Restart();
+                bool doCamQuery = true;
+                if (camQueryHz > 0.0)
+                {
+                    camQueryAcc += dt;
+                    if (camQueryAcc >= 1.0 / camQueryHz) camQueryAcc = 0.0;
+                    else doCamQuery = false;
+                }
+                if (!doCamQuery) hitDist = lastCamHit;
+                if (col != null && doCamQuery)
                 {
                     double rx = uz, rz = -ux;
                     double rl = Math.Sqrt(rx * rx + rz * rz);
@@ -1881,6 +1927,7 @@ internal static class RebornClient
                     // perimeter at 45 deg). The +0x15c trigger that selects the
                     // 9-ray mode is not recovered, so it stays opt-in.
                     int probeCount = nineRay ? 9 : 5;
+                    if (colProf) { bakeSw.Restart(); natSw.Restart(); }
                     for (int p = 0; p < probeCount; p++)
                     {
                         double ox2 = 0, oy2 = 0, oz2 = 0;
@@ -1906,9 +1953,11 @@ internal static class RebornClient
                         bool bBlk = col.LastBlocksCamera, bFol = col.LastFromFoliage;
                         // engine rays: the game's camera mask 0x301 covers terrain
                         // and scene entities, which the baked set cannot fully cover
+                        if (colProf) { bakeSw.Stop(); natSw.Start(); }
                         float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);
                         if (th > 0f && (h <= 0f || th < h)) h = th;
                         float sh = sceneRayCam ? engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2) : -1f;
+                        if (colProf) { natSw.Stop(); bakeSw.Start(); }
                         if (sh > 0f && sh < sceneMin) sh = -1f;   // self/exit faces (B12)
                         if (sh > 0f && (h <= 0f || sh < h)) h = sh;
                         // degenerate-hit guard (registered, RC_CAM_HITMIN=0
@@ -1942,6 +1991,19 @@ internal static class RebornClient
                 // engine vertical backend: the game mask's vertical probe.
                 // Sampling it along the camera line catches vertical/cliff
                 // geometry no horizontal ray reports.
+                if (colProf && doCamQuery)
+                {
+                    bakeSw.Stop(); natSw.Stop();
+                    bakeMsSum += bakeSw.Elapsed.TotalMilliseconds;
+                    natMsSum += natSw.Elapsed.TotalMilliseconds;
+                }
+                // The vertical ladder is a host-authored extra (not in the
+                // recovered engine probe set); when the horizontal probes
+                // already found a wall it is skipped - next to the big 玉门关
+                // building it alone cost ~1.9 ms/frame (RC_COL_PROF).
+                if (doCamQuery && hitDist < 0.0)
+                {
+                if (colProf) vertSw.Restart();
                 for (int i = 2; i <= 14; i++)
                 {
                     double t = (double)i / 14.0;
@@ -1965,9 +2027,12 @@ internal static class RebornClient
                         break;
                     }
                 }
+                if (colProf) { vertSw.Stop(); vertMsSum += vertSw.Elapsed.TotalMilliseconds; }
+                }
                 // terrain read as another obstruction ray (center probe march)
-                if (sampler != null)
+                if (sampler != null && doCamQuery)
                 {
+                    if (colProf) sampSw.Restart();
                     const double margin = 20.0;
                     const int steps = 14;
                     for (int i = 2; i <= steps; i++)
@@ -1987,10 +2052,20 @@ internal static class RebornClient
                         }
                     }
                 }
+                if (colProf && doCamQuery) { sampSw.Stop(); sampMsSum += sampSw.Elapsed.TotalMilliseconds; }
+                lastCamHit = hitDist;
                 hitDist = camObst.Stabilize(dt, hitDist);
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
                 dbgEffDist = dist; dbgSrc = hitSrc;
+                if (colProf && doCamQuery)
+                {
+                    camSw.Stop();
+                    double cms = camSw.Elapsed.TotalMilliseconds;
+                    camMsSum += cms;
+                    camProfFrames++;
+                    if (cms > camMsMax) camMsMax = cms;
+                }
                 // resolved-offset smoothing (their plan step 3): the pull result
                 // moves at the same per-axis limited rate as the orbit offset,
                 // so a one-frame hit change (corner-probe graze 123->88, backend
@@ -2720,6 +2795,39 @@ internal static class RebornClient
                                 cand[ci], ax, ay, az, bx, by, bz);
                     }
                     nearInfo += string.Format(" py={0:F0}", py);
+                }
+                if (colProf)
+                {
+                    long profTri = 0, profInst = 0;
+                    if (col != null)
+                    {
+                        profTri = col.ProfTriTests;
+                        profInst = col.ProfInstTouches;
+                        col.ProfTriTests = 0;
+                        col.ProfInstTouches = 0;
+                    }
+                    nearInfo += string.Format(" colms=avg{0:F2}/max{1:F2} tri={2} inst={3} calls={4}",
+                        colProfFrames > 0 ? colMsSum / colProfFrames : 0.0, colMsMax,
+                        profTri, profInst, colCalls - colCallsPrev);
+                    nearInfo += string.Format(" camms=avg{0:F2}/max{1:F2} n={6} bake={2:F2} nat={3:F2} vert={4:F2} samp={5:F2}",
+                        camProfFrames > 0 ? camMsSum / camProfFrames : 0.0, camMsMax,
+                        camProfFrames > 0 ? bakeMsSum / camProfFrames : 0.0,
+                        camProfFrames > 0 ? natMsSum / camProfFrames : 0.0,
+                        camProfFrames > 0 ? vertMsSum / camProfFrames : 0.0,
+                        camProfFrames > 0 ? sampMsSum / camProfFrames : 0.0,
+                        camProfFrames);
+                    colMsSum = 0; colMsMax = 0; colProfFrames = 0; colCallsPrev = colCalls;
+                    camMsSum = 0; camMsMax = 0; camProfFrames = 0;
+                    bakeMsSum = 0; natMsSum = 0; vertMsSum = 0; sampMsSum = 0;
+                    if (col != null && blocked && col.LastBlockedInst >= 0)
+                    {
+                        float bx0, by0, bz0, bx1, by1, bz1;
+                        col.GetInstanceBounds(col.LastBlockedInst, out bx0, out by0, out bz0, out bx1, out by1, out bz1);
+                        nearInfo += string.Format(" blkInst={0} depth={1:F1} n=({2:F2},{3:F2},{4:F2}) py={5:F0} AABB({6:F0},{7:F0},{8:F0})-({9:F0},{10:F0},{11:F0})",
+                            col.LastBlockedInst, col.LastBlockedDepth,
+                            col.LastBlockedNx, col.LastBlockedNy, col.LastBlockedNz, col.LastBlockedPy,
+                            bx0, by0, bz0, bx1, by1, bz1);
+                    }
                 }
                 float curSpd = !moving ? 0f
                              : shiftDown ? pRun * 10f
