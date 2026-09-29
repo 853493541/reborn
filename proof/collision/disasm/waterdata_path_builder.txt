@@ -1,0 +1,58 @@
+003a3480  dc37                   fdiv    qword ptr [rdi]
+003a3482  00488d                 add     byte ptr [rax - 0x73], cl
+003a3485  0d76cbc5ff             or      eax, 0xffc5cb76
+003a348a  ba07000000             mov     edx, 7
+003a348f  ff1593bc2c00           call    qword ptr [rip + 0x2cbc93]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+003a3495  e960020000             jmp     0x1803a36fa
+003a349a  4883bba804000000       cmp     qword ptr [rbx + 0x4a8], 0
+003a34a2  743a                   je      0x1803a34de
+003a34a4  488d8570010000         lea     rax, [rbp + 0x170]
+003a34ab  4c8d4d60               lea     r9, [rbp + 0x60]
+003a34af  4c8d8580020000         lea     r8, [rbp + 0x280]
+003a34b6  488d1553ba3200         lea     rdx, [rip + 0x32ba53]
+003a34bd  488d4c2450             lea     rcx, [rsp + 0x50]
+003a34c2  4889442420             mov     qword ptr [rsp + 0x20], rax
+003a34c7  ff15f3ca2c00           call    qword ptr [rip + 0x2ccaf3]  ; imp:USER32.dll!wsprintfA
+003a34cd  488b8ba8040000         mov     rcx, qword ptr [rbx + 0x4a8]
+003a34d4  488d542450             lea     rdx, [rsp + 0x50]
+003a34d9  e8a2621b00             call    0x180559780
+003a34de  488b83f8020000         mov     rax, qword ptr [rbx + 0x2f8]
+003a34e5  f20f101543ec2c00       movsd   xmm2, qword ptr [rip + 0x2cec43]  ; =0.1 (f64)
+003a34ed  0f29b424c0060000       movaps  xmmword ptr [rsp + 0x6c0], xmm6
+003a34f5  0f57f6                 xorps   xmm6, xmm6
+003a34f8  0f28ce                 movaps  xmm1, xmm6
+003a34fb  f30f10809c000000       movss   xmm0, dword ptr [rax + 0x9c]
+003a3503  f30f10a890000000       movss   xmm5, dword ptr [rax + 0x90]
+003a350b  f30f10a094000000       movss   xmm4, dword ptr [rax + 0x94]
+003a3513  f30f109898000000       movss   xmm3, dword ptr [rax + 0x98]
+003a351b  f30f5ccd               subss   xmm1, xmm5
+003a351f  f30f11442444           movss   dword ptr [rsp + 0x44], xmm0
+003a3525  0f5ac1                 cvtps2pd xmm0, xmm1
+003a3528  660f2fc2               comisd  xmm0, xmm2
+003a352c  0f8715010000           ja      0x1803a3647
+003a3532  f30f5cee               subss   xmm5, xmm6
+003a3536  0f5ac5                 cvtps2pd xmm0, xmm5
+003a3539  660f2fc2               comisd  xmm0, xmm2
+003a353d  0f8704010000           ja      0x1803a3647
+003a3543  0f28c6                 movaps  xmm0, xmm6
+003a3546  f30f5cc4               subss   xmm0, xmm4
+003a354a  0f5ac0                 cvtps2pd xmm0, xmm0
+003a354d  660f2fc2               comisd  xmm0, xmm2
+003a3551  0f87f0000000           ja      0x1803a3647
+003a3557  f30f5ce6               subss   xmm4, xmm6
+003a355b  0f5ac4                 cvtps2pd xmm0, xmm4
+003a355e  660f2fc2               comisd  xmm0, xmm2
+003a3562  0f87df000000           ja      0x1803a3647
+003a3568  0f28c6                 movaps  xmm0, xmm6
+003a356b  f30f5cc3               subss   xmm0, xmm3
+003a356f  0f5ac0                 cvtps2pd xmm0, xmm0
+003a3572  660f2fc2               comisd  xmm0, xmm2
+003a3576  0f87cb000000           ja      0x1803a3647
+003a357c  f30f5cde               subss   xmm3, xmm6
+003a3580  0f5ac3                 cvtps2pd xmm0, xmm3
+003a3583  660f2fc2               comisd  xmm0, xmm2
+003a3587  0f87ba000000           ja      0x1803a3647
+003a358d  488b8368040000         mov     rax, qword ptr [rbx + 0x468]
+003a3594  4885c0                 test    rax, rax
+003a3597  7446                   je      0x1803a35df
+003a3599  488d4c2438             lea     rcx, [rsp + 0x38]

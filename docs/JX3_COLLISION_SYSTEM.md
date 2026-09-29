@@ -604,9 +604,17 @@ when the loader's optional name member is set. Verified by extraction for 龙门
   map (values ≈0.50–0.53, not the BCH heights); its exact relation to BCH (legacy vs
   `bUseGrainHeight` detail heights) is unresolved — BCH is authoritative for reproduction.
 
-WaterData was not located under the guessed templates; the `.png` hole variant also never
-hit. `<map>.SRScene` (524 B, magic `SRS\0`, all-zero body, byte-identical across maps) is the
-empty SceneResponse state file (§17.1).
+**WaterData (negative + builder decoded).** The engine's builder (`KG3DEngineX64.dll`,
+`proof/collision/disasm/waterdata_ctx.txt`, `waterdata_path_builder.txt`) `_splitpath`s an
+input path and formats `drive+dir+fname+".WaterData"` (`%s%s%s.WaterData` at RVA `0x6CEF10`,
+wsprintf at `0x3A34B6`), opening the sibling `.ini` first (`g_OpenIniFile` at `0x3A330F`).
+No `.WaterData` file exists anywhere in the install (pak probes on 龙门寻宝/海岛绝境 all MISS;
+MovieEditor source maps contain none), so `.WaterData` is **editor-authored user water**.
+Shipped-map water is instead carried as **compressed scene-block data**
+(`KG3DSceneBlockData::UnCompressWaterData`, `pWaterDataCompress`, RVA `0x6C7440`) and surface
+instances (`%s_Water.mesh`); the compressed block format is still open. The `.png` hole
+variant also never hit. `<map>.SRScene` (524 B, magic `SRS\0`, all-zero body, byte-identical
+across maps) is the empty SceneResponse state file (§17.1).
 
 ---
 
@@ -2143,6 +2151,7 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/PhysicsEngineX64_strings.txt` | RTTI + `_CreateCapsule` + PhysX controller-desc strings |
 | `proof/collision/recon/PhysX3CharacterKinematic_*` | CharacterKinematic exports/strings (`createController` prototype) |
 | `proof/collision/terrain_extra/*` | extracted `<map>.SRScene` (magic `SRS`, empty body), BCH/R32 heightmaps, HLB hole masks |
+| `proof/collision/disasm/waterdata_*.txt` | WaterData builder context (`%s%s%s.WaterData`, `_splitpath`, ini open) |
 | `proof/collision/recon/terrain_extra_candidates*.txt`, `physic_config_candidates.txt` | extraction candidate batteries (method evidence) |
 | `proof/netcode/loot_protocol` (`disasm/OnSync*`) | doodad/loot packet layouts |
 
@@ -2195,7 +2204,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 | G-29 | projectile/missile system — **client data model recovered 2026-09-28** (`proof/collision/missile/`, §22.2); server simulation and tick-base fitting still open | disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor`; fit velocity tick base from captures |
 | G-25 | navmesh + `QueryPath` + obstacles + `bAutoPathing` — **decoded 2026-09-28**: 4-file set (p0 binary 12-byte header + stream payload; p1/p2 binary overlays; p3 text), loaded by the `LoadLibraryA` shim `Init(path)`; **no client module references NAVX64/PathEngine**, so this is the server/standalone stack and the data lives outside the pak | remaining: locate the server data files/naming and the client-side `KNavMeshQuery` mesh source |
 | G-21 | `KG3DSceneResponse` semantics — **partial 2026-09-28**: the plugin has just 2 exports (`GetSceneResponse`, `GetStateFileInfo`) and no flag literals; the map state file `<map>.SRScene` (magic `SRS`) is empty on 龙门寻宝; the static gate is the physic lists (§8.4); `bUnitWalkable`/`bUnitCanPass`/`bBullet*`/`bAutoPathing` consumers still unreversed | disassemble `GetStateFileInfo` consumers and the engine unit-template readers around `KG3DEngineX64!0x541388-0x541401` |
-| G-24 | water volumes + `UpdateFluxCollisionHeightMap` | disassemble `_FillMapWaterData`/`KG3D_LoadTerrainWaterData`; find native flux implementation |
+| G-24 | water volumes + `UpdateFluxCollisionHeightMap` — **2026-09-28**: no shipped `.WaterData` (editor-authored only; builder decoded); map water is `KG3DSceneBlockData::UnCompressWaterData` scene blocks; Flux still name-only | decode the compressed water block format; find the native flux implementation |
 | G-3 | `comLogic` flags ignored by bake — **audited 2026-09-28: all 4,965 objects are uniformly `obstacleOption=0`/`enablePhysicsConfig=0`; no behavioural impact**; the real gate is the physic white/black lists, now implemented (`--physic-lists`, H1) | validate H1 precedence in-game (G-35) |
 | G-5 | FOLI `sceneScale` double-apply | unit test with known non-1.0 patterns (天原 deadwood 1.299998, 龙门 rock6 0.5921); fix exporter or runtime |
 | G-0 | unit conflict 100 vs 192 u/m | run the decisive walk-speed/mesh-vs-cell experiment (§26.1); correct docs consistently |
