@@ -955,6 +955,28 @@ internal static class RebornClient
         // JX3_STEP_FORGIVENESS_RESEARCH.md). RC_STEP_HEIGHT overrides.
         float stepHeight = 50f;
         float.TryParse(Env("RC_STEP_HEIGHT", "50"), out stepHeight);
+        // debug/A-B: RC_COL_OFF=1 disables structure blocking everywhere;
+        // RC_COL_SKIP_BOX=x0,z0,x1,z1 disables it while the player is inside
+        // that XZ box (the live game's building collidability is server-side
+        // data that is not in the client install)
+        bool colOff = Env("RC_COL_OFF", "0") == "1";
+        float skipX0 = 0f, skipZ0 = 0f, skipX1 = 0f, skipZ1 = 0f;
+        bool skipBoxSet = false;
+        {
+            string skEnv = Env("RC_COL_SKIP_BOX", "");
+            if (skEnv.Length > 0)
+            {
+                string[] sp = skEnv.Split(',');
+                if (sp.Length >= 4)
+                {
+                    float.TryParse(sp[0], out skipX0);
+                    float.TryParse(sp[1], out skipZ0);
+                    float.TryParse(sp[2], out skipX1);
+                    float.TryParse(sp[3], out skipZ1);
+                    skipBoxSet = true;
+                }
+            }
+        }
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
@@ -1688,7 +1710,13 @@ internal static class RebornClient
                 if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
 
                 // object/foliage collision (walls, buildings, rocks, trees)
-                if (col != null)
+                // RC_COL_OFF / RC_COL_SKIP_BOX are debug/A-B controls: the live
+                // game's per-building collidability is server/streamed state we
+                // cannot read from the client install, so this lets a specific
+                // area be walked through to match what is observed in-game.
+                bool colSkip = colOff ||
+                    (skipBoxSet && px >= skipX0 && px <= skipX1 && pz >= skipZ0 && pz <= skipZ1);
+                if (col != null && !colSkip)
                 {
                     float stepGround = col.SupportHeight(px, pz, py - 20f, py + stepHeight);
                     if (moving)
@@ -2757,6 +2785,8 @@ internal static class RebornClient
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
+                if (colOff || (skipBoxSet && px >= skipX0 && px <= skipX1 && pz >= skipZ0 && pz <= skipZ1))
+                    state += " [COL OFF]";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : wSprint ? pSprint

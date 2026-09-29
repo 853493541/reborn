@@ -207,3 +207,32 @@ itself was never the bottleneck (0.2-0.44 ms/frame).
 **Open.** The native ray call itself still costs ~1.2-2.4 ms per query; a
 cheaper native query path (or reading the engine camera cadence) would remove
 the 20 Hz cap.
+## 8. Object collidability mismatch at the 玉门关 building (2026-09-29)
+
+User observation (live JX3): the wall/gate at the 玉门关 building (instance 897,
+`jz_xb玉门关建筑001_004_hd.mesh`, our blocked spot 18758,652,24591) **is walkable in
+the real game**; our host blocks it.
+
+Findings:
+
+- The unit chain is fine: 1 u = 1 cm (`G-0`), and the recovered CCT step is 0.5 m =
+  50 u. The mismatch is **which objects block**, not the units or the step height.
+- The building keeps its collision in our bake because the repo rule H1 admits it:
+  `jz_xb玉门关建筑001_004_hd` is not `file_black` and its folder (`maps_source`) is
+  `physic_folder_white` (`proof/collision/physic/audit_lists.txt`). H1 itself is
+  **[implemented, A/B pending]** (`G-35`) - never checked against the live game.
+- The engine's `.mesh` rule (visual mesh triangles) is what the host reproduces; in
+  the live game the object is a **server-streamed scene entity** and its collidability
+  is server state that is not present in the client install (`G-25` nav data lives
+  outside it). So the client files cannot settle this - only an observation can.
+- `bAddPlayerPhysicsActor=0` (EngineStaticConfig `[KG3DENGINE]`): the client has no
+  rigid player body; online blocking is server-authoritative.
+
+Debug/A-B controls added to the client (env, default off, HUD shows `[COL OFF]`):
+
+- `RC_COL_OFF=1` - disable structure/foliage blocking everywhere;
+- `RC_COL_SKIP_BOX=x0,z0,x1,z1` - disable it while the player is inside that XZ box.
+
+Open question for the rule: is the whole building walk-through in the live game (then
+H1 over-admits and should become file-white-only or server-data-driven), or only the
+gate/doorway (then it is door/doodad state), or only low geometry (step height)?

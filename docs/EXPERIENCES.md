@@ -184,3 +184,18 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved (adopted).
 - Re-open: a live-measured gameplay step height or server/nav decoding could replace
   the CCT default with the online value.
+### 2026-09-29 — client — Object collidability vs live game (玉门关 building)
+- Did: user reports walking through the 玉门关 wall in the live game while the host
+  blocks it (instance 897 = `jz_xb玉门关建筑001_004_hd.mesh`). Checked the bake rule:
+  H1 admits the model (not file_black; folder `maps_source` white) and H1 is still
+  A/B-pending (G-35). Engine `.mesh` rule collides visual triangles; live collidability
+  is server/streamed state absent from the client install. Units/step are not the
+  issue. Added debug controls `RC_COL_OFF` and `RC_COL_SKIP_BOX=x0,z0,x1,z1` (HUD
+  `[COL OFF]`), launched the client with the building box skipped so the user can
+  verify the rest of the world.
+- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8;
+  `proof/collision/physic/audit_lists.txt`; EngineStaticConfig.ini `[KG3DENGINE]`.
+- Outcome: partial (control shipped; rule open). Next: settle whether the live game
+  blocks any part of that building (whole-object vs doorway vs height) before changing
+  the bake rule; H1 A/B is the candidate fix.
+- Re-open: user observation or server/nav data.
