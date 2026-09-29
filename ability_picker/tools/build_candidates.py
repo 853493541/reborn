@@ -343,19 +343,19 @@ WEM_ADD = {
 # step = {t: ms, kind: anim|sound|dummy|remove, v: value, n: note, x/y/z: world offset}
 PROCESS = {
     "临时飞爪": [
+        {"t": 0, "kind": "cursor", "v": r"data\source\other\特效\系统\SFX\其他\鼠标移动.Sfx",
+         "n": "瞄准指示 = cursor_effect.txt 的鼠标特效; 范围 40尺 = 2560u"},
         {"t": 0, "kind": "action", "v": "DoAction(0,140022)", "n": "施法者动作 140022/140023"},
-        {"t": 0, "kind": "anim", "v": "s16lxg链技能03_释放HD", "n": "投掷 (链技能03 释放)"},
-        {"t": 0, "kind": "sound", "v": "62588785", "n": "链音效"},
-        {"t": 0, "kind": "dummy", "v": r"data\source\npc_source\a021\模型\a021b.mdl", "k": "proc_a",
-         "n": "装置NPC 70025=a021b (落点8尺)", "x": 0, "y": 60, "z": 100, "s": 2.5},
-        {"t": 0, "kind": "dummy", "v": r"data\source\NPC_source\WJ_lxg交通钩爪001_001\模型\WJ_lxg交通钩爪001_001_HD.mdl", "k": "proc_b",
-         "n": "替代造型 凌雪钩爪 (远点)", "x": 0, "y": 60, "z": 170, "s": 2.5},
-        {"t": 83, "kind": "chain", "v": "s_锁链01.pss", "n": "链状表现 28032: S_rh->S_fxmid 运行时两点渲染器 (不能静态摆放)"},
-        {"t": 83, "kind": "move", "v": "DASH_TO_POINT(120)", "n": "牵引 28033: 冲向落点 (移动未表现)"},
+        {"t": 0, "kind": "anim", "v": "s16lxg链技能03_释放HD", "n": "投掷/释放 (孤风飒踏)"},
+        {"t": 0, "kind": "sound", "v": "62588785", "n": "链音效 (s16lxglianjineng01_HD)"},
+        {"t": 0, "kind": "chain", "v": "device 67816 / model 70025=a021b",
+         "n": "装置NPC在落点: 引擎隐藏 (buff 12363 气场隐藏且无敌 + 12343 悬停), 仅提供 S_fxmid 锚点, 不显示"},
+        {"t": 83, "kind": "anim", "v": "s16lxg链技能03b_hd", "n": "牵引冲刺动画 (skill_dash: 28033 -> AnimationID 91076 -> 03b_hd.tani)"},
+        {"t": 83, "kind": "chain", "v": "s_锁链01.pss", "n": "链状表现 28032: S_rh->S_fxmid (Millisecond=1000, EnableRotation=1)"},
+        {"t": 83, "kind": "move", "v": "DASH_TO_POINT(120)", "n": "牵引: 120 u/帧 @15fps = 1800 u/s"},
         {"t": 450, "kind": "sound", "v": "697798714", "n": "命中/固定音"},
-        {"t": 600, "kind": "anim", "v": "s16lxg链技能03_缓冲_HD", "n": "牵引/落地缓冲"},
-        {"t": 2700, "kind": "remove", "v": "proc_a", "n": "装置消失 (160帧寿命)"},
-        {"t": 2710, "kind": "remove", "v": "proc_b", "n": "清理"},
+        {"t": 800, "kind": "anim", "v": "s16lxg链技能03_缓冲HD", "n": "落地缓冲 (AnimationID 91074)"},
+        {"t": 2700, "kind": "chain", "v": "remove device", "n": "装置消失 (160帧寿命, 隐藏物)"},
     ],
 }
 
@@ -371,7 +371,12 @@ MECH = {
         "5) 牵引: 28033 = DASH_TO_POINT(120,0) 把玩家拉向落点\n"
         "6) 动画: F1s16lxg链技能03_释放HD (孤风飒踏系); 落地 F1s16lxg链技能03_缓冲_HD\n"
         "7) 声音: wem 62588785 = s16lxglianjineng01_HD.wav (凌雪阁链音效)\n"
-        "已解(引擎代码): 爪锚模型 70025 = data\\source\\npc_source\\a021\\模型\\a021b.mdl (GetRepresentModelPath)\n"
+        "已解(引擎代码): 装置 70025 = data\\source\\npc_source\\a021\\模型\\a021b.mdl (GetRepresentModelPath), "
+        "但引擎用 buff 12363(气场隐藏且无敌)+12343(悬停) 将其隐藏 -> 落点不显示任何模型, 只提供 S_fxmid 链锚点\n"
+        "动画链 (引擎表): skill_dash.txt 28033 -> AnimationID 91076 -> F1s16lxg链技能03b_hd.tani (牵引); "
+        "释放=链技能03_释放HD; 落地=链技能03_缓冲HD (91074)\n"
+        "瞄准指示: cursor_effect.txt -> data\\source\\other\\特效\\系统\\SFX\\其他\\鼠标移动.Sfx (鼠标特效)\n"
+        "链条表: 技能链=skill_chain.txt (s_锁链01.pss); 公共链=public_chain.txt (独立系统)\n"
         "技能层链条 = KRLSfx 实例 + 两点绑定 (从二进制解析):\n"
         "  - ApplyBindChainSfx -> KRLSfx::Init(this, pcszFile=FilePath(s_锁链01.pss)) 加载资源 -> handle@sfx+0x98, path@+0x20\n"
         "  - 绑定子对象 @sfx+0x48: 起点=施法者 S_rh, 终点=装置NPC S_fxmid; 偏移vec3@+0x1b4..1bc, scale@+0x1c8, Millisecond(float)@+0x1e0\n"
