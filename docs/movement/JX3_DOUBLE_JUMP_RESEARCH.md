@@ -2,7 +2,7 @@
 
 **Status:** press semantics + per-school data verified; reproduced in the Reborn client
 (`client/JumpTable.cs`, `client/RebornClient.cs`), feature build
-`reborn_client_double_jump.exe`. The plain 二段跳 ships as a **provisional**
+`reborn_client_double_jump_control.exe` (double jump + controls subject). The plain 二段跳 ships as a **provisional**
 one-extra-jump model (`RC_DJUMP=flip`) because the game's `J1 takeoff burst +
 End-triple flight` phase trigger is still undecoded (§5.1); `RC_DJUMP=chain`
 keeps the literal table chain for research.
@@ -145,7 +145,9 @@ Verified in-engine (2026-09-29, curated in
 - `.tani` wrapper (runs B/D) reproduces the 0xC0000005 AV; the underlying
   `.ani` plays cleanly (runs E/F) — the flip action is available without the
   composite wrapper.
-Isolation verified in every run: `ns=reborn_client_double_jump.memory`.
+Isolation verified in every run: `ns=reborn_client_double_jump.memory`
+(renamed build `reborn_client_double_jump_control.exe` → `..._control.memory`;
+the same build now also carries the controls turn model, `docs/controls/` S6).
 
 Not reproduced (documented, not invented): segment-end End triple, `JumpFrameParam`
 curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
@@ -171,14 +173,14 @@ curves, wall/horse variants, fly/suspend states, horizontal `JumpSpeedXY`
 .venv\Scripts\python.exe tools\gravity\parse_jump_tables.py --csharp-out client\JumpTable.cs
 .venv\Scripts\python.exe tools\gravity\verify_model.py
 # feature client (isolated name/namespace):
-set RC_CLIENT_EXE=reborn_client_double_jump.exe
+set RC_CLIENT_EXE=reborn_client_double_jump_control.exe
 client\build_client.cmd
 # automated fingerprint run (engine, ~1 min; cwd must be MovieEditor):
 $env:RC_DEMO="1"; $env:RC_DJUMP_LOG="1"; $env:RC_AUTORUN="25000"
-$p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
+$p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump_control.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
 $p.WaitForExit(); $p.ExitCode
 # expect exit 0 and: jump: mode=flip school=0 scale=0.520 (apex 191u) ->
 # djb press n=1 -> djb press n=2 at ~191u above n=1 + clip -> ...二段跳a.ani
-# -> djb land n=2 -> DONE; ns=reborn_client_double_jump.memory in the init line
+# -> djb land n=2 -> DONE; ns=reborn_client_double_jump_control.memory in the init line
 # research chain mode: add $env:RC_DJUMP="chain"
 ```

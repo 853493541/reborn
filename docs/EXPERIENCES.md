@@ -159,3 +159,19 @@ solved it, and what is still open. **Newest at the bottom.**
   `djb apex n=2 py=1023 modelY=1022` (model tracks physics; before the fix the
   model stayed at the y=646 takeoff height).
 - Outcome: solved.
+
+### 2026-09-29 — controls — camera-relative steering + turn model (S6), client renamed
+- Did: user reported RMB drag could not turn the character while walking. Per the
+  control notes (`JX3_MOVEMENT_CONTROLS.md` §2; `CAMERAORSELECTORMOVESTICKY`
+  rotates camera **and** character; gap register S6) the client held the world
+  direction while the key set was unchanged, so camera rotation never steered.
+  Removed the latch (movement direction recomputed camera-relative every frame),
+  added the `RunTo` turn model (heading vs facing; facing turns at the π rad/s
+  host fallback; a >112.5° turn halves speed and turn step), reused the rate in
+  the RMB turn, and renamed the feature build to
+  `reborn_client_double_jump_control.exe`.
+- Evidence: `proof/controls/steering_run.txt` (demo camera orbit at t=6s:
+  `dir=(0,1)` → `(0.78,0.62)`, `yaw` 0.00 → 0.90, path curves; exit 0);
+  `CONTROLS_GAP_REGISTER.md` S6 → DONE; `JX3_MOVEMENT_CONTROLS.md` §6 updated.
+- Outcome: solved for the steering rule; the server `+0x48` per-frame turn step
+  is still undecoded (host π rad/s fallback documented).

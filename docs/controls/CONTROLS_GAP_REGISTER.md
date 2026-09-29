@@ -18,7 +18,7 @@ lands, keep the evidence column pointing at real file:line.
 | S3 | Terrain ground-clamp guard for the aim loop | **OPEN** | `camY = camGround` breaks the orbit ray | none — small |
 | S4 | Unify pitch controllers / deadband | **PARTIAL** | residual now fractional + 10 ms low-pass; feed-forward still separate, no deadband | S1–S3 |
 | S5 | Max-distance clamp on every distance writer | **OPEN** | only `ZoomBy` clamps; F11/sprint bypass; `SetMaxDistance` misnamed | none |
-| S6 | RMB character turn uses the turn-rate model | **OPEN** | instant snap at `RebornClient.cs:929` | movement turn model |
+| S6 | RMB character turn uses the turn-rate model | **DONE** (2026-09-29) | movement direction now recomputed camera-relative per frame (no held world dir) + heading/facing turn model with the >112.5° speed/turn-step penalty (`client/RebornClient.cs`; run `proof/controls/steering_run.txt`). Server `+0x48` turn step still undecoded — host fallback π rad/s | — |
 | S7 | LMB click vs drag (select on click) | **OPEN** | press always locks; no threshold/timestamp | targeting |
 | S8 | 广角/FOV + engine caps | **OPEN (mapping DONE)** | panel = 30–60°, default 50° → `Set3DEngineOption(fCameraAngle)`; caps unprobed (`RESEARCH_RESOLVED_GAPS.md` §3) | `docs/camera/DISTANCE_FOV_SPEC.md` |
 | S9 | Wall/structure obstruction (camera clips through walls) | **OPEN** | terrain-only march `RebornClient.cs:1058-1080`; native rules in `docs/camera/WALL_OBSTRUCTION.md` | baked bins; native interface optional |

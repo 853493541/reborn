@@ -525,8 +525,6 @@ internal static class RebornClient
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
-        float worldDirX = 0f, worldDirZ = 0f;
-        int lastKeySig = -1;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
@@ -685,7 +683,7 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         long lastWUp = 0, lastWDown = 0;
-        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoSkilled = false;
+        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
@@ -1421,6 +1419,9 @@ internal static class RebornClient
             {
                 pW = now >= 2000 && now < 12000;
                 walkMode = now >= 7000 && now < 12000;   // demo walk phase
+                // control check: rotate the camera mid-run (like an RMB drag);
+                // the camera-relative run must curve after this (turn model)
+                if (now >= 6000 && !demoTurned) { demoTurned = true; orbitQueue.Enqueue(new int[] { 500, 0 }); }
                 pA = now >= 14000 && now < 18000;
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
                 // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
@@ -1616,8 +1617,10 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction; hold the world-space direction while the key
-            // set is unchanged (the camera may rotate without curving the run)
+            // input -> direction. The game recomputes camera-relative movement
+            // every frame (MOVEFORWARD = camera forward; A/D strafe), so rotating
+            // the camera steers the run (docs/controls/JX3_MOVEMENT_CONTROLS.md §2;
+            // RMB = CAMERAORSELECTORMOVESTICKY rotates camera + character).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
             if (pW) { inX += hx; inZ += hz; }
@@ -1626,12 +1629,15 @@ internal static class RebornClient
             if (pD) { inX += rX; inZ += rZ; }
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
-            int keySig = (pW ? 1 : 0) | (pS ? 2 : 0) | (pA ? 4 : 0) | (pD ? 8 : 0);
-            if (keySig != lastKeySig) { lastKeySig = keySig; worldDirX = inX; worldDirZ = inZ; }
-            float dirX = worldDirX, dirZ = worldDirZ;
+            float dirX = inX, dirZ = inZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
+            // character yaw turn rate (rad/s): the game's per-frame turn step
+            // (+0x48) is a server sync byte and not decoded; the host uses the
+            // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
+            float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
+            if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
@@ -1642,8 +1648,22 @@ internal static class RebornClient
                             : walkMode ? pSpeed
                             : wSprint ? pSprint
                             : pRun) / len;
-                float step = sp * dt;
                 float ux = dirX / len, uz = dirZ / len;
+                // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
+                // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
+                // direction; facing turns toward it at the turn rate; a turn
+                // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
+                // and the turn step that frame.
+                float heading = (float)Math.Atan2(ux, uz);
+                float dYaw = heading - curYaw;
+                while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
+                while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
+                bool hardTurn = Math.Abs(dYaw) > 2.0071f;
+                if (hardTurn) sp *= 0.5f;
+                float turnStep = charTurnRate * dt * (hardTurn ? 0.5f : 1f);
+                if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
+                else curYaw += Math.Sign(dYaw) * turnStep;
+                float step = sp * dt;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
                 float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
                 if (gh - ground > 70f)
@@ -1655,25 +1675,18 @@ internal static class RebornClient
                     else if (gz2 - ground <= 70f) { pz = tryZ; }
                 }
                 else { px = tryX; pz = tryZ; }
-                curYaw = (float)Math.Atan2(ux, uz);
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
-            // camera direction; LMB drag rotates the camera only. The turn is
-            // rate-limited (S6) instead of snapping the yaw in one frame.
+            // camera direction; LMB drag rotates the camera only. Rate-limited
+            // (S6) instead of snapping the yaw in one frame.
             if (rmbDown)
             {
                 float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
                 float d = targetYaw - curYaw;
                 while (d > Math.PI) d -= 2f * (float)Math.PI;
                 while (d < -Math.PI) d += 2f * (float)Math.PI;
-                // RotationSpeed row values are engine int speeds (0.00314 in
-                // the host rows), not rad/s; the engine's key-rotation default
-                // fChaseRate is pi rad/s, so use a rad/s value only when the row
-                // is clearly one, else pi (S6: 0.00314 was ~0.18 deg/s).
-                float rate = (float)camSys.Row.F("RotationSpeed", 0.0);
-                if (rate < 1f) rate = (float)Math.PI;
-                float step = rate * (float)dt;
+                float step = charTurnRate * (float)dt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
             }
@@ -2760,11 +2773,11 @@ internal static class RebornClient
                                 : walkMode ? "WALK"
                                 : wSprint ? "SPRINT"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}){11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
-                    curSpd, moveMode));
+                    curSpd, moveMode, curYaw, dirX, dirZ));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {
