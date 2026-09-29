@@ -28,4 +28,7 @@ for /f %%c in ('git status --porcelain ^| find /c /v ""') do set DIRTY=%%c
 ) > "%BIN%\build_info.txt"
 "%CSC%" /nologo /platform:x64 /target:exe /out:"%BIN%\camera_smoke.exe" ^
   client\CameraSystem.cs client\CameraSmoke.cs
+rem offline collision gate (no engine/assets): bin64\collision_selftest.exe
+"%CSC%" /nologo /platform:x64 /target:exe /out:"%BIN%\collision_selftest.exe" ^
+  client\FoliageCollision.cs client\collision_selftest.cs
 echo build exit=%ERRORLEVEL%
