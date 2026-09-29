@@ -580,6 +580,11 @@ internal static class RebornClient
                 camSys.Mode, camSys.Distance,
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
         }
+        // projected vertical FOV actually applied to the engine view: the
+        // install default (config.ini KG3DENGINE CammeraAngle = 0.837757 rad =
+        // 48.0 deg, the SetViewAngleFactor divisor) x factor. The aim ray must
+        // use this, not the panel-default 50 deg (G-20).
+        double feiAimFovDeg = 60.0;
         try
         {
             // FOV: the editor's view-angle factor. A wider value makes the
@@ -594,7 +599,8 @@ internal static class RebornClient
                 Log("view angle factor test override=" + va);
             }
             scene.SetViewAngleFactor(va);
-            Log("view angle factor applied=" + va);
+            feiAimFovDeg = VideoSettings.DefaultAngle * 180.0 / Math.PI * va;
+            Log("view angle factor applied=" + va + " aimFov=" + feiAimFovDeg.ToString("F2") + " deg");
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
         float worldDirX = 0f, worldDirZ = 0f;
@@ -1058,6 +1064,30 @@ internal static class RebornClient
         bool feiBuffered = false;
         bool feiHitSounded = false;
         long feiSeqStart = 0;
+        long feiPullMs = 3500;          // pull budget (3-D distance based)
+        float feiRayY = -1e9f;          // raw aim-ray hit Y (pre-surface resolve)
+        float feiSurfY = -1e9f;         // visible top Y at the aimed column
+        // Visible top of a column: the surface the player sees/stands on - the
+        // first scene hit from above (cliffs, rocks, roofs) or the baked
+        // terrain, whichever is higher. This replaces the game-mask vertical
+        // probe, which returns phantom collision heights (verified 2026-09-29:
+        // ~9045/29122 u over plain dune columns) and whose old 10000-u start
+        // capped tall targets - the source of the Z "half way" pull.
+        Func<float, float, float> visibleTop = delegate(float sx, float sz)
+        {
+            float best = sampler != null ? sampler.Sample(sx, sz) : -1f;
+            try
+            {
+                float d = engineRay.RayScene(sx, 40000f, sz, sx, 0f, sz);
+                if (d > 0f)
+                {
+                    float y = 40000f - d;
+                    if (y > best) best = y;
+                }
+            }
+            catch { }
+            return best;
+        };
         float feiPX = 0f, feiPY = 0f, feiPZ = 0f, feiDist = 0f;
         float lastMarkerX = 1e9f, lastMarkerZ = 1e9f;
         long lastPullLogMs = 0;
@@ -1199,7 +1229,9 @@ internal static class RebornClient
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
         // ---- 临时飞爪 (28031): PointArea target ray + cast action ----
-        const string FEI_RANGE_UI = @"data\source\other\特效\技能\MESH\释放\释放_范围选择01.Mesh";
+        // authored range-select marker, exact spelling from the pak record
+        // (释放_范围选择01.Sfx dependency list: mesh + mtl-less textured emitters)
+        const string FEI_RANGE_UI = @"data\source\other\特效\技能\mesh\释放\释放_范围选择01.mesh";
         const string FEI_RANGE_SFX = @"data\source\other\特效\技能\SFX\释放\释放_范围选择01.Sfx";
         Func<float[]> computeFeiTarget = delegate
         {
@@ -1211,18 +1243,15 @@ internal static class RebornClient
                 if (float.TryParse(Env("SB_AIM_WX", ""), out awx) && float.TryParse(Env("SB_AIM_WZ", ""), out awz))
                 {
                     float ahy = sampler != null ? sampler.Sample(awx, awz) : py;
-                    try
+                    // visible top at the aimed column (same backend as the
+                    // cursor path; no height ceiling)
+                    float aTop = visibleTop(awx, awz);
+                    if (aTop > ahy)
                     {
-                        // scene hit first (buildings included - same backend the
-                        // real cursor ray uses), vertical segment downward
-                        float shs = engineRay.RayScene(awx, 10000f, awz, awx, -2000f, awz);
-                        if (shs > 0f)
-                        {
-                            float ays = 10000f - shs;
-                            if (ays > ahy && ays - py <= 1200f) ahy = ays;
-                        }
+                        ahy = aTop;
+                        feiSurfY = aTop;
                     }
-                    catch { }
+                    feiRayY = ahy;
                     float addx = awx - px, addz = awz - pz;
                     return new float[] { awx, ahy, awz, (float)Math.Sqrt(addx * addx + addz * addz) };
                 }
@@ -1247,7 +1276,7 @@ internal static class RebornClient
                 float ny = (ph * 0.5f - mp.Y) / (ph * 0.5f);
                 float aimTestX;
                 if (float.TryParse(Env("SB_AIM_NDC_X", ""), out aimTestX)) nx = aimTestX;
-                double tanY = Math.Tan(50.0 * Math.PI / 180.0 * 0.5);
+                double tanY = Math.Tan(feiAimFovDeg * Math.PI / 180.0 * 0.5);
                 double tanX = tanY * ((double)pw / ph);
                 float dx3 = fx + rgx * (float)(nx * tanX) + ux5 * (float)(ny * tanY);
                 float dy3 = fy + uy5 * (float)(ny * tanY);
@@ -1273,18 +1302,17 @@ internal static class RebornClient
                     hitX = px + mdx * kk; hitZ = pz + mdz * kk;
                     hitY = sampler != null ? sampler.Sample(hitX, hitZ) : hitY;
                 }
-                // standable surface at the target column (roof/ground): if the
-                // horizontal ray hit a wall face, pull to the surface on top of it
-                try
+                // visible top at the target column (roof/rock/terrain): if the
+                // horizontal ray hit a wall face, resolve to the surface on top
+                // of it. 28031's cast point is the picked point and the visible
+                // top at the aimed column is what the pick lands on; no cap.
+                feiRayY = hitY;
+                float sTop = visibleTop(hitX, hitZ);
+                if (sTop > hitY)
                 {
-                    int vhrT;
-                    float vhT = engineRay.RayVerticalHeight(hitX, 10000f, hitZ, 30000f, out vhrT);
-                    // game semantics: the pull goes to the picked point; the
-                    // standable surface at that column is the top face (roof),
-                    // so aim columns resolve upward (cap: 1200u above the caster)
-                    if (vhT > 0f && vhT - py <= 1200f) hitY = vhT;
+                    feiSurfY = sTop;
+                    hitY = sTop;
                 }
-                catch { }
                 return new float[] { hitX, hitY, hitZ, mdl };
             }
             catch { return null; }
@@ -1294,8 +1322,12 @@ internal static class RebornClient
             float gy = sampler != null ? sampler.Sample(feiPX, feiPZ) : feiPY;
             feiSeqActive = true; feiSeqStart = nowMs;
             feiPull = false; feiBuffered = false; feiHitSounded = false;
-            float estSec = feiDist / (120f * 15f);
-            skillUntil = nowMs + (long)(estSec * 1000.0) + 700;
+            // pull budget from the full 3-D travel (DASH_TO_POINT(120) = 120 u
+            // per logic frame at 15 fps): a fixed deadline cut tall pulls short
+            float d3 = (float)Math.Sqrt(feiDist * feiDist + (feiPY - py) * (feiPY - py));
+            feiPullMs = (long)(d3 / (120f * 15f) * 1000f) + 900;
+            if (feiPullMs < 1200) feiPullMs = 1200;
+            skillUntil = nowMs + feiPullMs;
             curClip = null;
             setClip(resolveTani("s16lxg链技能03_释放HD"));
             if (soundOn)
@@ -1304,7 +1336,9 @@ internal static class RebornClient
                 if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
             }
             Log("skill cast: 临时飞爪 -> target (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ
-                + ") dist=" + (int)feiDist + "u range=2560u(40尺) pullMs=" + (int)(estSec * 1000)
+                + ") dist=" + (int)feiDist + "u range=2560u(40尺) pullMs=" + feiPullMs
+                + " rawY=" + (int)feiRayY + " surfY=" + (int)feiSurfY
+                + " climb=" + (int)(feiPY - py)
                 + " terrainY=" + (int)gy + " device=67816/70025(hidden)");
         };
 
@@ -1833,14 +1867,23 @@ internal static class RebornClient
                             lastMarkerX = feiPX; lastMarkerZ = feiPZ;
                             var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 8f; mpos.z = feiPZ;
                             var mrot = new CLRfloat4(); mrot.w = 1f;
-                            var mscl = new CLRfloat3(); mscl.x = 1.3f; mscl.y = 1.3f; mscl.z = 1.3f;
+                            // authored marker made obvious: the range-select mesh
+                            // is only 2.3 m (its glow comes from the .Sfx emitters
+                            // the host cannot play). Scale is presentation only,
+                            // env-tunable for review (SB_FEI_RING_SCALE).
+                            float ringScale = 4f;
+                            float.TryParse(Env("SB_FEI_RING_SCALE", "4"), out ringScale);
+                            if (ringScale <= 0f) ringScale = 4f;
+                            var mscl = new CLRfloat3(); mscl.x = ringScale; mscl.y = ringScale; mscl.z = ringScale;
                             // NOTE: the .Sfx wrapper must NOT be fed to AddDummyModel -
                             // it returns a handle but AVs the engine later (verified).
                             // Only the raw mesh is placeable in this host.
                             long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
                             Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
-                                + " handle=" + mh);
+                                + " rawY=" + (int)feiRayY + " surfY=" + (int)feiSurfY
+                                + " climb=" + (int)(feiPY - py)
+                                + " scale=" + ringScale.ToString("F1") + " mesh=" + mh);
                         }
                     }
                 }
@@ -1903,9 +1946,7 @@ internal static class RebornClient
                 lastVhX = px; lastVhZ = pz; lastVhMs = now;
                 try
                 {
-                    int vhr2;
-                    float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
-                    lastVhY = vh2;
+                    lastVhY = visibleTop(px, pz);
                 }
                 catch { lastVhY = -1f; }
             }
@@ -1940,11 +1981,11 @@ internal static class RebornClient
             // full 3D - the pull climbs to the target height (roofs included)
             if (feiPull)
             {
-                if (now - feiSeqStart > 3500)
+                if (now - feiSeqStart > feiPullMs)
                 {
                     feiPull = false; feiBuffered = true;
                     grounded = true; vy = 0f;
-                    Log("feizhua pull timeout (target unreachable)");
+                    Log("feizhua pull timeout (target unreachable) after " + feiPullMs + "ms");
                 }
                 float pdx = feiPX - px, pdz = feiPZ - pz, pdy = feiPY - py;
                 float pdl = (float)Math.Sqrt(pdx * pdx + pdz * pdz);
@@ -2084,11 +2125,10 @@ internal static class RebornClient
                             float dx = sx * 300f;
                             try
                             {
-                                int hr3;
-                                float vh3 = engineRay.RayVerticalHeight(px + dx, 10000f, pz + dz, 30000f, out hr3);
-                                if (vh3 > py + 100f && vh3 - py <= 1200f)
+                                float vh3 = visibleTop(px + dx, pz + dz);
+                                if (vh3 > py + 100f)
                                     Log("scan candidate (" + (int)(px + dx) + "," + (int)vh3 + "," + (int)(pz + dz)
-                                        + ") rise=" + (int)(vh3 - py) + " hr=" + hr3);
+                                        + ") rise=" + (int)(vh3 - py));
                             }
                             catch { }
                         }

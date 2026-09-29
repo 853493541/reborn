@@ -102,3 +102,26 @@ solved it, and what is still open. **Newest at the bottom.**
   reorganization.
 - Evidence: merge commit `085daa7`; `origin/main` updated in the same session.
 - Outcome: solved.
+
+### 2026-09-29 — ability sandbox — 临时飞爪: phantom vertical probe was the Z "half way"
+**Problem:** 临时飞爪 pulls stopped mid-height ("z change seems to have a limit").
+**Tried:** removing the 1200-u climb cap and the fixed 3.5-s pull deadline (helped but not
+the real cause); raising the game-mask vertical probe start (10000 → 30000) produced a
+bogus 29083-u "top" and the pull landed floating in the sky; a 2-float `posXZ` probe shape
+returned `hr=0` everywhere (inconclusive by itself).
+**Outcome:** solved.
+**Why:** the game-mask vertical probe (`KG3D_SpaceManager::RayIntersectionVertical`,
+`EngineRay.RayVerticalHeight`) returns **phantom collision heights** — at plain dune columns
+it reports ~9045 u / ~29122 u while scene/terrain descent rays report 878 / 872 / sampler 868.
+Targets stacked a 1200-u cap and a 10000-u start on top of that, so pulls stopped at
+ledges/phantoms. Fix: resolve the target/floor from `visibleTop(x,z)` = max(first `RayScene`
+hit cast straight down from y=40000, baked terrain sampler) — the authored visible surface —
+no cap; pull budget is 3-D distance based; the game-mask probe is retained only for the
+camera-obstruction ladder. Indicator: the original `鼠标移动.Sfx` / selection SFX cannot be
+played by MovieEngineCLR (AV), so the aim point now shows only the authored
+`释放_范围选择01.mesh` range-select ring at a visible scale (`SB_FEI_RING_SCALE`, default 4)
+— no unrelated assets.
+**Re-open criteria:** if the engine pick ray / an SFX play path is wired, use them instead.
+**Links:** commits on `agent/skillv2-sandbox`; climb log 2026-09-29 16:51
+(`marker (24534,2919,21524) climb=2158` → `landed at (24534,2919,21524)`);
+`docs/movement/JX3_COLLISION_SYSTEM.md` §16.4 + G-20.
