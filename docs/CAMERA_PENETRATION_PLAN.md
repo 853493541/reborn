@@ -280,12 +280,17 @@ audit), P4 (broad audit + F9 captures at the spots where see-through remains).
 
 ### 2026-09-29 C0 - freeze & baseline (camFP build)
 
+> Rename note (2026-09-29 cleanup): the canonical client exe is now
+> **reborn_client.exe** (client/build_client.cmd). It was called
+> `reborn_client.exe` during the camera workstream; references below use the
+> current name.
+
 Protection against concurrent workstreams:
-- The exe is now **reborn_camfp.exe** (client/build_client.cmd); the fork's
-  builds (reborn_client.exe, ability_sandbox.exe - rebuilt 19:24) can no longer
-  overwrite it.
+- The exe name is unique to this build (**reborn_client.exe**,
+  client/build_client.cmd); the fork's build (ability_sandbox.exe - rebuilt
+  19:24) can no longer overwrite it.
 - Every run logs a first-line fingerprint:
-  `build=reborn_camfp.exe <mtime> git=<hash> dirty=<n> camFP=True flags=(...)`.
+  `build=reborn_client.exe <mtime> git=<hash> dirty=<n> camFP=True flags=(...)`.
   Camera logs are the **camFP=True** set; logs containing `feizhua` belong to
   the fork and are ignored.
 - The single-instance guard blocks any of reborn_camfp / reborn_client /
@@ -293,7 +298,7 @@ Protection against concurrent workstreams:
 - Fixed a FormatException in the fingerprint (unescaped braces) that crashed
   the first four runs.
 
-Baseline build: `reborn_camfp.exe` 2026-09-28 19:47:55, git 35dead9 dirty=18,
+Baseline build: `reborn_client.exe` 2026-09-28 19:47:55, git 35dead9 dirty=18,
 flags (ENGINESET=1, LOOKPACK=0, RATECAP=0, LOADPACE=1, FULLLOAD=0, PATCH_D6=0,
 PITCH_ALIGN=1, PLAYER_HIDE=1, SNAPGUARD=0).
 
@@ -329,7 +334,7 @@ honoring `bCameraSmoothing` from custom.dat. Applies in both modes (shared
 placement). Invariants re-verified: T2 hit=206 len=188; T1 hit=11 len=-7 with
 `vyaw = yaw + pi`; T4 hit=186 len=168; probe exit 0; smoke ALL PASS.
 
-Pending: user feel judgment on this build (`reborn_camfp.exe`).
+Pending: user feel judgment on this build (`reborn_client.exe`).
 
 ### 2026-09-29 C1b - crossing guard (nausea fix)
 
@@ -396,7 +401,7 @@ Shipped (all registered):
   hit changes slide instead of teleport; dt clamped to 50 ms so streaming
   hitches cannot snap it.
 
-Acceptance (shipped `reborn_camfp.exe`, fingerprint camFP=True):
+Acceptance (shipped `reborn_client.exe`, fingerprint camFP=True):
 - USERSPOT idle 14 s: 0 jumps, 0 shake, stable pull 155 (hit=173);
 - T1 cavity: hit=11, len=0, 0 jumps;
 - T2 wall (demo sweep): hit=287, len=189, 0 shake (raw follows smooth);

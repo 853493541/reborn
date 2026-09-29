@@ -43,7 +43,7 @@ internal static class RebornClient
                         System.Windows.Forms.MessageBox.Show(
                             name + " is already running (pid " + other.Id +
                             "). Close it first or set RC_ALLOW_MULTI=1.",
-                            "reborn_camfp");
+                            "reborn_client");
                         return;
                     }
                 }
