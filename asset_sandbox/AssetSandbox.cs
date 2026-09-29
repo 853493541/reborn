@@ -26,7 +26,10 @@
 //                        path (host space = actors/NPCs, not doodads)
 //   AS_SPACING=250       stage grid spacing (world units)
 //   AS_GLOW_SCALE=1      multiplier on the table EffectScale for the glow PSS
+//   AS_REF=1             spawn the 花萝 actor next to the stage as a 1.7 m scale reference
 //   AS_STAGE=x,y,z       explicit stage center (y optional -> terrain)
+//   AS_FLAT=1            keep the explicit stage y for all spawns (flat pad)
+//   AS_CAM_DIST / AS_CAM_UP   initial camera distance / height (default 1100/350)
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -89,6 +92,12 @@ internal static class AssetSandbox
     static float spacing = 250f;
     static float glowScale = 1f;
     static bool useRepresent;
+    static bool refEnabled;
+    static bool refAlive;
+    static bool flatMode;
+    static float camDist = 1100f;
+    static float camUp = 350f;
+    static string actorPath;
     static Func<int, int, int> MakeLParam = delegate(int x, int y)
     {
         return ((y & 0xFFFF) << 16) | (x & 0xFFFF);
@@ -104,6 +113,11 @@ internal static class AssetSandbox
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");
         string dataDir = Env("AS_DATA", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset_sandbox_data"));
         useRepresent = Env("AS_REPRESENT", "0") == "1";
+        refEnabled = Env("AS_REF", "0") == "1";
+        flatMode = Env("AS_FLAT", "0") == "1";
+        float.TryParse(Env("AS_CAM_DIST", "1100"), NumberStyles.Float, CultureInfo.InvariantCulture, out camDist);
+        float.TryParse(Env("AS_CAM_UP", "350"), NumberStyles.Float, CultureInfo.InvariantCulture, out camUp);
+        actorPath = Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor");
         float.TryParse(Env("AS_SPACING", "250"), NumberStyles.Float, CultureInfo.InvariantCulture, out spacing);
         float.TryParse(Env("AS_GLOW_SCALE", "1"), NumberStyles.Float, CultureInfo.InvariantCulture, out glowScale);
         if (glowScale <= 0f) glowScale = 1f;
@@ -173,6 +187,7 @@ internal static class AssetSandbox
 
         SetupStage();
         ProbeRepresentApi();
+        if (refEnabled) SpawnRef();
 
         if (smokeIds != null)
         {
@@ -425,6 +440,7 @@ internal static class AssetSandbox
         AddButton(buttons, "Snap", delegate { scene.ResetCameraPosLookAtUp(); });
         AddButton(buttons, "Shot", delegate { Shot("manual"); });
         AddButton(buttons, "Reload", delegate { Reload(); });
+        AddButton(buttons, "Ref", delegate { ToggleRef(); });
         left.Controls.Add(buttons, 0, 2);
 
         list = new ListView();
@@ -651,8 +667,9 @@ internal static class AssetSandbox
             float.TryParse(p[0], NumberStyles.Float, CultureInfo.InvariantCulture, out stageX);
             if (p.Length > 1) float.TryParse(p[1], NumberStyles.Float, CultureInfo.InvariantCulture, out stageY);
             if (p.Length > 2) float.TryParse(p[2], NumberStyles.Float, CultureInfo.InvariantCulture, out stageZ);
-            if (sampler != null) stageY = sampler.Sample(stageX, stageZ);
-            Log(string.Format("stage explicit ({0:F0},{1:F0},{2:F0})", stageX, stageY, stageZ));
+            if (sampler != null) stageY = sampler.Sample(stageX, stageZ); // flat pad at true terrain height
+            PlaceCamera(0f, 1f);
+            Log(string.Format("stage explicit ({0:F0},{1:F0},{2:F0}) flat={3}", stageX, stageY, stageZ, flatMode));
             return;
         }
 
@@ -685,7 +702,7 @@ internal static class AssetSandbox
                 scene.GetCameraPos(ref gx, ref gy, ref gz);
                 stageY = gy;
             }
-            scene.SetCameraPos(stageX - dx * 1100f, stageY + 350f, stageZ - dz * 1100f, false);
+            PlaceCamera(dx, dz);
             Log(string.Format("stage ({0:F0},{1:F0},{2:F0}) dir=({3:F2},{4:F2})", stageX, stageY, stageZ, dx, dz));
         }
         catch (Exception e)
@@ -693,6 +710,19 @@ internal static class AssetSandbox
             Log("stage ex: " + e.Message);
             stageX = 0f; stageY = 0f; stageZ = 0f;
         }
+    }
+
+    static void PlaceCamera(float dx, float dz)
+    {
+        float camX = stageX - dx * camDist;
+        float camY = stageY + camUp;
+        float camZ = stageZ - dz * camDist;
+        if (sampler != null)
+        {
+            float g = sampler.Sample(camX, camZ) + 60f;
+            if (camY < g) camY = g;
+        }
+        scene.SetCameraPos(camX, camY, camZ, false);
     }
 
     static void ProbeRepresentApi()
@@ -724,7 +754,7 @@ internal static class AssetSandbox
             int gz = i / cols;
             float x = stageX + (gx - (cols - 1) * 0.5f) * spacing;
             float z = stageZ + gz * spacing;
-            float y = sampler != null ? sampler.Sample(x, z) : stageY;
+            float y = (flatMode || sampler == null) ? stageY : sampler.Sample(x, z);
             SpawnOne(rows[i], x, y, z);
         }
         FillList();
@@ -843,8 +873,42 @@ internal static class AssetSandbox
         try { scene.ClearRepresentModel(); } catch (Exception e) { Log("ClearRepresentModel ex: " + e.Message); }
         try { scene.ClearDummyModel(); } catch (Exception e) { Log("ClearDummyModel ex: " + e.Message); }
         SpawnedList.Clear();
+        refAlive = false;
         Log("scene cleared");
+        if (refEnabled) SpawnRef();
         FillList();
+    }
+
+    static void ToggleRef()
+    {
+        refEnabled = !refEnabled;
+        if (!refEnabled)
+        {
+            try { scene.RemoveDummyModel("as_ref"); } catch { }
+            refAlive = false;
+            Log("ref off");
+            FillList();
+            return;
+        }
+        SpawnRef();
+        FillList();
+    }
+
+    static void SpawnRef()
+    {
+        if (refAlive || scene == null) return;
+        try
+        {
+            float x = stageX - spacing * 2f, z = stageZ + spacing * 0.5f;
+            float y = (flatMode || sampler == null) ? stageY : sampler.Sample(x, z);
+            var pos = new CLRfloat3(); pos.x = x; pos.y = y; pos.z = z;
+            var rot = new CLRfloat4(); rot.x = 0f; rot.y = 0f; rot.z = 0f; rot.w = 1f;
+            var scl = new CLRfloat3(); scl.x = 1f; scl.y = 1f; scl.z = 1f;
+            long h = scene.AddDummyModel("as_ref", actorPath, pos, rot, scl);
+            if (h > 0) { refAlive = true; Log("ref actor (\u82B1\u841D, human ~1.7 m) -> " + h); }
+            else Log("ref actor -> " + h + " path=" + actorPath);
+        }
+        catch (Exception e) { Log("ref ex: " + e.Message); }
     }
 
     // ---------------------------------------------------------------- misc
