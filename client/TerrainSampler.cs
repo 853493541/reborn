@@ -193,6 +193,12 @@ internal sealed class TerrainSampler : IDisposable
         int cx = (int)Math.Floor(gx), cz = (int)Math.Floor(gz);
         if (cx < 0) cx = 0; if (cz < 0) cz = 0;
         if (cx >= _size) cx = _size - 1; if (cz >= _size) cz = _size - 1;
+        // A/B against the extracted .hlb (see the plan doc): the engine's
+        // packed mask is row-flipped in Z relative to the raw file, so the
+        // engine cell for grid row cz is (_size - 1 - cz). Verified on
+        // 海岛绝境_000_000: 234/234 hole cells match with the flip and 0/234
+        // without it.
+        cz = _size - 1 - cz;
         int b = _holeRowBytes * cz + (cx >> 3);
         byte v = Marshal.ReadByte(_hole, b);
         return (v & (1 << (cx & 7))) == 0;

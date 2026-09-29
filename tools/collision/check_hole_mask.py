@@ -8,6 +8,11 @@ proof/collision/disasm/hole_convert_holedata.txt): the .hlb is
 samples are <= 0x7F. The packed mask has one bit per cell: byte
 z * ceil(n/8) + (x >> 3), bit (x & 7), set = hole.
 
+The engine's packed mask is **row-flipped in Z** relative to the raw file
+(engine cell z = n - 1 - z_raw). Verified by A/B on 海岛绝境_000_000 against
+a live client dump: 234/234 hole cells match with the flip, 0/234 without.
+This tool applies the flip, so --dump comparisons are engine-exact.
+
 Usage:
   python tools/collision/check_hole_mask.py --hlb <file.hlb> --dump <holes_*.bin>
   python tools/collision/check_hole_mask.py --hlb <file.hlb> --spawn-cells 8
@@ -31,7 +36,7 @@ def convert_hlb(raw: bytes, n: int) -> bytes:
     holes = 0
     for z in range(n):
         base = z * stride
-        out = z * row_bytes
+        out = (n - 1 - z) * row_bytes
         for x in range(n):
             i = base + x
             if (raw[i] <= 0x7F and raw[i + 1] <= 0x7F
