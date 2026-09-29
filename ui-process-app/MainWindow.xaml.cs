@@ -421,6 +421,19 @@ namespace UiProcessApp
                     VerticalAlignment = VerticalAlignment.Top,
                 };
                 _layoutCanvas.Children.Add(build.Root);
+                _layoutCanvas.Measure(new Size(width, height));
+                _layoutCanvas.Arrange(new Rect(0, 0, width, height));
+                _layoutCanvas.UpdateLayout();
+                var overhang = App.ComputeOverhang(build, width, height);
+                if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
+                {
+                    width += overhang.L + overhang.R;
+                    height += overhang.T + overhang.B;
+                    _layoutCanvas.Width = width;
+                    _layoutCanvas.Height = height;
+                    Canvas.SetLeft(build.Root, overhang.L);
+                    Canvas.SetTop(build.Root, overhang.T);
+                }
                 LayoutScroll.UpdateLayout();
                 _zoom = FitZoom(width, height);
                 _layoutCanvas.LayoutTransform = new ScaleTransform(_zoom, _zoom);

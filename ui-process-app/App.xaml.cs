@@ -183,6 +183,32 @@ namespace UiProcessApp
                 host.Arrange(new Rect(0, 0, width, height));
                 host.UpdateLayout();
 
+                // The client draws window children without clipping them, so decorative
+                // art the INI authors just outside the window rect (RevivePanel's icon,
+                // PVPShowPanel's title, settlement logos) is visible in game. Grow the
+                // render canvas by that overhang; parked off-window elements (overhang
+                // beyond the limit) stay excluded.
+                var overhang = ComputeOverhang(build, width, height);
+                if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
+                {
+                    var expanded = new Canvas
+                    {
+                        Width = width + overhang.L + overhang.R,
+                        Height = height + overhang.T + overhang.B,
+                        Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                    };
+                    host.Child = null;
+                    Canvas.SetLeft(build.Root, overhang.L);
+                    Canvas.SetTop(build.Root, overhang.T);
+                    expanded.Children.Add(build.Root);
+                    host.Child = expanded;
+                    host.Width = expanded.Width;
+                    host.Height = expanded.Height;
+                    host.Measure(new Size(expanded.Width, expanded.Height));
+                    host.Arrange(new Rect(0, 0, expanded.Width, expanded.Height));
+                    host.UpdateLayout();
+                }
+
                 if (!string.IsNullOrWhiteSpace(dump))
                 {
                     var lines = new List<string>();
@@ -205,7 +231,7 @@ namespace UiProcessApp
                     File.WriteAllLines(dump, lines);
                 }
 
-                var bitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
+                var bitmap = new RenderTargetBitmap((int)host.Width, (int)host.Height, 96, 96, PixelFormats.Pbgra32);
                 bitmap.Render(host);
                 var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
@@ -221,6 +247,39 @@ namespace UiProcessApp
                 Console.WriteLine("render failed: " + ex.Message);
                 return 1;
             }
+        }
+
+        /// <summary>
+        /// Union of the visible art/text elements that stick out of the window rect
+        /// (clamped so parked off-window elements are ignored). Used to grow the
+        /// render canvas like the unclipped client does.
+        /// </summary>
+        internal static (double L, double T, double R, double B) ComputeOverhang(UiBuildResult build, double width, double height)
+        {
+            const double limit = 48;
+            double l = 0, t = 0, r = 0, b = 0;
+            foreach (var pair in build.Elements)
+            {
+                if (!build.Sections.TryGetValue(pair.Key, out var section)) continue;
+                var type = section.Get("._WndType") ?? "";
+                if (type != "Image" && type != "Text" && type != "WndButton" && type != "WndCheckBox") continue;
+                var element = pair.Value;
+                if (element.Visibility != Visibility.Visible) continue;
+                try
+                {
+                    var p = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                    double w = element.ActualWidth, h = element.ActualHeight;
+                    if (w <= 0 && h <= 0) continue;
+                    double dl = -p.X, dt = -p.Y, dr = p.X + w - width, db = p.Y + h - height;
+                    if (dl > limit || dt > limit || dr > limit || db > limit) continue;
+                    l = Math.Max(l, dl);
+                    t = Math.Max(t, dt);
+                    r = Math.Max(r, dr);
+                    b = Math.Max(b, db);
+                }
+                catch { }
+            }
+            return (Math.Max(0, l), Math.Max(0, t), Math.Max(0, r), Math.Max(0, b));
         }
 
         /// <summary>
