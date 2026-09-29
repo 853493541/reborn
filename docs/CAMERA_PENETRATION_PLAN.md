@@ -348,3 +348,84 @@ never flips. Kill switch `RC_CAM_CROSS=1` restores the native crossing.
 After: T1 sweep 0 flips, `len=0`, `vyaw` tracks the aim; T2 `hit=206 len=188`;
 T4 `hit=186 len=168`; 62 s walk route 0 events, fps 273; exit 0.
 Exit criterion: stable render-entity hit set (P4), then re-allow crossing.
+
+### 2026-09-29 C1c - edge/teleport fixes (from the 204545 log review)
+
+Reproduced with `RC_CAM_OBSTDBG=1` at T1 + yaw sweep: the degenerate near hits
+come from the **raw scene backend** at the offset probe origins
+(`probe1 ... bake=-1 terr=-1 scene=0.1`, `probe3 ... scene=2.3`), i.e. the D4
+no-self-filter backend returning exit/grazing faces within 3 u of the origin.
+Those won the min and moved the camera 10+ u in one frame (hit 11 -> hit 1 ->
+len -17 in 204545).
+
+Landed:
+1. `RC_CAM_HITMIN` (default 3.0 u, 0 disables): probe hits closer than the
+   threshold to the probe origin are ignored (registered B9). Sweep result: 21
+   degenerate hits ignored, winning hits real (`bake=11`, `bake=70`), camLen
+   steps 0.0 -> 20.5, 0 shake events.
+2. `RC_CAM_WALLGATE` (default 0): B5 final-camera gate off by default
+   (registered B10) - it was another jump source at edges.
+3. B8 crossing guard + offset SmoothTime (previous cycles) remain.
+
+Acceptance: T2 `hit=206 len=188`; T4 `hit=186 len=168`; T1 `hit=11 len=0` (no
+crossing/flip); 62 s walk route 0 shake events @252 fps; smoke ALL PASS.
+Exit: real FilterCamera/self-filter + footprint basis (P2/P4) then remove
+B8/B9/B10.
+
+### 2026-09-29 C1d - user-spot shake, root causes and shipped fix
+
+User report: at (18755,657,24539), camera shaking at some angles after a while.
+
+Measured with `RC_CAM_OBSTDBG=1 RC_CAM_SHAKEDBG=1` (jumpdbg = frame-to-frame
+resolved-length jumps > 5 u):
+1. Raw min-hit flicker from the idle head motion across bake triangle edges:
+   probe3 bake 52 <-> 3 u -> pull 34 <-> 0 several times per second
+   (dive/crawl cycle, 9-35 raw jumps per run).
+2. Scene backend self-hits: the raw scene ray hit the player's own model 57 u
+   behind the head -> pull 39 (unfiltered backend, D4).
+3. Structure gate: T2's wall (inst 262) is flag=0, which the game handles by
+   fading; the gate made the camera ignore a visible wall.
+
+Shipped (all registered):
+- hit stabilization B11 (min over 0.25 s, `RC_CAM_HITWINDOW`);
+- scene near-hit floor B12 (80 u, `RC_CAM_SCENEMIN`), scene backend restored
+  default-on;
+- flag=0 structures block again B13 (gate only drops flag=0 foliage);
+- resolved-offset smoothing (plan step 3): the post-pull offset follows the
+  same per-axis dead-zone + SmoothTime (60 ms) as the orbit, so single-frame
+  hit changes slide instead of teleport; dt clamped to 50 ms so streaming
+  hitches cannot snap it.
+
+Acceptance (shipped `reborn_camfp.exe`, fingerprint camFP=True):
+- USERSPOT idle 14 s: 0 jumps, 0 shake, stable pull 155 (hit=173);
+- T1 cavity: hit=11, len=0, 0 jumps;
+- T2 wall (demo sweep): hit=287, len=189, 0 shake (raw follows smooth);
+- T4 deadwood: hit=186, len=168, 0 jumps;
+- 42 s demo route: 0 jumps, 0 shake, 0 aim mismatches @278 fps;
+- camera_smoke ALL PASS (stabilizer kept out of the class contract).
+
+### 2026-09-29 Step 1 - penetration recorder shipped (RC_CAM_PENDBG=1)
+
+Implemented per the catch-classify plan (diagnostics only, default off):
+- probe context ring: the last ~150 frames of per-probe hits
+  (`p<n> off=(..) bake=<h>(i=<inst>,t=<tri>,blk=<cflags>,fol=<fromFoliage>) terr=.. scene=.. h=..`);
+- per frame after Render: reverse cast actual camera (scene.GetCameraPos) ->
+  placement anchor with four casts: bake gated, bake ungated, RayTerrain,
+  RayScene; event = a hit strictly between the two (end margin 2 u, scene body
+  margin 40 u for the player's own model);
+- event line: map, player, yaw/pitch, actual vs intended camera, anchor, dcam,
+  resolved len/hit/src, gated/ungated inst/tri/cflags/foliage, terrain, scene,
+  rayPost, sceneLevel (hr,hit) + the ring dump; rate limit 1 event / 500 ms,
+  `pendbg summary events=N` every 10 s.
+
+Controls (test exe, T-spots):
+- POSITIVE T2 with `RC_CAM_HITMIN=999` (pull disabled): 23 events / 2477
+  event-frames, attribution `gated=381(i=656,t=664,blk=1,fol=0) ungated=381
+  scene=384` - a real wall, flag=1, missed because the pull was off.
+- NEGATIVE T2 default: 0 events, dcam=188 (camera in front of the wall),
+  fps 247-296 with the recorder on.
+- Note: T1's pull comes from a CORNER probe (bake 11.4 at off=(-22,0,0)); the
+  center camera->anchor line is clear, so T1 is not a center-line penetration
+  spot (the F9 shot agrees: wall on the near side).
+- Recorder reverse casts use frontFacesOnly=false: the forward probe sees the
+  front face, the reverse cast meets its back - front-only skipped every wall.

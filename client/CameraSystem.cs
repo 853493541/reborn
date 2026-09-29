@@ -609,8 +609,33 @@ public sealed class CameraObstruction
     public double ReleaseThreshold = 100.0; // obstructed-side release hysteresis
     public double Flex = 1.5;
     public double Damp = 2.828;
+    // host hit stabilization (registered B11, default 0.25 s; 0 disables):
+    // the min-hit over a short past window is used. It can only hold the
+    // camera at the closest contact longer (never ignore a wall), which kills
+    // the dive/crawl oscillation when the raw min flickers at triangle edges
+    // (T3 idle: probe3 bake 52 <-> 3 -> pull 34 <-> 0 several times per
+    // second). Exit: stable render-entity hit set + footprint basis (P2/P4).
+    public double HitWindow = 0.25;
 
     double _vel;
+    readonly System.Collections.Generic.List<double[]> _hits = new System.Collections.Generic.List<double[]>();
+    double _clock;
+
+    // Called by the host BEFORE Update (the smoke tests exercise Update with
+    // the raw native rule, so the filter must stay out of the class contract).
+    public double Stabilize(double dt, double hitDistance)
+    {
+        _clock += dt;
+        if (HitWindow <= 0.0) return hitDistance;
+        double now = _clock;
+        if (hitDistance > 0.0) _hits.Add(new[] { now, hitDistance });
+        while (_hits.Count > 0 && now - _hits[0][0] > HitWindow) _hits.RemoveAt(0);
+        if (_hits.Count == 0) return -1.0;
+        double min = _hits[0][1];
+        for (int i = 1; i < _hits.Count; i++)
+            if (_hits[i][1] < min) min = _hits[i][1];
+        return min;
+    }
 
     public double Update(double dt, double desired, double hitDistance)
     {

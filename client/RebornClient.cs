@@ -120,13 +120,13 @@ internal static class RebornClient
             }
             catch { }
             Log(string.Format(
-                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13})",
+                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17})",
                 exeName, exeMtime, git, dirty,
                 Env("RC_CAM_ENGINESET", "1"), Env("RC_CAM_LOOKPACK", "0"),
                 Env("RC_CAM_RATECAP", "0"), Env("RC_CAM_LOADPACE", "1"),
                 Env("RC_FULLLOAD", "0"), Env("RC_PATCH_D6", "0"),
                 Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
-                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0")));
+                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80")));
         }
         Log("start map=" + mapPath);
 
@@ -426,6 +426,7 @@ internal static class RebornClient
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
         CameraObstruction camObst = new CameraObstruction();
+        double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")), out camObst.HitWindow);
         CameraShake camShake = new CameraShake();
         // near-plane ladder knob: clearance used by the obstruction response
         double clearanceOverride;
@@ -444,6 +445,15 @@ internal static class RebornClient
         // at wall edges and adds a jump of its own; the pull + crossing guard
         // already keep the camera on the near side). RC_CAM_WALLGATE=1 restores.
         bool wallGate = Env("RC_CAM_WALLGATE", "0") == "1";
+        // raw scene backend in the camera probes (game mask 0x301 includes it).
+        // D1/D4: unfiltered - it hits the player's own model (57 u at the user
+        // spot -> camera slammed to 39) and exit/grazing faces near the origin.
+        // Near walls are the bake's job (the bake is map geometry, no self);
+        // scene hits closer than RC_CAM_SCENEMIN (default 80 u) are dropped.
+        // RC_CAM_SCENERAY=0 removes the backend entirely.
+        bool sceneRayCam = Env("RC_CAM_SCENERAY", "1") == "1";
+        float sceneMin = 80f;
+        float.TryParse(Env("RC_CAM_SCENEMIN", "80"), out sceneMin);
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
@@ -647,6 +657,8 @@ internal static class RebornClient
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
+        bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
+        int zoomSeqStep = -1;
         bool nineRay = Env("RC_CAM_9RAY", "0") == "1";      // alternate 9-ray probe set
         string camMode = Env("RC_CAM_MODE", "");            // force a camera mode row
         bool demoTeleport = Env("RC_COL_TELEPORT", "0") == "1";
@@ -919,14 +931,32 @@ internal static class RebornClient
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
         double[] camOffSmooth = new double[3];
         bool camOffInit = false;
+        double[] rSm = new double[3];
+        bool rSmInit = false;
         bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
         int shakePrevSign = 0;
         long shakeLastLog = 0;
+        double shakePrevLen = 0.0;
+        double shakePrevSm = 0.0;
+        bool shakeHavePrev = false;
         var shakeFlips = new System.Collections.Generic.List<long>();
         bool orbitApplied = false;
         float dbgIntX = 0f, dbgIntY = 0f, dbgIntZ = 0f;
+        // penetration recorder (RC_CAM_PENDBG=1, diagnostics only): reverse
+        // cast camera -> anchor every frame with all three backends and log an
+        // attributed event when drawn geometry sits between them; keep the
+        // last ~150 frames of per-probe hits as the event's context.
+        bool penDbg = Env("RC_CAM_PENDBG", "0") == "1";
+        string penMapName = "";
+        try { penMapName = System.IO.Path.GetFileNameWithoutExtension(mapPath); } catch { }
+        var penRing = new System.Collections.Generic.List<string>();
+        var penCur = new System.Text.StringBuilder();
+        long penLastLog = 0, penLastSummary = 0;
+        int penEvents = 0;
+        double penLastDcam = 0; float penLastG1 = -1, penLastG2 = -1, penLastT1 = -1, penLastS1 = -1;
         bool dbgIntSet = false;
         double dbgHit = -1.0, dbgLen = 0.0, dbgEffDist = 0.0;
+        string dbgSrc = "";
         bool dbgObst = false;
         long lastObstLog = 0;
         long lastYawSync = 0;
@@ -1379,6 +1409,21 @@ internal static class RebornClient
                 }
             }
 
+            if (camZoomSeq)
+            {
+                // test input only (no camera behavior): wheel steps out x3 then
+                // in x3 at 1 s intervals after the rotation/pitch demo
+                if (now >= 13000 && now < 19000)
+                {
+                    int step = (int)((now - 13000) / 1000);
+                    if (step != zoomSeqStep)
+                    {
+                        zoomSeqStep = step;
+                        camSys.ZoomBy(step < 3 ? 1.0 : -1.0);
+                    }
+                }
+            }
+
             if (teleportToStructure)
             {
                 teleportToStructure = false;
@@ -1808,11 +1853,14 @@ internal static class RebornClient
                         // front faces only
                         float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, false, true, true);
                         float bh = h;
+                        int bInst = col.LastInst, bTri = col.LastTri;
+                        bool bBlk = col.LastBlocksCamera, bFol = col.LastFromFoliage;
                         // engine rays: the game's camera mask 0x301 covers terrain
                         // and scene entities, which the baked set cannot fully cover
                         float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);
                         if (th > 0f && (h <= 0f || th < h)) h = th;
-                        float sh = engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2);
+                        float sh = sceneRayCam ? engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2) : -1f;
+                        if (sh > 0f && sh < sceneMin) sh = -1f;   // self/exit faces (B12)
                         if (sh > 0f && (h <= 0f || sh < h)) h = sh;
                         // degenerate-hit guard (registered, RC_CAM_HITMIN=0
                         // disables): a hit a few units from the probe origin is
@@ -1837,6 +1885,9 @@ internal static class RebornClient
                         if (obstDbg && h > 0f && h < 700f && now - lastObstLog >= 500)
                             Log(string.Format("obstdbg probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F1}(inst={8},tri={9}) terr={5:F1} scene={6:F1} h={7:F1}",
                                 p, ox2, oy2, oz2, bh, th, sh, h, col.LastInst, col.LastTri));
+                        if (penDbg)
+                            penCur.Append(string.Format(" p{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F0}(i={5},t={6},blk={7},fol={8}) terr={9:F0} scene={10:F0} h={11:F0}",
+                                p, ox2, oy2, oz2, bh, bInst, bTri, bBlk ? 1 : 0, bFol ? 1 : 0, th, sh, h));
                     }
                 }
                 // engine vertical backend: the game mask's vertical probe.
@@ -1887,14 +1938,56 @@ internal static class RebornClient
                         }
                     }
                 }
+                hitDist = camObst.Stabilize(dt, hitDist);
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
-                dbgEffDist = dist;
+                dbgEffDist = dist; dbgSrc = hitSrc;
+                // resolved-offset smoothing (their plan step 3): the pull result
+                // moves at the same per-axis limited rate as the orbit offset,
+                // so a one-frame hit change (corner-probe graze 123->88, backend
+                // flicker 3/18 u) cannot teleport the camera. Anchor-relative:
+                // player motion and orbit changes still follow immediately.
+                double s0 = camLen / offLen;
+                double[] rWant = { camOff[0] * s0, camOff[1] * s0, camOff[2] * s0 };
+                // clamp the smoothing step clock: a streaming hitch (dt ~ 0.5 s)
+                // would otherwise turn the limited approach into a snap
+                double dtc = Math.Min(dt, 0.05);
+                if (!rSmInit)
+                {
+                    rSm[0] = rWant[0]; rSm[1] = rWant[1]; rSm[2] = rWant[2]; rSmInit = true;
+                }
+                else if (doSmooth)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        double d3 = rWant[i] - rSm[i];
+                        if (Math.Abs(d3) > 1e-6 && Math.Abs(d3) > Math.Abs(d3) * dtc / stime)
+                            rSm[i] += d3 * dtc / stime;
+                        else
+                            rSm[i] = rWant[i];
+                    }
+                }
+                else
+                {
+                    rSm[0] = rWant[0]; rSm[1] = rWant[1]; rSm[2] = rWant[2];
+                }
                 // shake detector (RC_CAM_SHAKEDBG=1): the nausea case is the
                 // signed pull oscillating across the anchor (view flips pi).
                 // Count sign flips in a rolling 2 s window and log bursts.
                 if (shakeDbg)
                 {
+                    // frame-to-frame resolved-length jumps (position teleports):
+                    // raw = the pull value, sm = the smoothed camera the player
+                    // actually sees
+                    double smLen = Math.Sqrt(rSm[0] * rSm[0] + rSm[1] * rSm[1] + rSm[2] * rSm[2]);
+                    if (shakeHavePrev && Math.Abs(camLen - shakePrevLen) > 5.0)
+                    {
+                        // smstep = the camera the player sees moved this much in
+                        // the last frame; acceptance: raw |d| > 5 -> |smstep| <= 2
+                        Log(string.Format("jumpdbg prev={0:F1} now={1:F1} d={2:F1} sm={3:F1} smstep={4:F2} hit={5:F0} src=[{6}] offLen={7:F0}",
+                            shakePrevLen, camLen, camLen - shakePrevLen, smLen, smLen - shakePrevSm, hitDist, hitSrc, offLen));
+                    }
+                    shakePrevLen = camLen; shakePrevSm = smLen; shakeHavePrev = true;
                     int sign = camLen < 0 ? -1 : (camLen > 0 ? 1 : 0);
                     if (shakePrevSign != 0 && sign != 0 && sign != shakePrevSign)
                     {
@@ -1942,10 +2035,9 @@ internal static class RebornClient
                         hitDist, hitSrc, offLen, camLen));
                 }
 
-                double s = camLen / offLen;
-                double camX = ax2 + camOff[0] * s;
-                double camY = ay2 + camOff[1] * s;
-                double camZ = az2 + camOff[2] * s;
+                double camX = ax2 + rSm[0];
+                double camY = ay2 + rSm[1];
+                double camZ = az2 + rSm[2];
                 aimPitchOverride = double.NaN;
                 if (sampler != null)
                 {
@@ -2214,6 +2306,82 @@ internal static class RebornClient
                 Log(string.Format("postdbg intended=({0:F0},{1:F0},{2:F0}) actual=({3:F0},{4:F0},{5:F0}) moved={6:F1} rayPost={7:F0}(hr={8},hit={9}) sceneLevel={10:F0}(hr={11},hit={12})",
                     dbgIntX, dbgIntY, dbgIntZ, abx, aby, abz, pd, rr, engineRay.LastHr, engineRay.LastHit,
                     sl, slHr, slHit));
+            }
+
+            if (penDbg)
+            {
+                // Step 1 penetration recorder (RC_CAM_PENDBG=1, diagnostics
+                // only): reverse cast actual camera -> anchor with all three
+                // backends every frame; an event fires when drawn geometry sits
+                // between them. The last ~150 frames of per-probe hits are the
+                // event context; classification is manual (plan steps 3-4).
+                penRing.Add(string.Format("{0} cam=({1:F0},{2:F0},{3:F0}) anchor=({4:F0},{5:F0},{6:F0}) len={7:F0} hit={8:F0} src=[{9}] obst={10}{11}",
+                    now, preX, preY, preZ, preAX, preAY, preAZ, dbgLen, dbgHit, dbgSrc, dbgObst ? 1 : 0, penCur.ToString()));
+                if (penRing.Count > 150) penRing.RemoveAt(0);
+                penCur.Length = 0;
+                if (preSet && col != null)
+                {
+                    float abx = 0f, aby = 0f, abz = 0f;
+                    try { scene.GetCameraPos(ref abx, ref aby, ref abz); } catch { }
+                    float ax = preAX, ay = preAY, az = preAZ;
+                    double ddx = abx - ax, ddy = aby - ay, ddz = abz - az;
+                    double dcam = Math.Sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
+                    if (dcam > 5.0)
+                    {
+                        // both orientations: a reverse cast meets the face the
+                        // forward probe saw as its front (front-only would skip
+                        // every wall here)
+                        float g1 = col.Raycast(abx, aby, abz, ax, ay, az, false, false, true);
+                        int g1i = col.LastInst, g1t = col.LastTri;
+                        bool g1b = col.LastBlocksCamera, g1f = col.LastFromFoliage;
+                        float g2 = col.Raycast(abx, aby, abz, ax, ay, az, false, false, false);
+                        int g2i = col.LastInst, g2t = col.LastTri;
+                        bool g2b = col.LastBlocksCamera, g2f = col.LastFromFoliage;
+                        float t1 = engineRay.RayTerrain(abx, aby, abz, ax, ay, az);
+                        float s1 = engineRay.RayScene(abx, aby, abz, ax, ay, az);
+                        penLastDcam = dcam; penLastG1 = g1; penLastG2 = g2; penLastT1 = t1; penLastS1 = s1;
+                        // the scene backend hits the player's own model near
+                        // the anchor end; the bake is map geometry only
+                        const double endMargin = 2.0, bodyMargin = 40.0;
+                        bool eG2 = g2 > 0f && g2 < dcam - endMargin;
+                        bool eT = t1 > 0f && t1 < dcam - endMargin;
+                        bool eS = s1 > 0f && s1 < dcam - bodyMargin;
+                        if (eG2 || eT || eS)
+                        {
+                            penEvents++;
+                            if (now - penLastLog >= 500)
+                            {
+                                penLastLog = now;
+                                float rdx = abx - ax, rdy = aby - ay, rdz = abz - az;
+                                float rl = (float)Math.Sqrt(rdx * rdx + rdy * rdy + rdz * rdz);
+                                float rr = -1f, sl = -1f;
+                                int slHr = 0, slHit = 0;
+                                if (rl > 1f)
+                                {
+                                    rr = engineRay.RayTerrain(ax, ay, az,
+                                        ax + rdx / rl * 600f, ay + rdy / rl * 600f, az + rdz / rl * 600f);
+                                    sl = engineRay.RaySceneLevel(ax, ay, az,
+                                        ax + rdx / rl * 600f, ay + rdy / rl * 600f, az + rdz / rl * 600f);
+                                    slHr = engineRay.LastHr; slHit = engineRay.LastHit;
+                                }
+                                Log(string.Format("pendbg event n={0} map={1} player=({2:F0},{3:F0},{4:F0}) yaw={5:F3} pitch={6:F3} camActual=({7:F0},{8:F0},{9:F0}) camIntended=({10:F0},{11:F0},{12:F0}) anchor=({13:F0},{14:F0},{15:F0}) dcam={16:F1} len={17:F1} hit={18:F0} src=[{19}] gated={20:F0}(i={21},t={22},blk={23},fol={24}) ungated={25:F0}(i={26},t={27},blk={28},fol={29}) terr={30:F0} scene={31:F0} rayPost={32:F0} sceneLevel={33:F0}(hr={34},hit={35})",
+                                    penEvents, penMapName, px, py, pz, camSys.Yaw, camSys.Pitch,
+                                    abx, aby, abz, dbgIntX, dbgIntY, dbgIntZ, ax, ay, az, dcam,
+                                    dbgLen, dbgHit, dbgSrc,
+                                    g1, g1i, g1t, g1b ? 1 : 0, g1f ? 1 : 0,
+                                    g2, g2i, g2t, g2b ? 1 : 0, g2f ? 1 : 0,
+                                    t1, s1, rr, sl, slHr, slHit));
+                                for (int i = 0; i < penRing.Count; i++) Log("pendbg ring " + penRing[i]);
+                            }
+                        }
+                    }
+                }
+                if (now - penLastSummary >= 10000)
+                {
+                    penLastSummary = now;
+                    Log(string.Format("pendbg summary events={0} frames={1} lastDcam={2:F1} g1={3:F0} g2={4:F0} t1={5:F0} s1={6:F0}",
+                        penEvents, penRing.Count, penLastDcam, penLastG1, penLastG2, penLastT1, penLastS1));
+                }
             }
 
             if ((nativeCam || engineSetCam) && !camBound && now >= 1500 && CameraShim.Available)

@@ -444,6 +444,10 @@ public sealed class FoliageCollision
     // front surface, so front faces are the faithful set.
     public int LastInst = -1;
     public int LastTri = -1;
+    // penetration recorder support (RC_CAM_PENDBG): which mesh was hit and
+    // whether the camera gate would have skipped it (cflags=0 foliage)
+    public bool LastBlocksCamera = true;
+    public bool LastFromFoliage = false;
 
     public float Raycast(float ax, float ay, float az, float bx, float by, float bz,
                          bool structuresOnly = false, bool frontFacesOnly = false,
@@ -460,13 +464,20 @@ public sealed class FoliageCollision
                          Math.Max(maxX - minX, maxZ - minZ) * 0.5f, _cand);
         float bestT = float.MaxValue;
         int bestInst = -1, bestTri = -1;
+        bool bestBlocks = true, bestFol = false;
         for (int ci = 0; ci < _cand.Count; ci++)
         {
             Instance it = _inst[_cand[ci]];
             if (structuresOnly && it.fromFoliage) continue;
             // game camera query: FilterCamera skips meshes whose
             // bObscatleCamera is 0 (KG3DMesh display block)
-            if (cameraGate && !it.mesh.blocksCamera) continue;
+                // flag=0 structures still block the camera (host deviation,
+                // registered): the game fades bObscatleCamera=0 meshes, the
+                // host has no fade yet, so ignoring them would see through a
+                // visible wall (T2 inst 262 is exactly that case). The gate
+                // therefore only removes flag=0 foliage (rocks/grass cards),
+                // where the bake already carries the real blockers.
+                if (cameraGate && it.fromFoliage && !it.mesh.blocksCamera) continue;
             if (it.maxY < minY || it.minY > maxY) continue;
             if (it.maxX < minX || it.minX > maxX) continue;
             if (it.maxZ < minZ || it.minZ > maxZ) continue;
@@ -508,6 +519,8 @@ public sealed class FoliageCollision
                             bestT = t;
                             bestInst = _cand[ci];
                             bestTri = md.cellTri[k];
+                            bestBlocks = it.mesh.blocksCamera;
+                            bestFol = it.fromFoliage;
                         }
                     }
                 }
@@ -515,6 +528,8 @@ public sealed class FoliageCollision
         }
         LastInst = bestInst;
         LastTri = bestTri;
+        LastBlocksCamera = bestBlocks;
+        LastFromFoliage = bestFol;
         return bestT == float.MaxValue ? -1f : bestT * len;
     }
 
