@@ -51,9 +51,6 @@ proof/netcode/mode_juejing/pak_logic/
 proof/netcode/mode_juejing/cache_maps/
 
 
-# Built map selector (research, kept local)
-engine_host_spike/map_selector.exe
-
 # Raw extracted minimap assets from PakV4 (research scratch)
 proof/minimap/ui/
 proof/minimap/addons/
