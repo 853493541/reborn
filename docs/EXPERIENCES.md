@@ -156,3 +156,20 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved (stutter). Blocking is engine-faithful, not a defect.
 - Re-open: engine camera query cadence / a cheaper native ray path (the 20 Hz
   cap is a provisional host policy).
+
+### 2026-09-29 — movement — Step forgiveness research (no invented threshold)
+- Did: researched the "low objects don't block" feel. Recovered the shipped engine's
+  PhysX capsule-controller defaults from `PhysicsEngineX64.dll` (`PxControllerDesc`
+  ctor RVA `0x18000e910`): `stepOffset=0.5` m, `slopeLimit=0.7071` (45°),
+  `contactOffset=0.1`, in the metric scene (gravity −9.81). PhysX CCT semantics climb
+  obstacles up to the step offset and block above. Found no gameplay step constant in
+  configs/tables/strings; `fPathingHeight` (unit template) is the only height-like key
+  left and has no recovered consumer; movement is server-authoritative and nav data
+  lives outside the client install.
+- Evidence: `proof/collision/disasm/pxcontrollerdesc_ctor.txt`,
+  `docs/movement/JX3_STEP_FORGIVENESS_RESEARCH.md`; G-13 updated.
+- Outcome: partial (engine defaults HIGH; gameplay applicability unproven). No host
+  threshold changed - deciding between the recovered 50 u default, the calibrated
+  70 u rule, and a live-measured value is pending a choice.
+- Re-open: a live observation of a walked-over object's height, or decoder work on
+  `KCharacter::AdjustPosZ` / server nav semantics.

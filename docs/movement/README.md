@@ -9,6 +9,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `JX3_CHARACTER_MOVEMENT_RESEARCH.md` | JX3 character movement & turning — research |
 | `JX3_COLLISION_SYSTEM.md` | JX3 Collision & Physics — Full-System Analysis and Reproduction Reference |
 | `JX3_GRAVITY_RESEARCH.md` | JX3 gravity system — static research notes |
+| `JX3_STEP_FORGIVENESS_RESEARCH.md` | Step forgiveness — recovered engine CCT stepOffset/slope defaults, what is and is not knowable |
 | `REAL_CLIENT_MAP_COLLISION.md` | Real client map collision — recon + working host probe |
 | `REBORN_JUMP_FALL_SPEC.md` | REBORN — JX3 jump & fall reproduction spec |
 | `STRUCTURE_COLLISION_RESEARCH.md` | Structure collision research — how the game handles houses/walls |
