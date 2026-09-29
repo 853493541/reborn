@@ -304,16 +304,20 @@ These were validated against the shipped data while building the WPF renderer:
     `CheckBox_MapPage` frame override hack is gone with the fix
     (`MapWindow6.UITex` group 34/33/87 = frames 39/4/38 = unchecked/checked/
     hover tab art).
-17. **Script-set labels and ids missing from the extracted tables.** The mode
+17. **Script-set labels come from the window's own string table.** The mode
     tab handlers set `Handle_Total/Text_SkillTitle` per mode (lua:4453-4573;
     五人模式 → `STR_DESERTSTORM_TITLE`) and `UpdateOpenTime` sets
     `Text_TIP_DSTime` (lua:4350-4372; `STR_DSOPEN_TIME`/`STR_DSOPEN_WEEKTIME`).
-    Those ids are absent from the extracted PakV4 tables, so
-    `Engine/Strings.cs` aliases them to the equivalent shipped strings that
-    match the live client screenshot: `STR_DESERTSTORM_TITLE` →
-    `STR_BATTLE_SHAMOT` (绝境战场), `STRDES_TIME`/`STR_DSOPEN_TIME` →
-    `STR_AREAN_DSTIP` (每日12:00至次日凌晨1:00开放). The inventory `texts`
-    field replays the Lua's `SetText` calls onto the static render.
+    Those ids live in the window's declared `StringTable=
+    ui\Scheme\Case\string_ArenaCorpsPanel.txt` (NewBattleFieldQueue.ini), which
+    the local extraction lacked — extracting it from PakV4 resolves 绝境战场,
+    每日12:00至次日凌晨1:00开放, 个人评分, 单场奖励, 随机地图, 技能平衡,
+    绝境殊影/排名信息/快捷组队 etc. The app loads it through the committed
+    UTF-8 copy `ui-process-app/Data/text/ui/Scheme/Case/string_ArenaCorpsPanel.txt`
+    (`Engine/Paths.cs` merges `Data/text/ui/Scheme/Case/*.txt` after the local
+    extraction, first id wins). `Engine/Strings.cs` keeps its aliases only as a
+    fallback for snapshots without that table. The inventory `texts` field
+    replays the Lua's `SetText` calls onto the static render.
 18. **Live reference screenshot.** `proof/minimap/screenshots/Screenshot-given-1.png`
     is the live client's 五人模式 idle queue window. Besides the visibility
     rules above it pins: the 4-tab strip (乱武模式 676 dropped by
@@ -398,7 +402,15 @@ These were validated against the shipped data while building the WPF renderer:
     client; the INI's authored `STR_WEIMINGDIAN_GET` renders as
     `本周还可获得<1010>` (inline icon) before the script runs. The inventory
     overrides `Text_FeiShaLingAvailable[_K/_S/_T]` with the formatted sample so
-    the static render matches the reference. The tab badges
-    (`Image_AnniversaryIcon1/2/3`) are left hidden: `UpdateAnniversaryTabIcon`
-    sets their atlas+frame from live activity data (the reference shows 赛季 art,
-    the INI default is 周年).
+    the static render matches the reference; it also overrides the
+    player-data labels `Text_PersonalScore` (1873) and `Text_FeiShaLing`
+    (10000/10000, `UpdatePersonalScore`/`UpdateFeiShaWandNumber` read live role
+    data) with the reference screenshot's values.
+25. **Runtime image swaps are replayed through the inventory `images`.** The tab
+    badges (`Image_AnniversaryIcon1/2/3`) are `LockShowAndHide=1` and
+    `UpdateAnniversaryTabIcon` (lua:6506-6553) sets their atlas+frame from
+    `ActivityBenefitMgr` data; the INI default is frame 21 of
+    `PartnerTeam.UITex` (周年), while the reference screenshot shows the 赛季
+    art (frame 23, verified by dumping the atlas frames). The queue inventory
+    shows the three ids and overrides their frame to 23 (`ApplyImages`), which
+    is what the reference state pins.

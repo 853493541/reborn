@@ -8,8 +8,9 @@ using MapUiApp.Engine;
 namespace UiProcessApp.Engine
 {
     /// <summary>
-    /// Loads the official PakV4 string tables (UTF-8 copies kept in assets/):
-    /// ui/Scheme/Case/string.txt and the settlement table string_PVPAcount.txt.
+    /// Loads the official PakV4 string tables (the per-window `StringTable=` files,
+    /// e.g. ui/Scheme/Case/string_ArenaCorpsPanel.txt for NewBattleFieldQueue, plus
+    /// ui/Scheme/Case/string.txt and the settlement table string_PVPAcount.txt).
     /// </summary>
     public static class Strings
     {
@@ -17,14 +18,13 @@ namespace UiProcessApp.Engine
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Ids the live INIs reference but the extracted PakV4 tables do not carry
-        /// (the live client resolves them from a newer table snapshot). Each alias
-        /// maps to the equivalent id whose shipped text matches the live client —
-        /// e.g. Text_SkillTitle is set to STR_DESERTSTORM_TITLE by the 五人模式 tab
-        /// handler (NewBattleFieldQueue.decompiled.lua:4477-4488) and the live queue
-        /// window shows 绝境战场, which is STR_BATTLE_SHAMOT; Text_TIP_DSTime is set
-        /// to STR_DSOPEN_TIME (lua:4350-4372) and the live window shows
-        /// 每日12:00至次日凌晨1:00开放 = STR_AREAN_DSTIP.
+        /// Fallbacks for ids a table snapshot may not carry: each alias maps to an
+        /// id whose shipped text matches the live client. With the committed
+        /// string_ArenaCorpsPanel.txt loaded these resolve directly and the aliases
+        /// are dead weight kept for older/local extractions — e.g. Text_SkillTitle
+        /// is set to STR_DESERTSTORM_TITLE by the 五人模式 tab handler
+        /// (NewBattleFieldQueue.decompiled.lua:4477-4488) and Text_TIP_DSTime is set
+        /// to STR_DSOPEN_TIME (lua:4350-4372).
         /// </summary>
         private static readonly Dictionary<string, string> Aliases =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)

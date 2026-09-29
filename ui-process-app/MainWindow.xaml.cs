@@ -394,6 +394,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, App.LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, App.ScriptShown(window));
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                 if (plan.Filtered.Sections.Count == 0)
                 {
@@ -622,6 +623,7 @@ namespace UiProcessApp
         public List<TextOverride> Texts { get; set; }
         public List<AdjustSpec> Adjust { get; set; }
         public List<AnchorSpec> Anchors { get; set; }
+        public List<ImageOverride> Images { get; set; }
         public List<ListTemplate> Lists { get; set; }
         public List<string> Evidence { get; set; }
         public List<string> Elements { get; set; }

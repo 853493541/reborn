@@ -166,7 +166,8 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                 LayoutPlanBuilder.ApplyOnly(plan.Filtered, only);
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
-                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
@@ -394,6 +395,7 @@ namespace UiProcessApp
                         LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                         LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                         LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                        LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                         LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                         var build = UiLayout.Build(plan.Filtered, assets, textures);
 
@@ -533,7 +535,8 @@ namespace UiProcessApp
                             LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                             LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
-                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                            LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+                            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                             var build = UiLayout.Build(plan.Filtered, assets, textures);
                             rendered++;
                             report.AppendLine($"OK   {window.Id,-22} sections={plan.Filtered.Sections.Count,-5} " +

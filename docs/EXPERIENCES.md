@@ -102,3 +102,28 @@ solved it, and what is still open. **Newest at the bottom.**
   reorganization.
 - Evidence: merge commit `085daa7`; `origin/main` updated in the same session.
 - Outcome: solved.
+
+### 2026-09-29 — UI — 排队界面 render vs live screenshot (string table + GT state replay)
+- Did: compared `proof/minimap/screenshots/Screenshot-given-1.png` with the
+  `ui-process-app` queue-panel render. Root cause of the missing labels: the
+  window's declared `StringTable=ui\Scheme\Case\string_ArenaCorpsPanel.txt` was
+  absent from the local extraction, so 绝境战场/个人评分/单场奖励/随机地图/
+  技能平衡/bottom-button labels did not resolve (the renderer hides unresolved
+  ids). Extracted the table from PakV4, committed a UTF-8 copy under
+  `ui-process-app/Data/text/ui/Scheme/Case/` and made `Engine/Paths.cs` merge
+  `Data/text/**/Scheme/Case/*.txt` tables (first id wins). Replayed the reference
+  state: `show` the three `Image_AnniversaryIcon1/2/3` badges and override their
+  frame to 23 (赛季; the INI default 21 is 周年) through a new inventory `images`
+  field (`LayoutPlanBuilder.ApplyImages`), plus sample values 个人评分=1873 /
+  飞沙令=10000/10000 via `texts`. Staged the git-ignored local art extraction
+  (`ui-process-app/assets`: Config/Scheme/Font/pak + flat `assets/uitex` from
+  PakV4) since main's checkout lacks it; README documents the layout.
+- Evidence: `UiProcessApp.exe --selftest` 19 rendered / 0 failed; `--audit`
+  queue-panel placeholders=0 unresolved=0 outOfBounds=0; region-RGB + feature
+  fingerprint `proof/ui/evidence/queue_panel_gt_vs_app_fingerprint.txt`
+  (score-yellow GT=97/APP=95, badge-orange GT=445/APP=357) and side-by-side
+  `proof/ui/evidence/queue_panel_gt_vs_app.png`; this commit.
+- Outcome: solved in worktree `reborn-iso-queue-ui-compare` (branch
+  `agent/queue-ui-compare`). Open: `Paths.Locate` still requires an
+  `assets/ui/Config` marker, so a fresh checkout needs the local extraction before
+  windows with uncommitted INIs render (not addressed here).

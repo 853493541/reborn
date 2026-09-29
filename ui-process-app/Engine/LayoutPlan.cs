@@ -76,6 +76,19 @@ namespace UiProcessApp.Engine
     }
 
     /// <summary>
+    /// Runtime image override: the Lua swaps an element's atlas and/or frame after
+    /// load from live data (UpdateAnniversaryTabIcon -> FromUITex(activity icon path,
+    /// frame) for the tab badges). The inventory carries the values matching the
+    /// captured state; a null Image/Frame keeps the authored value.
+    /// </summary>
+    public sealed class ImageOverride
+    {
+        public string Section { get; set; }
+        public string Image { get; set; }
+        public int? Frame { get; set; }
+    }
+
+    /// <summary>
     /// Runtime geometry override: some windows resize/reposition parts of their
     /// layout from the script (MapQueue.UpdateListSize sets the list, background
     /// and 自动进入 checkbox heights/offsets from the row count). The inventory
@@ -290,6 +303,20 @@ namespace UiProcessApp.Engine
                     string.IsNullOrWhiteSpace(text.Text)) continue;
                 if (!filtered.ByName.TryGetValue(text.Section, out var section)) continue;
                 section.Values["$Text"] = text.Text;
+            }
+        }
+
+        /// <summary>Applies the Lua's runtime FromUITex calls (inventory `images`).</summary>
+        public static void ApplyImages(IniFile filtered, IEnumerable<ImageOverride> images)
+        {
+            if (images == null) return;
+            foreach (var image in images)
+            {
+                if (image == null || string.IsNullOrWhiteSpace(image.Section)) continue;
+                if (!filtered.ByName.TryGetValue(image.Section, out var section)) continue;
+                if (!string.IsNullOrWhiteSpace(image.Image)) section.Values["Image"] = image.Image;
+                if (image.Frame.HasValue)
+                    section.Values["Frame"] = image.Frame.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
