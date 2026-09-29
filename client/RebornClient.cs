@@ -113,6 +113,15 @@ internal static class RebornClient
                 if (logLines.Count > 200) logLines.RemoveRange(0, logLines.Count - 200);
             }
         };
+        // short visible tag from the exe name: reborn_client_collision.exe ->
+        // "collision" (canonical reborn_client.exe -> "canonical"); shown in
+        // the window title and the HUD's first line so parallel clients are
+        // distinguishable at a glance
+        string buildTag = Path.GetFileNameWithoutExtension(
+            System.Reflection.Assembly.GetExecutingAssembly().Location);
+        if (buildTag.StartsWith("reborn_client_")) buildTag = buildTag.Substring("reborn_client_".Length);
+        else if (buildTag == "reborn_client") buildTag = "canonical";
+
         // Build fingerprint (camera workstream logs are the camFP=True set):
         // exe name + mtime + build_info git hash + the active camera flag
         // defaults. Ends "which build/flags produced this log" ambiguity.
@@ -146,7 +155,7 @@ internal static class RebornClient
         Log("start map=" + mapPath);
 
         var form = new Form();
-        form.Text = "JX3";
+        form.Text = "JX3 [" + buildTag + "]";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -2747,11 +2756,12 @@ internal static class RebornClient
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | Wx2 hold sprint | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3 [{12}]\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | Wx2 hold sprint | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip));
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    buildTag);
             }
             if (now - lastLog >= 2000)
             {
