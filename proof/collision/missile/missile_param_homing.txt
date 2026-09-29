@@ -1,0 +1,100 @@
+MissileHomingParamID	Desc	BoneNameCaster	BoneNameTarget	InitialVelocity	Acceleration	MaxVelocity	TargetRadius	ConvergenceFactor	HitRemainTime	SFXRemainTime	RandomByBone	MinRandomCount	SetLODDistByHitTarget	LODDist0	LODDist1	LODDist2	Rotation
+0				2	2	80	50	1	0		0	1	0	0	0	0	0
+1	从背面至原点	Bip01 Spine															
+2	从左手中指至躯体中间	Bip01 L Finger12	S_fxmid														
+3	从右手中指至躯体中间	Bip01 R Finger12	S_fxmid														
+4	从原点至原点									1000							
+5	从躯体中间至躯体中间	S_rh	S_fxmid	4	4					1000							
+6	从右手中指至躯体中间速度2倍	Bip01 R Finger12	S_fxmid	4	3												
+7	从右手至躯体中间缓慢的飞出去	Bip01 R Finger12	S_fxmid	1	1												
+8	从右手至躯体中间，加速度减半	Bip01 R Finger12	S_fxmid	4	3					1000							
+9	从头顶至躯体中间	S_fxtop	S_fxmid	2	1												
+10	从右手至躯体中间	S_rh	S_fxmid														
+11	从躯体中间至躯体中间速度1.5倍	S_fxmid	S_fxmid	3	3												
+12	从左手至躯体中间缓慢的飞出去	Bip01 L Finger12	S_fxmid	1	1												
+13	从右手至躯体中间，速度及加速度减半	S_rh	S_fxmid	1	1												
+14	从左手中指至躯体中间快速地飞出	Bip01 L Finger12	S_fxmid	4	4												
+15	从右手中指至躯体中间快速地飞出	Bip01 R Finger12	S_fxmid	4	4												
+16	从躯体中间至躯体中间快速飞出	S_face	S_fxmid	4	4			0.1									
+17	从躯体中间至躯体中间速度1.5倍	CATRigRArm1Palm	S_fxmid	3	3												
+18	从右手中指至躯体中间4倍速	Bip01 R Finger12	S_fxmid	4	3					200							
+19	从右手至躯体中间4倍速	S_rh	S_fxmid	4	3												
+20	从右手中指至躯体中间	Bip01 R Finger12	S_fxmid	5	5												
+21	从左手至脚底	Bip01 L Finger12	Bip01 L Foot	1	1												
+22	从脚底到脚底	Bip01 L Foot	Bip01 L Foot	3	3												
+23	从右手至躯体中间，速度及加速度减半	S_rh	S_fxmid	0.1	3												
+24	从脚底到脚底	Bip01 R Finger12	Bip01 L Foot	4	4												
+25	从左手中指至躯体中间快速地飞出	Bip01 L Finger12	S_fxmid	3	3												
+26	从右手中指至躯体中间快速地飞出	Bip01 R Finger12	S_fxmid	3	3												
+27	炮台开炮	S_fire	S_fxmid	1.5	0												
+28	从左手中指至躯体中间快速地飞出	Bip01 L Finger12	S_fxmid	4	4												
+29	从右手中指至躯体中间快速地飞出	Bip01 R Finger12	S_fxmid	4	3				2000								
+30	从左手中指至躯体中间快速地飞出	Bip01 L Hand	S_fxmid	2	80				800								
+31	从右手中指至躯体中间快速地飞出	Bip01 R Hand	S_fxmid	2	80				800								
+32	从炮口发射飞快的飞向对方身体中间	S_fire	S_fxmid	6	6												
+33	从炮口发射飞快的飞向对方身体并保持2秒	S_fire	S_fxmid	4	4				2000								
+34	明教左手回滚钩子	Bip01 L Hand	S_fxmid	2	10				0								
+35	明教右手回滚钩子	Bip01 L Hand	S_fxmid	2	10				0								
+36	从身体to身体并延时0.1s	S_fxmid	S_fxmid						100								
+38	苍龙戾天子弹	Bip01 R Finger12	Bip01 L Foot	1.5	1.5												
+39	从右手至躯体中间，加速度减半	S_rh	S_fxmid	3	1												
+40	从胸到胸停留1.5秒	S_fxmid	S_fxmid	4	3				1000								
+41	从弩车弓箭到胸口	S_face	S_fxmid	7	20												
+42	从右手中指至躯体中间	Bip01 R Finger12	S_fxmid	2	1												
+43	从右手至躯体中间有速度	Bip01 R Finger12	S_fxmid	3	3												
+44	从右手中指至右手中指快速地飞出	Bip01 R Finger12	Bip01 R Finger12	1	3												
+45	从右手中指至躯体中间缓慢地飞出	Bip01 R Finger12	S_fxmid	1	1												
+46	从右手至躯体中间，加速度减半	Bip01 R Finger12	S_fxmid	2	2												
+47	弩兵	Bip01 L Finger12	S_fxmid														
+48	两仪化形子弹轨迹	Bip01 R Finger12	S_fxmid	5	2					1000							
+49	四象轮回子弹轨迹	Bip01 L Finger12	S_fxmid	3.5	2					1000							
+50	八卦洞天子弹轨迹	Bip01 L Finger12	S_fxmid	3	2					1000							
+51	七星拱瑞子弹轨迹	Bip01 R Finger12	S_fxmid	3	3					1000							
+52	剑飞惊天子弹轨迹	Bip01 R Finger12	S_fxmid	1	15					1000							
+53	万花速度测试	Bip01 L Finger12	S_fxmid	3	2					1500							
+54	剑气长江子弹	Bip01 R Finger12	S_fxmid	2	1					1000							
+55	从左手至躯体中间缓慢的飞出去	Bip01 L Finger12	S_fxmid	2	2					1000							
+56	从右手中指至躯体中间快速地飞出	Bip01 R Finger12	S_fxmid	4	4					700							
+57	凌雪阁左手转移减益到目标身体	Bip01 L Finger12	S_fxmid	2	3												
+58	凌雪阁右手转移减益到目标身体	Bip01 R Finger12	S_fxmid	2	3												
+59	凌雪阁身体转移增益到自身左手	S_fxmid	Bip01 L Finger12	2	3												
+60	凌雪阁身体转移增益到自身右手	S_fxmid	Bip01 R Finger12	2	3												
+61	衍天子弹1	Bip01 R Finger12	S_fxmid	3	2					1000							
+62	衍天子弹2	S_fxmid	s_light	0.1	0.5					1000							
+63	从左手中指至躯体中间及其快速地飞出	Bip01 L Finger12	S_fxmid	5	7				300								
+64	药宗子弹左手至对方躯干有残留	Bip01 L Finger12	S_fxmid	2	2				500								
+65	药宗子弹左手至对方躯干有残留	Bip01 L Finger12	S_fxmid	2	2				0								
+66	技能组预留	Bip01 L Finger12	S_fxmid	2	2												
+67	技能组预留	Bip01 L Finger12	S_fxmid	2	2												
+68	从右手中指至躯体中间	Bip01 R Finger12	S_fxmid	5	5												
+69	飞机左炮筒	S_head		5	1												
+70	飞机右炮筒	S_head		5	1												
+71	炮台开炮	S_fxmid	S_fxmid		2				300								
+72	从左手至躯体中间极其缓慢的飞出去	Bip01 L Finger12	S_fxmid	0.5	0.5												
+73	从左手至躯体中间缓慢的飞出去，有残留	Bip01 L Finger12	S_fxmid	2	2				2000								
+74	达摩洞_投掷零件_右手至多闻天王中间	S_rh	S_fxmid	3	1					500							
+75	衍天打断	S_fire	S_fxmid	3	3												
+76	蓬莱特殊武器_伞子弹			0.02													
+77	龙门飞剑输出子弹	S_rh	S_fxmid	1	2	40											
+78	丢普通雪球	S_rh	S_fxmid	2	4				50								
+79	浪客行技能_竖悬针_黑子弹	S_rh	S_fxmid	3	4				50								
+80	浪客行技能_伏龙游第四段蓄力_紫色龙子弹	S_rh	S_fxmid	1.5	1				500								
+81	从右手至躯体中间，加速度减半	Bip01 R Finger12	S_fxmid	4	4					1000							
+82	从右手至躯体中间，加速度减半	Bip01 R Finger12	S_fxmid	4	4					1000							
+83	从右手至躯体中间，加速度减半	Bip01 R Finger12	S_fxmid	4	4					1000							
+84	万花商阳指	Bip01 R Finger12	S_fxmid	3	2					1500							
+85	天策射箭子弹	S_rh	S_fxmid	4	4					1000							
+86	从躯体中间至右手中指	S_fxmid	Bip01 R Finger12														
+87	从左手中指至躯体中间快速地飞出	Bip01 L Finger12	S_fxmid	4	4				5000		1	2	1	0	0	5000	
+88	唐门_炮台开炮_快	S_fire	S_fxmid	3	0												
+89	段氏指法左手	Bip01 L Finger12	S_fxmid	8	6				200								
+90	段氏指法右手	Bip01 R Finger12	S_fxmid	8	6				200								
+91	洇墨子弹	S_fxtop	S_fxmid	1	1												
+92	段氏劈风慢子弹	Bip01 R Finger12	S_fxmid	1	0					1000							
+93	勾线子弹	Bip01 R Finger12	S_fxmid	4	4				200		0						0
+94	无相楼普攻子弹	S_rh	S_fxmid	2	2				200								
+95	无相楼驻云飞子弹	S_fxtop	S_fxmid	4	4				200								
+96	勾线子弹偏移45	Bip01 R Finger12	S_fxmid	4	4				200		0						45
+97	勾线子弹偏移90	Bip01 R Finger12	S_fxmid	4	4				200		0						90
+98	勾线子弹偏移135	Bip01 R Finger12	S_fxmid	4	4				200		0						135
+99	爱心子弹从右手缓慢飞至躯体并停留0.5秒	Bip01 R Finger12	S_fxmid	1	1				250		0						

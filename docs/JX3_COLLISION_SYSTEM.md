@@ -1570,12 +1570,68 @@ Fields `nBulletVelocity` (points/frame), `nSkillBulletType`, `nSkillBulletSubTyp
 `bBulletDestroyScript` (`JX3ClientX64_exe_net_strings.txt:8448,8486-8487`,
 `sample_item_script.txt:209`, `exe_skillmove_strings.txt:39`).
 
-### 22.2 Open items
+### 22.2 Recovered data model (2026-09-28) [DATA]
 
-Server trajectory simulation, `nSkillBulletType/SubType` enums, and the
-`SkillMissileTable`/`SkillBulletTable` contents are not extracted; `KParabolaMissileProcessor`
-is referenced only in path registries (gap G-29, RE pass P0-2). The REBORN spec marks missiles
-as “different system” from melee hit resolution.
+Extraction root is **`Represent/`** (capital R) via `pss_assets.run_pakv4`; reproducible with
+`tools/netcode/extract_pak_paths.py --list proof/collision/recon/missile_candidates.txt`
+(candidates + phase files). All extracted tables are committed under
+`proof/collision/missile/` and `proof/collision/skill_tables/`.
+
+| Table | Rows | Key fields |
+|---|---|---|
+| `missile.txt` (`MissileTable`) | 413 | `MissileID` → `FightControllerID1..4` (flight), `HitControllerID1..4`, `MissControllerID1..4` |
+| `skill_missile.txt` (`SkillMissileTable`) | 412 | `SklillMissileID` [sic], `Desc`, `MissileID1..10`, `HitModelParamID` |
+| `missile_controller.txt` | 420 | `MissileControllerID`, flags `bTakeChangeVelocity`, `bTakeChargeModel`, `bChain`, `bReverseModel`, `RotationIgnoreY`; refs `ModelParamID`, `HomingParamID`, `ParabolaParamID`, `YAxisParamID`, `TimelineParamID`, `CurveParamID` |
+| `missile_phase_line.txt` | 5 | phase config (below) |
+| `missile_phase_circle.txt` | 2 | " |
+| `missile_phase_fixedtrack.txt` | 3 | " |
+| `missile_phase_lightning.txt` | 3 | " |
+| `missile_param_homing.txt` | 99 | `BoneNameCaster/Target`, `InitialVelocity`, `Acceleration`, `MaxVelocity`, `TargetRadius`, `ConvergenceFactor`, `HitRemainTime`, `SFXRemainTime`, `RandomByBone`, `MinRandomCount`, LOD distances, `Rotation` |
+| `missile_param_parabola.txt` | 68 | caster/target offsets, `GPSType`, `bFaceByTarget`, `bParabolaAutoToTarget`, `bScrew`, `Gravity`, `GravityAngle`, `InitialVelocity`, `Acceleration`, `MaxVelocity`, `AngleFactorType`, horizontal/vertical angle factors |
+| `missile_param_timeline.txt` | 4 | `Millisecond`, `fDistance` |
+| `missile_param_y_axis.txt` | 1 | `Y` |
+| `missile_param_curve.krl.txt` | — | curve definitions (Lua) |
+| `missile_fixed_track_frame.txt` | 14 | `MissilePhaseID` + 25 frames × (X,Y,Z) |
+| `buff_bullet.txt` (`BuffBulletTable`) | 181 (34 cols) | body type, buff slot/id, launch/burst skill ids, bullet model, caster socket, target bone, scale, bind FX, hit FX, and charge/launch/recover/end/burst timings + animation speeds (decoded header: `buff_bullet_header_utf8.txt`) |
+| `skill_bullet.krl.txt` | — | `nSkillBulletType` enum → per-type `{CommonModel, CommonFlyAni, SingleTargetAni (per body type), FlyEndAni, OutTime, Offset, Angle}` (types e.g. `CYShield`, `PureShadow`, `SelfShadow`, `TargetShadow`) |
+| `skill_result.txt` | 686 | `EffectResultID`, `EffectType`, `EffectID`, `Note` — result-effect mapping |
+| `behit_shake.txt` | 3 | `RepresentID`, `OscillationCount`, `MaxOffset`, `Duration`, `OscillationType` (e.g. 2/10/100/0) |
+
+Phase table common columns: `MissilePhaseID`, `Design_Name`, `AnimationSpeed`,
+`ModelScaleBegin/End`, `AnimationType`, `MeshFile`, `MaterialFile`, `AnimationFile`, `SFXFile`,
+`CasterType`, `MovementType`, `SymmetricalType`, `MissileDirection`, `Number`, `ReferenceType`,
+`ZLockType`, `BoneNameCaster`, `BoneNameTarget`, `IsShockWave`.
+
+`missile_phase_model.ini` defines the whole taxonomy:
+
+```
+field types   none, line, circle, homing, fixedtrack, fulmination
+caster types  last, caster, target
+movement      straight, parabola, random
+symmetrical   odd, even
+direction     horizontal, vertical
+reference     axis, centric
+z-lock        terrain, free
+phase files   line / circle / fixedtrack / lightning
+param files   model / homing / parabola / timeline / y_axis / curve / controller
+```
+
+### 22.3 Reproduction meaning
+
+The client projectile system is a **data-driven visual controller**: skill → `skill_missile` →
+`missile` record → controller flags + phase + mover params → animated bullet with per-body-type
+variants and hit FX. **Collision/hit resolution is not client-side**; damage arrives as
+`OnSkillEffectResult`, and bullet notifications (`OnNotifySkillBullet`, `OnSkillRayEffect`,
+`OnSkillChainEffect`) trigger presentation. A faithful client reproduces the controller motion
+(homing/parabola/timeline/fixed-track) and the phase visuals; an inferred server (P0-2
+remaining) simulates the same movers and applies `TargetRadius`/`HitRemainTime` hit windows.
+
+### 22.4 Open items
+
+* tick base for velocity/acceleration fields (`nBulletVelocity` “points/frame” — likely
+  `GAME_FPS=16`, needs capture fitting);
+* `KParabolaMissileProcessor` internals (RE pass P0-2 residual);
+* server-side projectile world collision (`SweepEx`/LOS) unverified.
 
 ---
 
@@ -1660,6 +1716,8 @@ Ordering of multi-target selection (nearest first? target priority?) is not in t
 spawn at caster socket (S_fxmid/S_rh pattern for chains, ability_candidates.json:41)
 velocity = nBulletVelocity points/frame (server tick base unknown; 16 fps?)
 trajectory: direct / parabola (KParabolaMissileProcessor)
+mover params: homing/parabola/timeline/y_axis/curve tables (§22.2)
+hit window: TargetRadius + Hit/SFXRemainTime (homing), target radius/bone (parabola)
 per server tick: integrate, collide vs world (SweepEx/LOS rules) and vs candidate entities
 on hit: server applies result and emits OnNotifySkillBullet / OnSkillRayEffect /
          OnSkillChainEffect; client plays visual only
@@ -1869,6 +1927,7 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/NAVX64_exports.txt` / `_strings.txt` | NAVX64 `PathEngineNavi` API surface (27 exports) |
 | `proof/collision/recon/PathEngine_exports.txt` / `_strings.txt` | PathEngine SDK surface + content-processing strings |
 | `proof/collision/recon/SIMWorldX64_exports.txt` / `_strings.txt` | re-verified SIMWorld export surface |
+| `proof/collision/missile/*` | extracted missile/bullet/phase/controller tables (2026-09-28) + decoded `buff_bullet_header_utf8.txt` |
 | `proof/netcode/loot_protocol` (`disasm/OnSync*`) | doodad/loot packet layouts |
 
 ### 28.2 Disassembly transcript dirs
@@ -1914,7 +1973,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 | ID | Gap | Method |
 |---|---|---|
 | G-1 | character solver/controller field labels (radius, half-height, slope, step, skin) | disassemble SIMWorld solver key consumers + `PhysicsEngineX64` region `0x180018990`; label the `0.01/0.025/0.2/0.04/0.4` params |
-| G-29 | projectile/missile system (tables, types, trajectory, server model) | extract `SkillMissileTable`/`BuffBulletTable`/`SkillBullet`/`MissileFixedTrackFrameTable`; disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor` |
+| G-29 | projectile/missile system — **client data model recovered 2026-09-28** (`proof/collision/missile/`, §22.2); server simulation and tick-base fitting still open | disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor`; fit velocity tick base from captures |
 | G-25 | navmesh format + `QueryPath` + obstacles + `bAutoPathing` — **API recovered 2026-09-28** (`proof/collision/recon/`), data format still open | disassemble `NAVX64!LoadSceneNaviMesh` `0x44D0` / `Init` `0x4060`; find the caller-side path template in `JX3ClientX64.exe`; parse the file magic |
 | G-21 | `KG3DSceneResponse` semantics (walkability/passability flags) | load `KG3DSceneResponseX64.dll`, disassemble `LoadSceneResponseEntities` + per-flag consumers |
 | G-24 | water volumes + `UpdateFluxCollisionHeightMap` | disassemble `_FillMapWaterData`/`KG3D_LoadTerrainWaterData`; find native flux implementation |

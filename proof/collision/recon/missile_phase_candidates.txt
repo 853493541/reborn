@@ -1,0 +1,12 @@
+# Missile phase/param files referenced by Represent/missile/missile_phase_model.ini
+Represent/missile/missile_phase_line.txt
+Represent/missile/missile_phase_circle.txt
+Represent/missile/missile_phase_fixedtrack.txt
+Represent/missile/missile_phase_lightning.txt
+Represent/missile/missile_param_model.txt
+Represent/missile/missile_param_homing.txt
+Represent/missile/missile_param_parabola.txt
+Represent/missile/missile_param_timeline.txt
+Represent/missile/missile_param_y_axis.txt
+Represent/missile/missile_param_curve.krl.txt
+Represent/missile/missile_controller.txt
