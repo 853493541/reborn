@@ -73,3 +73,9 @@ engine_host_spike/collision_data/*structure_collision.bin
 
 # Local merge/ref backup bundle (moved off the Desktop; delete after cleanup merge)
 _backup/
+
+# Local runtime state (AGENTS.md §9: never commit; leave on disk)
+perf_config.ini
+launch_out.txt
+launch_err.txt
+log/
