@@ -199,15 +199,24 @@ internal static class RebornClient
                 Log("another ability_sandbox instance is already running - exiting");
                 return;
             }
-            string[] engineProcs = new string[] { "reborn_client", "spike_host", "map_spike", "reborn_sandbox" };
-            foreach (string pn in engineProcs)
+            string[] enginePrefixes = new string[] { "reborn_", "spike_host", "map_spike", "movieditor", "qseasuneditor", "qmodeleditor" };
+            int me = System.Diagnostics.Process.GetCurrentProcess().Id;
+            foreach (System.Diagnostics.Process pr2 in System.Diagnostics.Process.GetProcesses())
             {
-                var pl = System.Diagnostics.Process.GetProcessesByName(pn);
-                if (pl.Length > 0)
+                string pn;
+                try { pn = pr2.ProcessName.ToLowerInvariant(); } catch { continue; }
+                if (pr2.Id == me) continue;
+                foreach (string pre in enginePrefixes)
                 {
-                    Log("engine client already running: " + pn + " (pid " + pl[0].Id + ") - refusing to start a second engine client");
-                    try { System.Windows.Forms.MessageBox.Show("Another engine client (" + pn + ") is running. Close it first.", "Ability Sandbox"); } catch { }
-                    return;
+                    if (pn.StartsWith(pre) || pn == pre)
+                    {
+                        Log("engine client already running: " + pr2.ProcessName + " (pid " + pr2.Id + ") - refusing to start a second engine client");
+                        if (Env("SB_NOLOCK_UI", "0") != "1")
+                        {
+                            try { System.Windows.Forms.MessageBox.Show("Another engine client (" + pr2.ProcessName + ", pid " + pr2.Id + ") is running. Close it first.", "Ability Sandbox"); } catch { }
+                        }
+                        return;
+                    }
                 }
             }
         }
