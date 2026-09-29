@@ -39,10 +39,46 @@ anything else (including reading or editing files):
 6. When done, report: worktree path, branch name, commit hashes, files touched, and anything
    left uncommitted or blocked.
 
-Shared resources (ports, running engines, `bin64/`, `.venv/`) are exclusive: state which ones
-you use in your first update and never run two agents against the same shared resource.
+Shared resources (ports, `bin64/`, `.venv/`) are exclusive: state which ones you use in your
+first update and never run two agents against the same shared resource. Engine runs are
+namespace-exclusive, not machine-exclusive: concurrent isolated client builds are the
+point (see "Parallel feature work on the client" below).
 
 To change the trigger, edit the keyword in this section; agents follow whatever keyword is here.
+
+### Parallel feature work on the client (isolated builds)
+
+Client features are developed in parallel and merged when the subject is done.
+Different client builds must not affect each other:
+
+1. **One subject = one worktree + branch off `main`** (`#iso` gives the mechanics);
+   merge back only when the subject is complete.
+2. **Unique build name**: feature clients build as `reborn_client_<slug>.exe` via
+   `set RC_CLIENT_EXE=reborn_client_<slug>.exe` before `client\build_client.cmd`
+   (`RC_SMOKE_EXE=camera_smoke_<slug>.exe` for the smoke exe; feature builds skip the
+   smoke build unless it is set). Never overwrite the canonical `reborn_client.exe`
+   while a feature is in flight; the canonical name is restored at merge.
+3. **No shared-state writes**: with `RC_CLIENT_EXE` set the build script skips the
+   shared `bin64` config copies (`camera.json`, `scene_init_param.txt`) and writes
+   `build_info_<exe>.txt` instead of the shared `build_info.txt`. Never write other
+   files into the shared `bin64` root (`client/AGENTS.md`); logs are per-run files in
+   `bin64\reborn_out\`, attributed by the fingerprint + `ns=` lines.
+4. **Concurrent runs are the point - isolation, not exclusion**: 2+ feature clients run
+   at the same time, each with its own engine memory namespace. The client derives it
+   from its exe name (`reborn_client_<slug>.exe` -> `reborn_client_<slug>.memory`; the
+   canonical `reborn_client.exe` keeps `MovieEditor.memory`; `RC_MEM_NS` overrides).
+   The single-instance guard blocks only processes that share the namespace: the
+   canonical build excludes `asset_sandbox`/`ability_picker` (they still hardcode
+   `MovieEditor.memory`), a feature build excludes only a second instance of itself.
+   `RC_ALLOW_MULTI=1` overrides. This follows the proven `ability_sandbox` recipe
+   (own namespace + own runtime dir); the root-isolation attempt broke engine init
+   (commit `d8268d2`), so the engine root stays shared.
+5. **Attribute logs by fingerprint**: every run logs
+   `build=<exe> <mtime> git=<hash> dirty=<n> ...` and the init line records
+   `ns=<memory namespace>`; use both to separate concurrent runs.
+6. **Known shared-write caveat**: all clients share the engine root
+   `C:\SeasunGame\MovieEditor` (ShaderListUpload/dxvk caches) - treat concurrent-run
+   flakiness as a shared-write suspect first, not as a namespace collision.
 
 ## 3. Session start (do this first)
 
@@ -184,8 +220,9 @@ dotnet run --project ui-process-app
   branches `research/<topic>`, `feature/<name>`, `cleanup/<scope>`, `<area>-fix`; small
   focused commits; never commit to `main` unless asked.
 - **Engine ops**: engine init ~24 s, each test run ~2 min — automate with env switches and
-  log/timestamp outputs; kill stale hosts before rebuilds; never run two engine hosts
-  concurrently; commit recon dumps so they are never redone.
+  log/timestamp outputs; kill stale hosts before rebuilds; never run two engine clients in
+  the same memory namespace (concurrent isolated feature builds are allowed — §2);
+  commit recon dumps so they are never redone.
 - **Binaries**: never open game assets/binaries with Read; use `tools/` scanners
   (`gbk_grep.py`, `extract_*`, `scan_*`); prefer indexes (`filepath.ini`, `tani.rt`).
 

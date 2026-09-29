@@ -102,3 +102,19 @@ solved it, and what is still open. **Newest at the bottom.**
   reorganization.
 - Evidence: merge commit `085daa7`; `origin/main` updated in the same session.
 - Outcome: solved.
+
+### 2026-09-29 — client — Parallel feature clients: per-build engine namespace
+- Did: replaced the name-list single-instance guard with namespace-based isolation.
+  Feature builds derive `reborn_client_<slug>.memory` from the exe name (canonical
+  keeps `MovieEditor.memory`; `RC_MEM_NS` overrides); the guard blocks only namespace
+  peers — the canonical build excludes `asset_sandbox`/`ability_picker` (they still
+  hardcode the shared namespace), a feature build excludes only a second instance of
+  itself. `client\build_client.cmd` accepts `RC_CLIENT_EXE`/`RC_SMOKE_EXE` and, for
+  feature builds, skips the shared bin64 config copies and writes
+  `build_info_<exe>.txt`. Rule added: `AGENTS.md` §2 "Parallel feature work on the
+  client (isolated builds)" + `client/AGENTS.md`.
+- Evidence: live 2-client run 12:27 — `reborn_client_alpha.exe` + `reborn_client_beta.exe`
+  concurrently; logs show `ns=reborn_client_alpha.memory` / `ns=reborn_client_beta.memory`,
+  both loaded terrain, no crash; `build exit=0` for all three builds.
+- Outcome: solved. Shared engine-root writes (ShaderListUpload/dxvk) remain the known
+  caveat; root isolation broke init (`d8268d2`).
