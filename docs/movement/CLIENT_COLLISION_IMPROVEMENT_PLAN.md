@@ -166,3 +166,44 @@ All five fixes landed and were verified:
   blocked at z=53288 with 264 blocked events (documented pre-change stop: z≈53278 with
   the old 25 u capsule; client capsule is 17 u), `grounded=True`, exit 0.
 - Proof: `proof/collision/client_holes/cactus_regression_longmen_20260929_135203.log`.
+## 7. Follow-up: "can't walk in the door / lag inside a building" (2026-09-29)
+
+User report (live client): walking into a building is blocked at its closed
+wooden gate; jumping gets in; inside, every step stutters.
+
+**Reproduced from the user's own run log** (`reborn_20260929_141108.log`,
+`reborn_client_colimp.exe`): sprint west, 57 blocked events at
+`(18758,652,24591)`, FPS drops 268 -> 155 -> 130 and stays ~130 while pressed
+against the wall, recovers to ~220 after moving off.
+
+**What blocks.** The only structure there is instance 897 = the visual mesh
+`jz_xb玉门关建筑001_004_hd.mesh` (34,786 triangles; sceneinfo export region
+`002_002.json`, object translation `(17942,554,25056)`). The engine's own rule
+(`JX3_COLLISION_SYSTEM.md` §5.4) collides `.mesh` world objects with their own
+triangles, so a closed gate blocking is **engine-faithful**; the jump entry
+exploits the building mesh not being a solid volume. Blocked contact recorded:
+`blkInst=897 depth=0.6 n=(-1.00,0.00,0.04)`.
+
+**What lags.** `RC_COL_PROF` split at the same spot (per frame):
+`colms=0.19-0.44` (player collision, fine) vs `camms=3.16` broken into
+`bake=0.09` + `nat=1.19` + `vert=1.90` + `samp=0.00` — i.e. the camera
+obstruction block's **native engine rays** (5 probes + 13-sample vertical
+ladder), up to 10.8 ms on stall frames. Open field baseline: `camms=0.15`.
+With the whole camera query disabled the same spot runs 215-223 fps.
+
+**Fix (this branch).** `RebornClient`:
+1. camera obstruction query set capped to **20 Hz** (`RC_CAM_OBSTHZ`, `0` =
+   every frame); placement smoothing/hysteresis still run every frame on the
+   last hit - PROVISIONAL host policy, re-open when the engine camera cadence
+   is recovered;
+2. the host-authored vertical ladder runs only when the horizontal probes found
+   no hit (it alone was ~1.9 ms/frame at the building).
+
+**Verified.** Same run, same spot: FPS 111-131 -> 228-243
+(`reborn_20260929_150433.log`); camera still pulls in correctly at the gate
+(`rc_00_7500ms.png`). `collision_selftest` 9/9 PASS. The collision system
+itself was never the bottleneck (0.2-0.44 ms/frame).
+
+**Open.** The native ray call itself still costs ~1.2-2.4 ms per query; a
+cheaper native query path (or reading the engine camera cadence) would remove
+the 20 Hz cap.

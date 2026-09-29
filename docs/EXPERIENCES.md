@@ -138,3 +138,21 @@ solved it, and what is still open. **Newest at the bottom.**
   bottomless until geometry is baked beneath (no invented floor).
 - Re-open: cave-bake availability; engine A/B for holes beyond region 0,0 once other maps
   with holes are baked.
+
+### 2026-09-29 — client — Building door block + inside stutter (camera rays, not collision)
+- Did: reproduced the user's report from their run log (57 blocked events at
+  (18758,652,24591), FPS 268→130 sustained at the wall). The blocker is the
+  visual mesh `jz_xb玉门关建筑001_004_hd.mesh` (34,786 tris) — closed gates block
+  per the engine's own `.mesh` rule, and the jump entry exploits the mesh not
+  being a solid volume, so both are engine-faithful. The stutter is the camera
+  obstruction block: `RC_COL_PROF` split `colms=0.19-0.44` vs `camms=3.16`
+  (`nat=1.19` + `vert=1.90` native rays; up to 10.8 ms stalls). Fixed with a
+  20 Hz cap on the camera query set (`RC_CAM_OBSTHZ`, 0 = old every-frame) and
+  skipping the host vertical ladder when the horizontal probes hit.
+- Evidence: user log `reborn_20260929_141108.log`; before/after runs
+  `145720` (122 fps) vs `150433` (228-243 fps) at the same spot; camera still
+  pulls at the gate (`rc_00_7500ms.png`); plan doc §7. Commits `6a4d8b3`,
+  `5ff8705`.
+- Outcome: solved (stutter). Blocking is engine-faithful, not a defect.
+- Re-open: engine camera query cadence / a cheaper native ray path (the 20 Hz
+  cap is a provisional host policy).
