@@ -11,6 +11,11 @@
 //   RC_SKILL_MS=8000              skill clip duration before returning to state clip
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
+//   RC_DJUMP=1                    mid-air jump chain (二段跳) on/off
+//   RC_JUMP_SCHOOL=0              settings/JumpParam.tab school row (0..22)
+//   RC_CLIP_DJUMP=<vfs path>      二段跳 clip (default: reuse RC_CLIP_JUMP)
+//   RC_DJUMP_LOG=1                log every press / land / reject (djb lines)
+//   RC_MEM_NS=<name>              engine memory namespace override
 using System;
 using System.IO;
 using System.Threading;
@@ -25,16 +30,30 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
-        // Single-instance guard: concurrent clients share the engine/GPU/D3D
-        // device and destabilize each other (observed: three overlapping runs
-        // 18:19/18:25/18:30 with a BEX64 crash in one). Blocks any known
-        // client process (including the fork's builds) unless RC_ALLOW_MULTI=1.
+        // Isolation (root AGENTS.md §2, parallel feature builds): a feature exe
+        // reborn_client_<slug>.exe gets its own engine memory namespace and only
+        // guards against a second instance of itself; the canonical
+        // reborn_client.exe keeps MovieEditor.memory and excludes the known
+        // shared-namespace apps. RC_MEM_NS overrides the namespace.
+        string selfExe = Path.GetFileNameWithoutExtension(
+            System.Reflection.Assembly.GetExecutingAssembly().Location);
+        string selfSlug = null;
+        if (selfExe.StartsWith("reborn_client_", StringComparison.Ordinal))
+            selfSlug = selfExe.Substring("reborn_client_".Length);
+        string memNs = Env("RC_MEM_NS", "");
+        if (memNs.Length == 0) memNs = selfSlug != null ? selfExe + ".memory" : "MovieEditor.memory";
+        string[] known;
+        if (selfSlug != null) known = new string[] { selfExe };
+        else known = new string[] { "reborn_camfp", "reborn_client", "ability_sandbox", "asset_sandbox", "ability_picker" };
+
+        // Single-instance guard: concurrent clients sharing the engine/GPU/D3D
+        // device and memory namespace destabilize each other (observed: three
+        // overlapping runs 18:19/18:25/18:30 with a BEX64 crash in one).
         if (Env("RC_ALLOW_MULTI", "0") != "1")
         {
             try
             {
                 var me = System.Diagnostics.Process.GetCurrentProcess();
-                string[] known = { "reborn_camfp", "reborn_client", "ability_sandbox", "asset_sandbox" };
                 foreach (string name in known)
                 {
                     foreach (var other in System.Diagnostics.Process.GetProcessesByName(name))
@@ -108,7 +127,10 @@ internal static class RebornClient
             try { exeMtime = File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss"); } catch { }
             try
             {
-                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
+                string dir = Path.GetDirectoryName(exePath);
+                string bi = Path.Combine(dir, "build_info_" + Path.GetFileName(exePath) + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info_" + Path.GetFileNameWithoutExtension(exePath) + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info.txt");
                 if (File.Exists(bi))
                 {
                     foreach (string ln in File.ReadAllLines(bi))
@@ -173,9 +195,9 @@ internal static class RebornClient
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("MovieEditor.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        try { r2 = baselib.InitMemory(memNs); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
-        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
+        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2} ns={3}", r1, r2, r3, memNs));
 
         int err = 1;
         int ok = 0;
@@ -457,9 +479,16 @@ internal static class RebornClient
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
+            // per-workstream config dir for feature builds (bin64\reborn_<slug>)
+            string cfgDir = AppDomain.CurrentDomain.BaseDirectory;
+            if (selfSlug != null)
+            {
+                string slugDir = Path.Combine(cfgDir, "reborn_" + selfSlug);
+                if (Directory.Exists(slugDir)) cfgDir = slugDir;
+            }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "camera.json");
+            string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
@@ -467,7 +496,7 @@ internal static class RebornClient
             }
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
             cameraSettings = CameraSettings.Load(
-                editorRoot, mapPath, AppDomain.CurrentDomain.BaseDirectory, Log);
+                editorRoot, mapPath, cfgDir, Log);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             camSys.Pitch = cameraSettings.InitPitch;
@@ -654,7 +683,7 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         long lastWUp = 0, lastWDown = 0;
-        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
+        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
@@ -914,7 +943,18 @@ internal static class RebornClient
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
-        float pGravity = -2475f, pJumpV = 1350f;
+        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
+        // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
+        // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
+        // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
+        bool djumpEnabled = Env("RC_DJUMP", "1") != "0";
+        int jumpSchool = 0;
+        int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
+        if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
+        string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.tani");
+        bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
+        int jumpCount = 0;
+        float curJumpGravity = -pGravity;
         float pSpeed = 96f, pRun = 320f;
         float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
@@ -1365,6 +1405,8 @@ internal static class RebornClient
                 walkMode = now >= 7000 && now < 12000;   // demo walk phase
                 pA = now >= 14000 && now < 18000;
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
+                // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
+                if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             }
             if (demoCollide)
@@ -1658,29 +1700,57 @@ internal static class RebornClient
                 else if (ground - py <= 70f) py = ground;
             }
 
-            // jump
+            // jump chain (二段跳): press 1 = J0, press 2 (airborne) = J1, ...
+            // up to MaxJumpCount[school]; further presses are rejected
+            // (client gate: jumpCount >= MaxJumpCount, KCharacter::Jump 0x140313B19)
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; }
+                if (grounded) jumpCount = 0;
+                int nextJump = jumpCount + 1;
+                int[] trip = null;
+                if (nextJump <= JumpTable.MaxJumpCount[jumpSchool] &&
+                    nextJump <= JumpTable.Triples[jumpSchool].Length &&
+                    (nextJump == 1 || djumpEnabled))
+                    trip = JumpTable.Triples[jumpSchool][nextJump - 1];
+                if (trip != null)
+                {
+                    jumpCount = nextJump;
+                    vy = trip[1] * 15f;
+                    int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
+                    curJumpGravity = gc * 225f;
+                    grounded = false;
+                    if (djumpLog) Log(string.Format(
+                        "djb press n={0} triple={1},{2},{3} vy={4:F0} g={5:F0} pos={6:F0},{7:F0},{8:F0}",
+                        jumpCount, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                }
+                else if (djumpLog) Log(string.Format(
+                    "djb reject n={0} max={1} grounded={2} enabled={3}",
+                    nextJump, JumpTable.MaxJumpCount[jumpSchool], grounded ? 1 : 0, djumpEnabled ? 1 : 0));
             }
 
-            // gravity
+            // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
             if (!grounded)
             {
-                vy += pGravity * dt;
+                vy -= curJumpGravity * dt;
                 py += vy * dt;
                 if (py <= ground)
                 {
                     py = ground;
+                    float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    if (djumpLog && jumpCount > 0) Log(string.Format(
+                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
+                        jumpCount, px, py, pz, impact));
+                    jumpCount = 0;
                 }
             }
+            else jumpCount = 0;
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
-            else if (!grounded) setClip(vy > 0f ? clipJump : clipFall);
+            else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
@@ -2616,7 +2686,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
