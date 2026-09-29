@@ -396,6 +396,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                 LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 if (plan.Filtered.Sections.Count == 0)
                 {
                     LayoutHost.Child = ShowMessage("All sections are hidden (check the 闅愯棌 list).");
@@ -624,6 +625,7 @@ namespace UiProcessApp
         public List<AdjustSpec> Adjust { get; set; }
         public List<AnchorSpec> Anchors { get; set; }
         public List<ImageOverride> Images { get; set; }
+        public List<AppendSpec> Appends { get; set; }
         public List<ListTemplate> Lists { get; set; }
         public List<string> Evidence { get; set; }
         public List<string> Elements { get; set; }

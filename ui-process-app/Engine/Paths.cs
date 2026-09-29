@@ -95,10 +95,15 @@ namespace UiProcessApp.Engine
                 tables.AddRange(Directory.GetFiles(proofScheme, "*.txt"));
             // Committed UTF-8 text copies (Data/text, see tools/prepare_ui_text.py).
             // They carry the per-window StringTable= files the local extraction lacks
-            // (e.g. string_ArenaCorpsPanel.txt for NewBattleFieldQueue).
+            // (e.g. string_ArenaCorpsPanel.txt for NewBattleFieldQueue) plus the
+            // global `g_tStrings` table pulled from ui/String/string.lua
+            // (tools/ui/extract_lua_string_table.py, e.g. STR_HOTKEY_SURE / MSG_BRACKET).
             var appTextScheme = Path.Combine(AppRoot, "Data", "text", "ui", "Scheme", "Case");
             if (Directory.Exists(appTextScheme))
                 tables.AddRange(Directory.GetFiles(appTextScheme, "*.txt"));
+            var appTextStrings = Path.Combine(AppRoot, "Data", "text", "ui", "String");
+            if (Directory.Exists(appTextStrings))
+                tables.AddRange(Directory.GetFiles(appTextStrings, "*.txt"));
             tables.Add(Path.Combine(PakRoot, "string_PVPAcount.txt"));
             Strings.Load(tables.ToArray());
 

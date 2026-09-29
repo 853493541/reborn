@@ -127,3 +127,28 @@ solved it, and what is still open. **Newest at the bottom.**
   `agent/queue-ui-compare`). Open: `Paths.Locate` still requires an
   `assets/ui/Config` marker, so a fresh checkout needs the local extraction before
   windows with uncommitted INIs render (not addressed here).
+
+### 2026-09-29 — UI — Match-found prompt: generic MessageBox + global g_tStrings
+- Did: the "2. 匹配成功" tree item rendered nothing because the inventory only had
+  the native-MessageBox note (status NATIVE, no INI). Research found the prompt is
+  the engine's generic KGUI `ui/Config/Default/MessageBox/MessageBox.ini`, opened
+  as `MB_entermap` by `ui/script/module.lua`; its strings are NOT in
+  `ui/Scheme/Case/string.txt` but in the global `g_tStrings` lib
+  `ui/String/string.lua` (bound by `ui/module_info.xml`, found via
+  `ui/filepath.txt` `SchemeGlobalStringValuable` + manifest). New tool
+  `tools/ui/extract_lua_string_table.py` decodes the Lua-5.1 `SETTABLE`
+  key/value constants (SETTABLE A B C: B=key, C=value) into the committed TSV
+  `ui-process-app/Data/text/ui/String/string.txt` (8,242 ids: 确定/取消,
+  MSG_BRACKET `<D0>(<D1>)`, STR_SWITCHMAP_GFZ_TIP 你要传送到"<D0>"地图吗？).
+  Renderer gained inventory `appends` (`ApplyAppends`, mirrors
+  `AppendItemFromString`, optional `top` spacer because list items ignore
+  authored offsets) and the window entry `ready-confirm` (hide CheckBox_Msg +
+  Btn_Option3; texts 确定(30)/取消; body at the 龙门绝境 sample).
+- Evidence: `--render ready-confirm` -> `proof/ui/evidence/ready_confirm_render.png`;
+  `--selftest` 20 rendered / 0 failed; `--audit` ready-confirm 1 authored
+  placeholder (`Image_Option1`, empty Image in the INI); queue-panel render
+  byte-identical before/after adding the global table; `MapList.tab` 296 =
+  龙门绝境; this commit.
+- Outcome: solved; strings available for every window now. Lesson: the UI
+  `$Text` table (`Scheme/Case`) and the Lua `g_tStrings` table (`String/*.lua`)
+  are different sources — check `ui/module_info.xml` libs when an id is missing.

@@ -73,12 +73,14 @@ and unresolved string ids are hidden instead of shown raw.
 - `Data/ui_inventory.json` — the stage/window/element/label inventory, generated
   from `docs/netcode/JX3_MODE_UI_INVENTORY.md` (evidence paths included). Window
   entries carry the static state to replay: `texts` (Lua `SetText` / sample
-  values), `images` (Lua `FromUITex` frame swaps), `show` (script-shown
+  values), `images` (Lua `FromUITex` frame swaps), `appends` (Lua
+  `AppendItemFromString` message bodies), `show` (script-shown
   `LockShowAndHide=1` sections), `hide`, `tabs`, `lists`, `anchors`, `adjust`.
 - `Data/text/**` — committed UTF-8 copies of the game text the renderer loads
   (system tables + per-window `StringTable=` files such as
   `string_ArenaCorpsPanel.txt` for NewBattleFieldQueue; see
-  `tools/prepare_ui_text.py`).
+  `tools/prepare_ui_text.py`) plus the global `g_tStrings` table decoded from
+  `ui/String/string.lua` (`tools/ui/extract_lua_string_table.py`).
 - `assets/` — git-ignored local extraction: `ui/Config/**` KGUI layouts,
   `ui/Scheme/Case/**`, `ui/Font/**` shipped fonts, `pak/` settlement INIs and the
   flat `uitex/` atlases pulled from PakV4. Fall back to `proof/minimap/ui` (and

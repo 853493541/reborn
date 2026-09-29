@@ -89,6 +89,24 @@ namespace UiProcessApp.Engine
     }
 
     /// <summary>
+    /// Runtime appended text item: the MessageBox module builds its body with
+    /// `handleMsg:AppendItemFromString(text, font)` (there is no authored section
+    /// for it), so the static render injects a Text child into the list handle.
+    /// The inventory carries the string for the captured state.
+    /// </summary>
+    public sealed class AppendSpec
+    {
+        public string Container { get; set; }
+        public string Text { get; set; }
+        public int? Font { get; set; }
+        public double? Width { get; set; }
+        public double? Height { get; set; }
+        public double? Top { get; set; }
+        public int? HAlign { get; set; }
+        public int? VAlign { get; set; }
+    }
+
+    /// <summary>
     /// Runtime geometry override: some windows resize/reposition parts of their
     /// layout from the script (MapQueue.UpdateListSize sets the list, background
     /// and 自动进入 checkbox heights/offsets from the row count). The inventory
@@ -317,6 +335,63 @@ namespace UiProcessApp.Engine
                 if (!string.IsNullOrWhiteSpace(image.Image)) section.Values["Image"] = image.Image;
                 if (image.Frame.HasValue)
                     section.Values["Frame"] = image.Frame.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        /// <summary>
+        /// Mirrors AppendItemFromString: injects a Text child into a list handle.
+        /// The injected item flows through the normal HandleType 3/6 layout (and is
+        /// sized by its measured text), so the MessageBox body renders where the
+        /// script would put it. A `Top` offset wraps the text in a spacer box because
+        /// list items ignore authored offsets (Wnd_Msg authors FlexMarginTop=20).
+        /// </summary>
+        public static void ApplyAppends(IniFile filtered, IEnumerable<AppendSpec> appends)
+        {
+            if (appends == null) return;
+            int index = 0;
+            foreach (var append in appends)
+            {
+                index++;
+                if (append == null || string.IsNullOrWhiteSpace(append.Container) ||
+                    string.IsNullOrWhiteSpace(append.Text)) continue;
+                if (!filtered.ByName.TryGetValue(append.Container, out var container)) continue;
+
+                var name = $"__append_{append.Container}_{index}";
+                if (filtered.ByName.ContainsKey(name)) continue;
+                var width = append.Width ?? container.GetInt("Width");
+                var height = append.Height ?? 20;
+                var top = append.Top ?? 0;
+                var parent = append.Container;
+                if (top > 0)
+                {
+                    var box = new IniSection { Name = name + "_box" };
+                    box.Values["._WndType"] = "WndWindow";
+                    box.Values["._Parent"] = append.Container;
+                    if (width > 0)
+                        box.Values["Width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    box.Values["Height"] = (height + top).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    filtered.Sections.Add(box);
+                    filtered.ByName[box.Name] = box;
+                    parent = box.Name;
+                }
+
+                var section = new IniSection { Name = name };
+                section.Values["._WndType"] = "Text";
+                section.Values["._Parent"] = parent;
+                section.Values["$Text"] = append.Text;
+                section.Values["FontScheme"] = (append.Font ?? 18)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["Left"] = "0";
+                section.Values["Top"] = top.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (width > 0)
+                    section.Values["Width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["Height"] = height.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["HAlign"] = (append.HAlign ?? 1)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["VAlign"] = (append.VAlign ?? 1)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                filtered.Sections.Add(section);
+                filtered.ByName[name] = section;
             }
         }
 

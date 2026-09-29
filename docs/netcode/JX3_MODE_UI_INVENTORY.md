@@ -63,9 +63,23 @@ updates via `OnQueuePosUpdate` / `OnSyncMapQueueInfo`.
 
 - **PROVEN (flow):** queue pop → confirm dialog, or silent entry when 自动进入 is
   checked → `DoComfirmEnterQueueMap` (C→S 0x116) (`JX3_MODE_UI_FLOW.md` §3).
-- **PARTIAL:** `STR_PVP_Ready` = 准备好了 exists in the official string table but **no
-  extracted window/lua consumes it** — likely the ready/accept prompt lives in a
-  not-yet-extracted panel or is native. Hunt target.
+- **PROVEN (renderer):** the prompt is the engine's generic KGUI MessageBox
+  (`ui/Config/Default/MessageBox/MessageBox.ini`, 35 sections), opened as
+  `MB_entermap` by the shell `ui/script/module.lua` `ComfirmEnterQueuedMap`:
+  body `FormatString(STR_SWITCHMAP_GFZ_TIP, map)` = 你要传送到"<map>"地图吗？,
+  option 1 `STR_HOTKEY_SURE` (确定) with `nCountDownTime=30` through
+  `MSG_BRACKET` `<D0>(<D1>)` = 确定(30), option 2 `STR_HOTKEY_CANCEL` (取消);
+  the script appends the body to `Handle_Message` (`AppendItemFromString`,
+  font 18), fills `Text_Option1/2`, hides `CheckBox_Msg` (no `tCheckBoxConfig`)
+  and `fnAutoClose` fires when the 30 s run out. The strings live in the global
+  `g_tStrings` lib `ui/String/string.lua` (bound by `ui/module_info.xml`, not in
+  `ui/Scheme/Case/string.txt`); `tools/ui/extract_lua_string_table.py` decodes
+  its Lua-5.1 `SETTABLE` constants into the committed TSV
+  `ui-process-app/Data/text/ui/String/string.txt` (8,242 ids). The viewer
+  renders the 龙门绝境 sample (MapList 296/297) at the first countdown frame:
+  `ui-process-app` `ready-confirm` (inventory `appends` + `texts`); render
+  `proof/ui/evidence/ready_confirm_render.png` (2026-09-29).
+- `STR_PVP_Ready` = 准备好了 is a separate label (no extracted consumer);
 - `STR_SETTING244` = 无需倒计时直接进入 (skip countdown and enter) — a user option
   that affects this transition.
 
@@ -126,7 +140,9 @@ for 296/297/410/512/532/645/709 (`proof/netcode/mode_ui/loading/*`, `JX3_MODE_UI
    144-file dictionary corpus; not in `JX3UIX64.dll` string scan; no extracted Lua
    references `STR_TIMEDESERT`/`STR_LEFTPEELE`. Candidates: a PakV4 `ui/Config/...` Lua
    panel whose path was never extracted, or a native/Compose window.
-2. **Ready prompt** (`STR_PVP_Ready`).
+2. **Ready prompt** — solved: the queue pop uses the generic MessageBox
+   (`MB_entermap`, §3); `STR_PVP_Ready` (准备好了) is a distinct label with no
+   extracted consumer yet.
 3. **Observer/spectate UI** (BR-specific or arena-only).
 4. **Death/revive overlay** for the BR mode.
 5. **Airdrop / kill-feed specifics** (`KMapMark` types exist; the labels are not located).

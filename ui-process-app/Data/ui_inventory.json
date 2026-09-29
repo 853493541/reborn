@@ -114,26 +114,41 @@
       "summary": "匹配成功后弹出确认（勾选自动进入则直接进入），确认即发送 C→S 0x116。",
       "windows": [
         {
-          "id": "ready-prompt",
-          "title": "Ready prompt (native MessageBox)",
-          "cn": "准备/接受提示",
-          "status": "NATIVE",
-          "root": null,
-          "path": null,
-          "summary": "Confirmed native: the compiled ui/script/module.lua opens the generic MessageBox for ComfirmEnterQueuedMap (STR_SWITCHMAP_GFZ_TIP body, STR_HOTKEY_SURE / STR_HOTKEY_CANCEL options, nCountDownTime auto-confirm). There is no KGUI INI for this prompt.",
+          "id": "ready-confirm",
+          "title": "MessageBox (MB_entermap)",
+          "cn": "匹配成功确认框",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MessageBox/MessageBox.ini",
+          "hide": "CheckBox_Msg,Btn_Option3",
+          "appends": [
+            { "container": "Handle_Message", "text": "你要传送到\"龙门绝境\"地图吗？", "font": 18, "top": 20 }
+          ],
+          "texts": [
+            { "section": "Text_Option1", "text": "确定(30)" },
+            { "section": "Text_Option2", "text": "取消" }
+          ],
+          "summary": "The queue match-found prompt is the engine's generic KGUI MessageBox (ui/Config/Default/MessageBox/MessageBox.ini), opened as MB_entermap by the compiled ui/script/module.lua ComfirmEnterQueuedMap handler. Body = FormatString(STR_SWITCHMAP_GFZ_TIP, map) = 你要传送到\"<map>\"地图吗？; option 1 = STR_HOTKEY_SURE (确定) with nCountDownTime=30 rendered through MSG_BRACKET <D0>(<D1>) = 确定(30); option 2 = STR_HOTKEY_CANCEL (取消). The script appends the body to Handle_Message (AppendItemFromString, font 18), fills Text_Option1/2, hides the 不再提示 checkbox (no tCheckBoxConfig), and fnAutoClose auto-confirms when the 30 s run out. The static render replays the 龙门绝境 sample (maps 296/297, MapList.tab) at the first countdown frame; the ids come from the global g_tStrings lib ui/String/string.lua (extracted by tools/ui/extract_lua_string_table.py).",
           "evidence": [
+            "ui/Config/Default/MessageBox/MessageBox.ini",
+            "ui/String/string.lua (g_tStrings: STR_SWITCHMAP_GFZ_TIP, STR_HOTKEY_SURE/CANCEL, MSG_BRACKET)",
             "proof/netcode/ui_scripts/b02/out/ui/script/module.lua (ComfirmEnterQueuedMap/MessageBox)",
+            "proof/ui/evidence/decompiled/MessageBox.decompiled.lua (AppendItemFromString font 18, checkbox hide, countdown)",
+            "proof/minimap/client_settings/MapList.tab (296/297 = 龙门绝境)",
             "docs/netcode/JX3_MODE_LOAD_FLOW.md 2",
             "proof/netcode/c2s_protocol_catalog.tsv (0x116 DoComfirmEnterQueueMap)"
           ],
           "elements": [
-            "Confirm dialog (or silent entry with 自动进入)",
-            "C→S 0x116 DoComfirmEnterQueueMap",
-            "Skip-countdown option"
+            "Body text (Handle_Message appended item, font 18)",
+            "Btn_Option1 确定(30) — countdown auto-confirm",
+            "Btn_Option2 取消",
+            "Btn_Close",
+            "C→S 0x116 DoComfirmEnterQueueMap on confirm"
           ],
           "labels": [
-            "STR_PVP_Ready",
-            "STR_SETTING244"
+            "STR_SWITCHMAP_GFZ_TIP",
+            "STR_HOTKEY_SURE",
+            "STR_HOTKEY_CANCEL"
           ]
         }
       ]

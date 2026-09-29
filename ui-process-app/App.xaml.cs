@@ -168,6 +168,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                 LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
@@ -397,6 +398,7 @@ namespace UiProcessApp
                         LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                         LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                         LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                        LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                         var build = UiLayout.Build(plan.Filtered, assets, textures);
 
                         double width = plan.Filtered.Sections[0].GetInt("Width");
@@ -537,6 +539,7 @@ namespace UiProcessApp
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                             LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                             LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                             var build = UiLayout.Build(plan.Filtered, assets, textures);
                             rendered++;
                             report.AppendLine($"OK   {window.Id,-22} sections={plan.Filtered.Sections.Count,-5} " +
