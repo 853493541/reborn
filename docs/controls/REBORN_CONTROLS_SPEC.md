@@ -18,7 +18,7 @@ camera, combat and UI customization.
 3. **Server authority:** the client sends intents (move/cast), predicts
    animation/UI only; no local damage/buff state.
 4. **One state, one owner:** the camera/aim state has a single writer (the
-   per-frame aim sync pattern proven in `docs/CAMERA_DRAG_MODEL.md`).
+   per-frame aim sync pattern proven in `docs/camera/DRAG_MODEL.md`).
 5. Every behaviour is testable without the engine where possible (pure model +
    smoke tests), with the engine host as the integration layer.
 
@@ -35,7 +35,7 @@ camera, combat and UI customization.
 | `Targeting` | current target, Tab/Ctrl+Tab cycle, F1–F5, click/mouseover, filters | client-side target state |
 | `CastController` | cast intent (skill, target, aim), directional cast (`Alt+WASD`), cast/channel bar, interrupt on move, GCD display | skill input + predict |
 | `ControlSettings` | read `custom.dat` (`tCameraStatic`, runtime view), `config.ini` (`CammeraAngle`, `[UIVideoSetting]`) | camera/video panels |
-| `CameraControl` | existing `CameraSystem` + aim loop + obstruction (see `docs/CAMERA_FIX_SUGGESTIONS.md`) | camera controller |
+| `CameraControl` | existing `CameraSystem` + aim loop + obstruction (see `docs/camera/FIX_SUGGESTIONS.md`) | camera controller |
 
 The camera work continues in `CameraSystem`/`RebornClient`; the input/combat
 work is new. All intents should funnel through plain structs so M2 netcode can
@@ -70,14 +70,14 @@ ActionBar    = id, page, slots[16] -> {kind: skill|item|macro, id}
 - Route movement through `CommandRegistry`; add turn keys, autorun, walk/run
   toggle, sit/mount/sheath, click-to-move, follow/interact; turn-rate model
   (facing interpolation + >112.5° penalty); port the integer jump/gravity model
-  (`docs/REBORN_JUMP_FALL_SPEC.md`) and later the 轻功 chain.
+  (`docs/movement/REBORN_JUMP_FALL_SPEC.md`) and later the 轻功 chain.
 - Acceptance: real defaults from `default.txt` drive movement; demo script
   reproduces documented speeds; smoke tests for the turn model.
 
 ### Phase C — camera completion
 - Fix S1/S2/S3 (aim re-pin, `EyeScale`, ground-clamp guard), wall obstruction
-  S9, then 广角/FOV + caps (`CAMERA_DISTANCE_FOV_SPEC.md`), then modes/move-pitch.
-- Acceptance: see `CAMERA_CONFORMANCE_CHECKS.md`.
+  S9, then 广角/FOV + caps (`docs/camera/DISTANCE_FOV_SPEC.md`), then modes/move-pitch.
+- Acceptance: see `docs/camera/CONFORMANCE_CHECKS.md`.
 
 ### Phase D — combat controls
 - `Targeting` + `ActionBars` + `CastController`; cast intents to the future

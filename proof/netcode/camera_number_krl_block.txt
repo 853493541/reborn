@@ -1,6 +1,6 @@
 Camera real-value evidence (2026-09-23)
 =======================================
-Companion to docs/CAMERA_REAL_VALUES.md. Raw values only, no interpretation
+Companion to docs/camera/REAL_VALUES.md. Raw values only, no interpretation
 beyond the labels noted inline.
 
 1. Represent/common/number.krl.txt - camera block

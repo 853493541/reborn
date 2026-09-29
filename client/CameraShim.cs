@@ -1,4 +1,4 @@
-// Step C native bridge (docs/CAMERA_HANDOFF.md): loads the version-checked
+// Step C native bridge (docs/camera/HANDOFF.md): loads the version-checked
 // camera_shim.dll and runs its self-test. The shim holds only ABI glue into
 // the host engine (near plane, absolute camera Y/look-at, FilterCamera ray);
 // if it is missing or the engine build does not match, the client keeps the

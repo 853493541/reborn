@@ -1,7 +1,7 @@
 # JX3 movement controls
 
-**Evidence:** `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md`,
-`docs/REBORN_JUMP_FALL_SPEC.md`,
+**Evidence:** `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md`,
+`docs/movement/REBORN_JUMP_FALL_SPEC.md`,
 `proof/movement/extracted/ui_hotkey_default.txt`.
 
 ---
@@ -70,7 +70,7 @@ Movement replication: `DoMoveCtrl` (C→S type 7, 49 B) and `DoSyncDirection`
   `JumpFrameParam.tab` (`TotalFrame` + 128 records)
 - clamps: XY 0..127, Z −2048..2047, gravity 0..31; `vxy_fixed = vxy << 4`
 - landing: roll if height diff > 500 u; water variants; fall death server-side
-- full model and animation mapping: `docs/REBORN_JUMP_FALL_SPEC.md`
+- full model and animation mapping: `docs/movement/REBORN_JUMP_FALL_SPEC.md`
 
 ## 5. Display side (facing/animation)
 

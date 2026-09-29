@@ -1,7 +1,7 @@
 # JX3 UI customization — how much the user can change
 
-**Evidence:** `docs/MAP_MINIMAP_RESEARCH.md` §2b,
-`docs/CAMERA_CONFIG_FILES.md` §7, `docs/CAMERA_REAL_VALUES.md` §2,
+**Evidence:** `docs/ui/MAP_MINIMAP_RESEARCH.md` §2b,
+`docs/camera/CONFIG_FILES.md` §7, `docs/camera/REAL_VALUES.md` §2,
 `proof/movement/extracted/ui_hotkey_default.txt`,
 `proof/minimap/recon/ui_config_inventory.txt`.
 
@@ -84,4 +84,4 @@
 
 HUD label + `I` toggle only. No panels, no rebinding, no layout persistence,
 no settings write path. Target design: `controls/REBORN_CONTROLS_SPEC.md`
-§UI and `CAMERA_DISTANCE_FOV_SPEC.md` for camera/video settings.
+§UI and `docs/camera/DISTANCE_FOV_SPEC.md` for camera/video settings.

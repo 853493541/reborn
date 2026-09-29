@@ -1,6 +1,6 @@
 Camera input controls - raw evidence (2026-09-23)
 =================================================
-Companion to docs/CAMERA_INPUT_CONTROLS.md.
+Companion to docs/camera/INPUT_CONTROLS.md.
 
 1. ui/hotkey/default.txt (extracted from the client pak)
 --------------------------------------------------------

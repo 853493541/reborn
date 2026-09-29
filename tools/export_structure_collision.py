@@ -49,7 +49,7 @@ def load_physic_lists(physic_dir):
 
     The engine decides which world-object models receive physics from
     physic_file/folder_white/black.  Rule implemented here (hypothesis H1,
-    see docs/JX3_COLLISION_SYSTEM.md section 8.4):
+    see docs/movement/JX3_COLLISION_SYSTEM.md section 8.4):
       - file_black always excludes;
       - folder_black excludes unless the file is explicitly file_white;
       - otherwise the model must be folder_white or file_white.

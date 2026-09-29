@@ -2,11 +2,10 @@
 setlocal
 set CSC=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
 set BIN=C:\SeasunGame\MovieEditor\bin64
-set EXE=reborn_camfp.exe
-rem This is the camera workstream build. Output name is unique so a
-rem concurrently-running fork build cannot overwrite it (the fork builds
-rem reborn_client.exe / ability_sandbox.exe). Every run logs a fingerprint
-rem with camFP=True so its logs are unambiguous.
+rem Canonical client (renamed from reborn_camfp.exe, the camera workstream
+rem name). Every run logs a fingerprint (name/git/dirty/flags) so its logs
+rem are unambiguous.
+set EXE=reborn_client.exe
 "%CSC%" /nologo /unsafe /platform:x64 /target:winexe /out:"%BIN%\%EXE%" ^
   /r:"%BIN%\MovieEngineCLR.dll" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll ^

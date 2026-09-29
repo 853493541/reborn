@@ -2,7 +2,7 @@
 """Numerically verify the JX3 jump/fall model recovered from the client.
 
 Checks (all values from proof/gravity tables + the verified per-frame integer
-model in docs/JX3_GRAVITY_RESEARCH.md §3):
+model in docs/movement/JX3_GRAVITY_RESEARCH.md §3):
 
   1. integer per-frame jump integration vs the continuous formula
   2. animation-tick alignment (11-frame jump = 0.733 s FBX = 66.7 ms tick)
@@ -136,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
     out()
     out("== result ==")
     out("  all checks reproduce the in-game expectations; the model in")
-    out("  docs/JX3_GRAVITY_RESEARCH.md §3 is self-consistent and complete")
+    out("  docs/movement/JX3_GRAVITY_RESEARCH.md §3 is self-consistent and complete")
 
     text = "\n".join(lines) + "\n"
     args.out.parent.mkdir(parents=True, exist_ok=True)

@@ -1,4 +1,4 @@
-﻿// JX3-modeled camera system for the engine host.
+// JX3-modeled camera system for the engine host.
 //
 // Port of the verified model in docs/netcode/REBORN_CAMERA_SPEC.md and the
 // Python reference tools/netcode/reference/camera_model.py:
@@ -140,7 +140,7 @@ public sealed class CameraSystem
                 p.Set("RotationSpeed", 0.00314);            // verified loader default
                 p.Set("InitCameraPitch", -0.35);        // real client default (custom.dat)
                 p.Set("InitCameraDistance", 6.0);
-                // Host placeholders (docs/CAMERA_REAL_VALUES.md 搂7/搂8 item 6):
+                // Host placeholders (docs/camera/REAL_VALUES.md 搂7/搂8 item 6):
                 // the real per-mode move-pitch rows are CDN-only. The DLL
                 // loader defaults are 0, but the model needs non-zero pivots
                 // (CameraSmoke 13/13); the host keeps the pre-CDN rows.
@@ -457,7 +457,7 @@ public sealed class CameraSystem
     // yaw=0 -> +X, yaw+ -> +Z, pitch from horizontal. The row distance is the
     // 3D orbit radius: pitch only rotates the offset (constant length) and the
     // row height is a separate additive term. Never use tan(pitch) here - that
-    // re-scales the radius while dragging (see docs/CAMERA_FIX_SPEC.md).
+    // re-scales the radius while dragging (see docs/camera/FIX_SPEC.md).
     public static void DesiredOffset(double yaw, double pitch, double distance, double height, double[] outOff)
     {
         double cp = Math.Cos(pitch);
@@ -582,7 +582,7 @@ public sealed class TrackCamera
     }
 }
 
-// Native JX3 wall-obstruction response (docs/CAMERA_WALL_OBSTRUCTION.md):
+// Native JX3 wall-obstruction response (docs/camera/WALL_OBSTRUCTION.md):
 //  - the camera is pulled to 18 u short of the nearest ray hit (along the
 //    anchor -> camera line);
 //  - 50 u / 100 u hysteresis prevents flicker at the boundary;

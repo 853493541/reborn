@@ -9,7 +9,7 @@ Record (``indexSize / count`` bytes): path cstr @+4 (<= 256), originalSize
 
 Members are either LZHAM blocks (try skip 0/4/.../48) or raw with a
 ``storedSize - originalSize`` byte header (0..64). See
-``docs/MAP_MINIMAP_RESEARCH.md`` §6 for the pitfall this handles.
+``docs/ui/MAP_MINIMAP_RESEARCH.md`` §6 for the pitfall this handles.
 
 Usage:
   python tools/netcode/extract_hpkg_member.py <file.hpkg> --list

@@ -50,12 +50,6 @@ proof/netcode/mode_juejing/pak_drop3/
 proof/netcode/mode_juejing/pak_logic/
 proof/netcode/mode_juejing/cache_maps/
 
-# Standalone map app build output
-map-ui-app/bin/
-map-ui-app/obj/
-
-# Built map selector (research, kept local)
-engine_host_spike/map_selector.exe
 
 # Raw extracted minimap assets from PakV4 (research scratch)
 proof/minimap/ui/
@@ -72,3 +66,16 @@ native/obj/
 
 # collision extractor scratch (PakV4 out dir)
 proof/collision/**/_work/
+
+# Generated per-map collision bins (regenerate with tools/bake_map_collision.py;
+# runtime copies live in bin64/collision_data)
+engine_host_spike/collision_data/*structure_collision.bin
+
+# Local merge/ref backup bundle (moved off the Desktop; delete after cleanup merge)
+_backup/
+
+# Local runtime state (AGENTS.md §9: never commit; leave on disk)
+perf_config.ini
+launch_out.txt
+launch_err.txt
+log/

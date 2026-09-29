@@ -636,7 +636,7 @@ Recovered S→C layouts (offsets HIGH, labels MED) live in `JX3_MODE_LOAD_FLOW.m
   came from a locally-built unluac (per `MAP_MINIMAP_RESEARCH.md` §432). Restoring/building
   unluac is a prerequisite for decompiling the remaining mode panels; `lua51_dump.py`
   (constants) is the fallback.
-- Mode strings: `map-ui-app/assets/text/ui/Scheme/Case/string.txt` carries `STR_BF_*`
+- Mode strings: `ui-process-app/Data/text/ui/Scheme/Case/string.txt` carries `STR_BF_*`
   (scoreboard), `STR_BATTLEFIELD_*` (queue/map/guild tips), `STR_SETTING195/197/201`
   (loot-filter UI for the mode).
 - **Corpus completeness risk:** the extraction used window names as a dictionary; a
@@ -711,8 +711,8 @@ docs/netcode/JX3_MODE_LOOT_SYSTEM.md          # loot containers/tables/dead ends
 docs/netcode/JX3_LOOT_PROTOCOL_LAYOUTS.md     # doodad/loot wire layouts
 docs/netcode/JX3_MODE_SPAWN_RULES_SEARCH.md   # closed dead end: anchors/refresh/rates
 docs/netcode/JX3_MODE_UI_FLOW.md              # screen-level flow: queue panel, loading art/progress, HUD
-docs/MAP_MINIMAP_RESEARCH.md                  # UI corpus, storm/battlefield map, markers
-docs/JX3_GRAVITY_RESEARCH.md                  # parachute partial, fly/glide states
+docs/ui/MAP_MINIMAP_RESEARCH.md                  # UI corpus, storm/battlefield map, markers
+docs/movement/JX3_GRAVITY_RESEARCH.md                  # parachute partial, fly/glide states
 docs/netcode/JX3_CAMERA_RESEARCH.md           # GliderCamera/carrier camera
 proof/netcode/mode_ui/**                      # loading art/progress xrefs, string scans
 proof/minimap/ui/Scheme/Case/string.txt       # official UI strings: STR_TIMEDESERT/STR_LEFTPEPLE/STR_SETTING210 (GBK, lines 2251/2425-2429)
@@ -738,7 +738,7 @@ proof/netcode/disasm/confirm_enter_queue.txt  # 0x116 builder
 proof/netcode/c2s_protocol_catalog.tsv        # 0xB9, 0xD9, 0x116, 0x1C9
 proof/netcode/mode_juejing/*                  # symbols, MapList rows, doodad inventory
 proof/minimap/ui/Config/Default/**            # UI Lua bytecode + 8 decompiled panels
-map-ui-app/assets/text/ui/Scheme/Case/string.txt  # STR_BF_* / STR_BATTLEFIELD_*
+ui-process-app/Data/text/ui/Scheme/Case/string.txt  # STR_BF_* / STR_BATTLEFIELD_*
 ```
 
 Decompile command (once a working unluac is restored):

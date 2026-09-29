@@ -93,4 +93,4 @@ type 0xD, classic pair +0x6C..+0x80 / joystick pair +0x84..+0x98:
   follow mode +0x80 (int) | +0x98 (int)   clamp [0, 3]
 Node selector [node+0x34] picks the pair. Video panel FOV slider writes
 engine option fCameraAngle (config.default.ini [KG3DENGINE] CammeraAngle =
-0.837757). Details: docs/CAMERA_CONFIG_FILES.md section 7.
+0.837757). Details: docs/camera/CONFIG_FILES.md section 7.

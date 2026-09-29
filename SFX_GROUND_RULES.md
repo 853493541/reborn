@@ -2,6 +2,11 @@
 
 Recorded 2026-09-21 by request of Andy.
 
+> **Update 2026-09-29:** the map-viewer ban below is **superseded for resources only**
+> by `AGENTS.md` §7 — its raw extracted game resources are allowed as input data with
+> provenance. The ban on map-viewer theory/decoders/heuristics/converted artifacts
+> still stands.
+
 ## 1. Map-viewer is NOT a reference
 
 The JX3 web map-viewer and anything it produced is **banned as a reference or

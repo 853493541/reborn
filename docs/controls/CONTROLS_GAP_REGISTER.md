@@ -20,8 +20,8 @@ lands, keep the evidence column pointing at real file:line.
 | S5 | Max-distance clamp on every distance writer | **OPEN** | only `ZoomBy` clamps; F11/sprint bypass; `SetMaxDistance` misnamed | none |
 | S6 | RMB character turn uses the turn-rate model | **OPEN** | instant snap at `RebornClient.cs:929` | movement turn model |
 | S7 | LMB click vs drag (select on click) | **OPEN** | press always locks; no threshold/timestamp | targeting |
-| S8 | 广角/FOV + engine caps | **OPEN (mapping DONE)** | panel = 30–60°, default 50° → `Set3DEngineOption(fCameraAngle)`; caps unprobed (`RESEARCH_RESOLVED_GAPS.md` §3) | `CAMERA_DISTANCE_FOV_SPEC.md` |
-| S9 | Wall/structure obstruction (camera clips through walls) | **OPEN** | terrain-only march `RebornClient.cs:1058-1080`; native rules in `docs/CAMERA_WALL_OBSTRUCTION.md` | baked bins; native interface optional |
+| S8 | 广角/FOV + engine caps | **OPEN (mapping DONE)** | panel = 30–60°, default 50° → `Set3DEngineOption(fCameraAngle)`; caps unprobed (`RESEARCH_RESOLVED_GAPS.md` §3) | `docs/camera/DISTANCE_FOV_SPEC.md` |
+| S9 | Wall/structure obstruction (camera clips through walls) | **OPEN** | terrain-only march `RebornClient.cs:1058-1080`; native rules in `docs/camera/WALL_OBSTRUCTION.md` | baked bins; native interface optional |
 
 ## Input / hotkeys
 
@@ -71,7 +71,7 @@ persistence, bridges) with complete decoded annexes.
 
 1. S1 + S2 + S3 (small, same aim loop) → V2 partial
 2. S9 wall ray (managed, `FoliageCollision.RaycastSegment`) → V3
-3. S5, then S8 (`CAMERA_DISTANCE_FOV_SPEC.md`)
+3. S5, then S8 (`docs/camera/DISTANCE_FOV_SPEC.md`)
 4. C1–C6 input core (biggest "full control" step), then C7–C9
 5. C10–C11 movement, C12 modes, C13 UI
 6. M2 netcode (N1–N4)

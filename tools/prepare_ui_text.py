@@ -1,13 +1,14 @@
-"""Convert the GBK game text assets needed by map-ui-app into UTF-8 copies.
+"""Convert the GBK game text assets needed by the map UI into UTF-8 copies.
 
-The WPF app reads these prepared copies so it does not need a GB18030 code page
-provider. Image assets (TGA/DDS/PNG) are read from the original proof tree.
+The UI-process app reads these prepared copies so it does not need a GB18030
+code page provider. Image assets (TGA/DDS/PNG) are read from the original
+proof tree.
 """
 
 import pathlib
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
-OUT = REPO / "map-ui-app" / "assets" / "text"
+OUT = REPO / "ui-process-app" / "Data" / "text"
 
 MAP_FOLDERS = [
     "龙门寻宝minimap_mb",

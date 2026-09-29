@@ -363,12 +363,12 @@ smooth return when clear (implemented in the reference).
   `custom.dat` -> `VideoSettingPanel.tCameraStatic`
   (`fDragSpeed` / `fDragPitchSpeed`, default 1, clamp [0.01, 10]) and are
   applied through represent Lua bindings to camera node fields; full table in
-  `docs/CAMERA_CONFIG_FILES.md` §7.
-- Obstruction is fully documented in `docs/CAMERA_WALL_OBSTRUCTION.md`; the
+  `docs/camera/CONFIG_FILES.md` §7.
+- Obstruction is fully documented in `docs/camera/WALL_OBSTRUCTION.md`; the
   §8.3 summary above is the early high-level version.
-- Engine `[Camera]` key usage: `docs/CAMERA_CONFIG_FILES.md` §2.
+- Engine `[Camera]` key usage: `docs/camera/CONFIG_FILES.md` §2.
 - Camera caps slots corrected (were one off): `+0x50 / +0x58 / +0x60 / +0x68`
-  in `CAMERA_REAL_VALUES.md` §6.
+  in `docs/camera/REAL_VALUES.md` §6.
 
 ## 10. Fifth pass — air-combat, shake, follow-action, skill-move, camera-ani
 
