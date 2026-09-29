@@ -33,12 +33,26 @@ MAGIC = 0x4C4F4346  # 'FCOL'
 
 
 def _read_list(path):
+    # The engine's list files are GB18030 (the carpet entry
+    # "wj_dcy地毯001_001_hd" is invalid UTF-8); decoding them as UTF-8 used to
+    # mojibake every Chinese stem, silently skipping the black-list filter for
+    # most models (carpets/props kept colliding).
+    raw = Path(path).read_bytes()
+    text = None
+    for enc in ('utf-8-sig', 'gb18030'):
+        try:
+            text = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    if text is None:
+        text = raw.decode('utf-8', errors='replace')
     out = set()
-    for line in Path(path).read_text(encoding='utf-8', errors='replace').splitlines():
+    for line in text.splitlines():
         s = line.strip().lower()
         if not s or s.startswith('#') or s.startswith('--'):
             continue
-        if '文件' in s or '文件夹' in s:   # list headers
+        if '文件' in s:   # list headers
             continue
         out.add(s)
     return out

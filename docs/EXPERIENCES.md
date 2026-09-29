@@ -199,3 +199,17 @@ solved it, and what is still open. **Newest at the bottom.**
   blocks any part of that building (whole-object vs doorway vs height) before changing
   the bake rule; H1 A/B is the candidate fix.
 - Re-open: user observation or server/nav data.
+### 2026-09-29 — client — Root cause: physic lists are GB18030, read as UTF-8
+- Did: the "carpet/props block walking" reports traced to `_read_list` in
+  `tools/export_structure_collision.py` decoding the engine's `Represent/physic/*`
+  lists as UTF-8 with errors=replace. Every Chinese stem became mojibake, so the
+  black-list filter silently skipped them (8 rejects instead of 60). Decode u8-sig ->
+  GB18030; re-baked 龙门寻宝 (60 rejects: 29 file_black + 23 folder_black + 8
+  no_whitelist; instances 4,949 -> 4,897). Removed the RC_COL_OFF/RC_COL_SKIP_BOX
+  band-aids entirely.
+- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8.2;
+  `wj_dcy地毯001_001_hd` present in `proof/collision/physic/physic_file_black.txt`
+  (GBK); bake log with 60 rejects; cactus regression still blocks (z=53288).
+- Outcome: solved (list filter now real). Gate passability remains server/doodad
+  state; other four maps need the same re-bake.
+- Re-open: none for the encoding bug; door state needs server data.

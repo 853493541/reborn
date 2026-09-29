@@ -238,6 +238,8 @@ H1 over-admits and should become file-white-only or server-data-driven), or only
 gate/doorway (then it is door/doodad state), or only low geometry (step height)?
 ### 8.1 Answer from the field: only the gate/doorway is walkable (2026-09-29)
 
+**SUPERSEDED by §8.2 (root cause: list-file encoding; skip-box controls removed).**
+
 The user confirms: at that building the **doorway/gate** is passable in the live game,
 the surrounding walls block. That is door state, not a blanket collidability rule.
 
@@ -262,3 +264,27 @@ Applied: `RC_COL_SKIP_BOX=x0,z0,x1,z1` set around the user's gate coordinate
 the gateway is passable and the rest of the building still blocks (HUD shows
 `[COL OFF]` while inside the box). This is a provisional offline stand-in for the
 server's open-door state, not a bake-rule change.
+## 8.2 Root cause found and fixed: physic lists were read as UTF-8 (2026-09-29)
+
+The complaints ("carpet inside the house blocks", "low props block") were the real
+global bug, not a per-object exception:
+
+- The engine's static-physics selection lists (`Represent/physic/*`) are **GB18030**
+  (the entry `wj_dcy地毯001_001_hd` is not valid UTF-8). The exporter read them with
+  `encoding='utf-8', errors='replace'`, so **every Chinese-named entry became
+  mojibake and was silently ignored**: only ASCII fixtures were filtered (8 objects
+  instead of 60). Everything else - carpets, wall lanterns, pen holders, vats,
+  interior decor, the blacklisted wall segment - kept colliding in the host.
+- Fix: `tools/export_structure_collision.py::_read_list` now decodes u8-sig then
+  GB18030. The bake then reports the exact audit prediction:
+  **60 rejected = 29 file_black + 23 folder_black + 8 no_whitelist**
+  (structure bin 4,949 -> 4,897 instances; 689 -> 681 meshes).
+- Re-baked `龙门寻宝` into `bin64/collision_data` with the rule applied.
+- Verified: cactus regression still blocks at z=53288 (bake intact); the gate still
+  blocks (the 玉门关 building is admitted by the real lists and its doorway is closed
+  geometry - live passability is door/doodad server state, see 8.1).
+- The temporary `RC_COL_OFF` / `RC_COL_SKIP_BOX` controls were **removed** from the
+  client; no per-object band-aids.
+
+Still to do: re-bake the other four local maps (白龙绝境, 天原绝境, 海岛绝境,
+龙门寻宝_夜晚) - their bins predate this fix just like 龙门寻宝 did.
