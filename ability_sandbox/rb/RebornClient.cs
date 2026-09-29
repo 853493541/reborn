@@ -198,21 +198,37 @@ internal static class RebornClient
                 Log("note: another ability_sandbox instance is running - continuing (no limit)");
             string[] enginePrefixes = new string[] { "reborn_", "spike_host", "map_spike", "movieditor", "qseasuneditor", "qmodeleditor" };
             int me = System.Diagnostics.Process.GetCurrentProcess().Id;
-            foreach (System.Diagnostics.Process pr2 in System.Diagnostics.Process.GetProcesses())
+            // POLITE START (no limits): the engine contends if two clients
+            // initialize at the same moment (verified in logs: our init died
+            // when another client started 3s later, and vice versa). We never
+            // block anyone - WE yield: if any other engine client is present,
+            // wait for it to exit before we initialize (bounded; then proceed).
+            long waitCap = 60000; long.TryParse(Env("SB_START_WAIT_MS", "60000"), out waitCap);
+            long waited = 0;
+            while (true)
             {
-                string pn;
-                try { pn = pr2.ProcessName.ToLowerInvariant(); } catch { continue; }
-                if (pr2.Id == me) continue;
-                foreach (string pre in enginePrefixes)
+                var others = new System.Collections.Generic.List<System.Diagnostics.Process>();
+                foreach (System.Diagnostics.Process pr2 in System.Diagnostics.Process.GetProcesses())
                 {
-                    if (pn.StartsWith(pre) || pn == pre)
+                    string pn;
+                    try { pn = pr2.ProcessName.ToLowerInvariant(); } catch { continue; }
+                    if (pr2.Id == me) continue;
+                    foreach (string pre in enginePrefixes)
                     {
-                        // isolated now (own engine memory namespace + own runtime
-                        // dirs): warn, do not block. If the GPU/driver still
-                        // dislikes two engine clients, that is outside our reach.
-                        Log("note: another engine client is running: " + pr2.ProcessName + " (pid " + pr2.Id + ") - continuing (isolated memory " + "AbilitySandbox.memory" + ")");
+                        if (pn.StartsWith(pre) || pn == pre) { others.Add(pr2); break; }
                     }
                 }
+                if (others.Count == 0) break;
+                if (waited >= waitCap)
+                {
+                    Log("polite start: wait cap " + waitCap + "ms reached - initializing anyway (no limit)");
+                    break;
+                }
+                string who = "";
+                foreach (var o in others) { try { who += o.ProcessName + "(" + o.Id + ") "; } catch { } }
+                Log("polite start: yielding to engine client(s) " + who + "- waiting " + waited + "ms / " + waitCap + "ms");
+                System.Threading.Thread.Sleep(3000);
+                waited += 3000;
             }
         }
         loadFeiZhua();
