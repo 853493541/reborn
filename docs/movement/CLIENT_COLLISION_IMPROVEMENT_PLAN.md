@@ -236,3 +236,29 @@ Debug/A-B controls added to the client (env, default off, HUD shows `[COL OFF]`)
 Open question for the rule: is the whole building walk-through in the live game (then
 H1 over-admits and should become file-white-only or server-data-driven), or only the
 gate/doorway (then it is door/doodad state), or only low geometry (step height)?
+### 8.1 Answer from the field: only the gate/doorway is walkable (2026-09-29)
+
+The user confirms: at that building the **doorway/gate** is passable in the live game,
+the surrounding walls block. That is door state, not a blanket collidability rule.
+
+Checked and ruled out as the source:
+
+- the world object has no collision/physics variant: `comEditor.templateFile` is
+  `npc.json`, `comLogic.obstacleOption=0`/`enablePhysicsConfig=0`, and only
+  `comRender.actorModel` (the visual `.mesh`) - parsed from the extracted
+  `entities/sceneinfo_full/002_002.json` (object uid `a792b736...` at
+  `(17941.6,553.8,25056.0)`);
+- no sibling `jz_xb玉门关建筑001_004_hd.CollisionMesh` / `.mdl` / `.group` in the pak
+  (pak probe, all MISS);
+- `<map>.SRScene` is an empty fixed container (`JX3_COLLISION_SYSTEM.md` §17.1).
+
+Doors in JX3 are **doodads** whose open/closed state is server-driven
+(`JX3_COLLISION_SYSTEM.md` §10.1: `DynamicObstacle` / `DisableNavObstacle`), and the
+client install carries no state for them. Offline, the doorway opening therefore has
+to be carved locally.
+
+Applied: `RC_COL_SKIP_BOX=x0,z0,x1,z1` set around the user's gate coordinate
+(`18458,24291,19058,24891`; their blocked log point was `(18758,652,24591)`), so only
+the gateway is passable and the rest of the building still blocks (HUD shows
+`[COL OFF]` while inside the box). This is a provisional offline stand-in for the
+server's open-door state, not a bake-rule change.
