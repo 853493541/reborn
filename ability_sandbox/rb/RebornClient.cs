@@ -50,6 +50,26 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
+        // SUPERVISOR (default on; SB_NO_SUPERVISOR=1 disables): if the engine
+        // init race with another client kills the app early, relaunch it. Our
+        // app is never "affected" by other clients - it self-heals. The
+        // supervisor itself never loads the engine (zero interference).
+        if (Env("SB_NO_SUPERVISOR", "0") != "1" && !(args != null && System.Array.Exists(args, delegate(string a) { return a == "--child"; })))
+        {
+            string self = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            for (int attempt = 1; attempt <= 6; attempt++)
+            {
+                var psi = new System.Diagnostics.ProcessStartInfo(self, "--child");
+                psi.UseShellExecute = false;
+                var child = System.Diagnostics.Process.Start(psi);
+                var swc = System.Diagnostics.Stopwatch.StartNew();
+                child.WaitForExit();
+                swc.Stop();
+                if (swc.ElapsedMilliseconds > 60000) return;
+                System.Threading.Thread.Sleep(4000);
+            }
+            return;
+        }
         string editorRoot = @"C:\SeasunGame\MovieEditor";
         string startupPath = Path.Combine(editorRoot, "bin64");
         string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
@@ -183,9 +203,7 @@ internal static class RebornClient
                 + " pid=" + System.Diagnostics.Process.GetCurrentProcess().Id;
             Log(fp);
         }
-        // NO LIMITS: multiple instances and other engine clients may run
-        // together. We never block anything. Separation is by resources
-        // (own engine memory namespace, own runtime dir), not by exclusion.
+        // NO LIMITS: multiple instances may run; we never block anything.
         {
             bool haveMutex = false;
             try
@@ -196,197 +214,18 @@ internal static class RebornClient
             catch { haveMutex = true; }
             if (!haveMutex)
                 Log("note: another ability_sandbox instance is running - continuing (no limit)");
-            string[] enginePrefixes = new string[] { "reborn_", "spike_host", "map_spike", "movieditor", "qseasuneditor", "qmodeleditor" };
-            int me = System.Diagnostics.Process.GetCurrentProcess().Id;
-            // POLITE START (no limits): the engine contends if two clients
-            // initialize at the same moment (verified in logs: our init died
-            // when another client started 3s later, and vice versa). We never
-            // block anyone - WE yield: if any other engine client is present,
-            // wait for it to exit before we initialize (bounded; then proceed).
-            long waitCap = 60000; long.TryParse(Env("SB_START_WAIT_MS", "60000"), out waitCap);
-            long waited = 0;
-            while (true)
-            {
-                var others = new System.Collections.Generic.List<System.Diagnostics.Process>();
-                foreach (System.Diagnostics.Process pr2 in System.Diagnostics.Process.GetProcesses())
-                {
-                    string pn;
-                    try { pn = pr2.ProcessName.ToLowerInvariant(); } catch { continue; }
-                    if (pr2.Id == me) continue;
-                    foreach (string pre in enginePrefixes)
-                    {
-                        if (pn.StartsWith(pre) || pn == pre) { others.Add(pr2); break; }
-                    }
-                }
-                if (others.Count == 0) break;
-                if (waited >= waitCap)
-                {
-                    Log("polite start: wait cap " + waitCap + "ms reached - initializing anyway (no limit)");
-                    break;
-                }
-                string who = "";
-                foreach (var o in others) { try { who += o.ProcessName + "(" + o.Id + ") "; } catch { } }
-                Log("polite start: yielding to engine client(s) " + who + "- waiting " + waited + "ms / " + waitCap + "ms");
-                System.Threading.Thread.Sleep(3000);
-                waited += 3000;
-            }
         }
-        loadFeiZhua();
-
-        var form = new Form();
-        form.Text = "JX3";
-        form.StartPosition = FormStartPosition.CenterScreen;
-        form.ClientSize = new System.Drawing.Size(1280, 720);
-        var panel = new Panel();
-        panel.Dock = DockStyle.Fill;
-        form.Controls.Add(panel);
-        var hud = new Label();
-        hud.AutoSize = true;
-        hud.ForeColor = System.Drawing.Color.White;
-        hud.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
-        hud.Font = new System.Drawing.Font("Consolas", 10f);
-        hud.Padding = new Padding(6);
-        hud.Location = new System.Drawing.Point(38, 10);
-        hud.Text = "loading...";
-        hud.Visible = false;   // info window starts collapsed; "I" toggles it
-        panel.Controls.Add(hud);
-        // "I" toggle in the top-left corner: expands/collapses the info window
-        var infoToggle = new Label();
-        infoToggle.AutoSize = false;
-        infoToggle.Size = new System.Drawing.Size(22, 22);
-        infoToggle.Location = new System.Drawing.Point(10, 10);
-        infoToggle.Text = "I";
-        infoToggle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        infoToggle.ForeColor = System.Drawing.Color.White;
-        infoToggle.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
-        infoToggle.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
-        infoToggle.Cursor = Cursors.Hand;
-        infoToggle.MouseClick += delegate { hud.Visible = !hud.Visible; };
-        panel.Controls.Add(infoToggle);
-
-        // ---- ability panel (P): select what key "1" casts ----
-        var abilityBtn = new Label();
-        abilityBtn.AutoSize = false;
-        abilityBtn.Size = new System.Drawing.Size(140, 22);
-        abilityBtn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        abilityBtn.ForeColor = System.Drawing.Color.White;
-        abilityBtn.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
-        abilityBtn.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
-        abilityBtn.Cursor = Cursors.Hand;
-        var abilityPanel = new Panel();
-        abilityPanel.Size = new System.Drawing.Size(224, 96);
-        abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
-        abilityPanel.Visible = false;
-        var abilityList = new ListBox();
-        abilityList.Items.Add("风来吴山 (flws)");
-        abilityList.Items.Add("临时飞爪 (feizhua)");
-        abilityList.SelectedIndex = abilitySel == "feizhua" ? 1 : 0;
-        abilityList.Location = new System.Drawing.Point(6, 6);
-        abilityList.Size = new System.Drawing.Size(212, 60);
-        abilityList.SelectedIndexChanged += delegate
-        {
-            abilitySel = abilityList.SelectedIndex == 1 ? "feizhua" : "flws";
-            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
-            Log("ability selected: " + abilitySel);
-        };
-        abilityPanel.Controls.Add(abilityList);
-        var soundBox = new CheckBox();
-        soundBox.Text = "sound";
-        soundBox.ForeColor = System.Drawing.Color.White;
-        soundBox.Checked = soundOn;
-        soundBox.Location = new System.Drawing.Point(6, 70);
-        soundBox.AutoSize = true;
-        soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
-        abilityPanel.Controls.Add(soundBox);
-        panel.Controls.Add(abilityPanel);
-        abilityBtn.MouseClick += delegate
-        {
-            abilityPanel.Visible = !abilityPanel.Visible;
-            if (abilityPanel.Visible) abilityPanel.BringToFront();
-        };
-        Action placeAbilityUi = delegate
-        {
-            abilityBtn.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 150), 10);
-            abilityPanel.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 236), 36);
-            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
-        };
-        panel.Resize += delegate { placeAbilityUi(); };
-        panel.Controls.Add(abilityBtn);
-        placeAbilityUi();
-
-        form.Show();
-        Application.DoEvents();
-
-        var baselib = new KGBaseCLR();
-        var engine = new KGEngineCLR();
-        var editor = new KGMovieEditorCLR();
-        var sound = new KG3DSoundCLR();
-
-        engine.SetRootPath(workingDir);
-        try { baselib.InitConsoleLog(); } catch (Exception e) { Log("InitConsoleLog: " + e.Message); }
-        Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
-        int r1 = 0, r2 = 0, r3 = 0;
-        try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("AbilitySandbox.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
-        try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
-        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
-
-        // YIELD WATCHDOG: while OUR engine init is in flight, if another engine
-        // client STARTS (its cold init would contend with ours; verified in the
-        // logs: whichever inits overlap, one dies), we yield immediately - the
-        // other app always wins, we kill ourselves before we can disturb it.
-        // SB_YIELD_INIT=0 disables.
-        bool engineInitInFlight = true;
-        int meInit = System.Diagnostics.Process.GetCurrentProcess().Id;
-        string[] engPrefixes = new string[] { "reborn_", "spike_host", "map_spike", "movieditor", "qseasuneditor", "qmodeleditor" };
-        if (Env("SB_YIELD_INIT", "1") == "1")
-        {
-            var known = new System.Collections.Generic.HashSet<int>();
-            foreach (System.Diagnostics.Process p0 in System.Diagnostics.Process.GetProcesses())
-            {
-                string n0;
-                try { n0 = p0.ProcessName.ToLowerInvariant(); } catch { continue; }
-                if (p0.Id == meInit) continue;
-                foreach (string pre in engPrefixes)
-                { if (n0.StartsWith(pre) || n0 == pre) { known.Add(p0.Id); break; } }
-            }
-            var wt = new System.Threading.Thread(delegate()
-            {
-                while (engineInitInFlight)
-                {
-                    System.Threading.Thread.Sleep(700);
-                    if (!engineInitInFlight) break;
-                    foreach (System.Diagnostics.Process p1 in System.Diagnostics.Process.GetProcesses())
-                    {
-                        try
-                        {
-                            int id1 = p1.Id;
-                            if (id1 == meInit || known.Contains(id1)) continue;
-                            string n1 = p1.ProcessName.ToLowerInvariant();
-                            foreach (string pre in engPrefixes)
-                            {
-                                if (n1.StartsWith(pre) || n1 == pre)
-                                {
-                                    Log("yield: engine client " + p1.ProcessName + "(" + id1 + ") started during our init - yielding (you win)");
-                                    try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { }
-                                    return;
-                                }
-                            }
-                        }
-                        catch { }
-                    }
-                }
-            });
-            wt.IsBackground = true;
-            wt.Start();
-        }
-        int err = 1;
+            int err = 1;
         int ok = 0;
-        try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
+        // engine root = OUR dir: the engine writes its own files (ShaderList.txt,
+        // BuildDXVKCache, ...) relative to this root - it must never be the
+        // shared bin64 that other engine clients use.
+        string engineRoot = Path.Combine(startupPath, "ability_sandbox");
+        try { Directory.CreateDirectory(engineRoot); } catch { }
+        try { ok = engine.Init3DEngine(engineRoot, engineRoot, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1}", ok, err));
-        engineInitInFlight = false;
-        if (ok == 0) { Log("FATAL: engine init failed"); return; }
+       if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
