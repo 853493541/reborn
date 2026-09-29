@@ -108,7 +108,9 @@ internal static class RebornClient
             try { exeMtime = File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss"); } catch { }
             try
             {
-                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
+                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info_" + exeName + ".txt");
+                if (!File.Exists(bi))
+                    bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
                 if (File.Exists(bi))
                 {
                     foreach (string ln in File.ReadAllLines(bi))
