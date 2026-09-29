@@ -57,6 +57,7 @@ def main() -> int:
 
     data = image[start:start + size]
     md = Cs(CS_ARCH_X86, CS_MODE_64)
+    md.skipdata = True
     lines = []
     for ins in md.disasm(data, base + start):
         note = ""

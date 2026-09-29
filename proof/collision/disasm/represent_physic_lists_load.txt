@@ -1,0 +1,495 @@
+00828b00  5e                     pop     rsi
+00828b01  c3                     ret     
+00828b02  48896c2448             mov     qword ptr [rsp + 0x48], rbp
+00828b07  33ed                   xor     ebp, ebp
+00828b09  4d85f6                 test    r14, r14
+00828b0c  0f8484000000           je      0x180828b96
+00828b12  48895c2440             mov     qword ptr [rsp + 0x40], rbx
+00828b17  4889742450             mov     qword ptr [rsp + 0x50], rsi
+00828b1c  48897c2458             mov     qword ptr [rsp + 0x58], rdi
+00828b21  488d7a04               lea     rdi, [rdx + 4]
+00828b25  488b0f                 mov     rcx, qword ptr [rdi]
+00828b28  ff15da1f8700           call    qword ptr [rip + 0x871fda]  ; imp:SemanticX64.dll!cstr_path0
+00828b2e  488b4f08               mov     rcx, qword ptr [rdi + 8]
+00828b32  488907                 mov     qword ptr [rdi], rax
+00828b35  ff15cd1f8700           call    qword ptr [rip + 0x871fcd]  ; imp:SemanticX64.dll!cstr_path0
+00828b3b  488b37                 mov     rsi, qword ptr [rdi]
+00828b3e  33db                   xor     ebx, ebx
+00828b40  48894708               mov     qword ptr [rdi + 8], rax
+00828b44  4885f6                 test    rsi, rsi
+00828b47  742d                   je      0x180828b76
+00828b49  0fb606                 movzx   eax, byte ptr [rsi]
+00828b4c  84c0                   test    al, al
+00828b4e  7422                   je      0x180828b72
+00828b50  0fbec8                 movsx   ecx, al
+00828b53  ff159f288700           call    qword ptr [rip + 0x87289f]  ; imp:api-ms-win-crt-string-l1-1-0.dll!tolower
+00828b59  8b0d51f26600           mov     ecx, dword ptr [rip + 0x66f251]
+00828b5f  488d7601               lea     rsi, [rsi + 1]
+00828b63  0fafcb                 imul    ecx, ebx
+00828b66  0fbed8                 movsx   ebx, al
+00828b69  0fb606                 movzx   eax, byte ptr [rsi]
+00828b6c  03d9                   add     ebx, ecx
+00828b6e  84c0                   test    al, al
+00828b70  75de                   jne     0x180828b50
+00828b72  0fbaf31f               btr     ebx, 0x1f
+00828b76  ffc5                   inc     ebp
+00828b78  895ffc                 mov     dword ptr [rdi - 4], ebx
+00828b7b  4863c5                 movsxd  rax, ebp
+00828b7e  4883c71c               add     rdi, 0x1c
+00828b82  493bc6                 cmp     rax, r14
+00828b85  729e                   jb      0x180828b25
+00828b87  488b7c2458             mov     rdi, qword ptr [rsp + 0x58]
+00828b8c  488b742450             mov     rsi, qword ptr [rsp + 0x50]
+00828b91  488b5c2440             mov     rbx, qword ptr [rsp + 0x40]
+00828b96  488b6c2448             mov     rbp, qword ptr [rsp + 0x48]
+00828b9b  b001                   mov     al, 1
+00828b9d  4883c430               add     rsp, 0x30
+00828ba1  415e                   pop     r14
+00828ba3  c3                     ret     
+00828ba4  cc                     int3    
+00828ba5  cc                     int3    
+00828ba6  cc                     int3    
+00828ba7  cc                     int3    
+00828ba8  cc                     int3    
+00828ba9  cc                     int3    
+00828baa  cc                     int3    
+00828bab  cc                     int3    
+00828bac  cc                     int3    
+00828bad  cc                     int3    
+00828bae  cc                     int3    
+00828baf  cc                     int3    
+00828bb0  cc                     int3    
+00828bb1  cc                     int3    
+00828bb2  cc                     int3    
+00828bb3  cc                     int3    
+00828bb4  cc                     int3    
+00828bb5  cc                     int3    
+00828bb6  cc                     int3    
+00828bb7  cc                     int3    
+00828bb8  cc                     int3    
+00828bb9  cc                     int3    
+00828bba  cc                     int3    
+00828bbb  cc                     int3    
+00828bbc  cc                     int3    
+00828bbd  cc                     int3    
+00828bbe  cc                     int3    
+00828bbf  cc                     int3    
+00828bc0  cc                     int3    
+00828bc1  cc                     int3    
+00828bc2  cc                     int3    
+00828bc3  cc                     int3    
+00828bc4  cc                     int3    
+00828bc5  cc                     int3    
+00828bc6  cc                     int3    
+00828bc7  cc                     int3    
+00828bc8  cc                     int3    
+00828bc9  cc                     int3    
+00828bca  cc                     int3    
+00828bcb  cc                     int3    
+00828bcc  cc                     int3    
+00828bcd  cc                     int3    
+00828bce  cc                     int3    
+00828bcf  cc                     int3    
+00828bd0  cc                     int3    
+00828bd1  cc                     int3    
+00828bd2  cc                     int3    
+00828bd3  cc                     int3    
+00828bd4  cc                     int3    
+00828bd5  cc                     int3    
+00828bd6  cc                     int3    
+00828bd7  cc                     int3    
+00828bd8  cc                     int3    
+00828bd9  cc                     int3    
+00828bda  cc                     int3    
+00828bdb  cc                     int3    
+00828bdc  cc                     int3    
+00828bdd  cc                     int3    
+00828bde  cc                     int3    
+00828bdf  cc                     int3    
+00828be0  4c8bdc                 mov     r11, rsp
+00828be3  49895b10               mov     qword ptr [r11 + 0x10], rbx
+00828be7  57                     push    rdi
+00828be8  4881eca0000000         sub     rsp, 0xa0
+00828bef  488b05e2146700         mov     rax, qword ptr [rip + 0x6714e2]
+00828bf6  4833c4                 xor     rax, rsp
+00828bf9  4889842490000000       mov     qword ptr [rsp + 0x90], rax
+00828c01  488bf9                 mov     rdi, rcx
+00828c04  32db                   xor     bl, bl
+00828c06  49c7438800000000       mov     qword ptr [r11 - 0x78], 0
+00828c0e  0f57c0                 xorps   xmm0, xmm0
+00828c11  33c0                   xor     eax, eax
+00828c13  0f11442440             movups  xmmword ptr [rsp + 0x40], xmm0
+00828c18  0f11442450             movups  xmmword ptr [rsp + 0x50], xmm0
+00828c1d  0f11442460             movups  xmmword ptr [rsp + 0x60], xmm0
+00828c22  0f11442470             movups  xmmword ptr [rsp + 0x70], xmm0
+00828c27  498943d8               mov     qword ptr [r11 - 0x28], rax
+00828c2b  498d4b98               lea     rcx, [r11 - 0x68]
+00828c2f  e8df327fff             call    0x18001bf13
+00828c34  90                     nop     
+00828c35  488b0da4536b00         mov     rcx, qword ptr [rip + 0x6b53a4]
+00828c3c  4881c120010000         add     rcx, 0x120
+00828c43  488d1566d84a00         lea     rdx, [rip + 0x4ad866]
+00828c4a  e87c037eff             call    0x180008fcb
+00828c4f  4885c0                 test    rax, rax
+00828c52  752d                   jne     0x180828c81
+00828c54  41b9681a0000           mov     r9d, 0x1a68
+00828c5a  4c8d058fd84a00         lea     r8, [rip + 0x4ad88f]
+00828c61  488d0560d84a00         lea     rax, [rip + 0x4ad860]
+00828c68  4889442420             mov     qword ptr [rsp + 0x20], rax
+00828c6d  488d15dc7e4500         lea     rdx, [rip + 0x457edc]
+00828c74  b903000000             mov     ecx, 3
+00828c79  ff1581138700           call    qword ptr [rip + 0x871381]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+00828c7f  eb72                   jmp     0x180828cf3
+00828c81  c744242802000000       mov     dword ptr [rsp + 0x28], 2
+00828c89  c644242000             mov     byte ptr [rsp + 0x20], 0
+00828c8e  4533c9                 xor     r9d, r9d
+00828c91  4c8d054c794a00         lea     r8, [rip + 0x4a794c]
+00828c98  488bd0                 mov     rdx, rax
+00828c9b  488d4c2440             lea     rcx, [rsp + 0x40]
+00828ca0  e8cc757eff             call    0x180010271
+00828ca5  85c0                   test    eax, eax
+00828ca7  750f                   jne     0x180828cb8
+00828ca9  41b96b1a0000           mov     r9d, 0x1a6b
+00828caf  4c8d05a2454600         lea     r8, [rip + 0x4645a2]
+00828cb6  eba9                   jmp     0x180828c61
+00828cb8  488d542430             lea     rdx, [rsp + 0x30]
+00828cbd  488d4c2440             lea     rcx, [rsp + 0x40]
+00828cc2  e80caf7eff             call    0x180013bd3
+00828cc7  488d8f58420200         lea     rcx, [rdi + 0x24258]
+00828cce  4c8b442430             mov     r8, qword ptr [rsp + 0x30]
+00828cd3  488bd0                 mov     rdx, rax
+00828cd6  e865f00200             call    0x180857d40
+00828cdb  84c0                   test    al, al
+00828cdd  7512                   jne     0x180828cf1
+00828cdf  41b96f1a0000           mov     r9d, 0x1a6f
+00828ce5  4c8d056c454600         lea     r8, [rip + 0x46456c]
+00828cec  e970ffffff             jmp     0x180828c61
+00828cf1  b301                   mov     bl, 1
+00828cf3  488d4c2440             lea     rcx, [rsp + 0x40]
+00828cf8  e8d73a7eff             call    0x18000c7d4
+00828cfd  0fb6c3                 movzx   eax, bl
+00828d00  488b8c2490000000       mov     rcx, qword ptr [rsp + 0x90]
+00828d08  4833cc                 xor     rcx, rsp
+00828d0b  e88b327eff             call    0x18000bf9b
+00828d10  488b9c24b8000000       mov     rbx, qword ptr [rsp + 0xb8]
+00828d18  4881c4a0000000         add     rsp, 0xa0
+00828d1f  5f                     pop     rdi
+00828d20  c3                     ret     
+00828d21  cc                     int3    
+00828d22  cc                     int3    
+00828d23  cc                     int3    
+00828d24  cc                     int3    
+00828d25  cc                     int3    
+00828d26  cc                     int3    
+00828d27  cc                     int3    
+00828d28  cc                     int3    
+00828d29  cc                     int3    
+00828d2a  cc                     int3    
+00828d2b  cc                     int3    
+00828d2c  cc                     int3    
+00828d2d  cc                     int3    
+00828d2e  cc                     int3    
+00828d2f  cc                     int3    
+00828d30  cc                     int3    
+00828d31  cc                     int3    
+00828d32  cc                     int3    
+00828d33  cc                     int3    
+00828d34  cc                     int3    
+00828d35  cc                     int3    
+00828d36  cc                     int3    
+00828d37  cc                     int3    
+00828d38  cc                     int3    
+00828d39  cc                     int3    
+00828d3a  cc                     int3    
+00828d3b  cc                     int3    
+00828d3c  cc                     int3    
+00828d3d  cc                     int3    
+00828d3e  cc                     int3    
+00828d3f  cc                     int3    
+00828d40  cc                     int3    
+00828d41  cc                     int3    
+00828d42  cc                     int3    
+00828d43  cc                     int3    
+00828d44  cc                     int3    
+00828d45  cc                     int3    
+00828d46  cc                     int3    
+00828d47  cc                     int3    
+00828d48  cc                     int3    
+00828d49  cc                     int3    
+00828d4a  cc                     int3    
+00828d4b  cc                     int3    
+00828d4c  cc                     int3    
+00828d4d  cc                     int3    
+00828d4e  cc                     int3    
+00828d4f  cc                     int3    
+00828d50  cc                     int3    
+00828d51  cc                     int3    
+00828d52  cc                     int3    
+00828d53  cc                     int3    
+00828d54  cc                     int3    
+00828d55  cc                     int3    
+00828d56  cc                     int3    
+00828d57  cc                     int3    
+00828d58  cc                     int3    
+00828d59  cc                     int3    
+00828d5a  cc                     int3    
+00828d5b  cc                     int3    
+00828d5c  cc                     int3    
+00828d5d  cc                     int3    
+00828d5e  cc                     int3    
+00828d5f  cc                     int3    
+00828d60  cc                     int3    
+00828d61  cc                     int3    
+00828d62  cc                     int3    
+00828d63  cc                     int3    
+00828d64  cc                     int3    
+00828d65  cc                     int3    
+00828d66  cc                     int3    
+00828d67  cc                     int3    
+00828d68  cc                     int3    
+00828d69  cc                     int3    
+00828d6a  cc                     int3    
+00828d6b  cc                     int3    
+00828d6c  cc                     int3    
+00828d6d  cc                     int3    
+00828d6e  cc                     int3    
+00828d6f  cc                     int3    
+00828d70  cc                     int3    
+00828d71  cc                     int3    
+00828d72  cc                     int3    
+00828d73  cc                     int3    
+00828d74  cc                     int3    
+00828d75  cc                     int3    
+00828d76  cc                     int3    
+00828d77  cc                     int3    
+00828d78  cc                     int3    
+00828d79  cc                     int3    
+00828d7a  cc                     int3    
+00828d7b  cc                     int3    
+00828d7c  cc                     int3    
+00828d7d  cc                     int3    
+00828d7e  cc                     int3    
+00828d7f  cc                     int3    
+00828d80  4c8bdc                 mov     r11, rsp
+00828d83  49895b10               mov     qword ptr [r11 + 0x10], rbx
+00828d87  57                     push    rdi
+00828d88  4881eca0000000         sub     rsp, 0xa0
+00828d8f  488b0542136700         mov     rax, qword ptr [rip + 0x671342]
+00828d96  4833c4                 xor     rax, rsp
+00828d99  4889842490000000       mov     qword ptr [rsp + 0x90], rax
+00828da1  488bf9                 mov     rdi, rcx
+00828da4  32db                   xor     bl, bl
+00828da6  49c7438800000000       mov     qword ptr [r11 - 0x78], 0
+00828dae  0f57c0                 xorps   xmm0, xmm0
+00828db1  33c0                   xor     eax, eax
+00828db3  0f11442440             movups  xmmword ptr [rsp + 0x40], xmm0
+00828db8  0f11442450             movups  xmmword ptr [rsp + 0x50], xmm0
+00828dbd  0f11442460             movups  xmmword ptr [rsp + 0x60], xmm0
+00828dc2  0f11442470             movups  xmmword ptr [rsp + 0x70], xmm0
+00828dc7  498943d8               mov     qword ptr [r11 - 0x28], rax
+00828dcb  498d4b98               lea     rcx, [r11 - 0x68]
+00828dcf  e83f317fff             call    0x18001bf13
+00828dd4  90                     nop     
+00828dd5  488b0d04526b00         mov     rcx, qword ptr [rip + 0x6b5204]
+00828ddc  4881c120010000         add     rcx, 0x120
+00828de3  488d150ed74a00         lea     rdx, [rip + 0x4ad70e]
+00828dea  e8dc017eff             call    0x180008fcb
+00828def  4885c0                 test    rax, rax
+00828df2  752d                   jne     0x180828e21
+00828df4  41b9801a0000           mov     r9d, 0x1a80
+00828dfa  4c8d05efd64a00         lea     r8, [rip + 0x4ad6ef]
+00828e01  488d0508d74a00         lea     rax, [rip + 0x4ad708]
+00828e08  4889442420             mov     qword ptr [rsp + 0x20], rax
+00828e0d  488d153c7d4500         lea     rdx, [rip + 0x457d3c]
+00828e14  b903000000             mov     ecx, 3
+00828e19  ff15e1118700           call    qword ptr [rip + 0x8711e1]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+00828e1f  eb72                   jmp     0x180828e93
+00828e21  c744242802000000       mov     dword ptr [rsp + 0x28], 2
+00828e29  c644242000             mov     byte ptr [rsp + 0x20], 0
+00828e2e  4533c9                 xor     r9d, r9d
+00828e31  4c8d05ac774a00         lea     r8, [rip + 0x4a77ac]
+00828e38  488bd0                 mov     rdx, rax
+00828e3b  488d4c2440             lea     rcx, [rsp + 0x40]
+00828e40  e82c747eff             call    0x180010271
+00828e45  85c0                   test    eax, eax
+00828e47  750f                   jne     0x180828e58
+00828e49  41b9831a0000           mov     r9d, 0x1a83
+00828e4f  4c8d0502444600         lea     r8, [rip + 0x464402]
+00828e56  eba9                   jmp     0x180828e01
+00828e58  488d542430             lea     rdx, [rsp + 0x30]
+00828e5d  488d4c2440             lea     rcx, [rsp + 0x40]
+00828e62  e86cad7eff             call    0x180013bd3
+00828e67  488d8f78420200         lea     rcx, [rdi + 0x24278]
+00828e6e  4c8b442430             mov     r8, qword ptr [rsp + 0x30]
+00828e73  488bd0                 mov     rdx, rax
+00828e76  e8c5ee0200             call    0x180857d40
+00828e7b  84c0                   test    al, al
+00828e7d  7512                   jne     0x180828e91
+00828e7f  41b9871a0000           mov     r9d, 0x1a87
+00828e85  4c8d05cc434600         lea     r8, [rip + 0x4643cc]
+00828e8c  e970ffffff             jmp     0x180828e01
+00828e91  b301                   mov     bl, 1
+00828e93  488d4c2440             lea     rcx, [rsp + 0x40]
+00828e98  e837397eff             call    0x18000c7d4
+00828e9d  0fb6c3                 movzx   eax, bl
+00828ea0  488b8c2490000000       mov     rcx, qword ptr [rsp + 0x90]
+00828ea8  4833cc                 xor     rcx, rsp
+00828eab  e8eb307eff             call    0x18000bf9b
+00828eb0  488b9c24b8000000       mov     rbx, qword ptr [rsp + 0xb8]
+00828eb8  4881c4a0000000         add     rsp, 0xa0
+00828ebf  5f                     pop     rdi
+00828ec0  c3                     ret     
+00828ec1  cc                     int3    
+00828ec2  cc                     int3    
+00828ec3  cc                     int3    
+00828ec4  cc                     int3    
+00828ec5  cc                     int3    
+00828ec6  cc                     int3    
+00828ec7  cc                     int3    
+00828ec8  cc                     int3    
+00828ec9  cc                     int3    
+00828eca  cc                     int3    
+00828ecb  cc                     int3    
+00828ecc  cc                     int3    
+00828ecd  cc                     int3    
+00828ece  cc                     int3    
+00828ecf  cc                     int3    
+00828ed0  cc                     int3    
+00828ed1  cc                     int3    
+00828ed2  cc                     int3    
+00828ed3  cc                     int3    
+00828ed4  cc                     int3    
+00828ed5  cc                     int3    
+00828ed6  cc                     int3    
+00828ed7  cc                     int3    
+00828ed8  cc                     int3    
+00828ed9  cc                     int3    
+00828eda  cc                     int3    
+00828edb  cc                     int3    
+00828edc  cc                     int3    
+00828edd  cc                     int3    
+00828ede  cc                     int3    
+00828edf  cc                     int3    
+00828ee0  cc                     int3    
+00828ee1  cc                     int3    
+00828ee2  cc                     int3    
+00828ee3  cc                     int3    
+00828ee4  cc                     int3    
+00828ee5  cc                     int3    
+00828ee6  cc                     int3    
+00828ee7  cc                     int3    
+00828ee8  cc                     int3    
+00828ee9  cc                     int3    
+00828eea  cc                     int3    
+00828eeb  cc                     int3    
+00828eec  cc                     int3    
+00828eed  cc                     int3    
+00828eee  cc                     int3    
+00828eef  cc                     int3    
+00828ef0  cc                     int3    
+00828ef1  cc                     int3    
+00828ef2  cc                     int3    
+00828ef3  cc                     int3    
+00828ef4  cc                     int3    
+00828ef5  cc                     int3    
+00828ef6  cc                     int3    
+00828ef7  cc                     int3    
+00828ef8  cc                     int3    
+00828ef9  cc                     int3    
+00828efa  cc                     int3    
+00828efb  cc                     int3    
+00828efc  cc                     int3    
+00828efd  cc                     int3    
+00828efe  cc                     int3    
+00828eff  cc                     int3    
+00828f00  cc                     int3    
+00828f01  cc                     int3    
+00828f02  cc                     int3    
+00828f03  cc                     int3    
+00828f04  cc                     int3    
+00828f05  cc                     int3    
+00828f06  cc                     int3    
+00828f07  cc                     int3    
+00828f08  cc                     int3    
+00828f09  cc                     int3    
+00828f0a  cc                     int3    
+00828f0b  cc                     int3    
+00828f0c  cc                     int3    
+00828f0d  cc                     int3    
+00828f0e  cc                     int3    
+00828f0f  cc                     int3    
+00828f10  cc                     int3    
+00828f11  cc                     int3    
+00828f12  cc                     int3    
+00828f13  cc                     int3    
+00828f14  cc                     int3    
+00828f15  cc                     int3    
+00828f16  cc                     int3    
+00828f17  cc                     int3    
+00828f18  cc                     int3    
+00828f19  cc                     int3    
+00828f1a  cc                     int3    
+00828f1b  cc                     int3    
+00828f1c  cc                     int3    
+00828f1d  cc                     int3    
+00828f1e  cc                     int3    
+00828f1f  cc                     int3    
+00828f20  48895c2408             mov     qword ptr [rsp + 8], rbx
+00828f25  48896c2410             mov     qword ptr [rsp + 0x10], rbp
+00828f2a  4889742418             mov     qword ptr [rsp + 0x18], rsi
+00828f2f  57                     push    rdi
+00828f30  4154                   push    r12
+00828f32  4155                   push    r13
+00828f34  4156                   push    r14
+00828f36  4157                   push    r15
+00828f38  4883ec30               sub     rsp, 0x30
+00828f3c  4533ff                 xor     r15d, r15d
+00828f3f  4c8db180200000         lea     r14, [rcx + 0x2080]
+00828f46  4c8d2d23df6e00         lea     r13, [rip + 0x6edf23]
+00828f4d  0f1f00                 nop     dword ptr [rax]
+00828f50  488b0d89506b00         mov     rcx, qword ptr [rip + 0x6b5089]
+00828f57  488d15e2c84a00         lea     rdx, [rip + 0x4ac8e2]
+00828f5e  49635e08               movsxd  rbx, dword ptr [r14 + 8]
+00828f62  4881c120010000         add     rcx, 0x120
+00828f69  4d63c7                 movsxd  r8, r15d
+00828f6c  49c1e006               shl     r8, 6
+00828f70  4d03c5                 add     r8, r13
+00828f73  e813367eff             call    0x18000c58b
+00828f78  4c8be0                 mov     r12, rax
+00828f7b  4885c0                 test    rax, rax
+00828f7e  7471                   je      0x180828ff1
+00828f80  33ff                   xor     edi, edi
+00828f82  488beb                 mov     rbp, rbx
+00828f85  85db                   test    ebx, ebx
+00828f87  7e41                   jle     0x180828fca
+00828f89  8d7702                 lea     esi, [rdi + 2]
+00828f8c  33db                   xor     ebx, ebx
+00828f8e  6690                   nop     
+00828f90  498b0e                 mov     rcx, qword ptr [r14]
+00828f93  4803cb                 add     rcx, rbx
+00828f96  744a                   je      0x180828fe2
+00828f98  8b4114                 mov     eax, dword ptr [rcx + 0x14]
+00828f9b  83f801                 cmp     eax, 1
+00828f9e  761c                   jbe     0x180828fbc
+00828fa0  448bce                 mov     r9d, esi
+00828fa3  89442420               mov     dword ptr [rsp + 0x20], eax
+00828fa7  4d8bc4                 mov     r8, r12
+00828faa  488d15a7d94a00         lea     rdx, [rip + 0x4ad9a7]
+00828fb1  b906000000             mov     ecx, 6
+00828fb6  ff1544108700           call    qword ptr [rip + 0x871044]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+00828fbc  ffc6                   inc     esi
+00828fbe  48ffc7                 inc     rdi
+00828fc1  4883c33c               add     rbx, 0x3c
+00828fc5  483bfd                 cmp     rdi, rbp
+00828fc8  7cc6                   jl      0x180828f90
+00828fca  41ffc7                 inc     r15d
+00828fcd  4981c6f0130000         add     r14, 0x13f0
+00828fd4  4183ff07               cmp     r15d, 7
+00828fd8  0f8572ffffff           jne     0x180828f50
+00828fde  b001                   mov     al, 1
+00828fe0  eb3c                   jmp     0x18082901e
+00828fe2  41b9701c0000           mov     r9d, 0x1c70
+00828fe8  4c8d05c1c44700         lea     r8, [rip + 0x47c4c1]
+00828fef  eb0d                   jmp     0x180828ffe
+00828ff1  41b96b1c0000           mov     r9d, 0x1c6b
+00828ff7  4c8d054ad94a00         lea     r8, [rip + 0x4ad94a]

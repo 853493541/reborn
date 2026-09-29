@@ -1702,15 +1702,32 @@ Reproduction therefore needs the inferred model (§24), driven by these fields.
 
 * Combat is fully server-arbitrated; only `OnSkillEffectResult` changes HP
   (`proof/pvp/combat_netcode.md:28-58,205-206,352-353`); no rollback (`:233-248`).
-* `OnSkillEffectResult` layout (header confirmed from the full handler disassembly
-  `proof/pvp/netcode/disasm/KPlayerClient__OnSkillEffectResult.txt`): packet flags at `+0x1b`
+* `OnSkillEffectResult` layout (header confirmed from the full handler disassembly — the
+  historical proof `proof/pvp/netcode/disasm/KPlayerClient__OnSkillEffectResult.txt` is from an
+  older build; the current live build handler is `KPlayerClient::OnSkillEffectResult` at
+  `0x14014B610` (base `0x140000000`), `proof/collision/disasm/kskill_effectresult_current.txt`):
+  packet flags at `+0x1b`
   (bit0 miss/absorb path, bit1, bit2, bit3, bit6, bit7) and `+0x1c` (bit0, bit2);
   `casterID` dword at `+9`; `targetID` dword at `+0x0d`; byte `+0x15`; dword `+0x16`
   (damage/skill value); byte `+0x1a`; `cResultCount` int8 at `+0x22`; `KSKILL_RESULT` records
   start at `+0x23`, stride 9 (`offset = count*9 + 0x23`, assert at `0x18018f9df`). The handler
   feeds five-dword view structs `{caster,target,byte,dword,byte}` into presentation callbacks
-  via vt[`+0x4b0/+0x4b8/+0x4d0/+0x4d8/+0x4e0/+0x550/+0x568/+0x570/+0x578`]. **Per-record
-  9-byte field meaning still requires the per-record consumer trace** (G-26 residual).
+  via vt[`+0x4b0/+0x4b8/+0x4d0/+0x4d8/+0x4e0/+0x550/+0x568/+0x570/+0x578`].
+* **`KSKILL_RESULT` record format decoded (2026-09-28, current live build,
+  `proof/collision/disasm/kskill_effectresult_current.txt`)**: each 9-byte record is
+  **`s8 resultType` + `u64 payload`**. Two in-handler loops consume them
+  (`0x14BB7D` compact-array path, `0x14BEF4` view path with stride 9 until
+  `count = int8 [packet+0x22]`):
+  - the qword payload is usually a pointer (records with `payload == 0` are skipped in the
+    view path);
+  - in the compact path, a zero-payload record with `resultType ∈ {0x0D, 0x0E}` is also
+    skipped; otherwise the pair `{u32 resultType, ptr payload}` (16-byte stride) is collected
+    and passed to vt[`+0x4A8`];
+  - the view path builds
+    `{casterID/targetID (ordered by flag), +0x16 dword, +0x1A byte, +0x1C bit2, resultType,
+    +0x15 byte, payload}` and calls vt[`+0x540`].
+  Residual: the semantic names of the `resultType` byte values live in the presentation
+  callbacks, not in this handler.
 * Event family: `OnSkillPrepare/Cast/Channel/EffectResult/BeatBack/RayEffect/ChainEffect/
   PointChainSkillEffect` (`combat_netcode.md:99-131,194-216`).
 * C→S casts: `DoCastProfessionSkill 0x49/0x20`, `DoCharacterSkill 0x1B/0x1D`,
@@ -1727,8 +1744,11 @@ Reproduction therefore needs the inferred model (§24), driven by these fields.
   (`NewSkill.lh.strings.txt:85-99`). Used by skill scripts and the map loader.
 * **Bone boxes**: `KG3DModel::IsRayIntersectBoneBox` (inner test `0x180376BE0`, element flag
   `0x20000`), `UpdateBoneOBBox`, `CreateOBBoxOfBone`, `vBoneBox`, `KG3DBip::GetSkeletonBoneBound`
-  (§14.3); skeleton bone-bound assets load via `KG3DSkeletonBoneBound::*`. Only proven for the
-  **camera near-ray** so far; use for skills is unevidenced (gap G-27).
+  (§14.3); skeleton bone-bound assets load via `KG3DSkeletonBoneBound::*`. **Caller scan
+  2026-09-28**: the inner test has exactly three call sites in `KG3DEngineX64`
+  (`0x1801F3E38`, `0x1801F3F5E`, `0x1801FE6B3`), all inside the camera/near-ray model path
+  (`GetCameraNearRayIntersect` region). **No combat consumer exists client-side** — skill hits
+  are server-resolved; the client only plays hit reactions (G-27 closed).
 * **Body bone box sync**: `KPlayerClient::OnSyncBodyBoneBoxSize`,
   `KPlayer::LuaGetBodyBoneBoxSize`, `GetBodyBoneBoxSize`, `m_BodyBoneBox`,
   `BODY_BONE_BOX_MAX_SIZE` (`JX3ClientX64_exe_strings.txt:706402,739291-739466,770101,773575`) —
@@ -1759,9 +1779,10 @@ event `KREPRESENT_EVENT_CHAE_BE_HITTED`, tables `BeHitEffect` / `SkillHitEffect`
 
 ### 21.5 Explicit gaps
 
-Weapon hitboxes/traces have **zero evidence** (gap G-28); `OnSkillRayEffect` body disassembly is
-missing (only the handler name); `IsExactHit` semantics undecoded; `KSKILL_RESULT` split
-unknown.
+Weapon hitboxes/traces have **zero evidence** (G-28 closed as a negative: the only weapon-shape
+symbol is a represent visual check `nWeaponShape == RL_WEAPON_SHAPE_LH || …_RH`; weapon damage
+is a skill column `nWeaponDamagePercent`, resolved server-side). `IsExactHit` semantics remain
+undecoded; `OnSkillRayEffect` body disassembly is still missing (handler name only).
 
 ---
 
@@ -2213,7 +2234,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 
 | ID | Gap | Method |
 |---|---|---|
-| G-27 | combat use of bone boxes / body bone box | disassemble `OnSyncBodyBoneBoxSize`; trace `IsRayIntersectBoneBox` callers beyond camera |
+| G-27 | bone-box combat use — **closed 2026-09-28 (negative)**: the engine's only `IsRayIntersectBoneBox` callers are in the camera near-ray path; the synced `BodyBoneBox` belongs to `KBodyReshapingBox` (body customization), not hit detection | — |
 | G-10 | advanced/movable obstacle runtime + net handlers | disassemble `KScene::ChangeAdvancedDynamicObstacleState`, `CheckCollisionRange`; decode `OnAdd/RemoveAdvancedDynamicObstacle` payloads |
 | G-19 | `target.lua` / `skill.lua` target selection — **decompiled 2026-09-28** (`proof/collision/ui_scripts/`): local candidate list, `SelectTarget(PLAYER/NPC/DOODAD/FURNITURE/DUMMY)`, filters (`CanSelectPlayer`, `IsCorpseAndCanLoot`, `g_nTabPlayerPriority`, `bOnlyPlayer`), per-skill cast modes/flags recovered | residual: C++ `GetSearchTargetPlayer` candidate ordering/filters |
 | G-23 | interaction range value + server legality | find `nCustomInteractRange` source (INI/table); trace `ProcessCustomInteractRange` |
@@ -2231,9 +2252,9 @@ IDs are stable references for future work. “Method” names the concrete next 
 |---|---|---|
 | G-33 | billboard-only SpeedTrees (海岛 758) walk-through | decode `.srt`/billboard geometry or accept client behaviour |
 | G-6 | non-uniform foliage scale dropped | store 3 scales in FCOL v3 or reject |
-| G-26 | `KSKILL_RESULT` 9-byte split — **header layout recovered 2026-09-28** (flags `+0x1b/+0x1c`, caster `+9`, target `+0xd`, `+0x15`, `+0x16`, `+0x1a`, count `+0x22`, records `0x23+9i`); per-record field meaning open | trace the per-record consumer and compare against combat captures |
+| G-26 | `KSKILL_RESULT` — **closed 2026-09-28**: packet header + record format `s8 resultType + u64 payload`; two consumer loops and view structs mapped; only the semantic names of `resultType` values live in UI callbacks | map `resultType` values via the vt[+0x540] callback implementations if needed |
 | G-30 | rating→% damage formulas | attribute dump diffing + capture fitting |
-| G-28 | weapon collision/traces | search weapon model/bone paths; likely none client-side |
+| G-28 | weapon collision/traces — **closed 2026-09-28 (negative)**: no client weapon hit system exists; only represent weapon-shape visuals + server-side `nWeaponDamagePercent` | — |
 | G-31 | undecoded CastMode variants (`Column`, `TargetHoodle`, `SectorOfAttention`, `CasterConvexHullArea`, `PointAreaFindFirst`) | find example skills + captures |
 | G-32 | multi-target ordering policy | capture fitting (server) |
 | G-18 | cursor scene-pos conversion internals | annotate `GetRLCursorScenePos` disasm |

@@ -1,0 +1,167 @@
+003e08c0  0200                   add     al, byte ptr [rax]
+003e08c2  4889b7b03f0200         mov     qword ptr [rdi + 0x23fb0], rsi
+003e08c9  89b7b83f0200           mov     dword ptr [rdi + 0x23fb8], esi
+003e08cf  4889b7c03f0200         mov     qword ptr [rdi + 0x23fc0], rsi
+003e08d6  4889b7c83f0200         mov     qword ptr [rdi + 0x23fc8], rsi
+003e08dd  488d8fd03f0200         lea     rcx, [rdi + 0x23fd0]
+003e08e4  488d05e10cc3ff         lea     rax, [rip - 0x3cf31f]
+003e08eb  4889442420             mov     qword ptr [rsp + 0x20], rax
+003e08f0  4c8d0d3d4fc3ff         lea     r9, [rip - 0x3cb0c3]
+003e08f7  8d5650                 lea     edx, [rsi + 0x50]
+003e08fa  448d4607               lea     r8d, [rsi + 7]
+003e08fe  e858ffc3ff             call    0x18002085b
+003e0903  90                     nop     
+003e0904  4889b700420200         mov     qword ptr [rdi + 0x24200], rsi
+003e090b  4889b708420200         mov     qword ptr [rdi + 0x24208], rsi
+003e0912  4889b710420200         mov     qword ptr [rdi + 0x24210], rsi
+003e0919  4889b718420200         mov     qword ptr [rdi + 0x24218], rsi
+003e0920  4889b720420200         mov     qword ptr [rdi + 0x24220], rsi
+003e0927  4889b728420200         mov     qword ptr [rdi + 0x24228], rsi
+003e092e  4889b730420200         mov     qword ptr [rdi + 0x24230], rsi
+003e0935  89b738420200           mov     dword ptr [rdi + 0x24238], esi
+003e093b  4889b740420200         mov     qword ptr [rdi + 0x24240], rsi
+003e0942  4889b748420200         mov     qword ptr [rdi + 0x24248], rsi
+003e0949  4889b750420200         mov     qword ptr [rdi + 0x24250], rsi
+003e0950  488d8f58420200         lea     rcx, [rdi + 0x24258]
+003e0957  e8b266c2ff             call    0x18000700e
+003e095c  90                     nop     
+003e095d  488d8f78420200         lea     rcx, [rdi + 0x24278]
+003e0964  e8a566c2ff             call    0x18000700e
+003e0969  90                     nop     
+003e096a  488bc7                 mov     rax, rdi
+003e096d  488b5c2458             mov     rbx, qword ptr [rsp + 0x58]
+003e0972  488b742460             mov     rsi, qword ptr [rsp + 0x60]
+003e0977  4883c440               add     rsp, 0x40
+003e097b  5f                     pop     rdi
+003e097c  c3                     ret     
+003e097d  cc                     int3    
+003e097e  cc                     int3    
+003e097f  cc                     int3    
+003e0980  cc                     int3    
+003e0981  cc                     int3    
+003e0982  cc                     int3    
+003e0983  cc                     int3    
+003e0984  cc                     int3    
+003e0985  cc                     int3    
+003e0986  cc                     int3    
+003e0987  cc                     int3    
+003e0988  cc                     int3    
+003e0989  cc                     int3    
+003e098a  cc                     int3    
+003e098b  cc                     int3    
+003e098c  cc                     int3    
+003e098d  cc                     int3    
+003e098e  cc                     int3    
+003e098f  cc                     int3    
+003e0990  cc                     int3    
+003e0991  cc                     int3    
+003e0992  cc                     int3    
+003e0993  cc                     int3    
+003e0994  cc                     int3    
+003e0995  cc                     int3    
+003e0996  cc                     int3    
+003e0997  cc                     int3    
+003e0998  cc                     int3    
+003e0999  cc                     int3    
+003e099a  cc                     int3    
+003e099b  cc                     int3    
+003e099c  cc                     int3    
+003e099d  cc                     int3    
+003e099e  cc                     int3    
+003e099f  cc                     int3    
+003e09a0  cc                     int3    
+003e09a1  cc                     int3    
+003e09a2  cc                     int3    
+003e09a3  cc                     int3    
+003e09a4  cc                     int3    
+003e09a5  cc                     int3    
+003e09a6  cc                     int3    
+003e09a7  cc                     int3    
+003e09a8  cc                     int3    
+003e09a9  cc                     int3    
+003e09aa  cc                     int3    
+003e09ab  cc                     int3    
+003e09ac  cc                     int3    
+003e09ad  cc                     int3    
+003e09ae  cc                     int3    
+003e09af  cc                     int3    
+003e09b0  cc                     int3    
+003e09b1  cc                     int3    
+003e09b2  cc                     int3    
+003e09b3  cc                     int3    
+003e09b4  cc                     int3    
+003e09b5  cc                     int3    
+003e09b6  cc                     int3    
+003e09b7  cc                     int3    
+003e09b8  cc                     int3    
+003e09b9  cc                     int3    
+003e09ba  cc                     int3    
+003e09bb  cc                     int3    
+003e09bc  cc                     int3    
+003e09bd  cc                     int3    
+003e09be  cc                     int3    
+003e09bf  cc                     int3    
+003e09c0  cc                     int3    
+003e09c1  cc                     int3    
+003e09c2  cc                     int3    
+003e09c3  cc                     int3    
+003e09c4  cc                     int3    
+003e09c5  cc                     int3    
+003e09c6  cc                     int3    
+003e09c7  cc                     int3    
+003e09c8  cc                     int3    
+003e09c9  cc                     int3    
+003e09ca  cc                     int3    
+003e09cb  cc                     int3    
+003e09cc  cc                     int3    
+003e09cd  cc                     int3    
+003e09ce  cc                     int3    
+003e09cf  cc                     int3    
+003e09d0  cc                     int3    
+003e09d1  cc                     int3    
+003e09d2  cc                     int3    
+003e09d3  cc                     int3    
+003e09d4  cc                     int3    
+003e09d5  cc                     int3    
+003e09d6  cc                     int3    
+003e09d7  cc                     int3    
+003e09d8  cc                     int3    
+003e09d9  cc                     int3    
+003e09da  cc                     int3    
+003e09db  cc                     int3    
+003e09dc  cc                     int3    
+003e09dd  cc                     int3    
+003e09de  cc                     int3    
+003e09df  cc                     int3    
+003e09e0  cc                     int3    
+003e09e1  cc                     int3    
+003e09e2  cc                     int3    
+003e09e3  cc                     int3    
+003e09e4  cc                     int3    
+003e09e5  cc                     int3    
+003e09e6  cc                     int3    
+003e09e7  cc                     int3    
+003e09e8  cc                     int3    
+003e09e9  cc                     int3    
+003e09ea  cc                     int3    
+003e09eb  cc                     int3    
+003e09ec  cc                     int3    
+003e09ed  cc                     int3    
+003e09ee  cc                     int3    
+003e09ef  cc                     int3    
+003e09f0  cc                     int3    
+003e09f1  cc                     int3    
+003e09f2  cc                     int3    
+003e09f3  cc                     int3    
+003e09f4  cc                     int3    
+003e09f5  cc                     int3    
+003e09f6  cc                     int3    
+003e09f7  cc                     int3    
+003e09f8  cc                     int3    
+003e09f9  cc                     int3    
+003e09fa  cc                     int3    
+003e09fb  cc                     int3    
+003e09fc  cc                     int3    
+003e09fd  cc                     int3    
+003e09fe  cc                     int3    
+003e09ff  cc                     int3    
