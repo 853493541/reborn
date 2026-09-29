@@ -949,6 +949,11 @@ internal static class RebornClient
         bool penDbg = Env("RC_CAM_PENDBG", "0") == "1";
         string penMapName = "";
         try { penMapName = System.IO.Path.GetFileNameWithoutExtension(mapPath); } catch { }
+        // terrain-hole A/B dump (RC_HOLE_DUMP=<dir>): writes the packed mask
+        // of every hole region the terrain sampler loads, for comparison with
+        // the extracted .hlb files (proof/collision/terrain_extra)
+        string holeDumpDir = Env("RC_HOLE_DUMP", "");
+        int lastHoleIx = int.MinValue, lastHoleIz = int.MinValue;
         var penRing = new System.Collections.Generic.List<string>();
         var penCur = new System.Text.StringBuilder();
         long penLastLog = 0, penLastSummary = 0;
@@ -2644,6 +2649,29 @@ internal static class RebornClient
             if (now - lastLog >= 2000)
             {
                 lastLog = now;
+                if (holeDumpDir.Length > 0 && sampler != null && sampler.HasHoles &&
+                    (sampler.HoleRegionX != lastHoleIx || sampler.HoleRegionZ != lastHoleIz))
+                {
+                    lastHoleIx = sampler.HoleRegionX;
+                    lastHoleIz = sampler.HoleRegionZ;
+                    try
+                    {
+                        byte[] mask = sampler.HoleMaskCopy();
+                        string fp = Path.Combine(holeDumpDir,
+                            string.Format("holes_{0}_{1:D3}_{2:D3}.bin", penMapName, lastHoleIx, lastHoleIz));
+                        using (System.IO.BinaryWriter w = new System.IO.BinaryWriter(System.IO.File.Create(fp)))
+                        {
+                            w.Write(1);
+                            w.Write(sampler.RegionSize);
+                            w.Write(lastHoleIx);
+                            w.Write(lastHoleIz);
+                            w.Write(mask.Length);
+                            w.Write(mask);
+                        }
+                        Log("hole dump -> " + fp + " bytes=" + mask.Length);
+                    }
+                    catch (Exception e) { Log("hole dump ex: " + e.Message); }
+                }
                 string nearInfo = "";
                 if (colDebug && col != null)
                 {
