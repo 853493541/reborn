@@ -15,7 +15,9 @@ Game assets are private and are not in the repo.
 
 Work directly in the current checkout on the current branch, as normal.
 
-- Never commit or push to `main` unless the user explicitly asks.
+- **Never push to `origin` (any branch) unless the user explicitly asks** — pushing is
+  always an explicit request; local commits are fine.
+- Never commit to `main` unless the user explicitly asks.
 - Never commit generated/binary artifacts (`*.bin`, `*.pss`, `*.t2`, `samples/`, `bin64/`, `.venv/`).
   Leave them untracked.
 - Keep commits small and focused.
@@ -34,8 +36,9 @@ anything else (including reading or editing files):
 4. In your first status update, list the files/directories you own for this task. Do not
    edit anything outside that scope. If the task requires a file outside your scope, stop
    and report it instead of editing.
-5. Commit to your branch and push after every commit. Never merge to `main`, never rebase
-   `main`, never delete the worktree, never touch another agent's worktree.
+5. Commit to your branch after every change; never push unless the user explicitly asks.
+   Never merge to `main`, never rebase `main`, never delete the worktree, never touch
+   another agent's worktree.
 6. When done, report: worktree path, branch name, commit hashes, files touched, and anything
    left uncommitted or blocked.
 
@@ -226,7 +229,8 @@ dotnet run --project ui-process-app
 - **Encoding**: decode game text as GB18030/GBK; repo files are UTF-8.
 - **Git**: commit style `Area: summary` (e.g. `Client:`, `Camera:`, `Cleanup:`, `Docs:`);
   branches `research/<topic>`, `feature/<name>`, `cleanup/<scope>`, `<area>-fix`; small
-  focused commits; never commit to `main` unless asked.
+  focused commits; never commit to `main` and **never push to `origin` unless the user
+  explicitly asks**.
 - **Engine ops**: engine init ~24 s, each test run ~2 min — automate with env switches and
   log/timestamp outputs; kill stale hosts before rebuilds; never run two engine clients in
   the same memory namespace (concurrent isolated feature builds are allowed — §2);

@@ -128,3 +128,11 @@ solved it, and what is still open. **Newest at the bottom.**
   `RC_PatchD6` trampoline is cited as the cautionary example).
 - Evidence: `AGENTS.md` §4/§8, `tools/netcode/AGENTS.md`, `native/AGENTS.md`.
 - Outcome: solved.
+
+### 2026-09-29 — repo — Rule: never push to origin unless explicitly asked
+- Did: strengthened the git rule — `AGENTS.md` §2 default mode ("Never push to `origin`
+  (any branch) unless the user explicitly asks; pushing is always an explicit request;
+  local commits are fine"), `#iso` step 5 (commit after every change; never push unless
+  asked — replaces "push after every commit"), and §13 Git hard rule (same wording).
+- Evidence: `AGENTS.md`; this commit, kept local per the new rule.
+- Outcome: solved.
