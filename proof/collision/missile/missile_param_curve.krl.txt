@@ -1,0 +1,80 @@
+1 = {
+	CasterBoneName = S_fxmid
+	TargetBoneName = s_light
+	
+	TotalTime = 1500	-- 子弹飞行总时间
+	HitFloor = false		-- 允许穿过地面
+	
+	ControlPoints = 3	-- 控制点数(决定曲线走向)
+	Ramdom = True		-- 随机模式
+}
+
+2 = {
+	CasterBoneName = S_fxtop
+	TargetBoneName = S_fxmid
+	
+	TotalTime = 300	-- 子弹飞行总时间
+	HitFloor = false		-- 允许穿过地面
+	
+	ControlPoints = 5	-- 控制点数(决定曲线走向)
+	Ramdom = false		-- 随机模式
+}
+
+3 = {
+	CasterBoneName = S_fire
+	TargetBoneName = S_fxmid
+	
+	TotalTime = 1000	-- 子弹飞行总时间
+	HitFloor = false		-- 允许穿过地面
+	
+	ControlPoints = 3	-- 控制点数(决定曲线走向)
+	Ramdom = false		-- 随机模式
+}
+
+4 = {
+	CasterBoneName = S_fxmid
+	TargetBoneName = S_fxmid
+	
+	TotalTime = 1000	-- 子弹飞行总时间
+	HitFloor = true		-- 允许穿过地面
+	
+	ControlPoints = 1	-- 控制点数(决定曲线走向)
+	Ramdom = false		-- 随机模式
+	FinishEffectID = 8229
+}
+
+5 = {
+	CasterBoneName = S_fxmid
+	TargetBoneName = S_fxmid
+	
+	TotalTime = 2000	-- 子弹飞行总时间
+	HitFloor = true		-- 允许穿过地面
+	
+	ControlPoints = 1	-- 控制点数(决定曲线走向)
+	Ramdom = false		-- 随机模式
+	FinishEffectID = 8229
+}
+
+6 = {
+	CasterBoneName = S_fxmid
+	TargetBoneName = S_fxmid
+	Rotation = true
+	
+	TotalTime = 400	-- 子弹飞行总时间
+	HitFloor = true		-- 允许穿过地面
+	
+	ControlPoints = 1	-- 控制点数(决定曲线走向)
+	Ramdom = false		-- 随机模式
+}
+
+7 = {
+	CasterBoneName = S_fxmid
+	TargetBoneName = S_fxmid
+	
+	TotalTime = 800	-- 子弹飞行总时间
+	HitFloor = false		-- 允许穿过地面
+	
+	ControlPoints = 1	-- 控制点数(决定曲线走向)
+	Ramdom = True		-- 随机模式
+	FinishEffectID = 8340
+}

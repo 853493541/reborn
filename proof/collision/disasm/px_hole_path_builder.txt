@@ -1,0 +1,138 @@
+00032600  003b                   add     byte ptr [rbx], bh
+00032602  7330                   jae     0x180032634
+00032604  0f8dd9020000           jge     0x1800328e3
+0003260a  8b4314                 mov     eax, dword ptr [rbx + 0x14]
+0003260d  0fafc0                 imul    eax, eax
+00032610  99                     cdq     
+00032611  83e207                 and     edx, 7
+00032614  03c2                   add     eax, edx
+00032616  c1f803                 sar     eax, 3
+00032619  3bc8                   cmp     ecx, eax
+0003261b  7432                   je      0x18003264f
+0003261d  488d0d7cae0c00         lea     rcx, [rip + 0xcae7c]
+00032624  41b9e5000000           mov     r9d, 0xe5
+0003262a  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+0003262f  4c8d0532af0c00         lea     r8, [rip + 0xcaf32]
+00032636  b903000000             mov     ecx, 3
+0003263b  488d15064e0c00         lea     rdx, [rip + 0xc4e06]
+00032642  ff1568db0b00           call    qword ptr [rip + 0xbdb68]  ; imp:KGCommonX64.dll!KG_PrintfLog
+00032648  33c0                   xor     eax, eax
+0003264a  e967020000             jmp     0x1800328b6
+0003264f  4889ac2478010000       mov     qword ptr [rsp + 0x178], rbp
+00032657  4c8d4b40               lea     r9, [rbx + 0x40]
+0003265b  488dab44010000         lea     rbp, [rbx + 0x144]
+00032662  4c89b42470010000       mov     qword ptr [rsp + 0x170], r14
+0003266a  807d0000               cmp     byte ptr [rbp], 0
+0003266e  488d4c2450             lea     rcx, [rsp + 0x50]
+00032673  ba04010000             mov     edx, 0x104
+00032678  741b                   je      0x180032695
+0003267a  89742430               mov     dword ptr [rsp + 0x30], esi
+0003267e  4c8d0523af0c00         lea     r8, [rip + 0xcaf23]
+00032685  897c2428               mov     dword ptr [rsp + 0x28], edi
+00032689  48896c2420             mov     qword ptr [rsp + 0x20], rbp
+0003268e  e89dfffeff             call    0x180022630
+00032693  eb14                   jmp     0x1800326a9
+00032695  89742428               mov     dword ptr [rsp + 0x28], esi
+00032699  4c8d0528af0c00         lea     r8, [rip + 0xcaf28]
+000326a0  897c2420               mov     dword ptr [rsp + 0x20], edi
+000326a4  e887fffeff             call    0x180022630
+000326a9  488b0d48ce0e00         mov     rcx, qword ptr [rip + 0xece48]
+000326b0  4885c9                 test    rcx, rcx
+000326b3  7437                   je      0x1800326ec
+000326b5  488b01                 mov     rax, qword ptr [rcx]
+000326b8  488d542450             lea     rdx, [rsp + 0x50]
+000326bd  ff5040                 call    qword ptr [rax + 0x40]
+000326c0  85c0                   test    eax, eax
+000326c2  7428                   je      0x1800326ec
+000326c4  4d8bc4                 mov     r8, r12
+000326c7  4c897c2420             mov     qword ptr [rsp + 0x20], r15
+000326cc  488d542450             lea     rdx, [rsp + 0x50]
+000326d1  488bcb                 mov     rcx, rbx
+000326d4  e877020000             call    0x180032950
+000326d9  85c0                   test    eax, eax
+000326db  0f85fb010000           jne     0x1800328dc
+000326e1  41b9f3000000           mov     r9d, 0xf3
+000326e7  e993010000             jmp     0x18003287f
+000326ec  807d0000               cmp     byte ptr [rbp], 0
+000326f0  4c8d4b40               lea     r9, [rbx + 0x40]
+000326f4  ba04010000             mov     edx, 0x104
+000326f9  488d4c2450             lea     rcx, [rsp + 0x50]
+000326fe  741b                   je      0x18003271b
+00032700  89742430               mov     dword ptr [rsp + 0x30], esi
+00032704  4c8d05d5ae0c00         lea     r8, [rip + 0xcaed5]
+0003270b  897c2428               mov     dword ptr [rsp + 0x28], edi
+0003270f  48896c2420             mov     qword ptr [rsp + 0x20], rbp
+00032714  e817fffeff             call    0x180022630
+00032719  eb14                   jmp     0x18003272f
+0003271b  89742428               mov     dword ptr [rsp + 0x28], esi
+0003271f  4c8d05daae0c00         lea     r8, [rip + 0xcaeda]
+00032726  897c2420               mov     dword ptr [rsp + 0x20], edi
+0003272a  e801fffeff             call    0x180022630
+0003272f  488b0dc2cd0e00         mov     rcx, qword ptr [rip + 0xecdc2]
+00032736  4885c9                 test    rcx, rcx
+00032739  0f8496010000           je      0x1800328d5
+0003273f  488b01                 mov     rax, qword ptr [rcx]
+00032742  488d542450             lea     rdx, [rsp + 0x50]
+00032747  ff5040                 call    qword ptr [rax + 0x40]
+0003274a  85c0                   test    eax, eax
+0003274c  0f8483010000           je      0x1800328d5
+00032752  488d4c2450             lea     rcx, [rsp + 0x50]
+00032757  c744244001000000       mov     dword ptr [rsp + 0x40], 1
+0003275f  4533f6                 xor     r14d, r14d
+00032762  e8d9750000             call    0x180039d40
+00032767  488bf8                 mov     rdi, rax
+0003276a  4885c0                 test    rax, rax
+0003276d  752e                   jne     0x18003279d
+0003276f  488d05aaae0c00         lea     rax, [rip + 0xcaeaa]
+00032776  41b928010000           mov     r9d, 0x128
+0003277c  4c8d05e5ae0c00         lea     r8, [rip + 0xcaee5]
+00032783  4889442420             mov     qword ptr [rsp + 0x20], rax
+00032788  488d15b94c0c00         lea     rdx, [rip + 0xc4cb9]
+0003278f  8d4f03                 lea     ecx, [rdi + 3]
+00032792  ff1518da0b00           call    qword ptr [rip + 0xbda18]  ; imp:KGCommonX64.dll!KG_PrintfLog
+00032798  e9dc000000             jmp     0x180032879
+0003279d  8b7314                 mov     esi, dword ptr [rbx + 0x14]
+000327a0  ffc6                   inc     esi
+000327a2  0faff6                 imul    esi, esi
+000327a5  4863d6                 movsxd  rdx, esi
+000327a8  e853e4ffff             call    0x180030c00
+000327ad  488be8                 mov     rbp, rax
+000327b0  4885c0                 test    rax, rax
+000327b3  752e                   jne     0x1800327e3
+000327b5  488d0564ae0c00         lea     rax, [rip + 0xcae64]
+000327bc  41b92c010000           mov     r9d, 0x12c
+000327c2  4c8d05afae0c00         lea     r8, [rip + 0xcaeaf]
+000327c9  4889442420             mov     qword ptr [rsp + 0x20], rax
+000327ce  488d15734c0c00         lea     rdx, [rip + 0xc4c73]
+000327d5  8d4d03                 lea     ecx, [rbp + 3]
+000327d8  ff15d2d90b00           call    qword ptr [rip + 0xbd9d2]  ; imp:KGCommonX64.dll!KG_PrintfLog
+000327de  e988000000             jmp     0x18003286b
+000327e3  448bc6                 mov     r8d, esi
+000327e6  488bd5                 mov     rdx, rbp
+000327e9  488bcf                 mov     rcx, rdi
+000327ec  e88ffaffff             call    0x180032280
+000327f1  85c0                   test    eax, eax
+000327f3  752d                   jne     0x180032822
+000327f5  41b92f010000           mov     r9d, 0x12f
+000327fb  488d051eae0c00         lea     rax, [rip + 0xcae1e]
+00032802  b903000000             mov     ecx, 3
+00032807  4c8d054a760c00         lea     r8, [rip + 0xc764a]
+0003280e  4889442420             mov     qword ptr [rsp + 0x20], rax
+00032813  488d152e4c0c00         lea     rdx, [rip + 0xc4c2e]
+0003281a  ff1590d90b00           call    qword ptr [rip + 0xbd990]  ; imp:KGCommonX64.dll!KG_PrintfLog
+00032820  eb2c                   jmp     0x18003284e
+00032822  4c8d4c2440             lea     r9, [rsp + 0x40]
+00032827  4d8bc4                 mov     r8, r12
+0003282a  488bd5                 mov     rdx, rbp
+0003282d  488bcb                 mov     rcx, rbx
+00032830  e85b060000             call    0x180032e90
+00032835  85c0                   test    eax, eax
+00032837  7508                   jne     0x180032841
+00032839  41b932010000           mov     r9d, 0x132
+0003283f  ebba                   jmp     0x1800327fb
+00032841  8b442440               mov     eax, dword ptr [rsp + 0x40]
+00032845  41be01000000           mov     r14d, 1
+0003284b  418907                 mov     dword ptr [r15], eax
+0003284e  488b0d0bcc0e00         mov     rcx, qword ptr [rip + 0xecc0b]
+00032855  4533c9                 xor     r9d, r9d
+00032858  4881c190000000         add     rcx, 0x90

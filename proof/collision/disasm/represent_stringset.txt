@@ -1,0 +1,358 @@
+00857c80  cc                     int3    
+00857c81  cc                     int3    
+00857c82  cc                     int3    
+00857c83  cc                     int3    
+00857c84  cc                     int3    
+00857c85  cc                     int3    
+00857c86  cc                     int3    
+00857c87  cc                     int3    
+00857c88  cc                     int3    
+00857c89  cc                     int3    
+00857c8a  cc                     int3    
+00857c8b  cc                     int3    
+00857c8c  cc                     int3    
+00857c8d  cc                     int3    
+00857c8e  cc                     int3    
+00857c8f  cc                     int3    
+00857c90  cc                     int3    
+00857c91  cc                     int3    
+00857c92  cc                     int3    
+00857c93  cc                     int3    
+00857c94  cc                     int3    
+00857c95  cc                     int3    
+00857c96  cc                     int3    
+00857c97  cc                     int3    
+00857c98  cc                     int3    
+00857c99  cc                     int3    
+00857c9a  cc                     int3    
+00857c9b  cc                     int3    
+00857c9c  cc                     int3    
+00857c9d  cc                     int3    
+00857c9e  cc                     int3    
+00857c9f  cc                     int3    
+00857ca0  cc                     int3    
+00857ca1  cc                     int3    
+00857ca2  cc                     int3    
+00857ca3  cc                     int3    
+00857ca4  cc                     int3    
+00857ca5  cc                     int3    
+00857ca6  cc                     int3    
+00857ca7  cc                     int3    
+00857ca8  cc                     int3    
+00857ca9  cc                     int3    
+00857caa  cc                     int3    
+00857cab  cc                     int3    
+00857cac  cc                     int3    
+00857cad  cc                     int3    
+00857cae  cc                     int3    
+00857caf  cc                     int3    
+00857cb0  cc                     int3    
+00857cb1  cc                     int3    
+00857cb2  cc                     int3    
+00857cb3  cc                     int3    
+00857cb4  cc                     int3    
+00857cb5  cc                     int3    
+00857cb6  cc                     int3    
+00857cb7  cc                     int3    
+00857cb8  cc                     int3    
+00857cb9  cc                     int3    
+00857cba  cc                     int3    
+00857cbb  cc                     int3    
+00857cbc  cc                     int3    
+00857cbd  cc                     int3    
+00857cbe  cc                     int3    
+00857cbf  cc                     int3    
+00857cc0  cc                     int3    
+00857cc1  cc                     int3    
+00857cc2  cc                     int3    
+00857cc3  cc                     int3    
+00857cc4  cc                     int3    
+00857cc5  cc                     int3    
+00857cc6  cc                     int3    
+00857cc7  cc                     int3    
+00857cc8  cc                     int3    
+00857cc9  cc                     int3    
+00857cca  cc                     int3    
+00857ccb  cc                     int3    
+00857ccc  cc                     int3    
+00857ccd  cc                     int3    
+00857cce  cc                     int3    
+00857ccf  cc                     int3    
+00857cd0  cc                     int3    
+00857cd1  cc                     int3    
+00857cd2  cc                     int3    
+00857cd3  cc                     int3    
+00857cd4  cc                     int3    
+00857cd5  cc                     int3    
+00857cd6  cc                     int3    
+00857cd7  cc                     int3    
+00857cd8  cc                     int3    
+00857cd9  cc                     int3    
+00857cda  cc                     int3    
+00857cdb  cc                     int3    
+00857cdc  cc                     int3    
+00857cdd  cc                     int3    
+00857cde  cc                     int3    
+00857cdf  cc                     int3    
+00857ce0  cc                     int3    
+00857ce1  cc                     int3    
+00857ce2  cc                     int3    
+00857ce3  cc                     int3    
+00857ce4  cc                     int3    
+00857ce5  cc                     int3    
+00857ce6  cc                     int3    
+00857ce7  cc                     int3    
+00857ce8  cc                     int3    
+00857ce9  cc                     int3    
+00857cea  cc                     int3    
+00857ceb  cc                     int3    
+00857cec  cc                     int3    
+00857ced  cc                     int3    
+00857cee  cc                     int3    
+00857cef  cc                     int3    
+00857cf0  cc                     int3    
+00857cf1  cc                     int3    
+00857cf2  cc                     int3    
+00857cf3  cc                     int3    
+00857cf4  cc                     int3    
+00857cf5  cc                     int3    
+00857cf6  cc                     int3    
+00857cf7  cc                     int3    
+00857cf8  cc                     int3    
+00857cf9  cc                     int3    
+00857cfa  cc                     int3    
+00857cfb  cc                     int3    
+00857cfc  cc                     int3    
+00857cfd  cc                     int3    
+00857cfe  cc                     int3    
+00857cff  cc                     int3    
+00857d00  cc                     int3    
+00857d01  cc                     int3    
+00857d02  cc                     int3    
+00857d03  cc                     int3    
+00857d04  cc                     int3    
+00857d05  cc                     int3    
+00857d06  cc                     int3    
+00857d07  cc                     int3    
+00857d08  cc                     int3    
+00857d09  cc                     int3    
+00857d0a  cc                     int3    
+00857d0b  cc                     int3    
+00857d0c  cc                     int3    
+00857d0d  cc                     int3    
+00857d0e  cc                     int3    
+00857d0f  cc                     int3    
+00857d10  cc                     int3    
+00857d11  cc                     int3    
+00857d12  cc                     int3    
+00857d13  cc                     int3    
+00857d14  cc                     int3    
+00857d15  cc                     int3    
+00857d16  cc                     int3    
+00857d17  cc                     int3    
+00857d18  cc                     int3    
+00857d19  cc                     int3    
+00857d1a  cc                     int3    
+00857d1b  cc                     int3    
+00857d1c  cc                     int3    
+00857d1d  cc                     int3    
+00857d1e  cc                     int3    
+00857d1f  cc                     int3    
+00857d20  cc                     int3    
+00857d21  cc                     int3    
+00857d22  cc                     int3    
+00857d23  cc                     int3    
+00857d24  cc                     int3    
+00857d25  cc                     int3    
+00857d26  cc                     int3    
+00857d27  cc                     int3    
+00857d28  cc                     int3    
+00857d29  cc                     int3    
+00857d2a  cc                     int3    
+00857d2b  cc                     int3    
+00857d2c  cc                     int3    
+00857d2d  cc                     int3    
+00857d2e  cc                     int3    
+00857d2f  cc                     int3    
+00857d30  cc                     int3    
+00857d31  cc                     int3    
+00857d32  cc                     int3    
+00857d33  cc                     int3    
+00857d34  cc                     int3    
+00857d35  cc                     int3    
+00857d36  cc                     int3    
+00857d37  cc                     int3    
+00857d38  cc                     int3    
+00857d39  cc                     int3    
+00857d3a  cc                     int3    
+00857d3b  cc                     int3    
+00857d3c  cc                     int3    
+00857d3d  cc                     int3    
+00857d3e  cc                     int3    
+00857d3f  cc                     int3    
+00857d40  48895c2408             mov     qword ptr [rsp + 8], rbx
+00857d45  48896c2410             mov     qword ptr [rsp + 0x10], rbp
+00857d4a  4889742418             mov     qword ptr [rsp + 0x18], rsi
+00857d4f  57                     push    rdi
+00857d50  4883ec30               sub     rsp, 0x30
+00857d54  33db                   xor     ebx, ebx
+00857d56  498bf8                 mov     rdi, r8
+00857d59  488bf2                 mov     rsi, rdx
+00857d5c  488be9                 mov     rbp, rcx
+00857d5f  4d85c0                 test    r8, r8
+00857d62  7422                   je      0x180857d86
+00857d64  488b14de               mov     rdx, qword ptr [rsi + rbx*8]
+00857d68  4885d2                 test    rdx, rdx
+00857d6b  7411                   je      0x180857d7e
+00857d6d  803a00                 cmp     byte ptr [rdx], 0
+00857d70  740c                   je      0x180857d7e
+00857d72  488bcd                 mov     rcx, rbp
+00857d75  e8ebbe7aff             call    0x180003c65
+00857d7a  85c0                   test    eax, eax
+00857d7c  741f                   je      0x180857d9d
+00857d7e  48ffc3                 inc     rbx
+00857d81  483bdf                 cmp     rbx, rdi
+00857d84  72de                   jb      0x180857d64
+00857d86  b001                   mov     al, 1
+00857d88  488b5c2440             mov     rbx, qword ptr [rsp + 0x40]
+00857d8d  488b6c2448             mov     rbp, qword ptr [rsp + 0x48]
+00857d92  488b742450             mov     rsi, qword ptr [rsp + 0x50]
+00857d97  4883c430               add     rsp, 0x30
+00857d9b  5f                     pop     rdi
+00857d9c  c3                     ret     
+00857d9d  488d0d646a4700         lea     rcx, [rip + 0x476a64]
+00857da4  41b9e2000000           mov     r9d, 0xe2
+00857daa  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00857daf  4c8d05a2544300         lea     r8, [rip + 0x4354a2]
+00857db6  b903000000             mov     ecx, 3
+00857dbb  488d158e8d4200         lea     rdx, [rip + 0x428d8e]
+00857dc2  ff1538228400           call    qword ptr [rip + 0x842238]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+00857dc8  32c0                   xor     al, al
+00857dca  ebbc                   jmp     0x180857d88
+00857dcc  cc                     int3    
+00857dcd  cc                     int3    
+00857dce  cc                     int3    
+00857dcf  cc                     int3    
+00857dd0  cc                     int3    
+00857dd1  cc                     int3    
+00857dd2  cc                     int3    
+00857dd3  cc                     int3    
+00857dd4  cc                     int3    
+00857dd5  cc                     int3    
+00857dd6  cc                     int3    
+00857dd7  cc                     int3    
+00857dd8  cc                     int3    
+00857dd9  cc                     int3    
+00857dda  cc                     int3    
+00857ddb  cc                     int3    
+00857ddc  cc                     int3    
+00857ddd  cc                     int3    
+00857dde  cc                     int3    
+00857ddf  cc                     int3    
+00857de0  cc                     int3    
+00857de1  cc                     int3    
+00857de2  cc                     int3    
+00857de3  cc                     int3    
+00857de4  cc                     int3    
+00857de5  cc                     int3    
+00857de6  cc                     int3    
+00857de7  cc                     int3    
+00857de8  cc                     int3    
+00857de9  cc                     int3    
+00857dea  cc                     int3    
+00857deb  cc                     int3    
+00857dec  cc                     int3    
+00857ded  cc                     int3    
+00857dee  cc                     int3    
+00857def  cc                     int3    
+00857df0  48895c2408             mov     qword ptr [rsp + 8], rbx
+00857df5  48896c2410             mov     qword ptr [rsp + 0x10], rbp
+00857dfa  4889742418             mov     qword ptr [rsp + 0x18], rsi
+00857dff  57                     push    rdi
+00857e00  4883ec30               sub     rsp, 0x30
+00857e04  488bda                 mov     rbx, rdx
+00857e07  488bf9                 mov     rdi, rcx
+00857e0a  4032ed                 xor     bpl, bpl
+00857e0d  ff15bd2c8400           call    qword ptr [rip + 0x842cbd]  ; imp:SemanticX64.dll!CreateRLFile
+00857e13  488bf0                 mov     rsi, rax
+00857e16  4885c0                 test    rax, rax
+00857e19  752e                   jne     0x180857e49
+00857e1b  488d0d2e6a4700         lea     rcx, [rip + 0x476a2e]
+00857e22  41b929010000           mov     r9d, 0x129
+00857e28  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00857e2d  4c8d05c43c4400         lea     r8, [rip + 0x443cc4]
+00857e34  8d4803                 lea     ecx, [rax + 3]
+00857e37  488d15128d4200         lea     rdx, [rip + 0x428d12]
+00857e3e  ff15bc218400           call    qword ptr [rip + 0x8421bc]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+00857e44  e9ae130000             jmp     0x1808591f7
+00857e49  488b00                 mov     rax, qword ptr [rax]
+00857e4c  41b901000000           mov     r9d, 1
+00857e52  458bc1                 mov     r8d, r9d
+00857e55  488bd3                 mov     rdx, rbx
+00857e58  488bce                 mov     rcx, rsi
+00857e5b  ff5010                 call    qword ptr [rax + 0x10]
+00857e5e  488bd8                 mov     rbx, rax
+00857e61  4885c0                 test    rax, rax
+00857e64  7530                   jne     0x180857e96
+00857e66  41b92c010000           mov     r9d, 0x12c
+00857e6c  4c8d0579a44500         lea     r8, [rip + 0x45a479]
+00857e73  488d0dd6694700         lea     rcx, [rip + 0x4769d6]
+00857e7a  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00857e7f  488d15ca8c4200         lea     rdx, [rip + 0x428cca]
+00857e86  b903000000             mov     ecx, 3
+00857e8b  ff156f218400           call    qword ptr [rip + 0x84216f]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+00857e91  e958130000             jmp     0x1808591ee
+00857e96  488b00                 mov     rax, qword ptr [rax]
+00857e99  488d15c8694700         lea     rdx, [rip + 0x4769c8]
+00857ea0  f30f1017               movss   xmm2, dword ptr [rdi]
+00857ea4  488bcb                 mov     rcx, rbx
+00857ea7  ff5050                 call    qword ptr [rax + 0x50]
+00857eaa  f30f105704             movss   xmm2, dword ptr [rdi + 4]
+00857eaf  488d15ca694700         lea     rdx, [rip + 0x4769ca]
+00857eb6  f30f1107               movss   dword ptr [rdi], xmm0
+00857eba  488bcb                 mov     rcx, rbx
+00857ebd  488b03                 mov     rax, qword ptr [rbx]
+00857ec0  ff5050                 call    qword ptr [rax + 0x50]
+00857ec3  f30f105708             movss   xmm2, dword ptr [rdi + 8]
+00857ec8  488d15d1694700         lea     rdx, [rip + 0x4769d1]
+00857ecf  f30f114704             movss   dword ptr [rdi + 4], xmm0
+00857ed4  488bcb                 mov     rcx, rbx
+00857ed7  488b03                 mov     rax, qword ptr [rbx]
+00857eda  ff5050                 call    qword ptr [rax + 0x50]
+00857edd  f30f10570c             movss   xmm2, dword ptr [rdi + 0xc]
+00857ee2  488d15d7694700         lea     rdx, [rip + 0x4769d7]
+00857ee9  f30f114708             movss   dword ptr [rdi + 8], xmm0
+00857eee  488bcb                 mov     rcx, rbx
+00857ef1  488b03                 mov     rax, qword ptr [rbx]
+00857ef4  ff5050                 call    qword ptr [rax + 0x50]
+00857ef7  f30f105710             movss   xmm2, dword ptr [rdi + 0x10]
+00857efc  488d15dd694700         lea     rdx, [rip + 0x4769dd]
+00857f03  f30f11470c             movss   dword ptr [rdi + 0xc], xmm0
+00857f08  488bcb                 mov     rcx, rbx
+00857f0b  488b03                 mov     rax, qword ptr [rbx]
+00857f0e  ff5050                 call    qword ptr [rax + 0x50]
+00857f11  f30f105714             movss   xmm2, dword ptr [rdi + 0x14]
+00857f16  488d15db694700         lea     rdx, [rip + 0x4769db]
+00857f1d  f30f114710             movss   dword ptr [rdi + 0x10], xmm0
+00857f22  488bcb                 mov     rcx, rbx
+00857f25  488b03                 mov     rax, qword ptr [rbx]
+00857f28  ff5050                 call    qword ptr [rax + 0x50]
+00857f2b  f30f105718             movss   xmm2, dword ptr [rdi + 0x18]
+00857f30  488d15d9694700         lea     rdx, [rip + 0x4769d9]
+00857f37  f30f114714             movss   dword ptr [rdi + 0x14], xmm0
+00857f3c  488bcb                 mov     rcx, rbx
+00857f3f  488b03                 mov     rax, qword ptr [rbx]
+00857f42  ff5050                 call    qword ptr [rax + 0x50]
+00857f45  f30f10571c             movss   xmm2, dword ptr [rdi + 0x1c]
+00857f4a  488d15d7694700         lea     rdx, [rip + 0x4769d7]
+00857f51  f30f114718             movss   dword ptr [rdi + 0x18], xmm0
+00857f56  488bcb                 mov     rcx, rbx
+00857f59  488b03                 mov     rax, qword ptr [rbx]
+00857f5c  ff5050                 call    qword ptr [rax + 0x50]
+00857f5f  f30f105720             movss   xmm2, dword ptr [rdi + 0x20]
+00857f64  488d15dd694700         lea     rdx, [rip + 0x4769dd]
+00857f6b  f30f11471c             movss   dword ptr [rdi + 0x1c], xmm0
+00857f70  488bcb                 mov     rcx, rbx
+00857f73  488b03                 mov     rax, qword ptr [rbx]
+00857f76  ff5050                 call    qword ptr [rax + 0x50]
+00857f79  f30f105724             movss   xmm2, dword ptr [rdi + 0x24]

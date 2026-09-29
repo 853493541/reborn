@@ -1,0 +1,9 @@
+# Hole probes on water-heavy maps (map-name variant, several regions)
+data/source/maps/海岛绝境/landscape/hole/海岛绝境_000_000.hlb
+data/source/maps/海岛绝境/landscape/hole/海岛绝境_000_000.png
+data/source/maps/海岛绝境/landscape/hole/海岛绝境_001_001.hlb
+data/source/maps/海岛绝境/landscape/heightmap/海岛绝境_000_000.r32
+data/source/maps/白龙绝境/landscape/hole/白龙绝境_000_000.hlb
+data/source/maps/天原绝境/landscape/hole/天原绝境_000_000.hlb
+data/source/maps/龙门寻宝/landscape/hole/龙门寻宝_003_003.hlb
+data/source/maps/龙门寻宝/landscape/hole/龙门寻宝_007_007.hlb

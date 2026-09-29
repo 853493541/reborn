@@ -1,0 +1,5 @@
+0000f850 ord=5     GetPhysicsManager
+00025cf0 ord=4     CreateSceneFileDataLoader
+0002cb40 ord=1     CreatePhysicsSceneDynamicLoader
+0002eae0 ord=2     CreatePhysicsTerrain
+00031320 ord=3     CreatePhysicsTerrainDataLoader

@@ -1,0 +1,36 @@
+0x000f11a8 ascii  PxCapsuleGeometry
+0x000f49c8 ascii  mLowForwardSpeedSubStepCount
+0x000f49e8 ascii  mHighForwardSpeedSubStepCount
+0x000f5738 ascii  LowForwardSpeedSubStepCount
+0x000f5758 ascii  HighForwardSpeedSubStepCount
+0x000f8fd0 ascii  D:\qb\buildagent\workspace\root\JX3\zhcn_hd\DataStores\DevEnv\physx334\src\PhysXSDK\Include\characterkinematic\PxController.h
+0x000f9050 ascii  PxControllerDesc::callback is deprecated, please use PxControllerDesc::reportCallback instead.
+0x000f99c8 ascii  capsule collision geometry not support non uniform scaling!
+0x000fa020 ascii  PhysicsEngine::_CreateCapsule
+0x000fa6b8 ascii  PhysicsEngine::SceneFileDataLoader_JsonSource::_LoadSceneDesc
+0x000fb3d8 ascii  PhysicsEngine::SceneRegionManager::_AddActorDescToQuadTree
+0x000fb938 ascii  m_SceneDesc.nRegionSize % m_SceneDesc.nSubRegionSize == 0
+0x000fbcd0 ascii  nArrayCount == m_TerrainDesc.nRegionCountX * m_TerrainDesc.nRegionCountZ
+0x000fbea8 ascii  nRegionHeightPointCount <= (m_pTerrainDesc->nRegionSize + 1)
+0x000fc170 ascii  m_Desc.nRegionTableSizeX > 0
+0x000fc190 ascii  m_Desc.nRegionTableSizeY > 0
+0x000fc308 ascii  nX >= 0 && nX < m_Desc.nRegionTableSizeX
+0x000fc338 ascii  nZ >= 0 && nZ < m_Desc.nRegionTableSizeY
+0x000fc368 ascii  nArraySize == (m_Desc.nRegionSize * m_Desc.nRegionSize / 8)
+0x000fc720 ascii  sHeightImg.GetSize() <= static_cast<UINT>(m_Desc.nRegionSize + 1)
+0x000fc7f0 ascii  nDataCount == (m_pTerrain->m_TerrainDesc.nRegionSize + 1) * (m_pTerrain->m_TerrainDesc.nRegionSize + 1)
+0x000fc858 ascii  (INT)u2IndexOffset.x < m_pTerrain->m_TerrainDesc.nRegionCountX
+0x000fc898 ascii  (INT)u2IndexOffset.y < m_pTerrain->m_TerrainDesc.nRegionCountZ
+0x000fd4c8 ascii  FillSkinData
+0x000fd710 ascii  [KG3D-MsgBox]%s skin BoneWeights have NaN data!
+0x00115dc8 ascii  PxCreateControllerManager
+0x00115de2 ascii  PhysX3CharacterKinematic_x64.dll
+0x00117448 ascii  ?getGeometry@PxShapeGeometryPropertyHelper@physx@@QEBA_NPEBVPxShape@2@AEAVPxCapsuleGeometry@2@@Z
+0x001178b0 ascii  ??0PxCapsuleGeometryGeneratedInfo@physx@@QEAA@XZ
+0x00117ac8 ascii  ??0PxHeightFieldDescGeneratedInfo@physx@@QEAA@XZ
+0x0011a868 ascii  .?AVPhysicsController@PhysicsEngine@@
+0x0011a8a0 ascii  .?AUIPhysicsController@PhysicsEngine@@
+0x0011a8d8 ascii  .?AVPxBoxControllerDesc@physx@@
+0x0011a908 ascii  .?AVPxCapsuleControllerDesc@physx@@
+0x0011a940 ascii  .?AVPxControllerDesc@physx@@
+0x0011ab00 ascii  .?AUKG_Capsule@PhysicsEngine@@

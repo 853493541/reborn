@@ -1,0 +1,8 @@
+data/source/maps/海岛绝境/海岛绝境.WaterData
+data/source/maps/海岛绝境/landscape/海岛绝境.WaterData
+data/source/maps/海岛绝境/landscape/landscapeinfo.WaterData
+data/source/maps/海岛绝境/spec/海岛绝境.WaterData
+data/source/maps/龙门寻宝/landscape/landscapeinfo.WaterData
+data/source/maps/龙门寻宝/spec/龙门寻宝.WaterData
+data/source/maps/龙门寻宝/龙门寻宝.rcidx.WaterData
+data/source/maps/龙门寻宝/landscape/heightmap.WaterData

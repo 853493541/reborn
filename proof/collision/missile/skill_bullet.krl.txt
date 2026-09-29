@@ -1,0 +1,163 @@
+-- 该表用于配置子弹表现. 需要在技能中配置 `skill.nSkillBulletType`.
+-- `skill.nSkillBulletType` 是一个枚举值, 其值必须为 SKILL_BULLET_TYPE 中的一个
+CYShield = 						
+{						
+	0 = 					
+	{					
+		CommonFlyAni = data\source\NPC_source\苍云盾\动作\盾飞01.tani				
+		CommonModel = data\source\item\weapon\shield\LH_shield_006.mdl				
+		CommonSingleTargetAni =				
+		{				
+			Count = 3			
+			0 = data\source\NPC_source\苍云盾\动作\shield_scy12盾飞01a.tani			
+			1 = data\source\NPC_source\苍云盾\动作\shield_scy12盾飞01b.tani			
+			2 = data\source\NPC_source\苍云盾\动作\shield_scy12盾飞01c.tani			
+		}				
+		OutTime = 2000				
+	}					
+}						
+						
+PureShadow = 						
+{						
+	0 = 					
+	{					
+		CommonFlyAni = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani				
+		CommonModel = data\source\NPC_source\P012\模型\P012097.mdl				
+		CommonSingleTargetAni = 				
+		{				
+			Count = 1			
+			0 = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani			
+		}				
+		OutTime = 2000				
+	}					
+}						
+						
+SelfShadow = 						
+{						
+	0 = 					
+	{					
+		CommonModel = data\source\NPC_source\P012\模型\P012097.mdl				
+						
+		FlyAni = 				
+		{				
+			1 = Data\source\player\M2\动作\M2b02yd奔跑.tani		-- stander male	
+			2 = Data\source\player\F2\动作\F2b02yd奔跑.tani		-- stander female	
+			5 = Data\source\player\M1\动作\M1b02yd奔跑.tani		-- little boy	
+			6 = Data\source\player\F1\动作\F1b02yd奔跑.tani		-- little girl	
+		}				
+		CommonFlyAni = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani				
+						
+		SingleTargetAni = 				
+		{				
+			Count = 1			
+			0 = 			
+			{			
+				1 = Data\source\player\M2\动作\M2b02yd奔跑.tani		-- stander male
+				2 = Data\source\player\F2\动作\F2b02yd奔跑.tani		-- stander female
+				5 = Data\source\player\M1\动作\M1b02yd奔跑.tani		-- little boy
+				6 = Data\source\player\F1\动作\F1b02yd奔跑.tani		-- little girl
+			}			
+		}				
+		CommonSingleTargetAni = 				
+		{				
+			Count = 1			
+			0 = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani			
+		}				
+						
+		FlyEndAni = 				
+		{				
+			1 = Data\source\player\M2\动作\M2b02yd奔跑.tani		-- stander male	
+			2 = Data\source\player\F2\动作\F2b02dj表白.tani		-- stander female	
+			5 = Data\source\player\M1\动作\M1b02yd奔跑.tani		-- little boy	
+			6 = Data\source\player\F1\动作\F1b02yd奔跑.tani		-- little girl	
+		}				
+		CommonFlyEndAni = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani				
+						
+		OutTime = 2000				
+		--Angle = 90
+		Offset = 200				
+	}					
+}						
+						
+TargetShadow = 						
+{						
+	0 = 					
+	{					
+		CommonModel = data\source\NPC_source\P012\模型\P012097.mdl				
+		CommonFlyAni = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani				
+						
+		FlyAni = 				
+		{				
+			1 = Data\source\player\M2\动作\M2b02yd奔跑.tani		-- stander male	
+			2 = Data\source\player\F2\动作\F2b02yd奔跑.tani		-- stander female	
+			5 = Data\source\player\M1\动作\M1b02yd奔跑.tani		-- little boy	
+			6 = Data\source\player\F1\动作\F1b02yd奔跑.tani		-- little girl	
+		}				
+						
+		SingleTargetAni = 				
+		{				
+			Count = 1			
+			0 = 			
+			{			
+				1 = Data\source\player\M2\动作\M2b02yd奔跑.tani		-- stander male
+				2 = Data\source\player\F2\动作\F2b02yd奔跑.tani		-- stander female
+				5 = Data\source\player\M1\动作\M1b02yd奔跑.tani		-- little boy
+				6 = Data\source\player\F1\动作\F1b02yd奔跑.tani		-- little girl
+			}			
+		}				
+		CommonSingleTargetAni = 				
+		{				
+			Count = 1			
+			0 = data\source\NPC_source\P012\动作\P012_xlsf19a_泰崇傣肘击释放.tani			
+		}				
+						
+		OutTime = 2000				
+	}					
+}						
+
+-- CommonWeapon 是 `skill.nSkillBulletType = 6;`, 或者说是 `skill.nSkillBulletType = SKILL_BULLET_TYPE.Common_Weapon;`.
+CommonWeapon = {
+	--以下为skill.nSkillBulletSubType
+	0 = { -- 段氏 - 劈风令					
+		CommonFlyBeginAni = Data\source\player\M2\动作\M2b02yd奔跑.tani				
+		CommonModel = data\source\other\hd特效\技能\pss\子弹\ds_段氏风刃子弹_01.pss				
+		CommonFlyAni = Data\source\player\M2\动作\M2b02yd奔跑.tani				
+		CommonFlyEndAni = Data\source\player\M2\动作\M2b02yd奔跑.tani				
+		CommonSingleTargetAni =				
+		{				
+			Count = 3			
+			0 = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			1 = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			2 = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+		}				
+		OutTime = 0				
+	}					
+	1 = { -- 段氏 - 劈风令皮肤					
+		CommonFlyBeginAni = Data\source\player\M2\动作\M2b02yd奔跑.tani				
+		CommonModel = data\source\other\hd特效\技能\pss\子弹\ds_段氏风刃子弹_01_皮肤05.pss				
+		CommonFlyAni = Data\source\player\M2\动作\M2b02yd奔跑.tani				
+		CommonFlyEndAni = Data\source\player\M2\动作\M2b02yd奔跑.tani				
+		CommonSingleTargetAni =				
+		{				
+			Count = 3			
+			0 = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			1 = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			2 = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+		}				
+		OutTime = 0				
+	}					
+		2 = { -- 纯阳 - 太极无极子弹				
+			CommonFlyBeginAni = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			CommonModel = data\source\other\hd特效\技能\pss\子弹\c_纯阳紫霞功子弹.pss			
+			CommonFlyAni = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			CommonFlyEndAni = Data\source\player\M2\动作\M2b02yd奔跑.tani			
+			CommonSingleTargetAni =			
+			{			
+				Count = 3		
+				0 = Data\source\player\M2\动作\M2b02yd奔跑.tani		
+				1 = Data\source\player\M2\动作\M2b02yd奔跑.tani		
+				2 = Data\source\player\M2\动作\M2b02yd奔跑.tani		
+			}			
+			OutTime = 0			
+		}				
+}						

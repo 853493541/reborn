@@ -1,0 +1,683 @@
+SkillID	SkillLevel	"SrcBuffPart（链状特效起点位置由角色buffPart对应模型的插槽决定,对应skill_buff.txt -1：原角色模型， 0：TOP, 1：MIDDLE, 2：BOTTOM, 3：SPECIAL, 4：WEAPON）"	"DstBuffPart（链状特效终点位置由角色buffPart对应模型的插槽决定,对应skill_buff.txt -1：原角色模型， 0：TOP, 1：MIDDLE, 2：BOTTOM, 3：SPECIAL, 4：WEAPON）"	SrcBone	DstBone	Millisecond	SFXFlip	FilePath	LinkTime	EnableRotation（默认值为1进行旋转，填0表示禁用旋转）
+0	0	-1	-1			2000	0		0	1
+1	1			Bip01 Spine	Bip01 Spine			data\source\other\特效\技能\SFX\负面\负面_增益免疫01.Sfx		
+341	1			Bip01 Spine	Bip01 Spine			data\source\other\特效\技能\SFX\链状\引导.Sfx		
+342	1			Bip01 Spine	Bip01 Spine			data\source\other\特效\技能\SFX\链状\引导.Sfx		
+343	1			Bip01 Spine	Bip01 Spine			data\source\other\特效\技能\SFX\链状\引导.Sfx		
+344	1			Bip01 Spine	Bip01 Spine			data\source\other\特效\技能\SFX\链状\引导.Sfx		
+345	1			Bip01 Spine	Bip01 Spine			data\source\other\特效\技能\SFX\链状\引导.Sfx		
+2526	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+2716	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+2994	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+3116	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+3624	1			S_fxtop	S_Spine2	1600		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+3683	1			Bip01 L Finger12	bip01 l foot	1600		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+3778	1			Bip01 L Finger12	S_fxmid	10000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+3920	1			S_fxmid	S_fxmid	500		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+3946	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+4314	1			Bip01 L Finger12	S_Spine2	1500		data\source\other\特效\技能\SFX\链状\引导.Sfx		
+4314	2			Bip01 L Finger12	S_Spine2	1500		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+4348	1			Bip01 L Finger12	S_fxmid	600		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+4406	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+4407	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_橙hd.pss		
+4408	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_黄hd.pss		
+4409	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+4410	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+4411	1			Bip01 L Finger12	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_紫hd.pss		
+4814	1			Bip01 L Finger12	S_Spine2	1500		data\source\other\特效\技能\SFX\链状\引导.Sfx		
+4863	1			Bip01 R Finger12	Bip01 R Finger12	3000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+5322	1			Bip01 L Finger12	S_fxmid	2000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+5460	1			S_fxmid	S_fxmid	30000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_紫hd.pss		
+5521	1			Bip01 R Finger12	S_fxmid	10000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+5521	2			Bip01 R Finger12	S_fxmid	10000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+5525	1			S_fxmid	S_fxmid	1200		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+5648	1			S_fxmid	S_fxmid	20000		data\source\other\特效\技能\SFX\链状\引导_六道轮回.Sfx		
+6434	1			S_fxmid	S_fxmid	20000		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+6662	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+6949	1			S_fxmid	S_fxmid	12000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+6949	2			S_fxmid	S_fxmid	12000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+6994	1			S_fxfront	S_fxmid	500		data\source\other\特效\技能\SFX\链状\引导_五毒002.Sfx		
+6994	2			S_fxfront	S_fxmid	500		data\source\other\特效\技能\SFX\链状\引导_五毒002.Sfx		
+6995	1			S_fxmid	S_fxmid	500		data\source\other\特效\技能\SFX\链状\引导_五毒002.Sfx		
+6995	2			S_fxmid	S_fxmid	500		data\source\other\特效\技能\SFX\链状\引导_五毒002.Sfx		
+7580	1			S_fxtop	S_fxmid	600000		data\source\other\特效\技能\SFX\增益\增益_南屏传功链接.Sfx		
+7733	1			S_fxmid	S_fxmid	500		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+7811	1			Bip01 R Finger12	S_fxmid	3000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+7827	1			S_fxmid	S_fxmid	1500		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+7900	1			S_fxmid	Bip01 R Finger12	10000		data\source\other\特效\技能\SFX\释放\释放_风灵珠连接线.Sfx		
+7903	1			S_fxmid	Bip01 R Finger12	10000		data\source\other\特效\技能\SFX\释放\释放_雷灵珠连接线.Sfx		
+7906	1			S_fxmid	Bip01 R Finger12	10000		data\source\other\特效\技能\SFX\释放\释放_水灵珠连接线.Sfx		
+7910	1			S_fxmid	Bip01 R Finger12	10000		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+7914	1			S_fxmid	Bip01 R Finger12	10000		data\source\other\特效\技能\SFX\释放\释放_土灵珠连接线.Sfx		
+7938	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+7981	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+7982	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+7986	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+8064	1			S_fxmid	S_fxmid	3000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+8067	1			S_fxmid	S_fxmid	300		data\source\other\特效\技能\SFX\释放\释放_土灵珠连接线.Sfx		
+8067	2			S_fxmid	S_fxmid	300		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+8067	3			S_fxmid	Bip01 R Finger12	300		data\source\other\特效\技能\SFX\释放\释放_风灵珠连接线.Sfx		
+8167	1			S_fxmid	S_fxmid	1200		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+8187	1			S_fxmid	S_fxmid	10000		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+8254	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+8255	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+8259	1			Bip01 L Finger12	Bip01 L Finger12	300	1	data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+8332	1			S_fxmid	S_fxmid	1050		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+8464	1			Bip01 L Finger12	Bip01 L Finger12	1000	1	data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+8537	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+8539	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+8573	1			S_fxmid	S_fxmid	1000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+8595	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+8768	1			Bip002 Spine2	S_fxmid	1100	1	data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+8815	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+8817	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+8871	1			Bone40	Bone10	500		data\source\other\新特效\技能\Pss\子弹\D_导火索01.pss		
+8873	1			S_fxtop	S_Spine2	1600		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+9018	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒002.Sfx		
+9030	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+9157	1			S_fxmid	S_fxmid	2000		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+9189	1			Bip01 R Finger12	Bip01_horse Neck2	80000		data/source/other/特效/技能/SFX/链状/引导_五毒002.Sfx		
+9207	1			Bip01 R Finger12	Bip01_horse Neck2	2000		data/source/other/特效/技能/SFX/链状/s_绳子.Sfx		
+9366	1			Bone17	S_fxmid	1000		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+9395	1			S_fxmid	S_fxmid	1000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+9548	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\释放\释放_导引白.Sfx		
+10344	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+10348	1			S_fxmid	S_fxmid	6000		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+10423	1			S_fxmid	S_fxmid	1000		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+10424	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+13036	1			Bip01 neck	S_fxmid	500	1	data/source/other/新特效/技能/Pss/子弹/z_紫引导01.pss		
+13297	1			S_fxmid	S_fxmid	1200	1	data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+13427	1			bone16	S_fxmid	5000		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+13858	1			Bip01 R Finger12	Bip01 Spine	400		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+13858	2			Bip01 R Finger12	Bip01 Spine	400		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+13875	1			S_fxmid	S_fxmid	12000	1	data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+13944	1			S_top	Bip01 Spine	400		data\source\other\新特效\技能\Pss\子弹\H_红链01.pss		
+13944	2			S_top	Bip01 Spine	400		data\source\other\新特效\技能\Pss\子弹\H_红链01.pss		
+13945	1			S_top	Bip01 Spine	400		data\source\other\新特效\技能\Pss\子弹\H_绿链01.pss		
+13945	2			S_top	Bip01 Spine	400		data\source\other\新特效\技能\Pss\子弹\H_绿链01.pss		
+13946	1			S_top	Bip01 Spine	400		data\source\other\新特效\技能\Pss\子弹\H_黄链01.pss		
+13946	2			S_top	Bip01 Spine	400		data\source\other\新特效\技能\Pss\子弹\H_黄链01.pss		
+14234	1			S_fxmid	S_fxmid	5000		data\source\other\特效\技能\SFX\释放\释放_风灵珠连接线.Sfx		
+14947	1			S_fxmid	S_fxmid	400		data\source\other\新特效\技能\Pss\子弹\H_红链01.pss		
+15136	1			Bip01 R Finger12	Bip01_horse Neck2	2000		data/source/other/特效/技能/SFX/链状/s_绳子.Sfx		
+15265	1			S_rh	S_fxmid	400		data\source\other\特效\技能\SFX\释放\释放_风灵珠连接线.Sfx		
+15279	1			S_rh	S_rh	1000		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+15350	1			Bip01 R Finger12	Bip01 R Finger12	2000		data/source/other/特效/技能/SFX/链状/s_绳子.Sfx		
+15363	1			S_fxmid	S_fxmid	3000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_紫hd.pss		
+15647	1			Bip01 L Finger12	Bip01 Spine	400		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+15648	1			Bip01 L Finger12	Bip01 Spine	400		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_黄hd.pss		
+15649	1			Bip01 L Finger12	Bip01 Spine	400		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+15795	1			S_lh	S_rh	20000		data/source/other/特效/技能/SFX/链状/s_绳子.Sfx		
+15893	1			S_fxmid	S_fxmid	400		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+15893	2			S_fxmid	S_fxmid	400		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+16044	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+16104	1			S_fxmid	S_fxmid	600		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+16144	1			Bip01 L Finger12	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+16352	1			Bip01 L Finger12	S_fxmid	1500		data/source/other/新特效/技能/Pss/状态/X_心魔噬魂吸收01.pss		
+16352	2			Bip01 L Finger12	S_fxmid	1500		data/source/other/新特效/技能/Pss/状态/X_心魔噬魂吸收01.pss		
+16352	3			Bip01 L Finger12	S_fxmid	1500		data/source/other/新特效/技能/Pss/状态/X_心魔噬魂吸收01.pss		
+16383	1			Bip01 L Finger12	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+16498	1			Bip01 L Finger12	S_fxmid	600		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+16568	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+16593	1			Bip01 L Finger12	S_fxmid	600		data\source\other\新特效\技能\Pss\子弹\H_绿链01.pss		
+16956	1			S_fxmid	S_fxtop	2300		data\source\other\新特效\技能\Pss\状态\L_柳夕_光链01.pss		
+16969	1			S_fxmid	S_fxmid	400		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+16979	1			Bip01 R Finger12	Bip01 R Finger12	1500		data/source/other/特效/技能/SFX/链状/s_绳子.Sfx		
+17140	1			S_fxmid	S_fxmid	500		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+17171	1			S_lh	S_lh	3100		data/source/other/新特效/技能/Pss/子弹/H_黄链01.pss		
+17172	1			S_hat	S_fxtop	3100		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+17192	1			S_fxmid	Bip01 Spine	500		data\source\other\新特效\技能\Pss\状态\l_雷电射线01.pss		
+17206	1			S_fxmid	Bip01 Spine	1500		data\source\other\新特效\技能\Pss\状态\l_雷电射线01.pss		
+17241	1			S_lh	S_fxmid	2000		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+17413	1			S_fxmid	Bip01 Spine	1500		data\source\other\新特效\技能\Pss\子弹\H_黄链01.pss		
+17428	1			S_fxmid	Bip01 Spine	1500		data\source\other\新特效\技能\Pss\状态\l_雷电射线01.pss		
+17487	1			S_fxmid	Bip01 Spine	1500		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+17542	1			S_lh	S_fxmid	2000		data\source\other\特效\技能\SFX\释放\释放_火灵珠连接线.Sfx		
+17574	1			S_fxmid	S_fxmid	3000		data\source\other\新特效\技能\Pss\状态\C_纯阳连线_气劲.pss		
+17596	1			S_fxtop	S_fxtop	1500		data\source\other\新特效\技能\Pss\状态\l_雷电射线01.pss		
+17596	2			S_fxtop	S_fxtop	1500		data\source\other\新特效\技能\Pss\状态\l_雷电射线01.pss		
+17597	1			Bip01 Spine	S_fxmid	1000		data\source\other\新特效\技能\Pss\状态\P_喷火01.pss		
+17598	1			Bip01 Spine	S_fxmid	1000		data\source\other\新特效\技能\Pss\状态\P_喷水01.pss		
+17679	1			Bip01 Spine	S_fxmid	1500		data\source\other\新特效\技能\Pss\状态\P_喷火01.pss		
+17680	1			Bip01 Spine	S_fxmid	1500		data\source\other\新特效\技能\Pss\状态\P_喷水01.pss		
+17917	1			S_fxmid	Bip01 Spine	600		data\source\other\新特效\技能\Pss\状态\l_雷电射线01.pss		
+17921	1			S_fxtop	S_fxmid	400		data\source\other\HD特效\技能\Pss\发招\s_石斑火焰_链状01.pss		
+17921	2			S_fxtop	S_fxmid	400		data\source\other\HD特效\技能\Pss\发招\s_石斑火焰_链状01.pss		
+17960	1			Bip01 L Finger12	S_fxmid	400		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_橙hd.pss		
+17963	1			S_fxmid	S_fxmid	2000		data\source\other\HD特效\技能\Pss\发招\W_乌灵风藤蔓链状01.pss		
+18143	1			S_fxmid	S_fxmid	1200		data\source\other\HD特效\技能\Pss\子弹\L_链状蓝红01.pss		
+18163	1			S_fxmid	S_fxmid	300		data\source\other\新特效\技能\Pss\子弹\S_锁链01.pss		
+18190	1			Bip01 L Finger12	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+18191	1			Bip01 L Finger12	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+18192	1			Bip01 L Finger12	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+18193	1			Bip01 L Finger12	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+18194	1			Bip01 L Finger12	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+18349	1			S_fxmid	Bip01 Spine	3000		data\source\other\HD特效\技能\Pss\发招\S_司晴剑气01hd.pss		
+18477	1			S_fxmid	S_fxmid	1000		data\source\other\HD特效\技能\Pss\发招\S_司晴天山阵法02hd.pss		
+18479	1			S_fxmid	S_rh	5000		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18481	1			Bip01 L Finger12	S_fxmid	1000		data/source/other/HD特效/技能/Pss/状态/S_锁链01.pss		
+18506	1			S_fxmid	S_fxmid	1100		data/source/other/HD特效/技能/Pss/状态/Q_七秀王母buff01.pss		
+18516	1			S_fxmid	S_fxmid	1000		data/source/other/HD特效/技能/Pss/状态/S_锁链01.pss		
+18580	1			Bip01 L Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+18593	1			s_fire	Bip01 Spine	2500		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+18671	1			S_rh	S_fxmid	5000		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18686	1			S_fxmid	S_fxmid	500		data/source/other/HD特效/技能/Pss/状态/W_五毒水蛊减伤链状.pss		
+18738	1			S_fxmid	S_fxmid	3000		data\source\other\HD特效\技能\Pss\子弹\T_唐门狙击子弹02.pss		
+18746	1			S_fxmid	S_lh	5000		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18747	1			S_fxmid	S_fxmid	1100		data/source/other/HD特效/技能/Pss/状态/C_长歌目标连续特效.pss		
+18758	1			S_fxmid	S_fxmid	1200		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+18759	1			S_fxmid	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+18784	1			S_fxmid	S_lh	1100		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18785	1			S_fxmid	S_rh	1100		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18790	1			S_fxmid	S_lh	10000		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18791	1			S_fxmid	S_lh	2100		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+18792	1			S_fxmid	S_rh	4100		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+19013	1			S_fxmid	S_rh	400		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+19056	1			S_rh	S_fxmid	3000		data/source/other/HD特效/技能/Pss/子弹/h_回风链状锁链.pss		
+19070	1			S_fxmid	S_fxmid	1500		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+19073	1				S_fxmid	700		data/source/other/hd特效/技能/pss/子弹/y_月华_禁锢锁链02.pss		
+19110	1			S_lh	S_fxmid	1200		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+19341	1			S_fxtop	S_fxtop	5500		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+19504	1			S_fxmid	S_fxmid	1000		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+19567	1			S_rh	S_fxmid	1000		data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+19568	1			S_lh	S_fxmid	1000		data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+19648	1			S_rh	S_fxmid	2000		data/source/other/hd特效/技能/pss/状态/g_勾子链状01_加强.pss		
+19649	1			S_rh	S_fxmid	2000		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+19691	1			S_fxmid	S_fxmid	1200		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+19691	2			S_fxmid	S_fxmid	1200		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+19691	3			S_fxmid	S_fxmid	1200		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+19730	1			S_fxmid	S_fxmid	10000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+19792	1			S_fxmid	S_fxmid	1200		data\source\other\新特效\技能\Pss\子弹\L_链血红01.pss		
+19801	1			S_lh	S_fxmid	2000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+19953	1			S_lh	S_fxmid	1000		data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+19958	1			S_rh	S_fxmid	2000		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+20077	1			S_rh	S_fxmid	1200		data\source\other\特效\技能\SFX\链状\引导_铁链.Sfx		
+20120	1			S_fxmid	S_fxmid	1100		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+20146	1			S_fxmid	S_fxmid	1000		data\source\other\HD特效\技能\Pss\子弹\T_唐门狙击子弹02.pss		
+20194	1			S_fxmid	S_fxmid	1000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_橙hd.pss		
+20195	1			S_fxmid	S_fxmid	1100		data\source\other\特效\技能\SFX\链状\引导_令狐伤_冰霜链01.Sfx		
+20218	1			S_fxmid	S_fxmid	10000		data/source/other/新特效/技能/pss/子弹/h_绿链01.pss		
+20384	1			S_fxmid	S_fxmid	1000		data/source/other/新特效/技能/pss/状态/l_柳夕_光链01.pss		
+20402	1			s_fire	S_fxmid	1000		data/source/other/新特效/技能/pss/子弹/l_链绿01.pss		
+20453	1			S_fxmid	S_fxmid	1000		data\source\other\HD特效\技能\Pss\状态\Y_源氏北斗圆环炸线01.pss		
+20465	1			S_rh	S_fxmid	500		data/source/other/新特效/技能/Pss/状态/D_毒针连线02.pss		
+20475	1			S_rh	S_fxmid	10000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+20478	1			S_fxmid	S_fxmid	510		data/source/other/特效/技能/sfx/链状/引导_令狐伤_冰霜链01.sfx		
+20526	1			S_fxmid	S_fxmid	4000		data/source/other/新特效/技能/pss/子弹/h_红链01.pss		
+20644	1			S_fxmid	S_fxmid	1200		data/source/other/hd特效/技能/pss/发招/y_月华_禁锢锁链01.pss		
+20644	2			S_fxmid	S_fxmid	1200		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+20889	1			S_fxtop	S_fxmid	3000		data/source/other/hd特效/技能/pss/状态/g_勾子链状01.pss		
+20933	1			S_fxmid	S_fxmid	1100		data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+21056	1			S_rh	S_fxmid	260		data\source\other\HD特效\技能\Pss\发招\s_石斑火焰_链状01.pss		
+21167	1			S_fxmid	S_fxmid	400		data/source/other/hd特效/技能/pss/状态/q_七秀束缚_链状.pss		
+21190	1			S_fxmid	S_fxmid	400		data/source/other/hd特效/技能/pss/状态/q_七秀束缚_链状加强.pss		
+21191	1			S_fxmid	S_fxmid	600		data/source/other/hd特效/技能/pss/状态/q_七秀束缚_链状消散.pss		
+21233	1			S_spine2	S_fxtop	600		data/source/other/特效/技能/sfx/释放/释放_六脉神剑导引_蓝.sfx		
+21258	1			S_spine2	S_fxmid	10000		data/source/other/特效/技能/sfx/释放/释放_六脉神剑导引_绿.sfx		
+21354	1			S_spine2	S_fxmid	6000		data/source/other/hd特效/技能/pss/状态/s_索套缢刑宴灾01_hd.pss		
+21395	1			S_rh	S_fxmid	100000		data/source/other/hd特效/技能/pss/状态/s_锁链01.pss		
+21437	1			S_rh	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+21462	1			S_rh	S_fxmid	1200		data/source/other/特效/技能/sfx/释放/释放_六脉神剑导引_绿.sfx		
+21561	1			S_fxmid	S_fxmid	5000		data/source/other/hd特效/技能/pss/状态/l_链状紫黄穆01_hd.pss		
+21562	1			S_fxmid	S_fxmid	5000		data/source/other/hd特效/技能/pss/状态/l_链状白黄穆01_hd.pss		
+21563	1			S_fxmid	S_fxmid	5000		data/source/other/hd特效/技能/pss/状态/l_链状黑黄穆01_hd.pss		
+21872	1			S_fxmid	S_fxmid	2000		data\source\other\HD特效\技能\Pss\发招\s_石斑火焰_链状01.pss		
+21901	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_黄hd.pss		
+21902	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+21903	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+21904	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+21905	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_橙hd.pss		
+22044	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+22052	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\m_明玉连线01.pss		
+22053	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\m_明玉连线01.pss		
+22319	1			S_fxtop	S_fxmid	500		data/source/other/HD特效/技能/Pss/状态/L_凌雪阁眼部链状.pss		
+22436	1			S_rh	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子毒.pss		
+22440	1			S_rh	S_fxmid	3000		data/source/other/新特效/技能/pss/状态/l_柳夕_光链01.pss		
+22441	1			S_rh	S_fxmid	3000		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子吸血.pss		
+22442	1			S_fxmid	S_lh	2000		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子.pss		
+22443	1			S_fxmid	S_rh	4500		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子.pss		
+22451	1			S_fxmid	S_fxmid	1100		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子.pss		
+22452	1				S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\f_方有崖星位点阵链01.pss		
+22466	1			S_fxmid	S_fxmid	1100		data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+22467	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\s_尸毒爆发链条01.pss		
+22860	1			S_rh	Origin	11000		data\source\other\hd特效\技能\pss\状态\t_铁链火系.pss		
+22893	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\f_方有崖星链静止01.pss		
+23017	1			S_fxmid	S_fxmid	100000		data\source\other\特效\技能\sfx\增益\增益_南屏传功链接.sfx		
+23460	1			S_rh	s_fxmid	1100		data/source/other/HD特效/技能/Pss/状态/W_五毒水蛊减伤链状.pss		
+23625	1			S_rh	s_fxmid	6000		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁链状01.pss		
+23674	1			S_rh	s_fxmid	500		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+23680	1			S_rh	s_fxmid	400		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+23682	1			s_fxmid	s_fxmid	600		data\source\other\hd特效\技能\pss\状态\b_白某_生线.pss		
+23687	1			s_fxmid	s_fxmid	600		data\source\other\hd特效\技能\pss\状态\b_白某_死线.pss		
+23777	1			S_rh	S_rh	1100		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子.pss		
+23845	1			S_rh	s_fxmid	1010		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁链状02.pss		
+23887	1			s_fxmid	s_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+24011	1			s_fxmid	s_fxmid	4000		data\source\other\特效\技能\sfx\释放\释放_风灵珠连接线.sfx		
+24039	1			s_fxmid	s_fxmid	6000		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+24040	1			S_fxtop	s_fxmid	13000		data\source\other\hd特效\技能\pss\状态\l_凌雪阁眼部链状.pss		
+24125	1			S_lh	S_fxmid	1200		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+24148	1			s_fxmid	s_fxmid	600		data\source\other\hd特效\技能\pss\状态\b_白某_死线.pss		
+24149	1			s_fxmid	s_fxmid	600		data\source\other\hd特效\技能\pss\状态\b_白某_生线.pss		
+24201	1			S_lh	s_fxmid	4000		data\source\other\hd特效\技能\pss\状态\t_铁链火系.pss		
+24209	1			s_fxmid	s_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+24308	1			s_fxmid	s_fxmid	600		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_命线.pss		
+24387	1			s_fxmid	s_fxmid	1100		data\source\other\新特效\技能\pss\子弹\l_链血红01.pss		
+24390	1			s_fxmid	s_fxmid	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗.pss		
+24391	1			S_fxtop	S_fxtop	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗.pss		
+24411	1			S_fxtop	S_fxtop	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗.pss		
+24415	1			s_fxmid	s_fxmid	1100		data\source\other\新特效\技能\pss\状态\l_柳夕_光链01.pss		
+24429	1			S_spine2	S_spine2	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗阴影.pss		
+24476	1			S_rh	s_fxmid	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+24477	1			S_rh	S_fxtop	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+24523	1			S_rh	s_fxmid	1000		data\source\other\hd特效\技能\pss\状态\g_勾子链状01.pss		
+24528	1			s_fxmid	s_fxmid	30000		data\source\other\hd特效\技能\pss\发招\y_哑头陀木甲充能.pss		
+24529	1			S_fxmid	S_fxmid	2000		data/source/other/hd特效/技能/pss/状态/q_七秀束缚_链状.pss		
+24622	1			s_fxmid	S_fxtop	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗.pss		
+24623	1			S_fxtop	s_fxmid	750		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗.pss		
+24629	1			s_lh	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\y_哑头陀净天眼链状_金色.pss		
+24635	1			S_fxmid	s_lc	30000		data\source\other\hd特效\技能\pss\发招\y_哑头陀木甲充能.pss		
+24679	1			s_fxmid	s_fxmid	1010		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+24701	1			S_rh	S_face	1010		data\source\other\HD特效\技能\Pss\状态\t_唐门特殊武器_链子吸血.pss		
+24729	1			s_fxmid	s_fxmid	1100		data\source\other\hd特效\技能\pss\发招\m_明玉连线01.pss		
+24738	1			s_fxmid	s_fxmid	1100		data\source\other\hd特效\技能\pss\发招\m_明玉连线02.pss		
+24759	1			S_fxmid	s_rc	30000		data\source\other\hd特效\技能\pss\发招\y_哑头陀木甲充能.pss		
+24810	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\增益\增益_南屏传功链接.Sfx		
+24810	2			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\增益\增益_南屏传功链接.Sfx		
+24920	1			S_fxmid	S_fxmid	600				
+24922	1			s_lh	s_rh	5000		data/source/other/HD特效/技能/Pss/状态/l_链金色连线.pss		
+24931	1			S_fxmid	S_fxmid	600		data/source/other/hd特效/技能/pss/状态/W_万花墨线链01.pss		
+24931	2			S_fxmid	S_fxmid	600		data/source/other/hd特效/技能/pss/状态/W_万花墨线链爆01.pss		
+24975	1			s_hat	S_fxmid	4100		data\source\other\hd特效\技能\pss\发招\y_哑头陀净天眼链状_金色.pss		
+25081	1			S_fxmid	S_fxmid	550		data/source/other/HD特效/技能/Pss/发招/C_藏剑大招祭剑_链状.pss		
+25274	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+25346	1			S_fxmid	Bip01 Spine	600	2	data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+25533	1			s_rh	S_fxmid	60000		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+25550	1			s_fixmid	s_fxmid	1100		data\source\other\hd特效\技能\pss\状态\q_七秀束缚_链状.pss		
+25653	1			s_rh	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+25666	1			s_rh	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\f_方有崖星位点阵链01.pss		
+25707	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+25727	1			S_lh	S_rh	1200		data\source\other\新特效\技能\pss\子弹\s_绳.pss		
+25823	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\y_衍天宗链状_01.pss		
+25889	1			S_fxtop	S_fxtop	3500		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+25900	1			s_rh	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+25903	1			S_fxmid	S_fxmid	600		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_绿.sfx		
+25904	1			S_fxmid	S_fxmid	600		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_橙.sfx		
+25905	1			S_fxmid	S_fxmid	600		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_红.sfx		
+26063	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+26187	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\链状\引导_七秀001.Sfx		
+26400	1			S_rh	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\w_无名链状特效.pss		
+26502	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_红hd.pss		
+26655	1			S_rh	S_fxmid	3000		data/source/other/hd特效/技能/pss/状态/s_锁链01.pss		
+26680	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+26704	1			s_rh	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\s_锁链01.pss		
+26705	1			s_rh	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\g_勾子链状01.pss		
+26785	1			S_fxmid	s_rh	5000		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+26834	1			s_rh	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\g_勾子链状01_加强.pss		
+26846	1			S_fxtop	S_fxtop	500		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_红hd.pss		
+26847	1			S_fxtop	S_fxtop	500		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_蓝hd.pss		
+26848	1			S_fxtop	S_fxtop	500		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_绿hd.pss		
+26849	1			S_fxtop	S_fxtop	600		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+26946	1			S_rh	S_Spine2	2000		data/source/other/HD特效/技能/Pss/状态/S_锁链01.pss		
+26963	1			Bip01 R Finger12	S_fxmid	2000		data/source/other/HD特效/技能/Pss/发招/L_链状_锁链_白01.pss		
+27016	1			S_rh	S_fxtop	1000		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+27048	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链金色连线.pss		
+27122	1			S_fxmid	S_fxmid	2000	1	data\source\other\HD特效\其他\Pss\w_五毒蜘蛛吐丝02.pss		
+27134	1			S_fxmid	S_fxmid	8000		data/source/other/HD特效/技能/Pss/状态/W_五毒水蛊减伤链状.pss		
+27168	1			s_rh	S_fxmid	2000		data/source/other/新特效/技能/pss/子弹/h_绿链01.pss		
+27224	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链金色连线.pss		
+27233	1			S_fxmid	S_fxmid	3000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+27246	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链金色连线.pss		
+27247	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链金色连线.pss		
+27280	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_绿.sfx		
+27286	1			Bip01 R Finger12	S_fxmid	2000		data/source/other/HD特效/技能/Pss/发招/L_链状_锁链_白01.pss		
+27289	1			S_fxmid	S_rh	1100	1	data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+27294	1			S_rh	S_fxmid	1100		data/source/other/HD特效/技能/Pss/状态/W_五毒水蛊减伤链状.pss		
+27391	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+27416	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\f_方有崖星链静止01.pss		
+27426	1			S_fxmid	S_rh	1100	1	data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+27439	1			S_rh	S_fxmid	1100		data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+27439	2			S_fxmid	S_rh	1100	1	data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+27439	3			S_rh	S_fxmid	1100	1	data/source/other/hd特效/技能/pss/状态/s_尸毒爆发链条01.pss		
+27474	1			S_rh	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\f_方有崖星位点阵链01.pss		
+27474	2			S_fxmid	S_rh	1100	1	data\source\other\hd特效\技能\pss\发招\f_方有崖星位点阵链01.pss		
+27474	3			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+27527	1			S_rh	S_fxmid	550		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+27595	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\j_剑星芒链接01.pss		
+27807	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+27838	1			S_rh	s_fxmid	1800		data\source\other\hd特效\技能\pss\状态\s_尸毒爆发链条01.pss		
+27885	1			S_lh	S_fxmid	1050		data\source\other\HD特效\技能\Pss\状态\YZ_且待时休链状.pss		
+27885	2			S_lh	S_fxmid	1500		data\source\other\HD特效\技能\Pss\状态\YZ_且待时休链状.pss	200	
+28017	1			S_rh	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁链状01.pss		
+28032	1			S_rh	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\s_锁链01.pss		
+28077	1			S_fxmid	S_fxmid	400		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+28134	1			S_lh	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\q_潜蛇喋咬_乌蒙贵_链状.pss		
+28263	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\子弹\l_链状蓝红01.pss		
+28309	1			S_face	S_face	275		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+28353	1			S_rh	S_fxmid	8000		data\source\other\hd特效\技能\pss\状态\s_锁链01.pss		
+28440	1			s_fxmid	s_fxmid	1010		data\source\other\hd特效\技能\pss\发招\f_方有崖星位点阵链离地01.pss		
+28809	1			s_fxmid	s_fxmid	1010		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+28918	1			S_lh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_药宗_链状特效_银光照雪.pss	200	
+29213	1			S_fxmid	S_fxmid	10000		data/source/other/HD特效/技能/Pss/状态/L_凌雪阁链子_灵魂互换01.pss		
+29237	1			S_fxmid	S_fxmid	3100		data\source\other\新特效\技能\pss\子弹\h_绿链01.pss		
+29317	1			S_lh	S_fxmid	1010		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+29324	1			Bip01 R Finger12	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+29325	1			S_fxmid	S_fxmid	1000		data\source\other\特效\技能\SFX\链状\引导_五毒001.Sfx		
+29336	1			S_fxmid	S_fxmid	600		data/source/other/HD特效/技能/Pss/发招/L_链状_少林佛珠01.pss		
+29337	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_黄hd.pss		
+29621	1			S_fxmid	S_fxmid	550		data\source\other\hd特效\技能\pss\发招\f_方有崖星位点阵链01.pss		
+29623	1			S_fxmid	S_fxmid	550		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+29685	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁花吸收01.pss		
+29686	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\c_藏剑大招祭剑_链状.pss		
+29719	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\l_链状_白_桑乔01.pss		
+29865	1			S_fxmid	S_fxmid	1100	1	data\source\other\hd特效\技能\pss\发招\q_潜蛇喋咬_乌蒙贵_链状.pss		
+29983	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\t_唐门天绝地灭拖拽链条.pss		
+30072	1			S_fxmid	S_fxtop	3000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+30087	1			S_fxmid	S_fxmid	25000		data\source\other\hd特效\技能\pss\状态\y_药宗_链状特效_银光照雪.pss	200	
+30246	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+30249	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\链状\引导_七秀001.Sfx		
+30317	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+30318	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\z_周贽_贯体箭链状.pss		
+30319	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁花吸收01.pss		
+30336	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+30344	1			S_fxmid	S_fxmid	1100	1	data\source\other\hd特效\技能\pss\状态\l_链金色连线.pss		
+30499	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+30501	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+30796	1			S_fxmid	S_fxmid	9000		data\source\other\hd特效\技能\pss\状态\t_唐门天绝地灭拖拽链条.pss		
+30854	1			S_fxmid	S_fxmid	5000		data\source\other\新特效\技能\pss\子弹\l_链红.pss		
+30884	1			S_fxmid	S_fxmid	1500		data\source\other\hd特效\技能\pss\状态\q_七秀_治疗链接.pss		
+30980	1			S_rh	S_fxmid	1500		data\source\other\hd特效\技能\pss\发招\b_鞭子链装特效.pss		
+31128	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+31128	2			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+31128	3			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+31144	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\技能\pss\发招\f_方有崖星链静止01.pss		
+31160	1			S_fxmid	S_fxmid	1500		data\source\other\hd特效\技能\pss\状态\l_雷电链状左.pss		
+31160	2			S_fxmid	S_fxmid	1500		data\source\other\hd特效\技能\pss\状态\l_雷电链状中.pss		
+31160	3			S_fxmid	S_fxmid	1500		data\source\other\hd特效\技能\pss\状态\l_雷电链状右.pss		
+31233	1			S_fxmid	S_fxmid	15000		data\source\other\hd特效\技能\pss\发招\w_无名链状特效.pss		
+31422	1			S_fxmid	S_rh	500		data\source\other\新特效\技能\pss\子弹\s_绳.pss		
+31491	1			S_rh	S_lh	1300		data\source\other\hd特效\技能\pss\发招\y_月华_禁锢锁链01.pss		
+31491	2			S_rh	S_rh	1300		data\source\other\hd特效\技能\pss\发招\y_月华_禁锢锁链01.pss		
+31491	3			S_rh	Bip01 l foot	1300		data\source\other\hd特效\技能\pss\发招\y_月华_禁锢锁链01.pss		
+31491	4			S_rh	Bip01 r foot	1300		data\source\other\hd特效\技能\pss\发招\y_月华_禁锢锁链01.pss		
+31562	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\其他\pss\z_战场链状02_4.pss		
+31689	1			S_rh	S_fxmid	2200		data\source\other\hd特效\技能\pss\发招\y_月华_禁锢锁链01.pss		
+31887	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+31907	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+31927	1			S_fxmid	S_fxmid	5100		data\source\other\hd特效\技能\pss\状态\l_凌雪阁眼部链状.pss		
+31975	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_链状阵眼充能01.pss		
+32027	1			S_fxmid	S_fxmid	300		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+32045	1			S_rh	S_fxmid	2000		data\source\other\hd特效\其他\pss\z_战场链状01_1_low.pss		
+32074	1			S_fxmid	S_fxmid	5100		data\source\other\hd特效\技能\pss\状态\l_链状音波01.pss		
+32155	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_橙hd.pss		
+32155	2			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_红hd.pss		
+32155	3			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁链状消散01.pss		
+32197	1			S_fxmid	S_fxmid	4750		data\source\other\hd特效\技能\pss\状态\l_链状黑黄穆01_hd.pss		
+32390	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状黑黄穆01_hd.pss		
+32528	1			S_rh	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+32552	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+32560	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+32562	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+32565	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+32664	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+32798	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\w_五毒链传递01.pss		
+32890	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+32921	1			S_fxmid	S_fxmid	300		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+32995	1			S_fxmid	S_fxmid	1100		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_黄hd.pss		
+33023	1			S_fxmid	S_fxmid	3000		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+33211	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\d_刀宗_链状特效_01.pss		
+33306	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链状笑尘诀.pss		
+33331	1			S_rh	bone002	1100		data\source\other\hd特效\技能\pss\状态\l_龙一荡链状02.pss		
+33460	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\发招\j_剑星芒链接01.pss		
+33547	1			S_rh	S_fxmid	1000		data/source/other/HD特效/技能/Pss/发招/l_链状麻绳01.pss		
+33605	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\其他\pss\z_战场链状02_4.pss		
+33626	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\其他\pss\z_战场链状02_1.pss		
+33817	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\子弹\y_月华_禁锢锁链02.pss		
+33835	1			S_face	S_face	2000		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+34000	1			S_rh	S_fxmid	3000		data\source\other\hd特效\其他\pss\z_战场链状02_4.pss		
+34092	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+34122	1			S_fxmid	S_fxmid	15000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+34319	1			S_rh	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\g_勾子链状01.pss		
+34342	1			S_fxmid	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+34523	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\其他\pss\w_乌蒙贵_雷击链状02_绿.pss		
+34536	1			S_fxmid	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\g_勾子链状01.pss		
+34571	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+34721	1			S_rh	S_fxmid	2000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+34752	1			S_rh	S_face	1010		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_红黑.pss		
+34911	1			S_fxmid	S_fxmid	1010		data\source\other\hd特效\技能\pss\状态\l_龙一荡链状02.pss		
+34990	1			S_lh	s_fxmid	30000		data/source/other/HD特效/技能/Pss/发招/W_无名链状特效.pss		
+35085	1			s_fxmid	S_lh	600		data\source\other\hd特效\技能\pss\状态\t_铁链火系.pss		
+35178	1			S_fxmid	S_fxmid	4000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+35179	1			S_fxmid	S_fxmid	2000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+35281	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+35378	1			S_rh	S_rh	2000		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+35379	1			S_lh	S_rh	2000		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+35380	1			Bip01 r foot	S_rh	2000		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+35381	1			Bip01 l foot	S_rh	2000		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+35390	1			S_lh	s_fxmid	1100		data\source\other\hd特效\技能\pss\状态\lxg_凌雪阁链状02.pss		
+35415	1			S_fxmid	S_fxmid	420		data\source\other\hd特效\技能\pss\状态\l_龙一荡链状01.pss		
+35426	1			S_fxmid	S_fxmid	420		data\source\other\hd特效\其他\pss\z_战场链状01_4_low.pss		
+35458	1			S_fxmid	S_fxmid	1010		data\source\other\hd特效\技能\pss\状态\y_ytz解控链接.pss		
+35492	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35514	1			S_rh	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35533	1			S_rh	S_fxmid	8000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35554	1			S_rh	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35557	1			S_rh	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35621	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+35622	1			S_fxmid	S_fxmid	5000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+35672	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\c_岑伤内力链状.pss		
+35712	1			S_fxmid	S_fxmid	375		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+35713	1			S_fxmid	S_fxmid	375		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+35783	1			S_fire01	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\q_麒麟吐息链状光束.pss		
+35801	1			S_fxmid	S_fxmid	1600		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+35831	1			S_rh	S_fxmid	40000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35832	1			S_rh	S_fxmid	40000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35838	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\发招\w_无名链状特效.pss		
+35839	1			S_fxmid	S_fxmid	10000		data\source\other\hd特效\技能\pss\发招\w_无名链状特效.pss		
+35841	1			S_fire01	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\l_链状杳月缠流.pss		
+35861	1			S_fire01	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状雷电_01.pss		
+35902	1			S_rh	S_fxmid	1100		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_黄.sfx		
+35903	1			S_rh	S_fxmid	1100		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_绿.sfx		
+35904	1			S_rh	S_fxmid	1100		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_蓝.sfx		
+35905	1			S_rh	S_fxmid	1100		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_红.sfx		
+35906	1			S_rh	S_fxmid	1100		data\source\other\特效\技能\sfx\释放\释放_六脉神剑导引_紫.sfx		
+35907	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状金.pss		
+35908	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状绿.pss		
+35909	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状特效.pss		
+35910	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状红.pss		
+35911	1			S_rh	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状紫.pss		
+35952	1			S_fxmid	S_fxmid	10000		data\source\other\hd特效\技能\pss\状态\l_链状阵眼充能01.pss		
+36038	1			S_fxmid	S_lh	1100		data\source\other\hd特效\技能\pss\发招\w_无名链状特效.pss		
+36094	1			S_rh	S_fxmid	2200		data\source\other\新特效\技能\pss\状态\d_毒针连线02.pss		
+36277	1			S_fxmid	S_fxmid	600000		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+36335	1			S_fire01	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\q_麒麟寒冰光束.pss		
+36339	1			S_fxmid	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+36362	1			S_fxmid	S_fxmid	8000		data\source\other\hd特效\技能\pss\发招\j_剑星芒链接01.pss		
+36456	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\y_ytz衍天宗链状连接.pss		
+36465	1			S_fire01	s_fxmid	1100		data\source\other\HD特效\技能\Pss\状态\链状_机关镜子红光.pss		
+36532	1			S_fxmid	S_fxmid	400		data\source\other\hd特效\技能\pss\发招\m_明玉连线01.pss		
+36610	1			S_fxmid	S_fxmid	400		data\source\other\hd特效\技能\pss\发招\l_链状_白_桑乔01.pss		
+36629	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_紫hd.pss		
+36635	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_黄hd.pss		
+36701	1			S_rh	S_fxmid	1100		data\source\other\hd特效\其他\pss\w_乌蒙贵_雷击链状02_绿.pss		
+36741	1			S_lh	S_spine2	500		data\source\other\hd特效\技能\pss\发招\L_lxg特殊武器_链状特效_白.pss		
+36742	1			S_rh	S_spine2	500		data\source\other\hd特效\技能/Pss/发招/L_lxg特殊武器_链状特效_黑.pss		
+36755	1			S_rh	S_fxmid	1100		data\source\other\hd特效\其他\pss\w_乌蒙贵_雷击链状02_绿.pss		
+36781	1			S_fxmid	S_fxmid	3500		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+36784	1			S_rh	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\w_五毒链传递01.pss		
+36798	1			S_rh	S_fxmid	1100		data\source\other\hd特效\其他\pss\w_乌蒙贵_雷击链状02_绿.pss		
+36888	1			S_fxmid	S_fxmid	1600		data\source\other\hd特效\技能\pss\状态\y_ytz衍天宗链状连接.pss		
+36986	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\其他\pss\z_战场链状01_5.pss		
+37024	1			S_fxmid	S_fxmid	375		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+37040	1			S_fxmid	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+37052	1			S_fxmid	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+37067	1			S_fxmid	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_绿hd.pss		
+37093	1			S_fxmid	S_fxmid	1100		data\source\other\新特效\技能\pss\状态\d_毒针连线02.pss		
+37121	1	1	1	s_fire01	s_fire02	1100		data/source/other/HD特效/技能/Pss/状态/LXG_凌雪阁链状01.pss		0
+37121	2	1	1	s_fire01	s_fire02	1100		data\source\other\HD特效\其他\Pss\L_龙身体拆分_链状.pss		0
+37180	1			S_fxmid	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+37194	1			S_lh	S_lh	600000		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+37226	1			S_rh	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\链状_机关镜子红光.pss		
+37228	1			S_lh	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\l_戮夜游弟子_链状.pss		
+37243	1			S_lh	S_fxmid	2500		data\source\other\hd特效\技能\pss\状态\y_鹰眼客苍隼锁链浅灰_链状.pss		
+37243	2			S_lh	S_fxmid	2500		data\source\other\hd特效\技能\pss\状态\y_鹰眼客苍隼锁链深灰_链状.pss		
+37243	3			S_lh	S_fxmid	2500		data\source\other\hd特效\技能\pss\状态\y_鹰眼客苍隼锁链纯黑_链状.pss		
+37258	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_阴影.pss		
+37305	1			S_spine2	S_fxmid	1100		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+37411	1			S_fxmid	S_fxmid	1900		data\source\other\hd特效\其他\pss\z_战场链状01_1_low.pss		
+37441	1			S_fxmid	S_fxmid	2400		data\source\other\hd特效\技能\pss\状态\y_鹰眼客囚笼锁链_链状.pss		
+37449	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_命线.pss		
+37541	1			S_lh	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\y_鹰眼客苍隼锁链纯黑_链状.pss		
+37594	1			S_spine2	s_fxmid	550		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+37595	1			S_spine2	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_紫hd.pss		
+37679	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+37777	1			S_fxmid	S_fxmid	4000		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+37794	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+37795	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\链状\引导_七秀001.Sfx		
+37927	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\q_七秀王母buff01_皮肤03.pss		
+38048	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\其他\pss\z_战场链状01_5.pss		
+38173	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\链状_机关镜子红光.pss		
+38187	1					600000		data\source\other\hd特效\技能\pss\发招\y_月华_禁锢锁链01.pss		
+38212	1			S_fxmid	Bip01 R Finger12	1000		data/source/other/特效/技能/SFX/链状/s_绳子.Sfx		
+38253	1			S_fxmid	S_fxmid	600		data/source/other/HD特效/技能/Pss/状态/l_链金色连线.pss		
+38301	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\l_链状麻绳01.pss		
+38302	1			S_fxmid	S_fxmid	20000		data\source\other\hd特效\技能\pss\发招\q_麒麟吐息链状光束.pss		
+38402	1			S_fxmid	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+38594	1			S_fxmid	S_fxmid	700		data\source\other\hd特效\技能\pss\状态\y_衍天宗链状_01.pss		
+38614	1			S_lh	S_lh	3000		data\source\other\新特效\技能\pss\子弹\s_绳.pss		
+38647	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\Y_药宗灵素_链状特效_01.pss		
+38774	1			S_fxmid	S_fxmid	600		data/source/other/HD特效/技能/Pss/状态/l_凌雪阁_链状渐变.pss		
+38821	1			S_lh	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\g_勾子链状01.pss		
+38960	1			s_fxmid	s_fxmid	1100		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+38961	1			S_fxtop	S_fxtop	1100		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+38963	1			s_fxmid	s_fxmid	1100		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+38964	1			S_fxtop	S_fxtop	1100		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+38967	1			S_spine2	S_spine2	1100		data\source\other\hd特效\技能\pss\发招\w_武雪散链01_粗阴影.pss		
+39016	1			S_fxmid	S_fxmid	500		data/source/other/HD特效/技能/Pss/状态/w_五毒蛊虫链状.pss		
+39229	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_链状笑尘诀.pss		
+39239	1			S_fxmid	S_fxmid	1500		data\source\other\hd特效\技能\pss\发招\l_链状火焰之种.pss		
+39241	1			S_fxmid	S_fxmid	1500		data\source\other\hd特效\技能\pss\发招\l_链状蓝色闪电.pss		
+39248	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\w_武雪散链01.pss		
+39251	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_紫hd.pss		
+39274	1			s_fxmid	s_fxmid	1100		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+39275	1			S_fxtop	S_fxtop	1100		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+39282	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\c_迟驻_短歌垂链_黄色01.pss		
+39283	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\c_迟驻_短歌垂链_红色01.pss		
+39705	1			S_fxmid	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+39886	1			S_fxmid	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\x_刑廷恩球链状.pss		
+39887	1			S_fxmid	S_fxmid	1200		data\source\other\HD特效\技能\Pss\状态\x_刑廷恩球链状.pss		
+39915	1			S_rh	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/l_雷电链状01_紫.pss		
+39964	1			S_fire01	S_fxmid	1200		data\source\other\hd特效\技能\pss\状态\c_迟驻_短歌垂链_黄色01.pss		
+39979	1			S_fxmid	S_fxmid	1100		data/source/other/HD特效/技能/Pss/状态/z_诸恶战斗链状_敌方.pss		1
+39980	1			S_fxmid	S_lh	1100		data\source\other\HD特效\技能\Pss\状态\z_诸恶战斗链状_友方.pss		1
+39981	1			S_lh	S_fxmid	1100		data/source/other/HD特效/技能/Pss/状态/z_诸恶战斗链状_敌方_对波.pss		1
+39981	2			S_fxmid	S_fxmid	1100		data\source\other\HD特效\技能\Pss\状态\z_诸恶战斗链状_友方_对波.pss		1
+39989	1			S_rh	S_fxmid	1500		data\source\other\新特效\技能\pss\子弹\s_绳.pss		
+40014	1			S_fxmid	S_fxmid	1200		data\source\other\hd特效\技能\pss\子弹\y_月华_禁锢锁链02.pss		
+40050	1			S_fxmid	S_fxmid	1200		data\source\other\hd特效\技能\pss\状态\链状_机关镜子红光.pss		
+40051	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\l_李倓激光链子01蓝色.pss		
+40302	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\l_李倓镜光链子01白色.pss		
+40307	1			S_fire01	S_fxmid	600		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_红hd.pss		
+40393	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\l_李倓激光链子01黑红.pss		
+40396	1			S_fxmid	S_fxmid	1200		data\source\other\hd特效\技能\pss\状态\c_迟驻_短歌垂链_黄色01.pss		
+40414	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\状态\t_铁链火系.pss		
+40420	1			S_fxmid	S_fxmid	1200		data\source\other\hd特效\技能\pss\状态\c_迟驻_短歌垂链_黄色01.pss		
+40426	1			S_fire01	S_spine2	1200		data\source\other\hd特效\技能\pss\发招\q_麒麟吐息链状光束.pss		
+40465	1			S_fxmid	S_fxmid	1200		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+40485	1			S_fire01	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\l_李倓雷电链01.pss		
+40816	1			S_fxmid	S_lh	5000		data\source\other\hd特效\技能\pss\状态\l_龙一荡链状01.pss		
+40817	1			S_fxmid	S_rh	5000		data\source\other\hd特效\技能\pss\状态\l_龙一荡链状01.pss		
+40898	1			S_fxmid	S_rh	800		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_黄hd.pss		
+40946	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+40947	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+40985	1			S_fire01	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_红hd.pss		
+40986	1			S_fire01	s_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_凌雪阁眼部链状.pss		
+40987	1			S_fire01	S_fxtop	1100		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_黄hd.pss		
+41025	1			S_rh	S_fxmid	1500		data\source\other\hd特效\技能\pss\发招\q_潜蛇喋咬_乌蒙贵_链状.pss		
+41085	1			S_fxmid	S_fxmid	12000		data\source\other\hd特效\技能\pss\状态\q_七秀束缚_链状加强.pss		
+41265	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+41286	1			S_fxmid	S_fxmid	1500		data/source/other/HD特效/技能/Pss/发招/q_七秀剑破虚空_链状特效.pss		
+41298	1			S_fxmid	S_fxmid	2000		data\source\other\特效\技能\SFX\链状\引导_七秀001.Sfx		
+41303	1			S_fxmid	S_fxmid	2000		data/source/other/HD特效/技能/Pss/状态/引导_七秀001_皮肤04.pss		
+41547	1			S_lh	S_fxmid	500		data\source\other\HD特效\技能\Pss\状态\YZ_且待时休链状.pss	200	
+41573	1			S_fxmid	S_fxmid	700		data\source\other\hd特效\技能\pss\状态\y_鹰眼客囚笼锁链_链状.pss		
+41576	1			S_fxmid	S_fxmid	700		data\source\other\hd特效\技能\pss\状态\a_阿里曼黄色锁链.pss		
+41577	1			S_fxmid	S_fxmid	700		data\source\other\hd特效\技能\pss\状态\a_阿里曼红色锁链.pss		
+41697	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+41727	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\y_尹雪尘_音律链状.pss		
+41844	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+42000	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\f_方有崖星链静止01.pss		
+42001	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状.pss		
+42001	2			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状_冰.pss		
+42001	3			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状_火.pss		
+42002	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\y_叶葵链状碎裂.pss		
+42002	2			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\y_叶葵链状碎裂_冰.pss		
+42002	3			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\y_叶葵链状碎裂_火.pss		
+42012	1			S_rh	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状.pss		
+42012	2			S_rh	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状_冰.pss		
+42012	3			S_rh	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状_火.pss		
+42162	1			S_rh	S_fxmid	2000		data\source\other\hd特效\技能\pss\发招\f_方有崖星链静止01.pss		
+42169	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\发招\t_桃心_链状特效.pss		
+42271	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状.pss		
+42271	2			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状_冰.pss		
+42271	3			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状_火.pss		
+42320	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状01.pss		
+42404	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状03.pss		
+42404	2			B_Hat	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状03.pss		
+42442	1			B_LH	S_rh	1500		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状03.pss		
+42442	2			B_RH	S_rh	1500		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状03.pss		
+42442	3			Puppet_Bip01 L Foot	S_rh	400		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状03.pss		
+42442	4			Puppet_Bip01 R Foot	S_rh	400		data\source\other\hd特效\技能\pss\状态\w_无相楼_丝线链状03.pss		
+42494	1			S_fxmid	S_fxmid	1050		data\source\other\hd特效\技能\pss\状态\Y_药宗灵素_绿色链状.pss		
+42838	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\a_阿萨辛巴赫曼_链状.pss		
+42909	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\发招\l_链状火焰之种.pss		
+42949	1			S_hat	S_fxmid	350		data\source\other\hd特效\技能\pss\发招\y_眼链状光束白红.pss		
+42950	1			S_hat	S_fxmid	350		data\source\other\hd特效\技能\pss\发招\y_眼链状光束黑红.pss		
+42952	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+42988	1			S_fxmid	S_fxmid	1050		data\source\other\hd特效\技能\pss\发招\y_叶葵锁影缠身链状.pss		
+43024	1			S_fxmid	S_lh	5000		data\source\other\hd特效\技能\pss\发招\d_毒线链.pss		
+43047	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\发招\s_石斑火焰_链状01.pss		
+43064	1			S_fxmid	S_spine2	5000		data\source\other\新特效\技能\pss\子弹\s_绳.pss		
+43148	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状绿.pss		
+43150	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状红.pss		
+43153	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\y_月泉天锁_链状金.pss		
+43195	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+43257	1			B_RH	S_fxmid	1000		data\source\other\hd特效\技能\pss\发招\l_链状麻绳01.pss		
+43349	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\其他\pss\z_战场链状02_4.pss		
+43350	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\发招\l_链状_白_桑乔01.pss		
+43356	1			S_fxmid	S_fxmid	1000		data/source/other/HD特效/技能/Pss/状态/S_锁链01.pss		
+43372	1			S_rh	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\y_月姬_丝捕_链状特效_01.pss		
+43387	1			B_LH	s_fire02	1100		data/source/other/HD特效/技能/Pss/状态/LXG_凌雪阁链状01.pss		
+43389	1			S_fxmid	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\l_六脉神剑导引_黄hd.pss		
+43409	1			S_lH	Bip01 r hand	1100		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+43409	2			S_rh	Bip01 l hand	1100		data\source\other\新特效\技能\pss\状态\l_链红外线.pss		
+43414	1			S_head	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\c_程沐华_玄珠花蜜_吸收_青01.pss		
+43415	1			S_head	S_fxmid	1100		data\source\other\hd特效\技能\pss\发招\c_程沐华_玄珠花蜜_恢复_青01.pss		
+43585	1			S_fxmid	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+43839	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+43938	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\l_戮夜游弟子_链状.pss		
+44021	1			S_fxmid	S_fxmid	1800		data\source\other\hd特效\技能\pss\发招\x_笑妆娘_普攻链状01.pss		
+44049	1			S_fxmid	S_fxmid	600000		data\source\other\HD特效\技能\Pss\状态\L_六脉神剑导引_蓝hd.pss		
+44096	1			S_Spine	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\q_千机源枢炽热射线_红.pss		
+44274	1			S_Spine	S_fxmid	500		data\source\other\hd特效\技能\pss\状态\q_千机源枢电涌镭射_链状.pss		
+44472	1			Bip01 L Finger12	S_fxmid	1000		data/source/other/HD特效/技能/Pss/状态/S_锁链01.pss		
+44562	1			Bip01 L Finger12	S_fxmid	600		data/source/other/HD特效/技能/Pss/状态/S_锁链01.pss		
+44644	1			S_fxmid	S_fxmid	5000		data\source\other\hd特效\技能\pss\发招\l_链状_白_桑乔01.pss		
+44645	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+44748	1			S_fxmid	S_fxmid	10000		data\source\other\新特效\技能\pss\状态\c_纯阳连线_气劲.pss		
+44823	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+44888	1			S_fxmid	S_rh	1500		data\source\other\hd特效\技能\pss\状态\a_阿史那承庆_汲取链状.pss		
+45025	1			S_fxmid	S_fxmid	8000		data\source\other\特效\技能\sfx\释放\释放_水灵珠连接线.sfx		
+45090	1			S_fxmid	S_fxmid	600		data\source\other\hd特效\技能\pss\发招\l_链状_锁链_白01.pss		
+45187	1			S_fxmid	S_fxmid	1100		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+45282	1			S_fire01	S_fxmid	6000		data\source\other\hd特效\技能\pss\状态\y_鹰眼客囚笼锁链_链状.pss		
+45282	2			S_fire02	S_fxmid	6000		data\source\other\hd特效\技能\pss\状态\y_鹰眼客囚笼锁链_链状.pss		
+45282	3			S_fire03	S_fxmid	6000		data\source\other\hd特效\技能\pss\状态\y_鹰眼客囚笼锁链_链状.pss		
+45282	4			S_fire04	S_fxmid	6000		data\source\other\hd特效\技能\pss\状态\y_鹰眼客囚笼锁链_链状.pss		
+45290	1			S_Spine	S_fxmid	300		data\source\other\hd特效\技能\pss\状态\l_链状_红_悉达摩罗01.pss		
+45408	1			S_fxmid	S_fxmid	3000		data\source\other\hd特效\技能\pss\状态\l_链状白黄穆01_hd.pss		
+45426	1			S_fxtop	S_fxmid	800		data\source\other\HD特效\其他\Pss\D_端午竹叶连线01.pss		1
+64353	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+64571	1			S_fxmid	S_fxmid	1000		data\source\other\hd特效\其他\pss\l_雷电链状01.pss		
+64577	1			S_fxmid	S_fxmid	1100		data\source\other\特效\技能\SFX\链状\引导_吸血001.Sfx		
+64784	1			S_fxmid	S_fxmid	1600		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		
+64784	1			S_fxmid	S_fxmid	1600		data\source\other\特效\技能\SFX\链状\引导_烛龙殿电.Sfx		

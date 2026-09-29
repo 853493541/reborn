@@ -114,8 +114,11 @@ def main():
         out += verts.tobytes()
         out += tris.tobytes()
     for i in instances:
+        # The mesh record carries the pattern's FoliagePatternSceneScale and the
+        # runtime multiplies it into the instance scale; keep the instance scale
+        # raw here so the scene scale is applied exactly once (game semantics).
         out += struct.pack('<Ifffff', i['pattern'], i['x'], i['y'], i['z'], i['yaw'],
-                           i['scale'] * scales.get(i['pattern'], 1.0))
+                           i['scale'])
 
     dest = Path(args.out)
     dest.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,11 @@
+# Candidate pak paths for missile/bullet tables (from proof/gravity/filepath.ini)
+# Correct root is Represent/ (capital R); earlier data/source/ guesses were wrong.
+Represent/skill/skill_missile.txt
+Represent/skill/missile.txt
+Represent/skill/skill_bullet.krl.txt
+Represent/skill/buff_bullet.txt
+Represent/missile/missile_fixed_track_frame.txt
+Represent/missile/missile_phase_model.ini
+Represent/skill/skill_result.txt
+Represent/skill/behit_shake.txt
+Represent/skill/skill_chain.txt

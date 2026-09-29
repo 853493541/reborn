@@ -1,0 +1,23 @@
+0x0001e8d0 ascii  E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Include\characterkinematic\PxControllerManager.h
+0x0001e960 ascii  The PxControllerManager::createController prototype has changed. Please upate your code.
+0x0001f110 ascii  E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Source\PhysXCharacterKinematic\src\CctCharacterControllerManager.cpp
+0x0001f1a8 ascii  PxControllerManager::getController(): out-of-range index
+0x0001f1e8 ascii  PxControllerManager::getObstacleContext(): out-of-range index
+0x0002234f ascii  ??0PxControllerManager@physx@@IEAA@XZ
+0x00022375 ascii  ??0PxControllerManager@physx@@QEAA@AEBV01@@Z
+0x000223a2 ascii  ??1PxControllerManager@physx@@MEAA@XZ
+0x000223c8 ascii  ??4PxControllerManager@physx@@QEAAAEAV01@AEBV01@@Z
+0x000223fb ascii  ??_7PxControllerManager@physx@@6B@
+0x0002241e ascii  ?createController@PxControllerManager@physx@@UEAAPEAVPxController@2@AEAVPxPhysics@2@PEAVPxScene@2@AEBVPxControllerDesc@2@@Z
+0x0002249a ascii  PxCreateControllerManager
+0x00022a70 ascii  ?outputCapsule@RenderOutput@Cm@physx@@QEAAAEAV123@MMAEBVMatrix34@23@@Z
+0x00022caa ascii  ?getTriangle@PxMeshQuery@physx@@SAXAEBVPxHeightFieldGeometry@2@AEBVPxTransform@2@IAEAVPxTriangle@2@PEAI3@Z
+0x00023472 ascii  ?findOverlapTriangleMesh@PxMeshQuery@physx@@SAIAEBVPxGeometry@2@AEBVPxTransform@2@AEBVPxTriangleMeshGeometry@2@1PEAIIIAEA_N@Z
+0x000234f2 ascii  ?findOverlapHeightField@PxMeshQuery@physx@@SAIAEBVPxGeometry@2@AEBVPxTransform@2@AEBVPxHeightFieldGeometry@2@1PEAIIIAEA_N@Z
+0x000236c0 ascii  .?AUPxExtendedCapsule@physx@@
+0x00023778 ascii  .?AVCharacterControllerManager@Cct@physx@@
+0x000237e8 ascii  .?AVCapsuleController@Cct@physx@@
+0x00023820 ascii  .?AVBoxController@Cct@physx@@
+0x000238b8 ascii  .PEAVController@Cct@physx@@
+0x000239d0 ascii  .?AUInternalCapsuleObstacle@ObstacleContext@Cct@physx@@
+0x00025386 utf16  FileDescription

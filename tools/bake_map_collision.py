@@ -34,6 +34,16 @@ FOLIAGE_MESHES = [
     r'data\source\maps_source\石头\wj_石头006_005_hd.mesh',
 ]
 
+# Engine static-physics selection lists (Represent/physic/*).  When present the
+# structure exporter applies the engine's white/black-list rule so the bake does
+# not add colliders the client filters out (doc 8.4, hypothesis H1).
+PHYSIC_LIST_FILES = [
+    'Represent/physic/physic_file_white.txt',
+    'Represent/physic/physic_file_black.txt',
+    'Represent/physic/physic_folder_white.txt',
+    'Represent/physic/physic_folder_black.txt',
+]
+
 
 def dump(found, dest):
     dest.mkdir(parents=True, exist_ok=True)
@@ -54,6 +64,8 @@ def main():
     ap.add_argument('--copy-to', default=None,
                     help='also copy the bins here (e.g. MovieEditor bin64 collision_data)')
     ap.add_argument('--max-regions', type=int, default=16)
+    ap.add_argument('--no-physic-lists', action='store_true',
+                    help='skip the engine white/black physic-list filter for structure objects')
     args = ap.parse_args()
 
     m = args.map
@@ -118,11 +130,24 @@ def main():
     n_ent = dump(found, ent_dir)
     print('[%s] world-object region files: %d' % (m, n_ent))
 
+    phys_dir = None
+    if not args.no_physic_lists:
+        found_phys = run_pakv4(PHYSIC_LIST_FILES, work=work / '_physic')
+        if len(found_phys) == len(PHYSIC_LIST_FILES):
+            phys_dir = work / 'physic_lists'
+            dump(found_phys, phys_dir)
+            print('[%s] physic lists: %d files' % (m, len(found_phys)))
+        else:
+            print('[%s] physic lists incomplete (%d/%d) - no list filter'
+                  % (m, len(found_phys), len(PHYSIC_LIST_FILES)))
+
     if n_ent:
         out_s = out_dir / f'{m}_structure_collision.bin'
         cmd = [sys.executable, str(TOOLS / 'export_structure_collision.py'),
                '--regions', str(ent_dir), '--out', str(out_s),
                '--work', str(work / 'struct_meshes')]
+        if phys_dir:
+            cmd += ['--physic-lists', str(phys_dir)]
         if args.copy_to:
             cmd += ['--copy-to', args.copy_to]
         subprocess.run(cmd, check=False)

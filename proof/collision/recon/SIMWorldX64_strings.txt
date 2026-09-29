@@ -1,0 +1,51 @@
+0x0004f8d8 ascii  solverFlagUnevenTerrian
+0x0004f8f0 ascii  solverFlagTwoBone
+0x0004fcb8 ascii  solverFlag
+0x0004fd28 ascii  bad array new length
+0x0004fdaf ascii  ?solveResult
+0x000508f8 ascii  PhysicScene::_CookTriangleMesh
+0x000509c0 ascii  PhysicScene::_AddMesh
+0x000509f0 ascii  PhysicScene::_AddCapsules
+0x00050c80 ascii  ZoneMgr::_OnMeshLoaded
+0x00050c98 ascii  ZoneMgr::_AddBuildinMesh
+0x00050ce8 ascii  ZoneMgr::_ClearMeshDef
+0x00050eb0 ascii  cam trigger
+0x00050ed0 ascii  px query
+0x00050fa8 ascii  mesh object
+0x00050fe8 ascii  capsules radius
+0x00050ff8 ascii  capsules length
+0x00051018 ascii  meshpath
+0x00051050 ascii  query type
+0x00051090 ascii  obj add trigger
+0x000510a0 ascii  obj remove trigger
+0x000510b8 ascii  obj update trigger
+0x00051390 ascii  raylen
+0x00051398 ascii  rayradius
+0x000513a4 ascii  raydir
+0x000513b0 ascii  raypoint
+0x000513c0 ascii  raynormal
+0x000513d0 ascii  raydist
+0x000513d8 ascii  raycheckquerymask
+0x000513f0 ascii  ray cast ti
+0x00051400 ascii  ray cast touch
+0x00051410 ascii  raytrigger
+0x00051420 ascii  rayvalid
+0x00051430 ascii  ray has block
+0x00051440 ascii  ray nb touches
+0x00051f70 ascii  computeMassAndInertia: Dynamic actor with illegal collision shapes
+0x00052150 ascii  E:\buildagent\workspace\root\JX3\hd_code\DataStores\DevEnv\physx334\src\PhysXSDK\Source\foundation\include\PsArray.h
+0x000595db ascii  ?RayCast@PxWorld@@QEAAHPEAURayCastResult@@AEBVFVECTOR3@@1MMHHHHHPEAX@Z
+0x00059622 ascii  ?RayCastDirect@PxWorld@@QEAAHAEBVFVECTOR3@@0MMHAEAV2@1@Z
+0x000597cd ascii  ?SetMeshMass@PxWorld@@QEAAXI_KM@Z
+0x000597ef ascii  ?SetMeshMaterial@PxWorld@@QEAAXI_KMMM@Z
+0x00059817 ascii  ?SetMeshSimulatable@PxWorld@@QEAAXI_K_N@Z
+0x0005a112 ascii  cstr_path
+0x0005a12e ascii  cstr_path0
+0x0005a316 ascii  _Query_perf_counter
+0x0005a32c ascii  _Query_perf_frequency
+0x0005b0b0 ascii  QueryPerformanceCounter
+0x0005b820 ascii  .?AVbad_array_new_length@std@@
+0x0005b9e0 ascii  .?AU?$PxHitCallback@UPxRaycastHit@physx@@@physx@@
+0x0005ba30 ascii  .?AU?$PxHitBuffer@UPxRaycastHit@physx@@@physx@@
+0x0005ba70 ascii  .?AVPxQueryFilterCallback@physx@@
+0x0005bc40 ascii  .?AVPxQueryFilter@@

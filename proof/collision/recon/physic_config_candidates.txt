@@ -1,0 +1,9 @@
+# Physic config files from proof/gravity/filepath.ini
+Represent/physic/physic_shape_param.krl.txt
+Represent/physic/physic_rigid_param.krl.txt
+Represent/physic/physic_conveyor_belt_param.krl.txt
+Represent/physic/physic_folder_white.txt
+Represent/physic/physic_folder_black.txt
+Represent/physic/physic_file_white.txt
+Represent/physic/physic_file_black.txt
+Represent/physic/physic_character_param.krl.txt

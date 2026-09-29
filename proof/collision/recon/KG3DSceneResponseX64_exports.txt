@@ -1,0 +1,2 @@
+00006720 ord=1     GetSceneResponse
+00006730 ord=2     GetStateFileInfo

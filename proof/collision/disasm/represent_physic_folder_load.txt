@@ -1,0 +1,74 @@
+0082ce00  4a00e8                 add     al, bpl
+0082ce03  d4                     .byte   0xd4
+0082ce04  c4                     .byte   0xc4
+0082ce05  7eff                   jle     0x18082ce06
+0082ce07  85c0                   test    eax, eax
+0082ce09  7512                   jne     0x18082ce1d
+0082ce0b  41b9b50e0000           mov     r9d, 0xeb5
+0082ce11  4c8d05703d4500         lea     r8, [rip + 0x453d70]
+0082ce18  e90a420000             jmp     0x180831027
+0082ce1d  488bcb                 mov     rcx, rbx
+0082ce20  e81b427eff             call    0x180011040
+0082ce25  488d8bf8e80100         lea     rcx, [rbx + 0x1e8f8]
+0082ce2c  c744242002000000       mov     dword ptr [rsp + 0x20], 2
+0082ce34  4c8d0dc5984800         lea     r9, [rip + 0x4898c5]
+0082ce3b  4c8d05ba694500         lea     r8, [rip + 0x4569ba]
+0082ce42  488d1557374a00         lea     rdx, [rip + 0x4a3757]
+0082ce49  e88dc47eff             call    0x1800192db
+0082ce4e  85c0                   test    eax, eax
+0082ce50  7512                   jne     0x18082ce64
+0082ce52  41b9b60e0000           mov     r9d, 0xeb6
+0082ce58  4c8d05293d4500         lea     r8, [rip + 0x453d29]
+0082ce5f  e9c3410000             jmp     0x180831027
+0082ce64  488bcb                 mov     rcx, rbx
+0082ce67  e814897eff             call    0x180015780
+0082ce6c  488d8ba8e90100         lea     rcx, [rbx + 0x1e9a8]
+0082ce73  c744242002000000       mov     dword ptr [rsp + 0x20], 2
+0082ce7b  4c8d0d36374a00         lea     r9, [rip + 0x4a3736]
+0082ce82  4c8d0573694500         lea     r8, [rip + 0x456973]
+0082ce89  488d1548374a00         lea     rdx, [rip + 0x4a3748]
+0082ce90  e846c47eff             call    0x1800192db
+0082ce95  85c0                   test    eax, eax
+0082ce97  7512                   jne     0x18082ceab
+0082ce99  41b9b70e0000           mov     r9d, 0xeb7
+0082ce9f  4c8d05e23c4500         lea     r8, [rip + 0x453ce2]
+0082cea6  e97c410000             jmp     0x180831027
+0082ceab  488bcb                 mov     rcx, rbx
+0082ceae  e8d2017eff             call    0x18000d085
+0082ceb3  488d8b00ea0100         lea     rcx, [rbx + 0x1ea00]
+0082ceba  c744242002000000       mov     dword ptr [rsp + 0x20], 2
+0082cec2  4c8d0d1b374a00         lea     r9, [rip + 0x4a371b]
+0082cec9  4c8d052c694500         lea     r8, [rip + 0x45692c]
+0082ced0  488d1511374a00         lea     rdx, [rip + 0x4a3711]
+0082ced7  e8ffc37eff             call    0x1800192db
+0082cedc  85c0                   test    eax, eax
+0082cede  7512                   jne     0x18082cef2
+0082cee0  41b9b80e0000           mov     r9d, 0xeb8
+0082cee6  4c8d059b3c4500         lea     r8, [rip + 0x453c9b]
+0082ceed  e935410000             jmp     0x180831027
+0082cef2  488d8b58ea0100         lea     rcx, [rbx + 0x1ea58]
+0082cef9  c744242002000000       mov     dword ptr [rsp + 0x20], 2
+0082cf01  4c8d0ddc364a00         lea     r9, [rip + 0x4a36dc]
+0082cf08  4c8d05ed684500         lea     r8, [rip + 0x4568ed]
+0082cf0f  488d15ea364a00         lea     rdx, [rip + 0x4a36ea]
+0082cf16  e8c0c37eff             call    0x1800192db
+0082cf1b  85c0                   test    eax, eax
+0082cf1d  7512                   jne     0x18082cf31
+0082cf1f  41b9b90e0000           mov     r9d, 0xeb9
+0082cf25  4c8d055c3c4500         lea     r8, [rip + 0x453c5c]
+0082cf2c  e9f6400000             jmp     0x180831027
+0082cf31  488d8bb0ea0100         lea     rcx, [rbx + 0x1eab0]
+0082cf38  c744242002000000       mov     dword ptr [rsp + 0x20], 2
+0082cf40  4c8d0dd1364a00         lea     r9, [rip + 0x4a36d1]
+0082cf47  4c8d05ae684500         lea     r8, [rip + 0x4568ae]
+0082cf4e  488d15f3364a00         lea     rdx, [rip + 0x4a36f3]
+0082cf55  e881c37eff             call    0x1800192db
+0082cf5a  85c0                   test    eax, eax
+0082cf5c  7512                   jne     0x18082cf70
+0082cf5e  41b9ba0e0000           mov     r9d, 0xeba
+0082cf64  4c8d051d3c4500         lea     r8, [rip + 0x453c1d]
+0082cf6b  e9b7400000             jmp     0x180831027
+0082cf70  488bcb                 mov     rcx, rbx
+0082cf73  e890957fff             call    0x180026508
+0082cf78  488d8b08eb0100         lea     rcx, [rbx + 0x1eb08]
+0082cf7f  c7                     .byte   0xc7

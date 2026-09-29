@@ -1,0 +1,5 @@
+00121a70 ord=2     DLLExport_RefWrapperPointer
+00121ad0 ord=3     DLLExport_SetDefaultAllocator
+00121b10 ord=4     DLLExport_SetQueryAllocator
+00121b50 ord=1     DLLExport_GetIPathEngine
+00121c50 ord=5     DllExport_GetIPathEngine

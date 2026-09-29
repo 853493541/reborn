@@ -1,0 +1,4 @@
+MissilePhaseID	Design_Name	AnimationSpeed	ModelScaleBegin	ModelScaleEnd	AnimationType	MeshFile	MaterialFile	AnimationFile	SFXFile	CasterType	MovementType	SymmetricalType	MissileDirection	Number	ReferenceType	ZLockType	BoneNameCaster	BoneNameTarget	IsShockWave	FixedTrackID_0	FixedTrackID_1	FixedTrackID_2	FixedTrackID_3	FixedTrackID_4	FixedTrackID_5	FixedTrackID_6	FixedTrackID_7
+0		1	1	1	0					1	0	0	0	3	0	1											
+1		1	0.2	0.3	1					0	0	0	0	0	0	1				1	2	3	4	5	6	7	8
+2		1	0.1	0.1	1					1	0	0	0	0	0	1				1	2	3	4	5	6	7	8

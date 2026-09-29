@@ -1,0 +1,78 @@
+00446880  d7                     xlatb   
+00446881  0f28c6                 movaps  xmm0, xmm6
+00446884  f30f5945cf             mulss   xmm0, dword ptr [rbp - 0x31]
+00446889  f30f59ce               mulss   xmm1, xmm6
+0044688d  f30f59d6               mulss   xmm2, xmm6
+00446891  f3410f5807             addss   xmm0, dword ptr [r15]
+00446896  f3410f584f04           addss   xmm1, dword ptr [r15 + 4]
+0044689c  f3410f585708           addss   xmm2, dword ptr [r15 + 8]
+004468a2  f30f1145cf             movss   dword ptr [rbp - 0x31], xmm0
+004468a7  f30f114dd3             movss   dword ptr [rbp - 0x2d], xmm1
+004468ac  488b45cf               mov     rax, qword ptr [rbp - 0x31]
+004468b0  488945bf               mov     qword ptr [rbp - 0x41], rax
+004468b4  f30f1155d7             movss   dword ptr [rbp - 0x29], xmm2
+004468b9  8b45d7                 mov     eax, dword ptr [rbp - 0x29]
+004468bc  8945c7                 mov     dword ptr [rbp - 0x39], eax
+004468bf  4885f6                 test    rsi, rsi
+004468c2  741d                   je      0x1804468e1
+004468c4  f30f1045bf             movss   xmm0, dword ptr [rbp - 0x41]
+004468c9  f30f104dc3             movss   xmm1, dword ptr [rbp - 0x3d]
+004468ce  f30f1106               movss   dword ptr [rsi], xmm0
+004468d2  f30f1045c7             movss   xmm0, dword ptr [rbp - 0x39]
+004468d7  f30f114e04             movss   dword ptr [rsi + 4], xmm1
+004468dc  f30f114608             movss   dword ptr [rsi + 8], xmm0
+004468e1  4d85e4                 test    r12, r12
+004468e4  7404                   je      0x1804468ea
+004468e6  45893424               mov     dword ptr [r12], r14d
+004468ea  33c0                   xor     eax, eax
+004468ec  eb05                   jmp     0x1804468f3
+004468ee  b805400080             mov     eax, 0x80004005
+004468f3  488b4ddf               mov     rcx, qword ptr [rbp - 0x21]
+004468f7  4833cc                 xor     rcx, rsp
+004468fa  e841d31e00             call    0x180633c40
+004468ff  0f28b42480000000       movaps  xmm6, xmmword ptr [rsp + 0x80]
+00446907  0f287c2470             movaps  xmm7, xmmword ptr [rsp + 0x70]
+0044690c  4881c490000000         add     rsp, 0x90
+00446913  415f                   pop     r15
+00446915  415e                   pop     r14
+00446917  415c                   pop     r12
+00446919  5f                     pop     rdi
+0044691a  5e                     pop     rsi
+0044691b  5b                     pop     rbx
+0044691c  5d                     pop     rbp
+0044691d  c3                     ret     
+0044691e  cc                     int3    
+0044691f  cc                     int3    
+00446920  48895c2408             mov     qword ptr [rsp + 8], rbx
+00446925  57                     push    rdi
+00446926  4883ec60               sub     rsp, 0x60
+0044692a  8b842498000000         mov     eax, dword ptr [rsp + 0x98]
+00446931  4d8bd9                 mov     r11, r9
+00446934  498bd8                 mov     rbx, r8
+00446937  4533c0                 xor     r8d, r8d
+0044693a  448bd0                 mov     r10d, eax
+0044693d  488bfa                 mov     rdi, rdx
+00446940  0f29742450             movaps  xmmword ptr [rsp + 0x50], xmm6
+00446945  4183e201               and     r10d, 1
+00446949  418bc8                 mov     ecx, r8d
+0044694c  ba01030000             mov     edx, 0x301
+00446951  448bc8                 mov     r9d, eax
+00446954  0f45ca                 cmovne  ecx, edx
+00446957  4183e102               and     r9d, 2
+0044695b  7406                   je      0x180446963
+0044695d  81c901010000           or      ecx, 0x101
+00446963  a804                   test    al, 4
+00446965  7404                   je      0x18044696b
+00446967  0fbae908               bts     ecx, 8
+0044696b  a808                   test    al, 8
+0044696d  7403                   je      0x180446972
+0044696f  83c901                 or      ecx, 1
+00446972  a810                   test    al, 0x10
+00446974  7403                   je      0x180446979
+00446976  83c902                 or      ecx, 2
+00446979  f3                     .byte   0xf3
+0044697a  0f                     .byte   0x0f
+0044697b  10                     .byte   0x10
+0044697c  b424                   mov     ah, 0x24
+0044697e  90                     nop     
+0044697f  00                     .byte   0x00

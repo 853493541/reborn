@@ -1,0 +1,75 @@
+00844180  4528c7                 sub     r15b, r8b
+00844183  453000                 xor     byte ptr [r8], r8b
+00844186  2000                   and     byte ptr [rax], al
+00844188  000f                   add     byte ptr [rdi], cl
+0084418a  57                     push    rdi
+0084418b  c033c0                 sal     byte ptr [rbx], 0xc0
+0084418e  0f114534               movups  xmmword ptr [rbp + 0x34], xmm0
+00844192  894544                 mov     dword ptr [rbp + 0x44], eax
+00844195  488d442460             lea     rax, [rsp + 0x60]
+0084419a  48894550               mov     qword ptr [rbp + 0x50], rax
+0084419e  488d85d0000000         lea     rax, [rbp + 0xd0]
+008441a5  48894558               mov     qword ptr [rbp + 0x58], rax
+008441a9  48897560               mov     qword ptr [rbp + 0x60], rsi
+008441ad  4889b5a0000000         mov     qword ptr [rbp + 0xa0], rsi
+008441b4  33c0                   xor     eax, eax
+008441b6  668985a8000000         mov     word ptr [rbp + 0xa8], ax
+008441bd  8985ac000000           mov     dword ptr [rbp + 0xac], eax
+008441c3  488985b0000000         mov     qword ptr [rbp + 0xb0], rax
+008441ca  0f1185b8000000         movups  xmmword ptr [rbp + 0xb8], xmm0
+008441d1  488985c8000000         mov     qword ptr [rbp + 0xc8], rax
+008441d8  488d0591a34800         lea     rax, [rip + 0x48a391]
+008441df  48894548               mov     qword ptr [rbp + 0x48], rax
+008441e3  c785d000000000400000   mov     dword ptr [rbp + 0xd0], 0x4000
+008441ed  33c0                   xor     eax, eax
+008441ef  0f1185d8000000         movups  xmmword ptr [rbp + 0xd8], xmm0
+008441f6  8885e8000000           mov     byte ptr [rbp + 0xe8], al
+008441fc  0f57c9                 xorps   xmm1, xmm1
+008441ff  0f118df0000000         movups  xmmword ptr [rbp + 0xf0], xmm1
+00844206  0f118d00010000         movups  xmmword ptr [rbp + 0x100], xmm1
+0084420d  48898510010000         mov     qword ptr [rbp + 0x110], rax
+00844214  498bce                 mov     rcx, r14
+00844217  e892b97dff             call    0x18001fbae
+0084421c  498d8e58420200         lea     rcx, [r14 + 0x24258]
+00844223  e8b65c7dff             call    0x180019ede
+00844228  498d8e78420200         lea     rcx, [r14 + 0x24278]
+0084422f  e8aa5c7dff             call    0x180019ede
+00844234  4088742471             mov     byte ptr [rsp + 0x71], sil
+00844239  b801000000             mov     eax, 1
+0084423e  86442472               xchg    byte ptr [rsp + 0x72], al
+00844242  488b4d20               mov     rcx, qword ptr [rbp + 0x20]
+00844246  482b4d10               sub     rcx, qword ptr [rbp + 0x10]
+0084424a  48c1f904               sar     rcx, 4
+0084424e  4883f908               cmp     rcx, 8
+00844252  730c                   jae     0x180844260
+00844254  8d5608                 lea     edx, [rsi + 8]
+00844257  488d4d10               lea     rcx, [rbp + 0x10]
+0084425b  e8d39e7cff             call    0x18000e133
+00844260  488bfe                 mov     rdi, rsi
+00844263  488d442460             lea     rax, [rsp + 0x60]
+00844268  4889442438             mov     qword ptr [rsp + 0x38], rax
+0084426d  4c8d3d74cb7cff         lea     r15, [rip - 0x83348c]
+00844274  4c897c2430             mov     qword ptr [rsp + 0x30], r15
+00844279  488b5d18               mov     rbx, qword ptr [rbp + 0x18]
+0084427d  0f1f00                 nop     dword ptr [rax]
+00844280  483b5d20               cmp     rbx, qword ptr [rbp + 0x20]
+00844284  7460                   je      0x1808442e6
+00844286  b910000000             mov     ecx, 0x10
+0084428b  e8238d7cff             call    0x18000cfb3
+00844290  4c8bc8                 mov     r9, rax
+00844293  4885c0                 test    rax, rax
+00844296  740e                   je      0x1808442a6
+00844298  488d442460             lea     rax, [rsp + 0x60]
+0084429d  498901                 mov     qword ptr [r9], rax
+008442a0  4d897908               mov     qword ptr [r9 + 8], r15
+008442a4  eb03                   jmp     0x1808442a9
+008442a6  4c8bce                 mov     r9, rsi
+008442a9  4c894c2458             mov     qword ptr [rsp + 0x58], r9
+008442ae  488d4308               lea     rax, [rbx + 8]
+008442b2  4889442428             mov     qword ptr [rsp + 0x28], rax
+008442b7  89742420               mov     dword ptr [rsp + 0x20], esi
+008442bb  4c                     .byte   0x4c
+008442bc  8d                     .byte   0x8d
+008442bd  05                     .byte   0x05
+008442be  d4                     .byte   0xd4
+008442bf  eb                     .byte   0xeb

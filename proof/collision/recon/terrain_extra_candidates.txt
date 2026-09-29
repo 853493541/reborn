@@ -1,0 +1,9 @@
+# Terrain extras: holes, water data, SceneResponse state files (龙门寻宝)
+data/source/maps/龙门寻宝/hole/000_000.hlb
+data/source/maps/龙门寻宝/hole/000_000.png
+data/source/maps/龙门寻宝/landscape/龙门寻宝.WaterData
+data/source/maps/龙门寻宝/龙门寻宝.WaterData
+data/source/maps/龙门寻宝/water/龙门寻宝.WaterData
+data/source/maps/龙门寻宝/龙门寻宝.SRScene
+data/source/maps/龙门寻宝/scene/龙门寻宝.SRScene
+data/source/maps/龙门寻宝/spec/龙门寻宝.SRScene

@@ -1,0 +1,4 @@
+MissilePhaseID	Design_Name	AnimationSpeed	ModelScaleBegin	ModelScaleEnd	AnimationType	MeshFile	MaterialFile	AnimationFile	SFXFile	CasterType	MovementType	SymmetricalType	MissileDirection	Number	ReferenceType	ZLockType	BoneNameCaster	BoneNameTarget	IsShockWave	PervasionTime
+0		1	1	1	0					1	0	0	0	3	0	1				
+1	闪电特效范例	1	1	1	1					1	0	0	0	1	0	1	Bip01 Spine	Bip01 Spine		5000
+2	天外飞仙	1	1	1	1					1	0	0	0	1	0	1	Bip01 Spine	Bip01 Spine		2048
