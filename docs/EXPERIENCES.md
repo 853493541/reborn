@@ -175,3 +175,26 @@ double-sided probes cause over-pulling somewhere (kill switch `RC_CAM_BACKFACE=0
 - Outcome: solved. Committed on `agent/camera-wall-clip`; **not pushed** (new
   main rule `ff67fff`: never push unless explicitly asked). The per-slug test
   client picks the config from `bin64\reborn_campen_v3\camera.json`.
+
+### 2026-09-29 — camera — "zooms in while turning, returns when I stop" (B15)
+**Problem:** user report: pressing W (running a slope/turning) the camera
+continuously zoomed in "for no reason", then sprang back to the 2000 u default
+after stopping.
+**Tried:** reproduced with `RC_CAM_DEBUG/SHAKEDBG/OBSTDBG/PENDBG` (log
+`reborn_20260929_163131`): the penetration recorder showed **0 events** and
+`betweendbg` clear, `hit=-1` on every frame of the burst - so the pull was not
+geometry. `jumpdbg` showed `offLen` collapsing 2050 -> 1520 u in ~60 ms at a
+fast camera flick, then recovering over ~3 s.
+**Outcome:** solved (fix landed in code; live feel check pending).
+**Why:** the per-axis SmoothTime smoothing of the *rotating* orbit offset
+shortens the vector through its chord; the obstruction state machine received
+that shortened `offLen` as its desired length and, since `target < Distance`
+applies immediately (the engine's no-threshold shortening rule), snapped the
+camera in - then the 1.5/2.828 flex eased it back over seconds. Fix: probes +
+`CameraObstruction` now use the **raw desired offset** (the candidate line the
+engine queries); the per-axis smoothing stays once, on the resolved offset
+(`rSm`). The double `camOffSmooth` stage was removed.
+**Re-open criteria:** a fast flick still produces a resolved-length jump in
+`jumpdbg` (`smstep` > 2 u), or the T2/T4 obstruction invariants drift.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` B15; logs `_163131` (before),
+`_165430` (after); `client/RebornClient.cs`.

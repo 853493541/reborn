@@ -942,8 +942,6 @@ internal static class RebornClient
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
-        double[] camOffSmooth = new double[3];
-        bool camOffInit = false;
         double[] rSm = new double[3];
         bool rSmInit = false;
         bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
@@ -1793,34 +1791,18 @@ internal static class RebornClient
                 // radius while dragging, so dragging changed the distance).
                 double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
+                // Camera probes + obstruction use the candidate (desired) camera
+                // line, not the per-axis smoothed offset: smoothing a rotating
+                // vector through its chord shortens it, and feeding that to the
+                // obstruction state machine snapped the camera in on fast flicks
+                // (immediate "shortening") with a slow flex return (HOST_DEVIATIONS
+                // B15). The game's per-axis SmoothTime now applies once, to the
+                // resolved offset (rSm) below.
                 double[] camOff = new double[3];
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
-                // game per-axis dead-zone + SmoothTime (SetCharacterCameraPosition
-                // @ 0x180B0F2BA..0x180B0F3A6, state +0x1B8/0x1BC/0x1C0; spec
-                // docs/camera/FIX_SPEC.md, reference tools/netcode/reference/
-                // camera_model.py): current += delta*dt/SmoothTime per axis, snap
-                // when the step covers the delta. The host engine has no camera
-                // smoothing of its own, so without this the orbit is raw.
-                if (!camOffInit)
-                {
-                    camOffSmooth[0] = camOff[0]; camOffSmooth[1] = camOff[1];
-                    camOffSmooth[2] = camOff[2]; camOffInit = true;
-                }
                 bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
                                 Env("RC_CAM_NOSMOOTH", "0") != "1";
                 double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
-                for (int i = 0; i < 3; i++)
-                {
-                    double d3 = camOff[i] - camOffSmooth[i];
-                    if (doSmooth && Math.Abs(d3) > 1e-6 &&
-                        Math.Abs(d3) > Math.Abs(d3) * dt / stime)
-                        camOffSmooth[i] += d3 * dt / stime;
-                    else
-                        camOffSmooth[i] = camOff[i];
-                }
-                camOff[0] = camOffSmooth[0];
-                camOff[1] = camOffSmooth[1];
-                camOff[2] = camOffSmooth[2];
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
