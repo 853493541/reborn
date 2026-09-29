@@ -1,8 +1,8 @@
 # JX3 camera controls
 
-**Evidence:** `docs/CAMERA_INPUT_CONTROLS.md`, `docs/CAMERA_REAL_VALUES.md`,
-`docs/CAMERA_CONFIG_FILES.md`, `docs/CAMERA_DRAG_MODEL.md`,
-`docs/CAMERA_WALL_OBSTRUCTION.md`,
+**Evidence:** `docs/camera/INPUT_CONTROLS.md`, `docs/camera/REAL_VALUES.md`,
+`docs/camera/CONFIG_FILES.md`, `docs/camera/DRAG_MODEL.md`,
+`docs/camera/WALL_OBSTRUCTION.md`,
 `proof/netcode/camera_settings_real.txt`,
 `proof/movement/extracted/ui_hotkey_default.txt`.
 
@@ -89,7 +89,7 @@ maps 0/1 yaw 0.5022619 pitch −0.17, map 653 yaw 2.11075783).
   `fMaxCameraDistance` `+0x58`, `fMinCameraAngle` `+0x60`, `fMaxCameraAngle`
   `+0x68` of the caps object (`[[manager]+0xB0] → vt+0x238`).
 - 镜头最大距离 details and our implementation plan:
-  `CAMERA_DISTANCE_FOV_SPEC.md`.
+  `docs/camera/DISTANCE_FOV_SPEC.md`.
 - **广角 slider mapping (resolved 2026-09-25):** the video panel stores
   `VideoSetting_WidAngle`; the applier clamps **30°–60°**, defaults to **50°**
   (`50·π/180`) when unset, adds `caps.fMinCameraAngle` (converted to degrees)
@@ -110,7 +110,7 @@ maps 0/1 yaw 0.5022619 pitch −0.17, map 653 yaw 2.11075783).
 - `NearByWallDistance = 800` is **not** a wall rule (loaded, no reader found)
 
 Our client: **terrain-only** ray-march, no structures — S9 in
-`CAMERA_FIX_SUGGESTIONS.md`.
+`docs/camera/FIX_SUGGESTIONS.md`.
 
 ## 7. Other camera systems
 

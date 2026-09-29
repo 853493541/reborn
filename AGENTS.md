@@ -48,7 +48,8 @@ To change the trigger, edit the keyword in this section; agents follow whatever 
 
 1. `PLAN_REBORN_ONLINE.md` — goal, milestones, locked decisions.
 2. `docs/GAME_SYSTEMS_RESEARCH_MAP.md` — primary research index (17 systems, ~110 areas, backlog §18).
-3. Area index for the task: `docs/netcode/README.md`, `docs/pvp/README.md`, `docs/controls/README.md`.
+3. Area index for the task: `docs/README.md`, then the area's `docs/<area>/README.md`
+   (`netcode/`, `controls/`, `pvp/`, `camera/`, `movement/`, `engine_host/`, `ui/`, `audio/`).
 4. Then task code. Load docs lazily — never preemptively read the whole docs tree.
 
 State check before work: `git status`, `git log -5 --oneline`, confirm the branch.
@@ -116,13 +117,13 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 
 | Area | Code | Docs index | Proof |
 |---|---|---|---|
-| Engine host / game client | `client/`, `app/`, `native/` | `docs/ENGINE_HOST_PLAN.md`, `docs/M1_*.md`, `engine_host_spike/` (recon only) | `proof/engine_host*`, `proof/map_spike` |
-| Mode UI | `ui-process-app/` | `docs/netcode/JX3_MODE_UI_INVENTORY.md`, `docs/netcode/JX3_MODE_UI_FLOW.md` | `proof/ui` |
+| Engine host / game client | `client/`, `app/`, `native/` | `docs/engine_host/ENGINE_HOST_PLAN.md`, `docs/engine_host/M1_*.md`, `engine_host_spike/` (recon only) | `proof/engine_host*`, `proof/map_spike` |
+| Mode UI | `ui-process-app/` | `docs/ui/README.md`, `docs/netcode/JX3_MODE_UI_INVENTORY.md`, `docs/netcode/JX3_MODE_UI_FLOW.md` | `proof/ui` |
 | Abilities / skills | `ability_picker/`, `ability_sandbox/`, `asset_sandbox/` | `docs/netcode/SKILL_DATA_RESEARCH.md` | `proof/netcode` |
 | Netcode / protocol / server | `tools/netcode/`, `tools/netcode/reference/` | `docs/netcode/README.md`, `REBORN_SERVER_SPEC.md` | `proof/netcode` |
 | Controls | `client/` (input), `tools/controls/` | `docs/controls/README.md` | `proof/controls` |
-| Camera | `client/CameraSystem.cs`, `native/camera_shim.cpp` | `docs/CAMERA_*.md` | `proof/*` camera sets |
-| Movement / gravity / collision | `client/TerrainSampler.cs`, `client/FoliageCollision.cs`, `tools/gravity/`, `tools/movement/`, `tools/collision/` | `docs/REBORN_JUMP_FALL_SPEC.md`, `docs/JX3_GRAVITY_RESEARCH.md`, `docs/FULL_MAP_COLLISION.md` | `proof/gravity`, `proof/collision` |
+| Camera | `client/CameraSystem.cs`, `native/camera_shim.cpp` | `docs/camera/README.md` | `proof/*` camera sets |
+| Movement / gravity / collision | `client/TerrainSampler.cs`, `client/FoliageCollision.cs`, `tools/gravity/`, `tools/movement/`, `tools/collision/` | `docs/movement/REBORN_JUMP_FALL_SPEC.md`, `docs/movement/JX3_GRAVITY_RESEARCH.md`, `docs/movement/FULL_MAP_COLLISION.md` | `proof/gravity`, `proof/collision` |
 | PVP / combat | — | `docs/pvp/README.md` | `proof/pvp` |
 
 ## 11. Stack & toolchain

@@ -62,7 +62,7 @@
     fallback `config/config.default.ini`.
 - Apply through a thin abstraction `ICameraLens`:
   - interim: `factor = CammeraAngle / 0.837757` → `scene.SetViewAngleFactor(factor)`;
-  - later: real FOV via the engine camera (Phase 3 / `CAMERA_COMPLETION_PLAN.md`
+  - later: real FOV via the engine camera (Phase 3 / `docs/camera/COMPLETION_PLAN.md`
     Phase 0), then delete the factor mapping.
 - `RC_VIEW_ANGLE` stays a test override. Log
   `fov source=config.ini angle=.. factor=..`.
@@ -79,7 +79,7 @@
 - Keep `MinCameraDistance`/`MaxCameraDistance` in the character row (user
   override at load). Note the mixed units (`TargetDistance` metres vs
   min/max world units) in the row docs.
-- Update `CAMERA_CLIENT_AUDIT.md`, `CAMERA_COMPLETION_PLAN.md` Phase 4 and the
+- Update `docs/camera/CLIENT_AUDIT.md`, `docs/camera/COMPLETION_PLAN.md` Phase 4 and the
   gap register (S5, S8).
 
 ## 6. Phase 5 — verification

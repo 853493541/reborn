@@ -3,7 +3,7 @@
 **Status:** reproduce-ready for the single jump, gravity, fall, landing and
 death. The 轻功 multi-jump chain is data-complete but its phase timing still
 needs one update function decoded (no live capture).
-**Sources:** `docs/JX3_GRAVITY_RESEARCH.md`, tables in `proof/gravity/`,
+**Sources:** `docs/movement/JX3_GRAVITY_RESEARCH.md`, tables in `proof/gravity/`,
 disasm in `proof/gravity/disasm/`.
 
 ## 1. Constants (verified)

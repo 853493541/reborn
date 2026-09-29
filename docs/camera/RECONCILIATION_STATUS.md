@@ -5,11 +5,11 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 
 | Report item | Status | Where |
 |---|---|---|
-| A W1 wheel = `Camera_Zoom(0.9/1.1)`, Step is not the wheel | fixed | `CAMERA_REAL_VALUES.md` §5, `CAMERA_ADOPTION_FOR_ONLINE_CLIENT.md` §2, `REBORN_CAMERA_SPEC.md` |
-| A W2 `NearByWallDistance` has no reader | fixed | `CAMERA_REAL_VALUES.md` §3/§8, `CAMERA_ADOPTION...` §4 |
+| A W1 wheel = `Camera_Zoom(0.9/1.1)`, Step is not the wheel | fixed | `docs/camera/REAL_VALUES.md` §5, `docs/camera/ADOPTION_FOR_ONLINE_CLIENT.md` §2, `REBORN_CAMERA_SPEC.md` |
+| A W2 `NearByWallDistance` has no reader | fixed | `docs/camera/REAL_VALUES.md` §3/§8, `CAMERA_ADOPTION...` §4 |
 | A W3 fixed-`camY` placement claim | fixed (sphere offset) | `CAMERA_ADOPTION...` §3 |
-| A W4 "never write `camSys.Yaw` from the measured view" | fixed (reversed) | `CAMERA_COMPLETION_PLAN.md` §1.2 C |
-| A W5 15 fps speed basis | fixed (16 Hz -> 96/320 u/s) | `CAMERA_REAL_VALUES.md` §7 #4, `CAMERA_ADOPTION...` §1 |
+| A W4 "never write `camSys.Yaw` from the measured view" | fixed (reversed) | `docs/camera/COMPLETION_PLAN.md` §1.2 C |
+| A W5 15 fps speed basis | fixed (16 Hz -> 96/320 u/s) | `docs/camera/REAL_VALUES.md` §7 #4, `CAMERA_ADOPTION...` §1 |
 | B S2 `EyeScale` missing from the aim math | done | `RebornClient.cs geometricAimPitch`/`aimPitchOf` use `Distance * EyeScale` (`52cca8f`) |
 | B S1 aim re-pin after zoom/sprint/EyeScale | done | `aimDirty` on distance change (`52cca8f`) |
 | B S3 ground-clamp aim guard | done (over-claim corrected) | `aimPitchOverride` aims at the anchor from the clamped point **and marks `aimDirty`** so the aim sync consumes it (`52cca8f` + this batch) |
@@ -27,15 +27,15 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 
 | Item | Why blocked | Path |
 |---|---|---|
-| Per-mode `.krl` rows (CameraCommon/AirCombat/NpcDialog/Carrier/Glider/DynamicFollow), `CameraLockTargetConfig`, `player_rush_camera.txt` | not in the local install (CDN mini-update) | `CAMERA_REAL_VALUES.md` §7 #1 |
+| Per-mode `.krl` rows (CameraCommon/AirCombat/NpcDialog/Carrier/Glider/DynamicFollow), `CameraLockTargetConfig`, `player_rush_camera.txt` | not in the local install (CDN mini-update) | `docs/camera/REAL_VALUES.md` §7 #1 |
 | Engine `[Camera]` ini (`bObstructdAvert`, `fChaseRate`, flex, `fFovy`) | ini not shipped; constants hardcoded from the constructor defaults | §7 #2 |
 | 广角/FOV path (config.ini `[UIVideoSetting]`, skill-move FOV, nameplate compensation) | binding not decoded; engine caps unprobed | §7 #7, §6 |
 | Engine caps `fMinCameraDistance`/`fMinCameraAngle`/`fMaxCameraAngle` | compiled per option level | live caps probe from the host (§6) |
-| `bObscatleCamera` per-mesh gate, alternate 9-ray mode | extraction doesn't store the mesh property; 9-ray trigger field unknown | `CAMERA_WALL_OBSTRUCTION.md` (remaining unknowns) |
+| `bObscatleCamera` per-mesh gate, alternate 9-ray mode | extraction doesn't store the mesh property; 9-ray trigger field unknown | `docs/camera/WALL_OBSTRUCTION.md` (remaining unknowns) |
 | Real anchor head/socket (`Bip01 Head`, `s_face`, carrier sockets) | managed host exposes no bone/socket transform | native camera/actor interface recon (Phase 0) |
 | Mounts, gliding, air combat, dialogs, spectate, skill-move/dynamic-follow cameras | per-mode rows + activation triggers missing | completion plan Phase 4-6; §7 #1 |
 | `CameraShake`, `SetFollowAction`, `TrackCamera` triggers | no gameplay hook in the host (model classes exist) | completion plan Phase 6 |
-| `IKG3D_Camera` / `KG3DCameraProxy` (look-at, FOV, engine obstruction) | never reconned | `CAMERA_STATUS.md` next step / Phase 0 |
+| `IKG3D_Camera` / `KG3DCameraProxy` (look-at, FOV, engine obstruction) | never reconned | `docs/camera/STATUS.md` next step / Phase 0 |
 | `MinCameraDistance = 100 u` | engine cap unprobed (placeholder) | live caps probe |
 | Character visibility when the camera is inside (park-below-map hack) | no visibility/alpha in the managed API | **mitigated**: hide/show now keyed on the real post-clamp camera->anchor distance (90/150 u) and the model re-attaches on every handle change; inside-character views are gone in testing (user-confirmed). Still a host approximation of the game's near-plane clipping. |
 

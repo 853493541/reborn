@@ -299,7 +299,7 @@ untouched by this research.
   field/default notes for this investigation (§7 filter/RTTI, §8 KG3DMesh
   display block and defaults, §9 response clearance/hysteresis, §10
   render-entity backend, §11 CommonNumber).
-- `docs/CAMERA_CONFIG_FILES.md` — camera config logical-name map, on-disk
+- `docs/camera/CONFIG_FILES.md` — camera config logical-name map, on-disk
   status and content usage of `bObscatleCamera`.
 - `proof/netcode/disasm/engine_obstruct.txt` — existing `[Camera]` loader and
   obstruction xrefs.

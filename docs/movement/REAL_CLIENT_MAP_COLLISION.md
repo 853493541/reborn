@@ -151,7 +151,7 @@ Physics implementation (`TerrainSampler` in `MapSpike.cs`):
 - Player simulation: gravity `-1289 cm/s²` (12.89 m/s²), jump `703 cm/s`
   (~192 cm apex), walk `200`, run `667` — the real game values from
   `settings/JumpParam.tab` + `Represent/common/number.krl.txt`
-  (see `docs/JX3_GRAVITY_RESEARCH.md`); landing snaps to the sampled ground height.
+  (see `docs/movement/JX3_GRAVITY_RESEARCH.md`); landing snaps to the sampled ground height.
 - Actor is repositioned each frame with `RemoveDummyModel` + `AddDummyModel`
   (map dummy-model system); follow camera keeps it framed.
 

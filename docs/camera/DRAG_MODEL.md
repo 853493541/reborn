@@ -137,4 +137,4 @@ camera position (it orbits) instead of rotating in place.
 | `proof/netcode/disasm/camera_set_tail.txt` | anchor/params reads + the yaw/pitch setter `0x180AE29D0` (pitch clamps) |
 | `proof/netcode/disasm/camera_adjust.txt`, `camera_set.txt` | slope adjustment + placement function |
 | `docs/netcode/JX3_CAMERA_RESEARCH.md` sections 2, 6 | offset formula, smoothing, look-at, row vocabulary |
-| `docs/CAMERA_INPUT_CONTROLS.md` | LMB/RMB/wheel bindings + UI layer |
+| `docs/camera/INPUT_CONTROLS.md` | LMB/RMB/wheel bindings + UI layer |

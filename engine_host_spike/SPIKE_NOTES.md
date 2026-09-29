@@ -1,4 +1,4 @@
-﻿# Spike A — engine host recipe (PASSED 2026-09-21)
+# Spike A — engine host recipe (PASSED 2026-09-21)
 
 Result: MovieEditor engine DLLs hosted in our own C# process play the real
 `重剑技能15_风来吴山红色hd.tani` on the 花萝 actor, including the red PSS SFX.
@@ -102,7 +102,7 @@ The tani carries a SoundTag event:
   plays the decoded WAV directly with `winmm PlaySound` on animation start and
   each loop restart (`SPIKE_SOUND_PLAY=0` disables).
 - WAV: `bin64/flws_sound.wav` (ww2ogg -> ffmpeg from WEM 161340541).
-- Full chain, files and decode recipe: `docs/SOUND_PATH.md`.
+- Full chain, files and decode recipe: `docs/audio/SOUND_PATH.md`.
 ## Camera controls (mirrors MovieEditor `ViewWindow` -> `KGSceneCLR.ExecAction`)
 
 | Input | ExecAction | Meaning |

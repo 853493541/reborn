@@ -31,7 +31,7 @@ enforced everywhere (S5), RMB turn/LMB select fidelity (S6/S7), 广角/FOV + cap
 ## 2. What is working (do not touch)
 
 - `CameraSystem.DesiredOffset` is the proven JX3 sphere offset
-  (`docs/CAMERA_DRAG_MODEL.md`); the radius-invariant smoke checks pass.
+  (`docs/camera/DRAG_MODEL.md`); the radius-invariant smoke checks pass.
 - Drag mapping: mouse X → yaw, Y → pitch; pitch `+= dy`; clamps, engine orbit as
   the actuator; smoothed yaw correction (`yawCorr`, τ=10 ms) instead of a snap.
 - **Per-frame aim sync** (`00f1237`): `measureView()` each frame while dragging;
@@ -139,11 +139,11 @@ cursor capture; drag still rotates.
 
 - Read `config.ini [KG3DENGINE] CammeraAngle` (default 0.837757 rad) read-only,
   map to `SetViewAngleFactor(angle / 0.837757)` until the engine FOV interface
-  is exposed (`docs/CAMERA_COMPLETION_PLAN.md` Phase 0); FOV must not move the
+  is exposed (`docs/camera/COMPLETION_PLAN.md` Phase 0); FOV must not move the
   camera.
 - Probe the engine caps (`+0x50/+0x58/+0x60/+0x68`) to replace the 100 u
   `MinCameraDistance` guess (`CameraSettings.cs:12`).
-- Full spec: `docs/CAMERA_DISTANCE_FOV_SPEC.md` (this worktree).
+- Full spec: `docs/camera/DISTANCE_FOV_SPEC.md` (this worktree).
 
 ### S9 [P0] Camera goes through walls — no structure obstruction
 
@@ -154,9 +154,9 @@ march-samples `TerrainSampler` at 14 points (20 u margin) and clamps `camY`
 above terrain+30 u. `FoliageCollision` — which holds the real wall/building/
 rock/tree triangle meshes and world matrices — is used only for the player
 capsule (`:934-957`) and debug (`:1127-1134`); the camera path never queries it.
-`docs/CAMERA_WALL_OBSTRUCTION.md` confirms the host cannot hit structures with
+`docs/camera/WALL_OBSTRUCTION.md` confirms the host cannot hit structures with
 the heightfield alone and does not test the per-mesh `bObscatleCamera` gate.
-**Real rules to match** (`docs/CAMERA_WALL_OBSTRUCTION.md`):
+**Real rules to match** (`docs/camera/WALL_OBSTRUCTION.md`):
 `bObstructdAvert` default on; **5-ray** default probe set (center + 4 corners;
 9-ray alternate); nearest hit along anchor→camera; final
 `C'' = C' + normalize(A − C')·18 u`; hysteresis **50 u** clear / **100 u**
@@ -170,7 +170,7 @@ per-mesh `bObscatleCamera` (default 1; some decorative props 0);
   Caveat: the bake does **not** store `bObscatleCamera`; include all structure
   instances first, or filter by size; real gating needs the mesh-property inis.
 - **B (native):** once the host camera interface exists
-  (`CAMERA_COMPLETION_PLAN.md` Phase 0), `bObstructdAvert` handles it
+  (`docs/camera/COMPLETION_PLAN.md` Phase 0), `bObstructdAvert` handles it
   (5/9 probes, `FilterCamera` mask `0x301`, per-mesh gate). Verify that our
   `SetCameraPos` does not bypass/race the native update (open item in the wall
   doc).
@@ -211,13 +211,13 @@ debug or `RC_DEMO_COLLIDE=1 RC_SPAWN=15007,398,25400`).
 
 | File | Content |
 |---|---|
-| `docs/CAMERA_DRAG_MODEL.md` | proven mouse → yaw/pitch mapping |
-| `docs/CAMERA_FIX_SPEC.md` | Part 1 (drag fix) proof and acceptance |
-| `docs/CAMERA_CLIENT_AUDIT.md` | implemented / partial / missing inventory |
-| `docs/CAMERA_COMPLETION_PLAN.md` | Phase 0–6 (native interface, obstruction, modes, settings) |
-| `docs/CAMERA_DISTANCE_FOV_SPEC.md` | 镜头最大距离 + 广角 implementation spec |
-| `docs/CAMERA_CONFORMANCE_CHECKS.md` | this list as a live notes-vs-code checklist |
-| `docs/CAMERA_WALL_OBSTRUCTION.md` | native wall obstruction rules (S9) |
-| `docs/PLAYER_CONTROLS_FINDINGS.md` | the full control surface this camera serves |
+| `docs/camera/DRAG_MODEL.md` | proven mouse → yaw/pitch mapping |
+| `docs/camera/FIX_SPEC.md` | Part 1 (drag fix) proof and acceptance |
+| `docs/camera/CLIENT_AUDIT.md` | implemented / partial / missing inventory |
+| `docs/camera/COMPLETION_PLAN.md` | Phase 0–6 (native interface, obstruction, modes, settings) |
+| `docs/camera/DISTANCE_FOV_SPEC.md` | 镜头最大距离 + 广角 implementation spec |
+| `docs/camera/CONFORMANCE_CHECKS.md` | this list as a live notes-vs-code checklist |
+| `docs/camera/WALL_OBSTRUCTION.md` | native wall obstruction rules (S9) |
+| `docs/controls/PLAYER_CONTROLS_FINDINGS.md` | the full control surface this camera serves |
 | `docs/controls/CONTROLS_GAP_REGISTER.md` | the master gap register |
 | `docs/controls/README.md` | index of this notes set |

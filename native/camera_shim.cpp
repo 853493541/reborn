@@ -1,5 +1,5 @@
 // camera_shim.dll - Step C ABI glue into the host engine
-// (docs/CAMERA_HANDOFF.md). Contains no camera logic: it only calls the
+// (docs/camera/HANDOFF.md). Contains no camera logic: it only calls the
 // engine's own functions with the right objects/context, so the client keeps
 // the game mechanism instead of approximating it.
 //
@@ -27,7 +27,7 @@
 static const DWORD ENGINE_TIMESTAMP = 0x6AA7C1F5;
 static const DWORD ENGINE_SIZE_OF_IMAGE = 0x2EA7000;
 
-// RVAs verified in client/EngineRay.cs and docs/CAMERA_*.md
+// RVAs verified in client/EngineRay.cs and docs/camera/
 static const DWORD RVA_RAY_TERRAIN = 0x976260; // KG3D_Scene::RayIntersectionTerrain
 
 // RTTI-derived vtable RVAs (VA - 0x180000000)

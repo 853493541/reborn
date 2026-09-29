@@ -711,8 +711,8 @@ docs/netcode/JX3_MODE_LOOT_SYSTEM.md          # loot containers/tables/dead ends
 docs/netcode/JX3_LOOT_PROTOCOL_LAYOUTS.md     # doodad/loot wire layouts
 docs/netcode/JX3_MODE_SPAWN_RULES_SEARCH.md   # closed dead end: anchors/refresh/rates
 docs/netcode/JX3_MODE_UI_FLOW.md              # screen-level flow: queue panel, loading art/progress, HUD
-docs/MAP_MINIMAP_RESEARCH.md                  # UI corpus, storm/battlefield map, markers
-docs/JX3_GRAVITY_RESEARCH.md                  # parachute partial, fly/glide states
+docs/ui/MAP_MINIMAP_RESEARCH.md                  # UI corpus, storm/battlefield map, markers
+docs/movement/JX3_GRAVITY_RESEARCH.md                  # parachute partial, fly/glide states
 docs/netcode/JX3_CAMERA_RESEARCH.md           # GliderCamera/carrier camera
 proof/netcode/mode_ui/**                      # loading art/progress xrefs, string scans
 proof/minimap/ui/Scheme/Case/string.txt       # official UI strings: STR_TIMEDESERT/STR_LEFTPEPLE/STR_SETTING210 (GBK, lines 2251/2425-2429)

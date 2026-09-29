@@ -3,9 +3,9 @@
 Scope: `client/RebornClient.cs`, `client/CameraSystem.cs`,
 `client/CameraSettings.cs`, `client/camera.json` as of 2026-09-24 (worktree
 carries the pitch-align/tracking correction diff). Compared against the
-recovered reference in `reborn-camera` (`CAMERA_WALL_OBSTRUCTION.md`,
-`CAMERA_CONFIG_FILES.md`, `CAMERA_REAL_VALUES.md`,
-`CAMERA_INPUT_CONTROLS.md`) and the UI bindings.
+recovered reference in `reborn-camera` (`docs/camera/WALL_OBSTRUCTION.md`,
+`docs/camera/CONFIG_FILES.md`, `docs/camera/REAL_VALUES.md`,
+`docs/camera/INPUT_CONTROLS.md`) and the UI bindings.
 
 **Verdict:** the client implements the follow camera's user-facing subset —
 distance/zoom/drag/reset/init per-user settings plus a terrain-only
@@ -151,11 +151,11 @@ is a separate, incorrect reimplementation.
 **Fix status (2026-09-24):** 1-3 implemented in `client/RebornClient.cs` +
 `client/CameraSystem.cs` (`DesiredOffset`), smoke 15/15. The full drag model
 (L/R = yaw orbit, U/D = pitch, look-at = character head) is proven in
-`docs/CAMERA_DRAG_MODEL.md`. Yaw is read back with `measureView()` and the
+`docs/camera/DRAG_MODEL.md`. Yaw is read back with `measureView()` and the
 engine aim pitch gets a model feed-forward (`oyFF`), so the character stays
 centred through both drags (probe: yaw sync <= 0.02 rad, aim steady-state
 ~0.03 rad, captures centred). Remaining: native look-at interface with the
-real head anchor (`IKG3D_Camera`) per `docs/CAMERA_STATUS.md`.
+real head anchor (`IKG3D_Camera`) per `docs/camera/STATUS.md`.
 
 ## Practical gaps with the most visible effect
 
@@ -164,7 +164,7 @@ real head anchor (`IKG3D_Camera`) per `docs/CAMERA_STATUS.md`.
 2. Walls/buildings/trees never push the camera (terrain only) — **fixed**:
    `FoliageCollision.Raycast` + `CameraObstruction` implement the native 18-u
    clearance, 50/100-u hysteresis and flex return over the extracted
-   structure/foliage instances (`docs/CAMERA_WALL_OBSTRUCTION.md` host
+   structure/foliage instances (`docs/camera/WALL_OBSTRUCTION.md` host
    section). Remaining: the engine `bObscatleCamera` exclusions and geometry
    baked into the terrain mesh have no ray data.
 3. No auto pitch when running (the real client dips the camera while moving).
@@ -172,5 +172,5 @@ real head anchor (`IKG3D_Camera`) per `docs/CAMERA_STATUS.md`.
 5. The camera never shakes and never eases back with the native flex curve.
 
 Sources: `client/*.cs` line references above; the recovered reference tables
-in `reborn-camera/docs/CAMERA_CONFIG_FILES.md` §7 and
-`reborn-camera/docs/CAMERA_WALL_OBSTRUCTION.md`.
+in `reborn-camera/docs/camera/CONFIG_FILES.md` §7 and
+`reborn-camera/docs/camera/WALL_OBSTRUCTION.md`.

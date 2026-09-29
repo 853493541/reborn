@@ -609,8 +609,8 @@ else:
 | `proof/gravity/number.krl.txt` | speeds + yaw turn constants |
 | `proof/gravity/player_flyjump.krl.txt` | `TurningEpsilon`, `KeepTurningFrame`, turn clips |
 | `proof/gravity/disasm/process_acceleration.txt` | heading recompute (`atan2`), velocity clamps |
-| `docs/JX3_GRAVITY_RESEARCH.md` | gravity/jump/fall model |
-| `docs/REBORN_JUMP_FALL_SPEC.md` | implementation spec for jump/fall |
+| `docs/movement/JX3_GRAVITY_RESEARCH.md` | gravity/jump/fall model |
+| `docs/movement/REBORN_JUMP_FALL_SPEC.md` | implementation spec for jump/fall |
 | `samples/player/catalog/player_animation_f1.txt` | F1 animation table (KindID map) |
 | `reborn-netcode/docs/netcode/REBORN_CAMERA_SPEC.md` | camera turn coupling |
 | `tools/movement/extract_ui_filepath.py` | extracts hotkey tables from PakV4 |

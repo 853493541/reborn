@@ -206,7 +206,7 @@ client (`client/CameraSystem.cs`, commit `bdfb586`; `client/CameraSmoke.cs`
   Shift+move = sprint mode pull-back,
   movement input holds its world direction while the key set is unchanged.
   *The live client integration has since moved to the sphere offset + aim
-  closed loop (`CAMERA_FIX_SPEC.md`, `CAMERA_DRAG_MODEL.md`); the lines below
+  closed loop (`docs/camera/FIX_SPEC.md`, `docs/camera/DRAG_MODEL.md`); the lines below
   describe the earlier spike.*
 - Units: rows are meters; the host scales them by `UnitsPerMeter`
   (default **100**, `MAP_CAMERA_SCALE`). Character 6 m distance -> 600 u,
@@ -230,7 +230,7 @@ client (`client/CameraSystem.cs`, commit `bdfb586`; `client/CameraSmoke.cs`
   - **Pending adoption (camera fix later):** the client still runs the
     pre-`37bb969` values — `UnitsPerMeter = 192`, wheel 2..30 m, sprint row
     9 m, and the 1.92x-off player sim constants. Value list:
-    `docs/CAMERA_ADOPTION_FOR_ONLINE_CLIENT.md`.
+    `docs/camera/ADOPTION_FOR_ONLINE_CLIENT.md`.
 
 Build (from the repo root):
 

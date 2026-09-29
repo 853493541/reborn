@@ -13,11 +13,11 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 
 | Area | Status | Artifacts / next questions |
 |---|---|---|
-| Engine host init (MovieEditor DLLs) | [DONE] | `docs/ENGINE_HOST_PLAN.md`, `engine_host_spike/` |
-| Scene/map loading (`jsonmap`, regions) | [DONE] | `docs/M1_ACTOR_ON_MAP.md`, `TerrainSampler` |
-| Terrain heightfield + collision | [DONE] | `docs/FULL_MAP_COLLISION.md`, `REAL_CLIENT_MAP_COLLISION.md` |
+| Engine host init (MovieEditor DLLs) | [DONE] | `docs/engine_host/ENGINE_HOST_PLAN.md`, `engine_host_spike/` |
+| Scene/map loading (`jsonmap`, regions) | [DONE] | `docs/engine_host/M1_ACTOR_ON_MAP.md`, `TerrainSampler` |
+| Terrain heightfield + collision | [DONE] | `docs/movement/FULL_MAP_COLLISION.md`, `REAL_CLIENT_MAP_COLLISION.md` |
 | Baked structure/foliage collision | [DONE] | `tools/bake_map_collision.py`, `FoliageCollision.cs` |
-| Camera (follow/modes/drag) | [DONE] | `docs/CAMERA_*`, this branch |
+| Camera (follow/modes/drag) | [DONE] | `docs/camera/`, this branch |
 | SFX / PSS / movie editor path | [PART] | `PSS_FORMAT.md`, `HANDOFF_SFX.md`, `SFX_RUNTIME_STATUS.md` |
 | Unit scale & character size | [DONE] | `docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md` |
 | Rendering options / graphics presets | [OPEN] | `config/config_*.ini` presets (9 levels), per-option caps probe |
@@ -33,7 +33,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | Actor/mesh/texture formats | [PART] | `_dump_*.mjs`, FBX exports, `mesh.py` |
 | Animation formats (.ani/.tani) | [PART] | `min2.py`, `tani.py`, `_tani_timing_probe.py`, catalogs in `samples/` |
 | PSS particles | [PART] | `PSS_FORMAT.md`, `pss*.py` |
-| UI textures / `.UITex` atlases | [PART] | `docs/MAP_MINIMAP_RESEARCH.md` |
+| UI textures / `.UITex` atlases | [PART] | `docs/ui/MAP_MINIMAP_RESEARCH.md` |
 | Addon encryption/loader | [DONE] | `tools/addon_decrypt.py`, `proof/minimap/recon/kgui_*` |
 | Fonts/strings (`string.txt`) | [PART] | needed for full UI text parity |
 
@@ -42,12 +42,12 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | Area | Status | Artifacts / next questions |
 |---|---|---|
 | Rig/body parts/head attach | [PART] | `_head_attach.jsfrag`, actor presets |
-| Locomotion blend/kind map | [DONE] | `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §4 |
+| Locomotion blend/kind map | [DONE] | `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §4 |
 | Motion tags / root motion | [PART] | `docs/netcode/SKILL_MOTION_METHOD.md` |
 | Facial/morph (FaceLift) | [OPEN] | `FaceLiftDataConverter.exe`, face bone probes |
 | Ragdoll/physics bodies | [PART] | `physic_character_param.krl.txt` |
 | Mounts/vehicles/glider/parachute | [PART] | `number.krl`, JumpParam wall/horse rows |
-| Swim/fly/轻功 states | [PART] | `docs/REBORN_JUMP_FALL_SPEC.md` §3–§9 |
+| Swim/fly/轻功 states | [PART] | `docs/movement/REBORN_JUMP_FALL_SPEC.md` §3–§9 |
 
 ## 4. Controls & UI (this branch)
 
@@ -132,7 +132,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | Area | Status | Artifacts |
 |---|---|---|
 | MapList / BR rows / sub-maps | [DONE] | `JX3_MODE_LOAD_FLOW.md` |
-| Minimap/big map/markers/fog | [DONE] | `docs/MAP_MINIMAP_RESEARCH.md` |
+| Minimap/big map/markers/fog | [DONE] | `docs/ui/MAP_MINIMAP_RESEARCH.md` |
 | Map collision (the 5 baked) | [DONE] | `collision_data/`, bake tools |
 | Scene animations | [PART] | `SceneCameraAni.tab` |
 | Region streaming/loading screens | [DONE] | `JX3_MODE_UI_FLOW.md` §4 |
@@ -171,7 +171,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 
 | Area | Status | Artifacts |
 |---|---|---|
-| Mode cameras (carrier/glider/air/dialog) | [PART] | `CAMERA_CONFIG_FILES.md` §6 |
+| Mode cameras (carrier/glider/air/dialog) | [PART] | `docs/camera/CONFIG_FILES.md` §6 |
 | Camera animations / tracks | [PART] | `KRLCameraAni`, `.mani` files |
 | Skill-move camera FOV | [PART] | `skill_move_camera.txt` |
 | Camera shake | [DONE] | `JX3_CAMERA_RESEARCH.md` §8 |

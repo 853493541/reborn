@@ -23,8 +23,8 @@ no protocol RE.
 | Engine host init + actor + tani + SFX | `engine_host_spike/SpikeHost.cs` (Spike A PASS) |
 | Map load + camera + player walk/jump + collision | `engine_host_spike/MapSpike.cs` (Spike B PASS) |
 | Baked collision (5 maps) | `engine_host_spike/collision_data/`, `tools/bake_map_collision.py` |
-| Jump/gravity/fall exact model | `docs/REBORN_JUMP_FALL_SPEC.md` + `tools/gravity/verify_model.py` |
-| Movement + camera rules | `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md`, `docs/netcode/REBORN_CAMERA_SPEC.md` |
+| Jump/gravity/fall exact model | `docs/movement/REBORN_JUMP_FALL_SPEC.md` + `tools/gravity/verify_model.py` |
+| Movement + camera rules | `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md`, `docs/netcode/REBORN_CAMERA_SPEC.md` |
 | Netcode model + server spec | `docs/netcode/REBORN_SERVER_SPEC.md`, `tools/netcode/reference/` |
 | Skill data (182 绝境 skills) | `docs/netcode/JX3_MODE_JUEJING_LOGIC.md`, `SkillMove.tab`, ranges, cooldowns |
 | Loot/doodad layouts + tables | `docs/netcode/JX3_LOOT_PROTOCOL_LAYOUTS.md`, `JX3_MODE_LOOT_SYSTEM.md` |

@@ -1064,7 +1064,7 @@ internal static class RebornClient
         // the user's saved runtime values with RC_CUSTOM_DAT). Maps without
         // their own row keep the spawn view. Model pitch is the offset
         // parameter of the JX3 sphere offset; the engine view pitch follows
-        // from it (see geometricAimPitch / CAMERA_FIX_SPEC.md).
+        // from it (see geometricAimPitch / docs/camera/FIX_SPEC.md).
         bool applyCamInit = cameraSettings.HasSceneInit || cameraSettings.HasSavedRuntime;
         if (applyCamInit)
         {
@@ -1223,7 +1223,7 @@ internal static class RebornClient
                 // the full delta is synthesised
                 int oxSend = ox + adjYawPx; adjYawPx = 0;
                 // row per-frame clamps (CameraMaxDeltaYaw/Pitch, row speeds in
-                // CAMERA_REAL_VALUES.md) converted through the measured engine
+                // docs/camera/REAL_VALUES.md) converted through the measured engine
                 // orbit sensitivity: 0.0018 rad/px yaw, 0.00121 rad/px pitch
                 CameraParams orow = camSys.Row;
                 double yawMaxPx = orow.F("CameraMaxDeltaYaw", 2.0 * Math.PI) / 0.0018;
@@ -1774,7 +1774,7 @@ internal static class RebornClient
                 }
 
                 // JX3 sphere offset (SetCharacterCameraPosition @ 0x180B0E820,
-                // CAMERA_FIX_SPEC.md): constant-length orbit around the anchor;
+                // docs/camera/FIX_SPEC.md): constant-length orbit around the anchor;
                 // pitch only rotates it and CameraHeight is a separate additive
                 // term. Never use tan(pitch) here (the old bug scaled the orbit
                 // radius while dragging, so dragging changed the distance).
@@ -1784,7 +1784,7 @@ internal static class RebornClient
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 // game per-axis dead-zone + SmoothTime (SetCharacterCameraPosition
                 // @ 0x180B0F2BA..0x180B0F3A6, state +0x1B8/0x1BC/0x1C0; spec
-                // docs/CAMERA_FIX_SPEC.md, reference tools/netcode/reference/
+                // docs/camera/FIX_SPEC.md, reference tools/netcode/reference/
                 // camera_model.py): current += delta*dt/SmoothTime per axis, snap
                 // when the step covers the delta. The host engine has no camera
                 // smoothing of its own, so without this the orbit is raw.
@@ -1815,7 +1815,7 @@ internal static class RebornClient
                 // Native JX3 obstruction: nearest hit of the anchor->camera
                 // segment against structures/foliage (5-probe camera footprint)
                 // and terrain; then 18 u clearance + 50/100 u hysteresis + flex
-                // return (docs/CAMERA_WALL_OBSTRUCTION.md).
+                // return (docs/camera/WALL_OBSTRUCTION.md).
                 double hitDist = -1.0;
                 string hitSrc = "";
                 bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
@@ -2247,7 +2247,7 @@ internal static class RebornClient
 
                 // Character visibility near the camera: the native client relies
                 // on view near-plane clipping (value not shipped, see
-                // CAMERA_CLOSE_RANGE_RESEARCH.md). The host has no visibility
+                // docs/camera/CLOSE_RANGE_RESEARCH.md). The host has no visibility
                 // API, so hide the dummy while the REAL camera->anchor distance
                 // (after the ground clamp) is inside the character's volume and
                 // restore it once clearly outside - conservative radius and

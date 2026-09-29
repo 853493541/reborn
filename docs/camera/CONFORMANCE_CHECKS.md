@@ -2,7 +2,7 @@
 
 **Code audited:** `camara-fix` @ `00f1237` (per-frame aim sync) · **Date:** 2026-09-25
 **Purpose:** turn every camera note into a check with a status, a code
-reference and an acceptance test. Companion to `CAMERA_FIX_SUGGESTIONS.md`
+reference and an acceptance test. Companion to `docs/camera/FIX_SUGGESTIONS.md`
 (what to fix) and `controls/CONTROLS_GAP_REGISTER.md` (live register).
 
 Status: `PASS` · `PARTIAL` · `FAIL` · `N/A`
@@ -13,8 +13,8 @@ Status: `PASS` · `PARTIAL` · `FAIL` · `N/A`
 
 | # | Requirement | Status | Code / evidence | Acceptance |
 |---|---|---|---|---|
-| A1 | Camera position is the constant-length JX3 sphere offset; height is an additive term; no `tan` | **PASS** | `CameraSystem.DesiredOffset`; placement `RebornClient.cs:1053`; `docs/CAMERA_DRAG_MODEL.md` | `camera_smoke.exe` radius-invariant case |
-| A2 | Mouse X → yaw, Y → pitch (`pitch += dy`), engine orbit as actuator | **PASS** | `RebornClient.cs:728`, `:735`; proven in `docs/CAMERA_DRAG_MODEL.md` | drag probe: model and measured yaw track |
+| A1 | Camera position is the constant-length JX3 sphere offset; height is an additive term; no `tan` | **PASS** | `CameraSystem.DesiredOffset`; placement `RebornClient.cs:1053`; `docs/camera/DRAG_MODEL.md` | `camera_smoke.exe` radius-invariant case |
+| A2 | Mouse X → yaw, Y → pitch (`pitch += dy`), engine orbit as actuator | **PASS** | `RebornClient.cs:728`, `:735`; proven in `docs/camera/DRAG_MODEL.md` | drag probe: model and measured yaw track |
 | A3 | Per-frame aim sync while dragging (no interval lag) | **PASS** | `if (dragging \|\| orbitApplied)` `RebornClient.cs:675` (commit `00f1237`) | fast 1.5 rad/s sweep: yaw err ≤ 0.002 rad (commit probe) |
 | A4 | Yaw correction smoothed, not snapped | **PASS** | τ=10 ms low-pass `:699` | no visible snap; yaw err ≤ 0.002 rad |
 | A5 | Pitch aim closed loop (residual to the engine) | **PASS** | `pitchAimErrPx` `:691`, applied `:745-752` (±400 px clamp `:753`) | pitch aim ≤ 0.013 rad |
@@ -35,7 +35,7 @@ Status: `PASS` · `PARTIAL` · `FAIL` · `N/A`
 | S5 | Max-distance clamp on every writer | **FAIL** | only `ZoomBy` clamps; F11 `:558` and sprint `CameraSystem.cs:450` bypass | user max 760: zoom-out stops, F11/sprint obey |
 | S6 | RMB turn via turn model | **FAIL** | snap `:929` | smooth rate-limited turn, no snap |
 | S7 | LMB click vs drag | **FAIL** | press always locks `:483-491` | click selects without capture; drag rotates |
-| S8 | 广角/FOV + engine caps | **FAIL** | only `RC_VIEW_ANGLE`; `MinCameraDistance=100` guess | see `CAMERA_DISTANCE_FOV_SPEC.md` |
+| S8 | 广角/FOV + engine caps | **FAIL** | only `RC_VIEW_ANGLE`; `MinCameraDistance=100` guess | see `docs/camera/DISTANCE_FOV_SPEC.md` |
 | S9 | Wall/structure obstruction | **FAIL** | terrain-only `:1058-1080`; `FoliageCollision` unused for camera | camera stops at hit−18 u, hysteresis 50/100 u, flex return |
 
 ## C. Settings / distance / FOV

@@ -1,7 +1,7 @@
 # Camera plan #2 — first fix, then full completion
 
-Supersedes the "Next step" section of `docs/CAMERA_STATUS.md` and extends
-`docs/CAMERA_CLIENT_AUDIT.md`. Target repo: `reborn-merge` (branch `merge`),
+Supersedes the "Next step" section of `docs/camera/STATUS.md` and extends
+`docs/camera/CLIENT_AUDIT.md`. Target repo: `reborn-merge` (branch `merge`),
 client code in `client/`, host spike in `engine_host_spike/`.
 
 Goal: **(1)** fix the drag/pitch placement bug now, **(2)** finish the camera
@@ -70,9 +70,9 @@ camera height.
 `camSys.Yaw` from a measured view" rule is reversed by the later proof)*
 
 - Keep `orbitQueue -> ExecAction(30/1, ...)` as the host's aim driver (the
-  managed `SetCameraPos` cannot set look-at — `CAMERA_STATUS.md` blocker 1).
+  managed `SetCameraPos` cannot set look-at — `docs/camera/STATUS.md` blocker 1).
 - **Yaw must be read back from the engine aim** (`measureView()`): pixel-only
-  integration drifts up to 4.36 rad from the engine view (`CAMERA_DRAG_MODEL.md`
+  integration drifts up to 4.36 rad from the engine view (`docs/camera/DRAG_MODEL.md`
   §3), which puts the placed camera on a different orbit angle than the aim.
   A *position*-derived yaw is the trap (our own placement overwrites the
   position -> circular); the measured view direction is authoritative.
@@ -103,7 +103,7 @@ feature surface; Phase 6 keeps it honest with tests and the missing data.
 ## Phase 0 — Host camera interface (unblocker)
 
 The managed wrapper only exposes position + editor actions
-(`CAMERA_STATUS.md` blockers 1-3). The recovered engine facts show the camera
+(`docs/camera/STATUS.md` blockers 1-3). The recovered engine facts show the camera
 object (`KG3DTrackCamera`) has position/look-at/FOV vtable methods and its own
 obstruction+flex path.
 
@@ -111,7 +111,7 @@ obstruction+flex path.
   (`MovieEngineCLR.dll` RTTI): walk `KGSceneCLR.m_pScene` -> camera object;
   map vtable slots used by the engine (`+0x18` direction, `+0x20` set-position,
   `+0x28` set-position variant, `+0x48..+0x54` FOV block, `+0x60/+0x68` FOV
-  get/set, `+0xC8` 9-ray mode; see `CAMERA_WALL_OBSTRUCTION.md` and
+  get/set, `+0xC8` 9-ray mode; see `docs/camera/WALL_OBSTRUCTION.md` and
   `proof/netcode/camera_wall_obstruction.txt` §12).
 - [ ] Extend the host wrapper with: `GetCameraPos`, `SetCameraPos`,
   `SetCameraLookAt`, `GetCameraLookAt`, `Get/SetFov`, `GetEngineCameraState`
@@ -157,7 +157,7 @@ If the host must keep placing positions manually, implement the same rule:
 
 ## Phase 3 — Modes
 
-Parameter vocabularies recovered in `CAMERA_CONFIG_FILES.md` §6.
+Parameter vocabularies recovered in `docs/camera/CONFIG_FILES.md` §6.
 
 - [ ] Sprint: pull-back distance, `SprintCameraOffset`/`MaxOffset`,
   `SpringTime`, track-back `10 -> 90 deg/s` slope 1.0, `SprintCameraAngle`,
@@ -235,7 +235,7 @@ Parameter vocabularies recovered in `CAMERA_CONFIG_FILES.md` §6.
 ## Risks / decisions
 
 - **Native vs reimplementation**: the engine's own chase camera acts every
-  frame (`CAMERA_STATUS.md` blocker 2) and can fight manual placement. Once
+  frame (`docs/camera/STATUS.md` blocker 2) and can fight manual placement. Once
   Phase 0 lands, prefer handing aim/obstruction/FOV to the native camera and
   keep only the JX3 behaviour layer in the client.
 - **Missing rows**: placeholders must stay clearly marked until the CDN data
@@ -246,11 +246,11 @@ Parameter vocabularies recovered in `CAMERA_CONFIG_FILES.md` §6.
 
 ## References
 
-- `docs/CAMERA_CLIENT_AUDIT.md` — what exists / what is missing.
-- `docs/CAMERA_STATUS.md` — host constraints (position-only API, orbit rate).
-- `reborn-camera/docs/CAMERA_WALL_OBSTRUCTION.md` — obstruction rule.
-- `reborn-camera/docs/CAMERA_CONFIG_FILES.md` §6/§7 — mode vocabularies and
+- `docs/camera/CLIENT_AUDIT.md` — what exists / what is missing.
+- `docs/camera/STATUS.md` — host constraints (position-only API, orbit rate).
+- `reborn-camera/docs/camera/WALL_OBSTRUCTION.md` — obstruction rule.
+- `reborn-camera/docs/camera/CONFIG_FILES.md` §6/§7 — mode vocabularies and
   user settings.
-- `reborn-camera/docs/CAMERA_REAL_VALUES.md`, `docs/netcode/REBORN_CAMERA_SPEC.md`
+- `reborn-camera/docs/camera/REAL_VALUES.md`, `docs/netcode/REBORN_CAMERA_SPEC.md`
   — constants and the reference model.
 - `reborn-camera/proof/netcode/disasm/camera_set.txt` — placement disassembly.

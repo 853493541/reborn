@@ -26,8 +26,8 @@ it adds no new reverse engineering.
 | Operation mode | classic / joystick | per-role `custom.dat` |
 
 Sources: `proof/movement/extracted/ui_hotkey_default.txt`,
-`ui_hotkey_bindings.ini`, `docs/MAP_MINIMAP_RESEARCH.md` §2b,
-`docs/CAMERA_CONFIG_FILES.md` §7, `docs/CAMERA_REAL_VALUES.md` §2.
+`ui_hotkey_bindings.ini`, `docs/ui/MAP_MINIMAP_RESEARCH.md` §2b,
+`docs/camera/CONFIG_FILES.md` §7, `docs/camera/REAL_VALUES.md` §2.
 
 ---
 
@@ -47,8 +47,8 @@ Sources: `proof/movement/extracted/ui_hotkey_default.txt`,
 **Examples decoded:** `ACTIONBAR2_BUTTON1 = 262193 = 0x40031` → Alt+1;
 `TOGGLE_UI = 65621 = 0x10055` → Ctrl+U; `SKILL_CAST_FORWARD = 0x40057` → Alt+W.
 
-Evidence: `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2,
-`docs/CAMERA_INPUT_CONTROLS.md` §1–2.
+Evidence: `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2,
+`docs/camera/INPUT_CONTROLS.md` §1–2.
 
 ---
 
@@ -79,10 +79,10 @@ sprint dash), heading (`atan2`), facing (byte 0..255) and turn rate; a turn
 
 Jump: Space takeoff triple from `JumpParam.tab`, gravity per frame, landing
 thresholds (500 u roll / water variants), fall death server-side. Full spec:
-`docs/REBORN_JUMP_FALL_SPEC.md`.
+`docs/movement/REBORN_JUMP_FALL_SPEC.md`.
 
-Evidence: `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2.3–§3,
-`docs/REBORN_JUMP_FALL_SPEC.md`.
+Evidence: `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2.3–§3,
+`docs/movement/REBORN_JUMP_FALL_SPEC.md`.
 
 ---
 
@@ -113,9 +113,9 @@ rotates, `Scene_LockMouseRotation`). Per-map init from `scene_init_param.txt`.
 
 **镜头最大距离** caps wheel zoom-out and scales the DLL zoom step;
 **广角** is projection-only and is overridden per skill/mode by the
-skill-move camera tables. Details: `docs/CAMERA_REAL_VALUES.md`,
-`docs/CAMERA_CONFIG_FILES.md`, `docs/CAMERA_INPUT_CONTROLS.md`,
-`docs/CAMERA_DRAG_MODEL.md`.
+skill-move camera tables. Details: `docs/camera/REAL_VALUES.md`,
+`docs/camera/CONFIG_FILES.md`, `docs/camera/INPUT_CONTROLS.md`,
+`docs/camera/DRAG_MODEL.md`.
 
 ---
 
@@ -147,7 +147,7 @@ Evidence: `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md`,
   sliders.
 
 Evidence: `proof/movement/extracted/ui_hotkey_default.txt`,
-`docs/MAP_MINIMAP_RESEARCH.md` §2b, `docs/CAMERA_CONFIG_FILES.md` §7.
+`docs/ui/MAP_MINIMAP_RESEARCH.md` §2b, `docs/camera/CONFIG_FILES.md` §7.
 
 ---
 
@@ -179,7 +179,7 @@ Evidence: `proof/movement/extracted/ui_hotkey_default.txt`,
 
 Open gaps for the full control system are consolidated in
 `docs/controls/CONTROLS_GAP_REGISTER.md`; the camera-specific status is in
-`docs/CAMERA_CONFORMANCE_CHECKS.md`.
+`docs/camera/CONFORMANCE_CHECKS.md`.
 
 ---
 
@@ -189,14 +189,14 @@ Open gaps for the full control system are consolidated in
 |---|---|
 | `proof/movement/extracted/ui_hotkey_default.txt` | real default bindings |
 | `proof/movement/extracted/ui_hotkey_bindings.ini` | 428 command definitions |
-| `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md` | movement + turning + hotkey encoding |
-| `docs/CAMERA_INPUT_CONTROLS.md` | camera bindings and drag pipeline |
-| `docs/CAMERA_REAL_VALUES.md`, `docs/CAMERA_CONFIG_FILES.md` | camera values, settings, files |
-| `docs/CAMERA_DRAG_MODEL.md` | proven mouse → yaw/pitch mapping |
-| `docs/REBORN_JUMP_FALL_SPEC.md` | jump/fall/轻功 model |
+| `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` | movement + turning + hotkey encoding |
+| `docs/camera/INPUT_CONTROLS.md` | camera bindings and drag pipeline |
+| `docs/camera/REAL_VALUES.md`, `docs/camera/CONFIG_FILES.md` | camera values, settings, files |
+| `docs/camera/DRAG_MODEL.md` | proven mouse → yaw/pitch mapping |
+| `docs/movement/REBORN_JUMP_FALL_SPEC.md` | jump/fall/轻功 model |
 | `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` | combat, targeting, cooldowns |
 | `proof/netcode/camera_settings_real.txt` | per-user settings + zoom step |
-| `docs/MAP_MINIMAP_RESEARCH.md` §2b | per-window `custom.dat` state |
+| `docs/ui/MAP_MINIMAP_RESEARCH.md` §2b | per-window `custom.dat` state |
 
 ---
 
@@ -212,6 +212,6 @@ Open gaps for the full control system are consolidated in
 | `docs/controls/JX3_UI_CUSTOMIZATION.md` | customization counts and mechanics |
 | `docs/controls/REBORN_CONTROLS_SPEC.md` | target architecture (design only) + phases |
 | `docs/controls/CONTROLS_GAP_REGISTER.md` | master live checklist |
-| `docs/CAMERA_FIX_SUGGESTIONS.md` | camera defects S1–S9 + suggested fixes |
-| `docs/CAMERA_CONFORMANCE_CHECKS.md` | notes-vs-code matrix with acceptance |
-| `docs/CAMERA_DISTANCE_FOV_SPEC.md` | 镜头最大距离 + 广角 spec |
+| `docs/camera/FIX_SUGGESTIONS.md` | camera defects S1–S9 + suggested fixes |
+| `docs/camera/CONFORMANCE_CHECKS.md` | notes-vs-code matrix with acceptance |
+| `docs/camera/DISTANCE_FOV_SPEC.md` | 镜头最大距离 + 广角 spec |

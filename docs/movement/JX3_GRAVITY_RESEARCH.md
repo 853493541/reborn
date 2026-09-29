@@ -659,7 +659,7 @@ parachute flag (`bOnParachuteFlag` `0x0084B508`, `ON_PARACHUTE_FLAG`
   `ragdoll.txt`
 - `proof/gravity/verification.txt` — numeric verification of the model
   (`tools/gravity/verify_model.py`)
-- `docs/REBORN_JUMP_FALL_SPEC.md` — implementation-ready jump/fall spec
+- `docs/movement/REBORN_JUMP_FALL_SPEC.md` — implementation-ready jump/fall spec
 - `tools/gravity/parse_jump_tables.py` — parser + calibrated replays
   (`--summary` covers jump, fall caps, death moves)
 
@@ -693,7 +693,7 @@ parachute flag (`bOnParachuteFlag` `0x0084B508`, `ON_PARACHUTE_FLAG`
    transitions, individual `SkillMove.tab` applications (8 call sites of
    `GetSkillMoveSetting` located).
 
-For the implementation-ready summary see `docs/REBORN_JUMP_FALL_SPEC.md`;
+For the implementation-ready summary see `docs/movement/REBORN_JUMP_FALL_SPEC.md`;
 numeric validation is `proof/gravity/verification.txt`
 (`tools/gravity/verify_model.py`).
 

@@ -70,18 +70,18 @@ consolidates them and adds the domains that had no synthesized reference yet.
 
 | # | Domain | Client system | Primary evidence |
 |---|---|---|---|
-| 1 | Core physics runtime | PhysX 3.3.4, `PhysicsEngineX64.dll`, `SIMWorldX64.dll` | `docs/REAL_CLIENT_MAP_COLLISION.md`, `proof/gravity/SIMWorldX64_exports.txt` |
+| 1 | Core physics runtime | PhysX 3.3.4, `PhysicsEngineX64.dll`, `SIMWorldX64.dll` | `docs/movement/REAL_CLIENT_MAP_COLLISION.md`, `proof/gravity/SIMWorldX64_exports.txt` |
 | 2 | Collision math | `KBaseX64.dll` | `proof/netcode/exports_KBaseX64.txt` |
-| 3 | Terrain | heightfield loader, regions, holes, streaming | `docs/REAL_CLIENT_MAP_COLLISION.md`, `engine_host_spike/recon_terrain_*.txt` |
-| 4 | Static world | `StaticPhysicsSceneManager`, `sceneinfo_full` JSON | `docs/STRUCTURE_COLLISION_RESEARCH.md`, `docs/FULL_MAP_COLLISION.md` |
-| 5 | Foliage / SpeedTree | `.foliage`, `.CollisionMesh`, bake pipeline | `docs/FULL_MAP_COLLISION.md`, `tools/decode_foliage.py` |
+| 3 | Terrain | heightfield loader, regions, holes, streaming | `docs/movement/REAL_CLIENT_MAP_COLLISION.md`, `engine_host_spike/recon_terrain_*.txt` |
+| 4 | Static world | `StaticPhysicsSceneManager`, `sceneinfo_full` JSON | `docs/movement/STRUCTURE_COLLISION_RESEARCH.md`, `docs/movement/FULL_MAP_COLLISION.md` |
+| 5 | Foliage / SpeedTree | `.foliage`, `.CollisionMesh`, bake pipeline | `docs/movement/FULL_MAP_COLLISION.md`, `tools/decode_foliage.py` |
 | 6 | Dynamic objects | doodads, state machines, movable/advanced obstacles, conveyors, carriers | `proof/netcode/disasm/*`, `proof/gravity/SIMWorldX64_strings.txt` |
 | 7 | Character body | kinematic capsule + SIMWorld foot solver; `KRLCharacterControllerComponent` | `proof/gravity/disasm/physics_scene_setup.txt`, string dumps |
-| 8 | Movement model | `KCharacter` 15 Hz integer integration | `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md`, `proof/movement/disasm/*` |
-| 9 | Jump/fall/swim/fly | `JumpParam.tab`, `JumpFrameParam.tab`, `SkillMove.tab` | `docs/JX3_GRAVITY_RESEARCH.md`, `docs/REBORN_JUMP_FALL_SPEC.md` |
+| 8 | Movement model | `KCharacter` 15 Hz integer integration | `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md`, `proof/movement/disasm/*` |
+| 9 | Jump/fall/swim/fly | `JumpParam.tab`, `JumpFrameParam.tab`, `SkillMove.tab` | `docs/movement/JX3_GRAVITY_RESEARCH.md`, `docs/movement/REBORN_JUMP_FALL_SPEC.md` |
 | 10 | Ragdoll/death | `KPhysicsRagdoll`, 11-body presets | `proof/gravity/physic_character_param.krl.txt`, `proof/gravity/disasm/ragdoll.txt` |
-| 11 | Rays/filters/camera | `RayIntersection*`, `FilterCamera`, track camera | `docs/CAMERA_WALL_OBSTRUCTION.md`, `proof/netcode/camera_wall_obstruction.txt` |
-| 12 | Picking/selection | cursor rays, `PickRayWalk`, `target.lua` | `proof/netcode/disasm/cursor_*`, `docs/CAMERA_INPUT_CONTROLS.md` |
+| 11 | Rays/filters/camera | `RayIntersection*`, `FilterCamera`, track camera | `docs/camera/WALL_OBSTRUCTION.md`, `proof/netcode/camera_wall_obstruction.txt` |
+| 12 | Picking/selection | cursor rays, `PickRayWalk`, `target.lua` | `proof/netcode/disasm/cursor_*`, `docs/camera/INPUT_CONTROLS.md` |
 | 13 | Triggers/volumes | `KG3DSceneResponse`, zone mgr, PhysX triggers, interaction | string dumps (`KG3DEngineX64`, `SIMWorldX64`, Represent) |
 | 14 | Water/fluids | waterline math, `WaterData`, flux collision map | `proof/gravity/disasm/get_waterline.txt`, `recon_managed_api.txt` |
 | 15 | Navigation | `NAVX64.dll`, `KNavMeshQuery`, `DoNavTo` | `docs/netcode/JX3_NETCODE_RESEARCH.md`, string dumps |
@@ -156,14 +156,14 @@ motion, protocol), `tools/pvp/*` (attributes, cast/hitstiff), `tools/bake_map_co
   `m2_1018_body_hd.mesh` bounding height 181.64 u = 1.816 m
   (`docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md:15-31`,
   `proof/netcode/character_size/mesh_census.json`). Ragdoll limb radii 5–8 u = 5–8 cm
-  (`docs/CAMERA_REAL_VALUES.md:27`).
+  (`docs/camera/REAL_VALUES.md:27`).
 * **1 尺 (game foot) = 64 units = 0.64 m** — `LENGTH_BASE = 64.0`
   (`proof/pvp/cast_cooldown_resources.md:38-45`); skill ranges are written in 尺 and
   multiplied by 64. `HEIGHT_BASE = 512.0`, `PERCENT_BASE = 1024`, `GAME_FPS = 16`.
 * Terrain cells are 100 u = 1 m; region = 512 cells = 51,200 u = 512 m.
 
-**Unresolved conflict [known]:** `docs/JX3_GRAVITY_RESEARCH.md:109-112` and
-`docs/REBORN_JUMP_FALL_SPEC.md:14` use **1 m = 192 u** (implying 1 尺 = 64 u = 1/3 m), which
+**Unresolved conflict [known]:** `docs/movement/JX3_GRAVITY_RESEARCH.md:109-112` and
+`docs/movement/REBORN_JUMP_FALL_SPEC.md:14` use **1 m = 192 u** (implying 1 尺 = 64 u = 1/3 m), which
 contradicts the mesh census (1 u = 1 cm). The movement/gravity *integer* model (90 u/frame
 takeoff, 11 u/frame² gravity) is independent of the label; only the m/s and m/s² conversions
 differ (13.5 m/s / 24.75 m/s² at 100 u/m vs 7.03 m/s / 12.89 m/s² at 192 u/m). See §26.1 for
@@ -173,21 +173,21 @@ calibrated otherwise.
 ### 3.2 Coordinates
 
 * World is **X/Z horizontal, Y up**; terrain origin `(-102400, -102400)`, 8×8 regions of
-  51,200 u (`docs/REAL_CLIENT_MAP_COLLISION.md:69-70`).
+  51,200 u (`docs/movement/REAL_CLIENT_MAP_COLLISION.md:69-70`).
 * Region index `floor((v - origin) / (RegionSize*UnitScale))`, clamped; loader returns a
   `(512+1)²` float height grid per region (R32 or BCH/RLE encoding).
 * Instance matrices in `sceneinfo_full` are **row-major with translation in row 3**; the
   runtime convention used by the baked bins is **row-vector** `w = l · M`
-  (`docs/FULL_MAP_COLLISION.md:138-145`).
+  (`docs/movement/FULL_MAP_COLLISION.md:138-145`).
 * Foliage cells add `(cellX*400, baseZ, cellY*400)` to instance local positions; region origin
   `(-102400 + ix*51200, -102400 + iz*51200)`
-  (`docs/FULL_MAP_COLLISION.md:120-136`).
+  (`docs/movement/FULL_MAP_COLLISION.md:120-136`).
 
 ### 3.3 Time
 
 | Clock | Rate | Where |
 |---|---|---|
-| Character logic | **15 Hz** (66.7 ms/frame) | `KCharacter` movement, `DoMoveCtrl`; `docs/JX3_GRAVITY_RESEARCH.md:56-104` |
+| Character logic | **15 Hz** (66.7 ms/frame) | `KCharacter` movement, `DoMoveCtrl`; `docs/movement/JX3_GRAVITY_RESEARCH.md:56-104` |
 | Combat table time | **16 fps** (`GAME_FPS=16`) | skills/buffs/debuff frames |
 | Physics world | **50 Hz fixed 20 ms** | PhysX scene step (`proof/gravity/disasm/physics_scene_setup.txt:192-235`) |
 | Animation | 30/33 fps samples | `.tani` clips (46 frames @ 33 fps for 太阴指) |
@@ -312,7 +312,7 @@ Manager singleton at RVA `0x11B5D0`, vtable RVA `0xFA6B0`; vtable entries
 
 `PhysicsScene` vtable `0x1800FA7B8`, `SweepEx` string `0x1800FAA58`, vt[16] RVA `0x1C5B0`
 (`engine_host_spike/recon_physics3.txt:76`, `proof/gravity/recon?` — see
-`docs/REAL_CLIENT_MAP_COLLISION.md:128-131`). **There is no `PhysicsScene::RayCast` and no
+`docs/movement/REAL_CLIENT_MAP_COLLISION.md:128-131`). **There is no `PhysicsScene::RayCast` and no
 `PhysicsScene::GetFloorHeight` inside `PhysicsEngineX64.dll`**
 (`engine_host_spike/recon_physics3.txt:78-80`); gameplay ray/floor queries live in
 `SIMWorldX64.dll`, scene sweeps in `SweepEx`.
@@ -359,7 +359,7 @@ through `PhysicsSceneActor::AddToPxScene` / removed via `RemoveFromPxScene`
 ### 5.4 Collision geometry resolution [DISASM]
 
 `PhysicsEngine::_GetCollisionGeometryFilesFromFile` dispatches by extension
-(`docs/STRUCTURE_COLLISION_RESEARCH.md:167-217`):
+(`docs/movement/STRUCTURE_COLLISION_RESEARCH.md:167-217`):
 
 | Source | Collision geometry rule |
 |---|---|
@@ -387,7 +387,7 @@ Per-mesh display/physics flags written by `KG3DMesh::SavePropertyToIni`
 The `bObscatleCamera` data path is fully recovered: `KG3DMeshFileDataLoader::Load`
 (`0x180264540`, 2026-09-27 build) derives `.ini` siblings and `_LoadMeshProperty`
 (`0x180267360`) reads `[Display] bObscatleCamera`; a missing ini keeps the ctor default 1
-(`docs/CAMERA_PENETRATION_PLAN.md:165-186`). Our exporter converts these to `.cflags` sidecars
+(`docs/camera/PENETRATION_PLAN.md:165-186`). Our exporter converts these to `.cflags` sidecars
 (§9.4).
 
 **Static-physics selection is list-driven (recovered 2026-09-28).** The engine does not use
@@ -474,7 +474,7 @@ Config keys and the fields they fill (`engine_host_spike/recon_adapter_mgruse.tx
 | `bEnableForceField` | — | — |
 | `bEnableFluxWater` | — | — |
 
-Values from `config.ini:199-201` per `docs/REAL_CLIENT_MAP_COLLISION.md:19`; `DrawPhysicsObstacle=0`.
+Values from `config.ini:199-201` per `docs/movement/REAL_CLIENT_MAP_COLLISION.md:19`; `DrawPhysicsObstacle=0`.
 Other engine-facing API: `KG3DPhysiscManager::{QueryPhysXParam, CreateCapsule, CreatePxScene,
 NewOnePhysiscScene, DeleteOnePhysiscScene, _ForceAllSceneFinishSimulate}`,
 `KG3DEngineManager::GetPhysxInterface`, config `data\public\physics.ini`
@@ -518,7 +518,7 @@ The scene-level ray dispatch (`RayAaBBboxTest` etc.) is one level above these pr
 
 The `.jsonmap` references `landscape/<map>_landscapeinfo.json`. Observed descriptor for
 龙门寻宝 (`proof/map_spike/龙门寻宝_landscapeinfo.json:2-19`, probe log
-`docs/REAL_CLIENT_MAP_COLLISION.md:84-92`):
+`docs/movement/REAL_CLIENT_MAP_COLLISION.md:84-92`):
 
 ```
 RegionSize 512        LeafNodeSize 64       UnitScale 100
@@ -545,13 +545,13 @@ World span per region = `RegionSize × UnitScale` = 51,200 u; region index is
   (`engine_host_spike/recon_pxactor.txt:263,352-413`).
 * Region table on the terrain object: `+0x24` count X, `+0x28` count Y, `+0x48` array of
   0x30-byte entries (`+0` type, `+8` data pointer); `type==2` = loaded
-  (`docs/REAL_CLIENT_MAP_COLLISION.md:67-70`).
+  (`docs/movement/REAL_CLIENT_MAP_COLLISION.md:67-70`).
 
 ### 7.3 Streaming [DISASM]
 
 `UpdateTerrain(pos)` = terrain vt[2] `0x18002DAB0` streams force/preload ranges around the
 position; probe calls it 40× and observes `region[20] type=2` for `(147463,5231,49911)`
-(`docs/REAL_CLIENT_MAP_COLLISION.md:59,91`). Full map load uses terrain vt[5]
+(`docs/movement/REAL_CLIENT_MAP_COLLISION.md:59,91`). Full map load uses terrain vt[5]
 `LoadTerrain(path,0,mgr)` which builds its own loader, reads `landscapeinfo.json`, allocates the
 region table and creates the region manager.
 
@@ -624,11 +624,11 @@ across maps) is the empty SceneResponse state file (§17.1).
 
 The shipped `entities/<map>_sceneinfo.json` + `entities/sceneinfo/%03u_%03u.json` files contain
 `"worldObjects": {}` on all 150 maps scanned (1,714 region files)
-(`docs/STRUCTURE_COLLISION_RESEARCH.md:39-63`). The real HD objects live in
+(`docs/movement/STRUCTURE_COLLISION_RESEARCH.md:39-63`). The real HD objects live in
 `entities/sceneinfo_full/%03u_%03u.json`: template
 `%s%s\entities\%s_full\%03u_%03u.json` built by `SceneFileLoader_Jsonmap::OnSyncLoad`
 (init `0x18004CA5A`, fill `0x18004B7E3-0x18004B816`, format string `0x180069288`, literal
-`sceneinfo` at `0x180069158`) (`docs/FULL_MAP_COLLISION.md:57-66`).
+`sceneinfo` at `0x180069158`) (`docs/movement/FULL_MAP_COLLISION.md:57-66`).
 
 ### 8.2 World-object schema [DATA]
 
@@ -643,7 +643,7 @@ Per object (example from 龙门寻宝):
 ```
 
 `worldObjectCount` example: 5,075; extracted 4,965 objects (4,777 mesh + 186 SpeedTree + 2
-misc) (`docs/FULL_MAP_COLLISION.md:52-79`).
+misc) (`docs/movement/FULL_MAP_COLLISION.md:52-79`).
 
 ### 8.3 Loader and streaming [DISASM]
 
@@ -651,9 +651,9 @@ misc) (`docs/FULL_MAP_COLLISION.md:52-79`).
 `LoadRegionData`, `_LoadSceneDesc`, `FreeRegionData`; `engine_host_spike/recon_jsonsource.txt`)
 feeds `StaticPhysicsSceneManager::LoadFromFile`. Region stream states and actor
 add/remove per §5.3. Scene region manager `SceneRegionManager::_CreatePxActorInRegion`
-(`docs/STRUCTURE_COLLISION_RESEARCH.md:17-23`). Editor process scans found **no live
+(`docs/movement/STRUCTURE_COLLISION_RESEARCH.md:17-23`). Editor process scans found **no live
 PhysicsScene** inside MovieEditor, which is why our host bakes meshes offline instead
-(`docs/STRUCTURE_COLLISION_RESEARCH.md:56-60`).
+(`docs/movement/STRUCTURE_COLLISION_RESEARCH.md:56-60`).
 
 ### 8.4 Physics selection: audit + implemented engine rule (2026-09-28)
 
@@ -730,7 +730,7 @@ region origin (−102400 + ix*51200, −102400 + iz*51200)
 ```
 
 Validated byte-exact on all 13 龙门寻宝 files. Patterns: 2/3 grass (`.srt`, no mesh), 4
-deadwood, 5 cactus, 6/7 rocks (`docs/FULL_MAP_COLLISION.md:26-48`).
+deadwood, 5 cactus, 6/7 rocks (`docs/movement/FULL_MAP_COLLISION.md:26-48`).
 
 ### 9.2 Baked binary formats [DATA]
 
@@ -754,7 +754,7 @@ instance: u32 meshIndex, f32 m[16] (row-vector w=l·M), u32 pad,
 
 **CFGL sidecar** (`<bin>.cflags`, camara-fix): `u32 0x474C4643 ('CFLG'), u32 count,
 u8 flags[count]` — one `bObscatleCamera` byte per mesh, order-aligned with the bin meshes
-(§5.4, `docs/CAMERA_PENETRATION_PLAN.md:165-186`).
+(§5.4, `docs/camera/PENETRATION_PLAN.md:165-186`).
 
 ### 9.3 SpeedTree and degenerate-tree measurement [DATA]
 
@@ -762,7 +762,7 @@ Rule: `.srt` → `<base>.CollisionMesh` sibling. A shipped CollisionMesh is reje
 degenerate when `height < 150` **or** XZ extent `< 30`; then a trunk prism is measured from the
 visual `<base>.mesh`: select vertices within `250/scale` local units of the mesh base (retry
 2×), 2-D monotone-chain convex hull, extrude between base and base+250 u into a capped prism
-(`export_structure_collision.py:113-133,238-257`; `docs/FULL_MAP_COLLISION.md:94-116`).
+(`export_structure_collision.py:113-133,238-257`; `docs/movement/FULL_MAP_COLLISION.md:94-116`).
 Trees with neither usable CollisionMesh nor visual mesh stay walk-through, as in the client.
 
 ### 9.4 Bake orchestration and coverage [HOST]
@@ -783,7 +783,7 @@ Baked coverage (2026-09-22, verified by parsing the bins):
 | 天原绝境 | 4 / 279 | 535 / 6,393 | 6,672 / 539 |
 | 海岛绝境 | 4 / 0 | 245 / 4,177 | 4,177 / 249 |
 
-(`docs/FULL_MAP_COLLISION.md:227-241`; bin headers re-parsed 2026-09-28.)
+(`docs/movement/FULL_MAP_COLLISION.md:227-241`; bin headers re-parsed 2026-09-28.)
 
 ### 9.5 Runtime library (`FoliageCollision.cs`) [HOST]
 
@@ -1067,10 +1067,10 @@ hotkey (default.txt) → UI Lua bindings (control.lua ids) → CommitInput 0x180
 | `+0x320` | gravity accumulator |
 | `+0x2F8` | speed |
 | `+0x170` | scaled speed / ground term used by `ProcessVerticalMove` |
-| `+0xC08` | turn/sync counter (`docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md:151-174`; `proof/pvp/netcode/disasm/KPlayerClient__OnSyncMoveState.txt`) |
+| `+0xC08` | turn/sync counter (`docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md:151-174`; `proof/pvp/netcode/disasm/KPlayerClient__OnSyncMoveState.txt`) |
 
 Ground-capable move states are masked by `0x1000011E` = `{1,2,3,4,8,0x1C}`
-(`docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md:180-181,338-343`).
+(`docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md:180-181,338-343`).
 
 ### 12.2 Movement methods [DISASM]
 
@@ -1092,7 +1092,7 @@ Ground-capable move states are masked by `0x1000011E` = `{1,2,3,4,8,0x1C}`
 
 ### 12.3 The integer integration (verified)
 
-Constants (`proof/gravity/disasm/*`, `docs/JX3_GRAVITY_RESEARCH.md:63-104`):
+Constants (`proof/gravity/disasm/*`, `docs/movement/JX3_GRAVITY_RESEARCH.md:63-104`):
 
 ```
 takeoff velocity   Vz0 = 90 u/frame
@@ -1106,10 +1106,10 @@ Per-school takeoff triples come from `JumpParam.tab` (23 schools × 183 columns,
 `proof/gravity/verification.txt:4-9`); discrete apex ≈ 414 u / 18 air frames. Continuous
 approximation is acceptable if the discrete order is kept for reproduction of animation timing.
 Turn penalty: a direction change > `0x50/0x100` (112.5°) halves speed
-(`docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md:217-241`).
+(`docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md:217-241`).
 
 Slope: the terrain cell packs a slope value `(cell >> 1) & 7`; slope ≤ 8 forces `Vz = 0`
-(stand on slope), per `process_drop_speed.txt:48`, `docs/JX3_GRAVITY_RESEARCH.md:120-168`.
+(stand on slope), per `process_drop_speed.txt:48`, `docs/movement/JX3_GRAVITY_RESEARCH.md:120-168`.
 Ledge/fall behaviour is emergent from `ProcessVerticalMove` ground clamp + `ProcessDropSpeed`;
 there is no explicit "ledge" symbol (gap G-13: exact step-up offset unknown; our clients use
 70 u and a 150-u ledge rule).
@@ -1134,7 +1134,7 @@ implements the real 15 Hz state machine, turn model, or table-driven jump (gap G
 
 | Table | Content |
 |---|---|
-| `proof/gravity/JumpParam.tab` | 23 schools × 183 cols; per-school jump triplets `(VelocityXY, VelocityZ, Gravity)` + `End`; wall/horse/dash variants (`docs/JX3_GRAVITY_RESEARCH.md:471-535`) |
+| `proof/gravity/JumpParam.tab` | 23 schools × 183 cols; per-school jump triplets `(VelocityXY, VelocityZ, Gravity)` + `End`; wall/horse/dash variants (`docs/movement/JX3_GRAVITY_RESEARCH.md:471-535`) |
 | `proof/gravity/JumpFrameParam.tab` | 128 per-frame keyframes `(Frame, VelocityXY, VelocityZ, DirectionXY)`; **only schools 10/11 shipped rows in this build** (`:515-517`) |
 | `proof/gravity/Sprint.tab` | sprint caps (school 0/1/2 max Z 900 u/f, school 17 1000 u/f) |
 | `proof/gravity/SkillMove.tab` | 919 rows: `IngoreGravity`, `TotalFrame`, `SkillMoveOnlyFly`, `SkillMoveDeath`, `SkillMoveEndButKeepVelocity`, `CanJump`, `CanBanMask`, per-frame `FrameN/VelocityXYN/VelocityZN/DirectionXYN` |
@@ -1143,7 +1143,7 @@ implements the real 15 Hz state machine, turn model, or table-driven jump (gap G
 
 ### 13.2 Phase model [DOC/DISASM]
 
-Jump phases and table selection are documented in `docs/JX3_GRAVITY_RESEARCH.md:170-262`:
+Jump phases and table selection are documented in `docs/movement/JX3_GRAVITY_RESEARCH.md:170-262`:
 takeoff → ascending (frame curve) → apex → fall (`ProcessDropSpeed`) → land / roll / death.
 Fall caps and hard clamps in `verification.txt:42-54`. Roll threshold 500 u; water landing
 thresholds 500/50. Fall animation selection via `Fall%s%sAnimation` (`fall_animation.txt:4`).
@@ -1166,11 +1166,11 @@ thresholds 500/50. Fall animation selection via `Fall%s%sAnimation` (`fall_anima
 `BirdFlyTo` `0x14030C940`, `OnParkour` `0x140314510`, `SprintDash` `0x14031CC00`
 (`proof/gravity/disasm/{fly_to,end_fly_jump,bird_fly_to,on_parkour,sprint_dash}.txt`).
 Lightfoot/轻功 chains are table-driven via `SkillMove` rows; chain-segment timing frame
-condition open (`docs/REBORN_JUMP_FALL_SPEC.md:116-127`).
+condition open (`docs/movement/REBORN_JUMP_FALL_SPEC.md:116-127`).
 
 ### 13.5 Reproduction blueprint
 
-Use `docs/REBORN_JUMP_FALL_SPEC.md` as the implementation-ready spec: constants table,
+Use `docs/movement/REBORN_JUMP_FALL_SPEC.md` as the implementation-ready spec: constants table,
 per-frame pseudocode, single-jump numbers, status tables per subsystem. The discrete order
 (`y += v; v -= g`) must be kept if animation alignment matters. SkillMove rows provide dash,
 fly, death and forced-motion trajectories; `IngoreGravity` and `SkillMoveEndButKeepVelocity`
@@ -1270,7 +1270,7 @@ backends by mask bits and keeps the nearest positive hit. Bit 9 reaches
 `RayIntersectRenderEntity`; bit 8 reaches helpers `0x18032ED10 → 0x18032EF50/0x18032F0B0 →
 0x18008AF20/0x18038B6E0/0x1803AA8B0`. **The exact `0x301` bit split is unresolved** (gap G-17).
 Evidence: `proof/netcode/camera_wall_obstruction.txt:96-130,154-157,184-221,283-289`,
-`docs/CAMERA_WALL_OBSTRUCTION.md:96-107,242-244`.
+`docs/camera/WALL_OBSTRUCTION.md:96-107,242-244`.
 
 ### 15.3 Camera obstruction loop [DISASM]
 
@@ -1312,7 +1312,7 @@ guarded by a TEB cell (`gs:[0x58]`, index module+`0x26546C4`, cell `+0x89B0`).
 Known host deviations: D5 vertical backend returns no hits in the editor scene; C2 invented
 22-u footprint; C7 near plane unmeasured (getter deadlocks); D6 intermittent content AV under
 fast view changes (mitigated with a 1.5 rad/s cap and full-load). Register:
-`docs/CAMERA_HOST_DEVIATIONS.md`, plan: `docs/CAMERA_PENETRATION_PLAN.md`.
+`docs/camera/HOST_DEVIATIONS.md`, plan: `docs/camera/PENETRATION_PLAN.md`.
 
 ---
 
@@ -1322,7 +1322,7 @@ fast view changes (mitigated with a 1.5 rad/s cap and full-load). Register:
 
 LMB = `CAMERAORSELECTORMOVE` (rotate camera **or select under cursor**), RMB =
 `CAMERAORSELECTORMOVESTICKY` (camera + character turn)
-(`docs/CAMERA_INPUT_CONTROLS.md:19-29`); binding lines
+(`docs/camera/INPUT_CONTROLS.md:19-29`); binding lines
 `proof/movement/extracted/ui_hotkey_default.txt:35-36`. Cursor position functions:
 `GetRLCursorPos` (view-manager `vt+0x30`) and `GetRLCursorScenePos` (screen→scene through
 `0x18001740E` with global `+0x24AE8`) — recovered in
@@ -1354,7 +1354,7 @@ non-spatial.
   `atAutoSelectTarget`, `atAutoSelectTargetByLifeless`.
 * Lock target camera: `OnSetCharacterCameraLockTarget` (fn `0x180322D00`),
   `CameraLockTargetConfig` (`reborn-camara-fix/proof/netcode/disasm/locktarget_set.txt:4`;
-  `docs/CAMERA_CONFIG_FILES.md:20,161`).
+  `docs/camera/CONFIG_FILES.md:20,161`).
 * **UI targeting logic decompiled (2026-09-28).** `ui/script/target.lua` / `skill.lua` are
   Lua 5.1 bytecode; unluac (fetched to temp, output stripped-debug but readable) produced
   `proof/collision/ui_scripts/{Target,target_b03,skill}.utf8.lua`. Recovered semantics
@@ -1397,7 +1397,7 @@ adapter side `KG3D_CreateSceneResponseData`, `bAsyncLoadSceneResponse`,
 `g_pRL->m_pi3DSceneResponseMgr` and calls `LoadSceneResponseEntities`
 (`JX3RepresentX64_strings.txt:738952,747249,778869`). This is the system through which
 per-object semantics (`bUnitWalkable` … `bAutoPathing`) are surfaced to gameplay
-(`docs/STRUCTURE_COLLISION_RESEARCH.md:21`). Behaviour not decoded (gap G-21).
+(`docs/movement/STRUCTURE_COLLISION_RESEARCH.md:21`). Behaviour not decoded (gap G-21).
 
 ### 17.2 Physics zones and triggers [NAME/DISASM]
 
@@ -1459,7 +1459,7 @@ exist; the game uses callback-style triggers and skill-side area radii instead.
   magic divisors: NPC `0x66666667` (÷20, 0.30·h), player `0x92492493` (≈0.586·h);
   submersion helper `0x140312440` (`proof/gravity/disasm/get_waterline.txt:4-26`).
 * `KCharacter::SwimTo` `0x14031D770` (valid states 6/7 → state 7), speed 20 尺/s
-  (`swim_to.txt:4`, `docs/JX3_GRAVITY_RESEARCH.md:296-311`).
+  (`swim_to.txt:4`, `docs/movement/JX3_GRAVITY_RESEARCH.md:296-311`).
 * Represent surface queries: `GetWaterHeight`, `ValidWaterHeightDiff`, `GetAdjustWaterDelta`,
   `KRLCharacterFrameData::UpdateWaterHeight`, `KRLCharacter::UpdateIsUnderWater`,
   `CheckIsLogicWater`, `EnableNewWaterHeight`, `GetAdjustHeightForWater`, `bUnderWater`,
@@ -1963,7 +1963,7 @@ on hit: server applies result and emits OnNotifySkillBullet / OnSkillRayEffect /
 The client predicts locally with the 15 Hz integer model; the server owns control locks
 (`MoveCtrl`, `nDisableMoveCtrlCounter`) and periodically applies
 `OnMoveCharacter` / `OnSyncMoveState` / `OnSyncMoveCtrl` / `OnSyncMoveParam`; reconciliation
-uses the sequence at `+0xF9C` (`docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md:354-468`). CC and
+uses the sequence at `+0xF9C` (`docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md:354-468`). CC and
 displacement are applied through move states and forced `SkillMove` rows, not client physics.
 
 ### 24.5 Reproduction validation strategy
@@ -2018,7 +2018,7 @@ To lift this to full fidelity: replace the continuous integrator with the 15 Hz 
 
 ### 25.3 Camera obstruction
 
-Assemble from `docs/CAMERA_WALL_OBSTRUCTION.md` + `camara-fix` implementation:
+Assemble from `docs/camera/WALL_OBSTRUCTION.md` + `camara-fix` implementation:
 
 ```
 anchor A = player + (0, 90, 0) chest offset
@@ -2105,8 +2105,8 @@ gating (`Use3DObstacle`) has no reversed implementation (G-21).
 
 ### 26.6 Known documentation drift to fix over time
 
-* `docs/FULL_MAP_COLLISION.md:243-253` claims MapSelector lists all 621 maps; code filters to 5.
-* `docs/FULL_MAP_COLLISION.md:168` lists a proof `structure_collision.bin` that is not present.
+* `docs/movement/FULL_MAP_COLLISION.md:243-253` claims MapSelector lists all 621 maps; code filters to 5.
+* `docs/movement/FULL_MAP_COLLISION.md:168` lists a proof `structure_collision.bin` that is not present.
 * `bake_map_collision.py` defines `--max-regions` but never uses it.
 * Historic `Describe()` pattern breakdown (deadcount/cactus/rock) no longer printed.
 * `PxCapsuleControllerDesc` claim (G-1) is unverified; treat as open.
@@ -2119,7 +2119,7 @@ gating (`Use3DObstacle`) has no reversed implementation (G-21).
 
 | Domain | Existing proof | Reproduction check |
 |---|---|---|
-| terrain sampling | probe log `docs/REAL_CLIENT_MAP_COLLISION.md:84-92`; `TerrainSampler` warm-up | sample known coords; cross-check `SetCameraPos` Y-snap oracle (`SPIKE_B_MAP_NOTES.md:43-44`) |
+| terrain sampling | probe log `docs/movement/REAL_CLIENT_MAP_COLLISION.md:84-92`; `TerrainSampler` warm-up | sample known coords; cross-check `SetCameraPos` Y-snap oracle (`SPIKE_B_MAP_NOTES.md:43-44`) |
 | terrain height decode | BCH formula verified against `proof/map_spike/player/player.log` (5 samples, ≤0.4 u) | re-extract `<map>_%03u_%03u.bch`; assert `min + v·(max−min)` matches logged grounds |
 | baked structures | `proof/map_spike/structure_collision/*.log/.png` (cactus, building, tree, measured tree) | walk into each class; expect `blocked=True` and stop distance ≈ capsule radius |
 | physic-list filter | `proof/collision/physic/audit_lists.txt` (617 models / 4,963 objects) | re-run `tools/collision/audit_physic_lists.py`; assert 4,903/60 accepted/rejected; walk into a blacklisted prop (should not block) |
@@ -2127,7 +2127,7 @@ gating (`Use3DObstacle`) has no reversed implementation (G-21).
 | foliage decode | `tools/decode_foliage.py` exact-length validation | decode all 13 files; length + instance-count match |
 | gravity/jump | `proof/gravity/verification.txt` (apex 414 u, 18 frames, per-school) | `python tools/gravity/verify_model.py` diff |
 | movement sync | `proof/movement/disasm/*`, `client_movement_symbols.txt` | replay `DoMoveCtrl`/`OnSyncMoveState` field maps against captures |
-| camera obstruction | T1–T4 runs in `docs/CAMERA_PENETRATION_PLAN.md:127-163`; `proof/nearplane_ladder.png`, `proof/lookpack_ab.png` | `camera_smoke.exe` ALL PASS + spot sweeps (penetration frames = 0) |
+| camera obstruction | T1–T4 runs in `docs/camera/PENETRATION_PLAN.md:127-163`; `proof/nearplane_ladder.png`, `proof/lookpack_ab.png` | `camera_smoke.exe` ALL PASS + spot sweeps (penetration frames = 0) |
 | camera rays | `proof/netcode/engine_camera_contract.txt` | compare host `EngineRay` hits vs shim/bake |
 | combat fields | `proof/pvp/cast/skill_cast_fields.tsv`, `skill_range_report.tsv` | re-run scanners; row counts and unit conversions |
 | loot/doodad layouts | `proof/netcode/disasm/OnSync*.txt`, `JX3_LOOT_PROTOCOL_LAYOUTS.md` | decode captures; field offsets match |
@@ -2239,7 +2239,7 @@ shipped data allow. Closure types:
 | G-11 | conveyors / carriers | **[SOLVED]** | `physic_conveyor_belt_param.krl.txt` decoded: named box (40×20×70 @ z−120, rotated), `max_impulse=1000`, separation scale, 9-sample velocity texture (yaw/strength); SIMWorld exports `SetConveyorBeltParam`/`OnSetConveyorBeltParam`; carrier binding via `KRLMannedSpace`/`MountMannedSpace` |
 | G-12 | actor-vs-actor collision | **[NEGATIVE]** | Represent has only soft intersection toggles (`SetInteractor(bManaged,bCollision,nType)`, `ResponseIntersect`, `OnEnableIntersect`, `IntersectFeedback`); no hard character collision; hosts treat characters as non-colliding |
 | G-13 | step-up / slope limits | **[SOLVED — documented limitation]** | CCT desc fields known (`stepOffset +0x3c`, `slopeLimit +0x2c`); the gameplay SIMWorld solver exposes only semantic keys (`footContactGroundDis=10`, `footAlignToSurfaceMaxSlopeAngle`); host uses the calibrated 70 u climb rule |
-| G-14 | exact 15 Hz movement port | **[BACKLOG]** | research complete (`docs/REBORN_JUMP_FALL_SPEC.md`, tables + discrete integrator); porting the integer model into the host is implementation work |
+| G-14 | exact 15 Hz movement port | **[BACKLOG]** | research complete (`docs/movement/REBORN_JUMP_FALL_SPEC.md`, tables + discrete integrator); porting the integer model into the host is implementation work |
 | G-15 | swim per-frame step | **[SOLVED]** | per-frame state handler at `0x14031B640`: `GetWaterline` sampled twice per frame, waterline scaled `<<4`, velocity clamps (127), terrain-cell slope packed `(cell>>1)&7`; swim/dive states flow through the same integrator |
 | G-16 | ragdoll update | **[SOLVED]** | `KPhysicsRagdoll::{Init, AddPhysicsBone, AddPhysicsJoint, SetPhysicsBoneFilterGroup}`; activation, 11-body presets, time/blend config documented; solving is PhysX articulation inside the physics scene (no separate update symbol) |
 | G-17 | camera ray mask bits | **[SOLVED]** | option→mask builder decoded (`0x180446920`): bit0→`0x301`, bit1→`|0x101`, bit2→bit8, bit3→bit0, bit4→bit1; filters option1=FilterCamera, option2=FilterLogic; dispatcher keeps nearest hit (§15.2) |

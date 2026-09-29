@@ -8,7 +8,7 @@ Reads the extracted game tables:
   settings/JumpFrameParam.tab   per-(school, jump count, double player)
                                 per-frame velocity keyframes (the real 轻功 arcs)
 
-Calibration (see docs/JX3_GRAVITY_RESEARCH.md):
+Calibration (see docs/movement/JX3_GRAVITY_RESEARCH.md):
   * logic tick = 66.7 ms (15 ticks/s) -- 11-frame jump animation == 0.733 s
   * 1 m = 192 units (1 尺 = 64 units)
   * single jump: VelocityZ=90 u/tick, Gravity=11 u/tick^2

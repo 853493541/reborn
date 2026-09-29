@@ -11,10 +11,10 @@ state of our own client, so the full control system can be implemented later.
 
 | File | Content |
 |---|---|
-| `PLAYER_CONTROLS_FINDINGS.md` (repo `docs/`) | consolidated findings: every user input (hotkeys, movement, camera, combat, UI) + our client status |
-| `CAMERA_FIX_SUGGESTIONS.md` (repo `docs/`) | post-fix camera analysis: S1–S9 remaining defects with suggested fixes |
-| `CAMERA_CONFORMANCE_CHECKS.md` (repo `docs/`) | notes-vs-code checklist: every item with status, evidence, acceptance |
-| `CAMERA_DISTANCE_FOV_SPEC.md` (repo `docs/`) | implementation spec for 镜头最大距离 + 广角 (read-only settings) |
+| `controls/PLAYER_CONTROLS_FINDINGS.md` | consolidated findings: every user input (hotkeys, movement, camera, combat, UI) + our client status |
+| `docs/camera/FIX_SUGGESTIONS.md` (repo `docs/`) | post-fix camera analysis: S1–S9 remaining defects with suggested fixes |
+| `docs/camera/CONFORMANCE_CHECKS.md` (repo `docs/`) | notes-vs-code checklist: every item with status, evidence, acceptance |
+| `docs/camera/DISTANCE_FOV_SPEC.md` (repo `docs/`) | implementation spec for 镜头最大距离 + 广角 (read-only settings) |
 | `controls/RESEARCH_RESOLVED_GAPS.md` | 2026-09-25 pass: hotkey override files, rebind UI flow, 广角 mapping, operation modes, movement Lua bridge, action-bar/UI-custom storage |
 | `controls/HOTKEY_SYSTEM_FULL.md` | **full specification of the hotkey/input system** (the top topic), with complete decoded annexes |
 | `GAME_SYSTEMS_RESEARCH_MAP.md` (repo `docs/`) | all game systems + research backlog and priorities |
@@ -44,14 +44,14 @@ Research is ~85–90% complete; implementation ~30–35%.
 |---|---|
 | `proof/movement/extracted/ui_hotkey_default.txt` | real default bindings |
 | `proof/movement/extracted/ui_hotkey_bindings.ini` | 428 command definitions |
-| `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md` | movement, turning, key encoding |
-| `docs/CAMERA_INPUT_CONTROLS.md` | camera bindings and drag pipeline |
-| `docs/CAMERA_DRAG_MODEL.md` | proven mouse→yaw/pitch mapping |
-| `docs/CAMERA_WALL_OBSTRUCTION.md` | native wall obstruction rules |
-| `docs/CAMERA_REAL_VALUES.md`, `docs/CAMERA_CONFIG_FILES.md` | camera values/settings/files |
-| `docs/REBORN_JUMP_FALL_SPEC.md` | jump/fall/轻功 model |
+| `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` | movement, turning, key encoding |
+| `docs/camera/INPUT_CONTROLS.md` | camera bindings and drag pipeline |
+| `docs/camera/DRAG_MODEL.md` | proven mouse→yaw/pitch mapping |
+| `docs/camera/WALL_OBSTRUCTION.md` | native wall obstruction rules |
+| `docs/camera/REAL_VALUES.md`, `docs/camera/CONFIG_FILES.md` | camera values/settings/files |
+| `docs/movement/REBORN_JUMP_FALL_SPEC.md` | jump/fall/轻功 model |
 | `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` | combat/targeting/cooldowns |
-| `docs/MAP_MINIMAP_RESEARCH.md` §2b | `custom.dat` window state |
+| `docs/ui/MAP_MINIMAP_RESEARCH.md` §2b | `custom.dat` window state |
 
 ## Rules for implementing later
 

@@ -108,7 +108,7 @@ actions are fed; it has no LMB/RMB split and no character coupling. To match:
 2. **LMB drag** (mode 0): rotate the camera only; a click without drag selects
    (keep the existing left-click select).
 3. **Wheel**: `distance *= 0.9` (up) / `*= 1.1` (down), clamped to
-   `[fMinCameraDistance, fMaxCameraDistance]` (see `CAMERA_REAL_VALUES.md`).
+   `[fMinCameraDistance, fMaxCameraDistance]` (see `docs/camera/REAL_VALUES.md`).
    This supersedes the invented ±0.5 m step.
 4. **F11**: reset the camera behind the character with pitch **-15 deg**
    (`Camera_SetForceReset(charYaw, -pi/12)`), not the current ad-hoc reset.

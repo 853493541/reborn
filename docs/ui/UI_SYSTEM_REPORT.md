@@ -537,6 +537,6 @@ The address-level decode plan for each open item is in
 | `proof/ui/evidence/animation/` | 41 named UI animation XMLs |
 | `proof/ui/evidence/scripts/`, `decompiled/` | UI Lua bytecode + unluac output |
 | `proof/ui/evidence/re/` | KGUIX64/JX3UIX64 xref disassembly dumps |
-| `docs/MAP_MINIMAP_RESEARCH.md` (main worktree) | map/minimap runtime background |
+| `docs/ui/MAP_MINIMAP_RESEARCH.md` (main worktree) | map/minimap runtime background |
 | `proof/netcode/ui_lua_probe/out/ui/module_info.xml` | the UI manifest |
 | `proof/movement/extracted/ui_filepath.txt` | the system path table |

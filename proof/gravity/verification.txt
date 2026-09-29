@@ -55,4 +55,4 @@ tick = 66.7 ms (15/s), 1 m = 192 units
 
 == result ==
   all checks reproduce the in-game expectations; the model in
-  docs/JX3_GRAVITY_RESEARCH.md §3 is self-consistent and complete
+  docs/movement/JX3_GRAVITY_RESEARCH.md §3 is self-consistent and complete

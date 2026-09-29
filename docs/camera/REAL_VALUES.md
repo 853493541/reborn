@@ -31,8 +31,8 @@ earlier `UnitsPerMeter = 192` assumption in the host was wrong by 1.92x.
 Canonical doc: `docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md` (this is the
 calibrated system; the netcode index was revised to it in commit `cf93d9b`).
 
-**Stale docs:** `docs/JX3_GRAVITY_RESEARCH.md` §3.1/§9,
-`proof/gravity/verification.txt` and `docs/REBORN_JUMP_FALL_SPEC.md` still say
+**Stale docs:** `docs/movement/JX3_GRAVITY_RESEARCH.md` §3.1/§9,
+`proof/gravity/verification.txt` and `docs/movement/REBORN_JUMP_FALL_SPEC.md` still say
 `1 m = 192 units` (they assumed the real-world 尺 = 1/3 m). Do not use those
 for camera distances. The table values in them are fine — only their metric
 labels are wrong (world-unit values are 1.92x the printed metres).
@@ -121,7 +121,7 @@ block (extracted: `proof/gravity/number.krl.txt`; loader
 | `CarrierCameraYaw` | 0 | rad |
 | `CarrierCameraMaxDistance` | 1 | u? (see §6) |
 | `CarrierCameraDeltaHeight` | 50 | u |
-| `NearByWallDistance` | 800 | loaded, **no reader found** — legacy/unused, NOT an obstruction rule (see `CAMERA_WALL_OBSTRUCTION.md` §11) |
+| `NearByWallDistance` | 800 | loaded, **no reader found** — legacy/unused, NOT an obstruction rule (see `docs/camera/WALL_OBSTRUCTION.md` §11) |
 | `AirCombatToSkillMoveCameraDis` | 2000.0 | u |
 | `DiveCameraRollRange` / `DiveCameraRollTime` | 12 / 400 | deg? / ms |
 | `TitleAdjustFovMin` / `Max` / `Value` | 0.7 / 1.4 / 40 | nameplate FOV scale |
@@ -150,7 +150,7 @@ camera from the map's real init yaw/pitch instead of guessing.
 ## 5. Wheel zoom — real behaviour and limits
 
 The wheel binding is `CAMERAZOOMIN/OUT` -> `CameraZoomIn/Out()` ->
-`Camera_Zoom(0.9 / 1.1)` (`docs/CAMERA_INPUT_CONTROLS.md` §2): the target
+`Camera_Zoom(0.9 / 1.1)` (`docs/camera/INPUT_CONTROLS.md` §2): the target
 distance is multiplied by 0.9 (zoom in) / 1.1 (zoom out) and clamped to
 `[fMinCameraDistance, fMaxCameraDistance]`.
 
@@ -238,7 +238,7 @@ Still to adopt from this file (values are real; safe ones first):
 3. Carrier camera: `Pitch = -0.17`, `Yaw = 0`, `DeltaHeight = 50 u`.
 4. Obstruction: **not** `NearByWallDistance` (no reader in the represent
    camera path). Use the proven rule: 18 u clearance after the nearest ray hit,
-   50/100 u hysteresis, flex return (`CAMERA_WALL_OBSTRUCTION.md`).
+   50/100 u hysteresis, flex return (`docs/camera/WALL_OBSTRUCTION.md`).
 5. Initialise the camera per map from `scene_init_param.txt`
    (`CameraInitYaw/Pitch`), and keep `-0.35` as the character/sprint pitch.
 6. Keep the per-mode rows (`TargetDistance`, `CameraHeight`, `MaxDragSpeed`,

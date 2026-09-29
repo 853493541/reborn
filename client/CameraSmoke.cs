@@ -45,7 +45,7 @@ internal static class CameraSmoke
               Math.Abs(cam.Pos[1] - ey) < 0.01,
               string.Format("pos=({0:F2},{1:F2},{2:F2})", cam.Pos[0], cam.Pos[1], cam.Pos[2]));
 
-        // Part 1 regression (CAMERA_FIX_SPEC.md): pitch rotates a constant-length
+        // Part 1 regression (docs/camera/FIX_SPEC.md): pitch rotates a constant-length
         // JX3 sphere offset; it must not scale the distance with tan(pitch).
         var cam3 = new CameraSystem();
         cam3.UnitsPerMeter = 1.0;
@@ -160,7 +160,7 @@ internal static class CameraSmoke
         Check("camera recovers when clear", dd > 3.0, string.Format("dist={0:F2}", dd));
 
         // native wall obstruction state machine (18 u clearance, 50/100
-        // hysteresis, spring return) - docs/CAMERA_WALL_OBSTRUCTION.md
+        // hysteresis, spring return) - docs/camera/WALL_OBSTRUCTION.md
         var clampCam = new CameraSystem();
         Check("shared distance clamp helper (S5)",
               Math.Abs(clampCam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&

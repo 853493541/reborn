@@ -1,8 +1,8 @@
 # JX3 camera config files — inventory and where the values live
 
 Static inventory recovered 2026-09-23. This is a new file; no existing research
-file was changed. Companion to `CAMERA_WALL_OBSTRUCTION.md` (engine defaults)
-and `CAMERA_REAL_VALUES.md` (real values found).
+file was changed. Companion to `docs/camera/WALL_OBSTRUCTION.md` (engine defaults)
+and `docs/camera/REAL_VALUES.md` (real values found).
 
 ## 1. The definitive logical-name map
 
@@ -49,14 +49,14 @@ then loads `CameraLockTargetConfig`.
   `C:\SeasunGame\Game\JX3` matched **only `KG3DEngineX64.dll` itself**
   (the embedded key strings). It matched `bObstructdAvert|fChaseRate`.
 - So all engine `[Camera]` behaviour in the current install runs on the
-  compiled constructor defaults (see `CAMERA_WALL_OBSTRUCTION.md` §Settings);
+  compiled constructor defaults (see `docs/camera/WALL_OBSTRUCTION.md` §Settings);
   the streamed override has not been observed.
 
 ### Engine `[Camera]` key usage in this build
 
 | Key | Consumed as |
 |---|---|
-| `bObstructdAvert` | obstruction gate (parent `+0x204`); see `CAMERA_WALL_OBSTRUCTION.md` |
+| `bObstructdAvert` | obstruction gate (parent `+0x204`); see `docs/camera/WALL_OBSTRUCTION.md` |
 | `nChaseType` | camera-key input mode (nested `+0x18` = parent `+0x2b0`, compared to 0 / 2) |
 | `fChaseRate` | camera-key rotation rate (nested `+0x1c` = `+0x2b4`, × dt, default π) |
 | `fMaxDistance` / `fMinDistance` | read via `+0x2b8` / `+0x2bc` |
@@ -105,7 +105,7 @@ Across extracted mesh property inis:
 
 The `KG3DMesh` constructor defaults the whole `[Display]` block to 1
 (`bAutoProduceObstacle`, `bObscatleCamera`, `bSelectable`, `bHeightTest`,
-`bOccluder`). See `CAMERA_WALL_OBSTRUCTION.md` and
+`bOccluder`). See `docs/camera/WALL_OBSTRUCTION.md` and
 `proof/netcode/camera_wall_obstruction.txt` §8.
 
 ## 6. Recovered parameter vocabularies (from the loaders)
@@ -153,7 +153,7 @@ A table config consumed by the follow-camera code (the file
 
 - AirCombat: `docs/netcode/JX3_CAMERA_RESEARCH.md` §10 (`LoadAirCombatParams`
   `0x180AC9C00`).
-- Carrier + Sprint + CommonNumber: `docs/CAMERA_REAL_VALUES.md`.
+- Carrier + Sprint + CommonNumber: `docs/camera/REAL_VALUES.md`.
 - CameraShake: `ShakeType`, `ShakeIntensity`, `ShakeTotalTime`,
   `ShakeCycleCount`, `ShakeOffsetX/Y`, `ShakeDecayRate`, `ShakePeriodTime`
   (same section).
@@ -210,7 +210,7 @@ constant. `config.default.ini [KG3DENGINE]` holds the defaults:
 `Scene_LockMouseRotation`, and calls `Camera_SetResetSpeed(3.5, 3.75)` (the
 two literal floats in the bytecode).
 
-Hotkeys (unchanged from `CAMERA_INPUT_CONTROLS.md`): LMB/RMB drag, wheel
+Hotkeys (unchanged from `docs/camera/INPUT_CONTROLS.md`): LMB/RMB drag, wheel
 `Camera_Zoom(0.9/1.1)`, F11 `Camera_SetForceReset(charYaw, -pi/12, 1)`,
 Home/End view presets.
 

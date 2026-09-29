@@ -8,7 +8,7 @@
 
 | Item | Evidence |
 |---|---|
-| M1.2 animated character on a real map (gate) | `docs/M1_ACTOR_ON_MAP.md`, `actor_map_out/*.png` |
+| M1.2 animated character on a real map (gate) | `docs/engine_host/M1_ACTOR_ON_MAP.md`, `actor_map_out/*.png` |
 | M1.1 client scaffold: 龙门寻宝 + terrain sampler + animated dummy player + follow camera + HUD stub | `reborn_out/rc_*.png`, `reborn.log` |
 | Movement: walk 200 / run 667 / gravity -1289 / jump 703, slope blocking, ledge fall | demo log: walk z 201->1010, run ->3236, jump clips, strafe blocked=True |
 | M1.4 clip state machine (idle/walk/run/jump/fall) with real VFS clips | log clip switches; walk/skill screenshots |
@@ -39,7 +39,7 @@ Env: `RC_MAP`, `RC_SPAWN`, `RC_AUTORUN`, `RC_SHOTS`, `RC_CLIP_*`, `RC_SKILL_MS`,
 ## Remaining M1
 
 1. **M1.3 shared movement model** — port the exact integer jump/gravity/fall model
-   (`docs/REBORN_JUMP_FALL_SPEC.md`, `tools/gravity/verify_model.py`) to C#; current
+   (`docs/movement/REBORN_JUMP_FALL_SPEC.md`, `tools/gravity/verify_model.py`) to C#; current
    movement is the continuous approximation from the map host.
 2. **M1.7 HUD + 5-min proof** — the WinForms label is hidden behind the engine output
    window; use an overlay (separate top-level transparent form or engine-side draw).
@@ -60,7 +60,7 @@ Env: `RC_MAP`, `RC_SPAWN`, `RC_AUTORUN`, `RC_SHOTS`, `RC_CLIP_*`, `RC_SKILL_MS`,
 - Demo: `RC_DEMO_COLLIDE=1 RC_SPAWN=15007,398,25400 RC_DEMO_DIR=0,1`
   -> blocked at z≈25613, ground 415 (map-host proof: z=25606).
 - Swap path: when the live PhysX scene recon lands
-  (`docs/REAL_CLIENT_MAP_COLLISION.md` open items 1/3), replace the two collision
+  (`docs/movement/REAL_CLIENT_MAP_COLLISION.md` open items 1/3), replace the two collision
   calls (`SupportHeight` / `Resolve`) with the engine's scene queries; the rest of
   the movement code stays.
 

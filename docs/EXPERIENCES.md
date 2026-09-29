@@ -81,3 +81,15 @@ solved it, and what is still open. **Newest at the bottom.**
   `JX3_MODE_JUEJING_LOGIC`, `JX3_MODE_LOAD_FLOW`) in `docs/netcode/README.md` (§13).
 - Evidence: `git ls-files "*.md"`; index audit command; this commit.
 - Outcome: solved. `docs/netcode` is now 21/21 registered.
+
+### 2026-09-29 — docs — Reorganize docs into area folders + indexes
+- Did: moved the 32 remaining `docs/` root notes into `docs/camera/` (18, `CAMERA_`
+  prefix dropped), `docs/movement/` (7), `docs/engine_host/` (3), `docs/ui/` (2),
+  `docs/audio/` (1) and `docs/controls/` (+`PLAYER_CONTROLS_FINDINGS.md`); swept all
+  old-path references (50+52 files, incl. backslash variants and the `docs/CAMERA_*`
+  glob); generated area `README.md` indexes from each doc's H1 (camera 18/18,
+  movement 7/7, engine_host 3/3, ui 2/2, audio 1/1; netcode 21/21, controls 10/10,
+  pvp 2/2); added `docs/README.md` master index; updated `AGENTS.md` §3/§10 paths.
+- Evidence: stale-path sweep → 0; registration audit output; this commit.
+- Outcome: solved. `docs/` root is exactly `README.md`,
+  `GAME_SYSTEMS_RESEARCH_MAP.md`, `EXPERIENCES.md`.

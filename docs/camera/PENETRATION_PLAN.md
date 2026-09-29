@@ -326,7 +326,7 @@ both modes, telemetry comparison:
 Conclusion: the scripted responses are identical, so the felt difference is not
 input math. The engine path placed the offset **raw every frame**; the client
 lost the game's per-axis dead-zone + SmoothTime (`SetCharacterCameraPosition`
-@ 0x180B0F2BA.., spec CAMERA_FIX_SPEC.md, reference camera_model.py).
+@ 0x180B0F2BA.., spec docs/camera/FIX_SPEC.md, reference camera_model.py).
 
 Landed (game rule, no tuning): per-axis `current += delta*dt/SmoothTime` with
 dead-zone snap, SmoothTime from the character row (0.06 s, CommonNumber 60 ms),

@@ -1,7 +1,7 @@
 # JX3 hotkey system (input layer)
 
-**Evidence:** `docs/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2,
-`docs/CAMERA_INPUT_CONTROLS.md` §1–2,
+**Evidence:** `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2,
+`docs/camera/INPUT_CONTROLS.md` §1–2,
 `proof/movement/extracted/ui_hotkey_default.txt`,
 `proof/movement/extracted/ui_hotkey_bindings.ini`,
 `proof/movement/disasm/kgui_hotkey*.txt`.

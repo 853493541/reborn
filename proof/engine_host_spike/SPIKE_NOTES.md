@@ -104,7 +104,7 @@ Host wiring:
 - Banks come from the VFS via `config.ini [WwiseSetting] BasePath =
   data/wwiseaudio/GeneratedSoundBanks/Windows` → `.../Base/{Init,skillremake}.bnk`
   and `.../Base/161340541.wem`.
-- Full chain + extraction recipe: `docs/SOUND_PATH.md`.
+- Full chain + extraction recipe: `docs/audio/SOUND_PATH.md`.
 - Local (gitignored) copies: `assets/sound/`.
 
 ## Camera controls (mirrors MovieEditor `ViewWindow` -> `KGSceneCLR.ExecAction`)

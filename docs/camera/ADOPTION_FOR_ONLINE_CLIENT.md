@@ -1,7 +1,7 @@
 # Camera: what the online client (`reborn-online`) should take from the camera work
 
 Analysis date 2026-09-23. Compared against the real values documented in
-`docs/CAMERA_REAL_VALUES.md` (same worktree, branch `camara-imp`).
+`docs/camera/REAL_VALUES.md` (same worktree, branch `camara-imp`).
 
 Target code: `C:\Users\Zhibin Ren\Desktop\reborn-online\client\`
 (`RebornClient.cs`, `CameraSystem.cs`, `camera.json`).
@@ -18,7 +18,7 @@ its `CameraSmoke.cs` is byte-identical to ours (so the smoke test is safe).
 
 | Where | Now | Use | Why |
 |---|---|---|---|
-| `client/CameraSystem.cs:89` | `UnitsPerMeter = 192.0` | **`100.0`** | 1 engine unit = 1 cm (mesh 181.64 u = 1.816 m; official FBX `UnitScaleFactor=1.0` cm; pelvis 98.59 u; ragdoll limbs in cm). `docs/CAMERA_REAL_VALUES.md` §1 |
+| `client/CameraSystem.cs:89` | `UnitsPerMeter = 192.0` | **`100.0`** | 1 engine unit = 1 cm (mesh 181.64 u = 1.816 m; official FBX `UnitScaleFactor=1.0` cm; pelvis 98.59 u; ragdoll limbs in cm). `docs/camera/REAL_VALUES.md` §1 |
 | `client/RebornClient.cs:698` | `pRun / 192.0` | `pRun / camSys.UnitsPerMeter` | same |
 | `client/RebornClient.cs:380` | `pGravity=-1289, pJumpV=703, pSpeed=200, pRun=667` | `-2475, 1350, 96, 320` | table values in world units at **16 game frames/s** (1 frame = 1/16 s): walk/run 6/20 u/frame -> 96/320 u/s (`PLAYER_CONTROLS_FINDINGS.md` §3; the old 15-fps note was wrong); gravity/jump from `JX3_GRAVITY_RESEARCH.md`. Current values are the 192-derived metric numbers, i.e. 1.92x off in the world |
 
@@ -29,9 +29,9 @@ too far back.
 ## 2. Wheel zoom — `Camera_Zoom(0.9 / 1.1)`
 
 **Corrected 2026-09-24:** the wheel binding is `CAMERAZOOMIN/OUT` ->
-`CameraZoomIn/Out()` -> `Camera_Zoom(0.9 / 1.1)` (`CAMERA_INPUT_CONTROLS.md`
+`CameraZoomIn/Out()` -> `Camera_Zoom(0.9 / 1.1)` (`docs/camera/INPUT_CONTROLS.md`
 §2): multiply the target distance by 0.9 / 1.1 and clamp to
-`[fMinCameraDistance, fMaxCameraDistance]` (`CAMERA_REAL_VALUES.md` §5).
+`[fMinCameraDistance, fMaxCameraDistance]` (`docs/camera/REAL_VALUES.md` §5).
 `ZoomCharacterCamera_Step` (`0x180b3ce40`) is **not** the wheel path - it is a
 separate step-zoom used by other camera code. Our `CameraSystem.ZoomBy` serves
 the wheel with the proven factors (row keys `MaxCameraDistance=2000`,
@@ -41,8 +41,8 @@ the wheel with the proven factors (row keys `MaxCameraDistance=2000`,
 
 **Corrected 2026-09-24:** the real camera is the constant-length sphere
 offset, `camera = anchor + (cos(yaw)cos(pitch)d, sin(pitch)d + height,
-sin(yaw)cos(pitch)d)`, smoothed per axis (`CAMERA_FIX_SPEC.md`,
-`CAMERA_DRAG_MODEL.md`). The earlier "horizontal direction + fixed
+sin(yaw)cos(pitch)d)`, smoothed per axis (`docs/camera/FIX_SPEC.md`,
+`docs/camera/DRAG_MODEL.md`). The earlier "horizontal direction + fixed
 `camY = anchor.y + CameraHeight`, no pitch" note is wrong and would freeze the
 pitch geometry (drag up/down must orbit the camera vertically). Keep the
 proven offset plus the native obstruction rule.
@@ -61,7 +61,7 @@ proven offset plus the native obstruction rule.
 | `SprintCameraOffset` / `MaxOffset` | 40 u / 100 u | - |
 | `SprintCameraMaxDistance` | 60 (unit TBC — **not** an absolute target) | 9 m as absolute target |
 | `CarrierCameraPitch/Yaw/DeltaHeight` | -0.17 / 0 / 50 u | -0.35 / 0 / 1 m |
-| `NearByWallDistance` | 800 u **loaded, no reader** — NOT an obstruction trigger | terrain ray-march; wall rule is 18 u clearance + 50/100 u hysteresis (`CAMERA_WALL_OBSTRUCTION.md`) |
+| `NearByWallDistance` | 800 u **loaded, no reader** — NOT an obstruction trigger | terrain ray-march; wall rule is 18 u clearance + 50/100 u hysteresis (`docs/camera/WALL_OBSTRUCTION.md`) |
 | per-map init | `scene_init_param.txt`: maps 0/1 yaw 0.5022619 pitch -0.17; map 653 yaw 2.11075783 | measured at startup |
 
 ## 5. Read the user's real camera settings at startup
@@ -100,7 +100,7 @@ Per-mode rows (`Represent/camera/config.ini` + `*.krl.txt`) and the engine
 `[Camera]` ini (`fChaseRate`, `fFovy`, `fMaxDistance`, ...) are not in the
 local paks; they need the CDN mini-update / one client update run. Until
 then, the per-mode `TargetDistance` / `CameraHeight` / move-pitch / drag
-speeds stay host placeholders. Details: `docs/CAMERA_REAL_VALUES.md` §7.
+speeds stay host placeholders. Details: `docs/camera/REAL_VALUES.md` §7.
 
 ## 8. Fastest port
 

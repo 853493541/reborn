@@ -61,8 +61,8 @@ Input (game `JX3RepresentX64.dll`):
   `(cos(yaw)cos(pitch)d, sin(pitch)d + h, sin(yaw)cos(pitch)d)`; anchor =
   head/socket (Bip01 Head, s_face); 5/9-ray probes; 18 u clearance
   (`0x1806ED3F0`); 50/100 u window; flex `E=cur-ref, S+=(-1.5E-2.828S)dt,
-  X=cur+S*dt`, 0.05 rad guard (`0x180674314`). All in `docs/CAMERA_DRAG_MODEL.md`,
-  `docs/CAMERA_CLOSE_RANGE_RESEARCH.md`, `proof/netcode/disasm/*`.
+  X=cur+S*dt`, 0.05 rad guard (`0x180674314`). All in `docs/camera/DRAG_MODEL.md`,
+  `docs/camera/CLOSE_RANGE_RESEARCH.md`, `proof/netcode/disasm/*`.
 
 Values: max distance cap 2000 u (20 m; users ship 760/1125/1245); min cap
 unknown (100 u placeholder); 广角 panel 30-60 deg default 50, install
@@ -412,12 +412,12 @@ approximations.
 
 ## 6. Deviations register / docs
 
-- `docs/CAMERA_HOST_DEVIATIONS.md` - all 37 host-vs-game items with exit
+- `docs/camera/HOST_DEVIATIONS.md` - all 37 host-vs-game items with exit
   criteria (A1-A11, B1-B6, C1-C9, D1-D5, E1-E7), current as of the Step B pass.
-- `docs/CAMERA_RECONCILIATION_STATUS.md` - fix status per audit item.
-- `docs/CAMERA_DRAG_MODEL.md`, `docs/CAMERA_CLOSE_RANGE_RESEARCH.md`,
-  `docs/CAMERA_WALL_OBSTRUCTION.md` - proven game behaviour + evidence.
-- `docs/CAMERA_FIX_SPEC.md`, `docs/CAMERA_COMPLETION_PLAN.md` - the original
+- `docs/camera/RECONCILIATION_STATUS.md` - fix status per audit item.
+- `docs/camera/DRAG_MODEL.md`, `docs/camera/CLOSE_RANGE_RESEARCH.md`,
+  `docs/camera/WALL_OBSTRUCTION.md` - proven game behaviour + evidence.
+- `docs/camera/FIX_SPEC.md`, `docs/camera/COMPLETION_PLAN.md` - the original
   fix spec/plan.
 
 ## 7. Useful runtime knobs and logs
@@ -446,9 +446,9 @@ approximations.
 - `main` is not perfectly clean: `perf_config.ini` is untracked there
   (unrelated to the camera work; leave it alone).
 - Doc staleness: the `control-system-notes` camera pages,
-  `CAMERA_CLOSE_RANGE_RESEARCH.md` §3 and the host section of
-  `CAMERA_WALL_OBSTRUCTION.md` predate the current tip; treat this file and
-  `CAMERA_HOST_DEVIATIONS.md` as current.
+  `docs/camera/CLOSE_RANGE_RESEARCH.md` §3 and the host section of
+  `docs/camera/WALL_OBSTRUCTION.md` predate the current tip; treat this file and
+  `docs/camera/HOST_DEVIATIONS.md` as current.
 
 ## 2026-09-28: engine-faithful camera path landed (D3/B6 closed)
 

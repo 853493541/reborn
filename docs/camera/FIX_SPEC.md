@@ -1,6 +1,6 @@
 # Camera drag/placement fix — exact spec (2026-09-24)
 
-Companion to `docs/CAMERA_COMPLETION_PLAN.md` Part 1. This file records what
+Companion to `docs/camera/COMPLETION_PLAN.md` Part 1. This file records what
 is **proven** from the recorded disassembly, what is **inferred**, and the
 exact code change plus the short probe that settles the remaining
 conventions.
@@ -32,7 +32,7 @@ From `JX3RepresentX64.dll SetCharacterCameraPosition` (`0x180B0E820`,
 
 ## 2. Resolved by the drag-model proof (2026-09-24)
 
-`docs/CAMERA_DRAG_MODEL.md` proves from this build's disassembly
+`docs/camera/DRAG_MODEL.md` proves from this build's disassembly
 (`proof/netcode/disasm/mouse_drag_update.txt`, `camera_set_tail.txt`):
 
 - controller `+0x20` = **yaw**, `+0x24` = **pitch**; `ApplyMouse`
@@ -147,11 +147,11 @@ Record the two outcomes in this file when done.
 
 **Run 2026-09-24:** the probe was executed (`bin64\reborn_out\reborn.log`);
 outcomes, addresses and the per-piece proof are recorded in
-`docs/CAMERA_DRAG_MODEL.md` (L/R = yaw orbit, U/D = pitch; closed loop
+`docs/camera/DRAG_MODEL.md` (L/R = yaw orbit, U/D = pitch; closed loop
 required; anchor/look-at = character head).
 
 ## 7. Not covered here
 
 Native obstruction (walls/models, 18 u clearance, hysteresis, flex), mode
 behaviour, settings and extras are the plan's Phases 0-6 — see
-`docs/CAMERA_COMPLETION_PLAN.md`.
+`docs/camera/COMPLETION_PLAN.md`.
