@@ -1,0 +1,59 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList'
+# image base 0x180000000
+
+## xref @ 0x180193bfd -> 0x1807788d8 'KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList'  fn start 0x180193b98
+  0x180193b98: add      byte ptr [rbx + rcx*4 + 0x42], al
+  0x180193b9c: or       ecx, dword ptr [rax - 0x7f]
+  0x180193b9f: sar      eax, 0x31
+  0x180193ba2: sub      byte ptr [rax], al
+  0x180193ba4: mov      edx, eax
+  0x180193ba6: jmp      0x18028a540
+  0x180193bab: ret      
+  0x180193bac: int3     
+  0x180193bad: int3     
+  0x180193bae: int3     
+  0x180193baf: int3     
+  0x180193bb0: mov      qword ptr [rsp + 8], rbx
+  0x180193bb5: mov      qword ptr [rsp + 0x18], rsi
+  0x180193bba: mov      qword ptr [rsp + 0x20], rdi
+  0x180193bbf: push     rbp
+  0x180193bc0: push     r12
+  0x180193bc2: push     r13
+  0x180193bc4: push     r14
+  0x180193bc6: push     r15
+  0x180193bc8: lea      rbp, [rsp - 0x37]
+  0x180193bcd: sub      rsp, 0x100
+  0x180193bd4: mov      rax, qword ptr [rip + 0x822645]
+  0x180193bdb: xor      rax, rsp
+  0x180193bde: mov      qword ptr [rbp + 0x27], rax
+  0x180193be2: mov      r13, rdx
+  0x180193be5: mov      r8d, dword ptr [rdx + 0xd]
+  0x180193be9: mov      edx, dword ptr [rdx + 9]
+  0x180193bec: mov      rcx, qword ptr [rip + 0x82d72d]
+  0x180193bf3: call     0x18012b750
+  0x180193bf8: test     rax, rax
+  0x180193bfb: jne      0x180193c55
+  0x180193bfd: lea      rax, [rip + 0x5e4cd4]  ; 'KPlayerClient::OnSyncBaseInfoFromBattlefieldCompetitorList'
+  0x180193c04: mov      qword ptr [rsp + 0x20], rax
+  0x180193c09: mov      r9d, 0x7363
+  0x180193c0f: lea      r8, [rip + 0x5d315a]  ; 'pClientScene'
+  0x180193c16: lea      rdx, [rip + 0x75a88b]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180193c1d: mov      ecx, 3
+  0x180193c22: call     qword ptr [rip + 0x5d1638]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180193c28: mov      rcx, qword ptr [rbp + 0x27]
+  0x180193c2c: xor      rcx, rsp
+  0x180193c2f: call     0x18073aa10
+  0x180193c34: lea      r11, [rsp + 0x100]
+  0x180193c3c: mov      rbx, qword ptr [r11 + 0x30]
+  0x180193c40: mov      rsi, qword ptr [r11 + 0x40]
+  0x180193c44: mov      rdi, qword ptr [r11 + 0x48]
+  0x180193c48: mov      rsp, r11
+  0x180193c4b: pop      r15
+  0x180193c4d: pop      r14
+  0x180193c4f: pop      r13
+  0x180193c51: pop      r12
+  0x180193c53: pop      rbp
+  0x180193c54: ret      
+  0x180193c55: .byte    0x48
+  0x180193c56: .byte    0x8d
+

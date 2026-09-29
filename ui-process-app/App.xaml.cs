@@ -1,0 +1,328 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using MapUiApp.Engine;
+using UiProcessApp.Engine;
+
+namespace UiProcessApp
+{
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            if (e.Args.Contains("--selftest"))
+            {
+                var exit = RunSelfTest();
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--render"))
+            {
+                var exit = RunRender(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--frame"))
+            {
+                var exit = RunFrame(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            base.OnStartup(e);
+        }
+
+        /// <summary>
+        /// Debug: dump one atlas frame to PNG so frame/group resolution can be checked.
+        ///   UiProcessApp.exe --frame Button.UITex g18 --out frame.png
+        /// </summary>
+        private static int RunFrame(string[] args)
+        {
+            try
+            {
+                string name = null, spec = null, outPath = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                {
+                    if (args[i] == "--frame") name = args[i + 1];
+                    else if (args[i] == "--out") outPath = args[i + 1];
+                    else if (args[i] == "--index") spec = args[i + 1];
+                }
+                if (name == null) throw new ArgumentException("--frame needs a UITex name");
+                spec ??= "0";
+                Paths.Locate();
+                var roots = Paths.ResolveRoots();
+                string file = null;
+                foreach (var root in roots)
+                    foreach (var candidate in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+                        if (string.Equals(Path.GetFileName(candidate), name, StringComparison.OrdinalIgnoreCase))
+                        { file = candidate; break; }
+                if (file == null) throw new FileNotFoundException($"UITex '{name}' not found");
+
+                var assets = new AssetResolver(roots);
+                var tex = new UiTex(file, assets);
+                int index;
+                string label;
+                if (spec.StartsWith("g", StringComparison.OrdinalIgnoreCase))
+                {
+                    var group = int.Parse(spec.Substring(1));
+                    index = tex.GetGroupFrame(group);
+                    label = $"group {group} -> frame {index}";
+                }
+                else
+                {
+                    index = int.Parse(spec);
+                    label = $"frame {index}";
+                }
+                var source = tex.GetFrame(index);
+                if (source == null) throw new InvalidOperationException($"{label}: no bitmap");
+                var host = new Border
+                {
+                    Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                    Width = source.PixelWidth,
+                    Height = source.PixelHeight,
+                    Child = new System.Windows.Controls.Image { Source = source, Stretch = Stretch.None },
+                };
+                host.Measure(new Size(source.PixelWidth, source.PixelHeight));
+                host.Arrange(new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                var bitmap = new RenderTargetBitmap(source.PixelWidth, source.PixelHeight, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(host);
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                outPath ??= Path.Combine(AppContext.BaseDirectory, $"frame_{index}.png");
+                using var stream = File.Create(outPath);
+                encoder.Save(stream);
+                File.WriteAllText(outPath + ".txt",
+                    $"{name}: frames={tex.Frames.Length} groups={tex.Groups.Length} {label} size={source.PixelWidth}x{source.PixelHeight}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("frame dump failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Offscreen render for verification:
+        ///   UiProcessApp.exe --render &lt;windowId&gt; [--page Page_X] [--out file.png] [--wire]
+        /// </summary>
+        private static int RunRender(string[] args)
+        {
+            try
+            {
+                string windowId = null, page = null, outPath = null, hide = null, only = null, dump = null;
+                bool wire = args.Contains("--wire");
+                for (int i = 0; i < args.Length - 1; i++)
+                {
+                    if (args[i] == "--render") windowId = args[i + 1];
+                    else if (args[i] == "--page") page = args[i + 1];
+                    else if (args[i] == "--out") outPath = args[i + 1];
+                    else if (args[i] == "--hide") hide = args[i + 1];
+                    else if (args[i] == "--only") only = args[i + 1];
+                    else if (args[i] == "--dump") dump = args[i + 1];
+                }
+                if (windowId == null) throw new ArgumentException("--render needs a window id");
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+                WindowInfo window = null;
+                foreach (var stage in inventory.Stages)
+                    foreach (var w in stage.Windows ?? new List<WindowInfo>())
+                        if (string.Equals(w.Id, windowId, StringComparison.OrdinalIgnoreCase)) window = w;
+                if (window?.Path == null) throw new ArgumentException($"window '{windowId}' has no layout");
+
+                var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+                var iniPath = window.Root == "pak"
+                    ? Path.Combine(Paths.PakRoot, rel)
+                    : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+                var ini = IniFile.Load(iniPath);
+                var effectivePage = page ?? window.Page;
+                var plan = LayoutPlanBuilder.Build(ini, effectivePage);
+                LayoutPlanBuilder.ApplyHide(plan.Filtered, hide ?? window.Hide);
+                LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
+                LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
+                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
+                LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                LayoutPlanBuilder.ApplyOnly(plan.Filtered, only);
+                LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                UiLayout.Wireframe = wire;
+                var build = UiLayout.Build(plan.Filtered, assets, textures);
+
+                double width = plan.Filtered.Sections[0].GetInt("Width");
+                double height = plan.Filtered.Sections[0].GetInt("Height");
+                if (width <= 0) width = 1280;
+                if (height <= 0) height = 720;
+
+                var host = new Border
+                {
+                    Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                    Width = width,
+                    Height = height,
+                    Child = build.Root,
+                };
+                host.Measure(new Size(width, height));
+                host.Arrange(new Rect(0, 0, width, height));
+                host.UpdateLayout();
+
+                if (!string.IsNullOrWhiteSpace(dump))
+                {
+                    var lines = new List<string>();
+                    foreach (var pair in build.Elements)
+                    {
+                        var element = pair.Value;
+                        string text = null;
+                        if (element is TextBlock tb) text = tb.Text;
+                        else if (element is Canvas canvas && canvas.Children.Count == 1 && canvas.Children[0] is TextBlock inner) text = inner.Text;
+                        try
+                        {
+                            var point = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                            lines.Add($"{pair.Key}\tx={point.X:F0}\ty={point.Y:F0}\tw={element.ActualWidth:F0}\th={element.ActualHeight:F0}\t{text ?? ""}");
+                        }
+                        catch
+                        {
+                            lines.Add($"{pair.Key}\t(not in tree)\t{text ?? ""}");
+                        }
+                    }
+                    File.WriteAllLines(dump, lines);
+                }
+
+                var bitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(host);
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                outPath ??= Path.Combine(AppContext.BaseDirectory, $"render_{windowId}.png");
+                using (var stream = File.Create(outPath)) encoder.Save(stream);
+                Console.WriteLine($"rendered {windowId} page={effectivePage ?? "(all)"} sections={plan.Filtered.Sections.Count} " +
+                                  $"art={(Paths.ProofUiRoot != null ? "on" : "missing")} -> {outPath}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "render_error.txt"), ex.ToString());
+                Console.WriteLine("render failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Sections the window script shows even though they carry
+        /// LockShowAndHide=1: the mode tabs (ShowModeTabs) plus the inventory's
+        /// script-shown list (e.g. the activity badges of the tab row).
+        /// </summary>
+        internal static IEnumerable<string> ScriptShown(WindowInfo window)
+        {
+            var shown = new List<string>();
+            if (window?.Show != null) shown.AddRange(window.Show);
+            if (window?.Tabs?.Show != null) shown.AddRange(window.Tabs.Show);
+            return shown;
+        }
+
+        /// <summary>
+        /// Resolves a list-item prototype INI referenced by the inventory. Prototypes
+        /// live either in PakV4 (root "pak", flat names) or the extracted ui tree.
+        /// </summary>
+        internal static IniFile LoadTemplateIni(string relative)
+        {
+            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
+            var candidates = new[]
+            {
+                Path.Combine(Paths.PakRoot, rel),
+                Path.Combine(Paths.AppRoot, "assets", "ui", rel),
+                Path.Combine(Paths.AppRoot, "assets", "ui", "Config", "Default", Path.GetFileName(rel)),
+            };
+            foreach (var candidate in candidates)
+                if (File.Exists(candidate)) return IniFile.Load(candidate);
+            throw new FileNotFoundException($"list template ini '{relative}' not found");
+        }
+
+        /// <summary>
+        /// Headless verification: loads the inventory, then builds every window layout
+        /// that has an extracted KGUI INI. Writes ui_process_selftest.txt next to the exe.
+        /// </summary>
+        private static int RunSelfTest()
+        {
+            var report = new StringBuilder();
+            var ok = true;
+            try
+            {
+                Paths.Locate();
+                report.AppendLine($"AppRoot   = {Paths.AppRoot}");
+                report.AppendLine($"RepoRoot  = {Paths.RepoRoot}");
+                report.AppendLine($"UiRoot    = {Paths.UiRoot}");
+                report.AppendLine($"PakRoot   = {Paths.PakRoot}");
+                report.AppendLine($"Strings   = {Strings.Table.Count}");
+
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+
+                var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+
+                int rendered = 0, skipped = 0, failed = 0;
+                foreach (var stage in inventory.Stages)
+                {
+                    foreach (var window in stage.Windows ?? new List<WindowInfo>())
+                    {
+                        if (string.IsNullOrWhiteSpace(window.Path)) { skipped++; continue; }
+                        var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+                        var iniPath = window.Root == "pak"
+                            ? Path.Combine(Paths.PakRoot, rel)
+                            : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+                        if (!File.Exists(iniPath))
+                        {
+                            failed++;
+                            report.AppendLine($"FAIL missing ini: {window.Id} -> {iniPath}");
+                            continue;
+                        }
+                        try
+                        {
+                            var ini = IniFile.Load(iniPath);
+                            var plan = LayoutPlanBuilder.Build(ini, window.Page);
+                            LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
+                            LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
+                            LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
+                            LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                            LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
+                            LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                            LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                            var build = UiLayout.Build(plan.Filtered, assets, textures);
+                            rendered++;
+                            report.AppendLine($"OK   {window.Id,-22} sections={plan.Filtered.Sections.Count,-5} " +
+                                              $"elements={build.Elements.Count,-5} {window.Title}");
+                        }
+                        catch (Exception ex)
+                        {
+                            failed++;
+                            report.AppendLine($"FAIL {window.Id}: {ex.Message}");
+                        }
+                    }
+                }
+                report.AppendLine($"rendered={rendered} skipped={skipped} failed={failed}");
+                ok = failed == 0 && rendered > 0;
+            }
+            catch (Exception ex)
+            {
+                report.AppendLine("FATAL " + ex);
+                ok = false;
+            }
+
+            var outPath = Path.Combine(AppContext.BaseDirectory, "ui_process_selftest.txt");
+            File.WriteAllText(outPath, report.ToString());
+            return ok ? 0 : 1;
+        }
+    }
+}

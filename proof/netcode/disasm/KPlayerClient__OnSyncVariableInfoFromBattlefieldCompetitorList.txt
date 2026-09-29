@@ -1,0 +1,52 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList'
+# image base 0x180000000
+
+## xref @ 0x1801a94a3 -> 0x180778918 'KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList'  fn start 0x1801a9458
+  0x1801a9458: add      rsp, 0x30
+  0x1801a945c: pop      rbx
+  0x1801a945d: jmp      qword ptr [rax + 0x1118]
+  0x1801a9464: add      rsp, 0x30
+  0x1801a9468: pop      rbx
+  0x1801a9469: ret      
+  0x1801a946a: int3     
+  0x1801a946b: int3     
+  0x1801a946c: int3     
+  0x1801a946d: int3     
+  0x1801a946e: int3     
+  0x1801a946f: int3     
+  0x1801a9470: push     rbx
+  0x1801a9472: sub      rsp, 0x50
+  0x1801a9476: mov      rax, qword ptr [rip + 0x80cda3]
+  0x1801a947d: xor      rax, rsp
+  0x1801a9480: mov      qword ptr [rsp + 0x40], rax
+  0x1801a9485: mov      r8d, dword ptr [rdx + 0xd]
+  0x1801a9489: mov      rbx, rdx
+  0x1801a948c: mov      edx, dword ptr [rdx + 9]
+  0x1801a948f: mov      rcx, qword ptr [rip + 0x817e8a]
+  0x1801a9496: call     0x18012b750
+  0x1801a949b: mov      r11, rax
+  0x1801a949e: test     rax, rax
+  0x1801a94a1: jne      0x1801a94e1
+  0x1801a94a3: lea      rax, [rip + 0x5cf46e]  ; 'KPlayerClient::OnSyncVariableInfoFromBattlefieldCompetitorList'
+  0x1801a94aa: mov      r9d, 0x737d
+  0x1801a94b0: lea      r8, [rip + 0x5bd8b9]  ; 'pClientScene'
+  0x1801a94b7: lea      rdx, [rip + 0x744fea]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801a94be: mov      qword ptr [rsp + 0x20], rax
+  0x1801a94c3: mov      ecx, 3
+  0x1801a94c8: call     qword ptr [rip + 0x5bbd92]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801a94ce: mov      rcx, qword ptr [rsp + 0x40]
+  0x1801a94d3: xor      rcx, rsp
+  0x1801a94d6: call     0x18073aa10
+  0x1801a94db: add      rsp, 0x50
+  0x1801a94df: pop      rbx
+  0x1801a94e0: ret      
+  0x1801a94e1: movzx    eax, byte ptr [rbx + 0x11]
+  0x1801a94e5: cmp      qword ptr [r11 + 0xf0], rax
+  0x1801a94ec: jae      0x1801a952d
+  0x1801a94ee: mov      eax, 0x164
+  0x1801a94f3: lea      rdx, [rsp + 0x30]
+  0x1801a94f8: .byte    0x41
+  0x1801a94f9: .byte    0xb8
+  0x1801a94fa: or       eax, dword ptr [rax]
+  0x1801a94fc: .byte    0x00
+

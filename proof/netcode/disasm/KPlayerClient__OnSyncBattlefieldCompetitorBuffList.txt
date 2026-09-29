@@ -1,0 +1,41 @@
+# JX3LogicEditOperationX64.dll xrefs for 'KPlayerClient::OnSyncBattlefieldCompetitorBuffList'
+# image base 0x180000000
+
+## xref @ 0x1801943a6 -> 0x18077a498 'KPlayerClient::OnSyncBattlefieldCompetitorBuffList'  fn start 0x180194378
+  0x180194378: or       ecx, dword ptr [r11 - 0x7cb7f8ad]
+  0x18019437f: .byte    0xc4
+  0x180194380: xor      byte ptr [rbx - 0x17], bl
+  0x180194383: cmp      dword ptr [rbx + 9], esp
+  0x180194386: add      byte ptr [rax - 0x7d], cl
+  0x180194389: .byte    0xc4
+  0x18019438a: xor      byte ptr [rbx - 0x3d], bl
+  0x18019438d: int3     
+  0x18019438e: int3     
+  0x18019438f: int3     
+  0x180194390: push     rdi
+  0x180194392: sub      rsp, 0x30
+  0x180194396: movzx    eax, word ptr [rdx + 0x15]
+  0x18019439a: mov      rdi, rdx
+  0x18019439d: add      rax, 0x17
+  0x1801943a1: cmp      r8, rax
+  0x1801943a4: je       0x1801943d7
+  0x1801943a6: lea      rax, [rip + 0x5e60eb]  ; 'KPlayerClient::OnSyncBattlefieldCompetitorBuffList'
+  0x1801943ad: mov      r9d, 0x7fb7
+  0x1801943b3: lea      r8, [rip + 0x5e6116]  ; 'nSize == sizeof(S2C_SYNC_BATTLEFIELD_COMPETITOR_BUFF_LIST) + pSync->wDataSize'
+  0x1801943ba: mov      qword ptr [rsp + 0x20], rax
+  0x1801943bf: lea      rdx, [rip + 0x75a0e2]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1801943c6: mov      ecx, 3
+  0x1801943cb: call     qword ptr [rip + 0x5d0e8f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1801943d1: add      rsp, 0x30
+  0x1801943d5: pop      rdi
+  0x1801943d6: ret      
+  0x1801943d7: mov      edx, dword ptr [rdx + 9]
+  0x1801943da: mov      rcx, qword ptr [rip + 0x82cf3f]
+  0x1801943e1: mov      qword ptr [rsp + 0x40], rbx
+  0x1801943e6: call     0x18012b610
+  0x1801943eb: mov      rbx, rax
+  0x1801943ee: test     rax, rax
+  0x1801943f1: jne      0x180194427
+  0x1801943f3: lea      rax, [rip + 0x5e609e]  ; 'KPlayerClient::OnSyncBattlefieldCompetitorBuffList'
+  0x1801943fa: mov      r9d, 0x7fba
+

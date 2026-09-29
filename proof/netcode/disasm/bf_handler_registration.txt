@@ -1,0 +1,69 @@
+# JX3LogicEditOperationX64.dll xrefs to 0x180193bb0, 0x180194310, 0x180194488
+
+## ref @ 0x180166692 -> 0x180193bb0
+  0x180166656: xchg     byte ptr [rdi - 0x76b7ffff], bh
+  0x18016665c: xchg     eax, eax
+  0x18016665e: jb       0x180166661
+  0x180166660: add      bh, al
+  0x180166662: xchg     dword ptr [rax - 0x7a], ebx
+  0x180166665: add      dword ptr [rax], eax
+  0x180166667: sldt     word ptr [rax]
+  0x18016666a: add      byte ptr [rax - 0x73], cl
+  0x18016666d: add      eax, 0x2cd0e
+  0x180166672: mov      qword ptr [rdi + 0x172c8], rax
+  0x180166679: mov      qword ptr [rdi + 0x1865c], 0xffffffffffffffff
+  0x180166684: lea      rax, [rip + 0x2c925]
+  0x18016668b: mov      qword ptr [rdi + 0x172d0], rax
+  0x180166692: lea      rax, [rip + 0x2d517]
+  0x180166699: mov      qword ptr [rdi + 0x17758], rax
+  0x1801666a0: mov      qword ptr [rdi + 0x188a4], 0xffffffffffffffff
+  0x1801666ab: lea      rax, [rip + 0x42dbe]
+  0x1801666b2: mov      qword ptr [rdi + 0x17760], rax
+  0x1801666b9: lea      rax, [rip + 0x3a7e0]
+  0x1801666c0: mov      qword ptr [rdi + 0x172d8], rax
+  0x1801666c7: mov      dword ptr [rdi + 0x18664], 0x17
+  0x1801666d1: lea      rax, [rip + 0x31168]
+  0x1801666d8: mov      qword ptr [rdi + 0x172e0], rax
+  0x1801666df: mov      dword ptr [rdi + 0x18668], 0xffffffff
+  0x1801666e9: lea      rax, [rip + 0x282d0]
+  0x1801666f0: mov      qword ptr [rdi + 0x172e8], rax
+  0x1801666f7: mov      dword ptr [rdi + 0x1866c], 0x17
+  0x180166701: lea      rax, [rip + 0x24a78]
+  0x180166708: mov      qword ptr [rdi + 0x172f0], rax
+  0x18016670f: mov      dword ptr [rdi + 0x18670], 0x45f
+  0x180166719: lea      rax, [rip + 0x20b20]
+  0x180166720: mov      qword ptr [rdi + 0x172f8], rax
+  0x180166727: mov      dword ptr [rdi + 0x18674], 0xffffffff
+  0x180166731: .byte    0x48
+
+## ref @ 0x18016812f -> 0x180194310
+  0x1801680f3: add      dword ptr [rax], eax
+  0x1801680f5: mov      dword ptr [rdi + 0x18bbc], 9
+  0x1801680ff: lea      rax, [rip + 0x3c6aa]
+  0x180168106: mov      qword ptr [rdi + 0x17db8], rax
+  0x18016810d: mov      dword ptr [rdi + 0x18bd4], 0xffffffff
+  0x180168117: lea      rax, [rip + 0x3ebf2]
+  0x18016811e: mov      qword ptr [rdi + 0x17dd0], rax
+  0x180168125: mov      dword ptr [rdi + 0x18be0], 0xf
+  0x18016812f: lea      rax, [rip + 0x2c1da]
+  0x180168136: mov      qword ptr [rdi + 0x17de0], rax
+  0x18016813d: mov      dword ptr [rdi + 0x18be8], 0xf
+  0x180168147: lea      rax, [rip + 0x2e072]
+  0x18016814e: mov      qword ptr [rdi + 0x17de8], rax
+  0x180168155: mov      dword ptr [rdi + 0x18bec], 0xb
+  0x18016815f: lea      rax, [rip + 0x4428a]
+  0x180168166: mov      qword ptr [rdi + 0x17928], rax
+  0x18016816d: mov      dword ptr [rdi + 0x1898c], 0xffffffff
+  0x180168177: lea      rax, [rip + 0x18c72]
+  0x18016817e: mov      qword ptr [rdi + 0x17e70], rax
+  0x180168185: mov      dword ptr [rdi + 0x18c30], 0x4f
+  0x18016818f: lea      rax, [rip + 0x439ea]
+  0x180168196: mov      qword ptr [rdi + 0x17e78], rax
+  0x18016819d: mov      dword ptr [rdi + 0x18c34], 0xc
+  0x1801681a7: lea      rax, [rip + 0x29302]
+  0x1801681ae: mov      qword ptr [rdi + 0x17e90], rax
+  0x1801681b5: mov      dword ptr [rdi + 0x18c40], 0xffffffff
+  0x1801681bf: lea      rax, [rip + 0x3a77a]
+  0x1801681c6: mov      qword ptr [rdi + 0x17ea0], rax
+  0x1801681cd: .byte    0xc7
+  0x1801681ce: .byte    0x87

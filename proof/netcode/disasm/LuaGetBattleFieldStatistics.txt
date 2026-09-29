@@ -1,0 +1,97 @@
+# JX3LogicEditOperationX64.dll xrefs for 'LuaGetBattleFieldStatistics'
+# image base 0x180000000
+
+## xref @ 0x180356b81 -> 0x1807c70b8 'KScriptFuncList::LuaGetBattleFieldStatistics'  fn start 0x180356b40
+  0x180356b40: .byte    0x0f
+  0x180356b41: out      0xc9, al
+  0x180356b43: call     0x180749c00
+  0x180356b48: mov      eax, 4
+  0x180356b4d: add      rsp, 0x30
+  0x180356b51: pop      rbx
+  0x180356b52: ret      
+  0x180356b53: int3     
+  0x180356b54: int3     
+  0x180356b55: int3     
+  0x180356b56: int3     
+  0x180356b57: int3     
+  0x180356b58: int3     
+  0x180356b59: int3     
+  0x180356b5a: int3     
+  0x180356b5b: int3     
+  0x180356b5c: int3     
+  0x180356b5d: int3     
+  0x180356b5e: int3     
+  0x180356b5f: int3     
+  0x180356b60: push     rsi
+  0x180356b62: sub      rsp, 0x70
+  0x180356b66: mov      rax, qword ptr [rip + 0x65f6b3]
+  0x180356b6d: xor      rax, rsp
+  0x180356b70: mov      qword ptr [rsp + 0x50], rax
+  0x180356b75: mov      rsi, rcx
+  0x180356b78: call     0x1807497c0
+  0x180356b7d: test     eax, eax
+  0x180356b7f: je       0x180356bb1
+  0x180356b81: lea      rax, [rip + 0x470530]  ; 'KScriptFuncList::LuaGetBattleFieldStatistics'
+  0x180356b88: mov      r9d, 0x2d90
+  0x180356b8e: lea      r8, [rip + 0x43148b]  ; 'nTopIndex == 0'
+  0x180356b95: mov      qword ptr [rsp + 0x20], rax
+  0x180356b9a: lea      rdx, [rip + 0x597907]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x180356ba1: mov      ecx, 3
+  0x180356ba6: call     qword ptr [rip + 0x40e6b4]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180356bac: jmp      0x180356df2
+  0x180356bb1: mov      qword ptr [rsp + 0x88], rbx
+  0x180356bb9: xor      r8d, r8d
+  0x180356bbc: xor      edx, edx
+  0x180356bbe: mov      qword ptr [rsp + 0x60], r14
+  0x180356bc3: mov      rcx, rsi
+  0x180356bc6: call     0x1807494f0
+  0x180356bcb: mov      rax, qword ptr [rip + 0x66a74e]
+  0x180356bd2: mov      r14, qword ptr [rax + 0x1b470]
+  0x180356bd9: mov      rbx, qword ptr [r14]
+  0x180356bdc: cmp      rbx, r14
+  0x180356bdf: je       0x180356de5
+  0x180356be5: mov      qword ptr [rsp + 0x90], rbp
+  0x180356bed: mov      qword ptr [rsp + 0x68], rdi
+  0x180356bf2: nop      dword ptr [rax]
+  0x180356bf6: nop      word ptr [rax + rax]
+  0x180356c00: mov      r9, qword ptr [rbx + 0x30]
+  0x180356c04: lea      r8, [rip + 0x4311a9]  ; '%llu'
+  0x180356c0b: mov      edx, 0x20
+  0x180356c10: lea      rcx, [rsp + 0x30]
+  0x180356c15: call     0x18008b620
+  0x180356c1a: mov      byte ptr [rsp + 0x4f], 0
+  0x180356c1f: xorps    xmm1, xmm1
+  0x180356c22: mov      eax, dword ptr [rbx + 0x20]
+  0x180356c25: mov      rcx, rsi
+  0x180356c28: cvtsi2sd xmm1, rax
+  0x180356c2d: call     0x180749c00
+  0x180356c32: xor      r8d, r8d
+  0x180356c35: xor      edx, edx
+  0x180356c37: mov      rcx, rsi
+  0x180356c3a: call     0x1807494f0
+  0x180356c3f: lea      rdx, [rip + 0x59ec5a]  ; 'Name'
+  0x180356c46: mov      rcx, rsi
+  0x180356c49: call     0x180749c20
+  0x180356c4e: lea      rdx, [rbx + 0x108]
+  0x180356c55: mov      rcx, rsi
+  0x180356c58: call     0x180749c20
+  0x180356c5d: mov      edx, 0xfffffffd
+  0x180356c62: mov      rcx, rsi
+  0x180356c65: call     0x18074a010
+  0x180356c6a: lea      rdx, [rip + 0x41062f]  ; 'ForceID'
+  0x180356c71: mov      rcx, rsi
+  0x180356c74: call     0x180749c20
+  0x180356c79: mov      eax, dword ptr [rbx + 0x100]
+  0x180356c7f: xorps    xmm1, xmm1
+  0x180356c82: mov      rcx, rsi
+  0x180356c85: cvtsi2sd xmm1, rax
+  0x180356c8a: call     0x180749c00
+  0x180356c8f: mov      edx, 0xfffffffd
+  0x180356c94: mov      rcx, rsi
+  0x180356c97: call     0x18074a010
+  0x180356c9c: lea      rdx, [rip + 0x470445]  ; 'BattleFieldSide'
+  0x180356ca3: mov      rcx, rsi
+  0x180356ca6: call     0x180749c20
+  0x180356cab: .byte    0x66
+  0x180356cac: .byte    0x0f
+

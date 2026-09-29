@@ -1,0 +1,571 @@
+{
+  "title": "JX3 绝境战场 — UI process explorer",
+  "generated": "2026-09-24",
+  "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
+  "stages": [
+    {
+      "id": "queue",
+      "title": "1. 排队 Queue",
+      "summary": "排队面板与队列追踪窗口。单人/组队/房间三种队列，飞沙与周奖励展示，排队中匹配状态与取消。",
+      "windows": [
+        {
+          "id": "queue-panel",
+          "title": "NewBattleFieldQueue",
+          "cn": "绝境战场排队面板",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/NewBattleFieldQueue.ini",
+          "page": "Page_DesertStorm",
+          "tabs": {
+            "parent": "PageSet_Total",
+            "x0": 18,
+            "step": 100,
+            "show": [
+              "CheckBox_DesertStorm",
+              "CheckBox_DesertStorm_Single",
+              "CheckBox_DesertStorm_Takov",
+              "CheckBox_CustomizeBattlefield"
+            ]
+          },
+          "show": [
+            "Image_AnniversaryIcon1",
+            "Image_AnniversaryIcon2",
+            "Image_AnniversaryIcon3"
+          ],
+          "texts": [
+            { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" }
+          ],
+          "summary": "1,129 sections. The mode tab strip is not authored as a strip: ShowModeTabs (NewBattleFieldQueue.decompiled.lua:4374-4451) hides every tab, then shows only the battlefield ids bound to the entry point and pins them at SetRelX(18 + i*100). InitWndBattleField (lua:4713-4744) drops modes whose IsActivityOn is false, which is why the live queue window shows 五人模式/单人模式/寻宝模式/自定义模式 (乱武模式 676 is off). Visibility follows the engine's LockShowAndHide flag (KGUI decoder clears the visible flag of locked sections; the window script is the only thing that shows them), so locked state widgets stay hidden and the script-shown ones (tabs, activity badges) are listed. The 五人模式 tab handler also sets Text_SkillTitle to STR_DESERTSTORM_TITLE (lua:4477-4488) and Text_TIP_DSTime to the schedule (lua:4350-4372).",
+          "evidence": [
+            "ui/Config/Default/NewBattleFieldQueue.ini",
+            "proof/minimap/ui/Config/Default/decompiled/NewBattleFieldQueue.decompiled.lua",
+            "docs/netcode/JX3_MODE_UI_INVENTORY.md §1"
+          ],
+          "elements": [
+            "CheckBox_DesertStorm{,_Single,_Skill,_Takov} — mode tabs",
+            "Handle_FEISHA / Text_AllNum / Text_WeekNum / Text_MyScore — 飞沙 currency",
+            "Btn_SingleQueue / Btn_TeamQueue / Btn_RoomQueue + Handle_Mathing_* / Text_Time_*",
+            "Image_S/T/R WeiWang|ZhanJie|ZHF — weekly reward preview",
+            "Btn_LeaveSingleQueue / Btn_LeaveTeamQueue / Btn_LeaveRoomQueue",
+            "WndContainer_Buff / Handle_Buff — queue buffs",
+            "Wnd_ListMaps / Handle_BattlefieldList — map rows",
+            "Bool_CreateRoom / JoinRoom / StartGame / DisbandRoom / ExitRoom — room dialogs"
+          ],
+          "labels": [
+            "STR_BATTLEFIELD_DGPAGE",
+            "STR_SETTING197",
+            "STR_SETTING201"
+          ]
+        },
+        {
+          "id": "map-queue",
+          "title": "MapQueue",
+          "cn": "队列追踪窗口",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MapQueue.ini",
+          "hide": "Handle_Content,Handle_Content_0",
+          "lists": [
+            { "container": "Handle_List", "ini": "MapQueue.ini", "item": "Handle_Content", "count": 1 }
+          ],
+          "summary": "Per-map queue rows with elapsed time, cancel menu and the auto-enter checkbox; fed by OnSyncMapQueueInfo. Handle_Content/_0 are parked prototypes cloned per queued map by AppendItemFromIni into Handle_List, so the default hides them and injects one authored row.",
+          "evidence": [
+            "ui/Config/Default/MapQueue.ini",
+            "proof/minimap/ui/Config/Default/decompiled/MapQueue.decompiled.lua"
+          ],
+          "elements": [
+            "Per-map queue rows + 点击取消排队 context menu",
+            "自动进入 checkbox (silent entry when match found)",
+            "Elapsed time display (UpdateJoinTime / FormatBattleFieldTime)",
+            "OnQueuePosUpdate-driven position/ETA rows"
+          ],
+          "labels": [
+            "STR_MAP_QUEUE",
+            "STR_MAP_QUEUE_AUTOSURE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "match",
+      "title": "2. 匹配成功 / 接受 Match found",
+      "summary": "匹配成功后弹出确认（勾选自动进入则直接进入），确认即发送 C→S 0x116。",
+      "windows": [
+        {
+          "id": "ready-prompt",
+          "title": "Ready prompt (native MessageBox)",
+          "cn": "准备/接受提示",
+          "status": "NATIVE",
+          "root": null,
+          "path": null,
+          "summary": "Confirmed native: the compiled ui/script/module.lua opens the generic MessageBox for ComfirmEnterQueuedMap (STR_SWITCHMAP_GFZ_TIP body, STR_HOTKEY_SURE / STR_HOTKEY_CANCEL options, nCountDownTime auto-confirm). There is no KGUI INI for this prompt.",
+          "evidence": [
+            "proof/netcode/ui_scripts/b02/out/ui/script/module.lua (ComfirmEnterQueuedMap/MessageBox)",
+            "docs/netcode/JX3_MODE_LOAD_FLOW.md 2",
+            "proof/netcode/c2s_protocol_catalog.tsv (0x116 DoComfirmEnterQueueMap)"
+          ],
+          "elements": [
+            "Confirm dialog (or silent entry with 自动进入)",
+            "C→S 0x116 DoComfirmEnterQueueMap",
+            "Skip-countdown option"
+          ],
+          "labels": [
+            "STR_PVP_Ready",
+            "STR_SETTING244"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "loading",
+      "title": "3. 过图 Loading",
+      "summary": "X3DEngine 的 GDI 载入窗口：背景画 + 进度条 + spinner，等 ComfirmSyncMapProgress 握手。",
+      "windows": [
+        {
+          "id": "loading-window",
+          "title": "LoadingPanel",
+          "cn": "载入窗口",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/LoadingPanel.ini",
+          "summary": "Located in PakV4 as ui/Config/Default/LoadingPanel.ini (39 sections). Shows the per-map loading art (Carriage/CharButton atlases) with progress widgets; complements KWindowsLoadingWnd in X3DEngine.dll.",
+          "evidence": [
+            "ui/Config/Default/LoadingPanel.ini",
+            "ui/Image/login/Carriage.UITex + CharButton.UITex",
+            "docs/netcode/JX3_MODE_UI_FLOW.md 4"
+          ],
+          "elements": [
+            "Background art (per-map loading story)",
+            "Progress bar + spinner",
+            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
+          ],
+          "labels": []
+        }
+      ]
+    },
+    {
+      "id": "staging",
+      "title": "4. 入场 / 等待开局 Staging",
+      "summary": "落地在安全区等待 30 秒级倒计时（数值由服务器下发），使用模式专属站姿；倒计时结束后起飞/开战。",
+      "windows": [
+        {
+          "id": "staging-countdown",
+          "title": "Staging countdown (renderer missing)",
+          "cn": "开局倒计时 / 安全区",
+          "status": "PARTIAL",
+          "root": null,
+          "path": null,
+          "summary": "Countdown frame art UI_黑山绝境_倒计时通用底框.pss + staging poses 龙门绝境_站姿01-05. The clock value comes from S2C 0x11B (startOffset/duration -> absolute end time); the HUD renderer for it is not in the extracted corpus.",
+          "evidence": [
+            "proof/netcode/mode_juejing/editor_assets_juejing.txt:72-77",
+            "docs/netcode/JX3_MODE_MATCH_LIFECYCLE.md stage 3",
+            "proof/netcode/protocol_table_s2c_annotated.tsv (0x11B)"
+          ],
+          "elements": [
+            "Countdown frame PSS",
+            "Safe zone state labels",
+            "Staging pose animation set",
+            "Phase clock cache +0x1b490 (absolute end time)"
+          ],
+          "labels": [
+            "STR_PQ_PROTIME",
+            "STR_PQ_TIMETITLE",
+            "STR_SAFEZONE",
+            "STR_HATREDPANEL_SAFEZONE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hud",
+      "title": "5. 对局 HUD In-match",
+      "summary": "小地图（含风暴圈与安全区外警告）、战场地图（风暴线/圈）、BR 动态技能栏、拾取窗口、统计面板、消息行、队友与增益。",
+      "windows": [
+        {
+          "id": "middlemap",
+          "title": "MiddleMap",
+          "cn": "大地图（M）",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MiddleMap.ini",
+          "summary": "Full-screen map window (M), shared by every scene type: Wnd_NormalMap (world map: region list/quest/NPC search), Wnd_CommandMap (war-sandbox command map), explore panels and the battlefield layers under Handle_Total (storm line, camp counts, events) plus WndContainer_GFInfo/HeatMapDetail. The default hide list renders the 绝境战场 state: normal-map and command-map subtrees are suppressed, contested-area heat map stays.",
+          "evidence": [
+            "ui/Config/Default/MiddleMap.ini",
+            "proof/minimap/ui/Config/Default/decompiled/MiddleMap.decompiled.lua"
+          ],
+          "elements": [
+            "Map layers",
+            "Handle_MapMark / SyncMidMapMark",
+            "Btn_WorldMap"
+          ],
+          "labels": [],
+          "hide": "Text_Num_HQ_XS,Text_Num_HQ_S,Text_Num_HQ_M,Text_Num_ER_XS,Text_Num_ER_S,Text_Num_ER_M,Text_EventValue_PreTime,Text_EventValue_Count,Text_EventValue_Fraction,Text_Title1,Handle_ContendBtn,Text_MarkBtn_8,Text_MarkBtn_8_0,Text_MarkBtn_8_1,Text_FlTitle_Level,Text_HQDotTitle,Text_ERDotTitle,Wnd_NormalMap,Wnd_CommandMap,WndFlexContainer_Explore,WndFlexContainer_AllEPBar,Btn_BattleMap,Btn_QuitCommand,Btn_EnterCommand,Btn_City,Btn_WorldMap,CheckBox_Hq,CheckBox_Er,CheckBox_MapPage,CheckBox_QuestPage,CheckBox_ExplorePage,CheckBox_QuestShowMain,CheckBox_QuestShowNormal,CheckBox_QuestShowRepeat,CheckBox_QuestShowLow,CheckBox_QuestShowLower,CheckBox_QuestShowActivity,CheckBox_ActiveNPC,Btn_MarkSetting,Text_QuestMarkTitle"
+        },
+        {
+          "id": "minimap",
+          "title": "MiniMap",
+          "cn": "小地图 / 战场入口按钮",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MiniMap.ini",
+          "summary": "Top-right lens with the battlefield button, observer button, storm circle range hint and outside-safe-zone warning options.",
+          "evidence": [
+            "ui/Config/Default/MiniMap.ini",
+            "proof/minimap/ui/Config/Default/decompiled/Minimap.decompiled.lua",
+            "docs/netcode/JX3_MODE_UI_INVENTORY.md §6"
+          ],
+          "elements": [
+            "Btn_BattleField — opens the battlefield map",
+            "WndContainer_Observer / Btn_Observer — observer (scope unknown)",
+            "Storm circle overlays + outside-zone flashing warning",
+            "Map marks (players / loot / airdrops / storm)"
+          ],
+          "labels": [
+            "STR_SETTING210",
+            "STR_SETTING262",
+            "STR_MINIMAP_SWITCH"
+          ]
+        },
+        {
+          "id": "battlefield-map",
+          "title": "BattleFieldMap",
+          "cn": "战场地图（风暴线/圈）",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/BattleFieldMap.ini",
+          "summary": "Draggable M-map panel. When IsInTreasureBattleFieldMap() it shows Handle_StormLine and registers MapCircle/SFX_CircleNew; heat map toggle; mark/gain/sfx notify events.",
+          "evidence": [
+            "ui/Config/Default/BattleField/BattleFieldMap.ini",
+            "proof/minimap/ui/Config/Default/BattleField/BattleFieldMap.decompiled.lua:5303,5316-5341,9362-9405",
+            "proof/minimap/ui/Image/MiddleMap/StormLine/*.DDS (41 segments)"
+          ],
+          "elements": [
+            "Handle_Map/Handle_StormLine — storm ring segments",
+            "Handle_Map/Handle_CircleNew + MapCircle/SFX_CircleNew",
+            "CheckBox_ShowNum / Btn_HeatMapState",
+            "ON_BATTLE_FIELD_MAKR/GAIN/SFX_DATA_NOTIFY handlers"
+          ],
+          "labels": [
+            "STR_BATTLEFIELD_MAPTIP1",
+            "STR_BATTLEFIELD_MAPTIP2",
+            "STR_BATTLEFIELD_MAPTIP3"
+          ]
+        },
+        {
+          "id": "dynamic-skill-bar",
+          "title": "DynamicBattleRoyale",
+          "cn": "BR 动态技能栏",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/DynamicBattleRoyale.ini",
+          "summary": "The mode's skill bar: fixed default skills plus dynamic boxes for picked-up skills, driven by nDynamicSkillNum / nCanDragCount.",
+          "evidence": [
+            "ui/Config/Default/DynamicBattleRoyale.ini",
+            "proof/minimap/ui/Config/Default/decompiled/DynamicBattleRoyale.decompiled.lua"
+          ],
+          "elements": [
+            "Wnd_DefaultSkillBar / Handle_DefaultSkill_N",
+            "Wnd_DynamicSkill / Handle_DynamicSkill_N / Box_DySkill_<D0>",
+            "Hotkey binding BATTLEACTIONBAR_BUTTON + index"
+          ],
+          "labels": []
+        },
+        {
+          "id": "pvp-show-panel",
+          "title": "PVPShowPanel",
+          "cn": "对局统计面板",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/PVPShowPanel.ini",
+          "anchors": [
+            { "section": "Wnd_HPListL", "s": "LEFTCENTER", "r": "LEFTCENTER", "x": 0, "y": 10 },
+            { "section": "Wnd_HPListR", "s": "RIGHTCENTER", "r": "RIGHTCENTER", "x": 0, "y": 10 },
+            { "section": "Wnd_PlayerInfo", "s": "BOTTOMCENTER", "r": "BOTTOMCENTER", "x": 0, "y": 0 }
+          ],
+          "summary": "In-match statistics table fed by GetBattleFieldStatistics + PQ_STATISTICS_INDEX slices (INJURY / HARM_OUTPUT / TREAT_OUTPUT / SPECIAL_OP_7). UpdatePos (PVPShowPanel.lua:155-183) anchors the team HP lists to LEFTCENTER/RIGHTCENTER and the player info to BOTTOMCENTER at runtime; the inventory anchors replay that.",
+          "evidence": [
+            "ui/Config/Default/PVPShowPanel.ini",
+            "proof/netcode/ui/PVPShowPanel.dump.txt:40,70-72"
+          ],
+          "elements": [
+            "Per-player rows: name / kills / damage / healing",
+            "BATTLE_FIELD_SYNC_STATISTICS event refresh"
+          ],
+          "labels": []
+        },
+        {
+          "id": "loot-list",
+          "title": "LootList",
+          "cn": "拾取窗口",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/LootList.ini",
+          "summary": "Container loot window (OnSyncLootList), pickup bar (拾取/打开/操作), smart-loot and filter options; MaxLootRange = 5.",
+          "evidence": [
+            "ui/Config/Default/LootList.ini",
+            "docs/netcode/JX3_LOOT_PROTOCOL_LAYOUTS.md",
+            "docs/netcode/JX3_MODE_UI_INVENTORY.md §6"
+          ],
+          "elements": [
+            "Loot rows (type/index/count/flag)",
+            "Pickup bar text",
+            "Auto-pickup + filter settings"
+          ],
+          "labels": [
+            "STR_TITLE_LOOT",
+            "STR_FREE_FOR_ALL",
+            "STR_PARTY_PICK_UP",
+            "STR_ITEMBOX_LOOT",
+            "STR_SETTING195",
+            "STR_SETTING196",
+            "STR_SETTING199",
+            "STR_SETTING202"
+          ]
+        },
+        {
+          "id": "fighting-num",
+          "title": "FightingNum",
+          "cn": "对局数字 HUD",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/FightingNum.ini",
+          "summary": "Number HUD candidates (kills / remaining). The storm countdown and remaining-players renderer (STR_TIMEDESERT / STR_LEFTPEPLE) is still unlocated; this panel is the closest extracted candidate.",
+          "evidence": [
+            "ui/Config/Default/FightingNum.ini",
+            "docs/netcode/JX3_MODE_UI_INVENTORY.md §8"
+          ],
+          "elements": [
+            "Numeric counter rows"
+          ],
+          "labels": [
+            "STR_LEFTPEPLE",
+            "STR_TIMEDESERT",
+            "STR_STORM2"
+          ]
+        },
+        {
+          "id": "fighting-statistic",
+          "title": "FightingStatistic",
+          "cn": "对局统计行",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/FightingStatistic.ini",
+          "summary": "Statistics rows used by the scoreboard-side UI; feeds from the same statistics records as PVPShowPanel.",
+          "evidence": [
+            "ui/Config/Default/FightingStatistic.ini"
+          ],
+          "elements": [
+            "Statistic rows"
+          ],
+          "labels": []
+        },
+        {
+          "id": "main-message-line",
+          "title": "MainMessageLine",
+          "cn": "系统消息行",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MainMessageLine.ini",
+          "summary": "System message line (SYS_MSG); carries the mode announcements (e.g. the streamer-mode warning STR_STORM3) and event calls.",
+          "evidence": [
+            "ui/Config/Default/MainMessageLine.ini",
+            "ui/Scheme/Case/string.txt (STR_STORM3)"
+          ],
+          "elements": [
+            "Message line + queue"
+          ],
+          "labels": [
+            "STR_STORM3"
+          ]
+        },
+        {
+          "id": "buff-list",
+          "title": "BuffList / DebuffList / TargetBuff",
+          "cn": "增益/减益/目标增益",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BuffList.ini",
+          "summary": "Standard buff/debuff UI; the storm/zone state arrives as a server-synced buff (no official local storm buff row found).",
+          "evidence": [
+            "ui/Config/Default/BuffList.ini",
+            "ui/Config/Default/DebuffList.ini",
+            "ui/Config/Default/TargetBuff.ini"
+          ],
+          "elements": [
+            "Buff icons + remaining time"
+          ],
+          "labels": [
+            "STR_BUFF_H_LEFT_TIME_MSG"
+          ]
+        },
+        {
+          "id": "teammate",
+          "title": "Teammate / TeamBuff",
+          "cn": "队友框",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/Teammate.ini",
+          "summary": "Squad frames used by the mode (5-player squads in the original design); battlefield side drives nameplate colour.",
+          "evidence": [
+            "ui/Config/Default/Teammate.ini",
+            "ui/Config/Default/TeamBuff.ini"
+          ],
+          "elements": [
+            "Player unit frames",
+            "Team buffs"
+          ],
+          "labels": [
+            "STR_BF_NAME"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "death",
+      "title": "6. 死亡 / 复活 Death",
+      "summary": "受重伤/濒危状态，复活请求 C→S 0xB9；天原冰封复活与流萤魂返花等模式复活手段。",
+      "windows": [
+        {
+          "id": "death-revive",
+          "title": "RevivePanel",
+          "cn": "死亡与复活",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/RevivePanel.ini",
+          "summary": "Located in PakV4 as ui/Config/Default/RevivePanel.ini (43 sections, DesertStorm3 + RevivePanel atlases). BR death/revive prompt driven by C->S 0xB9 DoPlayerReviveRequest.",
+          "evidence": [
+            "ui/Config/Default/RevivePanel.ini",
+            "ui/Image/UITga/DesertStorm3.UITex",
+            "ui/Image/UItimate/UICommon/RevivePanel.UITex"
+          ],
+          "elements": [
+            "濒危 / 受重伤 indicator",
+            "Revive prompt (0xB9 DoPlayerReviveRequest)",
+            "天原冰封复活 skill 31507 / 流萤魂返花 item"
+          ],
+          "labels": [
+            "STR_NEAR_DEATH",
+            "STR_BF_DEAD",
+            "STR_REVIVE_NO"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "settlement",
+      "title": "7. 结算 Settlement",
+      "summary": "PVPShowFinal 结算面板（左右两列玩家行），由 BATTLE_FIELD_SYNC_STATISTICS 驱动，展示击伤/伤害/治疗/濒危与奖励。",
+      "windows": [
+        {
+          "id": "pvp-show-final",
+          "title": "PVPShowFinal",
+          "cn": "结算面板",
+          "status": "PROVEN",
+          "root": "pak",
+          "path": "PVPShowFinal.ini",
+          "hide": "Handle_Player*,Handle_Title,Image_ScoreL,Image_ScoreR,Image_Bglogo_1",
+          "lists": [
+            { "container": "Handle_FinalListL", "ini": "PVPShowFinalL.ini", "item": "Handle_Player", "count": 1 },
+            { "container": "Handle_FinalListR", "ini": "PVPShowFinalR.ini", "item": "Handle_Player", "count": 1 }
+          ],
+          "summary": "Panel frame; the Lua driver registers BATTLE_FIELD_SYNC_STATISTICS -> OnSyncPQ -> GetBattleFieldStatistics, then MergeData/UpdateList; opens with ApplyBattleFieldStatistics. The Handle_Player* rows parked at the window edge are item prototypes cloned at runtime (InitPanel hides the arena score/title; UpdateOneSideList appends rows from PVPShowFinalL/R.ini), so the default state shows the authored row layout via the cloned prototypes instead of the parked originals.",
+          "evidence": [
+            "proof/netcode/ui/pak_candidates/PVPShowFinal.ini",
+            "proof/netcode/ui/PVPShowFinal.dump.txt",
+            "docs/netcode/JX3_MODE_UI_INVENTORY.md §7"
+          ],
+          "elements": [
+            "Window frame",
+            "Two-column player lists (L/R)",
+            "Open animation + sound"
+          ],
+          "labels": [
+            "STR_JIESUAN_TITLE",
+            "STR_SHOW2",
+            "STR_BF_REWARD",
+            "STR_BF_MONEY",
+            "STR_BF_EXP",
+            "STR_BF_PRESTAGE"
+          ]
+        },
+        {
+          "id": "pvp-show-final-l",
+          "title": "PVPShowFinalL",
+          "cn": "结算列表（左）",
+          "status": "PROVEN",
+          "root": "pak",
+          "path": "PVPShowFinalL.ini",
+          "summary": "Item prototype INI (not a standalone window): Handle_Player is appended into PVPShowFinal's Handle_FinalListL by AppendItemFromIni. Rendered standalone it shows the parked prototype row.",
+          "evidence": [
+            "proof/netcode/ui/pak_candidates/PVPShowFinalL.ini"
+          ],
+          "elements": [
+            "Handle_Player rows",
+            "Text_Name / Text_Kill / Text_Damage / Text_Health / Text_NearDeathNum"
+          ],
+          "labels": [
+            "STR_FBLIST_DUIYUANMINGZI",
+            "STR_BF_DAMAGE",
+            "STR_BF_HEALTH",
+            "STR_BF_KILL2",
+            "STR_NEAR_DEATH"
+          ]
+        },
+        {
+          "id": "pvp-show-final-r",
+          "title": "PVPShowFinalR",
+          "cn": "结算列表（右）",
+          "status": "PROVEN",
+          "root": "pak",
+          "path": "PVPShowFinalR.ini",
+          "summary": "Item prototype INI (not a standalone window): Handle_Player is appended into PVPShowFinal's Handle_FinalListR by AppendItemFromIni (StringTable=ui/Scheme/Case/string_PVPAcount.txt).",
+          "evidence": [
+            "proof/netcode/ui/pak_candidates/PVPShowFinalR.ini",
+            "proof/netcode/ui/string_PVPAcount.utf8.txt"
+          ],
+          "elements": [
+            "Handle_Player rows",
+            "Image_Bg / school icon / name / kills"
+          ],
+          "labels": [
+            "STR_FBLIST_DUIYUANMINGZI",
+            "STR_BF_DAMAGE",
+            "STR_BF_HEALTH",
+            "STR_BF_KILL2",
+            "STR_NEAR_DEATH"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "title": "8. 离开 / 退出 Exit",
+      "summary": "小地图菜单离开战场、排队取消确认与 LEAVE_BATTLE_FIELD 事件。",
+      "windows": [
+        {
+          "id": "leave-menu",
+          "title": "ExitPanel",
+          "cn": "离开战场",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/ExitPanel.ini",
+          "summary": "Located in PakV4 as ui/Config/Default/ExitPanel.ini (15 sections, CommonPanel2/PanelBg atlases). The leave-battlefield confirm menu (LEAVE_BATTLE_FIELD event).",
+          "evidence": [
+            "ui/Config/Default/ExitPanel.ini",
+            "ui/Image/UICommon/CommonPanel2.UITex",
+            "proof/minimap/ui/Config/Default/decompiled/Minimap.decompiled.lua"
+          ],
+          "elements": [
+            "Minimap leave menu",
+            "Leave-queue confirm dialogs",
+            "LEAVE_BATTLE_FIELD event"
+          ],
+          "labels": [
+            "STR_BATTLEFIELD_MENU_LEAVE",
+            "STR_BATTLEFIELD_LEAVE_QUEUE"
+          ]
+        }
+      ]
+    }
+  ]
+}

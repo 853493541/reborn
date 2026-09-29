@@ -1,0 +1,6 @@
+# Build output
+bin/
+obj/
+
+# Extracted game assets / atlases (local only, re-extract from PakV4)
+assets/

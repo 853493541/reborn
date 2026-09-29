@@ -85,7 +85,7 @@ room create/force-start/side payloads.
 |---|---|
 | Frame layout, reliability (serial/ack/retransmit), handshake/resume, ping/timeout | DONE (`JX3_PROTOCOL_SPEC.md`) |
 | Reference server+client implementing the model | DONE (`tools/netcode/reference/`, 10/10 smoke) |
-| Fixed-size table `m_nProtocolSize` + S2C opcode IDs | STATIC (hard): find dispatch table / size table |
+| Fixed-size table `m_nProtocolSize` + S2C opcode IDs | **DONE (2026-09-24)**: KPlayerClient registration function parsed (handler base `this+0x16460`, size base `this+0x17F28`, anchor `0x22A`); 810 handlers with IDs+sizes in `proof/netcode/protocol_table_s2c_annotated.tsv` |
 | ~900 protocol payload layouts | STATIC (per-handler disasm, only ~15 recovered so far) |
 | Crypto/compression order on live stream | UNKNOWN (runtime/RE) |
 | Self skill/cast (`OnSkillPrepare/Cast/EffectResult`), move sync (`OnSyncMoveState/MoveCtrl/MoveParam`), buffs | STATIC — same method as loot |
@@ -155,7 +155,43 @@ Linked docs: `JX3_MODE_LOOT_SYSTEM.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md`,
   灵魂出窍02 animation), AFK report (C2S **0x1C9**), revive request (C2S **0xB9**),
   `MaxSwitchMapMoveDistance`, glider camera/carrier wiring, storm art
   (`Image/MiddleMap/StormLine/*.DDS`).
-- **Top open proof item**: the storm **data source** (server → circle center/radius) —
-  lifecycle §8.1; until proven, the phase/storm chapter stays unwritten.
+- **Top open proof item**: the storm **data path** is now recovered (objective/PQ cache
+  writers `0x180193FD0`/`0x180194020`, stats builder `0x1801940A0`; lifecycle Stage 7/8),
+  but the **schedule values and index→meaning labels remain server/capture-only** — no
+  official local file carries shrink timing (verified: 0 hits for 风暴/缩圈/沙暴/安全区 in
+  Buff/TopBuff/Activity/CoolDown; the CheckTreasure ids 22495+ are skills).
 - UI corpus was dictionary-extracted (window names) → PakV4 `ui/` enumeration (item 4
   above) is still recommended before claiming any UI stage complete.
+- **UI inventory (2026-09-24)**: `JX3_MODE_UI_INVENTORY.md` maps every stage to its
+  official windows/labels (queue panel sections, MapQueue auto-enter, loading window,
+  DynamicBattleRoyale, BattleFieldMap storm lines, PVPShowPanel stats, PVPShowFinal
+  settlement). Open renderers: mode storm HUD (`STR_TIMEDESERT`/`STR_LEFTPEELE`), ready
+  prompt (`STR_PVP_Ready`), observer/death overlays — not in the extracted PakV4 corpus or
+  `JX3UIX64.dll` strings; hunt plan in the doc §9.
+- **Capture decoders ready (2026-09-24)**: `tools/netcode/mode/capture.py` decodes the
+  recovered mode opcodes (switch map placement, objective increments `0x11A`, phase clock
+  `0x11B`, statistics `0x119`, side `0xAA`, stat flag `0x330`, BR role data `0x245`);
+  self-test 7/7, synthetic end-to-end decode verified. Loot stays in
+  `tools/netcode/loot/capture.py`. A single live capture labels the objective-array
+  indices and yields the actual zone/phase schedule values.
+- **Settlement panel located (2026-09-24)**: `PVPShowFinal.lua` + `PVPShowFinalL/R.ini`
+  extracted from PakV4 (`proof/netcode/ui/`); registers `BATTLE_FIELD_SYNC_STATISTICS`,
+  consumes `GetBattleFieldStatistics` + `PQ_STATISTICS_INDEX`; settlement labels live in
+  `string_PVPAcount.txt`.
+- **S2C opcode IDs recovered (2026-09-24)**: the KPlayerClient protocol registration
+  function (`0x180163540`–`0x180168280`) was parsed with
+  `tools/netcode/parse_protocol_registration.py`; calibration anchor
+  `s2c_sync_arena_competitior_cd_state = 0x22A`. Mode-relevant IDs: `0x11A` objective
+  array update (16 B), `0x11B` phase clock (23 B), `0x119` statistics (264 B), competitor
+  family `0x25F/0x260/0x261/0x262`, side `0xAA`, BR role data `0x245`, stat flag `0x330`,
+  room `0x323/0x324`, plus loot/movement (`0x0C/0x10/0x82/0x19`). Full table:
+  `proof/netcode/protocol_table_s2c_annotated.tsv`.
+- **Source audit (2026-09-24)**: match-start/storm timings previously read from a
+  team-monitor addon userdata (`interface\MY#DATA\...\userdata\team_mon\remote\*.jx3dat`)
+  were **excluded as evidence** (player-side config, not official) and the extracted proof
+  file was deleted. Official replacement: the panel clock comes from
+  `GetBattleFieldPQInfo` (engine getter `0x180356a90`, 4 ints at client cache
+  `+0x1b480..0x1b490`, 4th = absolute end time; see
+  `proof/netcode/disasm/LuaGetBattleFieldPQInfo.txt`), and phase data is the 16-int
+  `LuaGetBattleFieldObjective` array (`+0x1b498..0x1b4d8`). Evidence rule: client
+  binaries, PakV4-shipped assets, and protocol only; `interface\` is out of scope.

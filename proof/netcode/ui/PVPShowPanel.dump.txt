@@ -1,0 +1,493 @@
+# PVPShowPanel.lua: Lua 0x51 int=4 size_t=4 num=8
+function <?> line 0-0 params=0 ups=0 stack=79
+  strings: 'module', 'PVPShowPanel', 'ExportExternalLib', 'GLOBAL', 'GAME_FPS', 'ui/Config/Default/PVPShowPanel.ini', '/ui/Scheme/Setting/PVPShowFrame.ini', '\\UI\\Image\\cursor\\OBnormal.cur', 'scale', 'ARENA_UI_TYPE', 'ARENA_2V2', 'ARENA_3V3', 'ARENA_5V5', 'ARENA_MASTER_3V3', 'g_tStrings', 'STR_PVP_PLAYER_TEAM_NAME_L', 'STR_PVP_PLAYER_TEAM_NAME_R', 'List', 'Wnd_HPListL', 'WndDrag'
+  numbers: 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 12.0, 600.0, 300.0, 10174.0, 120.0, 2013265919.0, 1.5, 15.0, 25.0, 4294901760.0, 4294929002.0, 4281506252.0, 4287090431.0
+  globals: =AddCastSkill, =AddKillMessage, =AdjustCDSize, =AdjustSize, =ApplyAllQiXue, =ChangePlayerBg, =ChangeViewText, =ChoiceCameraStatus, =ClearPlayerInfo, =ClickPlayer, =ClickPlayerByIndex, =Close, =CreateInfo, =CreatePlayer, =CreateSkillBox, =EndWrite, =FindNotCreatPlayer, =FindPlayerByID, =FreshReplayData, =GetArenaCompetitorTable, =GetArenaPlayer, =GetBuffData, =GetCastSkill, =GetCorpsName, =GetGlobalID, =GetHideSkill, =GetMapView, =GetTableLength, =GetTeamNumber, =GetViewPlayerID, =InitGlobalView, =InitModeShow, =InitPanel, =InitSelectInfo, =InitWatchOrOBSet, =InsertPVPShowTargetMenu, =IsLeaveOBMode, =IsOpened, =LoadSetting, =OnActionBreak
+  function <?> line 155-183 params=0 ups=0 stack=3
+    strings: 'Wnd_HPListL', 'tAnchor', 'x', 'y', 's', 'LEFTCENTER', 'r', 'Wnd_HPListR', 'RIGHTCENTER', 'Wnd_PlayerInfo', 'BOTTOMCENTER'
+    numbers: 0.0, 10.0
+  function <?> line 185-211 params=1 ups=0 stack=8
+    strings: '', 'GetTimeToHourMinuteSecond', 'h', 'm'
+    numbers: 0.0, 2.0, 1.0, 5.0, 3.0
+    globals: GetTimeToHourMinuteSecond
+  function <?> line 213-222 params=1 ups=0 stack=7
+    strings: 'pairs'
+    globals: pairs
+  function <?> line 224-231 params=0 ups=2 stack=3
+    strings: 'Re_GetMapID', 'GetMapView'
+    globals: GetMapView, Re_GetMapID
+  function <?> line 233-245 params=0 ups=0 stack=11
+    strings: 'g_tTable', 'LiveShowBuff', 'GetRowCount', 'GetRow', 'BuffID'
+    numbers: 2.0, 1.0
+    globals: g_tTable
+  function <?> line 247-257 params=0 ups=0 stack=11
+    strings: 'g_tTable', 'PVPShowMapGlobalView', 'GetRowCount', 'GetRow', 'MapID'
+    numbers: 1.0
+    globals: g_tTable
+  function <?> line 259-269 params=0 ups=0 stack=11
+    strings: 'g_tTable', 'PVPHideSkill', 'GetRowCount', 'GetRow', 'dwSkillID'
+    numbers: 1.0
+    globals: g_tTable
+  function <?> line 271-281 params=0 ups=0 stack=11
+    strings: 'g_tTable', 'PVPCastSkill', 'GetRowCount', 'GetRow', 'dwSkillID'
+    numbers: 1.0
+    globals: g_tTable
+  function <?> line 283-310 params=0 ups=2 stack=18
+    strings: 'Ini', 'Open', 'LIST_L', 'LIST_R', 'pairs', 'KillFrame', 'ReadInteger', 'MessageR', 'MessageG', 'MessageB', 'HealthFrame', 'ScoreFrame', 'StateFrame', 'Close'
+    numbers: 0.0, 1.0, 5.0, 3.0
+    globals: Ini, pairs
+  function <?> line 312-383 params=0 ups=15 stack=5
+    strings: 'Station', 'Hide', 'LoadSetting', 'this', 'RegisterEvent', 'UI_SCALED', 'LOADING_END', 'NPC_ENTER_SCENE', 'NPC_LEAVE_SCENE', 'SYS_MSG', 'BUFF_UPDATE', 'ON_ARENA_COMPETITOR_UDPATE', 'ARENA_END', 'OT_ACTION_PROGRESS_BREAK', 'PLAYER_DISPLAY_DATA_UPDATE', 'BATTLE_FIELD_SYNC_STATISTICS', 'On_JJC_GetStartTime', 'ON_SKILL_CD_NOTIFY', 'SYNC_ARENA_VISITOR_COUNT', 'DO_SKILL_CAST'
+    globals: GetBuffData, GetCastSkill, GetHideSkill, LoadSetting, RemoteCallToServer, SettingMode, Station, this
+  function <?> line 385-495 params=0 ups=7 stack=20
+    strings: 'this', 'GetCurrentTime', 'GetTickCount', 'nKillTime', 'Lookup', 'Wnd_KillInformation', 'Hide', 'Wnd_Title', 'Text_Time', 'nEndTime', 'nStartTime', 'math', 'floor', '0', 'SetText', ':', 'SetFontColor', 'ApplyTime', 'ApplyBattleFieldStatistics', 'nApplyTime'
+    numbers: 0.0, 60.0, 10.0, 3.0, 255.0, 18.0, 1.0, 500.0
+    globals: ApplyBattleFieldStatistics, GetCurrentTime, GetSkillOTActionState, GetTickCount, IsInReplay, IsReplayPause, OnPlayerHide, Re_GetPlayer, RefreshOnePlayerBuff, RemoteCallToServer, UpdateAction, UpdateSkillCD, math, pairs, this
+  function <?> line 497-507 params=2 ups=2 stack=7
+    strings: 'Lookup', 'Wnd_Navigation/WndContainer_CameraRange', 'Show', 'Wnd_Navigation', 'Handle_Title'
+  function <?> line 509-530 params=3 ups=3 stack=10
+    strings: 'Re_GetPlayer', 'SetReplayCamera', 'CameraStatus_Set', 'scale', 'yaw', 'math', 'pi', 'nFaceDirection', 'pitch', 'mode', 'remote camera', 'remoteid', 'dis_ctrl'
+    numbers: 2.0, 255.0
+    globals: CameraStatus_Set, Re_GetPlayer, SetReplayCamera, math
+  function <?> line 532-600 params=5 ups=1 stack=18
+    strings: 'Lookup', 'Text_SkillName', 'Image_SkillProgress', 'Image_FlashF', 'Image_FlashS', 'Box_Skill', 'Image_BarShieldBg', 'Table_GetSkillOTActionShow', 'nActionState', 'PREPARE', 'dwSkillID', 'Show', 'SetAlpha', 'Hide', 'SetText', 'Table_GetSkillName', 'SetObjectIcon', 'Table_GetSkillIconID', 'SetBoxDefaultExtent', 'UI_OBJECT_SKILL'
+    numbers: 255.0, 31.0, 0.0, 21.0, 10.0
+    globals: GetSkill, SetBoxDefaultExtent, Table_GetSkill, Table_GetSkillIconID, Table_GetSkillName, Table_GetSkillOTActionShow, UI_OBJECT_SKILL, tonumber
+  function <?> line 602-610 params=1 ups=2 stack=5
+    strings: 'Lookup', 'Handle_Tar', 'nActionState', 'BREAK', 'dwSkillID'
+  function <?> line 612-799 params=1 ups=15 stack=22
+    strings: 'LOADING_END', 'IsInReplay', 'Replay_End', 'IsInArena', 'Close', 'Station', 'Hide', 'NPC_ENTER_SCENE', 'GetNpc', 'arg0', 'dwTemplateID', 'OnGetPlayerIndex', 'dwEmployer', 'unpack', 'this', 'Lookup', '', 'Handle_Shadows', 'AppendItemFromString', '<shadow>name="'
+    numbers: 0.0
+    globals: ARENA_UI_TYPE, AddCastSkill, AddKillMessage, CHARACTER_OTACTION_TYPE, Close, ExecuteWithThis, GetClientPlayer, GetNpc, IsInArena, IsInReplay, OnActionBreak, OnGetPlayerIndex, OnPlayerHide, OnSkillCDNotify, OnSkillListCDNotify, OnSyncPQ, OpenAllQiXue, PVPQiXueList, PVPReplayBar, PVPShowFinal, QIXUE_TYPE, RefreshBuff, RefreshVideoBuffList, Replay_End, SceneObject_SetTitleEffect, SetNewGlobalView, StartWrite, Station, TARGET, Table_BuffIsVisible, UpdateAction, UpdateBuff, UpdatePlayerList, UpdatePos, UpdateTitle, UpdateVideoBuff, UpdateVisitorCount, XGUI, arg0, arg1
+  function <?> line 801-809 params=2 ups=2 stack=6
+    strings: 'Lookup', 'Wnd_Navigation', 'Handle_PersonOnLine/Text_NumOnline', 'Show', 'SetText', 'Hide'
+    numbers: 0.0
+  function <?> line 811-827 params=1 ups=3 stack=15
+    strings: 'g_tPVPShowPanelData', 'nVersion', 'Lookup', 'Wnd_HPListL', 'tAnchor', 'SetPoint', 's', 'r', 'x', 'y', 'Wnd_HPListR', 'Wnd_PlayerInfo'
+    numbers: 0.0
+    globals: =g_tPVPShowPanelData, =nVersion, g_tPVPShowPanelData, nVersion
+  function <?> line 829-878 params=1 ups=5 stack=12
+    strings: 'GetBattleFieldStatistics', 'pairs', 'ipairs', 'dwID', 'dwRoleID', 'szPlayerName', 'szName', 'nGroupID', 'nIndex', 'tStat', 'GetArenaStatistics', 'ApplyArenaStatistics', 'ForceID', 'Kungfu_GetType', 'dwMountKungfu', 'PQ_STATISTICS_INDEX', 'INJURY', 'HARM_OUTPUT', 'TREAT_OUTPUT', 'SPECIAL_OP_7'
+    numbers: 0.0
+    globals: ApplyArenaStatistics, GetArenaStatistics, GetBattleFieldStatistics, Kungfu_GetType, PQ_STATISTICS_INDEX, PVPShowHarm, bShowHarm, dwMountKungfu, ipairs, pairs
+  function <?> line 881-898 params=2 ups=3 stack=16
+    strings: 'pairs', 'nIndex', 'CreateSkillBox', 'GetRoot', 'nViewPlayerID', 'boxs', 'UpdateSelectCD'
+    numbers: 1.0
+    globals: CreateSkillBox, UpdateSelectCD, pairs
+  function <?> line 900-916 params=2 ups=3 stack=11
+    strings: 'boxs', 'Lookup', 'Handle_SkillCD', 'Clear', 'GetRoot', 'nViewPlayerID', 'ipairs', 'OnSkillCDNotify'
+    globals: OnSkillCDNotify, ipairs
+  function <?> line 918-934 params=3 ups=1 stack=9
+    strings: 'GetTableCount', 'dwSkillID', 'dwTrueSkillID', 'nIndex', 'CreateSkillBox'
+    numbers: 1.0
+    globals: CreateSkillBox, GetTableCount
+  function <?> line 936-964 params=3 ups=4 stack=11
+    strings: 'boxs', 'GetTableLength', 'Lookup', 'Handle_SkillCD', 'AppendItemFromIni', 'IniPath', 'Box_SkillCD', 'FormatAllItemPos', 'dwPlayerID', 'UpdateBox', 'GetRoot', 'nViewPlayerID', 'UpdateSelectCD'
+    numbers: 1.0
+    globals: GetTableLength, UpdateBox, UpdateSelectCD
+  function <?> line 966-972 params=1 ups=0 stack=8
+    strings: 'pairs'
+    numbers: 0.0, 1.0
+    globals: pairs
+  function <?> line 974-992 params=2 ups=1 stack=11
+    strings: 'dwPlayerID', 'Re_GetPlayer', 'bSetHide', 'EnableObject', 'dwSkillLevel', 'GetSkillLevel', 'dwTrueSkillID', 'UpdateSkillBoxObject'
+    numbers: 0.0
+    globals: Re_GetPlayer, UpdateSkillBoxObject
+  function <?> line 994-1022 params=2 ups=0 stack=8
+    strings: 'SetObject', 'UI_OBJECT_SKILL', 'dwTrueSkillID', 'SetObjectIcon', 'Table_GetSkillIconID', 'EnableObject', 'SetOverTextPosition', 'ITEM_POSITION', 'BOTTOM_RIGHT', 'CENTER', 'SetBoxDefaultExtent', 'Re_GetPlayer', 'dwPlayerID', 'dwSkillLevel', 'GetSkillLevel', 'OnItemMouseEnter', 'OnItemMouseHover', 'OnItemRefreshTip', 'OnItemLButtonClick', 'OnItemMouseLeave'
+    numbers: 1.0, 0.0, 2.0, 3.0
+    globals: ITEM_POSITION, Re_GetPlayer, SetBoxDefaultExtent, Table_GetSkillIconID, UI_OBJECT_SKILL, UpdateSkillCD
+    function <?> line 1006-1011 params=0 ups=1 stack=16
+      strings: 'this', 'SetObjectMouseOver', 'GetAbsPos', 'GetSize', 'OutputSkillTip', 'dwTrueSkillID', 'dwSkillLevel'
+      numbers: 1.0
+      globals: OutputSkillTip, this
+    function <?> line 1014-1014 params=0 ups=0 stack=2
+    function <?> line 1016-1019 params=0 ups=0 stack=3
+      strings: 'HideTip', 'this', 'SetObjectMouseOver'
+      numbers: 0.0
+      globals: HideTip, this
+  function <?> line 1024-1053 params=2 ups=1 stack=5
+    strings: 'bHide', 'SetPlayerStateTop'
+    globals: SetPlayerStateTop
+  function <?> line 1055-1070 params=1 ups=0 stack=8
+    strings: 'IsOpened', 'bSetting', 'Lookup', 'Wnd_HPListL', 'Wnd_HPListR', 'Wnd_PlayerInfo', 'SetMoveable', 'Wnd_DragBox_HPL', 'Show', 'Wnd_DragBox_HPR', 'Wnd_DragBox_Info'
+    globals: IsOpened
+  function <?> line 1072-1078 params=0 ups=1 stack=3
+    strings: 'g_tPVPShowPanelData', 'IsOpened', 'UpdatePos'
+    globals: =g_tPVPShowPanelData, IsOpened, UpdatePos
+  function <?> line 1080-1095 params=0 ups=0 stack=6
+    strings: 'this', 'GetName', 'GetRoot', 'bSetting', 'Wnd_HPListL', 'Lookup', 'Wnd_DragBox_HPL', 'Image_DragOn_HPL_On', 'Show', 'Wnd_HPListR', 'Wnd_DragBox_HPR', 'Image_DragOn_HPR_On', 'Wnd_PlayerInfo', 'Wnd_DragBox_Info', 'Image_DragOn_Info_On'
+    globals: this
+  function <?> line 1097-1112 params=0 ups=0 stack=6
+    strings: 'this', 'GetName', 'GetRoot', 'bSetting', 'Wnd_HPListL', 'Lookup', 'Wnd_DragBox_HPL', 'Image_DragOn_HPL_On', 'Hide', 'Wnd_HPListR', 'Wnd_DragBox_HPR', 'Image_DragOn_HPR_On', 'Wnd_PlayerInfo', 'Wnd_DragBox_Info', 'Image_DragOn_Info_On'
+    globals: this
+  function <?> line 1114-1168 params=0 ups=3 stack=6
+    strings: 'this', 'GetName', 'Btn_Close', 'IsInReplay', 'Replay_End', 'Close', 'Btn_Setting', 'fnAutoClose', 'bVisibleWhenHideUI', 'table', 'insert', 'szOption', 'g_tStrings', 'STR_CUSTOM_PANEL', 'szIcon', 'ui\\Image\\button\\SystemButton_1.UITex', 'nFrame', 'szLayer', 'ICON_RIGHT', 'nIconWidth'
+    numbers: 5.0, 17.0, 19.0
+    globals: ApplyAllQiXue, Close, IsInReplay, PVPQiXueList, PopupMenu, Replay_End, bShowHarm, g_PVPShowPanelShowTop, g_tStrings, table, this
+    function <?> line 1125-1125 params=0 ups=0 stack=2
+      strings: 'IsOpened'
+      globals: IsOpened
+    function <?> line 1134-1140 params=0 ups=0 stack=2
+      strings: 'PVPShowSetting', 'IsOpened', 'Close', 'Open'
+      globals: PVPShowSetting
+    function <?> line 1146-1148 params=2 ups=0 stack=4
+      strings: 'SetShowTop'
+      globals: SetShowTop
+    function <?> line 1155-1157 params=2 ups=0 stack=4
+      strings: 'SetShowHarm'
+      globals: SetShowHarm
+  function <?> line 1170-1179 params=1 ups=1 stack=11
+    strings: 'g_PVPShowPanelShowTop', 'TopBuff_SetOpenPVPTop', 'ipairs', 'Re_GetPlayer', 'dwID', 'FireUIEvent', 'PVP_SHOW_PLAYER_UPDATE'
+    globals: =g_PVPShowPanelShowTop, FireUIEvent, Re_GetPlayer, TopBuff_SetOpenPVPTop, g_PVPShowPanelShowTop, ipairs
+  function <?> line 1181-1189 params=1 ups=0 stack=5
+    strings: 'bShowHarm', 'PVPShowHarm', 'Close', 'IsOpened', 'UpdateHarm', 'tName'
+    globals: =bShowHarm, IsOpened, PVPShowHarm
+  function <?> line 1191-1221 params=0 ups=3 stack=7
+    strings: 'this', 'GetName', 'GetRoot', 'Handle_Teammate', 'dwPlayerID', 'bOnLine', 'nViewPlayerID', 'ChangeViewText', 'SetTarget', 'TARGET', 'PLAYER', 'nSetView', 'SetPlayerCameraStatus', 'math', 'pi', 'SetShowScroll', 'ResetViewBg', 'bSelect', 'ChangePlayerBg', 'FireUIEvent'
+    numbers: 1.0, 10.0
+    globals: ChangePlayerBg, ChangeViewText, FireUIEvent, OutputMessage, PlayerViewJJC, ResetViewBg, SetPlayerCameraStatus, SetShowScroll, SetTarget, TARGET, UpdateSelectWnd, g_tStrings, math, this
+  function <?> line 1223-1225 params=0 ups=0 stack=2
+    strings: 'OnItemLButtonClick'
+    globals: OnItemLButtonClick
+  function <?> line 1227-1234 params=0 ups=0 stack=3
+    strings: 'this', 'GetName', 'Handle_Teammate', 'bOnLine', 'bEnter', 'ChangePlayerBg'
+    globals: ChangePlayerBg, this
+  function <?> line 1236-1243 params=0 ups=0 stack=3
+    strings: 'this', 'GetName', 'Handle_Teammate', 'bOnLine', 'bEnter', 'ChangePlayerBg'
+    globals: ChangePlayerBg, this
+  function <?> line 1245-1250 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'Handle_ArmMessage', 'Lookup', 'Show'
+    numbers: 1.0
+    globals: this
+  function <?> line 1252-1257 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'Handle_ArmMessage', 'Lookup', 'Hide'
+    numbers: 1.0
+    globals: this
+  function <?> line 1259-1266 params=0 ups=0 stack=3
+    strings: 'this', 'GetName', 'Handle_Teammate', 'bOnLine', 'bDown', 'ChangePlayerBg'
+    globals: ChangePlayerBg, this
+  function <?> line 1268-1270 params=0 ups=0 stack=2
+    strings: 'OnItemLButtonDown'
+    globals: OnItemLButtonDown
+  function <?> line 1272-1276 params=3 ups=0 stack=6
+    strings: 'nSetView', 'SetPlayerCameraStatus', 'nViewPlayerID', 'UICPT_UpdateCheckList', 'GetParent'
+    globals: SetPlayerCameraStatus, UICPT_UpdateCheckList
+  function <?> line 1278-1286 params=0 ups=0 stack=7
+    strings: 'this', 'GetName', 'string', 'match', 'CheckBox_Camera(%d+)', 'tonumber', 'GetRoot', 'ChoiceCameraStatus'
+    globals: ChoiceCameraStatus, string, this, tonumber
+  function <?> line 1288-1293 params=0 ups=0 stack=2
+    strings: 'this', 'GetRoot', 'bSetting'
+    numbers: 1.0
+    globals: this
+  function <?> line 1295-1304 params=0 ups=0 stack=4
+    strings: 'this', 'GetName', 'Wnd_HPListL', 'Wnd_HPListR', 'Wnd_PlayerInfo', 'g_tPVPShowPanelData', 'tAnchor', 'GetFrameAnchor'
+    globals: GetFrameAnchor, g_tPVPShowPanelData, this
+  function <?> line 1306-1438 params=2 ups=6 stack=25
+    strings: 'pairs', 'Lookup', 'List', '', 'Clear', 'nCorpStyle', 'AppendItemFromIni', 'IniPath', 'Handle_Teammate', 'bNotCreat', 'Text_Name', 'SetText', 'PlayerName', 'g_tStrings', 'STR_NUMBER', 'Image_School', 'FromUITex', 'GetForceImage', 'Text_NotCreat', 'Show'
+    numbers: 1.0, 0.0, 65.0, 5.0, 3.0, 95.0, 10.0, 2.0, 1.04
+    globals: AdjustSize, CURSOR, ClearPlayerInfo, Cursor, ExecuteWithThis, GLOBAL_HEAD, GetForceImage, GetGlobalTopHeadFlag, Global_UpdateHeadTopPosition, InitGlobalView, InitModeShow, InitWatchOrOBSet, KG3DEngine, OnEvent, SetCorpsScore, SetForbidSelectPlayer, SetGlobalTopHeadFlag, SetHandleShowOrHide, SetNewGlobalView, SetSpeed, TopBuff_SetOpenPVPTop, UIGetInteger, UISetInteger, UpdateSelectWnd, UpdateVisitorCount, g_PVPShowPanelShowTop, g_tStrings, pairs, rlcmd
+  function <?> line 1440-1464 params=1 ups=1 stack=13
+    strings: 'bSetWatchOrOB', 'nRobotIndex', 'Camera_GetParams', 'fMaxCameraDistance', 'Camera_SetMaxDistance', 'KG3DEngine', 'Get3DEngineOption', 'fCameraAngle', 'Set3DEngineOption', 'GasFieldSetting', 'ObjectKey', 'ipairs', 'SkillInfoList', 'StorageServer', 'GetData', 'GasFieldVisibleSetting', 'dwSkillID', 'SetGasFieldRepresentVisible', 'tGasFieldSettingList'
+    numbers: 2000.0, 1.5
+    globals: Camera_GetParams, Camera_SetMaxDistance, GasFieldSetting, KG3DEngine, SetGasFieldRepresentVisible, StorageServer, ipairs
+  function <?> line 1466-1475 params=1 ups=2 stack=4
+    strings: 'Re_GetMapID', 'MapID', 'GetMapView'
+    globals: GetMapView, Re_GetMapID
+  function <?> line 1477-1486 params=1 ups=4 stack=5
+    strings: 'Lookup', 'Wnd_Title', 'Image_ScoreL', 'Show', 'Image_ScoreR', 'Wnd_Navigation', 'Handle_PersonOnLine', 'Wnd_Navigation/Btn_Qixue', 'Wnd_Navigation/WndContainer_CameraRange', 'Handle_Title'
+  function <?> line 1488-1502 params=5 ups=0 stack=12
+    strings: 'FormatAllItemPos', 'GetW', 'SetSizeByAllItemSize', 'SetW', 'GetH', 'Lookup', 'SetH', ''
+  function <?> line 1504-1531 params=1 ups=0 stack=13
+    strings: 'FormatAllItemPos', 'GetW', 'SetSizeByAllItemSize', 'SetW', 'GetH', 'GetParent', 'Lookup', 'Handle_bgCD/Image_Line', 'SetH', 'GetRelY', 'Handle_bgCD/Image_bgCD', 'Wnd_DragBox_Info', '', 'Image_DragNormal_CD'
+  function <?> line 1533-1561 params=1 ups=0 stack=6
+    strings: 'IsLocalFileExist', 'caption.ini', 'Ini', 'Open', 'data/public/caption.ini', 'HPBarWidth', 'HPBarHeight', 'EnableDisShow', 'PHBorder', 'DisableZTest', 'BorderWeight', 'NewHPBar', 'Save', 'Close', 'k3dcmd', 'reload_caption'
+    globals: Ini, IsLocalFileExist, k3dcmd
+    function <?> line 1544-1548 params=1 ups=2 stack=6
+      strings: 'WriteInteger', 'FontConfig'
+  function <?> line 1563-1575 params=2 ups=0 stack=8
+    strings: 'IsLocalFileExist', 'caption.ini', 'Ini', 'Open', 'data/public/caption.ini', 'ReadInteger', 'FontConfig'
+    globals: Ini, IsLocalFileExist
+  function <?> line 1577-1592 params=2 ups=0 stack=8
+    strings: 'Lookup', 'Handle_BuffList', 'Clear', 'Handle_DeBuffList', 'Handle_BigBuff', 'Handle_Target', 'Hide', 'Handle_Tar'
+  function <?> line 1594-1614 params=3 ups=0 stack=14
+    strings: 'SetHandleShowOrHide', 'nCurrentQiRedSP', 'nCurrentQiSP', 'GetItemCount', 'Lookup', 'Show', 'FormatAllItemPos'
+    numbers: 0.0, 1.0
+    globals: SetHandleShowOrHide
+  function <?> line 1616-1671 params=1 ups=6 stack=4
+    strings: 'Lookup', 'Wnd_Navigation/Btn_GlobalView', 'szName', 'g_tStrings', 'STR_GLOBAL_VIEW', 'GetClientPlayer', 'nOriginFaceDirection', 'nFaceDirection', 'OnLButtonClick', 'hBtnGlobalView'
+    globals: GetClientPlayer, g_tStrings
+    function <?> line 1624-1669 params=0 ups=8 stack=15
+      strings: 'nViewPlayerID', 'Camera_GetRTParams', 'Scene_ScenePositionToGameWorldPosition', 'CameraStatus_Set', 'scale', 'math', 'max', 'pitch', 'pi', 'yaw', 'mode', 'god camera', 'x', 'y', 'z', 'dis_ctrl', 'movespeed', 'maxheight', 'SetShowScroll', 'ResetViewBg'
+      numbers: 0.8, 8.0, 1.0, 0.0, 100.0
+      globals: CameraStatus_Set, Camera_GetRTParams, ChangeViewText, ResetViewBg, Scene_ScenePositionToGameWorldPosition, SelectTarget, SetShowScroll, TARGET, UpdateSelectWnd, math
+  function <?> line 1673-1678 params=2 ups=0 stack=7
+    strings: 'GetRoot', 'nViewPlayerID', 'Lookup', 'Wnd_Navigation', 'Text_NavViewValue', 'SetText', 'szName'
+  function <?> line 1680-1688 params=0 ups=1 stack=7
+    strings: 'pairs', 'bNotCreat', 'bSelect', 'bDown', 'ChangePlayerBg'
+    globals: ChangePlayerBg, pairs
+  function <?> line 1690-1723 params=1 ups=0 stack=7
+    strings: 'Lookup', 'Handle_Bg', 'Image_Selected', 'Image_Down', 'Image_On', 'bOnLine', 'bSelect', 'Show', 'Hide', 'bDown', 'bEnter'
+  function <?> line 1725-1787 params=3 ups=2 stack=28
+    strings: 'Re_GetPlayer', 'FindPlayerByID', 'EMPTY_TABLE', 'szName', '', 'Lookup', 'Wnd_Message', 'AppendItemFromIni', 'Handle_MessageMod', 'Text_MessageNameL', 'SetText', 'SetFontColor', 'MessageR', 'MessageG', 'MessageB', 'Text_MessageNameR', 'GetItemCount', 'RemoveItem', 'FormatAllItemPos', 'nKillTime'
+    numbers: 5.0, 1.0
+    globals: EMPTY_TABLE, FindPlayerByID, GetCurrentTime, PlaySound, Re_GetPlayer, SOUND, UpdateSchoolImage, g_sound
+  function <?> line 1789-1796 params=1 ups=1 stack=9
+    strings: 'pairs', 'playerList', 'nIndex'
+    globals: pairs
+  function <?> line 1798-1814 params=3 ups=1 stack=10
+    strings: 'Re_GetPlayer', 'Lookup', '', 'Image_School_Info', 'UpdateSchoolImage', 'Handle_Heath/Text_Name_Info', 'SetText', 'szName', 'Handle_Heath/Image_Mana_Info', 'Handle_Heath/Image_Mana_Info_bg', 'Handle_QiControlList', 'Hide', 'SetHandleShowOrHide'
+    globals: Re_GetPlayer, SetHandleShowOrHide, UpdateSchoolImage
+  function <?> line 1816-1840 params=1 ups=3 stack=9
+    strings: 'nViewPlayerID', 'Hide', 'Show', 'ipairs', 'dwID', 'boxs', 'InitSelectInfo', 'dwMountKungfuID', 'UpdateSelectRecentSkill', 'UpdateSelectCD', 'SetPlayerStateSelect', 'tPlayerInfo', 'UpdateSelectHealth'
+    globals: InitSelectInfo, SetPlayerStateSelect, UpdateSelectCD, UpdateSelectHealth, UpdateSelectRecentSkill, ipairs
+  function <?> line 1842-1850 params=1 ups=1 stack=15
+    strings: 'Lookup', '', 'Handle_Heath', 'Text_Health_Info', 'Image_Health_Info', 'Image_HealthLine_Info', 'Handle_QiControlList', 'SetPlayerHealth'
+    numbers: 1.0
+    globals: SetPlayerHealth
+  function <?> line 1852-1874 params=1 ups=3 stack=15
+    strings: 'nViewPlayerID', 'Lookup', '', 'Handle_CDList', 'Clear', 'pairs', 'AppendItemFromData', 'hBoxSkillCD', 'Box_Skill_CD', 'boxs', 'dwSkillID', 'dwPlayerID', 'SetUserData', 'nIndex', 'UpdateBox', 'Sort', 'FormatAllItemPos'
+    globals: UpdateBox, pairs
+  function <?> line 1890-1921 params=0 ups=2 stack=17
+    strings: 'GetRoot', 'nViewPlayerID', 'Lookup', '', 'Handle_RecentSkill', 'Clear', 'ipairs', 'AppendItemFromData', 'hBoxSkillInfo', 'dwSkillID', 'Box_Skill_Info', 'SetObject', 'UI_OBJECT_SKILL', 'SetObjectIcon', 'Table_GetSkillIconID', 'EnableObject', 'SetBoxDefaultExtent', 'OnItemMouseEnter', 'OnItemMouseHover', 'OnItemRefreshTip'
+    numbers: 1.0, 0.0
+    globals: SetBoxDefaultExtent, Table_GetSkillIconID, UI_OBJECT_SKILL, ipairs
+    function <?> line 1905-1910 params=0 ups=1 stack=16
+      strings: 'this', 'SetObjectMouseOver', 'GetAbsPos', 'GetSize', 'OutputSkillTip', 'dwSkillID', 'dwLevel'
+      numbers: 1.0
+      globals: OutputSkillTip, this
+    function <?> line 1913-1913 params=0 ups=0 stack=2
+    function <?> line 1915-1918 params=0 ups=0 stack=3
+      strings: 'HideTip', 'this', 'SetObjectMouseOver'
+      numbers: 0.0
+      globals: HideTip, this
+  function <?> line 1923-1933 params=4 ups=2 stack=7
+    strings: 'table', 'insert', 'dwSkillID', 'dwLevel', 'remove', 'nViewPlayerID', 'UpdateSelectRecentSkill'
+    numbers: 1.0
+    globals: UpdateSelectRecentSkill, table
+  function <?> line 1935-2020 params=1 ups=9 stack=14
+    strings: 'Re_GetScene', 'GetArenaCompetitorCount', 'pairs', 'bNotOnLine', 'GetArenaCompetitorTable', 'dwID', 'CreatePlayer', 'szName', '', 'CreateInfo', 'dwMountKungfuID', 'UpdateInfo', 'nIndex', 'bControl', 'DelayCall', 'tPlayerInfo', 'GetTableLength', 'boxs', 'UpdateSkillListCD', 'nViewPlayerID'
+    numbers: 1.0, 800.0, 0.0, 2.0
+    globals: ApplyArenaStatistics, ClearPlayerInfo, ClickPlayer, CreateInfo, CreatePlayer, DelayCall, GetArenaCompetitorTable, GetTableLength, OnGetPlayerByIndex, Re_GetPlayer, Re_GetScene, SetPlayerStateTop, StartWrite, UpdateInfo, UpdateSkillListCD, pairs
+    function <?> line 1959-1966 params=0 ups=3 stack=7
+      strings: 'IsOpened', 'bControl', 'rlcmd', 'string', 'format', 'set caption color %u %u %u %u', 'dwID', 'PlayerColor', 'PlayerSelectColor', 'set caption kungfu icon %u %u %u', 'dwMountKungfuID'
+      numbers: 0.0, 1.0
+      globals: IsOpened, rlcmd, string
+  function <?> line 2022-2031 params=1 ups=1 stack=6
+    strings: 'IsOpened', 'ExecuteWithThis', 'OnItemLButtonClick'
+    globals: ExecuteWithThis, IsOpened
+  function <?> line 2033-2044 params=2 ups=1 stack=10
+    strings: 'ipairs', 'nIndex', 'ClickPlayer', 'dwID'
+    numbers: 0.0, 1.0
+    globals: ClickPlayer, ipairs
+  function <?> line 2046-2058 params=1 ups=0 stack=15
+    strings: 'GetRoot', 'Lookup', 'Text_Name', 'Text_Health', 'Image_Health', 'Handle_QiControlList', 'Image_State', 'SetPlayerState', 'nViewPlayerID', 'dwPlayerID', 'SetPlayerStateSelect'
+    globals: SetPlayerState, SetPlayerStateSelect
+  function <?> line 2060-2073 params=1 ups=2 stack=20
+    strings: 'nViewPlayerID', 'Lookup', '', 'Handle_Heath', 'Text_Name_Info', 'Text_Health_Info', 'Image_Health_Info', 'Image_HealthLine_Info', 'Handle_QiControlList', 'Image_State_Info', 'Image_Mana_Info_bg', 'SetPlayerState'
+    globals: SetPlayerState
+  function <?> line 2075-2104 params=8 ups=4 stack=14
+    strings: 'bOnLine', 'SetFontScheme', 'Show', 'SetHandleShowOrHide', 'bDead', 'nIndex', 'StateFrame', 'SetFrame', 'bHide', 'Hide'
+    numbers: 15.0, 108.0
+    globals: SetHandleShowOrHide
+  function <?> line 2106-2120 params=2 ups=0 stack=12
+    strings: 'GetArenaCompetitor', 'dwID', 'nCurrentLife', 'nMaxLife', 'nCurrentMana', 'nMaxMana', 'dwTargetID', 'dwMountKungfuID', 'nCurrentQiSP', 'nCurrentQiRedSP'
+  function <?> line 2122-2236 params=2 ups=9 stack=21
+    strings: 'dwID', 'Re_GetPlayer', 'nBattleFieldSide', 'playerList', 'dwMountKungfuID', 'nIndex', 'UpdateTitle', 'Lookup', 'List', '', 'FindNotCreatPlayer', 'table', 'insert', 'szName', 'dwPlayerID', 'bNotCreat', 'Text_NotCreat', 'Hide', 'Handle_ArmMessage', 'Show'
+    numbers: -1.0, 0.0, 1.0
+    globals: ApplyArenaStatistics, CreateInfo, FindNotCreatPlayer, GetTableLength, Re_GetPlayer, RefreshOnePlayerBuff, RemoteCallToServer, UpdateTitle, rlcmd, string, table
+  function <?> line 2238-2245 params=1 ups=0 stack=8
+    strings: 'GetArenaStatistics', 'pairs', 'dwCorpsID', 'szCorpsName'
+    globals: GetArenaStatistics, pairs
+  function <?> line 2247-2254 params=1 ups=0 stack=8
+    strings: 'GetArenaStatistics', 'pairs', 'dwRoleID', 'szGlobalRoleID'
+    globals: GetArenaStatistics, pairs
+  function <?> line 2256-2264 params=1 ups=0 stack=9
+    strings: 'GetItemCount', 'Lookup', 'bNotCreat'
+    numbers: 1.0
+  function <?> line 2266-2281 params=1 ups=2 stack=13
+    strings: 'Lookup', 'Wnd_Title', '', 'pairs', 'tInfo', 'tSingle', 'GetCorpsName', 'TeamName', 'SetText', 'tName'
+    numbers: 1.0
+    globals: GetCorpsName, pairs
+  function <?> line 2283-2290 params=1 ups=4 stack=7
+    strings: 'tInfo', 'Lookup', 'Wnd_Title', '', 'SetScore'
+    globals: SetScore
+  function <?> line 2292-2302 params=3 ups=2 stack=11
+    strings: 'Lookup', 'Score', 'ScoreFrame', 'SetFrame'
+    numbers: 1.0, 2.0, 0.0
+  function <?> line 2304-2333 params=2 ups=2 stack=13
+    strings: 'dwPlayerID', 'Re_GetPlayer', 'GetRoot', 'szName', 'Lookup', 'Text_Name', 'SetText', 'nViewPlayerID', '', 'Image_School_Info', 'UpdateSchoolImage', 'Handle_Heath/Text_Name_Info', 'Image_School', 'Image_Mana', 'Handle_QiControlList', 'Hide', 'SetHandleShowOrHide', 'ipairs', 'dwID'
+    globals: Re_GetPlayer, SetHandleShowOrHide, UpdateSchoolImage, ipairs
+  function <?> line 2335-2345 params=2 ups=0 stack=8
+    strings: 'GetRoot', 'tKungfuInfo', 'Table_GetKungfuData', 'FromUITex', 'szImagePath', 'nFrame'
+    globals: Table_GetKungfuData
+  function <?> line 2347-2381 params=2 ups=1 stack=22
+    strings: 'GetRoot', 'Lookup', 'Text_Health', 'Image_Health', 'Image_Warning', 'Handle_QiControlList', 'SetPlayerHealth', 'nIndex', 'bDead', 'nViewPlayerID', 'dwID', 'UpdateSelectHealth', 'Handle_Target', 'dwTargetID', 'Hide', 'GetArenaPlayer', 'Re_GetPlayer', 'Show', 'dwPlayerID', 'Image_TargetHealth'
+    numbers: 0.0
+    globals: GetArenaPlayer, Re_GetPlayer, SetPlayerHealth, UpdateSchoolImage, UpdateSelectHealth
+  function <?> line 2383-2398 params=1 ups=0 stack=11
+    strings: 'Re_GetScene', 'GetArenaCompetitorCount', 'GetArenaCompetitorTable', 'dwID', 'FindPlayerByID'
+    numbers: 1.0
+    globals: FindPlayerByID, GetArenaCompetitorTable, Re_GetScene
+  function <?> line 2400-2460 params=8 ups=1 stack=17
+    strings: 'SetHandleShowOrHide', 'Re_GetPlayer', 'dwID', 'nMoveState', 'MOVE_STATE', 'ON_DEATH', 'nMaxLife', 'nCurrentLife', 'SetPercentage', 'imageAni_stop', 'Show', 'imageAni_isplaying', 'alpha_init', 'alpha_end', 'alpha_delta', 'alpha_loop', 'interval_self', 'imageAni_play', 'GetSelfStateString', 'SetTextNum'
+    numbers: 1.0, 0.0, 0.3, 50.0, 255.0, 60.0, -1.0
+    globals: GetSelfStateString, MOVE_STATE, Re_GetPlayer, SetHandleShowOrHide, SetTextNum, imageAni_isplaying, imageAni_play, imageAni_stop
+  function <?> line 2462-2466 params=2 ups=0 stack=5
+    strings: 'SetText'
+  function <?> line 2468-2472 params=2 ups=0 stack=5
+    strings: 'Show'
+  function <?> line 2474-2501 params=2 ups=5 stack=11
+    strings: 'pairs', 'BuffID', 'bControl', 'nIndex', 'rlcmd', 'string', 'format', 'set caption color %u %u %u %u', 'dwPlayerID', 'PlayerColor', 'PlayerSelectColor', 'set hired character fake relation %u 2', 'set character fake relation %u 2', 'set hired character fake relation %u 5', 'set character fake relation %u 5'
+    numbers: 1.0, 2.0, 0.0
+    globals: pairs, rlcmd, string
+  function <?> line 2503-2584 params=1 ups=3 stack=29
+    strings: 'dwPlayerID', 'Re_GetPlayer', 'IsInReplay', 'ScreenVideoBuff', 'ScreenBuff', 'UpdatePlayerColor', 'nIndex', 'IniPath', 'Lookup', 'Handle_BigBuff', 'Clear', 'ShowLevel', 'Desc', '', 'table', 'remove', 'AppendItemFromIni', 'Handle_BigBuffMod', 'Text_Time', 'Text_State'
+    numbers: 1.0, 0.0
+    globals: IsInReplay, Re_GetPlayer, ScreenBuff, ScreenVideoBuff, UpdateABuff, UpdatePlayerColor, ipairs, table
+  function <?> line 2586-2623 params=4 ups=0 stack=16
+    strings: 'dwBuffID', 'BuffID', 'bShowTime', 'Table_BuffNeedShowTime', 'nLevel', 'OnItemMouseEnter', 'OnItemMouseHover', 'OnItemMouseLeave', 'SetObject', 'UI_OBJECT_NOT_NEED_KNOWN', 'SetObjectIcon', 'Table_GetBuffIconID', 'SetBoxDefaultExtent', 'UI_OBJECT_BUFF', 'Re_Buffer_GetLeftFrame', 'Time_GetTextData', 'SetText', 'SetFontColor', 'nStackNum', 'SetOverText'
+    numbers: 0.0, 1.0
+    globals: Re_Buffer_GetLeftFrame, SetBoxDefaultExtent, Table_BuffNeedShowTime, Table_GetBuffIconID, Time_GetTextData, UI_OBJECT_BUFF, UI_OBJECT_NOT_NEED_KNOWN
+    function <?> line 2589-2598 params=0 ups=2 stack=17
+      strings: 'this', 'SetObjectMouseOver', 'math', 'floor', 'Re_Buffer_GetLeftFrame', 'GetAbsPos', 'GetSize', 'OutputBuffTip', 'BuffID', 'nLevel', 'nStackNum', 'bShowTime', 'bCanCancel'
+      numbers: 1.0, 16.0, 0.0
+      globals: OutputBuffTip, Re_Buffer_GetLeftFrame, math, this
+    function <?> line 2601-2604 params=0 ups=0 stack=3
+      strings: 'HideTip', 'this', 'SetObjectMouseOver'
+      numbers: 0.0
+      globals: HideTip, this
+  function <?> line 2625-2635 params=2 ups=1 stack=5
+    strings: 'bOnLine', 'bDead', 'RefreshOnePlayerBuff'
+    globals: RefreshOnePlayerBuff
+  function <?> line 2637-2679 params=10 ups=1 stack=35
+    strings: 'bOnLine', 'bDead', 'Lookup', 'Handle_BigBuff', 'GetItemCount', 'Box_BigBuff', 'Text_BigTime', 'dwBuffID', 'UpdateBuffInfo', 'Handle_DeBuffList', 'Box_Buff', 'Handle_BuffList', 'Box_DeBuff'
+    numbers: 1.0
+    globals: UpdateBuffInfo
+  function <?> line 2681-2694 params=12 ups=0 stack=18
+    strings: 'BuffID', 'nLevel', 'bCanCancel', 'nEndFrame', 'nIndex', 'nStackNum', 'dwSkillSrcID', 'bValid', 'nLeftFrame', 'UpdateABuff'
+    globals: UpdateABuff
+  function <?> line 2696-2740 params=1 ups=2 stack=14
+    strings: 'GetBuffCount', 'GetBuffData', 'Buffer_Get', 'Table_BuffIsVisible', 'dwID', 'nLevel', 'BuffID', 'bCanCancel', 'nEndFrame', 'nIndex', 'nStackNum', 'dwSkillSrcID', 'bValid', 'nLeftFrame', 'Desc', 'ShowLevel', 'table', 'insert', 'sort'
+    numbers: 1.0, 0.0
+    globals: Buffer_Get, GetBuffData, Table_BuffIsVisible, table
+    function <?> line 2730-2736 params=2 ups=0 stack=4
+      strings: 'ShowLevel', 'nEndFrame'
+  function <?> line 2742-2783 params=1 ups=3 stack=14
+    strings: 'GetBuffData', 'pairs', 'Table_BuffIsVisible', 'BuffID', 'BuffLevel', 'Delete', 'nLevel', 'bCanCancel', 'CanCancel', 'nEndFrame', 'EndFrame', 'nStackNum', 'Count', 'dwSkillSrcID', 'SkillSrcID', 'bValid', 'Validity', 'nLeftFrame', 'LeftFrame', 'nIndex'
+    numbers: 0.0
+    globals: GetBuffData, Table_BuffIsVisible, pairs, table
+    function <?> line 2773-2779 params=2 ups=0 stack=4
+      strings: 'ShowLevel', 'nEndFrame'
+  function <?> line 2785-2795 params=3 ups=2 stack=6
+    strings: 'bOnLine', 'bDead', 'RefreshOnePlayerBuff'
+    globals: RefreshOnePlayerBuff
+  function <?> line 2797-2827 params=12 ups=2 stack=25
+    strings: 'BuffID', 'BuffLevel', 'CanCancel', 'EndFrame', 'Count', 'SkillSrcID', 'Validity', 'LeftFrame', 'Delete', 'bOnLine', 'bDead', 'RefreshOnePlayerBuff', 'UpdateBuff'
+    globals: RefreshOnePlayerBuff, UpdateBuff
+  function <?> line 2829-2855 params=2 ups=3 stack=4
+    strings: 'CombatText', 'OpenTargetShow', 'QixueLookup', 'SetVisibleWhenHideUI', 'ArenaCorpsPanel', 'PlayerView', 'Target', 'TargetTarget', 'FireUIEvent', 'PVP_SHOW_ON_OPEN', 'PVP_SHOW_ON_CLOSE', 'Danmaku', 'IsDebugClient', 'PVP_VIDEO_SHOW_ON_OPEN', 'PVP_VIDEO_SHOW_ON_CLOSE'
+    globals: ArenaCorpsPanel, CombatText, Danmaku, FireUIEvent, IsDebugClient, PlayerView, QixueLookup, Target, TargetTarget
+  function <?> line 2857-2908 params=3 ups=0 stack=12
+    strings: 'Target_GetTargetData', 'IsPlayer', 'TARGET', 'PLAYER', 'NPC', 'tSubMenu', 'szOption', 'g_tStrings', 'STR_MARK_TARGET', 'bDisable', 'pairs_c', 'PARTY_MARK_ICON_FRAME_LIST', 'table', 'insert', 'szIcon', 'PARTY_MARK_ICON_PATH', 'nFrame', 'szLayer', 'ICON_CENTER', 'UserData'
+    globals: =tSubMenu, IsPlayer, PARTY_MARK_ICON_FRAME_LIST, PARTY_MARK_ICON_PATH, PARTY_TITLE_MARK_EFFECT_LIST, TARGET, Target_GetTargetData, bDisable, g_tStrings, pairs_c, tSubMenu, table
+    function <?> line 2876-2876 params=1 ups=1 stack=5
+      strings: 'SetMark', 'SceneObject_SetTitleEffect', 'TARGET', 'PLAYER'
+      globals: SceneObject_SetTitleEffect, SetMark, TARGET
+    function <?> line 2884-2884 params=0 ups=1 stack=4
+      strings: 'SetMark', 'UserData', 'SceneObject_SetTitleEffect', 'TARGET', 'PLAYER', 'TITLE_EFFECT_NONE'
+      globals: SceneObject_SetTitleEffect, SetMark, TARGET, TITLE_EFFECT_NONE, UserData
+    function <?> line 2892-2892 params=0 ups=1 stack=2
+      strings: 'ViewInviteToPlayer'
+      globals: ViewInviteToPlayer
+    function <?> line 2898-2898 params=0 ups=1 stack=2
+      strings: 'GetPlayer'
+      globals: GetPlayer
+    function <?> line 2899-2899 params=0 ups=1 stack=2
+      strings: 'Station_IsInUserAction', 'PeekOtherPlayerTalent'
+      globals: PeekOtherPlayerTalent, Station_IsInUserAction
+    function <?> line 2904-2904 params=0 ups=1 stack=2
+      strings: 'GetPlayer'
+      globals: GetPlayer
+    function <?> line 2905-2905 params=0 ups=1 stack=3
+      strings: 'ArenaCorpsPanel', 'Close', 'Open'
+      globals: ArenaCorpsPanel
+  function <?> line 2910-2912 params=2 ups=1 stack=3
+  function <?> line 2914-2932 params=0 ups=3 stack=9
+    strings: 'Arena_GetCompetitionIndex', 'GetGlobalID', 'Log', '[ArenaOB]StartWrite:', ' CompetitionIndex-', ' OBFollowIndex-', 'Arena_GetOBIndex', 'GetUserDataFolder', '\\notify.txt', 'io', 'open', 'a', 'start|', '|', '\n', 'write', 'close'
+    globals: Arena_GetCompetitionIndex, Arena_GetOBIndex, GetGlobalID, GetUserDataFolder, Log, io
+  function <?> line 2934-2949 params=0 ups=3 stack=9
+    strings: 'Arena_GetCompetitionIndex', 'GetGlobalID', 'GetUserDataFolder', '\\notify.txt', 'io', 'open', 'a', 'end|', '|', '\n', 'write', 'close'
+    globals: Arena_GetCompetitionIndex, GetGlobalID, GetUserDataFolder, io
+  function <?> line 2957-3010 params=6 ups=13 stack=13
+    strings: 'IsInArena', 'IsInReplay', 'IsOpened', 'Close', 'Wnd', 'OpenWindow', 'PVPShowPanel', 'ShowWhenUIHide', 'Station', 'SetFocusWindow', 'nCorpStyle', 'ARENA_UI_TYPE', 'ARENA_3V3', 'tInfo', 'tSingle', 'nRobotIndex', 'Arena_GetOBIndex', 'SetShowWhenUIHide', 'DelayCall', 'bShowHarm'
+    numbers: 1.0, 2.0, 0.0, 500.0
+    globals: ARENA_UI_TYPE, Arena_GetOBIndex, Close, DelayCall, FireHelpEvent, InitPanel, IsInArena, IsInReplay, IsOpened, PVPShowHarm, PlaySound, SOUND, SetShowWhenUIHide, Station, Wnd, bShowHarm, g_sound
+    function <?> line 2995-2995 params=0 ups=0 stack=2
+      strings: 'ApplyArenaStatistics'
+      globals: ApplyArenaStatistics
+  function <?> line 3012-3019 params=0 ups=0 stack=2
+    strings: 'Station', 'Lookup', 'Normal/PVPShowPanel'
+    globals: Station
+  function <?> line 3021-3028 params=0 ups=0 stack=2
+    strings: 'Station', 'Lookup', 'Normal/PVPShowPanel', 'bLeave'
+    globals: Station
+  function <?> line 3030-3075 params=2 ups=6 stack=15
+    strings: 'IsOpened', 'bLeave', 'ResetSet', 'ipairs', 'rlcmd', 'string', 'format', 'set caption color %u %u %u %u', 'dwID', 'set caption kungfu icon %u %u %u', 'set hired character fake relation %u 0', 'set character fake relation relation %u 0', 'set local battlefield side -1', 'nViewPlayerID', 'IsInArena', 'LogOutArena', 'Station', 'Show', 'SetCemeraToMyself', 'nOriginFaceDirection'
+    numbers: 0.0
+    globals: IsInArena, IsOpened, LogOutArena, PVPQiXueList, PVPShowHarm, PVPShowSetting, PlaySound, PlayerViewJJC, ResetSet, SOUND, SetCemeraToMyself, SetShowWhenUIHide, Station, Wnd, g_sound, ipairs, rlcmd, string
+  function <?> line 3077-3097 params=1 ups=0 stack=8
+    strings: 'GetClientPlayer', 'nFaceDirection', 'CameraStatus_Set', 'mode', 'local camera', 'scale', 'yaw', 'math', 'pi', 'pitch', 'EndWrite'
+    numbers: 0.9, 2.0, 255.0, 12.0
+    globals: CameraStatus_Set, EndWrite, GetClientPlayer, math
+  function <?> line 3099-3159 params=1 ups=2 stack=14
+    strings: 'bInit', 'HPBarWidth', 'HPBarHeight', 'EnableDisShow', 'PHBorder', 'DisableZTest', 'BorderWeight', 'NewHPBar', 'UISetInteger', 'TopBuff_SetOpenPVPTop', 'SetForbidSelectPlayer', 'Cursor', 'LoadAll', 'SetGlobalTopHeadFlag', 'GLOBAL_HEAD', 'OTHERPLAYER', 'LIFE', 'bLife', 'NAME', 'bName'
+    numbers: 2013265919.0
+    globals: Camera_SetMaxDistance, Cursor, GLOBAL_HEAD, GasFieldSetting, Global_UpdateHeadTopPosition, KG3DEngine, SetForbidSelectPlayer, SetGasFieldRepresentVisible, SetGlobalTopHeadFlag, TopBuff_SetOpenPVPTop, UISetInteger, ipairs, rlcmd
+  function <?> line 3161-3165 params=2 ups=1 stack=6
+    strings: 'Lookup', 'Wnd_Navigation', 'Handle_Title/Text_Speed', 'SetText', 'g_tStrings', 'STR_PVP_CAMERA_SPEED'
+    globals: g_tStrings
+  function <?> line 3167-3259 params=0 ups=9 stack=18
+    strings: 'Station', 'GetMessageKey', 'GetKeyName', 'IsOpened', 'Esc', 'g_tStrings', 'STR_PVP_ESC_MESSAGE', 'STR_PVP_ESC_MESSAGE_1', 'STR_REPLAY_VIDEO_QUIT', 'szMessage', 'bVisibleWhenHideUI', 'szPrevFocus', 'Normal/PVPShowPanel', 'szName', 'EscPVPShowPanel', 'szOption', 'STR_HOTKEY_SURE', 'fnAction', 'STR_HOTKEY_CANCEL', 'MessageBox'
+    numbers: 1.0, 2.0, 0.8, 8.0, 0.0
+    globals: CONTROL_DOWN, CONTROL_UP, CameraStatus_Set, Camera_EnableControl, Camera_GetRTParams, ChoiceCameraStatus, ClickPlayerByIndex, GetKeyName, IsOpened, MessageBox, Scene_ScenePositionToGameWorldPosition, SetSpeed, Station, g_tStrings, ipairs, math
+    function <?> line 3189-3195 params=0 ups=2 stack=2
+      strings: 'Replay_End', 'Close'
+      globals: Close, Replay_End
+    function <?> line 3197-3197 params=0 ups=1 stack=2
+      strings: 'Station', 'SetFocusWindow'
+      globals: Station
+  function <?> line 3261-3272 params=0 ups=0 stack=5
+    strings: 'Station', 'GetMessageKey', 'GetKeyName', 'Q', 'Camera_EnableControl', 'CONTROL_UP', 'E', 'CONTROL_DOWN'
+    numbers: 1.0, 0.0
+    globals: CONTROL_DOWN, CONTROL_UP, Camera_EnableControl, GetKeyName, Station
+  function <?> line 3274-3284 params=1 ups=1 stack=4
+    strings: 'IsOpened', 'nIndex'
+    numbers: 1.0
+    globals: IsOpened
+  function <?> line 3287-3293 params=1 ups=1 stack=7
+    strings: 'ipairs', 'dwID', 'dwMountKungfuID'
+    globals: ipairs
+  function <?> line 3296-3302 params=1 ups=1 stack=5
+    strings: 'table', 'sort', 'dwID'
+    globals: table
+    function <?> line 3297-3299 params=2 ups=0 stack=4
+      strings: 'dwID'
+  function <?> line 3305-3316 params=0 ups=4 stack=9
+    strings: 'ipairs', 'dwID', 'PeekOtherPlayerTalent', 'QIXUE_TYPE', 'PVP_SHOW', 'OpenAllQiXue'
+    globals: OpenAllQiXue, PeekOtherPlayerTalent, QIXUE_TYPE, ipairs
+  function <?> line 3318-3324 params=0 ups=2 stack=9
+    strings: 'pairs', 'table', 'insert', 'PVPQiXueList', 'Open'
+    globals: PVPQiXueList, pairs, table
+  function <?> line 3327-3332 params=0 ups=1 stack=3
+    strings: 'IsOpened', 'nCorpStyle'
+    globals: IsOpened
+  function <?> line 3335-3340 params=0 ups=0 stack=2
+    strings: 'IsOpened', 'nViewPlayerID'
+    globals: IsOpened
+  function <?> line 3343-3352 params=0 ups=4 stack=2
+    strings: 'IsOpened', 'nViewPlayerID'
+    globals: IsOpened
+  function <?> line 3354-3354 params=0 ups=0 stack=3
+    strings: 'ExecuteWithThis', 'PVPShowPanel', 'IsOpened', 'OnFrameKeyDown'
+    globals: ExecuteWithThis, PVPShowPanel
