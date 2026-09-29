@@ -72,3 +72,12 @@ solved it, and what is still open. **Newest at the bottom.**
   `bin64\reborn_client.exe` (build_info git id); `_backup\reborn-all-refs.bundle`.
 - Outcome: solved. `cleanup/repo-tidy` is ahead of `main`, not merged yet.
 - Re-open: merge `cleanup/repo-tidy` → `main` and push; delete `_backup/` after.
+
+### 2026-09-29 — docs — Note inventory + netcode index registration
+- Did: inventoried tracked notes (**143 `.md`**: `docs/` 69, `proof/` 30, root 28
+  (24 player-era), `engine_host_spike/` 5, tools/apps 10); audited the area indexes
+  (`docs/controls` 9/9, `docs/pvp` 2/2, `docs/netcode` 17/21) and registered the four
+  missing 绝境 mode notes (`JX3_MODE_GAP_REGISTER`, `JX3_MODE_JUEJING`,
+  `JX3_MODE_JUEJING_LOGIC`, `JX3_MODE_LOAD_FLOW`) in `docs/netcode/README.md` (§13).
+- Evidence: `git ls-files "*.md"`; index audit command; this commit.
+- Outcome: solved. `docs/netcode` is now 21/21 registered.

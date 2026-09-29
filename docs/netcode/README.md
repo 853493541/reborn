@@ -32,6 +32,10 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `SKILL_DATA_EXTRACTION.md`, `SKILL_MOTION_METHOD.md` | skill/asset extraction methods |
 | `JX3_CAMERA_RESEARCH.md`, `REBORN_CAMERA_SPEC.md` | camera behaviour research + spec |
 | `JX3_MODE_*.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md` | 绝境 mode loading and loot protocol layouts |
+| `JX3_MODE_JUEJING.md` | 绝境战场 client-side **data map** (static mining: tables, symbols, MapList) |
+| `JX3_MODE_JUEJING_LOGIC.md` | mode logic from shipped tables (`skills.tab`, `Buff.tab`, `CoolDownList.tab`, Doodad) |
+| `JX3_MODE_LOAD_FLOW.md` | client-side **load flow** into the mode (settings tables + binary analysis) |
+| `JX3_MODE_GAP_REGISTER.md` | known / missing / how-to-get **gap register** (DONE vs open) |
 | `JX3_MODE_MATCH_LIFECYCLE.md` | **full match lifecycle** (queue → accept → load → arrival → loot → combat → phases/revive → endgame), all 绝境 maps, evidence-tagged, incl. the full-pass RE plan |
 | `JX3_MODE_EDGE_SYSTEMS.md` | edge systems: death/ghost/revive, observer, AFK report, disconnect/reconnect, guild league, rooms, rewards |
 | `JX3_MODE_UI_INVENTORY.md` | **UI inventory by stage** (queue → loading → HUD → death → settlement), evidence per window/label, missing-renderer hunt list + plan |
