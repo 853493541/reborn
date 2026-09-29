@@ -1,0 +1,980 @@
+# JX3RepresentX64.dll xrefs for 'CameraDistance'
+# image base 0x180000000
+
+## xref @ 0x18086ea94 -> 0x180cf09c8 'UpdateAnimationCameraDistance'  fn start 0x18086dad0
+  0x18086dad0: mov      qword ptr [rsp + 8], rbx
+  0x18086dad5: mov      qword ptr [rsp + 0x10], rbp
+  0x18086dada: mov      qword ptr [rsp + 0x18], rsi
+  0x18086dadf: push     rdi
+  0x18086dae0: sub      rsp, 0x30
+  0x18086dae4: mov      rbx, rdx
+  0x18086dae7: mov      rdi, rcx
+  0x18086daea: xor      bpl, bpl
+  0x18086daed: call     qword ptr [rip + 0x8590ed]  ; SemanticX64.dll!CreateRLFile
+  0x18086daf3: mov      rsi, rax
+  0x18086daf6: test     rax, rax
+  0x18086daf9: jne      0x18086db29
+  0x18086dafb: lea      rcx, [rip + 0x48208e]  ; 'sLoadNumberFromFile'
+  0x18086db02: mov      r9d, 0x129
+  0x18086db08: mov      qword ptr [rsp + 0x20], rcx
+  0x18086db0d: lea      r8, [rip + 0x44e7d4]  ; 'pFile'
+  0x18086db14: lea      ecx, [rax + 3]
+  0x18086db17: lea      rdx, [rip + 0x432052]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18086db1e: call     qword ptr [rip + 0x85860c]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18086db24: jmp      0x18086eed7
+  0x18086db29: mov      rax, qword ptr [rax]
+  0x18086db2c: mov      r9d, 1
+  0x18086db32: mov      r8d, r9d
+  0x18086db35: mov      rdx, rbx
+  0x18086db38: mov      rcx, rsi
+  0x18086db3b: call     qword ptr [rax + 0x10]
+  0x18086db3e: mov      rbx, rax
+  0x18086db41: test     rax, rax
+  0x18086db44: jne      0x18086db76
+  0x18086db46: mov      r9d, 0x12c
+  0x18086db4c: lea      r8, [rip + 0x465759]  ; 'Table'
+  0x18086db53: lea      rcx, [rip + 0x482036]  ; 'sLoadNumberFromFile'
+  0x18086db5a: mov      qword ptr [rsp + 0x20], rcx
+  0x18086db5f: lea      rdx, [rip + 0x43200a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18086db66: mov      ecx, 3
+  0x18086db6b: call     qword ptr [rip + 0x8585bf]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18086db71: jmp      0x18086eece
+  0x18086db76: mov      rax, qword ptr [rax]
+  0x18086db79: lea      rdx, [rip + 0x482028]  ; 'CaptionFloorSpace'
+  0x18086db80: movss    xmm2, dword ptr [rdi]
+  0x18086db84: mov      rcx, rbx
+  0x18086db87: call     qword ptr [rax + 0x50]
+  0x18086db8a: movss    xmm2, dword ptr [rdi + 4]
+  0x18086db8f: lea      rdx, [rip + 0x48202a]  ; 'CaptionFloorSpaceDist'
+  0x18086db96: movss    dword ptr [rdi], xmm0
+  0x18086db9a: mov      rcx, rbx
+  0x18086db9d: mov      rax, qword ptr [rbx]
+  0x18086dba0: call     qword ptr [rax + 0x50]
+  0x18086dba3: movss    xmm2, dword ptr [rdi + 8]
+  0x18086dba8: lea      rdx, [rip + 0x482031]  ; 'CaptionFloorSpaceMax'
+  0x18086dbaf: movss    dword ptr [rdi + 4], xmm0
+  0x18086dbb4: mov      rcx, rbx
+  0x18086dbb7: mov      rax, qword ptr [rbx]
+  0x18086dbba: call     qword ptr [rax + 0x50]
+  0x18086dbbd: movss    xmm2, dword ptr [rdi + 0xc]
+  0x18086dbc2: lea      rdx, [rip + 0x482037]  ; 'CaptionFloorSpaceMaxDist'
+  0x18086dbc9: movss    dword ptr [rdi + 8], xmm0
+  0x18086dbce: mov      rcx, rbx
+  0x18086dbd1: mov      rax, qword ptr [rbx]
+  0x18086dbd4: call     qword ptr [rax + 0x50]
+  0x18086dbd7: movss    xmm2, dword ptr [rdi + 0x10]
+  0x18086dbdc: lea      rdx, [rip + 0x48203d]  ; 'CaptionLifeHeight'
+  0x18086dbe3: movss    dword ptr [rdi + 0xc], xmm0
+  0x18086dbe8: mov      rcx, rbx
+  0x18086dbeb: mov      rax, qword ptr [rbx]
+  0x18086dbee: call     qword ptr [rax + 0x50]
+  0x18086dbf1: movss    xmm2, dword ptr [rdi + 0x14]
+  0x18086dbf6: lea      rdx, [rip + 0x48203b]  ; 'CaptionTongHeight'
+  0x18086dbfd: movss    dword ptr [rdi + 0x10], xmm0
+  0x18086dc02: mov      rcx, rbx
+  0x18086dc05: mov      rax, qword ptr [rbx]
+  0x18086dc08: call     qword ptr [rax + 0x50]
+  0x18086dc0b: movss    xmm2, dword ptr [rdi + 0x18]
+  0x18086dc10: lea      rdx, [rip + 0x482039]  ; 'CaptionTitleHeight'
+  0x18086dc17: movss    dword ptr [rdi + 0x14], xmm0
+  0x18086dc1c: mov      rcx, rbx
+  0x18086dc1f: mov      rax, qword ptr [rbx]
+  0x18086dc22: call     qword ptr [rax + 0x50]
+  0x18086dc25: movss    xmm2, dword ptr [rdi + 0x1c]
+  0x18086dc2a: lea      rdx, [rip + 0x482037]  ; 'CaptionSkillBufferHeight'
+  0x18086dc31: movss    dword ptr [rdi + 0x18], xmm0
+  0x18086dc36: mov      rcx, rbx
+  0x18086dc39: mov      rax, qword ptr [rbx]
+  0x18086dc3c: call     qword ptr [rax + 0x50]
+  0x18086dc3f: movss    xmm2, dword ptr [rdi + 0x20]
+  0x18086dc44: lea      rdx, [rip + 0x48203d]  ; 'CaptionNameHeight'
+  0x18086dc4b: movss    dword ptr [rdi + 0x1c], xmm0
+  0x18086dc50: mov      rcx, rbx
+  0x18086dc53: mov      rax, qword ptr [rbx]
+  0x18086dc56: call     qword ptr [rax + 0x50]
+  0x18086dc59: movss    xmm2, dword ptr [rdi + 0x24]
+  0x18086dc5e: lea      rdx, [rip + 0x48203b]  ; 'CaptionMarkHeight'
+  0x18086dc65: movss    dword ptr [rdi + 0x20], xmm0
+  0x18086dc6a: mov      rcx, rbx
+  0x18086dc6d: mov      rax, qword ptr [rbx]
+  0x18086dc70: call     qword ptr [rax + 0x50]
+  0x18086dc73: movss    xmm2, dword ptr [rdi + 0x28]
+  0x18086dc78: lea      rdx, [rip + 0x482039]  ; 'TeamKungFuSpace'
+  0x18086dc7f: movss    dword ptr [rdi + 0x24], xmm0
+  0x18086dc84: mov      rcx, rbx
+  0x18086dc87: mov      rax, qword ptr [rbx]
+  0x18086dc8a: call     qword ptr [rax + 0x50]
+  0x18086dc8d: movss    xmm2, dword ptr [rdi + 0x2c]
+  0x18086dc92: lea      rdx, [rip + 0x482037]  ; 'TeamKungFuDistance'
+  0x18086dc99: movss    dword ptr [rdi + 0x28], xmm0
+  0x18086dc9e: mov      rcx, rbx
+  0x18086dca1: mov      rax, qword ptr [rbx]
+  0x18086dca4: call     qword ptr [rax + 0x50]
+  0x18086dca7: movss    xmm2, dword ptr [rdi + 0x30]
+  0x18086dcac: lea      rdx, [rip + 0x482035]  ; 'BufferHeightN'
+  0x18086dcb3: movss    dword ptr [rdi + 0x2c], xmm0
+  0x18086dcb8: mov      rcx, rbx
+  0x18086dcbb: mov      rax, qword ptr [rbx]
+  0x18086dcbe: call     qword ptr [rax + 0x50]
+  0x18086dcc1: movss    xmm2, dword ptr [rdi + 0x34]
+  0x18086dcc6: lea      rdx, [rip + 0x48202b]  ; 'BufferHeightY1'
+  0x18086dccd: movss    dword ptr [rdi + 0x30], xmm0
+  0x18086dcd2: mov      rax, qword ptr [rbx]
+  0x18086dcd5: mov      rcx, rbx
+  0x18086dcd8: call     qword ptr [rax + 0x50]
+  0x18086dcdb: movss    xmm2, dword ptr [rdi + 0x38]
+  0x18086dce0: lea      rdx, [rip + 0x482029]  ; 'CaptionMarkSpaceHeight'
+  0x18086dce7: movss    dword ptr [rdi + 0x34], xmm0
+  0x18086dcec: mov      rcx, rbx
+  0x18086dcef: mov      rax, qword ptr [rbx]
+  0x18086dcf2: call     qword ptr [rax + 0x50]
+  0x18086dcf5: movss    xmm2, dword ptr [rdi + 0x3c]
+  0x18086dcfa: lea      rdx, [rip + 0x48202f]  ; 'CastSkillResetPeriod'
+  0x18086dd01: movss    dword ptr [rdi + 0x38], xmm0
+  0x18086dd06: mov      rcx, rbx
+  0x18086dd09: mov      rax, qword ptr [rbx]
+  0x18086dd0c: call     qword ptr [rax + 0x50]
+  0x18086dd0f: movss    xmm2, dword ptr [rdi + 0x40]
+  0x18086dd14: lea      rdx, [rip + 0x482035]  ; 'SkillEffectResultTimeout'
+  0x18086dd1b: movss    dword ptr [rdi + 0x3c], xmm0
+  0x18086dd20: mov      rcx, rbx
+  0x18086dd23: mov      rax, qword ptr [rbx]
+  0x18086dd26: call     qword ptr [rax + 0x50]
+  0x18086dd29: movss    xmm2, dword ptr [rdi + 0x44]
+  0x18086dd2e: lea      rdx, [rip + 0x48203b]  ; 'NPCLookAtInterpolateTime'
+  0x18086dd35: movss    dword ptr [rdi + 0x40], xmm0
+  0x18086dd3a: mov      rcx, rbx
+  0x18086dd3d: mov      rax, qword ptr [rbx]
+  0x18086dd40: call     qword ptr [rax + 0x50]
+  0x18086dd43: movss    xmm2, dword ptr [rdi + 0x48]
+  0x18086dd48: lea      rdx, [rip + 0x482041]  ; 'NPCLookAtDeltaDistance'
+  0x18086dd4f: movss    dword ptr [rdi + 0x44], xmm0
+  0x18086dd54: mov      rcx, rbx
+  0x18086dd57: mov      rax, qword ptr [rbx]
+  0x18086dd5a: call     qword ptr [rax + 0x50]
+  0x18086dd5d: movss    xmm2, dword ptr [rdi + 0x4c]
+  0x18086dd62: lea      rdx, [rip + 0x482047]  ; 'CharacterWalkSpeed'
+  0x18086dd69: movss    dword ptr [rdi + 0x48], xmm0
+  0x18086dd6e: mov      rcx, rbx
+  0x18086dd71: mov      rax, qword ptr [rbx]
+  0x18086dd74: call     qword ptr [rax + 0x50]
+  0x18086dd77: movss    xmm2, dword ptr [rdi + 0x50]
+  0x18086dd7c: lea      rdx, [rip + 0x482045]  ; 'CharacterRunSpeed'
+  0x18086dd83: movss    dword ptr [rdi + 0x4c], xmm0
+  0x18086dd88: mov      rcx, rbx
+  0x18086dd8b: mov      rax, qword ptr [rbx]
+  0x18086dd8e: call     qword ptr [rax + 0x50]
+  0x18086dd91: movss    xmm2, dword ptr [rdi + 0x54]
+  0x18086dd96: lea      rdx, [rip + 0x482043]  ; 'CharacterSwimSpeed'
+  0x18086dd9d: movss    dword ptr [rdi + 0x50], xmm0
+  0x18086dda2: mov      rcx, rbx
+  0x18086dda5: mov      rax, qword ptr [rbx]
+  0x18086dda8: call     qword ptr [rax + 0x50]
+  0x18086ddab: movss    xmm2, dword ptr [rdi + 0x58]
+  0x18086ddb0: lea      rdx, [rip + 0x482041]  ; 'CharacterYawTurnSpeed'
+  0x18086ddb7: movss    dword ptr [rdi + 0x54], xmm0
+  0x18086ddbc: mov      rcx, rbx
+  0x18086ddbf: mov      rax, qword ptr [rbx]
+  0x18086ddc2: call     qword ptr [rax + 0x50]
+  0x18086ddc5: movss    xmm2, dword ptr [rdi + 0x5c]
+  0x18086ddca: lea      rdx, [rip + 0x482047]  ; 'CharacterYawTurnResetSpeed'
+  0x18086ddd1: movss    dword ptr [rdi + 0x58], xmm0
+  0x18086ddd6: mov      rcx, rbx
+  0x18086ddd9: mov      rax, qword ptr [rbx]
+  0x18086dddc: call     qword ptr [rax + 0x50]
+  0x18086dddf: movss    xmm2, dword ptr [rdi + 0x60]
+  0x18086dde4: lea      rdx, [rip + 0x48204d]  ; 'CharacterRideWalkSpeed'
+  0x18086ddeb: movss    dword ptr [rdi + 0x5c], xmm0
+  0x18086ddf0: mov      rcx, rbx
+  0x18086ddf3: mov      rax, qword ptr [rbx]
+  0x18086ddf6: call     qword ptr [rax + 0x50]
+  0x18086ddf9: movss    xmm2, dword ptr [rdi + 0x64]
+  0x18086ddfe: lea      rdx, [rip + 0x482053]  ; 'CharacterRideRunSpeed'
+  0x18086de05: movss    dword ptr [rdi + 0x60], xmm0
+  0x18086de0a: mov      rcx, rbx
+  0x18086de0d: mov      rax, qword ptr [rbx]
+  0x18086de10: call     qword ptr [rax + 0x50]
+  0x18086de13: movss    xmm2, dword ptr [rdi + 0x68]
+  0x18086de18: lea      rdx, [rip + 0x482059]  ; 'CharacterRideYawTurnSpeed'
+  0x18086de1f: movss    dword ptr [rdi + 0x64], xmm0
+  0x18086de24: mov      rcx, rbx
+  0x18086de27: mov      rax, qword ptr [rbx]
+  0x18086de2a: call     qword ptr [rax + 0x50]
+  0x18086de2d: movss    dword ptr [rdi + 0x68], xmm0
+  0x18086de32: mov      rax, qword ptr [rbx]
+  0x18086de35: lea      rdx, [rip + 0x48205c]  ; 'CharacterRideYawResetSpeed'
+  0x18086de3c: movss    xmm2, dword ptr [rdi + 0x6c]
+  0x18086de41: mov      rcx, rbx
+  0x18086de44: call     qword ptr [rax + 0x50]
+  0x18086de47: movss    xmm2, dword ptr [rdi + 0x70]
+  0x18086de4c: lea      rdx, [rip + 0x482065]  ; 'CharacterVehicleYawTurnSpeed'
+  0x18086de53: movss    dword ptr [rdi + 0x6c], xmm0
+  0x18086de58: mov      rcx, rbx
+  0x18086de5b: mov      rax, qword ptr [rbx]
+  0x18086de5e: call     qword ptr [rax + 0x50]
+  0x18086de61: movss    xmm2, dword ptr [rdi + 0x74]
+  0x18086de66: lea      rdx, [rip + 0x482073]  ; 'CameraSpeedRatio'
+  0x18086de6d: movss    dword ptr [rdi + 0x70], xmm0
+  0x18086de72: mov      rcx, rbx
+  0x18086de75: mov      rax, qword ptr [rbx]
+  0x18086de78: call     qword ptr [rax + 0x50]
+  0x18086de7b: movss    xmm2, dword ptr [rdi + 0x78]
+  0x18086de80: lea      rdx, [rip + 0x482071]  ; 'CameraRideYawOffset'
+  0x18086de87: movss    dword ptr [rdi + 0x74], xmm0
+  0x18086de8c: mov      rcx, rbx
+  0x18086de8f: mov      rax, qword ptr [rbx]
+  0x18086de92: call     qword ptr [rax + 0x50]
+  0x18086de95: movss    xmm2, dword ptr [rdi + 0x7c]
+  0x18086de9a: lea      rdx, [rip + 0x48206f]  ; 'MissileLiveTime'
+  0x18086dea1: movss    dword ptr [rdi + 0x78], xmm0
+  0x18086dea6: mov      rcx, rbx
+  0x18086dea9: mov      rax, qword ptr [rbx]
+  0x18086deac: call     qword ptr [rax + 0x50]
+  0x18086deaf: movss    xmm2, dword ptr [rdi + 0x80]
+  0x18086deb7: lea      rdx, [rip + 0x48206a]  ; 'OptimizationHintFPS'
+  0x18086debe: movss    dword ptr [rdi + 0x7c], xmm0
+  0x18086dec3: mov      rcx, rbx
+  0x18086dec6: mov      rax, qword ptr [rbx]
+  0x18086dec9: call     qword ptr [rax + 0x50]
+  0x18086decc: movss    xmm2, dword ptr [rdi + 0x84]
+  0x18086ded4: lea      rdx, [rip + 0x482065]  ; 'OptimizationStartTime'
+  0x18086dedb: movss    dword ptr [rdi + 0x80], xmm0
+  0x18086dee3: mov      rcx, rbx
+  0x18086dee6: mov      rax, qword ptr [rbx]
+  0x18086dee9: call     qword ptr [rax + 0x50]
+  0x18086deec: movss    xmm2, dword ptr [rdi + 0x88]
+  0x18086def4: lea      rdx, [rip + 0x482065]  ; 'OptimizationEvaluationTime'
+  0x18086defb: movss    dword ptr [rdi + 0x84], xmm0
+  0x18086df03: mov      rcx, rbx
+  0x18086df06: mov      rax, qword ptr [rbx]
+  0x18086df09: call     qword ptr [rax + 0x50]
+  0x18086df0c: movss    xmm2, dword ptr [rdi + 0x8c]
+  0x18086df14: lea      rdx, [rip + 0x482065]  ; 'RemoteCharacterFramedataDelayTime'
+  0x18086df1b: movss    dword ptr [rdi + 0x88], xmm0
+  0x18086df23: mov      rcx, rbx
+  0x18086df26: mov      rax, qword ptr [rbx]
+  0x18086df29: call     qword ptr [rax + 0x50]
+  0x18086df2c: movss    xmm2, dword ptr [rdi + 0x90]
+  0x18086df34: lea      rdx, [rip + 0x48206d]  ; 'CameraFollowMode'
+  0x18086df3b: movss    dword ptr [rdi + 0x8c], xmm0
+  0x18086df43: mov      rcx, rbx
+  0x18086df46: mov      rax, qword ptr [rbx]
+  0x18086df49: call     qword ptr [rax + 0x50]
+  0x18086df4c: movss    xmm2, dword ptr [rdi + 0x94]
+  0x18086df54: lea      rdx, [rip + 0x482065]  ; 'CameraDragSpeed'
+  0x18086df5b: movss    dword ptr [rdi + 0x90], xmm0
+  0x18086df63: mov      rcx, rbx
+  0x18086df66: mov      rax, qword ptr [rbx]
+  0x18086df69: call     qword ptr [rax + 0x50]
+  0x18086df6c: movss    xmm2, dword ptr [rdi + 0x98]
+  0x18086df74: lea      rdx, [rip + 0x48205d]  ; 'CameraMaxDistance'
+  0x18086df7b: movss    dword ptr [rdi + 0x94], xmm0
+  0x18086df83: mov      rcx, rbx
+  0x18086df86: mov      rax, qword ptr [rbx]
+  0x18086df89: call     qword ptr [rax + 0x50]
+  0x18086df8c: movss    xmm2, dword ptr [rdi + 0x9c]
+  0x18086df94: lea      rdx, [rip + 0x482055]  ; 'CameraResetSpeed'
+  0x18086df9b: movss    dword ptr [rdi + 0x98], xmm0
+  0x18086dfa3: mov      rcx, rbx
+  0x18086dfa6: mov      rax, qword ptr [rbx]
+  0x18086dfa9: call     qword ptr [rax + 0x50]
+  0x18086dfac: movss    xmm2, dword ptr [rdi + 0xa0]
+  0x18086dfb4: lea      rdx, [rip + 0x48204d]  ; 'CameraPitchSpeed'
+  0x18086dfbb: movss    dword ptr [rdi + 0x9c], xmm0
+  0x18086dfc3: mov      rax, qword ptr [rbx]
+  0x18086dfc6: mov      rcx, rbx
+  0x18086dfc9: call     qword ptr [rax + 0x50]
+  0x18086dfcc: movss    xmm2, dword ptr [rdi + 0xa4]
+  0x18086dfd4: lea      rdx, [rip + 0x482045]  ; 'PlayerIdleRandomAnimationTimeIntervalMin'
+  0x18086dfdb: movss    dword ptr [rdi + 0xa0], xmm0
+  0x18086dfe3: mov      rcx, rbx
+  0x18086dfe6: mov      rax, qword ptr [rbx]
+  0x18086dfe9: call     qword ptr [rax + 0x50]
+  0x18086dfec: movss    xmm2, dword ptr [rdi + 0xa8]
+  0x18086dff4: lea      rdx, [rip + 0x48205d]  ; 'PlayerIdleRandomAnimationTimeIntervalMax'
+  0x18086dffb: movss    dword ptr [rdi + 0xa4], xmm0
+  0x18086e003: mov      rcx, rbx
+  0x18086e006: mov      rax, qword ptr [rbx]
+  0x18086e009: call     qword ptr [rax + 0x50]
+  0x18086e00c: movss    xmm2, dword ptr [rdi + 0xac]
+  0x18086e014: lea      rdx, [rip + 0x482075]  ; 'PlayerIdleRandomSFXTimeIntervalMin'
+  0x18086e01b: movss    dword ptr [rdi + 0xa8], xmm0
+  0x18086e023: mov      rcx, rbx
+  0x18086e026: mov      rax, qword ptr [rbx]
+  0x18086e029: call     qword ptr [rax + 0x50]
+  0x18086e02c: movss    xmm2, dword ptr [rdi + 0xb0]
+  0x18086e034: lea      rdx, [rip + 0x482085]  ; 'PlayerIdleRandomSFXTimeIntervalMax'
+  0x18086e03b: movss    dword ptr [rdi + 0xac], xmm0
+  0x18086e043: mov      rcx, rbx
+  0x18086e046: mov      rax, qword ptr [rbx]
+  0x18086e049: call     qword ptr [rax + 0x50]
+  0x18086e04c: movss    xmm2, dword ptr [rdi + 0xb4]
+  0x18086e054: lea      rdx, [rip + 0x482095]  ; 'TitleAdjustHeightMin'
+  0x18086e05b: movss    dword ptr [rdi + 0xb0], xmm0
+  0x18086e063: mov      rcx, rbx
+  0x18086e066: mov      rax, qword ptr [rbx]
+  0x18086e069: call     qword ptr [rax + 0x50]
+  0x18086e06c: movss    xmm2, dword ptr [rdi + 0xb8]
+  0x18086e074: lea      rdx, [rip + 0x482095]  ; 'TitleAdjustHeightMax'
+  0x18086e07b: movss    dword ptr [rdi + 0xb4], xmm0
+  0x18086e083: mov      rcx, rbx
+  0x18086e086: mov      rax, qword ptr [rbx]
+  0x18086e089: call     qword ptr [rax + 0x50]
+  0x18086e08c: movss    xmm2, dword ptr [rdi + 0xbc]
+  0x18086e094: lea      rdx, [rip + 0x482095]  ; 'TitleAdjustDistanceMin'
+  0x18086e09b: movss    dword ptr [rdi + 0xb8], xmm0
+  0x18086e0a3: mov      rcx, rbx
+  0x18086e0a6: mov      rax, qword ptr [rbx]
+  0x18086e0a9: call     qword ptr [rax + 0x50]
+  0x18086e0ac: movss    xmm2, dword ptr [rdi + 0xc0]
+  0x18086e0b4: lea      rdx, [rip + 0x482095]  ; 'TitleAdjustDistanceMax'
+  0x18086e0bb: movss    dword ptr [rdi + 0xbc], xmm0
+  0x18086e0c3: mov      rcx, rbx
+  0x18086e0c6: mov      rax, qword ptr [rbx]
+  0x18086e0c9: call     qword ptr [rax + 0x50]
+  0x18086e0cc: movss    xmm2, dword ptr [rdi + 0xc4]
+  0x18086e0d4: lea      rdx, [rip + 0x482095]  ; 'TitleAdjustFovMin'
+  0x18086e0db: movss    dword ptr [rdi + 0xc0], xmm0
+  0x18086e0e3: mov      rcx, rbx
+  0x18086e0e6: mov      rax, qword ptr [rbx]
+  0x18086e0e9: call     qword ptr [rax + 0x50]
+  0x18086e0ec: movss    xmm2, dword ptr [rdi + 0xc8]
+  0x18086e0f4: lea      rdx, [rip + 0x48208d]  ; 'TitleAdjustFovMax'
+  0x18086e0fb: movss    dword ptr [rdi + 0xc4], xmm0
+  0x18086e103: mov      rcx, rbx
+  0x18086e106: mov      rax, qword ptr [rbx]
+  0x18086e109: call     qword ptr [rax + 0x50]
+  0x18086e10c: movss    xmm2, dword ptr [rdi + 0xcc]
+  0x18086e114: lea      rdx, [rip + 0x482085]  ; 'TitleAdjustFovValue'
+  0x18086e11b: movss    dword ptr [rdi + 0xc8], xmm0
+  0x18086e123: mov      rcx, rbx
+  0x18086e126: mov      rax, qword ptr [rbx]
+  0x18086e129: call     qword ptr [rax + 0x50]
+  0x18086e12c: movss    xmm2, dword ptr [rdi + 0xd0]
+  0x18086e134: lea      rdx, [rip + 0x48207d]  ; 'SkillRushStateAdjustTime'
+  0x18086e13b: movss    dword ptr [rdi + 0xcc], xmm0
+  0x18086e143: mov      rcx, rbx
+  0x18086e146: mov      rax, qword ptr [rbx]
+  0x18086e149: call     qword ptr [rax + 0x50]
+  0x18086e14c: movss    xmm2, dword ptr [rdi + 0xd4]
+  0x18086e154: lea      rdx, [rip + 0x48207d]  ; 'SprintCameraAngle'
+  0x18086e15b: movss    dword ptr [rdi + 0xd0], xmm0
+  0x18086e163: mov      rcx, rbx
+  0x18086e166: mov      rax, qword ptr [rbx]
+  0x18086e169: call     qword ptr [rax + 0x50]
+  0x18086e16c: movss    dword ptr [rdi + 0xd4], xmm0
+  0x18086e174: mov      rax, qword ptr [rbx]
+  0x18086e177: lea      rdx, [rip + 0x482072]  ; 'SprintCameraPitch'
+  0x18086e17e: movss    xmm2, dword ptr [rdi + 0xd8]
+  0x18086e186: mov      rcx, rbx
+  0x18086e189: call     qword ptr [rax + 0x50]
+  0x18086e18c: movss    xmm2, dword ptr [rdi + 0xdc]
+  0x18086e194: lea      rdx, [rip + 0x48206d]  ; 'SprintCameraMaxDistance'
+  0x18086e19b: movss    dword ptr [rdi + 0xd8], xmm0
+  0x18086e1a3: mov      rcx, rbx
+  0x18086e1a6: mov      rax, qword ptr [rbx]
+  0x18086e1a9: call     qword ptr [rax + 0x50]
+  0x18086e1ac: movss    xmm2, dword ptr [rdi + 0xe0]
+  0x18086e1b4: lea      rdx, [rip + 0x48206d]  ; 'SprintCameraSmoothTime'
+  0x18086e1bb: movss    dword ptr [rdi + 0xdc], xmm0
+  0x18086e1c3: mov      rcx, rbx
+  0x18086e1c6: mov      rax, qword ptr [rbx]
+  0x18086e1c9: call     qword ptr [rax + 0x50]
+  0x18086e1cc: movss    xmm2, dword ptr [rdi + 0xe4]
+  0x18086e1d4: lea      rdx, [rip + 0x48206d]  ; 'SprintCameraSpringTime'
+  0x18086e1db: movss    dword ptr [rdi + 0xe0], xmm0
+  0x18086e1e3: mov      rcx, rbx
+  0x18086e1e6: mov      rax, qword ptr [rbx]
+  0x18086e1e9: call     qword ptr [rax + 0x50]
+  0x18086e1ec: movss    xmm2, dword ptr [rdi + 0xe8]
+  0x18086e1f4: lea      rdx, [rip + 0x48206d]  ; 'StrollYOffset'
+  0x18086e1fb: movss    dword ptr [rdi + 0xe4], xmm0
+  0x18086e203: mov      rcx, rbx
+  0x18086e206: mov      rax, qword ptr [rbx]
+  0x18086e209: call     qword ptr [rax + 0x50]
+  0x18086e20c: movss    xmm2, dword ptr [rdi + 0xec]
+  0x18086e214: lea      rdx, [rip + 0x48205d]  ; 'SprintCameraOffset'
+  0x18086e21b: movss    dword ptr [rdi + 0xe8], xmm0
+  0x18086e223: mov      rcx, rbx
+  0x18086e226: mov      rax, qword ptr [rbx]
+  0x18086e229: call     qword ptr [rax + 0x50]
+  0x18086e22c: movss    xmm2, dword ptr [rdi + 0xf0]
+  0x18086e234: lea      rdx, [rip + 0x482055]  ; 'SprintCameraOffsetSmoothTime'
+  0x18086e23b: movss    dword ptr [rdi + 0xec], xmm0
+  0x18086e243: mov      rcx, rbx
+  0x18086e246: mov      rax, qword ptr [rbx]
+  0x18086e249: call     qword ptr [rax + 0x50]
+  0x18086e24c: movss    xmm2, dword ptr [rdi + 0xf4]
+  0x18086e254: lea      rdx, [rip + 0x48205d]  ; 'CarrierCameraPitch'
+  0x18086e25b: movss    dword ptr [rdi + 0xf0], xmm0
+  0x18086e263: mov      rcx, rbx
+  0x18086e266: mov      rax, qword ptr [rbx]
+  0x18086e269: call     qword ptr [rax + 0x50]
+  0x18086e26c: movss    xmm2, dword ptr [rdi + 0xf8]
+  0x18086e274: lea      rdx, [rip + 0x482055]  ; 'CarrierCameraYaw'
+  0x18086e27b: movss    dword ptr [rdi + 0xf4], xmm0
+  0x18086e283: mov      rcx, rbx
+  0x18086e286: mov      rax, qword ptr [rbx]
+  0x18086e289: call     qword ptr [rax + 0x50]
+  0x18086e28c: movss    xmm2, dword ptr [rdi + 0xfc]
+  0x18086e294: lea      rdx, [rip + 0x48204d]  ; 'CarrierCameraMaxDistance'
+  0x18086e29b: movss    dword ptr [rdi + 0xf8], xmm0
+  0x18086e2a3: mov      rcx, rbx
+  0x18086e2a6: mov      rax, qword ptr [rbx]
+  0x18086e2a9: call     qword ptr [rax + 0x50]
+  0x18086e2ac: movss    xmm2, dword ptr [rdi + 0x100]
+  0x18086e2b4: lea      rdx, [rip + 0x48204d]  ; 'CarrierCameraDeltaHeight'
+  0x18086e2bb: movss    dword ptr [rdi + 0xfc], xmm0
+  0x18086e2c3: mov      rcx, rbx
+  0x18086e2c6: mov      rax, qword ptr [rbx]
+  0x18086e2c9: call     qword ptr [rax + 0x50]
+  0x18086e2cc: movss    xmm2, dword ptr [rdi + 0x104]
+  0x18086e2d4: lea      rdx, [rip + 0x48204d]  ; 'NearByWallDistance'
+  0x18086e2db: movss    dword ptr [rdi + 0x100], xmm0
+  0x18086e2e3: mov      rcx, rbx
+  0x18086e2e6: mov      rax, qword ptr [rbx]
+  0x18086e2e9: call     qword ptr [rax + 0x50]
+  0x18086e2ec: movss    xmm2, dword ptr [rdi + 0x108]
+  0x18086e2f4: lea      rdx, [rip + 0x482045]  ; 'SprintCameraMaxOffset'
+  0x18086e2fb: movss    dword ptr [rdi + 0x104], xmm0
+  0x18086e303: mov      rcx, rbx
+  0x18086e306: mov      rax, qword ptr [rbx]
+  0x18086e309: call     qword ptr [rax + 0x50]
+  0x18086e30c: movss    xmm2, dword ptr [rdi + 0x10c]
+  0x18086e314: lea      rdx, [rip + 0x482045]  ; 'AnimationDelayFrame'
+  0x18086e31b: movss    dword ptr [rdi + 0x108], xmm0
+  0x18086e323: mov      rax, qword ptr [rbx]
+  0x18086e326: mov      rcx, rbx
+  0x18086e329: call     qword ptr [rax + 0x50]
+  0x18086e32c: movss    xmm2, dword ptr [rdi + 0x110]
+  0x18086e334: lea      rdx, [rip + 0x48203d]  ; 'PlayerSwingSchoolID'
+  0x18086e33b: movss    dword ptr [rdi + 0x10c], xmm0
+  0x18086e343: mov      rcx, rbx
+  0x18086e346: mov      rax, qword ptr [rbx]
+  0x18086e349: call     qword ptr [rax + 0x50]
+  0x18086e34c: movss    xmm2, dword ptr [rdi + 0x114]
+  0x18086e354: lea      rdx, [rip + 0x482035]  ; 'PlayerSwingWeaponID'
+  0x18086e35b: movss    dword ptr [rdi + 0x110], xmm0
+  0x18086e363: mov      rcx, rbx
+  0x18086e366: mov      rax, qword ptr [rbx]
+  0x18086e369: call     qword ptr [rax + 0x50]
+  0x18086e36c: movss    xmm2, dword ptr [rdi + 0x118]
+  0x18086e374: lea      rdx, [rip + 0x48202d]  ; 'DeathAnimationTimeout'
+  0x18086e37b: movss    dword ptr [rdi + 0x114], xmm0
+  0x18086e383: mov      rcx, rbx
+  0x18086e386: mov      rax, qword ptr [rbx]
+  0x18086e389: call     qword ptr [rax + 0x50]
+  0x18086e38c: movss    xmm2, dword ptr [rdi + 0x11c]
+  0x18086e394: lea      rdx, [rip + 0x48202d]  ; 'PauseAnimationTimeout'
+  0x18086e39b: movss    dword ptr [rdi + 0x118], xmm0
+  0x18086e3a3: mov      rcx, rbx
+  0x18086e3a6: mov      rax, qword ptr [rbx]
+  0x18086e3a9: call     qword ptr [rax + 0x50]
+  0x18086e3ac: movss    xmm2, dword ptr [rdi + 0x120]
+  0x18086e3b4: lea      rdx, [rip + 0x48202d]  ; 'NavigateEffectID'
+  0x18086e3bb: movss    dword ptr [rdi + 0x11c], xmm0
+  0x18086e3c3: mov      rcx, rbx
+  0x18086e3c6: mov      rax, qword ptr [rbx]
+  0x18086e3c9: call     qword ptr [rax + 0x50]
+  0x18086e3cc: movss    xmm2, dword ptr [rdi + 0x124]
+  0x18086e3d4: lea      rdx, [rip + 0x482025]  ; 'NavigateInterval'
+  0x18086e3db: movss    dword ptr [rdi + 0x120], xmm0
+  0x18086e3e3: mov      rcx, rbx
+  0x18086e3e6: mov      rax, qword ptr [rbx]
+  0x18086e3e9: call     qword ptr [rax + 0x50]
+  0x18086e3ec: movss    xmm2, dword ptr [rdi + 0x128]
+  0x18086e3f4: lea      rdx, [rip + 0x48201d]  ; 'NavigateFadeOut'
+  0x18086e3fb: movss    dword ptr [rdi + 0x124], xmm0
+  0x18086e403: mov      rcx, rbx
+  0x18086e406: mov      rax, qword ptr [rbx]
+  0x18086e409: call     qword ptr [rax + 0x50]
+  0x18086e40c: movss    xmm2, dword ptr [rdi + 0x12c]
+  0x18086e414: lea      rdx, [rip + 0x482015]  ; 'NavigateOffset'
+  0x18086e41b: movss    dword ptr [rdi + 0x128], xmm0
+  0x18086e423: mov      rcx, rbx
+  0x18086e426: mov      rax, qword ptr [rbx]
+  0x18086e429: call     qword ptr [rax + 0x50]
+  0x18086e42c: movss    xmm2, dword ptr [rdi + 0x130]
+  0x18086e434: lea      rdx, [rip + 0x48200d]  ; 'SoundPosCoeff'
+  0x18086e43b: movss    dword ptr [rdi + 0x12c], xmm0
+  0x18086e443: mov      rcx, rbx
+  0x18086e446: mov      rax, qword ptr [rbx]
+  0x18086e449: call     qword ptr [rax + 0x50]
+  0x18086e44c: movss    xmm2, dword ptr [rdi + 0x134]
+  0x18086e454: lea      rdx, [rip + 0x481ffd]  ; 'RenderLimitRange'
+  0x18086e45b: movss    dword ptr [rdi + 0x130], xmm0
+  0x18086e463: mov      rcx, rbx
+  0x18086e466: mov      rax, qword ptr [rbx]
+  0x18086e469: call     qword ptr [rax + 0x50]
+  0x18086e46c: movss    xmm2, dword ptr [rdi + 0x138]
+  0x18086e474: lea      rdx, [rip + 0x481ff5]  ; 'PreloadWeight'
+  0x18086e47b: movss    dword ptr [rdi + 0x134], xmm0
+  0x18086e483: mov      rcx, rbx
+  0x18086e486: mov      rax, qword ptr [rbx]
+  0x18086e489: call     qword ptr [rax + 0x50]
+  0x18086e48c: movss    xmm2, dword ptr [rdi + 0x13c]
+  0x18086e494: lea      rdx, [rip + 0x481fe5]  ; 'RenderInterval'
+  0x18086e49b: movss    dword ptr [rdi + 0x138], xmm0
+  0x18086e4a3: mov      rcx, rbx
+  0x18086e4a6: mov      rax, qword ptr [rbx]
+  0x18086e4a9: call     qword ptr [rax + 0x50]
+  0x18086e4ac: movss    xmm2, dword ptr [rdi + 0x140]
+  0x18086e4b4: lea      rdx, [rip + 0x481fdd]  ; 'FadeNpcLimit'
+  0x18086e4bb: movss    dword ptr [rdi + 0x13c], xmm0
+  0x18086e4c3: mov      rcx, rbx
+  0x18086e4c6: mov      rax, qword ptr [rbx]
+  0x18086e4c9: call     qword ptr [rax + 0x50]
+  0x18086e4cc: movss    dword ptr [rdi + 0x140], xmm0
+  0x18086e4d4: mov      rax, qword ptr [rbx]
+  0x18086e4d7: lea      rdx, [rip + 0x481fca]  ; 'FadePlayerLimit'
+  0x18086e4de: movss    xmm2, dword ptr [rdi + 0x144]
+  0x18086e4e6: mov      rcx, rbx
+  0x18086e4e9: call     qword ptr [rax + 0x50]
+  0x18086e4ec: movss    xmm2, dword ptr [rdi + 0x148]
+  0x18086e4f4: lea      rdx, [rip + 0x481fc5]  ; 'FlightRollTurnResetSpeed'
+  0x18086e4fb: movss    dword ptr [rdi + 0x144], xmm0
+  0x18086e503: mov      rcx, rbx
+  0x18086e506: mov      rax, qword ptr [rbx]
+  0x18086e509: call     qword ptr [rax + 0x50]
+  0x18086e50c: movss    xmm2, dword ptr [rdi + 0x14c]
+  0x18086e514: lea      rdx, [rip + 0x481fc5]  ; 'CorpseLimit'
+  0x18086e51b: movss    dword ptr [rdi + 0x148], xmm0
+  0x18086e523: mov      rcx, rbx
+  0x18086e526: mov      rax, qword ptr [rbx]
+  0x18086e529: call     qword ptr [rax + 0x50]
+  0x18086e52c: movss    xmm2, dword ptr [rdi + 0x150]
+  0x18086e534: lea      rdx, [rip + 0x481fb5]  ; 'CorpseProtectTime'
+  0x18086e53b: movss    dword ptr [rdi + 0x14c], xmm0
+  0x18086e543: mov      rcx, rbx
+  0x18086e546: mov      rax, qword ptr [rbx]
+  0x18086e549: call     qword ptr [rax + 0x50]
+  0x18086e54c: movss    xmm2, dword ptr [rdi + 0x154]
+  0x18086e554: lea      rdx, [rip + 0x481fad]  ; 'CharacterDialogFadeOut'
+  0x18086e55b: movss    dword ptr [rdi + 0x150], xmm0
+  0x18086e563: mov      rcx, rbx
+  0x18086e566: mov      rax, qword ptr [rbx]
+  0x18086e569: call     qword ptr [rax + 0x50]
+  0x18086e56c: movss    xmm2, dword ptr [rdi + 0x158]
+  0x18086e574: lea      rdx, [rip + 0x481fad]  ; 'SceneObjectBorderThick'
+  0x18086e57b: movss    dword ptr [rdi + 0x154], xmm0
+  0x18086e583: mov      rcx, rbx
+  0x18086e586: mov      rax, qword ptr [rbx]
+  0x18086e589: call     qword ptr [rax + 0x50]
+  0x18086e58c: movss    xmm2, dword ptr [rdi + 0x15c]
+  0x18086e594: lea      rdx, [rip + 0x481fad]  ; 'SceneObjectBorderColor'
+  0x18086e59b: movss    dword ptr [rdi + 0x158], xmm0
+  0x18086e5a3: mov      rcx, rbx
+  0x18086e5a6: mov      rax, qword ptr [rbx]
+  0x18086e5a9: call     qword ptr [rax + 0x50]
+  0x18086e5ac: movss    xmm2, dword ptr [rdi + 0x160]
+  0x18086e5b4: lea      rdx, [rip + 0x481fad]  ; 'SprintCameraMaxDragSpeed'
+  0x18086e5bb: movss    dword ptr [rdi + 0x15c], xmm0
+  0x18086e5c3: mov      rcx, rbx
+  0x18086e5c6: mov      rax, qword ptr [rbx]
+  0x18086e5c9: call     qword ptr [rax + 0x50]
+  0x18086e5cc: movss    xmm2, dword ptr [rdi + 0x164]
+  0x18086e5d4: lea      rdx, [rip + 0x481fad]  ; 'SprintCameraMinTrackBackSpeed'
+  0x18086e5db: movss    dword ptr [rdi + 0x160], xmm0
+  0x18086e5e3: mov      rcx, rbx
+  0x18086e5e6: mov      rax, qword ptr [rbx]
+  0x18086e5e9: call     qword ptr [rax + 0x50]
+  0x18086e5ec: movss    xmm2, dword ptr [rdi + 0x168]
+  0x18086e5f4: lea      rdx, [rip + 0x481fb5]  ; 'SprintCameraMaxTrackBackSpeed'
+  0x18086e5fb: movss    dword ptr [rdi + 0x164], xmm0
+  0x18086e603: mov      rcx, rbx
+  0x18086e606: mov      rax, qword ptr [rbx]
+  0x18086e609: call     qword ptr [rax + 0x50]
+  0x18086e60c: movss    xmm2, dword ptr [rdi + 0x16c]
+  0x18086e614: lea      rdx, [rip + 0x481fbd]  ; 'SprintCameraTrackBackSpeedSlope'
+  0x18086e61b: movss    dword ptr [rdi + 0x168], xmm0
+  0x18086e623: mov      rcx, rbx
+  0x18086e626: mov      rax, qword ptr [rbx]
+  0x18086e629: call     qword ptr [rax + 0x50]
+  0x18086e62c: movss    xmm2, dword ptr [rdi + 0x170]
+  0x18086e634: lea      rdx, [rip + 0x481fc5]  ; 'DiveCameraRollRange'
+  0x18086e63b: movss    dword ptr [rdi + 0x16c], xmm0
+  0x18086e643: mov      rcx, rbx
+  0x18086e646: mov      rax, qword ptr [rbx]
+  0x18086e649: call     qword ptr [rax + 0x50]
+  0x18086e64c: movss    xmm2, dword ptr [rdi + 0x174]
+  0x18086e654: lea      rdx, [rip + 0x481fbd]  ; 'DiveCameraRollTime'
+  0x18086e65b: movss    dword ptr [rdi + 0x170], xmm0
+  0x18086e663: mov      rcx, rbx
+  0x18086e666: mov      rax, qword ptr [rbx]
+  0x18086e669: call     qword ptr [rax + 0x50]
+  0x18086e66c: movss    xmm2, dword ptr [rdi + 0x178]
+  0x18086e674: lea      rdx, [rip + 0x481fb5]  ; 'CYReflectSfxID'
+  0x18086e67b: movss    dword ptr [rdi + 0x174], xmm0
+  0x18086e683: mov      rax, qword ptr [rbx]
+  0x18086e686: mov      rcx, rbx
+  0x18086e689: call     qword ptr [rax + 0x50]
+  0x18086e68c: movss    xmm2, dword ptr [rdi + 0x17c]
+  0x18086e694: lea      rdx, [rip + 0x481fad]  ; 'CYReflectSoundID'
+  0x18086e69b: movss    dword ptr [rdi + 0x178], xmm0
+  0x18086e6a3: mov      rcx, rbx
+  0x18086e6a6: mov      rax, qword ptr [rbx]
+  0x18086e6a9: call     qword ptr [rax + 0x50]
+  0x18086e6ac: movss    dword ptr [rdi + 0x17c], xmm0
+  0x18086e6b4: lea      rdx, [rip + 0x481fa5]  ; 'nNpcAdjustSlipOffsetY'
+  0x18086e6bb: mov      rax, qword ptr [rbx]
+  0x18086e6be: mov      rcx, rbx
+  0x18086e6c1: movss    xmm2, dword ptr [rdi + 0x180]
+  0x18086e6c9: call     qword ptr [rax + 0x50]
+  0x18086e6cc: movss    dword ptr [rdi + 0x180], xmm0
+  0x18086e6d4: lea      rdx, [rip + 0x481fa5]  ; 'nNpcAdjustOffsetY'
+  0x18086e6db: mov      rax, qword ptr [rbx]
+  0x18086e6de: mov      rcx, rbx
+  0x18086e6e1: movss    xmm2, dword ptr [rdi + 0x184]
+  0x18086e6e9: call     qword ptr [rax + 0x50]
+  0x18086e6ec: movss    dword ptr [rdi + 0x184], xmm0
+  0x18086e6f4: lea      rdx, [rip + 0x481f9d]  ; 'SummitDistance'
+  0x18086e6fb: mov      rax, qword ptr [rbx]
+  0x18086e6fe: mov      rcx, rbx
+  0x18086e701: movss    xmm2, dword ptr [rdi + 0x188]
+  0x18086e709: call     qword ptr [rax + 0x50]
+  0x18086e70c: movss    dword ptr [rdi + 0x188], xmm0
+  0x18086e714: lea      rdx, [rip + 0x481f95]  ; 'SummitFadeTime'
+  0x18086e71b: mov      rax, qword ptr [rbx]
+  0x18086e71e: mov      rcx, rbx
+  0x18086e721: movss    xmm2, dword ptr [rdi + 0x18c]
+  0x18086e729: call     qword ptr [rax + 0x50]
+  0x18086e72c: movss    dword ptr [rdi + 0x18c], xmm0
+  0x18086e734: lea      rdx, [rip + 0x481f8d]  ; 'SummitAdjustY'
+  0x18086e73b: mov      rax, qword ptr [rbx]
+  0x18086e73e: mov      rcx, rbx
+  0x18086e741: movss    xmm2, dword ptr [rdi + 0x190]
+  0x18086e749: call     qword ptr [rax + 0x50]
+  0x18086e74c: movss    dword ptr [rdi + 0x190], xmm0
+  0x18086e754: lea      rdx, [rip + 0x481f7d]  ; 'NpcLinkFadeTime'
+  0x18086e75b: mov      rax, qword ptr [rbx]
+  0x18086e75e: mov      rcx, rbx
+  0x18086e761: movss    xmm2, dword ptr [rdi + 0x194]
+  0x18086e769: call     qword ptr [rax + 0x50]
+  0x18086e76c: movss    dword ptr [rdi + 0x194], xmm0
+  0x18086e774: lea      rdx, [rip + 0x481f75]  ; 'InteractTitleEffectID'
+  0x18086e77b: mov      rax, qword ptr [rbx]
+  0x18086e77e: mov      rcx, rbx
+  0x18086e781: movss    xmm2, dword ptr [rdi + 0x198]
+  0x18086e789: call     qword ptr [rax + 0x50]
+  0x18086e78c: movss    dword ptr [rdi + 0x198], xmm0
+  0x18086e794: lea      rdx, [rip + 0x481f75]  ; 'InteractTitleFaceAngle'
+  0x18086e79b: mov      rax, qword ptr [rbx]
+  0x18086e79e: mov      rcx, rbx
+  0x18086e7a1: movss    xmm2, dword ptr [rdi + 0x19c]
+  0x18086e7a9: call     qword ptr [rax + 0x50]
+  0x18086e7ac: movss    dword ptr [rdi + 0x19c], xmm0
+  0x18086e7b4: lea      rdx, [rip + 0x481f75]  ; 'ForceStopSimWorld'
+  0x18086e7bb: mov      rax, qword ptr [rbx]
+  0x18086e7be: mov      rcx, rbx
+  0x18086e7c1: movss    xmm2, dword ptr [rdi + 0x1a0]
+  0x18086e7c9: call     qword ptr [rax + 0x50]
+  0x18086e7cc: movss    dword ptr [rdi + 0x1a0], xmm0
+  0x18086e7d4: lea      rdx, [rip + 0x481f6d]  ; 'FootContactGroundDis'
+  0x18086e7db: mov      rax, qword ptr [rbx]
+  0x18086e7de: mov      rcx, rbx
+  0x18086e7e1: movss    xmm2, dword ptr [rdi + 0x1a4]
+  0x18086e7e9: call     qword ptr [rax + 0x50]
+  0x18086e7ec: movss    dword ptr [rdi + 0x1a4], xmm0
+  0x18086e7f4: lea      rdx, [rip + 0x481f6d]  ; 'FootprintApplyTimeInterval'
+  0x18086e7fb: mov      rax, qword ptr [rbx]
+  0x18086e7fe: mov      rcx, rbx
+  0x18086e801: movss    xmm2, dword ptr [rdi + 0x1a8]
+  0x18086e809: call     qword ptr [rax + 0x50]
+  0x18086e80c: movss    dword ptr [rdi + 0x1a8], xmm0
+  0x18086e814: lea      rdx, [rip + 0x481f6d]  ; 'FootprintLife'
+  0x18086e81b: mov      rax, qword ptr [rbx]
+  0x18086e81e: mov      rcx, rbx
+  0x18086e821: movss    xmm2, dword ptr [rdi + 0x1ac]
+  0x18086e829: call     qword ptr [rax + 0x50]
+  0x18086e82c: movss    dword ptr [rdi + 0x1ac], xmm0
+  0x18086e834: mov      rax, qword ptr [rbx]
+  0x18086e837: lea      rdx, [rip + 0x481f5a]  ; 'FootprintCount'
+  0x18086e83e: movss    xmm2, dword ptr [rdi + 0x1b0]
+  0x18086e846: mov      rcx, rbx
+  0x18086e849: call     qword ptr [rax + 0x50]
+  0x18086e84c: movss    dword ptr [rdi + 0x1b0], xmm0
+  0x18086e854: lea      rdx, [rip + 0x481f55]  ; 'RideFootContactGroundDis'
+  0x18086e85b: mov      rax, qword ptr [rbx]
+  0x18086e85e: mov      rcx, rbx
+  0x18086e861: movss    xmm2, dword ptr [rdi + 0x1b4]
+  0x18086e869: call     qword ptr [rax + 0x50]
+  0x18086e86c: movss    dword ptr [rdi + 0x1b4], xmm0
+  0x18086e874: lea      rdx, [rip + 0x481f55]  ; 'RideFootprintApplyTimeInterval'
+  0x18086e87b: mov      rax, qword ptr [rbx]
+  0x18086e87e: mov      rcx, rbx
+  0x18086e881: movss    xmm2, dword ptr [rdi + 0x1b8]
+  0x18086e889: call     qword ptr [rax + 0x50]
+  0x18086e88c: movss    dword ptr [rdi + 0x1b8], xmm0
+  0x18086e894: lea      rdx, [rip + 0x481f5d]  ; 'RideFootprintLife'
+  0x18086e89b: mov      rax, qword ptr [rbx]
+  0x18086e89e: mov      rcx, rbx
+  0x18086e8a1: movss    xmm2, dword ptr [rdi + 0x1bc]
+  0x18086e8a9: call     qword ptr [rax + 0x50]
+  0x18086e8ac: movss    dword ptr [rdi + 0x1bc], xmm0
+  0x18086e8b4: lea      rdx, [rip + 0x481f55]  ; 'GroundEffectDis'
+  0x18086e8bb: mov      rax, qword ptr [rbx]
+  0x18086e8be: mov      rcx, rbx
+  0x18086e8c1: movss    xmm2, dword ptr [rdi + 0x1c0]
+  0x18086e8c9: call     qword ptr [rax + 0x50]
+  0x18086e8cc: movss    dword ptr [rdi + 0x1c0], xmm0
+  0x18086e8d4: lea      rdx, [rip + 0x481f4d]  ; 'LocalPlayerEnvironmentOffset'
+  0x18086e8db: mov      rax, qword ptr [rbx]
+  0x18086e8de: mov      rcx, rbx
+  0x18086e8e1: movss    xmm2, dword ptr [rdi + 0x1c4]
+  0x18086e8e9: call     qword ptr [rax + 0x50]
+  0x18086e8ec: movss    dword ptr [rdi + 0x1c4], xmm0
+  0x18086e8f4: lea      rdx, [rip + 0x481f55]  ; 'EyeLightIntensityMin'
+  0x18086e8fb: mov      rax, qword ptr [rbx]
+  0x18086e8fe: mov      rcx, rbx
+  0x18086e901: movss    xmm2, dword ptr [rdi + 0x1c8]
+  0x18086e909: call     qword ptr [rax + 0x50]
+  0x18086e90c: movss    dword ptr [rdi + 0x1c8], xmm0
+  0x18086e914: lea      rdx, [rip + 0x481f55]  ; 'EyeLightIntensityMax'
+  0x18086e91b: mov      rax, qword ptr [rbx]
+  0x18086e91e: mov      rcx, rbx
+  0x18086e921: movss    xmm2, dword ptr [rdi + 0x1cc]
+  0x18086e929: call     qword ptr [rax + 0x50]
+  0x18086e92c: movss    dword ptr [rdi + 0x1cc], xmm0
+  0x18086e934: lea      rdx, [rip + 0x481f55]  ; 'SocketLOD0Distance'
+  0x18086e93b: mov      rax, qword ptr [rbx]
+  0x18086e93e: mov      rcx, rbx
+  0x18086e941: movss    xmm2, dword ptr [rdi + 0x1d0]
+  0x18086e949: call     qword ptr [rax + 0x50]
+  0x18086e94c: movss    dword ptr [rdi + 0x1d0], xmm0
+  0x18086e954: lea      rdx, [rip + 0x481f4d]  ; 'SocketLOD1Distance'
+  0x18086e95b: mov      rax, qword ptr [rbx]
+  0x18086e95e: mov      rcx, rbx
+  0x18086e961: movss    xmm2, dword ptr [rdi + 0x1d4]
+  0x18086e969: call     qword ptr [rax + 0x50]
+  0x18086e96c: movss    dword ptr [rdi + 0x1d4], xmm0
+  0x18086e974: lea      rdx, [rip + 0x481f45]  ; 'HitMissAdjustOffset'
+  0x18086e97b: mov      rax, qword ptr [rbx]
+  0x18086e97e: mov      rcx, rbx
+  0x18086e981: movss    xmm2, dword ptr [rdi + 0x1d8]
+  0x18086e989: call     qword ptr [rax + 0x50]
+  0x18086e98c: movss    dword ptr [rdi + 0x1d8], xmm0
+  0x18086e994: lea      rdx, [rip + 0x481f3d]  ; 'NpcAutoLookAtDistance'
+  0x18086e99b: mov      rax, qword ptr [rbx]
+  0x18086e99e: mov      rcx, rbx
+  0x18086e9a1: movss    xmm2, dword ptr [rdi + 0x1dc]
+  0x18086e9a9: call     qword ptr [rax + 0x50]
+  0x18086e9ac: movss    dword ptr [rdi + 0x1dc], xmm0
+  0x18086e9b4: lea      rdx, [rip + 0x481f3d]  ; 'NpcAutoLookAtAngle'
+  0x18086e9bb: mov      rax, qword ptr [rbx]
+  0x18086e9be: mov      rcx, rbx
+  0x18086e9c1: movss    xmm2, dword ptr [rdi + 0x1e0]
+  0x18086e9c9: call     qword ptr [rax + 0x50]
+  0x18086e9cc: movss    dword ptr [rdi + 0x1e0], xmm0
+  0x18086e9d4: lea      rdx, [rip + 0x481f35]  ; 'AirCombatToSkillMoveCameraDis'
+  0x18086e9db: mov      rax, qword ptr [rbx]
+  0x18086e9de: movss    xmm2, dword ptr [rdi + 0x1e4]
+  0x18086e9e6: mov      rcx, rbx
+  0x18086e9e9: call     qword ptr [rax + 0x50]
+  0x18086e9ec: movss    dword ptr [rdi + 0x1e4], xmm0
+  0x18086e9f4: lea      rdx, [rip + 0x481f3d]  ; 'PengLaiEagleLimit'
+  0x18086e9fb: mov      rax, qword ptr [rbx]
+  0x18086e9fe: mov      rcx, rbx
+  0x18086ea01: movss    xmm2, dword ptr [rdi + 0x1e8]
+  0x18086ea09: call     qword ptr [rax + 0x50]
+  0x18086ea0c: movss    dword ptr [rdi + 0x1e8], xmm0
+  0x18086ea14: lea      rdx, [rip + 0x481f35]  ; 'ChainBladeSmoothTime'
+  0x18086ea1b: mov      rax, qword ptr [rbx]
+  0x18086ea1e: mov      rcx, rbx
+  0x18086ea21: movss    xmm2, dword ptr [rdi + 0x1ec]
+  0x18086ea29: call     qword ptr [rax + 0x50]
+  0x18086ea2c: movss    dword ptr [rdi + 0x1ec], xmm0
+  0x18086ea34: lea      rdx, [rip + 0x481f35]  ; 'MissileBlockDis'
+  0x18086ea3b: mov      rax, qword ptr [rbx]
+  0x18086ea3e: mov      rcx, rbx
+  0x18086ea41: movss    xmm2, dword ptr [rdi + 0x1f0]
+  0x18086ea49: call     qword ptr [rax + 0x50]
+  0x18086ea4c: movss    dword ptr [rdi + 0x1f0], xmm0
+  0x18086ea54: lea      rdx, [rip + 0x481f2d]  ; 'CharacterCameraSmoothTime'
+  0x18086ea5b: mov      rax, qword ptr [rbx]
+  0x18086ea5e: mov      rcx, rbx
+  0x18086ea61: movss    xmm2, dword ptr [rdi + 0x1f4]
+  0x18086ea69: call     qword ptr [rax + 0x50]
+  0x18086ea6c: movss    dword ptr [rdi + 0x1f4], xmm0
+  0x18086ea74: lea      rdx, [rip + 0x481f2d]  ; 'AutoUpdateLookAtDistance'
+  0x18086ea7b: mov      rax, qword ptr [rbx]
+  0x18086ea7e: mov      rcx, rbx
+  0x18086ea81: movss    xmm2, dword ptr [rdi + 0x1f8]
+  0x18086ea89: call     qword ptr [rax + 0x50]
+  0x18086ea8c: movss    dword ptr [rdi + 0x1f8], xmm0
+  0x18086ea94: lea      rdx, [rip + 0x481f2d]  ; 'UpdateAnimationCameraDistance'
+  0x18086ea9b: mov      rax, qword ptr [rbx]
+  0x18086ea9e: mov      rcx, rbx
+  0x18086eaa1: movss    xmm2, dword ptr [rdi + 0x1fc]
+  0x18086eaa9: call     qword ptr [rax + 0x50]
+  0x18086eaac: movss    dword ptr [rdi + 0x1fc], xmm0
+  0x18086eab4: lea      rdx, [rip + 0x481f35]  ; 'FocusFaceExitDisDelta'
+  0x18086eabb: mov      rax, qword ptr [rbx]
+  0x18086eabe: mov      rcx, rbx
+  0x18086eac1: movss    xmm2, dword ptr [rdi + 0x234]
+  0x18086eac9: call     qword ptr [rax + 0x50]
+  0x18086eacc: movss    dword ptr [rdi + 0x234], xmm0
+  0x18086ead4: lea      rdx, [rip + 0x481f35]  ; 'FocusFaceExitDuration'
+  0x18086eadb: mov      rax, qword ptr [rbx]
+  0x18086eade: mov      rcx, rbx
+  0x18086eae1: movss    xmm2, dword ptr [rdi + 0x238]
+  0x18086eae9: call     qword ptr [rax + 0x50]
+  0x18086eaec: movss    dword ptr [rdi + 0x238], xmm0
+  0x18086eaf4: lea      rdx, [rip + 0x481f35]  ; 'FocusFaceZoomFactor'
+  0x18086eafb: mov      rax, qword ptr [rbx]
+  0x18086eafe: mov      rcx, rbx
+  0x18086eb01: movss    xmm2, dword ptr [rdi + 0x23c]
+  0x18086eb09: call     qword ptr [rax + 0x50]
+  0x18086eb0c: movss    dword ptr [rdi + 0x23c], xmm0
+  0x18086eb14: lea      rdx, [rip + 0x481f2d]  ; 'FocusFaceFov'
+  0x18086eb1b: mov      rax, qword ptr [rbx]
+  0x18086eb1e: mov      rcx, rbx
+  0x18086eb21: movss    xmm2, dword ptr [rdi + 0x240]
+  0x18086eb29: call     qword ptr [rax + 0x50]
+  0x18086eb2c: movss    dword ptr [rdi + 0x240], xmm0
+  0x18086eb34: lea      rdx, [rip + 0x481f1d]  ; 'EmptyModelCacheLimit'
+  0x18086eb3b: mov      rax, qword ptr [rbx]
+  0x18086eb3e: mov      rcx, rbx
+  0x18086eb41: movss    xmm2, dword ptr [rdi + 0x244]
+  0x18086eb49: call     qword ptr [rax + 0x50]
+  0x18086eb4c: movss    dword ptr [rdi + 0x244], xmm0
+  0x18086eb54: lea      rdx, [rip + 0x481f1d]  ; 'NavFlyVehicleRideID'
+  0x18086eb5b: mov      rax, qword ptr [rbx]
+  0x18086eb5e: mov      rcx, rbx
+  0x18086eb61: mov      r8d, dword ptr [rdi + 0x248]
+  0x18086eb68: call     qword ptr [rax + 0x40]
+  0x18086eb6b: mov      dword ptr [rdi + 0x248], eax
+  0x18086eb71: lea      rdx, [rip + 0x481f18]  ; 'LocalPlayerEmployeeClipLevel'
+  0x18086eb78: mov      rax, qword ptr [rbx]
+  0x18086eb7b: mov      rcx, rbx
+  0x18086eb7e: mov      r8d, dword ptr [rdi + 0x24c]
+  0x18086eb85: call     qword ptr [rax + 0x40]
+  0x18086eb88: mov      dword ptr [rdi + 0x24c], eax
+  0x18086eb8e: mov      rax, qword ptr [rbx]
+  0x18086eb91: lea      rdx, [rip + 0x481f20]  ; 'LocalPlayerAssistedClipLevel'
+  0x18086eb98: mov      r8d, dword ptr [rdi + 0x250]
+  0x18086eb9f: mov      rcx, rbx
+  0x18086eba2: call     qword ptr [rax + 0x40]
+  0x18086eba5: mov      dword ptr [rdi + 0x250], eax
+  0x18086ebab: lea      rdx, [rip + 0x481f2e]  ; 'OtherPlayerEmployeeClipLevel'
+  0x18086ebb2: mov      rax, qword ptr [rbx]
+  0x18086ebb5: mov      rcx, rbx
+  0x18086ebb8: mov      r8d, dword ptr [rdi + 0x254]
+  0x18086ebbf: call     qword ptr [rax + 0x40]
+  0x18086ebc2: mov      dword ptr [rdi + 0x254], eax
+  0x18086ebc8: lea      rdx, [rip + 0x481f39]  ; 'OtherPlayerAssistedClipLevel'
+  0x18086ebcf: mov      rax, qword ptr [rbx]
+  0x18086ebd2: mov      rcx, rbx
+  0x18086ebd5: mov      r8d, dword ptr [rdi + 0x258]
+  0x18086ebdc: call     qword ptr [rax + 0x40]
+  0x18086ebdf: mov      dword ptr [rdi + 0x258], eax
+  0x18086ebe5: lea      rdx, [rip + 0x481f44]  ; 'NpcEmployeeClipLevel'
+  0x18086ebec: mov      rax, qword ptr [rbx]
+  0x18086ebef: mov      rcx, rbx
+  0x18086ebf2: mov      r8d, dword ptr [rdi + 0x25c]
+  0x18086ebf9: call     qword ptr [rax + 0x40]
+  0x18086ebfc: mov      dword ptr [rdi + 0x25c], eax
+  0x18086ec02: lea      rdx, [rip + 0x481f47]  ; 'DoodadClipLevel'
+  0x18086ec09: mov      rax, qword ptr [rbx]
+  0x18086ec0c: mov      rcx, rbx
+  0x18086ec0f: mov      r8d, dword ptr [rdi + 0x260]
+  0x18086ec16: call     qword ptr [rax + 0x40]
+  0x18086ec19: mov      dword ptr [rdi + 0x260], eax
+  0x18086ec1f: lea      rdx, [rip + 0x481f42]  ; 'DoodadLootClipLevel'
+  0x18086ec26: mov      rax, qword ptr [rbx]
+  0x18086ec29: mov      rcx, rbx
+  0x18086ec2c: mov      r8d, dword ptr [rdi + 0x264]
+  0x18086ec33: call     qword ptr [rax + 0x40]
+  0x18086ec36: mov      dword ptr [rdi + 0x264], eax
+  0x18086ec3c: lea      rdx, [rip + 0x481f3d]  ; 'DoodadQuestClipLevel'
+  0x18086ec43: mov      rax, qword ptr [rbx]
+  0x18086ec46: mov      rcx, rbx
+  0x18086ec49: mov      r8d, dword ptr [rdi + 0x268]
+  0x18086ec50: call     qword ptr [rax + 0x40]
+  0x18086ec53: mov      dword ptr [rdi + 0x268], eax
+  0x18086ec59: lea      rdx, [rip + 0x481f40]  ; 'LocalPlayerFootprintClipLevel'
+  0x18086ec60: mov      rax, qword ptr [rbx]
+  0x18086ec63: mov      rcx, rbx
+  0x18086ec66: mov      r8d, dword ptr [rdi + 0x26c]
+  0x18086ec6d: call     qword ptr [rax + 0x40]
+  0x18086ec70: mov      dword ptr [rdi + 0x26c], eax
+  0x18086ec76: lea      rdx, [rip + 0x481f4b]  ; 'OtherPlayerFootprintClipLevel'
+  0x18086ec7d: mov      rax, qword ptr [rbx]
+  0x18086ec80: mov      rcx, rbx
+  0x18086ec83: mov      r8d, dword ptr [rdi + 0x270]
+  0x18086ec8a: call     qword ptr [rax + 0x40]
+  0x18086ec8d: mov      dword ptr [rdi + 0x270], eax
+  0x18086ec93: lea      rdx, [rip + 0x481f56]  ; 'NpcFootprintClipLevel'
+  0x18086ec9a: mov      rax, qword ptr [rbx]
+  0x18086ec9d: mov      rcx, rbx
+  0x18086eca0: mov      r8d, dword ptr [rdi + 0x274]
+  0x18086eca7: call     qword ptr [rax + 0x40]
+  0x18086ecaa: mov      dword ptr [rdi + 0x274], eax
+  0x18086ecb0: lea      rdx, [rip + 0x481f59]  ; 'CameraFollowCharacterAction_MinDis'
+  0x18086ecb7: mov      rax, qword ptr [rbx]
+  0x18086ecba: mov      rcx, rbx
+  0x18086ecbd: movss    xmm2, dword ptr [rdi + 0x278]
+  0x18086ecc5: call     qword ptr [rax + 0x50]
+  0x18086ecc8: movss    dword ptr [rdi + 0x278], xmm0
+  0x18086ecd0: lea      rdx, [rip + 0x481f69]  ; 'CameraFollowCharacterAction_MaxDis'
+  0x18086ecd7: mov      rax, qword ptr [rbx]
+  0x18086ecda: mov      rcx, rbx
+  0x18086ecdd: movss    xmm2, dword ptr [rdi + 0x27c]
+  0x18086ece5: call     qword ptr [rax + 0x50]
+  0x18086ece8: movss    dword ptr [rdi + 0x27c], xmm0
+  0x18086ecf0: lea      rdx, [rip + 0x481f79]  ; 'CameraFollowCharacterAction_Speed'
+  0x18086ecf7: mov      rax, qword ptr [rbx]
+  0x18086ecfa: mov      rcx, rbx
+  0x18086ecfd: movss    xmm2, dword ptr [rdi + 0x280]
+  0x18086ed05: call     qword ptr [rax + 0x50]
+  0x18086ed08: movss    dword ptr [rdi + 0x280], xmm0
+  0x18086ed10: lea      rdx, [rip + 0x481f81]  ; 'm1PelvisHeight'
+  0x18086ed17: mov      rax, qword ptr [rbx]
+  0x18086ed1a: movss    xmm2, dword ptr [rdi + 0x200]
+  0x18086ed22: mov      rcx, rbx
+  0x18086ed25: call     qword ptr [rax + 0x50]
+  0x18086ed28: movss    dword ptr [rdi + 0x200], xmm0
+  0x18086ed30: lea      rdx, [rip + 0x481f79]  ; 'm2PelvisHeight'
+  0x18086ed37: mov      rax, qword ptr [rbx]
+  0x18086ed3a: mov      rcx, rbx
+  0x18086ed3d: movss    xmm2, dword ptr [rdi + 0x204]
+  0x18086ed45: call     qword ptr [rax + 0x50]
+  0x18086ed48: movss    dword ptr [rdi + 0x204], xmm0
+  0x18086ed50: lea      rdx, [rip + 0x481f71]  ; 'f1PelvisHeight'
+  0x18086ed57: mov      rax, qword ptr [rbx]
+  0x18086ed5a: mov      rcx, rbx
+  0x18086ed5d: movss    xmm2, dword ptr [rdi + 0x208]
+  0x18086ed65: call     qword ptr [rax + 0x50]
+  0x18086ed68: movss    dword ptr [rdi + 0x208], xmm0
+  0x18086ed70: lea      rdx, [rip + 0x481f69]  ; 'f2PelvisHeight'
+  0x18086ed77: mov      rax, qword ptr [rbx]
+  0x18086ed7a: mov      rcx, rbx
+  0x18086ed7d: movss    xmm2, dword ptr [rdi + 0x20c]
+  0x18086ed85: call     qword ptr [rax + 0x50]
+  0x18086ed88: movss    dword ptr [rdi + 0x20c], xmm0
+  0x18086ed90: lea      rdx, [rip + 0x481f61]  ; 'ShakeFresnelStrengthTime'
+  0x18086ed97: mov      rax, qword ptr [rbx]
+  0x18086ed9a: mov      rcx, rbx
+  0x18086ed9d: movss    xmm2, dword ptr [rdi + 0x210]
+  0x18086eda5: call     qword ptr [rax + 0x50]
+  0x18086eda8: comiss   xmm0, dword ptr [rip + 0x43e77d]
+  0x18086edaf: movss    dword ptr [rdi + 0x210], xmm0
+  0x18086edb7: ja       0x18086edcb
+  0x18086edb9: mov      r9d, 0x1c7
+  0x18086edbf: lea      r8, [rip + 0x481f52]  ; 'pNumbers->fShakeFresnelStrengthTime > 0.1f'
+  0x18086edc6: jmp      0x18086db53
+  0x18086edcb: mov      rax, qword ptr [rbx]
+  0x18086edce: lea      rdx, [rip + 0x481f7b]  ; 'ShakeFresnelStrengthHalfPercent'
+  0x18086edd5: movss    xmm2, dword ptr [rdi + 0x214]
+  0x18086eddd: mov      rcx, rbx
+  0x18086ede0: call     qword ptr [rax + 0x50]
+  0x18086ede3: movss    dword ptr [rdi + 0x214], xmm0
+  0x18086edeb: lea      rdx, [rip + 0x481f86]  ; 'FresnelPower'
+  0x18086edf2: mov      rax, qword ptr [rbx]
+  0x18086edf5: mov      rcx, rbx
+  0x18086edf8: movss    xmm2, dword ptr [rdi + 0x218]
+  0x18086ee00: call     qword ptr [rax + 0x50]
+  0x18086ee03: movss    dword ptr [rdi + 0x218], xmm0
+  0x18086ee0b: lea      rdx, [rip + 0x481f76]  ; 'MaxFresnelStrength'
+  0x18086ee12: mov      rax, qword ptr [rbx]
+  0x18086ee15: mov      rcx, rbx
+

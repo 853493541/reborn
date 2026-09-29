@@ -1,0 +1,97 @@
+# KG3DEngineX64.dll xrefs to 0x1801ef000
+
+## ref @ 0x18016d446 -> 0x1801ef000
+  0x18016d40a: mov      eax, dword ptr [rdi]
+  0x18016d40c: mov      rcx, rdi
+  0x18016d40f: call     qword ptr [rax + 0x890]
+  0x18016d415: test     rax, rax
+  0x18016d418: je       0x18016d46b
+  0x18016d41a: mov      rcx, rax
+  0x18016d41d: call     0x180254080
+  0x18016d422: cmp      dword ptr [rax + 4], 0
+  0x18016d426: je       0x18016d46b
+  0x18016d428: lea      rax, [rsp + 0x30]
+  0x18016d42d: mov      r9d, r13d
+  0x18016d430: mov      r8, r12
+  0x18016d433: mov      rdx, r15
+  0x18016d436: mov      rcx, rdi
+  0x18016d439: mov      dword ptr [rsp + 0x30], 0
+  0x18016d441: mov      qword ptr [rsp + 0x20], rax
+  0x18016d446: call     0x1801ef000
+  0x18016d44b: test     eax, eax
+  0x18016d44d: je       0x18016d46b
+  0x18016d44f: movss    xmm0, dword ptr [rsp + 0x30]
+  0x18016d455: test     rbx, rbx
+  0x18016d458: je       0x18016d460
+  0x18016d45a: comiss   xmm0, dword ptr [rbp]
+  0x18016d45e: jbe      0x18016d465
+  0x18016d460: movss    dword ptr [rbp], xmm0
+  0x18016d465: mov      r14d, 1
+  0x18016d46b: mov      rdx, qword ptr [rsi + 0x178]
+  0x18016d472: mov      rcx, qword ptr [rsi + 0x180]
+  0x18016d479: inc      rbx
+  0x18016d47c: sub      rcx, rdx
+  0x18016d47f: sar      rcx, 3
+  0x18016d483: cmp      rbx, rcx
+  0x18016d486: jb       0x18016d400
+  0x18016d48c: mov      rdi, qword ptr [rsp + 0xd8]
+  0x18016d494: mov      rcx, qword ptr [rip + 0x7014c5]
+  0x18016d49b: lea      r8, [rsp + 0x40]
+  0x18016d4a0: mov      edx, 0x100
+  0x18016d4a5: mov      r9, qword ptr [rcx]
+  0x18016d4a8: call     qword ptr [r9 + 0x160]
+  0x18016d4af: mov      rbx, qword ptr [rsp + 0xe0]
+  0x18016d4b7: mov      eax, r14d
+  0x18016d4ba: .byte    0x48
+  0x18016d4bb: .byte    0x8b
+  0x18016d4bc: .byte    0x8c
+  0x18016d4bd: .byte    0x24
+
+## ref @ 0x180545826 -> 0x1801ef000
+  0x1805457ea: mov      eax, dword ptr [rdi]
+  0x1805457ec: mov      rcx, rdi
+  0x1805457ef: call     qword ptr [rax + 0x890]
+  0x1805457f5: test     rax, rax
+  0x1805457f8: je       0x18054584a
+  0x1805457fa: mov      rcx, rax
+  0x1805457fd: call     0x180254080
+  0x180545802: cmp      dword ptr [rax + 4], 0
+  0x180545806: je       0x18054584a
+  0x180545808: mov      dword ptr [rsp + 0x30], 0
+  0x180545810: lea      rax, [rsp + 0x30]
+  0x180545815: mov      qword ptr [rsp + 0x20], rax
+  0x18054581a: mov      r9d, r14d
+  0x18054581d: mov      r8, r13
+  0x180545820: mov      rdx, r12
+  0x180545823: mov      rcx, rdi
+  0x180545826: call     0x1801ef000
+  0x18054582b: test     eax, eax
+  0x18054582d: je       0x18054584a
+  0x18054582f: movss    xmm0, dword ptr [rsp + 0x30]
+  0x180545835: test     rbx, rbx
+  0x180545838: je       0x180545840
+  0x18054583a: comiss   xmm0, dword ptr [r15]
+  0x18054583e: jbe      0x180545845
+  0x180545840: movss    dword ptr [r15], xmm0
+  0x180545845: mov      esi, 1
+  0x18054584a: mov      rcx, qword ptr [rsp + 0x38]
+  0x18054584f: inc      rbx
+  0x180545852: mov      rax, qword ptr [rsp + 0x40]
+  0x180545857: sub      rax, rcx
+  0x18054585a: sar      rax, 3
+  0x18054585e: cmp      rbx, rax
+  0x180545861: jb       0x1805457e0
+  0x180545867: mov      rcx, qword ptr [rip + 0x3290f2]
+  0x18054586e: mov      rax, qword ptr [rcx]
+  0x180545871: lea      r8, [rsp + 0x70]
+  0x180545876: mov      edx, 0x100
+  0x18054587b: call     qword ptr [rax + 0x160]
+  0x180545881: nop      
+  0x180545882: cmp      qword ptr [rsp + 0x38], 0
+  0x180545888: je       0x18054589f
+  0x18054588a: lea      rcx, [rsp + 0x38]
+  0x18054588f: call     qword ptr [rip + 0x129f0b]
+  0x180545895: mov      rcx, qword ptr [rsp + 0x38]
+  0x18054589a: .byte    0xe8
+  0x18054589b: mov      bl, 0xe1
+  0x18054589d: .byte    0x0e

@@ -1,0 +1,10 @@
+
+==== 0x180afcd90 .. 0x180afcda0 (.text)
+  0x180afcd90: mov      rax, qword ptr [rip + 0x4938a9]  ; 0x180f90640
+  0x180afcd97: mov      qword ptr [rcx], rax
+  0x180afcd9a: ret      
+  0x180afcd9b: int3     
+  0x180afcd9c: int3     
+  0x180afcd9d: int3     
+  0x180afcd9e: int3     
+  0x180afcd9f: int3     

@@ -271,9 +271,14 @@ public sealed class CameraSystem
         var row = Row;
         if (!row.B("ForbidRotation", false)) Yaw -= dx * sens;
         Yaw = (Yaw + Math.PI) % (2 * Math.PI) - Math.PI;
-        double maxPitch = row.F("CameraMaxDeltaPitch", 0.35);
-        Pitch = Math.Max(-Math.PI / 2 + 0.05, Math.Min(Math.PI / 2 - 0.05, Pitch - dy * sens));
-        Pitch = Math.Max(Pitch - maxPitch, Math.Min(Pitch + maxPitch, Pitch));
+        // per-call delta clamp (the row value is the engine's per-frame delta
+        // bound); the old code clamped the absolute Pitch around itself, which
+        // was a no-op and left the real clamp to the live drag path
+        double maxPitchDelta = row.F("CameraMaxDeltaPitch", 0.35);
+        double dp = dy * sens;
+        if (dp > maxPitchDelta) dp = maxPitchDelta;
+        if (dp < -maxPitchDelta) dp = -maxPitchDelta;
+        Pitch = Math.Max(-Math.PI / 2 + 0.05, Math.Min(Math.PI / 2 - 0.05, Pitch - dp));
     }
 
     public void SwitchMode(string mode) { SwitchMode(mode, true); }
@@ -294,7 +299,28 @@ public sealed class CameraSystem
         if (row.Has("InitCameraDistance")) Distance = row.F("InitCameraDistance", 6.0) * UnitsPerMeter;
     }
 
-    public void SetMaxDistance(double meters) { Rows[MODE_CHARACTER].Set("TargetDistance", meters); }
+    public void SetTargetDistance(double meters)
+    {
+        Rows[MODE_CHARACTER].Set("TargetDistance", meters);
+    }
+
+    // kept for the reference smoke tests; the real name is SetTargetDistance
+    public void SetMaxDistance(double meters) { SetTargetDistance(meters); }
+
+    // One clamp for every distance writer (S5): [MinCameraDistance,
+    // MaxCameraDistance] in world units. ZoomBy, the sprint pull-back and the
+    // client's F11 reset all go through this.
+    public double ClampDistanceUnits(double units)
+    {
+        // the user/engine caps are stored on the character row (only that row
+        // is written from custom.dat), so read them there instead of the
+        // current mode row which may not carry them (S5)
+        double min = Rows[MODE_CHARACTER].F("MinCameraDistance", 100.0);
+        double max = Rows[MODE_CHARACTER].F("MaxCameraDistance", 2000.0);
+        if (units < min) units = min;
+        if (units > max) units = max;
+        return units;
+    }
 
     // JX3 wheel zoom, from the real UI binding (ui/script/hotkeys.lua):
     //   CAMERAZOOMIN  -> CameraZoomIn()  = Camera_Zoom(0.9)   (distance * 0.9)
@@ -305,16 +331,38 @@ public sealed class CameraSystem
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
         td *= (direction > 0.0) ? 1.1 : 0.9;
-        double min = Row.F("MinCameraDistance", 100.0);
-        double max = Row.F("MaxCameraDistance", 2000.0);
-        if (td < min) td = min;
-        if (td > max) td = max;
-        SetMaxDistance(td / UnitsPerMeter);
+        SetTargetDistance(ClampDistanceUnits(td) / UnitsPerMeter);
     }
     public void SetDragSpeed(double v) { Rows[MODE_CHARACTER].Set("MaxDragSpeed", v); }
     public void SetFollowMode(string mode) { SwitchMode(mode); }
     public void SetPitch(double deg) { Pitch = deg * DEG; }
     public void SetFollowAction(double[] target) { FollowActionTarget = target; }
+
+    // CameraMovePitch* rows: while moving the pitch eases to
+    // CameraMovePitchApplyAngle, when idle to CameraMovePitchAdjustPitch, both
+    // rate-limited by PitchRate (60 deg/s). The current build's real table
+    // values are 0.0 (data-gated), so the host calls this only with
+    // RC_MOVE_PITCH=1 until the real per-mode rows arrive.
+    public void AdjustPitch(double dt, bool moving)
+    {
+        var row = Row;
+        if (moving)
+        {
+            double applyAngle = row.F("CameraMovePitchApplyAngle", -12.0 * DEG);
+            double step = PitchRate * dt;
+            if (Math.Abs(applyAngle - Pitch) <= step) Pitch = applyAngle;
+            else Pitch += Math.Sign(applyAngle - Pitch) * step;
+            MovePitchApplied = true;
+        }
+        else
+        {
+            double adjust = row.F("CameraMovePitchAdjustPitch", -20.0 * DEG);
+            double step = PitchRate * dt;
+            if (Math.Abs(adjust - Pitch) <= step) Pitch = adjust;
+            else Pitch += Math.Sign(adjust - Pitch) * step;
+            MovePitchApplied = false;
+        }
+    }
 
     // anchor: (x, y=height, z) in host units
     public void Update(double dt, double[] anchor, bool moving = false, double turnAngle = 0.0,
@@ -346,33 +394,13 @@ public sealed class CameraSystem
             distance = Distance;
         }
 
-        if (moving)
-        {
-            double applyAngle = row.F("CameraMovePitchApplyAngle", -12.0 * DEG);
-            double step = PitchRate * dt;
-            if (Math.Abs(applyAngle - Pitch) <= step) Pitch = applyAngle;
-            else Pitch += Math.Sign(applyAngle - Pitch) * step;
-            MovePitchApplied = true;
-        }
-        else
-        {
-            double adjust = row.F("CameraMovePitchAdjustPitch", -20.0 * DEG);
-            double step = PitchRate * dt;
-            if (Math.Abs(adjust - Pitch) <= step) Pitch = adjust;
-            else Pitch += Math.Sign(adjust - Pitch) * step;
-            MovePitchApplied = false;
-        }
+        AdjustPitch(dt, moving);
 
         if (moving && Math.Abs(turnAngle) > row.F("CameraAdjustYawWhenMoveTurnDisableAngle", 15.0 * DEG))
             Yaw += row.F("CameraAdjustYawWhenMoveTurn", 1.0) * turnAngle;
 
-        // JX3-exact convention: offset = (cos(yaw)*cos(pitch)*d, sin(pitch)*d + h,
-        // sin(yaw)*cos(pitch)*d)  (yaw=0 -> +X, yaw+ -> +Z; pitch from horizontal)
-        double yaw = Yaw, pitch = Pitch;
         double[] desired = new double[3];
-        desired[0] = Math.Cos(yaw) * Math.Cos(pitch) * distance;
-        desired[1] = Math.Sin(pitch) * distance + height;
-        desired[2] = Math.Sin(yaw) * Math.Cos(pitch) * distance;
+        DesiredOffset(Yaw, Pitch, distance, height, desired);
 
         double smoothTime = Math.Max(row.F("SmoothTime", 0.1), 1e-3);
         for (int i = 0; i < 3; i++)
@@ -424,6 +452,20 @@ public sealed class CameraSystem
         fz = -Math.Sin(Yaw);
     }
 
+    // JX3-exact follow offset (SetCharacterCameraPosition @ 0x180B0F1EE):
+    //   off = (cos(yaw)*cos(pitch)*d,  sin(pitch)*d + height,  sin(yaw)*cos(pitch)*d)
+    // yaw=0 -> +X, yaw+ -> +Z, pitch from horizontal. The row distance is the
+    // 3D orbit radius: pitch only rotates the offset (constant length) and the
+    // row height is a separate additive term. Never use tan(pitch) here - that
+    // re-scales the radius while dragging (see docs/CAMERA_FIX_SPEC.md).
+    public static void DesiredOffset(double yaw, double pitch, double distance, double height, double[] outOff)
+    {
+        double cp = Math.Cos(pitch);
+        outOff[0] = Math.Cos(yaw) * cp * distance;
+        outOff[1] = Math.Sin(pitch) * distance + height;
+        outOff[2] = Math.Sin(yaw) * cp * distance;
+    }
+
     // Distance-only update for hosts whose orientation comes from the engine
     // (the engine camera owns the look direction; we advance the JX3 distance
     // dynamics: SmoothTime smoothing + sprint pull-back). Returns the smoothed
@@ -437,15 +479,23 @@ public sealed class CameraSystem
             // SprintCameraMaxDistance is a pull-back delta (60 u), not an
             // absolute 60 m target. The exact engine consumer/unit remains an
             // open RE item; use the observed world-unit delta conservatively.
-            double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters +
-                            row.F("SprintCameraMaxDistance", 60.0);
+            // per-mode distance: the active mode row owns TargetDistance (the
+            // engine reads the mode row); fall back to the character row when
+            // the mode row does not carry the key
+            double baseDist = row.F("TargetDistance",
+                Rows[MODE_CHARACTER].F("TargetDistance", 6.0));
+            double target = ClampDistanceUnits(
+                baseDist * meters + row.F("SprintCameraMaxDistance", 60.0));
             double st = Math.Max(row.F("SprintCameraSmoothTime", 0.5), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         else
         {
-            double target = Rows[MODE_CHARACTER].F("TargetDistance", 6.0) * meters;
-            double st = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
+            double baseDist = row.F("TargetDistance",
+                Rows[MODE_CHARACTER].F("TargetDistance", 6.0));
+            double target = ClampDistanceUnits(baseDist * meters);
+            double st = Math.Max(row.F("SmoothTime",
+                Rows[MODE_CHARACTER].F("SmoothTime", 0.06)), 1e-3);
             Distance += Math.Min(1.0, dt / st) * (target - Distance);
         }
         return Distance;
@@ -529,6 +579,139 @@ public sealed class TrackCamera
             Pos[i] += Vel[i] * dt;
         }
         return Pos;
+    }
+}
+
+// Native JX3 wall-obstruction response (docs/CAMERA_WALL_OBSTRUCTION.md):
+//  - the camera is pulled to 18 u short of the nearest ray hit (along the
+//    anchor -> camera line);
+//  - 50 u / 100 u hysteresis prevents flicker at the boundary;
+//  - pull-in is immediate, the spring (fFlex 1.5, fDamp 2.828) eases the
+//    return out once the hit clears.
+// `hitDistance <= 0` means "no hit". `desired` is the unobstructed length of
+// the anchor -> camera offset. The caller owns the actual ray queries.
+public sealed class CameraObstruction
+{
+    public bool Obstructed;
+    // Host crossing guard (registered, default OFF in this class; the client
+    // enables it): the native rule may place the camera behind the anchor when
+    // hit < 18, and the look-at then flips the view 180 deg. With a chattering
+    // hit set (our bake) that flips several times per second - nausea. When
+    // NoCross is set the pull floors at 0 (camera reaches the anchor, never
+    // passes it). Exit: stable render-entity hit set (P4).
+    public bool NoCross;
+    public double Distance = -1.0;     // current (possibly pulled) length
+    // native bound is max(0.001, hit) - 18 (signed; T1.4 landed, the old
+    // MinDistance floor is gone - no field references it)
+    bool _init;
+    public double Clearance = 18.0;
+    public double PullThreshold = 50.0;     // free-side entry hysteresis
+    public double ReleaseThreshold = 100.0; // obstructed-side release hysteresis
+    public double Flex = 1.5;
+    public double Damp = 2.828;
+    // host hit stabilization (registered B11, default 0.25 s; 0 disables):
+    // the min-hit over a short past window is used. It can only hold the
+    // camera at the closest contact longer (never ignore a wall), which kills
+    // the dive/crawl oscillation when the raw min flickers at triangle edges
+    // (T3 idle: probe3 bake 52 <-> 3 -> pull 34 <-> 0 several times per
+    // second). Exit: stable render-entity hit set + footprint basis (P2/P4).
+    public double HitWindow = 0.25;
+
+    double _vel;
+    readonly System.Collections.Generic.List<double[]> _hits = new System.Collections.Generic.List<double[]>();
+    double _clock;
+
+    // Called by the host BEFORE Update (the smoke tests exercise Update with
+    // the raw native rule, so the filter must stay out of the class contract).
+    public double Stabilize(double dt, double hitDistance)
+    {
+        _clock += dt;
+        if (HitWindow <= 0.0) return hitDistance;
+        double now = _clock;
+        if (hitDistance > 0.0) _hits.Add(new[] { now, hitDistance });
+        while (_hits.Count > 0 && now - _hits[0][0] > HitWindow) _hits.RemoveAt(0);
+        if (_hits.Count == 0) return -1.0;
+        double min = _hits[0][1];
+        for (int i = 1; i < _hits.Count; i++)
+            if (_hits[i][1] < min) min = _hits[i][1];
+        return min;
+    }
+
+    public double Update(double dt, double desired, double hitDistance)
+    {
+        if (!_init)
+        {
+            Distance = desired;
+            _init = true;
+        }
+        double target = desired;
+        if (hitDistance > 0.0)
+        {
+            // native signed pull: C' = A + u*max(0.001, hit), then the 18 u
+            // clearance -> the camera may sit behind the anchor (T1.4)
+            double pull = Math.Max(0.001, hitDistance) - Clearance;
+            if (NoCross && pull < 0.0) pull = 0.0;   // host crossing guard
+            if (pull < Distance)
+            {
+                // engine rule: a hit that shortens the anchor ray applies
+                // immediately, with no threshold (0x1804C1208: |A-C'| < |A-cur|
+                // -> apply)
+                Obstructed = true;
+                target = pull;
+            }
+            else
+            {
+                // not a shortening: apply only while the hit stays within the
+                // free (50) / obstructed (100) window of the reference; outside
+                // it the state clears (engine: threshold^2 > |C'-ref|^2)
+                double window = Obstructed ? ReleaseThreshold : PullThreshold;
+                if (Math.Abs(hitDistance - desired) < window)
+                    target = pull < desired ? pull : desired;
+                else
+                    Obstructed = false;
+            }
+        }
+        else if (Obstructed)
+        {
+            Obstructed = false;
+        }
+
+        if (target < Distance)
+        {
+            Distance = target;   // pull in immediately (engine applies the hit point directly)
+            _vel = 0.0;
+            return Distance;
+        }
+        if (target == Distance)
+        {
+            _vel = 0.0;
+            return Distance;
+        }
+
+        // Engine flex (KG3DEngineX64 0x1804C0E84): E = current - reference,
+        // S += (-fFlex*E - fDamp*S)*dt, X = current + S*dt; the 0.05 rad guard
+        // (0x180674314) snaps to the target and drops the state when the move
+        // direction leaves the desired direction.
+        double e = Distance - target;
+        _vel += (-Flex * e - Damp * _vel) * dt;
+        double x = Distance + _vel * dt;
+        bool sameDir = (x - Distance) * (target - Distance) >= 0.0;
+        double angle = sameDir ? 0.0 : Math.PI;
+        if (angle <= 0.05)
+        {
+            Distance = x;
+        }
+        else
+        {
+            Distance = target;
+            _vel = 0.0;
+        }
+        if (Math.Abs(target - Distance) < 0.5 && Math.Abs(_vel) < 1.0)
+        {
+            Distance = target;
+            _vel = 0.0;
+        }
+        return Distance;
     }
 }
 

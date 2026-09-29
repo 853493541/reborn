@@ -1,0 +1,109 @@
+Engine camera API contract - recovered 2026-09-27 (Phase 1 of the
+engine-faithful camera plan)
+
+Source: MovieEngineCLR.dll (C++/CLI), method KGSceneCLR::SetCameraPos
+RVA 0x2728AC (file offset 0x271CAC), IL decoded with dncil. The IL is the
+contract the host engine already accepts (SetCameraPos X/Z work today).
+
+Contract (all virtual calls go through the object's first qword = vtable):
+
+  scene = this.m_pScene                       (field token 0x04000FF8)
+  camera = scene->vt[+0x50](scene)            (returns the camera object)
+
+  // position read/write on the camera object
+  camera->vt[+0x48](camera, &float3 outPos)   // get position (fills 12 bytes)
+  camera->vt[+0x50](camera, &float3 pos, 0)   // set position
+
+  // look-at target read/write on the camera object
+  camera->vt[+0x60](camera, &float3 outTarget) // get target
+  camera->vt[+0x58](camera, &float3 target, 0) // set target (look-at)
+
+  // Y clamp source: the scene's own surface query
+  scene->vt[+0x70](scene, &outPos, &float outClampedY, ?)
+     ; SetCameraPos IL then does:  if (outClampedY > pos.y) pos.y = outClampedY;
+     ; bKeepY=true skips that by using the current position Y instead of fY
+
+  // managed SetCameraPos moves the target by the same delta as the position,
+  // which is why the engine view keeps its direction when the pull crosses
+  // the anchor (the target translation preserves the old look direction).
+
+IL excerpt (dncil, decimal operands), SetCameraPos:
+  69: ldloc.1            (scene)
+  70: dup
+  71: ldind.i8           (vtable)
+  72: ldc.i4.s 80        (0x50)
+  75: add
+  76: ldind.i8
+  77: calli 0x11000420   -> camera object
+  82: stloc.0
+  ...
+  118: ldloc.0 / ldind.i8 / ldc.i4.s 72 (0x48) / add / ldind.i8
+  132: calli 0x1100041F   -> read position into local0x10
+  ...
+  147: scene / vt+112 (0x70) / calli 0x1100040F  -> clamp query (local3)
+  176: if (local3 > local2) local2 = local3       ; the Y clamp
+  ...
+  184: camera / vt+80 (0x50) / calli 0x1100041D  -> set position {x,Y,z}, 0
+  ...
+  254: camera / vt+96 (0x60) / calli 0x1100041F  -> read target into local0x0F
+  263: camera / vt+88 (0x58) / calli 0x1100041D  -> set target {target+delta}, 0
+
+Also recovered from the same IL (same object model):
+  SetCamareMoveState -> calls a native method on the static holder field
+  SetViewAngleFactor -> calls [scene vtable + 560](scene, factor)
+
+BLOCKED (what did not work, with evidence):
+  - Get3DScene2 scene (EngineRay._scene, ray backends work) called at vt+0x50
+    with (void*) signature returns 0 -> not the same object/class as m_pScene.
+  - The managed KGSceneCLR wrapper address (via __makeref and via weak
+    GCHandle deref, both gave the same pointer) scanned over 0x400 bytes
+    exposes no field whose target has an engine-code vtable -> the native
+    m_pScene is not stored as a plain inline pointer reachable that way
+    (C++/CLI layout/GC indirection).
+  - The object scanner's "Camera" object (vtable = engine base + 0x21EF6E0,
+    class KG3D_Camera) has vt+0x50 = base+0x7B5CA0 and vt+0x58 = base+0x7B5CE0,
+    but disassembly at those addresses is mid-function code (no prologue);
+    calling them executes garbage/int3 -> engine AV. KG3D_Camera is NOT the
+    camera class whose +0x50/+0x58 are the position/look-at setters.
+
+UPDATE 2026-09-27 (same session, after the blocked routes):
+  - Prologue-guarded calls were added (int3 padding or common prologue) so a
+    wrong vtable entry is rejected instead of AVing: the client never crashed
+    with the guard on.
+  - RC_CamBind with the relaxed contract still binds wrong objects: the
+    latest bind (obj 0x12A1B2400, posOff 0xE40) has vt[+0x48] == vt[+0x58]
+    == vt[+0x60] (one generic function), and setting through it has no effect
+    on GetCameraPos (read-back fallback fires). None of the root-scanned
+    objects is the camera the managed IL uses.
+  - The client path is default-OFF (`RC_CAM_ENGINESET=1` to probe), verified
+    with a read-back: a native set that does not move the engine camera falls
+    back to the managed call, so the probe can never break placement.
+  - Conclusion: the managed camera object cannot be reached from outside the
+    managed method with the current tools; the hook (or a C++/CLI helper) is
+    required to finish Phase 2.
+
+Next routes (not attempted):
+  1. Hook the managed SetCameraPos call (the camera object is in a register
+     at the vt+0x50/+0x58 call sites) and use the real camera object.
+  2. After one managed SetCameraPos with a unique triple, find the object
+     whose vtable +0x50/+0x58 give valid function prologues (not the
+     KG3D_Camera scanner object) and call them.
+  3. A C++/CLI helper compiled against the engine headers with access to
+     KGSceneCLR/IGK3D_Camera (no signatures to guess).
+
+P2 footprint recon (2026-09-28, KG3DEngineX64.dll 2026-09-27 build):
+  Base-camera ctor 0x180447770 initializes the probe-basis block used by the
+  obstruction helper (proof: camera_wall_obstruction.txt sections 2/3):
+    +0x12c..+0x134 = (500, 0, 0)
+    +0x138..+0x140 = (0, 0, 500)
+    +0x144..+0x14c = (0, 500, 0)
+  i.e. the camera axes scaled by 500.0 (constant @ 0x18068064C; xmm1 = -1000.0
+  goes to +0x10; the rest zeroed). The ctor also zeroes +0x15c (5-ray mode).
+  Writers of +0x12c/+0x144 found by full .text store scan: 0x1802c1f8f,
+  0x1802c2d73, 0x180474528, 0x18048540e, 0x1804a5343, 0x1804d11c7,
+  0x1804d3538/0x1804d3571 - disassembly shows these are struct copy/serialize
+  blocks (write +0xf0..+0x158 from spill slots), not the per-frame footprint
+  projection. The exact transform from camera basis to the corner offsets
+  (how 500 is scaled per frame) was not located.
+  Result: host keeps foot = 22 u (registered C2 approximation); the ctor
+  evidence is recorded for a future session.

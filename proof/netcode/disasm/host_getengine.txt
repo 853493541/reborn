@@ -1,0 +1,44 @@
+
+==== 0x1808d38a0 .. 0x1808d3920 (.text)
+  0x1808d38a0: mov      rax, qword ptr [rip + 0x2423791]  ; 0x182cf7038
+  0x1808d38a7: mov      qword ptr [rcx], rax
+  0x1808d38aa: xor      ecx, ecx
+  0x1808d38ac: mov      eax, 0x80004005
+  0x1808d38b1: cmp      qword ptr [rip + 0x2423780], rcx  ; 0x182cf7038
+  0x1808d38b8: cmovne   eax, ecx
+  0x1808d38bb: ret      
+  0x1808d38bc: int3     
+  0x1808d38bd: int3     
+  0x1808d38be: int3     
+  0x1808d38bf: int3     
+  0x1808d38c0: mov      rax, qword ptr [rip + 0x2423771]  ; 0x182cf7038
+  0x1808d38c7: ret      
+  0x1808d38c8: int3     
+  0x1808d38c9: int3     
+  0x1808d38ca: int3     
+  0x1808d38cb: int3     
+  0x1808d38cc: int3     
+  0x1808d38cd: int3     
+  0x1808d38ce: int3     
+  0x1808d38cf: int3     
+  0x1808d38d0: mov      rax, rsp
+  0x1808d38d3: mov      qword ptr [rax + 0x18], rbx
+  0x1808d38d7: push     rbp
+  0x1808d38d8: push     rsi
+  0x1808d38d9: push     rdi
+  0x1808d38da: push     r12
+  0x1808d38dc: push     r13
+  0x1808d38de: push     r14
+  0x1808d38e0: push     r15
+  0x1808d38e2: lea      rbp, [rax - 0x5f]
+  0x1808d38e6: sub      rsp, 0xe0
+  0x1808d38ed: movaps   xmmword ptr [rax - 0x48], xmm6
+  0x1808d38f1: movaps   xmmword ptr [rax - 0x58], xmm7
+  0x1808d38f5: movaps   xmmword ptr [rax - 0x68], xmm8
+  0x1808d38fa: movaps   xmmword ptr [rax - 0x78], xmm9
+  0x1808d38ff: mov      rax, qword ptr [rip + 0x1cab9da]  ; 0x18257f2e0
+  0x1808d3906: xor      rax, rsp
+  0x1808d3909: mov      qword ptr [rbp - 0x21], rax
+  0x1808d390d: mov      r14, rdx
+  0x1808d3910: mov      rbx, rcx
+  0x1808d3913: mov      r8d, dword ptr [rip + 0x1d80daa]  ; 0x1826546c4

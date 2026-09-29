@@ -1,0 +1,814 @@
+# KG3DEngineX64.dll xrefs for 'SmallCullNear'
+# image base 0x180000000
+
+## xref @ 0x18032d09d -> 0x1806c1ad0 'SetSmallCullNear'  fn start 0x18032c590
+  0x18032c590: push     rbp
+  0x18032c592: push     rsi
+  0x18032c593: push     rdi
+  0x18032c594: lea      rbp, [rsp - 0x380]
+  0x18032c59c: sub      rsp, 0x480
+  0x18032c5a3: mov      qword ptr [rbp - 0x80], 0xfffffffffffffffe
+  0x18032c5ab: mov      qword ptr [rsp + 0x4b0], rbx
+  0x18032c5b3: mov      rax, qword ptr [rip + 0x51d4c6]
+  0x18032c5ba: xor      rax, rsp
+  0x18032c5bd: mov      qword ptr [rbp + 0x370], rax
+  0x18032c5c4: mov      rsi, rdx
+  0x18032c5c7: mov      rdi, rcx
+  0x18032c5ca: lea      rcx, [rip + 0x53d18f]
+  0x18032c5d1: call     0x180127250
+  0x18032c5d6: test     eax, eax
+  0x18032c5d8: je       0x18032d460
+  0x18032c5de: xor      ebx, ebx
+  0x18032c5e0: mov      qword ptr [rsp + 0x78], rbx
+  0x18032c5e5: lea      rdx, [rip + 0x3951d4]  ; 'ReloadShader'
+  0x18032c5ec: mov      rcx, rdi
+  0x18032c5ef: call     qword ptr [rip + 0x34335b]  ; MSVCR110.dll!_mbsicmp
+  0x18032c5f5: test     eax, eax
+  0x18032c5f7: jne      0x18032c6b9
+  0x18032c5fd: lea      edx, [rbx + 0x28]
+  0x18032c600: mov      rcx, rsi
+  0x18032c603: call     qword ptr [rip + 0x3433df]  ; MSVCR110.dll!_mbschr
+  0x18032c609: inc      rax
+  0x18032c60c: mov      qword ptr [rsp + 0x58], rbx
+  0x18032c611: je       0x18032c6a1
+  0x18032c617: lea      r8, [rsp + 0x58]
+  0x18032c61c: lea      rdx, [rip + 0x50f38d]  ; ' ,)\t\n'
+  0x18032c623: mov      rcx, rax
+  0x18032c626: call     qword ptr [rip + 0x3433c4]  ; MSVCR110.dll!_mbstok_s
+  0x18032c62c: mov      rbx, rax
+  0x18032c62f: mov      rcx, qword ptr [rsp + 0x58]
+  0x18032c634: mov      qword ptr [rsp + 0x78], rcx
+  0x18032c639: test     rax, rax
+  0x18032c63c: je       0x18032c6a1
+  0x18032c63e: lea      rcx, [rsp + 0x50]
+  0x18032c643: call     0x18037f8d0
+  0x18032c648: nop      
+  0x18032c649: call     0x180384c20
+  0x18032c64e: mov      r9, qword ptr [rax]
+  0x18032c651: lea      r8, [rsp + 0x50]
+  0x18032c656: mov      rdx, rbx
+  0x18032c659: mov      rcx, rax
+  0x18032c65c: call     qword ptr [r9 + 0x20]
+  0x18032c660: test     eax, eax
+  0x18032c662: js       0x18032c67e
+  0x18032c664: lea      rcx, [rsp + 0x50]
+  0x18032c669: call     0x18037fd20
+  0x18032c66e: nop      
+  0x18032c66f: lea      rcx, [rsp + 0x50]
+  0x18032c674: call     0x18037f8e0
+  0x18032c679: jmp      0x18032d460
+  0x18032c67e: mov      rcx, qword ptr [rip + 0x50f333]
+  0x18032c685: mov      rax, qword ptr [rcx]
+  0x18032c688: lea      rdx, [rip + 0x395141]
+  0x18032c68f: call     qword ptr [rax]
+  0x18032c691: nop      
+  0x18032c692: lea      rcx, [rsp + 0x50]
+  0x18032c697: call     0x18037f8e0
+  0x18032c69c: jmp      0x18032d460
+  0x18032c6a1: mov      rcx, qword ptr [rip + 0x50f310]
+  0x18032c6a8: mov      rax, qword ptr [rcx]
+  0x18032c6ab: lea      rdx, [rip + 0x39513e]
+  0x18032c6b2: call     qword ptr [rax]
+  0x18032c6b4: jmp      0x18032d460
+  0x18032c6b9: lea      rdx, [rip + 0x395140]  ; 'ReloadAllShaders'
+  0x18032c6c0: mov      rcx, rdi
+  0x18032c6c3: call     qword ptr [rip + 0x343287]  ; MSVCR110.dll!_mbsicmp
+  0x18032c6c9: test     eax, eax
+  0x18032c6cb: jne      0x18032c6e0
+  0x18032c6cd: call     0x180384c20
+  0x18032c6d2: mov      rdx, qword ptr [rax]
+  0x18032c6d5: mov      rcx, rax
+  0x18032c6d8: call     qword ptr [rdx + 8]
+  0x18032c6db: jmp      0x18032d460
+  0x18032c6e0: lea      rdx, [rip + 0x395131]  ; 'ToggleSwitch'
+  0x18032c6e7: mov      rcx, rdi
+  0x18032c6ea: call     qword ptr [rip + 0x343260]  ; MSVCR110.dll!_mbsicmp
+  0x18032c6f0: test     eax, eax
+  0x18032c6f2: jne      0x18032c7fe
+  0x18032c6f8: lea      edx, [rax + 0x28]
+  0x18032c6fb: mov      rcx, rsi
+  0x18032c6fe: call     qword ptr [rip + 0x3432e4]  ; MSVCR110.dll!_mbschr
+  0x18032c704: inc      rax
+  0x18032c707: mov      qword ptr [rsp + 0x58], rbx
+  0x18032c70c: je       0x18032d460
+  0x18032c712: lea      r8, [rsp + 0x58]
+  0x18032c717: lea      rdx, [rip + 0x50f292]  ; ' ,)\t\n'
+  0x18032c71e: mov      rcx, rax
+  0x18032c721: call     qword ptr [rip + 0x3432c9]  ; MSVCR110.dll!_mbstok_s
+  0x18032c727: mov      rdi, rax
+  0x18032c72a: mov      rcx, qword ptr [rsp + 0x58]
+  0x18032c72f: mov      qword ptr [rsp + 0x78], rcx
+  0x18032c734: test     rax, rax
+  0x18032c737: je       0x18032d460
+  0x18032c73d: lea      r8, [rsp + 0x78]
+  0x18032c742: lea      rdx, [rip + 0x50f267]  ; ' ,)\t\n'
+  0x18032c749: xor      ecx, ecx
+  0x18032c74b: call     qword ptr [rip + 0x34329f]  ; MSVCR110.dll!_mbstok_s
+  0x18032c751: test     rax, rax
+  0x18032c754: je       0x18032d460
+  0x18032c75a: mov      dword ptr [rsp + 0x50], ebx
+  0x18032c75e: mov      qword ptr [rbp + 0xb8], 0xf
+  0x18032c769: mov      qword ptr [rbp + 0xb0], rbx
+  0x18032c770: mov      byte ptr [rbp + 0xa0], bl
+  0x18032c776: cmp      byte ptr [rax], bl
+  0x18032c778: je       0x18032c789
+  0x18032c77a: or       rbx, 0xffffffffffffffff
+  0x18032c77e: nop      
+  0x18032c780: inc      rbx
+  0x18032c783: cmp      byte ptr [rax + rbx], 0
+  0x18032c787: jne      0x18032c780
+  0x18032c789: mov      r8, rbx
+  0x18032c78c: mov      rdx, rax
+  0x18032c78f: lea      rcx, [rbp + 0xa0]
+  0x18032c796: call     0x18001bc10
+  0x18032c79b: nop      
+  0x18032c79c: lea      rcx, [rbp + 0xa0]
+  0x18032c7a3: cmp      qword ptr [rbp + 0xb8], 0x10
+  0x18032c7ab: cmovae   rcx, qword ptr [rbp + 0xa0]
+  0x18032c7b3: lea      r8, [rsp + 0x50]
+  0x18032c7b8: mov      edx, dword ptr [rbp + 0xb0]
+  0x18032c7be: call     0x18033c5b0
+  0x18032c7c3: mov      ebx, eax
+  0x18032c7c5: cmp      qword ptr [rbp + 0xb8], 0x10
+  0x18032c7cd: jb       0x18032c7db
+  0x18032c7cf: mov      rcx, qword ptr [rbp + 0xa0]
+  0x18032c7d6: call     0x180633a52
+  0x18032c7db: test     ebx, ebx
+  0x18032c7dd: je       0x18032d460
+  0x18032c7e3: xor      edx, edx
+  0x18032c7e5: mov      rcx, rdi
+  0x18032c7e8: call     0x180327700
+  0x18032c7ed: mov      rcx, rax
+  0x18032c7f0: mov      edx, dword ptr [rsp + 0x50]
+  0x18032c7f4: call     0x180327d10
+  0x18032c7f9: jmp      0x18032d460
+  0x18032c7fe: lea      rdx, [rip + 0x395023]  ; 'ModelShadowSync'
+  0x18032c805: mov      rcx, rdi
+  0x18032c808: call     qword ptr [rip + 0x343142]  ; MSVCR110.dll!_mbsicmp
+  0x18032c80e: test     eax, eax
+  0x18032c810: jne      0x18032c897
+  0x18032c816: lea      edx, [rax + 0x28]
+  0x18032c819: mov      rcx, rsi
+  0x18032c81c: call     qword ptr [rip + 0x3431c6]  ; MSVCR110.dll!_mbschr
+  0x18032c822: inc      rax
+  0x18032c825: mov      qword ptr [rsp + 0x58], rbx
+  0x18032c82a: jne      0x18032c831
+  0x18032c82c: mov      rcx, rbx
+  0x18032c82f: jmp      0x18032c853
+  0x18032c831: lea      r8, [rsp + 0x58]
+  0x18032c836: lea      rdx, [rip + 0x50f173]  ; ' ,)\t\n'
+  0x18032c83d: mov      rcx, rax
+  0x18032c840: call     qword ptr [rip + 0x3431aa]  ; MSVCR110.dll!_mbstok_s
+  0x18032c846: mov      rcx, rax
+  0x18032c849: mov      rax, qword ptr [rsp + 0x58]
+  0x18032c84e: mov      qword ptr [rsp + 0x78], rax
+  0x18032c853: mov      dword ptr [rsp + 0x50], 1
+  0x18032c85b: or       rbx, 0xffffffffffffffff
+  0x18032c85f: nop      
+  0x18032c860: lea      rbx, [rbx + 1]
+  0x18032c864: cmp      byte ptr [rcx + rbx], 0
+  0x18032c868: jne      0x18032c860
+  0x18032c86a: lea      edx, [rbx + 1]
+  0x18032c86d: lea      r8, [rsp + 0x50]
+  0x18032c872: call     0x18033c5b0
+  0x18032c877: test     eax, eax
+  0x18032c879: je       0x18032d460
+  0x18032c87f: call     0x1802e9490
+  0x18032c884: mov      r8, qword ptr [rax]
+  0x18032c887: mov      edx, dword ptr [rsp + 0x50]
+  0x18032c88b: mov      rcx, rax
+  0x18032c88e: call     qword ptr [r8 + 0x78]
+  0x18032c892: jmp      0x18032d460
+  0x18032c897: lea      rdx, [rip + 0x360a92]  ; 'ModelShadowType'
+  0x18032c89e: mov      rcx, rdi
+  0x18032c8a1: call     qword ptr [rip + 0x3430a9]  ; MSVCR110.dll!_mbsicmp
+  0x18032c8a7: test     eax, eax
+  0x18032c8a9: jne      0x18032c949
+  0x18032c8af: lea      edx, [rax + 0x28]
+  0x18032c8b2: mov      rcx, rsi
+  0x18032c8b5: call     qword ptr [rip + 0x34312d]  ; MSVCR110.dll!_mbschr
+  0x18032c8bb: inc      rax
+  0x18032c8be: mov      qword ptr [rsp + 0x58], rbx
+  0x18032c8c3: jne      0x18032c8ca
+  0x18032c8c5: mov      rcx, rbx
+  0x18032c8c8: jmp      0x18032c8ec
+  0x18032c8ca: lea      r8, [rsp + 0x58]
+  0x18032c8cf: lea      rdx, [rip + 0x50f0da]  ; ' ,)\t\n'
+  0x18032c8d6: mov      rcx, rax
+  0x18032c8d9: call     qword ptr [rip + 0x343111]  ; MSVCR110.dll!_mbstok_s
+  0x18032c8df: mov      rcx, rax
+  0x18032c8e2: mov      rax, qword ptr [rsp + 0x58]
+  0x18032c8e7: mov      qword ptr [rsp + 0x78], rax
+  0x18032c8ec: mov      dword ptr [rsp + 0x50], ebx
+  0x18032c8f0: or       rbx, 0xffffffffffffffff
+  0x18032c8f4: lea      rbx, [rbx + 1]
+  0x18032c8f8: cmp      byte ptr [rcx + rbx], 0
+  0x18032c8fc: jne      0x18032c8f4
+  0x18032c8fe: lea      edx, [rbx + 1]
+  0x18032c901: lea      r8, [rsp + 0x50]
+  0x18032c906: call     0x18033c5b0
+  0x18032c90b: test     eax, eax
+  0x18032c90d: je       0x18032d460
+  0x18032c913: xor      edx, edx
+  0x18032c915: mov      r8d, 0x2a4
+  0x18032c91b: lea      rcx, [rbp + 0xc0]
+  0x18032c922: call     0x180633e24
+  0x18032c927: lea      rdx, [rbp + 0xc0]
+  0x18032c92e: lea      rcx, [rip + 0x53ce2b]
+  0x18032c935: call     0x180122d10
+  0x18032c93a: mov      eax, dword ptr [rsp + 0x50]
+  0x18032c93e: mov      dword ptr [rbp + 0x168], eax
+  0x18032c944: jmp      0x18032cf93
+  0x18032c949: lea      rdx, [rip + 0x360708]  ; 'ForceShaderModel'
+  0x18032c950: mov      rcx, rdi
+  0x18032c953: call     qword ptr [rip + 0x342ff7]  ; MSVCR110.dll!_mbsicmp
+  0x18032c959: test     eax, eax
+  0x18032c95b: jne      0x18032c9dd
+  0x18032c961: lea      edx, [rax + 0x28]
+  0x18032c964: mov      rcx, rsi
+  0x18032c967: call     qword ptr [rip + 0x34307b]  ; MSVCR110.dll!_mbschr
+  0x18032c96d: inc      rax
+  0x18032c970: mov      qword ptr [rsp + 0x58], rbx
+  0x18032c975: jne      0x18032c97c
+  0x18032c977: mov      rcx, rbx
+  0x18032c97a: jmp      0x18032c99e
+  0x18032c97c: lea      r8, [rsp + 0x58]
+  0x18032c981: lea      rdx, [rip + 0x50f028]  ; ' ,)\t\n'
+  0x18032c988: mov      rcx, rax
+  0x18032c98b: call     qword ptr [rip + 0x34305f]  ; MSVCR110.dll!_mbstok_s
+  0x18032c991: mov      rcx, rax
+  0x18032c994: mov      rax, qword ptr [rsp + 0x58]
+  0x18032c999: mov      qword ptr [rsp + 0x78], rax
+  0x18032c99e: mov      dword ptr [rsp + 0x50], ebx
+  0x18032c9a2: or       rbx, 0xffffffffffffffff
+  0x18032c9a6: lea      rbx, [rbx + 1]
+  0x18032c9aa: cmp      byte ptr [rcx + rbx], 0
+  0x18032c9ae: jne      0x18032c9a6
+  0x18032c9b0: lea      edx, [rbx + 1]
+  0x18032c9b3: lea      r8, [rsp + 0x50]
+  0x18032c9b8: call     0x18033c5b0
+  0x18032c9bd: test     eax, eax
+  0x18032c9bf: je       0x18032d460
+  0x18032c9c5: mov      eax, dword ptr [rsp + 0x50]
+  0x18032c9c9: cmp      eax, 3
+  0x18032c9cc: ja       0x18032d460
+  0x18032c9d2: mov      dword ptr [rip + 0x53c9fc], eax
+  0x18032c9d8: jmp      0x18032d460
+  0x18032c9dd: lea      rdx, [rip + 0x394e54]  ; 'EnableBsp'
+  0x18032c9e4: mov      rcx, rdi
+  0x18032c9e7: call     qword ptr [rip + 0x342f63]  ; MSVCR110.dll!_mbsicmp
+  0x18032c9ed: test     eax, eax
+  0x18032c9ef: jne      0x18032ca95
+  0x18032c9f5: lea      edx, [rax + 0x28]
+  0x18032c9f8: mov      rcx, rsi
+  0x18032c9fb: call     qword ptr [rip + 0x342fe7]  ; MSVCR110.dll!_mbschr
+  0x18032ca01: inc      rax
+  0x18032ca04: mov      qword ptr [rsp + 0x58], rbx
+  0x18032ca09: jne      0x18032ca10
+  0x18032ca0b: mov      rcx, rbx
+  0x18032ca0e: jmp      0x18032ca32
+  0x18032ca10: lea      r8, [rsp + 0x58]
+  0x18032ca15: lea      rdx, [rip + 0x50ef94]  ; ' ,)\t\n'
+  0x18032ca1c: mov      rcx, rax
+  0x18032ca1f: call     qword ptr [rip + 0x342fcb]  ; MSVCR110.dll!_mbstok_s
+  0x18032ca25: mov      rcx, rax
+  0x18032ca28: mov      rax, qword ptr [rsp + 0x58]
+  0x18032ca2d: mov      qword ptr [rsp + 0x78], rax
+  0x18032ca32: mov      dword ptr [rsp + 0x50], ebx
+  0x18032ca36: or       rbx, 0xffffffffffffffff
+  0x18032ca3a: nop      word ptr [rax + rax]
+  0x18032ca40: lea      rbx, [rbx + 1]
+  0x18032ca44: cmp      byte ptr [rcx + rbx], 0
+  0x18032ca48: jne      0x18032ca40
+  0x18032ca4a: lea      edx, [rbx + 1]
+  0x18032ca4d: lea      r8, [rsp + 0x50]
+  0x18032ca52: call     0x18033c5b0
+  0x18032ca57: test     eax, eax
+  0x18032ca59: je       0x18032d460
+  0x18032ca5f: xor      edx, edx
+  0x18032ca61: mov      r8d, 0x2a4
+  0x18032ca67: lea      rcx, [rbp + 0xc0]
+  0x18032ca6e: call     0x180633e24
+  0x18032ca73: lea      rdx, [rbp + 0xc0]
+  0x18032ca7a: lea      rcx, [rip + 0x53ccdf]
+  0x18032ca81: call     0x180122d10
+  0x18032ca86: mov      eax, dword ptr [rsp + 0x50]
+  0x18032ca8a: mov      dword ptr [rbp + 0x2ac], eax
+  0x18032ca90: jmp      0x18032cf93
+  0x18032ca95: lea      rdx, [rip + 0x394dac]  ; 'ReportResourceUse'
+  0x18032ca9c: mov      rcx, rdi
+  0x18032ca9f: call     qword ptr [rip + 0x342eab]  ; MSVCR110.dll!_mbsicmp
+  0x18032caa5: test     eax, eax
+  0x18032caa7: jne      0x18032cab3
+  0x18032caa9: call     0x1801362e0
+  0x18032caae: jmp      0x18032d460
+  0x18032cab3: lea      rdx, [rip + 0x394da6]  ; 'ClearResourceAnalize'
+  0x18032caba: mov      rcx, rdi
+  0x18032cabd: call     qword ptr [rip + 0x342e8d]  ; MSVCR110.dll!_mbsicmp
+  0x18032cac3: test     eax, eax
+  0x18032cac5: jne      0x18032cad1
+  0x18032cac7: call     0x1801362a0
+  0x18032cacc: jmp      0x18032d460
+  0x18032cad1: lea      rdx, [rip + 0x394da0]  ; 'SaveVisibleModelST'
+  0x18032cad8: mov      rcx, rdi
+  0x18032cadb: call     qword ptr [rip + 0x342e6f]  ; MSVCR110.dll!_mbsicmp
+  0x18032cae1: test     eax, eax
+  0x18032cae3: jne      0x18032cb08
+  0x18032cae5: lea      rcx, [rip + 0x5421d4]
+  0x18032caec: call     0x1801435b0
+  0x18032caf1: test     rax, rax
+  0x18032caf4: je       0x18032d460
+  0x18032cafa: mov      rcx, qword ptr [rax + 0x70]
+  0x18032cafe: call     0x1804741b0
+  0x18032cb03: jmp      0x18032d460
+  0x18032cb08: lea      rdx, [rip + 0x394d7d]  ; 'EarlyZ'
+  0x18032cb0f: mov      rcx, rdi
+  0x18032cb12: call     qword ptr [rip + 0x342e38]  ; MSVCR110.dll!_mbsicmp
+  0x18032cb18: test     eax, eax
+  0x18032cb1a: jne      0x18032cb30
+  0x18032cb1c: cmp      dword ptr [rip + 0x5258aa], ebx
+  0x18032cb22: sete     bl
+  0x18032cb25: mov      dword ptr [rip + 0x5258a1], ebx
+  0x18032cb2b: jmp      0x18032d460
+  0x18032cb30: lea      rdx, [rip + 0x394d61]  ; 'WndSelRegion'
+  0x18032cb37: mov      rcx, rdi
+  0x18032cb3a: call     qword ptr [rip + 0x342e10]  ; MSVCR110.dll!_mbsicmp
+  0x18032cb40: test     eax, eax
+  0x18032cb42: jne      0x18032cba6
+  0x18032cb44: lea      rcx, [rip + 0x53cc15]
+  0x18032cb4b: call     0x180123260
+  0x18032cb50: mov      rdi, rax
+  0x18032cb53: test     rax, rax
+  0x18032cb56: je       0x18032d460
+  0x18032cb5c: xor      r8d, r8d
+  0x18032cb5f: mov      rdx, rax
+  0x18032cb62: xor      ecx, ecx
+  0x18032cb64: call     0x180483ba0
+  0x18032cb69: mov      rbx, rax
+  0x18032cb6c: test     rax, rax
+  0x18032cb6f: je       0x18032d460
+  0x18032cb75: mov      rcx, rdi
+  0x18032cb78: call     0x18044f280
+  0x18032cb7d: mov      r9, qword ptr [rax]
+  0x18032cb80: xor      r8d, r8d
+  0x18032cb83: mov      rdx, rbx
+  0x18032cb86: mov      rcx, rax
+  0x18032cb89: call     qword ptr [r9 + 0x90]
+  0x18032cb90: test     eax, eax
+  0x18032cb92: jns      0x18032d460
+  0x18032cb98: mov      rax, qword ptr [rbx]
+  0x18032cb9b: mov      rcx, rbx
+  0x18032cb9e: call     qword ptr [rax + 0x10]
+  0x18032cba1: jmp      0x18032d460
+  0x18032cba6: lea      rdx, [rip + 0x394cfb]  ; 'OutputTextures'
+  0x18032cbad: mov      rcx, rdi
+  0x18032cbb0: call     qword ptr [rip + 0x342d9a]  ; MSVCR110.dll!_mbsicmp
+  0x18032cbb6: test     eax, eax
+  0x18032cbb8: jne      0x18032cbcb
+  0x18032cbba: lea      rcx, [rip + 0x57ad7f]
+  0x18032cbc1: call     0x1802b73d0
+  0x18032cbc6: jmp      0x18032d460
+  0x18032cbcb: lea      rdx, [rip + 0x394ce6]  ; 'Caption_EnableFade'
+  0x18032cbd2: mov      rcx, rdi
+  0x18032cbd5: call     qword ptr [rip + 0x342d75]  ; MSVCR110.dll!_mbsicmp
+  0x18032cbdb: test     eax, eax
+  0x18032cbdd: jne      0x18032cc4b
+  0x18032cbdf: mov      dword ptr [rsp + 0x50], ebx
+  0x18032cbe3: lea      r8, [rsp + 0x50]
+  0x18032cbe8: lea      rdx, [rip + 0x394ce1]  ; 'Caption_EnableFade %d'
+  0x18032cbef: mov      rcx, rsi
+  0x18032cbf2: call     qword ptr [rip + 0x342de8]  ; MSVCR110.dll!sscanf_s
+  0x18032cbf8: cmp      eax, 1
+  0x18032cbfb: je       0x18032cc36
+  0x18032cbfd: lea      rax, [rip + 0x394ce4]  ; 'ParseAndExecCommand'
+  0x18032cc04: mov      qword ptr [rsp + 0x28], rax
+  0x18032cc09: mov      dword ptr [rsp + 0x20], 0x10b
+  0x18032cc11: lea      r9, [rip + 0x3456f8]  ; 'nRetCode'
+  0x18032cc18: lea      r8, [rip + 0x3f44b9]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18032cc1f: mov      edx, 7
+  0x18032cc24: lea      rcx, [rip - 0x32cc2b]
+  0x18032cc2b: call     qword ptr [rip + 0x3424f7]  ; Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+  0x18032cc31: jmp      0x18032d460
+  0x18032cc36: mov      edx, dword ptr [rsp + 0x50]
+  0x18032cc3a: lea      rcx, [rip + 0x57c02f]
+  0x18032cc41: call     0x1802d40c0
+  0x18032cc46: jmp      0x18032d460
+  0x18032cc4b: lea      rdx, [rip + 0x394cae]  ; 'SetFXAALevel'
+  0x18032cc52: mov      rcx, rdi
+  0x18032cc55: call     qword ptr [rip + 0x342cf5]  ; MSVCR110.dll!_mbsicmp
+  0x18032cc5b: test     eax, eax
+  0x18032cc5d: jne      0x18032ccb7
+  0x18032cc5f: mov      dword ptr [rsp + 0x50], ebx
+  0x18032cc63: xor      edx, edx
+  0x18032cc65: mov      r8d, 0x2a4
+  0x18032cc6b: lea      rcx, [rbp + 0xc0]
+  0x18032cc72: call     0x180633e24
+  0x18032cc77: lea      r8, [rsp + 0x50]
+  0x18032cc7c: lea      rdx, [rip + 0x394c8d]  ; 'SetFXAALevel %d'
+  0x18032cc83: mov      rcx, rsi
+  0x18032cc86: call     qword ptr [rip + 0x342d54]  ; MSVCR110.dll!sscanf_s
+  0x18032cc8c: cmp      eax, 1
+  0x18032cc8f: jne      0x18032d460
+  0x18032cc95: lea      rdx, [rbp + 0xc0]
+  0x18032cc9c: lea      rcx, [rip + 0x53cabd]
+  0x18032cca3: call     0x180122d10
+  0x18032cca8: mov      eax, dword ptr [rsp + 0x50]
+  0x18032ccac: mov      dword ptr [rbp + 0x15c], eax
+  0x18032ccb2: jmp      0x18032cf93
+  0x18032ccb7: lea      rdx, [rip + 0x394c62]  ; 'EnableFXAA'
+  0x18032ccbe: mov      rcx, rdi
+  0x18032ccc1: call     qword ptr [rip + 0x342c89]  ; MSVCR110.dll!_mbsicmp
+  0x18032ccc7: test     eax, eax
+  0x18032ccc9: jne      0x18032cd23
+  0x18032cccb: mov      dword ptr [rsp + 0x50], ebx
+  0x18032cccf: xor      edx, edx
+  0x18032ccd1: mov      r8d, 0x2a4
+  0x18032ccd7: lea      rcx, [rbp + 0xc0]
+  0x18032ccde: call     0x180633e24
+  0x18032cce3: lea      r8, [rsp + 0x50]
+  0x18032cce8: lea      rdx, [rip + 0x394c41]  ; 'EnableFXAA %d'
+  0x18032ccef: mov      rcx, rsi
+  0x18032ccf2: call     qword ptr [rip + 0x342ce8]  ; MSVCR110.dll!sscanf_s
+  0x18032ccf8: cmp      eax, 1
+  0x18032ccfb: jne      0x18032d460
+  0x18032cd01: lea      rdx, [rbp + 0xc0]
+  0x18032cd08: lea      rcx, [rip + 0x53ca51]
+  0x18032cd0f: call     0x180122d10
+  0x18032cd14: mov      eax, dword ptr [rsp + 0x50]
+  0x18032cd18: mov      dword ptr [rbp + 0x158], eax
+  0x18032cd1e: jmp      0x18032cf93
+  0x18032cd23: lea      rdx, [rip + 0x394c16]  ; 'reload_caption'
+  0x18032cd2a: mov      rcx, rdi
+  0x18032cd2d: call     qword ptr [rip + 0x342c1d]  ; MSVCR110.dll!_mbsicmp
+  0x18032cd33: test     eax, eax
+  0x18032cd35: jne      0x18032cd48
+  0x18032cd37: lea      rcx, [rip + 0x57bf32]
+  0x18032cd3e: call     0x1802d7000
+  0x18032cd43: jmp      0x18032d460
+  0x18032cd48: lea      rdx, [rip + 0x394c01]  ; 'show_caption_icon'
+  0x18032cd4f: mov      rcx, rdi
+  0x18032cd52: call     qword ptr [rip + 0x342bf8]  ; MSVCR110.dll!_mbsicmp
+  0x18032cd58: test     eax, eax
+  0x18032cd5a: jne      0x18032cd93
+  0x18032cd5c: mov      dword ptr [rsp + 0x50], ebx
+  0x18032cd60: lea      r8, [rsp + 0x50]
+  0x18032cd65: lea      rdx, [rip + 0x394bfc]  ; 'show_caption_icon %d'
+  0x18032cd6c: mov      rcx, rsi
+  0x18032cd6f: call     qword ptr [rip + 0x342c6b]  ; MSVCR110.dll!sscanf_s
+  0x18032cd75: cmp      eax, 1
+  0x18032cd78: jne      0x18032d460
+  0x18032cd7e: mov      edx, dword ptr [rsp + 0x50]
+  0x18032cd82: lea      rcx, [rip + 0x57bee7]
+  0x18032cd89: call     0x1802d77a0
+  0x18032cd8e: jmp      0x18032d460
+  0x18032cd93: lea      rdx, [rip + 0x394be6]  ; 'profile_caption'
+  0x18032cd9a: mov      rcx, rdi
+  0x18032cd9d: call     qword ptr [rip + 0x342bad]  ; MSVCR110.dll!_mbsicmp
+  0x18032cda3: test     eax, eax
+  0x18032cda5: jne      0x18032ce98
+  0x18032cdab: mov      dword ptr [rsp + 0x50], ebx
+  0x18032cdaf: mov      dword ptr [rsp + 0x58], ebx
+  0x18032cdb3: mov      dword ptr [rsp + 0x6c], ebx
+  0x18032cdb7: mov      dword ptr [rsp + 0x68], ebx
+  0x18032cdbb: mov      dword ptr [rsp + 0x70], ebx
+  0x18032cdbf: mov      dword ptr [rsp + 0x64], ebx
+  0x18032cdc3: mov      dword ptr [rsp + 0x60], ebx
+  0x18032cdc7: lea      rax, [rsp + 0x60]
+  0x18032cdcc: mov      qword ptr [rsp + 0x38], rax
+  0x18032cdd1: lea      rax, [rsp + 0x64]
+  0x18032cdd6: mov      qword ptr [rsp + 0x30], rax
+  0x18032cddb: lea      rax, [rsp + 0x70]
+  0x18032cde0: mov      qword ptr [rsp + 0x28], rax
+  0x18032cde5: lea      rax, [rsp + 0x68]
+  0x18032cdea: mov      qword ptr [rsp + 0x20], rax
+  0x18032cdef: lea      r9, [rsp + 0x6c]
+  0x18032cdf4: lea      r8, [rsp + 0x58]
+  0x18032cdf9: lea      rdx, [rsp + 0x50]
+  0x18032cdfe: lea      rcx, [rip + 0x57be6b]
+  0x18032ce05: call     0x1802d5170
+  0x18032ce0a: mov      eax, dword ptr [rsp + 0x60]
+  0x18032ce0e: mov      dword ptr [rsp + 0x38], eax
+  0x18032ce12: mov      eax, dword ptr [rsp + 0x64]
+  0x18032ce16: mov      dword ptr [rsp + 0x30], eax
+  0x18032ce1a: mov      eax, dword ptr [rsp + 0x70]
+  0x18032ce1e: mov      dword ptr [rsp + 0x28], eax
+  0x18032ce22: mov      eax, dword ptr [rsp + 0x68]
+  0x18032ce26: mov      dword ptr [rsp + 0x20], eax
+  0x18032ce2a: mov      r9d, dword ptr [rsp + 0x6c]
+  0x18032ce2f: mov      r8d, dword ptr [rsp + 0x58]
+  0x18032ce34: mov      edx, dword ptr [rsp + 0x50]
+  0x18032ce38: lea      rcx, [rip + 0x394b51]  ; 'texture count(%d) mem(%d)\nRenderData count(%d) used(%d) mem(%d)\nGlyph count(%d) Border(%d)\n'
+  0x18032ce3f: call     qword ptr [rip + 0x342a8b]  ; MSVCR110.dll!printf
+  0x18032ce45: mov      eax, dword ptr [rsp + 0x60]
+  0x18032ce49: mov      dword ptr [rsp + 0x48], eax
+  0x18032ce4d: mov      eax, dword ptr [rsp + 0x64]
+  0x18032ce51: mov      dword ptr [rsp + 0x40], eax
+  0x18032ce55: mov      eax, dword ptr [rsp + 0x70]
+  0x18032ce59: mov      dword ptr [rsp + 0x38], eax
+  0x18032ce5d: mov      eax, dword ptr [rsp + 0x68]
+  0x18032ce61: mov      dword ptr [rsp + 0x30], eax
+  0x18032ce65: mov      eax, dword ptr [rsp + 0x6c]
+  0x18032ce69: mov      dword ptr [rsp + 0x28], eax
+  0x18032ce6d: mov      eax, dword ptr [rsp + 0x58]
+  0x18032ce71: mov      dword ptr [rsp + 0x20], eax
+  0x18032ce75: mov      r9d, dword ptr [rsp + 0x50]
+  0x18032ce7a: lea      r8, [rip + 0x394b0f]  ; 'texture count(%d) mem(%d)\nRenderData count(%d) used(%d) mem(%d)\nGlyph count(%d) Border(%d)\n'
+  0x18032ce81: mov      edx, 7
+  0x18032ce86: lea      rcx, [rip - 0x32ce8d]
+  0x18032ce8d: call     qword ptr [rip + 0x342295]  ; Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+  0x18032ce93: jmp      0x18032d460
+  0x18032ce98: lea      rdx, [rip + 0x394b51]  ; 'profile_caption_open'
+  0x18032ce9f: mov      rcx, rdi
+  0x18032cea2: call     qword ptr [rip + 0x342aa8]  ; MSVCR110.dll!_mbsicmp
+  0x18032cea8: test     eax, eax
+  0x18032ceaa: jne      0x18032cee0
+  0x18032ceac: mov      dword ptr [rsp + 0x50], ebx
+  0x18032ceb0: lea      r8, [rsp + 0x50]
+  0x18032ceb5: lea      rdx, [rip + 0x394b4c]  ; 'profile_caption_open %d'
+  0x18032cebc: mov      rcx, rsi
+  0x18032cebf: call     qword ptr [rip + 0x342b1b]  ; MSVCR110.dll!sscanf_s
+  0x18032cec5: cmp      eax, 1
+  0x18032cec8: jne      0x18032d460
+  0x18032cece: cmp      dword ptr [rsp + 0x50], ebx
+  0x18032ced2: setne    bl
+  0x18032ced5: mov      dword ptr [rip + 0x57bdbd], ebx
+  0x18032cedb: jmp      0x18032d460
+  0x18032cee0: lea      rdx, [rip + 0x394b39]  ; 'OutputFaceTextures'
+  0x18032cee7: mov      rcx, rdi
+  0x18032ceea: call     qword ptr [rip + 0x342a60]  ; MSVCR110.dll!_mbsicmp
+  0x18032cef0: test     eax, eax
+  0x18032cef2: jne      0x18032cf05
+  0x18032cef4: lea      rcx, [rip + 0x57ab4d]
+  0x18032cefb: call     0x180515500
+  0x18032cf00: jmp      0x18032d460
+  0x18032cf05: lea      rdx, [rip + 0x394b2c]  ; 'EnableOutputSceneInfomation'
+  0x18032cf0c: mov      rcx, rdi
+  0x18032cf0f: call     qword ptr [rip + 0x342a3b]  ; MSVCR110.dll!_mbsicmp
+  0x18032cf15: test     eax, eax
+  0x18032cf17: jne      0x18032cfab
+  0x18032cf1d: mov      dword ptr [rsp + 0x60], ebx
+  0x18032cf21: xor      edx, edx
+  0x18032cf23: mov      r8d, 0x2a4
+  0x18032cf29: lea      rcx, [rbp + 0xc0]
+  0x18032cf30: call     0x180633e24
+  0x18032cf35: lea      r8, [rsp + 0x60]
+  0x18032cf3a: lea      rdx, [rip + 0x394b17]  ; 'EnableOutputSceneInfomation %d'
+  0x18032cf41: mov      rcx, rsi
+  0x18032cf44: call     qword ptr [rip + 0x342a96]  ; MSVCR110.dll!sscanf_s
+  0x18032cf4a: cmp      eax, 1
+  0x18032cf4d: jne      0x18032d460
+  0x18032cf53: lea      rcx, [rip + 0x394b1e]  ; 'SceneInfomation.tab'
+  0x18032cf5a: cmp      dword ptr [rsp + 0x60], ebx
+  0x18032cf5e: je       0x18032cf67
+  0x18032cf60: call     0x180094fc0
+  0x18032cf65: jmp      0x18032cf6c
+  0x18032cf67: call     0x180095110
+  0x18032cf6c: mov      eax, dword ptr [rsp + 0x60]
+  0x18032cf70: mov      dword ptr [rip + 0x52543e], eax
+  0x18032cf76: lea      rdx, [rbp + 0xc0]
+  0x18032cf7d: lea      rcx, [rip + 0x53c7dc]
+  0x18032cf84: call     0x180122d10
+  0x18032cf89: mov      eax, dword ptr [rsp + 0x60]
+  0x18032cf8d: mov      dword ptr [rbp + 0x328], eax
+  0x18032cf93: lea      rdx, [rbp + 0xc0]
+  0x18032cf9a: lea      rcx, [rip + 0x53c7bf]
+  0x18032cfa1: call     0x18012e450
+  0x18032cfa6: jmp      0x18032d460
+  0x18032cfab: lea      rdx, [rip + 0x394ade]  ; 'play_font_sfx'
+  0x18032cfb2: mov      rcx, rdi
+  0x18032cfb5: call     qword ptr [rip + 0x342995]  ; MSVCR110.dll!_mbsicmp
+  0x18032cfbb: test     eax, eax
+  0x18032cfbd: jne      0x18032d043
+  0x18032cfc3: lea      edx, [rax + 0x28]
+  0x18032cfc6: mov      rcx, rsi
+  0x18032cfc9: call     qword ptr [rip + 0x342a19]  ; MSVCR110.dll!_mbschr
+  0x18032cfcf: inc      rax
+  0x18032cfd2: mov      qword ptr [rsp + 0x50], rbx
+  0x18032cfd7: je       0x18032cffb
+  0x18032cfd9: lea      r8, [rsp + 0x50]
+  0x18032cfde: lea      rdx, [rip + 0x50e9cb]  ; ' ,)\t\n'
+  0x18032cfe5: mov      rcx, rax
+  0x18032cfe8: call     qword ptr [rip + 0x342a02]  ; MSVCR110.dll!_mbstok_s
+  0x18032cfee: mov      rbx, rax
+  0x18032cff1: mov      rax, qword ptr [rsp + 0x50]
+  0x18032cff6: mov      qword ptr [rsp + 0x78], rax
+  0x18032cffb: lea      rax, [rbp - 0x68]
+  0x18032cfff: mov      qword ptr [rbp - 0x70], rax
+  0x18032d003: mov      r8d, 3
+  0x18032d009: mov      rdx, rbx
+  0x18032d00c: lea      rcx, [rbp - 0x70]
+  0x18032d010: call     0x1800de1d0
+  0x18032d015: nop      
+  0x18032d016: mov      rdx, qword ptr [rbp - 0x70]
+  0x18032d01a: lea      rcx, [rip + 0x5017ef]
+  0x18032d021: call     0x18003f340
+  0x18032d026: nop      
+  0x18032d027: lea      rax, [rbp - 0x68]
+  0x18032d02b: mov      rcx, qword ptr [rbp - 0x70]
+  0x18032d02f: cmp      rcx, rax
+  0x18032d032: je       0x18032d460
+  0x18032d038: call     qword ptr [rip + 0x3427b2]  ; MSVCR110.dll!free
+  0x18032d03e: jmp      0x18032d460
+  0x18032d043: lea      rdx, [rip + 0x394a56]  ; 'Enable_SmallCull'
+  0x18032d04a: mov      rcx, rdi
+  0x18032d04d: call     qword ptr [rip + 0x3428fd]  ; MSVCR110.dll!_mbsicmp
+  0x18032d053: test     eax, eax
+  0x18032d055: jne      0x18032d09d
+  0x18032d057: mov      dword ptr [rsp + 0x50], ebx
+  0x18032d05b: lea      r8, [rsp + 0x50]
+  0x18032d060: lea      rdx, [rip + 0x394a51]  ; 'Enable_SmallCull %d'
+  0x18032d067: mov      rcx, rsi
+  0x18032d06a: call     qword ptr [rip + 0x342970]  ; MSVCR110.dll!sscanf_s
+  0x18032d070: cmp      eax, 1
+  0x18032d073: je       0x18032d08e
+  0x18032d075: lea      rax, [rip + 0x39486c]  ; 'ParseAndExecCommand'
+  0x18032d07c: mov      qword ptr [rsp + 0x28], rax
+  0x18032d081: mov      dword ptr [rsp + 0x20], 0x17e
+  0x18032d089: jmp      0x18032cc11
+  0x18032d08e: mov      eax, dword ptr [rsp + 0x50]
+  0x18032d092: mov      dword ptr [rip + 0x5950ec], eax
+  0x18032d098: jmp      0x18032d460
+  0x18032d09d: lea      rdx, [rip + 0x394a2c]  ; 'SetSmallCullNear'
+  0x18032d0a4: mov      rcx, rdi
+  0x18032d0a7: call     qword ptr [rip + 0x3428a3]  ; MSVCR110.dll!_mbsicmp
+  0x18032d0ad: test     eax, eax
+  0x18032d0af: jne      0x18032d100
+  0x18032d0b1: xorps    xmm0, xmm0
+  0x18032d0b4: movss    dword ptr [rsp + 0x50], xmm0
+  0x18032d0ba: lea      r8, [rsp + 0x50]
+  0x18032d0bf: lea      rdx, [rip + 0x394a22]  ; 'SetSmallCullNear %f'
+  0x18032d0c6: mov      rcx, rsi
+  0x18032d0c9: call     qword ptr [rip + 0x342911]  ; MSVCR110.dll!sscanf_s
+  0x18032d0cf: cmp      eax, 1
+  0x18032d0d2: je       0x18032d0ed
+  0x18032d0d4: lea      rax, [rip + 0x39480d]  ; 'ParseAndExecCommand'
+  0x18032d0db: mov      qword ptr [rsp + 0x28], rax
+  0x18032d0e0: mov      dword ptr [rsp + 0x20], 0x186
+  0x18032d0e8: jmp      0x18032cc11
+  0x18032d0ed: movss    xmm0, dword ptr [rsp + 0x50]
+  0x18032d0f3: movss    dword ptr [rip + 0x510149], xmm0
+  0x18032d0fb: jmp      0x18032d460
+  0x18032d100: lea      rdx, [rip + 0x3949f9]  ; 'SetSmallCullFar'
+  0x18032d107: mov      rcx, rdi
+  0x18032d10a: call     qword ptr [rip + 0x342840]  ; MSVCR110.dll!_mbsicmp
+  0x18032d110: test     eax, eax
+  0x18032d112: jne      0x18032d163
+  0x18032d114: xorps    xmm0, xmm0
+  0x18032d117: movss    dword ptr [rsp + 0x50], xmm0
+  0x18032d11d: lea      r8, [rsp + 0x50]
+  0x18032d122: lea      rdx, [rip + 0x3949e7]  ; 'SetSmallCullFar %f'
+  0x18032d129: mov      rcx, rsi
+  0x18032d12c: call     qword ptr [rip + 0x3428ae]  ; MSVCR110.dll!sscanf_s
+  0x18032d132: cmp      eax, 1
+  0x18032d135: je       0x18032d150
+  0x18032d137: lea      rax, [rip + 0x3947aa]  ; 'ParseAndExecCommand'
+  0x18032d13e: mov      qword ptr [rsp + 0x28], rax
+  0x18032d143: mov      dword ptr [rsp + 0x20], 0x18e
+  0x18032d14b: jmp      0x18032cc11
+  0x18032d150: movss    xmm0, dword ptr [rsp + 0x50]
+  0x18032d156: movss    dword ptr [rip + 0x5100ea], xmm0
+  0x18032d15e: jmp      0x18032d460
+  0x18032d163: lea      rdx, [rip + 0x3949be]  ; 'SetSmallCullModel'
+  0x18032d16a: mov      rcx, rdi
+  0x18032d16d: call     qword ptr [rip + 0x3427dd]  ; MSVCR110.dll!_mbsicmp
+  0x18032d173: test     eax, eax
+  0x18032d175: jne      0x18032d1c6
+  0x18032d177: xorps    xmm0, xmm0
+  0x18032d17a: movss    dword ptr [rsp + 0x50], xmm0
+  0x18032d180: lea      r8, [rsp + 0x50]
+  0x18032d185: lea      rdx, [rip + 0x3949b4]  ; 'SetSmallCullModel %f'
+  0x18032d18c: mov      rcx, rsi
+  0x18032d18f: call     qword ptr [rip + 0x34284b]  ; MSVCR110.dll!sscanf_s
+  0x18032d195: cmp      eax, 1
+  0x18032d198: je       0x18032d1b3
+  0x18032d19a: lea      rax, [rip + 0x394747]  ; 'ParseAndExecCommand'
+  0x18032d1a1: mov      qword ptr [rsp + 0x28], rax
+  0x18032d1a6: mov      dword ptr [rsp + 0x20], 0x196
+  0x18032d1ae: jmp      0x18032cc11
+  0x18032d1b3: movss    xmm0, dword ptr [rsp + 0x50]
+  0x18032d1b9: movss    dword ptr [rip + 0x514883], xmm0
+  0x18032d1c1: jmp      0x18032d460
+  0x18032d1c6: lea      rdx, [rip + 0x39498b]  ; 'SetPhysXLOD'
+  0x18032d1cd: mov      rcx, rdi
+  0x18032d1d0: call     qword ptr [rip + 0x34277a]  ; MSVCR110.dll!_mbsicmp
+  0x18032d1d6: test     eax, eax
+  0x18032d1d8: jne      0x18032d229
+  0x18032d1da: xorps    xmm0, xmm0
+  0x18032d1dd: movss    dword ptr [rsp + 0x50], xmm0
+  0x18032d1e3: lea      r8, [rsp + 0x50]
+  0x18032d1e8: lea      rdx, [rip + 0x394979]  ; 'SetPhysXLOD %f'
+  0x18032d1ef: mov      rcx, rsi
+  0x18032d1f2: call     qword ptr [rip + 0x3427e8]  ; MSVCR110.dll!sscanf_s
+  0x18032d1f8: cmp      eax, 1
+  0x18032d1fb: je       0x18032d216
+  0x18032d1fd: lea      rax, [rip + 0x3946e4]  ; 'ParseAndExecCommand'
+  0x18032d204: mov      qword ptr [rsp + 0x28], rax
+  0x18032d209: mov      dword ptr [rsp + 0x20], 0x19e
+  0x18032d211: jmp      0x18032cc11
+  0x18032d216: movss    xmm0, dword ptr [rsp + 0x50]
+  0x18032d21c: movss    dword ptr [rip + 0x5476ac], xmm0
+  0x18032d224: jmp      0x18032d460
+  0x18032d229: lea      rdx, [rip + 0x394948]  ; 'SetPhysXLODMin'
+  0x18032d230: mov      rcx, rdi
+  0x18032d233: call     qword ptr [rip + 0x342717]  ; MSVCR110.dll!_mbsicmp
+  0x18032d239: test     eax, eax
+  0x18032d23b: jne      0x18032d28c
+  0x18032d23d: xorps    xmm0, xmm0
+  0x18032d240: movss    dword ptr [rsp + 0x50], xmm0
+  0x18032d246: lea      r8, [rsp + 0x50]
+  0x18032d24b: lea      rdx, [rip + 0x394936]  ; 'SetPhysXLODMin %f'
+  0x18032d252: mov      rcx, rsi
+  0x18032d255: call     qword ptr [rip + 0x342785]  ; MSVCR110.dll!sscanf_s
+  0x18032d25b: cmp      eax, 1
+  0x18032d25e: je       0x18032d279
+  0x18032d260: lea      rax, [rip + 0x394681]  ; 'ParseAndExecCommand'
+  0x18032d267: mov      qword ptr [rsp + 0x28], rax
+  0x18032d26c: mov      dword ptr [rsp + 0x20], 0x1a6
+  0x18032d274: jmp      0x18032cc11
+  0x18032d279: movss    xmm0, dword ptr [rsp + 0x50]
+  0x18032d27f: movss    dword ptr [rip + 0x5093e5], xmm0
+  0x18032d287: jmp      0x18032d460
+  0x18032d28c: lea      rdx, [rip + 0x39490d]  ; 'EnableInstance'
+  0x18032d293: mov      rcx, rdi
+  0x18032d296: call     qword ptr [rip + 0x3426b4]  ; MSVCR110.dll!_mbsicmp
+  0x18032d29c: test     eax, eax
+  0x18032d29e: jne      0x18032d2e6
+  0x18032d2a0: mov      dword ptr [rsp + 0x50], ebx
+  0x18032d2a4: lea      r8, [rsp + 0x50]
+  0x18032d2a9: lea      rdx, [rip + 0x394900]  ; 'EnableInstance %d'
+  0x18032d2b0: mov      rcx, rsi
+  0x18032d2b3: call     qword ptr [rip + 0x342727]  ; MSVCR110.dll!sscanf_s
+  0x18032d2b9: cmp      eax, 1
+  0x18032d2bc: je       0x18032d2d7
+  0x18032d2be: lea      rax, [rip + 0x394623]  ; 'ParseAndExecCommand'
+  0x18032d2c5: mov      qword ptr [rsp + 0x28], rax
+  0x18032d2ca: mov      dword ptr [rsp + 0x20], 0x1ae
+  0x18032d2d2: jmp      0x18032cc11
+  0x18032d2d7: mov      eax, dword ptr [rsp + 0x50]
+  0x18032d2db: mov      dword ptr [rip + 0x51d1bf], eax
+  0x18032d2e1: jmp      0x18032d460
+  0x18032d2e6: lea      rdx, [rip + 0x3948db]  ; 'DisableAddonModelSortForShadowMap'
+  0x18032d2ed: mov      rcx, rdi
+  0x18032d2f0: call     qword ptr [rip + 0x34265a]  ; MSVCR110.dll!_mbsicmp
+  0x18032d2f6: test     eax, eax
+  0x18032d2f8: jne      0x18032d340
+  0x18032d2fa: mov      dword ptr [rsp + 0x50], ebx
+  0x18032d2fe: lea      r8, [rsp + 0x50]
+  0x18032d303: lea      rdx, [rip + 0x3948e6]  ; 'DisableAddonModelSortForShadowMap %d'
+  0x18032d30a: mov      rcx, rsi
+  0x18032d30d: call     qword ptr [rip + 0x3426cd]  ; MSVCR110.dll!sscanf_s
+  0x18032d313: cmp      eax, 1
+  0x18032d316: je       0x18032d331
+  0x18032d318: lea      rax, [rip + 0x3945c9]  ; 'ParseAndExecCommand'
+  0x18032d31f: mov      qword ptr [rsp + 0x28], rax
+  0x18032d324: mov      dword ptr [rsp + 0x20], 0x1b7
+  0x18032d32c: jmp      0x18032cc11
+  0x18032d331: mov      eax, dword ptr [rsp + 0x50]
+  0x18032d335: mov      dword ptr [rip + 0x57c2f9], eax
+  0x18032d33b: jmp      0x18032d460
+  0x18032d340: lea      rdx, [rip + 0x3948d1]  ; 'SetRenderShadowLimit'
+  0x18032d347: mov      rcx, rdi
+  0x18032d34a: call     qword ptr [rip + 0x342600]  ; MSVCR110.dll!_mbsicmp
+  0x18032d350: test     eax, eax
+  0x18032d352: jne      0x18032d39a
+  0x18032d354: mov      dword ptr [rsp + 0x50], ebx
+  0x18032d358: lea      r8, [rsp + 0x50]
+  0x18032d35d: lea      rdx, [rip + 0x3948cc]  ; 'SetRenderShadowLimit %d'
+  0x18032d364: mov      rcx, rsi
+  0x18032d367: call     qword ptr [rip + 0x342673]  ; MSVCR110.dll!sscanf_s
+  0x18032d36d: cmp      eax, 1
+  0x18032d370: je       0x18032d38b
+  0x18032d372: lea      rax, [rip + 0x39456f]  ; 'ParseAndExecCommand'
+  0x18032d379: mov      qword ptr [rsp + 0x28], rax
+  0x18032d37e: mov      dword ptr [rsp + 0x20], 0x1c0
+  0x18032d386: jmp      0x18032cc11
+  0x18032d38b: mov      eax, dword ptr [rsp + 0x50]
+  0x18032d38f: mov      dword ptr [rip + 0x5028b3], eax  ; '2'
+  0x18032d395: jmp      0x18032d460
+  0x18032d39a: lea      rdx, [rip + 0x3948a7]  ; 'SetD6RDSBCLA'
+  0x18032d3a1: mov      rcx, rdi
+  0x18032d3a4: call     qword ptr [rip + 0x3425a6]  ; MSVCR110.dll!_mbsicmp
+  0x18032d3aa: test     eax, eax
+  0x18032d3ac: jne      0x18032d460
+  0x18032d3b2: lea      rax, [rsp + 0x60]
+  0x18032d3b7: mov      qword ptr [rsp + 0x40], rax
+  0x18032d3bc: lea      rax, [rsp + 0x64]
+  0x18032d3c1: mov      qword ptr [rsp + 0x38], rax
+  0x18032d3c6: lea      rax, [rsp + 0x70]
+  0x18032d3cb: mov      qword ptr [rsp + 0x30], rax
+  0x18032d3d0: lea      rax, [rsp + 0x68]
+  0x18032d3d5: mov      qword ptr [rsp + 0x28], rax
+  0x18032d3da: lea      rax, [rsp + 0x6c]
+  0x18032d3df: mov      qword ptr [rsp + 0x20], rax
+  0x18032d3e4: lea      r9, [rsp + 0x58]
+  0x18032d3e9: lea      r8, [rsp + 0x50]
+  0x18032d3ee: lea      rdx, [rip + 0x394863]  ; 'SetD6RDSBCLA %f, %f, %f, %f, %f, %f, %f'
+  0x18032d3f5: mov      rcx, rsi
+  0x18032d3f8: call     qword ptr [rip + 0x3425e2]  ; MSVCR110.dll!sscanf_s
+  0x18032d3fe: movss    xmm0, dword ptr [rsp + 0x50]
+  0x18032d404: movss    dword ptr [rip + 0x50344c], xmm0
+  0x18032d40c: movss    xmm1, dword ptr [rsp + 0x58]
+  0x18032d412: movss    dword ptr [rip + 0x503442], xmm1
+  0x18032d41a: movss    xmm0, dword ptr [rsp + 0x6c]
+  0x18032d420: .byte    0xf3
+

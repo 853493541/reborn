@@ -1,0 +1,475 @@
+# KG3DEngineX64.dll xrefs for 'FadeStartDis'
+# image base 0x180000000
+
+## xref @ 0x1802d62b0 -> 0x1806b8a40 'FadeStartDis'  fn start 0x1802d5de0
+  0x1802d5de0: push     rbp
+  0x1802d5de2: push     r12
+  0x1802d5de4: push     r13
+  0x1802d5de6: push     r15
+  0x1802d5de8: lea      rbp, [rsp - 0x3f]
+  0x1802d5ded: sub      rsp, 0xd8
+  0x1802d5df4: mov      rax, qword ptr [rip + 0x573c85]
+  0x1802d5dfb: xor      rax, rsp
+  0x1802d5dfe: mov      qword ptr [rbp + 7], rax
+  0x1802d5e02: mov      r13, rcx
+  0x1802d5e05: mov      qword ptr [rbp - 0x51], rcx
+  0x1802d5e09: xor      r12d, r12d
+  0x1802d5e0c: lea      rcx, [rip + 0x3e2a6d]  ; 'caption.ini'
+  0x1802d5e13: xor      r8d, r8d
+  0x1802d5e16: xor      edx, edx
+  0x1802d5e18: mov      dword ptr [rbp - 0x69], r12d
+  0x1802d5e1c: mov      qword ptr [rbp - 0x49], r12
+  0x1802d5e20: call     qword ptr [rip + 0x39929a]  ; Engine_Lua5X64.dll!g_OpenIniFile
+  0x1802d5e26: mov      r15, rax
+  0x1802d5e29: test     rax, rax
+  0x1802d5e2c: jne      0x1802d5e4c
+  0x1802d5e2e: lea      rcx, [rip + 0x3e2a5b]  ; 'data\\public\\caption.ini'
+  0x1802d5e35: xor      r8d, r8d
+  0x1802d5e38: xor      edx, edx
+  0x1802d5e3a: call     qword ptr [rip + 0x399280]  ; Engine_Lua5X64.dll!g_OpenIniFile
+  0x1802d5e40: mov      r15, rax
+  0x1802d5e43: test     rax, rax
+  0x1802d5e46: je       0x1802d69ca
+  0x1802d5e4c: mov      qword ptr [rsp + 0x108], rbx
+  0x1802d5e54: mov      qword ptr [rsp + 0x110], rsi
+  0x1802d5e5c: mov      qword ptr [rsp + 0x118], rdi
+  0x1802d5e64: lea      rcx, [rbp - 0x69]
+  0x1802d5e68: mov      byte ptr [r13 + 0x70], r12b
+  0x1802d5e6c: mov      rax, qword ptr [r15]
+  0x1802d5e6f: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d5e74: mov      qword ptr [rsp + 0xd0], r14
+  0x1802d5e7c: lea      rbx, [r13 + 0x70]
+  0x1802d5e80: movaps   xmmword ptr [rsp + 0xc0], xmm6
+  0x1802d5e88: movaps   xmmword ptr [rsp + 0xb0], xmm7
+  0x1802d5e90: lea      r8, [rip + 0x3e2a11]  ; 'NewHPBar'
+  0x1802d5e97: lea      rdx, [rip + 0x3e2a1a]  ; 'FontConfig'
+  0x1802d5e9e: xor      r9d, r9d
+  0x1802d5ea1: mov      rcx, r15
+  0x1802d5ea4: call     qword ptr [rax + 0x50]
+  0x1802d5ea7: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d5eab: lea      rcx, [rbp - 0x69]
+  0x1802d5eaf: mov      byte ptr [r13 + 0x65], al
+  0x1802d5eb3: mov      rax, qword ptr [r15]
+  0x1802d5eb6: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d5ebb: lea      r8, [rip + 0x3e2a06]  ; 'ShowHPValue'
+  0x1802d5ec2: lea      rdx, [rip + 0x3e29ef]  ; 'FontConfig'
+  0x1802d5ec9: xor      r9d, r9d
+  0x1802d5ecc: mov      rcx, r15
+  0x1802d5ecf: call     qword ptr [rax + 0x50]
+  0x1802d5ed2: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d5ed6: lea      rcx, [rbp - 0x69]
+  0x1802d5eda: mov      byte ptr [r13 + 0x66], al
+  0x1802d5ede: mov      rax, qword ptr [r15]
+  0x1802d5ee1: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d5ee6: lea      r8, [rip + 0x3e29eb]  ; 'HPValueFontColor'
+  0x1802d5eed: lea      rdx, [rip + 0x3e29c4]  ; 'FontConfig'
+  0x1802d5ef4: or       r9d, 0xffffffff
+  0x1802d5ef8: mov      rcx, r15
+  0x1802d5efb: call     qword ptr [rax + 0x50]
+  0x1802d5efe: mov      eax, dword ptr [rbp - 0x69]
+  0x1802d5f01: lea      r8, [rip + 0x3e29e8]  ; 'HPValueFontScale'
+  0x1802d5f08: movss    xmm3, dword ptr [rip + 0x39b240]
+  0x1802d5f10: mov      dword ptr [r13 + 0x6c], eax
+  0x1802d5f14: mov      r9, qword ptr [r15]
+  0x1802d5f17: lea      rax, [r13 + 0x68]
+  0x1802d5f1b: lea      rdx, [rip + 0x3e2996]  ; 'FontConfig'
+  0x1802d5f22: mov      rcx, r15
+  0x1802d5f25: mov      qword ptr [rsp + 0x20], rax
+  0x1802d5f2a: call     qword ptr [r9 + 0x70]
+  0x1802d5f2e: mov      rax, qword ptr [r15]
+  0x1802d5f31: lea      r9, [rip + 0x448f03]
+  0x1802d5f38: lea      r8, [rip + 0x3e29c9]  ; 'FontFile'
+  0x1802d5f3f: lea      rdx, [rip + 0x3e2972]  ; 'FontConfig'
+  0x1802d5f46: mov      rcx, r15
+  0x1802d5f49: mov      dword ptr [rsp + 0x28], 0x103
+  0x1802d5f51: mov      qword ptr [rsp + 0x20], rbx
+  0x1802d5f56: call     qword ptr [rax + 0x48]
+  0x1802d5f59: mov      r10, qword ptr [r15]
+  0x1802d5f5c: lea      rax, [r13 + 0x174]
+  0x1802d5f63: lea      r9, [rip + 0x3e29ae]  ; 'data\\public\\HPBar.tga'
+  0x1802d5f6a: lea      r8, [rip + 0x3e29bf]  ; 'HPBarTexture'
+  0x1802d5f71: lea      rdx, [rip + 0x3e2940]  ; 'FontConfig'
+  0x1802d5f78: mov      rcx, r15
+  0x1802d5f7b: mov      dword ptr [rsp + 0x28], 0x103
+  0x1802d5f83: mov      qword ptr [rsp + 0x20], rax
+  0x1802d5f88: call     qword ptr [r10 + 0x48]
+  0x1802d5f8c: mov      rax, qword ptr [r15]
+  0x1802d5f8f: lea      rcx, [rbp - 0x69]
+  0x1802d5f93: lea      r8, [rip + 0x3e29a6]  ; 'FaceIndex'
+  0x1802d5f9a: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d5f9f: lea      rdx, [rip + 0x3e2912]  ; 'FontConfig'
+  0x1802d5fa6: xor      r9d, r9d
+  0x1802d5fa9: mov      rcx, r15
+  0x1802d5fac: call     qword ptr [rax + 0x50]
+  0x1802d5faf: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d5fb3: lea      rcx, [rbp - 0x69]
+  0x1802d5fb7: mov      word ptr [r13 + 0x14], ax
+  0x1802d5fbc: mov      rax, qword ptr [r15]
+  0x1802d5fbf: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d5fc4: lea      r8, [rip + 0x3e2981]  ; 'Span'
+  0x1802d5fcb: lea      rdx, [rip + 0x3e28e6]  ; 'FontConfig'
+  0x1802d5fd2: xor      r9d, r9d
+  0x1802d5fd5: mov      rcx, r15
+  0x1802d5fd8: call     qword ptr [rax + 0x50]
+  0x1802d5fdb: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d5fdf: lea      rcx, [rbp - 0x69]
+  0x1802d5fe3: lea      r8, [rip + 0x3e296e]  ; 'BorderColor'
+  0x1802d5fea: mov      byte ptr [r13 + 0x16], al
+  0x1802d5fee: mov      rax, qword ptr [r15]
+  0x1802d5ff1: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d5ff6: lea      rdx, [rip + 0x3e28bb]  ; 'FontConfig'
+  0x1802d5ffd: mov      r9d, 0xff000000
+  0x1802d6003: mov      rcx, r15
+  0x1802d6006: call     qword ptr [rax + 0x50]
+  0x1802d6009: mov      eax, dword ptr [rbp - 0x69]
+  0x1802d600c: lea      r8, [rip + 0x3e2955]  ; 'BorderWeight'
+  0x1802d6013: movss    xmm6, dword ptr [rip + 0x39b369]
+  0x1802d601b: movaps   xmm3, xmm6
+  0x1802d601e: mov      dword ptr [r13 + 0x18], eax
+  0x1802d6022: mov      r9, qword ptr [r15]
+  0x1802d6025: lea      rax, [r13 + 0x54]
+  0x1802d6029: lea      rdx, [rip + 0x3e2888]  ; 'FontConfig'
+  0x1802d6030: mov      rcx, r15
+  0x1802d6033: mov      qword ptr [rsp + 0x20], rax
+  0x1802d6038: call     qword ptr [r9 + 0x70]
+  0x1802d603c: mov      rax, qword ptr [r15]
+  0x1802d603f: lea      rcx, [rbp - 0x69]
+  0x1802d6043: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6048: lea      r8, [rip + 0x3e2929]  ; 'Size'
+  0x1802d604f: lea      rdx, [rip + 0x3e2862]  ; 'FontConfig'
+  0x1802d6056: mov      rcx, r15
+  0x1802d6059: mov      r9d, 0x16
+  0x1802d605f: call     qword ptr [rax + 0x50]
+  0x1802d6062: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d6066: lea      rcx, [rbp - 0x69]
+  0x1802d606a: mov      word ptr [r13 + 0x24], ax
+  0x1802d606f: mov      rax, qword ptr [r15]
+  0x1802d6072: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6077: lea      r8, [rip + 0x3e2902]  ; 'LineSpan'
+  0x1802d607e: lea      rdx, [rip + 0x3e2833]  ; 'FontConfig'
+  0x1802d6085: mov      r9d, 2
+  0x1802d608b: mov      rcx, r15
+  0x1802d608e: call     qword ptr [rax + 0x50]
+  0x1802d6091: movzx    ecx, word ptr [r13 + 0x24]
+  0x1802d6096: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d609a: movss    xmm3, dword ptr [rip + 0x3b0382]
+  0x1802d60a2: mov      byte ptr [r13 + 0x26], al
+  0x1802d60a6: cmp      ecx, 8
+  0x1802d60a9: mov      dword ptr [rbp - 0x59], ecx
+  0x1802d60ac: lea      rdx, [rbp - 0x59]
+  0x1802d60b0: lea      rax, [rbp - 0x55]
+  0x1802d60b4: mov      dword ptr [rbp - 0x55], 8
+  0x1802d60bb: cmovge   rax, rdx
+  0x1802d60bf: lea      rdx, [rbp - 0x59]
+  0x1802d60c3: mov      dword ptr [rbp - 0x61], 0x40
+  0x1802d60ca: movzx    ecx, word ptr [rax]
+  0x1802d60cd: lea      rax, [rbp - 0x61]
+  0x1802d60d1: lea      r8, [rip + 0x3e28b8]  ; 'HPBarWidth'
+  0x1802d60d8: cmp      ecx, 0x40
+  0x1802d60db: mov      dword ptr [rbp - 0x59], ecx
+  0x1802d60de: mov      rcx, r15
+  0x1802d60e1: cmovle   rax, rdx
+  0x1802d60e5: lea      rdx, [rip + 0x3e27cc]  ; 'FontConfig'
+  0x1802d60ec: movzx    eax, word ptr [rax]
+  0x1802d60ef: mov      word ptr [r13 + 0x24], ax
+  0x1802d60f4: mov      r10, qword ptr [r15]
+  0x1802d60f7: lea      rax, [r13 + 0x28]
+  0x1802d60fb: mov      qword ptr [rsp + 0x20], rax
+  0x1802d6100: call     qword ptr [r10 + 0x70]
+  0x1802d6104: mov      r10, qword ptr [r15]
+  0x1802d6107: movaps   xmm3, xmm6
+  0x1802d610a: lea      rax, [r13 + 0x2c]
+  0x1802d610e: lea      r8, [rip + 0x3e288b]  ; 'HPBarHeight'
+  0x1802d6115: lea      rdx, [rip + 0x3e279c]  ; 'FontConfig'
+  0x1802d611c: mov      rcx, r15
+  0x1802d611f: mov      qword ptr [rsp + 0x20], rax
+  0x1802d6124: call     qword ptr [r10 + 0x70]
+  0x1802d6128: mov      rax, qword ptr [r15]
+  0x1802d612b: lea      rcx, [rbp - 0x69]
+  0x1802d612f: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6134: lea      r8, [rip + 0x3e2875]  ; 'HPBorderColor'
+  0x1802d613b: lea      rdx, [rip + 0x3e2776]  ; 'FontConfig'
+  0x1802d6142: mov      rcx, r15
+  0x1802d6145: or       r9d, 0xffffffff
+  0x1802d6149: call     qword ptr [rax + 0x50]
+  0x1802d614c: mov      eax, dword ptr [rbp - 0x69]
+  0x1802d614f: lea      rcx, [rbp - 0x69]
+  0x1802d6153: lea      r8, [rip + 0x3e2866]  ; 'PHBackColor'
+  0x1802d615a: mov      dword ptr [r13 + 0x1c], eax
+  0x1802d615e: mov      rax, qword ptr [r15]
+  0x1802d6161: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6166: lea      rdx, [rip + 0x3e274b]  ; 'FontConfig'
+  0x1802d616d: mov      r9d, 0xff000000
+  0x1802d6173: mov      rcx, r15
+  0x1802d6176: call     qword ptr [rax + 0x50]
+  0x1802d6179: mov      eax, dword ptr [rbp - 0x69]
+  0x1802d617c: lea      r8, [rip + 0x3e284d]  ; 'MinScale'
+  0x1802d6183: movss    xmm3, dword ptr [rip + 0x39e635]
+  0x1802d618b: mov      dword ptr [r13 + 0x20], eax
+  0x1802d618f: mov      r9, qword ptr [r15]
+  0x1802d6192: lea      rax, [r13 + 0x30]
+  0x1802d6196: lea      rdx, [rip + 0x3e271b]  ; 'FontConfig'
+  0x1802d619d: mov      rcx, r15
+  0x1802d61a0: mov      qword ptr [rsp + 0x20], rax
+  0x1802d61a5: call     qword ptr [r9 + 0x70]
+  0x1802d61a9: mov      r9, qword ptr [r15]
+  0x1802d61ac: lea      rax, [r13 + 0x34]
+  0x1802d61b0: movss    xmm6, dword ptr [rip + 0x39afb0]
+  0x1802d61b8: movaps   xmm3, xmm6
+  0x1802d61bb: lea      r8, [rip + 0x3e281e]  ; 'MaxScale'
+  0x1802d61c2: lea      rdx, [rip + 0x3e26ef]  ; 'FontConfig'
+  0x1802d61c9: mov      rcx, r15
+  0x1802d61cc: mov      qword ptr [rsp + 0x20], rax
+  0x1802d61d1: call     qword ptr [r9 + 0x70]
+  0x1802d61d5: mov      rax, qword ptr [r15]
+  0x1802d61d8: movss    xmm7, dword ptr [rip + 0x3aa624]
+  0x1802d61e0: movaps   xmm3, xmm7
+  0x1802d61e3: lea      rbx, [r13 + 0x38]
+  0x1802d61e7: lea      r8, [rip + 0x3e2802]  ; 'ReferDis'
+  0x1802d61ee: lea      rdx, [rip + 0x3e26c3]  ; 'FontConfig'
+  0x1802d61f5: mov      rcx, r15
+  0x1802d61f8: mov      qword ptr [rsp + 0x20], rbx
+  0x1802d61fd: call     qword ptr [rax + 0x70]
+  0x1802d6200: mov      rax, qword ptr [r15]
+  0x1802d6203: lea      rsi, [r13 + 0x3c]
+  0x1802d6207: movss    xmm3, dword ptr [rip + 0x3a1f45]
+  0x1802d620f: lea      r8, [rip + 0x3e27ea]  ; 'ReferDisCof'
+  0x1802d6216: lea      rdx, [rip + 0x3e269b]  ; 'FontConfig'
+  0x1802d621d: mov      rcx, r15
+  0x1802d6220: mov      qword ptr [rsp + 0x20], rsi
+  0x1802d6225: call     qword ptr [rax + 0x70]
+  0x1802d6228: mov      r9, qword ptr [r15]
+  0x1802d622b: movss    xmm3, dword ptr [rip + 0x3e2bf1]
+  0x1802d6233: lea      rax, [r13 + 0x40]
+  0x1802d6237: lea      r8, [rip + 0x3e27d2]  ; 'ConstScale'
+  0x1802d623e: lea      rdx, [rip + 0x3e2673]  ; 'FontConfig'
+  0x1802d6245: mov      rcx, r15
+  0x1802d6248: mov      qword ptr [rsp + 0x20], rax
+  0x1802d624d: call     qword ptr [r9 + 0x70]
+  0x1802d6251: mov      rax, qword ptr [r15]
+  0x1802d6254: lea      r14, [r13 + 8]
+  0x1802d6258: movss    xmm3, dword ptr [rip + 0x39e55c]
+  0x1802d6260: lea      r8, [rip + 0x3e27b9]  ; 'FadeReferCof'
+  0x1802d6267: lea      rdx, [rip + 0x3e264a]  ; 'FontConfig'
+  0x1802d626e: mov      rcx, r15
+  0x1802d6271: mov      qword ptr [rsp + 0x20], r14
+  0x1802d6276: call     qword ptr [rax + 0x70]
+  0x1802d6279: mov      rax, qword ptr [r15]
+  0x1802d627c: movss    xmm3, dword ptr [rip + 0x39e090]  ; '��L=data\\public\\LookAtConfig.ini'
+  0x1802d6284: lea      rdi, [r13 + 0xc]
+  0x1802d6288: lea      r8, [rip + 0x3e27a1]  ; 'FadeReferDis'
+  0x1802d628f: lea      rdx, [rip + 0x3e2622]  ; 'FontConfig'
+  0x1802d6296: mov      rcx, r15
+  0x1802d6299: mov      qword ptr [rsp + 0x20], rdi
+  0x1802d629e: call     qword ptr [rax + 0x70]
+  0x1802d62a1: mov      r9, qword ptr [r15]
+  0x1802d62a4: lea      rax, [r13 + 0x10]
+  0x1802d62a8: movss    xmm3, dword ptr [rip + 0x3e2b78]
+  0x1802d62b0: lea      r8, [rip + 0x3e2789]  ; 'FadeStartDis'
+  0x1802d62b7: lea      rdx, [rip + 0x3e25fa]  ; 'FontConfig'
+  0x1802d62be: mov      rcx, r15
+  0x1802d62c1: mov      qword ptr [rsp + 0x20], rax
+  0x1802d62c6: call     qword ptr [r9 + 0x70]
+  0x1802d62ca: mov      r9, qword ptr [r15]
+  0x1802d62cd: lea      rax, [r13 + 0x44]
+  0x1802d62d1: mov      qword ptr [rsp + 0x20], rax
+  0x1802d62d6: lea      r8, [rip + 0x3e2773]  ; 'PHBorder'
+  0x1802d62dd: lea      rdx, [rip + 0x3e25d4]  ; 'FontConfig'
+  0x1802d62e4: movaps   xmm3, xmm6
+  0x1802d62e7: mov      rcx, r15
+  0x1802d62ea: call     qword ptr [r9 + 0x70]
+  0x1802d62ee: mov      r9, qword ptr [r15]
+  0x1802d62f1: lea      rax, [r13 + 0x50]
+  0x1802d62f5: movss    xmm3, dword ptr [rip + 0x3e2b2f]
+  0x1802d62fd: lea      r8, [rip + 0x3e275c]  ; 'BaseHeight'
+  0x1802d6304: lea      rdx, [rip + 0x3e25ad]  ; 'FontConfig'
+  0x1802d630b: mov      rcx, r15
+  0x1802d630e: mov      qword ptr [rsp + 0x20], rax
+  0x1802d6313: call     qword ptr [r9 + 0x70]
+  0x1802d6317: mov      dword ptr [rbp - 0x61], 0x3f800000
+  0x1802d631e: movss    xmm3, dword ptr [rip + 0x39ae36]
+  0x1802d6326: xorps    xmm2, xmm2
+  0x1802d6329: comiss   xmm3, dword ptr [rbx]
+  0x1802d632c: lea      rax, [rbp - 0x61]
+  0x1802d6330: lea      rcx, [rbp - 0x69]
+  0x1802d6334: lea      r8, [rip + 0x3e2735]  ; 'ReferWidth'
+  0x1802d633b: cmovbe   rax, rbx
+  0x1802d633f: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6344: lea      rdx, [rip + 0x3e256d]  ; 'FontConfig'
+  0x1802d634b: mov      eax, dword ptr [rax]
+  0x1802d634d: mov      dword ptr [rbp - 0x61], r12d
+  0x1802d6351: mov      r9d, 0x5a0
+  0x1802d6357: mov      dword ptr [rbx], eax
+  0x1802d6359: lea      rax, [rbp - 0x61]
+  0x1802d635d: mov      rcx, r15
+  0x1802d6360: comiss   xmm2, dword ptr [rsi]
+  0x1802d6363: cmovbe   rax, rsi
+  0x1802d6367: movss    xmm0, dword ptr [rax]
+  0x1802d636b: mov      dword ptr [rbp - 0x61], 0x3f800000
+  0x1802d6372: lea      rax, [rbp - 0x61]
+  0x1802d6376: movss    dword ptr [rsi], xmm0
+  0x1802d637a: comiss   xmm0, xmm3
+  0x1802d637d: movss    xmm0, dword ptr [rip + 0x3a69d7]
+  0x1802d6385: cmovbe   rax, rsi
+  0x1802d6389: mov      eax, dword ptr [rax]
+  0x1802d638b: mov      dword ptr [rbp - 0x61], 0x38d1b717
+  0x1802d6392: mov      dword ptr [rsi], eax
+  0x1802d6394: lea      rax, [rbp - 0x61]
+  0x1802d6398: comiss   xmm0, dword ptr [rdi]
+  0x1802d639b: cmovbe   rax, rdi
+  0x1802d639f: movss    xmm1, dword ptr [rax]
+  0x1802d63a3: mov      dword ptr [rbp - 0x61], 0x3f800000
+  0x1802d63aa: lea      rax, [rbp - 0x61]
+  0x1802d63ae: movss    dword ptr [rdi], xmm1
+  0x1802d63b2: comiss   xmm1, xmm3
+  0x1802d63b5: cmovbe   rax, rdi
+  0x1802d63b9: mov      eax, dword ptr [rax]
+  0x1802d63bb: mov      dword ptr [rbp - 0x61], r12d
+  0x1802d63bf: mov      dword ptr [rdi], eax
+  0x1802d63c1: lea      rax, [rbp - 0x61]
+  0x1802d63c5: comiss   xmm2, dword ptr [r14]
+  0x1802d63c9: cmovbe   rax, r14
+  0x1802d63cd: movss    xmm0, dword ptr [rax]
+  0x1802d63d1: lea      rax, [rbp - 0x61]
+  0x1802d63d5: mov      dword ptr [rbp - 0x61], 0x3f800000
+  0x1802d63dc: movss    dword ptr [r14], xmm0
+  0x1802d63e1: comiss   xmm0, xmm3
+  0x1802d63e4: cmovbe   rax, r14
+  0x1802d63e8: mov      eax, dword ptr [rax]
+  0x1802d63ea: mov      dword ptr [r14], eax
+  0x1802d63ed: mov      rax, qword ptr [r15]
+  0x1802d63f0: call     qword ptr [rax + 0x50]
+  0x1802d63f3: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d63f7: lea      rcx, [rbp - 0x69]
+  0x1802d63fb: mov      word ptr [r13 + 0x48], ax
+  0x1802d6400: mov      rax, qword ptr [r15]
+  0x1802d6403: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6408: lea      rdi, [r13 + 0x48]
+  0x1802d640c: lea      r8, [rip + 0x3e266d]  ; 'ReferWidthCof1'
+  0x1802d6413: lea      rdx, [rip + 0x3e249e]  ; 'FontConfig'
+  0x1802d641a: mov      r9d, 0x7d0
+  0x1802d6420: mov      rcx, r15
+  0x1802d6423: call     qword ptr [rax + 0x50]
+  0x1802d6426: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d642a: lea      rcx, [rbp - 0x69]
+  0x1802d642e: mov      word ptr [r13 + 0x4a], ax
+  0x1802d6433: mov      rax, qword ptr [r15]
+  0x1802d6436: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d643b: lea      r8, [rip + 0x3e264e]  ; 'ReferWidthCof2'
+  0x1802d6442: lea      rdx, [rip + 0x3e246f]  ; 'FontConfig'
+  0x1802d6449: mov      r9d, 0x1388
+  0x1802d644f: mov      rcx, r15
+  0x1802d6452: call     qword ptr [rax + 0x50]
+  0x1802d6455: movzx    eax, word ptr [rdi]
+  0x1802d6458: mov      r8d, dword ptr [rbp - 0x69]
+  0x1802d645c: mov      dword ptr [rbp - 0x59], eax
+  0x1802d645f: mov      word ptr [r13 + 0x4c], r8w
+  0x1802d6464: lea      rdx, [rbp - 0x59]
+  0x1802d6468: mov      esi, 1
+  0x1802d646d: lea      rcx, [rbp - 0x61]
+  0x1802d6471: cmp      eax, esi
+  0x1802d6473: mov      dword ptr [rbp - 0x61], esi
+  0x1802d6476: lea      rax, [r13 + 0x4a]
+  0x1802d647a: cmovge   rcx, rdx
+  0x1802d647e: movzx    edx, word ptr [rcx]
+  0x1802d6481: lea      rcx, [rbp - 0x69]
+  0x1802d6485: mov      word ptr [rdi], dx
+  0x1802d6488: cmp      word ptr [r13 + 0x4a], dx
+  0x1802d648d: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6492: cmovb    rax, rdi
+  0x1802d6496: cmp      r8w, dx
+  0x1802d649a: lea      r8, [rip + 0x3e25ff]  ; 'BaseHeightGroupNum'
+  0x1802d64a1: movzx    eax, word ptr [rax]
+  0x1802d64a4: lea      rdx, [rip + 0x3e240d]  ; 'FontConfig'
+  0x1802d64ab: mov      rcx, r15
+  0x1802d64ae: mov      word ptr [r13 + 0x4a], ax
+  0x1802d64b3: lea      rax, [r13 + 0x4c]
+  0x1802d64b7: cmovb    rax, rdi
+  0x1802d64bb: xor      r9d, r9d
+  0x1802d64be: movzx    eax, word ptr [rax]
+  0x1802d64c1: mov      word ptr [r13 + 0x4c], ax
+  0x1802d64c6: mov      rax, qword ptr [r15]
+  0x1802d64c9: call     qword ptr [rax + 0x50]
+  0x1802d64cc: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d64d0: lea      rcx, [rbp - 0x69]
+  0x1802d64d4: mov      word ptr [r13 + 0x58], ax
+  0x1802d64d9: mov      rax, qword ptr [r15]
+  0x1802d64dc: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d64e1: lea      r8, [rip + 0x3e25d0]  ; 'BaseHeightGroup0SPNum'
+  0x1802d64e8: lea      rdx, [rip + 0x3e23c9]  ; 'FontConfig'
+  0x1802d64ef: xor      r9d, r9d
+  0x1802d64f2: mov      rcx, r15
+  0x1802d64f5: call     qword ptr [rax + 0x50]
+  0x1802d64f8: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d64fc: lea      rcx, [rbp - 0x69]
+  0x1802d6500: mov      word ptr [r13 + 0x5a], ax
+  0x1802d6505: mov      rax, qword ptr [r15]
+  0x1802d6508: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d650d: lea      r8, [rip + 0x3e25bc]  ; 'EnableFade'
+  0x1802d6514: lea      rdx, [rip + 0x3e239d]  ; 'FontConfig'
+  0x1802d651b: xor      r9d, r9d
+  0x1802d651e: mov      rcx, r15
+  0x1802d6521: call     qword ptr [rax + 0x50]
+  0x1802d6524: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d6528: lea      rcx, [rbp - 0x69]
+  0x1802d652c: mov      byte ptr [r13 + 1], al
+  0x1802d6530: mov      rax, qword ptr [r15]
+  0x1802d6533: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6538: lea      r8, [rip + 0x3e25a1]  ; 'TextureWidth'
+  0x1802d653f: lea      rdx, [rip + 0x3e2372]  ; 'FontConfig'
+  0x1802d6546: mov      r9d, 0x200
+  0x1802d654c: mov      rcx, r15
+  0x1802d654f: call     qword ptr [rax + 0x50]
+  0x1802d6552: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d6556: lea      rcx, [rbp - 0x69]
+  0x1802d655a: mov      word ptr [r13 + 0x5e], ax
+  0x1802d655f: mov      rax, qword ptr [r15]
+  0x1802d6562: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6567: lea      r8, [rip + 0x3e2582]  ; 'TextureHeight'
+  0x1802d656e: lea      rdx, [rip + 0x3e2343]  ; 'FontConfig'
+  0x1802d6575: mov      r9d, 0x200
+  0x1802d657b: mov      rcx, r15
+  0x1802d657e: call     qword ptr [rax + 0x50]
+  0x1802d6581: movzx    eax, word ptr [rbp - 0x69]
+  0x1802d6585: lea      rcx, [rbp - 0x69]
+  0x1802d6589: mov      word ptr [r13 + 0x60], ax
+  0x1802d658e: mov      rax, qword ptr [r15]
+  0x1802d6591: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6596: lea      r8, [rip + 0x3e2563]  ; 'EnableDisShow'
+  0x1802d659d: lea      rdx, [rip + 0x3e2314]  ; 'FontConfig'
+  0x1802d65a4: xor      r9d, r9d
+  0x1802d65a7: mov      rcx, r15
+  0x1802d65aa: call     qword ptr [rax + 0x50]
+  0x1802d65ad: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d65b1: lea      rcx, [rbp - 0x69]
+  0x1802d65b5: mov      byte ptr [r13 + 0x62], al
+  0x1802d65b9: mov      rax, qword ptr [r15]
+  0x1802d65bc: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d65c1: lea      r8, [rip + 0x3e2548]  ; 'LoadFontInMem'
+  0x1802d65c8: lea      rdx, [rip + 0x3e22e9]  ; 'FontConfig'
+  0x1802d65cf: mov      r9d, esi
+  0x1802d65d2: mov      rcx, r15
+  0x1802d65d5: call     qword ptr [rax + 0x50]
+  0x1802d65d8: mov      eax, dword ptr [rbp - 0x69]
+  0x1802d65db: lea      rcx, [rbp - 0x69]
+  0x1802d65df: mov      dword ptr [rip + 0x5640df], eax
+  0x1802d65e5: mov      rax, qword ptr [r15]
+  0x1802d65e8: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d65ed: lea      r8, [rip + 0x3e252c]  ; 'DisableZTest'
+  0x1802d65f4: lea      rdx, [rip + 0x3e22bd]  ; 'FontConfig'
+  0x1802d65fb: xor      r9d, r9d
+  0x1802d65fe: mov      rcx, r15
+  0x1802d6601: call     qword ptr [rax + 0x50]
+  0x1802d6604: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d6608: lea      rcx, [rbp - 0x69]
+  0x1802d660c: mov      byte ptr [r13 + 0x63], al
+  0x1802d6610: mov      rax, qword ptr [r15]
+  0x1802d6613: mov      qword ptr [rsp + 0x20], rcx
+  0x1802d6618: lea      r8, [rip + 0x3e2511]  ; 'IconVisible'
+  0x1802d661f: lea      rdx, [rip + 0x3e2292]  ; 'FontConfig'
+  0x1802d6626: xor      r9d, r9d
+  0x1802d6629: mov      rcx, r15
+  0x1802d662c: call     qword ptr [rax + 0x50]
+  0x1802d662f: movzx    eax, byte ptr [rbp - 0x69]
+  0x1802d6633: .byte    0xc7
+

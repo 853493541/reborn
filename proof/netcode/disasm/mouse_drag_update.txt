@@ -1,0 +1,840 @@
+
+==== 0x180b36d00 .. 0x180b37200 (.text)
+  0x180b36d00: int3     
+  0x180b36d01: int3     
+  0x180b36d02: int3     
+  0x180b36d03: int3     
+  0x180b36d04: int3     
+  0x180b36d05: int3     
+  0x180b36d06: int3     
+  0x180b36d07: int3     
+  0x180b36d08: int3     
+  0x180b36d09: int3     
+  0x180b36d0a: int3     
+  0x180b36d0b: int3     
+  0x180b36d0c: int3     
+  0x180b36d0d: int3     
+  0x180b36d0e: int3     
+  0x180b36d0f: int3     
+  0x180b36d10: int3     
+  0x180b36d11: int3     
+  0x180b36d12: int3     
+  0x180b36d13: int3     
+  0x180b36d14: int3     
+  0x180b36d15: int3     
+  0x180b36d16: int3     
+  0x180b36d17: int3     
+  0x180b36d18: int3     
+  0x180b36d19: int3     
+  0x180b36d1a: int3     
+  0x180b36d1b: int3     
+  0x180b36d1c: int3     
+  0x180b36d1d: int3     
+  0x180b36d1e: int3     
+  0x180b36d1f: int3     
+  0x180b36d20: int3     
+  0x180b36d21: int3     
+  0x180b36d22: int3     
+  0x180b36d23: int3     
+  0x180b36d24: int3     
+  0x180b36d25: int3     
+  0x180b36d26: int3     
+  0x180b36d27: int3     
+  0x180b36d28: int3     
+  0x180b36d29: int3     
+  0x180b36d2a: int3     
+  0x180b36d2b: int3     
+  0x180b36d2c: int3     
+  0x180b36d2d: int3     
+  0x180b36d2e: int3     
+  0x180b36d2f: int3     
+  0x180b36d30: push     rbx
+  0x180b36d32: sub      rsp, 0x20
+  0x180b36d36: mov      rbx, qword ptr [rcx + 0xf29e8]
+  0x180b36d3d: test     rbx, rbx
+  0x180b36d40: je       0x180b36ddf
+  0x180b36d46: mov      rbx, qword ptr [rbx + 0x10]
+  0x180b36d4a: test     rbx, rbx
+  0x180b36d4d: je       0x180b36ddf
+  0x180b36d53: lea      rcx, [rbx + 0x28]
+  0x180b36d57: mov      r8d, 0x18
+  0x180b36d5d: lea      rdx, [rip + 0x169690]  ; "camera"
+  0x180b36d64: call     qword ptr [rip + 0x59086e]  ; api-ms-win-crt-string-l1-1-0.dll!strncmp
+  0x180b36d6a: test     eax, eax
+  0x180b36d6c: je       0x180b36d7f
+  0x180b36d6e: mov      rbx, qword ptr [rbx + 0x18]
+  0x180b36d72: test     rbx, rbx
+  0x180b36d75: jne      0x180b36d53
+  0x180b36d77: xor      eax, eax
+  0x180b36d79: add      rsp, 0x20
+  0x180b36d7d: pop      rbx
+  0x180b36d7e: ret      
+  0x180b36d7f: test     rbx, rbx
+  0x180b36d82: je       0x180b36ddf
+  0x180b36d84: mov      rbx, qword ptr [rbx + 0x10]
+  0x180b36d88: test     rbx, rbx
+  0x180b36d8b: je       0x180b36ddf
+  0x180b36d8d: nop      dword ptr [rax]
+  0x180b36d90: lea      rcx, [rbx + 0x28]
+  0x180b36d94: mov      r8d, 0x18
+  0x180b36d9a: lea      rdx, [rip + 0x1f41cf]  ; "camera controller"
+  0x180b36da1: call     qword ptr [rip + 0x590831]  ; api-ms-win-crt-string-l1-1-0.dll!strncmp
+  0x180b36da7: test     eax, eax
+  0x180b36da9: je       0x180b36dbc
+  0x180b36dab: mov      rbx, qword ptr [rbx + 0x18]
+  0x180b36daf: test     rbx, rbx
+  0x180b36db2: jne      0x180b36d90
+  0x180b36db4: xor      eax, eax
+  0x180b36db6: add      rsp, 0x20
+  0x180b36dba: pop      rbx
+  0x180b36dbb: ret      
+  0x180b36dbc: test     rbx, rbx
+  0x180b36dbf: je       0x180b36ddf
+  0x180b36dc1: mov      rax, qword ptr [rbx + 0x20]
+  0x180b36dc5: test     rax, rax
+  0x180b36dc8: je       0x180b36ddf
+  0x180b36dca: nop      word ptr [rax + rax]
+  0x180b36dd0: cmp      dword ptr [rax + 8], 0x1d
+  0x180b36dd4: je       0x180b36de1
+  0x180b36dd6: mov      rax, qword ptr [rax + 0x18]
+  0x180b36dda: test     rax, rax
+  0x180b36ddd: jne      0x180b36dd0
+  0x180b36ddf: xor      eax, eax
+  0x180b36de1: add      rsp, 0x20
+  0x180b36de5: pop      rbx
+  0x180b36de6: ret      
+  0x180b36de7: int3     
+  0x180b36de8: int3     
+  0x180b36de9: int3     
+  0x180b36dea: int3     
+  0x180b36deb: int3     
+  0x180b36dec: int3     
+  0x180b36ded: int3     
+  0x180b36dee: int3     
+  0x180b36def: int3     
+  0x180b36df0: int3     
+  0x180b36df1: int3     
+  0x180b36df2: int3     
+  0x180b36df3: int3     
+  0x180b36df4: int3     
+  0x180b36df5: int3     
+  0x180b36df6: int3     
+  0x180b36df7: int3     
+  0x180b36df8: int3     
+  0x180b36df9: int3     
+  0x180b36dfa: int3     
+  0x180b36dfb: int3     
+  0x180b36dfc: int3     
+  0x180b36dfd: int3     
+  0x180b36dfe: int3     
+  0x180b36dff: int3     
+  0x180b36e00: int3     
+  0x180b36e01: int3     
+  0x180b36e02: int3     
+  0x180b36e03: int3     
+  0x180b36e04: int3     
+  0x180b36e05: int3     
+  0x180b36e06: int3     
+  0x180b36e07: int3     
+  0x180b36e08: int3     
+  0x180b36e09: int3     
+  0x180b36e0a: int3     
+  0x180b36e0b: int3     
+  0x180b36e0c: int3     
+  0x180b36e0d: int3     
+  0x180b36e0e: int3     
+  0x180b36e0f: int3     
+  0x180b36e10: int3     
+  0x180b36e11: int3     
+  0x180b36e12: int3     
+  0x180b36e13: int3     
+  0x180b36e14: int3     
+  0x180b36e15: int3     
+  0x180b36e16: int3     
+  0x180b36e17: int3     
+  0x180b36e18: int3     
+  0x180b36e19: int3     
+  0x180b36e1a: int3     
+  0x180b36e1b: int3     
+  0x180b36e1c: int3     
+  0x180b36e1d: int3     
+  0x180b36e1e: int3     
+  0x180b36e1f: int3     
+  0x180b36e20: push     rbx
+  0x180b36e22: push     rbp
+  0x180b36e23: push     rsi
+  0x180b36e24: push     rdi
+  0x180b36e25: push     r12
+  0x180b36e27: push     r14
+  0x180b36e29: push     r15
+  0x180b36e2b: sub      rsp, 0x80
+  0x180b36e32: movaps   xmmword ptr [rsp + 0x70], xmm6
+  0x180b36e37: movaps   xmmword ptr [rsp + 0x60], xmm7
+  0x180b36e3c: mov      rax, qword ptr [rip + 0x38b045]  ; 0x180ec1e88
+  0x180b36e43: xor      rax, rsp
+  0x180b36e46: mov      qword ptr [rsp + 0x58], rax
+  0x180b36e4b: mov      rsi, qword ptr [rsp + 0xe0]
+  0x180b36e53: xorps    xmm7, xmm7
+  0x180b36e56: mov      r15, r9
+  0x180b36e59: mov      dword ptr [rsp + 0x54], 0
+  0x180b36e61: mov      r12, r8
+  0x180b36e64: mov      rbp, rdx
+  0x180b36e67: mov      rdi, rcx
+  0x180b36e6a: movss    xmm0, dword ptr [rsi]
+  0x180b36e6e: ucomiss  xmm0, xmm7
+  0x180b36e71: jp       0x180b36e85
+  0x180b36e73: jne      0x180b36e85
+  0x180b36e75: movss    xmm0, dword ptr [rsi + 4]
+  0x180b36e7a: ucomiss  xmm0, xmm7
+  0x180b36e7d: jp       0x180b36e85
+  0x180b36e7f: je       0x180b3721b
+  0x180b36e85: mov      ecx, dword ptr [rdx + 0x48]
+  0x180b36e88: call     0x180008f12
+  0x180b36e8d: mov      rbx, rax
+  0x180b36e90: test     rax, rax
+  0x180b36e93: jne      0x180b36ea4
+  0x180b36e95: mov      r9d, 0x20b
+  0x180b36e9b: lea      r8, [rip + 0x16920e]  ; "pRLScene"
+  0x180b36ea2: jmp      0x180b36f11
+  0x180b36ea4: mov      rcx, rbx
+  0x180b36ea7: call     0x1800132f0
+  0x180b36eac: mov      r14, rax
+  0x180b36eaf: test     rax, rax
+  0x180b36eb2: jne      0x180b36ec3
+  0x180b36eb4: mov      r9d, 0x20e
+  0x180b36eba: lea      r8, [rip + 0x1f8fcf]  ; "pGliderCameraController"
+  0x180b36ec1: jmp      0x180b36f11
+  0x180b36ec3: mov      rbx, qword ptr [rbx + 0xf29e8]
+  0x180b36eca: test     rbx, rbx
+  0x180b36ecd: je       0x180b36f04
+  0x180b36ecf: mov      rbx, qword ptr [rbx + 0x10]
+  0x180b36ed3: test     rbx, rbx
+  0x180b36ed6: je       0x180b36f04
+  0x180b36ed8: nop      dword ptr [rax + rax]
+  0x180b36ee0: lea      rcx, [rbx + 0x28]
+  0x180b36ee4: mov      r8d, 0x18
+  0x180b36eea: lea      rdx, [rip + 0x169503]  ; "camera"
+  0x180b36ef1: call     qword ptr [rip + 0x5906e1]  ; api-ms-win-crt-string-l1-1-0.dll!strncmp
+  0x180b36ef7: test     eax, eax
+  0x180b36ef9: je       0x180b36f5a
+  0x180b36efb: mov      rbx, qword ptr [rbx + 0x18]
+  0x180b36eff: test     rbx, rbx
+  0x180b36f02: jne      0x180b36ee0
+  0x180b36f04: mov      r9d, 0x211
+  0x180b36f0a: lea      r8, [rip + 0x1f8c07]  ; "pNPCDialogCameraController"
+  0x180b36f11: lea      rcx, [rip + 0x1f9160]  ; "ApplyMouse"
+  0x180b36f18: mov      qword ptr [rsp + 0x20], rcx
+  0x180b36f1d: lea      rdx, [rip + 0x168c4c]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180b36f24: mov      ecx, 3
+  0x180b36f29: call     qword ptr [rip + 0x58f201]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180b36f2f: xor      eax, eax
+  0x180b36f31: mov      rcx, qword ptr [rsp + 0x58]
+  0x180b36f36: xor      rcx, rsp
+  0x180b36f39: call     0x18000bc76
+  0x180b36f3e: movaps   xmm6, xmmword ptr [rsp + 0x70]
+  0x180b36f43: movaps   xmm7, xmmword ptr [rsp + 0x60]
+  0x180b36f48: add      rsp, 0x80
+  0x180b36f4f: pop      r15
+  0x180b36f51: pop      r14
+  0x180b36f53: pop      r12
+  0x180b36f55: pop      rdi
+  0x180b36f56: pop      rsi
+  0x180b36f57: pop      rbp
+  0x180b36f58: pop      rbx
+  0x180b36f59: ret      
+  0x180b36f5a: test     rbx, rbx
+  0x180b36f5d: je       0x180b36f04
+  0x180b36f5f: mov      rbx, qword ptr [rbx + 0x10]
+  0x180b36f63: test     rbx, rbx
+  0x180b36f66: je       0x180b36f04
+  0x180b36f68: nop      dword ptr [rax + rax]
+  0x180b36f70: lea      rcx, [rbx + 0x28]
+  0x180b36f74: mov      r8d, 0x18
+  0x180b36f7a: lea      rdx, [rip + 0x1f3fef]  ; "camera controller"
+  0x180b36f81: call     qword ptr [rip + 0x590651]  ; api-ms-win-crt-string-l1-1-0.dll!strncmp
+  0x180b36f87: test     eax, eax
+  0x180b36f89: je       0x180b36f99
+  0x180b36f8b: mov      rbx, qword ptr [rbx + 0x18]
+  0x180b36f8f: test     rbx, rbx
+  0x180b36f92: jne      0x180b36f70
+  0x180b36f94: jmp      0x180b36f04
+  0x180b36f99: test     rbx, rbx
+  0x180b36f9c: je       0x180b36f04
+  0x180b36fa2: mov      rbx, qword ptr [rbx + 0x20]
+  0x180b36fa6: test     rbx, rbx
+  0x180b36fa9: je       0x180b36f04
+  0x180b36faf: nop      
+  0x180b36fb0: cmp      dword ptr [rbx + 8], 0x18
+  0x180b36fb4: je       0x180b36fc4
+  0x180b36fb6: mov      rbx, qword ptr [rbx + 0x18]
+  0x180b36fba: test     rbx, rbx
+  0x180b36fbd: jne      0x180b36fb0
+  0x180b36fbf: jmp      0x180b36f04
+  0x180b36fc4: test     rbx, rbx
+  0x180b36fc7: je       0x180b36f04
+  0x180b36fcd: cmp      dword ptr [rdi + 0x1ac], 0
+  0x180b36fd4: movss    xmm1, dword ptr [rsi]
+  0x180b36fd8: movss    xmm2, dword ptr [rsi + 4]
+  0x180b36fdd: mulss    xmm1, dword ptr [rip + 0x182f4f]  ; 0x180cb9f34
+  0x180b36fe5: mulss    xmm2, dword ptr [rip + 0x182f47]  ; 0x180cb9f34
+  0x180b36fed: movss    dword ptr [rsp + 0x54], xmm1
+  0x180b36ff3: movss    dword ptr [rsp + 0x50], xmm2
+  0x180b36ff9: jne      0x180b37133
+  0x180b36fff: cmp      dword ptr [rdi + 0x1b0], 0
+  0x180b37006: jne      0x180b37133
+  0x180b3700c: movss    xmm6, dword ptr [r15 + 0x24]
+  0x180b37012: lea      rax, [rsp + 0x50]
+  0x180b37017: movss    xmm3, dword ptr [r15 + 0x20]
+  0x180b3701d: mov      r8, r12
+  0x180b37020: mov      qword ptr [rsp + 0x40], rax
+  0x180b37025: mov      rdx, rbp
+  0x180b37028: lea      rax, [rsp + 0x54]
+  0x180b3702d: mov      rcx, rdi
+  0x180b37030: mov      qword ptr [rsp + 0x38], rax
+  0x180b37035: movss    dword ptr [rsp + 0x30], xmm2
+  0x180b3703b: movss    dword ptr [rsp + 0x28], xmm1
+  0x180b37041: movss    dword ptr [rsp + 0x20], xmm6
+  0x180b37047: call     0x180b37770
+  0x180b3704c: test     eax, eax
+  0x180b3704e: jne      0x180b37062
+  0x180b37050: mov      r9d, 0x224
+  0x180b37056: lea      r8, [rip + 0x168b4b]  ; "nRetCode"
+  0x180b3705d: jmp      0x180b36f11
+  0x180b37062: mov      rcx, rbx
+  0x180b37065: call     0x180019353
+  0x180b3706a: test     eax, eax
+  0x180b3706c: je       0x180b3707f
+  0x180b3706e: lea      rdx, [rdi + 0x38]
+  0x180b37072: mov      rcx, rbx
+  0x180b37075: lea      r8, [rsp + 0x54]
+  0x180b3707a: call     0x18000db07
+  0x180b3707f: addss    xmm6, dword ptr [rsp + 0x50]
+  0x180b37085: movss    xmm2, dword ptr [rdi + 0xa8]
+  0x180b3708d: comiss   xmm6, xmm2
+  0x180b37090: ja       0x180b3709e
+  0x180b37092: movss    xmm2, dword ptr [rdi + 0xa4]
+  0x180b3709a: maxss    xmm2, xmm6
+  0x180b3709e: cmp      dword ptr [rdi + 0x318], 0
+  0x180b370a5: je       0x180b370ad
+  0x180b370a7: cmp      dword ptr [rbp + 0x44], 0
+  0x180b370ab: je       0x180b370c4
+  0x180b370ad: subss    xmm2, dword ptr [r15 + 0x24]
+  0x180b370b3: movss    xmm1, dword ptr [rsp + 0x54]
+  0x180b370b9: movaps   xmm3, xmm7
+  0x180b370bc: mov      rcx, r15
+  0x180b370bf: call     0x18000327e
+  0x180b370c4: mov      rax, qword ptr [rip + 0x3cf985]  ; 0x180f06a50
+  0x180b370cb: movzx    ecx, word ptr [rax + 0x25cf8]
+  0x180b370d2: test     ecx, ecx
+  0x180b370d4: je       0x180b371f8
+  0x180b370da: mov      eax, dword ptr [r14 + 0x17c]
+  0x180b370e1: dec      eax
+  0x180b370e3: cmp      eax, 1
+  0x180b370e6: jbe      0x180b371f8
+  0x180b370ec: mov      eax, dword ptr [rsp + 0xf0]
+  0x180b370f3: mov      rdx, r12
+  0x180b370f6: movss    xmm3, dword ptr [r15 + 0x24]
+  0x180b370fc: mov      rcx, rdi
+  0x180b370ff: movss    xmm2, dword ptr [r15 + 0x20]
+  0x180b37105: mov      dword ptr [rsp + 0x28], eax
+  0x180b37109: mov      eax, dword ptr [rsp + 0xe8]
+  0x180b37110: mov      dword ptr [rsp + 0x20], eax
+  0x180b37114: call     0x180b38ad0
+  0x180b37119: test     eax, eax
+  0x180b3711b: jne      0x180b371f8
+  0x180b37121: mov      r9d, 0x23b
+  0x180b37127: lea      r8, [rip + 0x168a7a]  ; "nRetCode"
+  0x180b3712e: jmp      0x180b36f11
+  0x180b37133: movss    xmm6, dword ptr [r12 + 0x20]
+  0x180b3713a: lea      rax, [rsp + 0x50]
+  0x180b3713f: movss    xmm7, dword ptr [r12 + 0x24]
+  0x180b37146: movaps   xmm3, xmm6
+  0x180b37149: mov      qword ptr [rsp + 0x40], rax
+  0x180b3714e: mov      r8, r12
+  0x180b37151: lea      rax, [rsp + 0x54]
+  0x180b37156: mov      rdx, rbp
+  0x180b37159: mov      qword ptr [rsp + 0x38], rax
+  0x180b3715e: mov      rcx, rdi
+  0x180b37161: movss    dword ptr [rsp + 0x30], xmm2
+  0x180b37167: movss    dword ptr [rsp + 0x28], xmm1
+  0x180b3716d: movss    dword ptr [rsp + 0x20], xmm7
+  0x180b37173: call     0x180b37770
+  0x180b37178: test     eax, eax
+  0x180b3717a: jne      0x180b3718e
+  0x180b3717c: mov      r9d, 0x244
+  0x180b37182: lea      r8, [rip + 0x168a1f]  ; "nRetCode"
+  0x180b37189: jmp      0x180b36f11
+  0x180b3718e: mov      rax, qword ptr [rip + 0x3cf8bb]  ; 0x180f06a50
+  0x180b37195: movzx    ecx, word ptr [rax + 0x25cf8]
+  0x180b3719c: test     ecx, ecx
+  0x180b3719e: je       0x180b371f8
+  0x180b371a0: mov      eax, dword ptr [r14 + 0x17c]
+  0x180b371a7: dec      eax
+  0x180b371a9: cmp      eax, 1
+  0x180b371ac: jbe      0x180b371f8
+  0x180b371ae: mov      eax, dword ptr [rsp + 0xf0]
+  0x180b371b5: mov      rdx, r12
+  0x180b371b8: movss    xmm3, dword ptr [rsp + 0x50]
+  0x180b371be: mov      rcx, rdi
+  0x180b371c1: subss    xmm6, dword ptr [rsp + 0x54]
+  0x180b371c7: mov      dword ptr [rsp + 0x28], eax
+  0x180b371cb: addss    xmm3, xmm7
+  0x180b371cf: mov      eax, dword ptr [rsp + 0xe8]
+  0x180b371d6: mov      dword ptr [rsp + 0x20], eax
+  0x180b371da: movaps   xmm2, xmm6
+  0x180b371dd: call     0x180b38ad0
+  0x180b371e2: test     eax, eax
+  0x180b371e4: jne      0x180b371f8
+  0x180b371e6: mov      r9d, 0x24b
+  0x180b371ec: lea      r8, [rip + 0x1689b5]  ; "nRetCode"
+  0x180b371f3: jmp      0x180b36f11
+  0x180b371f8: mov      rcx, qword ptr [rip + 0x3cf851]  ; 0x180f06a50
+
+==== 0x180b1fe70 .. 0x180b20320 (.text)
+  0x180b1fe70: mov      ecx, eax
+  0x180b1fe72: call     0x180bd62ed
+  0x180b1fe77: test     rax, rax
+  0x180b1fe7a: mov      ecx, 1
+  0x180b1fe7f: cmovne   ebx, ecx
+  0x180b1fe82: mov      eax, ebx
+  0x180b1fe84: add      rsp, 0x20
+  0x180b1fe88: pop      rbx
+  0x180b1fe89: ret      
+  0x180b1fe8a: int3     
+  0x180b1fe8b: int3     
+  0x180b1fe8c: int3     
+  0x180b1fe8d: int3     
+  0x180b1fe8e: int3     
+  0x180b1fe8f: int3     
+  0x180b1fe90: int3     
+  0x180b1fe91: int3     
+  0x180b1fe92: int3     
+  0x180b1fe93: int3     
+  0x180b1fe94: int3     
+  0x180b1fe95: int3     
+  0x180b1fe96: int3     
+  0x180b1fe97: int3     
+  0x180b1fe98: int3     
+  0x180b1fe99: int3     
+  0x180b1fe9a: int3     
+  0x180b1fe9b: int3     
+  0x180b1fe9c: int3     
+  0x180b1fe9d: int3     
+  0x180b1fe9e: int3     
+  0x180b1fe9f: int3     
+  0x180b1fea0: sub      rsp, 0x28
+  0x180b1fea4: test     rcx, rcx
+  0x180b1fea7: je       0x180b1feff
+  0x180b1fea9: mov      qword ptr [rsp + 0x20], rbx
+  0x180b1feae: call     qword ptr [rip + 0x5a6c64]  ; SemanticX64.dll!cstr_tolower
+  0x180b1feb4: mov      rbx, rax
+  0x180b1feb7: test     rax, rax
+  0x180b1feba: je       0x180b1fef3
+  0x180b1febc: lea      rdx, [rip + 0x1c7851]  ; ".pss"
+  0x180b1fec3: mov      rcx, rax
+  0x180b1fec6: call     0x180bd62ed
+  0x180b1fecb: test     rax, rax
+  0x180b1fece: jne      0x180b1fee4
+  0x180b1fed0: lea      rdx, [rip + 0x20f091]  ; ".sfx"
+  0x180b1fed7: mov      rcx, rbx
+  0x180b1feda: call     0x180bd62ed
+  0x180b1fedf: test     rax, rax
+  0x180b1fee2: je       0x180b1fef3
+  0x180b1fee4: mov      rbx, qword ptr [rsp + 0x20]
+  0x180b1fee9: mov      eax, 1
+  0x180b1feee: add      rsp, 0x28
+  0x180b1fef2: ret      
+  0x180b1fef3: mov      rbx, qword ptr [rsp + 0x20]
+  0x180b1fef8: xor      eax, eax
+  0x180b1fefa: add      rsp, 0x28
+  0x180b1fefe: ret      
+  0x180b1feff: xor      eax, eax
+  0x180b1ff01: add      rsp, 0x28
+  0x180b1ff05: ret      
+  0x180b1ff06: int3     
+  0x180b1ff07: int3     
+  0x180b1ff08: int3     
+  0x180b1ff09: int3     
+  0x180b1ff0a: int3     
+  0x180b1ff0b: int3     
+  0x180b1ff0c: int3     
+  0x180b1ff0d: int3     
+  0x180b1ff0e: int3     
+  0x180b1ff0f: int3     
+  0x180b1ff10: int3     
+  0x180b1ff11: int3     
+  0x180b1ff12: int3     
+  0x180b1ff13: int3     
+  0x180b1ff14: int3     
+  0x180b1ff15: int3     
+  0x180b1ff16: int3     
+  0x180b1ff17: int3     
+  0x180b1ff18: int3     
+  0x180b1ff19: int3     
+  0x180b1ff1a: int3     
+  0x180b1ff1b: int3     
+  0x180b1ff1c: int3     
+  0x180b1ff1d: int3     
+  0x180b1ff1e: int3     
+  0x180b1ff1f: int3     
+  0x180b1ff20: push     rbx
+  0x180b1ff22: sub      rsp, 0x140
+  0x180b1ff29: mov      rax, qword ptr [rip + 0x3a1f58]  ; 0x180ec1e88
+  0x180b1ff30: xor      rax, rsp
+  0x180b1ff33: mov      qword ptr [rsp + 0x130], rax
+  0x180b1ff3b: xor      ebx, ebx
+  0x180b1ff3d: test     rcx, rcx
+  0x180b1ff40: je       0x180b1ffff
+  0x180b1ff46: cmp      byte ptr [rcx], bl
+  0x180b1ff48: je       0x180b1ffff
+  0x180b1ff4e: mov      rdx, rcx
+  0x180b1ff51: mov      qword ptr [rsp + 0x158], rdi
+  0x180b1ff59: lea      rcx, [rsp + 0x20]
+  0x180b1ff5e: mov      byte ptr [rsp + 0x20], bl
+  0x180b1ff62: mov      r8d, 0x104
+  0x180b1ff68: call     qword ptr [rip + 0x5a7662]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x180b1ff6e: lea      edx, [rbx + 0x2f]
+  0x180b1ff71: mov      byte ptr [rsp + 0x123], bl
+  0x180b1ff78: lea      rcx, [rsp + 0x20]
+  0x180b1ff7d: call     0x180bd62e1
+  0x180b1ff82: lea      edx, [rbx + 0x5c]
+  0x180b1ff85: mov      rdi, rax
+  0x180b1ff88: test     rax, rax
+  0x180b1ff8b: jne      0x180b1ff9c
+  0x180b1ff8d: lea      rcx, [rsp + 0x20]
+  0x180b1ff92: call     0x180bd62e1
+  0x180b1ff97: mov      rdi, rax
+  0x180b1ff9a: jmp      0x180b1ffab
+  0x180b1ff9c: mov      rcx, rdi
+  0x180b1ff9f: call     0x180bd62e1
+  0x180b1ffa4: test     rax, rax
+  0x180b1ffa7: cmovne   rdi, rax
+  0x180b1ffab: test     rdi, rdi
+  0x180b1ffae: je       0x180b1ffdc
+  0x180b1ffb0: mov      edx, 0x5f
+  0x180b1ffb5: mov      rcx, rdi
+  0x180b1ffb8: call     0x180bd62f3
+  0x180b1ffbd: test     rax, rax
+  0x180b1ffc0: je       0x180b1ffdc
+  0x180b1ffc2: lea      rcx, [rax + 1]
+  0x180b1ffc6: mov      edx, 0x5f
+  0x180b1ffcb: call     0x180bd62f3
+  0x180b1ffd0: test     rax, rax
+  0x180b1ffd3: je       0x180b1ffdc
+  0x180b1ffd5: cmp      byte ptr [rax - 1], 0x76
+  0x180b1ffd9: sete     bl
+  0x180b1ffdc: mov      rdi, qword ptr [rsp + 0x158]
+  0x180b1ffe4: mov      eax, ebx
+  0x180b1ffe6: mov      rcx, qword ptr [rsp + 0x130]
+  0x180b1ffee: xor      rcx, rsp
+  0x180b1fff1: call     0x18000bc76
+  0x180b1fff6: add      rsp, 0x140
+  0x180b1fffd: pop      rbx
+  0x180b1fffe: ret      
+  0x180b1ffff: mov      eax, ebx
+  0x180b20001: jmp      0x180b1ffe6
+  0x180b20003: int3     
+  0x180b20004: int3     
+  0x180b20005: int3     
+  0x180b20006: int3     
+  0x180b20007: int3     
+  0x180b20008: int3     
+  0x180b20009: int3     
+  0x180b2000a: int3     
+  0x180b2000b: int3     
+  0x180b2000c: int3     
+  0x180b2000d: int3     
+  0x180b2000e: int3     
+  0x180b2000f: int3     
+  0x180b20010: int3     
+  0x180b20011: int3     
+  0x180b20012: int3     
+  0x180b20013: int3     
+  0x180b20014: int3     
+  0x180b20015: int3     
+  0x180b20016: int3     
+  0x180b20017: int3     
+  0x180b20018: int3     
+  0x180b20019: int3     
+  0x180b2001a: int3     
+  0x180b2001b: int3     
+  0x180b2001c: int3     
+  0x180b2001d: int3     
+  0x180b2001e: int3     
+  0x180b2001f: int3     
+  0x180b20020: int3     
+  0x180b20021: int3     
+  0x180b20022: int3     
+  0x180b20023: int3     
+  0x180b20024: int3     
+  0x180b20025: int3     
+  0x180b20026: int3     
+  0x180b20027: int3     
+  0x180b20028: int3     
+  0x180b20029: int3     
+  0x180b2002a: int3     
+  0x180b2002b: int3     
+  0x180b2002c: int3     
+  0x180b2002d: int3     
+  0x180b2002e: int3     
+  0x180b2002f: int3     
+  0x180b20030: int3     
+  0x180b20031: int3     
+  0x180b20032: int3     
+  0x180b20033: int3     
+  0x180b20034: int3     
+  0x180b20035: int3     
+  0x180b20036: int3     
+  0x180b20037: int3     
+  0x180b20038: int3     
+  0x180b20039: int3     
+  0x180b2003a: int3     
+  0x180b2003b: int3     
+  0x180b2003c: int3     
+  0x180b2003d: int3     
+  0x180b2003e: int3     
+  0x180b2003f: int3     
+  0x180b20040: mov      qword ptr [rsp + 0x10], rbx
+  0x180b20045: push     rdi
+  0x180b20046: sub      rsp, 0x140
+  0x180b2004d: mov      rax, qword ptr [rip + 0x3a1e34]  ; 0x180ec1e88
+  0x180b20054: xor      rax, rsp
+  0x180b20057: mov      qword ptr [rsp + 0x130], rax
+  0x180b2005f: mov      rdi, rcx
+  0x180b20062: call     qword ptr [rip + 0x5a6bc0]  ; SemanticX64.dll!cstr_path0
+  0x180b20068: xor      edx, edx
+  0x180b2006a: lea      rcx, [rsp + 0x21]
+  0x180b2006f: mov      r8d, 0x103
+  0x180b20075: mov      rbx, rax
+  0x180b20078: call     0x180bd62b1
+  0x180b2007d: test     rdi, rdi
+  0x180b20080: je       0x180b2015b
+  0x180b20086: cmp      byte ptr [rdi], 0
+  0x180b20089: je       0x180b2015b
+  0x180b2008f: mov      r8d, 0x104
+  0x180b20095: mov      byte ptr [rsp + 0x20], 0
+  0x180b2009a: mov      rdx, rdi
+  0x180b2009d: lea      rcx, [rsp + 0x20]
+  0x180b200a2: call     qword ptr [rip + 0x5a7528]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x180b200a8: lea      rcx, [rsp + 0x20]
+  0x180b200ad: mov      byte ptr [rsp + 0x123], 0
+  0x180b200b5: mov      rax, 0xffffffffffffffff
+  0x180b200bc: nop      dword ptr [rax]
+  0x180b200c0: inc      rax
+  0x180b200c3: cmp      byte ptr [rcx + rax], 0
+  0x180b200c7: jne      0x180b200c0
+  0x180b200c9: cmp      eax, 0x103
+  0x180b200ce: jge      0x180b2015b
+  0x180b200d4: mov      edx, 0x2f
+  0x180b200d9: lea      rcx, [rsp + 0x20]
+  0x180b200de: call     0x180bd62e1
+  0x180b200e3: mov      rdi, rax
+  0x180b200e6: mov      edx, 0x5c
+  0x180b200eb: test     rax, rax
+  0x180b200ee: jne      0x180b200ff
+  0x180b200f0: lea      rcx, [rsp + 0x20]
+  0x180b200f5: call     0x180bd62e1
+  0x180b200fa: mov      rdi, rax
+  0x180b200fd: jmp      0x180b2010e
+  0x180b200ff: mov      rcx, rdi
+  0x180b20102: call     0x180bd62e1
+  0x180b20107: test     rax, rax
+  0x180b2010a: cmovne   rdi, rax
+  0x180b2010e: test     rdi, rdi
+  0x180b20111: je       0x180b2015b
+  0x180b20113: mov      edx, 0x5f
+  0x180b20118: mov      rcx, rdi
+  0x180b2011b: call     0x180bd62f3
+  0x180b20120: test     rax, rax
+  0x180b20123: je       0x180b2015b
+  0x180b20125: lea      rcx, [rax + 1]
+  0x180b20129: mov      edx, 0x5f
+  0x180b2012e: call     0x180bd62f3
+  0x180b20133: test     rax, rax
+  0x180b20136: je       0x180b2015b
+  0x180b20138: dec      rax
+  0x180b2013b: cmp      byte ptr [rax], 0x76
+  0x180b2013e: jne      0x180b2015b
+  0x180b20140: movzx    edx, byte ptr [rax + 1]
+  0x180b20144: mov      byte ptr [rax], dl
+  0x180b20146: lea      rax, [rax + 1]
+  0x180b2014a: test     dl, dl
+  0x180b2014c: jne      0x180b20140
+  0x180b2014e: lea      rcx, [rsp + 0x20]
+  0x180b20153: call     qword ptr [rip + 0x5a6acf]  ; SemanticX64.dll!cstr_path0
+  0x180b20159: jmp      0x180b2015e
+  0x180b2015b: mov      rax, rbx
+  0x180b2015e: mov      rcx, qword ptr [rsp + 0x130]
+  0x180b20166: xor      rcx, rsp
+  0x180b20169: call     0x18000bc76
+  0x180b2016e: mov      rbx, qword ptr [rsp + 0x158]
+  0x180b20176: add      rsp, 0x140
+  0x180b2017d: pop      rdi
+  0x180b2017e: ret      
+  0x180b2017f: int3     
+  0x180b20180: int3     
+  0x180b20181: int3     
+  0x180b20182: int3     
+  0x180b20183: int3     
+  0x180b20184: int3     
+  0x180b20185: int3     
+  0x180b20186: int3     
+  0x180b20187: int3     
+  0x180b20188: int3     
+  0x180b20189: int3     
+  0x180b2018a: int3     
+  0x180b2018b: int3     
+  0x180b2018c: int3     
+  0x180b2018d: int3     
+  0x180b2018e: int3     
+  0x180b2018f: int3     
+  0x180b20190: int3     
+  0x180b20191: int3     
+  0x180b20192: int3     
+  0x180b20193: int3     
+  0x180b20194: int3     
+  0x180b20195: int3     
+  0x180b20196: int3     
+  0x180b20197: int3     
+  0x180b20198: int3     
+  0x180b20199: int3     
+  0x180b2019a: int3     
+  0x180b2019b: int3     
+  0x180b2019c: int3     
+  0x180b2019d: int3     
+  0x180b2019e: int3     
+  0x180b2019f: int3     
+  0x180b201a0: int3     
+  0x180b201a1: int3     
+  0x180b201a2: int3     
+  0x180b201a3: int3     
+  0x180b201a4: int3     
+  0x180b201a5: int3     
+  0x180b201a6: int3     
+  0x180b201a7: int3     
+  0x180b201a8: int3     
+  0x180b201a9: int3     
+  0x180b201aa: int3     
+  0x180b201ab: int3     
+  0x180b201ac: int3     
+  0x180b201ad: int3     
+  0x180b201ae: int3     
+  0x180b201af: int3     
+  0x180b201b0: int3     
+  0x180b201b1: int3     
+  0x180b201b2: int3     
+  0x180b201b3: int3     
+  0x180b201b4: int3     
+  0x180b201b5: int3     
+  0x180b201b6: int3     
+  0x180b201b7: int3     
+  0x180b201b8: int3     
+  0x180b201b9: int3     
+  0x180b201ba: int3     
+  0x180b201bb: int3     
+  0x180b201bc: int3     
+  0x180b201bd: int3     
+  0x180b201be: int3     
+  0x180b201bf: int3     
+  0x180b201c0: int3     
+  0x180b201c1: int3     
+  0x180b201c2: int3     
+  0x180b201c3: int3     
+  0x180b201c4: int3     
+  0x180b201c5: int3     
+  0x180b201c6: int3     
+  0x180b201c7: int3     
+  0x180b201c8: int3     
+  0x180b201c9: int3     
+  0x180b201ca: int3     
+  0x180b201cb: int3     
+  0x180b201cc: int3     
+  0x180b201cd: int3     
+  0x180b201ce: int3     
+  0x180b201cf: int3     
+  0x180b201d0: mov      qword ptr [rsp + 0x10], rbx
+  0x180b201d5: mov      qword ptr [rsp + 0x18], rbp
+  0x180b201da: mov      qword ptr [rsp + 0x20], rsi
+  0x180b201df: push     rdi
+  0x180b201e0: sub      rsp, 0x30
+  0x180b201e4: mov      rdi, r8
+  0x180b201e7: mov      ebp, edx
+  0x180b201e9: mov      rsi, rcx
+  0x180b201ec: test     rcx, rcx
+  0x180b201ef: jne      0x180b20221
+  0x180b201f1: lea      r9d, [rcx + 0x12]
+  0x180b201f5: lea      r8, [rip + 0x17feb4]  ; "pRLScene"
+  0x180b201fc: lea      rax, [rip + 0x20ee6d]  ; "CreateRide"
+  0x180b20203: mov      qword ptr [rsp + 0x20], rax
+  0x180b20208: lea      rdx, [rip + 0x17f961]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180b2020f: mov      ecx, 3
+  0x180b20214: call     qword ptr [rip + 0x5a5f16]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180b2021a: xor      eax, eax
+  0x180b2021c: jmp      0x180b20319
+  0x180b20221: test     rdi, rdi
+  0x180b20224: jne      0x180b20233
+  0x180b20226: lea      r9d, [rdi + 0x14]
+  0x180b2022a: lea      r8, [rip + 0x17ff6f]  ; "pRLCharacter"
+  0x180b20231: jmp      0x180b201fc
+  0x180b20233: mov      rbx, qword ptr [r8 + 0x3a00]
+  0x180b2023a: test     rbx, rbx
+  0x180b2023d: je       0x180b2024e
+  0x180b2023f: mov      r9d, 0x17
+  0x180b20245: lea      r8, [rip + 0x20ee34]  ; "pRLRide == nullptr"
+  0x180b2024c: jmp      0x180b202b7
+  0x180b2024e: lea      rdx, [rip + 0x48b7e4]  ; 0x180faba39
+  0x180b20255: mov      ecx, 0x2098
+  0x180b2025a: call     0x180004110
+  0x180b2025f: mov      qword ptr [rsp + 0x40], rax
+  0x180b20264: test     rax, rax
+  0x180b20267: je       0x180b20276
+  0x180b20269: mov      rcx, rax
+  0x180b2026c: call     0x180016ea0
+  0x180b20271: mov      rbx, rax
+  0x180b20274: jmp      0x180b20278
+  0x180b20276: xor      ebx, ebx
+  0x180b20278: test     rbx, rbx
+  0x180b2027b: jne      0x180b2028a
+  0x180b2027d: lea      r9d, [rbx + 0x1a]
+  0x180b20281: lea      r8, [rip + 0x1aae10]  ; "pRLRide"
+  0x180b20288: jmp      0x180b202b7
+  0x180b2028a: mov      rcx, rdi
+  0x180b2028d: call     0x18000140b
+  0x180b20292: lea      r9, [rdi + 0x38]
+  0x180b20296: mov      dword ptr [rsp + 0x20], eax
+  0x180b2029a: mov      r8d, ebp
+  0x180b2029d: mov      rdx, rsi
+  0x180b202a0: mov      rcx, rbx
+  0x180b202a3: call     0x180023dcb
+  0x180b202a8: test     eax, eax
+  0x180b202aa: jne      0x180b202fc
+  0x180b202ac: lea      r9d, [rax + 0x1d]
+  0x180b202b0: lea      r8, [rip + 0x17f8f1]  ; "nRetCode"
+  0x180b202b7: lea      rax, [rip + 0x20edb2]  ; "CreateRide"
+  0x180b202be: mov      qword ptr [rsp + 0x20], rax
+  0x180b202c3: lea      rdx, [rip + 0x17f8a6]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180b202ca: mov      ecx, 3
+  0x180b202cf: call     qword ptr [rip + 0x5a5e5b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180b202d5: test     rbx, rbx
+  0x180b202d8: je       0x180b20316
+  0x180b202da: mov      rcx, rbx
+  0x180b202dd: call     0x18001eb0f
+  0x180b202e2: mov      rcx, rbx
+  0x180b202e5: call     0x180024708
+  0x180b202ea: mov      r8, qword ptr [rbx]
+  0x180b202ed: mov      edx, 1
+  0x180b202f2: mov      rcx, rbx
+  0x180b202f5: call     qword ptr [r8]
+  0x180b202f8: xor      eax, eax
+  0x180b202fa: jmp      0x180b20319
+  0x180b202fc: mov      rdx, rdi
+  0x180b202ff: mov      rcx, rbx
+  0x180b20302: call     0x180020496
+  0x180b20307: lea      rdx, [rdi + 0x1020]
+  0x180b2030e: mov      rcx, rbx
+  0x180b20311: call     0x1800154b0
+  0x180b20316: mov      rax, rbx
+  0x180b20319: mov      rbx, qword ptr [rsp + 0x48]

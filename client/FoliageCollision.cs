@@ -36,11 +36,15 @@ public sealed class FoliageCollision
         public int[] cellStart;
         public int[] cellTri;
         public float minX, minY, minZ, maxX, maxY, maxZ;
+        // game KG3DMesh [Display] bObscatleCamera (default 1); the camera
+        // obstruction query skips meshes with false
+        public bool blocksCamera = true;
     }
 
     sealed class Instance
     {
         public MeshData mesh;
+        public bool fromFoliage;
         public float[] l2w;   // 16, row-major, row-vector: w = l * M
         public float[] w2l;   // 16, inverse
         public float m00, m01, m02, m10, m11, m12, m20, m21, m22; // 3x3 for world deltas
@@ -55,6 +59,7 @@ public sealed class FoliageCollision
 
     public int InstanceCount { get { return _inst.Count; } }
     public int MeshCount { get; private set; }
+    int _cameraFlagZero;
 
     public FoliageCollision(string foliagePath, string structurePath = null, float cellSize = 800f)
     {
@@ -69,10 +74,11 @@ public sealed class FoliageCollision
     // ---- loading ----
 
     void AddInstance(MeshData md, float[] m, float bminX, float bminY, float bminZ,
-                     float bmaxX, float bmaxY, float bmaxZ)
+                     float bmaxX, float bmaxY, float bmaxZ, bool foliage = false)
     {
         var it = new Instance();
         it.mesh = md;
+        it.fromFoliage = foliage;
         it.l2w = m;
         it.w2l = Invert4x4(m);
         it.m00 = m[0]; it.m01 = m[1]; it.m02 = m[2];
@@ -194,6 +200,10 @@ public sealed class FoliageCollision
                 float sceneScale = r.ReadSingle();
                 meshes[pattern] = ReadMesh(r, 1);
                 meshes[pattern].gcell = meshes[pattern].gcell; // no-op
+                // bObscatleCamera from the game's mesh property inis (2026-09-28
+                // extraction): rock patterns 6/7 ship =0 (the camera ignores
+                // them); deadwood/cactus (4/5) have no ini -> ctor default 1
+                meshes[pattern].blocksCamera = !(pattern == 6 || pattern == 7);
                 _v1Scale[pattern] = sceneScale;
             }
             for (int i = 0; i < instCount; i++)
@@ -216,7 +226,7 @@ public sealed class FoliageCollision
                 float ez = Math.Max(Math.Abs(md.minZ), Math.Abs(md.maxZ));
                 float rad = (float)Math.Sqrt(ex * ex + ez * ez) * s;
                 AddInstance(md, m, x - rad, y + md.minY * s, z - rad,
-                            x + rad, y + md.maxY * s, z + rad);
+                            x + rad, y + md.maxY * s, z + rad, true);
             }
         }
     }
@@ -235,6 +245,29 @@ public sealed class FoliageCollision
             MeshCount += meshCount;
             var meshes = new MeshData[meshCount];
             for (int i = 0; i < meshCount; i++) meshes[i] = ReadMesh(r, 2);
+            // per-mesh bObscatleCamera sidecar written by
+            // tools/export_structure_collision.py (game default = 1)
+            string cf = path + ".cflags";
+            if (File.Exists(cf))
+            {
+                try
+                {
+                    using (var cf2 = new BinaryReader(File.OpenRead(cf)))
+                    {
+                        if (cf2.ReadUInt32() == 0x474C4643)
+                        {
+                            int n = cf2.ReadInt32();
+                            for (int i = 0; i < n && i < meshCount; i++)
+                            {
+                                bool b = cf2.ReadByte() != 0;
+                                meshes[i].blocksCamera = b;
+                                if (!b) _cameraFlagZero++;
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
             for (int i = 0; i < instCount; i++)
             {
                 int mi = r.ReadInt32();
@@ -399,6 +432,136 @@ public sealed class FoliageCollision
                 }
             }
         }
+    }
+
+    // Nearest world-space hit of the segment A->B against the structure and
+    // foliage instances (camera obstruction). Returns the distance from A
+    // along A->B in world units, or -1 when nothing is hit.
+    // frontFacesOnly (camera probes): skip back-facing hits. A probe whose
+    // origin sits inside a mesh only finds that mesh's exit faces; treating
+    // those as walls produced a phantom hit inches behind the anchor and a
+    // negative (crossing) pull. The game's render-entity ray sees the drawn
+    // front surface, so front faces are the faithful set.
+    public int LastInst = -1;
+    public int LastTri = -1;
+    // penetration recorder support (RC_CAM_PENDBG): which mesh was hit and
+    // whether the camera gate would have skipped it (cflags=0 foliage)
+    public bool LastBlocksCamera = true;
+    public bool LastFromFoliage = false;
+
+    public float Raycast(float ax, float ay, float az, float bx, float by, float bz,
+                         bool structuresOnly = false, bool frontFacesOnly = false,
+                         bool cameraGate = false)
+    {
+        LastInst = -1;
+        float dx = bx - ax, dy = by - ay, dz = bz - az;
+        float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        if (len < 1e-3f) return -1f;
+        float minX = Math.Min(ax, bx), maxX = Math.Max(ax, bx);
+        float minY = Math.Min(ay, by), maxY = Math.Max(ay, by);
+        float minZ = Math.Min(az, bz), maxZ = Math.Max(az, bz);
+        GatherCandidates((minX + maxX) * 0.5f, (minZ + maxZ) * 0.5f,
+                         Math.Max(maxX - minX, maxZ - minZ) * 0.5f, _cand);
+        float bestT = float.MaxValue;
+        int bestInst = -1, bestTri = -1;
+        bool bestBlocks = true, bestFol = false;
+        for (int ci = 0; ci < _cand.Count; ci++)
+        {
+            Instance it = _inst[_cand[ci]];
+            if (structuresOnly && it.fromFoliage) continue;
+            // game camera query: FilterCamera skips meshes whose
+            // bObscatleCamera is 0 (KG3DMesh display block)
+                // flag=0 structures still block the camera (host deviation,
+                // registered): the game fades bObscatleCamera=0 meshes, the
+                // host has no fade yet, so ignoring them would see through a
+                // visible wall (T2 inst 262 is exactly that case). The gate
+                // therefore only removes flag=0 foliage (rocks/grass cards),
+                // where the bake already carries the real blockers.
+                if (cameraGate && it.fromFoliage && !it.mesh.blocksCamera) continue;
+            if (it.maxY < minY || it.minY > maxY) continue;
+            if (it.maxX < minX || it.minX > maxX) continue;
+            if (it.maxZ < minZ || it.minZ > maxZ) continue;
+            float[] w2l = it.w2l;
+            if (w2l == null) continue;
+            float lAx = ax * w2l[0] + ay * w2l[4] + az * w2l[8] + w2l[12];
+            float lAy = ax * w2l[1] + ay * w2l[5] + az * w2l[9] + w2l[13];
+            float lAz = ax * w2l[2] + ay * w2l[6] + az * w2l[10] + w2l[14];
+            float lBx = bx * w2l[0] + by * w2l[4] + bz * w2l[8] + w2l[12];
+            float lBy = bx * w2l[1] + by * w2l[5] + bz * w2l[9] + w2l[13];
+            float lBz = bx * w2l[2] + by * w2l[6] + bz * w2l[10] + w2l[14];
+            float ldx = lBx - lAx, ldy = lBy - lAy, ldz = lBz - lAz;
+            MeshData md = it.mesh;
+            float lminx = Math.Min(lAx, lBx), lmaxx = Math.Max(lAx, lBx);
+            float lminz = Math.Min(lAz, lBz), lmaxz = Math.Max(lAz, lBz);
+            int cx0 = (int)((lminx - md.gx0) / md.gcell);
+            int cx1 = (int)((lmaxx - md.gx0) / md.gcell);
+            int cz0 = (int)((lminz - md.gz0) / md.gcell);
+            int cz1 = (int)((lmaxz - md.gz0) / md.gcell);
+            if (cx0 < 0) cx0 = 0; if (cz0 < 0) cz0 = 0;
+            if (cx1 >= md.gx) cx1 = md.gx - 1; if (cz1 >= md.gz) cz1 = md.gz - 1;
+            if (cx0 > cx1 || cz0 > cz1) continue;
+            for (int cz = cz0; cz <= cz1; cz++)
+            {
+                int rowBase = cz * md.gx;
+                for (int cx = cx0; cx <= cx1; cx++)
+                {
+                    int c = rowBase + cx;
+                    int s0 = md.cellStart[c], s1 = md.cellStart[c + 1];
+                    for (int k = s0; k < s1; k++)
+                    {
+                        float t;
+                        bool front;
+                        if (!RayTri(md.verts, md.tris, md.cellTri[k],
+                                    lAx, lAy, lAz, ldx, ldy, ldz, out t, out front)) continue;
+                        if (frontFacesOnly && !front) continue;
+                        if (t < bestT)
+                        {
+                            bestT = t;
+                            bestInst = _cand[ci];
+                            bestTri = md.cellTri[k];
+                            bestBlocks = it.mesh.blocksCamera;
+                            bestFol = it.fromFoliage;
+                        }
+                    }
+                }
+            }
+        }
+        LastInst = bestInst;
+        LastTri = bestTri;
+        LastBlocksCamera = bestBlocks;
+        LastFromFoliage = bestFol;
+        return bestT == float.MaxValue ? -1f : bestT * len;
+    }
+
+    // Moller-Trumbore; t in [0,1] along O + t*D. `front` is true for a hit on
+    // the face's front side (ray travels against the triangle normal;
+    // d.n = -det, so det > 0 is a front hit).
+    static bool RayTri(float[] v, int[] tris, int tri,
+                       float ox, float oy, float oz,
+                       float dx, float dy, float dz, out float t, out bool front)
+    {
+        t = 0f;
+        front = false;
+        int i0 = tris[tri * 3] * 3, i1 = tris[tri * 3 + 1] * 3, i2 = tris[tri * 3 + 2] * 3;
+        float e1x = v[i1] - v[i0], e1y = v[i1 + 1] - v[i0 + 1], e1z = v[i1 + 2] - v[i0 + 2];
+        float e2x = v[i2] - v[i0], e2y = v[i2 + 1] - v[i0 + 1], e2z = v[i2 + 2] - v[i0 + 2];
+        float px = dy * e2z - dz * e2y;
+        float py = dz * e2x - dx * e2z;
+        float pz = dx * e2y - dy * e2x;
+        float det = e1x * px + e1y * py + e1z * pz;
+        if (det > -1e-9f && det < 1e-9f) return false;
+        float inv = 1f / det;
+        float tx = ox - v[i0], ty = oy - v[i0 + 1], tz = oz - v[i0 + 2];
+        float u = (tx * px + ty * py + tz * pz) * inv;
+        if (u < 0f || u > 1f) return false;
+        float qx = ty * e1z - tz * e1y;
+        float qy = tz * e1x - tx * e1z;
+        float qz = tx * e1y - ty * e1x;
+        float w = (dx * qx + dy * qy + dz * qz) * inv;
+        if (w < 0f || u + w > 1f) return false;
+        t = (e2x * qx + e2y * qy + e2z * qz) * inv;
+        front = det > 0f;
+        return t >= 0f && t <= 1f;
     }
 
     bool InstanceContact(Instance it, float px, float py, float pz,
@@ -628,6 +791,7 @@ public sealed class FoliageCollision
 
     public string Describe()
     {
-        return string.Format("instances={0} meshes={1}", _inst.Count, MeshCount);
+        return string.Format("instances={0} meshes={1} camflag0={2}",
+            _inst.Count, MeshCount, _cameraFlagZero);
     }
 }

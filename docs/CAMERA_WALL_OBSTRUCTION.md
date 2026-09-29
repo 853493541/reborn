@@ -207,9 +207,49 @@ model's bone boxes. So `bObscatleCamera` (mesh-level) and the `0x20000` flag
 (part/material-level) are two layers of the same "this geometry can push the
 camera" property.
 
-## Comparison with the current host/client camera
+## Host implementation (2026-09-24)
 
-The inspected host/client camera code still performs a terrain-only march:
+The rule above is now implemented in the client:
+
+- `client/FoliageCollision.cs Raycast(A,B)` - nearest world-space hit of the
+  anchor->camera segment against the real structure (`structure_collision.bin`:
+  walls, buildings, props) and foliage instances, triangle-exact through the
+  instance matrix (Moller-Trumbore, mesh triangle grid for candidates).
+- `client/CameraSystem.cs CameraObstruction` - the response state machine:
+  18 u clearance, immediate pull-in to `hit - 18`, 50 u tolerance for shallow
+  hits while free, spring return with `fFlex = 1.5`, `fDamp = 2.828`,
+  `MinDistance = 5` (a practical floor: the native bound is `0.001`).
+  While a hit remains the target keeps following the wall (`hit - 18`); a full
+  release happens only when the ray is clear to the desired point - releasing
+  on the 100-u threshold early popped the camera through the wall. The spring
+  is `v' = +k*e - c*v` (`e = target - distance`); the inverted sign ran away
+  (distance crept in until it reset to desired - the reported "keeps zooming
+  in, then resets" bug).
+- **Camera inside the character:** the native path has no character
+  min-distance - with `hit < 18` the camera lands at `anchor + u*(hit-18)`,
+  i.e. at/behind the head, and the engine relies on the near clip plane and
+  backface culling. The client also carries a per-represent
+  `KRLCharacter::SetPlayerControlVisibleState` (0x1804E4150) but the managed
+  host API exposes no visibility/alpha. Host approximation: when the resolved
+  length is below 45 u the dummy model is parked 100000 u below the map and it
+  is restored above 70 u (hysteresis), so the character is not seen from
+  inside when jammed against a wall.
+- `client/RebornClient.cs` placement - 5 probe rays (centre + 4 corners of a
+  22 u camera footprint, the engine default mode), terrain sampled as another
+  ray on the centre probe; the nearest hit feeds the state machine and the
+  camera is scaled along the same `anchor + u*len` line.
+- `CameraSmoke` covers the state machine (pull to hit-18, shallow-hit ignore,
+  spring return, min distance); all checks pass.
+- Probe with `RC_DEMO_COLLIDE=1 RC_COL_TELEPORT=1 RC_CAM_DEMO=1
+  RC_CAM_DEBUG=1`: 5351 structure instances; free `len = 599`, wall at 35 u ->
+  pull to 17 u, wall at 11-19 u -> floor 5 u, `obst=1` held while jammed
+  against the structure.
+- Limitation: only the extracted structure/foliage instances and the
+  heightfield obstruct; map geometry baked into the terrain mesh (some
+  buildings) has no ray data, and the engine's per-mesh `bObscatleCamera`
+  exclusions are not in the extracted data yet.
+
+The earlier inspected host/client camera code performed a terrain-only march:
 
 - `reborn-merge/client/RebornClient.cs` (current worktree version) places the
   camera using tracked yaw/pitch and per-axis camera-offset smoothing with a

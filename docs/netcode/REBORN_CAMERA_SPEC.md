@@ -199,10 +199,15 @@ client (`client/CameraSystem.cs`, commit `bdfb586`; `client/CameraSmoke.cs`
   the F free-cam toggle was removed 2026-09-23):
   right-drag = engine-native rotation (the engine camera owns the look
   direction; the host re-measures it via the nudge probe every 200 ms),
-  wheel = real JX3 zoom step (see §7.5) with limits `MinCameraDistance = 100 u`
-  (placeholder for the unknown engine cap) .. `MaxCameraDistance = 2000 u`
-  (real setting default, 20 m), Shift+move = sprint mode pull-back,
+  wheel = `Camera_Zoom(0.9 / 1.1)` (the real wheel binding, corrected
+  2026-09-24; `ZoomCharacterCamera_Step` is a different path) with limits
+  `MinCameraDistance = 100 u` (placeholder for the unknown engine cap)
+  .. `MaxCameraDistance = 2000 u` (real setting default, 20 m),
+  Shift+move = sprint mode pull-back,
   movement input holds its world direction while the key set is unchanged.
+  *The live client integration has since moved to the sphere offset + aim
+  closed loop (`CAMERA_FIX_SPEC.md`, `CAMERA_DRAG_MODEL.md`); the lines below
+  describe the earlier spike.*
 - Units: rows are meters; the host scales them by `UnitsPerMeter`
   (default **100**, `MAP_CAMERA_SCALE`). Character 6 m distance -> 600 u,
   height 2 m -> 200 u, real pitch -0.35 rad.

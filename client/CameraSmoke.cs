@@ -29,6 +29,9 @@ internal static class CameraSmoke
         double DEG = CameraSystem.DEG;
         var cam = new CameraSystem();
         cam.UnitsPerMeter = 1.0;
+        // the reference model uses metre-scaled numbers; the user/engine caps
+        // are exercised separately by the clamp helper check
+        cam.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
         cam.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam.Pitch = cam.Row.F("InitCameraPitch", -20.0 * DEG);
         cam.Distance = cam.Row.F("InitCameraDistance", 6.0);
@@ -41,6 +44,38 @@ internal static class CameraSmoke
               Math.Abs(cam.Pos[0] - ex) < 0.01 && Math.Abs(cam.Pos[2]) < 0.01 &&
               Math.Abs(cam.Pos[1] - ey) < 0.01,
               string.Format("pos=({0:F2},{1:F2},{2:F2})", cam.Pos[0], cam.Pos[1], cam.Pos[2]));
+
+        // Part 1 regression (CAMERA_FIX_SPEC.md): pitch rotates a constant-length
+        // JX3 sphere offset; it must not scale the distance with tan(pitch).
+        var cam3 = new CameraSystem();
+        cam3.UnitsPerMeter = 1.0;
+        cam3.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        cam3.SwitchMode(CameraSystem.MODE_CHARACTER);
+        cam3.Distance = 6.0;
+        double[] pitches = { -40.0 * DEG, -20.0 * DEG, 0.0, 25.0 * DEG, 40.0 * DEG };
+        double worst = 0.0;
+        foreach (double pv in pitches)
+        {
+            // pin the idle/move pitch pull to the test pitch (Update drives Pitch
+            // toward these rows every frame at PitchRate)
+            cam3.Rows[CameraSystem.MODE_CHARACTER].Set("CameraMovePitchAdjustPitch", pv);
+            cam3.Rows[CameraSystem.MODE_CHARACTER].Set("CameraMovePitchApplyAngle", pv);
+            cam3.Pitch = pv;
+            for (int i = 0; i < 90; i++) cam3.Update(1.0 / 60.0, anchor);
+            double hhx = cam3.Pos[0] - anchor[0], hhz = cam3.Pos[2] - anchor[2];
+            double horiz = Math.Sqrt(hhx * hhx + hhz * hhz);
+            double err = Math.Max(Math.Abs(horiz - Math.Cos(pv) * 6.0),
+                                  Math.Abs(cam3.Pos[1] - (Math.Sin(pv) * 6.0 + 2.0)));
+            if (err > worst) worst = err;
+        }
+        Check("pitch drag keeps constant-length orbit", worst < 0.02,
+              string.Format("worst err={0:F4}", worst));
+
+        double[] offD = new double[3];
+        CameraSystem.DesiredOffset(0.0, 90.0 * DEG, 6.0, 2.0, offD);
+        Check("desired offset vertical at +90deg pitch",
+              Math.Abs(offD[0]) < 1e-9 && Math.Abs(offD[1] - 8.0) < 1e-9 && Math.Abs(offD[2]) < 1e-9,
+              string.Format("off=({0:F3},{1:F3},{2:F3})", offD[0], offD[1], offD[2]));
 
         cam.Mouse(0.2, 0.0);
         cam.Update(1.0 / 60.0, anchor);
@@ -104,6 +139,7 @@ internal static class CameraSmoke
 
         var cam2 = new CameraSystem();
         cam2.UnitsPerMeter = 1.0;
+        cam2.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
         cam2.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam2.Pitch = cam2.Row.F("InitCameraPitch", -20.0 * DEG);
         cam2.Distance = cam2.Row.F("InitCameraDistance", 6.0);
@@ -122,6 +158,70 @@ internal static class CameraSmoke
         cam2.Update(1.0 / 60.0, anchor);
         dd = Math.Sqrt(cam2.Pos[0] * cam2.Pos[0] + cam2.Pos[1] * cam2.Pos[1] + cam2.Pos[2] * cam2.Pos[2]);
         Check("camera recovers when clear", dd > 3.0, string.Format("dist={0:F2}", dd));
+
+        // native wall obstruction state machine (18 u clearance, 50/100
+        // hysteresis, spring return) - docs/CAMERA_WALL_OBSTRUCTION.md
+        var clampCam = new CameraSystem();
+        Check("shared distance clamp helper (S5)",
+              Math.Abs(clampCam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
+              Math.Abs(clampCam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&
+              Math.Abs(clampCam.ClampDistanceUnits(600.0) - 600.0) < 1e-9,
+              string.Format("{0:F0}/{1:F0}/{2:F0}", clampCam.ClampDistanceUnits(50.0),
+                  clampCam.ClampDistanceUnits(5000.0), clampCam.ClampDistanceUnits(600.0)));
+
+        var obstA = new CameraObstruction();
+        double od = obstA.Update(1.0 / 60.0, 600.0, 500.0);
+        Check("obstruction pulls in to hit-18u", obstA.Obstructed && Math.Abs(od - 482.0) < 1e-6,
+              string.Format("dist={0:F1}", od));
+        var obstB = new CameraObstruction();
+        double od2 = obstB.Update(1.0 / 60.0, 600.0, 570.0);
+        Check("shortening hit pulls immediately (engine rule)",
+              obstB.Obstructed && Math.Abs(od2 - 552.0) < 1e-6,
+              string.Format("dist={0:F1}", od2));
+        double minReturn = obstA.Distance;
+        for (int i = 0; i < 900; i++)
+        {
+            double before = obstA.Distance;
+            od = obstA.Update(1.0 / 60.0, 600.0, -1.0);
+            if (obstA.Distance < before - 0.5) minReturn = Math.Min(minReturn, obstA.Distance);
+        }
+        Check("camera springs back when clear", !obstA.Obstructed && Math.Abs(od - 600.0) < 1.0,
+              string.Format("dist={0:F2}", od));
+        Check("spring return is monotonic (no runaway zoom-in)",
+              minReturn >= 482.0 - 0.5, string.Format("min={0:F1}", minReturn));
+        var obstC = new CameraObstruction();
+        double od3 = obstC.Update(1.0 / 60.0, 600.0, 10.0);
+        Check("signed pull goes behind the anchor (native rule)", Math.Abs(od3 - (-8.0)) < 1e-6,
+              string.Format("dist={0:F1}", od3));
+        var obstE = new CameraObstruction();
+        obstE.Update(1.0 / 60.0, 600.0, 50.0);            // obstructed at 32 u
+        obstE.Update(1.0 / 60.0, 600.0, 760.0);           // 160 u past desired
+        Check("non-shortening hit outside the window releases", !obstE.Obstructed,
+              string.Format("obst={0}", obstE.Obstructed));
+
+        var obstH = new CameraObstruction();
+        obstH.Update(1.0 / 60.0, 600.0, 500.0);           // obstructed, pulled to 482
+        for (int i = 0; i < 900; i++) obstH.Update(1.0 / 60.0, 600.0, 620.0);
+        Check("obstructed-side 100 u hysteresis keeps the state",
+              obstH.Obstructed && Math.Abs(obstH.Distance - 600.0) < 1.0,
+              string.Format("dist={0:F1} obst={1}", obstH.Distance, obstH.Obstructed));
+        for (int i = 0; i < 600; i++) obstH.Update(1.0 / 60.0, 600.0, -1.0);
+        Check("releases once the ray is fully clear",
+              !obstH.Obstructed && Math.Abs(obstH.Distance - 600.0) < 1.0,
+              string.Format("dist={0:F1}", obstH.Distance));
+
+        var obstD = new CameraObstruction();
+        obstD.Update(1.0 / 60.0, 600.0, 50.0);            // pulled to 32 u
+        double minOut = obstD.Distance;
+        for (int i = 0; i < 900; i++)
+        {
+            double before = obstD.Distance;
+            obstD.Update(1.0 / 60.0, 600.0, 550.0);       // wall recedes, still
+            if (obstD.Distance < before - 0.5) minOut = Math.Min(minOut, obstD.Distance); // inside the 100 u window
+        }
+        Check("camera springs out along a receding wall (stays in front)",
+              obstD.Obstructed && Math.Abs(obstD.Distance - 532.0) < 1.0 && minOut >= 32.0 - 0.5,
+              string.Format("dist={0:F1} min={1:F1}", obstD.Distance, minOut));
 
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
         Environment.Exit(_fail == 0 ? 0 : 1);

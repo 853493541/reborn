@@ -140,17 +140,33 @@ is a separate, incorrect reimplementation.
 1. Use the constant-length rotation in the live placement (same math as
    `CameraSystem.Update`): horizontal `cos(pitch)·dist`, vertical
    `sin(pitch)·dist + CameraHeight` (separate term, no `tan`).
-2. Do not derive yaw from camera positions while dragging; integrate the drag
-   deltas into yaw/pitch only (re-measure only when idle, and only if needed).
+2. Do not integrate yaw from pixels while dragging: read the engine aim back
+   after each orbit batch (`orbitApplied` closed loop). The probe showed pure
+   integration drifts up to 4.36 rad from the engine aim; the closed loop
+   matches it to 3 decimals. Pitch still integrates the vertical pixels at the
+   measured rate.
 3. Keep the engine orbit strictly as an aim-alignment step for the host's
    screenshot path; never let it define the camera position.
 
+**Fix status (2026-09-24):** 1-3 implemented in `client/RebornClient.cs` +
+`client/CameraSystem.cs` (`DesiredOffset`), smoke 15/15. The full drag model
+(L/R = yaw orbit, U/D = pitch, look-at = character head) is proven in
+`docs/CAMERA_DRAG_MODEL.md`. Yaw is read back with `measureView()` and the
+engine aim pitch gets a model feed-forward (`oyFF`), so the character stays
+centred through both drags (probe: yaw sync <= 0.02 rad, aim steady-state
+~0.03 rad, captures centred). Remaining: native look-at interface with the
+real head anchor (`IKG3D_Camera`) per `docs/CAMERA_STATUS.md`.
+
 ## Practical gaps with the most visible effect
 
-1. Dragging re-scales the camera distance (wrong pitch model, above) — the
-   worst current camera defect.
-2. Walls/buildings/trees never push the camera (terrain only) — the native
-   18-u wall clearance and model filter are absent.
+1. Dragging re-scales the camera distance (wrong pitch model, above) — fixed
+   in the camara-fix worktree (sphere offset + aim closed loop).
+2. Walls/buildings/trees never push the camera (terrain only) — **fixed**:
+   `FoliageCollision.Raycast` + `CameraObstruction` implement the native 18-u
+   clearance, 50/100-u hysteresis and flex return over the extracted
+   structure/foliage instances (`docs/CAMERA_WALL_OBSTRUCTION.md` host
+   section). Remaining: the engine `bObscatleCamera` exclusions and geometry
+   baked into the terrain mesh have no ray data.
 3. No auto pitch when running (the real client dips the camera while moving).
 4. Mounts, gliding, air combat and dialogs do not change the camera.
 5. The camera never shakes and never eases back with the native flex curve.

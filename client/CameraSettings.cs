@@ -13,6 +13,13 @@ internal sealed class CameraSettings
     public double DragSpeed = 1.0;
     public double DragPitchSpeed = 1.0;
     public double EyeScale = 1.0;
+    public double WidAngleDeg = 0.0;        // 广角 VideoSetting_WidAngle (deg, 0=unset)
+    public double SpringResetSpeed = 1.0;   // fSpringResetSpeed (read-only for now)
+    public double CameraResetSpeed = 1.0;   // fCameraResetSpeed (read-only for now)
+    public int CameraMode = 0;              // nCameraMode: 0 classic, 1 joystick
+    public bool CameraSmoothing = true;     // bCameraSmoothing
+    public bool CurveCamera = false;        // bCurveCamera
+    public bool EyeFollow = true;           // bEyeFollow
     public bool HasSceneInit;
     public bool HasSavedRuntime;
     public bool HasCustomSettings;
@@ -29,8 +36,12 @@ internal sealed class CameraSettings
         string initPath = Path.Combine(appDir, "scene_init_param.txt");
         LoadSceneInit(initPath, result.MapId, result);
 
+        // the real client always reads the user's per-role custom.dat; do the
+        // same by default (latest file) with RC_CUSTOM_DAT as an override and
+        // RC_LOAD_CUSTOM_DAT=0 to opt out
         string customPath = Environment.GetEnvironmentVariable("RC_CUSTOM_DAT");
-        if (string.IsNullOrEmpty(customPath) && Environment.GetEnvironmentVariable("RC_LOAD_CUSTOM_DAT") == "1")
+        bool loadDefault = Environment.GetEnvironmentVariable("RC_LOAD_CUSTOM_DAT") != "0";
+        if (string.IsNullOrEmpty(customPath) && loadDefault)
             customPath = FindLatestCustomDat(Path.Combine(@"C:\SeasunGame\Game\JX3\bin\zhcn_hd", "userdata"));
         if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
         {
@@ -47,6 +58,9 @@ internal sealed class CameraSettings
             result.MapId, result.HasSceneInit || result.HasSavedRuntime ? 1 : 0,
             result.InitYaw, result.InitPitch, result.MaxCameraDistance,
             result.DragSpeed, result.DragPitchSpeed, result.EyeScale));
+        log(string.Format("CameraSettings extra: mode={0} resetSpring={1:F2} resetCam={2:F2} smoothing={3} curve={4} eyeFollow={5}",
+            result.CameraMode, result.SpringResetSpeed, result.CameraResetSpeed,
+            result.CameraSmoothing ? 1 : 0, result.CurveCamera ? 1 : 0, result.EyeFollow ? 1 : 0));
         return result;
     }
 
@@ -146,6 +160,33 @@ internal sealed class CameraSettings
         }
         if (TryNumber(runtimeBlock, "fCameraToObjectEyeScale", out value) && value > 0)
             settings.EyeScale = value;
+        // 广角: the video panel value (degrees, 30..60, default 50)
+        string uiBlock = FindSection(text, "UIVideoSetting");
+        if (TryNumber(uiBlock, "VideoSetting_WidAngle", out value) && value > 0)
+            settings.WidAngleDeg = value;
+        if (TryNumber(staticBlock, "fSpringResetSpeed", out value))
+            settings.SpringResetSpeed = value;
+        if (TryNumber(staticBlock, "fCameraResetSpeed", out value))
+            settings.CameraResetSpeed = value;
+        if (TryNumber(staticBlock, "nCameraMode", out value))
+            settings.CameraMode = (int)Math.Round(value);
+        bool flag;
+        if (TryBool(staticBlock, "bCameraSmoothing", out flag)) settings.CameraSmoothing = flag;
+        if (TryBool(staticBlock, "bCurveCamera", out flag)) settings.CurveCamera = flag;
+        if (TryBool(staticBlock, "bEyeFollow", out flag)) settings.EyeFollow = flag;
+    }
+
+    static bool TryBool(string block, string key, out bool value)
+    {
+        value = false;
+        if (string.IsNullOrEmpty(block)) return false;
+        Match m = Regex.Match(block,
+            @"(?:^|[,\s])" + Regex.Escape(key) + @"\s*=\s*([A-Za-z0-9]+)");
+        if (!m.Success) return false;
+        string t = m.Groups[1].Value.ToLowerInvariant();
+        if (t == "true" || t == "1") { value = true; return true; }
+        if (t == "false" || t == "0") { value = false; return true; }
+        return false;
     }
 
     static string FindSection(string text, string key)

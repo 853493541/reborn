@@ -1,0 +1,278 @@
+
+==== 0x180afcae0 .. 0x180afcd90 (.text)
+  0x180afcae0: push     rbx
+  0x180afcae2: sub      rsp, 0x50
+  0x180afcae6: mov      rax, qword ptr [rip + 0x3c539b]  ; 0x180ec1e88
+  0x180afcaed: xor      rax, rsp
+  0x180afcaf0: mov      qword ptr [rsp + 0x40], rax
+  0x180afcaf5: mov      rbx, rcx
+  0x180afcaf8: mov      dword ptr [rsp + 0x30], 0
+  0x180afcb00: mov      dword ptr [rsp + 0x38], 0
+  0x180afcb08: call     qword ptr [rip + 0x5ca472]  ; X3DEngine.dll!?GetViewMgr@NSX3DEngine@@YAPEAVIView@1@XZ
+  0x180afcb0e: lea      r8, [rsp + 0x38]
+  0x180afcb13: mov      rcx, rax
+  0x180afcb16: lea      rdx, [rsp + 0x30]
+  0x180afcb1b: mov      r9, qword ptr [rax]
+  0x180afcb1e: call     qword ptr [r9 + 0x30]
+  0x180afcb22: test     eax, eax
+  0x180afcb24: jne      0x180afcb62
+  0x180afcb26: lea      rcx, [rip + 0x230373]  ; "GetRLCursorPos"
+  0x180afcb2d: mov      qword ptr [rsp + 0x20], rcx
+  0x180afcb32: lea      r9d, [rax + 0xf]
+  0x180afcb36: lea      ecx, [rax + 3]
+  0x180afcb39: lea      r8, [rip + 0x1a3068]  ; "nRetCode"
+  0x180afcb40: lea      rdx, [rip + 0x1a3029]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180afcb47: call     qword ptr [rip + 0x5c95e3]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180afcb4d: xor      eax, eax
+  0x180afcb4f: mov      rcx, qword ptr [rsp + 0x40]
+  0x180afcb54: xor      rcx, rsp
+  0x180afcb57: call     0x18000bc76
+  0x180afcb5c: add      rsp, 0x50
+  0x180afcb60: pop      rbx
+  0x180afcb61: ret      
+  0x180afcb62: mov      eax, dword ptr [rsp + 0x30]
+  0x180afcb66: mov      dword ptr [rsp + 0x30], eax
+  0x180afcb6a: mov      eax, dword ptr [rsp + 0x38]
+  0x180afcb6e: mov      dword ptr [rsp + 0x34], eax
+  0x180afcb72: mov      rax, qword ptr [rsp + 0x30]
+  0x180afcb77: mov      qword ptr [rbx], rax
+  0x180afcb7a: mov      eax, 1
+  0x180afcb7f: mov      rcx, qword ptr [rsp + 0x40]
+  0x180afcb84: xor      rcx, rsp
+  0x180afcb87: call     0x18000bc76
+  0x180afcb8c: add      rsp, 0x50
+  0x180afcb90: pop      rbx
+  0x180afcb91: ret      
+  0x180afcb92: int3     
+  0x180afcb93: int3     
+  0x180afcb94: int3     
+  0x180afcb95: int3     
+  0x180afcb96: int3     
+  0x180afcb97: int3     
+  0x180afcb98: int3     
+  0x180afcb99: int3     
+  0x180afcb9a: int3     
+  0x180afcb9b: int3     
+  0x180afcb9c: int3     
+  0x180afcb9d: int3     
+  0x180afcb9e: int3     
+  0x180afcb9f: int3     
+  0x180afcba0: int3     
+  0x180afcba1: int3     
+  0x180afcba2: int3     
+  0x180afcba3: int3     
+  0x180afcba4: int3     
+  0x180afcba5: int3     
+  0x180afcba6: int3     
+  0x180afcba7: int3     
+  0x180afcba8: int3     
+  0x180afcba9: int3     
+  0x180afcbaa: int3     
+  0x180afcbab: int3     
+  0x180afcbac: int3     
+  0x180afcbad: int3     
+  0x180afcbae: int3     
+  0x180afcbaf: int3     
+  0x180afcbb0: int3     
+  0x180afcbb1: int3     
+  0x180afcbb2: int3     
+  0x180afcbb3: int3     
+  0x180afcbb4: int3     
+  0x180afcbb5: int3     
+  0x180afcbb6: int3     
+  0x180afcbb7: int3     
+  0x180afcbb8: int3     
+  0x180afcbb9: int3     
+  0x180afcbba: int3     
+  0x180afcbbb: int3     
+  0x180afcbbc: int3     
+  0x180afcbbd: int3     
+  0x180afcbbe: int3     
+  0x180afcbbf: int3     
+  0x180afcbc0: push     rdi
+  0x180afcbc2: sub      rsp, 0x50
+  0x180afcbc6: mov      rax, qword ptr [rip + 0x3c52bb]  ; 0x180ec1e88
+  0x180afcbcd: xor      rax, rsp
+  0x180afcbd0: mov      qword ptr [rsp + 0x40], rax
+  0x180afcbd5: mov      rdi, rcx
+  0x180afcbd8: call     0x180021b4d
+  0x180afcbdd: test     rax, rax
+  0x180afcbe0: jne      0x180afcc1e
+  0x180afcbe2: lea      rcx, [rip + 0x2302e7]  ; "GetRLCursorScenePos"
+  0x180afcbe9: mov      qword ptr [rsp + 0x20], rcx
+  0x180afcbee: lea      r9d, [rax + 0x2e]
+  0x180afcbf2: lea      ecx, [rax + 3]
+  0x180afcbf5: lea      r8, [rip + 0x1a34b4]  ; "pRLScene"
+  0x180afcbfc: lea      rdx, [rip + 0x1a2f6d]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180afcc03: call     qword ptr [rip + 0x5c9527]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180afcc09: xor      eax, eax
+  0x180afcc0b: mov      rcx, qword ptr [rsp + 0x40]
+  0x180afcc10: xor      rcx, rsp
+  0x180afcc13: call     0x18000bc76
+  0x180afcc18: add      rsp, 0x50
+  0x180afcc1c: pop      rdi
+  0x180afcc1d: ret      
+  0x180afcc1e: mov      qword ptr [rsp + 0x68], rbx
+  0x180afcc23: mov      rbx, qword ptr [rax + 0xf1978]
+  0x180afcc2a: test     rbx, rbx
+  0x180afcc2d: jne      0x180afcc3f
+  0x180afcc2f: lea      r9d, [rbx + 0x31]
+  0x180afcc33: lea      r8, [rip + 0x1a826e]  ; "p3DScene"
+  0x180afcc3a: jmp      0x180afccea
+  0x180afcc3f: mov      dword ptr [rsp + 0x30], 0
+  0x180afcc47: mov      dword ptr [rsp + 0x38], 0
+  0x180afcc4f: call     qword ptr [rip + 0x5ca32b]  ; X3DEngine.dll!?GetViewMgr@NSX3DEngine@@YAPEAVIView@1@XZ
+  0x180afcc55: lea      r8, [rsp + 0x38]
+  0x180afcc5a: mov      rcx, rax
+  0x180afcc5d: lea      rdx, [rsp + 0x30]
+  0x180afcc62: mov      r9, qword ptr [rax]
+  0x180afcc65: call     qword ptr [r9 + 0x30]
+  0x180afcc69: test     eax, eax
+  0x180afcc6b: jne      0x180afcc9f
+  0x180afcc6d: mov      r9d, 0xf
+  0x180afcc73: lea      rax, [rip + 0x230226]  ; "GetRLCursorPos"
+  0x180afcc7a: lea      r8, [rip + 0x1a2f27]  ; "nRetCode"
+  0x180afcc81: mov      qword ptr [rsp + 0x20], rax
+  0x180afcc86: lea      rdx, [rip + 0x1a2ee3]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180afcc8d: lea      ecx, [r9 - 0xc]
+  0x180afcc91: call     qword ptr [rip + 0x5c9499]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180afcc97: mov      r9d, 0x34
+  0x180afcc9d: jmp      0x180afcce3
+  0x180afcc9f: movd     xmm0, dword ptr [rsp + 0x30]
+  0x180afcca5: lea      r8, [rsp + 0x30]
+  0x180afccaa: movd     xmm1, dword ptr [rsp + 0x38]
+  0x180afccb0: mov      r9, rdi
+  0x180afccb3: mov      rdx, qword ptr [rip + 0x409d96]  ; 0x180f06a50
+  0x180afccba: mov      rcx, rbx
+  0x180afccbd: cvtdq2ps xmm0, xmm0
+  0x180afccc0: add      rdx, 0x24ae8
+  0x180afccc7: cvtdq2ps xmm1, xmm1
+  0x180afccca: movss    dword ptr [rsp + 0x30], xmm0
+  0x180afccd0: movss    dword ptr [rsp + 0x34], xmm1
+  0x180afccd6: call     0x18001740e
+  0x180afccdb: test     eax, eax
+  0x180afccdd: jne      0x180afcd0c
+  0x180afccdf: lea      r9d, [rax + 0x3a]
+  0x180afcce3: lea      r8, [rip + 0x1a2ebe]  ; "nRetCode"
+  0x180afccea: lea      rcx, [rip + 0x2301df]  ; "GetRLCursorScenePos"
+  0x180afccf1: mov      qword ptr [rsp + 0x20], rcx
+  0x180afccf6: lea      rdx, [rip + 0x1a2e73]  ; "KGLOG_PROCESS_ERROR(%s) at line %d in %s
+"
+  0x180afccfd: mov      ecx, 3
+  0x180afcd02: call     qword ptr [rip + 0x5c9428]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x180afcd08: xor      eax, eax
+  0x180afcd0a: jmp      0x180afcd11
+  0x180afcd0c: mov      eax, 1
+  0x180afcd11: mov      rbx, qword ptr [rsp + 0x68]
+  0x180afcd16: mov      rcx, qword ptr [rsp + 0x40]
+  0x180afcd1b: xor      rcx, rsp
+  0x180afcd1e: call     0x18000bc76
+  0x180afcd23: add      rsp, 0x50
+  0x180afcd27: pop      rdi
+  0x180afcd28: ret      
+  0x180afcd29: int3     
+  0x180afcd2a: int3     
+  0x180afcd2b: int3     
+  0x180afcd2c: int3     
+  0x180afcd2d: int3     
+  0x180afcd2e: int3     
+  0x180afcd2f: int3     
+  0x180afcd30: int3     
+  0x180afcd31: int3     
+  0x180afcd32: int3     
+  0x180afcd33: int3     
+  0x180afcd34: int3     
+  0x180afcd35: int3     
+  0x180afcd36: int3     
+  0x180afcd37: int3     
+  0x180afcd38: int3     
+  0x180afcd39: int3     
+  0x180afcd3a: int3     
+  0x180afcd3b: int3     
+  0x180afcd3c: int3     
+  0x180afcd3d: int3     
+  0x180afcd3e: int3     
+  0x180afcd3f: int3     
+  0x180afcd40: int3     
+  0x180afcd41: int3     
+  0x180afcd42: int3     
+  0x180afcd43: int3     
+  0x180afcd44: int3     
+  0x180afcd45: int3     
+  0x180afcd46: int3     
+  0x180afcd47: int3     
+  0x180afcd48: int3     
+  0x180afcd49: int3     
+  0x180afcd4a: int3     
+  0x180afcd4b: int3     
+  0x180afcd4c: int3     
+  0x180afcd4d: int3     
+  0x180afcd4e: int3     
+  0x180afcd4f: int3     
+  0x180afcd50: int3     
+  0x180afcd51: int3     
+  0x180afcd52: int3     
+  0x180afcd53: int3     
+  0x180afcd54: int3     
+  0x180afcd55: int3     
+  0x180afcd56: int3     
+  0x180afcd57: int3     
+  0x180afcd58: int3     
+  0x180afcd59: int3     
+  0x180afcd5a: int3     
+  0x180afcd5b: int3     
+  0x180afcd5c: int3     
+  0x180afcd5d: int3     
+  0x180afcd5e: int3     
+  0x180afcd5f: int3     
+  0x180afcd60: int3     
+  0x180afcd61: int3     
+  0x180afcd62: int3     
+  0x180afcd63: int3     
+  0x180afcd64: int3     
+  0x180afcd65: int3     
+  0x180afcd66: int3     
+  0x180afcd67: int3     
+  0x180afcd68: int3     
+  0x180afcd69: int3     
+  0x180afcd6a: int3     
+  0x180afcd6b: int3     
+  0x180afcd6c: int3     
+  0x180afcd6d: int3     
+  0x180afcd6e: int3     
+  0x180afcd6f: int3     
+  0x180afcd70: int3     
+  0x180afcd71: int3     
+  0x180afcd72: int3     
+  0x180afcd73: int3     
+  0x180afcd74: int3     
+  0x180afcd75: int3     
+  0x180afcd76: int3     
+  0x180afcd77: int3     
+  0x180afcd78: int3     
+  0x180afcd79: int3     
+  0x180afcd7a: int3     
+  0x180afcd7b: int3     
+  0x180afcd7c: int3     
+  0x180afcd7d: int3     
+  0x180afcd7e: int3     
+  0x180afcd7f: int3     
+  0x180afcd80: int3     
+  0x180afcd81: int3     
+  0x180afcd82: int3     
+  0x180afcd83: int3     
+  0x180afcd84: int3     
+  0x180afcd85: int3     
+  0x180afcd86: int3     
+  0x180afcd87: int3     
+  0x180afcd88: int3     
+  0x180afcd89: int3     
+  0x180afcd8a: int3     
+  0x180afcd8b: int3     
+  0x180afcd8c: int3     
+  0x180afcd8d: int3     
+  0x180afcd8e: int3     
+  0x180afcd8f: int3     
