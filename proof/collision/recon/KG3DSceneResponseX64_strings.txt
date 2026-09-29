@@ -1,0 +1,7 @@
+0x00018018 ascii  bad array new length
+0x0001a190 ascii  nRetCode == sizeof(char) * MAX_PATH
+0x0001a3e8 ascii  pnIntArray
+0x0001f1d4 ascii  _splitpath_s
+0x0001f212 ascii  _splitpath
+0x0001f518 ascii  QueryPerformanceCounter
+0x0001f850 ascii  .?AVbad_array_new_length@std@@

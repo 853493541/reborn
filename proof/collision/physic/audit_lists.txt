@@ -1,0 +1,68 @@
+models=617 objects=4963
+file_white=2559 file_black=2205 folder_white=6 folder_black=6
+
+folder_w folder_b file_w file_b -> models
+True     False    False  False  -> 557
+        data/source/maps_source/门派/明教/st_mj石拱003_hd.mesh
+        data/source/maps_source/门派/明教/st_mj戈壁碎石003_001_hd.mesh
+        data/source/maps_source/小物件/室内/xwj_ca柜子003_003_hd.mesh
+        data/source/maps_source/建筑/jz_xb楼兰三间房001_003_hd.mesh
+        data/source/maps_source/小物件/木箱/wj_圆木桶堆001_hd.mesh
+        data/source/maps_source/小物件/木箱/wj_龙门木箱001_hd.mesh
+True     True     False  False  -> 30
+        data/source/maps_source/树/s_西北枯树001_001_hd.mesh
+        data/source/maps_source/树/s_xb多枝枯树003_005.srt
+        data/source/maps_source/树/s_xb多枝枯树003_001.srt
+        data/source/maps_source/树/s_xb多枝枯树003_007.srt
+        data/source/maps_source/树/s_xb多枝枯树003_003.srt
+        data/source/maps_source/树/s_西北枯树001_002.srt
+True     False    True   False  -> 18
+        data/source/maps_source/建筑/jz_xb楼兰哨台001_004_hd.mesh
+        data/source/maps_source/小物件/生活品/xwj_竹筐008_001_hd.mesh
+        data/source/maps_source/小物件/坛罐/xwj_破坛子001_001_hd.mesh
+        data/source/maps_source/小物件/生活品/wj_小木台001_hd.mesh
+        data/source/maps_source/小物件/生活品/xwj_斗笠001_hd.mesh
+        data/source/maps_source/建筑/jz_xb玉门关建筑001_003_hd.mesh
+False    False    False  False  -> 6
+        data/source/other/hd特效/场景/mesh/y_鱼群02_红_hd.mesh
+        data/source/doodad/帮会约战/wj_bhyz金刚战车001_hd.mesh
+        data/source/other/hd特效/场景/mesh/y_鱼群02_hd.mesh
+        data/source/doodad/通用/路标/xwj_驿站灯001_hd.mesh
+        data/source/doodad/洛阳/wj_ly地鼠土堆001_hd.mesh
+        data/source/other/hd特效/场景/mesh/t_天空飞鸟_鹰01_hd.mesh
+True     False    False  True   -> 5
+        data/source/maps_source/小物件/室内/xwj_人俑灯001_hd.mesh
+        data/source/maps_source/小物件/室内/wj_erg笔筒001_hd.mesh
+        data/source/maps_source/小物件/室内/wj_壁挂灯笼001_hd.mesh
+        data/source/maps_source/小物件/生活品/wj_s书画缸001_hd.mesh
+        data/source/maps_source/城墙/cq_龙门城墙001_008_hd.mesh
+True     False    True   True   -> 1
+        data/source/maps_source/小物件/坛罐/wj_水缸005_001_hd.mesh
+
+file_white hits (19):
+  data/source/maps_source/foliage/st_deadwood001_003_hd.mesh
+  data/source/maps_source/城墙/cq_龙门城墙001_003_hd.mesh
+  data/source/maps_source/小物件/坛罐/wj_水缸005_001_hd.mesh
+  data/source/maps_source/小物件/坛罐/wj_破罐001_001_hd.mesh
+  data/source/maps_source/小物件/坛罐/wj_破罐001_002_hd.mesh
+  data/source/maps_source/小物件/坛罐/xwj_破坛子001_001_hd.mesh
+  data/source/maps_source/小物件/工地物件/wj_工地物件001_007_hd.mesh
+  data/source/maps_source/小物件/木箱/wj_圆水木桶001_hd.mesh
+  data/source/maps_source/小物件/木箱/wj_圆水木桶007_hd.mesh
+  data/source/maps_source/小物件/木箱/wj_破木板002_004_hd.mesh
+  data/source/maps_source/小物件/栏杆/wj_木棍001_001_hd.mesh
+  data/source/maps_source/小物件/灯/xwj_紫竹路灯001_001_hd.mesh
+  data/source/maps_source/小物件/生活品/wj_小木台001_hd.mesh
+  data/source/maps_source/小物件/生活品/wj_绳001_001_hd.mesh
+  data/source/maps_source/小物件/生活品/xwj_斗笠001_hd.mesh
+  data/source/maps_source/小物件/生活品/xwj_竹筐008_001_hd.mesh
+  data/source/maps_source/建筑/jz_xb楼兰哨台001_004_hd.mesh
+  data/source/maps_source/建筑/jz_xb玉门关建筑001_003_hd.mesh
+  data/source/maps_source/门派/明教/s_mj树001_003_hd.mesh
+file_black hits (6):
+  data/source/maps_source/城墙/cq_龙门城墙001_008_hd.mesh
+  data/source/maps_source/小物件/坛罐/wj_水缸005_001_hd.mesh
+  data/source/maps_source/小物件/室内/wj_erg笔筒001_hd.mesh
+  data/source/maps_source/小物件/室内/wj_壁挂灯笼001_hd.mesh
+  data/source/maps_source/小物件/室内/xwj_人俑灯001_hd.mesh
+  data/source/maps_source/小物件/生活品/wj_s书画缸001_hd.mesh

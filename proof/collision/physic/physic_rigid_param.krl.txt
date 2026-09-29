@@ -1,0 +1,322 @@
+-- 0 = {
+--    simulatable  = 1,									-- 是否启用simulatable
+--    mass = 10, 							            -- 质量 (0, 无穷)
+--    static_friction  = 0.5, 							-- 静摩擦系数[0, 无穷)
+--    dynamic_friction = 0.4, 							-- 动摩擦系数[0, 无穷) 小于静摩擦系数
+--    restitution  = 0.2, 					-			-- 弹性系数，碰撞后速度恢复的比例
+--    friction_combine_mode=0,                     		-- (0:average, 1:min, 2:multiply, 3:max)
+-- 
+--    contact_mask_can_be_modify_contact = 0,			-- 可以被自定义碰撞修改
+--    contact_mask_can_modify_contact_with_others = 0,	-- 可以自定义碰撞修改其他物体
+--    contact_mask_can_be_touch_found = 0,				-- 可以被触发碰撞开始事件
+--    contact_mask_can_touch_found_with_others = 0,		-- 可以触发其他物体的碰撞开始事件
+--    contact_mask_can_be_touch_lost = 0,				-- 可以被触发碰撞离开事件
+--    contact_mask_can_touch_lost_with_others = 0,		-- 可以触发其他物体的碰撞离开事件
+--    contact_mask_can_be_touch_persists = 0,			-- 可以被触发碰撞持续事件
+--    contact_mask_can_touch_persists_with_others = 0,	-- 可以触发其他物体的碰撞持续事件
+--
+--    -- 动态物件独有参数
+--    linear_velocity_x = 0,					-- 初始速度
+--    linear_velocity_y = 0,					-- 初始速度
+--    linear_velocity_z = 0,					-- 初始速度
+--    angular_velocity_x = 0,					-- 初始角速度 绕X轴
+--    angular_velocity_y = 0,					-- 初始角速度 绕Y轴
+--    angular_velocity_z = 0,					-- 初始角速度 绕Z轴
+--    linear_damp   = 0.01,					-- 速度阻尼
+--    angular_damp  = 0.01,					-- 角速度阻尼
+--}
+
+1 = {
+	simulatable  = 1, 						
+    mass = 10, 								
+    static_friction  = 0.5, 				
+    dynamic_friction = 0.4, 				
+    restitution  = 0.6, 					
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 0,	
+    contact_mask_can_modify_contact_with_others = 0,
+    contact_mask_can_be_touch_found = 1,		
+    contact_mask_can_touch_found_with_others = 1,		
+    contact_mask_can_be_touch_lost = 0,		
+    contact_mask_can_touch_lost_with_others = 0,		
+    contact_mask_can_be_touch_persists = 0,	
+    contact_mask_can_touch_persists_with_others = 0,	
+
+    linear_velocity_x = 0,					
+    linear_velocity_y = 0,					
+    linear_velocity_z = 0,					
+    angular_velocity_x = 0,					
+    angular_velocity_y = 0,					
+    angular_velocity_z = 0,					
+    linear_damp   = 0.1,					
+    angular_damp  = 0.1,					
+}
+2 = {
+	simulatable  = 1, 						
+    mass = 500, 							
+    static_friction  = 0.7, 				
+    dynamic_friction = 0.5, 				
+    restitution  = 0.01, 					
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 0,	
+    contact_mask_can_modify_contact_with_others = 1,	
+    contact_mask_can_be_touch_found = 1,		
+    contact_mask_can_touch_found_with_others = 1,		
+    contact_mask_can_be_touch_lost = 0,		
+    contact_mask_can_touch_lost_with_others = 0,		
+    contact_mask_can_be_touch_persists = 0,	
+    contact_mask_can_touch_persists_with_others = 1,	
+}
+3 = {
+	simulatable  = 1, 						
+    mass = 1, 							    
+    static_friction  = 0.1, 				
+    dynamic_friction = 0.01, 				
+    restitution  = 0.5, 					
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 1,	
+    contact_mask_can_modify_contact_with_others = 0,	
+    contact_mask_can_be_touch_found = 1,		
+    contact_mask_can_touch_found_with_others = 1,		
+    contact_mask_can_be_touch_lost = 1,		
+    contact_mask_can_touch_lost_with_others = 0,		
+    contact_mask_can_be_touch_persists = 1,	
+    contact_mask_can_touch_persists_with_others = 0,	
+
+    linear_velocity_x = 0,					
+    linear_velocity_y = 0,					
+    linear_velocity_z = 0,					
+    angular_velocity_x = 0,					
+    angular_velocity_y = 0,					
+    angular_velocity_z = 0,					
+    linear_damp   = 0.1,					
+    angular_damp  = 0.1,					
+}
+
+4 = {
+	simulatable  = 1, 						
+    mass = 100, 							
+    static_friction  = 0, 				    
+    dynamic_friction = 0, 				    
+    restitution  = 0, 					    
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 0,	
+    contact_mask_can_modify_contact_with_others = 0,	
+    contact_mask_can_be_touch_found = 0,		
+    contact_mask_can_touch_found_with_others = 0,		
+    contact_mask_can_be_touch_lost = 0,		
+    contact_mask_can_touch_lost_with_others = 1,		
+    contact_mask_can_be_touch_persists = 0,	
+    contact_mask_can_touch_persists_with_others = 0,	
+}
+
+5 = {
+	simulatable  = 1, 						
+    mass = 1, 							    
+    static_friction  = 0.05, 				
+    dynamic_friction = 0.01, 				
+    restitution  = 0.8, 					
+    friction_combine_mode=2,
+    contact_mask_can_be_modify_contact = 0,	
+    contact_mask_can_modify_contact_with_others = 0,	
+    contact_mask_can_be_touch_found = 1,		
+    contact_mask_can_touch_found_with_others = 1,		
+    contact_mask_can_be_touch_lost = 1,		
+    contact_mask_can_touch_lost_with_others = 0,		
+    contact_mask_can_be_touch_persists = 0,	
+    contact_mask_can_touch_persists_with_others = 0,	
+
+    linear_velocity_x = 0,					
+    linear_velocity_y = 0,					
+    linear_velocity_z = 0,					
+    angular_velocity_x = 0,					
+    angular_velocity_y = 0,					
+    angular_velocity_z = 0,					
+    linear_damp   = 0.1,					
+    angular_damp  = 0.1,					
+}
+
+6 = { --玩家胶囊体
+    simulatable  = 1,                       
+    mass = 20,                             
+    static_friction  = 0.1,                 
+    dynamic_friction = 0.1,                 
+    restitution  = 0.1,                    
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 0, 
+    contact_mask_can_modify_contact_with_others = 0,    
+    contact_mask_can_be_touch_found = 0,        
+    contact_mask_can_touch_found_with_others = 0,       
+    contact_mask_can_be_touch_lost = 0,     
+    contact_mask_can_touch_lost_with_others = 0,        
+    contact_mask_can_be_touch_persists = 0, 
+    contact_mask_can_touch_persists_with_others = 0,  
+
+    linear_velocity_x = 0,                  
+    linear_velocity_y = 0,                  
+    linear_velocity_z = 0,                  
+    angular_velocity_x = 0,                 
+    angular_velocity_y = 0,                 
+    angular_velocity_z = 0,                 
+    linear_damp   = 1000,                    
+    angular_damp  = 1000,  
+}
+7 = {--物理龙珠小游戏龙珠
+    simulatable  = 1,									-- 是否启用simulatable
+    mass = 0.3, 							            -- 质量 (0, 无穷)
+   static_friction  = 0.001, 							-- 静摩擦系数[0, 无穷)
+    dynamic_friction =  0.001, 							-- 动摩擦系数[0, 无穷) 小于静摩擦系数
+    restitution  = 0.9, 					-			-- 弹性系数，碰撞后速度恢复的比例
+    friction_combine_mode=0,                     		-- (0:average, 1:min, 2:multiply, 3:max)
+
+    contact_mask_can_be_modify_contact = 0,			-- 可以被自定义碰撞修改
+    contact_mask_can_modify_contact_with_others = 0,	-- 可以自定义碰撞修改其他物体
+    contact_mask_can_be_touch_found = 1,				-- 可以被触发碰撞开始事件
+    contact_mask_can_touch_found_with_others = 1,		-- 可以触发其他物体的碰撞开始事件
+    contact_mask_can_be_touch_lost = 0,				-- 可以被触发碰撞离开事件
+    contact_mask_can_touch_lost_with_others = 0,		-- 可以触发其他物体的碰撞离开事件
+    contact_mask_can_be_touch_persists = 0,			-- 可以被触发碰撞持续事件
+   contact_mask_can_touch_persists_with_others = 0,	-- 可以触发其他物体的碰撞持续事件
+
+--    -- 动态物件独有参数
+    linear_velocity_x = 0,					-- 初始速度
+    linear_velocity_y = 0,					-- 初始速度
+    linear_velocity_z = 0,					-- 初始速度
+    angular_velocity_x = 0,					-- 初始角速度 绕X轴
+    angular_velocity_y = 0,					-- 初始角速度 绕Y轴
+    angular_velocity_z = 0,					-- 初始角速度 绕Z轴
+    linear_damp   = 0.00005,					-- 速度阻尼
+    angular_damp  = 0.00005,					-- 角速度阻尼
+}
+8 = {--物理龙珠小游戏 桌子
+    simulatable  = 1,									-- 是否启用simulatable
+    mass = 10, 							            -- 质量 (0, 无穷)
+   static_friction  = 0.5, 							-- 静摩擦系数[0, 无穷)
+    dynamic_friction = 0.4, 							-- 动摩擦系数[0, 无穷) 小于静摩擦系数
+    restitution  = 0.2, 					-			-- 弹性系数，碰撞后速度恢复的比例
+    friction_combine_mode=0,                     		-- (0:average, 1:min, 2:multiply, 3:max)
+
+    contact_mask_can_be_modify_contact = 0,			-- 可以被自定义碰撞修改
+    contact_mask_can_modify_contact_with_others = 0,	-- 可以自定义碰撞修改其他物体
+    contact_mask_can_be_touch_found = 1,				-- 可以被触发碰撞开始事件
+    contact_mask_can_touch_found_with_others = 1,		-- 可以触发其他物体的碰撞开始事件
+    contact_mask_can_be_touch_lost = 0,				-- 可以被触发碰撞离开事件
+    contact_mask_can_touch_lost_with_others = 0,		-- 可以触发其他物体的碰撞离开事件
+    contact_mask_can_be_touch_persists = 0,			-- 可以被触发碰撞持续事件
+   contact_mask_can_touch_persists_with_others = 0,	-- 可以触发其他物体的碰撞持续事件
+
+--    -- 动态物件独有参数
+    linear_velocity_x = 0,					-- 初始速度
+    linear_velocity_y = 0,					-- 初始速度
+    linear_velocity_z = 0,					-- 初始速度
+    angular_velocity_x = 0,					-- 初始角速度 绕X轴
+    angular_velocity_y = 0,					-- 初始角速度 绕Y轴
+    angular_velocity_z = 0,					-- 初始角速度 绕Z轴
+    linear_damp   = 0.01,					-- 速度阻尼
+    angular_damp  = 0.01,					-- 角速度阻尼
+}
+9 = {--唐简-铜铃
+	simulatable  = 1, 						
+    mass = 43, 						-- 质量：25kg（一个空木桶或装了少许东西的重量）		
+    static_friction  = 0.8, 				-- 静摩擦：较高，不容易被轻轻推滑
+    dynamic_friction = 0.7, 				-- 动摩擦：较高，滑动时很快会停下，并转化为滚动
+    restitution  = 0.01, 					-- 弹性：极低！木头砸在地上几乎不反弹
+    friction_combine_mode=0,
+    -- 碰撞事件掩码（保持开启“开始碰撞”，用于播放木头撞击音效或碎裂逻辑）
+    contact_mask_can_be_modify_contact = 0,	
+    contact_mask_can_modify_contact_with_others = 0,
+    contact_mask_can_be_touch_found = 1,		
+    contact_mask_can_touch_found_with_others = 1,		
+    contact_mask_can_be_touch_lost = 0,		
+    contact_mask_can_touch_lost_with_others = 0,		
+    contact_mask_can_be_touch_persists = 0,	
+    contact_mask_can_touch_persists_with_others = 0,	
+
+    -- 初始状态静止
+    linear_velocity_x = 0,					
+    linear_velocity_y = 0,					
+    linear_velocity_z = 0,					
+    angular_velocity_x = 0,					
+    angular_velocity_y = 0,					
+    angular_velocity_z = 0,					
+    -- 阻尼（空气阻力与旋转阻尼）
+    linear_damp   = 0.3,		-- 线性阻尼：较小，符合重物在空气中掉落的正常阻力			
+    angular_damp  = 0.3,	-- 角阻尼：较大，木桶在地上滚一段时间后会自己停下
+}
+10 = {--轻型：碗、烛台、小香炉
+	simulatable  = 1, 
+    mass = 1,
+    static_friction = 0.4,
+    dynamic_friction = 0.3,
+    restitution = 0.3,
+    linear_damp   = 1,
+    angular_damp  = 1,
+}
+11 = {--中等；竹筐、木桶、锄头、摆灯
+	simulatable  = 1, 
+    mass = 50,
+    static_friction = 0.8,
+    dynamic_friction = 0.7,
+    restitution = 0.2,
+    linear_damp   = 2,
+    angular_damp  = 2,
+}
+12 = {--重型；车轮、石碾
+	simulatable  = 1, 
+    mass = 1900,
+    static_friction = 1,
+    dynamic_friction = 0.9,
+    restitution = 0.01,
+    linear_damp   = 5,
+    angular_damp  = 5,
+}
+13 = {--金元宝，约20kg
+	simulatable  = 1,
+    mass = 2800,
+    static_friction  = 0.45,
+    dynamic_friction = 0.38,
+    restitution  = 0.03,
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 0,
+    contact_mask_can_modify_contact_with_others = 0,
+    contact_mask_can_be_touch_found = 1,
+    contact_mask_can_touch_found_with_others = 1,
+    contact_mask_can_be_touch_lost = 0,
+    contact_mask_can_touch_lost_with_others = 0,
+    contact_mask_can_be_touch_persists = 0,
+    contact_mask_can_touch_persists_with_others = 0,
+
+    linear_velocity_x = 0,
+    linear_velocity_y = 0,
+    linear_velocity_z = 0,
+    angular_velocity_x = 0,
+    angular_velocity_y = 0,
+    angular_velocity_z = 0,
+    linear_damp   = 7,
+    angular_damp  = 4,
+}
+14 = {--木制骰子 1m立方，约500kg（软木密度~500kg/m3）
+	simulatable  = 1,
+    mass = 860,
+    static_friction  = 0.8,
+    dynamic_friction = 0.7,
+    restitution  = 0.15,
+    friction_combine_mode=0,
+    contact_mask_can_be_modify_contact = 0,
+    contact_mask_can_modify_contact_with_others = 0,
+    contact_mask_can_be_touch_found = 1,
+    contact_mask_can_touch_found_with_others = 1,
+    contact_mask_can_be_touch_lost = 0,
+    contact_mask_can_touch_lost_with_others = 0,
+    contact_mask_can_be_touch_persists = 0,
+    contact_mask_can_touch_persists_with_others = 0,
+
+    linear_velocity_x = 0,
+    linear_velocity_y = 0,
+    linear_velocity_z = 0,
+    angular_velocity_x = 0,
+    angular_velocity_y = 0,
+    angular_velocity_z = 0,
+    linear_damp   = 5,
+    angular_damp  = 3,
+}

@@ -1,0 +1,11 @@
+# Second terrain extras battery (landscape base dir)
+data/source/maps/龙门寻宝/landscape/hole/000_000.hlb
+data/source/maps/龙门寻宝/landscape/hole/000_000.png
+data/source/maps/龙门寻宝/landscape/hole/003_003.hlb
+data/source/maps/龙门寻宝/landscape/hole/007_007.hlb
+data/source/maps/龙门寻宝/landscape/landscape.WaterData
+data/source/maps/龙门寻宝/landscape/water/landscape.WaterData
+data/source/maps/龙门寻宝/landscape/waterinfo.json
+data/source/maps/龙门寻宝/landscape/water.json
+data/source/maps/龙门寻宝/landscape/龙门寻宝_WaterData
+data/source/maps/龙门寻宝/landscape/holeinfo.json

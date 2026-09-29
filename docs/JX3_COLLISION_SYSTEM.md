@@ -390,6 +390,23 @@ The `bObscatleCamera` data path is fully recovered: `KG3DMeshFileDataLoader::Loa
 (`docs/CAMERA_PENETRATION_PLAN.md:165-186`). Our exporter converts these to `.cflags` sidecars
 (§9.4).
 
+**Static-physics selection is list-driven (recovered 2026-09-28).** The engine does not use
+`comLogic.obstacleOption` to decide per-object physics; it filters models through four config
+files (`Represent/physic/`, extracted to `proof/collision/physic/`):
+
+| File | Size | Content |
+|---|---|---|
+| `physic_folder_white.txt` | 6 | allowed folders: `maps_source`, `home`, `item`, `树`, `whitebox_k` |
+| `physic_folder_black.txt` | 6 | filtered folders: `灌木`, `花草`, `树`, `NPC_source`, `water` |
+| `physic_file_white.txt` | 2,559 | explicit model stems allowed |
+| `physic_file_black.txt` | 2,205 | explicit model stems filtered |
+
+Additional physic configs recovered: `physic_shape_param.krl.txt` (named shape library — box
+500×50×50 @y50, sphere r26, mesh, two boxes, **capsule r50/l50**, more), 
+`physic_rigid_param.krl.txt` (mass, static/dynamic friction, restitution, combine mode,
+contact-modification masks, initial velocities/damping), and
+`physic_conveyor_belt_param.krl.txt`. See §8.4 for the audit and the implemented rule.
+
 ### 5.5 `SIMWorldX64.dll` — gameplay PhysX world [DISASM]
 
 Export table (`proof/gravity/SIMWorldX64_exports.txt`):
@@ -556,6 +573,19 @@ region (~1 MB) and bilinearly samples `Sample(x,z)` with clamped coordinates
 still solid ground (gap G-2). No normals/materials are exposed; steep cliffs appear as large
 height deltas and are handled by the 70-u rise rule (§12.4, §25.2).
 
+### 7.6 Hole/water asset probes (2026-09-28)
+
+Two candidate batteries (24 paths, `proof/collision/recon/terrain_extra_candidates*.txt`) could
+not locate the hole/water files for 龙门寻宝 under the guessed templates (`<map>/hole/*.hlb`,
+`<map>/landscape/hole/*`, `<map>/landscape/*.WaterData`, `…/water/*.WaterData`). The loader
+format strings and PNG/HLB decoders remain the authoritative description of the formats
+(§7.2); the shipped file naming for holes/water is still an open item — next step is to
+disassemble the loader path builder (`KG3D_PhysxTerrainDataLoader_Source`) for the exact
+`%hs` composition and to test a map known to ship water (e.g. 海岛绝境).
+
+The map does ship `<map>.SRScene` (524 B, extracted to `proof/collision/terrain_extra/`):
+magic `SRS\0`, body all-zero on 龙门寻宝 — the SceneResponse state file (§17.1).
+
 ---
 
 ## 8. Static scene objects and regions
@@ -595,25 +625,42 @@ add/remove per §5.3. Scene region manager `SceneRegionManager::_CreatePxActorIn
 PhysicsScene** inside MovieEditor, which is why our host bakes meshes offline instead
 (`docs/STRUCTURE_COLLISION_RESEARCH.md:56-60`).
 
-### 8.4 Object flags and passability [NAME / partial]
+### 8.4 Physics selection: audit + implemented engine rule (2026-09-28)
 
-Engine unit-template keys (`proof/movement/KG3DEngineX64_strings.txt:541388-541401`):
-`bUnitWalkable`, `bUnitCanPass`, `bBulletWalkable`, `bBulletCanPass`, `bAutoPathing`,
-`nPathingType`, `fPathingHeight`, next to `bAttackable`, `bSelectable`, `bDropOnDeath`,
-`nDeathType`, `fReviveDelay/Time`, `nDropNumber`. Semantics per docs
-(`docs/STRUCTURE_COLLISION_RESEARCH.md:21`):
+**World-object flag audit [DATA].** All 64 region files / 4,965 objects of 龙门寻宝 were parsed
+(`tools/collision/audit_physic_lists.py` companion scan): every object carries
+`comLogic = {obstacleOption: 0, enablePhysicsConfig: 0}`; no other flag keys exist on the
+objects. So per-object variation is zero on this map and the earlier "flags ignored" concern
+(G-3) has **no behavioural impact** for it: the flags are uniformly 0.
 
-| Flag | Intended meaning |
+**The real selection mechanism is the physic white/black lists** (§5.4). Audit of the 617
+distinct models in the map's `sceneinfo_full` against the lists
+(`proof/collision/physic/audit_lists.txt`):
+
+| Category | Models |
 |---|---|
-| `bUnitWalkable` | ground unit may stand on it |
-| `bUnitCanPass` | movement can pass through |
-| `bBulletWalkable` | bullets travel along it / collide? (walkability for bullets) |
-| `bBulletCanPass` | bullets pass through |
-| `bAutoPathing` | navmesh generation includes it |
-| `obstacleOption` / `enablePhysicsConfig` | per-object physics/collider option (option 4 = AABB from bounds) |
+| folder whitelist only | 557 |
+| folder white **and** black (`树` trees) | 30 |
+| folder white + file white | 18 |
+| no list hit (doodad/effect meshes) | 6 |
+| folder white + file black | 5 |
+| file white + file black | 1 |
+| **file list hits** | 19 white / 6 black |
 
-**These flags are not consumed by our baker or runtime** (gap G-3), and no reversed consumer
-exists yet. Data presence: not verified in the shipped JSONs in this repo.
+**Implemented rule (hypothesis H1, `export_structure_collision.py --physic-lists`):**
+`file_black` always excludes; `folder_black` excludes unless the file is explicitly
+`file_white`; otherwise the model must be `folder_white` or `file_white`. SpeedTree `.srt`
+objects bypass the lists because their collision comes from the separate
+`<base>.CollisionMesh` path (trees do block in the client). Applying the rule to 龙门寻宝
+accepts 4,903 of 4,963 objects; 60 are rejected: **29 file_black props** (wall lanterns, pen
+holders, calligraphy vats, water vat, one wall segment), **23 blacklisted `.mesh` trees**, and
+**8 non-whitelisted doodad/effect meshes**. The baker now extracts the lists and passes them
+automatically (`--no-physic-lists` opts out).
+
+Engine unit-template keys remain separate (`bUnitWalkable`, `bUnitCanPass`, `bBulletWalkable`,
+`bBulletCanPass`, `bAutoPathing`, `nPathingType`, `fPathingHeight` —
+`proof/movement/KG3DEngineX64_strings.txt:541388-541401`) and are not part of the static-mesh
+gate; their consumers are still unreversed (G-21).
 
 ### 8.5 SpeedTree and LOD [DISASM/DATA]
 
@@ -842,6 +889,20 @@ is **not backed by any dump in the repository**: no `PxController`, `PxCCT`, or
   (`proof/gravity/disasm/physics_scene_setup.txt:37-67`). **Which multiplier maps to radius,
   half-height, slope limit, step offset, contact offset/skin is unidentified** (gap G-1).
   This path may serve the editor/cinematic avatar rather than the online character.
+
+**Resolved constants (2026-09-28, `proof/collision/disasm/physics_controller_setup.txt`):** the
+multipliers are exactly `0.01`, `0.025`, `0.2`, `0.04` applied to scale components (x for
+three of them, z for one) plus the constant `0.4`; the same function (`PhysicsScene::_InitPhysXScene`
+`0x180018990`) builds the scene description with gravity from the caller's vector or
+`(0, -9.81, 0)`, a default filter shader fallback `0x1800169A9`, scene flags
+`eENABLE_ACTIVETRANSFORMS (0x2)` always plus `eENABLE_CCD (0x4)` when `[params+0x20]` and
+`eREQUIRE_RW_LOCK (0x1000)` when `[params+0x21]`, creates the controller manager via
+`PxCreateControllerManager(scene, 0)` and stores it at `PhysicsScene+0x10`; the fixed-step tick
+(`0x180018C60`) accumulates dt/1000 into `+0x34` against `+0x30` with a 20 ms step and calls
+scene vt[`0x318`], vt[`0x1B0`], vt[`0x1D0`], vt[`0x320`]. **Which product maps to radius,
+half-height, slope limit, step offset and skin is still unproven** — the honest state of G-1.
+The named shape library (`physic_shape_param.krl.txt`, capsule r50/l50 at index 6) is a
+separate per-object shape table, not the player body.
 
 ### 11.2 The SIMWorld kinematic solver [NAME]
 
@@ -1356,6 +1417,18 @@ strings show content processing and federation tiling (`iMeshFederation`,
 `buildTileMeshFromContent`, “Pathfind preprocess persistent data version is incompatible”,
 tiles/`partitionWithGridSize`/`startFacePerTile` fields)
 (`proof/collision/recon/PathEngine_exports.txt`, `PathEngine_strings.txt`).
+
+**Loader search (2026-09-28):** a raw byte scan of all 339 modules in `bin64` (ASCII and
+UTF-16) found **no module that references `NAVX64`, `CreateNAV` or `LoadSceneNaviMesh`** —
+NAVX64 is imported by nobody and has no import table consumer. `KNavMeshQuery` literals exist
+only in `JX3ClientX64.exe` (and the editor DLL); no Recast/Detour strings. So the client's
+`KNavMeshQuery` wraps a navmesh source that is not NAVX64 in this install, and NAVX64 is
+presumably loaded by the server/standalone logic externally (or via a config-driven loader).
+Disassembly of `NAVX64!Init` (`0x4060`) and `LoadSceneNaviMesh` (`0x44D0`) is committed
+(`proof/collision/disasm/navx64_*.txt`): `Init(path)` lazily creates the PathEngine factory and
+the navigator object; `LoadSceneNaviMesh(p0..p3)` reads the four files in-module with
+`fopen_s`/`fread` (CRT imports), so the navmesh format is a custom binary parsed by NAVX64 —
+its magic is the next RE target.
 
 Client-side query wrapper: `KNavMeshQuery::Init`, `m_pNavMesh`, `m_pNavMeshQuery`,
 `KNavMeshQuery::QueryPath` (`JX3ClientX64_exe_strings.txt:766962-766971`); `KPlayer::LuaNavTo`,
@@ -1886,6 +1959,7 @@ gating (`Use3DObstacle`) has no reversed implementation (G-21).
 |---|---|---|
 | terrain sampling | probe log `docs/REAL_CLIENT_MAP_COLLISION.md:84-92`; `TerrainSampler` warm-up | sample known coords; cross-check `SetCameraPos` Y-snap oracle (`SPIKE_B_MAP_NOTES.md:43-44`) |
 | baked structures | `proof/map_spike/structure_collision/*.log/.png` (cactus, building, tree, measured tree) | walk into each class; expect `blocked=True` and stop distance ≈ capsule radius |
+| physic-list filter | `proof/collision/physic/audit_lists.txt` (617 models / 4,963 objects) | re-run `tools/collision/audit_physic_lists.py`; assert 4,903/60 accepted/rejected; walk into a blacklisted prop (should not block) |
 | foliage counts/scales | bin headers parse (section 9.4 table) | re-parse `FCOL` headers; assert counts/sizes |
 | foliage decode | `tools/decode_foliage.py` exact-length validation | decode all 13 files; length + instance-count match |
 | gravity/jump | `proof/gravity/verification.txt` (apex 414 u, 18 frames, per-school) | `python tools/gravity/verify_model.py` diff |
@@ -1928,6 +2002,10 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/PathEngine_exports.txt` / `_strings.txt` | PathEngine SDK surface + content-processing strings |
 | `proof/collision/recon/SIMWorldX64_exports.txt` / `_strings.txt` | re-verified SIMWorld export surface |
 | `proof/collision/missile/*` | extracted missile/bullet/phase/controller tables (2026-09-28) + decoded `buff_bullet_header_utf8.txt` |
+| `proof/collision/physic/*` | engine physic configs (file/folder white/black lists, shape/rigid/conveyor params) + UTF-8 copies + `audit_lists.txt` |
+| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh` |
+| `proof/collision/terrain_extra/*` | extracted `<map>.SRScene` (magic `SRS`, empty body) |
+| `proof/collision/recon/terrain_extra_candidates*.txt`, `physic_config_candidates.txt` | extraction candidate batteries (method evidence) |
 | `proof/netcode/loot_protocol` (`disasm/OnSync*`) | doodad/loot packet layouts |
 
 ### 28.2 Disassembly transcript dirs
@@ -1953,7 +2031,9 @@ client\build_client.cmd   # then camera_smoke.exe
 | `tools/pvp/*` | attributes, cast, hitstiff, control, modes |
 | `tools/decode_foliage.py`, `export_foliage_collision.py`, `export_structure_collision.py`, `export_camera_flags.py`, `bake_map_collision.py` | collision bake |
 | `pss_assets.py` (`run_pakv4`) | PakV4 extraction backend |
-| `tools/collision/recon_module.py` | dump PE exports + keyword strings for any module (used for NAVX64/PathEngine/SIMWorld) |
+| `tools/collision/recon_module.py` | dump PE exports + keyword strings for any module (used for NAVX64/PathEngine/SIMWorld/SceneResponse) |
+| `tools/collision/disasm_range.py` | RVA-range disassembler with IAT/export/float-constant annotation (used for the controller and NAVX64 passes) |
+| `tools/collision/audit_physic_lists.py` | classify map models against the physic white/black lists (produces `audit_lists.txt`) |
 
 ### 28.4 Proof directories
 
@@ -1972,12 +2052,12 @@ IDs are stable references for future work. “Method” names the concrete next 
 
 | ID | Gap | Method |
 |---|---|---|
-| G-1 | character solver/controller field labels (radius, half-height, slope, step, skin) | disassemble SIMWorld solver key consumers + `PhysicsEngineX64` region `0x180018990`; label the `0.01/0.025/0.2/0.04/0.4` params |
+| G-1 | character solver/controller field labels — **constants resolved 2026-09-28** (0.01/0.025/0.2/0.04/0.4, scene flags, gravity, step tick; `proof/collision/disasm/physics_controller_setup.txt`); field mapping still open | locate the `createController(desc)` call site and the SIMWorld solver key consumers; label fields against the PhysX 3.3.4 `PxCapsuleControllerDesc` layout |
 | G-29 | projectile/missile system — **client data model recovered 2026-09-28** (`proof/collision/missile/`, §22.2); server simulation and tick-base fitting still open | disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor`; fit velocity tick base from captures |
-| G-25 | navmesh format + `QueryPath` + obstacles + `bAutoPathing` — **API recovered 2026-09-28** (`proof/collision/recon/`), data format still open | disassemble `NAVX64!LoadSceneNaviMesh` `0x44D0` / `Init` `0x4060`; find the caller-side path template in `JX3ClientX64.exe`; parse the file magic |
-| G-21 | `KG3DSceneResponse` semantics (walkability/passability flags) | load `KG3DSceneResponseX64.dll`, disassemble `LoadSceneResponseEntities` + per-flag consumers |
+| G-25 | navmesh format + `QueryPath` + obstacles + `bAutoPathing` — **API recovered and NAVX64 disassembled 2026-09-28**; **no module in `bin64` references NAVX64**, so the client nav source is elsewhere; data format still open | parse the NAVX64 `fopen_s`/`fread` format; find `KNavMeshQuery` construction in `JX3ClientX64.exe`; identify the server/standalone NAVX64 caller |
+| G-21 | `KG3DSceneResponse` semantics — **partial 2026-09-28**: the plugin has just 2 exports (`GetSceneResponse`, `GetStateFileInfo`) and no flag literals; the map state file `<map>.SRScene` (magic `SRS`) is empty on 龙门寻宝; the static gate is the physic lists (§8.4); `bUnitWalkable`/`bUnitCanPass`/`bBullet*`/`bAutoPathing` consumers still unreversed | disassemble `GetStateFileInfo` consumers and the engine unit-template readers around `KG3DEngineX64!0x541388-0x541401` |
 | G-24 | water volumes + `UpdateFluxCollisionHeightMap` | disassemble `_FillMapWaterData`/`KG3D_LoadTerrainWaterData`; find native flux implementation |
-| G-3 | `comLogic` flags ignored by bake (passability) | audit shipped `sceneinfo_full` JSONs for flag presence; extend exporter + runtime |
+| G-3 | `comLogic` flags ignored by bake — **audited 2026-09-28: all 4,965 objects are uniformly `obstacleOption=0`/`enablePhysicsConfig=0`; no behavioural impact**; the real gate is the physic white/black lists, now implemented (`--physic-lists`, H1) | validate H1 precedence in-game (G-35) |
 | G-5 | FOLI `sceneScale` double-apply | unit test with known non-1.0 patterns (天原 deadwood 1.299998, 龙门 rock6 0.5921); fix exporter or runtime |
 | G-0 | unit conflict 100 vs 192 u/m | run the decisive walk-speed/mesh-vs-cell experiment (§26.1); correct docs consistently |
 
@@ -1994,6 +2074,8 @@ IDs are stable references for future work. “Method” names the concrete next 
 | G-16 | ragdoll blend/update loop | disassemble `KPhysicsRagdoll` update + represent blend |
 | G-13 | real step-up offset / slope limit | part of G-1; validate in game by stair tests |
 | G-7 | per-map `.cflags` for maps beyond the five | run `export_camera_flags.py` per extracted entity dump; copy sidecars |
+| G-35 | physic-list rule precedence (H1) and the `.srt` bypass are hypotheses; the folder `树` is in both lists | A/B: bake 龙门寻宝 with/without the list filter; walk into a blacklisted prop (wall lantern/pen holder) and a `s` mesh tree; compare blocking against the live client |
+| G-2 | terrain hole/water file naming not found under guessed templates (24 candidates) | disassemble the loader path composition; probe a water-heavy map (海岛绝境); extract and parse `.hlb`/`WaterData` once located |
 
 ### P2 — completeness
 

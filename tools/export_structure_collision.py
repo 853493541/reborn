@@ -32,8 +32,58 @@ from pss_assets import run_pakv4  # noqa: E402
 MAGIC = 0x4C4F4346  # 'FCOL'
 
 
-def load_objects(region_dir):
+def _read_list(path):
+    out = set()
+    for line in Path(path).read_text(encoding='utf-8', errors='replace').splitlines():
+        s = line.strip().lower()
+        if not s or s.startswith('#') or s.startswith('--'):
+            continue
+        if '文件' in s or '文件夹' in s:   # list headers
+            continue
+        out.add(s)
+    return out
+
+
+def load_physic_lists(physic_dir):
+    """Engine static-physics selection lists (Represent/physic/*).
+
+    The engine decides which world-object models receive physics from
+    physic_file/folder_white/black.  Rule implemented here (hypothesis H1,
+    see docs/JX3_COLLISION_SYSTEM.md section 8.4):
+      - file_black always excludes;
+      - folder_black excludes unless the file is explicitly file_white;
+      - otherwise the model must be folder_white or file_white.
+    """
+    d = Path(physic_dir)
+    return {
+        'file_white': _read_list(d / 'physic_file_white.txt'),
+        'file_black': _read_list(d / 'physic_file_black.txt'),
+        'folder_white': _read_list(d / 'physic_folder_white.txt'),
+        'folder_black': _read_list(d / 'physic_folder_black.txt'),
+    }
+
+
+def phys_reject_reason(model, lists):
+    """None when the engine would give this model physics, else the reason."""
+    p = model.replace('\\', '/').lower()
+    base = p.rsplit('/', 1)[-1].rsplit('.', 1)[0]
+    folders = set(p.split('/')[:-1])
+    file_w = base in lists['file_white']
+    file_b = base in lists['file_black']
+    folder_w = bool(folders & lists['folder_white'])
+    folder_b = bool(folders & lists['folder_black'])
+    if file_b:
+        return 'file_black'
+    if folder_b and not file_w:
+        return 'folder_black'
+    if not (folder_w or file_w):
+        return 'no_whitelist'
+    return None
+
+
+def load_objects(region_dir, physic=None):
     objs = []
+    rejected = []
     for f in sorted(Path(region_dir).glob('*.json')):
         raw = f.read_bytes()
         if len(raw) < 100:
@@ -55,6 +105,14 @@ def load_objects(region_dir):
                 coll = model[:-len('.srt')] + '.CollisionMesh'
             else:
                 continue
+            # The lists gate static .mesh physics.  SpeedTree collision uses the
+            # separate <base>.CollisionMesh path and is kept (trees do block in
+            # the client), so .srt objects bypass the list filter.
+            if physic is not None and ext != '.srt':
+                reason = phys_reject_reason(model, physic)
+                if reason:
+                    rejected.append((reason, model))
+                    continue
             objs.append({
                 'uuid': g,
                 'model': coll,
@@ -63,7 +121,7 @@ def load_objects(region_dir):
                 'bmin': b.get('actorBoundBoxMin'),
                 'bmax': b.get('actorBoundBoxMax'),
             })
-    return objs
+    return objs, rejected
 
 
 def convex_hull_2d(pts):
@@ -174,10 +232,20 @@ def main():
     ap.add_argument('--flags', default=str(Path(__file__).resolve().parent.parent /
                                            'engine_host_spike' / 'collision_data' / 'camera_mesh_flags.json'),
                     help='per-mesh bObscatleCamera map (export_camera_flags.py)')
+    ap.add_argument('--physic-lists', default=None,
+                    help='directory with physic_file/folder_white/black.txt; when set, the '
+                         'engine static-physics selection rule is applied (H1, doc 8.4)')
     args = ap.parse_args()
 
-    objs = load_objects(args.regions)
+    physic = load_physic_lists(args.physic_lists) if args.physic_lists else None
+    objs, rejected = load_objects(args.regions, physic)
     print('objects with .mesh: %d' % len(objs))
+    if physic is not None:
+        import collections
+        reasons = collections.Counter(r for r, _ in rejected)
+        print('physic-list rejected objects: %d %s' % (len(rejected), dict(reasons)))
+        for r, model in rejected[:8]:
+            print('   reject(%s) %s' % (r, model))
     models = {}
     visual_of = {}   # tree collision mesh path -> sibling visual .mesh path
     for o in objs:

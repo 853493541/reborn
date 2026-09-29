@@ -1,0 +1,72 @@
+1 = {
+		shape_type = "box"
+		box_extend_x = "500.0000"
+		box_extend_y = "50.0000"
+		box_extend_z = "50.0000"
+		pos_x = "0.0000"
+		pos_y = "50.0000"
+		pos_z = "0.0000"
+    }
+2 = {
+		shape_type = "sphere"
+		radius = "26.0000"
+		pos_x = "0.0000"
+		pos_y = "0.0000"
+		pos_z = "0.0000"
+    }
+3 = {
+		shape_type = "mesh"
+    }
+4 = {
+		shape_type = "box"
+		box_extend_x = "280.0000"
+		box_extend_y = "200.0000"
+		box_extend_z = "550.0000"
+		pos_x = "0.0000"
+		pos_y = "150.0000"
+		pos_z = "-500.0000"
+    }
+5 = {
+		shape_type = "box"
+		box_extend_x = "80.0000"
+		box_extend_y = "10.0000"
+		box_extend_z = "250.0000"
+		pos_x = "0.0000"
+		pos_y = "150.0000"
+		pos_z = "0.0000"
+    }
+6 = {
+		shape_type = "capsule"
+		radius = "50.0000"
+		length = "50.0000"
+		pos_x = "0.0000"
+		pos_y = "0.0000"
+		pos_z = "0.0000"
+    }
+7 = {
+		shape_type = "box"
+		box_extend_x = "700.0000"
+		box_extend_y = "25.0000"
+		box_extend_z = "550.0000"
+		pos_x = "0.0000"
+		pos_y = "25.0000"
+		pos_z = "0.0000"
+    }
+8 = {
+		shape_type = "box"
+		box_extend_x = "20.0000"
+		box_extend_y = "25.0000"
+		box_extend_z = "20.0000"
+		pos_x = "0.0000"
+		pos_y = "25.0000"
+		pos_z = "0.0000"
+    }
+9 = {
+		shape_type = "box"
+		box_extend_x = "700.0000"
+		box_extend_y = "550.0000"
+		box_extend_z = "25.0000"
+		pos_x = "0.0000"
+		pos_y = "0.0000"
+		pos_z = "0.0000"
+    }
