@@ -1,0 +1,9 @@
+# Corrected hole/height paths from the disassembled builder (map-name variant first)
+data/source/maps/龙门寻宝/hole/龙门寻宝_000_000.hlb
+data/source/maps/龙门寻宝/hole/龙门寻宝_000_000.png
+data/source/maps/龙门寻宝/landscape/hole/龙门寻宝_000_000.hlb
+data/source/maps/龙门寻宝/landscape/hole/龙门寻宝_000_000.png
+data/source/maps/龙门寻宝/landscape/heightmap/龙门寻宝_000_000.r32
+data/source/maps/龙门寻宝/landscape/heightmap/000_000.r32
+data/source/maps/龙门寻宝/heightmap/000_000.r32
+data/source/maps/龙门寻宝/hole/000_000.hlb

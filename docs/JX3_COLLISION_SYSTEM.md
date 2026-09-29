@@ -573,18 +573,40 @@ region (~1 MB) and bilinearly samples `Sample(x,z)` with clamped coordinates
 still solid ground (gap G-2). No normals/materials are exposed; steep cliffs appear as large
 height deltas and are handled by the 70-u rise rule (§12.4, §25.2).
 
-### 7.6 Hole/water asset probes (2026-09-28)
+### 7.6 Terrain files decoded from the path builder (2026-09-28, solved)
 
-Two candidate batteries (24 paths, `proof/collision/recon/terrain_extra_candidates*.txt`) could
-not locate the hole/water files for 龙门寻宝 under the guessed templates (`<map>/hole/*.hlb`,
-`<map>/landscape/hole/*`, `<map>/landscape/*.WaterData`, `…/water/*.WaterData`). The loader
-format strings and PNG/HLB decoders remain the authoritative description of the formats
-(§7.2); the shipped file naming for holes/water is still an open item — next step is to
-disassemble the loader path builder (`KG3D_PhysxTerrainDataLoader_Source`) for the exact
-`%hs` composition and to test a map known to ship water (e.g. 海岛绝境).
+Disassembling the path builder (`proof/collision/disasm/px_hole_path_builder.txt`) showed the
+real templates:
 
-The map does ship `<map>.SRScene` (524 B, extracted to `proof/collision/terrain_extra/`):
-magic `SRS\0`, body all-zero on 龙门寻宝 — the SceneResponse state file (§17.1).
+```
+height (R32):  <dir>\heightmap\<map>_%03u_%03u.r32      (or without <map>_)
+height (BCH):  <dir>/heightmap_bc/<map>_%03d_%03d.bch   (or without <map>_)
+holes  (HLB):  <dir>\hole\<map>_%03u_%03u.hlb           (or without <map>_; .png variants exist)
+```
+
+with `<dir>` = `data/source/maps/<map>/landscape` and `<map>` = the map-name variant chosen
+when the loader's optional name member is set. Verified by extraction for 龙门寻宝 and
+海岛绝境 (`proof/collision/terrain_extra/`):
+
+* **BCH (the runtime heightmap) [DATA, verified]**: 36-byte header
+  `{u32 magic=0xBC000001, u32 width, u32 height, u32 0, u32 1, u32 headerSize=36,
+  u32 dataSize, f32 maxHeight, f32 minHeight, ...extra floats}` followed by
+  `width×height` **normalized floats** (0..1). Conversion:
+  `worldY = minHeight + v · (maxHeight − minHeight)`, grid **row = Z, column = X**, bilinear.
+  This reproduces live-engine ground samples exactly (log `pos=(0,5652,5962) ground=5652`
+  → decoded 5652.2; four more samples within 0.4 u). Full-resolution files are 513² floats
+  (1,052,676 B payload); 000_000 of 龙门寻宝 ships a reduced 129² variant (66,564 B payload).
+* **HLB holes [DATA, verified]**: raw `(RegionSize+1)²` bytes (263,169 for 512), one byte per
+  height sample: **255 = solid, 0 = hole** (intermediate 247–254 values appear at hole edges);
+  龙门寻宝 ships no hole files, 海岛绝境 does (`<map>_000_000.hlb`, `_001_001.hlb`). The loader
+  packs this into the `RegionSize²/8`-byte PhysX hole mask (`_ConvertHoleData`).
+* **R32 [DATA, open relation]**: same 513² float dimensions but a different encoding on this
+  map (values ≈0.50–0.53, not the BCH heights); its exact relation to BCH (legacy vs
+  `bUseGrainHeight` detail heights) is unresolved — BCH is authoritative for reproduction.
+
+WaterData was not located under the guessed templates; the `.png` hole variant also never
+hit. `<map>.SRScene` (524 B, magic `SRS\0`, all-zero body, byte-identical across maps) is the
+empty SceneResponse state file (§17.1).
 
 ---
 
@@ -2069,6 +2091,7 @@ gating (`Use3DObstacle`) has no reversed implementation (G-21).
 | Domain | Existing proof | Reproduction check |
 |---|---|---|
 | terrain sampling | probe log `docs/REAL_CLIENT_MAP_COLLISION.md:84-92`; `TerrainSampler` warm-up | sample known coords; cross-check `SetCameraPos` Y-snap oracle (`SPIKE_B_MAP_NOTES.md:43-44`) |
+| terrain height decode | BCH formula verified against `proof/map_spike/player/player.log` (5 samples, ≤0.4 u) | re-extract `<map>_%03u_%03u.bch`; assert `min + v·(max−min)` matches logged grounds |
 | baked structures | `proof/map_spike/structure_collision/*.log/.png` (cactus, building, tree, measured tree) | walk into each class; expect `blocked=True` and stop distance ≈ capsule radius |
 | physic-list filter | `proof/collision/physic/audit_lists.txt` (617 models / 4,963 objects) | re-run `tools/collision/audit_physic_lists.py`; assert 4,903/60 accepted/rejected; walk into a blacklisted prop (should not block) |
 | foliage counts/scales | bin headers parse (section 9.4 table) | re-parse `FCOL` headers; assert counts/sizes |
@@ -2119,7 +2142,7 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/ui_scripts/*.utf8.lua` | unluac decompilation of `Target.lua` / `target.lua` / `skill.lua` (client targeting model) |
 | `proof/collision/recon/PhysicsEngineX64_strings.txt` | RTTI + `_CreateCapsule` + PhysX controller-desc strings |
 | `proof/collision/recon/PhysX3CharacterKinematic_*` | CharacterKinematic exports/strings (`createController` prototype) |
-| `proof/collision/terrain_extra/*` | extracted `<map>.SRScene` (magic `SRS`, empty body) |
+| `proof/collision/terrain_extra/*` | extracted `<map>.SRScene` (magic `SRS`, empty body), BCH/R32 heightmaps, HLB hole masks |
 | `proof/collision/recon/terrain_extra_candidates*.txt`, `physic_config_candidates.txt` | extraction candidate batteries (method evidence) |
 | `proof/netcode/loot_protocol` (`disasm/OnSync*`) | doodad/loot packet layouts |
 
@@ -2191,7 +2214,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 | G-13 | real step-up offset / slope limit | part of G-1; validate in game by stair tests |
 | G-7 | per-map `.cflags` for maps beyond the five | run `export_camera_flags.py` per extracted entity dump; copy sidecars |
 | G-35 | physic-list rule precedence (H1) and the `.srt` bypass are hypotheses; the folder `树` is in both lists | A/B: bake 龙门寻宝 with/without the list filter; walk into a blacklisted prop (wall lantern/pen holder) and a `s` mesh tree; compare blocking against the live client |
-| G-2 | terrain hole/water file naming not found under guessed templates (24 candidates) | disassemble the loader path composition; probe a water-heavy map (海岛绝境); extract and parse `.hlb`/`WaterData` once located |
+| G-2 | terrain files — **solved 2026-09-28**: exact paths (`landscape/heightmap[_bc]`, `landscape/hole`), BCH header + conversion verified against live samples, HLB byte mask decoded; remaining: WaterData naming and the R32↔BCH relation | find the WaterData builder xref in `KG3DSceneResAPI`/Represent; compare R32/BCH pairs across maps |
 
 ### P2 — completeness
 
