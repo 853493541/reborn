@@ -531,7 +531,7 @@ internal static class RebornClient
         var model = new KGModelCLR();
         string curClip = null;
         float curYaw = 0f;
-        float lastModelX = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
+        float lastModelX = float.MaxValue, lastModelY = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
         Action<string> setClip = delegate(string path)
         {
@@ -1754,8 +1754,13 @@ internal static class RebornClient
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
             if (!grounded)
             {
+                float vyBefore = vy;
                 vy -= curJumpGravity * dt;
                 py += vy * dt;
+                // apex sample: the model transform must have followed the physics
+                // height (modelY ~ py); a stale modelY is the standing-jump stutter
+                if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
+                    "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
                 if (py <= ground)
                 {
                     py = ground;
@@ -1776,12 +1781,16 @@ internal static class RebornClient
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
-            // model update (only when changed; keeps animation alive)
-            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(pz - lastModelZ) > 0.5f ||
+            // model update (only when changed; keeps animation alive).
+            // Y must be part of the gate: a standing jump changes py only, and
+            // without it the model stays at the takeoff height (stutter/"stuck
+            // in the middle"); moving jumps updated via X/Z and looked fine.
+            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(py - lastModelY) > 0.5f ||
+                Math.Abs(pz - lastModelZ) > 0.5f ||
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
                 placePlayer(px, py, pz, curYaw);
-                lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
+                lastModelX = px; lastModelY = py; lastModelZ = pz; lastModelYaw = curYaw;
             }
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this

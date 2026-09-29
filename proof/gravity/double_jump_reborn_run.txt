@@ -96,3 +96,17 @@ full logs (untracked): C:\SeasunGame\MovieEditor\bin64\reborn_out\<file>
    14:41:04.317 djb press n=2 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,835,26300
    14:41:05.628 djb land n=2 pos=23234,646,26300 vy=-989
    14:41:16.318 DONE
+
+== G: standing-jump model-follow fix (modelY must track py)
+   log: reborn_20260929_145053.log    process exit=0 (clean)
+   before the fix the model transform gate ignored Y, so a stationary jump
+   left the model at the takeoff height (stutter/stuck); with W held the
+   X/Z deltas masked it. Now: djb apex n=2 py=1023 modelY=1022
+   14:50:53.139 build=reborn_client_double_jump.exe 2026-09-29 14:50:47 git=db0d514 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   14:50:53.822 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   14:51:22.225 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+   14:51:34.729 djb press n=1 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,646,26299
+   14:51:35.226 djb press n=2 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,834,26299
+   14:51:35.769 djb apex n=2 py=1023 modelY=1022
+   14:51:36.531 djb land n=2 pos=23236,646,26299 vy=-981
+   14:51:47.232 DONE

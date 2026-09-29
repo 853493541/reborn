@@ -147,3 +147,15 @@ solved it, and what is still open. **Newest at the bottom.**
   press n=1 at y=646 (191 u = 1.91 m); double-jump apex ~3.8 m. Client log line
   added at startup.
 - Outcome: solved. Raw-table mode still available with `RC_JUMP_SCALE=1`.
+
+### 2026-09-29 — client — standing-jump stutter: model transform gate ignored Y
+- Did: user reported a stationary jump stutters/"sticks in the middle" (both
+  jumps), while holding W looked correct. Root cause: the model-update gate
+  (`RebornClient.cs`) only re-placed the dummy when X/Z or yaw changed, so a
+  standing jump (py only) never moved the model; with W held the X/Z deltas
+  masked it. Added Y to the gate + `lastModelY`, and an apex sample log
+  (`djb apex n= py= modelY=`) so the fix is numerically checkable.
+- Evidence: `proof/gravity/double_jump_reborn_run.txt` run G (exit 0):
+  `djb apex n=2 py=1023 modelY=1022` (model tracks physics; before the fix the
+  model stayed at the y=646 takeoff height).
+- Outcome: solved.
