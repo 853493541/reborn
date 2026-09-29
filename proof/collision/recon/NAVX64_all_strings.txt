@@ -1,0 +1,852 @@
+0x00004d !This program cannot be run in DOS mode.
+0x000082 NH+v 
+0x0000e8 Rich+v 
+0x000208 .text
+0x00022f `.rdata
+0x000257 @.data
+0x000280 .pdata
+0x0002a7 @.rsrc
+0x0002cf @.reloc
+0x00040f WAVAWH
+0x0005a4 \$@H
+0x0005a9 l$HH
+0x0005ae t$PH
+0x0005b4  A_A^_
+0x0005e7 |$0H
+0x000638 |$0H
+0x000640 \$8H
+0x000653 t{WH
+0x00065c \$0H
+0x000664 t$8H
+0x0006c3 \$0H
+0x0006c8 t$8H
+0x0006e5 SVWATAUAVAWH
+0x000756 \$hH
+0x000769 D$xN
+0x0007c1  A_A^A]A\_^[
+0x0007ef SVWATAUAVAWH
+0x000813 t$8H
+0x000827 D$ H
+0x00082f t$(H
+0x000882 $2I+
+0x0008c1 D$8H
+0x0008c7 H+D$ H
+0x0008ce D$(H
+0x0008d7 D$0I
+0x000903 T$ I
+0x00090d D$(H
+0x000912 T$ I
+0x00091f D$0I
+0x000951 @A_A^A]A\_^[
+0x0009cb |$8H
+0x0009fc @A_A^A]A\_^[
+0x000a37 \$0H
+0x000a5f L$ L
+0x000a64 L$(H
+0x000a69 L$0I;
+0x000a73 Z0fff
+0x000abb |$(H
+0x000ade \$PH
+0x000ae3 l$XH
+0x000ae8 t$`H
+0x000b11 |$ ATAVAWH
+0x000b9d H#V0H
+0x000bb3 ,$H;
+0x000be3 \$PH
+0x000be8 l$XH
+0x000bed t$`H
+0x000bf2 |$hH
+0x000bf8 0A_A^A\
+0x000c19 d$ H
+0x000c34 D$(I
+0x000cc0 H#F0H
+0x000cdb T$ H
+0x000d0b D$ H
+0x000d14 (D$ f
+0x000d1b D$ L
+0x000d24 l$ H
+0x000d45 H#^0H
+0x000d5e L$ H
+0x000e00 <$M;
+0x000e48 WATAUAVAWH
+0x000ede U0I#
+0x000ef1 4$I;
+0x000f33 d$0L
+0x000f4a D$8H
+0x000fd3 E0I#
+0x000fef T$ L
+0x00101b D$ H
+0x001024 (D$ f
+0x00102b D$@L
+0x001034 t$@L
+0x001039 l$8I
+0x00105c E0I#
+0x001076 L$ L
+0x0010af \$PI
+0x0010c1 A_A^A]A\_
+0x0010e7 t$ AVH
+0x00110e \$0I+
+0x001119 |$8H
+0x00114e |$8H
+0x001153 \$0H
+0x00115c l$@H
+0x001164 t$HH
+0x001177 t$ AVH
+0x00119e \$0I+
+0x0011a6 |$8H
+0x0011cf |$8H
+0x0011d4 \$0H
+0x0011dd l$@H
+0x0011e5 t$HH
+0x0011f7 l$ H
+0x0011ff VWAVH
+0x001366 \$PH
+0x00136b l$XH
+0x001371  A^_^
+0x001382 \$ H
+0x00138a UVWATAUAVAWH
+0x0013e9 \$hL
+0x001413 ~(M;
+0x001418 t0M+
+0x001496 VXH+VPH
+0x001500 \$xH
+0x001506  A_A^A]A\_^]
+0x001527 l$ H
+0x00152f VWAVH
+0x0016c9 \$PH
+0x0016ce l$XH
+0x0016d4  A^_^
+0x0016ea UVWH
+0x001767 WPH+WHH
+0x0017da \$PH
+0x0017e0  _^]
+0x0017f7 t$ H
+0x0018ac \$@H
+0x0018b1 t$HH
+0x0019df W H+
+0x001a57 \$0H
+0x001af1 \$ H
+0x001b27 \$ H
+0x001bb7 \$0H
+0x001c12 |$0H
+0x001d08 \$0H
+0x001d4d t$8H
+0x001d5f \$0H
+0x001d69 W0H+
+0x001e48 S(H+
+0x001e85 \$0H
+0x001eb0 \$8H
+0x001eee \$8H
+0x001fa3 t$8H
+0x001fab \$0H
+0x001fd1 |$ AVH
+0x0020b5 l$8H
+0x0020bd \$0H
+0x0020c2 t$@H
+0x0020c7 |$HH
+0x0020f1 |$ AVH
+0x0021c6 l$8H
+0x0021ce \$0H
+0x0021d3 t$@H
+0x0021d8 |$HH
+0x0021f0 @SVWATAVH
+0x002241 { I;
+0x0022b3 l$XL
+0x0022bc |$`L
+0x0022c1 ~8M;
+0x0022db N H+
+0x0022e8 I;~ I
+0x00237f |$`L
+0x0023d9 l$XH
+0x0023e9  A^A\_^[
+0x002402 \$ VAVAWH
+0x00243d s0M;
+0x00244a l$HI
+0x002463 N H+
+0x002470 I;~ H
+0x002489 |$PH
+0x00248e l$HA
+0x00254f \$XH
+0x002555  A_A^^
+0x002567 t$ WH
+0x00259e K0H;
+0x00268b l$8H
+0x0026b1 t$HH
+0x0026b9 \$@H
+0x002736 \$0H
+0x00278a VWAVH
+0x002850 D$0d
+0x002869 D$ A
+0x002880 L$@H
+0x0028f7 \$`I
+0x002905 A^_^
+0x002a1e \$0H
+0x002a23 t$8H
+0x002a3c \$0H
+0x002a65 \$ H
+0x002a6a L$0H
+0x002a85 L$0H
+0x002a9e \$ H
+0x002ad3 L$0L
+0x002ae9 L$0M
+0x002b03 L$0H
+0x002b13 \$8H
+0x002b2a \$0H
+0x002b4d L$0H
+0x002b75 L$0H
+0x002c31 \$ L
+0x002c81 \$`H
+0x002c86 t$hH
+0x002c91 \$`H
+0x002c96 t$hH
+0x002cfb \$PH
+0x002d27 \$PH
+0x002d68 )t$pfA
+0x002d79 T$0A
+0x002d97 T$ H
+0x002e04 T$ H
+0x002e27 (t$pH
+0x002e5e T$@L
+0x002e65 D$(H
+0x002e6a T$ H
+0x002e6f T$`A
+0x002ea8 D$(H
+0x002ead D$PH
+0x002eb2 D$ L
+0x002ed2 L$Xt2
+0x002ee2 T$PL
+0x002eeb L$@H
+0x002ef0 T$ H
+0x002f2c UVWATAUAVAWH
+0x002f6a )l$pD
+0x002f70 )t$`D
+0x002f76 )|$PD
+0x002f91 t$ H
+0x00302f L$@M
+0x003104 L$@L
+0x003130 \$@I
+0x003240 D$ A
+0x0032f3 (t$`D
+0x0032f9 (|$PI
+0x003300 A_A^A]A\_^]
+0x003318 I+?H
+0x003341 F(I+F
+0x003380 D$ M
+0x003495 \$8H
+0x0034cc D$0H
+0x0034f1 \$8H
+0x003517 l$ WH
+0x003534 E(H+E
+0x00356a t$H3
+0x003585 T$ D
+0x003599 D$ H
+0x0035aa D$@H;U(t
+0x0035c3 D$@H
+0x0035d5 T$ H
+0x0035f7 D$@H;U(t
+0x003610 D$@H
+0x003628 D$$f
+0x003635 D$@H;U(t
+0x00364e D$@H
+0x00366f t$HH
+0x003674 \$PH
+0x003679 l$XH
+0x003690 @VWAVH
+0x0036d3 t$`H
+0x003733 L$`L
+0x003743 L$8H
+0x003748 L$xH
+0x00374d L$0H
+0x003752 L$XH
+0x003757 L$(H
+0x00375c L$\H
+0x003761 L$ I
+0x00376f T$hE3
+0x0037a9 D$@H;W(t
+0x0037c2 D$@H
+0x0037d4 T$HH
+0x0037f6 D$@H;W(t
+0x00380f D$@H
+0x003834 D$@H;W(t
+0x00384d D$@H
+0x003893 A^_^
+0x0038d0 @SUVWATAUAVAWH
+0x0038fb L$HM
+0x003903 D$PH
+0x003916 D$@H
+0x003949 L$0H
+0x0039cc L$8H
+0x0039d1 D$hH
+0x0039d6 D$8H
+0x0039f2 D$XH
+0x003a2b t$XH
+0x003a30 \$`M
+0x003b38 l$HH
+0x003c52 A_A^A]A\_^][
+0x003c7c t$ WAVAWH
+0x003d18 NPH+
+0x003d25 H;~PH
+0x003d6f \$HH
+0x003d74 l$PH
+0x003d79 t$XH
+0x003d7f  A_A^_
+0x003d9c t$ H
+0x003ea3 D$9H3
+0x003eaf D$:H3
+0x003ebb D$;H3
+0x003ec7 D$<H3
+0x003ed3 D$=H3
+0x003edf D$>H3
+0x003eeb D$?H3
+0x003fa0 \$0H
+0x003fa5 l$@H
+0x003faa t$HH
+0x003fc5 SUAVH
+0x003ff9 t$@H
+0x003ffe |$HH;
+0x00401d N'H;
+0x0040b0 t$@H
+0x0040b5 |$HH
+0x0040bb  A^][
+0x0040ca D$PH
+0x0040d8  A^][
+0x00411f K'H;
+0x004165 \$0H
+0x0041b3 K'H;
+0x0041f9 \$0H
+0x004272 l$8H
+0x00427f t$@H
+0x004288 \$0H
+0x0042ad p WAVAWH
+0x0042fe t$0H
+0x004303 D$HH
+0x004308 D$83
+0x004311 L$@H
+0x004316 t$ H;
+0x004331 D$(H
+0x00433e L$8H
+0x004346 L$8H
+0x00434f D$8H
+0x004354 L$@H
+0x00435c L$@H
+0x004371 l$@H
+0x004381 D$8H
+0x00438a D$HH
+0x004396 D$HH
+0x00439b D$8H
+0x0043a0 L$@H
+0x0043ad \$HH
+0x0043b3 t fff
+0x0043ef \$`I
+0x004401 A_A^_
+0x004542 t$ WH
+0x004574 \$0H
+0x0045bd l$8H
+0x0045eb ^0L3
+0x0046a8 tOL;
+0x0046e1 l$8H
+0x0046e6 \$0L
+0x0046eb t$@H
+0x0046f0 t$HH
+0x004772 \$ H
+0x00477f VWAVH
+0x004791 H+9H
+0x0047a2 D$PL
+0x0047c6 \$XH
+0x0047cc  A^_^
+0x0048b8 \$0H
+0x004916 A'H;
+0x0049a7 \$0H
+0x004ab1 L$ SVWH
+0x004adb t$ L
+0x004af0 0_^[
+0x004b05 SVWATAUAVAWH
+0x004b76 \$hH
+0x004b89 D$xN
+0x004be1  A_A^A]A\_^[
+0x004c11 |$ ATAVAWH
+0x004c9d H#U0H
+0x004cb3 <$I;
+0x004ce3 \$PH
+0x004ce8 l$XH
+0x004ced t$`H
+0x004cf2 |$hH
+0x004cf8 0A_A^A\
+0x004d19 d$ H
+0x004d34 D$(H
+0x004e1d H#E0H
+0x004e38 T$ H
+0x004e68 D$ H
+0x004e71 (D$ f
+0x004e78 D$ H
+0x004e81 |$ I
+0x004ea2 H#]0H
+0x004ebb L$ H
+0x004f0a UVWH
+0x004f9d \$PH
+0x004fa3  _^]
+0x004fb7 D$0E3
+0x004ff0 t$ H
+0x005058 |$(H
+0x00505d t$ H
+0x00506f 4$}$M+C
+0x0050b2 L$ H
+0x0050ba SVWATAUAWH
+0x0050fb A0H+A H
+0x005128 L$ H
+0x00513b I+L$
+0x005144 L$8H
+0x00515b t$PH
+0x005164 t$8H
+0x00516b )t$@x
+0x00520b (t$@
+0x00521e I;V8v
+0x005267 T$(I;T$0t
+0x005294 D$(I
+0x005299 L$ H;
+0x0052a1 L9)t
+0x0053b9 H0H;
+0x0053d6 t$8K
+0x0053df L$(H
+0x0053ec D$(H
+0x0053f4 L$ H
+0x005401 D$ H
+0x005406 T$(I
+0x005413 \$ E2
+0x00543f D$@A
+0x00544b T$ I
+0x0054bd L$PI
+0x0054cb I#T$hH
+0x00550d D$(I
+0x005512 L$ H;
+0x005566 J0M+M
+0x00558f T$(I;T$0tLL
+0x0055d3 S0I;R0}
+0x0055e7 D$ I
+0x00560f L$ M
+0x005614 t$(M+
+0x0056d9 H0H;
+0x005705 D$(I
+0x00570a L$ H;
+0x005712 L9)t
+0x005725 L$ M
+0x00572a t$8H
+0x005768 )H9*t f
+0x0057b7 XA_A]A\_^[
+0x0057d7 l$ VWAWH
+0x00584c t$PH
+0x005858 D$PH
+0x00585d D$(H
+0x00587f |$PM
+0x0058cc t$XL
+0x0058f7 D$PH;S
+0x005910 D$PH
+0x00592b D$PH;S
+0x005944 D$PH
+0x00595f D$PH;S
+0x005978 D$PH
+0x005997 t$XA
+0x00599f \$`A
+0x0059a8 l$hH
+0x0059ae 0A__^
+0x005a04 \$0H
+0x005a82 l$8H
+0x005a8f t$@H
+0x005a98 \$0H
+0x005ab3 t{WH
+0x005abc \$0I
+0x005ac4 t$8H
+0x005b23 \$0H
+0x005b28 t$8H
+0x005b42 \$ H
+0x005b4f VWAVH
+0x005b61 H+9H
+0x005b72 D$PL
+0x005b96 \$XH
+0x005b9c  A^_^
+0x005bd6 A'H;
+0x005c7e K H+
+0x005c8b H;{ H
+0x005ca1 \$0H
+0x005ca6 t$8H
+0x005d56  rWH
+0x005e89 x AVH
+0x005ede \$0H
+0x005ee3 l$8H
+0x005ee8 t$@H
+0x005eed |$HH
+0x005fbc |$ AVH
+0x005fe2 D$@@
+0x0060a6 \$0H
+0x0060ab t$8H
+0x0060b0 |$HH
+0x006136 \$0H
+0x00615e VWAVH
+0x006273 \$xH
+0x006279 @A^_^
+0x0062ab \$0H
+0x0062b0 t$8H
+0x0062e1 ntelA
+0x0062e8 GenuD
+0x0062ff ineI
+0x00632b t(=`
+0x006332 t!=p
+0x006342  w$H
+0x0063ea T$ H
+0x0063ef D$ "
+0x006448 \$(3
+0x00644f t$0H
+0x006500 D$8H
+0x00650c D$8H
+0x00652a D$@H
+0x0065a8 @SVWH
+0x0065c7 T$`H
+0x0065e0 L$hH
+0x0065e5 T$`L
+0x0065ed L$0L
+0x0065f5 L$pH
+0x0065fa L$(3
+0x006614 @_^[
+0x00661e \$ UH
+0x00666c M H1E
+0x006682  H3E H3E
+0x0066b5 \$HH
+0x006737 t!eH
+0x006838 L$PH
+0x00683d \$0H
+0x006842 l$8H
+0x006847 t$@H
+0x006983 uxHc
+0x0069a7 uTL+
+0x006aee L$0L
+0x006afd L$(H
+0x006b06 L$ 3
+0x006b1a L$PH
+0x006b6a D$PH
+0x006b6f D$@H
+0x006b7b D$H3
+0x006be7 \$0H
+0x006c23 \$0H
+0x006db5 SUWH
+0x0070b7 T$ L
+0x007458 Unknown exception
+0x0074a0 bad array new length
+0x0074f8 Can't load nav mesh from %s
+0x007518 Can't build agent shape with radius %d
+0x007540 vector<T> too long
+0x007558 invalid hash bucket count
+0x007578 unordered_map/set too long
+0x0075e8 bad allocation
+0x007b54 RSDS
+0x007b61 @qz8
+0x007b6c d:\qb\buildagent\workspace\root\JX3\zhcn_bvt\DataStores\Sword3\Source\Common\NAV\x64\Release_2019\NAVX64.pdb
+0x007bf0 GCTL
+0x007bfc .text$mn
+0x007c10 .text$mn$00
+0x007c24 .text$x
+0x007c34 .idata$5
+0x007c48 .00cfg
+0x007c58 .CRT$XCA
+0x007c6c .CRT$XCZ
+0x007c80 .CRT$XIA
+0x007c94 .CRT$XIZ
+0x007ca8 .CRT$XPA
+0x007cbc .CRT$XPZ
+0x007cd0 .CRT$XTA
+0x007ce4 .CRT$XTZ
+0x007cf8 .rdata
+0x007d08 .rdata$r
+0x007d1c .rdata$zzzdbg
+0x007d34 .rtc$IAA
+0x007d48 .rtc$IZZ
+0x007d5c .rtc$TAA
+0x007d70 .rtc$TZZ
+0x007d84 .xdata
+0x007d94 .xdata$x
+0x007da8 .edata
+0x007db8 .idata$2
+0x007dcc .idata$3
+0x007de0 .idata$4
+0x007df4 .idata$6
+0x007e08 .data
+0x007e18 .data$r
+0x007e28 .bss
+0x007e38 .pdata
+0x007e48 .rsrc$01
+0x007e5c .rsrc$02
+0x008e36 NAVX64.dll
+0x008e41 ??0PathEngineNavi@@QEAA@$$QEAV0@@Z
+0x008e64 ??0PathEngineNavi@@QEAA@AEBV0@@Z
+0x008e85 ??0PathEngineNavi@@QEAA@XZ
+0x008ea0 ??1PathEngineNavi@@QEAA@XZ
+0x008ebb ??4PathEngineNavi@@QEAAAEAV0@$$QEAV0@@Z
+0x008ee3 ??4PathEngineNavi@@QEAAAEAV0@AEBV0@@Z
+0x008f09 ?AddObstacle@PathEngineNavi@@QEAA_JAEAV?$vector@HV?$allocator@H@std@@@std@@_NMMM@Z
+0x008f5c ?EnableObstacle@PathEngineNavi@@QEAA_N_J_N@Z
+0x008f89 ?FindCurvedPath@PathEngineNavi@@QEAA_NMMMMMMHMMHM@Z
+0x008fbd ?FindNearestWayPointWithRadius@PathEngineNavi@@QEAA_JMMMM@Z
+0x008ff9 ?FindPath@PathEngineNavi@@QEAA_NMMMMMMM@Z
+0x009023 ?FindPathNow@PathEngineNavi@@AEAAPEAViPath@@MMMMMM@Z
+0x009058 ?FindPathWithWayPoint@PathEngineNavi@@QEAA_NMMMMMMMMH@Z
+0x009090 ?FindWayPointPath@PathEngineNavi@@QEAA_N_J0@Z
+0x0090be ?GetPathPoint@PathEngineNavi@@QEBAAEBV?$vector@MV?$allocator@M@std@@@std@@XZ
+0x00910b ?GetPathPointCount@PathEngineNavi@@QEBA_KXZ
+0x009137 ?GetWayPointCount@PathEngineNavi@@QEBA_KXZ
+0x009162 ?GetWayPoints@PathEngineNavi@@QEBAAEBV?$vector@MV?$allocator@M@std@@@std@@XZ
+0x0091af ?Init@PathEngineNavi@@QEAA_NPEBD@Z
+0x0091d2 ?LoadPathFromIPath@PathEngineNavi@@AEAAXPEAViPath@@@Z
+0x009208 ?LoadPathFromIPath@PathEngineNavi@@AEAAXPEAViPath@@M@Z
+0x00923f ?LoadSceneData@PathEngineNavi@@AEAA_KPEBD@Z
+0x00926b ?LoadSceneNaviMesh@PathEngineNavi@@QEAA_NPEBD000@Z
+0x00929e ?Release@PathEngineNavi@@QEAAXXZ
+0x0092bf ?ReleaseSceneNaviMesh@PathEngineNavi@@AEAAXXZ
+0x0092ed ?RemoveObstacle@PathEngineNavi@@QEAA_N_J@Z
+0x009318 CreateNAV
+0x0095ba ?_Xlength_error@std@@YAXPEBD@Z
+0x0095da MSVCP140.dll
+0x0095ea GetLastError
+0x0095fa SetLastError
+0x00960a GetProcAddress
+0x00961c LoadLibraryA
+0x00962c RtlCaptureContext
+0x009640 RtlLookupFunctionEntry
+0x00965a RtlVirtualUnwind
+0x00966e UnhandledExceptionFilter
+0x00968a SetUnhandledExceptionFilter
+0x0096a8 GetCurrentProcess
+0x0096bc TerminateProcess
+0x0096d0 IsProcessorFeaturePresent
+0x0096ec QueryPerformanceCounter
+0x009706 GetCurrentProcessId
+0x00971c GetCurrentThreadId
+0x009732 GetSystemTimeAsFileTime
+0x00974c DisableThreadLibraryCalls
+0x009768 InitializeSListHead
+0x00977e IsDebuggerPresent
+0x009790 KERNEL32.dll
+0x0097a0 _purecall
+0x0097ac __std_terminate
+0x0097be __std_exception_copy
+0x0097d6 __std_exception_destroy
+0x0097f0 __std_type_info_compare
+0x00980a _CxxThrowException
+0x009820 __CxxFrameHandler4
+0x009836 memmove
+0x009840 __C_specific_handler
+0x009858 __std_type_info_destroy_list
+0x009878 memset
+0x009880 VCRUNTIME140.dll
+0x009892 VCRUNTIME140_1.dll
+0x0098a8 _invalid_parameter_noinfo_noreturn
+0x0098ce free
+0x0098d6 malloc
+0x0098e0 __acrt_iob_func
+0x0098f2 fopen_s
+0x0098fc fclose
+0x009906 fread
+0x00990e _fseeki64
+0x00991a _ftelli64
+0x009926 __stdio_common_vfprintf
+0x009940 ceilf
+0x009948 sqrtf
+0x009950 _callnewh
+0x00995c _initterm
+0x009968 _initterm_e
+0x009976 _seh_filter_dll
+0x009988 _configure_narrow_argv
+0x0099a2 _initialize_narrow_environment
+0x0099c4 _initialize_onexit_table
+0x0099e0 _execute_onexit_table
+0x0099f8 _cexit
+0x009a00 api-ms-win-crt-runtime-l1-1-0.dll
+0x009a22 api-ms-win-crt-heap-l1-1-0.dll
+0x009a42 api-ms-win-crt-stdio-l1-1-0.dll
+0x009a62 api-ms-win-crt-math-l1-1-0.dll
+0x009c58 .?AVbad_array_new_length@std@@
+0x009c88 .?AVbad_alloc@std@@
+0x009cb0 .?AVexception@std@@
+0x009cd8 .P6AXPEAX@Z
+0x009cf8 .?AV_Ref_count_base@std@@
+0x009d28 .?AViErrorHandler@@
+0x009d50 .?AVcGenericErrorHandler@@
+0x009d80 .?AV?$_Ref_count_resource@PEADP6AXPEAX@Z@std@@
+0x009dc0 .?AVtype_info@@
+0x00a860 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+0x00a899 <assembly xmlns='urn:schemas-microsoft-com:asm.v1' manifestVersion='1.0'>
+0x00a8e4   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+0x00a91c     <security>
+0x00a92c       <requestedPrivileges>
+0x00a949         <requestedExecutionLevel level='asInvoker' uiAccess='false' />
+0x00a991       </requestedPrivileges>
+0x00a9af     </security>
+0x00a9c0   </trustInfo>
+0x00a9d0 </assembly>
+0x00ac42 N0L0
+0x00ac87 RR{u
+0x00acdd DigiCert Inc1
+0x00acf4 www.digicert.com1!0
+0x00ad0f DigiCert Trusted Root G40
+0x00ad2b 210429000000Z
+0x00ad3a 360428235959Z0i1
+0x00ad61 DigiCert, Inc.1A0?
+0x00ad79 8DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA10
+0x00ae1a >Mp$d
+0x00ae23 }4}L
+0x00ae58 !xE.
+0x00ae67 IpB2
+0x00af0e 6*f(_
+0x00af6a [K]taM?
+0x00af7f m&vh
+0x00af94 J>@G_
+0x00af9f #!Y`
+0x00afb1 x8E0
+0x00afbf SA|X=G
+0x00b025 q]dL
+0x00b066 k0i0$
+0x00b077 http://ocsp.digicert.com0A
+0x00b09c 5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x00b0da <0:08
+0x00b0e4 2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0
+0x00b149 :#D=
+0x00b17d :]Hm
+0x00b192 v~7q
+0x00b226 !usR
+0x00b235 ov7,
+0x00b2e1 /"lA
+0x00b2fb jj@0HK4
+0x00b346 VxN0
+0x00b391 DigiCert, Inc.1A0?
+0x00b3a9 8DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA10
+0x00b3e6 240614000000Z
+0x00b3f5 270614235959Z0
+0x00b41d Sichuan1
+0x00b42f Chengdu1>0<
+0x00b440 5Chengdu Westhouse Interactive Entertainment Co., Ltd.1>0<
+0x00b480 5Chengdu Westhouse Interactive Entertainment Co., Ltd.0
+0x00b4e6 (hJi
+0x00b579 $r8}v
+0x00b5ae (7!2D
+0x00b5e8 av-(
+0x00b656 0M$~4
+0x00b671 AG:p
+0x00b694 R\1g
+0x00b72c 70503
+0x00b739 0)0'
+0x00b749 http://www.digicert.com/CPS0
+0x00b79e Mhttp://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S
+0x00b7f3 Mhttp://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0
+0x00b862 http://ocsp.digicert.com0\
+0x00b887 Phttp://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0
+0x00b93b d2/T
+0x00b954 Y6zO
+0x00b99c |HH`~.
+0x00b9c6 ?FR6
+0x00b9f1 H#c-
+0x00ba2f 5/}8
+0x00ba4c }C"G
+0x00ba88 :Tl\
+0x00ba8e |{~>
+0x00baa2 d1jV
+0x00bb02 0}0i1
+0x00bb1e DigiCert, Inc.1A0?
+0x00bb36 8DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1
+0x00bc7e Zh\Wgk
+0x00bc86 Z&3~D
+0x00bca7 :qqN
+0x00bd4d ~<0>^fo
+0x00bd94 vAc-a
+0x00bdf0 ^En#+~i
+0x00be1b JwCYwL
+0x00bec0 +^3Y
+0x00beca #--u
+0x00bee3 20260926140100Z
+0x00bf08 3O~EN
+0x00bf3e DigiCert, Inc.1A0?
+0x00bf56 8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x00bf93 260805000000Z
+0x00bfa2 371104235959Z0c1
+0x00bfc9 DigiCert, Inc.1;09
+0x00bfe1 2DigiCert SHA256 RSA4096 Timestamp Responder 2026 10
+0x00c0cd W3E)
+0x00c0fa et~H
+0x00c106 ?eq"
+0x00c112 wq}V
+0x00c15d lTl"
+0x00c206 , P|
+0x00c227 ms8B
+0x00c22e @!z\0%=
+0x00c2d9 http://ocsp.digicert.com0]
+0x00c2fe Qhttp://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_
+0x00c358 X0V0T
+0x00c362 Nhttp://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0 
+0x00c3f4 ~}(@
+0x00c437 kxXgMt
+0x00c4c3 W!yi
+0x00c4e5 rDN6
+0x00c4f1 8m)Y
+0x00c4f7 =+lu
+0x00c57a :"A#
+0x00c5fe .@C"
+0x00c62f DigiCert Inc1
+0x00c646 www.digicert.com1!0
+0x00c661 DigiCert Trusted Root G40
+0x00c67d 250507000000Z
+0x00c68c 380114235959Z0i1
+0x00c6b3 DigiCert, Inc.1A0?
+0x00c6cb 8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA10
+0x00c799 P]&G
+0x00c7c1 "9<x:
+0x00c7da |4^o
+0x00c7fe q)5U
+0x00c829 h`i<
+0x00c90b TxF4
+0x00c921 k cS
+0x00c977 q]dL
+0x00c9b8 k0i0$
+0x00c9c9 http://ocsp.digicert.com0A
+0x00c9ee 5http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C
+0x00ca2c <0:08
+0x00ca36 2http://crl3.digicert.com/DigiCertTrustedRootG4.crl0 
+0x00cbb3 Dwj|
+0x00cbca :U|r*C
+0x00cbf9 o84s[
+0x00cc0c a:m1&
+0x00cce7 DigiCert Inc1
+0x00ccfe www.digicert.com1$0"
+0x00cd19 DigiCert Assured ID Root CA0
+0x00cd38 220801000000Z
+0x00cd47 311109235959Z0b1
+0x00cd6e DigiCert Inc1
+0x00cd85 www.digicert.com1!0
+0x00cda0 DigiCert Trusted Root G40
+0x00cde1 ]J<0"0i3
+0x00ce47 t;mq
+0x00ced6 u]xf
+0x00cf03 v=Y]Bv
+0x00cf52 p,A`
+0x00cf84 RQGt
+0x00cfa7 |Lu?c
+0x00cfb0  Qko
+0x00d007 q]dL
+0x00d054 m0k0$
+0x00d065 http://ocsp.digicert.com0C
+0x00d08a 7http://cacerts.digicert.com/DigiCertAssuredIDRootCA.crt0E
+0x00d0ca >0<0:
+0x00d0d4 4http://crl3.digicert.com/DigiCertAssuredIDRootCA.crl0
+0x00d162 Jz/-
+0x00d1bc 5FjiT
+0x00d1d1 wZ\T
+0x00d207 ~qj#k"
+0x00d210 T-'~
+0x00d23b 0}0i1
+0x00d257 DigiCert, Inc.1A0?
+0x00d26f 8DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1
+0x00d2ad 3O~EN
+0x00d2f9 260926140100Z0+
+0x00d351 6h^x~
+0x00d372 /1(0&0$0"
+0x00d3b5 Tw"z*
+0x00d3c2 Brn#
+0x00d4a2 h)b+g
+0x00d4c8 :nF\
+0x00d56e YHa2

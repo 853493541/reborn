@@ -1,0 +1,137 @@
+00003600  95                     xchg    ebp, eax
+00003601  c3                     ret     
+00003602  742e                   je      0x180003632
+00003604  488b4f70               mov     rcx, qword ptr [rdi + 0x70]
+00003608  498bd3                 mov     rdx, r11
+0000360b  488b01                 mov     rax, qword ptr [rcx]
+0000360e  4084f6                 test    sil, sil
+00003611  7419                   je      0x18000362c
+00003613  ff90c8000000           call    qword ptr [rax + 0xc8]
+00003619  0fb6c3                 movzx   eax, bl
+0000361c  488b5c2430             mov     rbx, qword ptr [rsp + 0x30]
+00003621  488b742438             mov     rsi, qword ptr [rsp + 0x38]
+00003626  4883c420               add     rsp, 0x20
+0000362a  5f                     pop     rdi
+0000362b  c3                     ret     
+0000362c  ff90c0000000           call    qword ptr [rax + 0xc0]
+00003632  488b742438             mov     rsi, qword ptr [rsp + 0x38]
+00003637  0fb6c3                 movzx   eax, bl
+0000363a  488b5c2430             mov     rbx, qword ptr [rsp + 0x30]
+0000363f  4883c420               add     rsp, 0x20
+00003643  5f                     pop     rdi
+00003644  c3                     ret     
+00003645  cc                     int3    
+00003646  cc                     int3    
+00003647  cc                     int3    
+00003648  cc                     int3    
+00003649  cc                     int3    
+0000364a  cc                     int3    
+0000364b  cc                     int3    
+0000364c  cc                     int3    
+0000364d  cc                     int3    
+0000364e  cc                     int3    
+0000364f  cc                     int3    
+00003650  4883ec28               sub     rsp, 0x28
+00003654  4885c9                 test    rcx, rcx
+00003657  7507                   jne     0x180003660
+00003659  32c0                   xor     al, al
+0000365b  4883c428               add     rsp, 0x28
+0000365f  c3                     ret     
+00003660  488bd1                 mov     rdx, rcx
+00003663  48895c2420             mov     qword ptr [rsp + 0x20], rbx
+00003668  488d4c2430             lea     rcx, [rsp + 0x30]
+0000366d  48c744243000000000     mov     qword ptr [rsp + 0x30], 0
+00003676  4c8d056f4c0000         lea     r8, [rip + 0x4c6f]
+0000367d  ff15354b0000           call    qword ptr [rip + 0x4b35]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fopen_s
+00003683  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00003688  4885c9                 test    rcx, rcx
+0000368b  0f95c3                 setne   bl
+0000368e  4885c9                 test    rcx, rcx
+00003691  7406                   je      0x180003699
+00003693  ff15074b0000           call    qword ptr [rip + 0x4b07]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fclose
+00003699  0fb6c3                 movzx   eax, bl
+0000369c  488b5c2420             mov     rbx, qword ptr [rsp + 0x20]
+000036a1  4883c428               add     rsp, 0x28
+000036a5  c3                     ret     
+000036a6  cc                     int3    
+000036a7  cc                     int3    
+000036a8  cc                     int3    
+000036a9  cc                     int3    
+000036aa  cc                     int3    
+000036ab  cc                     int3    
+000036ac  cc                     int3    
+000036ad  cc                     int3    
+000036ae  cc                     int3    
+000036af  cc                     int3    
+000036b0  4885c9                 test    rcx, rcx
+000036b3  7466                   je      0x18000371b
+000036b5  48895c2410             mov     qword ptr [rsp + 0x10], rbx
+000036ba  57                     push    rdi
+000036bb  4883ec20               sub     rsp, 0x20
+000036bf  488bfa                 mov     rdi, rdx
+000036c2  48c744243000000000     mov     qword ptr [rsp + 0x30], 0
+000036cb  488bd1                 mov     rdx, rcx
+000036ce  498bd8                 mov     rbx, r8
+000036d1  488d4c2430             lea     rcx, [rsp + 0x30]
+000036d6  4c8d050f4c0000         lea     r8, [rip + 0x4c0f]
+000036dd  ff15d54a0000           call    qword ptr [rip + 0x4ad5]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fopen_s
+000036e3  85c0                   test    eax, eax
+000036e5  751a                   jne     0x180003701
+000036e7  4c8b4c2430             mov     r9, qword ptr [rsp + 0x30]
+000036ec  4d85c9                 test    r9, r9
+000036ef  7420                   je      0x180003711
+000036f1  448d4001               lea     r8d, [rax + 1]
+000036f5  488bd3                 mov     rdx, rbx
+000036f8  488bcf                 mov     rcx, rdi
+000036fb  ff15a74a0000           call    qword ptr [rip + 0x4aa7]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fread
+00003701  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00003706  4885c9                 test    rcx, rcx
+00003709  7406                   je      0x180003711
+0000370b  ff158f4a0000           call    qword ptr [rip + 0x4a8f]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fclose
+00003711  488b5c2438             mov     rbx, qword ptr [rsp + 0x38]
+00003716  4883c420               add     rsp, 0x20
+0000371a  5f                     pop     rdi
+0000371b  c3                     ret     
+0000371c  cc                     int3    
+0000371d  cc                     int3    
+0000371e  cc                     int3    
+0000371f  cc                     int3    
+00003720  4053                   push    rbx
+00003722  4883ec20               sub     rsp, 0x20
+00003726  33db                   xor     ebx, ebx
+00003728  48895c2430             mov     qword ptr [rsp + 0x30], rbx
+0000372d  4885c9                 test    rcx, rcx
+00003730  7451                   je      0x180003783
+00003732  488bd1                 mov     rdx, rcx
+00003735  4c8d05b04b0000         lea     r8, [rip + 0x4bb0]
+0000373c  488d4c2430             lea     rcx, [rsp + 0x30]
+00003741  ff15714a0000           call    qword ptr [rip + 0x4a71]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fopen_s
+00003747  85c0                   test    eax, eax
+00003749  7528                   jne     0x180003773
+0000374b  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00003750  4885c9                 test    rcx, rcx
+00003753  742e                   je      0x180003783
+00003755  33d2                   xor     edx, edx
+00003757  448d4302               lea     r8d, [rbx + 2]
+0000375b  ff156f4a0000           call    qword ptr [rip + 0x4a6f]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!_fseeki64
+00003761  85c0                   test    eax, eax
+00003763  750e                   jne     0x180003773
+00003765  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+0000376a  ff15584a0000           call    qword ptr [rip + 0x4a58]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!_ftelli64
+00003770  488bd8                 mov     rbx, rax
+00003773  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00003778  4885c9                 test    rcx, rcx
+0000377b  7406                   je      0x180003783
+0000377d  ff151d4a0000           call    qword ptr [rip + 0x4a1d]  ; imp:api-ms-win-crt-stdio-l1-1-0.dll!fclose
+00003783  488bc3                 mov     rax, rbx
+00003786  4883c420               add     rsp, 0x20
+0000378a  5b                     pop     rbx
+0000378b  c3                     ret     
+0000378c  cc                     int3    
+0000378d  cc                     int3    
+0000378e  cc                     int3    
+0000378f  cc                     int3    
+00003790  48895c2408             mov     qword ptr [rsp + 8], rbx
+00003795  4889742410             mov     qword ptr [rsp + 0x10], rsi
+0000379a  57                     push    rdi
+0000379b  4883ec50               sub     rsp, 0x50

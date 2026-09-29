@@ -1447,17 +1447,47 @@ strings show content processing and federation tiling (`iMeshFederation`,
 tiles/`partitionWithGridSize`/`startFacePerTile` fields)
 (`proof/collision/recon/PathEngine_exports.txt`, `PathEngine_strings.txt`).
 
-**Loader search (2026-09-28):** a raw byte scan of all 339 modules in `bin64` (ASCII and
-UTF-16) found **no module that references `NAVX64`, `CreateNAV` or `LoadSceneNaviMesh`** —
-NAVX64 is imported by nobody and has no import table consumer. `KNavMeshQuery` literals exist
-only in `JX3ClientX64.exe` (and the editor DLL); no Recast/Detour strings. So the client's
-`KNavMeshQuery` wraps a navmesh source that is not NAVX64 in this install, and NAVX64 is
-presumably loaded by the server/standalone logic externally (or via a config-driven loader).
-Disassembly of `NAVX64!Init` (`0x4060`) and `LoadSceneNaviMesh` (`0x44D0`) is committed
-(`proof/collision/disasm/navx64_*.txt`): `Init(path)` lazily creates the PathEngine factory and
-the navigator object; `LoadSceneNaviMesh(p0..p3)` reads the four files in-module with
-`fopen_s`/`fread` (CRT imports), so the navmesh format is a custom binary parsed by NAVX64 —
-its magic is the next RE target.
+**Loader and format decoded further (2026-09-28, second pass).** Raw byte scans of all 339
+modules in `bin64` (ASCII + UTF-16) found **no module other than NAVX64/PathEngine themselves
+that references `NAVX64`, `CreateNAV`, `LoadSceneNaviMesh`, `PathEngine` or `CreateNAV`** —
+nothing imports them. `KNavMeshQuery` literals exist only in `JX3ClientX64.exe`; there are no
+Recast/Detour strings. Conclusion: the client does **not** host this navigator; NAVX64 +
+PathEngine.dll are the standalone/server nav stack shipped in the same folder, and the client's
+`KNavMeshQuery` gets its mesh from another (unlocated) source.
+
+Decoded from the committed disassembly (`proof/collision/disasm/navx64_*.txt`):
+
+* `PathEngineNavi::Init(const char* dllPath)` is a **`LoadLibraryA(dllPath)` shim** plus
+  `GetLastError`/`SetLastError`/`GetProcAddress` (`navx64_init.txt:8-35`): the passed path is the
+  real implementation DLL (`PathEngine.dll` ships beside it). `CreateNAV` then builds the
+  `PathEngineNavi` object.
+* `LoadSceneNaviMesh(this, p0, p1, p2, p3)` (`navx64_loadscenenavimesh.txt`):
+  1. checks `p0` exists with `fopen_s`+`fclose` (0x4535-0x455d);
+  2. computes the sizes of all four paths (helper `0x180003720` = open/seek-end/tell/close);
+  3. `malloc(max size)` — one shared scratch buffer;
+  4. allocates a refcounted 0x20-byte **stream object** (vtable, buffer, refcounts) and reads
+     **p0** wholly into it;
+  5. parses a **12-byte binary header** `{int a -> +0x78, int b -> +0x7c, int c -> +0x80
+     (c<=0 => 1)}` then calls `stream->vt[0x40](name, buf+0xC, size-0xC, 0)` (0x4629-0x4684);
+  6. calls `ReleaseSceneNaviMesh`, stores the loaded mesh at `+8`, builds an 8-int array from
+     `b` as `{-b, b, b, b, b, -b, -b, -b}` and calls `stream->vt[0x38]` -> stored at `+0x10`
+     (0x46a3-0x4705);
+  7. `stream->vt[0x1f8]()` -> `+0x70`;
+  8. if **p2** exists and is non-empty: read it and call `stream->vt[0x1c8](+0x10, buf, size)`
+     (0x4736-0x4771);
+  9. if **p1** is non-empty: read it and call `stream->vt[0x1e8](+0x10, buf, size)`
+     (0x4771-0x479d); else fall back to `stream->vt[0x160](+0x10, 1, 0)` (0x479f-0x47b4);
+  10. `stream->vt[0x188](+0x10, 0)`;
+  11. if **p3** is non-empty: read it, NUL-terminate, and parse it as **text** via
+      `0x1800065C0(&this[0x88], buf, size)` (0x47ca-0x47fd) — the only textual component;
+  12. returns success and releases the stream.
+
+So a navmesh is a **four-file set**: `p0` binary mesh (12-byte header + payload), `p1` and `p2`
+binary overlay sets, `p3` text (parsed with a token scanner that bounds names at 31 chars and
+buffers at 0x1000, `navx64_text_parser.txt`). Files are read with CRT `fopen_s`/`fread`, i.e.
+from the on-disk/server data directory, **not** the client pak VFS — consistent with the files
+being absent from the client install. Error strings: `Can't load nav mesh from %s` (0x74F8),
+`Can't build agent shape with radius %d` (0x7518).
 
 Client-side query wrapper: `KNavMeshQuery::Init`, `m_pNavMesh`, `m_pNavMeshQuery`,
 `KNavMeshQuery::QueryPath` (`JX3ClientX64_exe_strings.txt:766962-766971`); `KPlayer::LuaNavTo`,
@@ -2038,7 +2068,8 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/SIMWorldX64_exports.txt` / `_strings.txt` | re-verified SIMWorld export surface |
 | `proof/collision/missile/*` | extracted missile/bullet/phase/controller tables (2026-09-28) + decoded `buff_bullet_header_utf8.txt` |
 | `proof/collision/physic/*` | engine physic configs (file/folder white/black lists, shape/rigid/conveyor params) + UTF-8 copies + `audit_lists.txt` |
-| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`, `PxControllerDesc::isValid` |
+| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`/IO helpers/text parser, `PxControllerDesc::isValid` |
+| `proof/collision/recon/NAVX64_all_strings.txt` | every ASCII string in NAVX64 (error texts, factory names) |
 | `proof/collision/ui_scripts/*.utf8.lua` | unluac decompilation of `Target.lua` / `target.lua` / `skill.lua` (client targeting model) |
 | `proof/collision/recon/PhysicsEngineX64_strings.txt` | RTTI + `_CreateCapsule` + PhysX controller-desc strings |
 | `proof/collision/recon/PhysX3CharacterKinematic_*` | CharacterKinematic exports/strings (`createController` prototype) |
@@ -2072,6 +2103,7 @@ client\build_client.cmd   # then camera_smoke.exe
 | `tools/collision/recon_module.py` | dump PE exports + keyword strings for any module (used for NAVX64/PathEngine/SIMWorld/SceneResponse) |
 | `tools/collision/disasm_range.py` | RVA-range disassembler with IAT/export/float-constant annotation (used for the controller and NAVX64 passes) |
 | `tools/collision/audit_physic_lists.py` | classify map models against the physic white/black lists (produces `audit_lists.txt`) |
+| `tools/collision/find_import_calls.py` | linear-disassemble a PE and list all call sites of named imports/exports (used for NAVX64 CRT I/O) |
 
 ### 28.4 Proof directories
 
@@ -2092,7 +2124,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 |---|---|---|
 | G-1 | character solver/controller field labels — **constants resolved 2026-09-28** (0.01/0.025/0.2/0.04/0.4, scene flags, gravity, step tick; `proof/collision/disasm/physics_controller_setup.txt`); field mapping still open | locate the `createController(desc)` call site and the SIMWorld solver key consumers; label fields against the PhysX 3.3.4 `PxCapsuleControllerDesc` layout |
 | G-29 | projectile/missile system — **client data model recovered 2026-09-28** (`proof/collision/missile/`, §22.2); server simulation and tick-base fitting still open | disassemble `KRLMissile::Update/HitTarget`, `KParabolaMissileProcessor`; fit velocity tick base from captures |
-| G-25 | navmesh format + `QueryPath` + obstacles + `bAutoPathing` — **API recovered and NAVX64 disassembled 2026-09-28**; **no module in `bin64` references NAVX64**, so the client nav source is elsewhere; data format still open | parse the NAVX64 `fopen_s`/`fread` format; find `KNavMeshQuery` construction in `JX3ClientX64.exe`; identify the server/standalone NAVX64 caller |
+| G-25 | navmesh + `QueryPath` + obstacles + `bAutoPathing` — **decoded 2026-09-28**: 4-file set (p0 binary 12-byte header + stream payload; p1/p2 binary overlays; p3 text), loaded by the `LoadLibraryA` shim `Init(path)`; **no client module references NAVX64/PathEngine**, so this is the server/standalone stack and the data lives outside the pak | remaining: locate the server data files/naming and the client-side `KNavMeshQuery` mesh source |
 | G-21 | `KG3DSceneResponse` semantics — **partial 2026-09-28**: the plugin has just 2 exports (`GetSceneResponse`, `GetStateFileInfo`) and no flag literals; the map state file `<map>.SRScene` (magic `SRS`) is empty on 龙门寻宝; the static gate is the physic lists (§8.4); `bUnitWalkable`/`bUnitCanPass`/`bBullet*`/`bAutoPathing` consumers still unreversed | disassemble `GetStateFileInfo` consumers and the engine unit-template readers around `KG3DEngineX64!0x541388-0x541401` |
 | G-24 | water volumes + `UpdateFluxCollisionHeightMap` | disassemble `_FillMapWaterData`/`KG3D_LoadTerrainWaterData`; find native flux implementation |
 | G-3 | `comLogic` flags ignored by bake — **audited 2026-09-28: all 4,965 objects are uniformly `obstacleOption=0`/`enablePhysicsConfig=0`; no behavioural impact**; the real gate is the physic white/black lists, now implemented (`--physic-lists`, H1) | validate H1 precedence in-game (G-35) |

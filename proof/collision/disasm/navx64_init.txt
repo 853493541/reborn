@@ -1,56 +1,56 @@
-00004060  48895c2410               mov     qword ptr [rsp + 0x10], rbx
-00004065  57                       push    rdi
-00004066  4883ec20                 sub     rsp, 0x20
-0000406a  48833d6671000000         cmp     qword ptr [rip + 0x7166], 0
-00004072  488bd9                   mov     rbx, rcx
-00004075  7549                     jne     0x1800040c0
-00004077  488bca                   mov     rcx, rdx
-0000407a  ff15a03f0000             call    qword ptr [rip + 0x3fa0]
-00004080  488bf8                   mov     rdi, rax
-00004083  4885c0                   test    rax, rax
-00004086  7516                     jne     0x18000409e
-00004088  ff157a3f0000             call    qword ptr [rip + 0x3f7a]
-0000408e  33c0                     xor     eax, eax
-00004090  488903                   mov     qword ptr [rbx], rax
-00004093  488b5c2438               mov     rbx, qword ptr [rsp + 0x38]
-00004098  4883c420                 add     rsp, 0x20
-0000409c  5f                       pop     rdi
-0000409d  c3                       ret     
-0000409e  33c9                     xor     ecx, ecx
-000040a0  ff156a3f0000             call    qword ptr [rip + 0x3f6a]
-000040a6  ba01000000               mov     edx, 1
-000040ab  488bcf                   mov     rcx, rdi
-000040ae  ff15643f0000             call    qword ptr [rip + 0x3f64]
-000040b4  4885c0                   test    rax, rax
-000040b7  74d5                     je      0x18000408e
-000040b9  48890518710000           mov     qword ptr [rip + 0x7118], rax
-000040c0  b908000000               mov     ecx, 8
-000040c5  e8ee280000               call    0x1800069b8
-000040ca  4889442430               mov     qword ptr [rsp + 0x30], rax
-000040cf  4885c0                   test    rax, rax
-000040d2  740a                     je      0x1800040de
-000040d4  488d0dfd410000           lea     rcx, [rip + 0x41fd]
-000040db  488908                   mov     qword ptr [rax], rcx
-000040de  488bc8                   mov     rcx, rax
-000040e1  ff15f1700000             call    qword ptr [rip + 0x70f1]
-000040e7  488903                   mov     qword ptr [rbx], rax
-000040ea  4885c0                   test    rax, rax
-000040ed  750b                     jne     0x1800040fa
-000040ef  488b5c2438               mov     rbx, qword ptr [rsp + 0x38]
-000040f4  4883c420                 add     rsp, 0x20
-000040f8  5f                       pop     rdi
-000040f9  c3                       ret     
-000040fa  488b5c2438               mov     rbx, qword ptr [rsp + 0x38]
-000040ff  b001                     mov     al, 1
-00004101  4883c420                 add     rsp, 0x20
-00004105  5f                       pop     rdi
-00004106  c3                       ret     
-00004107  cc                       int3    
-00004108  cc                       int3    
-00004109  cc                       int3    
-0000410a  cc                       int3    
-0000410b  cc                       int3    
-0000410c  cc                       int3    
-0000410d  cc                       int3    
-0000410e  cc                       int3    
-0000410f  cc                       int3    
+00004060  48895c2410             mov     qword ptr [rsp + 0x10], rbx
+00004065  57                     push    rdi
+00004066  4883ec20               sub     rsp, 0x20
+0000406a  48833d6671000000       cmp     qword ptr [rip + 0x7166], 0
+00004072  488bd9                 mov     rbx, rcx
+00004075  7549                   jne     0x1800040c0
+00004077  488bca                 mov     rcx, rdx
+0000407a  ff15a03f0000           call    qword ptr [rip + 0x3fa0]  ; imp:KERNEL32.dll!LoadLibraryA
+00004080  488bf8                 mov     rdi, rax
+00004083  4885c0                 test    rax, rax
+00004086  7516                   jne     0x18000409e
+00004088  ff157a3f0000           call    qword ptr [rip + 0x3f7a]  ; imp:KERNEL32.dll!GetLastError
+0000408e  33c0                   xor     eax, eax
+00004090  488903                 mov     qword ptr [rbx], rax
+00004093  488b5c2438             mov     rbx, qword ptr [rsp + 0x38]
+00004098  4883c420               add     rsp, 0x20
+0000409c  5f                     pop     rdi
+0000409d  c3                     ret     
+0000409e  33c9                   xor     ecx, ecx
+000040a0  ff156a3f0000           call    qword ptr [rip + 0x3f6a]  ; imp:KERNEL32.dll!SetLastError
+000040a6  ba01000000             mov     edx, 1
+000040ab  488bcf                 mov     rcx, rdi
+000040ae  ff15643f0000           call    qword ptr [rip + 0x3f64]  ; imp:KERNEL32.dll!GetProcAddress
+000040b4  4885c0                 test    rax, rax
+000040b7  74d5                   je      0x18000408e
+000040b9  48890518710000         mov     qword ptr [rip + 0x7118], rax
+000040c0  b908000000             mov     ecx, 8
+000040c5  e8ee280000             call    0x1800069b8
+000040ca  4889442430             mov     qword ptr [rsp + 0x30], rax
+000040cf  4885c0                 test    rax, rax
+000040d2  740a                   je      0x1800040de
+000040d4  488d0dfd410000         lea     rcx, [rip + 0x41fd]
+000040db  488908                 mov     qword ptr [rax], rcx
+000040de  488bc8                 mov     rcx, rax
+000040e1  ff15f1700000           call    qword ptr [rip + 0x70f1]
+000040e7  488903                 mov     qword ptr [rbx], rax
+000040ea  4885c0                 test    rax, rax
+000040ed  750b                   jne     0x1800040fa
+000040ef  488b5c2438             mov     rbx, qword ptr [rsp + 0x38]
+000040f4  4883c420               add     rsp, 0x20
+000040f8  5f                     pop     rdi
+000040f9  c3                     ret     
+000040fa  488b5c2438             mov     rbx, qword ptr [rsp + 0x38]
+000040ff  b001                   mov     al, 1
+00004101  4883c420               add     rsp, 0x20
+00004105  5f                     pop     rdi
+00004106  c3                     ret     
+00004107  cc                     int3    
+00004108  cc                     int3    
+00004109  cc                     int3    
+0000410a  cc                     int3    
+0000410b  cc                     int3    
+0000410c  cc                     int3    
+0000410d  cc                     int3    
+0000410e  cc                     int3    
+0000410f  cc                     int3    
