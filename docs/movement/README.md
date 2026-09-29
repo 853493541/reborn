@@ -4,6 +4,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 
 | Doc | Title |
 |---|---|
+| `CLIENT_COLLISION_IMPROVEMENT_PLAN.md` | Main client collision — gap audit (holes, capsule, slope) + fix plan |
 | `FULL_MAP_COLLISION.md` | Full map collision from the real client data - how it was achieved |
 | `JX3_CHARACTER_MOVEMENT_RESEARCH.md` | JX3 character movement & turning — research |
 | `JX3_COLLISION_SYSTEM.md` | JX3 Collision & Physics — Full-System Analysis and Reproduction Reference |
