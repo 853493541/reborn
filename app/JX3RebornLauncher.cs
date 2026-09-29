@@ -4,11 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-// JX3 Reborn launcher - two options:
-//   1. Character action  (spike_host.exe    -> FLWS tani + SFX + sound)
-//   2. Map display       (map_spike_host.exe -> MovieEditor map render)
-// Both hosts live in C:\SeasunGame\MovieEditor\bin64 and must run with
-// working dir = C:\SeasunGame\MovieEditor.
+// JX3 Reborn launcher - starts the canonical game client
+// (bin64\reborn_client.exe) with working dir = C:\SeasunGame\MovieEditor,
+// optionally with a chosen map via RC_MAP (5 rendered maps).
 internal static class JX3RebornLauncher
 {
     private const string EditorRoot = @"C:\SeasunGame\MovieEditor";
@@ -38,25 +36,25 @@ internal static class JX3RebornLauncher
         form.Controls.Add(title);
 
         var subtitle = new Label();
-        subtitle.Text = "MovieEditor \u5F15\u64CE\u4E3B\u673A  /  engine host"; // 引擎主机
+        subtitle.Text = "\u6E38\u620F\u5BA2\u6237\u7AEF  /  game client (reborn_client.exe)"; // 游戏客户端
         subtitle.Font = new Font("Segoe UI", 9F);
         subtitle.ForeColor = Color.FromArgb(170, 180, 195);
         subtitle.SetBounds(26, 50, 400, 20);
         form.Controls.Add(subtitle);
 
         var b1 = MakeButton(
-            "\u89D2\u8272\u52A8\u4F5C   Character Action\n(\u98CE\u6765\u5434\u5C71)", // 角色动作 / 风来吴山
+            "\u8FDB\u5165\u6E38\u620F   Play\n(\u9ED8\u8BA4\u5730\u56FE / default map)", // 进入游戏 / 默认地图
             78);
-        b1.Click += delegate { Launch("spike_host.exe"); };
+        b1.Click += delegate { Launch("reborn_client.exe"); };
         form.Controls.Add(b1);
 
         var b2 = MakeButton(
-            "\u5730\u56FE\u663E\u793A   Map Display\n(\u9009\u62E9\u5730\u56FE / pick a map)", // 地图显示 / 选择地图
+            "\u9009\u62E9\u5730\u56FE   Play with map\n(\u9009\u62E9\u5730\u56FE / pick a map)", // 选择地图 / 选择地图
             148);
         b2.Click += delegate
         {
             string mapPath = PickMap();
-            if (mapPath != null) Launch("map_spike_host.exe", "MAP_PATH", mapPath);
+            if (mapPath != null) Launch("reborn_client.exe", "RC_MAP", mapPath);
         };
         form.Controls.Add(b2);
 
@@ -94,7 +92,7 @@ internal static class JX3RebornLauncher
         };
 
         var dlg = new Form();
-        dlg.Text = "\u5730\u56FE\u663E\u793A  Map Display"; // 地图显示
+        dlg.Text = "\u9009\u62E9\u5730\u56FE  Pick a map"; // 选择地图
         dlg.ClientSize = new Size(360, 292);
         dlg.StartPosition = FormStartPosition.CenterScreen;
         dlg.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -143,7 +141,7 @@ internal static class JX3RebornLauncher
         string path = Path.Combine(Bin64, exeName);
         if (!File.Exists(path))
         {
-            MessageBox.Show("Host not found:\n" + path, "JX3 Reborn",
+            MessageBox.Show("App not found:\n" + path, "JX3 Reborn",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
