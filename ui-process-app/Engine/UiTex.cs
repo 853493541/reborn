@@ -121,7 +121,7 @@ namespace MapUiApp.Engine
                     var file = _assets.ResolveSibling(directory, TextureName);
                     if (file != null)
                     {
-                        try { _texture = Tga.Load(file); }
+                        try { _texture = TextureLoader.Load(file); }
                         catch { _texture = null; }
                     }
                 }
@@ -199,10 +199,33 @@ namespace MapUiApp.Engine
     {
         private readonly AssetResolver _assets;
         private readonly Dictionary<string, UiTex> _cache = new Dictionary<string, UiTex>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, BitmapSource> _raw = new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
 
         public UiTexCache(AssetResolver assets)
         {
             _assets = assets;
+        }
+
+        private static bool IsRawImage(string path)
+        {
+            var ext = System.IO.Path.GetExtension(path);
+            return ext.Equals(".tga", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals(".dds", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals(".png", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Some sections point Image straight at a texture file instead of a .UITex
+        /// atlas (e.g. MiddleMap's LinkLine.tga); the engine loads those directly.
+        /// </summary>
+        private BitmapSource GetRaw(string path)
+        {
+            if (_raw.TryGetValue(path, out var hit)) return hit;
+            BitmapSource source = null;
+            try { source = TextureLoader.Load(path); }
+            catch { source = null; }
+            _raw[path] = source;
+            return source;
         }
 
         public UiTex Get(string uitPath)
@@ -222,6 +245,9 @@ namespace MapUiApp.Engine
 
         public BitmapSource GetFrame(string uitPath, int frame)
         {
+            var file = _assets.Resolve(uitPath);
+            if (file != null && IsRawImage(file))
+                return frame == 0 ? GetRaw(file) : null;
             var tex = Get(uitPath);
             return tex?.GetFrame(frame);
         }

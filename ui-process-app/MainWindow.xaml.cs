@@ -394,6 +394,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, App.LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, App.ScriptShown(window));
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                 if (plan.Filtered.Sections.Count == 0)
                 {
                     LayoutHost.Child = ShowMessage("All sections are hidden (check the 闅愯棌 list).");
@@ -606,6 +607,7 @@ namespace UiProcessApp
         public TabStrip Tabs { get; set; }
         public List<string> Show { get; set; }
         public List<TextOverride> Texts { get; set; }
+        public List<AdjustSpec> Adjust { get; set; }
         public List<AnchorSpec> Anchors { get; set; }
         public List<ListTemplate> Lists { get; set; }
         public List<string> Evidence { get; set; }

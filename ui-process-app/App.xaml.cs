@@ -35,6 +35,12 @@ namespace UiProcessApp
                 Shutdown(exit);
                 return;
             }
+            if (e.Args.Contains("--audit"))
+            {
+                var exit = RunAudit(e.Args);
+                Shutdown(exit);
+                return;
+            }
             base.OnStartup(e);
         }
 
@@ -154,6 +160,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                 LayoutPlanBuilder.ApplyOnly(plan.Filtered, only);
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
@@ -212,6 +219,106 @@ namespace UiProcessApp
             {
                 File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "render_error.txt"), ex.ToString());
                 Console.WriteLine("render failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Full-system audit: builds every inventory window with the production pass
+        /// order and reports objective issues per window (missing atlas frames,
+        /// unresolved string ids, elements drawn outside the window bounds).
+        ///   UiProcessApp.exe --audit [--out file.txt]
+        /// </summary>
+        private static int RunAudit(string[] args)
+        {
+            try
+            {
+                string outPath = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--out") outPath = args[i + 1];
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var report = new StringBuilder();
+                int totalPlaceholders = 0, totalUnresolved = 0, totalOutOfBounds = 0;
+
+                foreach (var stage in inventory.Stages)
+                {
+                    foreach (var window in stage.Windows ?? new List<WindowInfo>())
+                    {
+                        if (string.IsNullOrWhiteSpace(window.Path)) continue;
+                        var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+                        var iniPath = window.Root == "pak"
+                            ? Path.Combine(Paths.PakRoot, rel)
+                            : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+                        if (!File.Exists(iniPath)) continue;
+
+                        var ini = IniFile.Load(iniPath);
+                        var plan = LayoutPlanBuilder.Build(ini, window.Page);
+                        LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
+                        LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
+                        LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
+                        LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs);
+                        LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
+                        LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                        LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                        var build = UiLayout.Build(plan.Filtered, assets, textures);
+
+                        double width = plan.Filtered.Sections[0].GetInt("Width");
+                        double height = plan.Filtered.Sections[0].GetInt("Height");
+                        if (width <= 0) width = 1280;
+                        if (height <= 0) height = 720;
+
+                        var host = new Border { Width = width, Height = height, Child = build.Root };
+                        host.Measure(new Size(width, height));
+                        host.Arrange(new Rect(0, 0, width, height));
+                        host.UpdateLayout();
+
+                        var outOfBounds = new List<string>();
+                        foreach (var pair in build.Elements)
+                        {
+                            var element = pair.Value;
+                            if (element.Visibility != Visibility.Visible) continue;
+                            if (element.ActualWidth <= 0 && element.ActualHeight <= 0) continue;
+                            try
+                            {
+                                var p = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                                double w = element.ActualWidth, h = element.ActualHeight;
+                                if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
+                                    outOfBounds.Add($"{pair.Key} ({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})");
+                            }
+                            catch { }
+                        }
+
+                        totalPlaceholders += build.Placeholders.Count;
+                        totalUnresolved += build.UnresolvedStrings.Count;
+                        totalOutOfBounds += outOfBounds.Count;
+
+                        report.AppendLine($"== {window.Id} ({window.Title}) {width:0}x{height:0} " +
+                                          $"sections={plan.Filtered.Sections.Count} elements={build.Elements.Count} " +
+                                          $"placeholders={build.Placeholders.Count} unresolved={build.UnresolvedStrings.Count} " +
+                                          $"outOfBounds={outOfBounds.Count}");
+                        foreach (var item in build.Placeholders.Take(40)) report.AppendLine("   placeholder  " + item);
+                        foreach (var item in build.UnresolvedStrings.Take(40)) report.AppendLine("   unresolved   " + item);
+                        foreach (var item in outOfBounds.Take(40)) report.AppendLine("   outOfBounds  " + item);
+                    }
+                }
+                report.AppendLine($"TOTAL placeholders={totalPlaceholders} unresolved={totalUnresolved} outOfBounds={totalOutOfBounds}");
+
+                outPath ??= Path.Combine(AppContext.BaseDirectory, "ui_process_audit.txt");
+                File.WriteAllText(outPath, report.ToString());
+                Console.WriteLine($"audit -> {outPath} placeholders={totalPlaceholders} unresolved={totalUnresolved} outOfBounds={totalOutOfBounds}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("audit failed: " + ex.Message);
                 return 1;
             }
         }
@@ -299,6 +406,7 @@ namespace UiProcessApp
                             LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                             LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
                             var build = UiLayout.Build(plan.Filtered, assets, textures);
                             rendered++;
                             report.AppendLine($"OK   {window.Id,-22} sections={plan.Filtered.Sections.Count,-5} " +

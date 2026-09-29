@@ -89,6 +89,9 @@ namespace UiProcessApp.Engine
             var tables = new List<string>();
             if (Directory.Exists(SchemeRoot))
                 tables.AddRange(Directory.GetFiles(SchemeRoot, "*.txt"));
+            var proofScheme = Path.Combine(ProofUiRoot ?? "", "Scheme", "Case");
+            if (Directory.Exists(proofScheme))
+                tables.AddRange(Directory.GetFiles(proofScheme, "*.txt"));
             tables.Add(Path.Combine(PakRoot, "string_PVPAcount.txt"));
             Strings.Load(tables.ToArray());
 

@@ -68,7 +68,14 @@
           "lists": [
             { "container": "Handle_List", "ini": "MapQueue.ini", "item": "Handle_Content", "count": 1 }
           ],
-          "summary": "Per-map queue rows with elapsed time, cancel menu and the auto-enter checkbox; fed by OnSyncMapQueueInfo. Handle_Content/_0 are parked prototypes cloned per queued map by AppendItemFromIni into Handle_List, so the default hides them and injects one authored row.",
+          "adjust": [
+            { "section": "MapQueue", "height": 112 },
+            { "section": "Handle_List", "height": 48 },
+            { "section": "Handle_Total", "height": 48 },
+            { "section": "Image_Bg", "height": 82 },
+            { "section": "WndCheckBox_AutoSure", "top": 53 }
+          ],
+          "summary": "Per-map queue rows with elapsed time, cancel menu and the auto-enter checkbox; fed by OnSyncMapQueueInfo. Handle_Content/_0 are parked prototypes cloned per queued map by AppendItemFromIni into Handle_List, so the default hides them and injects one authored row. UpdateListSize (MapQueue.decompiled.lua:667-745) resizes the list/bg/checkbox from the row count and then calls Collapse (lua:330-376), which sets the window to 32 + rows*48 + 32 (112 for one row) and shows Wnd_List; the inventory adjust list carries those one-row values.",
           "evidence": [
             "ui/Config/Default/MapQueue.ini",
             "proof/minimap/ui/Config/Default/decompiled/MapQueue.decompiled.lua"

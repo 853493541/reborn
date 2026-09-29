@@ -69,6 +69,23 @@ namespace UiProcessApp.Engine
     }
 
     /// <summary>
+    /// Runtime geometry override: some windows resize/reposition parts of their
+    /// layout from the script (MapQueue.UpdateListSize sets the list, background
+    /// and 自动进入 checkbox heights/offsets from the row count). The inventory
+    /// carries the values for the state the static render shows.
+    /// </summary>
+    public sealed class AdjustSpec
+    {
+        public string Section { get; set; }
+        public double? Width { get; set; }
+        public double? Height { get; set; }
+        public double? Left { get; set; }
+        public double? Top { get; set; }
+        public double? RelX { get; set; }
+        public double? RelY { get; set; }
+    }
+
+    /// <summary>
     /// KGUI files declare every page/tab variant as a separately named element
     /// (e.g. Btn_RoomQueue vs Btn_RoomQueue_B) and the engine looks them up by
     /// exact name. This builds the subset visible for one page by walking the
@@ -266,6 +283,28 @@ namespace UiProcessApp.Engine
                     string.IsNullOrWhiteSpace(text.Text)) continue;
                 if (!filtered.ByName.TryGetValue(text.Section, out var section)) continue;
                 section.Values["$Text"] = text.Text;
+            }
+        }
+
+        /// <summary>Applies the Lua's runtime SetSize/SetRelPos calls (inventory `adjust`).</summary>
+        public static void ApplyAdjustments(IniFile filtered, IEnumerable<AdjustSpec> adjustments)
+        {
+            if (adjustments == null) return;
+            foreach (var adjust in adjustments)
+            {
+                if (adjust == null || string.IsNullOrWhiteSpace(adjust.Section)) continue;
+                if (!filtered.ByName.TryGetValue(adjust.Section, out var section)) continue;
+                void Set(string key, double? value)
+                {
+                    if (value.HasValue)
+                        section.Values[key] = value.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                }
+                Set("Width", adjust.Width);
+                Set("Height", adjust.Height);
+                Set("Left", adjust.Left);
+                Set("Top", adjust.Top);
+                Set("RelX", adjust.RelX);
+                Set("RelY", adjust.RelY);
             }
         }
 

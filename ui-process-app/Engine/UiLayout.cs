@@ -13,6 +13,12 @@ namespace MapUiApp.Engine
         public FrameworkElement Root;
         public readonly Dictionary<string, FrameworkElement> Elements = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase);
         public readonly Dictionary<string, IniSection> Sections = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>Sections whose atlas/frame did not resolve (drawn as placeholders).</summary>
+        public readonly List<string> Placeholders = new List<string>();
+
+        /// <summary>Text sections whose string id is missing from the loaded tables.</summary>
+        public readonly List<string> UnresolvedStrings = new List<string>();
     }
 
     /// <summary>
@@ -66,7 +72,7 @@ namespace MapUiApp.Engine
             foreach (var section in ini.Sections)
             {
                 if (section != rootSection && SkipSections.Contains(section.Name)) continue;
-                var element = CreateElement(section, textures, parentNames.Contains(section.Name));
+                var element = CreateElement(section, textures, parentNames.Contains(section.Name), result);
                 if (element == null) continue;
                 result.Elements[section.Name] = element;
                 result.Sections[section.Name] = section;
@@ -325,7 +331,7 @@ namespace MapUiApp.Engine
             return canvas;
         }
 
-        private static FrameworkElement CreateElement(IniSection section, UiTexCache textures, bool isParent = false)
+        private static FrameworkElement CreateElement(IniSection section, UiTexCache textures, bool isParent, UiBuildResult result)
         {
             var type = section.Get("._WndType") ?? "";
             if (SkipTypes.Contains(type)) return null;
@@ -362,6 +368,8 @@ namespace MapUiApp.Engine
                 if (string.IsNullOrWhiteSpace(imagePath))
                 {
                     // No atlas: keep the authored size, drop truly empty spacers unless wireframe.
+                    if (width > 0 || height > 0 || autoSize)
+                        result.Placeholders.Add($"{section.Name} [{type} no Image]");
                     if (width <= 0 && height <= 0 && !autoSize)
                         return Wireframe ? Placeholder(section.Name, width, height) : (FrameworkElement)new Canvas { Visibility = Visibility.Collapsed };
                     if (Wireframe) return Placeholder(section.Name, width, height);
@@ -375,6 +383,7 @@ namespace MapUiApp.Engine
                 {
                     // Atlas/frame missing: the engine still lays the element out at the
                     // authored size (or the atlas frame size when it later loads).
+                    result.Placeholders.Add($"{section.Name} [{type} {imagePath} frame={frame}]");
                     if (width <= 0 && height <= 0 && !autoSize)
                         return Wireframe ? Placeholder(section.Name, width, height) : (FrameworkElement)new Canvas { Visibility = Visibility.Collapsed };
                     return Placeholder(section.Name, width, height);
@@ -478,7 +487,10 @@ namespace MapUiApp.Engine
                 {
                     // Missing string-table entry: hide the label instead of showing the id.
                     if (rawText.StartsWith("STR", StringComparison.OrdinalIgnoreCase))
+                    {
+                        result.UnresolvedStrings.Add($"{section.Name} {rawText}");
                         return isParent ? CreateFallbackContainer(section, true) : null;
+                    }
                     text = rawText;
                 }
                 double fontSize = 14;
