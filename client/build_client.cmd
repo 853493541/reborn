@@ -48,7 +48,7 @@ if "%RC_SMOKE_EXE%"=="" goto :done
 :done
 rem offline collision gate (no engine/assets); unique name for feature builds
 set COLTEST=collision_selftest.exe
-if not "%RC_CLIENT_EXE%"=="" set COLTEST=collision_selftest_%EXE%.exe
+if not "%RC_CLIENT_EXE%"=="" set COLTEST=collision_selftest_%EXE%
 "%CSC%" /nologo /platform:x64 /target:exe /out:"%BIN%\%COLTEST%" ^
   client\FoliageCollision.cs client\collision_selftest.cs
 echo build exit=%ERRORLEVEL%
