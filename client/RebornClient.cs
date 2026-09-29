@@ -25,24 +25,39 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
-        // Single-instance guard: concurrent clients share the engine/GPU/D3D
-        // device and destabilize each other (observed: three overlapping runs
-        // 18:19/18:25/18:30 with a BEX64 crash in one). Blocks any known
-        // client process (including the fork's builds) unless RC_ALLOW_MULTI=1.
+        // Per-build engine memory namespace (isolation, not exclusion): feature
+        // builds (reborn_client_<slug>.exe) get their own namespace so 2+ clients
+        // can run at the same time without sharing engine memory. The canonical
+        // reborn_client.exe keeps MovieEditor.memory. RC_MEM_NS overrides.
+        string memNs = Env("RC_MEM_NS", "");
+        if (memNs.Length == 0)
+        {
+            string myName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            memNs = (myName == "reborn_client") ? "MovieEditor.memory" : myName + ".memory";
+        }
+        // Single-instance guard: block only processes that share this build's
+        // memory namespace. Different feature builds have different namespaces
+        // and are allowed to run concurrently; the canonical build excludes the
+        // apps that still hardcode MovieEditor.memory. RC_ALLOW_MULTI=1 overrides.
         if (Env("RC_ALLOW_MULTI", "0") != "1")
         {
             try
             {
                 var me = System.Diagnostics.Process.GetCurrentProcess();
-                string[] known = { "reborn_camfp", "reborn_client", "ability_sandbox", "asset_sandbox" };
-                foreach (string name in known)
+                string[] peers;
+                if (memNs == "MovieEditor.memory")
+                    peers = new string[] { "reborn_camfp", "reborn_client", "asset_sandbox", "ability_picker" };
+                else
+                    peers = new string[] { me.ProcessName };
+                foreach (string name in peers)
                 {
                     foreach (var other in System.Diagnostics.Process.GetProcessesByName(name))
                     {
                         if (other.Id == me.Id) continue;
                         System.Windows.Forms.MessageBox.Show(
                             name + " is already running (pid " + other.Id +
-                            "). Close it first or set RC_ALLOW_MULTI=1.",
+                            ") and shares memory namespace " + memNs +
+                            ". Close it first or set RC_ALLOW_MULTI=1.",
                             "reborn_client");
                         return;
                     }
@@ -173,9 +188,9 @@ internal static class RebornClient
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("MovieEditor.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        try { r2 = baselib.InitMemory(memNs); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
-        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
+        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2} ns={3}", r1, r2, r3, memNs));
 
         int err = 1;
         int ok = 0;
