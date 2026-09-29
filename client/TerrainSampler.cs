@@ -25,9 +25,22 @@ internal sealed class TerrainSampler : IDisposable
     delegate int LoadRegionFn(IntPtr self, int nX, int nZ, IntPtr pData, int nCount,
                               IntPtr outA, IntPtr outB, IntPtr outC);
 
+    // vt[4] PhysicsEngine::KG3D_PhysxTerrainDataLoader_Source::LoadHoleRegion.
+    // pRetByteArray receives a packed 1-bit-per-cell hole mask
+    // (nRegionSize*nRegionSize/8 bytes); pOutFlag is set to 1 when the region
+    // has no holes at all (assert nArraySize == nRegionSize^2/8, verified in
+    // engine_host_spike/recon_loader_methods.txt and the _ConvertHoleData
+    // disasm proof/collision/disasm/hole_convert_holedata.txt).
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int LoadHoleRegionFn(IntPtr self, int nX, int nZ, IntPtr pData,
+                                  int nArraySize, IntPtr pOutFlag);
+
     IntPtr _loader = IntPtr.Zero;
     IntPtr _buf = IntPtr.Zero;
+    IntPtr _hole = IntPtr.Zero;
     int _size, _nrx, _nrz, _count, _curIx = -1, _curIz = -1;
+    int _holeRowBytes, _holeIx = -1, _holeIz = -1;
+    bool _hasHoles;
     float _cell, _originX, _originZ;
     Action<string> _log;
 
@@ -80,6 +93,9 @@ internal sealed class TerrainSampler : IDisposable
 
         _count = (_size + 1) * (_size + 1);
         _buf = Marshal.AllocHGlobal(_count * 4);
+        _holeRowBytes = (_size + 7) / 8;
+        _hole = Marshal.AllocHGlobal(_holeRowBytes * _size);
+        Marshal.Copy(new byte[_holeRowBytes * _size], 0, _hole, _holeRowBytes * _size);
         log(string.Format("TerrainSampler: size={0} regions={1}x{2} cell={3} origin=({4},{5})",
             _size, _nrx, _nrz, _cell, _originX, _originZ));
     }
@@ -107,6 +123,27 @@ internal sealed class TerrainSampler : IDisposable
                 else _log("LoadRegion failed (" + ix + "," + iz + ")");
             }
             finally { Marshal.FreeHGlobal(a); Marshal.FreeHGlobal(b); Marshal.FreeHGlobal(c); }
+
+            // real terrain holes (cave voids): packed 1-bit-per-cell mask
+            _hasHoles = false;
+            _holeIx = -1; _holeIz = -1;
+            IntPtr holeFn = Marshal.ReadIntPtr(vt, 4 * IntPtr.Size);
+            if (holeFn != IntPtr.Zero && _hole != IntPtr.Zero)
+            {
+                var loadHole = Fn<LoadHoleRegionFn>(holeFn);
+                IntPtr flag = Marshal.AllocHGlobal(4);
+                try
+                {
+                    Marshal.WriteInt32(flag, 0, 1);
+                    int hok = loadHole(_loader, ix, iz, _hole, _size * _size / 8, flag);
+                    if (hok != 0)
+                    {
+                        _holeIx = ix; _holeIz = iz;
+                        _hasHoles = Marshal.ReadInt32(flag) == 0;
+                    }
+                }
+                finally { Marshal.FreeHGlobal(flag); }
+            }
         }
         catch (Exception e) { _log("EnsureRegion ex: " + e.Message); }
     }
@@ -141,9 +178,45 @@ internal sealed class TerrainSampler : IDisposable
         return a + (b - a) * fz;
     }
 
+    // Ground height at (x,z); false when the point is over a real terrain
+    // hole (cave/void), where the game has no collision and the player falls.
+    // The hole cell is hole only when all four of its height samples are
+    // marked in the mask (decoded _ConvertHoleData rule).
+    public bool SampleGround(float x, float z, out float height)
+    {
+        height = Sample(x, z);
+        if (!_hasHoles) return true;
+        int ix = RegionIndex(x, _originX, _nrx), iz = RegionIndex(z, _originZ, _nrz);
+        if (ix != _holeIx || iz != _holeIz) return true;
+        float gx = (x - _originX) / _cell - ix * _size;
+        float gz = (z - _originZ) / _cell - iz * _size;
+        int cx = (int)Math.Floor(gx), cz = (int)Math.Floor(gz);
+        if (cx < 0) cx = 0; if (cz < 0) cz = 0;
+        if (cx >= _size) cx = _size - 1; if (cz >= _size) cz = _size - 1;
+        int b = _holeRowBytes * cz + (cx >> 3);
+        byte v = Marshal.ReadByte(_hole, b);
+        return (v & (1 << (cx & 7))) == 0;
+    }
+
+    // Debug/A-B support: the packed mask of the region loaded last.
+    public bool HasHoles { get { return _hasHoles; } }
+    public int HoleRegionX { get { return _holeIx; } }
+    public int HoleRegionZ { get { return _holeIz; } }
+    public int RegionSize { get { return _size; } }
+
+    public byte[] HoleMaskCopy()
+    {
+        if (_hole == IntPtr.Zero) return null;
+        byte[] b = new byte[_holeRowBytes * _size];
+        Marshal.Copy(_hole, b, 0, b.Length);
+        return b;
+    }
+
     public void Dispose()
     {
         if (_buf != IntPtr.Zero) Marshal.FreeHGlobal(_buf);
         _buf = IntPtr.Zero;
+        if (_hole != IntPtr.Zero) Marshal.FreeHGlobal(_hole);
+        _hole = IntPtr.Zero;
     }
 }

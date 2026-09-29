@@ -1573,8 +1573,11 @@ internal static class RebornClient
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
 
-            // horizontal move + slope blocking (map-host rules)
-            float ground = sampler != null ? sampler.Sample(px, pz) : py;
+            // horizontal move + slope blocking (map-host rules); terrain holes
+            // (real LoadHoleRegion data) carry no ground at all
+            float ground = py;
+            bool groundOk = true;
+            if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
             bool blocked = false;
             if (moving)
             {
@@ -1585,14 +1588,17 @@ internal static class RebornClient
                 float step = sp * dt;
                 float ux = dirX / len, uz = dirZ / len;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
-                float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
-                if (gh - ground > 70f)
+                float gh = ground;
+                bool ghOk = false;
+                if (sampler != null) ghOk = sampler.SampleGround(tryX, tryZ, out gh);
+                if (groundOk && ghOk && gh - ground > 70f)
                 {
                     blocked = true;
-                    float gx2 = sampler != null ? sampler.Sample(tryX, pz) : ground;
-                    float gz2 = sampler != null ? sampler.Sample(px, tryZ) : ground;
-                    if (gx2 - ground <= 70f) { px = tryX; }
-                    else if (gz2 - ground <= 70f) { pz = tryZ; }
+                    float gx2 = ground, gz2 = ground;
+                    bool okX = sampler != null && sampler.SampleGround(tryX, pz, out gx2);
+                    bool okZ = sampler != null && sampler.SampleGround(px, tryZ, out gz2);
+                    if (!okX || gx2 - ground <= 70f) { px = tryX; }
+                    else if (!okZ || gz2 - ground <= 70f) { pz = tryZ; }
                 }
                 else { px = tryX; pz = tryZ; }
                 curYaw = (float)Math.Atan2(ux, uz);
@@ -1618,6 +1624,9 @@ internal static class RebornClient
                 else curYaw += Math.Sign(d) * step;
             }
 
+            // terrain ground at the new position (hole => no ground at all)
+            if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+
             // object/foliage collision (walls, buildings, rocks, trees)
             if (col != null)
             {
@@ -1635,17 +1644,20 @@ internal static class RebornClient
                 if (stepGround > ground)
                 {
                     ground = stepGround;
+                    groundOk = true;   // standing on a structure
                 }
                 else
                 {
                     colCalls++;
+                    float gBefore = ground;
                     bool sBlocked = col.Resolve(ref px, ref py, ref pz,
                         playerRadius, playerHeight, ref ground, ref grounded);
                     if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                    if (ground > gBefore + 0.01f) groundOk = true;   // structure support
                     if (grounded)
                     {
                         float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
-                        if (sh > ground) ground = sh;
+                        if (sh > ground) { ground = sh; groundOk = true; }
                     }
                 }
             }
@@ -1653,7 +1665,7 @@ internal static class RebornClient
             // grounded / ledge / step (map-host rules)
             if (grounded)
             {
-                if (py - ground > 150f) { grounded = false; vy = 0f; }
+                if (!groundOk || py - ground > 150f) { grounded = false; vy = 0f; }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
             }
@@ -1670,7 +1682,7 @@ internal static class RebornClient
             {
                 vy += pGravity * dt;
                 py += vy * dt;
-                if (py <= ground)
+                if (py <= ground && groundOk)
                 {
                     py = ground;
                     if (vy < 0f) vy = 0f;
