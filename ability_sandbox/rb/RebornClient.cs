@@ -56,18 +56,26 @@ internal static class RebornClient
         // supervisor itself never loads the engine (zero interference).
         if (Env("SB_NO_SUPERVISOR", "0") != "1" && !(args != null && System.Array.Exists(args, delegate(string a) { return a == "--child"; })))
         {
-            string self = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            for (int attempt = 1; attempt <= 6; attempt++)
+            try
             {
-                var psi = new System.Diagnostics.ProcessStartInfo(self, "--child");
-                psi.UseShellExecute = false;
-                var child = System.Diagnostics.Process.Start(psi);
-                var swc = System.Diagnostics.Stopwatch.StartNew();
-                child.WaitForExit();
-                swc.Stop();
-                if (swc.ElapsedMilliseconds > 60000) return;
-                System.Threading.Thread.Sleep(4000);
+                string self = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string supLog = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(self), "ability_sandbox", "out", "supervisor.log");
+                try { System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(supLog)); } catch { }
+                for (int attempt = 1; attempt <= 8; attempt++)
+                {
+                    var psi = new System.Diagnostics.ProcessStartInfo(self, "--child");
+                    psi.UseShellExecute = false;
+                    psi.WorkingDirectory = @"C:\SeasunGame\MovieEditor";
+                    var child = System.Diagnostics.Process.Start(psi);
+                    var swc = System.Diagnostics.Stopwatch.StartNew();
+                    child.WaitForExit();
+                    swc.Stop();
+                    try { System.IO.File.AppendAllText(supLog, System.DateTime.Now.ToString("HH:mm:ss.fff") + " child pid=" + child.Id + " ran " + swc.ElapsedMilliseconds + "ms attempt " + attempt + "\r\n"); } catch { }
+                    if (swc.ElapsedMilliseconds > 60000) return;
+                    System.Threading.Thread.Sleep(3000);
+                }
             }
+            catch { }
             return;
         }
         string editorRoot = @"C:\SeasunGame\MovieEditor";
@@ -319,12 +327,10 @@ internal static class RebornClient
 
         int err = 1;
         int ok = 0;
-        // engine root = OUR dir: the engine writes its own files (ShaderList.txt,
-        // BuildDXVKCache, ...) relative to this root - it must never be the
-        // shared bin64 that other engine clients use.
-        string engineRoot = Path.Combine(startupPath, "ability_sandbox");
-        try { Directory.CreateDirectory(engineRoot); } catch { }
-        try { ok = engine.Init3DEngine(engineRoot, engineRoot, workingDir, 0, "./configHttpFile.ini", ref err); }
+        // NOTE: the engine root must stay bin64 - the engine loads root-relative
+        // resources during init (data\public\EnginePreloadList.csv, version.cfg,
+        // shader dirs). A subdir root crashes init instantly (verified).
+        try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1}", ok, err));
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
