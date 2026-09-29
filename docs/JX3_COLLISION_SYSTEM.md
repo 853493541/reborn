@@ -904,6 +904,20 @@ half-height, slope limit, step offset and skin is still unproven** — the hones
 The named shape library (`physic_shape_param.krl.txt`, capsule r50/l50 at index 6) is a
 separate per-object shape table, not the player body.
 
+Further G-1 evidence (2026-09-28): `PhysicsEngineX64.dll` really does construct PhysX
+characters — RTTI strings for `.?AVPxCapsuleControllerDesc@physx@@`,
+`.?AVPxControllerDesc@physx@@`, `.?AVPhysicsController@PhysicsEngine@@`,
+`.?AUIPhysicsController@PhysicsEngine@@` and `PhysicsEngine::_CreateCapsule`
+(`proof/collision/recon/PhysicsEngineX64_strings.txt`), and
+`PhysX3CharacterKinematic_x64.dll` exports the 3.3.4 prototype
+`PxControllerManager::createController(PxPhysics&, PxScene*, const PxControllerDesc&)`.
+The desc validator compiled into the game (`PxControllerDesc::isValid`,
+`proof/collision/disasm/pxcontrollerdesc_defaults.txt`, xref to the deprecation message
+`0x1800fa250`) checks floats at desc offsets `+0x2c`, `+0x38`, `+0x3c`, `+0x40`, `+0x44`
+(≥ 0) and `+0x48` (≤ 1) plus the deprecated/current callback pair at `+0x50`/`+0x58` and the
+material at `+0x70` — so the live desc layout is partially mapped; the exact game-side field
+assignment (which value is radius/half-height vs slope/step) remains G-1.
+
 ### 11.2 The SIMWorld kinematic solver [NAME]
 
 The solver is configured through semantic keys captured in `SIMWorldX64`:
@@ -1265,8 +1279,23 @@ non-spatial.
 * Lock target camera: `OnSetCharacterCameraLockTarget` (fn `0x180322D00`),
   `CameraLockTargetConfig` (`reborn-camara-fix/proof/netcode/disasm/locktarget_set.txt:4`;
   `docs/CAMERA_CONFIG_FILES.md:20,161`).
-* UI logic `ui/script/target.lua` (16 KB) and `skill.lua` (59.6 KB) are Lua 5.1 bytecode, not
-  decompiled (gap G-19).
+* **UI targeting logic decompiled (2026-09-28).** `ui/script/target.lua` / `skill.lua` are
+  Lua 5.1 bytecode; unluac (fetched to temp, output stripped-debug but readable) produced
+  `proof/collision/ui_scripts/{Target,target_b03,skill}.utf8.lua`. Recovered semantics
+  (`target_b03.utf8.lua`):
+  - candidate source `GetSearchTargetPlayer()`; selection by type
+    `SelectTarget(TARGET.PLAYER|NPC, id)`;
+  - `TARGET` enum includes `PLAYER`, `NPC`, `DOODAD`, `FURNITURE`, `DUMMY`, `NO_TARGET`;
+  - filters: `CanSelectPlayer(id)`, `IsCorpseAndCanLoot(id)`, player priority
+    `g_nTabPlayerPriority`, `bOnlyPlayer` setting, enemy/other setting token `"Enmey"`
+    (`L1_1.ENMEY`), old/new-version path via `SearchTarget_IsOldVerion`;
+  - `skill.lua` uses `SKILL_CAST_MODE.TARGET_SINGLE/TARGET_CHAIN/TARGET_AREA`, per-skill
+    `nCastMode`, `bAutoSelectTarget`, `bForbidSelectTarget`, `bAllyTarget`,
+    `IsSelfCastSkill/SetSelfCastSkill`, `SetAutoTarget/IsAutoTarget`, `Target_GetTargetData`,
+    `TARGET.NO_TARGET`.
+  Combined with the absence of a select opcode (§16.1), client targeting is a **local list
+  selection feeding the cast packet**, not a replicated action. Residual gap: exact candidate
+  ordering/filter priorities in the C++ `GetSearchTargetPlayer` (G-19 residual).
 
 ### 16.4 Ground-target reproduction (临时飞爪) [HOST]
 
@@ -1567,9 +1596,15 @@ Reproduction therefore needs the inferred model (§24), driven by these fields.
 
 * Combat is fully server-arbitrated; only `OnSkillEffectResult` changes HP
   (`proof/pvp/combat_netcode.md:28-58,205-206,352-353`); no rollback (`:233-248`).
-* `OnSkillEffectResult` = `0x23 + 9·n` bytes; `cResultCount` at `+0x22`; 9-byte
-  `KSKILL_RESULT` records from `+0x23` (assert-proven). **The 9-byte field split is unknown**
-  (gap G-26).
+* `OnSkillEffectResult` layout (header confirmed from the full handler disassembly
+  `proof/pvp/netcode/disasm/KPlayerClient__OnSkillEffectResult.txt`): packet flags at `+0x1b`
+  (bit0 miss/absorb path, bit1, bit2, bit3, bit6, bit7) and `+0x1c` (bit0, bit2);
+  `casterID` dword at `+9`; `targetID` dword at `+0x0d`; byte `+0x15`; dword `+0x16`
+  (damage/skill value); byte `+0x1a`; `cResultCount` int8 at `+0x22`; `KSKILL_RESULT` records
+  start at `+0x23`, stride 9 (`offset = count*9 + 0x23`, assert at `0x18018f9df`). The handler
+  feeds five-dword view structs `{caster,target,byte,dword,byte}` into presentation callbacks
+  via vt[`+0x4b0/+0x4b8/+0x4d0/+0x4d8/+0x4e0/+0x550/+0x568/+0x570/+0x578`]. **Per-record
+  9-byte field meaning still requires the per-record consumer trace** (G-26 residual).
 * Event family: `OnSkillPrepare/Cast/Channel/EffectResult/BeatBack/RayEffect/ChainEffect/
   PointChainSkillEffect` (`combat_netcode.md:99-131,194-216`).
 * C→S casts: `DoCastProfessionSkill 0x49/0x20`, `DoCharacterSkill 0x1B/0x1D`,
@@ -2003,7 +2038,10 @@ client\build_client.cmd   # then camera_smoke.exe
 | `proof/collision/recon/SIMWorldX64_exports.txt` / `_strings.txt` | re-verified SIMWorld export surface |
 | `proof/collision/missile/*` | extracted missile/bullet/phase/controller tables (2026-09-28) + decoded `buff_bullet_header_utf8.txt` |
 | `proof/collision/physic/*` | engine physic configs (file/folder white/black lists, shape/rigid/conveyor params) + UTF-8 copies + `audit_lists.txt` |
-| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh` |
+| `proof/collision/disasm/*` | 2026-09-28 disassembly: `PhysicsScene::_InitPhysXScene` constants, NAVX64 `Init`/`LoadSceneNaviMesh`, `PxControllerDesc::isValid` |
+| `proof/collision/ui_scripts/*.utf8.lua` | unluac decompilation of `Target.lua` / `target.lua` / `skill.lua` (client targeting model) |
+| `proof/collision/recon/PhysicsEngineX64_strings.txt` | RTTI + `_CreateCapsule` + PhysX controller-desc strings |
+| `proof/collision/recon/PhysX3CharacterKinematic_*` | CharacterKinematic exports/strings (`createController` prototype) |
 | `proof/collision/terrain_extra/*` | extracted `<map>.SRScene` (magic `SRS`, empty body) |
 | `proof/collision/recon/terrain_extra_candidates*.txt`, `physic_config_candidates.txt` | extraction candidate batteries (method evidence) |
 | `proof/netcode/loot_protocol` (`disasm/OnSync*`) | doodad/loot packet layouts |
@@ -2067,7 +2105,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 |---|---|---|
 | G-27 | combat use of bone boxes / body bone box | disassemble `OnSyncBodyBoneBoxSize`; trace `IsRayIntersectBoneBox` callers beyond camera |
 | G-10 | advanced/movable obstacle runtime + net handlers | disassemble `KScene::ChangeAdvancedDynamicObstacleState`, `CheckCollisionRange`; decode `OnAdd/RemoveAdvancedDynamicObstacle` payloads |
-| G-19 | `target.lua` / `skill.lua` target selection | unluac the bytecode; map to UI commands (`SearchNextTarget`, filters) |
+| G-19 | `target.lua` / `skill.lua` target selection — **decompiled 2026-09-28** (`proof/collision/ui_scripts/`): local candidate list, `SelectTarget(PLAYER/NPC/DOODAD/FURNITURE/DUMMY)`, filters (`CanSelectPlayer`, `IsCorpseAndCanLoot`, `g_nTabPlayerPriority`, `bOnlyPlayer`), per-skill cast modes/flags recovered | residual: C++ `GetSearchTargetPlayer` candidate ordering/filters |
 | G-23 | interaction range value + server legality | find `nCustomInteractRange` source (INI/table); trace `ProcessCustomInteractRange` |
 | G-17 | camera ray mask `0x301` bit split / 9-ray trigger `+0x15C` | disassemble dispatcher `0x18032EA40` and camera field reader |
 | G-15 | per-frame swim step | trace `SwimTo` update path and represent water frame data |
@@ -2083,7 +2121,7 @@ IDs are stable references for future work. “Method” names the concrete next 
 |---|---|---|
 | G-33 | billboard-only SpeedTrees (海岛 758) walk-through | decode `.srt`/billboard geometry or accept client behaviour |
 | G-6 | non-uniform foliage scale dropped | store 3 scales in FCOL v3 or reject |
-| G-26 | `KSKILL_RESULT` 9-byte split | disassemble consumers / compare captures |
+| G-26 | `KSKILL_RESULT` 9-byte split — **header layout recovered 2026-09-28** (flags `+0x1b/+0x1c`, caster `+9`, target `+0xd`, `+0x15`, `+0x16`, `+0x1a`, count `+0x22`, records `0x23+9i`); per-record field meaning open | trace the per-record consumer and compare against combat captures |
 | G-30 | rating→% damage formulas | attribute dump diffing + capture fitting |
 | G-28 | weapon collision/traces | search weapon model/bone paths; likely none client-side |
 | G-31 | undecoded CastMode variants (`Column`, `TargetHoodle`, `SectorOfAttention`, `CasterConvexHullArea`, `PointAreaFindFirst`) | find example skills + captures |

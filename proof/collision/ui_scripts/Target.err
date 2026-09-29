@@ -1,0 +1,13 @@
+Warning: This file was stripped when it was compiled.
+You may need to edit it manually.
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1
+	at unluac.decompile.VariableFinder$RegisterStates.get(VariableFinder.java:54)
+	at unluac.decompile.VariableFinder$RegisterStates.setWritten(VariableFinder.java:62)
+	at unluac.decompile.VariableFinder.process(VariableFinder.java:302)
+	at unluac.decompile.Decompiler.<init>(Decompiler.java:85)
+	at unluac.decompile.expression.ClosureExpression.printClosure(ClosureExpression.java:72)
+	at unluac.decompile.statement.Assignment.print(Assignment.java:232)
+	at unluac.decompile.statement.Statement.printSequence(Statement.java:27)
+	at unluac.decompile.block.OuterBlock.print(OuterBlock.java:46)
+	at unluac.decompile.Decompiler.print(Decompiler.java:142)
+	at unluac.Main.main(Main.java:80)

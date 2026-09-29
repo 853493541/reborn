@@ -1,0 +1,7 @@
+00001720 ord=1     ??0PxControllerManager@physx@@IEAA@XZ
+00001730 ord=2     ??0PxControllerManager@physx@@QEAA@AEBV01@@Z
+00001760 ord=3     ??1PxControllerManager@physx@@MEAA@XZ
+00001770 ord=4     ??4PxControllerManager@physx@@QEAAAEAV01@AEBV01@@Z
+000019f0 ord=6     ?createController@PxControllerManager@physx@@UEAAPEAVPxController@2@AEAVPxPhysics@2@PEAVPxScene@2@AEBVPxControllerDesc@2@@Z
+0000fc00 ord=7     PxCreateControllerManager
+0001f638 ord=5     ??_7PxControllerManager@physx@@6B@
