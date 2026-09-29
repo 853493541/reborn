@@ -35,8 +35,8 @@ sections / 1,016 elements, BattleFieldMap 367 sections.
 
 | pane | content |
 |---|---|
-| left tree | stages (queue → match → loading → staging → HUD → death → settlement → exit) and their windows |
-| Details | summary, status (PROVEN / PARTIAL), evidence list (click `open` to reveal the file), interface elements, key labels |
+| left tree | stages (queue → match → loading → staging → HUD → death → settlement → exit) and their windows (Chinese names; the English window id is the tooltip) |
+| Details | status (PROVEN / PARTIAL), evidence list (click `open` to reveal the file), interface elements, key labels |
 | Layout | the KGUI window rebuilt from its INI with a zoom slider; textures come from `proof/minimap/ui` when that extraction exists |
 | Labels 文案 | every `STR_*` referenced by the window/layout, resolved to Chinese |
 | INI 源码 | the raw layout file |
@@ -46,6 +46,8 @@ Search box filters windows by name/summary/label.
 ### Layout controls
 
 - **Page** — KGUI tab sections (`Page_*`): only the selected tab's content renders.
+  Entries are labelled with the game's own Chinese mode name when the INI authors
+  one (`Page_X` → `CheckBox_X` → its `Text_*` label), otherwise the raw page id.
 - **隐藏 (Hide)** — comma-separated section names whose whole subtree is hidden;
   `Name_*` wildcards are supported. Windows in `Data/ui_inventory.json` may carry a
   default `hide` list (the queue panel hides extra full-window backgrounds and the

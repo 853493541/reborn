@@ -92,8 +92,9 @@ namespace UiProcessApp
                 {
                     stageNode.Items.Add(new TreeViewItem
                     {
-                        Header = $"{window.Title}  路  {window.Cn}",
+                        Header = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn,
                         Foreground = new SolidColorBrush(Color.FromRgb(0xDD, 0xDD, 0xDD)),
+                        ToolTip = window.Title,
                         Tag = window,
                     });
                 }
@@ -136,13 +137,12 @@ namespace UiProcessApp
             PageBox.Items.Clear();
             PageBox.IsEnabled = false;
             WindowTitle.Text = stage.Title;
-            WindowMeta.Text = stage.Summary;
             DetailsPanel.Children.Clear();
             AddHeading(stage.Title);
             AddParagraph(stage.Summary);
-            AddHeading("绐楀彛");
+            AddHeading("窗口");
             foreach (var w in stage.Windows ?? new List<WindowInfo>())
-                AddBullet($"{w.Title} 路 {w.Cn}  [{w.Status}]");
+                AddBullet($"{(string.IsNullOrWhiteSpace(w.Cn) ? w.Title : w.Cn)}  [{w.Status}]");
             LabelsGrid.ItemsSource = new List<LabelRow>();
             IniText.Text = "";
             LayoutHost.Child = ShowMessage("Select a window to render its layout.");
@@ -151,15 +151,16 @@ namespace UiProcessApp
         private void ShowWindow(WindowInfo window)
         {
             _currentWindow = window;
-            WindowTitle.Text = $"{window.Title}  路  {window.Cn}";
-            WindowMeta.Text = $"[{window.Status}]  {window.Summary}";
+            var displayName = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn;
+            WindowTitle.Text = displayName;
+            WindowTitle.ToolTip = window.Title;
 
             DetailsPanel.Children.Clear();
-            AddHeading(window.Title);
-            AddParagraph(window.Summary);
+            AddHeading(displayName);
+            AddParagraph($"[{window.Status}]");
 
             var iniPath = ResolveIniPath(window);
-            AddHeading("璇佹嵁");
+            AddHeading("证据");
             foreach (var evidence in window.Evidence ?? new List<string>())
             {
                 var full = ResolveRepoPath(evidence);
@@ -184,13 +185,13 @@ namespace UiProcessApp
 
             if ((window.Elements?.Count ?? 0) > 0)
             {
-                AddHeading("鐣岄潰鍏冪礌");
+                AddHeading("界面元素");
                 foreach (var element in window.Elements) AddBullet(element);
             }
 
             if ((window.Labels?.Count ?? 0) > 0)
             {
-                AddHeading("鍏抽敭鏂囨");
+                AddHeading("关键文案");
                 foreach (var id in window.Labels)
                     AddBullet($"{id} = {Strings.Resolve(id)}");
             }
@@ -221,22 +222,71 @@ namespace UiProcessApp
             }
             PageBox.IsEnabled = true;
             var pages = BuildPlan(_currentIni, null).Pages;
-            PageBox.Items.Add("(all)");
-            foreach (var page in pages) PageBox.Items.Add(page);
+            PageBox.Items.Add(new ComboBoxItem { Content = "(all)", Tag = null });
+            foreach (var page in pages)
+                PageBox.Items.Add(new ComboBoxItem { Content = PageDisplayName(_currentIni, page), Tag = page });
             var preferred = !string.IsNullOrWhiteSpace(_currentWindow?.Page) && pages.Contains(_currentWindow.Page)
                 ? _currentWindow.Page
                 : pages.Contains("Page_DesertStorm") ? "Page_DesertStorm"
-                : pages.Count > 0 ? pages[0] : "(all)";
-            PageBox.SelectedItem = preferred;
+                : pages.Count > 0 ? pages[0] : null;
+            ComboBoxItem selected = null;
+            foreach (ComboBoxItem item in PageBox.Items)
+            {
+                if (string.Equals(item.Tag as string, preferred, StringComparison.OrdinalIgnoreCase))
+                {
+                    selected = item;
+                    break;
+                }
+            }
+            PageBox.SelectedItem = selected ?? PageBox.Items[0];
             _updatingPages = false;
             RebuildPlan();
+        }
+
+        /// <summary>
+        /// Chinese selector label for a Page_* entry, taken from the game's own mode
+        /// label: Page_X -> CheckBox_X -> its first Text descendant's $Text. Falls back
+        /// to the raw page id when the INI authors no label (never machine-translated).
+        /// </summary>
+        private static string PageDisplayName(IniFile ini, string page)
+        {
+            var suffix = page.StartsWith("Page_", StringComparison.OrdinalIgnoreCase) ? page.Substring(5) : null;
+            if (string.IsNullOrWhiteSpace(suffix)) return page;
+            var checkbox = "CheckBox_" + suffix;
+            if (!ini.ByName.ContainsKey(checkbox)) return page;
+            foreach (var section in ini.Sections)
+            {
+                if (!string.Equals(section.Get("._WndType"), "Text", StringComparison.OrdinalIgnoreCase)) continue;
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var cursor = section.Get("._Parent");
+                bool under = false;
+                while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                {
+                    if (string.Equals(cursor, checkbox, StringComparison.OrdinalIgnoreCase)) { under = true; break; }
+                    cursor = ini.ByName.TryGetValue(cursor, out var parent) ? parent.Get("._Parent") : null;
+                }
+                if (!under) continue;
+                var raw = section.Get("$Text");
+                if (!string.IsNullOrWhiteSpace(raw) && Strings.TryResolve(raw, out var label) &&
+                    !string.IsNullOrWhiteSpace(label) &&
+                    !string.Equals(label, raw, StringComparison.OrdinalIgnoreCase))
+                    return label;
+            }
+            return page;
+        }
+
+        /// <summary>Selected page id (ComboBoxItem.Tag) or null for "(all)".</summary>
+        private string SelectedPage()
+        {
+            if (PageBox.SelectedItem is ComboBoxItem item) return item.Tag as string;
+            return PageBox.SelectedItem as string;
         }
 
         private void RebuildPlan()
         {
             if (_currentIni == null) { _currentPlan = null; return; }
-            var page = PageBox.SelectedItem as string;
-            if (string.IsNullOrWhiteSpace(page) || page == "(all)") page = null;
+            var page = SelectedPage();
+            if (string.IsNullOrWhiteSpace(page)) page = null;
             _currentPlan = BuildPlan(_currentIni, page);
         }
 
@@ -399,7 +449,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 if (plan.Filtered.Sections.Count == 0)
                 {
-                    LayoutHost.Child = ShowMessage("All sections are hidden (check the 闅愯棌 list).");
+                    LayoutHost.Child = ShowMessage("All sections are hidden (check the 隐藏 list).");
                     AssetNote.Text = "";
                     return;
                 }
@@ -444,7 +494,7 @@ namespace UiProcessApp
                 if (Math.Abs(ZoomSlider.Value - _zoom) > 0.001) ZoomSlider.Value = _zoom;
                 _settingZoom = false;
                 LayoutScroll.ScrollToHome();
-                var page = PageBox.SelectedItem as string ?? "(all)";
+                var page = SelectedPage() ?? "(all)";
                 AssetNote.Text = $"page={page}  size={width:0}x{height:0}  " +
                                  $"sections={ini.Sections.Count}  rendered={CountVisible(build.Root)}  " +
                                  $"art={(Paths.ProofUiRoot != null ? "on" : "missing")}";
@@ -501,8 +551,8 @@ namespace UiProcessApp
 
         private string CurrentPage()
         {
-            var page = PageBox.SelectedItem as string;
-            return string.IsNullOrWhiteSpace(page) || page == "(all)" ? null : page;
+            var page = SelectedPage();
+            return string.IsNullOrWhiteSpace(page) ? null : page;
         }
 
         private static int CountVisible(DependencyObject root)
@@ -585,7 +635,7 @@ namespace UiProcessApp
         private void AddBullet(string text) =>
             DetailsPanel.Children.Add(new TextBlock
             {
-                Text = "鈥?" + text,
+                Text = "• " + text,
                 Foreground = new SolidColorBrush(Color.FromRgb(0xC8, 0xC8, 0xC8)),
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(14, 1, 0, 1),

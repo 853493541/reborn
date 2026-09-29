@@ -173,3 +173,19 @@ solved it, and what is still open. **Newest at the bottom.**
   breakage; queue-panel render still byte-identical; this commit.
 - Outcome: solved. Open: an `AnchorDst` whose target is attached later in INI
   order still falls back to the parent anchor.
+
+### 2026-09-29 — UI — Viewer chrome: Chinese-only names, layout-first tabs, page labels
+- Did: app UX pass on `ui-process-app`. Left tree and right header now show the
+  window's Chinese name only (English id moved to the tooltip), the stage list
+  bullet drops the English title, the big summary line under the header is gone
+  (status moved to the Details heading), the 布局 Layout tab is first and the
+  default, and the Page selector shows the game's own mode labels
+  (`Page_X` → `CheckBox_X` → its `Text_*` `$Text`; e.g. Page_DesertStorm →
+  五人模式, Page_DesertStorm_Skill → 乱武模式, Page_Zombie → 李渡鬼域) instead of
+  raw ids, falling back to the id when the INI authors no label. Also repaired
+  the double-encoded Chinese literals in `MainWindow.xaml.cs`
+  (绐楀彛/璇佹嵁/鐣岄潰鍏冪礌/鍏抽敭鏂囨/闅愯棌/鈥? → 窗口/证据/界面元素/关键文案/
+  隐藏/•).
+- Evidence: `--selftest` 20 rendered / 0 failed; build 0 errors; page labels
+  cross-checked against `string_ArenaCorpsPanel.txt`; this commit.
+- Outcome: solved.
