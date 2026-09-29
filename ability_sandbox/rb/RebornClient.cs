@@ -160,12 +160,12 @@ internal static class RebornClient
         Directory.CreateDirectory(outDir);
         // keep a per-run log (overwrite-safe for parallel sessions) and the
         // stable reborn.log used by the analysis scripts
-        string runLog = Path.Combine(outDir, "reborn_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
+        string runLog = Path.Combine(outDir, "ability_sandbox_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
         var logLines = new System.Collections.Generic.List<string>();
         Log = delegate(string s)
         {
             string line = DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n";
-            try { File.AppendAllText(Path.Combine(outDir, "reborn.log"), line); } catch { }
+            try { File.AppendAllText(Path.Combine(outDir, "ability_sandbox.log"), line); } catch { }
             try { File.AppendAllText(runLog, line); } catch { }
             Console.WriteLine(s);
             lock (logLines)
@@ -175,6 +175,42 @@ internal static class RebornClient
             }
         };
         Log("start map=" + mapPath);
+        {
+            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string fp = "brand=ability_sandbox exe=" + Path.GetFileName(exePath)
+                + " build=" + File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss")
+                + " size=" + new FileInfo(exePath).Length
+                + " pid=" + System.Diagnostics.Process.GetCurrentProcess().Id;
+            Log(fp);
+        }
+        // one engine client at a time: the engine/D3D device cannot be shared
+        // between concurrently running clients (verified: overlapping clients
+        // destabilize both processes)
+        {
+            bool haveMutex = false;
+            try
+            {
+                var mm = new System.Threading.Mutex(true, "Global\\AbilitySandbox_SingleInstance", out haveMutex);
+                GC.KeepAlive(mm);
+            }
+            catch { haveMutex = true; }
+            if (!haveMutex)
+            {
+                Log("another ability_sandbox instance is already running - exiting");
+                return;
+            }
+            string[] engineProcs = new string[] { "reborn_client", "spike_host", "map_spike", "reborn_sandbox" };
+            foreach (string pn in engineProcs)
+            {
+                var pl = System.Diagnostics.Process.GetProcessesByName(pn);
+                if (pl.Length > 0)
+                {
+                    Log("engine client already running: " + pn + " (pid " + pl[0].Id + ") - refusing to start a second engine client");
+                    try { System.Windows.Forms.MessageBox.Show("Another engine client (" + pn + ") is running. Close it first.", "Ability Sandbox"); } catch { }
+                    return;
+                }
+            }
+        }
         loadFeiZhua();
 
         var form = new Form();
@@ -1197,7 +1233,10 @@ internal static class RebornClient
                 {
                     int vhrT;
                     float vhT = engineRay.RayVerticalHeight(hitX, 10000f, hitZ, 30000f, out vhrT);
-                    if (vhT > 0f && Math.Abs(vhT - hitY) < 400f) hitY = vhT;
+                    // game semantics: the pull goes to the picked point; the
+                    // standable surface at that column is the top face (roof),
+                    // so aim columns resolve upward (cap: 1200u above the caster)
+                    if (vhT > 0f && vhT - py <= 1200f) hitY = vhT;
                 }
                 catch { }
                 return new float[] { hitX, hitY, hitZ, mdl };
@@ -1739,7 +1778,7 @@ internal static class RebornClient
                             // it returns a handle but AVs the engine later (verified).
                             // Only the raw mesh is placeable in this host.
                             long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
-                            Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPZ + ") d=" + (int)feiDist
+                            Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
                                 + " handle=" + mh);
                         }
