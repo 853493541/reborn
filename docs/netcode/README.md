@@ -65,3 +65,10 @@ machine), used to recreate the runtime model for reborn. Branch:
 `character_size/` (mesh census), `skill_motion/` (tani motion curves).
 
 Reproduce commands live at the bottom of each doc.
+
+## Apps
+
+- `ui-process-app/` — WPF **UI Process Explorer**: interactive browser/renderer for
+  every 绝境战场 UI recovered so far (queue → loading → HUD → settlement), built from the
+  real KGUI INIs (`dotnet run --project ui-process-app`; headless `--selftest` = 15/15
+  windows). See `JX3_MODE_UI_INVENTORY.md`.
