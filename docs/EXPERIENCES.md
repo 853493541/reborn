@@ -93,3 +93,12 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: stale-path sweep → 0; registration audit output; this commit.
 - Outcome: solved. `docs/` root is exactly `README.md`,
   `GAME_SYSTEMS_RESEARCH_MAP.md`, `EXPERIENCES.md`.
+
+### 2026-09-29 — repo — Finalize: merge the cleanup branch into main
+- Did: merged `cleanup/repo-tidy` into `main` (`085daa7`, 21 commits) and pushed.
+  The branch carried: repo consolidation (web/legacy removal, union anim-picker
+  merge), client naming (`reborn_client.exe`), launcher repurpose, Desktop
+  consolidation, agent-rules alignment, note inventory, and the docs area
+  reorganization.
+- Evidence: merge commit `085daa7`; `origin/main` updated in the same session.
+- Outcome: solved.
