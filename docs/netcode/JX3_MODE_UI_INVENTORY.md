@@ -326,3 +326,29 @@ These were validated against the shipped data while building the WPF renderer:
     the player has the treasure-balance buff (`UpdateBalanceBuff`, lua:4746),
     and the translucent 琉璃 glass background over the world (the offscreen
     renderer draws the same tone opaquely).
+19. **Window geometry is script-driven in places.** `MapQueue.UpdateListSize`
+    (lua:667-745) resizes the list handle/background/checkbox from the row
+    count and then `Collapse` (lua:330-376) sets the window to
+    `32 + rows*48 + 32` (112 for one row) and shows `Wnd_List`; the inventory
+    `adjust` list replays those `SetSize`/`SetRelPos` calls for the state the
+    static render shows (MapQueue is 240x112 with the row and 自动进入 checkbox
+    inside). Elsewhere the authored sizes overhang the window on purpose: the
+    client does not clip window children, so `RevivePanel`'s kneeling icon
+    (Top=-24), `PVPShowPanel`'s title (Top=-12) and the settlement logos
+    (Top=-2) are visible in game. The renderer grows the canvas by the
+    overhang of visible art/text elements (clamped to 48px so parked
+    off-window elements stay excluded) and offsets the root accordingly.
+20. **Missing live assets can be re-extracted from PakV4.** Several atlases
+    referenced by the INIs were absent from the extraction: `PVPSetting2` and
+    `StormLine3` ship as single-mip DXT5 `.dds` (`Engine/Dds.cs` decodes
+    BC1/BC3; `TextureLoader` dispatches TGA/DDS), `PVPShowFinal.UITex` +
+    `.Tga`, `LinkLine.tga`/`LinkLine200.tga` (an `Image` pointing straight at
+    a texture file loads it as frame 0) and the per-window string tables
+    (e.g. `ui/Scheme/Case/string_LoadingPanel.txt` for STR_PAKV4_TIP1/2).
+    `UiProcessApp --audit` renders every inventory window and reports what is
+    still missing: currently 17 placeholders, 0 unresolved ids. The remaining
+    placeholders are legitimate gaps — `Image_Map` is painted by the engine's
+    map renderer (no UI atlas), `Image_School`/`Image_NPCMark`/
+    `Image_innerPower` are filled at runtime from player data, and Minimap's
+    slide-out panels are authored parked at negative X until the module
+    animates them in.
