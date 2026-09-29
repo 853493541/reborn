@@ -430,3 +430,24 @@ These were validated against the shipped data while building the WPF renderer:
     art (frame 23, verified by dumping the atlas frames). The queue inventory
     shows the three ids and overrides their frame to 23 (`ApplyImages`), which
     is what the reference state pins.
+26. **Runtime message bodies are appended, and anchors honour `AnchorDst`.**
+    The MessageBox module never draws its body from the INI: it calls
+    `handleMsg:AppendItemFromString(text, 18)` and fills only the option labels.
+    The inventory `appends` field injects the authored text into the list handle
+    (`ApplyAppends`, optional `top` spacer because list items ignore authored
+    offsets), and the option texts come from `texts`. `AnchorArgs` sections that
+    also carry `AnchorDst` (e.g. the MessageBox ornaments →
+    `../Image_Bg`, `Btn_Close` → `root`) align against that target's rect, not
+    the direct parent's; the renderer resolves the named section when its
+    absolute rect is already known and otherwise keeps the parent fallback.
+27. **The MessageBox sizes to its content.** `MessageBox.lua` (lua:829-842)
+    sets `handleMsg` width to the body text extent, the option row to
+    `max(option button width * n + 40 + (n-1)*10, body)`, Wnd_All to the flex
+    content (+20 height via `StretchAnchorArgs`) and Image_Bg to the flex content
+    +56 (the 28px overhang on each side of the window). For the 2-option queue
+    prompt (`确定(30)` / `取消`, body 你要传送到"龙门绝境"地图吗？ = 205px):
+    content 226x83 → window 226x103, panel 282x103, buttons at x=20/118 (10px
+    gap), `Btn_Close` and `CheckBox_Msg` hidden (`bShowClose`/`tCheckBoxConfig`
+    unset). The inventory replays those values in `adjust`
+    (`ready-confirm`); the corrected render is
+    `proof/ui/evidence/ready_confirm_render.png` (2026-09-29).

@@ -311,7 +311,7 @@ namespace MapUiApp.Engine
                 if (!result.Elements.TryGetValue(parentName, out var parent) || parent is not Canvas parentCanvas) continue;
                 var parentSection = result.Sections[parentName];
                 var parentAbs = absPos.TryGetValue(parentName, out var pa) ? pa : (0, 0);
-                Attach(parentCanvas, parentSection, element, section, buttonSlots, rootWidth, rootHeight, SizeOf, tabX, listPos, parentAbs, prevSibling, result);
+                Attach(parentCanvas, parentSection, element, section, buttonSlots, rootWidth, rootHeight, SizeOf, tabX, listPos, parentAbs, prevSibling, result, absPos);
                 double ax = Canvas.GetLeft(element); if (double.IsNaN(ax)) ax = 0;
                 double ay = Canvas.GetTop(element); if (double.IsNaN(ay)) ay = 0;
                 absPos[section.Name] = (parentAbs.X + ax, parentAbs.Y + ay);
@@ -742,10 +742,13 @@ namespace MapUiApp.Engine
         }
 
         /// <summary>
-        /// Engine AnchorArgs: "parentSide,selfSide,dx,dy" 鈥?align a point on this element
-        /// to the matching point on the parent, then apply the pixel offsets.
+        /// Engine AnchorArgs: "parentSide,selfSide,dx,dy" — align a point on this element
+        /// to the matching point on the parent, then apply the pixel offsets. When the
+        /// section carries AnchorDst, the alignment basis is that section's rect instead
+        /// (resolved by name after stripping the "../" path prefix), like the engine's
+        /// AnchorDst target lookup.
         /// </summary>
-        private static bool TryAnchorArgs(IniSection section, double parentWidth, double parentHeight, double elementWidth, double elementHeight, out double left, out double top)
+        private static bool TryAnchorArgs(IniSection section, double parentWidth, double parentHeight, double elementWidth, double elementHeight, out double left, out double top, (double X, double Y, double W, double H)? target = null)
         {
             left = top = 0;
             var raw = section.Get("AnchorArgs");
@@ -759,12 +762,41 @@ namespace MapUiApp.Engine
             double dy = parts.Length > 3 && double.TryParse(parts[3], out var py) ? py : 0;
             var parentFraction = SideFractions[parentSide];
             var selfFraction = SideFractions[selfSide];
-            left = parentWidth * parentFraction.X - elementWidth * selfFraction.X + dx;
-            top = parentHeight * parentFraction.Y - elementHeight * selfFraction.Y + dy;
+            double basisX = target?.X ?? 0;
+            double basisY = target?.Y ?? 0;
+            double basisWidth = target?.W ?? parentWidth;
+            double basisHeight = target?.H ?? parentHeight;
+            left = basisX + basisWidth * parentFraction.X - elementWidth * selfFraction.X + dx;
+            top = basisY + basisHeight * parentFraction.Y - elementHeight * selfFraction.Y + dy;
             return true;
         }
 
-        private static void Attach(Canvas parent, IniSection parentSection, FrameworkElement element, IniSection section, HashSet<string> buttonSlots, double rootWidth, double rootHeight, Func<IniSection, (double W, double H)> sizeOf, Dictionary<string, double> tabX = null, Dictionary<string, (double X, double Y)> listPos = null, (double X, double Y) parentAbs = default, Dictionary<string, string> prevSibling = null, UiBuildResult build = null)
+        /// <summary>
+        /// Resolves a section's AnchorDst to a rect in parent-local coordinates. "root" is
+        /// the window; "../Name"/"../../Name" resolve to the named section (names are
+        /// unique) and yield its absolute rect minus the parent's origin. Unresolvable
+        /// targets return null so the anchor falls back to the parent (pre-AnchorDst
+        /// behavior); sections anchored later in the tree are not available yet.
+        /// </summary>
+        private static (double X, double Y, double W, double H)? ResolveAnchorDst(IniSection section, (double X, double Y) parentAbs, double rootWidth, double rootHeight, Func<IniSection, (double W, double H)> sizeOf, Dictionary<string, (double X, double Y)> absPos, UiBuildResult build)
+        {
+            var raw = section.Get("AnchorDst");
+            if (string.IsNullOrWhiteSpace(raw)) return null;
+            raw = raw.Trim().Replace('\\', '/');
+            if (string.Equals(raw, "root", StringComparison.OrdinalIgnoreCase))
+                return (0 - parentAbs.X, 0 - parentAbs.Y, rootWidth, rootHeight);
+            if (build == null || absPos == null) return null;
+            string name = null;
+            foreach (var part in raw.Split('/'))
+                if (!string.IsNullOrWhiteSpace(part) && part != "." && part != "..") name = part;
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            if (!build.Sections.TryGetValue(name, out var targetSection)) return null;
+            if (!absPos.TryGetValue(name, out var abs)) return null;
+            var size = sizeOf(targetSection);
+            return (abs.X - parentAbs.X, abs.Y - parentAbs.Y, size.W, size.H);
+        }
+
+        private static void Attach(Canvas parent, IniSection parentSection, FrameworkElement element, IniSection section, HashSet<string> buttonSlots, double rootWidth, double rootHeight, Func<IniSection, (double W, double H)> sizeOf, Dictionary<string, double> tabX = null, Dictionary<string, (double X, double Y)> listPos = null, (double X, double Y) parentAbs = default, Dictionary<string, string> prevSibling = null, UiBuildResult build = null, Dictionary<string, (double X, double Y)> absPos = null)
         {
             if (ReferenceEquals(parent, element)) return; // guard against aliased self-parents
             double left = section.GetInt("Left");
@@ -790,7 +822,8 @@ namespace MapUiApp.Engine
                 return;
             }
 
-            if (TryAnchorArgs(section, parentWidth, parentHeight, elementWidth, elementHeight, out var anchorLeft, out var anchorTop))
+            var anchorTarget = ResolveAnchorDst(section, parentAbs, rootWidth, rootHeight, sizeOf, absPos, build);
+            if (TryAnchorArgs(section, parentWidth, parentHeight, elementWidth, elementHeight, out var anchorLeft, out var anchorTop, anchorTarget))
             {
                 left = anchorLeft;
                 top = anchorTop;

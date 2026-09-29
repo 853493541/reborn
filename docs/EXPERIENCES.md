@@ -152,3 +152,24 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved; strings available for every window now. Lesson: the UI
   `$Text` table (`Scheme/Case`) and the Lua `g_tStrings` table (`String/*.lua`)
   are different sources — check `ui/module_info.xml` libs when an id is missing.
+
+### 2026-09-29 — UI — Match prompt layout: script resize + AnchorDst
+- Did: the first `ready-confirm` render only showed the parked INI layout
+  (500x120, buttons at x=20/150, X floating at the far right). Reproduced
+  `MessageBox.lua`'s runtime geometry (lua:829-842 mostly, plus 655-659/824 for
+  the close button) with inventory `adjust`: body 205px (measured with the
+  shipped fzht_GBK at 15px via PIL) → content 226x83, window 226x103, panel
+  (Image_Bg/Glassmorphism, stretch = content+56) 282x103, option row y=55,
+  buttons x=20/118 (10px gap), `Btn_Close` + `CheckBox_Msg` hidden.
+  Implemented `AnchorDst` support in `UiLayout` (`TryAnchorArgs` target rect +
+  `ResolveAnchorDst` by section name when its abs rect is known) so the panel
+  ornaments anchor to `../Image_Bg` top/bottom-centre instead of the parent's
+  box. Note: an item's `Top` is relative to its parent — the first attempt set
+  the buttons' Top=55 *and* moved the option container to y=55 (double offset).
+- Evidence: render `proof/ui/evidence/ready_confirm_render.png` (282x103 panel,
+  centred body/buttons, no X); `--selftest` 20 rendered / 0 failed; whole
+  inventory `--audit` stable (166 placeholders / 8 unresolved / 82
+  outOfBounds); MiddleMap / PVPShowPanel / ExitPanel re-rendered without
+  breakage; queue-panel render still byte-identical; this commit.
+- Outcome: solved. Open: an `AnchorDst` whose target is attached later in INI
+  order still falls back to the parent anchor.

@@ -120,15 +120,28 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MessageBox/MessageBox.ini",
-          "hide": "CheckBox_Msg,Btn_Option3",
+          "hide": "CheckBox_Msg,Btn_Option3,Btn_Close",
           "appends": [
-            { "container": "Handle_Message", "text": "你要传送到\"龙门绝境\"地图吗？", "font": 18, "top": 20 }
+            { "container": "Handle_Message", "text": "你要传送到\"龙门绝境\"地图吗？", "font": 18, "top": 20, "height": 17 }
           ],
           "texts": [
             { "section": "Text_Option1", "text": "确定(30)" },
             { "section": "Text_Option2", "text": "取消" }
           ],
-          "summary": "The queue match-found prompt is the engine's generic KGUI MessageBox (ui/Config/Default/MessageBox/MessageBox.ini), opened as MB_entermap by the compiled ui/script/module.lua ComfirmEnterQueuedMap handler. Body = FormatString(STR_SWITCHMAP_GFZ_TIP, map) = 你要传送到\"<map>\"地图吗？; option 1 = STR_HOTKEY_SURE (确定) with nCountDownTime=30 rendered through MSG_BRACKET <D0>(<D1>) = 确定(30); option 2 = STR_HOTKEY_CANCEL (取消). The script appends the body to Handle_Message (AppendItemFromString, font 18), fills Text_Option1/2, hides the 不再提示 checkbox (no tCheckBoxConfig), and fnAutoClose auto-confirms when the 30 s run out. The static render replays the 龙门绝境 sample (maps 296/297, MapList.tab) at the first countdown frame; the ids come from the global g_tStrings lib ui/String/string.lua (extracted by tools/ui/extract_lua_string_table.py).",
+          "adjust": [
+            { "section": "MessageBox", "width": 226, "height": 103 },
+            { "section": "Wnd_All", "width": 226, "height": 103 },
+            { "section": "Handle_Total", "width": 400, "height": 103 },
+            { "section": "Image_Bg", "width": 282, "height": 103 },
+            { "section": "Image_BgPopUp_Glassmorphism", "width": 282, "height": 103 },
+            { "section": "WndFlexContainer_Msg", "width": 226, "height": 83 },
+            { "section": "Wnd_Msg", "width": 226, "height": 37 },
+            { "section": "Handle_Message", "width": 226, "height": 37 },
+            { "section": "WndFlexContainer_Opt", "width": 226, "height": 28, "left": 0, "top": 55 },
+            { "section": "Btn_Option1", "left": 20, "top": 0 },
+            { "section": "Btn_Option2", "left": 118, "top": 0 }
+          ],
+          "summary": "The queue match-found prompt is the engine's generic KGUI MessageBox (ui/Config/Default/MessageBox/MessageBox.ini), opened as MB_entermap by the compiled ui/script/module.lua ComfirmEnterQueuedMap handler. Body = FormatString(STR_SWITCHMAP_GFZ_TIP, map) = 你要传送到\"<map>\"地图吗？; option 1 = STR_HOTKEY_SURE (确定) with nCountDownTime=30 rendered through MSG_BRACKET <D0>(<D1>) = 确定(30); option 2 = STR_HOTKEY_CANCEL (取消). The script appends the body to Handle_Message (AppendItemFromString, font 18), fills Text_Option1/2, hides the 不再提示 checkbox (no tCheckBoxConfig) and Btn_Close (no bShowClose), and fnAutoClose auto-confirms when the 30 s run out. Layout replays MessageBox.lua:829-842 for this state: body 205px -> content 226x83, window 226x103, panel (Image_Bg/Glassmorphism) 282x103, option row at y=55 with buttons at x=20/118 (10px gap), ornaments anchored to Image_Bg. The static render uses the 龙门绝境 sample (maps 296/297, MapList.tab) at the first countdown frame; the ids come from the global g_tStrings lib ui/String/string.lua (extracted by tools/ui/extract_lua_string_table.py).",
           "evidence": [
             "ui/Config/Default/MessageBox/MessageBox.ini",
             "ui/String/string.lua (g_tStrings: STR_SWITCHMAP_GFZ_TIP, STR_HOTKEY_SURE/CANCEL, MSG_BRACKET)",
