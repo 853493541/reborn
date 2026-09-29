@@ -1283,9 +1283,9 @@ internal static class RebornClient
                 string wav = Path.Combine(soundDir, "62588785.wav");
                 if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
             }
-            Log("skill cast: 临时飞爪 -> target (" + (int)feiPX + "," + (int)gy + "," + (int)feiPZ
+            Log("skill cast: 临时飞爪 -> target (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ
                 + ") dist=" + (int)feiDist + "u range=2560u(40尺) pullMs=" + (int)(estSec * 1000)
-                + " device=67816/70025(hidden)");
+                + " terrainY=" + (int)gy + " device=67816/70025(hidden)");
         };
 
         // SB_PROBE_MESHES=1: ground-mesh probe (find which candidate renders as a range ring)
