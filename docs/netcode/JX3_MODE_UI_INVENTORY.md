@@ -101,12 +101,16 @@ reads the destination map's minimap `config.ini` `[loading] image=` (e.g. 龙门
 `Handle_Nor`+`Image_Progress` for a normal map load, and the traffic state adds the
 `Handle_Nodes` markers with `Text_PointName`. Progress chrome: `Carriage.UITex`
 frames 20-24 (track) and `CharButton.UITex` frames 18/19 (fill). The viewer replays
-the normal state for 龙门绝境 (296) — `Handle_Traffic` hidden, art letterboxed
-1280x720 in the 1280x960 design canvas — via inventory `images`/`hide`/`adjust`;
-render `proof/ui/evidence/loading_panel_render.png` (2026-09-29). The CDN art is
-pulled with `tools/netcode/extract_hpkg_member.py` (package
-`105/dhirli24xvjuv.hpkg`); the viewer's `TextureLoader` now decodes PNG/BMP (WPF)
-in addition to the custom TGA/DDS decoders.
+  the normal state for all seven 绝境 maps (296/297/410/512/532/645/709, one
+  viewer entry each, `loading-<id>`): `Handle_Traffic` hidden, `Image_Bg`
+  full-bleed (cw+4 x ch+2 at -3,-1), progress bar at (10% w, 89.4% h) =
+  (128,858) with a 912px fill, message handles at (128,838), tip panel at
+  (655,115) — all from `CorrectShow`; renders
+  `proof/ui/evidence/loading_panel_296_render.png` and
+  `loading_panel_532_render.png` (2026-09-29). The CDN art is pulled with
+  `tools/netcode/extract_hpkg_member.py` (packages `105/…`, `103/…`, `117/…`,
+  `51/…`, `108/…`, `111/…`, `100/…`); the viewer's `TextureLoader` decodes
+  PNG/BMP (WPF) in addition to the custom TGA/DDS decoders.
 
 ## 5. Staging (safe zone + countdown)
 

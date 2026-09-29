@@ -193,6 +193,23 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved. Open: the native GDI `KWindowsLoadingWnd` composition
   (`ui/Loading/background{1..18}.bmp`, 600x333) is still not shown by the viewer.
 
+### 2026-09-29 — UI — All map loading screens + bar position fix
+- Did: extended the loading window to all seven 绝境 maps (296 龙门绝境,
+  297 龙门绝境·夜, 410 沧溟绝境, 512 白龙绝境, 532 天原绝境, 645 洱海绝境,
+  709 林海绝境), one viewer entry per map (`loading-<id>`), each with its own
+  `[loading] image=` art pulled from the CDN hpkg (7 PNGs in the local assets).
+  Fixed the bar position: the previous render used the parked INI geometry
+  (bar at y=495, letterboxed art); `LoadingPanel.lua`'s `CorrectShow` sizes
+  `Image_Bg` to the client (+4/+2 at -3,-1) and places the progress bar at
+  (10% w, 89.4% h) = (128,858) with an 80%-wide track and a 912px fill,
+  message handles at (128,838) and the tip panel at (655,115). Replayed via
+  inventory `adjust`.
+- Evidence: `--selftest` 26 rendered / 0 failed; `--audit` `loading-*`
+  placeholders 0 / unresolved 0; renders
+  `proof/ui/evidence/loading_panel_296_render.png` +
+  `loading_panel_532_render.png`; this commit.
+- Outcome: solved.
+
 ### 2026-09-29 — UI — Viewer chrome: Chinese-only names, layout-first tabs, page labels
 - Did: app UX pass on `ui-process-app`. Left tree and right header now show the
   window's Chinese name only (English id moved to the tooltip), the stage list
