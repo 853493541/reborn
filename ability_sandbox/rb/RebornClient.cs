@@ -1871,6 +1871,20 @@ internal static class RebornClient
                 {
                     int vhr2;
                     float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
+                    // scene ray too: buildings are scene geometry (the terrain
+                    // probe alone does not see roofs). Vertical segment from
+                    // above the head down past the feet; nearest hit = the
+                    // surface under/near the feet.
+                    try
+                    {
+                        float hs = engineRay.RayScene(px, py + 1200f, pz, px, py - 900f, pz);
+                        if (hs > 0f)
+                        {
+                            float ys = (py + 1200f) - hs;
+                            if (ys > vh2) vh2 = ys;
+                        }
+                    }
+                    catch { }
                     lastVhY = vh2;
                 }
                 catch { lastVhY = -1f; }
