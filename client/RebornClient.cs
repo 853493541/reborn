@@ -707,30 +707,26 @@ internal static class RebornClient
         // (authored End triple xy 125 / vz -140 / g 12 -> 1875 u/s fwd + 2100 u/s
         // down); releasing W ends the state but the velocity persists, so the
         // character keeps falling forward+down fast. No special animation.
-        // WW in air replays the shipped flight curve (JumpFrameParam school 10
-        // jump 1): per-frame forward/down velocities (XY peak 205 u/f = 3075 u/s,
-        // dive Z -949 u/f = -14235 u/s). Releasing W ends the state but the
-        // current velocity is kept (player tech). No special animation.
+        // WW in air = forward-dominant charge (player tech): forward = the
+        // shipped flight-curve XY peak (205 u/f = 3075 u/s); the state holds the
+        // vertical (level), releasing W ends the state and gravity builds the
+        // down -> fast forward + gradual down. No special animation.
+        float wwFwdFrame = WwRules.ChargeForwardFrame;
+        float wwDownFrame = WwRules.ChargeDownFrame;
+        {
+            float v;
+            if (float.TryParse(Env("RC_WW_FWD", ""), out v)) wwFwdFrame = v;
+            if (float.TryParse(Env("RC_WW_DOWN", ""), out v)) wwDownFrame = v;
+        }
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
         bool wwStateActive = false;     // WW state; ends on W release, velocity kept
-        bool wwCurveActive = false;     // curve playback running
-        int wwCurveFrame = 0;
-        float wwCurveAccum = 0f;
-        Action wwCurveApply = delegate()
-        {
-            if (wwCurveFrame < 0 || wwCurveFrame >= WwRules.FlyCurveXY.Length) return;
-            leapSpeedXY = WwRules.FlyCurveXY[wwCurveFrame] * WwRules.LogicTicksPerSecond;
-            vy = WwRules.FlyCurveZ[wwCurveFrame] * WwRules.LogicTicksPerSecond;
-        };
         Action wwCharge = delegate()
         {
+            leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
+            vy = wwDownFrame * WwRules.LogicTicksPerSecond;
             wwStateActive = true;
-            wwCurveActive = true;
-            wwCurveFrame = 0;
-            wwCurveAccum = 0f;
-            wwCurveApply();
-            Log("ww AIR: flight curve start (JumpFrameParam school10 jump1: entry " +
-                WwRules.FlyCurveXY[0] + "/" + WwRules.FlyCurveZ[0] + " u/f, XY peak 205, dive Z -949)");
+            Log("ww AIR: charge fwd=" + wwFwdFrame + " u/f (" + leapSpeedXY +
+                " u/s) down=" + wwDownFrame + " u/f (" + vy + " u/s); state until W release");
         };
         Action wwTrigger = delegate()
         {
@@ -1012,7 +1008,6 @@ internal static class RebornClient
                 {
                     // player tech: release ends the WW state; velocity is kept
                     wwStateActive = false;
-                    wwCurveActive = false;
                     Log("ww: W released -> state ended, velocity kept (vxy=" + leapSpeedXY +
                         " u/s, vy=" + vy + " u/s)");
                 }
@@ -1493,7 +1488,7 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; wwCurveActive = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; }
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
@@ -1509,7 +1504,6 @@ internal static class RebornClient
                 if (wwStateActive)
                 {
                     wwStateActive = false;
-                    wwCurveActive = false;
                     Log("wwdemo: W release -> state ended, velocity kept (vxy=" + leapSpeedXY +
                         " u/s, vy=" + vy + " u/s)");
                 }
@@ -1824,7 +1818,7 @@ internal static class RebornClient
                     grounded = false; vy = 0f;
                     // walking off a ledge counts as the J0 takeoff done, so the
                     // first air WW can start the chain (as in the game)
-                    leapSpeedXY = 0f; wwStateActive = false; wwCurveActive = false;
+                    leapSpeedXY = 0f; wwStateActive = false;
                 }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
@@ -1834,24 +1828,13 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; wwCurveActive = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; }
             }
 
-            // gravity (WW curve drives the velocity while active)
+            // gravity (WW state holds the vertical; release lets gravity build)
             if (!grounded)
             {
-                if (wwCurveActive)
-                {
-                    wwCurveAccum += dt;
-                    while (wwCurveActive && wwCurveAccum >= WwRules.FlyCurveTickSeconds)
-                    {
-                        wwCurveAccum -= WwRules.FlyCurveTickSeconds;
-                        wwCurveFrame++;
-                        if (wwCurveFrame >= WwRules.FlyCurveXY.Length) { wwCurveActive = false; break; }
-                        wwCurveApply();
-                    }
-                }
-                else vy += pGravity * dt;
+                if (!wwStateActive) vy += pGravity * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
                 py += vy * dt;
@@ -1862,7 +1845,6 @@ internal static class RebornClient
                     grounded = true;
                     leapSpeedXY = 0f;
                     wwStateActive = false;
-                    wwCurveActive = false;
                 }
             }
 
