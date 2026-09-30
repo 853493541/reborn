@@ -11,6 +11,8 @@
 //   RC_SKILL_MS=8000              skill clip duration before returning to state clip
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
+//   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
+// RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
 using System.IO;
 using System.Threading;
@@ -25,24 +27,42 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
-        // Single-instance guard: concurrent clients share the engine/GPU/D3D
-        // device and destabilize each other (observed: three overlapping runs
-        // 18:19/18:25/18:30 with a BEX64 crash in one). Blocks any known
-        // client process (including the fork's builds) unless RC_ALLOW_MULTI=1.
+        // Per-build engine memory namespace (isolation, not exclusion): feature
+        // builds (reborn_client_<slug>.exe) get their own namespace so 2+ clients
+        // can run at the same time without sharing engine memory. The canonical
+        // reborn_client.exe keeps MovieEditor.memory. RC_MEM_NS overrides.
+        string memNs = Env("RC_MEM_NS", "");
+        string selfSlug = null;
+        {
+            string myName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            if (memNs.Length == 0)
+                memNs = (myName == "reborn_client") ? "MovieEditor.memory" : myName + ".memory";
+            if (myName.StartsWith("reborn_client_"))
+                selfSlug = myName.Substring("reborn_client_".Length);
+        }
+        // Single-instance guard: block only processes that share this build's
+        // memory namespace. Different feature builds have different namespaces
+        // and are allowed to run concurrently; the canonical build excludes the
+        // apps that still hardcode MovieEditor.memory. RC_ALLOW_MULTI=1 overrides.
         if (Env("RC_ALLOW_MULTI", "0") != "1")
         {
             try
             {
                 var me = System.Diagnostics.Process.GetCurrentProcess();
-                string[] known = { "reborn_camfp", "reborn_client", "ability_sandbox", "asset_sandbox" };
-                foreach (string name in known)
+                string[] peers;
+                if (memNs == "MovieEditor.memory")
+                    peers = new string[] { "reborn_camfp", "reborn_client", "asset_sandbox", "ability_picker" };
+                else
+                    peers = new string[] { me.ProcessName };
+                foreach (string name in peers)
                 {
                     foreach (var other in System.Diagnostics.Process.GetProcessesByName(name))
                     {
                         if (other.Id == me.Id) continue;
                         System.Windows.Forms.MessageBox.Show(
                             name + " is already running (pid " + other.Id +
-                            "). Close it first or set RC_ALLOW_MULTI=1.",
+                            ") and shares memory namespace " + memNs +
+                            ". Close it first or set RC_ALLOW_MULTI=1.",
                             "reborn_client");
                         return;
                     }
@@ -53,6 +73,10 @@ internal static class RebornClient
         string editorRoot = @"C:\SeasunGame\MovieEditor";
         string startupPath = Path.Combine(editorRoot, "bin64");
         string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
+        // Terrain sampler physics DLL override (sandbox/portable roots); default
+        // is the client's copy, same as the canonical host.
+        string physDll = Env("RC_PHYS_DLL",
+            @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll");
         string mapPath = Env("RC_MAP",
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");
         string actorPath = Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor");
@@ -108,7 +132,10 @@ internal static class RebornClient
             try { exeMtime = File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss"); } catch { }
             try
             {
-                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
+                string dir = Path.GetDirectoryName(exePath);
+                string bi = Path.Combine(dir, "build_info_" + Path.GetFileName(exePath) + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info_" + Path.GetFileNameWithoutExtension(exePath) + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info.txt");
                 if (File.Exists(bi))
                 {
                     foreach (string ln in File.ReadAllLines(bi))
@@ -120,18 +147,35 @@ internal static class RebornClient
             }
             catch { }
             Log(string.Format(
-                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17})",
+                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17},BACKFACE={18},HITWIN={19},OPMODE={20})",
                 exeName, exeMtime, git, dirty,
                 Env("RC_CAM_ENGINESET", "1"), Env("RC_CAM_LOOKPACK", "0"),
                 Env("RC_CAM_RATECAP", "0"), Env("RC_CAM_LOADPACE", "1"),
                 Env("RC_FULLLOAD", "0"), Env("RC_PATCH_D6", "0"),
                 Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
-                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80")));
+                Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80"),
+                Env("RC_CAM_BACKFACE", "1"), Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")),
+                Env("RC_MODE", "classical")));
         }
         Log("start map=" + mapPath);
+        Log("asset_root=" + workingDir + " phys=" + physDll);
 
         var form = new Form();
-        form.Text = "JX3";
+        // Window title: feature builds (reborn_client_<slug>.exe) identify as
+        // sandbox-<slug> so concurrent sandbox windows are distinguishable
+        // (AGENTS.md, parallel client feature work); RC_TITLE overrides.
+        {
+            string appTitle = Env("RC_TITLE", "");
+            if (appTitle.Length == 0)
+            {
+                string myProcName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+                if (myProcName == "reborn_client") appTitle = "JX3";
+                else if (myProcName.StartsWith("reborn_client_"))
+                    appTitle = "sandbox-" + myProcName.Substring("reborn_client_".Length);
+                else appTitle = myProcName;
+            }
+            form.Text = appTitle;
+        }
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -172,26 +216,59 @@ internal static class RebornClient
         try { baselib.InitConsoleLog(); } catch (Exception e) { Log("InitConsoleLog: " + e.Message); }
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
+        long tInit = Environment.TickCount;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("MovieEditor.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        long m1 = Environment.TickCount - tInit;
+        try { r2 = baselib.InitMemory(memNs); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        long m2 = Environment.TickCount - tInit - m1;
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
-        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
+        long m3 = Environment.TickCount - tInit - m1 - m2;
+        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2} ns={3} ms=({4},{5},{6})", r1, r2, r3, memNs, m1, m2, m3));
 
         int err = 1;
         int ok = 0;
+        long t3d = Environment.TickCount;
         try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
-        Log(string.Format("Init3DEngine={0} err={1}", ok, err));
+        Log(string.Format("Init3DEngine={0} err={1} ms={2}", ok, err, Environment.TickCount - t3d));
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
         var scene = new KGSceneCLR();
+        // Recon: dump the managed wrapper API surface for the player / near-plane
+        // paths (B1 exit; docs/camera/CLOSE_RANGE_RESEARCH.md §2). Env-gated.
+        if (Env("RC_API_DUMP", "0") == "1")
+        {
+            DumpApi("KGEngineCLR", typeof(KGEngineCLR));
+            DumpApi("KGSceneCLR", typeof(KGSceneCLR));
+            DumpApi("KGModelCLR", typeof(KGModelCLR));
+        }
+        if (Env("RC_MAINPLAYER", "") != "")
+        {
+            int mp;
+            if (int.TryParse(Env("RC_MAINPLAYER", "0"), out mp))
+            {
+                try
+                {
+                    System.Reflection.MethodInfo mi = typeof(KGEngineCLR).GetMethod("SetMainPlayerType");
+                    if (mi == null) Log("mainplayer: KGEngineCLR.SetMainPlayerType not exposed");
+                    else
+                    {
+                        mi.Invoke(engine, new object[] { mp });
+                        Log("mainplayer: SetMainPlayerType(" + mp + ") ok");
+                    }
+                }
+                catch (Exception e) { Log("mainplayer ex: " + e.Message); }
+            }
+        }
         // D6 mitigation: ask the engine to fully load the scene up front so the
         // lazy material/shader loader (missing build-machine DataStores -> AV)
         // is not raced while running through the map. Env-gated for A/B first.
         bool fullLoad = Env("RC_FULLLOAD", "0") == "1";
+        long tMap = Environment.TickCount;
         int loadResult = scene.LoadMap(mapPath, false);
+        long mMap = Environment.TickCount - tMap;
         if (fullLoad)
         {
             try
@@ -201,7 +278,7 @@ internal static class RebornClient
             }
             catch (Exception e) { Log("fullload ex: " + e.Message); }
         }
-        Log("LoadMap result=" + loadResult);
+        Log("LoadMap result=" + loadResult + " ms=" + mMap);
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
         scene.SetActiveEnvironment();
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 0);
@@ -251,8 +328,7 @@ internal static class RebornClient
         TerrainSampler sampler = null;
         try
         {
-            sampler = new TerrainSampler(
-                @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll", mapPath, Log);
+            sampler = new TerrainSampler(physDll, mapPath, Log);
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 
@@ -445,6 +521,16 @@ internal static class RebornClient
         // at wall edges and adds a jump of its own; the pull + crossing guard
         // already keep the camera on the near side). RC_CAM_WALLGATE=1 restores.
         bool wallGate = Env("RC_CAM_WALLGATE", "0") == "1";
+        // double-sided camera probes, default on (RC_CAM_BACKFACE=0 restores
+        // the old front-only rule). The penetration recorder showed the
+        // resolved camera on the far side of surfaces whose front faces point
+        // at the camera (T1 sweep: reverse cast hit 1-11 u from the camera,
+        // forward front-only probes blind), i.e. front-only can strand the
+        // camera outside the obstruction set. A/B 2026-09-29: T1 sweep 192
+        // event-frames -> 0; T2 hit=206 len=188 and T4 hit=186 len=168 exact;
+        // 0 shake events. Registered host fix; exits with the real
+        // FilterCamera pass (D1) once its winding rule is proven.
+        bool probeFrontOnly = Env("RC_CAM_BACKFACE", "1") != "1";
         // raw scene backend in the camera probes (game mask 0x301 includes it).
         // D1/D4: unfiltered - it hits the player's own model (57 u at the user
         // spot -> camera slammed to 39) and exit/grazing faces near the origin.
@@ -457,9 +543,16 @@ internal static class RebornClient
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
+            // per-workstream config dir for feature builds (bin64\reborn_<slug>)
+            string cfgDir = AppDomain.CurrentDomain.BaseDirectory;
+            if (selfSlug != null)
+            {
+                string slugDir = Path.Combine(cfgDir, "reborn_" + selfSlug);
+                if (Directory.Exists(slugDir)) cfgDir = slugDir;
+            }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "camera.json");
+            string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
@@ -467,15 +560,30 @@ internal static class RebornClient
             }
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
             cameraSettings = CameraSettings.Load(
-                editorRoot, mapPath, AppDomain.CurrentDomain.BaseDirectory, Log);
+                editorRoot, mapPath, cfgDir, Log);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             camSys.Pitch = cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
-            camSys.Distance = camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter;
-            Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
+            // deterministic test pose (camera A/B harness): override the loaded
+            // yaw/pitch without touching the settings sources
+            double poseOv;
+            if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
+            if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
+            camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
+            // deterministic test distance (world units): RC_CAM_DIST=100 puts
+            // the camera close-up while RC_CAM_PITCH tilts it (repro harness)
+            double distOv;
+            if (double.TryParse(Env("RC_CAM_DIST", ""), out distOv) && distOv > 0.0)
+            {
+                camSys.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", distOv / camSys.UnitsPerMeter);
+                camSys.Rows[CameraSystem.MODE_CHARACTER].Set("InitCameraDistance", distOv / camSys.UnitsPerMeter);
+                camSys.Distance = distOv;
+            }
+            Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3} op={4}",
                 camSys.Mode, camSys.Distance,
-                camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
+                camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,
+                CameraOperationMode.Name(cameraSettings.OperationMode)));
         }
         try
         {
@@ -494,13 +602,11 @@ internal static class RebornClient
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
-        float worldDirX = 0f, worldDirZ = 0f;
-        int lastKeySig = -1;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
         float curYaw = 0f;
-        float lastModelX = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
+        float lastModelX = float.MaxValue, lastModelY = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
         Action<string> setClip = delegate(string path)
         {
@@ -654,7 +760,7 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         long lastWUp = 0, lastWDown = 0;
-        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
+        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
@@ -791,11 +897,12 @@ internal static class RebornClient
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
             // joystick mode keeps the cursor locked between drags
-            if (!lmbDown && !rmbDown && mouseLocked && cameraSettings.CameraMode != 1) unlockMouse();
+            if (!lmbDown && !rmbDown && mouseLocked &&
+                !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
-            bool joystick = cameraSettings.CameraMode == 1;
+            bool joystick = CameraOperationMode.MouseRotatesWithoutButtons(cameraSettings.OperationMode);
             if ((!lmbDown && !rmbDown) && !joystick) return;
             if (!joystick && !dragArmed) return;
             System.Drawing.Point p = panelPoint(s, e);
@@ -869,11 +976,23 @@ internal static class RebornClient
                 walkMode = !walkMode;
                 Log("movement mode: " + (walkMode ? "WALK" : "RUN"));
             }
+            else if (e.KeyCode == Keys.F7)
+            {
+                // operation-mode switch (host key; the real client switches in
+                // the UISetting_Operation_Switch panel and has no default
+                // hotkey - docs/controls/OPERATION_MODES_PLAN.md)
+                cameraSettings.OperationMode =
+                    cameraSettings.OperationMode == CameraOperationMode.Joystick
+                        ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
+                Log("operation mode -> " + CameraOperationMode.Name(cameraSettings.OperationMode));
+                if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
+                else if (!lmbDown && !rmbDown) unlockMouse();
+            }
             else if (e.KeyCode == Keys.F11)
             {
                 // Camera reset: behind the character, model pitch -15 deg, distance 1x
                 camSys.SetMaxDistance(camSys.ClampDistanceUnits(
-                    camSys.Row.F("InitCameraDistance", 6.0) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
+                    camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
                 camSys.Pitch = -Math.PI / 12.0;
                 alignAim();
@@ -914,7 +1033,34 @@ internal static class RebornClient
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
-        float pGravity = -2475f, pJumpV = 1350f;
+        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
+        // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
+        // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
+        // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
+        //   flip  = one extra jump with the J0 profile (the real 二段跳; provisional
+        //           until the J1 burst/End phase trigger is decoded)
+        //   chain = the raw J1..MaxJumpCount 轻功 rows (ballistic shortcut, high)
+        string djumpMode = Env("RC_DJUMP", "flip");
+        // Unit calibration (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md): 1 u = 1 cm,
+        // and the movement spec's in-game jump is apex 192 u / 1.09 s air
+        // (REBORN_JUMP_FALL_SPEC.md; MapSpike used 703 u/s, 1289 u/s^2). The raw table
+        // triple (90/11 u/frame) gives 368 u = 3.7 m - ~2x too high. Scaling takeoff
+        // AND gravity by 100/192 keeps the 1.09 s air time and realises 1.92 m.
+        float jumpScale = 0.52f;
+        float.TryParse(Env("RC_JUMP_SCALE", "0.52"), out jumpScale);
+        if (jumpScale <= 0f) jumpScale = 1f;
+        int jumpSchool = 0;
+        int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
+        if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
+        // Authored f1b02yd二段跳a.tani resolves but AVs the host (documented);
+        // the underlying .ani is the flip pose the client plays instead.
+        string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.ani");
+        if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
+        bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
+        int jumpCount = 0;
+        float curJumpGravity = -pGravity;
+        Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
+            djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
         float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
@@ -929,8 +1075,6 @@ internal static class RebornClient
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
-        double[] camOffSmooth = new double[3];
-        bool camOffInit = false;
         double[] rSm = new double[3];
         bool rSmInit = false;
         bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
@@ -1363,8 +1507,13 @@ internal static class RebornClient
             {
                 pW = now >= 2000 && now < 12000;
                 walkMode = now >= 7000 && now < 12000;   // demo walk phase
+                // control check: rotate the camera mid-run (like an RMB drag);
+                // the camera-relative run must curve after this (turn model)
+                if (now >= 6000 && !demoTurned) { demoTurned = true; orbitQueue.Enqueue(new int[] { 500, 0 }); }
                 pA = now >= 14000 && now < 18000;
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
+                // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
+                if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             }
             if (demoCollide)
@@ -1497,9 +1646,10 @@ internal static class RebornClient
                 measureView();
                 double vyaw = Math.Atan2(-viewZ, -viewX);
                 double vpitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0} eff={13:F0} clamp={14}",
+                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0} eff={13:F0} clamp={14} op={15}",
                     camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz,
-                    dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1));
+                    dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1,
+                    CameraOperationMode.Name(cameraSettings.OperationMode)));
                 // NOTE: do NOT probe the near plane here. The view-manager
                 // getter (0x1801433E0) deadlocks the engine even from a worker
                 // thread (see EngineRay.ProbeNearPlane) - it can only run in the
@@ -1556,8 +1706,10 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction; hold the world-space direction while the key
-            // set is unchanged (the camera may rotate without curving the run)
+            // input -> direction. The game recomputes camera-relative movement
+            // every frame (MOVEFORWARD = camera forward; A/D strafe), so rotating
+            // the camera steers the run (docs/controls/JX3_MOVEMENT_CONTROLS.md §2;
+            // RMB = CAMERAORSELECTORMOVESTICKY rotates camera + character).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
             if (pW) { inX += hx; inZ += hz; }
@@ -1566,12 +1718,15 @@ internal static class RebornClient
             if (pD) { inX += rX; inZ += rZ; }
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
-            int keySig = (pW ? 1 : 0) | (pS ? 2 : 0) | (pA ? 4 : 0) | (pD ? 8 : 0);
-            if (keySig != lastKeySig) { lastKeySig = keySig; worldDirX = inX; worldDirZ = inZ; }
-            float dirX = worldDirX, dirZ = worldDirZ;
+            float dirX = inX, dirZ = inZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
+            // character yaw turn rate (rad/s): the game's per-frame turn step
+            // (+0x48) is a server sync byte and not decoded; the host uses the
+            // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
+            float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
+            if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
@@ -1582,8 +1737,22 @@ internal static class RebornClient
                             : walkMode ? pSpeed
                             : wSprint ? pSprint
                             : pRun) / len;
-                float step = sp * dt;
                 float ux = dirX / len, uz = dirZ / len;
+                // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
+                // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
+                // direction; facing turns toward it at the turn rate; a turn
+                // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
+                // and the turn step that frame.
+                float heading = (float)Math.Atan2(ux, uz);
+                float dYaw = heading - curYaw;
+                while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
+                while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
+                bool hardTurn = Math.Abs(dYaw) > 2.0071f;
+                if (hardTurn) sp *= 0.5f;
+                float turnStep = charTurnRate * dt * (hardTurn ? 0.5f : 1f);
+                if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
+                else curYaw += Math.Sign(dYaw) * turnStep;
+                float step = sp * dt;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
                 float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
                 if (gh - ground > 70f)
@@ -1595,25 +1764,18 @@ internal static class RebornClient
                     else if (gz2 - ground <= 70f) { pz = tryZ; }
                 }
                 else { px = tryX; pz = tryZ; }
-                curYaw = (float)Math.Atan2(ux, uz);
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
             // camera direction; LMB drag rotates the camera only. The turn is
             // rate-limited (S6) instead of snapping the yaw in one frame.
-            if (rmbDown)
+            if (rmbDown && CameraOperationMode.RmbTurnsBody(cameraSettings.OperationMode))
             {
                 float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
                 float d = targetYaw - curYaw;
                 while (d > Math.PI) d -= 2f * (float)Math.PI;
                 while (d < -Math.PI) d += 2f * (float)Math.PI;
-                // RotationSpeed row values are engine int speeds (0.00314 in
-                // the host rows), not rad/s; the engine's key-rotation default
-                // fChaseRate is pi rad/s, so use a rad/s value only when the row
-                // is clearly one, else pi (S6: 0.00314 was ~0.18 deg/s).
-                float rate = (float)camSys.Row.F("RotationSpeed", 0.0);
-                if (rate < 1f) rate = (float)Math.PI;
-                float step = rate * (float)dt;
+                float step = charTurnRate * (float)dt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
             }
@@ -1658,38 +1820,79 @@ internal static class RebornClient
                 else if (ground - py <= 70f) py = ground;
             }
 
-            // jump
+            // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
+            // extra normal-strength jump) or chain mode (raw J1.. table rows)
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; }
+                if (grounded) jumpCount = 0;
+                int nextJump = jumpCount + 1;
+                bool chainMode = djumpMode == "chain";
+                bool djumpOn = djumpMode != "0";
+                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
+                int[] trip = null;
+                if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
+                    (nextJump == 1 || djumpOn))
+                {
+                    // chain mode reads the pressed row; flip mode reuses J0
+                    trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
+                }
+                if (trip != null)
+                {
+                    jumpCount = nextJump;
+                    vy = trip[1] * 15f * jumpScale;
+                    int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
+                    curJumpGravity = gc * 225f * jumpScale;
+                    grounded = false;
+                    if (djumpLog) Log(string.Format(
+                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
+                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                }
+                else if (djumpLog) Log(string.Format(
+                    "djb reject n={0} max={1} grounded={2} mode={3}",
+                    nextJump, maxJump, grounded ? 1 : 0, djumpMode));
             }
 
-            // gravity
+            // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
             if (!grounded)
             {
-                vy += pGravity * dt;
+                float vyBefore = vy;
+                vy -= curJumpGravity * dt;
                 py += vy * dt;
+                // apex sample: the model transform must have followed the physics
+                // height (modelY ~ py); a stale modelY is the standing-jump stutter
+                if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
+                    "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
                 if (py <= ground)
                 {
                     py = ground;
+                    float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    if (djumpLog && jumpCount > 0) Log(string.Format(
+                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
+                        jumpCount, px, py, pz, impact));
+                    jumpCount = 0;
                 }
             }
+            else jumpCount = 0;
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
-            else if (!grounded) setClip(vy > 0f ? clipJump : clipFall);
+            else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
-            // model update (only when changed; keeps animation alive)
-            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(pz - lastModelZ) > 0.5f ||
+            // model update (only when changed; keeps animation alive).
+            // Y must be part of the gate: a standing jump changes py only, and
+            // without it the model stays at the takeoff height (stutter/"stuck
+            // in the middle"); moving jumps updated via X/Z and looked fine.
+            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(py - lastModelY) > 0.5f ||
+                Math.Abs(pz - lastModelZ) > 0.5f ||
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
                 placePlayer(px, py, pz, curYaw);
-                lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
+                lastModelX = px; lastModelY = py; lastModelZ = pz; lastModelYaw = curYaw;
             }
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
@@ -1780,34 +1983,18 @@ internal static class RebornClient
                 // radius while dragging, so dragging changed the distance).
                 double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
                 double ax2 = px, ay2 = py + 90.0, az2 = pz;
+                // Camera probes + obstruction use the candidate (desired) camera
+                // line, not the per-axis smoothed offset: smoothing a rotating
+                // vector through its chord shortens it, and feeding that to the
+                // obstruction state machine snapped the camera in on fast flicks
+                // (immediate "shortening") with a slow flex return (HOST_DEVIATIONS
+                // B15). The game's per-axis SmoothTime now applies once, to the
+                // resolved offset (rSm) below.
                 double[] camOff = new double[3];
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
-                // game per-axis dead-zone + SmoothTime (SetCharacterCameraPosition
-                // @ 0x180B0F2BA..0x180B0F3A6, state +0x1B8/0x1BC/0x1C0; spec
-                // docs/camera/FIX_SPEC.md, reference tools/netcode/reference/
-                // camera_model.py): current += delta*dt/SmoothTime per axis, snap
-                // when the step covers the delta. The host engine has no camera
-                // smoothing of its own, so without this the orbit is raw.
-                if (!camOffInit)
-                {
-                    camOffSmooth[0] = camOff[0]; camOffSmooth[1] = camOff[1];
-                    camOffSmooth[2] = camOff[2]; camOffInit = true;
-                }
                 bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
                                 Env("RC_CAM_NOSMOOTH", "0") != "1";
                 double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
-                for (int i = 0; i < 3; i++)
-                {
-                    double d3 = camOff[i] - camOffSmooth[i];
-                    if (doSmooth && Math.Abs(d3) > 1e-6 &&
-                        Math.Abs(d3) > Math.Abs(d3) * dt / stime)
-                        camOffSmooth[i] += d3 * dt / stime;
-                    else
-                        camOffSmooth[i] = camOff[i];
-                }
-                camOff[0] = camOffSmooth[0];
-                camOff[1] = camOffSmooth[1];
-                camOff[2] = camOffSmooth[2];
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
@@ -1850,8 +2037,9 @@ internal static class RebornClient
                         float qz2 = (float)(az2 + oz2 + uz * offLen);
                         // game camera class set: every instance passes through
                         // the per-mesh bObscatleCamera gate (cflags sidecars);
-                        // front faces only
-                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, false, true, true);
+                        // front faces only unless the double-sided experiment
+                        // (RC_CAM_BACKFACE=1) is on
+                        float h = col.Raycast(px2, py2, pz2, qx2, qy2, qz2, false, probeFrontOnly, true);
                         float bh = h;
                         int bInst = col.LastInst, bTri = col.LastTri;
                         bool bBlk = col.LastBlocksCamera, bFol = col.LastFromFoliage;
@@ -1883,8 +2071,8 @@ internal static class RebornClient
                                 p, ox2, oy2, oz2, bh, th, sh);
                         }
                         if (obstDbg && h > 0f && h < 700f && now - lastObstLog >= 500)
-                            Log(string.Format("obstdbg probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F1}(inst={8},tri={9}) terr={5:F1} scene={6:F1} h={7:F1}",
-                                p, ox2, oy2, oz2, bh, th, sh, h, col.LastInst, col.LastTri));
+                            Log(string.Format("obstdbg probe{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F1}(inst={8},tri={9},blk={10},fol={11}) terr={5:F1} scene={6:F1} h={7:F1}",
+                                p, ox2, oy2, oz2, bh, th, sh, h, bInst, bTri, bBlk ? 1 : 0, bFol ? 1 : 0));
                         if (penDbg)
                             penCur.Append(string.Format(" p{0} off=({1:F0},{2:F0},{3:F0}) bake={4:F0}(i={5},t={6},blk={7},fol={8}) terr={9:F0} scene={10:F0} h={11:F0}",
                                 p, ox2, oy2, oz2, bh, bInst, bTri, bBlk ? 1 : 0, bFol ? 1 : 0, th, sh, h));
@@ -2245,26 +2433,30 @@ internal static class RebornClient
                             sd, camX, camY, camZ, sx, sy, sz));
                 }
 
-                // Character visibility near the camera: the native client relies
-                // on view near-plane clipping (value not shipped, see
-                // docs/camera/CLOSE_RANGE_RESEARCH.md). The host has no visibility
-                // API, so hide the dummy while the REAL camera->anchor distance
-                // (after the ground clamp) is inside the character's volume and
-                // restore it once clearly outside - conservative radius and
-                // hysteresis (host approximation, not a game value).
+                // Character visibility near the camera: the native client fades
+                // the character out as the camera closes in (engine model fade
+                // measured at camLen ~36..96 u, HANDOFF section 4) on top of the
+                // view near plane. The host has no visibility/near-plane API, so
+                // the dummy is parked below the map while the camera is inside
+                // the character volume. Threshold must exceed the head offset
+                // (~90 u above the chest anchor) - a camera inside the head
+                // hovers at camDist ~90 and a 90 u threshold never fired
+                // (reported: "I see the inside of the character").
                 double camDist = Math.Sqrt((camX - ax2) * (camX - ax2) +
                                            (camY - ay2) * (camY - ay2) +
                                            (camZ - az2) * (camZ - az2));
                 if (hideNear)
                 {
-                    if (!playerHidden && camDist < 90.0)
+                    if (!playerHidden && camDist < 105.0)
                     {
                         playerHidden = true;
+                        Log(string.Format("hideNear hide camDist={0:F1} (B1 host approximation)", camDist));
                         placePlayer(px, py, pz, curYaw);
                     }
-                    else if (playerHidden && camDist > 150.0)
+                    else if (playerHidden && camDist > 250.0)
                     {
                         playerHidden = false;
+                        Log(string.Format("hideNear show camDist={0:F1}", camDist));
                         placePlayer(px, py, pz, curYaw);
                     }
                 }
@@ -2616,7 +2808,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
@@ -2659,11 +2851,11 @@ internal static class RebornClient
                                 : walkMode ? "WALK"
                                 : wSprint ? "SPRINT"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}){11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
-                    curSpd, moveMode));
+                    curSpd, moveMode, curYaw, dirX, dirZ));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {
@@ -2708,6 +2900,26 @@ internal static class RebornClient
     {
         string v = Environment.GetEnvironmentVariable(name);
         return string.IsNullOrEmpty(v) ? def : v;
+    }
+
+    // Recon helper: log the public managed methods whose name matters for the
+    // player / visibility / near-plane paths.
+    static void DumpApi(string label, Type t)
+    {
+        System.Reflection.MethodInfo[] ms = t.GetMethods(
+            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.Static);
+        foreach (System.Reflection.MethodInfo mi in ms)
+        {
+            string n = mi.Name;
+            if (n.IndexOf("Player", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Near", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Visible", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Camera", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("View", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0)
+                Log("api " + label + "." + n + "(" + mi.ReturnType.Name + ")");
+        }
     }
 
     static double WrapAngle(double angle)

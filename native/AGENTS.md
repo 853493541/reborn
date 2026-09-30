@@ -9,4 +9,7 @@ C++ camera shim (`camera_shim.cpp`) injected/loaded for camera work.
 - Kill running engine hosts before rebuilding; the DLL can be locked.
 - The shim must stay minimal: engine interfaces/behavior are authoritative, adopt from
   IL/binaries rather than reimplementing (root `AGENTS.md` §6).
+- Never patch the installed client/engine binaries (on disk or in memory) as a research
+  technique (root `AGENTS.md` §4). Any patch is a locked decision needing explicit
+  sign-off — the broken `RC_PatchD6` trampoline is the cautionary example.
 - Root `AGENTS.md` rules apply.

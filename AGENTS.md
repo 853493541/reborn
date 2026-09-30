@@ -15,7 +15,9 @@ Game assets are private and are not in the repo.
 
 Work directly in the current checkout on the current branch, as normal.
 
-- Never commit or push to `main` unless the user explicitly asks.
+- **Never push to `origin` (any branch) unless the user explicitly asks** — pushing is
+  always an explicit request; local commits are fine.
+- Never commit to `main` unless the user explicitly asks.
 - Never commit generated/binary artifacts (`*.bin`, `*.pss`, `*.t2`, `samples/`, `bin64/`, `.venv/`).
   Leave them untracked.
 - Keep commits small and focused.
@@ -34,15 +36,56 @@ anything else (including reading or editing files):
 4. In your first status update, list the files/directories you own for this task. Do not
    edit anything outside that scope. If the task requires a file outside your scope, stop
    and report it instead of editing.
-5. Commit to your branch and push after every commit. Never merge to `main`, never rebase
-   `main`, never delete the worktree, never touch another agent's worktree.
+5. Commit to your branch after every change; never push unless the user explicitly asks.
+   Never merge to `main`, never rebase `main`, never delete the worktree, never touch
+   another agent's worktree.
 6. When done, report: worktree path, branch name, commit hashes, files touched, and anything
    left uncommitted or blocked.
 
-Shared resources (ports, running engines, `bin64/`, `.venv/`) are exclusive: state which ones
-you use in your first update and never run two agents against the same shared resource.
+Shared resources (ports, `bin64/`, `.venv/`) are exclusive: state which ones you use in your
+first update and never run two agents against the same shared resource. Engine runs are
+namespace-exclusive, not machine-exclusive: concurrent isolated client builds are the
+point (see "Parallel feature work on the client" below).
 
 To change the trigger, edit the keyword in this section; agents follow whatever keyword is here.
+
+### Parallel feature work on the client (isolated builds)
+
+Client features are developed in parallel and merged when the subject is done.
+Different client builds must not affect each other:
+
+1. **One subject = one worktree + branch off `main`** (`#iso` gives the mechanics);
+   merge back only when the subject is complete.
+2. **Unique build name**: feature clients build as `reborn_client_<slug>.exe` via
+   `set RC_CLIENT_EXE=reborn_client_<slug>.exe` before `client\build_client.cmd`
+   (`RC_SMOKE_EXE=camera_smoke_<slug>.exe` for the smoke exe; feature builds skip the
+   smoke build unless it is set). Never overwrite the canonical `reborn_client.exe`
+   while a feature is in flight; the canonical name is restored at merge.
+3. **No shared-state writes**: with `RC_CLIENT_EXE` set the build script skips the
+   shared `bin64` config copies (`camera.json`, `scene_init_param.txt`) and writes
+   `build_info_<exe>.txt` instead of the shared `build_info.txt`. Never write other
+   files into the shared `bin64` root (`client/AGENTS.md`); logs are per-run files in
+   `bin64\reborn_out\`, attributed by the fingerprint + `ns=` lines.
+4. **Concurrent runs are the point - isolation, not exclusion**: 2+ feature clients run
+   at the same time, each with its own engine memory namespace. The client derives it
+   from its exe name (`reborn_client_<slug>.exe` -> `reborn_client_<slug>.memory`; the
+   canonical `reborn_client.exe` keeps `MovieEditor.memory`; `RC_MEM_NS` overrides).
+   The single-instance guard blocks only processes that share the namespace: the
+   canonical build excludes `asset_sandbox`/`ability_picker` (they still hardcode
+   `MovieEditor.memory`), a feature build excludes only a second instance of itself.
+   `RC_ALLOW_MULTI=1` overrides. This follows the proven `ability_sandbox` recipe
+   (own namespace + own runtime dir); the root-isolation attempt broke engine init
+   (commit `d8268d2`), so the engine root stays shared.
+5. **Attribute logs by fingerprint**: every run logs
+   `build=<exe> <mtime> git=<hash> dirty=<n> ...` and the init line records
+   `ns=<memory namespace>`; use both to separate concurrent runs.
+6. **Known shared-write caveat**: all clients share the engine root
+   `C:\SeasunGame\MovieEditor` (ShaderListUpload/dxvk caches) - treat concurrent-run
+   flakiness as a shared-write suspect first, not as a namespace collision.
+7. **Sandbox title**: every feature/sandbox app sets its top-left window title to
+   `sandbox-<featurename>` (e.g. `sandbox-ability`, `sandbox-asset`; main-client feature
+   builds derive it from the exe name: `reborn_client_<slug>.exe` -> `sandbox-<slug>`),
+   so concurrent sandbox windows are identifiable at a glance.
 
 ## 3. Session start (do this first)
 
@@ -58,10 +101,21 @@ State check before work: `git status`, `git log -5 --oneline`, confirm the branc
 
 - Game client `C:\SeasunGame\Game\JX3\bin\zhcn_hd` is the true resource. For any problem or
   question, look here first (`bin64` DLLs, IL, shipped tables/paks). Read-only, always.
+- **Research = copy & analyze, never affect**: the client and MovieEditor installs may be
+  copied out (into ignored dirs) and analyzed offline (parsers, scanners, disassemblers on
+  the copies), and observed while running. Never write, rename, delete, patch, or inject
+  into the installs or their running processes — on disk or in memory. The only writes
+  under `C:\SeasunGame` are our documented build outputs into `MovieEditor\bin64` (§8);
+  those are our binaries, not the client's.
 - MovieEditor `C:\SeasunGame\MovieEditor` is the canonical engine/resource host.
   Client-bundled `...\zhcn_hd\MovieEditor` is an older build (2026-04-28).
 - Evidence hierarchy: repo docs → game client code/IL → MovieEditor behavior/IL → raw
   extracted caches. Never answer from assumption.
+- **Local-first: everything needed is in the client/MovieEditor installs.** Whatever the
+  game needs to run (prediction, UI data, tables, configs, formats) exists locally in the
+  client binaries/IL/paks or the MovieEditor engine — "it comes from the server / we
+  cannot find it" is **not an acceptable answer**. Keep digging locally; a server-side
+  claim needs a cited client-side counterpart before it is used.
 - Engine claims cite symbol/RVA. Every claim carries HIGH/MED/LOW + a source path.
 - No web apps: not for the product and not for test/prototype tooling. New tooling is
   native (C#, C++, Python CLI). `map-ui-explorer`/`web/` were removed in cleanup — do not
@@ -95,8 +149,10 @@ This supersedes the stricter wording in `SFX_GROUND_RULES.md` for resources only
 
 ## 8. Locked constraints
 
-- Game installs are read-only. The only writes allowed under `C:\SeasunGame` are the
-  documented build outputs into `C:\SeasunGame\MovieEditor\bin64` (see the `.cmd` scripts).
+- Game installs are read-only. Research may copy files out and analyze them, but must
+  never affect the install itself (no writes, renames, patches, or injection — on disk or
+  in memory). The only writes allowed under `C:\SeasunGame` are the documented build
+  outputs into `C:\SeasunGame\MovieEditor\bin64` (see the `.cmd` scripts).
 - No real-client hijack, no packet capture, no protocol RE (`PLAN_REBORN_ONLINE.md`).
 - Never redistribute game assets; keep them in ignored dirs.
 
@@ -170,6 +226,10 @@ dotnet run --project ui-process-app
   list tools in the area README tools table; delete one-off probes after use.
 - **Testing**: no fix without a reproduce/verify command; prefer offline deterministic
   checks; visual passes need a numeric fingerprint (per-region RGB), not one screenshot.
+- **Images**: the model API caps images per request (30), and the cap counts the whole
+  conversation — never Read image files for analysis in a session that already has
+  several; use `tools/proof/image_stats.py` (size/hash/per-region RGB) instead. If an
+  image must be attached, do it in a fresh session and keep the total well under 30.
 - **Scope**: align to the M1 exit criteria; one milestone/area per session; no M2+ work
   before the M1 gate passes.
 - **Constants**: canonical values live in `docs/netcode/README.md`; do not redefine magic
@@ -182,10 +242,12 @@ dotnet run --project ui-process-app
 - **Encoding**: decode game text as GB18030/GBK; repo files are UTF-8.
 - **Git**: commit style `Area: summary` (e.g. `Client:`, `Camera:`, `Cleanup:`, `Docs:`);
   branches `research/<topic>`, `feature/<name>`, `cleanup/<scope>`, `<area>-fix`; small
-  focused commits; never commit to `main` unless asked.
+  focused commits; never commit to `main` and **never push to `origin` unless the user
+  explicitly asks**.
 - **Engine ops**: engine init ~24 s, each test run ~2 min — automate with env switches and
-  log/timestamp outputs; kill stale hosts before rebuilds; never run two engine hosts
-  concurrently; commit recon dumps so they are never redone.
+  log/timestamp outputs; kill stale hosts before rebuilds; never run two engine clients in
+  the same memory namespace (concurrent isolated feature builds are allowed — §2);
+  commit recon dumps so they are never redone.
 - **Binaries**: never open game assets/binaries with Read; use `tools/` scanners
   (`gbk_grep.py`, `extract_*`, `scan_*`); prefer indexes (`filepath.ini`, `tani.rt`).
 
@@ -204,6 +266,26 @@ Claims currently sourced from `interface\` addon/user data; annotate on touch:
 
 Loose format. Required: a `Verified:` line (command → result) for any change or finding,
 and evidence paths/confidence for factual claims. Do not present hypotheses as facts.
+
+**Full-chain ownership (the agent is the tester).** When a problem repeats, or when a fix
+is requested, the agent owns the entire chain — never hand testing back to the user:
+
+1. **Reproduce** it deterministically first (scripted repro + env switches; capture logs
+   and a numeric fingerprint — `tools/proof/image_stats.py`; proof files under `proof/`).
+2. **Fix** against that reproduction.
+3. **Prove it is solved**: re-run the same reproduction and show before/after evidence,
+   plus the regression gates (§12). "Should be fixed" is not an outcome.
+4. If it cannot be reproduced, report exactly what evidence/conditions are missing and
+   what the next probe would be — do not ask the user to retry and report back.
+
+**Mandatory closing game-design check.** End every response with:
+
+> **Game-design check:** Does this follow the client's own truth — no invented fixes or
+> band-aids? **Yes** — we connect the real game engines and reproduce the original game
+> design; nothing was invented or band-aided around.
+
+If a provisional deviation is involved, the check must name it explicitly (the registered
+deviation + re-open criteria, §6) — a "Yes" must never hide it.
 
 Definition of done: verify/gate command run; area README index updated; `docs/EXPERIENCES.md`
 entry appended.

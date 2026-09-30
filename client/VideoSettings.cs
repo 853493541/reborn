@@ -65,11 +65,14 @@ internal static class VideoSettings
         }
         catch (Exception e) { log("VideoSettings ex: " + e.Message); }
         // no per-user panel value: default to the panel MAXIMUM (60 deg) as
-        // requested (the install config.ini value is informational only then)
+        // requested - "true max from client truth": the client's own slider
+        // range is 30..60 (PanelMinDeg/PanelMaxDeg); the install config.ini
+        // CammeraAngle (48 deg) is informational only, and the engine
+        // fMaxCameraAngle cap is not recoverable in this install (C6/C10)
         if (userWidAngleDeg <= 0.0)
         {
             angleDeg = PanelMaxDeg;
-            src = "max-default";
+            src = "client-max-default";
         }
         // game panel clamp: 30..60 deg
         if (angleDeg < PanelMinDeg) angleDeg = PanelMinDeg;

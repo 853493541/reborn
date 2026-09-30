@@ -24,6 +24,7 @@ state of our own client, so the full control system can be implemented later.
 | `controls/JX3_COMBAT_CONTROLS.md` | targeting, action bars, cast input, server authority |
 | `controls/JX3_UI_CUSTOMIZATION.md` | counts and mechanics of user customization |
 | `controls/REBORN_CONTROLS_SPEC.md` | our target architecture (design only) + phase plan |
+| `controls/OPERATION_MODES_PLAN.md` | CLASSICAL/JOYSTICK operation modes — game truth, routing matrix, switch key, P0–P4 |
 | `controls/CONTROLS_GAP_REGISTER.md` | every open gap with ID, status, dependency |
 
 ## The one-paragraph summary
