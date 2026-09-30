@@ -349,6 +349,17 @@ before/after; if confirmed, find an engine redirect or register a documented dev
 - Evidence: merge `d450ba6`; temp shim export check; `camera_smoke.exe` ALL PASS.
 - Outcome: merged (local only); D6 fix pending the shim rebuild.
 
+### 2026-09-30 — client — Merge double-jump into main (二段跳 flip + calibration + S6 steering)
+- Did: merged `agent/double-jump` (`7f06700`). Conflicts resolved: `RebornClient.cs` via
+  `git merge-file --ours` (auto-merged jump code kept; `selfSlug` restored for the
+  per-workstream config dir), `build_client.cmd` kept main's feature-build contract
+  (branch's per-slug config copies dropped), `EXPERIENCES.md` = main's + 5 branch
+  entries. Client rebuilt (`exit=0`); camera smoke ALL PASS; `tools/gravity/verify_model.py`
+  passes (J1 default row; J0 1.92 m calibration); live run logs
+  `jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)`.
+- Evidence: merge `7f06700`; `build_info.txt` git=7f06700; `reborn_20260930_132754.log`.
+- Outcome: solved (local only).
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
