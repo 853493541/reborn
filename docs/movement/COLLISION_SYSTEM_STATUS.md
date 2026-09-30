@@ -113,8 +113,18 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 8. **Merged interiors** (e.g. `jz_xb玉门关建筑001_003sw_hd`) — walls, floors,
    furniture and carpets are one mesh; the CCT top rule now handles low parts, but
    per-part semantics remain server state.
-9. Dead code: `FoliageCollision.LocalTop` was superseded by `triTop`/`lowTop` (cleanup).
-
+9. **User-reported door wood + interior carpet: OPEN, not confirmed solved.** The
+   fixes (capsule bottom at feet; CCT top step) make floor-level/thin geometry not
+   block in the host model, and the interior coordinate from the user log ran with
+   0 blocked events (`183202`), but the user has not confirmed the exact objects.
+   Verification protocol: hit the object, COPY LOG, then read
+   `blocked by … top=<x> feet=<y>` — top ≤ feet+50 means a host bug (fix), top >
+   feet+50 means a real >0.5 m face per the engine's step rule. If a low object
+   still blocks because the contacting triangle spans high (merged geometry), the
+   next implementation is an engine-style **forward floor probe** at the movement
+   target (query the walkable floor; climb when floor ≤ feet+stepOffset), instead
+   of relying on the contact triangle's top.
+10. Dead code: `FoliageCollision.LocalTop` was superseded by `triTop`/`lowTop` (cleanup).
 ## 9. Verified this branch (quick index)
 
 - exact capsule/triangle contact; segment contact; substeps; self-test gate (16 checks)
