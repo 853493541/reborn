@@ -97,6 +97,14 @@ class Dump(object):
         return None
 
 
+def dump_strings_at(d, addr, label):
+    blob = d.read(addr, 0x200) or b''
+    for m in re.finditer(rb'[\x20-\x7e]{4,}', blob):
+        print('  %s+0x%X: %s' % (label, m.start(), m.group(0).decode('ascii', 'replace')))
+    for m in re.finditer(rb'(?:[\x20-\x7e]\x00){4,}', blob):
+        print('  %s+0x%X: %s' % (label, m.start(), m.group(0).decode('utf-16-le', 'replace')))
+
+
 def main():
     path = sys.argv[1]
     want_strings = '--strings' in sys.argv
@@ -127,6 +135,8 @@ def main():
     if ctx:
         for name, off in (('rax', 0x78), ('rcx', 0x80), ('rdx', 0x88), ('rbx', 0x90),
                           ('rsp', 0x98), ('rbp', 0xA0), ('rsi', 0xA8), ('rdi', 0xB0),
+                          ('r8', 0xB8), ('r9', 0xC0), ('r10', 0xC8), ('r11', 0xD0),
+                          ('r12', 0xD8), ('r13', 0xE0), ('r14', 0xE8), ('r15', 0xF0),
                           ('rip', 0xF8)):
             if len(ctx) >= off + 8:
                 regs[name] = u64(ctx, off)
@@ -134,7 +144,7 @@ def main():
                                    ('rip', 'rsp', 'rbp', 'rcx', 'rdx', 'rbx', 'rsi', 'rdi')))
 
     print('-- strings at register pointers --')
-    for name in ('rcx', 'rdx', 'rbx', 'rdi', 'rsi'):
+    for name in ('rcx', 'rdx', 'rbx', 'rdi', 'rsi', 'r8', 'r9', 'r12', 'r13', 'r14', 'r15'):
         p = regs.get(name)
         if not p:
             continue
@@ -143,6 +153,22 @@ def main():
             print('  %s+0x%X: %s' % (name, m.start(), m.group(0).decode('ascii', 'replace')))
         for m in re.finditer(rb'(?:[\x20-\x7e]\x00){6,}', blob):
             print('  %s+0x%X: %s' % (name, m.start(), m.group(0).decode('utf-16-le', 'replace')))
+
+    for i, a in enumerate(sys.argv):
+        if a == '--ptr' and i + 1 < len(sys.argv):
+            va = int(sys.argv[i + 1], 16)
+            print('-- at 0x%X --' % va)
+            dump_strings_at(d, va, 'inline')
+            w = d.read(va, 8)
+            if w:
+                p = u64(w, 0)
+                print('  ptr -> 0x%X' % p)
+                dump_strings_at(d, p, 'deref')
+    for i, a in enumerate(sys.argv):
+        if a == '--base' and i + 1 < len(sys.argv):
+            for base, size, name in d.modules:
+                if a == '--base' and sys.argv[i + 1].lower() in name.lower():
+                    print('base %s = 0x%X (size 0x%X)' % (name, base, size))
 
     print('-- rbp-chain frames --')
     rbp = regs.get('rbp', 0)

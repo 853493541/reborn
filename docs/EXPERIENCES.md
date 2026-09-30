@@ -355,3 +355,25 @@ plane remains the faithful target (camera/view vtable projection block).
 **Links:** `docs/camera/HOST_DEVIATIONS.md` B1; harness knobs
 `RC_API_DUMP`, `RC_MAINPLAYER`, `RC_CAM_PITCH/RC_CAM_YAW`
 (`client/RebornClient.cs`); A/B screenshots `%TEMP%\campen_ab\t1_mp{0,1}.png`.
+
+### 2026-09-29 — engine — D6 root cause pinned: missing `RCPI_Scene` registry entry
+**Problem:** the user crashed again (same D6 `+0x11D03B6`) after running ~4 s
+and stopping with the camera <105 u; asked to reproduce and find the cause.
+**Tried:** WER dump `...30272.dmp` -> `tools/camera/minidump_exc.py`; then full
+`dumpbin /disasm` of `KG3DEngineDX11EX64.dll` and targeted decompilation of the
+faulting function.
+**Outcome:** root cause identified (fix path clear, not yet implemented).
+**Why:** fault function RVA `0x11CE760` (worker/streaming path) lazily FNV-hashes
+the named context string **`RCPI_Scene`** (RVA `0x21CB2A8`), looks it up in a
+global registry, and on lookup failure stores `rsi=0` then dereferences without
+a null check (`mov rbx,[rsi]` at `+0x11D03B6`). The editor host's registry lacks
+that entry - the documented missing build-machine content. The in-function
+failure cleanup at `0x1811D0778` frees locals that are not yet initialized at
+the crash point, so the old trampoline (skip-to-epilogue) was guaranteed to
+corrupt (BEX64).
+**Re-open criteria:** locate the `RCPI_Scene` registrar (or trigger its
+creation) and init it in the host; otherwise write a patch that performs the
+function's own partial cleanup before returning failure.
+**Links:** `proof/netcode/disasm/d6_rcpi_scene.txt`; `docs/camera/
+HOST_DEVIATIONS.md` D6; dump `%LOCALAPPDATA%\CrashDumps\reborn_client_campen_v3.exe.30272.dmp`;
+`tools/camera/minidump_exc.py`.
