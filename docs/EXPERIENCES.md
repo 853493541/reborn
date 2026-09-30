@@ -292,3 +292,14 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   engine log `KG3D_Engine_2026_09_29_21_54_26.log`; extracted
   `PreDrawSetting.ini`; `_PreDrawMachineInfo.txt`.
 - Outcome: explained; no fix applied (would need install write — forbidden).
+
+### 2026-09-29 — repo — Merge mini-sandbox into main + naming alignment
+- Did: merged `agent/mini-sandbox` (`f3e9511`) — union-resolved the window-title hunk
+  (main derivation + `RC_TITLE` override), kept both experience-log entry sets and both
+  `docs/engine_host/README.md` rows/tools table. Post-merge: `run_sandbox.cmd` builds
+  and launches `reborn_client_mini.exe` (title `sandbox-mini`; `RC_TITLE` dropped),
+  MINI doc updated, `build_sandbox.py` derives extractor/pak from `--client-root`
+  (dead constants removed). Rebuilt canonical client (`exit=0`); `camera_smoke.exe`
+  ALL PASS; bin64 `reborn_client_pure.exe` leftovers removed.
+- Evidence: merge `f3e9511`; `client\build_client.cmd` exit=0; `camera_smoke.exe` ALL PASS.
+- Outcome: solved. `main` local-only ahead of origin (no push).

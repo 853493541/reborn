@@ -27,9 +27,9 @@ Usage:
 
 Run the sandbox (feature exe name per AGENTS.md parallel-work rule):
   set RC_MAP=C:\\jx3tmp\\reborn_sandbox\\map\\龙门寻宝_mini\\龙门寻宝_mini.jsonmap
-  set RC_CLIENT_EXE=reborn_client_mini_sandbox.exe
+  set RC_CLIENT_EXE=reborn_client_mini.exe
   client\\build_client.cmd
-  C:\\SeasunGame\\MovieEditor\\bin64\\reborn_client_mini_sandbox.exe
+  C:\\SeasunGame\\MovieEditor\\bin64\\reborn_client_mini.exe
 """
 from __future__ import annotations
 
@@ -42,8 +42,6 @@ import sys
 from pathlib import Path
 
 CLIENT_ROOT = Path(r"C:\SeasunGame\Game\JX3\bin\zhcn_hd")
-PAK_DIR = Path(r"C:\SeasunGame\Game\JX3\PakV4")
-EXTRACTOR = CLIENT_ROOT / "bin64" / "PakV4SfxExtract.exe"
 WORK_ROOT = Path(r"C:\jx3tmp\sandbox_work")
 DEFAULT_OUT = Path(r"C:\jx3tmp\reborn_sandbox\map")
 
@@ -84,14 +82,14 @@ def _write_pathlist(path: Path, entries: list[str]) -> None:
     path.write_bytes(text.encode("gb18030", errors="replace"))
 
 
-def run_pakv4(entries: list[str], work: Path) -> dict[str, bytes]:
+def run_pakv4(entries: list[str], work: Path, extractor: Path) -> dict[str, bytes]:
     """Run the official extractor for ``entries``; return logical path -> bytes.
 
     Ported from the frozen root pss_assets.run_pakv4 (new code must not import
     the legacy root modules; tools keep their own copy).
     """
-    if not EXTRACTOR.is_file():
-        raise FileNotFoundError("PakV4SfxExtract not found: %s" % EXTRACTOR)
+    if not extractor.is_file():
+        raise FileNotFoundError("PakV4SfxExtract not found: %s" % extractor)
     if not entries:
         return {}
     list_path = work / "pathlist.txt"
@@ -101,8 +99,8 @@ def run_pakv4(entries: list[str], work: Path) -> dict[str, bytes]:
         shutil.rmtree(out_dir, ignore_errors=True)
     out_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        [str(EXTRACTOR), str(list_path), str(out_dir)],
-        cwd=str(EXTRACTOR.parent),
+        [str(extractor), str(list_path), str(out_dir)],
+        cwd=str(extractor.parent),
         capture_output=True,
         text=True,
         timeout=600,
@@ -195,6 +193,9 @@ def main(argv: list[str] | None = None) -> int:
     out: Path = args.out.resolve()
     map_dir = out / nm
     work = (args.work or (WORK_ROOT / nm)).resolve()
+    client_root: Path = args.client_root.resolve()
+    extractor = client_root / "bin64" / "PakV4SfxExtract.exe"
+    pak_dir = client_root.parents[1] / "PakV4"
     if map_dir.exists():
         shutil.rmtree(map_dir)
     map_dir.mkdir(parents=True, exist_ok=True)
@@ -206,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
         plan = [p for p in plan if "\\landscape\\blendmap_bc\\" not in p[0]]
     print("[%s] extracting %d candidate paths (crop %d,%d %dx%d%s)"
           % (nm, len(plan), cx, cy, cw, ch, ", keep-bake-caches" if args.keep_bake_caches else ""))
-    found = run_pakv4([p[0] for p in plan], work)
+    found = run_pakv4([p[0] for p in plan], work, extractor)
     print("[%s] extractor returned %d files" % (nm, len(found)))
     by_norm = {norm(k): v for k, v in found.items()}
 
@@ -238,9 +239,9 @@ def main(argv: list[str] | None = None) -> int:
         "sandbox_map": nm,
         "crop": {"cx": cx, "cy": cy, "cw": cw, "ch": ch},
         "world_origin": [origin_x, origin_y],
-        "client_root": str(args.client_root),
-        "pak_dir": str(PAK_DIR),
-        "extractor": str(EXTRACTOR),
+        "client_root": str(client_root),
+        "pak_dir": str(pak_dir),
+        "extractor": str(extractor),
         "files": files_meta,
         "misses": misses,
     }

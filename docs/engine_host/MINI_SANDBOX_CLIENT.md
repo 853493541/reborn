@@ -138,7 +138,7 @@ desert scene (sand, ruins, props) with the 花萝 actor at the real spawn.
   `Init3DEngine=... ms=`, `LoadMap result=... ms=`).
 - Header note: `RC_MAP` accepts an absolute path.
 
-Feature builds stay per-worktree (`RC_CLIENT_EXE=reborn_client_mini_sandbox.exe`,
+Feature builds stay per-worktree (`RC_CLIENT_EXE=reborn_client_mini.exe`,
 `AGENTS.md` §2).
 
 ## What it is / is not
@@ -189,7 +189,7 @@ C:\SeasunGame\MovieEditor\bin64\reborn_client.exe
 # -> logs in C:\SeasunGame\MovieEditor\bin64\reborn_out\ ; terrain line must read
 #    "TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0)"
 #    and spawn must read "(23334,761,24224)"
-# Run script: tools\sandbox\run_sandbox.cmd (title "Sandbox-pure")
+# Run script: tools\sandbox\run_sandbox.cmd (title "sandbox-mini")
 ```
 
 ## Confidence
