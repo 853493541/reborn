@@ -236,9 +236,11 @@ is **data/semantics + integrator**. Ordered by impact/effort:
 
 | Task | Content | Source | Verify |
 |---|---|---|---|
-| T1 tick | 15 Hz accumulator: input buffered, per-tick `ProcessAcceleration` / `ProcessVerticalMove` / `ProcessDropSpeed`, integer cm positions | `REBORN_JUMP_FALL_SPEC.md`, `proof/movement/disasm/client_movement_symbols.txt` | `tools/gravity/verify_model.py` extended |
+| T1 tick | **DONE (first cut) 2026-09-30:** fixed 15 Hz accumulator (hitch cap 4), physics block runs per whole 1/15 s tick with `pdt`, positions quantized to integer cm after every tick (`reborn_20260930_143156.log`: integer positions, jump air ~1.0 s, FPS 235-306). Remaining: align walk/run/sprint to the engine's exact per-frame integers (T4 below) | `REBORN_JUMP_FALL_SPEC.md`, `proof/movement/disasm/client_movement_symbols.txt` | `tools/gravity/verify_model.py` extended |
 | T2 slope | two 3-bit cell slope fields (`(cell>>1)&7`, `(cell>>4)&7`); body is Q12 fixed point (`>>12` via `and 0xfff`/`sar 0xc`) with a 64-entry trig table (`0x14020ee10`, args 0..0x40); speed state `[+0x270]` clamped to ±0x7ff, projected vector length compared against the state speed (`[rsp+0x60]<<4`) with input flags `[+0x20c..+0x214]` -> speed zeroed (air/slope stop). Full 908-line body port needed | `proof/gravity/disasm/process_drop_speed.txt` | offline vectors + in-game steep-slope run |
-| T3 render glue | host renders at frame rate from the integer state (interpolation), no gameplay math outside the tick | this doc §8.1 #1 | A/B telemetry (`RC_CAM_YDBG`-style) |
+| T3 render glue | **DONE (first cut) 2026-09-30:** model placement and camera anchor use the interpolated render position between the pre-tick state and the current tick state (`rpx/rpy/rpz`, alpha = tick fraction); gameplay math stays in the tick | this doc §8.1 #1 | A/B telemetry (`RC_CAM_YDBG`-style) |
+
+| T4 constants | align walk/run/sprint (and jump/gravity already exact: 6/20/44 u/f, 90 u/f, 11 u/f2) to the engine's per-frame integers from the movement research tables | `JX3_CHARACTER_MOVEMENT_RESEARCH.md` | in-game speed telemetry vs table |
 
 P0 is small and immediate; P2 is the biggest feel win; P1/P4 are the research
 that removes the remaining proxies; P5 is the only "rebuild" that reaches full

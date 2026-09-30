@@ -547,6 +547,12 @@ internal static class RebornClient
         catch (Exception e) { Log("view angle: " + e.Message); }
         float worldDirX = 0f, worldDirZ = 0f;
         int lastKeySig = -1;
+        // P2-T1: fixed 15 Hz logic tick (engine KCharacter model) + integer cm.
+        // Physics runs in whole 1/15 s ticks; the render/camera interpolate the
+        // remaining fraction (P2-T3).
+        float moveAcc = 0f;
+        float lastTickX = 0f, lastTickY = 0f, lastTickZ = 0f;
+        bool lastTickInit = false;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
@@ -1686,6 +1692,22 @@ internal static class RebornClient
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
 
+            // P2-T1: whole logic ticks only (66.7 ms); remaining time is the
+            // render interpolation fraction (P2-T3).
+            const float MOVE_TICK = 1f / 15f;
+            moveAcc += dt;
+            int moveTicks = (int)(moveAcc / MOVE_TICK);
+            if (moveTicks > 4) moveTicks = 4;          // hitch guard
+            moveAcc -= moveTicks * MOVE_TICK;
+            if (moveTicks > 0)
+            {
+                lastTickX = px; lastTickY = py; lastTickZ = pz;
+                lastTickInit = true;
+            }
+            bool blocked = false;
+            for (int mti = 0; mti < moveTicks; mti++)
+            {
+            float pdt = MOVE_TICK;
             // horizontal move + slope blocking (map-host rules); terrain holes
             // (real LoadHoleRegion data) carry no ground at all. Long moves are
             // split into substeps so a step cannot tunnel a thin collider, and
@@ -1694,7 +1716,6 @@ internal static class RebornClient
             float ground = py;
             bool groundOk = true;
             if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-            bool blocked = false;
             float mvx = 0f, mvz = 0f;
             float subStep = 0f;
             int subCount = 1;
@@ -1704,7 +1725,7 @@ internal static class RebornClient
                             : walkMode ? pSpeed
                             : wSprint ? pSprint
                             : pRun) / len;
-                float step = sp * dt;
+                float step = sp * pdt;
                 mvx = dirX / len; mvz = dirZ / len;
                 if (step > 20f) subCount = (int)Math.Ceiling(step / 20f);
                 if (subCount > 64) subCount = 64;
@@ -1797,7 +1818,7 @@ internal static class RebornClient
                 // is clearly one, else pi (S6: 0.00314 was ~0.18 deg/s).
                 float rate = (float)camSys.Row.F("RotationSpeed", 0.0);
                 if (rate < 1f) rate = (float)Math.PI;
-                float step = rate * (float)dt;
+                float step = rate * (float)pdt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
             }
@@ -1828,8 +1849,8 @@ internal static class RebornClient
             // gravity
             if (!grounded)
             {
-                vy += pGravity * dt;
-                py += vy * dt;
+                vy += pGravity * pdt;
+                py += vy * pdt;
                 if (py <= ground && groundOk)
                 {
                     py = ground;
@@ -1837,6 +1858,17 @@ internal static class RebornClient
                     grounded = true;
                 }
             }
+            // engine integer positions (u = cm)
+            px = (float)Math.Round(px);
+            py = (float)Math.Round(py);
+            pz = (float)Math.Round(pz);
+            }
+            // P2-T3 render position: interpolate between the pre-tick state and
+            // the current tick state by the remaining tick fraction.
+            float rAlpha = lastTickInit ? Math.Min(1f, moveAcc / MOVE_TICK) : 0f;
+            float rpx = lastTickX + (px - lastTickX) * rAlpha;
+            float rpy = lastTickY + (py - lastTickY) * rAlpha;
+            float rpz = lastTickZ + (pz - lastTickZ) * rAlpha;
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
@@ -1845,11 +1877,11 @@ internal static class RebornClient
             else setClip(clipIdle);
 
             // model update (only when changed; keeps animation alive)
-            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(pz - lastModelZ) > 0.5f ||
+            if (Math.Abs(rpx - lastModelX) > 0.5f || Math.Abs(rpz - lastModelZ) > 0.5f ||
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
-                placePlayer(px, py, pz, curYaw);
-                lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
+                placePlayer(rpx, rpy, rpz, curYaw);
+                lastModelX = rpx; lastModelZ = rpz; lastModelYaw = curYaw;
             }
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
@@ -1987,7 +2019,7 @@ internal static class RebornClient
                     Log(string.Format("ydbg rawstep={0:F1} sm={1:F1} grounded={2}",
                         ay2Raw - camYPrevRaw, camYSmooth - camYBefore, grounded));
                 camYPrevRaw = ay2Raw;
-                double ax2 = px, ay2 = camYSmooth, az2 = pz;
+                double ax2 = rpx, ay2 = camYSmooth, az2 = rpz;
                 double[] camOff = new double[3];
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 // game per-axis dead-zone + SmoothTime (SetCharacterCameraPosition

@@ -463,3 +463,18 @@ solved it, and what is still open. **Newest at the bottom.**
 - Next: P2 task breakdown (T1 15 Hz tick, T2 slope fixed-point, T3 render glue)
   added to `COLLISION_SYSTEM_COMPARISON.md` §8.3.
 - Outcome: P1 closed; plan continues at P2.
+
+### 2026-09-30 — movement — P2-T1/T3: fixed 15 Hz logic tick + render interpolation
+- Did: the movement/collision/ground/jump/gravity block now runs only in whole
+  1/15 s ticks (accumulator, hitch cap 4; `pdt` = 1/15), positions are quantized
+  to integer cm after every tick (engine integer model), and the model
+  placement + camera anchor use the interpolated render position (`rpx/rpy/rpz`,
+  alpha = remaining tick fraction) so 15 Hz does not stutter at 200+ fps.
+  Constants already match the integer model exactly (jump 1350 u/s = 90 u/f,
+  gravity -2475 u/s2 = -11 u/f2).
+- Verified: build ok, selftest 24/24; in-game demo `reborn_20260930_143156.log`:
+  integer positions (23334,719,24875...), jump air ~1.0 s (小跳b/c clips),
+  FPS 235-306, ground/walk/run unchanged.
+- Remaining P2: T2 slope/air-stop fixed-point port (`ProcessDropSpeed`, Q12,
+  64-entry trig); T4 walk/run/sprint per-frame integer alignment (96/320/563
+  u/s are not the table's u/f values).
