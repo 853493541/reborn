@@ -995,6 +995,18 @@ internal static class RebornClient
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
         double[] camOffSmooth = new double[3];
         bool camOffInit = false;
+        // camera anchor-Y smooth-follow (B14): the engine smooths the followed
+        // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition",
+        // CharacterCameraSmoothTime=60 ms in Represent/common/number.krl.txt).
+        // The host feeds the raw physics py as the anchor, so a discrete step
+        // snap (up to the 64 u ground tolerance) teleported the camera. Only
+        // discrete snaps are eased; continuous slope/jump motion passes through.
+        double camYSmooth = 0.0, camYPrevRaw = 0.0;
+        bool camYInit = false, camYEasing = false;
+        bool camYFollow = Env("RC_CAM_YFOLLOW", "1") == "1";
+        bool camYDbg = Env("RC_CAM_YDBG", "0") == "1";
+        double camYMaxRate = 1200.0;
+        double.TryParse(Env("RC_CAM_YRATE", "1200"), out camYMaxRate);
         double[] rSm = new double[3];
         bool rSmInit = false;
         bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
@@ -1913,7 +1925,55 @@ internal static class RebornClient
                 // term. Never use tan(pitch) here (the old bug scaled the orbit
                 // radius while dragging, so dragging changed the distance).
                 double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
-                double ax2 = px, ay2 = py + 90.0, az2 = pz;
+                bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
+                                Env("RC_CAM_NOSMOOTH", "0") != "1";
+                double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
+                // B14 anchor-Y smooth-follow: the engine smooths the followed
+                // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition";
+                // CharacterCameraSmoothTime = 60 ms, Represent/common/number.krl.txt).
+                // The host feeds raw physics py + 90 as the anchor, so a discrete
+                // vertical snap (step/ledge, up to the 64 u ground tolerance)
+                // teleported the camera. Only one-frame snaps (|dy| > 5 u while
+                // grounded) are eased over SmoothTime; continuous slope motion and
+                // airborne frames pass through. Kill switch RC_CAM_YFOLLOW=0.
+                double ay2Raw = py + 90.0;
+                if (!camYInit)
+                {
+                    camYSmooth = ay2Raw; camYPrevRaw = ay2Raw; camYInit = true;
+                }
+                if (grounded && Math.Abs(ay2Raw - camYPrevRaw) > 5.0) camYEasing = true;
+                double camYBefore = camYSmooth;
+                if (camYEasing && camYFollow && doSmooth)
+                {
+                    double dy3 = ay2Raw - camYSmooth;
+                    if (Math.Abs(dy3) > 0.05)
+                    {
+                        // exponential follow (native rule) with a frame-time
+                        // clamp; the catch-up rate is capped so a multi-snap
+                        // climb (hundreds of u in a few frames) is traversed at
+                        // a bounded speed instead of teleporting (RC_CAM_YRATE).
+                        double yFrac = Math.Min(dt, 0.005) / stime;
+                        double yStep = dy3 * yFrac;
+                        double yCap = camYMaxRate * Math.Min(dt, 0.02);
+                        if (Math.Abs(yStep) > yCap) yStep = (yStep > 0.0 ? yCap : -yCap);
+                        camYSmooth += yStep;
+                    }
+                    else
+                    {
+                        camYSmooth = ay2Raw;
+                        camYEasing = false;
+                    }
+                }
+                else
+                {
+                    camYSmooth = ay2Raw;
+                    camYEasing = false;
+                }
+                if (camYDbg && Math.Abs(ay2Raw - camYPrevRaw) > 4.0)
+                    Log(string.Format("ydbg rawstep={0:F1} sm={1:F1} grounded={2}",
+                        ay2Raw - camYPrevRaw, camYSmooth - camYBefore, grounded));
+                camYPrevRaw = ay2Raw;
+                double ax2 = px, ay2 = camYSmooth, az2 = pz;
                 double[] camOff = new double[3];
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 // game per-axis dead-zone + SmoothTime (SetCharacterCameraPosition
@@ -1927,9 +1987,6 @@ internal static class RebornClient
                     camOffSmooth[0] = camOff[0]; camOffSmooth[1] = camOff[1];
                     camOffSmooth[2] = camOff[2]; camOffInit = true;
                 }
-                bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
-                                Env("RC_CAM_NOSMOOTH", "0") != "1";
-                double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
                 for (int i = 0; i < 3; i++)
                 {
                     double d3 = camOff[i] - camOffSmooth[i];

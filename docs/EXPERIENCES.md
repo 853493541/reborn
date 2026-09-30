@@ -320,3 +320,24 @@ solved it, and what is still open. **Newest at the bottom.**
   The next blocker east is inst 773, the same mesh placed vertically (top
   1115.9, feet 924.6) — a real obstacle.
 - Outcome: solved.
+### 2026-09-29 — camera — Anchor-Y smooth-follow (step-snap shake, B14)
+- Did: the user's repeated walking in the house area produced 42–64 u camera
+  jumps in single frames: the camera anchor is raw physics `py + 90`, so the
+  grounded step snap (rug 924 ↔ floor 969, stairs) teleported the camera, plus
+  a ~10 Hz +7/+10 u stair train. Added an anchor-Y smooth-follow: one-frame
+  grounded delta > 5 u starts an exponential follow (SmoothTime = camera-row
+  0.06 s = `CharacterCameraSmoothTime`) with a 5 ms frame clamp and a catch-up
+  rate cap (`RC_CAM_YRATE`, 1200 u/s); slopes and airborne frames stay raw.
+  Kill switch `RC_CAM_YFOLLOW=0`; debug `RC_CAM_YDBG=1` (rawstep vs smoothed).
+- Verified: A/B on the field route (spawn 19600,36000, walk north): raw max
+  grounded camera-Y step 63.9 u → shipped 6.0 u (median 0.6, p90 1.5); stair
+  train 7–10 u → 0.1–0.8 u/frame. Logs `reborn_20260929_215235.log` (raw) /
+  `..._220246.log` (fix); selftest 19/19; registered as B14 in
+  `docs/camera/HOST_DEVIATIONS.md`.
+- Outcome: solved (host stabilizer; re-open with the represent-layer
+  interpolation / `DynamicFollowSmoothObjectPosition` port).
+### 2026-09-29 — collision — Tagged the door/carpet fix
+- Did: the user asked to record the rug fix commit as the door/carpet fix:
+  annotated tag `door-carpet-fix` → `62f796a` (floor query ignores winding).
+- Evidence: `git show door-carpet-fix`.
+- Outcome: recorded.

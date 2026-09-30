@@ -434,3 +434,23 @@ Controls (test exe, T-spots):
   spot (the F9 shot agrees: wall on the near side).
 - Recorder reverse casts use frontFacesOnly=false: the forward probe sees the
   front face, the reverse cast meets its back - front-only skipped every wall.
+
+### 2026-09-29 C1e - step-snap camera shake (anchor-Y smooth-follow, B14)
+
+User report: pacing the house floor at 龙门寻宝 (~19600,36000-36300) "camera
+shakes quite a bit". `RC_CAM_YDBG=1` on the field route shows the cause: the
+camera anchor is raw `py + 90`, so while grounded the rug (924) / house floor
+(969) boundary and the stairs snap the anchor in single frames: 42-64 u steps
+plus a ~10 Hz +7/+10 u stair train.
+
+Fix (B14, default on, `RC_CAM_YFOLLOW=0` off): a one-frame grounded delta
+> 5 u starts an exponential follow (SmoothTime = camera-row 0.06 s =
+`CharacterCameraSmoothTime`) with a 5 ms frame clamp and a catch-up rate cap
+(`RC_CAM_YRATE`, 1200 u/s). Continuous slope motion and airborne (jump/fall)
+frames pass through, so jump/fall behaviour is unaffected.
+
+A/B on the same demo route (spawn 19600,36000, walk north):
+- raw (`RC_CAM_YFOLLOW=0`): per-frame anchored camera-Y steps up to 63.9 u;
+  stair train 7-10 u/frame.
+- shipped: max 6.0 u, p90 1.5 u, median 0.6 u; stair train 0.1-0.8 u/frame.
+Logs `reborn_20260929_215235.log` (raw), `..._220246.log` (fix).
