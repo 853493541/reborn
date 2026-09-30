@@ -169,6 +169,31 @@ message; attachments persist in history. One session must stay under 30 total.
 from history automatically.
 **Links:** `tools/proof/image_stats.py`, `tools/proof/README.md`, `AGENTS.md` §13 Images.
 
+### 2026-09-29 — engine_host — Mini-sandbox branch review (`agent/mini-sandbox`)
+- Did: reviewed the cropped-loose-map sandbox branch vs `main`: builder
+  (`tools/sandbox/build_sandbox.py`, official extractor, world coords preserved,
+  manifest + sha1), client delta (RC_PHYS_DLL, init/LoadMap ms, title), verified runs
+  (`proof/sandbox/*`: 1x1 = 6.5 MiB, LoadMap 156 ms vs 1.6 s full, fps 231-274).
+- Evidence: merge-base diff `ff67fff..agent/mini-sandbox`; `MINI_SANDBOX_CLIENT.md`.
+- Outcome: solved (review). Verdict: pull-ready; conflicts = title hunk + doc appends;
+  convention fix needed (`Sandbox-pure` -> `sandbox-mini`); builder `--client-root` arg
+  accepted but unused.
+
+### 2026-09-29 — engine_host — Install-write audit: shader cache under zhcn_hd\CachedShaders
+**Problem:** the copy-and-analyze rule (`AGENTS.md` §4/§8) bans writes under
+`C:\SeasunGame` except documented `MovieEditor\bin64` outputs. A read-only check during
+the mini-sandbox review found files in
+`C:\SeasunGame\Game\JX3\bin\zhcn_hd\CachedShaders` dated 09-29 20:32/21:00/21:02/21:28
+that coincide with our engine runs (20:32 is the branch's disclosed junction experiment).
+**Tried:** read-only attribution (no writes); repo grep - the path is not documented
+anywhere.
+**Outcome:** open (finding) - attribution not yet proven by a controlled run.
+**Why:** likely the engine writes its shader cache under the asset root (`workingDir` =
+`zhcn_hd` in the client), i.e. every host run may write there.
+**Re-open criteria:** controlled canonical run watching `zhcn_hd\CachedShaders` mtimes
+before/after; if confirmed, find an engine redirect or register a documented deviation.
+**Links:** `docs/engine_host/MINI_SANDBOX_CLIENT.md` dead-end #1; `AGENTS.md` §4/§8.
+
 ### 2026-09-29 — client — Code provenance audit (original vs game-derived)
 - Did: audited `client/*.cs` + `native/camera_shim.cpp` (main `2a973a0`) and the client
   deltas of all 8 active isolation branches. Counted lines, IL/RVA citations, engine
