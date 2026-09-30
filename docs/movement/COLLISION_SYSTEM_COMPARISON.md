@@ -82,7 +82,7 @@ Ported column: does the host use it today.
 |---|---|---|---|---|
 | `bObscatleCamera` | `.mesh.ini` `[Display]` | KG3D mesh property → camera filter | 316/692 zero (map) | **[PORTED]** `.cflags` |
 | `bObstacleCamera` | `.mesh.ini` per LOD submesh | KG3D | mixed | **not ported** |
-| `bAutoProduceObstacle` | `.mesh.ini` `[Display]` | `KG3DEngineX64` (field `+0x194`), `KG3DEngineDX11EX64`, `KG3D_LoaderNoRenderX64` | 587 inis: 12 zero (e.g. `wj_晾衣架004`) | **not ported** |
+| `bAutoProduceObstacle` | `.mesh.ini` `[Display]` | `KG3DEngineX64` (field `+0x194`), `KG3DEngineDX11EX64`, `KG3D_LoaderNoRenderX64` | bake census: 17 zero of 681 (flags/lanterns/racks/mats/hut) | **[PORTED P0]** `.oflags` bit0; auto=0 → no physics |
 | `bLogicObstacle` | `.mesh.ini` per LOD submesh | `KG3DEngineDX11EX64`, `KG3D_LoaderNoRenderX64` | mixed per submesh (`jz_破旧兵营001_002` has 0+1) | **not ported** |
 | `bCollisionOnly` | `.mesh.ini` per LOD submesh | `KG3DEngineDX11EX64` | mostly 0 | **not ported** |
 | `bTransparentCamera`, `bRecomputeNormals` | `.mesh.ini` per submesh | KG3D | — | not ported (not collision) |
@@ -224,7 +224,7 @@ is **data/semantics + integrator**. Ordered by impact/effort:
 
 | Phase | Work | Data/source | Effect |
 |---|---|---|---|
-| P0 | Bake the shipped obstacle flags (`bAutoProduceObstacle`, `bLogicObstacle`, `bCollisionOnly`) into a sidecar; wire `bAutoProduceObstacle=0` → no collision | `.mesh.ini` (census done) | removes wrong collisions (12 meshes/map) |
+| P0 | **DONE 2026-09-30** for 龙门寻宝: `tools/export_obstacle_flags.py` + `<bin>.oflags` loader; 17 meshes / 56 instances skipped (`noObstacle=56`, `reborn_20260930_135518.log`), selftest 24/24; other 4 maps need their `.meshes.txt` sidecars first | `.mesh.ini` (census done) | removes wrong collisions |
 | P1 | Reverse the auto-produced obstacle geometry (`KG3D_LoaderNoRenderX64` + `PhysicsEngineX64` actor build) and bake that shape | client DLLs + paks | replaces the AABB/name proxy with the real shape (§8.1 #9-11) |
 | P2 | Port the 15 Hz integer movement model + `ProcessDropSpeed` slope projection | `REBORN_JUMP_FALL_SPEC.md`, `proof/gravity/disasm` | removes #1, #2; feel parity in air/landing/slopes |
 | P3 | Extract the gameplay capsule values (semantic K/V / shape library `capsule r50/l50`) and CCT `contactOffset` | engine semantic registrations | removes #15, #16 |

@@ -92,6 +92,15 @@ internal static class CollisionSelfTest
         File.WriteAllText(binPath + ".meshes.txt", sb.ToString());
     }
 
+    static void WriteOflags(string binPath, byte[] flags)
+    {
+        byte[] raw = new byte[8 + flags.Length];
+        BitConverter.GetBytes(0x474C464Fu).CopyTo(raw, 0);
+        BitConverter.GetBytes((uint)flags.Length).CopyTo(raw, 4);
+        flags.CopyTo(raw, 8);
+        File.WriteAllBytes(binPath + ".oflags", raw);
+    }
+
     static MeshBuilder Wall()
     {
         MeshBuilder m = new MeshBuilder();
@@ -313,6 +322,28 @@ internal static class CollisionSelfTest
             ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
             Check("prop_solid_free_exit", ej && px > 146f,
                 string.Format("eject={0} px={1:F1}", ej, px));
+        }
+
+        // 12. shipped obstacle flags (plan P0): a mesh whose .mesh.ini says
+        //     bAutoProduceObstacle=0 gets no physics; flag=1 keeps collision.
+        {
+            string pb = WriteBin("wall_oflags_off", new MeshBuilder[] { Wall() }, new float[][] { M(0f, 0f, 0f) });
+            WriteOflags(pb, new byte[] { 0x00 });
+            FoliageCollision col = new FoliageCollision(null, pb);
+            float px = 5f, py = 0f, pz = 0f, ground = 0f;
+            bool grounded = false;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
+            Check("obstacle_flag_off_walkthrough",
+                !blocked && Math.Abs(px - 5f) < 0.01f && col.NoObstacleSkipped == 1,
+                string.Format("blocked={0} px={1:F1} skipped={2}", blocked, px, col.NoObstacleSkipped));
+
+            string pb2 = WriteBin("wall_oflags_on", new MeshBuilder[] { Wall() }, new float[][] { M(0f, 0f, 0f) });
+            WriteOflags(pb2, new byte[] { 0x01 });
+            col = new FoliageCollision(null, pb2);
+            px = 5f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
+            Check("obstacle_flag_on_blocks", blocked && Math.Abs(px - 17f) < 0.05f,
+                string.Format("blocked={0} px={1:F1}", blocked, px));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"

@@ -417,3 +417,19 @@ solved it, and what is still open. **Newest at the bottom.**
   `docs/movement/README.md`.
 - Evidence: the doc and the sources cited inside it.
 - Outcome: recorded; no code change.
+
+### 2026-09-30 — collision — P0: shipped obstacle flags wired (`bAutoProduceObstacle`)
+- Did: `tools/export_obstacle_flags.py` fetches each baked mesh's sibling
+  `.mesh.ini` and writes `<bin>.oflags` (bit0 `bAutoProduceObstacle`, bit1/2
+  any/all LOD0 `bLogicObstacle`, bit3 `bCollisionOnly`, bit4 missing-ini);
+  `FoliageCollision` skips instances whose mesh has auto=0
+  (`RC_OBST_FLAGS=0` disables). On 龙门寻宝 17 meshes (flags, lanterns, drying
+  racks, straw mats, farm props, one hut) carry auto=0 and **none** has an
+  authored `CollisionMesh` sibling — the shipped data says the engine does not
+  auto-produce an obstacle for them.
+- Verified: selftest 24/24 (`obstacle_flag_off_walkthrough`,
+  `obstacle_flag_on_blocks`); in-game `FoliageCollision: instances=5235 ...
+  noObstacle=56` (was 5291), FPS 216-267 (`reborn_20260930_135518.log`).
+- Outcome: P0 done for the loaded map; other 4 baked maps need their
+  `.meshes.txt` sidecars (re-run `export_structure_collision.py`) before the
+  same oflags export.

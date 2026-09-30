@@ -72,7 +72,9 @@ public sealed class FoliageCollision
     readonly Dictionary<long, List<int>> _grid = new Dictionary<long, List<int>>();
     readonly float _cell;
     readonly List<int> _cand = new List<int>(64);
-    readonly List<int> _candClear = new List<int>(16);
+    readonly bool _useObstacleFlags;
+    // meshes skipped because the shipped .mesh.ini says bAutoProduceObstacle=0
+    public int NoObstacleSkipped;
 
     public int InstanceCount { get { return _inst.Count; } }
     public int MeshCount { get; private set; }
@@ -80,9 +82,11 @@ public sealed class FoliageCollision
     int _cameraFlagZero;
     string[] _meshPaths;   // optional mesh-index -> source model path sidecar
 
-    public FoliageCollision(string foliagePath, string structurePath = null, float cellSize = 800f)
+    public FoliageCollision(string foliagePath, string structurePath = null, float cellSize = 800f,
+                            bool useObstacleFlags = true)
     {
         _cell = cellSize;
+        _useObstacleFlags = useObstacleFlags;
         if (!string.IsNullOrEmpty(foliagePath) && File.Exists(foliagePath))
             LoadV1(foliagePath);
         if (!string.IsNullOrEmpty(structurePath) && File.Exists(structurePath))
@@ -323,6 +327,27 @@ public sealed class FoliageCollision
                 }
                 catch { }
             }
+            // per-mesh obstacle-flag sidecar (plan P0) written by
+            // tools/export_obstacle_flags.py; bit0 = bAutoProduceObstacle
+            // ([Display]). Meshes with the flag 0 get NO physics - the shipped
+            // game data says the engine does not auto-produce an obstacle for
+            // them (no authored CollisionMesh sibling exists either).
+            byte[] oflags = null;
+            string of = path + ".oflags";
+            if (_useObstacleFlags && File.Exists(of))
+            {
+                try
+                {
+                    byte[] raw = File.ReadAllBytes(of);
+                    if (raw.Length >= 8 && BitConverter.ToUInt32(raw, 0) == 0x474C464F)
+                    {
+                        int n = (int)BitConverter.ToUInt32(raw, 4);
+                        if (n == meshCount && raw.Length >= 8 + n)
+                            oflags = raw;
+                    }
+                }
+                catch { }
+            }
             for (int i = 0; i < instCount; i++)
             {
                 int mi = r.ReadInt32();
@@ -332,6 +357,11 @@ public sealed class FoliageCollision
                 float bminX = r.ReadSingle(), bminY = r.ReadSingle(), bminZ = r.ReadSingle();
                 float bmaxX = r.ReadSingle(), bmaxY = r.ReadSingle(), bmaxZ = r.ReadSingle();
                 if (mi < 0 || mi >= meshCount) continue;
+                if (oflags != null && (oflags[8 + mi] & 0x01) == 0)
+                {
+                    NoObstacleSkipped++;
+                    continue;
+                }
                 if (bmaxX <= bminX && bmaxY <= bminY && bmaxZ <= bminZ)
                 {
                     // derive AABB from mesh corners
@@ -1216,7 +1246,7 @@ public sealed class FoliageCollision
 
     public string Describe()
     {
-        return string.Format("instances={0} meshes={1} camflag0={2}",
-            _inst.Count, MeshCount, _cameraFlagZero);
+        return string.Format("instances={0} meshes={1} camflag0={2} noObstacle={3}",
+            _inst.Count, MeshCount, _cameraFlagZero, NoObstacleSkipped);
     }
 }

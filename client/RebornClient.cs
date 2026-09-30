@@ -330,7 +330,7 @@ internal static class RebornClient
             if (!File.Exists(sp)) sp = Path.Combine(colDir, "structure_collision.bin");
             if (File.Exists(fp) || File.Exists(sp))
             {
-                col = new FoliageCollision(fp, sp);
+                col = new FoliageCollision(fp, sp, 800f, Env("RC_OBST_FLAGS", "1") == "1");
                 Log("FoliageCollision: " + col.Describe()
                     + " foliage=" + (File.Exists(fp) ? Path.GetFileName(fp) : "(none)")
                     + " structures=" + (File.Exists(sp) ? Path.GetFileName(sp) : "(none)"));
