@@ -749,3 +749,36 @@ or the engine's own init starts running (verified build).
   `CONTROLS_GAP_REGISTER.md` S6 → DONE; `JX3_MOVEMENT_CONTROLS.md` §6 updated.
 - Outcome: solved for the steering rule; the server `+0x48` per-frame turn step
   is still undecoded (host π rad/s fallback documented).
+
+### 2026-09-30 — camera/client — WW trigger removed; sprint placement smoothing fixed; no OS-input testing
+- Problem: user report "ww + right drag will falsely bring camera zoom in".
+  Reproduced deterministically (`reborn_client_cam-wwdrag.exe`, sandbox map,
+  `RC_CAM_DEBUG/SHAKEDBG`): `camdbg mode=sprint dist=1305 obst=0 hit=-1` while
+  the real anchor->camera distance `r` collapsed 1305 -> 443 and recovered only
+  after the drag stopped (before-log mean r/len 0.77 over 95 unobstructed
+  samples, 48 < 0.9).
+- Root cause: the resolved-offset placement smoothing (`rSm`) read the *active
+  mode row's* `SmoothTime`; in sprint mode that is the sprint row's 0.5 s
+  (`SprintCameraSmoothTime`, the pull-back constant already applied by
+  `UpdateDistance`) instead of the shared `CharacterCameraSmoothTime` (60 ms;
+  PENETRATION_PLAN C1). Per-axis smoothing of the rotating offset then shortens
+  the vector through its chord - the B15 class, amplified 8x by the wrong
+  constant.
+- Fix: placement smoothing uses the character row's `SmoothTime` in every mode
+  (live `RebornClient.cs` + model `CameraSystem.Update`); offline regression
+  `camera_smoke` "sprint drag keeps constant-length orbit" (old code 47.6% ->
+  fixed 1.15% rel err). Live after-fix: mean r/len 0.99 over 136 unobstructed
+  samples; only the synthetic >30 rad/s flick troughs dip.
+- Then per user decision the WW (double-tap W) sprint trigger was **removed**
+  from the client ("for now"); the sprint camera row stays reachable only via
+  the `RC_CAM_MODE` test harness. HUD/help and the controls/camera docs updated.
+- Process: the external `tools/camera/drive_client.ps1` driver moves the real
+  desktop mouse/keyboard - the user stopped it mid-run. From now on: internal
+  env-driven test modes only; never drive the user's mouse/keyboard. My driver
+  changes were reverted to main; the README row now carries the hijack warning.
+- Evidence: `reborn_out/reborn_20260930_151919.log` (before), `_152453.log`
+  (after), `_153426.log` (no-WW run, DONE); `camera_smoke_cam-wwdrag.exe` ALL
+  PASS; commits `b186564` (fix), `850940c` (driver revert), `3cb1246` (WW
+  removal).
+- Outcome: WW removed; the camera placement fix kept (valid for any camera mode
+  whose row SmoothTime differs from the character row).

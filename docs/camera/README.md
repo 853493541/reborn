@@ -28,4 +28,4 @@ Camera model and host work. Canonical gameplay spec in `docs/netcode/REBORN_CAME
 | Tool | Purpose |
 |---|---|
 | `tools/camera/minidump_exc.py` | stdlib minidump reader: exception record, registers, module-resolved stack candidates, register-pointer strings. Used for the D6 crash analysis (no debugger installed; dumps in `%LOCALAPPDATA%\CrashDumps`). |
-| `tools/camera/drive_client.ps1` | Synthetic player input driver (camera drags + WASD via `mouse_event`/`keybd_event`) to reproduce interactive-only engine crashes (D6) on a running client. |
+| `tools/camera/drive_client.ps1` | Synthetic player input driver (camera drags + WASD via `mouse_event`/`keybd_event`) to reproduce interactive-only engine crashes (D6) on a running client. **It hijacks the real desktop cursor/keyboard - use only with the user's explicit approval; prefer internal env-driven test modes (`RC_*` scripted paths) for camera/input repros (2026-09-30).** |
