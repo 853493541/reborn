@@ -914,3 +914,21 @@ s=reborn_client_mini.memory,
   `CONTROLS_GAP_REGISTER.md` S6 → DONE; `JX3_MOVEMENT_CONTROLS.md` §6 updated.
 - Outcome: solved for the steering rule; the server `+0x48` per-frame turn step
   is still undecoded (host π rad/s fallback documented).
+
+
+### 2026-09-30 — client — sandbox + 轻功 version: newest main merged, WW fully ported
+- Did: merged the newest main (765447f: double-jump 二段跳/flip + calibrated jump
+  RC_JUMP_SCALE 0.52 + camera-relative steering + mini-sandbox) into feature/ww-sandbox
+  and integrated the 轻功 changes into the new client: WW state hold guards the per-jump
+  gravity (if (!wwStateActive) vy -= curJumpGravity*dt), the Vz clamps + Sprint.tab fall
+  cap (900 u/f) apply after it, landing resets the WW state, the charge clip + HUD CHARGE
+  coexist with the 二段跳 clip/state display. build_client.cmd compiles both JumpTable.cs
+  and WwRules.cs. Built the sandbox client 
+eborn_client_mini.exe and ran it on the
+  cropped map; the WW demo was retimed for the calibrated airtime.
+- Evidence: merge 5bfb956 (5 conflict hunks resolved, 0 markers), demo run 14:32 on the
+  1x1 map (LoadMap 141 ms): jump 8.0s -> charge 8.4s (fwd 150 u/f = 2250 u/s) -> release
+  10.2s (velocity kept); selftest PASS; commits 819951e; app relaunched pid 34116.
+- Outcome: solved. This branch is now the sandbox + 轻功 version (run via
+  	ools\sandbox\run_sandbox.cmd / 
+eborn_client_mini.exe + RC_MAP cropped map).
