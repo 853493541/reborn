@@ -136,3 +136,16 @@ solved it, and what is still open. **Newest at the bottom.**
   asked — replaces "push after every commit"), and §13 Git hard rule (same wording).
 - Evidence: `AGENTS.md`; this commit, kept local per the new rule.
 - Outcome: solved.
+
+### 2026-09-29 — engine_host — Mini sandbox client plan (small-map dev root)
+- Did: measured the loop's weight (PakV4 **192.34 GB**, client root 21.62 GB,
+  MovieEditor 2.46 GB) and planned a mini sandbox: sandbox asset root with its own
+  `clientconfig.ini` + mini `PakV4` (or loose tree), trace-driven dependency closure,
+  native repack via the engine's own `KG_PAKFS_*` write API (verified exports:
+  `WriteFile`, `MakeSubPackage`, `CreateDirTree`, `EnableFileTrace`, …), and a small
+  scene tier (existing `source\Map\EmptyMap`/`512Simple2`, then a 2×2 region crop of
+  龙门寻宝 around region (2,2), world coords preserved).
+- Evidence: `docs/engine_host/MINI_SANDBOX_CLIENT.md` (sizes, formats, exports, phases
+  S0–S4); local scans + dumpbin; no install writes.
+- Outcome: plan committed on `agent/mini-sandbox`; S0 (loose-map load spike) and S1
+  (foreign asset root spike) are the next gates.
