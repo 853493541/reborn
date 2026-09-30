@@ -332,3 +332,26 @@ park-below hack can be deleted.
 - Evidence: log `reborn_20260929_204449.log` (+ hide lines), tool output saved
   in the session; new build `reborn_client_campen_v3.exe` (log
   `reborn_20260929_205411.log`). Outcome: partial (risk reduced, root open).
+
+### 2026-09-29 — camera — faithful-mechanism recon for close-camera hiding
+**Problem:** the user called out the park-below threshold tuning as a band-aid;
+the real game uses the view near plane + engine model fade (CLOSE_RANGE_RESEARCH
+§2), so find an engine-authored mechanism instead of tuning thresholds.
+**Tried:** (a) dumped the managed wrapper API (`RC_API_DUMP`): only
+`KGEngineCLR.SetMainPlayerType/GetMainPlayerType` exist, no near-plane/visibility
+API; (b) A/B `SetMainPlayerType(0/1)` at T1 with park-below off and the camera
+pulled to len=0 - the engine culls the character identically in both, and the
+one crash seen in the first mp0 run did not reproduce (3 runs each, all exit 0);
+(c) engine exports: `KG3D_SceneObject::SetPlayerObject/IsPlayerObject` /
+`SetMainCharactor`, camera-property schema `NearPlane/FarPlane/
+AutoComputeClipPanes` (consumed by `KG3D_Engine::CreateCamera`), no near-plane
+setter export.
+**Outcome:** partial - the main-player route is not the mechanism; the near
+plane remains the faithful target (camera/view vtable projection block).
+**Why:** the engine already culls the model at len=0 natively; the residual
+"see inside" band is where the host approximation sits.
+**Re-open criteria:** locate the camera/view projection near-plane field or the
+`KG3D_CAMERA_PROPERTY` write path, then delete B1.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` B1; harness knobs
+`RC_API_DUMP`, `RC_MAINPLAYER`, `RC_CAM_PITCH/RC_CAM_YAW`
+(`client/RebornClient.cs`); A/B screenshots `%TEMP%\campen_ab\t1_mp{0,1}.png`.

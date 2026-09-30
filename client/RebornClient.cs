@@ -191,6 +191,32 @@ internal static class RebornClient
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
         var scene = new KGSceneCLR();
+        // Recon: dump the managed wrapper API surface for the player / near-plane
+        // paths (B1 exit; docs/camera/CLOSE_RANGE_RESEARCH.md §2). Env-gated.
+        if (Env("RC_API_DUMP", "0") == "1")
+        {
+            DumpApi("KGEngineCLR", typeof(KGEngineCLR));
+            DumpApi("KGSceneCLR", typeof(KGSceneCLR));
+            DumpApi("KGModelCLR", typeof(KGModelCLR));
+        }
+        if (Env("RC_MAINPLAYER", "") != "")
+        {
+            int mp;
+            if (int.TryParse(Env("RC_MAINPLAYER", "0"), out mp))
+            {
+                try
+                {
+                    System.Reflection.MethodInfo mi = typeof(KGEngineCLR).GetMethod("SetMainPlayerType");
+                    if (mi == null) Log("mainplayer: KGEngineCLR.SetMainPlayerType not exposed");
+                    else
+                    {
+                        mi.Invoke(engine, new object[] { mp });
+                        Log("mainplayer: SetMainPlayerType(" + mp + ") ok");
+                    }
+                }
+                catch (Exception e) { Log("mainplayer ex: " + e.Message); }
+            }
+        }
         // D6 mitigation: ask the engine to fully load the scene up front so the
         // lazy material/shader loader (missing build-machine DataStores -> AV)
         // is not raced while running through the map. Env-gated for A/B first.
@@ -486,6 +512,11 @@ internal static class RebornClient
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             camSys.Pitch = cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
+            // deterministic test pose (camera A/B harness): override the loaded
+            // yaw/pitch without touching the settings sources
+            double poseOv;
+            if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
+            if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
             camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
             Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3} op={4}",
                 camSys.Mode, camSys.Distance,
@@ -2724,6 +2755,26 @@ internal static class RebornClient
     {
         string v = Environment.GetEnvironmentVariable(name);
         return string.IsNullOrEmpty(v) ? def : v;
+    }
+
+    // Recon helper: log the public managed methods whose name matters for the
+    // player / visibility / near-plane paths.
+    static void DumpApi(string label, Type t)
+    {
+        System.Reflection.MethodInfo[] ms = t.GetMethods(
+            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.Static);
+        foreach (System.Reflection.MethodInfo mi in ms)
+        {
+            string n = mi.Name;
+            if (n.IndexOf("Player", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Near", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Visible", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Camera", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("View", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0)
+                Log("api " + label + "." + n + "(" + mi.ReturnType.Name + ")");
+        }
     }
 
     static double WrapAngle(double angle)
