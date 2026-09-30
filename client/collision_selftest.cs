@@ -344,6 +344,16 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
             Check("obstacle_flag_on_blocks", blocked && Math.Abs(px - 17f) < 0.05f,
                 string.Format("blocked={0} px={1:F1}", blocked, px));
+
+            // auto=0 but an authored CollisionMesh sibling exists (bit5): the
+            // engine still creates physics from the sibling -> keep collision
+            string pb3 = WriteBin("wall_oflags_off_sib", new MeshBuilder[] { Wall() }, new float[][] { M(0f, 0f, 0f) });
+            WriteOflags(pb3, new byte[] { 0x20 });
+            col = new FoliageCollision(null, pb3);
+            px = 5f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
+            Check("obstacle_flag_off_with_sibling_blocks", blocked && col.NoObstacleSkipped == 0,
+                string.Format("blocked={0} skipped={1}", blocked, col.NoObstacleSkipped));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"

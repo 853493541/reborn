@@ -529,3 +529,15 @@ solved it, and what is still open. **Newest at the bottom.**
   candidates: scene-response binary decode or a `filepath.ini` index search.
 - Evidence: `proof/gravity/disasm/process_drop_speed.txt`,
   `heading_table_65x32.txt`; plan doc §8.3.
+
+### 2026-09-30 — collision — P0 refined (authored siblings keep physics) + all 5 maps re-baked
+- Re-running the bake for the other four maps (白龙绝境, 天原绝境, 海岛绝境,
+  龙门寻宝_夜晚) produced their `.meshes.txt` sidecars + fresh cflags; oflags
+  generated for all five. New finding from the sibling probe: several `auto=0`
+  meshes on the other maps DO have authored `.CollisionMesh` siblings, which
+  the engine's file-selection chain uses - so the skip rule is now
+  `auto=0 AND no sibling` (bit5 in the oflags marks the exception).
+- Verified: selftest 25/25 (`obstacle_flag_off_with_sibling_blocks`);
+  龙门寻宝 unchanged `noObstacle=56` (`reborn_20260930_153559.log`).
+- New plan item P0b: when a sibling collision file exists the BAKE should use
+  it instead of the render mesh (recorded in the comparison doc §8.3).

@@ -152,6 +152,21 @@ def main() -> None:
         if auto == "0":
             auto0.append(m)
 
+    # meshes with bAutoProduceObstacle=0 but an AUTHORED collision sibling
+    # (proxymesh / CollisionMesh) still receive physics in the engine
+    # (file-selection chain falls back to it): mark bit5 so the runtime only
+    # skips auto=0 meshes that have NO authored collision.
+    if auto0:
+        sib = pss_assets.run_pakv4(
+            sorted({s for m in auto0 for s in collision_siblings(m)}),
+            work=Path(r"C:\Users\Zhibin Ren\AppData\Local\Temp\opencode\oflags_sib"))
+        sibl = {k.replace("/", "\\").lower() for k in sib}
+        for i in range(count):
+            m = models.get(i)
+            if not m or (flags[i] & 0x01):
+                continue
+            if any(s.replace("/", "\\").lower() in sibl for s in collision_siblings(m)):
+                flags[i] |= 0x20
     out = struct.pack("<II", 0x474C464F, count) + bytes(flags)
     Path(str(bin_path) + ".oflags").write_bytes(out)
     print("wrote %s.oflags (%d bytes)" % (bin_path.name, len(out)))
@@ -164,15 +179,6 @@ def main() -> None:
     n_noini = sum(1 for b in flags if b & 0x10)
     n_logic0 = sum(1 for b in flags if not (b & 0x02))
     print("stats: auto=0 %d, no-ini %d, no-logic %d" % (n_auto0, n_noini, n_logic0))
-    if auto0:
-        sib = pss_assets.run_pakv4(
-            sorted({s for m in auto0 for s in collision_siblings(m)}),
-            work=Path(r"C:\Users\Zhibin Ren\AppData\Local\Temp\opencode\oflags_sib"))
-        sibl = {k.replace("/", "\\").lower() for k in sib}
-        print("auto=0 meshes and their collision siblings:")
-        for m in auto0:
-            hit = [s for s in collision_siblings(m) if s.replace("/", "\\").lower() in sibl]
-            print("  %s -> %s" % (m, hit if hit else "none"))
 
 
 if __name__ == "__main__":

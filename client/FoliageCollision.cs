@@ -357,7 +357,7 @@ public sealed class FoliageCollision
                 float bminX = r.ReadSingle(), bminY = r.ReadSingle(), bminZ = r.ReadSingle();
                 float bmaxX = r.ReadSingle(), bmaxY = r.ReadSingle(), bmaxZ = r.ReadSingle();
                 if (mi < 0 || mi >= meshCount) continue;
-                if (oflags != null && (oflags[8 + mi] & 0x01) == 0)
+                if (oflags != null && (oflags[8 + mi] & 0x01) == 0 && (oflags[8 + mi] & 0x20) == 0)
                 {
                     NoObstacleSkipped++;
                     continue;
