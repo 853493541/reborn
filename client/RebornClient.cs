@@ -110,7 +110,7 @@ internal static class RebornClient
             lock (logLines)
             {
                 logLines.Add(DateTime.Now.ToString("HH:mm:ss") + " " + s);
-                if (logLines.Count > 200) logLines.RemoveRange(0, logLines.Count - 200);
+                if (logLines.Count > 400) logLines.RemoveRange(0, logLines.Count - 400);
             }
         };
         // short visible tag from the exe name: reborn_client_collision.exe ->
@@ -184,6 +184,33 @@ internal static class RebornClient
         infoToggle.Cursor = Cursors.Hand;
         infoToggle.MouseClick += delegate { hud.Visible = !hud.Visible; };
         panel.Controls.Add(infoToggle);
+        // COPY LOG button (top-right): puts the recent run log - including the
+        // "blocked by inst=... mesh=... top=... feet=..." diagnostics - on the
+        // clipboard so it can be pasted without hunting the log files.
+        var copyBtn = new Label();
+        copyBtn.AutoSize = false;
+        copyBtn.Size = new System.Drawing.Size(80, 22);
+        copyBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        copyBtn.Location = new System.Drawing.Point(form.ClientSize.Width - 90, 10);
+        copyBtn.Text = "COPY LOG";
+        copyBtn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+        copyBtn.ForeColor = System.Drawing.Color.White;
+        copyBtn.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+        copyBtn.Font = new System.Drawing.Font("Consolas", 9f, System.Drawing.FontStyle.Bold);
+        copyBtn.Cursor = Cursors.Hand;
+        copyBtn.MouseClick += delegate
+        {
+            try
+            {
+                string text;
+                lock (logLines) { text = string.Join("\r\n", logLines.ToArray()); }
+                if (text.Length == 0) text = "(no log yet)";
+                Clipboard.SetText(text);
+                Log("copied " + text.Length + " chars of log to clipboard");
+            }
+            catch (Exception e) { Log("clipboard copy failed: " + e.Message); }
+        };
+        panel.Controls.Add(copyBtn);
         form.Show();
         Application.DoEvents();
 
@@ -2783,8 +2810,9 @@ internal static class RebornClient
                     lastBlkInstLogged = col.LastBlockedInst;
                     int bmi = col.GetInstanceMesh(col.LastBlockedInst);
                     string bmp = col.GetMeshPath(bmi);
-                    Log(string.Format("blocked by inst={0} mesh={1} {2}",
-                        col.LastBlockedInst, bmi, bmp == null ? "(no name sidecar)" : bmp));
+                    Log(string.Format("blocked by inst={0} mesh={1} top={2:F1} feet={3:F1} {4}",
+                        col.LastBlockedInst, bmi, col.LastBlockedTriTop, py,
+                        bmp == null ? "(no name sidecar)" : bmp));
                 }
                 if (holeDumpDir.Length > 0 && sampler != null && sampler.HasHoles &&
                     (sampler.HoleRegionX != lastHoleIx || sampler.HoleRegionZ != lastHoleIz))
