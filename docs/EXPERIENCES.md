@@ -233,3 +233,13 @@ solved it, and what is still open. **Newest at the bottom.**
   selftest 17/17 PASS; tables committed under `proof/controls/sprint/`.
 - Outcome: solved. The "downward+forward dash" is the authored End/glide phase after the
   纵跃段 takeoff (not an upward-only leap).
+
+### 2026-09-29 — controls — WW air = 纵跃段 charge (every class, release-independent)
+- Did: per the user's spec, air WW now applies the **charge directly** (no takeoff phase):
+  the shared End triple `xy 125 u/f, vz -140 u/f, g 12` = 1875 u/s forward + 2100 u/s down,
+  for every class (the triple is identical across schools in the fresh `JumpParam.tab`).
+  The W release does not change it (the charge persists to the ground). Wrong weapon -> no
+  charge. Ground WW stays sprint. `RC_WW_DEMO` reproduces it.
+- Evidence: demo run 22:14 — `ww AIR: 纵跃段 charge vxy=125 vz=-140 g=12 -> 1875 u/s fwd,
+  -2100 u/s down`, lands cleanly; selftest PASS; commit 40b51c9.
+- Outcome: solved.
