@@ -1045,8 +1045,139 @@ SHIM_EXPORT int RC_CamSetVt3(void* cam, float x, float y, float z,
     __except (EXCEPTION_EXECUTE_HANDLER) { return -5; }
 }
 
+// ---- D6 crash-context diagnostic (RC_D6DBG=1, no behavior change) ---------
+// The engine's worker dereferences a null registry entry at +0x11D03B6 (see
+// docs/camera/HOST_DEVIATIONS.md D6). This VEH only snapshots the object graph
+// (registers, the r12 chain, the registry map and its root node) to a file,
+// then lets the crash proceed unchanged - diagnostics, not a patch.
+static const DWORD RVA_D6_SITE = 0x11D03B6;
+static char  g_d6File[MAX_PATH] = "";
+static PVOID g_d6Veh = NULL;
+
+static void D6LogPtr(FILE* f, const char* label, unsigned long long v)
+{
+    if (v == 0 || v == ~0ULL) { fprintf(f, "%s=0x%llX\n", label, v); return; }
+    HMODULE mod = NULL;
+    if (GetModuleHandleExA(0x00000004 | 0x00000002, (LPCSTR)v, &mod) && mod != NULL)
+    {
+        char name[MAX_PATH] = "";
+        GetModuleFileNameA(mod, name, MAX_PATH);
+        fprintf(f, "%s=0x%llX %s+0x%llX\n", label, v, name,
+                (unsigned long long)(v - (unsigned long long)mod));
+    }
+    else fprintf(f, "%s=0x%llX\n", label, v);
+}
+
+static unsigned long long D6Q(unsigned long long a)
+{
+    if (a == 0 || !Readable((void*)a, 8)) return 0;
+    return *(unsigned long long*)a;
+}
+
+static LONG CALLBACK D6Veh(EXCEPTION_POINTERS* ep)
+{
+    if (ep == NULL || ep->ExceptionRecord->ExceptionCode != 0xC0000005)
+        return EXCEPTION_CONTINUE_SEARCH;
+    if (g_base == NULL)
+    {
+        HMODULE m = GetModuleHandleA(kEngineName);
+        if (m != NULL) g_base = (BYTE*)m;
+    }
+    if (g_base == NULL || ep->ExceptionRecord->ExceptionAddress != g_base + RVA_D6_SITE)
+        return EXCEPTION_CONTINUE_SEARCH;
+    CONTEXT* c = ep->ContextRecord;
+    FILE* f = NULL;
+    fopen_s(&f, g_d6File, "a");
+    if (f == NULL) return EXCEPTION_CONTINUE_SEARCH;
+    fprintf(f, "== D6 site pid=%lu tid=%lu rip=0x%llX ==\n",
+            GetCurrentProcessId(), GetCurrentThreadId(), (unsigned long long)c->Rip);
+    const char* names[16] = { "rax","rcx","rdx","rbx","rsp","rbp","rsi","rdi",
+                              "r8","r9","r10","r11","r12","r13","r14","r15" };
+    unsigned long long vals[16] = { c->Rax,c->Rcx,c->Rdx,c->Rbx,c->Rsp,c->Rbp,c->Rsi,c->Rdi,
+                                    c->R8,c->R9,c->R10,c->R11,c->R12,c->R13,c->R14,c->R15 };
+    for (int i = 0; i < 16; i++) D6LogPtr(f, names[i], vals[i]);
+    unsigned long long p = c->R12;
+    for (int i = 0; i < 4 && p != 0; i++)
+    {
+        p = D6Q(p);
+        char lbl[32];
+        sprintf_s(lbl, "[r12]^%d", i + 1);
+        D6LogPtr(f, lbl, p);
+    }
+    unsigned long long rbp = c->Rbp;
+    unsigned long long m68 = D6Q(rbp - 0x68);
+    D6LogPtr(f, "*(rbp-68h)", m68);
+    unsigned long long o2 = m68 ? D6Q(m68) : 0;
+    D6LogPtr(f, "**(rbp-68h)", o2);
+    fprintf(f, "[rbp-70h]=0x%llX [rbp-0B8h]=0x%llX [rbp-0C0h]=0x%llX [rsp+70h]=0x%llX [rsp+78h]=0x%llX\n",
+            D6Q(rbp - 0x70), D6Q(rbp - 0xB8), D6Q(rbp - 0xC0),
+            D6Q(c->Rsp + 0x70), D6Q(c->Rsp + 0x78));
+    if (o2 != 0)
+    {
+        unsigned long long root = D6Q(o2 + 0x58 + 0x20);
+        fprintf(f, "map(o2+58h).root=0x%llX key=0x%llX left=0x%llX right=0x%llX\n",
+                root, root ? D6Q(root + 0x20) : 0,
+                root ? D6Q(root + 8) : 0, root ? D6Q(root + 0x10) : 0);
+    }
+    fprintf(f, "== end ==\n");
+    fclose(f);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
+// Seed the engine's lazy name-hash for "RCPI_Scene" (RVA 0x2D5BBD0). The
+// engine computes it on demand with an FNV-1 loop, but the guard gate
+// (`cmp [guard], tls; jg init`) can let a worker thread through before the
+// init ran, leaving the hash 0 -> the registry lookup misses -> AV. Writing
+// the same value the engine would compute is using its own mechanism.
+SHIM_EXPORT int RC_D6Seed()
+{
+    if (RC_Shim_Init() != 0) return -1;
+    if (g_base == NULL) return -2;
+    unsigned long long* slot = (unsigned long long*)(g_base + 0x2D5BBD0);
+    if (*slot == 0)
+        *slot = 0x392E0BFA0428F080ULL;   // FNV-1 of "RCPI_Scene" (engine loop)
+    return *slot == 0x392E0BFA0428F080ULL ? 0 : -3;
+}
+
+SHIM_EXPORT const char* RC_D6SeedInfo()
+{
+    sprintf_s(g_status, "seed slot=0x%p value=0x%llX",
+              g_base ? g_base + 0x2D5BBD0 : NULL,
+              g_base ? *(unsigned long long*)(g_base + 0x2D5BBD0) : 0ULL);
+    return g_status;
+}
+
+SHIM_EXPORT int RC_D6Dbg()
+{
+    if (g_d6File[0] == 0)
+    {
+        DWORD n = GetEnvironmentVariableA("RC_D6DBG_FILE", g_d6File, MAX_PATH);
+        if (n == 0)
+        {
+            char dir[MAX_PATH];
+            GetTempPathA(MAX_PATH, dir);
+            sprintf_s(g_d6File, "%sd6dbg_%lu.txt", dir, GetCurrentProcessId());
+        }
+    }
+    if (g_d6Veh != NULL) return 0;
+    g_d6Veh = AddVectoredExceptionHandler(1, D6Veh);
+    return g_d6Veh != NULL ? 0 : 1;
+}
+
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 {
+    if (reason == DLL_PROCESS_ATTACH)
+    {
+        char v[8];
+        if (GetEnvironmentVariableA("RC_D6DBG", v, sizeof(v)) > 0 && v[0] == '1')
+            RC_D6Dbg();
+        // default on (RC_D6SEED=0 opts out): seed the engine's lazy name hash
+        // the guard left at 0, which is the confirmed D6 null-lookup cause
+        v[0] = 0;
+        DWORD n = GetEnvironmentVariableA("RC_D6SEED", v, sizeof(v));
+        if (n == 0 || v[0] != '0')
+            RC_D6Seed();
+    }
     if (reason == DLL_PROCESS_DETACH)
     {
         g_engine = NULL;

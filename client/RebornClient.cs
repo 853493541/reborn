@@ -518,6 +518,15 @@ internal static class RebornClient
             if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
             if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
             camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
+            // deterministic test distance (world units): RC_CAM_DIST=100 puts
+            // the camera close-up while RC_CAM_PITCH tilts it (repro harness)
+            double distOv;
+            if (double.TryParse(Env("RC_CAM_DIST", ""), out distOv) && distOv > 0.0)
+            {
+                camSys.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", distOv / camSys.UnitsPerMeter);
+                camSys.Rows[CameraSystem.MODE_CHARACTER].Set("InitCameraDistance", distOv / camSys.UnitsPerMeter);
+                camSys.Distance = distOv;
+            }
             Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3} op={4}",
                 camSys.Mode, camSys.Distance,
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,

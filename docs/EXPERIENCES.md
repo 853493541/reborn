@@ -377,3 +377,28 @@ function's own partial cleanup before returning failure.
 **Links:** `proof/netcode/disasm/d6_rcpi_scene.txt`; `docs/camera/
 HOST_DEVIATIONS.md` D6; dump `%LOCALAPPDATA%\CrashDumps\reborn_client_campen_v3.exe.30272.dmp`;
 `tools/camera/minidump_exc.py`.
+
+### 2026-09-29 — engine — D6 FIXED: seed the engine's uncomputed `RCPI_Scene` hash
+**Problem:** the app kept AVing at `KG3DEngineDX11EX64+0x11D03B6` (`rsi=0`) in
+interactive play; earlier work only diagnosed it (missing `RCPI_Scene`
+registry lookup).
+**Tried:** (a) live-context VEH in `camera_shim.dll` (`RC_D6DBG=1`) that dumps
+registers + the registry graph at the exact fault site; (b) a synthetic input
+driver (`tools/camera/drive_client.ps1`) to reproduce the interaction-only
+crash unattended; (c) seed the engine's lazy hash value from the shim.
+**Outcome:** solved (default-on).
+**Why:** the VEH capture showed `[rbp-70h]=0` at the crash - the engine's
+per-function lazy FNV-1 hash of `RCPI_Scene` (slot `base+0x2D5BBD0`) was never
+computed: the guard gate `cmp [guard], tls; jg init` (`0x1811D0335`) let the
+worker through before the init ran, so the map lookup used key 0 and the
+null result was dereferenced without a check. `camera_shim.dll` now writes the
+exact hash the engine's own loop would compute (`0x392E0BFA0428F080`) into the
+slot at load (`RC_D6Seed`, no code patch, `RC_D6SEED=0` opts out).
+**Evidence:** driven interactive A/B at the crash spot: baseline
+(`RC_D6SEED=0`) **2/2 crashes** with `key=0` captures; seeded **2/2 alive**
+(240 s and 200 s driver runs).
+**Re-open criteria:** a crash at another lazy-hash site (VEH will capture it),
+or the engine's own init starts running (verified build).
+**Links:** `docs/camera/HOST_DEVIATIONS.md` D6; `native/camera_shim.cpp`
+(`RC_D6Seed`/`RC_D6Dbg`); `tools/camera/drive_client.ps1`;
+`tools/camera/minidump_exc.py`.
