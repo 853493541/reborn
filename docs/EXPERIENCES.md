@@ -270,3 +270,12 @@ solved it, and what is still open. **Newest at the bottom.**
   `reborn_20260929_183202.log` (0 blocked, was 400+); gate run
   `reborn_20260929_183257.log` (blocked by top=860.8 vs feet=701, a real >0.5 m wall).
 - Outcome: solved; this makes the host capsule match the engine controller convention.
+### 2026-09-29 — movement — Full collision status audit
+- Did: rechecked the collision docs against the branch and wrote
+  `docs/movement/COLLISION_SYSTEM_STATUS.md` (per-subsystem implemented/missing/wrong).
+  Top issues: terrain slope over-permissive (no ProcessDropSpeed projection);
+  15 Hz integer movement not ported (G-14); H1 list rule A/B pending (G-35);
+  host-generated tree canopy columns; 20 Hz camera query cap; bottomless holes;
+  host-chosen capsule/step values; merged interiors remain server state.
+- Evidence: the audit doc; this branch's commits and run logs.
+- Outcome: documented; implementation priorities listed in the doc §8.
