@@ -262,6 +262,17 @@ Claims currently sourced from `interface\` addon/user data; annotate on touch:
 Loose format. Required: a `Verified:` line (command → result) for any change or finding,
 and evidence paths/confidence for factual claims. Do not present hypotheses as facts.
 
+**Full-chain ownership (the agent is the tester).** When a problem repeats, or when a fix
+is requested, the agent owns the entire chain — never hand testing back to the user:
+
+1. **Reproduce** it deterministically first (scripted repro + env switches; capture logs
+   and a numeric fingerprint — `tools/proof/image_stats.py`; proof files under `proof/`).
+2. **Fix** against that reproduction.
+3. **Prove it is solved**: re-run the same reproduction and show before/after evidence,
+   plus the regression gates (§12). "Should be fixed" is not an outcome.
+4. If it cannot be reproduced, report exactly what evidence/conditions are missing and
+   what the next probe would be — do not ask the user to retry and report back.
+
 **Mandatory closing game-design check.** End every response with:
 
 > **Game-design check:** Does this respect the game's own design — or are we inventing

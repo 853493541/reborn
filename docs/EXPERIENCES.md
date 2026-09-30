@@ -194,6 +194,14 @@ anywhere.
 before/after; if confirmed, find an engine redirect or register a documented deviation.
 **Links:** `docs/engine_host/MINI_SANDBOX_CLIENT.md` dead-end #1; `AGENTS.md` §4/§8.
 
+### 2026-09-29 — repo — Rule: full-chain ownership (the agent is the tester)
+- Did: `AGENTS.md` §15 now requires the agent to own the whole chain for any repeated
+  problem or fix request: reproduce deterministically (scripted repro, logs, numeric
+  fingerprint), fix against the repro, prove it solved with before/after evidence plus
+  the §12 gates, and never ask the user to retry and report back.
+- Evidence: `AGENTS.md` §15; this commit (local).
+- Outcome: solved.
+
 ### 2026-09-29 — client — Code provenance audit (original vs game-derived)
 - Did: audited `client/*.cs` + `native/camera_shim.cpp` (main `2a973a0`) and the client
   deltas of all 8 active isolation branches. Counted lines, IL/RVA citations, engine
