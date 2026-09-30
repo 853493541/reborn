@@ -19,6 +19,7 @@ N=native bypass, H=harness. Status updated as items land.
 | A9 | same as A8 | drag integrates `Yaw -= ox*0.0018`, `Pitch += oy*0.00121` | B | A8 |
 | A10 | `CharacterYawTurnSpeed` (consumer unknown) | RMB body-turn fallback pi rad/s | P | recover the consumer |
 | A11 | mouse deltas are clamped per frame | `CameraSystem.Mouse` now clamps the per-call delta with `CameraMaxDeltaPitch` (was a no-op absolute clamp); still test-path only, the live drag clamps in `RebornClient` | B | wire the model call into the live path |
+| A12 | `CAMERAZOOMIN`/`CAMERAZOOMOUT` bound to the wheel (`ui/script/hotkeys.lua`; `INPUT_CONTROLS.md` §2) | **the wheel is inert; zoom is on the `+`/`-` keys (2026-09-30, user decision)**: `Oemplus`/numpad `Add` = CameraZoomIn (x0.9), `OemMinus`/numpad `Subtract` = CameraZoomOut (x1.1); same `CameraSystem.ZoomBy` rule and clamps | H (host binding) | real hotkey table + input contexts |
 
 ## B. Visibility/placement band-aids
 

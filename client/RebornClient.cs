@@ -870,6 +870,8 @@ internal static class RebornClient
         // RMB drag = rotate camera and turn the character, wheel = x0.9/x1.1
         // zoom, F11 = reset behind the character (-15 deg pitch), Home/End =
         // view presets 0/180 relative to the character facing.
+        // Host change 2026-09-30 (user decision): the zoom moved off the wheel
+        // onto the +/- keys; the wheel is inert.
         // The handlers are shared by the panel and the HUD labels (a label
         // would otherwise swallow clicks), with coordinates mapped to the panel.
         Func<object, MouseEventArgs, System.Drawing.Point> panelPoint = delegate(object s, MouseEventArgs e)
@@ -927,20 +929,15 @@ internal static class RebornClient
                 try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
-        MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
-        {
-            // CameraZoomIn/Out: Camera_Zoom(0.9 / 1.1)
-            camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
-        };
+        // The wheel no longer zooms (user decision 2026-09-30): the zoom moved
+        // to the +/- keys below. The wheel is deliberately left unbound.
         Control[] hitTargets = new Control[] { panel, hud };
         foreach (Control c in hitTargets)
         {
             c.MouseDown += onMouseDown;
             c.MouseUp += onMouseUp;
             c.MouseMove += onMouseMove;
-            c.MouseWheel += wheel;
         }
-        form.MouseWheel += wheel;
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
@@ -971,6 +968,16 @@ internal static class RebornClient
                 Log("operation mode -> " + CameraOperationMode.Name(cameraSettings.OperationMode));
                 if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
                 else if (!lmbDown && !rmbDown) unlockMouse();
+            }
+            else if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
+            {
+                // CameraZoomIn: Camera_Zoom(0.9) (moved off the wheel, 2026-09-30)
+                camSys.ZoomBy(-1.0);
+            }
+            else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+            {
+                // CameraZoomOut: Camera_Zoom(1.1)
+                camSys.ZoomBy(1.0);
             }
             else if (e.KeyCode == Keys.F11)
             {
@@ -1218,7 +1225,7 @@ internal static class RebornClient
             alignAim();
         }
         // the game keeps the follow distance at the row value; MaxCameraDistance
-        // is only the cap the wheel can zoom out to (starting at the cap made
+        // is only the cap the zoom can reach (starting at the cap made
         // the camera pump when walls passed in/out of range)
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
@@ -1543,7 +1550,7 @@ internal static class RebornClient
 
             if (camZoomSeq)
             {
-                // test input only (no camera behavior): wheel steps out x3 then
+                // test input only (no camera behavior): zoom steps out x3 then
                 // in x3 at 1 s intervals after the rotation/pitch demo
                 if (now >= 13000 && now < 19000)
                 {
@@ -1935,7 +1942,7 @@ internal static class RebornClient
                 // (double-tap W, WW) was removed 2026-09-30; the sprint row is
                 // reachable only through the RC_CAM_MODE test harness.
                 double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
-                // any distance change (wheel zoom, sprint pull-back, EyeScale)
+                // any distance change (zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
                 if (Math.Abs(dist - lastAimDist) > 0.5)
                 {
@@ -2788,7 +2795,7 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,

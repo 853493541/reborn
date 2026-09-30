@@ -782,3 +782,15 @@ or the engine's own init starts running (verified build).
   removal).
 - Outcome: WW removed; the camera placement fix kept (valid for any camera mode
   whose row SmoothTime differs from the character row).
+
+### 2026-09-30 — camera/client — Zoom moved from the wheel to +/- keys
+- Did: user decision — the wheel no longer zooms; the zoom feature moves to the
+  `+`/`-` keys. Removed the `MouseWheel` handlers (panel/HUD/form), added
+  `Oemplus`/numpad `Add` = CameraZoomIn (x0.9) and `OemMinus`/numpad
+  `Subtract` = CameraZoomOut (x1.1), same `CameraSystem.ZoomBy` rule + clamps.
+  HUD help updated (`+/- zoom`); registered as host binding deviation A12
+  (the real client binds CAMERAZOOMIN/OUT to the wheel).
+- Evidence: `client/RebornClient.cs` (wheel handlers removed, key branch);
+  `camera_smoke_cam-wwdrag.exe` ALL PASS; feature client rebuilt
+  (`bin64\reborn_client_cam-wwdrag.exe`).
+- Outcome: solved (host binding; wheel inert).

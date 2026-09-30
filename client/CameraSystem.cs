@@ -328,11 +328,13 @@ public sealed class CameraSystem
         return units;
     }
 
-    // JX3 wheel zoom, from the real UI binding (ui/script/hotkeys.lua):
+    // JX3 zoom, from the real UI binding (ui/script/hotkeys.lua):
     //   CAMERAZOOMIN  -> CameraZoomIn()  = Camera_Zoom(0.9)   (distance * 0.9)
     //   CAMERAZOOMOUT -> CameraZoomOut() = Camera_Zoom(1.1)   (distance * 1.1)
     // clamped to [fMinCameraDistance, fMaxCameraDistance]; units: world units.
     // (The DLL's ZoomCharacterCamera_Step is a different path, not the wheel.)
+    // Host binding 2026-09-30 (user decision): the wheel is inert; the host
+    // maps these to the +/- keys in RebornClient.
     public void ZoomBy(double direction)
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
