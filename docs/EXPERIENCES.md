@@ -295,3 +295,20 @@ park-below hack can be deleted.
 **Links:** `docs/camera/HOST_DEVIATIONS.md` B1; `docs/camera/CLOSE_RANGE_RESEARCH.md`
 §2; HANDOFF §4 ladder; test client `reborn_client_campen_v3.exe`
 (`6b55d5b+modes+hide105`, log `reborn_20260929_203437.log`).
+
+### 2026-09-29 — engine — D6 trampoline verdict: BEX64 side effect even single-instance
+- Did: the test client ran with `RC_PATCH_D6=1` (single instance, `patchD6 rc=0
+  cave=0000000170EE0000`); while walking "down" the app died. Event log:
+  `c0000005`, **module unknown**, fault offset `0x7FFE70EE0000` - the documented
+  BEX64 jump-to-data pattern (earlier occurrence `0x7FFE622B0000` with three
+  overlapping clients), i.e. the bail path's skipped cleanup corrupting state.
+- Evidence: Windows Application Error event; run log
+  `reborn_20260929_203437.log` (idle at 20:43 before the fault);
+  `docs/camera/HOST_DEVIATIONS.md` D6 updated.
+- Outcome: the trampoline trades D6 for a rarer but fake crash; it stays
+  **off by default** and must not be re-enabled until the bail path is fixed
+  (proper local cleanup) or the missing editor DataStores/material root cause
+  is fixed. Test client restarted with `PATCH_D6=0` (log
+  `reborn_20260929_204449.log`).
+- Re-open: fix the trampoline's bail path, or isolate/preconvert the missing
+  materials (D6 exit).
