@@ -758,20 +758,11 @@ internal static class RebornClient
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
-        bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
-        long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
         int zoomSeqStep = -1;
-        // internal WW + RMB drag repro (no OS input): drives the same state the
-        // double-tap-W hold and a yaw drag produce. RC_WWDRAG=1; the rate is
-        // RC_WWDRAG_RATE rad/s (default 3.0).
-        bool wwDrag = Env("RC_WWDRAG", "0") == "1";
-        double wwDragRate = 3.0;
-        double.TryParse(Env("RC_WWDRAG_RATE", "3.0"), out wwDragRate);
-        bool wwDragLogged = false;
         bool nineRay = Env("RC_CAM_9RAY", "0") == "1";      // alternate 9-ray probe set
         string camMode = Env("RC_CAM_MODE", "");            // force a camera mode row
         bool demoTeleport = Env("RC_COL_TELEPORT", "0") == "1";
@@ -954,21 +945,7 @@ internal static class RebornClient
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) unlockMouse();
-            if (e.KeyCode == Keys.W)
-            {
-                long t = Environment.TickCount;
-                if (!pW || t - lastWDown > 100)   // new press, not keyboard auto-repeat
-                {
-                    // double-tap: second press within 500 ms of the first release
-                    if (lastWUp != 0 && t - lastWUp < 500)
-                    {
-                        wSprint = true;
-                        Log("sprint on (double-tap W)");
-                    }
-                    lastWDown = t;
-                }
-                pW = true;
-            }
+            if (e.KeyCode == Keys.W) pW = true;
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
             else if (e.KeyCode == Keys.D) pD = true;
@@ -1020,7 +997,7 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) { pW = false; wSprint = false; lastWUp = Environment.TickCount; }
+            if (e.KeyCode == Keys.W) pW = false;
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -1069,7 +1046,6 @@ internal static class RebornClient
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
-        float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
@@ -1565,37 +1541,6 @@ internal static class RebornClient
                 }
             }
 
-            if (wwDrag)
-            {
-                // internal repro (no OS input, AGENTS host test mode): hold W
-                // with the double-tap sprint state and feed the orbit deltas a
-                // yaw drag produces. 2 s baseline, then 6 s cycles: 1.5 s
-                // sprint settle / 3 s drag at RC_WWDRAG_RATE / 1.5 s release.
-                if (!wwDragLogged)
-                {
-                    wwDragLogged = true;
-                    Log(string.Format("wwdrag: internal repro on rate={0:F2} rad/s", wwDragRate));
-                }
-                long wt = now - 2000;
-                if (wt >= 0 && wt < 18000)
-                {
-                    long cyc = wt % 6000;
-                    pW = cyc < 4500;       // W held through the drag
-                    wSprint = pW;          // double-tap outcome (hold after 2nd press)
-                    if (cyc >= 1500 && cyc < 4500)
-                    {
-                        int px2 = (int)(dt * wwDragRate / 0.0018);
-                        if (px2 < 1) px2 = 1;
-                        orbitQueue.Enqueue(new int[] { px2, 0 });
-                    }
-                }
-                else if (wt >= 18000)
-                {
-                    pW = false;
-                    wSprint = false;
-                }
-            }
-
             if (camZoomSeq)
             {
                 // test input only (no camera behavior): wheel steps out x3 then
@@ -1773,7 +1718,6 @@ internal static class RebornClient
             {
                 float sp = (shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
-                            : wSprint ? pSprint
                             : pRun) / len;
                 float ux = dirX / len, uz = dirZ / len;
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
@@ -1964,9 +1908,6 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
-                // sprint camera mode follows the real trigger: double-tap W
-                // (wSprint), not the Shift test-speed modifier
-                bool sprinting = movingNow && wSprint;
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the
@@ -1990,22 +1931,10 @@ internal static class RebornClient
                     double aimAdj = aimPitchOf(camSys.Pitch) - aimPitchOf(pitchPreAdj);
                     adjPitchPx = (int)Math.Round(-aimAdj / 0.00121);
                 }
-                // the automatic character/sprint mode logic must not override a
-                // forced test mode (RC_CAM_MODE)
-                if (camMode.Length == 0)
-                {
-                    if (sprinting)
-                    {
-                        if (camSys.Mode != CameraSystem.MODE_SPRINT)
-                            camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
-                    }
-                    else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
-                    {
-                        camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
-                    }
-                }
-                double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
-                              * cameraSettings.EyeScale;
+                // no automatic camera-mode switching: the sprint trigger
+                // (double-tap W, WW) was removed 2026-09-30; the sprint row is
+                // reachable only through the RC_CAM_MODE test harness.
+                double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
                 // any distance change (wheel zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
                 if (Math.Abs(dist - lastAimDist) > 0.5)
@@ -2036,8 +1965,8 @@ internal static class RebornClient
                 // (CharacterCameraSmoothTime, 60 ms; PENETRATION_PLAN C1). The
                 // sprint row's SmoothTime (0.5 s) is SprintCameraSmoothTime, the
                 // sprint pull-back constant already applied by UpdateDistance -
-                // reading the active row here made a sprint (WW) drag collapse
-                // the orbit radius ("WW + right drag falsely zooms in").
+                // reading the active row here collapsed the orbit radius while
+                // dragging in sprint mode (2026-09-30 camera-wwdrag repro).
                 double stime = Math.Max(
                     camSys.Rows[CameraSystem.MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
@@ -2854,13 +2783,12 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
-                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
+                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
-                                : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | Wx2 hold sprint | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
@@ -2889,12 +2817,10 @@ internal static class RebornClient
                 float curSpd = !moving ? 0f
                              : shiftDown ? pRun * 10f
                              : walkMode ? pSpeed
-                             : wSprint ? pSprint
                              : pRun;
                 string moveMode = !moving ? "IDLE"
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
-                                : wSprint ? "SPRINT"
                                 : "RUN";
                 Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
