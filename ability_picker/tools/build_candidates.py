@@ -357,6 +357,13 @@ PROCESS = {
         {"t": 800, "kind": "anim", "v": "s16lxg链技能03_缓冲HD", "n": "落地缓冲 (AnimationID 91074)"},
         {"t": 2700, "kind": "chain", "v": "remove device", "n": "装置消失 (160帧寿命, 隐藏物)"},
     ],
+    "如意法": [
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1smj10双刀buff04.ani",
+         "n": "免控姿态基础动画 (tani 内嵌 .Sfx 标签会让宿主 AV; 播放其基础 .ani)"},
+        {"t": 0, "kind": "sound", "v": "75054615", "n": "riyuejiaohui.wav"},
+        {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\m_明教清净心01.pss",
+         "k": "ruyi_pss", "n": "清净心发招 PSS (tani 引用的作者资源, 随施法者)"},
+    ],
 }
 
 # full ability mechanism write-ups (shown in the Mechanism tab of the picker)
@@ -415,7 +422,9 @@ MECH = {
         "如意法 (道具 32247)\n"
         "1) 脚本: EXECUTE_SCRIPT + DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE x4 (清除移动限制组) + BindBuff 4421 (明教_夜叉心_免控)\n"
         "2) 动画 = F1smj10双刀buff04_清净心01 (免控姿态, m_明教清净心01.pss)\n"
-        "3) 音效 wem 75054615 = riyuejiaohui.wav"
+        "3) 音效 wem 75054615 = riyuejiaohui.wav\n"
+        "宿主(Skill 2026-09-29): tani F1smj10双刀buff04_清净心01 内嵌 .Sfx 标签 (m明教元素18/19.sfx, g光晕02.sfx, 释放_气场聚集03.sfx) "
+        "-> 播放该 tani 让宿主 AV (Render); 改播其基础 .ani f1smj10双刀buff04.ani (无标签) + 作者 PSS m_明教清净心01.pss 正常渲染 (火柱)"
     ),
 }
 

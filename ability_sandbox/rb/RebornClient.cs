@@ -122,10 +122,21 @@ internal static class RebornClient
         var feiSteps = new List<ProcStep>();
         var feiTanis = new List<string>();
         string feiMatched = "";
+        var ruyiSteps = new List<ProcStep>();
+        var ruyiTanis = new List<string>();
+        string ruyiMatched = "";
+        bool ruyiActive = false;
+        long ruyiStart = 0, ruyiUntil = 0;
+        int ruyiIdx = 0;
+        bool ruyiPss = false;
+        string ruyiPssPath = "";
+        float lastRuyiX = 1e9f, lastRuyiZ = 1e9f;
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
         bool autoSkillConfirmDone = false;
-        Action loadFeiZhua = delegate
+        // dataset entry loader shared by every ability (anim/sound/dummy steps)
+        Action<string, List<ProcStep>, List<string>, string[]> loadAbility =
+            delegate(string abName, List<ProcStep> abSteps, List<string> abTanis, string[] abMatched)
         {
             try
             {
@@ -138,12 +149,12 @@ internal static class RebornClient
                     var d = o as Dictionary<string, object>;
                     if (d == null) continue;
                     object nv;
-                    if (!d.TryGetValue("name", out nv) || nv == null || nv.ToString() != "临时飞爪") continue;
+                    if (!d.TryGetValue("name", out nv) || nv == null || nv.ToString() != abName) continue;
                     object mv;
-                    if (d.TryGetValue("matched", out mv) && mv != null) feiMatched = mv.ToString();
+                    if (d.TryGetValue("matched", out mv) && mv != null) abMatched[0] = mv.ToString();
                     object tv;
                     if (d.TryGetValue("tanis", out tv) && tv is object[])
-                        foreach (object t in (object[])tv) if (t != null) feiTanis.Add(t.ToString());
+                        foreach (object t in (object[])tv) if (t != null) abTanis.Add(t.ToString());
                     object pv2;
                     if (d.TryGetValue("process", out pv2) && pv2 is object[])
                     {
@@ -165,21 +176,27 @@ internal static class RebornClient
                             if (float.TryParse(StrOf(pd, "y"), out f)) st.Y = f;
                             if (float.TryParse(StrOf(pd, "z"), out f)) st.Z = f;
                             if (float.TryParse(StrOf(pd, "s"), out f) && f > 0f) st.S = f;
-                            feiSteps.Add(st);
+                            abSteps.Add(st);
                         }
                     }
                     break;
                 }
-                Log("feizhua loaded: steps=" + feiSteps.Count + " tanis=" + feiTanis.Count + " matched=" + feiMatched);
+                Log(abName + " loaded: steps=" + abSteps.Count + " tanis=" + abTanis.Count + " matched=" + abMatched[0]);
             }
-            catch (Exception e) { Log("loadFeiZhua ex: " + e.Message); }
+            catch (Exception e) { Log("loadAbility(" + abName + ") ex: " + e.Message); }
         };
+        string[] feiMatchedBox = new string[1] { "" };
+        string[] ruyiMatchedBox = new string[1] { "" };
+        Action loadFeiZhua = delegate { loadAbility("临时飞爪", feiSteps, feiTanis, feiMatchedBox); feiMatched = feiMatchedBox[0]; };
+        Action loadRuyi = delegate { loadAbility("如意法", ruyiSteps, ruyiTanis, ruyiMatchedBox); ruyiMatched = ruyiMatchedBox[0]; };
 
         // resolve a process step's clip name to a vfs path
         Func<string, string> resolveTani = delegate(string needle)
         {
             if (string.IsNullOrEmpty(needle)) return "";
             foreach (string t in feiTanis)
+                if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
+            foreach (string t in ruyiTanis)
                 if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
             return f1 + "F1" + needle + ".tani";
         };
@@ -226,6 +243,7 @@ internal static class RebornClient
                 Log("note: another Skill instance is running - continuing (no limit)");
         }
         loadFeiZhua();
+        loadRuyi();
 
         var form = new Form();
         form.Text = "Skill";
@@ -271,16 +289,21 @@ internal static class RebornClient
         abilityPanel.Size = new System.Drawing.Size(224, 96);
         abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
         abilityPanel.Visible = false;
+        Func<string> abilityLabel = delegate
+        {
+            return "P: " + (abilitySel == "feizhua" ? "临时飞爪" : (abilitySel == "ruyifa" ? "如意法" : "风来吴山"));
+        };
         var abilityList = new ListBox();
         abilityList.Items.Add("风来吴山 (flws)");
         abilityList.Items.Add("临时飞爪 (feizhua)");
-        abilityList.SelectedIndex = abilitySel == "feizhua" ? 1 : 0;
+        abilityList.Items.Add("如意法 (ruyifa)");
+        abilityList.SelectedIndex = abilitySel == "feizhua" ? 1 : (abilitySel == "ruyifa" ? 2 : 0);
         abilityList.Location = new System.Drawing.Point(6, 6);
         abilityList.Size = new System.Drawing.Size(212, 60);
         abilityList.SelectedIndexChanged += delegate
         {
-            abilitySel = abilityList.SelectedIndex == 1 ? "feizhua" : "flws";
-            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
+            abilitySel = abilityList.SelectedIndex == 1 ? "feizhua" : (abilityList.SelectedIndex == 2 ? "ruyifa" : "flws");
+            abilityBtn.Text = abilityLabel();
             Log("ability selected: " + abilitySel);
         };
         abilityPanel.Controls.Add(abilityList);
@@ -302,7 +325,7 @@ internal static class RebornClient
         {
             abilityBtn.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 150), 10);
             abilityPanel.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 236), 36);
-            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
+            abilityBtn.Text = abilityLabel();
         };
         panel.Resize += delegate { placeAbilityUi(); };
         panel.Controls.Add(abilityBtn);
@@ -1823,6 +1846,16 @@ internal static class RebornClient
                         feiConfirm = true;
                     }
                 }
+                else if (abilitySel == "ruyifa")
+                {
+                    // dataset process: anim (清净心 tani) + sound + PSS stance
+                    skillUntil = now + 3000;
+                    curClip = null;
+                    ruyiActive = true; ruyiStart = now; ruyiUntil = now + 3000;
+                    ruyiIdx = 0; ruyiPss = false; ruyiPssPath = "";
+                    lastRuyiX = 1e9f; lastRuyiZ = 1e9f;
+                    Log("ruyifa cast: steps=" + ruyiSteps.Count + " matched=" + ruyiMatched);
+                }
                 else
                 {
                     skillUntil = now + skillMs;
@@ -1911,6 +1944,71 @@ internal static class RebornClient
                 {
                     feiSeqActive = false;
                     Log("feizhua device gone (160帧寿命, was hidden)");
+                }
+            }
+
+            // 如意法: dataset process runner (anim / sound / dummy PSS on caster)
+            if (ruyiActive)
+            {
+                long rel = now - ruyiStart;
+                while (ruyiIdx < ruyiSteps.Count && ruyiSteps[ruyiIdx].T <= rel)
+                {
+                    ProcStep st = ruyiSteps[ruyiIdx];
+                    ruyiIdx++;
+                    try
+                    {
+                        if (st.Kind == "anim")
+                        {
+                            // full vfs paths pass through; short names resolve
+                            // against the ability's tani list
+                            string path = st.V.IndexOf('\\') >= 0 ? st.V : resolveTani(st.V);
+                            if (!string.IsNullOrEmpty(path)) { curClip = null; setClip(path); }
+                            Log("ruyifa anim -> " + st.V + " = " + path);
+                        }
+                        else if (st.Kind == "sound")
+                        {
+                            if (soundOn)
+                            {
+                                string wav = Path.Combine(soundDir, st.V + ".wav");
+                                if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
+                            }
+                            Log("ruyifa sound -> " + st.V);
+                        }
+                        else if (st.Kind == "dummy")
+                        {
+                            if (Env("SB_RUYI_NOPSS", "0") == "1")
+                            {
+                                Log("ruyifa dummy skipped (SB_RUYI_NOPSS) -> " + st.V);
+                            }
+                            else
+                            {
+                                ruyiPss = true; ruyiPssPath = st.V;
+                                Log("ruyifa dummy -> " + st.V);
+                            }
+                        }
+                    }
+                    catch (Exception e) { Log("ruyifa step ex (" + st.Kind + "): " + e.Message); }
+                }
+                if (ruyiPss && ruyiPssPath.Length > 0)
+                {
+                    // the stance PSS follows the caster (reposition on movement)
+                    bool first = lastRuyiX > 1e8f;
+                    if (first || Math.Abs(px - lastRuyiX) > 16f || Math.Abs(pz - lastRuyiZ) > 16f)
+                    {
+                        lastRuyiX = px; lastRuyiZ = pz;
+                        var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
+                        float half = curYaw * 0.5f;
+                        var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
+                        var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
+                        long h = scene.AddDummyModel("ruyi_pss", ruyiPssPath, pp, pr, ps);
+                        if (first) Log("ruyifa pss -> " + ruyiPssPath + " handle=" + h);
+                    }
+                }
+                if (now >= ruyiUntil)
+                {
+                    ruyiActive = false;
+                    if (ruyiPss) { ruyiPss = false; try { scene.RemoveDummyModel("ruyi_pss"); } catch { } }
+                    Log("ruyifa done");
                 }
             }
 

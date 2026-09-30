@@ -163,3 +163,23 @@ played by MovieEngineCLR (AV), so the aim point now shows only the authored
   (`crop_mesh1x.png`, temp). `build_candidates.py` compiles.
 - Outcome: Z roof case solved; indicator resource restored, display remains host-limited.
 - Re-open: native SFX/effect path.
+
+### 2026-09-29 — Skill sandbox — 如意法 (32247): first dataset-driven ability cast
+- Did: added 如意法 to the ability panel (P) and a **dataset-driven process runner**
+  (anim / sound / dummy steps read from `ability_candidates.json`, generic loader shared
+  with 飞爪); process added to the tracked dataset, the runtime copy, and the `PROCESS`
+  dict in `build_candidates.py`. Steps: base `.ani`
+  `data\source\player\f1\动作\f1smj10双刀buff04.ani`, sound 75054615
+  (`riyuejiaohui.wav`), authored PSS
+  `data\source\other\hd特效\技能\pss\发招\m_明教清净心01.pss` (spawns at the caster and
+  follows movement).
+- Why the base `.ani`: the matched tani `F1smj10双刀buff04_清净心01.tani` embeds `.Sfx`
+  tags (`m明教元素18/19.sfx`, `g光晕02.sfx`, `释放_气场聚集03.sfx`) — playing it AVs the
+  host in `KGEngineCLR.Render()` (exit `0xC0000005`, `SB_RUYI_NOPSS=1` A/B proved the PSS
+  was not the cause); its base `.ani` is tag-free and plays.
+- Evidence: `Skill_20260929_2048*.log` — cast → anim/sound/dummy → PSS handle →
+  `ruyifa done` → `DONE`, exit 0; `rc_00_2500ms.png` (authored fire-pillar PSS on the
+  caster), `rc_01_4500ms.png`.
+- Outcome: solved — first generic, data-driven ability cast (no special-casing).
+- Re-open: none (the PSS runs its own authored duration; add a `状态` buff-PSS step when
+  staging the sustained part).
