@@ -374,7 +374,7 @@ internal static class AssetSandbox
     static void BuildUi()
     {
         form = new Form();
-        form.Text = "JX3 Asset Sandbox - \u7EDD\u5883\u6218\u573A doodad assets";
+        form.Text = "sandbox-asset - \u7EDD\u5883\u6218\u573A doodad assets";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new Size(1500, 920);
         form.KeyPreview = true;

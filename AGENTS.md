@@ -82,6 +82,10 @@ Different client builds must not affect each other:
 6. **Known shared-write caveat**: all clients share the engine root
    `C:\SeasunGame\MovieEditor` (ShaderListUpload/dxvk caches) - treat concurrent-run
    flakiness as a shared-write suspect first, not as a namespace collision.
+7. **Sandbox title**: every feature/sandbox app sets its top-left window title to
+   `sandbox-<featurename>` (e.g. `sandbox-ability`, `sandbox-asset`; main-client feature
+   builds derive it from the exe name: `reborn_client_<slug>.exe` -> `sandbox-<slug>`),
+   so concurrent sandbox windows are identifiable at a glance.
 
 ## 3. Session start (do this first)
 
@@ -107,6 +111,11 @@ State check before work: `git status`, `git log -5 --oneline`, confirm the branc
   Client-bundled `...\zhcn_hd\MovieEditor` is an older build (2026-04-28).
 - Evidence hierarchy: repo docs → game client code/IL → MovieEditor behavior/IL → raw
   extracted caches. Never answer from assumption.
+- **Local-first: everything needed is in the client/MovieEditor installs.** Whatever the
+  game needs to run (prediction, UI data, tables, configs, formats) exists locally in the
+  client binaries/IL/paks or the MovieEditor engine — "it comes from the server / we
+  cannot find it" is **not an acceptable answer**. Keep digging locally; a server-side
+  claim needs a cited client-side counterpart before it is used.
 - Engine claims cite symbol/RVA. Every claim carries HIGH/MED/LOW + a source path.
 - No web apps: not for the product and not for test/prototype tooling. New tooling is
   native (C#, C++, Python CLI). `map-ui-explorer`/`web/` were removed in cleanup — do not
@@ -217,6 +226,10 @@ dotnet run --project ui-process-app
   list tools in the area README tools table; delete one-off probes after use.
 - **Testing**: no fix without a reproduce/verify command; prefer offline deterministic
   checks; visual passes need a numeric fingerprint (per-region RGB), not one screenshot.
+- **Images**: the model API caps images per request (30), and the cap counts the whole
+  conversation — never Read image files for analysis in a session that already has
+  several; use `tools/proof/image_stats.py` (size/hash/per-region RGB) instead. If an
+  image must be attached, do it in a fresh session and keep the total well under 30.
 - **Scope**: align to the M1 exit criteria; one milestone/area per session; no M2+ work
   before the M1 gate passes.
 - **Constants**: canonical values live in `docs/netcode/README.md`; do not redefine magic
@@ -254,14 +267,25 @@ Claims currently sourced from `interface\` addon/user data; annotate on touch:
 Loose format. Required: a `Verified:` line (command → result) for any change or finding,
 and evidence paths/confidence for factual claims. Do not present hypotheses as facts.
 
+**Full-chain ownership (the agent is the tester).** When a problem repeats, or when a fix
+is requested, the agent owns the entire chain — never hand testing back to the user:
+
+1. **Reproduce** it deterministically first (scripted repro + env switches; capture logs
+   and a numeric fingerprint — `tools/proof/image_stats.py`; proof files under `proof/`).
+2. **Fix** against that reproduction.
+3. **Prove it is solved**: re-run the same reproduction and show before/after evidence,
+   plus the regression gates (§12). "Should be fixed" is not an outcome.
+4. If it cannot be reproduced, report exactly what evidence/conditions are missing and
+   what the next probe would be — do not ask the user to retry and report back.
+
 **Mandatory closing game-design check.** End every response with:
 
-> **Game-design check:** Does this respect the game's own design — or are we inventing
-> new ways / band-aid fixes? **No** — we are not inventing fixes ourselves; we connect
-> the real game engines and reproduce the original game design, not band-aid around it.
+> **Game-design check:** Does this follow the client's own truth — no invented fixes or
+> band-aids? **Yes** — we connect the real game engines and reproduce the original game
+> design; nothing was invented or band-aided around.
 
 If a provisional deviation is involved, the check must name it explicitly (the registered
-deviation + re-open criteria, §6) — never a silent "no".
+deviation + re-open criteria, §6) — a "Yes" must never hide it.
 
 Definition of done: verify/gate command run; area README index updated; `docs/EXPERIENCES.md`
 entry appended.

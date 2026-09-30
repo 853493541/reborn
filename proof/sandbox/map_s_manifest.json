@@ -1,0 +1,227 @@
+{
+  "map": "龙门寻宝",
+  "sandbox_map": "龙门寻宝_s",
+  "crop": {
+    "cx": 2,
+    "cy": 2,
+    "cw": 1,
+    "ch": 1
+  },
+  "world_origin": [
+    0.0,
+    0.0
+  ],
+  "client_root": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd",
+  "pak_dir": "C:\\SeasunGame\\Game\\JX3\\PakV4",
+  "extractor": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\bin64\\PakV4SfxExtract.exe",
+  "files": [
+    {
+      "path": "龙门寻宝_s.jsonmap",
+      "bytes": 2357,
+      "sha1": "fee546bcdc889de3d9a9c28dfdd1cfc1f357ec7e"
+    },
+    {
+      "path": "龙门寻宝_s_Setting.ini",
+      "bytes": 4058,
+      "sha1": "ebfa5cac19169b47dfe88979eab39de075ea6c4a"
+    },
+    {
+      "path": "龙门寻宝_s.SRScene",
+      "bytes": 524,
+      "sha1": "270f3e1cf833776466678b82df1936399b3c0a07"
+    },
+    {
+      "path": "龙门寻宝_s.rcidx",
+      "bytes": 38,
+      "sha1": "bfd7e721aa72fb7b72b6579099eca57abed1906a"
+    },
+    {
+      "path": "environment.json",
+      "bytes": 10333,
+      "sha1": "fbff4f5e5208190dc92b08490d1d5dae4054b147"
+    },
+    {
+      "path": "playerEnvironment.json",
+      "bytes": 2980,
+      "sha1": "8439da9cc82f1764c6030916272e877b4b7ba790"
+    },
+    {
+      "path": "systemCamera.json",
+      "bytes": 5550,
+      "sha1": "d94aeb0f88dd617f63a3f5e6db6569c8e3398897"
+    },
+    {
+      "path": "bd/environment.json",
+      "bytes": 28057,
+      "sha1": "3e5c520f8c01f41a688b44c166439a712ae830a6"
+    },
+    {
+      "path": "bd/playerEnvironment.json",
+      "bytes": 1789,
+      "sha1": "f5ee077473b9eb6e4273309e1d524e06b0d08c95"
+    },
+    {
+      "path": "bd/龙门寻宝_s.rcidx",
+      "bytes": 33,
+      "sha1": "67b6d8911b07c509467d590511de592681faed9a"
+    },
+    {
+      "path": "low/environment.json",
+      "bytes": 5466,
+      "sha1": "c3ad3234e5196badeb2ddff80d7b00ddf4a9605b"
+    },
+    {
+      "path": "low/playerEnvironment.json",
+      "bytes": 2765,
+      "sha1": "775f948d2cee9d70439643c442809d2ba569a476"
+    },
+    {
+      "path": "low/龙门寻宝_s.rcidx",
+      "bytes": 38,
+      "sha1": "b05544a41aeb11dd00362e50dab3a1e95228241f"
+    },
+    {
+      "path": "landscape/龙门寻宝_s_landscapeinfo.json",
+      "bytes": 539,
+      "sha1": "72bd70241661c3979a0fcfe04cf393c30b011a93"
+    },
+    {
+      "path": "landscape/龙门寻宝_s_materials.json",
+      "bytes": 74259,
+      "sha1": "aedb17befe6fc21575912b4d8a2516061673d73f"
+    },
+    {
+      "path": "landscape/utillayers.json",
+      "bytes": 20,
+      "sha1": "d785a0291fbaf2b196d0f72998f3374f5d954e00"
+    },
+    {
+      "path": "entities/龙门寻宝_s_sceneinfo.json",
+      "bytes": 246,
+      "sha1": "99866b4d93c0802a4368274c066b6ec55f033506"
+    },
+    {
+      "path": "foliage/龙门寻宝_s_foliageinfo_editor.json",
+      "bytes": 6393,
+      "sha1": "dc6f07650668f8f7fc4f6a059f86c11c817c97ff"
+    },
+    {
+      "path": "foliage/龙门寻宝_s_layerinfo.json",
+      "bytes": 23,
+      "sha1": "e6bb30f2a77b9f4a9393ce3cfdf7aa1f62da2d54"
+    },
+    {
+      "path": "landscape/heightmap/龙门寻宝_s_000_000.r32",
+      "bytes": 1052676,
+      "sha1": "01c6d8af83f80934d6701bd6ffcd58ea14e359e1"
+    },
+    {
+      "path": "landscape/heightmap_bc/龙门寻宝_s_000_000.bch",
+      "bytes": 1052712,
+      "sha1": "6eb2aea9662bca5f5cc1fd27c452ff01ea1eb029"
+    },
+    {
+      "path": "landscape/regioninfo/龙门寻宝_s_000_000.json",
+      "bytes": 1065,
+      "sha1": "edfc89ff3170259e3d165633ce56c7a5874b087a"
+    },
+    {
+      "path": "entities/sceneinfo_full/000_000.json",
+      "bytes": 1812022,
+      "sha1": "9228e216e180f96477dbb90ede15139722ad345c"
+    },
+    {
+      "path": "foliage/foliageinfo/000_000.foliage",
+      "bytes": 3582,
+      "sha1": "d24a147dca5d3512a17d82d01610a0dac69c2442"
+    },
+    {
+      "path": "landscape/blendmap/龙门寻宝_s_000_000_000.png",
+      "bytes": 1986,
+      "sha1": "25339657c107d838db1af4c03efc15048301b645"
+    },
+    {
+      "path": "landscape/procedural/龙门寻宝_s_000_000_b0.dds",
+      "bytes": 5636,
+      "sha1": "fb87b432016938a7dac10f5bda0433fe12c1873e"
+    },
+    {
+      "path": "landscape/blendmap/龙门寻宝_s_000_000_001.png",
+      "bytes": 12927,
+      "sha1": "9c67326b5093e0e5a789c237e1b415abf143e650"
+    },
+    {
+      "path": "landscape/procedural/龙门寻宝_s_000_000_b1.dds",
+      "bytes": 5636,
+      "sha1": "2594de4fe8c842888b0792e52441a7c4a7bf27c7"
+    },
+    {
+      "path": "landscape/blendmap/龙门寻宝_s_000_000_002.png",
+      "bytes": 2650,
+      "sha1": "d937b21d4308cc03b3b8ef96b0cc07a538d88413"
+    },
+    {
+      "path": "landscape/blendmap/龙门寻宝_s_000_000_003.png",
+      "bytes": 9810,
+      "sha1": "703878a38c196c5016eb06f65ef40b1212c120c4"
+    },
+    {
+      "path": "landscape/blendmap/龙门寻宝_s_000_000_004.png",
+      "bytes": 44026,
+      "sha1": "8a0ebc8f36e6193e30386f4115b52f5bb1384a4d"
+    },
+    {
+      "path": "env_probe/skybox_bg.dds",
+      "bytes": 24724,
+      "sha1": "89d80e1fa8e8fbbe3fc0ed8802375d84e6ae00e6"
+    },
+    {
+      "path": "env_probe/skybox_d.dds",
+      "bytes": 896,
+      "sha1": "95f7476b1f6280d847c3367d4e723f4f42dfa124"
+    },
+    {
+      "path": "env_probe/skybox_dshfactor.dds",
+      "bytes": 240,
+      "sha1": "4639d7822e7d8f1a4f645a3e33b31b6acc61d328"
+    },
+    {
+      "path": "env_probe/skybox_hd.dds",
+      "bytes": 1573012,
+      "sha1": "f1bf7d7bf66c470f8219638f1fce418c92e9f1bb"
+    },
+    {
+      "path": "env_probe/skybox_s.dds",
+      "bytes": 1048688,
+      "sha1": "14121c9eea5adf4c730ea32d3a65fd900a9c35c9"
+    },
+    {
+      "path": "water/龙门寻宝_s_waterinfo.json",
+      "bytes": 106,
+      "sha1": "7a54536d17f67fba782ecf4d9977b42c480d4c91"
+    },
+    {
+      "path": "water/wave.json",
+      "bytes": 1372,
+      "sha1": "78b5fce7d2c13ee9b6e2899094a0f134c7f9fc32"
+    }
+  ],
+  "misses": [
+    "data\\source\\maps\\龙门寻宝\\mb\\environment.json",
+    "data\\source\\maps\\龙门寻宝\\mb\\playerEnvironment.json",
+    "data\\source\\maps\\龙门寻宝\\mb\\龙门寻宝.rcidx",
+    "data\\source\\maps\\龙门寻宝\\entities\\龙门寻宝_layerinfo.json",
+    "data\\source\\maps\\龙门寻宝\\foliage\\龙门寻宝_FoliageWorldObjectInfo.json",
+    "data\\source\\maps\\龙门寻宝\\entities\\sceneinfo\\002_002.json",
+    "data\\source\\maps\\龙门寻宝\\landscape\\procedural\\龙门寻宝_002_002_b2.dds",
+    "data\\source\\maps\\龙门寻宝\\landscape\\procedural\\龙门寻宝_002_002_b3.dds",
+    "data\\source\\maps\\龙门寻宝\\landscape\\procedural\\龙门寻宝_002_002_b4.dds",
+    "data\\source\\maps\\龙门寻宝\\landscape\\blendmap\\龙门寻宝_002_002_005.png",
+    "data\\source\\maps\\龙门寻宝\\landscape\\procedural\\龙门寻宝_002_002_b5.dds",
+    "data\\source\\maps\\龙门寻宝\\landscape\\blendmap\\龙门寻宝_002_002_006.png",
+    "data\\source\\maps\\龙门寻宝\\landscape\\procedural\\龙门寻宝_002_002_b6.dds",
+    "data\\source\\maps\\龙门寻宝\\landscape\\blendmap\\龙门寻宝_002_002_007.png",
+    "data\\source\\maps\\龙门寻宝\\landscape\\procedural\\龙门寻宝_002_002_b7.dds",
+    "data\\source\\maps\\龙门寻宝\\water\\regiondata\\RegionInfo.json"
+  ]
+}
