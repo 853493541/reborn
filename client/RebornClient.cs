@@ -977,8 +977,11 @@ internal static class RebornClient
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f, pJumpV = 1350f;
-        float pSpeed = 96f, pRun = 320f;
-        float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
+        // Real locomotion speeds from the shipped CommonNumber table
+        // (proof/gravity/number.krl.txt): CharacterWalkSpeed=6, CharacterRunSpeed=20
+        // in units per 15 Hz logic frame -> 90 / 300 u/s (exact integer per tick).
+        float pSpeed = 90f, pRun = 300f;
+        float pSprint = 8.8f * 64f;   // double-tap W hold: host value (8.8 尺/s), table pending
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose

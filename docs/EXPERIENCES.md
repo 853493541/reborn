@@ -504,3 +504,12 @@ solved it, and what is still open. **Newest at the bottom.**
   table dump + per-state thresholds; deprioritized behind P3/P4 unless slides
   are needed.
 - Evidence: `proof/gravity/disasm/process_drop_speed.txt`; plan doc §8.3.
+
+### 2026-09-30 — movement — T4 done: walk/run from the shipped CommonNumber table
+- Found `CharacterWalkSpeed=6`, `CharacterRunSpeed=20`, `CharacterSwimSpeed=20`,
+  Ride 8/40 in `proof/gravity/number.krl.txt` (units per 15 Hz logic frame).
+  Client constants updated: walk 90 u/s, run 300 u/s - exact 6/20 u per tick.
+- Verified: build ok, selftest 24/24; in-game `spd=300u/s(RUN)` then
+  `90u/s(WALK)` (`reborn_20260930_152403.log`), integer positions.
+- Remaining: sprint hold value (host 8.8 尺/s), `CharacterYawTurnSpeed`
+  (camera A10).
