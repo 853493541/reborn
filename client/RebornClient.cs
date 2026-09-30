@@ -707,18 +707,30 @@ internal static class RebornClient
         // (authored End triple xy 125 / vz -140 / g 12 -> 1875 u/s fwd + 2100 u/s
         // down); releasing W ends the state but the velocity persists, so the
         // character keeps falling forward+down fast. No special animation.
-        float leapGravityPerSec = 0f;   // state gravity while WW held (0 = default)
+        // WW in air replays the shipped flight curve (JumpFrameParam school 10
+        // jump 1): per-frame forward/down velocities (XY peak 205 u/f = 3075 u/s,
+        // dive Z -949 u/f = -14235 u/s). Releasing W ends the state but the
+        // current velocity is kept (player tech). No special animation.
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
         bool wwStateActive = false;     // WW state; ends on W release, velocity kept
+        bool wwCurveActive = false;     // curve playback running
+        int wwCurveFrame = 0;
+        float wwCurveAccum = 0f;
+        Action wwCurveApply = delegate()
+        {
+            if (wwCurveFrame < 0 || wwCurveFrame >= WwRules.FlyCurveXY.Length) return;
+            leapSpeedXY = WwRules.FlyCurveXY[wwCurveFrame] * WwRules.LogicTicksPerSecond;
+            vy = WwRules.FlyCurveZ[wwCurveFrame] * WwRules.LogicTicksPerSecond;
+        };
         Action wwCharge = delegate()
         {
-            vy = WwRules.EndVzFrame * WwRules.LogicTicksPerSecond;
-            leapGravityPerSec = -WwRules.EndGravityFrame * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
-            leapSpeedXY = WwRules.EndSpeedXYFrame * WwRules.LogicTicksPerSecond;
             wwStateActive = true;
-            Log("ww AIR: charge vxy=" + WwRules.EndSpeedXYFrame + " vz=" +
-                WwRules.EndVzFrame + " g=" + WwRules.EndGravityFrame + " -> " +
-                leapSpeedXY + " u/s fwd, " + vy + " u/s down (state until W release)");
+            wwCurveActive = true;
+            wwCurveFrame = 0;
+            wwCurveAccum = 0f;
+            wwCurveApply();
+            Log("ww AIR: flight curve start (JumpFrameParam school10 jump1: entry " +
+                WwRules.FlyCurveXY[0] + "/" + WwRules.FlyCurveZ[0] + " u/f, XY peak 205, dive Z -949)");
         };
         Action wwTrigger = delegate()
         {
@@ -1000,7 +1012,7 @@ internal static class RebornClient
                 {
                     // player tech: release ends the WW state; velocity is kept
                     wwStateActive = false;
-                    leapGravityPerSec = 0f;
+                    wwCurveActive = false;
                     Log("ww: W released -> state ended, velocity kept (vxy=" + leapSpeedXY +
                         " u/s, vy=" + vy + " u/s)");
                 }
@@ -1481,7 +1493,7 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; wwStateActive = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; wwCurveActive = false; }
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
@@ -1491,13 +1503,13 @@ internal static class RebornClient
                 if (wwd == WwRules.WwAction.Charge) wwCharge();
                 Log("wwdemo: charge action=" + wwd);
             }
-            if (wwDemo && !wwDemoReleased && now >= 8500)
+            if (wwDemo && !wwDemoReleased && now >= 9600)
             {
                 wwDemoReleased = true;
                 if (wwStateActive)
                 {
                     wwStateActive = false;
-                    leapGravityPerSec = 0f;
+                    wwCurveActive = false;
                     Log("wwdemo: W release -> state ended, velocity kept (vxy=" + leapSpeedXY +
                         " u/s, vy=" + vy + " u/s)");
                 }
@@ -1812,7 +1824,7 @@ internal static class RebornClient
                     grounded = false; vy = 0f;
                     // walking off a ledge counts as the J0 takeoff done, so the
                     // first air WW can start the chain (as in the game)
-                    leapGravityPerSec = 0f; leapSpeedXY = 0f; wwStateActive = false;
+                    leapSpeedXY = 0f; wwStateActive = false; wwCurveActive = false;
                 }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
@@ -1822,13 +1834,24 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; wwStateActive = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; wwCurveActive = false; }
             }
 
-            // gravity (WW air chain applies the JumpParam stage gravity)
+            // gravity (WW curve drives the velocity while active)
             if (!grounded)
             {
-                vy += (leapGravityPerSec != 0f ? leapGravityPerSec : pGravity) * dt;
+                if (wwCurveActive)
+                {
+                    wwCurveAccum += dt;
+                    while (wwCurveActive && wwCurveAccum >= WwRules.FlyCurveTickSeconds)
+                    {
+                        wwCurveAccum -= WwRules.FlyCurveTickSeconds;
+                        wwCurveFrame++;
+                        if (wwCurveFrame >= WwRules.FlyCurveXY.Length) { wwCurveActive = false; break; }
+                        wwCurveApply();
+                    }
+                }
+                else vy += pGravity * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
                 py += vy * dt;
@@ -1837,9 +1860,9 @@ internal static class RebornClient
                     py = ground;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
-                    leapGravityPerSec = 0f;
                     leapSpeedXY = 0f;
                     wwStateActive = false;
+                    wwCurveActive = false;
                 }
             }
 
