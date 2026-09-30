@@ -871,7 +871,14 @@ public sealed class FoliageCollision
                     float top = best.triTop;
                     if (top > py + stepHeight && best.lowTop <= py + stepHeight)
                         top = best.lowTop;
-                    if (top > ground && top <= py + stepHeight)
+                    if (top <= py + 0.5f)
+                    {
+                        // the contacting face's top is at or below the feet:
+                        // never an obstacle (floor edges, thresholds below the
+                        // capsule bottom). Do not push out, just keep moving.
+                        stepUp = true;
+                    }
+                    else if (top > ground && top <= py + stepHeight)
                     {
                         ground = top;
                         grounded = true;

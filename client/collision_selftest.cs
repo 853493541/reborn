@@ -220,6 +220,17 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("low_plank_at_wall_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
+
+            // face whose top is below the feet: must never push out (the
+            // user-log case: top=929.9 < feet=933.9 was blocking)
+            MeshBuilder below = new MeshBuilder();
+            below.AddQuad(30f, -100f, -200f, 30f, -100f, 200f, 30f, -10f, 200f, 30f, -10f, -200f);
+            string pb = WriteBin("plate_below", new MeshBuilder[] { below }, new float[][] { M(0f, 0f, 0f) });
+            col = new FoliageCollision(null, pb);
+            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            Check("face_below_feet_passes", !blocked,
+                string.Format("blocked={0} px={1:F2}", blocked, px));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"

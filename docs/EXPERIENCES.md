@@ -248,3 +248,14 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `client/FoliageCollision.cs`; selftest 15/15 (`low_plank_at_wall_passes`);
   run log `reborn_20260929_175736.log`.
 - Outcome: solved for low geometry at wall bases; >0.5 m still blocks (engine default).
+### 2026-09-29 — movement — Faces at/below the feet must never block (user-log case)
+- Did: the user's copied log showed the stuck contact as
+  `blocked by inst=487 mesh=364 top=929.9 feet=933.9 ...001_003sw_hd.mesh` - the
+  contacting face's top is BELOW the player's feet, yet the resolve pushed out.
+  `Resolve` now treats any horizontal contact whose triangle top is `<= feet` as a
+  non-obstacle (no push-out, keep moving), in addition to the existing within-budget
+  climb. Verified in-engine at the same interior spot: 0 blocked events while
+  running through (was 400+ and stuck).
+- Evidence: `client/FoliageCollision.cs`; selftest 16/16 (`face_below_feet_passes`);
+  run `reborn_20260929_181709.log`.
+- Outcome: solved.
