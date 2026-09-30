@@ -287,3 +287,12 @@ solved it, and what is still open. **Newest at the bottom.**
   events; the next block 340 u later is a real 1.05 m wall (top 1007.8, feet 903).
 - Evidence: `client/RebornClient.cs`; run `reborn_20260929_203756.log`.
 - Outcome: solved.
+### 2026-09-29 — movement — Step budget 64 u (1 尺 ground tolerance), field case
+- Did: the user's run showed the stuck spot (19756,971,...) bouncing at the house floor
+  edge: floor ~51 u above the outside ground, 1 u over the 50 u CCT default. The
+  engine's ground/landing tolerance constant is 64 u = 1 尺 (`ProcessVerticalMove`
+  0x14031A25E), so the step budget is now 64 u (`RC_STEP_HEIGHT` override). New
+  selftest `step_51u_with_64_budget` (17/17).
+- Evidence: run `reborn_20260929_203902.log` (vy/fall-clip loop at the floor edge);
+  `client/RebornClient.cs`.
+- Outcome: solved (field case covered by an engine constant).

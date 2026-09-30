@@ -981,12 +981,14 @@ internal static class RebornClient
         float playerRadius = 17f, playerHeight = 116f;
         float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
         float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
-        // Character step budget: the engine's own PxControllerDesc default
-        // stepOffset = 0.5 m = 50 u (recovered at PhysicsEngineX64 RVA
-        // 0x18000e910, metric PhysX scene; docs/movement/
-        // JX3_STEP_FORGIVENESS_RESEARCH.md). RC_STEP_HEIGHT overrides.
-        float stepHeight = 50f;
-        float.TryParse(Env("RC_STEP_HEIGHT", "50"), out stepHeight);
+        // Character step budget: the engine's recovered CCT default is
+        // stepOffset 0.5 m = 50 u (PhysicsEngineX64 PxControllerDesc ctor), but
+        // the engine's own ground/landing tolerance constant is 64 u = 1 尺
+        // (ProcessVerticalMove 0x14031A25E). Field case: interior house floors
+        // sit ~51 u above the outside ground and are walkable in the live game,
+        // so the budget is the 64 u ground tolerance. RC_STEP_HEIGHT overrides.
+        float stepHeight = 64f;
+        float.TryParse(Env("RC_STEP_HEIGHT", "64"), out stepHeight);
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";

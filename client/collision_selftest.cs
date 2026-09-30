@@ -188,6 +188,19 @@ internal static class CollisionSelfTest
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
         }
 
+        // 7b. 64 u ground tolerance: a 51 u floor edge (the field case) climbs
+        {
+            MeshBuilder m = new MeshBuilder();
+            m.AddBox(30f, -10f, -200f, 300f, 51f, 200f);
+            string p = WriteBin("step51", new MeshBuilder[] { m }, new float[][] { M(0f, 0f, 0f) });
+            FoliageCollision col = new FoliageCollision(null, p);
+            float px = 29.9f, py = 0f, pz = 0f, ground = 0f;
+            bool grounded = false;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f);
+            Check("step_51u_with_64_budget", !blocked && Math.Abs(ground - 51f) < 0.05f,
+                string.Format("blocked={0} ground={1:F2}", blocked, ground));
+        }
+
         // 8. CCT top rule on face-only geometry: a thin plate with no up-facing
         //    top below the step budget must not block; a tall one must block.
         {
