@@ -141,7 +141,8 @@ def main():
             if len(ctx) >= off + 8:
                 regs[name] = u64(ctx, off)
         print('regs   ' + ' '.join('%s=0x%X' % (k, regs[k]) for k in
-                                   ('rip', 'rsp', 'rbp', 'rcx', 'rdx', 'rbx', 'rsi', 'rdi')))
+                                   ('rip', 'rsp', 'rbp', 'rcx', 'rdx', 'rbx', 'rsi', 'rdi',
+                                    'r12', 'r13', 'r14', 'r15')))
 
     print('-- strings at register pointers --')
     for name in ('rcx', 'rdx', 'rbx', 'rdi', 'rsi', 'r8', 'r9', 'r12', 'r13', 'r14', 'r15'):
