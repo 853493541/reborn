@@ -577,7 +577,18 @@ internal static class RebornClient
             double poseOv;
             if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
             if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
-            camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
+            // user decision 2026-09-30: both follow rows start at the max range
+            // (fMaxCameraDistance; 广角 is already the client panel max). This
+            // overrides the 1245 u client-number initial (C10) - target AND
+            // init distance are max, so the follow camera holds at max instead
+            // of easing back to the row value.
+            double maxDistM = camSys.ClampDistanceUnits(cameraSettings.MaxCameraDistance)
+                              / camSys.UnitsPerMeter;
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("InitCameraDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_SPRINT].Set("TargetDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_SPRINT].Set("InitCameraDistance", maxDistM);
+            camSys.Distance = maxDistM * camSys.UnitsPerMeter;
             // deterministic test distance (world units): RC_CAM_DIST=100 puts
             // the camera close-up while RC_CAM_PITCH tilts it (repro harness)
             double distOv;

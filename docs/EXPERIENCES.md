@@ -823,3 +823,18 @@ E6 update.
 **Re-open:** the exact real follow distance (C10) still scales the perceived
 angle; if the CDN per-mode rows land, re-derive the view angle with the real
 `TargetDistance`/`CameraHeight`.
+
+### 2026-09-30 — camera/client — Start both follow rows at max range (user decision)
+- Did: user report — after the start-angle change the camera no longer starts at
+  max range. Per the earlier "both start from max" decision (distance + 广角;
+  FOV is already the client panel max), the host now sets **both** the character
+  and sprint rows' `TargetDistance` + `InitCameraDistance` to the clamped
+  `fMaxCameraDistance` and starts `Distance` there, so the follow camera holds
+  at max instead of easing back to the 1245 u client number (C10).
+- Evidence: log `reborn_out/reborn_20260930_164645.log` —
+  `CameraSystem ready: mode=character dist=2000u`, camdbg `dist=2000 r=2077`
+  (offset incl. height), `pitch=0.350 vpitch=-0.441` (camera above, ~25 deg
+  down). `camera_smoke_cam-wwdrag.exe` ALL PASS. `HOST_DEVIATIONS.md` C10
+  updated.
+- Outcome: solved (host/user decision; 1245 stays the client-number reference,
+  max is the host start).
