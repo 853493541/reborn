@@ -35,16 +35,15 @@ internal static class WwRules
     {
         None,
         Sprint,
-        Leap
+        Charge
     }
 
-    public static WwAction Evaluate(bool grounded, bool doubleTapW, bool schoolWeaponEquipped, int stage)
+    public static WwAction Evaluate(bool grounded, bool doubleTapW, bool schoolWeaponEquipped)
     {
         if (!doubleTapW) return WwAction.None;
         if (grounded) return WwAction.Sprint;
         if (!schoolWeaponEquipped) return WwAction.None;
-        if (stage < 1 || stage >= ChainVzFrame.Length) return WwAction.None;
-        return WwAction.Leap;
+        return WwAction.Charge;
     }
 
     public static float ApexMeters(int stage)
@@ -59,13 +58,11 @@ internal static class WwRules
     public static int SelfTest()
     {
         int fail = 0;
-        fail += Check("GROUND_WW_SPRINT", Evaluate(true, true, true, 0), WwAction.Sprint);
-        fail += Check("GROUND_WW_NO_WEAPON_SPRINT", Evaluate(true, true, false, 0), WwAction.Sprint);
-        fail += Check("AIR_WW_LEAP", Evaluate(false, true, true, 1), WwAction.Leap);
-        fail += Check("AIR_WW_NO_WEAPON_NONE", Evaluate(false, true, false, 1), WwAction.None);
-        fail += Check("AIR_WW_STAGE0_NONE", Evaluate(false, true, true, 0), WwAction.None);
-        fail += Check("AIR_WW_EXHAUSTED_NONE", Evaluate(false, true, true, 6), WwAction.None);
-        fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true, 1), WwAction.None);
+        fail += Check("GROUND_WW_SPRINT", Evaluate(true, true, true), WwAction.Sprint);
+        fail += Check("GROUND_WW_NO_WEAPON_SPRINT", Evaluate(true, true, false), WwAction.Sprint);
+        fail += Check("AIR_WW_CHARGE", Evaluate(false, true, true), WwAction.Charge);
+        fail += Check("AIR_WW_NO_WEAPON_NONE", Evaluate(false, true, false), WwAction.None);
+        fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true), WwAction.None);
         fail += CheckValue("CHAIN_J1_VZ", ChainVzFrame[1], 160f);
         fail += CheckValue("CHAIN_J1_G", ChainGravityFrame[1], 8f);
         fail += CheckValue("CHAIN_J1_XY", ChainSpeedXYFrame[1], 50f);

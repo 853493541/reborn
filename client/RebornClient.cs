@@ -112,13 +112,7 @@ internal static class RebornClient
         // stage 1/2 = 跳跃2/3 (小跳b/c), stage 3 (downward) = ChongCiQingGong dive.
         // NOTE: f1b02yd二段跳a.tani AVs the engine in KGEngineCLR.Render()
         // (reproduced 2026-09-29, RC_DEMO with that clip as clipJump).
-        string[] clipLeapStage = new string[6];
-        clipLeapStage[1] = Env("RC_CLIP_LEAP1", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
-        clipLeapStage[2] = Env("RC_CLIP_LEAP2", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
-        clipLeapStage[3] = Env("RC_CLIP_LEAP3", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
-        clipLeapStage[4] = Env("RC_CLIP_LEAP4", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
-        clipLeapStage[5] = Env("RC_CLIP_LEAP5", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
-        // End-phase glide (forward-down dash) uses the ChongCiQingGong dive clip.
+        // End-phase charge (forward-down) uses the ChongCiQingGong dive clip.
         string clipGlide = Env("RC_CLIP_GLIDE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
@@ -710,40 +704,36 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
-        // WW air chain (纵跃段): stage index into WwRules.ChainVzFrame; 0 = J0
-        // (used by the ground jump), air WW advances 1 -> 2 -> 3 (J3 downward).
-        int chainStage = 0;
-        float leapGravityPerSec = 0f;   // active chain-stage gravity (0 = default)
-        float leapSpeedXY = 0f;         // authored JumpSpeedXY of the active stage (u/s)
-        bool leapGlide = false;         // stage rise ended -> End forward-down glide phase
-        Action wwLeap = delegate()
+        // WW in air = the shared 纵跃段 charge (every class): the authored End
+        // triple xy 125 / vz -140 / g 12 -> forward 1875 u/s + down 2100 u/s.
+        float leapGravityPerSec = 0f;   // charge gravity (0 = default)
+        float leapSpeedXY = 0f;         // charge forward speed (u/s)
+        bool leapGlide = false;         // charge active (HUD/clip state)
+        Action wwCharge = delegate()
         {
-            float vzf = WwRules.ChainVzFrame[chainStage];
-            float gf = WwRules.ChainGravityFrame[chainStage];
-            float xyf = WwRules.ChainSpeedXYFrame[chainStage];
-            vy = vzf * WwRules.LogicTicksPerSecond;
-            leapGravityPerSec = -gf * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
-            leapSpeedXY = xyf * WwRules.LogicTicksPerSecond;
-            Log("ww AIR: \u7EB5\u8DC3\u6BB5 stage " + chainStage +
-                " vz=" + vzf + " g=" + gf + " vxy=" + xyf + " u/f -> vy=" + vy +
-                " u/s g=" + leapGravityPerSec + " u/s2 vxy=" + leapSpeedXY + " u/s");
-            chainStage++;
+            vy = WwRules.EndVzFrame * WwRules.LogicTicksPerSecond;
+            leapGravityPerSec = -WwRules.EndGravityFrame * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
+            leapSpeedXY = WwRules.EndSpeedXYFrame * WwRules.LogicTicksPerSecond;
+            leapGlide = true;
+            Log("ww AIR: \u7EB5\u8DC3\u6BB5 charge vxy=" + WwRules.EndSpeedXYFrame + " vz=" +
+                WwRules.EndVzFrame + " g=" + WwRules.EndGravityFrame + " -> " +
+                leapSpeedXY + " u/s fwd, " + vy + " u/s down");
         };
         Action wwTrigger = delegate()
         {
-            WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk, chainStage);
+            WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk);
             if (ww == WwRules.WwAction.Sprint)
             {
                 wSprint = true;
                 Log("ww: SPRINT (8.8 \u5C3A/s)");
             }
-            else if (ww == WwRules.WwAction.Leap)
+            else if (ww == WwRules.WwAction.Charge)
             {
-                wwLeap();
+                wwCharge();
             }
             else
             {
-                Log("ww: no action (grounded=" + grounded + " stage=" + chainStage +
+                Log("ww: no action (grounded=" + grounded +
                     " weapon=" + (wwWeaponOk ? "ok" : "WRONG") + ")");
             }
         };
@@ -1477,15 +1467,15 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
             {
                 wwDemoLeaped = true;
-                WwRules.WwAction wwd = WwRules.Evaluate(grounded, true, wwWeaponOk, chainStage);
-                if (wwd == WwRules.WwAction.Leap) wwLeap();
-                Log("wwdemo: leap action=" + wwd + " nextStage=" + chainStage);
+                WwRules.WwAction wwd = WwRules.Evaluate(grounded, true, wwWeaponOk);
+                if (wwd == WwRules.WwAction.Charge) wwCharge();
+                Log("wwdemo: charge action=" + wwd);
             }
 
             if (demo)
@@ -1797,7 +1787,7 @@ internal static class RebornClient
                     grounded = false; vy = 0f;
                     // walking off a ledge counts as the J0 takeoff done, so the
                     // first air WW can start the chain (as in the game)
-                    chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false;
+                    leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false;
                 }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
@@ -1807,23 +1797,12 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
             }
 
             // gravity (WW air chain applies the JumpParam stage gravity)
             if (!grounded)
             {
-                // chain stage rise ends -> authored End triple: forward-down glide
-                if (leapGravityPerSec != 0f && vy <= 0f && !leapGlide)
-                {
-                    leapGlide = true;
-                    vy = WwRules.EndVzFrame * WwRules.LogicTicksPerSecond;
-                    leapGravityPerSec = -WwRules.EndGravityFrame * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
-                    leapSpeedXY = WwRules.EndSpeedXYFrame * WwRules.LogicTicksPerSecond;
-                    Log("ww AIR: chain End phase vxy=" + WwRules.EndSpeedXYFrame + " u/f vz=" +
-                        WwRules.EndVzFrame + " g=" + WwRules.EndGravityFrame +
-                        " -> " + leapSpeedXY + " u/s fwd, " + vy + " u/s down");
-                }
                 vy += (leapGravityPerSec != 0f ? leapGravityPerSec : pGravity) * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
@@ -1833,7 +1812,6 @@ internal static class RebornClient
                     py = ground;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
-                    chainStage = 0;
                     leapGravityPerSec = 0f;
                     leapSpeedXY = 0f;
                     leapGlide = false;
@@ -1844,16 +1822,7 @@ internal static class RebornClient
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded)
             {
-                if (leapGravityPerSec != 0f)
-                {
-                    if (leapGlide) setClip(clipGlide);
-                    else
-                    {
-                        int li = chainStage - 1;
-                        if (li < 1 || li > 5) li = 1;
-                        setClip(clipLeapStage[li]);
-                    }
-                }
+                if (leapGravityPerSec != 0f) setClip(clipGlide);
                 else setClip(vy > 0f ? clipJump : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
@@ -2791,7 +2760,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (leapGlide ? "GLIDE" : leapGravityPerSec != 0f ? "LEAP" : vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? (leapGlide ? "CHARGE" : vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
