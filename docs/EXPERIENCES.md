@@ -478,3 +478,15 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining P2: T2 slope/air-stop fixed-point port (`ProcessDropSpeed`, Q12,
   64-entry trig); T4 walk/run/sprint per-frame integer alignment (96/320/563
   u/s are not the table's u/f values).
+
+### 2026-09-30 — movement — P2: JumpParam confirms 15 Hz; integer per-tick step
+- Evidence: `proof/gravity/JumpParam.tab` school 0 jump 0 = (XY 40, Z 90,
+  G 11) integers -> 90 u/f * 15 = 1350 u/s and 11 u/f2 * 225 = 2475 u/s2,
+  exactly the client's jump constants: the integer model runs at 15 Hz. The
+  run UI value (5 尺/s at 1 尺 = 64 u = 320 u/s) is 4.69 rounded at 20 u/f
+  (300 u/s). The locomotion table is not in the extracted set (`Sprint.tab`
+  is dive caps 10..120 / 8..900 u/f) - T4 = extract the walk/run table.
+- Did: per-tick displacement is now integral (`step = round(sp * pdt)`), so
+  each logic frame moves an integer number of units like the engine.
+- Verified: build ok, selftest 24/24; run `reborn_20260930_144921.log`:
+  integer positions, rug crossing normal, hits=0.

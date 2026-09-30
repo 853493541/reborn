@@ -1725,7 +1725,10 @@ internal static class RebornClient
                             : walkMode ? pSpeed
                             : wSprint ? pSprint
                             : pRun) / len;
-                float step = sp * pdt;
+                // the engine moves integer units per logic frame (u/f); make
+                // the per-tick displacement integral too
+                float step = (float)Math.Round(sp * pdt);
+                if (step < 1f && sp > 0f) step = 1f;
                 mvx = dirX / len; mvz = dirZ / len;
                 if (step > 20f) subCount = (int)Math.Ceiling(step / 20f);
                 if (subCount > 64) subCount = 64;
