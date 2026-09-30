@@ -213,3 +213,82 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   from game: `camera.json`, `scene_init_param.txt`, baked collision bins, mesh flags.
 - Outcome: solved (audit), no code changes.
 - Re-open: re-run after branch merges; line-level attribution would need per-hunk review.
+
+### 2026-09-29 — engine_host — Mini sandbox client plan (small-map dev root)
+- Did: measured the loop's weight (PakV4 **192.34 GB**, client root 21.62 GB,
+  MovieEditor 2.46 GB) and planned a mini sandbox: sandbox asset root with its own
+  `clientconfig.ini` + mini `PakV4` (or loose tree), trace-driven dependency closure,
+  native repack via the engine's own `KG_PAKFS_*` write API (verified exports:
+  `WriteFile`, `MakeSubPackage`, `CreateDirTree`, `EnableFileTrace`, …), and a small
+  scene tier (existing `source\Map\EmptyMap`/`512Simple2`, then a 2×2 region crop of
+  龙门寻宝 around region (2,2), world coords preserved).
+- Evidence: `docs/engine_host/MINI_SANDBOX_CLIENT.md` (sizes, formats, exports, phases
+  S0–S4); local scans + dumpbin; no install writes.
+- Outcome: plan committed on `agent/mini-sandbox`; S0 (loose-map load spike) and S1
+  (foreign asset root spike) are the next gates.
+
+### 2026-09-29 — client — Mini sandbox: cropped loose map via RC_MAP (verified)
+- Did: built `tools/sandbox/build_sandbox.py` (crop a real map to a loose map dir,
+  world coords preserved by re-anchoring `WorldOrigin` + renaming region files) and
+  verified the client loads it via `RC_MAP=<absolute path>`: InitPak 406 ms,
+  LoadMap 281 ms, `TerrainSampler regions=2x2 origin=(0,0)`, real spawn
+  `(23334,761,24224)`, 5351 collision instances, screenshots render the real scene.
+  Client additions: `RC_PHYS_DLL` override + init/LoadMap elapsed-ms logs.
+- Lesson (dead end): a custom sandbox asset root (junctions + copied configs)
+  stalls `InitPak` ~181 s waiting on the StreamDownloader IPC, and **writable
+  junctions leak engine writes into the install** — shader-cache files in
+  `zhcn_hd\CachedShaders` (20:32:25) and a minidump in `zhcn_hd\bin64\minidump`
+  (20:32:45) were written during the experiment; they cannot be undone (installs
+  are read-only). Never junction writable dirs; absolute `RC_MAP` needs no root
+  change at all and is the supported path.
+- Evidence: `proof/sandbox/{mini_run.log,mini_00_15000ms.png,mini_01_30000ms.png,
+  fingerprints.txt,map_manifest.json}`; `docs/engine_host/MINI_SANDBOX_CLIENT.md`.
+- Outcome: solved. Sandbox = 21 MB loose map dir; scene load ~0.3 s.
+
+### 2026-09-29 — client — Mini sandbox size trim: 1×1 crop, 6.5 MB (1/3)
+- Did: added the 1×1 build (`--crop 2,2,1,1`, region (2,2) = the spawn region)
+  and ran removal tests for the runtime file set: `heightmap/*.r32` is required
+  by the renderer, `heightmap_bc/*.bch` by the physics terrain loader, and
+  `blendmap_bc/*.r8` is an editor bake cache the runtime never reads. The
+  builder now drops `.r8` by default (`--keep-bake-caches` keeps it). Final
+  1×1 bundle: 6.5 MiB / 38 files = 32 % of the 2×2 (20.1 MiB); LoadMap 156 ms,
+  spawn `(23334,761,24224)`, render verified. `run_sandbox.cmd` points at it
+  and sets the title `sandbox-mini` (client derives `sandbox-<slug>` from the
+  exe name per `AGENTS.md` §2.7; `RC_TITLE` overrides).
+- Lesson: a spawn-height check is not enough to validate a trim — dropping
+  `.r32` kept the physics height but rendered sky where the ground was; only the
+  screenshot fingerprint caught it. Trim validation = screenshot + spawn + zero
+  load failures in the engine log.
+- Evidence: `proof/sandbox/{mini_s_run.log,mini_s_00_8000ms.png,
+  map_s_manifest.json,fingerprints.txt}`; `docs/engine_host/MINI_SANDBOX_CLIENT.md`
+  (size profiles + runtime file set).
+- Outcome: solved. 1/3-size sandbox runs with identical terrain/props/spawn.
+
+### 2026-09-29 — client — Quality-tier probe: no low-quality map ships
+- Did: probed the `.jsonmap`-declared quality sets (`hd/bd/bddnc/mb/low`) for
+  龙门寻宝 — 32 candidate paths across the non-HD sets returned only
+  `bd/env_probe/skybox_s.dds`. `MapList.tab` has no quality variants (296/676/677
+  → same jsonmap; 297 is the night map). The HD client loads the root HD set;
+  `bd/` extras it asks for (`focus_face_env_params.json`,
+  `volumetricCloud.json`) are absent in the install and non-fatal. No
+  lower-quality map exists to shrink the sandbox with.
+- Evidence: probe output (extractor, read-only); `MapList.tab` rows;
+  full-client engine log `KG3D_Engine_2026_09_29_21_42_17.log` paths.
+- Outcome: solved (answered); documented in `MINI_SANDBOX_CLIENT.md` §Quality tiers.
+
+### 2026-09-29 — client — Startup cost is engine pre-draw, not the map
+- Did: measured launch→playable for the sandbox (26.8 s) and broke down the
+  engine log: `Init3DEngine` 24.4 s, of which ~22 s is
+  `KG3D_Engine::StartPreDrawShader` (`预渲染总开关:开启`); `LoadMap` is only
+  0.17 s. Root cause of the 22 s: `data/public/PreDrawSetting.ini` ships
+  `ShouldPreDraw=1` + `PreDrawThreadMaxNum=1`; this machine's GPU score is
+  61656 vs the 10257 threshold, but the one-thread cap is what makes the
+  warm-up slow. Full client pays the same 24 s; the sandbox cannot change it.
+- Lesson: engine init is a fixed host cost (~24 s) — scene cropping only cuts
+  map load (1.6 s → 0.17 s) and memory. Faster startup requires overriding
+  `PreDrawSetting.ini` (pak, install read-only) via a writable root (InitPak
+  stall) or an engine-level bypass — both open research items.
+- Evidence: `docs/engine_host/MINI_SANDBOX_CLIENT.md` §Startup breakdown;
+  engine log `KG3D_Engine_2026_09_29_21_54_26.log`; extracted
+  `PreDrawSetting.ini`; `_PreDrawMachineInfo.txt`.
+- Outcome: explained; no fix applied (would need install write — forbidden).
