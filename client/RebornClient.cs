@@ -153,7 +153,21 @@ internal static class RebornClient
         Log("asset_root=" + workingDir + " phys=" + physDll);
 
         var form = new Form();
-        form.Text = "JX3";
+        // Sandbox title (AGENTS.md §2.7): feature builds derive sandbox-<slug>
+        // from reborn_client_<slug>.exe so concurrent sandbox windows are
+        // identifiable; the canonical client keeps "JX3". RC_TITLE overrides.
+        {
+            string windowTitle = Env("RC_TITLE", "");
+            if (windowTitle.Length == 0)
+            {
+                string pn = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+                if (pn == "reborn_client") windowTitle = "JX3";
+                else if (pn.StartsWith("reborn_client_"))
+                    windowTitle = "sandbox-" + pn.Substring("reborn_client_".Length);
+                else windowTitle = pn;
+            }
+            form.Text = windowTitle;
+        }
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();

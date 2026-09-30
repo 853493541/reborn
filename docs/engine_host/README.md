@@ -14,3 +14,4 @@ MovieEditor engine-hosting research and the M1 milestone docs.
 | Tool | Purpose |
 |---|---|
 | `tools/sandbox/build_sandbox.py` | Build a cropped loose mini-map from the real pak (read-only extraction; world coords preserved) |
+| `tools/sandbox/run_sandbox.cmd` | Launch the feature client on the 1×1 sandbox map (title `Sandbox-pure`) |

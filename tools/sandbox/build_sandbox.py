@@ -16,6 +16,12 @@ renaming them to 0-based indices and moving WorldOrigin to
 (-102400 + cx*51200, -102400 + cy*51200) preserves every world coordinate, so
 spawn, object matrices, foliage and the baked collision bins stay valid.
 
+Runtime heightfield: the renderer reads `landscape/heightmap/<name>_i_j.r32`
+and the physics terrain loader reads `landscape/heightmap_bc/<name>_i_j.bch`;
+both are required (dropping .bch breaks terrain sampling; dropping .r32 breaks
+the terrain render). `landscape/blendmap_bc/*.r8` is an editor bake cache the
+runtime does not read and is dropped by default (`--keep-bake-caches` keeps it).
+
 Usage:
   python tools/sandbox/build_sandbox.py --map 龙门寻宝 --crop 2,2,2,2
 
@@ -57,7 +63,7 @@ REGION_FILES = [
     ("entities\\sceneinfo\\{i:03d}_{j:03d}.json", "entities\\sceneinfo\\{i:03d}_{j:03d}.json"),
     ("foliage\\foliageinfo\\{i:03d}_{j:03d}.foliage", "foliage\\foliageinfo\\{i:03d}_{j:03d}.foliage"),
 ]
-for _k in range(6):
+for _k in range(8):
     REGION_FILES.append((
         "landscape\\blendmap\\{m}_{i:03d}_{j:03d}_%03d.png" % _k,
         "landscape\\blendmap\\{m}_{i:03d}_{j:03d}_%03d.png" % _k,
@@ -179,6 +185,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT, help="output dir (map bundle root)")
     ap.add_argument("--client-root", type=Path, default=CLIENT_ROOT)
     ap.add_argument("--work", type=Path, default=None)
+    ap.add_argument("--keep-bake-caches", action="store_true",
+                    help="keep landscape/blendmap_bc/*.r8 (editor bake cache; not read at runtime)")
     args = ap.parse_args(argv)
 
     cx, cy, cw, ch = (int(v) for v in args.crop.split(","))
@@ -192,7 +200,12 @@ def main(argv: list[str] | None = None) -> int:
     map_dir.mkdir(parents=True, exist_ok=True)
 
     plan = build_plan(m, nm, cx, cy, cw, ch)
-    print("[%s] extracting %d candidate paths (crop %d,%d %dx%d)" % (nm, len(plan), cx, cy, cw, ch))
+    if not args.keep_bake_caches:
+        # blendmap_bc/*.r8 is an editor bake cache; the runtime reads
+        # blendmap/*.png. Verified: identical render and terrain without it.
+        plan = [p for p in plan if "\\landscape\\blendmap_bc\\" not in p[0]]
+    print("[%s] extracting %d candidate paths (crop %d,%d %dx%d%s)"
+          % (nm, len(plan), cx, cy, cw, ch, ", keep-bake-caches" if args.keep_bake_caches else ""))
     found = run_pakv4([p[0] for p in plan], work)
     print("[%s] extractor returned %d files" % (nm, len(found)))
     by_norm = {norm(k): v for k, v in found.items()}

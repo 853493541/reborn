@@ -1,25 +1,50 @@
 # Mini Sandbox — a cropped loose map for feature work (verified)
 
 Date: 2026-09-29 · Branch: `agent/mini-sandbox` (`#iso`)
-Status: **VERIFIED** — the client loads a 2×2-region crop of 龙门寻宝 as a loose
-map directory with real terrain, props, collision and spawn.
+Status: **VERIFIED** — the client loads a cropped loose map of 龙门寻宝 with real
+terrain, props, collision and spawn. Size-trimmed 1×1 build: **6.5 MB**
+(32 % of the 2×2 build), render + physics verified.
 
 ## TL;DR
 
 ```powershell
 # build the map once (read-only extraction from the real pak)
-.venv\Scripts\python.exe tools\sandbox\build_sandbox.py --map 龙门寻宝 --crop 2,2,2,2
+.venv\Scripts\python.exe tools\sandbox\build_sandbox.py --map 龙门寻宝 --crop 2,2,1,1 --name 龙门寻宝_s
 
 # run any client build against it
-set RC_MAP=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_mini\龙门寻宝_mini.jsonmap
+set RC_MAP=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap
 C:\SeasunGame\MovieEditor\bin64\reborn_client.exe
 ```
 
 `RC_MAP` accepts an **absolute OS path**; the engine resolves the map's sibling
 files (`landscape/`, `entities/`, `foliage/`, `env_probe/`) through the same
 directory. Everything else (map props, textures, actor clips, paks) keeps
-loading from the normal client install — the sandbox is a **21 MB map folder**,
-not an install. HIGH — verified run, `proof/sandbox/mini_run.log`.
+loading from the normal client install — the sandbox is a small map folder, not
+an install. HIGH — verified runs, `proof/sandbox/mini_run.log` (2×2) and
+`mini_s_run.log` (1×1).
+
+## Size profiles (all verified or measured)
+
+| build | area | files | size | note |
+|---|---|---:|---:|---|
+| `--crop 2,2,2,2` (default) | ~1.0 km² | 98 | 20.1 MiB | full scene, current sandbox |
+| same, cache dropped | ~1.0 km² | 77 | 14.6 MiB | `blendmap_bc/*.r8` removed |
+| `--crop 2,2,1,1` | ~0.25 km² | 38 | **6.5 MiB** | 32 % of the 2×2; render + spawn verified |
+
+The 1×1 crop is region (2,2) of the source map — the region that contains the
+real spawn `(23334,761,24224)`.
+
+### Runtime file set (verified by removal tests)
+
+- `landscape/heightmap/<name>_i_j.r32` — **required** (renderer terrain mesh;
+  dropping it renders sky where the ground should be).
+- `landscape/heightmap_bc/<name>_i_j.bch` — **required** (physics terrain
+  loader; dropping it makes the spawn height sample 0).
+- `landscape/blendmap/<name>_i_j_<layer>.png` — kept (terrain material blend).
+- `landscape/blendmap_bc/*.r8` — editor bake cache, **not read at runtime**;
+  dropped by default (`--keep-bake-caches` keeps it).
+- `entities/sceneinfo_full/*.json` (props), `env_probe/*` (skybox), foliage,
+  regioninfo, materials, water, globals — kept.
 
 ## Crop model (world coordinates preserved)
 
@@ -43,26 +68,28 @@ not an install. HIGH — verified run, `proof/sandbox/mini_run.log`.
    (`WorldOrigin`, `RegionTableSize`),
 4. writes `<name>_manifest.json` (per-file sha1 + misses) next to the map.
 
-Result for the default crop: **98 files / 21.1 MB**; misses are editor-only
-variants (`entities/sceneinfo/*`, `procedural b2+`, `mb/` quality) and are
-non-fatal in the run.
+Result for the default crop: **98 files / 20.1 MiB** (1×1: 38 files / 6.5 MiB);
+misses are editor-only variants (`entities/sceneinfo/*`, `procedural b2+`,
+`mb/` quality) and are non-fatal in the run.
 
-## Verified numbers (2026-09-29 21:04, 2×2 crop)
+## Verified numbers
 
-| stage | sandbox | full client |
-|---|---|---|
-| InitPath / InitMemory / InitPak | 16 / 0 / **406 ms** | ~1 s |
-| Init3DEngine | 24.4 s | ~25 s |
-| LoadMap | **281 ms** | ~1.6 s (8×8) |
-| TerrainSampler | `regions=2x2 origin=(0,0)` | `8x8 -102400` |
-| FoliageCollision | 5351 instances (generic bins; world coords still valid) | same |
-| spawn | `(23334,761,24224)` | same |
-| scripted run total | ~68 s | ~2 min+ |
+| stage | 1×1 (21:30) | 2×2 (21:04) | full client |
+|---|---|---|---|
+| InitPath / InitMemory / InitPak | 31 / 0 / **406 ms** | 16 / 0 / 406 ms | ~1 s |
+| Init3DEngine | 24.6 s | 24.4 s | ~25 s |
+| LoadMap (client) | **156 ms** | 281 ms | ~1.6 s (8×8) |
+| engine `load scene` | 0.125 s | 0.203 s | — |
+| TerrainSampler | `regions=1x1 origin=(0,0)` | `regions=2x2 origin=(0,0)` | `8x8 -102400` |
+| spawn | `(23334,761,24224)` | same | same |
+| scripted run total | ~46 s | ~68 s | ~2 min+ |
 
-Evidence: `proof/sandbox/mini_run.log`, `mini_00_15000ms.png` (meanRGB
-210,190,169), `mini_01_30000ms.png` (meanRGB 168,155,147), `map_manifest.json`.
-The screenshots show the real desert scene (sand, ruins, props) with the 花萝
-actor at the real spawn.
+The dominant cost is engine init (~24 s) in every case; the scene load is
+sub-second. Evidence: `proof/sandbox/mini_run.log` + `mini_00_15000ms.png`
+(meanRGB 210,190,169), `mini_01_30000ms.png` (168,155,147) for 2×2;
+`mini_s_run.log` + `mini_s_00_8000ms.png` (meanRGB 195,179,164) for 1×1;
+`map_manifest.json` / `map_s_manifest.json`. The screenshots show the real
+desert scene (sand, ruins, props) with the 花萝 actor at the real spawn.
 
 ## Client changes (small)
 
@@ -97,6 +124,12 @@ Feature builds stay per-worktree (`RC_CLIENT_EXE=reborn_client_mini_sandbox.exe`
 2. Editor maps (`MovieEditor\source\Map\EmptyMap` / `512Simple2`) exist but are
    editor-source only; the real-map crop via absolute `RC_MAP` is the supported
    path.
+3. **File-set trimming needs a screenshot, not just a spawn-height check.**
+   Dropping `heightmap/*.r32` kept `spawn=(23334,761,24224)` (physics used
+   `.bch`) but the render was sky where the ground should be. Dropping
+   `heightmap_bc/*.bch` kept the render but sampled spawn height 0. Only
+   `blendmap_bc/*.r8` proved droppable on both checks. Always verify a trim
+   with the per-region RGB fingerprint of a fresh screenshot.
 
 ## Future (only if the full client must be dropped)
 
@@ -108,21 +141,24 @@ dev-loop goal; deferred.
 ## Reproduce
 
 ```powershell
-.venv\Scripts\python.exe tools\sandbox\build_sandbox.py --map 龙门寻宝 --crop 2,2,2,2
-set RC_MAP=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_mini\龙门寻宝_mini.jsonmap
-set RC_AUTORUN=40000
-set RC_SHOTS=15000,30000
+.venv\Scripts\python.exe tools\sandbox\build_sandbox.py --crop 2,2,1,1 --name 龙门寻宝_s
+set RC_MAP=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap
+set RC_AUTORUN=20000
+set RC_SHOTS=8000
 C:\SeasunGame\MovieEditor\bin64\reborn_client.exe
 # -> logs in C:\SeasunGame\MovieEditor\bin64\reborn_out\ ; terrain line must read
-#    "TerrainSampler: size=512 regions=2x2 cell=100 origin=(0,0)"
+#    "TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0)"
+#    and spawn must read "(23334,761,24224)"
+# Run script: tools\sandbox\run_sandbox.cmd (title "Sandbox-pure")
 ```
 
 ## Confidence
 
 | Claim | Conf. | Source |
 |---|---|---|
-| `RC_MAP` absolute path + sibling resolution | HIGH | verified run, `proof/sandbox/mini_run.log` |
+| `RC_MAP` absolute path + sibling resolution | HIGH | verified runs, `proof/sandbox/mini*_run.log` |
 | crop math preserves world coords | HIGH | terrain/spawn/collision match full map; `FULL_MAP_COLLISION.md` region formula |
-| builder output complete for 2×2 | HIGH | 98 files hit, run renders |
+| `.r32` renderer / `.bch` physics / `.r8` unused | HIGH | removal runs + screenshots (dead end #3) |
+| 1×1 = 6.5 MiB, render + spawn verified | HIGH | `mini_s_run.log`, `mini_s_00_8000ms.png` |
 | root-overlay InitPak stall / leak | HIGH | measured `ms=(32,0,181453)`; install write audit |
 | standalone repack viable | MED | export names only, untested |

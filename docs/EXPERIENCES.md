@@ -167,3 +167,22 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `proof/sandbox/{mini_run.log,mini_00_15000ms.png,mini_01_30000ms.png,
   fingerprints.txt,map_manifest.json}`; `docs/engine_host/MINI_SANDBOX_CLIENT.md`.
 - Outcome: solved. Sandbox = 21 MB loose map dir; scene load ~0.3 s.
+
+### 2026-09-29 — client — Mini sandbox size trim: 1×1 crop, 6.5 MB (1/3)
+- Did: added the 1×1 build (`--crop 2,2,1,1`, region (2,2) = the spawn region)
+  and ran removal tests for the runtime file set: `heightmap/*.r32` is required
+  by the renderer, `heightmap_bc/*.bch` by the physics terrain loader, and
+  `blendmap_bc/*.r8` is an editor bake cache the runtime never reads. The
+  builder now drops `.r8` by default (`--keep-bake-caches` keeps it). Final
+  1×1 bundle: 6.5 MiB / 38 files = 32 % of the 2×2 (20.1 MiB); LoadMap 156 ms,
+  spawn `(23334,761,24224)`, render verified. `run_sandbox.cmd` points at it
+  and sets the title `Sandbox-pure` (client now derives `sandbox-<slug>` from
+  the exe name per `AGENTS.md` §2.7; `RC_TITLE` overrides).
+- Lesson: a spawn-height check is not enough to validate a trim — dropping
+  `.r32` kept the physics height but rendered sky where the ground was; only the
+  screenshot fingerprint caught it. Trim validation = screenshot + spawn + zero
+  load failures in the engine log.
+- Evidence: `proof/sandbox/{mini_s_run.log,mini_s_00_8000ms.png,
+  map_s_manifest.json,fingerprints.txt}`; `docs/engine_host/MINI_SANDBOX_CLIENT.md`
+  (size profiles + runtime file set).
+- Outcome: solved. 1/3-size sandbox runs with identical terrain/props/spawn.
