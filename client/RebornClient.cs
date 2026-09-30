@@ -1872,6 +1872,9 @@ internal static class RebornClient
                 if (!wwStateActive) vy += pGravity * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
+                // Sprint.tab dive/fall terminal cap (school 4: 900 u/f)
+                if (vy < WwRules.FallCapFrame * WwRules.LogicTicksPerSecond)
+                    vy = WwRules.FallCapFrame * WwRules.LogicTicksPerSecond;
                 py += vy * dt;
                 if (py <= ground)
                 {
