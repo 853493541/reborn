@@ -930,15 +930,29 @@ all tags should fire. Editor config to adopt when initializing the host
 - Re-open: engine-load trigger + movie-engine vtable map.
 
 ### 2026-09-30 — ability sandbox — merge main + run on the mini sandbox map
-- Did: merged \main\ into \gent/skillv2-sandbox\ (mini-sandbox tooling + latest client
+- Did: merged `main` into `agent/skillv2-sandbox` (mini-sandbox tooling + latest client
   features; conflicts: EXPERIENCES append-merge, ability_sandbox window title resolved to
-  \sandbox-ability\ per main's naming rule). Rebuilt \Skill.exe\ and added
-  \bility_sandbox/run_sandbox.cmd\ (RC_MAP = the 1x1 cropped map, mirroring
-  \	ools/sandbox/run_sandbox.cmd\).
-- Evidence: run log \Skill_20260930_1432*.log\ — \LoadMap result=0\,
-  \TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0)\,
-  \spawn=(23334,761,24224)\; map built by \	ools/sandbox/build_sandbox.py\.
+  `sandbox-ability` per main's naming rule). Rebuilt `Skill.exe` and added
+  `ability_sandbox/run_sandbox.cmd` (RC_MAP = the 1x1 cropped map, mirroring
+  `tools/sandbox/run_sandbox.cmd`).
+- Evidence: run log `Skill_20260930_1432*.log` — `LoadMap result=0`,
+  `TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0)`,
+  `spawn=(23334,761,24224)`; map built by `tools/sandbox/build_sandbox.py`.
 - Outcome: the skill sandbox runs on the mini sandbox scene (sandbox + skills replaces
   full-client + skills for feature work).
 - Re-open: none.
 
+### 2026-09-30 — ability sandbox — cast cooldown: one press = one cast
+- Problem: an ability cast (e.g. 撼如雷) could be re-triggered by spam presses; every
+  press restarted the animation and spawned the effect again (the user saw the animation
+  "repeatedly happen").
+- Fix (host rule, C# only): 3 s cooldown from the moment a cast commits, applied to every
+  cast path (dataset abilities, 风来吴山, 临时飞爪 confirm). Same-ability recast is
+  also blocked while its effect is still live (`castActive`), and a new cast explicitly
+  removes the previous `cast_pss` dummy. Gated presses log `cast blocked: cooldown Ns` or
+  `cast blocked: effect still playing`.
+- Evidence: scripted spam run `Skill_20260930_1451*.log` — cast once at 48.385 s; presses
+  at +1.0 s / +2.1 s blocked (cooldown 2 s / 1 s), +3.1 s blocked (effect still playing);
+  `cast done` at +8.5 s; exit 0. Sandbox map: `regions=1x1 origin=(0,0)`.
+- Outcome: solved — one press plays the animation/effect exactly once.
+- Re-open: none (the authored PSS may contain its own repeating pulses; that is data).
