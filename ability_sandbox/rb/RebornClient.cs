@@ -116,7 +116,7 @@ internal static class RebornClient
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "ability_candidates.json"));
         string soundDir = Env("SB_SOUND_DIR",
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "sound"));
-        bool soundOn = Env("SB_SOUND", "0") == "1";
+        bool soundOn = Env("SB_SOUND", "1") == "1";   // default on; P panel checkbox toggles
         long autoSkillMs = 0;
         long.TryParse(Env("SB_CAST_MS", "0"), out autoSkillMs);
         bool autoSkillDone = false;
