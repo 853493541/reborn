@@ -477,7 +477,7 @@ internal static class RebornClient
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
         CameraObstruction camObst = new CameraObstruction();
-        double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")), out camObst.HitWindow);
+        double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0.25")), out camObst.HitWindow);
         CameraShake camShake = new CameraShake();
         // near-plane ladder knob: clearance used by the obstruction response
         double clearanceOverride;

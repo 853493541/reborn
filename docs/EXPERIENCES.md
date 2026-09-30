@@ -279,3 +279,11 @@ solved it, and what is still open. **Newest at the bottom.**
   host-chosen capsule/step values; merged interiors remain server state.
 - Evidence: the audit doc; this branch's commits and run logs.
 - Outcome: documented; implementation priorities listed in the doc §8.
+### 2026-09-29 — camera — Re-enable hit stabilizer (door-crossing shake)
+- Did: `RC_CAM_HITWIN` defaulted to "0" (stabilizer disabled) although the class
+  documents 0.25 s as the registered B11 default; raw min-hit flicker at triangle
+  edges made the camera jump while crossing a doorway. Default restored to 0.25 s.
+- Carpet check: `wj_erg地毯001_hd` at (19690,920,36271) crossed with 0 blocked
+  events; the next block 340 u later is a real 1.05 m wall (top 1007.8, feet 903).
+- Evidence: `client/RebornClient.cs`; run `reborn_20260929_203756.log`.
+- Outcome: solved.
