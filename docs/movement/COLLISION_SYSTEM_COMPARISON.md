@@ -171,6 +171,71 @@ those three items are ported.
 | Solid prop (cabinet) | `reborn_20260929_234229.log` | held at z=36704, 2–9 u pushes |
 | Camera step snap (B14) | `reborn_20260929_220246.log` | max 6.0 u/frame (was 63.9) |
 
+
+## 8. Invented-behaviour census and accuracy plan (2026-09-29)
+
+"Invented" = host does something the game does not, or uses a host number/rule
+where the engine has one. Registered camera deviations are counted here too
+where they affect collision/camera geometry. Excludes harness switches
+(demo/env) and telemetry.
+
+### 8.1 Census — 27 active behaviours
+
+| # | Behaviour | Kind | Where |
+|---|---|---|---|
+| 1 | per-frame float integration instead of 15 Hz integer | rule | `RebornClient` loop |
+| 2 | no slope projection/air-stop (`ProcessDropSpeed`) | rule | ground step |
+| 3 | 64 u step budget applied to mesh obstacles (engine `stepOffset` is 0.5 m) | number | `RC_STEP_HEIGHT` |
+| 4 | `lowTop` fallback in the step rule | rule | `FoliageCollision.Resolve` |
+| 5 | 20 u movement substep | number | `RebornClient` loop |
+| 6 | floor source = terrain sample + `SupportHeight` (not native `GetFloorHeight`) | proxy | both |
+| 7 | winding-agnostic floor query (game winding is inverted) | rule | `SupportHeight` |
+| 8 | hole cells bottomless (no cave floor) | rule | terrain |
+| 9 | solid-prop decision by mesh-name taxonomy | rule | `FoliageCollision` loader |
+| 10 | solid shape = world AABB (game uses mesh/convex) | rule | `SolidPropPush` |
+| 11 | prop push gates (`NearGeometry` 80 u, axis choice) | number | `SolidPropPush` |
+| 12 | H1 folder-white list predicate unverified | rule | bake |
+| 13 | tree canopy columns generated (extruded prisms) | rule | bake |
+| 14 | degenerate trunk columns sized from visual mesh (6/68 match client walk-through) | proxy | bake |
+| 15 | capsule 17/116 host-chosen | number | `RC_RADIUS/HEIGHT` |
+| 16 | CCT `contactOffset` 0.1 recovered but not modelled | proxy | solver |
+| 17 | in-house solver instead of PhysX/SIMWorld | proxy | `FoliageCollision` |
+| 18 | camera anchor = chest + 90 u (game: head/socket) | number | `RebornClient` |
+| 19 | 20 Hz camera obstruction query cap | number | `RC_CAM_OBSTHZ` |
+| 20 | B4 camera terrain-ray substitute (heightfield march) | proxy | camera |
+| 21 | B8 crossing guard (pull floors at 0) | guard | camera |
+| 22 | B9 degenerate-hit guard (`RC_CAM_HITMIN` 3 u) | guard | camera |
+| 23 | B10 final-camera wall gate (default off) | guard | camera |
+| 24 | B11 hit stabilization window (0.4 s) | guard | camera |
+| 25 | B12 scene near-hit floor (80 u) | guard | camera |
+| 26 | B13 flag=0 structures block (no fade) | guard | camera |
+| 27 | B14 anchor-Y step smoother | guard | camera |
+
+Kind totals: **rules 10 · numbers/gates 6 · proxies 5 · guards 6.**
+Camera register totals for reference: A 11 + B 14 + C 9 + D 6 = 40 rows
+(`docs/camera/HOST_DEVIATIONS.md`), of which 8 are counted above (B4, B8-B14,
+anchor, 20 Hz).
+
+### 8.2 Plan — shortest path to a more accurate system
+
+Not a from-scratch rebuild first: the solver core (exact capsule/triangle
+contact, substeps, step/ground rules) is already game-shaped. The accuracy gap
+is **data/semantics + integrator**. Ordered by impact/effort:
+
+| Phase | Work | Data/source | Effect |
+|---|---|---|---|
+| P0 | Bake the shipped obstacle flags (`bAutoProduceObstacle`, `bLogicObstacle`, `bCollisionOnly`) into a sidecar; wire `bAutoProduceObstacle=0` → no collision | `.mesh.ini` (census done) | removes wrong collisions (12 meshes/map) |
+| P1 | Reverse the auto-produced obstacle geometry (`KG3D_LoaderNoRenderX64` + `PhysicsEngineX64` actor build) and bake that shape | client DLLs + paks | replaces the AABB/name proxy with the real shape (§8.1 #9-11) |
+| P2 | Port the 15 Hz integer movement model + `ProcessDropSpeed` slope projection | `REBORN_JUMP_FALL_SPEC.md`, `proof/gravity/disasm` | removes #1, #2; feel parity in air/landing/slopes |
+| P3 | Extract the gameplay capsule values (semantic K/V / shape library `capsule r50/l50`) and CCT `contactOffset` | engine semantic registrations | removes #15, #16 |
+| P4 | Locate the unit-template value source for `bUnitWalkable`/`bUnitCanPass` (reader xrefs in `KG3DEngineX64` → pak path) | client + paks | replaces #9 taxonomy with the game's per-unit rule |
+| P5 | Endgame option: host the game's own physics stack (`SIMWorldX64` / `PhysicsEngineX64` + `StaticPhysicsSceneManager`) in the client host | game `bin64` DLLs (present) | full parity by construction; separate milestone, larger RE |
+| P6 | Dynamic/server-owned state (doodads, movable obstacles, conveyors, water) | server stream | only if the product simulates world state |
+
+P0 is small and immediate; P2 is the biggest feel win; P1/P4 are the research
+that removes the remaining proxies; P5 is the only "rebuild" that reaches full
+fidelity and should be its own milestone decision.
+
 ## 7. Reproduce
 
 ```powershell
