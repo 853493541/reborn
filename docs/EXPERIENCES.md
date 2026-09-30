@@ -322,3 +322,16 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   wrong, while it was intended to mean "no invented fixes".
 - Evidence: `AGENTS.md` §15; this commit (local).
 - Outcome: solved.
+
+### 2026-09-29 — client — Collision + camera-wall-clip merge review (offline gates run)
+- Did: full check of `agent/collision-improvement` (39 commits, 26 files) and
+  `agent/camera-wall-clip` (15 commits, 17 files) vs main. Preflight conflicts are narrow:
+  `client/RebornClient.cs` + `docs/EXPERIENCES.md` (camera adds `client/build_client.cmd`).
+  Built and ran each branch's offline gate from detached temp worktrees (no shared-state
+  writes): **collision selftest 19/19 PASS**, **camera smoke ALL PASS** (operation modes +
+  obstruction rules).
+- Evidence: temp-worktree builds/runs; `git merge-tree` preflight; branch logs.
+- Outcome: both merge-worthy; recommended order camera first, then collision; held because
+  both agent worktrees are dirty (collision 6 files, camera 3 files) - merge when the
+  subjects are committed/clean (or accept the tips as-is).
+- Re-open: merge + post-merge gates (collision 19/19, camera smoke, live T1/door spot).
