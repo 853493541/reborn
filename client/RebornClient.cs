@@ -112,8 +112,7 @@ internal static class RebornClient
         // stage 1/2 = 跳跃2/3 (小跳b/c), stage 3 (downward) = ChongCiQingGong dive.
         // NOTE: f1b02yd二段跳a.tani AVs the engine in KGEngineCLR.Render()
         // (reproduced 2026-09-29, RC_DEMO with that clip as clipJump).
-        // End-phase charge (forward-down) uses the ChongCiQingGong dive clip.
-        string clipGlide = Env("RC_CLIP_GLIDE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
+        // WW air charge uses the normal air clips (player tech, no special animation).
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -704,20 +703,22 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
-        // WW in air = the shared 纵跃段 charge (every class): the authored End
-        // triple xy 125 / vz -140 / g 12 -> forward 1875 u/s + down 2100 u/s.
-        float leapGravityPerSec = 0f;   // charge gravity (0 = default)
-        float leapSpeedXY = 0f;         // charge forward speed (u/s)
-        bool leapGlide = false;         // charge active (HUD/clip state)
+        // WW in air = player tech: the double-tap applies the fly velocity
+        // (authored End triple xy 125 / vz -140 / g 12 -> 1875 u/s fwd + 2100 u/s
+        // down); releasing W ends the state but the velocity persists, so the
+        // character keeps falling forward+down fast. No special animation.
+        float leapGravityPerSec = 0f;   // state gravity while WW held (0 = default)
+        float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
+        bool wwStateActive = false;     // WW state; ends on W release, velocity kept
         Action wwCharge = delegate()
         {
             vy = WwRules.EndVzFrame * WwRules.LogicTicksPerSecond;
             leapGravityPerSec = -WwRules.EndGravityFrame * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
             leapSpeedXY = WwRules.EndSpeedXYFrame * WwRules.LogicTicksPerSecond;
-            leapGlide = true;
-            Log("ww AIR: \u7EB5\u8DC3\u6BB5 charge vxy=" + WwRules.EndSpeedXYFrame + " vz=" +
+            wwStateActive = true;
+            Log("ww AIR: charge vxy=" + WwRules.EndSpeedXYFrame + " vz=" +
                 WwRules.EndVzFrame + " g=" + WwRules.EndGravityFrame + " -> " +
-                leapSpeedXY + " u/s fwd, " + vy + " u/s down");
+                leapSpeedXY + " u/s fwd, " + vy + " u/s down (state until W release)");
         };
         Action wwTrigger = delegate()
         {
@@ -738,7 +739,7 @@ internal static class RebornClient
             }
         };
         bool wwDemo = Env("RC_WW_DEMO", "0") == "1";
-        bool wwDemoJumped = false, wwDemoLeaped = false;
+        bool wwDemoJumped = false, wwDemoLeaped = false, wwDemoReleased = false;
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
@@ -990,7 +991,20 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) { pW = false; wSprint = false; lastWUp = Environment.TickCount; }
+            if (e.KeyCode == Keys.W)
+            {
+                pW = false;
+                wSprint = false;
+                lastWUp = Environment.TickCount;
+                if (wwStateActive)
+                {
+                    // player tech: release ends the WW state; velocity is kept
+                    wwStateActive = false;
+                    leapGravityPerSec = 0f;
+                    Log("ww: W released -> state ended, velocity kept (vxy=" + leapSpeedXY +
+                        " u/s, vy=" + vy + " u/s)");
+                }
+            }
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -1467,7 +1481,7 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; wwStateActive = false; }
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
@@ -1476,6 +1490,17 @@ internal static class RebornClient
                 WwRules.WwAction wwd = WwRules.Evaluate(grounded, true, wwWeaponOk);
                 if (wwd == WwRules.WwAction.Charge) wwCharge();
                 Log("wwdemo: charge action=" + wwd);
+            }
+            if (wwDemo && !wwDemoReleased && now >= 8500)
+            {
+                wwDemoReleased = true;
+                if (wwStateActive)
+                {
+                    wwStateActive = false;
+                    leapGravityPerSec = 0f;
+                    Log("wwdemo: W release -> state ended, velocity kept (vxy=" + leapSpeedXY +
+                        " u/s, vy=" + vy + " u/s)");
+                }
             }
 
             if (demo)
@@ -1787,7 +1812,7 @@ internal static class RebornClient
                     grounded = false; vy = 0f;
                     // walking off a ledge counts as the J0 takeoff done, so the
                     // first air WW can start the chain (as in the game)
-                    leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false;
+                    leapGravityPerSec = 0f; leapSpeedXY = 0f; wwStateActive = false;
                 }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
@@ -1797,7 +1822,7 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
+                if (grounded) { vy = pJumpV; grounded = false; leapGravityPerSec = 0f; leapSpeedXY = 0f; wwStateActive = false; }
             }
 
             // gravity (WW air chain applies the JumpParam stage gravity)
@@ -1814,7 +1839,7 @@ internal static class RebornClient
                     grounded = true;
                     leapGravityPerSec = 0f;
                     leapSpeedXY = 0f;
-                    leapGlide = false;
+                    wwStateActive = false;
                 }
             }
 
@@ -1822,8 +1847,7 @@ internal static class RebornClient
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded)
             {
-                if (leapGravityPerSec != 0f) setClip(clipGlide);
-                else setClip(vy > 0f ? clipJump : clipFall);
+                setClip(vy > 0f ? clipJump : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
@@ -2760,7 +2784,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (leapGlide ? "CHARGE" : vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? (wwStateActive ? "CHARGE" : vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
