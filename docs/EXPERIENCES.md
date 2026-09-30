@@ -564,3 +564,12 @@ solved it, and what is still open. **Newest at the bottom.**
 - Plan status after this: P0/P0b/P1/P2-T1-T3/T4 done; T2/P3/P4 closed as
   scene/server/runtime boundaries; P5 (host the game physics stack) and P6
   (server dynamics) gated on a milestone decision.
+
+### 2026-09-30 — collision — re-baked maps smoke-tested
+- 白龙绝境 (RC_MAP smoke): loads the re-baked bins cleanly -
+  `instances=5156 meshes=817 camflag0=112 noObstacle=172`
+  (`reborn_20260930_154956.log`).
+- 天原绝境 (the 133-substitution map): loads with
+  `instances=5842 meshes=501 noObstacle=100` (shared engine root; line captured
+  from the concurrent-session log `reborn_20260930_155044.log`).
+- No crashes, terrain/spawn fine on both; 龙门寻宝 unchanged.
