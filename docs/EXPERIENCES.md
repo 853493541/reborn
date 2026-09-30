@@ -297,3 +297,13 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: log 23:45 (charge at 24.860 ended by W release at 24.911; key-1 presses logged
   `nothing active`); fix build exit=0, selftest PASS, commit 10c8a7d; relaunched pid 33124.
 - Outcome: solved.
+
+### 2026-09-30 — controls — fall terminal cap from Sprint.tab (real fall number)
+- Did: the fall had no terminal cap (accelerated to the engine hard clamp 2048 u/f = 30720
+  u/s). Added the shipped dive/fall cap: `settings/Sprint.tab` school 4 `MaxVelocityZ` =
+  **900 u/f (13500 u/s, ~70 m/s at 192 u/m)**. Gravity stays the table's 11 u/f2 (2475
+  u/s2); chain End gravity is 12 u/f2 (2700 u/s2). Selftest asserts FALL_CAP = -900.
+- Evidence: build exit=0; selftest PASS; commit 9e012f8; app relaunched pid 37500.
+- Outcome: solved. Real fall numbers: gravity per school/stage in `JumpParam.tab` G columns
+  (clamped [0,31] u/f2), terminal in `Sprint.tab` MaxVelocityZ (900/1000 u/f), authored
+  profile in `JumpFrameParam.tab` Z (dive -949 u/f).
