@@ -200,3 +200,18 @@ solved it, and what is still open. **Newest at the bottom.**
   demo run 21:42 — Z 24224 -> 25149 -> 25658, landed t=12s, no crash.
 - Outcome: solved. Stage direction per the table: stages 1-2 forward-up, stage 3
   forward-down (the far dash).
+
+### 2026-09-29 — client — Chinese stage names for the WW chain
+- Did: resolved the official stage vocabulary from the shipped tables/UI:
+  J0 ground jump = 跳跃 (小跳a/b/c); J1/J2 ascent = 纵跃 (一段/二段) —
+  `Z_纵跃UI.pss` UI effect, buff 16516 "上升过程中免控", buff 13836
+  "空中一段后撤换二段表现"; J3 downward = 急坠/俯冲 — per-school skills named
+  `<style>·坠` (游龙步·坠 20234, 逍遥游·坠 20273, 百转千回·坠 20570, …), buffs
+  13730/13761 "轻功急坠换动作", 13889 "通用急坠播表现Buff", per-school animation
+  names 俯冲 (苍云俯冲/纯阳俯冲/…); glide = 滑翔 (蓬莱加强滑翔段, 丐帮一段冲a滑翔,
+  鸟翔碧空三段 "滑翔至目标点"); summit = 登顶 (`STR_SPRINTPOWERINTOP`); the state
+  itself = 新轻功状态 (`STR_SPRINT_POWER` tooltip: 双击W进入/按住保持/松开结束,
+  空格做出各式动作) and 萍踪侠影 in ban buffs.
+- Evidence: `settings/skill/Buff.tab` names, `ui/Scheme/Case/Skill.txt` names,
+  editor resource index (Z_纵跃UI.pss), repo `string.txt` (STR_SPRINT*).
+- Outcome: done (research only).
