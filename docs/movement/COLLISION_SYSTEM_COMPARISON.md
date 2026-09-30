@@ -237,7 +237,7 @@ is **data/semantics + integrator**. Ordered by impact/effort:
 | Task | Content | Source | Verify |
 |---|---|---|---|
 | T1 tick | 15 Hz accumulator: input buffered, per-tick `ProcessAcceleration` / `ProcessVerticalMove` / `ProcessDropSpeed`, integer cm positions | `REBORN_JUMP_FALL_SPEC.md`, `proof/movement/disasm/client_movement_symbols.txt` | `tools/gravity/verify_model.py` extended |
-| T2 slope | two 3-bit cell slope fields (`(cell>>1)&7`, `(cell>>4)&7`), Q5/Q8 fixed-point projection, slope 0-1 skips, `Vz=0` air-stop | `proof/gravity/disasm/process_drop_speed.txt` | offline vectors + in-game steep-slope run |
+| T2 slope | two 3-bit cell slope fields (`(cell>>1)&7`, `(cell>>4)&7`); body is Q12 fixed point (`>>12` via `and 0xfff`/`sar 0xc`) with a 64-entry trig table (`0x14020ee10`, args 0..0x40); speed state `[+0x270]` clamped to ±0x7ff, projected vector length compared against the state speed (`[rsp+0x60]<<4`) with input flags `[+0x20c..+0x214]` -> speed zeroed (air/slope stop). Full 908-line body port needed | `proof/gravity/disasm/process_drop_speed.txt` | offline vectors + in-game steep-slope run |
 | T3 render glue | host renders at frame rate from the integer state (interpolation), no gameplay math outside the tick | this doc §8.1 #1 | A/B telemetry (`RC_CAM_YDBG`-style) |
 
 P0 is small and immediate; P2 is the biggest feel win; P1/P4 are the research
