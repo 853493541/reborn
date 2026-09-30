@@ -1746,7 +1746,13 @@ internal static class RebornClient
             // grounded / ledge / step (map-host rules)
             if (grounded)
             {
-                if (py - ground > 150f) { grounded = false; vy = 0f; }
+                if (py - ground > 150f)
+                {
+                    grounded = false; vy = 0f;
+                    // walking off a ledge counts as the J0 takeoff done, so the
+                    // first air WW can start the chain (as in the game)
+                    chainStage = 1; leapGravityPerSec = 0f; leapDown = false;
+                }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
             }
