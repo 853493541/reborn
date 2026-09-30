@@ -146,3 +146,16 @@ solved it, and what is still open. **Newest at the bottom.**
   silently answered "no".
 - Evidence: `AGENTS.md` §15; this commit (local).
 - Outcome: solved.
+
+### 2026-09-29 — controls — WW sandbox: 3 double-tap-W cases (feature/ww-sandbox)
+- Did: new worktree `reborn-iso-ww-sandbox` (feature/ww-sandbox off main). Added
+  `client/WwRules.cs` (pure rules + selftest) and wired it into RebornClient: double-tap W
+  on ground -> sprint (existing 8.8 尺/s); double-tap W in air with the school weapon ->
+  急坠 plunge (`SetPassiveVelocityZ(-2000)` u/f = -30000 u/s, engine Z clamp -2048..2047 u/f);
+  wrong/no weapon -> no plunge (generic only). Env `RC_WW_WEAPON=right|wrong`. Feature build
+  `reborn_client_ww_sandbox.exe` (own memory namespace, no shared bin64 writes).
+- Evidence: `reborn_client_ww_sandbox.exe --ww-selftest` -> bin64\reborn_out\ww_sandbox_selftest.txt
+  `RESULT PASS failures=0` (6 checks); build exit=0. Rule source: extracted 天策轻功急坠.lua
+  `SetPassiveVelocityZ(-2000)` + skill 37891 mask 0xFFFFFFFF (agent/daqinggong commit e0c7be3).
+- Outcome: sandbox ready. MED: the air double-tap -> 急坠 trigger mapping is inferred from the
+  any-state WW entry skill + the plunge script; re-open if a live client comparison differs.

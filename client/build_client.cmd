@@ -17,7 +17,7 @@ if not "%RC_CLIENT_EXE%"=="" set BINFO=build_info_%EXE%.txt
 "%CSC%" /nologo /unsafe /platform:x64 /target:winexe /out:"%BIN%\%EXE%" ^
   /r:"%BIN%\MovieEngineCLR.dll" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
-  client\RebornClient.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
+  client\RebornClient.cs client\WwRules.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
   client\CameraSystem.cs client\CameraSettings.cs client\EngineRay.cs ^
   client\CameraShim.cs client\VideoSettings.cs
 if errorlevel 1 goto :eof

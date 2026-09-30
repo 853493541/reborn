@@ -25,6 +25,35 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
+        // WW sandbox selftest: pure rules check, no engine init (deterministic
+        // gate for the 3 double-tap-W cases; winexe has no console, so the
+        // report goes to reborn_out\ww_sandbox_selftest.txt).
+        for (int ai = 0; ai < args.Length; ai++)
+        {
+            if (args[ai] == "--ww-selftest")
+            {
+                int fail;
+                string report;
+                {
+                    var stSw = new StringWriter();
+                    TextWriter savedOut = Console.Out;
+                    Console.SetOut(stSw);
+                    fail = WwRules.SelfTest();
+                    Console.SetOut(savedOut);
+                    report = stSw.ToString();
+                }
+                try
+                {
+                    string stDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
+                    Directory.CreateDirectory(stDir);
+                    File.WriteAllText(Path.Combine(stDir, "ww_sandbox_selftest.txt"),
+                        report + "exit=" + fail + "\r\n", System.Text.Encoding.UTF8);
+                }
+                catch { }
+                Console.Write(report);
+                Environment.Exit(fail == 0 ? 0 : 1);
+            }
+        }
         // Per-build engine memory namespace (isolation, not exclusion): feature
         // builds (reborn_client_<slug>.exe) get their own namespace so 2+ clients
         // can run at the same time without sharing engine memory. The canonical
@@ -668,6 +697,8 @@ internal static class RebornClient
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
+        bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
+        bool airPlunge = false;  // double-tap W in air with the school weapon -> 急坠 plunge
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
@@ -863,8 +894,23 @@ internal static class RebornClient
                     // double-tap: second press within 500 ms of the first release
                     if (lastWUp != 0 && t - lastWUp < 500)
                     {
-                        wSprint = true;
-                        Log("sprint on (double-tap W)");
+                        WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk);
+                        if (ww == WwRules.WwAction.Sprint)
+                        {
+                            wSprint = true;
+                            Log("ww: SPRINT (double-tap W, 8.8 \u5C3A/s)");
+                        }
+                        else if (ww == WwRules.WwAction.Plunge)
+                        {
+                            airPlunge = true;
+                            vy = WwRules.PlungeVzPerSecond;
+                            Log("ww AIR: PLUNGE Vz=" + WwRules.PlungeVzFrame + " u/f (" +
+                                WwRules.PlungeVzPerSecond + " u/s)");
+                        }
+                        else
+                        {
+                            Log("ww AIR: no school weapon -> no plunge (generic; set RC_WW_WEAPON=right to enable)");
+                        }
                     }
                     lastWDown = t;
                 }
@@ -1680,16 +1726,22 @@ internal static class RebornClient
                 if (grounded) { vy = pJumpV; grounded = false; }
             }
 
-            // gravity
+            // gravity (WW plunge overrides vertical speed: SetPassiveVelocityZ)
             if (!grounded)
             {
                 vy += pGravity * dt;
+                if (airPlunge)
+                {
+                    vy = WwRules.PlungeVzPerSecond;
+                    if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
+                }
                 py += vy * dt;
                 if (py <= ground)
                 {
                     py = ground;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    airPlunge = false;
                 }
             }
 
@@ -2631,18 +2683,19 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? (airPlunge ? "PLUNGE" : vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | Wx2 hold sprint | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air plunge | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip));
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    wwWeaponOk ? "school weapon (air plunge armed)" : "WRONG/no weapon (air plunge disabled)");
             }
             if (now - lastLog >= 2000)
             {
