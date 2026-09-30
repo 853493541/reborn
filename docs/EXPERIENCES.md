@@ -1023,3 +1023,15 @@ eborn_client_daqinggong carries these changes — other
   Doc: JX3_QINGGONG_BEHAVIOR.md 2.1.
 - Evidence: Buff.tab 12085/12190/11338-11343; Sprint.tab; number.krl; commit next.
 - Outcome: research done.
+
+
+### 2026-09-30 — client — 疾跑段 implemented in the sandbox
+- Did: ground hold-W now enters the 疾跑段: jipaoActive (grounded + W held + moving,
+  not walk/Shift) ramps 25% -> 75% -> 100% of the Sprint.tab cap (school 4 MaxVelocityXY
+  120 u/f = 1800 u/s) on 16-frame stages, with the 12085 通用疾速跑 / 12190 通用疾跑按住
+  log semantics; release -> CheckEndSprint (speed back to run). HUD/log state JIPAO.
+  Selftest asserts JIPAO_CAP = 1800.
+- Evidence: demo run 16:56 on the cropped map — jipao: enter -> spd 450 -> 1350 -> 1800
+  u/s (JIPAO) -> jipao: end; positions advance ~3540 u per 2 s at the cap; selftest PASS;
+  commit 308ef8d; relaunched pid 19296.
+- Outcome: solved.
