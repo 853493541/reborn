@@ -175,7 +175,7 @@ internal static class RebornClient
         Log("start map=" + mapPath);
 
         var form = new Form();
-        form.Text = "JX3";
+        form.Text = "sandbox-\u5927\u8F7B\u529F";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -986,7 +986,14 @@ internal static class RebornClient
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
-        float pGravity = -2475f, pJumpV = 1350f;
+        // WW sandbox: jump height x10 (velocity scales by sqrt of the height
+        // multiplier); RC_JUMP_MULT overrides.
+        float pJumpMult = 10f;
+        {
+            float jm;
+            if (float.TryParse(Env("RC_JUMP_MULT", "10"), out jm) && jm > 0f) pJumpMult = jm;
+        }
+        float pGravity = -2475f, pJumpV = 1350f * (float)Math.Sqrt(pJumpMult);
         float pSpeed = 96f, pRun = 320f;
         float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
@@ -2701,7 +2708,7 @@ internal static class RebornClient
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air plunge | K weapon | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air plunge | K weapon | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
