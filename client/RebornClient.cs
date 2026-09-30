@@ -816,6 +816,7 @@ internal static class RebornClient
         }
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
         bool wwStateActive = false;     // WW state; ends on release
+        bool wwDashActive = false;      // release dash active: holds the 45 deg line
         // WW release = forward+down dash at this angle below horizontal (default 45).
         float wwDashAngleDeg = 45f;
         float.TryParse(Env("RC_WW_DASH_ANGLE", "45"), out wwDashAngleDeg);
@@ -823,10 +824,11 @@ internal static class RebornClient
         {
             if (!wwStateActive) return;
             wwStateActive = false;
-            // 45 deg down-forward: vy = -forward * tan(angle)
+            wwDashActive = true;
+            // 45 deg down-forward: vy = -forward * tan(angle); held to the ground
             vy = -leapSpeedXY * (float)Math.Tan(wwDashAngleDeg * Math.PI / 180.0);
             Log("ww release: forward-down dash " + wwDashAngleDeg + " deg -> vxy=" +
-                leapSpeedXY + " u/s, vy=" + vy + " u/s");
+                leapSpeedXY + " u/s, vy=" + vy + " u/s (held to landing)");
         };
         Action wwCharge = delegate()
         {
@@ -2038,7 +2040,7 @@ internal static class RebornClient
             if (!grounded)
             {
                 float vyBefore = vy;
-                if (!wwStateActive) vy -= curJumpGravity * dt;
+                if (!wwStateActive && !wwDashActive) vy -= curJumpGravity * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
                 // Sprint.tab dive/fall terminal cap (school 4: 900 u/f)
@@ -2061,6 +2063,7 @@ internal static class RebornClient
                     jumpCount = 0;
                     leapSpeedXY = 0f;
                     wwStateActive = false;
+                    wwDashActive = false;
                 }
             }
             else jumpCount = 0;
@@ -3000,7 +3003,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (wwStateActive ? "CHARGE" : ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : "")))
+                string state = skillUntil > now ? "SKILL" : !grounded ? (wwDashActive ? "DASH" : wwStateActive ? "CHARGE" : ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : "")))
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
