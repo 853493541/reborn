@@ -61,10 +61,13 @@ internal static class RebornClient
         // can run at the same time without sharing engine memory. The canonical
         // reborn_client.exe keeps MovieEditor.memory. RC_MEM_NS overrides.
         string memNs = Env("RC_MEM_NS", "");
-        if (memNs.Length == 0)
+        string selfSlug = null;
         {
             string myName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            memNs = (myName == "reborn_client") ? "MovieEditor.memory" : myName + ".memory";
+            if (memNs.Length == 0)
+                memNs = (myName == "reborn_client") ? "MovieEditor.memory" : myName + ".memory";
+            if (myName.StartsWith("reborn_client_"))
+                selfSlug = myName.Substring("reborn_client_".Length);
         }
         // Single-instance guard: block only processes that share this build's
         // memory namespace. Different feature builds have different namespaces
@@ -167,9 +170,10 @@ internal static class RebornClient
             try { exeMtime = File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss"); } catch { }
             try
             {
-                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info_" + exeName + ".txt");
-                if (!File.Exists(bi))
-                    bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
+                string dir = Path.GetDirectoryName(exePath);
+                string bi = Path.Combine(dir, "build_info_" + Path.GetFileName(exePath) + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info_" + Path.GetFileNameWithoutExtension(exePath) + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info.txt");
                 if (File.Exists(bi))
                 {
                     foreach (string ln in File.ReadAllLines(bi))
@@ -577,9 +581,16 @@ internal static class RebornClient
         bool playerHidden = false;
         CameraSettings cameraSettings = null;
         {
+            // per-workstream config dir for feature builds (bin64\reborn_<slug>)
+            string cfgDir = AppDomain.CurrentDomain.BaseDirectory;
+            if (selfSlug != null)
+            {
+                string slugDir = Path.Combine(cfgDir, "reborn_" + selfSlug);
+                if (Directory.Exists(slugDir)) cfgDir = slugDir;
+            }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "camera.json");
+            string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
@@ -587,7 +598,7 @@ internal static class RebornClient
             }
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
             cameraSettings = CameraSettings.Load(
-                editorRoot, mapPath, AppDomain.CurrentDomain.BaseDirectory, Log);
+                editorRoot, mapPath, cfgDir, Log);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             camSys.Pitch = cameraSettings.InitPitch;
@@ -629,13 +640,11 @@ internal static class RebornClient
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
-        float worldDirX = 0f, worldDirZ = 0f;
-        int lastKeySig = -1;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
         float curYaw = 0f;
-        float lastModelX = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
+        float lastModelX = float.MaxValue, lastModelY = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
         Action<string, int> setClipPlay = delegate(string path, int playType)
         {
@@ -858,7 +867,7 @@ internal static class RebornClient
         bool wwDemo = Env("RC_WW_DEMO", "0") == "1";
         bool wwDemoJumped = false, wwDemoLeaped = false, wwDemoReleased = false;
         long lastWUp = 0, lastWDown = 0;
-        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
+        bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
@@ -1163,14 +1172,34 @@ internal static class RebornClient
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
-        // WW sandbox: jump height x10 (velocity scales by sqrt of the height
-        // multiplier); RC_JUMP_MULT overrides.
-        float pJumpMult = 10f;
-        {
-            float jm;
-            if (float.TryParse(Env("RC_JUMP_MULT", "10"), out jm) && jm > 0f) pJumpMult = jm;
-        }
-        float pGravity = -2475f, pJumpV = 1350f * (float)Math.Sqrt(pJumpMult);
+        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
+        // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
+        // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
+        // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
+        //   flip  = one extra jump with the J0 profile (the real 二段跳; provisional
+        //           until the J1 burst/End phase trigger is decoded)
+        //   chain = the raw J1..MaxJumpCount 轻功 rows (ballistic shortcut, high)
+        string djumpMode = Env("RC_DJUMP", "flip");
+        // Unit calibration (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md): 1 u = 1 cm,
+        // and the movement spec's in-game jump is apex 192 u / 1.09 s air
+        // (REBORN_JUMP_FALL_SPEC.md; MapSpike used 703 u/s, 1289 u/s^2). The raw table
+        // triple (90/11 u/frame) gives 368 u = 3.7 m - ~2x too high. Scaling takeoff
+        // AND gravity by 100/192 keeps the 1.09 s air time and realises 1.92 m.
+        float jumpScale = 0.52f;
+        float.TryParse(Env("RC_JUMP_SCALE", "0.52"), out jumpScale);
+        if (jumpScale <= 0f) jumpScale = 1f;
+        int jumpSchool = 0;
+        int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
+        if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
+        // Authored f1b02yd二段跳a.tani resolves but AVs the host (documented);
+        // the underlying .ani is the flip pose the client plays instead.
+        string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.ani");
+        if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
+        bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
+        int jumpCount = 0;
+        float curJumpGravity = -pGravity;
+        Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
+            djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
         float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
@@ -1616,7 +1645,7 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; }
+                if (grounded) jumpPressed = true;
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
@@ -1641,8 +1670,13 @@ internal static class RebornClient
             {
                 pW = now >= 2000 && now < 12000;
                 walkMode = now >= 7000 && now < 12000;   // demo walk phase
+                // control check: rotate the camera mid-run (like an RMB drag);
+                // the camera-relative run must curve after this (turn model)
+                if (now >= 6000 && !demoTurned) { demoTurned = true; orbitQueue.Enqueue(new int[] { 500, 0 }); }
                 pA = now >= 14000 && now < 18000;
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
+                // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
+                if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             }
             if (demoCollide)
@@ -1835,8 +1869,10 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction; hold the world-space direction while the key
-            // set is unchanged (the camera may rotate without curving the run)
+            // input -> direction. The game recomputes camera-relative movement
+            // every frame (MOVEFORWARD = camera forward; A/D strafe), so rotating
+            // the camera steers the run (docs/controls/JX3_MOVEMENT_CONTROLS.md §2;
+            // RMB = CAMERAORSELECTORMOVESTICKY rotates camera + character).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
             if (pW) { inX += hx; inZ += hz; }
@@ -1845,12 +1881,15 @@ internal static class RebornClient
             if (pD) { inX += rX; inZ += rZ; }
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
-            int keySig = (pW ? 1 : 0) | (pS ? 2 : 0) | (pA ? 4 : 0) | (pD ? 8 : 0);
-            if (keySig != lastKeySig) { lastKeySig = keySig; worldDirX = inX; worldDirZ = inZ; }
-            float dirX = worldDirX, dirZ = worldDirZ;
+            float dirX = inX, dirZ = inZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
+            // character yaw turn rate (rad/s): the game's per-frame turn step
+            // (+0x48) is a server sync byte and not decoded; the host uses the
+            // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
+            float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
+            if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
@@ -1861,8 +1900,22 @@ internal static class RebornClient
                             : walkMode ? pSpeed
                             : wSprint ? pSprint
                             : pRun) / len;
-                float step = sp * dt;
                 float ux = dirX / len, uz = dirZ / len;
+                // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
+                // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
+                // direction; facing turns toward it at the turn rate; a turn
+                // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
+                // and the turn step that frame.
+                float heading = (float)Math.Atan2(ux, uz);
+                float dYaw = heading - curYaw;
+                while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
+                while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
+                bool hardTurn = Math.Abs(dYaw) > 2.0071f;
+                if (hardTurn) sp *= 0.5f;
+                float turnStep = charTurnRate * dt * (hardTurn ? 0.5f : 1f);
+                if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
+                else curYaw += Math.Sign(dYaw) * turnStep;
+                float step = sp * dt;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
                 float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
                 if (gh - ground > 70f)
@@ -1874,7 +1927,6 @@ internal static class RebornClient
                     else if (gz2 - ground <= 70f) { pz = tryZ; }
                 }
                 else { px = tryX; pz = tryZ; }
-                curYaw = (float)Math.Atan2(ux, uz);
             }
 
             // WW chain dash: authored JumpSpeedXY along facing (J1 30, J2 50,
@@ -1896,13 +1948,7 @@ internal static class RebornClient
                 float d = targetYaw - curYaw;
                 while (d > Math.PI) d -= 2f * (float)Math.PI;
                 while (d < -Math.PI) d += 2f * (float)Math.PI;
-                // RotationSpeed row values are engine int speeds (0.00314 in
-                // the host rows), not rad/s; the engine's key-rotation default
-                // fChaseRate is pi rad/s, so use a rad/s value only when the row
-                // is clearly one, else pi (S6: 0.00314 was ~0.18 deg/s).
-                float rate = (float)camSys.Row.F("RotationSpeed", 0.0);
-                if (rate < 1f) rate = (float)Math.PI;
-                float step = rate * (float)dt;
+                float step = charTurnRate * (float)dt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
             }
@@ -1953,49 +1999,90 @@ internal static class RebornClient
                 else if (ground - py <= 70f) py = ground;
             }
 
-            // jump
+            // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
+            // extra normal-strength jump) or chain mode (raw J1.. table rows)
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; leapSpeedXY = 0f; wwStateActive = false; }
+                if (grounded) jumpCount = 0;
+                int nextJump = jumpCount + 1;
+                bool chainMode = djumpMode == "chain";
+                bool djumpOn = djumpMode != "0";
+                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
+                int[] trip = null;
+                if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
+                    (nextJump == 1 || djumpOn))
+                {
+                    // chain mode reads the pressed row; flip mode reuses J0
+                    trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
+                }
+                if (trip != null)
+                {
+                    jumpCount = nextJump;
+                    vy = trip[1] * 15f * jumpScale;
+                    int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
+                    curJumpGravity = gc * 225f * jumpScale;
+                    grounded = false;
+                    if (djumpLog) Log(string.Format(
+                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
+                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                }
+                else if (djumpLog) Log(string.Format(
+                    "djb reject n={0} max={1} grounded={2} mode={3}",
+                    nextJump, maxJump, grounded ? 1 : 0, djumpMode));
             }
 
-            // gravity (WW state holds the vertical; release lets gravity build)
+            // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
             if (!grounded)
             {
-                if (!wwStateActive) vy += pGravity * dt;
+                float vyBefore = vy;
+                if (!wwStateActive) vy -= curJumpGravity * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
                 // Sprint.tab dive/fall terminal cap (school 4: 900 u/f)
                 if (vy < WwRules.FallCapFrame * WwRules.LogicTicksPerSecond)
                     vy = WwRules.FallCapFrame * WwRules.LogicTicksPerSecond;
                 py += vy * dt;
+                // apex sample: the model transform must have followed the physics
+                // height (modelY ~ py); a stale modelY is the standing-jump stutter
+                if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
+                    "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
                 if (py <= ground)
                 {
                     py = ground;
+                    float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    if (djumpLog && jumpCount > 0) Log(string.Format(
+                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
+                        jumpCount, px, py, pz, impact));
+                    jumpCount = 0;
                     leapSpeedXY = 0f;
                     wwStateActive = false;
                 }
             }
+            else jumpCount = 0;
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded)
             {
                 if (wwStateActive) setClipPlay(clipGlide, glidePlayType);
-                else setClip(vy > 0f ? clipJump : clipFall);
+                else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
-            // model update (only when changed; keeps animation alive)
-            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(pz - lastModelZ) > 0.5f ||
+            // model update (only when changed; keeps animation alive).
+            // Y must be part of the gate: a standing jump changes py only, and
+            // without it the model stays at the takeoff height (stutter/"stuck
+            // in the middle"); moving jumps updated via X/Z and looked fine.
+            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(py - lastModelY) > 0.5f ||
+                Math.Abs(pz - lastModelZ) > 0.5f ||
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
                 placePlayer(px, py, pz, curYaw);
-                lastModelX = px; lastModelZ = pz; lastModelYaw = curYaw;
+                lastModelX = px; lastModelY = py; lastModelZ = pz; lastModelYaw = curYaw;
             }
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
@@ -2911,7 +2998,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (wwStateActive ? "CHARGE" : vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? (wwStateActive ? "CHARGE" : ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : "")))
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
@@ -2955,11 +3042,11 @@ internal static class RebornClient
                                 : walkMode ? "WALK"
                                 : wSprint ? "SPRINT"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}){11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
-                    curSpd, moveMode));
+                    curSpd, moveMode, curYaw, dirX, dirZ));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {

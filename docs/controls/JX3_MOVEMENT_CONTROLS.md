@@ -107,11 +107,14 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
 
 ## 6. Our client today
 
-`client/RebornClient.cs`: WASD camera-relative with held world direction,
-Shift ×10 debug, Space jump, `/` walk-run toggle, W-double-tap sprint,
-continuous gravity/jump approximation. Missing: turn-in-place keys, autorun,
-sit/mount/sheath, click-to-move, follow/interact, exact 15/16 Hz integer model,
-turn-rate interpolation + >112.5° penalty, jump chain.
+`client/RebornClient.cs` (feature build `reborn_client_double_jump_control.exe`):
+WASD camera-relative **recomputed per frame** (rotating the camera steers the
+run), heading/facing turn model with the >112.5° speed/turn-step penalty,
+RMB turns camera + character at π rad/s (server `+0x48` step undecoded),
+Shift ×10 debug, Space jump + 二段跳 (J0-profile flip, `RC_JUMP_SCALE`),
+`/` walk-run toggle, W-double-tap sprint, continuous gravity/jump
+approximation. Missing: turn-in-place keys, autorun, sit/mount/sheath,
+click-to-move, follow/interact, exact 15/16 Hz integer model, jump-chain phase.
 
 ## 7. Open items
 

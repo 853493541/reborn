@@ -5,10 +5,12 @@ set BIN=C:\SeasunGame\MovieEditor\bin64
 rem Canonical client (renamed from reborn_camfp.exe, the camera workstream
 rem name). Every run logs a fingerprint (name/git/dirty/flags) so its logs
 rem are unambiguous.
-rem Feature builds (AGENTS.md §2): set RC_CLIENT_EXE=reborn_client_<slug>.exe
-rem to avoid clobbering the canonical exe; shared config copies and
-rem build_info.txt are skipped, build_info_<exe>.txt is written instead.
-rem The smoke build is skipped unless RC_SMOKE_EXE is set.
+rem
+rem Parallel feature builds (root AGENTS.md §2): set RC_CLIENT_EXE to a unique
+rem name (reborn_client_<slug>.exe). That skips the shared bin64 config copies,
+rem keeps per-workstream configs in bin64\reborn_<slug>\, and writes
+rem build_info_<exe>.txt instead of the shared build_info.txt. Feature builds
+rem also skip the smoke exe unless RC_SMOKE_EXE names one.
 set EXE=reborn_client.exe
 rem Feature workstreams: build a uniquely named client so parallel work cannot
 rem overwrite the canonical exe or shared bin64 state (AGENTS.md, parallel
@@ -21,7 +23,7 @@ if not "%RC_CLIENT_EXE%"=="" set BINFO=build_info_%EXE%.txt
 "%CSC%" /nologo /unsafe /platform:x64 /target:winexe /out:"%BIN%\%EXE%" ^
   /r:"%BIN%\MovieEngineCLR.dll" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
-  client\RebornClient.cs client\WwRules.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
+  client\RebornClient.cs client\JumpTable.cs client\WwRules.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
   client\CameraSystem.cs client\CameraSettings.cs client\EngineRay.cs ^
   client\CameraShim.cs client\VideoSettings.cs
 if errorlevel 1 goto :eof
