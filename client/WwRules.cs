@@ -14,9 +14,12 @@ internal static class WwRules
 {
     public const float LogicTicksPerSecond = 15f;
     public const float PlungeVzFrame = -2000f;
-    public const float PlungeVzPerSecond = PlungeVzFrame * LogicTicksPerSecond;
-    public const float VzClampMinPerSecond = -2048f * LogicTicksPerSecond;
-    public const float VzClampMaxPerSecond = 2047f * LogicTicksPerSecond;
+    public const float DiveCapFrame = -900f;
+    public const float VzClampMinFrame = -2048f;
+    public const float VzClampMaxFrame = 2047f;
+    public const float PlungeVzPerSecond = DiveCapFrame * LogicTicksPerSecond;
+    public const float VzClampMinPerSecond = VzClampMinFrame * LogicTicksPerSecond;
+    public const float VzClampMaxPerSecond = VzClampMaxFrame * LogicTicksPerSecond;
     public const float SprintSpeedPerSecond = 8.8f * 64f;
 
     public enum WwAction
@@ -24,6 +27,13 @@ internal static class WwRules
         None,
         Sprint,
         Plunge
+    }
+
+    public static float ClampPlungeVz(float frame)
+    {
+        if (frame > -1f) frame = -1f;
+        if (frame < VzClampMinFrame) frame = VzClampMinFrame;
+        return frame;
     }
 
     public static WwAction Evaluate(bool grounded, bool doubleTapW, bool schoolWeaponEquipped)
@@ -43,16 +53,30 @@ internal static class WwRules
         fail += Check("AIR_WW_NO_WEAPON_NONE", Evaluate(false, true, false), WwAction.None);
         fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true), WwAction.None);
         fail += CheckRange("PLUNGE_VZ_RANGE", PlungeVzPerSecond, VzClampMinPerSecond, VzClampMaxPerSecond);
+        fail += CheckRange("RAW_VS_DIVE_CAP", PlungeVzFrame, VzClampMinFrame, DiveCapFrame);
+        fail += CheckValue("CLAMP_PLUNGE_HIGH", ClampPlungeVz(500f), -1f);
+        fail += CheckValue("CLAMP_PLUNGE_LOW", ClampPlungeVz(-9999f), VzClampMinFrame);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
+    }
+
+    private static int CheckValue(string name, float got, float want)
+    {
+        if (got == want)
+        {
+            Console.WriteLine(name + ": PASS (" + got + ")");
+            return 0;
+        }
+        Console.WriteLine(name + ": FAIL got=" + got + " want=" + want);
+        return 1;
     }
 
     private static int CheckRange(string name, float vz, float lo, float hi)
     {
         if (vz >= lo && vz <= hi)
         {
-            Console.WriteLine(name + ": PASS vz=" + PlungeVzFrame + " u/f = " + vz +
-                " u/s within Z clamp [" + lo + ", " + hi + "]");
+            Console.WriteLine(name + ": PASS vz=" + vz +
+                " u/s within [" + lo + ", " + hi + "]");
             return 0;
         }
         Console.WriteLine(name + ": FAIL vz=" + vz + " outside [" + lo + ", " + hi + "]");

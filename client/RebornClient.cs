@@ -108,6 +108,9 @@ internal static class RebornClient
         string clipRun = Env("RC_CLIP_RUN", f1 + "f1b02yd\u5954\u8DD1.ani");
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
+        // WW plunge: the school dive animation (player_flyjump.krl.txt
+        // ChongCiQingGong:1, little-girl body -> F1bqg苍云俯冲a.tani).
+        string clipPlunge = Env("RC_CLIP_PLUNGE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -699,6 +702,17 @@ internal static class RebornClient
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
         bool airPlunge = false;  // double-tap W in air with the school weapon -> 急坠 plunge
+        // Plunge vertical speed: raw script value is -2000 u/f (~156 m/s at
+        // 192 u/m) which crosses any normal jump in ~2 frames; the engine dive
+        // cap is Sprint.tab MaxVelocityZ = -900 u/f (~70 m/s). Default to the
+        // cap; RC_WW_PLUNGE_VZ overrides (u/f, clamped to the engine Z clamp).
+        float plungeVzFrame = WwRules.DiveCapFrame;
+        {
+            float pv;
+            if (float.TryParse(Env("RC_WW_PLUNGE_VZ", ""), out pv)) plungeVzFrame = pv;
+            plungeVzFrame = WwRules.ClampPlungeVz(plungeVzFrame);
+        }
+        float plungeVzPerSec = plungeVzFrame * WwRules.LogicTicksPerSecond;
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
@@ -903,9 +917,12 @@ internal static class RebornClient
                         else if (ww == WwRules.WwAction.Plunge)
                         {
                             airPlunge = true;
-                            vy = WwRules.PlungeVzPerSecond;
-                            Log("ww AIR: PLUNGE Vz=" + WwRules.PlungeVzFrame + " u/f (" +
-                                WwRules.PlungeVzPerSecond + " u/s)");
+                            vy = plungeVzPerSec;
+                            Log("ww AIR: PLUNGE Vz=" + plungeVzFrame + " u/f (" +
+                                plungeVzPerSec + " u/s)" +
+                                (plungeVzFrame == WwRules.DiveCapFrame
+                                    ? " [Sprint.tab dive cap; raw script -2000 via RC_WW_PLUNGE_VZ]"
+                                    : " [override]"));
                         }
                         else
                         {
@@ -1750,7 +1767,7 @@ internal static class RebornClient
                 vy += pGravity * dt;
                 if (airPlunge)
                 {
-                    vy = WwRules.PlungeVzPerSecond;
+                    vy = plungeVzPerSec;
                     if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 }
                 py += vy * dt;
@@ -1765,7 +1782,7 @@ internal static class RebornClient
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
-            else if (!grounded) setClip(vy > 0f ? clipJump : clipFall);
+            else if (!grounded) setClip(airPlunge ? clipPlunge : vy > 0f ? clipJump : clipFall);
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
