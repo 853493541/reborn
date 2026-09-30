@@ -34,6 +34,35 @@ an install. HIGH — verified runs, `proof/sandbox/mini_run.log` (2×2) and
 The 1×1 crop is region (2,2) of the source map — the region that contains the
 real spawn `(23334,761,24224)`.
 
+## Startup breakdown (measured 2026-09-29 21:54, 1×1)
+
+Launch → playable = **26.8 s**, and it does not change with map size:
+
+| phase | time | note |
+|---|---|---|
+| engine init (client `Init3DEngine`) | **24.4 s** | engine logs `KG3D_Engine initialize success. const time = 24.375s` |
+| — device + shader tables | ~2 s | DX11 device, shader map/table |
+| — `KG3D_Engine::StartPreDrawShader` | **~22 s** | pre-draw warm-up, log: `预渲染总开关:开启` |
+| `LoadMap` | 0.17 s | 1×1 (2×2: 0.28 s) |
+| actor + spawn settle | ~1.5 s | |
+
+The pre-draw is driven by `data/public/PreDrawSetting.ini` (in the pak):
+
+```
+ShouldPreDraw=1
+GPUScoreStandard=10257
+PreDrawThreadMaxNum=1
+PreDrawThreadMinNum=1
+```
+
+This machine's GPU score is 61656 (`data/material/Shader/_PreDrawMachineInfo.txt`),
+far above the 10257 threshold, but the shipped `PreDrawThreadMaxNum=1` caps the
+warm-up at one thread — hence ~22 s. The full client pays exactly the same; the
+sandbox only removes scene load (1.6 s → 0.17 s), not engine init. Reducing
+startup needs an override of `PreDrawSetting.ini` (pak file, install read-only)
+via a writable asset root (blocked by the `InitPak` stall — see dead end #1) or
+an engine-level bypass; both are open research items, not scene problems.
+
 ### Quality tiers (龙门寻宝)
 
 The `.jsonmap` declares `hd/bd/bddnc/mb/low` file sets, but the install ships

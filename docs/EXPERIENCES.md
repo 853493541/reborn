@@ -198,3 +198,20 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: probe output (extractor, read-only); `MapList.tab` rows;
   full-client engine log `KG3D_Engine_2026_09_29_21_42_17.log` paths.
 - Outcome: solved (answered); documented in `MINI_SANDBOX_CLIENT.md` §Quality tiers.
+
+### 2026-09-29 — client — Startup cost is engine pre-draw, not the map
+- Did: measured launch→playable for the sandbox (26.8 s) and broke down the
+  engine log: `Init3DEngine` 24.4 s, of which ~22 s is
+  `KG3D_Engine::StartPreDrawShader` (`预渲染总开关:开启`); `LoadMap` is only
+  0.17 s. Root cause of the 22 s: `data/public/PreDrawSetting.ini` ships
+  `ShouldPreDraw=1` + `PreDrawThreadMaxNum=1`; this machine's GPU score is
+  61656 vs the 10257 threshold, but the one-thread cap is what makes the
+  warm-up slow. Full client pays the same 24 s; the sandbox cannot change it.
+- Lesson: engine init is a fixed host cost (~24 s) — scene cropping only cuts
+  map load (1.6 s → 0.17 s) and memory. Faster startup requires overriding
+  `PreDrawSetting.ini` (pak, install read-only) via a writable root (InitPak
+  stall) or an engine-level bypass — both open research items.
+- Evidence: `docs/engine_host/MINI_SANDBOX_CLIENT.md` §Startup breakdown;
+  engine log `KG3D_Engine_2026_09_29_21_54_26.log`; extracted
+  `PreDrawSetting.ini`; `_PreDrawMachineInfo.txt`.
+- Outcome: explained; no fix applied (would need install write — forbidden).
