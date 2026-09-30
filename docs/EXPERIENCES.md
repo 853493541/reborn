@@ -189,3 +189,14 @@ solved it, and what is still open. **Newest at the bottom.**
   apex ~23 m above ground, lands t=12s, no crash, app exits via `RC_AUTORUN`.
 - Outcome: solved. Do not play `f1b02yd二段跳a.tani` standalone (engine bug); it is not the
   chain leap animation in the sandbox.
+
+### 2026-09-29 — client — WW trigger on key 1 + authored chain XY dash
+- Did: bound the WW action to key `1` (double-tap W kept; skill moved to `2`). Applied the
+  authored `JumpParam` `JumpSpeedXY` per stage along the character facing: J1 30 u/f
+  (450 u/s, forward-up), J2 50 (750 u/s, forward-up), J3 100 (1500 u/s, forward-down far
+  dash). `RC_WW_DEMO` shows the leap now carries the character forward (~1430 u in the
+  stage-1 demo) and lands cleanly.
+- Evidence: selftest 15/15 PASS (incl. `CHAIN_J1_XY=30`, `CHAIN_J2_XY=50`, `CHAIN_J3_XY=100`);
+  demo run 21:42 — Z 24224 -> 25149 -> 25658, landed t=12s, no crash.
+- Outcome: solved. Stage direction per the table: stages 1-2 forward-up, stage 3
+  forward-down (the far dash).
