@@ -13,6 +13,7 @@
 //   RC_SCALE=1                    player model scale
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -52,6 +53,16 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
+        // diagnostic: unhandled managed exceptions land in %TEMP%\skill_unhandled.txt
+        AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
+        {
+            try
+            {
+                File.AppendAllText(Path.Combine(Path.GetTempPath(), "skill_unhandled.txt"),
+                    DateTime.Now.ToString("HH:mm:ss") + " " + ue.ExceptionObject + "\r\n");
+            }
+            catch { }
+        };
         // SUPERVISOR (default on; SB_NO_SUPERVISOR=1 disables): if the engine
         // init race with another client kills the app early, relaunch it. Our
         // app is never "affected" by other clients - it self-heals. The
@@ -125,6 +136,7 @@ internal static class RebornClient
         long autoSkillMs = 0;
         long.TryParse(Env("SB_CAST_MS", "0"), out autoSkillMs);
         bool autoSkillDone = false;
+        bool clickCastRequested = false;   // P panel click -> cast in the frame loop
 
         var feiSteps = new List<ProcStep>();
         var feiTanis = new List<string>();
@@ -245,6 +257,68 @@ internal static class RebornClient
             catch (Exception e) { Log("loadDatasetNames ex: " + e.Message); }
         };
 
+        // client skill data (ability_picker/tools/build_skill_data.py): icon/desc/
+        // school per ability, straight from the client's own Skill.txt + Icon.txt
+        var skillData = new Dictionary<string, Dictionary<string, object>>();
+        string skillDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "skill_data.json");
+        string skillIconDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "icons");
+        string skillDataError = "";
+        try
+        {
+            if (File.Exists(skillDataPath))
+            {
+                var ser = new JavaScriptSerializer();
+                var root = ser.DeserializeObject(File.ReadAllText(skillDataPath, System.Text.Encoding.UTF8)) as Dictionary<string, object>;
+                object abilObj;
+                if (root != null && root.TryGetValue("abilities", out abilObj))
+                {
+                    var abil = abilObj as Dictionary<string, object>;
+                    if (abil != null)
+                        foreach (KeyValuePair<string, object> kv in abil)
+                        {
+                            var d = kv.Value as Dictionary<string, object>;
+                            if (d != null) skillData[kv.Key] = d;
+                        }
+                }
+            }
+        }
+        catch (Exception e) { skillDataError = e.Message; }
+        // client tooltip markup (<SKILL ...>, <BUFF ...>) is stripped for display
+        Func<string, string> stripMarkup = delegate(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return "";
+            var sb = new System.Text.StringBuilder();
+            bool inTag = false;
+            foreach (char ch in s)
+            {
+                if (ch == '<') { inTag = true; continue; }
+                if (ch == '>') { inTag = false; continue; }
+                if (!inTag) sb.Append(ch);
+            }
+            return sb.ToString();
+        };
+        Func<string, string> skillTipText = delegate(string nm)
+        {
+            string tip = nm;
+            try
+            {
+                Dictionary<string, object> d;
+                if (skillData.TryGetValue(nm, out d))
+                {
+                    string school = StrOf(d, "school");
+                    string kind = StrOf(d, "kind");
+                    if (school != "" || kind != "")
+                        tip += "  [" + kind + (kind != "" && school != "" ? " " : "") + school + "]";
+                    string desc = stripMarkup(StrOf(d, "desc"));
+                    if (desc != "") tip += "\n" + desc;
+                    string sd = stripMarkup(StrOf(d, "simpleDesc"));
+                    if (desc == "" && sd != "") tip += "\n" + sd;
+                }
+            }
+            catch { }
+            return tip;
+        };
+
         // resolve a process step's clip name to a vfs path
         Func<string, string> resolveTani = delegate(string needle)
         {
@@ -275,6 +349,8 @@ internal static class RebornClient
             }
         };
         Log("start map=" + mapPath);
+        Log("skill data: " + skillData.Count + " abilities"
+            + (skillDataError != "" ? " (load ex: " + skillDataError + ")" : ""));
         {
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string fp = "brand=Skill exe=" + Path.GetFileName(exePath)
@@ -341,7 +417,7 @@ internal static class RebornClient
         abilityBtn.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
         abilityBtn.Cursor = Cursors.Hand;
         var abilityPanel = new Panel();
-        abilityPanel.Size = new System.Drawing.Size(224, 136);
+        abilityPanel.Size = new System.Drawing.Size(224, 200);
         abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
         abilityPanel.Visible = false;
         Func<string> abilityLabel = delegate { return "P: " + abilitySel; };
@@ -354,7 +430,66 @@ internal static class RebornClient
         abilityList.SelectedIndex = abilitySelIdx >= 0 ? abilitySelIdx : 0;
         if (abilityList.SelectedIndex >= 0) abilitySel = abilityItems[abilityList.SelectedIndex];
         abilityList.Location = new System.Drawing.Point(6, 6);
-        abilityList.Size = new System.Drawing.Size(212, 98);
+        abilityList.Size = new System.Drawing.Size(212, 158);
+        abilityList.DrawMode = DrawMode.OwnerDrawFixed;
+        abilityList.ItemHeight = 52;
+        abilityList.BorderStyle = BorderStyle.None;
+        // ListBox rejects transparent background colors (ArgumentException)
+        abilityList.BackColor = System.Drawing.Color.FromArgb(12, 12, 12);
+        abilityList.ForeColor = System.Drawing.Color.White;
+        abilityList.Font = new System.Drawing.Font("Microsoft YaHei", 9.5f, System.Drawing.FontStyle.Bold);
+        // client icons (build_skill_data.py -> bin64\ability_picker\icons\<id>.png)
+        var skillIcons = new Dictionary<string, Image>();
+        Func<string, Image> iconFor = delegate(string nm)
+        {
+            Image img;
+            if (skillIcons.TryGetValue(nm, out img)) return img;
+            img = null;
+            try
+            {
+                Dictionary<string, object> d;
+                if (skillData.TryGetValue(nm, out d))
+                {
+                    string png = StrOf(d, "iconPng");
+                    if (png != "")
+                    {
+                        string p = Path.Combine(skillIconDir, png);
+                        if (File.Exists(p)) img = Image.FromFile(p);
+                    }
+                }
+            }
+            catch { img = null; }
+            skillIcons[nm] = img;
+            return img;
+        };
+        abilityList.DrawItem += delegate(object sender, DrawItemEventArgs e)
+        {
+            try
+            {
+                if (e.Index < 0 || e.Index >= abilityItems.Count) return;
+                bool sel = (e.State & DrawItemState.Selected) != 0;
+                using (var b = new SolidBrush(sel
+                    ? System.Drawing.Color.FromArgb(230, 62, 96, 150)
+                    : System.Drawing.Color.FromArgb(180, 12, 12, 12)))
+                    e.Graphics.FillRectangle(b, e.Bounds);
+                string nm = abilityItems[e.Index];
+                Image img = iconFor(nm);
+                if (img != null) e.Graphics.DrawImage(img, e.Bounds.X + 3, e.Bounds.Y + 2, 48, 48);
+                using (var tb = new SolidBrush(System.Drawing.Color.White))
+                    e.Graphics.DrawString(nm, e.Font, tb, e.Bounds.X + 58, e.Bounds.Y + 6);
+                Dictionary<string, object> dd;
+                if (skillData.TryGetValue(nm, out dd))
+                {
+                    string kind = StrOf(dd, "kind");
+                    string school = StrOf(dd, "school");
+                    if (kind != "" || school != "")
+                        using (var sb2 = new SolidBrush(System.Drawing.Color.FromArgb(200, 200, 200)))
+                            e.Graphics.DrawString(kind + " " + school,
+                                new Font("Consolas", 7.5f), sb2, e.Bounds.X + 58, e.Bounds.Y + 30);
+                }
+            }
+            catch (Exception ex) { Log("panel draw ex: " + ex.Message); }
+        };
         abilityList.SelectedIndexChanged += delegate
         {
             if (abilityList.SelectedIndex >= 0 && abilityList.SelectedIndex < abilityItems.Count)
@@ -362,12 +497,39 @@ internal static class RebornClient
             abilityBtn.Text = abilityLabel();
             Log("ability selected: " + abilitySel);
         };
+        // hover -> the client's own skill description (markup stripped)
+        var skillTip = new ToolTip();
+        skillTip.InitialDelay = 250;
+        skillTip.ReshowDelay = 100;
+        skillTip.AutoPopDelay = 20000;
+        int lastTipIdx = -2;
+        abilityList.MouseMove += delegate(object sender, MouseEventArgs e)
+        {
+            int idx = abilityList.IndexFromPoint(e.Location);
+            if (idx == lastTipIdx) return;
+            lastTipIdx = idx;
+            string txt = "";
+            if (idx >= 0 && idx < abilityItems.Count) txt = skillTipText(abilityItems[idx]);
+            skillTip.SetToolTip(abilityList, txt);
+        };
+        // click -> cast the clicked ability (the loop's cooldown gate still applies)
+        abilityList.MouseClick += delegate(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            int idx = abilityList.IndexFromPoint(e.Location);
+            if (idx < 0 || idx >= abilityItems.Count) return;
+            abilitySel = abilityItems[idx];
+            abilityList.SelectedIndex = idx;
+            abilityBtn.Text = abilityLabel();
+            clickCastRequested = true;
+            Log("ability click-cast: " + abilitySel);
+        };
         abilityPanel.Controls.Add(abilityList);
         var soundBox = new CheckBox();
         soundBox.Text = "sound";
         soundBox.ForeColor = System.Drawing.Color.White;
         soundBox.Checked = soundOn;
-        soundBox.Location = new System.Drawing.Point(6, 110);
+        soundBox.Location = new System.Drawing.Point(6, 172);
         soundBox.AutoSize = true;
         soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
         abilityPanel.Controls.Add(soundBox);
@@ -1078,6 +1240,7 @@ internal static class RebornClient
             {
                 abilityPanel.Visible = !abilityPanel.Visible;
                 if (abilityPanel.Visible) abilityPanel.BringToFront();
+                Log("ability panel " + (abilityPanel.Visible ? "shown" : "hidden"));
             }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
@@ -1902,6 +2065,11 @@ internal static class RebornClient
             float hz = (float)cfz;
 
             // auto-cast (smoke/test): SB_CAST_MS (feizhua: aim then auto-confirm)
+            if (clickCastRequested)
+            {
+                clickCastRequested = false;
+                skillPressed = true;
+            }
             if (autoSkillMs > 0 && !autoSkillDone && now >= autoSkillMs)
             {
                 autoSkillDone = true;

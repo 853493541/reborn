@@ -976,3 +976,23 @@ all tags should fire. Editor config to adopt when initializing the host
   timeline (30 emitters, staggered delays up to 1.44 s over 8.4 s — authored data) or a
   specific visual the user can point at.
 
+### 2026-09-30 — ability sandbox — P panel: client icons + hover desc + click to cast
+- Did: new tool `ability_picker/tools/build_skill_data.py` pulls each ability's data straight
+  from the client tables — `ui/Scheme/Case/Skill.txt` (Name/Desc/ShortDesc/SimpleDesc +
+  IconID), `ui/Scheme/Case/Icon.txt` (IconID → `ui/Image/Icon/<FileName>.UITex` + frame),
+  `settings/skill/skills.tab` (kind/school/cast mode/script) and `SkillRealization.tab`.
+  Icons: the UITex names its texture (descriptor says `.Tga`, the shipped file is `.dds` —
+  extension swap), extracted through the official `PakV4SfxExtract.exe`, cropped to the
+  frame rect and written as PNG to `bin64\ability_picker\icons\<skillid>.png`.
+  All 8 staged ids resolved: 65119 撼如雷, 65101 五蕴皆空, 65113 傍花随柳, 65138 凌太虚,
+  65062 天地无极, 28031 临时飞爪, 32247 如意法, 27967 风来吴山.
+- Panel: the P list is now owner-drawn (48 px client icon + name + kind/school), hover
+  shows the client's own tooltip text (markup `<SKILL ...>`/`<BUFF ...>` stripped), and a
+  click casts the clicked ability (same 3 s cooldown gate as the 1 key).
+- Evidence: log `Skill_20260930_1617*.log` — `skill data: 8 abilities`,
+  `ability panel shown`; desktop capture crop shows the icon list + hover tooltip;
+  tool output `8 abilities, 8 icons`; tracked `ability_picker/data/skill_data.json`.
+- Outcome: solved — the panel is client-data driven (icon/desc), click-to-cast wired to
+  the verified cast path.
+- Re-open: none.
+

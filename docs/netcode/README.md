@@ -53,6 +53,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `scan_skill_scripts.py`, `scan_skill_ranges.py`, `make_range_examples.py`, `query_skill_tooltip.py` | skill formula/range/tooltip extraction |
 | `lua51_constants.py` | JX3 Lua 5.1 bytecode constant dumper (32-bit header, size_t=4) |
 | `measure_skill_motion.py`, `dump_motion_floats.py` | tani/ani motion extraction |
+| `ability_picker/tools/build_skill_data.py` | per-ability client data (name/desc/IconID -> icon PNG/school/kind) for the P panel: `ui/Scheme/Case/Skill.txt` + `Icon.txt` + `skills.tab` |
 | `character_mesh_census.py`, `measure_character_size.py` | mesh height census / unit calibration |
 | `loot/capture.py` | loot/doodad capture decoder (spawn positions, rolled contents, takes) + selftest |
 | `mode/capture.py` | 绝境 mode-state decoder keyed on recovered S2C opcodes (0x08/0xAA/0x11A/0x11B/0x119/0x330/0x245) + selftest |

@@ -1,0 +1,182 @@
+{
+ "source": "ui/Scheme/Case/Skill.txt + Icon.txt + settings/skill/skills.tab",
+ "count": 8,
+ "abilities": {
+  "临时飞爪": {
+   "name": "临时飞爪",
+   "ids": [
+    "28031"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s16lxg链技能03_释放HD.tani",
+   "school": "13",
+   "kind": "Physics",
+   "functionType": "Normal",
+   "castMode": "PointArea",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 2,
+   "iconId": "3199",
+   "iconVfs": "ui/Image/Icon/skill\\TangMen\\skill_tangm_35.UITex",
+   "iconPng": "28031.png",
+   "desc": "将自身牵引至标记位置，非战斗中使用时将返还部分调息时间。",
+   "shortDesc": "",
+   "simpleDesc": "位移技。",
+   "script": "沙漠风暴/道具_临时飞爪.lua",
+   "iconFrame": 0
+  },
+  "如意法": {
+   "name": "如意法",
+   "ids": [
+    "32247"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1smj10双刀buff04_清净心01.tani",
+   "school": "13",
+   "kind": "LunarMagic",
+   "functionType": "Normal",
+   "castMode": "CasterSingle",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 1,
+   "iconId": "4175",
+   "iconVfs": "ui/Image/Icon/skill\\MingJiao\\skill_mingjiao36.UITex",
+   "iconPng": "32247.png",
+   "desc": "清除自身当前所受的移动限制效果，使自身<BUFF 4421 1 desc>，持续<BUFF 4421 1 time>，并使自身接下来10秒内的下一个伤害招式附带该移动限制效果。",
+   "shortDesc": "",
+   "simpleDesc": "解控技。",
+   "script": "沙漠风暴/道具_如意法.lua",
+   "iconFrame": 0
+  },
+  "风来吴山": {
+   "name": "风来吴山",
+   "ids": [
+    "27967"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15_风来吴山hd.tani",
+   "school": "13",
+   "kind": "Physics",
+   "functionType": "Normal",
+   "castMode": "CasterSingle",
+   "passive": false,
+   "channel": true,
+   "maxLevel": 1,
+   "iconId": "2375",
+   "iconVfs": "ui/Image/Icon/skill\\CangJian\\cangjian_lfjs_6.UITex",
+   "iconPng": "27967.png",
+   "desc": "发动旋风般的重剑攻击，5秒内对周围10尺内的最多10个目标造成共计8次伤害。\n在此过程中你无法跳跃，不受控制招式影响（被拉除外）。",
+   "shortDesc": "",
+   "simpleDesc": "群体伤害技。",
+   "script": "沙漠风暴/道具_风来吴山.lua",
+   "iconFrame": 0
+  },
+  "五蕴皆空": {
+   "name": "五蕴皆空",
+   "ids": [
+    "65101"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1ssl04袈裟攻击05.tani",
+   "school": "13",
+   "kind": "Adaptive",
+   "functionType": "Damage",
+   "castMode": "TargetSingle",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 1,
+   "iconId": "424",
+   "iconVfs": "ui/Image/Icon/skill\\ShaoLin\\skill_shaolin09.UITex",
+   "iconPng": "65101.png",
+   "desc": "使目标眩晕5秒，并使其8秒内“蹑云逐月”招式移动速度降低70%。",
+   "shortDesc": "",
+   "simpleDesc": "控制",
+   "script": "绝境战场\\绝境_五蕴皆空.lua",
+   "iconFrame": 0
+  },
+  "傍花随柳": {
+   "name": "傍花随柳",
+   "ids": [
+    "65113"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani",
+   "school": "13",
+   "kind": "Adaptive",
+   "functionType": "Damage",
+   "castMode": "TargetSingle",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 1,
+   "iconId": "405",
+   "iconVfs": "ui/Image/Icon/skill\\WanHua\\skill_wanhua16.UITex",
+   "iconPng": "65113.png",
+   "desc": "使目标8秒内获得3层“傍花随柳”效果，前2层“傍花随柳”目标施展任何招式将受到伤害，最后1层“傍花随柳”时将直接沉默目标4秒。",
+   "shortDesc": "",
+   "simpleDesc": "控制，伤害",
+   "script": "绝境战场\\绝境_傍花随柳.lua",
+   "iconFrame": 0
+  },
+  "凌太虚": {
+   "name": "凌太虚",
+   "ids": [
+    "65138"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1scy03技能05-05.tani",
+   "school": "13",
+   "kind": "None",
+   "functionType": "Normal",
+   "castMode": "CasterSingle",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 1,
+   "iconId": "1443",
+   "iconVfs": "ui/Image/Icon/skill\\ChunYang\\skill_chunyang31.UITex",
+   "iconPng": "65138.png",
+   "desc": "在自身脚下产生一个15尺范围气场，在气场范围内自身和友方目标受到的外功伤害降低30%，气场持续10秒。",
+   "shortDesc": "",
+   "simpleDesc": "增益",
+   "script": "绝境战场\\绝境_凌太虚.lua",
+   "iconFrame": 0
+  },
+  "天地无极": {
+   "name": "天地无极",
+   "ids": [
+    "65062"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11c.ani",
+   "school": "13",
+   "kind": "Adaptive",
+   "functionType": "Damage",
+   "castMode": "TargetSingle",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 1,
+   "iconId": "609",
+   "iconVfs": "ui/Image/Icon/skill\\ChunYang\\skill_chunyang03.UITex",
+   "iconPng": "65062.png",
+   "desc": "对目标造成<SKILL PhysicsDamage>(+<SKILLEx {D0} {SkillPhysicsAP}>)伤害，并隐身3秒，施展任何招式都将提前解除隐身效果。",
+   "shortDesc": "",
+   "simpleDesc": "伤害，隐身",
+   "script": "绝境战场\\绝境_天地无极.lua",
+   "iconFrame": 0
+  },
+  "撼如雷": {
+   "name": "撼如雷",
+   "ids": [
+    "65119"
+   ],
+   "matched": "data\\source\\player\\f1\\动作\\F1s04tc技能22_撼HD.tani",
+   "school": "13",
+   "kind": "Adaptive",
+   "functionType": "Damage",
+   "castMode": "CasterArea",
+   "passive": false,
+   "channel": false,
+   "maxLevel": 1,
+   "iconId": "635",
+   "iconVfs": "ui/Image/Icon/skill\\TianCe\\skill_tiance04.UITex",
+   "iconPng": "65119.png",
+   "desc": "使自身会心几率提高10%，会心效果提高20%，持续20秒，并使15尺内的10个敌对目标8秒内无法进入隐身状态，已经进入隐身状态的目标则立刻解除隐身状态。",
+   "shortDesc": "",
+   "simpleDesc": "增益",
+   "script": "绝境战场\\绝境_撼如雷.lua",
+   "iconFrame": 0
+  }
+ }
+}
