@@ -341,3 +341,26 @@ solved it, and what is still open. **Newest at the bottom.**
   annotated tag `door-carpet-fix` → `62f796a` (floor query ignores winding).
 - Evidence: `git show door-carpet-fix`.
 - Outcome: recorded.
+### 2026-09-29 — camera — Tagged the step-shake build
+- Did: annotated tag `camera-step-fix` → `6b03864` (anchor-Y smooth-follow B14).
+- Outcome: recorded.
+### 2026-09-29 — collision — "walked into the cabinet": engine step rule, not a bug
+- Did: the user's end-of-run log showed them inside the open-front cabinet
+  `wj_erg柜子002_hd` (龙门寻宝 idx 648, AABB 18728-19351/922-1329/36721-36821)
+  at feet 974-1044, asking whether the step forgiveness let them in.
+  Reproduced with a grounded walk (spawn 19040,36650, walk north): the cabinet
+  front BLOCKS at z=36714 (`blocked by inst=1042 top=1017.2 feet=928`), so a
+  plain walk-in is not possible. Route from the log + geometry: a 51 u ledge
+  south of the cabinet (within the 64 u = 1 尺 tolerance) put the feet at ~974;
+  the cabinet's closed-door front top (1007.8) was then only ~34 u above the
+  feet, inside the engine's own `stepOffset` (0.5 m = 50 u), so the step rule
+  climbed over the doors; the following 小跳 landed on the interior shelf
+  (1043.7 / 1052). Same outcome would occur under the real PhysX CCT for the
+  same collidable mesh.
+- Open question (not invented): whether the real game collides with this prop
+  at all — the bake admits it under the unresolved folder-white H1 rule
+  (`G-35`); real per-object physics is server/nav state we cannot derive from
+  the client files. Indoor props' interiors are therefore **[PART/H1]**.
+- Evidence: repro run `reborn_20260929_222021.log`; geometry scan of the
+  cabinet mesh (front panels y 922-1008 + sides; open band y 1008-1224).
+- Outcome: explained + documented; no host rule added (engine-faithful).
