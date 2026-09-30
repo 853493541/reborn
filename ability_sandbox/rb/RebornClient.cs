@@ -139,6 +139,7 @@ internal static class RebornClient
         int castIdx = 0;
         bool castPss = false;
         string castPssPath = "";
+        long castPssHandle = 0;
         float lastCastX = 1e9f, lastCastZ = 1e9f;
         // 3 s cooldown between ability casts: one press = one cast, one
         // animation, one effect. Spam presses are ignored (no restart).
@@ -2099,9 +2100,11 @@ internal static class RebornClient
                 }
                 if (castPss && castPssPath.Length > 0)
                 {
-                    // the effect follows the caster (reposition on movement)
+                    // the effect is spawned ONCE at the cast point and plays its
+                    // authored timeline once; re-adding it on movement would
+                    // restart the timeline, so it is not repositioned
                     bool first = lastCastX > 1e8f;
-                    if (first || Math.Abs(px - lastCastX) > 16f || Math.Abs(pz - lastCastZ) > 16f)
+                    if (first)
                     {
                         lastCastX = px; lastCastZ = pz;
                         var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
@@ -2109,7 +2112,8 @@ internal static class RebornClient
                         var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                         var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                         long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
-                        if (first) Log("cast pss -> " + castPssPath + " handle=" + h);
+                        castPssHandle = h;
+                        Log("cast pss -> " + castPssPath + " handle=" + h + " (once, anchored)");
                     }
                 }
                 if (now >= castUntil)

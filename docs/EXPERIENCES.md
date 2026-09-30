@@ -956,3 +956,23 @@ all tags should fire. Editor config to adopt when initializing the host
   `cast done` at +8.5 s; exit 0. Sandbox map: `regions=1x1 origin=(0,0)`.
 - Outcome: solved — one press plays the animation/effect exactly once.
 - Re-open: none (the authored PSS may contain its own repeating pulses; that is data).
+
+### 2026-09-30 — ability sandbox — cast effect anchored (one spawn, timeline once)
+- Problem: the user still saw the cast "animation" happen multiple times (reported after the
+  3 s cooldown). Verified with logs + screenshot fingerprints: the character clip is set
+  once per cast (939 ms for 撼如雷) and returns to idle at +972 ms — one play; the PSS
+  dummy is spawned once; the cooldown blocks spam presses. The remaining host artifact was
+  the effect re-add on movement (the PSS dummy was re-added every >16 u to follow the
+  caster, which can restart the authored timeline).
+- Change: the cast PSS is now spawned ONCE at the cast point and never re-added on
+  movement (anchored; the authored timeline plays once). The handle log now says
+  `(once, anchored)`.
+- Evidence: scripted run `Skill_20260930_1513*.log` — cast → clip once →
+  `cast pss -> ... (once, anchored)` → `cast done` +8.5 s, with W held during the whole
+  effect; screenshot series `rc_*_2000..3100ms.png` shows a single motion arc (pairwise
+  diff peak mid-clip, no periodicity).
+- Outcome: one cast = one animation, one sound, one effect instance.
+- Re-open: if repetition persists, identify whether it is the authored PSS multi-pulse
+  timeline (30 emitters, staggered delays up to 1.44 s over 8.4 s — authored data) or a
+  specific visual the user can point at.
+
