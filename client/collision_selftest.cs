@@ -75,13 +75,21 @@ internal static class CollisionSelfTest
             }
             for (int mi = 0; mi < matrices.Length; mi++)
             {
-                w.Write(0);
+                w.Write(mi);                 // instance -> mesh index
                 for (int k = 0; k < 16; k++) w.Write(matrices[mi][k]);
                 w.Write(0);
                 for (int k = 0; k < 6; k++) w.Write(0f); // AABB derived from mesh
             }
         }
         return path;
+    }
+
+    static void WriteMeshSidecar(string binPath, string[] meshPaths)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        for (int i = 0; i < meshPaths.Length; i++)
+            sb.Append(i).Append('\t').Append(meshPaths[i]).Append('\n');
+        File.WriteAllText(binPath + ".meshes.txt", sb.ToString());
     }
 
     static MeshBuilder Wall()
@@ -265,6 +273,46 @@ internal static class CollisionSelfTest
             bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f);
             Check("inverted_floor_stand", !blocked && Math.Abs(py - 3f) < 0.05f,
                 string.Format("blocked={0} py={1:F2}", blocked, py));
+        }
+
+        // 11. solid props (host proxy for the client's per-unit passability):
+        //     a capsule inside a 小物件 prop is ejected through the nearest free
+        //     face; a building-class mesh keeps shell collision; an exit blocked
+        //     by a nearby wall is skipped for a free one.
+        {
+            MeshBuilder prop = new MeshBuilder();
+            prop.AddBox(30f, -10f, -200f, 130f, 200f, 200f);
+            string pb = WriteBin("propbox", new MeshBuilder[] { prop }, new float[][] { M(0f, 0f, 0f) });
+            WriteMeshSidecar(pb, new string[] { "data/source/maps_source/小物件/木箱/test_prop.mesh" });
+            FoliageCollision col = new FoliageCollision(null, pb);
+            float px = 80f, py = 0f, pz = 0f;
+            int ei;
+            bool ej = col.SolidPropEject(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
+            Check("prop_solid_eject", ej && (px < 13f || px > 147f),
+                string.Format("eject={0} px={1:F1}", ej, px));
+
+            string pb2 = WriteBin("propbox_building", new MeshBuilder[] { prop }, new float[][] { M(0f, 0f, 0f) });
+            WriteMeshSidecar(pb2, new string[] { "data/source/maps_source/建筑/test_house.mesh" });
+            col = new FoliageCollision(null, pb2);
+            px = 80f; py = 0f; pz = 0f;
+            ej = col.SolidPropEject(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
+            Check("prop_solid_building_kept", !ej && Math.Abs(px - 80f) < 0.01f,
+                string.Format("eject={0} px={1:F1}", ej, px));
+
+            MeshBuilder propW = new MeshBuilder();
+            propW.AddBox(30f, -10f, -200f, 130f, 200f, 200f);
+            MeshBuilder wallB = new MeshBuilder();
+            wallB.AddQuad(20f, 0f, -200f, 20f, 0f, 200f, 20f, 200f, 200f, 20f, 200f, -200f);
+            string pw = WriteBin("propbox_wall", new MeshBuilder[] { propW, wallB },
+                                 new float[][] { M(0f, 0f, 0f), M(0f, 0f, 0f) });
+            WriteMeshSidecar(pw, new string[] {
+                "data/source/maps_source/小物件/木箱/test_prop2.mesh",
+                "data/source/maps_source/建筑/test_wall.mesh" });
+            col = new FoliageCollision(null, pw);
+            px = 80f; py = 0f; pz = 0f;
+            ej = col.SolidPropEject(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
+            Check("prop_solid_free_exit", ej && px > 147f,
+                string.Format("eject={0} px={1:F1}", ej, px));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"

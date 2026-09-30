@@ -50,6 +50,11 @@ public sealed class FoliageCollision
         // obstruction query skips meshes with false
         public bool blocksCamera = true;
         public int meshIndex = -1;
+        // host proxy for the client's per-unit passability (bUnitWalkable /
+        // bUnitCanPass values are not in the shipped files, G-21): objects
+        // under the 小物件 taxonomy are solid volumes - the capsule is never
+        // inside them. Set from the .meshes.txt sidecar at load.
+        public bool propSolid = false;
     }
 
     sealed class Instance
@@ -67,9 +72,11 @@ public sealed class FoliageCollision
     readonly Dictionary<long, List<int>> _grid = new Dictionary<long, List<int>>();
     readonly float _cell;
     readonly List<int> _cand = new List<int>(64);
+    readonly List<int> _candClear = new List<int>(16);
 
     public int InstanceCount { get { return _inst.Count; } }
     public int MeshCount { get; private set; }
+    public string LastEjectDbg = "";
     int _cameraFlagZero;
     string[] _meshPaths;   // optional mesh-index -> source model path sidecar
 
@@ -272,8 +279,23 @@ public sealed class FoliageCollision
                         int tab = ln.IndexOf('\t');
                         if (tab <= 0) continue;
                         int mi;
-                        if (int.TryParse(ln.Substring(0, tab), out mi) && mi >= 0 && mi < meshCount)
+                        if (                        int.TryParse(ln.Substring(0, tab), out mi) && mi >= 0 && mi < meshCount)
                             _meshPaths[mi] = ln.Substring(tab + 1);
+                    }
+                    for (int i = 0; i < meshCount; i++)
+                    {
+                        string mp = _meshPaths[i];
+                        if (mp == null) continue;
+                        // volumetric furniture only (cabinets/crates/tables/
+                        // barrels/vats): thin sheets (rugs, banners, bones)
+                        // legitimately share walkable space and are excluded.
+                        if (mp.IndexOf("\u67dc", StringComparison.Ordinal) >= 0 ||
+                            mp.IndexOf("\u7bb1", StringComparison.Ordinal) >= 0 ||
+                            mp.IndexOf("\u684c", StringComparison.Ordinal) >= 0 ||
+                            mp.IndexOf("\u6876", StringComparison.Ordinal) >= 0 ||
+                            mp.IndexOf("\u7f38", StringComparison.Ordinal) >= 0 ||
+                            mp.IndexOf("\u575b", StringComparison.Ordinal) >= 0)
+                            meshes[i].propSolid = true;
                     }
                 }
                 catch { }
@@ -1057,6 +1079,150 @@ public sealed class FoliageCollision
             }
         }
         return best;
+    }
+
+    // Host proxy (registered) for the client's per-unit passability: the
+    // bUnitWalkable/bUnitCanPass values for placed objects are not in the
+    // shipped files (G-21), but the objects are. Small props (小物件) are solid
+    // volumes: if the capsule centre is inside a prop's world AABB, it is
+    // ejected through the nearest face whose destination is free (no capsule
+    // contact, not under the terrain). Buildings keep mesh-shell collision.
+    // Winding-free by construction (the shipped meshes use inverted winding).
+    public bool SolidPropEject(ref float px, ref float py, ref float pz,
+                               float radius, float height, float ground,
+                               out int outInst)
+    {
+        outInst = -1;
+        LastEjectDbg = "";
+        float cy = py + height * 0.5f;
+        GatherCandidates(px, pz, 300f, _cand);
+        for (int ci = 0; ci < _cand.Count; ci++)
+        {
+            Instance it = _inst[_cand[ci]];
+            if (!it.mesh.propSolid) continue;
+            if (px < it.minX || px > it.maxX) continue;
+            if (pz < it.minZ || pz > it.maxZ) continue;
+            if (cy <= it.minY || cy >= it.maxY) continue;
+            // only deep interiors: near a side face the capsule is stepping or
+            // landing on the prop (jumping onto boxes must keep working), and
+            // feet at/above the top means standing on it
+            float dxm = Math.Min(px - it.minX, it.maxX - px);
+            float dzm = Math.Min(pz - it.minZ, it.maxZ - pz);
+            if (dxm < 8f || dzm < 8f) continue;
+            if (py > it.maxY - 25f) continue;
+            // the AABB of a shell can enclose empty air (an 800 u rug mesh
+            // placed vertically): require real geometry nearby
+            if (!NearGeometry(it, px, cy, pz, 80f)) continue;
+            // six face exits: (dx-sign x, dy-sign y, dz-sign z) with distance
+            float[] bd = new float[6];
+            float[] bx = new float[6], by = new float[6], bz = new float[6];
+            int n = 0;
+            float ex, dist;
+            ex = it.minX - radius - 1f; dist = px - ex;
+            bd[n] = dist; bx[n] = ex; by[n] = py; bz[n] = pz; n++;
+            ex = it.maxX + radius + 1f; dist = ex - px;
+            bd[n] = dist; bx[n] = ex; by[n] = py; bz[n] = pz; n++;
+            ex = it.minZ - radius - 1f; dist = pz - ex;
+            bd[n] = dist; bx[n] = px; by[n] = py; bz[n] = ex; n++;
+            ex = it.maxZ + radius + 1f; dist = ex - pz;
+            bd[n] = dist; bx[n] = px; by[n] = py; bz[n] = ex; n++;
+            ex = it.minY - height - 1f; dist = py - ex;
+            bd[n] = dist; bx[n] = px; by[n] = ex; bz[n] = pz; n++;
+            ex = it.maxY + 1f; dist = ex - py;
+            bd[n] = dist; bx[n] = px; by[n] = ex; bz[n] = pz; n++;
+            for (int a = 1; a < 6; a++)               // insertion sort, nearest first
+            {
+                for (int b = a; b > 0 && bd[b] < bd[b - 1]; b--)
+                {
+                    float t = bd[b]; bd[b] = bd[b - 1]; bd[b - 1] = t;
+                    t = bx[b]; bx[b] = bx[b - 1]; bx[b - 1] = t;
+                    t = by[b]; by[b] = by[b - 1]; by[b - 1] = t;
+                    t = bz[b]; bz[b] = bz[b - 1]; bz[b - 1] = t;
+                }
+            }
+            for (int a = 0; a < 6; a++)
+            {
+                if (bd[a] > 500f) break;
+                if (by[a] < py - 1f && by[a] < ground - 1f)
+                {
+                    LastEjectDbg += string.Format(" e{0}=d{1:F0}:ground", a, bd[a]);
+                    continue;
+                }
+                if (!CapsuleClear(bx[a], by[a], bz[a], radius, height))
+                {
+                    LastEjectDbg += string.Format(" e{0}=d{1:F0}:blocked", a, bd[a]);
+                    continue;
+                }
+                px = bx[a]; py = by[a]; pz = bz[a];
+                outInst = _cand[ci];
+                LastEjectDbg += string.Format(" e{0}=d{1:F0}:OK", a, bd[a]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool NearGeometry(Instance it, float x, float y, float z, float margin)
+    {
+        float[] w2l = it.w2l;
+        if (w2l == null) return false;
+        float lx = x * w2l[0] + y * w2l[4] + z * w2l[8] + w2l[12];
+        float ly = x * w2l[1] + y * w2l[5] + z * w2l[9] + w2l[13];
+        float lz = x * w2l[2] + y * w2l[6] + z * w2l[10] + w2l[14];
+        MeshData md = it.mesh;
+        float limLoc = margin * it.maxLocalFromWorld;
+        float limSq = limLoc * limLoc;
+        int cx0 = (int)((lx - limLoc - md.gx0) / md.gcell);
+        int cx1 = (int)((lx + limLoc - md.gx0) / md.gcell);
+        int cz0 = (int)((lz - limLoc - md.gz0) / md.gcell);
+        int cz1 = (int)((lz + limLoc - md.gz0) / md.gcell);
+        if (cx0 < 0) cx0 = 0; if (cz0 < 0) cz0 = 0;
+        if (cx1 >= md.gx) cx1 = md.gx - 1; if (cz1 >= md.gz) cz1 = md.gz - 1;
+        if (cx0 > cx1 || cz0 > cz1) return false;
+        for (int cz = cz0; cz <= cz1; cz++)
+        {
+            int rowBase = cz * md.gx;
+            for (int cx = cx0; cx <= cx1; cx++)
+            {
+                int c = rowBase + cx;
+                int s0 = md.cellStart[c], s1 = md.cellStart[c + 1];
+                for (int k = s0; k < s1; k++)
+                {
+                    float tx, ty, tz;
+                    ClosestPointOnTri(md.verts, md.tris, md.cellTri[k], lx, ly, lz,
+                                      out tx, out ty, out tz);
+                    float dx = lx - tx, dy = ly - ty, dz = lz - tz;
+                    if (dx * dx + dy * dy + dz * dz < limSq) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool CapsuleClear(float x, float y, float z, float radius, float height)
+    {
+        Contact probe = new Contact();
+        probe.lowTop = float.MaxValue;
+        GatherCandidates(x, z, radius + 8f, _candClear);
+        for (int k = 0; k < _candClear.Count; k++)
+        {
+            Instance it = _inst[_candClear[k]];
+            if (y + height < it.minY || y > it.maxY) continue;
+            if (x < it.minX - radius || x > it.maxX + radius) continue;
+            if (z < it.minZ - radius || z > it.maxZ + radius) continue;
+            if (it.mesh.propSolid)
+            {
+                // another prop: only a deep interior blocks the exit (a graze
+                // along a nearby box/cabinet is normal room space)
+                float dxm = Math.Min(x - it.minX, it.maxX - x);
+                float dzm = Math.Min(z - it.minZ, it.maxZ - z);
+                if (dxm >= 25f && dzm >= 25f && y < it.maxY - 20f) return false;
+                continue;
+            }
+            if (InstanceContact(it, x, y, z, radius, height, ref probe) && probe.depth > 3f)
+                return false;   // ignore shallow grazes (resting floor touch)
+        }
+        return true;
     }
 
     public float NearestInstance(float x, float z, out float nx, out float ny, out float nz)

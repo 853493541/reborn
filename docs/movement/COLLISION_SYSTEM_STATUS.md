@@ -151,6 +151,15 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
     registered host stand-in for server solidity; (b) recover the real
     server/nav static-collision data (may not exist client-side);
     (c) accept as the documented boundary.
+    **Update 2026-09-29:** (a) shipped (`SolidPropEject`): volumetric furniture
+    classes (柜/箱/桌/桶/缸/坛) are solid — capsule centres inside their AABB
+    (deep-gated, near geometry) are ejected through the nearest free face;
+    buildings keep shell collision; thin sheets excluded. Selftest 22/22;
+    cabinet spawn evicted to the room (`reborn_20260929_231615.log`).
+    Per-mesh obstacle flags recovered for future work: each `.mesh.ini` carries
+    `bAutoProduceObstacle` + per-submesh `bLogicObstacle`/`bCollisionOnly`
+    (consumers `KG3DEngineDX11EX64.dll`, `KG3D_LoaderNoRenderX64.dll`); the
+    per-unit `bUnitWalkable`/`bUnitCanPass` values remain unrecovered (G-21).
 ## 9. Verified this branch (quick index)
 
 - exact capsule/triangle contact; segment contact; substeps; self-test gate (19 checks)

@@ -383,3 +383,24 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: documented; no host rule shipped. Options (solid-prop volume
   approximation vs server/nav research) in `COLLISION_SYSTEM_STATUS.md` §8
   item 11.
+### 2026-09-29 — collision — Solid volumetric props (cabinet entry fixed, host proxy)
+- Did: recovered the shipped per-mesh obstacle flags — every mesh `.mesh.ini`
+  carries `bAutoProduceObstacle` (`[Display]`) and `bLogicObstacle` /
+  `bCollisionOnly` per LOD submesh; consumers in `KG3DEngineDX11EX64.dll` /
+  `KG3D_LoaderNoRenderX64.dll`. Our bake used only `bObscatleCamera` and
+  ignored them. The per-unit passability values (`bUnitWalkable` /
+  `bUnitCanPass`) are **not** in the shipped files (G-21).
+  Implemented the host proxy: volumetric furniture (柜/箱/桌/桶/缸/坛 mesh
+  classes) is solid — if the capsule centre is inside the prop's world AABB
+  (deep-gated 8 u, near real geometry within 80 u) it is ejected through the
+  nearest face whose destination is free (no contact > 3 u, not underground).
+  Buildings keep mesh-shell collision; thin sheets (rugs/banners/bones) are
+  excluded after they produced false ejections in the room.
+- Verified: selftest 22/22 (`prop_solid_eject`, `prop_solid_building_kept`,
+  `prop_solid_free_exit`); in-game spawn inside `wj_erg柜子002_hd`
+  (`reborn_20260929_231615.log`): `propfix inst=1042 pos=(19168,921,36703)` —
+  evicted to the room, never inside; holding W re-ejects (cannot enter); the
+  rug/room route runs without false ejections on the floor rug
+  (`reborn_20260929_231717.log`).
+- Outcome: solved as a registered host proxy; re-open with the real
+  `bUnitWalkable` data (G-21) or the server/nav obstacle stream.

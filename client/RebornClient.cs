@@ -992,6 +992,9 @@ internal static class RebornClient
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
+        // host proxy: 小物件 props are solid (RC_PROP_SOLID=0 disables)
+        bool propSolid = Env("RC_PROP_SOLID", "1") == "1";
+        int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
         double[] camOffSmooth = new double[3];
         bool camOffInit = false;
@@ -1756,6 +1759,17 @@ internal static class RebornClient
                             if (sh > ground) { ground = sh; groundOk = true; }
                         }
                     }
+                }
+            }
+            if (col != null && propSolid)
+            {
+                int pfInst;
+                if (col.SolidPropEject(ref px, ref py, ref pz, playerRadius, playerHeight, ground, out pfInst))
+                {
+                    propFixEvents++;
+                    if (propFixEvents <= 20)
+                        Log(string.Format("propfix inst={0} pos=({1:F0},{2:F0},{3:F0}) dbg={4}",
+                            pfInst, px, py, pz, col.LastEjectDbg));
                 }
             }
             if (colProf)
