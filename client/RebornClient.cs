@@ -1764,7 +1764,7 @@ internal static class RebornClient
             if (col != null && propSolid)
             {
                 int pfInst;
-                if (col.SolidPropEject(ref px, ref py, ref pz, playerRadius, playerHeight, ground, out pfInst))
+                if (col.SolidPropPush(ref px, ref py, ref pz, playerRadius, playerHeight, ground, out pfInst))
                 {
                     propFixEvents++;
                     if (propFixEvents <= 20)

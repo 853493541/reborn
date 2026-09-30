@@ -1083,14 +1083,16 @@ public sealed class FoliageCollision
 
     // Host proxy (registered) for the client's per-unit passability: the
     // bUnitWalkable/bUnitCanPass values for placed objects are not in the
-    // shipped files (G-21), but the objects are. Small props (小物件) are solid
-    // volumes: if the capsule centre is inside a prop's world AABB, it is
-    // ejected through the nearest face whose destination is free (no capsule
-    // contact, not under the terrain). Buildings keep mesh-shell collision.
-    // Winding-free by construction (the shipped meshes use inverted winding).
-    public bool SolidPropEject(ref float px, ref float py, ref float pz,
-                               float radius, float height, float ground,
-                               out int outInst)
+    // shipped files (G-21), but the objects are. Volumetric furniture
+    // (cabinet/crate/table/barrel/vat mesh classes) is solid: when the capsule
+    // overlaps a prop's world AABB, it is pushed out along the minimum-
+    // translation axis — a wall-like contact (small per-frame push), not an
+    // ejection. Buildings keep mesh-shell collision; thin sheets are excluded
+    // by the near-geometry gate; the shipped meshes use inverted winding, so
+    // no winding is used anywhere here.
+    public bool SolidPropPush(ref float px, ref float py, ref float pz,
+                              float radius, float height, float ground,
+                              out int outInst)
     {
         outInst = -1;
         LastEjectDbg = "";
@@ -1100,64 +1102,33 @@ public sealed class FoliageCollision
         {
             Instance it = _inst[_cand[ci]];
             if (!it.mesh.propSolid) continue;
-            if (px < it.minX || px > it.maxX) continue;
-            if (pz < it.minZ || pz > it.maxZ) continue;
-            if (cy <= it.minY || cy >= it.maxY) continue;
-            // only deep interiors: near a side face the capsule is stepping or
-            // landing on the prop (jumping onto boxes must keep working), and
-            // feet at/above the top means standing on it
-            float dxm = Math.Min(px - it.minX, it.maxX - px);
-            float dzm = Math.Min(pz - it.minZ, it.maxZ - pz);
-            if (dxm < 8f || dzm < 8f) continue;
-            if (py > it.maxY - 25f) continue;
-            // the AABB of a shell can enclose empty air (an 800 u rug mesh
-            // placed vertically): require real geometry nearby
             if (!NearGeometry(it, px, cy, pz, 80f)) continue;
-            // six face exits: (dx-sign x, dy-sign y, dz-sign z) with distance
-            float[] bd = new float[6];
-            float[] bx = new float[6], by = new float[6], bz = new float[6];
-            int n = 0;
-            float ex, dist;
-            ex = it.minX - radius - 1f; dist = px - ex;
-            bd[n] = dist; bx[n] = ex; by[n] = py; bz[n] = pz; n++;
-            ex = it.maxX + radius + 1f; dist = ex - px;
-            bd[n] = dist; bx[n] = ex; by[n] = py; bz[n] = pz; n++;
-            ex = it.minZ - radius - 1f; dist = pz - ex;
-            bd[n] = dist; bx[n] = px; by[n] = py; bz[n] = ex; n++;
-            ex = it.maxZ + radius + 1f; dist = ex - pz;
-            bd[n] = dist; bx[n] = px; by[n] = py; bz[n] = ex; n++;
-            ex = it.minY - height - 1f; dist = py - ex;
-            bd[n] = dist; bx[n] = px; by[n] = ex; bz[n] = pz; n++;
-            ex = it.maxY + 1f; dist = ex - py;
-            bd[n] = dist; bx[n] = px; by[n] = ex; bz[n] = pz; n++;
-            for (int a = 1; a < 6; a++)               // insertion sort, nearest first
+            float ox = Math.Min(px + radius, it.maxX) - Math.Max(px - radius, it.minX);
+            if (ox <= 0.01f) continue;
+            float oz = Math.Min(pz + radius, it.maxZ) - Math.Max(pz - radius, it.minZ);
+            if (oz <= 0.01f) continue;
+            float oy = Math.Min(py + height, it.maxY) - Math.Max(py, it.minY);
+            if (oy <= 0.01f) continue;
+            if (ox <= oz && ox <= oy)
             {
-                for (int b = a; b > 0 && bd[b] < bd[b - 1]; b--)
-                {
-                    float t = bd[b]; bd[b] = bd[b - 1]; bd[b - 1] = t;
-                    t = bx[b]; bx[b] = bx[b - 1]; bx[b - 1] = t;
-                    t = by[b]; by[b] = by[b - 1]; by[b - 1] = t;
-                    t = bz[b]; bz[b] = bz[b - 1]; bz[b - 1] = t;
-                }
+                float cx2 = (it.minX + it.maxX) * 0.5f;
+                px = (px < cx2) ? it.minX - radius : it.maxX + radius;
             }
-            for (int a = 0; a < 6; a++)
+            else if (oz <= oy)
             {
-                if (bd[a] > 500f) break;
-                if (by[a] < py - 1f && by[a] < ground - 1f)
-                {
-                    LastEjectDbg += string.Format(" e{0}=d{1:F0}:ground", a, bd[a]);
-                    continue;
-                }
-                if (!CapsuleClear(bx[a], by[a], bz[a], radius, height))
-                {
-                    LastEjectDbg += string.Format(" e{0}=d{1:F0}:blocked", a, bd[a]);
-                    continue;
-                }
-                px = bx[a]; py = by[a]; pz = bz[a];
-                outInst = _cand[ci];
-                LastEjectDbg += string.Format(" e{0}=d{1:F0}:OK", a, bd[a]);
-                return true;
+                float cz2 = (it.minZ + it.maxZ) * 0.5f;
+                pz = (pz < cz2) ? it.minZ - radius : it.maxZ + radius;
             }
+            else
+            {
+                float cy2 = (it.minY + it.maxY) * 0.5f;
+                float down = it.minY - height;
+                if (py < cy2 && down >= ground - 1f) py = down;   // never underground
+                else py = it.maxY;                                 // step onto the top
+            }
+            LastEjectDbg += string.Format(" push ox={0:F0} oy={1:F0} oz={2:F0}", ox, oy, oz);
+            outInst = _cand[ci];
+            return true;
         }
         return false;
     }
@@ -1199,31 +1170,6 @@ public sealed class FoliageCollision
         return false;
     }
 
-    bool CapsuleClear(float x, float y, float z, float radius, float height)
-    {
-        Contact probe = new Contact();
-        probe.lowTop = float.MaxValue;
-        GatherCandidates(x, z, radius + 8f, _candClear);
-        for (int k = 0; k < _candClear.Count; k++)
-        {
-            Instance it = _inst[_candClear[k]];
-            if (y + height < it.minY || y > it.maxY) continue;
-            if (x < it.minX - radius || x > it.maxX + radius) continue;
-            if (z < it.minZ - radius || z > it.maxZ + radius) continue;
-            if (it.mesh.propSolid)
-            {
-                // another prop: only a deep interior blocks the exit (a graze
-                // along a nearby box/cabinet is normal room space)
-                float dxm = Math.Min(x - it.minX, it.maxX - x);
-                float dzm = Math.Min(z - it.minZ, it.maxZ - z);
-                if (dxm >= 25f && dzm >= 25f && y < it.maxY - 20f) return false;
-                continue;
-            }
-            if (InstanceContact(it, x, y, z, radius, height, ref probe) && probe.depth > 3f)
-                return false;   // ignore shallow grazes (resting floor touch)
-        }
-        return true;
-    }
 
     public float NearestInstance(float x, float z, out float nx, out float ny, out float nz)
     {

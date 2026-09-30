@@ -391,16 +391,17 @@ solved it, and what is still open. **Newest at the bottom.**
   ignored them. The per-unit passability values (`bUnitWalkable` /
   `bUnitCanPass`) are **not** in the shipped files (G-21).
   Implemented the host proxy: volumetric furniture (柜/箱/桌/桶/缸/坛 mesh
-  classes) is solid — if the capsule centre is inside the prop's world AABB
-  (deep-gated 8 u, near real geometry within 80 u) it is ejected through the
-  nearest face whose destination is free (no contact > 3 u, not underground).
-  Buildings keep mesh-shell collision; thin sheets (rugs/banners/bones) are
-  excluded after they produced false ejections in the room.
+  classes) is solid — when the capsule overlaps the prop's world AABB it is
+  pushed out along the minimum-translation axis (a wall-like contact with
+  2–10 u per-frame pushes), so it cannot be entered and there is no ejection
+  bounce/shake. Near-geometry gate (80 u) keeps the empty AABB air of thin
+  sheets (rugs/banners/bones) non-solid; buildings keep mesh-shell collision.
 - Verified: selftest 22/22 (`prop_solid_eject`, `prop_solid_building_kept`,
-  `prop_solid_free_exit`); in-game spawn inside `wj_erg柜子002_hd`
-  (`reborn_20260929_231615.log`): `propfix inst=1042 pos=(19168,921,36703)` —
-  evicted to the room, never inside; holding W re-ejects (cannot enter); the
-  rug/room route runs without false ejections on the floor rug
-  (`reborn_20260929_231717.log`).
+  `prop_solid_free_exit`); in-game pressing into the cabinet front
+  (`reborn_20260929_234229.log`): held at z=36704 (face − radius) with
+  2–9 u per-frame pushes — wall-like, no bounce; running into its east side
+  (`..._234128.log`) the same. Earlier ejection build teleported 19–27 u per
+  frame and made the camera shake (user report 23:38), which is why the
+  contact-push form replaced it.
 - Outcome: solved as a registered host proxy; re-open with the real
   `bUnitWalkable` data (G-21) or the server/nav obstacle stream.
