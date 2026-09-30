@@ -312,3 +312,13 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   `tools/netcode/AGENTS.md`.
 - Evidence: `AGENTS.md` §4; `tools/netcode/AGENTS.md`; this commit (local).
 - Outcome: solved.
+
+### 2026-09-29 — repo — Rule: closing game-design check answers "Yes"
+- Did: wording change in `AGENTS.md` §15 — the mandatory closing check now reads
+  "Does this follow the client's own truth - no invented fixes or band-aids? **Yes** -
+  we connect the real game engines and reproduce the original game design; nothing was
+  invented or band-aided around." A provisional deviation must still be named explicitly
+  (a "Yes" must never hide it). Reason: the old "No" answer read as if something was
+  wrong, while it was intended to mean "no invented fixes".
+- Evidence: `AGENTS.md` §15; this commit (local).
+- Outcome: solved.

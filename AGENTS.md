@@ -280,12 +280,12 @@ is requested, the agent owns the entire chain — never hand testing back to the
 
 **Mandatory closing game-design check.** End every response with:
 
-> **Game-design check:** Does this respect the game's own design — or are we inventing
-> new ways / band-aid fixes? **No** — we are not inventing fixes ourselves; we connect
-> the real game engines and reproduce the original game design, not band-aid around it.
+> **Game-design check:** Does this follow the client's own truth — no invented fixes or
+> band-aids? **Yes** — we connect the real game engines and reproduce the original game
+> design; nothing was invented or band-aided around.
 
 If a provisional deviation is involved, the check must name it explicitly (the registered
-deviation + re-open criteria, §6) — never a silent "no".
+deviation + re-open criteria, §6) — a "Yes" must never hide it.
 
 Definition of done: verify/gate command run; area README index updated; `docs/EXPERIENCES.md`
 entry appended.
