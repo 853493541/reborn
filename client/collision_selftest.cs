@@ -182,6 +182,10 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 30f);
             Check("step_blocks_over_budget", blocked && ground <= 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
+            px = 29.9f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            Check("step_onto_low_edge", !blocked && grounded && Math.Abs(ground - 35f) < 0.05f,
+                string.Format("blocked={0} ground={1:F2}", blocked, ground));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"

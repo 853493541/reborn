@@ -622,17 +622,22 @@ internal static class RebornClient
             // right after the camera jumps it can return all-zero heights for
             // the spawn region (observed on 龙门寻宝). Pump frames and retry
             // through the neighbouring region until real heights arrive.
-            py = sampler != null ? sampler.Sample(px, pz) : 0f;
-            if (sampler != null && py == 0f)
+            // RC_SPAWN_Y=1 keeps the provided absolute Y (indoor test spawns:
+            // floors above terrain are scene meshes, not terrain).
+            if (Env("RC_SPAWN_Y", "0") != "1")
             {
-                long warm = Environment.TickCount;
-                while (py == 0f && Environment.TickCount - warm < 10000)
+                py = sampler != null ? sampler.Sample(px, pz) : 0f;
+                if (sampler != null && py == 0f)
                 {
-                    Pump(engine, 250);
-                    sampler.Sample(px - 51200f, pz);
-                    py = sampler.Sample(px, pz);
+                    long warm = Environment.TickCount;
+                    while (py == 0f && Environment.TickCount - warm < 10000)
+                    {
+                        Pump(engine, 250);
+                        sampler.Sample(px - 51200f, pz);
+                        py = sampler.Sample(px, pz);
+                    }
+                    Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
                 }
-                Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
             }
             Log(string.Format("spawn=({0:F0},{1:F0},{2:F0}) view=({3:F2},{4:F2})", px, py, pz, viewX, viewZ));
         }

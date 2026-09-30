@@ -834,10 +834,21 @@ public sealed class FoliageCollision
             {
                 Instance bi = _inst[bestIdx];
                 float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
-                if (horiz > 0.5f && bi.maxY > ground && bi.maxY <= py + stepHeight)
+                if (horiz > 0.5f)
                 {
-                    float sh = SupportHeight(px, pz, py - 30f, bi.maxY + 5f);
-                    if (sh > ground)
+                    // CCT step semantics (PxControllerDesc.stepOffset = 0.5 m =
+                    // 50 u, recovered from PhysicsEngineX64): if a walkable
+                    // surface within the step budget exists at the contact (or
+                    // under the capsule), climb onto it instead of pushing out.
+                    // This is what lets the real client walk over low geometry
+                    // (carpet edges, sills, ledges) even inside merged meshes.
+                    float fwd = (radius + 2f) / horiz;
+                    float fx = px - best.nx * fwd;
+                    float fz = pz - best.nz * fwd;
+                    float sh = SupportHeight(fx, fz, py - 30f, py + stepHeight + 5f);
+                    if (sh <= ground || sh > py + stepHeight)
+                        sh = SupportHeight(px, pz, py - 30f, py + stepHeight + 5f);
+                    if (sh > ground && sh <= py + stepHeight)
                     {
                         ground = sh;
                         grounded = true;
