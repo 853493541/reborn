@@ -108,8 +108,9 @@ internal static class RebornClient
         string clipRun = Env("RC_CLIP_RUN", f1 + "f1b02yd\u5954\u8DD1.ani");
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
-        // WW plunge: the school dive animation (player_flyjump.krl.txt
-        // ChongCiQingGong:1, little-girl body -> F1bqg苍云俯冲a.tani).
+        // WW chain clips: 纵跃段 = f1b02yd二段跳a.tani (REBORN_JUMP_FALL_SPEC §6),
+        // downward stage (J3) = the ChongCiQingGong dive (player_flyjump.krl.txt).
+        string clipLeap = Env("RC_CLIP_LEAP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.tani");
         string clipPlunge = Env("RC_CLIP_PLUNGE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
@@ -701,18 +702,11 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
-        bool airPlunge = false;  // double-tap W in air with the school weapon -> 急坠 plunge
-        // Plunge vertical speed: raw script value is -2000 u/f (~156 m/s at
-        // 192 u/m) which crosses any normal jump in ~2 frames; the engine dive
-        // cap is Sprint.tab MaxVelocityZ = -900 u/f (~70 m/s). Default to the
-        // cap; RC_WW_PLUNGE_VZ overrides (u/f, clamped to the engine Z clamp).
-        float plungeVzFrame = WwRules.DiveCapFrame;
-        {
-            float pv;
-            if (float.TryParse(Env("RC_WW_PLUNGE_VZ", ""), out pv)) plungeVzFrame = pv;
-            plungeVzFrame = WwRules.ClampPlungeVz(plungeVzFrame);
-        }
-        float plungeVzPerSec = plungeVzFrame * WwRules.LogicTicksPerSecond;
+        // WW air chain (纵跃段): stage index into WwRules.ChainVzFrame; 0 = J0
+        // (used by the ground jump), air WW advances 1 -> 2 -> 3 (J3 downward).
+        int chainStage = 0;
+        float leapGravityPerSec = 0f;   // active chain-stage gravity (0 = default)
+        bool leapDown = false;          // current stage is the downward one (J3)
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
@@ -908,25 +902,28 @@ internal static class RebornClient
                     // double-tap: second press within 500 ms of the first release
                     if (lastWUp != 0 && t - lastWUp < 500)
                     {
-                        WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk);
+                        WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk, chainStage);
                         if (ww == WwRules.WwAction.Sprint)
                         {
                             wSprint = true;
                             Log("ww: SPRINT (double-tap W, 8.8 \u5C3A/s)");
                         }
-                        else if (ww == WwRules.WwAction.Plunge)
+                        else if (ww == WwRules.WwAction.Leap)
                         {
-                            airPlunge = true;
-                            vy = plungeVzPerSec;
-                            Log("ww AIR: PLUNGE Vz=" + plungeVzFrame + " u/f (" +
-                                plungeVzPerSec + " u/s)" +
-                                (plungeVzFrame == WwRules.DiveCapFrame
-                                    ? " [Sprint.tab dive cap; raw script -2000 via RC_WW_PLUNGE_VZ]"
-                                    : " [override]"));
+                            float vzf = WwRules.ChainVzFrame[chainStage];
+                            float gf = WwRules.ChainGravityFrame[chainStage];
+                            vy = vzf * WwRules.LogicTicksPerSecond;
+                            leapGravityPerSec = gf * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
+                            leapDown = vzf < 0f;
+                            Log("ww AIR: \u7EB5\u8DC3\u6BB5 stage " + chainStage +
+                                " vz=" + vzf + " u/f g=" + gf + " u/f2 -> vy=" + vy +
+                                " u/s g=" + leapGravityPerSec + " u/s2");
+                            chainStage++;
                         }
                         else
                         {
-                            Log("ww AIR: no school weapon -> no plunge (generic; set RC_WW_WEAPON=right to enable)");
+                            Log("ww AIR: no leap (stage " + chainStage + ", weapon " +
+                                (wwWeaponOk ? "ok" : "WRONG") + ")");
                         }
                     }
                     lastWDown = t;
@@ -1758,31 +1755,34 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; }
+                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapDown = false; }
             }
 
-            // gravity (WW plunge overrides vertical speed: SetPassiveVelocityZ)
+            // gravity (WW air chain applies the JumpParam stage gravity)
             if (!grounded)
             {
-                vy += pGravity * dt;
-                if (airPlunge)
-                {
-                    vy = plungeVzPerSec;
-                    if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
-                }
+                vy += (leapGravityPerSec > 0f ? leapGravityPerSec : pGravity) * dt;
+                if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
+                if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
                 py += vy * dt;
                 if (py <= ground)
                 {
                     py = ground;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
-                    airPlunge = false;
+                    chainStage = 0;
+                    leapGravityPerSec = 0f;
+                    leapDown = false;
                 }
             }
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
-            else if (!grounded) setClip(airPlunge ? clipPlunge : vy > 0f ? clipJump : clipFall);
+            else if (!grounded)
+            {
+                if (leapGravityPerSec > 0f) setClip(leapDown ? clipPlunge : clipLeap);
+                else setClip(vy > 0f ? clipJump : clipFall);
+            }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
@@ -2718,14 +2718,14 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (airPlunge ? "PLUNGE" : vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? (leapGravityPerSec > 0f ? "LEAP" : vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air plunge | K weapon | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air \u7EB5\u8DC3 chain | K weapon | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,

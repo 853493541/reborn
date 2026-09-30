@@ -159,3 +159,17 @@ solved it, and what is still open. **Newest at the bottom.**
   `SetPassiveVelocityZ(-2000)` + skill 37891 mask 0xFFFFFFFF (agent/daqinggong commit e0c7be3).
 - Outcome: sandbox ready. MED: the air double-tap -> 急坠 trigger mapping is inferred from the
   any-state WW entry skill + the plunge script; re-open if a live client comparison differs.
+
+### 2026-09-29 — controls — WW = 纵跃段 chain (correction; feature/ww-sandbox)
+- Did: replaced the air-WW plunge with the client-shipped 轻功 chain. Air WW now advances
+  `JumpParam.tab` school 0 stages J1 300/20 -> J2 400/20 -> J3 -250/8 (MaxJumpCount 4;
+  Vz u/frame, G u/frame^2), playing `f1b02yd二段跳a.tani` for the 纵跃段 and the
+  ChongCiQingGong dive clip for the downward J3. Ground WW stays sprint; wrong weapon ->
+  no leap. The term is real: `Z_纵跃UI.pss` / `Z_纵跃.dds` in the editor resource index.
+- Evidence: selftest 13/13 PASS (chain triples + apex 11.7/20.8 m); build exit=0; both
+  clips verified present via `PakV4SfxExtract.exe`. The chain data is client-shipped
+  (`proof/gravity/JumpParam.tab`), so the movement is client-predicted — no server
+  dependency; the earlier "server-side setter" note applies only to the separate 急坠
+  skill script, not to the WW chain.
+- Outcome: supersedes the plunge mapping above (kept as history). The 急坠
+  `SetPassiveVelocityZ(-2000)` skill remains a separate school dive, not the WW action.
