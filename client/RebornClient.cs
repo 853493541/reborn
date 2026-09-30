@@ -702,7 +702,7 @@ internal static class RebornClient
         long f9At = 0;
         bool f9Fired = false;
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
-        bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
+        bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false, twoDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
@@ -710,16 +710,37 @@ internal static class RebornClient
         // (used by the ground jump), air WW advances 1 -> 2 -> 3 (J3 downward).
         int chainStage = 0;
         float leapGravityPerSec = 0f;   // active chain-stage gravity (0 = default)
+        float leapSpeedXY = 0f;         // authored JumpSpeedXY of the active stage (u/s)
         Action wwLeap = delegate()
         {
             float vzf = WwRules.ChainVzFrame[chainStage];
             float gf = WwRules.ChainGravityFrame[chainStage];
+            float xyf = WwRules.ChainSpeedXYFrame[chainStage];
             vy = vzf * WwRules.LogicTicksPerSecond;
             leapGravityPerSec = -gf * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
+            leapSpeedXY = xyf * WwRules.LogicTicksPerSecond;
             Log("ww AIR: \u7EB5\u8DC3\u6BB5 stage " + chainStage +
-                " vz=" + vzf + " u/f g=" + gf + " u/f2 -> vy=" + vy +
-                " u/s g=" + leapGravityPerSec + " u/s2");
+                " vz=" + vzf + " g=" + gf + " vxy=" + xyf + " u/f -> vy=" + vy +
+                " u/s g=" + leapGravityPerSec + " u/s2 vxy=" + leapSpeedXY + " u/s");
             chainStage++;
+        };
+        Action wwTrigger = delegate()
+        {
+            WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk, chainStage);
+            if (ww == WwRules.WwAction.Sprint)
+            {
+                wSprint = true;
+                Log("ww: SPRINT (8.8 \u5C3A/s)");
+            }
+            else if (ww == WwRules.WwAction.Leap)
+            {
+                wwLeap();
+            }
+            else
+            {
+                Log("ww: no action (grounded=" + grounded + " stage=" + chainStage +
+                    " weapon=" + (wwWeaponOk ? "ok" : "WRONG") + ")");
+            }
         };
         bool wwDemo = Env("RC_WW_DEMO", "0") == "1";
         bool wwDemoJumped = false, wwDemoLeaped = false;
@@ -918,21 +939,7 @@ internal static class RebornClient
                     // double-tap: second press within 500 ms of the first release
                     if (lastWUp != 0 && t - lastWUp < 500)
                     {
-                        WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk, chainStage);
-                        if (ww == WwRules.WwAction.Sprint)
-                        {
-                            wSprint = true;
-                            Log("ww: SPRINT (double-tap W, 8.8 \u5C3A/s)");
-                        }
-                        else if (ww == WwRules.WwAction.Leap)
-                        {
-                            wwLeap();
-                        }
-                        else
-                        {
-                            Log("ww AIR: no leap (stage " + chainStage + ", weapon " +
-                                (wwWeaponOk ? "ok" : "WRONG") + ")");
-                        }
+                        wwTrigger();
                     }
                     lastWDown = t;
                 }
@@ -943,7 +950,8 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.D) pD = true;
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
-            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
+            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; wwTrigger(); }
+            else if (e.KeyCode == Keys.D2 && !twoDown) { twoDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
             {
@@ -994,6 +1002,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
+            else if (e.KeyCode == Keys.D2) twoDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.K) kDown = false;
             else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
@@ -1463,7 +1472,7 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; }
+                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; }
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
@@ -1713,6 +1722,16 @@ internal static class RebornClient
                 curYaw = (float)Math.Atan2(ux, uz);
             }
 
+            // WW chain dash: authored JumpSpeedXY along facing (J1 30, J2 50,
+            // J3 100 u/f -> 450/750/1500 u/s); forward in all stages, J3 is the
+            // downward far dash (Vz -250).
+            if (!grounded && leapSpeedXY > 0f)
+            {
+                float dstep = leapSpeedXY * dt;
+                px += (float)Math.Sin(curYaw) * dstep;
+                pz += (float)Math.Cos(curYaw) * dstep;
+            }
+
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
             // camera direction; LMB drag rotates the camera only. The turn is
             // rate-limited (S6) instead of snapping the yaw in one frame.
@@ -1773,7 +1792,7 @@ internal static class RebornClient
                     grounded = false; vy = 0f;
                     // walking off a ledge counts as the J0 takeoff done, so the
                     // first air WW can start the chain (as in the game)
-                    chainStage = 1; leapGravityPerSec = 0f;
+                    chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f;
                 }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
@@ -1783,7 +1802,7 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; }
+                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; }
             }
 
             // gravity (WW air chain applies the JumpParam stage gravity)
@@ -1802,6 +1821,7 @@ internal static class RebornClient
                     grounded = true;
                     chainStage = 0;
                     leapGravityPerSec = 0f;
+                    leapSpeedXY = 0f;
                 }
             }
 
@@ -2759,7 +2779,7 @@ internal static class RebornClient
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air \u7EB5\u8DC3 chain | K weapon | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 / 1 = ww (ground sprint / air \u7EB5\u8DC3 chain) | K weapon | / walk-run | Shift 10x | Space jump | 2 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,

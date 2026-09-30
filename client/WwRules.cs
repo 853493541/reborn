@@ -22,6 +22,7 @@ internal static class WwRules
 
     public static readonly float[] ChainVzFrame = { 90f, 300f, 400f, -250f };
     public static readonly float[] ChainGravityFrame = { 11f, 20f, 20f, 8f };
+    public static readonly float[] ChainSpeedXYFrame = { 40f, 30f, 50f, 100f };
 
     public enum WwAction
     {
@@ -60,8 +61,11 @@ internal static class WwRules
         fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true, 1), WwAction.None);
         fail += CheckValue("CHAIN_J1_VZ", ChainVzFrame[1], 300f);
         fail += CheckValue("CHAIN_J1_G", ChainGravityFrame[1], 20f);
+        fail += CheckValue("CHAIN_J1_XY", ChainSpeedXYFrame[1], 30f);
         fail += CheckValue("CHAIN_J2_VZ", ChainVzFrame[2], 400f);
+        fail += CheckValue("CHAIN_J2_XY", ChainSpeedXYFrame[2], 50f);
         fail += CheckValue("CHAIN_J3_VZ", ChainVzFrame[3], -250f);
+        fail += CheckValue("CHAIN_J3_XY", ChainSpeedXYFrame[3], 100f);
         fail += CheckRange("LEAP_J1_APEX_M", ApexMeters(1), 11.0f, 12.5f);
         fail += CheckRange("LEAP_J2_APEX_M", ApexMeters(2), 19.5f, 22.0f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
