@@ -80,8 +80,10 @@ internal static class RebornClient
             catch { }
             return;
         }
-        string editorRoot = @"C:\SeasunGame\MovieEditor";
-        string startupPath = Path.Combine(editorRoot, "bin64");
+        string editorRoot = Env("RC_EDITOR_ROOT", @"C:\SeasunGame\MovieEditor");
+        // RC_BIN64: engine DLL directory override (probe hosts can point the
+        // engine at another engine build without touching the canonical install)
+        string startupPath = Env("RC_BIN64", Path.Combine(editorRoot, "bin64"));
         string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
         string mapPath = Env("RC_MAP",
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");

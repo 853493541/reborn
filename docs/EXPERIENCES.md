@@ -247,3 +247,29 @@ all tags should fire. Editor config to adopt when initializing the host
 - Outcome: solved — 7 abilities now cast from authored data through one generic runner.
 - Re-open: engine tag-SFX path (stale MovieEditor build); when it is updated, the tani's
   own `.Sfx` tags replace the staged `.ani`+PSS approximations.
+
+### 2026-09-30 — Engine host — client-stack pivot: recon + mixed-host A/B (negative)
+- Did (per user direction: answers from the game client, not MovieEditor): (1) recon of
+  the client `zhcn_hd\bin64` stack — client adapter exports the same 4 host entry points
+  as the MovieEditor adapter, engine exports the full `KG3D_Engine` class (1959 exports),
+  and `KG_MovieEngineX64.dll` (`KG_CreateMovieEngine`/`KG_GetMovieEngine`) is the native
+  module the MovieEditor adapter dynamically loads by name (client-only; MovieEditor
+  pairs `MovieEngineCLR` + `KG_EngineEditorX64` instead); the client adapter's manager
+  code is byte-identical at the same RVAs as the MovieEditor one. (2) Mixed-host A/B:
+  temp copy of `MovieEditor\bin64`, swapped 30 client engine/tag/plugin DLLs, new
+  `RC_BIN64` engine-dir override in the host.
+- Result: **negative** — control (ME modules) AV `0xC0000005` right after the tagged
+  ruyifa tani starts (`play=0`); treatment (client 09-27 engine) fast-fails `0xC0000409`
+  in `KG3DEngineDX11EX64.dll` (offset `0x18c82c4`) at the same point. The client engine
+  *was* loaded (`CameraShim: engine build mismatch`; WER timestamp matches), and the
+  engine stdout shows a missing VFS resource (`foliage/blendmap/clusterinfo.json`).
+  Conclusion: the editor shell is not a faithful host; the `.Sfx` failure is
+  host-context, not only the stale 09-14 build.
+- Evidence: `engine_host_spike/recon_client_stack_exports.txt`,
+  `recon_client_movie_disasm.txt`; run logs + WER in `%TEMP%\opencode\skillv2\`
+  (`host_client_engine\...\Skill_20260930_002*.log`, `ce_treat3.out`); plan in
+  `docs/engine_host/CLIENT_STACK_PIVOT.md` (registered in the area README).
+- Outcome: pivot decided; next probe = native client-stack host (client adapter/engine/
+  movie engine + client VFS, no MovieEditor/CLR), goal "ability id in, engine reads the
+  authored data itself".
+- Re-open: native probe result; if it passes, retire the staged anim/sound/PSS playlists.
