@@ -998,3 +998,17 @@ eborn_client_daqinggong carries these changes — other
   t=12s with forward/down ≈ 1700/1440 units (≈45 deg); selftest PASS; commit 2c6af05;
   relaunched pid 20332.
 - Outcome: solved.
+
+
+### 2026-09-30 — controls — ground hold-W research: 疾跑段 (通用疾速跑 buff 12085)
+- Did: resolved what holding W does on the ground from Sprint\Condition.tab:
+  every school has <MOVEFORWARD;1> rows (JumpCount 0, Jumping 0, BuffID 12085,
+  OTAction 12085;150) = <school>·疾跑段 / 萍踪侠影·疾跑段 — the 轻功 accelerated run,
+  buff 12085 通用疾速跑, ground + water-surface (RunOnWater 0/1) variants. Velocity
+  range = Sprint.tab (MaxXY 120 u/f = 1800 u/s = 28 尺/s, newer schools 127); sprint
+  animation AniFrame 40–105; SprintCamera pull-back. Release W -> HoldW=0 +
+  CheckEndSprint. Double-tap W is 【WW上冲】, not the sprint (controls doc note superseded).
+  Doc: docs/movement/JX3_QINGGONG_BEHAVIOR.md §2.1.
+- Evidence: Condition.tab rows 17–22 / 47–54 / 135–142 / 223–230 / 311–318…; Buff.tab
+  12085 = 通用疾速跑; number.krl walk 6 / run 20 尺/s; Sprint.tab caps.
+- Outcome: research done; sandbox still runs plain run on hold-W (not modelled).

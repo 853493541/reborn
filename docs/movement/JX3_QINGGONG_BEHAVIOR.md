@@ -50,6 +50,31 @@ registry (`g_tTableFile`) lives in `ui\script\common\table_defs.lua`.
 `Action.tab`/`Condition.tab`/`Display.tab`/`SpecialSprint.tab` are extracted in
 `proof/controls/sprint/out/`.
 
+### 2.1 Ground: press and hold W = 疾跑段 (accelerated run)
+
+Every school has `<MOVEFORWARD;1>` (hold W) rows with `JumpCount=0`,
+`Jumping=0`, `WeaponCheck=-1`, `BuffID=12085`, `OTAction=12085;150`:
+
+| School | desc | comment |
+|---|---|---|
+| 0 (common) | 萍踪侠影·疾跑段 | 入门轻功·疾跑段 |
+| 3 | 一苇渡江·疾跑段 | 进入轻功地面上加速跑 / 水面上加速跑 |
+| 4 | 点墨江山·疾跑段 | 同上 (RunOnWater 0/1 variants) |
+| 1/2/5/… | 游龙步/逍遥游/暗香掠影·疾跑段 | 同上 |
+
+So holding W on the ground enters the **轻功疾跑段** — buff **12085 通用疾速跑**
+(`Buff.tab`) — an accelerated run above the normal run speed (20 尺/s), with a
+separate water-surface variant (`RunOnWater=1`). The velocity range is the
+`Sprint.tab` row (MinXY 10 … MaxXY **120 u/f = 1800 u/s = 28 尺/s** for schools
+0–16; 127 u/f for 17+) with the per-school sprint animation (`AniFrame` 40–105)
+and the sprint camera (`SprintCamera*` pull-back). Release W →
+`MoveForwardStop` → `HoldW=0` + `CheckEndSprint()` (ends the sprint if no other
+key is held). Double-tap W is NOT the sprint — it is 【WW上冲】 (§1); the
+earlier "double-tap = sprint" note in `docs/controls/` is superseded.
+
+Sandbox status: holding W currently moves at the plain run speed
+(`pRun=320 u/s`); the 疾跑段 acceleration is not modelled yet.
+
 ## 3. Movement law (verified, `JX3_GRAVITY_RESEARCH.md` §3)
 
 - **Logic tick 15/s** (66.7 ms); velocities are **integer units per frame**.
