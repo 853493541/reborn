@@ -1185,8 +1185,10 @@ internal static class RebornClient
         // (REBORN_JUMP_FALL_SPEC.md; MapSpike used 703 u/s, 1289 u/s^2). The raw table
         // triple (90/11 u/frame) gives 368 u = 3.7 m - ~2x too high. Scaling takeoff
         // AND gravity by 100/192 keeps the 1.09 s air time and realises 1.92 m.
-        float jumpScale = 0.52f;
-        float.TryParse(Env("RC_JUMP_SCALE", "0.52"), out jumpScale);
+        // sandbox super jump: 10x the calibrated height (5.2 = 0.52*10; apex ~19 m).
+        // RC_JUMP_SCALE=0.52 restores the calibrated 1.92 m jump.
+        float jumpScale = 5.2f;
+        float.TryParse(Env("RC_JUMP_SCALE", "5.2"), out jumpScale);
         if (jumpScale <= 0f) jumpScale = 1f;
         int jumpSchool = 0;
         int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
