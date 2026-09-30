@@ -1,0 +1,2 @@
+scripts\skill\轻功\轻功通用\疾跑通用BUFF魔法.lua
+scripts\skill\轻功\轻功通用\疾跑通用BUFF.lua

@@ -1012,3 +1012,14 @@ eborn_client_daqinggong carries these changes — other
 - Evidence: Condition.tab rows 17–22 / 47–54 / 135–142 / 223–230 / 311–318…; Buff.tab
   12085 = 通用疾速跑; number.krl walk 6 / run 20 尺/s; Sprint.tab caps.
 - Outcome: research done; sandbox still runs plain run on hold-W (not modelled).
+
+
+### 2026-09-30 — controls — 疾跑段 speed numbers
+- Did: resolved the hold-W 疾跑段 speed. Sprint state buffs: 12085 通用疾速跑 +
+  12190 通用疾跑按住 (removed by the 12085 script on exit); staged speed-percent buffs
+  疾速第零~三段 (atMoveSpeedPercent 256=+25%, 768=+75%) while InSprint. Velocity cap =
+  Sprint.tab MaxVelocityXY 120 u/f (0-16) / 127 u/f (17+): 1800 u/s = 28.1 尺/s ~ 9.4 m/s
+  at 15 Hz (1920 u/s at the 16 fps convention); normal run 20 u/f = 320 u/s (5 尺/s).
+  Doc: JX3_QINGGONG_BEHAVIOR.md 2.1.
+- Evidence: Buff.tab 12085/12190/11338-11343; Sprint.tab; number.krl; commit next.
+- Outcome: research done.

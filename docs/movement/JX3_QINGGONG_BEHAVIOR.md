@@ -63,13 +63,22 @@ Every school has `<MOVEFORWARD;1>` (hold W) rows with `JumpCount=0`,
 | 1/2/5/… | 游龙步/逍遥游/暗香掠影·疾跑段 | 同上 |
 
 So holding W on the ground enters the **轻功疾跑段** — buff **12085 通用疾速跑**
-(`Buff.tab`) — an accelerated run above the normal run speed (20 尺/s), with a
-separate water-surface variant (`RunOnWater=1`). The velocity range is the
-`Sprint.tab` row (MinXY 10 … MaxXY **120 u/f = 1800 u/s = 28 尺/s** for schools
-0–16; 127 u/f for 17+) with the per-school sprint animation (`AniFrame` 40–105)
-and the sprint camera (`SprintCamera*` pull-back). Release W →
-`MoveForwardStop` → `HoldW=0` + `CheckEndSprint()` (ends the sprint if no other
-key is held). Double-tap W is NOT the sprint — it is 【WW上冲】 (§1); the
+(`Buff.tab`) plus **12190 通用疾跑按住** (the while-held buff; the 12085 script
+`疾跑通用BUFF魔法.lua` removes it on exit) — an accelerated run above the normal
+run speed (20 尺/s), with a separate water-surface variant (`RunOnWater=1`).
+
+**Speed**: the sprint velocity is capped by `Sprint.tab` **MaxVelocityXY =
+120 u/frame** (schools 0–16) / **127 u/frame** (17+):
+- at the 15 Hz logic tick: **1800 u/s = 28.1 尺/s ≈ 9.4 m/s** (192 u/m);
+  newer schools 1905 u/s ≈ 29.8 尺/s;
+- at the client's 16 fps convention (`GAME_FPS=16`): 1920 / 2032 u/s.
+- Ramp: staged speed-percent buffs `疾速第零~三段` (11343/11338/11339/11340,
+  `atMoveSpeedPercent` 256 = +25%, 768 = +75%, …) while `InSprint`.
+- Compare: normal run = `CharacterRunSpeed` 20 u/frame = 320 u/s (5 尺/s) — the
+  sprint is ≈5.6× the run.
+
+Release W → `MoveForwardStop` → `HoldW=0` + `CheckEndSprint()` (ends the sprint if
+no other key is held). Double-tap W is NOT the sprint — it is 【WW上冲】 (§1); the
 earlier "double-tap = sprint" note in `docs/controls/` is superseded.
 
 Sandbox status: holding W currently moves at the plain run speed
