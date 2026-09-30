@@ -195,3 +195,28 @@ played by MovieEngineCLR (AV), so the aim point now shows only the authored
 - Outcome: solved (intermediate; the whole staged-process runner is slated for deletion in the
   "engine effects online" milestone — the engine should play the tani's own tags).
 - Re-open: engine tag-SFX path online.
+
+### 2026-09-29 — Skill sandbox — .Sfx tag AV root cause: stale MovieEditor engine build
+**Problem:** playing a tani with `.Sfx` tags AVs the host in `KGEngineCLR.Render()`
+(`0xC0000005`); PSS-tagged tanis play fine.
+**Tried:** editor init mirrored (KG3DSoundCLR.Init, SetActorCreateOption, rtxradius command)
+— no change; actor path (KGMovieActorCLR + AppendModel) crashes identically → not the model
+type; loose-file loading works (absolute paths accepted), so the ruyifa tani was copied to
+temp and patched per Sfx path (paths zeroed in place).
+**Outcome:** root cause identified (environment, not our code).
+**Why:** per-file isolation on the patched tanis: all-Sfx-zeroed = clean; only
+`m明教元素19.sfx` / `g光晕02.sfx` / `释放_气场聚集03.sfx` = CRASH; only `m明教元素18.sfx` =
+clean; another tani's single Sfx (`d001014伞开灰.sfx`) = clean. The engine builds differ:
+MovieEditor `bin64\KG3DEngineDX11EX64.dll` = **2026-09-14** (41,512,880 B) vs client
+`zhcn_hd\bin64\KG3DEngineDX11EX64.dll` = **2026-09-27** (41,492,920 B, SHA256 `9B49…AA99`).
+The crashing Sfx use emitter blocks authored for the newer engine; the 09-14 build AVs on
+them. (The client-bundled MovieEditor is older still, 2026-04-28.)
+**Re-open criteria:** update the canonical MovieEditor install to the engine build matching
+the client (rule 6: use the matching engine, no workarounds), then replay the ruyifa tani —
+all tags should fire. Editor config to adopt when initializing the host
+(`MovieEditor\MovieEditorConfig.xml`): `AniPlayMode=ADDCURRENT_CIRCLE`,
+`ActorCreateOption=APEX|CLIENT_OBJECT`, `EnableModelAsyncLoad/MapAsyncLoad=True`,
+`RtxRadiusMode=HIGHT`.
+**Links:** temp variants + run logs in `%TEMP%\opencode\skillv2\` (`ruyi_no_sfx` clean,
+`ruyi_only19/02/03` crash, `ruyi_only18` clean); `SB_ACTOR_TEST` hook in
+`ability_sandbox\rb\RebornClient.cs`.

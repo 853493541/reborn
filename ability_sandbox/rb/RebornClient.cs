@@ -18,6 +18,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Web.Script.Serialization;
 using MovieEngineCLR;
+using MovieEditor.ActorEditor;
 
 internal static class RebornClient
 {
@@ -362,6 +363,16 @@ internal static class RebornClient
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
+
+        // editor EngineLayer::Init order (rule 6): KG3DSoundCLR.Init + actor
+        // options + engine command + async load flags. The .Sfx tag renderer
+        // touches the Wwise/sound path, so the sound system must be up.
+        try { Log("sound.Init result=" + sound.Init(startupPath, form.Handle.ToInt64())); }
+        catch (Exception e) { Log("sound.Init ex: " + e.Message); }
+        try { Log("SetActorCreateOption=" + engine.SetActorCreateOption(0)); }
+        catch (Exception e) { Log("SetActorCreateOption ex: " + e.Message); }
+        try { Log("ExecCommand(rtxradius 0)=" + engine.ExecCommand("rtxradius 0")); }
+        catch (Exception e) { Log("ExecCommand ex: " + e.Message); }
 
         var scene = new KGSceneCLR();
         int loadResult = scene.LoadMap(mapPath, false);
@@ -1368,6 +1379,27 @@ internal static class RebornClient
                 + " climb=" + (int)(feiPY - py)
                 + " terrainY=" + (int)gy + " device=67816/70025(hidden)");
         };
+
+        // SB_ACTOR_TEST=1: play the ability tani on the editor's own actor object
+        // (KGMovieActorCLR + AppendModel) instead of the dummy model - tests
+        // whether .Sfx tag playback needs the actor path (rule 6: editor's way).
+        if (Env("SB_ACTOR_TEST", "0") == "1")
+        {
+            try
+            {
+                var actor = new KGMovieActorCLR();
+                actor.Init();
+                ActorEditorCommandHelper.LoadFromFile(actor, actorPath, 0);
+                long ah = actor.GetModelHandle();
+                scene.AppendModel(ah);
+                try { scene.FocusOnModel(); } catch { }
+                var am = new KGModelCLR();
+                am.AttachModel(ah);
+                string tani = Env("SB_ACTOR_TANI", ruyiMatched);
+                Log("actor test: handle=" + ah + " tani=" + tani + " play=" + am.PlayAnimation(tani, 0, 1.0f, 0));
+            }
+            catch (Exception e) { Log("actor test ex: " + e.Message); }
+        }
 
         // SB_PROBE_MESHES=1: ground-mesh probe (find which candidate renders as a range ring)
         if (Env("SB_PROBE_MESHES", "0") == "1")
