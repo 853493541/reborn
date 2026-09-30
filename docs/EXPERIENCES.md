@@ -433,3 +433,18 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: P0 done for the loaded map; other 4 baked maps need their
   `.meshes.txt` sidecars (re-run `export_structure_collision.py`) before the
   same oflags export.
+
+### 2026-09-30 — collision — P1 probe (negative) + P2 sizing (integer model)
+- P1: `KG3D_LoaderNoRenderX64.dll` is **not** the auto-obstacle producer - no
+  client module references it, its exports are `Get/Init/UninitLoaderNoRender`
+  plus SpeedTree, and it imports no PhysX/cooking APIs; it merely parses the
+  same ini keys while loading meshes offline. The producer is the client
+  `PhysicsEngineX64` actor-from-mesh path reading the `KG3DMesh` struct fields
+  (+0x194 = `bAutoProduceObstacle`, filled by `KG3DMeshFileDataLoader`); next
+  probe = locate `_CreatePxActorFromMeshFile` there and trace the field reads.
+- P2: `KCharacter::ProcessDropSpeed` (`0x140316BE0`) is Q5/Q8 fixed-point over
+  two 3-bit terrain-cell slope fields (`(cell>>1)&7`, `(cell>>4)&7`; slope 0-1
+  skips the projection path). A faithful port needs the full integer model
+  (G-14), not a scalar patch; sized as its own work item.
+- Evidence: loader exports/imports dump; `proof/gravity/disasm/process_drop_speed.txt`.
+- Outcome: plan rows P1/P2 updated in `COLLISION_SYSTEM_COMPARISON.md` §8.2.
