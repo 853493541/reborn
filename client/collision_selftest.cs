@@ -174,7 +174,7 @@ internal static class CollisionSelfTest
             string p = WriteBin("step", new MeshBuilder[] { m }, new float[][] { M(0f, 0f, 0f) });
             FoliageCollision col = new FoliageCollision(null, p);
             float px = 31f, py = 0f, pz = 0f, ground = 0f;
-            bool grounded = false;
+            bool grounded = true;
             bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("step_up_50u_budget", !blocked && grounded && Math.Abs(ground - 35f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
@@ -182,7 +182,7 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 30f);
             Check("step_blocks_over_budget", blocked && ground <= 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
-            px = 29.9f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            px = 29.9f; py = 0f; pz = 0f; ground = 0f; grounded = true;
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("step_onto_low_edge", !blocked && grounded && Math.Abs(ground - 35f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
@@ -195,7 +195,7 @@ internal static class CollisionSelfTest
             string p = WriteBin("step51", new MeshBuilder[] { m }, new float[][] { M(0f, 0f, 0f) });
             FoliageCollision col = new FoliageCollision(null, p);
             float px = 29.9f, py = 0f, pz = 0f, ground = 0f;
-            bool grounded = false;
+            bool grounded = true;
             bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f);
             Check("step_51u_with_64_budget", !blocked && Math.Abs(ground - 51f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
@@ -209,7 +209,7 @@ internal static class CollisionSelfTest
             string pl = WriteBin("plate_low", new MeshBuilder[] { low }, new float[][] { M(0f, 0f, 0f) });
             FoliageCollision col = new FoliageCollision(null, pl);
             float px = 25f, py = 0f, pz = 0f, ground = 0f;
-            bool grounded = false;
+            bool grounded = true;
             bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("thin_low_plate_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
@@ -229,7 +229,7 @@ internal static class CollisionSelfTest
             mixed.AddQuad(27f, 0f, -200f, 27f, 0f, 200f, 27f, 20f, 200f, 27f, 20f, -200f);
             string pm = WriteBin("plate_mixed", new MeshBuilder[] { mixed }, new float[][] { M(0f, 0f, 0f) });
             col = new FoliageCollision(null, pm);
-            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = true;
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("low_plank_at_wall_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
@@ -240,7 +240,7 @@ internal static class CollisionSelfTest
             below.AddQuad(30f, -100f, -200f, 30f, -100f, 200f, 30f, -10f, 200f, 30f, -10f, -200f);
             string pb = WriteBin("plate_below", new MeshBuilder[] { below }, new float[][] { M(0f, 0f, 0f) });
             col = new FoliageCollision(null, pb);
-            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = true;
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("face_below_feet_passes", !blocked,
                 string.Format("blocked={0} px={1:F2}", blocked, px));

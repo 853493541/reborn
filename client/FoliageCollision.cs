@@ -865,15 +865,15 @@ public sealed class FoliageCollision
             if (bestIdx >= 0)
             {
                 float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
-                if (horiz > 0.5f)
+                if (horiz > 0.5f && grounded)
                 {
-                    // CCT step semantics (PxControllerDesc.stepOffset = 0.5 m =
-                    // 50 u, recovered from PhysicsEngineX64): an obstacle whose
-                    // top is within the step budget never blocks - the
-                    // controller climbs it. The top is taken from the triangle
-                    // that actually contacts the capsule: merged meshes mix low
-                    // planks and tall walls in one mesh, so a neighbourhood
-                    // measurement would wrongly include the tall parts.
+                    // CCT step semantics (PxControllerDesc.stepOffset, recovered
+                    // from PhysicsEngineX64; budget = the 64 u = 1 尺 ground
+                    // tolerance): while GROUNDED, an obstacle whose top is
+                    // within the budget never blocks - the controller climbs it.
+                    // Airborne moves never step (the CCT steps only off a floor
+                    // contact), otherwise a jump would let the player climb any
+                    // wall whose top is below the current jump height.
                     float top = best.triTop;
                     if (top > py + stepHeight && best.lowTop <= py + stepHeight)
                         top = best.lowTop;

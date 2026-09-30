@@ -296,3 +296,11 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: run `reborn_20260929_203902.log` (vy/fall-clip loop at the floor edge);
   `client/RebornClient.cs`.
 - Outcome: solved (field case covered by an engine constant).
+### 2026-09-29 — movement — Steps only while grounded; camera stabilizer 0.4 s
+- Did: the CCT climb applied while airborne, so a jump let the player climb/penetrate
+  walls whose top was below the jump height. `Resolve` now climbs only when
+  `grounded`; airborne moves push out. Camera hit stabilizer window 0.25 -> 0.4 s
+  (20 Hz query sampling needs the longer hold to stop doorway shake).
+- Evidence: selftest 17/17 (step tests now start grounded); jump-against-gate run
+  `reborn_20260929_204919.log` (x stays 18768, blocked, no penetration).
+- Outcome: solved.
