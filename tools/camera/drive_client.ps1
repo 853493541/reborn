@@ -9,7 +9,9 @@
 param(
     [Parameter(Mandatory = $true)][int]$ProcessId,
     [int]$Seconds = 240,
-    [ValidateSet("sweep", "wwdrag")][string]$Mode = "sweep"
+    [ValidateSet("sweep", "wwdrag")][string]$Mode = "sweep",
+    [int]$SweepStepMs = 12,     # wwdrag yaw sweep step time (12 ms = stress flick, 150 ms = human rate)
+    [int]$SweepAmp = 220        # wwdrag yaw sweep cursor amplitude (px)
 )
 Add-Type @"
 using System;
@@ -70,9 +72,9 @@ if ($Mode -eq "wwdrag") {
         [RCInput]::mouse_event([RCInput]::RDOWN, 0, 0, 0, [IntPtr]::Zero)
         # yaw sweep: horizontal drags around the client center (no pitch change)
         for ($i = 0; $i -lt 60; $i++) {
-            $x = [int]($ccx + 220 * [Math]::Sin($i * 0.16))
+            $x = [int]($ccx + $SweepAmp * [Math]::Sin($i * 0.16))
             [RCInput]::SetCursorPos($x, $ccy) | Out-Null
-            Start-Sleep -Milliseconds 12
+            Start-Sleep -Milliseconds $SweepStepMs
         }
         [RCInput]::mouse_event([RCInput]::RUP, 0, 0, 0, [IntPtr]::Zero)
         Start-Sleep -Milliseconds 2500
