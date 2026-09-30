@@ -377,6 +377,14 @@ before/after; if confirmed, find an engine redirect or register a documented dev
 - Evidence: `AGENTS.md` §2.7; `client/AGENTS.md`; this commit (local).
 - Outcome: solved.
 
+### 2026-09-30 — repo — Rule: blocked client start must name the conflicting session
+- Did: `AGENTS.md` §2.4 now requires that when a client start is blocked by the
+  single-instance/namespace guard, the response must end by naming the conflicting
+  session — process name, PID, start time and namespace — so the user knows which
+  window/session to close. Mirrored in `client/AGENTS.md`.
+- Evidence: `AGENTS.md` §2.4; `client/AGENTS.md`; this commit (local).
+- Outcome: solved.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,

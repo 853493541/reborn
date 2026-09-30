@@ -21,6 +21,9 @@ Desktop game client (`reborn_client.exe`) hosting the MovieEditor engine DLLs.
   a feature must set a matching title** (`RC_TITLE=<feature>` for one-off runs) — never
   run a feature build under a generic title; identical titles across client windows are
   a rule violation (root `AGENTS.md` §2.7).
+- If a start is blocked by the instance guard (namespace conflict), the response must
+  end by naming the conflicting session: process name, PID, start time and namespace —
+  so the user knows which window/session to close (root `AGENTS.md` §2.4).
 - Do not write other files into the `bin64` root — it is shared with other apps
   (`ability_*`, `asset_sandbox`, engine hosts). Use an isolated output subdir.
 - **C# 5 only** (built with `Framework64\v4.0.30319\csc.exe`): no `$"..."`, `?.`,

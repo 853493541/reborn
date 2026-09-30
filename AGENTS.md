@@ -76,6 +76,10 @@ Different client builds must not affect each other:
    `RC_ALLOW_MULTI=1` overrides. This follows the proven `ability_sandbox` recipe
    (own namespace + own runtime dir); the root-isolation attempt broke engine init
    (commit `d8268d2`), so the engine root stays shared.
+   **If a client start is blocked by this guard, the response must end by naming the
+   conflicting session** — process name, PID and start time holding the namespace (from
+   the guard message or a process check) — so the user knows which window/session to
+   close.
 5. **Attribute logs by fingerprint**: every run logs
    `build=<exe> <mtime> git=<hash> dirty=<n> ...` and the init line records
    `ns=<memory namespace>`; use both to separate concurrent runs.
