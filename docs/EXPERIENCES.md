@@ -364,3 +364,22 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: repro run `reborn_20260929_222021.log`; geometry scan of the
   cabinet mesh (front panels y 922-1008 + sides; open band y 1008-1224).
 - Outcome: explained + documented; no host rule added (engine-faithful).
+### 2026-09-29 — collision — Prop shells: ejection experiment reverted (inverted winding)
+- Did: the user went fully inside the open-front cabinet (latest position
+  (19168,921,36779), inside its footprint) and asked for a fix. Diagnostics:
+  the prop mesh is a hollow shell (front panels y 922-1008, open band
+  y 1008-1224, no bottom face, interior shelves at 1017/1076/1085), admitted
+  by the unresolved H1 folder-white rule (top folder `maps_source`, G-35).
+  A winding-based "stay on the visible side" ejection was implemented and
+  benched: it never fired on this data because the game's meshes are authored
+  with **inverted winding** (the rug's triangles ny=-1; the cabinet's front
+  panel normal points +z INTO the cabinet) - winding carries no reliable
+  visible side. An earlier variant also oscillated between the cabinet and the
+  house shell (exit into a wall). Live game keeps characters out of props via
+  server/nav movement authority, which is not in the client install.
+- Evidence: offline geometry scans; runs `reborn_20260929_222232.log` (user
+  inside), `..._223458/224136/224248.log` (ejection experiment: oscillation /
+  no fire). Reverted; selftest 19/19; build clean.
+- Outcome: documented; no host rule shipped. Options (solid-prop volume
+  approximation vs server/nav research) in `COLLISION_SYSTEM_STATUS.md` §8
+  item 11.

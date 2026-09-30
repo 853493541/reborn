@@ -132,6 +132,25 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
    obstacle (standing/folded rug), not a bug. Doorway passability remains
    door/doodad server state (item 4; plan §8.1).
 10. Dead code: `FoliageCollision.LocalTop` was superseded by `triTop`/`lowTop` (cleanup).
+11. **Prop shells (furniture interiors) are enterable — OPEN, server/nav state.**
+    The open-front cabinet `wj_erg柜子002_hd` (idx 648) is a hollow shell
+    (front panels y 922-1008, open band y 1008-1224, no bottom, shelves at
+    1017/1076/1085). A grounded walk-in is blocked (repro stops at z=36714,
+    `blocked by inst=1042 top=1017.2`); entry comes from a legal 51 u step up a
+    nearby ledge plus the engine's `stepOffset` (0.5 m) over the closed-door
+    top (1007.8), or a jump through the opening. The live game keeps the player
+    out of props via server/nav movement authority (not in the client install,
+    `G-35`); the H1 folder-white rule admits the prop for physics. A
+    winding-based "stay on the visible side" ejection was implemented and
+    **reverted**: the shipped meshes use inverted winding (rug ny=-1; cabinet
+    front normal points +z into the cabinet), so winding cannot identify the
+    visible side; an AABB-exit variant oscillated between the cabinet and the
+    house shell. Options for a future session, in preference order:
+    (a) **solid-prop approximation** — treat `小物件/`-class instances as solid
+    volumes (exit via the nearest AABB face whose destination is free), a
+    registered host stand-in for server solidity; (b) recover the real
+    server/nav static-collision data (may not exist client-side);
+    (c) accept as the documented boundary.
 ## 9. Verified this branch (quick index)
 
 - exact capsule/triangle contact; segment contact; substeps; self-test gate (19 checks)
