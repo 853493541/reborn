@@ -563,7 +563,14 @@ internal static class RebornClient
                 editorRoot, mapPath, cfgDir, Log);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
-            camSys.Pitch = cameraSettings.InitPitch;
+            // Game-data pitch is NEGATIVE when the camera sits above the anchor
+            // (looking down): g_Scene_tCameraRuntime fPitch default -0.35,
+            // number.krl CameraInitPitch -0.17 / SprintCameraPitch -0.35, and
+            // hotkeys.lua F11 passes -pi/12 for the standard behind view
+            // ("pitch -15 deg"). The model pitch is the opposite (positive =
+            // camera above, measured: model +0.15 -> engine view vpitch -0.31),
+            // so negate on application (2026-09-30 start-angle research).
+            camSys.Pitch = -cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
             // deterministic test pose (camera A/B harness): override the loaded
             // yaw/pitch without touching the settings sources
@@ -981,13 +988,15 @@ internal static class RebornClient
             }
             else if (e.KeyCode == Keys.F11)
             {
-                // Camera reset: behind the character, model pitch -15 deg, distance 1x
+                // Camera reset: behind the character, distance 1x. hotkeys.lua
+                // CameraReset -> Camera_SetForceReset(yaw, -pi/12, 1): game
+                // pitch -15 deg (camera above) -> model +pi/12.
                 camSys.SetMaxDistance(camSys.ClampDistanceUnits(
                     camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
-                camSys.Pitch = -Math.PI / 12.0;
+                camSys.Pitch = Math.PI / 12.0;
                 alignAim();
-                Log("camera reset: behind character, pitch -15deg");
+                Log("camera reset: behind character, game pitch -15deg (model +15)");
             }
             else if (e.KeyCode == Keys.F9)
             {
@@ -1203,9 +1212,11 @@ internal static class RebornClient
         if (applyCamInit)
         {
             camSys.Yaw = cameraSettings.InitYaw;
-            camSys.Pitch = cameraSettings.InitPitch;
-            Log(string.Format("camera init applied mapId={0} yaw={1:F3} pitch={2:F3}",
-                cameraSettings.MapId, camSys.Yaw, camSys.Pitch));
+            // game pitch -> model pitch (negate; see the convention note at the
+            // settings application above)
+            camSys.Pitch = -cameraSettings.InitPitch;
+            Log(string.Format("camera init applied mapId={0} yaw={1:F3} gamePitch={2:F3} modelPitch={3:F3}",
+                cameraSettings.MapId, camSys.Yaw, cameraSettings.InitPitch, camSys.Pitch));
         }
         else
         {

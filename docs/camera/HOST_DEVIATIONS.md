@@ -71,7 +71,7 @@ N=native bypass, H=harness. Status updated as items land.
 | E3 `RC_CAM_9RAY` | H | trigger `+0x15c` unknown |
 | E4 `RC_VIEW_ANGLE` | H | test override of FOV |
 | E5 skill-cast shake | H | host amplitude 2.0/0.5/0.8/3, rotation unused |
-| E6 `FindLatestCustomDat` | H | newest custom.dat globally, not the active role |
+| E6 `FindLatestCustomDat` | H | newest custom.dat globally, not the active role. **2026-09-30:** prefers the newest file that actually carries `g_Scene_tCameraRuntime` (the account/global files have no saved view), so the real per-role view is restored; the active-role ambiguity remains (no login context) |
 | E7 `RC_PLAYER_HIDE=0` | H | disables the park-below character hack so the engine near-plane can be bracketed with the clearance ladder |
 
 Verified at this tip: B1/B2/B3/B4/B5 confirmed in code; B6 found by

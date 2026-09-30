@@ -794,3 +794,32 @@ or the engine's own init starts running (verified build).
   `camera_smoke_cam-wwdrag.exe` ALL PASS; feature client rebuilt
   (`bin64\reborn_client_cam-wwdrag.exe`).
 - Outcome: solved (host binding; wheel inert).
+
+### 2026-09-30 — camera/client — First-load camera angle: game pitch sign was inverted
+**Problem:** user report — "when game starts the camera looks from the same
+height"; the real client feels like it starts from above (~45 deg). Research:
+what is the true first-load angle?
+**Research (client truth):** the real client restores the per-role saved view
+first (`g_Scene_tCameraRuntime` in the role `custom.dat`; this role:
+`fYaw=2.3360588550568, fPitch=-0.35000029206276`), with the map init
+(`scene_init_param` / `number.krl CameraInitPitch=-0.17`) as the fallback. Game
+pitch data is negative when the camera is above/looking down: defaults
+fPitch/CameraInitPitch -0.35/-0.17, `SprintCameraPitch=-0.35`, and
+`hotkeys.lua` F11 `Camera_SetForceReset(yaw, -pi/12, 1)` = the standard behind
+view "pitch -15 deg". The host model pitch is the opposite (positive = above;
+measured model +0.15 -> `vpitch` -0.31), so the old host start (model -0.17 ->
+vpitch +0.009) was level — the sign was never flipped, and the custom.dat
+picker could miss the role file (E6).
+**Fix:** negate game pitch on application (startup + map init), F11 reset now
+model +pi/12 (game -15 deg), and `FindLatestCustomDat` prefers the newest
+custom.dat that carries the runtime block.
+**Evidence:** log `reborn_out/reborn_20260930_161907.log` —
+`CameraSettings: loaded real per-role camera settings: userdata\...\custom.dat`;
+`camera init applied mapId=-1 yaw=2.336 gamePitch=-0.350 modelPitch=0.350`;
+camdbg `pitch=0.350 vyaw=2.336 vpitch=-0.492` (= 28.2 deg down, camera above
+the head), vs the pre-fix level `vpitch=+0.009`. `camera_smoke_cam-wwdrag.exe`
+ALL PASS. Docs: `REAL_VALUES.md` §4 (chain + convention), `HOST_DEVIATIONS.md`
+E6 update.
+**Re-open:** the exact real follow distance (C10) still scales the perceived
+angle; if the CDN per-mode rows land, re-derive the view angle with the real
+`TargetDistance`/`CameraHeight`.
