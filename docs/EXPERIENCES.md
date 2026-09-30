@@ -368,6 +368,15 @@ before/after; if confirmed, find an engine redirect or register a documented dev
 - Outcome: solved (no harm). Lesson: when the branch choice is ambiguous, ask and wait —
   never infer the target from branch content.
 
+### 2026-09-30 — repo — Rule: feature title mandatory on every client update
+- Did: strengthened `AGENTS.md` §2.7 — every client update for a feature must set the
+  top-left window title to that feature (`reborn_client_<slug>.exe` -> `sandbox-<slug>`;
+  sandboxes `sandbox-ability`/`sandbox-asset`; `RC_TITLE=<feature>` overrides one-off
+  canonical runs). Identical titles across client windows are a rule violation.
+  Mirrored in `client/AGENTS.md`.
+- Evidence: `AGENTS.md` §2.7; `client/AGENTS.md`; this commit (local).
+- Outcome: solved.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
