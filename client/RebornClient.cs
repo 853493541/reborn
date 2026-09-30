@@ -113,6 +113,10 @@ internal static class RebornClient
         // NOTE: f1b02yd二段跳a.tani AVs the engine in KGEngineCLR.Render()
         // (reproduced 2026-09-29, RC_DEMO with that clip as clipJump).
         // WW air charge uses the normal air clips (player tech, no special animation).
+        // Charge state animation: one-shot dive clip (playType 1 = once; 0 loops).
+        string clipGlide = Env("RC_CLIP_GLIDE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
+        int glidePlayType = 1;
+        int.TryParse(Env("RC_GLIDE_PLAY", "1"), out glidePlayType);
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -551,17 +555,18 @@ internal static class RebornClient
         float curYaw = 0f;
         float lastModelX = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
-        Action<string> setClip = delegate(string path)
+        Action<string, int> setClipPlay = delegate(string path, int playType)
         {
             if (path == curClip) return;
             try
             {
-                int pr = model.PlayAnimation(path, 0, 1.0f, 0);
-                Log("clip -> " + path + " (" + pr + ")");
+                int pr = model.PlayAnimation(path, playType, 1.0f, 0);
+                Log("clip -> " + path + " (" + pr + ", type=" + playType + ")");
                 curClip = path;
             }
             catch (Exception e) { Log("setClip ex: " + e.Message); }
         };
+        Action<string> setClip = delegate(string path) { setClipPlay(path, 0); };
 
         // measure camera view direction by nudging forward (map-host method)
         Action measureView = delegate
@@ -744,6 +749,26 @@ internal static class RebornClient
             {
                 Log("ww: no action (grounded=" + grounded +
                     " weapon=" + (wwWeaponOk ? "ok" : "WRONG") + ")");
+            }
+        };
+        Action wwRelease = delegate()
+        {
+            // key 1 = the W-release action, usable while W is still physically
+            // held: ends the WW state (velocity kept) / turns the sprint off.
+            if (wwStateActive)
+            {
+                wwStateActive = false;
+                Log("ww release (key 1): state ended, velocity kept (vxy=" + leapSpeedXY +
+                    " u/s, vy=" + vy + " u/s)");
+            }
+            else if (wSprint)
+            {
+                wSprint = false;
+                Log("ww release (key 1): sprint off");
+            }
+            else
+            {
+                Log("ww release (key 1): nothing active");
             }
         };
         bool wwDemo = Env("RC_WW_DEMO", "0") == "1";
@@ -954,7 +979,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.D) pD = true;
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
-            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; wwTrigger(); }
+            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; wwRelease(); }
             else if (e.KeyCode == Keys.D2 && !twoDown) { twoDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
@@ -1852,7 +1877,8 @@ internal static class RebornClient
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded)
             {
-                setClip(vy > 0f ? clipJump : clipFall);
+                if (wwStateActive) setClipPlay(clipGlide, glidePlayType);
+                else setClip(vy > 0f ? clipJump : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
@@ -2796,7 +2822,7 @@ internal static class RebornClient
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 / 1 = ww (ground sprint / air \u7EB5\u8DC3 chain) | K weapon | / walk-run | Shift 10x | Space jump | 2 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 = ww (ground sprint / air charge) | 1 = ww release | K weapon | / walk-run | Shift 10x | Space jump | 2 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
