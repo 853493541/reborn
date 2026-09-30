@@ -490,3 +490,17 @@ solved it, and what is still open. **Newest at the bottom.**
   each logic frame moves an integer number of units like the engine.
 - Verified: build ok, selftest 24/24; run `reborn_20260930_144921.log`:
   integer positions, rug crossing normal, hits=0.
+
+### 2026-09-30 — movement — T2 mapped: ProcessDropSpeed is a steep-slope slide, not a climb limit
+- Read the full function (`0x140316BE0..0x1403171FD`): Vz-gated; terrain cell slope
+  fields `(cell>>1)&7` / `(cell>>4)&7`; `slope2<=1` (or states 0x1A..0x1D,
+  `[+0xC20]` 0x1A/0x1B) -> `Vz=0`; steeper -> Q12 trig (64-entry table
+  `0x14020EE10`, angle `slope2*8`) projects the velocity onto the slope, `sqrtf`
+  magnitude vs per-state threshold; below threshold -> `Vz=0`; else clamp
+  `Vxy_fixed` 0..0x7FF / `Vz` -0x800..0x7FF and switch move state.
+- Conclusion: this is the airborne slide model on steep terrain; the walking
+  path (WalkTo/RunTo) has no client-side slope limit (server validates). T2 is
+  therefore re-scoped: needs packed-cell exposure in TerrainSampler + the trig
+  table dump + per-state thresholds; deprioritized behind P3/P4 unless slides
+  are needed.
+- Evidence: `proof/gravity/disasm/process_drop_speed.txt`; plan doc §8.3.
