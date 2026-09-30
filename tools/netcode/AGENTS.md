@@ -7,6 +7,9 @@ Static, read-only research against the JX3 client install. Nothing here may writ
 - **Copy & analyze only** (root `AGENTS.md` §4): never write, patch, or inject into the
   installed client/engine or its running processes (on disk or in memory). Work on copies
   under `proof/`.
+- **Local-first** (root `AGENTS.md` §4): whatever the client needs exists in the client
+  install (prediction, tables, configs, UI data). "Server-only / we cannot find it" is not
+  an acceptable answer — keep digging and cite the client-side counterpart.
 
 - Python stdlib-first, run with `.venv\Scripts\python.exe`; no new dependencies.
 - `reference/jx3_model.py` is the runnable spec model — **10x PASS must stay green**.

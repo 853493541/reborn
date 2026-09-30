@@ -111,6 +111,11 @@ State check before work: `git status`, `git log -5 --oneline`, confirm the branc
   Client-bundled `...\zhcn_hd\MovieEditor` is an older build (2026-04-28).
 - Evidence hierarchy: repo docs → game client code/IL → MovieEditor behavior/IL → raw
   extracted caches. Never answer from assumption.
+- **Local-first: everything needed is in the client/MovieEditor installs.** Whatever the
+  game needs to run (prediction, UI data, tables, configs, formats) exists locally in the
+  client binaries/IL/paks or the MovieEditor engine — "it comes from the server / we
+  cannot find it" is **not an acceptable answer**. Keep digging locally; a server-side
+  claim needs a cited client-side counterpart before it is used.
 - Engine claims cite symbol/RVA. Every claim carries HIGH/MED/LOW + a source path.
 - No web apps: not for the product and not for test/prototype tooling. New tooling is
   native (C#, C++, Python CLI). `map-ui-explorer`/`web/` were removed in cleanup — do not

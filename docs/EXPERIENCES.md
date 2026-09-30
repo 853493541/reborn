@@ -303,3 +303,12 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   ALL PASS; bin64 `reborn_client_pure.exe` leftovers removed.
 - Evidence: merge `f3e9511`; `client\build_client.cmd` exit=0; `camera_smoke.exe` ALL PASS.
 - Outcome: solved. `main` local-only ahead of origin (no push).
+
+### 2026-09-29 — repo — Rule: local-first (no server-side excuses)
+- Did: `AGENTS.md` §4 now requires local-first research: whatever the game needs exists
+  in the client/MovieEditor installs (prediction, UI data, tables, configs, formats);
+  "it comes from the server / we cannot find it" is not an acceptable answer, and a
+  server-side claim needs a cited client-side counterpart. Mirrored in
+  `tools/netcode/AGENTS.md`.
+- Evidence: `AGENTS.md` §4; `tools/netcode/AGENTS.md`; this commit (local).
+- Outcome: solved.
