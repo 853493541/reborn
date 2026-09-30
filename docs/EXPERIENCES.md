@@ -267,3 +267,14 @@ solved it, and what is still open. **Newest at the bottom.**
   demo run 22:42 — curve start (150/150), dive reached vy=-11565 u/s at 0.5 s; commit 6654363.
 - Outcome: solved. The curve is the authored forward/down profile; forward is 1.6-2.2x the
   old 125 u/f.
+
+### 2026-09-29 — controls — WW charge forward-dominant (no instant drop)
+- Did: user felt the curve replay dropped too fast ("forward more not down more"). Switched
+  the air WW to a forward-dominant charge: forward = the curve's XY peak **205 u/f
+  (3075 u/s)**; while the state is held the vertical is held (level); releasing W ends the
+  state and gravity builds the down (fast forward + gradual fall). Tunable with
+  `RC_WW_FWD` / `RC_WW_DOWN` (u/f). No special animation.
+- Evidence: demo run 22:53 (RC_JUMP_MULT=50) — `charge fwd=205 u/f (3075 u/s) down=0`,
+  release keeps vxy=3075, then vy builds -1007 -> -5967 while Z advances 24224 -> 36558;
+  selftest `CHARGE_FORWARD: PASS (205)`; commit 5086599.
+- Outcome: solved.
