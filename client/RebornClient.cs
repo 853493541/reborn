@@ -765,6 +765,13 @@ internal static class RebornClient
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
         int zoomSeqStep = -1;
+        // internal WW + RMB drag repro (no OS input): drives the same state the
+        // double-tap-W hold and a yaw drag produce. RC_WWDRAG=1; the rate is
+        // RC_WWDRAG_RATE rad/s (default 3.0).
+        bool wwDrag = Env("RC_WWDRAG", "0") == "1";
+        double wwDragRate = 3.0;
+        double.TryParse(Env("RC_WWDRAG_RATE", "3.0"), out wwDragRate);
+        bool wwDragLogged = false;
         bool nineRay = Env("RC_CAM_9RAY", "0") == "1";      // alternate 9-ray probe set
         string camMode = Env("RC_CAM_MODE", "");            // force a camera mode row
         bool demoTeleport = Env("RC_COL_TELEPORT", "0") == "1";
@@ -1555,6 +1562,37 @@ internal static class RebornClient
                     // the row range (no ground clamp)
                     int py2 = (((now - 6000) / 1500) % 2 == 0) ? 1 : -1;
                     orbitQueue.Enqueue(new int[] { 0, py2 });
+                }
+            }
+
+            if (wwDrag)
+            {
+                // internal repro (no OS input, AGENTS host test mode): hold W
+                // with the double-tap sprint state and feed the orbit deltas a
+                // yaw drag produces. 2 s baseline, then 6 s cycles: 1.5 s
+                // sprint settle / 3 s drag at RC_WWDRAG_RATE / 1.5 s release.
+                if (!wwDragLogged)
+                {
+                    wwDragLogged = true;
+                    Log(string.Format("wwdrag: internal repro on rate={0:F2} rad/s", wwDragRate));
+                }
+                long wt = now - 2000;
+                if (wt >= 0 && wt < 18000)
+                {
+                    long cyc = wt % 6000;
+                    pW = cyc < 4500;       // W held through the drag
+                    wSprint = pW;          // double-tap outcome (hold after 2nd press)
+                    if (cyc >= 1500 && cyc < 4500)
+                    {
+                        int px2 = (int)(dt * wwDragRate / 0.0018);
+                        if (px2 < 1) px2 = 1;
+                        orbitQueue.Enqueue(new int[] { px2, 0 });
+                    }
+                }
+                else if (wt >= 18000)
+                {
+                    pW = false;
+                    wSprint = false;
                 }
             }
 
