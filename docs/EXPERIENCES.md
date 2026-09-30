@@ -287,3 +287,13 @@ solved it, and what is still open. **Newest at the bottom.**
   HUD updated.
 - Evidence: build exit=0; selftest PASS; commit 5b8566b; app relaunched pid 27296.
 - Outcome: solved.
+
+### 2026-09-29 — controls — WW charge was dying on the double-tap's own keyup
+- Did: user reported key 1 "doesn't work". Log showed the charge ending ~50 ms after the
+  trigger (`charge 24.860 -> W released 24.911`) — the double-tap's **own second W keyup**
+  was ending the state, so key 1 always found "nothing active". Fix: ignore a W keyup
+  within 250 ms of the charge trigger (that release belongs to the double-tap); the state
+  now persists until key 1 or a deliberate later W release.
+- Evidence: log 23:45 (charge at 24.860 ended by W release at 24.911; key-1 presses logged
+  `nothing active`); fix build exit=0, selftest PASS, commit 10c8a7d; relaunched pid 33124.
+- Outcome: solved.
