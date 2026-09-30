@@ -1394,12 +1394,16 @@ baked terrain) — the authored visible surface — with no height cap; the pull
 (24534,2919,21524)` (log 2026-09-29 16:51). The vertical probe wrapper keeps its original
 3-float form and is retained only for the camera-obstruction ladder.
 
-Indicator: the original plays the cursor effect `鼠标移动.Sfx` at the cursor
+Indicator (2026-09-29): the original plays the cursor effect `鼠标移动.Sfx` at the cursor
 (`Represent/common/cursor_effect.txt` row 0 via `ShowCursorEffect`) and `Selection_ShowSFX` at
-the picked point; MovieEngineCLR cannot play `.Sfx` (verified AV), so the aim point shows the
-authored `释放_范围选择01.mesh` range-select ring, scaled for visibility
-(`SB_FEI_RING_SCALE`, default 4; the 2.3-m mesh carries no material — its glow comes from the
-.Sfx emitters). No unrelated assets are substituted.
+the picked point. MovieEngineCLR cannot play `.Sfx` (AddDummyModel AVs; AddStateMachineModel
+returns E_FAIL), and the raw range-select mesh carries no material (renders untextured white).
+The client's authored ground indicator instead ships as a `.pss` **hint circle** and PSS dummies
+do spawn in the host (asset_sandbox recipe): the aim point now shows
+`data\source\other\HD特效\其他\Pss\t_提示圈圆_6尺黄_贴地.pss` — the yellow 6-尺 ground-hugging
+target circle, authored size and color at scale 1 (`SB_FEI_RING_SCALE` override only). Candidate
+family verified side-by-side (`t_提示圈3尺[_绿|_高度25_黄]`, `j_姜棠目标圈_6尺`,
+`y_雨轻红指示圈6米`, `z_治疗提示圈`). The chain 28032 remains the only unplayable effect.
 
 **Chain 28032** (`S_rh` → `S_fxmid`, `s_锁链01.pss`): log-only / BLOCKED (2026-09-29) — a
 represent-layer `KRLSfx` feature with no MovieEngineCLR play path; no stand-in added.

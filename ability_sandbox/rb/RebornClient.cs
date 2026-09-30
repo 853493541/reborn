@@ -59,7 +59,7 @@ internal static class RebornClient
             try
             {
                 string self = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string supLog = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(self), "ability_sandbox", "out", "supervisor.log");
+                string supLog = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(self), "Skill", "out", "supervisor.log");
                 try { System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(supLog)); } catch { }
                 for (int attempt = 1; attempt <= 8; attempt++)
                 {
@@ -184,16 +184,16 @@ internal static class RebornClient
             return f1 + "F1" + needle + ".tani";
         };
 
-        outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_sandbox", "out");
+        outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skill", "out");
         Directory.CreateDirectory(outDir);
         // keep a per-run log (overwrite-safe for parallel sessions) and the
         // stable reborn.log used by the analysis scripts
-        string runLog = Path.Combine(outDir, "ability_sandbox_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
+        string runLog = Path.Combine(outDir, "Skill_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
         var logLines = new System.Collections.Generic.List<string>();
         Log = delegate(string s)
         {
             string line = DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n";
-            try { File.AppendAllText(Path.Combine(outDir, "ability_sandbox.log"), line); } catch { }
+            try { File.AppendAllText(Path.Combine(outDir, "Skill.log"), line); } catch { }
             try { File.AppendAllText(runLog, line); } catch { }
             Console.WriteLine(s);
             lock (logLines)
@@ -205,7 +205,7 @@ internal static class RebornClient
         Log("start map=" + mapPath);
         {
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string fp = "brand=ability_sandbox exe=" + Path.GetFileName(exePath)
+            string fp = "brand=Skill exe=" + Path.GetFileName(exePath)
                 + " build=" + File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss")
                 + " size=" + new FileInfo(exePath).Length
                 + " pid=" + System.Diagnostics.Process.GetCurrentProcess().Id;
@@ -218,17 +218,17 @@ internal static class RebornClient
             bool haveMutex = false;
             try
             {
-                var mm = new System.Threading.Mutex(true, "Global\\AbilitySandbox_SingleInstance", out haveMutex);
+                var mm = new System.Threading.Mutex(true, "Global\\Skill_SingleInstance", out haveMutex);
                 GC.KeepAlive(mm);
             }
             catch { haveMutex = true; }
             if (!haveMutex)
-                Log("note: another ability_sandbox instance is running - continuing (no limit)");
+                Log("note: another Skill instance is running - continuing (no limit)");
         }
         loadFeiZhua();
 
         var form = new Form();
-        form.Text = "JX3";
+        form.Text = "Skill";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
@@ -321,7 +321,7 @@ internal static class RebornClient
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("AbilitySandbox.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        try { r2 = baselib.InitMemory("Skill.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
         Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
 
@@ -562,7 +562,7 @@ internal static class RebornClient
         {
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_sandbox", "camera.json");
+            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skill", "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
@@ -1229,10 +1229,12 @@ internal static class RebornClient
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
         // ---- 临时飞爪 (28031): PointArea target ray + cast action ----
-        // authored range-select marker, exact spelling from the pak record
-        // (释放_范围选择01.Sfx dependency list: mesh + mtl-less textured emitters)
-        const string FEI_RANGE_UI = @"data\source\other\特效\技能\mesh\释放\释放_范围选择01.mesh";
-        const string FEI_RANGE_SFX = @"data\source\other\特效\技能\SFX\释放\释放_范围选择01.Sfx";
+        // authored ground-target indicator: the client's yellow hint circle
+        // (6 尺, ground-hugging). The raw range-select mesh rendered untextured
+        // white (no material ships; color lives in the .Sfx emitters the host
+        // cannot play), but this .pss spawns as a dummy with authored size and
+        // color - the same asset the client's ground targeting shows.
+        const string FEI_MARKER_PSS = @"data\source\other\HD特效\其他\Pss\t_提示圈圆_6尺黄_贴地.pss";
         Func<float[]> computeFeiTarget = delegate
         {
             try
@@ -1867,23 +1869,18 @@ internal static class RebornClient
                             lastMarkerX = feiPX; lastMarkerZ = feiPZ;
                             var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 8f; mpos.z = feiPZ;
                             var mrot = new CLRfloat4(); mrot.w = 1f;
-                            // authored marker made obvious: the range-select mesh
-                            // is only 2.3 m (its glow comes from the .Sfx emitters
-                            // the host cannot play). Scale is presentation only,
-                            // env-tunable for review (SB_FEI_RING_SCALE).
-                            float ringScale = 4f;
-                            float.TryParse(Env("SB_FEI_RING_SCALE", "4"), out ringScale);
-                            if (ringScale <= 0f) ringScale = 4f;
+                            // authored size/color at scale 1; SB_FEI_RING_SCALE only
+                            // for review
+                            float ringScale = 1f;
+                            float.TryParse(Env("SB_FEI_RING_SCALE", "1"), out ringScale);
+                            if (ringScale <= 0f) ringScale = 1f;
                             var mscl = new CLRfloat3(); mscl.x = ringScale; mscl.y = ringScale; mscl.z = ringScale;
-                            // NOTE: the .Sfx wrapper must NOT be fed to AddDummyModel -
-                            // it returns a handle but AVs the engine later (verified).
-                            // Only the raw mesh is placeable in this host.
-                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
+                            long mh = scene.AddDummyModel("fei_marker", FEI_MARKER_PSS, mpos, mrot, mscl);
                             Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
                                 + " rawY=" + (int)feiRayY + " surfY=" + (int)feiSurfY
                                 + " climb=" + (int)(feiPY - py)
-                                + " scale=" + ringScale.ToString("F1") + " mesh=" + mh);
+                                + " scale=" + ringScale.ToString("F1") + " marker=" + mh);
                         }
                     }
                 }

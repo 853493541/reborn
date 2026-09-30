@@ -385,8 +385,9 @@ MECH = {
         "  => 实现配方: 用 FilePath 建 SFX; 双点绑定到 S_rh 与装置 S_fxmid; 设 Millisecond=1000/旋转/偏移; 每帧从插槽更新\n"
         "动画层链条 (已忠实): tani 自带 l_凌雪阁出链带01/出链02/链技能03_3, 播放 tanis 时引擎自动触发\n"
         "未解: DoAction(0,140022/140023) 不在客户端动画表内 (服务器侧动作触发); DASH_TO_POINT 牵引移动 (引擎无 actor 位移 API)\n"
-        "宿主(ability_sandbox 2026-09-29): 落点=可视顶面 visibleTop (上方场景射线/地形, 遮蔽了返回幻影高度的 game-mask 垂直探针); "
-        "瞄准 FOV=应用投影 48°x因子; 指示=作者资源 释放_范围选择01.mesh 环 (SB_FEI_RING_SCALE 放大, Sfx 无法在 MovieEngineCLR 播放)"
+        "宿主(Skill, 2026-09-29): 落点=可视顶面 visibleTop (上方场景射线/地形, 遮蔽了返回幻影高度的 game-mask 垂直探针) 且无攀爬上限; "
+        "瞄准 FOV=应用投影 48°x因子; 指示=客户端黄圈提示 PSS data\\source\\other\\HD特效\\其他\\Pss\\t_提示圈圆_6尺黄_贴地.pss "
+        "(PSS 可作 dummy 播放; 28032 的 .Sfx/KRLSfx 仍无法在 MovieEngineCLR 播放 - AddStateMachineModel E_FAIL)"
     ),
     "乘黄之威": (
         "乘黄之威 (道具 36500)\n"

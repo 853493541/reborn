@@ -125,3 +125,21 @@ played by MovieEngineCLR (AV), so the aim point now shows only the authored
 **Links:** commits on `agent/skillv2-sandbox`; climb log 2026-09-29 16:51
 (`marker (24534,2919,21524) climb=2158` → `landed at (24534,2919,21524)`);
 `docs/movement/JX3_COLLISION_SYSTEM.md` §16.4 + G-20.
+
+### 2026-09-29 — Skill sandbox — rename to Skill + authored PSS hint-circle indicator
+- Did: renamed the sandbox client to **Skill** (`bin64\Skill.exe`, window title "Skill",
+  runtime dir `bin64\Skill\`, memory namespace `Skill.memory`, brand `Skill`); replaced the
+  white raw range-select mesh marker with the client's authored ground indicator PSS
+  `data\source\other\HD特效\其他\Pss\t_提示圈圆_6尺黄_贴地.pss` — the yellow 6-尺
+  ground-hugging hint circle at authored size/color, scale 1 (`SB_FEI_RING_SCALE` override).
+- Why: the range-select `.Sfx` cannot be played by the host (`AddDummyModel` AVs;
+  `AddStateMachineModel` E_FAIL) and the raw mesh ships without material/texture (untextured
+  white). PSS dummies do play (asset_sandbox recipe) and the client's ground-target look is
+  the 提示圈 family — verified side-by-side (`t_提示圈3尺[_绿|_高度25_黄]`,
+  `j_姜棠目标圈_6尺`, `y_雨轻红指示圈6米`, `z_治疗提示圈`).
+- Evidence: `Skill_20260929_181018.log` + `rc_00_7000ms.png` (7 candidate PSS, colored rings);
+  final aim run `Skill_20260929_181543.log` + `rc_00_3500ms.png` (`scale=1.0 marker=<h>`,
+  yellow circle at the aim point); `ability_sandbox\build.cmd` → `bin64\Skill.exe`.
+- Outcome: solved (indicator size+color are now the authored ones).
+- Re-open: if a native SFX path (`KG3DScene::GetSceneSFXEditor` / `KG3DSFX`) is wired, play
+  the true `鼠标移动.Sfx` cursor effect and the `Selection_ShowSFX` selection effect too.
