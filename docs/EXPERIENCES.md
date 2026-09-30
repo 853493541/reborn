@@ -513,3 +513,19 @@ solved it, and what is still open. **Newest at the bottom.**
   `90u/s(WALK)` (`reborn_20260930_152403.log`), integer positions.
 - Remaining: sprint hold value (host 8.8 尺/s), `CharacterYawTurnSpeed`
   (camera A10).
+
+### 2026-09-30 — movement — T2 disposition (scene/server data) + P4 probe negative
+- The `0x14020EE10` helper behind ProcessDropSpeed's slope math is a 65-entry
+  **Q12 sine table** (0..4096 for 0..90 deg in 1/64 steps): dumped to
+  `proof/gravity/heading_table_65x32.txt` (VA 0x140A0DEA0).
+- The slide inputs are the in-memory terrain **cell word** (slope fields +
+  road/path flag). Shipped BCH is normalized floats; cells/road flags are
+  engine-scene/nav-derived (server) -> T2 is not client-derivable; normal
+  terrain (packed slope <=1) forces `Vz=0` anyway. T2 parked behind P5/server
+  data, not required for current-map parity.
+- P4 probe: the scene objects' `templateFile: "npc.json"` is an editor
+  template name; 12 candidate paks paths do not exist. `bUnitWalkable`/
+  `bUnitCanPass` values still have no located shipped source (G-21); next
+  candidates: scene-response binary decode or a `filepath.ini` index search.
+- Evidence: `proof/gravity/disasm/process_drop_speed.txt`,
+  `heading_table_65x32.txt`; plan doc §8.3.
