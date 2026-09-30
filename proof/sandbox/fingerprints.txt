@@ -1,0 +1,2 @@
+﻿mini_00_15000ms.png 1280x720 meanRGB=(210,190,169)
+mini_01_30000ms.png 1280x720 meanRGB=(168,155,147)

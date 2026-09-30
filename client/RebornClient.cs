@@ -11,6 +11,8 @@
 //   RC_SKILL_MS=8000              skill clip duration before returning to state clip
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
+//   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
+// RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
 using System.IO;
 using System.Threading;
@@ -68,6 +70,10 @@ internal static class RebornClient
         string editorRoot = @"C:\SeasunGame\MovieEditor";
         string startupPath = Path.Combine(editorRoot, "bin64");
         string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
+        // Terrain sampler physics DLL override (sandbox/portable roots); default
+        // is the client's copy, same as the canonical host.
+        string physDll = Env("RC_PHYS_DLL",
+            @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll");
         string mapPath = Env("RC_MAP",
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");
         string actorPath = Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor");
@@ -144,6 +150,7 @@ internal static class RebornClient
                 Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80")));
         }
         Log("start map=" + mapPath);
+        Log("asset_root=" + workingDir + " phys=" + physDll);
 
         var form = new Form();
         form.Text = "JX3";
@@ -187,16 +194,21 @@ internal static class RebornClient
         try { baselib.InitConsoleLog(); } catch (Exception e) { Log("InitConsoleLog: " + e.Message); }
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
+        long tInit = Environment.TickCount;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
+        long m1 = Environment.TickCount - tInit;
         try { r2 = baselib.InitMemory(memNs); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        long m2 = Environment.TickCount - tInit - m1;
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
-        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2} ns={3}", r1, r2, r3, memNs));
+        long m3 = Environment.TickCount - tInit - m1 - m2;
+        Log(string.Format("InitPath={0} InitMemory={1} InitPak={2} ns={3} ms=({4},{5},{6})", r1, r2, r3, memNs, m1, m2, m3));
 
         int err = 1;
         int ok = 0;
+        long t3d = Environment.TickCount;
         try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
-        Log(string.Format("Init3DEngine={0} err={1}", ok, err));
+        Log(string.Format("Init3DEngine={0} err={1} ms={2}", ok, err, Environment.TickCount - t3d));
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
@@ -206,7 +218,9 @@ internal static class RebornClient
         // lazy material/shader loader (missing build-machine DataStores -> AV)
         // is not raced while running through the map. Env-gated for A/B first.
         bool fullLoad = Env("RC_FULLLOAD", "0") == "1";
+        long tMap = Environment.TickCount;
         int loadResult = scene.LoadMap(mapPath, false);
+        long mMap = Environment.TickCount - tMap;
         if (fullLoad)
         {
             try
@@ -216,7 +230,7 @@ internal static class RebornClient
             }
             catch (Exception e) { Log("fullload ex: " + e.Message); }
         }
-        Log("LoadMap result=" + loadResult);
+        Log("LoadMap result=" + loadResult + " ms=" + mMap);
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
         scene.SetActiveEnvironment();
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 0);
@@ -266,8 +280,7 @@ internal static class RebornClient
         TerrainSampler sampler = null;
         try
         {
-            sampler = new TerrainSampler(
-                @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll", mapPath, Log);
+            sampler = new TerrainSampler(physDll, mapPath, Log);
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 

@@ -149,3 +149,21 @@ solved it, and what is still open. **Newest at the bottom.**
   S0–S4); local scans + dumpbin; no install writes.
 - Outcome: plan committed on `agent/mini-sandbox`; S0 (loose-map load spike) and S1
   (foreign asset root spike) are the next gates.
+
+### 2026-09-29 — client — Mini sandbox: cropped loose map via RC_MAP (verified)
+- Did: built `tools/sandbox/build_sandbox.py` (crop a real map to a loose map dir,
+  world coords preserved by re-anchoring `WorldOrigin` + renaming region files) and
+  verified the client loads it via `RC_MAP=<absolute path>`: InitPak 406 ms,
+  LoadMap 281 ms, `TerrainSampler regions=2x2 origin=(0,0)`, real spawn
+  `(23334,761,24224)`, 5351 collision instances, screenshots render the real scene.
+  Client additions: `RC_PHYS_DLL` override + init/LoadMap elapsed-ms logs.
+- Lesson (dead end): a custom sandbox asset root (junctions + copied configs)
+  stalls `InitPak` ~181 s waiting on the StreamDownloader IPC, and **writable
+  junctions leak engine writes into the install** — shader-cache files in
+  `zhcn_hd\CachedShaders` (20:32:25) and a minidump in `zhcn_hd\bin64\minidump`
+  (20:32:45) were written during the experiment; they cannot be undone (installs
+  are read-only). Never junction writable dirs; absolute `RC_MAP` needs no root
+  change at all and is the supported path.
+- Evidence: `proof/sandbox/{mini_run.log,mini_00_15000ms.png,mini_01_30000ms.png,
+  fingerprints.txt,map_manifest.json}`; `docs/engine_host/MINI_SANDBOX_CLIENT.md`.
+- Outcome: solved. Sandbox = 21 MB loose map dir; scene load ~0.3 s.
