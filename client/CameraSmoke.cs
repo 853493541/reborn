@@ -170,9 +170,9 @@ internal static class CameraSmoke
         // user decision 2026-09-29: both settings default to the client-truth
         // max - follow distance 2000 u (panel fMaxCameraDistance / engine cap)
         // and FOV 60 deg (panel 30..60 max, see VideoSettings.PanelMaxDeg)
-        Check("distance default = client max 2000 u",
-              Math.Abs(clampCam.Row.F("InitCameraDistance", 0.0) - 20.0) < 1e-9 &&
-              Math.Abs(clampCam.Row.F("TargetDistance", 0.0) - 20.0) < 1e-9 &&
+        Check("distance default = client number 1245 u",
+              Math.Abs(clampCam.Row.F("InitCameraDistance", 0.0) - 12.45) < 1e-9 &&
+              Math.Abs(clampCam.Row.F("TargetDistance", 0.0) - 12.45) < 1e-9 &&
               Math.Abs(clampCam.Row.F("MaxCameraDistance", 0.0) - 2000.0) < 1e-9,
               string.Format("init={0:F0}m target={1:F0}m max={2:F0}u",
                   clampCam.Row.F("InitCameraDistance", 0.0), clampCam.Row.F("TargetDistance", 0.0),

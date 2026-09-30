@@ -98,7 +98,7 @@ public sealed class CameraSystem
         Rows[MODE_NPC_DIALOG] = DefaultRow(MODE_NPC_DIALOG);
         Rows[MODE_GOD] = DefaultRow(MODE_GOD);
         Pitch = Rows[MODE_CHARACTER].F("InitCameraPitch", -20.0 * DEG);
-        Distance = Rows[MODE_CHARACTER].F("InitCameraDistance", 20.0) * UnitsPerMeter;
+        Distance = Rows[MODE_CHARACTER].F("InitCameraDistance", 12.45) * UnitsPerMeter;
     }
 
     public CameraParams Row { get { return Rows[Mode]; } }
@@ -129,7 +129,7 @@ public sealed class CameraSystem
                 // default follow distance = the client-truth max: user panel
                 // fMaxCameraDistance clamps at 2000 u (20 m) and the engine cap
                 // is 2000; user decision 2026-09-29 (see HOST_DEVIATIONS C10).
-                p.Set("TargetDistance", 20.0);
+                p.Set("TargetDistance", 12.45);
                 // real zoom limits, world units (NOT meters). The client's
                 // VideoSettingPanel.tCameraStatic default fMaxCameraDistance is
                 // 2000 (userdata/<account>/<role>/custom.dat, 68/92 roles;
@@ -142,7 +142,7 @@ public sealed class CameraSystem
                 p.Set("MaxDragSpeed", 0.00314);             // verified loader default
                 p.Set("RotationSpeed", 0.00314);            // verified loader default
                 p.Set("InitCameraPitch", -0.35);        // real client default (custom.dat)
-                p.Set("InitCameraDistance", 20.0);      // client-truth max (2000 u)
+                p.Set("InitCameraDistance", 12.45);    // client number 1245 u (number.krl CameraMaxDistance)
                 // Host placeholders (docs/camera/REAL_VALUES.md §7/§8 item 6):
                 // the real per-mode move-pitch rows are CDN-only. The DLL
                 // loader defaults are 0, but the model needs non-zero pivots
@@ -160,12 +160,12 @@ public sealed class CameraSystem
                 // sprint base = the same client-truth max as the character row:
                 // a 6 m sprint base made Shift+W ramp 2000->660->2000 (the
                 // "camera zooms in while running" report, 2026-09-29)
-                p.Set("TargetDistance", 20.0);
+                p.Set("TargetDistance", 12.45);
                 p.Set("SmoothTime", 0.5);
                 p.Set("MaxDragSpeed", 0.0025);
                 p.Set("RotationSpeed", 0.0025);
                 p.Set("InitCameraPitch", -0.35);
-                p.Set("InitCameraDistance", 20.0);
+                p.Set("InitCameraDistance", 12.45);
                 p.Set("SprintCameraAngle", 0.3);
                 p.Set("SprintCameraPitch", -0.35);
                 p.Set("SprintCameraMaxDistance", 60.0);     // unit/consumer unresolved; not an absolute target

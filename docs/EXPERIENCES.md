@@ -245,3 +245,33 @@ engine queries); the per-axis smoothing stays once, on the resolved offset
   ported edits, log `reborn_20260929_175819.log`, `OPMODE=classical`).
 - Outcome: P0-P2 solved (P2 partial), P3 partial, P4 open.
 - Re-open: turn-rate model + follow-mode semantics + reset-speed application.
+
+### 2026-09-29 — camera — default follow distance corrected to 1245 u (cap vs initial)
+**Problem:** after the "max default" change the camera terrain-pulled constantly
+("zooms in for no reason"): `jumpdbg src=[probe4 ... terr=1934->1365]`,
+`obstdbg probe0 ... terr=671` at rest, `clamp=1` - the native 5-probe query
+pulling because a 2000 u camera sits at ground level behind the player.
+**Tried:** traced the original game's distance sources in the disassembly and
+shipped data instead of guessing again.
+**Outcome:** solved (default changed to 1245 u; exact initial value still not
+provable from local data).
+**Why:** `fMaxCameraDistance` (default 2000, custom.dat) is only the zoom-out
+cap - `SetCameraMaxDistance` `0x180ace520` clamps and writes the camera node's
+cap field `+0x74`/`+0x8C`, never the current distance. The character camera
+reads **no** `InitCameraDistance` (string xrefs only in the air-combat
+`0x180ac9db5` and carrier `0x180b1c876` loaders). The distance is not persisted
+either (`g_Scene_tCameraRuntime` = yaw/pitch/eyeScale only). The only shipped
+camera-distance number is `number.krl CameraMaxDistance = 1245 u`, loaded into
+`CommonNumber+0x98`; no reader of that field was located in this build (same
+as the documented legacy `NearByWallDistance`), so 1245 is the best
+client-authored value but the exact initial distance remains unproven until
+the CDN `camera_common.krl.txt` row is obtained.
+**Re-open criteria:** a `CommonNumber+0x98` reader is found (proves/refutes
+1245), or the CDN per-mode row arrives.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` C10; `proof/netcode/disasm/
+camera_maxdistance_xrefs.txt` (loader store at `+0x98`),
+`camera_sLoad_calls.txt`, `camera_wall_obstruction.txt` §11;
+`proof/gravity/number.krl.txt`. Code: `camera.json` (character + sprint rows),
+`CameraSystem.cs`, `CameraSmoke.cs` (`distance default = client number 1245 u`),
+live log `reborn_20260929_181215.log` (before), `camera_smoke_wallclip` ALL
+PASS after.

@@ -486,7 +486,7 @@ internal static class RebornClient
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             camSys.Pitch = cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
-            camSys.Distance = camSys.Row.F("InitCameraDistance", 20.0) * camSys.UnitsPerMeter;
+            camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
             Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3} op={4}",
                 camSys.Mode, camSys.Distance,
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,
@@ -901,7 +901,7 @@ internal static class RebornClient
             {
                 // Camera reset: behind the character, model pitch -15 deg, distance 1x
                 camSys.SetMaxDistance(camSys.ClampDistanceUnits(
-                    camSys.Row.F("InitCameraDistance", 20.0) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
+                    camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
                 camSys.Pitch = -Math.PI / 12.0;
                 alignAim();
