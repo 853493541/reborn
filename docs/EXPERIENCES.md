@@ -278,3 +278,12 @@ solved it, and what is still open. **Newest at the bottom.**
   release keeps vxy=3075, then vy builds -1007 -> -5967 while Z advances 24224 -> 36558;
   selftest `CHARGE_FORWARD: PASS (205)`; commit 5086599.
 - Outcome: solved.
+
+### 2026-09-29 — controls — key 1 = WW release (independent of the physical W key)
+- Did: rebound key `1` from the WW trigger to the **W-release action**, usable while W is
+  still physically held: it ends the WW state (velocity kept) or turns the sprint off.
+  Double-tap W remains the WW trigger. Charge forward default lowered to the curve entry
+  150 u/f (2250 u/s, RC_WW_FWD); charge clip plays once (playType 1, RC_GLIDE_PLAY).
+  HUD updated.
+- Evidence: build exit=0; selftest PASS; commit 5b8566b; app relaunched pid 27296.
+- Outcome: solved.
