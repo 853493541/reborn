@@ -1,0 +1,181 @@
+# Host collision system vs the game's collision system — full comparison
+
+Date: 2026-09-29
+Branch: `agent/collision-improvement`
+Purpose: one place that answers "what does the real client's collision system
+consist of, what have we ported, what do we have, and what do we NOT have".
+Companion docs: `JX3_COLLISION_SYSTEM.md` (game truth + gap register
+`G-0..G-35`), `COLLISION_SYSTEM_STATUS.md` (working audit),
+`STRUCTURE_COLLISION_RESEARCH.md`, `JX3_STEP_FORGIVENESS_RESEARCH.md`,
+`REAL_CLIENT_MAP_COLLISION.md`.
+
+Legend: **[PORTED]** host implements the game mechanism · **[PART]** partial ·
+**[PROXY]** host stand-in for game data that is not in the client install ·
+**[MISSING]** researched, not implemented · **[SERVER]** server-owned or absent
+client-side · **[N/A]** does not apply to this product.
+
+---
+
+## 1. System-by-system view (game domains from `JX3_COLLISION_SYSTEM.md` §1.1)
+
+| # | Domain | Game (client truth) | Host (`client/`, `tools/`) | Status |
+|---|---|---|---|---|
+| 1 | Core physics runtime | PhysX 3.3.4 (`PhysicsEngineX64.dll`), gameplay wrapper `SIMWorldX64.dll` (`PxWorld::RayCast`, `GetFloorHeight`, `SweepEx`) | own float solver: `FoliageCollision` capsule/triangle + substeps; no PhysX (MovieEditor never creates a physics scene — proven) | **[PROXY]** |
+| 2 | Collision math | `KBaseX64.dll` | in-house: closest-point-triangle, segment-segment, Möller–Trumbore | **[PORTED]** (equivalent math) |
+| 3 | Terrain | R32 heights + `.hlb` holes, 512-cell regions, streaming; `ProcessVerticalMove` ground clamp; `ProcessDropSpeed` slope projection | `TerrainSampler.cs` (heights + holes, Z-flip verified); ground rules from `ProcessVerticalMove` (snap up, 64 u tolerance); **slope projection missing** | **[PART]** |
+| 4 | Static world | `sceneinfo_full` objects + 4×4 matrices; physic white/black lists; sibling `.mesh.ini` flags; PhysX static actors | `bake_map_collision.py` → FCOL v2 bins; GB18030 physic lists; `.cflags` (camera only); exact capsule contact; CCT top-step (64 u budget) | **[PART]** — obstacle flags not ported (§3) |
+| 5 | Foliage / SpeedTree | `.foliage` v1, `.CollisionMesh`, canopy columns | byte-exact foliage decode; shipped `CollisionMesh` used verbatim; 6 degenerate trunks left walk-through (matches client); **canopy columns host-made** | **[PART]** |
+| 6 | Dynamic objects | doodads/doors/chests (server stream), state-machine props (visual only, G-9), movable obstacles (radius+points, server state G-10), conveyors (params decoded G-11), carriers | none | **[SERVER/MISSING]** |
+| 7 | Character body | kinematic capsule + SIMWorld foot solver; capsule values are semantic K/V (`capsule r50/l50` shape lib); CCT defaults recovered (`stepOffset 0.5 m`, `slopeLimit 45°`, `contactOffset 0.1`) | capsule `r=17 u, h=116 u` host-chosen (`RC_RADIUS/HEIGHT`); step budget 64 u; contact offset not modelled | **[PART]** |
+| 8 | Movement model | `KCharacter` **15 Hz integer** integration | per-frame float integration | **[WRONG vs G-14]** |
+| 9 | Jump/fall/swim/fly | `JumpParam.tab`, `JumpFrameParam.tab`, `SkillMove.tab`; swim step `0x14031B640` | single jump/gravity constants; 轻功 chain, sprint dive, wall jump, suspend/fly, mount, swim all missing | **[PART/MISSING]** |
+| 10 | Ragdoll/death | `KPhysicsRagdoll` (11-body), PhysX articulation | none (`bAddPlayerPhysicsActor=0`) | **[MISSING]** |
+| 11 | Rays/filters/camera | `RayIntersection*` mask `0x301`, `FilterCamera`, `GetFloorHeight` | bake raycast + engine terrain/scene rays; mask/filter model recovered; camera deviations B1–B14 registered | **[PART]** |
+| 12 | Picking/selection | cursor rays, `PickRayWalk`, target.lua | none (server validates) | **[SERVER]** |
+| 13 | Triggers/volumes | `KG3DSceneResponse`, zone mgr, PhysX triggers | none (no collision consumer found, G-22) | **[N/A]** |
+| 14 | Water/fluids | waterline math decoded, `.WaterData` editor-only, shipped water in scene blocks | none | **[MISSING]** |
+| 15 | Navigation | NAVX64/PathEngine — server/standalone stack, no client module | none | **[SERVER]** |
+| 16 | Combat collision | CastMode shapes, missiles, bone boxes, server results | none (client plays effects only) | **[SERVER]** |
+
+Fidelity definition (`JX3_COLLISION_SYSTEM.md` §1.3): positions/blocking,
+support/falling, camera placement, targetability/hit outcomes observable-equal.
+Host today is faithful in blocking geometry (mesh-level), ground rule and
+camera obstruction, and deviates in movement integrator, slope, props and all
+server-owned dynamic state.
+
+## 2. What we have vs what we do NOT have (data inventory)
+
+### 2.1 In the client install — we have it
+
+| Data | Location | Host use |
+|---|---|---|
+| Terrain heights (R32) + holes (`.hlb`) | paks | `TerrainSampler` |
+| Static object list + matrices (`sceneinfo_full/*.json`) | paks | bake |
+| Object render meshes (`.mesh`) | paks | bake |
+| Foliage instances (`.foliage`) | paks | bake |
+| SpeedTree `.CollisionMesh` | paks | bake (verbatim) |
+| Physic lists (`physic_file/folder_white/black`) | paks | bake gate |
+| Per-mesh `.mesh.ini` flags (see §3) | paks | **only `bObscatleCamera` used** |
+| `comLogic.obstacleOption` / `enablePhysicsConfig` | `sceneinfo_full` | scanned: uniformly 0 on 724 objects (G-3) |
+| Physic params (`physic_shape_param`, `physic_rigid_param`, `physic_character_param`, `physic_conveyor_belt_param`) | paks | decoded in proof, **not wired** |
+| Jump/move tables (`JumpParam`, `JumpFrameParam`, `SkillMove`) | paks | partially ported |
+
+### 2.2 In the client install — we do NOT have it
+
+| Data | Why not | Consequence |
+|---|---|---|
+| `bUnitWalkable` / `bUnitCanPass` / `bBulletWalkable` / `bBulletCanPass` / `bAutoPathing` / `nPathingType` / `fPathingHeight` **values** | engine unit-template keys exist in `KG3DEngineX64.dll`; the value source (unit templates / scene-response stream) is not in the shipped files found so far (`G-21`) | prop passability is a host proxy (§6) |
+| `bAutoProduceObstacle` / `bLogicObstacle` / `bCollisionOnly` **semantics** | flags ship in `.mesh.ini`, consumers located (`KG3DEngineDX11EX64.dll`, `KG3D_LoaderNoRenderX64.dll`), production rule not yet reversed | host ignores them; props classified by name taxonomy (§6) |
+| Server scene response set (which objects are active/nav-walkable at runtime) | server stream (`G-25`, `G-35`) | H1 folder-white admits all `maps_source` props |
+| Doodad/door open/closed state | server | closed geometry blocks in host |
+| Movable/advanced obstacle live states | server (`G-10`) | none |
+| Conveyor live state | server; params local | none |
+| Navmesh data | not in client install (`G-25`) | none |
+| 15 Hz movement snapshots / server authority | netcode | host is its own authority |
+
+## 3. Per-object / per-unit flag inventory (the missing semantics)
+
+Every mesh ships a sibling `.mesh.ini`; every placed object ships `comLogic`.
+Ported column: does the host use it today.
+
+| Key | Ships in | Consumed by (game) | Census on 龙门寻宝 | Host |
+|---|---|---|---|---|
+| `bObscatleCamera` | `.mesh.ini` `[Display]` | KG3D mesh property → camera filter | 316/692 zero (map) | **[PORTED]** `.cflags` |
+| `bObstacleCamera` | `.mesh.ini` per LOD submesh | KG3D | mixed | **not ported** |
+| `bAutoProduceObstacle` | `.mesh.ini` `[Display]` | `KG3DEngineX64` (field `+0x194`), `KG3DEngineDX11EX64`, `KG3D_LoaderNoRenderX64` | 587 inis: 12 zero (e.g. `wj_晾衣架004`) | **not ported** |
+| `bLogicObstacle` | `.mesh.ini` per LOD submesh | `KG3DEngineDX11EX64`, `KG3D_LoaderNoRenderX64` | mixed per submesh (`jz_破旧兵营001_002` has 0+1) | **not ported** |
+| `bCollisionOnly` | `.mesh.ini` per LOD submesh | `KG3DEngineDX11EX64` | mostly 0 | **not ported** |
+| `bTransparentCamera`, `bRecomputeNormals` | `.mesh.ini` per submesh | KG3D | — | not ported (not collision) |
+| `bUnitWalkable`, `bUnitCanPass` | engine unit-template keys (`KG3DEngineX64` strings 0x692740/0x692750) | scene-response units | **values not in shipped files** | **not ported / no data** |
+| `bBulletWalkable`, `bBulletCanPass`, `bAutoPathing`, `nPathingType`, `fPathingHeight` | same stringset | same | **no data** | **not ported / no data** |
+| `comLogic.obstacleOption`, `enablePhysicsConfig` | `sceneinfo_full` objects | editor/stream | uniformly 0 (G-3) | n/a (no behaviour) |
+| physic lists | `Represent/physic/*.txt` (GB18030) | `StaticPhysicsSceneManager` | 60 rejects | **[PORTED]** |
+| `physic_shape_param` (box/sphere/capsule/mesh shapes) | `.krl.txt` | SIMWorld shape builder | decoded | **not ported** |
+| `physic_conveyor_belt_param` | `.krl.txt` | SIMWorld conveyor | decoded (G-11) | **not ported** |
+
+**Bottom line:** the game decides prop/unit collision and walkability through
+these flags; the host currently ports only the camera flag and the list gate.
+Solid-prop handling is therefore a **proxy**, not the game rule (§6).
+
+## 4. Gap register rollup (`G-0..G-35` vs host)
+
+Solved gaps are game-side research; the host column marks whether the
+mechanism is in the product.
+
+| Gap | Game truth | Host |
+|---|---|---|
+| G-0 units (1 u = 1 cm, 100 u/m) | solved | used |
+| G-1 capsule values | desc mapped; values semantic (`capsule r50/l50`) | host 17/116 **[HOST-CHOSEN]** |
+| G-2 holes | solved | ported (A/B region 0,0) |
+| G-3 `comLogic` flags | uniform 0, no impact | n/a |
+| G-4 geometry classes | `.mesh`/`.srt` only | ported |
+| G-5 FOLI scale | fixed in exporter | ported |
+| G-6 non-uniform foliage scale | non-issue | ported |
+| G-7 per-map `.cflags` | solved | ported (5 maps) |
+| G-9 state-machine props | visual only | n/a |
+| G-10 movable obstacles | radius+points, server state | **[SERVER]** |
+| G-11 conveyors | decoded | **not ported** |
+| G-12 actor-vs-actor | soft toggles only | n/a |
+| G-13 step/slope | CCT defaults recovered | step ported (64 u), **slope missing** |
+| G-14 15 Hz integer movement | research complete | **not ported** |
+| G-15 swim | solved | **not ported** |
+| G-16 ragdoll | solved | **[MISSING]** |
+| G-17 camera mask bits | solved | ported (camera) |
+| G-18 cursor scene-pos | solved | n/a |
+| G-19 target.lua | solved | n/a (server) |
+| G-20 ground-target constants | backlog | n/a |
+| G-21 SceneResponse semantics | plugin solved; unit-template keys are engine config read at load | **values not found; solid-prop proxy** |
+| G-22 environment volumes | negative | n/a |
+| G-23 interaction range | solved | n/a |
+| G-24 water/Flux | solved (scope) | **not ported** |
+| G-25 navmesh | server stack | **[SERVER]** |
+| G-26..G-34 combat/skill | solved/documented/server | n/a (server) |
+| G-35 physic-list precedence (H1) | loaders located; rule implemented | ported; **in-game A/B pending** |
+
+## 5. Registered host deviations (do not hide)
+
+| Item | Where | Re-open when |
+|---|---|---|
+| Movement per-frame float instead of 15 Hz integer | `RebornClient` loop | G-14 port |
+| Slope too permissive (any rise climbs) | ground rule | `ProcessDropSpeed` port |
+| Capsule 17/116 / step 64 u | host constants | exact values extracted (G-1/G-13) |
+| Tree canopy columns host-generated | bake | `.srt` canopy decode |
+| Camera 20 Hz obstruction cap | `RC_CAM_OBSTHF` | engine camera cadence recovered |
+| Camera stabilizers B8/B9/B11/B12/B13/B14 | `docs/camera/HOST_DEVIATIONS.md` | P4 native filter/represent port |
+| **Solid-prop proxy** (name taxonomy 柜/箱/桌/桶/缸/坛 + AABB push) | `FoliageCollision.SolidPropPush` | §3 flags ported + `bAutoProduceObstacle` rule or `bUnitWalkable` data |
+| H1 folder-white list rule | bake | in-game per-object A/B (G-35) |
+| Hole cells bottomless | terrain | cave meshes baked |
+
+### 5.1 Why the solid-prop fix is "partly" game-respect (recorded verbatim scope)
+
+1. **Deciding which props are solid**: game uses `bAutoProduceObstacle` /
+   `bLogicObstacle` (shipped, consumers known) and per-unit
+   `bUnitWalkable`/`bUnitCanPass`; the host uses mesh-name taxonomy.
+2. **Solid shape**: game generates the obstacle in its physics pipeline; host
+   uses the world AABB.
+3. **Missing values**: `bUnitWalkable`/`bUnitCanPass` values are not in the
+   shipped files we have (G-21).
+
+Behaviour (cannot be inside furniture) matches; data/shape are proxies until
+those three items are ported.
+
+## 6. Verification matrix (host)
+
+| Check | Command / evidence | Result |
+|---|---|---|
+| Offline collision gate | `bin64\collision_selftest_reborn_client_collision.exe` | 22/22 PASS |
+| Hole mask A/B | `tools/collision/check_hole_mask.py` vs `RC_HOLE_DUMP` | region (0,0) match |
+| Physic-list rejects | bake audit | 60 (29+23+8) |
+| Ground/step rules | selftest step cases + in-game logs | 64 u budget, 51 u floors |
+| Rug floor (inverted winding) | `reborn_20260929_212757.log` | py=924 on rug, hits=0 |
+| Solid prop (cabinet) | `reborn_20260929_234229.log` | held at z=36704, 2–9 u pushes |
+| Camera step snap (B14) | `reborn_20260929_220246.log` | max 6.0 u/frame (was 63.9) |
+
+## 7. Reproduce
+
+```powershell
+client\build_client.cmd
+C:\SeasunGame\MovieEditor\bin64\collision_selftest_reborn_client_collision.exe   # 22/22
+# in-game: RC_DEMO_COLLIDE=1 RC_SPAWN=<x,y,z> RC_DEMO_DIR=<dx,dz> (logs in bin64\reborn_out)
+# flag census: %TEMP%\opencode\flag_stats.py (fetches the 587 sibling inis via pss_assets.run_pakv4)
+```

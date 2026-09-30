@@ -405,3 +405,15 @@ solved it, and what is still open. **Newest at the bottom.**
   contact-push form replaced it.
 - Outcome: solved as a registered host proxy; re-open with the real
   `bUnitWalkable` data (G-21) or the server/nav obstacle stream.
+### 2026-09-29 — docs — Full host-vs-game collision comparison + solid-prop deviation recorded
+- Did: created `docs/movement/COLLISION_SYSTEM_COMPARISON.md`: the game's 16
+  collision domains vs the host, a per-object/per-unit flag inventory
+  (`bAutoProduceObstacle`/`bLogicObstacle`/`bCollisionOnly` ship in every
+  `.mesh.ini` with located consumers; `bUnitWalkable`/`bUnitCanPass` values are
+  NOT in the shipped client files, G-21), data-have / data-do-not-have lists,
+  the `G-0..G-35` rollup mapped to host status, and the registered host
+  deviations including the solid-prop proxy with its exact "partly" scope
+  (name taxonomy + AABB shape + missing unit values). Registered in
+  `docs/movement/README.md`.
+- Evidence: the doc and the sources cited inside it.
+- Outcome: recorded; no code change.
