@@ -168,3 +168,15 @@ message; attachments persist in history. One session must stay under 30 total.
 **Re-open criteria:** the provider raises the cap, or opencode strips old image parts
 from history automatically.
 **Links:** `tools/proof/image_stats.py`, `tools/proof/README.md`, `AGENTS.md` §13 Images.
+
+### 2026-09-29 — client — Code provenance audit (original vs game-derived)
+- Did: audited `client/*.cs` + `native/camera_shim.cpp` (main `2a973a0`) and the client
+  deltas of all 8 active isolation branches. Counted lines, IL/RVA citations, engine
+  call sites, and data-file provenance; filed as `docs/engine_host/CLIENT_PROVENANCE.md`
+  (registered in the area index).
+- Evidence: 6,545 client lines total; 71 IL/RVA citations; 233 engine/API call sites;
+  100% of source written by us — game-derived parts are behaviour rules (camera 23%,
+  collision) + engine calls (58%) + config readers (4%) + native shim (15%); data files
+  from game: `camera.json`, `scene_init_param.txt`, baked collision bins, mesh flags.
+- Outcome: solved (audit), no code changes.
+- Re-open: re-run after branch merges; line-level attribution would need per-hunk review.
