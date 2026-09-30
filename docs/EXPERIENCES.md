@@ -932,3 +932,15 @@ eborn_client_mini.exe and ran it on the
 - Outcome: solved. This branch is now the sandbox + 轻功 version (run via
   	ools\sandbox\run_sandbox.cmd / 
 eborn_client_mini.exe + RC_MAP cropped map).
+
+
+### 2026-09-30 — client — sandbox client renamed for the 轻功 feature
+- Did: the branch's sandbox client was the generic 
+eborn_client_mini.exe; renamed the
+  feature build to 
+eborn_client_qinggong.exe (window title derives to
+  sandbox-qinggong, AGENTS 2.7) and pointed 	ools/sandbox/run_sandbox.cmd at it.
+- Evidence: build exit=0; selftest PASS; run log 14:44 (
+s=reborn_client_qinggong.memory,
+  cropped map); commit 41e23a9.
+- Outcome: solved.
