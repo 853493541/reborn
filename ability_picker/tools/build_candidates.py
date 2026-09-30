@@ -359,10 +359,12 @@ PROCESS = {
     ],
     "如意法": [
         {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1smj10双刀buff04.ani",
-         "n": "免控姿态基础动画 (tani 内嵌 .Sfx 标签会让宿主 AV; 播放其基础 .ani)"},
+         "durMs": 939,
+         "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次 (tani 内嵌 .Sfx 标签会让宿主 AV; 播放其基础 .ani)"},
         {"t": 0, "kind": "sound", "v": "75054615", "n": "riyuejiaohui.wav"},
         {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\m_明教清净心01.pss",
-         "k": "ruyi_pss", "n": "清净心发招 PSS (tani 引用的作者资源, 随施法者)"},
+         "k": "ruyi_pss", "durMs": 12480,
+         "n": "清净心发招 PSS: 作者寿命最长 12480ms (RepeatTimes=1), 随施法者"},
     ],
 }
 

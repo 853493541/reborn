@@ -183,3 +183,15 @@ played by MovieEngineCLR (AV), so the aim point now shows only the authored
 - Outcome: solved — first generic, data-driven ability cast (no special-casing).
 - Re-open: none (the PSS runs its own authored duration; add a `状态` buff-PSS step when
   staging the sustained part).
+
+### 2026-09-29 — Skill sandbox — 如意法 timing from authored data (939 ms anim once, 12.48 s PSS)
+- Did: the fixed 3 s cast window looped the 939 ms base `.ani` ~3x and cut the PSS at 3 s.
+  Timings now come from the authored data: anim step `durMs=939` (31 f @ 33 fps, MIN2) and
+  PSS step `durMs=12480` (max emitter `DelayTime+DurationTime`, `RepeatTimes=1`); the runner
+  ends the skill clip at the anim length (idle resumes) and the PSS dummy at its authored
+  life. Dataset + `PROCESS` updated; `ProcStep.Dur` parsed.
+- Evidence: `Skill_20260929_2112*.log` — `ruyifa cast: animMs=939 pssMs=12480`, clip returns
+  to idle at +0.94 s, `ruyifa done` at +12.6 s; shots `rc_00_2500/rc_01_5000/rc_02_11000ms.png`.
+- Outcome: solved (intermediate; the whole staged-process runner is slated for deletion in the
+  "engine effects online" milestone — the engine should play the tani's own tags).
+- Re-open: engine tag-SFX path online.

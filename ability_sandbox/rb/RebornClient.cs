@@ -33,6 +33,7 @@ internal static class RebornClient
     internal class ProcStep
     {
         public int T;
+        public int Dur;   // authored duration in ms (anim length / effect life)
         public string Kind = "";
         public string V = "";
         public string N = "";
@@ -171,6 +172,8 @@ internal static class RebornClient
                             st.V = StrOf(pd, "v");
                             st.N = StrOf(pd, "n");
                             st.K = StrOf(pd, "k");
+                            int dm = 0;
+                            if (int.TryParse(StrOf(pd, "durMs"), out dm)) st.Dur = dm;
                             float f;
                             if (float.TryParse(StrOf(pd, "x"), out f)) st.X = f;
                             if (float.TryParse(StrOf(pd, "y"), out f)) st.Y = f;
@@ -1848,13 +1851,22 @@ internal static class RebornClient
                 }
                 else if (abilitySel == "ruyifa")
                 {
-                    // dataset process: anim (清净心 tani) + sound + PSS stance
-                    skillUntil = now + 3000;
+                    // dataset process: anim + sound + PSS. Timing from authored
+                    // data: the base .ani is 31 f @ 33 fps = 939 ms and plays
+                    // ONCE (a fixed 3 s window looped it 3x); the PSS runs its
+                    // own authored life (emitters up to 12.48 s).
+                    long animMs = 1000, pssMs = 3000;
+                    foreach (ProcStep s in ruyiSteps)
+                    {
+                        if (s.Kind == "anim" && s.Dur > 0) animMs = s.Dur;
+                        if (s.Kind == "dummy" && s.Dur > 0) pssMs = s.Dur;
+                    }
+                    skillUntil = now + animMs + 40;
                     curClip = null;
-                    ruyiActive = true; ruyiStart = now; ruyiUntil = now + 3000;
+                    ruyiActive = true; ruyiStart = now; ruyiUntil = now + pssMs + 120;
                     ruyiIdx = 0; ruyiPss = false; ruyiPssPath = "";
                     lastRuyiX = 1e9f; lastRuyiZ = 1e9f;
-                    Log("ruyifa cast: steps=" + ruyiSteps.Count + " matched=" + ruyiMatched);
+                    Log("ruyifa cast: steps=" + ruyiSteps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
                 }
                 else
                 {
