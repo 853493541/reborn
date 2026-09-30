@@ -254,3 +254,16 @@ solved it, and what is still open. **Newest at the bottom.**
   (vxy=1875 u/s, vy=-3431 u/s)` at 8.5s, lands t=10s; selftest PASS; commit fb073f8.
 - Outcome: solved. The velocity values remain the authored End triple; the release/keep
   combination is the player-discovered part.
+
+### 2026-09-29 — controls — forward number found: replay the shipped flight curve
+- Did: user said the forward (125 u/f = 1875 u/s) was too low. Found the real numbers in
+  the shipped `settings/JumpFrameParam.tab` flight curves (the only ones shipped: schools
+  10/11): per-frame VelocityXY ramps **150 -> 205 -> 273 u/f (2250 -> 3075 -> 4095 u/s)**
+  and the dive reaches **Z -949 u/f (-14235 u/s)**. The End triple (125/-140) is only the
+  hover/end velocity, not the flight forward. Sandbox now **replays the school-10 jump-1
+  curve** (81 frames at 15 Hz) on air WW; releasing W stops the curve and keeps the current
+  velocity. Selftest asserts frames=81, XY peak=205, dive=-949.
+- Evidence: selftest `FLY_CURVE_PEAK_XY: PASS (205)`, `FLY_CURVE_DIVE_Z: PASS (-949)`;
+  demo run 22:42 — curve start (150/150), dive reached vy=-11565 u/s at 0.5 s; commit 6654363.
+- Outcome: solved. The curve is the authored forward/down profile; forward is 1.6-2.2x the
+  old 125 u/f.
