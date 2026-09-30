@@ -98,6 +98,41 @@ internal static class CameraSmoke
         Check("sprint pulls camera back", cam.Distance > 7.5,
               string.Format("dist={0:F2}", cam.Distance));
 
+        // sprint drag invariant (camera-wwdrag fix): placement smoothing is
+        // shared in every mode (CharacterCameraSmoothTime 60 ms) - rotating
+        // the camera while sprinting must not collapse the orbit radius. With
+        // the sprint row's SmoothTime (0.5 s) the live radius dropped 1305 ->
+        // 443 u at hit=-1 ("WW + right drag falsely zooms in").
+        {
+            var camS = new CameraSystem();
+            camS.UnitsPerMeter = 1.0;
+            camS.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+            camS.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
+            camS.Rows[CameraSystem.MODE_SPRINT].Set("TargetDistance", 6.0);
+            camS.SwitchMode(CameraSystem.MODE_SPRINT);
+            camS.Distance = 6.0;
+            double pit = -20.0 * DEG;
+            // pin the move-pitch rows (active sprint row) so only yaw rotates
+            camS.Rows[CameraSystem.MODE_SPRINT].Set("CameraMovePitchAdjustPitch", pit);
+            camS.Rows[CameraSystem.MODE_SPRINT].Set("CameraMovePitchApplyAngle", pit);
+            camS.Pitch = pit;
+            for (int i = 0; i < 150; i++) camS.Update(1.0 / 60.0, anchor);
+            double r0 = Math.Sqrt(camS.Pos[0] * camS.Pos[0] + camS.Pos[1] * camS.Pos[1] +
+                                  camS.Pos[2] * camS.Pos[2]);
+            double worstR = 0.0;
+            for (int i = 0; i < 120; i++)
+            {
+                camS.Mouse(0.05, 0.0);   // 3 rad/s yaw orbit
+                camS.Update(1.0 / 60.0, anchor);
+                double rr = Math.Sqrt(camS.Pos[0] * camS.Pos[0] + camS.Pos[1] * camS.Pos[1] +
+                                      camS.Pos[2] * camS.Pos[2]);
+                double err = Math.Abs(rr - r0) / r0;
+                if (err > worstR) worstR = err;
+            }
+            Check("sprint drag keeps constant-length orbit", worstR < 0.03,
+                  string.Format("worst rel err={0:F4} r0={1:F2}", worstR, r0));
+        }
+
         cam.SwitchMode(CameraSystem.MODE_CARRIER);
         cam.Update(1.0 / 60.0, anchor);
         Check("mode rows switch params",

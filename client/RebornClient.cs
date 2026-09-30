@@ -1994,7 +1994,14 @@ internal static class RebornClient
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
                                 Env("RC_CAM_NOSMOOTH", "0") != "1";
-                double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
+                // Placement smoothing is one shared state in every camera mode
+                // (CharacterCameraSmoothTime, 60 ms; PENETRATION_PLAN C1). The
+                // sprint row's SmoothTime (0.5 s) is SprintCameraSmoothTime, the
+                // sprint pull-back constant already applied by UpdateDistance -
+                // reading the active row here made a sprint (WW) drag collapse
+                // the orbit radius ("WW + right drag falsely zooms in").
+                double stime = Math.Max(
+                    camSys.Rows[CameraSystem.MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
