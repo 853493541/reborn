@@ -157,12 +157,15 @@ public sealed class CameraSystem
                 break;
             case MODE_SPRINT:
                 p.Set("CameraHeight", 2.2);
-                p.Set("TargetDistance", 6.0);               // per-mode row unavailable
+                // sprint base = the same client-truth max as the character row:
+                // a 6 m sprint base made Shift+W ramp 2000->660->2000 (the
+                // "camera zooms in while running" report, 2026-09-29)
+                p.Set("TargetDistance", 20.0);
                 p.Set("SmoothTime", 0.5);
                 p.Set("MaxDragSpeed", 0.0025);
                 p.Set("RotationSpeed", 0.0025);
                 p.Set("InitCameraPitch", -0.35);
-                p.Set("InitCameraDistance", 6.0);
+                p.Set("InitCameraDistance", 20.0);
                 p.Set("SprintCameraAngle", 0.3);
                 p.Set("SprintCameraPitch", -0.35);
                 p.Set("SprintCameraMaxDistance", 60.0);     // unit/consumer unresolved; not an absolute target

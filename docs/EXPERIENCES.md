@@ -198,3 +198,16 @@ engine queries); the per-axis smoothing stays once, on the resolved offset
 `jumpdbg` (`smstep` > 2 u), or the T2/T4 obstruction invariants drift.
 **Links:** `docs/camera/HOST_DEVIATIONS.md` B15; logs `_163131` (before),
 `_165430` (after); `client/RebornClient.cs`.
+
+### 2026-09-29 — camera — "still happens": sprint row still targeted 6 m
+- Did: user retest still showed "press W (Shift) -> camera zooms in, stop ->
+  back". Log `reborn_20260929_165430` camdbg: `mode=sprint dist=1334 -> 905 ->
+  660`, then `mode=character dist=1995` - the **sprint row** still carried the
+  old 6 m placeholder, so Shift+W ramped the distance target 2000 -> 660 and
+  back. (The B15 fix is visible in the same log: during a ~7 rad/s flick the
+  raw `offLen` moves but the smoothed camera `sm` stays ~2018, no collapse.)
+- Fix: sprint row `TargetDistance`/`InitCameraDistance` = 20 m in
+  `camera.json` + `CameraSystem.DefaultRow`, same client-truth max as the
+  character row. The sprint pull-back (+60 u) clamps at the 2000 u max.
+- Evidence: `reborn_20260929_171501` (`CameraSystem ready: ... dist=2000u`),
+  `camera_smoke_wallclip` ALL PASS. Outcome: solved pending user feel check.
