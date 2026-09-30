@@ -1654,12 +1654,13 @@ internal static class RebornClient
             {
                 wwDemoLeaped = true;
                 WwRules.WwAction wwd = WwRules.Evaluate(grounded, true, wwWeaponOk);
-                if (wwd == WwRules.WwAction.Charge) wwCharge();
+                if (wwd == WwRules.WwAction.Charge) { wwCharge(); pW = true; }
                 Log("wwdemo: charge action=" + wwd);
             }
             if (wwDemo && !wwDemoReleased && now >= 10200)
             {
                 wwDemoReleased = true;
+                pW = false;
                 if (wwStateActive)
                 {
                     wwStateActive = false;
@@ -2032,6 +2033,15 @@ internal static class RebornClient
                 else if (djumpLog) Log(string.Format(
                     "djb reject n={0} max={1} grounded={2} mode={3}",
                     nextJump, maxJump, grounded ? 1 : 0, djumpMode));
+            }
+
+            // WW state ends when W is no longer held (after the double-tap grace):
+            // the velocity is kept, gravity takes over -> the forward-down fall.
+            if (wwStateActive && Environment.TickCount - wwTriggerTick > 250 && !pW)
+            {
+                wwStateActive = false;
+                Log("ww: W not held -> state ended, velocity kept (vxy=" + leapSpeedXY +
+                    " u/s, vy=" + vy + " u/s)");
             }
 
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
