@@ -928,3 +928,17 @@ all tags should fire. Editor config to adopt when initializing the host
   3 vtables from `MovieEngineCLR` IL/disasm (`engine_host_spike/recon_il.txt`) and drive
   engine/scene/actor/animation, then replay the tagged tani.
 - Re-open: engine-load trigger + movie-engine vtable map.
+
+### 2026-09-30 — ability sandbox — merge main + run on the mini sandbox map
+- Did: merged \main\ into \gent/skillv2-sandbox\ (mini-sandbox tooling + latest client
+  features; conflicts: EXPERIENCES append-merge, ability_sandbox window title resolved to
+  \sandbox-ability\ per main's naming rule). Rebuilt \Skill.exe\ and added
+  \bility_sandbox/run_sandbox.cmd\ (RC_MAP = the 1x1 cropped map, mirroring
+  \	ools/sandbox/run_sandbox.cmd\).
+- Evidence: run log \Skill_20260930_1432*.log\ — \LoadMap result=0\,
+  \TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0)\,
+  \spawn=(23334,761,24224)\; map built by \	ools/sandbox/build_sandbox.py\.
+- Outcome: the skill sandbox runs on the mini sandbox scene (sandbox + skills replaces
+  full-client + skills for feature work).
+- Re-open: none.
+
