@@ -16,7 +16,10 @@ internal sealed class CameraSettings
     public double WidAngleDeg = 0.0;        // 广角 VideoSetting_WidAngle (deg, 0=unset)
     public double SpringResetSpeed = 1.0;   // fSpringResetSpeed (read-only for now)
     public double CameraResetSpeed = 1.0;   // fCameraResetSpeed (read-only for now)
-    public int CameraMode = 0;              // nCameraMode: 0 classic, 1 joystick
+    public int CameraMode = 0;              // tCameraStatic.nCameraMode (follow mode 0..3)
+    public int OperationMode = CameraOperationMode.Classical; // CLASSICAL/JOYSTICK (runtime, RC_MODE)
+    public int FollowModeClassic = 0;       // nCameraModeInClassicMode (per-mode follow mode)
+    public int FollowModeJoystick = 0;      // nCameraModeInJoystickMode
     public bool CameraSmoothing = true;     // bCameraSmoothing
     public bool CurveCamera = false;        // bCurveCamera
     public bool EyeFollow = true;           // bEyeFollow
@@ -54,10 +57,18 @@ internal sealed class CameraSettings
             catch (Exception e) { log("CameraSettings custom.dat ex: " + e.Message); }
         }
 
+        // operation mode is runtime-session state: set via RC_MODE, toggled by
+        // F7; the custom.dat key for the persisted mode itself is unrecovered
+        // (docs/controls/OPERATION_MODES_PLAN.md), so nothing is written back.
+        string opEnv = Environment.GetEnvironmentVariable("RC_MODE");
+        if (!string.IsNullOrEmpty(opEnv)) result.OperationMode = CameraOperationMode.Parse(opEnv);
+
         log(string.Format("CameraSettings: mapId={0} sceneInit={1} yaw={2:F6} pitch={3:F3} max={4:F0} drag={5:F2}/{6:F2} eyeScale={7:F2}",
             result.MapId, result.HasSceneInit || result.HasSavedRuntime ? 1 : 0,
             result.InitYaw, result.InitPitch, result.MaxCameraDistance,
             result.DragSpeed, result.DragPitchSpeed, result.EyeScale));
+        log("CameraSettings: operationMode=" + CameraOperationMode.Name(result.OperationMode)
+            + " perModeFollow classic=" + result.FollowModeClassic + " joystick=" + result.FollowModeJoystick);
         log(string.Format("CameraSettings extra: mode={0} resetSpring={1:F2} resetCam={2:F2} smoothing={3} curve={4} eyeFollow={5}",
             result.CameraMode, result.SpringResetSpeed, result.CameraResetSpeed,
             result.CameraSmoothing ? 1 : 0, result.CurveCamera ? 1 : 0, result.EyeFollow ? 1 : 0));
@@ -164,6 +175,12 @@ internal sealed class CameraSettings
         string uiBlock = FindSection(text, "UIVideoSetting");
         if (TryNumber(uiBlock, "VideoSetting_WidAngle", out value) && value > 0)
             settings.WidAngleDeg = value;
+        // per-operation-mode follow mode (UISetting_Comprehensive)
+        string uiSetBlock = FindSection(text, "UISetting_Comprehensive");
+        if (TryNumber(uiSetBlock, "nCameraModeInClassicMode", out value))
+            settings.FollowModeClassic = (int)Math.Round(value);
+        if (TryNumber(uiSetBlock, "nCameraModeInJoystickMode", out value))
+            settings.FollowModeJoystick = (int)Math.Round(value);
         if (TryNumber(staticBlock, "fSpringResetSpeed", out value))
             settings.SpringResetSpeed = value;
         if (TryNumber(staticBlock, "fCameraResetSpeed", out value))

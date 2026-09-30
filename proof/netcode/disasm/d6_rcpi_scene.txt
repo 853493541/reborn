@@ -1,0 +1,158 @@
+# D6 crash-site disassembly - KG3DEngineDX11EX64.dll (local editor build)
+# Function RVA 0x11CE760; crash at 0x11D03B6 (mov rbx,[rsi], rsi=0).
+# Lookup key: lazy FNV hash of the named context RCPI_Scene (RVA 0x21CB2A8).
+# Dump source: dumpbin /disasm:nobytes KG3DEngineDX11EX64.dll (2026-09-29).
+
+## function prologue (0x1811CE760)
+  00000001811CE760: mov         qword ptr [rsp+8],rbx
+  00000001811CE765: push        rbp
+  00000001811CE766: push        rsi
+  00000001811CE767: push        rdi
+  00000001811CE768: push        r12
+  00000001811CE76A: push        r13
+  00000001811CE76C: push        r14
+  00000001811CE76E: push        r15
+  00000001811CE770: lea         rbp,[rsp+FFFFFFFFFFFFF710h]
+  00000001811CE778: sub         rsp,9F0h
+  00000001811CE77F: mov         rax,qword ptr [000000018257F2E0h]
+  00000001811CE786: xor         rax,rsp
+  00000001811CE789: mov         qword ptr [rbp+00000000000008E0h],rax
+  00000001811CE790: mov         rdi,r9
+  00000001811CE793: mov         r12,rdx
+  00000001811CE796: mov         r14,qword ptr [rbp+0000000000000950h]
+  00000001811CE79D: xor         r13d,r13d
+  00000001811CE7A0: mov         r15d,r13d
+  00000001811CE7A3: mov         dword ptr [rsp+70h],r13d
+  00000001811CE7A8: lea         rbx,[00000001820F5A28h]
+  00000001811CE7AF: lea         rsi,[0000000181C7E018h]
+  00000001811CE7B6: cmp         r8,7
+  00000001811CE7BA: je          00000001811CEA55
+  00000001811CE7C0: cmp         qword ptr [0000000182D00B98h],r13
+
+## RCPI_Scene lookup + null deref (0x1811D0335..0x1811D036D)
+  00000001811D0335: cmp         dword ptr [0000000182D5BBC8h],ecx
+  00000001811D033B: jg          00000001811D088C
+  00000001811D0341: mov         rax,qword ptr [0000000182D5BBD0h]
+  00000001811D0348: mov         qword ptr [rbp-70h],rax
+  00000001811D034C: mov         rcx,qword ptr [rbp-68h]
+  00000001811D0350: mov         rcx,qword ptr [rcx]
+  00000001811D0353: add         rcx,58h
+  00000001811D0357: lea         rdx,[rbp-70h]
+  00000001811D035B: call        000000018105CF50
+  00000001811D0360: test        rax,rax
+  00000001811D0363: je          00000001811D036A
+  00000001811D0365: mov         rsi,qword ptr [rax]
+  00000001811D0368: jmp         00000001811D036D
+  00000001811D036A: mov         rsi,r13
+  00000001811D036D: lea         rax,[rsp+70h]
+  00000001811D0372: mov         qword ptr [rbp-68h],rax
+  00000001811D0376: mov         ecx,20h
+  00000001811D037B: call        00000001818C796C
+  00000001811D0380: mov         qword ptr [rax+10h],r13
+  00000001811D0384: mov         qword ptr [rax+18h],0Fh
+  00000001811D038C: mov         byte ptr [rax],0
+  00000001811D038F: mov         qword ptr [rsp+70h],rax
+  00000001811D0394: cmp         rax,r12
+  00000001811D0397: je          00000001811D03B6
+  00000001811D0399: mov         rdx,r12
+  00000001811D039C: cmp         qword ptr [r12+18h],10h
+  00000001811D03A2: jb          00000001811D03A8
+  00000001811D03A4: mov         rdx,qword ptr [r12]
+  00000001811D03A8: mov         r8,qword ptr [r12+10h]
+  00000001811D03AD: mov         rcx,rax
+  00000001811D03B0: call        00000001800E4F30
+  00000001811D03B5: nop
+  00000001811D03B6: mov         rbx,qword ptr [rsi]
+  00000001811D03B9: mov         rcx,qword ptr [rsp+78h]
+  00000001811D03BE: mov         rax,qword ptr [rcx]
+  00000001811D03C1: call        qword ptr [rax+8]
+  00000001811D03C4: mov         rdx,rax
+  00000001811D03C7: lea         rax,[rbp+00000000000000B8h]
+  00000001811D03CE: mov         qword ptr [rsp+40h],rax
+  00000001811D03D3: lea         rax,[rbp+00000000000000C0h]
+  00000001811D03DA: mov         qword ptr [rsp+38h],rax
+  00000001811D03DF: lea         rax,[rsp+70h]
+  00000001811D03E4: mov         qword ptr [rsp+30h],rax
+  00000001811D03E9: lea         rax,[rbp+00000000000000C8h]
+  00000001811D03F0: mov         qword ptr [rsp+28h],rax
+  00000001811D03F5: lea         rax,[rbp+00000000000000A8h]
+  00000001811D03FC: mov         qword ptr [rsp+20h],rax
+  00000001811D0401: lea         r9,[rbp+00000000000000B0h]
+  00000001811D0408: lea         r8,[rbp+00000000000000A0h]
+  00000001811D040F: mov         rcx,rsi
+  00000001811D0412: call        qword ptr [rbx+0000000000000190h]
+  00000001811D0418: mov         qword ptr [rbp-68h],r14
+  00000001811D041C: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D0423: mov         qword ptr [rbp-70h],rcx
+  00000001811D0427: mov         rax,qword ptr [rcx]
+  00000001811D042A: mov         qword ptr [rsp+20h],0ABh
+  00000001811D0433: lea         r9,[00000001822A8680h]
+  00000001811D043A: lea         r8,[0000000182296E18h]
+  00000001811D0441: mov         edx,20h
+  00000001811D0446: call        qword ptr [rax]
+  00000001811D0448: mov         r13,rax
+  00000001811D044B: mov         qword ptr [rbp-80h],rax
+  00000001811D044F: test        rax,rax
+  00000001811D0452: je          00000001811D0484
+
+## failure cleanup path (0x1811D0778..0x1811D0887)
+  00000001811D0778: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D077F: mov         rax,qword ptr [rcx]
+  00000001811D0782: mov         rdx,qword ptr [rbp+00000000000000B8h]
+  00000001811D0789: call        qword ptr [rax+8]
+  00000001811D078C: nop
+  00000001811D078D: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D0794: mov         rax,qword ptr [rcx]
+  00000001811D0797: mov         rdx,qword ptr [rbp+00000000000000C0h]
+  00000001811D079E: call        qword ptr [rax+8]
+  00000001811D07A1: nop
+  00000001811D07A2: mov         rcx,r12
+  00000001811D07A5: call        00000001800E4EA0
+  00000001811D07AA: mov         edx,20h
+  00000001811D07AF: mov         rcx,r12
+  00000001811D07B2: call        00000001818C7964
+  00000001811D07B7: nop
+  00000001811D07B8: test        rdi,rdi
+  00000001811D07BB: je          00000001811D07D0
+  00000001811D07BD: call        000000018105A320
+  00000001811D07C2: mov         r8,qword ptr [rax]
+  00000001811D07C5: mov         rdx,rdi
+  00000001811D07C8: mov         rcx,rax
+  00000001811D07CB: call        qword ptr [r8+8]
+  00000001811D07CF: nop
+  00000001811D07D0: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D07D7: mov         rax,qword ptr [rcx]
+  00000001811D07DA: mov         rdx,qword ptr [rbp+00000000000000C8h]
+  00000001811D07E1: call        qword ptr [rax+8]
+  00000001811D07E4: nop
+  00000001811D07E5: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D07EC: mov         rax,qword ptr [rcx]
+  00000001811D07EF: mov         rdx,qword ptr [rbp+00000000000000A8h]
+  00000001811D07F6: call        qword ptr [rax+8]
+  00000001811D07F9: nop
+  00000001811D07FA: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D0801: mov         r8,qword ptr [rcx]
+  00000001811D0804: mov         rdx,qword ptr [rbp+00000000000000B0h]
+  00000001811D080B: call        qword ptr [r8+8]
+  00000001811D080F: nop
+  00000001811D0810: mov         rcx,qword ptr [0000000182D00BA0h]
+  00000001811D0817: mov         r8,qword ptr [rcx]
+  00000001811D081A: mov         rdx,qword ptr [rbp+00000000000000A0h]
+  00000001811D0821: call        qword ptr [r8+8]
+  00000001811D0825: nop
+  00000001811D0826: mov         rax,r13
+  00000001811D0829: mov         rcx,qword ptr [rbp+00000000000008E0h]
+  00000001811D0830: xor         rcx,rsp
+  00000001811D0833: call        00000001818C7940
+  00000001811D0838: mov         rbx,qword ptr [rsp+0000000000000A30h]
+  00000001811D0840: add         rsp,9F0h
+  00000001811D0847: pop         r15
+  00000001811D0849: pop         r14
+  00000001811D084B: pop         r13
+  00000001811D084D: pop         r12
+  00000001811D084F: pop         rdi
+  00000001811D0850: pop         rsi
+  00000001811D0851: pop         rbp
+  00000001811D0852: ret
+  00000001811D0853: nop         dword ptr [rax]
+  00000001811D0857: nop         word ptr [rax+rax+0000000000000000h]

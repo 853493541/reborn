@@ -5,6 +5,10 @@ set BIN=C:\SeasunGame\MovieEditor\bin64
 rem Canonical client (renamed from reborn_camfp.exe, the camera workstream
 rem name). Every run logs a fingerprint (name/git/dirty/flags) so its logs
 rem are unambiguous.
+rem Feature builds (AGENTS.md §2): set RC_CLIENT_EXE=reborn_client_<slug>.exe
+rem to avoid clobbering the canonical exe; shared config copies and
+rem build_info.txt are skipped, build_info_<exe>.txt is written instead.
+rem The smoke build is skipped unless RC_SMOKE_EXE is set.
 set EXE=reborn_client.exe
 rem Feature workstreams: build a uniquely named client so parallel work cannot
 rem overwrite the canonical exe or shared bin64 state (AGENTS.md, parallel

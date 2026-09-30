@@ -335,3 +335,303 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   both agent worktrees are dirty (collision 6 files, camera 3 files) - merge when the
   subjects are committed/clean (or accept the tips as-is).
 - Re-open: merge + post-merge gates (collision 19/19, camera smoke, live T1/door spot).
+
+### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
+- Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
+  `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
+  `FIX_SUGGESTIONS`, `CONFORMANCE_CHECKS`), the camera git history
+  (`bdfb586`..`3fd31b4`), and the live code camera block (`RebornClient.cs`,
+  `CameraSystem.CameraObstruction`, `FoliageCollision.Raycast`). Confirmed main
+  carries the engine look-at/absolute-Y path (D3/B6 closed), 5/9 probes with
+  the per-mesh `.cflags` gate, NoCross/scene-min/degenerate-hit guards and the
+  `RC_CAM_PENDBG` recorder. Drifts found: (1) the live default
+  `RC_CAM_HITWIN`/`RC_CAM_HITWINDOW` is `0`, so B11 hit stabilization is OFF on
+  main although `PENETRATION_PLAN` C1d and `HOST_DEVIATIONS` B11 say 0.25 s
+  default-on (all added in the `3fd31b4` WIP checkpoint); (2) `docs/controls/
+  CONTROLS_GAP_REGISTER.md` S9 and `docs/camera/CONFORMANCE_CHECKS.md` still
+  describe the pre-obstruction state; (3) generated foliage bins + `.cflags`
+  remain tracked under `engine_host_spike/collision_data`.
+- Side-job queue (from `PENETRATION_PLAN`): P0 recorder audit on T1-T4 with the
+  current build; P4 missing drawn classes (landscape/bd/subscene -> camera-only
+  FCOL); P2 probe footprint (blocked, live host recon); P5 band-aid removal
+  after the audit.
+- Evidence: `git merge-base --is-ancestor 3fd31b4 main` -> true;
+  `client/RebornClient.cs:429,1854,1941`; `client/FoliageCollision.cs:452`.
+- Outcome: partial (research done, fix queue defined, drifts not yet fixed).
+
+### 2026-09-29 — camera — T1 penetration root cause: front-only probes; double-sided fix landed
+**Problem:** after the engine look-at/guard work the user still reported wall
+penetration. The Step-1 recorder had never been run over the T1 sweep, and the
+T1 cavity (`18985,682,24515`) is the original user spot.
+**Tried:** built the workstream client `reborn_client_camclip.exe` (and first
+fixed `client/build_client.cmd` to honor the AGENTS §2 `RC_CLIENT_EXE`
+contract it claimed to implement), re-ran the T1 demo sweep with
+`RC_CAM_PENDBG=1`, then A/B'd the front-only probe filter and the hit window.
+**Outcome:** solved (fix landed, default on).
+**Why:** main-tip defaults produced 18 event lines / 192 event-frames at T1:
+the resolved camera sat on the far side of rock shell inst 897 (reverse bake
+hit 1-2 u from the camera) and of scene-only geometry (reverse scene hit 6-11 u,
+bake clear) while the forward front-face-only probes were blind - once the
+camera slips past a surface whose front faces it, the forward query can never
+see it again and the spring returns through the geometry. A/B: front-only
+192 frames; front-only + hit-window(0.25 s) 118; **double-sided 0**.
+`RC_CAM_BACKFACE` now defaults on (`=0` restores front-only), registered as
+B14 with the real `FilterCamera` (D1) winding rule as the exit. Exact
+regressions: T2 `hit=206 len=188`, T4 `hit=186 len=168`, T1 `hit=11 len=0`,
+userspot idle pull 155 (`hit=173`) 0 jumps, 45 s route 0 events/jumps,
+camera_smoke ALL PASS, exit 0/DONE.
+Also corrected a doc/code drift: B11 hit stabilization is opt-in on main
+(`RC_CAM_HITWIN` default 0), not the C1d "shipped 0.25".
+**Re-open criteria:** the native `FilterCamera` winding rule is recovered, or
+double-sided probes cause over-pulling somewhere (kill switch `RC_CAM_BACKFACE=0`).
+**Links:** `docs/camera/PENETRATION_PLAN.md` progress log 2026-09-29 (camclip);
+`docs/camera/HOST_DEVIATIONS.md` B11/B14; logs `reborn_20260929_122635`
+(before) and `_123534`/`_123619`/`_123704`/`_123851`/`_123947` (after) in
+`bin64\reborn_out`.
+
+### 2026-09-29 — camera — client-truth max defaults (follow distance 2000 u, 广角 60°)
+- Did: user decision "default both to true max = client truth": the character
+  follow distance default moved from the invented 6 m placeholder to **2000 u
+  (20 m)** - the client's own maximum (`VideoSettingPanel.fMaxCameraDistance`
+  default 2000, engine cap 2000, `JX3RepresentX64` const blob `0x180d2af90`);
+  广角 default stays the client's panel maximum **60°** (log source renamed
+  `client-max-default`; the engine `fMaxCameraAngle` cap is not recoverable in
+  this install). Also carried the session build tag (`Camera Pen v3`) and the
+  `obstdbg` instance/flag logging.
+- Evidence: `client/camera.json` character row, `CameraSystem.cs:101/129/142`,
+  `RebornClient.cs:488/889`, `VideoSettings.cs`,
+  `docs/camera/HOST_DEVIATIONS.md` C6/C10;
+  `camera_smoke_wallclip.exe` **ALL PASS (26 checks**, incl. the new
+  "distance default = client max 2000 u"); live log
+  `reborn_20260929_162023.log`: `CameraSystem ready: ... dist=2000u`,
+  `fov source=... angle=60.00`.
+- Outcome: solved. Committed on `agent/camera-wall-clip`; **not pushed** (new
+  main rule `ff67fff`: never push unless explicitly asked). The per-slug test
+  client picks the config from `bin64\reborn_campen_v3\camera.json`.
+
+### 2026-09-29 — camera — "zooms in while turning, returns when I stop" (B15)
+**Problem:** user report: pressing W (running a slope/turning) the camera
+continuously zoomed in "for no reason", then sprang back to the 2000 u default
+after stopping.
+**Tried:** reproduced with `RC_CAM_DEBUG/SHAKEDBG/OBSTDBG/PENDBG` (log
+`reborn_20260929_163131`): the penetration recorder showed **0 events** and
+`betweendbg` clear, `hit=-1` on every frame of the burst - so the pull was not
+geometry. `jumpdbg` showed `offLen` collapsing 2050 -> 1520 u in ~60 ms at a
+fast camera flick, then recovering over ~3 s.
+**Outcome:** solved (fix landed in code; live feel check pending).
+**Why:** the per-axis SmoothTime smoothing of the *rotating* orbit offset
+shortens the vector through its chord; the obstruction state machine received
+that shortened `offLen` as its desired length and, since `target < Distance`
+applies immediately (the engine's no-threshold shortening rule), snapped the
+camera in - then the 1.5/2.828 flex eased it back over seconds. Fix: probes +
+`CameraObstruction` now use the **raw desired offset** (the candidate line the
+engine queries); the per-axis smoothing stays once, on the resolved offset
+(`rSm`). The double `camOffSmooth` stage was removed.
+**Re-open criteria:** a fast flick still produces a resolved-length jump in
+`jumpdbg` (`smstep` > 2 u), or the T2/T4 obstruction invariants drift.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` B15; logs `_163131` (before),
+`_165430` (after); `client/RebornClient.cs`.
+
+### 2026-09-29 — camera — "still happens": sprint row still targeted 6 m
+- Did: user retest still showed "press W (Shift) -> camera zooms in, stop ->
+  back". Log `reborn_20260929_165430` camdbg: `mode=sprint dist=1334 -> 905 ->
+  660`, then `mode=character dist=1995` - the **sprint row** still carried the
+  old 6 m placeholder, so Shift+W ramped the distance target 2000 -> 660 and
+  back. (The B15 fix is visible in the same log: during a ~7 rad/s flick the
+  raw `offLen` moves but the smoothed camera `sm` stays ~2018, no collapse.)
+- Fix: sprint row `TargetDistance`/`InitCameraDistance` = 20 m in
+  `camera.json` + `CameraSystem.DefaultRow`, same client-truth max as the
+  character row. The sprint pull-back (+60 u) clamps at the 2000 u max.
+- Evidence: `reborn_20260929_171501` (`CameraSystem ready: ... dist=2000u`),
+  `camera_smoke_wallclip` ALL PASS. Outcome: solved pending user feel check.
+
+### 2026-09-29 — controls — operation-modes implementation plan (CLASSICAL/JOYSTICK)
+- Did: wrote `docs/controls/OPERATION_MODES_PLAN.md` (registered in the
+  controls index): game truth per mode, input routing matrix, switch key
+  (`F7` host + `RC_MODE` env; the real client switches via the
+  `UISetting_Operation_Switch` panel and has no default hotkey), per-mode
+  settings (`nCameraModeInClassicMode/JoystickMode`), phases P0-P4 and tests.
+  Found that the client already has a partial joystick branch keyed off the
+  **wrong** setting (`tCameraStatic.nCameraMode == 1`, the follow mode, at
+  `RebornClient.cs:806-823`) - P1 moves it onto an explicit `OperationMode`.
+- Evidence: `docs/controls/JX3_CAMERA_CONTROLS.md` §3,
+  `controls/RESEARCH_RESOLVED_GAPS.md` §4-5,
+  `proof/controls/ui_lua/OperationSwitch.joystick.txt`,
+  `hotkeys_script.dump.txt`.
+- Outcome: plan committed; implementation starts at P0 on request.
+- Re-open: implement P0 when the user picks it up (no code changes yet).
+
+### 2026-09-29 — controls — operation modes P0-P2 landed (F7 switch)
+- Did: implemented the plan: `CameraOperationMode` pure gating model +
+  `CameraSettings.OperationMode` with `RC_MODE`, `F7` toggle (host key; real
+  client switches via the UI panel), `op=` in `camdbg`, `OPMODE=` fingerprint;
+  moved the always-rotate/cursor-lock branch off `tCameraStatic.nCameraMode`
+  onto the operation mode; joystick disables the RMB body-turn (body follows
+  the movement heading). Per-mode follow values (`nCameraModeIn*Mode`) are
+  parsed + logged; applying them and the turn-rate model stay open (P2/P3
+  partial). Controls register C12 -> PARTIAL.
+- Evidence: `client/CameraSystem.cs` (`CameraOperationMode`),
+  `client/CameraSettings.cs`, `client/RebornClient.cs`;
+  `camera_smoke_wallclip` ALL PASS (29 checks: mode gating + parse);
+  `RC_MODE=joystick` run `reborn_20260929_175413.log` (`op=joystick`, DONE,
+  exit 0); test client rebuilt (`reborn_client_campen_v3.exe`, merged tree +
+  ported edits, log `reborn_20260929_175819.log`, `OPMODE=classical`).
+- Outcome: P0-P2 solved (P2 partial), P3 partial, P4 open.
+- Re-open: turn-rate model + follow-mode semantics + reset-speed application.
+
+### 2026-09-29 — camera — default follow distance corrected to 1245 u (cap vs initial)
+**Problem:** after the "max default" change the camera terrain-pulled constantly
+("zooms in for no reason"): `jumpdbg src=[probe4 ... terr=1934->1365]`,
+`obstdbg probe0 ... terr=671` at rest, `clamp=1` - the native 5-probe query
+pulling because a 2000 u camera sits at ground level behind the player.
+**Tried:** traced the original game's distance sources in the disassembly and
+shipped data instead of guessing again.
+**Outcome:** solved (default changed to 1245 u; exact initial value still not
+provable from local data).
+**Why:** `fMaxCameraDistance` (default 2000, custom.dat) is only the zoom-out
+cap - `SetCameraMaxDistance` `0x180ace520` clamps and writes the camera node's
+cap field `+0x74`/`+0x8C`, never the current distance. The character camera
+reads **no** `InitCameraDistance` (string xrefs only in the air-combat
+`0x180ac9db5` and carrier `0x180b1c876` loaders). The distance is not persisted
+either (`g_Scene_tCameraRuntime` = yaw/pitch/eyeScale only). The only shipped
+camera-distance number is `number.krl CameraMaxDistance = 1245 u`, loaded into
+`CommonNumber+0x98`; no reader of that field was located in this build (same
+as the documented legacy `NearByWallDistance`), so 1245 is the best
+client-authored value but the exact initial distance remains unproven until
+the CDN `camera_common.krl.txt` row is obtained.
+**Re-open criteria:** a `CommonNumber+0x98` reader is found (proves/refutes
+1245), or the CDN per-mode row arrives.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` C10; `proof/netcode/disasm/
+camera_maxdistance_xrefs.txt` (loader store at `+0x98`),
+`camera_sLoad_calls.txt`, `camera_wall_obstruction.txt` §11;
+`proof/gravity/number.krl.txt`. Code: `camera.json` (character + sprint rows),
+`CameraSystem.cs`, `CameraSmoke.cs` (`distance default = client number 1245 u`),
+live log `reborn_20260929_181215.log` (before), `camera_smoke_wallclip` ALL
+PASS after.
+
+### 2026-09-29 — camera — close-camera character hide threshold (B1 fix)
+**Problem:** user report: dragging the camera up close shows the **inside of
+the character**; the game hides/fades the character at some point (like "too
+close") instead.
+**Tried:** re-read the original-design evidence (`CLOSE_RANGE_RESEARCH.md` §2:
+no explicit hide in the camera path; the effect is view near-plane clipping +
+the engine's model fade, measured at camLen ~36..96 u in HANDOFF §4) and
+inspected the host park-below hack.
+**Outcome:** solved (threshold fixed; true exit remains the near-plane setter).
+**Why:** the hack hid the dummy when camera->chest-anchor distance < **90 u** -
+exactly the head offset (~90 u above the chest anchor). A camera sitting inside
+the head hovers at camDist ~90, so the hide never fired and the inside stayed
+visible. Raised the hide threshold to **105 u** (restore still >150 u) and added
+`hideNear hide/show camDist=` logs. Host approximation registered under B1.
+**Re-open criteria:** the view near-plane setter lands (C7/B1 exit) and the
+park-below hack can be deleted.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` B1; `docs/camera/CLOSE_RANGE_RESEARCH.md`
+§2; HANDOFF §4 ladder; test client `reborn_client_campen_v3.exe`
+(`6b55d5b+modes+hide105`, log `reborn_20260929_203437.log`).
+
+### 2026-09-29 — engine — D6 trampoline verdict: BEX64 side effect even single-instance
+- Did: the test client ran with `RC_PATCH_D6=1` (single instance, `patchD6 rc=0
+  cave=0000000170EE0000`); while walking "down" the app died. Event log:
+  `c0000005`, **module unknown**, fault offset `0x7FFE70EE0000` - the documented
+  BEX64 jump-to-data pattern (earlier occurrence `0x7FFE622B0000` with three
+  overlapping clients), i.e. the bail path's skipped cleanup corrupting state.
+- Evidence: Windows Application Error event; run log
+  `reborn_20260929_203437.log` (idle at 20:43 before the fault);
+  `docs/camera/HOST_DEVIATIONS.md` D6 updated.
+- Outcome: the trampoline trades D6 for a rarer but fake crash; it stays
+  **off by default** and must not be re-enabled until the bail path is fixed
+  (proper local cleanup) or the missing editor DataStores/material root cause
+  is fixed. Test client restarted with `PATCH_D6=0` (log
+  `reborn_20260929_204449.log`).
+- Re-open: fix the trampoline's bail path, or isolate/preconvert the missing
+  materials (D6 exit).
+
+### 2026-09-29 — engine — D6 dump analysis + hide-thrash correlation
+- Did: parsed the WER crash dump
+  `%LOCALAPPDATA%\CrashDumps\reborn_client_campen_v3.exe.30400.dmp` with a new
+  stdlib tool (`tools/camera/minidump_exc.py`, registered in the camera README).
+- Found: fault `KG3DEngineDX11EX64+0x11D03B6`, **`rsi=0`** (the null
+  material/store pointer), worker thread `tid 36460`; stack candidates inside
+  `KG3DEngineDX11EX64` (e.g. `+0x1F6D790`, `+0xBF77A0`, `+0x745A89`) and the
+  editor host wrappers `KG_EngineEditorX64+0x26F6B/+0x2725E`; no asset path on
+  the stack (register pointers are objects, not strings).
+- Log correlation: in the seconds before the fault the camera was at extreme
+  pitch (`-1.553`) pulled to 70 u, and `hideNear` **thrashed**
+  (`hide 104.9 -> show 150.1 -> hide 105.0 -> show 150.5`); every `show`
+  re-adds the dummy model, i.e. engine content churn on the streamed-content
+  path that AVs.
+- Mitigation: show threshold 150 -> **250** (hide 105 unchanged) to cut the
+  churn; D6 root cause (missing editor DataStores / null material) stays open.
+- Evidence: log `reborn_20260929_204449.log` (+ hide lines), tool output saved
+  in the session; new build `reborn_client_campen_v3.exe` (log
+  `reborn_20260929_205411.log`). Outcome: partial (risk reduced, root open).
+
+### 2026-09-29 — camera — faithful-mechanism recon for close-camera hiding
+**Problem:** the user called out the park-below threshold tuning as a band-aid;
+the real game uses the view near plane + engine model fade (CLOSE_RANGE_RESEARCH
+§2), so find an engine-authored mechanism instead of tuning thresholds.
+**Tried:** (a) dumped the managed wrapper API (`RC_API_DUMP`): only
+`KGEngineCLR.SetMainPlayerType/GetMainPlayerType` exist, no near-plane/visibility
+API; (b) A/B `SetMainPlayerType(0/1)` at T1 with park-below off and the camera
+pulled to len=0 - the engine culls the character identically in both, and the
+one crash seen in the first mp0 run did not reproduce (3 runs each, all exit 0);
+(c) engine exports: `KG3D_SceneObject::SetPlayerObject/IsPlayerObject` /
+`SetMainCharactor`, camera-property schema `NearPlane/FarPlane/
+AutoComputeClipPanes` (consumed by `KG3D_Engine::CreateCamera`), no near-plane
+setter export.
+**Outcome:** partial - the main-player route is not the mechanism; the near
+plane remains the faithful target (camera/view vtable projection block).
+**Why:** the engine already culls the model at len=0 natively; the residual
+"see inside" band is where the host approximation sits.
+**Re-open criteria:** locate the camera/view projection near-plane field or the
+`KG3D_CAMERA_PROPERTY` write path, then delete B1.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` B1; harness knobs
+`RC_API_DUMP`, `RC_MAINPLAYER`, `RC_CAM_PITCH/RC_CAM_YAW`
+(`client/RebornClient.cs`); A/B screenshots `%TEMP%\campen_ab\t1_mp{0,1}.png`.
+
+### 2026-09-29 — engine — D6 root cause pinned: missing `RCPI_Scene` registry entry
+**Problem:** the user crashed again (same D6 `+0x11D03B6`) after running ~4 s
+and stopping with the camera <105 u; asked to reproduce and find the cause.
+**Tried:** WER dump `...30272.dmp` -> `tools/camera/minidump_exc.py`; then full
+`dumpbin /disasm` of `KG3DEngineDX11EX64.dll` and targeted decompilation of the
+faulting function.
+**Outcome:** root cause identified (fix path clear, not yet implemented).
+**Why:** fault function RVA `0x11CE760` (worker/streaming path) lazily FNV-hashes
+the named context string **`RCPI_Scene`** (RVA `0x21CB2A8`), looks it up in a
+global registry, and on lookup failure stores `rsi=0` then dereferences without
+a null check (`mov rbx,[rsi]` at `+0x11D03B6`). The editor host's registry lacks
+that entry - the documented missing build-machine content. The in-function
+failure cleanup at `0x1811D0778` frees locals that are not yet initialized at
+the crash point, so the old trampoline (skip-to-epilogue) was guaranteed to
+corrupt (BEX64).
+**Re-open criteria:** locate the `RCPI_Scene` registrar (or trigger its
+creation) and init it in the host; otherwise write a patch that performs the
+function's own partial cleanup before returning failure.
+**Links:** `proof/netcode/disasm/d6_rcpi_scene.txt`; `docs/camera/
+HOST_DEVIATIONS.md` D6; dump `%LOCALAPPDATA%\CrashDumps\reborn_client_campen_v3.exe.30272.dmp`;
+`tools/camera/minidump_exc.py`.
+
+### 2026-09-29 — engine — D6 FIXED: seed the engine's uncomputed `RCPI_Scene` hash
+**Problem:** the app kept AVing at `KG3DEngineDX11EX64+0x11D03B6` (`rsi=0`) in
+interactive play; earlier work only diagnosed it (missing `RCPI_Scene`
+registry lookup).
+**Tried:** (a) live-context VEH in `camera_shim.dll` (`RC_D6DBG=1`) that dumps
+registers + the registry graph at the exact fault site; (b) a synthetic input
+driver (`tools/camera/drive_client.ps1`) to reproduce the interaction-only
+crash unattended; (c) seed the engine's lazy hash value from the shim.
+**Outcome:** solved (default-on).
+**Why:** the VEH capture showed `[rbp-70h]=0` at the crash - the engine's
+per-function lazy FNV-1 hash of `RCPI_Scene` (slot `base+0x2D5BBD0`) was never
+computed: the guard gate `cmp [guard], tls; jg init` (`0x1811D0335`) let the
+worker through before the init ran, so the map lookup used key 0 and the
+null result was dereferenced without a check. `camera_shim.dll` now writes the
+exact hash the engine's own loop would compute (`0x392E0BFA0428F080`) into the
+slot at load (`RC_D6Seed`, no code patch, `RC_D6SEED=0` opts out).
+**Evidence:** driven interactive A/B at the crash spot: baseline
+(`RC_D6SEED=0`) **2/2 crashes** with `key=0` captures; seeded **2/2 alive**
+(240 s and 200 s driver runs).
+**Re-open criteria:** a crash at another lazy-hash site (VEH will capture it),
+or the engine's own init starts running (verified build).
+**Links:** `docs/camera/HOST_DEVIATIONS.md` D6; `native/camera_shim.cpp`
+(`RC_D6Seed`/`RC_D6Dbg`); `tools/camera/drive_client.ps1`;
+`tools/camera/minidump_exc.py`.

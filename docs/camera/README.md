@@ -22,3 +22,10 @@ Camera model and host work. Canonical gameplay spec in `docs/netcode/REBORN_CAME
 | `RECONCILIATION_STATUS.md` | Camera reconciliation status (2026-09-24) |
 | `STATUS.md` | Camera status — JX3 follow model (port of the camara-imp branch) |
 | `WALL_OBSTRUCTION.md` | Native JX3 camera wall obstruction |
+
+## Tools
+
+| Tool | Purpose |
+|---|---|
+| `tools/camera/minidump_exc.py` | stdlib minidump reader: exception record, registers, module-resolved stack candidates, register-pointer strings. Used for the D6 crash analysis (no debugger installed; dumps in `%LOCALAPPDATA%\CrashDumps`). |
+| `tools/camera/drive_client.ps1` | Synthetic player input driver (camera drags + WASD via `mouse_event`/`keybd_event`) to reproduce interactive-only engine crashes (D6) on a running client. |

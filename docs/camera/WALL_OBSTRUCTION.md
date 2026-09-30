@@ -238,6 +238,15 @@ The rule above is now implemented in the client:
   22 u camera footprint, the engine default mode), terrain sampled as another
   ray on the centre probe; the nearest hit feeds the state machine and the
   camera is scaled along the same `anchor + u*len` line.
+- **Double-sided probes (2026-09-29, default on, `RC_CAM_BACKFACE=0` restores
+  front-only).** The earlier front-face-only rule stranded the resolved camera
+  outside surfaces once the desired ray cleared: at T1 the penetration
+  recorder measured 192 event-frames (reverse bake hit 1-2 u from the camera,
+  reverse scene hit 6-11 u with the bake clear) while the forward front-only
+  probes reported no hit. With double-sided probes the same sweep is 0 events;
+  T2 `206->188`, T4 `186->168`, T1 `11->0`, userspot pull 155 (`hit=173`) all
+  unchanged. Registered as B14; the native `FilterCamera` winding rule is
+  still unproven (D1 exit).
 - `CameraSmoke` covers the state machine (pull to hit-18, shallow-hit ignore,
   spring return, min distance); all checks pass.
 - Probe with `RC_DEMO_COLLIDE=1 RC_COL_TELEPORT=1 RC_CAM_DEMO=1
