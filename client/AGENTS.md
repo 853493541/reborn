@@ -16,6 +16,8 @@ Desktop game client (`reborn_client.exe`) hosting the MovieEditor engine DLLs.
   namespace peers, so different feature builds run side by side. The engine root stays
   shared (root isolation broke init — `d8268d2`); ShaderListUpload/dxvk writes are the
   known shared-write caveat.
+- Feature builds title their window `sandbox-<slug>` (derived from
+  `reborn_client_<slug>.exe`); the canonical build keeps `JX3`.
 - Do not write other files into the `bin64` root — it is shared with other apps
   (`ability_*`, `asset_sandbox`, engine hosts). Use an isolated output subdir.
 - **C# 5 only** (built with `Framework64\v4.0.30319\csc.exe`): no `$"..."`, `?.`,

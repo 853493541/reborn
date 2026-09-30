@@ -146,3 +146,13 @@ solved it, and what is still open. **Newest at the bottom.**
   silently answered "no".
 - Evidence: `AGENTS.md` §15; this commit (local).
 - Outcome: solved.
+
+### 2026-09-29 — repo — Rule: sandbox windows title as sandbox-<featurename>
+- Did: `AGENTS.md` §2 item 7 requires feature/sandbox apps to set their top-left window
+  title to `sandbox-<featurename>`; implemented: the client derives `sandbox-<slug>` from
+  `reborn_client_<slug>.exe` (canonical keeps `JX3`), `ability_sandbox` ->
+  `sandbox-ability`, `asset_sandbox` -> `sandbox-asset`; all three rebuilt (`exit=0` /
+  `build OK`); `client/AGENTS.md` note added.
+- Evidence: `client\RebornClient.cs`, `ability_sandbox\rb\RebornClient.cs`,
+  `asset_sandbox\AssetSandbox.cs`, `AGENTS.md` §2.7; this commit (local).
+- Outcome: solved.

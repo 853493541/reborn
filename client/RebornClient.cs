@@ -146,7 +146,14 @@ internal static class RebornClient
         Log("start map=" + mapPath);
 
         var form = new Form();
-        form.Text = "JX3";
+        // Window title: feature builds (reborn_client_<slug>.exe) identify as
+        // sandbox-<slug> so concurrent sandbox windows are distinguishable
+        // (AGENTS.md, parallel client feature work).
+        string appTitle = "JX3";
+        string myProcName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+        if (myProcName.StartsWith("reborn_client_"))
+            appTitle = "sandbox-" + myProcName.Substring("reborn_client_".Length);
+        form.Text = appTitle;
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();

@@ -82,6 +82,10 @@ Different client builds must not affect each other:
 6. **Known shared-write caveat**: all clients share the engine root
    `C:\SeasunGame\MovieEditor` (ShaderListUpload/dxvk caches) - treat concurrent-run
    flakiness as a shared-write suspect first, not as a namespace collision.
+7. **Sandbox title**: every feature/sandbox app sets its top-left window title to
+   `sandbox-<featurename>` (e.g. `sandbox-ability`, `sandbox-asset`; main-client feature
+   builds derive it from the exe name: `reborn_client_<slug>.exe` -> `sandbox-<slug>`),
+   so concurrent sandbox windows are identifiable at a glance.
 
 ## 3. Session start (do this first)
 

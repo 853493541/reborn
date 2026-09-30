@@ -228,7 +228,7 @@ internal static class RebornClient
         loadFeiZhua();
 
         var form = new Form();
-        form.Text = "JX3";
+        form.Text = "sandbox-ability";
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
