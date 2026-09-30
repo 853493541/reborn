@@ -798,6 +798,9 @@ internal static class RebornClient
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false, twoDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
+        bool jipaoWasActive = false;   // 疾跑段 (ground hold-W) active
+        float jipaoSpeed = 0f;         // current 疾跑 speed (u/s, ramped)
+        long jipaoStartMs = 0;
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
         // WW in air = player tech: the double-tap applies the fly velocity
         // (authored End triple xy 125 / vz -140 / g 12 -> 1875 u/s fwd + 2100 u/s
@@ -1887,6 +1890,29 @@ internal static class RebornClient
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
+            // 疾跑段 (ground hold-W accelerated run; buffs 12085 通用疾速跑 +
+            // 12190 通用疾跑按住): staged ramp 25/75/100% of the Sprint.tab cap
+            // (school 4 MaxVelocityXY 120 u/f = 1800 u/s), 16-frame stages.
+            bool jipaoActive = grounded && pW && moving && !walkMode && !shiftDown;
+            if (jipaoActive)
+            {
+                if (!jipaoWasActive)
+                {
+                    jipaoWasActive = true;
+                    jipaoStartMs = now;
+                    Log("jipao: enter (12085 通用疾速跑 + 12190 通用疾跑按住; cap " +
+                        WwRules.JipaoCapPerSecond + " u/s)");
+                }
+                float stageT = (now - jipaoStartMs) / (WwRules.JipaoStageFrames * 1000f / WwRules.LogicTicksPerSecond);
+                float pct = stageT < 1f ? 0.25f : stageT < 2f ? 0.75f : 1f;
+                jipaoSpeed = WwRules.JipaoCapPerSecond * pct;
+            }
+            else if (jipaoWasActive)
+            {
+                jipaoWasActive = false;
+                jipaoSpeed = 0f;
+                Log("jipao: end (HoldW=0 + CheckEndSprint)");
+            }
             // character yaw turn rate (rad/s): the game's per-frame turn step
             // (+0x48) is a server sync byte and not decoded; the host uses the
             // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
@@ -1898,7 +1924,8 @@ internal static class RebornClient
             bool blocked = false;
             if (moving)
             {
-                float sp = (shiftDown ? pRun * 10f
+                float sp = (jipaoActive ? jipaoSpeed
+                            : shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
                             : wSprint ? pSprint
                             : pRun) / len;
@@ -3004,8 +3031,9 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? (wwDashActive ? "DASH" : wwStateActive ? "CHARGE" : ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : "")))
-                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
-                float moveSpeed = shiftDown ? pRun * 10f
+                             : moving ? (jipaoActive ? "JIPAO" : shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
+                float moveSpeed = jipaoActive ? jipaoSpeed
+                                : shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : wSprint ? pSprint
                                 : pRun;
@@ -3038,11 +3066,13 @@ internal static class RebornClient
                     nearInfo += string.Format(" py={0:F0}", py);
                 }
                 float curSpd = !moving ? 0f
+                             : jipaoActive ? jipaoSpeed
                              : shiftDown ? pRun * 10f
                              : walkMode ? pSpeed
                              : wSprint ? pSprint
                              : pRun;
                 string moveMode = !moving ? "IDLE"
+                                : jipaoActive ? "JIPAO"
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : wSprint ? "SPRINT"

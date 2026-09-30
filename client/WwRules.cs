@@ -45,6 +45,14 @@ internal static class WwRules
     // Fall/dive terminal speed: settings/Sprint.tab school 4 MaxVelocityZ
     // (900 u/frame = 13500 u/s); the engine hard clamp is -2048 u/f.
     public const float FallCapFrame = -900f;
+
+    // Ground hold-W 疾跑段 (buff 12085 通用疾速跑 + 12190 通用疾跑按住):
+    // Sprint.tab school 4 MaxVelocityXY = 120 u/frame -> 1800 u/s; staged ramp
+    // per 疾速第零~三段 (atMoveSpeedPercent 256/768/1024 = 25/75/100%), 16-frame
+    // buff intervals. RC_JUMP_SCALE does not apply here.
+    public const float JipaoCapFrame = 120f;
+    public const float JipaoCapPerSecond = JipaoCapFrame * LogicTicksPerSecond;
+    public const int JipaoStageFrames = 16;
     public static readonly float[] FlyCurveXY = { 150f, 2f, 9f, 16f, 22f, 28f, 34f, 39f, 45f, 51f, 57f, 64f, 70f, 77f, 84f, 92f, 100f, 108f, 118f, 128f, 140f, 153f, 168f, 185f, 205f, 202f, 178f, 158f, 142f, 128f, 116f, 106f, 97f, 90f, 83f, 77f, 72f, 68f, 64f, 60f, 58f, 55f, 54f, 52f, 51f, 51f, 51f, 51f, 52f, 54f, 56f, 58f, 47f, 17f, 3f, 2f, 6f, 10f, 15f, 20f, 24f, 29f, 34f, 40f, 45f, 50f, 56f, 62f, 68f, 74f, 80f, 87f, 94f, 100f, 108f, 115f, 123f, 131f, 139f, 147f, 156f };
     public static readonly float[] FlyCurveZ = { 150f, -81f, -232f, -369f, -491f, -599f, -693f, -771f, -836f, -886f, -921f, -942f, -949f, -941f, -918f, -881f, -830f, -763f, -683f, -588f, -478f, -354f, -216f, -63f, 105f, 298f, 493f, 666f, 818f, 949f, 1058f, 1145f, 1211f, 1256f, 1279f, 1280f, 1260f, 1219f, 1156f, 1072f, 966f, 838f, 689f, 519f, 327f, 114f, 0f, 0f, 0f, 0f, 0f, 693f, 693f, 315f, -14f, -41f, -65f, -88f, -108f, -127f, -143f, -156f, -168f, -178f, -185f, -191f, -194f, -195f, -194f, -191f, -185f, -178f, -168f, -156f, -143f, -127f, -108f, -88f, -65f, -41f, -14f };
 
@@ -98,7 +106,8 @@ internal static class WwRules
         for (int i = 0; i < FlyCurveZ.Length; i++) if (FlyCurveZ[i] < dive) dive = FlyCurveZ[i];
         fail += CheckValue("FLY_CURVE_DIVE_Z", dive, -949f);
         fail += CheckValue("CHARGE_FORWARD", ChargeForwardFrame, FlyCurveXY[0]);
-        fail += CheckValue("FALL_CAP", FallCapFrame, -900f);        fail += CheckRange("LEAP_J3_APEX_M", ApexMeters(3), 34.0f, 37.0f);
+        fail += CheckValue("FALL_CAP", FallCapFrame, -900f);
+        fail += CheckValue("JIPAO_CAP", JipaoCapPerSecond, 1800f);        fail += CheckRange("LEAP_J3_APEX_M", ApexMeters(3), 34.0f, 37.0f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
     }
