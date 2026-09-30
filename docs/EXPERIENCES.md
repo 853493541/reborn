@@ -808,3 +808,18 @@ or the engine's own init starts running (verified build).
 **Links:** `docs/camera/HOST_DEVIATIONS.md` D6; `native/camera_shim.cpp`
 (`RC_D6Seed`/`RC_D6Dbg`); `tools/camera/drive_client.ps1`;
 `tools/camera/minidump_exc.py`.
+
+
+### 2026-09-30 — movement/controls — 轻功 full analysis + sandbox port
+- Did: merged main into feature/ww-sandbox (camera merges + mini-sandbox) and ported the
+  WW changes onto the new client; built the sandbox client 
+eborn_client_mini.exe and
+  ran it on the cropped map (RC_MAP=...龙门寻宝_s.jsonmap; LoadMap 141 ms, 1x1 region).
+  Wrote docs/movement/JX3_QINGGONG_BEHAVIOR.md: full client-side 轻功 analysis (terms,
+  official key map, stage table, movement law, fall/turn, costs, WW tech, open items).
+- Evidence: merge commit 5f257ea; mini run log 13:21 (
+s=reborn_client_mini.memory,
+  LoadMap result=0 ms=141, TerrainSampler 1x1); doc registered in docs/movement/README.md.
+- Outcome: sandbox is now the iteration target; analysis doc added. Fall+turn answer: the
+  horizontal velocity is speed+heading, steered toward the facing each frame
+  (ProcessAcceleration), so turning curves the fall while gravity keeps the fall rate.
