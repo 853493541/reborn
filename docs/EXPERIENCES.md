@@ -273,3 +273,21 @@ all tags should fire. Editor config to adopt when initializing the host
   movie engine + client VFS, no MovieEditor/CLR), goal "ability id in, engine reads the
   authored data itself".
 - Re-open: native probe result; if it passes, retire the staged anim/sound/PSS playlists.
+
+### 2026-09-30 — Engine host — client stack boots read-only (native probe, step 1)
+- Did: temp copy of the client `bin64` + a temp client root (install untouched); native
+  probe (`client_boot_probe.cpp`, temp) loads the client `X3DEngine.dll` with
+  `LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR` and calls the client's own init facade.
+- Result: `PreInitX3DEngine -> 1`, `LoadX3DEngine -> 1`; loaded modules = `X3DEngine.dll`
+  + `KG3DEngineAdapterX64.dll` only. The 3D engine (`KG3DEngineDX11EX64.dll`) and movie
+  engine (`KG_MovieEngineX64.dll`) do **not** load from the facade alone (polled 60 s);
+  `GetK3EngineMgr` does not trigger it either. Manually loading `KG_MovieEngineX64.dll`
+  and calling `KG_CreateMovieEngine(out)` creates the movie-engine object (returns in
+  `AL`, not the int) and `KG_GetMovieEngine()` returns it — the engine is created lazily
+  when the movie engine is driven.
+- Evidence: probe logs in `%TEMP%\opencode\skillv2\` (`probe_stdout.txt`), plan doc
+  `docs/engine_host/CLIENT_STACK_PIVOT.md` (updated with the boot table).
+- Outcome: client stack is hostable read-only; next = map the movie-engine object's
+  3 vtables from `MovieEngineCLR` IL/disasm (`engine_host_spike/recon_il.txt`) and drive
+  engine/scene/actor/animation, then replay the tagged tani.
+- Re-open: engine-load trigger + movie-engine vtable map.

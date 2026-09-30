@@ -85,6 +85,30 @@ Open decision: build the probe against the manager `Init` (RVA path) or trace th
 client `X3DEngine` init first. Whichever, the goal stays: **ability id in, engine reads
 the authored data itself** — no hand-staged anim/sound/PSS playlists.
 
+## Native boot probe (2026-09-30, running)
+
+`client_boot_probe.cpp` (temp, `%TEMP%\opencode\skillv2\`): loads the client
+`X3DEngine.dll` from a temp copy of `zhcn_hd\bin64` (robocopy; the game install is
+never written), cwd = a temp client root, `LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR`.
+
+Verified results:
+
+| Step | Result |
+|---|---|
+| `PreInitX3DEngine()` | **1** (ok) |
+| `LoadX3DEngine()` | **1** (ok) |
+| loaded modules after Load | `X3DEngine.dll` + `KG3DEngineAdapterX64.dll` (from the temp copy) |
+| `GetK3EngineMgr()` | returns a facade manager pointer; does **not** load the engine |
+| `KG3DEngineDX11EX64.dll` / `KG_MovieEngineX64.dll` | **not loaded** by the facade alone (polled 60 s) |
+| manual `LoadLibrary KG_MovieEngineX64.dll` + `KG_CreateMovieEngine(out)` | object created (`out` non-null; the int return is garbage — the function returns in `AL`) |
+| `KG_GetMovieEngine()` | returns the same object |
+
+Conclusion: the client stack boots read-only, but the 3D engine is created **lazily**
+by the movie engine / game flow — the facade init alone stops at the adapter. Next
+step: drive the movie engine object (3 vtables at `[obj]`, `[obj+8]`, `[obj+0x10]`) —
+map its interface from `MovieEngineCLR`'s IL/disasm (`engine_host_spike/recon_il.txt`,
+`recon_managed_api.txt`) or find the game's engine-load trigger.
+
 ## Reproduce
 
 ```powershell
@@ -96,6 +120,10 @@ engine_host_spike\recon_client_movie_disasm.txt
 # control: MovieEditor modules; treatment: client modules swapped in
 # run: SB_NO_SUPERVISOR=1 RC_MEM_NS=ce_probe SB_ACTOR_TEST=1 RC_AUTORUN=20000 RC_BIN64=<temp bin64> Skill.exe
 # check: %TEMP%\opencode\skillv2\host_client_engine\bin64\Skill\out\Skill_*.log + WER event log
+
+# native boot probe (temp)
+build_client_probe.cmd  # cl /O2 /GS- /utf-8 client_boot_probe.cpp user32.lib
+client_boot_probe.exe   # logs: PreInit/Load results, loaded modules, movie-engine object
 ```
 
 Last verified: 2026-09-30
