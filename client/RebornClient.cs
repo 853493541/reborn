@@ -815,8 +815,20 @@ internal static class RebornClient
             if (float.TryParse(Env("RC_WW_DOWN", ""), out v)) wwDownFrame = v;
         }
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
-        bool wwStateActive = false;     // WW state; ends on release, velocity kept
+        bool wwStateActive = false;     // WW state; ends on release
         long wwTriggerTick = 0;         // when the charge started (double-tap keyup guard)
+        // WW release = forward+down dash at this angle below horizontal (default 45).
+        float wwDashAngleDeg = 45f;
+        float.TryParse(Env("RC_WW_DASH_ANGLE", "45"), out wwDashAngleDeg);
+        Action wwEndState = delegate()
+        {
+            if (!wwStateActive) return;
+            wwStateActive = false;
+            // 45 deg down-forward: vy = -forward * tan(angle)
+            vy = -leapSpeedXY * (float)Math.Tan(wwDashAngleDeg * Math.PI / 180.0);
+            Log("ww release: forward-down dash " + wwDashAngleDeg + " deg -> vxy=" +
+                leapSpeedXY + " u/s, vy=" + vy + " u/s");
+        };
         Action wwCharge = delegate()
         {
             leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
@@ -824,7 +836,8 @@ internal static class RebornClient
             wwStateActive = true;
             wwTriggerTick = Environment.TickCount;
             Log("ww AIR: charge fwd=" + wwFwdFrame + " u/f (" + leapSpeedXY +
-                " u/s) down=" + wwDownFrame + " u/f (" + vy + " u/s); state until W release");
+                " u/s) down=" + wwDownFrame + " u/f (" + vy + " u/s); release = " +
+                wwDashAngleDeg + " deg dash");
         };
         Action wwTrigger = delegate()
         {
@@ -847,12 +860,10 @@ internal static class RebornClient
         Action wwRelease = delegate()
         {
             // key 1 = the W-release action, usable while W is still physically
-            // held: ends the WW state (velocity kept) / turns the sprint off.
+            // held: forward-down dash (45 deg default) / turns the sprint off.
             if (wwStateActive)
             {
-                wwStateActive = false;
-                Log("ww release (key 1): state ended, velocity kept (vxy=" + leapSpeedXY +
-                    " u/s, vy=" + vy + " u/s)");
+                wwEndState();
             }
             else if (wSprint)
             {
@@ -1141,9 +1152,7 @@ internal static class RebornClient
                     // deliberate later release (or key 1) ends it
                     if (Environment.TickCount - wwTriggerTick > 250)
                     {
-                        wwStateActive = false;
-                        Log("ww: W released -> state ended, velocity kept (vxy=" + leapSpeedXY +
-                            " u/s, vy=" + vy + " u/s)");
+                        wwEndState();
                     }
                     else
                     {
@@ -1663,9 +1672,7 @@ internal static class RebornClient
                 pW = false;
                 if (wwStateActive)
                 {
-                    wwStateActive = false;
-                    Log("wwdemo: W release -> state ended, velocity kept (vxy=" + leapSpeedXY +
-                        " u/s, vy=" + vy + " u/s)");
+                    wwEndState();
                 }
             }
 
@@ -2039,9 +2046,7 @@ internal static class RebornClient
             // the velocity is kept, gravity takes over -> the forward-down fall.
             if (wwStateActive && Environment.TickCount - wwTriggerTick > 250 && !pW)
             {
-                wwStateActive = false;
-                Log("ww: W not held -> state ended, velocity kept (vxy=" + leapSpeedXY +
-                    " u/s, vy=" + vy + " u/s)");
+                wwEndState();
             }
 
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
