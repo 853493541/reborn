@@ -681,14 +681,20 @@ public sealed class FoliageCollision
         float[] w2l = it.w2l;
         if (w2l == null) return false;
         ProfInstTouches++;
-        // world -> local for capsule endpoints
-        float lAx = px * w2l[0] + py * w2l[4] + pz * w2l[8] + w2l[12];
-        float lAy = px * w2l[1] + py * w2l[5] + pz * w2l[9] + w2l[13];
-        float lAz = px * w2l[2] + py * w2l[6] + pz * w2l[10] + w2l[14];
-        float hTop = height;
-        float lBx = lAx + (0f * w2l[0] + hTop * w2l[4] + 0f * w2l[8]);
-        float lBy = lAy + (0f * w2l[1] + hTop * w2l[5] + 0f * w2l[9]);
-        float lBz = lAz + (0f * w2l[2] + hTop * w2l[6] + 0f * w2l[10]);
+        // Capsule convention: `py` is the FEET, `height` the total capsule
+        // height. The axis runs between the end-sphere centers, i.e. from
+        // py+radius to py+height-radius, so the capsule bottom sits exactly at
+        // the feet (geometry at/below the floor can never touch it). The old
+        // model used py..py+height as the axis, which extended the capsule a
+        // full radius below the feet and made floor edges/thresholds collide.
+        float segLen = height - 2f * radius;
+        if (segLen < 0f) segLen = 0f;
+        float lAx = px * w2l[0] + (py + radius) * w2l[4] + pz * w2l[8] + w2l[12];
+        float lAy = px * w2l[1] + (py + radius) * w2l[5] + pz * w2l[9] + w2l[13];
+        float lAz = px * w2l[2] + (py + radius) * w2l[6] + pz * w2l[10] + w2l[14];
+        float lBx = lAx + segLen * w2l[4];
+        float lBy = lAy + segLen * w2l[5];
+        float lBz = lAz + segLen * w2l[6];
 
         MeshData md = it.mesh;
         bool found = false;
@@ -871,14 +877,7 @@ public sealed class FoliageCollision
                     float top = best.triTop;
                     if (top > py + stepHeight && best.lowTop <= py + stepHeight)
                         top = best.lowTop;
-                    if (top <= py + 0.5f)
-                    {
-                        // the contacting face's top is at or below the feet:
-                        // never an obstacle (floor edges, thresholds below the
-                        // capsule bottom). Do not push out, just keep moving.
-                        stepUp = true;
-                    }
-                    else if (top > ground && top <= py + stepHeight)
+                    if (top > ground && top <= py + stepHeight)
                     {
                         ground = top;
                         grounded = true;

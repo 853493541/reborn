@@ -259,3 +259,14 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `client/FoliageCollision.cs`; selftest 16/16 (`face_below_feet_passes`);
   run `reborn_20260929_181709.log`.
 - Outcome: solved.
+### 2026-09-29 — movement — Capsule bottom artifact: feet are the capsule bottom
+- Did: the "below feet skip" hack caused wall penetration and carpets still blocking.
+  Root cause: `InstanceContact` used the axis py..py+height, extending the capsule a
+  full radius BELOW the feet, so floor edges/thresholds/carpet borders touched it and
+  were treated as obstacles. Fixed the capsule to the engine convention: axis from
+  `py + radius` to `py + height - radius` (bottom exactly at the feet), and removed
+  the skip hack; the CCT top rule remains (below feet cannot touch anymore).
+- Evidence: `client/FoliageCollision.cs`; selftest 16/16; interior run
+  `reborn_20260929_183202.log` (0 blocked, was 400+); gate run
+  `reborn_20260929_183257.log` (blocked by top=860.8 vs feet=701, a real >0.5 m wall).
+- Outcome: solved; this makes the host capsule match the engine controller convention.
