@@ -211,3 +211,19 @@ engine queries); the per-axis smoothing stays once, on the resolved offset
   character row. The sprint pull-back (+60 u) clamps at the 2000 u max.
 - Evidence: `reborn_20260929_171501` (`CameraSystem ready: ... dist=2000u`),
   `camera_smoke_wallclip` ALL PASS. Outcome: solved pending user feel check.
+
+### 2026-09-29 — controls — operation-modes implementation plan (CLASSICAL/JOYSTICK)
+- Did: wrote `docs/controls/OPERATION_MODES_PLAN.md` (registered in the
+  controls index): game truth per mode, input routing matrix, switch key
+  (`F7` host + `RC_MODE` env; the real client switches via the
+  `UISetting_Operation_Switch` panel and has no default hotkey), per-mode
+  settings (`nCameraModeInClassicMode/JoystickMode`), phases P0-P4 and tests.
+  Found that the client already has a partial joystick branch keyed off the
+  **wrong** setting (`tCameraStatic.nCameraMode == 1`, the follow mode, at
+  `RebornClient.cs:806-823`) - P1 moves it onto an explicit `OperationMode`.
+- Evidence: `docs/controls/JX3_CAMERA_CONTROLS.md` §3,
+  `controls/RESEARCH_RESOLVED_GAPS.md` §4-5,
+  `proof/controls/ui_lua/OperationSwitch.joystick.txt`,
+  `hotkeys_script.dump.txt`.
+- Outcome: plan committed; implementation starts at P0 on request.
+- Re-open: implement P0 when the user picks it up (no code changes yet).
