@@ -360,6 +360,14 @@ before/after; if confirmed, find an engine redirect or register a documented dev
 - Evidence: merge `7f06700`; `build_info.txt` git=7f06700; `reborn_20260930_132754.log`.
 - Outcome: solved (local only).
 
+### 2026-09-30 — repo — Aborted a wrong-branch merge (ww-sandbox) — ask, never infer
+- Did: started merging `feature/ww-sandbox` into main based on inference from its
+  "sandbox port notes"; the user stopped it — that branch was not requested.
+  `git merge --abort` restored main to `765447f` (clean); the branch/worktree untouched.
+- Evidence: `git status -sb` -> `## main...origin/main`; `git log -1` -> `765447f`.
+- Outcome: solved (no harm). Lesson: when the branch choice is ambiguous, ask and wait —
+  never infer the target from branch content.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
