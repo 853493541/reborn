@@ -2277,7 +2277,7 @@ internal static class RebornClient
                         Log(string.Format("hideNear hide camDist={0:F1} (B1 host approximation)", camDist));
                         placePlayer(px, py, pz, curYaw);
                     }
-                    else if (playerHidden && camDist > 150.0)
+                    else if (playerHidden && camDist > 250.0)
                     {
                         playerHidden = false;
                         Log(string.Format("hideNear show camDist={0:F1}", camDist));

@@ -312,3 +312,23 @@ park-below hack can be deleted.
   `reborn_20260929_204449.log`).
 - Re-open: fix the trampoline's bail path, or isolate/preconvert the missing
   materials (D6 exit).
+
+### 2026-09-29 — engine — D6 dump analysis + hide-thrash correlation
+- Did: parsed the WER crash dump
+  `%LOCALAPPDATA%\CrashDumps\reborn_client_campen_v3.exe.30400.dmp` with a new
+  stdlib tool (`tools/camera/minidump_exc.py`, registered in the camera README).
+- Found: fault `KG3DEngineDX11EX64+0x11D03B6`, **`rsi=0`** (the null
+  material/store pointer), worker thread `tid 36460`; stack candidates inside
+  `KG3DEngineDX11EX64` (e.g. `+0x1F6D790`, `+0xBF77A0`, `+0x745A89`) and the
+  editor host wrappers `KG_EngineEditorX64+0x26F6B/+0x2725E`; no asset path on
+  the stack (register pointers are objects, not strings).
+- Log correlation: in the seconds before the fault the camera was at extreme
+  pitch (`-1.553`) pulled to 70 u, and `hideNear` **thrashed**
+  (`hide 104.9 -> show 150.1 -> hide 105.0 -> show 150.5`); every `show`
+  re-adds the dummy model, i.e. engine content churn on the streamed-content
+  path that AVs.
+- Mitigation: show threshold 150 -> **250** (hide 105 unchanged) to cut the
+  churn; D6 root cause (missing editor DataStores / null material) stays open.
+- Evidence: log `reborn_20260929_204449.log` (+ hide lines), tool output saved
+  in the session; new build `reborn_client_campen_v3.exe` (log
+  `reborn_20260929_205411.log`). Outcome: partial (risk reduced, root open).
