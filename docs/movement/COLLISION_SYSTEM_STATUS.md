@@ -113,31 +113,39 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 8. **Merged interiors** (e.g. `jz_xb玉门关建筑001_003sw_hd`) — walls, floors,
    furniture and carpets are one mesh; the CCT top rule now handles low parts, but
    per-part semantics remain server state.
-9. **User-reported door wood + interior carpet: OPEN, not confirmed solved.** The
-   fixes (capsule bottom at feet; CCT top step) make floor-level/thin geometry not
-   block in the host model, and the interior coordinate from the user log ran with
-   0 blocked events (`183202`), but the user has not confirmed the exact objects.
-   Verification protocol: hit the object, COPY LOG, then read
-   `blocked by … top=<x> feet=<y>` — top ≤ feet+50 means a host bug (fix), top >
-   feet+50 means a real >0.5 m face per the engine's step rule. If a low object
-   still blocks because the contacting triangle spans high (merged geometry), the
-   next implementation is an engine-style **forward floor probe** at the movement
-   target (query the walkable floor; climb when floor ≤ feet+stepOffset), instead
-   of relying on the contact triangle's top.
+9. **Door wood + interior rug: rug SOLVED; door stays server state.** The
+   "carpet" is `wj_erg地毯001_hd` (structure bin inst 485, mesh 75): an
+   ~800×800 u plate at y 921.8–924.2 authored with **inverted winding**
+   (both triangles ny = −1.00, verified offline from the baked bin; scan:
+   up=0 down=2). `SupportHeight` required up-facing normals, so the rug was
+   never ground; the capsule surface contact pushed the player **up** onto it
+   and the 64 u drop-tolerance snapped him back to terrain every frame:
+   py oscillates 921↔924, horizontal pushes are zero (`hits=0`), camera anchor
+   bobs (shake) — exactly the user report. Fix: the floor query is
+   winding-agnostic (`Math.Abs(wny)/nl >= 0.5`; winding is a rendering
+   property, the engine floor test is orientation-agnostic). Selftest
+   `inverted_floor_support` / `inverted_floor_stand` (19/19). In-game verified
+   by the agent at the exact user coordinate: `reborn_20260929_212757.log`
+   spawn (19295,887,36435) → t=2s pos (19935,**924**,36435) grounded `hits=0`
+   `colCalls=0`; same in `212423.log`. Next blocker east is inst 773 — the
+   same rug mesh placed **vertically** (top 1115.9, feet 924.6), a real
+   obstacle (standing/folded rug), not a bug. Doorway passability remains
+   door/doodad server state (item 4; plan §8.1).
 10. Dead code: `FoliageCollision.LocalTop` was superseded by `triTop`/`lowTop` (cleanup).
 ## 9. Verified this branch (quick index)
 
-- exact capsule/triangle contact; segment contact; substeps; self-test gate (16 checks)
+- exact capsule/triangle contact; segment contact; substeps; self-test gate (19 checks)
 - holes (loader + flip) with engine A/B at region (0,0)
 - GB18030 physic lists applied with the audit's exact 60 rejects
 - ground rules from `ProcessVerticalMove`; capsule bottom at the feet
 - CCT top step (within `stepOffset`), low-touching-face and below-feet handling
+- winding-agnostic floor query (inverted-winding rug, inst 485)
 - named blockers (`blocked by inst=… mesh=… top=… feet=…`) + COPY LOG
 
 ## Reproduce
 
 ```powershell
 client\build_client.cmd
-C:\SeasunGame\MovieEditor\bin64\collision_selftest_reborn_client_collision.exe   # 16/16
+C:\SeasunGame\MovieEditor\bin64\collision_selftest_reborn_client_collision.exe   # 19/19
 # engine A/B run: see the run logs cited in docs/EXPERIENCES.md (2026-09-29 entries)
 ```

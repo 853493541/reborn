@@ -304,3 +304,19 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: selftest 17/17 (step tests now start grounded); jump-against-gate run
   `reborn_20260929_204919.log` (x stays 18768, blocked, no penetration).
 - Outcome: solved.
+### 2026-09-29 — movement — Floor query ignores triangle winding (house rug case)
+- Did: the house "carpet" (`wj_erg地毯001_hd`, 龙门寻宝 inst 485 / mesh 75) is an
+  ~800×800 u plate at y 921.8–924.2 authored with **inverted winding** (both
+  triangles ny=−1.00; verified offline from the baked bin). `SupportHeight`
+  (the floor query) required up-facing normals, so the rug was never ground:
+  the capsule surface contact pushed the player up, the 64 u drop-tolerance
+  snapped him back — py oscillated 921↔924 every frame, `hits=0`, camera bob.
+  Fix: `Math.Abs(wny)/nl >= 0.5` in the floor query (winding is a render
+  property; the engine floor test is orientation-agnostic).
+- Verified: selftest 19/19 (`inverted_floor_support`, `inverted_floor_stand`);
+  in-game by the agent at the user's stuck coordinate: `reborn_20260929_212757.log`
+  (spawn 19295,887,36435 → t=2s pos (19935,**924**,36435) grounded `hits=0`
+  `colCalls=0`) and `reborn_20260929_212423.log` (spawn 19240,886,36435).
+  The next blocker east is inst 773, the same mesh placed vertically (top
+  1115.9, feet 924.6) — a real obstacle.
+- Outcome: solved.

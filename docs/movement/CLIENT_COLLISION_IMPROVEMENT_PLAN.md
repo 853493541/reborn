@@ -317,3 +317,29 @@ still blocked by `inst=487 mesh=364
 data/source/maps_source/建筑室内/jz_xb玉门关建筑001_003sw_hd.mesh` - the whole
 interior (walls, furniture, carpet) is one 34,576-triangle streamed mesh; its
 per-part blocking is server state, not recoverable from the client files.
+## 8.4 The house rug is authored with inverted winding (2026-09-29)
+
+The "carpet blocks / cannot stand in the house" field case was a **floor-query
+orientation bug**, not a bake rule:
+
+- `wj_erg地毯001_hd` in the 龙门寻宝 house (structure bin instance 485, mesh 75)
+  is one ~800×800 u plate at y 921.8–924.2; both triangles carry **ny = -1.00**
+  (inverted winding). Verified offline from
+  `bin64/collision_data/龙门寻宝_structure_collision.bin` (scan: 2 triangles,
+  up=0 down=2).
+- `SupportHeight` (the host's `GetFloorHeight` proxy) required `wny/nl >= 0.5`,
+  so the rug was invisible to the floor query; `ground` stayed at terrain.
+- The capsule contact *did* push the player up onto the rug surface, but the
+  64 u drop-tolerance then snapped `py` back to terrain every frame:
+  py oscillates 921 ↔ 924.2, horizontal pushes are zero (`hits=0`), camera
+  anchor bobs (shake). This is the exact user report.
+- Fix: the floor query ignores winding (`Math.Abs(wny)/nl >= 0.5`) — winding
+  is a rendering property; the engine floor test is orientation-agnostic.
+  Selftest `inverted_floor_support` / `inverted_floor_stand` (19/19).
+- Verified in-game by the agent (not the user): run
+  `reborn_20260929_212757.log`, spawn (19295,887,36435) = the user's stuck
+  coordinate, walk east: t=2s pos (19935,**924**,36435), grounded, `hits=0`,
+  `colCalls=0` — the rug carries the player with zero contact resolution.
+  Same in `reborn_20260929_212423.log` (spawn 19240,886,36435).
+- Still blocking in that room: instance 773, same mesh, placed **vertically**
+  (top 1115.9, feet 924.6) — a real obstacle (standing/folded rug), not a bug.

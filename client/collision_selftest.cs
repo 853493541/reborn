@@ -246,6 +246,27 @@ internal static class CollisionSelfTest
                 string.Format("blocked={0} px={1:F2}", blocked, px));
         }
 
+        // 9. inverted floor plate (flipped winding, field case: the 龙门寻宝
+        //    house rug wj_erg地毯001_hd, inst 485, ny=-1): the floor query must
+        //    ignore winding, otherwise the client steps onto terrain below and
+        //    the 64 u drop-tolerance snaps the player back down every frame.
+        {
+            MeshBuilder m = new MeshBuilder();
+            int a = m.AddVertex(-200f, 3f, -200f), b = m.AddVertex(-200f, 3f, 200f);
+            int c = m.AddVertex(200f, 3f, 200f), d = m.AddVertex(200f, 3f, -200f);
+            m.AddTri(a, c, b); m.AddTri(a, d, c);   // reversed -> normal down
+            string p = WriteBin("floor_inverted", new MeshBuilder[] { m }, new float[][] { M(0f, 0f, 0f) });
+            FoliageCollision col = new FoliageCollision(null, p);
+            float top = col.SupportHeight(40f, 40f, -20f, 60f);
+            Check("inverted_floor_support", Math.Abs(top - 3f) < 0.05f,
+                string.Format("top={0:F2}", top));
+            float px = 0f, py = 3f, pz = 0f, ground = 3f;
+            bool grounded = true;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f);
+            Check("inverted_floor_stand", !blocked && Math.Abs(py - 3f) < 0.05f,
+                string.Format("blocked={0} py={1:F2}", blocked, py));
+        }
+
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"
             + (_fail > 0 ? " failed=" + string.Join(",", _failed.ToArray()) : ""));
         Environment.Exit(_fail == 0 ? 0 : 1);

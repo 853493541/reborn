@@ -1044,7 +1044,13 @@ public sealed class FoliageCollision
                 float wny = nx * it.m01 + ny * it.m11 + nz * it.m21;
                 float wnz = nx * it.m02 + ny * it.m12 + nz * it.m22;
                 float nl = (float)Math.Sqrt(wnx * wnx + wny * wny + wnz * wnz);
-                if (nl < 1e-9f || wny / nl < 0.5f) continue;
+                // Floor query: winding is a rendering property, not a physics
+                // one (engine GetFloorHeight / CCT floor test). Field case:
+                // wj_erg地毯001_hd (龙门寻宝 house rug, inst 485) is a ~800 u
+                // plate authored with inverted winding (ny=-1); requiring
+                // wny>0 made the client step off the rug onto terrain and the
+                // 64 u drop-tolerance snapped the player back down every frame.
+                if (nl < 1e-9f || Math.Abs(wny) / nl < 0.5f) continue;
                 float wy = lx * it.l2w[1] + ly * it.l2w[5] + lz * it.l2w[9] + it.l2w[13];
                 if (wy < yLow || wy > yHigh) continue;
                 if (wy > best) best = wy;
