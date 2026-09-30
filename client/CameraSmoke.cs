@@ -177,6 +177,24 @@ internal static class CameraSmoke
               string.Format("init={0:F0}m target={1:F0}m max={2:F0}u",
                   clampCam.Row.F("InitCameraDistance", 0.0), clampCam.Row.F("TargetDistance", 0.0),
                   clampCam.Row.F("MaxCameraDistance", 0.0)));
+        Check("operation mode gating (classical)",
+              !CameraOperationMode.MouseRotatesWithoutButtons(CameraOperationMode.Classical) &&
+              !CameraOperationMode.KeepsCursorLocked(CameraOperationMode.Classical) &&
+              CameraOperationMode.RmbTurnsBody(CameraOperationMode.Classical) &&
+              !CameraOperationMode.BodyFollowsHeading(CameraOperationMode.Classical),
+              CameraOperationMode.Name(CameraOperationMode.Classical));
+        Check("operation mode gating (joystick)",
+              CameraOperationMode.MouseRotatesWithoutButtons(CameraOperationMode.Joystick) &&
+              CameraOperationMode.KeepsCursorLocked(CameraOperationMode.Joystick) &&
+              !CameraOperationMode.RmbTurnsBody(CameraOperationMode.Joystick) &&
+              CameraOperationMode.BodyFollowsHeading(CameraOperationMode.Joystick),
+              CameraOperationMode.Name(CameraOperationMode.Joystick));
+        Check("operation mode parse (RC_MODE)",
+              CameraOperationMode.Parse("joystick") == CameraOperationMode.Joystick &&
+              CameraOperationMode.Parse("CLASSICAL") == CameraOperationMode.Classical &&
+              CameraOperationMode.Parse("junk") == CameraOperationMode.Classical &&
+              CameraOperationMode.Parse("") == CameraOperationMode.Classical,
+              "joystick/classical/junk/empty");
         Check("shared distance clamp helper (S5)",
               Math.Abs(clampCam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
               Math.Abs(clampCam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&

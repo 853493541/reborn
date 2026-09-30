@@ -803,3 +803,32 @@ internal static class MiniJson
         while (i < s.Length && char.IsWhiteSpace(s[i])) i++;
     }
 }
+
+// JX3 operation modes (docs/controls/OPERATION_MODES_PLAN.md). Pure gating
+// model so the smoke exe can test it without the engine. CLASSICAL rotates
+// only while LMB/RMB is held and RMB also turns the body; JOYSTICK rotates on
+// mouse move without buttons, keeps the cursor locked, and the body follows
+// the movement heading (no RMB body turn).
+public static class CameraOperationMode
+{
+    public const int Classical = 0;
+    public const int Joystick = 1;
+
+    public static string Name(int mode)
+    {
+        return mode == Joystick ? "joystick" : "classical";
+    }
+
+    public static int Parse(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return Classical;
+        string t = s.Trim().ToLowerInvariant();
+        if (t == "joystick" || t == "1") return Joystick;
+        return Classical;
+    }
+
+    public static bool MouseRotatesWithoutButtons(int mode) { return mode == Joystick; }
+    public static bool KeepsCursorLocked(int mode) { return mode == Joystick; }
+    public static bool RmbTurnsBody(int mode) { return mode == Classical; }
+    public static bool BodyFollowsHeading(int mode) { return mode == Joystick; }
+}

@@ -108,6 +108,26 @@ persist only when the mode's custom.dat key is recovered.
   fingerprints, not screenshots-as-proof.
 - Manual checklist per mode (documented in this file's phase PR notes).
 
+## 5b. Status (2026-09-29, `agent/camera-wall-clip`)
+
+- **P0 done** — `CameraOperationMode` (`CameraSystem.cs`), `CameraSettings.OperationMode`
+  + `RC_MODE` + per-mode fields, `F7` toggle, `op=` in `camdbg`, `OPMODE=` in the
+  build fingerprint.
+- **P1 done** — the always-rotate/cursor-lock branch moved off the follow-mode
+  setting (`RebornClient.cs`); joystick keeps the cursor locked, classical
+  unlocks on release.
+- **P2 partial** — body already faces the movement heading; RMB body-turn is
+  disabled in joystick. The recovered turn-rate model (>112.5° penalty) is not
+  applied yet (units consumer open, tracked here).
+- **P3 partial** — `nCameraModeInClassicMode`/`InJoystickMode` parsed + logged;
+  applying them needs the follow-mode [0..3] semantics (`+0x80`) that are not
+  decoded yet. Reset-speed application still open.
+- **P4 not started** (UI panel).
+- Verified: `camera_smoke` ALL PASS (29 checks incl. mode gating + parse);
+  `RC_MODE=joystick` run `reborn_20260929_175413.log` (`op=joystick`, DONE,
+  exit 0); test client `reborn_client_campen_v3.exe` (merged tree + ports)
+  runs with `OPMODE=classical`, F7 live.
+
 ## 6. Open / risks
 
 1. Persisted operation-mode key (custom.dat) unrecovered — session-only until

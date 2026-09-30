@@ -44,7 +44,7 @@ persistence, bridges) with complete decoded annexes.
 | C9 | Cast input: keydown, `Alt+WASD` direction, ground aim | **OPEN (partially researched)** | `CastSkillByKeyDown` defined in `hotkeys.lua`; body pending | C7/C8 |
 | C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **OPEN (research DONE)** | command bodies decoded (§5); engine `ResponseWASDKey` is C-side | C1 |
 | C11 | Integer 15/16 Hz movement model + turn-rate + penalty | **OPEN** | spec complete (`REBORN_JUMP_FALL_SPEC.md`) | C10 |
-| C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **OPEN (research DONE)** | `SetOperationMode` + `Camera_EnableControl`/`Scene_EnableFreeMoveControl` (§4) | C1 |
+| C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **PARTIAL (P0-P2 landed 2026-09-29, `agent/camera-wall-clip`)** | plan `controls/OPERATION_MODES_PLAN.md`; F7 + `RC_MODE`; joystick always-rotate/cursor lock/RMB-off done; per-mode follow modes parsed not applied; turn-rate model + reset-speed application open | C1 |
 | C13 | UI customization (panels, layout `custom.dat`, settings panels) | **OPEN (research DONE)** | `UICustomModePanel` + window anchors (§7) | C1 |
 
 ## Combat / netcode (server-owned)

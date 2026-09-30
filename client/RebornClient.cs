@@ -122,14 +122,15 @@ internal static class RebornClient
             }
             catch { }
             Log(string.Format(
-                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17},BACKFACE={18},HITWIN={19})",
+                "build={0} {1} git={2} dirty={3} camFP=True flags=(ENGINESET={4},LOOKPACK={5},RATECAP={6},LOADPACE={7},FULLLOAD={8},PATCH_D6={9},PITCH_ALIGN={10},PLAYER_HIDE={11},SNAPGUARD={12},CROSS={13},HITMIN={14},WALLGATE={15},SCENERAY={16},SCENEMIN={17},BACKFACE={18},HITWIN={19},OPMODE={20})",
                 exeName, exeMtime, git, dirty,
                 Env("RC_CAM_ENGINESET", "1"), Env("RC_CAM_LOOKPACK", "0"),
                 Env("RC_CAM_RATECAP", "0"), Env("RC_CAM_LOADPACE", "1"),
                 Env("RC_FULLLOAD", "0"), Env("RC_PATCH_D6", "0"),
                 Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
                 Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80"),
-                Env("RC_CAM_BACKFACE", "1"), Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0"))));
+                Env("RC_CAM_BACKFACE", "1"), Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")),
+                Env("RC_MODE", "classical")));
         }
         Log("start map=" + mapPath);
 
@@ -486,9 +487,10 @@ internal static class RebornClient
             camSys.Pitch = cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
             camSys.Distance = camSys.Row.F("InitCameraDistance", 20.0) * camSys.UnitsPerMeter;
-            Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3}",
+            Log(string.Format("CameraSystem ready: mode={0} dist={1:F0}u height={2:F0}u units/m={3} op={4}",
                 camSys.Mode, camSys.Distance,
-                camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
+                camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,
+                CameraOperationMode.Name(cameraSettings.OperationMode)));
         }
         try
         {
@@ -804,11 +806,12 @@ internal static class RebornClient
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
             // joystick mode keeps the cursor locked between drags
-            if (!lmbDown && !rmbDown && mouseLocked && cameraSettings.CameraMode != 1) unlockMouse();
+            if (!lmbDown && !rmbDown && mouseLocked &&
+                !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
-            bool joystick = cameraSettings.CameraMode == 1;
+            bool joystick = CameraOperationMode.MouseRotatesWithoutButtons(cameraSettings.OperationMode);
             if ((!lmbDown && !rmbDown) && !joystick) return;
             if (!joystick && !dragArmed) return;
             System.Drawing.Point p = panelPoint(s, e);
@@ -881,6 +884,18 @@ internal static class RebornClient
                 divDown = true;
                 walkMode = !walkMode;
                 Log("movement mode: " + (walkMode ? "WALK" : "RUN"));
+            }
+            else if (e.KeyCode == Keys.F7)
+            {
+                // operation-mode switch (host key; the real client switches in
+                // the UISetting_Operation_Switch panel and has no default
+                // hotkey - docs/controls/OPERATION_MODES_PLAN.md)
+                cameraSettings.OperationMode =
+                    cameraSettings.OperationMode == CameraOperationMode.Joystick
+                        ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
+                Log("operation mode -> " + CameraOperationMode.Name(cameraSettings.OperationMode));
+                if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
+                else if (!lmbDown && !rmbDown) unlockMouse();
             }
             else if (e.KeyCode == Keys.F11)
             {
@@ -1508,9 +1523,10 @@ internal static class RebornClient
                 measureView();
                 double vyaw = Math.Atan2(-viewZ, -viewX);
                 double vpitch = Math.Asin(Math.Max(-1.0, Math.Min(1.0, viewY)));
-                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0} eff={13:F0} clamp={14}",
+                Log(string.Format("camdbg mode={0} yaw={1:F3} pitch={2:F3} vyaw={3:F3} vpitch={4:F3} dist={5:F0} r={6:F1} cam=({7:F0},{8:F0},{9:F0}) obst={10} hit={11:F0} len={12:F0} eff={13:F0} clamp={14} op={15}",
                     camSys.Mode, camSys.Yaw, camSys.Pitch, vyaw, vpitch, camSys.Distance, rgeo, dbgx, dbgy, dbgz,
-                    dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1));
+                    dbgObst ? 1 : 0, dbgHit, dbgLen, dbgEffDist, double.IsNaN(aimPitchOverride) ? 0 : 1,
+                    CameraOperationMode.Name(cameraSettings.OperationMode)));
                 // NOTE: do NOT probe the near plane here. The view-manager
                 // getter (0x1801433E0) deadlocks the engine even from a worker
                 // thread (see EngineRay.ProbeNearPlane) - it can only run in the
@@ -1612,7 +1628,7 @@ internal static class RebornClient
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
             // camera direction; LMB drag rotates the camera only. The turn is
             // rate-limited (S6) instead of snapping the yaw in one frame.
-            if (rmbDown)
+            if (rmbDown && CameraOperationMode.RmbTurnsBody(cameraSettings.OperationMode))
             {
                 float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
                 float d = targetYaw - curYaw;

@@ -227,3 +227,21 @@ engine queries); the per-axis smoothing stays once, on the resolved offset
   `hotkeys_script.dump.txt`.
 - Outcome: plan committed; implementation starts at P0 on request.
 - Re-open: implement P0 when the user picks it up (no code changes yet).
+
+### 2026-09-29 — controls — operation modes P0-P2 landed (F7 switch)
+- Did: implemented the plan: `CameraOperationMode` pure gating model +
+  `CameraSettings.OperationMode` with `RC_MODE`, `F7` toggle (host key; real
+  client switches via the UI panel), `op=` in `camdbg`, `OPMODE=` fingerprint;
+  moved the always-rotate/cursor-lock branch off `tCameraStatic.nCameraMode`
+  onto the operation mode; joystick disables the RMB body-turn (body follows
+  the movement heading). Per-mode follow values (`nCameraModeIn*Mode`) are
+  parsed + logged; applying them and the turn-rate model stay open (P2/P3
+  partial). Controls register C12 -> PARTIAL.
+- Evidence: `client/CameraSystem.cs` (`CameraOperationMode`),
+  `client/CameraSettings.cs`, `client/RebornClient.cs`;
+  `camera_smoke_wallclip` ALL PASS (29 checks: mode gating + parse);
+  `RC_MODE=joystick` run `reborn_20260929_175413.log` (`op=joystick`, DONE,
+  exit 0); test client rebuilt (`reborn_client_campen_v3.exe`, merged tree +
+  ported edits, log `reborn_20260929_175819.log`, `OPMODE=classical`).
+- Outcome: P0-P2 solved (P2 partial), P3 partial, P4 open.
+- Re-open: turn-rate model + follow-mode semantics + reset-speed application.
