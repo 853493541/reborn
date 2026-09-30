@@ -3,7 +3,7 @@ setlocal
 set CSC=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
 set BIN=C:\SeasunGame\MovieEditor\bin64
 "%CSC%" /nologo /unsafe /platform:x64 /target:winexe /codepage:65001 /out:"%BIN%\Skill.exe" ^
-  /r:"%BIN%\MovieEngineCLR.dll" ^
+  /r:"%BIN%\MovieEngineCLR.dll" /r:"%BIN%\MovieEditorHD.exe" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll ^
   ability_sandbox\rb\RebornClient.cs ability_sandbox\rb\TerrainSampler.cs ability_sandbox\rb\FoliageCollision.cs ^
   ability_sandbox\rb\CameraSystem.cs ability_sandbox\rb\CameraSettings.cs ability_sandbox\rb\EngineRay.cs ^
