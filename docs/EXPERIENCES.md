@@ -173,3 +173,19 @@ solved it, and what is still open. **Newest at the bottom.**
   skill script, not to the WW chain.
 - Outcome: supersedes the plunge mapping above (kept as history). The 急坠
   `SetPassiveVelocityZ(-2000)` skill remains a separate school dive, not the WW action.
+
+### 2026-09-29 — client — WW leap crash: engine AV from the 二段跳 clip + gravity sign
+- Did: user WW crashed the sandbox. Reproduced deterministically: `RC_DEMO` with
+  `RC_CLIP_JUMP=data\source\player\f1\动作\f1b02yd二段跳a.tani` AVs `KGEngineCLR.Render`
+  (`System.AccessViolationException`, faulting ntdll 0xc0000005) on the first frame after
+  the clip loads — the clip itself is the trigger, independent of the leap. Switched the
+  chain to the per-jump `.ani` clips (`f1b02yd小跳b/c.ani`, REBORN_JUMP_FALL_SPEC §6) and
+  the proven ChongCiQingGong dive `.tani` for the downward J3. Also fixed the stage gravity
+  sign (was +4500, launching the character to Y=112k at the Z clamp) and added apex ->
+  End-gravity (11) revert. Added `RC_WW_DEMO=1` (auto jump+leap at 6s/8s) as the
+  deterministic live repro.
+- Evidence: crash .NET Runtime event 21:21:40 (AV in `MovieEngineCLR.KGEngineCLR.Render`);
+  isolated repro 21:24:19 with `RC_DEMO`; fix verified 21:31 run — leap vy=4500, g=-4500,
+  apex ~23 m above ground, lands t=12s, no crash, app exits via `RC_AUTORUN`.
+- Outcome: solved. Do not play `f1b02yd二段跳a.tani` standalone (engine bug); it is not the
+  chain leap animation in the sandbox.
