@@ -243,3 +243,14 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: demo run 22:14 — `ww AIR: 纵跃段 charge vxy=125 vz=-140 g=12 -> 1875 u/s fwd,
   -2100 u/s down`, lands cleanly; selftest PASS; commit 40b51c9.
 - Outcome: solved.
+
+### 2026-09-29 — controls — WW air charge = player tech (state ends on release, velocity kept)
+- Did: remodelled per the user's clarification: air WW applies the fly velocity (authored
+  End triple 1875 u/s fwd + 2100 u/s down) as a **state**; releasing W ends the state but
+  keeps the velocity, so the character keeps falling forward+down fast (emergent player
+  tech, not an authored move). No special animation — normal air clips only. `RC_WW_DEMO`
+  now also simulates the release.
+- Evidence: demo run 22:36 — charge at 8.0s, `W release -> state ended, velocity kept
+  (vxy=1875 u/s, vy=-3431 u/s)` at 8.5s, lands t=10s; selftest PASS; commit fb073f8.
+- Outcome: solved. The velocity values remain the authored End triple; the release/keep
+  combination is the player-discovered part.
