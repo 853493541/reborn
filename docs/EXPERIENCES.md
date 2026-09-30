@@ -976,3 +976,14 @@ s=reborn_client_daqinggong.memory,
 - Evidence: demo run 15:49 on the cropped map — ww release: forward-down dash 45 deg ->
   vxy=2250 u/s, vy=-2250 u/s, grounded by 12 s; selftest PASS; commit 59b7ac6; pid 10636.
 - Outcome: solved.
+
+
+### 2026-09-30 — client — WW release dash fires on any W release
+- Did: user saw no change because the double-tap grace delayed/ignored their quick release.
+  Removed the grace and the not-held auto-end: any W keyup while the WW state is active now
+  triggers the 45-degree forward-down dash immediately; key 1 remains the explicit release.
+- Evidence: build exit=0; selftest PASS; commit a99bc87; relaunched pid 13028 (title 大轻功,
+  cropped map). Note: only 
+eborn_client_daqinggong carries these changes — other
+  workstream clients (cam-wwdrag/collision) do not.
+- Outcome: solved.
