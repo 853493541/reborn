@@ -156,3 +156,15 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `client\RebornClient.cs`, `ability_sandbox\rb\RebornClient.cs`,
   `asset_sandbox\AssetSandbox.cs`, `AGENTS.md` §2.7; this commit (local).
 - Outcome: solved.
+
+### 2026-09-29 — tooling — "Too many images in request" (API caps images at 30)
+**Problem:** long sessions that Read image files (screenshots, proof PNGs) accumulate
+image parts in the conversation; every later request fails with
+`invalid_request_error: Too many images in request: 31 > 30`, blocking the session.
+**Tried:** mitigation is not possible once the cap is hit - prevention only.
+**Outcome:** solved (prevention).
+**Why:** the API counts every image in the whole conversation, not just the latest
+message; attachments persist in history. One session must stay under 30 total.
+**Re-open criteria:** the provider raises the cap, or opencode strips old image parts
+from history automatically.
+**Links:** `tools/proof/image_stats.py`, `tools/proof/README.md`, `AGENTS.md` §13 Images.

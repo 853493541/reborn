@@ -221,6 +221,10 @@ dotnet run --project ui-process-app
   list tools in the area README tools table; delete one-off probes after use.
 - **Testing**: no fix without a reproduce/verify command; prefer offline deterministic
   checks; visual passes need a numeric fingerprint (per-region RGB), not one screenshot.
+- **Images**: the model API caps images per request (30), and the cap counts the whole
+  conversation — never Read image files for analysis in a session that already has
+  several; use `tools/proof/image_stats.py` (size/hash/per-region RGB) instead. If an
+  image must be attached, do it in a fresh session and keep the total well under 30.
 - **Scope**: align to the M1 exit criteria; one milestone/area per session; no M2+ work
   before the M1 gate passes.
 - **Constants**: canonical values live in `docs/netcode/README.md`; do not redefine magic
