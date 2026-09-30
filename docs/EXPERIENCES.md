@@ -944,3 +944,15 @@ eborn_client_qinggong.exe (window title derives to
 s=reborn_client_qinggong.memory,
   cropped map); commit 41e23a9.
 - Outcome: solved.
+
+
+### 2026-09-30 — client — sandbox super jump + 大轻功 client name
+- Did: re-applied the super jump to the sandbox client: RC_JUMP_SCALE default 5.2
+  (10x the calibrated height, apex ~19 m; 0.52 restores the calibrated 1.92 m). Renamed
+  the feature client to 
+eborn_client_daqinggong.exe with window title 大轻功
+  (RC_TITLE=大轻功 in 	ools/sandbox/run_sandbox.cmd).
+- Evidence: build exit=0; selftest PASS; run log 15:02 (
+s=reborn_client_daqinggong.memory,
+  cropped map, LoadMap 172 ms); commit 5174d3f; app pid 1284.
+- Outcome: solved.
