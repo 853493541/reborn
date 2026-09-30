@@ -541,3 +541,15 @@ solved it, and what is still open. **Newest at the bottom.**
   龙门寻宝 unchanged `noObstacle=56` (`reborn_20260930_153559.log`).
 - New plan item P0b: when a sibling collision file exists the BAKE should use
   it instead of the render mesh (recorded in the comparison doc §8.3).
+
+### 2026-09-30 — collision — P0b done: authored collision siblings baked
+- `tools/export_structure_collision.py` now resolves each object's obstacle
+  geometry through the engine's file-selection chain
+  (`<base>_proxymesh.mesh` / `.proxymesh` / `.CollisionMesh` / render `.mesh`)
+  and picks the first that exists in the pak; the camera-flag lookup falls back
+  to the render model.
+- Re-baked all five maps (structure + sidecars + oflags). Non-tree sibling
+  substitutions: 白龙绝境 17, 天原绝境 133, 海岛绝境 8, 龙门寻宝_夜晚 15,
+  龙门寻宝 0.
+- Verified: client load unchanged on 龙门寻宝 (5235 instances, noObstacle=56),
+  rug crossing py=924 hits=0, fps 238-248 (`reborn_20260930_154559.log`).

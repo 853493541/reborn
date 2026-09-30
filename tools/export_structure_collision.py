@@ -111,8 +111,14 @@ def load_objects(region_dir, physic=None):
             if not model or not m or len(m) != 16:
                 continue
             ext = Path(model).suffix.lower()
+            cand = []
             if ext == '.mesh':
                 coll = model
+                # engine file-selection chain: a proxymesh / CollisionMesh
+                # sibling overrides the render mesh as the obstacle geometry
+                base = model[:-len('.mesh')]
+                cand = [base + '_proxymesh.mesh', base + '.proxymesh',
+                        base + '.CollisionMesh', base + '.collisionmesh']
             elif ext == '.srt':
                 # SpeedTree: the physics engine builds "<base>.CollisionMesh"
                 # from the .srt name (PhysicsEngine::_GetCollisionGeometryFilesFromFile)
@@ -134,6 +140,7 @@ def load_objects(region_dir, physic=None):
                 'm': [float(v) for v in m],
                 'bmin': b.get('actorBoundBoxMin'),
                 'bmax': b.get('actorBoundBoxMax'),
+                'cand': cand,
             })
     return objs, rejected
 
@@ -265,6 +272,9 @@ def main():
     for o in objs:
         p = norm_pak_path(o['model'])
         models[p] = models.get(p, 0) + 1
+        for c in o.get('cand', []):
+            cp = norm_pak_path(c)
+            models[cp] = models.get(cp, 0) + 1
         if o.get('srt'):
             vis = p[:-len('.CollisionMesh')] + '.mesh'
             visual_of[p] = vis
@@ -309,6 +319,7 @@ def main():
     import numpy as np
     extra = {}      # synthetic mesh key -> (verts, tris)
     placed = []     # (object, mesh key) pairs to write
+    flag_of = {}    # geometry key -> render model path (camera-flag lookup)
     degenerate = 0
     measured = 0
     for o in objs:
@@ -317,6 +328,14 @@ def main():
         if m is None:
             continue
         if not o.get('srt'):
+            orig = p
+            for c in o.get('cand', []):
+                cp = norm_pak_path(c)
+                if cp in meshes:
+                    p = cp          # authored obstacle geometry wins
+                    o['model'] = c
+                    break
+            flag_of[p] = norm_pak_path(orig)
             placed.append((o, p))
             continue
         v = m.positions
@@ -397,7 +416,8 @@ def main():
                 base = visual_of.get(key.split('#', 1)[0], '')
                 f = int(fmap.get(base.replace('/', '\\').lower(), 1))
             else:
-                f = int(fmap.get(key.replace('/', '\\').lower(), 1))
+                fk = flag_of.get(key, key)
+                f = int(fmap.get(fk.replace('/', '\\').lower(), 1))
             if f == 0:
                 zeros += 1
             cflags.append(f)
