@@ -213,3 +213,15 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved (list filter now real). Gate passability remains server/doodad
   state; other four maps need the same re-bake.
 - Re-open: none for the encoding bug; door state needs server data.
+### 2026-09-29 — movement — Local prediction ground rules (engine) replace host rise/ledge rules
+- Did: decoded `KCharacter::ProcessVerticalMove` (y = min(y, ground), 64 u landing
+  tolerance) and `ProcessDropSpeed` (slope projection/air-stop); replaced the host's
+  70/50 u rise-budget and 150 u ledge rule with the engine behavior (snap up, snap
+  down within 64, else fall). Named-blocker logging added earlier identifies the
+  merged interior mesh (`jz_xb玉门关建筑001_003sw_hd`) as the carpet/furniture
+  blocker; per-part blocking inside merged meshes is server state.
+- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8.3;
+  `docs/movement/JX3_GRAVITY_RESEARCH.md` §3.2; disasm transcripts; selftest 11/11.
+- Outcome: solved for terrain ground forgiveness; structure blocking remains the
+  host's server proxy.
+- Re-open: server-side obstacle data (client files cannot express doors/carpets).

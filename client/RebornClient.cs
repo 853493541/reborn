@@ -1661,7 +1661,6 @@ internal static class RebornClient
                 if (subCount > 64) subCount = 64;
                 subStep = step / subCount;
             }
-            float look = subStep > 40f ? subStep : 40f;
             if (colProf) colSw.Restart();
             for (int si = 0; si < subCount; si++)
             {
@@ -1670,19 +1669,10 @@ internal static class RebornClient
                 {
                     sdx = mvx * subStep;
                     sdz = mvz * subStep;
-                    float pgh = ground;
-                    bool pghOk = false;
-                    if (sampler != null) pghOk = sampler.SampleGround(px + mvx * look, pz + mvz * look, out pgh);
-                    if (groundOk && pghOk && pgh - ground > 70f)
-                    {
-                        blocked = true;
-                        float gx2 = ground, gz2 = ground;
-                        bool okX = sampler != null && sampler.SampleGround(px + mvx * look, pz, out gx2);
-                        bool okZ = sampler != null && sampler.SampleGround(px, pz + mvz * look, out gz2);
-                        if (!okX || gx2 - ground <= 70f) { sdz = 0f; }
-                        else if (!okZ || gz2 - ground <= 70f) { sdx = 0f; }
-                        else { sdx = 0f; sdz = 0f; }
-                    }
+                    // Engine ground rule (KCharacter::ProcessVerticalMove,
+                    // 0x140318E73: y = min(y, ground); ground = terrain cell
+                    // height): terrain rises never block horizontally, they
+                    // raise the character. No rise-budget check here.
                 }
                 px += sdx;
                 pz += sdz;
@@ -1752,12 +1742,19 @@ internal static class RebornClient
                 else curYaw += Math.Sign(d) * step;
             }
 
-            // grounded / ledge / step (map-host rules)
+            // grounded / step / drop - engine rules (KCharacter::ProcessVerticalMove
+            // 0x140318E73 clamps y = min(y, ground); the 64 u = 1 尺 landing
+            // tolerance at 0x14031A25E):
+            //  - higher ground raises the character (no rise-budget on terrain
+            //    or steppable structures);
+            //  - drops up to 64 u stay snapped (walking down slopes);
+            //  - larger drops make the character airborne.
             if (grounded)
             {
-                if (!groundOk || py - ground > 150f) { grounded = false; vy = 0f; }
-                else if (py > ground) py = ground;
-                else if (ground - py <= stepHeight) py = ground;
+                if (!groundOk) { grounded = false; vy = 0f; }
+                else if (py < ground) py = ground;
+                else if (py - ground <= 64f) py = ground;
+                else { grounded = false; vy = 0f; }
             }
 
             // jump

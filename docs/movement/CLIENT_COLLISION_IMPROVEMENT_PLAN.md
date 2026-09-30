@@ -288,3 +288,32 @@ global bug, not a per-object exception:
 
 Still to do: re-bake the other four local maps (白龙绝境, 天原绝境, 海岛绝境,
 龙门寻宝_夜晚) - their bins predate this fix just like 龙门寻宝 did.
+## 8.3 Local-prediction ground rules (engine-decoded, 2026-09-29)
+
+The host previously blocked horizontal movement on a rise budget (70 u then 50 u)
+and used a 150 u ledge rule - both host inventions. The client's own local
+prediction does not do that (`JX3_GRAVITY_RESEARCH.md` §3.2, disasm
+`proof/gravity/disasm/process_vertical_move.txt`, `process_drop_speed.txt`):
+
+- `KCharacter::ProcessVerticalMove` (clamp @ `0x140318E73`): **`y = min(y, ground)`**
+  where `ground` is the terrain cell height (`word[cell+4]<<6` / cell top) - the
+  character is raised onto higher ground; rises never block locally.
+- Landing tolerance **64 u = 1 尺**: `y - cellTop <= 64` keeps the landing/ground
+  reset (`0x14031A25E`).
+- Drops are handled by `ProcessDropSpeed` (`0x140316BE0`): cell packed-slope
+  projection, `Vz = 0` on shallow slope / air-stop, clamps.
+- No capsule-vs-static-mesh blocking exists in this local prediction path; wall
+  blocking is server-side (movement authority, §24.4) - consistent with
+  `bAddPlayerPhysicsActor=0`.
+
+Applied to the host (`client/RebornClient.cs`): terrain rise-budget check removed;
+grounded state now snaps up to `ground`, snaps down within 64 u, and goes airborne
+beyond that. Structure support/blocking (the bake) remains as the host's
+server-proxy and still names its blockers at runtime
+(`blocked by inst=… mesh=… <model path>`).
+
+Observed with the change: at the interior house spot `(18965,35474)` the player is
+still blocked by `inst=487 mesh=364
+data/source/maps_source/建筑室内/jz_xb玉门关建筑001_003sw_hd.mesh` - the whole
+interior (walls, furniture, carpet) is one 34,576-triangle streamed mesh; its
+per-part blocking is server state, not recoverable from the client files.
