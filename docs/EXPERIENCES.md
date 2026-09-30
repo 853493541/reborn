@@ -573,3 +573,19 @@ solved it, and what is still open. **Newest at the bottom.**
   `instances=5842 meshes=501 noObstacle=100` (shared engine root; line captured
   from the concurrent-session log `reborn_20260930_155044.log`).
 - No crashes, terrain/spawn fine on both; 龙门寻宝 unchanged.
+
+### 2026-09-30 — collision — P5 feasibility confirmed: game physics stack runs in-host
+- Added `client/PhysicsProbe.cs` (`RC_PHYS_PROBE=1`) and the standalone
+  `tools/p5_physics_probe/PhysicsProbe.cs` (csc, no engine needed).
+- In-client results (`reborn_20260930_161323.log`): `GetPhysicsManager hr=0`,
+  `CreatePhysXTerrain hr=0`, `LoadTerrain(vt5) ok=1` (region table 8x8,
+  regionMgr created), `UpdateTerrain x40` streaming, and
+  `CreatePhysicsSceneDynamicLoader hr=0` (`StaticPhysicsSceneManager`,
+  vtable rva 0xFCCA8) - the whole static pipeline comes up inside our client.
+- Standalone: PhysX core initializes in a fresh process (`Init hr=0`) after
+  preloading `KGCommonX64`/`SemanticX64`/`Engine_Lua5X64` (`SetWorkingDir
+  hr=0`); the map loader needs the engine FS, so the integration point is the
+  client host (as the legacy probe was).
+- Next: drive the static dyn loader (`recon_dyn_methods.txt`) to add object
+  actors, then query the real scene (`PhysicsScene` rva 0xFA7B8, `SweepEx`
+  vt[16]) - P5 continues.

@@ -18,7 +18,8 @@ if not "%RC_CLIENT_EXE%"=="" set BINFO=build_info_%EXE%.txt
   /r:"%BIN%\MovieEngineCLR.dll" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
   client\RebornClient.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
-  client\CameraSystem.cs client\CameraSettings.cs client\EngineRay.cs ^
+  client\CameraSystem.cs client\CameraSettings.cs client\EngineRay.cs ^
+client\PhysicsProbe.cs ^
   client\CameraShim.cs client\VideoSettings.cs
 if errorlevel 1 goto :eof
 rem Shared bin64 configs are only written by the canonical build; feature builds

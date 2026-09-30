@@ -318,6 +318,13 @@ internal static class RebornClient
             sampler.Sample(0f, 0f);
         }
 
+        // P5 probe: drive the game's own physics stack inside this host
+        if (Env("RC_PHYS_PROBE", "0") == "1")
+        {
+            try { PhysicsProbe.Run(Log, mapPath); }
+            catch (Exception e) { Log("physprobe ex: " + e.Message); }
+        }
+
         // baked object/foliage collision (derived from the game's own map files)
         FoliageCollision col = null;
         try
