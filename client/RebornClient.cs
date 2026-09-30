@@ -2257,26 +2257,30 @@ internal static class RebornClient
                             sd, camX, camY, camZ, sx, sy, sz));
                 }
 
-                // Character visibility near the camera: the native client relies
-                // on view near-plane clipping (value not shipped, see
-                // docs/camera/CLOSE_RANGE_RESEARCH.md). The host has no visibility
-                // API, so hide the dummy while the REAL camera->anchor distance
-                // (after the ground clamp) is inside the character's volume and
-                // restore it once clearly outside - conservative radius and
-                // hysteresis (host approximation, not a game value).
+                // Character visibility near the camera: the native client fades
+                // the character out as the camera closes in (engine model fade
+                // measured at camLen ~36..96 u, HANDOFF section 4) on top of the
+                // view near plane. The host has no visibility/near-plane API, so
+                // the dummy is parked below the map while the camera is inside
+                // the character volume. Threshold must exceed the head offset
+                // (~90 u above the chest anchor) - a camera inside the head
+                // hovers at camDist ~90 and a 90 u threshold never fired
+                // (reported: "I see the inside of the character").
                 double camDist = Math.Sqrt((camX - ax2) * (camX - ax2) +
                                            (camY - ay2) * (camY - ay2) +
                                            (camZ - az2) * (camZ - az2));
                 if (hideNear)
                 {
-                    if (!playerHidden && camDist < 90.0)
+                    if (!playerHidden && camDist < 105.0)
                     {
                         playerHidden = true;
+                        Log(string.Format("hideNear hide camDist={0:F1} (B1 host approximation)", camDist));
                         placePlayer(px, py, pz, curYaw);
                     }
                     else if (playerHidden && camDist > 150.0)
                     {
                         playerHidden = false;
+                        Log(string.Format("hideNear show camDist={0:F1}", camDist));
                         placePlayer(px, py, pz, curYaw);
                     }
                 }

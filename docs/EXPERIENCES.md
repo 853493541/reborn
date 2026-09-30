@@ -275,3 +275,23 @@ camera_maxdistance_xrefs.txt` (loader store at `+0x98`),
 `CameraSystem.cs`, `CameraSmoke.cs` (`distance default = client number 1245 u`),
 live log `reborn_20260929_181215.log` (before), `camera_smoke_wallclip` ALL
 PASS after.
+
+### 2026-09-29 — camera — close-camera character hide threshold (B1 fix)
+**Problem:** user report: dragging the camera up close shows the **inside of
+the character**; the game hides/fades the character at some point (like "too
+close") instead.
+**Tried:** re-read the original-design evidence (`CLOSE_RANGE_RESEARCH.md` §2:
+no explicit hide in the camera path; the effect is view near-plane clipping +
+the engine's model fade, measured at camLen ~36..96 u in HANDOFF §4) and
+inspected the host park-below hack.
+**Outcome:** solved (threshold fixed; true exit remains the near-plane setter).
+**Why:** the hack hid the dummy when camera->chest-anchor distance < **90 u** -
+exactly the head offset (~90 u above the chest anchor). A camera sitting inside
+the head hovers at camDist ~90, so the hide never fired and the inside stayed
+visible. Raised the hide threshold to **105 u** (restore still >150 u) and added
+`hideNear hide/show camDist=` logs. Host approximation registered under B1.
+**Re-open criteria:** the view near-plane setter lands (C7/B1 exit) and the
+park-below hack can be deleted.
+**Links:** `docs/camera/HOST_DEVIATIONS.md` B1; `docs/camera/CLOSE_RANGE_RESEARCH.md`
+§2; HANDOFF §4 ladder; test client `reborn_client_campen_v3.exe`
+(`6b55d5b+modes+hide105`, log `reborn_20260929_203437.log`).
