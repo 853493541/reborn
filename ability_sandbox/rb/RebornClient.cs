@@ -110,8 +110,11 @@ internal static class RebornClient
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
 
-        // ---- ability selection (P panel): flws (default) / 临时飞爪 ----
-        string abilitySel = Env("SB_ABILITY", "feizhua");    // default 临时飞爪
+        // ---- ability selection (P panel): dataset-driven, default 临时飞爪 ----
+        string abilitySel = Env("SB_ABILITY", "feizhua");
+        if (abilitySel == "feizhua") abilitySel = "临时飞爪";
+        else if (abilitySel == "ruyifa") abilitySel = "如意法";
+        else if (abilitySel == "flws") abilitySel = "风来吴山";
         string dataPath = Env("SB_DATA",
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "ability_candidates.json"));
         string soundDir = Env("SB_SOUND_DIR",
@@ -124,15 +127,18 @@ internal static class RebornClient
         var feiSteps = new List<ProcStep>();
         var feiTanis = new List<string>();
         string feiMatched = "";
-        var ruyiSteps = new List<ProcStep>();
-        var ruyiTanis = new List<string>();
-        string ruyiMatched = "";
-        bool ruyiActive = false;
-        long ruyiStart = 0, ruyiUntil = 0;
-        int ruyiIdx = 0;
-        bool ruyiPss = false;
-        string ruyiPssPath = "";
-        float lastRuyiX = 1e9f, lastRuyiZ = 1e9f;
+        // generic dataset-driven cast state (any ability with a staged process)
+        var castSteps = new List<ProcStep>();
+        var castTanis = new List<string>();
+        string castMatched = "";
+        string castName = "";
+        bool castActive = false;
+        long castStart = 0, castUntil = 0;
+        int castIdx = 0;
+        bool castPss = false;
+        string castPssPath = "";
+        float lastCastX = 1e9f, lastCastZ = 1e9f;
+        var datasetAbilityNames = new List<string>();   // panel: abilities with a process
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
         bool autoSkillConfirmDone = false;
@@ -152,6 +158,13 @@ internal static class RebornClient
                     if (d == null) continue;
                     object nv;
                     if (!d.TryGetValue("name", out nv) || nv == null || nv.ToString() != abName) continue;
+                    // the dataset has duplicate rows per name (resolved + empty);
+                    // skip the unresolved duplicates
+                    object mv0;
+                    bool hasMatched = d.TryGetValue("matched", out mv0) && mv0 != null && mv0.ToString() != "";
+                    object pv0;
+                    bool hasProc = d.TryGetValue("process", out pv0) && pv0 is object[] && ((object[])pv0).Length > 0;
+                    if (!hasMatched && !hasProc) continue;
                     object mv;
                     if (d.TryGetValue("matched", out mv) && mv != null) abMatched[0] = mv.ToString();
                     object tv;
@@ -190,9 +203,40 @@ internal static class RebornClient
             catch (Exception e) { Log("loadAbility(" + abName + ") ex: " + e.Message); }
         };
         string[] feiMatchedBox = new string[1] { "" };
-        string[] ruyiMatchedBox = new string[1] { "" };
+        string[] castMatchedBox = new string[1] { "" };
         Action loadFeiZhua = delegate { loadAbility("临时飞爪", feiSteps, feiTanis, feiMatchedBox); feiMatched = feiMatchedBox[0]; };
-        Action loadRuyi = delegate { loadAbility("如意法", ruyiSteps, ruyiTanis, ruyiMatchedBox); ruyiMatched = ruyiMatchedBox[0]; };
+        Action<string> loadCastAbility = delegate(string abName)
+        {
+            castSteps.Clear(); castTanis.Clear();
+            castName = abName; castMatched = ""; castMatchedBox[0] = "";
+            loadAbility(abName, castSteps, castTanis, castMatchedBox);
+            castMatched = castMatchedBox[0];
+        };
+        // panel list: every dataset ability that has a staged process
+        Action loadDatasetNames = delegate
+        {
+            datasetAbilityNames.Clear();
+            try
+            {
+                if (!File.Exists(dataPath)) return;
+                var ser = new JavaScriptSerializer();
+                var root = ser.DeserializeObject(File.ReadAllText(dataPath, System.Text.Encoding.UTF8)) as Dictionary<string, object>;
+                if (root == null || !root.ContainsKey("abilities")) return;
+                foreach (object o in (object[])root["abilities"])
+                {
+                    var d = o as Dictionary<string, object>;
+                    if (d == null) continue;
+                    string nm = StrOf(d, "name");
+                    if (nm == "") continue;
+                    object pv2;
+                    if (!d.TryGetValue("process", out pv2) || !(pv2 is object[]) || ((object[])pv2).Length == 0) continue;
+                    string mt = StrOf(d, "matched");
+                    if (mt == "") continue;   // skip unresolved duplicate rows
+                    if (!datasetAbilityNames.Contains(nm)) datasetAbilityNames.Add(nm);
+                }
+            }
+            catch (Exception e) { Log("loadDatasetNames ex: " + e.Message); }
+        };
 
         // resolve a process step's clip name to a vfs path
         Func<string, string> resolveTani = delegate(string needle)
@@ -200,7 +244,7 @@ internal static class RebornClient
             if (string.IsNullOrEmpty(needle)) return "";
             foreach (string t in feiTanis)
                 if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
-            foreach (string t in ruyiTanis)
+            foreach (string t in castTanis)
                 if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
             return f1 + "F1" + needle + ".tani";
         };
@@ -247,7 +291,7 @@ internal static class RebornClient
                 Log("note: another Skill instance is running - continuing (no limit)");
         }
         loadFeiZhua();
-        loadRuyi();
+        loadDatasetNames();
 
         var form = new Form();
         form.Text = "Skill";
@@ -290,23 +334,24 @@ internal static class RebornClient
         abilityBtn.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
         abilityBtn.Cursor = Cursors.Hand;
         var abilityPanel = new Panel();
-        abilityPanel.Size = new System.Drawing.Size(224, 96);
+        abilityPanel.Size = new System.Drawing.Size(224, 136);
         abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
         abilityPanel.Visible = false;
-        Func<string> abilityLabel = delegate
-        {
-            return "P: " + (abilitySel == "feizhua" ? "临时飞爪" : (abilitySel == "ruyifa" ? "如意法" : "风来吴山"));
-        };
+        Func<string> abilityLabel = delegate { return "P: " + abilitySel; };
+        var abilityItems = new List<string>();
+        abilityItems.Add("风来吴山");                 // single-clip demo
+        foreach (string nm in datasetAbilityNames) abilityItems.Add(nm);
         var abilityList = new ListBox();
-        abilityList.Items.Add("风来吴山 (flws)");
-        abilityList.Items.Add("临时飞爪 (feizhua)");
-        abilityList.Items.Add("如意法 (ruyifa)");
-        abilityList.SelectedIndex = abilitySel == "feizhua" ? 1 : (abilitySel == "ruyifa" ? 2 : 0);
+        abilityList.Items.AddRange(abilityItems.ToArray());
+        int abilitySelIdx = abilityItems.IndexOf(abilitySel);
+        abilityList.SelectedIndex = abilitySelIdx >= 0 ? abilitySelIdx : 0;
+        if (abilityList.SelectedIndex >= 0) abilitySel = abilityItems[abilityList.SelectedIndex];
         abilityList.Location = new System.Drawing.Point(6, 6);
-        abilityList.Size = new System.Drawing.Size(212, 60);
+        abilityList.Size = new System.Drawing.Size(212, 98);
         abilityList.SelectedIndexChanged += delegate
         {
-            abilitySel = abilityList.SelectedIndex == 1 ? "feizhua" : (abilityList.SelectedIndex == 2 ? "ruyifa" : "flws");
+            if (abilityList.SelectedIndex >= 0 && abilityList.SelectedIndex < abilityItems.Count)
+                abilitySel = abilityItems[abilityList.SelectedIndex];
             abilityBtn.Text = abilityLabel();
             Log("ability selected: " + abilitySel);
         };
@@ -315,7 +360,7 @@ internal static class RebornClient
         soundBox.Text = "sound";
         soundBox.ForeColor = System.Drawing.Color.White;
         soundBox.Checked = soundOn;
-        soundBox.Location = new System.Drawing.Point(6, 70);
+        soundBox.Location = new System.Drawing.Point(6, 110);
         soundBox.AutoSize = true;
         soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
         abilityPanel.Controls.Add(soundBox);
@@ -1395,7 +1440,7 @@ internal static class RebornClient
                 try { scene.FocusOnModel(); } catch { }
                 var am = new KGModelCLR();
                 am.AttachModel(ah);
-                string tani = Env("SB_ACTOR_TANI", ruyiMatched);
+                string tani = Env("SB_ACTOR_TANI", @"data\source\player\f1\动作\F1smj10双刀buff04_清净心01.tani");
                 Log("actor test: handle=" + ah + " tani=" + tani + " play=" + am.PlayAnimation(tani, 0, 1.0f, 0));
             }
             catch (Exception e) { Log("actor test ex: " + e.Message); }
@@ -1867,7 +1912,7 @@ internal static class RebornClient
             if (skillPressed)
             {
                 skillPressed = false;
-                if (abilitySel == "feizhua")
+                if (abilitySel == "临时飞爪")
                 {
                     // PointArea: first press enters the targeting phase, the
                     // second press (or a ground click) confirms at the marker
@@ -1881,26 +1926,7 @@ internal static class RebornClient
                         feiConfirm = true;
                     }
                 }
-                else if (abilitySel == "ruyifa")
-                {
-                    // dataset process: anim + sound + PSS. Timing from authored
-                    // data: the base .ani is 31 f @ 33 fps = 939 ms and plays
-                    // ONCE (a fixed 3 s window looped it 3x); the PSS runs its
-                    // own authored life (emitters up to 12.48 s).
-                    long animMs = 1000, pssMs = 3000;
-                    foreach (ProcStep s in ruyiSteps)
-                    {
-                        if (s.Kind == "anim" && s.Dur > 0) animMs = s.Dur;
-                        if (s.Kind == "dummy" && s.Dur > 0) pssMs = s.Dur;
-                    }
-                    skillUntil = now + animMs + 40;
-                    curClip = null;
-                    ruyiActive = true; ruyiStart = now; ruyiUntil = now + pssMs + 120;
-                    ruyiIdx = 0; ruyiPss = false; ruyiPssPath = "";
-                    lastRuyiX = 1e9f; lastRuyiZ = 1e9f;
-                    Log("ruyifa cast: steps=" + ruyiSteps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
-                }
-                else
+                else if (abilitySel == "风来吴山")
                 {
                     skillUntil = now + skillMs;
                     curClip = null;
@@ -1909,6 +1935,25 @@ internal static class RebornClient
                     // are data-gated)
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     Log("skill cast: 风来吴山");
+                }
+                else
+                {
+                    // dataset-driven cast: any staged ability's process steps.
+                    // Timing from the authored data (anim length, effect life);
+                    // the animation plays ONCE.
+                    loadCastAbility(abilitySel);
+                    long animMs = 1000, pssMs = 3000;
+                    foreach (ProcStep s in castSteps)
+                    {
+                        if (s.Kind == "anim" && s.Dur > 0) animMs = s.Dur;
+                        if (s.Kind == "dummy" && s.Dur > 0) pssMs = s.Dur;
+                    }
+                    skillUntil = now + animMs + 40;
+                    curClip = null;
+                    castActive = true; castStart = now; castUntil = now + pssMs + 120;
+                    castIdx = 0; castPss = false; castPssPath = "";
+                    lastCastX = 1e9f; lastCastZ = 1e9f;
+                    Log("cast: " + abilitySel + " steps=" + castSteps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
                 }
             }
 
@@ -1991,14 +2036,14 @@ internal static class RebornClient
                 }
             }
 
-            // 如意法: dataset process runner (anim / sound / dummy PSS on caster)
-            if (ruyiActive)
+            // generic dataset process runner (anim / sound / dummy PSS on caster)
+            if (castActive)
             {
-                long rel = now - ruyiStart;
-                while (ruyiIdx < ruyiSteps.Count && ruyiSteps[ruyiIdx].T <= rel)
+                long rel = now - castStart;
+                while (castIdx < castSteps.Count && castSteps[castIdx].T <= rel)
                 {
-                    ProcStep st = ruyiSteps[ruyiIdx];
-                    ruyiIdx++;
+                    ProcStep st = castSteps[castIdx];
+                    castIdx++;
                     try
                     {
                         if (st.Kind == "anim")
@@ -2007,7 +2052,7 @@ internal static class RebornClient
                             // against the ability's tani list
                             string path = st.V.IndexOf('\\') >= 0 ? st.V : resolveTani(st.V);
                             if (!string.IsNullOrEmpty(path)) { curClip = null; setClip(path); }
-                            Log("ruyifa anim -> " + st.V + " = " + path);
+                            Log("cast anim -> " + st.V + " = " + path);
                         }
                         else if (st.Kind == "sound")
                         {
@@ -2016,43 +2061,43 @@ internal static class RebornClient
                                 string wav = Path.Combine(soundDir, st.V + ".wav");
                                 if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
                             }
-                            Log("ruyifa sound -> " + st.V);
+                            Log("cast sound -> " + st.V);
                         }
                         else if (st.Kind == "dummy")
                         {
-                            if (Env("SB_RUYI_NOPSS", "0") == "1")
+                            if (Env("SB_CAST_NOPSS", Env("SB_RUYI_NOPSS", "0")) == "1")
                             {
-                                Log("ruyifa dummy skipped (SB_RUYI_NOPSS) -> " + st.V);
+                                Log("cast dummy skipped (SB_CAST_NOPSS) -> " + st.V);
                             }
                             else
                             {
-                                ruyiPss = true; ruyiPssPath = st.V;
-                                Log("ruyifa dummy -> " + st.V);
+                                castPss = true; castPssPath = st.V;
+                                Log("cast dummy -> " + st.V);
                             }
                         }
                     }
-                    catch (Exception e) { Log("ruyifa step ex (" + st.Kind + "): " + e.Message); }
+                    catch (Exception e) { Log("cast step ex (" + st.Kind + "): " + e.Message); }
                 }
-                if (ruyiPss && ruyiPssPath.Length > 0)
+                if (castPss && castPssPath.Length > 0)
                 {
-                    // the stance PSS follows the caster (reposition on movement)
-                    bool first = lastRuyiX > 1e8f;
-                    if (first || Math.Abs(px - lastRuyiX) > 16f || Math.Abs(pz - lastRuyiZ) > 16f)
+                    // the effect follows the caster (reposition on movement)
+                    bool first = lastCastX > 1e8f;
+                    if (first || Math.Abs(px - lastCastX) > 16f || Math.Abs(pz - lastCastZ) > 16f)
                     {
-                        lastRuyiX = px; lastRuyiZ = pz;
+                        lastCastX = px; lastCastZ = pz;
                         var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
                         float half = curYaw * 0.5f;
                         var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                         var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
-                        long h = scene.AddDummyModel("ruyi_pss", ruyiPssPath, pp, pr, ps);
-                        if (first) Log("ruyifa pss -> " + ruyiPssPath + " handle=" + h);
+                        long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
+                        if (first) Log("cast pss -> " + castPssPath + " handle=" + h);
                     }
                 }
-                if (now >= ruyiUntil)
+                if (now >= castUntil)
                 {
-                    ruyiActive = false;
-                    if (ruyiPss) { ruyiPss = false; try { scene.RemoveDummyModel("ruyi_pss"); } catch { } }
-                    Log("ruyifa done");
+                    castActive = false;
+                    if (castPss) { castPss = false; try { scene.RemoveDummyModel("cast_pss"); } catch { } }
+                    Log("cast done: " + castName);
                 }
             }
 

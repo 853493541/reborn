@@ -220,3 +220,30 @@ all tags should fire. Editor config to adopt when initializing the host
 **Links:** temp variants + run logs in `%TEMP%\opencode\skillv2\` (`ruyi_no_sfx` clean,
 `ruyi_only19/02/03` crash, `ruyi_only18` clean); `SB_ACTOR_TEST` hook in
 `ability_sandbox\rb\RebornClient.cs`.
+
+### 2026-09-29 — Skill sandbox — generic dataset-driven cast runner + 5 more abilities
+- Did: generalized the 如意法-specific runner into one **dataset-driven cast runner**
+  (`loadCastAbility` / `castSteps` / `castActive`), and made the P panel list every
+  dataset ability that has a staged process. Staged 5 more abilities in the tracked
+  dataset + `PROCESS` in `build_candidates.py` (anim length from MIN2, wem from the
+  confirmed list, PSS life from the emitter max `DelayTime+DurationTime`):
+  五蕴皆空 (576 ms + 157383905), 凌太虚 (620 ms + 45472664),
+  撼如雷 (939 ms + 22651465 + `t_天策撼如雷02_重制.pss` 8400 ms),
+  傍花随柳 (1697 ms + 7390771 + `w_万花蓄力脚下.pss` 14880 ms),
+  天地无极 (1394 ms + 252612285). The base `.ani` is played (not the tani): the tanis
+  embed `.Sfx` tags and the MovieEditor engine build is stale (see entry above).
+- Also fixed dataset hygiene: the generator now attaches `process` **only to the
+  resolved row** of each name (the dataset carries duplicate rows, resolved + empty;
+  the host takes the first resolved row). The previous hand-patch (stage5.py) had the
+  same semantics, but the generator re-added steps to unresolved rows — now regenerating
+  the dataset reproduces the committed file (only newer MECH/note text differs).
+- Evidence: smoke logs in `%TEMP%\opencode\skillv2\` (`run5_1` 五蕴皆空, `run5_2` 凌太虚,
+  `run5_3` 撼如雷, `run5_4b` 傍花随柳 steps=3, `run5_5` 天地无极); regenerated runtime
+  dataset verified in an interactive session
+  (`MovieEditor\bin64\Skill\out\Skill_20260929_234219.log`: 傍花随柳 steps=3
+  animMs=1697 pssMs=14880 + PSS handle, 凌太虚/天地无极 casts, `DONE`).
+  `py_compile` + `build_candidates.py` regen: 383 abilities, same counters as the
+  committed dataset; A/B field compare showed only the 2 newer doc-text rows differ.
+- Outcome: solved — 7 abilities now cast from authored data through one generic runner.
+- Re-open: engine tag-SFX path (stale MovieEditor build); when it is updated, the tani's
+  own `.Sfx` tags replace the staged `.ani`+PSS approximations.

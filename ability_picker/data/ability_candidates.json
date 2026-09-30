@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-28T17:24:03",
+ "generatedAt": "2026-09-29T23:40:35",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 300,
@@ -38,7 +38,7 @@
    "noAnim": false,
    "ip": false,
    "ipNote": "",
-   "mech": "临时飞爪 (道具技能 28031, 地面点, 最大 40 尺, CD 30s, 非战斗返还部分CD)\n1) 在落点生成隐形装置 NPC (模板 67816, 寿命 160 帧), SetModelID(70025)=爪锚; buff 12363 隐藏+无敌, 12343 悬停\n2) 施法者 DoAction(0, 140022/140023)\n3) 5 帧后 OnTimer: CastSkill(28032 链状表现) + CastSkillXYZ(28033 道具_孤风飒踏冲刺)\n4) 链条: skill_chain 28032 = 起点 S_rh(右手) -> 终点 S_fxmid, 特效 s_锁链01.pss\n   贴图: t_铁链02(链环) + s_链状_闪电01(光效) + l_流光01(流光); 已提取 bin64\\ability_picker\\chains\\\n5) 牵引: 28033 = DASH_TO_POINT(120,0) 把玩家拉向落点\n6) 动画: F1s16lxg链技能03_释放HD (孤风飒踏系); 落地 F1s16lxg链技能03_缓冲_HD\n7) 声音: wem 62588785 = s16lxglianjineng01_HD.wav (凌雪阁链音效)\n已解(引擎代码): 装置 70025 = data\\source\\npc_source\\a021\\模型\\a021b.mdl (GetRepresentModelPath), 但引擎用 buff 12363(气场隐藏且无敌)+12343(悬停) 将其隐藏 -> 落点不显示任何模型, 只提供 S_fxmid 链锚点\n动画链 (引擎表): skill_dash.txt 28033 -> AnimationID 91076 -> F1s16lxg链技能03b_hd.tani (牵引); 释放=链技能03_释放HD; 落地=链技能03_缓冲HD (91074)\n瞄准指示: cursor_effect.txt -> data\\source\\other\\特效\\系统\\SFX\\其他\\鼠标移动.Sfx (鼠标特效)\n链条表: 技能链=skill_chain.txt (s_锁链01.pss); 公共链=public_chain.txt (独立系统)\n技能层链条 = KRLSfx 实例 + 两点绑定 (从二进制解析):\n  - ApplyBindChainSfx -> KRLSfx::Init(this, pcszFile=FilePath(s_锁链01.pss)) 加载资源 -> handle@sfx+0x98, path@+0x20\n  - 绑定子对象 @sfx+0x48: 起点=施法者 S_rh, 终点=装置NPC S_fxmid; 偏移vec3@+0x1b4..1bc, scale@+0x1c8, Millisecond(float)@+0x1e0\n  - _CreatePublicChain: 按 ID 解析 pSrcCharacter/pDstCharacter, nLinkType 1..4 (rpclt_Total=5), 创建后每帧 UpdateSkillChain 由插槽重绑\n  - 触发: 服务器包 S2C_POINT_CHAIN_SKILL_EFFECT -> OnCharacterSkillChainDisplay\n  => 实现配方: 用 FilePath 建 SFX; 双点绑定到 S_rh 与装置 S_fxmid; 设 Millisecond=1000/旋转/偏移; 每帧从插槽更新\n动画层链条 (已忠实): tani 自带 l_凌雪阁出链带01/出链02/链技能03_3, 播放 tanis 时引擎自动触发\n未解: DoAction(0,140022/140023) 不在客户端动画表内 (服务器侧动作触发); DASH_TO_POINT 牵引移动 (引擎无 actor 位移 API)",
+   "mech": "临时飞爪 (道具技能 28031, 地面点, 最大 40 尺, CD 30s, 非战斗返还部分CD)\n1) 在落点生成隐形装置 NPC (模板 67816, 寿命 160 帧), SetModelID(70025)=爪锚; buff 12363 隐藏+无敌, 12343 悬停\n2) 施法者 DoAction(0, 140022/140023)\n3) 5 帧后 OnTimer: CastSkill(28032 链状表现) + CastSkillXYZ(28033 道具_孤风飒踏冲刺)\n4) 链条: skill_chain 28032 = 起点 S_rh(右手) -> 终点 S_fxmid, 特效 s_锁链01.pss\n   贴图: t_铁链02(链环) + s_链状_闪电01(光效) + l_流光01(流光); 已提取 bin64\\ability_picker\\chains\\\n5) 牵引: 28033 = DASH_TO_POINT(120,0) 把玩家拉向落点\n6) 动画: F1s16lxg链技能03_释放HD (孤风飒踏系); 落地 F1s16lxg链技能03_缓冲_HD\n7) 声音: wem 62588785 = s16lxglianjineng01_HD.wav (凌雪阁链音效)\n已解(引擎代码): 装置 70025 = data\\source\\npc_source\\a021\\模型\\a021b.mdl (GetRepresentModelPath), 但引擎用 buff 12363(气场隐藏且无敌)+12343(悬停) 将其隐藏 -> 落点不显示任何模型, 只提供 S_fxmid 链锚点\n动画链 (引擎表): skill_dash.txt 28033 -> AnimationID 91076 -> F1s16lxg链技能03b_hd.tani (牵引); 释放=链技能03_释放HD; 落地=链技能03_缓冲HD (91074)\n瞄准指示: cursor_effect.txt -> data\\source\\other\\特效\\系统\\SFX\\其他\\鼠标移动.Sfx (鼠标特效)\n链条表: 技能链=skill_chain.txt (s_锁链01.pss); 公共链=public_chain.txt (独立系统)\n技能层链条 = KRLSfx 实例 + 两点绑定 (从二进制解析):\n  - ApplyBindChainSfx -> KRLSfx::Init(this, pcszFile=FilePath(s_锁链01.pss)) 加载资源 -> handle@sfx+0x98, path@+0x20\n  - 绑定子对象 @sfx+0x48: 起点=施法者 S_rh, 终点=装置NPC S_fxmid; 偏移vec3@+0x1b4..1bc, scale@+0x1c8, Millisecond(float)@+0x1e0\n  - _CreatePublicChain: 按 ID 解析 pSrcCharacter/pDstCharacter, nLinkType 1..4 (rpclt_Total=5), 创建后每帧 UpdateSkillChain 由插槽重绑\n  - 触发: 服务器包 S2C_POINT_CHAIN_SKILL_EFFECT -> OnCharacterSkillChainDisplay\n  => 实现配方: 用 FilePath 建 SFX; 双点绑定到 S_rh 与装置 S_fxmid; 设 Millisecond=1000/旋转/偏移; 每帧从插槽更新\n动画层链条 (已忠实): tani 自带 l_凌雪阁出链带01/出链02/链技能03_3, 播放 tanis 时引擎自动触发\n未解: DoAction(0,140022/140023) 不在客户端动画表内 (服务器侧动作触发); DASH_TO_POINT 牵引移动 (引擎无 actor 位移 API)\n宿主(Skill, 2026-09-29): 落点=visibleTop (碰撞烘焙自上向下首击, 可站立) 且无攀爬上限; 瞄准 FOV=应用投影 48°x因子; 指示=正确资源 释放_范围选择01.mesh 但 VFS 缺材质 -> 引擎回退错误材质 (亮地面上几乎不可见); 忠实显示需要引擎特效通道 KG3DScene::GetSceneSFXEditor / KG3DSFX (未接通); 28032 .Sfx/KRLSfx 同类阻塞 (AddStateMachineModel E_FAIL)",
    "process": [
     {
      "t": 0,
@@ -812,14 +812,14 @@
    "noAnim": false,
    "ip": false,
    "ipNote": "",
-   "mech": "如意法 (道具 32247)\n1) 脚本: EXECUTE_SCRIPT + DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE x4 (清除移动限制组) + BindBuff 4421 (明教_夜叉心_免控)\n2) 动画 = F1smj10双刀buff04_清净心01 (免控姿态, m_明教清净心01.pss)\n3) 音效 wem 75054615 = riyuejiaohui.wav",
+   "mech": "如意法 (道具 32247)\n1) 脚本: EXECUTE_SCRIPT + DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE x4 (清除移动限制组) + BindBuff 4421 (明教_夜叉心_免控)\n2) 动画 = F1smj10双刀buff04_清净心01 (免控姿态, m_明教清净心01.pss)\n3) 音效 wem 75054615 = riyuejiaohui.wav\n宿主(Skill 2026-09-29): tani F1smj10双刀buff04_清净心01 内嵌 .Sfx 标签 (m明教元素18/19.sfx, g光晕02.sfx, 释放_气场聚集03.sfx) -> 播放该 tani 让宿主 AV (Render); 改播其基础 .ani f1smj10双刀buff04.ani (无标签) + 作者 PSS m_明教清净心01.pss 正常渲染 (火柱)",
    "process": [
     {
      "t": 0,
      "kind": "anim",
      "v": "data\\source\\player\\f1\\动作\\f1smj10双刀buff04.ani",
      "durMs": 939,
-     "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次 (tani 内嵌 .Sfx 标签会让宿主 AV, 播放其基础 .ani)"
+     "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次 (tani 内嵌 .Sfx 标签会让宿主 AV; 播放其基础 .ani)"
     },
     {
      "t": 0,
@@ -4433,7 +4433,21 @@
    "ip": false,
    "ipNote": "",
    "mech": "",
-   "process": []
+   "process": [
+    {
+     "t": 0,
+     "kind": "anim",
+     "v": "data\\source\\player\\f1\\动作\\f1ssl04袈裟攻击05.ani",
+     "durMs": 576,
+     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+    },
+    {
+     "t": 0,
+     "kind": "sound",
+     "v": "157383905",
+     "n": "157383905.wav"
+    }
+   ]
   },
   {
    "key": "绝境:28589:buff",
@@ -4860,7 +4874,29 @@
    "ip": false,
    "ipNote": "",
    "mech": "",
-   "process": []
+   "process": [
+    {
+     "t": 0,
+     "kind": "anim",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh点穴13a.ani",
+     "durMs": 1697,
+     "n": "基础动画 1697ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+    },
+    {
+     "t": 0,
+     "kind": "sound",
+     "v": "7390771",
+     "n": "7390771.wav"
+    },
+    {
+     "t": 0,
+     "kind": "dummy",
+     "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花蓄力脚下.pss",
+     "k": "cast_pss",
+     "durMs": 14880,
+     "n": "施法者 PSS 作者寿命 14880ms"
+    }
+   ]
   },
   {
    "key": "绝境:28596:buff",
@@ -5218,7 +5254,21 @@
    "ip": false,
    "ipNote": "",
    "mech": "",
-   "process": []
+   "process": [
+    {
+     "t": 0,
+     "kind": "anim",
+     "v": "data\\source\\player\\f1\\动作\\f1scy03技能05.ani",
+     "durMs": 620,
+     "n": "基础动画 620ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+    },
+    {
+     "t": 0,
+     "kind": "sound",
+     "v": "45472664",
+     "n": "45472664.wav"
+    }
+   ]
   },
   {
    "key": "绝境:28607:buff",
@@ -6819,7 +6869,21 @@
    "ip": false,
    "ipNote": "",
    "mech": "",
-   "process": []
+   "process": [
+    {
+     "t": 0,
+     "kind": "anim",
+     "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11c.ani",
+     "durMs": 1394,
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+    },
+    {
+     "t": 0,
+     "kind": "sound",
+     "v": "252612285",
+     "n": "252612285.wav"
+    }
+   ]
   },
   {
    "key": "绝境:28571:buff",
@@ -9290,7 +9354,29 @@
    "ip": false,
    "ipNote": "",
    "mech": "",
-   "process": []
+   "process": [
+    {
+     "t": 0,
+     "kind": "anim",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能22.ani",
+     "durMs": 939,
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+    },
+    {
+     "t": 0,
+     "kind": "sound",
+     "v": "22651465",
+     "n": "22651465.wav"
+    },
+    {
+     "t": 0,
+     "kind": "dummy",
+     "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策撼如雷02_重制.pss",
+     "k": "cast_pss",
+     "durMs": 8400,
+     "n": "施法者 PSS 作者寿命 8400ms"
+    }
+   ]
   },
   {
    "key": "绝境:28599:buff",

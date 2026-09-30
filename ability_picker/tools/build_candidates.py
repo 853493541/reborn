@@ -366,6 +366,42 @@ PROCESS = {
          "k": "ruyi_pss", "durMs": 12480,
          "n": "清净心发招 PSS: 作者寿命最长 12480ms (RepeatTimes=1), 随施法者"},
     ],
+    "五蕴皆空": [
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1ssl04袈裟攻击05.ani",
+         "durMs": 576,
+         "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "157383905", "n": "157383905.wav"},
+    ],
+    "凌太虚": [
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1scy03技能05.ani",
+         "durMs": 620,
+         "n": "基础动画 620ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "45472664", "n": "45472664.wav"},
+    ],
+    "撼如雷": [
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1s04tc技能22.ani",
+         "durMs": 939,
+         "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "22651465", "n": "22651465.wav"},
+        {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\t_天策撼如雷02_重制.pss",
+         "k": "cast_pss", "durMs": 8400,
+         "n": "施法者 PSS 作者寿命 8400ms"},
+    ],
+    "傍花随柳": [
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1s01wh点穴13a.ani",
+         "durMs": 1697,
+         "n": "基础动画 1697ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "7390771", "n": "7390771.wav"},
+        {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\w_万花蓄力脚下.pss",
+         "k": "cast_pss", "durMs": 14880,
+         "n": "施法者 PSS 作者寿命 14880ms"},
+    ],
+    "天地无极": [
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\F1s03cy剑技能11c.ani",
+         "durMs": 1394,
+         "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "252612285", "n": "252612285.wav"},
+    ],
 }
 
 # full ability mechanism write-ups (shown in the Mechanism tab of the picker)
@@ -474,7 +510,10 @@ def apply_overrides(all_entries: list) -> None:
         e["ip"] = name in IP
         e["ipNote"] = IP.get(name, "")
         e["mech"] = MECH.get(name, "")
-        e["process"] = PROCESS.get(name, [])
+        # process steps attach to the resolved row only: the dataset carries
+        # duplicate rows per name (resolved + empty) and the host picks the
+        # first row with a resolved tani
+        e["process"] = PROCESS.get(name, []) if e.get("matched") else []
 
 F1_DIR = r"data\source\player\f1\动作"
 TANI_RT = r"C:\SeasunGame\MovieEditor\ResourcePack\Tani.rt"
