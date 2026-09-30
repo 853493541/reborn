@@ -225,3 +225,16 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved for terrain ground forgiveness; structure blocking remains the
   host's server proxy.
 - Re-open: server-side obstacle data (client files cannot express doors/carpets).
+### 2026-09-29 — movement — CCT top rule: low obstacles never block
+- Did: the remaining "wood on the ground / carpet blocks" cases are merged-mesh
+  features with no up-facing support face (verified: at the gate contact the mesh
+  has 0 up-facing and 10 down-facing local triangles). Implemented the engine's
+  CCT rule directly: when a horizontal contact occurs, measure the obstacle top
+  from the geometry at the contact point (`LocalTop`, world-XZ-tight probe) and
+  climb (no block) whenever top <= feet + stepOffset; block only above.
+- Evidence: `client/FoliageCollision.cs` (LocalTop + Resolve), selftest 14/14
+  (`thin_low_plate_passes`, `thin_tall_plate_blocks`, `step_onto_low_edge`);
+  commit to follow; docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md §8.3.
+- Outcome: solved for low geometry; tall walls/gates still block.
+- Re-open: live spot with a still-blocking low object - the named blocker log
+  gives the model, then the local contact triangle can be inspected.

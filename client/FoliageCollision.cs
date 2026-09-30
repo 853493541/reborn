@@ -832,27 +832,39 @@ public sealed class FoliageCollision
             bool stepUp = false;
             if (bestIdx >= 0)
             {
-                Instance bi = _inst[bestIdx];
                 float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
                 if (horiz > 0.5f)
                 {
                     // CCT step semantics (PxControllerDesc.stepOffset = 0.5 m =
-                    // 50 u, recovered from PhysicsEngineX64): if a walkable
-                    // surface within the step budget exists at the contact (or
-                    // under the capsule), climb onto it instead of pushing out.
-                    // This is what lets the real client walk over low geometry
-                    // (carpet edges, sills, ledges) even inside merged meshes.
-                    float fwd = (radius + 2f) / horiz;
-                    float fx = px - best.nx * fwd;
-                    float fz = pz - best.nz * fwd;
-                    float sh = SupportHeight(fx, fz, py - 30f, py + stepHeight + 5f);
-                    if (sh <= ground || sh > py + stepHeight)
-                        sh = SupportHeight(px, pz, py - 30f, py + stepHeight + 5f);
-                    if (sh > ground && sh <= py + stepHeight)
+                    // 50 u, recovered from PhysicsEngineX64): an obstacle whose
+                    // top is within the step budget never blocks - the
+                    // controller climbs it. Measured from the geometry at the
+                    // contact point (not from an up-facing support face: merged
+                    // meshes often model thresholds/carpets with side/down faces
+                    // only).
+                    float pd = radius - best.depth;
+                    float cx2 = px - best.nx * pd;
+                    float cz2 = pz - best.nz * pd;
+                    float top = LocalTop(bestIdx, cx2, cz2, 10f);
+                    if (top > ground && top <= py + stepHeight)
                     {
-                        ground = sh;
+                        ground = top;
                         grounded = true;
                         stepUp = true;
+                    }
+                    else
+                    {
+                        // top face present case: probe just past the contact
+                        float fwd = (radius + 2f) / horiz;
+                        float fx = px - best.nx * fwd;
+                        float fz = pz - best.nz * fwd;
+                        float sh = SupportHeight(fx, fz, py - 30f, py + stepHeight + 5f);
+                        if (sh > ground && sh <= py + stepHeight)
+                        {
+                            ground = sh;
+                            grounded = true;
+                            stepUp = true;
+                        }
                     }
                 }
             }
@@ -907,6 +919,66 @@ public sealed class FoliageCollision
                 blocked = true;
         }
         return blocked;
+    }
+
+    // Highest world-space vertex Y of an instance's geometry inside a square of
+    // half-size `half` around (x, z): the obstacle top used by CCT step
+    // semantics (top within stepOffset => never blocks). Works for merged
+    // meshes whose low features carry no up-facing triangle.
+    public float LocalTop(int instIdx, float x, float z, float half)
+    {
+        if (instIdx < 0 || instIdx >= _inst.Count) return float.MinValue;
+        Instance it = _inst[instIdx];
+        float[] w2l = it.w2l;
+        if (w2l == null) return float.MinValue;
+        MeshData md = it.mesh;
+        float lx0 = float.MaxValue, lz0 = float.MaxValue, lx1 = float.MinValue, lz1 = float.MinValue;
+        for (int c = 0; c < 4; c++)
+        {
+            float wx = x + ((c & 1) == 0 ? -half : half);
+            float wz = z + ((c & 2) == 0 ? -half : half);
+            float lx = wx * w2l[0] + wz * w2l[8] + w2l[12];
+            float lz = wx * w2l[2] + wz * w2l[10] + w2l[14];
+            if (lx < lx0) lx0 = lx; if (lx > lx1) lx1 = lx;
+            if (lz < lz0) lz0 = lz; if (lz > lz1) lz1 = lz;
+        }
+        int cx0 = (int)((lx0 - md.gx0) / md.gcell), cx1 = (int)((lx1 - md.gx0) / md.gcell);
+        int cz0 = (int)((lz0 - md.gz0) / md.gcell), cz1 = (int)((lz1 - md.gz0) / md.gcell);
+        if (cx0 < 0) cx0 = 0; if (cz0 < 0) cz0 = 0;
+        if (cx1 >= md.gx) cx1 = md.gx - 1; if (cz1 >= md.gz) cz1 = md.gz - 1;
+        if (cx0 > cx1 || cz0 > cz1) return float.MinValue;
+        float best = float.MinValue;
+        for (int cz = cz0; cz <= cz1; cz++)
+        {
+            int rowBase = cz * md.gx;
+            for (int cx = cx0; cx <= cx1; cx++)
+            {
+                int c = rowBase + cx;
+                for (int k = md.cellStart[c]; k < md.cellStart[c + 1]; k++)
+                {
+                    int t = md.cellTri[k];
+                    int i0 = md.tris[t * 3] * 3, i1 = md.tris[t * 3 + 1] * 3, i2 = md.tris[t * 3 + 2] * 3;
+                    // tight world-XZ AABB test against the probe square (grid
+                    // cells are loose: a triangle may span many cells)
+                    float ax = md.verts[i0] * it.l2w[0] + md.verts[i0 + 1] * it.l2w[4] + md.verts[i0 + 2] * it.l2w[8] + it.l2w[12];
+                    float az = md.verts[i0] * it.l2w[2] + md.verts[i0 + 1] * it.l2w[6] + md.verts[i0 + 2] * it.l2w[10] + it.l2w[14];
+                    float bx = md.verts[i1] * it.l2w[0] + md.verts[i1 + 1] * it.l2w[4] + md.verts[i1 + 2] * it.l2w[8] + it.l2w[12];
+                    float bz = md.verts[i1] * it.l2w[2] + md.verts[i1 + 1] * it.l2w[6] + md.verts[i1 + 2] * it.l2w[10] + it.l2w[14];
+                    float dx = md.verts[i2] * it.l2w[0] + md.verts[i2 + 1] * it.l2w[4] + md.verts[i2 + 2] * it.l2w[8] + it.l2w[12];
+                    float dz = md.verts[i2] * it.l2w[2] + md.verts[i2 + 1] * it.l2w[6] + md.verts[i2 + 2] * it.l2w[10] + it.l2w[14];
+                    float tminx = Math.Min(ax, Math.Min(bx, dx)), tmaxx = Math.Max(ax, Math.Max(bx, dx));
+                    float tminz = Math.Min(az, Math.Min(bz, dz)), tmaxz = Math.Max(az, Math.Max(bz, dz));
+                    if (tmaxx < x - half || tminx > x + half) continue;
+                    if (tmaxz < z - half || tminz > z + half) continue;
+                    float ay = md.verts[i0] * it.l2w[1] + md.verts[i0 + 1] * it.l2w[5] + md.verts[i0 + 2] * it.l2w[9] + it.l2w[13];
+                    float by = md.verts[i1] * it.l2w[1] + md.verts[i1 + 1] * it.l2w[5] + md.verts[i1 + 2] * it.l2w[9] + it.l2w[13];
+                    float dy = md.verts[i2] * it.l2w[1] + md.verts[i2 + 1] * it.l2w[5] + md.verts[i2 + 2] * it.l2w[9] + it.l2w[13];
+                    float ty = Math.Max(ay, Math.Max(by, dy));
+                    if (ty > best) best = ty;
+                }
+            }
+        }
+        return best;
     }
 
     public float SupportHeight(float x, float z, float yLow, float yHigh)

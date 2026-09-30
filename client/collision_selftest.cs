@@ -126,7 +126,7 @@ internal static class CollisionSelfTest
             FoliageCollision col = new FoliageCollision(null, p);
             float px = 0f, py = 0f, pz = 0f, ground = 0f;
             bool grounded = false;
-            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("rail_between_samples", blocked && px <= -1.9f,
                 string.Format("blocked={0} px={1:F2}", blocked, px));
         }
@@ -186,6 +186,28 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("step_onto_low_edge", !blocked && grounded && Math.Abs(ground - 35f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
+        }
+
+        // 8. CCT top rule on face-only geometry: a thin plate with no up-facing
+        //    top below the step budget must not block; a tall one must block.
+        {
+            MeshBuilder low = new MeshBuilder();
+            low.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 30f, 20f, 200f, 30f, 20f, -200f);
+            string pl = WriteBin("plate_low", new MeshBuilder[] { low }, new float[][] { M(0f, 0f, 0f) });
+            FoliageCollision col = new FoliageCollision(null, pl);
+            float px = 25f, py = 0f, pz = 0f, ground = 0f;
+            bool grounded = false;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            Check("thin_low_plate_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
+                string.Format("blocked={0} ground={1:F2}", blocked, ground));
+
+            MeshBuilder tall = new MeshBuilder();
+            tall.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 30f, 200f, 200f, 30f, 200f, -200f);
+            string pt = WriteBin("plate_tall", new MeshBuilder[] { tall }, new float[][] { M(0f, 0f, 0f) });
+            col = new FoliageCollision(null, pt);
+            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            Check("thin_tall_plate_blocks", blocked, string.Format("blocked={0}", blocked));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"
