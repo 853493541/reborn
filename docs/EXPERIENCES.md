@@ -966,3 +966,13 @@ s=reborn_client_daqinggong.memory,
 - Evidence: demo run 15:32 on the cropped map — charge 8.4 s level (vy=0) -> release 10.2 s
   (velocity kept 2250 u/s) -> grounded by 12 s; selftest PASS; commit ec8376d; pid 30748.
 - Outcome: solved.
+
+
+### 2026-09-30 — client — WW release = 45-degree forward-down dash
+- Did: per the user's spec, the WW release (key 1, W keyup, or W not held) now converts
+  the kept forward speed into a forward-down dash at a configurable angle, default 45 deg:
+  y = -vxy * tan(angle) (2250/2250 u/s at 45). All release paths share wwEndState.
+  Hold behavior is incidental; the release is the dash. RC_WW_DASH_ANGLE overrides.
+- Evidence: demo run 15:49 on the cropped map — ww release: forward-down dash 45 deg ->
+  vxy=2250 u/s, vy=-2250 u/s, grounded by 12 s; selftest PASS; commit 59b7ac6; pid 10636.
+- Outcome: solved.
