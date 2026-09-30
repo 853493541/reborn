@@ -589,3 +589,16 @@ solved it, and what is still open. **Newest at the bottom.**
 - Next: drive the static dyn loader (`recon_dyn_methods.txt`) to add object
   actors, then query the real scene (`PhysicsScene` rva 0xFA7B8, `SweepEx`
   vt[16]) - P5 continues.
+
+### 2026-09-30 — collision — P5 static-object path is server-owned (LoadFromFile ok=0)
+- Extended `RC_PHYS_PROBE`: dyn vt[4] = `StaticPhysicsSceneManager::LoadFromFile`
+  (0x2BB80), vt[2] = UpdateScene (0x2BA90). `LoadFromFile(sceneDir, mapName)`
+  returns **ok=0**.
+- Cause (pak check): `data/source/maps/<map>/entities/sceneinfo/%03u_%03u.json`
+  does **not exist** in the shipped client - only `sceneinfo_full/%03u_%03u.json`
+  (editor data, 1448 objects in 002_002). The engine's runtime static-object
+  loader has no local source; that set is server-streamed (P1/P4 boundary).
+- P5 disposition: engine stack + terrain + scene manager run in-host
+  (feasibility proven); its remaining value is the PhysX query API on
+  terrain/dynamic actors, not static collision. Scan diagnostic fixed
+  (private-memory filter) after the crash.

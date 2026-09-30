@@ -30,6 +30,21 @@ internal static class PhysicsProbe
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int FourArgFn(IntPtr self, IntPtr a, IntPtr b, IntPtr c);
 
+    [StructLayout(LayoutKind.Sequential)]
+    struct MEMORY_BASIC_INFORMATION
+    {
+        public IntPtr BaseAddress;
+        public IntPtr AllocationBase;
+        public uint AllocationProtect;
+        public IntPtr RegionSize;
+        public uint State;
+        public uint Protect;
+        public uint Type;
+    }
+
+    [DllImport("kernel32.dll")]
+    static extern IntPtr VirtualQuery(IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, IntPtr dwLength);
+
     static IntPtr Vt(IntPtr obj, int index)
     {
         IntPtr vt = Marshal.ReadIntPtr(obj);
@@ -112,6 +127,11 @@ internal static class PhysicsProbe
         catch (Exception e) { log("physprobe: UpdateTerrain ex: " + e.Message); }
         finally { Marshal.FreeHGlobal(posBuf); }
 
+        IntPtr posBuf2 = Marshal.AllocHGlobal(12);
+        Marshal.WriteInt32(posBuf2, 0, BitConverter.ToInt32(BitConverter.GetBytes(px), 0));
+        Marshal.WriteInt32(posBuf2, 4, BitConverter.ToInt32(BitConverter.GetBytes(py), 0));
+        Marshal.WriteInt32(posBuf2, 8, BitConverter.ToInt32(BitConverter.GetBytes(pz), 0));
+
         IntPtr dynLoader = IntPtr.Zero;
         IntPtr cfg2 = Marshal.AllocHGlobal(16);
         Marshal.WriteInt32(cfg2, 0, 2);
@@ -131,6 +151,78 @@ internal static class PhysicsProbe
             log("physprobe: dyn vtable rva=0x" + baseRva.ToString("X"));
             for (int i = 0; i < 16; i++)
                 log(string.Format("physprobe:   dyn vt[{0}] rva=0x{1:X}", i, (Vt(dynLoader, i).ToInt64() - h.ToInt64())));
+
+            // StaticPhysicsSceneManager::LoadFromFile(sceneDir, mapName)
+            // (recon: 0x2BB80 = dyn vt[4]; CreateSceneFileDataLoader arg2 =
+            //  scene base dir; arg3 must be non-null -> map name)
+            string sceneDir = mapPath;
+            try
+            {
+                string fn = System.IO.Path.GetFileName(sceneDir);
+                sceneDir = sceneDir.Substring(0, sceneDir.Length - fn.Length).TrimEnd('\\');
+            }
+            catch { }
+            string mapName = System.IO.Path.GetFileNameWithoutExtension(mapPath);
+            log("physprobe: LoadFromFile dir=" + sceneDir + " name=" + mapName);
+            IntPtr dirBuf = Marshal.StringToHGlobalAnsi(sceneDir);
+            IntPtr nameBuf = Marshal.StringToHGlobalAnsi(mapName);
+            IntPtr r8buf = Marshal.AllocHGlobal(16);
+            try
+            {
+                var loadFromFile = Fn<FourArgFn>(Vt(dynLoader, 4));
+                int ok = loadFromFile(dynLoader, dirBuf, nameBuf, IntPtr.Zero);
+                log("physprobe: LoadFromFile ok=" + ok);
+            }
+            catch (Exception e) { log("physprobe: LoadFromFile ex: " + e.Message); }
+            finally { Marshal.FreeHGlobal(dirBuf); Marshal.FreeHGlobal(nameBuf); Marshal.FreeHGlobal(r8buf); }
+
+            // StaticPhysicsSceneManager::UpdateScene(float3 pos) (dyn vt[2])
+            try
+            {
+                var updateScene = Fn<BoolArgFn>(Vt(dynLoader, 2));
+                for (int i = 0; i < 5; i++) { updateScene(dynLoader, posBuf2); Thread.Sleep(50); }
+                log("physprobe: UpdateScene x5 done");
+            }
+            catch (Exception e) { log("physprobe: UpdateScene ex: " + e.Message); }
+        }
+        Marshal.FreeHGlobal(posBuf2);
+
+        // scan the process for live engine physics objects (vtable RVAs)
+        if (Environment.GetEnvironmentVariable("RC_PHYS_SCAN") == "1")
+        {
+            long hb = h.ToInt64();
+            long[] known = new long[] { 0xFA7B8, 0xFCCA8, 0xFCFE0, 0xFD198, 0xFA6C0, 0xFD2B0 };
+            string[] names = new string[] { "PhysicsScene", "StaticSceneMgr", "PhysicsTerrain", "TerrainRegionMgr", "PhysicsManager", "TerrainLoader" };
+            var counts = new int[known.Length];
+            long addr = 0x10000;
+            while (addr < 0x7FFFFFFFFFFF)
+            {
+                MEMORY_BASIC_INFORMATION mbi;
+                if (VirtualQuery(new IntPtr(addr), out mbi, new IntPtr(Marshal.SizeOf(typeof(MEMORY_BASIC_INFORMATION)))) == IntPtr.Zero)
+                    break;
+                long rsize = mbi.RegionSize.ToInt64();
+                if (rsize <= 0) break;
+                bool readable = mbi.State == 0x1000 && (mbi.Protect & 0x101) == 0 && mbi.Type == 0x20000;
+                if (readable && rsize <= 16L * 1024 * 1024)
+                {
+                    try
+                    {
+                        byte[] buf = new byte[(int)rsize];
+                        Marshal.Copy(new IntPtr(addr), buf, 0, (int)rsize);
+                        for (int i = 0; i + 8 <= buf.Length; i += 8)
+                        {
+                            long v = BitConverter.ToInt64(buf, i);
+                            long rva = v - hb;
+                            for (int k = 0; k < known.Length; k++)
+                                if (rva == known[k]) counts[k]++;
+                        }
+                    }
+                    catch { }
+                }
+                addr += rsize;
+            }
+            for (int k = 0; k < known.Length; k++)
+                log(string.Format("physprobe: scan {0} (rva 0x{1:X}) = {2}", names[k], known[k], counts[k]));
         }
     }
 }
