@@ -336,6 +336,19 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   subjects are committed/clean (or accept the tips as-is).
 - Re-open: merge + post-merge gates (collision 19/19, camera smoke, live T1/door spot).
 
+### 2026-09-29 — client — Merge camera-wall-clip (camera pen v3) into main
+- Did: merged `agent/camera-wall-clip` @ `0a8d60b` (`d450ba6`). Conflicts resolved: window
+  title kept main's `sandbox-<slug>` derivation (branch's hardcoded "Camera Pen v3"
+  dropped; `RC_TITLE` can reproduce it), `build_client.cmd` kept main's feature-build
+  contract, `EXPERIENCES.md` = main's entries + the branch's 300 added lines. Client
+  rebuilt (`exit=0`); camera smoke ALL PASS; shim source compiles with
+  `RC_D6Seed`/`RC_D6Dbg`/`RC_Shim` exports verified via a temp build.
+- Blocked: bin64 `camera_shim.dll` rebuild (activates the D6 seed) while three agent
+  clients hold the DLL (`reborn_client_campen_v3`, `reborn_client_collision`,
+  `reborn_client_ww_sandbox`) - run `native\build_shim.cmd` once they close.
+- Evidence: merge `d450ba6`; temp shim export check; `camera_smoke.exe` ALL PASS.
+- Outcome: merged (local only); D6 fix pending the shim rebuild.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
