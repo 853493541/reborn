@@ -1,0 +1,6 @@
+Index	IconPath	IconFrame	Tip	comment
+0		0		
+1	ui\Image\Dodge\DodgeIcon1.UITex	54	<text>text="对准建筑，可抛飞索。" font=0</text>	
+2	ui\Image\Dodge\DodgeIcon1.UITex	55	<text>text="可松开W键，轻功保持。" font=0</text>	
+3	ui\Image\Dodge\DodgeIcon1.UITex	51	<text>text="偏转镜头，可控制轨迹。" font=0</text>	
+4	ui\Image\Dodge\DodgeIcon1.UITex	52	<text>text="持续奔跑，可二段加速。" font=0</text>	

@@ -1,0 +1,77 @@
+Index	IconPath	IconFrame	IconOverFrame	HighLight	Name	KeyGroup	Desc	comment	MobileIconPath	MobileIconFrame	MobileBaseIconPath	MobileBaseIconFrame
+0		0	0	0								
+1	ui\Image\Dodge\DodgeIcon1.UITex	21	21		<JUMP>	<JUMP;0>		【space纵跃】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	2	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+2	ui\Image\Dodge\DodgeIcon1.UITex	11	11		<RIDEHORSE>	<RIDEHORSE;0>		【T轻功上马】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	4	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+3	ui\Image\Dodge\DodgeIcon1.UITex	14	14		Shift	<SHIFT;0>		【shift水花】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	19	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+4	ui\Image\Dodge\DodgeIcon1.UITex	9	9		Shift	<SHIFT;0>		【shift切入】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	0	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+5	ui\Image\Dodge\DodgeIcon1.UITex	4	4		松开<MOVEFORWARD>	<MOVEFORWARD;1>		【松开W登顶】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	16	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+6	ui\Image\Dodge\DodgeIcon1.UITex	5	5		<JUMP>	<JUMP;0>		【space踩人】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	6	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+7	ui\Image\Dodge\DodgeIcon1.UITex	43	43		Shift	<SHIFT;0>		【shift双人】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	54	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+8	ui\Image\Dodge\DodgeIcon1.UITex	19	19		<JUMP>	<JUMP;0>		【space一段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	31	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+9	ui\Image\Dodge\DodgeIcon1.UITex	6	6		<JUMP>	<JUMP;0>		【space二段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	12	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+10	ui\Image\Dodge\DodgeIcon1.UITex	10	10		<JUMP>	<JUMP;0>		【space三段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	46	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+11	ui\Image\Dodge\DodgeIcon1.UITex	15	15		<JUMP>	<JUMP;0>		【space四段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	58	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+12	ui\Image\Dodge\DodgeIcon1.UITex	16	16		Shift	<SHIFT;0>		【shift退出】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	22	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+13	ui\Image\Dodge\DodgeIcon1.UITex	13	13		双击<MOVEFORWARD>/<MOVEBACKWARD>	<MOVEFORWARD;2>|<MOVEBACKWARD;2>		【WW上冲/SS下冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+14	ui\Image\Dodge\DodgeIcon1.UITex	23	23		双击<TURNLEFT>/<TURNRIGHT>	<TURNLEFT;2>|<TURNRIGHT;2>		【AA左冲/DD右冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+15	ui\Image\Dodge\DodgeIcon1.UITex	7	7		Shift	<SHIFT;0>		【shift急降】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	26	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+16	ui\Image\Dodge\DodgeIcon1.UITex	24	24		按住<TURNLEFT>/<TURNRIGHT>	<TURNLEFT;1>|<TURNRIGHT;1>		【左A/右D滑翔(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	22	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+17	ui\Image\Dodge\DodgeIcon1.UITex	8	8		按住<MOVEFORWARD>/<MOVEBACKWARD>	<MOVEFORWARD;1>|<MOVEBACKWARD;1>		【快W/慢S滑翔(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	28	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+18	ui\Image\Dodge\DodgeIcon1.UITex	12	12		按住<MOVEFORWARD>	<MOVEFORWARD;0>		【W上爬】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	50	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+19	ui\Image\Dodge\DodgeIcon1.UITex	22	22		按住<TURNLEFT>	<TURNLEFT;0>		【A左跑(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	42	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+20	ui\Image\Dodge\DodgeIcon1.UITex	20	20		按住<TURNRIGHT>	<TURNRIGHT;0>		【D右跑(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	34	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+21	ui\Image\Dodge\DodgeIcon1.UITex	3	3		长按<MOVEBACKWARD>	<MOVEBACKWARD;0>		【S弹出(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	9	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+22	ui\Image\Dodge\DodgeIcon1.UITex	21	21		<MOVEFORWARD>	<MOVEFORWARD;0>		【w纵跃】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	6	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+23	ui\Image\Dodge\DodgeIcon1.UITex	17	17		<RIDEHORSE>	<RIDEHORSE;0>		【t翻身下马】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	11	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+24	ui\Image\Dodge\DodgeIcon1.UITex	18	18		<JUMP>	<JUMP;0>		【space轻功跳跃下马】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	42	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+25	ui\Image\Dodge\DodgeIcon1.UITex	41	41		<JUMP>	<JUMP;0>		【space双人一段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	28	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+26	ui\Image\Dodge\DodgeIcon1.UITex	33	33		<JUMP>	<JUMP;0>		【space双人二段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	10	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+27	ui\Image\Dodge\DodgeIcon1.UITex	38	38		<JUMP>	<JUMP;0>		【space双人三段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	44	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+28	ui\Image\Dodge\DodgeIcon1.UITex	39	39		<JUMP>	<JUMP;0>		【space双人四段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	56	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+29	ui\Image\Dodge\DodgeIcon1.UITex	2	2		<JUMP>	<JUMP;0>		【space出水】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	14	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+30	ui\Image\Dodge\DodgeIcon1.UITex	16	16		<TOGGLE_OPTION_PANEL>	<TOGGLE_OPTION_PANEL;0>		【esc退出】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+31	ui\Image\Dodge\DodgeIcon1.UITex	46	46		鼠标右键	<NIL;1>		【右键控向】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+32	ui\Image\Dodge\DodgeIcon1.UITex	44	44		<JUMP>	<JUMP;0>		【space五段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	24	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+33	ui\Image\Dodge\DodgeIcon1.UITex	30	30		<JUMP>	<JUMP;0>		【space六段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	32	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+34	ui\Image\Dodge\DodgeIcon1.UITex	31	31		<JUMP>	<JUMP;0>		【space七段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	36	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+35	ui\Image\Dodge\DodgeIcon1.UITex	0	0		<JUMP>	<JUMP;0>		【space八段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	2	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+36	ui\Image\Dodge\DodgeIcon1.UITex	40	40		<JUMP>	<JUMP;0>		【space双人五段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	62	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+37	ui\Image\Dodge\DodgeIcon1.UITex	35	35		<JUMP>	<JUMP;0>		【space双人六段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	30	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+38	ui\Image\Dodge\DodgeIcon1.UITex	36	36		<JUMP>	<JUMP;0>		【space双人七段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	34	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+39	ui\Image\Dodge\DodgeIcon1.UITex	34	34		Shift	<SHIFT;0>		【shift双人俯冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+40	ui\Image\Dodge\DodgeIcon1.UITex	32	32		Shift	<SHIFT;0>		【shift双人伞降】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	49	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+41	ui\Image\Dodge\DodgeIcon1.UITex	29	29		Shift	<SHIFT;0>		【shift双人挥斩】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	25	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+42	ui\Image\Dodge\DodgeIcon1.UITex	48	48		双击<TURNLEFT>	<TURNLEFT;2>		【AA左冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	40	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+43	ui\Image\Dodge\DodgeIcon1.UITex	45	45		双击<TURNRIGHT>	<TURNRIGHT;2>		【DD右冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	32	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+44	ui\Image\Dodge\DodgeIcon1.UITex	25	25		<JUMP>	<JUMP;0>		【space飞索】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	14	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+45	ui\Image\Dodge\DodgeIcon1.UITex	27	27		Shift	<SHIFT;0>		【shift滑铲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	21	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+46	ui\Image\Dodge\DodgeIcon1.UITex	50	50		按住<JUMP>	<JUMP;0>		【space蓄力】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	26	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+47	ui\Image\Dodge\DodgeIcon1.UITex	24	24	1	按住<TURNLEFT>/<TURNRIGHT>	<TURNLEFT;1>|<TURNRIGHT;1>		【左A/右D滑翔(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	22	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+48	ui\Image\Dodge\DodgeIcon1.UITex	8	8	1	按住<MOVEFORWARD>/<MOVEBACKWARD>	<MOVEFORWARD;1>|<MOVEBACKWARD;1>		【快W/慢S滑翔(H)】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	28	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+49	ui\Image\Dodge\DodgeIcon1.UITex	49	49	0	松开<JUMP>	<JUMP;1>		【space起跳】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	2	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+50	ui\Image\Dodge\DodgeIcon1.UITex	16	16		<JUMP>	<JUMP;0>		【space退出】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	21	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+51	ui\Image\Dodge\DodgeIcon1.UITex	53	53		<JUMP>	<JUMP;0>		【space突刺/飞索】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	60	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+52	ui\Image\Dodge\DodgeIcon1.UITex	28	28		Shift	<SHIFT;0>		【SHIFT滑翔】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	22	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+53	ui\Image\Dodge\DodgeIcon1.UITex	26	26		Shift	<SHIFT;0>		【SHIFT高跃】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	18	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+54	ui\Image\Dodge\DodgeIcon1.UITex	42	42		Shift	<SHIFT;0>		【shift御龙】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	36	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+55	ui\Image\Dodge\DodgeIcon1.UITex	37	37		Shift	<SHIFT;0>		【shift前冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	40	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+56	ui\Image\Dodge\DodgeIcon1.UITex	57	57		按住<MOVEFORWARD>	<MOVEFORWARD;1>		【W按住】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+57	ui\Image\Dodge\DodgeIcon1.UITex	58	58		<MOVEBACKWARD>	<MOVEBACKWARD;0>		【S急停】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+58	ui\Image\Dodge\DodgeIcon1.UITex	58	58		<JUMP>	<JUMP;0>		【空格急停】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	2	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+59	ui\Traits\mobilestreaming\Image\Dodge\DodgeCloud.UITex	8	8						ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	17
+60	ui\Image\Dodge\DodgeIcon1.UITex	47	47		<JUMP>	<JUMP;0>		【Space中跃】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	38	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	39
+61	ui\Image\Dodge\DodgeIcon1.UITex	49	49	0	<JUMP>	<JUMP;0>		【space起跳】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	2	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+62	ui\Image\Dodge\DodgeIcon1.UITex	7	7		<JUMP>	<JUMP;0>		【space急坠】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	26	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+63	ui\Image\Dodge\DodgeIcon1.UITex	9	9		Shift	<SHIFT;0>		【shift切换】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	0	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+64	ui\Image\Dodge\DodgeIcon1.UITex	61	61		Alt	<ALT;0>		【Alt切入5.0】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	48	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	48
+65	ui\Image\Dodge\DodgeIcon1.UITex	59	59		<JUMP>	<JUMP;0>		【空格5.0翻越】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	46	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	46
+66	ui\Image\Dodge\DodgeIcon1.UITex	60	60		Alt	<ALT;0>		【Alt切出5.0】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47
+67	ui\Image\Dodge\DodgeIcon1.UITex	26	26		Alt	<ALT;0>		【Alt高跃】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	18	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	39
+68	ui\Image\Dodge\DodgeIcon1.UITex	37	37		<JUMP>	<JUMP;0>		【space前冲】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	40	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	23
+69	ui\Image\Dodge\DodgeIcon1.UITex	60	60		Shift	<SHIFT;0>		【shift切入滑行】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47
+70	ui\Image\Dodge\DodgeIcon1.UITex	49	49		<JUMP>	<JUMP;0>		【space滑行起跳】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	2	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+71	ui\Image\Dodge\DodgeIcon1.UITex	60	60		Shift	<SHIFT;0>		【shift切出滑行】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47
+72	ui\Image\Dodge\DodgeIcon1.UITex	62	62		Alt	<ALT;0>		【shift滑行】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	47
+73	ui\Image\Dodge\DodgeIcon1.UITex	44	44		Shift	<SHIFT;0>		【shift五段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	24	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+74	ui\Image\Dodge\DodgeIcon1.UITex	30	30		Shift	<SHIFT;0>		【shift六段】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud2.UITex	32	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	15
+75	ui\Image\Dodge\DodgeIcon1.UITex	63	63		<RIDEHORSE>	<RIDEHORSE;0>		【t翻身下马】	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	11	ui/Traits/mobilestreaming/Image/Dodge/DodgeCloud.UITex	63

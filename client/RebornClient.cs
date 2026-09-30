@@ -112,10 +112,14 @@ internal static class RebornClient
         // stage 1/2 = 跳跃2/3 (小跳b/c), stage 3 (downward) = ChongCiQingGong dive.
         // NOTE: f1b02yd二段跳a.tani AVs the engine in KGEngineCLR.Render()
         // (reproduced 2026-09-29, RC_DEMO with that clip as clipJump).
-        string[] clipLeapStage = new string[4];
+        string[] clipLeapStage = new string[6];
         clipLeapStage[1] = Env("RC_CLIP_LEAP1", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         clipLeapStage[2] = Env("RC_CLIP_LEAP2", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
         clipLeapStage[3] = Env("RC_CLIP_LEAP3", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
+        clipLeapStage[4] = Env("RC_CLIP_LEAP4", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
+        clipLeapStage[5] = Env("RC_CLIP_LEAP5", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
+        // End-phase glide (forward-down dash) uses the ChongCiQingGong dive clip.
+        string clipGlide = Env("RC_CLIP_GLIDE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -711,6 +715,7 @@ internal static class RebornClient
         int chainStage = 0;
         float leapGravityPerSec = 0f;   // active chain-stage gravity (0 = default)
         float leapSpeedXY = 0f;         // authored JumpSpeedXY of the active stage (u/s)
+        bool leapGlide = false;         // stage rise ended -> End forward-down glide phase
         Action wwLeap = delegate()
         {
             float vzf = WwRules.ChainVzFrame[chainStage];
@@ -1472,7 +1477,7 @@ internal static class RebornClient
             if (wwDemo && !wwDemoJumped && now >= 6000)
             {
                 wwDemoJumped = true;
-                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; }
+                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
                 Log("wwdemo: ground jump");
             }
             if (wwDemo && !wwDemoLeaped && now >= 8000)
@@ -1792,7 +1797,7 @@ internal static class RebornClient
                     grounded = false; vy = 0f;
                     // walking off a ledge counts as the J0 takeoff done, so the
                     // first air WW can start the chain (as in the game)
-                    chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f;
+                    chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false;
                 }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
@@ -1802,14 +1807,23 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; }
+                if (grounded) { vy = pJumpV; grounded = false; chainStage = 1; leapGravityPerSec = 0f; leapSpeedXY = 0f; leapGlide = false; }
             }
 
             // gravity (WW air chain applies the JumpParam stage gravity)
             if (!grounded)
             {
-                // apex of a chain stage -> back to the default (End) gravity 11
-                if (leapGravityPerSec != 0f && vy <= 0f) leapGravityPerSec = 0f;
+                // chain stage rise ends -> authored End triple: forward-down glide
+                if (leapGravityPerSec != 0f && vy <= 0f && !leapGlide)
+                {
+                    leapGlide = true;
+                    vy = WwRules.EndVzFrame * WwRules.LogicTicksPerSecond;
+                    leapGravityPerSec = -WwRules.EndGravityFrame * WwRules.LogicTicksPerSecond * WwRules.LogicTicksPerSecond;
+                    leapSpeedXY = WwRules.EndSpeedXYFrame * WwRules.LogicTicksPerSecond;
+                    Log("ww AIR: chain End phase vxy=" + WwRules.EndSpeedXYFrame + " u/f vz=" +
+                        WwRules.EndVzFrame + " g=" + WwRules.EndGravityFrame +
+                        " -> " + leapSpeedXY + " u/s fwd, " + vy + " u/s down");
+                }
                 vy += (leapGravityPerSec != 0f ? leapGravityPerSec : pGravity) * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
@@ -1822,6 +1836,7 @@ internal static class RebornClient
                     chainStage = 0;
                     leapGravityPerSec = 0f;
                     leapSpeedXY = 0f;
+                    leapGlide = false;
                 }
             }
 
@@ -1831,9 +1846,13 @@ internal static class RebornClient
             {
                 if (leapGravityPerSec != 0f)
                 {
-                    int li = chainStage - 1;
-                    if (li < 1 || li > 3) li = 1;
-                    setClip(clipLeapStage[li]);
+                    if (leapGlide) setClip(clipGlide);
+                    else
+                    {
+                        int li = chainStage - 1;
+                        if (li < 1 || li > 5) li = 1;
+                        setClip(clipLeapStage[li]);
+                    }
                 }
                 else setClip(vy > 0f ? clipJump : clipFall);
             }
@@ -2772,7 +2791,7 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? (leapGravityPerSec != 0f ? "LEAP" : vy > 0f ? "JUMP" : "FALL")
+                string state = skillUntil > now ? "SKILL" : !grounded ? (leapGlide ? "GLIDE" : leapGravityPerSec != 0f ? "LEAP" : vy > 0f ? "JUMP" : "FALL")
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed

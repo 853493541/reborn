@@ -20,9 +20,16 @@ internal static class WwRules
     public const float VzClampMaxPerSecond = 2047f * LogicTicksPerSecond;
     public const float SprintSpeedPerSecond = 8.8f * 64f;
 
-    public static readonly float[] ChainVzFrame = { 90f, 300f, 400f, -250f };
-    public static readonly float[] ChainGravityFrame = { 11f, 20f, 20f, 8f };
-    public static readonly float[] ChainSpeedXYFrame = { 40f, 30f, 50f, 100f };
+    // settings/JumpParam.tab school 4 (万花/点墨江山, the sandbox actor's school;
+    // fresh extraction 2026-09-29), Vz u/frame, G u/frame^2, MaxJumpCount 5:
+    //   J1 50/160/8  J2 70/240/7  J3 100/700/36  J4/J5 100/-250/8
+    //   End triple (all stages): xy 125, vz -140, g 12  -> forward-down glide
+    public static readonly float[] ChainVzFrame = { 90f, 160f, 240f, 700f, -250f, -250f };
+    public static readonly float[] ChainGravityFrame = { 11f, 8f, 7f, 36f, 8f, 8f };
+    public static readonly float[] ChainSpeedXYFrame = { 40f, 50f, 70f, 100f, 100f, 100f };
+    public const float EndSpeedXYFrame = 125f;
+    public const float EndVzFrame = -140f;
+    public const float EndGravityFrame = 12f;
 
     public enum WwAction
     {
@@ -57,17 +64,19 @@ internal static class WwRules
         fail += Check("AIR_WW_LEAP", Evaluate(false, true, true, 1), WwAction.Leap);
         fail += Check("AIR_WW_NO_WEAPON_NONE", Evaluate(false, true, false, 1), WwAction.None);
         fail += Check("AIR_WW_STAGE0_NONE", Evaluate(false, true, true, 0), WwAction.None);
-        fail += Check("AIR_WW_EXHAUSTED_NONE", Evaluate(false, true, true, 4), WwAction.None);
+        fail += Check("AIR_WW_EXHAUSTED_NONE", Evaluate(false, true, true, 6), WwAction.None);
         fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true, 1), WwAction.None);
-        fail += CheckValue("CHAIN_J1_VZ", ChainVzFrame[1], 300f);
-        fail += CheckValue("CHAIN_J1_G", ChainGravityFrame[1], 20f);
-        fail += CheckValue("CHAIN_J1_XY", ChainSpeedXYFrame[1], 30f);
-        fail += CheckValue("CHAIN_J2_VZ", ChainVzFrame[2], 400f);
-        fail += CheckValue("CHAIN_J2_XY", ChainSpeedXYFrame[2], 50f);
-        fail += CheckValue("CHAIN_J3_VZ", ChainVzFrame[3], -250f);
-        fail += CheckValue("CHAIN_J3_XY", ChainSpeedXYFrame[3], 100f);
-        fail += CheckRange("LEAP_J1_APEX_M", ApexMeters(1), 11.0f, 12.5f);
-        fail += CheckRange("LEAP_J2_APEX_M", ApexMeters(2), 19.5f, 22.0f);
+        fail += CheckValue("CHAIN_J1_VZ", ChainVzFrame[1], 160f);
+        fail += CheckValue("CHAIN_J1_G", ChainGravityFrame[1], 8f);
+        fail += CheckValue("CHAIN_J1_XY", ChainSpeedXYFrame[1], 50f);
+        fail += CheckValue("CHAIN_J2_VZ", ChainVzFrame[2], 240f);
+        fail += CheckValue("CHAIN_J2_XY", ChainSpeedXYFrame[2], 70f);
+        fail += CheckValue("CHAIN_J3_VZ", ChainVzFrame[3], 700f);
+        fail += CheckValue("CHAIN_J4_VZ", ChainVzFrame[4], -250f);
+        fail += CheckValue("CHAIN_END_XY", EndSpeedXYFrame, 125f);
+        fail += CheckValue("CHAIN_END_VZ", EndVzFrame, -140f);
+        fail += CheckValue("CHAIN_END_G", EndGravityFrame, 12f);
+        fail += CheckRange("LEAP_J3_APEX_M", ApexMeters(3), 34.0f, 37.0f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
     }

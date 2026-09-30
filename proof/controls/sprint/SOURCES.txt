@@ -1,0 +1,20 @@
+Sprint/displacement UI tables extracted from the client paks with the official
+extractor (read-only store, output only into this proof dir):
+
+  tool : C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PakV4SfxExtract.exe
+  args : <pathlist.txt> <out-dir>
+  store: C:\SeasunGame\Game\JX3\Pakv4 (read-only)
+
+  ui\Scheme\Case\Sprint\Condition.tab  -- per-school chain stage table
+                                           (纵跃段 = JumpCount 1, 四段斜降, 六段俯冲, …)
+  ui\Scheme\Case\Sprint\Action.tab     -- official action dictionary (WW上冲, w纵跃,
+                                           space急坠/一段..八段, shift滑翔, …)
+  ui\Scheme\Case\Sprint\Display.tab    -- display tips
+  ui\Scheme\Case\SpecialSprint.tab     -- per-school upper jump-count branches
+  settings\JumpParam.tab               -- fresh copy (chain triples incl. the End
+                                          125/-140/12 forward-down glide triple)
+  settings\JumpFrameParam.tab          -- fresh copy (curves only for schools 10/11)
+
+Registry of table names -> paths: ui\script\common\table_defs.lua (g_tTableFile).
+Runtime dispatcher: ui\script\hotkeys.lua ResponseDisplacementHotkey (proto 44),
+script side ui\script\sprintbase.lua (proof/netcode/ui_scripts/b03/...).

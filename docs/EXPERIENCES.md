@@ -215,3 +215,21 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `settings/skill/Buff.tab` names, `ui/Scheme/Case/Skill.txt` names,
   editor resource index (Z_纵跃UI.pss), repo `string.txt` (STR_SPRINT*).
 - Outcome: done (research only).
+
+### 2026-09-29 — controls — WW = 纵跃段 + authored End glide (forward-down dash)
+- Did: found the client-side sprint system: `ui\script\sprintbase.lua` +
+  `hotkeys.lua` `ResponseDisplacementHotkey` (proto 44) dispatcher, driven by the UI
+  tables `\UI\Scheme\Case\Sprint\Condition.tab` / `Action.tab` (extracted to
+  `proof/controls/sprint/out`, registry in `ui\script\common\table_defs.lua`).
+  Official key map (Action.tab): 双击W = 【WW上冲】, 双击S = 【SS下冲】, w = 【w纵跃】,
+  Space = 一段..八段/急坠, Shift = 滑翔/高跃/急降, 按住W = 快W滑翔/上爬. Condition.tab:
+  纵跃段 = JumpCount 1 "前跃第一段跳"; stages 一段/二段/三段鹰/四段斜降/六段俯冲; 双人冲刺/俯冲;
+  凌霄登顶; 纵马疾驰·纵跃段.
+- Motion: fresh `settings/JumpParam.tab` school 4 (万花, the F1 actor's school):
+  J1 50/160/8, J2 70/240/7, J3 100/700/36, J4/J5 100/-250/8; shared **End triple
+  xy 125 vz -140 g 12** = the forward-down glide (1875 u/s fwd, 2100 u/s down).
+  Sandbox: air WW -> 纵跃段 takeoff, at apex -> End glide phase (dive clip).
+- Evidence: demo run 22:05 — leap 2400 u/s up, End 1875 fwd / -2100 down, lands t=12s;
+  selftest 17/17 PASS; tables committed under `proof/controls/sprint/`.
+- Outcome: solved. The "downward+forward dash" is the authored End/glide phase after the
+  纵跃段 takeoff (not an upward-only leap).
