@@ -24,6 +24,16 @@ public sealed class FoliageCollision
         public float nx, ny, nz;
         public float depth;
         public float py;
+        // world-space top of the contacting triangle: the CCT step budget is
+        // compared against the surface that actually blocks (merged meshes mix
+        // low planks and tall walls in one mesh, so the neighbourhood is not
+        // usable for this)
+        public float triTop;
+        // lowest top among all horizontal contacts touching the capsule: a low
+        // plank at a tall wall touches the capsule too, and the deepest contact
+        // may be the tall face. If any touching face is within the step budget,
+        // the controller climbs (CCT top rule).
+        public float lowTop;
     }
 
     sealed class MeshData
@@ -475,6 +485,7 @@ public sealed class FoliageCollision
     // produced a push-out / blocked result in the last Resolve.
     public int LastBlockedInst = -1;
     public float LastBlockedDepth, LastBlockedNx, LastBlockedNy, LastBlockedNz, LastBlockedPy;
+    public float LastBlockedTriTop;
     // profiling counters (always counted; cheap int adds)
     public long ProfInstTouches, ProfTriTests;
 
@@ -796,7 +807,21 @@ public sealed class FoliageCollision
                         best.nx = nx; best.ny = ny; best.nz = nz;
                         best.depth = depth;
                         best.py = cpx * it.l2w[1] + cpy * it.l2w[5] + cpz * it.l2w[9] + it.l2w[13];
+                        // world top of the contacting triangle (CCT step test)
+                        float v0y = md.verts[i0] * it.l2w[1] + md.verts[i0 + 1] * it.l2w[5] + md.verts[i0 + 2] * it.l2w[9] + it.l2w[13];
+                        float v1y = md.verts[i1] * it.l2w[1] + md.verts[i1 + 1] * it.l2w[5] + md.verts[i1 + 2] * it.l2w[9] + it.l2w[13];
+                        float v2y = md.verts[i2] * it.l2w[1] + md.verts[i2 + 1] * it.l2w[5] + md.verts[i2 + 2] * it.l2w[9] + it.l2w[13];
+                        best.triTop = Math.Max(v0y, Math.Max(v1y, v2y));
                         found = true;
+                    }
+                    // low horizontal face touching the capsule (any depth)
+                    if (Math.Sqrt(nx * nx + nz * nz) > 0.5f)
+                    {
+                        float v0y = md.verts[i0] * it.l2w[1] + md.verts[i0 + 1] * it.l2w[5] + md.verts[i0 + 2] * it.l2w[9] + it.l2w[13];
+                        float v1y = md.verts[i1] * it.l2w[1] + md.verts[i1 + 1] * it.l2w[5] + md.verts[i1 + 2] * it.l2w[9] + it.l2w[13];
+                        float v2y = md.verts[i2] * it.l2w[1] + md.verts[i2 + 1] * it.l2w[5] + md.verts[i2 + 2] * it.l2w[9] + it.l2w[13];
+                        float ttop = Math.Max(v0y, Math.Max(v1y, v2y));
+                        if (ttop < best.lowTop) best.lowTop = ttop;
                     }
                 }
             }
@@ -813,6 +838,7 @@ public sealed class FoliageCollision
         for (int iter = 0; iter < 3; iter++)
         {
             Contact best = new Contact();
+            best.lowTop = float.MaxValue;
             bool any = false;
             int bestIdx = -1;
             GatherCandidates(px, pz, radius + 600f, _cand);
@@ -838,33 +864,18 @@ public sealed class FoliageCollision
                     // CCT step semantics (PxControllerDesc.stepOffset = 0.5 m =
                     // 50 u, recovered from PhysicsEngineX64): an obstacle whose
                     // top is within the step budget never blocks - the
-                    // controller climbs it. Measured from the geometry at the
-                    // contact point (not from an up-facing support face: merged
-                    // meshes often model thresholds/carpets with side/down faces
-                    // only).
-                    float pd = radius - best.depth;
-                    float cx2 = px - best.nx * pd;
-                    float cz2 = pz - best.nz * pd;
-                    float top = LocalTop(bestIdx, cx2, cz2, 10f);
+                    // controller climbs it. The top is taken from the triangle
+                    // that actually contacts the capsule: merged meshes mix low
+                    // planks and tall walls in one mesh, so a neighbourhood
+                    // measurement would wrongly include the tall parts.
+                    float top = best.triTop;
+                    if (top > py + stepHeight && best.lowTop <= py + stepHeight)
+                        top = best.lowTop;
                     if (top > ground && top <= py + stepHeight)
                     {
                         ground = top;
                         grounded = true;
                         stepUp = true;
-                    }
-                    else
-                    {
-                        // top face present case: probe just past the contact
-                        float fwd = (radius + 2f) / horiz;
-                        float fx = px - best.nx * fwd;
-                        float fz = pz - best.nz * fwd;
-                        float sh = SupportHeight(fx, fz, py - 30f, py + stepHeight + 5f);
-                        if (sh > ground && sh <= py + stepHeight)
-                        {
-                            ground = sh;
-                            grounded = true;
-                            stepUp = true;
-                        }
                     }
                 }
             }
@@ -881,6 +892,7 @@ public sealed class FoliageCollision
                     LastBlockedDepth = best.depth;
                     LastBlockedNx = best.nx; LastBlockedNy = best.ny; LastBlockedNz = best.nz;
                     LastBlockedPy = best.py;
+                    LastBlockedTriTop = best.triTop;
                 }
             }
             if (best.ny > 0.55f && best.py > ground && best.py <= py + 60f)

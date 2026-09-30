@@ -238,3 +238,13 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved for low geometry; tall walls/gates still block.
 - Re-open: live spot with a still-blocking low object - the named blocker log
   gives the model, then the local contact triangle can be inspected.
+### 2026-09-29 — movement — Low touching face wins the CCT step test (plank at wall passes)
+- Did: at the gate the deepest contact was a tall face (top 860.8 vs feet 636.9) while a low
+  face also touched the capsule, so the step test blocked. `InstanceContact` now tracks
+  `lowTop` (lowest top among all horizontal faces touching the capsule) and `Resolve` climbs
+  when `lowTop` is within the step budget. Live test at the gate: the first low contact now
+  passes (blocked=False, player climbed and continued); the next block is a genuine 1.03 m
+  face (top 741.7, feet 638) beyond the recovered 0.5 m step budget.
+- Evidence: `client/FoliageCollision.cs`; selftest 15/15 (`low_plank_at_wall_passes`);
+  run log `reborn_20260929_175736.log`.
+- Outcome: solved for low geometry at wall bases; >0.5 m still blocks (engine default).

@@ -208,6 +208,18 @@ internal static class CollisionSelfTest
             px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = false;
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("thin_tall_plate_blocks", blocked, string.Format("blocked={0}", blocked));
+
+            // tall wall behind + low plank in front: the low touching face wins
+            // the step test (CCT top rule), the player walks in
+            MeshBuilder mixed = new MeshBuilder();
+            mixed.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 30f, 200f, 200f, 30f, 200f, -200f);
+            mixed.AddQuad(27f, 0f, -200f, 27f, 0f, 200f, 27f, 20f, 200f, 27f, 20f, -200f);
+            string pm = WriteBin("plate_mixed", new MeshBuilder[] { mixed }, new float[][] { M(0f, 0f, 0f) });
+            col = new FoliageCollision(null, pm);
+            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            Check("low_plank_at_wall_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
+                string.Format("blocked={0} ground={1:F2}", blocked, ground));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"
