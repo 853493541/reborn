@@ -609,7 +609,7 @@ internal static class RebornClient
         // (find columns with a raised standable surface near the spawn) -
         // engine-driven target discovery, no guessing. One row per frame.
         bool scanOn = Env("SB_SCAN", "0") == "1";
-        int scanRow = -9;
+        int scanRow = -14;
         long loopStartMs = 0;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
@@ -1067,22 +1067,24 @@ internal static class RebornClient
         long feiPullMs = 3500;          // pull budget (3-D distance based)
         float feiRayY = -1e9f;          // raw aim-ray hit Y (pre-surface resolve)
         float feiSurfY = -1e9f;         // visible top Y at the aimed column
-        // Visible top of a column: the surface the player sees/stands on - the
-        // first scene hit from above (cliffs, rocks, roofs) or the baked
-        // terrain, whichever is higher. This replaces the game-mask vertical
-        // probe, which returns phantom collision heights (verified 2026-09-29:
-        // ~9045/29122 u over plain dune columns) and whose old 10000-u start
-        // capped tall targets - the source of the Z "half way" pull.
+        // Player-collidable top of a column: first hit of the baked collision
+        // geometry (roofs, rocks, foliage) cast straight down, max with the
+        // baked terrain. The scene-ray descent could hit non-collidable visuals
+        // (a "roof" in mid-air that locked the player in place); the collision
+        // bake is the geometry the player can actually stand on.
         Func<float, float, float> visibleTop = delegate(float sx, float sz)
         {
             float best = sampler != null ? sampler.Sample(sx, sz) : -1f;
             try
             {
-                float d = engineRay.RayScene(sx, 40000f, sz, sx, 0f, sz);
-                if (d > 0f)
+                if (col != null)
                 {
-                    float y = 40000f - d;
-                    if (y > best) best = y;
+                    float d = col.Raycast(sx, 40000f, sz, sx, 0f, sz);
+                    if (d > 0f)
+                    {
+                        float y = 40000f - d;
+                        if (y > best) best = y;
+                    }
                 }
             }
             catch { }
@@ -1229,12 +1231,9 @@ internal static class RebornClient
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
         // ---- 临时飞爪 (28031): PointArea target ray + cast action ----
-        // authored ground-target indicator: the client's yellow hint circle
-        // (6 尺, ground-hugging). The raw range-select mesh rendered untextured
-        // white (no material ships; color lives in the .Sfx emitters the host
-        // cannot play), but this .pss spawns as a dummy with authored size and
-        // color - the same asset the client's ground targeting shows.
-        const string FEI_MARKER_PSS = @"data\source\other\HD特效\其他\Pss\t_提示圈圆_6尺黄_贴地.pss";
+        // the area-selection resource (释放_范围选择01 family), exact authored
+        // path from the .Sfx dependency list
+        const string FEI_RANGE_UI = @"data\source\other\特效\技能\mesh\释放\释放_范围选择01.mesh";
         Func<float[]> computeFeiTarget = delegate
         {
             try
@@ -1869,13 +1868,12 @@ internal static class RebornClient
                             lastMarkerX = feiPX; lastMarkerZ = feiPZ;
                             var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 8f; mpos.z = feiPZ;
                             var mrot = new CLRfloat4(); mrot.w = 1f;
-                            // authored size/color at scale 1; SB_FEI_RING_SCALE only
-                            // for review
+                            // authored size at scale 1; SB_FEI_RING_SCALE for review
                             float ringScale = 1f;
                             float.TryParse(Env("SB_FEI_RING_SCALE", "1"), out ringScale);
                             if (ringScale <= 0f) ringScale = 1f;
                             var mscl = new CLRfloat3(); mscl.x = ringScale; mscl.y = ringScale; mscl.z = ringScale;
-                            long mh = scene.AddDummyModel("fei_marker", FEI_MARKER_PSS, mpos, mrot, mscl);
+                            long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
                             Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
                                 + " rawY=" + (int)feiRayY + " surfY=" + (int)feiSurfY
@@ -2111,13 +2109,13 @@ internal static class RebornClient
             if (scanOn)
             {
                 if (loopStartMs == 0) loopStartMs = now;
-                if (now - loopStartMs >= 8000 && scanRow <= 9)
+                if (now - loopStartMs >= 8000 && scanRow <= 14)
                 {
-                    if (scanRow == -9) { scanRow = -9; }
-                    if (scanRow <= 9)
+                    if (scanRow == -14) { scanRow = -14; }
+                    if (scanRow <= 14)
                     {
                         float dz = scanRow * 300f;
-                        for (int sx = -4; sx <= 4; sx++)
+                        for (int sx = -10; sx <= 10; sx++)
                         {
                             float dx = sx * 300f;
                             try
@@ -2130,7 +2128,7 @@ internal static class RebornClient
                             catch { }
                         }
                         scanRow++;
-                        if (scanRow > 9) Log("scan done");
+                        if (scanRow > 14) Log("scan done");
                     }
                 }
             }

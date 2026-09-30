@@ -143,3 +143,23 @@ played by MovieEngineCLR (AV), so the aim point now shows only the authored
 - Outcome: solved (indicator size+color are now the authored ones).
 - Re-open: if a native SFX path (`KG3DScene::GetSceneSFXEditor` / `KG3DSFX`) is wired, play
   the true `鼠标移动.Sfx` cursor effect and the `Selection_ShowSFX` selection effect too.
+
+### 2026-09-29 — Skill sandbox — CORRECTION: PSS hint circle was the wrong resource; roof Z fixed
+- Did: (1) reverted the indicator to the correct resource — the `释放_范围选择01` family
+  (`data\source\other\特效\技能\mesh\释放\释放_范围选择01.mesh`, authored size, scale 1,
+  `SB_FEI_RING_SCALE` override). The 提示圈 PSS was a wrong substitution and is removed.
+  (2) Fixed the "target a rooftop, stop in mid-air and lock" case: the target/floor resolve
+  now uses the **collision bake** (`FoliageCollision.Raycast` straight down from y=40000) max
+  baked terrain — not `RayScene`, which hit non-collidable visuals and let `roofHold` lock the
+  player floating. (3) Widened the `SB_SCAN` grid to ±3000/±4200 u to find roofs.
+- Why the mesh still "doesn't display right": the engine falls back to the **error material**
+  (dark/red; washes out on bright ground, visible only against dark surfaces) because the mesh
+  has no material in the VFS; the authored glow/textures live in the `.Sfx` emitters, which the
+  host cannot play (AddDummyModel AVs; AddStateMachineModel E_FAIL). A faithful display needs
+  the engine effect path (`KG3DScene::GetSceneSFXEditor` / `KG3DSFX`) — not wired.
+- Evidence: roof/rock column (26034,24524) → target Y=1168, `landed at (26034,1168,24524)`
+  standing on the collision top (`Skill_20260929_1844*.log`, `rc_01_9000ms.png`); tall rock
+  (24534,21524) → collision top 2886; marker crop at scale 1 shows the error-material pattern
+  (`crop_mesh1x.png`, temp). `build_candidates.py` compiles.
+- Outcome: Z roof case solved; indicator resource restored, display remains host-limited.
+- Re-open: native SFX/effect path.

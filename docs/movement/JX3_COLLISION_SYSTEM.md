@@ -1383,27 +1383,27 @@ range-select marker. Two-press targeting (first press aims, second confirms). Th
 cast point is `player.GetCoordinateBulletTarget()` (`scripts/skill/沙漠风暴/绝境·临时飞爪.lua`),
 `nMaxRadius = 40 * LENGTH_BASE`; the ray itself is still a host reconstruction (G-20 residual).
 
-**Update 2026-09-29 — Z "half way" root cause (fixed):** the standable-surface probe used the
-game-mask vertical ray (`EngineRay.RayVerticalHeight`) and it returns **phantom collision
-heights** — verified at plain dune columns: ~9045 u and ~29122 u above terrain that descent rays
-report at ~870 u (`RayScene` down = 878, `RayTerrain` down = 872, sampler = 868). A 1200-u cap
-and a 10000-u probe start were stacked on top of that, so pulls stopped at ledges/phantoms.
-The target/floor resolution now uses `visibleTop(x,z)` = max(first scene hit from above,
-baked terrain) — the authored visible surface — with no height cap; the pull budget/timeout is
-3-D distance based. Verified: climb 2158 u (761 → 2919) at (24534,21524), `landed at
-(24534,2919,21524)` (log 2026-09-29 16:51). The vertical probe wrapper keeps its original
-3-float form and is retained only for the camera-obstruction ladder.
+**Update 2026-09-29 — Z "half way" / "stops in mid-air and locks":** the standable-surface probe
+used the game-mask vertical ray (`EngineRay.RayVerticalHeight`) which returns **phantom collision
+heights** (~9045 u / ~29122 u over plain dune columns where real surfaces are ~870 u), and a
+scene-ray descent (`RayScene` straight down) could hit **non-collidable visuals** — the player
+was pulled to a visual surface with no collision and `roofHold` locked them floating. The
+target/floor resolution now uses `visibleTop(x,z)` = max(first hit of the **baked collision
+geometry** cast straight down from y=40000, baked terrain) — the geometry the player can actually
+stand on — with no height cap and a 3-D-distance pull budget. Verified: roof/rock column
+(26034,24524) resolves to Y=1168 (collision top), climb 407 u, `landed at (26034,1168,24524)`
+standing on the surface (log 2026-09-29 18:44); tall rock (24534,21524) resolves to the
+collision top 2886 u. The game-mask vertical probe is retained only for the camera-obstruction
+ladder. **The earlier PSS hint-circle substitution was wrong and has been reverted.**
 
-Indicator (2026-09-29): the original plays the cursor effect `鼠标移动.Sfx` at the cursor
-(`Represent/common/cursor_effect.txt` row 0 via `ShowCursorEffect`) and `Selection_ShowSFX` at
-the picked point. MovieEngineCLR cannot play `.Sfx` (AddDummyModel AVs; AddStateMachineModel
-returns E_FAIL), and the raw range-select mesh carries no material (renders untextured white).
-The client's authored ground indicator instead ships as a `.pss` **hint circle** and PSS dummies
-do spawn in the host (asset_sandbox recipe): the aim point now shows
-`data\source\other\HD特效\其他\Pss\t_提示圈圆_6尺黄_贴地.pss` — the yellow 6-尺 ground-hugging
-target circle, authored size and color at scale 1 (`SB_FEI_RING_SCALE` override only). Candidate
-family verified side-by-side (`t_提示圈3尺[_绿|_高度25_黄]`, `j_姜棠目标圈_6尺`,
-`y_雨轻红指示圈6米`, `z_治疗提示圈`). The chain 28032 remains the only unplayable effect.
+Indicator (2026-09-29): the area-selection resource is the `释放_范围选择01` family (the shape
+is correct), but this host cannot display it faithfully: MovieEngineCLR cannot play the `.Sfx`
+(AddDummyModel AVs; AddStateMachineModel E_FAIL), the mesh has **no material in the VFS** so the
+engine falls back to the error material (dark/red; washes out on bright ground, visible only on
+dark surfaces), and its glow/textures live in the `.Sfx` emitters. Correct display requires the
+engine's own effect path (`KG3DScene::GetSceneSFXEditor` / `KG3DSFX`) — not wired yet; the aim
+marker stays the authored mesh at scale 1 (`SB_FEI_RING_SCALE` override). The chain 28032 is the
+same class of blocker.
 
 **Chain 28032** (`S_rh` → `S_fxmid`, `s_锁链01.pss`): log-only / BLOCKED (2026-09-29) — a
 represent-layer `KRLSfx` feature with no MovieEngineCLR play path; no stand-in added.
