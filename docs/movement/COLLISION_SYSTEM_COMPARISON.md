@@ -225,12 +225,20 @@ is **data/semantics + integrator**. Ordered by impact/effort:
 | Phase | Work | Data/source | Effect |
 |---|---|---|---|
 | P0 | **DONE 2026-09-30** for 龙门寻宝: `tools/export_obstacle_flags.py` + `<bin>.oflags` loader; 17 meshes / 56 instances skipped (`noObstacle=56`, `reborn_20260930_135518.log`), selftest 24/24; other 4 maps need their `.meshes.txt` sidecars first | `.mesh.ini` (census done) | removes wrong collisions |
-| P1 | **Probed 2026-09-30:** `KG3D_LoaderNoRenderX64` is NOT the producer (no client module loads it; exports `Get/Init/UninitLoaderNoRender` + SpeedTree; no PhysX imports - it only parses the same keys when loading meshes offline). Producer target: the client `PhysicsEngineX64` actor-from-mesh path reading the `KG3DMesh` fields (+0x194 etc., filled by `KG3DMeshFileDataLoader`), which has no ini string path. Next probe: locate `_CreatePxActorFromMeshFile` in the client `PhysicsEngineX64.dll` and trace the +0x194 / per-submesh flag reads | client DLLs + paks | replaces the AABB/name proxy with the real shape (§8.1 #9-11) |
+| P1 | **RESOLVED (negative) 2026-09-30:** no generated obstacle shape exists client-side. `PhysicsEngineX64` (client+MovieEditor, identical imports) takes `PxCreateCooking`, registers box/sphere/capsule/convex/triangle/heightfield geometries, and its symbol blob names `_GetCollisionGeometryFilesFromGroupFile` (`.CollisionMesh`/`.proxymesh`/`.mesh`), `_CreateCollisionDataFromFile`, `_CreatePxActorFromMeshFile`. The baked props have no sibling collision file, so the fallback is the render `.mesh` cooked as a triangle mesh. Our baked triangle geometry therefore equals the game's obstacle geometry; there is no AABB/generated-box path for statics (AABBs exist only as `actorBoundBox` metadata). Prop-interior solidity is server/nav; the AABB push stays a labeled proxy. Remaining refinement: per-submesh `bLogicObstacle` filtering in the bake (few mixed meshes) | client DLLs + paks | - |
 | P2 | **Sized 2026-09-30:** `ProcessDropSpeed` @`0x140316BE0` is Q5/Q8 fixed-point over two 3-bit cell slope fields (`(cell>>1)&7`, `(cell>>4)&7`; slope 0-1 skips the projection) - porting it plus the 15 Hz integrator is an integer-model task (G-14) with its own verification, not a scalar patch | `REBORN_JUMP_FALL_SPEC.md`, `proof/gravity/disasm` | removes #1, #2; feel parity in air/landing/slopes |
 | P3 | Extract the gameplay capsule values (semantic K/V / shape library `capsule r50/l50`) and CCT `contactOffset` | engine semantic registrations | removes #15, #16 |
 | P4 | Locate the unit-template value source for `bUnitWalkable`/`bUnitCanPass` (reader xrefs in `KG3DEngineX64` → pak path) | client + paks | replaces #9 taxonomy with the game's per-unit rule |
 | P5 | Endgame option: host the game's own physics stack (`SIMWorldX64` / `PhysicsEngineX64` + `StaticPhysicsSceneManager`) in the client host | game `bin64` DLLs (present) | full parity by construction; separate milestone, larger RE |
 | P6 | Dynamic/server-owned state (doodads, movable obstacles, conveyors, water) | server stream | only if the product simulates world state |
+
+### 8.3 P2 task breakdown (15 Hz integer model + slope)
+
+| Task | Content | Source | Verify |
+|---|---|---|---|
+| T1 tick | 15 Hz accumulator: input buffered, per-tick `ProcessAcceleration` / `ProcessVerticalMove` / `ProcessDropSpeed`, integer cm positions | `REBORN_JUMP_FALL_SPEC.md`, `proof/movement/disasm/client_movement_symbols.txt` | `tools/gravity/verify_model.py` extended |
+| T2 slope | two 3-bit cell slope fields (`(cell>>1)&7`, `(cell>>4)&7`), Q5/Q8 fixed-point projection, slope 0-1 skips, `Vz=0` air-stop | `proof/gravity/disasm/process_drop_speed.txt` | offline vectors + in-game steep-slope run |
+| T3 render glue | host renders at frame rate from the integer state (interpolation), no gameplay math outside the tick | this doc §8.1 #1 | A/B telemetry (`RC_CAM_YDBG`-style) |
 
 P0 is small and immediate; P2 is the biggest feel win; P1/P4 are the research
 that removes the remaining proxies; P5 is the only "rebuild" that reaches full

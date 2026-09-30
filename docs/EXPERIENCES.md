@@ -448,3 +448,18 @@ solved it, and what is still open. **Newest at the bottom.**
   (G-14), not a scalar patch; sized as its own work item.
 - Evidence: loader exports/imports dump; `proof/gravity/disasm/process_drop_speed.txt`.
 - Outcome: plan rows P1/P2 updated in `COLLISION_SYSTEM_COMPARISON.md` §8.2.
+
+### 2026-09-30 — collision — P1 resolved (negative): no generated obstacle shape client-side
+- Evidence: client+MovieEditor `PhysicsEngineX64.dll` import the same PhysX surface
+  (`PxCreateCooking`, box/sphere/capsule/convex/triangle/heightfield geometry
+  registrations, `PxCreateControllerManager`); its symbol blob names
+  `_GetCollisionGeometryFilesFromGroupFile` (`.CollisionMesh`/`.proxymesh`/`.mesh`),
+  `_CreateCollisionDataFromFile`, `_CreatePxActorFromMeshFile` (isolated literals,
+  no code xrefs; scanner validated on `KGLOG_PROCESS_ERROR`). The baked props
+  have no sibling collision file -> fallback to the render `.mesh` cooked as a
+  triangle mesh. Conclusion: our baked triangle geometry equals the game's
+  obstacle geometry; statics have no AABB/generated-box path; prop-interior
+  solidity is server/nav and the AABB push remains a labeled proxy.
+- Next: P2 task breakdown (T1 15 Hz tick, T2 slope fixed-point, T3 render glue)
+  added to `COLLISION_SYSTEM_COMPARISON.md` §8.3.
+- Outcome: P1 closed; plan continues at P2.
