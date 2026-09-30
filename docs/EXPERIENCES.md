@@ -987,3 +987,14 @@ s=reborn_client_daqinggong.memory,
 eborn_client_daqinggong carries these changes — other
   workstream clients (cam-wwdrag/collision) do not.
 - Outcome: solved.
+
+
+### 2026-09-30 — client — WW release dash holds the 45-degree line
+- Did: the release dash was being buried by the super-jump-scaled gravity (5.2x), so an
+  instant release read as a straight drop. Added wwDashActive: during the release dash
+  gravity is suspended and the velocity holds xy + y = -vxy*tan(45) to the ground
+  (HUD state DASH). Landing clears it.
+- Evidence: demo run 16:21 — release xy=2250, vy=-2250 (held to landing), landed at
+  t=12s with forward/down ≈ 1700/1440 units (≈45 deg); selftest PASS; commit 2c6af05;
+  relaunched pid 20332.
+- Outcome: solved.
