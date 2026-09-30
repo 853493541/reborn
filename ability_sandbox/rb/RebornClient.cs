@@ -140,6 +140,10 @@ internal static class RebornClient
         bool castPss = false;
         string castPssPath = "";
         float lastCastX = 1e9f, lastCastZ = 1e9f;
+        // 3 s cooldown between ability casts: one press = one cast, one
+        // animation, one effect. Spam presses are ignored (no restart).
+        const long castCooldownMs = 3000;
+        long castCooldownUntil = 0;
         var datasetAbilityNames = new List<string>();   // panel: abilities with a process
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
@@ -1914,7 +1918,16 @@ internal static class RebornClient
             if (skillPressed)
             {
                 skillPressed = false;
-                if (abilitySel == "临时飞爪")
+                if (now < castCooldownUntil)
+                {
+                    Log("cast blocked: cooldown " + ((castCooldownUntil - now + 999) / 1000)
+                        + "s (" + abilitySel + ")");
+                }
+                else if (castActive && abilitySel == castName)
+                {
+                    Log("cast blocked: effect still playing (" + abilitySel + ")");
+                }
+                else if (abilitySel == "临时飞爪")
                 {
                     // PointArea: first press enters the targeting phase, the
                     // second press (or a ground click) confirms at the marker
@@ -1931,6 +1944,7 @@ internal static class RebornClient
                 else if (abilitySel == "风来吴山")
                 {
                     skillUntil = now + skillMs;
+                    castCooldownUntil = now + castCooldownMs;
                     curClip = null;
                     setClip(clipSkill);
                     // camera shake on the cast (host default; per-skill shake rows
@@ -1955,6 +1969,9 @@ internal static class RebornClient
                     castActive = true; castStart = now; castUntil = now + pssMs + 120;
                     castIdx = 0; castPss = false; castPssPath = "";
                     lastCastX = 1e9f; lastCastZ = 1e9f;
+                    castCooldownUntil = now + castCooldownMs;
+                    // a new cast replaces any previous effect instance
+                    try { scene.RemoveDummyModel("cast_pss"); } catch { }
                     Log("cast: " + abilitySel + " steps=" + castSteps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
                 }
             }
@@ -1972,7 +1989,7 @@ internal static class RebornClient
                 {
                     feiConfirm = false; feiAiming = false;
                     try { scene.RemoveDummyModel("fei_marker"); } catch { }
-                    if (feiDist > 0f) doFeiCast(now);
+                    if (feiDist > 0f) { doFeiCast(now); castCooldownUntil = now + castCooldownMs; }
                 }
                 else
                 {
