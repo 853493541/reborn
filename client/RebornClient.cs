@@ -1787,6 +1787,7 @@ internal static class RebornClient
             {
                 if (!groundOk) { grounded = false; vy = 0f; }
                 else if (py < ground) py = ground;
+                else if (vy > 0f) grounded = false;          // ascending: a jump is never re-grounded
                 else if (py - ground <= 64f) py = ground;
                 else { grounded = false; vy = 0f; }
             }
