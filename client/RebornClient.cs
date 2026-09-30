@@ -1642,20 +1642,20 @@ internal static class RebornClient
                     viewFlipped, dYaw, dPitch, measYaw, flipPxTarget));
             }
 
-            if (wwDemo && !wwDemoJumped && now >= 6000)
+            if (wwDemo && !wwDemoJumped && now >= 8000)
             {
                 wwDemoJumped = true;
                 if (grounded) jumpPressed = true;
                 Log("wwdemo: ground jump");
             }
-            if (wwDemo && !wwDemoLeaped && now >= 8000)
+            if (wwDemo && !wwDemoLeaped && now >= 8400)
             {
                 wwDemoLeaped = true;
                 WwRules.WwAction wwd = WwRules.Evaluate(grounded, true, wwWeaponOk);
                 if (wwd == WwRules.WwAction.Charge) wwCharge();
                 Log("wwdemo: charge action=" + wwd);
             }
-            if (wwDemo && !wwDemoReleased && now >= 9600)
+            if (wwDemo && !wwDemoReleased && now >= 10200)
             {
                 wwDemoReleased = true;
                 if (wwStateActive)
