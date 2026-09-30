@@ -648,3 +648,76 @@ or the engine's own init starts running (verified build).
 **Links:** `docs/camera/HOST_DEVIATIONS.md` D6; `native/camera_shim.cpp`
 (`RC_D6Seed`/`RC_D6Dbg`); `tools/camera/drive_client.ps1`;
 `tools/camera/minidump_exc.py`.
+
+### 2026-09-29 — movement — 二段跳 research + client jump chain (reborn_client_double_jump)
+- Did: decoded the double-jump press model from `KCharacter::Jump` (chain gate
+  `jumpCount >= MaxJumpCount[school]` 0x140313B19, row = current count at
+  0x140313B20, Represent `DOUBLE_JUMP` state + `GetDoubleJumpEndOffset`),
+  extracted the full per-school chain (`--chain`; J0 invariant 40,90,11, J1 is
+  the 二段跳 signature, gravity clamp 0..31 matters for schools 10/11),
+  reproduced it in `client/JumpTable.cs` + RebornClient (J0 unchanged, J1+ per
+  press, landing reset, reject log), and added isolated feature-build naming
+  (`RC_CLIENT_EXE`, own memory namespace + guard, per-exe build_info).
+- Evidence: `tools/gravity/parse_jump_tables.py --chain`; verify_model §6;
+  in-engine runs in `proof/gravity/double_jump_reborn_run.txt` (A/C clean:
+  `djb press n=2` -> `djb land n=2` -> DONE; B/D reproduce the
+  `f1b02yd二段跳a.tani` AV, so the tani is opt-in and the client defaults to the
+  jump clip); commits `e261499`, `c937973`.
+- Outcome: solved. Open: segment-end End-triple trigger, JumpFrameParam curves,
+  fly-state re-press path, tani AV.
+
+### 2026-09-29 — movement — 二段跳 corrected: flip mode (user feedback), tani vs ani
+- Did: user reported the chain-mode double jump (J1 ballistic, 11.7 m) as "way
+  too high / wrong action". Confirmed via MIN2 that the jump clips are in-place
+  (bip01 Y=0 all frames), so the arc is physics; the J1 row is the 轻功 flight
+  chain and its takeoff-burst/End-phase trigger is still undecoded. Implemented
+  the plain 二段跳 as `RC_DJUMP=flip` (provisional): the air press re-uses the
+  J0 triple (one extra normal jump, max 2) and plays the authored
+  `f1b02yd二段跳a.ani`; kept the raw table chain as `RC_DJUMP=chain` for research.
+- Evidence: `proof/gravity/double_jump_reborn_run.txt` run E (exit 0; press n=2
+  at first-jump apex y=1008 -> land y=646, ~1.9 m extra; `clip -> ...二段跳a.ani
+  (0)`; reject n=3), runs B/D (tani wrapper AV 0xC0000005). Doc §1/§4/§5 updated.
+- Outcome: solved provisionally; re-open when the `ModifySprintEndSpeed` trigger
+  is decoded (then use J1 burst + End triple instead of the J0 re-use).
+
+### 2026-09-29 — movement — 二段跳 unit calibration: RC_JUMP_SCALE=0.52
+- Did: user still reported the flip jump as "way too high" and asked to make the
+  unit research work. Per `UNIT_SCALE_AND_CHARACTER_SIZE.md` / `JX3_COLLISION_SYSTEM.md`
+  G-0 (canonical 1 u = 1 cm), the raw `J0` triple gives a 368 u = 3.68 m apex,
+  ~2x the spec's in-game 1.92 m (`REBORN_JUMP_FALL_SPEC.md`; MapSpike used
+  `703 u/s`, `1289 u/s^2`). Added `RC_JUMP_SCALE` (default 0.52 = 100/192)
+  scaling takeoff AND gravity together, so `J0` realises 1.92 m with the 1.09 s
+  air time; applies to flip and chain modes.
+- Evidence: `proof/gravity/double_jump_reborn_run.txt` run F (exit 0):
+  `jump: mode=flip school=0 scale=0.520 (apex 191u)`; press n=2 at y=835 after
+  press n=1 at y=646 (191 u = 1.91 m); double-jump apex ~3.8 m. Client log line
+  added at startup.
+- Outcome: solved. Raw-table mode still available with `RC_JUMP_SCALE=1`.
+
+### 2026-09-29 — client — standing-jump stutter: model transform gate ignored Y
+- Did: user reported a stationary jump stutters/"sticks in the middle" (both
+  jumps), while holding W looked correct. Root cause: the model-update gate
+  (`RebornClient.cs`) only re-placed the dummy when X/Z or yaw changed, so a
+  standing jump (py only) never moved the model; with W held the X/Z deltas
+  masked it. Added Y to the gate + `lastModelY`, and an apex sample log
+  (`djb apex n= py= modelY=`) so the fix is numerically checkable.
+- Evidence: `proof/gravity/double_jump_reborn_run.txt` run G (exit 0):
+  `djb apex n=2 py=1023 modelY=1022` (model tracks physics; before the fix the
+  model stayed at the y=646 takeoff height).
+- Outcome: solved.
+
+### 2026-09-29 — controls — camera-relative steering + turn model (S6), client renamed
+- Did: user reported RMB drag could not turn the character while walking. Per the
+  control notes (`JX3_MOVEMENT_CONTROLS.md` §2; `CAMERAORSELECTORMOVESTICKY`
+  rotates camera **and** character; gap register S6) the client held the world
+  direction while the key set was unchanged, so camera rotation never steered.
+  Removed the latch (movement direction recomputed camera-relative every frame),
+  added the `RunTo` turn model (heading vs facing; facing turns at the π rad/s
+  host fallback; a >112.5° turn halves speed and turn step), reused the rate in
+  the RMB turn, and renamed the feature build to
+  `reborn_client_double_jump_control.exe`.
+- Evidence: `proof/controls/steering_run.txt` (demo camera orbit at t=6s:
+  `dir=(0,1)` → `(0.78,0.62)`, `yaw` 0.00 → 0.90, path curves; exit 0);
+  `CONTROLS_GAP_REGISTER.md` S6 → DONE; `JX3_MOVEMENT_CONTROLS.md` §6 updated.
+- Outcome: solved for the steering rule; the server `+0x48` per-frame turn step
+  is still undecoded (host π rad/s fallback documented).

@@ -1,0 +1,112 @@
+Reborn client double-jump verification runs (curated excerpts)
+capture: 2026-09-29, exe C:\SeasunGame\MovieEditor\bin64\reborn_client_double_jump.exe
+cwd C:\SeasunGame\MovieEditor, RC_DEMO=1 RC_DJUMP_LOG=1 RC_AUTORUN=25000
+full logs (untracked): C:\SeasunGame\MovieEditor\bin64\reborn_out\<file>
+
+== A: final default build, RC_CLIP_DJUMP unset (reuse jump clip)
+   log: reborn_20260929_135508.log    process exit=0 (clean)
+   13:55:08.900 build=reborn_client_double_jump.exe 2026-09-29 13:55:08 git=c937973 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:55:09.560 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:55:37.548 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:55:40.081 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:55:45.078 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:55:50.080 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:55:50.580 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,646,26299
+   13:55:50.581 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:55:51.080 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1009,26299
+   13:55:52.076 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+   13:55:53.158 djb land n=2 pos=22990,650,26299 vy=-4833
+   13:55:53.158 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:55:56.080 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:55:56.579 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+   13:56:03.082 DONE
+
+== B: same final build, RC_CLIP_DJUMP=<authored tani> explicit
+   log: reborn_20260929_135616.log    process exit=0xC0000005 (AV, no DONE)
+   13:56:16.118 build=reborn_client_double_jump.exe 2026-09-29 13:55:08 git=c937973 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:56:16.583 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:56:44.559 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:56:47.065 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:56:52.064 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:56:57.066 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:56:57.567 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,646,26301
+   13:56:57.568 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:56:58.064 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1009,26301
+   13:56:58.065 clip -> data\source\player\f1\动作\f1b02yd二段跳a.tani (0)
+
+== C: RC_CLIP_DJUMP=0 (reuse jump clip)
+   log: reborn_20260929_135347.log    process exit=0 (clean)
+   13:53:47.313 build=reborn_client_double_jump.exe 2026-09-29 13:53:46 git=c937973 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:53:47.982 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:54:15.761 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:54:18.291 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:54:23.291 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:54:28.292 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:54:28.792 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,646,26300
+   13:54:28.793 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:54:29.290 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1009,26300
+   13:54:30.289 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+   13:54:31.367 djb land n=2 pos=22991,650,26300 vy=-4829
+   13:54:31.368 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:54:34.290 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:54:34.790 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+   13:54:41.292 DONE
+
+== D: pre-toggle build, default tani
+   log: reborn_20260929_135055.log    process exit=0xC0000005 (AV, no DONE)
+   13:50:55.611 build=reborn_client_double_jump.exe 2026-09-29 13:43:42 git=48ee9a6 dirty=8 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   13:50:56.055 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   13:51:24.949 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:51:27.479 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+   13:51:34.340 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+   13:51:37.477 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+   13:51:37.975 djb press n=1 triple=40,90,11 vy=1350 g=2475 pos=23334,672,25552
+   13:51:37.976 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+   13:51:38.479 djb press n=2 triple=30,300,20 vy=4500 g=4500 pos=23334,1034,25552
+   13:51:38.481 clip -> data\source\player\f1\动作\f1b02yd二段跳a.tani (0)
+
+== E: flip mode (default), authored .ani flip clip (non-ballistic 二段跳)
+   log: reborn_20260929_141544.log    process exit=0 (clean)
+   RC_DJUMP/RC_CLIP_DJUMP unset -> flip mode + f1b02yd二段跳a.ani
+   14:15:44.370 build=reborn_client_double_jump.exe 2026-09-29 14:15:38 git=d3441fe dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   14:15:45.106 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   14:16:25.822 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23334,646,26299
+   14:16:26.318 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23334,1008,26299
+   14:16:26.319 clip -> data\source\player\f1\动作\f1b02yd二段跳a.ani (0)
+   14:16:26.689 djb reject n=3 max=2 grounded=0 mode=flip
+   14:16:27.625 djb land n=2 pos=23235,646,26290 vy=-1897
+   14:16:27.679 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23217,646,26288
+   14:16:28.110 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=23081,996,26276
+   14:16:29.410 djb land n=2 pos=22669,666,26237 vy=-1858
+   14:16:29.464 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22652,667,26235
+   14:16:29.752 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22560,953,26227
+   14:16:31.014 djb land n=2 pos=22158,673,26189 vy=-1783
+   14:16:31.302 djb press n=1 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22067,672,26181
+   14:16:31.741 djb press n=2 mode=flip triple=40,90,11 vy=1350 g=2475 pos=22063,1024,26180
+   14:16:33.044 djb land n=2 pos=22063,672,26180 vy=-1885
+   14:16:38.321 DONE
+
+== F: unit-calibrated flip mode (RC_JUMP_SCALE=0.52, the 1.92 m spec jump)
+   log: reborn_20260929_144022.log    process exit=0 (clean)
+   apex per jump 191 u = 1.91 m (1 u = 1 cm); double-jump apex ~382 u = 3.8 m
+   14:40:22.205 build=reborn_client_double_jump.exe 2026-09-29 14:40:16 git=3de70c3 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   14:40:22.997 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   14:40:51.312 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+   14:41:03.816 djb press n=1 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,646,26300
+   14:41:04.317 djb press n=2 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,835,26300
+   14:41:05.628 djb land n=2 pos=23234,646,26300 vy=-989
+   14:41:16.318 DONE
+
+== G: standing-jump model-follow fix (modelY must track py)
+   log: reborn_20260929_145053.log    process exit=0 (clean)
+   before the fix the model transform gate ignored Y, so a stationary jump
+   left the model at the takeoff height (stutter/stuck); with W held the
+   X/Z deltas masked it. Now: djb apex n=2 py=1023 modelY=1022
+   14:50:53.139 build=reborn_client_double_jump.exe 2026-09-29 14:50:47 git=db0d514 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+   14:50:53.822 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump.memory
+   14:51:22.225 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+   14:51:34.729 djb press n=1 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,646,26299
+   14:51:35.226 djb press n=2 mode=flip triple=40,90,11 vy=702 g=1287 pos=23334,834,26299
+   14:51:35.769 djb apex n=2 py=1023 modelY=1022
+   14:51:36.531 djb land n=2 pos=23236,646,26299 vy=-981
+   14:51:47.232 DONE

@@ -30,6 +30,8 @@ from parse_jump_tables import (  # noqa: E402
 
 PROOF = ROOT / "proof" / "gravity"
 
+MAX_CHAIN_GRAVITY = 31
+
 
 def uf_to_ms(v: float) -> float:
     return v / TICK_S / UNITS_PER_M
@@ -133,6 +135,36 @@ def main(argv: list[str] | None = None) -> int:
             f"= {uf_to_ms(s['min_velocity_z']):.2f}..{uf_to_ms(s['max_velocity_z']):.2f} m/s")
     out(f"  hard clamps in code: XY <= 127 u/f ({uf_to_ms(127):.2f} m/s), "
         f"Z in [-2048, 2047] u/f ({uf_to_ms(2047):.2f} m/s)")
+    out()
+    out("== 6. double jump / 二段跳 chain (JumpParam.tab) ==")
+    schools = load_jump_param()
+    assert len(schools) == 23, "expected 23 school rows, got " + str(len(schools))
+    for s in schools:
+        max_jump = s["max_jump_count"] or 0
+        assert 2 <= max_jump <= 24, "school " + str(s["school"]) + " MaxJumpCount " + str(max_jump)
+        j0 = s["jumps"][0]
+        expected_j0 = (40, 120, 11) if s["school"] == 9 else (40, 90, 11)
+        assert (j0["jump_speed_xy"], j0["velocity_z"], j0["gravity"]) == expected_j0, (
+            "school " + str(s["school"]) + " J0 mismatch: " + str(j0)
+        )
+        assert j0["velocity_z_end"] is not None and j0["gravity_end"] is not None, (
+            "school " + str(s["school"]) + " missing J0 End triple"
+        )
+    out("  23 school rows; every school MaxJumpCount >= 2 (二段跳 available);")
+    out("  J0 = 40,90,11 for all schools except 9 (40,120,11)")
+    out(f"{'school':>7} {'J1 (xy,vz,g)':>14} {'g clamped':>9} {'v0 m/s':>8} {'g m/s2':>8} {'apex m':>7} {'air s':>7}")
+    for s in schools:
+        j1 = s["jumps"][1]
+        vz, g = j1["velocity_z"], j1["gravity"]
+        g_clamped = max(0, min(MAX_CHAIN_GRAVITY, g))
+        cont_apex = vz * vz / (2.0 * g_clamped) / UNITS_PER_M if g_clamped else None
+        out(f"{s['school']:>7} {str((j1['jump_speed_xy'], vz, g)):>14} {g_clamped:>9} "
+            f"{uf_to_ms(vz):>8.2f} {uf2_to_ms2(g_clamped):>8.2f} "
+            f"{(f'{cont_apex:.2f}' if cont_apex is not None else 'n/a'):>7} "
+            f"{2.0 * vz / g_clamped * TICK_S if g_clamped else 0.0:>7.2f}")
+    out("  gravity clamp [0, 31] applies: schools 10/11 store g=80 -> 31 (KCharacter::Jump 0x140313BD5)")
+    out("  school 0 (default row): J1 = 30,300,20 -> v0 23.44 m/s, g 23.44 m/s^2, apex 11.72 m, air 2.00 s")
+    out("  contrast: J0 = 90/11 -> v0 7.03 m/s, apex 1.92 m (continuous)")
     out()
     out("== result ==")
     out("  all checks reproduce the in-game expectations; the model in")

@@ -1,0 +1,15 @@
+Reborn client steering verification (camera-relative movement + turn model)
+capture: 2026-09-29, exe reborn_client_double_jump_control.exe
+cwd C:\\SeasunGame\\MovieEditor, RC_DEMO=1 RC_AUTORUN=25000, exit=0
+rule: docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md 3.5 (heading/facing, >112.5deg penalty)
+demo rotates the camera at t=6s (orbit +500px, like RMB CAMERAORSELECTORMOVESTICKY):
+expect dir to change from (0,1) to the new camera-relative direction and yaw to turn toward it;
+before the fix the world direction was latched and dir stayed (0,1).
+
+15:19:47.516 build=reborn_client_double_jump_control.exe 2026-09-29 15:19:42 git=efb1e34 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+15:19:48.194 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_double_jump_control.memory
+15:20:19.449 t=2s fps=155 pos=(23334,761,24226) vy=0 grounded=True blocked=False hits=0 colCalls=336 colBlocked=0 spd=320u/s(RUN) yaw=0.00 dir=(0.00,1.00) clip=f1b02yd奔跑.ani
+15:20:21.452 t=4s fps=159 pos=(23334,720,24860) vy=0 grounded=True blocked=False hits=0 colCalls=647 colBlocked=0 spd=320u/s(RUN) yaw=0.00 dir=(0.00,1.00) clip=f1b02yd奔跑.ani
+15:20:23.454 t=6s fps=152 pos=(23336,673,25497) vy=0 grounded=True blocked=False hits=0 colCalls=957 colBlocked=0 spd=320u/s(RUN) yaw=0.02 dir=(0.78,0.62) clip=f1b02yd奔跑.ani
+15:20:25.515 t=8s fps=123 pos=(23620,652,25722) vy=0 grounded=True blocked=False hits=0 colCalls=1180 colBlocked=0 spd=96u/s(WALK) yaw=0.90 dir=(0.78,0.62) clip=f1b02yd行走.ani
+15:20:27.515 t=10s fps=128 pos=(23763,648,25836) vy=0 grounded=True blocked=False hits=0 colCalls=1465 colBlocked=0 spd=96u/s(WALK) yaw=0.90 dir=(0.78,0.62) clip=f1b02yd行走.ani
