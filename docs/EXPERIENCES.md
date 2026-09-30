@@ -186,3 +186,15 @@ solved it, and what is still open. **Newest at the bottom.**
   map_s_manifest.json,fingerprints.txt}`; `docs/engine_host/MINI_SANDBOX_CLIENT.md`
   (size profiles + runtime file set).
 - Outcome: solved. 1/3-size sandbox runs with identical terrain/props/spawn.
+
+### 2026-09-29 — client — Quality-tier probe: no low-quality map ships
+- Did: probed the `.jsonmap`-declared quality sets (`hd/bd/bddnc/mb/low`) for
+  龙门寻宝 — 32 candidate paths across the non-HD sets returned only
+  `bd/env_probe/skybox_s.dds`. `MapList.tab` has no quality variants (296/676/677
+  → same jsonmap; 297 is the night map). The HD client loads the root HD set;
+  `bd/` extras it asks for (`focus_face_env_params.json`,
+  `volumetricCloud.json`) are absent in the install and non-fatal. No
+  lower-quality map exists to shrink the sandbox with.
+- Evidence: probe output (extractor, read-only); `MapList.tab` rows;
+  full-client engine log `KG3D_Engine_2026_09_29_21_42_17.log` paths.
+- Outcome: solved (answered); documented in `MINI_SANDBOX_CLIENT.md` §Quality tiers.

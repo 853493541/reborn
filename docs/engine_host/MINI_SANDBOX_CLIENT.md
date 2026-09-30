@@ -34,6 +34,17 @@ an install. HIGH — verified runs, `proof/sandbox/mini_run.log` (2×2) and
 The 1×1 crop is region (2,2) of the source map — the region that contains the
 real spawn `(23334,761,24224)`.
 
+### Quality tiers (龙门寻宝)
+
+The `.jsonmap` declares `hd/bd/bddnc/mb/low` file sets, but the install ships
+**HD only** for this map: a probe of 32 paths across `low/mb/bd/bddnc`
+(landscape, heightmap, sceneinfo, foliage, env_probe) returned only
+`bd/env_probe/skybox_s.dds`; `MapList.tab` has no quality variants (296/676/677
+→ same jsonmap, 297 = the separate night map). The HD client loads the root
+`landscape/`/`foliage/`/`env_probe/` set and only touches `bd/` for
+`focus_face_env_params.json` + `volumetricCloud/volumetricCloud.json` (missing
+in the install, non-fatal). There is no lower-quality map to downshift to.
+
 ### Runtime file set (verified by removal tests)
 
 - `landscape/heightmap/<name>_i_j.r32` — **required** (renderer terrain mesh;
