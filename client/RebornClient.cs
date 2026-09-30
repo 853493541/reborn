@@ -713,7 +713,7 @@ internal static class RebornClient
             string[] dd = Env("RC_DEMO_DIR", "0,1").Split(',');
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
-        bool cDown = false, teleportToStructure = false;
+        bool cDown = false, kDown = false, teleportToStructure = false;
         bool divDown = false;
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
@@ -952,6 +952,16 @@ internal static class RebornClient
                 alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
             }
+            else if (e.KeyCode == Keys.K && !kDown)
+            {
+                // WW sandbox: flip the school-weapon state at runtime so all 3
+                // double-tap-W cases can be observed in one session.
+                kDown = true;
+                wwWeaponOk = !wwWeaponOk;
+                Log("ww weapon mode: " + (wwWeaponOk
+                    ? "RIGHT weapon (air plunge armed)"
+                    : "WRONG/no weapon (air plunge disabled)"));
+            }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
@@ -963,6 +973,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
+            else if (e.KeyCode == Keys.K) kDown = false;
             else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
         };
         panel.Focus();
@@ -2690,7 +2701,7 @@ internal static class RebornClient
                                 : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air plunge | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 ground sprint / air plunge | K weapon | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
