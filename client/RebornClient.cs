@@ -816,7 +816,6 @@ internal static class RebornClient
         }
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
         bool wwStateActive = false;     // WW state; ends on release
-        long wwTriggerTick = 0;         // when the charge started (double-tap keyup guard)
         // WW release = forward+down dash at this angle below horizontal (default 45).
         float wwDashAngleDeg = 45f;
         float.TryParse(Env("RC_WW_DASH_ANGLE", "45"), out wwDashAngleDeg);
@@ -834,7 +833,6 @@ internal static class RebornClient
             leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
             vy = wwDownFrame * WwRules.LogicTicksPerSecond;
             wwStateActive = true;
-            wwTriggerTick = Environment.TickCount;
             Log("ww AIR: charge fwd=" + wwFwdFrame + " u/f (" + leapSpeedXY +
                 " u/s) down=" + wwDownFrame + " u/f (" + vy + " u/s); release = " +
                 wwDashAngleDeg + " deg dash");
@@ -1148,16 +1146,8 @@ internal static class RebornClient
                 lastWUp = Environment.TickCount;
                 if (wwStateActive)
                 {
-                    // the double-tap's own W keyup must not end the charge; only a
-                    // deliberate later release (or key 1) ends it
-                    if (Environment.TickCount - wwTriggerTick > 250)
-                    {
-                        wwEndState();
-                    }
-                    else
-                    {
-                        Log("ww: double-tap W release ignored (use key 1 to release)");
-                    }
+                    // any W release is the WW release: the 45 deg forward-down dash
+                    wwEndState();
                 }
             }
             else if (e.KeyCode == Keys.S) pS = false;
@@ -2042,12 +2032,7 @@ internal static class RebornClient
                     nextJump, maxJump, grounded ? 1 : 0, djumpMode));
             }
 
-            // WW state ends when W is no longer held (after the double-tap grace):
-            // the velocity is kept, gravity takes over -> the forward-down fall.
-            if (wwStateActive && Environment.TickCount - wwTriggerTick > 250 && !pW)
-            {
-                wwEndState();
-            }
+            // (no auto-end: any W release is handled by the KeyUp handler)
 
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
             if (!grounded)
