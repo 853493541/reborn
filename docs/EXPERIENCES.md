@@ -956,3 +956,13 @@ eborn_client_daqinggong.exe with window title 大轻功
 s=reborn_client_daqinggong.memory,
   cropped map, LoadMap 172 ms); commit 5174d3f; app pid 1284.
 - Outcome: solved.
+
+
+### 2026-09-30 — client — WW state now ends when W is not held (falls after release)
+- Did: user reported the charge never fell after releasing W. Cause: the double-tap keyup
+  was ignored by the 250 ms guard and, with no later W press/release, nothing ended the
+  state. Fix: after the grace, if W is not held (!pW) the state ends (velocity kept) and
+  gravity takes over; key 1 still releases while holding. Demo now holds W during the charge.
+- Evidence: demo run 15:32 on the cropped map — charge 8.4 s level (vy=0) -> release 10.2 s
+  (velocity kept 2250 u/s) -> grounded by 12 s; selftest PASS; commit ec8376d; pid 30748.
+- Outcome: solved.
