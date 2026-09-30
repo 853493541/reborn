@@ -724,12 +724,14 @@ internal static class RebornClient
             if (float.TryParse(Env("RC_WW_DOWN", ""), out v)) wwDownFrame = v;
         }
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
-        bool wwStateActive = false;     // WW state; ends on W release, velocity kept
+        bool wwStateActive = false;     // WW state; ends on release, velocity kept
+        long wwTriggerTick = 0;         // when the charge started (double-tap keyup guard)
         Action wwCharge = delegate()
         {
             leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
             vy = wwDownFrame * WwRules.LogicTicksPerSecond;
             wwStateActive = true;
+            wwTriggerTick = Environment.TickCount;
             Log("ww AIR: charge fwd=" + wwFwdFrame + " u/f (" + leapSpeedXY +
                 " u/s) down=" + wwDownFrame + " u/f (" + vy + " u/s); state until W release");
         };
@@ -1031,10 +1033,18 @@ internal static class RebornClient
                 lastWUp = Environment.TickCount;
                 if (wwStateActive)
                 {
-                    // player tech: release ends the WW state; velocity is kept
-                    wwStateActive = false;
-                    Log("ww: W released -> state ended, velocity kept (vxy=" + leapSpeedXY +
-                        " u/s, vy=" + vy + " u/s)");
+                    // the double-tap's own W keyup must not end the charge; only a
+                    // deliberate later release (or key 1) ends it
+                    if (Environment.TickCount - wwTriggerTick > 250)
+                    {
+                        wwStateActive = false;
+                        Log("ww: W released -> state ended, velocity kept (vxy=" + leapSpeedXY +
+                            " u/s, vy=" + vy + " u/s)");
+                    }
+                    else
+                    {
+                        Log("ww: double-tap W release ignored (use key 1 to release)");
+                    }
                 }
             }
             else if (e.KeyCode == Keys.S) pS = false;
