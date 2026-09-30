@@ -136,3 +136,13 @@ solved it, and what is still open. **Newest at the bottom.**
   asked — replaces "push after every commit"), and §13 Git hard rule (same wording).
 - Evidence: `AGENTS.md`; this commit, kept local per the new rule.
 - Outcome: solved.
+
+### 2026-09-29 — repo — Rule: mandatory closing game-design check
+- Did: `AGENTS.md` §15 now requires every response to end with the game-design check
+  ("Does this respect the game's own design — or are we inventing new ways / band-aid
+  fixes?" -> "No — we are not inventing fixes ourselves; we connect the real game
+  engines and reproduce the original game design, not band-aid around it."), with the
+  caveat that a provisional deviation must be named explicitly (§6) rather than
+  silently answered "no".
+- Evidence: `AGENTS.md` §15; this commit (local).
+- Outcome: solved.

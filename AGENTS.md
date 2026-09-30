@@ -254,6 +254,15 @@ Claims currently sourced from `interface\` addon/user data; annotate on touch:
 Loose format. Required: a `Verified:` line (command → result) for any change or finding,
 and evidence paths/confidence for factual claims. Do not present hypotheses as facts.
 
+**Mandatory closing game-design check.** End every response with:
+
+> **Game-design check:** Does this respect the game's own design — or are we inventing
+> new ways / band-aid fixes? **No** — we are not inventing fixes ourselves; we connect
+> the real game engines and reproduce the original game design, not band-aid around it.
+
+If a provisional deviation is involved, the check must name it explicitly (the registered
+deviation + re-open criteria, §6) — never a silent "no".
+
 Definition of done: verify/gate command run; area README index updated; `docs/EXPERIENCES.md`
 entry appended.
 
