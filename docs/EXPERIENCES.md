@@ -553,3 +553,14 @@ solved it, and what is still open. **Newest at the bottom.**
   龙门寻宝 0.
 - Verified: client load unchanged on 龙门寻宝 (5235 instances, noObstacle=56),
   rug crossing py=924 hits=0, fps 238-248 (`reborn_20260930_154559.log`).
+
+### 2026-09-30 — collision — P3 closed as runtime boundary (capsule K/V not shipped)
+- `PxWorld::GetRigidParam` / `ShapeData` consume the shape/rigid tables for
+  dynamic actors; the gameplay movement capsule is the SIMWorld scenario K/V
+  (`capsules radius/length`) set from the character unit at runtime. No shipped
+  value exists (ragdoll file = bone capsules r6/l10-12; shape id 6 = dynamic
+  actor capsule). Host keeps 17/116 (scaled from the 花萝 115.58 u bind pose),
+  registered as a host value with this re-open criterion.
+- Plan status after this: P0/P0b/P1/P2-T1-T3/T4 done; T2/P3/P4 closed as
+  scene/server/runtime boundaries; P5 (host the game physics stack) and P6
+  (server dynamics) gated on a milestone decision.
