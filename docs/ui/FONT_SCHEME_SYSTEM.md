@@ -188,11 +188,17 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
     projection ARGB into `+0x80/+0x84/+0x88`, sizes into `+0xA8/+0xA9`, the
     **resolved font-size float `+0x2F4` into `+0x94`** (after `addss` + a
     `0x1804DB63D` rounding call) and `FontScale (+0x314)` into `+0x90`.
-- So border thickness is a 0–4 px outline and projection is a 0–255 parameter;
-  the draw path continues through virtual font-renderer calls
-  (`0x1800FBE70` fills the text-extent struct via `[vtable+0x138/+0x148/+0x158]`
-  with default 0.5/0.5 and 1.0 scale rows) — the exact projection rasterization is
-  not pinned statically; `projection` is not rendered by `ui-process-app` (gap, §5).
+- So border thickness is a 0–4 px outline and projection is a 0–255 parameter.
+- **Renderer owner (2026-09-30):** the live Cocos UI draws text through cocos2d-x
+  label effects (`ccui.RichText:setAnchorTextOutline/Color/Size`,
+  `setAnchorTextShadow/Offset/BlurRadius`, `getAnchorTextOutlineSize` in
+  `KGUICocosX64`'s binding strings) on the **Imgui backend**
+  (`KGUICocosX64` imports `KG3D_ImguiX64.dll`, 2.88 MB, stock ImGui). The exact
+  outline/shadow rasterization is therefore **third-party cocos/Imgui code, not a
+  JX3-authored formula**; the legacy KGUI draw path continues through virtual
+  font-renderer calls (`0x1800FBE70`, vtable `+0x138/+0x148/+0x158`).
+  `ui-process-app` keeps approximating the outline with a `DropShadowEffect` and
+  does not render projection (§5) — a fidelity gap, not a missing mechanism.
 
 ### 2.3 FontColor / per-state codes
 
