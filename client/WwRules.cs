@@ -45,6 +45,10 @@ internal static class WwRules
     // Fall/dive terminal speed: settings/Sprint.tab school 4 MaxVelocityZ
     // (900 u/frame = 13500 u/s); the engine hard clamp is -2048 u/f.
     public const float FallCapFrame = -900f;
+    // Base fall gravity after a fly exit (StopBirdFly -> UnlockBirdMoveZ):
+    // JumpParam row 0 gravity 11 u/frame^2 -> 2475 u/s^2 (the non-chain fall).
+    public const float FallGravityFrame = 11f;
+    public const float FallGravityPerSecond2 = FallGravityFrame * 225f;
 
     // Ground hold-W 疾跑段 (buff 12085 通用疾速跑 + 12190 通用疾跑按住):
     // Sprint.tab school 4 MaxVelocityXY = 120 u/frame -> 1800 u/s; staged ramp
@@ -131,6 +135,7 @@ internal static class WwRules
         fail += CheckValue("FLY_CURVE_DIVE_Z", dive, -949f);
         fail += CheckValue("CHARGE_FORWARD", ChargeForwardFrame, FlyCurveXY[0]);
         fail += CheckValue("FALL_CAP", FallCapFrame, -900f);
+        fail += CheckValue("FALL_GRAVITY", FallGravityPerSecond2, 2475f);
         fail += CheckValue("JIPAO_CAP", JipaoCapPerSecond, 1800f);        fail += CheckRange("LEAP_J3_APEX_M", ApexMeters(3), 34.0f, 37.0f);
         fail += CheckValue("WH_TRIGGER_COST", WhTriggerCost, 2500f);
         fail += CheckValue("WH_PLUNGE_FRAME", WhPlungeFrame, -2000f);

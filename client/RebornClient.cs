@@ -830,11 +830,12 @@ internal static class RebornClient
             if (float.TryParse(Env("RC_WW_DOWN", ""), out v)) wwDownFrame = v;
         }
         float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
-        bool wwStateActive = false;     // WW state; ends on release
-        bool wwDashActive = false;      // release dash active: holds the 45 deg line
-        // WW release = forward+down dash at this angle below horizontal (default 45).
-        float wwDashAngleDeg = 45f;
-        float.TryParse(Env("RC_WW_DASH_ANGLE", "45"), out wwDashAngleDeg);
+        bool wwStateActive = false;     // fly state; ends on release (StopBirdFly)
+        // Fall gravity (school-0 J0 row: 11 u/f2 as u/s2) -- the base fall value
+        // applied after a fly exit (UnlockBirdMoveZ -> gravity integrates Vz).
+        // Declared here so the exit delegate can set it.
+        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
+        float curJumpGravity = -pGravity;
         // 万花大轻功「点墨江山」 state (school 4; 20628 trigger -> 20630 急坠).
         float whPower = WwRules.WhPowerMax;   // 气力值; CanCast needs >= 10000
         float whTriggerCost = WwRules.WhTriggerCost;
@@ -857,15 +858,18 @@ internal static class RebornClient
         Action wwEndState = delegate()
         {
             if (!wwStateActive) return;
+            // 松开W登顶 / fly end (buff 13422 -> skill/轻功/轻功状态结束处理.lua):
+            // StopBirdFly() + UnlockBirdMoveZ() -- the fly ends, the horizontal
+            // speed (speed+heading vector) persists, gravity integrates Vz from
+            // the unlocked value. No dash, no angle (client truth).
             wwStateActive = false;
-            wwDashActive = true;
             if (whStage > 0 || whDiving)
                 Log("wh chain end (登顶): stage " + whStage + " dive=" + whDiving);
             whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
-            // 45 deg down-forward: vy = -forward * tan(angle); held to the ground
-            vy = -leapSpeedXY * (float)Math.Tan(wwDashAngleDeg * Math.PI / 180.0);
-            Log("ww release: forward-down dash " + wwDashAngleDeg + " deg -> vxy=" +
-                leapSpeedXY + " u/s, vy=" + vy + " u/s (held to landing)");
+            curJumpGravity = WwRules.FallGravityPerSecond2;
+            Log("wh StopBirdFly + UnlockBirdMoveZ: vxy=" + leapSpeedXY +
+                " u/s persists, vy=" + vy + " u/s; fall gravity " + curJumpGravity +
+                " u/s2 (cap " + WwRules.FallCapFrame + " u/f)");
         };
         Action wwCharge = delegate()
         {
@@ -924,7 +928,8 @@ internal static class RebornClient
         bool wwDemoJumped = false, wwDemoLeaped = false, wwDemoReleased = false;
         bool whDemo = Env("RC_WH_DEMO", "0") == "1";
         bool whDemoJumped = false, whDemoCast = false, whDemoS1 = false, whDemoS2 = false,
-             whDemoS3 = false, whDemoS4 = false, whDemoS5 = false, whDemoPlunge = false;
+             whDemoS3 = false, whDemoS4 = false, whDemoS5 = false, whDemoPlunge = false,
+             whDemoReleased = false;
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
@@ -1223,7 +1228,6 @@ internal static class RebornClient
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
-        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
         // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
         // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
         // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
@@ -1250,7 +1254,6 @@ internal static class RebornClient
         if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
         bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
         int jumpCount = 0;
-        float curJumpGravity = -pGravity;
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
@@ -1724,9 +1727,10 @@ internal static class RebornClient
                 // End phase in between (J1 apex 1.33s, J2 2.3s), 急坠 at
                 // RC_WH_DEMO_PLUNGE_MS (default 17.0s). RC_WH_DEMO_S5_MS can
                 // stretch the JC4/JC5 windows to test long dive playback.
-                long whS5Ms = 16400, whPlungeMs = 17000;
+                long whS5Ms = 16400, whPlungeMs = 17000, whReleaseMs = 0;
                 long.TryParse(Env("RC_WH_DEMO_S5_MS", "16400"), out whS5Ms);
                 long.TryParse(Env("RC_WH_DEMO_PLUNGE_MS", "17000"), out whPlungeMs);
+                long.TryParse(Env("RC_WH_DEMO_RELEASE_MS", "0"), out whReleaseMs);
                 if (!whDemoJumped && now >= 8000) { whDemoJumped = true; if (grounded) jumpPressed = true; Log("whdemo: ground jump"); }
                 if (!whDemoCast && now >= 8500) { whDemoCast = true; wwCharge(); }
                 if (!whDemoS1 && now >= 9500) { whDemoS1 = true; whStagePressed = true; }
@@ -1735,7 +1739,15 @@ internal static class RebornClient
                 if (!whDemoS4 && now >= 15400) { whDemoS4 = true; whStagePressed = true; }
                 if (!whDemoS5 && now >= whS5Ms) { whDemoS5 = true; whStagePressed = true; }
                 if (!whDemoPlunge && now >= whPlungeMs) { whDemoPlunge = true; whPlungePressed = true; }
-                pW = now >= 8500 && now < whPlungeMs + 200;
+                // RC_WH_DEMO_RELEASE_MS>0: release W (登顶 exit) at that time
+                if (whReleaseMs > 0 && !whDemoReleased && now >= whReleaseMs)
+                {
+                    whDemoReleased = true;
+                    if (wwStateActive) wwEndState();
+                    Log("whdemo: release W -> 登顶 exit (StopBirdFly + UnlockBirdMoveZ)");
+                }
+                long whEndMs = whReleaseMs > 0 ? whReleaseMs : whPlungeMs + 200;
+                pW = now >= 8500 && now < whEndMs;
             }
 
             if (demo)
@@ -1992,7 +2004,6 @@ internal static class RebornClient
             {
                 whArmed = false;
                 wwStateActive = true;
-                wwDashActive = false;
                 whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
                 vy = 0f;
                 leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
@@ -2229,7 +2240,7 @@ internal static class RebornClient
                             WwRules.EndGravityFrame + " -> vy=" + vy + " xy=" + leapSpeedXY + " u/s");
                     }
                 }
-                else if (!wwStateActive && !wwDashActive) vy -= curJumpGravity * dt;
+                else if (!wwStateActive) vy -= curJumpGravity * dt;
                 if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
                 if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
                 // Sprint.tab dive/fall terminal cap (school 4: 900 u/f); the 急坠
@@ -2253,7 +2264,6 @@ internal static class RebornClient
                     jumpCount = 0;
                     leapSpeedXY = 0f;
                     wwStateActive = false;
-                    wwDashActive = false;
                     if (whStage > 0 || whDiving)
                         Log("wh chain landed: stage " + whStage + " dive=" + whDiving);
                     whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
@@ -2272,7 +2282,6 @@ internal static class RebornClient
                     else if (whStageActive && !whEndPhase) setClipPlay(clipWhStage[whStage - 1], 1);
                     else setClipPlay(clipWhFly, 0);
                 }
-                else if (wwDashActive) setClipPlay(clipWhPlunge, 0);
                 else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
@@ -3208,7 +3217,7 @@ internal static class RebornClient
                              : whStageActive ? ("WH-" + WwRules.WhStageNames[whStage - 1])
                              : wwStateActive ? "WH-FLY"
                              : whArmed ? "WH-CAST"
-                             : !grounded ? (wwDashActive ? "DASH" : ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : "")))
+                             : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
                              : moving ? (jipaoActive ? "JIPAO" : shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
                 float moveSpeed = jipaoActive ? jipaoSpeed
                                 : shiftDown ? pRun * 10f

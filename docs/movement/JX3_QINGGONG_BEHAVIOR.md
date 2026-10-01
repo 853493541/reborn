@@ -171,7 +171,7 @@ school 4 JC1..JC5; `Sprint/Action.tab` actions 5/8/9/10/11.
 | Stages | Condition.tab school 4: JC1..JC5 = 点墨江山·纵跃段/一段/二段/三段/四段, `ActionGroup` space一段..四段 (Action.tab 8/9/10/11) | Space: takeoff triple J1..J5 (JumpParam rows 1..5), apex -> End triple 125/−140/12 (`ModifySprintEndSpeed`) |
 | 急坠 | skill 20630 `万花轻功急坠.lua`: `SetPassiveVelocityZ(-2000)` | key 3: vy = −2000 u/f, bypasses the 900 u/f fall cap (engine clamp −2048 u/f) |
 | Fly costs | JumpParam school 4: OnFlyCost 75, OnFlyFloatCost 35, OnFlyJumpCost 300, OnFlyBirdMoveCost 206 | 气力值: hover 35/s, bird move (W) 206/s, per stage 300; ground regen 2000/s (provisional, D0 open) |
-| Exit | Action.tab 5 【松开W登顶】 (`<MOVEFORWARD;1>`) | release -> 45° dash (existing sandbox behavior); landing resets the chain |
+| Exit | Action.tab 5 【松开W登顶】 (`<MOVEFORWARD;1>`) | release -> StopBirdFly + UnlockBirdMoveZ: velocity persists, gravity integrates Vz, 900 u/f fall cap, 气力值 drain stops (no dash; §7.2) |
 | Animation | `player_suspend.krl.txt` ZhiKongQingGong:2 (【万花】) body 6 `StayAnimaiton`; `Tani.rt` 万花加强段跳/俯冲 series | hover/fly = `F1bqg万花加强滞空_01.tani`; stages = 加强一段跳b / 加强二段跳a / 加强三段跳a / 加强二段跳b / 加强俯冲b; 急坠 = 加强俯冲b |
 
 **Engine-AV clips (avoid)**: `F1bqg万花四段跳a_空.tani` and `F1bqg万花俯冲a01.tani`
@@ -223,9 +223,14 @@ Engine states (RVAs): `KCharacter::FlyTo` `0x140310B70` (0x20→0x1F),
 `BirdFlyTo` 0x24→0x23, `EndFlyJump` `0x140310960` (requires 0x21, writes Vz
 `[+0x270]`, → 4/0xE); landing resets the scripted-move counter `[+0xC08]`.
 
-Sandbox gap: the sandbox release = the 45° constant-angle dash (tuned stand-in)
-and it has the power-exhaustion end; it does not yet model the altitude<3072
-auto-end, the summit state, or the buff-driven end handler.
+Sandbox: implemented 2026-09-30 (`wwEndState` in `client/RebornClient.cs`) —
+release = the real StopBirdFly + UnlockBirdMoveZ semantics: the fly ends, the
+horizontal speed persists (the forward glide), gravity integrates Vz from the
+row-0 base gravity (`WwRules.FallGravityPerSecond2` 2475 u/s²), the 900 u/f fall
+cap applies, the 气力值 drain stops; the 45° constant-angle dash was removed.
+`RC_WH_DEMO_RELEASE_MS` exercises the exit in the demo. Not modelled: the summit
+state (no summit points in the cropped sandbox map) and the altitude < 3072 u
+auto-end (`GetAltitude` units/semantics need verification before wiring).
 
 ## 8. Open items
 
