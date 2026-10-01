@@ -820,9 +820,11 @@ internal static class RebornClient
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false, twoDown = false, threeDown = false, fourDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
-        bool jipaoWasActive = false;   // 疾跑段 (ground hold-W) active
+        bool jipaoWasActive = false;   // 疾跑段 active
         float jipaoSpeed = 0f;         // current 疾跑 speed (u/s, ramped)
         long jipaoStartMs = 0;
+        long jipaoUntilMs = 0;         // WW burst end (the double-tap starts the sprint)
+        long jipaoLastActiveMs = 0;    // the 250 ms exit grace
         bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
         // WW in air = player tech: the double-tap applies the fly velocity
         // (authored End triple xy 125 / vz -140 / g 12 -> 1875 u/s fwd + 2100 u/s
@@ -934,8 +936,10 @@ internal static class RebornClient
             WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk);
             if (ww == WwRules.WwAction.Sprint)
             {
-                // ground WW = 点墨江山·疾跑段 (the fast run); Space enters 纵跃段
-                Log("ww: 点墨江山·疾跑段 (run fast; Space = 纵跃段)");
+                // ground WW = 点墨江山·疾跑段: the burst starts the fast run
+                // (persists ~3 s / while W is held); Space enters 纵跃段
+                jipaoUntilMs = Environment.TickCount + 3000;
+                Log("ww: 点墨江山·疾跑段 burst (run fast; Space = 纵跃段)");
             }
             else if (ww == WwRules.WwAction.Charge)
             {
@@ -966,7 +970,7 @@ internal static class RebornClient
         bool whDemoJumped = false, whDemoCast = false, whDemoS1 = false, whDemoS2 = false,
              whDemoS3 = false, whDemoS4 = false, whDemoS5 = false, whDemoPlunge = false,
              whDemoReleased = false, whDemoCast2 = false, whDemoDashed = false,
-             whDemoShifted = false, whDemoShifted2 = false, whDemoEntered = false;
+             whDemoShifted = false, whDemoShifted2 = false, whDemoEntered = false, whDemoWw = false;
         long whShiftReleaseMs = 0;
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
@@ -1800,6 +1804,15 @@ internal static class RebornClient
                     if (Env("RC_WH_DEMO_ENTRY_MS", "0") == "0") wwCharge();
                     else Log("whdemo: direct cast skipped (entry hook set)");
                 }
+                // RC_WH_DEMO_WW_MS>0: the ground WW (疾跑段 burst) at that time
+                long whWwMs = 0;
+                long.TryParse(Env("RC_WH_DEMO_WW_MS", "0"), out whWwMs);
+                if (whWwMs > 0 && !whDemoWw && now >= whWwMs)
+                {
+                    whDemoWw = true;
+                    wwTrigger();
+                    Log("whdemo: WW (疾跑段 burst)");
+                }
                 // RC_WH_DEMO_ENTRY_MS>0: the real entry (疾跑段 + Space -> 纵跃段)
                 long whEntryMs = 0;
                 long.TryParse(Env("RC_WH_DEMO_ENTRY_MS", "0"), out whEntryMs);
@@ -2087,28 +2100,43 @@ internal static class RebornClient
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
-            // 疾跑段 (ground hold-W accelerated run; buffs 12085 通用疾速跑 +
-            // 12190 通用疾跑按住): staged ramp 25/75/100% of the Sprint.tab cap
-            // (school 4 MaxVelocityXY 120 u/f = 1800 u/s), 16-frame stages.
-            bool jipaoActive = grounded && pW && moving && !walkMode && !shiftDown;
+            // 疾跑段 (buffs 12085 通用疾速跑 + 12190 通用疾跑按住): the live-game
+            // entry is the WW (double-tap W) — it starts a burst that persists
+            // even if W is not held (momentum); holding W keeps it running.
+            // Staged ramp 25/75/100% of the Sprint.tab cap (school 4
+            // MaxVelocityXY 120 u/f = 1800 u/s), 16-frame stages.
+            bool jipaoHeld = pW && moving;
+            bool jipaoBurst = Environment.TickCount < jipaoUntilMs;
+            bool jipaoActive = grounded && !walkMode && !shiftDown && (jipaoHeld || jipaoBurst);
             if (jipaoActive)
             {
+                jipaoLastActiveMs = Environment.TickCount;
                 if (!jipaoWasActive)
                 {
                     jipaoWasActive = true;
                     jipaoStartMs = now;
                     Log("jipao: enter (12085 通用疾速跑 + 12190 通用疾跑按住; cap " +
-                        WwRules.JipaoCapPerSecond + " u/s)");
+                        WwRules.JipaoCapPerSecond + " u/s; " +
+                        (jipaoBurst && !jipaoHeld ? "WW burst" : "hold W") + ")");
                 }
                 float stageT = (now - jipaoStartMs) / (WwRules.JipaoStageFrames * 1000f / WwRules.LogicTicksPerSecond);
                 float pct = stageT < 1f ? 0.25f : stageT < 2f ? 0.75f : 1f;
                 jipaoSpeed = WwRules.JipaoCapPerSecond * pct;
             }
-            else if (jipaoWasActive)
+            else if (jipaoWasActive && Environment.TickCount - jipaoLastActiveMs > 250)
             {
+                // 250 ms grace: the WW double-tap's press/release flap must not
+                // restart the ramp (it kept the speed at 25%)
                 jipaoWasActive = false;
                 jipaoSpeed = 0f;
                 Log("jipao: end (HoldW=0 + CheckEndSprint)");
+            }
+            // WW burst momentum: auto-forward along the facing while no input
+            if (jipaoBurst && grounded && !moving && !walkMode && !shiftDown && jipaoSpeed > 0f)
+            {
+                float jstep = jipaoSpeed * dt;
+                px += (float)Math.Sin(curYaw) * jstep;
+                pz += (float)Math.Cos(curYaw) * jstep;
             }
             // character yaw turn rate (rad/s): the game's per-frame turn step
             // (+0x48) is a server sync byte and not decoded; the host uses the
