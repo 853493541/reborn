@@ -251,7 +251,19 @@ test that bit (`0x180106CBF`, `0x180107A2F`, `0x18011F8FF`, `0x18012006F`,
 `0x1801207AF`, `0x180120FBF`) — the markup parser runs inside that path when the
 flag is on; the exact parser body is still not isolated (**next probe**: breakpoint
 a known markup label in the live client, e.g. a string containing `<1010>`).
-Dumps: `re/kgui_richtext/`. The `<Dn>` tags (15×) remain undecoded (**unknown**).
+Dumps: `re/kgui_richtext/`.
+
+**Markup grammar (decoded via the pure-text extractor):**
+`UI::KSchemeScriptTable::LuaGetPureText` (`0x1801AA260`, Lua-exposed) decodes the
+string, then `0x1800BC260` scans the **UTF-16** text for the attribute name
+`text` (literal `u"text"` at `0x1805AAFE8`), requires `="` (checks `=` then `"`),
+copies the quoted value until the next `"`, and unescapes backslash sequences
+(`\n`/`\t`/`\"`/`\\` handling at `0x1800BC32E..0x1800BC375`). So the markup carries
+its content in the `text="…"` **attribute**, not element text —
+`<text text="…" font=N r=R g=G b=B </text>` (represent producer) is the canonical
+form; everything else is stripped for pure-text consumers. Renderer-side handling
+of `font=`/`r/g/b` attributes remains part of the un-isolated parser.
+Dumps: `re/kgui_puretext/`. The `<Dn>` tags (15×) remain undecoded (**unknown**).
 
 ## 3. Engine side (KGUIX64.dll)
 
