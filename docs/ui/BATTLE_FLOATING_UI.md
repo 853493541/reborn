@@ -204,10 +204,13 @@ merge/queue behavior lives in the decompiled Lua (port or re-derive against capt
   `number.krl` layout row. Target frame cast art: `TargetCommon.ini` carries
   `Animate_Long/Image_Long/Text_Long` (+ `Animate_Short`) — the target cast/channel
   indicator (MED).
-- Status: driver + presets HIGH; which `ProgressBar.tab` row a given skill/action uses
-  (and the `CASTINGBAR_*` native listener) still open — next probe: breakpoint the
-  `REPRESENT_CALL` dispatch during a cast, or scan for `Table_GetProgressBar` callers
-  outside the extracted subset.
+- Status (full-sweep 2026-09-30): driver + presets HIGH; table consumers are exactly
+  `GeneralProgressBar.lua` (`Table_GetProgressBar`, `AutoProgressBarInfo`),
+  `ProgressBar.lua` (`ProgressBarPlus`) and the table engine (`table.lua`,
+  `table_defs.lua`). The whole UI Lua corpus has **0 `CASTINGBAR` hits** and no
+  `CreateProgressBar` caller beyond `representcommand.lua`, so the producer (and the
+  per-action row id) is native — next probe: breakpoint `GeneralProgressBar_Create`
+  / `REPRESENT_CALL` during a cast.
 
 #### Balloons (doodad/NPC bubble text) (P3) — native
 `KRLCharacter::UpdateBalloon` / `UpdateBalloonPosition` (`0x1805020A0`, re-verified),
@@ -261,7 +264,7 @@ buff-sync netcode already documented in `docs/pvp/`.
 | `KillMessage` | `[KillMessage]` default `TOPRIGHT,-354,110`, `RenderEvent=1` | — | kill feed list, ≤6 entries, 5000/4000 ms, `Tween=ui\Animation\KillMessage_Ani.ini`, SFX `UI_击杀_*.pss`; `OnRemotekillMessage` |
 | `KillInformation` | `[KillInformation]` `TOPCENTER,0,250` | — | single kill banner (killer → killed), fades; fires `DESERTSTROM_KILLMESSAGE` |
 | `MainMessageLine` | `[MainMessageLine]` `Lowest2` top strip, `OnlineFrameAnchor` | — | top counters (currency/money/camp) + system messages; 14 events (`SYNC_COIN`, `MONEY_UPDATE`, `LOADING_END`, …) |
-| `FullScreenWarning` | `[FullScreenWarning]` `Topmost2` | — | full-screen red-edge flash (`CampMaps/red.tga`); API `Open(duration,color)/Close`; auto-fade |
+| `FullScreenWarning` | `[FullScreenWarning]` `Topmost2` | — | full-screen red-edge flash (`CampMaps/red.tga`); API `Open(duration)/UpdateTime/Close`; **opener decoded**: `DynamicCarrierBar.lua` on `PLAYER_STATE_UPDATE`/`SKILL_EFFECT_TEXT` when `nCurrentLife/nMaxLife ≤ 0.15` (rebuild-then-extend loop, 1000 ms; a 1500 ms variant and a `ShowWhenUIHide` 10 000 000 ms carrier state exist); `CoinShop_View.lua` also drives it |
 
 `PVPShowPanel` / `PVPShowFinal` (battlefield stats/scoreboard) are already covered by
 `docs/netcode/JX3_MODE_UI_INVENTORY.md` §6-§7; `PVPShowPanel.dump.txt` shows the same
@@ -339,14 +342,18 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
    dead code; `OnEvent` dispatches by explicit string comparison
    (`REPRESENT_MISS_TEXT`/`DODGE`/`IMMUNITY` → `RepresentNewStateText`, at
    decompiled lines 1104-1113). No action needed.
-8. **External openers (partial, 2026-09-30)** — decoded: `EndOfBattle` ←
-   `ON_CASTLE_END_ACTIVITY` (`ui/script/module.lua`); `ComboWinEffect` ←
-   `ON_ARENA_COMBO_WIN` (`ui/script/arena_head.lua`); `GeneralProgressBar` ← native
-   `REPRESENT_CALL` → `representcommand.lua` (per-action row mapping still open — the
-   producer string is not in any readable binary, likely the protected
-   `JX3ClientX64Base.dll`; runtime probe needed). Still open: `FullScreenWarning`
-   opener (no caller in any extracted script corpus) and `ProgressBar.Start/Finish`
-   callers.
+8. **External openers (2026-09-30, full-sweep closed)** — the complete UI Lua
+   corpus (1,615 files from the manifest; evidence
+   `proof/ui/evidence/battle_hud/sweep_findings.md`) resolved all openers:
+   `EndOfBattle` ← `ON_CASTLE_END_ACTIVITY` (`module.lua`); `ComboWinEffect` ←
+   `ON_ARENA_COMBO_WIN` (`arena_head.lua`); `FullScreenWarning` ←
+   `DynamicCarrierBar` low-HP (≤0.15, 1000 ms) / `CoinShop_View`; **`CASTINGBAR`
+   has 0 occurrences in the whole corpus** (native-only listener) and
+   `CreateProgressBar`/`REPRESENT_CALL` only self-reference, so the
+   `GeneralProgressBar` producer is native (per-action `ProgressBar.tab` row
+   mapping needs a runtime probe; producer string absent from every readable
+   binary — protected base DLL suspected). The generic `ProgressBar.Start/Finish`
+   module has **no Lua caller** either (native-driven).
 9. **Head-top buffs render owner** — Lua `TopBuff` window vs native caption texture slots:
    both exist; which one shows the row needs a runtime check (MED).
 
@@ -385,6 +392,8 @@ java -Dstdout.encoding=UTF-8 -jar %TEMP%\unluac.jar proof\ui\battle_hud\pakv4\Co
 | `proof/ui/evidence/battle_hud/pakv4_candidates_native.txt` | 11 native config/table paths (8 HIT) |
 | `proof/ui/evidence/battle_hud/pakv4_candidates_castbar.txt` | bar modules + `ProgressBar.tab` / `AutoProgressBarInfo.txt` / `ProgressBarPlus.txt` (9 HIT) |
 | `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt` | target layouts + `UISetting.ini` (29/30 HIT; only `TargetS.ini` MISS by design) |
+| `proof/ui/evidence/battle_hud/pakv4_candidates_fullui_lua.txt` | full UI Lua sweep list (1,619 paths; 1,615 HIT) |
+| `proof/ui/evidence/battle_hud/sweep_findings.md` | sweep needle results + FullScreenWarning opener excerpt (tracked) |
 | `proof/ui/battle_hud/SOURCES.txt` | exact commands + result counts (local, ignored) |
 | `proof/ui/battle_hud/pakv4/`, `pakv4_native/`, `probe/` | extracted INIs/Lua/art/tables (local, ignored) |
 | `proof/ui/battle_hud/decompiled/` | 33 unluac outputs + probe decompiles (local, ignored) |
@@ -394,8 +403,10 @@ java -Dstdout.encoding=UTF-8 -jar %TEMP%\unluac.jar proof\ui\battle_hud\pakv4\Co
 | `docs/pvp/` buff/CC research | buff data semantics (cross-ref) |
 
 **Verified (2026-09-30):** PakV4 extraction 65/67 UI + 8/11 native + 9/9 bar incl.
-`ProgressBar.tab` + target set 28/28 + `UISetting.ini` HIT; 33 modules + probe files
-decompiled with a locally built unluac; `representcommand.lua` shows
+`ProgressBar.tab` + target set 28/28 + `UISetting.ini` HIT + **full UI Lua sweep
+1,615/1,619 HIT** (whole-corpus needles: `CASTINGBAR` 0, `CreateProgressBar` 1 self,
+`FullScreenWarning` 3); 33 modules + probe files decompiled with a locally built
+unluac; `representcommand.lua` shows
 `REPRESENT_CALL` → `GeneralProgressBar_Create`; xrefs re-run →
 `KG3D_CaptionManager::_LoadCaptionConfig 0x180058420`,
 `PlaySkillEffectText 0x18059FA10`, `LuaScene_GetCharacterSkillEffectTextPos 0x1800BBF60`,

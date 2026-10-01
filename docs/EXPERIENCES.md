@@ -1129,3 +1129,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `GeneralProgressBar` native caller (protected base DLL), `FullScreenWarning`
   opener, `ProgressBar.Start/Finish` callers, live `IsUseCocos` confirmation.
 - Dumps `re/kgui_richtext/`, `re/kgui_font/glyph/` committed.
+
+### 2026-09-30 — ui — Full UI Lua sweep (1,615 files) closes the opener questions
+- Extracted every `ui/Config/**/*.lua` + `ui/Script/**/*.lua` from the manifest in
+  one batch pass (`pss_assets.run_pakv4` grouped chunks; 1,615/1,619 HIT) to the
+  local ignored `proof/ui/battle_hud/ui_sweep/`; candidate list tracked
+  (`proof/ui/evidence/battle_hud/pakv4_candidates_fullui_lua.txt`).
+- Needle results: **`CASTINGBAR` = 0** (native-only listener; cast/generic bars are
+  native `REPRESENT_CALL` → `representcommand.lua` → `GeneralProgressBar`),
+  `CreateProgressBar`/`REPRESENT_CALL` only self, exact-identifier `ProgressBar`
+  only infra (`globalmgr.lua` custom data, `table*.lua` paths) — no `Start/Finish`
+  caller; `FullScreenWarning` opened by `DynamicCarrierBar` (≤15% HP → `Open(1000)`
+  extend-loop) and `CoinShop_View`; `EndOfBattle`/`ComboWinEffect` confirmed.
+- Tracked findings: `proof/ui/evidence/battle_hud/sweep_findings.md`;
+  `BATTLE_FLOATING_UI.md` §2.1/§2.4/§4.8/§6 updated.
