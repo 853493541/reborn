@@ -456,6 +456,17 @@ reverted); experiment output `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`.
 - Evidence: `.opencode/skills/*/SKILL.md`; this commit (local).
 - Outcome: solved.
 
+### 2026-09-30 — repo — Third-party general skills installed
+- Did: reviewed and installed three general skills under `.opencode/skills/`:
+  `karpathy-guidelines` (adapted behavioral rules, attributed; upstream states no
+  license), `diagnosing-bugs` (Matt Pocock, MIT, installed with attribution and license
+  field), `skill-creator` (Anthropic, Apache-2.0, trimmed adaptation with a modification
+  notice — the upstream bundled eval tooling is not included). Sources recorded in each
+  skill's `metadata`.
+- Evidence: `.opencode/skills/{karpathy-guidelines,diagnosing-bugs,skill-creator}/SKILL.md`;
+  this commit (local).
+- Outcome: solved. Restart opencode to load.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
