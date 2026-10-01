@@ -1156,3 +1156,25 @@ eborn_client_daqinggong carries these changes — other
   — recast -> y 890 -> 5095 (vy 8040) -> fly at 10479 -> hover. Selftest
   WH_LAUNCH_FRAMES/PEAK/MIN_ALTITUDE PASS.
 - Outcome: solved; the process now matches the extracted scripts/tables.
+
+### 2026-09-30 - research - full-system audit (大轻功 generators)
+- User feedback: the sandbox does not match the live game; maybe a different
+  大轻功 generator. Audit result: the system is a composition -
+  (1) WW entry 37891 (双w进入轻功技能.lua, compiled; mount checks + dispatch),
+  (2) the school trigger 20628 (gate 10000, cost 100*CONSUME_BASE, SkillMove 336
+  launch, SetTimer(30) -> BirdFlyTo + LockBirdMoveZ, buffs 13422/14626/13836),
+  (3) the fly monitor 13422, (4) the solo stage chain JC1..JC5, (5) the AIR DASH
+  20788 通用空中冲刺 -> 20789: DashToPitchDirection(480, face, 160) + buff 14561
+  (免控) + 14129 (换二段; 通用持续冲刺结束.lua -> Stop() + camera + SFX; atDriftFlag),
+  (6) 急坠 20630, (7) the 弈韵 branch JC6..JC11 via 踩人/双人 (SpecialSprint 6..11),
+  (8) 双人 rows, (9) 登顶 summit.
+- School mapping CLOSED: JumpParam.WeaponMask = 1<<(WeaponRequest-1); 万花 weapon 6
+  -> mask 32 -> JumpParam school 4 (our chain data is right); the curve schools
+  (JumpFrameParam) are 10/11 = 丐帮/苍云, NOT 万花 - the double-jump doc label fixed.
+- Sandbox consequence: missing the air dash (the live fast flight move) and the
+  弈韵/双人/登顶 branches; the tuned fly-forward 150 u/f was borrowed from the
+  丐帮 curve entry.
+- Evidence: scripts under proof/controls/sprint/out/scripts/skill/ (双w进入轻功技能,
+  江湖轻功_空中持续冲刺, 通用持续冲刺结束), Buff.tab 14129/14561/14626, skills.tab
+  trigger WeaponRequest, JumpParam/SpecialSprint tables; doc §7.3.
+- Outcome: audit recorded; the air dash + branches are the next build items.

@@ -244,10 +244,42 @@ not in the client tables (server/attribute-side) — the sandbox uses 10000
 (provisional); note the gate is the *bar at 10000*, not "enough for the cost"
 (all school triggers use the same check).
 
+### 7.3 Full-system audit (2026-09-30) — the generators of 大轻功
+
+Re-derived from the client after user feedback that the sandbox does not match
+the live game. **The system is a composition of several generators**, and the
+earlier sandbox implemented only part of the solo base chain:
+
+| Layer | Client source | State |
+|---|---|---|
+| WW entry | skill `37891 双w进入轻功技能` (`轻功/轻功通用/双w进入轻功技能.lua`, compiled): the mount checks (special mounts → red warning; `tSpecialHorse`, `GetEquippedHorse`), the 龙门寻宝 map check, the dispatch to the school trigger | not modelled (mount checks) |
+| School trigger | `20628 万花轻功触发`: CanCast 气力值 ≥ 10000, cost `100*CONSUME_BASE`, `SkillMove 336` launch, `SetTimer(30)` → `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 | modelled |
+| Fly monitor | buff `13422`: `atFlyFlag`, `atMoveSpeedPercent 1024`, the stage skill icons (21124/21130/21132/21133), `ActiveAttrib1 = 气力值持续消耗.lua` | partly (drain) |
+| Stage chain (solo) | Condition.tab JC1..JC5 (纵跃段/一段/二段/三段/四段) → JumpParam J1..J5 + End triple | modelled |
+| **Air dash** | skill `20788 通用空中冲刺` → `20789` (learned by the trigger): `DashToPitchDirection(480, nFaceDirection, 160)`, buff `14561` (免控/CC immunity), buff `14129` (空中持续冲刺换二段; `ScriptFile = 轻功/通用持续冲刺结束.lua` → `Stop()` + skill-move camera + SFX hide; `atDriftFlag`; icon 20788→20789), `Fly_Skill` fullscreen SFX, `nDashFrame` 100/12/14/16 | **not modelled — the fast flight dash** |
+| 急坠 | `20630` → `SetPassiveVelocityZ(-2000)` | modelled |
+| 登顶/exit | buff 13422 end → `轻功状态结束处理.lua` (StopBirdFly + UnlockBirdMoveZ); summit = `KRLSummit` + doodad_summit cone + `SummitDistance=20000` | exit modelled; summit not (no summit points in the cropped map) |
+| 弈韵 branch | Condition JC6..JC11, entered via the 踩人/双人 actions (`6;7;`), the 踩尖/踩点 performance (player_summit.txt), `SpecialSprint` school 4 = 6\|7\|8\|9\|10\|11 | not modelled |
+| 双人 | the 双人一段..六段 rows (带人/被带 animations) | not modelled |
+| Curve schools | `JumpFrameParam.tab` authored per-frame flight curves exist only for JumpParam 10/11 = **丐帮 (weapon 13) / 苍云 (weapon 14)** | the 万花 has no curve |
+
+**School mapping (verified, closes old open item 5)**: `JumpParam.WeaponMask` =
+`1 << (WeaponRequest-1)`; the trigger skills give the weapon per school
+(少林 1, 天策 2, 纯阳 3, 七秀 5, **万花 6 → mask 32 → JumpParam school 4**,
+唐门 11, 明教 12, 丐帮 13, 苍云 14, 长歌 15, 霸刀 16, 蓬莱 17, 凌雪阁 18,
+衍天 19, 药宗 20). The double-jump doc's "10/11 (万花/…)" label was wrong and is
+corrected there.
+
+**Consequence for the sandbox**: the 万花 solo chain data (J1..J5 + End) and the
+launch are correct; the flight currently lacks the **空中冲刺 dash** (the live
+game's fast air move, `DashToPitchDirection(480, …)` with the drift + immunity
+buffs), and the 弈韵/双人/登顶 branches are unmodelled. The tuned fly-forward
+value (150 u/f, `RC_WW_FWD`) came from the 丐帮 curve entry — a cross-school
+borrow; the 万花's own fly speed is not in the extracted tables (open).
+
 ## 8. Open items
 
-1. `CONSUME_BASE` numeric (engine/server script VM) — not in client scripts.
-2. Air-steering gain/turn-rate in `ProcessAcceleration` (exact input→heading math).
+1. `CONSUME_BASE` numeric (engine/server script VM) — not in client scripts.2. Air-steering gain/turn-rate in `ProcessAcceleration` (exact input→heading math).
 3. `门派轻功触发区分.lua` referenced by skill 10548 but absent from the paks.
 4. Fly curves ship only for schools 10/11 (`JumpFrameParam.tab`).
 5. `JumpParam` SchoolID ↔ playable school mapping (weapon-mask keyed).
