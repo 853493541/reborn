@@ -215,6 +215,34 @@ logging shows no C++ EH — a direct CRT `_invoke_watson` (invalid parameter) pa
 probe: hook `_invoke_watson` in MSVCR110 (note: MSVCR110 loads only with the engine, so
 install the hook after the engine DLL is loaded).
 
+### Follow-up — Python, font, and window (2026-10-01)
+
+The abort was traced (by hooking MSVCR110 `abort`, which IS the 0x740C4 fast-fail path)
+to **python35.dll offset 0x1B699A**: the engine's embedded Python aborted because its
+library was missing. Fix: copy `data\rcdata\PythonLib` (real client, 14.8 MB / 854 files)
+into the working root.
+
+Next missing piece: `KG3D_LoadFontFile` → the engine's default font
+`ui\Font\FZHeiTi_GBK.ttf` (not shipped under that exact name; the client ships
+`ui\Font\fzht_GBK.TTF`). Copy `ui\Font` into the root and provide `FZHeiTi_GBK.ttf`
+(copy of `fzht_GBK.TTF`; probe-level data shim).
+
+**Then the engine's core init SUCCEEDS**: log line
+`-- KG3D_Engine initialize success. const time = 3.156s --`. The only remaining failure is
+the **target window / swap chain**:
+```
+KG3D_Window::_CreateSwapChain -> 0x80070057 (E_INVALIDARG)
+KG3D_Window::Init -> KG3D_CreateWindow -> KG3D_Engine::CreateTargetWindow -> E_FAIL
+```
+`?CreateTargetWindow@KG3D_Engine@@UEAAJPEAUHWND__@@PEAPEAUIKG3D_Window@@@Z` (export
+`0x8AEF30`) takes an **HWND** + out-window; the engine's Init calls it with the HWND from
+the init param, and our host provides none (the game creates its own window and passes it;
+the adapter reads `config.ini` for size/mode — see `config.ini` refs at adapter
+`0x5FA56`/`0x67BE6`). Setting the root `config.ini` to windowed 1280x720 did not change
+the E_INVALIDARG — the next step is to create a real Win32 window in the host and supply
+its HWND through the manager init path (the adapter manager's window field / the init
+param), plus a message pump.
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
