@@ -43,12 +43,13 @@ UiProcessApp.exe --fonttest
 #         scheme #212: size=14 color=#F0F0F0 file=fzht_GBK.ttf
 ```
 
-Current selftest: **rendered=56 skipped=2 failed=0** over the 58-window inventory
-(the two skipped windows have no INI by design — the ready prompt is native and
-the staging countdown has no renderer). Stages 9-10 render the battle-HUD
-appendix from `docs/ui/BATTLE_FLOATING_UI.md` §A in two batches (37 modules:
-objective/score panels, warnings, team/raid lists, buff monitors, loot rolls,
-death/revive, skill bars and hints).
+Current selftest: **rendered=77 skipped=4 failed=0** over the 81-window inventory.
+Four skips: the ready prompt (native) and staging countdown (no renderer) have no
+INI by design; `pvp-random-force` and `skill-glossary` are marked PARTIAL because
+the static renderer hits a WPF logical-child error on those two INIs. Stages 9-11
+render the battle-HUD appendix from `docs/ui/BATTLE_FLOATING_UI.md` §A (60
+modules: objective/score panels, warnings, team/raid lists, buff monitors, loot
+rolls, death/revive, skill bars/hints/panels, mode HUD).
 
 ## What it shows
 

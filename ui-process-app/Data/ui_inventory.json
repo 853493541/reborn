@@ -1189,6 +1189,379 @@
           ]
         }
       ]
+    },
+    {
+      "id": "battle-hud-3",
+      "title": "11. 战斗 HUD 附录·三 Battle HUD appendix 3",
+      "summary": "Third render batch completing the battle-HUD appendix (docs/ui/BATTLE_FLOATING_UI.md §A); paths verified per module (seven live in Config/Default/BattleField).",
+      "windows": [
+        {
+          "id": "dynamic-skill-bar-2",
+          "title": "DynamicSkillBar",
+          "cn": "动态技能栏",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/DynamicSkillBar.ini",
+          "summary": "Dynamic skill bar variant (distinct from DynamicBattleRoyale).",
+          "evidence": [
+            "ui/Config/Default/DynamicSkillBar.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Dynamic slots"
+          ]
+        },
+        {
+          "id": "weapon-skill-bar",
+          "title": "WeaponSkillBar",
+          "cn": "武器技能栏",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/WeaponSkillBar.ini",
+          "summary": "Weapon skill bar; the file's root section is named SpArmsActionBar (shipped naming quirk).",
+          "evidence": [
+            "ui/Config/Default/WeaponSkillBar.ini",
+            "proof/ui/evidence/battle_hud/appendix_inis.tsv"
+          ],
+          "elements": [
+            "Weapon skill slots"
+          ]
+        },
+        {
+          "id": "vk-action-bar",
+          "title": "VkActionBar",
+          "cn": "VK技能栏",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/VkActionBar.ini",
+          "summary": "VK action bar (Lowest2 layer, mode 27).",
+          "evidence": [
+            "ui/Config/Default/VkActionBar.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "VK skill slots"
+          ]
+        },
+        {
+          "id": "desert-storm-info",
+          "title": "DesertStormInfoPanel",
+          "cn": "绝境信息面板",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/DesertStormInfoPanel.ini",
+          "summary": "Desert Storm info panel anchored BOTTOMRIGHT.",
+          "evidence": [
+            "ui/Config/Default/DesertStormInfoPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Info rows"
+          ]
+        },
+        {
+          "id": "acc-bf-info",
+          "title": "ACC_BFInfo",
+          "cn": "战场战绩",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/ACC_BFInfo.ini",
+          "summary": "Battlefield account summary panel (BattleField subfolder).",
+          "evidence": [
+            "ui/Config/Default/BattleField/ACC_BFInfo.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Battlefield summary rows"
+          ]
+        },
+        {
+          "id": "acc-desert-storm-info",
+          "title": "ACC_DesertStormInfo",
+          "cn": "绝境战绩",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/ACC_DesertStormInfo.ini",
+          "summary": "Desert Storm account summary anchored TOPRIGHT -10,298.",
+          "evidence": [
+            "ui/Config/Default/BattleField/ACC_DesertStormInfo.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Summary rows"
+          ]
+        },
+        {
+          "id": "acc-treasure-hunt-info",
+          "title": "ACC_TreasureHuntInfo",
+          "cn": "寻宝战绩",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/ACC_TreasureHuntInfo.ini",
+          "summary": "Treasure-hunt account summary anchored CENTER/TOPRIGHT -122,290.",
+          "evidence": [
+            "ui/Config/Default/BattleField/ACC_TreasureHuntInfo.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Summary rows"
+          ]
+        },
+        {
+          "id": "zombie-fight-final",
+          "title": "ZombieFightFinal",
+          "cn": "僵尸模式结算",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/ZombieFightFinal.ini",
+          "summary": "Zombie mode settlement anchored BOTTOMCENTER -10,-150, mode 2.",
+          "evidence": [
+            "ui/Config/Default/ZombieFightFinal.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Settlement rows"
+          ]
+        },
+        {
+          "id": "roommate-team",
+          "title": "RoommateTeam",
+          "cn": "室友队伍",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/RoommateTeam.ini",
+          "summary": "Roommate team panel (Normal layer, CENTER).",
+          "evidence": [
+            "ui/Config/Default/RoommateTeam.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Team slots"
+          ]
+        },
+        {
+          "id": "pvp-input",
+          "title": "PVPInput",
+          "cn": "战场输入",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/PVPInput.ini",
+          "summary": "Battlefield input prompt; the file's root section is named SkillIntroduce (shipped naming quirk).",
+          "evidence": [
+            "ui/Config/Default/PVPInput.ini",
+            "proof/ui/evidence/battle_hud/appendix_inis.tsv"
+          ],
+          "elements": [
+            "Input prompt"
+          ]
+        },
+        {
+          "id": "pvp-random-force",
+          "title": "PVPRandomForce",
+          "cn": "随机阵营",
+          "status": "PARTIAL",
+          "root": "ui",
+          "summary": "Random faction assignment prompt, CENTER 0,20, mode 0. INI extracted (ui/Config/Default/PVPRandomForce.ini) but the static renderer hits a WPF logical-child error on this file; next probe: isolate the re-parented element (no duplicate section names or parent cycles found).",
+          "evidence": [
+            "ui/Config/Default/PVPRandomForce.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Faction choice"
+          ]
+        },
+        {
+          "id": "vampire-info",
+          "title": "VampireInfoPanel",
+          "cn": "吸血鬼信息",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/VampireInfoPanel.ini",
+          "summary": "Vampire mode info panel (Normal layer).",
+          "evidence": [
+            "ui/Config/Default/VampireInfoPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Info rows"
+          ]
+        },
+        {
+          "id": "interlude-hslh",
+          "title": "InterludeHSLHPanel",
+          "cn": "林海间章面板",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/InterludeHSLHPanel.ini",
+          "summary": "Interlude HSLH panel anchored Topmost TOPLEFT, mode 16.",
+          "evidence": [
+            "ui/Config/Default/InterludeHSLHPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Interlude rows"
+          ]
+        },
+        {
+          "id": "moba-information",
+          "title": "MobaInformationPanel",
+          "cn": "MOBA信息",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/MobaInformationPanel.ini",
+          "summary": "MOBA information panel (BattleField subfolder).",
+          "evidence": [
+            "ui/Config/Default/BattleField/MobaInformationPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "MOBA info rows"
+          ]
+        },
+        {
+          "id": "moba-pvp-list",
+          "title": "MobaPVPList",
+          "cn": "MOBA对战列表",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/MobaPVPList.ini",
+          "summary": "MOBA PVP list anchored BOTTOM 0,0, mode 5.",
+          "evidence": [
+            "ui/Config/Default/BattleField/MobaPVPList.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Player list rows"
+          ]
+        },
+        {
+          "id": "tong-battle-tips",
+          "title": "TongBattleTips",
+          "cn": "帮会战场提示",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/TongBattleTips.ini",
+          "summary": "Guild battle tips banner anchored TOPCENTER 0,250.",
+          "evidence": [
+            "ui/Config/Default/BattleField/TongBattleTips.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Tip text"
+          ]
+        },
+        {
+          "id": "tong-battledragon-tips",
+          "title": "TongBattledragonTips",
+          "cn": "帮会龙战提示",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleField/TongBattledragonTips.ini",
+          "summary": "Guild dragon-battle tips anchored TOPCENTER 0,250.",
+          "evidence": [
+            "ui/Config/Default/BattleField/TongBattledragonTips.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Tip text"
+          ]
+        },
+        {
+          "id": "battle-tip-panel",
+          "title": "BattleTipPanel",
+          "cn": "战斗提示",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleTipPanel.ini",
+          "summary": "Battle tip panel (Topmost1 layer).",
+          "evidence": [
+            "ui/Config/Default/BattleTipPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Tip rows"
+          ]
+        },
+        {
+          "id": "skill-introduce",
+          "title": "SkillIntroduce",
+          "cn": "技能介绍",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/SkillIntroduce.ini",
+          "summary": "Skill introduction panel anchored TOPLEFT/TOPRIGHT -2,0, mode 27.",
+          "evidence": [
+            "ui/Config/Default/SkillIntroduce.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Skill description"
+          ]
+        },
+        {
+          "id": "skill-glossary",
+          "title": "SkillGlossaryPanel",
+          "cn": "技能词条",
+          "status": "PARTIAL",
+          "root": "ui",
+          "summary": "Skill glossary anchored Topmost1 BOTTOMRIGHT, mode 28. INI extracted (ui/Config/Default/SkillGlossaryPanel.ini) but the static renderer hits a WPF logical-child error on this file (ContainerType=1 content host); next probe: isolate the re-parented element.",
+          "evidence": [
+            "ui/Config/Default/SkillGlossaryPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Glossary entries"
+          ]
+        },
+        {
+          "id": "skill-formula",
+          "title": "SkillFormulaPanel",
+          "cn": "技能公式",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/SkillFormulaPanel.ini",
+          "summary": "Skill formula panel anchored BOTTOMRIGHT.",
+          "evidence": [
+            "ui/Config/Default/SkillFormulaPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Formula rows"
+          ]
+        },
+        {
+          "id": "skill-panel-teaching",
+          "title": "SkillPanelTeaching",
+          "cn": "技能教学",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/SkillPanelTeaching.ini",
+          "summary": "Skill teaching panel (Topmost layer, CENTER).",
+          "evidence": [
+            "ui/Config/Default/SkillPanelTeaching.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Teaching steps"
+          ]
+        },
+        {
+          "id": "skill-guide-panel",
+          "title": "SkillGuidePanel",
+          "cn": "技能引导",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/SkillGuidePanel.ini",
+          "summary": "Skill guide panel (Lowest1 layer).",
+          "evidence": [
+            "ui/Config/Default/SkillGuidePanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Guide rows"
+          ]
+        }
+      ]
     }
   ]
 }

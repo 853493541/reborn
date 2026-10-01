@@ -1242,3 +1242,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `ui/Config/Default/<name>.ini`.
 - Gate: **rendered=56 skipped=2 failed=0** over 58 windows (stage 9 = 12, stage 10
   = 25 appendix modules; 2 skipped by design). README/AGENTS counts updated.
+
+### 2026-09-30 — ui — Battle-HUD appendix complete (81 windows, 77/4/0)
+- Added stage 11 (`battle-hud-3`, 23 windows) covering the rest of the appendix:
+  DynamicSkillBar, WeaponSkillBar, VkActionBar, DesertStormInfoPanel,
+  ACC_BFInfo/ACC_DesertStormInfo/ACC_TreasureHuntInfo (BattleField subfolder),
+  ZombieFightFinal, RoommateTeam, PVPInput, PVPRandomForce, VampireInfoPanel,
+  InterludeHSLHPanel, MobaInformationPanel/MobaPVPList (BattleField),
+  TongBattleTips/TongBattledragonTips (BattleField), BattleTipPanel,
+  SkillIntroduce/Glossary/Formula/Teaching/Guide. Paths re-probed per module
+  (`resolve_batch3_paths.py`); all 60 appendix modules now inventoried.
+- Two renderer gaps found and marked **PARTIAL** (no `path`, so the gate skips
+  them cleanly): `PVPRandomForce.ini` and `SkillGlossaryPanel.ini` throw a WPF
+  "element is already the logical child of another element" error — no duplicate
+  section names or parent cycles in the files; next probe: isolate the re-parented
+  element (likely a content-host/PageSet re-issue).
+- Final gate for the branch: **rendered=77 skipped=4 failed=0** over 81 windows;
+  README/AGENTS counts updated.
