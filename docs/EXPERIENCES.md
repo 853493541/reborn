@@ -1181,3 +1181,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   Cocos). The 58 differing `Size>0` schemes are unused placeholders — zero impact.
 - `FONT_SCHEME_SYSTEM.md` §2.1 rewritten to the final answer; no renderer change
   needed (`Size>0 ? Size : base` coincides with the slot base for every used scheme).
+
+### 2026-09-30 — ui — Static-analysis bedrock: protected module is the boundary
+- `JX3ClientX64Base.dll` probed: `.tp6d` section **entropy 8.00**, 20.8 MB `.tvm0`
+  VM section, and **no plaintext** for `CreateProgressBar`, `REPRESENT_CALL`,
+  `</text>`, `font=`, `text="`, `<text`, `KGUICocos`, `IsUseCocos`. The two
+  remaining unknowns (native `CreateProgressBar` producer / per-action
+  `ProgressBar.tab` row; exact UI markup parser body) are therefore in that
+  protected module or in a literal-free parser; both need a live debugger session,
+  which the no-injection rules exclude. Documented as the final boundary in
+  `FONT_SCHEME_SYSTEM.md` §2.4.
+- Cocos `<`/`>` compare scan (57 functions) and `SetText`/`SetString` callee dumps
+  (`0x180349E00`, `0x180345D10`, `0x180337AC0`, `0x180338020`) show no char-level
+  tag parser — the label markup is handled outside the readable UI DLLs.

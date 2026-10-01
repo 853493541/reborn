@@ -292,6 +292,16 @@ The producer of the markup is the represent layer:
 `font=N` value there is the represent font index, while the string-table variant
 (`font=` only, values ≤177) is the scheme id (MED).
 
+**Static-analysis boundary (2026-09-30):** the remaining two unknowns (the exact
+markup parser body and the native `CreateProgressBar` producer) are not in any
+readable binary. `JX3ClientX64Base.dll` (the client's protected module) shows
+`.tp6d` at **entropy 8.00** and a 20.8 MB `.tvm0` VM section, with **zero**
+plaintext occurrences of `CreateProgressBar`, `REPRESENT_CALL`, `</text>`,
+`font=`, `text="`, `<text`, `KGUICocos` or `IsUseCocos` — both are attributed to
+that protected module (or to a literal-free char parser that exhaustive scans did
+not isolate). Settling them needs a live debugger session (injection is forbidden
+by the repo rules), so they stay documented open items with runtime probes.
+
 KGUI rich-text flag (decoded 2026-09-30): `KItemText::SetRichText` /
 `LuaItemText_SetRichText` (`KGUIX64 0x1801978F0`) only toggles **flag bit 23**
 (`0x800000`) on `item+0x10`; `IsRichText` reads it. Six text-processing functions
