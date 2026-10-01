@@ -1049,14 +1049,22 @@ internal static class RebornClient
                 try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
-        // The wheel no longer zooms (user decision 2026-09-30): the zoom moved
-        // to the +/- keys below. The wheel is deliberately left unbound.
+        // Real default binding (ui/hotkey/default.txt): CAMERAZOOMIN/OUT on the
+        // wheel (codes 256/257) -> Camera_Zoom(0.9 / 1.1). Restored 2026-10-01
+        // for classic-control completeness (the +/- keys stay as a host extra;
+        // the 2026-09-30 wheel-inert host deviation A12 is superseded).
+        MouseEventHandler onWheel = delegate(object s, MouseEventArgs e)
+        {
+            if (e.Delta > 0) camSys.ZoomBy(-1.0);        // CAMERAZOOMIN  x0.9
+            else if (e.Delta < 0) camSys.ZoomBy(1.0);    // CAMERAZOOMOUT x1.1
+        };
         Control[] hitTargets = new Control[] { panel, hud };
         foreach (Control c in hitTargets)
         {
             c.MouseDown += onMouseDown;
             c.MouseUp += onMouseUp;
             c.MouseMove += onMouseMove;
+            c.MouseWheel += onWheel;
         }
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
@@ -3089,7 +3097,7 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel or +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,

@@ -26,6 +26,7 @@ state of our own client, so the full control system can be implemented later.
 | `controls/REBORN_CONTROLS_SPEC.md` | our target architecture (design only) + phase plan |
 | `controls/OPERATION_MODES_PLAN.md` | CLASSICAL/JOYSTICK operation modes — game truth, routing matrix, switch key, P0–P4 |
 | `controls/CONTROLS_GAP_REGISTER.md` | every open gap with ID, status, dependency |
+| `controls/CLASSIC_CONTROLS_AUDIT.md` | classic-mode control surface audit: shipped default bindings vs client handlers (2026-10-01) |
 
 ## The one-paragraph summary
 
