@@ -225,8 +225,17 @@ layout exposes per-**fragment-run** fields (`text`, `rowTop`, `relX/relY`,
 markup built by the represent layer is parsed here. It also decodes the same INI
 keys in lowercase (`richtext`, `multiline`, `halign`, `showall`, `reversemask`,
 `shaptexture`, …), i.e. the runtime decoder is case-insensitive. Evidence:
-`proof/ui/evidence/battle_hud/re/cocos_richtext/`. Which of the two control DLLs
-the loader binds at runtime is not traced (**MED**, next probe: JX3UIX64 loader).
+`proof/ui/evidence/battle_hud/re/cocos_richtext/`.
+
+**Which control DLL is live (decoded 2026-09-30):** the Cocos layer is a
+**gray-release feature `KGUIUseCocos`** in `JX3ClientX64.exe`
+(`KLoadGrayFeatureConfig` `0x140099820`: reads `[KGUIUseCocos] Percent` (default 0,
+clamped 0-100), `Override` from per-user settings, `IntraNet`; the client also has
+`GetCocosGrayInfo`/`IsUseCocos` Lua bindings and logs
+`Gray feature: name=KGUIUseCocos, percent=%d, override=%d, …`). The live
+`config/gray_config.ini` contains an **empty `[KGUIUseCocos]` section** → Percent 0
+→ the Cocos UI is **not active on this install**; the running text/control renderer
+is **KGUIX64**. Dumps: `proof/ui/evidence/battle_hud/re/cocos_gray/`.
 
 The producer of the markup is the represent layer:
 `OnReloadTable` (`JX3RepresentX64.dll 0x18031FE40`) builds

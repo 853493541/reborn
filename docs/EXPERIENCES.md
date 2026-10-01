@@ -1101,3 +1101,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   builder). Represent produces the markup: `OnReloadTable` `0x18031FE40`,
   template `font=10 r=255 g=165 b=0`.
 - Dumps `re/cocos_richtext/` committed; `FONT_SCHEME_SYSTEM.md` §2.4 updated.
+
+### 2026-09-30 — ui — KGUI-vs-Cocos is a gray feature; EndOfBattle/ComboWinEffect openers
+- **Renderer choice decoded**: `JX3ClientX64.exe` `KLoadGrayFeatureConfig`
+  (`0x140099820`) reads feature `KGUIUseCocos` (`Percent` default 0/0-100,
+  `Override` in per-user settings, `IntraNet`); live `config/gray_config.ini` has an
+  empty `[KGUIUseCocos]` section → **Cocos UI inactive; KGUIX64 is the live control
+  renderer on this install**. Dumps `re/cocos_gray/`.
+- **Openers decoded**: `EndOfBattle` ← `ON_CASTLE_END_ACTIVITY`
+  (`ui/script/module.lua`: `CampMaps.ClearData(); EndOfBattle.Open(arg0)`);
+  `ComboWinEffect` ← `ON_ARENA_COMBO_WIN` (`ui/script/arena_head.lua`).
+- `GeneralProgressBar` producer is not in any readable binary (likely protected
+  `JX3ClientX64Base.dll`) — per-action row mapping needs a runtime probe;
+  `FullScreenWarning` opener and `ProgressBar.Start/Finish` callers still open.
+- Evidence: `BATTLE_FLOATING_UI.md` §2.4/§4.8; `re/cocos_gray/` committed.

@@ -1,0 +1,397 @@
+# needle: KGUIUseCocos
+# string VAs: ['0x140953590']
+# xrefs: 2
+
+## xref 0x1400998c6  fn_start 0x140099820
+0x0140099820: mov	qword ptr [rsp + 0x18], rbx
+0x0140099825: push	rbp
+0x0140099826: push	rsi
+0x0140099827: push	r12
+0x0140099829: push	r13
+0x014009982b: push	r15
+0x014009982d: sub	rsp, 0x30
+0x0140099831: mov	rbx, qword ptr [rsp + 0x80]
+0x0140099839: xor	esi, esi
+0x014009983b: mov	dword ptr [rbx + 4], 0xffffffff
+0x0140099842: lea	r12, [rbx + 4]
+0x0140099846: mov	dword ptr [rbx + 8], esi
+0x0140099849: lea	r15, [rbx + 8]
+0x014009984d: mov	r13, r8
+0x0140099850: mov	rax, rdx
+0x0140099853: mov	dword ptr [rbx], esi
+0x0140099855: mov	word ptr [rbx + 0xc], si
+0x0140099859: test	rdx, rdx
+0x014009985c: je	0x140099a3f
+0x0140099862: test	r8, r8
+0x0140099865: je	0x140099a3f
+0x014009986b: mov	qword ptr [rsp + 0x60], rdi
+0x0140099870: xor	r8d, r8d
+0x0140099873: xor	edx, edx
+0x0140099875: mov	qword ptr [rsp + 0x68], r14
+0x014009987a: mov	rcx, rax
+0x014009987d: call	qword ptr [rip + 0x71eb7d]	; 0x1407b8400 -> "|鐬"
+0x0140099883: lea	rbp, [rip + 0x8b95be]	; 0x140952e48 -> "KLoadGrayFeatureConfig"
+0x014009988a: mov	r14, rax
+0x014009988d: test	rax, rax
+0x0140099890: jne	0x1400998b4
+0x0140099892: lea	r9d, [rsi + 0x1c]
+0x0140099896: mov	qword ptr [rsp + 0x20], rbp
+0x014009989b: lea	r8, [rip + 0x8b95f6]	; 0x140952e98 -> "pGrayConfig"
+0x01400998a2: lea	rdx, [rip + 0x8b5cc7]
+0x01400998a9: lea	ecx, [rsi + 4]
+0x01400998ac: call	qword ptr [rip + 0x71eb96]	; 0x1407b8448 -> "Z鏋"
+0x01400998b2: jmp	0x1400998d3
+0x01400998b4: mov	rax, qword ptr [rax]
+0x01400998b7: lea	r8, [rip + 0x8b95ea]	; 0x140952ea8 -> "Percent"
+0x01400998be: xor	r9d, r9d
+0x01400998c1: mov	qword ptr [rsp + 0x20], rbx
+0x01400998c6: lea	rdx, [rip + 0x8b9cc3]	; 0x140953590 -> "KGUIUseCocos"
+0x01400998cd: mov	rcx, r14
+0x01400998d0: call	qword ptr [rax + 0x50]
+0x01400998d3: mov	eax, dword ptr [rbx]
+0x01400998d5: test	eax, eax
+0x01400998d7: jns	0x1400998dd
+0x01400998d9: mov	eax, esi
+0x01400998db: jmp	0x1400998e7
+0x01400998dd: mov	ecx, 0x64
+0x01400998e2: cmp	eax, ecx
+0x01400998e4: cmovg	eax, ecx
+0x01400998e7: xor	r8d, r8d
+0x01400998ea: mov	dword ptr [rbx], eax
+0x01400998ec: mov	rcx, r13
+0x01400998ef: lea	edx, [r8 + 1]
+0x01400998f3: call	qword ptr [rip + 0x71eb07]	; 0x1407b8400 -> "|鐬"
+0x01400998f9: mov	rdi, rax
+0x01400998fc: test	rax, rax
+0x01400998ff: jne	0x140099960
+0x0140099901: call	qword ptr [rip + 0x71eaf1]
+0x0140099907: mov	rdi, rax
+0x014009990a: test	rax, rax
+0x014009990d: jne	0x140099931
+0x014009990f: lea	r9d, [rax + 0x26]
+0x0140099913: mov	qword ptr [rsp + 0x20], rbp
+0x0140099918: lea	r8, [rip + 0x8b9591]	; 0x140952eb0 -> "pUserSettings"
+0x014009991f: lea	rdx, [rip + 0x8b5c4a]
+0x0140099926: lea	ecx, [rax + 4]
+0x0140099929: call	qword ptr [rip + 0x71eb19]	; 0x1407b8448 -> "Z鏋"
+0x014009992f: jmp	0x140099986
+0x0140099931: mov	rax, qword ptr [rax]
+0x0140099934: mov	rdx, r13
+0x0140099937: mov	rcx, rdi
+0x014009993a: call	qword ptr [rax]
+0x014009993c: test	eax, eax
+0x014009993e: jne	0x140099960
+0x0140099940: lea	r9d, [rax + 0x2a]
+0x0140099944: mov	qword ptr [rsp + 0x20], rbp
+0x0140099949: lea	r8, [rip + 0x8b55d8]	; 0x14094ef28 -> "nRetCode"
+0x0140099950: lea	rdx, [rip + 0x8b5c19]
+0x0140099957: lea	ecx, [rax + 4]
+0x014009995a: call	qword ptr [rip + 0x71eae8]	; 0x1407b8448 -> "Z鏋"
+0x0140099960: mov	rax, qword ptr [rdi]
+0x0140099963: lea	r8, [rip + 0x8b9556]	; 0x140952ec0 -> "Override"
+0x014009996a: mov	r9d, 0xffffffff
+0x0140099970: mov	qword ptr [rsp + 0x20], r12
+0x0140099975: lea	rdx, [rip + 0x8b9c14]	; 0x140953590 -> "KGUIUseCocos"
+0x014009997c: mov	rcx, rdi
+0x014009997f: call	qword ptr [rax + 0x50]
+0x0140099982: test	eax, eax
+0x0140099984: jne	0x14009998e
+0x0140099986: mov	dword ptr [r12], 0xffffffff
+0x014009998e: test	rdi, rdi
+0x0140099991: je	0x1400999b2
+0x0140099993: mov	rax, qword ptr [rdi]
+0x0140099996: lea	r8, [rip + 0x8b9533]	; 0x140952ed0 -> "IntraNet"
+0x014009999d: xor	r9d, r9d
+0x01400999a0: mov	qword ptr [rsp + 0x20], r15
+0x01400999a5: lea	rdx, [rip + 0x8b9534]	; 0x140952ee0 -> "Environment"
+0x01400999ac: mov	rcx, rdi
+0x01400999af: call	qword ptr [rax + 0x50]
+0x01400999b2: cmp	dword ptr [r15], 1
+0x01400999b6: mov	eax, dword ptr [rbx]
+0x01400999b8: sete	sil
+0x01400999bc: mov	dword ptr [r15], esi
+0x01400999bf: cmp	eax, 0x64
+0x01400999c2: jl	0x1400999ca
+0x01400999c4: mov	byte ptr [rbx + 0xc], 1
+0x01400999c8: jmp	0x1400999da
+0x01400999ca: test	eax, eax
+0x01400999cc: jle	0x1400999da
+0x01400999ce: mov	ecx, eax
+0x01400999d0: call	0x14009aba0
+0x01400999d5: mov	byte ptr [rbx + 0xc], al
+0x01400999d8: mov	eax, dword ptr [rbx]
+0x01400999da: mov	ecx, dword ptr [r12]
+0x01400999de: cmp	eax, 0x64
+0x01400999e1: jl	0x1400999e7
+0x01400999e3: mov	al, 1
+0x01400999e5: jmp	0x1400999ff
+0x01400999e7: cmp	ecx, 1
+0x01400999ea: jbe	0x1400999fc
+0x01400999ec: cmp	dword ptr [r15], 1
+0x01400999f0: jne	0x1400999f6
+0x01400999f2: mov	al, 1
+0x01400999f4: jmp	0x1400999ff
+0x01400999f6: movzx	eax, byte ptr [rbx + 0xc]
+0x01400999fa: jmp	0x1400999ff
+0x01400999fc: sete	al
+0x01400999ff: mov	byte ptr [rbx + 0xd], al
+0x0140099a02: test	r14, r14
+0x0140099a05: je	0x140099a10
+0x0140099a07: mov	rax, qword ptr [r14]
+0x0140099a0a: mov	rcx, r14
+0x0140099a0d: call	qword ptr [rax + 0x10]
+0x0140099a10: mov	r14, qword ptr [rsp + 0x68]
+0x0140099a15: test	rdi, rdi
+0x0140099a18: je	0x140099a23
+0x0140099a1a: mov	rax, qword ptr [rdi]
+0x0140099a1d: mov	rcx, rdi
+0x0140099a20: call	qword ptr [rax + 0x10]
+0x0140099a23: mov	rdi, qword ptr [rsp + 0x60]
+0x0140099a28: mov	eax, 1
+0x0140099a2d: mov	rbx, qword ptr [rsp + 0x70]
+0x0140099a32: add	rsp, 0x30
+0x0140099a36: pop	r15
+0x0140099a38: pop	r13
+0x0140099a3a: pop	r12
+0x0140099a3c: pop	rsi
+0x0140099a3d: pop	rbp
+0x0140099a3e: ret	
+0x0140099a3f: mov	r9d, 0x19
+0x0140099a45: lea	rbp, [rip + 0x8b93fc]	; 0x140952e48 -> "KLoadGrayFeatureConfig"
+0x0140099a4c: lea	r8, [rip + 0x8b940d]	; 0x140952e60 -> "szGrayConfigFilePath && szGrayUserSettingsFilePath"
+0x0140099a53: mov	qword ptr [rsp + 0x20], rbp
+0x0140099a58: lea	rdx, [rip + 0x8b54d9]
+0x0140099a5f: lea	ecx, [r9 - 0x16]
+0x0140099a63: call	qword ptr [rip + 0x71e9df]	; 0x1407b8448 -> "Z鏋"
+0x0140099a69: mov	rbx, qword ptr [rsp + 0x70]
+0x0140099a6e: mov	eax, esi
+0x0140099a70: add	rsp, 0x30
+0x0140099a74: pop	r15
+0x0140099a76: pop	r13
+0x0140099a78: pop	r12
+0x0140099a7a: pop	rsi
+0x0140099a7b: pop	rbp
+0x0140099a7c: ret	
+0x0140099a7d: int3	
+0x0140099a7e: int3	
+0x0140099a7f: int3	
+0x0140099a80: push	rbx
+0x0140099a82: sub	rsp, 0x20
+0x0140099a86: and	edx, 5
+0x0140099a89: mov	qword ptr [rcx + 8], 0
+0x0140099a91: lea	rax, [rip + 0x8b9518]
+0x0140099a98: mov	rbx, rcx
+0x0140099a9b: mov	qword ptr [rcx], rax
+0x0140099a9e: cmp	dl, 5
+0x0140099aa1: jne	0x140099aad
+0x0140099aa3: mov	edx, 0x10
+0x0140099aa8: call	0x140087980
+0x0140099aad: mov	rax, rbx
+0x0140099ab0: add	rsp, 0x20
+0x0140099ab4: pop	rbx
+0x0140099ab5: ret	
+0x0140099ab6: int3	
+0x0140099ab7: int3	
+0x0140099ab8: int3	
+0x0140099ab9: int3	
+0x0140099aba: int3	
+0x0140099abb: int3	
+0x0140099abc: int3	
+0x0140099abd: int3	
+
+## xref 0x140099975  fn_start 0x140099820
+0x0140099820: mov	qword ptr [rsp + 0x18], rbx
+0x0140099825: push	rbp
+0x0140099826: push	rsi
+0x0140099827: push	r12
+0x0140099829: push	r13
+0x014009982b: push	r15
+0x014009982d: sub	rsp, 0x30
+0x0140099831: mov	rbx, qword ptr [rsp + 0x80]
+0x0140099839: xor	esi, esi
+0x014009983b: mov	dword ptr [rbx + 4], 0xffffffff
+0x0140099842: lea	r12, [rbx + 4]
+0x0140099846: mov	dword ptr [rbx + 8], esi
+0x0140099849: lea	r15, [rbx + 8]
+0x014009984d: mov	r13, r8
+0x0140099850: mov	rax, rdx
+0x0140099853: mov	dword ptr [rbx], esi
+0x0140099855: mov	word ptr [rbx + 0xc], si
+0x0140099859: test	rdx, rdx
+0x014009985c: je	0x140099a3f
+0x0140099862: test	r8, r8
+0x0140099865: je	0x140099a3f
+0x014009986b: mov	qword ptr [rsp + 0x60], rdi
+0x0140099870: xor	r8d, r8d
+0x0140099873: xor	edx, edx
+0x0140099875: mov	qword ptr [rsp + 0x68], r14
+0x014009987a: mov	rcx, rax
+0x014009987d: call	qword ptr [rip + 0x71eb7d]	; 0x1407b8400 -> "|鐬"
+0x0140099883: lea	rbp, [rip + 0x8b95be]	; 0x140952e48 -> "KLoadGrayFeatureConfig"
+0x014009988a: mov	r14, rax
+0x014009988d: test	rax, rax
+0x0140099890: jne	0x1400998b4
+0x0140099892: lea	r9d, [rsi + 0x1c]
+0x0140099896: mov	qword ptr [rsp + 0x20], rbp
+0x014009989b: lea	r8, [rip + 0x8b95f6]	; 0x140952e98 -> "pGrayConfig"
+0x01400998a2: lea	rdx, [rip + 0x8b5cc7]
+0x01400998a9: lea	ecx, [rsi + 4]
+0x01400998ac: call	qword ptr [rip + 0x71eb96]	; 0x1407b8448 -> "Z鏋"
+0x01400998b2: jmp	0x1400998d3
+0x01400998b4: mov	rax, qword ptr [rax]
+0x01400998b7: lea	r8, [rip + 0x8b95ea]	; 0x140952ea8 -> "Percent"
+0x01400998be: xor	r9d, r9d
+0x01400998c1: mov	qword ptr [rsp + 0x20], rbx
+0x01400998c6: lea	rdx, [rip + 0x8b9cc3]	; 0x140953590 -> "KGUIUseCocos"
+0x01400998cd: mov	rcx, r14
+0x01400998d0: call	qword ptr [rax + 0x50]
+0x01400998d3: mov	eax, dword ptr [rbx]
+0x01400998d5: test	eax, eax
+0x01400998d7: jns	0x1400998dd
+0x01400998d9: mov	eax, esi
+0x01400998db: jmp	0x1400998e7
+0x01400998dd: mov	ecx, 0x64
+0x01400998e2: cmp	eax, ecx
+0x01400998e4: cmovg	eax, ecx
+0x01400998e7: xor	r8d, r8d
+0x01400998ea: mov	dword ptr [rbx], eax
+0x01400998ec: mov	rcx, r13
+0x01400998ef: lea	edx, [r8 + 1]
+0x01400998f3: call	qword ptr [rip + 0x71eb07]	; 0x1407b8400 -> "|鐬"
+0x01400998f9: mov	rdi, rax
+0x01400998fc: test	rax, rax
+0x01400998ff: jne	0x140099960
+0x0140099901: call	qword ptr [rip + 0x71eaf1]
+0x0140099907: mov	rdi, rax
+0x014009990a: test	rax, rax
+0x014009990d: jne	0x140099931
+0x014009990f: lea	r9d, [rax + 0x26]
+0x0140099913: mov	qword ptr [rsp + 0x20], rbp
+0x0140099918: lea	r8, [rip + 0x8b9591]	; 0x140952eb0 -> "pUserSettings"
+0x014009991f: lea	rdx, [rip + 0x8b5c4a]
+0x0140099926: lea	ecx, [rax + 4]
+0x0140099929: call	qword ptr [rip + 0x71eb19]	; 0x1407b8448 -> "Z鏋"
+0x014009992f: jmp	0x140099986
+0x0140099931: mov	rax, qword ptr [rax]
+0x0140099934: mov	rdx, r13
+0x0140099937: mov	rcx, rdi
+0x014009993a: call	qword ptr [rax]
+0x014009993c: test	eax, eax
+0x014009993e: jne	0x140099960
+0x0140099940: lea	r9d, [rax + 0x2a]
+0x0140099944: mov	qword ptr [rsp + 0x20], rbp
+0x0140099949: lea	r8, [rip + 0x8b55d8]	; 0x14094ef28 -> "nRetCode"
+0x0140099950: lea	rdx, [rip + 0x8b5c19]
+0x0140099957: lea	ecx, [rax + 4]
+0x014009995a: call	qword ptr [rip + 0x71eae8]	; 0x1407b8448 -> "Z鏋"
+0x0140099960: mov	rax, qword ptr [rdi]
+0x0140099963: lea	r8, [rip + 0x8b9556]	; 0x140952ec0 -> "Override"
+0x014009996a: mov	r9d, 0xffffffff
+0x0140099970: mov	qword ptr [rsp + 0x20], r12
+0x0140099975: lea	rdx, [rip + 0x8b9c14]	; 0x140953590 -> "KGUIUseCocos"
+0x014009997c: mov	rcx, rdi
+0x014009997f: call	qword ptr [rax + 0x50]
+0x0140099982: test	eax, eax
+0x0140099984: jne	0x14009998e
+0x0140099986: mov	dword ptr [r12], 0xffffffff
+0x014009998e: test	rdi, rdi
+0x0140099991: je	0x1400999b2
+0x0140099993: mov	rax, qword ptr [rdi]
+0x0140099996: lea	r8, [rip + 0x8b9533]	; 0x140952ed0 -> "IntraNet"
+0x014009999d: xor	r9d, r9d
+0x01400999a0: mov	qword ptr [rsp + 0x20], r15
+0x01400999a5: lea	rdx, [rip + 0x8b9534]	; 0x140952ee0 -> "Environment"
+0x01400999ac: mov	rcx, rdi
+0x01400999af: call	qword ptr [rax + 0x50]
+0x01400999b2: cmp	dword ptr [r15], 1
+0x01400999b6: mov	eax, dword ptr [rbx]
+0x01400999b8: sete	sil
+0x01400999bc: mov	dword ptr [r15], esi
+0x01400999bf: cmp	eax, 0x64
+0x01400999c2: jl	0x1400999ca
+0x01400999c4: mov	byte ptr [rbx + 0xc], 1
+0x01400999c8: jmp	0x1400999da
+0x01400999ca: test	eax, eax
+0x01400999cc: jle	0x1400999da
+0x01400999ce: mov	ecx, eax
+0x01400999d0: call	0x14009aba0
+0x01400999d5: mov	byte ptr [rbx + 0xc], al
+0x01400999d8: mov	eax, dword ptr [rbx]
+0x01400999da: mov	ecx, dword ptr [r12]
+0x01400999de: cmp	eax, 0x64
+0x01400999e1: jl	0x1400999e7
+0x01400999e3: mov	al, 1
+0x01400999e5: jmp	0x1400999ff
+0x01400999e7: cmp	ecx, 1
+0x01400999ea: jbe	0x1400999fc
+0x01400999ec: cmp	dword ptr [r15], 1
+0x01400999f0: jne	0x1400999f6
+0x01400999f2: mov	al, 1
+0x01400999f4: jmp	0x1400999ff
+0x01400999f6: movzx	eax, byte ptr [rbx + 0xc]
+0x01400999fa: jmp	0x1400999ff
+0x01400999fc: sete	al
+0x01400999ff: mov	byte ptr [rbx + 0xd], al
+0x0140099a02: test	r14, r14
+0x0140099a05: je	0x140099a10
+0x0140099a07: mov	rax, qword ptr [r14]
+0x0140099a0a: mov	rcx, r14
+0x0140099a0d: call	qword ptr [rax + 0x10]
+0x0140099a10: mov	r14, qword ptr [rsp + 0x68]
+0x0140099a15: test	rdi, rdi
+0x0140099a18: je	0x140099a23
+0x0140099a1a: mov	rax, qword ptr [rdi]
+0x0140099a1d: mov	rcx, rdi
+0x0140099a20: call	qword ptr [rax + 0x10]
+0x0140099a23: mov	rdi, qword ptr [rsp + 0x60]
+0x0140099a28: mov	eax, 1
+0x0140099a2d: mov	rbx, qword ptr [rsp + 0x70]
+0x0140099a32: add	rsp, 0x30
+0x0140099a36: pop	r15
+0x0140099a38: pop	r13
+0x0140099a3a: pop	r12
+0x0140099a3c: pop	rsi
+0x0140099a3d: pop	rbp
+0x0140099a3e: ret	
+0x0140099a3f: mov	r9d, 0x19
+0x0140099a45: lea	rbp, [rip + 0x8b93fc]	; 0x140952e48 -> "KLoadGrayFeatureConfig"
+0x0140099a4c: lea	r8, [rip + 0x8b940d]	; 0x140952e60 -> "szGrayConfigFilePath && szGrayUserSettingsFilePath"
+0x0140099a53: mov	qword ptr [rsp + 0x20], rbp
+0x0140099a58: lea	rdx, [rip + 0x8b54d9]
+0x0140099a5f: lea	ecx, [r9 - 0x16]
+0x0140099a63: call	qword ptr [rip + 0x71e9df]	; 0x1407b8448 -> "Z鏋"
+0x0140099a69: mov	rbx, qword ptr [rsp + 0x70]
+0x0140099a6e: mov	eax, esi
+0x0140099a70: add	rsp, 0x30
+0x0140099a74: pop	r15
+0x0140099a76: pop	r13
+0x0140099a78: pop	r12
+0x0140099a7a: pop	rsi
+0x0140099a7b: pop	rbp
+0x0140099a7c: ret	
+0x0140099a7d: int3	
+0x0140099a7e: int3	
+0x0140099a7f: int3	
+0x0140099a80: push	rbx
+0x0140099a82: sub	rsp, 0x20
+0x0140099a86: and	edx, 5
+0x0140099a89: mov	qword ptr [rcx + 8], 0
+0x0140099a91: lea	rax, [rip + 0x8b9518]
+0x0140099a98: mov	rbx, rcx
+0x0140099a9b: mov	qword ptr [rcx], rax
+0x0140099a9e: cmp	dl, 5
+0x0140099aa1: jne	0x140099aad
+0x0140099aa3: mov	edx, 0x10
+0x0140099aa8: call	0x140087980
+0x0140099aad: mov	rax, rbx
+0x0140099ab0: add	rsp, 0x20
+0x0140099ab4: pop	rbx
+0x0140099ab5: ret	
+0x0140099ab6: int3	
+0x0140099ab7: int3	
+0x0140099ab8: int3	
+0x0140099ab9: int3	
+0x0140099aba: int3	
+0x0140099abb: int3	
+0x0140099abc: int3	
+0x0140099abd: int3	

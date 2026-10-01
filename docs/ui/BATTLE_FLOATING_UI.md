@@ -255,7 +255,7 @@ buff-sync netcode already documented in `docs/pvp/`.
 | UI | root / anchor | mode | role / updates |
 |---|---|---|---|
 | `ComboPanel` | `[ComboPanel]` `TOPRIGHT,-100,200` | 27 | combo counter (连击) with hit/crit stamps; `LOCAL_CHARACTER_HIT_RESULT`; 丐帮 special path |
-| `ComboWinEffect` | `[ComboWinEffect]` `Topmost`, `SetPoint CENTER 0,250` | — | transient "combo win" SFX counter; API `Open(count)`; fade 3 s / close 5 s; caller external (INFERRED) |
+| `ComboWinEffect` | `[ComboWinEffect]` `Topmost`, `SetPoint CENTER 0,250` | — | transient "combo win" SFX counter; API `Open(count)`; fade 3 s / close 5 s; **opener decoded: `ON_ARENA_COMBO_WIN`** → `arena_head.lua` `ComboWinEffect.Open(arg0)` (`proof/netcode/ui_scripts/b00/.../arena_head.lua`) |
 | `FightingNum` | `[FightingNum]` `Normal`, `OnlineFrameAnchor` | — | combat-score HUD (attack/toughness/healing + equip score); SFX `Z_战斗出现/消失`; prefs `bShowFightingNum/bShowPVP` |
 | `FightingStatistic` | `[FightingStatistic]` | 28 | 伤害统计 damage meter (`STR_FIGHTINGSTATISTIC_TITLE`); `QuerySkillStatData`; history `userdata/fight_stat/log_*.jx3dat` |
 | `KillMessage` | `[KillMessage]` default `TOPRIGHT,-354,110`, `RenderEvent=1` | — | kill feed list, ≤6 entries, 5000/4000 ms, `Tween=ui\Animation\KillMessage_Ani.ini`, SFX `UI_击杀_*.pss`; `OnRemotekillMessage` |
@@ -270,8 +270,10 @@ head-top controls used here (`Global_UpdateHeadTopPosition`, `SetGlobalTopHeadFl
 
 ### 2.5 Battle flow / mode UI (cross-refs, not re-documented)
 
-`EndOfBattle` (`[EndOfBattle]` `CENTER,CENTER,0,0`, 207 sections, 浩气/恶人 scoreboard,
-external opener INFERRED) · `LootList` · `DynamicBattleRoyale` (BR bar
+`EndOfBattle` (`[EndOfBattle]` `CENTER,CENTER,0,0`, 207 sections, 浩气/恶人 scoreboard;
+**opener decoded: `ON_CASTLE_END_ACTIVITY`** → `ui/script/module.lua`
+`CampMaps.ClearData(); EndOfBattle.Open(arg0)` — the camp/guild castle-war end) ·
+`LootList` · `DynamicBattleRoyale` (BR bar
 `BOTTOMCENTER,0,-7`: 8 default + 6 dynamic slots, `BATTLEACTIONBAR_BUTTON<n>`) ·
 `MainBarPanel` · `WhoSeeMe`/`HatredPanel` · queue/loading/settlement: see
 `docs/netcode/JX3_MODE_UI_INVENTORY.md` and `docs/netcode/JX3_MODE_UI_FLOW.md`.
@@ -337,8 +339,14 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
    dead code; `OnEvent` dispatches by explicit string comparison
    (`REPRESENT_MISS_TEXT`/`DODGE`/`IMMUNITY` → `RepresentNewStateText`, at
    decompiled lines 1104-1113). No action needed.
-8. **External openers** for `EndOfBattle`, `FullScreenWarning`, `ComboWinEffect`,
-   `ProgressBar.Start/Finish` are outside the extracted subset (INFERRED callers).
+8. **External openers (partial, 2026-09-30)** — decoded: `EndOfBattle` ←
+   `ON_CASTLE_END_ACTIVITY` (`ui/script/module.lua`); `ComboWinEffect` ←
+   `ON_ARENA_COMBO_WIN` (`ui/script/arena_head.lua`); `GeneralProgressBar` ← native
+   `REPRESENT_CALL` → `representcommand.lua` (per-action row mapping still open — the
+   producer string is not in any readable binary, likely the protected
+   `JX3ClientX64Base.dll`; runtime probe needed). Still open: `FullScreenWarning`
+   opener (no caller in any extracted script corpus) and `ProgressBar.Start/Finish`
+   callers.
 9. **Head-top buffs render owner** — Lua `TopBuff` window vs native caption texture slots:
    both exist; which one shows the row needs a runtime check (MED).
 
