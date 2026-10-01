@@ -28,12 +28,14 @@ extracted INI, writes `ui_process_selftest.txt` next to the exe):
 UiProcessApp.exe --selftest
 ```
 
-Fonts are game assets and are not committed. Copy the shipped `ui/Font` faces and
-the font/color scheme tables once per checkout (without them the renderer falls
-back to Microsoft YaHei UI and default scheme values):
+App assets (layout INIs, fonts, scheme tables) are game data and are not
+committed. Stage them once per checkout — without them the selftest cannot build
+windows and text falls back to Microsoft YaHei UI / default schemes. Also run
+`tools/prepare_ui_text.py` for the map text copies:
 
 ```powershell
-.venv\Scripts\python.exe tools\prepare_ui_fonts.py
+.venv\Scripts\python.exe tools\prepare_ui_configs.py   # layouts/settlement INIs from the inventory
+.venv\Scripts\python.exe tools\prepare_ui_fonts.py     # fonts + scheme tables
 UiProcessApp.exe --fonttest
 # expect: family=FZHei-B01 resolved=True
 #         scheme #18: size=15 color=#F0F0F0 file=fzht_GBK.ttf
@@ -41,8 +43,10 @@ UiProcessApp.exe --fonttest
 #         scheme #212: size=14 color=#F0F0F0 file=fzht_GBK.ttf
 ```
 
-Current selftest: **15/15 windows rendered**, e.g. NewBattleFieldQueue 1,129
-sections / 1,016 elements, BattleFieldMap 367 sections.
+Current selftest: **rendered=19 skipped=2 failed=0** (the two skipped windows have
+no INI by design — the ready prompt is native and the staging countdown has no
+renderer), e.g. NewBattleFieldQueue 1,129 sections / 1,016 elements,
+BattleFieldMap 367 sections.
 
 ## What it shows
 
