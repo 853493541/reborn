@@ -1168,3 +1168,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   substitution point remains the one open renderer detail.
 - Docs: `FONT_SCHEME_SYSTEM.md` §2.1/§2.4, `BATTLE_FLOATING_UI.md` §1.2; dumps
   `re/cocos_font/`, `re/cocos_richtext/`, `re/cocos_gray/` committed (`d5eb54a`).
+
+### 2026-09-30 — ui — FINAL font Size answer (supersedes the note above)
+- The Cocos style/decoration converter (`KGUICocosX64 0x1802CC070`, dumped) reads the
+  scheme record's `FontID (+0)`, `BorderSize (+8)`, `ProjectionSize (+0xC)`, colors
+  (`+0x10/+0x14/+0x18`) and `FontScale (+0x3C)` — **never `Size (+4)`**; its style
+  size is a constant default `0x10` (16) fallback.
+- Both `KFontSchemeMgr::LoadFont` ports create the 36 slot fonts at
+  `(slot.Size + mgr+0x4C) * mgr+0x48` = the **fontlist slot base size** × global
+  scale. Therefore **effective rendered size = slot base size × scales**, and the
+  scheme `Size` field is editor metadata in *both* renderers (legacy KGUI and live
+  Cocos). The 58 differing `Size>0` schemes are unused placeholders — zero impact.
+- `FONT_SCHEME_SYSTEM.md` §2.1 rewritten to the final answer; no renderer change
+  needed (`Size>0 ? Size : base` coincides with the slot base for every used scheme).

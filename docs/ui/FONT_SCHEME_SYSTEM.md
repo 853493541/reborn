@@ -134,19 +134,22 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
   Size 18 vs 15) — but **none of those 58 is referenced by any shipped layout** in the
   corpus. All 125 referenced schemes resolve to the same effective size under both rules
   (scheme `Size=0` → base, or the few used `Size>0` schemes already equal the base).
-- **Live Cocos path (added 2026-09-30): the scheme is applied with a size.**
-  `ccui.KGUIText:SetFontScheme` (`KGUICocosX64 0x1803A30A0`) → scheme apply
-  `0x180346AA0`: fetches the scheme record, stores the id at `text+0x6C8`, computes
-  an int size from the style struct (`cvttss2si` of a float) and calls the glyph
-  font builder `0x180347E80` with `{size (float), scale, valid-flag}`; the
-  scheme→style converter (`0x1802CC070`) writes a **default style size of `0x10`
-  (16)** plus FontID/slot lookups when the record is missing/incomplete. A
-  `shl×6 + [reg+4]` scan over the whole Cocos DLL (39 hits) did **not** isolate the
-  scheme `Size` → slot-base substitution (Cocos's scheme vector is a member at
-  `mgr+8`, unlike KGUI's `+0x5A80`, so consumers index it differently). **Single
-  remaining renderer detail**; next probe: trace `SetFontScheme → 0x180346AA0`
-  arguments into `0x180347E80` and the style object fields.
-- **Legacy KGUIX64 path: no code reads the scheme record's `Size` (+4).** Two exhaustive scans
+- **Final answer (2026-09-30): the scheme `Size` field is not consumed by either
+  renderer; the effective size comes from the font slot.**
+  - KGUIX64: two exhaustive scans found no reader of record `+4` (see below).
+  - KGUICocosX64 (live): the style/decoration converter `0x1802CC070` reads the
+    record's `FontID (+0)`, `BorderSize (+8)`, `ProjectionSize (+0xC)`, the three
+    colors (`+0x10/+0x14/+0x18`) and `FontScale (+0x3C)` — **never `+4`**; its
+    style size is a constant default `0x10` (16) fallback.
+  - Both `KFontSchemeMgr::LoadFont` implementations create the 36 slot fonts at
+    `size = (slot.Size + mgr+0x4C) * mgr+0x48` — i.e. the **fontlist slot base
+    size** (times the global scale) is what gets rendered.
+  - Consistent with the data: the 58 `Size>0` schemes that differ from their base
+    are unused placeholders/chat schemes.
+  - Renderer note: `Size>0 ? Size : base` coincides with the slot base for every
+    referenced scheme, so no renderer change is required; the field is editor
+    metadata (the scheme names encode the intended size).
+- **Legacy extra scans (for the record).** Two exhaustive scans
   (2026-09-30): (a) every `shl/imul reg, ×0x40` followed by a `[reg+4]` read across the
   whole image — only unrelated 0x40-stride tables matched; (b) every writer of the item
   font-size float `+0x2F4` — only the font-scale adjuster (`0x18011EFE0`, multiplies
