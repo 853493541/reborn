@@ -1,0 +1,70 @@
+# Operation modes — scripted engine runs (CLASSICAL vs JOYSTICK)
+
+**Date:** 2026-09-30
+**Build:** `reborn_client_control_modes.exe` (agent/move-controls, tree @ 547ba57+dirty; same sources as the
+turn-coupling fix below)
+**Namespace:** `reborn_client_control_modes.memory` (isolated)
+**Script:** `RC_DEMO_MOVE=1 RC_AUTORUN=15000` — autorun -> forward jump -> strafe L -> back-pedal -> turn
+right -> 600 u drop (roll). `RC_MODE` selects the mode.
+**Logs:** `reborn_out/reborn_20260930_232408.log` (classical, exit 0),
+`reborn_out/reborn_20260930_232519.log` (joystick, exit 0)
+
+## Clip availability pre-check (`reborn_20260930_231207.log`)
+
+The F1 authored strafe/back-pedal wrappers load and play in-engine (rc=0, no
+AV; the 二段跳a.tani wrapper AV hazard does not apply to these):
+
+```
+clip -> data\source\player\F1\动作\F1b02yd挪步左.tani (0)
+clip -> data\source\player\F1\动作\F1b02yd挪步右.tani (0)
+clip -> data\source\player\F1\动作\F1b02yd后退01.tani (0)
+clip -> data\source\player\F1\动作\F1b02yd后退02.tani (0)
+```
+
+## CLASSICAL (normal) — `op=classical`
+
+```
+movetest strafe mode=classical yaw0=2.38 yaw1=2.38 d=0.00 cam0=2.34 cam1=2.34
+movetest back   mode=classical yaw0=2.38 yaw1=2.38 d=0.00 cam0=2.34 cam1=2.34
+movetest turn   yaw0=2.38 yaw1=4.26 d=1.88 cam0=2.34 cam1=0.71 camd=-1.62
+land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0
+```
+clip switches: `F1b02yd挪步左.tani` (strafe window), `F1b02yd后退01.tani` (back window).
+
+- Strafe/back input moves the character with the **facing kept** (d=0.00) and
+  selects the authored **side-step / back-pedal** clips — the classical game
+  truth (`OPERATION_MODES_PLAN.md` §1).
+- Turn keys: character +1.88 rad; camera yaw 2.34 -> 0.71 — the
+  `cameraYawBehind` reflection (behind(4.26) = 4.712-4.26 = 0.45) with the
+  15 deg `CameraAdjustYawWhenMoveTurnDisableAngle` drag lag (~0.26), so the
+  camera stays behind through the turn.
+- Landing roll branch unchanged.
+
+## JOYSTICK — `op=joystick`
+
+```
+movetest strafe mode=joystick yaw0=2.38 yaw1=0.81 d=-1.57 cam0=2.34 cam1=2.34
+movetest back   mode=joystick yaw0=0.81 yaw1=-0.77 d=-1.57 cam0=2.34 cam1=2.34
+movetest turn   yaw0=-0.77 yaw1=1.13 d=1.89 cam0=2.34 cam1=3.78 camd=1.45
+land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0
+```
+
+- Strafe/back input **turns the body to the travel heading** (d = -1.57 rad per
+  1 s window at the pi rad/s turn rate) — the joystick game truth; no strafe /
+  back-pedal clips are selected.
+- Movement does not move the camera (mouse owns it in joystick mode).
+- Turn keys behave as in classical (camera drag), independent of this run's
+  mouse-driven camera.
+
+## Reproduce
+
+```powershell
+set RC_CLIENT_EXE=reborn_client_control_modes.exe
+set RC_SMOKE_EXE=camera_smoke_control_modes.exe
+client\build_client.cmd
+# classical
+$env:RC_DEMO_MOVE="1"; $env:RC_AUTORUN="15000"; $env:RC_MODE="classical"
+$p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_control_modes.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
+$p.WaitForExit(); $p.ExitCode   # 0
+# joystick: same with RC_MODE="joystick"
+```

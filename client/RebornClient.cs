@@ -112,6 +112,13 @@ internal static class RebornClient
         // data/source/player/F1/动作/F1b02yd握拳小跳c.ani is played when the
         // landed height difference exceeds FallDownHeightFloor (500 u).
         string clipLand = Env("RC_CLIP_LAND", f1 + "f1b02yd\u63E1\u62F3\u5C0F\u8DF3c.ani");
+        // Strafe / back-pedal locomotion for the operation-mode routing
+        // (CLASSICAL side-step / back-pedal): the F1 authored clips
+        // (player_animation_f1.txt KindID 6 / 57). Verified loadable+playable
+        // in-engine (reborn_20260930_231207.log, rc=0, no AV).
+        string clipStrafeL = Env("RC_CLIP_STRAFE_L", f1 + "F1b02yd\u632A\u6B65\u5DE6.tani");
+        string clipStrafeR = Env("RC_CLIP_STRAFE_R", f1 + "F1b02yd\u632A\u6B65\u53F3.tani");
+        string clipBack = Env("RC_CLIP_BACK", f1 + "F1b02yd\u540E\u900001.tani");
         long landClipMs = 700;
         long.TryParse(Env("RC_CLIP_LAND_MS", "700"), out landClipMs);
         float fallDownHeightFloor = 500f;   // FallDownHeightFloor (player_suspend.krl.txt)
@@ -824,7 +831,10 @@ internal static class RebornClient
         int unhandledCmd = 0;
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
-        bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false, mvDrop = false, mvDone = false;
+        bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
+        bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
+        float strafeYaw0 = 0f, backYaw0 = 0f, turnYaw0 = 0f;
+        double strafeCam0 = 0.0, backCam0 = 0.0, turnCam0 = 0.0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -1617,14 +1627,20 @@ internal static class RebornClient
             if (demoMove)
             {
                 // scripted movement-controls run (RC_DEMO_MOVE=1): autorun ->
-                // forward jump -> autorun stop -> turn key -> 600 u drop (roll)
+                // forward jump -> turn key -> classical strafe / back-pedal ->
+                // 600 u drop (roll). Run with RC_MODE=classical|joystick to
+                // compare the operation-mode routing (yaw/gait fingerprints).
                 if (now >= 2500 && !mvAuth) { mvAuth = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
                 if (now >= 5000 && !mvJumped) { mvJumped = true; runCommand("JUMP", true); runCommand("JUMP", false); }
                 if (now >= 6000 && !mvAuthOff) { mvAuthOff = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
-                if (now >= 7000 && !mvTurn) { mvTurn = true; runCommand("TURNRIGHT", true); }
-                if (now >= 7600 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw={0:F2}", curYaw)); }
-                if (now >= 8500 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
-                if (now >= 11000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4}", curYaw, px, py, pz, autorunOn ? 1 : 0)); }
+                if (now >= 6800 && !mvStrafe) { mvStrafe = true; strafeYaw0 = curYaw; strafeCam0 = camSys.Yaw; runCommand("STRAFELEFT", true); }
+                if (now >= 7800 && !mvStrafeDone) { mvStrafeDone = true; runCommand("STRAFELEFT", false); Log(string.Format("movetest strafe mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), strafeYaw0, curYaw, curYaw - strafeYaw0, strafeCam0, camSys.Yaw)); }
+                if (now >= 8100 && !mvBack) { mvBack = true; backYaw0 = curYaw; backCam0 = camSys.Yaw; runCommand("MOVEBACKWARD", true); }
+                if (now >= 9100 && !mvBackDone) { mvBackDone = true; runCommand("MOVEBACKWARD", false); Log(string.Format("movetest back mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), backYaw0, curYaw, curYaw - backYaw0, backCam0, camSys.Yaw)); }
+                if (now >= 9500 && !mvTurn) { mvTurn = true; turnYaw0 = curYaw; turnCam0 = camSys.Yaw; runCommand("TURNRIGHT", true); }
+                if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, curYaw - turnYaw0, turnCam0, camSys.Yaw, camSys.Yaw - turnCam0)); }
+                if (now >= 10800 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
+                if (now >= 12500 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
             }
             if (rotTest)
             {
@@ -1823,6 +1839,13 @@ internal static class RebornClient
             if (pD) { inX += rX; inZ += rZ; }
             // TOGGLEAUTORUN (G/NumLock): keep moving forward without holding W
             if (autorunOn) { inX += hx; inZ += hz; }
+            // forward/lateral input split for the operation-mode routing
+            // (OPERATION_MODES_PLAN.md §1: CLASSICAL lateral/back input keeps
+            // the facing; JOYSTICK turns the body to the travel heading).
+            float fwdAxis = 0f;
+            if (pW) fwdAxis += 1f;
+            if (pS) fwdAxis -= 1f;
+            if (autorunOn) fwdAxis += 1f;
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
             float dirX = inX, dirZ = inZ;
@@ -1843,26 +1866,46 @@ internal static class RebornClient
             // per-frame air steering is invented here.
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
             bool blocked = false;
+            // locomotion clip selection: 0 run/walk, 1 strafe left, 2 strafe
+            // right, 3 back-pedal (CLASSICAL side-step/back-pedal only)
+            int gait = 0;
             if (grounded && moving)
             {
                 float sp = (shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
                             : pRun) / len;
                 float ux = dirX / len, uz = dirZ / len;
+                float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
                 // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
                 // direction; facing turns toward it at the turn rate; a turn
                 // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
                 // and the turn step that frame.
-                float heading = (float)Math.Atan2(ux, uz);
-                float dYaw = heading - curYaw;
-                while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
-                while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
-                bool hardTurn = Math.Abs(dYaw) > 2.0071f;
-                if (hardTurn) sp *= 0.5f;
-                float turnStep = charTurnRate * dt * (hardTurn ? 0.5f : 1f);
-                if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
-                else curYaw += Math.Sign(dYaw) * turnStep;
+                bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
+                bool forwardish = fwdAxis > 0f || demoCollide;
+                if (followsHeading || forwardish)
+                {
+                    float dYaw = heading - curYaw;
+                    while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
+                    while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
+                    bool hardTurn = Math.Abs(dYaw) > 2.0071f;
+                    if (hardTurn) sp *= 0.5f;
+                    float turnStep = charTurnRate * dt * (hardTurn ? 0.5f : 1f);
+                    if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
+                    else curYaw += Math.Sign(dYaw) * turnStep;
+                }
+                else
+                {
+                    // CLASSICAL lateral/back input (OPERATION_MODES_PLAN.md §1):
+                    // side-step / back-pedal with the facing kept; the authored
+                    // strafe/back clips are chosen by travel angle vs facing.
+                    float a = heading - curYaw;
+                    while (a > Math.PI) a -= 2f * (float)Math.PI;
+                    while (a < -Math.PI) a += 2f * (float)Math.PI;
+                    float aa = Math.Abs(a);
+                    if (aa > 2.3562f) gait = 3;                     // >135 deg: back-pedal
+                    else if (aa > 0.7854f) gait = a > 0f ? 2 : 1;   // >45 deg: strafe R/L
+                }
                 float step = sp * dt;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
                 float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
@@ -1898,13 +1941,25 @@ internal static class RebornClient
             }
 
             // TURNLEFT/TURNRIGHT (real default: arrow keys): turn in place at
-            // the char turn rate; the camera follows (CameraAdjustYawWhenMoveTurn,
-            // docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md §7).
+            // the char turn rate; the camera follows via the documented
+            // CameraAdjustYawWhenMoveTurn drag (15 deg dead zone). heading and
+            // camera yaw are related by the cameraYawBehind reflection
+            // (Forward(yaw)=(-cos,-sin)), so the drag is computed through it.
             if (grounded && (pTurnL || pTurnR))
             {
                 float tstep = charTurnRate * (float)dt;
-                if (pTurnL && !pTurnR) { curYaw -= tstep; camSys.Yaw -= tstep; }
-                else if (pTurnR && !pTurnL) { curYaw += tstep; camSys.Yaw += tstep; }
+                if (pTurnL && !pTurnR) curYaw -= tstep;
+                else if (pTurnR && !pTurnL) curYaw += tstep;
+                double behind = Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw));
+                double dcam = behind - camSys.Yaw;
+                while (dcam > Math.PI) dcam -= 2.0 * Math.PI;
+                while (dcam < -Math.PI) dcam += 2.0 * Math.PI;
+                double turnDead = camSys.Row.F("CameraAdjustYawWhenMoveTurnDisableAngle", 0.26);
+                if (Math.Abs(dcam) > turnDead)
+                {
+                    double drag = Math.Min(Math.Abs(dcam), tstep);
+                    camSys.Yaw += Math.Sign(dcam) * drag;
+                }
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
@@ -2064,7 +2119,11 @@ internal static class RebornClient
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
-            else if (moving) setClip(walkMode ? clipWalk : clipRun);
+            else if (moving) setClip(
+                gait == 1 ? clipStrafeL :
+                gait == 2 ? clipStrafeR :
+                gait == 3 ? clipBack :
+                walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
             // model update (only when changed; keeps animation alive).
@@ -2991,11 +3050,12 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip));
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    CameraOperationMode.Name(cameraSettings.OperationMode));
             }
             if (now - lastLog >= 2000)
             {
@@ -3025,12 +3085,13 @@ internal static class RebornClient
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}){11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24}{11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz,
-                    unhandledCmd, lastUnhandled));
+                    unhandledCmd, lastUnhandled, gait,
+                    CameraOperationMode.Name(cameraSettings.OperationMode)));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {
