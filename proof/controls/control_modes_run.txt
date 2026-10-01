@@ -84,3 +84,27 @@ speeds 1.0/1.0), clamped per the freshly disassembled setters (follow [0..3],
 Speeds [0.01, 10]). NOTE: the per-frame consumer of follow mode [0..3] and of
 the reset speeds is still undecoded — the host applies and logs the active
 values and does not fake their behaviour (OPERATION_MODES_PLAN.md §7c).
+
+## Correction 2026-10-01 — classical A/D turns (bytecode re-decode)
+
+Re-decoded the real handlers from the packed bytecode (`tools/controls/lua51_probe.py`):
+StrafeLeftStart = proto 0/76, StrafeRightStart = 0/78; forward/back/turn = 0/65-0/74.
+STRAFE is the only mode-branched movement command: CLASSICAL -> SetControl +
+TurnLeft/RightStart when Camera_IsInFreeView(); JOYSTICK -> ResponseWASDKey
+(double-tap aware). The earlier summary in OPERATION_MODES_PLAN.md (classical
+strafe keeps facing) described only the non-free-view branch — corrected.
+
+Host mapping: RC_FREEVIEW=1 (default) = A/D turn in classical (observed game
+behaviour); RC_FREEVIEW=0 = decoded side-step branch.
+
+Runs (RC_DEMO_MOVE=1 RC_AUTORUN=15000, exit 0):
+
+| run | strafe line | back line |
+|---|---|---|
+| classical, default (free view) | `movetest strafe mode=classical yaw0=2.38 yaw1=-0.76 d=-3.14 cam0=2.34 cam1=5.22` | `d=0.00` + 后退01 (back-pedal) |
+| classical, RC_FREEVIEW=0 | `movetest strafe mode=classical yaw0=2.38 yaw1=2.38 d=0.00` (side-step; 挪步 clips) | `d=0.00` |
+| joystick | `movetest strafe mode=joystick yaw0=2.38 yaw1=0.81 d=-1.57 cam0=2.34 cam1=2.34` | `d=-1.57` |
+
+d=-3.14 = 1 s hold at the host turn rate pi rad/s; classical camera follows
+(cam 2.34 -> 5.22, cameraYawBehind reflection + 15 deg drag). Landing roll
+unchanged (`land drop=600u roll=1 ... rc=0`).

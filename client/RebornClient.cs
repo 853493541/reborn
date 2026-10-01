@@ -1849,15 +1849,32 @@ internal static class RebornClient
             // RMB = CAMERAORSELECTORMOVESTICKY rotates camera + character).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
+            // Operation-mode routing, decoded from the packed hotkeys.lua
+            // bytecode (StrafeLeftStart proto 0/76, StrafeRightStart 0/78):
+            // STRAFE is the only mode-branched command. CLASSICAL:
+            // SetControl(CONTROL_STRAFE_*) and, when Camera_IsInFreeView(),
+            // TurnLeftStart/TurnRightStart (A/D turn); JOYSTICK:
+            // ResponseWASDKey('StrafeLeft/Right') free-move (A/D turn to the
+            // travel heading). The free-view state is not locatable in the
+            // client binaries, so it is a host knob: RC_FREEVIEW=1 (default) =
+            // the observed game behaviour (A/D turn in classical); 0 = the
+            // decoded side-step branch (provisional; re-open when
+            // Camera_IsInFreeView is found - OPERATION_MODES_PLAN.md §7c).
+            bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
+            bool classicalMode = !followsHeading;
+            bool freeView = Env("RC_FREEVIEW", "1") != "0";
+            bool turnL = pTurnL || (classicalMode && freeView && pA);
+            bool turnR = pTurnR || (classicalMode && freeView && pD);
             if (pW) { inX += hx; inZ += hz; }
             if (pS) { inX -= hx; inZ -= hz; }
-            if (pA) { inX -= rX; inZ -= rZ; }
-            if (pD) { inX += rX; inZ += rZ; }
+            if (pA && !(classicalMode && freeView)) { inX -= rX; inZ -= rZ; }
+            if (pD && !(classicalMode && freeView)) { inX += rX; inZ += rZ; }
             // TOGGLEAUTORUN (G/NumLock): keep moving forward without holding W
             if (autorunOn) { inX += hx; inZ += hz; }
             // forward/lateral input split for the operation-mode routing
-            // (OPERATION_MODES_PLAN.md §1: CLASSICAL lateral/back input keeps
-            // the facing; JOYSTICK turns the body to the travel heading).
+            // (CLASSICAL: only forward/back move; lateral input is a turn when
+            // in free view, or the decoded side-step with RC_FREEVIEW=0;
+            // JOYSTICK: every direction turns the body to the travel heading).
             float fwdAxis = 0f;
             if (pW) fwdAxis += 1f;
             if (pS) fwdAxis -= 1f;
@@ -1897,7 +1914,6 @@ internal static class RebornClient
                 // direction; facing turns toward it at the turn rate; a turn
                 // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
                 // and the turn step that frame.
-                bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
                 bool forwardish = fwdAxis > 0f || demoCollide;
                 if (followsHeading || forwardish)
                 {
@@ -1956,16 +1972,18 @@ internal static class RebornClient
                 vjx = 0f; vjz = 0f;
             }
 
-            // TURNLEFT/TURNRIGHT (real default: arrow keys): turn in place at
-            // the char turn rate; the camera follows via the documented
-            // CameraAdjustYawWhenMoveTurn drag (15 deg dead zone). heading and
-            // camera yaw are related by the cameraYawBehind reflection
-            // (Forward(yaw)=(-cos,-sin)), so the drag is computed through it.
-            if (grounded && (pTurnL || pTurnR))
+            // TURNLEFT/TURNRIGHT (arrows) plus classical A/D in free view (the
+            // decoded StrafeLeft/Right handlers turn instead of strafing):
+            // turn in place at the char turn rate; the camera follows via the
+            // documented CameraAdjustYawWhenMoveTurn drag (15 deg dead zone).
+            // heading and camera yaw are related by the cameraYawBehind
+            // reflection (Forward(yaw)=(-cos,-sin)), so the drag is computed
+            // through it.
+            if (grounded && (turnL || turnR))
             {
                 float tstep = charTurnRate * (float)dt;
-                if (pTurnL && !pTurnR) curYaw -= tstep;
-                else if (pTurnR && !pTurnL) curYaw += tstep;
+                if (turnL && !turnR) curYaw -= tstep;
+                else if (turnR && !turnL) curYaw += tstep;
                 double behind = Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw));
                 double dcam = behind - camSys.Yaw;
                 while (dcam > Math.PI) dcam -= 2.0 * Math.PI;

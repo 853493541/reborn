@@ -216,12 +216,19 @@ or merge that subject to main first and branch `agent/control-modes`.
 
 - **M0 done** — HUD shows `op <classical|joystick>`; periodic log carries
   `gait=` and `mode=`; `RC_MODE` + `OPMODE=` fingerprint already live.
-- **M3 done (decoded routing)** — classical lateral/back input keeps the facing
-  and selects the authored strafe/back-pedal clips (`F1b02yd挪步左/右.tani`,
-  `F1b02yd后退01.tani`; load-tested rc=0); joystick keeps the turn-to-heading
-  turn model for all input. Proof `proof/controls/control_modes_run.txt`:
-  classical strafe/back yaw d=0.00 with the clips; joystick d=-1.57 with the run
-  clip and camera untouched; landing roll unchanged.
+- **M3 done (decoded routing)** — **corrected 2026-10-01 by re-decoding the
+  packed bytecode** (`StrafeLeftStart` proto 0/76, `StrafeRightStart` 0/78):
+  STRAFE is the **only** mode-branched movement handler. CLASSICAL calls
+  `SetControl(CONTROL_STRAFE_*)` (upval `SetControl`; falsy -> return) and calls
+  `TurnLeftStart/TurnRightStart` when `Camera_IsInFreeView()`; JOYSTICK calls
+  `ResponseWASDKey('StrafeLeft/Right', true, double)` (double-tap aware), with
+  `Camera_EnableControl` only as the failure fallback. Forward/back/turn
+  handlers (protos 0/65-0/74) have no mode branch. The host maps the undecoded
+  free-view state to `RC_FREEVIEW`: **1 (default) = A/D turn in classical**
+  (the observed game behaviour; camera drags behind through the 15 deg dead
+  zone), 0 = the decoded side-step branch with the authored `挪步左/右` clips.
+  Classical S back-pedals (`后退01` clip); joystick A/D/S turn to the travel
+  heading. Proof: `proof/controls/control_modes_run.txt`.
 - **Turn-key camera coupling fixed** — the heading<->camera-yaw relation is the
   `cameraYawBehind` reflection (`Forward(yaw)=(-cos,-sin)`), so the drag now
   rotates the camera behind the character (was rotating the wrong way after the

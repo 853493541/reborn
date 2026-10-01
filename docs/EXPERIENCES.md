@@ -1011,3 +1011,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   reset speeds; Camera_IsInFreeView absent from all candidate binaries' string
   tables (hashed Lua registration?). Next: type-0xD node vtable update trace or
   live debug on the real client.
+
+### 2026-10-01 - controls/client - Correction: classical A/D turns (bytecode re-decode)
+- Problem: the client implemented classical A/D as side-step, but in the real
+  game (user report) classical A/D turn. Root cause: the earlier
+  RESEARCH_RESOLVED_GAPS summary of hotkeys.lua was wrong - it described only
+  the non-free-view branch.
+- Fix: re-decoded the actual bytecode (lua51_probe): StrafeLeftStart proto 0/76
+  branches CLASSICAL -> SetControl + Camera_IsInFreeView -> TurnLeftStart;
+  JOYSTICK -> ResponseWASDKey (double-tap). Forward/back/turn have no mode
+  branch. Host now: classical A/D turn in place by default (RC_FREEVIEW=1,
+  camera drags behind via cameraYawBehind + 15 deg dead zone); RC_FREEVIEW=0
+  restores the decoded side-step branch with the 挪步 clips; S stays
+  back-pedal in classical.
+- Evidence: runs 20261001_003459 (classical free view: d=-3.14, cam follows),
+  20261001_003600 (RC_FREEVIEW=0: d=0.00 side-step), 20261001_003644 (joystick:
+  d=-1.57); proof/controls/control_modes_run.txt; gates all PASS.
+- Lesson: decode the handler bodies, not the string/global summaries.

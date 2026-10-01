@@ -132,13 +132,19 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
   `CameraAdjustYawWhenMoveTurnDisableAngle` dead zone; **TOGGLEAUTORUN
   (G/NumLock)** runs forward hands-free (cancel: backward/strafe);
   **TOGGLERUN (Numpad /)**, debug main-`/` kept.
-- **Operation modes** (F7 / `RC_MODE`): CLASSICAL (normal) keeps the facing for
-  lateral/back input — side-step / back-pedal with the authored
-  `F1b02yd挪步左/右.tani` / `F1b02yd后退01.tani` clips (chosen by travel angle vs
-  facing); JOYSTICK turns the body to the travel heading for all input (run
-  clip). Turn keys behave the same in both modes. Per-mode follow mode / reset
-  speeds and the classical free view stay open (`OPERATION_MODES_PLAN.md` §7b);
-  proof `proof/controls/control_modes_run.txt`.
+- **Operation modes** (F7 / `RC_MODE`): the packed `hotkeys.lua` bytecode shows
+  STRAFE is the only mode-branched movement handler — CLASSICAL:
+  `SetControl(CONTROL_STRAFE_*)` and, when `Camera_IsInFreeView()`,
+  `TurnLeftStart/TurnRightStart`; JOYSTICK: `ResponseWASDKey('StrafeLeft/Right')`
+  free-move (no free-view branch). Forward/back/turn handlers are
+  mode-independent. Host: classical A/D **turn in place** by default
+  (`RC_FREEVIEW=1`, the observed game behaviour; the camera drags behind with
+  the 15° dead zone) — `RC_FREEVIEW=0` restores the decoded side-step branch
+  with the authored `F1b02yd挪步左/右.tani` clips. Classical S back-pedals
+  (`F1b02yd后退01.tani`); joystick A/D/S turn the body to the travel heading
+  (run clip). Per-mode follow mode / reset speeds are applied at switch; the
+  free-view state itself and the follow-mode `[0..3]` consumer stay open
+  (`OPERATION_MODES_PLAN.md` §7c); proof `proof/controls/control_modes_run.txt`.
 - **Jump carries horizontal takeoff velocity** (`JumpSpeedXY` of the row,
   clamp 0..127, 15 Hz, `RC_JUMP_SCALE`) along the input direction when moving;
   a standing jump is ballistic-vertical (no move intent -> no horizontal
