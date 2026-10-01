@@ -1274,3 +1274,26 @@ eborn_client_daqinggong carries these changes — other
   cycle -> shift -> `弈韵六段` -> fall. Build + selftest PASS.
 - Outcome: the live flow works with the small leap; the 336/altitude items are
   flagged for re-derivation.
+
+### 2026-09-30 - client - the REAL current system: 轻功/八大派/万花
+- User: the 点墨江山 1-4 model is outdated / no 4-phase in the current setup.
+  Found the actual current system: skills 15554/15835/15577/15579/15581/15688/
+  15690 (轻功\八大派\万花\*): the 切入 (SkillMove 126, SET_JUMP_COUNT 6, cost
+  50*100 = 5000, NO gate), the 小跳 (175, count 1), the 段数第一..第五
+  (127/128/129/163/162, counts 7-11), the 水冲刺 (183, count 12); all CanCast
+  require bSprintFlag (the 疾跑段). The JumpParam J-rows (the old jump chain) are
+  NOT the current system.
+- Did: generated the SkillMove per-frame XY/Z tables into WwRules (WhMove*,
+  WhMoveLen/XY/Z accessors, WhEntryCost 5000, WhDisplayNames) and rebuilt the
+  client chain: the entry = the 切入 (cost 5000 + the 126 curve), Space = 小跳
+  (纵跃段) -> 段数第一..第五 (一段..五段), 段数第五 + Space cycles to 段数第一
+  (the 棋弈 loop), Shift (KeyDown edge, event-based) = the fall-out. Each move
+  runs its authored frames (IgnoreGravity) and keeps the last velocity at the
+  end (EndButKeepVelocity). The landing/collision grounding is skipped during a
+  move (it re-grounded at frame 0).
+- Evidence: run 23:19 exit=0 - 切入 (cost 5000) -> 纵跃段 (175, 8f) -> 一段 (127,
+  37f, end vxy=2040) -> 二段 (128) -> 三段 (129) -> 四段 (163, 81f); shift run
+  23:21 exit=0 - shift -> the chain ends -> the fall. Build + selftest PASS.
+- Open: the base chain (the 小跳 -> the 一段..) vs the special 棋弈 entry (the
+  切入) - both cast from the 疾跑段; the water 冲刺 (183) not wired.
+- Outcome: the chain now runs the real current stage moves.

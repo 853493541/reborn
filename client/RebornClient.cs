@@ -856,19 +856,14 @@ internal static class RebornClient
         bool whStageActive = false;           // a stage leap is in flight
         bool whEndPhase = false;              // segment-end triple applied
         bool whDiving = false;                // 急坠 (SetPassiveVelocityZ -2000)
-        bool whShiftLatch = false;            // Shift edge latch (棋弈 entry/dive-out)
+        float whMoveT = 0f;                   // the current SkillMove elapsed seconds
+        bool whShiftPressed = false;          // Shift edge (KeyDown event)
         bool whStagePressed = false;
         bool whPlungePressed = false;
-        // phase name for the HUD/logs: 1..5 = 纵跃段/一段..四段, 6..11 = 弈韵一段..六段
+        // phase name for the HUD/logs (the current 八大派 moves)
         Func<string> whStageName = delegate()
         {
-            if (whStage >= WwRules.WhYiyunFirst)
-            {
-                int i = whStage - WwRules.WhYiyunFirst;
-                if (i >= WwRules.WhYiyunNames.Length) i = WwRules.WhYiyunNames.Length - 1;
-                return WwRules.WhYiyunNames[i];
-            }
-            if (whStage >= 1 && whStage <= WwRules.WhBaseStages) return WwRules.WhStageNames[whStage - 1];
+            if (whStage >= 0 && whStage < WwRules.WhDisplayNames.Length) return WwRules.WhDisplayNames[whStage];
             return "?";
         };
         {
@@ -894,24 +889,21 @@ internal static class RebornClient
         };
         Action wwCharge = delegate()
         {
-            // 疾跑段 + Space -> 点墨江山·纵跃段: the trigger cost (100*CONSUME_BASE;
-            // the 气力值 cast gate was removed by user request) + the chain row
-            // J1 = the small takeoff leap (50/160/8; the J0 normal jump and the
-            // jump scale do NOT apply to the 大轻功 chain).
-            whPower -= whTriggerCost;
+            // the current 八大派 system: the 切入 (skill 15554) consumes 50*100
+            // sprint power (no gate) and casts the 切入执行 = SkillMove 126 (the
+            // entry); the chain then follows the 小跳 (175) and the
+            // 段数第一..第五 (127/128/129/163/162).
+            whPower -= WwRules.WhEntryCost;
             wwStateActive = true;
             grounded = false;
-            whStage = 1;   // 点墨江山·纵跃段 (the chain's first phase)
-            whStageActive = true;
+            whStage = 0;            // move index: 0 = 切入
+            whStageActive = true;   // the SkillMove running
             whEndPhase = false; whDiving = false;
-            vy = WwRules.ChainVzFrame[1] * WwRules.LogicTicksPerSecond;
-            curJumpGravity = WwRules.ChainGravityFrame[1] * 225f;
-            leapSpeedXY = WwRules.ChainSpeedXYFrame[1] * WwRules.LogicTicksPerSecond;
-            Log("wh 点墨江山·纵跃段 (JC1): J1 " + WwRules.ChainSpeedXYFrame[1] + "/" +
-                WwRules.ChainVzFrame[1] + "/" + WwRules.ChainGravityFrame[1] +
-                " -> vy=" + vy + " g=" + curJumpGravity + " xy=" + leapSpeedXY +
-                " u/s (small takeoff leap; cost " + whTriggerCost + ", power " + whPower +
-                "); Space = 一段, Shift(一段/二段/三段) = 棋弈");
+            whMoveT = 0f;
+            vy = 0f; leapSpeedXY = 0f;
+            Log("wh 点墨江山·切入 (15554 -> SkillMove " + WwRules.WhMoveIds[0] +
+                ", jumpCount " + WwRules.WhMoveJumpCount[0] + "): cost " + WwRules.WhEntryCost +
+                " (50*100), power " + whPower + "; Space = 纵跃段/一段..五段, Shift = fall-out");
         };
         Action wwTrigger = delegate()
         {
@@ -1164,7 +1156,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
             else if (e.KeyCode == Keys.D) pD = true;
-            else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
+            else if (e.KeyCode == Keys.ShiftKey && !shiftDown) { shiftDown = true; whShiftPressed = true; }
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; if (wwStateActive) whStagePressed = true; else jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; wwRelease(); }
             else if (e.KeyCode == Keys.D2 && !twoDown) { twoDown = true; skillPressed = true; }
@@ -1827,6 +1819,7 @@ internal static class RebornClient
                 {
                     whDemoShifted = true;
                     shiftDown = true;
+                    whShiftPressed = true;
                     whShiftReleaseMs = now + 250;
                     Log("whdemo: shift pulse 1 (棋弈 entry)");
                 }
@@ -1834,6 +1827,7 @@ internal static class RebornClient
                 {
                     whDemoShifted2 = true;
                     shiftDown = true;
+                    whShiftPressed = true;
                     whShiftReleaseMs = now + 250;
                     Log("whdemo: shift pulse 2 (六段)");
                 }
@@ -2114,80 +2108,32 @@ internal static class RebornClient
                 whStagePressed = false;
                 if (wwStateActive)
                 {
-                    // Space progression (live-game structure):
-                    //   纵跃段(1) -> 一段(2) -> 二段(3) -> 三段(4) -> 四段(5) = end
-                    //   弈韵一段(6)..弈韵五段(10): Space cycles, 10 -> 6
-                    //   四段/弈韵六段: no further stage
-                    // A press during the 纵跃段 launch advances too (it takes over).
-                    int next;
-                    if (whStage >= WwRules.WhYiyunFirst && whStage < WwRules.WhYiyunCycleLast)
-                        next = whStage + 1;                 // 6..9 -> +1
-                    else if (whStage == WwRules.WhYiyunCycleLast)
-                        next = WwRules.WhYiyunFirst;        // 10 -> 6 (the cycle)
-                    else if (whStage < WwRules.WhBaseStages)
-                        next = whStage + 1;                 // 1..4 -> +1
-                    else
-                        next = 0;                           // 5 (四段 end) / 11 -> no action
-                    if (next == 0)
-                    {
-                        Log("wh 四段 is the chain end (fall; Space has no effect)");
-                    }
-                    else
-                    {
-                        whStage = next;
-                        if (next >= WwRules.WhYiyunFirst)
-                        {
-                            // 弈韵 (棋弈) stages = the float: Z stays locked and
-                            // the poses cycle (only 六段/Shift falls out)
-                            vy = 0f;
-                            whStageActive = false;
-                            whEndPhase = false;
-                            leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
-                            Log("wh 点墨江山·" + whStageName() + " (JC" + next +
-                                "): 棋弈 float (Z locked; Space cycles 一段..五段, shift -> 六段)");
-                        }
-                        else
-                        {
-                            vy = WwRules.ChainVzFrame[next] * WwRules.LogicTicksPerSecond;
-                            curJumpGravity = WwRules.ChainGravityFrame[next] * 225f;
-                            leapSpeedXY = WwRules.ChainSpeedXYFrame[next] * WwRules.LogicTicksPerSecond;
-                            whStageActive = true;
-                            whEndPhase = false;
-                            grounded = false;
-                            whPower -= WwRules.WhJumpCost;
-                            Log("wh 点墨江山·" + whStageName() + " (JC" + next +
-                                "): J" + next + " " + WwRules.ChainSpeedXYFrame[next] + "/" +
-                                WwRules.ChainVzFrame[next] + "/" + WwRules.ChainGravityFrame[next] +
-                                " -> vy=" + vy + " g=" + curJumpGravity + " xy=" + leapSpeedXY +
-                                " u/s (OnFlyJumpCost " + WwRules.WhJumpCost + ", power " + whPower + ")");
-                        }
-                    }
+                    // Space: 切入(0) -> 纵跃段(1) -> 段数第一..第五(2..6); at the
+                    // 段数第五 Space cycles back to the 段数第一 (the 棋弈 loop)
+                    int next = whStage + 1;
+                    if (whStage >= 6) next = 2;
+                    whStage = next;
+                    whStageActive = true;
+                    whEndPhase = false;
+                    whMoveT = 0f;
+                    grounded = false;
+                    Log("wh 点墨江山·" + WwRules.WhDisplayNames[whStage] + " (SkillMove " +
+                        WwRules.WhMoveIds[whStage] + ", jumpCount " + WwRules.WhMoveJumpCount[whStage] +
+                        ", " + WwRules.WhMoveLen(whStage) + " frames)");
                 }
                 else Log("wh stage ignored: no fly active");
             }
-            // Shift in the fly (live-game structure): from 一段/二段/三段 it
-            // enters the 棋弈 branch (弈韵一段); in the 弈韵 it dives out (六段)
-            if (shiftDown && !whShiftLatch && wwStateActive)
+            // Shift in the chain = the fall-out (the live 棋弈 exit)
+            if (whShiftPressed)
             {
-                whShiftLatch = true;
-                if (whStage >= WwRules.WhYiyunFirst && whStage <= WwRules.WhYiyunCycleLast)
+                whShiftPressed = false;
+                if (wwStateActive)
                 {
-                    Log("wh 点墨江山·弈韵六段 (俯冲): shift -> the fly ends (fall)");
+                    Log("wh 点墨江山: shift -> the chain ends (fall)");
                     wwEndState();
                 }
-                else if (whStage >= 2 && whStage <= 4)
-                {
-                    whStage = WwRules.WhYiyunFirst;
-                    vy = 0f;
-                    whStageActive = false;
-                    whEndPhase = false;
-                    leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
-                    Log("wh 点墨江山·" + WwRules.WhYiyunNames[0] + " (JC" + whStage +
-                        ", 棋弈): entered via shift (float); Space cycles 一段..五段, shift -> 六段");
-                }
-                else Log("wh shift: no 棋弈 entry from stage " + whStage);
+                else Log("wh shift ignored: no fly active");
             }
-            if (!shiftDown) whShiftLatch = false;
             if (whPlungePressed)
             {
                 whPlungePressed = false;
@@ -2312,7 +2258,7 @@ internal static class RebornClient
                     colCalls++;
                     // SkillMove 336 launch (IgnoreGravity, XY=0): the scripted
                     // move controls the position; no ground resolve re-grounding
-                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
+                    bool sBlocked = !whStageActive && col.Resolve(ref px, ref py, ref pz,
                         playerRadius, playerHeight, ref ground, ref grounded);
                     if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
                     if (grounded)
@@ -2393,18 +2339,23 @@ internal static class RebornClient
                 }
                 else if (whStageActive)
                 {
-                    vy -= curJumpGravity * dt;
-                    if (!whEndPhase && vyBefore > 0f && vy <= 0f)
+                    // the stage SkillMove (IgnoreGravity): the authored per-frame
+                    // XY (forward, along the facing) and Z velocities
+                    whMoveT += dt;
+                    int whFrame = (int)(whMoveT * WwRules.LogicTicksPerSecond);
+                    if (whFrame >= WwRules.WhMoveLen(whStage))
                     {
-                        // segment end: the row's End triple (school 4 all stages
-                        // 125/-140/12) -> forward-down glide (ModifySprintEndSpeed)
+                        // SkillMoveEndButKeepVelocity: the move ends, the last
+                        // velocity stays (the drift)
+                        whStageActive = false;
                         whEndPhase = true;
-                        vy = WwRules.EndVzFrame * WwRules.LogicTicksPerSecond;
-                        curJumpGravity = WwRules.EndGravityFrame * 225f;
-                        leapSpeedXY = WwRules.EndSpeedXYFrame * WwRules.LogicTicksPerSecond;
-                        Log("wh stage " + whStage + " segment end: End triple " +
-                            WwRules.EndSpeedXYFrame + "/" + WwRules.EndVzFrame + "/" +
-                            WwRules.EndGravityFrame + " -> vy=" + vy + " xy=" + leapSpeedXY + " u/s");
+                        Log("wh " + WwRules.WhDisplayNames[whStage] + " end (keep velocity: vxy=" +
+                            leapSpeedXY + " vy=" + vy + " u/s)");
+                    }
+                    else
+                    {
+                        vy = WwRules.WhMoveZ(whStage, whFrame) * WwRules.LogicTicksPerSecond;
+                        leapSpeedXY = WwRules.WhMoveXY(whStage, whFrame) * WwRules.LogicTicksPerSecond;
                     }
                 }
                 else if (!wwStateActive) vy -= curJumpGravity * dt;
@@ -2419,7 +2370,7 @@ internal static class RebornClient
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
                     "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
-                if (py <= ground)
+                if (py <= ground && !whStageActive)
                 {
                     py = ground;
                     float impact = vy;
@@ -2447,10 +2398,8 @@ internal static class RebornClient
                     if (whDiving) setClipPlay(clipWhPlunge, 0);
                     else if (whStageActive && !whEndPhase)
                     {
-                        // 1..5 = 纵跃段..四段 clips; 6..10 (弈韵) reuse them cyclically
-                        int ci = whStage - 1;
-                        if (ci >= WwRules.WhBaseStages) ci = (whStage - WwRules.WhYiyunFirst) % WwRules.WhBaseStages;
-                        if (ci < 0) ci = 0;
+                        // the 万花 stage clips, mapped over the 7 moves
+                        int ci = whStage <= 1 ? 0 : (whStage - 2) % WwRules.WhBaseStages;
                         setClipPlay(clipWhStage[ci], 1);
                     }
                     else setClipPlay(clipWhFly, 0);
