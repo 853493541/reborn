@@ -1231,3 +1231,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   MISSed the app's exact-path loader).
 - `--selftest`: **rendered=31 skipped=2 failed=0**; README/AGENTS counts updated;
   inventory `generated`/`source` metadata now includes stage 9's catalog.
+
+### 2026-09-30 — ui — Battle-HUD appendix batch 2 (58 windows, 56/2/0)
+- Added stage 10 (`battle-hud-2`, 25 windows): BuffMonitorGeneral/YaoZong/DaoZong,
+  MonsterBuffPanel/Choose/SkillPreset, TeamStatePop/Countdown/SwitchBtn/
+  TagPlayers/PlayerTagList/NumListLong, LootRollMini/LootShowList,
+  GoldTeamLootList/Distribution, BattleFieldHSLHNotice, DesertStormOB, NewSkillBar,
+  SkillRemind/SkillTipPanel, FBCountNum, PQwarning, YaoZongSkillHint, MingJiaoSkill.
+  Every INI path was re-probed in PakV4 first (`resolve_batch2_paths.py`), all
+  `ui/Config/Default/<name>.ini`.
+- Gate: **rendered=56 skipped=2 failed=0** over 58 windows (stage 9 = 12, stage 10
+  = 25 appendix modules; 2 skipped by design). README/AGENTS counts updated.

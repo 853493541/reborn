@@ -782,6 +782,413 @@
           ]
         }
       ]
+    },
+    {
+      "id": "battle-hud-2",
+      "title": "10. 战斗 HUD 附录·二 Battle HUD appendix 2",
+      "summary": "Second render batch of battle-HUD modules from docs/ui/BATTLE_FLOATING_UI.md §A (paths verified via proof/ui/evidence/battle_hud/appendix_inis.tsv).",
+      "windows": [
+        {
+          "id": "buff-monitor-general",
+          "title": "BuffMonitorGeneral",
+          "cn": "增益监控·通用",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BuffMonitorGeneral.ini",
+          "summary": "General buff-monitor variant (script-built icon boxes; see the full UI corpus).",
+          "evidence": [
+            "ui/Config/Default/BuffMonitorGeneral.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Buff monitor rows"
+          ]
+        },
+        {
+          "id": "buff-monitor-yaozong",
+          "title": "BuffMonitorYaoZong",
+          "cn": "药宗增益监控",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BuffMonitorYaoZong.ini",
+          "summary": "YaoZong school buff-monitor variant.",
+          "evidence": [
+            "ui/Config/Default/BuffMonitorYaoZong.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Buff monitor rows"
+          ]
+        },
+        {
+          "id": "buff-monitor-daozong",
+          "title": "BuffMonitorDaoZong",
+          "cn": "刀宗增益监控",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BuffMonitorDaoZong.ini",
+          "summary": "DaoZong buff monitor anchored TOPLEFT 400,400.",
+          "evidence": [
+            "ui/Config/Default/BuffMonitorDaoZong.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Buff monitor rows"
+          ]
+        },
+        {
+          "id": "monster-buff-panel",
+          "title": "MonsterBuffPanel",
+          "cn": "怪物增益面板",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MonsterBuffPanel.ini",
+          "summary": "Monster/transform buff panel anchored TOPLEFT 370,180.",
+          "evidence": [
+            "ui/Config/Default/MonsterBuffPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Monster buff icons"
+          ]
+        },
+        {
+          "id": "monster-buff-choose",
+          "title": "MonsterBuffChoose",
+          "cn": "怪物增益选择",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MonsterBuffChoose.ini",
+          "summary": "Monster buff selection prompt anchored TOPCENTER 80,0.",
+          "evidence": [
+            "ui/Config/Default/MonsterBuffChoose.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Buff choice buttons"
+          ]
+        },
+        {
+          "id": "monster-skill-preset",
+          "title": "MonsterSkillPreset",
+          "cn": "怪物技能预设",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MonsterSkillPreset.ini",
+          "summary": "Monster skill preset panel anchored TOPLEFT->TOPRIGHT -2,0.",
+          "evidence": [
+            "ui/Config/Default/MonsterSkillPreset.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Skill preset slots"
+          ]
+        },
+        {
+          "id": "team-state-pop",
+          "title": "TeamStatePop",
+          "cn": "队伍状态弹窗",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/TeamStatePop.ini",
+          "summary": "Topmost team-state popup, special modes 14/4.",
+          "evidence": [
+            "ui/Config/Default/TeamStatePop.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Team state rows"
+          ]
+        },
+        {
+          "id": "team-countdown",
+          "title": "TeamCountdown",
+          "cn": "队伍倒计时",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/TeamCountdown.ini",
+          "summary": "Team countdown panel (Normal layer, CENTER).",
+          "evidence": [
+            "ui/Config/Default/TeamCountdown.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Countdown digits"
+          ]
+        },
+        {
+          "id": "team-switch-btn",
+          "title": "TeamSwitchBtn",
+          "cn": "队伍切换",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/TeamSwitchBtn.ini",
+          "summary": "Team switch button (Normal layer).",
+          "evidence": [
+            "ui/Config/Default/TeamSwitchBtn.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Switch button"
+          ]
+        },
+        {
+          "id": "team-tag-players",
+          "title": "TeamTagPlayers",
+          "cn": "标记队员",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/TeamTagPlayers.ini",
+          "summary": "Team player tagging panel (Normal layer, CENTER).",
+          "evidence": [
+            "ui/Config/Default/TeamTagPlayers.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Tag rows/buttons"
+          ]
+        },
+        {
+          "id": "team-player-tag-list",
+          "title": "TeamPlayerTagList",
+          "cn": "标记列表",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/TeamPlayerTagList.ini",
+          "summary": "Team player tag list (Normal layer).",
+          "evidence": [
+            "ui/Config/Default/TeamPlayerTagList.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Tag list entries"
+          ]
+        },
+        {
+          "id": "team-num-list-long",
+          "title": "TeamNumListLong",
+          "cn": "队伍人数·长",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/TeamNumListLong.ini",
+          "summary": "Long team-count list anchored BOTTOMRIGHT (companion of TeamNumList).",
+          "evidence": [
+            "ui/Config/Default/TeamNumListLong.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Team number rows"
+          ]
+        },
+        {
+          "id": "loot-roll-mini",
+          "title": "LootRollMini",
+          "cn": "掷骰·迷你",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/LootRollMini.ini",
+          "summary": "Compact loot-roll prompt, mode 15.",
+          "evidence": [
+            "ui/Config/Default/LootRollMini.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Roll buttons"
+          ]
+        },
+        {
+          "id": "loot-show-list",
+          "title": "LootShowList",
+          "cn": "掉落展示",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/LootShowList.ini",
+          "summary": "Loot display list, special modes 26,24,23,14,15,3,22.",
+          "evidence": [
+            "ui/Config/Default/LootShowList.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Loot rows"
+          ]
+        },
+        {
+          "id": "gold-team-loot-list",
+          "title": "GoldTeamLootList",
+          "cn": "金团分配列表",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/GoldTeamLootList.ini",
+          "summary": "Gold-team loot list (mode 28, CENTER).",
+          "evidence": [
+            "ui/Config/Default/GoldTeamLootList.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Loot rows / prices"
+          ]
+        },
+        {
+          "id": "gold-team-distribution",
+          "title": "GoldTeamDistribution",
+          "cn": "金团分配",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/GoldTeamDistribution.ini",
+          "summary": "Gold-team distribution panel (mode 28, BOTTOMRIGHT).",
+          "evidence": [
+            "ui/Config/Default/GoldTeamDistribution.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Distribution table"
+          ]
+        },
+        {
+          "id": "battlefield-hslh-notice",
+          "title": "BattleFieldHSLHNotice",
+          "cn": "战场公告",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/BattleFieldHSLHNotice.ini",
+          "summary": "Battlefield notice banner (Normal layer; 林海绝境 notice per module name).",
+          "evidence": [
+            "ui/Config/Default/BattleFieldHSLHNotice.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Notice text"
+          ]
+        },
+        {
+          "id": "desert-storm-ob",
+          "title": "DesertStormOB",
+          "cn": "绝境观战",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/DesertStormOB.ini",
+          "summary": "Desert Storm observer panel anchored BOTTOMCENTER, mode 1 (DesertStormOB).",
+          "evidence": [
+            "ui/Config/Default/DesertStormOB.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Observer controls"
+          ]
+        },
+        {
+          "id": "new-skill-bar",
+          "title": "NewSkillBar",
+          "cn": "技能栏",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/NewSkillBar.ini",
+          "summary": "Skill bar variant (Normal layer; see DynamicBattleRoyale for the BR bar).",
+          "evidence": [
+            "ui/Config/Default/NewSkillBar.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Skill slots"
+          ]
+        },
+        {
+          "id": "skill-remind",
+          "title": "SkillRemind",
+          "cn": "技能提醒",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/SkillRemind.ini",
+          "summary": "Skill reminder anchored BOTTOMRIGHT 0,-60.",
+          "evidence": [
+            "ui/Config/Default/SkillRemind.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Reminder icon/text"
+          ]
+        },
+        {
+          "id": "skill-tip-panel",
+          "title": "SkillTipPanel",
+          "cn": "技能提示",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/SkillTipPanel.ini",
+          "summary": "Skill tip panel anchored TOPLEFT/CENTER -385,202, mode 27.",
+          "evidence": [
+            "ui/Config/Default/SkillTipPanel.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Tip text"
+          ]
+        },
+        {
+          "id": "fb-count-num",
+          "title": "FBCountNum",
+          "cn": "副本计数",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/FBCountNum.ini",
+          "summary": "Dungeon count display (Normal layer).",
+          "evidence": [
+            "ui/Config/Default/FBCountNum.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Count digits"
+          ]
+        },
+        {
+          "id": "pq-warning",
+          "title": "PQwarning",
+          "cn": "阶段警告",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/PQwarning.ini",
+          "summary": "Phase/queue warning panel (Normal layer).",
+          "evidence": [
+            "ui/Config/Default/PQwarning.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Warning text"
+          ]
+        },
+        {
+          "id": "yaozong-skill-hint",
+          "title": "YaoZongSkillHint",
+          "cn": "药宗技能提示",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/YaoZongSkillHint.ini",
+          "summary": "YaoZong skill hint anchored Lowest1 CENTER 700,-180, mode 27.",
+          "evidence": [
+            "ui/Config/Default/YaoZongSkillHint.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Hint rows"
+          ]
+        },
+        {
+          "id": "mingjiao-skill",
+          "title": "MingJiaoSkill",
+          "cn": "明教技能",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MingJiaoSkill.ini",
+          "summary": "MingJiao skill panel anchored Topmost BOTTOMCENTER -350, mode 27.",
+          "evidence": [
+            "ui/Config/Default/MingJiaoSkill.ini",
+            "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
+          ],
+          "elements": [
+            "Skill rows"
+          ]
+        }
+      ]
     }
   ]
 }

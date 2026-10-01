@@ -43,12 +43,12 @@ UiProcessApp.exe --fonttest
 #         scheme #212: size=14 color=#F0F0F0 file=fzht_GBK.ttf
 ```
 
-Current selftest: **rendered=31 skipped=2 failed=0** over the 33-window inventory
+Current selftest: **rendered=56 skipped=2 failed=0** over the 58-window inventory
 (the two skipped windows have no INI by design — the ready prompt is native and
-the staging countdown has no renderer); stage 9 adds the first battle-HUD appendix
-batch (BuffMonitor, BattleFieldObjective, BattleIntegral, FightingWarning,
-WarningTipPanel, TargetSkill, SingleFStatistic, LootRoll, NumericalPanel,
-TeamNumList, RecoverEquipment, SkillCDJingYuJue).
+the staging countdown has no renderer). Stages 9-10 render the battle-HUD
+appendix from `docs/ui/BATTLE_FLOATING_UI.md` §A in two batches (37 modules:
+objective/score panels, warnings, team/raid lists, buff monitors, loot rolls,
+death/revive, skill bars and hints).
 
 ## What it shows
 

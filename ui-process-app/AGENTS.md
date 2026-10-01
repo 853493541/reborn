@@ -5,8 +5,8 @@ the real KGUI layout INIs and official string tables.
 
 - Run: `dotnet run --project ui-process-app`. Release binary:
   `ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe`.
-- Gate: `UiProcessApp.exe --selftest` must report **rendered=31 skipped=2 failed=0**
-  over the 33-window inventory (the two skipped windows have no INI by design:
+- Gate: `UiProcessApp.exe --selftest` must report **rendered=56 skipped=2 failed=0**
+  over the 58-window inventory (the two skipped windows have no INI by design:
   ready-prompt is native, staging-countdown has no renderer; writes
   `ui_process_selftest.txt` next to the exe). Stage the assets first:
   `tools/prepare_ui_text.py`, `tools/prepare_ui_fonts.py`,
