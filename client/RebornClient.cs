@@ -1252,8 +1252,10 @@ internal static class RebornClient
                 lastWUp = Environment.TickCount;
                 if (wwStateActive)
                 {
-                    // any W release is 松开W登顶 (StopBirdFly + UnlockBirdMoveZ)
-                    wwEndState();
+                    // 松开W登顶 only from the hover/glide: during the launch or a
+                    // stage leap the release does not end the chain (key 1 does)
+                    if (!whLaunch && !whStageActive && !whDashActive) wwEndState();
+                    else Log("wh: W release during launch/stage (no exit; key 1 = 登顶)");
                 }
             }
             else if (e.KeyCode == Keys.S) pS = false;
@@ -2139,17 +2141,13 @@ internal static class RebornClient
             if (whStagePressed)
             {
                 whStagePressed = false;
-                if (wwStateActive && whLaunch)
-                {
-                    // SkillMove 336 CanJump=0: no stage/jump during the launch
-                    Log("wh stage ignored: launch in progress (SkillMove CanJump=0)");
-                }
-                else if (wwStateActive)
+                if (wwStateActive)
                 {
                     // Space progression (live-game structure):
                     //   纵跃段(1) -> 一段(2) -> 二段(3) -> 三段(4) -> 四段(5) = end
                     //   弈韵一段(6)..弈韵五段(10): Space cycles, 10 -> 6
                     //   四段/弈韵六段: no further stage
+                    // A press during the 纵跃段 launch advances too (it takes over).
                     int next;
                     if (whStage >= WwRules.WhYiyunFirst && whStage < WwRules.WhYiyunCycleLast)
                         next = whStage + 1;                 // 6..9 -> +1
@@ -2167,6 +2165,7 @@ internal static class RebornClient
                     {
                         whStage = next;
                         whDashActive = false;   // a stage press takes over the dash
+                        whLaunch = false;       // ... and the 纵跃段 launch
                         if (next >= WwRules.WhYiyunFirst)
                         {
                             // 弈韵 (棋弈) stages = the float: Z stays locked and
