@@ -1259,3 +1259,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   element (likely a content-host/PageSet re-issue).
 - Final gate for the branch: **rendered=77 skipped=4 failed=0** over 81 windows;
   README/AGENTS counts updated.
+
+### 2026-09-30 — ui — Renderer bug fixed: section names are case-sensitive
+- **Root cause of the two PARTIAL windows:** real INIs contain **case-variant twin
+  sections** (`PVPRandomForce`: `Handle_BG` vs `Handle_Bg`; `SkillGlossaryPanel`:
+  `Image_Line1` vs `Image_line1`). The app keyed sections by name with
+  `StringComparer.OrdinalIgnoreCase` (`IniFile.ByName`, `UiBuildResult.Elements/
+  Sections`), so one twin overwrote the other and the surviving visual was added to
+  two parents → WPF "element is already the logical child of another element".
+- **Fix:** section-name identity is now `Ordinal` throughout (`IniFile.ByName` +
+  tolerance fallback for suffix inheritance; `UiBuildResult` maps; UiLayout name-keyed
+  maps/sets and parent comparisons; LayoutPlan name-keyed sets/maps and page
+  comparisons). Diagnostics added: `AddChild` now names the failing section.
+- **Proof:** `--selftest` went 77/4/0 → **79/2/0** (both windows render, nothing
+  else regressed); inventory entries restored to PROVEN; README/AGENTS updated.
+- This is a renderer parity fix (engine section names are case-sensitive), not a
+  special case: any window with case twins now renders correctly.

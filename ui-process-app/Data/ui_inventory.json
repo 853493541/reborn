@@ -1359,9 +1359,10 @@
           "id": "pvp-random-force",
           "title": "PVPRandomForce",
           "cn": "随机阵营",
-          "status": "PARTIAL",
+          "status": "PROVEN",
           "root": "ui",
-          "summary": "Random faction assignment prompt, CENTER 0,20, mode 0. INI extracted (ui/Config/Default/PVPRandomForce.ini) but the static renderer hits a WPF logical-child error on this file; next probe: isolate the re-parented element (no duplicate section names or parent cycles found).",
+          "path": "Config/Default/PVPRandomForce.ini",
+          "summary": "Random faction assignment prompt, CENTER 0,20, mode 0. Contains case-variant twin sections (Handle_BG vs Handle_Bg) — these exposed and now verify the renderer's case-sensitive section identity.",
           "evidence": [
             "ui/Config/Default/PVPRandomForce.ini",
             "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
@@ -1502,9 +1503,10 @@
           "id": "skill-glossary",
           "title": "SkillGlossaryPanel",
           "cn": "技能词条",
-          "status": "PARTIAL",
+          "status": "PROVEN",
           "root": "ui",
-          "summary": "Skill glossary anchored Topmost1 BOTTOMRIGHT, mode 28. INI extracted (ui/Config/Default/SkillGlossaryPanel.ini) but the static renderer hits a WPF logical-child error on this file (ContainerType=1 content host); next probe: isolate the re-parented element.",
+          "path": "Config/Default/SkillGlossaryPanel.ini",
+          "summary": "Skill glossary anchored Topmost1 BOTTOMRIGHT, mode 28. Contains case-variant twin sections (Image_Line1 vs Image_line1) — verifies case-sensitive section identity in the renderer.",
           "evidence": [
             "ui/Config/Default/SkillGlossaryPanel.ini",
             "docs/ui/BATTLE_FLOATING_UI.md (appendix §A)"
