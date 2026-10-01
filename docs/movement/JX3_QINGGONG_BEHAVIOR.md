@@ -172,11 +172,18 @@ school 4 JC1..JC5; `Sprint/Action.tab` actions 5/8/9/10/11.
 | 急坠 | skill 20630 `万花轻功急坠.lua`: `SetPassiveVelocityZ(-2000)` | key 3: vy = −2000 u/f, bypasses the 900 u/f fall cap (engine clamp −2048 u/f) |
 | Fly costs | JumpParam school 4: OnFlyCost 75, OnFlyFloatCost 35, OnFlyJumpCost 300, OnFlyBirdMoveCost 206 | 气力值: hover 35/s, bird move (W) 206/s, per stage 300; ground regen 2000/s (provisional, D0 open) |
 | Exit | Action.tab 5 【松开W登顶】 (`<MOVEFORWARD;1>`) | release -> 45° dash (existing sandbox behavior); landing resets the chain |
+| Animation | `player_suspend.krl.txt` ZhiKongQingGong:2 (【万花】) body 6 `StayAnimaiton`; `Tani.rt` 万花加强段跳/俯冲 series | hover/fly = `F1bqg万花加强滞空_01.tani`; stages = 加强一段跳b / 加强二段跳a / 加强三段跳a / 加强二段跳b / 加强俯冲b; 急坠 = 加强俯冲b |
+
+**Engine-AV clips (avoid)**: `F1bqg万花四段跳a_空.tani` and `F1bqg万花俯冲a01.tani`
+crash the engine host with 0xC0000005 when played airborne (isolated 2026-09-30;
+both load fine as idle clips — same class as the documented `f1b02yd二段跳a.tani`
+AV). Stage 4/5 therefore substitute 加强二段跳b / 加强俯冲b; both survive a 5 s
+airborne window.
 
 Not modelled yet: the 弈韵一~六段 branch (Condition.tab JC6..JC11), the 双人/踩人
-rows, per-stage authored animations (the sandbox plays the generic glide/fall
-clips), the exact `CONSUME_BASE` value, the 气力值 regen D0, and whether
-`SetTimer(30)` counts 15 Hz logic frames (2 s) or ms-scale frames.
+rows, the exact per-stage action→animation mapping (Action.tab labels vs
+Condition.tab comments), the exact `CONSUME_BASE` value, the 气力值 regen D0, and
+whether `SetTimer(30)` counts 15 Hz logic frames (2 s) or ms-scale frames.
 
 ## 8. Open items
 

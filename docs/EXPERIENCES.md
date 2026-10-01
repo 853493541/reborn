@@ -1054,3 +1054,20 @@ eborn_client_daqinggong carries these changes — other
 - Open: 弈韵 JC6..JC11 branch, 双人/踩人 rows, per-stage animations, CONSUME_BASE
   exact value, regen D0, SetTimer unit (docs/movement/JX3_QINGGONG_BEHAVIOR.md §7.1).
 - Outcome: solved for the base chain.
+
+
+### 2026-09-30 — client — 万花 animations wired (real F1 clips, engine-AV avoidance)
+- Did: replaced the 苍云俯冲a charge clip with the real 万花 (school 4) 大轻功
+  animations: hover/fly = F1bqg万花加强滞空_01 (player_suspend.krl.txt
+  ZhiKongQingGong:2 【万花】), stages = 加强一段跳b / 加强二段跳a / 加强三段跳a /
+  加强二段跳b / 加强俯冲b (Tani.rt 万花 series), 急坠 = 加强俯冲b. Clip envs
+  RC_CLIP_WH_FLY / WH_S1..S5 / WH_PLUNGE; RC_CLIP_GLIDE retired. Demo times
+  RC_WH_DEMO_S5_MS / RC_WH_DEMO_PLUNGE_MS for long-window tests.
+- Lesson (engine AV, 0xC0000005): F1bqg万花四段跳a_空.tani and F1bqg万花俯冲a01.tani
+  crash KGEngineCLR when played airborne, but are fine as idle clips — same class
+  as the documented f1b02yd二段跳a.tani AV. Isolated by bisecting the clip set
+  (exit codes D/E/F), then verified the substitutes over 5 s airborne windows.
+- Evidence: demo runs 17:36 (exit=0, DONE) — hover 加强滞空 -> JC1 一段跳b -> JC2
+  二段跳a -> JC3 三段跳a -> JC4 二段跳b -> JC5 俯冲b -> 急坠 俯冲b -> landed;
+  clip -> lines all load with no setClip ex. Selftest PASS.
+- Outcome: solved; 万花 clips visible in the 大轻功 window.

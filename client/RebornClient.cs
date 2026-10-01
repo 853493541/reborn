@@ -121,11 +121,23 @@ internal static class RebornClient
         // stage 1/2 = 跳跃2/3 (小跳b/c), stage 3 (downward) = ChongCiQingGong dive.
         // NOTE: f1b02yd二段跳a.tani AVs the engine in KGEngineCLR.Render()
         // (reproduced 2026-09-29, RC_DEMO with that clip as clipJump).
-        // WW air charge uses the normal air clips (player tech, no special animation).
-        // Charge state animation: one-shot dive clip (playType 1 = once; 0 loops).
-        string clipGlide = Env("RC_CLIP_GLIDE", f1 + "f1bqg\u82CD\u4E91\u4FEF\u51B2a.tani");
-        int glidePlayType = 1;
-        int.TryParse(Env("RC_GLIDE_PLAY", "1"), out glidePlayType);
+        // 万花 (school 4, F1 body) 大轻功 clips -- the real game animations:
+        //  - hover/fly: player_suspend.krl.txt ZhiKongQingGong:2 (【万花】) body 6
+        //    StayAnimaiton = F1bqg万花加强滞空_01.tani (the 大轻功 flight pose)
+        //  - stages: the 加强段跳 series (Condition.tab school 4 stage names +
+        //    Action.tab 8/9/10/11 【space一段..四段】). Two F1 万花 clips AV the
+        //    engine host when played airborne (same class as the documented
+        //    f1b02yd二段跳a.tani AV; isolated 2026-09-30: F1bqg万花四段跳a_空 and
+        //    F1bqg万花俯冲a01 crash, 加强俯冲b / 加强二段跳b are safe), so
+        //    stage 4 uses 加强二段跳b and stage 5 + 急坠 use 加强俯冲b.
+        string clipWhFly = Env("RC_CLIP_WH_FLY", f1 + "F1bqg万花加强滞空_01.tani");
+        string[] clipWhStage = new string[] {
+            Env("RC_CLIP_WH_S1", f1 + "F1bqg万花加强一段跳b_01.tani"),
+            Env("RC_CLIP_WH_S2", f1 + "F1bqg万花加强二段跳a_01.tani"),
+            Env("RC_CLIP_WH_S3", f1 + "F1bqg万花加强三段跳a_02.tani"),
+            Env("RC_CLIP_WH_S4", f1 + "F1bqg万花加强二段跳b_01.tani"),
+            Env("RC_CLIP_WH_S5", f1 + "F1bqg万花加强俯冲b_01.tani") };
+        string clipWhPlunge = Env("RC_CLIP_WH_PLUNGE", f1 + "F1bqg万花加强俯冲b_01.tani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -1709,16 +1721,21 @@ internal static class RebornClient
             {
                 // full 万花 点墨江山 timeline: jump 8.0s, 20628 cast 8.5s
                 // (SetTimer -> fly ~9.0s), stages JC1..JC5 with the segment-end
-                // End phase in between (J1 apex 1.33s, J2 2.3s), 急坠 17.0s
+                // End phase in between (J1 apex 1.33s, J2 2.3s), 急坠 at
+                // RC_WH_DEMO_PLUNGE_MS (default 17.0s). RC_WH_DEMO_S5_MS can
+                // stretch the JC4/JC5 windows to test long dive playback.
+                long whS5Ms = 16400, whPlungeMs = 17000;
+                long.TryParse(Env("RC_WH_DEMO_S5_MS", "16400"), out whS5Ms);
+                long.TryParse(Env("RC_WH_DEMO_PLUNGE_MS", "17000"), out whPlungeMs);
                 if (!whDemoJumped && now >= 8000) { whDemoJumped = true; if (grounded) jumpPressed = true; Log("whdemo: ground jump"); }
                 if (!whDemoCast && now >= 8500) { whDemoCast = true; wwCharge(); }
                 if (!whDemoS1 && now >= 9500) { whDemoS1 = true; whStagePressed = true; }
                 if (!whDemoS2 && now >= 11200) { whDemoS2 = true; whStagePressed = true; }
                 if (!whDemoS3 && now >= 13800) { whDemoS3 = true; whStagePressed = true; }
                 if (!whDemoS4 && now >= 15400) { whDemoS4 = true; whStagePressed = true; }
-                if (!whDemoS5 && now >= 16400) { whDemoS5 = true; whStagePressed = true; }
-                if (!whDemoPlunge && now >= 17000) { whDemoPlunge = true; whPlungePressed = true; }
-                pW = now >= 8500 && now < 17200;
+                if (!whDemoS5 && now >= whS5Ms) { whDemoS5 = true; whStagePressed = true; }
+                if (!whDemoPlunge && now >= whPlungeMs) { whDemoPlunge = true; whPlungePressed = true; }
+                pW = now >= 8500 && now < whPlungeMs + 200;
             }
 
             if (demo)
@@ -2251,9 +2268,11 @@ internal static class RebornClient
             {
                 if (wwStateActive)
                 {
-                    if (whDiving) setClip(clipFall);
-                    else setClipPlay(clipGlide, glidePlayType);
+                    if (whDiving) setClipPlay(clipWhPlunge, 0);
+                    else if (whStageActive && !whEndPhase) setClipPlay(clipWhStage[whStage - 1], 1);
+                    else setClipPlay(clipWhFly, 0);
                 }
+                else if (wwDashActive) setClipPlay(clipWhPlunge, 0);
                 else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
