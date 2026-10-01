@@ -328,11 +328,13 @@ public sealed class CameraSystem
         return units;
     }
 
-    // JX3 wheel zoom, from the real UI binding (ui/script/hotkeys.lua):
+    // JX3 zoom, from the real UI binding (ui/script/hotkeys.lua):
     //   CAMERAZOOMIN  -> CameraZoomIn()  = Camera_Zoom(0.9)   (distance * 0.9)
     //   CAMERAZOOMOUT -> CameraZoomOut() = Camera_Zoom(1.1)   (distance * 1.1)
     // clamped to [fMinCameraDistance, fMaxCameraDistance]; units: world units.
     // (The DLL's ZoomCharacterCamera_Step is a different path, not the wheel.)
+    // Host binding 2026-09-30 (user decision): the wheel is inert; the host
+    // maps these to the +/- keys in RebornClient.
     public void ZoomBy(double direction)
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
@@ -408,7 +410,11 @@ public sealed class CameraSystem
         double[] desired = new double[3];
         DesiredOffset(Yaw, Pitch, distance, height, desired);
 
-        double smoothTime = Math.Max(row.F("SmoothTime", 0.1), 1e-3);
+        // placement smoothing is shared across modes (CharacterCameraSmoothTime,
+        // 60 ms; PENETRATION_PLAN C1): the sprint row's SmoothTime is the sprint
+        // pull-back constant, not the orbit placement constant - using it made
+        // a sprint (WW) drag collapse the orbit radius (the "false zoom-in")
+        double smoothTime = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
         for (int i = 0; i < 3; i++)
         {
             double delta = desired[i] - Offset[i];

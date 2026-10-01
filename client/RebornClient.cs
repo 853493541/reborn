@@ -27,35 +27,6 @@ internal static class RebornClient
     [STAThread]
     private static void Main(string[] args)
     {
-        // WW sandbox selftest: pure rules check, no engine init (deterministic
-        // gate for the 3 double-tap-W cases; winexe has no console, so the
-        // report goes to reborn_out\ww_sandbox_selftest.txt).
-        for (int ai = 0; ai < args.Length; ai++)
-        {
-            if (args[ai] == "--ww-selftest")
-            {
-                int fail;
-                string report;
-                {
-                    var stSw = new StringWriter();
-                    TextWriter savedOut = Console.Out;
-                    Console.SetOut(stSw);
-                    fail = WwRules.SelfTest();
-                    Console.SetOut(savedOut);
-                    report = stSw.ToString();
-                }
-                try
-                {
-                    string stDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
-                    Directory.CreateDirectory(stDir);
-                    File.WriteAllText(Path.Combine(stDir, "ww_sandbox_selftest.txt"),
-                        report + "exit=" + fail + "\r\n", System.Text.Encoding.UTF8);
-                }
-                catch { }
-                Console.Write(report);
-                Environment.Exit(fail == 0 ? 0 : 1);
-            }
-        }
         // Per-build engine memory namespace (isolation, not exclusion): feature
         // builds (reborn_client_<slug>.exe) get their own namespace so 2+ clients
         // can run at the same time without sharing engine memory. The canonical
@@ -117,27 +88,6 @@ internal static class RebornClient
         string clipRun = Env("RC_CLIP_RUN", f1 + "f1b02yd\u5954\u8DD1.ani");
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
-        // WW chain clips (per-jump animations, REBORN_JUMP_FALL_SPEC §6):
-        // stage 1/2 = 跳跃2/3 (小跳b/c), stage 3 (downward) = ChongCiQingGong dive.
-        // NOTE: f1b02yd二段跳a.tani AVs the engine in KGEngineCLR.Render()
-        // (reproduced 2026-09-29, RC_DEMO with that clip as clipJump).
-        // 万花 (school 4, F1 body) 大轻功 clips -- the real game animations:
-        //  - hover/fly: player_suspend.krl.txt ZhiKongQingGong:2 (【万花】) body 6
-        //    StayAnimaiton = F1bqg万花加强滞空_01.tani (the 大轻功 flight pose)
-        //  - stages: the 加强段跳 series (Condition.tab school 4 stage names +
-        //    Action.tab 8/9/10/11 【space一段..四段】). Two F1 万花 clips AV the
-        //    engine host when played airborne (same class as the documented
-        //    f1b02yd二段跳a.tani AV; isolated 2026-09-30: F1bqg万花四段跳a_空 and
-        //    F1bqg万花俯冲a01 crash, 加强俯冲b / 加强二段跳b are safe), so
-        //    stage 4 uses 加强二段跳b and stage 5 + 急坠 use 加强俯冲b.
-        string clipWhFly = Env("RC_CLIP_WH_FLY", f1 + "F1bqg万花加强滞空_01.tani");
-        string[] clipWhStage = new string[] {
-            Env("RC_CLIP_WH_S1", f1 + "F1bqg万花加强一段跳b_01.tani"),
-            Env("RC_CLIP_WH_S2", f1 + "F1bqg万花加强二段跳a_01.tani"),
-            Env("RC_CLIP_WH_S3", f1 + "F1bqg万花加强三段跳a_02.tani"),
-            Env("RC_CLIP_WH_S4", f1 + "F1bqg万花加强二段跳b_01.tani"),
-            Env("RC_CLIP_WH_S5", f1 + "F1bqg万花加强俯冲b_01.tani") };
-        string clipWhPlunge = Env("RC_CLIP_WH_PLUNGE", f1 + "F1bqg万花加强俯冲b_01.tani");
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -254,17 +204,6 @@ internal static class RebornClient
         infoToggle.Cursor = Cursors.Hand;
         infoToggle.MouseClick += delegate { hud.Visible = !hud.Visible; };
         panel.Controls.Add(infoToggle);
-        // 段数 overlay, top-right: visible while in the 大轻功 (stage chain
-        // feedback) and while 气力值 refills (recast readiness)
-        var stageHud = new Label();
-        stageHud.AutoSize = true;
-        stageHud.ForeColor = System.Drawing.Color.White;
-        stageHud.BackColor = System.Drawing.Color.FromArgb(170, 0, 0, 0);
-        stageHud.Font = new System.Drawing.Font("Microsoft YaHei", 15f, System.Drawing.FontStyle.Bold);
-        stageHud.Padding = new Padding(10, 5, 10, 5);
-        stageHud.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-        stageHud.Visible = false;
-        panel.Controls.Add(stageHud);
         form.Show();
         Application.DoEvents();
 
@@ -624,14 +563,32 @@ internal static class RebornClient
                 editorRoot, mapPath, cfgDir, Log);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
-            camSys.Pitch = cameraSettings.InitPitch;
+            // Game-data pitch is NEGATIVE when the camera sits above the anchor
+            // (looking down): g_Scene_tCameraRuntime fPitch default -0.35,
+            // number.krl CameraInitPitch -0.17 / SprintCameraPitch -0.35, and
+            // hotkeys.lua F11 passes -pi/12 for the standard behind view
+            // ("pitch -15 deg"). The model pitch is the opposite (positive =
+            // camera above, measured: model +0.15 -> engine view vpitch -0.31),
+            // so negate on application (2026-09-30 start-angle research).
+            camSys.Pitch = -cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
             // deterministic test pose (camera A/B harness): override the loaded
             // yaw/pitch without touching the settings sources
             double poseOv;
             if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
             if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
-            camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
+            // user decision 2026-09-30: both follow rows start at the max range
+            // (fMaxCameraDistance; 广角 is already the client panel max). This
+            // overrides the 1245 u client-number initial (C10) - target AND
+            // init distance are max, so the follow camera holds at max instead
+            // of easing back to the row value.
+            double maxDistM = camSys.ClampDistanceUnits(cameraSettings.MaxCameraDistance)
+                              / camSys.UnitsPerMeter;
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("InitCameraDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_SPRINT].Set("TargetDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_SPRINT].Set("InitCameraDistance", maxDistM);
+            camSys.Distance = maxDistM * camSys.UnitsPerMeter;
             // deterministic test distance (world units): RC_CAM_DIST=100 puts
             // the camera close-up while RC_CAM_PITCH tilts it (repro harness)
             double distOv;
@@ -669,18 +626,17 @@ internal static class RebornClient
         float curYaw = 0f;
         float lastModelX = float.MaxValue, lastModelY = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
-        Action<string, int> setClipPlay = delegate(string path, int playType)
+        Action<string> setClip = delegate(string path)
         {
             if (path == curClip) return;
             try
             {
-                int pr = model.PlayAnimation(path, playType, 1.0f, 0);
-                Log("clip -> " + path + " (" + pr + ", type=" + playType + ")");
+                int pr = model.PlayAnimation(path, 0, 1.0f, 0);
+                Log("clip -> " + path + " (" + pr + ")");
                 curClip = path;
             }
             catch (Exception e) { Log("setClip ex: " + e.Message); }
         };
-        Action<string> setClip = delegate(string path) { setClipPlay(path, 0); };
 
         // measure camera view direction by nudging forward (map-host method)
         Action measureView = delegate
@@ -818,135 +774,8 @@ internal static class RebornClient
         long f9At = 0;
         bool f9Fired = false;
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
-        bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false, twoDown = false, threeDown = false;
+        bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
-        bool jipaoWasActive = false;   // 疾跑段 active
-        float jipaoSpeed = 0f;         // current 疾跑 speed (u/s, ramped)
-        long jipaoStartMs = 0;
-        long jipaoUntilMs = 0;         // WW burst end (the double-tap starts the sprint)
-        long jipaoLastActiveMs = 0;    // the 250 ms exit grace
-        bool wwWeaponOk = Env("RC_WW_WEAPON", "right") == "right";  // wrong/none -> no school 大轻功
-        // WW in air = player tech: the double-tap applies the fly velocity
-        // (authored End triple xy 125 / vz -140 / g 12 -> 1875 u/s fwd + 2100 u/s
-        // down); releasing W ends the state but the velocity persists, so the
-        // character keeps falling forward+down fast. No special animation.
-        // WW in air = forward-dominant charge (player tech): forward = the
-        // shipped flight-curve XY peak (205 u/f = 3075 u/s); the state holds the
-        // vertical (level), releasing W ends the state and gravity builds the
-        // down -> fast forward + gradual down. No special animation.
-        float wwFwdFrame = WwRules.ChargeForwardFrame;
-        float wwDownFrame = WwRules.ChargeDownFrame;
-        {
-            float v;
-            if (float.TryParse(Env("RC_WW_FWD", ""), out v)) wwFwdFrame = v;
-            if (float.TryParse(Env("RC_WW_DOWN", ""), out v)) wwDownFrame = v;
-        }
-        float leapSpeedXY = 0f;         // forward speed (u/s), kept after release
-        bool wwStateActive = false;     // fly state; ends on release (StopBirdFly)
-        // Fall gravity (school-0 J0 row: 11 u/f2 as u/s2) -- the base fall value
-        // applied after a fly exit (UnlockBirdMoveZ -> gravity integrates Vz).
-        // Declared here so the exit delegate can set it.
-        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
-        float curJumpGravity = -pGravity;
-        // 万花大轻功「点墨江山」 state (school 4; 20628 trigger -> 20630 急坠).
-        float whPower = WwRules.WhPowerMax;   // 气力值; CanCast needs >= 10000
-        float whTriggerCost = WwRules.WhTriggerCost;
-        float whRegenPerSecond = 4000f;       // ground regen (D0 open; provisional)
-        int whStage = 0;                      // 0 none; 1..5 = 纵跃段/一段/二段/三段/四段
-        bool whStageActive = false;           // a stage leap is in flight
-        bool whEndPhase = false;              // segment-end triple applied
-        bool whDiving = false;                // 急坠 (SetPassiveVelocityZ -2000)
-        float whMoveT = 0f;                   // the current SkillMove elapsed seconds
-        bool whShiftPressed = false;          // Shift edge (KeyDown event)
-        bool whStagePressed = false;
-        bool whPlungePressed = false;
-        // phase name for the HUD/logs (the current 八大派 moves)
-        Func<string> whStageName = delegate()
-        {
-            if (whStage >= 0 && whStage < WwRules.WhDisplayNames.Length) return WwRules.WhDisplayNames[whStage];
-            return "?";
-        };
-        {
-            float v;
-            if (float.TryParse(Env("RC_WH_COST", ""), out v)) whTriggerCost = v;
-            if (float.TryParse(Env("RC_WH_REGEN", ""), out v)) whRegenPerSecond = v;
-        }
-        Action wwEndState = delegate()
-        {
-            if (!wwStateActive) return;
-            // 松开W登顶 / fly end (buff 13422 -> skill/轻功/轻功状态结束处理.lua):
-            // StopBirdFly() + UnlockBirdMoveZ() -- the fly ends, the horizontal
-            // speed (speed+heading vector) persists, gravity integrates Vz from
-            // the unlocked value. No dash, no angle (client truth).
-            wwStateActive = false;
-            if (whStage > 0 || whDiving)
-                Log("wh chain end (登顶): stage " + whStage + " dive=" + whDiving);
-            whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
-            curJumpGravity = WwRules.FallGravityPerSecond2;
-            Log("wh StopBirdFly + UnlockBirdMoveZ: vxy=" + leapSpeedXY +
-                " u/s persists, vy=" + vy + " u/s; fall gravity " + curJumpGravity +
-                " u/s2 (cap " + WwRules.FallCapFrame + " u/f)");
-        };
-        Action wwCharge = delegate()
-        {
-            // the current 八大派 system: the 切入 (skill 15554) consumes 50*100
-            // sprint power (no gate) and casts the 切入执行 = SkillMove 126 (the
-            // entry); the chain then follows the 小跳 (175) and the
-            // 段数第一..第五 (127/128/129/163/162).
-            whPower -= WwRules.WhEntryCost;
-            wwStateActive = true;
-            grounded = false;
-            whStage = 0;            // move index: 0 = 切入
-            whStageActive = true;   // the SkillMove running
-            whEndPhase = false; whDiving = false;
-            whMoveT = 0f;
-            vy = 0f; leapSpeedXY = 0f;
-            Log("wh 点墨江山·切入 (15554 -> SkillMove " + WwRules.WhMoveIds[0] +
-                ", jumpCount " + WwRules.WhMoveJumpCount[0] + "): cost " + WwRules.WhEntryCost +
-                " (50*100), power " + whPower + "; Space = 纵跃段/一段..五段, Shift = fall-out");
-        };
-        Action wwTrigger = delegate()
-        {
-            WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk);
-            if (ww == WwRules.WwAction.Sprint)
-            {
-                // ground WW = 点墨江山·疾跑段: the burst starts the fast run
-                // (persists ~3 s / while W is held); Space enters 纵跃段
-                jipaoUntilMs = Environment.TickCount + 3000;
-                Log("ww: 点墨江山·疾跑段 burst (run fast; Space = 纵跃段)");
-            }
-            else if (ww == WwRules.WwAction.Charge)
-            {
-                wwCharge();
-            }
-            else
-            {
-                Log("ww: no action (grounded=" + grounded +
-                    " weapon=" + (wwWeaponOk ? "ok" : "WRONG") + ")");
-            }
-        };
-        Action wwRelease = delegate()
-        {
-            // key 1 = the W-release action (松开W登顶), usable while W is still
-            // physically held: StopBirdFly + UnlockBirdMoveZ (velocity persists).
-            if (wwStateActive)
-            {
-                wwEndState();
-            }
-            else
-            {
-                Log("ww release (key 1): nothing active");
-            }
-        };
-        bool wwDemo = Env("RC_WW_DEMO", "0") == "1";
-        bool wwDemoJumped = false, wwDemoLeaped = false, wwDemoReleased = false;
-        bool whDemo = Env("RC_WH_DEMO", "0") == "1";
-        bool whDemoJumped = false, whDemoCast = false, whDemoS1 = false, whDemoS2 = false,
-             whDemoS3 = false, whDemoS4 = false, whDemoS5 = false, whDemoPlunge = false,
-             whDemoReleased = false, whDemoCast2 = false,
-             whDemoShifted = false, whDemoShifted2 = false, whDemoEntered = false, whDemoWw = false;
-        long whShiftReleaseMs = 0;
-        long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -960,7 +789,7 @@ internal static class RebornClient
             string[] dd = Env("RC_DEMO_DIR", "0,1").Split(',');
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
-        bool cDown = false, kDown = false, teleportToStructure = false;
+        bool cDown = false, teleportToStructure = false;
         bool divDown = false;
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
@@ -1059,6 +888,8 @@ internal static class RebornClient
         // RMB drag = rotate camera and turn the character, wheel = x0.9/x1.1
         // zoom, F11 = reset behind the character (-15 deg pitch), Home/End =
         // view presets 0/180 relative to the character facing.
+        // Host change 2026-09-30 (user decision): the zoom moved off the wheel
+        // onto the +/- keys; the wheel is inert.
         // The handlers are shared by the panel and the HUD labels (a label
         // would otherwise swallow clicks), with coordinates mapped to the panel.
         Func<object, MouseEventArgs, System.Drawing.Point> panelPoint = delegate(object s, MouseEventArgs e)
@@ -1116,51 +947,26 @@ internal static class RebornClient
                 try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
-        MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
-        {
-            // CameraZoomIn/Out: Camera_Zoom(0.9 / 1.1)
-            camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
-        };
+        // The wheel no longer zooms (user decision 2026-09-30): the zoom moved
+        // to the +/- keys below. The wheel is deliberately left unbound.
         Control[] hitTargets = new Control[] { panel, hud };
         foreach (Control c in hitTargets)
         {
             c.MouseDown += onMouseDown;
             c.MouseUp += onMouseUp;
             c.MouseMove += onMouseMove;
-            c.MouseWheel += wheel;
         }
-        form.MouseWheel += wheel;
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) unlockMouse();
-            if (e.KeyCode == Keys.W)
-            {
-                long t = Environment.TickCount;
-                if (!pW || t - lastWDown > 100)   // new press, not keyboard auto-repeat
-                {
-                    // double-tap: second press within 500 ms of the first release.
-                    // Outside the fly it is the school 大轻功 trigger (ground/air).
-                    // In the fly the 万花 rows have no double-tap action (the
-                    // 上冲/下冲/左冲/右冲 belong to the 长歌 御空 system) -> no action.
-                    if (lastWUp != 0 && t - lastWUp < 500)
-                    {
-                        if (wwStateActive)
-                            Log("wh: double-tap W in flight (no 万花 action; 4 = 20788 dash)");
-                        else wwTrigger();
-                    }
-                    lastWDown = t;
-                }
-                pW = true;
-            }
+            if (e.KeyCode == Keys.W) pW = true;
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
             else if (e.KeyCode == Keys.D) pD = true;
-            else if (e.KeyCode == Keys.ShiftKey && !shiftDown) { shiftDown = true; whShiftPressed = true; }
-            else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; if (wwStateActive) whStagePressed = true; else jumpPressed = true; }
-            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; wwRelease(); }
-            else if (e.KeyCode == Keys.D2 && !twoDown) { twoDown = true; skillPressed = true; }
-            else if (e.KeyCode == Keys.D3 && !threeDown) { threeDown = true; whPlungePressed = true; }
+            else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
+            else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
+            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
             {
@@ -1181,15 +987,27 @@ internal static class RebornClient
                 if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
                 else if (!lmbDown && !rmbDown) unlockMouse();
             }
+            else if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
+            {
+                // CameraZoomIn: Camera_Zoom(0.9) (moved off the wheel, 2026-09-30)
+                camSys.ZoomBy(-1.0);
+            }
+            else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+            {
+                // CameraZoomOut: Camera_Zoom(1.1)
+                camSys.ZoomBy(1.0);
+            }
             else if (e.KeyCode == Keys.F11)
             {
-                // Camera reset: behind the character, model pitch -15 deg, distance 1x
+                // Camera reset: behind the character, distance 1x. hotkeys.lua
+                // CameraReset -> Camera_SetForceReset(yaw, -pi/12, 1): game
+                // pitch -15 deg (camera above) -> model +pi/12.
                 camSys.SetMaxDistance(camSys.ClampDistanceUnits(
                     camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
-                camSys.Pitch = -Math.PI / 12.0;
+                camSys.Pitch = Math.PI / 12.0;
                 alignAim();
-                Log("camera reset: behind character, pitch -15deg");
+                Log("camera reset: behind character, game pitch -15deg (model +15)");
             }
             else if (e.KeyCode == Keys.F9)
             {
@@ -1203,41 +1021,17 @@ internal static class RebornClient
                 alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
             }
-            else if (e.KeyCode == Keys.K && !kDown)
-            {
-                // WW sandbox: flip the school-weapon state at runtime so all 3
-                // double-tap-W cases can be observed in one session.
-                kDown = true;
-                wwWeaponOk = !wwWeaponOk;
-                Log("ww weapon mode: " + (wwWeaponOk
-                    ? "RIGHT weapon (air plunge armed)"
-                    : "WRONG/no weapon (air plunge disabled)"));
-            }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W)
-            {
-                pW = false;
-                lastWUp = Environment.TickCount;
-                if (wwStateActive)
-                {
-                    // 松开W登顶 only from the hover/glide: during the launch or a
-                    // stage leap the release does not end the chain (key 1 does)
-                    if (!whStageActive) wwEndState();
-                    else Log("wh: W release during launch/stage (no exit; key 1 = 登顶)");
-                }
-            }
+            if (e.KeyCode == Keys.W) pW = false;
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
-            else if (e.KeyCode == Keys.D2) twoDown = false;
-            else if (e.KeyCode == Keys.D3) threeDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
-            else if (e.KeyCode == Keys.K) kDown = false;
             else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
         };
         panel.Focus();
@@ -1250,6 +1044,7 @@ internal static class RebornClient
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
         // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
+        float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
         // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
         // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
         // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
@@ -1262,10 +1057,8 @@ internal static class RebornClient
         // (REBORN_JUMP_FALL_SPEC.md; MapSpike used 703 u/s, 1289 u/s^2). The raw table
         // triple (90/11 u/frame) gives 368 u = 3.7 m - ~2x too high. Scaling takeoff
         // AND gravity by 100/192 keeps the 1.09 s air time and realises 1.92 m.
-        // sandbox super jump: 10x the calibrated height (5.2 = 0.52*10; apex ~19 m).
-        // RC_JUMP_SCALE=0.52 restores the calibrated 1.92 m jump.
-        float jumpScale = 5.2f;
-        float.TryParse(Env("RC_JUMP_SCALE", "5.2"), out jumpScale);
+        float jumpScale = 0.52f;
+        float.TryParse(Env("RC_JUMP_SCALE", "0.52"), out jumpScale);
         if (jumpScale <= 0f) jumpScale = 1f;
         int jumpSchool = 0;
         int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
@@ -1276,6 +1069,7 @@ internal static class RebornClient
         if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
         bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
         int jumpCount = 0;
+        float curJumpGravity = -pGravity;
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
@@ -1429,9 +1223,11 @@ internal static class RebornClient
         if (applyCamInit)
         {
             camSys.Yaw = cameraSettings.InitYaw;
-            camSys.Pitch = cameraSettings.InitPitch;
-            Log(string.Format("camera init applied mapId={0} yaw={1:F3} pitch={2:F3}",
-                cameraSettings.MapId, camSys.Yaw, camSys.Pitch));
+            // game pitch -> model pitch (negate; see the convention note at the
+            // settings application above)
+            camSys.Pitch = -cameraSettings.InitPitch;
+            Log(string.Format("camera init applied mapId={0} yaw={1:F3} gamePitch={2:F3} modelPitch={3:F3}",
+                cameraSettings.MapId, camSys.Yaw, cameraSettings.InitPitch, camSys.Pitch));
         }
         else
         {
@@ -1451,7 +1247,7 @@ internal static class RebornClient
             alignAim();
         }
         // the game keeps the follow distance at the row value; MaxCameraDistance
-        // is only the cap the wheel can zoom out to (starting at the cap made
+        // is only the cap the zoom can reach (starting at the cap made
         // the camera pump when walls passed in/out of range)
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
@@ -1719,125 +1515,6 @@ internal static class RebornClient
                     viewFlipped, dYaw, dPitch, measYaw, flipPxTarget));
             }
 
-            if (wwDemo && !wwDemoJumped && now >= 8000)
-            {
-                wwDemoJumped = true;
-                if (grounded) jumpPressed = true;
-                Log("wwdemo: ground jump");
-            }
-            if (wwDemo && !wwDemoLeaped && now >= 8400)
-            {
-                wwDemoLeaped = true;
-                WwRules.WwAction wwd = WwRules.Evaluate(grounded, true, wwWeaponOk);
-                if (wwd == WwRules.WwAction.Charge) { wwCharge(); pW = true; }
-                Log("wwdemo: charge action=" + wwd);
-            }
-            if (wwDemo && !wwDemoReleased && now >= 10200)
-            {
-                wwDemoReleased = true;
-                pW = false;
-                if (wwStateActive)
-                {
-                    wwEndState();
-                }
-            }
-            if (whDemo)
-            {
-                // full 万花 点墨江山 timeline: jump 8.0s, 20628 cast 8.5s ->
-                // SkillMove 336 launch 8.5..10.57s -> fly; stages JC1..JC5 with
-                // the segment-end End phase in between (J1 apex 1.33s, J2 2.3s),
-                // 急坠 at RC_WH_DEMO_PLUNGE_MS (default 18.6s).
-                // RC_WH_DEMO_S5_MS can stretch the JC4/JC5 windows.
-                long whS5Ms = 18000, whPlungeMs = 18600, whReleaseMs = 0;
-                long whS1Ms = 10800, whS2Ms = 12500, whS3Ms = 15200, whS4Ms = 17000;
-                long.TryParse(Env("RC_WH_DEMO_S1_MS", "10800"), out whS1Ms);
-                long.TryParse(Env("RC_WH_DEMO_S2_MS", "12500"), out whS2Ms);
-                long.TryParse(Env("RC_WH_DEMO_S3_MS", "15200"), out whS3Ms);
-                long.TryParse(Env("RC_WH_DEMO_S4_MS", "17000"), out whS4Ms);
-                long.TryParse(Env("RC_WH_DEMO_S5_MS", "18000"), out whS5Ms);
-                long.TryParse(Env("RC_WH_DEMO_PLUNGE_MS", "18600"), out whPlungeMs);
-                long.TryParse(Env("RC_WH_DEMO_RELEASE_MS", "0"), out whReleaseMs);
-                if (!whDemoJumped && now >= 8000)
-                {
-                    whDemoJumped = true;
-                    if (Env("RC_WH_DEMO_NOJUMP", "0") != "1" && grounded) jumpPressed = true;
-                    Log("whdemo: ground jump" + (Env("RC_WH_DEMO_NOJUMP", "0") == "1" ? " (skipped: ground cast test)" : ""));
-                }
-                if (!whDemoCast && now >= 8500)
-                {
-                    whDemoCast = true;
-                    if (Env("RC_WH_DEMO_ENTRY_MS", "0") == "0") wwCharge();
-                    else Log("whdemo: direct cast skipped (entry hook set)");
-                }
-                // RC_WH_DEMO_WW_MS>0: the ground WW (疾跑段 burst) at that time
-                long whWwMs = 0;
-                long.TryParse(Env("RC_WH_DEMO_WW_MS", "0"), out whWwMs);
-                if (whWwMs > 0 && !whDemoWw && now >= whWwMs)
-                {
-                    whDemoWw = true;
-                    wwTrigger();
-                    Log("whdemo: WW (疾跑段 burst)");
-                }
-                // RC_WH_DEMO_ENTRY_MS>0: the real entry (疾跑段 + Space -> 纵跃段)
-                long whEntryMs = 0;
-                long.TryParse(Env("RC_WH_DEMO_ENTRY_MS", "0"), out whEntryMs);
-                if (whEntryMs > 0 && !whDemoEntered && now >= whEntryMs)
-                {
-                    whDemoEntered = true;
-                    jumpPressed = true;
-                    Log("whdemo: entry Space (疾跑段 + Space)");
-                }
-                if (!whDemoS1 && now >= whS1Ms) { whDemoS1 = true; whStagePressed = true; }
-                if (!whDemoS2 && now >= whS2Ms) { whDemoS2 = true; whStagePressed = true; }
-                if (!whDemoS3 && now >= whS3Ms) { whDemoS3 = true; whStagePressed = true; }
-                if (!whDemoS4 && now >= whS4Ms) { whDemoS4 = true; whStagePressed = true; }
-                if (!whDemoS5 && now >= whS5Ms) { whDemoS5 = true; whStagePressed = true; }
-                if (!whDemoPlunge && now >= whPlungeMs) { whDemoPlunge = true; whPlungePressed = true; }
-                // RC_WH_DEMO_RELEASE_MS>0: release W (登顶 exit) at that time
-                if (whReleaseMs > 0 && !whDemoReleased && now >= whReleaseMs)
-                {
-                    whDemoReleased = true;
-                    if (wwStateActive) wwEndState();
-                    Log("whdemo: release W -> 登顶 exit (StopBirdFly + UnlockBirdMoveZ)");
-                }
-                long whEndMs = whReleaseMs > 0 ? whReleaseMs : whPlungeMs + 200;
-                pW = now >= 8500 && now < whEndMs;
-                // RC_WH_DEMO_RECAST_MS>0: ground recast test (land -> WW again)
-                long whRecastMs = 0;
-                long.TryParse(Env("RC_WH_DEMO_RECAST_MS", "0"), out whRecastMs);
-                if (whRecastMs > 0 && !whDemoCast2 && now >= whRecastMs)
-                {
-                    whDemoCast2 = true;
-                    wwCharge();
-                    Log("whdemo: recast from ground (power " + whPower + ")");
-                }
-                // RC_WH_DEMO_SHIFT_MS / _SHIFT2_MS: pulse Shift (棋弈 entry / 六段)
-                long whShiftMs = 0, whShift2Ms = 0;
-                long.TryParse(Env("RC_WH_DEMO_SHIFT_MS", "0"), out whShiftMs);
-                long.TryParse(Env("RC_WH_DEMO_SHIFT2_MS", "0"), out whShift2Ms);
-                if (whShiftMs > 0 && !whDemoShifted && now >= whShiftMs)
-                {
-                    whDemoShifted = true;
-                    shiftDown = true;
-                    whShiftPressed = true;
-                    whShiftReleaseMs = now + 250;
-                    Log("whdemo: shift pulse 1 (棋弈 entry)");
-                }
-                if (whShift2Ms > 0 && !whDemoShifted2 && now >= whShift2Ms)
-                {
-                    whDemoShifted2 = true;
-                    shiftDown = true;
-                    whShiftPressed = true;
-                    whShiftReleaseMs = now + 250;
-                    Log("whdemo: shift pulse 2 (六段)");
-                }
-                if (whShiftReleaseMs > 0 && now >= whShiftReleaseMs)
-                {
-                    whShiftReleaseMs = 0;
-                    shiftDown = false;
-                }
-            }
-
             if (demo)
             {
                 pW = now >= 2000 && now < 12000;
@@ -1895,7 +1572,7 @@ internal static class RebornClient
 
             if (camZoomSeq)
             {
-                // test input only (no camera behavior): wheel steps out x3 then
+                // test input only (no camera behavior): zoom steps out x3 then
                 // in x3 at 1 s intervals after the rotation/pitch demo
                 if (now >= 13000 && now < 19000)
                 {
@@ -2057,129 +1734,18 @@ internal static class RebornClient
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
-            // 疾跑段 (buffs 12085 通用疾速跑 + 12190 通用疾跑按住): the live-game
-            // entry is the WW (double-tap W) — it starts a burst that persists
-            // even if W is not held (momentum); holding W keeps it running.
-            // Staged ramp 25/75/100% of the Sprint.tab cap (school 4
-            // MaxVelocityXY 120 u/f = 1800 u/s), 16-frame stages.
-            bool jipaoHeld = pW && moving;
-            bool jipaoBurst = Environment.TickCount < jipaoUntilMs;
-            bool jipaoActive = grounded && !walkMode && !shiftDown && (jipaoHeld || jipaoBurst);
-            if (jipaoActive)
-            {
-                jipaoLastActiveMs = Environment.TickCount;
-                if (!jipaoWasActive)
-                {
-                    jipaoWasActive = true;
-                    jipaoStartMs = now;
-                    Log("jipao: enter (12085 通用疾速跑 + 12190 通用疾跑按住; cap " +
-                        WwRules.JipaoCapPerSecond + " u/s; " +
-                        (jipaoBurst && !jipaoHeld ? "WW burst" : "hold W") + ")");
-                }
-                float stageT = (now - jipaoStartMs) / (WwRules.JipaoStageFrames * 1000f / WwRules.LogicTicksPerSecond);
-                float pct = stageT < 1f ? 0.25f : stageT < 2f ? 0.75f : 1f;
-                jipaoSpeed = WwRules.JipaoCapPerSecond * pct;
-            }
-            else if (jipaoWasActive && Environment.TickCount - jipaoLastActiveMs > 250)
-            {
-                // 250 ms grace: the WW double-tap's press/release flap must not
-                // restart the ramp (it kept the speed at 25%)
-                jipaoWasActive = false;
-                jipaoSpeed = 0f;
-                Log("jipao: end (HoldW=0 + CheckEndSprint)");
-            }
-            // WW burst momentum: auto-forward along the facing while no input
-            if (jipaoBurst && grounded && !moving && !walkMode && !shiftDown && jipaoSpeed > 0f)
-            {
-                float jstep = jipaoSpeed * dt;
-                px += (float)Math.Sin(curYaw) * jstep;
-                pz += (float)Math.Cos(curYaw) * jstep;
-            }
             // character yaw turn rate (rad/s): the game's per-frame turn step
             // (+0x48) is a server sync byte and not decoded; the host uses the
             // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
             float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
             if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
-            // ---- 万花大轻功 (20628 trigger -> BirdFlyTo + LockBirdMoveZ;
-            // 20630 急坠 SetPassiveVelocityZ -2000; stages JC1..JC5 = J1..J5) ----
-            if (whStagePressed)
-            {
-                whStagePressed = false;
-                if (wwStateActive)
-                {
-                    // Space: 切入(0) -> 纵跃段(1) -> 段数第一..第五(2..6); at the
-                    // 段数第五 Space cycles back to the 段数第一 (the 棋弈 loop)
-                    int next = whStage + 1;
-                    if (whStage >= 6) next = 2;
-                    whStage = next;
-                    whStageActive = true;
-                    whEndPhase = false;
-                    whMoveT = 0f;
-                    grounded = false;
-                    Log("wh 点墨江山·" + WwRules.WhDisplayNames[whStage] + " (SkillMove " +
-                        WwRules.WhMoveIds[whStage] + ", jumpCount " + WwRules.WhMoveJumpCount[whStage] +
-                        ", " + WwRules.WhMoveLen(whStage) + " frames)");
-                }
-                else Log("wh stage ignored: no fly active");
-            }
-            // Shift in the chain = the fall-out (the live 棋弈 exit)
-            if (whShiftPressed)
-            {
-                whShiftPressed = false;
-                if (wwStateActive)
-                {
-                    Log("wh 点墨江山: shift -> the chain ends (fall)");
-                    wwEndState();
-                }
-                else Log("wh shift ignored: no fly active");
-            }
-            if (whPlungePressed)
-            {
-                whPlungePressed = false;
-                if (wwStateActive)
-                {
-                    whDiving = true;
-                    whStageActive = false; whEndPhase = false;
-                    vy = WwRules.WhPlungeFrame * WwRules.LogicTicksPerSecond;
-                    Log("wh 20630 万花轻功急坠: SetPassiveVelocityZ(" + WwRules.WhPlungeFrame +
-                        ") -> vy=" + vy + " u/s (held to landing)");
-                }
-                else Log("wh 急坠 ignored: no fly active");
-            }
-            // 气力值 drain/regen (JumpParam school 4 fly costs; ground regen provisional)
-            if (grounded)
-            {
-                if (whPower < WwRules.WhPowerMax)
-                {
-                    whPower += whRegenPerSecond * dt;
-                    if (whPower > WwRules.WhPowerMax) whPower = WwRules.WhPowerMax;
-                }
-            }
-            else if (wwStateActive)
-            {
-                whPower -= (pW ? WwRules.WhBirdMoveCostPerSecond
-                            : WwRules.WhFloatCostPerSecond) * dt;
-                if (whPower <= 0f)
-                {
-                    whPower = 0f;
-                    Log("wh: 气力值 exhausted -> fly ends (登顶)");
-                    wwEndState();
-                }
-            }
-
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
-            // NOTE: the 气力值持续消耗.lua altitude auto-end (Flyheight < 6*8*64)
-            // is disabled: the GetAltitude semantics/units are unverified and the
-            // check killed the chain right after the small 纵跃段 leap (live
-            // flow: the chain works from the ground). Re-open with a verified
-            // Flyheight definition.
             bool blocked = false;
             if (moving)
             {
-                float sp = (jipaoActive ? jipaoSpeed
-                            : shiftDown && !wwStateActive ? pRun * 10f
+                float sp = (shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
                             : pRun) / len;
                 float ux = dirX / len, uz = dirZ / len;
@@ -2209,16 +1775,6 @@ internal static class RebornClient
                     else if (gz2 - ground <= 70f) { pz = tryZ; }
                 }
                 else { px = tryX; pz = tryZ; }
-            }
-
-            // WW chain dash: authored JumpSpeedXY along facing (J1 30, J2 50,
-            // J3 100 u/f -> 450/750/1500 u/s); forward in all stages, J3 is the
-            // downward far dash (Vz -250).
-            if (!grounded && leapSpeedXY > 0f)
-            {
-                float dstep = leapSpeedXY * dt;
-                px += (float)Math.Sin(curYaw) * dstep;
-                pz += (float)Math.Cos(curYaw) * dstep;
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
@@ -2256,9 +1812,7 @@ internal static class RebornClient
                 else
                 {
                     colCalls++;
-                    // SkillMove 336 launch (IgnoreGravity, XY=0): the scripted
-                    // move controls the position; no ground resolve re-grounding
-                    bool sBlocked = !whStageActive && col.Resolve(ref px, ref py, ref pz,
+                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
                         playerRadius, playerHeight, ref ground, ref grounded);
                     if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
                     if (grounded)
@@ -2272,13 +1826,7 @@ internal static class RebornClient
             // grounded / ledge / step (map-host rules)
             if (grounded)
             {
-                if (py - ground > 150f)
-                {
-                    grounded = false; vy = 0f;
-                    // walking off a ledge counts as the J0 takeoff done, so the
-                    // first air WW can start the chain (as in the game)
-                    leapSpeedXY = 0f; wwStateActive = false;
-                }
+                if (py - ground > 150f) { grounded = false; vy = 0f; }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
             }
@@ -2288,89 +1836,45 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (jipaoActive && !wwStateActive)
+                if (grounded) jumpCount = 0;
+                int nextJump = jumpCount + 1;
+                bool chainMode = djumpMode == "chain";
+                bool djumpOn = djumpMode != "0";
+                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
+                int[] trip = null;
+                if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
+                    (nextJump == 1 || djumpOn))
                 {
-                    // 疾跑段 + Space = 点墨江山·纵跃段 (the chain entry; the gate
-                    // and the SkillMove 336 launch run in wwCharge)
-                    Log("wh: 疾跑段 + Space -> 纵跃段 (chain entry)");
-                    wwCharge();
+                    // chain mode reads the pressed row; flip mode reuses J0
+                    trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
                 }
-                else
+                if (trip != null)
                 {
-                    if (grounded) jumpCount = 0;
-                    int nextJump = jumpCount + 1;
-                    bool chainMode = djumpMode == "chain";
-                    bool djumpOn = djumpMode != "0";
-                    int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
-                    int[] trip = null;
-                    if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
-                        (nextJump == 1 || djumpOn))
-                    {
-                        // chain mode reads the pressed row; flip mode reuses J0
-                        trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
-                    }
-                    if (trip != null)
-                    {
-                        jumpCount = nextJump;
-                        vy = trip[1] * 15f * jumpScale;
-                        int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
-                        curJumpGravity = gc * 225f * jumpScale;
-                        grounded = false;
-                        if (djumpLog) Log(string.Format(
-                            "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
-                            jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
-                    }
-                    else if (djumpLog) Log(string.Format(
-                        "djb reject n={0} max={1} grounded={2} mode={3}",
-                        nextJump, maxJump, grounded ? 1 : 0, djumpMode));
+                    jumpCount = nextJump;
+                    vy = trip[1] * 15f * jumpScale;
+                    int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
+                    curJumpGravity = gc * 225f * jumpScale;
+                    grounded = false;
+                    if (djumpLog) Log(string.Format(
+                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
+                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
                 }
+                else if (djumpLog) Log(string.Format(
+                    "djb reject n={0} max={1} grounded={2} mode={3}",
+                    nextJump, maxJump, grounded ? 1 : 0, djumpMode));
             }
-
-            // (no auto-end: any W release is handled by the KeyUp handler)
 
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
             if (!grounded)
             {
                 float vyBefore = vy;
-                if (whDiving)
-                {
-                    // 20630: SetPassiveVelocityZ(-2000) overrides gravity entirely
-                    vy = WwRules.WhPlungeFrame * WwRules.LogicTicksPerSecond;
-                }
-                else if (whStageActive)
-                {
-                    // the stage SkillMove (IgnoreGravity): the authored per-frame
-                    // XY (forward, along the facing) and Z velocities
-                    whMoveT += dt;
-                    int whFrame = (int)(whMoveT * WwRules.LogicTicksPerSecond);
-                    if (whFrame >= WwRules.WhMoveLen(whStage))
-                    {
-                        // SkillMoveEndButKeepVelocity: the move ends, the last
-                        // velocity stays (the drift)
-                        whStageActive = false;
-                        whEndPhase = true;
-                        Log("wh " + WwRules.WhDisplayNames[whStage] + " end (keep velocity: vxy=" +
-                            leapSpeedXY + " vy=" + vy + " u/s)");
-                    }
-                    else
-                    {
-                        vy = WwRules.WhMoveZ(whStage, whFrame) * WwRules.LogicTicksPerSecond;
-                        leapSpeedXY = WwRules.WhMoveXY(whStage, whFrame) * WwRules.LogicTicksPerSecond;
-                    }
-                }
-                else if (!wwStateActive) vy -= curJumpGravity * dt;
-                if (vy < WwRules.VzClampMinPerSecond) vy = WwRules.VzClampMinPerSecond;
-                if (vy > WwRules.VzClampMaxPerSecond) vy = WwRules.VzClampMaxPerSecond;
-                // Sprint.tab dive/fall terminal cap (school 4: 900 u/f); the 急坠
-                // SetPassiveVelocityZ(-2000) is the authored exception to the cap.
-                if (!whDiving && vy < WwRules.FallCapFrame * WwRules.LogicTicksPerSecond)
-                    vy = WwRules.FallCapFrame * WwRules.LogicTicksPerSecond;
+                vy -= curJumpGravity * dt;
                 py += vy * dt;
                 // apex sample: the model transform must have followed the physics
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
                     "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
-                if (py <= ground && !whStageActive)
+                if (py <= ground)
                 {
                     py = ground;
                     float impact = vy;
@@ -2380,32 +1884,13 @@ internal static class RebornClient
                         "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
                         jumpCount, px, py, pz, impact));
                     jumpCount = 0;
-                    leapSpeedXY = 0f;
-                    wwStateActive = false;
-                    if (whStage > 0 || whDiving)
-                        Log("wh chain landed: stage " + whStage + " dive=" + whDiving);
-                    whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
                 }
             }
             else jumpCount = 0;
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
-            else if (!grounded)
-            {
-                if (wwStateActive)
-                {
-                    if (whDiving) setClipPlay(clipWhPlunge, 0);
-                    else if (whStageActive && !whEndPhase)
-                    {
-                        // the 万花 stage clips, mapped over the 7 moves
-                        int ci = whStage <= 1 ? 0 : (whStage - 2) % WwRules.WhBaseStages;
-                        setClipPlay(clipWhStage[ci], 1);
-                    }
-                    else setClipPlay(clipWhFly, 0);
-                }
-                else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
-            }
+            else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
@@ -2452,9 +1937,6 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
-                // sprint camera mode: the 疾跑段 (hold W) and the 大轻功 fly, not
-                // the Shift test-speed modifier
-                bool sprinting = movingNow && (jipaoActive || wwStateActive);
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the
@@ -2478,23 +1960,11 @@ internal static class RebornClient
                     double aimAdj = aimPitchOf(camSys.Pitch) - aimPitchOf(pitchPreAdj);
                     adjPitchPx = (int)Math.Round(-aimAdj / 0.00121);
                 }
-                // the automatic character/sprint mode logic must not override a
-                // forced test mode (RC_CAM_MODE)
-                if (camMode.Length == 0)
-                {
-                    if (sprinting)
-                    {
-                        if (camSys.Mode != CameraSystem.MODE_SPRINT)
-                            camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
-                    }
-                    else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
-                    {
-                        camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
-                    }
-                }
-                double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
-                              * cameraSettings.EyeScale;
-                // any distance change (wheel zoom, sprint pull-back, EyeScale)
+                // no automatic camera-mode switching: the sprint trigger
+                // (double-tap W, WW) was removed 2026-09-30; the sprint row is
+                // reachable only through the RC_CAM_MODE test harness.
+                double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
+                // any distance change (zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
                 if (Math.Abs(dist - lastAimDist) > 0.5)
                 {
@@ -2520,7 +1990,14 @@ internal static class RebornClient
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
                                 Env("RC_CAM_NOSMOOTH", "0") != "1";
-                double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
+                // Placement smoothing is one shared state in every camera mode
+                // (CharacterCameraSmoothTime, 60 ms; PENETRATION_PLAN C1). The
+                // sprint row's SmoothTime (0.5 s) is SprintCameraSmoothTime, the
+                // sprint pull-back constant already applied by UpdateDistance -
+                // reading the active row here collapsed the orbit radius while
+                // dragging in sprint mode (2026-09-30 camera-wwdrag repro).
+                double stime = Math.Max(
+                    camSys.Rows[CameraSystem.MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
@@ -3334,54 +2811,17 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL"
-                             : whDiving ? "WH-DIVE"
-                             : wwStateActive ? ("WH-" + whStageName())
-                             : whStageActive ? ("WH-" + whStageName())
-                             : wwStateActive ? "WH-FLY"
-                             : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
-                             : moving ? (jipaoActive ? "JIPAO" : shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
-                float moveSpeed = jipaoActive ? jipaoSpeed
-                                : shiftDown && !wwStateActive ? pRun * 10f
+                string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
+                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
+                float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6} \u6C14\u529B {13:F0}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 = 点墨江山·疾跑段 | Space = 纵跃段 -> 一段..四段 | Shift = 棋弈(一段起) / 六段 | 3 = 急坠 | 1 = 登顶 | K weapon | / walk-run | Shift 10x | 2 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip),
-                    wwWeaponOk ? "school weapon (air plunge armed)" : "WRONG/no weapon (air plunge disabled)",
-                    whPower / WwRules.WhPowerUiScale);
-                // 段数 overlay top-right: the 大轻功 stage chain while flying;
-                // 气力值 readiness while it refills
-                bool whInFly = wwStateActive;
-                if (whInFly || whPower < WwRules.WhPowerMax)
-                {
-                    if (whInFly)
-                    {
-                    // each phase shows its own name (纵跃段/一段..四段/弈韵一..六段)
-                    string whNm = whDiving ? "急坠" : whStageName();
-                    stageHud.Text = "点墨江山 " + whNm + "\n段数 " + whStage + "/" +
-                        WwRules.WhStageNames.Length + "\n气力 " +
-                        (whPower / WwRules.WhPowerUiScale).ToString("F0") + "/" +
-                        (WwRules.WhPowerMax / WwRules.WhPowerUiScale).ToString("F0");
-                    stageHud.ForeColor = System.Drawing.Color.White;
-                }
-                else
-                {
-                    stageHud.Text = "气力回复\n" + (whPower / WwRules.WhPowerUiScale).ToString("F0") + "/" +
-                        (WwRules.WhPowerMax / WwRules.WhPowerUiScale).ToString("F0");
-                    stageHud.ForeColor = System.Drawing.Color.White;
-                }
-                    stageHud.Location = new System.Drawing.Point(
-                        panel.ClientSize.Width - stageHud.Width - 12, 10);
-                    stageHud.Visible = true;
-                }
-                else
-                {
-                    stageHud.Visible = false;
-                }
+                    curClip == null ? "-" : Path.GetFileName(curClip));
             }
             if (now - lastLog >= 2000)
             {
@@ -3404,20 +2844,18 @@ internal static class RebornClient
                     nearInfo += string.Format(" py={0:F0}", py);
                 }
                 float curSpd = !moving ? 0f
-                             : jipaoActive ? jipaoSpeed
-                             : shiftDown && !wwStateActive ? pRun * 10f
+                             : shiftDown ? pRun * 10f
                              : walkMode ? pSpeed
                              : pRun;
                 string moveMode = !moving ? "IDLE"
-                                : jipaoActive ? "JIPAO"
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12} power={18:F0}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
-                    curSpd, moveMode, curYaw, dirX, dirZ, whPower / WwRules.WhPowerUiScale));
+                    curSpd, moveMode, curYaw, dirX, dirZ));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {

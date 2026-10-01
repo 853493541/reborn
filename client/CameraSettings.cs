@@ -52,7 +52,7 @@ internal sealed class CameraSettings
             {
                 LoadCustomDat(File.ReadAllText(customPath), result);
                 result.HasCustomSettings = true;
-                log("CameraSettings: loaded real per-role camera settings");
+                log("CameraSettings: loaded real per-role camera settings: " + customPath);
             }
             catch (Exception e) { log("CameraSettings custom.dat ex: " + e.Message); }
         }
@@ -130,8 +130,8 @@ internal sealed class CameraSettings
     static string FindLatestCustomDat(string root)
     {
         if (!Directory.Exists(root)) return null;
-        string best = null;
-        DateTime bestTime = DateTime.MinValue;
+        string best = null, bestRuntime = null;
+        DateTime bestTime = DateTime.MinValue, bestRuntimeTime = DateTime.MinValue;
         try
         {
             foreach (string path in Directory.GetFiles(root, "custom.dat", SearchOption.AllDirectories))
@@ -140,12 +140,21 @@ internal sealed class CameraSettings
                 {
                     DateTime time = File.GetLastWriteTimeUtc(path);
                     if (time > bestTime) { best = path; bestTime = time; }
+                    // prefer a role file that carries the saved camera runtime
+                    // (g_Scene_tCameraRuntime): the account/global custom.dat
+                    // files have no saved view, and the real client restores the
+                    // per-role view at first load (2026-09-30 start-angle fix)
+                    if (time > bestRuntimeTime && File.ReadAllText(path).Contains("g_Scene_tCameraRuntime"))
+                    {
+                        bestRuntime = path;
+                        bestRuntimeTime = time;
+                    }
                 }
                 catch { }
             }
         }
         catch { }
-        return best;
+        return bestRuntime != null ? bestRuntime : best;
     }
 
     static void LoadCustomDat(string text, CameraSettings settings)
