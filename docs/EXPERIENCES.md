@@ -395,6 +395,18 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   `reborn_20260930_1519/1524/1619/1646`.
 - Outcome: verified; awaiting the merge decision (no merge performed).
 
+### 2026-09-30 — client — Merge cam-wwdrag into main + rebuild full & sandbox clients
+- Did: merged `agent/cam-wwdrag` (`18885a1`, conflict-free) — camera orbit `SmoothTime`
+  fix (sprint drag no longer collapses the radius; smoke regression 1.15%), WW/double-tap-W
+  sprint removed per user, zoom moved to `+/-` (A12), first-load pitch sign + per-role
+  saved view, start at max range (C10). Rebuilt BOTH from merged main: canonical
+  `reborn_client.exe` and sandbox `reborn_client_mini.exe` (both `git=18885a1`); gates:
+  camera smoke ALL PASS, gravity model, loot selftest PASS, jx3_model PASS; relaunched
+  both (full 8x8 map + sandbox 1x1 map, identical spawn, jump flip active).
+- Evidence: merge `18885a1`; `build_info.txt` + `build_info_reborn_client_mini.exe.txt`;
+  logs `reborn_20260930_172038.log` (full) / `_172041.log` (sandbox).
+- Outcome: solved (local only; main 13 ahead of origin).
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
