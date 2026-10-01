@@ -977,3 +977,25 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `proof/controls/target_frame_elements_20260930.txt` (parsed summary);
   raw INIs not committed (game assets).
 - Outcome: question answered; HUD inventory registered in the targeting doc.
+
+### 2026-09-30 — client — real target HUD (client UI assets, no hand-drawn art)
+- Did: replaced the hand-drawn target frame with a renderer that draws the
+  client's own selected-target window `ui/Config/Default/TargetTarget.ini`
+  (50 sections, script Target.lua) using its real `.UITex` atlases + `ui/Font`
+  text schemes. New `tools/netcode/ui/extract_target_frame.py` pulls the
+  layout + atlases + textures + scheme files from the client PakV4 into the
+  git-ignored `assets/ui/targetframe/`; `client/UiClient.cs` parses the INI,
+  resolves PosType placement, decodes UITex/TGA/DDS, and draws with the real
+  fonts/colors. The HUD is composited by a per-pixel-alpha layered window
+  (`TargetFrameControl : Form`, WS_EX_LAYERED + UpdateLayeredWindow) because a
+  WinForms child control cannot blend over the engine's child HWND.
+- Evidence: client run `reborn_20260930_233743.log` (`target=初级试炼木桩 ...
+  zone=MidAxis`, no `target ui` warnings); window capture fingerprint
+  `proof/controls/target_hud_client_20260930.txt` (TargetBg plate + HP bar +
+  game-font name/level/camp visible). Gates: jx3_model 10x PASS, gravity,
+  loot selftest PASS.
+- Note: `Player.ini` (the first pick) is the player's own frame; the selected
+  target window is `TargetTarget.ini` — corrected in
+  `docs/controls/JX3_TARGET_SELECTION.md` §9.
+- Outcome: solved; runtime-set portrait face / buff rows / cast bar are
+  skipped until their state exists (missing art draws nothing, per §6).

@@ -126,25 +126,26 @@ dispatches `InteractPlayer/Npc/Doodad/LandObject`.
 * `proof/pvp/disasm_targeting/KPlayer__LuaSearchForEnemy.txt` (+6 more)
 * `docs/controls/JX3_COMBAT_CONTROLS.md` §1/§4/§5
 
-## 9. What HUD appears when a target is selected (HIGH elements, MED window identity)
+## 9. What HUD appears when a target is selected (HIGH)
 
-The selected-target HUD is the target frame family: layout `ui/config/default/Player.ini`
-(script `Player.lua`, TargetPanel textures) driven by the target module
-`ui/script/Target.lua` + its element library `ui/config/default/TargetCommon.ini`
-(extracted + parsed 2026-09-30; element list:
-`proof/controls/target_frame_elements_20260930.txt`).
+The selected-target HUD is the window **`ui/Config/Default/TargetTarget.ini`**
+(50 sections, `ScriptFile=UI\Config\Default\Target.lua`, authored 325x115 at
+500,124; PakV4-extracted 2026-09-30, element list:
+`proof/controls/target_frame_elements_20260930.txt`). `Player.ini` is the
+player's own frame; the target window is TargetTarget (confirmed by the
+`Text_Target` / `Handle_TarBg` names in Target.lua's bytecode).
 
-| group | elements (Player.ini) | meaning |
+| group | elements (TargetTarget.ini) | meaning |
 |---|---|---|
-| frame/back | `Handle_Back` (`Image_BackL/C/R/RR/R2`) | target bar background |
-| avatar | `Handle_Avatar` (`Image_Avatar`, `Image_School`, `Animate_Avatar`, `SFX_Avatar`), `Handle_BuyBg` | portrait + school icon |
-| name/level | `Handle_Name` (`Text_Player`, `Image_Cloud`), `Text_Level`, `Text_Others` | name, level, misc text |
-| health | `Image_Health`, `Image_Flash` (hit flash), `Handle_C_Blood` + `SFX_BloodScale`, `Handle_BloodTip`, `Image_SubHealth`, `Text_Health` | HP bar + damage flash + animated fill + text |
-| mana | `Image_Mana`, `Handle_C_Mana` + `SFX_ManaScale`, `Handle_NoManaBG`, `Text_Mana`, `Image_DefenseShield`/`Image_DefenseShieldLight` | resource bar, no-mana state, defence/减伤 icon |
-| absorb/shield | `Handle_CureShield` (`Image_CureShield*`), `Handle_CureShieldCount` + `Text_CureShieldCount`, `Image_HealthShield*` + `Text_HealthShield` | heal-absorb and shield overlays |
-| camp/relation | `Image_Camp`, `Image_TeamCamp` + `Animate_TeamCamp` | faction/team color |
-| marks/state | `Image_Mark` (party mark), `Image_NPCMark`, `Image_Flag`, `Image_Boss`, `Image_Center`, `Image_Invincible`, `Image_Fight`/`Animate_Fight*` | marks, boss frame variant, invincible, in-combat glow |
-| custom | `Wnd_CustomMode` (`Image_CM*`, `Text_CMName`), `Btn_RoleChange` | custom-UI label + role-change button |
+| frame/back | `Image_TarBg`, `Image_TarBgF` (`UItimate/UICommon/TargetBg.UITex`), `Image_Target`, `Image_NewTarget` | target plate |
+| avatar | `Handle_Avatar` (`Image_Avatar`, `Image_School`, `Animate_Avatar`), `Handle_BuyBg` (`Image_BuyBG1-3`, `CHGJ_1_DK_2.UITex`) | portrait + school icon + wardrobe bg |
+| name/level | `Handle_Name` (`Text_Target`, `Image_Cloud`), `Text_Level`, `Image_Danger` | name, level, danger mark |
+| health | `Image_Health` (fill, width = HP%), `Image_SubHealth` (shield overlay), `Text_Health` | HP bar + shield + text |
+| mana | `Image_Mana`, `Text_Mana` | player targets only |
+| camp/relation | `Image_Camp` (`CommonPanel2.UITex` frame 5) | faction color |
+| marks/state | `Image_NPCMark`, `Image_Invincible` (`Baizhan.UITex`), `Image_HPmark` | marks, invincible |
+| cast bar | `Handle_Bar` (`Image_Bg`, `Image_Progress`, `Image_FlashS/F`, `Text_Name`; `ProgressBar.UITex`) | target prepare/channel bar |
+| custom | `Wnd_CustomMode` (`Image_CM*`, `Text_CMName`) | custom-UI label |
 
 Script-driven behavior (`Target.lua`):
 * `UpdateState` = `UpdateLM/Name/Level/Action/Head/Kungfu/TargetMark/Camp/Invincible`;
@@ -167,9 +168,12 @@ Script-driven behavior (`Target.lua`):
   `UPDATE_RELATION`, `PLAYER_LEVEL_UP`, `CHANGE_CAMP`, `BUFF_UPDATE`,
   `SET_SHOW_STANDARD_TARGET`, `UI_ON_DAMAGE_EVENT`, mini-avatar events.
 
-MED: the exact window instantiation (the frame is the `Player` window family;
-whether self and target instantiate the same INI or a sibling `Target` INI is not
-pinned — the module + element names above are the target path).
+Implemented in `client/` (2026-09-30): `Targeting.cs` (Tab cone search + click
+pick) and `UiClient.cs` (renders this window from the real `.UITex` atlases +
+`ui/Font` through `ui/Scheme/Elem/{font.ini,fontlist.ini,color.txt}`), composited
+by a per-pixel-alpha layered window. Client-side subset currently drawn: plate,
+name/level/HP/shield/camp + real fonts; runtime-set portrait face, buff rows and
+cast bar are skipped until their state exists (missing art draws nothing).
 
 ## Reproduce
 
@@ -178,11 +182,11 @@ python tools\pvp\dump_fn_disasm.py "C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3
   --names names.txt --out-dir proof\pvp\disasm_targeting
 # names.txt: KPlayer::LuaSearchForEnemy / _Allies / _Npc / _PetEnemy /
 #            LuaFollowSelectTarget / LuaStopFollow / KSkill::AutoSelectTarget
-```
 
-Target-frame HUD layout (read-only, official PakV4SfxExtract via
-`pss_assets.run_pakv4`): `ui/config/default/Player.ini` +
-`ui/config/default/TargetCommon.ini`, parsed summary
-`proof/controls/target_frame_elements_20260930.txt`.
+python tools\netcode\ui\extract_target_frame.py
+# -> assets\ui\targetframe\ (gitignored): TargetTarget.ini, TargetCommon.ini,
+#    the .UITex atlases + .Tga textures, ui/Scheme/Elem scheme files
+# parsed summary: proof/controls/target_frame_elements_20260930.txt
+```
 
 Last verified: 2026-09-30
