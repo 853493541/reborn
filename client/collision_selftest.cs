@@ -239,6 +239,20 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
             Check("thin_tall_plate_blocks", blocked, string.Format("blocked={0}", blocked));
 
+            // thin wall crossed in a long substep: the capsule centre passes
+            // the plane inside one substep and the degenerate normal points
+            // along the motion - the push must oppose the motion (field case:
+            // the Yumen building 001_002 wall z~33870 walked through).
+            MeshBuilder twall = new MeshBuilder();
+            twall.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 30f, 200f, 200f, 30f, 200f, -200f);
+            string ptw = WriteBin("thin_wall", new MeshBuilder[] { twall }, new float[][] { M(0f, 0f, 0f) });
+            col = new FoliageCollision(null, ptw);
+            px = 5f; py = 0f; pz = 0f; ground = 0f; grounded = true;
+            blocked = col.MoveResolved(ref px, ref py, ref pz, 60f, 0f,
+                17f, 116f, 20f, ref ground, ref grounded, 64f);
+            Check("thin_wall_no_popthrough", blocked && px <= 13.5f,
+                string.Format("blocked={0} px={1:F2}", blocked, px));
+
             // tall wall behind + low plank in front: the low touching face wins
             // the step test when the raised capsule clears the blocker (open
             // space above the plank). If the wall continues at the plank's

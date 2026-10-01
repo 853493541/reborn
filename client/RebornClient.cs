@@ -1781,7 +1781,8 @@ internal static class RebornClient
                     colCalls++;
                     float gBefore = ground;
                     bool sBlocked = col.Resolve(ref px, ref py, ref pz,
-                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight);
+                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
+                        0f, mvx, mvz);
                     if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
                     if (ground > gBefore + 0.01f) groundOk = true;   // structure support
                     if (grounded)
@@ -1880,7 +1881,7 @@ internal static class RebornClient
                 // here created a fall->push-up ratchet at overlapping ledges.
                 if (col != null && vy > 0f)
                     col.Resolve(ref px, ref py, ref pz,
-                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight, vy);
+                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight, vy, mvx, mvz);
                 if (py <= ground && groundOk)
                 {
                     py = ground;

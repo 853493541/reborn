@@ -936,7 +936,8 @@ public sealed class FoliageCollision
     public bool Resolve(ref float px, ref float py, ref float pz,
                         float radius, float height,
                         ref float ground, ref bool grounded,
-                        float stepHeight = 70f, float vMotion = 0f)
+                        float stepHeight = 70f, float vMotion = 0f,
+                        float hMoveX = 0f, float hMoveZ = 0f)
     {
         bool blocked = false;
         for (int iter = 0; iter < 3; iter++)
@@ -1008,6 +1009,17 @@ public sealed class FoliageCollision
                 // thin slab (field case: jumping up through a roof).
                 if (vMotion != 0f && Math.Abs(best.ny) > 0.5f)
                     best.ny = -Math.Sign(vMotion) * Math.Abs(best.ny);
+                // Vertical faces resist the horizontal motion the same way:
+                // once the capsule centre crosses a thin wall, the degenerate
+                // closest-point normal points ALONG the motion and the push
+                // would eject it out the far side (field case: the 玉门关
+                // building 001_002 wall at z~33870, 2026-09-30 walk-through).
+                float hlen = (float)Math.Sqrt(hMoveX * hMoveX + hMoveZ * hMoveZ);
+                if (hlen > 1e-4f && Math.Sqrt(best.nx * best.nx + best.nz * best.nz) > 0.5f)
+                {
+                    float hdot = (best.nx * hMoveX + best.nz * hMoveZ) / hlen;
+                    if (hdot > 0.2f) { best.nx = -best.nx; best.nz = -best.nz; }
+                }
                 px += best.nx * best.depth;
                 py += best.ny * best.depth;
                 pz += best.nz * best.depth;
@@ -1116,7 +1128,7 @@ public sealed class FoliageCollision
         {
             px += dx / n;
             pz += dz / n;
-            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded, stepHeight))
+            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded, stepHeight, 0f, dx, dz))
                 blocked = true;
         }
         return blocked;
