@@ -663,3 +663,17 @@ solved it, and what is still open. **Newest at the bottom.**
   engine table jump (v0=90 u/f, g=11 u/f2 -> ~368 u apex), not a walk-up.
 - The fix removal is therefore validated on the reproducible route; the A/B
   binaries are kept for the user.
+
+### 2026-09-30 — collision — Solid props collide as AABB boxes (pile no longer penetrable)
+- User follow-up: after contact-only steps the wood pile became **walk-through**
+  (its render mesh is stacked logs with air gaps: `hits=0` through the
+  footprint), and the tiered log faces let a slow contact-step climb back up.
+- Fix: `propSolid` instances (registered proxy family 柜/箱/桌/桶/缸/坛 + 堆)
+  now collide as their **world AABB box** in `InstanceContact` (`AabbContact`):
+  smallest-overlap push, surface height = the box top, so the CCT step branch
+  can only step onto the top within the step budget (a low box still steps,
+  the 270 u pile blocks). No winding, no tiers, no gaps.
+- Verified: selftest 27/27 (`solid_prop_blocks_tall`, `solid_prop_step_low`);
+  in-game pile mid (20450,31000) and tall (20450,30800) held at x=20114 with
+  y constant and hits climbing - no climb, no pass-through
+  (`reborn_20260930_184525/184610.log`); rug unchanged (924, hits=0).

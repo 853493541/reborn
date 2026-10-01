@@ -298,7 +298,11 @@ public sealed class FoliageCollision
                             mp.IndexOf("\u684c", StringComparison.Ordinal) >= 0 ||
                             mp.IndexOf("\u6876", StringComparison.Ordinal) >= 0 ||
                             mp.IndexOf("\u7f38", StringComparison.Ordinal) >= 0 ||
-                            mp.IndexOf("\u575b", StringComparison.Ordinal) >= 0)
+                            mp.IndexOf("\u575b", StringComparison.Ordinal) >= 0 ||
+                            // sparse stacked props (log piles etc.): the render
+                            // mesh has air gaps the capsule can slip through
+                            // (wj_木堆001_hd, AABB y 787..1057); solid like the rest
+                            mp.IndexOf("\u5806", StringComparison.Ordinal) >= 0)
                             meshes[i].propSolid = true;
                     }
                 }
@@ -727,9 +731,51 @@ public sealed class FoliageCollision
     // world space through the instance 3x3, so anisotropic scales stay exact.
     // Replaces the former 6-point axis sampling, which missed surfaces that
     // sit between two sample heights (e.g. railings at 15 u).
+    // Capsule-vs-AABB (boxy capsule approximation) used for solid props: push
+    // along the smallest overlap axis; the surface height is the box top so the
+    // CCT step branch can only step onto the top within the step budget.
+    bool AabbContact(Instance it, float px, float py, float pz,
+                     float radius, float height, ref Contact best)
+    {
+        float ox = Math.Min(px + radius, it.maxX) - Math.Max(px - radius, it.minX);
+        if (ox <= 0.01f) return false;
+        float oz = Math.Min(pz + radius, it.maxZ) - Math.Max(pz - radius, it.minZ);
+        if (oz <= 0.01f) return false;
+        float oy = Math.Min(py + height, it.maxY) - Math.Max(py, it.minY);
+        if (oy <= 0.01f) return false;
+        float nx = 0f, ny = 0f, nz = 0f, depth;
+        if (ox <= oz && ox <= oy)
+        {
+            nx = (px < (it.minX + it.maxX) * 0.5f) ? -1f : 1f;
+            depth = ox;
+        }
+        else if (oz <= oy)
+        {
+            nz = (pz < (it.minZ + it.maxZ) * 0.5f) ? -1f : 1f;
+            depth = oz;
+        }
+        else
+        {
+            ny = (py < (it.minY + it.maxY) * 0.5f) ? -1f : 1f;
+            depth = oy;
+        }
+        best.nx = nx; best.ny = ny; best.nz = nz;
+        best.depth = depth;
+        best.py = it.maxY;
+        best.triTop = it.maxY;
+        best.lowTop = it.minY;
+        return true;
+    }
+
     bool InstanceContact(Instance it, float px, float py, float pz,
                          float radius, float height, ref Contact best)
     {
+        // Solid props (registered host proxy) collide as their world AABB box:
+        // the render mesh of a stacked prop has air gaps and tiered faces the
+        // capsule can slip or step through (wj_木堆001_hd); a solid box blocks
+        // like furniture and can only be climbed within the step budget.
+        if (it.mesh.propSolid)
+            return AabbContact(it, px, py, pz, radius, height, ref best);
         float[] w2l = it.w2l;
         if (w2l == null) return false;
         ProfInstTouches++;

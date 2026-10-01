@@ -354,6 +354,29 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
             Check("obstacle_flag_off_with_sibling_blocks", blocked && col.NoObstacleSkipped == 0,
                 string.Format("blocked={0} skipped={1}", blocked, col.NoObstacleSkipped));
+
+            // solid-prop AABB collision: a tall prop blocks like a wall, a low
+            // one is stepped onto within the budget (registered proxy)
+            MeshBuilder spb = new MeshBuilder();
+            spb.AddBox(30f, -10f, -200f, 130f, 200f, 200f);
+            string spbPath = WriteBin("solid_prop_tall", new MeshBuilder[] { spb }, new float[][] { M(0f, 0f, 0f) });
+            WriteMeshSidecar(spbPath, new string[] { "data/source/maps_source/小物件/木箱/test_solid.mesh" });
+            FoliageCollision spc = new FoliageCollision(null, spbPath);
+            float spx = 25f, spy = 0f, spz = 0f, spg = 0f;
+            bool spGrounded = true;
+            bool spBlocked = spc.Resolve(ref spx, ref spy, ref spz, 17f, 116f, ref spg, ref spGrounded, 64f);
+            Check("solid_prop_blocks_tall", spBlocked && spx <= 13.1f,
+                string.Format("blocked={0} px={1:F1}", spBlocked, spx));
+
+            MeshBuilder spl = new MeshBuilder();
+            spl.AddBox(30f, -10f, -200f, 130f, 35f, 200f);
+            string splPath = WriteBin("solid_prop_low", new MeshBuilder[] { spl }, new float[][] { M(0f, 0f, 0f) });
+            WriteMeshSidecar(splPath, new string[] { "data/source/maps_source/小物件/木箱/test_solid2.mesh" });
+            spc = new FoliageCollision(null, splPath);
+            spx = 29.9f; spy = 0f; spz = 0f; spg = 0f; spGrounded = true;
+            spBlocked = spc.Resolve(ref spx, ref spy, ref spz, 17f, 116f, ref spg, ref spGrounded, 64f);
+            Check("solid_prop_step_low", !spBlocked && Math.Abs(spg - 35f) < 0.05f,
+                string.Format("blocked={0} ground={1:F1}", spBlocked, spg));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"
