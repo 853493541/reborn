@@ -23,10 +23,10 @@ client-side · **[N/A]** does not apply to this product.
 | 1 | Core physics runtime | PhysX 3.3.4 (`PhysicsEngineX64.dll`), gameplay wrapper `SIMWorldX64.dll` (`PxWorld::RayCast`, `GetFloorHeight`, `SweepEx`) | own float solver: `FoliageCollision` capsule/triangle + substeps; no PhysX (MovieEditor never creates a physics scene — proven) | **[PROXY]** |
 | 2 | Collision math | `KBaseX64.dll` | in-house: closest-point-triangle, segment-segment, Möller–Trumbore | **[PORTED]** (equivalent math) |
 | 3 | Terrain | R32 heights + `.hlb` holes, 512-cell regions, streaming; `ProcessVerticalMove` ground clamp; `ProcessDropSpeed` slope projection | `TerrainSampler.cs` (heights + holes, Z-flip verified); ground rules from `ProcessVerticalMove` (snap up, 64 u tolerance); **slope projection missing** | **[PART]** |
-| 4 | Static world | `sceneinfo_full` objects + 4×4 matrices; physic white/black lists; sibling `.mesh.ini` flags; PhysX static actors | `bake_map_collision.py` → FCOL v2 bins; GB18030 physic lists; `.cflags` (camera only); exact capsule contact; CCT top-step (64 u budget) | **[PART]** — obstacle flags not ported (§3) |
+| 4 | Static world | `sceneinfo_full` objects + 4×4 matrices; physic white/black lists; sibling `.mesh.ini` flags; PhysX static actors | `bake_map_collision.py` → FCOL v2 bins; GB18030 physic lists; `.cflags` (camera only); exact capsule contact; CCT top-step (64 u budget, up-sweep clearance) | **[PART]** — obstacle flags not ported (§3) |
 | 5 | Foliage / SpeedTree | `.foliage` v1, `.CollisionMesh`, canopy columns | byte-exact foliage decode; shipped `CollisionMesh` used verbatim; 6 degenerate trunks left walk-through (matches client); **canopy columns host-made** | **[PART]** |
 | 6 | Dynamic objects | doodads/doors/chests (server stream), state-machine props (visual only, G-9), movable obstacles (radius+points, server state G-10), conveyors (params decoded G-11), carriers | none | **[SERVER/MISSING]** |
-| 7 | Character body | kinematic capsule + SIMWorld foot solver; capsule values are semantic K/V (`capsule r50/l50` shape lib); CCT defaults recovered (`stepOffset 0.5 m`, `slopeLimit 45°`, `contactOffset 0.1`) | capsule `r=17 u, h=116 u` host-chosen (`RC_RADIUS/HEIGHT`); step budget 64 u; contact offset not modelled | **[PART]** |
+| 7 | Character body | kinematic capsule + SIMWorld foot solver; capsule values are semantic K/V (`capsule r50/l50` shape lib); CCT defaults recovered (`stepOffset 0.5 m`, `slopeLimit 45°`, `contactOffset 0.1`) | capsule `r=17 u, h=116 u` host-chosen (`RC_RADIUS/HEIGHT`); step budget 64 u with CCT up-sweep (the raise must clear the blocker) + standability gate on the support raise; contact offset not modelled | **[PART]** |
 | 8 | Movement model | `KCharacter` **15 Hz integer** integration | per-frame float integration | **[WRONG vs G-14]** |
 | 9 | Jump/fall/swim/fly | `JumpParam.tab`, `JumpFrameParam.tab`, `SkillMove.tab`; swim step `0x14031B640` | single jump/gravity constants; 轻功 chain, sprint dive, wall jump, suspend/fly, mount, swim all missing | **[PART/MISSING]** |
 | 10 | Ragdoll/death | `KPhysicsRagdoll` (11-body), PhysX articulation | none (`bAddPlayerPhysicsActor=0`) | **[MISSING]** |
@@ -187,6 +187,7 @@ where they affect collision/camera geometry. Excludes harness switches
 | 2 | no slope projection/air-stop (`ProcessDropSpeed`) | rule | ground step |
 | 3 | 64 u step budget applied to mesh obstacles (engine `stepOffset` is 0.5 m) | number | `RC_STEP_HEIGHT` |
 | 4 | `lowTop` fallback in the step rule | rule | `FoliageCollision.Resolve` |
+| 4b | step raise requires CCT up-sweep clearance (raised capsule must not overlap the blocker; else block+push-out, no embedding); support raise only to a standable surface (downward contacts reject; horizontal overlaps left to the prop push) | rule | `FoliageCollision.CapsuleBlocked/CapsuleBlockedDown` |
 | 5 | 20 u movement substep | number | `RebornClient` loop |
 | 6 | floor source = terrain sample + `SupportHeight` (not native `GetFloorHeight`) | proxy | both |
 | 7 | winding-agnostic floor query (game winding is inverted) | rule | `SupportHeight` |

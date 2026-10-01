@@ -55,7 +55,7 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Capsule radius/height | **[HOST-CHOSEN]** | 17/116 (`RC_RADIUS/HEIGHT`); exact gameplay values not extracted (`G-1`) |
 | Capsule convention (feet = capsule bottom) | **[OK — new]** | axis `py+radius … py+height−radius`; removed the below-feet artifact |
 | PhysX CCT defaults (stepOffset 0.5 m, slope 45°, contactOffset 0.1) | **[PART]** | recovered from the shipped DLL; **step applied, slope not**; gameplay applicability unproven (`G-1/G-13`) |
-| Step-up (climb obstacles whose top ≤ step budget) | **[OK — new]** | contact-local top + `lowTop`; budget = 64 u = 1 尺 ground tolerance (field case: 51 u house floors); `RC_STEP_HEIGHT` |
+| Step-up (climb obstacles whose top ≤ step budget) | **[OK — new]** | contact-local top + `lowTop`; budget = 64 u = 1 尺 ground tolerance (field case: 51 u house floors); **CCT up-sweep: the raise must clear the blocker** (wall-ledge ladders block, no embedding, `CapsuleBlocked`); `RC_STEP_HEIGHT` |
 | Contact offset / skin | **[MISSING]** | not modelled |
 
 ## 5. Movement & ground

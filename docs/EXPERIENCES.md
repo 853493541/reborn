@@ -691,3 +691,30 @@ solved it, and what is still open. **Newest at the bottom.**
   `vertical_fall_slab_supports` py -> 64); in-game spot (18850,36700) stable at
   y=959 with hits climbing (no launch, `reborn_20260930_203353.log`); a
   pre-vertical-fix binary kept as `bin64\reborn_client_prevert.exe`.
+
+### 2026-09-30 - collision - Wall-ledge ratchet fixed (CCT up-sweep) + standability gate
+- Field report (user, 玉门关 building backside x 18899-19026): running into the
+  back wall climbed the player +96 u (y 951<->1047 airborne cycles, capsule
+  embedded in the face) - "walked up because the wall had a step, then half way
+  into the building". Bin data: the wall profile (mesh 364, inst 93) carries
+  ledge/molding faces at y ~975/990/1030/1040 - a ladder within the step budget.
+- Root cause: the step branch claimed ANY touched face top within the budget
+  (`lowTop`) without requiring the raise to clear the blocker, and skipped the
+  push-out while stepping (embedding); the caller support raise then lifted
+  `ground` to overhang undersides under the capsule centre every tick.
+- Fix: CCT up-sweep contract - a step is accepted only when the raised capsule
+  is clear (`CapsuleBlocked` at top+0.1); the support raise only to a surface
+  the capsule can stand on (`CapsuleBlockedDown`: reject downward contacts
+  only; horizontal side overlaps are left to the solid-prop push). A first
+  strict fit test bounced the player airborne on the prop edge at the rug
+  (19690,36270) - caught with `RC_SUPDBG=1` (sh=924.2 rejected by a 0.17 u
+  horizontal AABB contact) and fixed by the down-only filter.
+- Also fixed: the log fingerprint read the shared `build_info.txt` (every
+  feature run printed the canonical build's git hash, 2026-09-30 incident);
+  it now prefers `build_info_<exe>.txt`.
+- Verified: selftest 31/31 (`wall_ledge_step_rejected` blocked/ground 0;
+  `capsule_fit_probe`; `low_plank_open_top_passes`); in-game A/B at
+  (18915,36850): old build oscillates 951<->1047 airborne, new build stable
+  952-994 blocked (`reborn_20260930_212339` vs `_214718`); rug/prop spawn
+  (19690,36270) new build stable grounded y=969, no bounce
+  (`reborn_20260930_214555`). A/B binary kept: `bin64\reborn_client_prewall.exe`.

@@ -10,7 +10,7 @@ verification state; run the automated gates first, then walk the manual list.
 | `.venv\Scripts\python.exe tools\netcode\reference\jx3_model.py` | all 10 checks PASS |
 | `.venv\Scripts\python.exe tools\gravity\verify_model.py` | model self-consistent |
 | `.venv\Scripts\python.exe tools\netcode\loot\capture.py selftest` | SELFTEST PASS |
-| `bin64\collision_selftest_reborn_client_collision.exe` | 25/25 PASS |
+| `bin64\collision_selftest_reborn_client_collision.exe` | 31/31 PASS |
 | `native\build_shim.cmd` | `RC_Shim_*` exports linked (run with NO reborn client alive) |
 | `ui-process-app` `--selftest` | needs a desktop session (headless exits 1; app untouched by this branch) |
 
@@ -54,7 +54,18 @@ exact blocker (`blocked by inst=… mesh=… top=… feet=…`) or the prop cont
 4. **Steps/ledges**
    - The ~51 u house floor edge is walkable (climb); taller ledges block and
      require a jump.
-   - Thin rails/planks at walls do not stop you (step budget 64 u).
+   - Thin rails/planks at walls do not stop you (step budget 64 u) **when the
+     raised capsule clears them** (a plank with open space above steps; a plank
+     whose plane continues upward is a wall ledge - you are blocked, not lifted).
+5. **Building back wall / stepped walls (x≈18915, z≈36850, 玉门关建筑 backside)**
+   - Run straight into the wall: you stop at its face; you must NOT climb up
+     its ledges (no y rise, no airborne cycles). Old build climbed to y≈1047
+     (`reborn_client_prewall.exe` shows it; current build stays ≈994).
+   - Same for any wall with moldings/sills: repeated step-ups up a continuing
+     face are rejected (CCT up-sweep clearance).
+6. **Rug next to the solid prop (x≈19813, z 36270)**
+   - Stand still: you stay grounded (y≈969 on the prop top / ≈924 on the rug),
+     no airborne bounce; `propfix` pushes may appear once.
 5. **Wood pile (x 19858-20097 / z 30743-31026, 270 u tall)** - walking into
    it must NOT climb it and NOT pass through it: you are held at its face
    (log line `propfix` pushes ~20 u/tick). Jumping on top from higher ground
@@ -84,6 +95,10 @@ exact blocker (`blocked by inst=… mesh=… top=… feet=…`) or the prop cont
 - `bin64\reborn_client_pileold.exe` - pre-fix revision (`85e086b^`); walks up the
   z=31000 pile crossing (t=2s y=974) where the current build does not (y=874
   bump/fall). Use it to compare any disputed behaviour old vs new.
+- `bin64\reborn_client_prewall.exe` - pre-wall-fix revision (`2dcb4d8` + dirty);
+  climbs the 玉门关 building back wall ledges (y 951↔1047 airborne) where the
+  current build stays blocked (y≈994) at (18915,36850).
+- `bin64\reborn_client_prevert.exe` - pre-vertical-rise-fix revision.
 
 ## 4. Useful switches
 
