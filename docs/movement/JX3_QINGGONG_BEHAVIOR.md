@@ -167,7 +167,7 @@ school 4 JC1..JC5; `Sprint/Action.tab` actions 5/8/9/10/11.
 
 | Step | Real source (HIGH) | Sandbox model |
 |---|---|---|
-| Trigger | skill 20628: CanCast `nSprintPower >= 10000`, cost `100*CONSUME_BASE`; `Apply` -> `SetTimer(30)` -> `OnTimer`: `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 (binds 13889/16516) | WW (**ground or air**; ground WW = 【WW上冲】 per the scenario table, not a sprint): 气力值 gate 10000, cost 2500 (CONSUME_BASE=25 hypothesis, MED), `RC_WH_DELAY_MS` 500 ms; from the ground the takeoff leap (J1 triple) runs first, then `LockBirdMoveZ` hovers at the apex |
+| Trigger | skill 20628: CanCast `nSprintPower >= 10000` (all school triggers share the gate), cost `100*CONSUME_BASE`; cast applies `SkillMove 336` (the school launch); `Apply` -> `SetTimer(30)` -> `OnTimer`: `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 (binds 13889/16516) | WW (ground or air; ground WW = 【WW上冲】 per the scenario table, not a sprint): 气力值 gate 10000, cost 2500 (CONSUME_BASE=25 hypothesis, MED); the cast runs the **SkillMove 336 launch** (31 frames, XY=0, IgnoreGravity; the per-frame VelocityZ curve), then `BirdFlyTo` + `LockBirdMoveZ` starts the Z-locked fly. Stage presses are ignored during the launch (SkillMove `CanJump=0`) |
 | Stages | Condition.tab school 4: JC1..JC5 = 点墨江山·纵跃段/一段/二段/三段/四段, `ActionGroup` space一段..四段 (Action.tab 8/9/10/11) | Space: takeoff triple J1..J5 (JumpParam rows 1..5), apex -> End triple 125/−140/12 (`ModifySprintEndSpeed`) |
 | 急坠 | skill 20630 `万花轻功急坠.lua`: `SetPassiveVelocityZ(-2000)` | key 3: vy = −2000 u/f, bypasses the 900 u/f fall cap (engine clamp −2048 u/f) |
 | Fly costs | JumpParam school 4: OnFlyCost 75, OnFlyFloatCost 35, OnFlyJumpCost 300, OnFlyBirdMoveCost 206 | 气力值: hover 35/s, bird move (W) 206/s, per stage 300; ground regen 2000/s (provisional, D0 open) |
@@ -228,16 +228,21 @@ release = the real StopBirdFly + UnlockBirdMoveZ semantics: the fly ends, the
 horizontal speed persists (the forward glide), gravity integrates Vz from the
 row-0 base gravity (`WwRules.FallGravityPerSecond2` 2475 u/s²), the 900 u/f fall
 cap applies, the 气力值 drain stops; the 45° constant-angle dash was removed.
-`RC_WH_DEMO_RELEASE_MS` exercises the exit in the demo. Not modelled: the summit
-state (no summit points in the cropped sandbox map) and the altitude < 3072 u
-auto-end (`GetAltitude` units/semantics need verification before wiring).
+The auto-ends are wired too: 气力值 0 and altitude < `WwRules.FlyMinAltitudeUnits`
+(3072 u, checked while flying, not during the launch). `RC_WH_DEMO_RELEASE_MS`
+exercises the exit in the demo. Not modelled: the summit state (no summit points
+in the cropped sandbox map).
 
 Recast (2026-09-30): WW works on the ground too (`WwRules.Evaluate` — the ground
 double-tap is 【WW上冲】, the ground sprint is HOLD W/疾跑段), so after landing you
 can cast again once the bar is back to the 10000 gate. The ground regen default
-is 4000/s (`RC_WH_REGEN`; D0 open — provisional), the top-right overlay shows
-段数 while flying and 气力值/气力不足 while it refills. `RC_WH_DEMO_NOJUMP` /
-`RC_WH_DEMO_RECAST_MS` exercise the ground cast in the demo.
+is 4000/s (`RC_WH_REGEN`; D0 open — provisional); the top-right overlay shows
+段数 N/5 + the state (上冲/段名/急坠/滑翔) + 气力值 while flying, and
+`气力未满 需 10000` while the gate is unmet. `RC_WH_DEMO_NOJUMP` /
+`RC_WH_DEMO_RECAST_MS` exercise the ground cast in the demo. The 气力值 max is
+not in the client tables (server/attribute-side) — the sandbox uses 10000
+(provisional); note the gate is the *bar at 10000*, not "enough for the cost"
+(all school triggers use the same check).
 
 ## 8. Open items
 

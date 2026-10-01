@@ -1133,3 +1133,26 @@ eborn_client_daqinggong carries these changes — other
   PASS. The recast at 22.0 s first failed at 9806/10000 (regen 2000/s) — the
   4000/s default fixes the "only once" feel.
 - Outcome: solved; land -> double-tap W casts again.
+
+### 2026-09-30 — client — WW launch re-derived from SkillMove 336 (起跳 was wrong)
+- Lesson: the earlier WW model was wrong twice. (1) The ground double-tap is
+  【WW上冲】 = the school trigger (all school triggers: CanCast `nSprintPower >=
+  10000`, cost 100*CONSUME_BASE, then `BirdFlyTo + LockBirdMoveZ`) — the ground
+  sprint is HOLD W. (2) The activation launch is the trigger's `SkillMove 336`
+  (settings/SkillMove.tab): IgnoreGravity=1, TotalFrame=31, XY=0, VelocityZ
+  0/471/537/574/590/589/578/.../8 u/frame (a ~2 s vertical rise; SetTimer(30) ~=
+  the launch). It is NOT the 起跳/纵跃段 (that is JC1, entered by Space), and the
+  HUD must not name it 起跳.
+- Did: the cast starts the 336 launch (`whLaunch`, frame-stepped at 15 Hz);
+  stage presses are ignored during it (SkillMove CanJump=0); at frame 31
+  BirdFlyTo + LockBirdMoveZ starts the Z-locked fly. HUD: 上冲/段名/急坠/滑翔 +
+  段数 N/5 + 气力值; rejection shows 气力未满 需 10000 (the gate is the bar at
+  10000, not "enough for the cost"). Altitude auto-end (< 3072 u) wired. Fixed a
+  re-grounding bug: the landing check and the collision resolve re-grounded the
+  character during the launch (skip both while whLaunch).
+- Evidence: launch run 20:28 exit=0 — cast -> y 1099 -> 11699 (launch) ->
+  `SetTimer(30) -> BirdFlyTo + LockBirdMoveZ` -> JC1..JC5 -> 急坠 ->
+  `altitude 3014 < 3072 -> StopBirdFly` -> land; ground recast run 20:32 exit=0
+  — recast -> y 890 -> 5095 (vy 8040) -> fly at 10479 -> hover. Selftest
+  WH_LAUNCH_FRAMES/PEAK/MIN_ALTITUDE PASS.
+- Outcome: solved; the process now matches the extracted scripts/tables.

@@ -81,6 +81,19 @@ internal static class WwRules
     public const float WhPlungeFrame = -2000f;
     public const int WhTimerFrames = 30;
     public static readonly string[] WhStageNames = { "纵跃段", "一段", "二段", "三段", "四段" };
+    // Trigger cast SkillMove 336 (settings/SkillMove.tab; the school launch):
+    // IgnoreGravity=1, TotalFrame=31, XY=0, per-frame VelocityZ 0/471/537/574/
+    // 590/589/578/560/536/509/481/452/422/393/364/335/308/281/255/230/206/183/
+    // 161/139/118/98/79/60/42/25/8 u/frame. The WW上冲 vertical takeoff; the
+    // fly (BirdFlyTo + LockBirdMoveZ) starts after SetTimer(30) ~= the launch.
+    public const int WhLaunchFrames = 31;
+    public static readonly float[] WhLaunchVzFrame = { 0f, 471f, 537f, 574f, 590f, 589f, 578f, 560f,
+        536f, 509f, 481f, 452f, 422f, 393f, 364f, 335f, 308f, 281f, 255f, 230f, 206f, 183f, 161f,
+        139f, 118f, 98f, 79f, 60f, 42f, 25f, 8f };
+    // 大轻功 auto-end altitude (气力值持续消耗.lua): Flyheight < 6*8*64 u
+    // (3072 u) -> StopBirdFly + UnlockBirdMoveZ (checked while flying, not
+    // during the launch).
+    public const float FlyMinAltitudeUnits = 6f * 8f * 64f;
     public static readonly float[] FlyCurveXY = { 150f, 2f, 9f, 16f, 22f, 28f, 34f, 39f, 45f, 51f, 57f, 64f, 70f, 77f, 84f, 92f, 100f, 108f, 118f, 128f, 140f, 153f, 168f, 185f, 205f, 202f, 178f, 158f, 142f, 128f, 116f, 106f, 97f, 90f, 83f, 77f, 72f, 68f, 64f, 60f, 58f, 55f, 54f, 52f, 51f, 51f, 51f, 51f, 52f, 54f, 56f, 58f, 47f, 17f, 3f, 2f, 6f, 10f, 15f, 20f, 24f, 29f, 34f, 40f, 45f, 50f, 56f, 62f, 68f, 74f, 80f, 87f, 94f, 100f, 108f, 115f, 123f, 131f, 139f, 147f, 156f };
     public static readonly float[] FlyCurveZ = { 150f, -81f, -232f, -369f, -491f, -599f, -693f, -771f, -836f, -886f, -921f, -942f, -949f, -941f, -918f, -881f, -830f, -763f, -683f, -588f, -478f, -354f, -216f, -63f, 105f, 298f, 493f, 666f, 818f, 949f, 1058f, 1145f, 1211f, 1256f, 1279f, 1280f, 1260f, 1219f, 1156f, 1072f, 966f, 838f, 689f, 519f, 327f, 114f, 0f, 0f, 0f, 0f, 0f, 693f, 693f, 315f, -14f, -41f, -65f, -88f, -108f, -127f, -143f, -156f, -168f, -178f, -185f, -191f, -194f, -195f, -194f, -191f, -185f, -178f, -168f, -156f, -143f, -127f, -108f, -88f, -65f, -41f, -14f };
 
@@ -144,6 +157,9 @@ internal static class WwRules
         fail += CheckValue("WH_PLUNGE_FRAME", WhPlungeFrame, -2000f);
         fail += CheckValue("WH_TIMER_FRAMES", (float)WhTimerFrames, 30f);
         fail += CheckValue("WH_STAGES", (float)WhStageNames.Length, 5f);
+        fail += CheckValue("WH_LAUNCH_FRAMES", (float)WhLaunchVzFrame.Length, 31f);
+        fail += CheckValue("WH_LAUNCH_PEAK", WhLaunchVzFrame[4], 590f);
+        fail += CheckValue("WH_MIN_ALTITUDE", FlyMinAltitudeUnits, 3072f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
     }

@@ -849,22 +849,19 @@ internal static class RebornClient
         // 万花大轻功「点墨江山」 state (school 4; 20628 trigger -> 20630 急坠).
         float whPower = WwRules.WhPowerMax;   // 气力值; CanCast needs >= 10000
         float whTriggerCost = WwRules.WhTriggerCost;
-        float whDelayMs = 500f;               // SetTimer(30) activation; timer unit MED
         float whRegenPerSecond = 4000f;       // ground regen (D0 open; provisional)
-        bool whArmed = false;                 // trigger cast, SetTimer(30) running
-        long whArmedAtMs = 0;
         int whStage = 0;                      // 0 none; 1..5 = 纵跃段/一段/二段/三段/四段
         bool whStageActive = false;           // a stage leap is in flight
         bool whEndPhase = false;              // segment-end triple applied
         bool whDiving = false;                // 急坠 (SetPassiveVelocityZ -2000)
         bool whLaunch = false;                // WW上冲 ground takeoff leap -> fly
+        float whLaunchT = 0f;                 // launch elapsed seconds (31 frames @15 Hz)
         long whRejectAtMs = 0;                // last NOT_ENOUGH_SPRINT_POWER time
         bool whStagePressed = false;
         bool whPlungePressed = false;
         {
             float v;
             if (float.TryParse(Env("RC_WH_COST", ""), out v)) whTriggerCost = v;
-            if (float.TryParse(Env("RC_WH_DELAY_MS", ""), out v)) whDelayMs = v;
             if (float.TryParse(Env("RC_WH_REGEN", ""), out v)) whRegenPerSecond = v;
         }
         Action wwEndState = delegate()
@@ -885,8 +882,10 @@ internal static class RebornClient
         };
         Action wwCharge = delegate()
         {
-            // 万花轻功触发 20628: CanCast needs 气力值 >= 10000; Apply ->
-            // SetTimer(30) -> OnTimer: BirdFlyTo + LockBirdMoveZ (Z-locked fly).
+            // 万花轻功触发 20628: CanCast needs 气力值 >= 10000 (all school
+            // triggers share the gate); cost 100*CONSUME_BASE; the cast applies
+            // SkillMove 336 (the WW上冲 vertical launch); Apply -> SetTimer(30)
+            // -> OnTimer: BirdFlyTo + LockBirdMoveZ (Z-locked fly).
             if (whPower < WwRules.WhPowerMax)
             {
                 whRejectAtMs = Environment.TickCount;
@@ -895,10 +894,16 @@ internal static class RebornClient
                 return;
             }
             whPower -= whTriggerCost;
-            whArmed = true;
-            whArmedAtMs = Environment.TickCount;
+            wwStateActive = true;
+            grounded = false;
+            whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
+            whLaunch = true;
+            whLaunchT = 0f;
+            vy = 0f;
+            leapSpeedXY = 0f;   // SkillMove 336: XY = 0 (vertical launch)
             Log("wh 20628 万花轻功触发: cost " + whTriggerCost + " (100*CONSUME_BASE), power " +
-                whPower + "; SetTimer(" + WwRules.WhTimerFrames + ") then BirdFlyTo + LockBirdMoveZ; " +
+                whPower + "; SkillMove " + WwRules.WhLaunchFrames + "-frame launch (WW上冲); " +
+                "SetTimer(" + WwRules.WhTimerFrames + ") -> BirdFlyTo + LockBirdMoveZ; " +
                 "binds 13889/16516 -> 13422/14626/13836");
         };
         Action wwTrigger = delegate()
@@ -1723,14 +1728,14 @@ internal static class RebornClient
             }
             if (whDemo)
             {
-                // full 万花 点墨江山 timeline: jump 8.0s, 20628 cast 8.5s
-                // (SetTimer -> fly ~9.0s), stages JC1..JC5 with the segment-end
-                // End phase in between (J1 apex 1.33s, J2 2.3s), 急坠 at
-                // RC_WH_DEMO_PLUNGE_MS (default 17.0s). RC_WH_DEMO_S5_MS can
-                // stretch the JC4/JC5 windows to test long dive playback.
-                long whS5Ms = 16400, whPlungeMs = 17000, whReleaseMs = 0;
-                long.TryParse(Env("RC_WH_DEMO_S5_MS", "16400"), out whS5Ms);
-                long.TryParse(Env("RC_WH_DEMO_PLUNGE_MS", "17000"), out whPlungeMs);
+                // full 万花 点墨江山 timeline: jump 8.0s, 20628 cast 8.5s ->
+                // SkillMove 336 launch 8.5..10.57s -> fly; stages JC1..JC5 with
+                // the segment-end End phase in between (J1 apex 1.33s, J2 2.3s),
+                // 急坠 at RC_WH_DEMO_PLUNGE_MS (default 18.6s).
+                // RC_WH_DEMO_S5_MS can stretch the JC4/JC5 windows.
+                long whS5Ms = 18000, whPlungeMs = 18600, whReleaseMs = 0;
+                long.TryParse(Env("RC_WH_DEMO_S5_MS", "18000"), out whS5Ms);
+                long.TryParse(Env("RC_WH_DEMO_PLUNGE_MS", "18600"), out whPlungeMs);
                 long.TryParse(Env("RC_WH_DEMO_RELEASE_MS", "0"), out whReleaseMs);
                 if (!whDemoJumped && now >= 8000)
                 {
@@ -1739,10 +1744,10 @@ internal static class RebornClient
                     Log("whdemo: ground jump" + (Env("RC_WH_DEMO_NOJUMP", "0") == "1" ? " (skipped: ground cast test)" : ""));
                 }
                 if (!whDemoCast && now >= 8500) { whDemoCast = true; wwCharge(); }
-                if (!whDemoS1 && now >= 9500) { whDemoS1 = true; whStagePressed = true; }
-                if (!whDemoS2 && now >= 11200) { whDemoS2 = true; whStagePressed = true; }
-                if (!whDemoS3 && now >= 13800) { whDemoS3 = true; whStagePressed = true; }
-                if (!whDemoS4 && now >= 15400) { whDemoS4 = true; whStagePressed = true; }
+                if (!whDemoS1 && now >= 10800) { whDemoS1 = true; whStagePressed = true; }
+                if (!whDemoS2 && now >= 12500) { whDemoS2 = true; whStagePressed = true; }
+                if (!whDemoS3 && now >= 15200) { whDemoS3 = true; whStagePressed = true; }
+                if (!whDemoS4 && now >= 17000) { whDemoS4 = true; whStagePressed = true; }
                 if (!whDemoS5 && now >= whS5Ms) { whDemoS5 = true; whStagePressed = true; }
                 if (!whDemoPlunge && now >= whPlungeMs) { whDemoPlunge = true; whPlungePressed = true; }
                 // RC_WH_DEMO_RELEASE_MS>0: release W (登顶 exit) at that time
@@ -2015,44 +2020,40 @@ internal static class RebornClient
 
             // ---- 万花大轻功 (20628 trigger -> BirdFlyTo + LockBirdMoveZ;
             // 20630 急坠 SetPassiveVelocityZ -2000; stages JC1..JC5 = J1..J5) ----
-            if (whArmed && Environment.TickCount - whArmedAtMs >= (long)whDelayMs)
+            // SkillMove 336 launch (WW上冲): the authored 31-frame VelocityZ
+            // curve (XY=0, IgnoreGravity=1); SetTimer(30) ~= the launch, then
+            // BirdFlyTo + LockBirdMoveZ starts the Z-locked fly.
+            if (wwStateActive && whLaunch)
             {
-                bool whFromGround = grounded;   // WW上冲 ground takeoff vs air re-fly
-                whArmed = false;
-                wwStateActive = true;
-                grounded = false;   // leave the ground for the fly/launch physics
-                whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
-                if (whFromGround)
-                {
-                    // WW上冲 from the ground: the takeoff leap (起跳纵跃小跳) --
-                    // the J1 triple launches the character, then LockBirdMoveZ
-                    // resumes at the apex (the fly hovers there).
-                    whLaunch = true;
-                    vy = WwRules.ChainVzFrame[1] * WwRules.LogicTicksPerSecond;
-                    curJumpGravity = WwRules.ChainGravityFrame[1] * 225f;
-                    leapSpeedXY = WwRules.ChainSpeedXYFrame[1] * WwRules.LogicTicksPerSecond;
-                    Log("wh WW\u4E0A\u51B2 takeoff (ground): J1 leap vy=" + vy + " g=" + curJumpGravity +
-                        " xy=" + leapSpeedXY + " u/s -> LockBirdMoveZ at the apex");
-                }
-                else
+                whLaunchT += dt;
+                int whFrame = (int)(whLaunchT * WwRules.LogicTicksPerSecond);
+                if (whFrame >= WwRules.WhLaunchFrames)
                 {
                     whLaunch = false;
                     vy = 0f;
                     leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
-                    Log("wh BirdFlyTo + LockBirdMoveZ: fly (Z locked; fwd " + leapSpeedXY +
-                        " u/s); buffs 13422(lv3)/14626/13836");
+                    Log("wh SetTimer(" + WwRules.WhTimerFrames + ") -> BirdFlyTo + LockBirdMoveZ: fly (Z locked; fwd " +
+                        leapSpeedXY + " u/s); buffs 13422(lv3)/14626/13836");
+                }
+                else
+                {
+                    vy = WwRules.WhLaunchVzFrame[whFrame] * WwRules.LogicTicksPerSecond;
                 }
             }
             if (whStagePressed)
             {
                 whStagePressed = false;
-                if (wwStateActive)
+                if (wwStateActive && whLaunch)
+                {
+                    // SkillMove 336 CanJump=0: no stage/jump during the launch
+                    Log("wh stage ignored: launch in progress (SkillMove CanJump=0)");
+                }
+                else if (wwStateActive)
                 {
                     int next = whStage + 1;
                     if (next <= WwRules.WhStageNames.Length)
                     {
                         whStage = next;
-                        whLaunch = false;   // a stage press takes over the takeoff
                         vy = WwRules.ChainVzFrame[next] * WwRules.LogicTicksPerSecond;
                         curJumpGravity = WwRules.ChainGravityFrame[next] * 225f;
                         leapSpeedXY = WwRules.ChainSpeedXYFrame[next] * WwRules.LogicTicksPerSecond;
@@ -2069,7 +2070,6 @@ internal static class RebornClient
                     else Log("wh stage: max " + WwRules.WhStageNames.Length +
                         " stages reached (school 4 MaxJumpCount 5)");
                 }
-                else if (whArmed) Log("wh stage ignored: SetTimer(" + WwRules.WhTimerFrames + ") still running");
                 else Log("wh stage ignored: no fly active");
             }
             if (whPlungePressed)
@@ -2107,6 +2107,14 @@ internal static class RebornClient
 
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
+            // 大轻功 auto-end (气力值持续消耗.lua): while flying (not during the
+            // launch) Flyheight < 6*8*64 u -> StopBirdFly + UnlockBirdMoveZ
+            if (wwStateActive && !whLaunch && (py - ground) < WwRules.FlyMinAltitudeUnits)
+            {
+                Log("wh: altitude " + (py - ground) + " u < " + WwRules.FlyMinAltitudeUnits +
+                    " u -> StopBirdFly + UnlockBirdMoveZ (auto-end)");
+                wwEndState();
+            }
             bool blocked = false;
             if (moving)
             {
@@ -2188,7 +2196,9 @@ internal static class RebornClient
                 else
                 {
                     colCalls++;
-                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
+                    // SkillMove 336 launch (IgnoreGravity, XY=0): the scripted
+                    // move controls the position; no ground resolve re-grounding
+                    bool sBlocked = !whLaunch && col.Resolve(ref px, ref py, ref pz,
                         playerRadius, playerHeight, ref ground, ref grounded);
                     if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
                     if (grounded)
@@ -2259,16 +2269,8 @@ internal static class RebornClient
                 }
                 else if (whLaunch)
                 {
-                    // WW上冲 takeoff leap: gravity on the J1 triple; at the apex
-                    // LockBirdMoveZ resumes and the fly hovers there
-                    vy -= curJumpGravity * dt;
-                    if (vyBefore > 0f && vy <= 0f)
-                    {
-                        whLaunch = false;
-                        vy = 0f;
-                        leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
-                        Log("wh takeoff apex -> LockBirdMoveZ (fly hovers; fwd " + leapSpeedXY + " u/s)");
-                    }
+                    // SkillMove 336 launch: IgnoreGravity; vy is driven by the
+                    // authored per-frame curve in the launch update above
                 }
                 else if (whStageActive)
                 {
@@ -2298,7 +2300,7 @@ internal static class RebornClient
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
                     "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
-                if (py <= ground)
+                if (py <= ground && !whLaunch)
                 {
                     py = ground;
                     float impact = vy;
@@ -2313,7 +2315,6 @@ internal static class RebornClient
                     if (whStage > 0 || whDiving)
                         Log("wh chain landed: stage " + whStage + " dive=" + whDiving);
                     whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false; whLaunch = false;
-                    if (whArmed) { whArmed = false; Log("wh trigger cancelled: landed during SetTimer(30)"); }
                 }
             }
             else jumpCount = 0;
@@ -3261,10 +3262,9 @@ internal static class RebornClient
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL"
                              : whDiving ? "WH-DIVE"
-                             : whLaunch ? "WH-TAKEOFF"
+                             : whLaunch ? "WH-LAUNCH"
                              : whStageActive ? ("WH-" + WwRules.WhStageNames[whStage - 1])
                              : wwStateActive ? "WH-FLY"
-                             : whArmed ? "WH-CAST"
                              : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
                              : moving ? (jipaoActive ? "JIPAO" : shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = jipaoActive ? jipaoSpeed
@@ -3281,30 +3281,34 @@ internal static class RebornClient
                     whPower);
                 // 段数 overlay top-right: the 大轻功 stage chain while flying;
                 // 气力值 readiness while it refills / after a rejected cast
-                bool whInFly = wwStateActive || whArmed;
+                bool whInFly = wwStateActive;
                 bool whRejected = whRejectAtMs != 0 && Environment.TickCount - whRejectAtMs < 2000;
                 if (whInFly || whRejected || whPower < WwRules.WhPowerMax)
                 {
                     if (whInFly)
                     {
-                        string whNm = whDiving ? "急坠"
-                                    : whLaunch ? "起跳"
-                                    : whStageActive && whStage >= 1 ? WwRules.WhStageNames[whStage - 1]
-                                    : "滑翔";
-                        stageHud.Text = "点墨江山 " + whNm + "\n段数 " + whStage + "/" +
-                            WwRules.WhStageNames.Length;
-                        stageHud.ForeColor = System.Drawing.Color.White;
-                    }
-                    else if (whRejected)
-                    {
-                        stageHud.Text = "气力不足\n" + whPower.ToString("F0") + "/" + WwRules.WhPowerMax.ToString("F0");
-                        stageHud.ForeColor = System.Drawing.Color.OrangeRed;
-                    }
-                    else
-                    {
-                        stageHud.Text = "气力回复\n" + whPower.ToString("F0") + "/" + WwRules.WhPowerMax.ToString("F0");
-                        stageHud.ForeColor = System.Drawing.Color.White;
-                    }
+                    string whNm = whDiving ? "急坠"
+                                : whLaunch ? "上冲"
+                                : whStageActive && whStage >= 1 ? WwRules.WhStageNames[whStage - 1]
+                                : "滑翔";
+                    stageHud.Text = "点墨江山 " + whNm + "\n段数 " + whStage + "/" +
+                        WwRules.WhStageNames.Length + "\n气力 " + whPower.ToString("F0") + "/" +
+                        WwRules.WhPowerMax.ToString("F0");
+                    stageHud.ForeColor = System.Drawing.Color.White;
+                }
+                else if (whRejected)
+                {
+                    // the client gate: CanCast needs 气力值 >= 10000 (all school
+                    // triggers) -- not just the cost
+                    stageHud.Text = "气力未满\n需 10000 才能起轻功\n" + whPower.ToString("F0") + "/" +
+                        WwRules.WhPowerMax.ToString("F0");
+                    stageHud.ForeColor = System.Drawing.Color.OrangeRed;
+                }
+                else
+                {
+                    stageHud.Text = "气力回复\n" + whPower.ToString("F0") + "/" + WwRules.WhPowerMax.ToString("F0");
+                    stageHud.ForeColor = System.Drawing.Color.White;
+                }
                     stageHud.Location = new System.Drawing.Point(
                         panel.ClientSize.Width - stageHud.Width - 12, 10);
                     stageHud.Visible = true;
