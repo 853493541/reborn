@@ -402,6 +402,34 @@ PROCESS = {
          "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
         {"t": 0, "kind": "sound", "v": "252612285", "n": "252612285.wav"},
     ],
+    "坐忘无我": [
+        {"t": 0, "kind": "anim", "v": "data\\source\\player\\f1\\动作\\f1s03cy技能11.ani", "durMs": 1394, "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "209352714", "n": "209352714.wav"},
+        {"t": 0, "kind": "dummy", "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳_坐忘无我_起跳_悟.pss", "durMs": 9600, "n": "施法者 PSS 作者寿命 9600ms", "k": "cast_pss"},
+    ],
+    "夺命蛊": [
+        {"t": 0, "kind": "anim", "v": "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01.ani", "durMs": 348, "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "121381088", "n": "121381088.wav"},
+    ],
+    "帝骖龙翔": [
+        {"t": 0, "kind": "anim", "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23.ani", "durMs": 1394, "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "795435370", "n": "795435370.wav"},
+        {"t": 0, "kind": "dummy", "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀帝骖龙翔002.pss", "durMs": 24000, "n": "施法者 PSS 作者寿命 24000ms", "k": "cast_pss"},
+    ],
+    "雷震子": [
+        {"t": 0, "kind": "anim", "v": "data\\source\\player\\f1\\动作\\f1stm09控制03.ani", "durMs": 394, "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "641180650", "n": "641180650.wav"},
+    ],
+    "韦陀献杵": [
+        {"t": 0, "kind": "anim", "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能12.ani", "durMs": 1394, "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "227396769", "n": "227396769.wav"},
+        {"t": 0, "kind": "dummy", "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层.pss", "durMs": 9600, "n": "施法者 PSS 作者寿命 9600ms", "k": "cast_pss"},
+    ],
+    "鹊踏枝": [
+        {"t": 0, "kind": "anim", "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能22.ani", "durMs": 1303, "n": "基础动画 1303ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"},
+        {"t": 0, "kind": "sound", "v": "199467777", "n": "199467777.wav"},
+        {"t": 0, "kind": "dummy", "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀鹊踏枝01.pss", "durMs": 10560, "n": "施法者 PSS 作者寿命 10560ms", "k": "cast_pss"},
+    ],
 }
 
 # full ability mechanism write-ups (shown in the Mechanism tab of the picker)
