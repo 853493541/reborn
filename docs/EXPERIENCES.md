@@ -648,3 +648,18 @@ solved it, and what is still open. **Newest at the bottom.**
   `173345`); rug unchanged py=924 `hits=0` (`173620`); house floor edge still
   steps up to ~969 (`173445`); buildings still block (inst 563 top 1061 >
   feet 888).
+
+### 2026-09-30 — collision — Pile walk-up fix PROVEN by controlled A/B
+- Built the pre-fix revision as a separate binary
+  (`bin64\reborn_client_pileold.exe`, source = `85e086b^`) and ran the same
+  spawn/direction on both.
+- z=31000 crossing (spawn 20450,0,31000, dir -1,0, held W):
+  - OLD: t=2s `(19870, 974, 31000) grounded=True` - walked up onto the pile.
+  - NEW: t=2s `(19850, 874, 31000) grounded=False vy=-660` - bump/fall, stays
+    at ground (`reborn_20260930_182507.log` vs `..._182553.log`).
+- Two other routes (z=30800 straight, NW segment toward the pile top) do not
+  reproduce a walk-up on either build - the user's 1048 was reached with the
+  jump (their log shows the 小跳c clips immediately before), which is the
+  engine table jump (v0=90 u/f, g=11 u/f2 -> ~368 u apex), not a walk-up.
+- The fix removal is therefore validated on the reproducible route; the A/B
+  binaries are kept for the user.
