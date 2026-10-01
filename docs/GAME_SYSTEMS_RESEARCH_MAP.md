@@ -35,7 +35,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | PSS particles | [PART] | `PSS_FORMAT.md`, `pss*.py` |
 | UI textures / `.UITex` atlases | [PART] | `docs/ui/MAP_MINIMAP_RESEARCH.md` |
 | Addon encryption/loader | [DONE] | `tools/addon_decrypt.py`, `proof/minimap/recon/kgui_*` |
-| Fonts/strings (`string.txt`) | [PART] | needed for full UI text parity |
+| Fonts/strings (`string.txt`) | [PART] | `docs/ui/FONT_SCHEME_SYSTEM.md` (2026-09-30): `FontScheme=#<id>`/`FontColor` chain decoded (421 schemes / 36 slots / 106 colors), `tools/ui_scheme_lookup.py`; open: 阴影/projection + per-state font rendering, `Size=0` engine math |
 
 ## 3. Character & animation
 

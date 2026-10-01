@@ -982,3 +982,21 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   SHA256-match the install.
 - Note: editor-only fonts (`MovieEditor\ResourcePack`: Daum/tahoma/aridda/…),
   addon user fonts and the H5 mini-game fonts are separate from the KGUI set.
+
+### 2026-09-30 — ui — Font/color code system decoded (FontScheme=#43)
+- Question: layouts reference text styles by code (`FontScheme=43`,
+  `FontColor=yellow2`) — what is that system? Answer: 421 font schemes in
+  `\UI\Scheme\Elem\font.ini` (id → FontID + Color/Size/Border*/Projection*),
+  36 slots in `fontlist.ini` (File + base Size/Vertical/Dpi/Chat), 3 families in
+  `fontpathlist.ini` feeding 4 of the 5 shipped `ui/Font` files, and 106 rows /
+  105 names in `color.txt` (red6 duplicated; lookup case-insensitive). 358/421
+  schemes use the fontlist base size (`Size=0`; 346/358 names agree — engine math
+  still open at `KFontSchemeMgr::LoadScheme` `0x1801F5C30`).
+- Did: new `docs/ui/FONT_SCHEME_SYSTEM.md` + `tools/ui_scheme_lookup.py`
+  (`--list/--color/--scan/--census`); census over 160 INIs = 4,595 refs / 125
+  distinct schemes, 0 unknown ids, top `#18 方正黑体15白-阴影灰7` (2,397);
+  engine symbols re-xrefed (`LoadScheme 0x1801F5C30`, `LoadFontList 0x1801F5790`,
+  `LoadFontPathList 0x1801F63D0`); per-state font keys counted (MouseOverFont 904
+  etc.). Renderer gaps recorded: projection (阴影) not drawn, per-state fonts,
+  WndEdit caret/placeholder, `<Dn>` rich-text tags.
+- Evidence: doc §8 + `proof/ui/evidence/scheme/*` (tracked).
