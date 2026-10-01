@@ -144,8 +144,13 @@ this table (plus per-window string tables). Inline color/rich-text markup is
 
 ### 3.5 Fonts (VERIFIED)
 
-- `fontpathlist.ini` → families (`fzht_GBK.ttf`, `fzxk.ttf`, `fzjz.ttf`, ...);
-  files are loose at `<game>\ui\Font\`.
+- `fontpathlist.ini` → 3 families: 方正黑体 `fzht_GBK.ttf`, 行楷 `fzxk.ttf`,
+  剪纸 `fzjz.ttf`; `fontlist.ini` additionally references `FangZhengKaiTi-GBK.ttf`
+  (方正楷体). The install also ships `MSJH.TTF` (Microsoft JhengHei, not referenced
+  by the UI tables) — the complete client UI font set is these **5 loose files**
+  in `<game>\ui\Font\` (verified 2026-09-30; `caption.ini` `FontFile` uses
+  `fzht_GBK.TTF`). Prepared for the renderer by `tools/prepare_ui_fonts.py`
+  (→ `ui-process-app/assets/ui/Font/`).
 - `fontlist.ini` → FontID → `IsMipmap, IsAntiAlias, Size, Border, Vertical,
   Projection, Dpi, Name, File` (36 entries; `Chat=1` marks a chat-only face).
 - `font.ini` → **421 named FontSchemes**:
@@ -405,7 +410,7 @@ Source matrix (**VERIFIED** by experiment):
 |---|---|---|
 | `ui/**` (INI, Lua, images, atlases, scheme tables) | PakV4 (`bin64\PakV4SfxExtract.exe`) | exact path, no leading `\`, case-insensitive |
 | `data/source/other/**/Pss/*.pss` (UI effects) | CDN `.hpkg` | `tools/netcode/extract_hpkg_member.py` |
-| fonts | loose `<game>\ui\Font\*.ttf` | copy directly |
+| fonts | loose `<game>\ui\Font\*.ttf` (5 files) | copy directly — `tools/prepare_ui_fonts.py` → `ui-process-app/assets/ui/Font/` (verifies fontlist/fontpathlist coverage) |
 | loading art/config | loose `<game>\ui\Loading\` | documented in `JX3_MODE_UI_FLOW.md` |
 
 Facts and caveats:

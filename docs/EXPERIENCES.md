@@ -962,3 +962,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   semantics.
 - Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §6; index rows updated in
   `docs/ui/README.md` and `docs/GAME_SYSTEMS_RESEARCH_MAP.md` §4.
+
+### 2026-09-30 — ui — Font coverage: all 5 shipped UI fonts prepared for the renderer
+- Question: "do we have all the fonts the game uses?" Answer: the client UI font
+  set is exactly **5 loose files** in `<game>\ui\Font\` — `fzht_GBK.ttf` (方正黑体),
+  `fzxk.ttf` (行楷), `fzjz.ttf` (剪纸), `FangZhengKaiTi-GBK.ttf` (方正楷体, referenced
+  by `fontlist.ini`), plus `MSJH.TTF` (unreferenced fallback; `fontpathlist.ini`
+  lists only 3 families). All 5 are in the install; **none were in the repo**
+  (`ui-process-app/assets` is git-ignored), so the WPF renderer fell back to
+  Microsoft YaHei UI — only one sibling worktree had them copied ad hoc.
+- Did: new `tools/prepare_ui_fonts.py` copies the shipped `ui/Font/*` into
+  `ui-process-app/assets/ui/Font/` and verifies every `File=` entry of
+  `fontlist.ini`/`fontpathlist.ini`; ui-process-app README/AGENTS and
+  `docs/ui/UI_SYSTEM_REPORT.md` §3.5/§10 updated.
+- Proof: `--fonttest` before `font file not found` vs after
+  `family=FZHei-B01 resolved=True`; numeric fingerprints
+  `proof/ui/battle_hud/fonttest_before.png` sha256 `41a0147f25b7b221` vs
+  `fonttest_after.png` `bd34a77b958bd2b9` (per-cell RGB differs); all 5 copies
+  SHA256-match the install.
+- Note: editor-only fonts (`MovieEditor\ResourcePack`: Daum/tahoma/aridda/…),
+  addon user fonts and the H5 mini-game fonts are separate from the KGUI set.

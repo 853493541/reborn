@@ -28,6 +28,14 @@ extracted INI, writes `ui_process_selftest.txt` next to the exe):
 UiProcessApp.exe --selftest
 ```
 
+Fonts are game assets and are not committed. Copy the shipped `ui/Font` faces
+once per checkout (the renderer falls back to Microsoft YaHei UI without them):
+
+```powershell
+.venv\Scripts\python.exe tools\prepare_ui_fonts.py
+UiProcessApp.exe --fonttest     # expect: family=FZHei-B01 resolved=True
+```
+
 Current selftest: **15/15 windows rendered**, e.g. NewBattleFieldQueue 1,129
 sections / 1,016 elements, BattleFieldMap 367 sections.
 
@@ -74,6 +82,8 @@ and unresolved string ids are hidden instead of shown raw.
   from `docs/netcode/JX3_MODE_UI_INVENTORY.md` (evidence paths included).
 - `assets/ui/Config/**` — extracted KGUI layouts (converted to UTF-8).
 - `assets/ui/Scheme/Case/string.txt` — official UI strings (UTF-8 copy).
+- `assets/ui/Font/**` — the 5 shipped client UI fonts, copied locally by
+  `tools/prepare_ui_fonts.py` (game assets, never committed).
 - `assets/pak/**` — settlement panel (`PVPShowFinal*`) + `string_PVPAcount.txt`.
 
 ## Notes

@@ -13,4 +13,8 @@ the real KGUI layout INIs and official string tables.
   `tools/prepare_ui_text.py`); never point the renderer at the game install directly.
 - Textures come from the git-ignored `proof/minimap/ui` extraction when present;
   missing art is expected and must render as placeholder/wireframe, not invented.
+- Fonts: run `tools/prepare_ui_fonts.py` once per checkout — copies the shipped
+  `ui/Font/*.ttf` into the git-ignored `assets/ui/Font/` and verifies coverage of
+  `fontlist.ini`/`fontpathlist.ini`. Without them the renderer falls back to
+  Microsoft YaHei UI (`--fonttest` shows `font file not found`).
 - Desktop only — no web tooling. Root `AGENTS.md` rules apply.
