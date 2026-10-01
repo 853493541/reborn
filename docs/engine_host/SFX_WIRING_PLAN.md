@@ -29,16 +29,26 @@ KG3D_SFX* KG3D_CreateSFXFromFile(void* owner /*rcx*/, const char* path /*rdx*/,
 - SFX pool verified initialized (`[engine+0x2CF7BB0]` non-null; created by
   `KG3D_Engine::Init`).
 
-**Still missing: driving/attaching the instance.** The created SFX does not render its
-flash yet (bright-pixel A/B: dummy 2010 vs engine 15 at the flash moment). The engine's
-own caller does a follow-up call after creation — `0x76A8E0` (args: `rcx`=owner struct
-from `0x769E00`, `rdx`=SFX, `r8`, `r9`=effect path string, plus 6 stack args; the callee
-hashes the path) — and then releases its local reference (`vt[1]`). Replicating that
-call (or finding the manager's register/play entry) is the next step; the render list is
-processed by the SFX module update at `0xE2B080`.
+**Still missing: driving/attaching the instance.** The engine's tag update (code
+@`0xE3412A`, inside an animation/tag function) does this after creation:
 
-Next: recover `0x76A8E0`'s args (the caller at `0x76E539` shows the setup) and call it
-after creation, then A/B the flash again.
+1. `KG3D_CreateSFXFromFile(...)` → SFX object.
+2. `__RTDynamicCast(sfx, 0, IKG3D_Model, IKG3D_NormalModel, 0)` → the play interface.
+3. `vt[0xD58](model, 1, 1, 0)` → play; `vt[0xD60](model, ...)` → attach.
+
+The shim replicates 2+3 (VCRUNTIME140 `__RTDynamicCast`, descriptors at engine RVAs
+`0x260E0A0`/`0x260EB40`). **Result**: the cast returns the same pointer and the created
+**PSS** object's `vt[0xD58]` is the `return 0` stub — i.e. the play path applies to
+**`.Sfx`-derived** effects (`IKG3D_NormalModel`), not to bare-PSS instances. The `.Sfx`
+path is exactly the one that AVs on this (09-14) engine build — so finishing the
+engine-driven effect likely requires the client-stack host (`CLIENT_STACK_PIVOT.md`) or
+the `.Sfx` parser difference. Evidence: `Skill_20260930_1902*.log`
+(`model=0x… play=0xE5420 rc=0`), shim status line.
+
+Earlier wrong lead (documented so it is not repeated): `0x76E300` looked like a spawn
+(create + follow-up call) but its asserts are `pcszModelPath` / `piModel` /
+`_BakeSubsetTexturesToFileWithIndex` — it is a **model/bake loader**, not the SFX spawn.
+The real SFX-module caller is `0xE3412A` (animation/tag update).
 
 ## Probe results (2026-09-30, `RC_SFX_PROBE=1` + `native/sfx_shim.cpp`)
 

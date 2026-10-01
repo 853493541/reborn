@@ -246,9 +246,11 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
     DWORD64 fault = 0;
     PEXCEPTION_POINTERS ep = NULL;
     char stackDump[1024] = {0};
-    // args mirror the engine's SFX-module caller (code @0xE3412A): a6 = world
-    // matrix, a8 = out slot; r9/a5/a7 zero
-    __try { sfx = create(owner, path, NULL, NULL, NULL, mtx, 0, &outParam); }
+    // args mirror the engine's SFX-module caller (code @0xE3412A): a6 is an
+    // object (the tag context's model/scene pointer), a8 = out slot; r9/a5/a7
+    // zero. The world matrix is applied separately below (tag offsets live in
+    // the tag data, not here).
+    __try { sfx = create(owner, path, NULL, NULL, NULL, scene, 0, &outParam); }
     __except (ep = GetExceptionInformation(),
               exc = ep->ExceptionRecord->ExceptionCode,
               fault = (DWORD64)ep->ExceptionRecord->ExceptionAddress,
@@ -276,6 +278,61 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
               owner, iface, ownerInfo, scene, pool, (int)poolRc, path, mtx[12], mtx[13], mtx[14],
               sfx, outParam, (unsigned)exc,
               (unsigned)(fault > (DWORD64)g_base ? (fault - (DWORD64)g_base) : 0), stackDump);
+    if (sfx != NULL)
+    {
+        __try
+        {
+            void** vt = *(void***)sfx;
+            sprintf_s(g_status + strlen(g_status), sizeof(g_status) - strlen(g_status),
+                      " vt0=0x%X vt121=0x%X vt427=0x%X vt428=0x%X",
+                      (unsigned)((BYTE*)vt[0] - g_base), (unsigned)((BYTE*)vt[121] - g_base),
+                      (unsigned)((BYTE*)vt[427] - g_base), (unsigned)((BYTE*)vt[428] - g_base));
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+
+    // play step (mirrors the engine's tag update @0xE34147): cast the SFX to
+    // IKG3D_NormalModel via __RTDynamicCast, then vt[0xD58](model,1,1,0) and
+    // vt[0xD60](model,...)
+    if (sfx != NULL)
+    {
+        DWORD pexc = 0;
+        void* model = NULL;
+        DWORD64 pfault = 0;
+        __try
+        {
+            HMODULE vc = GetModuleHandleA("VCRUNTIME140.dll");
+            typedef void* (__cdecl *CastFn)(void* inptr, long vfDelta, void* srcType, void* targetType, int isReference);
+            CastFn cast = vc ? (CastFn)GetProcAddress(vc, "__RTDynamicCast") : NULL;
+            if (cast != NULL)
+                model = cast(sfx, 0, (void*)(g_base + 0x260E0A0), (void*)(g_base + 0x260EB40), 0);
+            if (model != NULL)
+            {
+                void** mvt = *(void***)model;
+                typedef long (__fastcall *PlayFn)(void* self, char a, char b, int c);
+                PlayFn play = (PlayFn)mvt[0xD58 / 8];
+                long prc = 0;
+                if (play != NULL) prc = play(model, 1, 1, 0);
+                sprintf_s(g_status + strlen(g_status), sizeof(g_status) - strlen(g_status),
+                          " | model=0x%p mvt0=0x%X play=0x%X rc=0x%08X",
+                          model, (unsigned)((BYTE*)mvt[0] - g_base),
+                          (unsigned)((BYTE*)mvt[0xD58 / 8] - g_base), (unsigned)prc);
+            }
+            else
+            {
+                sprintf_s(g_status + strlen(g_status), sizeof(g_status) - strlen(g_status),
+                          " | model cast failed");
+            }
+        }
+        __except (pexc = GetExceptionCode(),
+                  pfault = (DWORD64)((PEXCEPTION_POINTERS)GetExceptionInformation())->ExceptionRecord->ExceptionAddress,
+                  EXCEPTION_EXECUTE_HANDLER)
+        {
+            sprintf_s(g_status + strlen(g_status), sizeof(g_status) - strlen(g_status),
+                      " | play exc=0x%08X fault_rva=0x%X",
+                      (unsigned)pexc, (unsigned)(pfault > (DWORD64)g_base ? (pfault - (DWORD64)g_base) : 0));
+        }
+    }
     return sfx != NULL ? 0 : 7;
 }
 
