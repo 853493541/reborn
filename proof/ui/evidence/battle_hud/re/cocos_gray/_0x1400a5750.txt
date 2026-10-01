@@ -1,0 +1,33 @@
+# needle: @0x1400a5750
+# string VAs: []
+# xrefs: 1
+
+## xref 0x1400a5750  fn_start 0x1400a5750
+0x01400a5750: sub	rsp, 0x28
+0x01400a5754: mov	rax, qword ptr [rip + 0x9e6a6d]
+0x01400a575b: mov	edx, dword ptr [rax + 0x25c]
+0x01400a5761: call	0x140112e90
+0x01400a5766: mov	eax, 1
+0x01400a576b: add	rsp, 0x28
+0x01400a576f: ret	
+0x01400a5770: push	rbx
+0x01400a5772: sub	rsp, 0x20
+0x01400a5776: movd	xmm1, dword ptr [rip + 0x994f0e]
+0x01400a577e: mov	rbx, rcx
+0x01400a5781: cvtdq2pd	xmm1, xmm1
+0x01400a5785: call	0x1401130f0
+0x01400a578a: movzx	edx, byte ptr [rip + 0x994f03]
+0x01400a5791: mov	rcx, rbx
+0x01400a5794: call	0x140112e90
+0x01400a5799: mov	eax, 2
+0x01400a579e: add	rsp, 0x20
+0x01400a57a2: pop	rbx
+0x01400a57a3: ret	
+0x01400a57a4: int3	
+0x01400a57a5: int3	
+0x01400a57a6: int3	
+0x01400a57a7: int3	
+0x01400a57a8: int3	
+0x01400a57a9: int3	
+0x01400a57aa: int3	
+0x01400a57ab: int3	

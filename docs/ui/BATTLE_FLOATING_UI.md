@@ -87,6 +87,12 @@ complete locally, so a first parity pass can be data-only.
 
 ### 1.2 KGUI screen layer + floating anchors
 
+**Renderer note (2026-09-30):** this build runs the **Cocos control layer**
+(`config/cocos_config.ini [Main] KGUIUseCocos=1`, gray `Percent=5`,
+`IsUseCocos`→1, `base.lua USE_COCOS=true`); `KGUIX64` is the legacy layer with the
+same INI/data semantics and its own font-scheme port in `KGUICocosX64`
+(`docs/ui/FONT_SCHEME_SYSTEM.md` §2.4). Layouts/anchors/schemes below are shared.
+
 Every HUD window is a `WndFrame` in a UI layer (`Lowest*`, `Normal`, `Topmost*`).
 Movable windows persist their anchor through `StorageServer` key `OnlineFrameAnchor`
 (`GetFrameAnchor` / `SetData` + `SetPoint`) and fire a `*_ANCHOR_CHANGED` event;

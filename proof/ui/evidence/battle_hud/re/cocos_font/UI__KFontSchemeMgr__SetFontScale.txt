@@ -1,0 +1,160 @@
+# needle: UI::KFontSchemeMgr::SetFontScale
+# string VAs: ['0x180c2d850']
+# xrefs: 1
+
+## xref 0x1801b48a3  fn_start 0x1801b47a0
+0x01801b47a0: mov	qword ptr [rsp + 0x20], rbx
+0x01801b47a5: push	rdi
+0x01801b47a6: sub	rsp, 0x50
+0x01801b47aa: movaps	xmmword ptr [rsp + 0x40], xmm6
+0x01801b47af: mov	edi, r8d
+0x01801b47b2: movss	xmm6, dword ptr [rip + 0xa9b62a]
+0x01801b47ba: mov	rbx, rcx
+0x01801b47bd: movaps	xmmword ptr [rsp + 0x30], xmm7
+0x01801b47c2: movaps	xmm7, xmm1
+0x01801b47c5: movss	xmm1, dword ptr [rip + 0xa9b587]
+0x01801b47cd: comiss	xmm7, xmm1
+0x01801b47d0: ja	0x1801b4825
+0x01801b47d2: lea	rcx, [rip + 0xa555a7]	; 0x180c09d80 -> "UI::KWndStation::SetUIScale"
+0x01801b47d9: mov	r9d, 0x734
+0x01801b47df: mov	qword ptr [rsp + 0x20], rcx
+0x01801b47e4: lea	r8, [rip + 0xa555fd]	; 0x180c09de8 -> "fScale > FLT_EPSILON"
+0x01801b47eb: mov	ecx, 3
+0x01801b47f0: lea	rdx, [rip + 0xa3fa11]
+0x01801b47f7: call	qword ptr [rip + 0x86f99b]
+0x01801b47fd: xorps	xmm2, xmm2
+0x01801b4800: lea	rdx, [rip + 0xa555b9]
+0x01801b4807: cvtss2sd	xmm2, xmm7
+0x01801b480b: mov	r9d, edi
+0x01801b480e: mov	ecx, 3
+0x01801b4813: movq	r8, xmm2
+0x01801b4818: call	qword ptr [rip + 0x86f97a]
+0x01801b481e: xor	eax, eax
+0x01801b4820: jmp	0x1801b4a32
+0x01801b4825: test	edi, edi
+0x01801b4827: jne	0x1801b4845
+0x01801b4829: movss	xmm0, dword ptr [rcx + 0x6430]
+0x01801b4831: subss	xmm0, xmm7
+0x01801b4835: andps	xmm0, xmmword ptr [rip + 0xa9c394]
+0x01801b483c: comiss	xmm1, xmm0
+0x01801b483f: ja	0x1801b4a2d
+0x01801b4845: movss	xmm0, dword ptr [rcx + 0x6430]
+0x01801b484d: comiss	xmm0, xmm1
+0x01801b4850: mov	qword ptr [rsp + 0x68], rsi
+0x01801b4855: mov	qword ptr [rsp + 0x70], r14
+0x01801b485a: jbe	0x1801b4863
+0x01801b485c: movaps	xmm6, xmm7
+0x01801b485f: divss	xmm6, xmm0
+0x01801b4863: mov	rcx, qword ptr [rip + 0xbe5fee]
+0x01801b486a: movss	xmm0, dword ptr [rip + 0xa9b676]
+0x01801b4872: add	rcx, 0x5790
+0x01801b4879: comiss	xmm7, xmm0
+0x01801b487c: ja	0x1801b488e
+0x01801b487e: movss	xmm1, dword ptr [rip + 0xa9b512]
+0x01801b4886: movaps	xmm0, xmm7
+0x01801b4889: comiss	xmm1, xmm7
+0x01801b488c: ja	0x1801b4891
+0x01801b488e: movaps	xmm1, xmm0
+0x01801b4891: mov	rdx, qword ptr [rcx + 0x28]
+0x01801b4895: movss	dword ptr [rcx + 0x48], xmm1
+0x01801b489a: call	0x18024dd90
+0x01801b489f: test	eax, eax
+0x01801b48a1: jne	0x1801b48ce
+0x01801b48a3: lea	rax, [rip + 0xa78fa6]	; 0x180c2d850 -> "UI::KFontSchemeMgr::SetFontScale"
+0x01801b48aa: mov	r9d, 0x143
+0x01801b48b0: lea	r8, [rip + 0xa3f9d9]	; 0x180bf4290 -> "nRetCode"
+0x01801b48b7: mov	qword ptr [rsp + 0x20], rax
+0x01801b48bc: lea	rdx, [rip + 0xa3f945]
+0x01801b48c3: mov	ecx, 3
+0x01801b48c8: call	qword ptr [rip + 0x86f8ca]
+0x01801b48ce: movss	dword ptr [rbx + 0x6430], xmm7
+0x01801b48d6: mov	rdi, rbx
+0x01801b48d9: mov	esi, 9
+0x01801b48de: nop	
+0x01801b48e0: mov	rax, qword ptr [rbx]
+0x01801b48e3: movaps	xmm2, xmm6
+0x01801b48e6: movaps	xmm1, xmm6
+0x01801b48e9: mov	rcx, rdi
+0x01801b48ec: call	qword ptr [rax + 0x268]
+0x01801b48f2: add	rdi, 0x9f0
+0x01801b48f9: lea	rbx, [rbx + 0x9f0]
+0x01801b4900: sub	rsi, 1
+0x01801b4904: jne	0x1801b48e0
+0x01801b4906: call	0x180266a90
+0x01801b490b: mov	rcx, rax
+0x01801b490e: movaps	xmm1, xmm6
+0x01801b4911: call	0x1802678a0
+0x01801b4916: mov	rdi, qword ptr [rip + 0xbe5f3b]
+0x01801b491d: mov	rsi, qword ptr [rdi + 0x5d88]
+0x01801b4924: mov	rcx, rsi
+0x01801b4927: call	0x180700b90
+0x01801b492c: lea	rcx, [rdi + 0x5d30]
+0x01801b4933: mov	r14d, eax
+0x01801b4936: call	0x180209bd0
+0x01801b493b: test	eax, eax
+0x01801b493d: jne	0x1801b496f
+0x01801b493f: lea	rax, [rip + 0xa69f4a]	; 0x180c1e890 -> "UI::KScriptMgr::CallGlobalFunc"
+0x01801b4946: mov	r9d, 0x85e
+0x01801b494c: lea	r8, [rip + 0xa3f93d]	; 0x180bf4290 -> "nRetCode"
+0x01801b4953: mov	qword ptr [rsp + 0x20], rax
+0x01801b4958: lea	rdx, [rip + 0xa3f8a9]
+0x01801b495f: mov	ecx, 3
+0x01801b4964: call	qword ptr [rip + 0x86f82e]
+0x01801b496a: jmp	0x1801b49f8
+0x01801b496f: mov	rcx, rsi
+0x01801b4972: mov	qword ptr [rsp + 0x60], rbp
+0x01801b4977: call	0x180700b90
+0x01801b497c: mov	rbx, qword ptr [rdi + 0x5d88]
+0x01801b4983: mov	ebp, eax
+0x01801b4985: test	rbx, rbx
+0x01801b4988: je	0x1801b49f3
+0x01801b498a: lea	r8, [rip + 0xa5546f]	; 0x180c09e00 -> "ResizeUI"
+0x01801b4991: mov	edx, 0xffffd8ee
+0x01801b4996: mov	rcx, rbx
+0x01801b4999: call	0x180700a90
+0x01801b499e: mov	edx, 0xffffffff
+0x01801b49a3: mov	rcx, rbx
+0x01801b49a6: call	0x180701cb0
+0x01801b49ab: cmp	eax, 6
+0x01801b49ae: jne	0x1801b49f3
+0x01801b49b0: mov	rcx, qword ptr [rdi + 0x5d88]
+0x01801b49b7: mov	r9d, ebp
+0x01801b49ba: xor	r8d, r8d
+0x01801b49bd: xor	edx, edx
+0x01801b49bf: call	0x180209cc0
+0x01801b49c4: test	eax, eax
+0x01801b49c6: jne	0x1801b49f3
+0x01801b49c8: lea	rax, [rip + 0xa69a59]	; 0x180c1e428 -> "UI::KScriptMgr::Call"
+0x01801b49cf: mov	r9d, 0x3f8
+0x01801b49d5: lea	r8, [rip + 0xa3f8b4]	; 0x180bf4290 -> "nRetCode"
+0x01801b49dc: mov	qword ptr [rsp + 0x20], rax
+0x01801b49e1: lea	rdx, [rip + 0xa3f820]
+0x01801b49e8: mov	ecx, 3
+0x01801b49ed: call	qword ptr [rip + 0x86f7a5]
+0x01801b49f3: mov	rbp, qword ptr [rsp + 0x60]
+0x01801b49f8: mov	edx, r14d
+0x01801b49fb: mov	rcx, rsi
+0x01801b49fe: call	0x180701900
+0x01801b4a03: mov	rcx, qword ptr [rip + 0xbe5e4e]
+0x01801b4a0a: lea	rdx, [rip + 0xa5539f]	; 0x180c09db0 -> "UI_SCALED"
+0x01801b4a11: add	rcx, 0x5d30
+0x01801b4a18: xor	r9d, r9d
+0x01801b4a1b: xor	r8d, r8d
+0x01801b4a1e: call	0x18020cf30
+0x01801b4a23: mov	r14, qword ptr [rsp + 0x70]
+0x01801b4a28: mov	rsi, qword ptr [rsp + 0x68]
+0x01801b4a2d: mov	eax, 1
+0x01801b4a32: mov	rbx, qword ptr [rsp + 0x78]
+0x01801b4a37: movaps	xmm6, xmmword ptr [rsp + 0x40]
+0x01801b4a3c: movaps	xmm7, xmmword ptr [rsp + 0x30]
+0x01801b4a41: add	rsp, 0x50
+0x01801b4a45: pop	rdi
+0x01801b4a46: ret	
+0x01801b4a47: int3	
+0x01801b4a48: int3	
+0x01801b4a49: int3	
+0x01801b4a4a: int3	
+0x01801b4a4b: int3	
+0x01801b4a4c: int3	
+0x01801b4a4d: int3	
+0x01801b4a4e: int3	

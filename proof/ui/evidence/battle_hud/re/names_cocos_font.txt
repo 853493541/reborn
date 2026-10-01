@@ -1,0 +1,4 @@
+UI::KFontSchemeMgr::LoadScheme
+UI::KFontSchemeMgr::LoadFont
+UI::KFontSchemeMgr::SetFontScale
+UI::KFontSchemeMgr::LoadFontList

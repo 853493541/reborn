@@ -1,0 +1,311 @@
+# needle: @0x1803a1d00
+# string VAs: []
+# xrefs: 1
+
+## xref 0x1803a1d00  fn_start 0x1803a19c0
+0x01803a19c0: mov	qword ptr [rsp + 0x10], rbx
+0x01803a19c5: mov	qword ptr [rsp + 0x18], rsi
+0x01803a19ca: push	rbp
+0x01803a19cb: push	rdi
+0x01803a19cc: push	r14
+0x01803a19ce: lea	rbp, [rsp - 0x47]
+0x01803a19d3: sub	rsp, 0xa0
+0x01803a19da: mov	rax, qword ptr [rip + 0x9ad727]
+0x01803a19e1: xor	rax, rsp
+0x01803a19e4: mov	qword ptr [rbp + 0x3f], rax
+0x01803a19e8: mov	rbx, rcx
+0x01803a19eb: xor	r8d, r8d
+0x01803a19ee: lea	edx, [r8 + 1]
+0x01803a19f2: call	0x1804a23a0
+0x01803a19f7: mov	rsi, rax
+0x01803a19fa: mov	rcx, rbx
+0x01803a19fd: test	rax, rax
+0x01803a1a00: jne	0x1803a1a18
+0x01803a1a02: xor	r8d, r8d
+0x01803a1a05: lea	rdx, [rip + 0x8ac16c]	; 0x180c4db78 -> "invalid 'self' in function 'ccui.KGUIText:SetText'"
+0x01803a1a0c: call	0x1804a2910
+0x01803a1a11: xor	eax, eax
+0x01803a1a13: jmp	0x1803a1cdc
+0x01803a1a18: call	0x180700b90
+0x01803a1a1d: dec	eax
+0x01803a1a1f: mov	rcx, rbx
+0x01803a1a22: cmp	eax, 1
+0x01803a1a25: je	0x1803a1b5a
+0x01803a1a2b: cmp	eax, 2
+0x01803a1a2e: je	0x1803a1a5d
+0x01803a1a30: mov	dword ptr [rsp + 0x28], 2
+0x01803a1a38: mov	dword ptr [rsp + 0x20], 1
+0x01803a1a40: mov	r9d, eax
+0x01803a1a43: lea	r8, [rip + 0x8ac116]	; 0x180c4db60 -> "ccui.KGUIText:SetText"
+0x01803a1a4a: lea	rdx, [rip + 0x8ac357]
+0x01803a1a51: call	0x1807026d0
+0x01803a1a56: xor	eax, eax
+0x01803a1a58: jmp	0x1803a1cdc
+0x01803a1a5d: mov	edx, 3
+0x01803a1a62: call	0x180701a50
+0x01803a1a67: test	eax, eax
+0x01803a1a69: setne	r14b
+0x01803a1a6d: xor	edi, edi
+0x01803a1a6f: mov	qword ptr [rbp - 0x29], rdi
+0x01803a1a73: lea	r8, [rbp - 0x29]
+0x01803a1a77: lea	edx, [rdi + 2]
+0x01803a1a7a: mov	rcx, rbx
+0x01803a1a7d: call	0x180701b00
+0x01803a1a82: test	rax, rax
+0x01803a1a85: jne	0x1803a1a9d
+0x01803a1a87: lea	rdx, [rip + 0x8ac2e2]	; 0x180c4dd70 -> "ccui.KGUIText:SetText invalid text at argument 2"
+0x01803a1a8e: mov	rcx, rbx
+0x01803a1a91: call	0x1807026d0
+0x01803a1a96: xor	eax, eax
+0x01803a1a98: jmp	0x1803a1cdc
+0x01803a1a9d: mov	qword ptr [rbp - 0x11], rdi
+0x01803a1aa1: mov	qword ptr [rbp - 9], 0xf
+0x01803a1aa9: mov	byte ptr [rbp - 0x21], dil
+0x01803a1aad: mov	r8, qword ptr [rbp - 0x29]
+0x01803a1ab1: mov	rdx, rax
+0x01803a1ab4: lea	rcx, [rbp - 0x21]
+0x01803a1ab8: call	0x1800f0d00
+0x01803a1abd: nop	
+0x01803a1abe: mov	rax, qword ptr [rip + 0x9f8d93]
+0x01803a1ac5: test	rax, rax
+0x01803a1ac8: je	0x1803a1af3
+0x01803a1aca: mov	rax, qword ptr [rax + 0xd8b8]
+0x01803a1ad1: test	rax, rax
+0x01803a1ad4: je	0x1803a1af3
+0x01803a1ad6: cmp	dword ptr [rax + 0x218], 0
+0x01803a1add: je	0x1803a1ae7
+0x01803a1adf: mov	r8d, 0xfde9
+0x01803a1ae5: jmp	0x1803a1af6
+0x01803a1ae7: mov	r8d, dword ptr [rax + 0x918]
+0x01803a1aee: test	r8d, r8d
+0x01803a1af1: jne	0x1803a1af6
+0x01803a1af3: mov	r8d, edi
+0x01803a1af6: lea	rdx, [rbp - 0x21]
+0x01803a1afa: lea	rcx, [rbp + 0x1f]
+0x01803a1afe: call	0x180345d10
+0x01803a1b03: nop	
+0x01803a1b04: lea	rcx, [rbp - 0x21]
+0x01803a1b08: call	0x1800f1190
+0x01803a1b0d: test	r14b, r14b
+0x01803a1b10: je	0x1803a1b44
+0x01803a1b12: call	0x180338020
+0x01803a1b17: lea	r8, [rbp + 0x1f]
+0x01803a1b1b: lea	rdx, [rbp - 1]
+0x01803a1b1f: mov	rcx, qword ptr [rip + 0x9fb1b2]
+0x01803a1b26: call	0x180337ac0
+0x01803a1b2b: nop	
+0x01803a1b2c: lea	rdx, [rbp - 1]
+0x01803a1b30: mov	rcx, rsi
+0x01803a1b33: call	0x180349e00
+0x01803a1b38: nop	
+0x01803a1b39: lea	rcx, [rbp - 1]
+0x01803a1b3d: call	0x1800f1190
+0x01803a1b42: jmp	0x1803a1b51
+0x01803a1b44: lea	rdx, [rbp + 0x1f]
+0x01803a1b48: mov	rcx, rsi
+0x01803a1b4b: call	0x180349e00
+0x01803a1b50: nop	
+0x01803a1b51: lea	rcx, [rbp + 0x1f]
+0x01803a1b55: jmp	0x1803a1cc5
+0x01803a1b5a: mov	edx, 2
+0x01803a1b5f: call	0x180701cb0
+0x01803a1b64: xor	edi, edi
+0x01803a1b66: cmp	eax, 3
+0x01803a1b69: jne	0x1803a1c2b
+0x01803a1b6f: mov	qword ptr [rbp - 0x29], rdi
+0x01803a1b73: lea	r8, [rbp - 0x29]
+0x01803a1b77: lea	edx, [rdi + 2]
+0x01803a1b7a: mov	rcx, rbx
+0x01803a1b7d: call	0x180701b00
+0x01803a1b82: mov	qword ptr [rbp - 0x11], rdi
+0x01803a1b86: mov	qword ptr [rbp - 9], 0xf
+0x01803a1b8e: mov	byte ptr [rbp - 0x21], dil
+0x01803a1b92: lea	rcx, [rbp - 0x21]
+0x01803a1b96: test	rax, rax
+0x01803a1b99: je	0x1803a1c09
+0x01803a1b9b: mov	r8, qword ptr [rbp - 0x29]
+0x01803a1b9f: mov	rdx, rax
+0x01803a1ba2: call	0x1800f0d00
+0x01803a1ba7: nop	
+0x01803a1ba8: mov	rax, qword ptr [rip + 0x9f8ca9]
+0x01803a1baf: test	rax, rax
+0x01803a1bb2: je	0x1803a1bdc
+0x01803a1bb4: mov	rax, qword ptr [rax + 0xd8b8]
+0x01803a1bbb: test	rax, rax
+0x01803a1bbe: je	0x1803a1bdc
+0x01803a1bc0: cmp	dword ptr [rax + 0x218], edi
+0x01803a1bc6: je	0x1803a1bd0
+0x01803a1bc8: mov	r8d, 0xfde9
+0x01803a1bce: jmp	0x1803a1bdf
+0x01803a1bd0: mov	r8d, dword ptr [rax + 0x918]
+0x01803a1bd7: test	r8d, r8d
+0x01803a1bda: jne	0x1803a1bdf
+0x01803a1bdc: mov	r8d, edi
+0x01803a1bdf: lea	rdx, [rbp - 0x21]
+0x01803a1be3: lea	rcx, [rbp - 1]
+0x01803a1be7: call	0x180345d10
+0x01803a1bec: nop	
+0x01803a1bed: lea	rdx, [rbp - 1]
+0x01803a1bf1: mov	rcx, rsi
+0x01803a1bf4: call	0x180349e00
+0x01803a1bf9: nop	
+0x01803a1bfa: lea	rcx, [rbp - 1]
+0x01803a1bfe: call	0x1800f1190
+0x01803a1c03: nop	
+0x01803a1c04: jmp	0x1803a1cc1
+0x01803a1c09: xor	r8d, r8d
+0x01803a1c0c: lea	rdx, [rip + 0x8525ad]
+0x01803a1c13: call	0x1800f0d00
+0x01803a1c18: nop	
+0x01803a1c19: lea	rdx, [rbp - 0x21]
+0x01803a1c1d: mov	rcx, rsi
+0x01803a1c20: call	0x180349e00
+0x01803a1c25: nop	
+0x01803a1c26: jmp	0x1803a1cc1
+0x01803a1c2b: mov	qword ptr [rbp - 0x11], rdi
+0x01803a1c2f: mov	qword ptr [rbp - 9], 0xf
+0x01803a1c37: mov	byte ptr [rbp - 0x21], dil
+0x01803a1c3b: lea	r9, [rip + 0x8abf1e]	; 0x180c4db60 -> "ccui.KGUIText:SetText"
+0x01803a1c42: lea	r8, [rbp - 0x21]
+0x01803a1c46: mov	edx, 2
+0x01803a1c4b: mov	rcx, rbx
+0x01803a1c4e: call	0x18049f4f0
+0x01803a1c53: test	al, al
+0x01803a1c55: jne	0x1803a1c64
+0x01803a1c57: lea	rcx, [rbp - 0x21]
+0x01803a1c5b: call	0x1800f1190
+0x01803a1c60: xor	eax, eax
+0x01803a1c62: jmp	0x1803a1cdc
+0x01803a1c64: mov	rax, qword ptr [rip + 0x9f8bed]
+0x01803a1c6b: test	rax, rax
+0x01803a1c6e: je	0x1803a1c99
+0x01803a1c70: mov	rax, qword ptr [rax + 0xd8b8]
+0x01803a1c77: test	rax, rax
+0x01803a1c7a: je	0x1803a1c99
+0x01803a1c7c: cmp	dword ptr [rax + 0x218], 0
+0x01803a1c83: je	0x1803a1c8d
+0x01803a1c85: mov	r8d, 0xfde9
+0x01803a1c8b: jmp	0x1803a1c9c
+0x01803a1c8d: mov	r8d, dword ptr [rax + 0x918]
+0x01803a1c94: test	r8d, r8d
+0x01803a1c97: jne	0x1803a1c9c
+0x01803a1c99: mov	r8d, edi
+0x01803a1c9c: lea	rdx, [rbp - 0x21]
+0x01803a1ca0: lea	rcx, [rbp - 1]
+0x01803a1ca4: call	0x180345d10
+0x01803a1ca9: nop	
+0x01803a1caa: lea	rdx, [rbp - 1]
+0x01803a1cae: mov	rcx, rsi
+0x01803a1cb1: call	0x180349e00
+0x01803a1cb6: nop	
+0x01803a1cb7: lea	rcx, [rbp - 1]
+0x01803a1cbb: call	0x1800f1190
+0x01803a1cc0: nop	
+0x01803a1cc1: lea	rcx, [rbp - 0x21]
+0x01803a1cc5: call	0x1800f1190
+0x01803a1cca: mov	edx, 1
+0x01803a1ccf: mov	rcx, rbx
+0x01803a1cd2: call	0x180701900
+0x01803a1cd7: mov	eax, 1
+0x01803a1cdc: mov	rcx, qword ptr [rbp + 0x3f]
+0x01803a1ce0: xor	rcx, rsp
+0x01803a1ce3: call	0x1809ecd40
+0x01803a1ce8: lea	r11, [rsp + 0xa0]
+0x01803a1cf0: mov	rbx, qword ptr [r11 + 0x28]
+0x01803a1cf4: mov	rsi, qword ptr [r11 + 0x30]
+0x01803a1cf8: mov	rsp, r11
+0x01803a1cfb: pop	r14
+0x01803a1cfd: pop	rdi
+0x01803a1cfe: pop	rbp
+0x01803a1cff: ret	
+0x01803a1d00: mov	qword ptr [rsp + 0x10], rbx
+0x01803a1d05: mov	qword ptr [rsp + 0x18], rsi
+0x01803a1d0a: push	rdi
+0x01803a1d0b: sub	rsp, 0x80
+0x01803a1d12: mov	rax, qword ptr [rip + 0x9ad3ef]
+0x01803a1d19: xor	rax, rsp
+0x01803a1d1c: mov	qword ptr [rsp + 0x70], rax
+0x01803a1d21: mov	rbx, rcx
+0x01803a1d24: xor	r8d, r8d
+0x01803a1d27: lea	edx, [r8 + 1]
+0x01803a1d2b: call	0x1804a23a0
+0x01803a1d30: mov	rsi, rax
+0x01803a1d33: mov	rcx, rbx
+0x01803a1d36: test	rax, rax
+0x01803a1d39: jne	0x1803a1d51
+0x01803a1d3b: xor	r8d, r8d
+0x01803a1d3e: lea	rdx, [rip + 0x8abff3]	; 0x180c4dd38 -> "invalid 'self' in function 'ccui.KGUIText:SetString'"
+0x01803a1d45: call	0x1804a2910
+0x01803a1d4a: xor	eax, eax
+0x01803a1d4c: jmp	0x1803a1e32
+0x01803a1d51: call	0x180700b90
+0x01803a1d56: dec	eax
+0x01803a1d58: cmp	eax, 1
+0x01803a1d5b: je	0x1803a1d85
+0x01803a1d5d: mov	dword ptr [rsp + 0x20], 1
+0x01803a1d65: mov	r9d, eax
+0x01803a1d68: lea	r8, [rip + 0x8abfb1]	; 0x180c4dd20 -> "ccui.KGUIText:SetString"
+0x01803a1d6f: lea	rdx, [rip + 0x8a96b2]
+0x01803a1d76: mov	rcx, rbx
+0x01803a1d79: call	0x1807026d0
+0x01803a1d7e: xor	eax, eax
+0x01803a1d80: jmp	0x1803a1e32
+0x01803a1d85: xor	edi, edi
+0x01803a1d87: mov	qword ptr [rsp + 0x40], rdi
+0x01803a1d8c: mov	qword ptr [rsp + 0x48], 0xf
+0x01803a1d95: mov	byte ptr [rsp + 0x30], dil
+0x01803a1d9a: lea	r9, [rip + 0x8abf7f]	; 0x180c4dd20 -> "ccui.KGUIText:SetString"
+0x01803a1da1: lea	r8, [rsp + 0x30]
+0x01803a1da6: lea	edx, [rdi + 2]
+0x01803a1da9: mov	rcx, rbx
+0x01803a1dac: call	0x18049f4f0
+0x01803a1db1: test	al, al
+0x01803a1db3: je	0x1803a1e26
+0x01803a1db5: mov	rax, qword ptr [rip + 0x9f8a9c]
+0x01803a1dbc: test	rax, rax
+0x01803a1dbf: je	0x1803a1de9
+0x01803a1dc1: mov	rax, qword ptr [rax + 0xd8b8]
+0x01803a1dc8: test	rax, rax
+0x01803a1dcb: je	0x1803a1de9
+0x01803a1dcd: cmp	dword ptr [rax + 0x218], edi
+0x01803a1dd3: je	0x1803a1ddd
+0x01803a1dd5: mov	r8d, 0xfde9
+0x01803a1ddb: jmp	0x1803a1dec
+0x01803a1ddd: mov	r8d, dword ptr [rax + 0x918]
+0x01803a1de4: test	r8d, r8d
+0x01803a1de7: jne	0x1803a1dec
+0x01803a1de9: mov	r8d, edi
+0x01803a1dec: lea	rdx, [rsp + 0x30]
+0x01803a1df1: lea	rcx, [rsp + 0x50]
+0x01803a1df6: call	0x180345d10
+0x01803a1dfb: nop	
+0x01803a1dfc: lea	rdx, [rsp + 0x50]
+0x01803a1e01: mov	rcx, rsi
+0x01803a1e04: call	0x180349e00
+0x01803a1e09: nop	
+0x01803a1e0a: lea	rcx, [rsp + 0x50]
+0x01803a1e0f: call	0x1800f1190
+0x01803a1e14: mov	edx, 1
+0x01803a1e19: mov	rcx, rbx
+0x01803a1e1c: call	0x180701900
+0x01803a1e21: mov	edi, 1
+0x01803a1e26: lea	rcx, [rsp + 0x30]
+0x01803a1e2b: call	0x1800f1190
+0x01803a1e30: mov	eax, edi
+0x01803a1e32: mov	rcx, qword ptr [rsp + 0x70]
+0x01803a1e37: xor	rcx, rsp
+0x01803a1e3a: call	0x1809ecd40
+0x01803a1e3f: lea	r11, [rsp + 0x80]
+0x01803a1e47: mov	rbx, qword ptr [r11 + 0x18]
+0x01803a1e4b: mov	rsi, qword ptr [r11 + 0x20]
+0x01803a1e4f: mov	rsp, r11
+0x01803a1e52: pop	rdi
+0x01803a1e53: ret	
+0x01803a1e54: int3	
+0x01803a1e55: int3	
+0x01803a1e56: int3	
+0x01803a1e57: int3	
+0x01803a1e58: int3	
+0x01803a1e59: int3	
+0x01803a1e5a: int3	
+0x01803a1e5b: int3	

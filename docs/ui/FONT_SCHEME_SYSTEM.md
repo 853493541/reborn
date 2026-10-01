@@ -228,15 +228,29 @@ keys in lowercase (`richtext`, `multiline`, `halign`, `showall`, `reversemask`,
 `shaptexture`, …), i.e. the runtime decoder is case-insensitive. Evidence:
 `proof/ui/evidence/battle_hud/re/cocos_richtext/`.
 
-**Which control DLL is live (decoded 2026-09-30):** the Cocos layer is a
-**gray-release feature `KGUIUseCocos`** in `JX3ClientX64.exe`
-(`KLoadGrayFeatureConfig` `0x140099820`: reads `[KGUIUseCocos] Percent` (default 0,
-clamped 0-100), `Override` from per-user settings, `IntraNet`; the client also has
-`GetCocosGrayInfo`/`IsUseCocos` Lua bindings and logs
-`Gray feature: name=KGUIUseCocos, percent=%d, override=%d, …`). The live
-`config/gray_config.ini` contains an **empty `[KGUIUseCocos]` section** → Percent 0
-→ the Cocos UI is **not active on this install**; the running text/control renderer
-is **KGUIX64**. Dumps: `proof/ui/evidence/battle_hud/re/cocos_gray/`.
+**Which control DLL is live (final, 2026-09-30): the Cocos layer.**
+The Cocos UI is a gray-release feature `KGUIUseCocos` in `JX3ClientX64.exe`
+(`KLoadGrayFeatureConfig` `0x140099820`: `[KGUIUseCocos] Percent` default 0 clamped
+0-100, `Override` from user settings, `IntraNet`; Lua bindings `IsUseCocos` /
+`GetCocosGrayInfo` registered via the config binding table at `0x140A3E210`), and
+the **client module loader uses `%s%s.dll` with module name `KGUICocos`**
+(module list next to `JX3UI`, `JX3Represent`, `KG3DEngineAdapter`).
+
+Live install evidence (read 2026-09-30):
+- `config/cocos_config.ini` → `[Main] KGUIUseCocos=1` (explicit override),
+- `config/gray_config.ini` → `[KGUIUseCocos] Percent=5` (rewritten by the client
+  2026-09-27; the earlier "empty section" read was stale),
+- `config/gray_usersettings.ini` → `[Environment] IntraNet=0`,
+- the bound `IsUseCocos` implementation (`0x1400A5750`) returns a **constant 1**,
+- `ui/Script/base.lua` sets `USE_COCOS = IsUseCocos()` (→ true) and branches on it.
+
+⇒ the running control/text renderer is **KGUICocosX64**; `KGUIX64` is the legacy
+renderer still shipped. **`KGUICocosX64` carries its own 1:1 port of the font
+scheme manager** (`UI::KFontSchemeMgr::LoadScheme/LoadFont/SetFontScale/...`,
+same `SchemeElemFont` keys, 36 slots, `size=(slot+mgr+0x4C)*mgr+0x48`,
+`GetLocaleFontListPath`) — the KGUIX64 RVAs in §3 document the shared semantics;
+Cocos dumps: `proof/ui/evidence/battle_hud/re/cocos_font/`. Dumps for the gray
+gate: `re/cocos_gray/`.
 
 The producer of the markup is the represent layer:
 `OnReloadTable` (`JX3RepresentX64.dll 0x18031FE40`) builds
@@ -265,10 +279,12 @@ form; everything else is stripped for pure-text consumers. Renderer-side handlin
 of `font=`/`r/g/b` attributes remains part of the un-isolated parser.
 Dumps: `re/kgui_puretext/`. The `<Dn>` tags (15×) remain undecoded (**unknown**).
 
-## 3. Engine side (KGUIX64.dll)
+## 3. Engine side (KGUIX64.dll; KGUICocosX64 is a parallel port)
 
 Symbols and RVAs (committed annotated dumps in
-`proof/ui/evidence/battle_hud/re/kgui_font/`; xref re-run 2026-09-30):
+`proof/ui/evidence/battle_hud/re/kgui_font/`; xref re-run 2026-09-30).
+The live Cocos layer ships the same manager (dumps `re/cocos_font/`); the table
+below is the legacy KGUIX64 instance of the shared code:
 
 | symbol | RVA / offset | role |
 |---|---|---|
