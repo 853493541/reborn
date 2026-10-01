@@ -385,6 +385,16 @@ before/after; if confirmed, find an engine redirect or register a documented dev
 - Evidence: `AGENTS.md` §2.4; `client/AGENTS.md`; this commit (local).
 - Outcome: solved.
 
+### 2026-09-30 — camera — cam-wwdrag branch verification (pre-merge)
+- Did: verified `agent/cam-wwdrag` @ `0d958f8` (8 commits, clean worktree): rebuilt its
+  camera smoke from a detached temp worktree — **ALL PASS**, including the new
+  sprint-drag constant-length regression (worst rel err **0.0115**, matches the report).
+  `git merge-tree main agent/cam-wwdrag` → exit 0: **conflict-free merge** (main's newer
+  guard-rule docs commit is picked up automatically).
+- Evidence: temp-worktree smoke output; merge-tree preflight; report's live logs
+  `reborn_20260930_1519/1524/1619/1646`.
+- Outcome: verified; awaiting the merge decision (no merge performed).
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
