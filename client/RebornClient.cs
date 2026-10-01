@@ -801,7 +801,7 @@ internal static class RebornClient
         float qgLeapSpeedXY = 0f;         // the move's forward speed (along the facing)
         bool qgSpacePressed = false;
         bool qgDemo = Env("RC_QG_DEMO", "0") == "1";
-        bool qgDemoWw = false, qgDemoS1 = false, qgDemoS2 = false, qgDemoS3 = false,
+        bool qgDemoWw = false, qgDemoS1 = false, qgDemoS2 = false, qgDemoS3 = false, qgDemoRel = false,
              qgDemoSh1 = false, qgDemoS4 = false, qgDemoS5 = false, qgDemoSh2 = false,
              qgDemoS6 = false, qgDemoS7 = false;
         bool qgShiftPressed = false;
@@ -822,6 +822,14 @@ internal static class RebornClient
                 QinggongData.MoveSkillIds[idx] + ", SkillMove " + QinggongData.MoveSkillMoveIds[idx] +
                 ", jumpCount " + QinggongData.MoveJumpCount[idx] + ", " +
                 QinggongData.MoveXY[idx].Length + " frames)");
+        };
+        // 松开W登顶 (Action.tab 5, <MOVEFORWARD;1>): releasing W ends the
+        // 大轻功 -- the chain stops and the character falls/lands.
+        Action qgDengding = delegate()
+        {
+            if (qgMove < 0) return;
+            Log("wh 松开W登顶 (Action 5): the 大轻功 ends -> fall");
+            qgMove = -1; qgChess = false; qgMoveRunning = false; qgEnded = false;
         };
         bool userShot = false, forceDiag = false;
         long f9At = 0;
@@ -1092,7 +1100,12 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) { pW = false; lastWUp = Environment.TickCount; }
+            if (e.KeyCode == Keys.W)
+            {
+                pW = false;
+                lastWUp = Environment.TickCount;
+                qgDengding();
+            }
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -1831,6 +1844,9 @@ internal static class RebornClient
                 if (!qgDemoS5 && now >= 14300) { qgDemoS5 = true; qgSpacePressed = true; }
                 if (!qgDemoS6 && now >= 20000) { qgDemoS6 = true; qgSpacePressed = true; }
                 if (!qgDemoS7 && now >= 21500) { qgDemoS7 = true; qgSpacePressed = true; }
+                long qgRelMs = 0;
+                long.TryParse(Env("RC_QG_DEMO_RELEASE_MS", "0"), out qgRelMs);
+                if (qgRelMs > 0 && !qgDemoRel && now >= qgRelMs) { qgDemoRel = true; qgDengding(); Log("qgdemo: release W (\u767b\u9876)"); }
                 if (!qgDemoSh2 && now >= 23000) { qgDemoSh2 = true; qgShiftPressed = true; Log("qgdemo: shift (\u516d\u6bb5)"); }
             }
             // ---- 万花大轻功: the 疾跑段 / the SkillMove chain ----
