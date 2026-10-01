@@ -797,6 +797,7 @@ internal static class RebornClient
         bool qgChess = false;             // 棋弈 mode (Shift at 一段)
         bool qgEnded = false;             // 四段 ended: Space inert until the ground
         float qgT = 0f;                   // the SkillMove elapsed seconds
+        bool qgMoveRunning = false;       // the SkillMove frames are playing (IgnoreGravity)
         float qgLeapSpeedXY = 0f;         // the move's forward speed (along the facing)
         bool qgSpacePressed = false;
         bool qgDemo = Env("RC_QG_DEMO", "0") == "1";
@@ -815,6 +816,7 @@ internal static class RebornClient
         {
             qgMove = idx;
             qgT = 0f;
+            qgMoveRunning = true;
             grounded = false;
             Log("wh 点墨江山·" + QinggongData.MoveNames[idx] + " (skill " +
                 QinggongData.MoveSkillIds[idx] + ", SkillMove " + QinggongData.MoveSkillMoveIds[idx] +
@@ -1881,7 +1883,7 @@ internal static class RebornClient
             }
             else qgRun = false;
             // the chain: the SkillMove (IgnoreGravity; the last velocity keeps at the end)
-            if (qgMove >= 0)
+            if (qgMove >= 0 && qgMoveRunning)
             {
                 qgT += dt;
                 int qf = (int)(qgT * 15f);
@@ -1890,19 +1892,23 @@ internal static class RebornClient
                     vy = QinggongData.MoveZ[qgMove][qf] * 15f;
                     qgLeapSpeedXY = QinggongData.MoveXY[qgMove][qf] * 15f;
                 }
-                else if (qgMove == 6)
+                else
                 {
-                    qgStartMove(1);              // 切入 -> the 棋弈 一段
+                    // the move ended: the velocity keeps (EndButKeepVelocity) and
+                    // the normal gravity resumes -> the character FALLS between the
+                    // base stages (the 棋弈 keeps floating, see the gravity guard)
+                    qgMoveRunning = false;
+                    if (qgMove == 6)
+                        qgStartMove(1);          // 切入 -> the 棋弈 一段
+                    else if (qgMove == 4 && !qgChess)
+                    {
+                        Log("wh 四段 end -> fall");
+                        qgMove = -1; qgEnded = true;
+                    }
                 }
-                else if (qgMove == 4 && !qgChess)
-                {
-                    Log("wh 四段 end -> fall");
-                    qgMove = -1; qgEnded = true;
-                }
-                // else: the drift (the last velocity stays; Space advances)
             }
             // the chain's forward (the SkillMove XY along the facing)
-            if (!grounded && qgMove >= 0 && qgLeapSpeedXY > 0f)
+            if (!grounded && qgLeapSpeedXY > 0f)
             {
                 float qstep = qgLeapSpeedXY * dt;
                 px += (float)Math.Sin(curYaw) * qstep;
@@ -2049,18 +2055,23 @@ internal static class RebornClient
             if (!grounded)
             {
                 float vyBefore = vy;
-                if (qgMove < 0) vy -= curJumpGravity * dt;   // the chain = IgnoreGravity
+                if (!qgMoveRunning && !qgChess) vy -= curJumpGravity * dt;   // the move frames = IgnoreGravity; the 棋弈 floats
                 py += vy * dt;
                 // apex sample: the model transform must have followed the physics
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
                     "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
-                if (py <= ground && qgMove < 0)
+                if (py <= ground && !qgMoveRunning)
                 {
                     py = ground;
                     float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    if (qgMove >= 0)
+                    {
+                        Log("wh chain landed (the stage chain ends)");
+                        qgMove = -1; qgChess = false; qgMoveRunning = false;
+                    }
                     qgEnded = false; qgRun = false; qgLeapSpeedXY = 0f;
                     if (djumpLog && jumpCount > 0) Log(string.Format(
                         "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
@@ -2074,7 +2085,8 @@ internal static class RebornClient
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded)
             {
-                if (qgMove >= 0 && qgMove < qgClip.Length) setClipPlay(qgClip[qgMove], 1);
+                if (qgMove >= 0 && qgMoveRunning && qgMove < qgClip.Length) setClipPlay(qgClip[qgMove], 1);
+                else if (qgMove >= 0) setClip(clipFall);
                 else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
