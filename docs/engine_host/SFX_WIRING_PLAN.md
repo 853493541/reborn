@@ -141,6 +141,45 @@ entry `[rsp+0x28]`), then call `iface->vt[0]()` with the same context. Candidate
 references: the facade's `GetFilePath` object (tried: wrong type — null-deref inside Init),
 the game exe's import call sites for `GetK3EngineMgr`/`LoadX3DEngine`.
 
+## Update — FS object identified; engine now loads loose files (2026-09-30 late)
+
+Follow-up on the same probe (CreateEngine hook now fixed to observe `param+0xeec`/`param+8`):
+
+- **The working root IS delivered correctly**: `KG3D_CreateEngine` receives
+  `root=client_root` (param+0xEEC) — the earlier "empty root" read was from the wrong
+  object type (the FS-manager global holds the HTTP wrapper, not the base manager).
+- **The original-FS object is the adapter's own FS class**, created during the manager
+  Init: adapter function **`0x7AB90(this, path, flags, providedFS)`** — if `providedFS`
+  (r9) is null it allocates 0x220 bytes, sets vtable **`adapter+0x29CB10`**, stores it at
+  **`iface+0x2018`**; else it stores the provided object. The manager Init calls it at
+  `0x732CC` with `r9=0` (adapter-internal FS) and the working-root path. This is the
+  object the engine uses as `param+8` (`KG3D_CreateHttpFileSystem(pOrignalFS)`).
+- **File lookups now work**: after fixing a nested-copy bug (the data trees had landed as
+  `client_root\data\material\material\...`; fixed with robocopy), the engine's first
+  shader load (`FullScreenUtils.hlsl`) succeeded and the failure moved to the **next**
+  shader (`VG_DumpDecodedClusterCS.hlsl`) — i.e. the loose-file path is functional and
+  the remaining gap is **files that only exist in the PakV4 store**.
+- **The game's pak-backed FS**: `KGPK4_FileSystemX64.dll!KGPK4_CreateFileSystemWrapper`
+  (+ `KG_PAKFS_*` API) is the client's pak file system; the game creates/configures it in
+  `Engine_Lua5X64.dll` (function at RVA `0xCC2D0`: `LoadLibrary` → GetProcAddress
+  `KGPK4_CreateFileSystemWrapper` → create → `wrapper->vt[3](callback)` → use; wrapper
+  global at `Engine_Lua5X64+0x1730B8`). The adapter references the module names
+  `CEngine_Lua5X64.dll` / `KIndexpackX64.dll` in its string table (dynamic loading).
+- **Host options for pak-served files** (next session, in order): (a) find the adapter's
+  pak-enable hook (`m_pGetPakV4EnableFunc` / `g_IsPakV4Enable` debug-symbol strings exist
+  in the adapter) and the injection path for a provided FS object; (b) drive the game's
+  wrapper (`KGPK4_CreateFileSystemWrapper` + `KG_PAKFS_OpenFileSystem` with the
+  `clientconfig.ini [PakV4] PakDir` store) and pass it via `0x7AB90`'s `r9` path or the
+  init stack arg5; (c) extract the needed files from the PakV4 store into `client_root`
+  (iterative, works for the shader set but not a general solution).
+
+**Instrumentation note**: inline-hooking `KG3D_CreateEngine` (`0x8D46C0`) works only if
+the copied prologue covers **whole instructions incl. RIP-relative ones** (its first
+RIP-relative `mov r8d,[rip+…]` needs ≥26 bytes) — and copied RIP-relative instructions
+must not be relocated (a 17-byte copy crashed with a wild `av_addr`; the hook was removed
+after the observation). `KG3D_CreateEngine` cannot be called twice (the engine global is
+already set) — call it once per process.
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
