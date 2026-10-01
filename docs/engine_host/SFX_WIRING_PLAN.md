@@ -50,6 +50,23 @@ Earlier wrong lead (documented so it is not repeated): `0x76E300` looked like a 
 `_BakeSubsetTexturesToFileWithIndex` — it is a **model/bake loader**, not the SFX spawn.
 The real SFX-module caller is `0xE3412A` (animation/tag update).
 
+## Client-engine probe (2026-09-30, `client_sfx_probe.cpp`, temp)
+
+Booted the client facade read-only (`PreInitX3DEngine -> 1`, `LoadX3DEngine -> 1`), then
+loaded the client `KG3DEngineDX11EX64.dll` explicitly and called its
+`CreateSFXFromFile` (client RVA `0xBE5610`). Results:
+
+- `KG3D_GetEngine2()` returns **null** after the facade init — the engine instance is not
+  created by `LoadX3DEngine` alone (it loads lazily when the movie engine / game flow
+  drives it). `GetActiveWindow2`/`Get3DScene2` therefore also return null.
+- With a null owner the create AVs at `fault_rva=0xBE568E` for every input (including
+  `.pss`) — the test is inconclusive until a real engine instance is available.
+
+Conclusion: testing (and using) the client engine's `.Sfx` path requires the **native
+client-stack host** with the full client init — the `CLIENT_STACK_PIVOT.md` milestone.
+The probe source + build script live in `%TEMP%\opencode\skillv2\`
+(`client_sfx_probe.cpp`, `build_client_sfx_probe.cmd`).
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
