@@ -1013,3 +1013,21 @@ all tags should fire. Editor config to adopt when initializing the host
 - Outcome: solved — icon-grid panel + 14 staged abilities with client icons/desc.
 - Re-open: none.
 
+### 2026-09-30 — ability sandbox — caster-bound effects follow the caster
+- Problem: 撼如雷 / 鹊踏枝 effects stayed at the cast point after the caster moved (the
+  earlier "anchored" fix removed the follow).
+- Diagnosis: the host plays the effect as a free-standing scene dummy
+  (`AddDummyModel`); the client binds these effects to the caster socket through the tani's
+  SFX tags (`KG3D_SFX_BIND_TYPE`), which the managed API does not expose and the stale
+  engine AVs on. So the follow is a host approximation — the honest gap.
+- Fix: restore follow-on-move (re-add the dummy when the caster moved > 32 u, throttled).
+  The engine reuses the same dummy object (handle unchanged, no `re-added handle=` log —
+  no timeline restart observed).
+- Evidence: `RC_DEMO=1` walk during the effect (`Skill_20260930_1716*.log`, pos z
+  24224 → 25187); screenshots `rc_00_3000/rc_01_6000/rc_02_9000ms.png` — at 6 s the bright
+  effect centroid is x=634 vs screen centre x=640 after ~950 u of movement (an anchored
+  effect would drift off-centre).
+- Outcome: caster-bound effects follow the caster again; the faithful fix (engine socket
+  binding / SFX track) stays the next engine-wiring step.
+- Re-open: engine SFX bind (`CreateScreen3DSFX` / `KG3DSceneSFXEditor::NewSFX`).
+

@@ -2234,11 +2234,12 @@ internal static class RebornClient
                 }
                 if (castPss && castPssPath.Length > 0)
                 {
-                    // the effect is spawned ONCE at the cast point and plays its
-                    // authored timeline once; re-adding it on movement would
-                    // restart the timeline, so it is not repositioned
+                    // caster-bound effects follow the caster: re-add the dummy at
+                    // the new position when the caster moved (throttled). The
+                    // engine reuses the same dummy (same handle) - no timeline
+                    // restart observed; the faithful fix is engine socket binding.
                     bool first = lastCastX > 1e8f;
-                    if (first)
+                    if (first || Math.Abs(px - lastCastX) > 32f || Math.Abs(pz - lastCastZ) > 32f)
                     {
                         lastCastX = px; lastCastZ = pz;
                         var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
@@ -2246,8 +2247,8 @@ internal static class RebornClient
                         var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                         var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                         long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
-                        castPssHandle = h;
-                        Log("cast pss -> " + castPssPath + " handle=" + h + " (once, anchored)");
+                        if (first) { castPssHandle = h; Log("cast pss -> " + castPssPath + " handle=" + h + " (follows caster)"); }
+                        else if (h != castPssHandle) { castPssHandle = h; Log("cast pss re-added handle=" + h + " (effect restarted)"); }
                     }
                 }
                 if (now >= castUntil)
