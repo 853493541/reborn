@@ -563,14 +563,32 @@ internal static class RebornClient
                 editorRoot, mapPath, cfgDir, Log);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
-            camSys.Pitch = cameraSettings.InitPitch;
+            // Game-data pitch is NEGATIVE when the camera sits above the anchor
+            // (looking down): g_Scene_tCameraRuntime fPitch default -0.35,
+            // number.krl CameraInitPitch -0.17 / SprintCameraPitch -0.35, and
+            // hotkeys.lua F11 passes -pi/12 for the standard behind view
+            // ("pitch -15 deg"). The model pitch is the opposite (positive =
+            // camera above, measured: model +0.15 -> engine view vpitch -0.31),
+            // so negate on application (2026-09-30 start-angle research).
+            camSys.Pitch = -cameraSettings.InitPitch;
             camSys.Yaw = cameraSettings.InitYaw;
             // deterministic test pose (camera A/B harness): override the loaded
             // yaw/pitch without touching the settings sources
             double poseOv;
             if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
             if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
-            camSys.Distance = camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter;
+            // user decision 2026-09-30: both follow rows start at the max range
+            // (fMaxCameraDistance; 广角 is already the client panel max). This
+            // overrides the 1245 u client-number initial (C10) - target AND
+            // init distance are max, so the follow camera holds at max instead
+            // of easing back to the row value.
+            double maxDistM = camSys.ClampDistanceUnits(cameraSettings.MaxCameraDistance)
+                              / camSys.UnitsPerMeter;
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("InitCameraDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_SPRINT].Set("TargetDistance", maxDistM);
+            camSys.Rows[CameraSystem.MODE_SPRINT].Set("InitCameraDistance", maxDistM);
+            camSys.Distance = maxDistM * camSys.UnitsPerMeter;
             // deterministic test distance (world units): RC_CAM_DIST=100 puts
             // the camera close-up while RC_CAM_PITCH tilts it (repro harness)
             double distOv;
@@ -758,8 +776,6 @@ internal static class RebornClient
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
-        bool wSprint = false;    // double-tap W and hold -> sprint (8.8 尺/s)
-        long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -872,6 +888,8 @@ internal static class RebornClient
         // RMB drag = rotate camera and turn the character, wheel = x0.9/x1.1
         // zoom, F11 = reset behind the character (-15 deg pitch), Home/End =
         // view presets 0/180 relative to the character facing.
+        // Host change 2026-09-30 (user decision): the zoom moved off the wheel
+        // onto the +/- keys; the wheel is inert.
         // The handlers are shared by the panel and the HUD labels (a label
         // would otherwise swallow clicks), with coordinates mapped to the panel.
         Func<object, MouseEventArgs, System.Drawing.Point> panelPoint = delegate(object s, MouseEventArgs e)
@@ -929,39 +947,20 @@ internal static class RebornClient
                 try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
-        MouseEventHandler wheel = delegate(object s, MouseEventArgs e)
-        {
-            // CameraZoomIn/Out: Camera_Zoom(0.9 / 1.1)
-            camSys.ZoomBy(e.Delta > 0 ? -1.0 : 1.0);
-        };
+        // The wheel no longer zooms (user decision 2026-09-30): the zoom moved
+        // to the +/- keys below. The wheel is deliberately left unbound.
         Control[] hitTargets = new Control[] { panel, hud };
         foreach (Control c in hitTargets)
         {
             c.MouseDown += onMouseDown;
             c.MouseUp += onMouseUp;
             c.MouseMove += onMouseMove;
-            c.MouseWheel += wheel;
         }
-        form.MouseWheel += wheel;
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) unlockMouse();
-            if (e.KeyCode == Keys.W)
-            {
-                long t = Environment.TickCount;
-                if (!pW || t - lastWDown > 100)   // new press, not keyboard auto-repeat
-                {
-                    // double-tap: second press within 500 ms of the first release
-                    if (lastWUp != 0 && t - lastWUp < 500)
-                    {
-                        wSprint = true;
-                        Log("sprint on (double-tap W)");
-                    }
-                    lastWDown = t;
-                }
-                pW = true;
-            }
+            if (e.KeyCode == Keys.W) pW = true;
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
             else if (e.KeyCode == Keys.D) pD = true;
@@ -988,15 +987,27 @@ internal static class RebornClient
                 if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
                 else if (!lmbDown && !rmbDown) unlockMouse();
             }
+            else if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
+            {
+                // CameraZoomIn: Camera_Zoom(0.9) (moved off the wheel, 2026-09-30)
+                camSys.ZoomBy(-1.0);
+            }
+            else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+            {
+                // CameraZoomOut: Camera_Zoom(1.1)
+                camSys.ZoomBy(1.0);
+            }
             else if (e.KeyCode == Keys.F11)
             {
-                // Camera reset: behind the character, model pitch -15 deg, distance 1x
+                // Camera reset: behind the character, distance 1x. hotkeys.lua
+                // CameraReset -> Camera_SetForceReset(yaw, -pi/12, 1): game
+                // pitch -15 deg (camera above) -> model +pi/12.
                 camSys.SetMaxDistance(camSys.ClampDistanceUnits(
                     camSys.Row.F("InitCameraDistance", 12.45) * camSys.UnitsPerMeter) / camSys.UnitsPerMeter);
                 camSys.Yaw = cameraYawBehind();
-                camSys.Pitch = -Math.PI / 12.0;
+                camSys.Pitch = Math.PI / 12.0;
                 alignAim();
-                Log("camera reset: behind character, pitch -15deg");
+                Log("camera reset: behind character, game pitch -15deg (model +15)");
             }
             else if (e.KeyCode == Keys.F9)
             {
@@ -1013,7 +1024,7 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) { pW = false; wSprint = false; lastWUp = Environment.TickCount; }
+            if (e.KeyCode == Keys.W) pW = false;
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -1062,7 +1073,6 @@ internal static class RebornClient
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
         float pSpeed = 96f, pRun = 320f;
-        float pSprint = 8.8f * 64f;   // double-tap W hold: 8.8 尺/s = 563.2 u/s
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
@@ -1213,9 +1223,11 @@ internal static class RebornClient
         if (applyCamInit)
         {
             camSys.Yaw = cameraSettings.InitYaw;
-            camSys.Pitch = cameraSettings.InitPitch;
-            Log(string.Format("camera init applied mapId={0} yaw={1:F3} pitch={2:F3}",
-                cameraSettings.MapId, camSys.Yaw, camSys.Pitch));
+            // game pitch -> model pitch (negate; see the convention note at the
+            // settings application above)
+            camSys.Pitch = -cameraSettings.InitPitch;
+            Log(string.Format("camera init applied mapId={0} yaw={1:F3} gamePitch={2:F3} modelPitch={3:F3}",
+                cameraSettings.MapId, camSys.Yaw, cameraSettings.InitPitch, camSys.Pitch));
         }
         else
         {
@@ -1235,7 +1247,7 @@ internal static class RebornClient
             alignAim();
         }
         // the game keeps the follow distance at the row value; MaxCameraDistance
-        // is only the cap the wheel can zoom out to (starting at the cap made
+        // is only the cap the zoom can reach (starting at the cap made
         // the camera pump when walls passed in/out of range)
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
@@ -1560,7 +1572,7 @@ internal static class RebornClient
 
             if (camZoomSeq)
             {
-                // test input only (no camera behavior): wheel steps out x3 then
+                // test input only (no camera behavior): zoom steps out x3 then
                 // in x3 at 1 s intervals after the rotation/pitch demo
                 if (now >= 13000 && now < 19000)
                 {
@@ -1735,7 +1747,6 @@ internal static class RebornClient
             {
                 float sp = (shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
-                            : wSprint ? pSprint
                             : pRun) / len;
                 float ux = dirX / len, uz = dirZ / len;
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
@@ -1926,9 +1937,6 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
-                // sprint camera mode follows the real trigger: double-tap W
-                // (wSprint), not the Shift test-speed modifier
-                bool sprinting = movingNow && wSprint;
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the
@@ -1952,23 +1960,11 @@ internal static class RebornClient
                     double aimAdj = aimPitchOf(camSys.Pitch) - aimPitchOf(pitchPreAdj);
                     adjPitchPx = (int)Math.Round(-aimAdj / 0.00121);
                 }
-                // the automatic character/sprint mode logic must not override a
-                // forced test mode (RC_CAM_MODE)
-                if (camMode.Length == 0)
-                {
-                    if (sprinting)
-                    {
-                        if (camSys.Mode != CameraSystem.MODE_SPRINT)
-                            camSys.SwitchMode(CameraSystem.MODE_SPRINT, false);
-                    }
-                    else if (camSys.Mode != CameraSystem.MODE_CHARACTER)
-                    {
-                        camSys.SwitchMode(CameraSystem.MODE_CHARACTER, false);
-                    }
-                }
-                double dist = camSys.UpdateDistance(dt, sprinting, pRun / camSys.UnitsPerMeter)
-                              * cameraSettings.EyeScale;
-                // any distance change (wheel zoom, sprint pull-back, EyeScale)
+                // no automatic camera-mode switching: the sprint trigger
+                // (double-tap W, WW) was removed 2026-09-30; the sprint row is
+                // reachable only through the RC_CAM_MODE test harness.
+                double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
+                // any distance change (zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
                 if (Math.Abs(dist - lastAimDist) > 0.5)
                 {
@@ -1994,7 +1990,14 @@ internal static class RebornClient
                 CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
                                 Env("RC_CAM_NOSMOOTH", "0") != "1";
-                double stime = Math.Max(camSys.Row.F("SmoothTime", 0.06), 1e-3);
+                // Placement smoothing is one shared state in every camera mode
+                // (CharacterCameraSmoothTime, 60 ms; PENETRATION_PLAN C1). The
+                // sprint row's SmoothTime (0.5 s) is SprintCameraSmoothTime, the
+                // sprint pull-back constant already applied by UpdateDistance -
+                // reading the active row here collapsed the orbit radius while
+                // dragging in sprint mode (2026-09-30 camera-wwdrag repro).
+                double stime = Math.Max(
+                    camSys.Rows[CameraSystem.MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
@@ -2809,13 +2812,12 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
-                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : wSprint ? "SPRINT" : "RUN") : "IDLE";
+                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
-                                : wSprint ? pSprint
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | Wx2 hold sprint | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
@@ -2844,12 +2846,10 @@ internal static class RebornClient
                 float curSpd = !moving ? 0f
                              : shiftDown ? pRun * 10f
                              : walkMode ? pSpeed
-                             : wSprint ? pSprint
                              : pRun;
                 string moveMode = !moving ? "IDLE"
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
-                                : wSprint ? "SPRINT"
                                 : "RUN";
                 Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,

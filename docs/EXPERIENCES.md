@@ -767,3 +767,92 @@ or the engine's own init starts running (verified build).
   `CONTROLS_GAP_REGISTER.md` S6 → DONE; `JX3_MOVEMENT_CONTROLS.md` §6 updated.
 - Outcome: solved for the steering rule; the server `+0x48` per-frame turn step
   is still undecoded (host π rad/s fallback documented).
+
+### 2026-09-30 — camera/client — WW trigger removed; sprint placement smoothing fixed; no OS-input testing
+- Problem: user report "ww + right drag will falsely bring camera zoom in".
+  Reproduced deterministically (`reborn_client_cam-wwdrag.exe`, sandbox map,
+  `RC_CAM_DEBUG/SHAKEDBG`): `camdbg mode=sprint dist=1305 obst=0 hit=-1` while
+  the real anchor->camera distance `r` collapsed 1305 -> 443 and recovered only
+  after the drag stopped (before-log mean r/len 0.77 over 95 unobstructed
+  samples, 48 < 0.9).
+- Root cause: the resolved-offset placement smoothing (`rSm`) read the *active
+  mode row's* `SmoothTime`; in sprint mode that is the sprint row's 0.5 s
+  (`SprintCameraSmoothTime`, the pull-back constant already applied by
+  `UpdateDistance`) instead of the shared `CharacterCameraSmoothTime` (60 ms;
+  PENETRATION_PLAN C1). Per-axis smoothing of the rotating offset then shortens
+  the vector through its chord - the B15 class, amplified 8x by the wrong
+  constant.
+- Fix: placement smoothing uses the character row's `SmoothTime` in every mode
+  (live `RebornClient.cs` + model `CameraSystem.Update`); offline regression
+  `camera_smoke` "sprint drag keeps constant-length orbit" (old code 47.6% ->
+  fixed 1.15% rel err). Live after-fix: mean r/len 0.99 over 136 unobstructed
+  samples; only the synthetic >30 rad/s flick troughs dip.
+- Then per user decision the WW (double-tap W) sprint trigger was **removed**
+  from the client ("for now"); the sprint camera row stays reachable only via
+  the `RC_CAM_MODE` test harness. HUD/help and the controls/camera docs updated.
+- Process: the external `tools/camera/drive_client.ps1` driver moves the real
+  desktop mouse/keyboard - the user stopped it mid-run. From now on: internal
+  env-driven test modes only; never drive the user's mouse/keyboard. My driver
+  changes were reverted to main; the README row now carries the hijack warning.
+- Evidence: `reborn_out/reborn_20260930_151919.log` (before), `_152453.log`
+  (after), `_153426.log` (no-WW run, DONE); `camera_smoke_cam-wwdrag.exe` ALL
+  PASS; commits `b186564` (fix), `850940c` (driver revert), `3cb1246` (WW
+  removal).
+- Outcome: WW removed; the camera placement fix kept (valid for any camera mode
+  whose row SmoothTime differs from the character row).
+
+### 2026-09-30 — camera/client — Zoom moved from the wheel to +/- keys
+- Did: user decision — the wheel no longer zooms; the zoom feature moves to the
+  `+`/`-` keys. Removed the `MouseWheel` handlers (panel/HUD/form), added
+  `Oemplus`/numpad `Add` = CameraZoomIn (x0.9) and `OemMinus`/numpad
+  `Subtract` = CameraZoomOut (x1.1), same `CameraSystem.ZoomBy` rule + clamps.
+  HUD help updated (`+/- zoom`); registered as host binding deviation A12
+  (the real client binds CAMERAZOOMIN/OUT to the wheel).
+- Evidence: `client/RebornClient.cs` (wheel handlers removed, key branch);
+  `camera_smoke_cam-wwdrag.exe` ALL PASS; feature client rebuilt
+  (`bin64\reborn_client_cam-wwdrag.exe`).
+- Outcome: solved (host binding; wheel inert).
+
+### 2026-09-30 — camera/client — First-load camera angle: game pitch sign was inverted
+**Problem:** user report — "when game starts the camera looks from the same
+height"; the real client feels like it starts from above (~45 deg). Research:
+what is the true first-load angle?
+**Research (client truth):** the real client restores the per-role saved view
+first (`g_Scene_tCameraRuntime` in the role `custom.dat`; this role:
+`fYaw=2.3360588550568, fPitch=-0.35000029206276`), with the map init
+(`scene_init_param` / `number.krl CameraInitPitch=-0.17`) as the fallback. Game
+pitch data is negative when the camera is above/looking down: defaults
+fPitch/CameraInitPitch -0.35/-0.17, `SprintCameraPitch=-0.35`, and
+`hotkeys.lua` F11 `Camera_SetForceReset(yaw, -pi/12, 1)` = the standard behind
+view "pitch -15 deg". The host model pitch is the opposite (positive = above;
+measured model +0.15 -> `vpitch` -0.31), so the old host start (model -0.17 ->
+vpitch +0.009) was level — the sign was never flipped, and the custom.dat
+picker could miss the role file (E6).
+**Fix:** negate game pitch on application (startup + map init), F11 reset now
+model +pi/12 (game -15 deg), and `FindLatestCustomDat` prefers the newest
+custom.dat that carries the runtime block.
+**Evidence:** log `reborn_out/reborn_20260930_161907.log` —
+`CameraSettings: loaded real per-role camera settings: userdata\...\custom.dat`;
+`camera init applied mapId=-1 yaw=2.336 gamePitch=-0.350 modelPitch=0.350`;
+camdbg `pitch=0.350 vyaw=2.336 vpitch=-0.492` (= 28.2 deg down, camera above
+the head), vs the pre-fix level `vpitch=+0.009`. `camera_smoke_cam-wwdrag.exe`
+ALL PASS. Docs: `REAL_VALUES.md` §4 (chain + convention), `HOST_DEVIATIONS.md`
+E6 update.
+**Re-open:** the exact real follow distance (C10) still scales the perceived
+angle; if the CDN per-mode rows land, re-derive the view angle with the real
+`TargetDistance`/`CameraHeight`.
+
+### 2026-09-30 — camera/client — Start both follow rows at max range (user decision)
+- Did: user report — after the start-angle change the camera no longer starts at
+  max range. Per the earlier "both start from max" decision (distance + 广角;
+  FOV is already the client panel max), the host now sets **both** the character
+  and sprint rows' `TargetDistance` + `InitCameraDistance` to the clamped
+  `fMaxCameraDistance` and starts `Distance` there, so the follow camera holds
+  at max instead of easing back to the 1245 u client number (C10).
+- Evidence: log `reborn_out/reborn_20260930_164645.log` —
+  `CameraSystem ready: mode=character dist=2000u`, camdbg `dist=2000 r=2077`
+  (offset incl. height), `pitch=0.350 vpitch=-0.441` (camera above, ~25 deg
+  down). `camera_smoke_cam-wwdrag.exe` ALL PASS. `HOST_DEVIATIONS.md` C10
+  updated.
+- Outcome: solved (host/user decision; 1245 stays the client-number reference,
+  max is the host start).

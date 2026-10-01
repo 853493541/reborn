@@ -24,7 +24,7 @@
 | `AUTOINTERACT` | F | `AutoInteract();` | interact nearest |
 | `TOGGLEMOVECONTROL` | — | `MoveControlStart/Stop` | control lock used by UI states |
 | *(click)* | LMB on ground | `AutoMoveToPoint` / `AutoMoveToTarget` | click-to-move |
-| *(host extra)* | double-tap W | — | sprint; real sprint is a 轻功/skill state [MED] |
+| *(host extra)* | double-tap W | — | sprint; real sprint is a 轻功/skill state [MED] — **removed 2026-09-30** (WW trigger dropped per user; the sprint row stays reachable via `RC_CAM_MODE` only) |
 
 ## 2. Movement model (logic side, server-authoritative + client prediction)
 
@@ -112,8 +112,9 @@ WASD camera-relative **recomputed per frame** (rotating the camera steers the
 run), heading/facing turn model with the >112.5° speed/turn-step penalty,
 RMB turns camera + character at π rad/s (server `+0x48` step undecoded),
 Shift ×10 debug, Space jump + 二段跳 (J0-profile flip, `RC_JUMP_SCALE`),
-`/` walk-run toggle, W-double-tap sprint, continuous gravity/jump
-approximation. Missing: turn-in-place keys, autorun, sit/mount/sheath,
+`/` walk-run toggle, continuous gravity/jump
+approximation (the W-double-tap sprint trigger was removed 2026-09-30).
+Missing: turn-in-place keys, autorun, sit/mount/sheath,
 click-to-move, follow/interact, exact 15/16 Hz integer model, jump-chain phase.
 
 ## 7. Open items

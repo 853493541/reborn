@@ -68,7 +68,7 @@ Evidence: `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2,
 | `TOGGLESITDOWN` | `V` / `X` | sit / stand |
 | `FOLLOWTARGET` | Ctrl+G | auto-follow target |
 | `AUTOINTERACT` | `F` | interact with nearest object |
-| — | double-tap `W` | sprint (host addition; real client sprint is a 轻功/skill state) [MED] |
+| — | double-tap `W` | sprint (host addition; real client sprint is a 轻功/skill state) [MED] — **removed 2026-09-30** |
 | — | mouse click on ground | click-to-move (`AutoMoveToPoint` / `AutoMoveToTarget`) |
 
 Model behind the keys: server-authoritative, client-predicted. The logic
@@ -156,7 +156,7 @@ Evidence: `proof/movement/extracted/ui_hotkey_default.txt`,
 | Area | State |
 |---|---|
 | Input | hardcoded `KeyDown/KeyUp` if-chain — **no hotkey table, no rebinding, no contexts** |
-| Movement | WASD camera-relative, Shift debug ×10, `Space` jump, `/` walk-run, W-double-tap sprint, `1` skill, `C` debug teleport; world-dir held while keys unchanged |
+| Movement | WASD camera-relative, Shift debug ×10, `Space` jump, `/` walk-run, `1` skill, `C` debug teleport; world-dir held while keys unchanged (W-double-tap sprint removed 2026-09-30) |
 | Turn | body turns instantly to the move direction / RMB camera direction (**no turn-rate model**) |
 | Camera | LMB/RMB drag, wheel ×0.9/×1.1, F11, Home/End; JX3 sphere offset; per-frame aim sync (`00f1237`); **no wall obstruction**, no FOV/modes/shake; settings read from `custom.dat` (3 keys) |
 | Jump | continuous approximation tuned to the table numbers (integer 15 Hz model **not ported**) |

@@ -145,6 +145,21 @@ The saved per-role `fYaw` matches these values (e.g. a role with
 `fYaw = 2.1107578277588` = map 653). So a host can initialise the follow
 camera from the map's real init yaw/pitch instead of guessing.
 
+**First-load chain + sign convention (2026-09-30 research):** the real client
+restores the per-role saved view first (`g_Scene_tCameraRuntime` in
+`userdata\<account>\...\<role>\custom.dat`), and the map init
+(`scene_init_param` / `CameraInitPitch`) is the per-map fallback. Game pitch
+data is **negative when the camera sits above the anchor (looking down)**:
+fPitch/CameraInitPitch defaults are -0.35/-0.17, `SprintCameraPitch` -0.35,
+and `hotkeys.lua` F11 calls `Camera_SetForceReset(yaw, -pi/12, 1)` for the
+standard behind view ("pitch -15 deg"). The host model pitch has the opposite
+sign (positive = camera above; measured model +0.15 -> engine `vpitch` -0.31),
+so the client negates the game pitch on application (`RebornClient.cs` init +
+F11). At the host geometry (d = 1245 u, height 200 u) the saved -0.35 becomes
+a **-0.492 rad (-28.2 deg) downward view** (`vpitch=-0.492`, log
+`reborn_20260930_161907`), vs the old level start (model -0.17 -> vpitch
++0.009).
+
 ---
 
 ## 5. Wheel zoom — real behaviour and limits
