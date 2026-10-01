@@ -467,6 +467,17 @@ reverted); experiment output `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`.
   this commit (local).
 - Outcome: solved. Restart opencode to load.
 
+### 2026-09-30 — repo — RE methodology skill installed (re-binary-analysis)
+- Did: installed `re-binary-analysis` under `.opencode/skills/` — an adapted, trimmed
+  version of Masriyan's "Reverse Engineering & Binary Analysis" skill (MIT, attributed;
+  bundled `binary_analyzer.py` not included; repo rules + local tools referenced instead).
+  Skipped `haikow/claude-reverse-skills` — the repo has **no license**, so no copying.
+  Checked option #2: **Ghidra is not installed** on this machine (so the Ghidra-based
+  skills need a new dependency → pending approval); `.venv` already has `capstone` +
+  `pefile`, `lief` missing.
+- Evidence: `.opencode/skills/re-binary-analysis/SKILL.md`; this commit (local).
+- Outcome: solved. Restart opencode to load.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
