@@ -88,6 +88,18 @@ internal static class RebornClient
         string clipRun = Env("RC_CLIP_RUN", f1 + "f1b02yd\u5954\u8DD1.ani");
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
+        // Landing branch (player_suspend.krl.txt F1 rows): FallFloorAnimation
+        // data/source/player/F1/动作/F1b02yd握拳小跳c.ani is played when the
+        // landed height difference exceeds FallDownHeightFloor (500 u).
+        string clipLand = Env("RC_CLIP_LAND", f1 + "f1b02yd\u63E1\u62F3\u5C0F\u8DF3c.ani");
+        long landClipMs = 700;
+        long.TryParse(Env("RC_CLIP_LAND_MS", "700"), out landClipMs);
+        float fallDownHeightFloor = 500f;   // FallDownHeightFloor (player_suspend.krl.txt)
+        float.TryParse(Env("RC_FALL_ROLL", "500"), out fallDownHeightFloor);
+        long landClipUntil = 0;
+        // Airborne horizontal state: takeoff/End triple JumpSpeedXY / walk-off
+        // momentum (u/s); airStartY = height when the character left the ground.
+        float vjx = 0f, vjz = 0f, airStartY = 0f;
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -626,16 +638,17 @@ internal static class RebornClient
         float curYaw = 0f;
         float lastModelX = float.MaxValue, lastModelY = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
-        Action<string> setClip = delegate(string path)
+        Func<string, int> setClip = delegate(string path)
         {
-            if (path == curClip) return;
+            if (path == curClip) return 0;
             try
             {
                 int pr = model.PlayAnimation(path, 0, 1.0f, 0);
                 Log("clip -> " + path + " (" + pr + ")");
                 curClip = path;
+                return pr;
             }
-            catch (Exception e) { Log("setClip ex: " + e.Message); }
+            catch (Exception e) { Log("setClip ex: " + e.Message); return -1; }
         };
 
         // measure camera view direction by nudging forward (map-host method)
@@ -776,6 +789,22 @@ internal static class RebornClient
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
+        // C1/C2 input core: the real binding table (ui/hotkey/default.txt +
+        // bindings.ini) is decoded at startup; movement commands below are
+        // dispatched from it instead of hardcoded keys.
+        HotkeyTable hotkeys = HotkeyTable.Load(Env("RC_HOTKEY_DIR", ""), Log);
+        {
+            string[] probe = new string[] { "MOVEFORWARD", "MOVEBACKWARD", "STRAFELEFT",
+                "STRAFERIGHT", "TURNLEFT", "TURNRIGHT", "JUMP", "TOGGLERUN", "TOGGLEAUTORUN" };
+            for (int hi = 0; hi < probe.Length; hi++)
+                Log("hotkey " + probe[hi] + " = " +
+                    HotkeyTable.Describe(hotkeys.Get(probe[hi])));
+        }
+        bool pTurnL = false, pTurnR = false, autorunOn = false;
+        int unhandledCmd = 0;
+        string lastUnhandled = "";
+        bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
+        bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false, mvDrop = false, mvDone = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -791,6 +820,44 @@ internal static class RebornClient
         }
         bool cDown = false, teleportToStructure = false;
         bool divDown = false;
+        // Command executor (host equivalent of the ui/script hotkey handlers):
+        // the movement set is dispatched from the real table; other commands
+        // are counted as unhandled - no fake handlers for combat/UI yet.
+        Action<string, bool> runCommand = delegate(string name, bool down)
+        {
+            switch (name)
+            {
+                case "MOVEFORWARD": pW = down; break;
+                case "MOVEBACKWARD": pS = down; if (down) autorunOn = false; break;
+                case "STRAFELEFT": pA = down; if (down) autorunOn = false; break;
+                case "STRAFERIGHT": pD = down; if (down) autorunOn = false; break;
+                case "TURNLEFT": pTurnL = down; break;
+                case "TURNRIGHT": pTurnR = down; break;
+                case "JUMP":
+                    if (down) { if (!spaceDown) { spaceDown = true; jumpPressed = true; } }
+                    else spaceDown = false;
+                    break;
+                case "TOGGLERUN":
+                    if (down)
+                    {
+                        if (!divDown)
+                        {
+                            divDown = true;
+                            walkMode = !walkMode;
+                            Log("movement mode: " + (walkMode ? "WALK" : "RUN") + " (TOGGLERUN)");
+                        }
+                    }
+                    else divDown = false;
+                    break;
+                case "TOGGLEAUTORUN":
+                    if (down) { autorunOn = !autorunOn; Log("autorun: " + (autorunOn ? "on" : "off")); }
+                    break;
+                default:
+                    unhandledCmd++;
+                    lastUnhandled = name;
+                    break;
+            }
+        };
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
         bool dragArmed = false;
@@ -960,21 +1027,17 @@ internal static class RebornClient
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) unlockMouse();
-            if (e.KeyCode == Keys.W) pW = true;
-            else if (e.KeyCode == Keys.S) pS = true;
-            else if (e.KeyCode == Keys.A) pA = true;
-            else if (e.KeyCode == Keys.D) pD = true;
-            else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
-            else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
-            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
+            if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
+            // real binding table first: movement commands dispatch through the
+            // game's own rows (W/Up, S/Down, A, D, Left, Right, Space, Num/, G)
+            System.Collections.Generic.List<string> hcmds =
+                hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
+            for (int hi = 0; hi < hcmds.Count; hi++) runCommand(hcmds[hi], true);
+            // host convenience: main "/" also toggles run (real binding Num/)
+            if (e.KeyCode == Keys.OemQuestion && hcmds.Count == 0) runCommand("TOGGLERUN", true);
+            // host/test keys outside the movement command set
+            if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
-            else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
-            {
-                // real TOGGLERUN binding (numpad /), also accept the main "/"
-                divDown = true;
-                walkMode = !walkMode;
-                Log("movement mode: " + (walkMode ? "WALK" : "RUN"));
-            }
             else if (e.KeyCode == Keys.F7)
             {
                 // operation-mode switch (host key; the real client switches in
@@ -1024,15 +1087,13 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) pW = false;
-            else if (e.KeyCode == Keys.S) pS = false;
-            else if (e.KeyCode == Keys.A) pA = false;
-            else if (e.KeyCode == Keys.D) pD = false;
-            else if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
-            else if (e.KeyCode == Keys.Space) spaceDown = false;
-            else if (e.KeyCode == Keys.D1) oneDown = false;
+            if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
+            System.Collections.Generic.List<string> hcmds =
+                hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
+            for (int hi = 0; hi < hcmds.Count; hi++) runCommand(hcmds[hi], false);
+            if (e.KeyCode == Keys.OemQuestion && hcmds.Count == 0) runCommand("TOGGLERUN", false);
+            if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
-            else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
         };
         panel.Focus();
 
@@ -1533,6 +1594,18 @@ internal static class RebornClient
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
                 pW = now >= 3000 && now < 9000;
             }
+            if (demoMove)
+            {
+                // scripted movement-controls run (RC_DEMO_MOVE=1): autorun ->
+                // forward jump -> autorun stop -> turn key -> 600 u drop (roll)
+                if (now >= 2500 && !mvAuth) { mvAuth = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
+                if (now >= 5000 && !mvJumped) { mvJumped = true; runCommand("JUMP", true); runCommand("JUMP", false); }
+                if (now >= 6000 && !mvAuthOff) { mvAuthOff = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
+                if (now >= 7000 && !mvTurn) { mvTurn = true; runCommand("TURNRIGHT", true); }
+                if (now >= 7600 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw={0:F2}", curYaw)); }
+                if (now >= 8500 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
+                if (now >= 11000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4}", curYaw, px, py, pz, autorunOn ? 1 : 0)); }
+            }
             if (rotTest)
             {
                 if (rotTestStart == 0) rotTestStart = now;
@@ -1728,6 +1801,8 @@ internal static class RebornClient
             if (pS) { inX -= hx; inZ -= hz; }
             if (pA) { inX -= rX; inZ -= rZ; }
             if (pD) { inX += rX; inZ += rZ; }
+            // TOGGLEAUTORUN (G/NumLock): keep moving forward without holding W
+            if (autorunOn) { inX += hx; inZ += hz; }
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
             float dirX = inX, dirZ = inZ;
@@ -1740,10 +1815,15 @@ internal static class RebornClient
             float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
             if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
-            // horizontal move + slope blocking (map-host rules)
+            // horizontal move + slope blocking (map-host rules).
+            // Ground: input direction at run/walk speed with the RunTo turn
+            // model. Airborne: the takeoff triple's JumpSpeedXY / walk-off
+            // momentum carried ballistically - ProcessAcceleration has no
+            // horizontal input term (JX3_GRAVITY_RESEARCH.md §3.2), so no
+            // per-frame air steering is invented here.
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
             bool blocked = false;
-            if (moving)
+            if (grounded && moving)
             {
                 float sp = (shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
@@ -1775,6 +1855,36 @@ internal static class RebornClient
                     else if (gz2 - ground <= 70f) { pz = tryZ; }
                 }
                 else { px = tryX; pz = tryZ; }
+                vjx = ux * sp; vjz = uz * sp;   // momentum for jump / ledge fall
+            }
+            else if (!grounded && (vjx != 0f || vjz != 0f))
+            {
+                float tryX = px + vjx * dt, tryZ = pz + vjz * dt;
+                float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
+                if (gh - ground > 70f)
+                {
+                    blocked = true;
+                    float gx2 = sampler != null ? sampler.Sample(tryX, pz) : ground;
+                    float gz2 = sampler != null ? sampler.Sample(px, tryZ) : ground;
+                    if (gx2 - ground <= 70f) { px = tryX; }
+                    else if (gz2 - ground <= 70f) { pz = tryZ; }
+                    else { vjx = 0f; vjz = 0f; }   // cliff face: stop
+                }
+                else { px = tryX; pz = tryZ; }
+            }
+            else if (grounded)
+            {
+                vjx = 0f; vjz = 0f;
+            }
+
+            // TURNLEFT/TURNRIGHT (real default: arrow keys): turn in place at
+            // the char turn rate; the camera follows (CameraAdjustYawWhenMoveTurn,
+            // docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md §7).
+            if (grounded && (pTurnL || pTurnR))
+            {
+                float tstep = charTurnRate * (float)dt;
+                if (pTurnL && !pTurnR) { curYaw -= tstep; camSys.Yaw -= tstep; }
+                else if (pTurnR && !pTurnL) { curYaw += tstep; camSys.Yaw += tstep; }
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
@@ -1826,7 +1936,7 @@ internal static class RebornClient
             // grounded / ledge / step (map-host rules)
             if (grounded)
             {
-                if (py - ground > 150f) { grounded = false; vy = 0f; }
+                if (py - ground > 150f) { grounded = false; vy = 0f; airStartY = py; }
                 else if (py > ground) py = ground;
                 else if (ground - py <= 70f) py = ground;
             }
@@ -1855,6 +1965,19 @@ internal static class RebornClient
                     int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
                     curJumpGravity = gc * 225f * jumpScale;
                     grounded = false;
+                    airStartY = py;
+                    // takeoff horizontal velocity: JumpSpeedXY of the row
+                    // (clamp [0,127] per JumpTo/KJump), converted at the 15 Hz
+                    // logic tick, along the input direction (facing if still).
+                    int xyc = trip[0]; if (xyc < 0) xyc = 0; else if (xyc > 127) xyc = 127;
+                    float xySpd = xyc * 15f * jumpScale;
+                    float jdx, jdz;
+                    if (len > 0.01f) { jdx = dirX / len; jdz = dirZ / len; }
+                    else { jdx = (float)Math.Sin(curYaw); jdz = (float)Math.Cos(curYaw); }
+                    vjx = jdx * xySpd; vjz = jdz * xySpd;
+                    if (djumpLog || demoMove) Log(string.Format(
+                        "jump xy takeoff vj=({0:F0},{1:F0}) u/s dir=({2:F2},{3:F2})",
+                        vjx, vjz, jdx, jdz));
                     if (djumpLog) Log(string.Format(
                         "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
                         jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
@@ -1880,9 +2003,30 @@ internal static class RebornClient
                     float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    // landing branch: height difference vs FallDownHeightFloor
+                    // (player_suspend.krl.txt F1: 500 u) -> the authored landing
+                    // animation; otherwise the normal resume.
+                    float drop = airStartY - py;
+                    vjx = 0f; vjz = 0f;
+                    if (drop > fallDownHeightFloor)
+                    {
+                        landClipUntil = now + landClipMs;
+                        int lrc = setClip(clipLand);
+                        Log(string.Format("land drop={0:F0}u roll=1 clip={1} rc={2}",
+                            drop, Path.GetFileName(clipLand), lrc));
+                        if (lrc != 0)
+                        {
+                            // clip not playable in this build: keep the branch
+                            // timing, fall back to the known-good fall clip
+                            clipLand = clipFall;
+                            landClipUntil = now + 400;
+                            setClip(clipLand);
+                            Log("land roll clip fallback -> " + Path.GetFileName(clipLand));
+                        }
+                    }
                     if (djumpLog && jumpCount > 0) Log(string.Format(
-                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
-                        jumpCount, px, py, pz, impact));
+                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0} drop={5:F0}",
+                        jumpCount, px, py, pz, impact, drop));
                     jumpCount = 0;
                 }
             }
@@ -1891,6 +2035,7 @@ internal static class RebornClient
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
+            else if (now < landClipUntil) setClip(clipLand);
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
@@ -2812,12 +2957,13 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
+                             : now < landClipUntil ? "LAND"
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
@@ -2851,11 +2997,11 @@ internal static class RebornClient
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}){11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
-                    curSpd, moveMode, curYaw, dirX, dirZ));
+                    curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {
