@@ -718,3 +718,26 @@ solved it, and what is still open. **Newest at the bottom.**
   952-994 blocked (`reborn_20260930_212339` vs `_214718`); rug/prop spawn
   (19690,36270) new build stable grounded y=969, no bounce
   (`reborn_20260930_214555`). A/B binary kept: `bin64\reborn_client_prewall.exe`.
+
+### 2026-09-30 - collision - Thin-wall walk-through (horizontal motion vs the degenerate normal)
+- Field report (user, end area): "the last wall i can just walk through... i
+  simply walk through for no reason" at the 玉门关建筑001_002 south wall
+  (x 27168..27768, z 33864..33875, y 853..1224). Session log scan + geometry
+  check: their last move (27606,33546)->(27508,34057) crossed the wall face
+  with only +2 blocked substeps.
+- Root cause: the horizontal twin of the roof bug. Once the capsule centre
+  crosses a thin face inside one substep, the closest-point normal points ALONG
+  the motion and the push-out ejects the capsule out the FAR side (the "+2
+  blocks" were pushes through, not stops). PhysX sweeps avoid this; the host's
+  discrete 19-20 u substeps + 17 u radius do not.
+- Fix: `Resolve(..., hMoveX, hMoveZ)`: a horizontal contact whose normal has a
+  forward component (dot > 0.2 of the move) is flipped so the push opposes the
+  motion (same contract as the vertical `vMotion` flip). Callers pass the
+  per-substep direction (client substep loop + airborne rise; `MoveResolved`
+  passes dx,dz).
+- Verified: selftest 32/32 (`thin_wall_no_popthrough` blocked px 13); in-game
+  A/B at the wall: old crossed to z=34125 in 2 s (2 blocks), new stops at
+  z=33852/33884 both directions with `blocked by inst=949
+  jz_xb玉门关建筑001_002_hd.mesh` and slides along it
+  (`reborn_20260930_222047` vs `_222711`/`_223142`); regressions re-checked:
+  building back wall spot stable (18915,952), rug/prop spawn stable grounded.

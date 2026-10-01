@@ -10,7 +10,7 @@ verification state; run the automated gates first, then walk the manual list.
 | `.venv\Scripts\python.exe tools\netcode\reference\jx3_model.py` | all 10 checks PASS |
 | `.venv\Scripts\python.exe tools\gravity\verify_model.py` | model self-consistent |
 | `.venv\Scripts\python.exe tools\netcode\loot\capture.py selftest` | SELFTEST PASS |
-| `bin64\collision_selftest_reborn_client_collision.exe` | 31/31 PASS |
+| `bin64\collision_selftest_reborn_client_collision.exe` | 32/32 PASS |
 | `native\build_shim.cmd` | `RC_Shim_*` exports linked (run with NO reborn client alive) |
 | `ui-process-app` `--selftest` | needs a desktop session (headless exits 1; app untouched by this branch) |
 
@@ -66,6 +66,10 @@ exact blocker (`blocked by inst=… mesh=… top=… feet=…`) or the prop cont
 6. **Rug next to the solid prop (x≈19813, z 36270)**
    - Stand still: you stay grounded (y≈969 on the prop top / ≈924 on the rug),
      no airborne bounce; `propfix` pushes may appear once.
+7. **Building 001_002 south wall (x≈27500, z≈33870, end area)**
+   - Run into the big wall from either side: you stop at it and slide along;
+     you must NOT pass through (old build crossed it freely with 2 graze
+     blocks). Log: `blocked by inst=… jz_xb玉门关建筑001_002_hd.mesh`.
 5. **Wood pile (x 19858-20097 / z 30743-31026, 270 u tall)** - walking into
    it must NOT climb it and NOT pass through it: you are held at its face
    (log line `propfix` pushes ~20 u/tick). Jumping on top from higher ground
