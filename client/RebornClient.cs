@@ -119,6 +119,15 @@ internal static class RebornClient
         string clipStrafeL = Env("RC_CLIP_STRAFE_L", f1 + "F1b02yd\u632A\u6B65\u5DE6.tani");
         string clipStrafeR = Env("RC_CLIP_STRAFE_R", f1 + "F1b02yd\u632A\u6B65\u53F3.tani");
         string clipBack = Env("RC_CLIP_BACK", f1 + "F1b02yd\u540E\u900001.tani");
+        // TOGGLESITDOWN (decoded: OnUseSkill(17) / Stand()): the F1 catalog's
+        // looping 打坐 clip (kind 1, loop 1) is the sit pose.
+        string clipSit = Env("RC_CLIP_SIT", f1 + "F1b02dj\u6253\u5750a.tani");
+        // TOGGLESHEATH (decoded: SetSheath flag): the b02 draw transition
+        // (F1b02ty拔剑01_start01) and the drawn-stance loop
+        // (F1b02ty拔剑01_st01_持续, kind 31 loop 1). No 收剑 clip ships for b02;
+        // sheathing falls back to the normal idle.
+        string clipSheathDraw = Env("RC_CLIP_SHEATH_DRAW", f1 + "F1b02ty\u62D4\u525101_start01.ani");
+        string clipSheathHold = Env("RC_CLIP_SHEATH_HOLD", f1 + "F1b02ty\u62D4\u525101_st01_\u6301\u7EED.tani");
         long landClipMs = 700;
         long.TryParse(Env("RC_CLIP_LAND_MS", "700"), out landClipMs);
         float fallDownHeightFloor = 500f;   // FallDownHeightFloor (player_suspend.krl.txt)
@@ -830,11 +839,17 @@ internal static class RebornClient
                     HotkeyTable.Describe(hotkeys.Get(probe[hi])));
         }
         bool pTurnL = false, pTurnR = false, autorunOn = false;
+        // base character actions (decoded handlers): sit = OnUseSkill(17 打坐) /
+        // Stand(); sheath = SetSheath flag (gates: sitting blocks it; the
+        // fight/bird/horse/tower/buff gates are always false in the host).
+        bool sitting = false, sheathOn = false;
+        long sheathDrawUntil = 0;   // draw transition window (拔剑 start clip)
         int unhandledCmd = 0;
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
         bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
+        bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
         float strafeYaw0 = 0f, backYaw0 = 0f, turnYaw0 = 0f;
         double strafeCam0 = 0.0, backCam0 = 0.0, turnCam0 = 0.0;
         long modeSwitchAt = 0;
@@ -886,6 +901,29 @@ internal static class RebornClient
                     break;
                 case "TOGGLEAUTORUN":
                     if (down) { autorunOn = !autorunOn; Log("autorun: " + (autorunOn ? "on" : "off")); }
+                    break;
+                case "TOGGLESITDOWN":
+                    // decoded 0/98: nMoveState == ON_SIT ? Stand() : OnUseSkill(17, ..)
+                    if (down)
+                    {
+                        if (sitting) { sitting = false; Log("sit: stand (Stand)"); }
+                        else { sitting = true; Log("sit: down (OnUseSkill 17 打坐)"); }
+                    }
+                    break;
+                case "TOGGLESHEATH":
+                    // decoded 0/97 gates: sit/death/fight/bird/horse/tower/buff
+                    // block it; the host only models the sit gate (the others
+                    // are always false).
+                    if (down)
+                    {
+                        if (sitting) Log("sheath rejected: sitting");
+                        else
+                        {
+                            sheathOn = !sheathOn;
+                            if (sheathOn) sheathDrawUntil = (long)Environment.TickCount + 800;
+                            Log("sheath: " + (sheathOn ? "drawn" : "sheathed"));
+                        }
+                    }
                     break;
                 default:
                     unhandledCmd++;
@@ -1654,7 +1692,11 @@ internal static class RebornClient
                 if (now >= 9500 && !mvTurn) { mvTurn = true; turnYaw0 = curYaw; turnCam0 = camSys.Yaw; runCommand("TURNRIGHT", true); }
                 if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, curYaw - turnYaw0, turnCam0, camSys.Yaw, camSys.Yaw - turnCam0)); }
                 if (now >= 10800 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
-                if (now >= 12500 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
+                if (now >= 12600 && !mvSit) { mvSit = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); }
+                if (now >= 13300 && !mvSitDone) { mvSitDone = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); Log("movetest sit done"); }
+                if (now >= 13600 && !mvSheath) { mvSheath = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); }
+                if (now >= 14600 && !mvSheathDone) { mvSheathDone = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); Log("movetest sheath done"); }
+                if (now >= 15000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
             }
             if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
             {
@@ -1873,6 +1915,12 @@ internal static class RebornClient
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
             bool turnL = pTurnL || (classicalMode && freeView && pA);
             bool turnR = pTurnR || (classicalMode && freeView && pD);
+            // sitting stands up on any movement intent (move / turn / jump)
+            if (sitting && (pW || pS || pA || pD || pTurnL || pTurnR || autorunOn))
+            {
+                sitting = false;
+                Log("sit: stand (movement)");
+            }
             if (pW) { inX += hx; inZ += hz; }
             if (pS) { inX -= hx; inZ -= hz; }
             if (pA && !(classicalMode && freeView)) { inX -= rX; inZ -= rZ; }
@@ -2068,6 +2116,7 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
+                if (sitting) { sitting = false; Log("sit: stand (jump)"); }
                 if (grounded) jumpCount = 0;
                 int nextJump = jumpCount + 1;
                 bool chainMode = djumpMode == "chain";
@@ -2166,12 +2215,14 @@ internal static class RebornClient
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
+            else if (sitting) setClip(clipSit);
             else if (moving) setClip(
                 gait == 1 ? clipStrafeL :
                 gait == 2 ? clipStrafeR :
                 gait == 3 ? clipBack :
                 walkMode ? clipWalk : clipRun);
-            else setClip(clipIdle);
+            else if (sheathOn && (long)Environment.TickCount < sheathDrawUntil) setClip(clipSheathDraw);
+            else setClip(sheathOn ? clipSheathHold : clipIdle);
 
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
@@ -3097,7 +3148,7 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel or +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | V sit | Z sheath | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel or +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,

@@ -1042,3 +1042,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   d=-1.57); proof/controls/control_modes_run.txt; build + smoke exit 0.
 - Open: engine clip-selection criteria (thresholds are host values); ground
   turn-in-place clip unresolved (catalog-verified absent).
+
+### 2026-10-01 - controls/client - Classic base actions: sit + sheath implemented
+- Did: decoded ToggleSitDown (0/98: OnUseSkill(17 打坐) / Stand()) and
+  ToggleSheath (0/97: SetSheath toggle; gates sit/death/fight/bird/horse/
+  tower/buff) from the packed hotkeys.lua bytecode. Host: V/X toggles the
+  looping F1b02dj打坐a.tani pose and stands on movement/jump; Z toggles the
+  b02 draw sequence (F1b02ty拔剑01_start01 -> st01_持续 stance), rejected while
+  sitting, back to idle on sheathe (no 收剑 clip ships for b02). HUD help and
+  the classic-controls audit updated.
+- Evidence: run reborn_20261001_081922.log (sit down/stand + 打坐a; sheath
+  drawn -> 拔剑01_start01 -> st01_持续; sheathed; exit 0);
+  proof/controls/control_modes_run.txt; camera_smoke ALL PASS; jx3_model 10x
+  PASS; verify_model/capture selftest exit 0.
+- Open: mount (T) needs the horse actor; follow/interact need targeting; the
+  sheath gates not modellable in the host (fight/bird/horse/tower/buff) are
+  always false.

@@ -145,6 +145,13 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
   (run clip). Per-mode follow mode / reset speeds are applied at switch; the
   free-view state itself and the follow-mode `[0..3]` consumer stay open
   (`OPERATION_MODES_PLAN.md` §7c); proof `proof/controls/control_modes_run.txt`.
+- **Base actions**: `TOGGLESITDOWN` (V/X — decoded 0/98: `OnUseSkill(17 打坐)` /
+  `Stand()`; the host plays the looping `F1b02dj打坐a.tani` pose and stands on
+  any movement/jump intent) and `TOGGLESHEATH` (Z — decoded 0/97: `SetSheath`
+  toggle with the sit/death/fight/bird/horse/tower/buff gates; b02 draw =
+  `F1b02ty拔剑01_start01` → `…st01_持续` stance, sheathe back to idle). Mount /
+  follow / interact await the mount and targeting subjects
+  (`CLASSIC_CONTROLS_AUDIT.md`).
 - **Mode-matched locomotion clips**: travel direction vs facing selects the
   clip in both modes (>45° = `挪步左/右` kind 6, >135° = `后退01` kind 57, else
   walk/run). So the joystick pivot plays `挪步`/`后退` while the body turns to

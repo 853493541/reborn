@@ -125,3 +125,31 @@ Runs (RC_DEMO_MOVE=1 RC_AUTORUN=15000, exit 0):
 
 Logs: `reborn_20261001_074718.log` (classical), `_074923.log` (freeview 0),
 `_074806.log` (joystick).
+
+## Classic base actions: sit + sheath (2026-10-01)
+
+Decoded from the packed hotkeys.lua bytecode: ToggleSitDown proto 0/98
+(OnUseSkill(17 打坐) / Stand()), ToggleSheath proto 0/97 (SetSheath toggle;
+gates sit/death/fight/bird/horse/tower/buff, only the sit gate modellable).
+
+Run: RC_DEMO_MOVE=1 RC_MODE=classical RC_AUTORUN=17000, exit 0
+(log reborn_20261001_081922.log):
+
+`
+sit: down (OnUseSkill 17 打坐)
+clip -> data\source\player\f1\动作\F1b02dj打坐a.tani (0)
+sit: stand (Stand)
+clip -> ...普通待机01.ani (0)
+sheath: drawn
+clip -> ...F1b02ty拔剑01_start01.ani (0)
+(800 ms later)
+clip -> ...F1b02ty拔剑01_st01_持续.tani (0)
+sheath: sheathed
+clip -> ...普通待机01.ani (0)
+DONE
+`
+
+Sit stands on any movement/jump intent (host mapping of the engine's stand-on-
+move); sheath is rejected while sitting (decoded gate). Both clips are the
+authored F1 b02 animations; no 收剑 clip ships for b02, so sheathing falls back
+to the normal idle.

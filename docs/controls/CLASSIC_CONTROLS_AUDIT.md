@@ -38,13 +38,13 @@ key, no action needed) · `BLOCKED-RE` (mechanism undecoded).
 | follow mode `nCameraModeInClassicMode` | — | BLOCKED-RE | per-mode value read/clamped/applied at switch, per-frame consumer `[0..3]` undecoded |
 | spring / camera reset speeds | — | BLOCKED-RE | values read/clamped/applied at switch, reset path not decoded |
 
-## 3. Base character actions — TODO (interaction kit)
+## 3. Base character actions
 
-| Command | Default key | Status | Needs |
+| Command | Default key | Status | Needs / note |
 |---|---|---|---|
+| `TOGGLESITDOWN` | V / X | **DONE (2026-10-01)** | decoded 0/98: sit = `OnUseSkill(17 打坐)`, stand = `Stand()`; host plays the catalog's looping `F1b02dj打坐a.tani` and stands on any movement/jump intent |
+| `TOGGLESHEATH` | Z | **DONE (2026-10-01)** | decoded 0/97: toggles `SetSheath`; gates sit/death/fight/bird/horse/tower/buff (only the sit gate is modellable in the host); draw = `F1b02ty拔剑01_start01.ani` → `…st01_持续.tani` stance, sheathe back to idle (no 收剑 clip ships for b02) |
 | `RIDEHORSE` / `DownHorse` | T | TODO | horse actor + mounted state/speeds |
-| `TOGGLESHEATH` | Z | TODO | sheath state + stance animations |
-| `TOGGLESITDOWN` | V / X | TODO | `MOVE_STATE.ON_SIT` + 打坐 animations |
 | `FOLLOWTARGET` | Ctrl+G | TODO | target system |
 | `AUTOINTERACT` | F | TODO | NPC/interactable lookup |
 | `SCREENSHOT` | PrintScreen | PARTIAL | host has F9 repro shot only |
@@ -64,11 +64,14 @@ key, no action needed) · `BLOCKED-RE` (mechanism undecoded).
 - **Wheel zoom restored** to the real default (`CAMERAZOOMIN/OUT` on wheel
   256/257 → `Camera_Zoom(0.9/1.1)`), keeping the `+/-` host keys. The
   2026-09-30 wheel-inert decision is superseded; say the word to revert.
+- **`TOGGLESITDOWN` (V/X)** implemented from the decoded body (sit = skill 17
+  打坐, stand = `Stand()`), with the looping 打坐 clip and stand-on-move.
+- **`TOGGLESHEATH` (Z)** implemented from the decoded body (SetSheath toggle,
+  sit gate), with the b02 draw transition + drawn-stance loop.
 
 ## 6. Recommended order
 
 1. Camera obstruction S9 + FOV S8 (classic camera feel; camera subject).
-2. Interaction kit: sit / sheath / mount (T/Z/V/X) — one state machine +
-   the authored animations (lookup in the F1 catalog + `number.krl` speeds).
-3. Targeting (Tab/F1-F5) — unlocks click-select and follow/interact.
+2. Mount (T) — horse actor + mounted movement (the last base action).
+3. Targeting (Tab/F1-F5) — unlocks click-select, follow and interact.
 4. Follow-mode `[0..3]` / reset-speed decode (live debug on the real client).
