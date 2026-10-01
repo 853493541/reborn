@@ -180,6 +180,41 @@ must not be relocated (a 17-byte copy crashed with a wild `av_addr`; the hook wa
 after the observation). `KG3D_CreateEngine` cannot be called twice (the engine global is
 already set) — call it once per process.
 
+## Proper FS fix — game file layer (2026-10-01, no more file copying)
+
+The adapter's FS class is **not** a loose-file FS: its init method (adapter `0x5DF10`,
+`rcx`=FS object, `rdx`=root path) loads **`Engine_Lua5X64.dll`** and resolves the game
+file API into its callback slots —
+`g_OpenFile`→+0x128, `g_OpenPakV5StreamFile`→+0x130, `g_IsFileExist`→+0x148,
+`g_IsPakFileExist`→+0x150, `g_IsFileDataExist`→+0x178, `g_GetFileState`→+0x180,
+`g_IfUsePackFileV3`→+0x168, `g_IsPakV4Enable`→+0x170, `g_PrepareFiles`,
+`g_GetStreamDownloadLoad`, `g_GetRootPath`, `g_SetRootPath`.
+The game's `KJX3PackageModule::Initialize` (JX3ClientX64.exe `0xB3C80`) first sets the
+root (`Engine_Lua5X64!g_SetRootPath`, export `0xB5400`, root global `Lua+0x170060`) and
+mounts the paks (`Engine_Lua5X64!KG_InitPakV4FileSystem`, export `0xCC2D0`, which loads
+`KGPK4_FileSystemX64.dll` → `KGPK4_CreateFileSystemWrapper` → `wrapper->vt[1]` =
+OpenFileSystem; the exe passes `[pakModule+0x93c]`=PakDir, `[+0xa40]`=DirFileName,
+`[+0xb84]`=priority, plus ints/bytes from `clientconfig.ini [PakV4]`).
+
+**Probe now does this properly** (before `iface->vt[0]()`):
+```
+g_SetRootPath("…\client_root")
+KG_InitPakV4FileSystem("C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0,0,0,0, (void*)"")
+```
+(9th arg is a dereferenced string — NULL AVs inside `KG_InitPakV4FileSystem` at `0xCC501`.)
+Result: `KG_InitPakV4FileSystem -> 1`, and the engine's file lookups now resolve from the
+**real PakV4 store** — the whole shader set loads (`shaderMap load finished … Shader map
+created succeeded`, `Gpu Particle Shader created succeeded`, `Shader table created
+succeeded`) with **no missing-file loop**.
+
+Engine init now reaches: device → shaders → `KG3D_Engine dlss2 init` → `KObjectManager is
+created` → pre-render pipeline (`ch=3` GBK string) → **abort `0xC0000409` in MSVCR110.dll
+offset 0x740C4** (fast-fail; `KG3D_MaterialSystemX64.dll` + `KG3D_ShaderReflectionX64.dll`
+just loaded, `KG3D_ImguiX64.dll` is the loaded MSVCR110 consumer). Vectored exception
+logging shows no C++ EH — a direct CRT `_invoke_watson` (invalid parameter) path; next
+probe: hook `_invoke_watson` in MSVCR110 (note: MSVCR110 loads only with the engine, so
+install the hook after the engine DLL is loaded).
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
