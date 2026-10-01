@@ -108,8 +108,24 @@ internal static class CollisionSelfTest
         return m;
     }
 
-    static void Main()
+    static void Main(string[] args)
     {
+        // Map-wide wall audit: `collision_selftest_<exe>.exe audit <structuresBin> [foliageBin] [stride]`
+        if (args.Length > 0 && args[0] == "audit")
+        {
+            string sbin = args.Length > 1 ? args[1] : null;
+            string fbin = args.Length > 2 ? args[2] : null;
+            int stride = 1;
+            if (args.Length > 3) int.TryParse(args[3], out stride);
+            if (stride < 1) stride = 1;
+            FoliageCollision ac = new FoliageCollision(fbin, sbin);
+            List<string> rep = new List<string>();
+            int tested;
+            int failed = ac.AuditWalls(rep, 60, 17f, 116f, 64f, out tested, stride);
+            Console.WriteLine("wall audit: tested=" + tested + " failed=" + failed + " stride=" + stride);
+            for (int i = 0; i < rep.Count; i++) Console.WriteLine(rep[i]);
+            Environment.Exit(failed == 0 ? 0 : 2);
+        }
         string wallPath = WriteBin("wall", new MeshBuilder[] { Wall() }, new float[][] { M(0f, 0f, 0f) });
 
         // 1. flat wall push-out

@@ -1106,8 +1106,136 @@ public sealed class FoliageCollision
         return false;
     }
 
-    // Moves the capsule by (dx,dz) in substeps of at most maxSubStep,
-    // resolving contacts after each substep, so a move longer than the
+    // Offline wall-sweep audit (map-wide walk-through detector): every
+    // wall-like triangle must stop a capsule sweep aimed at it from either
+    // side. Runs the real contact/resolve path (grid lookup included), so
+    // walk-through classes are found map-wide without the engine.
+    // stride > 1 samples every Nth wall face for fast triage.
+    public int AuditWalls(List<string> report, int maxReport,
+                          float radius, float height, float stepHeight,
+                          out int tested, int stride = 1)
+    {
+        int failed = 0, seen = 0;
+        tested = 0;
+        for (int ii = 0; ii < _inst.Count; ii++)
+        {
+            Instance it = _inst[ii];
+            MeshData md = it.mesh;
+            if (md == null || it.l2w == null || md.tris == null) continue;
+            if (md.propSolid) continue;   // props use the AABB proxy, not faces
+            int triCount = md.tris.Length / 3;
+            for (int t = 0; t < triCount; t++)
+            {
+                int i0 = md.tris[t * 3] * 3, i1 = md.tris[t * 3 + 1] * 3, i2 = md.tris[t * 3 + 2] * 3;
+                float ax = md.verts[i0] * it.l2w[0] + md.verts[i0 + 1] * it.l2w[4] + md.verts[i0 + 2] * it.l2w[8] + it.l2w[12];
+                float ay = md.verts[i0] * it.l2w[1] + md.verts[i0 + 1] * it.l2w[5] + md.verts[i0 + 2] * it.l2w[9] + it.l2w[13];
+                float az = md.verts[i0] * it.l2w[2] + md.verts[i0 + 1] * it.l2w[6] + md.verts[i0 + 2] * it.l2w[10] + it.l2w[14];
+                float bx = md.verts[i1] * it.l2w[0] + md.verts[i1 + 1] * it.l2w[4] + md.verts[i1 + 2] * it.l2w[8] + it.l2w[12];
+                float by = md.verts[i1] * it.l2w[1] + md.verts[i1 + 1] * it.l2w[5] + md.verts[i1 + 2] * it.l2w[9] + it.l2w[13];
+                float bz = md.verts[i1] * it.l2w[2] + md.verts[i1 + 1] * it.l2w[6] + md.verts[i1 + 2] * it.l2w[10] + it.l2w[14];
+                float cx = md.verts[i2] * it.l2w[0] + md.verts[i2 + 1] * it.l2w[4] + md.verts[i2 + 2] * it.l2w[8] + it.l2w[12];
+                float cy = md.verts[i2] * it.l2w[1] + md.verts[i2 + 1] * it.l2w[5] + md.verts[i2 + 2] * it.l2w[9] + it.l2w[13];
+                float cz = md.verts[i2] * it.l2w[2] + md.verts[i2 + 1] * it.l2w[6] + md.verts[i2 + 2] * it.l2w[10] + it.l2w[14];
+                float ux = bx - ax, uy = by - ay, uz = bz - az;
+                float vx = cx - ax, vy = cy - ay, vz = cz - az;
+                float nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+                float nl = (float)Math.Sqrt(nx * nx + ny * ny + nz * nz);
+                if (nl < 1e-6f) continue;
+                if ((float)Math.Sqrt(nx * nx + nz * nz) / nl < 0.5f) continue; // walls only
+                float ymin = Math.Min(ay, Math.Min(by, cy));
+                float ymax = Math.Max(ay, Math.Max(by, cy));
+                if (ymax - ymin < 1f) continue;
+                seen++;
+                if (stride > 1 && (seen % stride) != 0) continue;
+                float hnx = nx, hnz = nz;
+                float hl = (float)Math.Sqrt(hnx * hnx + hnz * hnz);
+                hnx /= hl; hnz /= hl;
+                float fcx = (ax + bx + cx) / 3f, fcz = (az + bz + cz) / 3f;
+                for (int hh = 0; hh < 3; hh++)
+                {
+                    float fy = ymin + (ymax - ymin) * (0.25f + 0.25f * hh);
+                    float feet = fy - height * 0.5f;
+                    for (int side = 0; side < 2; side++)
+                    {
+                        float sgn = side == 0 ? 1f : -1f;
+                        float px = fcx + hnx * sgn * (radius + 6f);
+                        float pz = fcz + hnz * sgn * (radius + 6f);
+                        float py = feet;
+                        // approach must be clear: if other geometry of this
+                        // instance already overlaps the start position the
+                        // face cannot be tested in isolation (dense stacks)
+                        Contact c0 = new Contact();
+                        c0.lowTop = float.MaxValue;
+                        if (InstanceContact(it, px, py, pz, radius, height, ref c0) && c0.depth > 0.5f)
+                            continue;
+                        float dx = -hnx * sgn * (2f * radius + 20f);
+                        float dz = -hnz * sgn * (2f * radius + 20f);
+                        // mini-resolve against THIS instance only (same
+                        // contact/step/push contract as Resolve; skips the
+                        // global candidate scan for audit speed)
+                        float ground = py;
+                        bool grounded = true;
+                        float len = (float)Math.Sqrt(dx * dx + dz * dz);
+                        int n = (int)Math.Ceiling(len / 20f);
+                        if (n < 1) n = 1;
+                        for (int s2 = 0; s2 < n; s2++)
+                        {
+                            px += dx / n; pz += dz / n;
+                            for (int iter = 0; iter < 3; iter++)
+                            {
+                                Contact best = new Contact();
+                                best.lowTop = float.MaxValue;
+                                if (!InstanceContact(it, px, py, pz, radius, height, ref best)) break;
+                                if (best.depth <= 0.01f) break;
+                                float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
+                                bool stepped = false;
+                                if (horiz > 0.5f && grounded)
+                                {
+                                    float top = best.triTop;
+                                    if (top > py + stepHeight && best.lowTop <= py + stepHeight)
+                                        top = best.lowTop;
+                                    if (top > ground && top <= py + stepHeight)
+                                    {
+                                        Contact probe = new Contact();
+                                        probe.lowTop = float.MaxValue;
+                                        if (!InstanceContact(it, px, top + 0.1f, pz, radius, height, ref probe)
+                                            || probe.depth <= 0.1f)
+                                        {
+                                            py = top + 0.1f;
+                                            ground = top;
+                                            stepped = true;
+                                        }
+                                    }
+                                }
+                                if (stepped) break;
+                                if (horiz > 0.5f)
+                                {
+                                    float hdot = (best.nx * dx + best.nz * dz) / (len + 1e-6f);
+                                    if (hdot > 0.2f) { best.nx = -best.nx; best.nz = -best.nz; }
+                                }
+                                px += best.nx * best.depth;
+                                py += best.ny * best.depth;
+                                pz += best.nz * best.depth;
+                            }
+                        }
+                        float sd = (px - fcx) * hnx * sgn + (pz - fcz) * hnz * sgn;
+                        tested++;
+                        if (sd < -8f)
+                        {
+                            failed++;
+                            if (report != null && report.Count < maxReport)
+                                report.Add(string.Format(
+                                    "FAIL inst={0} mesh={1} bb x{2:F0}..{3:F0} z{4:F0}..{5:F0} tri={6} top={7:F0} face=({8:F0},{9:F0},{10:F0}) sd={11:F1}",
+                                    ii, md.meshIndex, it.minX, it.maxX, it.minZ, it.maxZ, t, ymax, fcx, fy, fcz, sd));
+                        }
+                    }
+                }
+            }
+        }
+        return failed;
+    }
+
+    // Moves the capsule by (dx,dz) in substeps of at most maxSubStep,    // resolving contacts after each substep, so a move longer than the
     // capsule radius cannot tunnel through a thin collider. Terrain ground
     // and slope decisions stay with the caller; ref ground/grounded follow
     // the same Resolve semantics. Returns true when any substep was blocked.
