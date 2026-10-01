@@ -1093,3 +1093,22 @@ eborn_client_daqinggong carries these changes — other
 - Sandbox gap noted: 45 deg dash stand-in vs the real StopBirdFly glide; no
   altitude auto-end / summit state yet.
 - Outcome: answered; doc + experience recorded.
+
+### 2026-09-30 — client — release exit now the real StopBirdFly semantics (45° dash removed)
+- Did: `wwEndState` rewritten to the traced client exit (buff 13422 →
+  `skill/轻功/轻功状态结束处理.lua`): StopBirdFly + UnlockBirdMoveZ — the fly ends,
+  the horizontal speed (`leapSpeedXY`) persists as the forward glide, gravity
+  integrates Vz with the row-0 base gravity (`WwRules.FallGravityPerSecond2` =
+  2475 u/s²), the 900 u/f fall cap applies, the 气力值 drain stops. The 45° dash
+  (`wwDashActive` / `RC_WW_DASH_ANGLE`) removed; `pGravity`/`curJumpGravity`
+  moved before the exit delegate so it can set the fall gravity; the HUD DASH
+  state removed; `RC_WH_DEMO_RELEASE_MS` added for the exit test; WwRules
+  `FALL_GRAVITY` selftest added.
+- Evidence: release run 18:31 exit=0 — release during JC3: `wh chain end (登顶):
+  stage 3` → `wh StopBirdFly + UnlockBirdMoveZ: vxy=1500 u/s persists, vy=4846
+  u/s; fall gravity 2475 u/s2` → the ballistic rise decayed (vy 4846 → 941 over
+  1.5 s) with the forward motion continuing; standard chain run 18:32 exit=0
+  DONE; selftest PASS; commit c6cbe28.
+- Open: the summit state (no summit points in the sandbox map) and the
+  altitude < 3072 u auto-end (`GetAltitude` units unverified).
+- Outcome: solved; the sandbox release matches the client truth.
