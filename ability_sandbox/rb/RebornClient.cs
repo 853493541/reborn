@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Web.Script.Serialization;
@@ -49,6 +50,17 @@ internal static class RebornClient
     const uint SND_ASYNC = 0x0001;
     const uint SND_NODEFAULT = 0x0002;
     const uint SND_FILENAME = 0x00020000;
+
+    // sfx_shim.dll probe (engine SFX factories); see native/sfx_shim.cpp
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    static extern IntPtr LoadLibrary(string path);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+    static extern IntPtr GetProcAddress(IntPtr module, string name);
+
+    delegate int SfxProbeFn();
+
+    delegate IntPtr SfxStatusFn();
 
     [STAThread]
     private static void Main(string[] args)
@@ -657,6 +669,36 @@ internal static class RebornClient
         // Step C native bridge (optional, version-checked): near plane /
         // absolute camera Y / FilterCamera ray; managed fallback if absent
         CameraShim.TryLoad(Log);
+
+        // engine SFX wiring probe (RC_SFX_PROBE=1): loads the isolated
+        // sfx_shim.dll and calls the engine's own CreateScreen3DSFX /
+        // CreateSFXTrackData on the live engine instance; the shim dumps the
+        // interface vtables to Skill\out\sfx_probe.log
+        if (Env("RC_SFX_PROBE", "0") == "1")
+        {
+            try
+            {
+                string shimPath = Path.Combine(startupPath, "sfx_shim.dll");
+                IntPtr shim = LoadLibrary(shimPath);
+                if (shim == IntPtr.Zero)
+                    Log("sfx probe: sfx_shim.dll not loaded (err=" + Marshal.GetLastWin32Error() + ")");
+                else
+                {
+                    IntPtr fn = GetProcAddress(shim, "RC_Shim_SfxProbe");
+                    if (fn == IntPtr.Zero) Log("sfx probe: export missing");
+                    else
+                    {
+                        var probe = (SfxProbeFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(SfxProbeFn));
+                        int rc = probe();
+                        IntPtr st = GetProcAddress(shim, "RC_Shim_SfxStatus");
+                        string status = st == IntPtr.Zero ? "" : Marshal.PtrToStringAnsi(
+                            ((SfxStatusFn)Marshal.GetDelegateForFunctionPointer(st, typeof(SfxStatusFn)))());
+                        Log("sfx probe rc=" + rc + " status=" + status);
+                    }
+                }
+            }
+            catch (Exception e) { Log("sfx probe ex: " + e.Message); }
+        }
 
         // NOTE (2026-09-27): the engine camera contract is recovered (see
         // EngineRay comments: scene vt+0x50 -> camera, cam vt+0x50/+0x58
