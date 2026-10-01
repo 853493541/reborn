@@ -176,3 +176,34 @@ movetest WD     mode=classical dpos=(383,-33) dist=384 yaw=1.66 cam=3.84        
 `
 
 384 u over 1.2 s = 320 u/s run speed; 96 u/s = walk pace back-pedal.
+
+## Classic free view resolved + W+A/W+D curves (2026-10-01, correction)
+
+Decoded the free-view gate from the shipped scripts:
+- Camera_IsInFreeView = mainscene.lua proto 0/1 (returns a state local).
+- CameraStatus_Animation(isOn) (proto 0/0) swaps the Turn* globals to the
+  Strafe* handlers when free view is OFF (and restores them when ON).
+- CameraStatus_Set (proto 0/3) ends with CameraStatus_Animation(mode ~=
+  'god camera'); CameraCommon.lua enters 'local camera' for the player ->
+  FREE VIEW IS ON in normal play.
+So the classical strafe handler (proto 0/76) free-view branch runs in normal
+play: A/D call TurnLeft/RightStart -> A/D TURN. W+A / W+D therefore turn the
+view while W runs: a curve. The earlier host diagonal interpretation was
+wrong and is reverted. Host keyboard turn rotates the view at the char turn
+rate (standing still the body turns with it; while moving the body follows the
+rotating heading via the turn model), and curYaw/camSys.Yaw are wrapped each
+frame (an unwrapped facing aliased dYaw across +/-pi and flipped turns).
+
+Run RC_DEMO_MOVE=1 RC_MODE=classical RC_AUTORUN=20000, exit 0
+(log reborn_20261001_085528.log):
+
+`
+movetest strafe mode=classical yaw0=-2.85 yaw1=0.29 d=3.14 cam0=1.28 cam1=-1.86   # A alone: turn (wrapped +/-pi)
+movetest back   mode=classical dpos=(-27,-92) dist=96                              # S: 96 u/s walk-pace back-pedal
+movetest turn   yaw0=0.29 yaw1=2.17 d=1.88 camd=4.40 (=-1.88 wrapped)              # arrow turn 1:1 view+body
+movetest WA     dpos=(56,185) dist=194 dyaw=-3.75 dcam=-2.51 (=+3.77 wrapped)      # W+A: left curve (dist 194 vs 384 straight)
+movetest WD     dpos=(53,186) dist=194 dyaw=3.71  dcam=2.52 (=-3.77 wrapped)       # W+D: mirrored right curve
+`
+
+Joystick sanity: strafe d=4.71 turn-to-heading cam unchanged; back dist=320
+run; WA dist=348 no camera turn.

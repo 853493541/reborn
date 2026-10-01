@@ -852,6 +852,8 @@ internal static class RebornClient
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         float strafeX0 = 0f, strafeZ0 = 0f, backX0 = 0f, backZ0 = 0f, waX0 = 0f, waZ0 = 0f, wdX0 = 0f, wdZ0 = 0f;
+        float waYaw0 = 0f, wdYaw0 = 0f;
+        double waCam0 = 0.0, wdCam0 = 0.0;
         float strafeYaw0 = 0f, backYaw0 = 0f, turnYaw0 = 0f;
         double strafeCam0 = 0.0, backCam0 = 0.0, turnCam0 = 0.0;
         long modeSwitchAt = 0;
@@ -1698,11 +1700,11 @@ internal static class RebornClient
                 if (now >= 13300 && !mvSitDone) { mvSitDone = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); Log("movetest sit done"); }
                 if (now >= 13600 && !mvSheath) { mvSheath = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); }
                 if (now >= 14600 && !mvSheathDone) { mvSheathDone = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); Log("movetest sheath done"); }
-                // W+A / W+D matrix windows (classical: camera-relative diagonal run)
-                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); }
-                if (now >= 16300 && !mvWADone) { mvWADone = true; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} yaw={4:F2} cam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw, camSys.Yaw)); }
-                if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
-                if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} yaw={4:F2} cam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), curYaw, camSys.Yaw)); }
+                // W+A / W+D free-view windows: A/D turn while W runs -> curve
+                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); }
+                if (now >= 16300 && !mvWADone) { mvWADone = true; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw - waYaw0, camSys.Yaw - waCam0)); }
+                if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
+                if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), curYaw - wdYaw0, camSys.Yaw - wdCam0)); }
                 if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
             }
             if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
@@ -1919,16 +1921,18 @@ internal static class RebornClient
             // Camera_IsInFreeView is found - OPERATION_MODES_PLAN.md §7c).
             bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
             bool classicalMode = !followsHeading;
+            // Free view: mainscene.lua's CameraStatus_Set calls
+            // CameraStatus_Animation(mode ~= 'god camera'); CameraCommon.lua
+            // enters 'local camera' for the player, so free view is ON in
+            // normal play. In free view the classical strafe handler calls
+            // TurnLeft/RightStart -> A/D TURN (also while W is held, producing
+            // a run curve); A/D are never lateral movement in free view.
+            // RC_FREEVIEW=0 keeps the decoded non-free branch (SetControl
+            // side-step) reachable for tests.
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
-            // CLASSICAL full matrix (observed game behaviour + the decoded
-            // hotkeys.lua 8-way MOVE_* mapping): A/D alone turn (the camera
-            // follows); W+A / W+D run the camera-relative diagonal with A/D as
-            // lateral input (no camera turn); S / S+A/D back-pedal at walk
-            // pace with the facing kept; arrows always turn.
-            bool fwdKey = pW || autorunOn;
-            bool turnL = pTurnL || (classicalMode && freeView && pA && !fwdKey && !pS);
-            bool turnR = pTurnR || (classicalMode && freeView && pD && !fwdKey && !pS);
-            bool latMoves = !(classicalMode && freeView) || fwdKey || pS;
+            bool turnL = pTurnL || (classicalMode && freeView && pA);
+            bool turnR = pTurnR || (classicalMode && freeView && pD);
+            bool latMoves = !(classicalMode && freeView);
             // sitting stands up on any movement intent (move / turn / jump)
             if (sitting && (pW || pS || pA || pD || pTurnL || pTurnR || autorunOn))
             {
@@ -2052,29 +2056,29 @@ internal static class RebornClient
                 vjx = 0f; vjz = 0f;
             }
 
-            // TURNLEFT/TURNRIGHT (arrows) plus classical A/D in free view (the
-            // decoded StrafeLeft/Right handlers turn instead of strafing):
-            // turn in place at the char turn rate; the camera follows via the
-            // documented CameraAdjustYawWhenMoveTurn drag (15 deg dead zone).
-            // heading and camera yaw are related by the cameraYawBehind
-            // reflection (Forward(yaw)=(-cos,-sin)), so the drag is computed
-            // through it.
+            // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D: keyboard
+            // turn rotates the VIEW (camera yaw) at the char turn rate; the
+            // heading<->camera-yaw reflection (Forward(yaw)=(-cos,-sin)) makes
+            // the camera yaw move opposite to the facing step. Standing still,
+            // the body turns with it; while moving, the movement turn model
+            // aligns the body to the rotating camera-relative heading - only
+            // one driver per case.
             if (grounded && (turnL || turnR))
             {
                 float tstep = charTurnRate * (float)dt;
-                if (turnL && !turnR) curYaw -= tstep;
-                else if (turnR && !turnL) curYaw += tstep;
-                double behind = Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw));
-                double dcam = behind - camSys.Yaw;
-                while (dcam > Math.PI) dcam -= 2.0 * Math.PI;
-                while (dcam < -Math.PI) dcam += 2.0 * Math.PI;
-                double turnDead = camSys.Row.F("CameraAdjustYawWhenMoveTurnDisableAngle", 0.26);
-                if (Math.Abs(dcam) > turnDead)
-                {
-                    double drag = Math.Min(Math.Abs(dcam), tstep);
-                    camSys.Yaw += Math.Sign(dcam) * drag;
-                }
+                float dturn = 0f;
+                if (turnL && !turnR) dturn = -tstep;
+                else if (turnR && !turnL) dturn = tstep;
+                camSys.Yaw -= dturn;
+                if (!moving) curYaw += dturn;
             }
+            // keep the facing and camera yaw wrapped: the movement turn model
+            // compares against wrapped headings, and an unwrapped facing makes
+            // dYaw alias across +/-pi (turn flips to the long way around).
+            while (curYaw > (float)Math.PI) curYaw -= 2f * (float)Math.PI;
+            while (curYaw < -(float)Math.PI) curYaw += 2f * (float)Math.PI;
+            while (camSys.Yaw > Math.PI) camSys.Yaw -= 2.0 * Math.PI;
+            while (camSys.Yaw < -Math.PI) camSys.Yaw += 2.0 * Math.PI;
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
             // camera direction; LMB drag rotates the camera only. The turn is

@@ -1077,3 +1077,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   camera_smoke ALL PASS; jx3_model 10x PASS; verify/capture selftest exit 0.
 - Open: diagonal-back clip selection uses the host angle thresholds; the
   yaw-turn-speed consumer is still not located (registered S6 fallback).
+
+### 2026-10-01 - controls/client - Classic free view decoded; W+A/W+D are curves (not diagonals)
+- Problem: W+A / W+D behaved wrong (host had guessed camera-relative diagonals).
+- Research: found the actual free-view implementation in the shipped UI scripts:
+  CameraStatus_Animation (mainscene.lua proto 0/0) swaps Turn*<->Strafe*
+  handlers; CameraStatus_Set (0/3) calls it with (mode ~= 'god camera');
+  CameraCommon.lua enters 'local camera' -> free view ON normally. So the
+  classical strafe handler's free-view branch (TurnLeftStart/RightStart) runs
+  in normal play: A/D turn, and W+A/W+D are turns while running (curves).
+- Fix: reverted the diagonal behavior; keyboard turn now rotates the view at
+  the char turn rate (standing: body turns too; moving: body follows the
+  rotating heading via the turn model - one driver per case); curYaw/camSys.Yaw
+  wrapped each frame, fixing a +/-pi alias that flipped the turn model.
+  S stays walk-pace back-pedal.
+- Evidence: run reborn_20261001_085528.log (WA dist=194 curve vs 384 straight,
+  dyaw=-3.75; WD mirrored; back dist=96); joystick sanity run; camera_smoke
+  ALL PASS; jx3_model 10x PASS; verify/capture selftest exit 0.
+- Lesson: the answer was in another shipped script (mainscene.lua), not the
+  engine binary - extract the whole ui/Script set before concluding.

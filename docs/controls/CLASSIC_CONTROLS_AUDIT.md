@@ -12,26 +12,32 @@ key, no action needed) · `BLOCKED-RE` (mechanism undecoded).
 
 ## 1. Movement (classic) — all DONE
 
-**The full classic matrix (2026-10-01, from the user-observed game behaviour +
-the decoded `hotkeys.lua` 8-way `MOVE_*` mapping in `ResponseWASDKey` proto
-0/46):**
+**The full classic matrix (2026-10-01, decoded from the shipped UI scripts +
+the user-observed game behaviour):**
 
 | Input | Behaviour | Speed |
 |---|---|---|
 | W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D alone (free view) | turn character + camera (15° drag dead zone) | yaw rate |
-| W+A / W+D | **camera-relative 45° diagonal run**, character faces the diagonal, camera untouched | run 320 u/s |
-| S+A / S+D | diagonal back-pedal, facing kept | walk 96 u/s |
-| ←/→ | turn character + camera (arrows always turn) | yaw rate |
+| A/D · ←/→ | **turn: the view (camera) rotates at the char turn rate; standing still the body turns with it, while moving the body follows the rotating camera-relative heading** | yaw rate |
+| W+A / W+D | **run while turning (a curve)** — the view and the body rotate together | run 320 u/s, curve radius v/ω |
+| S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
+
+**Decoded gate:** `mainscene.lua`'s `CameraStatus_Set` calls
+`CameraStatus_Animation(mode ~= 'god camera')`; `CameraCommon.lua` enters
+`'local camera'` for the player, so `Camera_IsInFreeView()` is **true in normal
+play**. In free view the strafe handler (proto 0/76) calls
+`TurnLeftStart/RightStart`, i.e. **A/D turn**; the non-free branch
+(`SetControl` side-step) only applies to the god camera and stays reachable
+with `RC_FREEVIEW=0` for tests.
 
 | Command | Default key | Status | Note |
 |---|---|---|---|
 | `MOVEFORWARD` | W / Up | DONE | camera-relative, RunTo turn model |
 | `MOVEBACKWARD` | S / Down | DONE | back-pedal at walk pace, facing kept (`后退01`) |
-| `STRAFELEFT` / `STRAFERIGHT` | A / D | DONE | alone: turn (free view, `RC_FREEVIEW=1`) / side-step branch at `RC_FREEVIEW=0`; with W/S: lateral component of the diagonal |
-| `TURNLEFT` / `TURNRIGHT` | Left / Right | DONE | turn in place, camera drags behind (15° dead zone) |
+| `STRAFELEFT` / `STRAFERIGHT` | A / D | DONE | free view: turn the view + body; `RC_FREEVIEW=0`: side-step branch (挪步 clips) |
+| `TURNLEFT` / `TURNRIGHT` | Left / Right | DONE | same keyboard turn (view + body) |
 | `JUMP` | Space | DONE | + 二段跳, jump XY, landing branch |
 | `TOGGLERUN` | Numpad / | DONE | main `/` host convenience |
 | `TOGGLEAUTORUN` | G / NumLock | DONE | cancel set open (backward/strafe) |
