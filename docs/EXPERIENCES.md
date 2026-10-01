@@ -1000,3 +1000,32 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   etc.). Renderer gaps recorded: projection (阴影) not drawn, per-state fonts,
   WndEdit caret/placeholder, `<Dn>` rich-text tags.
 - Evidence: doc §8 + `proof/ui/evidence/scheme/*` (tracked).
+
+### 2026-09-30 — ui — Font/color scheme engine decode + cast-bar driver found
+- Did: continued the open items. Added RIP-relative string annotation to
+  `tools/pvp/dump_fn_disasm.py`; committed annotated disasm of the KGUIX64 font
+  pipeline (`proof/ui/evidence/battle_hud/re/kgui_font/`).
+- Decoded (HIGH): `LoadScheme` record 0x40 B (`FontID@0 / Size@4 / BorderSize@8u16 /
+  ProjectionSize@Cu16 / Color@0x10 / BorderColor@0x14 / ProjectionColor@0x18 /
+  Name[32]@0x1C / FontScale@0x3C`, file via `SchemeElemFont`, Size default 12);
+  `SetFontScheme` (item+0x2F8 scheme id, +0x2FC slot, +0x300 fill ARGB, +0x314
+  max(0,FontScale); border/projection setters 0x180121FC0/0x180122090 take
+  `(u16 size, ARGB)`); `LoadFont` (36 slots, `size=(slot.Size+mgr+0x4C)*mgr+0x48`);
+  `SetFontScale` (KWndStation::SetUIScale → mgr+0x48 → LoadFont → UI_SCALED);
+  `KColorSchemeMgr::Init` (color.txt = 4-col `siii` tab, array + linear **first-match**
+  scan); `UpdateCodePage` (locale font path list); per-state font keys in the
+  button/edit decoders; `GrayFontColor` = `uiconfig.ini [GrayFontColor] 207/207/207`.
+- Fixed renderer deviation: `red6` is defined twice — engine (and now
+  `ui-process-app/Engine/Fonts.cs` + `tools/ui_scheme_lookup.py`) uses the **first**
+  row `255,27,27` (scheme 208 is used by one shipped layout).
+- `Size=0` closure: all 58 differing `Size>0` override schemes are unused by every
+  shipped layout → the renderer rule matches all real usage; the engine glyph-size
+  consumer site stays unpinned (next probe: writers of `KItemText+0x2F4`).
+- Cast bar: driver is the native represent layer via `REPRESENT_CALL` →
+  `ui/script/representcommand.lua` `CreateProgressBar` → `GeneralProgressBar_Create
+  (name, tableID, …)` → `ProgressBar.tab` presets (161 rows incl. `szIniName`) +
+  `ProgressBarPlus.txt` / `AutoProgressBarInfo.txt`; `CASTINGBAR_START/END` have no
+  Lua consumer in any extracted corpus (native listener). `BATTLE_FLOATING_UI.md`
+  updated.
+- Verified: `dotnet build` 0 errors; `--fonttest` → `family=FZHei-B01 resolved=True`;
+  `ui_scheme_lookup.py --color red6` → `#FF1B1B` (first row).

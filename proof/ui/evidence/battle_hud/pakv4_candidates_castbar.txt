@@ -8,3 +8,6 @@ ui/Config/Default/GeneralProgressBar.lua
 ui/Config/Default/GeneralProgressBar.ini
 ui/Config/Default/PQprogressbar.lua
 ui/Config/Default/PQprogressbar.ini
+ui/Scheme/Case/ProgressBar.tab
+ui/Scheme/Case/AutoProgressBarInfo.txt
+ui/Scheme/Case/ProgressBarPlus.txt

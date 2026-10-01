@@ -50,9 +50,11 @@ def load_tables():
         parts = row.strip().split("\t")
         if len(parts) >= 4:
             try:
-                colors[parts[0]] = tuple(int(x) for x in parts[1:4])
+                colors.setdefault(parts[0], tuple(int(x) for x in parts[1:4]))
             except ValueError:
                 continue
+    # setdefault = FIRST row wins, matching the engine (KColorSchemeMgr::Init loads a
+    # 4-column tab and lookups are a linear first-match scan; red6 is duplicated).
     return schemes, fontlist, colors
 
 

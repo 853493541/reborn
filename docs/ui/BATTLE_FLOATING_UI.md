@@ -176,27 +176,35 @@ sizes, slots) against the configs.
 **Reborn:** this is the damage-number system; overlay window + billboard tracks. The
 merge/queue behavior lives in the decompiled Lua (port or re-derive against captures).
 
-#### Cast/channel bar (施法条) (P1) — two-part; consumer open
+#### Cast/channel bar (施法条) (P1) — driver identified (2026-09-30)
 - Native event ids `CASTINGBAR_START` / `CASTINGBAR_END` (`JX3UIX64.dll` strings
-  `0x393CC0`/`0x393CD8`).
-- UI side: generic `ProgressBar` module — INI `[Frame_ProgressBar]` `WndFrame` `._Parent=Normal`,
-  `AnchorArgs=BOTTOMCENTER,BOTTOMCENTER,0,-195`, `ShowModeID=6`; API `Start(title?, endTime, interval)`
-  / `Finish(id)`; per-item percentage (`Image_ProgressBar.SetPercentage`) and countdown
-  `(%.1fs)`; anchor persisted (`ProgressBar.Anchor`, `PROGRESS_BAR_ANCHOR_CHANGED`).
-  `GeneralProgressBar` (`MultiFrame ClassName=GeneralProgressBar_Base`) and `PQprogressbar`
-  are the same reusable-bar family.
-- **Consumer not located:** a byte scan over the tracked UI script corpus
-  (`proof/netcode/ui_scripts`, 229 scripts incl. `player.lua`, `skill.lua`, `target.lua`)
-  and over every extracted HUD Lua finds `CASTINGBAR_*` only in the DLL string dump
-  (2026-09-30). MED: either the wiring script is outside the extracted subset, or the
-  event is consumed natively and Lua only calls `ProgressBar.Start/Finish`.
+  `0x393CC0`/`0x393CD8`) — no Lua consumer found in ANY extracted corpus
+  (`proof/netcode/ui_scripts` 229 scripts, the 144-file map corpus, the battle-HUD
+  decompiles, local install ui): they are for a native listener, not a Lua module.
+- **The bar driver is the native represent layer via `REPRESENT_CALL`:**
+  `ui/script/representcommand.lua` registers `REPRESENT_CALL` and maps
+  `CreateProgressBar` → `GeneralProgressBar_Create(arg1..arg7)` and `CloseProgressBar`
+  → `GeneralProgressBar_Close(arg1)` (decompiled 2026-09-30). So the engine calls
+  into Lua with a bar name + preset id; the Lua side creates the window.
+- Presets: `ui/Scheme/Case/ProgressBar.tab` (HIT; 161 rows: `ID · Side · OffsetX ·
+  OffsetY · Left_Right · Way · ImagePath · Frame · SFXPath · FullSFXPath · Tip ·
+  szIniName · szMobileProgressColor`, e.g. row 0 = TOPRIGHT/-50/350, `PqUI1.UITex`
+  frame 23, `szIniName=GeneralProgressBar`). `GeneralProgressBar_Create(name, tableID,
+  title, describe, molecular, denominator, …)` looks the row up via
+  `Table_GetProgressBar` and opens window `"GPB_"..name` using the row's `szIniName`.
+  `ProgressBarPlus.txt` gives the fill direction (`left_to_right`/`right_to_left`);
+  `AutoProgressBarInfo.txt` maps auto-bar table ids to per-id INIs + icon atlases.
+- The separate generic `ProgressBar` module (`[Frame_ProgressBar]`,
+  `AnchorArgs=BOTTOMCENTER,BOTTOMCENTER,0,-195`, `ShowModeID=6`, API `Start/Finish`) is
+  the CangYun/OT-style action bar; `PQprogressbar` is the stage bar.
 - Head-top cast text: `CaptionSkillBufferHeight` + `CastSkillResetPeriod` in the
   `number.krl` layout row. Target frame cast art: `TargetCommon.ini` carries
   `Animate_Long/Image_Long/Text_Long` (+ `Animate_Short`) — the target cast/channel
   indicator (MED).
-- Next probe: extract the remaining `ui/Script/**` + `ui/Config/**` Lua and grep for
-  `CASTINGBAR` / `ProgressBar.Start`, or breakpoint the `CASTINGBAR_START` dispatch in
-  `JX3UIX64.dll` during a cast.
+- Status: driver + presets HIGH; which `ProgressBar.tab` row a given skill/action uses
+  (and the `CASTINGBAR_*` native listener) still open — next probe: breakpoint the
+  `REPRESENT_CALL` dispatch during a cast, or scan for `Table_GetProgressBar` callers
+  outside the extracted subset.
 
 #### Balloons (doodad/NPC bubble text) (P3) — native
 `KRLCharacter::UpdateBalloon` / `UpdateBalloonPosition` (`0x1805020A0`, re-verified),
@@ -297,9 +305,10 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
 
 ## 4. Gaps and open questions
 
-1. **Cast-bar consumer** — `CASTINGBAR_START/END` occur only in `JX3UIX64.dll` strings in
-   everything extracted. Next probe: full `ui/Script/**` + `ui/Config/**` dump + string
-   scan, or runtime breakpoint on the event dispatch while casting.
+1. **Cast-bar row mapping** — driver identified (native `REPRESENT_CALL` →
+   `representcommand.CreateProgressBar` → `GeneralProgressBar_Create` + `ProgressBar.tab`
+   presets, see §2.1); `CASTINGBAR_START/END` have no Lua consumer. Open: which
+   `ProgressBar.tab` row each cast/action uses, and the native `CASTINGBAR_*` listener.
 2. **Target layout INIs** — `TargetS.ini` MISS; the `Target<intensity>{2|1|0}` name set is
    not yet enumerated (only `TargetPlayer10/11.ini` confirmed). `TargetCommon.ini` HIT.
 3. **`UISetting_HeadTop.ini`** missing from PakV4 (page exists as Lua only) — likely in a

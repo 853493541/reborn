@@ -1,0 +1,277 @@
+# needle: SchemeElemColor
+# string VAs: ['0x1805e2bb0']
+# xrefs: 1
+
+## xref 0x1801f4338  fn_start 0x1801f4300
+0x01801f4300: push	rbx
+0x01801f4302: push	rsi
+0x01801f4303: push	rdi
+0x01801f4304: push	r12
+0x01801f4306: push	r15
+0x01801f4308: sub	rsp, 0x180
+0x01801f430f: mov	rax, qword ptr [rip + 0x45b992]
+0x01801f4316: xor	rax, rsp
+0x01801f4319: mov	qword ptr [rsp + 0x170], rax
+0x01801f4321: mov	rdi, rcx
+0x01801f4324: lea	r9, [rsp + 0x30]
+0x01801f4329: mov	rcx, qword ptr [rip + 0x47a520]
+0x01801f4330: lea	r8, [rsp + 0x38]
+0x01801f4335: xor	r12d, r12d
+0x01801f4338: lea	rdx, [rip + 0x3ee871]	; 0x1805e2bb0 -> "SchemeElemColor"
+0x01801f433f: add	rcx, 0x520
+0x01801f4346: mov	qword ptr [rsp + 0x38], r12
+0x01801f434b: mov	r15d, r12d
+0x01801f434e: mov	qword ptr [rsp + 0x30], r12
+0x01801f4353: call	0x1800e1eb0
+0x01801f4358: test	eax, eax
+0x01801f435a: jne	0x1801f4389
+0x01801f435c: lea	rax, [rip + 0x3bb1a5]	; 0x1805af508 -> "UI::KFilePathMgr::GetFilePath"
+0x01801f4363: mov	r9d, 0x131
+0x01801f4369: lea	r8, [rip + 0x3b5590]	; 0x1805a9900 -> "nRetCode"
+0x01801f4370: mov	qword ptr [rsp + 0x20], rax
+0x01801f4375: lea	rdx, [rip + 0x3b54fc]
+0x01801f437c: lea	ecx, [r12 + 3]
+0x01801f4381: call	qword ptr [rip + 0x2f2e91]
+0x01801f4387: jmp	0x1801f439f
+0x01801f4389: mov	rax, qword ptr [rsp + 0x30]
+0x01801f438e: mov	rsi, qword ptr [rsp + 0x38]
+0x01801f4393: cmp	byte ptr [rax], r12b
+0x01801f4396: cmovne	rsi, rax
+0x01801f439a: test	rsi, rsi
+0x01801f439d: jne	0x1801f43cf
+0x01801f439f: mov	r9d, 0x27
+0x01801f43a5: lea	r8, [rip + 0x3bbc8c]	; 0x1805b0038 -> "szFilePath"
+0x01801f43ac: lea	rax, [rip + 0x3ee7b5]	; 0x1805e2b68 -> "UI::KColorSchemeMgr::Init"
+0x01801f43b3: mov	ecx, 3
+0x01801f43b8: lea	rdx, [rip + 0x3b54b9]
+0x01801f43bf: mov	qword ptr [rsp + 0x20], rax
+0x01801f43c4: call	qword ptr [rip + 0x2f2e4e]
+0x01801f43ca: jmp	0x1801f4702
+0x01801f43cf: mov	rbx, r12
+0x01801f43d2: cmp	byte ptr [rsi], r12b
+0x01801f43d5: jne	0x1801f4406
+0x01801f43d7: mov	r9d, 0x24
+0x01801f43dd: lea	rax, [rip + 0x3ebc74]	; 0x1805e0058 -> "OpenTabFile"
+0x01801f43e4: lea	r8, [rip + 0x3ebc7d]	; 0x1805e0068 -> "szFilePath[0]"
+0x01801f43eb: mov	qword ptr [rsp + 0x20], rax
+0x01801f43f0: lea	rdx, [rip + 0x3b5481]
+0x01801f43f7: lea	ecx, [r9 - 0x21]
+0x01801f43fb: call	qword ptr [rip + 0x2f2e17]
+0x01801f4401: jmp	0x1801f4555
+0x01801f4406: mov	ecx, 0x30
+0x01801f440b: call	0x1804cc570
+0x01801f4410: mov	qword ptr [rsp + 0x30], rax
+0x01801f4415: mov	rbx, rax
+0x01801f4418: test	rax, rax
+0x01801f441b: je	0x1801f443d
+0x01801f441d: lea	rax, [rip + 0x3ebd74]
+0x01801f4424: mov	qword ptr [rbx + 8], r12
+0x01801f4428: mov	qword ptr [rbx], rax
+0x01801f442b: mov	qword ptr [rbx + 0x10], r12
+0x01801f442f: mov	qword ptr [rbx + 0x18], r12
+0x01801f4433: mov	qword ptr [rbx + 0x20], r12
+0x01801f4437: mov	qword ptr [rbx + 0x28], r12
+0x01801f443b: jmp	0x1801f4440
+0x01801f443d: mov	rbx, r12
+0x01801f4440: test	rbx, rbx
+0x01801f4443: jne	0x1801f4455
+0x01801f4445: lea	r9d, [rbx + 0x2b]
+0x01801f4449: lea	r8, [rip + 0x3d3ee0]	; 0x1805c8330 -> "pTabFile"
+0x01801f4450: jmp	0x1801f4521
+0x01801f4455: mov	ecx, 0x48
+0x01801f445a: mov	qword ptr [rbx + 0x20], 4
+0x01801f4462: call	0x1804cc570
+0x01801f4467: mov	qword ptr [rsp + 0x30], rax
+0x01801f446c: test	rax, rax
+0x01801f446f: je	0x1801f449a
+0x01801f4471: mov	qword ptr [rax], r12
+0x01801f4474: mov	dword ptr [rax + 8], r12d
+0x01801f4478: mov	qword ptr [rax + 0x10], r12
+0x01801f447c: mov	qword ptr [rax + 0x18], r12
+0x01801f4480: mov	qword ptr [rax + 0x20], r12
+0x01801f4484: mov	qword ptr [rax + 0x28], r12
+0x01801f4488: mov	qword ptr [rax + 0x30], r12
+0x01801f448c: mov	qword ptr [rax + 0x38], r12
+0x01801f4490: mov	dword ptr [rax + 0x40], r12d
+0x01801f4494: mov	byte ptr [rax + 0x44], r12b
+0x01801f4498: jmp	0x1801f449d
+0x01801f449a: mov	rax, r12
+0x01801f449d: mov	qword ptr [rbx + 8], rax
+0x01801f44a1: test	rax, rax
+0x01801f44a4: jne	0x1801f44b3
+0x01801f44a6: lea	r9d, [rax + 0x31]
+0x01801f44aa: lea	r8, [rip + 0x3ebb8f]	; 0x1805e0040 -> "pTabFile->m_pBinTab"
+0x01801f44b1: jmp	0x1801f4521
+0x01801f44b3: xor	r9d, r9d
+0x01801f44b6: mov	dword ptr [rsp + 0x20], r12d
+0x01801f44bb: lea	r8, [rip + 0x3ee6c2]	; 0x1805e2b84 -> "siii"
+0x01801f44c2: mov	rdx, rsi
+0x01801f44c5: mov	rcx, rax
+0x01801f44c8: call	0x1801ddc30
+0x01801f44cd: test	eax, eax
+0x01801f44cf: jne	0x1801f44de
+0x01801f44d1: lea	r9d, [rax + 0x41]
+0x01801f44d5: lea	r8, [rip + 0x3b5424]	; 0x1805a9900 -> "nRetCode"
+0x01801f44dc: jmp	0x1801f4521
+0x01801f44de: mov	rdx, qword ptr [rbx + 8]
+0x01801f44e2: mov	rax, qword ptr [rdx + 0x20]
+0x01801f44e6: mov	ecx, dword ptr [rax + 4]
+0x01801f44e9: mov	qword ptr [rbx + 0x18], rcx
+0x01801f44ed: mov	rax, qword ptr [rdx + 0x20]
+0x01801f44f1: mov	ecx, dword ptr [rax + 8]
+0x01801f44f4: mov	rax, qword ptr [rdx + 0x30]
+0x01801f44f8: mov	qword ptr [rbx + 0x10], rax
+0x01801f44fc: test	rax, rax
+0x01801f44ff: jne	0x1801f450e
+0x01801f4501: lea	r9d, [rax + 0x44]
+0x01801f4505: lea	r8, [rip + 0x3ebbc4]	; 0x1805e00d0 -> "pTabFile->m_pbyData"
+0x01801f450c: jmp	0x1801f4521
+0x01801f450e: cmp	qword ptr [rbx + 0x20], rcx
+0x01801f4512: je	0x1801f456c
+0x01801f4514: mov	r9d, 0x45
+0x01801f451a: lea	r8, [rip + 0x3ebbc7]	; 0x1805e00e8 -> "pTabFile->m_uColumnCount == uColumnCount"
+0x01801f4521: lea	rax, [rip + 0x3ebb30]	; 0x1805e0058 -> "OpenTabFile"
+0x01801f4528: mov	ecx, 3
+0x01801f452d: lea	rdx, [rip + 0x3b5344]
+0x01801f4534: mov	qword ptr [rsp + 0x20], rax
+0x01801f4539: call	qword ptr [rip + 0x2f2cd9]
+0x01801f453f: test	rbx, rbx
+0x01801f4542: je	0x1801f4555
+0x01801f4544: mov	rax, qword ptr [rbx]
+0x01801f4547: mov	edx, 1
+0x01801f454c: mov	rcx, rbx
+0x01801f454f: call	qword ptr [rax + 0x28]
+0x01801f4552: mov	rbx, r12
+0x01801f4555: mov	r8, rsi
+0x01801f4558: lea	rdx, [rip + 0x3ebbb9]
+0x01801f455f: mov	ecx, 3
+0x01801f4564: call	qword ptr [rip + 0x2f2cae]
+0x01801f456a: jmp	0x1801f4573
+0x01801f456c: mov	eax, dword ptr [rdx + 0x40]
+0x01801f456f: mov	qword ptr [rbx + 0x28], rax
+0x01801f4573: test	rbx, rbx
+0x01801f4576: jne	0x1801f4588
+0x01801f4578: lea	r9d, [rbx + 0x2a]
+0x01801f457c: lea	r8, [rip + 0x3baf55]	; 0x1805af4d8 -> "piTabFile"
+0x01801f4583: jmp	0x1801f43ac
+0x01801f4588: mov	rax, qword ptr [rbx]
+0x01801f458b: mov	rcx, rbx
+0x01801f458e: call	qword ptr [rax + 8]
+0x01801f4591: mov	qword ptr [rdi + 8], rax
+0x01801f4595: test	rax, rax
+0x01801f4598: jne	0x1801f45c8
+0x01801f459a: lea	r9d, [rax + 0x2d]
+0x01801f459e: lea	r8, [rip + 0x3ee5eb]	; 0x1805e2b90 -> "m_nSchemeCount > 0"
+0x01801f45a5: lea	rax, [rip + 0x3ee5bc]	; 0x1805e2b68 -> "UI::KColorSchemeMgr::Init"
+0x01801f45ac: mov	ecx, 3
+0x01801f45b1: lea	rdx, [rip + 0x3b52c0]
+0x01801f45b8: mov	qword ptr [rsp + 0x20], rax
+0x01801f45bd: call	qword ptr [rip + 0x2f2c55]
+0x01801f45c3: jmp	0x1801f46f5
+0x01801f45c8: mov	rcx, qword ptr [rdi]
+0x01801f45cb: imul	rdx, rax, 0x44
+0x01801f45cf: call	0x1804cc600
+0x01801f45d4: test	rax, rax
+0x01801f45d7: jne	0x1801f45e6
+0x01801f45d9: lea	r9d, [rax + 0x30]
+0x01801f45dd: lea	r8, [rip + 0x3ee5c4]	; 0x1805e2ba8 -> "pScheme"
+0x01801f45e4: jmp	0x1801f45a5
+0x01801f45e6: mov	rsi, r12
+0x01801f45e9: mov	qword ptr [rsp + 0x1b8], rbp
+0x01801f45f1: mov	qword ptr [rsp + 0x1c0], r14
+0x01801f45f9: mov	qword ptr [rdi], rax
+0x01801f45fc: cmp	qword ptr [rdi + 8], r12
+0x01801f4600: jbe	0x1801f46df
+0x01801f4606: mov	r14, r12
+0x01801f4609: nop	dword ptr [rax]
+0x01801f4610: mov	rax, qword ptr [rbx]
+0x01801f4613: lea	r8, [rsp + 0x40]
+0x01801f4618: mov	r9d, 0x14
+0x01801f461e: mov	rdx, rsi
+0x01801f4621: mov	rcx, rbx
+0x01801f4624: call	qword ptr [rax + 0x20]
+0x01801f4627: test	eax, eax
+0x01801f4629: je	0x1801f4747
+0x01801f462f: mov	rax, qword ptr [rip + 0x47a21a]
+0x01801f4636: mov	r8d, 0xfde9
+0x01801f463c: mov	rcx, qword ptr [rax + 0xdb50]
+0x01801f4643: cmp	dword ptr [rcx + 0x218], r12d
+0x01801f464a: jne	0x1801f4653
+0x01801f464c: mov	r8d, dword ptr [rcx + 0x918]
+0x01801f4653: mov	rdx, qword ptr [rsp + 0x40]
+0x01801f4658: lea	rax, [rsp + 0x68]
+0x01801f465d: lea	rcx, [rsp + 0x60]
+0x01801f4662: mov	qword ptr [rsp + 0x60], rax
+0x01801f4667: call	0x1800bceb0
+0x01801f466c: mov	rcx, qword ptr [rdi]
+0x01801f466f: mov	r9, 0xffffffffffffffff
+0x01801f4676: mov	r8, qword ptr [rsp + 0x60]
+0x01801f467b: add	rcx, r14
+0x01801f467e: lea	edx, [r9 + 0x21]
+0x01801f4682: call	qword ptr [rip + 0x2f3d08]	; 0x1804e8390 -> "D渄"
+0x01801f4688: mov	rcx, qword ptr [rsp + 0x60]
+0x01801f468d: mov	ebp, eax
+0x01801f468f: lea	rax, [rsp + 0x68]
+0x01801f4694: cmp	rcx, rax
+0x01801f4697: je	0x1801f469f
+0x01801f4699: call	qword ptr [rip + 0x2f3821]	; 0x1804e7ec0 -> "鰷d"
+0x01801f469f: test	ebp, ebp
+0x01801f46a1: jne	0x1801f4738
+0x01801f46a7: movzx	eax, byte ptr [rsp + 0x4c]
+0x01801f46ac: inc	rsi
+0x01801f46af: movzx	ecx, byte ptr [rsp + 0x48]
+0x01801f46b4: shl	ecx, 8
+0x01801f46b7: or	ecx, eax
+0x01801f46b9: movzx	eax, byte ptr [rsp + 0x50]
+0x01801f46be: shl	ecx, 8
+0x01801f46c1: or	ecx, eax
+0x01801f46c3: mov	rax, qword ptr [rdi]
+0x01801f46c6: or	ecx, 0xff000000
+0x01801f46cc: mov	dword ptr [r14 + rax + 0x40], ecx
+0x01801f46d1: add	r14, 0x44
+0x01801f46d5: cmp	rsi, qword ptr [rdi + 8]
+0x01801f46d9: jb	0x1801f4610
+0x01801f46df: mov	r15d, 1
+0x01801f46e5: mov	rbp, qword ptr [rsp + 0x1b8]
+0x01801f46ed: mov	r14, qword ptr [rsp + 0x1c0]
+0x01801f46f5: mov	rax, qword ptr [rbx]
+0x01801f46f8: mov	rcx, rbx
+0x01801f46fb: call	qword ptr [rax]
+0x01801f46fd: test	r15d, r15d
+0x01801f4700: jne	0x1801f4716
+0x01801f4702: mov	rcx, qword ptr [rdi]
+0x01801f4705: test	rcx, rcx
+0x01801f4708: je	0x1801f4712
+0x01801f470a: call	0x1804cc430
+0x01801f470f: mov	qword ptr [rdi], r12
+0x01801f4712: mov	qword ptr [rdi + 8], r12
+0x01801f4716: mov	eax, r15d
+0x01801f4719: mov	rcx, qword ptr [rsp + 0x170]
+0x01801f4721: xor	rcx, rsp
+0x01801f4724: call	0x1804ca730
+0x01801f4729: add	rsp, 0x180
+0x01801f4730: pop	r15
+0x01801f4732: pop	r12
+0x01801f4734: pop	rdi
+0x01801f4735: pop	rsi
+0x01801f4736: pop	rbx
+0x01801f4737: ret	
+0x01801f4738: mov	r9d, 0x3b
+0x01801f473e: lea	r8, [rip + 0x3b782b]	; 0x1805abf70 -> "nRetCode == 0"
+0x01801f4745: jmp	0x1801f4754
+0x01801f4747: mov	r9d, 0x37
+0x01801f474d: lea	r8, [rip + 0x3b51ac]	; 0x1805a9900 -> "nRetCode"
+0x01801f4754: lea	rax, [rip + 0x3ee40d]	; 0x1805e2b68 -> "UI::KColorSchemeMgr::Init"
+0x01801f475b: mov	ecx, 3
+0x01801f4760: lea	rdx, [rip + 0x3b5111]
+0x01801f4767: mov	qword ptr [rsp + 0x20], rax
+0x01801f476c: call	qword ptr [rip + 0x2f2aa6]
+0x01801f4772: jmp	0x1801f46e5
+0x01801f4777: int3	
+0x01801f4778: int3	
+0x01801f4779: int3	
+0x01801f477a: int3	
+0x01801f477b: int3	
+0x01801f477c: int3	
+0x01801f477d: int3	
+0x01801f477e: int3	

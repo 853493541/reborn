@@ -1,0 +1,175 @@
+# needle: UI::KItemHandleClassScriptTable::LuaItemText_IsRichText
+# string VAs: ['0x1805cc660']
+# xrefs: 1
+
+## xref 0x1801979f0  fn_start 0x1801978f0
+0x01801978f0: mov	qword ptr [rsp + 8], rbx
+0x01801978f5: push	rdi
+0x01801978f6: sub	rsp, 0x30
+0x01801978fa: mov	rbx, rcx
+0x01801978fd: mov	qword ptr [rsp + 0x48], 0
+0x0180197906: call	0x180233430
+0x018019790b: cmp	eax, 2
+0x018019790e: jne	0x180197950
+0x0180197910: lea	r8d, [rax - 1]
+0x0180197914: mov	rcx, rbx
+0x0180197917: lea	rdx, [rsp + 0x48]
+0x018019791c: call	0x1801a7420
+0x0180197921: test	eax, eax
+0x0180197923: jne	0x180197967
+0x0180197925: lea	rax, [rip + 0x434d6c]	; 0x1805cc698 -> "UI::KItemHandleClassScriptTable::LuaItemText_SetRichText"
+0x018019792c: mov	r9d, 0xfff
+0x0180197932: lea	r8, [rip + 0x411fc7]	; 0x1805a9900 -> "nRetCode"
+0x0180197939: mov	qword ptr [rsp + 0x20], rax
+0x018019793e: lea	rdx, [rip + 0x411f33]
+0x0180197945: mov	ecx, 3
+0x018019794a: call	qword ptr [rip + 0x34f8c8]
+0x0180197950: xor	edx, edx
+0x0180197952: mov	rcx, rbx
+0x0180197955: call	0x180182310
+0x018019795a: xor	eax, eax
+0x018019795c: mov	rbx, qword ptr [rsp + 0x40]
+0x0180197961: add	rsp, 0x30
+0x0180197965: pop	rdi
+0x0180197966: ret	
+0x0180197967: mov	rdi, qword ptr [rsp + 0x48]
+0x018019796c: test	rdi, rdi
+0x018019796f: je	0x180197950
+0x0180197971: mov	edx, 2
+0x0180197976: mov	rcx, rbx
+0x0180197979: call	0x180234560
+0x018019797e: mov	edx, 2
+0x0180197983: mov	rcx, rbx
+0x0180197986: cmp	eax, 1
+0x0180197989: jne	0x180197994
+0x018019798b: call	0x180234300
+0x0180197990: mov	ecx, eax
+0x0180197992: jmp	0x18019799d
+0x0180197994: call	0x180234450
+0x0180197999: cvttsd2si	ecx, xmm0
+0x018019799d: mov	eax, dword ptr [rdi + 0x10]
+0x01801979a0: bts	eax, 0x17
+0x01801979a4: mov	dword ptr [rdi + 0x10], eax
+0x01801979a7: test	ecx, ecx
+0x01801979a9: je	0x18019795a
+0x01801979ab: mov	rbx, qword ptr [rsp + 0x40]
+0x01801979b0: btr	eax, 0x17
+0x01801979b4: mov	dword ptr [rdi + 0x10], eax
+0x01801979b7: xor	eax, eax
+0x01801979b9: add	rsp, 0x30
+0x01801979bd: pop	rdi
+0x01801979be: ret	
+0x01801979bf: int3	
+0x01801979c0: push	rbx
+0x01801979c2: sub	rsp, 0x30
+0x01801979c6: mov	rbx, rcx
+0x01801979c9: mov	qword ptr [rsp + 0x48], 0
+0x01801979d2: call	0x180233430
+0x01801979d7: cmp	eax, 1
+0x01801979da: jne	0x180197a1b
+0x01801979dc: mov	r8d, eax
+0x01801979df: lea	rdx, [rsp + 0x48]
+0x01801979e4: mov	rcx, rbx
+0x01801979e7: call	0x1801a7420
+0x01801979ec: test	eax, eax
+0x01801979ee: jne	0x180197a2d
+0x01801979f0: lea	rax, [rip + 0x434c69]	; 0x1805cc660 -> "UI::KItemHandleClassScriptTable::LuaItemText_IsRichText"
+0x01801979f7: mov	r9d, 0x101b
+0x01801979fd: lea	r8, [rip + 0x411efc]	; 0x1805a9900 -> "nRetCode"
+0x0180197a04: mov	qword ptr [rsp + 0x20], rax
+0x0180197a09: lea	rdx, [rip + 0x411e68]
+0x0180197a10: mov	ecx, 3
+0x0180197a15: call	qword ptr [rip + 0x34f7fd]
+0x0180197a1b: xor	edx, edx
+0x0180197a1d: mov	rcx, rbx
+0x0180197a20: call	0x180182310
+0x0180197a25: xor	eax, eax
+0x0180197a27: add	rsp, 0x30
+0x0180197a2b: pop	rbx
+0x0180197a2c: ret	
+0x0180197a2d: mov	rcx, qword ptr [rsp + 0x48]
+0x0180197a32: test	rcx, rcx
+0x0180197a35: je	0x180197a1b
+0x0180197a37: mov	ecx, dword ptr [rcx + 0x10]
+0x0180197a3a: shr	ecx, 0x17
+0x0180197a3d: not	ecx
+0x0180197a3f: and	ecx, 1
+0x0180197a42: movd	xmm1, ecx
+0x0180197a46: mov	rcx, rbx
+0x0180197a49: cvtdq2pd	xmm1, xmm1
+0x0180197a4d: call	0x180233ae0
+0x0180197a52: mov	eax, 1
+0x0180197a57: add	rsp, 0x30
+0x0180197a5b: pop	rbx
+0x0180197a5c: ret	
+0x0180197a5d: int3	
+0x0180197a5e: int3	
+0x0180197a5f: int3	
+0x0180197a60: mov	qword ptr [rsp + 8], rbx
+0x0180197a65: push	rdi
+0x0180197a66: sub	rsp, 0x30
+0x0180197a6a: mov	rdi, rcx
+0x0180197a6d: mov	qword ptr [rsp + 0x48], 0
+0x0180197a76: call	0x180233430
+0x0180197a7b: cmp	eax, 2
+0x0180197a7e: jne	0x180197ac0
+0x0180197a80: lea	r8d, [rax - 1]
+0x0180197a84: mov	rcx, rdi
+0x0180197a87: lea	rdx, [rsp + 0x48]
+0x0180197a8c: call	0x1801a7420
+0x0180197a91: test	eax, eax
+0x0180197a93: jne	0x180197ad7
+0x0180197a95: lea	rax, [rip + 0x434d7c]	; 0x1805cc818 -> "UI::KItemHandleClassScriptTable::LuaItemText_SetFontID"
+0x0180197a9c: mov	r9d, 0x1033
+0x0180197aa2: lea	r8, [rip + 0x411e57]	; 0x1805a9900 -> "nRetCode"
+0x0180197aa9: mov	qword ptr [rsp + 0x20], rax
+0x0180197aae: lea	rdx, [rip + 0x411dc3]
+0x0180197ab5: mov	ecx, 3
+0x0180197aba: call	qword ptr [rip + 0x34f758]
+0x0180197ac0: xor	edx, edx
+0x0180197ac2: mov	rcx, rdi
+0x0180197ac5: call	0x180182310
+0x0180197aca: xor	eax, eax
+0x0180197acc: mov	rbx, qword ptr [rsp + 0x40]
+0x0180197ad1: add	rsp, 0x30
+0x0180197ad5: pop	rdi
+0x0180197ad6: ret	
+0x0180197ad7: mov	rbx, qword ptr [rsp + 0x48]
+0x0180197adc: test	rbx, rbx
+0x0180197adf: je	0x180197ac0
+0x0180197ae1: mov	edx, 2
+0x0180197ae6: mov	rcx, rdi
+0x0180197ae9: call	0x180234450
+0x0180197aee: mov	rax, qword ptr [rip + 0x4d6d5b]
+0x0180197af5: cvttsd2si	rdx, xmm0
+0x0180197afa: mov	r8, qword ptr [rax + 0x5aa8]
+0x0180197b01: test	r8, r8
+0x0180197b04: je	0x180197b35
+0x0180197b06: cmp	edx, 0x24
+0x0180197b09: jae	0x180197b35
+0x0180197b0b: mov	eax, edx
+0x0180197b0d: imul	rcx, rax, 0x138
+0x0180197b14: add	rcx, r8
+0x0180197b17: je	0x180197b35
+0x0180197b19: cmp	byte ptr [rcx + 0x134], 0
+0x0180197b20: je	0x180197b35
+0x0180197b22: mov	dword ptr [rbx + 0x2fc], edx
+0x0180197b28: xor	eax, eax
+0x0180197b2a: mov	rbx, qword ptr [rsp + 0x40]
+0x0180197b2f: add	rsp, 0x30
+0x0180197b33: pop	rdi
+0x0180197b34: ret	
+0x0180197b35: and	dword ptr [rbx + 0x10], 0xfffffffd
+0x0180197b39: mov	rbx, qword ptr [rsp + 0x40]
+0x0180197b3e: xor	eax, eax
+0x0180197b40: add	rsp, 0x30
+0x0180197b44: pop	rdi
+0x0180197b45: ret	
+0x0180197b46: int3	
+0x0180197b47: int3	
+0x0180197b48: int3	
+0x0180197b49: int3	
+0x0180197b4a: int3	
+0x0180197b4b: int3	
+0x0180197b4c: int3	
+0x0180197b4d: int3	

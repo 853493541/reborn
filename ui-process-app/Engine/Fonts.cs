@@ -116,7 +116,15 @@ namespace UiProcessApp.Engine
                 if (parts.Length < 4) continue;
                 if (byte.TryParse(parts[1], out var r) && byte.TryParse(parts[2], out var g) &&
                     byte.TryParse(parts[3], out var b))
-                    Colors[parts[0].Trim()] = Color.FromRgb(r, g, b);
+                {
+                    // The engine (UI::KColorSchemeMgr::Init, KGUIX64 0x1801F4300) loads
+                    // color.txt as a 4-column "siii" tab and resolves names with a linear
+                    // first-match scan, so the FIRST row wins for duplicates (red6 is
+                    // defined twice: 255,27,27 then 239,55,12).
+                    var name = parts[0].Trim();
+                    if (!Colors.ContainsKey(name))
+                        Colors[name] = Color.FromRgb(r, g, b);
+                }
             }
         }
 

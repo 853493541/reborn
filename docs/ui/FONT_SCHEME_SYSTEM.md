@@ -100,12 +100,18 @@ Fields: `IsMipmap`, `IsAntiAlias`, `Size` (base), `Border`, `Vertical`, `Project
 
 ### 1.4 `color.txt` — 106 rows / 105 unique names
 
-TSV `name<TAB>r<TAB>g<TAB>b` (0–255). Quirks:
+TSV `name<TAB>r<TAB>g<TAB>b` (0–255). The loader is `UI::KColorSchemeMgr::Init`
+(KGUIX64 fn `0x1801F4300`): it opens the file through the `SchemeElemColor` path key,
+reads it as a **4-column tab (`siii` row format)** and keeps an **array** of schemes;
+lookups are a linear first-match scan (the `LoadScheme` color loop at
+`0x1801F5E79..0x1801F5EA8` breaks on the first hit). Quirks:
 
-- **`red6` is defined twice** (`255,27,27` then `239,55,12`) — last-wins in our
-  renderer; engine side not decoded (**MED**).
+- **`red6` is defined twice** (`255,27,27` then `239,55,12`) → the engine resolves
+  `red6` = **255,27,27 (first row wins)**. Scheme 208 uses it and is referenced by one
+  shipped layout, so this is a real (if tiny) rendering difference; the renderer and
+  `tools/ui_scheme_lookup.py` now both use first-wins (fixed 2026-09-30).
 - 21 names mix case (`lightGrayYellow1`, `Yellow14`, `Brown6`, …) — lookup is
-  case-insensitive.
+  case-insensitive (a scheme uses `Yellow2` while the table defines `yellow2`).
 
 ### 1.5 `number.txt` and `codepage.txt`
 
@@ -116,21 +122,37 @@ TSV `name<TAB>r<TAB>g<TAB>b` (0–255). Quirks:
 
 ## 2. Resolution rules
 
-### 2.1 Size: scheme override, else fontlist base (**MED**)
+### 2.1 Size: scheme override, else fontlist base (**HIGH for all shipped usage**)
 
 `Size>0` on the scheme wins; `Size=0` (358 schemes) falls back to the `FontID`'s base
-`Size` in `fontlist.ini`. Evidence: names agree with the base size for 346/358
-schemes (the 9 disagreements are stale names — e.g. `#215 最小字体测试4` base 14,
-`#339 方正黑体8白` base 15 — and 3 have no number), and `ui-process-app/Engine/Fonts.cs`
-implements exactly that. Engine confirmation is still open:
-`UI::KFontSchemeMgr::LoadScheme` fn `0x1801F5C30` (KGUIX64) is the next probe.
+`Size` in `fontlist.ini`. Status after the engine pass (2026-09-30):
+
+- `LoadScheme` reads `Size` with default `12` and stores it **raw** in the 0x40-byte
+  scheme record (`+4`); it does not substitute the base size.
+- `Size>0` is a real override: 58 of the 63 `Size>0` schemes differ from their slot base
+  (the `____________` placeholders, Size 16 vs base 15; the two chat schemes #10/#175,
+  Size 18 vs 15) — but **none of those 58 is referenced by any shipped layout** in the
+  corpus. All 125 referenced schemes resolve to the same effective size under both rules
+  (scheme `Size=0` → base, or the few used `Size>0` schemes already equal the base).
+- The exact engine site that turns the record's `Size` into a rendered glyph size was not
+  pinned in this pass (the item carries a resolved float at `KItemText+0x2F4`, read by the
+  glyph-run builder at `0x18011F8FF`; the writer chain was not fully traced — next probe:
+  `KItemText` update font/size path).
+- Renderer rule (`Size>0 ? Size : base`) therefore matches every shipped layout; the
+  open item is only relevant when authoring *new* schemes with overrides.
 
 ### 2.2 Border and projection
 
-- `BorderSize>0` + `BorderColor` = 勾边 (glyph outline); the engine accessor symbol is
-  `GetFontBoder` (sic), plus `GetFontScale`, `GetFontOffset`, `GetFontProjection`
-  (`proof/ui/notes/re-xrefs.md`).
-- `ProjectionSize>0` + `ProjectionColor` = 阴影 (drop shadow).
+- `BorderSize>0` + `BorderColor` = 勾边 (glyph outline); `ProjectionSize>0` +
+  `ProjectionColor` = 阴影 (drop shadow). Accessors: `GetFontBoder` (sic),
+  `GetFontScale`, `GetFontOffset`, `GetFontProjection` (`proof/ui/notes/re-xrefs.md`;
+  Lua wrappers `LuaItemText_GetFontBoder/GetFontProjection`).
+- `KItemText::SetFontScheme` resolves both and calls the setters with
+  `(u16 size, ARGB color)` — see §3; the record stores them as 16-bit fields at `+8`
+  (border) and `+0xC` (projection). Item-side params live around `+0x304..+0x311`
+  (Lua getters read `+0x304`/`+0x308` + alpha bytes `+0x310`/`+0x311`).
+- Exact glyph-outline/shadow pixel math (offset, blur, thickness scaling) is **not**
+  decoded; `projection` is not rendered by `ui-process-app` (gap, see §5).
 
 ### 2.3 FontColor / per-state codes
 
@@ -145,16 +167,34 @@ Component state fonts are separate keys (KGUIX64 strings, same id space):
 | `CheckFont` / `UncheckFont` | 597 / 597 (42) | checkboxes |
 | `SelFontScheme` / `CaretFontScheme` | 74 / 74 (27) | `WndEdit` selection/caret |
 | `PlaceholderFontScheme` / `PlaceholderFontColor` | 35 (17) / present | `WndEdit` placeholder |
-| `GrayFontColor` | string only | disabled text |
+| `GrayFontColor` | config file | disabled text |
 
-### 2.4 Inline text runs (**MED**)
+Per-state consumption is in the component decoders, e.g. the button decoder
+(`KGUIX64` fn `0x1800CE400`) reads `NormalFont`/`MouseOverFont`/`MouseDownFont`/
+`DisableFont` next to `NormalGroup`/`MouseOverGroup`/`MouseDownGroup`/`DisableGroup`
+plus `SfxNormal/SfxMouseOver/SfxMouseDown/SfxDisable`; the `WndEdit` decoder
+(fn `0x1800D0100`) reads `FontScheme`, `SelFontScheme`, `CaretFontScheme` and
+`KWndEdit::SetPlaceholderFontScheme/Color` exists (placeholder branch, `+0x310`/`+0x311`
+alpha bytes on items).
+`GrayFontColor` is **not** a per-scheme value: it lives in `ui/scheme/elem/uiconfig.ini`
+as `[GrayFontColor] R=207 G=207 B=207` (read by `UI::KConfig::Init`; tracked copy
+`proof/ui/evidence/scheme/uiconfig.ini`).
+
+### 2.4 Inline text runs (**MED**, corrected)
 
 `ui/Scheme/Case/string.txt` embeds `<text text="…" font=N>` runs. The `N` values found
 are `{4,18,27,32,65,106,162,163,164,172,177}` — above the FontID range (0–35) and
 inside the scheme range, so `font=` names a **scheme id** (parser not disassembled).
-`<Dn>` style tags (15×) are not decoded (**unknown**).
+Correction (2026-09-30): the ASCII `font-size` string in `KGUIX64.dll` (`0x5B20A8`)
+belongs to the **SVG/HTML renderer** (`style`/`display`/`fill`/`stroke`/`opacity`
+parsers at `0x18010DA50..`), not to the label rich-text path; the label rich text uses
+UTF-16 tags (`<text>`, `font`, `color`, `richtext` strings at `0x5A9CF8..0x5A9F40`).
+The `<Dn>` tags (15×) remain undecoded (**unknown**).
 
 ## 3. Engine side (KGUIX64.dll)
+
+Symbols and RVAs (committed annotated dumps in
+`proof/ui/evidence/battle_hud/re/kgui_font/`; xref re-run 2026-09-30):
 
 | symbol | RVA / offset | role |
 |---|---|---|
@@ -162,12 +202,44 @@ inside the scheme range, so `font=` names a **scheme id** (parser not disassembl
 | `...::LoadFontList` | fn `0x1801F5790` (assert `0x5E1C50`) | reads `fontlist.ini` (FontList key) |
 | `...::LoadDefaultFontList` | string `0x5E1C28` | fallback list |
 | `...::LoadScheme` | fn `0x1801F5C30` | reads `font.ini` (SchemeElemFont) |
-| `...::LoadFontPathList` | fn `0x1801F63D0` | reads `fontpathlist.ini` |
-| `...::LoadFont` | fn `0x1801F5350` | loads a TTF (debug `[KGUI] KFontSchemeMgr::LoadFont(%u, %s)`) |
-| `...::SetFont` / `SetFontScale` / `IsFontVertical` / `ReloadFont` / `UpdateCodePage` | strings `0x5E1E48/`… | runtime switching |
-| `UI::KItemText::SetFontScheme` | string `0x5B37F8` | text consumer |
+| `...::LoadFontPathList` | fn `0x1801F63D0` | reads `fontpathlist.ini`; takes `pcszLocale` |
+| `...::LoadFont` | fn `0x1801F5350` | loads the 36 slot fonts (scaled) |
+| `...::SetFont` | string `0x5E1E48` | per-item font select |
+| `...::SetFontScale` | fn `0x180159BA0` | global UI-scale path |
+| `...::IsFontVertical` | fn `0x18012FFB0` | vertical flag (used by `KWndEdit`) |
+| `...::ReloadFont` | fn `0x1801AA260` | Lua `LuaFont_ReloadFont` binding |
+| `...::UpdateCodePage` | fn `0x1801F63D0` | per-locale font path list reload |
+| `UI::KColorSchemeMgr::Init` | fn `0x1801F4300` | loads `color.txt` (`SchemeElemColor`, `siii` 4-col tab) |
+| `UI::KItemText::SetFontScheme` | fn `0x18011F0F0` | applies a scheme to a text item |
 | `UI::KSchemeScriptTable::LuaFont_LoadFontList` | string `0x5D1B88` | Lua reload binding |
 | `UI::GetLocaleFontListPath` | string `0x5E1CC0` | locale-specific fontlist |
+
+Decoded behavior:
+
+- **`LoadScheme`** opens the file via `KFilePathMgr::GetFilePath("SchemeElemFont")`, then
+  per section `[0..N]` reads `Name` (buffer 32), `Color`, `BorderColor`,
+  `ProjectionColor` (resolved against the color array, index stored, `-1` = missing),
+  `FontID` (default 0), `Size` (default 12), `BorderSize` (default 0),
+  `ProjectionSize` (default 0), `FontScale` (float). Record is **0x40 bytes**:
+  `FontID@0 · Size@4 · BorderSize@8(u16) · ProjectionSize@0xC(u16) · Color@0x10 ·
+  BorderColor@0x14 · ProjectionColor@0x18 · Name[32]@0x1C · FontScale@0x3C`; the vector
+  lives at mgr `+0x5A80/+0x5A88`.
+- **`SetFontScheme`** (item method) bounds-checks the id against the vector and stores
+  the scheme id at `item+0x2F8`; resolves the record's `FontID` against the 0x138-stride
+  slot array (`mgr+0x5AA8`, slot valid byte `+0x134`) into `item+0x2FC`; resolves the
+  three color indices to ARGB at color entry `+0x40`; calls the border setter
+  (`0x180121FC0`, `(u16 BorderSize, ARGB)`) and projection setter (`0x180122090`,
+  `(u16 ProjectionSize, ARGB)`); stores fill ARGB at `item+0x300` and
+  `max(0, FontScale)` at `item+0x314`. Missing/black fill in one engine mode is
+  substituted by `0xFFFF7E7E`.
+- **`LoadFont`** loops exactly **36** slots (`RS2_MAX_FONT_ITEM_NUM`) and creates each
+  base font with `size = (slot.Size + mgr+0x4C) * mgr+0x48` (integer size plus an offset,
+  times the global font scale float) — the per-scheme `Size` is not part of this call.
+- **`SetFontScale`** is the UI-scale entry (`KWndStation::SetUIScale`): computes the
+  delta against the old scale (`this+0x6448`), writes the new scale into `mgr+0x48`,
+  re-runs `LoadFont`, rescales 9 layer objects, calls `ResizeUI` and fires `UI_SCALED`.
+- **`UpdateCodePage(locale)`** re-resolves the font path list for a locale
+  (`codepage.txt` 932/936/949/950/1258) and reloads it.
 
 Decoder keys live in the component decoder: `FontScheme`, `FontColor` (plus the
 per-state keys above; `proof/ui/evidence/manifest/decoder_properties.tsv`).
@@ -197,15 +269,19 @@ Per-state keys per §2.3. Inline `font=` per §2.4.
 Implemented (`Engine/Fonts.cs`, `Engine/UiLayout.cs`):
 scheme id → `FontID` → file + base size; scheme `Color`/`Size`/`BorderColor`/`BorderSize`;
 `FontColor` override; fallback scheme **212**; border approximated by a
-`DropShadowEffect` (blur 1, depth 0).
+`DropShadowEffect` (blur 1, depth 0); color name lookup first-wins and
+case-insensitive, matching the engine (`red6` fixed 2026-09-30).
 
-Not implemented (gaps, all data available):
-- `Projection*` (阴影) rendering — 149 schemes enable it (the most-used scheme #18 is one).
-- Exact 勾边 thickness (`BorderSize` px) and the engine's border math.
+Not implemented (gaps; data now decoded where noted):
+- `Projection*` (阴影) rendering — 149 schemes enable it (the most-used scheme #18 is
+  one). Setter/field locations decoded (§2.2); pixel math still open.
+- Exact 勾边 thickness (`BorderSize` px) and the engine border math.
 - Per-state fonts for buttons/checkboxes (`MouseOverFont` etc.) and `WndEdit`
-  caret/placeholder schemes.
-- Vertical text (`Vertical=1` slots), `SetFontScale`, `codepage.txt` mapping.
-- Rich-text inline runs (`<text font=N>`, `<Dn>` tags) inside string values.
+  caret/placeholder schemes — keys decoded (§2.3).
+- Vertical text (`Vertical=1` slots), `SetFontScale`, `codepage.txt` mapping — engine
+  paths decoded (§3); renderer side open.
+- Rich-text inline runs (`<text font=N>`, `<Dn>` tags) inside string values — label
+  parser still open (the `font-size` string is the SVG renderer; see §2.4).
 
 ## 6. Look any code up
 
@@ -232,6 +308,12 @@ Not implemented (gaps, all data available):
 .venv\Scripts\python.exe tools\netcode\xref_string.py C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KGUIX64.dll "UI::KFontSchemeMgr::LoadScheme"
 .venv\Scripts\python.exe tools\netcode\xref_string.py C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KGUIX64.dll "UI::KFontSchemeMgr::LoadFontList"
 .venv\Scripts\python.exe tools\netcode\xref_string.py C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KGUIX64.dll "UI::KFontSchemeMgr::LoadFontPathList"
+# annotated disasm dumps (committed; dump_fn_disasm now resolves RIP-relative strings)
+.venv\Scripts\python.exe tools\pvp\dump_fn_disasm.py C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KGUIX64.dll ^
+  --names proof\ui\evidence\battle_hud\re\names_font_scheme.txt ^
+  --out-dir proof\ui\evidence\battle_hud\re\kgui_font --limit 500
+# session scans (temporary probes, local): scheme_size_scan.py -> scheme_size_scan.report.txt,
+# scheme_size_readers.txt, scheme_size_resolved.txt under proof/ui/battle_hud/
 ```
 
 ## 8. Evidence index
@@ -247,15 +329,24 @@ Not implemented (gaps, all data available):
 | `proof/movement/KGUIX64_strings.txt` | KFontSchemeMgr strings/offsets (tracked) |
 | `proof/ui/notes/re-xrefs.md` | font symbols + accessors (tracked) |
 | `proof/ui/evidence/manifest/decoder_properties.tsv` | `FontScheme`/`FontColor` decoder fields (tracked) |
+| `proof/ui/evidence/scheme/uiconfig.ini` | `[GrayFontColor] 207/207/207` + Balloon/Option keys (tracked) |
+| `proof/ui/evidence/battle_hud/re/names_font_scheme.txt` | symbol list for the RE dumps (tracked) |
+| `proof/ui/evidence/battle_hud/re/kgui_font/*.txt` | annotated disasm: LoadScheme/LoadFont/SetFontScheme/SetFontScale/UpdateCodePage/ColorSchemeMgr/per-state decoders (tracked) |
 | `tools/ui_scheme_lookup.py` | resolver + census tool (committed 2026-09-30) |
+| `tools/pvp/dump_fn_disasm.py` | added RIP-relative string annotation (2026-09-30) |
 
 **Verified (2026-09-30):** `ui_scheme_lookup.py 43` → `方正黑体20黑 / fzht_GBK.ttf`;
 `--census` over the battle-HUD extraction → `schemes=421 fontlistSlots=36`,
 `0 unknown ids`, `0 unresolved FontColor`; combined 160-INI census → 4,595 refs /
 125 schemes; xrefs → `LoadScheme 0x1801F5C30`, `LoadFontList 0x1801F5790`,
-`LoadFontPathList 0x1801F63D0`, `LoadFont 0x1801F5350`.
+`LoadFontPathList 0x1801F63D0`, `LoadFont 0x1801F5350`,
+`KColorSchemeMgr::Init 0x1801F4300`; annotated dumps show the `siii` color tab load
+and the first-match lookup; override-usage scan → 58/58 differing `Size>0` schemes
+unused by shipped layouts.
 
 **Game-design check:** Does this follow the client's own truth — no invented fixes or
-band-aids? **Yes** — the system is decoded from the shipped scheme tables and engine
-symbols; the one unresolved engine detail (`Size=0` fallback math) is marked MED with
-its exact next probe instead of being guessed.
+band-aids? **Yes** — decoded from the shipped tables and engine disassembly; the one
+still-open engine detail (the exact glyph-size consumer for `Size>0` overrides) is
+marked with its next probe and shown to be unused by every shipped layout. The `red6`
+first-wins fix follows the engine's own loader (`KColorSchemeMgr::Init`), it is not a
+workaround.

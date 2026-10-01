@@ -1,0 +1,57 @@
+# needle: UI::KWndEdit::SetPlaceholderFontColor
+# string VAs: ['0x1805b5e40']
+# xrefs: 1
+
+## xref 0x18012a842  fn_start 0x18012a830
+0x018012a830: push	rbx
+0x018012a832: sub	rsp, 0x30
+0x018012a836: mov	rbx, qword ptr [rcx + 0xa70]
+0x018012a83d: test	rbx, rbx
+0x018012a840: jne	0x18012a871
+0x018012a842: lea	rax, [rip + 0x48b5f7]	; 0x1805b5e40 -> "UI::KWndEdit::SetPlaceholderFontColor"
+0x018012a849: mov	r9d, 0x265
+0x018012a84f: lea	r8, [rip + 0x48b4c2]	; 0x1805b5d18 -> "m_pPlaceholder"
+0x018012a856: mov	qword ptr [rsp + 0x20], rax
+0x018012a85b: lea	rdx, [rip + 0x47f016]
+0x018012a862: lea	ecx, [rbx + 3]
+0x018012a865: call	qword ptr [rip + 0x3bc9ad]
+0x018012a86b: add	rsp, 0x30
+0x018012a86f: pop	rbx
+0x018012a870: ret	
+0x018012a871: mov	rax, qword ptr [rip + 0x543fd8]
+0x018012a878: mov	rcx, qword ptr [rax + 0xdb50]
+0x018012a87f: cmp	dword ptr [rcx + 0x8f0], 2
+0x018012a886: jne	0x18012a8a6
+0x018012a888: mov	eax, edx
+0x018012a88a: and	eax, 0xff0000
+0x018012a88f: cmp	eax, 0xff0000
+0x018012a894: jne	0x18012a8a6
+0x018012a896: mov	eax, edx
+0x018012a898: shr	eax, 8
+0x018012a89b: or	eax, edx
+0x018012a89d: test	al, al
+0x018012a89f: jne	0x18012a8a6
+0x018012a8a1: mov	edx, 0xffff7e7e
+0x018012a8a6: cmp	dword ptr [rbx + 0x300], edx
+0x018012a8ac: je	0x18012a8d1
+0x018012a8ae: mov	rax, qword ptr [rbx]
+0x018012a8b1: mov	rcx, rbx
+0x018012a8b4: mov	dword ptr [rbx + 0x300], edx
+0x018012a8ba: call	qword ptr [rax + 0x350]
+0x018012a8c0: test	eax, eax
+0x018012a8c2: jne	0x18012a8d1
+0x018012a8c4: mov	rcx, rbx
+0x018012a8c7: add	rsp, 0x30
+0x018012a8cb: pop	rbx
+0x018012a8cc: jmp	0x180121f10
+0x018012a8d1: add	rsp, 0x30
+0x018012a8d5: pop	rbx
+0x018012a8d6: ret	
+0x018012a8d7: int3	
+0x018012a8d8: int3	
+0x018012a8d9: int3	
+0x018012a8da: int3	
+0x018012a8db: int3	
+0x018012a8dc: int3	
+0x018012a8dd: int3	
+0x018012a8de: int3	
