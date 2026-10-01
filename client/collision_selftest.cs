@@ -377,6 +377,22 @@ internal static class CollisionSelfTest
             spBlocked = spc.Resolve(ref spx, ref spy, ref spz, 17f, 116f, ref spg, ref spGrounded, 64f);
             Check("solid_prop_step_low", !spBlocked && Math.Abs(spg - 35f) < 0.05f,
                 string.Format("blocked={0} ground={1:F1}", spBlocked, spg));
+            // vertical motion: a thin slab inside the capsule must oppose the
+            // motion (rising -> pushed down, never ejected through the slab)
+            MeshBuilder slab = new MeshBuilder();
+            slab.AddBox(-200f, 60f, -200f, 200f, 64f, 200f);
+            string slabPath = WriteBin("slab", new MeshBuilder[] { slab }, new float[][] { M(0f, 0f, 0f) });
+            FoliageCollision slc = new FoliageCollision(null, slabPath);
+            float slx = 0f, sly = 40f, slz = 0f, slg = 0f;
+            bool slGrounded = false;
+            bool slBlocked = slc.Resolve(ref slx, ref sly, ref slz, 17f, 116f, ref slg, ref slGrounded, 64f, 300f);
+            Check("vertical_rise_slab_blocks", sly <= 40.05f,
+                string.Format("blocked={0} py={1:F1}", slBlocked, sly));
+            float flx = 0f, fly = 50f, flz = 0f, flg = 0f;
+            bool flGrounded = false;
+            bool flBlocked = slc.Resolve(ref flx, ref fly, ref flz, 17f, 116f, ref flg, ref flGrounded, 64f, -300f);
+            Check("vertical_fall_slab_supports", fly >= 63.9f,
+                string.Format("blocked={0} py={1:F1}", flBlocked, fly));
         }
 
         Console.WriteLine("collision_selftest: " + _pass + "/" + (_pass + _fail) + " PASS"

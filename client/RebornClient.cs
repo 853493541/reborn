@@ -1852,6 +1852,13 @@ internal static class RebornClient
             {
                 vy += pGravity * pdt;
                 py += vy * pdt;
+                // rising motion is resolved too (field case: a jump must not
+                // pass up through a thin roof slab; horizontal faces oppose the
+                // rise). Falling keeps the existing ground snap - resolving it
+                // here created a fall->push-up ratchet at overlapping ledges.
+                if (col != null && vy > 0f)
+                    col.Resolve(ref px, ref py, ref pz,
+                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight, vy);
                 if (py <= ground && groundOk)
                 {
                     py = ground;

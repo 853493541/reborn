@@ -936,7 +936,7 @@ public sealed class FoliageCollision
     public bool Resolve(ref float px, ref float py, ref float pz,
                         float radius, float height,
                         ref float ground, ref bool grounded,
-                        float stepHeight = 70f)
+                        float stepHeight = 70f, float vMotion = 0f)
     {
         bool blocked = false;
         for (int iter = 0; iter < 3; iter++)
@@ -985,6 +985,13 @@ public sealed class FoliageCollision
             }
             if (!stepUp && best.depth > 0.01f)
             {
+                // Horizontal faces resist the vertical motion: a face hit while
+                // rising must push DOWN, a face hit while falling must push UP.
+                // Without this the degenerate normal can flip once the face
+                // passes the capsule midpoint and eject the capsule through a
+                // thin slab (field case: jumping up through a roof).
+                if (vMotion != 0f && Math.Abs(best.ny) > 0.5f)
+                    best.ny = -Math.Sign(vMotion) * Math.Abs(best.ny);
                 px += best.nx * best.depth;
                 py += best.ny * best.depth;
                 pz += best.nz * best.depth;

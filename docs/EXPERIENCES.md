@@ -677,3 +677,17 @@ solved it, and what is still open. **Newest at the bottom.**
   in-game pile mid (20450,31000) and tall (20450,30800) held at x=20114 with
   y constant and hits climbing - no climb, no pass-through
   (`reborn_20260930_184525/184610.log`); rug unchanged (924, hits=0).
+
+### 2026-09-30 — collision — Vertical rise is resolved (jump-through-roof class)
+- User diagnosis confirmed: vertical motion was never resolved (only horizontal
+  substeps were), so a jump could carry the capsule through a thin slab, and the
+  degenerate normal could flip past the capsule midpoint and eject it upward.
+- Fix: `Resolve(..., vMotion)`: while RISING, horizontal faces oppose the motion
+  (`ny = -sign(vMotion)*|ny|`), so a face hit on the way up pushes down; the
+  client calls it for `vy > 0` only. A first version resolved falling too and
+  created a fall->push-up ratchet that launched the player to y=1274 at
+  (18850,36700) - caught by the in-game check and restricted to rises.
+- Verified: selftest 29/29 (`vertical_rise_slab_blocks` py 40 -> -11;
+  `vertical_fall_slab_supports` py -> 64); in-game spot (18850,36700) stable at
+  y=959 with hits climbing (no launch, `reborn_20260930_203353.log`); a
+  pre-vertical-fix binary kept as `bin64\reborn_client_prevert.exe`.
