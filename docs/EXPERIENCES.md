@@ -1031,3 +1031,25 @@ all tags should fire. Editor config to adopt when initializing the host
   binding / SFX track) stays the next engine-wiring step.
 - Re-open: engine SFX bind (`CreateScreen3DSFX` / `KG3DSceneSFXEditor::NewSFX`).
 
+### 2026-09-30 — ability sandbox — all remaining abilities staged (149 total) + SFX core recon
+- Staging: a batched pipeline (matched tani → base `.ani` + first authored PSS + wem)
+  staged **all 136 remaining** dataset abilities in one pass (0 missing): 136 tanis,
+  130 anis, 113 PSS parsed; tracked + runtime datasets patched; the regenerated dataset
+  matches exactly (0 diffs); 149 abilities now carry a `process`. The 8 missing sounds
+  were fetched with `fetch_sounds.py`; `skill_data.json` rebuilt for all 154 ids (icons).
+  Sample in-engine cast: 九转归一 — `animMs=816 pssMs=11520`, PSS `(follows caster)`,
+  `cast done`, exit 0.
+- Core recon (the deviation from the follow-up): both engine builds export the same SFX
+  factories (`CreateScreen3DSFX`, `CreateSFXTrackData`, `DestroySFXTrackData`,
+  `Get/SetAnimTagSystem`); the interfaces are pure virtual (vtable RE needed);
+  `CreateScreen3DSFX` forwards to the SFX manager at `engine+0x2c10`, vtable slot
+  `+0x68`. Plan + acceptance in `docs/engine_host/SFX_WIRING_PLAN.md` (registered in the
+  area README): map the interface vtables, add a native shim, replace the `cast_pss`
+  dummy path, then re-test the `.Sfx` tags.
+- Evidence: `stage_all.py` (temp) output `abilities to stage: 136 … staged: 136 missing: 0`;
+  `candidates_regen4.json` 0 diffs; `Skill_20260930_1722*.log`; commits `674829d`,
+  `dd5df84`; plan doc `docs/engine_host/SFX_WIRING_PLAN.md`.
+- Outcome: all abilities implemented; the engine SFX wiring (core deviation fix) is
+  scoped with its first RE step done (factories + forwarder chain).
+- Re-open: SFX vtable mapping → shim → A/B proof.
+

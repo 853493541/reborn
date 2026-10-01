@@ -1,0 +1,73 @@
+# SFX Wiring Plan — retire the free-standing dummy effect (2026-09-30)
+
+Status: **recon done; implementation not started.** This is the registered deviation
+from `docs/EXPERIENCES.md` (caster-follow emulated by re-adding a dummy; effects are
+free-standing scene dummies, not engine SFX).
+
+## Why
+
+The client plays ability effects through the engine's own SFX system: the tani's SFX
+tags spawn PSS bound to caster sockets (`KG3D_SFX_BIND_TYPE`), with authored offsets.
+Our host instead spawns a PSS path via `KGSceneCLR.AddDummyModel(name, pssPath, pos…)`
+and re-adds it on movement. Consequences: no bone attachment, no authored socket
+offsets, and `.Sfx` tags still AV on the MovieEditor engine build (2026-09-14).
+
+## Engine API surface (verified)
+
+Both engine builds (MovieEditor 09-14 and client 09-27) export the same SFX factories
+(`KG3DEngineDX11EX64.dll`, mangled exports):
+
+| Export | Signature | RVA (ME build) |
+|---|---|---|
+| `?CreateScreen3DSFX@KG3D_Engine@@UEAAJPEAPEAUIKG3D_Screen3DSFX@@@Z` | `long KG3D_Engine::CreateScreen3DSFX(IKG3D_Screen3DSFX**)` | `0x8ae9f0` |
+| `?CreateSFXTrackData@KG3D_Engine@@UEAAJPEAPEAUIKE3D_SFXTrackData@@@Z` | `long KG3D_Engine::CreateSFXTrackData(IKE3D_SFXTrackData**)` | `0x8b13e0` |
+| `?DestroySFXTrackData@KG3D_Engine@@UEAAJPEAPEAUIKE3D_SFXTrackData@@@Z` | destroy | — |
+| `?GetAnimTagSystem@KG3D_Engine@@…` / `?SetAnimTagSystem@…` | tag system accessors | `0x8b7920` |
+| `?ClearAnimTagSystemWithRefZero@KG3D_Engine@@QEAAHXZ` | tag system reset | — |
+
+The interfaces (`IKG3D_Screen3DSFX`, `IKE3D_SFXTrackData`, `IKG3D_AnimationTagSystem`)
+are **pure virtual — no exported methods**; their vtables must be mapped from the
+engine's own implementation.
+
+`CreateScreen3DSFX` is a forwarder (disasm): `engine+0x2c10` is the SFX manager; its
+vtable slot `+0x68` is the real implementation. Module references to `Screen3DSFX`
+exist in `KG3DEngineAdapterX64.dll` (both builds) and `KG_EngineEditorX64.dll`.
+
+## Plan
+
+1. **Map the interfaces** (RE, offline on copies): follow `engine+0x2c10` → SFX manager
+   vtable → slot `+0x68` implementation → the created object's vtable; identify
+   create/play/bind/stop methods and `KG3D_SFX_BIND_TYPE` values. The ME editor's
+   `KG_EngineEditorX64.dll` (`Screen3DSFX` ref) and the adapter are the usage references.
+2. **Native shim** (`native/` — extend `camera_shim.cpp` pattern): export
+   `RC_Shim_SfxPlay(path, socket, followCaster)` etc.; call the engine factories on the
+   engine pointer the host already holds (via the adapter's `Get3DEngineInterface` or the
+   managed engine handle). Replace the `cast_pss` dummy path in `RebornClient.cs`.
+3. **A/B proof**: same ability, same map — effect bound to the caster's socket, follows
+   without re-adds; screenshot fingerprint + log (no `AddDummyModel` for the effect).
+4. **Then** replay the `.Sfx`-tagged tanis: if the wired SFX path works on the ME build,
+   the stale-build AV question can be re-tested; otherwise this converges with the
+   client-stack host (`CLIENT_STACK_PIVOT.md`).
+
+Acceptance: a cast's effect is created by the engine SFX API, attached to the caster
+socket, and plays its authored timeline once — no host dummy, no re-add.
+
+## Reproduce (recon)
+
+```powershell
+# exports (mangled signatures) on both builds
+python - <<'PY'
+import pefile
+for p in (r"C:\SeasunGame\MovieEditor\bin64\KG3DEngineDX11EX64.dll",
+          r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KG3DEngineDX11EX64.dll"):
+    pe = pefile.PE(p, fast_load=True)
+    pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_EXPORT"]])
+    for e in pe.DIRECTORY_ENTRY_EXPORT.symbols:
+        n = e.name.decode() if e.name else ""
+        if "SFX" in n or "AnimTag" in n:
+            print("%08x %s" % (e.address, n))
+PY
+# CreateScreen3DSFX forwarder disasm: tools/collision/recon-style capstone dump (temp)
+```
+
+Last verified: 2026-09-30
