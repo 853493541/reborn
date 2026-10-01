@@ -213,7 +213,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 .venv\Scripts\python.exe tools\netcode\loot\capture.py selftest   # 8 checks
 native\build_shim.cmd                                             # bin64\camera_shim.dll, RC_Shim exports
 # UI gate (after dotnet build ui-process-app -c Release):
-ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 15/15 windows
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # rendered=79 skipped=2 failed=0
 
 # builds
 client\build_client.cmd        # bin64\reborn_client.exe + camera_smoke.exe
