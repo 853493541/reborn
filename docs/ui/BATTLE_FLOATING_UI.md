@@ -384,6 +384,42 @@ java -Dstdout.encoding=UTF-8 -jar %TEMP%\unluac.jar proof\ui\battle_hud\pakv4\Co
 & $py tools\netcode\xref_string.py C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3UIX64.dll "LuaScene_GetCharacterSkillEffectTextPos"
 ```
 
+## A. Corpus completeness appendix (after the full UI sweep, 2026-09-30)
+
+The full corpus (1,615 Lua; see `proof/ui/evidence/battle_hud/sweep_findings.md`)
+contains many more battle-HUD modules than §2 details. The list below are the
+battle-relevant ones found by name that are **not yet individually documented**
+(role from the module name; detail pending). Non-battle menus/settings are omitted;
+the raw corpus lives at `proof/ui/battle_hud/ui_sweep/`.
+
+**Their INIs were probed 2026-09-30: 61/61 HIT** (roots/anchors/ShowModeID in
+`proof/ui/evidence/battle_hud/appendix_inis.tsv`; candidate paths in
+`pakv4_candidates_appendix_inis.txt`). Notable: `WarningTipPanel` is a
+CENTER-anchored Topmost1 panel gated to the special modes
+`33,32,31,30,28,26,27,22,3,15,20,36`; `LootRoll` is Topmost2 at
+`TOPCENTER,0,240` (`ShowModeID=0,15`); `FightingWarning` is Topmost2;
+`WeaponSkillBar.ini`'s root section is named `SpArmsActionBar` and `PVPInput.ini`'s
+root is `SkillIntroduce` (shipped naming quirks); `TargetSkill` sits at
+`TOPLEFT,500,195` in modes 5/15 (the target-frame area).
+
+| family | modules |
+|---|---|
+| action/skill bars | `NewSkillBar`, `DynamicSkillBar`, `WeaponSkillBar`, `VkActionBar`, `SkillCDJingYuJue` (cooldown hint), `SkillRemind`, `SkillTipPanel` |
+| objective / score / mode info | `BattleFieldObjective`, `BattleIntegral`, `BattleFieldHSLHNotice`, `DesertStormInfoPanel`, `DesertStormOB`, `ACC_BFInfo`, `ACC_DesertStormInfo`, `ACC_TreasureHuntInfo`, `ZombieFightFinal` |
+| warnings | `FightingWarning`, `WarningTipPanel`, `PQwarning` |
+| statistics | `SingleFStatistic` (FightingStatistic's single-fight companion), `FBCountNum`, `NumericalPanel` |
+| team / raid HUD | `Teammate`, `TeamNumList`, `TeamNumListLong`, `TeamStatePop`, `TeamCountdown`, `TeamSwitchBtn`, `TeamTagPlayers`, `TeamPlayerTagList`, `RoommateTeam` |
+| buffs / monster | `BuffMonitor`, `BuffMonitorGeneral`, `BuffMonitorYaoZong`, `BuffMonitorDaoZong`, `MonsterBuffPanel`, `MonsterBuffChoose`, `MonsterSkillPreset` |
+| loot / gold | `LootRoll`, `LootRollMini`, `LootShowList`, `GoldTeamLootList`, `GoldTeamDistribution` |
+| death / revive | `RevivePanel`, `RecoverEquipment` |
+| target | `TargetSkill` |
+| mode HUD | `PVPInput`, `PVPRandomForce`, `VampireInfoPanel`, `InterludeHSLHPanel`, `MobaInformationPanel`, `MobaPVPList`, `TongBattleTips`, `TongBattledragonTips`, `BattleTipPanel` |
+| skill info panels | `SkillIntroduce`, `SkillGlossaryPanel`, `SkillFormulaPanel`, `SkillPanelTeaching`, `SkillGuidePanel`, `MingJiaoSkill`, `YaoZongSkillHint` |
+
+**Reborn:** these are candidates for the same P1/P2/P3 treatment once their INIs
+are extracted; the must-have table in §3 is unchanged (none of them outranks the
+P1 set).
+
 ## 6. Evidence index
 
 | path | content |
@@ -394,6 +430,8 @@ java -Dstdout.encoding=UTF-8 -jar %TEMP%\unluac.jar proof\ui\battle_hud\pakv4\Co
 | `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt` | target layouts + `UISetting.ini` (29/30 HIT; only `TargetS.ini` MISS by design) |
 | `proof/ui/evidence/battle_hud/pakv4_candidates_fullui_lua.txt` | full UI Lua sweep list (1,619 paths; 1,615 HIT) |
 | `proof/ui/evidence/battle_hud/sweep_findings.md` | sweep needle results + FullScreenWarning opener excerpt (tracked) |
+| `proof/ui/evidence/battle_hud/pakv4_candidates_appendix_inis.txt` | appendix-module INI probe list (244 paths) |
+| `proof/ui/evidence/battle_hud/appendix_inis.tsv` | appendix-module INI results (61/61 HIT; root/parent/anchor/mode) |
 | `proof/ui/battle_hud/SOURCES.txt` | exact commands + result counts (local, ignored) |
 | `proof/ui/battle_hud/pakv4/`, `pakv4_native/`, `probe/` | extracted INIs/Lua/art/tables (local, ignored) |
 | `proof/ui/battle_hud/decompiled/` | 33 unluac outputs + probe decompiles (local, ignored) |

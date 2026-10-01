@@ -1143,3 +1143,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   extend-loop) and `CoinShop_View`; `EndOfBattle`/`ComboWinEffect` confirmed.
 - Tracked findings: `proof/ui/evidence/battle_hud/sweep_findings.md`;
   `BATTLE_FLOATING_UI.md` §2.1/§2.4/§4.8/§6 updated.
+- Follow-up: catalog appendix (§A) lists 61 battle-HUD modules found by name in the
+  sweep; their INIs were batch-probed **61/61 HIT** and recorded
+  (`appendix_inis.tsv` + `pakv4_candidates_appendix_inis.txt`). Notable gates:
+  `WarningTipPanel` Topmost1 CENTER with a 12-mode list, `LootRoll` Topmost2
+  `TOPCENTER,0,240` with `ShowModeID=0,15`, `FightingWarning` Topmost2; naming
+  quirks `WeaponSkillBar.ini` root `SpArmsActionBar`, `PVPInput.ini` root
+  `SkillIntroduce`.
