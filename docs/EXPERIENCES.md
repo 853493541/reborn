@@ -625,3 +625,9 @@ solved it, and what is still open. **Newest at the bottom.**
   covered by TerrainSampler + EngineRay. Optional, not required for parity.
 - Plan execution is complete: everything client-derivable is implemented and
   gate-verified; all remaining items are closed as proven boundaries.
+
+### 2026-09-30 — collision — Full check + manual test list
+- Full check ran: gates (jx3_model 10x, verify_model, loot, collision 25/25)
+  and the three standard routes (rug y=924 hits=0; cabinet held z=36704;
+  demo walk/run 90/300 + jump). Manual test checklist written to
+  `docs/movement/COLLISION_TEST_LIST.md` (registered in the movement README).

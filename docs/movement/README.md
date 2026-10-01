@@ -6,6 +6,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 |---|---|
 | `CLIENT_COLLISION_IMPROVEMENT_PLAN.md` | Main client collision — gap audit (holes, capsule, slope) + fix plan |
 | `COLLISION_SYSTEM_COMPARISON.md` | Host vs game collision system — full subsystem/flag/data inventory incl. what we do NOT have |
+| `COLLISION_TEST_LIST.md` | Full check results + manual in-game test list (current build) |
 | `COLLISION_SYSTEM_STATUS.md` | Collision system status audit — implemented / missing / wrong per subsystem |
 | `FULL_MAP_COLLISION.md` | Full map collision from the real client data - how it was achieved |
 | `JX3_CHARACTER_MOVEMENT_RESEARCH.md` | JX3 character movement & turning — research |
