@@ -134,12 +134,23 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
   Size 18 vs 15) — but **none of those 58 is referenced by any shipped layout** in the
   corpus. All 125 referenced schemes resolve to the same effective size under both rules
   (scheme `Size=0` → base, or the few used `Size>0` schemes already equal the base).
-- The exact engine site that turns the record's `Size` into a rendered glyph size was not
-  pinned in this pass (the item carries a resolved float at `KItemText+0x2F4`, read by the
-  glyph-run builder at `0x18011F8FF`; the writer chain was not fully traced — next probe:
-  `KItemText` update font/size path).
-- Renderer rule (`Size>0 ? Size : base`) therefore matches every shipped layout; the
-  open item is only relevant when authoring *new* schemes with overrides.
+- **No KGUIX64 code reads the scheme record's `Size` (+4).** Two exhaustive scans
+  (2026-09-30): (a) every `shl/imul reg, ×0x40` followed by a `[reg+4]` read across the
+  whole image — only unrelated 0x40-stride tables matched; (b) every writer of the item
+  font-size float `+0x2F4` — only the font-scale adjuster (`0x18011EFE0`, multiplies
+  `+0x2F0/+0x2F4` by caller scale factors, optionally rounds via `0x1804DB63D`, then
+  re-layouts) and the draw-struct builder (`0x180122160`, copies `+0x2F4` → struct
+  `+0x94`). The rendered size therefore comes from the font slot's base size (already
+  scaled by `mgr+0x48`) times item scale adjustments, not from the scheme record.
+- Working conclusion (**MED-HIGH**): the scheme `Size` field is **editor metadata** in
+  this build — the tooling writes it and encodes it in the scheme name; the renderer
+  does not consume it. This matches the data: the only differing `Size>0` schemes are
+  unused placeholders/chat schemes, and every referenced scheme renders at its slot's
+  base size under any rule.
+- Renderer rule (`Size>0 ? Size : base`) stays as a harmless parity choice for all
+  shipped layouts; a new override scheme would not change the live client either.
+  Residual caveat: a whole-record copy (`movups`) followed by a local-buffer `+4` read
+  could in principle hide a reader — nothing in the traced item/draw path suggests one.
 
 ### 2.2 Border and projection
 

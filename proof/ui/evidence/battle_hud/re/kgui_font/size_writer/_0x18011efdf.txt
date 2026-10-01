@@ -1,0 +1,74 @@
+# needle: @0x18011efdf
+# string VAs: []
+# xrefs: 1
+
+## xref 0x18011efdf  fn_start 0x18011efdf
+0x018011efdf: int3	
+0x018011efe0: push	rbx
+0x018011efe2: sub	rsp, 0x50
+0x018011efe6: movaps	xmmword ptr [rsp + 0x40], xmm6
+0x018011efeb: mov	rbx, rcx
+0x018011efee: movaps	xmmword ptr [rsp + 0x20], xmm8
+0x018011eff4: movaps	xmm6, xmm1
+0x018011eff7: movaps	xmm8, xmm2
+0x018011effb: call	0x1800fec70
+0x018011f000: test	byte ptr [rbx + 0x10], 4
+0x018011f004: jne	0x18011f0cf
+0x018011f00a: mov	rax, qword ptr [rip + 0x54f83f]
+0x018011f011: movaps	xmmword ptr [rsp + 0x30], xmm7
+0x018011f016: mov	rdx, qword ptr [rax + 0x5aa8]
+0x018011f01d: test	rdx, rdx
+0x018011f020: je	0x18011f04b
+0x018011f022: mov	eax, dword ptr [rbx + 0x2fc]
+0x018011f028: cmp	eax, 0x24
+0x018011f02b: jae	0x18011f04b
+0x018011f02d: imul	rcx, rax, 0x138
+0x018011f034: add	rcx, rdx
+0x018011f037: je	0x18011f04b
+0x018011f039: cmp	byte ptr [rcx + 0x134], 0
+0x018011f040: je	0x18011f04b
+0x018011f042: test	byte ptr [rcx + 0x12c], 2
+0x018011f049: jne	0x18011f058
+0x018011f04b: cmp	dword ptr [rbx + 0x32c], 0
+0x018011f052: jne	0x18011f058
+0x018011f054: xor	eax, eax
+0x018011f056: jmp	0x18011f05d
+0x018011f058: mov	eax, 1
+0x018011f05d: movss	xmm0, dword ptr [rbx + 0x2f0]
+0x018011f065: movss	xmm7, dword ptr [rbx + 0x2f4]
+0x018011f06d: test	eax, eax
+0x018011f06f: je	0x18011f077
+0x018011f071: movaps	xmm1, xmm8
+0x018011f075: jmp	0x18011f07e
+0x018011f077: movaps	xmm1, xmm6
+0x018011f07a: movaps	xmm6, xmm8
+0x018011f07e: test	byte ptr [rbx + 0x10], 0x10
+0x018011f082: mulss	xmm0, xmm6
+0x018011f086: mulss	xmm7, xmm1
+0x018011f08a: movss	dword ptr [rbx + 0x2f0], xmm0
+0x018011f092: movss	dword ptr [rbx + 0x2f4], xmm7
+0x018011f09a: je	0x18011f0b9
+0x018011f09c: call	0x1804db63d
+0x018011f0a1: movss	dword ptr [rbx + 0x2f0], xmm0
+0x018011f0a9: movaps	xmm0, xmm7
+0x018011f0ac: call	0x1804db63d
+0x018011f0b1: movss	dword ptr [rbx + 0x2f4], xmm0
+0x018011f0b9: test	dword ptr [rbx + 0x10], 0x1000000
+0x018011f0c0: movaps	xmm7, xmmword ptr [rsp + 0x30]
+0x018011f0c5: je	0x18011f0cf
+0x018011f0c7: mov	rcx, rbx
+0x018011f0ca: call	0x18011f2c0
+0x018011f0cf: movaps	xmm6, xmmword ptr [rsp + 0x40]
+0x018011f0d4: mov	eax, 1
+0x018011f0d9: movaps	xmm8, xmmword ptr [rsp + 0x20]
+0x018011f0df: add	rsp, 0x50
+0x018011f0e3: pop	rbx
+0x018011f0e4: ret	
+0x018011f0e5: int3	
+0x018011f0e6: int3	
+0x018011f0e7: int3	
+0x018011f0e8: int3	
+0x018011f0e9: int3	
+0x018011f0ea: int3	
+0x018011f0eb: int3	
+0x018011f0ec: int3	
