@@ -321,12 +321,24 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
    `WndContainer_HeadTop` inside `UISetting.ini` (HIT, 1,749 sections).
 4. ~~`caption_images.ini`~~ **CLOSED (2026-09-30)** — not referenced by this build
    (string absent from `KG3DEngineAdapterX64.dll`; all variants MISS).
-5. **WhoSeeMe script conflict** — INI `ScriptFile=HatredPanel.lua` vs module
-   `WhoSeeMe.lua`; verify which one the loader binds.
-6. **`ShowModeID` semantics** for HUD windows (retain-in vs suppress-in) still unresolved
-   (mapping only; `docs/ui/UI_SYSTEM_REPORT.md` §9).
-7. **`REPRESENT_*` alias table** in `CombatText` (names→state ids) has no in-file consumer
-   in the decompile — UNKNOWN.
+5. ~~WhoSeeMe script conflict~~ **CLOSED (2026-09-30)** — `WhoSeeMe.lua` registers the
+   window itself (`ui/Config/Default/WhoSeeMe.ini`, `Normal/WhoSeeMe`,
+   `WhoSeeMe.DefaultAnchor/bCheck`, `SYNC_SELECT_ME_PLAYER_NOTIFY`); `HatredPanel.lua`
+   only drives its own window. The INI `ScriptFile=HatredPanel.lua` is stale; the module
+   registration binds `WhoSeeMe.lua`.
+6. **`ShowModeID` semantics (partially decoded 2026-09-30)** — the window decoder
+   (KGUIX64 `0x1800CD780`, key read at `0x1800CDE77`) parses a comma list (≤128 ids,
+   ≤127 each) into a 128-bit mask at `window+0xC58`; right after parsing it
+   **sets/clears bit 0 (`or/and [rbx+0xC58]` at `0x1800CE034`) from `ShowWhenHideUI != 0`**
+   — so Default-mode visibility is governed by `ShowWhenHideUI`, not by the list.
+   `[Balloon] ShowModeID` in the config uses the same mask format (fn `0x18020E250`).
+   Open: the actual `IsVisibleInShowMode` test (current-mode vs mask, and what "no
+   current mode" means) — next probe: `KWndStation::InitShowModeInfos` /
+   `IsVisibleInShowMode` implementation.
+7. ~~`REPRESENT_*` alias table~~ **CLOSED (2026-09-30)** — the `CombatText` alias table is
+   dead code; `OnEvent` dispatches by explicit string comparison
+   (`REPRESENT_MISS_TEXT`/`DODGE`/`IMMUNITY` → `RepresentNewStateText`, at
+   decompiled lines 1104-1113). No action needed.
 8. **External openers** for `EndOfBattle`, `FullScreenWarning`, `ComboWinEffect`,
    `ProgressBar.Start/Finish` are outside the extracted subset (INFERRED callers).
 9. **Head-top buffs render owner** — Lua `TopBuff` window vs native caption texture slots:

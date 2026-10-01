@@ -395,8 +395,19 @@ numerals for counters.
 `ShowModeID` values are defined in `ui/Scheme/Case/showmode.txt` (0–38, full
 list in `notes/system-tables.md`): e.g. `6` Cloud (mobile-stream mode),
 `12` Homeland building, `1` DesertStorm OB, `27` StoryMode, `28` DungeonOB,
-`36–38` GooseDuckKill. Windows are shown when the current mode id is in their
-list (`ShowModeID=1,4,5,17` etc.); `IsShowModeIdLegal` exists natively
+`36–38` GooseDuckKill.
+
+Decoder pass (2026-09-30, KGUIX64, annotated dumps in
+`proof/ui/evidence/battle_hud/re/kgui_showmode/`): the window decoder
+(`0x1800CD780`, `ShowModeID` read at `0x1800CDE77`) parses the value as a
+comma-separated list (up to 128 ids, each ≤127) into a **128-bit mask** at
+`window+0xC58`; right after parsing it sets/clears **bit 0 (Default)** from
+`ShowWhenHideUI != 0` (`or/and qword [rbx+0xC58],1` at `0x1800CE034`), i.e.
+Default-mode visibility is controlled by that flag rather than by the list.
+`[Balloon] ShowModeID` (config) uses the same mask format (fn `0x18020E250`).
+Old wording "shown when the current mode id is in their list" is an
+over-simplification; the exact visibility test (`KWndStation::IsVisibleInShowMode`,
+`InitShowModeInfos`) is still **OPEN**. `IsShowModeIdLegal` exists natively
 (**VERIFIED**). Canvas is 1280×960 with `MaxScale=2`; the exact screen-fit
 formula is **UNKNOWN**.
 

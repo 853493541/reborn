@@ -1,0 +1,5 @@
+IsVisibleInShowMode
+IsVisibleInCurrentShowMode
+AddShowModeByName
+ShowModeID
+IsShowModeIdLegal

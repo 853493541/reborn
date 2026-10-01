@@ -1042,3 +1042,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `KG3DEngineAdapterX64.dll` (probe + string scan) — no such file in this build.
 - Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §2.2/§4/§6; tracked candidate list
   `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt`.
+
+### 2026-09-30 — ui — Remaining UI open items: WhoSeeMe, ShowModeID, markup, alias
+- WhoSeeMe binding conflict **closed**: `WhoSeeMe.lua` registers the window
+  (`ui/Config/Default/WhoSeeMe.ini`, `Normal/WhoSeeMe`, `WhoSeeMe.bCheck`,
+  `SYNC_SELECT_ME_PLAYER_NOTIFY`); `HatredPanel.lua` only drives HatredPanel — the
+  INI `ScriptFile=HatredPanel.lua` is stale.
+- `ShowModeID` **partially decoded** (dumps `re/kgui_showmode/`): comma list (≤128,
+  ids ≤127) → 128-bit mask at `window+0xC58`; bit 0 (Default) is set/cleared from
+  `ShowWhenHideUI != 0` right after parsing (`0x1800CE034`); `[Balloon] ShowModeID`
+  uses the same mask (fn `0x18020E250`). Visibility test (`IsVisibleInShowMode`)
+  still open. `UI_SYSTEM_REPORT.md` §9 updated.
+- Inline markup: format produced by represent `OnReloadTable` (`0x18031FE40`):
+  `<text> text="…" font=N r=R g=G b=B </text>` (`font=10 r=255 g=165 b=0` template);
+  KGUI string.txt uses the `font=N`-only variant with N≤177 (scheme ids, MED). The
+  parser itself is not in KGUI/JX3UIX64 string tables — still open.
+- `CombatText` `REPRESENT_*` alias table is dead code — `OnEvent` dispatches by
+  explicit string compare (decompiled 1104-1113); closed.
+- Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §4; `re/kgui_showmode/`,
+  `re/represent_markup/` (tracked).
