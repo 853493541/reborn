@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -19,6 +20,7 @@ namespace UiProcessApp
         private WindowInfo _currentWindow;
         private IniFile _currentIni;
         private LayoutPlan _currentPlan;
+        private Dictionary<WindowInfo, string> _numbers;
         private bool _updatingPages;
         private double _zoom = 1.0;
         private bool _zoomUserSet;
@@ -73,6 +75,16 @@ namespace UiProcessApp
         {
             StageTree.Items.Clear();
             if (_inventory?.Stages == null) return;
+
+            _numbers = new Dictionary<WindowInfo, string>();
+            for (int si = 0; si < _inventory.Stages.Count; si++)
+            {
+                var all = _inventory.Stages[si].Windows ?? new List<WindowInfo>();
+                for (int wi = 0; wi < all.Count; wi++)
+                    _numbers[all[wi]] = (si + 1).ToString(CultureInfo.InvariantCulture) + "." +
+                                        (wi + 1).ToString(CultureInfo.InvariantCulture);
+            }
+
             foreach (var stage in _inventory.Stages)
             {
                 var windows = stage.Windows ?? new List<WindowInfo>();
@@ -83,16 +95,17 @@ namespace UiProcessApp
                 }
                 var stageNode = new TreeViewItem
                 {
-                    Header = stage.Title,
+                    Header = ChineseOnly(stage.Title),
                     IsExpanded = true,
                     Foreground = new SolidColorBrush(Color.FromRgb(0xF0, 0xD0, 0x90)),
                     Tag = stage,
                 };
                 foreach (var window in windows)
                 {
+                    var name = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn;
                     stageNode.Items.Add(new TreeViewItem
                     {
-                        Header = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn,
+                        Header = Number(window) + "  " + name,
                         Foreground = new SolidColorBrush(Color.FromRgb(0xDD, 0xDD, 0xDD)),
                         ToolTip = window.Title,
                         Tag = window,
@@ -100,6 +113,25 @@ namespace UiProcessApp
                 }
                 StageTree.Items.Add(stageNode);
             }
+        }
+
+        /// <summary>Stable "stage.window" number (e.g. 5.1) assigned in BuildTree.</summary>
+        private string Number(WindowInfo window)
+        {
+            if (window != null && _numbers != null && _numbers.TryGetValue(window, out var n)) return n;
+            return "";
+        }
+
+        /// <summary>
+        /// Drops a trailing English phrase from a catalog title ("1. 排队 Queue" →
+        /// "1. 排队"), so the tree shows Chinese only.
+        /// </summary>
+        private static string ChineseOnly(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return text;
+            var trimmed = System.Text.RegularExpressions.Regex.Replace(
+                text, @"\s+[A-Za-z][A-Za-z0-9 /'\-]*$", "");
+            return string.IsNullOrWhiteSpace(trimmed) ? text : trimmed.TrimEnd();
         }
 
         private static bool Matches(StageInfo stage, string filter)
@@ -136,13 +168,16 @@ namespace UiProcessApp
             _currentPlan = null;
             PageBox.Items.Clear();
             PageBox.IsEnabled = false;
-            WindowTitle.Text = stage.Title;
+            WindowTitle.Text = ChineseOnly(stage.Title);
             DetailsPanel.Children.Clear();
-            AddHeading(stage.Title);
+            AddHeading(ChineseOnly(stage.Title));
             AddParagraph(stage.Summary);
             AddHeading("窗口");
             foreach (var w in stage.Windows ?? new List<WindowInfo>())
-                AddBullet($"{(string.IsNullOrWhiteSpace(w.Cn) ? w.Title : w.Cn)}  [{w.Status}]");
+            {
+                var name = string.IsNullOrWhiteSpace(w.Cn) ? w.Title : w.Cn;
+                AddBullet($"{Number(w)}  {name}  [{w.Status}]");
+            }
             LabelsGrid.ItemsSource = new List<LabelRow>();
             IniText.Text = "";
             LayoutHost.Child = ShowMessage("Select a window to render its layout.");
@@ -152,11 +187,11 @@ namespace UiProcessApp
         {
             _currentWindow = window;
             var displayName = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn;
-            WindowTitle.Text = displayName;
+            WindowTitle.Text = Number(window) + "  " + displayName;
             WindowTitle.ToolTip = window.Title;
 
             DetailsPanel.Children.Clear();
-            AddHeading(displayName);
+            AddHeading(Number(window) + "  " + displayName);
             AddParagraph($"[{window.Status}]");
 
             var iniPath = ResolveIniPath(window);
@@ -221,6 +256,29 @@ namespace UiProcessApp
                 return;
             }
             PageBox.IsEnabled = true;
+            var customPages = _currentWindow?.Pages;
+            if (customPages != null && customPages.Count > 0)
+            {
+                // Data-driven windows (the loading screen) define their own pages:
+                // one entry per destination map, no INI Page_* filtering.
+                foreach (var page in customPages)
+                    PageBox.Items.Add(new ComboBoxItem { Content = page.Label ?? page.Id, Tag = page.Id });
+                var customPreferred = customPages.FirstOrDefault(pg =>
+                        string.Equals(pg.Id, _currentWindow.Page, StringComparison.OrdinalIgnoreCase)) ?? customPages[0];
+                ComboBoxItem customSelected = null;
+                foreach (ComboBoxItem item in PageBox.Items)
+                {
+                    if (string.Equals(item.Tag as string, customPreferred.Id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        customSelected = item;
+                        break;
+                    }
+                }
+                PageBox.SelectedItem = customSelected ?? PageBox.Items[0];
+                _updatingPages = false;
+                RebuildPlan();
+                return;
+            }
             var pages = BuildPlan(_currentIni, null).Pages;
             PageBox.Items.Add(new ComboBoxItem { Content = "(all)", Tag = null });
             foreach (var page in pages)
@@ -282,11 +340,22 @@ namespace UiProcessApp
             return PageBox.SelectedItem as string;
         }
 
+        /// <summary>The viewer page state for the current selection, if the window defines pages.</summary>
+        private PageState SelectedPageState()
+        {
+            var pages = _currentWindow?.Pages;
+            if (pages == null || pages.Count == 0) return null;
+            var id = SelectedPage();
+            return pages.FirstOrDefault(pg => string.Equals(pg.Id, id, StringComparison.OrdinalIgnoreCase)) ?? pages[0];
+        }
+
         private void RebuildPlan()
         {
             if (_currentIni == null) { _currentPlan = null; return; }
             var page = SelectedPage();
             if (string.IsNullOrWhiteSpace(page)) page = null;
+            // Custom pages are viewer state, not INI Page_* tabs.
+            if (_currentWindow?.Pages != null && _currentWindow.Pages.Count > 0) page = null;
             _currentPlan = BuildPlan(_currentIni, page);
         }
 
@@ -446,6 +515,13 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                 LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                var pageState = SelectedPageState();
+                if (pageState != null)
+                {
+                    LayoutPlanBuilder.ApplyTexts(plan.Filtered, pageState.Texts);
+                    LayoutPlanBuilder.ApplyImages(plan.Filtered, pageState.Images);
+                    LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, pageState.Adjust);
+                }
                 LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 if (plan.Filtered.Sections.Count == 0)
                 {
@@ -458,6 +534,7 @@ namespace UiProcessApp
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
                 var build = UiLayout.Build(ini, assets, textures);
+                var overlayRoot = App.BuildOverlayVisual(window, assets, textures, UiLayout.Wireframe);
 
                 double width = ini.Sections[0].GetInt("Width");
                 double height = ini.Sections[0].GetInt("Height");
@@ -472,7 +549,20 @@ namespace UiProcessApp
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                 };
+                if (overlayRoot != null) _layoutCanvas.Children.Add(overlayRoot);
                 _layoutCanvas.Children.Add(build.Root);
+                double offsetX = window.OffsetX ?? 0;
+                double offsetY = window.OffsetY ?? 0;
+                if (offsetX != 0 || offsetY != 0)
+                {
+                    // Window placement on the client; only the main window shifts.
+                    Canvas.SetLeft(build.Root, offsetX);
+                    Canvas.SetTop(build.Root, offsetY);
+                    width += Math.Max(0, offsetX);
+                    height += Math.Max(0, offsetY);
+                    _layoutCanvas.Width = width;
+                    _layoutCanvas.Height = height;
+                }
                 _layoutCanvas.Measure(new Size(width, height));
                 _layoutCanvas.Arrange(new Rect(0, 0, width, height));
                 _layoutCanvas.UpdateLayout();
@@ -483,8 +573,13 @@ namespace UiProcessApp
                     height += overhang.T + overhang.B;
                     _layoutCanvas.Width = width;
                     _layoutCanvas.Height = height;
-                    Canvas.SetLeft(build.Root, overhang.L);
-                    Canvas.SetTop(build.Root, overhang.T);
+                    Canvas.SetLeft(build.Root, overhang.L + offsetX);
+                    Canvas.SetTop(build.Root, overhang.T + offsetY);
+                    if (overlayRoot != null)
+                    {
+                        Canvas.SetLeft(overlayRoot, overhang.L);
+                        Canvas.SetTop(overlayRoot, overhang.T);
+                    }
                 }
                 LayoutScroll.UpdateLayout();
                 _zoom = FitZoom(width, height);
@@ -666,6 +761,7 @@ namespace UiProcessApp
         public string Root { get; set; }
         public string Path { get; set; }
         public string Page { get; set; }
+        public List<PageState> Pages { get; set; }
         public string Summary { get; set; }
         public string Hide { get; set; }
         public string Skin { get; set; }
@@ -677,9 +773,28 @@ namespace UiProcessApp
         public List<ImageOverride> Images { get; set; }
         public List<AppendSpec> Appends { get; set; }
         public List<ListTemplate> Lists { get; set; }
+        /// <summary>Window placement on the client (AnchorDst=client): the client
+        /// draws this window at this offset (e.g. the MiddleMap sits 33 px below the
+        /// WorldMap band that stays at the client top). Renders shift the window
+        /// content by this amount, keeping the overlay at (0,0).</summary>
+        public double? OffsetX { get; set; }
+        public double? OffsetY { get; set; }
+        /// <summary>Second KGUI window drawn behind this one (the client shows the
+        /// WorldMap behind the MiddleMap, so the reference capture is a composite:
+        /// MiddleMap chrome + WorldMap top-left/region list).</summary>
+        public OverlaySpec Overlay { get; set; }
         public List<string> Evidence { get; set; }
         public List<string> Elements { get; set; }
         public List<string> Labels { get; set; }
+    }
+
+    public sealed class OverlaySpec
+    {
+        public string Path { get; set; }
+        public string Hide { get; set; }
+        public List<string> Show { get; set; }
+        public List<TextOverride> Texts { get; set; }
+        public List<AdjustSpec> Adjust { get; set; }
     }
 
     public sealed class LabelRow

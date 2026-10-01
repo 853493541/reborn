@@ -101,11 +101,13 @@ reads the destination map's minimap `config.ini` `[loading] image=` (e.g. 龙门
 `Handle_Nor`+`Image_Progress` for a normal map load, and the traffic state adds the
 `Handle_Nodes` markers with `Text_PointName`. Progress chrome: `Carriage.UITex`
 frames 20-24 (track) and `CharButton.UITex` frames 18/19 (fill). The viewer replays
-  the normal state for all seven 绝境 maps (296/297/410/512/532/645/709, one
-  viewer entry each, `loading-<id>`): `Handle_Traffic` hidden, `Image_Bg`
-  full-bleed (cw+4 x ch+2 at -3,-1), progress bar at (10% w, 89.4% h) =
-  (128,858) with a 912px fill, message handles at (128,838), tip panel at
-  (655,115) — all from `CorrectShow`; renders
+  the normal state as one `loading-window` entry with a page per map
+  (296/297/410/512/532; 645 洱海绝境 / 709 林海绝境 dropped for now):
+  `Handle_Traffic` and `Handle_PakV4Msg` hidden (the traffic bar and the PakV4
+  download tips only appear while the client streams resources), `Image_Bg`
+  full-bleed (cw+4 x ch+2 at -3,-1) on a 1280x720 canvas, progress bar at
+  (10% w, 89.4% h) = (128,644) with a 912px fill, message handles at (128,646),
+  tip panel at (655,115) — all from `CorrectShow`; renders
   `proof/ui/evidence/loading_panel_296_render.png` and
   `loading_panel_532_render.png` (2026-09-29). The CDN art is pulled with
   `tools/netcode/extract_hpkg_member.py` (packages `105/…`, `103/…`, `117/…`,
@@ -116,12 +118,19 @@ frames 20-24 (track) and `CharButton.UITex` frames 18/19 (fill). The viewer repl
 
 | item | evidence | status |
 |---|---|---|
-| countdown frame art `UI_黑山绝境_倒计时通用底框.pss` | editor asset (`editor_assets_juejing.txt:72-77`) | PROVEN asset |
-| countdown value source | `OnSyncBFPQInfo` 0x11B → absolute end time → `BattleFieldMap.UpdateTime` h:m:s | PROVEN data path |
-| countdown labels | `STR_PQ_PROTIME` 阶段倒计时： and `STR_PQ_TIMETITLE` 挑战倒计时： (PQ module; mode use inferred), `STR_MAP_QUEUE` 排队中 | PARTIAL (generic PQ labels) |
-| safe-zone state | `STR_SAFEZONE` 安全区, `STR_HATREDPANEL_SAFEZONE` 安全区域 | PROVEN labels |
+| countdown frame art `UI_黑山绝境_倒计时通用底框.pss` | editor asset (`editor_assets_juejing.txt:72-77`); no extracted INI references it (corpus scan) | PROVEN asset, editor/runtime effect only |
+| countdown value source | `OnSyncBFPQInfo` 0x11B → absolute end time (`+0x1b490`) → `GetBattleFieldPQInfo()` 4th return | PROVEN data path |
+| countdown display | the only KGUI consumer is `BattleFieldMap.UpdateTime` → `Wnd_Title/Text_Time` (`STR_BUFF_H_LEFT_TIME_MSG`, decompiled:1578-1627), and `BattleFieldMap.Init` hides `Text_Time` when `IsInTreasureBattleFieldMap()` (decompiled:1352-1359) — true for every 绝境 map (296/297/410/512/532/645/676/677/709/715, `CheckTreasureBattleFieldMap.dump.txt`) | **OPEN — no KGUI renderer in this mode**; engine/PSS or system message |
+| countdown announcements | server system messages observed at T-30/20/10 s (`interface MY#DATA team_mon` countdown entries; interface-addon) | LOW |
+| countdown labels | `STR_PQ_PROTIME` 阶段倒计时： and `STR_PQ_TIMETITLE` 挑战倒计时： (PQ module; mode use inferred), `STR_MAP_QUEUE` 排队中 | PARTIAL (no mode consumer in the extracted corpus) |
+| safe-zone boundary | `BattleFieldMap.InitMapData` shows `Handle_CircleNew` + `Handle_StormLine` and registers `MapCircle` with `SFX_CircleNew` (`C_自己圈范围_677.pss`) for treasure maps (decompiled:5317-5341); engine-drawn, no KGUI image. `STR_SAFEZONE` 安全区 has no extracted consumer; `PROTECT_ZONE`/`ENTER_PROTECT_ZONE` (即将开启安全保护) is account security, not the BR zone | OPEN |
 | staging pose | `龙门绝境_站姿01..05` animation set | PROVEN asset |
 | mode HUD activation | minimap + main bar + BR skill bar appear after load | PARTIAL (activation trigger not proven) |
+
+**Viewer state (2026-09-29):** `staging-countdown` stays a research entry (no render):
+the countdown is not a KGUI window in this mode and the safe-zone circle is an
+engine/PSS effect. Re-open with a client GT screenshot of the staging moment or a
+PSS renderer.
 
 ## 6. In-match HUD
 
@@ -157,10 +166,82 @@ the local extraction and are now committed as UTF-8 copies under
 State/layout replays: the minimap lens is parked at `Left=-200` in the INI and
 `Minimap.UpdateAnchorCorner` (Minimap.decompiled.lua:1542-1770) puts the TOPRIGHT
 layout at `Wnd_Corner (27,0)` / `Wnd_Minimap (0,32)` / `CheckBox_Switch (205,-2)`
-(inventory `adjust`); the MiddleMap and BattleFieldMap `Image_Map` elements are
-filled by the engine's map renderer, so the viewer draws the extracted
-`data/source/maps/龙门寻宝minimap_mb/middlemap.png` sample (inventory `images`;
-raw textures ignore the authored `Frame`). Render sheet:
+(inventory `adjust`). The MiddleMap viewer state is a **composite**: the WorldMap
+window is drawn *behind* it — the client calls
+`WorldMap_ShowBehindMiddleMap(false, true)` (MiddleMap.decompiled.lua:22298,
+WorldMap.decompiled.lua:8314-8356), which hides the WorldMap map scroll/list and
+keeps its chrome — so the render takes the WorldMap top band (overlay `show`),
+`Text_Title` 地图, the `Handle_TipsTitle` zone legend, `CheckBox_Footprint`
+神行足迹 and `Wnd_SearchASetting` (`$Placeholder` 城镇或秘境; `WndEdit`
+placeholders now render). On top, MiddleMap replays the translucent
+`MapWindow3/4` bg tiles + `Handle_Map/Image_Map` with the **real map art** (the
+map area is masked by `Handle_Border`'s `ShapTexture`
+`ui/Image/UItimate/UIMask/MapMask.tga` with `AlphaShap=1` — a soft 100x80
+rounded-rect alpha stretched over the 936x764 border, applied by the viewer as a
+container `OpacityMask` so the art feathers into the glass like the capture): the
+map's own CDN pack (`data/source/maps/龙门荒漠minimap_mb/`, extracted from hpkg
+`50/oc23ca7fgr3io.hpkg` via the resource index) carries `config.ini`
+(`[middlemap0] image=middlemap.png`, 1024x896, scale/startx/starty),
+`middlemap.png` (2048x1792), `npc.tab`, `doodad.tab`, `area.tab`, traffic tables.
+`MiddleMap.UpdateMapPos` (:9263-9320) fits the art preserving the config aspect
+into `Handle_Map` (928x812 = 928/2048 = 0.453; the reference capture measures
+0.455, correlation 0.93). The region list rows come from the shipped tables:
+世界 = `STRING_TITLE_WORLDMAP`; 陇右 = `WorldMap_GetRegion(Table_GetMap(23).dwRegionID=7).szRegionName`
+(`RegionMap.tab`); 龙门荒漠 = `Table_GetMiddleMap(23)` (`MapList.tab` row 23
+`MiddleMap0`); `Wnd_SmallMaps` is adjusted to `(left 0, top 39)` because the
+runtime list sits directly under `Wnd_Region` and left-aligns with it (authored
+`(53,161)` is the parked prototype; left 6 left the 龙门荒漠 crest/text ~6 px
+right of the 陇右 row). `Image_MapLogo` is adjusted to top 4: the authored top
+-6 draws the crest ~10 px above the capture, which centers it on
+`Text_SmallMap` (box correlation +11 px before, +0 after; capture
+`proof/minimap/screenshots/5.1 Example.png`, 2026-09-30 measurement — the
+viewer's static item layout does not reproduce the runtime row placement). The NPC
+filter rows come from the map's `minimap/npc.tab` + `minimap/doodad.tab` category
+rows (`kind` + `defaultcheck`; `g_tMapNpcTitle`/`g_tMapDoodad` in
+table_defs_dynamic.lua) — the same source `UpdateNpcDoodad` (:5978-6043) appends
+from — rendered with `Image_NpcOption` frame 0 checked / 4 unchecked
+(:501-504); the shipped `defaultcheck` is 0, so the rows render unchecked (the
+capture's 跨地图交通 + 其他商人 checks are the player's saved StorageServer
+`MiddleMap_SelectNpc` filter, not shipped data). The trunk rows
+(`Handle_NpcTrunk`/`Handle_CraftTrunk`, cloned from `Handle_Mode` by
+`UpdateAreaOrNpcList` :5660-5705) carry the eye in the `Image_ListBg1`/`Bg2`
+art (`MapWindow6` frame 32 open / 35 closed; `UpdateAreaOrNpcTruckState`
+:4501-4592 swaps them with the expand state — NPC trunk expanded, craft trunk
+collapsed). The viewer hides the authored-visible `Image_ListCover` (frame 30
+magnifier, which the script shows over the eye) and `Image_Minimize` in both
+rows, plus the opposite bg frame per row state (list-template `hide`), matching
+the capture. `Image_Search` is rendered diced (`adjust imageType 10`): the
+client draws the 20x20 `Common` frame 0 box art with 1 px borders although the
+INI omits `ImageType`; the stretched render showed a 13 px left/right band (the
+"extra dusted area"), the capture 1 px. Also replayed: the 标记设置
+button and the scale/alpha sliders, plus the window placement and tab state the
+capture shows: the MiddleMap window sits 27 px below the WorldMap band
+(inventory `offsetY`; the WorldMap stays at the client top — the capture's 地图
+tab underline is at y=113, the list/bottom bar/art all ~+27 vs the authored
+positions, and a high-pass alignment against the capture now leaves ≤2 px
+residuals on the list/tabs/search/title/rows near the window origin), the NPC
+title row is 43 px tall
+at runtime (inventory `adjust Handle_Mode`; the authored 54 is the editor
+height — the capture's panel rows land at y=228.6/266.9, ours 229/267),
+`CheckBox_MapPage` is checked (`images.checked`; the capture paints
+the selected frame and the script calls `Check(true)` :20817/20942) and
+`CheckBox_ExplorePage` is hidden (the script hides it when
+`GetMapExploreInfo(mapID)` is empty :3920-3958; the capture shows no 探索 tab).
+Measurement note (2026-09-30): the capture's MiddleMap content is ~0.64 % (x) /
+0.72 % (y) larger than the design-size render — a least-squares fit over 16
+feature patches gives `dx = 0.0064·x + 2.4`, `dy = 0.0072·y − 0.7` (the
+screenshot's UI scale is ≈1.8145, not the 1.8021 used in earlier passes), so
+residuals grow with x/y (≈ +3 px at the left list, +10 px at the right panel);
+per-element checks must correct for the scale before calling an offset real.
+`WndContainer_GFInfo` (GF counters + heat
+toolbar) is hidden: `UpdateHeatMapState` hides it when `CanShowHeatMap()` is
+false (:25045-25081) and the reference capture shows no toolbar. Only the parked
+data-marker layers (person/teammate, born/treasure/event marks, draw/storm lines,
+area name, traffic, quest/NPC marks), the command-mode/quest-filter subtrees and
+the script-locked widgets (`Wnd_CommandMap`, `CheckBox_QuestPage`, `Btn_Close`,
+`WndContainer_HeatMapDetail`) stay hidden (2026-09-29). The viewer supports
+table-driven labels/lists (`TextOverride.Table*`, `ListTemplate.RowSources` over
+the UTF-8 table copies in `ui-process-app/Data/table/`). Render sheet:
 `proof/ui/evidence/hud_windows_render.png`. Audit after the pass: 15
 placeholders — all authored `Image no Image` elements filled at runtime from
 player/engine data (`Image_Map`, `Image_School`, `Image_NPCMark`,

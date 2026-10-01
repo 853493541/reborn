@@ -349,6 +349,53 @@ namespace MapUiApp.Engine
                     container.Background = new SolidColorBrush(Color.FromArgb(16, 0x6F, 0xC0, 0xEF));
                     container.ToolTip = section.Name;
                 }
+                // KGUI ShapTexture with AlphaShap=1 masks the subtree with the shape
+                // texture's alpha: the MiddleMap's Handle_Border uses MapMask.tga (a
+                // soft rounded rect) so the map feathers into the surrounding glass,
+                // and the minimap lens uses MinimapSharp.tga. Without the mask the
+                // map shows its hard-edged source rectangle.
+                var shapeTexture = section.Get("ShapTexture");
+                if (!string.IsNullOrWhiteSpace(shapeTexture) && section.GetInt("AlphaShap") == 1)
+                {
+                    var shape = textures.GetFrame(shapeTexture, 0);
+                    if (shape != null)
+                        container.OpacityMask = new ImageBrush(shape) { Stretch = Stretch.Fill };
+                }
+                // KGUI WndEdit draws its authored $Placeholder (e.g. the world-map
+                // search box "城镇或秘境" = STRING_Tip1) until the player types.
+                if (type == "WndEdit")
+                {
+                    var rawPlaceholder = section.Get("$Placeholder");
+                    if (!string.IsNullOrWhiteSpace(rawPlaceholder))
+                    {
+                        string placeholder = null;
+                        if (GameData.TryResolveString(rawPlaceholder, out var resolvedPlaceholder))
+                            placeholder = resolvedPlaceholder;
+                        else if (!rawPlaceholder.StartsWith("STR", StringComparison.OrdinalIgnoreCase))
+                            placeholder = rawPlaceholder;
+                        if (!string.IsNullOrWhiteSpace(placeholder))
+                        {
+                            double placeholderSize = 14;
+                            Brush placeholderBrush = new SolidColorBrush(Color.FromRgb(0xA8, 0xA8, 0xA8));
+                            if (UiProcessApp.Engine.Fonts.TryGet(section.GetInt("PlaceholderFontScheme", 108),
+                                                                 out var placeholderFontSize, out var placeholderColor, out _))
+                            {
+                                placeholderSize = placeholderFontSize;
+                                placeholderBrush = new SolidColorBrush(placeholderColor);
+                            }
+                            var placeholderBlock = new TextBlock
+                            {
+                                Text = placeholder,
+                                FontFamily = ResolveFontFamily(section, textures.Assets),
+                                FontSize = placeholderSize,
+                                Foreground = placeholderBrush,
+                            };
+                            double placeholderHeight = MeasureTextHeight(placeholderBlock, placeholder, placeholderSize);
+                            Canvas.SetTop(placeholderBlock, height > 0 ? (height - placeholderHeight) / 2 : 0);
+                            container.Children.Add(placeholderBlock);
+                        }
+                    }
+                }
                 return container;
             }
 
@@ -406,13 +453,16 @@ namespace MapUiApp.Engine
                     // uses as a blur+translucency shape (PanelBg frame 6 = solid fill,
                     // frame 4 = soft-edged popup). WPF has no backdrop blur offscreen, so
                     // approximate with the 琉璃 panel tone masked by the frame's alpha.
+                    // The tone is matched to the captures (the MiddleMap band and the
+                    // queue panel glass measure ~(52,70,70)/(67,82,79), a neutral dark
+                    // teal — a bluer tone reads unnatural against the glass panels).
                     double gw = drawWidth > 0 ? drawWidth : source.PixelWidth;
                     double gh = drawHeight > 0 ? drawHeight : source.PixelHeight;
                     var glass = new Border
                     {
                         Width = gw,
                         Height = gh,
-                        Background = new SolidColorBrush(Color.FromArgb(0xE6, 0x2E, 0x3B, 0x49)),
+                        Background = new SolidColorBrush(Color.FromArgb(0xE6, 0x33, 0x39, 0x3E)),
                         OpacityMask = new ImageBrush(source) { Stretch = Stretch.Fill },
                     };
                     visual = glass;

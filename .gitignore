@@ -55,6 +55,7 @@ proof/netcode/mode_juejing/cache_maps/
 proof/minimap/ui/
 proof/minimap/addons/
 proof/minimap/extracted/
+proof/minimap/tables/
 
 # Raw extracted loading-screen images (research scratch, kept local;
 # re-extract with tools/netcode/extract_hpkg_member.py)

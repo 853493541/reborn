@@ -47,7 +47,9 @@ namespace UiProcessApp.Engine
                     var parts = line.Split('\t');
                     if (parts.Length < 3) continue;
                     var key = parts[0].Trim();
-                    if (!key.StartsWith("STR_", StringComparison.OrdinalIgnoreCase)) continue;
+                    // Table ids are identifiers (STR_*, STRING_*, MIDDLEMAP_COMMON_NPC,
+                    // MSG_BRACKET, ...); skip header/numeric keys.
+                    if (key.Length == 0 || char.IsDigit(key[0])) continue;
                     if (Table.ContainsKey(key)) continue;
                     Table[key] = ExtractMarkupText(parts[2]);
                 }

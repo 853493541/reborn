@@ -157,6 +157,13 @@ namespace UiProcessApp
                     : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
                 var ini = IniFile.Load(iniPath);
                 var effectivePage = page ?? window.Page;
+                PageState pageState = null;
+                if (window.Pages != null && window.Pages.Count > 0)
+                {
+                    pageState = window.Pages.FirstOrDefault(pg =>
+                            string.Equals(pg.Id, effectivePage, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                    effectivePage = null; // viewer pages are state, not INI Page_* tabs
+                }
                 var plan = LayoutPlanBuilder.Build(ini, effectivePage);
                 LayoutPlanBuilder.ApplyHide(plan.Filtered, hide ?? window.Hide);
                 LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
@@ -168,24 +175,59 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                 LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                if (pageState != null)
+                {
+                    LayoutPlanBuilder.ApplyTexts(plan.Filtered, pageState.Texts);
+                    LayoutPlanBuilder.ApplyImages(plan.Filtered, pageState.Images);
+                    LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, pageState.Adjust);
+                }
                 LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
                 UiLayout.Wireframe = wire;
                 var build = UiLayout.Build(plan.Filtered, assets, textures);
+                var overlayRoot = BuildOverlayVisual(window, assets, textures, wire);
 
                 double width = plan.Filtered.Sections[0].GetInt("Width");
                 double height = plan.Filtered.Sections[0].GetInt("Height");
                 if (width <= 0) width = 1280;
                 if (height <= 0) height = 720;
 
+                FrameworkElement composedRoot = build.Root;
+                if (overlayRoot != null)
+                {
+                    var grid = new Grid { Width = width, Height = height };
+                    grid.Children.Add(overlayRoot);
+                    grid.Children.Add(build.Root);
+                    composedRoot = grid;
+                }
+
+                // Window placement on the client (inventory offsetX/offsetY): shift
+                // only the main window; the overlay stays at (0,0) — the client shows
+                // the MiddleMap below the WorldMap band (WorldMap at the client top).
+                double offsetX = window.OffsetX ?? 0;
+                double offsetY = window.OffsetY ?? 0;
+                if (offsetX != 0 || offsetY != 0)
+                {
+                    build.Root.Margin = new Thickness(offsetX, offsetY, 0, 0);
+                    build.Root.HorizontalAlignment = HorizontalAlignment.Left;
+                    build.Root.VerticalAlignment = VerticalAlignment.Top;
+                    width += Math.Max(0, offsetX);
+                    height += Math.Max(0, offsetY);
+                    if (composedRoot is Grid offsetGrid)
+                    {
+                        offsetGrid.Width = width;
+                        offsetGrid.Height = height;
+                    }
+                }
+
                 var host = new Border
                 {
                     Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
                     Width = width,
                     Height = height,
-                    Child = build.Root,
+                    Child = composedRoot,
                 };
                 host.Measure(new Size(width, height));
                 host.Arrange(new Rect(0, 0, width, height));
@@ -206,9 +248,9 @@ namespace UiProcessApp
                         Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
                     };
                     host.Child = null;
-                    Canvas.SetLeft(build.Root, overhang.L);
-                    Canvas.SetTop(build.Root, overhang.T);
-                    expanded.Children.Add(build.Root);
+                    Canvas.SetLeft(composedRoot, overhang.L);
+                    Canvas.SetTop(composedRoot, overhang.T);
+                    expanded.Children.Add(composedRoot);
                     host.Child = expanded;
                     host.Width = expanded.Width;
                     host.Height = expanded.Height;
@@ -245,7 +287,7 @@ namespace UiProcessApp
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 outPath ??= Path.Combine(AppContext.BaseDirectory, $"render_{windowId}.png");
                 using (var stream = File.Create(outPath)) encoder.Save(stream);
-                Console.WriteLine($"rendered {windowId} page={effectivePage ?? "(all)"} sections={plan.Filtered.Sections.Count} " +
+                Console.WriteLine($"rendered {windowId} page={pageState?.Id ?? effectivePage ?? "(all)"} sections={plan.Filtered.Sections.Count} " +
                                   $"art={(Paths.ProofUiRoot != null ? "on" : "missing")} -> {outPath}");
                 return 0;
             }
@@ -398,6 +440,14 @@ namespace UiProcessApp
                         LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                         LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                         LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                        if (window.Pages != null && window.Pages.Count > 0)
+                        {
+                            var auditPage = window.Pages.FirstOrDefault(pg =>
+                                    string.Equals(pg.Id, window.Page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                            LayoutPlanBuilder.ApplyTexts(plan.Filtered, auditPage.Texts);
+                            LayoutPlanBuilder.ApplyImages(plan.Filtered, auditPage.Images);
+                            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, auditPage.Adjust);
+                        }
                         LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                         var build = UiLayout.Build(plan.Filtered, assets, textures);
 
@@ -471,9 +521,36 @@ namespace UiProcessApp
         /// Resolves a list-item prototype INI referenced by the inventory. Prototypes
         /// live either in PakV4 (root "pak", flat names) or the extracted ui tree.
         /// </summary>
-        internal static IniFile LoadTemplateIni(string relative)
+        /// <summary>
+        /// Builds the optional second window drawn behind the main one (inventory
+        /// `overlay`): the client shows the WorldMap behind the MiddleMap, so the
+        /// reference capture is a composite (MiddleMap chrome + WorldMap top-left,
+        /// region list, close). Returns null when there is no overlay.
+        /// </summary>
+        internal static FrameworkElement BuildOverlayVisual(WindowInfo window, AssetResolver assets,
+            UiTexCache textures, bool wire)
         {
-            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
+            var spec = window?.Overlay;
+            if (spec == null || string.IsNullOrWhiteSpace(spec.Path)) return null;
+            var rel = spec.Path.Replace('/', Path.DirectorySeparatorChar);
+            var path = Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+            if (!File.Exists(path)) return null;
+            var ini = IniFile.Load(path);
+            var plan = LayoutPlanBuilder.Build(ini, null);
+            LayoutPlanBuilder.ApplyHide(plan.Filtered, spec.Hide);
+            LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, spec.Show ?? new List<string>());
+            LayoutPlanBuilder.ApplyTexts(plan.Filtered, spec.Texts);
+            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, spec.Adjust);
+            var build = UiLayout.Build(plan.Filtered, assets, textures);
+            // Pin the overlay to the top-left of the composite grid: a fixed-size
+            // root inside a taller grid would otherwise be centered by WPF.
+            build.Root.HorizontalAlignment = HorizontalAlignment.Left;
+            build.Root.VerticalAlignment = VerticalAlignment.Top;
+            return build.Root;
+        }
+
+        internal static IniFile LoadTemplateIni(string relative)
+        {            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
             var candidates = new[]
             {
                 Path.Combine(Paths.PakRoot, rel),
@@ -539,6 +616,14 @@ namespace UiProcessApp
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                             LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                             LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                            if (window.Pages != null && window.Pages.Count > 0)
+                            {
+                                var selfPage = window.Pages.FirstOrDefault(pg =>
+                                        string.Equals(pg.Id, window.Page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                                LayoutPlanBuilder.ApplyTexts(plan.Filtered, selfPage.Texts);
+                                LayoutPlanBuilder.ApplyImages(plan.Filtered, selfPage.Images);
+                                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, selfPage.Adjust);
+                            }
                             LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                             var build = UiLayout.Build(plan.Filtered, assets, textures);
                             rendered++;

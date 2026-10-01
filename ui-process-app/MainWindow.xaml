@@ -49,14 +49,14 @@
 
                 <TabControl Grid.Row="1" Margin="12,0,12,10" Background="#252526" BorderBrush="#333333"
                             SelectedIndex="0">
-                    <TabItem Header="布局 Layout">
+                    <TabItem Header="布局">
                         <DockPanel Background="#1B1B1B">
                             <WrapPanel DockPanel.Dock="Top" Margin="8,6">
-                                <TextBlock Text="Zoom" Foreground="#BBB" VerticalAlignment="Center"/>
+                                <TextBlock Text="缩放" Foreground="#BBB" VerticalAlignment="Center"/>
                                 <Slider x:Name="ZoomSlider" Width="220" Minimum="0.25" Maximum="2.5"
                                         Value="1" TickFrequency="0.25" IsSnapToTickEnabled="False"
                                         Margin="8,0,12,0" ValueChanged="OnZoomChanged"/>
-                                <TextBlock Text="Page" Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                                <TextBlock Text="页面" Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"/>
                                 <ComboBox x:Name="PageBox" Width="210" Margin="6,0,0,0"
                                           SelectionChanged="OnPageChanged"/>
                                 <TextBlock Text="隐藏" Foreground="#BBB" VerticalAlignment="Center" Margin="12,0,0,0"/>
@@ -64,7 +64,7 @@
                                          Background="#1B1B1B" Foreground="#EAEAEA" BorderBrush="#3C3C3C"
                                          ToolTip="Hidden sections (comma separated), e.g. Handle_PartyRecruit"
                                          KeyDown="OnHideKeyDown"/>
-                                <CheckBox x:Name="WireframeBox" Content="结构/名称 Wireframe" IsChecked="False"
+                                <CheckBox x:Name="WireframeBox" Content="结构/名称" IsChecked="False"
                                           Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"
                                           Checked="OnWireframeChanged" Unchecked="OnWireframeChanged"/>
                                 <TextBlock x:Name="AssetNote" Foreground="#8A8A8A" FontSize="11"
@@ -79,13 +79,13 @@
                         </DockPanel>
                     </TabItem>
 
-                    <TabItem Header="详情 Details">
+                    <TabItem Header="详情">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Background="#1B1B1B">
                             <StackPanel x:Name="DetailsPanel" Margin="14"/>
                         </ScrollViewer>
                     </TabItem>
 
-                    <TabItem Header="文案 Labels">
+                    <TabItem Header="文案">
                         <DataGrid x:Name="LabelsGrid" Background="#1B1B1B" Foreground="#E0E0E0"
                                   RowBackground="#1B1B1B" AlternatingRowBackground="#212121"
                                   BorderThickness="0" AutoGenerateColumns="False" IsReadOnly="True">

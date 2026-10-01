@@ -172,275 +172,41 @@
       "summary": "过图载入：琉璃 KGUI LoadingPanel 全屏覆盖（每张绝境地图一张加载画，进度条在屏幕底部 89.4% 处）+ X3DEngine 原生 GDI KWindowsLoadingWnd 兜底（18 张随机背景），等 ComfirmSyncMapProgress 握手。",
       "windows": [
         {
-          "id": "loading-296",
-          "title": "LoadingPanel (296 龙门绝境)",
-          "cn": "载入窗口 — 龙门绝境",
+          "id": "loading-window",
+          "title": "LoadingPanel",
+          "cn": "载入窗口",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝minimap_mb/loadinglmxb.png" }
+          "page": "296",
+          "pages": [
+    { "id": "296", "label": "龙门绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝minimap_mb/loadinglmxb.png" } ] },
+    { "id": "297", "label": "龙门绝境·夜", "images": [ { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/loadinglmjj2.png" } ] },
+    { "id": "410", "label": "沧溟绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/海岛绝境minimap_mb/loading.png" } ] },
+    { "id": "512", "label": "白龙绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/白龙绝境minimap_mb/bgblk.png" } ] },
+    { "id": "532", "label": "天原绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/天原绝境minimap_mb/loadingtyjj.png" } ] }
           ],
+          "hide": "Handle_Traffic,Handle_PakV4Msg",
           "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
+            { "section": "LoadingPanel", "width": 1280, "height": 720 },
+            { "section": "Image_Bg", "width": 1284, "height": 722, "left": -3, "top": -1 },
+            { "section": "Handle_Nor", "left": 128, "top": 644 },
+            { "section": "Handle_Traffic", "left": 128, "top": 644 },
+            { "section": "Text_Msg", "left": 128, "top": 646, "width": 1024, "height": 25 },
+            { "section": "Handle_Msg", "left": 128, "top": 646, "width": 1024, "height": 60 },
+            { "section": "Handle_MPakInfo", "left": 128, "top": 646, "width": 1024, "height": 60 },
+            { "section": "Handle_PakV4Msg", "left": 470, "top": 709 },
             { "section": "Handle_Tip", "left": 655, "top": 115 },
             { "section": "Text_Tip", "left": 655, "top": 115 },
             { "section": "Image_Progress", "width": 912 },
             { "section": "Image_ProgressT", "width": 615 }
           ],
-          "summary": "LoadingPanel — 龙门绝境 (map 296) loading screen. Image_Bg = data/source/maps/龙门寻宝minimap_mb/loadinglmxb.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
+          "summary": "Full-screen loading overlay for a map transfer, 1280x720. One viewer entry with the Page selector switching the destination map (296 龙门绝境 / 297 龙门绝境·夜 / 410 沧溟绝境 / 512 白龙绝境 / 532 天原绝境): Image_Bg = the map's own [loading] image art (CDN _mb PNG, full-bleed 1284x722 at -3,-1), Handle_Traffic and Handle_PakV4Msg hidden (normal map load; the traffic bar and the PakV4 download tips show only while the client is streaming resources), progress bar at (10% w, 89.4% h) with an 80%-wide track and a 912px fill, message/tip handles at (128,646), tip panel at (655,115) — all from LoadingPanel.lua CorrectShow/ShowProgress. Map art pulled from the CDN hpkg with tools/netcode/extract_hpkg_member.py.",
           "evidence": [
             "ui/Config/Default/LoadingPanel.ini",
             "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/龙门寻宝minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 105/dhirli24xvjuv.hpkg -> loadinglmxb.png (tools/netcode/extract_hpkg_member.py)",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
-          ],
-          "elements": [
-            "Background art (per-map loading image)",
-            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
-            "PakV4 download tips (Handle_PakV4Msg)",
-            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
-          ],
-          "labels": []
-        },
-        {
-          "id": "loading-297",
-          "title": "LoadingPanel (297 龙门绝境·夜)",
-          "cn": "载入窗口 — 龙门绝境·夜",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/loadinglmjj2.png" }
-          ],
-          "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
-          ],
-          "summary": "LoadingPanel — 龙门绝境·夜 (map 297) loading screen. Image_Bg = data/source/maps/龙门寻宝_夜晚minimap_mb/loadinglmjj2.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
-          "evidence": [
-            "ui/Config/Default/LoadingPanel.ini",
-            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/龙门寻宝_夜晚minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 103/naguofwk6qauw.hpkg -> loadinglmjj2.png (tools/netcode/extract_hpkg_member.py)",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
-          ],
-          "elements": [
-            "Background art (per-map loading image)",
-            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
-            "PakV4 download tips (Handle_PakV4Msg)",
-            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
-          ],
-          "labels": []
-        },
-        {
-          "id": "loading-410",
-          "title": "LoadingPanel (410 沧溟绝境)",
-          "cn": "载入窗口 — 沧溟绝境",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/海岛绝境minimap_mb/loading.png" }
-          ],
-          "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
-          ],
-          "summary": "LoadingPanel — 沧溟绝境 (map 410) loading screen. Image_Bg = data/source/maps/海岛绝境minimap_mb/loading.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
-          "evidence": [
-            "ui/Config/Default/LoadingPanel.ini",
-            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/海岛绝境minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 117/76ucqz6f4akw.hpkg -> loading.png (tools/netcode/extract_hpkg_member.py)",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
-          ],
-          "elements": [
-            "Background art (per-map loading image)",
-            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
-            "PakV4 download tips (Handle_PakV4Msg)",
-            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
-          ],
-          "labels": []
-        },
-        {
-          "id": "loading-512",
-          "title": "LoadingPanel (512 白龙绝境)",
-          "cn": "载入窗口 — 白龙绝境",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/白龙绝境minimap_mb/bgblk.png" }
-          ],
-          "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
-          ],
-          "summary": "LoadingPanel — 白龙绝境 (map 512) loading screen. Image_Bg = data/source/maps/白龙绝境minimap_mb/bgblk.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
-          "evidence": [
-            "ui/Config/Default/LoadingPanel.ini",
-            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/白龙绝境minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 51/hi3jgdxxatvn5.hpkg -> bgblk.png (tools/netcode/extract_hpkg_member.py)",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
-          ],
-          "elements": [
-            "Background art (per-map loading image)",
-            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
-            "PakV4 download tips (Handle_PakV4Msg)",
-            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
-          ],
-          "labels": []
-        },
-        {
-          "id": "loading-532",
-          "title": "LoadingPanel (532 天原绝境)",
-          "cn": "载入窗口 — 天原绝境",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/天原绝境minimap_mb/loadingtyjj.png" }
-          ],
-          "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
-          ],
-          "summary": "LoadingPanel — 天原绝境 (map 532) loading screen. Image_Bg = data/source/maps/天原绝境minimap_mb/loadingtyjj.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
-          "evidence": [
-            "ui/Config/Default/LoadingPanel.ini",
-            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/天原绝境minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 108/jglifvkwxi3tm.hpkg -> loadingtyjj.png (tools/netcode/extract_hpkg_member.py)",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
-          ],
-          "elements": [
-            "Background art (per-map loading image)",
-            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
-            "PakV4 download tips (Handle_PakV4Msg)",
-            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
-          ],
-          "labels": []
-        },
-        {
-          "id": "loading-645",
-          "title": "LoadingPanel (645 洱海绝境)",
-          "cn": "载入窗口 — 洱海绝境",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/洱海绝境minimap_mb/loading_ehjj.png" }
-          ],
-          "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
-          ],
-          "summary": "LoadingPanel — 洱海绝境 (map 645) loading screen. Image_Bg = data/source/maps/洱海绝境minimap_mb/loading_ehjj.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
-          "evidence": [
-            "ui/Config/Default/LoadingPanel.ini",
-            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/洱海绝境minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 111/jmowtulthvz2w.hpkg -> loading_ehjj.png (tools/netcode/extract_hpkg_member.py)",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
-          ],
-          "elements": [
-            "Background art (per-map loading image)",
-            "Normal progress bar Handle_Nor/Image_Progress (traffic bar hidden)",
-            "PakV4 download tips (Handle_PakV4Msg)",
-            "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
-          ],
-          "labels": []
-        },
-        {
-          "id": "loading-709",
-          "title": "LoadingPanel (709 林海绝境)",
-          "cn": "载入窗口 — 林海绝境",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/LoadingPanel.ini",
-          "hide": "Handle_Traffic",
-          "images": [
-            { "section": "Image_Bg", "image": "data/source/maps/林海绝境minimap_mb/loadinghslh.png" }
-          ],
-          "adjust": [
-            { "section": "Image_Bg", "width": 1284, "height": 962, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 858 },
-            { "section": "Handle_Traffic", "left": 128, "top": 858 },
-            { "section": "Text_Msg", "left": 128, "top": 838, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 838, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 923 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
-          ],
-          "summary": "LoadingPanel — 林海绝境 (map 709) loading screen. Image_Bg = data/source/maps/林海绝境minimap_mb/loadinghslh.png, the destination map's own art (its minimap config [loading] image=, CDN _mb PNG), full-bleed 1284x962 at (-3,-1); normal map-load state (Handle_Traffic hidden, Handle_Nor + Image_Progress shown). Bar/tips replay LoadingPanel.lua CorrectShow: progress bar at (128,858) = (10% w, 89.4% h), fill 912 wide; message/tip handles at (128,838); tip panel at (655,115).",
-          "evidence": [
-            "ui/Config/Default/LoadingPanel.ini",
-            "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
-            "data/source/maps/林海绝境minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
-            "CDN hpkg 100/d5dtppcj24fki.hpkg -> loadinghslh.png (tools/netcode/extract_hpkg_member.py)",
+            "data/source/maps/*minimap_mb/config.ini [loading] image= (see Data/text/extracted)",
+            "CDN hpkg: 105/dhirli24xvjuv.hpkg, 103/naguofwk6qauw.hpkg, 117/76ucqz6f4akw.hpkg, 51/hi3jgdxxatvn5.hpkg, 108/jglifvkwxi3tm.hpkg",
             "docs/netcode/JX3_MODE_UI_INVENTORY.md 4"
           ],
           "elements": [
@@ -460,28 +226,32 @@
       "windows": [
         {
           "id": "staging-countdown",
-          "title": "Staging countdown (renderer missing)",
+          "title": "Staging countdown (no KGUI renderer)",
           "cn": "开局倒计时 / 安全区",
-          "status": "PARTIAL",
+          "status": "OPEN",
           "root": null,
           "path": null,
-          "summary": "Countdown frame art UI_黑山绝境_倒计时通用底框.pss + staging poses 龙门绝境_站姿01-05. The clock value comes from S2C 0x11B (startOffset/duration -> absolute end time); the HUD renderer for it is not in the extracted corpus.",
+          "summary": "Decoded 2026-09-29: the phase clock exists (S2C 0x11B writes the absolute end time to +0x1b490; GetBattleFieldPQInfo returns it) but its only KGUI consumer, BattleFieldMap.UpdateTime -> Wnd_Title/Text_Time, is hidden in this mode: BattleFieldMap.Init hides Text_Time when IsInTreasureBattleFieldMap() is true (decompiled 1352-1359) and the treasure table covers 296/297/410/512/532/645/676/677/709/715 (CheckTreasureBattleFieldMap dump). The countdown frame UI_黑山绝境_倒计时通用底框.pss is an editor/runtime effect (no extracted INI references it). The safe-zone boundary on the M-map is engine-drawn: InitMapData shows Handle_CircleNew + Handle_StormLine and registers MapCircle with SFX_CircleNew (C_自己圈范围_677.pss) for treasure maps (decompiled 5317-5341) — no KGUI image renderer. Staging announcements are server system messages (observed at T-30/20/10 in interface addon configs, LOW).",
           "evidence": [
-            "proof/netcode/mode_juejing/editor_assets_juejing.txt:72-77",
-            "docs/netcode/JX3_MODE_MATCH_LIFECYCLE.md stage 3",
-            "proof/netcode/protocol_table_s2c_annotated.tsv (0x11B)"
+            "ui/Config/Default/BattleField/BattleFieldMap.decompiled.lua:1352-1359 (Text_Time hidden for treasure maps), :1578-1627 (UpdateTime), :5317-5341 (MapCircle + SFX_CircleNew)",
+            "proof/netcode/mode_juejing/CheckTreasureBattleFieldMap.dump.txt (map ids 296/297/410/512/532/645/676/677/709/715)",
+            "ui/String/string.txt:696 STR_BUFF_H_LEFT_TIME_MSG",
+            "docs/netcode/JX3_MODE_MATCH_LIFECYCLE.md stage 3 (0x11B -> +0x1b490)",
+            "proof/netcode/mode_juejing/editor_assets_juejing.txt:72-77 (countdown PSS)",
+            "interface MY#DATA team_mon countdown entries 绝境将在30/20/10秒后开始 (LOW, interface-addon)"
           ],
           "elements": [
-            "Countdown frame PSS",
-            "Safe zone state labels",
-            "Staging pose animation set",
-            "Phase clock cache +0x1b490 (absolute end time)"
+            "Phase clock cache +0x1b490 (absolute end time, server value)",
+            "BattleFieldMap Wnd_Title/Text_Time — hidden in this mode",
+            "Countdown frame PSS (editor/runtime effect, not extracted)",
+            "Engine safe-zone circle MapCircle + SFX_CircleNew (PSS)",
+            "Staging pose animation set 龙门绝境_站姿01..05 (world, not UI)"
           ],
           "labels": [
+            "STR_BUFF_H_LEFT_TIME_MSG",
             "STR_PQ_PROTIME",
             "STR_PQ_TIMETITLE",
-            "STR_SAFEZONE",
-            "STR_HATREDPANEL_SAFEZONE"
+            "STR_SAFEZONE"
           ]
         }
       ]
@@ -499,12 +269,18 @@
           "root": "ui",
           "path": "Config/Default/MiddleMap.ini",
           "images": [
-            { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" }
+            { "section": "Image_Map", "image": "data/source/maps/龙门荒漠minimap_mb/middlemap.png" },
+            { "section": "CheckBox_MapPage", "checked": true }
           ],
-          "summary": "Full-screen map window (M) with the 龙门绝境 sample map art (data/source/maps/龙门寻宝minimap_mb/middlemap.png, extracted from the CDN pack) drawn into Image_Map; shared by every scene type: Wnd_NormalMap (world map: region list/quest/NPC search), Wnd_CommandMap (war-sandbox command map), explore panels and the battlefield layers under Handle_Total (storm line, camp counts, events) plus WndContainer_GFInfo/HeatMapDetail. The default hide list renders the 绝境战场 state: normal-map and command-map subtrees are suppressed, contested-area heat map stays.",
+          "summary": "Full-screen map window (M) with the real 龙门荒漠 map art (data/source/maps/龙门荒漠minimap_mb/middlemap.png, 2048x1792, extracted from the CDN pack — hpkg 50/oc23ca7fgr3io.hpkg; the map's minimap/config.ini [middlemap0] image=middlemap.png, width/height 1024x896) drawn into Image_Map at the authored 928x812 rect (928/2048 = 0.453, the capture measures 0.455 — MiddleMap.UpdateMapPos :9263-9320 fits the art preserving the config aspect); shared by every scene type: Wnd_NormalMap (world map: region list/quest/NPC search), Wnd_CommandMap (war-sandbox command map), explore panels and the battlefield layers under Handle_Total (storm line, camp counts, events) plus WndContainer_GFInfo/HeatMapDetail. The viewer state is a composite of the two windows the client shows: WorldMap drawn behind (WorldMap_ShowBehindMiddleMap(false, true) — MiddleMap.decompiled.lua:22298, WorldMap.decompiled.lua:8314-8356 — hides the WorldMap map scroll/list and keeps its band/chrome) and MiddleMap on top. The overlay replays the WorldMap glass top band (the capture shows no HousePVP band-gradient art — those images stay script-locked), Text_Title 地图, the Handle_TipsTitle zone legend (停战区/保护区/争夺区/战争区/秘境区), CheckBox_Footprint 神行足迹, Wnd_SearchASetting (WndEdit $Placeholder 城镇或秘境) and Btn_Close; MiddleMap replays the translucent MapWindow3/4 bg tiles (Handle_Bg_0!/Handle_Mbg) + Handle_Map/Image_Map (the map area masked by Handle_Border's ShapTexture ui/Image/UItimate/UIMask/MapMask.tga, AlphaShap=1 — a soft 100x80 rounded-rect alpha stretched over the 936x764 border, applied by the viewer as a container OpacityMask so the art feathers into the glass like the capture), the 地图/探索 tabs, the region list rows (Text_WM 世界 = STRING_TITLE_WORLDMAP; Text_Region = WorldMap_GetRegion(Table_GetMap(23).dwRegionID=7).szRegionName = 陇右 from RegionMap.tab; Text_SmallMap = Table_GetMiddleMap(23) = MapList.tab row 23 MiddleMap0 = 龙门荒漠; Wnd_SmallMaps adjusted to (left 0, top 39) so it sits under Wnd_Region and left-aligns with it (authored 53/161 is the parked prototype; left 6 left the 龙门荒漠 crest/text ~6 px right of the 陇右 row); Image_MapLogo adjusted to top 4 because the authored top -6 draws the crest ~10 px above the capture, which centers it on Text_SmallMap (box correlation +11 px before, +0 after; capture 5.1 Example.png, measured 2026-09-30)), the NPC filter rows (kind + defaultcheck from the map's minimap/npc.tab and minimap/doodad.tab category rows, UTF-8 copies under Data/table/maps/龙门荒漠minimap_mb — the same source UpdateNpcDoodad :5978-6043 appends from; Image_NpcOption frame 0 checked / 4 unchecked, :501-504; the shipped defaultcheck is 0 so the rows render unchecked — the capture's 跨地图交通 + 其他商人 checks are the player's saved StorageServer MiddleMap_SelectNpc filter, not shipped data). The trunk rows (Handle_NpcTrunk/Handle_CraftTrunk, cloned from Handle_Mode by UpdateAreaOrNpcList :5660-5705) carry the eye in the Image_ListBg1/Bg2 art (MapWindow6 frame 32 open / 35 closed; UpdateAreaOrNpcTruckState :4501-4592 swaps them with the expand state — NPC trunk expanded, craft trunk collapsed); the viewer hides the authored-visible Image_ListCover (frame 30 magnifier, which the script shows over the eye) and Image_Minimize in both rows plus the opposite bg frame per row state (list-template hide), matching the capture. Image_Search is diced (adjust imageType 10): the client draws the 20x20 Common frame 0 box art with 1 px borders although the INI omits ImageType — the stretched render showed a 13 px left/right band (the extra-dusted area), the capture 1 px. Also replayed: the 标记设置 button and the scale/alpha sliders. The window is placed 27 px below the WorldMap band (inventory `offsetY`; the WorldMap stays at the client top) — the capture shows the 地图 tab underline at y=113 and the list/bottom bar/art ~+27 vs the authored positions; the runtime NPC title row is 43 px tall (inventory `adjust Handle_Mode`; the authored 54 is the editor height — with it the panel rows land at the capture's 228.6/266.9), and the tab state is the script's: `CheckBox_MapPage` checked (inventory `images.checked`; the capture paints the selected frame, the script calls `Check(true)` :20817/20942) and `CheckBox_ExplorePage` hidden (the script hides it when `GetMapExploreInfo(mapID)` is empty :3920-3958; the capture shows no 探索 tab). WndContainer_GFInfo is hidden (UpdateHeatMapState :25045-25081 hides it when CanShowHeatMap() is false), and only the parked data-marker layers (person/teammate, born/treasure/event marks, draw/storm lines, area name, traffic, quest/NPC marks), the command-mode/quest-filter subtrees and the script-locked widgets (Wnd_CommandMap, CheckBox_QuestPage, Btn_Close, WndContainer_HeatMapDetail) stay hidden.",
           "evidence": [
             "ui/Config/Default/MiddleMap.ini",
-            "proof/minimap/ui/Config/Default/decompiled/MiddleMap.decompiled.lua"
+            "ui/Config/Default/WorldMap.ini (overlay band/chrome)",
+            "proof/minimap/ui/Config/Default/decompiled/MiddleMap.decompiled.lua",
+            "proof/minimap/ui/Config/Default/decompiled/WorldMap.decompiled.lua:8314-8356 (ShowBehindMiddleMap)",
+            "proof/minimap/screenshots/5.1 Example.png (5.1 reference capture, 2026-09-29)",
+            "proof/netcode/ui_scripts/b00/out/ui/script/common/table_defs.lua (WorldMapZoning/WorldMapCity/RegionMap paths; dynamic g_tMapNpcTitle=minimap/npc.tab)",
+            "proof/minimap/tables/longmen_huangmo/ (extracted 龙门荒漠minimap_mb pack: config.ini, npc.tab, doodad.tab, middlemap.png; CDN hpkg 114/n7rauk6wpgaiw.hpkg + 50/oc23ca7fgr3io.hpkg, resource-index.jsonl)"
           ],
           "elements": [
             "Map layers",
@@ -512,7 +288,35 @@
             "Btn_WorldMap"
           ],
           "labels": [],
-          "hide": "Text_Num_HQ_XS,Text_Num_HQ_S,Text_Num_HQ_M,Text_Num_ER_XS,Text_Num_ER_S,Text_Num_ER_M,Text_EventValue_PreTime,Text_EventValue_Count,Text_EventValue_Fraction,Text_Title1,Handle_ContendBtn,Text_MarkBtn_8,Text_MarkBtn_8_0,Text_MarkBtn_8_1,Text_FlTitle_Level,Text_HQDotTitle,Text_ERDotTitle,Wnd_NormalMap,Wnd_CommandMap,WndFlexContainer_Explore,WndFlexContainer_AllEPBar,Btn_BattleMap,Btn_QuitCommand,Btn_EnterCommand,Btn_City,Btn_WorldMap,CheckBox_Hq,CheckBox_Er,CheckBox_MapPage,CheckBox_QuestPage,CheckBox_ExplorePage,CheckBox_QuestShowMain,CheckBox_QuestShowNormal,CheckBox_QuestShowRepeat,CheckBox_QuestShowLow,CheckBox_QuestShowLower,CheckBox_QuestShowActivity,CheckBox_ActiveNPC,Btn_MarkSetting,Text_QuestMarkTitle"
+          "hide": "Text_Num_HQ_XS,Text_Num_HQ_S,Text_Num_HQ_M,Text_Num_ER_XS,Text_Num_ER_S,Text_Num_ER_M,Text_EventValue_PreTime,Text_EventValue_Count,Text_EventValue_Fraction,Text_Title1,Text_SmallMap_Num,Handle_ContendBtn,Text_MarkBtn_8,Text_MarkBtn_8_0,Text_MarkBtn_8_1,Text_FlTitle_Level,Text_HQDotTitle,Text_ERDotTitle,Wnd_Quest,Wnd_CommandMap,WndFlexContainer_Explore,WndFlexContainer_AllEPBar,Btn_BattleMap,Btn_QuitCommand,Btn_EnterCommand,Btn_City,CheckBox_Hq,CheckBox_Er,CheckBox_ExplorePage,CheckBox_QuestPage,Image_Minimize,Image_ListCover,Image_ListBg2,Image_BgOn,Image_BgSelect,Handle_Weather,Handle_MainS,CheckBox_QuestShowMain,CheckBox_QuestShowNormal,CheckBox_QuestShowRepeat,CheckBox_QuestShowLow,CheckBox_QuestShowLower,CheckBox_QuestShowActivity,CheckBox_ActiveNPC,Text_QuestMarkTitle,WndContainer_HeatMapDetail,Handle_Npc,Handle_Area,Handle_AreaName,Handle_AreaOrNpc,Handle_MapMark,Handle_DynamicData,Handle_DynamicData_Ex,Handle_DynamicData_PQ,Handle_FieldPQMark,Handle_FieldMark,Handle_QuestMap,Image_TrafficBg,Handle_SelectNpcMark,Handle_QuestAcceptedMark,Handle_Traffic,Handle_Traffic_Skill,Handle_Wanted,Handle_Killer,Handle_Mark,Handle_TreasureMark,Handle_GFAreaList,Handle_GFList_Num,Handle_GuildLeagueMatches,Handle_CampOBMatches,Handle_CraftMark,Handle_BossList,Handle_QuestTargetMark,Handle_QuestCanAcceptMark,Handle_DrawLine,Handle_EventList,Handle_StormLine,Handle_Person,Handle_ExploreEvent,Handle_BeyondList,Handle_CircleNew,Handle_Inner,Handle_InnerCity,WndContainer_GFInfo,Image_Die,Animate_Ping,Image_MQuestID1,Image_MQuestID2,Image_MQuestID3",
+          "overlay": {
+            "path": "Config/Default/WorldMap.ini",
+            "hide": "Wnd_WordMapScroll,Wnd_AllTowns,Wnd_Guide_List,Wnd_EasyTraffic,Wnd_FuncBox,Wnd_Activity_Guide,Wnd_Map,Text_WM",
+            "show": [],
+            "adjust": [ { "section": "WorldMap", "left": 0, "top": 0 } ]
+          },
+          "adjust": [
+            { "section": "Handle_Mode", "height": 43 },
+            { "section": "Handle_NpcAreaList", "height": 380 },
+            { "section": "Wnd_SmallMaps", "left": 0, "top": 39 },
+            { "section": "Image_MapLogo", "top": 4 },
+            { "section": "Image_Search", "imageType": 10 }
+          ],
+          "offsetY": 27,
+          "texts": [
+            { "section": "Text_WM", "text": "STRING_TITLE_WORLDMAP" },
+            { "section": "Text_Region", "table": "ui/RegionMap.tab", "tableKey": "7", "tableKeyColumn": "RegionID", "tableColumn": "RegionName" },
+            { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "23", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" },
+            { "section": "Text_ListTitle", "text": "MIDDLEMAP_COMMON_NPC" }
+          ],
+          "lists": [
+            { "container": "Handle_NpcAreaList", "ini": "MiddleMap.ini", "item": "Handle_Npc", "textSection": "Text_NpcName", "imageSection": "Image_NpcOption", "checkedFrame": 0, "uncheckedFrame": 4,
+              "rowSources": [
+                { "table": "maps/龙门荒漠minimap_mb/npc.tab", "kindColumn": "kind", "checkColumn": "defaultcheck", "filterColumn": "npcid", "filterValue": "0" },
+                { "table": "maps/龙门荒漠minimap_mb/doodad.tab", "kindColumn": "kind", "checkColumn": "defaultcheck", "filterColumn": "doodadid", "filterValue": "0" }
+              ] },
+            { "container": "Handle_NpcOrAreaList", "ini": "MiddleMap.ini", "item": "Handle_Mode", "count": 1, "textSection": "Text_ListTitle", "rowTexts": ["MIDDLEMAP_CRAFT"], "hide": ["Image_ListBg1", "Image_ListCover", "Image_Minimize"] }
+          ]
         },
         {
           "id": "minimap",
