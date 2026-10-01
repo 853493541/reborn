@@ -602,3 +602,15 @@ solved it, and what is still open. **Newest at the bottom.**
   (feasibility proven); its remaining value is the PhysX query API on
   terrain/dynamic actors, not static collision. Scan diagnostic fixed
   (private-memory filter) after the crash.
+
+### 2026-09-30 — collision — All five maps smoke-verified; sprint disposition
+- 海岛绝境: `instances=3683 meshes=223 noObstacle=0`
+  (`reborn_20260930_170531.log`); 龙门寻宝_夜晚: `instances=5100 meshes=690
+  noObstacle=177` (`reborn_20260930_170643.log`); 白龙绝境/天原绝境 already
+  verified. All five maps load the re-baked bins + sidecars cleanly.
+- Sprint: the shipped rush tables (`player_rush_skill.txt`,
+  `skill_rush_state.txt`) are skill moves (轻功) with no hold-to-sprint
+  constant; the host 8.8 尺/s stays a registered test convenience.
+- Note: back-to-back client starts hit the single-instance guard if the
+  previous process is still shutting down (no log written, fast exit) - add a
+  3 s gap between smoke runs.
