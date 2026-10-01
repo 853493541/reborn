@@ -488,6 +488,19 @@ reverted); experiment output `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`.
 - Evidence: `AGENTS.md` §4; this commit (local).
 - Outcome: solved.
 
+### 2026-09-30 — camera — Camera system re-audit (implementation status + quality)
+- Did: refreshed the camera conformance audit (`CONFORMANCE_CHECKS.md` was the
+  2026-09-25 baseline @ `00f1237`). Landed-since list + counts + quality assessment
+  added. Current counts: core follow camera 12 implemented / 2 partial / 0 missing;
+  data-fidelity parameters 3 / 6 / 5; extra camera families & controls 5 / 3 / 21.
+  Core is engine-faithful (engine position+look-at setters, recovered model, verified
+  invariants); the weak layer is data placeholders (anchor/footprint/caps/rows/FOV
+  default/near plane) and the missing camera families.
+- Evidence: `docs/camera/CONFORMANCE_CHECKS.md` (2026-09-30 section),
+  `docs/camera/HOST_DEVIATIONS.md`, code (`client/CameraSystem.cs`,
+  `client/CameraSettings.cs`, `client/RebornClient.cs`); this commit (local).
+- Outcome: solved (audit).
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
