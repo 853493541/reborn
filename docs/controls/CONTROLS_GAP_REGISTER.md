@@ -33,17 +33,17 @@ persistence, bridges) with complete decoded annexes.
 
 | ID | Item | Status | Evidence / note | Dependency |
 |---|---|---|---|---|
-| C1 | Hotkey table (`default.txt` + `bindings.ini`) loaded at runtime | **OPEN** | hardcoded `KeyDown/KeyUp` | none |
-| C2 | Key encoding (VK + Ctrl/Shift/Alt + mouse/wheel) | **OPEN (research DONE)** | `JX3_HOTKEY_SYSTEM.md` §3 | C1 |
+| C1 | Hotkey table (`default.txt` + `bindings.ini`) loaded at runtime | **PARTIAL** (2026-09-30, `agent/move-controls`) | `client/HotkeyTable.cs` loads both files (embedded snapshot; `RC_HOTKEY_DIR` live override), key decode + match; movement command set dispatched, other commands parsed/counted as unhandled; `proof/controls/movement_controls_run.txt`. Rebinding/contexts still open | — |
+| C2 | Key encoding (VK + Ctrl/Shift/Alt + mouse/wheel) | **DONE** (2026-09-30) | `HotkeyTable.cs` low16 VK / high16 mods (Ctrl 1 / Shift 2 / Alt 4) + mouse 1/2/256/257; Shift ignored for the movement set only (host debug ×10 note) | C1 |
 | C3 | Rebinding UI + `SetCapture` semantics | **OPEN (research DONE)** | `HotkeyPanel` flow decoded (`RESEARCH_RESOLVED_GAPS.md` §2) | C1 |
-| C4 | Per-role override save/load (`hotkey_newlast.txt` + backups + `hotkey.data`) | **OPEN (research DONE)** | grammar + real files decoded (§1) | C1 |
+| C4 | Per-role override save/load (`hotkey_newlast.txt` + backups + `hotkey.data`) | **OPEN (research DONE)** | grammar + real files decoded (§1); `RC_HOTKEY_DIR` is the intended loading path | C1 |
 | C5 | Contexts (dynamic/BR/rogue/mobile) | **OPEN (research DONE)** | `context` column + `contextgroup` tabs (§1/§2) | C1 |
-| C6 | Key repeat (`EnableKeyDownLoop`) | **OPEN** | API recovered | C1 |
+| C6 | Key repeat (`EnableKeyDownLoop`) | **OPEN** | API recovered; movement keys use host debounce booleans | C1 |
 | C7 | Action bars/pages/dynamic bars + skill assignment | **OPEN (research DONE)** | custom data + `StorageServer('ActionBar')` + anchors (§6) | C1, targeting |
 | C8 | Targeting (Tab/Ctrl+Tab/F1–F5/target-of-target/filters) | **OPEN (partially researched)** | bodies located in `b03/target.lua`, not decoded | C1 |
 | C9 | Cast input: keydown, `Alt+WASD` direction, ground aim | **OPEN (partially researched)** | `CastSkillByKeyDown` defined in `hotkeys.lua`; body pending | C7/C8 |
-| C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **OPEN (research DONE)** | command bodies decoded (§5); engine `ResponseWASDKey` is C-side | C1 |
-| C11 | Integer 15/16 Hz movement model + turn-rate + penalty | **OPEN** | spec complete (`REBORN_JUMP_FALL_SPEC.md`) | C10 |
+| C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **PARTIAL** (2026-09-30, `agent/move-controls`) | turn-in-place (←/→, camera follows) + autorun (G/NumLock) landed; sit/mount/sheath/click-to-move/follow/interact open; `proof/controls/movement_controls_run.txt` | C1 |
+| C11 | Integer 15/16 Hz movement model + turn-rate + penalty | **PARTIAL** (2026-09-30) | turn model + penalty already live (S6); tick truth recorded: character logic 15 Hz, combat tables 16 fps (`JX3_COLLISION_SYSTEM.md:190-191`); integer port still open — host integrates continuous dt with 15 Hz jump conversions (`JX3_MOVEMENT_CONTROLS.md` §3) | C10 |
 | C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **PARTIAL (P0-P2 landed 2026-09-29, `agent/camera-wall-clip`)** | plan `controls/OPERATION_MODES_PLAN.md`; F7 + `RC_MODE`; joystick always-rotate/cursor lock/RMB-off done; per-mode follow modes parsed not applied; turn-rate model + reset-speed application open | C1 |
 | C13 | UI customization (panels, layout `custom.dat`, settings panels) | **OPEN (research DONE)** | `UICustomModePanel` + window anchors (§7) | C1 |
 

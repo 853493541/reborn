@@ -34,10 +34,11 @@ JX3's controls are **data-driven**: a 428-command hotkey table (2 keys + context
 feeds a server-authoritative movement/combat model; the camera is a mouse-drag
 orbit around the character with per-user settings; roughly 340 action-bar slots,
 ~60 panel toggles and 202 persisted window-state keys are user-customizable.
-Our client currently has hardcoded keys, a working camera drag (JX3-exact
-sphere offset + per-frame aim sync) but **no wall obstruction**, no hotkey
-table/rebinding, no action bars/targeting/cast model, and no UI customization.
-Research is ~85–90% complete; implementation ~30–35%.
+Our client now decodes the real binding table and dispatches the movement
+command set from it (turn-in-place, autorun, jump, strafe; 2026-09-30) and has a
+working camera drag (JX3-exact sphere offset + per-frame aim sync), but **no wall
+obstruction**, no rebinding UI, no action bars/targeting/cast model, and no UI
+customization. Research is ~85–90% complete; implementation ~35–40%.
 
 ## Evidence base (already in the repo)
 
@@ -53,6 +54,14 @@ Research is ~85–90% complete; implementation ~30–35%.
 | `docs/movement/REBORN_JUMP_FALL_SPEC.md` | jump/fall/轻功 model |
 | `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` | combat/targeting/cooldowns |
 | `docs/ui/MAP_MINIMAP_RESEARCH.md` §2b | `custom.dat` window state |
+
+## Tools
+
+| Tool | What |
+|---|---|
+| `tools/controls/hotkey_parse.py` | decode `ui/hotkey/default.txt` + `bindings.ini` into the proof annexes; `--movement-check` prints and asserts the decoded movement key map (offline gate for C1/C2) |
+| `tools/controls/registry_summary.py` | summarise the generated hotkey command registry (context groups/categories) |
+| `tools/controls/lua51_probe.py` | instruction-level Lua 5.1 bytecode probe (packed UI scripts) |
 
 ## Rules for implementing later
 

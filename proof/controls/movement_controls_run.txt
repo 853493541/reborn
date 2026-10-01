@@ -1,0 +1,73 @@
+# Movement controls — scripted engine run (input core C1/C2 + movement keys)
+
+**Date:** 2026-09-30
+**Build:** `reborn_client_move_controls.exe` (agent/move-controls @ b585882, dirty=4)
+**Namespace:** `reborn_client_move_controls.memory` (isolated, concurrent-safe)
+**Run:** `RC_DEMO_MOVE=1 RC_DJUMP_LOG=1 RC_AUTORUN=13000`, cwd `C:\SeasunGame\MovieEditor`, exit code 0
+**Log:** `C:\SeasunGame\MovieEditor\bin64\reborn_out\reborn_20260930_222145.log`
+**Map:** 龙门寻宝, spawn=(23334,761,24224)
+
+## Scripted timeline (RC_DEMO_MOVE)
+
+| t | Event | Log evidence (raw) |
+|---|---|---|
+| 2.5 s | autorun on | `autorun: on` |
+| 5.0 s | forward jump (autorun dir) | `jump xy takeoff vj=(216,-225) u/s dir=(0.69,-0.72)` / `djb press n=1 mode=flip triple=40,90,11 vy=702 g=1287` |
+| 6.0 s | autorun off | `autorun: off` |
+| 6.0–7.4 s | ballistic carry + land | `djb land n=1 pos=24088,736,23439 vy=-757 drop=7` (normal landing, no roll) |
+| 7.0–7.6 s | TURNRIGHT held | `movetest turn yaw=4.25` |
+| 8.5 s | forced 600 u drop | `movetest drop600 y=1337 (fall > FallDownHeightFloor)` |
+| 9.7 s | landing roll branch | `clip -> ...f1b02yd握拳小跳c.ani (0)` / `land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0` |
+| 11.0 s | summary + auto-exit | `movetest summary yaw=4.25 pos=(24088,737,23439) autorun=0` / `DONE` |
+
+## Raw key lines
+
+```
+22:21:45.742 build=reborn_client_move_controls.exe 2026-09-30 22:21:31 git=b585882 dirty=4 ...
+22:21:46.301 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_move_controls.memory ms=(32,0,453)
+22:22:15.967 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430
+22:22:15.970 hotkey TOGGLEAUTORUN = G / NumLock
+22:22:18.478 autorun: on
+22:22:18.479 clip -> ...f1b02yd奔跑.ani (0)
+22:22:20.979 jump xy takeoff vj=(216,-225) u/s dir=(0.69,-0.72)
+22:22:20.980 djb press n=1 mode=flip triple=40,90,11 vy=702 g=1287 pos=23844,743,23693
+22:22:21.566 djb apex n=1 py=929 modelY=929
+22:22:21.979 autorun: off
+22:22:22.348 djb land n=1 pos=24088,736,23439 vy=-757 drop=7
+22:22:23.578 movetest turn yaw=4.25
+22:22:24.478 movetest drop600 y=1337 (fall > FallDownHeightFloor)
+22:22:25.675 clip -> ...f1b02yd握拳小跳c.ani (0)
+22:22:25.676 land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0
+22:22:26.978 movetest summary yaw=4.25 pos=(24088,737,23439) autorun=0
+22:22:28.982 DONE
+```
+
+## What each evidence line proves
+
+- `hotkeys: source=embedded rows=286 commands=430` — the real binding table
+  (`ui/hotkey/default.txt` 286 rows + `bindings.ini` 430 commands) is decoded at
+  startup; `hotkey TOGGLEAUTORUN = G / NumLock` shows key decoding.
+- `jump xy takeoff vj=(216,-225) u/s` — magnitude 312 u/s = `JumpSpeedXY(40) ×
+  15 Hz × RC_JUMP_SCALE(0.52)`, along the input direction: the J0 row's
+  horizontal takeoff velocity is now applied (previously jumps were vertical-only).
+- Land at (24088,736,23439) from (23844,743,23693) = 352 u horizontal carry
+  during 1.37 s of air = forward jump works.
+- `land drop=7` — the normal jump (apex 929−743 ≈ 186 u) does NOT roll: 7 u drop
+  is below `FallDownHeightFloor` (500 u). Correct branch selection.
+- `movetest turn yaw=4.25` — TURNLEFT/TURNRIGHT (arrow keys) turn the character
+  in place; the run starts at camera yaw 2.336 and the 0.6 s × π rad/s hold lands
+  at 4.25 (the camera follows).
+- `land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0` — the authored
+  `player_suspend.krl.txt` F1 `FallFloorAnimation` clips loads and plays (rc=0);
+  >500 u drop correctly selects the landing branch.
+
+## Reproduce
+
+```powershell
+set RC_CLIENT_EXE=reborn_client_move_controls.exe
+client\build_client.cmd
+# engine run (cwd must be MovieEditor):
+$env:RC_DEMO_MOVE="1"; $env:RC_DJUMP_LOG="1"; $env:RC_AUTORUN="13000"
+$p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_move_controls.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
+$p.WaitForExit(); $p.ExitCode   # 0
+```

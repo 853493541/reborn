@@ -949,3 +949,25 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   updated.
 - Outcome: solved (host/user decision; 1245 stays the client-number reference,
   max is the host start).
+
+### 2026-09-30 - controls/client - Movement input core + control keys (agent/move-controls)
+- Did: C1/C2 input core (`client/HotkeyTable.cs`): real `ui/hotkey/default.txt` +
+  `bindings.ini` decoded at startup (embedded snapshot of
+  `proof/movement/extracted/`; `RC_HOTKEY_DIR` live override), VK+modifier
+  encoding, Shift ignored for the movement set only (host debug x10); movement
+  commands dispatched from the table (W/Up, S/Down, A, D, Left/Right, Space,
+  Numpad /, G/NumLock); turn-in-place (camera follows); autorun; jump takeoff
+  horizontal velocity from the row's JumpSpeedXY (clamp 0..127, 15 Hz x
+  RC_JUMP_SCALE) + ballistic air carry (no WASD air steering - no horizontal
+  input term in ProcessAcceleration); landing branch: drop > FallDownHeightFloor
+  (500 u) plays the authored F1 FallFloorAnimation (f1b02yd + fist + smalljump c).
+- Evidence: run `reborn_out/reborn_20260930_222145.log` (exit 0,
+  ns=reborn_client_move_controls.memory): `hotkeys: source=embedded rows=286
+  commands=430`; `jump xy takeoff vj=(216,-225) u/s`; forward land +352 u from
+  takeoff; `land drop=600u roll=1 clip=... rc=0`; curated
+  `proof/controls/movement_controls_run.txt`; scripted `RC_DEMO_MOVE=1`.
+- Gates: jx3_model 10x PASS, verify_model exit 0, capture selftest PASS,
+  `hotkey_parse.py --movement-check` 9/9 PASS, build exit 0.
+- Open: integer 15 Hz port (character logic; combat tables 16 fps per
+  JX3_COLLISION_SYSTEM.md:190-191), air-steer/click-to-move path, autorun exact
+  cancel set, rebinding/contexts (C3-C6).
