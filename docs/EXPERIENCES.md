@@ -837,3 +837,19 @@ solved it, and what is still open. **Newest at the bottom.**
   `Get-Content|Set-Content` (PS 5.1 reads BOM-less UTF-8 as ANSI and mangles
   the Chinese literals - this broke the prop selftests until restored from
   git and re-applied with the edit tool).
+
+### 2026-10-01 - collision - Capsule K/V deep pass (runtime boundary confirmed)
+- Goal: replace the host-chosen capsule 17/116 with the engine's gameplay
+  values. Result: confirmed NOT recoverable from shipped data, with new
+  evidence: `SIMWorldX64.dll` interns `capsules radius`/`capsules length` in
+  two tiny accessors (`0x180001ba0`, `0x180002700` - key handle stored into a
+  global) and the `_AddCapsules` builder (`0x1800223b0`) is a validator +
+  vtable dispatch with no default constants. The values live in the runtime
+  semantic K/V table; no shipped file carries them:
+  `physic_character_param.krl.txt` = `EnableCharacterCapsule=1` + ragdoll
+  bodies only; `physic_shape_param.krl.txt` capsule r50/l50 = named per-object
+  shape; extracted `player_*` configs have no radius/height.
+- Disposition: stays a registered host value (17/116) until a runtime/capture
+  source exists (P3 row updated with the RVAs). Next deep item:
+  engine-physics-in-host (feed baked geometry into PhysicsEngineX64 and use
+  its own character sweep) - a multi-session project.
