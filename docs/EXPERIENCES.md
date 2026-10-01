@@ -741,3 +741,32 @@ solved it, and what is still open. **Newest at the bottom.**
   jz_xb玉门关建筑001_002_hd.mesh` and slides along it
   (`reborn_20260930_222047` vs `_222711`/`_223142`); regressions re-checked:
   building back wall spot stable (18915,952), rug/prop spawn stable grounded.
+
+### 2026-10-01 - collision - Map-wide wall-sweep audit + the creep class
+- Built the audit the user asked for ("stop making me find bugs"): the
+  `collision_selftest_<exe>.exe audit <structuresBin> [foliageBin] [stride]`
+  mode sweeps a capsule against every wall-like face in the baked data with
+  the real contact/resolve code (grid lookup included) and flags faces that do
+  not stop it. 龙门寻宝 has 2.24M tris (1.78M wall-like per mesh; ~13M
+  instance-level faces).
+- Two audit bugs found and fixed while calibrating (both were audit-side, not
+  client-side): (1) the audit set grounded=true so its mini-resolve took the
+  CCT step-up branch - every face whose top is within the 64 u budget was
+  legitimately stepped over (33,960 -> 19,079 flags after testing airborne);
+  (2) substeps of 20 u exceed the 17 u radius, so a thin SMALL face (foliage
+  leaf/branch, rock sliver) degenerates to an edge push and the capsule creeps
+  through (19,079 -> 7,710 after the substep cap). Root-cause chain verified
+  offline: the client's w2l and world-distance 3x3 are correct; a Python
+  replica of the contact math found the 5.4 u contact the audit missed.
+- Client fix: movement substeps are capped below the capsule radius
+  (`subCap = min(20, radius*0.9)` in the client and in the audit sweep);
+  registered as deviation 4d.
+- Full-map numbers (龙门寻宝, stride 64 = every 64th wall face, 208,803 tests,
+  ~8 min): 3.7% residual flags - concentrated in scenery/foliage tiny faces
+  (`sd_崖壁狱门`, `st_mj戈壁碎石/石头/石拱`, `cq_玉门关城墙`, 楼兰哨台); only 32
+  flags in the play area, all small decorative props at unreachable heights.
+  Structural wall blocking (the user's field class) is closed; the tiny-face
+  creep is registered OPEN (next: anti-motion clamp for near-forward contacts
+  or continuous contact).
+- A/B/notes: the user's session (pid 33448) blocks the shared exe name - test
+  builds run as `reborn_client_colltest*.exe` (own namespace).

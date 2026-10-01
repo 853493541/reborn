@@ -121,7 +121,7 @@ internal static class CollisionSelfTest
             FoliageCollision ac = new FoliageCollision(fbin, sbin);
             List<string> rep = new List<string>();
             int tested;
-            int failed = ac.AuditWalls(rep, 60, 17f, 116f, 64f, out tested, stride);
+            int failed = ac.AuditWalls(rep, 20000, 17f, 116f, 64f, out tested, stride);
             Console.WriteLine("wall audit: tested=" + tested + " failed=" + failed + " stride=" + stride);
             for (int i = 0; i < rep.Count; i++) Console.WriteLine(rep[i]);
             Environment.Exit(failed == 0 ? 0 : 2);

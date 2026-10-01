@@ -1171,12 +1171,16 @@ public sealed class FoliageCollision
                         float dx = -hnx * sgn * (2f * radius + 20f);
                         float dz = -hnz * sgn * (2f * radius + 20f);
                         // mini-resolve against THIS instance only (same
-                        // contact/step/push contract as Resolve; skips the
-                        // global candidate scan for audit speed)
+                        // contact/push contract as Resolve; skips the global
+                        // candidate scan for audit speed). Airborne: no CCT
+                        // step-up - a wall face must BLOCK, stepping over low
+                        // faces is correct behavior and not a walk-through.
                         float ground = py;
-                        bool grounded = true;
+                        bool grounded = false;
                         float len = (float)Math.Sqrt(dx * dx + dz * dz);
-                        int n = (int)Math.Ceiling(len / 20f);
+                        float subCap = radius * 0.9f;
+                        if (subCap < 1f) subCap = 1f;
+                        int n = (int)Math.Ceiling(len / subCap);
                         if (n < 1) n = 1;
                         for (int s2 = 0; s2 < n; s2++)
                         {
@@ -1224,9 +1228,20 @@ public sealed class FoliageCollision
                         {
                             failed++;
                             if (report != null && report.Count < maxReport)
+                            {
+                                // diag: where the w2l path puts the face centroid vs
+                                // the triangle's own local verts (inverse check)
+                                float dlx = fcx * it.w2l[0] + fy * it.w2l[4] + fcz * it.w2l[8] + it.w2l[12];
+                                float dly = fcx * it.w2l[1] + fy * it.w2l[5] + fcz * it.w2l[9] + it.w2l[13];
+                                float dlz = fcx * it.w2l[2] + fy * it.w2l[6] + fcz * it.w2l[10] + it.w2l[14];
+                                float lcx = (md.verts[i0] + md.verts[i1] + md.verts[i2]) / 3f;
+                                float lcy = (md.verts[i0 + 1] + md.verts[i1 + 1] + md.verts[i2 + 1]) / 3f;
+                                float lcz = (md.verts[i0 + 2] + md.verts[i1 + 2] + md.verts[i2 + 2]) / 3f;
                                 report.Add(string.Format(
-                                    "FAIL inst={0} mesh={1} bb x{2:F0}..{3:F0} z{4:F0}..{5:F0} tri={6} top={7:F0} face=({8:F0},{9:F0},{10:F0}) sd={11:F1}",
-                                    ii, md.meshIndex, it.minX, it.maxX, it.minZ, it.maxZ, t, ymax, fcx, fy, fcz, sd));
+                                    "FAIL inst={0} mesh={1} bb x{2:F0}..{3:F0} z{4:F0}..{5:F0} tri={6} top={7:F0} face=({8:F0},{9:F0},{10:F0}) sd={11:F1} w2lLoc=({12:F0},{13:F0},{14:F0}) triLoc=({15:F0},{16:F0},{17:F0})",
+                                    ii, md.meshIndex, it.minX, it.maxX, it.minZ, it.maxZ, t, ymax, fcx, fy, fcz, sd,
+                                    dlx, dly, dlz, lcx, lcy, lcz));
+                            }
                         }
                     }
                 }

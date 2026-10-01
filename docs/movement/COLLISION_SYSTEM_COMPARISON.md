@@ -189,6 +189,7 @@ where they affect collision/camera geometry. Excludes harness switches
 | 4 | `lowTop` fallback in the step rule | rule | `FoliageCollision.Resolve` |
 | 4b | step raise requires CCT up-sweep clearance (raised capsule must not overlap the blocker; else block+push-out, no embedding); support raise only to a standable surface (downward contacts reject; horizontal overlaps left to the prop push) | rule | `FoliageCollision.CapsuleBlocked/CapsuleBlockedDown` |
 | 4c | horizontal faces resist the horizontal motion (a face whose normal points along the move is flipped - thin-wall pop-through prevented, field case z~33870 building 001_002) | rule | `FoliageCollision.Resolve` (hMove) |
+| 4d | movement substeps capped below the capsule radius (`min(20, 0.9*radius)`) - thin small faces (foliage/rock slivers) no longer creep at 20 u substeps | number | `RebornClient` loop + audit |
 | 5 | 20 u movement substep | number | `RebornClient` loop |
 | 6 | floor source = terrain sample + `SupportHeight` (not native `GetFloorHeight`) | proxy | both |
 | 7 | winding-agnostic floor query (game winding is inverted) | rule | `SupportHeight` |

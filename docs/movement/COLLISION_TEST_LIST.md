@@ -11,6 +11,7 @@ verification state; run the automated gates first, then walk the manual list.
 | `.venv\Scripts\python.exe tools\gravity\verify_model.py` | model self-consistent |
 | `.venv\Scripts\python.exe tools\netcode\loot\capture.py selftest` | SELFTEST PASS |
 | `bin64\collision_selftest_reborn_client_collision.exe` | 32/32 PASS |
+| `...exe audit <structuresBin> <foliageBin> 64` | map-wide wall sweep; 龙门寻宝 3.7% residual (scenery tiny faces; play area 32) |
 | `native\build_shim.cmd` | `RC_Shim_*` exports linked (run with NO reborn client alive) |
 | `ui-process-app` `--selftest` | needs a desktop session (headless exits 1; app untouched by this branch) |
 

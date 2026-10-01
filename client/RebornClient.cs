@@ -1748,7 +1748,14 @@ internal static class RebornClient
                 float step = (float)Math.Round(sp * pdt);
                 if (step < 1f && sp > 0f) step = 1f;
                 mvx = dirX / len; mvz = dirZ / len;
-                if (step > 20f) subCount = (int)Math.Ceiling(step / 20f);
+                // substep cap stays BELOW the capsule radius: at >= radius a
+                // thin small face (foliage leaf/branch) lets the centre pass
+                // the sheet inside one substep and the contact degenerates to
+                // an edge push - the capsule creeps through (audit class
+                // 2026-09-30, full-map sweep).
+                float subCap = Math.Min(20f, playerRadius * 0.9f);
+                if (subCap < 1f) subCap = 1f;
+                if (step > subCap) subCount = (int)Math.Ceiling(step / subCap);
                 if (subCount > 64) subCount = 64;
                 subStep = step / subCount;
             }
