@@ -60,7 +60,7 @@ internal static class RebornClient
 
     delegate int SfxProbeFn();
 
-    delegate int SfxPlayFn([MarshalAs(UnmanagedType.LPStr)] string path);
+    delegate int SfxPlayFn([MarshalAs(UnmanagedType.LPStr)] string path, float x, float y, float z);
 
     delegate IntPtr SfxStatusFn();
 
@@ -335,9 +335,9 @@ internal static class RebornClient
         };
 
         // engine SFX playback (RC_SFX_ENGINE=1): creates the effect through the
-        // engine's own KG3D_CreateSFXFromFile (sfx_shim.dll) instead of the
-        // host dummy approximation
-        Func<string, bool> engineSfxPlay = delegate(string path)
+        // engine's own KG3D_CreateSFXFromFile (sfx_shim.dll) at the given world
+        // position instead of the host dummy approximation
+        Func<string, float, float, float, bool> engineSfxPlay = delegate(string path, float x, float y, float z)
         {
             try
             {
@@ -351,7 +351,7 @@ internal static class RebornClient
                 IntPtr fn = GetProcAddress(shim, "RC_Shim_SfxPlay");
                 if (fn == IntPtr.Zero) { Log("engine sfx: export missing"); return false; }
                 var play = (SfxPlayFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(SfxPlayFn));
-                int rc = play(path);
+                int rc = play(path, x, y, z);
                 IntPtr st = GetProcAddress(shim, "RC_Shim_SfxStatus");
                 string status = st == IntPtr.Zero ? "" : Marshal.PtrToStringAnsi(
                     ((SfxStatusFn)Marshal.GetDelegateForFunctionPointer(st, typeof(SfxStatusFn)))());
@@ -2322,7 +2322,7 @@ internal static class RebornClient
                     {
                         lastCastX = px; lastCastZ = pz;
                         bool engineOk = false;
-                        if (Env("RC_SFX_ENGINE", "0") == "1") engineOk = engineSfxPlay(castPssPath);
+                        if (Env("RC_SFX_ENGINE", "0") == "1") engineOk = engineSfxPlay(castPssPath, px, py + 2f, pz);
                         castPssEngine = engineOk;
                         if (!engineOk)
                         {

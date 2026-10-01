@@ -157,7 +157,7 @@ static bool PeMatches2(BYTE* base)
     return ts == ENGINE_TIMESTAMP && size == ENGINE_SIZE_OF_IMAGE;
 }
 
-SHIM_EXPORT int RC_Shim_SfxPlay(const char* path)
+SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
 {
     if (g_base == NULL)
     {
@@ -185,42 +185,96 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path)
     // owner chain: mirror the engine's own tag-spawn caller (code @0x76E51A):
     // singleton @RVA 0x2CF7038 -> vt[10]() -> helper @0x8ABAB0(&out) = owner
     void* owner = NULL;
+    void* iface = NULL;
     DWORD oexc = 0;
+    char ownerInfo[256] = {0};
+    // engine caller @0x76E51A: out[0] = singleton->vt[8]() (the owner iface);
+    // out[8] = wrapper from vt[10]()+0x8ABAB0 (a different context)
     __try
     {
         void** g = *(void***)(g_base + 0x2CF7038);
         if (g != NULL)
         {
             typedef void* (__fastcall *GetIfaceFn)(void* self);
-            GetIfaceFn getIface = (GetIfaceFn)(*(void***)g)[10];
-            void* iface = getIface(g);
-            if (iface != NULL)
-            {
-                typedef long (__fastcall *OwnerFn)(void* self, void** out);
-                OwnerFn own = (OwnerFn)(g_base + 0x8ABAB0);
-                own(iface, &owner);
-            }
+            GetIfaceFn getOwner = (GetIfaceFn)(*(void***)g)[8];
+            owner = getOwner(g);
+            GetIfaceFn getCtx = (GetIfaceFn)(*(void***)g)[10];
+            iface = getCtx(g);
         }
     }
     __except (oexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { owner = NULL; }
+    if (owner != NULL)
+    {
+        void** vt = NULL;
+        __try
+        {
+            vt = *(void***)owner;
+            sprintf_s(ownerInfo, "ownervt=0x%p vt0=0x%X vt1=0x%X vt2=0x%X",
+                      vt, (unsigned)((BYTE*)vt[0] - g_base), (unsigned)((BYTE*)vt[1] - g_base),
+                      (unsigned)((BYTE*)vt[2] - g_base));
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { sprintf_s(ownerInfo, "ownervt unreadable"); }
+    }
 
     if (owner == NULL) { sprintf_s(g_status, "sfx play: owner chain failed exc=0x%08X scene=0x%p", (unsigned)oexc, scene); return 6; }
+
+    // SFX pool global (written by KG3D_CreateSFXPoolManager @0x197FA0, called
+    // from KG3D_Engine::Init): if null, init it before creating effects
+    void* pool = NULL;
+    DWORD pexc = 0;
+    __try { pool = *(void**)(g_base + 0x2CF7BB0); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { pool = NULL; }
+    long poolRc = -1;
+    if (pool == NULL)
+    {
+        __try
+        {
+            typedef long (__fastcall *PoolFn)(void);
+            PoolFn mkPool = (PoolFn)(g_base + 0x197FA0);
+            poolRc = mkPool();
+        }
+        __except (pexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { poolRc = -1; }
+        __try { pool = *(void**)(g_base + 0x2CF7BB0); }
+        __except (EXCEPTION_EXECUTE_HANDLER) { pool = NULL; }
+    }
 
     CreateSfxFromFileFn create = (CreateSfxFromFileFn)(g_base + RVA_CREATE_SFX_FROM_FILE);
     void* sfx = NULL;
     void* outParam = NULL;
-    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
+    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1 };
     DWORD exc = 0;
     DWORD64 fault = 0;
+    PEXCEPTION_POINTERS ep = NULL;
+    char stackDump[1024] = {0};
     // args mirror the engine's own caller (code @0x76E51A): a6 = world matrix,
     // a8 = out slot; r9/a5/a7 zero for the first test
     __try { sfx = create(owner, path, NULL, NULL, NULL, mtx, 0, &outParam); }
-    __except (exc = GetExceptionCode(),
-              fault = (DWORD64)((PEXCEPTION_POINTERS)GetExceptionInformation())->ExceptionRecord->ExceptionAddress,
-              EXCEPTION_EXECUTE_HANDLER) { sfx = NULL; }
-    sprintf_s(g_status, "sfx play owner=0x%p scene=0x%p path=%s -> obj=0x%p out=0x%p exc=0x%08X fault_rva=0x%X",
-              owner, scene, path, sfx, outParam, (unsigned)exc,
-              (unsigned)(fault > (DWORD64)g_base ? (fault - (DWORD64)g_base) : 0));
+    __except (ep = GetExceptionInformation(),
+              exc = ep->ExceptionRecord->ExceptionCode,
+              fault = (DWORD64)ep->ExceptionRecord->ExceptionAddress,
+              EXCEPTION_EXECUTE_HANDLER)
+    {
+        sfx = NULL;
+        // walk the faulting stack: log the first frames as module-relative RVAs
+        DWORD64* sp = (DWORD64*)ep->ContextRecord->Rsp;
+        int n = 0;
+        for (int i = 0; i < 16 && n < (int)sizeof(stackDump) - 40; i++)
+        {
+            DWORD64 v = 0;
+            __try { v = sp[i]; } __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+            HMODULE mod = NULL;
+            char name[MAX_PATH] = {0};
+            if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                   (LPCSTR)v, &mod) && mod != NULL)
+                GetModuleFileNameA(mod, name, MAX_PATH);
+            const char* bn = strrchr(name, '\\');
+            bn = bn ? bn + 1 : name;
+            n += sprintf_s(stackDump + n, sizeof(stackDump) - n, "%s+0x%llX ", bn, (unsigned long long)(v - (DWORD64)mod));
+        }
+    }
+    sprintf_s(g_status, "sfx play owner=0x%p iface=0x%p %s scene=0x%p pool=0x%p poolRc=%d path=%s -> obj=0x%p out=0x%p exc=0x%08X fault_rva=0x%X stack=[%s]",
+              owner, iface, ownerInfo, scene, pool, (int)poolRc, path, sfx, outParam, (unsigned)exc,
+              (unsigned)(fault > (DWORD64)g_base ? (fault - (DWORD64)g_base) : 0), stackDump);
     return sfx != NULL ? 0 : 7;
 }
 

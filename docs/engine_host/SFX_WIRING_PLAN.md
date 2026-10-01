@@ -6,28 +6,39 @@ free-standing scene dummies, not engine SFX).
 
 ## Wiring attempt (2026-09-30, `RC_SFX_ENGINE=1` + `RC_Shim_SfxPlay`)
 
-`KG3D_CreateSFXFromFile` found: **engine RVA 0xBE4000** (internal, not exported; the
-`KG3D_CreateSFXFromFile` string is referenced inside it). Signature from the prologue and
-two engine callers:
+**The engine now creates the effect itself.** `KG3D_CreateSFXFromFile` (engine RVA
+`0xBE4000`, internal) is called from `sfx_shim.dll` with the correct owner and returns a
+live `KG3D_SFX` instance:
+
+```
+engine sfx play rc=0 owner=0x… ownervt=0x… vt0=0x3B1E5C0 vt1=0x3B1CBF0 …
+  path=…\t_天策撼如雷02_重制.pss -> obj=0x… exc=0x00000000
+```
+
+Signature + context recovered from the engine's own callers:
 
 ```
 KG3D_SFX* KG3D_CreateSFXFromFile(void* owner /*rcx*/, const char* path /*rdx*/,
-    void* r8, void* r9, void* a5, void* a6, int a7, void* a8 /*stack*/)
+    void* r8, void* r9, void* a5, void* a6 /*world matrix*/, int a7, void* a8 /*out*/)
 ```
 
-The engine's own tag-spawn caller (code @ `0x76E51A`) gets its `owner` from a singleton
-chain: `[engine+0x2CF7038] -> vt[10]() -> helper @0x8ABAB0(&out)`. The shim replicates
-that chain (owner obtained, non-null) and passes `a6` = world matrix + `a8` = out slot.
+- **owner** = `[engine+0x2CF7038] -> vt[8]()` (the iface the engine's caller stores as
+  `out[0]`; the earlier `vt[10]()`+helper `0x8ABAB0` path is a *different* context field
+  and produced a garbage vtable — that was the AV cause).
+- **a6** = a world matrix (translation = caster position, passed from the host).
+- SFX pool verified initialized (`[engine+0x2CF7BB0]` non-null; created by
+  `KG3D_Engine::Init`).
 
-**Result: still AVs** — `fault_rva=0x3C001EA` is **beyond the engine image**
-(0x2EA7000), i.e. a virtual call through a pointer that requires the caller's context
-(the actor/animation object that the real callers pass in `r8`/`r9`/`a5`/`a7`). SEH
-catches it; the host falls back to the dummy path, so casts keep working.
+**Still missing: driving/attaching the instance.** The created SFX does not render its
+flash yet (bright-pixel A/B: dummy 2010 vs engine 15 at the flash moment). The engine's
+own caller does a follow-up call after creation — `0x76A8E0` (args: `rcx`=owner struct
+from `0x769E00`, `rdx`=SFX, `r8`, `r9`=effect path string, plus 6 stack args; the callee
+hashes the path) — and then releases its local reference (`vt[1]`). Replicating that
+call (or finding the manager's register/play entry) is the next step; the render list is
+processed by the SFX module update at `0xE2B080`.
 
-Next: recover the remaining args from the two callers
-(`0xE3412A` — SFX module; `0x76E51A` — actor/tag path), or obtain the same context object
-from the engine (the caller's `[rdi+0x38]`, `rsi+0xf8` matrix source, etc.). The shim
-already logs the fault RVA for each iteration.
+Next: recover `0x76A8E0`'s args (the caller at `0x76E539` shows the setup) and call it
+after creation, then A/B the flash again.
 
 ## Probe results (2026-09-30, `RC_SFX_PROBE=1` + `native/sfx_shim.cpp`)
 
