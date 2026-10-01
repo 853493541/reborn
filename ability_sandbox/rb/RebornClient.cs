@@ -2322,7 +2322,11 @@ internal static class RebornClient
                     {
                         lastCastX = px; lastCastZ = pz;
                         bool engineOk = false;
-                        if (Env("RC_SFX_ENGINE", "0") == "1") engineOk = engineSfxPlay(castPssPath, px, py + 2f, pz);
+                        if (Env("RC_SFX_ENGINE", "0") == "1")
+                        {
+                            string sfxTest = Env("RC_SFX_TEST_PATH", "");
+                            engineOk = engineSfxPlay(sfxTest != "" ? sfxTest : castPssPath, px, py + 2f, pz);
+                        }
                         castPssEngine = engineOk;
                         if (!engineOk)
                         {
