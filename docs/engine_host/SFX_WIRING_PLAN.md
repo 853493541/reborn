@@ -59,13 +59,19 @@ loaded the client `KG3DEngineDX11EX64.dll` explicitly and called its
 - `KG3D_GetEngine2()` returns **null** after the facade init — the engine instance is not
   created by `LoadX3DEngine` alone (it loads lazily when the movie engine / game flow
   drives it). `GetActiveWindow2`/`Get3DScene2` therefore also return null.
+- The client adapter's `Get3DEngineInterface` returns a non-null pointer, but it is not
+  the create's owner type (AV at `0xBE568E` when used).
+- The client owner chain (`singleton @RVA 0x2CF1038 -> vt[8]()`, found by the same
+  access pattern as the ME build) returns **null** — the singleton is not initialized by
+  the facade boot either.
 - With a null owner the create AVs at `fault_rva=0xBE568E` for every input (including
   `.pss`) — the test is inconclusive until a real engine instance is available.
 
 Conclusion: testing (and using) the client engine's `.Sfx` path requires the **native
-client-stack host** with the full client init — the `CLIENT_STACK_PIVOT.md` milestone.
-The probe source + build script live in `%TEMP%\opencode\skillv2\`
-(`client_sfx_probe.cpp`, `build_client_sfx_probe.cmd`).
+client-stack host** with the full client init (the engine instance + singleton are
+created by the game's boot flow, not by `X3DEngine` PreInit/Load alone) — the
+`CLIENT_STACK_PIVOT.md` milestone. The probe source + build script live in
+`%TEMP%\opencode\skillv2\` (`client_sfx_probe.cpp`, `build_client_sfx_probe.cmd`).
 
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
