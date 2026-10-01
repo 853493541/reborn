@@ -1115,3 +1115,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `JX3ClientX64Base.dll`) — per-action row mapping needs a runtime probe;
   `FullScreenWarning` opener and `ProgressBar.Start/Finish` callers still open.
 - Evidence: `BATTLE_FLOATING_UI.md` §2.4/§4.8; `re/cocos_gray/` committed.
+
+### 2026-09-30 — ui — KGUI rich-text flag + draw-extent path; static probes exhausted
+- `LuaItemText_SetRichText` (`KGUIX64 0x1801978F0`) toggles item flag bit 23
+  (`0x800000`); `IsRichText` reads it; six text-processing functions test the bit
+  (`0x180106CBF`, `0x180107A2F`, `0x18011F8FF`, `0x18012006F`, `0x1801207AF`,
+  `0x180120FBF`) — parser body not isolated; next probe is a runtime breakpoint on
+  a known markup label.
+- Text draw path continues through virtual font-renderer calls
+  (`0x1800FBE70` extent filler, vtable `+0x138/+0x148/+0x158`); projection
+  rasterization stays unresolved statically.
+- Remaining statically-blocked items (need runtime probes): markup parser,
+  `GeneralProgressBar` native caller (protected base DLL), `FullScreenWarning`
+  opener, `ProgressBar.Start/Finish` callers, live `IsUseCocos` confirmation.
+- Dumps `re/kgui_richtext/`, `re/kgui_font/glyph/` committed.

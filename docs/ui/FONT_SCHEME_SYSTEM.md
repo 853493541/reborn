@@ -173,10 +173,11 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
     projection ARGB into `+0x80/+0x84/+0x88`, sizes into `+0xA8/+0xA9`, the
     **resolved font-size float `+0x2F4` into `+0x94`** (after `addss` + a
     `0x1804DB63D` rounding call) and `FontScale (+0x314)` into `+0x90`.
-- So border thickness is a 0–4 px outline and projection is a 0–255 parameter
-  (offset/blur handled by the glyph builder); the exact rendered shadow pixel math
-  is still not fully pinned, and `projection` is not rendered by `ui-process-app`
-  (gap, see §5).
+- So border thickness is a 0–4 px outline and projection is a 0–255 parameter;
+  the draw path continues through virtual font-renderer calls
+  (`0x1800FBE70` fills the text-extent struct via `[vtable+0x138/+0x148/+0x158]`
+  with default 0.5/0.5 and 1.0 scale rows) — the exact projection rasterization is
+  not pinned statically; `projection` is not rendered by `ui-process-app` (gap, §5).
 
 ### 2.3 FontColor / per-state codes
 
@@ -242,7 +243,15 @@ The producer of the markup is the represent layer:
 `<text> text="…" font=10 r=255 g=165 b=0 </text>` (template at `0xC839C8`); the
 `font=N` value there is the represent font index, while the string-table variant
 (`font=` only, values ≤177) is the scheme id (MED).
-The `<Dn>` tags (15×) remain undecoded (**unknown**).
+
+KGUI rich-text flag (decoded 2026-09-30): `KItemText::SetRichText` /
+`LuaItemText_SetRichText` (`KGUIX64 0x1801978F0`) only toggles **flag bit 23**
+(`0x800000`) on `item+0x10`; `IsRichText` reads it. Six text-processing functions
+test that bit (`0x180106CBF`, `0x180107A2F`, `0x18011F8FF`, `0x18012006F`,
+`0x1801207AF`, `0x180120FBF`) — the markup parser runs inside that path when the
+flag is on; the exact parser body is still not isolated (**next probe**: breakpoint
+a known markup label in the live client, e.g. a string containing `<1010>`).
+Dumps: `re/kgui_richtext/`. The `<Dn>` tags (15×) remain undecoded (**unknown**).
 
 ## 3. Engine side (KGUIX64.dll)
 
