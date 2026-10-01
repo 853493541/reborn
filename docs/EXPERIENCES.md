@@ -996,3 +996,20 @@ all tags should fire. Editor config to adopt when initializing the host
   the verified cast path.
 - Re-open: none.
 
+### 2026-09-30 — ability sandbox — P panel icon grid + 6 more staged abilities
+- Panel: the P list is now an icon grid (FlowLayoutPanel, 6 per row, 32 px client icons,
+  no labels). Hover shows the client tooltip (description, markup stripped); a click casts
+  the clicked ability (same 3 s cooldown gate). Replaced the owner-drawn ListBox.
+- Staging: the next 6 abilities in the user's ID-list order, same pipeline as before
+  (matched tani → base `.ani` duration + authored PSS life + wem):
+  65161 鹊踏枝 (anim 1303 ms, PSS 10560 ms), 65165 雷震子 (394 ms, no PSS),
+  65097 韦陀献杵 (1394 ms, PSS 9600 ms), 65048 夺命蛊 (348 ms, no PSS),
+  65159 帝骖龙翔 (1394 ms, PSS 24000 ms), 65154 坐忘无我 (1394 ms, PSS 9600 ms).
+  `PROCESS` updated in `build_candidates.py`; the regenerated dataset matches the staged
+  one exactly (0 diffs). `skill_data.json` rebuilt for all 154 dataset ids (154 icons).
+- Evidence: `Skill_20260930_1701*.log` — `skill data: 154 abilities`,
+  `cast: 鹊踏枝 steps=3 animMs=1303 pssMs=10560`, anim/sound/pss
+  `(once, anchored)`, `cast done`, exit 0; commits `3eff80e`, `a3ca2f2`.
+- Outcome: solved — icon-grid panel + 14 staged abilities with client icons/desc.
+- Re-open: none.
+
