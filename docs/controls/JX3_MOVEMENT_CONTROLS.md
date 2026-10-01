@@ -145,6 +145,12 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
   (run clip). Per-mode follow mode / reset speeds are applied at switch; the
   free-view state itself and the follow-mode `[0..3]` consumer stay open
   (`OPERATION_MODES_PLAN.md` §7c); proof `proof/controls/control_modes_run.txt`.
+- **Mode-matched locomotion clips**: travel direction vs facing selects the
+  clip in both modes (>45° = `挪步左/右` kind 6, >135° = `后退01` kind 57, else
+  walk/run). So the joystick pivot plays `挪步`/`后退` while the body turns to
+  the heading, then the run clip; classical side-step (`RC_FREEVIEW=0`) and S
+  use the same clips. Classical A/D turn-in-place has no authored F1 turn clip
+  — the model rotates (catalog-verified).
 - **Jump carries horizontal takeoff velocity** (`JumpSpeedXY` of the row,
   clamp 0..127, 15 Hz, `RC_JUMP_SCALE`) along the input direction when moving;
   a standing jump is ballistic-vertical (no move intent -> no horizontal

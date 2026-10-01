@@ -229,6 +229,17 @@ or merge that subject to main first and branch `agent/control-modes`.
   zone), 0 = the decoded side-step branch with the authored `挪步左/右` clips.
   Classical S back-pedals (`后退01` clip); joystick A/D/S turn to the travel
   heading. Proof: `proof/controls/control_modes_run.txt`.
+- **Mode-matched locomotion animation (2026-10-01)** — the locomotion clip is
+  selected by travel direction vs facing in **both** modes: >45 deg plays the
+  authored side-step (`挪步左/右`, kind 6), >135 deg the back-pedal
+  (`后退01`, kind 57), else walk/run. This covers classical side-step
+  (`RC_FREEVIEW=0`), classical S, and the joystick pivot (the body plays
+  `挪步`/`后退` while the facing catches up with the heading, then the run clip).
+  Classical A/D turn-in-place uses model rotation: the F1 catalog has **no
+  dedicated ground turn clip** (kinds 5 run / 6 挪步 / 56 walk / 57-58 后退 /
+  16-19 jumps), so no clip is invented for it. Thresholds are host values
+  pending the engine's clip-selection criteria; proof:
+  `proof/controls/control_modes_run.txt`.
 - **Turn-key camera coupling fixed** — the heading<->camera-yaw relation is the
   `cameraYawBehind` reflection (`Forward(yaw)=(-cos,-sin)`), so the drag now
   rotates the camera behind the character (was rotating the wrong way after the

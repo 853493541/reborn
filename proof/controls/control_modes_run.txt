@@ -108,3 +108,20 @@ Runs (RC_DEMO_MOVE=1 RC_AUTORUN=15000, exit 0):
 d=-3.14 = 1 s hold at the host turn rate pi rad/s; classical camera follows
 (cam 2.34 -> 5.22, cameraYawBehind reflection + 15 deg drag). Landing roll
 unchanged (`land drop=600u roll=1 ... rc=0`).
+
+## Mode-matched locomotion animation (2026-10-01)
+
+Clip selected by travel direction vs facing in both modes (>45 deg = kind 6
+`挪步左/右`, >135 deg = kind 57 `后退01`, else walk/run). F1 catalog has no
+dedicated ground turn clip, so classical A/D turn-in-place rotates the model.
+
+Runs (RC_DEMO_MOVE=1 RC_AUTORUN=15000, exit 0):
+
+| run | strafe window | back window | notes |
+|---|---|---|---|
+| classical default (A/D turn) | `d=-3.14` (turn 1 s), no locomotion clip (idle + model rotation) | `后退01`, d=0.00 | face view |
+| classical RC_FREEVIEW=0 | `挪步左`, d=0.00 | `后退01`, d=0.00 | decoded side-step branch |
+| joystick | `挪步左` then `奔跑` (pivot then aligned), d=-1.57 | `挪步` then `奔跑` (90 deg pivot), d=-1.57 | turn-to-heading |
+
+Logs: `reborn_20261001_074718.log` (classical), `_074923.log` (freeview 0),
+`_074806.log` (joystick).

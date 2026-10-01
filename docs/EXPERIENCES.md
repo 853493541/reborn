@@ -1028,3 +1028,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   20261001_003600 (RC_FREEVIEW=0: d=0.00 side-step), 20261001_003644 (joystick:
   d=-1.57); proof/controls/control_modes_run.txt; gates all PASS.
 - Lesson: decode the handler bodies, not the string/global summaries.
+
+### 2026-10-01 - controls/client - Mode-matched locomotion animation
+- Did: locomotion clip selection by travel direction vs facing in both modes
+  (>45 deg 挪步 left/right kind 6, >135 deg 后退01 kind 57, else walk/run).
+  Classical side-step (RC_FREEVIEW=0) and S play the authored clips; the
+  joystick pivot plays 挪步/后退 while the facing catches up, then 奔跑.
+  Classical A/D turn-in-place rotates the model: the F1 catalog has no
+  dedicated ground turn clip (kinds 5 run / 6 挪步 / 56 walk / 57-58 后退 /
+  16-19 jumps), so none is invented.
+- Evidence: runs 20261001_074718 (classical: 后退01, turn d=-3.14),
+  074923 (freeview0: 挪步左 + 后退01), 074806 (joystick: 挪步左->奔跑,
+  d=-1.57); proof/controls/control_modes_run.txt; build + smoke exit 0.
+- Open: engine clip-selection criteria (thresholds are host values); ground
+  turn-in-place clip unresolved (catalog-verified absent).

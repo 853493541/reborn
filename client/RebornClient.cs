@@ -1900,7 +1900,7 @@ internal static class RebornClient
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
             bool blocked = false;
             // locomotion clip selection: 0 run/walk, 1 strafe left, 2 strafe
-            // right, 3 back-pedal (CLASSICAL side-step/back-pedal only)
+            // right, 3 back-pedal - chosen by travel direction vs facing below
             int gait = 0;
             if (grounded && moving)
             {
@@ -1926,18 +1926,23 @@ internal static class RebornClient
                     if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
                     else curYaw += Math.Sign(dYaw) * turnStep;
                 }
-                else
-                {
-                    // CLASSICAL lateral/back input (OPERATION_MODES_PLAN.md §1):
-                    // side-step / back-pedal with the facing kept; the authored
-                    // strafe/back clips are chosen by travel angle vs facing.
-                    float a = heading - curYaw;
-                    while (a > Math.PI) a -= 2f * (float)Math.PI;
-                    while (a < -Math.PI) a += 2f * (float)Math.PI;
-                    float aa = Math.Abs(a);
-                    if (aa > 2.3562f) gait = 3;                     // >135 deg: back-pedal
-                    else if (aa > 0.7854f) gait = a > 0f ? 2 : 1;   // >45 deg: strafe R/L
-                }
+                // else: CLASSICAL lateral/back input keeps the facing (the
+                // decoded Camera_IsInFreeView side-step branch) - no turn.
+                //
+                // Mode-matched locomotion clip (kind map, F1 catalog):
+                // 6 = 挪步 left/right, 57 = 后退 back-pedal. Whenever the body
+                // travels sideways or backwards relative to its facing it plays
+                // the authored side-step / back-pedal clip: this covers the
+                // classical side-step (RC_FREEVIEW=0) and back-pedal (S), and
+                // the joystick pivot while the body is still catching up with
+                // the heading. Thresholds are host values pending the engine's
+                // criteria (OPERATION_MODES_PLAN.md §7b).
+                float gaitAng = heading - curYaw;
+                while (gaitAng > Math.PI) gaitAng -= 2f * (float)Math.PI;
+                while (gaitAng < -Math.PI) gaitAng += 2f * (float)Math.PI;
+                float gaitAbs = Math.Abs(gaitAng);
+                if (gaitAbs > 2.3562f) gait = 3;                        // >135 deg: back-pedal
+                else if (gaitAbs > 0.7854f) gait = gaitAng > 0f ? 2 : 1; // >45 deg: strafe R/L
                 float step = sp * dt;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
                 float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
