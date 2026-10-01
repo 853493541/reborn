@@ -5,7 +5,7 @@ reads `ui-process-app/Data/ui_inventory.json`, extracts every referenced INI
 (ui-root windows plus their list prototypes, and the pak-root settlement files)
 through the official PakV4 extractor, and writes them where the app expects:
 
-  ui-root  -> ui-process-app/assets/ui/Config/Default/<name>.ini
+  ui-root  -> ui-process-app/assets/ui/<relative path, subfolders preserved>
   pak-root -> ui-process-app/assets/pak/<name>
 
 Together with `tools/prepare_ui_text.py` (text assets) and
@@ -71,7 +71,9 @@ def main() -> int:
     PAK_OUT.mkdir(parents=True, exist_ok=True)
 
     total = 0
-    for candidates, out in ((ui_candidates, UI_OUT), (pak_candidates, PAK_OUT)):
+    ui_root = REPO / "ui-process-app" / "assets" / "ui"
+    for candidates, out in ((ui_candidates, ui_root), (pak_candidates, PAK_OUT)):
+        by_name = {pathlib.PurePosixPath(c).name.lower(): c for c in candidates}
         for i in range(0, len(candidates), 100):
             chunk = candidates[i:i + 100]
             try:
@@ -81,9 +83,16 @@ def main() -> int:
                 continue
             for rel, data in found.items():
                 name = pathlib.PurePosixPath(rel).name
-                (out / name).write_bytes(data)
+                cand = by_name.get(name.lower())
+                if out == PAK_OUT:
+                    dest = out / name
+                else:
+                    rel_out = cand[3:] if cand and cand.lower().startswith("ui/") else name
+                    dest = out / pathlib.PurePosixPath(rel_out)
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                dest.write_bytes(data)
                 total += 1
-                print("HIT %-4s %-28s %d" % (out.name, name, len(data)))
+                print("HIT %-4s %-40s %d" % (out.name, pathlib.PurePosixPath(dest).name, len(data)))
     print("staged %d files" % total)
     return 0 if total else 1
 

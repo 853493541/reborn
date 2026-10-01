@@ -1218,3 +1218,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   prints the scheme proof. AGENTS/README gate text updated from the stale 15/15.
 - This also validates the earlier renderer changes (Fonts.cs first-wins) against
   the full 21-window inventory.
+
+### 2026-09-30 — ui — Battle-HUD appendix rendered in ui-process-app (33 windows, 31/2/0)
+- Extended `Data/ui_inventory.json` with stage 9 (`battle-hud`), the first render
+  batch of the battle-HUD appendix from `docs/ui/BATTLE_FLOATING_UI.md` §A:
+  BuffMonitor, BattleFieldObjective, BattleIntegral, FightingWarning,
+  WarningTipPanel, TargetSkill, SingleFStatistic, LootRoll, NumericalPanel,
+  TeamNumList, RecoverEquipment, SkillCDJingYuJue (12 windows; inventory is now
+  9 stages / 33 windows).
+- `tools/prepare_ui_configs.py` fixed to preserve subfolders (BattleIntegral lives
+  at `Config/Default/BattleField/BattleIntegral.ini`; it was being flattened and
+  MISSed the app's exact-path loader).
+- `--selftest`: **rendered=31 skipped=2 failed=0**; README/AGENTS counts updated;
+  inventory `generated`/`source` metadata now includes stage 9's catalog.

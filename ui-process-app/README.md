@@ -43,10 +43,12 @@ UiProcessApp.exe --fonttest
 #         scheme #212: size=14 color=#F0F0F0 file=fzht_GBK.ttf
 ```
 
-Current selftest: **rendered=19 skipped=2 failed=0** (the two skipped windows have
-no INI by design — the ready prompt is native and the staging countdown has no
-renderer), e.g. NewBattleFieldQueue 1,129 sections / 1,016 elements,
-BattleFieldMap 367 sections.
+Current selftest: **rendered=31 skipped=2 failed=0** over the 33-window inventory
+(the two skipped windows have no INI by design — the ready prompt is native and
+the staging countdown has no renderer); stage 9 adds the first battle-HUD appendix
+batch (BuffMonitor, BattleFieldObjective, BattleIntegral, FightingWarning,
+WarningTipPanel, TargetSkill, SingleFStatistic, LootRoll, NumericalPanel,
+TeamNumList, RecoverEquipment, SkillCDJingYuJue).
 
 ## What it shows
 

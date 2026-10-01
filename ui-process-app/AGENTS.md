@@ -5,11 +5,12 @@ the real KGUI layout INIs and official string tables.
 
 - Run: `dotnet run --project ui-process-app`. Release binary:
   `ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe`.
-- Gate: `UiProcessApp.exe --selftest` must report **rendered=19 skipped=2 failed=0**
-  (the two skipped windows have no INI by design: ready-prompt is native,
-  staging-countdown has no renderer; writes `ui_process_selftest.txt` next to the
-  exe). Stage the assets first: `tools/prepare_ui_text.py`,
-  `tools/prepare_ui_fonts.py`, `tools/prepare_ui_configs.py`.
+- Gate: `UiProcessApp.exe --selftest` must report **rendered=31 skipped=2 failed=0**
+  over the 33-window inventory (the two skipped windows have no INI by design:
+  ready-prompt is native, staging-countdown has no renderer; writes
+  `ui_process_selftest.txt` next to the exe). Stage the assets first:
+  `tools/prepare_ui_text.py`, `tools/prepare_ui_fonts.py`,
+  `tools/prepare_ui_configs.py`.
 - `Data/ui_inventory.json` is generated from `docs/netcode/JX3_MODE_UI_INVENTORY.md` —
   update the doc first, then regenerate; keep the evidence paths in the inventory.
 - Text assets in `Data/text/` are UTF-8 copies of the game files (see
