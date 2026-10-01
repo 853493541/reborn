@@ -440,7 +440,13 @@ internal static class RebornClient
                     if (png != "")
                     {
                         string p = Path.Combine(skillIconDir, png);
-                        if (File.Exists(p)) img = Image.FromFile(p);
+                        if (File.Exists(p))
+                        {
+                            // copy through a stream so the file is not locked
+                            using (var fs = File.OpenRead(p))
+                            using (var tmp = Image.FromStream(fs))
+                                img = new Bitmap(tmp);
+                        }
                     }
                 }
             }
