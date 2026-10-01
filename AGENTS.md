@@ -93,6 +93,10 @@ Different client builds must not affect each other:
    `sandbox-asset`); `RC_TITLE=<feature>` overrides for one-off runs of the canonical
    exe. If several client windows show the same title you cannot tell which feature is
    which — that is a rule violation.
+8. **Shared shim**: `bin64\camera_shim.dll` is shared by all clients — rebuild it only
+   from a worktree current with main (the build script refuses sources without
+   `RC_D6Seed`); every run log records the loaded shim's `d6=` seed status. A stale-branch
+   shim build reintroduces the D6 crash for every client (2026-09-30 incident).
 
 ## 3. Session start (do this first)
 

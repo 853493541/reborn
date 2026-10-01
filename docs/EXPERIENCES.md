@@ -407,6 +407,27 @@ before/after; if confirmed, find an engine redirect or register a documented dev
   logs `reborn_20260930_172038.log` (full) / `_172041.log` (sandbox).
 - Outcome: solved (local only; main 13 ahead of origin).
 
+### 2026-09-30 — engine — D6 crash returned: stale shared shim clobbered by old-branch build
+**Problem:** after the merges the full client AV'd again while dragging the camera below
+the character and looking up (the D6 signature). Log `reborn_20260930_173446.log` ended
+abruptly at 17:42:29 (spd=320, no clean exit).
+**Tried:** compared the merge vs the camera tip — shim source identical, so the merge did
+not lose the fix.
+**Outcome:** solved (build-process regression, not a merge regression).
+**Why:** the shared `bin64\camera_shim.dll` had been rebuilt at 16:56 by a worktree whose
+branch predates the D6 fix (`agent/collision-improvement` / `agent/double-jump` have 0
+`RC_D6Seed` refs); its exports lacked `RC_D6Seed`, so the D6 lazy-hash AV returned.
+Rebuilt the shim from main (17:46:57), exports verified, loaded shim logs
+`d6=seed slot=0x...`.
+**Prevention:** `native\build_shim.cmd` now refuses to build from a source without
+`RC_D6Seed` and verifies that export after linking; the client logs the loaded shim's
+`d6=` status in every run; `AGENTS.md` §2.8 + `native/AGENTS.md` document the shared-shim
+rule.
+**Verification:** driven repro (`tools/camera/drive_client.ps1`, 88 s of drag-down /
+look-up + WASD): client ran 305-308 fps throughout, no crash, clean `DONE` exit.
+**Links:** `native/camera_shim.cpp` (`RC_D6Seed`), `docs/camera/HOST_DEVIATIONS.md` D6,
+`tools/camera/drive_client.ps1`.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
