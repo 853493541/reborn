@@ -180,6 +180,8 @@ namespace UiProcessApp
                     LayoutPlanBuilder.ApplyTexts(plan.Filtered, pageState.Texts);
                     LayoutPlanBuilder.ApplyImages(plan.Filtered, pageState.Images);
                     LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, pageState.Adjust);
+                    if (pageState.Hide != null && pageState.Hide.Count > 0)
+                        LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", pageState.Hide));
                 }
                 LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");

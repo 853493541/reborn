@@ -168,6 +168,11 @@ namespace UiProcessApp.Engine
         public List<ImageOverride> Images { get; set; }
         public List<TextOverride> Texts { get; set; }
         public List<AdjustSpec> Adjust { get; set; }
+        /// <summary>Sections dropped for this page on top of the window's own
+        /// hide list (e.g. the BattleFieldMap's map-suffixed team/line elements
+        /// that only exist for map 512 — the runtime looks up
+        /// Handle_Team_&lt;currentMapID&gt;_n, so other maps show none).</summary>
+        public List<string> Hide { get; set; }
     }
 
     /// <summary>
@@ -666,6 +671,11 @@ namespace UiProcessApp.Engine
                 {
                     var section = stack.Pop();
                     var image = section.Get("Image") ?? "";
+                    // Runtime map layers (storm-line segments) are not chrome; counting
+                    // them as old-skin art makes the whole map layer look like an old
+                    // root once the heat-map items are hidden (it then gets dropped as
+                    // a duplicate of the new-skin panel background).
+                    if (image.IndexOf("StormLine", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                     if (image.IndexOf("UItimate", StringComparison.OrdinalIgnoreCase) < 0 &&
                         (image.IndexOf("ui\\Image", StringComparison.OrdinalIgnoreCase) >= 0 ||
                          image.IndexOf("ui/Image", StringComparison.OrdinalIgnoreCase) >= 0))

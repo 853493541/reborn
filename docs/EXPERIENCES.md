@@ -586,3 +586,101 @@ solved it, and what is still open. **Newest at the bottom.**
 - Evidence: `--render middlemap --page 296` → `Wnd_SmallMaps x=3 y=105`,
   trunk/scrollbar absent, sections 52; `--selftest` 20/1/0; `--audit` 15/0/79.
 - Outcome: solved.
+
+### 2026-09-30 — UI — BattleFieldMap: five battlefield pages
+- Did: the user asked for the 战场地图 to get one page per battlefield map like
+  the M window. Added pages 296/297/410/512/532, each overriding `Image_Map`
+  with that map's minimap-pack art (same packs as the loading/M windows). The
+  INI's map-suffixed team/line elements exist for two maps only — 512
+  (`Image_MapLine_512_*`, `Image_CLine_512_*`, `Handle_Team_512_*` with
+  `Image_Num*_512_*`/`Image_Team[M/L]512_*`/`Text_512_*`) and 709
+  (`Image_M709_*`/`Handle_Team_709_*`); the runtime looks up
+  `Handle_Team_<currentMapID>_n` :3324-3358 and `Image_CLine_` :3653, so the
+  four other pages hide both sets (wildcard `*_512_*` + `*709*`) and page 512
+  hides `*709*` — a new per-page `hide` (`PageState.Hide`, applied after the
+  window-level overrides in both render paths). Page 512 keeps the ring
+  segments + team numbers.
+- Evidence: `--render battlefield-map --page 296` → 0 `_512_`/709 lines, 105
+  sections; `--page 512` → 48 `_512_` lines, 0 709, 135 sections; the map area
+  reproduces the 296 pack art feature-for-feature (ascii match) and the 512
+  page shows the 512 ring/team art; `--selftest` 20/1/0; `--audit` 15/0/79.
+- Outcome: solved. Open: the ring/team elements' authored positions are the
+  editor's 512 sample; the runtime storm-ring geometry (MapCircle) is still
+  engine-driven and not replayed.
+
+### 2026-09-30 — UI — BattleFieldMap: drop the non-treasure-mode elements
+- Did: the user reported elements on the panel that do not belong to the
+  battlefield maps. The window-level hide now drops: the faction/camp set
+  (`CheckBox_Hq`/`CheckBox_Er` + `Handle_Hq`/`Handle_Er` 浩气盟/恶人谷,
+  `Handle_MainCmd_*`/`Handle_OtherCmd_*` commander markers, `Handle_CampObBoard`,
+  and the PK/area counts under `Handle_GFArea`/`Handle_GFList_Num`), the
+  camp-battle line tabs (`Wnd_Route` — they overlapped the 显示人数 controls),
+  the heat-map grid (`Handle_GFAreaList`/`Handle_GFArea`/`Handle_GFList_Num`;
+  the 显示人数 checkbox starts unchecked, same call as the middlemap's hidden
+  `WndContainer_GFInfo`) and the runtime item prototypes the client clears and
+  re-appends (`Handle_DataMod`/`Image_Data`, `Handle_MapIcon` (boss/vehicle/
+  医圣), `Handle_Gather`/`Handle_Mark`/`Handle_Arrow`, `Handle_EventMod`,
+  `Image_DrawLine1`, `Image_Player`, `Image_Teammate`).
+- Found + fixed a viewer bug while doing it: with the heat-map items hidden the
+  skin filter re-classified `Handle_Map` as an old-skin chrome root (its
+  remaining old art = the `ui\Image\MiddleMap\StormLine\*` segments) and
+  dropped the whole map layer as a duplicate of `Image_Bg` (14 of the 15
+  sections vanished). `HasLargeOldArt` now skips `StormLine` art (runtime map
+  layers are not chrome). Debugged with a temporary `RC_DEBUG_HIDE` dump.
+- Evidence: `--render battlefield-map --page 296` → 31 elements (map + title
+  bar only), page 512 → 61 (map + title bar + 512 ring/team); the map survives
+  the heat-map hide (bisect C4: 88 lines, was 44 without the fix); `--selftest`
+  20/1/0; `--audit` 15/0/79.
+- Outcome: solved.
+
+### 2026-09-30 — UI — BattleFieldMap: top-bar controls are mode-gated too
+- Did: the user questioned 显示人数/刷新/跟随 on the panel; the scripts say they
+  do not belong to a treasure map. `CanShowHeatMap` (map.lua:347-371,
+  decompiled with unluac) returns true only for `IsInTongWarFieldMap()` or
+  `CommandBase.CanShowHeatMap()` (the command mode) — so the 显示人数 checkbox
+  (`CheckBox_ShowNum.Show(CanShowHeatMap(...))`, BattleFieldMap :8198-8207) and
+  the 刷新 button (hidden unless the heat map is on, :8208-8224) are absent for
+  296/297/410/512/532; 跟随 (`CheckBox_Follow` → `OnCheckBoxFollow` →
+  `On_JueJin_Middle_Map_FollowLeader`) is the 绝境 line-choose-phase control,
+  hidden at init and after `MIDDLE_MAP_ON_JUEJING_STOPCHOOSELINE`. Added
+  `CheckBox_Follow,CheckBox_ShowNum,Btn_Refresh` to the window hide. Title bar
+  now keeps only `Btn_Setting` (PopupMenu) + `CheckBox_Minimize` (ExpandFrame).
+- Evidence: `--render battlefield-map --page 296` → 25 elements (map + title
+  bar), page 512 → 55; `--selftest` 20/1/0; `--audit` 15/0/79.
+- Outcome: solved.
+
+### 2026-09-30 — UI — BattleFieldMap: example storm line (5.3)
+- Did: the user asked to show an example 风暴线/圈 (the real one is positioned
+  from the runtime storm data). The script shows `Handle_StormLine` +
+  `Handle_CircleNew` for every treasure map (`InitMapData` :5317-5349), so the
+  viewer now keeps both shown and lays an example ring from the atlas art:
+  generic `Image_Line1..10` (`StormLine3.UITex` f0-9, dotted path segments) on
+  pages 296/297/410/532 and the map-512 set `Image_MapLine_512_1..6` (f10-15,
+  numbered 1-6) on page 512 — each segment scaled 300/928 and placed evenly
+  around a ring (center 150,131 r≈90) via `adjust` (the authored INI positions
+  are the editor's palette, all parked top-left). `Image_LineA/C/E_*` reference
+  `StormLine4.UITex` (not extracted) → hidden; `Image_M709_*` hidden.
+- Evidence: renders `stormf296.png` / `stormf512.png` (ring visible on both);
+  `--selftest` 20/1/0; `--audit` 15/0/80 (the +1 out-of-bounds is the 928x812
+  `Handle_StormLine` container itself).
+- Outcome: solved as an example. Open (registered deviation): the ring
+  geometry (center/radius/rotation order) is an example, not the runtime storm
+  data; the 圈 is the `SFX_CircleNew` particle (`C_自己圈范围_677.pss`) and has
+  no bitmap — re-open when the storm sync (`OnSyncSceneHeatMap`/storm data) is
+  replayed or a PSS renderer exists.
+
+### 2026-09-30 — UI — BattleFieldMap: no storm-line example (correction)
+- Did: the user corrected the previous example approach — only 白龙 (512) ships
+  the line data, so no example is drawn for the other maps; the 圈 is not
+  visible (the SFX particle has no bitmap). Reverted the example-ring `adjust`
+  entries and the `Handle_StormLine`/`Handle_CircleNew` `show`; page 512 keeps
+  its own `Image_CLine_512_*` choice-line ring (the script's `ShowLootMode`
+  :3636-3679 grays/normalizes the chosen line), the other pages draw nothing.
+  `Image_LineA/C/E_*` (`StormLine4` atlas not extracted) and `*709*` stay
+  hidden. The example entry above is superseded by this one.
+- Evidence: `--render battlefield-map --page 296` → 25 sections, 0 line
+  elements; `--page 512` → 55 sections with the six `Image_CLine_512_*` ring
+  elements; `--selftest` 20/1/0; `--audit` 15/0/80.
+- Outcome: solved (data-driven). Open: the runtime storm sync
+  (`OnSyncSceneHeatMap` / storm data) and the `SFX_CircleNew` PSS remain
+  unreplayed — the 圈 needs a PSS renderer or the storm-data replay.

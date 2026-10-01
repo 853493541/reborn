@@ -367,11 +367,14 @@
           "images": [
             { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" }
           ],
-          "summary": "Draggable M-map panel with the 龙门绝境 sample map art (same extracted middlemap.png) in Image_Map. When IsInTreasureBattleFieldMap() it shows Handle_StormLine and registers MapCircle/SFX_CircleNew; heat map toggle; mark/gain/sfx notify events.",
+          "hide": "CheckBox_Hq,Handle_Hq,CheckBox_Er,Handle_Er,Wnd_Route,CheckBox_Follow,CheckBox_ShowNum,Btn_Refresh,Handle_MainCmd_Hq,Handle_MainCmd_Er,Handle_OtherCmd_Hq,Handle_OtherCmd_Er,Handle_CampObBoard,Handle_GFAreaList,Handle_GFArea,Handle_GFList_Num,Handle_DataMod,Image_Data,Handle_MapIcon,Handle_Gather,Handle_Mark,Handle_Arrow,Handle_EventMod,Image_DrawLine1,Image_Player,Image_Teammate,Image_LineA_*,Image_LineC_*,Image_LineE_*,*709*",
+          "summary": "Draggable battlefield M-map panel with the map art in Image_Map — pages 296/297/410/512/532 take it from each map's minimap pack (like the loading and M windows). The map-suffixed team/line elements exist only for 512 and 709 in the INI (Image_MapLine_512_*, Image_CLine_512_*, Handle_Team_512_* with Image_Num*_512_*/Image_Team[M/L]512_*/Text_512_*, plus the Image_M709_*/Handle_Team_709_* set); the runtime looks up Handle_Team_<currentMapID>_n (:3324-3358) and Image_CLine_ (:3653), so the four other pages hide both sets (page hide *_512_* + *709_*) and page 512 hides *709*, leaving only map 512's ring segments + team numbers. The window-level hide drops what belongs to other modes or to runtime data: the faction/camp set (CheckBox_Hq/Er + Handle_Hq/Er, Handle_MainCmd_*/Handle_OtherCmd_*, Handle_CampObBoard), the top-bar mode controls (Wnd_Route line tabs + CheckBox_Follow — the 绝境 line-choose phase, hidden at init and after MIDDLE_MAP_ON_JUEJING_STOPCHOOSELINE; CheckBox_ShowNum + Btn_Refresh — CanShowHeatMap (map.lua:347-371) is true only for IsInTongWarFieldMap or CommandBase.CanShowHeatMap, never for a treasure map, so 显示人数/刷新 do not belong here), the heat-map grid (Handle_GFAreaList/Handle_GFArea/Handle_GFList_Num) and the runtime item prototypes the client clears/appends (Handle_DataMod/Image_Data, Handle_MapIcon, Handle_Gather/Mark/Arrow, Handle_EventMod, Image_DrawLine1, Image_Player, Image_Teammate). Viewer fix: the skin filter no longer counts ui/Image/MiddleMap/StormLine/* art as old-skin chrome — with the heat-map items hidden it classified the whole Handle_Map layer as an old root and dropped the map as a duplicate of Image_Bg. When IsInTreasureBattleFieldMap() it shows Handle_StormLine and registers MapCircle/SFX_CircleNew; only map 512 ships line data in the INI (Image_CLine_512_* — the choice-line ring, shown; the runtime grays/normalizes one line, ShowLootMode :3636-3679) — the other maps have none, so no storm line is drawn for them; the 圈 is the SFX_CircleNew particle (C_自己圈范围_677.pss), no bitmap, not rendered. Heat map toggle; mark/gain/sfx notify events.",
           "evidence": [
             "ui/Config/Default/BattleField/BattleFieldMap.ini",
-            "proof/minimap/ui/Config/Default/BattleField/BattleFieldMap.decompiled.lua:5303,5316-5341,9362-9405",
-            "proof/minimap/ui/Image/MiddleMap/StormLine/*.DDS (41 segments)"
+            "proof/minimap/ui/Config/Default/BattleField/BattleFieldMap.decompiled.lua:3324-3358,3653,5303,5316-5341,9362-9405",
+            "proof/minimap/ui/Image/MiddleMap/StormLine/*.DDS (41 segments)",
+            "proof/minimap/ui/Image/MiddleMap/StormLine/StormLine3.UITex (16 frames: f0-9 generic segments, f10-15 the map-512 set)",
+            "proof/minimap/extracted/data/source/maps/<map>minimap_mb/middlemap.png (the five battlefield packs)"
           ],
           "elements": [
             "Handle_Map/Handle_StormLine — storm ring segments",
@@ -383,6 +386,13 @@
             "STR_BATTLEFIELD_MAPTIP1",
             "STR_BATTLEFIELD_MAPTIP2",
             "STR_BATTLEFIELD_MAPTIP3"
+          ],
+          "pages": [
+            { "id": "296", "label": "龙门绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] },
+            { "id": "297", "label": "龙门绝境·夜", "images": [ { "section": "Image_Map", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] },
+            { "id": "410", "label": "沧溟绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] },
+            { "id": "512", "label": "白龙绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png" } ], "hide": ["*709*"] },
+            { "id": "532", "label": "天原绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/天原绝境minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] }
           ]
         },
         {
