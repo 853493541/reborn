@@ -23,7 +23,12 @@ Desktop game client (`reborn_client.exe`) hosting the MovieEditor engine DLLs.
   a rule violation (root `AGENTS.md` §2.7).
 - If a start is blocked by the instance guard (namespace conflict), the response must
   end by naming the conflicting session: process name, PID, start time and namespace —
-  so the user knows which window/session to close (root `AGENTS.md` §2.4).
+  so the user knows which window/session to close (root `AGENTS.md` §2.4). Blocked
+  starts are also recorded in `bin64\reborn_out\guard_block.txt` (timestamp,
+  blocker pid/start/window) and the dialog title names the build
+  (`<exe>: start blocked`), so a missed dialog is diagnosable.
+- A blocked start is NOT a startup failure: single instance per build namespace is by
+  design; press the guard dialog away and close the named window.
 - Do not write other files into the `bin64` root — it is shared with other apps
   (`ability_*`, `asset_sandbox`, engine hosts). Use an isolated output subdir.
 - **C# 5 only** (built with `Framework64\v4.0.30319\csc.exe`): no `$"..."`, `?.`,

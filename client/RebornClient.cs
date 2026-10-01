@@ -59,11 +59,31 @@ internal static class RebornClient
                     foreach (var other in System.Diagnostics.Process.GetProcessesByName(name))
                     {
                         if (other.Id == me.Id) continue;
+                        // Blocked-start diagnostics: the dialog keeps its title
+                        // on the feature build and names the conflicting session
+                        // (pid/start/title); a line is also appended to
+                        // reborn_out\guard_block.txt so a missed dialog is
+                        // discoverable from logs (rc=blocked marker).
+                        string started = "?";
+                        string title = "";
+                        try { started = other.StartTime.ToString("HH:mm:ss"); } catch { }
+                        try { title = other.MainWindowTitle; } catch { }
+                        try
+                        {
+                            string gdir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
+                            Directory.CreateDirectory(gdir);
+                            File.AppendAllText(Path.Combine(gdir, "guard_block.txt"),
+                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " +
+                                me.ProcessName + " blocked by " + name + " pid=" + other.Id +
+                                " start=" + started + " title=[" + title + "]\r\n");
+                        }
+                        catch { }
                         System.Windows.Forms.MessageBox.Show(
                             name + " is already running (pid " + other.Id +
-                            ") and shares memory namespace " + memNs +
+                            ", started " + started + ", window [" + title + "])" +
+                            " and shares memory namespace " + memNs +
                             ". Close it first or set RC_ALLOW_MULTI=1.",
-                            "reborn_client");
+                            me.ProcessName + ": start blocked");
                         return;
                     }
                 }
