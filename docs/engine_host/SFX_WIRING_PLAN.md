@@ -73,6 +73,74 @@ created by the game's boot flow, not by `X3DEngine` PreInit/Load alone) — the
 `CLIENT_STACK_PIVOT.md` milestone. The probe source + build script live in
 `%TEMP%\opencode\skillv2\` (`client_sfx_probe.cpp`, `build_client_sfx_probe.cmd`).
 
+## Client engine boot chain recovered (2026-09-30, same probe)
+
+The full instance-creation chain is now mapped (all RVAs = client `bin64` build):
+
+1. `X3DEngine.dll!LoadX3DEngine` (0x214C0) → facade manager (`GetK3EngineMgr`,
+   facade global RVA `0xFA418`); it calls the facade manager's `vt[1]()` and `vt[82]()`
+   but does **not** create the engine instance.
+2. Adapter `KG3DEngineAdapterX64.dll!Get3DEngineInterface(&p)` → `p` = the 3D engine
+   interface object (0x2180 bytes, built by adapter ctor `0x72AF0`, vtable
+   `adapter+0x29FFF0`; object pointer = the interface itself).
+3. **`p->vt[0]()` = the adapter manager Init (`0x730C0`)** — builds the
+   `KG3D_ENGINE_INIT_PARAM` (stack struct, param base = caller rsp+0x60) and calls
+   **`KG3D_CreateEngine(param, out)` (engine export `0x8D46C0`)** → `new(0x3A38)` +
+   `KG3D_Engine::ctor` (`0x8B8900`) + `KG3D_Engine::Init` (`0x8B9810`). Init stores the
+   engine singleton at engine global RVA `0x2CF1038` (writer `0x8BBDEB`; `KG3D_GetEngine2`
+   `0x8D4890` reads it).
+4. The engine Init boots the whole stack (log: WIC, memory, object pool, string table,
+   debug server, file system, streaming file manager, middleware, D3D11 device on the
+   RTX 5080, …) — **but file loading fails** (see next section).
+
+**Working root**: the adapter stores it as a `std::string` at `iface+0x2020`
+(`SetEngineWorkingRootDirectory` export `0x6CB50`; length at `iface+0x2030`). The manager
+Init (`0x730C0`, code at `0x73155`) copies it into a stack buffer and then into
+`param+0xEEC`; `KG3D_Engine::Init` uses `param+0xEEC` as the file-manager root
+(`FS_GetOrCreate` at engine `0xB0F720` → `KG3D_CreateFileManager(root)` at `0xB105E0`
+stores the root at `manager+0xC`).
+
+**Blocker found (host integration gap, not an engine bug)**: `KG3D_Engine::Init` also
+reads **`param+8` = `[iface+0x2018]`** — the **host-provided original file-system
+object** (`0xB524A0` = `KG3D_CreateHttpFileSystem(pOrignalFS)`; the engine's FS manager
+global is engine RVA `0x2D22598`). In our probe `iface+0x2018` is **0** (the adapter has
+no writer for it; the game/editor host sets it), so:
+- the engine's file manager is created with an **empty root** (verified at runtime:
+  `[engine+0x2D22598]+0xC` = `''`),
+- every lookup fails (`data\public\sound.ini`, `data\material\Shader_DX11_HD\Base\FullScreenUtils.hlsl`),
+- shader creation fails → the engine's shader-failure path calls `DebugBreak`
+  (engine `0xBB8E3A`, log `CreateNewShader:%s (%s)` + `KGLOG_COM_ASSERT_EXIT(0x80004005)`)
+  → `iface->vt[0]()` returns `E_FAIL`, no engine instance.
+
+Also note: `iface+0x2018` is read as an object with vtable calls at `0x73655`
+(`vt[0xB8]`) and `0x7376A` (`vt[0x68]`), and the physics manager (`PhysicsEngineX64.dll`
+export `GetPhysicsManager`, resolved via GetProcAddress by the adapter at `0x7384A`) is
+created/looked up there; `physMgr->vt[2](&buf)` returned an empty string in our boot.
+
+**Reusable instrumentation** (all in the probe, no game-install writes):
+- `KG_PrintfLog` (KGCommonX64 export) hooked by patching the engine+adapter IAT slots
+  (engine IAT RVA `0x1C14D08`) — the engine's full log now goes to probe stdout.
+- `CreateFileW/A` IAT hooks show the engine does **not** open shader files via
+  `CreateFile*` (VFS goes through the file-system object).
+- Inline hook on engine `0xB0F720` (lazy FS create) — installed, but the FS manager in
+  Init is created via the Init path, not the lazy getter.
+
+**Data**: the engine needs the client data tree; our `client_root` copy now includes
+`data\material` (shaders incl. `shader_dx11_hd\base\fullscreenutils.hlsl`) and
+`data\public` copied from
+`zhcn_hd\SeasunDownloaderV2.4\seasun\client\_HttpFileForDebug_\local\data` (the updater's
+local cache, 5.4 GB, mirrors the client tree), `CachedShaders` (114 MB) + `zsCache` from
+the real client, and `clientconfig.ini` `[PakV4] PakDir` pointed at
+`C:/SeasunGame/Game/JX3/Pakv4` (read-only pak store). None of this fixes the lookups while
+the FS object is missing.
+
+**Next step for the client host**: replicate the game's boot — find how
+`JX3ClientX64.exe` provides the original-FS object (`iface+0x2018`) / calls the manager
+Init (args r8d flag, stack arg5; the adapter init reads stack arg at `[rbp+0x3520]` =
+entry `[rsp+0x28]`), then call `iface->vt[0]()` with the same context. Candidate
+references: the facade's `GetFilePath` object (tried: wrong type — null-deref inside Init),
+the game exe's import call sites for `GetK3EngineMgr`/`LoadX3DEngine`.
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
