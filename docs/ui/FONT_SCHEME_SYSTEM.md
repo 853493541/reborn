@@ -124,48 +124,31 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
 
 ### 2.1 Size: scheme override, else fontlist base (**HIGH for all shipped usage**)
 
-`Size>0` on the scheme wins; `Size=0` (358 schemes) falls back to the `FontID`'s base
-`Size` in `fontlist.ini`. Status after the engine pass (2026-09-30):
+**Final answer (2026-09-30, HIGH for both renderers): the scheme record's `Size`
+field is not consumed; the effective rendered size is the font slot's base size
+(× global/item scale).** `LoadScheme` reads `Size` with default `12` and stores it
+raw in the 0x40-byte record (`+4`), but nothing reads `+4`:
 
-- `LoadScheme` reads `Size` with default `12` and stores it **raw** in the 0x40-byte
-  scheme record (`+4`); it does not substitute the base size.
-- `Size>0` is a real override: 58 of the 63 `Size>0` schemes differ from their slot base
-  (the `____________` placeholders, Size 16 vs base 15; the two chat schemes #10/#175,
-  Size 18 vs 15) — but **none of those 58 is referenced by any shipped layout** in the
-  corpus. All 125 referenced schemes resolve to the same effective size under both rules
-  (scheme `Size=0` → base, or the few used `Size>0` schemes already equal the base).
-- **Final answer (2026-09-30): the scheme `Size` field is not consumed by either
-  renderer; the effective size comes from the font slot.**
-  - KGUIX64: two exhaustive scans found no reader of record `+4` (see below).
-  - KGUICocosX64 (live): the style/decoration converter `0x1802CC070` reads the
-    record's `FontID (+0)`, `BorderSize (+8)`, `ProjectionSize (+0xC)`, the three
-    colors (`+0x10/+0x14/+0x18`) and `FontScale (+0x3C)` — **never `+4`**; its
-    style size is a constant default `0x10` (16) fallback.
-  - Both `KFontSchemeMgr::LoadFont` implementations create the 36 slot fonts at
-    `size = (slot.Size + mgr+0x4C) * mgr+0x48` — i.e. the **fontlist slot base
-    size** (times the global scale) is what gets rendered.
-  - Consistent with the data: the 58 `Size>0` schemes that differ from their base
-    are unused placeholders/chat schemes.
-  - Renderer note: `Size>0 ? Size : base` coincides with the slot base for every
-    referenced scheme, so no renderer change is required; the field is editor
-    metadata (the scheme names encode the intended size).
-- **Legacy extra scans (for the record).** Two exhaustive scans
-  (2026-09-30): (a) every `shl/imul reg, ×0x40` followed by a `[reg+4]` read across the
-  whole image — only unrelated 0x40-stride tables matched; (b) every writer of the item
-  font-size float `+0x2F4` — only the font-scale adjuster (`0x18011EFE0`, multiplies
-  `+0x2F0/+0x2F4` by caller scale factors, optionally rounds via `0x1804DB63D`, then
-  re-layouts) and the draw-struct builder (`0x180122160`, copies `+0x2F4` → struct
-  `+0x94`). The rendered size therefore comes from the font slot's base size (already
-  scaled by `mgr+0x48`) times item scale adjustments, not from the scheme record.
-- Working conclusion (**MED-HIGH**): the scheme `Size` field is **editor metadata** in
-  this build — the tooling writes it and encodes it in the scheme name; the renderer
-  does not consume it. This matches the data: the only differing `Size>0` schemes are
-  unused placeholders/chat schemes, and every referenced scheme renders at its slot's
-  base size under any rule.
-- Renderer rule (`Size>0 ? Size : base`) stays as a harmless parity choice for all
-  shipped layouts; a new override scheme would not change the live client either.
-  Residual caveat: a whole-record copy (`movups`) followed by a local-buffer `+4` read
-  could in principle hide a reader — nothing in the traced item/draw path suggests one.
+- **KGUIX64 (legacy):** two exhaustive scans found no reader — (a) every
+  `shl/imul reg, ×0x40` followed by a `[reg+4]` read across the image (only
+  unrelated 0x40-stride tables matched); (b) every writer of the item font-size
+  float `+0x2F4` (only the scale adjuster `0x18011EFE0` and the draw-struct builder
+  `0x180122160`, which copies `+0x2F4` → struct `+0x94`).
+- **KGUICocosX64 (live):** the style/decoration converter `0x1802CC070` reads the
+  record's `FontID (+0)`, `BorderSize (+8)`, `ProjectionSize (+0xC)`, colors
+  (`+0x10/+0x14/+0x18`) and `FontScale (+0x3C)` — **never `+4`**; its style size is
+  a constant default `0x10` (16) fallback.
+- Both `KFontSchemeMgr::LoadFont` ports build the 36 slot fonts at
+  `size = (slot.Size + mgr+0x4C) * mgr+0x48` — the **fontlist slot base size**
+  (× global scale) is what gets rendered.
+- Data corroborates: the 58 `Size>0` schemes that differ from their slot base are
+  unused `____________` placeholders and two chat schemes; every referenced scheme
+  resolves to its slot base under any rule. `Size` is editor metadata (the scheme
+  names encode the intended size).
+- Renderer note: `Size>0 ? Size : base` coincides with the slot base for every
+  referenced scheme, so no renderer change is required. Residual caveat: a
+  whole-record `movups` copy followed by a local-buffer `+4` read could in
+  principle hide a reader — nothing in the traced item/draw paths suggests one.
 
 ### 2.2 Border and projection
 
