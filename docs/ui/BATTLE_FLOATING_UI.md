@@ -326,15 +326,13 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
    `WhoSeeMe.DefaultAnchor/bCheck`, `SYNC_SELECT_ME_PLAYER_NOTIFY`); `HatredPanel.lua`
    only drives its own window. The INI `ScriptFile=HatredPanel.lua` is stale; the module
    registration binds `WhoSeeMe.lua`.
-6. **`ShowModeID` semantics (partially decoded 2026-09-30)** — the window decoder
-   (KGUIX64 `0x1800CD780`, key read at `0x1800CDE77`) parses a comma list (≤128 ids,
-   ≤127 each) into a 128-bit mask at `window+0xC58`; right after parsing it
-   **sets/clears bit 0 (`or/and [rbx+0xC58]` at `0x1800CE034`) from `ShowWhenHideUI != 0`**
-   — so Default-mode visibility is governed by `ShowWhenHideUI`, not by the list.
-   `[Balloon] ShowModeID` in the config uses the same mask format (fn `0x18020E250`).
-   Open: the actual `IsVisibleInShowMode` test (current-mode vs mask, and what "no
-   current mode" means) — next probe: `KWndStation::InitShowModeInfos` /
-   `IsVisibleInShowMode` implementation.
+6. ~~`ShowModeID` semantics~~ **CLOSED (2026-09-30)** — comma list → 128-bit mask
+   at `window+0xC58` (decoder `0x1800CD780`); the render gate (`0x180131E6F`,
+   `0x18015737F`) ignores the list while no special mode is active
+   (`KWndStation+0xCB24==0` = normal play), and when a mode is active the window
+   draws iff its mask bit is set — **except** `ShowWhenHideUI` windows (flag 0x800),
+   which always draw. `ShowModeID` is therefore a **special-mode allow-list**, not
+   a normal-play visibility list. Full note: `docs/ui/UI_SYSTEM_REPORT.md` §9.
 7. ~~`REPRESENT_*` alias table~~ **CLOSED (2026-09-30)** — the `CombatText` alias table is
    dead code; `OnEvent` dispatches by explicit string comparison
    (`REPRESENT_MISS_TEXT`/`DODGE`/`IMMUNITY` → `RepresentNewStateText`, at

@@ -1061,3 +1061,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   explicit string compare (decompiled 1104-1113); closed.
 - Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §4; `re/kgui_showmode/`,
   `re/represent_markup/` (tracked).
+
+### 2026-09-30 — ui — ShowModeID fully decoded (allow-list for special modes)
+- Mask-use scan (16 functions read `window+0xC58`) → the render gate at
+  `0x180131E6F`/`0x18015737F` is: no active show mode (`KWndStation+0xCB24==0`) →
+  window drawn (normal play ignores `ShowModeID`); with an active mode id
+  (`+0xCB28`): drawn iff `mask[word] & (1<<(mode&63))`, **except** windows with
+  flag `0x800` (`ShowWhenHideUI`) which always draw. So `ShowModeID` is an
+  allow-list for special modes, and `ShowWhenHideUI=1` is the persistent HUD.
+- `UI_SYSTEM_REPORT.md` §9 rewritten; `BATTLE_FLOATING_UI.md` §4.6 closed;
+  evidence `re/kgui_showmode/window_mask_uses.txt` + InitShowModeInfos dump
+  (showmode.txt loader) committed.

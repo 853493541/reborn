@@ -397,19 +397,27 @@ list in `notes/system-tables.md`): e.g. `6` Cloud (mobile-stream mode),
 `12` Homeland building, `1` DesertStorm OB, `27` StoryMode, `28` DungeonOB,
 `36–38` GooseDuckKill.
 
-Decoder pass (2026-09-30, KGUIX64, annotated dumps in
-`proof/ui/evidence/battle_hud/re/kgui_showmode/`): the window decoder
-(`0x1800CD780`, `ShowModeID` read at `0x1800CDE77`) parses the value as a
-comma-separated list (up to 128 ids, each ≤127) into a **128-bit mask** at
-`window+0xC58`; right after parsing it sets/clears **bit 0 (Default)** from
-`ShowWhenHideUI != 0` (`or/and qword [rbx+0xC58],1` at `0x1800CE034`), i.e.
-Default-mode visibility is controlled by that flag rather than by the list.
-`[Balloon] ShowModeID` (config) uses the same mask format (fn `0x18020E250`).
-Old wording "shown when the current mode id is in their list" is an
-over-simplification; the exact visibility test (`KWndStation::IsVisibleInShowMode`,
-`InitShowModeInfos`) is still **OPEN**. `IsShowModeIdLegal` exists natively
-(**VERIFIED**). Canvas is 1280×960 with `MaxScale=2`; the exact screen-fit
-formula is **UNKNOWN**.
+Decoder + render-pass decode (2026-09-30, KGUIX64; annotated dumps
+`proof/ui/evidence/battle_hud/re/kgui_showmode/` + `window_mask_uses.txt`):
+
+- The window decoder (`0x1800CD780`, key read at `0x1800CDE77`) parses the value
+  as a comma-separated list (up to 128 ids, each ≤127) into a **128-bit mask** at
+  `window+0xC58`. Bit 0 is then set/cleared from `ShowWhenHideUI != 0`
+  (`or/and qword [rbx+0xC58],1` at `0x1800CE034`).
+- Render-pass visibility (`0x180131E6F`, `0x18015737F`):
+  `if (KWndStation+0xCB24 == 0) → visible` (no special show mode active, i.e.
+  **normal play ignores the list**);
+  else with the active mode id at `KWndStation+0xCB28`:
+  `bit = 1 << (mode & 63)`, `word = mode >> 6`; the window is drawn iff its mask
+  bit is set — **except** windows with flag `0x800` (`ShowWhenHideUI`), which
+  bypass the gate entirely (always drawn, also while the UI is hidden).
+- So `ShowModeID` is an **allow-list for special modes**: it does not restrict
+  normal play; it decides which windows remain in the listed modes (StoryMode 27,
+  Dungeon OB 28, GuildLeague OB 17, GooseDuckKill 36-38, …). `ShowWhenHideUI=1`
+  windows are the persistent HUD (minimap, buffs) that stay in every mode.
+  `[Balloon] ShowModeID` (config) uses the same mask format (fn `0x18020E250`).
+- `IsShowModeIdLegal` exists natively (**VERIFIED**). Canvas is 1280×960 with
+  `MaxScale=2`; the exact screen-fit formula is **UNKNOWN**.
 
 ---
 
