@@ -24,9 +24,12 @@ internal static class WwRules
     // fresh extraction 2026-09-29), Vz u/frame, G u/frame^2, MaxJumpCount 5:
     //   J1 50/160/8  J2 70/240/7  J3 100/700/36  J4/J5 100/-250/8
     //   End triple (all stages): xy 125, vz -140, g 12  -> forward-down glide
-    public static readonly float[] ChainVzFrame = { 90f, 160f, 240f, 700f, -250f, -250f };
-    public static readonly float[] ChainGravityFrame = { 11f, 8f, 7f, 36f, 8f, 8f };
-    public static readonly float[] ChainSpeedXYFrame = { 40f, 50f, 70f, 100f, 100f, 100f };
+    // rows 0..10 (school 4): J0..J5 + the 弈韵 rows J6..J10 (all 100/-250/8,
+    // Condition.tab JC6..JC11 = 点墨江山·弈韵一段..六段; SpecialSprint school 4 =
+    // 6|7|8|9|10|11)
+    public static readonly float[] ChainVzFrame = { 90f, 160f, 240f, 700f, -250f, -250f, -250f, -250f, -250f, -250f, -250f };
+    public static readonly float[] ChainGravityFrame = { 11f, 8f, 7f, 36f, 8f, 8f, 8f, 8f, 8f, 8f, 8f };
+    public static readonly float[] ChainSpeedXYFrame = { 40f, 50f, 70f, 100f, 100f, 100f, 100f, 100f, 100f, 100f, 100f };
     public const float EndSpeedXYFrame = 125f;
     public const float EndVzFrame = -140f;
     public const float EndGravityFrame = 12f;
@@ -85,7 +88,16 @@ internal static class WwRules
     public const float WhBirdMoveCostPerSecond = 206f;
     public const float WhPlungeFrame = -2000f;
     public const int WhTimerFrames = 30;
+    // 11 phases: 1..5 = 纵跃段/一段/二段/三段/四段 (Condition JC1..JC5),
+    // 6..11 = 弈韵一段..六段 (JC6..JC11; the 棋弈 branch: Shift from 一段/二段/
+    // 三段 enters 6; Space cycles 6..10 then 10 -> 6; Shift -> 11 = the
+    // 俯冲 fall-out)
     public static readonly string[] WhStageNames = { "纵跃段", "一段", "二段", "三段", "四段" };
+    public static readonly string[] WhYiyunNames = { "弈韵一段", "弈韵二段", "弈韵三段", "弈韵四段", "弈韵五段", "弈韵六段" };
+    public const int WhBaseStages = 5;      // 1..5
+    public const int WhYiyunFirst = 6;      // 6..11
+    public const int WhYiyunCycleLast = 10; // Space at 10 -> 6 (the cycle)
+    public const int WhYiyunDive = 11;      // Shift at 6..10 -> 11 (fall out)
     // Trigger cast SkillMove 336 (settings/SkillMove.tab; the school launch):
     // IgnoreGravity=1, TotalFrame=31, XY=0, per-frame VelocityZ 0/471/537/574/
     // 590/589/578/560/536/509/481/452/422/393/364/335/308/281/255/230/206/183/
@@ -115,17 +127,17 @@ internal static class WwRules
     public enum WwAction
     {
         None,
+        Sprint,
         Charge
     }
 
-    // WW (double-tap W) = 【WW上冲】: the school 大轻功 trigger in BOTH ground
-    // and air (JX3_DAQINGGONG_RESEARCH.md scenario table: "Ground, school weapon
-    // | WW flag -> ... school trigger ... this is the school 大轻功"; air: WW
-    // still enters the fly states). The ground sprint is HOLD W (疾跑段), not
-    // the double-tap. No/wrong school weapon -> no action.
+    // WW (double-tap W): GROUND = 点墨江山·疾跑段 (the fast run — live-game
+    // behaviour: "ww = run fast 点墨江山 疾跑段"; the chain is entered from the
+    // 疾跑段 with Space = 纵跃段); AIR (not flying) = the school trigger.
     public static WwAction Evaluate(bool grounded, bool doubleTapW, bool schoolWeaponEquipped)
     {
         if (!doubleTapW) return WwAction.None;
+        if (grounded) return WwAction.Sprint;
         if (!schoolWeaponEquipped) return WwAction.None;
         return WwAction.Charge;
     }
@@ -142,8 +154,8 @@ internal static class WwRules
     public static int SelfTest()
     {
         int fail = 0;
-        fail += Check("GROUND_WW_CHARGE", Evaluate(true, true, true), WwAction.Charge);
-        fail += Check("GROUND_WW_NO_WEAPON_NONE", Evaluate(true, true, false), WwAction.None);
+        fail += Check("GROUND_WW_SPRINT", Evaluate(true, true, true), WwAction.Sprint);
+        fail += Check("GROUND_WW_NO_WEAPON_SPRINT", Evaluate(true, true, false), WwAction.Sprint);
         fail += Check("AIR_WW_CHARGE", Evaluate(false, true, true), WwAction.Charge);
         fail += Check("AIR_WW_NO_WEAPON_NONE", Evaluate(false, true, false), WwAction.None);
         fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true), WwAction.None);

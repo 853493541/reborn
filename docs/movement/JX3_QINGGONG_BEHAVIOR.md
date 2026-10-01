@@ -270,6 +270,27 @@ earlier sandbox implemented only part of the solo base chain:
 衍天 19, 药宗 20). The double-jump doc's "10/11 (万花/…)" label was wrong and is
 corrected there.
 
+### 7.4 The 万花 大轻功 structure (live-game verified 2026-09-30)
+
+User-described live-game flow, now mapped to the Condition.tab school-4 rows
+(JC1..JC11) and implemented in the sandbox:
+
+| Input | Live behaviour | Data |
+|---|---|---|
+| WW (ground) | 点墨江山·疾跑段 — the fast run (NOT the 大轻功 trigger) | the `<MOVEFORWARD;1>` rows + buffs 12085/12190; `WwRules.Evaluate` ground -> Sprint |
+| 疾跑段 + Space | 点墨江山·纵跃段 (the chain entry / takeoff) | JC1; casts the trigger 20628 (gate + `SkillMove 336` launch) |
+| Space | 纵跃段 -> 一段 -> 二段 -> 三段 -> 四段 | JC2..JC5 (JumpParam J2..J5); at 四段 the Space has no effect, the player falls |
+| Shift at 一段/二段/三段 | enters 点墨江山·棋弈 (弈韵) | JC6; action 4 【shift切入】 on the JC2..JC4 rows |
+| Space in 棋弈 | cycles 弈韵一段..弈韵五段; at 五段 Space returns to 弈韵一段 | JC6..JC10 (the SpecialSprint counts 6\|7\|8\|9\|10\|11); the cycle |
+| Shift in 棋弈 | 弈韵六段 (俯冲) — the fall-out | JC11; the fly ends (StopBirdFly -> fall) |
+
+The 弈韵 (棋弈) stages are modelled as a **float** (Z stays locked, the poses
+cycle) — the JumpParam J6..J10 rows are all `100/-250/8` dives, which descend
+into the altitude auto-end within a cycle, contradicting the live "cycle"
+behaviour; flagged MED/open (the 弈韵's authored motion is not in the extracted
+tables). The 四段 (JC5, the J5 dive) descends into the auto-end/fall as the live
+"start to fall" describes.
+
 **Corrections from live-game feedback (2026-09-30)**: (a) the
 上冲/下冲/左冲/右冲 double-tap actions are the **长歌 御空** system (Condition
 school 13 rows with actions 13/14) — the 万花 fly has no such action; the

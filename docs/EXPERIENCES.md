@@ -1213,3 +1213,25 @@ eborn_client_daqinggong carries these changes — other
   awaiting a concrete description (WW action, hold-W, Space stages, exit) to
   re-derive the flight model.
 - Outcome: concrete errors fixed; the flight model needs live-input calibration.
+
+### 2026-09-30 — client — 万花 大轻功 rebuilt to the live-game structure
+- User gave the real flow: WW = 点墨江山·疾跑段 (fast run, NOT the trigger);
+  疾跑段+Space = 纵跃段; Space = 一段..四段 (四段 = the end, then fall, Space
+  inert); Shift at 一段 = 点墨江山·棋弈 (弈韵): Space cycles 弈韵一段..五段
+  (五段+Space -> 弈韵一段), Shift in 棋弈 = 弈韵六段 (俯冲, the fall-out).
+- Did: rebuilt the phase machine (1..5 base = 纵跃段/一段..四段, 6..11 =
+  弈韵一段..六段): `WwRules.Evaluate` ground WW -> Sprint (疾跑段); the Space on
+  the ground while the 疾跑段 runs -> the chain entry (the 20628 trigger + the
+  336 launch, phase 1); the in-fly Space advances the phases (10 -> 6 cycle; 5
+  = end, inert); the in-fly Shift (edge-latched) enters the 棋弈 from the
+  一段/二段/三段 and dives out (六段 -> StopBirdFly) from the 弈韵; the 弈韵
+  stages are a float (Z locked, pose cycling) because the J6..J10 rows are dives
+  (MED/open). HUD/log names per phase; the Shift 10x debug disabled in the fly.
+- Evidence: entry run 22:11 exit=0 — `jipao: enter` (疾跑段) -> `entry Space` ->
+  `wh 20628 万花轻功触发 -> 点墨江山·纵跃段` -> the launch -> the fly -> the 一段;
+  弈韵 run 22:09 exit=0 — 一段/二段 -> shift -> 弈韵一段 (float) -> the Space
+  cycle 弈韵二/三/四段 (y stays 20454, no descent) -> shift2 -> `弈韵六段 (俯冲):
+  the fly ends` -> the fall. Selftest PASS (GROUND_WW_SPRINT).
+- Open: the 弈韵's authored motion (the float is a stand-in), the 四段->fall
+  details, the dash key.
+- Outcome: the structure now matches the live game; the 弈韵 motion is flagged.

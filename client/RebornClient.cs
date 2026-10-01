@@ -857,6 +857,7 @@ internal static class RebornClient
         bool whLaunch = false;                // WW上冲 ground takeoff leap -> fly
         float whLaunchT = 0f;                 // launch elapsed seconds (31 frames @15 Hz)
         long whRejectAtMs = 0;                // last NOT_ENOUGH_SPRINT_POWER time
+        bool whShiftLatch = false;            // Shift edge latch (棋弈 entry/dive-out)
         bool whStagePressed = false;
         bool whPlungePressed = false;
         // 空中冲刺 dash (skill 20788 -> 20789; the fly double-tap W/S/A/D =
@@ -867,6 +868,18 @@ internal static class RebornClient
         float whDashT = 0f;
         float whDashDirX = 0f, whDashDirY = 0f, whDashDirZ = 0f;
         string whDashName = "上冲";
+        // phase name for the HUD/logs: 1..5 = 纵跃段/一段..四段, 6..11 = 弈韵一段..六段
+        Func<string> whStageName = delegate()
+        {
+            if (whStage >= WwRules.WhYiyunFirst)
+            {
+                int i = whStage - WwRules.WhYiyunFirst;
+                if (i >= WwRules.WhYiyunNames.Length) i = WwRules.WhYiyunNames.Length - 1;
+                return WwRules.WhYiyunNames[i];
+            }
+            if (whStage >= 1 && whStage <= WwRules.WhBaseStages) return WwRules.WhStageNames[whStage - 1];
+            return "?";
+        };
         {
             float v;
             if (float.TryParse(Env("RC_WH_COST", ""), out v)) whTriggerCost = v;
@@ -905,20 +918,26 @@ internal static class RebornClient
             whPower -= whTriggerCost;
             wwStateActive = true;
             grounded = false;
-            whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false;
+            whStage = 1;   // 点墨江山·纵跃段 (the chain's first phase)
+            whStageActive = false; whEndPhase = false; whDiving = false;
             whLaunch = true;
             whLaunchT = 0f;
             vy = 0f;
             leapSpeedXY = 0f;   // SkillMove 336: XY = 0 (vertical launch)
-            Log("wh 20628 万花轻功触发: cost " + whTriggerCost + " (100*CONSUME_BASE), power " +
-                whPower + "; SkillMove " + WwRules.WhLaunchFrames + "-frame launch (WW上冲); " +
-                "SetTimer(" + WwRules.WhTimerFrames + ") -> BirdFlyTo + LockBirdMoveZ; " +
-                "binds 13889/16516 -> 13422/14626/13836");
+            Log("wh 20628 万花轻功触发 -> 点墨江山·纵跃段: cost " + whTriggerCost +
+                " (100*CONSUME_BASE), power " + whPower + "; SkillMove " +
+                WwRules.WhLaunchFrames + "-frame launch; SetTimer(" + WwRules.WhTimerFrames +
+                ") -> BirdFlyTo + LockBirdMoveZ; Space = 一段, Shift(一段/二段/三段) = 棋弈");
         };
         Action wwTrigger = delegate()
         {
             WwRules.WwAction ww = WwRules.Evaluate(grounded, true, wwWeaponOk);
-            if (ww == WwRules.WwAction.Charge)
+            if (ww == WwRules.WwAction.Sprint)
+            {
+                // ground WW = 点墨江山·疾跑段 (the fast run); Space enters 纵跃段
+                Log("ww: 点墨江山·疾跑段 (run fast; Space = 纵跃段)");
+            }
+            else if (ww == WwRules.WwAction.Charge)
             {
                 wwCharge();
             }
@@ -946,7 +965,9 @@ internal static class RebornClient
         bool whDemo = Env("RC_WH_DEMO", "0") == "1";
         bool whDemoJumped = false, whDemoCast = false, whDemoS1 = false, whDemoS2 = false,
              whDemoS3 = false, whDemoS4 = false, whDemoS5 = false, whDemoPlunge = false,
-             whDemoReleased = false, whDemoCast2 = false, whDemoDashed = false;
+             whDemoReleased = false, whDemoCast2 = false, whDemoDashed = false,
+             whDemoShifted = false, whDemoShifted2 = false, whDemoEntered = false;
+        long whShiftReleaseMs = 0;
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
@@ -1771,7 +1792,21 @@ internal static class RebornClient
                     if (Env("RC_WH_DEMO_NOJUMP", "0") != "1" && grounded) jumpPressed = true;
                     Log("whdemo: ground jump" + (Env("RC_WH_DEMO_NOJUMP", "0") == "1" ? " (skipped: ground cast test)" : ""));
                 }
-                if (!whDemoCast && now >= 8500) { whDemoCast = true; wwCharge(); }
+                if (!whDemoCast && now >= 8500)
+                {
+                    whDemoCast = true;
+                    if (Env("RC_WH_DEMO_ENTRY_MS", "0") == "0") wwCharge();
+                    else Log("whdemo: direct cast skipped (entry hook set)");
+                }
+                // RC_WH_DEMO_ENTRY_MS>0: the real entry (疾跑段 + Space -> 纵跃段)
+                long whEntryMs = 0;
+                long.TryParse(Env("RC_WH_DEMO_ENTRY_MS", "0"), out whEntryMs);
+                if (whEntryMs > 0 && !whDemoEntered && now >= whEntryMs)
+                {
+                    whDemoEntered = true;
+                    jumpPressed = true;
+                    Log("whdemo: entry Space (疾跑段 + Space)");
+                }
                 if (!whDemoS1 && now >= whS1Ms) { whDemoS1 = true; whStagePressed = true; }
                 if (!whDemoS2 && now >= whS2Ms) { whDemoS2 = true; whStagePressed = true; }
                 if (!whDemoS3 && now >= whS3Ms) { whDemoS3 = true; whStagePressed = true; }
@@ -1805,6 +1840,29 @@ internal static class RebornClient
                     whDashKey = Keys.W;
                     whDashPressed = true;
                     Log("whdemo: dash trigger (上冲)");
+                }
+                // RC_WH_DEMO_SHIFT_MS / _SHIFT2_MS: pulse Shift (棋弈 entry / 六段)
+                long whShiftMs = 0, whShift2Ms = 0;
+                long.TryParse(Env("RC_WH_DEMO_SHIFT_MS", "0"), out whShiftMs);
+                long.TryParse(Env("RC_WH_DEMO_SHIFT2_MS", "0"), out whShift2Ms);
+                if (whShiftMs > 0 && !whDemoShifted && now >= whShiftMs)
+                {
+                    whDemoShifted = true;
+                    shiftDown = true;
+                    whShiftReleaseMs = now + 250;
+                    Log("whdemo: shift pulse 1 (棋弈 entry)");
+                }
+                if (whShift2Ms > 0 && !whDemoShifted2 && now >= whShift2Ms)
+                {
+                    whDemoShifted2 = true;
+                    shiftDown = true;
+                    whShiftReleaseMs = now + 250;
+                    Log("whdemo: shift pulse 2 (六段)");
+                }
+                if (whShiftReleaseMs > 0 && now >= whShiftReleaseMs)
+                {
+                    whShiftReleaseMs = 0;
+                    shiftDown = false;
                 }
             }
 
@@ -2088,29 +2146,81 @@ internal static class RebornClient
                 }
                 else if (wwStateActive)
                 {
-                    int next = whStage + 1;
-                    if (next <= WwRules.WhStageNames.Length)
+                    // Space progression (live-game structure):
+                    //   纵跃段(1) -> 一段(2) -> 二段(3) -> 三段(4) -> 四段(5) = end
+                    //   弈韵一段(6)..弈韵五段(10): Space cycles, 10 -> 6
+                    //   四段/弈韵六段: no further stage
+                    int next;
+                    if (whStage >= WwRules.WhYiyunFirst && whStage < WwRules.WhYiyunCycleLast)
+                        next = whStage + 1;                 // 6..9 -> +1
+                    else if (whStage == WwRules.WhYiyunCycleLast)
+                        next = WwRules.WhYiyunFirst;        // 10 -> 6 (the cycle)
+                    else if (whStage < WwRules.WhBaseStages)
+                        next = whStage + 1;                 // 1..4 -> +1
+                    else
+                        next = 0;                           // 5 (四段 end) / 11 -> no action
+                    if (next == 0)
+                    {
+                        Log("wh 四段 is the chain end (fall; Space has no effect)");
+                    }
+                    else
                     {
                         whStage = next;
                         whDashActive = false;   // a stage press takes over the dash
-                        vy = WwRules.ChainVzFrame[next] * WwRules.LogicTicksPerSecond;
-                        curJumpGravity = WwRules.ChainGravityFrame[next] * 225f;
-                        leapSpeedXY = WwRules.ChainSpeedXYFrame[next] * WwRules.LogicTicksPerSecond;
-                        whStageActive = true;
-                        whEndPhase = false;
-                        grounded = false;
-                        whPower -= WwRules.WhJumpCost;
-                        Log("wh 点墨江山·" + WwRules.WhStageNames[next - 1] + " (JC" + next +
-                            "): J" + next + " " + WwRules.ChainSpeedXYFrame[next] + "/" +
-                            WwRules.ChainVzFrame[next] + "/" + WwRules.ChainGravityFrame[next] +
-                            " -> vy=" + vy + " g=" + curJumpGravity + " xy=" + leapSpeedXY +
-                            " u/s (OnFlyJumpCost " + WwRules.WhJumpCost + ", power " + whPower + ")");
+                        if (next >= WwRules.WhYiyunFirst)
+                        {
+                            // 弈韵 (棋弈) stages = the float: Z stays locked and
+                            // the poses cycle (only 六段/Shift falls out)
+                            vy = 0f;
+                            whStageActive = false;
+                            whEndPhase = false;
+                            leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
+                            Log("wh 点墨江山·" + whStageName() + " (JC" + next +
+                                "): 棋弈 float (Z locked; Space cycles 一段..五段, shift -> 六段)");
+                        }
+                        else
+                        {
+                            vy = WwRules.ChainVzFrame[next] * WwRules.LogicTicksPerSecond;
+                            curJumpGravity = WwRules.ChainGravityFrame[next] * 225f;
+                            leapSpeedXY = WwRules.ChainSpeedXYFrame[next] * WwRules.LogicTicksPerSecond;
+                            whStageActive = true;
+                            whEndPhase = false;
+                            grounded = false;
+                            whPower -= WwRules.WhJumpCost;
+                            Log("wh 点墨江山·" + whStageName() + " (JC" + next +
+                                "): J" + next + " " + WwRules.ChainSpeedXYFrame[next] + "/" +
+                                WwRules.ChainVzFrame[next] + "/" + WwRules.ChainGravityFrame[next] +
+                                " -> vy=" + vy + " g=" + curJumpGravity + " xy=" + leapSpeedXY +
+                                " u/s (OnFlyJumpCost " + WwRules.WhJumpCost + ", power " + whPower + ")");
+                        }
                     }
-                    else Log("wh stage: max " + WwRules.WhStageNames.Length +
-                        " stages reached (school 4 MaxJumpCount 5)");
                 }
                 else Log("wh stage ignored: no fly active");
             }
+            // Shift in the fly (live-game structure): from 一段/二段/三段 it
+            // enters the 棋弈 branch (弈韵一段); in the 弈韵 it dives out (六段)
+            if (shiftDown && !whShiftLatch && wwStateActive && !whLaunch)
+            {
+                whShiftLatch = true;
+                if (whStage >= WwRules.WhYiyunFirst && whStage <= WwRules.WhYiyunCycleLast)
+                {
+                    Log("wh 点墨江山·弈韵六段 (俯冲): shift -> the fly ends (fall)");
+                    wwEndState();
+                }
+                else if (whStage >= 2 && whStage <= 4)
+                {
+                    whStage = WwRules.WhYiyunFirst;
+                    whDashActive = false;
+                    vy = 0f;
+                    whStageActive = false;
+                    whEndPhase = false;
+                    leapSpeedXY = wwFwdFrame * WwRules.LogicTicksPerSecond;
+                    Log("wh 点墨江山·" + WwRules.WhYiyunNames[0] + " (JC" + whStage +
+                        ", 棋弈): entered via shift (float); Space cycles 一段..五段, shift -> 六段");
+                }
+                else Log("wh shift: no 棋弈 entry from stage " + whStage);
+            }
+            if (!shiftDown) whShiftLatch = false;
             if (whPlungePressed)
             {
                 whPlungePressed = false;
@@ -2194,7 +2304,7 @@ internal static class RebornClient
             if (moving)
             {
                 float sp = (jipaoActive ? jipaoSpeed
-                            : shiftDown ? pRun * 10f
+                            : shiftDown && !wwStateActive ? pRun * 10f
                             : walkMode ? pSpeed
                             : pRun) / len;
                 float ux = dirX / len, uz = dirZ / len;
@@ -2310,32 +2420,42 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
-                if (grounded) jumpCount = 0;
-                int nextJump = jumpCount + 1;
-                bool chainMode = djumpMode == "chain";
-                bool djumpOn = djumpMode != "0";
-                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
-                int[] trip = null;
-                if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
-                    (nextJump == 1 || djumpOn))
+                if (jipaoActive && !wwStateActive)
                 {
-                    // chain mode reads the pressed row; flip mode reuses J0
-                    trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
+                    // 疾跑段 + Space = 点墨江山·纵跃段 (the chain entry; the gate
+                    // and the SkillMove 336 launch run in wwCharge)
+                    Log("wh: 疾跑段 + Space -> 纵跃段 (chain entry)");
+                    wwCharge();
                 }
-                if (trip != null)
+                else
                 {
-                    jumpCount = nextJump;
-                    vy = trip[1] * 15f * jumpScale;
-                    int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
-                    curJumpGravity = gc * 225f * jumpScale;
-                    grounded = false;
-                    if (djumpLog) Log(string.Format(
-                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
-                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                    if (grounded) jumpCount = 0;
+                    int nextJump = jumpCount + 1;
+                    bool chainMode = djumpMode == "chain";
+                    bool djumpOn = djumpMode != "0";
+                    int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
+                    int[] trip = null;
+                    if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
+                        (nextJump == 1 || djumpOn))
+                    {
+                        // chain mode reads the pressed row; flip mode reuses J0
+                        trip = JumpTable.Triples[jumpSchool][chainMode ? nextJump - 1 : 0];
+                    }
+                    if (trip != null)
+                    {
+                        jumpCount = nextJump;
+                        vy = trip[1] * 15f * jumpScale;
+                        int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
+                        curJumpGravity = gc * 225f * jumpScale;
+                        grounded = false;
+                        if (djumpLog) Log(string.Format(
+                            "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
+                            jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                    }
+                    else if (djumpLog) Log(string.Format(
+                        "djb reject n={0} max={1} grounded={2} mode={3}",
+                        nextJump, maxJump, grounded ? 1 : 0, djumpMode));
                 }
-                else if (djumpLog) Log(string.Format(
-                    "djb reject n={0} max={1} grounded={2} mode={3}",
-                    nextJump, maxJump, grounded ? 1 : 0, djumpMode));
             }
 
             // (no auto-end: any W release is handled by the KeyUp handler)
@@ -2415,7 +2535,14 @@ internal static class RebornClient
                 {
                     if (whDiving) setClipPlay(clipWhPlunge, 0);
                     else if (whLaunch) setClipPlay(clipWhStage[0], 1);
-                    else if (whStageActive && !whEndPhase) setClipPlay(clipWhStage[whStage - 1], 1);
+                    else if (whStageActive && !whEndPhase)
+                    {
+                        // 1..5 = 纵跃段..四段 clips; 6..10 (弈韵) reuse them cyclically
+                        int ci = whStage - 1;
+                        if (ci >= WwRules.WhBaseStages) ci = (whStage - WwRules.WhYiyunFirst) % WwRules.WhBaseStages;
+                        if (ci < 0) ci = 0;
+                        setClipPlay(clipWhStage[ci], 1);
+                    }
                     else setClipPlay(clipWhFly, 0);
                 }
                 else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
@@ -3352,16 +3479,16 @@ internal static class RebornClient
                              : whDiving ? "WH-DIVE"
                              : whDashActive ? ("WH-DASH-" + whDashName)
                              : whLaunch ? "WH-LAUNCH"
-                             : whStageActive ? ("WH-" + WwRules.WhStageNames[whStage - 1])
+                             : whStageActive ? ("WH-" + whStageName())
                              : wwStateActive ? "WH-FLY"
                              : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
                              : moving ? (jipaoActive ? "JIPAO" : shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = jipaoActive ? jipaoSpeed
-                                : shiftDown ? pRun * 10f
+                                : shiftDown && !wwStateActive ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6} \u6C14\u529B {13:F0}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 = ww (万花大轻功 trigger) | Space = 轻功段 | 4 = 空中冲刺 | 3 = 急坠 | 1 = 登顶 | K weapon | / walk-run | Shift 10x | Space jump | 2 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
+                    "\u5927\u8F7B\u529F\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6} \u6C14\u529B {13:F0}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nww {12}\nWASD move | Wx2 = 点墨江山·疾跑段 | Space = 纵跃段 -> 一段..四段 | Shift = 棋弈(一段起) / 六段 | 4 = 空中冲刺 | 3 = 急坠 | 1 = 登顶 | K weapon | / walk-run | Shift 10x | 2 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
@@ -3379,7 +3506,7 @@ internal static class RebornClient
                     string whNm = whDiving ? "急坠"
                                 : whDashActive ? whDashName
                                 : whLaunch ? "上冲"
-                                : whStageActive && whStage >= 1 ? WwRules.WhStageNames[whStage - 1]
+                                : whStageActive && whStage >= 1 ? whStageName()
                                 : "滑翔";
                     stageHud.Text = "点墨江山 " + whNm + "\n段数 " + whStage + "/" +
                         WwRules.WhStageNames.Length + "\n气力 " +
@@ -3433,7 +3560,7 @@ internal static class RebornClient
                 }
                 float curSpd = !moving ? 0f
                              : jipaoActive ? jipaoSpeed
-                             : shiftDown ? pRun * 10f
+                             : shiftDown && !wwStateActive ? pRun * 10f
                              : walkMode ? pSpeed
                              : pRun;
                 string moveMode = !moving ? "IDLE"
