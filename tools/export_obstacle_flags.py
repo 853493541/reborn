@@ -125,16 +125,19 @@ def main() -> None:
         if not m:
             continue
         low = m.replace("/", "\\").lower()
-        text = None
+        # the engine reads TWO files: `_LoadDotIni` (mesh-level [Display]) and
+        # `_LoadDotMeshDotIni` (per-submesh [DisplaySub-*]). Both `<base>.ini`
+        # (a partial/stub) and `<base>.mesh.ini` (full) ship for many meshes -
+        # merging all candidates is what the engine does (field bug 2026-10-01:
+        # first-candidate-wins lost every DisplaySub key -> logic bits always 0).
+        d = {}
         for cand in ini_candidates(m):
             t = ini_map.get(cand.replace("/", "\\").lower())
             if t is not None:
-                text = t
-                break
-        if text is None:
+                d.update(parse_ini(t))
+        if not d:
             flags[i] = 0x01 | 0x02 | 0x04 | 0x10   # defaults: auto=1, logic=1
             continue
-        d = parse_ini(text)
         auto = d.get(("Display", "bAutoProduceObstacle"), "1")
         subs = [k for k in d if k[0].startswith("DisplaySub-Lod0") or k[0].startswith("DisplaySub-Lod1")]
         logic = [d[k] for k in subs if k[1] == "bLogicObstacle"]

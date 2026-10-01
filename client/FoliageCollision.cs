@@ -361,7 +361,15 @@ public sealed class FoliageCollision
                 float bminX = r.ReadSingle(), bminY = r.ReadSingle(), bminZ = r.ReadSingle();
                 float bmaxX = r.ReadSingle(), bmaxY = r.ReadSingle(), bmaxZ = r.ReadSingle();
                 if (mi < 0 || mi >= meshCount) continue;
-                if (oflags != null && (oflags[8 + mi] & 0x01) == 0 && (oflags[8 + mi] & 0x20) == 0)
+                // Engine auto-obstacle rule (KG3D_LoaderNoRenderX64 property
+                // reader + .mesh.ini schema, 2026-10-01): the produced obstacle
+                // is the union of LOD0 submeshes with bLogicObstacle=1; a mesh
+                // with bAutoProduceObstacle=0 OR no logic-obstacle submesh
+                // produces nothing - unless an authored collision sibling
+                // exists (bit5), which the file-selection chain falls back to.
+                if (oflags != null
+                    && ((oflags[8 + mi] & 0x01) == 0 || (oflags[8 + mi] & 0x02) == 0)
+                    && (oflags[8 + mi] & 0x20) == 0)
                 {
                     NoObstacleSkipped++;
                     continue;

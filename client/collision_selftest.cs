@@ -390,7 +390,7 @@ internal static class CollisionSelfTest
                 string.Format("blocked={0} px={1:F1} skipped={2}", blocked, px, col.NoObstacleSkipped));
 
             string pb2 = WriteBin("wall_oflags_on", new MeshBuilder[] { Wall() }, new float[][] { M(0f, 0f, 0f) });
-            WriteOflags(pb2, new byte[] { 0x01 });
+            WriteOflags(pb2, new byte[] { 0x03 });
             col = new FoliageCollision(null, pb2);
             px = 5f; py = 0f; pz = 0f; ground = 0f; grounded = false;
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
@@ -406,6 +406,18 @@ internal static class CollisionSelfTest
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
             Check("obstacle_flag_off_with_sibling_blocks", blocked && col.NoObstacleSkipped == 0,
                 string.Format("blocked={0} skipped={1}", blocked, col.NoObstacleSkipped));
+
+            // auto=1 but NO LOD0 submesh is a logic obstacle (bit1=0): the
+            // engine's produced obstacle is the union of bLogicObstacle=1
+            // submeshes - empty here -> no physics (field schema 2026-10-01)
+            string pb4 = WriteBin("wall_oflags_logic0", new MeshBuilder[] { Wall() }, new float[][] { M(0f, 0f, 0f) });
+            WriteOflags(pb4, new byte[] { 0x01 });
+            col = new FoliageCollision(null, pb4);
+            px = 5f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded);
+            Check("obstacle_flag_logic0_walkthrough",
+                !blocked && Math.Abs(px - 5f) < 0.01f && col.NoObstacleSkipped == 1,
+                string.Format("blocked={0} px={1:F1} skipped={2}", blocked, px, col.NoObstacleSkipped));
 
             // solid-prop AABB collision: a tall prop blocks like a wall, a low
             // one is stepped onto within the budget (registered proxy)

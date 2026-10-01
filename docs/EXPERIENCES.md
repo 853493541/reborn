@@ -808,3 +808,32 @@ solved it, and what is still open. **Newest at the bottom.**
 - Net: the registered deviation list is now accurate; the remaining genuine
   items (slope slide, obstacle production, capsule values, engine physics) are
   deep recovery work, not cheap steps.
+
+### 2026-10-01 - collision - Obstacle production REVERSED (engine rule ported)
+- Deep RE pass on `KG3D_LoaderNoRenderX64.dll` + `PhysicsEngineX64.dll` (game
+  client copies in a temp dir; never the installs):
+  - The loader's property readers: `_LoadDotIni` (`0x18002c6d0`) reads
+    `[Display] bAutoProduceObstacle` (default 1); `_LoadDotMeshDotIni`
+    (`0x18002c9a8`) reads per-LOD-submesh `bLogicObstacle` / `bSelectable` /
+    `bCastShadow` / `bTransparentCamera` / `bRecomputeNormals` (defaults
+    1/1/1/0/0) from `[DisplaySub-LodN-SubM]`.
+  - The physics chain (strings in `PhysicsEngineX64.dll`): actor option
+    `ppszCollsionFileArray` -> `_CreateCollisionFromMeshFile` ->
+    `PhysicsShapeFactory::CreateCacheShapeFromFile` / `_CreateFromGeometryData`
+    (box/capsule/sphere/convex/heightfield/triangle) - the authored
+    `.CollisionMesh`/`.proxymesh` siblings win; otherwise the mesh itself.
+  - **Rule (HIGH):** the produced obstacle = the union of LOD0 submeshes with
+    `bLogicObstacle=1`; `bAutoProduceObstacle=0` or no logic submesh -> no
+    obstacle (unless a sibling exists).
+- Host bug found while porting: the oflags exporter took the FIRST ini
+  candidate (`<base>.ini`, a stub with no DisplaySub sections) and never saw
+  the full `<base>.mesh.ini` -> bits 1/2 were 0 on 343/681 meshes. Fixed by
+  merging both files (the engine reads both); all 5 maps re-exported.
+- Client: the skip rule now ports both bits (`(auto==0 || logic_any==0) &&
+  no sibling`); new selftest `obstacle_flag_logic0_walkthrough` (33/33 PASS).
+  In-game: pile still blocks (logic=1), rug stable (rug mesh now correctly has
+  no engine obstacle - terrain provides the support).
+- Note for future edits: never rewrite source files with PowerShell
+  `Get-Content|Set-Content` (PS 5.1 reads BOM-less UTF-8 as ANSI and mangles
+  the Chinese literals - this broke the prop selftests until restored from
+  git and re-applied with the edit tool).
