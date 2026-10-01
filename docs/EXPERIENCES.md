@@ -428,6 +428,24 @@ look-up + WASD): client ran 305-308 fps throughout, no crash, clean `DONE` exit.
 **Links:** `native/camera_shim.cpp` (`RC_D6Seed`), `docs/camera/HOST_DEVIATIONS.md` D6,
 `tools/camera/drive_client.ps1`.
 
+### 2026-09-30 — sandbox — Half-size (quadrant) terrain: DEAD END (physics loader requires 512-sample regions)
+**Problem:** requested an even smaller sandbox — 1/2 the loaded map of the current 1×1
+crop (6.48 MB).
+**Tried:** built a quadrant crop (`--half`): r32 and bch cropped 513²→257², bch header
+grid fields patched 513/512→257/256, blendmap PNGs cropped 257², `landscapeinfo`
+`RegionSize` 512→256 (map `龙门寻宝_h`, 4.93 MB). The client loads the map and even
+reports the halved region (`TerrainSampler: size=256 regions=1x1 cell=100 origin=(0,0)`),
+but the real physics terrain loader rejects every region: `LoadRegion failed (0,0)`
+repeated (`client/TerrainSampler.cs:101-107` → `PhysicsEngineX64` `LoadRegion`).
+**Outcome:** dead end.
+**Why:** the shipped physics terrain loader requires full 512-sample regions per tile;
+sub-region grids are not supported by the engine loader. The 1×1 region crop is the
+minimum terrain the engine can load (whole-region granularity).
+**Re-open criteria:** only if a loader entry accepting other region sizes is found, or
+the game ships sub-region maps — otherwise stay with 1×1.
+**Links:** `client/TerrainSampler.cs`; `tools/sandbox/build_sandbox.py` (`--half`
+reverted); experiment output `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,

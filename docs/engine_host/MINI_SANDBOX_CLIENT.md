@@ -170,6 +170,13 @@ Feature builds stay per-worktree (`RC_CLIENT_EXE=reborn_client_mini.exe`,
    `heightmap_bc/*.bch` kept the render but sampled spawn height 0. Only
    `blendmap_bc/*.r8` proved droppable on both checks. Always verify a trim
    with the per-region RGB fingerprint of a fresh screenshot.
+4. **Sub-region (half/quadrant) terrain — rejected.** Cropping the region to 257²
+   (r32/bch/blendmaps cropped, bch header grid fields patched, `RegionSize` 512→256)
+   loads as a map (`TerrainSampler: size=256 regions=1x1`) but the real physics terrain
+   loader rejects every region: `LoadRegion failed (0,0)` (`client/TerrainSampler.cs`
+   → `PhysicsEngineX64` `LoadRegion`). The shipped loader requires full 512-sample
+   regions; the 1×1 whole-region crop is the minimum terrain. Dead end logged in
+   `docs/EXPERIENCES.md` (2026-09-30).
 
 ## Future (only if the full client must be dropped)
 
