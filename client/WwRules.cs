@@ -53,6 +53,30 @@ internal static class WwRules
     public const float JipaoCapFrame = 120f;
     public const float JipaoCapPerSecond = JipaoCapFrame * LogicTicksPerSecond;
     public const int JipaoStageFrames = 16;
+
+    // 万花大轻功「点墨江山」 (school 4; skills 20628 trigger / 20630 急坠;
+    // extracted 2026-09-30, proof/controls/sprint/out/scripts/skill/轻功/轻功通用/):
+    //  - CanCast: nSprintPower >= 10000 (bar max provisional); cost 100*CONSUME_BASE
+    //    (CONSUME_BASE open; 通用轻功气力值扣除 level 2 uses a literal 25 ->
+    //    the 25 hypothesis, MED)
+    //  - Apply: SetTimer(30) -> OnTimer: BirdFlyTo + LockBirdMoveZ (Z-locked fly),
+    //    buffs 13422 (lv3) / 14626 / 13836 (binds 13889 + 16516)
+    //  - 急坠 (20630): SetPassiveVelocityZ(-2000) u/frame
+    //  - JumpParam school 4 fly costs (气力值, per second unless noted): OnFlyCost 75,
+    //    OnFlyFloatCost 35, OnFlyJumpCost 300 (per stage press), OnFlyStandCost 21,
+    //    OnFlyJumpInSprintCost 200, OnSprintDashCost 3000, OnFlyBirdMoveCost 206,
+    //    OnFlyBirdMoveDashCost 375
+    //  - stages JC1..JC5 = 纵跃段/一段/二段/三段/四段 use JumpParam rows J1..J5
+    //    (Condition.tab school 4, JumpCount 1..5; MaxJumpCount 5)
+    public const float WhPowerMax = 10000f;
+    public const float WhTriggerCost = 2500f;
+    public const float WhFlyCostPerSecond = 75f;
+    public const float WhFloatCostPerSecond = 35f;
+    public const float WhJumpCost = 300f;
+    public const float WhBirdMoveCostPerSecond = 206f;
+    public const float WhPlungeFrame = -2000f;
+    public const int WhTimerFrames = 30;
+    public static readonly string[] WhStageNames = { "纵跃段", "一段", "二段", "三段", "四段" };
     public static readonly float[] FlyCurveXY = { 150f, 2f, 9f, 16f, 22f, 28f, 34f, 39f, 45f, 51f, 57f, 64f, 70f, 77f, 84f, 92f, 100f, 108f, 118f, 128f, 140f, 153f, 168f, 185f, 205f, 202f, 178f, 158f, 142f, 128f, 116f, 106f, 97f, 90f, 83f, 77f, 72f, 68f, 64f, 60f, 58f, 55f, 54f, 52f, 51f, 51f, 51f, 51f, 52f, 54f, 56f, 58f, 47f, 17f, 3f, 2f, 6f, 10f, 15f, 20f, 24f, 29f, 34f, 40f, 45f, 50f, 56f, 62f, 68f, 74f, 80f, 87f, 94f, 100f, 108f, 115f, 123f, 131f, 139f, 147f, 156f };
     public static readonly float[] FlyCurveZ = { 150f, -81f, -232f, -369f, -491f, -599f, -693f, -771f, -836f, -886f, -921f, -942f, -949f, -941f, -918f, -881f, -830f, -763f, -683f, -588f, -478f, -354f, -216f, -63f, 105f, 298f, 493f, 666f, 818f, 949f, 1058f, 1145f, 1211f, 1256f, 1279f, 1280f, 1260f, 1219f, 1156f, 1072f, 966f, 838f, 689f, 519f, 327f, 114f, 0f, 0f, 0f, 0f, 0f, 693f, 693f, 315f, -14f, -41f, -65f, -88f, -108f, -127f, -143f, -156f, -168f, -178f, -185f, -191f, -194f, -195f, -194f, -191f, -185f, -178f, -168f, -156f, -143f, -127f, -108f, -88f, -65f, -41f, -14f };
 
@@ -108,6 +132,10 @@ internal static class WwRules
         fail += CheckValue("CHARGE_FORWARD", ChargeForwardFrame, FlyCurveXY[0]);
         fail += CheckValue("FALL_CAP", FallCapFrame, -900f);
         fail += CheckValue("JIPAO_CAP", JipaoCapPerSecond, 1800f);        fail += CheckRange("LEAP_J3_APEX_M", ApexMeters(3), 34.0f, 37.0f);
+        fail += CheckValue("WH_TRIGGER_COST", WhTriggerCost, 2500f);
+        fail += CheckValue("WH_PLUNGE_FRAME", WhPlungeFrame, -2000f);
+        fail += CheckValue("WH_TIMER_FRAMES", (float)WhTimerFrames, 30f);
+        fail += CheckValue("WH_STAGES", (float)WhStageNames.Length, 5f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
     }

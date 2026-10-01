@@ -81,8 +81,9 @@ Release W → `MoveForwardStop` → `HoldW=0` + `CheckEndSprint()` (ends the spr
 no other key is held). Double-tap W is NOT the sprint — it is 【WW上冲】 (§1); the
 earlier "double-tap = sprint" note in `docs/controls/` is superseded.
 
-Sandbox status: holding W currently moves at the plain run speed
-(`pRun=320 u/s`); the 疾跑段 acceleration is not modelled yet.
+Sandbox status: the 疾跑段 staged ramp (25/75/100% of the Sprint.tab cap, 1800 u/s
+for school 4) is modelled in `client/RebornClient.cs` (`jipaoActive`), verified
+2026-09-30 (`jipao: enter` -> 450/1350/1800 u/s -> `jipao: end` on release).
 
 ## 3. Movement law (verified, `JX3_GRAVITY_RESEARCH.md` §3)
 
@@ -157,6 +158,25 @@ Sandbox status: holding W currently moves at the plain run speed
   forward = curve entry 150 u/f (2250 u/s), level while held; release → gravity
   builds the down; terminal fall cap = Sprint.tab 900 u/f (13500 u/s); charge clip
   one-shot (`PlayAnimation` playType 1; 0 loops).
+
+### 7.1 万花大轻功「点墨江山」 in the sandbox (implemented 2026-09-30)
+
+Sources: `proof/controls/sprint/out/scripts/skill/轻功/轻功通用/万花轻功触发.lua`,
+`万花轻功急坠.lua`; `settings/JumpParam.tab` school 4; `Sprint/Condition.tab`
+school 4 JC1..JC5; `Sprint/Action.tab` actions 5/8/9/10/11.
+
+| Step | Real source (HIGH) | Sandbox model |
+|---|---|---|
+| Trigger | skill 20628: CanCast `nSprintPower >= 10000`, cost `100*CONSUME_BASE`; `Apply` -> `SetTimer(30)` -> `OnTimer`: `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 (binds 13889/16516) | air WW: 气力值 gate 10000, cost 2500 (CONSUME_BASE=25 hypothesis, MED), `RC_WH_DELAY_MS` 500 ms -> Z-locked fly |
+| Stages | Condition.tab school 4: JC1..JC5 = 点墨江山·纵跃段/一段/二段/三段/四段, `ActionGroup` space一段..四段 (Action.tab 8/9/10/11) | Space: takeoff triple J1..J5 (JumpParam rows 1..5), apex -> End triple 125/−140/12 (`ModifySprintEndSpeed`) |
+| 急坠 | skill 20630 `万花轻功急坠.lua`: `SetPassiveVelocityZ(-2000)` | key 3: vy = −2000 u/f, bypasses the 900 u/f fall cap (engine clamp −2048 u/f) |
+| Fly costs | JumpParam school 4: OnFlyCost 75, OnFlyFloatCost 35, OnFlyJumpCost 300, OnFlyBirdMoveCost 206 | 气力值: hover 35/s, bird move (W) 206/s, per stage 300; ground regen 2000/s (provisional, D0 open) |
+| Exit | Action.tab 5 【松开W登顶】 (`<MOVEFORWARD;1>`) | release -> 45° dash (existing sandbox behavior); landing resets the chain |
+
+Not modelled yet: the 弈韵一~六段 branch (Condition.tab JC6..JC11), the 双人/踩人
+rows, per-stage authored animations (the sandbox plays the generic glide/fall
+clips), the exact `CONSUME_BASE` value, the 气力值 regen D0, and whether
+`SetTimer(30)` counts 15 Hz logic frames (2 s) or ms-scale frames.
 
 ## 8. Open items
 

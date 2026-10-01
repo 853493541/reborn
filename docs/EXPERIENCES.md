@@ -1035,3 +1035,22 @@ eborn_client_daqinggong carries these changes — other
   u/s (JIPAO) -> jipao: end; positions advance ~3540 u per 2 s at the cap; selftest PASS;
   commit 308ef8d; relaunched pid 19296.
 - Outcome: solved.
+
+
+### 2026-09-30 — client — 万花大轻功「点墨江山」 implemented in the sandbox
+- Did: full school-4 qinggong flow from the extracted scripts/tables:
+  20628 trigger (CanCast 气力值 >= 10000, cost 100*CONSUME_BASE -> 2500 with the
+  CONSUME_BASE=25 hypothesis, SetTimer(30) -> BirdFlyTo + LockBirdMoveZ Z-locked
+  fly, buffs 13422/14626/13836), Space stages JC1..JC5 = 纵跃段/一段/二段/三段/四段
+  using JumpParam rows J1..J5 with the segment-end End triple 125/-140/12, 20630
+  急坠 = SetPassiveVelocityZ(-2000) (bypasses the 900 u/f fall cap), 气力值 drains
+  (float 35/s, bird move 206/s, stage 300) + ground regen, HUD state WH-CAST/WH-FLY/
+  WH-<stage>/WH-DIVE + 气力值, help text, RC_WH_DEMO timeline, RC_WH_COST/DELAY_MS/
+  REGEN envs. Selftest asserts the trigger cost, plunge frame, timer and stage count.
+- Evidence: RC_WH_DEMO=1 run 17:13 — 20628 cast (power 7500) -> BirdFlyTo fly ->
+  纵跃段 J1 50/160/8 -> End 125/-140/12 -> 一段 J2 -> 二段 J3 100/700/36 (y 8400+)
+  -> 三段/四段 J4/J5 100/-250/8 -> 急坠 vy=-30000 -> landed (dive=True); costs
+  7500->7096->6445->5610->4980->4474. Selftest WH_* PASS.
+- Open: 弈韵 JC6..JC11 branch, 双人/踩人 rows, per-stage animations, CONSUME_BASE
+  exact value, regen D0, SetTimer unit (docs/movement/JX3_QINGGONG_BEHAVIOR.md §7.1).
+- Outcome: solved for the base chain.
