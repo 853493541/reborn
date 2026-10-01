@@ -478,6 +478,16 @@ reverted); experiment output `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`.
 - Evidence: `.opencode/skills/re-binary-analysis/SKILL.md`; this commit (local).
 - Outcome: solved. Restart opencode to load.
 
+### 2026-09-30 — repo — Rule: game client primary, MovieEditor = visual resource
+- Did: `AGENTS.md` §4 now states the **game client** (`...\zhcn_hd` binaries/IL/paks) is
+  the primary source for every mechanism/behavior/format/value question; **MovieEditor is
+  a visual resource** and supporting host-behavior evidence only — no digging into
+  MovieEditor to answer a game-client topic. The evidence hierarchy was updated to match
+  (repo docs → game client code/IL → raw extracted caches; MovieEditor for visuals/host
+  behavior only).
+- Evidence: `AGENTS.md` §4; this commit (local).
+- Outcome: solved.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,

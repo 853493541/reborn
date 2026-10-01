@@ -118,10 +118,14 @@ State check before work: `git status`, `git log -5 --oneline`, confirm the branc
   into the installs or their running processes — on disk or in memory. The only writes
   under `C:\SeasunGame` are our documented build outputs into `MovieEditor\bin64` (§8);
   those are our binaries, not the client's.
-- MovieEditor `C:\SeasunGame\MovieEditor` is the canonical engine/resource host.
-  Client-bundled `...\zhcn_hd\MovieEditor` is an older build (2026-04-28).
-- Evidence hierarchy: repo docs → game client code/IL → MovieEditor behavior/IL → raw
-  extracted caches. Never answer from assumption.
+- **Game client is primary; MovieEditor is a visual resource.** For any mechanism,
+  behavior, format, or value question, the game client (`...\zhcn_hd` binaries/IL/paks)
+  is the source of truth — do not answer a game-client question by digging into
+  MovieEditor. MovieEditor is used for rendering/preview (visual resources) and as
+  supporting host-behavior evidence only. Client-bundled `...\zhcn_hd\MovieEditor` is an
+  older build (2026-04-28).
+- Evidence hierarchy: repo docs → game client code/IL → raw extracted caches; MovieEditor
+  behavior/IL supports visuals and host behavior only. Never answer from assumption.
 - **Local-first: everything needed is in the client/MovieEditor installs.** Whatever the
   game needs to run (prediction, UI data, tables, configs, formats) exists locally in the
   client binaries/IL/paks or the MovieEditor engine — "it comes from the server / we
