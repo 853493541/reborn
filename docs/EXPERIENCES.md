@@ -1235,3 +1235,24 @@ eborn_client_daqinggong carries these changes — other
 - Open: the 弈韵's authored motion (the float is a stand-in), the 四段->fall
   details, the dash key.
 - Outcome: the structure now matches the live game; the 弈韵 motion is flagged.
+
+### 2026-09-30 — client — 疾跑段 burst + launch-stage press (live-flow fixes)
+- Live-flow bugs found in the user session log (22:11): (1) the WW double-tap
+  flapped the 疾跑段 (enter/end on every press-release) and the ramp reset each
+  time, keeping the speed at 25% -> the sprint felt "not triggered at all";
+  (2) the Space during the 纵跃段 launch was ignored (CanJump=0) -> the chain
+  felt dead; (3) the W release killed the fly mid-chain (the double-tap tail).
+- Did: the ground WW now starts a 3 s 疾跑段 burst (auto-forward momentum,
+  persists without holding W); a 250 ms exit grace stops the ramp resets; the
+  Space during the launch advances the phase (the launch is taken over); the W
+  release exits (登顶) only from the hover/glide (key 1 = explicit exit). Demo
+  hooks RC_WH_DEMO_WW_MS / _ENTRY_MS.
+- Evidence: burst run 22:31 exit=0 — WW burst -> entry Space -> the 纵跃段 launch
+  -> the 一段/二段 with normal Space timing; flow run 22:17 exit=0; commit
+  d41d8fb.
+- Note: the 纵跃段 (SkillMove 336) and the stage leaps use the raw authored
+  values — RC_JUMP_SCALE (the super jump) does not apply to the 大轻功 chain.
+- Open: whether the live 气力值 gate needs the full bar (the CanCast >= 10000 at
+  the assumed x10 display scale) — awaiting a live observation of a partial-bar
+  cast.
+- Outcome: the live flow (WW burst -> Space chain) works end to end.
