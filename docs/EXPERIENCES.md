@@ -1194,3 +1194,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Cocos `<`/`>` compare scan (57 functions) and `SetText`/`SetString` callee dumps
   (`0x180349E00`, `0x180345D10`, `0x180337AC0`, `0x180338020`) show no char-level
   tag parser — the label markup is handled outside the readable UI DLLs.
+
+### 2026-09-30 — ui — Scheme tables staged for the renderer + `--fonttest` scheme proof
+- `tools/prepare_ui_fonts.py` now also copies the scheme tables
+  (`font.ini/fontlist.ini/fontpathlist.ini/color.txt`) into the git-ignored
+  `ui-process-app/assets/ui/Scheme/Case/` (the app's `SchemeRoot`).
+- `UiProcessApp --fonttest` extended to print scheme resolutions; output matches
+  the decoded client values: `#18 size=15 #F0F0F0`, `#43 size=20 #000000`
+  (方正黑体20黑), `#212 size=14 #F0F0F0`, all `fzht_GBK.ttf`. This locks the
+  scheme chain (id → size/color/border → FontID file) into a runnable check.
+- Gates re-run green: `jx3_model.py` PASS, `verify_model.py` PASS,
+  `loot/capture.py selftest` PASS. README/AGENTS + `FONT_SCHEME_SYSTEM.md`
+  verified line updated.

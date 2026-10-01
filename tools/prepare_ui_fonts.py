@@ -24,6 +24,9 @@ REPO = pathlib.Path(__file__).resolve().parents[1]
 CLIENT_ROOT = pathlib.Path(r"C:\SeasunGame\Game\JX3\bin\zhcn_hd")
 SCHEME = REPO / "proof" / "ui" / "evidence" / "scheme"
 FONT_EXTENSIONS = (".ttf", ".otf", ".ttc")
+# The renderer also needs the scheme tables (font schemes/colors) next to the app:
+# SchemeRoot = ui-process-app/assets/ui/Scheme/Case (see Engine/Paths.cs).
+SCHEME_FILES = ("font.ini", "fontlist.ini", "fontpathlist.ini", "color.txt")
 
 
 def referenced_fonts() -> set:
@@ -65,6 +68,17 @@ def main() -> int:
         shutil.copyfile(font, dest)
         copied.append((font.name, font.stat().st_size))
         print("copy %-24s %10d bytes -> %s" % (font.name, font.stat().st_size, dest))
+
+    # scheme tables -> assets/ui/Scheme/Case (the app's SchemeRoot)
+    scheme_out = args.out.parent / "Scheme" / "Case"
+    scheme_out.mkdir(parents=True, exist_ok=True)
+    for name in SCHEME_FILES:
+        src = SCHEME / name
+        if src.is_file():
+            shutil.copyfile(src, scheme_out / name)
+            print("copy %-24s %10d bytes -> %s" % (name, src.stat().st_size, scheme_out / name))
+        else:
+            print("WARN scheme table missing:", src)
 
     present = {p.name.lower() for p in args.out.iterdir() if p.is_file()}
     referenced = sorted(referenced_fonts())

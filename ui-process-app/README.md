@@ -28,12 +28,17 @@ extracted INI, writes `ui_process_selftest.txt` next to the exe):
 UiProcessApp.exe --selftest
 ```
 
-Fonts are game assets and are not committed. Copy the shipped `ui/Font` faces
-once per checkout (the renderer falls back to Microsoft YaHei UI without them):
+Fonts are game assets and are not committed. Copy the shipped `ui/Font` faces and
+the font/color scheme tables once per checkout (without them the renderer falls
+back to Microsoft YaHei UI and default scheme values):
 
 ```powershell
 .venv\Scripts\python.exe tools\prepare_ui_fonts.py
-UiProcessApp.exe --fonttest     # expect: family=FZHei-B01 resolved=True
+UiProcessApp.exe --fonttest
+# expect: family=FZHei-B01 resolved=True
+#         scheme #18: size=15 color=#F0F0F0 file=fzht_GBK.ttf
+#         scheme #43: size=20 color=#000000 file=fzht_GBK.ttf
+#         scheme #212: size=14 color=#F0F0F0 file=fzht_GBK.ttf
 ```
 
 Current selftest: **15/15 windows rendered**, e.g. NewBattleFieldQueue 1,129
@@ -84,6 +89,10 @@ and unresolved string ids are hidden instead of shown raw.
 - `assets/ui/Scheme/Case/string.txt` — official UI strings (UTF-8 copy).
 - `assets/ui/Font/**` — the 5 shipped client UI fonts, copied locally by
   `tools/prepare_ui_fonts.py` (game assets, never committed).
+- `assets/ui/Scheme/Case/{font.ini,fontlist.ini,fontpathlist.ini,color.txt}` —
+  the shipped scheme tables (taken from the tracked extraction), copied by the
+  same tool so `FontScheme`/`FontColor` codes resolve (see
+  `docs/ui/FONT_SCHEME_SYSTEM.md`).
 - `assets/pak/**` — settlement panel (`PVPShowFinal*`) + `string_PVPAcount.txt`.
 
 ## Notes

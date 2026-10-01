@@ -317,6 +317,21 @@ namespace UiProcessApp
                 }
                 else report.AppendLine("font file not found");
 
+                // Scheme resolution proof: the KGUI font/color scheme tables
+                // (font.ini/fontlist.ini/color.txt) must resolve to the live client's
+                // values - e.g. #43 = 方正黑体20黑 (size 20, black, fzht_GBK.ttf).
+                foreach (var scheme in new[] { 18, 43, 212 })
+                {
+                    if (UiProcessApp.Engine.Fonts.TryGet(scheme, out var schemeSize, out var schemeColor, out var schemeBorder) &&
+                        UiProcessApp.Engine.Fonts.TryGetFontFile(scheme, out var fontFile))
+                        report.AppendLine(
+                            $"scheme #{scheme}: size={schemeSize} color=#{schemeColor.R:X2}{schemeColor.G:X2}{schemeColor.B:X2}" +
+                            $" border={(schemeBorder.HasValue ? "#" + schemeBorder.Value.R.ToString("X2") + schemeBorder.Value.G.ToString("X2") + schemeBorder.Value.B.ToString("X2") : "none")}" +
+                            $" file={fontFile}");
+                    else
+                        report.AppendLine($"scheme #{scheme}: unresolved (scheme tables missing? run tools/prepare_ui_fonts.py)");
+                }
+
                 var stack = new StackPanel { Background = Brushes.Black };
                 foreach (var family in new[] { fileFamily, new FontFamily("Microsoft YaHei UI") })
                 {

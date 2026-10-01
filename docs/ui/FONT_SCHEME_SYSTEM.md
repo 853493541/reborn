@@ -454,7 +454,10 @@ Not implemented (gaps; data now decoded where noted):
 | `tools/ui_scheme_lookup.py` | resolver + census tool (committed 2026-09-30) |
 | `tools/pvp/dump_fn_disasm.py` | added RIP-relative string annotation (2026-09-30) |
 
-**Verified (2026-09-30):** `ui_scheme_lookup.py 43` → `方正黑体20黑 / fzht_GBK.ttf`;
+**Verified (2026-09-30):** renderer scheme resolution — `tools/prepare_ui_fonts.py`
+now also stages the scheme tables and `UiProcessApp --fonttest` prints
+`#18 size=15 #F0F0F0`, `#43 size=20 #000000`, `#212 size=14 #F0F0F0`, all
+`fzht_GBK.ttf` (matches the decoded client values); `ui_scheme_lookup.py 43` → `方正黑体20黑 / fzht_GBK.ttf`;
 `--census` over the battle-HUD extraction → `schemes=421 fontlistSlots=36`,
 `0 unknown ids`, `0 unresolved FontColor`; combined 160-INI census → 4,595 refs /
 125 schemes; xrefs → `LoadScheme 0x1801F5C30`, `LoadFontList 0x1801F5790`,
