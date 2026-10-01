@@ -637,6 +637,18 @@ internal static class RebornClient
             }
             catch (Exception e) { Log("setClip ex: " + e.Message); }
         };
+        // one-shot variant (the \u5927\u8f7b\u529f stage clips play once per move)
+        Action<string, int> setClipPlay = delegate(string path, int playType)
+        {
+            if (path == curClip) return;
+            try
+            {
+                int pr = model.PlayAnimation(path, playType, 1.0f, 0);
+                Log("clip -> " + path + " (" + pr + ", type=" + playType + ")");
+                curClip = path;
+            }
+            catch (Exception e) { Log("setClip ex: " + e.Message); }
+        };
 
         // measure camera view direction by nudging forward (map-host method)
         Action measureView = delegate
@@ -1121,6 +1133,18 @@ internal static class RebornClient
         // the underlying .ani is the flip pose the client plays instead.
         string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.ani");
         if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
+        // \u4e07\u82b1 \u5927\u8f7b\u529f stage clips (F1 body, the \u52a0\u5f3a series; names from the
+        // client install's animation index). The F1bqg\u4e07\u82b1\u56db\u6bb5\u8df3a_\u7a7a /
+        // \u4fef\u51b2a01 clips AV the host (documented) -- substitutes used.
+        string[] qgClip = new string[] {
+            clipJump,
+            Env("RC_QG_CLIP_1", f1 + "F1bqg\u4e07\u82b1\u52a0\u5f3a\u4e00\u6bb5\u8df3b_01.tani"),
+            Env("RC_QG_CLIP_2", f1 + "F1bqg\u4e07\u82b1\u52a0\u5f3a\u4e8c\u6bb5\u8df3a_01.tani"),
+            Env("RC_QG_CLIP_3", f1 + "F1bqg\u4e07\u82b1\u52a0\u5f3a\u4e09\u6bb5\u8df3a_02.tani"),
+            Env("RC_QG_CLIP_4", f1 + "F1bqg\u4e07\u82b1\u52a0\u5f3a\u4e8c\u6bb5\u8df3b_01.tani"),
+            Env("RC_QG_CLIP_5", f1 + "F1bqg\u4e07\u82b1\u52a0\u5f3a\u4fef\u51b2b_01.tani"),
+            Env("RC_QG_CLIP_C", f1 + "F1bqg\u4e07\u82b1\u52a0\u5f3a\u6ede\u7a7a_01.tani"),
+        };
         bool djumpLog = Env("RC_DJUMP_LOG", "0") == "1";
         int jumpCount = 0;
         float curJumpGravity = -pGravity;
@@ -2048,7 +2072,11 @@ internal static class RebornClient
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
-            else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
+            else if (!grounded)
+            {
+                if (qgMove >= 0 && qgMove < qgClip.Length) setClipPlay(qgClip[qgMove], 1);
+                else setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
+            }
             else if (moving) setClip(walkMode ? clipWalk : clipRun);
             else setClip(clipIdle);
 
