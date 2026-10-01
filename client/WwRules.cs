@@ -94,6 +94,16 @@ internal static class WwRules
     // (3072 u) -> StopBirdFly + UnlockBirdMoveZ (checked while flying, not
     // during the launch).
     public const float FlyMinAltitudeUnits = 6f * 8f * 64f;
+    // 空中冲刺 / 空中持续冲刺 (skill 20788 通用空中冲刺 -> 20789, learned by every
+    // school trigger; the dash is usable only with the flight buff 13422):
+    // Apply = DashToPitchDirection(480, nFaceDirection, 160) + buff 14561
+    // (江湖轻功通用免控) + buff 14129 (空中持续冲刺换二段, ScriptFile =
+    // 轻功/通用持续冲刺结束.lua -> Stop() + skill-move camera + HideFullScreenSFX;
+    // atDriftFlag; icon 20788 -> 20789) + the Fly_Skill SFX.
+    // tSkillData nDashFrame per level: 100 / 12 / 14 / 16.
+    public const float WhDashFrame = 480f;        // DashToPitchDirection velocity, u/frame
+    public const int WhDashFrames = 100;          // nDashFrame level 1 (100/12/14/16)
+    public const float WhDashCostPerSecond = 375f; // OnFlyBirdMoveDashCost
     public static readonly float[] FlyCurveXY = { 150f, 2f, 9f, 16f, 22f, 28f, 34f, 39f, 45f, 51f, 57f, 64f, 70f, 77f, 84f, 92f, 100f, 108f, 118f, 128f, 140f, 153f, 168f, 185f, 205f, 202f, 178f, 158f, 142f, 128f, 116f, 106f, 97f, 90f, 83f, 77f, 72f, 68f, 64f, 60f, 58f, 55f, 54f, 52f, 51f, 51f, 51f, 51f, 52f, 54f, 56f, 58f, 47f, 17f, 3f, 2f, 6f, 10f, 15f, 20f, 24f, 29f, 34f, 40f, 45f, 50f, 56f, 62f, 68f, 74f, 80f, 87f, 94f, 100f, 108f, 115f, 123f, 131f, 139f, 147f, 156f };
     public static readonly float[] FlyCurveZ = { 150f, -81f, -232f, -369f, -491f, -599f, -693f, -771f, -836f, -886f, -921f, -942f, -949f, -941f, -918f, -881f, -830f, -763f, -683f, -588f, -478f, -354f, -216f, -63f, 105f, 298f, 493f, 666f, 818f, 949f, 1058f, 1145f, 1211f, 1256f, 1279f, 1280f, 1260f, 1219f, 1156f, 1072f, 966f, 838f, 689f, 519f, 327f, 114f, 0f, 0f, 0f, 0f, 0f, 693f, 693f, 315f, -14f, -41f, -65f, -88f, -108f, -127f, -143f, -156f, -168f, -178f, -185f, -191f, -194f, -195f, -194f, -191f, -185f, -178f, -168f, -156f, -143f, -127f, -108f, -88f, -65f, -41f, -14f };
 
@@ -160,6 +170,8 @@ internal static class WwRules
         fail += CheckValue("WH_LAUNCH_FRAMES", (float)WhLaunchVzFrame.Length, 31f);
         fail += CheckValue("WH_LAUNCH_PEAK", WhLaunchVzFrame[4], 590f);
         fail += CheckValue("WH_MIN_ALTITUDE", FlyMinAltitudeUnits, 3072f);
+        fail += CheckValue("WH_DASH_FRAME", WhDashFrame, 480f);
+        fail += CheckValue("WH_DASH_FRAMES", (float)WhDashFrames, 100f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
     }

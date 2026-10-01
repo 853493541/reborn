@@ -859,6 +859,14 @@ internal static class RebornClient
         long whRejectAtMs = 0;                // last NOT_ENOUGH_SPRINT_POWER time
         bool whStagePressed = false;
         bool whPlungePressed = false;
+        // 空中冲刺 dash (skill 20788 -> 20789; the fly double-tap W/S/A/D =
+        // 上冲/下冲/右冲/左冲; DashToPitchDirection(480, face, 160))
+        bool whDashPressed = false;
+        Keys whDashKey = Keys.W;
+        bool whDashActive = false;
+        float whDashT = 0f;
+        float whDashDirX = 0f, whDashDirY = 0f, whDashDirZ = 0f;
+        string whDashName = "上冲";
         {
             float v;
             if (float.TryParse(Env("RC_WH_COST", ""), out v)) whTriggerCost = v;
@@ -875,6 +883,7 @@ internal static class RebornClient
             if (whStage > 0 || whDiving)
                 Log("wh chain end (登顶): stage " + whStage + " dive=" + whDiving);
             whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false; whLaunch = false;
+            whDashActive = false;
             curJumpGravity = WwRules.FallGravityPerSecond2;
             Log("wh StopBirdFly + UnlockBirdMoveZ: vxy=" + leapSpeedXY +
                 " u/s persists, vy=" + vy + " u/s; fall gravity " + curJumpGravity +
@@ -937,8 +946,9 @@ internal static class RebornClient
         bool whDemo = Env("RC_WH_DEMO", "0") == "1";
         bool whDemoJumped = false, whDemoCast = false, whDemoS1 = false, whDemoS2 = false,
              whDemoS3 = false, whDemoS4 = false, whDemoS5 = false, whDemoPlunge = false,
-             whDemoReleased = false, whDemoCast2 = false;
+             whDemoReleased = false, whDemoCast2 = false, whDemoDashed = false;
         long lastWUp = 0, lastWDown = 0;
+        long lastSUp = 0, lastSDown = 0, lastAUp = 0, lastADown = 0, lastDUp = 0, lastDDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -1131,18 +1141,54 @@ internal static class RebornClient
                 long t = Environment.TickCount;
                 if (!pW || t - lastWDown > 100)   // new press, not keyboard auto-repeat
                 {
-                    // double-tap: second press within 500 ms of the first release
+                    // double-tap: second press within 500 ms of the first release.
+                    // In the fly it is 【WW上冲】 (the 空中冲刺 dash); otherwise it
+                    // is the school 大轻功 trigger.
                     if (lastWUp != 0 && t - lastWUp < 500)
                     {
-                        wwTrigger();
+                        if (wwStateActive && !whLaunch) { whDashKey = Keys.W; whDashPressed = true; }
+                        else wwTrigger();
                     }
                     lastWDown = t;
                 }
                 pW = true;
             }
-            else if (e.KeyCode == Keys.S) pS = true;
-            else if (e.KeyCode == Keys.A) pA = true;
-            else if (e.KeyCode == Keys.D) pD = true;
+            else if (e.KeyCode == Keys.S)
+            {
+                long t = Environment.TickCount;
+                if (!pS || t - lastSDown > 100)
+                {
+                    // 【SS下冲】 in the fly
+                    if (lastSUp != 0 && t - lastSUp < 500 && wwStateActive && !whLaunch)
+                    { whDashKey = Keys.S; whDashPressed = true; }
+                    lastSDown = t;
+                }
+                pS = true;
+            }
+            else if (e.KeyCode == Keys.A)
+            {
+                long t = Environment.TickCount;
+                if (!pA || t - lastADown > 100)
+                {
+                    // 【AA左冲】 in the fly
+                    if (lastAUp != 0 && t - lastAUp < 500 && wwStateActive && !whLaunch)
+                    { whDashKey = Keys.A; whDashPressed = true; }
+                    lastADown = t;
+                }
+                pA = true;
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                long t = Environment.TickCount;
+                if (!pD || t - lastDDown > 100)
+                {
+                    // 【DD右冲】 in the fly
+                    if (lastDUp != 0 && t - lastDUp < 500 && wwStateActive && !whLaunch)
+                    { whDashKey = Keys.D; whDashPressed = true; }
+                    lastDDown = t;
+                }
+                pD = true;
+            }
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; if (wwStateActive) whStagePressed = true; else jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; wwRelease(); }
@@ -1209,13 +1255,13 @@ internal static class RebornClient
                 lastWUp = Environment.TickCount;
                 if (wwStateActive)
                 {
-                    // any W release is the WW release: the 45 deg forward-down dash
+                    // any W release is 松开W登顶 (StopBirdFly + UnlockBirdMoveZ)
                     wwEndState();
                 }
             }
-            else if (e.KeyCode == Keys.S) pS = false;
-            else if (e.KeyCode == Keys.A) pA = false;
-            else if (e.KeyCode == Keys.D) pD = false;
+            else if (e.KeyCode == Keys.S) { pS = false; lastSUp = Environment.TickCount; }
+            else if (e.KeyCode == Keys.A) { pA = false; lastAUp = Environment.TickCount; }
+            else if (e.KeyCode == Keys.D) { pD = false; lastDUp = Environment.TickCount; }
             else if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
@@ -1734,6 +1780,11 @@ internal static class RebornClient
                 // 急坠 at RC_WH_DEMO_PLUNGE_MS (default 18.6s).
                 // RC_WH_DEMO_S5_MS can stretch the JC4/JC5 windows.
                 long whS5Ms = 18000, whPlungeMs = 18600, whReleaseMs = 0;
+                long whS1Ms = 10800, whS2Ms = 12500, whS3Ms = 15200, whS4Ms = 17000;
+                long.TryParse(Env("RC_WH_DEMO_S1_MS", "10800"), out whS1Ms);
+                long.TryParse(Env("RC_WH_DEMO_S2_MS", "12500"), out whS2Ms);
+                long.TryParse(Env("RC_WH_DEMO_S3_MS", "15200"), out whS3Ms);
+                long.TryParse(Env("RC_WH_DEMO_S4_MS", "17000"), out whS4Ms);
                 long.TryParse(Env("RC_WH_DEMO_S5_MS", "18000"), out whS5Ms);
                 long.TryParse(Env("RC_WH_DEMO_PLUNGE_MS", "18600"), out whPlungeMs);
                 long.TryParse(Env("RC_WH_DEMO_RELEASE_MS", "0"), out whReleaseMs);
@@ -1744,10 +1795,10 @@ internal static class RebornClient
                     Log("whdemo: ground jump" + (Env("RC_WH_DEMO_NOJUMP", "0") == "1" ? " (skipped: ground cast test)" : ""));
                 }
                 if (!whDemoCast && now >= 8500) { whDemoCast = true; wwCharge(); }
-                if (!whDemoS1 && now >= 10800) { whDemoS1 = true; whStagePressed = true; }
-                if (!whDemoS2 && now >= 12500) { whDemoS2 = true; whStagePressed = true; }
-                if (!whDemoS3 && now >= 15200) { whDemoS3 = true; whStagePressed = true; }
-                if (!whDemoS4 && now >= 17000) { whDemoS4 = true; whStagePressed = true; }
+                if (!whDemoS1 && now >= whS1Ms) { whDemoS1 = true; whStagePressed = true; }
+                if (!whDemoS2 && now >= whS2Ms) { whDemoS2 = true; whStagePressed = true; }
+                if (!whDemoS3 && now >= whS3Ms) { whDemoS3 = true; whStagePressed = true; }
+                if (!whDemoS4 && now >= whS4Ms) { whDemoS4 = true; whStagePressed = true; }
                 if (!whDemoS5 && now >= whS5Ms) { whDemoS5 = true; whStagePressed = true; }
                 if (!whDemoPlunge && now >= whPlungeMs) { whDemoPlunge = true; whPlungePressed = true; }
                 // RC_WH_DEMO_RELEASE_MS>0: release W (登顶 exit) at that time
@@ -1767,6 +1818,16 @@ internal static class RebornClient
                     whDemoCast2 = true;
                     wwCharge();
                     Log("whdemo: recast from ground (power " + whPower + ")");
+                }
+                // RC_WH_DEMO_DASH_MS>0: fire the 空中冲刺 (上冲) at that time
+                long whDashMs = 0;
+                long.TryParse(Env("RC_WH_DEMO_DASH_MS", "0"), out whDashMs);
+                if (whDashMs > 0 && !whDemoDashed && now >= whDashMs)
+                {
+                    whDemoDashed = true;
+                    whDashKey = Keys.W;
+                    whDashPressed = true;
+                    Log("whdemo: dash trigger (上冲)");
                 }
             }
 
@@ -2054,6 +2115,7 @@ internal static class RebornClient
                     if (next <= WwRules.WhStageNames.Length)
                     {
                         whStage = next;
+                        whDashActive = false;   // a stage press takes over the dash
                         vy = WwRules.ChainVzFrame[next] * WwRules.LogicTicksPerSecond;
                         curJumpGravity = WwRules.ChainGravityFrame[next] * 225f;
                         leapSpeedXY = WwRules.ChainSpeedXYFrame[next] * WwRules.LogicTicksPerSecond;
@@ -2085,6 +2147,43 @@ internal static class RebornClient
                 }
                 else Log("wh 急坠 ignored: no fly active");
             }
+            if (whDashPressed)
+            {
+                whDashPressed = false;
+                if (wwStateActive && !whLaunch)
+                {
+                    // 20788 通用空中冲刺 (DashToPitchDirection(480, face, 160)):
+                    // the dash follows the camera pitch; S/A/D are the other
+                    // vectors (【WW上冲/SS下冲/AA左冲/DD右冲】).
+                    double pitch = aimPitchOf(camSys.Pitch);
+                    float cp = (float)Math.Cos(pitch);
+                    float sp2 = (float)Math.Sin(pitch);
+                    float dx, dy, dz;
+                    if (whDashKey == Keys.W) { dx = hx * cp; dz = hz * cp; dy = sp2; whDashName = "上冲"; }
+                    else if (whDashKey == Keys.S) { dx = hx * cp; dz = hz * cp; dy = -sp2; whDashName = "下冲"; }
+                    else if (whDashKey == Keys.D) { dx = hz; dz = -hx; dy = 0f; whDashName = "右冲"; }
+                    else { dx = -hz; dz = hx; dy = 0f; whDashName = "左冲"; }
+                    whDashActive = true;
+                    whDashT = 0f;
+                    whDashDirX = dx; whDashDirY = dy; whDashDirZ = dz;
+                    Log("wh 20788 空中冲刺·" + whDashName + ": DashToPitchDirection(" + WwRules.WhDashFrame +
+                        ", face, pitch " + pitch.ToString("F2") + ") -> " +
+                        (WwRules.WhDashFrame * WwRules.LogicTicksPerSecond) + " u/s x " +
+                        WwRules.WhDashFrames + " frames; buff 14561 免控 + 14129 换二段 + Fly_Skill SFX");
+                }
+                else Log("wh dash ignored: no fly active");
+            }
+            // 20789 空中持续冲刺: nDashFrame frames, then the end handler
+            // 通用持续冲刺结束.lua (Stop() + skill-move camera off + HideFullScreenSFX)
+            if (whDashActive)
+            {
+                whDashT += dt;
+                if ((int)(whDashT * WwRules.LogicTicksPerSecond) >= WwRules.WhDashFrames)
+                {
+                    whDashActive = false;
+                    Log("wh 通用持续冲刺结束: Stop() (dash end, " + WwRules.WhDashFrames + " frames)");
+                }
+            }
             // 气力值 drain/regen (JumpParam school 4 fly costs; ground regen provisional)
             if (grounded)
             {
@@ -2096,7 +2195,9 @@ internal static class RebornClient
             }
             else if (wwStateActive)
             {
-                whPower -= (pW ? WwRules.WhBirdMoveCostPerSecond : WwRules.WhFloatCostPerSecond) * dt;
+                whPower -= (whDashActive ? WwRules.WhDashCostPerSecond
+                            : pW ? WwRules.WhBirdMoveCostPerSecond
+                            : WwRules.WhFloatCostPerSecond) * dt;
                 if (whPower <= 0f)
                 {
                     whPower = 0f;
@@ -2154,11 +2255,18 @@ internal static class RebornClient
             // WW chain dash: authored JumpSpeedXY along facing (J1 30, J2 50,
             // J3 100 u/f -> 450/750/1500 u/s); forward in all stages, J3 is the
             // downward far dash (Vz -250).
-            if (!grounded && leapSpeedXY > 0f)
+            if (!grounded && leapSpeedXY > 0f && !whDashActive)
             {
                 float dstep = leapSpeedXY * dt;
                 px += (float)Math.Sin(curYaw) * dstep;
                 pz += (float)Math.Cos(curYaw) * dstep;
+            }
+            // 空中冲刺 horizontal (20788 DashToPitchDirection; 480 u/f = 7200 u/s)
+            if (!grounded && whDashActive)
+            {
+                float dstep = WwRules.WhDashFrame * WwRules.LogicTicksPerSecond * dt;
+                px += whDashDirX * dstep;
+                pz += whDashDirZ * dstep;
             }
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
@@ -2267,6 +2375,11 @@ internal static class RebornClient
                     // 20630: SetPassiveVelocityZ(-2000) overrides gravity entirely
                     vy = WwRules.WhPlungeFrame * WwRules.LogicTicksPerSecond;
                 }
+                else if (whDashActive)
+                {
+                    // 20788 空中冲刺: the dash velocity (pitch component)
+                    vy = whDashDirY * WwRules.WhDashFrame * WwRules.LogicTicksPerSecond;
+                }
                 else if (whLaunch)
                 {
                     // SkillMove 336 launch: IgnoreGravity; vy is driven by the
@@ -2315,6 +2428,7 @@ internal static class RebornClient
                     if (whStage > 0 || whDiving)
                         Log("wh chain landed: stage " + whStage + " dive=" + whDiving);
                     whStage = 0; whStageActive = false; whEndPhase = false; whDiving = false; whLaunch = false;
+                    whDashActive = false;
                 }
             }
             else jumpCount = 0;
@@ -3262,6 +3376,7 @@ internal static class RebornClient
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL"
                              : whDiving ? "WH-DIVE"
+                             : whDashActive ? ("WH-DASH-" + whDashName)
                              : whLaunch ? "WH-LAUNCH"
                              : whStageActive ? ("WH-" + WwRules.WhStageNames[whStage - 1])
                              : wwStateActive ? "WH-FLY"
@@ -3288,6 +3403,7 @@ internal static class RebornClient
                     if (whInFly)
                     {
                     string whNm = whDiving ? "急坠"
+                                : whDashActive ? whDashName
                                 : whLaunch ? "上冲"
                                 : whStageActive && whStage >= 1 ? WwRules.WhStageNames[whStage - 1]
                                 : "滑翔";

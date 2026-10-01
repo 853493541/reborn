@@ -256,7 +256,7 @@ earlier sandbox implemented only part of the solo base chain:
 | School trigger | `20628 万花轻功触发`: CanCast 气力值 ≥ 10000, cost `100*CONSUME_BASE`, `SkillMove 336` launch, `SetTimer(30)` → `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 | modelled |
 | Fly monitor | buff `13422`: `atFlyFlag`, `atMoveSpeedPercent 1024`, the stage skill icons (21124/21130/21132/21133), `ActiveAttrib1 = 气力值持续消耗.lua` | partly (drain) |
 | Stage chain (solo) | Condition.tab JC1..JC5 (纵跃段/一段/二段/三段/四段) → JumpParam J1..J5 + End triple | modelled |
-| **Air dash** | skill `20788 通用空中冲刺` → `20789` (learned by the trigger): `DashToPitchDirection(480, nFaceDirection, 160)`, buff `14561` (免控/CC immunity), buff `14129` (空中持续冲刺换二段; `ScriptFile = 轻功/通用持续冲刺结束.lua` → `Stop()` + skill-move camera + SFX hide; `atDriftFlag`; icon 20788→20789), `Fly_Skill` fullscreen SFX, `nDashFrame` 100/12/14/16 | **not modelled — the fast flight dash** |
+| **Air dash** | skill `20788 通用空中冲刺` → `20789` (learned by the trigger): `DashToPitchDirection(480, nFaceDirection, 160)`, buff `14561` (免控/CC immunity), buff `14129` (空中持续冲刺换二段; `ScriptFile = 轻功/通用持续冲刺结束.lua` → `Stop()` + skill-move camera + SFX hide; `atDriftFlag`; icon 20788→20789), `Fly_Skill` fullscreen SFX, `nDashFrame` 100/12/14/16 | **modelled 2026-09-30**: the fly double-tap W/S/A/D = 上冲/下冲/右冲/左冲 (`DashToPitchDirection` along the camera pitch; 480 u/f = 7200 u/s x `WhDashFrames` 100; `WhDashCostPerSecond` 375; the end `Stop()`); the CC immunity/drift are logged, not simulated |
 | 急坠 | `20630` → `SetPassiveVelocityZ(-2000)` | modelled |
 | 登顶/exit | buff 13422 end → `轻功状态结束处理.lua` (StopBirdFly + UnlockBirdMoveZ); summit = `KRLSummit` + doodad_summit cone + `SummitDistance=20000` | exit modelled; summit not (no summit points in the cropped map) |
 | 弈韵 branch | Condition JC6..JC11, entered via the 踩人/双人 actions (`6;7;`), the 踩尖/踩点 performance (player_summit.txt), `SpecialSprint` school 4 = 6\|7\|8\|9\|10\|11 | not modelled |
@@ -270,12 +270,15 @@ earlier sandbox implemented only part of the solo base chain:
 衍天 19, 药宗 20). The double-jump doc's "10/11 (万花/…)" label was wrong and is
 corrected there.
 
-**Consequence for the sandbox**: the 万花 solo chain data (J1..J5 + End) and the
-launch are correct; the flight currently lacks the **空中冲刺 dash** (the live
-game's fast air move, `DashToPitchDirection(480, …)` with the drift + immunity
-buffs), and the 弈韵/双人/登顶 branches are unmodelled. The tuned fly-forward
-value (150 u/f, `RC_WW_FWD`) came from the 丐帮 curve entry — a cross-school
-borrow; the 万花's own fly speed is not in the extracted tables (open).
+**Consequence for the sandbox**: the 万花 solo chain data (J1..J5 + End), the
+launch and the **空中冲刺 dash** are now modelled; the 弈韵 (needs a 踩人 target
+player), the 双人 (needs two players) and the 登顶 summit (needs summit doodads
+in the map) remain unmodelled — none can be entered in a single-player sandbox.
+The tuned hold-W fly-forward value (150 u/f, `RC_WW_FWD`) came from the 丐帮
+curve entry — a cross-school borrow; the 万花's own bird-move speed is not in the
+extracted tables (open). In-flight double-tap W no longer re-casts the trigger
+(that was the wrong "气力未足" on a 7k bar) — it is the 上冲 dash; the 10000 gate
+applies only to the initial cast (all school triggers, HIGH).
 
 ## 8. Open items
 

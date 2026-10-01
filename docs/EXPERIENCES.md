@@ -1178,3 +1178,21 @@ eborn_client_daqinggong carries these changes — other
   江湖轻功_空中持续冲刺, 通用持续冲刺结束), Buff.tab 14129/14561/14626, skills.tab
   trigger WeaponRequest, JumpParam/SpecialSprint tables; doc §7.3.
 - Outcome: audit recorded; the air dash + branches are the next build items.
+
+### 2026-09-30 — client — 空中冲刺 dash implemented (20788/20789)
+- Did: the fly double-tap W/S/A/D = 上冲/下冲/右冲/左冲 — the 空中冲刺 dash per
+  skill 20788 通用空中冲刺: `DashToPitchDirection(480, face, 160)` (the dash
+  follows the camera pitch; the horizontal from the camera forward/strafe),
+  480 u/f = 7200 u/s for `WhDashFrames` 100 (nDashFrame level 1), the dash cost
+  375/s (`OnFlyBirdMoveDashCost`), the end = 通用持续冲刺结束.lua `Stop()` (+ the
+  camera/SFX notes); buffs 14561 免控 / 14129 换二段 logged. In-flight double-tap
+  W no longer re-casts the trigger (that produced the bogus 气力未足 on a 7k bar);
+  the stage press cancels the dash; demo hooks RC_WH_DEMO_DASH_MS +
+  RC_WH_DEMO_S1..S4_MS.
+- Evidence: dash run 21:16 exit=0 — `wh 20788 空中冲刺·上冲: DashToPitchDirection(480,
+  face, pitch 0.00) -> 7200 u/s x 100 frames`, z 31532->76677 over 6 s (~7.5k u/s),
+  power 6670->4419 (375/s), `wh 通用持续冲刺结束: Stop() (dash end, 100 frames)`;
+  then the stages/急坠/登顶 exit; selftest WH_DASH_FRAME/FRAMES PASS.
+- Open: the 弈韵 (踩人 target), 双人, 登顶 summit cannot be entered in a
+  single-player sandbox; the 万花 bird-move speed is not in the extracted tables.
+- Outcome: solved for the dash; the flight now matches the dash-based live feel.
