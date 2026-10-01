@@ -167,7 +167,7 @@ school 4 JC1..JC5; `Sprint/Action.tab` actions 5/8/9/10/11.
 
 | Step | Real source (HIGH) | Sandbox model |
 |---|---|---|
-| Trigger | skill 20628: CanCast `nSprintPower >= 10000`, cost `100*CONSUME_BASE`; `Apply` -> `SetTimer(30)` -> `OnTimer`: `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 (binds 13889/16516) | air WW: 气力值 gate 10000, cost 2500 (CONSUME_BASE=25 hypothesis, MED), `RC_WH_DELAY_MS` 500 ms -> Z-locked fly |
+| Trigger | skill 20628: CanCast `nSprintPower >= 10000`, cost `100*CONSUME_BASE`; `Apply` -> `SetTimer(30)` -> `OnTimer`: `BirdFlyTo` + `LockBirdMoveZ`, buffs 13422(lv3)/14626/13836 (binds 13889/16516) | WW (**ground or air**; ground WW = 【WW上冲】 per the scenario table, not a sprint): 气力值 gate 10000, cost 2500 (CONSUME_BASE=25 hypothesis, MED), `RC_WH_DELAY_MS` 500 ms; from the ground the takeoff leap (J1 triple) runs first, then `LockBirdMoveZ` hovers at the apex |
 | Stages | Condition.tab school 4: JC1..JC5 = 点墨江山·纵跃段/一段/二段/三段/四段, `ActionGroup` space一段..四段 (Action.tab 8/9/10/11) | Space: takeoff triple J1..J5 (JumpParam rows 1..5), apex -> End triple 125/−140/12 (`ModifySprintEndSpeed`) |
 | 急坠 | skill 20630 `万花轻功急坠.lua`: `SetPassiveVelocityZ(-2000)` | key 3: vy = −2000 u/f, bypasses the 900 u/f fall cap (engine clamp −2048 u/f) |
 | Fly costs | JumpParam school 4: OnFlyCost 75, OnFlyFloatCost 35, OnFlyJumpCost 300, OnFlyBirdMoveCost 206 | 气力值: hover 35/s, bird move (W) 206/s, per stage 300; ground regen 2000/s (provisional, D0 open) |
@@ -231,6 +231,13 @@ cap applies, the 气力值 drain stops; the 45° constant-angle dash was removed
 `RC_WH_DEMO_RELEASE_MS` exercises the exit in the demo. Not modelled: the summit
 state (no summit points in the cropped sandbox map) and the altitude < 3072 u
 auto-end (`GetAltitude` units/semantics need verification before wiring).
+
+Recast (2026-09-30): WW works on the ground too (`WwRules.Evaluate` — the ground
+double-tap is 【WW上冲】, the ground sprint is HOLD W/疾跑段), so after landing you
+can cast again once the bar is back to the 10000 gate. The ground regen default
+is 4000/s (`RC_WH_REGEN`; D0 open — provisional), the top-right overlay shows
+段数 while flying and 气力值/气力不足 while it refills. `RC_WH_DEMO_NOJUMP` /
+`RC_WH_DEMO_RECAST_MS` exercise the ground cast in the demo.
 
 ## 8. Open items
 

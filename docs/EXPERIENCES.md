@@ -1112,3 +1112,24 @@ eborn_client_daqinggong carries these changes — other
 - Open: the summit state (no summit points in the sandbox map) and the
   altitude < 3072 u auto-end (`GetAltitude` units unverified).
 - Outcome: solved; the sandbox release matches the client truth.
+
+### 2026-09-30 — client — ground WW recast (WW上冲), 段数 HUD, power feedback
+- Did: the double-tap W now casts the 大轻功 on the GROUND too — per the client
+  truth (`JX3_DAQINGGONG_RESEARCH.md` scenario table: "Ground, school weapon |
+  WW flag -> ... school trigger ... this is the school 大轻功"); the ground
+  sprint stays HOLD W (疾跑段). `WwRules.Evaluate` no longer returns Sprint
+  (the wSprint/pSprint stale double-tap-sprint path removed; the sprint camera
+  now follows the 疾跑段/fly). Ground cast = the WW上冲 takeoff leap (the J1
+  triple) then LockBirdMoveZ hovers at the apex (`whLaunch`); stage presses take
+  over the launch; `grounded` is cleared at the fly start (bug found by the
+  recast run: the takeoff never left the ground). Top-right overlay: 段数 N/5 +
+  stage name while flying, 气力值/气力不足 (2 s red) while it refills/rejects.
+  Ground regen default 4000/s (RC_WH_REGEN; D0 open, provisional).
+  RC_WH_DEMO_NOJUMP / RC_WH_DEMO_RECAST_MS demo hooks.
+- Evidence: ground-cast run 19:18 exit=0 — `wh WW上冲 takeoff (ground): J1 leap
+  vy=2400` -> rise -> apex -> hover; recast run 19:20 exit=0 — release at JC3 ->
+  land -> recast at 21.5 s accepted (power 7500) -> ground takeoff -> hover;
+  standard chain run 19:19 exit=0 DONE; selftest GROUND_WW_CHARGE/AIR_WW_CHARGE
+  PASS. The recast at 22.0 s first failed at 9806/10000 (regen 2000/s) — the
+  4000/s default fixes the "only once" feel.
+- Outcome: solved; land -> double-tap W casts again.

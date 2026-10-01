@@ -87,14 +87,17 @@ internal static class WwRules
     public enum WwAction
     {
         None,
-        Sprint,
         Charge
     }
 
+    // WW (double-tap W) = 【WW上冲】: the school 大轻功 trigger in BOTH ground
+    // and air (JX3_DAQINGGONG_RESEARCH.md scenario table: "Ground, school weapon
+    // | WW flag -> ... school trigger ... this is the school 大轻功"; air: WW
+    // still enters the fly states). The ground sprint is HOLD W (疾跑段), not
+    // the double-tap. No/wrong school weapon -> no action.
     public static WwAction Evaluate(bool grounded, bool doubleTapW, bool schoolWeaponEquipped)
     {
         if (!doubleTapW) return WwAction.None;
-        if (grounded) return WwAction.Sprint;
         if (!schoolWeaponEquipped) return WwAction.None;
         return WwAction.Charge;
     }
@@ -111,8 +114,8 @@ internal static class WwRules
     public static int SelfTest()
     {
         int fail = 0;
-        fail += Check("GROUND_WW_SPRINT", Evaluate(true, true, true), WwAction.Sprint);
-        fail += Check("GROUND_WW_NO_WEAPON_SPRINT", Evaluate(true, true, false), WwAction.Sprint);
+        fail += Check("GROUND_WW_CHARGE", Evaluate(true, true, true), WwAction.Charge);
+        fail += Check("GROUND_WW_NO_WEAPON_NONE", Evaluate(true, true, false), WwAction.None);
         fail += Check("AIR_WW_CHARGE", Evaluate(false, true, true), WwAction.Charge);
         fail += Check("AIR_WW_NO_WEAPON_NONE", Evaluate(false, true, false), WwAction.None);
         fail += Check("NO_DOUBLE_TAP_NONE", Evaluate(true, false, true), WwAction.None);
