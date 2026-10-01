@@ -61,7 +61,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | Action bars | [DONE] | `controls/RESEARCH_RESOLVED_GAPS.md` §6 |
 | Targeting bodies | [PART] | `target.lua` located, bodies not decoded |
 | UI panels overall (~253 files) | [PART] | `proof/minimap/recon/ui_config_inventory.txt` |
-| HUD/nameplates/damage numbers | [OPEN] | huge UI surface — prioritize by mode |
+| HUD/nameplates/damage numbers | [PART] | catalog `docs/ui/BATTLE_FLOATING_UI.md` (2026-09-30): native caption data (nameplate HP bar/slots/colors/icons) + 33 KGUI modules extracted/decompiled, general-combat must-have table; open: cast-bar consumer, target layout naming, UISetting_HeadTop.ini |
 
 ## 5. Combat — skills & resources
 

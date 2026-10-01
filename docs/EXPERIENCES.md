@@ -939,3 +939,26 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   updated.
 - Outcome: solved (host/user decision; 1245 stays the client-number reference,
   max is the host start).
+
+### 2026-09-30 — ui — Battle floating UI catalog from client data
+- Did: user asked for battle floating UI (头顶/浮动战斗界面). `#iso` worktree
+  `../reborn-iso-battle-floating-ui`, branch `agent/battle-floating-ui`. Extracted
+  65/67 UI module paths + 8/11 native caption configs + 6/6 generic-bar follow-ups
+  from PakV4 (new harness `proof/ui/evidence/battle_hud/*.txt`), decompiled 33
+  modules with a locally built unluac (repo jar is a 9-byte placeholder; build
+  recipe in `proof/ui/battle_hud/SOURCES.txt`), re-verified the native caption
+  xrefs (`_LoadCaptionConfig 0x180058420`, `PlaySkillEffectText 0x18059FA10`,
+  `LuaScene_GetCharacterSkillEffectTextPos 0x1800BBF60`).
+- Findings: two floating layers — native `KG3D_CaptionManager` (nameplates,
+  `data/public/caption*.ini`, relation colors/icon atlas, `number.krl` layout)
+  and KGUI panels (CombatText = damage numbers via world→screen tracks; TopBuff
+  per-player head-top buff row + `settings/TopBuff.tab`; target/self frames;
+  buff bars; kill feed; combo; combat score; warnings). Corrections: `CastingPanel`
+  is the refine/铸造 window, NOT the cast bar; `ProgressBar` is the generic bar;
+  `Target.ini` does not exist — `Target.lua` composes `TargetPlayer10/11|S|…`
+  (`TargetCommon.ini` found, 878 sections).
+- Gaps (each with a named next probe): cast-bar event consumer, `TargetS.ini` MISS,
+  `UISetting_HeadTop.ini` absent from PakV4, `caption_images.ini` MISS, ShowModeID
+  semantics.
+- Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §6; index rows updated in
+  `docs/ui/README.md` and `docs/GAME_SYSTEMS_RESEARCH_MAP.md` §4.
