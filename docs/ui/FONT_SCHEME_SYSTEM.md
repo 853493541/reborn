@@ -211,8 +211,28 @@ are `{4,18,27,32,65,106,162,163,164,172,177}` — above the FontID range (0–35
 inside the scheme range, so `font=` names a **scheme id** (parser not disassembled).
 Correction (2026-09-30): the ASCII `font-size` string in `KGUIX64.dll` (`0x5B20A8`)
 belongs to the **SVG/HTML renderer** (`style`/`display`/`fill`/`stroke`/`opacity`
-parsers at `0x18010DA50..`), not to the label rich-text path; the label rich text uses
-UTF-16 tags (`<text>`, `font`, `color`, `richtext` strings at `0x5A9CF8..0x5A9F40`).
+parsers at `0x18010DA50..`), not to the label rich-text path.
+
+**Second control/text layer (found 2026-09-30): `KGUICocosX64.dll`.** Besides
+`KGUIX64.dll`, the client ships a Cocos-based control layer that implements
+`ccui.KGUIText` (Lua binding table at `0x1803A4490`: `SetText`, `SetString`,
+`SetFontColor/Size`, `SetFontScheme/GetFontScheme`, `SetRichText`, `SetAutoEtc`,
+`SetMultiLine`, `SetVAlign/HAlign`, `AutoSize`, `Clear`, `GetLayoutInfo`, …) plus a
+rich-text API (`TipRichText`, `RichText`, `GetRichText`,
+`OnRichTextOpenUrl`, `RichTextImageRenderer`, `OnRichTextSpriteAnim`). Its text
+layout exposes per-**fragment-run** fields (`text`, `rowTop`, `relX/relY`,
+`absX/absY`, `width`, `height`, `visible`, `alpha`, `isTextFragmentRun`) — the
+markup built by the represent layer is parsed here. It also decodes the same INI
+keys in lowercase (`richtext`, `multiline`, `halign`, `showall`, `reversemask`,
+`shaptexture`, …), i.e. the runtime decoder is case-insensitive. Evidence:
+`proof/ui/evidence/battle_hud/re/cocos_richtext/`. Which of the two control DLLs
+the loader binds at runtime is not traced (**MED**, next probe: JX3UIX64 loader).
+
+The producer of the markup is the represent layer:
+`OnReloadTable` (`JX3RepresentX64.dll 0x18031FE40`) builds
+`<text> text="…" font=10 r=255 g=165 b=0 </text>` (template at `0xC839C8`); the
+`font=N` value there is the represent font index, while the string-table variant
+(`font=` only, values ≤177) is the scheme id (MED).
 The `<Dn>` tags (15×) remain undecoded (**unknown**).
 
 ## 3. Engine side (KGUIX64.dll)
@@ -357,6 +377,7 @@ Not implemented (gaps; data now decoded where noted):
 | `proof/ui/evidence/battle_hud/re/names_font_scheme.txt` | symbol list for the RE dumps (tracked) |
 | `proof/ui/evidence/battle_hud/re/kgui_font/*.txt` | annotated disasm: LoadScheme/LoadFont/SetFontScheme/SetFontScale/UpdateCodePage/ColorSchemeMgr/per-state decoders (tracked) |
 | `proof/ui/evidence/battle_hud/re/kgui_font/setters/*.txt` | border/projection setters + draw-struct builder (`@addr` dumps) (tracked) |
+| `proof/ui/evidence/battle_hud/re/cocos_richtext/*` | KGUICocosX64 text/rich-text bindings + fragment-run layout (`ccui.KGUIText`) (tracked) |
 | `tools/ui_scheme_lookup.py` | resolver + census tool (committed 2026-09-30) |
 | `tools/pvp/dump_fn_disasm.py` | added RIP-relative string annotation (2026-09-30) |
 

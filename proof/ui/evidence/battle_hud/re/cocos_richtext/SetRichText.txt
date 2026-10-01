@@ -1,0 +1,336 @@
+# needle: SetRichText
+# string VAs: ['0x180c14b78']
+# xrefs: 1
+
+## xref 0x1803a476c  fn_start 0x1803a4490
+0x01803a4490: test	rcx, rcx
+0x01803a4493: je	0x1803a4b56
+0x01803a4499: push	rbx
+0x01803a449a: sub	rsp, 0x90
+0x01803a44a1: mov	rax, qword ptr [rip + 0x9aac60]
+0x01803a44a8: xor	rax, rsp
+0x01803a44ab: mov	qword ptr [rsp + 0x80], rax
+0x01803a44b3: mov	rbx, rcx
+0x01803a44b6: mov	edx, 0xffffd8ee
+0x01803a44bb: call	0x180701330
+0x01803a44c0: lea	rdx, [rip + 0x8a6949]	; 0x180c4ae10 -> "ccui"
+0x01803a44c7: mov	rcx, rbx
+0x01803a44ca: call	0x1804a1390
+0x01803a44cf: lea	rdx, [rip + 0x89e8aa]	; 0x180c42d80 -> "ccui.KGUIText"
+0x01803a44d6: mov	rcx, rbx
+0x01803a44d9: call	0x1804a1df0
+0x01803a44de: mov	qword ptr [rsp + 0x20], 0
+0x01803a44e7: lea	r9, [rip + 0x88c5fa]	; 0x180c30ae8 -> "cc.Node"
+0x01803a44ee: lea	r8, [rip + 0x89e88b]	; 0x180c42d80 -> "ccui.KGUIText"
+0x01803a44f5: lea	rdx, [rip + 0x8a9a04]	; 0x180c4df00 -> "KGUIText"
+0x01803a44fc: mov	rcx, rbx
+0x01803a44ff: call	0x1804a1440
+0x01803a4504: lea	rdx, [rip + 0x8a99f5]	; 0x180c4df00 -> "KGUIText"
+0x01803a450b: mov	rcx, rbx
+0x01803a450e: call	0x1804a1390
+0x01803a4513: lea	r8, [rip - 0x2bca]
+0x01803a451a: lea	rdx, [rip + 0x8a6b6b]	; 0x180c4b08c -> "create"
+0x01803a4521: mov	rcx, rbx
+0x01803a4524: call	0x1804a16f0
+0x01803a4529: lea	r8, [rip - 0x2b70]
+0x01803a4530: lea	rdx, [rip + 0x8705e9]	; 0x180c14b20 -> "SetText"
+0x01803a4537: mov	rcx, rbx
+0x01803a453a: call	0x1804a16f0
+0x01803a453f: lea	r8, [rip - 0x2846]
+0x01803a4546: lea	rdx, [rip + 0x8a99a3]	; 0x180c4def0 -> "SetString"
+0x01803a454d: mov	rcx, rbx
+0x01803a4550: call	0x1804a16f0
+0x01803a4555: lea	r8, [rip - 0x26fc]
+0x01803a455c: lea	rdx, [rip + 0x8a9975]	; 0x180c4ded8 -> "RefreshShowAllLayout"
+0x01803a4563: mov	rcx, rbx
+0x01803a4566: call	0x1804a16f0
+0x01803a456b: lea	r8, [rip - 0x1572]
+0x01803a4572: lea	rdx, [rip + 0x86e23b]	; 0x180c127b4 -> "Clear"
+0x01803a4579: mov	rcx, rbx
+0x01803a457c: call	0x1804a16f0
+0x01803a4581: lea	r8, [rip - 0x26c8]
+0x01803a4588: lea	rdx, [rip + 0x870599]	; 0x180c14b28 -> "GetText"
+0x01803a458f: mov	rcx, rbx
+0x01803a4592: call	0x1804a16f0
+0x01803a4597: lea	r8, [rip - 0x1ece]
+0x01803a459e: lea	rdx, [rip + 0x87e32b]	; 0x180c228d0 -> "GetTextLength"
+0x01803a45a5: mov	rcx, rbx
+0x01803a45a8: call	0x1804a16f0
+0x01803a45ad: lea	r8, [rip - 0x1e34]
+0x01803a45b4: lea	rdx, [rip + 0x87071d]	; 0x180c14cd8 -> "GetTextExtent"
+0x01803a45bb: mov	rcx, rbx
+0x01803a45be: call	0x1804a16f0
+0x01803a45c3: lea	r8, [rip - 0x1d6a]
+0x01803a45ca: lea	rdx, [rip + 0x8a98f7]	; 0x180c4dec8 -> "GetLayoutInfo"
+0x01803a45d1: mov	rcx, rbx
+0x01803a45d4: call	0x1804a16f0
+0x01803a45d9: lea	r8, [rip - 0x1980]
+0x01803a45e0: lea	rdx, [rip + 0x8a98d1]	; 0x180c4deb8 -> "GetRenderInfo"
+0x01803a45e7: mov	rcx, rbx
+0x01803a45ea: call	0x1804a16f0
+0x01803a45ef: lea	r8, [rip - 0x2656]
+0x01803a45f6: lea	rdx, [rip + 0x8705cb]	; 0x180c14bc8 -> "SetFontColor"
+0x01803a45fd: mov	rcx, rbx
+0x01803a4600: call	0x1804a16f0
+0x01803a4605: lea	r8, [rip - 0x255c]
+0x01803a460c: lea	rdx, [rip + 0x87068d]	; 0x180c14ca0 -> "GetFontColor"
+0x01803a4613: mov	rcx, rbx
+0x01803a4616: call	0x1804a16f0
+0x01803a461b: lea	r8, [rip - 0x24f2]
+0x01803a4622: lea	rdx, [rip + 0x8a987f]	; 0x180c4dea8 -> "SetFontSize"
+0x01803a4629: mov	rcx, rbx
+0x01803a462c: call	0x1804a16f0
+0x01803a4631: lea	r8, [rip - 0x2488]
+0x01803a4638: lea	rdx, [rip + 0x8a9859]	; 0x180c4de98 -> "GetFontSize"
+0x01803a463f: mov	rcx, rbx
+0x01803a4642: call	0x1804a16f0
+0x01803a4647: lea	r8, [rip - 0x244e]
+0x01803a464e: lea	rdx, [rip + 0x8518fb]	; 0x180bf5f50 -> "AutoSize"
+0x01803a4655: mov	rcx, rbx
+0x01803a4658: call	0x1804a16f0
+0x01803a465d: lea	r8, [rip - 0x2424]
+0x01803a4664: lea	rdx, [rip + 0x870465]	; 0x180c14ad0 -> "SetVAlign"
+0x01803a466b: mov	rcx, rbx
+0x01803a466e: call	0x1804a16f0
+0x01803a4673: lea	r8, [rip - 0x237a]
+0x01803a467a: lea	rdx, [rip + 0x87045f]	; 0x180c14ae0 -> "GetVAlign"
+0x01803a4681: mov	rcx, rbx
+0x01803a4684: call	0x1804a16f0
+0x01803a4689: lea	r8, [rip - 0x2350]
+0x01803a4690: lea	rdx, [rip + 0x870459]	; 0x180c14af0 -> "SetHAlign"
+0x01803a4697: mov	rcx, rbx
+0x01803a469a: call	0x1804a16f0
+0x01803a469f: lea	r8, [rip - 0x22a6]
+0x01803a46a6: lea	rdx, [rip + 0x870453]	; 0x180c14b00 -> "GetHAlign"
+0x01803a46ad: mov	rcx, rbx
+0x01803a46b0: call	0x1804a16f0
+0x01803a46b5: lea	r8, [rip - 0x25c]
+0x01803a46bc: lea	rdx, [rip + 0x870169]	; 0x180c1482c -> "IsLink"
+0x01803a46c3: mov	rcx, rbx
+0x01803a46c6: call	0x1804a16f0
+0x01803a46cb: lea	r8, [rip - 0x2292]
+0x01803a46d2: lea	rdx, [rip + 0x8704cf]	; 0x180c14ba8 -> "SetMultiLine"
+0x01803a46d9: mov	rcx, rbx
+0x01803a46dc: call	0x1804a16f0
+0x01803a46e1: lea	r8, [rip - 0x21c8]
+0x01803a46e8: lea	rdx, [rip + 0x8a99c9]	; 0x180c4e0b8 -> "GetMultiLine"
+0x01803a46ef: mov	rcx, rbx
+0x01803a46f2: call	0x1804a16f0
+0x01803a46f7: lea	r8, [rip - 0x21de]
+0x01803a46fe: lea	rdx, [rip + 0x8704b3]	; 0x180c14bb8 -> "IsMultiLine"
+0x01803a4705: mov	rcx, rbx
+0x01803a4708: call	0x1804a16f0
+0x01803a470d: lea	r8, [rip - 0x2194]
+0x01803a4714: lea	rdx, [rip + 0x8a998d]	; 0x180c4e0a8 -> "SetAutoEtc"
+0x01803a471b: mov	rcx, rbx
+0x01803a471e: call	0x1804a16f0
+0x01803a4723: lea	r8, [rip - 0x20aa]
+0x01803a472a: lea	rdx, [rip + 0x8a9967]	; 0x180c4e098 -> "IsAutoEtc"
+0x01803a4731: mov	rcx, rbx
+0x01803a4734: call	0x1804a16f0
+0x01803a4739: lea	r8, [rip - 0x16a0]
+0x01803a4740: lea	rdx, [rip + 0x870369]	; 0x180c14ab0 -> "SetFontScheme"
+0x01803a4747: mov	rcx, rbx
+0x01803a474a: call	0x1804a16f0
+0x01803a474f: lea	r8, [rip - 0x1636]
+0x01803a4756: lea	rdx, [rip + 0x870363]	; 0x180c14ac0 -> "GetFontScheme"
+0x01803a475d: mov	rcx, rbx
+0x01803a4760: call	0x1804a16f0
+0x01803a4765: lea	r8, [rip - 0x160c]
+0x01803a476c: lea	rdx, [rip + 0x870405]	; 0x180c14b78 -> "SetRichText"
+0x01803a4773: mov	rcx, rbx
+0x01803a4776: call	0x1804a16f0
+0x01803a477b: lea	r8, [rip - 0x1592]
+0x01803a4782: lea	rdx, [rip + 0x8a98ff]	; 0x180c4e088 -> "GetRichText"
+0x01803a4789: mov	rcx, rbx
+0x01803a478c: call	0x1804a16f0
+0x01803a4791: lea	r8, [rip - 0x12f8]
+0x01803a4798: lea	rdx, [rip + 0x8a98d1]	; 0x180c4e070 -> "SetAutoAdaptSize"
+0x01803a479f: mov	rcx, rbx
+0x01803a47a2: call	0x1804a16f0
+0x01803a47a7: lea	r8, [rip - 0x129e]
+0x01803a47ae: lea	rdx, [rip + 0x8703a3]	; 0x180c14b58 -> "SetFontSpacing"
+0x01803a47b5: mov	rcx, rbx
+0x01803a47b8: call	0x1804a16f0
+0x01803a47bd: lea	r8, [rip - 0x1244]
+0x01803a47c4: lea	rdx, [rip + 0x87039d]	; 0x180c14b68 -> "GetFontSpacing"
+0x01803a47cb: mov	rcx, rbx
+0x01803a47ce: call	0x1804a16f0
+0x01803a47d3: lea	r8, [rip - 0x116a]
+0x01803a47da: lea	rdx, [rip + 0x8703f7]	; 0x180c14bd8 -> "SetFontBorder"
+0x01803a47e1: mov	rcx, rbx
+0x01803a47e4: call	0x1804a16f0
+0x01803a47e9: lea	r8, [rip - 0x10b0]
+0x01803a47f0: lea	rdx, [rip + 0x8a9869]	; 0x180c4e060 -> "GetFontBorder"
+0x01803a47f7: mov	rcx, rbx
+0x01803a47fa: call	0x1804a16f0
+0x01803a47ff: lea	r8, [rip - 0x1026]
+0x01803a4806: lea	rdx, [rip + 0x8703db]	; 0x180c14be8 -> "SetFontShadow"
+0x01803a480d: mov	rcx, rbx
+0x01803a4810: call	0x1804a16f0
+0x01803a4815: lea	r8, [rip - 0xf6c]
+0x01803a481c: lea	rdx, [rip + 0x8a982d]	; 0x180c4e050 -> "GetFontShadow"
+0x01803a4823: mov	rcx, rbx
+0x01803a4826: call	0x1804a16f0
+0x01803a482b: lea	r8, [rip - 0x1052]
+0x01803a4832: lea	rdx, [rip + 0x8a97ff]	; 0x180c4e038 -> "SetFontProjection"
+0x01803a4839: mov	rcx, rbx
+0x01803a483c: call	0x1804a16f0
+0x01803a4841: lea	r8, [rip - 0xef8]
+0x01803a4848: lea	rdx, [rip + 0x870471]	; 0x180c14cc0 -> "GetFontProjection"
+0x01803a484f: mov	rcx, rbx
+0x01803a4852: call	0x1804a16f0
+0x01803a4857: lea	r8, [rip - 0xe6e]
+0x01803a485e: lea	rdx, [rip + 0x8a988b]	; 0x180c4e0f0 -> "SetCenterEachLine"
+0x01803a4865: mov	rcx, rbx
+0x01803a4868: call	0x1804a16f0
+0x01803a486d: lea	r8, [rip - 0xe14]
+0x01803a4874: lea	rdx, [rip + 0x87030d]	; 0x180c14b88 -> "SetRowSpacing"
+0x01803a487b: mov	rcx, rbx
+0x01803a487e: call	0x1804a16f0
+0x01803a4883: lea	r8, [rip - 0xdba]
+0x01803a488a: lea	rdx, [rip + 0x870307]	; 0x180c14b98 -> "GetRowSpacing"
+0x01803a4891: mov	rcx, rbx
+0x01803a4894: call	0x1804a16f0
+0x01803a4899: lea	r8, [rip - 0xd90]
+0x01803a48a0: lea	rdx, [rip + 0x8701a1]	; 0x180c14a48 -> "SetRange"
+0x01803a48a7: mov	rcx, rbx
+0x01803a48aa: call	0x1804a16f0
+0x01803a48af: lea	r8, [rip - 0x23806]
+0x01803a48b6: lea	rdx, [rip + 0x87019b]	; 0x180c14a58 -> "SetTime"
+0x01803a48bd: mov	rcx, rbx
+0x01803a48c0: call	0x1804a16f0
+0x01803a48c5: lea	r8, [rip - 0xb9c]
+0x01803a48cc: lea	rdx, [rip + 0x87018d]	; 0x180c14a60 -> "SetNumber"
+0x01803a48d3: mov	rcx, rbx
+0x01803a48d6: call	0x1804a16f0
+0x01803a48db: lea	r8, [rip - 0xab2]
+0x01803a48e2: lea	rdx, [rip + 0x870187]	; 0x180c14a70 -> "GetNumber"
+0x01803a48e9: mov	rcx, rbx
+0x01803a48ec: call	0x1804a16f0
+0x01803a48f1: lea	r8, [rip - 0xa68]
+0x01803a48f8: lea	rdx, [rip + 0x870211]	; 0x180c14b10 -> "SprintfText"
+0x01803a48ff: mov	rcx, rbx
+0x01803a4902: call	0x1804a16f0
+0x01803a4907: lea	r8, [rip - 0x223e]
+0x01803a490e: lea	rdx, [rip + 0x87021b]	; 0x180c14b30 -> "GetTextLen"
+0x01803a4915: mov	rcx, rbx
+0x01803a4918: call	0x1804a16f0
+0x01803a491d: lea	r8, [rip - 0x23874]
+0x01803a4924: lea	rdx, [rip + 0x870215]	; 0x180c14b40 -> "FormatTextForDraw"
+0x01803a492b: mov	rcx, rbx
+0x01803a492e: call	0x1804a16f0
+0x01803a4933: lea	r8, [rip - 0x89a]
+0x01803a493a: lea	rdx, [rip + 0x8702d7]	; 0x180c14c18 -> "GetFontScale"
+0x01803a4941: mov	rcx, rbx
+0x01803a4944: call	0x1804a16f0
+0x01803a4949: lea	r8, [rip - 0x920]
+0x01803a4950: lea	rdx, [rip + 0x8702d1]	; 0x180c14c28 -> "SetFontScale"
+0x01803a4957: mov	rcx, rbx
+0x01803a495a: call	0x1804a16f0
+0x01803a495f: lea	r8, [rip - 0x866]
+0x01803a4966: lea	rdx, [rip + 0x8702cb]	; 0x180c14c38 -> "SetFontID"
+0x01803a496d: mov	rcx, rbx
+0x01803a4970: call	0x1804a16f0
+0x01803a4975: lea	r8, [rip - 0x80c]
+0x01803a497c: lea	rdx, [rip + 0x870275]	; 0x180c14bf8 -> "GetFontID"
+0x01803a4983: mov	rcx, rbx
+0x01803a4986: call	0x1804a16f0
+0x01803a498b: lea	r8, [rip - 0x1252]
+0x01803a4992: lea	rdx, [rip + 0x870317]	; 0x180c14cb0 -> "GetFontBoder"
+0x01803a4999: mov	rcx, rbx
+0x01803a499c: call	0x1804a16f0
+0x01803a49a1: lea	r8, [rip - 0x7f8]
+0x01803a49a8: lea	rdx, [rip + 0x870299]	; 0x180c14c48 -> "GetTextPosExtent"
+0x01803a49af: mov	rcx, rbx
+0x01803a49b2: call	0x1804a16f0
+0x01803a49b7: lea	r8, [rip - 0x61e]
+0x01803a49be: lea	rdx, [rip + 0x87029b]	; 0x180c14c60 -> "IsTextAutoTipEnabled"
+0x01803a49c5: mov	rcx, rbx
+0x01803a49c8: call	0x1804a16f0
+0x01803a49cd: lea	r8, [rip - 0x5e4]
+0x01803a49d4: lea	rdx, [rip + 0x87029d]	; 0x180c14c78 -> "SetTextAutoTipEnabled"
+0x01803a49db: mov	rcx, rbx
+0x01803a49de: call	0x1804a16f0
+0x01803a49e3: lea	r8, [rip - 0x17fa]
+0x01803a49ea: lea	rdx, [rip + 0x870217]	; 0x180c14c08 -> "IsRichText"
+0x01803a49f1: mov	rcx, rbx
+0x01803a49f4: call	0x1804a16f0
+0x01803a49f9: lea	r8, [rip - 0x17c0]
+0x01803a4a00: lea	rdx, [rip + 0x8a96d9]	; 0x180c4e0e0 -> "GetFragmentRuns"
+0x01803a4a07: mov	rcx, rbx
+0x01803a4a0a: call	0x1804a16f0
+0x01803a4a0f: lea	r8, [rip - 0x17d6]
+0x01803a4a16: lea	rdx, [rip + 0x8a96ab]	; 0x180c4e0c8 -> "GetFragmentLabels"
+0x01803a4a1d: mov	rcx, rbx
+0x01803a4a20: call	0x1804a16f0
+0x01803a4a25: lea	rdx, [rip + 0x89e354]	; 0x180c42d80 -> "ccui.KGUIText"
+0x01803a4a2c: mov	rcx, rbx
+0x01803a4a2f: call	0x18039a100
+0x01803a4a34: mov	rcx, rbx
+0x01803a4a37: call	0x1804a16e0
+0x01803a4a3c: mov	rcx, rbx
+0x01803a4a3f: call	0x1804a16e0
+0x01803a4a44: mov	edx, 0xfffffffe
+0x01803a4a49: mov	rcx, rbx
+0x01803a4a4c: call	0x180701900
+0x01803a4a51: lea	rdx, [rip + 0x9efea8]
+0x01803a4a58: lea	rcx, [rip + 0x9e0ff1]
+0x01803a4a5f: call	qword ptr [rip + 0x6807bb]
+0x01803a4a65: mov	qword ptr [rsp + 0x70], 0
+0x01803a4a6e: mov	qword ptr [rsp + 0x78], 0xf
+0x01803a4a77: mov	byte ptr [rsp + 0x60], 0
+0x01803a4a7c: mov	r8, 0xffffffffffffffff
+0x01803a4a83: inc	r8
+0x01803a4a86: cmp	byte ptr [rax + r8], 0
+0x01803a4a8b: jne	0x1803a4a83
+0x01803a4a8d: mov	rdx, rax
+0x01803a4a90: lea	rcx, [rsp + 0x60]
+0x01803a4a95: call	0x1800f0d00
+0x01803a4a9a: nop	
+0x01803a4a9b: lea	r8, [rsp + 0x60]
+0x01803a4aa0: lea	rdx, [rsp + 0x30]
+0x01803a4aa5: lea	rcx, [rip + 0x9eb7e4]
+0x01803a4aac: call	0x180343c40
+0x01803a4ab1: mov	rcx, qword ptr [rax]
+0x01803a4ab4: add	rcx, 0x30
+0x01803a4ab8: mov	r8d, 0xd
+0x01803a4abe: lea	rdx, [rip + 0x89e2bb]	; 0x180c42d80 -> "ccui.KGUIText"
+0x01803a4ac5: call	0x1800f0d00
+0x01803a4aca: mov	qword ptr [rsp + 0x50], 0
+0x01803a4ad3: mov	qword ptr [rsp + 0x58], 0xf
+0x01803a4adc: mov	byte ptr [rsp + 0x40], 0
+0x01803a4ae1: mov	r8d, 8
+0x01803a4ae7: lea	rdx, [rip + 0x8a9412]	; 0x180c4df00 -> "KGUIText"
+0x01803a4aee: lea	rcx, [rsp + 0x40]
+0x01803a4af3: call	0x1800f0d00
+0x01803a4af8: nop	
+0x01803a4af9: lea	r8, [rsp + 0x40]
+0x01803a4afe: lea	rdx, [rsp + 0x30]
+0x01803a4b03: lea	rcx, [rip + 0x9eb7c6]
+0x01803a4b0a: call	0x18037d8d0
+0x01803a4b0f: mov	rcx, qword ptr [rax]
+0x01803a4b12: add	rcx, 0x30
+0x01803a4b16: mov	r8d, 0xd
+0x01803a4b1c: lea	rdx, [rip + 0x89e25d]	; 0x180c42d80 -> "ccui.KGUIText"
+0x01803a4b23: call	0x1800f0d00
+0x01803a4b28: nop	
+0x01803a4b29: lea	rcx, [rsp + 0x40]
+0x01803a4b2e: call	0x1800f1190
+0x01803a4b33: nop	
+0x01803a4b34: lea	rcx, [rsp + 0x60]
+0x01803a4b39: call	0x1800f1190
+0x01803a4b3e: mov	rcx, qword ptr [rsp + 0x80]
+0x01803a4b46: xor	rcx, rsp
+0x01803a4b49: call	0x1809ecd40
+0x01803a4b4e: add	rsp, 0x90
+0x01803a4b55: pop	rbx
+0x01803a4b56: ret	
+0x01803a4b57: int3	
+0x01803a4b58: int3	
+0x01803a4b59: int3	
+0x01803a4b5a: int3	
+0x01803a4b5b: int3	
+0x01803a4b5c: int3	
+0x01803a4b5d: int3	
+0x01803a4b5e: int3	

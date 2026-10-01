@@ -1085,3 +1085,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - `FONT_SCHEME_SYSTEM.md` §2.2 updated; dumps
   `re/kgui_font/setters/` committed. Renderer gap remains: projection not drawn,
   border approximated (`DropShadowEffect`).
+
+### 2026-09-30 — ui — Rich text: shipping text layer is KGUICocosX64
+- Byte scan of `bin64` for markup tokens: `KGUIX64.dll` has only `RichText` (6×);
+  **`KGUICocosX64.dll` has `<text`, `richtext`, 164× `RichText`** plus
+  `TipRichText`/`GetRichText`/`OnRichTextOpenUrl`/`RichTextImageRenderer` and the
+  lowercase INI key table (`richtext`, `multiline`, `halign`, `showall`,
+  `reversemask`, `shaptexture`, …) — i.e. the Cocos control layer is the shipping
+  text/rich-text runtime, and the decoder is case-insensitive.
+- `ccui.KGUIText` Lua binding table at `0x1803A4490`
+  (`SetFontScheme/GetFontScheme`, `SetRichText`, `SetAutoEtc`, `MultiLine`, …);
+  layout exposes fragment runs (`text/rowTop/relX/relY/absX/absY/width/height/
+  visible/alpha/isTextFragmentRun`) — the markup parser feeds these runs.
+  Exact parser not pinned (next probe: `SetRichText` binding target / fragment
+  builder). Represent produces the markup: `OnReloadTable` `0x18031FE40`,
+  template `font=10 r=255 g=165 b=0`.
+- Dumps `re/cocos_richtext/` committed; `FONT_SCHEME_SYSTEM.md` §2.4 updated.
