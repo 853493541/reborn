@@ -45,6 +45,15 @@ def main() -> int:
 
     needles = [n.strip() for n in Path(args.names).read_text(encoding="utf-8").splitlines()
                if n.strip() and not n.startswith("#")]
+    # entries of the form @0x180012345 dump the function containing that address
+    addr_targets = []
+    text_needles = []
+    for n in needles:
+        if n.startswith("@"):
+            addr_targets.append(int(n[1:], 16))
+        else:
+            text_needles.append(n)
+    needles = text_needles
 
     # locate string VAs for each needle
     str_vas: dict[str, list[int]] = {}
@@ -124,12 +133,13 @@ def main() -> int:
         return ("\t; " + "; ".join(parts)) if parts else ""
 
     index = []
-    for n in needles:
-        xs = sorted(set(xrefs[n]))
+    jobs = [(n, sorted(set(xrefs[n]))) for n in needles]
+    jobs += [("@%#x" % a, [a]) for a in addr_targets]
+    for n, xs in jobs:
         fname = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in n)[:120]
         path = out_dir / f"{fname}.txt"
         lines = [f"# needle: {n}",
-                 f"# string VAs: {[hex(v) for v in str_vas[n]]}",
+                 f"# string VAs: {[hex(v) for v in str_vas.get(n, [])]}",
                  f"# xrefs: {len(xs)}"]
         if not xs:
             lines.append("(no xref found)")

@@ -1072,3 +1072,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - `UI_SYSTEM_REPORT.md` §9 rewritten; `BATTLE_FLOATING_UI.md` §4.6 closed;
   evidence `re/kgui_showmode/window_mask_uses.txt` + InitShowModeInfos dump
   (showmode.txt loader) committed.
+
+### 2026-09-30 — ui — Border/projection setters decoded (clamps + item fields)
+- Added `@<addr>` support to `tools/pvp/dump_fn_disasm.py` (dump a function by
+  address), then dumped the three font setters:
+  `0x180121FC0` border — **size clamped ≤4**, color `item+0x304`, size byte `+0x310`;
+  `0x180122090` projection — **clamped ≤255**, color `item+0x308`, byte `+0x311`;
+  `0x180122160` builds the per-glyph draw struct (fill/border/proj colors
+  `+0x80/+0x84/+0x88`, sizes `+0xA8/+0xA9`, resolved font-size float `+0x2F4` →
+  `+0x94`, FontScale `+0x314` → `+0x90`). Border color alpha is attenuated by
+  `(item+0x14 × item+0x18)/65025`.
+- `FONT_SCHEME_SYSTEM.md` §2.2 updated; dumps
+  `re/kgui_font/setters/` committed. Renderer gap remains: projection not drawn,
+  border approximated (`DropShadowEffect`).

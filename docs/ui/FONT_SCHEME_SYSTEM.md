@@ -148,11 +148,24 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
   `GetFontScale`, `GetFontOffset`, `GetFontProjection` (`proof/ui/notes/re-xrefs.md`;
   Lua wrappers `LuaItemText_GetFontBoder/GetFontProjection`).
 - `KItemText::SetFontScheme` resolves both and calls the setters with
-  `(u16 size, ARGB color)` — see §3; the record stores them as 16-bit fields at `+8`
-  (border) and `+0xC` (projection). Item-side params live around `+0x304..+0x311`
-  (Lua getters read `+0x304`/`+0x308` + alpha bytes `+0x310`/`+0x311`).
-- Exact glyph-outline/shadow pixel math (offset, blur, thickness scaling) is **not**
-  decoded; `projection` is not rendered by `ui-process-app` (gap, see §5).
+  `(u16 size, ARGB color)`; the record stores them as 16-bit fields at `+8`
+  (border) and `+0xC` (projection). Setters (decoded 2026-09-30, dumps in
+  `proof/ui/evidence/battle_hud/re/kgui_font/setters/`):
+  - border setter `0x180121FC0`: **clamps size to ≤4** (`cmp dx,4; cmovbe`), stores
+    color at `item+0x304`, size byte at `item+0x310`; if the item is dirty it pushes
+    per-glyph-part (`item+0x358..0x360`, stride 0xB0) `part+0x84` = border color and
+    `part+0xA8` = border size (color alpha attenuated by an item scaling factor
+    `(item+0x14 × item+0x18) / 65025`).
+  - projection setter `0x180122090`: **clamps size to ≤255**, stores color at
+    `item+0x308`, size byte at `item+0x311`; per part `part+0x88`/`part+0xA9`.
+  - draw-struct builder `0x180122160`: copies `FontID (+0x2FC)`, fill/border/
+    projection ARGB into `+0x80/+0x84/+0x88`, sizes into `+0xA8/+0xA9`, the
+    **resolved font-size float `+0x2F4` into `+0x94`** (after `addss` + a
+    `0x1804DB63D` rounding call) and `FontScale (+0x314)` into `+0x90`.
+- So border thickness is a 0–4 px outline and projection is a 0–255 parameter
+  (offset/blur handled by the glyph builder); the exact rendered shadow pixel math
+  is still not fully pinned, and `projection` is not rendered by `ui-process-app`
+  (gap, see §5).
 
 ### 2.3 FontColor / per-state codes
 
@@ -332,6 +345,7 @@ Not implemented (gaps; data now decoded where noted):
 | `proof/ui/evidence/scheme/uiconfig.ini` | `[GrayFontColor] 207/207/207` + Balloon/Option keys (tracked) |
 | `proof/ui/evidence/battle_hud/re/names_font_scheme.txt` | symbol list for the RE dumps (tracked) |
 | `proof/ui/evidence/battle_hud/re/kgui_font/*.txt` | annotated disasm: LoadScheme/LoadFont/SetFontScheme/SetFontScale/UpdateCodePage/ColorSchemeMgr/per-state decoders (tracked) |
+| `proof/ui/evidence/battle_hud/re/kgui_font/setters/*.txt` | border/projection setters + draw-struct builder (`@addr` dumps) (tracked) |
 | `tools/ui_scheme_lookup.py` | resolver + census tool (committed 2026-09-30) |
 | `tools/pvp/dump_fn_disasm.py` | added RIP-relative string annotation (2026-09-30) |
 
