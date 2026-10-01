@@ -1029,3 +1029,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   updated.
 - Verified: `dotnet build` 0 errors; `--fonttest` → `family=FZHei-B01 resolved=True`;
   `ui_scheme_lookup.py --color red6` → `#FF1B1B` (first row).
+
+### 2026-09-30 — ui — Battle-UI open items closed: target layouts, UISetting page, caption_images
+- Target layouts: `Target.lua` naming decoded — players `TargetPlayer10` (not enemy) /
+  `TargetPlayer11` (enemy); NPCs `"Target"..GetNpcIntensity(npc)..relation` with
+  `nIntensity 2|6→4, 5→3, 4→2, else 1` and relation 2/1/0; `S` is appended only in
+  standard-target mode (`Target.bStandard`). All 28 layouts extracted (12 NPC + 2
+  player, each ±S) + `TargetCommon.ini`; `TargetS.ini` never exists.
+- `UISetting_HeadTop.ini` closed: the page is `WndContainer_HeadTop` inside
+  `UISetting.ini` (HIT, 505 KB / 1,749 sections).
+- `caption_images.ini` closed: the string is absent from the current
+  `KG3DEngineAdapterX64.dll` (probe + string scan) — no such file in this build.
+- Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §2.2/§4/§6; tracked candidate list
+  `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt`.

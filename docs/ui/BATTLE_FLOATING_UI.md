@@ -65,7 +65,7 @@ Shipped data (PakV4, extracted to `proof/ui/battle_hud/pakv4_native/`):
 | `Represent/common/caption_color_group.txt` (+ `_care`) | `CaptionGroup × ForeceRelationType → 3DColor/2DColor/TargetColor/DeadColor` (Invalid/Foe/Enemy/Neutrality/Party/Ally/Self/None/All) | HIT |
 | `Represent/common/caption_icon_type.txt` | `TypeID · IconPosType (0 left small icon, 1 right big icon, 2 second left icon) · IconFile` (`ui/Image/UITga/LittleIcon/*.tga`) | HIT |
 | `Represent/common/number.krl.txt` | head-top layout row: `nNpcAdjustOffsetY=200`, `nNpcAdjustSlipOffsetY=64`, `Caption*Height/FloorSpace*`, `BufferHeightN/Y1`, `CaptionSkillBufferHeight`, `CastSkillResetPeriod`, `SkillEffectResultTimeout`, `TitleAdjust*`, `HitMissAdjustOffset=1000` | tracked copy `proof/gravity/number.krl.txt` |
-| `data/public/caption_images.ini` | referenced by code; not found at the probed path | MISS |
+| `data/public/caption_images.ini` | not referenced by this build — the string is absent from `KG3DEngineAdapterX64.dll` (xref re-run 2026-09-30) and all path variants MISS | CLOSED (no such file) |
 
 - Runtime override: the loose **install-root `caption.ini`** (`C:\SeasunGame\Game\JX3\bin\zhcn_hd\caption.ini`,
   `NewHPBar=1`, `HPBarWidth=51`, `BorderWeight=2`) is the user/settings overlay; the UI writes it
@@ -147,10 +147,13 @@ sizes, slots) against the configs.
   strings `0x7F6DA2`/`0x7F6E37`), loader `KBuffManager::LoadTopBuffInfo` (string `0x83CBE8`).
 - `TopBuffSet` window: `[TopBuffSet]` `WndFrame` `_,_Parent=Normal`,
   `AnchorArgs=TOPCENTER,TOPCENTER,80,0`, drag+close/sure buttons, `GetOffsetYOriginNum` default `-70`.
-- `UISetting_HeadTop.lua` (extracted; **no INI**) drives `HT_*` keys (`HT_NewPH`,
+- `UISetting_HeadTop.lua` drives `HT_*` keys (`HT_NewPH`,
   `HT_PHPercent`, `HT_Lod`, `HT_Fade`, `HT_FadeSDis`, `HT_Size`, `HT_Border`, `HT_Span`,
   `HT_PHHeight`, `HT_PHBorder`, `HT_PHWidth`, `HT_Zoom`, `HT_BorderColor`), calls
   `Global_SetCaptionParam`, and toggles care mode (`rlcmd "enable care mode 1/0"`).
+  There is **no `UISetting_HeadTop.ini`**: the page lives inside `UISetting.ini`
+  (HIT, 505 KB / 1,749 sections: `WndContainer_HeadTop`, `HI_HeadTop`, `Text_HeadTop*`,
+  `Scroll_List_HeadTop`, `Btn_Up/Down_HeadTop`) — closed 2026-09-30.
 **Reborn:** KGUI window per player + world→screen anchor; icon atlas + `TopBuff.tab` are local.
 
 #### CombatText — floating combat text (damage/heal/miss/dodge/block/immunity) (P1)
@@ -220,11 +223,13 @@ merge/queue behavior lives in the decompiled Lua (port or re-derive against capt
 | `Resourcebar` | `[Resourcebar]` `TOPLEFT,-10,73` | 15 | 7 qi dots (`Handle_QiControlList`), same script |
 | `TargetResourcebar` | `[TargetResourcebar]` `TOPLEFT,-10,73` | 28,15 | target qi/resource bar, same script + `TARGET_CHANGE` |
 | `TargetTarget` | `[TargetTarget]` no AnchorArgs | 17 | target-of-target, `ScriptFile=Target.lua`, `TargetTarget.area`; fires `TARGET_TARGET_ANCHOR_CHANGED` |
-| `Target` | layout composed per type | — | `Target.ini` does **not** exist: `Target.lua` builds `TargetPlayer10/11` (`IsEnemy`) or `Target<intensity>{2|1|0}` / `TargetS` names under `ui/config/default/` and opens instance `Normal/Target`; `TARGET_CHANGE`, `TARGET_ANCHOR_CHANGED`, damage/relation/party events |
+| `Target` | layout composed per type | — | `Target.ini`/`TargetS.ini` do **not** exist: `Target.lua` builds the name and appends `S` only in standard-target mode — players `TargetPlayer10` (not enemy) / `TargetPlayer11` (enemy), NPCs `"Target"..GetNpcIntensity(npc)..relation` (intensity `2|6→4, 5→3, 4→2, else 1`; relation 2 enemy / 1 neutral / 0 ally); opens instance `Normal/Target`; `TARGET_CHANGE`, `TARGET_ANCHOR_CHANGED`, damage/relation/party events |
 
-Target layout probes: `ui/config/default/TargetCommon.ini` **HIT** (878 sections; root
-`[TargetCommon]`, buff/debuff BG, `[Box]`, short/long cast art), `TargetPlayer10.ini` and
-`TargetPlayer11.ini` **HIT**, `TargetS.ini` **MISS** (naming pattern WIP in §4).
+Target layout probes (2026-09-30): `TargetCommon.ini` **HIT** (878 sections; root
+`[TargetCommon]`, buff/debuff BG, `[Box]`, short/long cast art); the complete shipped
+set **HIT**: `TargetPlayer10/11`, `TargetPlayer10S/11S`, `Target{10,11,12,20,21,22,30,
+31,32,40,41,42}` and all 12 `S` variants (28 layouts). `TargetS.ini` **MISS** — it
+never exists (the `S` suffix attaches to the base name).
 **Reborn:** standard KGUI frames; target layout selection logic must be ported
 (`Target.lua` naming rules above), buff boxes are dynamic (`BuffMgr`).
 
@@ -282,9 +287,9 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
 |---|---|---|---|---|
 | 1 | Nameplate/head-top (HP/name/title/icons) | native | data complete; adapter hosted | engine billboard via `KG3D_CaptionManager` path |
 | 2 | Floating combat text (`CombatText`) | KGUI + world→screen | Lua decompiled; events known | overlay window + world tracks (port merge/queue) |
-| 3 | Cast bar (`ProgressBar` + `CASTINGBAR_*`) | KGUI + native events | bar UI extracted; consumer open | event→bar; find consumer first (§4) |
+| 3 | Cast bar (`GeneralProgressBar` + presets) | KGUI + native `REPRESENT_CALL` | driver + `ProgressBar.tab` extracted | native call → `representcommand` → bar (§2.1) |
 | 4 | Self frame (`Player`, `Playerbar`, `Resourcebar`) | KGUI | extracted | UiLayout render; anchors |
-| 5 | Target + target-of-target (`Target`, `TargetTarget`, `TargetCommon`) | KGUI | extracted; `TargetS.ini` MISS | port target layout-name selection |
+| 5 | Target + target-of-target (`Target`, `TargetTarget`, `TargetCommon`) | KGUI | extracted (28 target layouts HIT) | port target layout-name selection |
 | 6 | Self buffs/debuffs (`BuffList`, `DeBuffList`) | KGUI | extracted | UiLayout + `BuffMgr` box math |
 | 7 | Target buffs/debuffs (`TargetBuff`, `TargetDeBuff`) | KGUI | extracted | same |
 | 8 | Head-top buffs (`TopBuff`, `TopBuffSet`) | KGUI per-player | extracted + `TopBuff.tab` | world anchor + icon row math |
@@ -309,11 +314,13 @@ Priority: **P1** = needed for any fight to be readable · **P2** = standard comb
    `representcommand.CreateProgressBar` → `GeneralProgressBar_Create` + `ProgressBar.tab`
    presets, see §2.1); `CASTINGBAR_START/END` have no Lua consumer. Open: which
    `ProgressBar.tab` row each cast/action uses, and the native `CASTINGBAR_*` listener.
-2. **Target layout INIs** — `TargetS.ini` MISS; the `Target<intensity>{2|1|0}` name set is
-   not yet enumerated (only `TargetPlayer10/11.ini` confirmed). `TargetCommon.ini` HIT.
-3. **`UISetting_HeadTop.ini`** missing from PakV4 (page exists as Lua only) — likely in a
-   subfolder; probe variants (`ui/config/default/UISetting*`).
-4. **`data/public/caption_images.ini`** MISS at the probed path.
+2. ~~Target layout INIs~~ **CLOSED (2026-09-30)** — the full set is shipped and
+   extracted: `TargetPlayer10/11(+S)` + `Target{10..42}` (12) and all 12 `S` variants,
+   plus `TargetCommon.ini`. `TargetS.ini` never exists; naming rule in §2.2.
+3. ~~`UISetting_HeadTop.ini`~~ **CLOSED (2026-09-30)** — it is not a file: the page is
+   `WndContainer_HeadTop` inside `UISetting.ini` (HIT, 1,749 sections).
+4. ~~`caption_images.ini`~~ **CLOSED (2026-09-30)** — not referenced by this build
+   (string absent from `KG3DEngineAdapterX64.dll`; all variants MISS).
 5. **WhoSeeMe script conflict** — INI `ScriptFile=HatredPanel.lua` vs module
    `WhoSeeMe.lua`; verify which one the loader binds.
 6. **`ShowModeID` semantics** for HUD windows (retain-in vs suppress-in) still unresolved
@@ -358,8 +365,8 @@ java -Dstdout.encoding=UTF-8 -jar %TEMP%\unluac.jar proof\ui\battle_hud\pakv4\Co
 |---|---|
 | `proof/ui/evidence/battle_hud/pakv4_candidates_ui.txt` | 67 module paths (65 HIT) |
 | `proof/ui/evidence/battle_hud/pakv4_candidates_native.txt` | 11 native config/table paths (8 HIT) |
-| `proof/ui/evidence/battle_hud/pakv4_candidates_castbar.txt` | cast/generic bar follow-up (6 HIT) |
-| `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt` | target-frame layout probes (3/4 HIT; `TargetS.ini` MISS) |
+| `proof/ui/evidence/battle_hud/pakv4_candidates_castbar.txt` | bar modules + `ProgressBar.tab` / `AutoProgressBarInfo.txt` / `ProgressBarPlus.txt` (9 HIT) |
+| `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt` | target layouts + `UISetting.ini` (29/30 HIT; only `TargetS.ini` MISS by design) |
 | `proof/ui/battle_hud/SOURCES.txt` | exact commands + result counts (local, ignored) |
 | `proof/ui/battle_hud/pakv4/`, `pakv4_native/`, `probe/` | extracted INIs/Lua/art/tables (local, ignored) |
 | `proof/ui/battle_hud/decompiled/` | 33 unluac outputs + probe decompiles (local, ignored) |
@@ -368,9 +375,10 @@ java -Dstdout.encoding=UTF-8 -jar %TEMP%\unluac.jar proof\ui\battle_hud\pakv4\Co
 | `docs/ui/UI_SYSTEM_REPORT.md` | KGUI system, formats, reproduction procedure (cross-ref) |
 | `docs/pvp/` buff/CC research | buff data semantics (cross-ref) |
 
-**Verified (2026-09-30):** PakV4 extraction 65/67 UI + 8/11 native + 6/6 castbar HIT;
-`TargetCommon.ini`, `TargetPlayer10.ini`, `TargetPlayer11.ini` HIT (TargetS.ini MISS);
-33 modules decompiled with a locally built unluac; xrefs re-run →
+**Verified (2026-09-30):** PakV4 extraction 65/67 UI + 8/11 native + 9/9 bar incl.
+`ProgressBar.tab` + target set 28/28 + `UISetting.ini` HIT; 33 modules + probe files
+decompiled with a locally built unluac; `representcommand.lua` shows
+`REPRESENT_CALL` → `GeneralProgressBar_Create`; xrefs re-run →
 `KG3D_CaptionManager::_LoadCaptionConfig 0x180058420`,
 `PlaySkillEffectText 0x18059FA10`, `LuaScene_GetCharacterSkillEffectTextPos 0x1800BBF60`,
 `UpdateBalloonPosition 0x1805020A0`, `GetHeadTopBufferHeight 0x1804DA270`.

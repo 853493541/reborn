@@ -1,9 +1,40 @@
-# Target-frame layout INI probe. `Target.ini` does not exist; `Target.lua` composes
-# the layout name per target type (TargetPlayer10/11 by IsEnemy; Target<intensity>{2|1|0};
-# TargetS) and opens instance Normal/Target. `TargetCommon.ini` is the shared/panel base.
-# Result 2026-09-30: TargetCommon.ini HIT (161,166 B), TargetPlayer10/11.ini HIT,
-# TargetS.ini MISS. The <intensity> name set is not yet enumerated (see doc §4).
+# Target-frame layout INI probe. `Target.ini`/`TargetS.ini` do not exist: Target.lua
+# composes `<base>.ini` and appends "S" only in standard-target mode (Target.bStandard).
+#   players: TargetPlayer10 (not enemy) / TargetPlayer11 (enemy)
+#   NPCs:    "Target"..GetNpcIntensity(npc)..relation   (intensity 1..4 via the
+#            nIntensity map 2|6->4, 5->3, 4->2, else 1; relation 2=enemy 1=neutral 0=ally)
+# Result 2026-09-30: TargetCommon HIT; TargetPlayer10/11 HIT; Target10..42 HIT;
+# TargetPlayer10S/11S HIT; Target10S..42S HIT; TargetS.ini MISS (never exists).
+# UISetting.ini probe closed the missing UISetting_HeadTop.ini: the HeadTop page lives
+# inside UISetting.ini (1,749 sections; WndContainer_HeadTop etc.).
 ui/config/default/TargetCommon.ini
-ui/config/default/TargetS.ini
 ui/config/default/TargetPlayer10.ini
 ui/config/default/TargetPlayer11.ini
+ui/config/default/TargetPlayer10S.ini
+ui/config/default/TargetPlayer11S.ini
+ui/config/default/Target10.ini
+ui/config/default/Target11.ini
+ui/config/default/Target12.ini
+ui/config/default/Target20.ini
+ui/config/default/Target21.ini
+ui/config/default/Target22.ini
+ui/config/default/Target30.ini
+ui/config/default/Target31.ini
+ui/config/default/Target32.ini
+ui/config/default/Target40.ini
+ui/config/default/Target41.ini
+ui/config/default/Target42.ini
+ui/config/default/Target10S.ini
+ui/config/default/Target11S.ini
+ui/config/default/Target12S.ini
+ui/config/default/Target20S.ini
+ui/config/default/Target21S.ini
+ui/config/default/Target22S.ini
+ui/config/default/Target30S.ini
+ui/config/default/Target31S.ini
+ui/config/default/Target32S.ini
+ui/config/default/Target40S.ini
+ui/config/default/Target41S.ini
+ui/config/default/Target42S.ini
+ui/Config/Default/UISetting.ini
+ui/config/default/TargetS.ini
