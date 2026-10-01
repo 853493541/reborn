@@ -4,6 +4,10 @@ Browse and display the real JX3 木桩 (target dummy) NPCs on a real map with th
 real engine (MovieEditor DLLs). Dummies only — the 试炼教官 instructor rows are
 excluded by the extractor.
 
+> This is the browse/verification tool. The requested in-client dummy (one
+> 试炼木桩 next to the player spawn) is in `client/RebornClient.cs` —
+> `RC_DUMMY`/`RC_DUMMY_DIST`, see `docs/pvp/TARGET_DUMMY_RESEARCH.md` §5.
+
 ## Data (once)
 
 ```powershell

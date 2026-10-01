@@ -930,3 +930,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   copy lacks that ID — re-extract the live `skill\Buff.tab` when combat lands
   (re-open criterion in `docs/pvp/TARGET_DUMMY_RESEARCH.md`).
 - Outcome: solved (sandbox + docs delivered; model display verified).
+
+### 2026-09-30 — client — one 试炼木桩 at the player spawn (sandbox-target-dummy)
+- Did: user clarified "sandbox" = the client, so `client/RebornClient.cs` now
+  spawns one dummy right after the player is placed: `RC_DUMMY` (default 35901
+  初级试炼木桩; 0 = off) at `RC_DUMMY_DIST` (default 400 u) along the measured
+  view direction, terrain-sampled; model via `GetRepresentModelPath`, idle clip
+  via `GetRepresentAniPath` + `KGModelCLR`. Feature build
+  `reborn_client_target-dummy.exe` (title `sandbox-target-dummy`, ns
+  `reborn_client_target-dummy.memory`); canonical exe/configs untouched.
+- Evidence: `proof/pvp/target_dummy_client_run_20260930.txt` — dummy handle valid
+  at (23334,740,24624) vs player spawn (23334,761,24224); screenshot
+  `rc_02_14000ms.png` shows the player and dummy together
+  (`target_dummy_client_shots_20260930.txt`).
+- Outcome: solved (requested in-client dummy delivered; the §4 browse sandbox
+  stays as a separate research tool, not the deliverable).

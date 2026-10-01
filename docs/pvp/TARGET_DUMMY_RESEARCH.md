@@ -88,7 +88,34 @@ dummies rendered with shadows on 龙门寻宝. Numeric fingerprint:
 (`TD_PATH=1`) loads the `.mdl` through `AddDummyModel` + idle `.ani`
 (`proof/pvp/target_dummy_sandbox_fallback_20260930.txt`). The smoke capture log
 also contains live interactive double-click spawns from the same run (list
-selection verified in-session).
+selection verified in-session). For the in-client spawn (one 试炼木桩 near the
+player), see §5.
+
+## 5. Client feature: one 试炼木桩 at the player spawn
+
+`client/RebornClient.cs` spawns one dummy right after the player is placed (the
+requested in-client sandbox target; the browse app in §4 is a separate tool):
+
+* `RC_DUMMY=<representID>` — default 35901 (初级试炼木桩); `0` disables.
+* `RC_DUMMY_DIST=<units>` — distance along the measured view direction
+  (default 400 u); terrain height from `TerrainSampler`.
+* model from `scene.GetRepresentModelPath(rid)`, idle clip from
+  `scene.GetRepresentAniPath(rid)` via `KGModelCLR.PlayAnimation`.
+
+Build/run (feature client; canonical `reborn_client.exe` untouched):
+
+```powershell
+$env:RC_CLIENT_EXE='reborn_client_target-dummy.exe'; client\build_client.cmd
+# cwd C:\SeasunGame\MovieEditor:
+C:\SeasunGame\MovieEditor\bin64\reborn_client_target-dummy.exe
+```
+
+Title `sandbox-target-dummy`, namespace `reborn_client_target-dummy.memory`.
+Run 2026-09-30 (`RC_AUTORUN=15000 RC_SHOTS=4000,9000,14000`): player spawn
+`(23334,761,24224)` view `(0.00,1.00)`, dummy handle valid at `(23334,740,24624)`
+(`proof/pvp/target_dummy_client_run_20260930.txt`); `rc_02_14000ms.png` shows the
+player and the dummy standing together
+(`proof/pvp/target_dummy_client_shots_20260930.txt`).
 
 ## Reproduce
 
