@@ -153,6 +153,13 @@ unavoidable: label it *provisional*, state why no native path exists, and log it
 `docs/EXPERIENCES.md` with re-open criteria. No guess-scoring, no closest-match-by-name,
 no procedural stand-ins presented as authored data.
 
+**Explore the whole system; never patch the reported spot.** When part of a system's
+behaviour is incorrect, the system was wired up wrong — not only the place that shows it.
+Explore the full system first (inputs → state → outputs, the data it reads, the engine
+calls it makes) before changing anything. When the user points at a specific wrong spot,
+that is a symptom location, not the fix target: fixing only there produces a band-aid.
+Trace the full chain to the root cause and fix the wiring.
+
 ## 7. Map-viewer disposition
 
 The JX3 web map-viewer is a failed project. Its **raw extracted game resources** are

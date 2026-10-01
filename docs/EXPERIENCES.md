@@ -962,3 +962,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   updated.
 - Outcome: solved (host/user decision; 1245 stays the client-number reference,
   max is the host start).
+
+### 2026-10-01 — process — Full-system exploration rule (no spot fixes)
+- Did: user rule — when part of a system behaves wrong, the system is wired wrong, not
+  just the spot that shows it; the user pointing at a specific wrong place is a symptom
+  location, not the fix target (patching only there = band-aid). Added to `AGENTS.md` §6:
+  explore the full system (inputs → state → outputs, data read, engine calls) before
+  changing anything; trace the full chain to the root cause and fix the wiring.
+- Evidence: `AGENTS.md` §6 (new paragraph); this commit (local).
+- Outcome: solved (rule added).
