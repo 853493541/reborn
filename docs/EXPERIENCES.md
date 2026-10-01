@@ -971,3 +971,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Open: integer 15 Hz port (character logic; combat tables 16 fps per
   JX3_COLLISION_SYSTEM.md:190-191), air-steer/click-to-move path, autorun exact
   cancel set, rebinding/contexts (C3-C6).
+
+### 2026-09-30 - controls/client - Operation modes: classical vs joystick movement routing (agent/move-controls)
+- Did: per-mode input routing in the client. CLASSICAL (normal): lateral/back
+  input keeps the facing - side-step / back-pedal with the authored
+  F1b02yd strafe-left/right and backpedal-01 clips (selected by travel angle vs
+  facing); JOYSTICK: turn-to-heading for all input (run clip), camera untouched
+  by movement. Turn-key camera coupling fixed: heading<->camera-yaw is the
+  cameraYawBehind reflection (Forward(yaw)=(-cos,-sin)); the earlier direct
+  "+=" turned the camera the wrong way. Drag uses the row's 15 deg
+  CameraAdjustYawWhenMoveTurnDisableAngle dead zone. HUD shows op; periodic log
+  gains gait=/mode=.
+- Evidence: classical run reborn_20260930_232408.log (strafe/back d=0.00 + the
+  two clips, turn char +1.88 / camera follow -1.62, land roll rc=0); joystick
+  run reborn_20260930_232519.log (d=-1.57, no strafe clips, camera unchanged);
+  clip load pre-check reborn_20260930_231207.log; curated
+  proof/controls/control_modes_run.txt; camera_smoke_control_modes ALL PASS.
+- Gates: jx3_model 10x PASS, verify_model exit 0, capture selftest PASS.
+- Open: M1 per-mode follow mode (nCameraMode [0..3] semantics), M2 reset
+  speeds (no reset path yet), free view (Camera_IsInFreeView not located);
+  turn-key drag rate is a host interpretation of the documented coupling.

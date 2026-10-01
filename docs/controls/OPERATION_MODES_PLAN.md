@@ -211,3 +211,30 @@ unknown; `nCameraMode [0..3]` semantics if undecoded; persisted mode key;
 **Branch decision:** continue on `agent/move-controls` (recommended — modes
 route through this branch's input/movement code; both subjects merge together),
 or merge that subject to main first and branch `agent/control-modes`.
+
+### 7b. Status (2026-09-30, `agent/move-controls`, commit 6833334)
+
+- **M0 done** — HUD shows `op <classical|joystick>`; periodic log carries
+  `gait=` and `mode=`; `RC_MODE` + `OPMODE=` fingerprint already live.
+- **M3 done (decoded routing)** — classical lateral/back input keeps the facing
+  and selects the authored strafe/back-pedal clips (`F1b02yd挪步左/右.tani`,
+  `F1b02yd后退01.tani`; load-tested rc=0); joystick keeps the turn-to-heading
+  turn model for all input. Proof `proof/controls/control_modes_run.txt`:
+  classical strafe/back yaw d=0.00 with the clips; joystick d=-1.57 with the run
+  clip and camera untouched; landing roll unchanged.
+- **Turn-key camera coupling fixed** — the heading<->camera-yaw relation is the
+  `cameraYawBehind` reflection (`Forward(yaw)=(-cos,-sin)`), so the drag now
+  rotates the camera behind the character (was rotating the wrong way after the
+  first turn keys landed). Uses the row's
+  `CameraAdjustYawWhenMoveTurnDisableAngle` (15 deg) dead zone; the pull rate is
+  the char turn step (host interpretation of the documented drag — re-open when
+  the `CameraAdjustYawWhenMoveTurn` row values/consumer are decoded).
+- **M1 open** — `nCameraMode` `[0..3]` follow-mode semantics still undecoded;
+  no application, no invented modes.
+- **M2 open** — the drag-release reset path (`Camera_SetResetSpeed(3.5, 3.75)`)
+  is not implemented in the host yet; values loaded but unused.
+- **Free view open** — `Camera_IsInFreeView` (classical A/D -> turn-in-place)
+  still not located in the game-client strings/dumps; classical A/D is always
+  strafe until it is decoded. No approximation.
+- Gates: camera_smoke (incl. mode gating) ALL PASS; jx3_model 10x PASS;
+  verify_model exit 0; capture selftest PASS.

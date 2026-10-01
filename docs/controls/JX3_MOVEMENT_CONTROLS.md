@@ -127,9 +127,18 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
   skill command, not forward).
 - WASD camera-relative **recomputed per frame** (rotating the camera steers the
   run), heading/facing turn model with the >112.5° speed/turn-step penalty.
-- **TURNLEFT/TURNRIGHT (←/→)** turn in place at the char turn rate (camera
-  follows); **TOGGLEAUTORUN (G/NumLock)** runs forward hands-free (cancel:
-  backward/strafe); **TOGGLERUN (Numpad /)**, debug main-`/` kept.
+- **TURNLEFT/TURNRIGHT (←/→)** turn in place at the char turn rate; the camera
+  drags behind through the `cameraYawBehind` reflection with the row's 15°
+  `CameraAdjustYawWhenMoveTurnDisableAngle` dead zone; **TOGGLEAUTORUN
+  (G/NumLock)** runs forward hands-free (cancel: backward/strafe);
+  **TOGGLERUN (Numpad /)**, debug main-`/` kept.
+- **Operation modes** (F7 / `RC_MODE`): CLASSICAL (normal) keeps the facing for
+  lateral/back input — side-step / back-pedal with the authored
+  `F1b02yd挪步左/右.tani` / `F1b02yd后退01.tani` clips (chosen by travel angle vs
+  facing); JOYSTICK turns the body to the travel heading for all input (run
+  clip). Turn keys behave the same in both modes. Per-mode follow mode / reset
+  speeds and the classical free view stay open (`OPERATION_MODES_PLAN.md` §7b);
+  proof `proof/controls/control_modes_run.txt`.
 - **Jump carries horizontal takeoff velocity** (`JumpSpeedXY` of the row,
   clamp 0..127, 15 Hz, `RC_JUMP_SCALE`) along the input direction when moving;
   a standing jump is ballistic-vertical (no move intent -> no horizontal
