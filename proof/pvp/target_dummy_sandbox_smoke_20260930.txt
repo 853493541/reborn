@@ -1,0 +1,48 @@
+21:00:11.806 build=target_dummy_sandbox.exe 2026-09-30 20:55:26 ns=TargetDummySandbox.memory exeDir=C:\SeasunGame\MovieEditor\bin64\
+21:00:11.806 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+21:00:11.806 data=C:\Users\Zhibin Ren\Desktop\reborn-iso-sandbox-target-dummy\target_dummy_sandbox\..\assets\mode\dummy smoke=37023,35901,35904,91454,6644
+21:00:11.807 rows=14 groups=江湖木桩,试炼木桩,其他木桩 from C:\Users\Zhibin Ren\Desktop\reborn-iso-sandbox-target-dummy\target_dummy_sandbox\..\assets\mode\dummy\dummy_index.tsv
+21:00:12.480 InitPath=0 InitMemory=0 InitPak=0 ns=TargetDummySandbox.memory
+21:00:36.614 Init3DEngine=1 err=1
+21:00:36.649 editor.Init result=0
+21:00:38.432 LoadMap result=0
+21:00:38.705 winId=6294286
+21:00:38.708 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400)
+21:00:39.655 stage (0,6177,2000) dir=(0.00,1.00)
+21:00:39.657 probe rid=6641 '江湖木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩001.mdl'
+21:00:39.660 probe rid=37023 '初级江湖木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.662 probe rid=37024 '中级江湖木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.664 probe rid=37025 '高级江湖木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.666 probe rid=37026 '初入江湖木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.671 probe rid=35901 '初级试炼木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.674 probe rid=35902 '中级试炼木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.676 probe rid=35903 '高级试炼木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.678 probe rid=35904 '极境试炼木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.683 probe rid=91454 '极境试炼木桩·斩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.694 probe rid=50 '初试木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩001.mdl'
+21:00:39.698 probe rid=6643 '秘境木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.702 probe rid=6644 '化境木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.706 probe rid=27609 '次极境·可控木桩' model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl'
+21:00:39.710 scene cleared
+21:00:39.724 spawn rid=37023 '初级江湖木桩' [江湖木桩] npc=25594 Lv50 HP=5000000 def=0 at (-250,6177,2000) via represent handle=1971040312 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:39.728 spawn rid=35901 '初级试炼木桩' [试炼木桩] npc=24535 Lv131 HP=500000000 def=33338 at (0,6177,2000) via represent handle=1971039752 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:39.733 spawn rid=35904 '极境试炼木桩' [试炼木桩] npc=24538 Lv134 HP=500000000 def=83679 at (250,6177,2000) via represent handle=1971038632 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:39.738 spawn rid=91454 '极境试炼木桩·斩' [试炼木桩] npc=128490 Lv134 HP=500000000 def=83679 at (-250,6177,2250) via represent handle=1971038072 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:39.750 spawn rid=6644 '化境木桩' [其他木桩] npc=7601 Lv73 HP=24879587 def=119 at (0,6177,2250) via represent handle=1540675320 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:39.755 ready - right-drag rotate, wheel zoom, WASD move, double-click list to spawn
+21:00:42.810 shot auto_3000_210042.png exists=True
+21:00:43.184 scene cleared
+21:00:43.188 spawn rid=27609 '次极境·可控木桩' [其他木桩] npc=17733 Lv80 HP=31787476 def=130 at (0,6177,2000) via represent handle=5875740632 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:44.324 scene cleared
+21:00:44.328 spawn rid=6644 '化境木桩' [其他木桩] npc=7601 Lv73 HP=24879587 def=119 at (0,6177,2000) via represent handle=5838603224 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:45.008 scene cleared
+21:00:45.013 spawn rid=6643 '秘境木桩' [其他木桩] npc=7600 Lv73 HP=223916 def=75 at (0,6177,2000) via represent handle=5838601544 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:45.665 scene cleared
+21:00:45.676 spawn rid=50 '初试木桩' [其他木桩] npc=5619 Lv0 HP=1000000 def=0 at (0,6177,2000) via represent handle=5836832600 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩001.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:45.806 shot auto_6000_210045.png exists=True
+21:00:46.275 scene cleared
+21:00:46.281 spawn rid=91454 '极境试炼木桩·斩' [试炼木桩] npc=128490 Lv134 HP=500000000 def=83679 at (0,6177,2000) via represent handle=5838601544 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:47.975 scene cleared
+21:00:47.978 spawn rid=37023 '初级江湖木桩' [江湖木桩] npc=25594 Lv50 HP=5000000 def=0 at (0,6177,2000) via represent handle=5840831880 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani'
+21:00:48.803 shot auto_9000_210048.png exists=True
+21:00:49.772 DONE

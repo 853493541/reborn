@@ -907,3 +907,26 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   updated.
 - Outcome: solved (host/user decision; 1245 stays the client-number reference,
   max is the host start).
+
+### 2026-09-30 — pvp/sandbox — 江湖木桩 target-dummy sandbox (dummies only)
+- Did: extracted the shipped
+  `settings\NpcTemplate\{ZhuChengMuZhuang,GongNengTongYongNPC}\sNpcTemplate.tab`
+  dummy rows (14 dummies, 3 groups: 江湖木桩/试炼木桩/其他木桩; 试炼教官 rows are
+  NPCs and excluded) via new `tools/netcode/mode/extract_target_dummies.py`; built
+  `target_dummy_sandbox/` (own namespace `TargetDummySandbox.memory`, own out dir
+  `target_dummy_sandbox_out`) listing name/RepresentID/NPCID/level/HP/defence and
+  displaying the selected dummy. Display is represent-first
+  (`AddRepresentModel(RepresentID)`), fallback
+  `AddDummyModel(GetRepresentModelPath)` + `GetRepresentAniPath` idle ani
+  (`TD_PATH=1`).
+- Evidence: `proof/pvp/target_dummy_sandbox_smoke_20260930.txt` — all 14 IDs probe
+  to `data\source\npc_source\练功木桩001\模型\wj_练功木桩001|002.mdl`, all spawn
+  handles valid, screenshots non-empty (`target_dummy_sandbox_shots_20260930.txt`);
+  fallback `target_dummy_sandbox_fallback_20260930.txt`. Gates: jx3_model 10x PASS,
+  gravity model, loot selftest PASS.
+- Note: PvP basis = live sNpcTemplate stats (主城试炼木桩 `MaxLife=500,000,000`,
+  def 33k-83k) + buff 28496 木桩心法属性 化劲/御劲
+  (`proof/pvp/attributes/buff_pvp_rows.txt:49`); the stale `pak_out4/Buff.tab`
+  copy lacks that ID — re-extract the live `skill\Buff.tab` when combat lands
+  (re-open criterion in `docs/pvp/TARGET_DUMMY_RESEARCH.md`).
+- Outcome: solved (sandbox + docs delivered; model display verified).

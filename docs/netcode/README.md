@@ -56,6 +56,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `character_mesh_census.py`, `measure_character_size.py` | mesh height census / unit calibration |
 | `loot/capture.py` | loot/doodad capture decoder (spawn positions, rolled contents, takes) + selftest |
 | `mode/capture.py` | 绝境 mode-state decoder keyed on recovered S2C opcodes (0x08/0xAA/0x11A/0x11B/0x119/0x330/0x245) + selftest |
+| `mode/extract_target_dummies.py` | 木桩 target-dummy NPC-template extraction (主城木桩 + generic rows, stats join) -> `assets/mode/dummy/dummy_index.tsv`; app: `target_dummy_sandbox/` |
 | `extract_pak_paths.py`, `mine_item_scripts.py`, `dump_mode_inventory.py` | PakV4 path extraction, item-pool catalog, container inventory |
 | `extract_hpkg_member.py` | CDN `.hpkg` member extractor (LZHAM index, raw/LZHAM payload variants) |
 | `lua51_dump.py`, `gbk_grep.py`, `search_tree.py` | Lua 5.1 bytecode proto/const dump, GBK/UTF-16 binary grep, tree token search |
