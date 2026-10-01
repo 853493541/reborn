@@ -945,3 +945,21 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (`target_dummy_client_shots_20260930.txt`).
 - Outcome: solved (requested in-client dummy delivered; the §4 browse sandbox
   stays as a separate research tool, not the deliverable).
+
+### 2026-09-30 — controls — target selection research (how to target someone in front)
+- Did: decompiled the shipped b03 targeting script and disassembled the engine
+  Lua bindings; documented the real mechanism in
+  `docs/controls/JX3_TARGET_SELECTION.md`: Tab runs `SearchForEnemy(player,
+  nRadius, nAngle)` over 3 facing-axis cone zones (MidAxis 2560 u/15/level 3,
+  Inner 512 u/85/level 2, Outer 1280 u/114/level 1), filters via
+  `CanSelectNpc/Player` + `SELECTABLE_*`, sorts by player/screen/level then
+  axis-offset weight `dist × sin(angle from facing)`, and calls
+  `SelectTarget(TARGET.NPC|PLAYER, id)`; click uses the engine pick; selection is
+  client-local (no opcode; target rides with cast intents).
+- Evidence: `proof/pvp/disasm_targeting/` (7 functions incl.
+  `KPlayer::LuaSearchForEnemy` @ 0x1403F03D0), decompiled
+  `proof/collision/ui_scripts/target_b03.utf8.lua:17-113,234-317,335-423,862-913`,
+  bytecode dump `proof/controls/ui_lua/target_script.dump.txt`.
+- Open: `nAngle` unit (deg vs legacy 1.40625 unit, MED) — next probe disasm
+  0x140242220; mouseover-cast.
+- Outcome: research delivered (doc registered in `docs/controls/README.md`).
