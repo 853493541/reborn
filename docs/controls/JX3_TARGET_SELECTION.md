@@ -126,6 +126,51 @@ dispatches `InteractPlayer/Npc/Doodad/LandObject`.
 * `proof/pvp/disasm_targeting/KPlayer__LuaSearchForEnemy.txt` (+6 more)
 * `docs/controls/JX3_COMBAT_CONTROLS.md` §1/§4/§5
 
+## 9. What HUD appears when a target is selected (HIGH elements, MED window identity)
+
+The selected-target HUD is the target frame family: layout `ui/config/default/Player.ini`
+(script `Player.lua`, TargetPanel textures) driven by the target module
+`ui/script/Target.lua` + its element library `ui/config/default/TargetCommon.ini`
+(extracted + parsed 2026-09-30; element list:
+`proof/controls/target_frame_elements_20260930.txt`).
+
+| group | elements (Player.ini) | meaning |
+|---|---|---|
+| frame/back | `Handle_Back` (`Image_BackL/C/R/RR/R2`) | target bar background |
+| avatar | `Handle_Avatar` (`Image_Avatar`, `Image_School`, `Animate_Avatar`, `SFX_Avatar`), `Handle_BuyBg` | portrait + school icon |
+| name/level | `Handle_Name` (`Text_Player`, `Image_Cloud`), `Text_Level`, `Text_Others` | name, level, misc text |
+| health | `Image_Health`, `Image_Flash` (hit flash), `Handle_C_Blood` + `SFX_BloodScale`, `Handle_BloodTip`, `Image_SubHealth`, `Text_Health` | HP bar + damage flash + animated fill + text |
+| mana | `Image_Mana`, `Handle_C_Mana` + `SFX_ManaScale`, `Handle_NoManaBG`, `Text_Mana`, `Image_DefenseShield`/`Image_DefenseShieldLight` | resource bar, no-mana state, defence/减伤 icon |
+| absorb/shield | `Handle_CureShield` (`Image_CureShield*`), `Handle_CureShieldCount` + `Text_CureShieldCount`, `Image_HealthShield*` + `Text_HealthShield` | heal-absorb and shield overlays |
+| camp/relation | `Image_Camp`, `Image_TeamCamp` + `Animate_TeamCamp` | faction/team color |
+| marks/state | `Image_Mark` (party mark), `Image_NPCMark`, `Image_Flag`, `Image_Boss`, `Image_Center`, `Image_Invincible`, `Image_Fight`/`Animate_Fight*` | marks, boss frame variant, invincible, in-combat glow |
+| custom | `Wnd_CustomMode` (`Image_CM*`, `Text_CMName`), `Btn_RoleChange` | custom-UI label + role-change button |
+
+Script-driven behavior (`Target.lua`):
+* `UpdateState` = `UpdateLM/Name/Level/Action/Head/Kungfu/TargetMark/Camp/Invincible`;
+  per-frame `UpdateEnergy/UpdateAction/UpdateSubHealth`.
+* **Buff/debuff rows**: `UpdateBuffParam` registers target buffs (`Handle_Buff`) and
+  debuffs (`Handle_Debuff`) in `BuffMgr` with timers (`showtime`, `show_pausecd`),
+  dispel highlight, enemy-debuff light-up; options `bShowSelfDebuff`, filtering.
+* **Action/cast progress bar**: `ACTION_STATE` (`NONE/PREPARE/DONE/BREAK/FADE`) and
+  `PROGRESS_BAR_TYPE` (`NORMAL`/`UNBREAKABLE`) — target prepare/channel bar with
+  break/fade transitions; `OT_ACTION_PROGRESS_BREAK` event.
+* **Per-school target handles** (`TargetCommon.ini`, under `Handle_tot`):
+  `Handle_TM/CJ/MJ/CY/TC/GB/BaDao/DZ/YZ/WH/WL/Wx/DS/CG/CangYun/SL/WD/YT` — the
+  target player's school resource/state displays (e.g. 明教 `Text_Sun/Text_Moon`,
+  藏剑 `Text_Short/Text_Long`, 苍云 `Text_Rang`, 天策 `Text_TC`, 丐帮 `Text_GBNum`,
+  衍天 `Handle_100/200`) plus `Image_BuffBG`/`Image_DebuffBG`.
+* Display options (custom data): `bShowStateValue`, `bShowSimpleBlood`,
+  `bShowPlayerSimpleBlood`, `bShowSelfDebuff`, `bStandard`, `Anchor`, `nVersion`;
+  `Target.nCurrentVersion = 2`; frame drag updates `TARGET_ANCHOR_CHANGED`.
+* Events that refresh/hide it: `NPC/PLAYER_STATE_UPDATE`, `NPC/PLAYER_LEAVE_SCENE`,
+  `UPDATE_RELATION`, `PLAYER_LEVEL_UP`, `CHANGE_CAMP`, `BUFF_UPDATE`,
+  `SET_SHOW_STANDARD_TARGET`, `UI_ON_DAMAGE_EVENT`, mini-avatar events.
+
+MED: the exact window instantiation (the frame is the `Player` window family;
+whether self and target instantiate the same INI or a sibling `Target` INI is not
+pinned — the module + element names above are the target path).
+
 ## Reproduce
 
 ```powershell
@@ -134,5 +179,10 @@ python tools\pvp\dump_fn_disasm.py "C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3
 # names.txt: KPlayer::LuaSearchForEnemy / _Allies / _Npc / _PetEnemy /
 #            LuaFollowSelectTarget / LuaStopFollow / KSkill::AutoSelectTarget
 ```
+
+Target-frame HUD layout (read-only, official PakV4SfxExtract via
+`pss_assets.run_pakv4`): `ui/config/default/Player.ini` +
+`ui/config/default/TargetCommon.ini`, parsed summary
+`proof/controls/target_frame_elements_20260930.txt`.
 
 Last verified: 2026-09-30

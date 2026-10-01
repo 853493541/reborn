@@ -1,0 +1,187 @@
+# Target-frame HUD element inventory (JX3 client, 2026-09-30)
+#
+# Sources (read-only extraction, official PakV4SfxExtract):
+#   ui/config/default/Player.ini        target-frame layout (88 sections)
+#   ui/config/default/TargetCommon.ini  per-school/buff element library (878 sections)
+#   ui/script/Target.lua                target HUD module (b03 decompile)
+# Raw game files are NOT committed; this is the parsed summary.
+
+## Player.ini sections (name | type | parent | image|text)
+Player                           | WndFrame  | Normal                   | 
+Handle_Player                    | Handle    | Player                   | 
+Image_FightBG1                   | Image     | Handle_Player            | ui\Image\Common\GreenFire.UITex
+Animate_FightBight               | Animate   | Handle_Player            | ui\Image\Common\PlayerFight.UITex
+Image_FightBight                 | Image     | Handle_Player            | ui\Image\Common\GreenFire.UITex
+Animate_FightTop                 | Animate   | Handle_Player            | ui\Image\Common\PlayerFight.UITex
+Handle_Back                      | Handle    | Handle_Player            | 
+Image_BackL                      | Image     | Handle_Back              | ui\Image\TargetPanel\Target.UITex
+Image_BackC                      | Image     | Handle_Back              | ui\Image\TargetPanel\Target.UITex
+Image_BackR                      | Image     | Handle_Back              | ui\Image\TargetPanel\Target.UITex
+Image_BackRR                     | Image     | Handle_Back              | ui\Image\TargetPanel\Target.UITex
+Image_BackR2                     | Image     | Handle_Back              | ui\Image\TargetPanel\Target.UITex
+Image_Back1                      | Image     | Handle_Back              | ui\Image\UItimate\UICommon\Player.UITex
+Image_Back2                      | Image     | Handle_Back              | ui\Image\UItimate\UICommon\Player.UITex
+Image_Back3                      | Image     | Handle_Back              | ui\Image\UItimate\UICommon\Player.UITex
+Handle_NoManaBG                  | Handle    | Handle_Player            | 
+Image_BackL_F                    | Image     | Handle_NoManaBG          | ui\Image\TargetPanel\FramePlayer.UITex
+Image_BackC_F                    | Image     | Handle_NoManaBG          | ui\Image\TargetPanel\FramePlayer.UITex
+Image_BackR_F                    | Image     | Handle_NoManaBG          | ui\Image\TargetPanel\FramePlayer.UITex
+Image_BackRR_F                   | Image     | Handle_NoManaBG          | ui\Image\TargetPanel\FramePlayer.UITex
+Image_BackR2_F                   | Image     | Handle_NoManaBG          | ui\Image\TargetPanel\FramePlayer.UITex
+Image_BackL_F1                   | Image     | Handle_NoManaBG          | ui\Image\UItimate\UICommon\Player.UITex
+Image_BackL_F2                   | Image     | Handle_NoManaBG          | ui\Image\UItimate\UICommon\Player.UITex
+Image_BackL_F3                   | Image     | Handle_NoManaBG          | ui\Image\UItimate\UICommon\Player.UITex
+Handle_BuyBg                     | Handle    | Handle_Player            | 
+Image_BuyBG1                     | Image     | Handle_BuyBg             | ui\Image\PlayerAvatar\CHGJ_1_DK_2.UITex
+Image_BuyBG2                     | Image     | Handle_BuyBg             | ui\Image\PlayerAvatar\CHGJ_1_DK_2.UITex
+Image_BuyBG3                     | Image     | Handle_BuyBg             | ui\Image\PlayerAvatar\CHGJ_1_DK_2.UITex
+SFX_BuyBG1                       | SFX       | Handle_BuyBg             | 
+SFX_BuyBG3                       | SFX       | Handle_BuyBg             | 
+Animate_Whole                    | Animate   | Handle_BuyBg             | ui\Image\PlayerAvatar\AvatarBgTest.UITex
+SFX_Whole                        | SFX       | Handle_BuyBg             | 
+Animate_Fire                     | Animate   | Handle_Player            | 
+Handle_Avatar                    | Handle    | Handle_Player            | 
+Image_Avatar                     | Image     | Handle_Avatar            | ui\Image\PlayerAvatar\HYGY_001.tga
+Animate_Avatar                   | Animate   | Handle_Avatar            | 
+Image_School                     | Image     | Handle_Avatar            | ui\Image\TargetPanel\Target.UITex
+SFX_Avatar                       | SFX       | Handle_Avatar            | 
+Handle_ClickArea                 | Handle    | Handle_Player            | 
+Image_Shadow                     | Image     | Handle_Player            | ui\Image\TargetPanel\Player.UITex
+Image_DefenseShield              | Image     | Handle_Player            | ui\Image\UItimate\UICommon\Player.UITex
+Image_SubHealth                  | Image     | Handle_Player            | ui\Image\TargetPanel\Target.UITex
+Image_Health                     | Image     | Handle_Player            | ui\Image\UItimate\UICommon\Player.UITex
+Image_Flash                      | Image     | Handle_Player            | ui\Image\TargetPanel\Target.UITex
+Image_Mana                       | Image     | Handle_Player            | ui\Image\UItimate\UICommon\Player.UITex
+Image_Mark                       | Image     | Handle_Player            | ui\Image\UICommon\CommonPanel2.UITex
+Image_Flag                       | Image     | Handle_Player            | UI\Image\TargetPanel\Player.UITex
+Image_Boss                       | Image     | Handle_Player            | UI\Image\TargetPanel\Player.UITex
+Image_Center                     | Image     | Handle_Player            | UI\Image\TargetPanel\Player.UITex
+Image_Fight                      | Image     | Handle_Player            | ui\Image\TargetPanel\Target.UITex
+Image_Camp                       | Image     | Handle_Player            | ui\Image\UICommon\CommonPanel2.UITex
+Handle_Name                      | Handle    | Handle_Player            | 
+Text_Player                      | Text      | Handle_Name              | 
+Null_New                         | Null      | Handle_Name              | 
+Image_Cloud                      | Image     | Handle_Name              | ui\Image\UICommon\CommonPanel.UITex
+Image_TeamCamp                   | Image     | Handle_Player            | ui\Image\UICommon\CommonPanel2.UITex
+Image_NPCMark                    | Image     | Handle_Player            | ui\Image\Mark\Cloud.tga
+Handle_CureShield                | Handle    | Handle_Player            | 
+Image_CureShieldBg               | Image     | Handle_CureShield        | ui\Image\TargetPanel\Target.UITex
+Image_CureShield                 | Image     | Handle_CureShield        | ui\Image\TargetPanel\Target.UITex
+Image_CureShield_Over            | Image     | Handle_CureShield        | ui\Image\TargetPanel\Target.UITex
+Image_CureShieldLight            | Image     | Handle_CureShield        | ui\Image\TargetPanel\Target.UITex
+Handle_CureShieldCount           | Handle    | Handle_Player            | 
+Image_CureShieldCount            | Image     | Handle_CureShieldCount   | ui\Image\TargetPanel\Target.UITex
+Text_CureShieldCount             | Text      | Handle_CureShieldCount   | 
+Image_Invincible                 | Image     | Handle_Player            | ui\Image\UICommon\Baizhan.UITex
+Text_Health                      | Text      | Handle_Player            | 
+Text_Mana                        | Text      | Handle_Player            | 
+Animate_TeamCamp                 | Animate   | Handle_Player            | ui\Image\Common\Animate.UITex
+Text_Level                       | Text      | Handle_Player            | 
+Image_Player                     | Image     | Handle_Player            | ui\Image\TargetPanel\Target.UITex
+Text_Others                      | Text      | Handle_Player            | 
+Image_HealthShieldBg             | Image     | Handle_Player            | ui\Image\UICommon\ChangGe.UITex
+Image_HealthShield               | Image     | Handle_Player            | ui\Image\UICommon\ChangGe.UITex
+Text_HealthShield                | Text      | Handle_Player            | 
+Handle_DefenseShieldLight        | Handle    | Handle_Player            | 
+Image_DefenseShieldLight         | Image     | Handle_DefenseShieldLight | ui\Image\UItimate\UICommon\Player.UITex
+Handle_BloodTip                  | Handle    | Handle_Player            | 
+Handle_C_Blood                   | Handle    | Handle_Player            | 
+SFX_BloodScale                   | SFX       | Handle_C_Blood           | 
+Handle_C_Mana                    | Handle    | Handle_Player            | 
+SFX_ManaScale                    | SFX       | Handle_C_Mana            | 
+Wnd_CustomMode                   | WndWindow | Player                   | 
+Handle_CustomMode                | Handle    | Wnd_CustomMode           | 
+Image_CMNormal                   | Image     | Handle_CustomMode        | ui\Image\Minimap\Minimap.UITex
+Image_CMOver                     | Image     | Handle_CustomMode        | ui\Image\Minimap\Minimap.UITex
+Text_CMName                      | Text      | Handle_CustomMode        | 
+Btn_RoleChange                   | WndButton | Player                   | ui\Image\UItimate\UICommon\Button.UITex
+
+## Target.lua element refs (22)
+  Handle_BaDao
+  Handle_Buff
+  Handle_CG
+  Handle_CJ
+  Handle_CY
+  Handle_CangYun
+  Handle_DS
+  Handle_DZ
+  Handle_Debuff
+  Handle_GB
+  Handle_MJ
+  Handle_SL
+  Handle_TC
+  Handle_TM
+  Handle_WD
+  Handle_WH
+  Handle_WL
+  Handle_Wx
+  Handle_YT
+  Handle_YZ
+  Image_Flash
+  Image_NPCMark
+
+## Target.lua registered events (34)
+  BUFF_UPDATE
+  CHANGE_CAMP
+  CHANGE_CAMP_FLAG
+  CUSTOM_DATA_LOADED
+  NPC_DROP_TARGET_UPDATE
+  NPC_LEAVE_SCENE
+  NPC_STATE_UPDATE
+  ON_CLEAR_PROXY_SKILL_LIST_NOTIFY
+  ON_ENTER_CUSTOM_UI_MODE
+  ON_LEAVE_CUSTOM_UI_MODE
+  ON_NEW_PROXY_SKILL_LIST_NOTIFY
+  ON_NPC_LEAVE_FIGHT
+  OT_ACTION_PROGRESS_BREAK
+  PARTY_SET_MARK
+  PARTY_UPDATE_BASE_INFO
+  PLAYER_ENTER_SCENE
+  PLAYER_LEAVE_SCENE
+  PLAYER_LEVEL_UP
+  PLAYER_STATE_UPDATE
+  SET_MINI_AVATAR
+  SET_SHOW_STANDARD_TARGET
+  SET_SHOW_VALUE_BY_PERCENTAGE
+  SET_SHOW_VALUE_SIMPLE_BLOOD
+  SET_SHOW_VALUE_TWO_FORMAT
+  SET_TARGET_SHOW_STATE_VALUE
+  SKILL_MOUNT_KUNG_FU
+  SKILL_UNMOUNT_KUNG_FU
+  TARGET_ANCHOR_CHANGED
+  TARGET_MINI_AVATAR_MISC
+  UI_ON_DAMAGE_EVENT
+  UI_SCALED
+  UPDATE_ALL_RELATION
+  UPDATE_PLAYER_SCHOOL_ID
+  UPDATE_RELATION
+
+## TargetCommon.ini school handles (from Target.lua refs)
+  Handle_BaDao      present_in_TargetCommon=True
+  Handle_Buff       present_in_TargetCommon=False
+  Handle_CG         present_in_TargetCommon=True
+  Handle_CJ         present_in_TargetCommon=True
+  Handle_CY         present_in_TargetCommon=True
+  Handle_CangYun    present_in_TargetCommon=True
+  Handle_DS         present_in_TargetCommon=True
+  Handle_DZ         present_in_TargetCommon=True
+  Handle_Debuff     present_in_TargetCommon=False
+  Handle_GB         present_in_TargetCommon=True
+  Handle_MJ         present_in_TargetCommon=True
+  Handle_SL         present_in_TargetCommon=True
+  Handle_TC         present_in_TargetCommon=True
+  Handle_TM         present_in_TargetCommon=True
+  Handle_WD         present_in_TargetCommon=True
+  Handle_WH         present_in_TargetCommon=True
+  Handle_WL         present_in_TargetCommon=True
+  Handle_Wx         present_in_TargetCommon=True
+  Handle_YT         present_in_TargetCommon=True
+  Handle_YZ         present_in_TargetCommon=True
+
+## TargetCommon.ini buff bg elements
+  Image_BuffBG parent=Handle_tot image=ui\Image\Common\MainPanel_1.UITex
+  Image_DebuffBG parent=Handle_tot image=ui\Image\Common\MainPanel_1.UITex
+
+Reproduce: temp script pss_assets.run_pakv4([ui/config/default/Player.ini,
+ui/config/default/TargetCommon.ini]) then parse sections (GB18030) - see
+docs/controls/JX3_TARGET_SELECTION.md Reproduce section.

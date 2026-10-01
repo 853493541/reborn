@@ -963,3 +963,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Open: `nAngle` unit (deg vs legacy 1.40625 unit, MED) — next probe disasm
   0x140242220; mouseover-cast.
 - Outcome: research delivered (doc registered in `docs/controls/README.md`).
+
+### 2026-09-30 — controls — target-selected HUD (what appears on select)
+- Did: extracted the target-frame layout `ui/config/default/Player.ini` (88
+  sections) + element library `TargetCommon.ini` (878 sections) and mapped the
+  target module `ui/script/Target.lua` onto them; documented the HUD in
+  `docs/controls/JX3_TARGET_SELECTION.md` §9: avatar+school icon, name/level,
+  HP bar (hit flash, animated fill) + text, mana bar/no-mana state, absorb/shield
+  overlays, camp/team relation icon, party/NPC marks, boss variant, invincible,
+  in-combat glow, custom-mode label; buff/debuff rows via `BuffMgr` (timers,
+  dispel highlight); action/cast progress bar (`ACTION_STATE`/`PROGRESS_BAR_TYPE`);
+  per-school target handles (`Handle_TM/CJ/MJ/...` under `Handle_tot`).
+- Evidence: `proof/controls/target_frame_elements_20260930.txt` (parsed summary);
+  raw INIs not committed (game assets).
+- Outcome: question answered; HUD inventory registered in the targeting doc.
