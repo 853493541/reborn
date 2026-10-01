@@ -1150,3 +1150,21 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `TOPCENTER,0,240` with `ShowModeID=0,15`, `FightingWarning` Topmost2; naming
   quirks `WeaponSkillBar.ini` root `SpArmsActionBar`, `PVPInput.ini` root
   `SkillIntroduce`.
+
+### 2026-09-30 — ui — Live renderer = Cocos (corrected) + live text API map
+- **Correction:** this build runs the **Cocos UI**. Evidence: `config/cocos_config.ini
+  [Main] KGUIUseCocos=1`; `gray_config.ini [KGUIUseCocos] Percent=5` (client-rewritten
+  2026-09-27; the earlier empty read was stale); `gray_usersettings.ini
+  [Environment] IntraNet=0`; the `IsUseCocos` binding (`JX3ClientX64.exe 0x1400A5750`,
+  table `0x140A3E210`) returns constant 1; `ui/Script/base.lua` sets
+  `USE_COCOS = IsUseCocos()`; the client module list (`%s%s.dll`) includes `KGUICocos`.
+- `KGUICocosX64` ships a 1:1 `KFontSchemeMgr` port (same `SchemeElemFont` keys, 36
+  slots, `(slot+mgr+0x4C)*mgr+0x48`, slot array `+0x57B8`) and the full `ccui.KGUIText`
+  API (binding table `0x1803A4490` parsed: SetText/SetString/SetFontScheme/
+  SetFontBorder/SetFontShadow/SetRichText/GetFragmentRuns/...).
+- Live scheme apply `0x180346AA0` → glyph font builder `0x180347E80` passes size+scale;
+  scheme→style converter `0x1802CC070` defaults style size to 16. Legacy KGUIX64
+  ignores scheme `Size`; the live Cocos path uses it — the exact `Size=0 → slot base`
+  substitution point remains the one open renderer detail.
+- Docs: `FONT_SCHEME_SYSTEM.md` §2.1/§2.4, `BATTLE_FLOATING_UI.md` §1.2; dumps
+  `re/cocos_font/`, `re/cocos_richtext/`, `re/cocos_gray/` committed (`d5eb54a`).
