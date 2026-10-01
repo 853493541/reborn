@@ -71,3 +71,16 @@ $env:RC_DEMO_MOVE="1"; $env:RC_DJUMP_LOG="1"; $env:RC_AUTORUN="13000"
 $p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_move_controls.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
 $p.WaitForExit(); $p.ExitCode   # 0
 ```
+
+## Post-change confirmation (standing-jump fix, commit f9de00f + wip)
+
+**Run:** RC_DEMO_MOVE=1 RC_DJUMP_LOG=1 RC_AUTORUN=30000, 2026-09-30 22:26:54,
+exit 0, namespace eborn_client_move_controls.memory.
+Log: eborn_out/reborn_20260930_222654.log (shared file with a concurrent
+collision-client session - attribute lines by timestamp/namespace).
+
+- jump xy takeoff vj=(216,-225) u/s - running jump takeoff unchanged.
+- land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0 at 0.96 s after the drop,
+  character back on the ground (movetest summary pos=(24096,737,23431)).
+- Standing jumps now stay ballistic-vertical (takeoff XY only with move intent;
+  open item: the client air-commit/EndJump clear path).

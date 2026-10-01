@@ -131,9 +131,11 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
   follows); **TOGGLEAUTORUN (G/NumLock)** runs forward hands-free (cancel:
   backward/strafe); **TOGGLERUN (Numpad /)**, debug main-`/` kept.
 - **Jump carries horizontal takeoff velocity** (`JumpSpeedXY` of the row,
-  clamp 0..127, 15 Hz, `RC_JUMP_SCALE`) along the input direction; airborne
-  integration is ballistic (no WASD air steering - `ProcessAcceleration` has no
-  horizontal input term). Landing stop resets the horizontal velocity.
+  clamp 0..127, 15 Hz, `RC_JUMP_SCALE`) along the input direction when moving;
+  a standing jump is ballistic-vertical (no move intent -> no horizontal
+  velocity). Airborne integration is ballistic (no WASD air steering -
+  `ProcessAcceleration` has no horizontal input term). Landing stop resets the
+  horizontal velocity.
 - **Landing branch**: drop > `FallDownHeightFloor` (500 u) plays the authored
   F1 `FallFloorAnimation` (`f1b02yd握拳小跳c.ani`, `RC_CLIP_LAND`); else the
   normal resume.
@@ -156,7 +158,9 @@ model, jump-chain phase, swim/sprint/parkour kit.
 5. **Air steering**: no horizontal input term found in the decoded per-frame
    integrator; click-to-move while airborne (`WalkTo` state-4 branch,
    `JX3_CHARACTER_MOVEMENT_RESEARCH.md` §3.2) not ported (host has no
-   click-to-move). Re-open when the air-commit path is decoded.
+   click-to-move). `KCharacter::Jump` writes `Vxy` unconditionally; whether the
+   air commit / `EndJump` stop path clears it for a standing jump is the next
+   probe - the host keeps standing jumps vertical until then (not invented).
 6. **Autorun cancel rules**: backward/strafe cancel per host reading of the
    `MoveAction_StopAll` handler; exact per-key cancel set (jump/turn/forward)
    still to be decoded from the packed hotkey Lua.

@@ -1968,16 +1968,24 @@ internal static class RebornClient
                     airStartY = py;
                     // takeoff horizontal velocity: JumpSpeedXY of the row
                     // (clamp [0,127] per JumpTo/KJump), converted at the 15 Hz
-                    // logic tick, along the input direction (facing if still).
+                    // logic tick, along the input direction. A standing jump
+                    // stays ballistic-vertical: with no move intent the client
+                    // commit path carries no horizontal velocity (the air
+                    // commit path is an open item, not invented here).
                     int xyc = trip[0]; if (xyc < 0) xyc = 0; else if (xyc > 127) xyc = 127;
                     float xySpd = xyc * 15f * jumpScale;
-                    float jdx, jdz;
-                    if (len > 0.01f) { jdx = dirX / len; jdz = dirZ / len; }
-                    else { jdx = (float)Math.Sin(curYaw); jdz = (float)Math.Cos(curYaw); }
-                    vjx = jdx * xySpd; vjz = jdz * xySpd;
+                    if (len > 0.01f)
+                    {
+                        vjx = dirX / len * xySpd;
+                        vjz = dirZ / len * xySpd;
+                    }
+                    else
+                    {
+                        vjx = 0f; vjz = 0f;
+                    }
                     if (djumpLog || demoMove) Log(string.Format(
                         "jump xy takeoff vj=({0:F0},{1:F0}) u/s dir=({2:F2},{3:F2})",
-                        vjx, vjz, jdx, jdz));
+                        vjx, vjz, dirX / (len > 0.01f ? len : 1f), dirZ / (len > 0.01f ? len : 1f)));
                     if (djumpLog) Log(string.Format(
                         "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
                         jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
