@@ -238,3 +238,34 @@ or merge that subject to main first and branch `agent/control-modes`.
   strafe until it is decoded. No approximation.
 - Gates: camera_smoke (incl. mode gating) ALL PASS; jx3_model 10x PASS;
   verify_model exit 0; capture selftest PASS.
+
+### 7c. Per-mode settings — decode pass + plumbing (2026-09-30)
+
+**Verified freshly from `JX3RepresentX64.dll` disasm (HIGH):** the camera node
+(type 0xD, reached via the `[scene+0x20]` chain) keeps two field pairs, selected
+by `[node+0x34]` (0 = joystick, nonzero = classic):
+
+| field | classic | joystick | setter (RVA) | clamp |
+|---|---|---|---|---|
+| drag / drag-pitch speed | +0x6C / +0x70 | +0x84 / +0x88 | `0x180ace2e0` | [0.01, 10] |
+| max distance | +0x74 | +0x8C | `0x180ace520` | [1, 2000] |
+| spring reset speed | +0x78 | +0x90 | `0x180aced60` | [0.01, 10] |
+| camera reset speed | +0x7C | +0x94 | `0x180ace900` | [0.01, 10] |
+| follow mode | +0x80 | +0x98 | `0x180ace3f0` | [0, 3] |
+
+`SetCameraFollowCharacterAction` (`0x180ace370`) stores its flag at
+`[obj+0x27C]`, which gates the `UpdateCameraFollowAction` path (`0x180b0e820`,
+`s_face` lookup) — the follow-action branch of the camera update.
+
+**Applied in the host:** `CameraSettings.ApplyOperationMode()` clamps and applies
+the role's per-mode follow mode + spring/camera reset speeds on every switch
+(F7 / `RC_MODE` / scripted `RC_MODE_SWITCH_AT`), logged as
+`opmode applied: op=... followMode=... springReset=... cameraReset=...`
+(proof: `proof/controls/control_modes_run.txt`).
+
+**Still open (no invention):** the per-frame *consumer* of follow mode [0..3]
+(what each value changes) and of the reset speeds; the `Camera_IsInFreeView`
+global is absent from every candidate binary's string table (JX3ClientX64.exe,
+JX3RepresentX64.dll, KGUIX64.dll, KG3DEngineX64.dll, Engine_Lua5X64.dll) —
+likely hashed Lua registration. Next probe: trace the type-0xD node's update
+(vtable) or a live debug session on the real client.

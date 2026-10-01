@@ -68,3 +68,19 @@ $p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_control_modes.
 $p.WaitForExit(); $p.ExitCode   # 0
 # joystick: same with RC_MODE="joystick"
 ```
+
+## Per-mode settings plumbing — switch test (2026-09-30)
+
+**Run:** RC_MODE=classical RC_MODE_SWITCH_AT=6000 RC_AUTORUN=12000, exit 0,
+log eborn_out/reborn_20260930_234456.log:
+
+`
+opmode applied: op=classical followMode=0 springReset=1.00 cameraReset=1.00
+opmode switch (test @6000ms): op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+`
+
+Values are the role's custom.dat per-mode fields (this role: follow 0/0,
+speeds 1.0/1.0), clamped per the freshly disassembled setters (follow [0..3],
+Speeds [0.01, 10]). NOTE: the per-frame consumer of follow mode [0..3] and of
+the reset speeds is still undecoded — the host applies and logs the active
+values and does not fake their behaviour (OPERATION_MODES_PLAN.md §7c).

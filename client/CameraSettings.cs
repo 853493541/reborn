@@ -26,6 +26,46 @@ internal sealed class CameraSettings
     public bool HasSceneInit;
     public bool HasSavedRuntime;
     public bool HasCustomSettings;
+    // Active per-mode camera values, applied on every mode switch. Clamps and
+    // field sources are verified from the represent setters
+    // (SetCameraFollowMode 0x180ace3f0 [0..3]; SetCameraSpringResetSpeed
+    // 0x180aced60 / SetCameraResetSpeed 0x180ace900 [0.01,10]; classic fields
+    // +0x78/+0x7C/+0x80, joystick +0x90/+0x94/+0x98). The per-frame consumer
+    // of follow mode [0..3] and the reset speeds is still undecoded, so the
+    // host applies/logs the active values and does not fake their behaviour
+    // (docs/controls/OPERATION_MODES_PLAN.md §7b).
+    public int ActiveFollowMode = 0;
+    public double ActiveSpringResetSpeed = 1.0;
+    public double ActiveCameraResetSpeed = 1.0;
+
+    public void ApplyOperationMode()
+    {
+        ActiveFollowMode = ClampFollowMode(
+            OperationMode == CameraOperationMode.Joystick ? FollowModeJoystick : FollowModeClassic);
+        ActiveSpringResetSpeed = ClampResetSpeed(SpringResetSpeed);
+        ActiveCameraResetSpeed = ClampResetSpeed(CameraResetSpeed);
+    }
+
+    public static int ClampFollowMode(int v)
+    {
+        if (v < 0) return 0;
+        if (v > 3) return 3;
+        return v;
+    }
+
+    public static double ClampResetSpeed(double v)
+    {
+        if (v < 0.01) return 0.01;
+        if (v > 10.0) return 10.0;
+        return v;
+    }
+
+    public string DescribeApplied()
+    {
+        return string.Format("op={0} followMode={1} springReset={2:F2} cameraReset={3:F2}",
+            CameraOperationMode.Name(OperationMode), ActiveFollowMode,
+            ActiveSpringResetSpeed, ActiveCameraResetSpeed);
+    }
 
     public static CameraSettings Load(string editorRoot, string mapPath, string appDir, Action<string> log)
     {

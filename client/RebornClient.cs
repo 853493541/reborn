@@ -600,6 +600,8 @@ internal static class RebornClient
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
             cameraSettings = CameraSettings.Load(
                 editorRoot, mapPath, cfgDir, Log);
+            cameraSettings.ApplyOperationMode();
+            Log("opmode applied: " + cameraSettings.DescribeApplied());
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             // Game-data pitch is NEGATIVE when the camera sits above the anchor
@@ -835,6 +837,9 @@ internal static class RebornClient
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         float strafeYaw0 = 0f, backYaw0 = 0f, turnYaw0 = 0f;
         double strafeCam0 = 0.0, backCam0 = 0.0, turnCam0 = 0.0;
+        long modeSwitchAt = 0;
+        long.TryParse(Env("RC_MODE_SWITCH_AT", "0"), out modeSwitchAt);
+        bool modeSwitched = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -1076,7 +1081,8 @@ internal static class RebornClient
                 cameraSettings.OperationMode =
                     cameraSettings.OperationMode == CameraOperationMode.Joystick
                         ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
-                Log("operation mode -> " + CameraOperationMode.Name(cameraSettings.OperationMode));
+                cameraSettings.ApplyOperationMode();
+                Log("opmode applied: " + cameraSettings.DescribeApplied());
                 if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
                 else if (!lmbDown && !rmbDown) unlockMouse();
             }
@@ -1641,6 +1647,16 @@ internal static class RebornClient
                 if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, curYaw - turnYaw0, turnCam0, camSys.Yaw, camSys.Yaw - turnCam0)); }
                 if (now >= 10800 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
                 if (now >= 12500 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
+            }
+            if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
+            {
+                // scripted operation-mode switch (test harness; same path as F7)
+                modeSwitched = true;
+                cameraSettings.OperationMode =
+                    cameraSettings.OperationMode == CameraOperationMode.Joystick
+                        ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
+                cameraSettings.ApplyOperationMode();
+                Log("opmode switch (test @" + modeSwitchAt + "ms): " + cameraSettings.DescribeApplied());
             }
             if (rotTest)
             {

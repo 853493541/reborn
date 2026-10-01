@@ -991,3 +991,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Open: M1 per-mode follow mode (nCameraMode [0..3] semantics), M2 reset
   speeds (no reset path yet), free view (Camera_IsInFreeView not located);
   turn-key drag rate is a host interpretation of the documented coupling.
+
+### 2026-09-30 - controls/client - Operation-mode settings: decode pass + switch plumbing (agent/move-controls)
+- Did: fresh disasm of JX3RepresentX64.dll camera node setters (type 0xD, pair
+  selector [node+0x34], 0=joystick): drag +0x6C/+0x84, drag-pitch +0x70/+0x88,
+  max distance +0x74/+0x8C, spring reset +0x78/+0x90, camera reset +0x7C/+0x94,
+  follow mode +0x80/+0x98; clamps [0.01,10] / [1,2000] / [0,3] read from the
+  binary. SetCameraFollowCharacterAction stores [obj+0x27C], gating the
+  UpdateCameraFollowAction path (0x180b0e820). Host: CameraSettings
+  ApplyOperationMode() clamps + applies the role's per-mode follow mode and
+  reset speeds on every switch (F7 / RC_MODE / RC_MODE_SWITCH_AT), logged.
+- Evidence: run reborn_20260930_234456.log (opmode applied: classical
+  followMode=0 springReset=1.00 cameraReset=1.00 -> switch test @6000ms ->
+  joystick same, exit 0); proof/controls/control_modes_run.txt addendum;
+  OPERATION_MODES_PLAN.md 7c.
+- Gates: camera_smoke ALL PASS, jx3_model 10x PASS, verify_model exit 0,
+  capture selftest PASS.
+- Open (no invention): per-frame consumer of follow mode [0..3] and of the
+  reset speeds; Camera_IsInFreeView absent from all candidate binaries' string
+  tables (hashed Lua registration?). Next: type-0xD node vtable update trace or
+  live debug on the real client.
