@@ -246,8 +246,8 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
     DWORD64 fault = 0;
     PEXCEPTION_POINTERS ep = NULL;
     char stackDump[1024] = {0};
-    // args mirror the engine's own caller (code @0x76E51A): a6 = world matrix,
-    // a8 = out slot; r9/a5/a7 zero for the first test
+    // args mirror the engine's SFX-module caller (code @0xE3412A): a6 = world
+    // matrix, a8 = out slot; r9/a5/a7 zero
     __try { sfx = create(owner, path, NULL, NULL, NULL, mtx, 0, &outParam); }
     __except (ep = GetExceptionInformation(),
               exc = ep->ExceptionRecord->ExceptionCode,
@@ -272,8 +272,9 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
             n += sprintf_s(stackDump + n, sizeof(stackDump) - n, "%s+0x%llX ", bn, (unsigned long long)(v - (DWORD64)mod));
         }
     }
-    sprintf_s(g_status, "sfx play owner=0x%p iface=0x%p %s scene=0x%p pool=0x%p poolRc=%d path=%s -> obj=0x%p out=0x%p exc=0x%08X fault_rva=0x%X stack=[%s]",
-              owner, iface, ownerInfo, scene, pool, (int)poolRc, path, sfx, outParam, (unsigned)exc,
+    sprintf_s(g_status, "sfx play owner=0x%p iface=0x%p %s scene=0x%p pool=0x%p poolRc=%d path=%s mtx=(%.0f,%.0f,%.0f) -> obj=0x%p out=0x%p exc=0x%08X fault_rva=0x%X stack=[%s]",
+              owner, iface, ownerInfo, scene, pool, (int)poolRc, path, mtx[12], mtx[13], mtx[14],
+              sfx, outParam, (unsigned)exc,
               (unsigned)(fault > (DWORD64)g_base ? (fault - (DWORD64)g_base) : 0), stackDump);
     return sfx != NULL ? 0 : 7;
 }
