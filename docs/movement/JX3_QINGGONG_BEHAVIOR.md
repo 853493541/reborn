@@ -278,7 +278,7 @@ User-described live-game flow, now mapped to the Condition.tab school-4 rows
 | Input | Live behaviour | Data |
 |---|---|---|
 | WW (ground) | 点墨江山·疾跑段 — the fast run (NOT the 大轻功 trigger) | the `<MOVEFORWARD;1>` rows + buffs 12085/12190; `WwRules.Evaluate` ground -> Sprint |
-| 疾跑段 + Space | 点墨江山·纵跃段 (the chain entry / takeoff) | JC1; casts the trigger 20628 (gate + `SkillMove 336` launch) |
+| 疾跑段 + Space | 点墨江山·纵跃段 (the chain entry / takeoff) | JC1 = the chain row **J1 50/160/8** (the small takeoff leap; the trigger's `SkillMove 336` launch was removed — it read as the 起跳 the live feedback rejected, and the chain must not use the normal-jump / jump-scale path). Cost only; the 气力值 cast gate was removed per user (2026-09-30). The altitude auto-end (`Flyheight < 3072`) is disabled — its semantics are unverified and it killed the chain after the small leap |
 | Space | 纵跃段 -> 一段 -> 二段 -> 三段 -> 四段 | JC2..JC5 (JumpParam J2..J5); at 四段 the Space has no effect, the player falls |
 | Shift at 一段/二段/三段 | enters 点墨江山·棋弈 (弈韵) | JC6; action 4 【shift切入】 on the JC2..JC4 rows |
 | Space in 棋弈 | cycles 弈韵一段..弈韵五段; at 五段 Space returns to 弈韵一段 | JC6..JC10 (the SpecialSprint counts 6\|7\|8\|9\|10\|11); the cycle |

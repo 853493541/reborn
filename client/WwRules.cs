@@ -76,11 +76,10 @@ internal static class WwRules
     //  - stages JC1..JC5 = 纵跃段/一段/二段/三段/四段 use JumpParam rows J1..J5
     //    (Condition.tab school 4, JumpCount 1..5; MaxJumpCount 5)
     public const float WhPowerMax = 10000f;
-    // UI scale: the live bar shows 气力值 ~700-1000 (user observation), so the
-    // scripts' nSprintPower is 10x the displayed value (10000 = the full bar
-    // shown as 1000). A full bar lasts ~1 min of bird-move flight:
-    // 10000 / OnFlyBirdMoveCost 206/s ~= 48 s.
-    public const float WhPowerUiScale = 10000f;
+    // UI scale: the live bar shows 气力值 max ~1000 (user rule: 10000 = 1k in
+    // our display); the scripts' nSprintPower is 10x the displayed value. The
+    // cast gate was removed by user request (2026-09-30).
+    public const float WhPowerUiScale = 10f;
     public const float WhTriggerCost = 2500f;
     public const float WhFlyCostPerSecond = 75f;
     public const float WhFloatCostPerSecond = 35f;
@@ -177,7 +176,7 @@ internal static class WwRules
         fail += CheckValue("WH_LAUNCH_FRAMES", (float)WhLaunchVzFrame.Length, 31f);
         fail += CheckValue("WH_LAUNCH_PEAK", WhLaunchVzFrame[4], 590f);
         fail += CheckValue("WH_MIN_ALTITUDE", FlyMinAltitudeUnits, 3072f);
-        fail += CheckValue("WH_POWER_UI_SCALE", WhPowerUiScale, 10000f);
+        fail += CheckValue("WH_POWER_UI_SCALE", WhPowerUiScale, 10f);
         Console.WriteLine("RESULT " + (fail == 0 ? "PASS" : "FAIL") + " failures=" + fail);
         return fail;
     }

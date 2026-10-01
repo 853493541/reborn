@@ -1256,3 +1256,21 @@ eborn_client_daqinggong carries these changes — other
   the assumed x10 display scale) — awaiting a live observation of a partial-bar
   cast.
 - Outcome: the live flow (WW burst -> Space chain) works end to end.
+
+### 2026-09-30 — client — 纵跃段 = J1 small leap; gate + altitude end removed
+- User directives: the 气力值 display max stays 1k (10000 internal = 1000 shown);
+  the 纵跃段 must never use the normal-jump system; remove the 气力值 cast gate.
+- Did: (a) the 纵跃段 (phase 1) is now the chain row J1 50/160/8 — the small
+  takeoff leap (vy 2400, g 1800, xy 750) — the trigger's SkillMove 336 launch
+  (the 2 s vertical rise the user called the 起跳) and its whole whLaunch
+  machinery are removed; the chain uses only the raw authored rows (no
+  jumpScale). (b) The 气力值 cast gate (CanCast >= 10000) is removed — the entry
+  always casts (the cost still deducts). (c) The altitude auto-end
+  (Flyheight < 3072) is disabled: it fired right after the small J1 leap
+  (apex 1590 u < 3072) and killed the chain; the GetAltitude semantics are
+  unverified. (d) The display is back to internal/10 (max 1000).
+- Evidence: flow run 22:57 exit=0 — WW burst -> entry -> `纵跃段 (JC1): J1
+  50/160/8` -> `一段 (JC2)` -> `二段 (JC3)` -> shift -> `弈韵一段 (float)` ->
+  cycle -> shift -> `弈韵六段` -> fall. Build + selftest PASS.
+- Outcome: the live flow works with the small leap; the 336/altitude items are
+  flagged for re-derivation.
