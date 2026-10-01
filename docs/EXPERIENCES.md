@@ -1058,3 +1058,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Open: mount (T) needs the horse actor; follow/interact need targeting; the
   sheath gates not modellable in the host (fight/bird/horse/tower/buff) are
   always false.
+
+### 2026-10-01 - controls/client - Full classic movement matrix (S slow, W+A/D diagonals)
+- Problem: classic had only been given A/D turn; W+A/W+D and S were wrong
+  (user report: S must be a slower backward move, W+A and W+D must differ).
+- Research: decoded hotkeys.lua proto 0/46 (ResponseWASDKey) - it merges
+  Forward/Backward and (Turn|Strafe)Left/Right into the 8-way MOVE_* intent
+  and passes it to ResponseDisplacementHotkey (proto 0/44, the sprint/skill
+  dispatcher). number.krl ships no back speed (walk 6 / run 20 only), so the
+  observed slower backward = walk pace (96 u/s).
+- Fix: host classic matrix - A/D alone turn (camera follows); W+A / W+D run
+  the camera-relative 45 deg diagonal with the facing turning to it and no
+  camera turn; S / S+A / S+D back-pedal at 96 u/s facing-kept; arrows always
+  turn; run/walk speeds otherwise unchanged.
+- Evidence: run reborn_20261001_083417.log - S dpos dist=96 (walk) with 后退
+  clip; WA dpos=(33,382) / WD dpos=(383,-33) dist=384 (run speed, mirrored
+  diagonals, camera unchanged); A alone d=-3.14 turn in place; exit 0.
+  camera_smoke ALL PASS; jx3_model 10x PASS; verify/capture selftest exit 0.
+- Open: diagonal-back clip selection uses the host angle thresholds; the
+  yaw-turn-speed consumer is still not located (registered S6 fallback).

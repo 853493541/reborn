@@ -850,6 +850,8 @@ internal static class RebornClient
         bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
+        bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
+        float strafeX0 = 0f, strafeZ0 = 0f, backX0 = 0f, backZ0 = 0f, waX0 = 0f, waZ0 = 0f, wdX0 = 0f, wdZ0 = 0f;
         float strafeYaw0 = 0f, backYaw0 = 0f, turnYaw0 = 0f;
         double strafeCam0 = 0.0, backCam0 = 0.0, turnCam0 = 0.0;
         long modeSwitchAt = 0;
@@ -1685,10 +1687,10 @@ internal static class RebornClient
                 if (now >= 2500 && !mvAuth) { mvAuth = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
                 if (now >= 5000 && !mvJumped) { mvJumped = true; runCommand("JUMP", true); runCommand("JUMP", false); }
                 if (now >= 6000 && !mvAuthOff) { mvAuthOff = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
-                if (now >= 6800 && !mvStrafe) { mvStrafe = true; strafeYaw0 = curYaw; strafeCam0 = camSys.Yaw; runCommand("STRAFELEFT", true); }
-                if (now >= 7800 && !mvStrafeDone) { mvStrafeDone = true; runCommand("STRAFELEFT", false); Log(string.Format("movetest strafe mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), strafeYaw0, curYaw, curYaw - strafeYaw0, strafeCam0, camSys.Yaw)); }
-                if (now >= 8100 && !mvBack) { mvBack = true; backYaw0 = curYaw; backCam0 = camSys.Yaw; runCommand("MOVEBACKWARD", true); }
-                if (now >= 9100 && !mvBackDone) { mvBackDone = true; runCommand("MOVEBACKWARD", false); Log(string.Format("movetest back mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), backYaw0, curYaw, curYaw - backYaw0, backCam0, camSys.Yaw)); }
+                if (now >= 6800 && !mvStrafe) { mvStrafe = true; strafeYaw0 = curYaw; strafeCam0 = camSys.Yaw; strafeX0 = px; strafeZ0 = pz; runCommand("STRAFELEFT", true); }
+                if (now >= 7800 && !mvStrafeDone) { mvStrafeDone = true; runCommand("STRAFELEFT", false); Log(string.Format("movetest strafe mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2} dpos=({6:F0},{7:F0})", CameraOperationMode.Name(cameraSettings.OperationMode), strafeYaw0, curYaw, curYaw - strafeYaw0, strafeCam0, camSys.Yaw, px - strafeX0, pz - strafeZ0)); }
+                if (now >= 8100 && !mvBack) { mvBack = true; backYaw0 = curYaw; backCam0 = camSys.Yaw; backX0 = px; backZ0 = pz; runCommand("MOVEBACKWARD", true); }
+                if (now >= 9100 && !mvBackDone) { mvBackDone = true; runCommand("MOVEBACKWARD", false); Log(string.Format("movetest back mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2} dpos=({6:F0},{7:F0}) dist={8:F0}", CameraOperationMode.Name(cameraSettings.OperationMode), backYaw0, curYaw, curYaw - backYaw0, backCam0, camSys.Yaw, px - backX0, pz - backZ0, (float)Math.Sqrt((px - backX0) * (px - backX0) + (pz - backZ0) * (pz - backZ0)))); }
                 if (now >= 9500 && !mvTurn) { mvTurn = true; turnYaw0 = curYaw; turnCam0 = camSys.Yaw; runCommand("TURNRIGHT", true); }
                 if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, curYaw - turnYaw0, turnCam0, camSys.Yaw, camSys.Yaw - turnCam0)); }
                 if (now >= 10800 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
@@ -1696,7 +1698,12 @@ internal static class RebornClient
                 if (now >= 13300 && !mvSitDone) { mvSitDone = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); Log("movetest sit done"); }
                 if (now >= 13600 && !mvSheath) { mvSheath = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); }
                 if (now >= 14600 && !mvSheathDone) { mvSheathDone = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); Log("movetest sheath done"); }
-                if (now >= 15000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
+                // W+A / W+D matrix windows (classical: camera-relative diagonal run)
+                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); }
+                if (now >= 16300 && !mvWADone) { mvWADone = true; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} yaw={4:F2} cam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw, camSys.Yaw)); }
+                if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
+                if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} yaw={4:F2} cam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), curYaw, camSys.Yaw)); }
+                if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
             }
             if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
             {
@@ -1913,8 +1920,15 @@ internal static class RebornClient
             bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
             bool classicalMode = !followsHeading;
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
-            bool turnL = pTurnL || (classicalMode && freeView && pA);
-            bool turnR = pTurnR || (classicalMode && freeView && pD);
+            // CLASSICAL full matrix (observed game behaviour + the decoded
+            // hotkeys.lua 8-way MOVE_* mapping): A/D alone turn (the camera
+            // follows); W+A / W+D run the camera-relative diagonal with A/D as
+            // lateral input (no camera turn); S / S+A/D back-pedal at walk
+            // pace with the facing kept; arrows always turn.
+            bool fwdKey = pW || autorunOn;
+            bool turnL = pTurnL || (classicalMode && freeView && pA && !fwdKey && !pS);
+            bool turnR = pTurnR || (classicalMode && freeView && pD && !fwdKey && !pS);
+            bool latMoves = !(classicalMode && freeView) || fwdKey || pS;
             // sitting stands up on any movement intent (move / turn / jump)
             if (sitting && (pW || pS || pA || pD || pTurnL || pTurnR || autorunOn))
             {
@@ -1923,8 +1937,8 @@ internal static class RebornClient
             }
             if (pW) { inX += hx; inZ += hz; }
             if (pS) { inX -= hx; inZ -= hz; }
-            if (pA && !(classicalMode && freeView)) { inX -= rX; inZ -= rZ; }
-            if (pD && !(classicalMode && freeView)) { inX += rX; inZ += rZ; }
+            if (pA && latMoves) { inX -= rX; inZ -= rZ; }
+            if (pD && latMoves) { inX += rX; inZ += rZ; }
             // TOGGLEAUTORUN (G/NumLock): keep moving forward without holding W
             if (autorunOn) { inX += hx; inZ += hz; }
             // forward/lateral input split for the operation-mode routing
@@ -1960,9 +1974,14 @@ internal static class RebornClient
             int gait = 0;
             if (grounded && moving)
             {
-                float sp = (shiftDown ? pRun * 10f
+                float baseSp = shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
-                            : pRun) / len;
+                            : pRun;
+                // classical S / S+A / S+D: back-pedal at walk pace (user-
+                // observed; number.krl ships no back speed - walk 6 u/f is the
+                // authored slow pace). Forward and strafe keep run/walk.
+                bool backPedal = classicalMode && fwdAxis < 0f;
+                float sp = (backPedal ? (shiftDown ? pSpeed * 10f : pSpeed) : baseSp) / len;
                 float ux = dirX / len, uz = dirZ / len;
                 float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/

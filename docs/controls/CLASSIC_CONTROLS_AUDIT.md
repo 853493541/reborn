@@ -12,11 +12,25 @@ key, no action needed) · `BLOCKED-RE` (mechanism undecoded).
 
 ## 1. Movement (classic) — all DONE
 
+**The full classic matrix (2026-10-01, from the user-observed game behaviour +
+the decoded `hotkeys.lua` 8-way `MOVE_*` mapping in `ResponseWASDKey` proto
+0/46):**
+
+| Input | Behaviour | Speed |
+|---|---|---|
+| W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
+| S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
+| A/D alone (free view) | turn character + camera (15° drag dead zone) | yaw rate |
+| W+A / W+D | **camera-relative 45° diagonal run**, character faces the diagonal, camera untouched | run 320 u/s |
+| S+A / S+D | diagonal back-pedal, facing kept | walk 96 u/s |
+| ←/→ | turn character + camera (arrows always turn) | yaw rate |
+| G autorun | forward run | run |
+
 | Command | Default key | Status | Note |
 |---|---|---|---|
 | `MOVEFORWARD` | W / Up | DONE | camera-relative, RunTo turn model |
-| `MOVEBACKWARD` | S / Down | DONE | classical: back-pedal facing-kept (`后退01`) |
-| `STRAFELEFT` / `STRAFERIGHT` | A / D | DONE | classical free view: turn (`RC_FREEVIEW=1`); side-step branch `RC_FREEVIEW=0` (挪步 clips) |
+| `MOVEBACKWARD` | S / Down | DONE | back-pedal at walk pace, facing kept (`后退01`) |
+| `STRAFELEFT` / `STRAFERIGHT` | A / D | DONE | alone: turn (free view, `RC_FREEVIEW=1`) / side-step branch at `RC_FREEVIEW=0`; with W/S: lateral component of the diagonal |
 | `TURNLEFT` / `TURNRIGHT` | Left / Right | DONE | turn in place, camera drags behind (15° dead zone) |
 | `JUMP` | Space | DONE | + 二段跳, jump XY, landing branch |
 | `TOGGLERUN` | Numpad / | DONE | main `/` host convenience |

@@ -153,3 +153,26 @@ Sit stands on any movement/jump intent (host mapping of the engine's stand-on-
 move); sheath is rejected while sitting (decoded gate). Both clips are the
 authored F1 b02 animations; no 收剑 clip ships for b02, so sheathing falls back
 to the normal idle.
+
+## Full classic movement matrix (2026-10-01)
+
+Decoded the 8-way intent system: ResponseWASDKey (hotkeys.lua proto 0/46)
+merges Forward/Backward and (TurnLeft|StrafeLeft)/(TurnRight|StrafeRight)
+into MOVE_FORWARD / MOVE_LEFTFORWARD / MOVE_BACKWARD / ... and passes them to
+ResponseDisplacementHotkey (proto 0/44, the sprint/轻功 skill dispatcher).
+Host classic matrix: A/D alone turn (camera follows); W+A / W+D run the
+camera-relative 45 deg diagonal with the character facing it (camera
+untouched); S / S+A / S+D back-pedal at walk pace (number.krl ships no back
+speed; walk 6 u/f = 96 u/s) with the facing kept; arrows always turn.
+
+Run RC_DEMO_MOVE=1 RC_MODE=classical RC_AUTORUN=20000, exit 0
+(log reborn_20261001_083417.log):
+
+`
+movetest strafe mode=classical yaw0=2.38 yaw1=-0.76 d=-3.14 cam0=2.34 cam1=5.22 dpos=(0,0)      # A alone: turn in place
+movetest back   mode=classical yaw0=-0.76 yaw1=-0.76 d=0.00  dpos=(47,-84) dist=96              # S: 96 u/s slow back-pedal, facing kept
+movetest WA     mode=classical dpos=(33,382)  dist=384 yaw=0.09 cam=3.84                        # W+A: 45 deg diagonal run, camera untouched
+movetest WD     mode=classical dpos=(383,-33) dist=384 yaw=1.66 cam=3.84                        # W+D: mirrored diagonal
+`
+
+384 u over 1.2 s = 320 u/s run speed; 96 u/s = walk pace back-pedal.
