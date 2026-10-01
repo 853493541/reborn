@@ -1764,34 +1764,22 @@ internal static class RebornClient
                 // object/foliage collision (walls, buildings, rocks, trees)
                 if (col != null)
                 {
-                    float stepGround = col.SupportHeight(px, pz, py - 20f, py + stepHeight);
-                    if (moving)
+                    // CCT semantics only: movement climbs via faces the
+                    // capsule actually contacts (Resolve's step branch).
+                    // (The caller-side SupportHeight raise was a host shortcut:
+                    // any surface within +64 u under the capsule centre lifted
+                    // the player every tick, which chained up stepped props
+                    // like the 270 u wood pile.)
+                    colCalls++;
+                    float gBefore = ground;
+                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
+                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight);
+                    if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                    if (ground > gBefore + 0.01f) groundOk = true;   // structure support
+                    if (grounded)
                     {
-                        for (int k = 1; k <= 3; k++)
-                        {
-                            float sd = playerRadius + k * 25f;
-                            float sh2 = col.SupportHeight(px + mvx * sd, pz + mvz * sd, py - 20f, py + stepHeight);
-                            if (sh2 > stepGround) stepGround = sh2;
-                        }
-                    }
-                    if (stepGround > ground)
-                    {
-                        ground = stepGround;
-                        groundOk = true;   // standing on a structure
-                    }
-                    else
-                    {
-                        colCalls++;
-                        float gBefore = ground;
-                        bool sBlocked = col.Resolve(ref px, ref py, ref pz,
-                            playerRadius, playerHeight, ref ground, ref grounded, stepHeight);
-                        if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
-                        if (ground > gBefore + 0.01f) groundOk = true;   // structure support
-                        if (grounded)
-                        {
-                            float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
-                            if (sh > ground) { ground = sh; groundOk = true; }
-                        }
+                        float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
+                        if (sh > ground) { ground = sh; groundOk = true; }
                     }
                 }
             }

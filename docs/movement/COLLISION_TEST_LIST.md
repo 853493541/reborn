@@ -55,7 +55,10 @@ exact blocker (`blocked by inst=… mesh=… top=… feet=…`) or the prop cont
    - The ~51 u house floor edge is walkable (climb); taller ledges block and
      require a jump.
    - Thin rails/planks at walls do not stop you (step budget 64 u).
-5. **Props**
+5. **Wood pile (x 19858-20097 / z 30743-31026, 270 u tall)** - walking
+   into it must NOT climb it (no more walking up to its top); you bump and
+   stay at ground level. Jumping onto it from higher ground is the only way up.
+6. **Props**
    - Wooden boxes can be jumped onto (standing on top works).
    - You can never end up inside a cabinet/box/barrel; interiors push you out.
 6. **Flags/lanterns/racks/straw mats** (bAutoProduceObstacle=0): walk-through is

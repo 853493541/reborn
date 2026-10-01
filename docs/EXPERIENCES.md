@@ -631,3 +631,20 @@ solved it, and what is still open. **Newest at the bottom.**
   and the three standard routes (rug y=924 hits=0; cabinet held z=36704;
   demo walk/run 90/300 + jump). Manual test checklist written to
   `docs/movement/COLLISION_TEST_LIST.md` (registered in the movement README).
+
+### 2026-09-30 — collision — Walked-up wood pile fixed (remove host climb shortcuts)
+- User report: "walked up a thing higher than me" - reproduced from the log:
+  the climb target is inst 624 `wj_木堆001_hd` (wood pile), AABB y 787..1057
+  (270 u tall) at x 19858..20097 / z 30743..31026; the player reached y=1048
+  (its top) at (19951,30869).
+- Cause (host inventions predating the plan): (1) the 42/67/92 u look-ahead
+  support probes and (2) the caller-side `SupportHeight(px,pz,+64)` raise -
+  both lifted `ground` onto any surface within +64 u, every 15 Hz tick, which
+  chained up the pile's stepped logs.
+- Fix: both removed; movement now climbs only via faces the capsule actually
+  contacts (`Resolve` step branch, CCT semantics). Selftest 25/25.
+- Verified: tall pile crossing (spawn 20450,30800 west): bump/fall, stays at
+  ground (874 peak, `173214`); mid pile (20450,31000): no climb (was 974,
+  `173345`); rug unchanged py=924 `hits=0` (`173620`); house floor edge still
+  steps up to ~969 (`173445`); buildings still block (inst 563 top 1061 >
+  feet 888).
