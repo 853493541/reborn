@@ -770,6 +770,45 @@ internal static class RebornClient
 
         // ---------------- input ----------------
         bool pW = false, pA = false, pS = false, pD = false, shiftDown = false;
+
+        // ---- 万花大轻功 (client data: 轻功/八大派/万花; QinggongData.cs) ----
+        // WW = 点墨江山·疾跑段 (run fast, instantly); Space = 纵跃段 -> 一段..四段
+        // (四段 ends -> fall; Space inert until the ground); at 一段 Shift = 棋弈
+        // (切入 + the 一段..五段 cycle); Shift in the 棋弈 = 六段 (急坠 fall).
+        float qgPower = 10000f;           // 气力值 internal (display = /10, max 1k)
+        float qgRegenPerSecond = 2000f;   // ground regen (provisional)
+        float qgDrainPerSecond = 166f;    // chain drain (provisional; 10000 ~ 1 min)
+        float qgRunSpeed = 1800f;         // Sprint.tab school 4 cap (120 u/frame)
+        bool qgRun = false;               // 疾跑段 active
+        long qgRunUntilMs = 0;
+        int qgMove = -1;                  // QinggongData move index; -1 = no chain
+        bool qgChess = false;             // 棋弈 mode (Shift at 一段)
+        bool qgEnded = false;             // 四段 ended: Space inert until the ground
+        float qgT = 0f;                   // the SkillMove elapsed seconds
+        float qgLeapSpeedXY = 0f;         // the move's forward speed (along the facing)
+        bool qgSpacePressed = false;
+        bool qgDemo = Env("RC_QG_DEMO", "0") == "1";
+        bool qgDemoWw = false, qgDemoS1 = false, qgDemoS2 = false, qgDemoS3 = false,
+             qgDemoSh1 = false, qgDemoS4 = false, qgDemoS5 = false, qgDemoSh2 = false,
+             qgDemoS6 = false, qgDemoS7 = false;
+        bool qgShiftPressed = false;
+        long lastWUp = 0, lastWDown = 0;
+        {
+            float v;
+            if (float.TryParse(Env("RC_QG_RUN_SPEED", ""), out v)) qgRunSpeed = v;
+            if (float.TryParse(Env("RC_QG_DRAIN", ""), out v)) qgDrainPerSecond = v;
+            if (float.TryParse(Env("RC_QG_REGEN", ""), out v)) qgRegenPerSecond = v;
+        }
+        Action<int> qgStartMove = delegate(int idx)
+        {
+            qgMove = idx;
+            qgT = 0f;
+            grounded = false;
+            Log("wh 点墨江山·" + QinggongData.MoveNames[idx] + " (skill " +
+                QinggongData.MoveSkillIds[idx] + ", SkillMove " + QinggongData.MoveSkillMoveIds[idx] +
+                ", jumpCount " + QinggongData.MoveJumpCount[idx] + ", " +
+                QinggongData.MoveXY[idx].Length + " frames)");
+        };
         bool userShot = false, forceDiag = false;
         long f9At = 0;
         bool f9Fired = false;
@@ -960,12 +999,27 @@ internal static class RebornClient
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) unlockMouse();
-            if (e.KeyCode == Keys.W) pW = true;
+            if (e.KeyCode == Keys.W)
+            {
+                long t = Environment.TickCount;
+                if (!pW || t - lastWDown > 100)
+                {
+                    // WW (double-tap) on the ground = 点墨江山·疾跑段 (instant)
+                    if (lastWUp != 0 && t - lastWUp < 500 && grounded && qgMove < 0)
+                    {
+                        qgRun = true;
+                        qgRunUntilMs = t + 3000;
+                        Log("ww: 点墨江山·疾跑段 (run fast; Space = 纵跃段)");
+                    }
+                    lastWDown = t;
+                }
+                pW = true;
+            }
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
             else if (e.KeyCode == Keys.D) pD = true;
-            else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
-            else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
+            else if (e.KeyCode == Keys.ShiftKey && !shiftDown) { shiftDown = true; qgShiftPressed = true; }
+            else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; if (qgRun || qgMove >= 0) qgSpacePressed = true; else if (qgEnded) { } else jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
@@ -1024,7 +1078,7 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) pW = false;
+            if (e.KeyCode == Keys.W) { pW = false; lastWUp = Environment.TickCount; }
             else if (e.KeyCode == Keys.S) pS = false;
             else if (e.KeyCode == Keys.A) pA = false;
             else if (e.KeyCode == Keys.D) pD = false;
@@ -1740,12 +1794,115 @@ internal static class RebornClient
             float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
             if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
+            if (qgDemo)
+            {
+                if (!qgDemoWw && now >= 3000) { qgDemoWw = true; qgRun = true; qgRunUntilMs = Environment.TickCount + 3000; Log("qgdemo: ww (\u75be\u8dd1\u6bb5)"); }
+                if (!qgDemoS1 && now >= 3600) { qgDemoS1 = true; qgSpacePressed = true; }
+                if (!qgDemoS2 && now >= 4400) { qgDemoS2 = true; qgSpacePressed = true; }
+                if (!qgDemoS3 && now >= 8300) { qgDemoS3 = true; qgSpacePressed = true; }
+                if (!qgDemoSh1 && now >= 5500) { qgDemoSh1 = true; qgShiftPressed = true; Log("qgdemo: shift (\u68cb\u5f08)"); }
+                if (!qgDemoS4 && now >= 11300) { qgDemoS4 = true; qgSpacePressed = true; }
+                if (!qgDemoS5 && now >= 14300) { qgDemoS5 = true; qgSpacePressed = true; }
+                if (!qgDemoS6 && now >= 20000) { qgDemoS6 = true; qgSpacePressed = true; }
+                if (!qgDemoS7 && now >= 21500) { qgDemoS7 = true; qgSpacePressed = true; }
+                if (!qgDemoSh2 && now >= 23000) { qgDemoSh2 = true; qgShiftPressed = true; Log("qgdemo: shift (\u516d\u6bb5)"); }
+            }
+            // ---- 万花大轻功: the 疾跑段 / the SkillMove chain ----
+            if (qgSpacePressed)
+            {
+                qgSpacePressed = false;
+                if (qgRun && qgMove < 0)
+                {
+                    qgRun = false;
+                    qgStartMove(0);              // 疾跑段 + Space = 纵跃段
+                }
+                else if (qgMove >= 0)
+                {
+                    if (qgMove == 4 && !qgChess)
+                        Log("wh 四段 is the chain end (fall; Space inert until the ground)");
+                    else if (qgMove == 5)
+                        qgStartMove(1);          // 棋弈 五段 -> 一段 (the cycle)
+                    else if (qgMove == 6)
+                        Log("wh 切入 running (the 棋弈 transition)");
+                    else
+                        qgStartMove(qgMove + 1);
+                }
+                else Log("wh stage ignored: no 大轻功 active");
+            }
+            if (qgShiftPressed)
+            {
+                qgShiftPressed = false;
+                if (qgMove == 1 && !qgChess)
+                {
+                    // Shift at 一段 = 点墨江山·棋弈: 切入 (15554) consumes 5000
+                    qgPower -= QinggongData.ChessEntryCost;
+                    qgChess = true;
+                    Log("wh 点墨江山·棋弈: 切入 (SkillMove 126, cost " +
+                        QinggongData.ChessEntryCost + "), power " + (qgPower / 10f).ToString("F0") + "/1000");
+                    qgStartMove(6);
+                }
+                else if (qgChess && qgMove >= 1)
+                {
+                    Log("wh 点墨江山·六段 (俯冲): shift -> the fall");
+                    qgMove = -1; qgChess = false; qgEnded = true;
+                    vy = -2000f * 15f;           // 万花轻功急坠 SetPassiveVelocityZ(-2000)
+                }
+                else Log("wh shift ignored: Shift at 一段 enters the 棋弈");
+            }
+            // the 疾跑段 state (the WW burst / holding W; instant full speed)
+            if (grounded && qgMove < 0)
+            {
+                if (pW && moving) qgRunUntilMs = Environment.TickCount + 250;
+                qgRun = Environment.TickCount < qgRunUntilMs;
+            }
+            else qgRun = false;
+            // the chain: the SkillMove (IgnoreGravity; the last velocity keeps at the end)
+            if (qgMove >= 0)
+            {
+                qgT += dt;
+                int qf = (int)(qgT * 15f);
+                if (qf < QinggongData.MoveXY[qgMove].Length)
+                {
+                    vy = QinggongData.MoveZ[qgMove][qf] * 15f;
+                    qgLeapSpeedXY = QinggongData.MoveXY[qgMove][qf] * 15f;
+                }
+                else if (qgMove == 6)
+                {
+                    qgStartMove(1);              // 切入 -> the 棋弈 一段
+                }
+                else if (qgMove == 4 && !qgChess)
+                {
+                    Log("wh 四段 end -> fall");
+                    qgMove = -1; qgEnded = true;
+                }
+                // else: the drift (the last velocity stays; Space advances)
+            }
+            // the chain's forward (the SkillMove XY along the facing)
+            if (!grounded && qgMove >= 0 && qgLeapSpeedXY > 0f)
+            {
+                float qstep = qgLeapSpeedXY * dt;
+                px += (float)Math.Sin(curYaw) * qstep;
+                pz += (float)Math.Cos(curYaw) * qstep;
+            }
+            // 气力值: the chain drain / the ground regen
+            if (qgMove >= 0)
+            {
+                qgPower -= qgDrainPerSecond * dt;
+                if (qgPower < 0f) qgPower = 0f;
+            }
+            else if (grounded && qgPower < 10000f)
+            {
+                qgPower += qgRegenPerSecond * dt;
+                if (qgPower > 10000f) qgPower = 10000f;
+            }
+
             // horizontal move + slope blocking (map-host rules)
             float ground = sampler != null ? sampler.Sample(px, pz) : py;
             bool blocked = false;
             if (moving)
             {
                 float sp = (shiftDown ? pRun * 10f
+                            : qgRun ? qgRunSpeed
                             : walkMode ? pSpeed
                             : pRun) / len;
                 float ux = dirX / len, uz = dirZ / len;
@@ -1868,18 +2025,19 @@ internal static class RebornClient
             if (!grounded)
             {
                 float vyBefore = vy;
-                vy -= curJumpGravity * dt;
+                if (qgMove < 0) vy -= curJumpGravity * dt;   // the chain = IgnoreGravity
                 py += vy * dt;
                 // apex sample: the model transform must have followed the physics
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
                     "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
-                if (py <= ground)
+                if (py <= ground && qgMove < 0)
                 {
                     py = ground;
                     float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    qgEnded = false; qgRun = false; qgLeapSpeedXY = 0f;
                     if (djumpLog && jumpCount > 0) Log(string.Format(
                         "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
                         jumpCount, px, py, pz, impact));
@@ -2811,17 +2969,20 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
-                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
+                string state = skillUntil > now ? "SKILL"
+                             : qgMove >= 0 ? ((qgChess ? "棋弈·" : "点墨江山·") + QinggongData.MoveNames[qgMove])
+                             : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
+                             : moving ? (qgRun ? "疾跑段" : shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6} \u6c14\u529b {12:F0}/1000\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip));
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    qgPower / 10f);
             }
             if (now - lastLog >= 2000)
             {
