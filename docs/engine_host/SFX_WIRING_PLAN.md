@@ -243,6 +243,23 @@ the E_INVALIDARG — the next step is to create a real Win32 window in the host 
 its HWND through the manager init path (the adapter manager's window field / the init
 param), plus a message pump.
 
+### Game boot path mapped (2026-10-01)
+
+The game's real init path is now known (from `JX3ClientX64.exe`):
+`KJX3RenderModule::Load` (`0xB7F3A`) → `LoadX3DEngine` + `GetK3EngineMgr`;
+`KJX3RenderModule::Initialize` (`0xB78C0`) →
+`facadeMgr->vt[4](objA, objB, objC)` (`0xB78F9`; facade `0x1F0F0` → `iface->vt[3]`),
+`facadeMgr->vt[5](objD)` (`0xB7940`; facade `0x1FE00` → `iface->vt[4]`),
+`facadeMgr->vt[2](0, 4)` (`0xB795D`; facade `0x1F7C0` =
+`NSX3DEngine::KWindowsX3DEngine::Init` → **`iface->vt[0](rdx=0, r8d=4)`** — the engine
+creation; r8d=4 did not change the window failure).
+The three host objects passed to vt[4]/vt[5] are the exe's module singletons
+(`[0xA8C1C0+0x18]`, `[0xA8C210+0x18]`, `[0xA8C260+0x18]`, `[0xA8C1E8+0x18]`) — these
+carry the host window/config context the adapter needs; replicating them (or at least the
+window) is the remaining host work.
+Adapter manager vtable: slot 0 = Init1 `0x730C0`, slot 1 = Init2 `0x75650`, slot 2 =
+UnInit `0x75A40`, slots 3/4 = `0x1BE40`/`0x1BBA0` (the host-object setters).
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
