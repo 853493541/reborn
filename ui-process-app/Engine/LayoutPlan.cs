@@ -48,6 +48,10 @@ namespace UiProcessApp.Engine
             /// CheckNormal 0 / UnCheckNormal 4 (MiddleMap.decompiled.lua:501-504).</summary>
             public int CheckedFrame { get; set; } = 0;
             public int UncheckedFrame { get; set; } = 4;
+            /// <summary>"row" flows the clones left-to-right (each after the previous
+            /// sibling's measured width, PosType 9) instead of the default vertical
+            /// stack — the message line's items flow right (FormatAllItemPos).</summary>
+            public string Flow { get; set; }
             /// <summary>Child section names dropped from every cloned item — the
             /// script's UpdateAreaOrNpcTruckState swaps the trunk's Bg1/Bg2 art and
             /// the capture shows no Image_ListCover/Image_Minimize in the rows, so
@@ -120,6 +124,13 @@ namespace UiProcessApp.Engine
         public string TableKey { get; set; }
         public string TableKeyColumn { get; set; }
         public string TableColumn { get; set; }
+
+        /// <summary>
+        /// Replays the Lua's SetFontScheme (e.g. MainMessageLine's getFPSFont/getPingFont
+        /// switch the value label between the shipped schemes 101 orange2 / 102 red2 /
+        /// 105 green2 by the live value). Null keeps the authored FontScheme.
+        /// </summary>
+        public int? FontScheme { get; set; }
     }
 
     /// <summary>
@@ -399,6 +410,9 @@ namespace UiProcessApp.Engine
                 if (string.IsNullOrWhiteSpace(value)) continue;
                 if (!filtered.ByName.TryGetValue(text.Section, out var section)) continue;
                 section.Values["$Text"] = value;
+                if (text.FontScheme.HasValue)
+                    section.Values["FontScheme"] = text.FontScheme.Value
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -777,9 +791,20 @@ namespace UiProcessApp.Engine
                     if (clones.Count == 0) continue;
 
                     var root = clones[0];
-                    root.Values["PosType"] = "0";
-                    root.Values["Left"] = "0";
-                    root.Values["Top"] = (rowHeight * row).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    if (string.Equals(template.Flow, "row", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Horizontal flow (the message line's items): PosType 9 places
+                        // each clone right after the previous sibling's measured width.
+                        root.Values["PosType"] = "9";
+                        root.Values["Left"] = "0";
+                        root.Values["Top"] = "0";
+                    }
+                    else
+                    {
+                        root.Values["PosType"] = "0";
+                        root.Values["Left"] = "0";
+                        root.Values["Top"] = (rowHeight * row).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
 
                     string rowText = tableRows.Count > 0 ? tableRows[row].Text
                         : (template.RowTexts != null && row < template.RowTexts.Count ? template.RowTexts[row] : null);

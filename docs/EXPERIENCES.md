@@ -722,3 +722,86 @@ solved it, and what is still open. **Newest at the bottom.**
   / 对抗 6 / 休闲 11 / 其他 9 rows; `--selftest` 19/1/0; `--audit` 15/0/79.
 - Outcome: done. Open: the numerical panel (`OpenNumericalPanel`) is a
   game-side panel not in the extracted UI corpus; the table is the option list.
+
+### 2026-09-30 — UI — main-message-line subset replay (时间/网络延迟/渲染FPS/逻辑FPS/飞沙令)
+- Did: the user asked to show only 时间, 网络延迟, 渲染FPS, 逻辑FPS and the
+  飞沙令 amount. Replayed the Lua model: the segments are runtime clones of
+  `Handle_Info` appended into `Handle_MainMessage` (`addCommom`), so the viewer
+  clones that item 5× from `MainMessageLine.ini` and flows the clones right —
+  new `ListTemplate.Flow = "row"` sets the clone root PosType 9 (placed after
+  the previous sibling's measured width). Titles via `RowTexts` on
+  `Text_TitleI`; values as static samples on `Text_ContentI`
+  (12:00/30/60/60/0). The static template blocks (`Handle_Currency`,
+  `Handle_Info`, `Handle_Money`, `Handle_Camp` — incl. the editor test text)
+  are hidden; `adjust` shrinks each clone's content block + `Image_HighlightI`
+  to its measured content width (82/92/91/91/68) so the items sit adjacent,
+  matching the client's content-sized items (`SetSizeByAllItemSize`).
+- Evidence: `--render main-message-line` → `mml2.txt`: clones at x=65/147/239/
+  330/421 (widths 82/92/91/91/68), texts 时间=12:00, 网络延迟=30, 渲染FPS=60,
+  逻辑FPS=60, 飞沙令=0; `mml2.png` 1572x32 sha256 43b2cb7e9d1b59fd (fingerprint
+  `image_stats.py`); `--selftest` 19/1/0 (main-message-line sections=45);
+  `--audit` 15/0/78.
+- Outcome: done. Open: values are samples (GetPing/GetFPS/currency data at
+  runtime); 飞沙令 has no icon in the commom template; the numerical panel
+  (`OpenNumericalPanel`) is not in the extracted UI corpus.
+
+### 2026-09-30 — UI — main-message-line vs the 5.8 example (order, colons, value colors)
+- Did: the user supplied `proof/minimap/screenshots/5.8 Example.png` (1199x98)
+  and asked what differs. Compared numerically (glyph template matching against
+  rendered font candidates + per-run mean RGB — no image attachments). Diffs
+  found and fixed: (a) item order — the client shows 网络延迟, 时间, 渲染FPS,
+  逻辑FPS (the tShow order), not 时间 first; (b) titles carry the fullwidth
+  colon — the Lua appends `g_tStrings.STR_COLON` ("：", lua:5755 commom / 6297
+  currency); (c) value colors — the Lua switches the value label's font scheme
+  by the live value: `getPingFont` (≤300ms → 105 green2, ≤800 → 101 orange2,
+  else 102 red2) and `getFPSFont` (≥40 → 105, ≥20 → 101, else 102), schemes read
+  from the shipped font.ini (101=orange2 255,150,0; 105=green2 0,200,72);
+  (d) values — ping "100", date-time "2026-08-22 00:31:45" (the DATE item shows
+  the full date-time), FPS "34"/"34". Viewer: new `fontScheme` field on the text
+  override (LayoutPlan.TextOverride + ApplyTexts) applies the scheme to the
+  section before layout; item widths re-measured (content + trailing blank 8).
+- Evidence: `--render main-message-line` → `mml4.txt` (items at x=65/180/386/
+  492/598; titles 网络延迟：/时间：/渲染FPS：/逻辑FPS：/飞沙令：; values
+  100/2026-08-22 00:31:45/34/34/0); `mml4.png` ink colors: ping #00C848,
+  FPS #E18909 (schemes 105/101), title #D0D50F (scheme 27), value white;
+  `--selftest` 19/1/0; `--audit` 15/0/78; fingerprint 1572x32 sha256
+  335927a61272337d.
+- Outcome: done. Open: the 5.8 capture has no 飞沙令 item (kept per request,
+  commom template, no icon); the example shows no obvious per-item highlight box
+  — `Image_HighlightI` stays authored-visible (no Lua driver found; re-open with
+  a hover/GT capture).
+
+### 2026-09-30 — UI — main-message-line: drop the per-item highlight plate
+- Did: the user reported the render looked like a pasted screenshot — every item
+  sat on a wide plate with a "lighting" glow. That plate is `Image_HighlightI`
+  (Common.UITex frame 4, 176x28 — a dark plate with a bright core), authored in
+  the item prototype but with no Lua driver (no Show/SetFrame/SetAlpha call in
+  MainMessageLine.lua — it is the engine's hover highlight). The 5.8 GT shows no
+  plate behind the items (its bar profile is smooth; the settings-button plate
+  at the left IS visible in both). Dropped it from the clones via the list
+  template's `hide` (cloned sections 45 → 40) and removed the dead adjust
+  entries.
+- Evidence: `--render main-message-line` → `mml5.txt` (no HighlightI sections;
+  items unchanged at x=65/180/386/492/598); `mml5.png` bg profile now uniform
+  (49 left of the glass edge, 37 beyond) instead of 43-99 plate banding;
+  `--selftest` 19/1/0; `--audit` 15/0/78; fingerprint 1572x32 sha256
+  99aa8a370ba196d4.
+- Outcome: done. Open: the hover highlight is not replayed (static render);
+  re-open with a hover GT if needed.
+
+### 2026-09-30 — UI — main-message-line: hide the glassmorphism overhang
+- Did: the user reported the bar's left side taller than the right. The left
+  region is `Image_Glassmorphism` (770x32, PanelBg.UITex frame 6 = a 48x48 white
+  mask, ImageType=16) while the bar (`Image_LineBg`) is 1572x22 — the viewer's
+  ImageType=16 stand-in (a solid #33393E plate masked by the frame) rendered a
+  10px plate below the bar plus a tint over its left. In the engine ImageType=16
+  is a backdrop blur (the mask selects the blur region); the 5.8 GT bar is a
+  uniform 22 tall and its left/right brightness ratio matches the world's (no
+  glass tint) — the blur is invisible over the dark LineBg. Hid the element in
+  this window (the stand-in stays for the MiddleMap/queue panels where captures
+  show visible frosted glass).
+- Evidence: `--render main-message-line` → canvas 1572x32 → 1572x22, left/right
+  bg rows both 37 (was left 49-52 / right 16-37); `--selftest` 19/1/0;
+  `--audit` 15/0/77; fingerprint 1572x22 sha256 b66201afddb7efb9.
+- Outcome: done. Open: the glass blur itself is not reproduced (no backdrop);
+  re-open if a capture shows visible glass on the message line.

@@ -124,21 +124,6 @@ namespace MapUiApp.Engine
                 intrinsic[section.Name] = size;
                 return size;
             }
-            double ElementSizeW(IniSection section)
-            {
-                var own = Intrinsic(section, 0);
-                if (own.W > 0) return own.W;
-                var imagePath = section.Get("Image");
-                if (!string.IsNullOrWhiteSpace(imagePath)) return 0; // resolved later from the atlas
-                var text = section.Get("$Text");
-                if (!string.IsNullOrWhiteSpace(text)) return Math.Max(8, GameData.ResolveString(text).Length * 12);
-                return 0;
-            }
-            double ElementSizeH(IniSection section)
-            {
-                var own = Intrinsic(section, 0);
-                return own.H > 0 ? own.H : (string.IsNullOrWhiteSpace(section.Get("$Text")) ? 0 : 16);
-            }
 
             var sizeCache = new Dictionary<string, (double W, double H)>(StringComparer.OrdinalIgnoreCase);
             // Content size when the INI authors none: the frame's pixel size for images,

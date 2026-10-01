@@ -492,16 +492,39 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MainMessageLine.ini",
-          "summary": "System message line (SYS_MSG); carries the mode announcements (e.g. the streamer-mode warning STR_STORM3) and event calls.",
+          "summary": "System message line (SYS_MSG); carries the mode announcements (e.g. the streamer-mode warning STR_STORM3) and event calls. Its info segments are runtime-appended clones of Handle_Info (commom items) / Handle_Currency (currency items) / Handle_Money into Handle_MainMessage (MainMessageLine.lua addCommom/addCurrency/addMoney), driven by the SHOW_ITEM list built from Table_GetMessageLineList (ui/Scheme/Case/MessageLineList.txt: 29 show/hide rows in 4 groups 协作/对抗/休闲/其他) and the saved tShow order (default = 网络延迟/时间/WeGame身份码, lua:100-111); Btn_Settings opens the numerical panel (OpenNumericalPanel, lua:1630-1657) where they are toggled. Viewer replay matches the 5.8 Example capture: 网络延迟：100, 时间：2026-08-22 00:31:45, 渲染FPS：34, 逻辑FPS：34 and 飞沙令：0 — five Handle_Info clones flowing right (list flow row; each clone's content block + highlight resized to its measured content width via adjust); titles carry the Lua's `.. g_tStrings.STR_COLON` (lua:5755/6297), values are static samples colored by the Lua's own schemes via the new `fontScheme` text override (getPingFont ≤300ms → 105 green2; getFPSFont 20-39 → 101 orange2, lua:465-531; the real values come from GetPing/GetFPS/Get3DEngineFPS/the date and the currency data); the static template blocks (Handle_Currency/Handle_Info/Handle_Money/Handle_Camp, incl. the editor test text 45646545) are hidden; the per-item `Image_HighlightI` plate (Common.UITex frame 4 — a bright-cored plate, no Lua driver) is dropped from the clones (list template `hide`), matching the 5.8 GT (no plate behind the items); `Image_Glassmorphism` (770x32, PanelBg.UITex frame 6 — a white mask for the engine's backdrop blur, ImageType=16) is hidden: the viewer's frosted-plate stand-in would overhang the 22-tall bar by 10px, and the GT bar is uniform with no glass tint (the blur is invisible over the dark LineBg; unlike the MiddleMap/queue panels where the frosted glass is visible in captures).",
           "evidence": [
             "ui/Config/Default/MainMessageLine.ini",
-            "ui/Scheme/Case/string.txt (STR_STORM3)"
+            "ui/Scheme/Case/string.txt (STR_STORM3, FPS=逻辑FPS)",
+            "ui/Scheme/Case/MessageLineList.txt (extracted from PakV4: 29 rows, szIndex/szDisplayKey/nGroup/szGroupTitle)",
+            "proof/minimap/ui/Config/Default/MainMessageLine.lua (addCommom/addCurrency/addMoney, SHOW_ITEM build, OpenNumericalPanel handler)"
+          ],
+          "hide": "Handle_Currency,Handle_Info,Handle_Money,Handle_Camp,Image_Glassmorphism",
+          "adjust": [
+            { "section": "__lt_Handle_MainMessage_0_Handle_Info_", "width": 115 },
+            { "section": "__lt_Handle_MainMessage_1_Handle_Info_", "width": 206 },
+            { "section": "__lt_Handle_MainMessage_2_Handle_Info_", "width": 106 },
+            { "section": "__lt_Handle_MainMessage_3_Handle_Info_", "width": 106 },
+            { "section": "__lt_Handle_MainMessage_4_Handle_Info_", "width": 83 }
+          ],
+          "lists": [
+            { "container": "Handle_MainMessage", "ini": "MainMessageLine.ini", "item": "Handle_Info", "count": 5, "flow": "row", "textSection": "Text_TitleI",
+              "rowTexts": ["网络延迟：", "时间：", "渲染FPS：", "逻辑FPS：", "飞沙令："], "hide": ["Image_HighlightI"] }
+          ],
+          "texts": [
+            { "section": "__lt_Handle_MainMessage_0_Text_ContentI", "text": "100", "fontScheme": 105 },
+            { "section": "__lt_Handle_MainMessage_1_Text_ContentI", "text": "2026-08-22 00:31:45" },
+            { "section": "__lt_Handle_MainMessage_2_Text_ContentI", "text": "34", "fontScheme": 101 },
+            { "section": "__lt_Handle_MainMessage_3_Text_ContentI", "text": "34", "fontScheme": 101 },
+            { "section": "__lt_Handle_MainMessage_4_Text_ContentI", "text": "0" }
           ],
           "elements": [
-            "Message line + queue"
+            "Message line + queue",
+            "SHOW_ITEM segments (commom/currency/money/camp templates)"
           ],
           "labels": [
-            "STR_STORM3"
+            "STR_STORM3",
+            "FPS"
           ]
         },
         {
