@@ -190,6 +190,8 @@ where they affect collision/camera geometry. Excludes harness switches
 | 4b | step raise requires CCT up-sweep clearance (raised capsule must not overlap the blocker; else block+push-out, no embedding); support raise only to a standable surface (downward contacts reject; horizontal overlaps left to the prop push) | rule | `FoliageCollision.CapsuleBlocked/CapsuleBlockedDown` |
 | 4c | horizontal faces resist the horizontal motion (a face whose normal points along the move is flipped - thin-wall pop-through prevented, field case z~33870 building 001_002) | rule | `FoliageCollision.Resolve` (hMove) |
 | 4d | movement substeps capped below the capsule radius (`min(20, 0.9*radius)`) - thin small faces (foliage/rock slivers) no longer creep at 20 u substeps | number | `RebornClient` loop + audit |
+| 4e | tree trunk prisms measured from the VISUAL mesh when the shipped `.CollisionMesh` is degenerate (62/68 trees in 龙门寻宝); not game data, kept to avoid a walk-through hole. Recover via `.srt` decode or engine obstacle production | proxy | `export_structure_collision.trunk_prism_from_mesh` |
+| 4f | step budget 64 u (the engine's landing tolerance `0x14031A25E`) instead of the PhysX `stepOffset` 50 u: a live-game field case (51 u house floors walkable) proves the gameplay step exceeds 50; the CCT value's gameplay applicability is unproven (`G-1/G-13`) | number | `RC_STEP_HEIGHT` |
 | 5 | 20 u movement substep | number | `RebornClient` loop |
 | 6 | floor source = terrain sample + `SupportHeight` (not native `GetFloorHeight`) | proxy | both |
 | 7 | winding-agnostic floor query (game winding is inverted) | rule | `SupportHeight` |

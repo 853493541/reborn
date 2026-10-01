@@ -770,3 +770,21 @@ solved it, and what is still open. **Newest at the bottom.**
   or continuous contact).
 - A/B/notes: the user's session (pid 33448) blocks the shared exe name - test
   builds run as `reborn_client_colltest*.exe` (own namespace).
+
+### 2026-10-01 - collision - Band-aid audit pass: step budget cleared, tree prisms registered
+- User asked to move toward "less band-aid, more original". Audited the top
+  candidates before touching them:
+  - **Step budget 64 u is NOT a band-aid** - it is the engine's own landing
+    tolerance (`ProcessVerticalMove` 0x14031A25E) and is backed by a live-game
+    field case (51 u interior house floors walkable). The PhysX `stepOffset`
+    50 u is the CCT default whose gameplay applicability is unproven
+    (`G-1/G-13`). Changing to 50 would regress a proven behavior -> dropped
+    from the plan; registered as deviation 4f with the reason.
+  - **Tree trunk prisms ARE a registered host deviation** (62/68 trees have a
+    degenerate shipped `.CollisionMesh`; the prism is measured from the visual
+    mesh). Deleting it would make those trees walk-through, so it stays with
+    the recovery path documented (`.srt` decode or engine obstacle production)
+    - registered as 4e in the comparison doc + in the exporter docstring.
+- Remaining genuine recovery work, priority order: slope model
+  (`ProcessDropSpeed` + live engine cell slope), cave floors under holes,
+  obstacle production reverse, capsule values, engine-physics-in-host.

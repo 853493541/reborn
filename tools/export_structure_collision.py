@@ -194,6 +194,13 @@ def trunk_prism_from_mesh(mesh_obj, world_thresh=250.0, scale=1.0):
 
     The tree meshes are in local units; the player is ~170 world units tall, so
     the collider only needs the trunk up to ~250 world units above the base.
+
+    REGISTERED HOST DEVIATION (comparison doc §8.1): for trees whose shipped
+    `.CollisionMesh` is degenerate (62 of 68 in 龙门寻宝) this prism is measured
+    from the VISUAL mesh - it is not game collision data. Kept because deleting
+    it makes those trees walk-through (a gameplay hole). Recovery path: decode
+    the SpeedTree `.srt` collision geometry, or use the engine's own obstacle
+    production (KG3D_LoaderNoRenderX64), then drop this helper.
     """
     v = mesh_obj.positions
     if v.size == 0:
