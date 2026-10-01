@@ -179,38 +179,53 @@ map area is masked by `Handle_Border`'s `ShapTexture`
 `ui/Image/UItimate/UIMask/MapMask.tga` with `AlphaShap=1` — a soft 100x80
 rounded-rect alpha stretched over the 936x764 border, applied by the viewer as a
 container `OpacityMask` so the art feathers into the glass like the capture): the
-map's own CDN pack (`data/source/maps/龙门荒漠minimap_mb/`, extracted from hpkg
-`50/oc23ca7fgr3io.hpkg` via the resource index) carries `config.ini`
+map window is the **battlefield map's M-map** (inventory `pages`): `MapList.tab`
+rows 296/297/410/512/532 are the five `BATTLE_FIELD` maps — 龙门绝境,
+龙门绝境·夜, 沧溟绝境, 白龙绝境, 天原绝境 — and each page takes its art from
+that map's minimap pack (`龙门寻宝minimap_mb`, `龙门寻宝_夜晚minimap_mb`,
+`海岛绝境minimap_mb`, `白龙绝境minimap_mb`, `天原绝境minimap_mb`, the same packs
+the loading pages use) and its row label from
+`Table_GetMiddleMap(id).MiddleMap0`. Each pack carries `config.ini`
 (`[middlemap0] image=middlemap.png`, 1024x896, scale/startx/starty),
-`middlemap.png` (2048x1792), `npc.tab`, `doodad.tab`, `area.tab`, traffic tables.
-`MiddleMap.UpdateMapPos` (:9263-9320) fits the art preserving the config aspect
-into `Handle_Map` (928x812 = 928/2048 = 0.453; the reference capture measures
-0.455, correlation 0.93). The region list rows come from the shipped tables:
-世界 = `STRING_TITLE_WORLDMAP`; 陇右 = `WorldMap_GetRegion(Table_GetMap(23).dwRegionID=7).szRegionName`
-(`RegionMap.tab`); 龙门荒漠 = `Table_GetMiddleMap(23)` (`MapList.tab` row 23
-`MiddleMap0`); `Wnd_SmallMaps` is adjusted to `(left 0, top 39)` because the
-runtime list sits directly under `Wnd_Region` and left-aligns with it (authored
-`(53,161)` is the parked prototype; left 6 left the 龙门荒漠 crest/text ~6 px
-right of the 陇右 row). `Image_MapLogo` is adjusted to top 4: the authored top
+`middlemap.png` (2048x1792) and `area.tab`; `MiddleMap.UpdateMapPos`
+(:9263-9320) fits the art preserving the config aspect into `Handle_Map`
+(928x812 = 928/2048 = 0.453; the inset art matches the packs at corr 0.98+).
+The left list is 世界 = `STRING_TITLE_WORLDMAP` plus the map row; the region row
+stays hidden (every battlefield row has Region=0, `UpateRegionBtn` :11989-11995
+returns before showing `Wnd_Region` — the 5.1 capture's 陇右 row is the
+world-map state); `Wnd_SmallMaps` is adjusted to `(left 0, top 0)` — with the
+region row hidden the runtime list stacks at the container top, right under the
+世界 row (authored `(53,161)` is the parked prototype; left 6 left the map
+crest/text ~6 px right of the row above; the engine's `FormatAllContentPos`
+re-format itself is not reproduced, so the viewer pins the stacked position). `Image_MapLogo` is adjusted to top 4: the authored top
 -6 draws the crest ~10 px above the capture, which centers it on
 `Text_SmallMap` (box correlation +11 px before, +0 after; capture
 `proof/minimap/screenshots/5.1 Example.png`, 2026-09-30 measurement — the
-viewer's static item layout does not reproduce the runtime row placement). The NPC
-filter rows come from the map's `minimap/npc.tab` + `minimap/doodad.tab` category
-rows (`kind` + `defaultcheck`; `g_tMapNpcTitle`/`g_tMapDoodad` in
-table_defs_dynamic.lua) — the same source `UpdateNpcDoodad` (:5978-6043) appends
-from — rendered with `Image_NpcOption` frame 0 checked / 4 unchecked
-(:501-504); the shipped `defaultcheck` is 0, so the rows render unchecked (the
-capture's 跨地图交通 + 其他商人 checks are the player's saved StorageServer
-`MiddleMap_SelectNpc` filter, not shipped data). The trunk rows
+viewer's static item layout does not reproduce the runtime row placement). The
+selected 龙门荒漠 row shows `Image_BgSelect` (`MapWindow6` frame 7 — its ink
+RGB (93,131,103) matches the capture's bar (91,118,100), not the normal frame
+33's (50,95,88)), so the viewer hides `Image_BgNormal`/`Image_BgOn` and places
+`Image_BgSelect` at top 5 (authored -5 puts the bar's bottom edge 10 px above
+the capture's — same runtime row-placement fit as the crest); the row highlight
+bar now aligns at +3/+1 px like the rest of the list (strip corr 0.68→0.94). The battlefield packs ship no NPC filter data: all five
+`minimap/npc.tab` are empty (0 bytes) and there is no `doodad.tab`, so
+`UpdateNpcDoodad` (:5978-6043, `g_tMapNpcTitle`/`g_tMapDoodad` in
+table_defs_dynamic.lua) appends nothing — the viewer replays no NPC rows (the
+5.1 capture's ten rows 地图内交通 … 碑铭 and its 跨地图交通/其他商人 checks are
+the *world* map 龙门荒漠's 33-row `npc.tab` and the player's saved StorageServer
+`MiddleMap_SelectNpc` filter — world state, not the battlefield; the same
+`Image_NpcOption` frame 0 checked / 4 unchecked mapping applies when a page
+ever carries rows, :501-504). The trunk rows
 (`Handle_NpcTrunk`/`Handle_CraftTrunk`, cloned from `Handle_Mode` by
-`UpdateAreaOrNpcList` :5660-5705) carry the eye in the `Image_ListBg1`/`Bg2`
-art (`MapWindow6` frame 32 open / 35 closed; `UpdateAreaOrNpcTruckState`
-:4501-4592 swaps them with the expand state — NPC trunk expanded, craft trunk
-collapsed). The viewer hides the authored-visible `Image_ListCover` (frame 30
-magnifier, which the script shows over the eye) and `Image_Minimize` in both
-rows, plus the opposite bg frame per row state (list-template `hide`), matching
-the capture. `Image_Search` is rendered diced (`adjust imageType 10`): the
+`UpdateAreaOrNpcList` :5660-5705) are hidden on the battlefield pages — an empty
+list shows no title, and the packs carry no rows (the 5.1 capture's world state
+shows them because its 龙门荒漠 pack has rows). When a page carries rows the
+trunk art is the `Image_ListBg1`/`Bg2` eye (`MapWindow6` frame 32 open / 35
+closed; `UpdateAreaOrNpcTruckState` :4501-4592 swaps them with the expand
+state), with the authored-visible `Image_ListCover` (frame 30 magnifier) and
+`Image_Minimize` hidden (list-template `hide`). The NPC list's scrollbar
+(`Scroll_List`) is hidden as well — the capture shows no scrollbar (its list
+fits; ours is empty). `Image_Search` is rendered diced (`adjust imageType 10`): the
 client draws the 20x20 `Common` frame 0 box art with 1 px borders although the
 INI omits `ImageType`; the stretched render showed a 13 px left/right band (the
 "extra dusted area"), the capture 1 px. Also replayed: the 标记设置

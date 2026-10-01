@@ -531,3 +531,58 @@ solved it, and what is still open. **Newest at the bottom.**
   2.4, dy = 0.0072y − 0.7 over 16 patches) — residual offsets grow with x/y;
   re-derive the per-element alignment with the corrected scale when touching
   those rows again.
+
+### 2026-09-30 — UI — MiddleMap: 龙门荒漠 selected-row highlight (BgSelect)
+- Did: the user reported the 龙门荒漠 row's line sitting too close under the
+  text. The capture's bar is `Image_BgSelect` (MapWindow6 frame 7): its ink RGB
+  (93,131,103) matches the capture's bar (91,118,100), while `Image_BgNormal`
+  (frame 33, (50,95,88)) is the unselected art. The script shows BgSelect for
+  the selected row (UpdateNameListState :14107-14124; the current map is
+  龙门荒漠), so the viewer hides `Image_BgNormal`/`Image_BgOn` instead of
+  `Image_BgSelect` and places BgSelect at top 5 (authored -5 puts the bar's
+  bottom edge 10 px above the capture's — same runtime row-placement fit as the
+  crest).
+- Evidence: strip correlations mm32→mm33: y200..210 0.83→0.90, y206..216
+  0.68→0.94, y212..222 0.88→0.94, all at +3/+1 like the rest of the list;
+  `--selftest` 20/1/0; `--audit` 15/0/79; render `middlemap33.png`.
+- Outcome: solved. Open: the capture's bar bottom edge carries the engine's
+  bloom (brighter green edge) — not replicated, same as the crest bloom.
+
+### 2026-09-30 — UI — MiddleMap: battlefield map pages (龙门绝境/龙门寻宝, not 龙门荒漠)
+- Did: the user corrected the map identity — the M-map must show the battlefield
+  map 龙门绝境/龙门寻宝, not the world-map village 龙门荒漠 the 5.1 capture
+  happens to show (the capture's art matches 龙门荒漠minimap_mb at 0.98 and its
+  row reads 龙门荒漠). Wired the five `BATTLE_FIELD` maps as pages like the
+  loading window: 296/297/410/512/532 (`MapList.tab` rows 龙门绝境,
+  龙门绝境·夜, 沧溟绝境, 白龙绝境, 天原绝境), each page = the map's minimap pack
+  art (龙门寻宝/龙门寻宝_夜晚/海岛绝境/白龙绝境/天原绝境 `minimap_mb`
+  middlemap.png) + `Table_GetMiddleMap(id).MiddleMap0` row label. Battlefield
+  state per the client data: `Wnd_Region` hidden (all battlefield rows
+  Region=0, `UpateRegionBtn` :11989-11995 returns) and no NPC filter rows (all
+  five packs ship a 0-byte `minimap/npc.tab` and no `doodad.tab`, so
+  `UpdateNpcDoodad` appends nothing). The world rows (陇右 + the ten NPC rows)
+  remain only in the capture as the layout reference. Art copies are git-ignored
+  under `ui-process-app/assets/ui/data/source/maps/`.
+- Evidence: `--render middlemap --page 296..532` → `Text_SmallMap` =
+  龙门绝境/龙门绝境·夜/沧溟绝境/白龙绝境/天原绝境; inset art corr 0.983 (296) /
+  0.987 (410) vs the packs; `--selftest` 20/1/0; `--audit` 15/0/79.
+- Outcome: solved. Open: the battlefield list's vertical re-format when the
+  region row hides (engine `FormatAllContentPos`) is not reproduced — the
+  smallmap row is pinned at the container top (`adjust` top 0, fixed in the
+  next entry); re-open when the format rule is decoded.
+
+### 2026-09-30 — UI — MiddleMap: battlefield list spacing + empty-list chrome
+- Did: the user reported an empty gap in the left list between 世界 and the map
+  row (the region row is hidden on the battlefield pages but `Wnd_SmallMaps`
+  was still pinned at the world-state y) and that an empty right list should
+  not show its title. Fixes: `Wnd_SmallMaps` adjust top 39 → 0 (the row stacks
+  at the container top, right under 世界 — the engine's `FormatAllContentPos`
+  re-format is not reproduced, the viewer pins the stacked position); the trunk
+  rows are hidden (window `hide Handle_Mode` + list-template `hide Handle_Mode`;
+  `ApplyListTemplates` now skips an empty clone list instead of crashing on
+  `clones[0]`), so no 显示常用NPC标记/显示采集点 titles; and the NPC list
+  scrollbar (`Scroll_List`) is hidden — the capture shows no scrollbar (its
+  list fits, ours is empty).
+- Evidence: `--render middlemap --page 296` → `Wnd_SmallMaps x=3 y=105`,
+  trunk/scrollbar absent, sections 52; `--selftest` 20/1/0; `--audit` 15/0/79.
+- Outcome: solved.

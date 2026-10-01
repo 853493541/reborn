@@ -764,6 +764,7 @@ namespace UiProcessApp.Engine
                             foreach (var child in children) Walk(child, clone.Name);
                     }
                     Walk(prototype, template.Container);
+                    if (clones.Count == 0) continue;
 
                     var root = clones[0];
                     root.Values["PosType"] = "0";
