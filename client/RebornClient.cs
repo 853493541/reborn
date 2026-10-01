@@ -7,6 +7,8 @@
 //   RC_SPAWN=x,y,z                optional spawn (y optional -> terrain)
 //   RC_DUMMY=<representid>        spawn one 试炼木桩 near spawn (default 35901; 0 = off)
 //   RC_DUMMY_DIST=<units>         dummy distance along the view dir (default 400)
+//   RC_DUMMY_NAME/LEVEL/HP        target-frame values (default 初级试炼木桩/131/500000000)
+//   RC_TAB_AT=ms,ms               smoke: target-next (Tab) at these times
 //   RC_AUTORUN=ms                 exit after N ms (0 = until window closed)
 //   RC_SHOTS=2000,5000,...        screenshot times (ms)
 //   RC_CLIP_IDLE/WALK/RUN/JUMP/FALL/SKILL=<vfs .ani/.tani path>
@@ -105,6 +107,12 @@ internal static class RebornClient
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
+        var tabAt = new System.Collections.Generic.List<long>();
+        foreach (string s in Env("RC_TAB_AT", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            long tt;
+            if (long.TryParse(s.Trim(), out tt)) tabAt.Add(tt);
+        }
 
         outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
         Directory.CreateDirectory(outDir);
@@ -764,6 +772,30 @@ internal static class RebornClient
         setClip(clipIdle);
         Pump(engine, 500);
 
+        // ---------------- target selection state (Targeting.cs) ----------------
+        // Target HUD art/layout comes from the game client's own UI files
+        // (TargetTarget.ini + .UITex atlases + ui/Font), extracted by
+        // tools/netcode/ui/extract_target_frame.py; RC_UI_ROOT points at the
+        // extracted tree. No hand-drawn substitute: missing art draws nothing.
+        var targetSelector = new TargetSelector();
+        UiTargetFrameRenderer targetUi = null;
+        try
+        {
+            string uiRoot = Env("RC_UI_ROOT", "");
+            if (uiRoot.Length > 0)
+            {
+                string fontDir = Env("RC_UI_FONT_DIR",
+                    @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\ui\Font");
+                targetUi = new UiTargetFrameRenderer(uiRoot, fontDir,
+                    Path.Combine(uiRoot, "ui", "Scheme", "Elem"));
+                foreach (string w in targetUi.Warnings) Log("target ui: " + w);
+            }
+            else Log("target ui: RC_UI_ROOT not set - target HUD art disabled");
+        }
+        catch (Exception e) { Log("target ui ex: " + e.Message); }
+        var targetFrame = new TargetFrameControl(targetUi);
+        targetFrame.PlaceOver(form);
+
         // ---------------- target dummy (sandbox-target-dummy) ----------------
         // One 试炼木桩 near the spawn point: RepresentID -> engine model path
         // (same actor space the editor NPC palette uses), placed RC_DUMMY_DIST
@@ -796,6 +828,22 @@ internal static class RebornClient
                     dummyHandle = scene.AddDummyModel("target_dummy", dummyModel.Replace('/', '\\'), tpos, trot, tscl);
                 Log(string.Format("target dummy rid={0} model='{1}' ani='{2}' handle={3} at ({4:F0},{5:F0},{6:F0})",
                     dummyRid, dummyModel, dummyAni, dummyHandle, tx, ty, tz));
+                if (dummyHandle > 0)
+                {
+                    // Target-frame values from the shipped sNpcTemplate row
+                    // (docs/pvp/TARGET_DUMMY_RESEARCH.md: 初级试炼木桩 Lv131,
+                    // MaxLife 500,000,000); RC_DUMMY_* overrides.
+                    var tent = new TargetEntity();
+                    tent.Handle = dummyHandle;
+                    tent.Name = Env("RC_DUMMY_NAME", "\u521D\u7EA7\u8BD5\u70BC\u6728\u6869"); // 初级试炼木桩
+                    if (!int.TryParse(Env("RC_DUMMY_LEVEL", "131"), out tent.Level)) tent.Level = 131;
+                    if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
+                    tent.Hp = tent.MaxHp;
+                    tent.X = tx; tent.Y = ty; tent.Z = tz;
+                    targetSelector.Add(tent);
+                    Log(string.Format("target entity registered: {0} lv{1} hp={2} (Tab = facing cone search)",
+                        tent.Name, tent.Level, tent.MaxHp));
+                }
                 if (dummyHandle > 0 && dummyAni != null && dummyAni.Length > 0)
                 {
                     var dummyAnim = new KGModelCLR();
@@ -957,12 +1005,36 @@ internal static class RebornClient
         {
             // S7: a press that never moved never locked the cursor - that press
             // was a click and the camera was not rotated.
+            bool leftClick = e.Button == MouseButtons.Left && lmbDown && !mouseLocked;
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
             // joystick mode keeps the cursor locked between drags
             if (!lmbDown && !rmbDown && mouseLocked &&
                 !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
+            // click (no drag) = select the target under the cursor. Host ray
+            // approximation (no world->screen in the managed host); rendering
+            // medium only, the selection model follows the client
+            // (docs/controls/JX3_TARGET_SELECTION.md §6).
+            if (leftClick)
+            {
+                System.Drawing.Point cp = panelPoint(s, e);
+                float ccx = 0f, ccy = 0f, ccz = 0f;
+                scene.GetCameraPos(ref ccx, ref ccy, ref ccz);
+                double w = Math.Max(1, panel.ClientSize.Width);
+                double h = Math.Max(1, panel.ClientSize.Height);
+                double nx = (cp.X - w / 2.0) / (w / 2.0);
+                double ny = (h / 2.0 - cp.Y) / (h / 2.0);
+                double fov = cameraSettings.WidAngleDeg > 0 ? cameraSettings.WidAngleDeg : 50.0;
+                TargetEntity picked = targetSelector.Pick(ccx, ccy, ccz, px, py + 90f, pz,
+                    (float)nx, (float)ny, fov, 12.0);
+                if (picked != null)
+                {
+                    targetSelector.Current = picked;
+                    Log("target=" + picked.Name + " (click pick, cursor)");
+                }
+                else Log("click: no target under cursor");
+            }
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
@@ -1005,7 +1077,14 @@ internal static class RebornClient
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) unlockMouse();
+            if (e.KeyCode == Keys.Escape) { unlockMouse(); targetSelector.Current = null; }
+            else if (e.KeyCode == Keys.Tab)
+            {
+                // SEARCH_ENEMY (Tab) / SELECT_PREV_TARGET (Ctrl+Tab), target.lua
+                targetSelector.Cycle(px, pz, curYaw, e.Control, Log);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
             if (e.KeyCode == Keys.W) pW = true;
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
@@ -2868,6 +2947,24 @@ internal static class RebornClient
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip));
+            }
+            // target frame (Targeting.cs): real client UI composited over the viewport
+            if (targetFrame != null)
+            {
+                targetFrame.Target = targetSelector.Current;
+                if (targetSelector.Current != null)
+                {
+                    double tdx = targetSelector.Current.X - px, tdz = targetSelector.Current.Z - pz;
+                    targetFrame.Distance = Math.Sqrt(tdx * tdx + tdz * tdz);
+                    targetFrame.PlaceOver(form);
+                }
+                targetFrame.UpdateLayered();
+            }
+            while (tabAt.Count > 0 && now >= tabAt[0])
+            {
+                tabAt.RemoveAt(0);
+                Log("RC_TAB_AT -> Tab (target next)");
+                targetSelector.Cycle(px, pz, curYaw, false, Log);
             }
             if (now - lastLog >= 2000)
             {
