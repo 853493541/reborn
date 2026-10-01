@@ -88,6 +88,41 @@ def main() -> int:
     md2.detail = True
     md2.skipdata = True
 
+    def annotate(insn) -> str:
+        """Resolve RIP-relative operand targets to printable strings (ASCII/UTF-16LE/GBK)."""
+        parts = []
+        for op in insn.operands:
+            if op.type != 3 or op.mem.base != 41:
+                continue
+            tgt = insn.address + insn.size + op.mem.disp
+            off = tgt - base
+            if off < 0 or off >= len(data):
+                continue
+            raw = data[off:off + 96]
+            # UTF-16LE ascii?
+            if len(raw) >= 4 and raw[1] == 0 and raw[0] != 0 and 0x20 <= raw[0] < 0x7F:
+                end = 0
+                while end + 1 < len(raw) and raw[end + 1] == 0 and raw[end] != 0:
+                    end += 2
+                text16 = raw[:end].decode("utf-16le", errors="replace")
+                if text16.isprintable():
+                    parts.append("%s -> u\"%s\"" % (hex(tgt), text16))
+                    continue
+            end = raw.find(b"\x00")
+            if end <= 1:
+                continue
+            chunk = raw[:end]
+            try:
+                text = chunk.decode("ascii")
+            except UnicodeDecodeError:
+                try:
+                    text = chunk.decode("gb18030")
+                except UnicodeDecodeError:
+                    continue
+            if all(ch.isprintable() or ch == "\t" for ch in text):
+                parts.append('%s -> "%s"' % (hex(tgt), text))
+        return ("\t; " + "; ".join(parts)) if parts else ""
+
     index = []
     for n in needles:
         xs = sorted(set(xrefs[n]))
@@ -123,7 +158,7 @@ def main() -> int:
             count = 0
             pad = 0
             for insn in md2.disasm(sdata[off:off + 0x3000], start):
-                lines.append(f"{insn.address:#012x}: {insn.mnemonic}\t{insn.op_str}")
+                lines.append(f"{insn.address:#012x}: {insn.mnemonic}\t{insn.op_str}{annotate(insn)}")
                 count += 1
                 if not insn.id or insn.mnemonic in ("int3",):
                     pad += 1
