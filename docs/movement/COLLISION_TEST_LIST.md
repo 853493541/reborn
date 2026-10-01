@@ -78,6 +78,12 @@ exact blocker (`blocked by inst=… mesh=… top=… feet=…`) or the prop cont
 - Sprint hold (double-tap W) is a host test convenience; the game has no plain
   hold-to-sprint constant.
 
+## 3b. A/B binäries kept for the user
+
+- `bin64\reborn_client_pileold.exe` - pre-fix revision (`85e086b^`); walks up the
+  z=31000 pile crossing (t=2s y=974) where the current build does not (y=874
+  bump/fall). Use it to compare any disputed behaviour old vs new.
+
 ## 4. Useful switches
 
 `RC_STEP_HEIGHT` (default 64) · `RC_PROP_SOLID` (1/0) · `RC_OBST_FLAGS` (1/0) ·
