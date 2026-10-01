@@ -1,0 +1,9 @@
+1 = {
+	angle = 45
+	horizontal = [0, 6000]
+	vertical = [0, 5600]
+	x = 1
+	y = 0
+	z = 0
+	-- 系数公式 v = angle * x + horizontal * y + vertical * z
+}

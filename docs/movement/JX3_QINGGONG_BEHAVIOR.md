@@ -185,6 +185,48 @@ rows, the exact per-stage action→animation mapping (Action.tab labels vs
 Condition.tab comments), the exact `CONSUME_BASE` value, the 气力值 regen D0, and
 whether `SetTimer(30)` counts 15 Hz logic frames (2 s) or ms-scale frames.
 
+### 7.2 Exit: release-W (登顶) and the automatic fly ends (traced 2026-09-30)
+
+Release W during the 大轻功 → `MoveForwardStop` → UI action 5 **【松开W登顶】**
+(`Sprint/Action.tab`, `<MOVEFORWARD;1>`). Two outcomes:
+
+1. **Near a summit point → 登顶 (summit).** The stage rows have 登顶 variants
+   (`Sprint/Condition.tab` school 4, `CanTowerFlag=1`, ActionGroup contains 5).
+   - detection cone: `Represent/doodad/doodad_summit.krl.txt` — `angle=45`,
+     `horizontal=[0,6000]`, `vertical=[0,5600]`, `v = angle*x + horizontal*y + vertical*z`;
+     `number.krl.txt`: `SummitDistance=20000`, `SummitFadeTime=2000` ms, `SummitAdjustY=30`.
+   - the character plays the 踩点/踩尖 performance
+     (`Represent/player/player_summit.txt`: per 体型×门派, A=起跳(原地) /
+     B=过程(飞行) / C=到达(终点) animations, 总持续时间 ~1846–2000 ms, 水平夹角;
+     万花 = `*bqg万花踩尖_上a01/b01.tani`), then stands
+     (`KRLCharacter::{QinggongSummit, StandSummit, ForceStandSummit,
+     TerminateQinggongSummit}`, `KRLSummit::{Enter, Stand}`, event
+     `STKREPRESENT_EVENT_QINGGONG_SUMMIT`); UI "当前处在轻功登顶状态".
+2. **Else the fly ends.** Buff **13422 全门派战斗轻功状态监控** (added by the
+   school trigger's OnTimer) ends; its `ScriptFile = skill/轻功/轻功状态结束处理.lua`
+   `OnRemove` (extracted script, HIGH) runs:
+   - `player.StopBirdFly()` — leave the BirdFly state,
+   - `player.UnlockBirdMoveZ()` — release the trigger's Z lock,
+   - `enable aircombat camera 0` — camera back to normal.
+   The horizontal speed persists (speed+heading vector, §4) and gravity now
+   integrates Vz → the forward-down glide; the Sprint.tab fall cap (900 u/f) and
+   the landing rules apply; the 气力值 drain (buff 13422 `ActiveAttrib1 =
+   气力值持续消耗.lua`) stops.
+
+**Automatic fly ends** (`气力值持续消耗.lua` `Apply`, HIGH): `nSprintPower == 0` →
+`StopBirdFly + UnlockBirdMoveZ`; altitude `Flyheight < 6*8*64 = 3072 u`
+(≈16 m at 192 u/m; ≈30.7 m at 100 u/m) → same. The same script applies the
+control-state 气力值 penalties (锁足 −1000, 定身 −2000, 眩晕 −3000, 击倒 −4000 per
+tick; /4 with the mount 10447) and the GF-map regen (+500/+2000 per s).
+
+Engine states (RVAs): `KCharacter::FlyTo` `0x140310B70` (0x20→0x1F),
+`BirdFlyTo` 0x24→0x23, `EndFlyJump` `0x140310960` (requires 0x21, writes Vz
+`[+0x270]`, → 4/0xE); landing resets the scripted-move counter `[+0xC08]`.
+
+Sandbox gap: the sandbox release = the 45° constant-angle dash (tuned stand-in)
+and it has the power-exhaustion end; it does not yet model the altitude<3072
+auto-end, the summit state, or the buff-driven end handler.
+
 ## 8. Open items
 
 1. `CONSUME_BASE` numeric (engine/server script VM) — not in client scripts.
