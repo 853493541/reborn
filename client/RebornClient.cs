@@ -5,6 +5,8 @@
 // Env:
 //   RC_MAP=<vfs jsonmap>          default 龙门寻宝
 //   RC_SPAWN=x,y,z                optional spawn (y optional -> terrain)
+//   RC_DUMMY=<representid>        spawn one 试炼木桩 near spawn (default 35901; 0 = off)
+//   RC_DUMMY_DIST=<units>         dummy distance along the view dir (default 400)
 //   RC_AUTORUN=ms                 exit after N ms (0 = until window closed)
 //   RC_SHOTS=2000,5000,...        screenshot times (ms)
 //   RC_CLIP_IDLE/WALK/RUN/JUMP/FALL/SKILL=<vfs .ani/.tani path>
@@ -761,6 +763,50 @@ internal static class RebornClient
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
+
+        // ---------------- target dummy (sandbox-target-dummy) ----------------
+        // One 试炼木桩 near the spawn point: RepresentID -> engine model path
+        // (same actor space the editor NPC palette uses), placed RC_DUMMY_DIST
+        // units along the measured view direction, standing on sampled terrain.
+        // RC_DUMMY=0 disables. Idle animation via GetRepresentAniPath.
+        try
+        {
+            int dummyRid = 35901;   // 初级试炼木桩 (ZhuChengMuZhuang zone)
+            int.TryParse(Env("RC_DUMMY", "35901"), out dummyRid);
+            if (dummyRid > 0)
+            {
+                float dummyDist = 400f;
+                float.TryParse(Env("RC_DUMMY_DIST", "400"), out dummyDist);
+                float dx = viewX, dz = viewZ;
+                float dl = (float)Math.Sqrt(dx * dx + dz * dz);
+                if (dl < 1e-4f) { dx = 0f; dz = 1f; } else { dx /= dl; dz /= dl; }
+                float tx = px + dx * dummyDist;
+                float tz = pz + dz * dummyDist;
+                float ty = sampler != null ? sampler.Sample(tx, tz) : py;
+                if (ty == 0f) ty = py;
+                string dummyModel = scene.GetRepresentModelPath(dummyRid);
+                string dummyAni = scene.GetRepresentAniPath(dummyRid);
+                var tpos = new CLRfloat3(); tpos.x = tx; tpos.y = ty; tpos.z = tz;
+                float tyaw = (float)Math.Atan2(-dx, -dz);   // face the player
+                float thalf = tyaw * 0.5f;
+                var trot = new CLRfloat4(); trot.x = 0f; trot.y = (float)Math.Sin(thalf); trot.z = 0f; trot.w = (float)Math.Cos(thalf);
+                var tscl = new CLRfloat3(); tscl.x = 1f; tscl.y = 1f; tscl.z = 1f;
+                long dummyHandle = 0;
+                if (dummyModel != null && dummyModel.Length > 0)
+                    dummyHandle = scene.AddDummyModel("target_dummy", dummyModel.Replace('/', '\\'), tpos, trot, tscl);
+                Log(string.Format("target dummy rid={0} model='{1}' ani='{2}' handle={3} at ({4:F0},{5:F0},{6:F0})",
+                    dummyRid, dummyModel, dummyAni, dummyHandle, tx, ty, tz));
+                if (dummyHandle > 0 && dummyAni != null && dummyAni.Length > 0)
+                {
+                    var dummyAnim = new KGModelCLR();
+                    dummyAnim.AttachModel(dummyHandle);
+                    Log("target dummy ani -> " + dummyAnim.PlayAnimation(dummyAni.Replace('/', '\\'), 0, 1.0f, 0));
+                }
+            }
+            else Log("target dummy disabled (RC_DUMMY=0)");
+        }
+        catch (Exception e) { Log("target dummy ex: " + e.Message); }
+
         // camera yaw from the measured engine view direction (camera -> anchor)
         if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
         {
