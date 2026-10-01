@@ -134,7 +134,16 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
   Size 18 vs 15) — but **none of those 58 is referenced by any shipped layout** in the
   corpus. All 125 referenced schemes resolve to the same effective size under both rules
   (scheme `Size=0` → base, or the few used `Size>0` schemes already equal the base).
-- **No KGUIX64 code reads the scheme record's `Size` (+4).** Two exhaustive scans
+- **Live Cocos path (added 2026-09-30): the scheme is applied with a size.**
+  `ccui.KGUIText:SetFontScheme` (`KGUICocosX64 0x1803A30A0`) → scheme apply
+  `0x180346AA0`: fetches the scheme record, stores the id at `text+0x6C8`, computes
+  an int size from the style struct (`cvttss2si` of a float) and calls the glyph
+  font builder `0x180347E80` with `{size (float), scale, valid-flag}`; the
+  scheme→style converter (`0x1802CC070`) writes a **default style size of `0x10`
+  (16)** plus FontID/slot lookups when the record is missing/incomplete. The
+  exact "scheme Size=0 → slot base" substitution point in that converter is not
+  yet pinned (next probe: dump `0x180347E80` / trace style field `+0x44`).
+- **Legacy KGUIX64 path: no code reads the scheme record's `Size` (+4).** Two exhaustive scans
   (2026-09-30): (a) every `shl/imul reg, ×0x40` followed by a `[reg+4]` read across the
   whole image — only unrelated 0x40-stride tables matched; (b) every writer of the item
   font-size float `+0x2F4` — only the font-scale adjuster (`0x18011EFE0`, multiplies
@@ -248,9 +257,22 @@ Live install evidence (read 2026-09-30):
 renderer still shipped. **`KGUICocosX64` carries its own 1:1 port of the font
 scheme manager** (`UI::KFontSchemeMgr::LoadScheme/LoadFont/SetFontScale/...`,
 same `SchemeElemFont` keys, 36 slots, `size=(slot+mgr+0x4C)*mgr+0x48`,
-`GetLocaleFontListPath`) — the KGUIX64 RVAs in §3 document the shared semantics;
-Cocos dumps: `proof/ui/evidence/battle_hud/re/cocos_font/`. Dumps for the gray
-gate: `re/cocos_gray/`.
+`GetLocaleFontListPath`; note its instance offsets differ, e.g. slot array at
+`mgr+0x57B8` vs KGUI's `+0x5AA8`) — the KGUIX64 RVAs in §3 document the shared
+semantics; Cocos dumps: `proof/ui/evidence/battle_hud/re/cocos_font/`. Dumps for
+the gray gate: `re/cocos_gray/`.
+
+**Live text element API** (`ccui.KGUIText` binding table parsed 2026-09-30 from
+`KGUICocosX64 0x1803A4490`; dumps `re/cocos_richtext/`): `SetText` `0x1803A19C0`,
+`SetString` `0x1803A1D00`, `SetFontScheme` `0x1803A30A0` / `GetFontScheme`
+`0x1803A3120`, `SetFontSize` `0x1803A2130`, `SetFontID` `0x1803A4100`,
+`SetFontBorder` `0x1803A3670`, `SetFontShadow`/`SetFontProjection` `0x1803A37E0`,
+`SetRichText` `0x1803A3160` / `IsRichText` `0x1803A31F0`,
+`GetFragmentRuns`/`GetFragmentLabels` `0x1803A3240`, `AutoSize` `0x1803A2200`,
+`SetAutoEtc` `0x1803A2580`, `SetFontSpacing/RowSpacing`, `SetNumber`
+`0x1803A3D30`, `SprintfText` `0x1803A3E90`, `FormatTextForDraw` `0x1803810B0`.
+The fragment runs expose `text/rowTop/relX/relY/absX/absY/width/height/visible/
+alpha/isTextFragmentRun` (`0x1803A3240` body).
 
 The producer of the markup is the represent layer:
 `OnReloadTable` (`JX3RepresentX64.dll 0x18031FE40`) builds

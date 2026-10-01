@@ -303,9 +303,4 @@
 0x01803a1e53: ret	
 0x01803a1e54: int3	
 0x01803a1e55: int3	
-0x01803a1e56: int3	
-0x01803a1e57: int3	
-0x01803a1e58: int3	
-0x01803a1e59: int3	
-0x01803a1e5a: int3	
-0x01803a1e5b: int3	
+...(truncated)
