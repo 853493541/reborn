@@ -66,10 +66,13 @@ namespace MapUiApp.Engine
 
             // Frame groups follow the frame table; the header carries their count at
             // offset 16. Each record is: u32 frameCount; a 0 count is an empty group
-            // (4 bytes only); otherwise u32 startFrame, u32 intervalMs and, for
-            // multi-frame groups, frameCount-1 extra frame indices. Buttons/checkboxes
-            // reference these group ids (NormalGroup/MouseOverGroup/...), and the ids
-            // are local to the atlas (e.g. Button.UITex group 96 = the "?" icon frame 92).
+            // (4 bytes only); otherwise frameCount × (u32 frameIndex, u32 intervalMs)
+            // — the per-frame entries are 8 bytes each, NOT a shared start/interval
+            // plus count-1 bare indices (that mis-read multi-frame groups and
+            // desynced the whole table, so buttons fell back to their authored Frame
+            // — e.g. DynamicBattleRoyale Btn_Option showed the wrong atlas art).
+            // Buttons/checkboxes reference these group ids (NormalGroup/...), and the
+            // ids are local to the atlas (e.g. Button.UITex group 96 = frame 92).
             var groups = new List<UiTexGroup>();
             int groupCount = Math.Max(0, BitConverter.ToInt32(b, 16));
             int p = 92 + count * 20;
@@ -83,16 +86,10 @@ namespace MapUiApp.Engine
                     groups.Add(new UiTexGroup());
                     continue;
                 }
-                if (p + 8 > b.Length) break;
+                if (p + framesInGroup * 8 > b.Length) break;
                 int startFrame = BitConverter.ToInt32(b, p);
                 int interval = BitConverter.ToInt32(b, p + 4);
-                p += 8;
-                if (framesInGroup > 1)
-                {
-                    int extraBytes = (framesInGroup - 1) * 4;
-                    if (p + extraBytes > b.Length) break;
-                    p += extraBytes;
-                }
+                p += framesInGroup * 8;
                 groups.Add(new UiTexGroup { Count = framesInGroup, StartFrame = startFrame, Interval = interval });
             }
             Groups = groups.ToArray();

@@ -48,9 +48,20 @@ namespace UiProcessApp
                 $"strings={Strings.Table.Count}";
             if (StageTree.Items.Count > 0 && StageTree.Items[0] is TreeViewItem firstStage && firstStage.Items.Count > 0)
             {
-                var first = (TreeViewItem)firstStage.Items[0];
-                first.IsSelected = true;
-                first.BringIntoView();
+                // Open on the catalog item currently being worked on
+                // (`defaultWindow`), else the first window.
+                TreeViewItem target = null;
+                if (!string.IsNullOrWhiteSpace(_inventory?.DefaultWindow))
+                {
+                    foreach (TreeViewItem stageNode in StageTree.Items)
+                        foreach (TreeViewItem node in stageNode.Items)
+                            if (node.Tag is WindowInfo wi &&
+                                string.Equals(wi.Id, _inventory.DefaultWindow, StringComparison.OrdinalIgnoreCase))
+                            { target = node; break; }
+                }
+                target = target ?? (TreeViewItem)firstStage.Items[0];
+                target.IsSelected = true;
+                target.BringIntoView();
             }
         }
 
@@ -743,6 +754,9 @@ namespace UiProcessApp
     {
         public string Title { get; set; }
         public string Generated { get; set; }
+        /// <summary>Window id the viewer opens on (the catalog item currently
+        /// being worked on — see ui-process-app/AGENTS.md).</summary>
+        public string DefaultWindow { get; set; }
         public List<StageInfo> Stages { get; set; }
     }
 

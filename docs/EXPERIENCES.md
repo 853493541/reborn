@@ -684,3 +684,41 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: solved (data-driven). Open: the runtime storm sync
   (`OnSyncSceneHeatMap` / storm data) and the `SFX_CircleNew` PSS remain
   unreplayed — the 圈 needs a PSS renderer or the storm-data replay.
+
+### 2026-09-30 — UI — .UITex frame-group parser fix (5.4 red axes button)
+- Did: the user asked why 5.4 (DynamicBattleRoyale) shows a red crossed-axes
+  sign at the right. It is `Btn_Option` (a real button — `OnLButtonClick` →
+  `OpenHotkeyPanel("BattleRoyaleBar")`, lua:501-505) but its art resolved
+  wrong: `NormalGroup=57` → `GetGroupFrame` returned -1 → the viewer fell back
+  to the authored `Frame=5` (the red axes). Root cause: the `.UITex` group
+  table was parsed as `(count, startFrame, interval)` + `(count−1)` bare u32
+  indices; the real record is u32 `count` then `count` × 8-byte
+  `(frameIndex, intervalMs)` entries — the mis-read desynced the table at the
+  first multi-frame group (CommonPanel2 group at count=8), so every later
+  group resolved to -1. Fixed `UiTex.cs`; group 57 now resolves to frame 105
+  (the gear icon) and the button reads correctly.
+- Evidence: `--frame CommonPanel2.UITex --index g57` → frame 105 (was -1);
+  the Python re-parse consumes the group area exactly (4004/4004 bytes);
+  5.4 render before/after (`dsb_right.png` red axes → `dsb1_right.png` gear);
+  middlemap render diff after the fix: mean 0.008 (127 px > 20, scrollbar
+  area only); `--selftest` 20/1/0; `--audit` 15/0/79.
+- Outcome: solved. Open: groups whose multi-frame animations need per-frame
+  timing still use only the first entry's interval (not animated in the static
+  render anyway).
+
+### 2026-09-30 — UI — viewer defaultWindow rule; catalog cleanup; 5.9 options
+- Did: (a) new rule (`ui-process-app/AGENTS.md`): when a session works on a
+  catalog item, set it as the viewer default — root `defaultWindow` in
+  `Data/ui_inventory.json`; `MainWindow` now selects that window at startup
+  (falls back to the first window when missing). (b) Removed the BR dynamic
+  skill bar (the user's 5.4) from the viewer catalog: JSON window entry deleted,
+  the §6 doc row marked research-only; the selftest drops to 19 rendered.
+  (c) Identified the 5.9 target — the main-message-line (系统消息行, a top bar
+  whose options come from `MessageLineList.txt`: 29 show/hide rows in 4 groups;
+  `Btn_Settings` opens `OpenNumericalPanel`, lua:1630-1657; default shown =
+  ONLINE_DELAY/DATE/WE_GAME_RAIL_ID, lua:100-111). `defaultWindow` =
+  main-message-line.
+- Evidence: MessageLineList.txt extracted from PakV4 (`ui/Scheme/Case/`) — 协作 3
+  / 对抗 6 / 休闲 11 / 其他 9 rows; `--selftest` 19/1/0; `--audit` 15/0/79.
+- Outcome: done. Open: the numerical panel (`OpenNumericalPanel`) is a
+  game-side panel not in the extracted UI corpus; the table is the option list.

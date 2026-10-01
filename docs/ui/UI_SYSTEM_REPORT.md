@@ -114,8 +114,13 @@ is the authoritative list of system files: `ModuleInfo`, `UIConfig`,
 
 92-byte header: magic `UI`, `texWidth@4`, `texHeight@8`, `frameCount@12`,
 64-byte texture name at `@24`; then `frameCount` × 20-byte records
-(`x, y, w, h, flag`); then frame-group records `(count, startFrame,
-intervalMs)` with `(count−1)` extra u32s for multi-frame groups. The texture
+(`x, y, w, h, flag`); then frame-group records: u32 `frameCount` (0 = empty
+group, 4 bytes), otherwise `frameCount` × 8-byte `(frameIndex, intervalMs)`
+entries — the group's start frame is the first entry's index. (An earlier
+reading as `(count, startFrame, intervalMs)` + `(count−1)` bare u32 indices
+mis-parsed multi-frame groups and desynced the whole group table, making
+buttons fall back to their authored `Frame` — fixed 2026-09-30, see
+`docs/EXPERIENCES.md`.) The texture
 is the sibling file named in the header (case-insensitive; `.tga`/`.dds`
 swap accepted).
 

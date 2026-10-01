@@ -2,6 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
+  "defaultWindow": "main-message-line",
   "stages": [
     {
       "id": "queue",
@@ -394,25 +395,6 @@
             { "id": "512", "label": "白龙绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png" } ], "hide": ["*709*"] },
             { "id": "532", "label": "天原绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/天原绝境minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] }
           ]
-        },
-        {
-          "id": "dynamic-skill-bar",
-          "title": "DynamicBattleRoyale",
-          "cn": "BR 动态技能栏",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/DynamicBattleRoyale.ini",
-          "summary": "The mode's skill bar: fixed default skills plus dynamic boxes for picked-up skills, driven by nDynamicSkillNum / nCanDragCount.",
-          "evidence": [
-            "ui/Config/Default/DynamicBattleRoyale.ini",
-            "proof/minimap/ui/Config/Default/decompiled/DynamicBattleRoyale.decompiled.lua"
-          ],
-          "elements": [
-            "Wnd_DefaultSkillBar / Handle_DefaultSkill_N",
-            "Wnd_DynamicSkill / Handle_DynamicSkill_N / Box_DySkill_<D0>",
-            "Hotkey binding BATTLEACTIONBAR_BUTTON + index"
-          ],
-          "labels": []
         },
         {
           "id": "pvp-show-panel",
