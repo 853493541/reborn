@@ -424,20 +424,6 @@ internal static class RebornClient
         var abilityItems = new List<string>();
         abilityItems.Add("风来吴山");                 // single-clip demo
         foreach (string nm in datasetAbilityNames) abilityItems.Add(nm);
-        var abilityList = new ListBox();
-        abilityList.Items.AddRange(abilityItems.ToArray());
-        int abilitySelIdx = abilityItems.IndexOf(abilitySel);
-        abilityList.SelectedIndex = abilitySelIdx >= 0 ? abilitySelIdx : 0;
-        if (abilityList.SelectedIndex >= 0) abilitySel = abilityItems[abilityList.SelectedIndex];
-        abilityList.Location = new System.Drawing.Point(6, 6);
-        abilityList.Size = new System.Drawing.Size(212, 158);
-        abilityList.DrawMode = DrawMode.OwnerDrawFixed;
-        abilityList.ItemHeight = 52;
-        abilityList.BorderStyle = BorderStyle.None;
-        // ListBox rejects transparent background colors (ArgumentException)
-        abilityList.BackColor = System.Drawing.Color.FromArgb(12, 12, 12);
-        abilityList.ForeColor = System.Drawing.Color.White;
-        abilityList.Font = new System.Drawing.Font("Microsoft YaHei", 9.5f, System.Drawing.FontStyle.Bold);
         // client icons (build_skill_data.py -> bin64\ability_picker\icons\<id>.png)
         var skillIcons = new Dictionary<string, Image>();
         Func<string, Image> iconFor = delegate(string nm)
@@ -462,69 +448,49 @@ internal static class RebornClient
             skillIcons[nm] = img;
             return img;
         };
-        abilityList.DrawItem += delegate(object sender, DrawItemEventArgs e)
-        {
-            try
-            {
-                if (e.Index < 0 || e.Index >= abilityItems.Count) return;
-                bool sel = (e.State & DrawItemState.Selected) != 0;
-                using (var b = new SolidBrush(sel
-                    ? System.Drawing.Color.FromArgb(230, 62, 96, 150)
-                    : System.Drawing.Color.FromArgb(180, 12, 12, 12)))
-                    e.Graphics.FillRectangle(b, e.Bounds);
-                string nm = abilityItems[e.Index];
-                Image img = iconFor(nm);
-                if (img != null) e.Graphics.DrawImage(img, e.Bounds.X + 3, e.Bounds.Y + 2, 48, 48);
-                using (var tb = new SolidBrush(System.Drawing.Color.White))
-                    e.Graphics.DrawString(nm, e.Font, tb, e.Bounds.X + 58, e.Bounds.Y + 6);
-                Dictionary<string, object> dd;
-                if (skillData.TryGetValue(nm, out dd))
-                {
-                    string kind = StrOf(dd, "kind");
-                    string school = StrOf(dd, "school");
-                    if (kind != "" || school != "")
-                        using (var sb2 = new SolidBrush(System.Drawing.Color.FromArgb(200, 200, 200)))
-                            e.Graphics.DrawString(kind + " " + school,
-                                new Font("Consolas", 7.5f), sb2, e.Bounds.X + 58, e.Bounds.Y + 30);
-                }
-            }
-            catch (Exception ex) { Log("panel draw ex: " + ex.Message); }
-        };
-        abilityList.SelectedIndexChanged += delegate
-        {
-            if (abilityList.SelectedIndex >= 0 && abilityList.SelectedIndex < abilityItems.Count)
-                abilitySel = abilityItems[abilityList.SelectedIndex];
-            abilityBtn.Text = abilityLabel();
-            Log("ability selected: " + abilitySel);
-        };
-        // hover -> the client's own skill description (markup stripped)
+        // icon grid: 6 per row, no labels (hover = client tooltip, click = cast)
+        var abilityGrid = new FlowLayoutPanel();
+        abilityGrid.Location = new System.Drawing.Point(6, 6);
+        abilityGrid.Size = new System.Drawing.Size(212, 158);
+        abilityGrid.AutoScroll = true;
+        abilityGrid.BackColor = System.Drawing.Color.FromArgb(12, 12, 12);
+        abilityGrid.FlowDirection = FlowDirection.LeftToRight;
+        abilityGrid.WrapContents = true;
         var skillTip = new ToolTip();
-        skillTip.InitialDelay = 250;
+        skillTip.InitialDelay = 200;
         skillTip.ReshowDelay = 100;
         skillTip.AutoPopDelay = 20000;
-        int lastTipIdx = -2;
-        abilityList.MouseMove += delegate(object sender, MouseEventArgs e)
+        var abilityIcons = new List<PictureBox>();
+        int abilitySelIdx = abilityItems.IndexOf(abilitySel);
+        if (abilitySelIdx < 0) abilitySelIdx = 0;
+        if (abilityItems.Count > 0) abilitySel = abilityItems[abilitySelIdx];
+        for (int i = 0; i < abilityItems.Count; i++)
         {
-            int idx = abilityList.IndexFromPoint(e.Location);
-            if (idx == lastTipIdx) return;
-            lastTipIdx = idx;
-            string txt = "";
-            if (idx >= 0 && idx < abilityItems.Count) txt = skillTipText(abilityItems[idx]);
-            skillTip.SetToolTip(abilityList, txt);
-        };
-        // click -> cast the clicked ability (the loop's cooldown gate still applies)
-        abilityList.MouseClick += delegate(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Left) return;
-            int idx = abilityList.IndexFromPoint(e.Location);
-            if (idx < 0 || idx >= abilityItems.Count) return;
-            abilitySel = abilityItems[idx];
-            abilityList.SelectedIndex = idx;
-            abilityBtn.Text = abilityLabel();
-            clickCastRequested = true;
-            Log("ability click-cast: " + abilitySel);
-        };
-        abilityPanel.Controls.Add(abilityList);
+            string name = abilityItems[i];
+            int idx = i;
+            var pb = new PictureBox();
+            pb.Size = new System.Drawing.Size(32, 32);
+            pb.Margin = new Padding(1);
+            pb.SizeMode = PictureBoxSizeMode.Zoom;
+            pb.Cursor = Cursors.Hand;
+            pb.BackColor = System.Drawing.Color.FromArgb(24, 24, 24);
+            pb.BorderStyle = (idx == abilitySelIdx) ? BorderStyle.FixedSingle : BorderStyle.None;
+            Image img = iconFor(name);
+            if (img != null) pb.Image = img;
+            skillTip.SetToolTip(pb, skillTipText(name));
+            pb.Click += delegate
+            {
+                abilitySel = name;
+                for (int k = 0; k < abilityIcons.Count; k++)
+                    abilityIcons[k].BorderStyle = (k == idx) ? BorderStyle.FixedSingle : BorderStyle.None;
+                abilityBtn.Text = abilityLabel();
+                clickCastRequested = true;
+                Log("ability click-cast: " + abilitySel);
+            };
+            abilityGrid.Controls.Add(pb);
+            abilityIcons.Add(pb);
+        }
+        abilityPanel.Controls.Add(abilityGrid);
         var soundBox = new CheckBox();
         soundBox.Text = "sound";
         soundBox.ForeColor = System.Drawing.Color.White;
