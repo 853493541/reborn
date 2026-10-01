@@ -117,8 +117,10 @@ persist only when the mode's custom.dat key is recovered.
   setting (`RebornClient.cs`); joystick keeps the cursor locked, classical
   unlocks on release.
 - **P2 partial** — body already faces the movement heading; RMB body-turn is
-  disabled in joystick. The recovered turn-rate model (>112.5° penalty) is not
-  applied yet (units consumer open, tracked here).
+  disabled in joystick. The recovered turn-rate model (`>112.5°` penalty) **landed
+  2026-09-29** (S6, `CONTROLS_GAP_REGISTER.md`); the remaining P2 gap is the
+  mode-specific movement routing (classical strafe/free-view vs joystick
+  turn-to-heading), tracked as M3 in §7.
 - **P3 partial** — `nCameraModeInClassicMode`/`InJoystickMode` parsed + logged;
   applying them needs the follow-mode [0..3] semantics (`+0x80`) that are not
   decoded yet. Reset-speed application still open.
@@ -137,3 +139,75 @@ persist only when the mode's custom.dat key is recovered.
    undefined in the host (open).
 4. `nCameraMode` [0..3] follow-mode semantics per mode not fully decoded.
 5. `Camera_SetResetSpeed(3.5, 3.75)` argument order per mode is [MED].
+
+## 7. Implementation plan — both modes end-to-end (2026-09-30, `agent/move-controls`)
+
+**Subject:** make CLASSICAL (normal) and JOYSTICK both fully playable and
+selectable at runtime, faithful to the decoded behavior. Build for mode runs:
+`reborn_client_control_modes.exe` (title `sandbox-control_modes`) in the same
+worktree as the C1/C2 input core this routes through.
+
+**What the player gets**
+
+- Normal (CLASSICAL): hold LMB/RMB to look; RMB also turns the character; A/D
+  side-step (strafe), S back-pedal while facing stays camera-forward; free view
+  turns A/D into turn-in-place; cursor stays free.
+- Joystick: mouse always looks (cursor locked); W/S/A/D all turn the character
+  to the travel heading; RMB rotates the camera only; camera follow per the
+  role's `nCameraModeInJoystickMode`.
+
+**Already landed**
+
+- P0/P1 (§5b) plus, since then (`agent/move-controls`): real hotkey table
+  (C1/C2), TURNLEFT/TURNRIGHT turn-in-place, autorun, jump takeoff XY, landing
+  branch — all of which the mode routing below builds on.
+
+**Remaining work (phases, each = code + verify command)**
+
+- **M0 mode routing audit + telemetry** (small). HUD shows the mode name (log
+  `op=` exists); confirm the matrix in §3 against live code. Verify:
+  `camera_smoke` ALL PASS, run logs `op=classical|joystick`.
+- **M1 per-mode follow mode (P3)**. Research `SetCameraMode(nCameraModeInXMode)`
+  -> `tCameraStatic.nCameraMode` (`+0x80`) `[0..3]` consumers in Represent and
+  decode each value; then apply the role's per-mode value on switch and log the
+  applied row. If `[0..3]` stays undecoded, keep the current follow behavior and
+  mark open (no invented modes).
+- **M2 per-mode reset speeds (P3)**. `Camera_SetResetSpeed(3.5, 3.75)` (order
+  [MED]) maps to the drag-release spring/return rate; `fSpringResetSpeed` /
+  `fCameraResetSpeed` are loaded but unused. Decode which arg belongs to which
+  mode first, then wire the release-reset path. Verify: scripted drag-release
+  reset-rate change per mode.
+- **M3 mode-specific movement routing** (the meat). The engine globals
+  `ResponseWASDKey`, `Camera_IsInFreeView`, `Camera_EnableControl`,
+  `Scene_EnableFreeMoveControl` are **not yet located in our string dumps** —
+  first scan the game-client binaries with `tools/` scanners for these names and
+  decode:
+  - how `ResponseWASDKey('StrafeLeft/Right'/'Forward')` behaves per
+    `GetOperationMode()` (classical side-step vs joystick turn-to-heading);
+  - what sets `Camera_IsInFreeView` (classic free view -> A/D call
+    `TurnLeftStart/Right`);
+  - what `Camera_EnableControl` vs `Scene_EnableFreeMoveControl` toggle.
+  Implement exactly what is decoded: classical strafe keeps the camera-forward
+  facing (strafe clip 6 / back-pedal 57-58 selection by travel angle vs facing);
+  joystick keeps the current turn-to-heading turn model; free view A/D turn in
+  place. Verify: scripted runs per mode, numeric fingerprints (facing yaw vs
+  travel heading, clip names, turn-key deltas), classical vs joystick compared.
+- **M4 switch UX + persistence**. F7 host key + `RC_MODE` already exist; HUD
+  label via M0. Persisted mode key is unrecovered -> session-only (open item;
+  no invented custom.dat key). P4 UI panel stays out of this subject.
+
+**Verification / gates**
+
+- `camera_smoke` extended with the mode->input matrix (pure, no engine).
+- Scripted engine runs per mode (`RC_MODE=` + `RC_DEMO_MOVE`, internal
+  env-driven test modes only — never drive the user's mouse/keyboard):
+  proof `proof/controls/control_modes_run.txt`.
+- Must-stay-green gates (§12 root AGENTS) + build exit 0.
+
+**Blocked / open (do not approximate)** — `Camera_UseFullAngle` consumer
+unknown; `nCameraMode [0..3]` semantics if undecoded; persisted mode key;
+`Camera_IsInFreeView` equivalent if not locatable.
+
+**Branch decision:** continue on `agent/move-controls` (recommended — modes
+route through this branch's input/movement code; both subjects merge together),
+or merge that subject to main first and branch `agent/control-modes`.
