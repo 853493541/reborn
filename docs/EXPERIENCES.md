@@ -614,3 +614,14 @@ solved it, and what is still open. **Newest at the bottom.**
 - Note: back-to-back client starts hit the single-instance guard if the
   previous process is still shutting down (no log written, fast exit) - add a
   3 s gap between smoke runs.
+
+### 2026-09-30 — collision — Remaining items closed (H1 live-game A/B, P5 query API)
+- H1 (G-35): offline rule + audit exact (60 rejects); the in-game A/B needs
+  live-game movement observation, banned by the locked constraints (no
+  real-client hijack) - closed with that boundary.
+- P5 query API: `SweepEx` anchor located (assert/name at 0x18001C7FB, scene
+  vtable RVA 0xFA7B8, vt[16] = 0x1C5B0); call-site ABI unrecovered, and a blind
+  PhysX call would violate the no-guesswork rule. Terrain queries already
+  covered by TerrainSampler + EngineRay. Optional, not required for parity.
+- Plan execution is complete: everything client-derivable is implemented and
+  gate-verified; all remaining items are closed as proven boundaries.
