@@ -1,0 +1,9 @@
+# Target-frame layout INI probe. `Target.ini` does not exist; `Target.lua` composes
+# the layout name per target type (TargetPlayer10/11 by IsEnemy; Target<intensity>{2|1|0};
+# TargetS) and opens instance Normal/Target. `TargetCommon.ini` is the shared/panel base.
+# Result 2026-09-30: TargetCommon.ini HIT (161,166 B), TargetPlayer10/11.ini HIT,
+# TargetS.ini MISS. The <intensity> name set is not yet enumerated (see doc §4).
+ui/config/default/TargetCommon.ini
+ui/config/default/TargetS.ini
+ui/config/default/TargetPlayer10.ini
+ui/config/default/TargetPlayer11.ini
