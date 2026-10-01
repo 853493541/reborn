@@ -1206,3 +1206,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Gates re-run green: `jx3_model.py` PASS, `verify_model.py` PASS,
   `loot/capture.py selftest` PASS. README/AGENTS + `FONT_SCHEME_SYSTEM.md`
   verified line updated.
+
+### 2026-09-30 — ui — UI gate made runnable from a fresh checkout (asset staging)
+- New `tools/prepare_ui_configs.py`: reads `Data/ui_inventory.json` and stages
+  every referenced layout/settlement INI from PakV4 into the git-ignored
+  `assets/ui/Config/Default/` + `assets/pak/` (21 files, all HIT). With the
+  existing `prepare_ui_text.py` + `prepare_ui_fonts.py` the whole UI gate now runs
+  in a fresh worktree.
+- `UiProcessApp --selftest` in this branch: **rendered=19 skipped=2 failed=0**
+  (skipped by design: ready-prompt native, staging-countdown no renderer); fonttest
+  prints the scheme proof. AGENTS/README gate text updated from the stale 15/15.
+- This also validates the earlier renderer changes (Fonts.cs first-wins) against
+  the full 21-window inventory.
