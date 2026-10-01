@@ -50,6 +50,35 @@ Earlier wrong lead (documented so it is not repeated): `0x76E300` looked like a 
 `_BakeSubsetTexturesToFileWithIndex` — it is a **model/bake loader**, not the SFX spawn.
 The real SFX-module caller is `0xE3412A` (animation/tag update).
 
+## Core bug isolated (2026-09-30, direct create-call tests)
+
+`RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
+timestamp/size guarded, per-build `CreateSFXFromFile` RVA) and was used to isolate the
+original `.Sfx` failure directly:
+
+| Input | Result on the ME (09-14) build |
+|---|---|
+| missing `.Sfx` (`M明教元素18.Sfx`) | **graceful E_FAIL** — `KG3D_LoadFile failed …` → `KG3D_SFXData::LoadFromFile` → `CreateSFXFromFile` returns null, no fault |
+| existing `.Sfx` (`c纯阳坐忘.Sfx`, extracted from the PakV4 store) | **AV `0xC0000005`** — the original crash, reproduced in isolation |
+| `.pss` (`t_天策撼如雷02_重制.pss`) | create OK (`rc=0`), but the object lacks the `IKG3D_NormalModel` play interface (stub at `vt[0xD58]`) |
+
+Notes:
+- The ruyifa tag `.Sfx` files (`SFX\发招\M明教元素18/19.Sfx`, `G光晕02.Sfx`,
+  `释放_气场聚集03.Sfx`) are **not present in any locally accessible store** (PakV4
+  extraction and `zsCache` PakV5 cache both miss them) — the game streams them on
+  demand, so the host sees a missing file.
+- The ME engine **AVs on a real, existing `.Sfx`** — that is the core bug, now isolated
+  from the tag system.
+
+## Mixed host retest (2026-09-30)
+
+Running the current host against the **client engine** in the temp mixed host crashes
+identically to the earlier experiment: fast-fail `0xC0000409` in
+`KG3DEngineDX11EX64.dll` offset `0x18C82C4`, right after `EngineRay: ready` — the editor
+shell is incompatible with the client engine build. The client engine's `.Sfx` behavior
+therefore cannot be tested through the editor shell; the **native client-stack host**
+(`CLIENT_STACK_PIVOT.md`) is required to finish the engine-driven effect path.
+
 ## Probe results (2026-09-30, `RC_SFX_PROBE=1` + `native/sfx_shim.cpp`)
 
 The engine's own SFX factories are **callable on the MovieEditor build** (no fault):

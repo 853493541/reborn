@@ -144,9 +144,15 @@ SHIM_EXPORT const char* RC_Shim_SfxStatus()
 static const DWORD ENGINE_TIMESTAMP = 0x6AA7C1F5;
 static const DWORD ENGINE_SIZE_OF_IMAGE = 0x2EA7000;
 static const DWORD RVA_CREATE_SFX_FROM_FILE = 0xBE4000;
+// client build (2026-09-27): same engine family, shifted RVAs
+static const DWORD CLIENT_TIMESTAMP = 0x6AB7CD10;
+static const DWORD CLIENT_SIZE_OF_IMAGE = 0x2EA1000;
+static const DWORD CLIENT_RVA_CREATE_SFX_FROM_FILE = 0xBE5610;
 
 typedef void* (__fastcall *CreateSfxFromFileFn)(void* owner, const char* path,
     void* a3, void* a4, void* a5, void* a6, int a7, void* a8);
+
+static int g_isClientBuild = 0;
 
 static bool PeMatches2(BYTE* base)
 {
@@ -154,7 +160,14 @@ static bool PeMatches2(BYTE* base)
     DWORD pe = *(DWORD*)(base + 0x3C);
     DWORD ts = *(DWORD*)(base + pe + 8);
     DWORD size = *(DWORD*)(base + pe + 0x50);
-    return ts == ENGINE_TIMESTAMP && size == ENGINE_SIZE_OF_IMAGE;
+    if (ts == ENGINE_TIMESTAMP && size == ENGINE_SIZE_OF_IMAGE) { g_isClientBuild = 0; return true; }
+    if (ts == CLIENT_TIMESTAMP && size == CLIENT_SIZE_OF_IMAGE) { g_isClientBuild = 1; return true; }
+    return false;
+}
+
+static DWORD CreateSfxRva()
+{
+    return g_isClientBuild ? CLIENT_RVA_CREATE_SFX_FROM_FILE : RVA_CREATE_SFX_FROM_FILE;
 }
 
 SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
@@ -216,29 +229,34 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
         __except (EXCEPTION_EXECUTE_HANDLER) { sprintf_s(ownerInfo, "ownervt unreadable"); }
     }
 
+    if (owner == NULL) owner = scene;   // client build: fall back to the scene
     if (owner == NULL) { sprintf_s(g_status, "sfx play: owner chain failed exc=0x%08X scene=0x%p", (unsigned)oexc, scene); return 6; }
 
     // SFX pool global (written by KG3D_CreateSFXPoolManager @0x197FA0, called
     // from KG3D_Engine::Init): if null, init it before creating effects
+    // (ME build only; the client build's globals shift)
     void* pool = NULL;
     DWORD pexc = 0;
-    __try { pool = *(void**)(g_base + 0x2CF7BB0); }
-    __except (EXCEPTION_EXECUTE_HANDLER) { pool = NULL; }
     long poolRc = -1;
-    if (pool == NULL)
+    if (!g_isClientBuild)
     {
-        __try
-        {
-            typedef long (__fastcall *PoolFn)(void);
-            PoolFn mkPool = (PoolFn)(g_base + 0x197FA0);
-            poolRc = mkPool();
-        }
-        __except (pexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { poolRc = -1; }
         __try { pool = *(void**)(g_base + 0x2CF7BB0); }
         __except (EXCEPTION_EXECUTE_HANDLER) { pool = NULL; }
+        if (pool == NULL)
+        {
+            __try
+            {
+                typedef long (__fastcall *PoolFn)(void);
+                PoolFn mkPool = (PoolFn)(g_base + 0x197FA0);
+                poolRc = mkPool();
+            }
+            __except (pexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { poolRc = -1; }
+            __try { pool = *(void**)(g_base + 0x2CF7BB0); }
+            __except (EXCEPTION_EXECUTE_HANDLER) { pool = NULL; }
+        }
     }
 
-    CreateSfxFromFileFn create = (CreateSfxFromFileFn)(g_base + RVA_CREATE_SFX_FROM_FILE);
+    CreateSfxFromFileFn create = (CreateSfxFromFileFn)(g_base + CreateSfxRva());
     void* sfx = NULL;
     void* outParam = NULL;
     float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1 };
