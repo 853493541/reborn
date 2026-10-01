@@ -446,6 +446,16 @@ the game ships sub-region maps — otherwise stay with 1×1.
 **Links:** `client/TerrainSampler.cs`; `tools/sandbox/build_sandbox.py` (`--half`
 reverted); experiment output `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`.
 
+### 2026-09-30 — repo — Project agent skills added (.opencode/skills)
+- Did: added five project skills under `.opencode/skills/` (auto-loaded by opencode):
+  `engine-run` (build/launch/log/guard/shim loop), `sandbox-map` (cropped loose map +
+  its engine limits), `merge-finalize` (preflight, proven conflict policy, dual rebuild,
+  gates, no-push rule), `crash-triage` (D6 signature, stale shared shim, driven repro,
+  minidump reader), `verify-proof` (must-stay-green gates, numeric fingerprints,
+  definition of done). Skills load at opencode startup — restart to pick them up.
+- Evidence: `.opencode/skills/*/SKILL.md`; this commit (local).
+- Outcome: solved.
+
 ### 2026-09-29 — camera — penetration research inventory + main-tip drift audit
 - Did: read the camera docs set (`PENETRATION_PLAN`, `WALL_OBSTRUCTION`,
   `HANDOFF`, `HOST_DEVIATIONS`, `COMPLETION_PLAN`, `CLOSE_RANGE_RESEARCH`,
