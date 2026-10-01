@@ -1071,3 +1071,25 @@ eborn_client_daqinggong carries these changes — other
   二段跳a -> JC3 三段跳a -> JC4 二段跳b -> JC5 俯冲b -> 急坠 俯冲b -> landed;
   clip -> lines all load with no setClip ex. Selftest PASS.
 - Outcome: solved; 万花 clips visible in the 大轻功 window.
+
+### 2026-09-30 — research — release-W (登顶) exit path traced from the client
+- Question: what happens when W is released / the 大轻功 exits?
+- Answer (client evidence): W-up -> action 5 【松开W登顶】 (Sprint/Action.tab,
+  `<MOVEFORWARD;1>`). Near a summit point (doodad_summit.krl.txt cone 45 deg,
+  horizontal <= 6000, vertical <= 5600; SummitDistance=20000, SummitFadeTime=2000,
+  SummitAdjustY=30) the stage rows' 登顶 variants (CanTowerFlag=1) enter the
+  summit: the player_summit.txt 踩点 A/B/C performance (~1846 ms; 万花 =
+  `*bqg万花踩尖_上a01/b01.tani`) then KRLSummit::Stand ("当前处在轻功登顶状态").
+  Otherwise buff 13422 (全门派战斗轻功状态监控) ends and its ScriptFile
+  `skill/轻功/轻功状态结束处理.lua` OnRemove runs: `StopBirdFly()` +
+  `UnlockBirdMoveZ()` + aircombat camera off -> horizontal speed persists,
+  gravity resumes (fall cap 900 u/f), 气力值 drain stops.
+- Automatic ends (`气力值持续消耗.lua` Apply): `nSprintPower == 0`, or altitude
+  `Flyheight < 6*8*64 = 3072 u` -> StopBirdFly + UnlockBirdMoveZ.
+- Evidence: extracted scripts under `proof/controls/sprint/out/scripts/skill/轻功/`
+  (轻功状态结束处理.lua, 气力值持续消耗.lua), Buff.tab rows 13422/13836/13889/
+  13730/13761, player_summit.txt, doodad_summit.krl.txt, number.krl.txt; doc
+  `docs/movement/JX3_QINGGONG_BEHAVIOR.md` §7.2; commit e59129d.
+- Sandbox gap noted: 45 deg dash stand-in vs the real StopBirdFly glide; no
+  altitude auto-end / summit state yet.
+- Outcome: answered; doc + experience recorded.
