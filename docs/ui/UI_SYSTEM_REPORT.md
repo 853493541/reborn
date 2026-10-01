@@ -57,6 +57,14 @@ JX3UIX64.dll (scheme/Lua host) ──► KGUIX64.dll / KGUICocosX64.dll (control
 Client build used for RE: `KGUIX64.dll` 1.0.0.6122, `JX3UIX64.dll` 1.0.0.6116
 (**VERIFIED**).
 
+**Live control layer (added 2026-09-30):** this install runs the **Cocos UI**
+(`config/cocos_config.ini [Main] KGUIUseCocos=1`; gray `Percent=5`;
+`IsUseCocos` remains 1; `ui/Script/base.lua` `USE_COCOS=true`), i.e.
+`KGUICocosX64.dll` renders the controls/text while `KGUIX64.dll` is the legacy
+renderer. Both share the same INI/string/font-scheme data and semantics; the
+Cocos layer carries a 1:1 `KFontSchemeMgr` port and the `ccui.KGUIText` API —
+see `docs/ui/FONT_SCHEME_SYSTEM.md` §2.4.
+
 ---
 
 ## 2. Finding any UI: the discovery chain
