@@ -270,6 +270,16 @@ earlier sandbox implemented only part of the solo base chain:
 衍天 19, 药宗 20). The double-jump doc's "10/11 (万花/…)" label was wrong and is
 corrected there.
 
+**Corrections from live-game feedback (2026-09-30)**: (a) the
+上冲/下冲/左冲/右冲 double-tap actions are the **长歌 御空** system (Condition
+school 13 rows with actions 13/14) — the 万花 fly has no such action; the
+sandbox's fly double-tap W is now a no-op and the 20788 dash is bound to key 4.
+(b) The 气力值 **UI scale**: the live bar shows ~700-1000 and a full bar flies
+~1 min; the scripts' `nSprintPower` is 10x the display (10000 = full = displayed
+1000), and 10000 / OnFlyBirdMoveCost 206/s ≈ 48 s of bird-move flight. The HUD
+now displays the UI scale (`WwRules.WhPowerUiScale` 10) and the gate reads
+"需 1000 (满)".
+
 **Consequence for the sandbox**: the 万花 solo chain data (J1..J5 + End), the
 launch and the **空中冲刺 dash** are now modelled; the 弈韵 (needs a 踩人 target
 player), the 双人 (needs two players) and the 登顶 summit (needs summit doodads

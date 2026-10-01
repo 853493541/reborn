@@ -1196,3 +1196,20 @@ eborn_client_daqinggong carries these changes — other
 - Open: the 弈韵 (踩人 target), 双人, 登顶 summit cannot be entered in a
   single-player sandbox; the 万花 bird-move speed is not in the extracted tables.
 - Outcome: solved for the dash; the flight now matches the dash-based live feel.
+
+### 2026-09-30 — client — live-feedback corrections: 气力值 scale + 长歌 dash revert
+- User feedback (live game): the 上冲/下冲 behaviours are not right; the normal
+  气力值 is ~700-1000 and a full bar flies ~1 minute; several numbers are off.
+- Lesson/fix: (a) the 上冲/下冲/左冲/右冲 double-tap actions belong to the 长歌
+  御空 system (Condition school 13, actions 13/14) — I had applied them to the
+  万花 wrongly. The fly double-tap W is now a no-op (the 万花 rows have no such
+  action) and the 20788 空中冲刺 dash moved to sandbox key 4. (b) The 气力值 UI
+  scale: the scripts' nSprintPower is 10x the displayed bar (10000 = full =
+  ~1000 shown); 10000 / OnFlyBirdMoveCost 206/s ~= 48 s ~= the observed ~1 min
+  flight. HUD/gate/log now display the UI scale (WwRules.WhPowerUiScale 10).
+- Evidence: build + selftest WH_POWER_UI_SCALE PASS; flow run 21:28 exit=0
+  (power logged in the UI scale, e.g. 552 = 5520 internal); commit next.
+- Open: the exact live controls/feel still diverge from the data reading —
+  awaiting a concrete description (WW action, hold-W, Space stages, exit) to
+  re-derive the flight model.
+- Outcome: concrete errors fixed; the flight model needs live-input calibration.
