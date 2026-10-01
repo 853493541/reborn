@@ -977,9 +977,25 @@ public sealed class FoliageCollision
                         top = best.lowTop;
                     if (top > ground && top <= py + stepHeight)
                     {
-                        ground = top;
-                        grounded = true;
-                        stepUp = true;
+                        // CCT up-sweep: the raise must actually clear the
+                        // blocking face. If the same obstacle still overlaps
+                        // the capsule at the raised height the "step" is a
+                        // ledge on a continuing wall (field case: the Yumen
+                        // building back wall ledge ladder y 975/990/1030/1040,
+                        // 2026-09-30) - climbing it ratchets the player up the
+                        // wall with the capsule embedded in the face.
+                        if (!CapsuleBlocked(px, top + 0.1f, pz, radius, height))
+                        {
+                            py = top + 0.1f;
+                            ground = top;
+                            grounded = true;
+                            stepUp = true;
+                        }
+                        else
+                        {
+                            StepRejectCount++;
+                            LastStepRejectTop = top;
+                        }
                     }
                 }
             }
@@ -1014,6 +1030,68 @@ public sealed class FoliageCollision
             if (stepUp) break;
         }
         return blocked;
+    }
+
+    // True when the capsule at (px,py,pz) overlaps any obstacle by more than
+    // the contact skin. The CCT "does this position fit" test: the step branch
+    // accepts a step only when the raised capsule is clear, and the caller
+    // raises ground to a support surface only when the capsule can stand on it
+    // (rejects overhang undersides of stepped walls).
+    public float LastProbeDepth, LastProbePy, LastProbeTriTop;
+    public int LastProbeInst = -1;
+    public int StepRejectCount;
+    public float LastStepRejectTop;
+    public bool CapsuleBlocked(float px, float py, float pz, float radius, float height)
+    {
+        GatherCandidates(px, pz, radius + 600f, _cand);
+        for (int k = 0; k < _cand.Count; k++)
+        {
+            Instance it = _inst[_cand[k]];
+            if (py + height < it.minY - 60f || py > it.maxY + 60f) continue;
+            if (px < it.minX - radius || px > it.maxX + radius) continue;
+            if (pz < it.minZ - radius || pz > it.maxZ + radius) continue;
+            Contact probe = new Contact();
+            probe.lowTop = float.MaxValue;
+            if (InstanceContact(it, px, py, pz, radius, height, ref probe) && probe.depth > 0.1f)
+            {
+                LastProbeDepth = probe.depth;
+                LastProbePy = probe.py;
+                LastProbeTriTop = probe.triTop;
+                LastProbeInst = _cand[k];
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Support-raise variant of the fit test: only a DOWNWARD-facing contact
+    // means the capsule is under an overhang (a stepped wall's molding) and
+    // the raised surface is not standable. Horizontal contacts are side
+    // overlaps a solid prop pushes out afterwards (field case: the 龙门寻宝
+    // rug beside wj_木堆/道具 inst 575 - the strict test rejected the drop to
+    // the rug and the player bounced airborne on the prop edge, 2026-09-30).
+    public bool CapsuleBlockedDown(float px, float py, float pz, float radius, float height)
+    {
+        GatherCandidates(px, pz, radius + 600f, _cand);
+        for (int k = 0; k < _cand.Count; k++)
+        {
+            Instance it = _inst[_cand[k]];
+            if (py + height < it.minY - 60f || py > it.maxY + 60f) continue;
+            if (px < it.minX - radius || px > it.maxX + radius) continue;
+            if (pz < it.minZ - radius || pz > it.maxZ + radius) continue;
+            Contact probe = new Contact();
+            probe.lowTop = float.MaxValue;
+            if (InstanceContact(it, px, py, pz, radius, height, ref probe) &&
+                probe.depth > 0.1f && probe.ny < -0.3f)
+            {
+                LastProbeDepth = probe.depth;
+                LastProbePy = probe.py;
+                LastProbeTriTop = probe.triTop;
+                LastProbeInst = _cand[k];
+                return true;
+            }
+        }
+        return false;
     }
 
     // Moves the capsule by (dx,dz) in substeps of at most maxSubStep,

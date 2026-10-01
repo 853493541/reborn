@@ -240,16 +240,38 @@ internal static class CollisionSelfTest
             Check("thin_tall_plate_blocks", blocked, string.Format("blocked={0}", blocked));
 
             // tall wall behind + low plank in front: the low touching face wins
-            // the step test (CCT top rule), the player walks in
+            // the step test when the raised capsule clears the blocker (open
+            // space above the plank). If the wall continues at the plank's
+            // plane the raise cannot clear - CCT up-sweep; field case: the
+            // Yumen building back wall ledge ladder y 975/990/1030/1040
+            // (2026-09-30) ratcheted the player up the wall.
             MeshBuilder mixed = new MeshBuilder();
-            mixed.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 30f, 200f, 200f, 30f, 200f, -200f);
+            mixed.AddQuad(50f, 0f, -200f, 50f, 0f, 200f, 50f, 200f, 200f, 50f, 200f, -200f);
             mixed.AddQuad(27f, 0f, -200f, 27f, 0f, 200f, 27f, 20f, 200f, 27f, 20f, -200f);
             string pm = WriteBin("plate_mixed", new MeshBuilder[] { mixed }, new float[][] { M(0f, 0f, 0f) });
             col = new FoliageCollision(null, pm);
             px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = true;
             blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
-            Check("low_plank_at_wall_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
+            Check("low_plank_open_top_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
+
+            // step face with the wall continuing above it: not a step, it is a
+            // wall ledge. The raise must not clear the blocker, so the move
+            // stays blocked and the capsule is pushed out (no embedding, no
+            // ratchet up the wall).
+            MeshBuilder ladder = new MeshBuilder();
+            ladder.AddBox(30f, 0f, -200f, 40f, 30f, 200f);
+            ladder.AddBox(40f, 0f, -200f, 60f, 300f, 200f);
+            string pl2 = WriteBin("wall_ledge", new MeshBuilder[] { ladder }, new float[][] { M(0f, 0f, 0f) });
+            col = new FoliageCollision(null, pl2);
+            px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = true;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f);
+            Check("wall_ledge_step_rejected", blocked && ground <= 0.05f && py <= 0.05f,
+                string.Format("blocked={0} ground={1:F2} py={2:F2}", blocked, ground, py));
+            Check("capsule_fit_probe",
+                col.CapsuleBlocked(35f, 0f, 0f, 17f, 116f) && !col.CapsuleBlocked(120f, 0f, 0f, 17f, 116f),
+                string.Format("inside={0} away={1}",
+                    col.CapsuleBlocked(35f, 0f, 0f, 17f, 116f), col.CapsuleBlocked(120f, 0f, 0f, 17f, 116f)));
 
             // face whose top is below the feet: must never push out (the
             // user-log case: top=929.9 < feet=933.9 was blocking)

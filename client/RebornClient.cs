@@ -132,7 +132,13 @@ internal static class RebornClient
             try { exeMtime = File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss"); } catch { }
             try
             {
-                string bi = Path.Combine(Path.GetDirectoryName(exePath), "build_info.txt");
+                // Per-exe build_info first: parallel feature builds write
+                // build_info_<exe>.txt, the shared build_info.txt belongs to
+                // the canonical build (reading it misattributed every feature
+                // run's git hash - field case 2026-09-30).
+                string dir = Path.GetDirectoryName(exePath);
+                string bi = Path.Combine(dir, "build_info_" + exeName + ".txt");
+                if (!File.Exists(bi)) bi = Path.Combine(dir, "build_info.txt");
                 if (File.Exists(bi))
                 {
                     foreach (string ln in File.ReadAllLines(bi))
@@ -725,6 +731,8 @@ internal static class RebornClient
         long lastWUp = 0, lastWDown = 0;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
+        bool supDbg = Env("RC_SUPDBG", "0") == "1";
+        int supDbgN = 0;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
         int zoomSeqStep = -1;
@@ -1778,8 +1786,22 @@ internal static class RebornClient
                     if (ground > gBefore + 0.01f) groundOk = true;   // structure support
                     if (grounded)
                     {
+                        // Support raise: only to a surface the capsule can
+                        // actually stand on. Without the fit test an overhang
+                        // underside (a stepped wall's molding) under the
+                        // capsule centre lifted the player every tick - field
+                        // case: the Yumen building back wall (2026-09-30).
                         float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
-                        if (sh > ground) { ground = sh; groundOk = true; }
+                        if (sh > ground && !col.CapsuleBlockedDown(px, sh, pz, playerRadius, playerHeight))
+                        { ground = sh; groundOk = true; }
+                        else if (sh > ground && supDbg && supDbgN < 40)
+                        {
+                            supDbgN++;
+                            Log(string.Format(
+                                "suprej sh={0:F1} py={1:F1} pos=({2:F0},{3:F0}) depth={4:F2} cpy={5:F1} triTop={6:F1} inst={7} stepRej={8} stepTop={9:F1}",
+                                sh, py, px, pz, col.LastProbeDepth, col.LastProbePy,
+                                col.LastProbeTriTop, col.LastProbeInst, col.StepRejectCount, col.LastStepRejectTop));
+                        }
                     }
                 }
             }
