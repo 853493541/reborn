@@ -60,6 +60,8 @@ internal static class RebornClient
 
     delegate int SfxProbeFn();
 
+    delegate int SfxPlayFn([MarshalAs(UnmanagedType.LPStr)] string path);
+
     delegate IntPtr SfxStatusFn();
 
     [STAThread]
@@ -162,6 +164,7 @@ internal static class RebornClient
         long castStart = 0, castUntil = 0;
         int castIdx = 0;
         bool castPss = false;
+        bool castPssEngine = false;   // effect created by the engine (RC_SFX_ENGINE)
         string castPssPath = "";
         long castPssHandle = 0;
         float lastCastX = 1e9f, lastCastZ = 1e9f;
@@ -329,6 +332,33 @@ internal static class RebornClient
             }
             catch { }
             return tip;
+        };
+
+        // engine SFX playback (RC_SFX_ENGINE=1): creates the effect through the
+        // engine's own KG3D_CreateSFXFromFile (sfx_shim.dll) instead of the
+        // host dummy approximation
+        Func<string, bool> engineSfxPlay = delegate(string path)
+        {
+            try
+            {
+                string shimPath = Path.Combine(startupPath, "sfx_shim.dll");
+                IntPtr shim = LoadLibrary(shimPath);
+                if (shim == IntPtr.Zero)
+                {
+                    Log("engine sfx: shim not loaded err=" + Marshal.GetLastWin32Error());
+                    return false;
+                }
+                IntPtr fn = GetProcAddress(shim, "RC_Shim_SfxPlay");
+                if (fn == IntPtr.Zero) { Log("engine sfx: export missing"); return false; }
+                var play = (SfxPlayFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(SfxPlayFn));
+                int rc = play(path);
+                IntPtr st = GetProcAddress(shim, "RC_Shim_SfxStatus");
+                string status = st == IntPtr.Zero ? "" : Marshal.PtrToStringAnsi(
+                    ((SfxStatusFn)Marshal.GetDelegateForFunctionPointer(st, typeof(SfxStatusFn)))());
+                Log("engine sfx play rc=" + rc + " status=" + status);
+                return rc == 0;
+            }
+            catch (Exception e) { Log("engine sfx ex: " + e.Message); return false; }
         };
 
         // resolve a process step's clip name to a vfs path
@@ -2282,12 +2312,31 @@ internal static class RebornClient
                 }
                 if (castPss && castPssPath.Length > 0)
                 {
-                    // caster-bound effects follow the caster: re-add the dummy at
-                    // the new position when the caster moved (throttled). The
-                    // engine reuses the same dummy (same handle) - no timeline
-                    // restart observed; the faithful fix is engine socket binding.
+                    // RC_SFX_ENGINE=1: the engine creates the effect itself
+                    // (KG3D_CreateSFXFromFile); the dummy path is the fallback.
+                    // Otherwise the dummy follows the caster by throttled re-adds
+                    // (the engine reuses the same handle; the faithful fix is
+                    // engine socket binding).
                     bool first = lastCastX > 1e8f;
-                    if (first || Math.Abs(px - lastCastX) > 32f || Math.Abs(pz - lastCastZ) > 32f)
+                    if (first)
+                    {
+                        lastCastX = px; lastCastZ = pz;
+                        bool engineOk = false;
+                        if (Env("RC_SFX_ENGINE", "0") == "1") engineOk = engineSfxPlay(castPssPath);
+                        castPssEngine = engineOk;
+                        if (!engineOk)
+                        {
+                            var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
+                            float half = curYaw * 0.5f;
+                            var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
+                            var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
+                            long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
+                            castPssHandle = h;
+                            Log("cast pss -> " + castPssPath + " handle=" + h + " (follows caster)");
+                        }
+                    }
+                    else if (!castPssEngine &&
+                             (Math.Abs(px - lastCastX) > 32f || Math.Abs(pz - lastCastZ) > 32f))
                     {
                         lastCastX = px; lastCastZ = pz;
                         var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
@@ -2295,14 +2344,18 @@ internal static class RebornClient
                         var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                         var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                         long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
-                        if (first) { castPssHandle = h; Log("cast pss -> " + castPssPath + " handle=" + h + " (follows caster)"); }
-                        else if (h != castPssHandle) { castPssHandle = h; Log("cast pss re-added handle=" + h + " (effect restarted)"); }
+                        if (h != castPssHandle) { castPssHandle = h; Log("cast pss re-added handle=" + h + " (effect restarted)"); }
                     }
                 }
                 if (now >= castUntil)
                 {
                     castActive = false;
-                    if (castPss) { castPss = false; try { scene.RemoveDummyModel("cast_pss"); } catch { } }
+                    if (castPss)
+                    {
+                        castPss = false;
+                        if (!castPssEngine) { try { scene.RemoveDummyModel("cast_pss"); } catch { } }
+                        else Log("cast pss engine-managed (no dummy to remove)");
+                    }
                     Log("cast done: " + castName);
                 }
             }

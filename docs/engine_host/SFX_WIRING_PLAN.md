@@ -4,6 +4,31 @@ Status: **in progress — probe works, interfaces mapped.** This is the register
 from `docs/EXPERIENCES.md` (caster-follow emulated by re-adding a dummy; effects are
 free-standing scene dummies, not engine SFX).
 
+## Wiring attempt (2026-09-30, `RC_SFX_ENGINE=1` + `RC_Shim_SfxPlay`)
+
+`KG3D_CreateSFXFromFile` found: **engine RVA 0xBE4000** (internal, not exported; the
+`KG3D_CreateSFXFromFile` string is referenced inside it). Signature from the prologue and
+two engine callers:
+
+```
+KG3D_SFX* KG3D_CreateSFXFromFile(void* owner /*rcx*/, const char* path /*rdx*/,
+    void* r8, void* r9, void* a5, void* a6, int a7, void* a8 /*stack*/)
+```
+
+The engine's own tag-spawn caller (code @ `0x76E51A`) gets its `owner` from a singleton
+chain: `[engine+0x2CF7038] -> vt[10]() -> helper @0x8ABAB0(&out)`. The shim replicates
+that chain (owner obtained, non-null) and passes `a6` = world matrix + `a8` = out slot.
+
+**Result: still AVs** — `fault_rva=0x3C001EA` is **beyond the engine image**
+(0x2EA7000), i.e. a virtual call through a pointer that requires the caller's context
+(the actor/animation object that the real callers pass in `r8`/`r9`/`a5`/`a7`). SEH
+catches it; the host falls back to the dummy path, so casts keep working.
+
+Next: recover the remaining args from the two callers
+(`0xE3412A` — SFX module; `0x76E51A` — actor/tag path), or obtain the same context object
+from the engine (the caller's `[rdi+0x38]`, `rsi+0xf8` matrix source, etc.). The shim
+already logs the fault RVA for each iteration.
+
 ## Probe results (2026-09-30, `RC_SFX_PROBE=1` + `native/sfx_shim.cpp`)
 
 The engine's own SFX factories are **callable on the MovieEditor build** (no fault):

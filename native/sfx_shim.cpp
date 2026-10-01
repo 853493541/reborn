@@ -136,6 +136,94 @@ SHIM_EXPORT const char* RC_Shim_SfxStatus()
     return g_status;
 }
 
+// ---- real engine SFX playback -------------------------------------------
+// KG3D_CreateSFXFromFile (engine RVA 0xBE4000, ME build): (owner=scene,
+// path, a3..a8 optional). Returns the engine's KG3D_SFX instance or null.
+// SEH-guarded; version-checked (timestamp/size) because the entry is an
+// internal RVA, not an export.
+static const DWORD ENGINE_TIMESTAMP = 0x6AA7C1F5;
+static const DWORD ENGINE_SIZE_OF_IMAGE = 0x2EA7000;
+static const DWORD RVA_CREATE_SFX_FROM_FILE = 0xBE4000;
+
+typedef void* (__fastcall *CreateSfxFromFileFn)(void* owner, const char* path,
+    void* a3, void* a4, void* a5, void* a6, int a7, void* a8);
+
+static bool PeMatches2(BYTE* base)
+{
+    if (base == NULL || base[0] != 'M' || base[1] != 'Z') return false;
+    DWORD pe = *(DWORD*)(base + 0x3C);
+    DWORD ts = *(DWORD*)(base + pe + 8);
+    DWORD size = *(DWORD*)(base + pe + 0x50);
+    return ts == ENGINE_TIMESTAMP && size == ENGINE_SIZE_OF_IMAGE;
+}
+
+SHIM_EXPORT int RC_Shim_SfxPlay(const char* path)
+{
+    if (g_base == NULL)
+    {
+        g_engine = GetModuleHandleA(kEngineName);
+        if (g_engine == NULL) { sprintf_s(g_status, "engine module not loaded"); return 1; }
+        g_base = (BYTE*)g_engine;
+        if (!PeMatches2(g_base)) { g_base = NULL; sprintf_s(g_status, "engine build mismatch"); return 2; }
+    }
+    if (path == NULL || path[0] == 0) { sprintf_s(g_status, "sfx play: empty path"); return 3; }
+
+    typedef void* (__stdcall* GetEngine2Fn)(void);
+    typedef void* (__stdcall* EngineMethodFn)(void* self);
+    GetEngine2Fn getEngine = (GetEngine2Fn)GetProcAddress(g_engine, "KG3D_GetEngine2");
+    EngineMethodFn getWindow = (EngineMethodFn)GetProcAddress(g_engine,
+        "?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ");
+    EngineMethodFn getScene = (EngineMethodFn)GetProcAddress(g_engine,
+        "?Get3DScene2@KG3D_Window@@UEAAPEAVKG3D_Scene@@XZ");
+    if (getEngine == NULL || getWindow == NULL || getScene == NULL)
+    { sprintf_s(g_status, "sfx play: engine accessors missing"); return 4; }
+    void* engine = getEngine();
+    if (engine == NULL) { sprintf_s(g_status, "sfx play: engine instance null"); return 5; }
+    void* window = getWindow(engine);
+    void* scene = window != NULL ? getScene(window) : NULL;
+
+    // owner chain: mirror the engine's own tag-spawn caller (code @0x76E51A):
+    // singleton @RVA 0x2CF7038 -> vt[10]() -> helper @0x8ABAB0(&out) = owner
+    void* owner = NULL;
+    DWORD oexc = 0;
+    __try
+    {
+        void** g = *(void***)(g_base + 0x2CF7038);
+        if (g != NULL)
+        {
+            typedef void* (__fastcall *GetIfaceFn)(void* self);
+            GetIfaceFn getIface = (GetIfaceFn)(*(void***)g)[10];
+            void* iface = getIface(g);
+            if (iface != NULL)
+            {
+                typedef long (__fastcall *OwnerFn)(void* self, void** out);
+                OwnerFn own = (OwnerFn)(g_base + 0x8ABAB0);
+                own(iface, &owner);
+            }
+        }
+    }
+    __except (oexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { owner = NULL; }
+
+    if (owner == NULL) { sprintf_s(g_status, "sfx play: owner chain failed exc=0x%08X scene=0x%p", (unsigned)oexc, scene); return 6; }
+
+    CreateSfxFromFileFn create = (CreateSfxFromFileFn)(g_base + RVA_CREATE_SFX_FROM_FILE);
+    void* sfx = NULL;
+    void* outParam = NULL;
+    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
+    DWORD exc = 0;
+    DWORD64 fault = 0;
+    // args mirror the engine's own caller (code @0x76E51A): a6 = world matrix,
+    // a8 = out slot; r9/a5/a7 zero for the first test
+    __try { sfx = create(owner, path, NULL, NULL, NULL, mtx, 0, &outParam); }
+    __except (exc = GetExceptionCode(),
+              fault = (DWORD64)((PEXCEPTION_POINTERS)GetExceptionInformation())->ExceptionRecord->ExceptionAddress,
+              EXCEPTION_EXECUTE_HANDLER) { sfx = NULL; }
+    sprintf_s(g_status, "sfx play owner=0x%p scene=0x%p path=%s -> obj=0x%p out=0x%p exc=0x%08X fault_rva=0x%X",
+              owner, scene, path, sfx, outParam, (unsigned)exc,
+              (unsigned)(fault > (DWORD64)g_base ? (fault - (DWORD64)g_base) : 0));
+    return sfx != NULL ? 0 : 7;
+}
+
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 {
     if (reason == DLL_PROCESS_DETACH)
