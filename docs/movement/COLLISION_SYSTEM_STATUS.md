@@ -36,7 +36,7 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Per-object flags (`comLogic.obstacleOption`, `enablePhysicsConfig`, unit-template keys) | **[N/A on this map]** | all 0/uniform (`G-3`, `G-21`) |
 | SpeedTree shipped `.CollisionMesh` | **[OK]** | used verbatim |
 | Degenerate tree trunks measured from visual mesh | **[OK]** | 62/68; 6 stay walk-through like the client (`G-33`) |
-| Tree canopy columns | **[WRONG/HOST]** | host-generated colliders (registration required); not game data |
+| Tree trunk prisms (degenerate shipped CollisionMesh) | **[HOST - registered 4e]** | 62/68 trees in 龙门寻宝 ship a degenerate `.CollisionMesh`; the exporter measures a trunk prism from the visual mesh (not game data). Kept (deleting = walk-through hole); recovery: `.srt` decode or engine obstacle production. NOTE: no host "canopy columns" exist in the code - that line was stale |
 | LOD mesh collision (`bUseLODMeshCollision=1`) | **[MISSING] (not needed per G-4)** | baked maps ship `.mesh`/`.srt` only |
 | Doors/gates as dynamic state | **[SERVER]** | client files have no per-door data; closed geometry blocks |
 | Selected-object blocking (server's world set) | **[SERVER]** | host uses the baked client geometry as a stand-in |
@@ -106,8 +106,11 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 4. **SpeedTree canopy columns are host-generated** — not from game data; must be
    labelled provisional (re-open with `.srt` geometry decoding).
 5. **Camera obstruction 20 Hz cap** — provisional; engine camera cadence not recovered.
-6. **Holes have no cave floor** — a hole cell falls bottomless until cave meshes
-   are baked beneath.
+6. **Holes: cave floors verified baked (claim corrected).** The scene data
+   contains the 山洞/cave meshes (`sd_崖壁狱门fb_001_hd` etc.) and 25
+   fully-underground instances (y down to -1200) and they ARE in the baked bin.
+   The earlier blanket "hole cells fall bottomless" line was stale; re-check a
+   SPECIFIC hole only with a cited hole cell (none registered so far).
 7. **Capsule 17/116 / step 64 u** — host/engine-default values; exact gameplay
    capsule and step (G-1/G-13) still unextracted.
 8. **Merged interiors** (e.g. `jz_xb玉门关建筑001_003sw_hd`) — walls, floors,

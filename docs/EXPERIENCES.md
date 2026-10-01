@@ -788,3 +788,23 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining genuine recovery work, priority order: slope model
   (`ProcessDropSpeed` + live engine cell slope), cave floors under holes,
   obstacle production reverse, capsule values, engine-physics-in-host.
+
+### 2026-10-01 - collision - Cheap-step pass: two stale audit claims corrected, slope re-confirmed parked
+- Ran the "cheap + original" list down to evidence:
+  - **Slope (T2)**: the earlier research re-scoped it as an AIRBORNE slide
+    feature (`ProcessDropSpeed`) over the engine's in-memory cell word + road
+    flags, not a walking climb limit; not client-derivable cheaply -> stays
+    parked (`COLLISION_SYSTEM_COMPARISON.md` 8.3 T2). Do NOT present it as a
+    cheap fix.
+  - **Cave floors**: verified the underground IS baked - the scene data has the
+    山洞 meshes (`sd_崖壁狱门fb_001_hd`) and 25 fully-underground instances
+    (y to -1200) in the bin. The blanket "holes fall bottomless" claim was
+    stale -> corrected; re-open only with a cited hole cell.
+  - **Canopy columns**: no such code exists (grep); the real tree deviation is
+    the host-measured trunk prisms (62/68 degenerate CollisionMesh) -> already
+    registered as 4e; the STATUS doc line was stale -> corrected.
+  - Step budget: NOT a band-aid (engine landing tolerance + 51 u field case);
+    kept, registered as 4f.
+- Net: the registered deviation list is now accurate; the remaining genuine
+  items (slope slide, obstacle production, capsule values, engine physics) are
+  deep recovery work, not cheap steps.
