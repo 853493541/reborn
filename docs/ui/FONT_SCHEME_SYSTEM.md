@@ -140,9 +140,12 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
   an int size from the style struct (`cvttss2si` of a float) and calls the glyph
   font builder `0x180347E80` with `{size (float), scale, valid-flag}`; the
   scheme→style converter (`0x1802CC070`) writes a **default style size of `0x10`
-  (16)** plus FontID/slot lookups when the record is missing/incomplete. The
-  exact "scheme Size=0 → slot base" substitution point in that converter is not
-  yet pinned (next probe: dump `0x180347E80` / trace style field `+0x44`).
+  (16)** plus FontID/slot lookups when the record is missing/incomplete. A
+  `shl×6 + [reg+4]` scan over the whole Cocos DLL (39 hits) did **not** isolate the
+  scheme `Size` → slot-base substitution (Cocos's scheme vector is a member at
+  `mgr+8`, unlike KGUI's `+0x5A80`, so consumers index it differently). **Single
+  remaining renderer detail**; next probe: trace `SetFontScheme → 0x180346AA0`
+  arguments into `0x180347E80` and the style object fields.
 - **Legacy KGUIX64 path: no code reads the scheme record's `Size` (+4).** Two exhaustive scans
   (2026-09-30): (a) every `shl/imul reg, ×0x40` followed by a `[reg+4]` read across the
   whole image — only unrelated 0x40-stride tables matched; (b) every writer of the item
