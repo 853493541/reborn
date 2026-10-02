@@ -1,0 +1,4 @@
+UI::KItemHandleClassScriptTable::LuaItemText_SetRichText
+UI::KItemHandleClassScriptTable::LuaItemText_IsRichText
+TipRichText
+SetRichText

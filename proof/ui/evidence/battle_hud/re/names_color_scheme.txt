@@ -1,0 +1,6 @@
+ColorSchemeMgr
+IsExistColor
+GetColorRGB
+SchemeElemColor
+LoadColor
+m_ColorList

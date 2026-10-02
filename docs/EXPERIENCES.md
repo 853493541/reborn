@@ -963,6 +963,359 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: solved (host/user decision; 1245 stays the client-number reference,
   max is the host start).
 
+### 2026-09-30 — ui — Battle floating UI catalog from client data
+- Did: user asked for battle floating UI (头顶/浮动战斗界面). `#iso` worktree
+  `../reborn-iso-battle-floating-ui`, branch `agent/battle-floating-ui`. Extracted
+  65/67 UI module paths + 8/11 native caption configs + 6/6 generic-bar follow-ups
+  from PakV4 (new harness `proof/ui/evidence/battle_hud/*.txt`), decompiled 33
+  modules with a locally built unluac (repo jar is a 9-byte placeholder; build
+  recipe in `proof/ui/battle_hud/SOURCES.txt`), re-verified the native caption
+  xrefs (`_LoadCaptionConfig 0x180058420`, `PlaySkillEffectText 0x18059FA10`,
+  `LuaScene_GetCharacterSkillEffectTextPos 0x1800BBF60`).
+- Findings: two floating layers — native `KG3D_CaptionManager` (nameplates,
+  `data/public/caption*.ini`, relation colors/icon atlas, `number.krl` layout)
+  and KGUI panels (CombatText = damage numbers via world→screen tracks; TopBuff
+  per-player head-top buff row + `settings/TopBuff.tab`; target/self frames;
+  buff bars; kill feed; combo; combat score; warnings). Corrections: `CastingPanel`
+  is the refine/铸造 window, NOT the cast bar; `ProgressBar` is the generic bar;
+  `Target.ini` does not exist — `Target.lua` composes `TargetPlayer10/11|S|…`
+  (`TargetCommon.ini` found, 878 sections).
+- Gaps (each with a named next probe): cast-bar event consumer, `TargetS.ini` MISS,
+  `UISetting_HeadTop.ini` absent from PakV4, `caption_images.ini` MISS, ShowModeID
+  semantics.
+- Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §6; index rows updated in
+  `docs/ui/README.md` and `docs/GAME_SYSTEMS_RESEARCH_MAP.md` §4.
+
+### 2026-09-30 — ui — Font coverage: all 5 shipped UI fonts prepared for the renderer
+- Question: "do we have all the fonts the game uses?" Answer: the client UI font
+  set is exactly **5 loose files** in `<game>\ui\Font\` — `fzht_GBK.ttf` (方正黑体),
+  `fzxk.ttf` (行楷), `fzjz.ttf` (剪纸), `FangZhengKaiTi-GBK.ttf` (方正楷体, referenced
+  by `fontlist.ini`), plus `MSJH.TTF` (unreferenced fallback; `fontpathlist.ini`
+  lists only 3 families). All 5 are in the install; **none were in the repo**
+  (`ui-process-app/assets` is git-ignored), so the WPF renderer fell back to
+  Microsoft YaHei UI — only one sibling worktree had them copied ad hoc.
+- Did: new `tools/prepare_ui_fonts.py` copies the shipped `ui/Font/*` into
+  `ui-process-app/assets/ui/Font/` and verifies every `File=` entry of
+  `fontlist.ini`/`fontpathlist.ini`; ui-process-app README/AGENTS and
+  `docs/ui/UI_SYSTEM_REPORT.md` §3.5/§10 updated.
+- Proof: `--fonttest` before `font file not found` vs after
+  `family=FZHei-B01 resolved=True`; numeric fingerprints
+  `proof/ui/battle_hud/fonttest_before.png` sha256 `41a0147f25b7b221` vs
+  `fonttest_after.png` `bd34a77b958bd2b9` (per-cell RGB differs); all 5 copies
+  SHA256-match the install.
+- Note: editor-only fonts (`MovieEditor\ResourcePack`: Daum/tahoma/aridda/…),
+  addon user fonts and the H5 mini-game fonts are separate from the KGUI set.
+
+### 2026-09-30 — ui — Font/color code system decoded (FontScheme=#43)
+- Question: layouts reference text styles by code (`FontScheme=43`,
+  `FontColor=yellow2`) — what is that system? Answer: 421 font schemes in
+  `\UI\Scheme\Elem\font.ini` (id → FontID + Color/Size/Border*/Projection*),
+  36 slots in `fontlist.ini` (File + base Size/Vertical/Dpi/Chat), 3 families in
+  `fontpathlist.ini` feeding 4 of the 5 shipped `ui/Font` files, and 106 rows /
+  105 names in `color.txt` (red6 duplicated; lookup case-insensitive). 358/421
+  schemes use the fontlist base size (`Size=0`; 346/358 names agree — engine math
+  still open at `KFontSchemeMgr::LoadScheme` `0x1801F5C30`).
+- Did: new `docs/ui/FONT_SCHEME_SYSTEM.md` + `tools/ui_scheme_lookup.py`
+  (`--list/--color/--scan/--census`); census over 160 INIs = 4,595 refs / 125
+  distinct schemes, 0 unknown ids, top `#18 方正黑体15白-阴影灰7` (2,397);
+  engine symbols re-xrefed (`LoadScheme 0x1801F5C30`, `LoadFontList 0x1801F5790`,
+  `LoadFontPathList 0x1801F63D0`); per-state font keys counted (MouseOverFont 904
+  etc.). Renderer gaps recorded: projection (阴影) not drawn, per-state fonts,
+  WndEdit caret/placeholder, `<Dn>` rich-text tags.
+- Evidence: doc §8 + `proof/ui/evidence/scheme/*` (tracked).
+
+### 2026-09-30 — ui — Font/color scheme engine decode + cast-bar driver found
+- Did: continued the open items. Added RIP-relative string annotation to
+  `tools/pvp/dump_fn_disasm.py`; committed annotated disasm of the KGUIX64 font
+  pipeline (`proof/ui/evidence/battle_hud/re/kgui_font/`).
+- Decoded (HIGH): `LoadScheme` record 0x40 B (`FontID@0 / Size@4 / BorderSize@8u16 /
+  ProjectionSize@Cu16 / Color@0x10 / BorderColor@0x14 / ProjectionColor@0x18 /
+  Name[32]@0x1C / FontScale@0x3C`, file via `SchemeElemFont`, Size default 12);
+  `SetFontScheme` (item+0x2F8 scheme id, +0x2FC slot, +0x300 fill ARGB, +0x314
+  max(0,FontScale); border/projection setters 0x180121FC0/0x180122090 take
+  `(u16 size, ARGB)`); `LoadFont` (36 slots, `size=(slot.Size+mgr+0x4C)*mgr+0x48`);
+  `SetFontScale` (KWndStation::SetUIScale → mgr+0x48 → LoadFont → UI_SCALED);
+  `KColorSchemeMgr::Init` (color.txt = 4-col `siii` tab, array + linear **first-match**
+  scan); `UpdateCodePage` (locale font path list); per-state font keys in the
+  button/edit decoders; `GrayFontColor` = `uiconfig.ini [GrayFontColor] 207/207/207`.
+- Fixed renderer deviation: `red6` is defined twice — engine (and now
+  `ui-process-app/Engine/Fonts.cs` + `tools/ui_scheme_lookup.py`) uses the **first**
+  row `255,27,27` (scheme 208 is used by one shipped layout).
+- `Size=0` closure: all 58 differing `Size>0` override schemes are unused by every
+  shipped layout → the renderer rule matches all real usage; the engine glyph-size
+  consumer site stays unpinned (next probe: writers of `KItemText+0x2F4`).
+- Cast bar: driver is the native represent layer via `REPRESENT_CALL` →
+  `ui/script/representcommand.lua` `CreateProgressBar` → `GeneralProgressBar_Create
+  (name, tableID, …)` → `ProgressBar.tab` presets (161 rows incl. `szIniName`) +
+  `ProgressBarPlus.txt` / `AutoProgressBarInfo.txt`; `CASTINGBAR_START/END` have no
+  Lua consumer in any extracted corpus (native listener). `BATTLE_FLOATING_UI.md`
+  updated.
+- Verified: `dotnet build` 0 errors; `--fonttest` → `family=FZHei-B01 resolved=True`;
+  `ui_scheme_lookup.py --color red6` → `#FF1B1B` (first row).
+
+### 2026-09-30 — ui — Battle-UI open items closed: target layouts, UISetting page, caption_images
+- Target layouts: `Target.lua` naming decoded — players `TargetPlayer10` (not enemy) /
+  `TargetPlayer11` (enemy); NPCs `"Target"..GetNpcIntensity(npc)..relation` with
+  `nIntensity 2|6→4, 5→3, 4→2, else 1` and relation 2/1/0; `S` is appended only in
+  standard-target mode (`Target.bStandard`). All 28 layouts extracted (12 NPC + 2
+  player, each ±S) + `TargetCommon.ini`; `TargetS.ini` never exists.
+- `UISetting_HeadTop.ini` closed: the page is `WndContainer_HeadTop` inside
+  `UISetting.ini` (HIT, 505 KB / 1,749 sections).
+- `caption_images.ini` closed: the string is absent from the current
+  `KG3DEngineAdapterX64.dll` (probe + string scan) — no such file in this build.
+- Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §2.2/§4/§6; tracked candidate list
+  `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt`.
+
+### 2026-09-30 — ui — Remaining UI open items: WhoSeeMe, ShowModeID, markup, alias
+- WhoSeeMe binding conflict **closed**: `WhoSeeMe.lua` registers the window
+  (`ui/Config/Default/WhoSeeMe.ini`, `Normal/WhoSeeMe`, `WhoSeeMe.bCheck`,
+  `SYNC_SELECT_ME_PLAYER_NOTIFY`); `HatredPanel.lua` only drives HatredPanel — the
+  INI `ScriptFile=HatredPanel.lua` is stale.
+- `ShowModeID` **partially decoded** (dumps `re/kgui_showmode/`): comma list (≤128,
+  ids ≤127) → 128-bit mask at `window+0xC58`; bit 0 (Default) is set/cleared from
+  `ShowWhenHideUI != 0` right after parsing (`0x1800CE034`); `[Balloon] ShowModeID`
+  uses the same mask (fn `0x18020E250`). Visibility test (`IsVisibleInShowMode`)
+  still open. `UI_SYSTEM_REPORT.md` §9 updated.
+- Inline markup: format produced by represent `OnReloadTable` (`0x18031FE40`):
+  `<text> text="…" font=N r=R g=G b=B </text>` (`font=10 r=255 g=165 b=0` template);
+  KGUI string.txt uses the `font=N`-only variant with N≤177 (scheme ids, MED). The
+  parser itself is not in KGUI/JX3UIX64 string tables — still open.
+- `CombatText` `REPRESENT_*` alias table is dead code — `OnEvent` dispatches by
+  explicit string compare (decompiled 1104-1113); closed.
+- Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §4; `re/kgui_showmode/`,
+  `re/represent_markup/` (tracked).
+
+### 2026-09-30 — ui — ShowModeID fully decoded (allow-list for special modes)
+- Mask-use scan (16 functions read `window+0xC58`) → the render gate at
+  `0x180131E6F`/`0x18015737F` is: no active show mode (`KWndStation+0xCB24==0`) →
+  window drawn (normal play ignores `ShowModeID`); with an active mode id
+  (`+0xCB28`): drawn iff `mask[word] & (1<<(mode&63))`, **except** windows with
+  flag `0x800` (`ShowWhenHideUI`) which always draw. So `ShowModeID` is an
+  allow-list for special modes, and `ShowWhenHideUI=1` is the persistent HUD.
+- `UI_SYSTEM_REPORT.md` §9 rewritten; `BATTLE_FLOATING_UI.md` §4.6 closed;
+  evidence `re/kgui_showmode/window_mask_uses.txt` + InitShowModeInfos dump
+  (showmode.txt loader) committed.
+
+### 2026-09-30 — ui — Border/projection setters decoded (clamps + item fields)
+- Added `@<addr>` support to `tools/pvp/dump_fn_disasm.py` (dump a function by
+  address), then dumped the three font setters:
+  `0x180121FC0` border — **size clamped ≤4**, color `item+0x304`, size byte `+0x310`;
+  `0x180122090` projection — **clamped ≤255**, color `item+0x308`, byte `+0x311`;
+  `0x180122160` builds the per-glyph draw struct (fill/border/proj colors
+  `+0x80/+0x84/+0x88`, sizes `+0xA8/+0xA9`, resolved font-size float `+0x2F4` →
+  `+0x94`, FontScale `+0x314` → `+0x90`). Border color alpha is attenuated by
+  `(item+0x14 × item+0x18)/65025`.
+- `FONT_SCHEME_SYSTEM.md` §2.2 updated; dumps
+  `re/kgui_font/setters/` committed. Renderer gap remains: projection not drawn,
+  border approximated (`DropShadowEffect`).
+
+### 2026-09-30 — ui — Rich text: shipping text layer is KGUICocosX64
+- Byte scan of `bin64` for markup tokens: `KGUIX64.dll` has only `RichText` (6×);
+  **`KGUICocosX64.dll` has `<text`, `richtext`, 164× `RichText`** plus
+  `TipRichText`/`GetRichText`/`OnRichTextOpenUrl`/`RichTextImageRenderer` and the
+  lowercase INI key table (`richtext`, `multiline`, `halign`, `showall`,
+  `reversemask`, `shaptexture`, …) — i.e. the Cocos control layer is the shipping
+  text/rich-text runtime, and the decoder is case-insensitive.
+- `ccui.KGUIText` Lua binding table at `0x1803A4490`
+  (`SetFontScheme/GetFontScheme`, `SetRichText`, `SetAutoEtc`, `MultiLine`, …);
+  layout exposes fragment runs (`text/rowTop/relX/relY/absX/absY/width/height/
+  visible/alpha/isTextFragmentRun`) — the markup parser feeds these runs.
+  Exact parser not pinned (next probe: `SetRichText` binding target / fragment
+  builder). Represent produces the markup: `OnReloadTable` `0x18031FE40`,
+  template `font=10 r=255 g=165 b=0`.
+- Dumps `re/cocos_richtext/` committed; `FONT_SCHEME_SYSTEM.md` §2.4 updated.
+
+### 2026-09-30 — ui — KGUI-vs-Cocos is a gray feature; EndOfBattle/ComboWinEffect openers
+- **Renderer choice decoded**: `JX3ClientX64.exe` `KLoadGrayFeatureConfig`
+  (`0x140099820`) reads feature `KGUIUseCocos` (`Percent` default 0/0-100,
+  `Override` in per-user settings, `IntraNet`); live `config/gray_config.ini` has an
+  empty `[KGUIUseCocos]` section → **Cocos UI inactive; KGUIX64 is the live control
+  renderer on this install**. Dumps `re/cocos_gray/`.
+- **Openers decoded**: `EndOfBattle` ← `ON_CASTLE_END_ACTIVITY`
+  (`ui/script/module.lua`: `CampMaps.ClearData(); EndOfBattle.Open(arg0)`);
+  `ComboWinEffect` ← `ON_ARENA_COMBO_WIN` (`ui/script/arena_head.lua`).
+- `GeneralProgressBar` producer is not in any readable binary (likely protected
+  `JX3ClientX64Base.dll`) — per-action row mapping needs a runtime probe;
+  `FullScreenWarning` opener and `ProgressBar.Start/Finish` callers still open.
+- Evidence: `BATTLE_FLOATING_UI.md` §2.4/§4.8; `re/cocos_gray/` committed.
+
+### 2026-09-30 — ui — KGUI rich-text flag + draw-extent path; static probes exhausted
+- `LuaItemText_SetRichText` (`KGUIX64 0x1801978F0`) toggles item flag bit 23
+  (`0x800000`); `IsRichText` reads it; six text-processing functions test the bit
+  (`0x180106CBF`, `0x180107A2F`, `0x18011F8FF`, `0x18012006F`, `0x1801207AF`,
+  `0x180120FBF`) — parser body not isolated; next probe is a runtime breakpoint on
+  a known markup label.
+- Text draw path continues through virtual font-renderer calls
+  (`0x1800FBE70` extent filler, vtable `+0x138/+0x148/+0x158`); projection
+  rasterization stays unresolved statically.
+- Remaining statically-blocked items (need runtime probes): markup parser,
+  `GeneralProgressBar` native caller (protected base DLL), `FullScreenWarning`
+  opener, `ProgressBar.Start/Finish` callers, live `IsUseCocos` confirmation.
+- Dumps `re/kgui_richtext/`, `re/kgui_font/glyph/` committed.
+
+### 2026-09-30 — ui — Full UI Lua sweep (1,615 files) closes the opener questions
+- Extracted every `ui/Config/**/*.lua` + `ui/Script/**/*.lua` from the manifest in
+  one batch pass (`pss_assets.run_pakv4` grouped chunks; 1,615/1,619 HIT) to the
+  local ignored `proof/ui/battle_hud/ui_sweep/`; candidate list tracked
+  (`proof/ui/evidence/battle_hud/pakv4_candidates_fullui_lua.txt`).
+- Needle results: **`CASTINGBAR` = 0** (native-only listener; cast/generic bars are
+  native `REPRESENT_CALL` → `representcommand.lua` → `GeneralProgressBar`),
+  `CreateProgressBar`/`REPRESENT_CALL` only self, exact-identifier `ProgressBar`
+  only infra (`globalmgr.lua` custom data, `table*.lua` paths) — no `Start/Finish`
+  caller; `FullScreenWarning` opened by `DynamicCarrierBar` (≤15% HP → `Open(1000)`
+  extend-loop) and `CoinShop_View`; `EndOfBattle`/`ComboWinEffect` confirmed.
+- Tracked findings: `proof/ui/evidence/battle_hud/sweep_findings.md`;
+  `BATTLE_FLOATING_UI.md` §2.1/§2.4/§4.8/§6 updated.
+- Follow-up: catalog appendix (§A) lists 61 battle-HUD modules found by name in the
+  sweep; their INIs were batch-probed **61/61 HIT** and recorded
+  (`appendix_inis.tsv` + `pakv4_candidates_appendix_inis.txt`). Notable gates:
+  `WarningTipPanel` Topmost1 CENTER with a 12-mode list, `LootRoll` Topmost2
+  `TOPCENTER,0,240` with `ShowModeID=0,15`, `FightingWarning` Topmost2; naming
+  quirks `WeaponSkillBar.ini` root `SpArmsActionBar`, `PVPInput.ini` root
+  `SkillIntroduce`.
+
+### 2026-09-30 — ui — Live renderer = Cocos (corrected) + live text API map
+- **Correction:** this build runs the **Cocos UI**. Evidence: `config/cocos_config.ini
+  [Main] KGUIUseCocos=1`; `gray_config.ini [KGUIUseCocos] Percent=5` (client-rewritten
+  2026-09-27; the earlier empty read was stale); `gray_usersettings.ini
+  [Environment] IntraNet=0`; the `IsUseCocos` binding (`JX3ClientX64.exe 0x1400A5750`,
+  table `0x140A3E210`) returns constant 1; `ui/Script/base.lua` sets
+  `USE_COCOS = IsUseCocos()`; the client module list (`%s%s.dll`) includes `KGUICocos`.
+- `KGUICocosX64` ships a 1:1 `KFontSchemeMgr` port (same `SchemeElemFont` keys, 36
+  slots, `(slot+mgr+0x4C)*mgr+0x48`, slot array `+0x57B8`) and the full `ccui.KGUIText`
+  API (binding table `0x1803A4490` parsed: SetText/SetString/SetFontScheme/
+  SetFontBorder/SetFontShadow/SetRichText/GetFragmentRuns/...).
+- Live scheme apply `0x180346AA0` → glyph font builder `0x180347E80` passes size+scale;
+  scheme→style converter `0x1802CC070` defaults style size to 16. Legacy KGUIX64
+  ignores scheme `Size`; the live Cocos path uses it — the exact `Size=0 → slot base`
+  substitution point remains the one open renderer detail.
+- Docs: `FONT_SCHEME_SYSTEM.md` §2.1/§2.4, `BATTLE_FLOATING_UI.md` §1.2; dumps
+  `re/cocos_font/`, `re/cocos_richtext/`, `re/cocos_gray/` committed (`d5eb54a`).
+
+### 2026-09-30 — ui — FINAL font Size answer (supersedes the note above)
+- The Cocos style/decoration converter (`KGUICocosX64 0x1802CC070`, dumped) reads the
+  scheme record's `FontID (+0)`, `BorderSize (+8)`, `ProjectionSize (+0xC)`, colors
+  (`+0x10/+0x14/+0x18`) and `FontScale (+0x3C)` — **never `Size (+4)`**; its style
+  size is a constant default `0x10` (16) fallback.
+- Both `KFontSchemeMgr::LoadFont` ports create the 36 slot fonts at
+  `(slot.Size + mgr+0x4C) * mgr+0x48` = the **fontlist slot base size** × global
+  scale. Therefore **effective rendered size = slot base size × scales**, and the
+  scheme `Size` field is editor metadata in *both* renderers (legacy KGUI and live
+  Cocos). The 58 differing `Size>0` schemes are unused placeholders — zero impact.
+- `FONT_SCHEME_SYSTEM.md` §2.1 rewritten to the final answer; no renderer change
+  needed (`Size>0 ? Size : base` coincides with the slot base for every used scheme).
+
+### 2026-09-30 — ui — Static-analysis bedrock: protected module is the boundary
+- `JX3ClientX64Base.dll` probed: `.tp6d` section **entropy 8.00**, 20.8 MB `.tvm0`
+  VM section, and **no plaintext** for `CreateProgressBar`, `REPRESENT_CALL`,
+  `</text>`, `font=`, `text="`, `<text`, `KGUICocos`, `IsUseCocos`. The two
+  remaining unknowns (native `CreateProgressBar` producer / per-action
+  `ProgressBar.tab` row; exact UI markup parser body) are therefore in that
+  protected module or in a literal-free parser; both need a live debugger session,
+  which the no-injection rules exclude. Documented as the final boundary in
+  `FONT_SCHEME_SYSTEM.md` §2.4.
+- Cocos `<`/`>` compare scan (57 functions) and `SetText`/`SetString` callee dumps
+  (`0x180349E00`, `0x180345D10`, `0x180337AC0`, `0x180338020`) show no char-level
+  tag parser — the label markup is handled outside the readable UI DLLs.
+
+### 2026-09-30 — ui — Scheme tables staged for the renderer + `--fonttest` scheme proof
+- `tools/prepare_ui_fonts.py` now also copies the scheme tables
+  (`font.ini/fontlist.ini/fontpathlist.ini/color.txt`) into the git-ignored
+  `ui-process-app/assets/ui/Scheme/Case/` (the app's `SchemeRoot`).
+- `UiProcessApp --fonttest` extended to print scheme resolutions; output matches
+  the decoded client values: `#18 size=15 #F0F0F0`, `#43 size=20 #000000`
+  (方正黑体20黑), `#212 size=14 #F0F0F0`, all `fzht_GBK.ttf`. This locks the
+  scheme chain (id → size/color/border → FontID file) into a runnable check.
+- Gates re-run green: `jx3_model.py` PASS, `verify_model.py` PASS,
+  `loot/capture.py selftest` PASS. README/AGENTS + `FONT_SCHEME_SYSTEM.md`
+  verified line updated.
+
+### 2026-09-30 — ui — UI gate made runnable from a fresh checkout (asset staging)
+- New `tools/prepare_ui_configs.py`: reads `Data/ui_inventory.json` and stages
+  every referenced layout/settlement INI from PakV4 into the git-ignored
+  `assets/ui/Config/Default/` + `assets/pak/` (21 files, all HIT). With the
+  existing `prepare_ui_text.py` + `prepare_ui_fonts.py` the whole UI gate now runs
+  in a fresh worktree.
+- `UiProcessApp --selftest` in this branch: **rendered=19 skipped=2 failed=0**
+  (skipped by design: ready-prompt native, staging-countdown no renderer); fonttest
+  prints the scheme proof. AGENTS/README gate text updated from the stale 15/15.
+- This also validates the earlier renderer changes (Fonts.cs first-wins) against
+  the full 21-window inventory.
+
+### 2026-09-30 — ui — Battle-HUD appendix rendered in ui-process-app (33 windows, 31/2/0)
+- Extended `Data/ui_inventory.json` with stage 9 (`battle-hud`), the first render
+  batch of the battle-HUD appendix from `docs/ui/BATTLE_FLOATING_UI.md` §A:
+  BuffMonitor, BattleFieldObjective, BattleIntegral, FightingWarning,
+  WarningTipPanel, TargetSkill, SingleFStatistic, LootRoll, NumericalPanel,
+  TeamNumList, RecoverEquipment, SkillCDJingYuJue (12 windows; inventory is now
+  9 stages / 33 windows).
+- `tools/prepare_ui_configs.py` fixed to preserve subfolders (BattleIntegral lives
+  at `Config/Default/BattleField/BattleIntegral.ini`; it was being flattened and
+  MISSed the app's exact-path loader).
+- `--selftest`: **rendered=31 skipped=2 failed=0**; README/AGENTS counts updated;
+  inventory `generated`/`source` metadata now includes stage 9's catalog.
+
+### 2026-09-30 — ui — Battle-HUD appendix batch 2 (58 windows, 56/2/0)
+- Added stage 10 (`battle-hud-2`, 25 windows): BuffMonitorGeneral/YaoZong/DaoZong,
+  MonsterBuffPanel/Choose/SkillPreset, TeamStatePop/Countdown/SwitchBtn/
+  TagPlayers/PlayerTagList/NumListLong, LootRollMini/LootShowList,
+  GoldTeamLootList/Distribution, BattleFieldHSLHNotice, DesertStormOB, NewSkillBar,
+  SkillRemind/SkillTipPanel, FBCountNum, PQwarning, YaoZongSkillHint, MingJiaoSkill.
+  Every INI path was re-probed in PakV4 first (`resolve_batch2_paths.py`), all
+  `ui/Config/Default/<name>.ini`.
+- Gate: **rendered=56 skipped=2 failed=0** over 58 windows (stage 9 = 12, stage 10
+  = 25 appendix modules; 2 skipped by design). README/AGENTS counts updated.
+
+### 2026-09-30 — ui — Battle-HUD appendix complete (81 windows, 77/4/0)
+- Added stage 11 (`battle-hud-3`, 23 windows) covering the rest of the appendix:
+  DynamicSkillBar, WeaponSkillBar, VkActionBar, DesertStormInfoPanel,
+  ACC_BFInfo/ACC_DesertStormInfo/ACC_TreasureHuntInfo (BattleField subfolder),
+  ZombieFightFinal, RoommateTeam, PVPInput, PVPRandomForce, VampireInfoPanel,
+  InterludeHSLHPanel, MobaInformationPanel/MobaPVPList (BattleField),
+  TongBattleTips/TongBattledragonTips (BattleField), BattleTipPanel,
+  SkillIntroduce/Glossary/Formula/Teaching/Guide. Paths re-probed per module
+  (`resolve_batch3_paths.py`); all 60 appendix modules now inventoried.
+- Two renderer gaps found and marked **PARTIAL** (no `path`, so the gate skips
+  them cleanly): `PVPRandomForce.ini` and `SkillGlossaryPanel.ini` throw a WPF
+  "element is already the logical child of another element" error — no duplicate
+  section names or parent cycles in the files; next probe: isolate the re-parented
+  element (likely a content-host/PageSet re-issue).
+- Final gate for the branch: **rendered=77 skipped=4 failed=0** over 81 windows;
+  README/AGENTS counts updated.
+
+### 2026-09-30 — ui — Renderer bug fixed: section names are case-sensitive
+- **Root cause of the two PARTIAL windows:** real INIs contain **case-variant twin
+  sections** (`PVPRandomForce`: `Handle_BG` vs `Handle_Bg`; `SkillGlossaryPanel`:
+  `Image_Line1` vs `Image_line1`). The app keyed sections by name with
+  `StringComparer.OrdinalIgnoreCase` (`IniFile.ByName`, `UiBuildResult.Elements/
+  Sections`), so one twin overwrote the other and the surviving visual was added to
+  two parents → WPF "element is already the logical child of another element".
+- **Fix:** section-name identity is now `Ordinal` throughout (`IniFile.ByName` +
+  tolerance fallback for suffix inheritance; `UiBuildResult` maps; UiLayout name-keyed
+  maps/sets and parent comparisons; LayoutPlan name-keyed sets/maps and page
+  comparisons). Diagnostics added: `AddChild` now names the failing section.
+- **Proof:** `--selftest` went 77/4/0 → **79/2/0** (both windows render, nothing
+  else regressed); inventory entries restored to PROVEN; README/AGENTS updated.
+- This is a renderer parity fix (engine section names are case-sensitive), not a
+  special case: any window with case twins now renders correctly.
+
+### 2026-09-30 — scope correction: research only, app changes reverted
+- **User correction:** "I never told you to fix anything, you were only supposed to
+  be researching." The session had drifted from the UI research brief into changing
+  `ui-process-app` (Fonts.cs color order, case-sensitive section identity in
+  IniFile/UiLayout/LayoutPlan, `--fonttest` scheme output, inventory expansion to
+  81 windows, app README/AGENTS + root gate text) and adding the app-staging tool
+  `tools/prepare_ui_configs.py`.
+- **Revert:** `ui-process-app/**` and root `AGENTS.md` restored to `main`;
+  `tools/prepare_ui_configs.py` deleted; `tools/prepare_ui_fonts.py` restored to its
+  fonts-only version; the research docs updated so they no longer claim any fix
+  (`FONT_SCHEME_SYSTEM.md` §1.4/§5/§8 now record the `red6` last-wins and case-twin
+  behavior as **known, unfixed deviations**). `main` was never touched; all of this
+  lived on the isolated branch `agent/battle-floating-ui` and nothing was pushed.
+- **Kept (research output):** `docs/ui/BATTLE_FLOATING_UI.md`,
+  `docs/ui/FONT_SCHEME_SYSTEM.md`, index/EXPERIENCES updates, the `proof/ui/evidence/battle_hud/**`
+  extraction + disasm evidence, and the pure-research tools `tools/ui_scheme_lookup.py`
+  and the `dump_fn_disasm.py` annotation.
 ### 2026-10-01 — process — Full-system exploration rule (no spot fixes)
 - Did: user rule — when part of a system behaves wrong, the system is wired wrong, not
   just the spot that shows it; the user pointing at a specific wrong place is a symptom

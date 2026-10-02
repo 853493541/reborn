@@ -1,0 +1,3 @@
+KJX3ConfigModule::RegisterLua
+IsUseCocos
+GetCocosGrayInfo

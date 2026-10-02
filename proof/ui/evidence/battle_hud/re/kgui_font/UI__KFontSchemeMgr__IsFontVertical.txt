@@ -1,0 +1,89 @@
+# needle: UI::KFontSchemeMgr::IsFontVertical
+# string VAs: ['0x1805e2e10']
+# xrefs: 1
+
+## xref 0x18013000d  fn_start 0x18012ffb0
+0x018012ffb0: push	rbx
+0x018012ffb2: sub	rsp, 0x30
+0x018012ffb6: movss	xmm0, dword ptr [rip + 0x4b6206]
+0x018012ffbe: movss	dword ptr [rsp + 0x48], xmm0
+0x018012ffc4: test	edx, edx
+0x018012ffc6: js	0x1801300c7
+0x018012ffcc: mov	rcx, qword ptr [rip + 0x53e87d]
+0x018012ffd3: mov	r8, qword ptr [rcx + 0x5a80]
+0x018012ffda: mov	rax, qword ptr [rcx + 0x5a88]
+0x018012ffe1: sub	rax, r8
+0x018012ffe4: sar	rax, 6
+0x018012ffe8: cmp	edx, eax
+0x018012ffea: jge	0x1801300c7
+0x018012fff0: movsxd	rax, edx
+0x018012fff3: shl	rax, 6
+0x018012fff7: lea	rbx, [rax + r8]
+0x018012fffb: test	rbx, rbx
+0x018012fffe: je	0x1801300c7
+0x0180130004: lea	rdx, [rax + r8]
+0x0180130008: test	rdx, rdx
+0x018013000b: jne	0x18013006a
+0x018013000d: lea	rax, [rip + 0x4b2dfc]	; 0x1805e2e10 -> "UI::KFontSchemeMgr::IsFontVertical"
+0x0180130014: mov	r9d, 0x157
+0x018013001a: lea	r8, [rip + 0x481fc7]	; 0x1805b1fe8 -> "pFontScheme"
+0x0180130021: mov	qword ptr [rsp + 0x20], rax
+0x0180130026: lea	rdx, [rip + 0x47984b]
+0x018013002d: mov	ecx, 3
+0x0180130032: call	qword ptr [rip + 0x3b71e0]
+0x0180130038: mov	rcx, qword ptr [rip + 0x53e811]
+0x018013003f: mov	rcx, qword ptr [rcx + 0xda40]
+0x0180130046: lea	r9, [rsp + 0x48]
+0x018013004b: movss	xmm2, dword ptr [rip + 0x4b607d]
+0x0180130053: mov	edx, dword ptr [rbx]
+0x0180130055: mov	rax, qword ptr [rcx]
+0x0180130058: call	qword ptr [rax + 0x1c8]
+0x018013005e: movss	xmm0, dword ptr [rsp + 0x48]
+0x0180130064: add	rsp, 0x30
+0x0180130068: pop	rbx
+0x0180130069: ret	
+0x018013006a: mov	r9, qword ptr [rcx + 0x5aa8]
+0x0180130071: test	r9, r9
+0x0180130074: je	0x18013003f
+0x0180130076: movsxd	rdx, dword ptr [rdx]
+0x0180130079: cmp	edx, 0x24
+0x018013007c: jge	0x18013003f
+0x018013007e: imul	r8, rdx, 0x138
+0x0180130085: add	r8, r9
+0x0180130088: je	0x18013003f
+0x018013008a: cmp	byte ptr [r8 + 0x134], 0
+0x0180130092: je	0x18013003f
+0x0180130094: test	byte ptr [r8 + 0x12c], 2
+0x018013009c: je	0x18013003f
+0x018013009e: mov	rcx, qword ptr [rcx + 0xda40]
+0x01801300a5: lea	r9, [rsp + 0x48]
+0x01801300aa: movss	xmm2, dword ptr [rip + 0x4b601e]
+0x01801300b2: mov	rax, qword ptr [rcx]
+0x01801300b5: call	qword ptr [rax + 0x1c0]
+0x01801300bb: movss	xmm0, dword ptr [rsp + 0x48]
+0x01801300c1: add	rsp, 0x30
+0x01801300c5: pop	rbx
+0x01801300c6: ret	
+0x01801300c7: lea	rax, [rip + 0x48618a]	; 0x1805b6258 -> "UI::KWndEdit::GetFontHeight"
+0x01801300ce: mov	r9d, 0xd4d
+0x01801300d4: lea	r8, [rip + 0x481f0d]	; 0x1805b1fe8 -> "pFontScheme"
+0x01801300db: mov	qword ptr [rsp + 0x20], rax
+0x01801300e0: lea	rdx, [rip + 0x479791]
+0x01801300e7: mov	ecx, 3
+0x01801300ec: call	qword ptr [rip + 0x3b7126]
+0x01801300f2: movss	xmm0, dword ptr [rsp + 0x48]
+0x01801300f8: add	rsp, 0x30
+0x01801300fc: pop	rbx
+0x01801300fd: ret	
+0x01801300fe: int3	
+0x01801300ff: int3	
+0x0180130100: mov	eax, 0x15
+0x0180130105: ret	
+0x0180130106: int3	
+0x0180130107: int3	
+0x0180130108: int3	
+0x0180130109: int3	
+0x018013010a: int3	
+0x018013010b: int3	
+0x018013010c: int3	
+0x018013010d: int3	

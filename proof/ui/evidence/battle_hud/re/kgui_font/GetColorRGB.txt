@@ -1,0 +1,4 @@
+# needle: GetColorRGB
+# string VAs: ['0x1805c9b28']
+# xrefs: 0
+(no xref found)

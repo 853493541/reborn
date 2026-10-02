@@ -1,0 +1,4 @@
+# needle: GetPureText
+# string VAs: ['0x1805d2930']
+# xrefs: 0
+(no xref found)
