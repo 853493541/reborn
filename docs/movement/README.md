@@ -22,6 +22,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | Tool | Purpose |
 |---|---|
 | `tools/collision/check_hole_mask.py` | Convert an extracted `.hlb` hole mask (flip rule applied) and A/B it against a client `RC_HOLE_DUMP` engine dump |
+| `tools/collision/spot_ab.py` | Solver-vs-engine A/B at field spots: capsule scan on our baked bin vs the engine PxMeshQuery scan recorded in `proof/movement/phys_engine_vtables.txt` (2026-10-02 c) |
 | `client/collision_selftest.cs` | Offline FoliageCollision gate (32 checks, no engine/assets); built as `bin64\collision_selftest_<exe>.exe` by `client\build_client.cmd`; `audit` mode = map-wide wall-face capsule sweep (walk-through detector) |
 | `tools/export_camera_flags.py` | Per-mesh `bObscatleCamera` extraction → `camera_mesh_flags.json` → `.cflags` sidecar |
 | `tools/bake_map_collision.py` | Bake per-map foliage/structure collision bins from the pak |
