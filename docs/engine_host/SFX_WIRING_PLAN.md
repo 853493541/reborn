@@ -488,6 +488,16 @@ distinguished; the returned object's inner pointer was null in the probe). Next:
 animation data manager's reader creation (its own read mode / the wrapper's decompressing
 read), not `KG3D_LoadFile`.
 
+Branch trace (`ani2.out`, `trace4.out`): the animation entry is `KG3D_Animation` (vtable
+`0x22195C0`; `vt[25]` = `LoadFromFile 0xC30DA0`; the `.tani` fall-through calls `vt[28]`
+= `0xC347A0` — the generic loader that would call the mode-aware `0xB0FC60(path, mode)`
+with the mode from `engine->vt[0xa10]()`), but for the ability `.tani` **neither
+`0xC347A0` nor `0xB0FC60` fires** — the failure comes from the shared
+`KG3D_DataManager::Load` helper (string refs `0x437D0C/0xA4D0E6/0xA4D129/0xA54E01/
+0xA63B9A`, error line 75) that reads the raw pak record and rejects the `GATA` type. So
+the fix target is that shared data-manager load helper (its reader/mode), not the
+animation class. Probe restored to the clean committed state.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
