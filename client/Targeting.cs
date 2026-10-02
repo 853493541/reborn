@@ -278,7 +278,7 @@ internal sealed class TargetFrameControl : Form
                 {
                     paintErrorLogged = true;
                     try { File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                        "target_dummy_sandbox_out", "target_ui_paint_error.txt"), e.ToString()); } catch { }
+                        "reborn_out", "target_ui_paint_error.txt"), e.ToString()); } catch { }
                 }
             }
         }

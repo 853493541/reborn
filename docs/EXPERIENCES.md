@@ -1024,3 +1024,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   docs/controls/JX3_TARGET_SELECTION.md §10.
 - Outcome: solved for the ring + facing cone; the brace/arrow composition waits
   on represent-world host support.
+
+### 2026-10-01 - cleanup - remove target_dummy_sandbox browse app
+- Did: deleted the separate browse/display app (	arget_dummy_sandbox/, added in
+  30e458e) per request - the client sandbox (one 试炼木桩 + in-world indicator in
+  client/RebornClient.cs) is the vehicle. Updated references: root AGENTS area
+  map, docs/pvp/README tools line, docs/netcode/README tools table,
+  docs/pvp/TARGET_DUMMY_RESEARCH.md (scope/§4/§5/Reproduce), and the target UI
+  paint-error path in client/Targeting.cs (now bin64\reborn_out). Historical
+  proof files (proof/pvp/target_dummy_sandbox_*) and the older EXPERIENCES entry
+  stay untouched.
+- Evidence: git rm of 4 files; client rebuild exit 0; grep shows no live
+  references outside historical proof/EXPERIENCES.
+- Outcome: branch carries only the client sandbox with the target dummy.

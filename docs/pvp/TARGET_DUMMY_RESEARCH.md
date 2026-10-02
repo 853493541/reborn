@@ -1,9 +1,10 @@
 # Target dummies (木桩) — 主城木桩 zone + generic dummies
 
-Scope: the attackable dummies recreated by `target_dummy_sandbox/`. Research is
-static/read-only against the local client; live spawn stats come from the shipped
+Scope: the attackable dummies recreated by the client sandbox
+(`client/RebornClient.cs`, `RC_DUMMY`). Research is static/read-only against the
+local client; live spawn stats come from the shipped
 `settings\NpcTemplate\<zone>\sNpcTemplate.tab` tables. The 试炼教官 instructor
-NPC is documented but **not** a dummy (excluded from the sandbox index).
+NPC is documented but **not** a dummy (excluded from the extraction index).
 
 ## 1. Inventory (HIGH)
 
@@ -80,7 +81,9 @@ Capture: `proof/pvp/target_dummy_sandbox_smoke_20260930.txt`.
 
 ## 4. Sandbox verification
 
-`target_dummy_sandbox/README.md`. Smoke run (2026-09-30):
+The original browse/display app (`target_dummy_sandbox/`) was removed on
+2026-10-01 — the client sandbox in §5 is the vehicle now. Its evidence stays
+here as historical proof: smoke run (2026-09-30)
 `TD_FLAT=1 TD_SMOKE=37023,35901,35904,91454,6644` — all spawns via
 `AddRepresentModel` with valid handles; screenshots show the wooden cross-arm
 dummies rendered with shadows on 龙门寻宝. Numeric fingerprint:
@@ -94,7 +97,7 @@ player), see §5.
 ## 5. Client feature: one 试炼木桩 at the player spawn
 
 `client/RebornClient.cs` spawns one dummy right after the player is placed (the
-requested in-client sandbox target; the browse app in §4 is a separate tool):
+requested in-client sandbox target):
 
 * `RC_DUMMY=<representID>` — default 35901 (初级试炼木桩); `0` disables.
 * `RC_DUMMY_DIST=<units>` — distance along the measured view direction
@@ -121,10 +124,9 @@ player and the dummy standing together
 
 ```powershell
 python tools\netcode\mode\extract_target_dummies.py
-target_dummy_sandbox\build_target_dummy_sandbox.cmd
-$env:TD_FLAT='1'; $env:TD_SMOKE='37023,35901,35904,91454,6644'
-target_dummy_sandbox\run_target_dummy_sandbox.cmd
-# log: C:\SeasunGame\MovieEditor\bin64\target_dummy_sandbox_out\target_dummy_sandbox.log
+$env:RC_CLIENT_EXE='reborn_client_target-dummy.exe'; client\build_client.cmd
+# cwd C:\SeasunGame\MovieEditor: bin64\reborn_client_target-dummy.exe
+# in-world indicator + selection: docs/controls/JX3_TARGET_SELECTION.md §10
 ```
 
-Last verified: 2026-09-30
+Last verified: 2026-10-01

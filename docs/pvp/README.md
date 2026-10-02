@@ -24,8 +24,8 @@ Catalogs: `../proof/pvp/attr_catalog.tsv`, `../proof/pvp/combat_opcodes.tsv`,
 
 Tools: `tools/pvp/` (`tab.py` table reader, `field_semantics.py`, `verify_pvp_evidence.py`,
 `dump_fn_disasm.py`, …), `tools/netcode/mode/extract_target_dummies.py` (dummy
-NPC-template extraction; app: `target_dummy_sandbox/`) and the reused
-`tools/netcode/` Lua/binary helpers.
+NPC-template extraction; in-client spawn: `client/RebornClient.cs` `RC_DUMMY`)
+and the reused `tools/netcode/` Lua/binary helpers.
 
 Sources: local JX3 install (`...\zhcn_hd`), extracted PakV4 assets under
 `SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe`, and the
