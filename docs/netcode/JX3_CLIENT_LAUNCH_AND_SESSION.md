@@ -342,3 +342,21 @@ what completes it (likely the launcher/security handshake).
   are registered; the object at `sub+0x18` is still never created.
 - Conclusion: the missing input is consumed by the **PlatformInitialize steps** - they complete
   but do not produce the platform/game object the pump's success test requires.
+
+## 19. Platform-init functor + registry (2026-10-01, thirteenth pass)
+
+- The `game.startup` sub-steps are functor instances of type
+  `.?AUInitialize@Module@KSO3ClientEvents@@` (`KSO3ClientEvents::Module::Initialize`);
+  descriptor vtable `0x140953EC0` (entry `0x14009CC90`, data name string "KStep_Async"),
+  RTTI COL `0x14096C180`, type descriptor `0x140A42300` (name at +0x10).
+- The runner `0x1400A0870` builds descriptor `{vt=0x140953EC0, id=2..5, ctx=&state_sub}` and calls
+  the dispatcher `0x14009C890`, which looks up the type in the registry at `[exe+0xA8C1F0]`
+  (a std::map: head at `[map]`, size at `[map+8]`; nodes {left, parent, right, color/isnil,
+  key@+0x20, value@+0x60}) and calls `[value]->vtable[0x10]`.
+- Runtime: registry map size grows 44 entries (0.46 s) -> 185 entries (1.96 s); the map is
+  populated throughout boot, so the handler registration is not the gate by itself.
+- Client KGLog writes no files in the probe (`logs/JX3Client_2052-zhcn/<date>` dirs stay empty;
+  `config/log.ini` has no file path), so the "[Initialize] ... failed" line is not observable
+  through files or OutputDebugString.
+- Open: the platform object (`state_sub+0x18`) is still never created - next is to instrument the
+  dispatcher's return values / compare registry contents against a real launch.

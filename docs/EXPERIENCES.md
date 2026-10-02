@@ -1534,3 +1534,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   is consumed by those steps; they complete without creating the platform object.
 - Evidence: doc §18; timeline logs; registry map dump; runner 0x1400A0870 disasm.
 - Outcome: gate localized to the PlatformInitialize step handlers (next: watch their execution).
+
+### 2026-10-01 — netcode — Platform-init functor and registry mapped; handler return still unobserved
+- Did: identified the game.startup sub-step type as KSO3ClientEvents::Module::Initialize functor
+  (descriptor/RTTI chain resolved); mapped the registry std::map at [exe+0xA8C1F0] (grows
+  44 -> 185 entries through boot); confirmed client KGLog writes nothing visible (no files, no
+  debug output). The platform object creation (state_sub+0x18) remains the gate.
+- Evidence: doc 19; probe_registry.py runs; COL/type-descriptor resolution; log dir inspection.
+- Outcome: partial; next = observe dispatcher return values or diff against a real launch.
