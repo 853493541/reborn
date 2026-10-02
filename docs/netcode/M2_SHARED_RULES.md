@@ -87,3 +87,29 @@ reconnect recovers session, resumed entity keeps position.
 2. Two-client in-engine smoke (two reborn clients, one server, AOI visible).
 3. Move the client's table-driven movement (walk 96 / run 320 u/s, gravity) into
    `Reborn.Rules` so prediction and simulation share the exact model (M1.3).
+
+## Client integration + two-client smoke (slice 3, 2026-10-02)
+
+- `client/NetClient.cs` (net48/C#5, on the shared rules) + `MiniJson` extended in
+  `CameraSystem.cs` (arrays/nested objects for netcode payloads). Env-gated:
+  `RC_NET=host:port` (off by default, canonical behaviour unchanged), `RC_NET_AUTH=1`
+  enables local reconciliation snap (drift > 96 u) once the server shares terrain.
+- Client wiring: input upstream at 10 Hz (`OP_MOVE_INPUT`, keys from WASD), server state
+  downstream (`OP_MOVE_STATE`), AOI entities -> engine actors (`AddDummyModel("net_<eid>")`),
+  removal on `OP_ENTITY_REMOVE`. Server `--spawn x,y,z` places new entities at the map spawn.
+- **Two-client in-engine smoke** (server + `reborn_client_m2-a.exe` + `reborn_client_m2-b.exe`,
+  RC_DEMO scripted movement, ~130 s each, no disconnects, no errors):
+
+```
+a: net: connect ok / handshake recovered=0 / join eid=1 / net entity add eid=2 name=82482b0f
+   net actor add eid=2 handle=5943650872
+b: net: connect ok / handshake recovered=0 / join eid=2 / net entity add eid=1 name=fac51f96
+   net actor add eid=1 handle=1833106360
+```
+
+Both clients joined, saw each other through AOI and spawned the remote actor in the engine
+scene; sessions stayed up for the full run (t=129 s each, movement logged).
+
+**Known gap (next M2 slice):** the server still simulates on a flat plane with the reference
+speed; authoritative movement needs the server-side terrain/collision model (the client keeps
+its own position unless `RC_NET_AUTH=1`). Remote interpolation is snapshot-stepped (10 Hz).

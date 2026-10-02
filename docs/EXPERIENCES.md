@@ -1662,3 +1662,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ways, ping/pong, reconnect recovered, position kept); doc `docs/netcode/M2_SHARED_RULES.md`
   (slice 2); gate registered in AGENTS §12.
 - Outcome: solved (local branch `agent/m2-model`, not pushed).
+
+### 2026-10-02 — netcode — M2 client integration + two-client in-engine smoke (slice 3)
+- Did: `client/NetClient.cs` (net48/C#5 on the shared rules; RC_NET=host:port, off by default)
+  + MiniJson extended for arrays/nested payloads; input upstream 10 Hz, move-state downstream,
+  AOI entities rendered as engine actors; server `--spawn`; exact jump model ported to
+  `GameMovement` (M1.3) and pinned by generated vectors.
+- Evidence: parity 51 PASS (incl. jump apex 414 u = 2.16 m); server smoke 8 PASS; two-client
+  in-engine smoke — a/b both `join` + `net entity add` + `net actor add` for each other, no
+  disconnects over 129 s runs. Doc `docs/netcode/M2_SHARED_RULES.md`.
+- Lesson: never `git add -A` over dotnet projects — `bin/`+`obj/` slipped into three local
+  commits; fixed by gitignore + re-committing the branch clean (unpushed, so rewritten locally).
+- Outcome: solved (local branch `agent/m2-model`, not pushed); authoritative movement (server
+  terrain/collision) is the next M2 slice.
