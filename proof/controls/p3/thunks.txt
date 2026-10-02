@@ -1,0 +1,532 @@
+
+########## CommitInput 0x1805E3270
+--- thunk window:
+0x18000E992  cmp al, 0
+0x18000E994  jmp 0x1805b92d0
+0x18000E999  jmp 0x1807fb070
+0x18000E99E  jmp 0x18064b650
+0x18000E9A3  jmp 0x1806119b0
+0x18000E9A8  jmp 0x1809c53d0
+0x18000E9AD  jmp 0x1807d5bf0
+0x18000E9B2  jmp 0x1805e3270
+0x18000E9B7  jmp 0x18042b840
+0x18000E9BC  jmp 0x1804745c0
+0x18000E9C1  jmp 0x1809c19a0
+0x18000E9C6  jmp 0x1804caaf0
+0x18000E9CB  jmp 0x18039b0c0
+0x18000E9D0  jmp 0x18075f030
+0x18000E9D5  jmp 0x180654bd0
+0x18000E9DA  jmp 0x180bb31e0
+0x18000E9DF  jmp 0x1809b6be0
+0x18000E9E4  jmp 0x1806bb9d0
+0x18000E9E9  jmp 0x180551230
+--- thunk start 0x18000E9B2: 0 callers
+
+########## GetMoveInfo 0x1805DFE90
+--- thunk window:
+0x18001AC6F  mov eax, 0x76dae900
+--- thunk start 0x18001AC8F: 1 callers
+   caller 0x180AD3609:
+0x180AD35D9  sbb eax, dword ptr [rax]
+0x180AD35DB  lea ecx, [rax + 3]
+0x180AD35DE  lea rdx, [rip + 0x1ad56b]
+0x180AD35E5  call qword ptr [rip + 0x5c6a15]
+0x180AD35EB  xor eax, eax
+0x180AD35ED  mov rbx, qword ptr [rsp + 0x40]
+0x180AD35F2  mov rsi, qword ptr [rsp + 0x48]
+0x180AD35F7  add rsp, 0x30
+0x180AD35FB  pop rdi
+0x180AD35FC  ret 
+0x180AD35FD  mov r9, rbx
+0x180AD3600  mov r8, rdi
+0x180AD3603  mov rdx, rsi
+0x180AD3606  mov rcx, rax
+0x180AD3609  call 0x18001ac8f
+0x180AD360E  test eax, eax
+0x180AD3610  jne 0x180ad364d
+0x180AD3612  lea rcx, [rip + 0x236cbf]
+0x180AD3619  mov r9d, 0xc2
+0x180AD361F  mov qword ptr [rsp + 0x20], rcx
+0x180AD3624  lea r8, [rip + 0x1ad55d]
+0x180AD362B  lea ecx, [rax + 3]
+0x180AD362E  lea rdx, [rip + 0x1ad51b]
+0x180AD3635  call qword ptr [rip + 0x5c69c5]
+0x180AD363B  xor eax, eax
+0x180AD363D  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3642  mov rsi, qword ptr [rsp + 0x48]
+0x180AD3647  add rsp, 0x30
+0x180AD364B  pop rdi
+0x180AD364C  ret 
+0x180AD364D  mov eax, 1
+0x180AD3652  mov rbx, qword ptr [rsp + 0x40]
+
+########## ApplyQueuedInput 0x1805DF7E0
+--- thunk window:
+0x18001620F  jge 0x180016211
+0x180016211  jmp 0x1803ec2e0
+0x180016216  jmp 0x1804afa00
+0x18001621B  jmp 0x180930390
+0x180016220  jmp 0x18087d050
+0x180016225  jmp 0x180804ca0
+0x18001622A  jmp 0x180933300
+0x18001622F  jmp 0x1805df7e0
+0x180016234  jmp 0x1807f0a80
+0x180016239  jmp 0x1804abbd0
+0x18001623E  jmp 0x18049be80
+0x180016243  jmp 0x18057bb90
+0x180016248  jmp 0x180b9fbb0
+0x18001624D  jmp 0x180a4fcb0
+0x180016252  jmp 0x18067e580
+0x180016257  jmp 0x1803f0070
+0x18001625C  jmp 0x18033d6c0
+0x180016261  jmp 0x18051fa60
+0x180016266  jmp 0x18048a470
+--- thunk start 0x18001622F: 3 callers
+   caller 0x1805DF459:
+0x1805DF429  mov rcx, rsi
+0x1805DF42C  call 0x180007996
+0x1805DF431  lea rcx, [rsi + 8]
+0x1805DF435  call 0x18000f7d1
+0x1805DF43A  test al, al
+0x1805DF43C  jne 0x1805df474
+0x1805DF43E  nop 
+0x1805DF440  lea rcx, [rsi + 8]
+0x1805DF444  call 0x18000ab23
+0x1805DF449  test rax, rax
+0x1805DF44C  je 0x1805df45e
+0x1805DF44E  cmp dword ptr [rax + 0x10], edi
+0x1805DF451  jg 0x1805df474
+0x1805DF453  mov rdx, rax
+0x1805DF456  mov rcx, rsi
+0x1805DF459  call 0x18001622f
+0x1805DF45E  lea rcx, [rsi + 8]
+0x1805DF462  call 0x18000c29d
+0x1805DF467  lea rcx, [rsi + 8]
+0x1805DF46B  call 0x18000f7d1
+0x1805DF470  test al, al
+0x1805DF472  je 0x1805df440
+0x1805DF474  mov rcx, qword ptr [rsp + 0x30]
+0x1805DF479  xor rcx, rsp
+0x1805DF47C  call 0x18000bf9b
+0x1805DF481  mov rbx, qword ptr [rsp + 0x68]
+0x1805DF486  mov rbp, qword ptr [rsp + 0x70]
+0x1805DF48B  mov rsi, qword ptr [rsp + 0x78]
+0x1805DF490  movaps xmm6, xmmword ptr [rsp + 0x40]
+0x1805DF495  add rsp, 0x50
+0x1805DF499  pop rdi
+0x1805DF49A  ret 
+0x1805DF49B  int3 
+0x1805DF49C  int3 
+0x1805DF49D  int3 
+0x1805DF49E  int3 
+0x1805DF49F  int3 
+0x1805DF4A0  int3 
+0x1805DF4A1  int3 
+0x1805DF4A2  int3 
+0x1805DF4A3  int3 
+0x1805DF4A4  int3 
+0x1805DF4A5  int3 
+0x1805DF4A6  int3 
+0x1805DF4A7  int3 
+0x1805DF4A8  int3 
+   caller 0x1805DF6F9:
+0x1805DF6C9  dec dword ptr [rax - 0x73]
+0x1805DF6CC  or byte ptr [rbp - 0x17bb8b13], r8b
+0x1805DF6D3  cli 
+0x1805DF6D4  add byte ptr [rbx + 0xfc084ff], ah
+0x1805DF6DA  test dword ptr [rbp - 0x70000000], ecx
+0x1805DF6E0  lea rcx, [rsi + 8]
+0x1805DF6E4  call 0x18000ab23
+0x1805DF6E9  test rax, rax
+0x1805DF6EC  je 0x1805df6fe
+0x1805DF6EE  cmp dword ptr [rax + 0x10], edi
+0x1805DF6F1  jg 0x1805df76c
+0x1805DF6F3  mov rdx, rax
+0x1805DF6F6  mov rcx, rsi
+0x1805DF6F9  call 0x18001622f
+0x1805DF6FE  lea rcx, [rsi + 8]
+0x1805DF702  call 0x18000c29d
+0x1805DF707  lea rcx, [rsi + 8]
+0x1805DF70B  call 0x18000f7d1
+0x1805DF710  test al, al
+0x1805DF712  je 0x1805df6e0
+0x1805DF714  jmp 0x1805df76c
+0x1805DF716  lea rdx, [rsp + 0x20]
+0x1805DF71B  call 0x180013b8d
+0x1805DF720  lea rdx, [rsp + 0x28]
+0x1805DF725  lea rcx, [rsi + 8]
+0x1805DF729  call 0x180003f35
+0x1805DF72E  mov rax, qword ptr [rsp + 0x20]
+0x1805DF733  cmp rax, qword ptr [rsp + 0x28]
+0x1805DF738  je 0x1805df76c
+0x1805DF73A  nop word ptr [rax + rax]
+0x1805DF740  cmp dword ptr [rax + 0x10], edi
+0x1805DF743  jl 0x1805df752
+0x1805DF745  jg 0x1805df76c
+   caller 0x1805DF74D:
+0x1805DF71D  movabs dword ptr [0x8d482824548d48ff], eax
+0x1805DF727  or al, r13b
+
+########## MoveSetter 0x1805E0010
+--- thunk window:
+0x18000567B  add cl, r13b
+0x18000567E  pop rsi
+0x18000567F  fst qword ptr [rdi + 0x5cd9e900]
+0x180005685  xchg ebx, eax
+0x180005686  add cl, ch
+0x180005688  je 0x180005671
+0x18000568A  add dword ptr [rax], 0x9901bfe9
+0x180005690  add cl, ch
+0x180005692  push 0x5f
+0x180005694  xchg edi, eax
+0x180005695  add cl, ch
+0x180005697  xor eax, 0xe90075ee
+0x18000569C  jo 0x180005647
+0x18000569E  pop rbp
+0x18000569F  add cl, ch
+0x1800056A1  pop rbx
+0x1800056A2  fcom dword ptr [rsi + 0x3796e900]
+0x1800056A8  mov dl, 0
+0x1800056AA  jmp 0x1804d1770
+0x1800056AF  jmp 0x180a7ddd0
+0x1800056B4  jmp 0x18097f1e0
+0x1800056B9  jmp 0x1809b40f0
+0x1800056BE  jmp 0x18092b8f0
+0x1800056C3  jmp 0x180806320
+0x1800056C8  jmp 0x18033d770
+0x1800056CD  jmp 0x180b8e780
+0x1800056D2  jmp 0x1809b44b0
+--- thunk start 0x18000569B: 2 callers
+   caller 0x180AD3796:
+0x180AD3766  sbb eax, dword ptr [rax]
+0x180AD3769  lea ecx, [rax + 3]
+0x180AD376C  lea rdx, [rip + 0x1ad3dd]
+0x180AD3773  call qword ptr [rip + 0x5c6887]
+0x180AD3779  xor eax, eax
+0x180AD377B  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3780  mov rsi, qword ptr [rsp + 0x48]
+0x180AD3785  add rsp, 0x30
+0x180AD3789  pop rdi
+0x180AD378A  ret 
+0x180AD378B  mov r9d, ebx
+0x180AD378E  mov r8d, edi
+0x180AD3791  mov edx, esi
+0x180AD3793  mov rcx, rax
+0x180AD3796  call 0x18000569b
+0x180AD379B  mov eax, 1
+0x180AD37A0  mov rbx, qword ptr [rsp + 0x40]
+0x180AD37A5  mov rsi, qword ptr [rsp + 0x48]
+0x180AD37AA  add rsp, 0x30
+0x180AD37AE  pop rdi
+0x180AD37AF  ret 
+0x180AD37B0  int3 
+0x180AD37B1  int3 
+0x180AD37B2  int3 
+0x180AD37B3  int3 
+0x180AD37B4  int3 
+0x180AD37B5  int3 
+0x180AD37B6  int3 
+0x180AD37B7  int3 
+0x180AD37B8  int3 
+0x180AD37B9  int3 
+0x180AD37BA  int3 
+0x180AD37BB  int3 
+0x180AD37BC  int3 
+0x180AD37BD  int3 
+0x180AD37BE  int3 
+0x180AD37BF  int3 
+0x180AD37C0  int3 
+0x180AD37C1  int3 
+0x180AD37C2  int3 
+0x180AD37C3  int3 
+0x180AD37C4  int3 
+0x180AD37C5  int3 
+0x180AD37C6  int3 
+0x180AD37C7  int3 
+0x180AD37C8  int3 
+0x180AD37C9  int3 
+0x180AD37CA  int3 
+0x180AD37CB  int3 
+0x180AD37CC  int3 
+0x180AD37CD  int3 
+0x180AD37CE  int3 
+0x180AD37CF  int3 
+0x180AD37D0  sub rsp, 0x38
+0x180AD37D4  call 0x180014e2f
+0x180AD37D9  test rax, rax
+0x180AD37DC  jne 0x180ad380e
+0x180AD37DE  lea rcx, [rip + 0x236adf]
+   caller 0x180AD39F5:
+0x180AD39C5  xchg ecx, edx
+0x180AD39C7  sbb al, byte ptr [rax]
+0x180AD39C9  call qword ptr [rip + 0x5c6631]
+0x180AD39CF  xor eax, eax
+0x180AD39D1  mov rbx, qword ptr [rsp + 0x40]
+0x180AD39D6  add rsp, 0x30
+0x180AD39DA  pop rdi
+0x180AD39DB  ret 
+0x180AD39DC  cmp edi, 8
+0x180AD39DF  je 0x180ad3a08
+0x180AD39E1  cmp edi, 0xa
+0x180AD39E4  jne 0x180ad3a29
+0x180AD39E6  test ebx, ebx
+0x180AD39E8  jne 0x180ad3a29
+0x180AD39EA  xor r9d, r9d
+0x180AD39ED  xor r8d, r8d
+0x180AD39F0  xor edx, edx
+0x180AD39F2  mov rcx, rax
+0x180AD39F5  call 0x18000569b
+0x180AD39FA  lea eax, [rdi - 9]
+0x180AD39FD  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3A02  add rsp, 0x30
+0x180AD3A06  pop rdi
+0x180AD3A07  ret 
+0x180AD3A08  mov rcx, rax
+0x180AD3A0B  test ebx, ebx
+0x180AD3A0D  je 0x180ad3a24
+0x180AD3A0F  call 0x18000c04f
+0x180AD3A14  mov eax, 1
+0x180AD3A19  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3A1E  add rsp, 0x30
+0x180AD3A22  pop rdi
+0x180AD3A23  ret 
+0x180AD3A24  call 0x1800182be
+0x180AD3A29  mov eax, 1
+0x180AD3A2E  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3A33  add rsp, 0x30
+0x180AD3A37  pop rdi
+0x180AD3A38  ret 
+0x180AD3A39  int3 
+0x180AD3A3A  int3 
+0x180AD3A3B  int3 
+0x180AD3A3C  int3 
+0x180AD3A3D  int3 
+0x180AD3A3E  int3 
+0x180AD3A3F  int3 
+0x180AD3A40  int3 
+0x180AD3A41  int3 
+0x180AD3A42  int3 
+0x180AD3A43  int3 
+0x180AD3A44  int3 
+
+########## JumpSetter 0x1805DFFF0
+--- thunk window:
+0x1800099C9  add cl, r13b
+--- thunk start 0x1800099E9: 1 callers
+   caller 0x180AD36F6:
+0x180AD36C6  mov dword ptr [rsp + 0x20], ecx
+0x180AD36CA  lea r8, [rip + 0x1bf40f]
+0x180AD36D1  lea ecx, [rax + 3]
+0x180AD36D4  lea rdx, [rip + 0x1ad475]
+0x180AD36DB  call qword ptr [rip + 0x5c691f]
+0x180AD36E1  xor eax, eax
+0x180AD36E3  mov rbx, qword ptr [rsp + 0x40]
+0x180AD36E8  add rsp, 0x30
+0x180AD36EC  pop rdi
+0x180AD36ED  ret 
+0x180AD36EE  mov r8d, ebx
+0x180AD36F1  mov edx, edi
+0x180AD36F3  mov rcx, rax
+0x180AD36F6  call 0x1800099e9
+0x180AD36FB  mov eax, 1
+0x180AD3700  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3705  add rsp, 0x30
+0x180AD3709  pop rdi
+0x180AD370A  ret 
+0x180AD370B  int3 
+0x180AD370C  int3 
+0x180AD370D  int3 
+0x180AD370E  int3 
+0x180AD370F  int3 
+0x180AD3710  int3 
+0x180AD3711  int3 
+0x180AD3712  int3 
+0x180AD3713  int3 
+0x180AD3714  int3 
+0x180AD3715  int3 
+0x180AD3716  int3 
+0x180AD3717  int3 
+0x180AD3718  int3 
+0x180AD3719  int3 
+0x180AD371A  int3 
+0x180AD371B  int3 
+0x180AD371C  int3 
+0x180AD371D  int3 
+0x180AD371E  int3 
+0x180AD371F  int3 
+0x180AD3720  int3 
+0x180AD3721  int3 
+0x180AD3722  int3 
+0x180AD3723  int3 
+0x180AD3724  int3 
+0x180AD3725  int3 
+0x180AD3726  int3 
+0x180AD3727  int3 
+0x180AD3728  int3 
+0x180AD3729  int3 
+0x180AD372A  int3 
+0x180AD372B  int3 
+0x180AD372C  int3 
+0x180AD372D  int3 
+0x180AD372E  int3 
+0x180AD372F  int3 
+0x180AD3730  mov qword ptr [rsp + 8], rbx
+0x180AD3735  mov qword ptr [rsp + 0x10], rsi
+0x180AD373A  push rdi
+0x180AD373B  sub rsp, 0x30
+0x180AD373F  mov ebx, r8d
+0x180AD3742  mov edi, edx
+0x180AD3744  mov esi, ecx
+
+########## ClearInput 0x1805E0030
+--- thunk window:
+0x18000757A  cwde 
+0x18000757B  add cl, ch
+--- thunk start 0x18000759A: 1 callers
+   caller 0x1805EBA41:
+0x1805EBA11  add dword ptr [rax], eax
+0x1805EBA13  add byte ptr [rcx - 0x75], cl
+0x1805EBA16  iretd 
+0x1805EBA17  call 0x180002c11
+0x1805EBA1C  test eax, eax
+0x1805EBA1E  jne 0x1805eba2b
+0x1805EBA20  mov r9d, 0x1a27
+0x1805EBA26  jmp 0x1805ebbf2
+0x1805EBA2B  call 0x180004b65
+0x1805EBA30  call 0x180014e2f
+0x1805EBA35  test rax, rax
+0x1805EBA38  je 0x1805ebca8
+0x1805EBA3E  mov rcx, rax
+0x1805EBA41  call 0x18000759a
+0x1805EBA46  jmp 0x1805ebca8
+0x1805EBA4B  lea rax, [r12 + 0x88]
+0x1805EBA53  mov rcx, qword ptr [rax]
+0x1805EBA56  mov qword ptr [rsp + 0x40], rax
+0x1805EBA5B  mov rdi, rcx
+0x1805EBA5E  mov rax, qword ptr [rcx + 8]
+0x1805EBA62  cmp byte ptr [rax + 0x19], r14b
+0x1805EBA66  jne 0x1805eba7f
+0x1805EBA68  cmp dword ptr [rax + 0x1c], esi
+0x1805EBA6B  jae 0x1805eba73
+0x1805EBA6D  mov rax, qword ptr [rax + 0x10]
+0x1805EBA71  jmp 0x1805eba79
+0x1805EBA73  mov rdi, rax
+0x1805EBA76  mov rax, qword ptr [rax]
+0x1805EBA79  cmp byte ptr [rax + 0x19], r14b
+0x1805EBA7D  je 0x1805eba68
+0x1805EBA7F  cmp byte ptr [rdi + 0x19], r14b
+0x1805EBA83  jne 0x1805eba8a
+0x1805EBA85  cmp esi, dword ptr [rdi + 0x1c]
+0x1805EBA88  jae 0x1805eba8d
+0x1805EBA8A  mov rdi, rcx
+
+########## AjustCtrlInput 0x1805E1ED0
+--- thunk window:
+0x1800164B7  stosd dword ptr [rdi], eax
+0x1800164B8  add cl, ch
+0x1800164BA  mov dl, 0x41
+--- thunk start 0x1800164D7: 0 callers
+
+########## ControllerApply 0x1805DF350
+--- thunk window:
+0x1800214BB  jle 0x1800214bd
+0x1800214BD  jmp 0x18073c1f0
+0x1800214C2  jmp 0x1808abe60
+0x1800214C7  jmp 0x18088b710
+0x1800214CC  jmp 0x1806bccc0
+0x1800214D1  jmp 0x1808993b0
+0x1800214D6  jmp 0x180751ba0
+0x1800214DB  jmp 0x1805df350
+0x1800214E0  jmp 0x180a62980
+0x1800214E5  jmp 0x1808cc240
+0x1800214EA  jmp 0x180655b50
+0x1800214EF  jmp 0x180639cb0
+0x1800214F4  jmp 0x1803e88d0
+0x1800214F9  jmp 0x1805743d0
+0x1800214FE  jmp 0x180988160
+0x180021503  jmp 0x180457f30
+0x180021508  jmp 0x1809a7b70
+0x18002150D  jmp 0x180935a20
+0x180021512  jmp 0x180907a30
+--- thunk start 0x1800214DB: 1 callers
+   caller 0x1805E1F21:
+0x1805E1EF1  add byte ptr [rax], al
+0x1805E1EF3  lea r8, [rip + 0x6e17de]
+0x1805E1EFA  mov qword ptr [rsp + 0x20], rax
+0x1805E1EFF  lea rdx, [rip + 0x69ec4a]
+0x1805E1F06  mov ecx, 3
+0x1805E1F0B  call qword ptr [rip + 0xab80ef]
+0x1805E1F11  movaps xmm6, xmmword ptr [rsp + 0x30]
+0x1805E1F16  add rsp, 0x48
+0x1805E1F1A  ret 
+0x1805E1F1B  movaps xmm1, xmm6
+0x1805E1F1E  mov rcx, rax
+0x1805E1F21  call 0x1800214db
+0x1805E1F26  movaps xmm6, xmmword ptr [rsp + 0x30]
+0x1805E1F2B  add rsp, 0x48
+0x1805E1F2F  ret 
+0x1805E1F30  int3 
+0x1805E1F31  int3 
+0x1805E1F32  int3 
+0x1805E1F33  int3 
+0x1805E1F34  int3 
+0x1805E1F35  int3 
+0x1805E1F36  int3 
+0x1805E1F37  int3 
+0x1805E1F38  int3 
+0x1805E1F39  int3 
+0x1805E1F3A  int3 
+0x1805E1F3B  int3 
+0x1805E1F3C  int3 
+0x1805E1F3D  int3 
+0x1805E1F3E  int3 
+0x1805E1F3F  int3 
+0x1805E1F40  int3 
+0x1805E1F41  int3 
+0x1805E1F42  int3 
+0x1805E1F43  int3 
+0x1805E1F44  int3 
+0x1805E1F45  int3 
+0x1805E1F46  int3 
+0x1805E1F47  int3 
+0x1805E1F48  int3 
+0x1805E1F49  int3 
+0x1805E1F4A  int3 
+0x1805E1F4B  int3 
+0x1805E1F4C  int3 
+0x1805E1F4D  int3 
+0x1805E1F4E  int3 
+0x1805E1F4F  int3 
+0x1805E1F50  push rbx
+0x1805E1F52  sub rsp, 0x30
+0x1805E1F56  mov rbx, rdx
+0x1805E1F59  call 0x180014e2f
+0x1805E1F5E  test rax, rax
+0x1805E1F61  jne 0x1805e1f97
+0x1805E1F63  lea rcx, [rip + 0x6e31f6]
+0x1805E1F6A  mov r9d, 0x178e
+
+########## EnableControlCamera 0x1805E36F0
+--- thunk window:
+0x18001BB79  add cl, r13b
+0x18001BB7C  jo 0x18001bb9a
+0x18001BB7E  movabs dword ptr [0x66e90096f25be900], eax
+0x18001BB87  add eax, 0xc1e90069
+0x18001BB8C  jnp 0x18001bbf4
+0x18001BB8E  add cl, ch
+0x18001BB90  int3 
+0x18001BB91  or edx, dword ptr [rdi + 0x7677e900]
+0x18001BB97  jp 0x18001bb99
+0x18001BB99  jmp 0x1805e36f0
+0x18001BB9E  jmp 0x180b3c8e0
+0x18001BBA3  jmp 0x180a7a680
+0x18001BBA8  jmp 0x180629dd0
+0x18001BBAD  jmp 0x1808e1b40
+0x18001BBB2  jmp 0x180972c40
+0x18001BBB7  jmp 0x1807f7380
+0x18001BBBC  jmp 0x1807fe680
+0x18001BBC1  jmp 0x180984b80
+0x18001BBC6  jmp 0x1807f7f30
+0x18001BBCB  jmp 0x1802f52a0
+0x18001BBD0  jmp 0x180b5c830
+--- thunk start 0x18001BB99: 0 callers

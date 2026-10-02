@@ -136,7 +136,7 @@ P7 data · P8 verification · P9 publish.
 
 | Gap | Owner | Closure |
 |---|---|---|
-| G1 exe per-frame input loop (runtime interface boundary) | P3 | pseudocode + RVAs + watchpoint evidence |
+| G1 exe per-frame input loop (runtime interface boundary) | P3 | **static chain mapped** (`CONTROL_MODES_P3_STATIC.md`): KEventCommonMgr → AjustCtrlInput → controller apply → tick-ordered queue drain → appliers; CommitInput caller + vtable wiring dynamic-probe step remains |
 | G2 `CONTROL_CAMERA`/`OBJECT_STICK` → `+0x1AC`/`+0x1B0` | P3 | writer watchpoint |
 | G3 `[mgr+0x5C]` state enum 1..7 | P3/P4 | transition table |
 | G4 follow mode `[0..3]` consumer | P4 | per-value behavior |

@@ -1585,3 +1585,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - All skill-displacement branches are dead in this build (captured const false);
   enable flags all captured true. P1 Lua layer is complete for the movement /
   camera / mode handler set.
+
+### 2026-10-02 - controls - P3 static: thunk + script-API + apply chain
+- Built a call-ref scanner for JX3RepresentX64.dll: every control function is
+  reached via a single low-region jmp thunk (CommitInput 0x1805E3270 via
+  0x18000E9B2, GetMoveInfo via 0x18001AC8F, Move/Jump/clear, camera drag
+  functions, etc.).
+- Script API wrapper cluster 0x180AD35A0..0x180AD3A40 with resolved assert
+  strings (GetMoveInfo L194, Move L130, Jump) forwarding to the engine thunks:
+  the C-side character API layer.
+- Input apply chain: KEventCommonMgr -> KGameWorldHandler::AjustCtrlInput
+  (0x1805E1ED0) -> controller apply 0x1805DF350 -> queued-input applier
+  0x1805DF7E0 (callers 0x1805DF459/0x1805DF6F9 iterate container [obj+8],
+  node tick [node+0x10] compare = tick-ordered queue drain). CommitInput
+  callers are vtable/runtime (boundary remains dynamic).
+- Doc: docs/controls/CONTROL_MODES_P3_STATIC.md; proof/controls/p3/*.
