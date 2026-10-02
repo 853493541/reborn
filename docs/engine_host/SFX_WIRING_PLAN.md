@@ -535,6 +535,26 @@ path→mode mapping (what `manager->vt[0xD8]()` returns and what `obj->vt[1](pat
 answers). Next: map the wrapper vtable from `0xB524A0` and the mapping init (who
 fills it — likely an engine API keyed by data type/extension).
 
+**Index-package resolution (ipm.out/ipm2.out):** the map is resolved:
+- manager callback at `[manager+0x160]` = `g_GetIndexPackageReader` resolved via
+  `GetProcAddress` from **`KIndexpackX64.dll`** (`[manager+0x168]` = its module);
+  `g_DownloadHttpFile` at +0x150 from the module at +0x148.
+- probe: preload `bin64\KIndexpackX64.dll` + call its own
+  **`g_InitIndexPackManager(NULL, NULL)`** (returns 1, creates the singleton at
+  `KIndexpack+0x3D220`; reader = singleton+8, vtable `0x35928`, vt[1] →
+  `0x10DD0(reader, path, flags)`).
+- The check consults the **index-package map table** (`singleton+0x280`, also
+  `g_GetIndexPackageMapTable`): our table is empty → `check=0`.
+- Reading: this is the **updater/streamed index package** (with
+  `g_DownloadHttpFile` alongside) — NOT the PakV4 paks. So for a pak-resident
+  `.tani` the raw path is the **expected** route in the game too; the remaining
+  defect is the **data content**: engine `KG3D_LoadFile(path,0)` returns the
+  3912-byte **GATA-compressed** record while the parse expects the decompressed
+  `ANIM` container (extractor gives 5532 B, flags=0).
+- Next: identify the reader returned by `0xB0F870` (class/vtable) and how the
+  real parse gets decompressed bytes (`vt[8]` buffer? or a GATA handler in the
+  data-manager/parse); compare with the extractor's flags=0 record.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
