@@ -504,3 +504,27 @@ world interface into `KGameWorldCharacterController` (intents +0x50/+0x4C/+0x3C)
 and `CommitInput` each frame. This closes the chain; the exe's forwarding loop
 itself is runtime-wired (no static names) and behaviourally equals the model in
 7e.
+
+### 7f. Input/camera plumbing completed (2026-10-01): world-API vtable, action table, property store
+
+- The world interface object's vtable = **0x180CC21E8**; slots: `BeginDragCamera
+  +0x3D0 = 0x1805E2640`, `EndDragCamera +0x3D8 = 0x1805E3B20`,
+  `SetCameraDragParams +0x3E8 = 0x1805F9B30`, `ForceResetCamera +0x428 =
+  0x1805E4680`, **`EnableControlCamera +0x450 = 0x1805E36F0`**.
+- `EnableControlCamera` (assert name `EnableControlCameraOnly`) posts an action
+  event to `vtbl+0x7D0` -> thunk 0x180004070 -> **HandleRLAction 0x1802F54B0**,
+  which dispatches through the **action table 0x180E96C00 (47 entries)**.
+- Action handlers relevant here: **6 = 0x1802F5E50 (control enable)**,
+  **7 = 0x1802F5400 (drag state)**, 3/4 = 0x1802EA100/0x1802EA120, plus named
+  handlers `HandleCamera`, `HandleCharacterAnimation`, `HandleSprint`,
+  `HandleCustomAction`, `HandleLogicEvent`.
+- The control/drag events carry (propertyId, value) fields; the handlers apply
+  them to the **property store at [SO3+0x25F08]** (field-apply helper
+  0x18000A83A / 0x18002557C). Property ids include 0x1E (playerId), 5 (tick),
+  **0x1C (drag state -> SO3+0xC)**, and the control ids 0..13. So
+  `CONTROL_CAMERA` (LMB) and `CONTROL_OBJECT_STICK_CAMERA` (RMB) are stored as
+  properties in the same store as the movement controls; the camera/movement
+  consumers read them through the engine property system (dynamic ids, hence
+  no static xrefs - this is the data-driven boundary).
+- Evidence: gc_handlrlaction.txt, gc_ctrl_action6.txt, gc_ctrl_action7.txt,
+  gc_enablecontrolonly.txt, gc_getmoveinfo_*.txt, gc_intent_*.txt.

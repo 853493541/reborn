@@ -1437,3 +1437,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   symbolically; the host implements the same model.
 - Docs: OPERATION_MODES_PLAN.md section 7e (full system); evidence in
   modes-re gc_strafe/gc_runforward/gc_pnstrafe/gc_getmoveinfo_*/gc_intent_*.
+
+### 2026-10-01 - controls/client - input/camera plumbing fully decoded (vtable/action-table/property-store)
+- Closed the loop: world vtable 0x180CC21E8 (slots 3D0/3D8/3E8/428/450 =
+  BeginDrag/EndDrag/SetCameraDragParams/ForceReset/EnableControlCamera
+  0x1805E36F0); EnableControlCamera posts to vtbl+7D0 -> thunk -> HandleRLAction
+  0x1802F54B0 -> action table 0x180E96C00 (47 handlers; 6 = control-enable,
+  7 = drag-state, plus HandleCamera/HandleCharacterAnimation/HandleSprint/...);
+  handlers apply (propertyId,value) fields to the property store at
+  [SO3+0x25F08] (property ids 0x1E player, 5 tick, 0x1C drag->SO3+0xC,
+  control ids 0..13). Consumers read the store through the dynamic property
+  system - that is the data-driven boundary, not an unknown.
+- Evidence: gc_handlrlaction/gc_ctrl_action6/gc_ctrl_action7/
+  gc_enablecontrolonly dumps + doc 7f.
