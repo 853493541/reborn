@@ -493,3 +493,14 @@ laterally without turning anything.
 and calls Move()/SetYaw()/CommitInput goes through runtime-built interface
 tables (no static symbols/xrefs); its behaviour is fully characterized by the
 API + intent model above and is what the host implements.
+
+**7e addendum (UI forwarding chain).** The UI-side control/state setters
+(`JX3UIX64` 0x18011D820 and siblings) follow one pattern: allocate a typed
+state object via `[self+0x20]->vtbl+0x18(type)`, fill {id, value, flag, tick}
+(type 0x4F movement-control; 0x69/0xB1 siblings), then notify the listener at
+`[self+0x18]`/`[self+0x20]` (vtable +0x20) with command byte 0x18/0x14. The
+listener forwards to the game client (exe), which applies the state through the
+world interface into `KGameWorldCharacterController` (intents +0x50/+0x4C/+0x3C)
+and `CommitInput` each frame. This closes the chain; the exe's forwarding loop
+itself is runtime-wired (no static names) and behaviourally equals the model in
+7e.
