@@ -71,9 +71,34 @@ The sibling routine at `0x18085CEB0` maps a raw index into a **10-entry
 `index % count` when a flag is set, first 10 scanned linearly), i.e. the
 state→kind mapping table behind the param struct.
 
-Next: decode `sub_180005204` (final param fetch) and the table at
-`[singleton+0x1A0]` / `+0x2158` to enumerate every state's param struct
-(id, thresholds, clips). Dumps: `proof/controls/p5/sub_18085CE60.txt`.
+### 2.1 Param fetch + table layout (HIGH)
+
+`sub_180005204` → `0x180812D70` fetches one entry by key `{mode, index, ?}`:
+
+```
+sub_180812D70(table, mode, index, ?):
+  zero key buffer (0x164 bytes)
+  key = { mode, index, 0 }
+  row = lookup(table, key)                  ; 0x18000A907
+  if !row: key.index = 0; row = lookup(...) ; fallback (mode, 0, ?)
+  if !row: key.? = 0; row = lookup(...)     ; fallback (mode, 0, 0)
+  return row
+```
+
+`0x180812E00` is the ordered-map find: **binary search** over a contiguous
+array of **0x54-byte entries** at `[container+0x1E2B8]` (count from
+`[container+0x1E2C0]`, magic-division by 0x54), key compare `entry+0 == mode`,
+`entry+4 == index`; returns the entry or 0. The 84-byte entry is exactly the
+param struct `UpdateMoveAnimation` reads (`+0x30…+0x88`).
+
+**Data provenance:** the table is loaded with `KTableList::LoadBinTextTab`
+(assert string `0x180CD02A0`) — a shipped BinText table (exact filename still
+OPEN; not an inline string in Represent, likely supplied by the exe/loader
+layer). Enumerating the entries is therefore a **runtime/data capture** (P4
+probe or the table extractor), not further static disasm.
+
+`[singleton+0x26466]` (the 999-sentinel mounted override) is set from a config
+option lookup (`0x1803185E0`: option query at `0x180318607` → byte).
 
 ## 3. `UpdateDirection` (`0x180533D40`) and `UpdateFaceFootDirection`
 

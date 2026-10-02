@@ -1619,3 +1619,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   index). Sibling 0x18085CEB0 maps raw index through a 10-entry {id,limit}
   table ([+4] count, index%count when flagged). Next: sub_180005204 + the
   singleton table to enumerate state param structs.
+
+### 2026-10-02 - controls - P5 table layout
+- Resolved sub_180005204 -> 0x180812D70 (key fetch with (mode,index) fallbacks)
+  and 0x180812E00 (binary search over 0x54-byte entries in the vector at
+  [container+0x1E2B8], count +0x1E2C0). The 84-byte entry IS the param struct
+  UpdateMoveAnimation consumes. Table loaded via KTableList::LoadBinTextTab
+  (0x180CD02A0); filename not an in-binary string -> entry enumeration goes via
+  the runtime probe / table extractor. 0x26466 sentinel flag set from a config
+  option query at 0x1803185E0.
