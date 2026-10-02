@@ -41,7 +41,8 @@ internal static class RebornClient
 {
     static string outDir;
     static Action<string> Log;
-    static string adHabit = "strafe";   // A/D habit: strafe (default.txt) | turn
+    static string adHabit = "turn";     // classic A/D: turn (rotate, no move) | strafe
+    static double moveYaw = 0.0;        // movement/control frame; turn keys rotate it
 
     [STAThread]
     private static void Main(string[] args)
@@ -619,10 +620,11 @@ internal static class RebornClient
             }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            // A/D habit (official tutorial choice; default = shipped default.txt):
-            // "strafe" = A/D side-step (mouse steers), "turn" = A/D rotate.
-            adHabit = Env("RC_ADHABIT", "strafe").Trim().ToLowerInvariant();
-            if (adHabit != "turn") adHabit = "strafe";
+            // Classic A/D default: TURN (rotate in place, no lateral movement);
+            // under the RMB stick camera the mouse owns the heading and A/D
+            // become strafe. RC_ADHABIT=strafe opts into the side-step habit.
+            adHabit = Env("RC_ADHABIT", "turn").Trim().ToLowerInvariant();
+            if (adHabit != "strafe") adHabit = "turn";
             string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {
@@ -842,6 +844,7 @@ internal static class RebornClient
             camSys.Yaw = Math.Atan2(-viewZ, -viewX);
             // classical movement runs along the facing: spawn facing the view
             curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            moveYaw = camSys.Yaw;
             Log(string.Format("camera yaw init={0:F3} (view dir {1:F2},{2:F2})", camSys.Yaw, viewX, viewZ));
         }
 
@@ -1012,6 +1015,7 @@ internal static class RebornClient
             if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                 camSys.Yaw = Math.Atan2(-viewZ, -viewX);
             curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            moveYaw = camSys.Yaw;
             camSys.Pitch = targetPitch;
         };
 
@@ -1413,6 +1417,7 @@ internal static class RebornClient
             if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                 camSys.Yaw = Math.Atan2(-viewZ, -viewX);
             curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            moveYaw = camSys.Yaw;
             Log(string.Format("camera init skipped mapId={0} (no scene_init_param row; keeping spawn view)",
                 cameraSettings.MapId));
         }
@@ -1535,8 +1540,10 @@ internal static class RebornClient
             {
                 int ox = 0, oy = 0;
                 // raw mouse drag? (distinguishes the user's drag from
-                // synthesised model deltas - gates the RMB body carry)
-                if (orbitQueue.Count > 0) lastMouseDragMs = now;
+                // synthesised model deltas - gates the RMB body carry and the
+                // mouse-steers-moveYaw rule)
+                bool rawMouse = orbitQueue.Count > 0;
+                if (rawMouse) lastMouseDragMs = now;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
                 if (loadPace && loadProg < 0.999f)
                 {
@@ -1581,6 +1588,8 @@ internal static class RebornClient
                 if (yawNew > Math.PI) yawNew -= twoPi;
                 if (yawNew < -Math.PI) yawNew += twoPi;
                 camSys.Yaw = yawNew;
+                // mouse drag = steering: the movement frame follows the camera
+                if (rawMouse) moveYaw = yawNew;
 
                 double pOld = camSys.Pitch;
                 camSys.Pitch += oy * 0.00121;
@@ -1927,8 +1936,10 @@ internal static class RebornClient
             // pure D (no W) is the 挪步 side-step.
             bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
             bool classicalMode = !followsHeading;
-            double cfx, cfz;
-            camSys.Forward(out cfx, out cfz);
+            // Movement frame: the control frame moveYaw (camera yaw + the turn
+            // keys' rotation). Mouse drags set moveYaw to the camera so mouse
+            // steering keeps working; the camera follows moveYaw via the row.
+            double cfx = -Math.Cos(moveYaw), cfz = -Math.Sin(moveYaw);
             float hx = (float)cfx;
             float hz = (float)cfz;
 
@@ -2113,11 +2124,13 @@ internal static class RebornClient
             if (grounded && rotAxis != 0f)
             {
                 float tstep = charTurnRate * (float)dt;
-                curYaw += rotAxis > 0f ? tstep : -tstep;
-                // Decoded: the keyboard never writes the camera. The camera is
-                // driven by the mouse drag (CONTROL_CAMERA / CONTROL_OBJECT_
-                // STICK_CAMERA properties) and by the moving
-                // CameraAdjustYawWhenMoveTurn row (follow call below).
+                float dstep = rotAxis > 0f ? tstep : -tstep;
+                // Turn keys rotate the CHARACTER and the movement/control frame
+                // (so W+A/D curves); the camera is not written here - it follows
+                // moveYaw through the CameraAdjustYawWhenMoveTurn row, or is
+                // moved by the mouse drag only.
+                curYaw += dstep;
+                moveYaw += dstep;
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
@@ -2349,7 +2362,7 @@ internal static class RebornClient
                 // arrow keys), never for pure strafe movement (a camera-follow on
                 // a strafe diagonal would feed back and spiral).
                 if (classicalMode && movingNow && rotAxis != 0f && !lmbDown && !rmbDown)
-                    camSys.FollowYaw(Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw)), dt);
+                    camSys.FollowYaw(moveYaw, dt);   // moveYaw is camera-convention
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the

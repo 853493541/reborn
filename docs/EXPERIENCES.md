@@ -1481,3 +1481,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: strafe habit A-alone side-step 96 dist camd=0; WA/WD straight
   315/385 dcam=0.00; turn habit A-alone turn 3.14 camd=0; WA curve 375 dcam=1.
   Smoke ALL PASS. Default relaunched (strafe habit).
+
+### 2026-10-02 - controls/client - classic default = TURN habit + moveYaw control frame
+- User: A/D must not move in classic. Default habit flipped to "turn": A/D
+  rotate in place; lateral only with the RMB stick camera. Added the moveYaw
+  movement/control frame (mouse drag sets it; turn keys rotate it; the camera
+  follows it via the row) so W+A/D curves instead of the camera-frame travel
+  canceling the turn.
+- Evidence: A-alone yaw 3.13 dpos=(0,0) camd=0; WA curve dist=193 dyaw=3.93;
+  WD dist=192 dyaw=-4.04; back 96. Smoke ALL PASS. Relaunched (turn default).

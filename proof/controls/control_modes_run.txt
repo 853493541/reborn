@@ -422,3 +422,15 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   A-alone: yaw +3.14 camd=0.00 dpos=(0,0) (turn in place)
   WA: curve dist=375 dcam=1.00 (row follow while turning)
 - Gates: camera_smoke ALL PASS. Default relaunched (strafe).
+
+## Classic default = TURN habit; moveYaw control frame (2026-10-02)
+- User: "in classic mode A/D SHOULD NOT MOVE". Default habit is now turn:
+  A/D rotate the character (no lateral movement); lateral only under the RMB
+  stick camera. The movement/control frame moveYaw carries the turn rotation
+  so W+A/D curves (previously the camera-frame travel canceled the turn).
+  RC_ADHABIT=strafe opts into the side-step habit.
+- Evidence, run reborn_20261002_133226.log (default = turn):
+  A-alone: yaw +3.13 camd=0.00 dpos=(0,0)   (no movement)
+  back: dist=96 cam kept; arrows turn camd=0.00
+  WA: dpos=(-31,-191) dist=193 dyaw=3.93 (curve); WD: dist=192 dyaw=-4.04
+- Gates: camera_smoke ALL PASS.
