@@ -479,6 +479,15 @@ layer → engine (`vt[0](0,4) -> 0`) → scene+view → actor from a PakV4 model
 `CreateAnimationFromFile` → `StartAnimation`/`FrameMove`, plus the direct `.Sfx`/`.pss`
 create tests (both `exc=0`).
 
+LoadFile sequence probe (`lfseq.out`): **the tani path does not go through
+`KG3D_LoadFile`** (only the actor's face `.ani`s and an SFX-mesh `.ani` do) — the
+animation data manager creates its **own reader**, which reads the raw pak record
+(mode-0 equivalent) and fails the `ANIM` type check. `KG_OpenPakV4File`/wrapper
+`OpenFile(path, NULL, 0|1)` both return file objects (decompress flag not yet
+distinguished; the returned object's inner pointer was null in the probe). Next: the
+animation data manager's reader creation (its own read mode / the wrapper's decompressing
+read), not `KG3D_LoadFile`.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code

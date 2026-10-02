@@ -76,9 +76,12 @@ static int g_lfForceMode = 0;
 typedef void* (__fastcall *LoadFileFn)(const char* path, int flags);
 static void* __fastcall hookLoadFile(const char* path, int flags)
 {
-    if (g_lfForceMode > 0 && flags == 0 && path != NULL &&
-        (strstr(path, ".tani") != NULL || strstr(path, ".ani") != NULL))
-        flags = g_lfForceMode;
+    if (path != NULL && (strstr(path, ".tani") != NULL || strstr(path, ".ani") != NULL))
+    {
+        printf("[LoadFile] flags=%d path=%s\n", flags, path);
+        fflush(stdout);
+        if (g_lfForceMode > 0 && flags == 0) flags = g_lfForceMode;
+    }
     return ((LoadFileFn)g_lfTramp)(path, flags);
 }
 
@@ -308,6 +311,72 @@ int main(void)
     // 7) actor from a real client model + engine animation controller + play
     if (engine != NULL)
     {
+        // read-mode scan on the tani (hook bypass: call the original via trampoline directly)
+        {
+            char taniPath[512];
+            char dirAni[64];
+            gbk(L"动作", dirAni, sizeof(dirAni));
+            sprintf_s(taniPath, sizeof(taniPath),
+                      "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
+            for (int mode = 0; mode <= 12; mode++)
+            {
+                void* rd = ((LoadFileFn)g_lfTramp)(taniPath, mode);
+                if (rd == NULL) { logf("  mode %d -> NULL", mode); continue; }
+                __try
+                {
+                    BYTE* rb = (BYTE*)rd;
+                    void* buf = *(void**)(rb + 0x10);
+                    unsigned size = *(unsigned*)(rb + 0x18);
+                    BYTE* bb = (BYTE*)buf;
+                    logf("  mode %2d -> size=0x%X head=%c%c%c%c %02X %02X %02X %02X", mode, size,
+                         (bb[0]>=32&&bb[0]<127)?bb[0]:'.',(bb[1]>=32&&bb[1]<127)?bb[1]:'.',
+                         (bb[2]>=32&&bb[2]<127)?bb[2]:'.',(bb[3]>=32&&bb[3]<127)?bb[3]:'.',
+                         bb[4],bb[5],bb[6],bb[7]);
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER) { logf("  mode %d read fault", mode); }
+            }
+        }
+        // wrapper OpenFile with a decompress flag: wrapper = Lua+0x1730B8
+        {
+            HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
+            char taniPath[512];
+            char dirAni[64];
+            gbk(L"动作", dirAni, sizeof(dirAni));
+            sprintf_s(taniPath, sizeof(taniPath),
+                      "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
+            void* wrapper = lua ? *(void**)((BYTE*)lua + 0x1730B8) : NULL;
+            logf("pak wrapper=%p", wrapper);
+            if (wrapper != NULL)
+            {
+                for (int df = 0; df <= 1; df++)
+                {
+                    __try
+                    {
+                        typedef void* (__fastcall *OpenFn)(void* self, const char* path, void* a3, int flag);
+                        void* f = ((OpenFn)(*(void***)wrapper)[2])(wrapper, taniPath, NULL, df);
+                        logf("wrapper OpenFile(decompress=%d) -> %p", df, f);
+                        if (f != NULL)
+                        {
+                            void* inner = *(void**)((BYTE*)f + 8);
+                            if (inner != NULL)
+                            {
+                                typedef void* (__fastcall *GetDataFn2)(void* self, void*, unsigned);
+                                void* data = ((GetDataFn2)(*(void***)inner)[2])(inner, NULL, 0);
+                                if (data != NULL)
+                                {
+                                    BYTE* dp = (BYTE*)data;
+                                    logf("   record head: %c%c%c%c %02X %02X %02X %02X", 
+                                         (dp[0]>=32&&dp[0]<127)?dp[0]:'.',(dp[1]>=32&&dp[1]<127)?dp[1]:'.',
+                                         (dp[2]>=32&&dp[2]<127)?dp[2]:'.',(dp[3]>=32&&dp[3]<127)?dp[3]:'.',
+                                         dp[4],dp[5],dp[6],dp[7]);
+                                }
+                            }
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("wrapper OpenFile(%d) fault", df); }
+                }
+            }
+        }
         typedef long (__fastcall *CreateActorFn)(void* self, const char* path, void* a3,
                                                  void** out, unsigned flags, void* opts);
         char mpath[512];
