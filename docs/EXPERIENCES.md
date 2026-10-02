@@ -1060,3 +1060,11 @@ solved it, and what is still open. **Newest at the bottom.**
   a bug; the per-substep debug (RC_WALL_DBG) made the true behavior visible.
 - Sampled residual status: all 6 play-area faces gameplay-correct (blocked or
   stepped within the 70 budget). Phase 4 closed on the sample.
+
+### 2026-10-02 - Phase-5 preflight green (merge pending explicit go)
+
+- Feature build `reborn_client_collision.exe` rebuilt clean from the branch
+  (exit=0; warnings only), collision_selftest 33/33, jx3_model 10/10, gravity
+  PASS, loot SELFTEST PASS. Shared shim untouched (build script does not touch
+  it). Merge to main is the only remaining step and needs the user's explicit
+  go (locked repo rule).
