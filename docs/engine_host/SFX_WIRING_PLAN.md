@@ -369,6 +369,15 @@ effects** (e.g., `c纯阳坐忘.Sfx` — create proven) once the bind context is
 actor/animation-driven authored effects need runtime model assets the local install
 lacks. Evidence `fs.out`, `fspath.out`, `tag3.out`.
 
+Follow-up probe (`fs2.out`): **both case variants of the SFX load** through the engine
+loader and the game layer (`g_IsFileExist sfx=1 sfxLow=1`,
+`KG3D_LoadFile sfx=<non-null> sfxLow=<non-null>`), so the actor path's earlier
+lowercased-path failure is **not** a case issue — the actor path's `KG3D_SFXData` load
+goes through a **different owner/context FS** (`KG3D_LoadFileToMemory` under the
+actor/model context) that our host does not set up. The working owner remains the engine
+singleton (`[engine+0x2CF1038] -> vt[8]()`). Loose files under the working root stay
+invisible to both FS layers (pak-only), confirmed with the copied player mesh.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
