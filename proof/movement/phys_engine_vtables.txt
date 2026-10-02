@@ -215,6 +215,17 @@ create a rigid-static + shape (`PxTriangleMeshGeometry`), add to the scene;
 imported CCT) for the character sweep; then A/B the engine's floor/sweep vs
 `TerrainSampler` at the field spots.
 
+### Update 2026-10-01e: shape-builder ABI skeleton
+
+`PhysicsShapeFactory::_CreateFromGeometryData` (`0x1EC90..0x1FBE0`) call
+skeleton (for bridge ABI verification): `PxGetFoundation` + `[foundation+0x28]`
+(creation callback), geometry branches with `[obj+0xF0]` (per-type builder),
+`[obj+0x150]` (cook-ish call on the big branch), `[rdx+0x38]`, `[r8+0x78]`,
+`[r10+0x10]`, and the shape stores. The exact object identities per branch
+remain to be pinned by register provenance; the bridge will use the public
+PhysX 3.3.4 vtable order and validate each call at runtime (e.g. cooked mesh
+triangle count vs input) with these sites as spot-checks.
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
