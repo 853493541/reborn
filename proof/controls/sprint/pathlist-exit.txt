@@ -1,0 +1,6 @@
+settings/Buff.tab
+settings/buff.tab
+settings/buff/Buff.tab
+Represent/player/player_summit.txt
+Represent/doodad/doodad_summit.krl.txt
+Represent/common/number.krl.txt

@@ -1,0 +1,3 @@
+scripts/skill/轻功/轻功通用/双w进入轻功技能.lua
+scripts/skill/江湖/江湖轻功_空中持续冲刺.lua
+scripts/skill/江湖/江湖轻功_蹑云逐月.lua

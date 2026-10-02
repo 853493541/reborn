@@ -1,0 +1,3 @@
+scripts\skill\轻功\轻功通用\万花轻功触发.lua
+scripts\skill\轻功\轻功通用\万花轻功急坠.lua
+scripts\skill\轻功\轻功通用\万花下坠二段表现.lua

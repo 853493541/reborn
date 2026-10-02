@@ -1,0 +1,4 @@
+Represent/player/player_serial_animation_table.txt
+Represent/player/player_animation_table_index.txt
+Represent/player/player_animation_relation_up.txt
+Represent/player/player_animation_relation_down.txt
