@@ -270,3 +270,21 @@ dispatch, guarded, no crash, repeatable across runs). Iterations:
    build a private scene with our baked geometry (route 2 in the plan).
 3. Then A/B the engine's floor/sweep against `TerrainSampler` / our solver at the
    field spots (spawn 23334,24224; wall 18915,36850; pile 20450,31000).
+
+### Update 2026-10-01h: Stage-1 verdict - factory route crashes (abandon criteria met)
+
+Called the engine's shape factory `CreateCacheShapeFromFile` (`0x1DC70`, this =
+the global singleton `base+0x129590`) in-host with a game mesh path and the
+observed call shape (name=path=char*, r9=0, stack 0/&byte/&outShape/1/&byte).
+**Result: the client process crashed at the call** (`reborn_20261001_205302.log`
+ends at the PX_COOK line; no return) - the factory expects the engine's own
+string objects (rdx was a list-node payload in the real call sites), not ANSI C
+strings, and likely the option structs too.
+
+Per the agreed stage-1 abandon criteria ("abandon if guarded calls can't run
+clean"), the factory route is PARKED with this repro (kept opt-in as
+`RC_PX_COOK=1`). The PhysX-direct route (cooking via the public 3.3.4 ABI) is
+the remaining option but is a multi-day ABI project, not an in-session build.
+The measured state stands: play-layer behavior ~85-90% (tested classes A/B
+proven, map-wide audit ~96% of sampled faces), exact engine-solver parity still
+unproven.
