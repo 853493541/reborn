@@ -853,3 +853,19 @@ solved it, and what is still open. **Newest at the bottom.**
   source exists (P3 row updated with the RVAs). Next deep item:
   engine-physics-in-host (feed baked geometry into PhysicsEngineX64 and use
   its own character sweep) - a multi-session project.
+
+### 2026-10-01 - collision - Engine-physics-in-host: vtables mapped
+- First step of the endgame track: static disasm of `PhysicsEngineX64.dll`'s
+  four vtables - PhysicsTerrain @0xFCFE0, PhysicsScene @0xFA7B8,
+  StaticPhysicsSceneManager @0xFCCA8, PhysicsManager @0xFA6C0 - every entry's
+  RVA + role recorded in `proof/movement/phys_engine_vtables.txt` (HIGH).
+- Key findings: the terrain vtable has NO height query (vt[7] is a
+  region/tile mask test; the heightfield is a PhysX object) -> engine queries
+  must go through a `PhysicsScene` instance; `CreatePhysicsScene` (manager
+  vt[14]) needs a real engine-side arg (the adapter's scene object), which the
+  P5 probe does not yet have. StaticSceneMgr vt[2]/vt[4] roles corrected vs
+  the earlier note.
+- Next: (a) find the adapter's engineArg (KG3DEngineAdapterX64 import chain),
+  (b) else reuse the engine's own PxPhysics/PxCooking (manager fields) to
+  build a private scene with our baked geometry, then A/B the engine's
+  floor/sweep vs our solver at the field spots.

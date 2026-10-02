@@ -1,0 +1,94 @@
+# PhysicsEngineX64.dll — engine physics vtables (P5 engine-physics-in-host recon)
+
+Date: 2026-10-01. Source: `C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll`
+(copy analyzed offline; image base 0x180000000). Confidence: HIGH (static disasm).
+Method: capstone over the vtables + `.pdata` function bounds; strings resolved from .rdata.
+
+## PhysicsTerrain vtable @ RVA 0xFCFE0 (16 entries)
+
+| idx | RVA | function |
+|---|---|---|
+| 0 | 0x262E0 | addref (lock xadd [rcx+8]) |
+| 1 | 0x2CFB0 | dtor-ish |
+| 2 | 0x2DAB0 | `UpdateTerrain(float3 pos)` — streams regions around pos (probe uses it) |
+| 3 | 0x2DC60 | low-level `LoadTerrain(desc)` |
+| 4 | 0x2DEE0 | computes world bounds from counts x cell size ([+0x20] cell, [+0x24] countX, [+0x28] countZ, [+0x30/+0x34] step, [+0x38/+0x3C] origin) |
+| 5 | 0x2DF90 | full `LoadTerrain(pszPath, opt, ownerPtr)` (probe uses it) |
+| 6 | 0x2DF80 | tail-jump thunk (`jmp [rax+0x28]`) |
+| 7 | 0x2E340 | point->region/tile mask test: world->local via matrix at [+0xB0..+0xE0], bounds check, tile array [+0x48] (stride 0x30, type at [tile], data at [tile+0x10]), 8x8 sub-cell bit test -> returns bool (r9d 0/1) |
+| 8 | 0x2E4F0 | region/tile helper |
+| 9 | 0x2E690 | region/tile helper |
+| 10 | 0x2E790 | region/tile helper |
+| 11 | 0x2E870 | reads [+0x20] bounds |
+| 12 | 0x2E890 | `GetTileBBox(pRetBboxArray, count)` (string-verified) |
+| 13 | 0x2EA20 | tile index -> sample count (vector at [tile+8]-[tile]) |
+| 14 | 0x2EA70 | tile sample accessor |
+| 15 | 0x2CEE0 | dtor |
+
+No height/floor query exists in the terrain vtable; the heightfield is a PhysX object.
+
+## PhysicsScene vtable @ RVA 0xFA7B8 (24+ entries)
+
+| idx | RVA | function |
+|---|---|---|
+| 0 | 0x18870 | addref |
+| 2 | 0x1CBC0 | query candidate (large) |
+| 3 | 0x18C60 | fixed-step tick (20 ms accumulate; calls vt[0x318], [0x1B0], [0x1D0], [0x320]) |
+| 4 | 0x18D20 | query candidate |
+| 5 | 0x18E70 | small (reads [rcx+8]) |
+| 6 | 0x19420 | query candidate |
+| 7 | 0x18EA0 | query candidate |
+| 8 | 0x1A580 | query candidate |
+| 9 | 0x196E0 | query candidate |
+| 10 | 0x1BE30 | query candidate |
+| 11 | 0x1B4A0 | query candidate |
+| 12 | 0x1CCC0 | large |
+| 13 | 0x1CEE0 | medium |
+| 14 | 0x2110 | getter [rcx+8] |
+| 15 | 0xF810 | getter [rcx+0x10] |
+| 16 | 0x1C5B0 | **SweepEx anchor** (recon `0x18001C7FB` inside; ABI unrecovered) |
+| 17 | 0x1C4E0 | medium |
+| 18 | 0x1B210 | medium |
+| 19 | 0x1B180 | medium |
+| 20 | 0x187E0 | small |
+| 22 | 0x18600 | small |
+| 23 | 0x18680 | small |
+
+## StaticPhysicsSceneManager vtable @ RVA 0xFCCA8
+
+| idx | RVA | function |
+|---|---|---|
+| 0 | 0x2BA90 | ctor-ish (checks [rcx+0x48]) |
+| 1 | 0x2CB30 | setter [rcx+0x98]=arg |
+| 2 | 0x2BB80 | `LoadFromFile(sceneDir, mapName)` (probe uses; ok=0 - runtime sceneinfo not shipped) |
+| 3 | 0x2BF00 | streaming update |
+| 4 | 0x2B950 | `UpdateScene(float3 pos)` (probe uses; ok) |
+| 8 | 0x2CD70 | small |
+
+(The manager vtable entries past 8 are not code - the table is short.)
+
+## PhysicsManager vtable @ RVA 0xFA6C0
+
+| idx | RVA | function |
+|---|---|---|
+| 0 | 0x109B0 | `Init` |
+| 1 | 0x10A80 | thunk |
+| 2 | 0x10300 | `SetWorkingDir` |
+| 3-11 | getters/setters (offsets 0x10/0x20/0x38/0x40/0x28/0x30/0x60/0xC8) |
+| 12 | 0x108B0 | `CreatePhysXTerrain(out, cfg)` |
+| 13 | 0x10930 | `CreatePhysicsSceneDynamicLoader(out, cfg)` |
+| 14 | 0x10460 | `CreatePhysicsScene(out, engineArg)` - needs a real engine-side arg (not 0) |
+| 15 | 0x105E0 | large |
+| 16 | 0x10A90 | large |
+| 17 | 0x10BE0 | large |
+
+## Next steps for engine-physics-in-host
+
+1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
+   (`KG3DEngineAdapterX64` / `SceneManagerX64` import chain) - then a scene exists
+   and its query entries (vt[2..19], SweepEx vt[16]) become callable in-host.
+2. Fallback: reuse the engine's own `PxPhysics` / `PxCooking` (manager fields
+   `m_pPhysXSDK` / `m_pPhysXCooking`, see `_InitPhysX` strings 0xf91e8/0xf9210) to
+   build a private scene with our baked geometry (route 2 in the plan).
+3. Then A/B the engine's floor/sweep against `TerrainSampler` / our solver at the
+   field spots (spawn 23334,24224; wall 18915,36850; pile 20450,31000).

@@ -125,6 +125,16 @@ Env switches: `MAP_PHYS_DLL` (default game `PhysicsEngineX64.dll`),
 
 ## 5. Open work (next milestones)
 
+**Update 2026-10-01 (vtable recon done):** full engine-physics vtable map in
+`proof/movement/phys_engine_vtables.txt` (PhysicsTerrain @0xFCFE0, PhysicsScene
+@0xFA7B8, StaticSceneMgr @0xFCCA8, PhysicsManager @0xFA6C0, every entry's RVA +
+role). Key findings: the terrain vtable has NO height query (its vt[7] is a
+region/tile mask test; the heightfield is a PhysX object), so queries must go
+through a `PhysicsScene` instance; `CreatePhysicsScene` (manager vt[14]) needs a
+real engine-side arg. Next: (a) find the engineArg from the adapter import
+chain, (b) else reuse the engine's own `PxPhysics`/`PxCooking` (manager fields)
+to build a private scene with our baked geometry.
+
 1. **Height/ray query**: regions hold `KG3D_PhysxTerrainData` objects that add PhysX
    actors (`_CreatePxActor` → `0x180011910`). Next step is to locate the `PxScene`
    used by the region manager and expose `PhysicsScene::SweepEx` (scene vtable RVA
