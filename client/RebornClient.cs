@@ -202,30 +202,13 @@ internal static class RebornClient
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         form.Controls.Add(panel);
-        var hud = new Label();
-        hud.AutoSize = true;
-        hud.ForeColor = System.Drawing.Color.White;
-        hud.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
-        hud.Font = new System.Drawing.Font("Consolas", 10f);
-        hud.Padding = new Padding(6);
-        hud.Location = new System.Drawing.Point(38, 10);
-        hud.Text = "loading...";
-        hud.Visible = false;   // info window starts collapsed; "I" toggles it
-        panel.Controls.Add(hud);
-        // "I" toggle in the top-left corner: expands/collapses the info window
-        var infoToggle = new Label();
-        infoToggle.AutoSize = false;
-        infoToggle.Size = new System.Drawing.Size(22, 22);
-        infoToggle.Location = new System.Drawing.Point(10, 10);
-        infoToggle.Text = "I";
-        infoToggle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        infoToggle.ForeColor = System.Drawing.Color.White;
-        infoToggle.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
-        infoToggle.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
-        infoToggle.Cursor = Cursors.Hand;
-        infoToggle.MouseClick += delegate { hud.Visible = !hud.Visible; };
-        panel.Controls.Add(infoToggle);
+        // M1.7: the engine renders into a child window of `form`, so WinForms
+        // child controls sit behind the 3D output. The HUD is a separate
+        // top-level layered overlay (client/HudOverlay.cs) owned by `form`;
+        // "I" toggles the info box (key handled with the other hotkeys).
+        var hud = new HudOverlay();
         form.Show();
+        hud.PlaceOver(form);
         Application.DoEvents();
 
         var baselib = new KGBaseCLR();
@@ -925,6 +908,7 @@ internal static class RebornClient
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
         bool cDown = false, teleportToStructure = false;
+        bool iDown = false;   // "I" toggles the HUD info box (M1.7 overlay)
         bool divDown = false;
         TargetEntity indTarget = null;
         bool mouseLocked = false;
@@ -1124,7 +1108,7 @@ internal static class RebornClient
         };
         // The wheel no longer zooms (user decision 2026-09-30): the zoom moved
         // to the +/- keys below. The wheel is deliberately left unbound.
-        Control[] hitTargets = new Control[] { panel, hud };
+        Control[] hitTargets = new Control[] { panel };
         foreach (Control c in hitTargets)
         {
             c.MouseDown += onMouseDown;
@@ -1150,6 +1134,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
             else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
+            else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
             {
                 // real TOGGLERUN binding (numpad /), also accept the main "/"
@@ -1214,6 +1199,7 @@ internal static class RebornClient
             else if (e.KeyCode == Keys.Space) spaceDown = false;
             else if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
+            else if (e.KeyCode == Keys.I) iDown = false;
             else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
         };
         panel.Focus();
@@ -2998,12 +2984,14 @@ internal static class RebornClient
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
-                hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                hud.SetText(string.Format(
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | I info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip));
+                    curClip == null ? "-" : Path.GetFileName(curClip)));
+                hud.PlaceOver(form);
+                hud.UpdateLayered();
             }
             // target frame (Targeting.cs): real client UI composited over the viewport
             if (targetFrame != null && targetHudOn)
