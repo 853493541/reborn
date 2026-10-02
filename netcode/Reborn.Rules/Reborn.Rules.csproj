@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <RootNamespace>Reborn.Rules</RootNamespace>
+    <AssemblyName>Reborn.Rules</AssemblyName>
+    <Description>Shared movement/combat/protocol rules for the reborn client and server (one source of truth).</Description>
+  </PropertyGroup>
+
+</Project>

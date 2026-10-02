@@ -1,4 +1,4 @@
-# JX3 Reborn — agent rules
+﻿# JX3 Reborn — agent rules
 
 Read this first. Keep it short; depth lives in the linked docs.
 
@@ -204,7 +204,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 | Engine host / game client | `client/`, `app/`, `native/` | `docs/engine_host/ENGINE_HOST_PLAN.md`, `docs/engine_host/M1_*.md`, `engine_host_spike/` (recon only) | `proof/engine_host*`, `proof/map_spike` |
 | Mode UI | `ui-process-app/` | `docs/ui/README.md`, `docs/netcode/JX3_MODE_UI_INVENTORY.md`, `docs/netcode/JX3_MODE_UI_FLOW.md` | `proof/ui` |
 | Abilities / skills | `ability_picker/`, `ability_sandbox/`, `asset_sandbox/` | `docs/netcode/SKILL_DATA_RESEARCH.md` | `proof/netcode` |
-| Netcode / protocol / server | `tools/netcode/`, `tools/netcode/reference/` | `docs/netcode/README.md`, `REBORN_SERVER_SPEC.md` | `proof/netcode` |
+| Netcode / protocol / server | `netcode/` (shared rules, C# netstandard2.0), `tools/netcode/`, `tools/netcode/reference/` | `docs/netcode/README.md`, `REBORN_SERVER_SPEC.md`, `M2_SHARED_RULES.md` | `proof/netcode` |
 | Controls | `client/` (input), `tools/controls/` | `docs/controls/README.md` | `proof/controls` |
 | Camera | `client/CameraSystem.cs`, `native/camera_shim.cpp` | `docs/camera/README.md` | `proof/*` camera sets |
 | Movement / gravity / collision | `client/TerrainSampler.cs`, `client/FoliageCollision.cs`, `tools/gravity/`, `tools/movement/`, `tools/collision/` | `docs/movement/REBORN_JUMP_FALL_SPEC.md`, `docs/movement/JX3_GRAVITY_RESEARCH.md`, `docs/movement/FULL_MAP_COLLISION.md` | `proof/gravity`, `proof/collision` |
@@ -228,6 +228,9 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 .venv\Scripts\python.exe tools\netcode\reference\jx3_model.py     # 10x PASS
 .venv\Scripts\python.exe tools\gravity\verify_model.py            # jump/fall model
 .venv\Scripts\python.exe tools\netcode\loot\capture.py selftest   # 8 checks
+.venv\Scripts\python.exe tools\netcode\reference\gen_parity_vectors.py   # M2 vectors
+dotnet run --project netcode\Reborn.Rules.Selftest -- proof\netcode\parity\rules_vectors.txt   # 41 PASS
+dotnet run --project netcode\Reborn.Server -- --selftest                       # 8 PASS
 native\build_shim.cmd                                             # bin64\camera_shim.dll, RC_Shim exports
 # UI gate (after dotnet build ui-process-app -c Release):
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 15/15 windows
@@ -327,3 +330,4 @@ beyond documented build outputs, changing locked decisions, crossing milestones.
 every work-bearing response; full template for notable lessons, dead ends, or decisions.
 Legacy records: `engine_host_spike/EXPERIENCE_MAP_SPIKE.md` (the removed
 `_port_from_mapviewer/EXPERIENCES.md` is recoverable from git history, commit `f92139d`).
+
