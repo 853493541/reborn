@@ -1675,3 +1675,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   commits; fixed by gitignore + re-committing the branch clean (unpushed, so rewritten locally).
 - Outcome: solved (local branch `agent/m2-model`, not pushed); authoritative movement (server
   terrain/collision) is the next M2 slice.
+
+### 2026-10-02 — netcode — M2 authoritative-movement slice (heightfield, AOI, interpolation)
+- Did: client heightfield bake mode (RC_BAKE_HF -> netcode/data/龙门寻宝_hf.tsv, 513x513@4u via
+  the game's own terrain loader); server --heightmap/--speed/--aoi with ground follow; remote
+  120 ms interpolation + run/idle clips; rate-limited reconciliation (600 u / 500 ms).
+- Evidence: smoke `tools/proof/run_m2_auth_smoke.py` — both clients joined, saw each other,
+  no AOI churn with 5000 u, corrections ~1.3 s apart during runs (no storm).
+- Gap: exact convergence needs the server to run the client's full movement (turn model +
+  object collision + per-frame integration) — next M2 slice; until then RC_NET_AUTH is opt-in.
+- Lesson: the reference AOI (100) is meters; in game units it is 1 m and drops entities
+  immediately — game AOI must be ~5000 u. Also: an edit targeted the main checkout by
+  mistake; reverted before commit (worktree discipline).
+- Outcome: solved (local branch `agent/m2-model`, not pushed).

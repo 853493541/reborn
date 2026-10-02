@@ -113,3 +113,27 @@ scene; sessions stayed up for the full run (t=129 s each, movement logged).
 **Known gap (next M2 slice):** the server still simulates on a flat plane with the reference
 speed; authoritative movement needs the server-side terrain/collision model (the client keeps
 its own position unless `RC_NET_AUTH=1`). Remote interpolation is snapshot-stepped (10 Hz).
+
+## Authoritative-movement slice (2026-10-02)
+
+- **Heightfield bake**: client tool mode `RC_BAKE_HF=<out.tsv>` (+ `RC_BAKE_HF_AREA`,
+  `RC_BAKE_HF_STEP`) samples the game's own terrain loader into a text grid -
+  `netcode/data/龙门寻宝_hf.tsv` (513x513 @ 4 u over the spawn area, 1.8 MB, heights 733-793).
+  The headless server cannot init the game VFS, so the grid is baked by the client once.
+- **Server**: `--heightmap <tsv>` (ground follow in the tick), `--speed <u/s>` (game run
+  320), `--aoi <u>` (interest radius; the reference's 100 is meters - the game uses 5000 u =
+  50 m, otherwise entities vanish after a few steps).
+- **Client remotes**: 120 ms interpolation buffer (10 Hz snapshots -> smooth placement) and
+  run/idle clips driven by interpolated speed (`KGModelCLR` per remote).
+- **Reconciliation** (`RC_NET_AUTH=1`): rate-limited safety net (drift > 600 u, max 1 per
+  500 ms). Exact convergence needs the server to run the client's full movement (turn model
+  + object collision + per-frame integration) - that is the remaining M2 slice.
+
+Smoke (`tools/proof/run_m2_auth_smoke.py`, server + 2 clients, held-W runs):
+
+```
+a: connect ok auth=1 / join eid=1 / entity add eid=2 / actor add eid=2 / corrections ~1.3 s apart at 600 u
+b: connect ok auth=1 / join eid=2 / entity add eid=1 / actor add eid=1 / same
+```
+
+No entity churn with AOI 5000, no correction storm, sessions stable.

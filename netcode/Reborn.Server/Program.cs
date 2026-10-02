@@ -25,10 +25,18 @@ namespace Reborn.Server
             int port = 0;
             bool selftest = false;
             double[] spawn = null;
+            string heightmap = null;
+            double speed = 0.0;
+            double aoi = 0.0;
             for (int i = 0; i < args.Length; i++)
             {
                 if (args[i] == "--port" && i + 1 < args.Length) port = int.Parse(args[++i]);
                 else if (args[i] == "--selftest") selftest = true;
+                else if (args[i] == "--aoi" && i + 1 < args.Length)
+                    aoi = double.Parse(args[++i], System.Globalization.CultureInfo.InvariantCulture);
+                else if (args[i] == "--heightmap" && i + 1 < args.Length) heightmap = args[++i];
+                else if (args[i] == "--speed" && i + 1 < args.Length)
+                    speed = double.Parse(args[++i], System.Globalization.CultureInfo.InvariantCulture);
                 else if (args[i] == "--spawn" && i + 1 < args.Length)
                 {
                     string[] p = args[++i].Split(',');
@@ -41,6 +49,20 @@ namespace Reborn.Server
 
             GameServer server = new GameServer();
             if (spawn != null) server.State.SpawnPos = spawn;
+            if (speed > 0.0) server.State.MoveSpeed = speed;
+            if (aoi > 0.0) server.State.AoiRange = aoi;
+            if (heightmap != null)
+            {
+                string hmErr;
+                Heightmap hm = Heightmap.Load(heightmap, out hmErr);
+                if (hm == null) Console.WriteLine("heightmap load failed: " + hmErr);
+                else
+                {
+                    server.State.Ground = hm.Sample;
+                    Console.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        "heightmap {0} nx={1} nz={2} step={3:F0} (ground follow on)", heightmap, hm.Nx, hm.Nz, hm.Step));
+                }
+            }
             int bound = server.Start(port);
             Console.WriteLine("reborn server listening on 127.0.0.1:" + bound);
             if (selftest)

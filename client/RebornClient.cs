@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using MovieEngineCLR;
@@ -347,6 +348,52 @@ internal static class RebornClient
             sampler.Sample(0f, 0f);
             System.Threading.Thread.Sleep(300);
             sampler.Sample(0f, 0f);
+        }
+
+        // ---------------- heightfield bake (M2 server terrain, RC_BAKE_HF) ----------------
+        // One-off tool mode: sample the real terrain loader into a text grid the
+        // headless server can read (the server cannot init the game VFS itself).
+        {
+            string bakeHf = Env("RC_BAKE_HF", "");
+            if (bakeHf.Length > 0)
+            {
+                if (sampler == null) { Log("bake: no terrain sampler"); Environment.Exit(2); }
+                // default: 龙门寻宝 spawn (23334,24224) +/- 1024 u at 4 u steps
+                float hx0 = 22310f, hz0 = 23200f, hx1 = 24358f, hz1 = 25248f, hstep = 4f;
+                string area = Env("RC_BAKE_HF_AREA", "");
+                if (area.Length > 0)
+                {
+                    string[] ap = area.Split(',');
+                    if (ap.Length == 4)
+                    {
+                        float.TryParse(ap[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out hx0);
+                        float.TryParse(ap[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out hz0);
+                        float.TryParse(ap[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out hx1);
+                        float.TryParse(ap[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out hz1);
+                    }
+                }
+                float.TryParse(Env("RC_BAKE_HF_STEP", "4"), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out hstep);
+                int hnx = (int)Math.Floor((hx1 - hx0) / hstep) + 1;
+                int hnz = (int)Math.Floor((hz1 - hz0) / hstep) + 1;
+                System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+                using (StreamWriter bw = new StreamWriter(bakeHf))
+                {
+                    bw.WriteLine(string.Format(inv, "origin {0} {1} step {2} nx {3} nz {4}", hx0, hz0, hstep, hnx, hnz));
+                    for (int j = 0; j < hnz; j++)
+                    {
+                        StringBuilder row = new StringBuilder();
+                        for (int i = 0; i < hnx; i++)
+                        {
+                            float h = sampler.Sample(hx0 + i * hstep, hz0 + j * hstep);
+                            row.Append(h.ToString("F2", inv));
+                            if (i < hnx - 1) row.Append('\t');
+                        }
+                        bw.WriteLine(row.ToString());
+                    }
+                }
+                Log(string.Format(inv, "bake heightfield -> {0} nx={1} nz={2} step={3} origin=({4},{5})", bakeHf, hnx, hnz, hstep, hx0, hz0));
+                Environment.Exit(0);
+            }
         }
 
         // baked object/foliage collision (derived from the game's own map files)
@@ -771,8 +818,10 @@ internal static class RebornClient
         // ---------------- reborn netcode (M2): RC_NET=host:port ----------------
         NetClient net = null;
         bool netAuth = false;
-        long netLastSend = 0, netLastKeys = 0;
+        long netLastSend = 0, netLastKeys = 0, netLastCorr = 0;
         Dictionary<int, long> netHandles = new Dictionary<int, long>();
+        Dictionary<int, KGModelCLR> netModels = new Dictionary<int, KGModelCLR>();
+        Dictionary<int, string> netClips = new Dictionary<int, string>();
         string netAddr = Env("RC_NET", "");
         if (netAddr.Length > 0)
         {
@@ -3032,7 +3081,8 @@ internal static class RebornClient
                 {
                     NetRemote r = remotes[ri];
                     string rname = "net_" + r.Eid;
-                    CLRfloat3 rp = new CLRfloat3(); rp.x = (float)r.Pos[0]; rp.y = (float)r.Pos[1]; rp.z = (float)r.Pos[2];
+                    double[] rpos = net.InterpPos(r, now, 120);   // 120 ms interpolation delay
+                    CLRfloat3 rp = new CLRfloat3(); rp.x = (float)rpos[0]; rp.y = (float)rpos[1]; rp.z = (float)rpos[2];
                     CLRfloat4 rr = new CLRfloat4(); rr.x = 0f; rr.y = 0f; rr.z = 0f; rr.w = 1f;
                     CLRfloat3 rs = new CLRfloat3(); rs.x = scale; rs.y = scale; rs.z = scale;
                     if (!netHandles.ContainsKey(r.Eid))
@@ -3042,8 +3092,27 @@ internal static class RebornClient
                     }
                     else
                     {
-                        scene.AddDummyModel(rname, actorPath, rp, rr, rs);   // re-place at server pos
+                        scene.AddDummyModel(rname, actorPath, rp, rr, rs);   // re-place at interpolated pos
                     }
+                    // remote animation: run clip while the interpolated speed says so
+                    try
+                    {
+                        KGModelCLR rmodel;
+                        if (!netModels.TryGetValue(r.Eid, out rmodel))
+                        {
+                            rmodel = new KGModelCLR();
+                            netModels[r.Eid] = rmodel;
+                            rmodel.AttachModel(netHandles[r.Eid]);
+                        }
+                        string rclip = net.Speed(r) > 10.0 ? clipRun : clipIdle;
+                        string rcur;
+                        if (!netClips.TryGetValue(r.Eid, out rcur) || rcur != rclip)
+                        {
+                            netClips[r.Eid] = rclip;
+                            rmodel.PlayAnimation(rclip, 0, 1.0f, 0);
+                        }
+                    }
+                    catch (Exception rex) { if (netModels.Count == 1) Log("net anim ex: " + rex.Message); }
                 }
                 List<int> netGone = new List<int>();
                 foreach (KeyValuePair<int, long> kv in netHandles)
@@ -3052,17 +3121,25 @@ internal static class RebornClient
                 {
                     scene.RemoveDummyModel("net_" + netGone[gi]);
                     netHandles.Remove(netGone[gi]);
+                    netModels.Remove(netGone[gi]);
+                    netClips.Remove(netGone[gi]);
                     Log("net actor remove eid=" + netGone[gi]);
                 }
+                // Local reconciliation. Exact convergence needs the server to run the same
+                // full movement (turn model + object collision + per-frame integration);
+                // until then this is a rate-limited safety net (documented gap), not a
+                // continuous snap fight.
                 if (netAuth && net.Joined)
                 {
                     double ndx = net.ServerPos[0] - px, ndy = net.ServerPos[1] - py, ndz = net.ServerPos[2] - pz;
                     double drift = Math.Sqrt(ndx * ndx + ndy * ndy + ndz * ndz);
-                    if (drift > 96.0)
+                    if (drift > 600.0 && now - netLastCorr >= 500)
                     {
+                        netLastCorr = now;
                         px = (float)net.ServerPos[0]; py = (float)net.ServerPos[1]; pz = (float)net.ServerPos[2];
                         net.Corrections++;
-                        Log(string.Format("net correction drift={0:F0}u n={1}", drift, net.Corrections));
+                        if (net.Corrections <= 5 || net.Corrections % 10 == 0)
+                            Log(string.Format("net correction drift={0:F0}u n={1}", drift, net.Corrections));
                         placePlayer(px, py, pz, curYaw);
                     }
                 }
