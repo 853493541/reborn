@@ -1,0 +1,20 @@
+
+===== function 0/36 | line 741-747 | params=1 nups=1 stack=5 =====
+pc=   0 L0     TEST      A=0   B=0    C=0    
+pc=   1 L0     JMP       A=0   B=256  C=7    to pc 10
+pc=   2 L0     GETGLOBAL A=1   B=0    C=0    'Camera_EndDrag'
+pc=   3 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   4 L0     GETTABLE  A=2   B=2    C=257  R2 K1('x')
+pc=   5 L0     GETUPVAL  A=3   B=0    C=0    
+pc=   6 L0     GETTABLE  A=3   B=3    C=258  R3 K2('y')
+pc=   7 L0     LOADK     A=4   B=0    C=3    1.0
+pc=   8 L0     CALL      A=1   B=4    C=1    args=3 ret=0
+pc=   9 L0     JMP       A=0   B=256  C=6    to pc 17
+pc=  10 L0     GETGLOBAL A=1   B=0    C=0    'Camera_EndDrag'
+pc=  11 L0     GETUPVAL  A=2   B=0    C=0    
+pc=  12 L0     GETTABLE  A=2   B=2    C=257  R2 K1('x')
+pc=  13 L0     GETUPVAL  A=3   B=0    C=0    
+pc=  14 L0     GETTABLE  A=3   B=3    C=258  R3 K2('y')
+pc=  15 L0     LOADK     A=4   B=0    C=4    2.0
+pc=  16 L0     CALL      A=1   B=4    C=1    args=3 ret=0
+pc=  17 L0     RETURN    A=0   B=1    C=0    

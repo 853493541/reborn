@@ -1,0 +1,13 @@
+
+===== function 0/63 | line 691-696 | params=2 nups=0 stack=5 =====
+pc=   0 L0     GETGLOBAL A=2   B=0    C=0    'IsPlayerInOBDungeon'
+pc=   1 L0     CALL      A=2   B=1    C=2    args=0 ret=1
+pc=   2 L0     TEST      A=2   B=0    C=0    
+pc=   3 L0     JMP       A=0   B=256  C=5    to pc 10
+pc=   4 L0     GETGLOBAL A=2   B=0    C=1    'Camera_EnableControl'
+pc=   5 L0     MOVE      A=3   B=0    C=0    
+pc=   6 L0     MOVE      A=4   B=1    C=0    
+pc=   7 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=   8 L0     LOADBOOL  A=2   B=1    C=0    
+pc=   9 L0     RETURN    A=2   B=2    C=0    
+pc=  10 L0     RETURN    A=0   B=1    C=0    

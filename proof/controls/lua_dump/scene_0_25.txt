@@ -1,0 +1,39 @@
+
+===== function 0/25 | line 585-599 | params=0 nups=2 stack=4 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'GetOperationMode'
+pc=   1 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   2 L0     GETGLOBAL A=1   B=0    C=1    'JOYSTICK_MODE'
+pc=   3 L0     EQ        A=1   B=0    C=1    R0 R1
+pc=   4 L0     JMP       A=0   B=256  C=0    to pc 6
+pc=   5 L0     RETURN    A=0   B=1    C=0    
+pc=   6 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   7 L0     GETGLOBAL A=1   B=0    C=2    'CONTROL_FORWARD'
+pc=   8 L0     GETTABLE  A=0   B=0    C=1    R0 R1
+pc=   9 L0     GETUPVAL  A=1   B=1    C=0    
+pc=  10 L0     GETTABLE  A=1   B=1    C=259  R1 K3('bLDown')
+pc=  11 L0     TEST      A=1   B=0    C=0    
+pc=  12 L0     JMP       A=0   B=256  C=3    to pc 17
+pc=  13 L0     GETUPVAL  A=1   B=1    C=0    
+pc=  14 L0     GETTABLE  A=1   B=1    C=260  R1 K4('bRDown')
+pc=  15 L0     TEST      A=1   B=0    C=1    
+pc=  16 L0     JMP       A=0   B=256  C=1    to pc 19
+pc=  17 L0     TEST      A=0   B=0    C=0    
+pc=  18 L0     JMP       A=0   B=256  C=6    to pc 26
+pc=  19 L0     GETGLOBAL A=1   B=0    C=5    'FreeMoveControl'
+pc=  20 L0     GETGLOBAL A=2   B=0    C=2    'CONTROL_FORWARD'
+pc=  21 L0     LOADBOOL  A=3   B=1    C=0    
+pc=  22 L0     CALL      A=1   B=3    C=1    args=2 ret=0
+pc=  23 L0     GETUPVAL  A=1   B=1    C=0    
+pc=  24 L0     SETTABLE  A=1   B=262  C=263  K6('bMoveStart') K7(True)
+pc=  25 L0     JMP       A=0   B=256  C=9    to pc 36
+pc=  26 L0     GETUPVAL  A=1   B=1    C=0    
+pc=  27 L0     GETTABLE  A=1   B=1    C=262  R1 K6('bMoveStart')
+pc=  28 L0     TEST      A=1   B=0    C=0    
+pc=  29 L0     JMP       A=0   B=256  C=3    to pc 34
+pc=  30 L0     GETGLOBAL A=1   B=0    C=5    'FreeMoveControl'
+pc=  31 L0     GETGLOBAL A=2   B=0    C=2    'CONTROL_FORWARD'
+pc=  32 L0     LOADBOOL  A=3   B=0    C=0    
+pc=  33 L0     CALL      A=1   B=3    C=1    args=2 ret=0
+pc=  34 L0     GETUPVAL  A=1   B=1    C=0    
+pc=  35 L0     SETTABLE  A=1   B=262  C=264  K6('bMoveStart') K8(False)
+pc=  36 L0     RETURN    A=0   B=1    C=0    

@@ -38,7 +38,7 @@ P7 data · P8 verification · P9 publish.
 | M1 | Binding table loaded (286 rows) | C1: `HotkeyTable.cs`; `default.txt` + `bindings.ini` | — | DONE (C1/C2) |
 | M2 | MOVEFORWARD (W/Up) | Lua handler 0/65-74 (no mode branch); intent `fForward +0x50` | run/walk clip (§6) | PART: direction application OPEN(P4, G6) |
 | M3 | MOVEBACKWARD (S/Down) | `后退01` clip, walk-tier 96 u/s; S cancels autorun (cancel set open) | kind 57/58 | PART |
-| M4 | STRAFELEFT/RIGHT (A/D) | proto 76/78: mode-branch; wrapper proto 63 (`IsPlayerInOBDungeon`); free view `TurnStart`; joystick `ResponseWASDKey` | kind 6 挪步 (god-camera branch) | PART: G10/P4 |
+| M4 | STRAFELEFT/RIGHT (A/D) | **decoded (annex A6)**: proto 76/78; classical → OB wrapper 0/63 (nil in normal play) → `Camera_IsInFreeView()` → `TurnLeftStart`; joystick → `ResponseWASDKey` + `Camera_EnableControl` fallback; displacement branch `OnUseSkill(3801…)` | turn = model rotate (no clip) | PART: Lua DONE, upvalue identity + engine consumer OPEN(P4) |
 | M5 | TURNLEFT/TURNRIGHT (arrows) | same keyboard turn; `RotationSpeed` row 0.00314 rad/ms | no ground turn clip (model rotate) | DONE (rate), engine consumer OPEN(P4) |
 | M6 | JUMP (Space) | +0x50 jump; 二段跳; takeoff XY; `JumpParam` | kinds 16-19 | PART (jump/land anim transitions OPEN(P5)) |
 | M7 | Q/E strafe | official help "Q/E 左右平行移动"; binding rows | as M4 | OPEN(P1) |
@@ -54,8 +54,8 @@ P7 data · P8 verification · P9 publish.
 
 | # | Item | Client chain | Status |
 |---|---|---|---|
-| C1 | LMB drag (`CAMERAORSELECTORMOVE`) | Lua `Scene_OnSceneLButtonDown` → `Camera_BeginDrag(1.0)`? + `CONTROL_CAMERA` | PART (click-select S7 OPEN targeting) |
-| C2 | RMB drag (`...STICKY`) | `Camera_BeginDrag(2.0)` + `CONTROL_OBJECT_STICK_CAMERA`; `Hotkey_IsRMouseEnabled` gate | PART: body-carry conditions OPEN(P4, G2) |
+| C1 | LMB drag (`CAMERAORSELECTORMOVE`) | **script DONE** (annex A7): `Camera_BeginDrag(1.0)` gated by `scene.bLDown` + `Hotkey_IsLMouseEnabled` (+ morph-camera bypass); `CONTROL_CAMERA` set/cleared in 0/31 | click-select S7 OPEN (targeting) |
+| C2 | RMB drag (`...STICKY`) | **script DONE** (annex A7): `Camera_BeginDrag(2.0)` gated by `scene.bRDown` + `Hotkey_IsRMouseEnabled`; `CONTROL_OBJECT_STICK_CAMERA` set/cleared; EndDrag 1.0/2.0 | engine flag mapping G2 OPEN(P3); body-carry conditions OPEN(P4) |
 | C3 | mouse move (joystick always-rotate) | `Scene_LockMouseRotation`; ApplyMouse gated by `+0x25C`/controller; controller index `+0x2D0` | OPEN(P4, G9) |
 | C4 | wheel zoom in/out | `Camera_Zoom(0.9/1.1)` (wheel 256/257) | DONE |
 | C5 | F11 reset / Home/End presets | `ForceResetCamera +0x428`; behind/front | DONE (host), spring path OPEN(P4, G5) |
@@ -167,3 +167,8 @@ P7 data · P8 verification · P9 publish.
   0/5 + toggle 0/19 + settings setter (R6/R8; mode key
   `StorageServer('CurrentOperationMode')`), `Camera_SetResetSpeed(1.0)`
   classical, `UseFullAngle`/`LockMouseRotation` per mode.
+- 2026-10-02: P1 movement+drag pass — A6 (`0/63` OB wrapper, `0/65`
+  MoveForwardStart, `0/76` StrafeLeftStart) and A7 (Scene `0/27`/`0/31`/`0/36`
+  drag + control ids, `0/61` rlcmd lock, `0/25` both-buttons autorun); the
+  older "OB-only free-view turn" correction was **inverted** and is superseded;
+  M4/C1/C2 updated.

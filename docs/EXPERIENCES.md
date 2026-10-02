@@ -1523,3 +1523,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   0/19 toggle (SetCameraMode(nCameraModeIn<Mode>,true); mobile-kungfu forces
   JOYSTICK + NEVER_FOLLOW); UISetting_Operation_Switch 0/12 setter.
 - Traceability statuses updated (R4/R6/R8 done, G9 Lua side done).
+
+### 2026-10-02 - controls - P1 movement/drag handlers + OB wrapper correction
+- Decoded (annex A6/A7, dumps committed): hotkeys 0/63 OB wrapper (returns
+  true only in OB), 0/65 MoveForwardStart (HoldW + displacement skill 3799 +
+  wrapper + ResponseWASDKey double-tap), 0/76 StrafeLeftStart (classical:
+  OB short-circuit else free-view TurnLeftStart; joystick: ResponseWASDKey +
+  Camera_EnableControl fallback), Scene 0/27/0/31 (desk drag: LMB->CONTROL_CAMERA,
+  RMB->CONTROL_OBJECT_STICK_CAMERA, morph bypass), 0/36 EndDrag(1.0/2.0),
+  0/61 Scene_LockMouseRotation rlcmd, 0/25 classical both-buttons autorun.
+- **Corrected the earlier inverted note**: normal classical A/D DOES call
+  TurnLeftStart via Camera_IsInFreeView; OB is the short-circuit. Superseded
+  notes added in CLASSIC_CONTROLS_AUDIT and OPERATION_MODES_PLAN; matrix
+  M4/C1/C2 updated.
+- Lesson: bytecode TEST/JMP convention (JMP taken iff bool(R[A]) == C) matters;
+  re-derive from a known body before trusting a chain.

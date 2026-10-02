@@ -1,0 +1,14 @@
+
+===== function 0/72 | line 791-795 | params=0 nups=1 stack=4 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'ResponseWASDKey'
+pc=   1 L0     LOADK     A=1   B=0    C=1    'TurnLeft'
+pc=   2 L0     LOADBOOL  A=2   B=0    C=0    
+pc=   3 L0     LOADBOOL  A=3   B=0    C=0    
+pc=   4 L0     CALL      A=0   B=4    C=2    args=3 ret=1
+pc=   5 L0     TEST      A=0   B=0    C=1    
+pc=   6 L0     JMP       A=0   B=255  C=511  to pc 7
+pc=   7 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   8 L0     GETGLOBAL A=1   B=0    C=2    'CONTROL_TURN_LEFT'
+pc=   9 L0     LOADBOOL  A=2   B=0    C=0    
+pc=  10 L0     CALL      A=0   B=3    C=1    args=2 ret=0
+pc=  11 L0     RETURN    A=0   B=1    C=0    

@@ -178,16 +178,149 @@ end
 (The joystick counterpart setter lives in another proto of the same file —
 next P1 item.)
 
+## A6. Movement handlers — `hotkeys.lua` (HIGH)
+
+Handler roster (proto index → guessed name from the chunk's `SETGLOBAL` pairs):
+`0/65 MoveForwardStart`, `0/66 MoveForwardStop`, `0/67` (forward/back composite),
+`0/71 TurnLeftStart`, `0/72 TurnLeftStop`, `0/73 TurnRightStart`①,
+`0/74 TurnRightStop`②, `0/76 StrafeLeftStart`, `0/77 StrafeLeftStop`,
+`0/78 StrafeRightStart`, `0/79 StrafeRightStop`.
+① `SETGLOBAL 41 = TurnLeftStart` at pc538-542 actually binds proto 73; the
+chunk interleaves captures — names per the index/dump pairs.
+
+### A6.1 OB wrapper — proto `0/63` (L691-696) HIGH
+
+```lua
+local function SetControlInOB(control, flag)
+    if IsPlayerInOBDungeon() then
+        Camera_EnableControl(control, flag)
+        return true
+    end
+    -- nil in normal play
+end
+```
+
+### A6.2 `StrafeLeftStart` — proto `0/76` (L825-854) HIGH
+
+```lua
+-- upvalues: [0]=OB wrapper (0/63), [1]=?, [2]=? (mode/state predicates)
+function StrafeLeftStart()
+    if GetOperationMode() == CLASSICAL_MODE then
+        if SetControlInOB(CONTROL_STRAFE_LEFT, true) then return end   -- OB: set + done
+        if Camera_IsInFreeView() then TurnLeftStart() end              -- normal play: turn
+        return
+    end
+    if not upval1 then
+        OnUseSkill(3801, 3801 * ((3801 % 10) + 1))                     -- 3801, 37990
+        return
+    end
+    if not upval2() then return end
+    if IsKeyDoubleDown() then
+        if not ResponseWASDKey('StrafeLeft', true, true) then
+            Camera_EnableControl(CONTROL_STRAFE_LEFT, true)            -- fallback
+        end
+    else
+        if not ResponseWASDKey('StrafeLeft', true, false) then
+            Camera_EnableControl(CONTROL_STRAFE_LEFT, true)
+        end
+    end
+end
+```
+
+`0/78 StrafeRightStart` mirrors it (`CONTROL_STRAFE_RIGHT`, `TurnRightStart`,
+`'StrafeRight'`, skill 3802 family).
+
+**Correction (2026-10-02):** the earlier doc correction that this free-view
+`TurnLeftStart/RightStart` branch is OB-only is **inverted**. Direct bytecode:
+the OB wrapper returns `true` only inside OB (short-circuit: set STRAFE, no
+turn); in normal play it returns nil, so the code continues to
+`Camera_IsInFreeView()` (true in normal play per `mainscene.lua` proto 0/1) and
+calls `TurnLeftStart/RightStart`. Normal classical A/D = turn + STRAFE control
+set; OB/spectator = strafe only. Supersedes the "Correction (later 2026-10-01)"
+text in `CLASSIC_CONTROLS_AUDIT.md` §1 and `OPERATION_MODES_PLAN.md` §7b.
+
+### A6.3 `MoveForwardStart` — proto `0/65` (L703-719) HIGH
+
+```lua
+function MoveForwardStart()
+    local p = GetClientPlayer()
+    if p then p.HoldW(1.0) end
+    if upval0 then
+        OnUseSkill(3799, 3799 * ((3799 % 10) + 1))   -- 3799, 37990
+    else
+        upval1(CONTROL_FORWARD, true)                -- mode wrapper (0/61)
+        if upval2() or not IsKeyDoubleDown() then
+            ResponseWASDKey('Forward', true, false)
+        else
+            ResponseWASDKey('Forward', true, true)   -- double-tap -> sprint (A2)
+        end
+    end
+end
+```
+
+`p.HoldW` (client-player hold state) + displacement skill in the `upval0`
+branch; the wrapper + joystick vector path otherwise. Stop handlers call the
+wrapper with `false` and `ResponseWASDKey(..., false, ...)`.
+
+## A7. Scene.lua drag / control handlers (G2 script side)
+
+### A7.1 `Scene` update (L614-622) — proto `0/27` HIGH
+
+```lua
+if scene.bLDown and Hotkey_IsLMouseEnabled() then Camera_BeginDrag(1.0) end
+if not scene.bLDown and Scene_IsInMorphCamera() then Camera_BeginDrag(1.0) end
+if scene.bRDown and Hotkey_IsRMouseEnabled() then Camera_BeginDrag(2.0) end
+```
+
+(Order per bytecode: L block falls through to the morph check; R block is
+independent.)
+
+### A7.2 Control enable — proto `0/31` (L652-665) HIGH
+
+```lua
+Camera_EnableControl(CONTROL_CAMERA,
+    scene.bLDown and Hotkey_IsLMouseEnabled() or Scene_IsInMorphCamera())
+Camera_EnableControl(CONTROL_OBJECT_STICK_CAMERA,
+    scene.bRDown and Hotkey_IsRMouseEnabled())
+```
+
+**G2 script answer:** LMB → `CONTROL_CAMERA` (with a morph-camera bypass),
+RMB → `CONTROL_OBJECT_STICK_CAMERA`; no other control ids are set by the drag
+path. Engine flag mapping (`+0x1AC`/`+0x1B0`) stays P3.
+
+### A7.3 EndDrag — proto `0/36` (L741-747) HIGH
+
+```lua
+Camera_EndDrag(x, y, right and 1.0 or 2.0)   -- 1.0 = LMB drag, 2.0 = RMB drag
+```
+
+### A7.4 `Scene_LockMouseRotation` — proto `0/61` (L924-930) HIGH
+
+```lua
+if lock then rlcmd('lock input control mouse object rotation 1')
+else        rlcmd('lock input control mouse object rotation 0') end
+```
+
+Joystick mode locks the mouse-object rotation through the engine console
+command (called from `ApplyOperationMode`, annex A3).
+
+### A7.5 Classical both-buttons autorun — proto `0/25` (L585-599) MED
+
+Joystick returns immediately; classical path enables
+`FreeMoveControl(CONTROL_FORWARD, true)` when both mouse buttons are down
+(with an extra `upval0[CONTROL_FORWARD]` condition) and clears it via the
+`bMoveStart` latch otherwise. Exact upvalue identity open (P1 next).
+
 ---
 
 ## Next P1 items (queued)
 
-1. `hotkeys.lua` `0/76` / `0/78` (Strafe handlers) + `0/65..0/74` (forward/back/
-   turn handlers): verify the classical/joystick branches against A1/A2 and
-   find every `ResponseWASDKey` call site.
-2. `Scene.lua` handlers: `MoveForwardStart/Stop`, `Scene_EnableFreeMoveControl`,
-   `Scene_LockMouseRotation`, `OnSceneRButtonDown`/LMB handlers (drag control
-   ids), `MoveControlStart/Stop`.
+1. `hotkeys.lua` stop handlers + `0/67`/`0/71`/`0/73` bodies; upvalue identity
+   for `0/65`/`0/76` (`upval0/1/2`), incl. the `OnUseSkill(3799/3801...)`
+   displacement branch and Scene `0/25` `upval0`.
+2. `Scene.lua` remaining: `Scene_EnableFreeMoveControl`, `MoveForwardStart/Stop`
+   wrappers (0/66), `MoveControlStart/Stop`, `IsInStickCamera`, `SetMouseMove`.
+3. `IsMobileKungfu` implementation + desktop behavior (C binding, P2/P4).
 3. Callers of `ResponseWASDKey` and consumer of `StartSprint`
    (`SprintBase.lua`?).
 4. `IsMobileKungfu` implementation + desktop behavior.
@@ -202,6 +335,8 @@ next P1 item.)
 | `proof/controls/lua_dump/opmodebase_0_5.txt` | A3 |
 | `proof/controls/lua_dump/opmodebase_0_19.txt` | A4 |
 | `proof/controls/lua_dump/uisetting_switch_0_12_set.txt` | A5 |
+| `proof/controls/lua_dump/hotkeys_0_63.txt` … `hotkeys_0_79.txt` | A6 (0/63,0/65,0/67,0/71-0/74,0/77,0/79) |
+| `proof/controls/lua_dump/scene_0_24.txt` … `scene_0_61_LockMouse.txt` | A7 (0/24-0/27,0/31,0/36,0/61) |
 
 Reproduce:
 

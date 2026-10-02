@@ -1,0 +1,29 @@
+
+===== function 0/27 | line 614-622 | params=0 nups=1 stack=2 =====
+pc=   0 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   1 L0     GETTABLE  A=0   B=0    C=256  R0 K0('bLDown')
+pc=   2 L0     TEST      A=0   B=0    C=0    
+pc=   3 L0     JMP       A=0   B=256  C=3    to pc 8
+pc=   4 L0     GETGLOBAL A=0   B=0    C=1    'Hotkey_IsLMouseEnabled'
+pc=   5 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   6 L0     TEST      A=0   B=0    C=1    
+pc=   7 L0     JMP       A=0   B=256  C=3    to pc 12
+pc=   8 L0     GETGLOBAL A=0   B=0    C=2    'Scene_IsInMorphCamera'
+pc=   9 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=  10 L0     TEST      A=0   B=0    C=0    
+pc=  11 L0     JMP       A=0   B=256  C=2    to pc 15
+pc=  12 L0     GETGLOBAL A=0   B=0    C=3    'Camera_BeginDrag'
+pc=  13 L0     LOADK     A=1   B=0    C=4    1.0
+pc=  14 L0     CALL      A=0   B=2    C=1    args=1 ret=0
+pc=  15 L0     GETUPVAL  A=0   B=0    C=0    
+pc=  16 L0     GETTABLE  A=0   B=0    C=261  R0 K5('bRDown')
+pc=  17 L0     TEST      A=0   B=0    C=0    
+pc=  18 L0     JMP       A=0   B=256  C=6    to pc 26
+pc=  19 L0     GETGLOBAL A=0   B=0    C=6    'Hotkey_IsRMouseEnabled'
+pc=  20 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=  21 L0     TEST      A=0   B=0    C=0    
+pc=  22 L0     JMP       A=0   B=256  C=2    to pc 26
+pc=  23 L0     GETGLOBAL A=0   B=0    C=3    'Camera_BeginDrag'
+pc=  24 L0     LOADK     A=1   B=0    C=7    2.0
+pc=  25 L0     CALL      A=0   B=2    C=1    args=1 ret=0
+pc=  26 L0     RETURN    A=0   B=1    C=0    

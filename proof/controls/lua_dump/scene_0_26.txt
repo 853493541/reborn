@@ -1,0 +1,15 @@
+
+===== function 0/26 | line 604-612 | params=2 nups=2 stack=5 =====
+pc=   0 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   1 L0     SETTABLE  A=2   B=0    C=1    R0 R1
+pc=   2 L0     GETGLOBAL A=2   B=0    C=0    'CONTROL_FORWARD'
+pc=   3 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=   4 L0     JMP       A=0   B=256  C=2    to pc 8
+pc=   5 L0     GETUPVAL  A=2   B=1    C=0    
+pc=   6 L0     CALL      A=2   B=1    C=1    args=0 ret=0
+pc=   7 L0     JMP       A=0   B=256  C=3    to pc 12
+pc=   8 L0     GETGLOBAL A=2   B=0    C=1    'FreeMoveControl'
+pc=   9 L0     MOVE      A=3   B=0    C=0    
+pc=  10 L0     MOVE      A=4   B=1    C=0    
+pc=  11 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  12 L0     RETURN    A=0   B=1    C=0    
