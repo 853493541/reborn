@@ -290,9 +290,8 @@ mapping is: **CLASSICAL** (A/D are STRAFE-bound in `default.txt`) →
 `ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)` fallback (the
 strafe habit); **JOYSTICK** → OB-wrapper + free-view `TurnLeftStart` (A/D
 turn to face movement). The earlier docs' "classical = turn" belonged to the
-joystick mode; the host now defaults to the CLASSICAL strafe behavior (the
-`turn` habit is available via `RC_ADHABIT=turn`), not
-CLASSICAL — flagged for the host model.
+joystick mode; the host now defaults to the CLASSICAL strafe behavior
+(`RC_ADHABIT=turn` opts into the turn habit).
 
 **Correction (2026-10-02):** the earlier doc correction that this free-view
 `TurnLeftStart/RightStart` branch is OB-only is **inverted**. Direct bytecode:
