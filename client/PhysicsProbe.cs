@@ -77,6 +77,11 @@ internal static class PhysicsProbe
         if (mgr == IntPtr.Zero) return;
         log("physprobe: mgr vtable rva=0x" + (Marshal.ReadIntPtr(mgr).ToInt64() - h.ToInt64()).ToString("X"));
         log("physprobe: fs=" + Hex(Marshal.ReadIntPtr(h, RVA_FS_PTR)));
+        // route 2 foundation: the engine's own PhysX singletons (offsets from
+        // _InitPhysX's PxCreate* stores, 2026-10-01)
+        log("physprobe: pxFoundation=[mgr+0x10]=" + Hex(Marshal.ReadIntPtr(mgr, 0x10))
+            + " pxPhysics=[mgr+0x38]=" + Hex(Marshal.ReadIntPtr(mgr, 0x38))
+            + " pxCooking=[mgr+0x40]=" + Hex(Marshal.ReadIntPtr(mgr, 0x40)));
 
         IntPtr cfg = Marshal.AllocHGlobal(16);
         Marshal.WriteInt32(cfg, 0, 2);

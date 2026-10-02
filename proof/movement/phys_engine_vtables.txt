@@ -191,6 +191,30 @@ baked triangles; engine version PhysX 3.3.4) or recover the engine scene
 `SweepEx` ABI from a real call site (generic `call [reg+0x80]` scans hit other
 vtables; the clean site is inside the wrapper methods).
 
+### Update 2026-10-01d: route-2 foundation confirmed at runtime
+
+`_InitPhysX` (`PhysicsEngineX64.dll 0x0FBA0..0x10159`) field map (HIGH, disasm):
+
+| manager offset | object | created by |
+|---|---|---|
+| +0x10 | PxFoundation | `PxCreateFoundation` (PhysX3Common_x64) |
+| +0x20 / +0x30 | tolerances-scale / error-callback objects | helper calls |
+| +0x38 | **PxPhysics** | `PxCreateBasePhysics` (PhysX3_x64) |
+| +0x40 | **PxCooking** | `PxCreateCooking` (PhysX3Cooking_x64) |
+| +0x48 / +0x50 / +0x60 | callbacks/profile objects | |
+
+Runtime confirmation (`reborn_20261001_194722.log`, RC_PHYS_PROBE=1):
+`pxFoundation=[mgr+0x10]=0x5DB88210  pxPhysics=[mgr+0x38]=0x203D5190
+pxCooking=[mgr+0x40]=0x7D31C730` - all live in our host.
+
+**Route-2 recipe (next build):** read those three singletons; cook our baked
+triangle mesh via PxCooking (`cookTriangleMesh`); create a PxScene via
+`PxPhysics::createScene` (or reuse the engine PhysicsScene we already create);
+create a rigid-static + shape (`PxTriangleMeshGeometry`), add to the scene;
+`PxCreateControllerManager(scene)` + capsule controller (the engine's own
+imported CCT) for the character sweep; then A/B the engine's floor/sweep vs
+`TerrainSampler` at the field spots.
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
