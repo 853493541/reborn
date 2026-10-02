@@ -1496,3 +1496,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc §14; disasm 0x1400e1380-0x1400e1440, 0x14009f6d0; WMI job-free probe
   (`in_job=False`, `client exited at 2.2s`); DBWIN capture; this commit (local).
 - Outcome: partial (wait semantics clear; the missing input is still unidentified).
+
+### 2026-10-01 — netcode — Runtime read of probe child; hash conflict = engine string-intern warning
+- Did: with user approval, suspended our own probe child and read registers/stacks (no injection):
+  main thread sits in ntdll waits all boot; at 1.47 s it is in KG_InitPakV4FileSystem (exe
+  "InitPackage"); WinMain wait frame never seen on any thread. Identified `Hash conflict!` as the
+  engine's benign string-intern warning (KG3DEngineDX11EX64, commonstartup.cpp:174); jemalloc and
+  KG3DEngineManager::UnInit lines are teardown diagnostics. Decrypted the real launch block:
+  probe clients write `(uptime_s<<16)|ticks` heartbeat; real run held random 8-byte values.
+- Evidence: doc §15; runtime samples; KG3DEngineDX11EX64.dll string + context; block decrypt run.
+- Outcome: partial (timeline/owners clarified; the waited-on object is still unidentified).

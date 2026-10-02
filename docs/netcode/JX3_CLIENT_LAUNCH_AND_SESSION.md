@@ -260,3 +260,23 @@ what completes it (likely the launcher/security handshake).
   2.2 s.
 - Dumper/DumpReport logs from probe runs are routine (no fresh minidump; newest crash
   XMLs are from 2025-12).
+
+## 15. Runtime read (user-approved) + hash-conflict identified (2026-10-01, ninth pass)
+
+- Runtime reads of our own probe child (suspend main thread + GetThreadContext + ReadProcessMemory;
+  no injection/writes) show: the main thread is in **ntdll waits** for the whole boot, and the
+  process thread count explodes (16 -> 44+) as the KGPK4 pool starts. At ~1.47 s the main thread
+  is inside **`KG_InitPakV4FileSystem`** (Engine_Lua5X64.dll) called from exe `0x1400B3DE2`
+  ("InitPackage"), executing in a module loaded after 0.72 s (KGPK4_FileSystemX64.dll range).
+  The WinMain wait frame (`0x1400E13DF`) was never found on any thread at 0.5/1.0/1.4/1.8/2.05 s.
+- `[%commonstartup%:174] Hash conflict!` (stdout) is **not** Lua: it is the engine's string-intern
+  warning `ERROR: there is string hash confliction, consider to change name.` in
+  KG3DEngineDX11EX64.dll (source tag `commonstartup.cpp:174`) - benign. `Use jemalloc.` and
+  `KG3DEngineManager::UnInit ... (FALSE)` are shutdown diagnostics of an engine that never
+  completed init.
+- Real-block decrypt (our cipher): probe clients write a heartbeat counter
+  `(uptime_seconds << 16) | ticks` (e.g. `C09D0000 -> C09F000B`, ~6 ticks/s); the real game's
+  block held random-looking 8-byte values. `+8`/`+0xc` stayed 0 in every captured sample.
+- Net: the missing input is consumed early (before/at PakV4 FS init); the exit is a clean
+  teardown. The wait/pump loop appears to spend the ~2 s inside a step that waits (ntdll) with a
+  timeout, then reports idle -> WinMain exits.
