@@ -1525,3 +1525,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   without creating the client/game instance -> pump returns 0 -> exit.
 - Evidence: doc §17; probe_unwind.py runs; state dump at 1.96 s.
 - Outcome: major step (startup chain + gate identified); setter of state_sub[0x18] is next.
+
+### 2026-10-01 — netcode — State timeline; game.startup group completes without creating platform object
+- Did: built probe_state_timeline.py (samples WinMain state every 40 ms). Reproduced: queue empty
+  until 1.90 s; game.startup group runs 1.90-2.05 s; done flag set 2.08 s; state_sub+0x18 stays
+  NULL -> pump returns 0 -> exit ~2.2 s. Identified the sub-steps as PlatformInitialize lambdas
+  (id 2..5) dispatched via the 185-entry registry (map populated at runtime). The missing input
+  is consumed by those steps; they complete without creating the platform object.
+- Evidence: doc §18; timeline logs; registry map dump; runner 0x1400A0870 disasm.
+- Outcome: gate localized to the PlatformInitialize step handlers (next: watch their execution).

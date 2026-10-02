@@ -321,3 +321,24 @@ what completes it (likely the launcher/security handshake).
   at state_sub+0x18, which the startup chain is supposed to create.
 - Next: find the writer of state_sub+0x18 (the step/condition that creates the client object)
   and why it is skipped/fails without the launcher session.
+
+## 18. State timeline + PlatformInitialize steps (2026-10-01, twelfth pass)
+
+- Tool `tools/netcode/probe_state_timeline.py`: finds the WinMain frame once, then samples the
+  state sub-object every 40 ms. Observed sequence (reproducible):
+  - 0.3-1.86 s: queue empty (`+0x70`=0) - platform/protection/module-init phases run inside
+    PlatformLoad's own state.
+  - **1.90 s**: first step appears in WinMain's state A (`+0x70`=heap ptr) - the `game.startup`
+    group starts.
+  - 1.90-2.05 s: group runs; **2.05-2.08 s**: done flag `+0x61`=1, queue drained.
+  - `sub+0x18` (status object) stays **0 the whole time** -> pump returns 0 -> WinMain exits at
+    ~2.2-2.26 s.
+- The `game.startup` sub-steps are **PlatformInitialize lambdas**
+  (`PlatformInitialize::<lambda_ecfea5fd20b359a80114fb9a53b7b3e5>::operator()`, failure log at
+  line 512) dispatched by id (2..5) through the type registry; runner `0x1400A0870` passes a
+  descriptor `{0x140953EC0 ("KStep_Async" type desc), id, state-sub}` to the dispatcher
+  `0x14009C890`.
+- Registry map `[exe+0xA8C1F0]` is populated at runtime (count 0xB9 = 185 handlers), so handlers
+  are registered; the object at `sub+0x18` is still never created.
+- Conclusion: the missing input is consumed by the **PlatformInitialize steps** - they complete
+  but do not produce the platform/game object the pump's success test requires.
