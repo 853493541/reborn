@@ -1409,3 +1409,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: run 224006 - WA rmb=1 gait=0 clip=跑动 during the diagonal; numbers
   unchanged otherwise. Smoke ALL PASS. Relaunched (pid per session).
 
+
+### 2026-10-01 - controls/client - RMB+A/D: walk-tier side-step; engine move-info decoded
+- User: what happens on RMB+A/D? animation not supporting.
+- Decoded: GetMoveInfo (0x1805DFE90) returns forward (+0x50), strafeRight (+0x4C),
+  rotationRight (+0x3C); animation parameter names pnForward/pnStrafeRight/
+  pnRotationRight; locomotion states RunForward/WalkForward/RunBackward/
+  WalkBackward -> lateral is a BLEND into the run state, and pure lateral is the
+  walk-tier 挪步 clip. No strafe-run state exists.
+- Host: pure lateral now moves at walk pace (96) so the 挪步 clip matches;
+  diagonal stays run; joystick always forward-family (body faces travel).
+- Evidence: strafe rmb=1 dist=96 dcam=0; WA rmb=1 dist=384 dcam=0.00; turn
+  1.88/-1.88; smoke ALL PASS. Relaunched.

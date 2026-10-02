@@ -377,3 +377,18 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   movetest WA rmb=1 dpos=(-47,-380) dist=383 dyaw=-0.79 dcam=0.00
   strafe A: yaw/cam 3.14/3.14; back dist=96 cam kept; turn 1.88/1.88; WD no-rmb curve.
 - Gates: camera_smoke ALL PASS.
+
+## RMB+A/D = walk-tier side-step (2026-10-01): GetMoveInfo(forward,strafeRight,rotationRight) + pnStrafeRight blend
+- Decoded: KGameWorldCharacterController::GetMoveInfo (0x1805DFE90) returns
+  *fForward=[ctrl+0x50], *fStrafeRight=[ctrl+0x4C], *fRotationRight=[ctrl+0x3C];
+  the anim parameter table has pnForward/pnStrafeRight/pnRotationRight and the
+  locomotion states are RunForward/WalkForward/RunBackward/WalkBackward - the
+  side motion is a strafe BLEND parameter, so pure lateral is the walk-tier
+  挪步 clip, not a strafe-run state.
+- Host: pure lateral (no W/S) moves at walk pace; diagonal (W/S held) keeps
+  run pace + forward-family clip; joystick always run (body faces travel).
+- Evidence, run reborn_20261001_225025.log (build git=78f1e32 dirty=1):
+  strafe rmb=1 yaw0=-0.97 yaw1=-0.97 d=0.00 cam0=-0.60 cam1=-0.60 dpos=(-54,-79) dist=96
+  back dist=96 cam kept; turn yaw 1.88 / cam -1.88; WA rmb=1 dist=384 dcam=0.00
+  periodic: spd=320u/s(RUN) gait=0 clip=跑动.
+- Gates: camera_smoke ALL PASS.

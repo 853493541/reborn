@@ -855,6 +855,8 @@ internal static class RebornClient
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         int demoRmbWa = 0;
         int.TryParse(Env("RC_DEMO_RMBWA", "0"), out demoRmbWa);   // 1 = hold RMB, 2 = + orbit drag
+        int demoRmbStrafe = 0;
+        int.TryParse(Env("RC_DEMO_RMBSTRAFE", "0"), out demoRmbStrafe);   // 1 = hold RMB during the A-strafe phase
         float strafeX0 = 0f, strafeZ0 = 0f, backX0 = 0f, backZ0 = 0f, waX0 = 0f, waZ0 = 0f, wdX0 = 0f, wdZ0 = 0f;
         float waYaw0 = 0f, wdYaw0 = 0f;
         double waCam0 = 0.0, wdCam0 = 0.0;
@@ -1698,8 +1700,8 @@ internal static class RebornClient
                 if (now >= 2500 && !mvAuth) { mvAuth = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
                 if (now >= 5000 && !mvJumped) { mvJumped = true; runCommand("JUMP", true); runCommand("JUMP", false); }
                 if (now >= 6000 && !mvAuthOff) { mvAuthOff = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
-                if (now >= 6800 && !mvStrafe) { mvStrafe = true; strafeYaw0 = curYaw; strafeCam0 = camSys.Yaw; strafeX0 = px; strafeZ0 = pz; runCommand("STRAFELEFT", true); }
-                if (now >= 7800 && !mvStrafeDone) { mvStrafeDone = true; runCommand("STRAFELEFT", false); Log(string.Format("movetest strafe mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2} dpos=({6:F0},{7:F0})", CameraOperationMode.Name(cameraSettings.OperationMode), strafeYaw0, curYaw, curYaw - strafeYaw0, strafeCam0, camSys.Yaw, px - strafeX0, pz - strafeZ0)); }
+                if (now >= 6800 && !mvStrafe) { mvStrafe = true; strafeYaw0 = curYaw; strafeCam0 = camSys.Yaw; strafeX0 = px; strafeZ0 = pz; runCommand("STRAFELEFT", true); if (demoRmbStrafe >= 1) rmbDown = true; }
+                if (now >= 7800 && !mvStrafeDone) { mvStrafeDone = true; rmbDown = false; runCommand("STRAFELEFT", false); Log(string.Format("movetest strafe mode={0} rmb={1} yaw0={2:F2} yaw1={3:F2} d={4:F2} cam0={5:F2} cam1={6:F2} dpos=({7:F0},{8:F0}) dist={9:F0}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbStrafe, strafeYaw0, curYaw, curYaw - strafeYaw0, strafeCam0, camSys.Yaw, px - strafeX0, pz - strafeZ0, (float)Math.Sqrt((px - strafeX0) * (px - strafeX0) + (pz - strafeZ0) * (pz - strafeZ0)))); }
                 if (now >= 8100 && !mvBack) { mvBack = true; backYaw0 = curYaw; backCam0 = camSys.Yaw; backX0 = px; backZ0 = pz; runCommand("MOVEBACKWARD", true); }
                 if (now >= 9100 && !mvBackDone) { mvBackDone = true; runCommand("MOVEBACKWARD", false); Log(string.Format("movetest back mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2} dpos=({6:F0},{7:F0}) dist={8:F0}", CameraOperationMode.Name(cameraSettings.OperationMode), backYaw0, curYaw, curYaw - backYaw0, backCam0, camSys.Yaw, px - backX0, pz - backZ0, (float)Math.Sqrt((px - backX0) * (px - backX0) + (pz - backZ0) * (pz - backZ0)))); }
                 if (now >= 9500 && !mvTurn) { mvTurn = true; turnYaw0 = curYaw; turnCam0 = camSys.Yaw; runCommand("TURNRIGHT", true); }
@@ -2001,9 +2003,12 @@ internal static class RebornClient
                             : pRun;
                 // classical S / S+A / S+D: back-pedal at walk pace (user-
                 // observed; number.krl ships no back speed - walk 6 u/f is the
-                // authored slow pace). Forward and strafe keep run/walk.
+                // authored slow pace). Pure lateral (no forward/back) is the
+                // walk-tier side-step (挪步 clip cadence); a forward component
+                // runs. Joystick always faces the travel -> run tier.
                 bool backPedal = classicalMode && fwdAxis < 0f;
-                float sp = (backPedal ? (shiftDown ? pSpeed * 10f : pSpeed) : baseSp) / len;
+                bool sideOnly = classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
+                float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : pSpeed) : baseSp) / len;
                 float ux = dirX / len, uz = dirZ / len;
                 float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
@@ -2034,7 +2039,8 @@ internal static class RebornClient
                 // 后退01 back-pedal, no forward/back but lateral = 挪步 L/R.
                 // Facing lag must NOT pick the clip (that mismatch is what put
                 // the side-step on forward-right).
-                if (fwdAxis > 0f) gait = 0;
+                if (followsHeading) gait = 0;          // joystick faces the travel
+                else if (fwdAxis > 0f) gait = 0;
                 else if (fwdAxis < 0f) gait = 3;
                 else if (latAxis > 0.01f) gait = 2;
                 else if (latAxis < -0.01f) gait = 1;
