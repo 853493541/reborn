@@ -305,7 +305,63 @@ internal static class PhysicsProbe
             }
         }
 
-        // Stage-1 v3 (opt-in RC_PX_LOAD=1): the engine's OWN mesh-file loader
+        // Stage-1 v4 (opt-in RC_PX_SWEEP=1): sweep EVERY mesh in the baked bin
+        // through the engine's own loader and compare vertex/triangle counts.
+        if (Environment.GetEnvironmentVariable("RC_PX_SWEEP") == "1")
+        {
+            string binPath = Environment.GetEnvironmentVariable("RC_PX_SWEEP_BIN");
+            if (string.IsNullOrEmpty(binPath))
+                binPath = @"C:\SeasunGame\MovieEditor\bin64\collision_data\龙门寻宝_structure_collision.bin";
+            try
+            {
+                using (var br = new System.IO.BinaryReader(System.IO.File.OpenRead(binPath)))
+                {
+                    br.ReadUInt32(); br.ReadInt32();
+                    int meshCount = br.ReadInt32(); br.ReadInt32();
+                    int[] vcs = new int[meshCount]; int[] tcs = new int[meshCount];
+                    for (int i = 0; i < meshCount; i++)
+                    {
+                        vcs[i] = br.ReadInt32(); tcs[i] = br.ReadInt32();
+                        br.BaseStream.Seek((long)vcs[i] * 12 + (long)tcs[i] * 12, System.IO.SeekOrigin.Current);
+                    }
+                    var paths = new string[meshCount];
+                    foreach (string ln in System.IO.File.ReadAllLines(binPath + ".meshes.txt"))
+                    {
+                        string[] parts = ln.Split('\t');
+                        if (parts.Length >= 2) { int k; if (int.TryParse(parts[0], out k) && k >= 0 && k < meshCount) paths[k] = parts[1]; }
+                    }
+                    var loadMesh = Fn<LoadMeshFn>(h + 0x3B3F0);
+                    int matched = 0, mismatched = 0, failed = 0, tested = 0;
+                    for (int i = 0; i < meshCount; i++)
+                    {
+                        string mp = paths[i];
+                        if (string.IsNullOrEmpty(mp)) continue;
+                        IntPtr pb = Marshal.StringToHGlobalAnsi(mp);
+                        try
+                        {
+                            IntPtr data = loadMesh(pb);
+                            tested++;
+                            if (data == IntPtr.Zero) { failed++; continue; }
+                            int ev = Marshal.ReadInt32(data); int et = Marshal.ReadInt32(data, 4);
+                            if (ev == vcs[i] && et == tcs[i]) matched++;
+                            else
+                            {
+                                mismatched++;
+                                if (mismatched <= 20)
+                                    log(string.Format("physprobe: PX_SWEEP MISMATCH mesh {0} {1} engine={2}/{3} bin={4}/{5}",
+                                        i, mp, ev, et, vcs[i], tcs[i]));
+                            }
+                        }
+                        finally { Marshal.FreeHGlobal(pb); }
+                    }
+                    log(string.Format("physprobe: PX_SWEEP tested={0} matched={1} mismatched={2} failed={3}",
+                        tested, matched, mismatched, failed));
+                }
+            }
+            catch (Exception e) { log("physprobe: PX_SWEEP ex: " + e.Message); }
+        }
+
+        // Stage-1 v3 (opt-in RC_PX_LOAD=1): the engine's own mesh-file loader
         // (PhysicsEngineX64 0x3B3F0(char* path) -> mesh file data, via the
         // engine FS/paks; logs 'Mesh file "%s" not exist' and returns null when
         // missing - low risk). Compare its geometry counts with our bake.

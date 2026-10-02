@@ -307,6 +307,19 @@ test meshes. Evidence: `reborn_20261001_214338.log` (`RC_PX_LOAD=1`).
 This is the bridge's proven geometry source; next: widen the comparison to
 more meshes (scripted over the bin sidecar) and then the cook/scene layer.
 
+**Full-map sweep (RC_PX_SWEEP=1, 2026-10-01):** every mesh in the bin is loaded
+through the engine loader and compared count-for-count:
+
+| map | tested | matched | mismatched | failed (= synthetic `#trunk` keys) |
+|---|---|---|---|---|
+| 龙门寻宝 | 681 | **637** | **0** | 44 (exactly the 44 trunk keys) |
+| 白龙绝境 | 813 | **748** | **0** | 65 (exactly the 65 trunk keys) |
+
+**1,385 real engine meshes measured, ZERO mismatches** - the baked collision
+geometry is the engine's geometry, map-wide (evidence:
+`reborn_20261001_221204.log`, `_221524.log`). The only failures are the
+host-generated trunk prisms (registered deviation 4e, not engine files).
+
 ### Update 2026-10-01i: string mystery solved (hashes) - factory still not callable piecemeal
 
 The factory's name/path args are **standard hash strings**:
