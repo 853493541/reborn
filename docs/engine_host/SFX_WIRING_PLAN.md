@@ -516,6 +516,25 @@ instantiation by hooking the type-check log site (`0xC3157E`, the
 `unsupport ani type` emitter) and walking its caller, or by scanning all five refs'
 function entries.
 
+**Resolved (`.pdata` boundaries):** the whole tani load lives in
+`KG3D_Animation::LoadFromFile` (`0xC30DA0..0xC34093`; parse + `unsupport ani type`
+type check `0xC31538` are inlined in it; `vt[25]` already pointed here). The reader
+creation is at `0xC30FD6..0xC31021`: `call 0xB101F0` (mode check) →
+- nonzero: `engine->vt[0x508]()` = mode → `0xB0FC60(path, mode)` (mode-aware loader;
+  wraps `manager->vt[0xD8]()->vt[2](path,mode)` in a 0x20-byte reader wrapper) →
+  reader->vt[4](0,&out) → `[this+0x28]`
+- zero: `0xB0F870(path, 0)` (raw loader) → **GATA record** → parse fails
+The mode manager is the global `0x2D22598`, created by the engine's lazy getter
+`0xB0F720(root)` → `0xB105E0(root)`: requires a non-null root string (r8; game
+callers pass `engine+0xEEC`, `0x135760`, `0x1359EB`), allocates 0x170 bytes,
+`runtime class` wrapper stored back after `0xB524A0`. Called from `0x8BA0CD`
+(engine working-root setter) and `0x135767/0x1359F2`.
+Probe test: `0xB0F720(g_rootA)` after engine init **returns 0 (success)** but the
+tani still takes the raw path → `0xB101F0` still 0: the manager needs its
+path→mode mapping (what `manager->vt[0xD8]()` returns and what `obj->vt[1](path)`
+answers). Next: map the wrapper vtable from `0xB524A0` and the mapping init (who
+fills it — likely an engine API keyed by data type/extension).
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
