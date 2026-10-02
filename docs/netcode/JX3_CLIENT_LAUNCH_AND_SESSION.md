@@ -471,3 +471,23 @@ KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX
   written during the probe; the file logger is not active before the gate.
 - Next: decode the null-path gates (`0x180127B52`, TEB/TLS check) or set the sink global to a
   target; alternatively instrument the module Initialize steps directly (vt[0x30]/group results).
+
+## 26. Console/log mechanism decoded + lv.exe experiment (2026-10-01, twentieth pass)
+
+- `KJX3ConsoleModule::OnInitialize` (`0x1400A5950`, event id 1): requires config flag
+  `[configModule+0x224] != 0`, then calls `OpenXLogV` (`0x1400A5AA0`):
+  - builds `<root>bin64\xlogv.exe` (literal at `exe+0x955229` = "bin64\xlogv.exe", ANSI,
+    appended to the root which ends with a backslash), checks existence;
+  - creates two pipes, `_spawnl(P_NOWAIT, <xlogv>, <xlogv>, "-o", <fd1_read>, "-i", <fd2_write>)`,
+    then `freopen(%TEMP%\JX3Client.io)` and `_dup2` stdout/stderr -> pipe (client writes logs to
+    the spawned viewer) and stdin <- pipe;
+  - if the spawn succeeds: `[module+0x18]=1`, `freopen("CONOUT$","w+t",stdout)` + `KGLogAddOption(2)`.
+- `bin64\xlogv.exe` is **not shipped** in this install -> the whole console/log mechanism is
+  skipped; that is why no client logs are ever visible (files, console, debug output).
+- Experiment: wrote a replacement log viewer (`C:\jx3tmp\lv.c` -> `lv.exe`, reads fd from `-o`,
+  appends to `C:\jx3tmp\client_log.txt`), patched the in-memory literal to `C:\jx3t\lv.exe`
+  (write succeeded) and set the config flag + engine log flags - the viewer was **not spawned**
+  because the literal is appended to the root (relative path); the root is stored as **UTF-16**
+  (`C:\SeasunGame\Game\JX3\bin\zhcn_hd\...` at e.g. 0xE6C89FF1FE) and `g_GetRootPath` converts it.
+- Next: patch the UTF-16 root (or find g_GetRootPath's ANSI source) so `<root>bin64\xlogv.exe`
+  resolves to our viewer; then the client's full log stream lands in `C:\jx3tmp\client_log.txt`.
