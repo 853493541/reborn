@@ -1571,3 +1571,28 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (KCharacter::OnPickPrepare); re-open when the host exposes a real model pick
   (docs/controls/JX3_TARGET_SELECTION.md section 6).
 - Outcome: solved; the user rule "not clicking on target = deselect" holds.
+
+### 2026-10-01 — repo — target-dummy merged into main (fe57fd5)
+- Did: merged `agent/sandbox-target-dummy` (16 commits: client 试炼木桩 spawn
+  rid=35901 + Tab/click targeting + in-world ring/arrow indicator; target HUD
+  compiled but off by default; extractors + docs/proof) into main; resolved the
+  single EXPERIENCES conflict by keeping main's file and appending the branch's
+  9 missing `###` blocks (168 insertions, 0 deletions). Main-side
+  `client/RebornClient.cs` was untouched since the branch base, so the merge is
+  a pure union; nothing else was merged.
+- Evidence: merge `fe57fd5`; canonical build `reborn_client.exe`
+  (git=fe57fd5, built 21:03:51); `camera_smoke.exe` ALL PASS; `jx3_model.py`
+  10x PASS; `verify_model.py` ok; loot `capture.py selftest` PASS; scripted
+  engine run (`RC_TITLE=Target-Dummy RC_TAB_AT=3000
+  RC_CLICK_AT=5000,620,430;7000,700,440 RC_SHOTS=4500,6500,8500
+  RC_AUTORUN=10000`) log `reborn_out/reborn_20261001_211147.log`: dummy
+  handle=1992345400 at (23334,740,24624), Tab pick MidAxis/400u, click 620,430
+  -> deselect + indicator removed, click 700,440 -> reselect + indicator
+  respawned, DONE; shot fingerprints match the branch proof's per-region RGB
+  (rc_00/01/02; only 1-unit lighting noise from a concurrent session).
+- Note: console `KGLOG_ASSERT_EXIT(pRetMinDistanceRet) KG3D_Scene::RayIntersection`
+  spam during the run is absent from all logs and correlates with the
+  pre-existing foliage-collision ray calls (colCalls ~1300 per 2 s), not the
+  merged feature; a separate `reborn_client_colltest4.exe` session ran
+  concurrently in its own namespace during the run.
+- Outcome: solved (local main, not pushed); branch + worktree left intact.
