@@ -1198,30 +1198,77 @@ internal static class PhysicsProbe
                             if (slen < 1e-6f) slen = 1f;
                             sdx /= slen; sdy /= slen; sdz /= slen;
                             IntPtr fat = Marshal.AllocHGlobal(0x20);
-                            float fatR = sdist * 0.5f + 24f;
+                            int fatR = 24;
                             Marshal.WriteInt32(fat, 0x00, 2);
-                            Marshal.WriteInt32(fat, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(fatR), 0));
+                            Marshal.WriteInt32(fat, 0x04, BitConverter.ToInt32(BitConverter.GetBytes((float)fatR), 0));
                             Marshal.WriteInt32(fat, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(41f), 0));
                             IntPtr fatPose = Marshal.AllocHGlobal(0x20);
-                            for (int i = 0; i < 8; i++) Marshal.WriteInt32(fatPose, i * 4, 0);
-                            Marshal.WriteInt32(fatPose, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
-                            Marshal.WriteInt32(fatPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
-                            Marshal.WriteInt32(fatPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(sx + sdx * sdist * 0.5f), 0));
-                            Marshal.WriteInt32(fatPose, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(sy + sdy * sdist * 0.5f), 0));
-                            Marshal.WriteInt32(fatPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(sz + sdz * sdist * 0.5f), 0));
                             IntPtr cand = Marshal.AllocHGlobal(256 * 4);
                             IntPtr ovf = Marshal.AllocHGlobal(4);
-                            uint nc = Fn<FindOverlapFn>(pOverlap)(fat, fatPose, geom, mpose, cand, 256, 0, ovf);
+                            System.Collections.Generic.List<int> candSet = new System.Collections.Generic.List<int>(256);
+                            for (int st = 0; st < 12; st++)
+                            {
+                                float tt = st / 11f;
+                                for (int i = 0; i < 8; i++) Marshal.WriteInt32(fatPose, i * 4, 0);
+                                Marshal.WriteInt32(fatPose, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                Marshal.WriteInt32(fatPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                Marshal.WriteInt32(fatPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(sx + sdx * sdist * tt), 0));
+                                Marshal.WriteInt32(fatPose, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(sy + sdy * sdist * tt), 0));
+                                Marshal.WriteInt32(fatPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(sz + sdz * sdist * tt), 0));
+                                uint nck = Fn<FindOverlapFn>(pOverlap)(fat, fatPose, geom, mpose, cand, 256, 0, ovf);
+                                for (int k = 0; k < nck && candSet.Count < 256; k++)
+                                {
+                                    int ti = Marshal.ReadInt32(cand, k * 4);
+                                    if (!candSet.Contains(ti)) candSet.Add(ti);
+                                }
+                            }
+                            uint nc = (uint)candSet.Count;
+                            for (int k = 0; k < candSet.Count; k++) Marshal.WriteInt32(cand, k * 4, candSet[k]);
                             IntPtr triArr = Marshal.AllocHGlobal((int)nc * 36 + 36);
                             IntPtr oneTri = Marshal.AllocHGlobal(0x30);
                             IntPtr triIdx = Marshal.AllocHGlobal(12);
                             IntPtr pGetTri3 = GetProcAddress(hCommon, "?getTriangle@PxMeshQuery@physx@@SAXAEBVPxTriangleMeshGeometry@2@AEBVPxTransform@2@IAEAVPxTriangle@2@PEAI3@Z");
+                            int kept = 0, filtered = 0;
                             for (int k = 0; k < nc; k++)
                             {
                                 uint ti = (uint)Marshal.ReadInt32(cand, k * 4);
                                 Fn<GetTriFn>(pGetTri3)(geom, mpose, ti, oneTri, triIdx);
+                                float[] tv = new float[9];
+                                bool ok = true;
                                 for (int b = 0; b < 9; b++)
-                                    Marshal.WriteInt32(triArr, k * 36 + b * 4, Marshal.ReadInt32(oneTri, b * 4));
+                                {
+                                    tv[b] = BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(oneTri, b * 4)), 0);
+                                    if (float.IsNaN(tv[b]) || float.IsInfinity(tv[b])) ok = false;
+                                }
+                                if (ok)
+                                {
+                                    float ux = tv[3] - tv[0], uy = tv[4] - tv[1], uz = tv[5] - tv[2];
+                                    float vx = tv[6] - tv[0], vy = tv[7] - tv[1], vz = tv[8] - tv[2];
+                                    float cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx;
+                                    float area2 = (float)Math.Sqrt(cx * cx + cy * cy + cz * cz);
+                                    if (area2 < 1e-6f) ok = false;
+                                }
+                                if (!ok) { filtered++; continue; }
+                                for (int b = 0; b < 9; b++)
+                                    Marshal.WriteInt32(triArr, kept * 36 + b * 4, Marshal.ReadInt32(oneTri, b * 4));
+                                kept++;
+                            }
+                            nc = (uint)kept;
+                            if (sp.Length > 7 && sp[7] == "synth")
+                            {
+                                float wx = sx + sdx * sdist * 0.6f;
+                                float wz = sz + sdz * sdist * 0.6f;
+                                float wy = sy;
+                                int o2 = 0;
+                                int[,] vs = new int[,] {
+                                    { BitConverter.ToInt32(BitConverter.GetBytes(wx), 0), BitConverter.ToInt32(BitConverter.GetBytes(wy - 60f), 0), BitConverter.ToInt32(BitConverter.GetBytes(wz - 40f), 0) },
+                                    { BitConverter.ToInt32(BitConverter.GetBytes(wx), 0), BitConverter.ToInt32(BitConverter.GetBytes(wy + 60f), 0), BitConverter.ToInt32(BitConverter.GetBytes(wz - 40f), 0) },
+                                    { BitConverter.ToInt32(BitConverter.GetBytes(wx), 0), BitConverter.ToInt32(BitConverter.GetBytes(wy), 0), BitConverter.ToInt32(BitConverter.GetBytes(wz + 40f), 0) } };
+                                for (int v = 0; v < 3; v++)
+                                    for (int c2 = 0; c2 < 3; c2++)
+                                    { Marshal.WriteInt32(triArr, o2 * 4, vs[v, c2]); o2++; }
+                                nc = 1;
+                                log("physprobe: PX_SWEEP3 synth triangle at x=" + wx + " z=" + wz);
                             }
                             IntPtr sPose = Marshal.AllocHGlobal(0x20);
                             for (int i = 0; i < 8; i++) Marshal.WriteInt32(sPose, i * 4, 0);
@@ -1237,22 +1284,16 @@ internal static class PhysicsProbe
                             IntPtr hit = Marshal.AllocHGlobal(0x40);
                             for (int i = 0; i < 0x40 / 4; i++) Marshal.WriteInt32(hit, i * 4, 0);
                             IntPtr pSweep = GetProcAddress(hCommon, "?sweep@PxMeshQuery@physx@@SA_NAEBVPxVec3@2@MAEBVPxGeometry@2@AEBVPxTransform@2@IPEBVPxTriangle@2@AEAUPxSweepHit@2@V?$PxFlags@W4Enum@PxHitFlag@physx@@G@2@PEBIM_N@Z");
-                            log("physprobe: PX_SWEEP3 spec=" + specOne + " candidates=" + nc + " pSweep=0x" + pSweep.ToInt64().ToString("X"));
+                            log("physprobe: PX_SWEEP3 spec=" + specOne + " candidates=" + nc + " filtered=" + filtered + " pSweep=0x" + pSweep.ToInt64().ToString("X"));
                             if (pSweep != IntPtr.Zero)
                             {
-                                IntPtr flagsBuf = Marshal.AllocHGlobal(4);
-                                Marshal.WriteInt32(flagsBuf, 3);
-                                IntPtr cached = Marshal.AllocHGlobal(4);
-                                Marshal.WriteInt32(cached, unchecked((int)0xFFFFFFFF));
-                                bool sh = Fn<SweepFn>(pSweep)(unit, sdist, cap, sPose, nc, triArr, hit, flagsBuf, cached, 0f, false);
-                                string hf = "";
-                                for (int i = 0; i < 16; i++)
-                                    hf += BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(hit, i * 4)), 0).ToString("0.###") + " ";
-                                string hi = "";
-                                for (int i = 0; i < 16; i++)
-                                    hi += Marshal.ReadInt32(hit, i * 4).ToString("X8") + " ";
-                                log("physprobe: PX_SWEEP3 hit=" + sh + " hitbufF=" + hf);
-                                log("physprobe: PX_SWEEP3 hitbufX=" + hi);
+                                // PARKED (see proof 2026-10-02i): the actual-hit path
+                                // crashes with map AND synthetic triangles, all flag
+                                // variants and a caller-mimicked arg8 layout - the
+                                // exported sweep needs internal state the standalone
+                                // call does not provide (the in-penetration early-out
+                                // is the only verified path). Diagnostic only.
+                                log("physprobe: PX_SWEEP3 call skipped (hit path needs engine-internal state - proof 2026-10-02i)");
                             }
                         }
                     }

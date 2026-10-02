@@ -612,3 +612,21 @@ between x=18450 (clear) and x=18500 (depth 7.5), so a working sweep from
 Do not feed arbitrary fat-capsule candidate sets until the crashing triangle
 class is isolated; prefer the caller's own pattern (per-region candidate
 lists).
+
+### Update 2026-10-02i: sweep hit-path needs engine-internal state (final boundary)
+
+Exhaustive attempts to make the exported sweep compute a real hit (start clear,
+target ~193 u along +X at the wall):
+- 74-triangle map candidate set (fat capsule): crash
+- 24-triangle narrowed set (small capsules along the path): crash
+- flags matched to the caller (7, and caller-mimicked arg8 struct with the
+  flags word at +8 and the hit word at +0x20): crash
+- **1 synthetic triangle** placed 150 u from the start: crash
+=> NOT triangle data, NOT flags layout, NOT candidate set. The in-penetration
+case (distance 0) returns without the hit computation and is the only verified
+path. Conclusion: this exported sweep needs internal state (query context /
+extension init) that a standalone call does not provide - use the engine's own
+call path or do not use it. The call, arg frame (+0xD0 hit / +0xD8 arg8 /
++0xE0 cachedIndex / +0xE8 inflation / +0xF0 anyHit) and hit layout (+0x10
+triangle index, +0x1C position, +0x28 normal, +0x34 distance) remain recorded;
+probe call re-parked (diagnostics only).
