@@ -46,6 +46,44 @@ internal static class PhysicsProbe
     delegate ulong HashFn(IntPtr s);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr LoadMeshFn(IntPtr path);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int Bool1Fn(IntPtr self);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int Bool2Fn(IntPtr self, IntPtr a, IntPtr b);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate uint WriteFn(IntPtr self, IntPtr src, uint count);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate void Void1Fn(IntPtr self);
+    static byte[] s_pxStreamBuf = new byte[1 << 20];
+    static int s_pxStreamLen;
+    static uint PxStreamWrite(IntPtr self, IntPtr src, uint count)
+    {
+        int n = (int)count;
+        if (n > 0 && src != IntPtr.Zero && s_pxStreamLen + n <= s_pxStreamBuf.Length)
+        {
+            Marshal.Copy(src, s_pxStreamBuf, s_pxStreamLen, n);
+            s_pxStreamLen += n;
+        }
+        return count;
+    }
+    static void PxStreamDtor(IntPtr self) { }
+    static WriteFn s_writeKeep;
+    static Void1Fn s_dtorKeep;
+    static IntPtr s_pxStream;
+    static IntPtr MakePxStream()
+    {
+        s_writeKeep = PxStreamWrite;
+        s_dtorKeep = PxStreamDtor;
+        IntPtr vtbl = Marshal.AllocHGlobal(16);
+        Marshal.WriteIntPtr(vtbl, 0, Marshal.GetFunctionPointerForDelegate(s_writeKeep));
+        Marshal.WriteIntPtr(vtbl, 8, Marshal.GetFunctionPointerForDelegate(s_dtorKeep));
+        s_pxStream = Marshal.AllocHGlobal(16);
+        Marshal.WriteIntPtr(s_pxStream, 0, vtbl);
+        Marshal.WriteIntPtr(s_pxStream, 8, IntPtr.Zero);
+        return s_pxStream;
+    }
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int Bool3Fn(IntPtr self, IntPtr a, IntPtr b, IntPtr c);
 
     [StructLayout(LayoutKind.Sequential)]
     struct MEMORY_BASIC_INFORMATION
@@ -95,6 +133,31 @@ internal static class PhysicsProbe
         log("physprobe: pxFoundation=[mgr+0x10]=" + Hex(Marshal.ReadIntPtr(mgr, 0x10))
             + " pxPhysics=[mgr+0x38]=" + Hex(Marshal.ReadIntPtr(mgr, 0x38))
             + " pxCooking=[mgr+0x40]=" + Hex(Marshal.ReadIntPtr(mgr, 0x40)));
+        // PhysX-direct solve step: dump the runtime vtables so the cook/create
+        // indices are read from the engine's own objects (never guessed).
+        if (Environment.GetEnvironmentVariable("RC_PX_VT") == "1")
+        {
+            IntPtr pxPhys = Marshal.ReadIntPtr(mgr, 0x38);
+            IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+            IntPtr hPhys = GetModuleHandleA("PhysX3_x64.dll");
+            IntPtr hCook = GetModuleHandleA("PhysX3Cooking_x64.dll");
+            IntPtr hCommon = GetModuleHandleA("PhysX3Common_x64.dll");
+            log("physprobe: modules PhysX3=" + Hex(hPhys) + " Cooking=" + Hex(hCook) + " Common=" + Hex(hCommon));
+            for (int i = 0; i < 60; i++)
+            {
+                long a = Vt(pxPhys, i).ToInt64();
+                long r = a - hPhys.ToInt64();
+                if (r > 0x1000 && r < 0x200000) log(string.Format("physprobe: pxPhysics vt[{0}] rva=0x{1:X}", i, r));
+                else { log(string.Format("physprobe: pxPhysics vt[{0}] = 0x{1:X} (not in PhysX3)", i, a)); break; }
+            }
+            for (int i = 0; i < 30; i++)
+            {
+                long a = Vt(pxCook, i).ToInt64();
+                long r = a - hCook.ToInt64();
+                if (r > 0x1000 && r < 0x200000) log(string.Format("physprobe: pxCooking vt[{0}] rva=0x{1:X}", i, r));
+                else { log(string.Format("physprobe: pxCooking vt[{0}] = 0x{1:X} (not in Cooking)", i, a)); break; }
+            }
+        }
 
         IntPtr cfg = Marshal.AllocHGlobal(16);
         Marshal.WriteInt32(cfg, 0, 2);
@@ -305,7 +368,93 @@ internal static class PhysicsProbe
             }
         }
 
-        // Stage-1 v4 (opt-in RC_PX_SWEEP=1): sweep EVERY mesh in the baked bin
+        // PhysX-direct solve step 2 (opt-in RC_PX_COOK2=1, test exe): build a
+        // minimal PxTriangleMeshDesc (quad) and call the engine's PxCooking:
+        // vt[6]=validateTriangleMesh (bool, low risk - layout test) then
+        // vt[4] (the triangle cook; identified via the cook helper 0x1F7E0).
+        if (Environment.GetEnvironmentVariable("RC_PX_COOK2") == "1")
+        {
+            IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+            log("physprobe: PX_COOK2 cooking=" + Hex(pxCook));
+            IntPtr desc = Marshal.AllocHGlobal(0x60);
+            for (int i = 0; i < 0x60 / 4; i++) Marshal.WriteInt32(desc, i * 4, 0);
+            // layout decoded from validator 0x7E40 + cooker 0x7970 field reads:
+            // +0x00 pointsStride, +0x08 points, +0x10 nbVertices, +0x18 trianglesStride,
+            // +0x20 triangles, +0x28 nbTriangles, +0x30 flags u16 (bit1=16-bit indices),
+            // +0x48 convexEdgeThreshold f32 (must be 0.001)
+            IntPtr verts = Marshal.AllocHGlobal(12 * 12);
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 3; j++)
+                {
+                    int o = (i + j * 4) * 12;
+                    Marshal.WriteInt32(verts, o + 0, BitConverter.ToInt32(BitConverter.GetBytes(i * 100f), 0));
+                    Marshal.WriteInt32(verts, o + 4, BitConverter.ToInt32(BitConverter.GetBytes(0f), 0));
+                    Marshal.WriteInt32(verts, o + 8, BitConverter.ToInt32(BitConverter.GetBytes(j * 100f), 0));
+                }
+            IntPtr tris = Marshal.AllocHGlobal(12 * 6);
+            int ti = 0;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 2; j++)
+                {
+                    ushort a = (ushort)(i + j * 4), b = (ushort)(i + 1 + j * 4);
+                    ushort c = (ushort)(i + 1 + (j + 1) * 4), d = (ushort)(i + (j + 1) * 4);
+                    Marshal.WriteInt16(tris, ti * 2, (short)a); ti++;
+                    Marshal.WriteInt16(tris, ti * 2, (short)b); ti++;
+                    Marshal.WriteInt16(tris, ti * 2, (short)c); ti++;
+                    Marshal.WriteInt16(tris, ti * 2, (short)a); ti++;
+                    Marshal.WriteInt16(tris, ti * 2, (short)c); ti++;
+                    Marshal.WriteInt16(tris, ti * 2, (short)d); ti++;
+                }
+            Marshal.WriteInt32(desc, 0x00, 12);       // pointsStride
+            Marshal.WriteIntPtr(desc, 0x08, verts);   // points
+            Marshal.WriteInt32(desc, 0x10, 12);       // nbVertices
+            Marshal.WriteInt32(desc, 0x18, 6);        // trianglesStride
+            Marshal.WriteIntPtr(desc, 0x20, tris);    // triangles
+            Marshal.WriteInt32(desc, 0x28, 12);       // nbTriangles
+            Marshal.WriteInt16(desc, 0x30, 2);        // flags: e16_BIT_INDICES
+            Marshal.WriteInt32(desc, 0x48, unchecked((int)0x3A83126F)); // convexEdgeThreshold = 0.001 (required)
+            try
+            {
+                IntPtr cookBase = GetModuleHandleA("PhysX3Cooking_x64.dll");
+                IntPtr paramsPtr = IntPtr.Add(pxCook, 8);
+                string ps = "";
+                for (int i = 0; i < 0x30; i += 4)
+                    ps += Marshal.ReadInt32(paramsPtr, i).ToString("X8") + " ";
+                log("physprobe: PX_COOK2 params(+" + "8) = " + ps);
+                string pf = "";
+                for (int i = 0; i < 0x30; i += 4)
+                    pf += BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(paramsPtr, i)), 0).ToString("0.###") + " ";
+                log("physprobe: PX_COOK2 params floats = " + pf);
+                int pureOk = 0;
+                if (cookBase != IntPtr.Zero)
+                {
+                    var pure = Fn<Bool1Fn>(IntPtr.Add(cookBase, 0x7E40));
+                    pureOk = pure(desc);
+                    log("physprobe: PX_COOK2 validator(0x7E40) -> " + pureOk);
+                }
+                if (pureOk != 0)
+                {
+                    s_pxStreamLen = 0;
+                    IntPtr stream = MakePxStream();
+                    var cook = Fn<Bool2Fn>(Vt(pxCook, 4));
+                    int r = cook(pxCook, desc, stream);
+                    log("physprobe: PX_COOK2 cook(vt4) -> " + r + " streamBytes=" + s_pxStreamLen);
+                    if (s_pxStreamLen >= 12)
+                    {
+                        string hdr = "";
+                        for (int i = 0; i < 12; i++) hdr += s_pxStreamBuf[i].ToString("X2");
+                        log("physprobe: PX_COOK2 cooked header=" + hdr);
+                    }
+                }
+                else
+                {
+                    log("physprobe: PX_COOK2 desc rejected; cook skipped (crash-safe)");
+                }
+            }
+            catch (Exception e) { log("physprobe: PX_COOK2 ex: " + e.Message); }
+            finally { Marshal.FreeHGlobal(verts); Marshal.FreeHGlobal(tris); Marshal.FreeHGlobal(desc); }
+        }
+
         // through the engine's own loader and compare vertex/triangle counts.
         if (Environment.GetEnvironmentVariable("RC_PX_SWEEP") == "1")
         {
