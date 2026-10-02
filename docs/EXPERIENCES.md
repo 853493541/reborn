@@ -1616,3 +1616,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `git worktree list` (main + 6 in-flight), branch list has no
   `agent/sandbox-target-dummy`.
 - Outcome: solved (local, not pushed).
+
+### 2026-10-02 — client — M1.7 HUD overlay + five-minute solo proof (M1 exit)
+- Did: replaced the hidden WinForms HUD label with `client/HudOverlay.cs` (top-level
+  layered click-through window owned by the host form; "I" key toggles the info box).
+  Built `reborn_client_m1-final.exe`; drove a 5-minute solo session with posted keys
+  (`tools/proof/run_solo5min.ps1`: I, W-hold run, Space jumps, 1 skills) and external
+  window captures (`tools/proof/capture_window.ps1`, DPI-aware) every 30 s.
+- Evidence: `docs/engine_host/M1_SOLO5_PROOF.md` — 10 captures with distinct sha256,
+  HUD text in every scene capture; log: 316 s, path span 15555 u (243 chi), run 320 u/s,
+  18 jump-clip switches, 5 skill casts, fps 131-287, no crash. Overlay window live:
+  LAYERED|TRANSPARENT|TOOLWINDOW|NOACTIVATE 1510x310 over the viewport.
+- Lesson: posted keys need `SetForegroundWindow` first (same as captures); `G` is a
+  game-side hotkey with no client handler - use W-hold for movement; the shared
+  `reborn_out` log dir mixes concurrent clients, select the log by `build=` fingerprint.
+- Outcome: M1 exit criteria met (local branch `agent/m1-final`, not pushed).
