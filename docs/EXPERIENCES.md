@@ -1012,3 +1012,12 @@ solved it, and what is still open. **Newest at the bottom.**
 - The return bool/fields do not yet match the public 3.3.4 semantics (true with
   zero triangles; unfamiliar hit field offsets; long sweeps hang). Unverified -
   next is copying the engine's own caller frame.
+
+### 2026-10-02 - Sweep cracked end-to-end: find the engine's own caller
+
+- The decisive move was scanning the sibling DLLs' IMPORT tables for the export
+  (PhysX3CharacterKinematic imports PxMeshQuery::sweep) and reading its call
+  site: frame + hit struct layout + distance semantics all came out of the
+  caller in one look (flags arg is a POINTER in this build; distance at hit+0x34).
+- First validated data point matches our solver (initial-overlap -> distance 0).
+- Long sweeps (600/3000u) do not return - respect the short-move boundary.

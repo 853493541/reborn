@@ -576,3 +576,25 @@ shadow-space accounting: stack args start at callee [rsp+0xC0]:
   short moves.
 **Next**: copy the engine's own caller (PhysX3CharacterKinematic or a scene
 query site) to confirm the return semantics + hit layout before any use.
+
+### Update 2026-10-02g: sweep FULLY CRACKED via the engine's own caller
+
+The engine caller was found: **PhysX3CharacterKinematic_x64.dll imports the
+sweep (IAT slot 0x180029180); the real call site is 0x180008421** (the second
+reference is a thunk jmp at 0x18001FC30). Its frame is authoritative:
+
+- args 1-4: unitDir=rcx, distance=xmm1 (clamped against a max constant),
+  geom=r8 (type switch: sphere/capsule/box), pose=r9.
+- stack args (callee rsp+0xC0): triCount@0xC0, triangles@0xC8, hit@0xD0,
+  **hitFlags POINTER@0xD8** (the crash cause: we passed a value),
+  cachedIndex@0xE0, inflation(float)@0xE8, anyHit(byte)@0xF0.
+- **PxSweepHit layout decoded from the caller's reads**: +0x10 u32 triangle
+  index, +0x1C/+0x20/+0x24 position, +0x28/+0x2C/+0x30 normal,
+  **+0x34 float distance** (compared with `comiss` against the running best).
+- Validated data point: sweep (18700,975,36850) dir +X 250 -> hit=true,
+  triangleIndex=2, distance=0.0 - and our solver reports the SAME pose already
+  penetrating the wj_erg prop (tinfo depth 12.3), i.e. engine and solver agree
+  on the initial-overlap case (engine reports distance 0).
+- Edge cases: 0-triangle sweeps return true with a zeroed hit buffer
+  (uninitialized-return path - ignore); sweeps of 600/3000 u do not return
+  (short 250 u works) - keep sweep specs short until root-caused.
