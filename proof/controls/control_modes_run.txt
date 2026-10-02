@@ -347,3 +347,18 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   WD mode=classical (no rmb) dpos=(68,182) dist=194 dyaw=3.77 dcam=2.51 (turn+camera curve)
   strafe (A alone) yaw 3.14 / cam 3.14 (1:1); back dpos=(0,96) cam kept.
 - Gates: camera_smoke ALL PASS.
+
+## Forward-right animation fix (2026-10-01): camera-relative input + drag-gated RMB carry
+- Root cause: the recent facing-frame change made W+D fight (RmbTurnsBody held the
+  body to the camera; RunTo pulled to the diagonal), so the gait angle stayed
+  >45 deg and the 挪步 side-step clip played. The engine controls are CAMERA
+  controls; the body faces the TRAVEL direction (RunTo). The RMB camera->face
+  carry fires on MOUSE DELTAS, not on a held button.
+- Fix: movement frame back to the camera in both modes; RMB body-carry gated by
+  a real mouse drag (150 ms window).
+- Evidence, run reborn_20261001_223135.log (build git=27e0350 dirty=1):
+  strafe (A): yaw 3.14 / cam 3.14 (1:1); turn 1.88/1.88; back cam kept dist 96
+  WA rmb=1 dpos=(-49,-380) dist=384 dyaw=-0.79 dcam=0.00
+    (45 deg camera-frame diagonal, body turned 45 deg to the travel -> gait ~0 -> run clip)
+  WD (no rmb) dpos=(-109,164) dist=197 dyaw=4.32 dcam=-3.53 (turn+camera curve)
+- Gates: camera_smoke ALL PASS.

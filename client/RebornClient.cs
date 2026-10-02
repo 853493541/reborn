@@ -1236,7 +1236,7 @@ internal static class RebornClient
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
-        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
+            long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
         double[] rSm = new double[3];
         bool rSmInit = false;
         bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
@@ -1508,6 +1508,9 @@ internal static class RebornClient
                 flipPxDelivered != flipPxTarget || flipPitchDelivered != flipPitchTarget)
             {
                 int ox = 0, oy = 0;
+                // raw mouse drag? (distinguishes the user's drag from
+                // synthesised model deltas - gates the RMB body carry)
+                if (orbitQueue.Count > 0) lastMouseDragMs = now;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
                 if (loadPace && loadProg < 0.999f)
                 {
@@ -1890,16 +1893,16 @@ internal static class RebornClient
                 forceDiag = false;
             }
 
-            // Movement frame (decoded, OPERATION_MODES_PLAN.md 7d): CLASSICAL
-            // movement runs along the CHARACTER facing (KRLLocalCharacter+0x30
-            // face yaw), JOYSTICK keeps the camera-relative frame (mouse always
-            // looks; the body turns to the travel heading). CONTROL_TURN_* is a
-            // character control - the keyboard never writes the camera.
+            // Movement frame (decoded): the engine controls are CAMERA controls
+            // (FORWARD/BACKWARD/STRAFE/TURN relative to the camera), so the input
+            // frame is the camera in both modes; the BODY faces the travel
+            // direction (RunTo, KRLLocalCharacter face yaw +0x30). That is why
+            // W+D runs the forward clip while the body faces the diagonal, and
+            // pure D (no W) is the 挪步 side-step.
             bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
             bool classicalMode = !followsHeading;
             double cfx, cfz;
-            if (followsHeading) camSys.Forward(out cfx, out cfz);
-            else { cfx = Math.Sin(curYaw); cfz = Math.Cos(curYaw); }
+            camSys.Forward(out cfx, out cfz);
             float hx = (float)cfx;
             float hz = (float)cfz;
 
@@ -2097,9 +2100,11 @@ internal static class RebornClient
             while (camSys.Yaw < -Math.PI) camSys.Yaw += 2.0 * Math.PI;
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
-            // camera direction; LMB drag rotates the camera only. The turn is
-            // rate-limited (S6) instead of snapping the yaw in one frame.
-            if (rmbDown && CameraOperationMode.RmbTurnsBody(cameraSettings.OperationMode))
+            // camera direction while the user is actually dragging (the decoded
+            // camera->face write fires on mouse deltas, not on a held button);
+            // LMB drag rotates the camera only. Rate-limited (S6), no snap.
+            if (rmbDown && (now - lastMouseDragMs < 150) &&
+                CameraOperationMode.RmbTurnsBody(cameraSettings.OperationMode))
             {
                 float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
                 float d = targetYaw - curYaw;

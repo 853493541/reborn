@@ -1382,3 +1382,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   panel's click-to-move option, NOT this switch; MouseControlMoveEnable remains
   the engine-side mouse-move option binding.
 
+
+### 2026-10-01 - controls/client - forward-right animation fixed (camera frame + drag-gated carry)
+- User: "the animation needs update when walking forward right".
+- Root cause: the facing-frame experiment made W+D fight - RmbTurnsBody held the
+  body toward the camera while RunTo pulled it to the diagonal, so the gait
+  angle exceeded 45 deg and the 挪步 side-step clip played instead of the run.
+  The decoded control set is CAMERA controls; the body faces the TRAVEL
+  direction; the engine's camera->face write fires on mouse DELTAS (ApplyRotation),
+  not on a held RMB.
+- Fix: reverted the movement frame to the camera (both modes); RMB body-carry
+  now requires a real mouse drag (150 ms window).
+- Evidence: WA rmb=1 dpos=(-49,-380) dist=384 dyaw=-0.79 dcam=0.00 - straight
+  45-deg camera-frame diagonal, body aligned to the travel (run clip); WD no-rmb
+  curve unchanged; strafe/turn 1:1 preserved. Smoke ALL PASS. Relaunched.
+
