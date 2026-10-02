@@ -13,6 +13,12 @@ and the committed disassembly dump.
 **Tools:** `tools/controls/lua_index.py` (batch proto/name/global index),
 `tools/controls/lua51_probe.py` (instruction-level body dump).
 
+**Branch convention (re-derived 2026-10-02, used throughout):** for
+`TEST/TESTSET A … C` and `EQ/LT/LE A …`, the following `JMP` is taken iff the
+condition equals `A` (`TEST C=0`: jump when the value is falsy; `EQ A=0`: jump
+when not equal); for `TEST C=1`: jump when truthy. Settled against proto 0/63,
+`0/31` and `0/76` where the source intent is known.
+
 **Dumps (committed):** `proof/controls/lua_dump/*.txt`;
 indexes `proof/controls/lua_index_control.txt` (+ `_all.txt`, all 1549 scripts).
 
@@ -71,16 +77,19 @@ end
 
 if ResponseDisplacementHotkey(move, down, isDouble) then handled = true end
 
--- double-tap sprint: only Forward, only on key-down with isDouble,
--- blocked while on tower / bird / horse:
-if down and isDouble and not onTower and key ~= 'Forward' then
-    return handled
+-- double-tap sprint (key-down + isDouble required):
+if not down then return handled end
+if isDouble then
+    -- on tower: only Forward may sprint; off tower: any movement key
+    if onTower and key ~= 'Forward' then return handled end
+    if p and (p.bBirdMove or p.bHoldHorse) then return handled end
+    StartSprint()
 end
-if p and (p.bBirdMove or p.bHoldHorse) then return handled end
-StartSprint()
 
 return handled
 ```
+
+(Symbolic execution of pc131-147; `onTower = p and p.bOnTowerFlag`.)
 
 Decoded facts:
 
@@ -94,8 +103,9 @@ Decoded facts:
 3. **Displacement routing**: the bare direction (`LEFT`, `RIGHT`, ...) and the
    `MOVE_*` state are both offered to `ResponseDisplacementHotkey` (轻功/位移
    hotkeys), which owns any direction-bound skill.
-4. **Double-tap forward = sprint** (`StartSprint`) with tower/bird/horse guards;
-   other keys ignore `isDouble`.
+4. **Double-tap = sprint** (`StartSprint`) on key-down with `isDouble`, blocked
+   by bird/hold-horse; on tower only the `Forward` key may sprint, off tower any
+   of the six movement keys may.
 5. `handled` (true when a displacement hotkey consumed the event) is returned
    to the movement handler (see the pending 76/78 verification).
 
@@ -104,7 +114,7 @@ Decoded facts:
 ```lua
 -- upvalue: current mode
 local function ApplyOperationMode(mode)
-    if mode ~= CLASSICAL_MODE and not IsMobileKungfu() then return end
+    if mode == CLASSICAL_MODE and IsMobileKungfu() then return end
     ClearMoveState()
     currentMode = mode
     UploadOperationMode(mode)
@@ -136,9 +146,11 @@ Decoded facts:
   `Scene_LockMouseRotation(false)`.
 - **JOYSTICK**: `UseFullAngle(true)`, `Scene_LockMouseRotation(true)`; no reset
   speed call here.
-- **Open:** the `IsMobileKungfu()` gate for non-classical modes — determine
-  what this flag actually is on desktop builds (implementation pending; do not
-  assume "mobile-only" yet).
+- **Gate (corrected by re-deriving EQ/TEST):** `if mode == CLASSICAL_MODE and
+  IsMobileKungfu() then return end` — joystick applies unconditionally; classical
+  is refused on mobile-kungfu clients (which A4 forces to JOYSTICK), desktop
+  classical applies. What `IsMobileKungfu` is on desktop builds stays open
+  (implementation pending; do not assume "mobile-only" yet).
 
 ## A4. Mode toggle — `OperationModeBase.lua` proto `0/19` (L463-488) MED/HIGH
 
@@ -210,11 +222,11 @@ function StrafeLeftStart()
         if Camera_IsInFreeView() then TurnLeftStart() end              -- normal play: turn
         return
     end
-    if not upval1 then
+    if upval1 then
         OnUseSkill(3801, 3801 * ((3801 % 10) + 1))                     -- 3801, 37990
         return
     end
-    if not upval2() then return end
+    if upval2() then return end                                        -- mode/state guard
     if IsKeyDoubleDown() then
         if not ResponseWASDKey('StrafeLeft', true, true) then
             Camera_EnableControl(CONTROL_STRAFE_LEFT, true)            -- fallback
@@ -245,22 +257,26 @@ text in `CLASSIC_CONTROLS_AUDIT.md` §1 and `OPERATION_MODES_PLAN.md` §7b.
 function MoveForwardStart()
     local p = GetClientPlayer()
     if p then p.HoldW(1.0) end
-    if upval0 then
-        OnUseSkill(3799, 3799 * ((3799 % 10) + 1))   -- 3799, 37990
-    else
+    if upval0 then                                   -- normal path
         upval1(CONTROL_FORWARD, true)                -- mode wrapper (0/61)
-        if upval2() or not IsKeyDoubleDown() then
-            ResponseWASDKey('Forward', true, false)
+        if upval2() then
+            if IsKeyDoubleDown() then
+                ResponseWASDKey('Forward', true, true)   -- double-tap (A2)
+            else
+                ResponseWASDKey('Forward', true, false)
+            end
         else
-            ResponseWASDKey('Forward', true, true)   -- double-tap -> sprint (A2)
+            ResponseWASDKey('Forward', true, false)
         end
+    else
+        OnUseSkill(3799, 3799 * ((3799 % 10) + 1))   -- 3799, 37990
     end
 end
 ```
 
-`p.HoldW` (client-player hold state) + displacement skill in the `upval0`
-branch; the wrapper + joystick vector path otherwise. Stop handlers call the
-wrapper with `false` and `ResponseWASDKey(..., false, ...)`.
+`p.HoldW` (client-player hold state); the wrapper + joystick vector path when
+`upval0` is truthy, the displacement skill when it is falsy. Stop handlers call
+the wrapper with `false` and `ResponseWASDKey(..., false, ...)`.
 
 ## A7. Scene.lua drag / control handlers (G2 script side)
 
