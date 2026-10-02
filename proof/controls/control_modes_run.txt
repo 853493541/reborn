@@ -392,3 +392,18 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   back dist=96 cam kept; turn yaw 1.88 / cam -1.88; WA rmb=1 dist=384 dcam=0.00
   periodic: spd=320u/s(RUN) gait=0 clip=跑动.
 - Gates: camera_smoke ALL PASS.
+
+## RE-BASED on the decoded control table (2026-10-02): keyboard never writes the camera
+- Client code: ControlId/Ctrl (ids 0..13 as in Camera_EnableControl's store);
+  intents forward/strafeRight/rotationRight derived per frame (GetMoveInfo
+  analog); A/D free view -> rotation; RMB stick camera -> strafe; drag is the
+  only camera yaw/pitch writer; CameraAdjustYawWhenMoveTurn row follows a
+  moving forward character. The user-directed A/D->camera 1:1 coupling is
+  REMOVED (decode-faithful).
+- Evidence, run reborn_20261002_125645.log (build git=93fc3d7 dirty=1):
+  strafe rmb=1: dpos=(-55,-79) dist=96 camd=0.00
+  back: dist=96 cam kept
+  turn: yaw 1.88 camd=0.00            (keyboard camera writes gone)
+  WA rmb=1: dpos=(-312,-56) dist=317 dcam=0.00
+  WD (no rmb): dpos=(-344,171) dist=385 dcam=0.15 (row follow)
+- Gates: camera_smoke ALL PASS.

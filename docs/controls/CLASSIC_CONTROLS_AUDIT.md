@@ -126,20 +126,20 @@ skill 9007).
   fields `+0x7C..+0x98`, vtable `[obj+0xA8]` slots `+0x88/+0x98/+0xA0…`) is the
   next trace target. Host has **no provisional rule** on this path; A/D behave
   the same with and without RMB.
-- **Host model — IMPLEMENTED 2026-10-01 (final form)**: classical movement
-  runs along the **character facing** (`KRLLocalCharacter+0x30` semantics),
-  spawn-synced to the initial camera view. A/D + arrows turn the character
-  **and the camera at the same rate (1:1)** - the client's historic coupling
-  (the old `ApplyRotation` wrote the identical yaw delta to the camera
-  controller; the rate is the local `RotationSpeed` row, 0.00314 rad/ms =
-  π rad/s). While **RMB holds the camera drag**, A/D turn the character but
-  the camera is not keyboard-turned (the observed classic rule). The camera
-  additionally follows a moving forward character through the cached
-  `CameraAdjustYawWhenMoveTurn` row (15° dead zone, rate-limited, skipped
-  while a drag is active). Evidence: run `reborn_20261001_220719.log` -
-  A-alone: yaw +3.14, cam -3.14, `dpos=(0,0)`; TURNRIGHT 0.6 s: +1.88/-1.88;
-  W+A/W+D: ±2.51 on both; back-pedal: camera kept, dist 96. Gates: smoke
-  ALL PASS; jx3_model 10x PASS; verify_model exit 0; loot selftest PASS.
+- **Host model — RE-BASED on the decoded control table 2026-10-02** (commit
+  `[pending]`): the host now keeps the client's control ids 0..13
+  (`ControlId`/`Ctrl`, mirroring `Camera_EnableControl`'s store) and derives
+  the engine intents `forward`/`strafeRight`/`rotationRight`
+  (`GetMoveInfo` analog) from them each frame. Keyboard A/D (free view) and
+  arrows produce the ROTATION intent; the RMB stick camera makes the
+  strafe-bound A/D produce the STRAFE intent (mouse owns the heading). **The
+  keyboard never writes the camera**: drag is mouse-only
+  (`CONTROL_CAMERA`/`CONTROL_OBJECT_STICK_CAMERA` props) and the camera follows
+  a moving forward character through the cached `CameraAdjustYawWhenMoveTurn`
+  row. Movement is camera-frame; the body faces the travel (RunTo). Evidence:
+  run `reborn_20261002_125645.log` - A-alone/arrows: yaw 1.88 with **camd=0.00**;
+  RMB strafe dist=96 camd=0.00; WA rmb=1 dist=317 camd=0.00; WD (no RMB) curve
+  with row follow (dcam=0.15). Gates: smoke ALL PASS.
 
 ## 6. Recommended order
 

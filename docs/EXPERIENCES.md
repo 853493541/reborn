@@ -1450,3 +1450,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   system - that is the data-driven boundary, not an unknown.
 - Evidence: gc_handlrlaction/gc_ctrl_action6/gc_ctrl_action7/
   gc_enablecontrolonly dumps + doc 7f.
+
+### 2026-10-02 - controls/client - re-based host on the decoded control table
+- User: implement the change plan (decode-faithful).
+- Changed client/RebornClient.cs: added ControlId/Ctrl (ids 0..13); per-frame
+  intents forward/strafeRight/rotationRight; movement from the intents;
+  removed the A/D->camera 1:1 coupling (the registered deviation); RMB stick
+  camera switches the strafe-bound A/D to lateral; keyboard no longer writes
+  the camera anywhere; camera = mouse drag + CameraAdjustYawWhenMoveTurn row.
+- Evidence: turn/A-alone camd=0.00; RMB strafe 96 camd=0.00; WA rmb=1 317
+  camd=0.00; WD row curve. Smoke ALL PASS. Relaunched.

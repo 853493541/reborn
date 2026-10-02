@@ -19,6 +19,24 @@ using System.Threading;
 using System.Windows.Forms;
 using MovieEngineCLR;
 
+// Engine control ids (control.lua / Camera_EnableControl): the host keeps the
+// same table the client stores in its control property store.
+internal static class ControlId
+{
+    public const int Forward = 0, Backward = 1, TurnLeft = 2, TurnRight = 3,
+        StrafeLeft = 4, StrafeRight = 5, Camera = 6, StickCamera = 7,
+        Walk = 8, Jump = 9, AutoRun = 10, Follow = 11, Up = 12, Down = 13;
+}
+
+internal static class Ctrl
+{
+    public static void Set(ref int mask, int id, bool on)
+    {
+        if (on) mask |= 1 << id; else mask &= ~(1 << id);
+    }
+    public static bool Get(int mask, int id) { return (mask & (1 << id)) != 0; }
+}
+
 internal static class RebornClient
 {
     static string outDir;
@@ -1921,14 +1939,11 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction (classical: along the facing; joystick:
-            // camera-relative). A/D in classical are TURN keys (decoded:
-            // TurnLeftStart -> Camera_EnableControl(CONTROL_TURN_*); the strafe
-            // handler's free-view Turn call is an OB-dungeon-only branch,
-            // hotkeys proto 63), NOT lateral movement in free view. A/D also
-            // turn the camera 1:1 with the character (local RotationSpeed =
-            // pi rad/s), except while RMB owns the camera; a moving character
-            // is additionally followed through the cached
+            // input -> direction (camera controls in both modes; the body faces
+            // the travel). A/D in classical free view are TURN intents (the
+            // strafe-bound key delegates to TurnStart, hotkeys proto 76/78),
+            // NOT lateral movement. The keyboard never writes the camera; a
+            // moving character is followed through the cached
             // CameraAdjustYawWhenMoveTurn row (see the follow call below).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
@@ -1937,41 +1952,43 @@ internal static class RebornClient
             // normal play. RC_FREEVIEW=0 keeps the god-camera side-step branch
             // (挪步 clips) reachable for tests.
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
-            // Decoded: A/D are STRAFE-bound (shipped default.txt); the free-view
-            // strafe handler delegates to TurnStart, which is why A/D turn (and
-            // carry the camera 1:1) WITHOUT RMB. While RMB holds the stick camera
-            // (CONTROL_OBJECT_STICK_CAMERA) the heading is mouse-owned, so the
-            // turn intent cannot act and the strafe intent moves the character
-            // laterally: W+D = diagonal walk, camera untouched.
-            bool rmbStrafe = classicalMode && rmbDown;
-            bool turnL = pTurnL || (classicalMode && freeView && pA && !rmbStrafe);
-            bool turnR = pTurnR || (classicalMode && freeView && pD && !rmbStrafe);
-            bool latMoves = !(classicalMode && freeView) || rmbStrafe;
+            // Control table (decoded): ids 0..13, built from keys/mouse exactly
+            // like Camera_EnableControl fills the client's control store. A/D
+            // are STRAFE-bound (default.txt); free view delegates the strafe key
+            // to TURN (hotkeys proto 76/78), while the RMB stick camera makes
+            // the mouse own the heading and the strafe intent moves laterally.
+            bool stickCam = classicalMode && rmbDown;
+            bool turnL = pTurnL || (classicalMode && freeView && pA && !stickCam);
+            bool turnR = pTurnR || (classicalMode && freeView && pD && !stickCam);
+            bool latMoves = !(classicalMode && freeView) || stickCam;
+            int ctrl = 0;
+            Ctrl.Set(ref ctrl, ControlId.Forward, pW || autorunOn);
+            Ctrl.Set(ref ctrl, ControlId.Backward, pS);
+            Ctrl.Set(ref ctrl, ControlId.TurnLeft, turnL);
+            Ctrl.Set(ref ctrl, ControlId.TurnRight, turnR);
+            Ctrl.Set(ref ctrl, ControlId.StrafeLeft, pA && latMoves);
+            Ctrl.Set(ref ctrl, ControlId.StrafeRight, pD && latMoves);
+            Ctrl.Set(ref ctrl, ControlId.Camera, lmbDown);
+            Ctrl.Set(ref ctrl, ControlId.StickCamera, rmbDown);
+            Ctrl.Set(ref ctrl, ControlId.AutoRun, autorunOn);
+            Ctrl.Set(ref ctrl, ControlId.Walk, walkMode);
+            // Intents (GetMoveInfo analog): forward, strafeRight, rotationRight.
+            float fwdAxis = (Ctrl.Get(ctrl, ControlId.Forward) ? 1f : 0f)
+                          - (Ctrl.Get(ctrl, ControlId.Backward) ? 1f : 0f);
+            float latAxis = (Ctrl.Get(ctrl, ControlId.StrafeRight) ? 1f : 0f)
+                          - (Ctrl.Get(ctrl, ControlId.StrafeLeft) ? 1f : 0f);
+            float rotAxis = (Ctrl.Get(ctrl, ControlId.TurnRight) ? 1f : 0f)
+                          - (Ctrl.Get(ctrl, ControlId.TurnLeft) ? 1f : 0f);
             // sitting stands up on any movement intent (move / turn / jump)
             if (sitting && (pW || pS || pA || pD || pTurnL || pTurnR || autorunOn))
             {
                 sitting = false;
                 Log("sit: stand (movement)");
             }
-            if (pW) { inX += hx; inZ += hz; }
-            if (pS) { inX -= hx; inZ -= hz; }
-            if (pA && latMoves) { inX -= rX; inZ -= rZ; }
-            if (pD && latMoves) { inX += rX; inZ += rZ; }
-            // TOGGLEAUTORUN (G/NumLock): keep moving forward without holding W
-            if (autorunOn) { inX += hx; inZ += hz; }
-            // forward/lateral input split for the operation-mode routing
-            // (CLASSICAL: only forward/back move; lateral input is a turn when
-            // in free view, or the decoded side-step with RC_FREEVIEW=0;
-            // JOYSTICK: every direction turns the body to the travel heading).
-            float fwdAxis = 0f;
-            if (pW) fwdAxis += 1f;
-            if (pS) fwdAxis -= 1f;
-            if (autorunOn) fwdAxis += 1f;
-            // lateral intent sign (right positive): feeds the decoded
-            // input-octant locomotion classification below
-            float latAxis = 0f;
-            if (pA && latMoves) latAxis -= 1f;
-            if (pD && latMoves) latAxis += 1f;
+            if (Ctrl.Get(ctrl, ControlId.Forward)) { inX += hx; inZ += hz; }
+            if (Ctrl.Get(ctrl, ControlId.Backward)) { inX -= hx; inZ -= hz; }
+            if (Ctrl.Get(ctrl, ControlId.StrafeLeft)) { inX -= rX; inZ -= rZ; }
+            if (Ctrl.Get(ctrl, ControlId.StrafeRight)) { inX += rX; inZ += rZ; }
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
             float dirX = inX, dirZ = inZ;
@@ -2085,22 +2102,14 @@ internal static class RebornClient
             // follow-on-turn is the host coupling (see the camera workstream).
             // No RMB/Mouse gate exists in the shipped UI scripts; the engine's
             // own consumer of CONTROL_TURN_* is still being traced.
-            if (grounded && (turnL || turnR))
+            if (grounded && rotAxis != 0f)
             {
                 float tstep = charTurnRate * (float)dt;
-                float dturn = 0f;
-                if (turnL && !turnR) dturn = -tstep;
-                else if (turnR && !turnL) dturn = tstep;
-                curYaw += dturn;
-                // A/D also turn the camera at the SAME rate as the character -
-                // the client's own 1:1 coupling (the old ApplyRotation wrote the
-                // identical yaw delta to the camera controller; the rate is the
-                // local RotationSpeed row, 0.00314 rad/ms = pi rad/s). While a
-                // mouse button holds the camera drag (LMB CONTROL_CAMERA or RMB
-                // CONTROL_OBJECT_STICK_CAMERA) the drag owns the camera: the
-                // character still turns, the camera is not keyboard-turned.
-                bool mouseOwnsCamera = lmbDown || rmbDown;
-                if (!mouseOwnsCamera) camSys.Yaw -= dturn;
+                curYaw += rotAxis > 0f ? tstep : -tstep;
+                // Decoded: the keyboard never writes the camera. The camera is
+                // driven by the mouse drag (CONTROL_CAMERA / CONTROL_OBJECT_
+                // STICK_CAMERA properties) and by the moving
+                // CameraAdjustYawWhenMoveTurn row (follow call below).
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
