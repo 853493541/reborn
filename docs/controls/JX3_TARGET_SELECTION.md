@@ -175,6 +175,54 @@ by a per-pixel-alpha layered window. Client-side subset currently drawn: plate,
 name/level/HP/shield/camp + real fonts; runtime-set portrait face, buff rows and
 cast bar are skipped until their state exists (missing art draws nothing).
 
+## 10. In-world target indicator (the visuals around the target) (HIGH config, MED host)
+
+The HUD window in §9 is 2D; the marker drawn **around the selected target** is
+the represent layer's `KRLTarget` (JX3RepresentX64.dll). Research 2026-10-01 on
+the game client (`bin64\JX3RepresentX64.dll`, disasm in
+`proof/controls/target_indicator_client_20261001.txt` companion notes):
+
+* **Per-relation config**: `represent/common/force_relation_care.txt`
+  (loaded as `ForceRelationCareTable`, `KTableList::LoadBinTextTab`
+  `0x18082C598`, stride 0x2C, format `iiOiiiifpp`; PakV4-extracted). Columns:
+  `CaptionType, ForceRelationType, Desc, 3DColor, 2DColor, TargetColor,
+  DeadColor, SFXScale, SFXFile, SFXEn`. Rows per relation
+  (`0=Invalid 1=Foe 2=Enemy 3=Neutrality 4=Party 5=Ally 6=Self 7=None 8=All`,
+  CaptionType 0/1), `SFXScale=1.8`, e.g. Enemy →
+  `data/source/other/HD特效/其他/Pss/选择特效a002_hd.pss` + `J_角色箭头面向.pss`.
+  The six `选择特效a001..a006_hd.pss` share one texture
+  (`QT_其他/选择特效A001.tga`) and differ only in colour params — the ring is
+  tinted per relation by the row colours.
+* **Who draws it**: `KRLTarget::Init` (`0x180567c40` game / `0x18057a0a0` show)
+  loads `SelectionEnhance→Arrow→SFX` (the 10 `J_角色箭头面向*.pss` facing arrows);
+  `KRLTarget::LoadFile` loads the 9 relation rows; `KRLTarget::Show(relation,..)`
+  shows the relation's model; `KRLTarget::EnableBraceSfx(a,b,index)` attaches a
+  `CommonCursorEffect` row (`represent/common/cursor_effect.txt` →
+  `data/source/other/特效/系统/SFX/其他/鼠标移动.Sfx`, the ground ring) as the
+  "brace"; the UI script `GlobalEventHandler.lua` (compiled, function at
+  line 5486) calls `TargetSelection_ShowSFX(relation, flag)` →
+  `KRepresentScriptTable::LuaTargetSelection_ShowSFX` (JX3UIX64) → represent
+  event → `krlEventAdaptor::HandleShowTargetSelectedSFX` →
+  `KGameWorldHandler::ShowTargetSelectionSFX` → `KRLTarget`.
+* **Client implementation** (2026-10-01, `client/RebornClient.cs`): on selection
+  change the sandbox spawns the game's own assets at the target through
+  `AddDummyModel` (engine loads PSS + textures from the client VFS): the
+  relation selection ring at the target base (Enemy/red `a002` by default,
+  `RC_INDICATOR_SEL`) and the facing cone at the base yawed to the target's
+  facing (`J_角色箭头面向.pss`, `RC_INDICATOR_ARROW*`). Removed on deselect.
+  `RC_INDICATOR=0` disables; `RC_TARGET_HUD=1` re-enables the §9 HUD (default
+  off — the request is the in-world marker, not the HUD).
+* **Host limitation (registered deviation, re-open criteria)**: the native
+  `KRLTarget` attach path needs the represent game world. In the
+  MovieEditor-hosted engine the represent singleton is null
+  (`JX3RepresentX64.dll` RVA 0xF06A50 reads 0), so `AttachSceneObject` cannot
+  run; the cursor-ring "brace" is a compiled `.Sfx` and cannot be fed to
+  `AddDummyModel`. Re-open when the host initializes the represent world (or
+  `AddRepresentModel` exposes a usable character id), then call
+  `AttachSceneObject → EnableBraceSfx → Show` for the exact game composition.
+  Proof: `proof/controls/target_indicator_client_20261001.txt` (+ the
+  before/after PNGs and per-region RGB in the same file).
+
 ## Reproduce
 
 ```powershell
@@ -187,6 +235,15 @@ python tools\netcode\ui\extract_target_frame.py
 # -> assets\ui\targetframe\ (gitignored): TargetTarget.ini, TargetCommon.ini,
 #    the .UITex atlases + .Tga textures, ui/Scheme/Elem scheme files
 # parsed summary: proof/controls/target_frame_elements_20260930.txt
+
+# in-world indicator (2026-10-01): ForceRelationCareTable + KRLTarget assets
+#   set RC_CLIENT_EXE=reborn_client_target-dummy.exe && client\build_client.cmd
+#   set RC_TITLE=targeting
+#   set RC_TAB_AT=3000
+#   set RC_SHOTS=2500,5000,9000
+#   set RC_AUTORUN=11000
+#   cd /d C:\SeasunGame\MovieEditor && bin64\reborn_client_target-dummy.exe
+#   evidence: proof/controls/target_indicator_client_20261001.txt
 ```
 
-Last verified: 2026-09-30
+Last verified: 2026-10-01

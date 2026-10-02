@@ -999,3 +999,28 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `docs/controls/JX3_TARGET_SELECTION.md` §9.
 - Outcome: solved; runtime-set portrait face / buff rows / cast bar are
   skipped until their state exists (missing art draws nothing, per §6).
+
+### 2026-10-01 - client - in-world target indicator (KRLTarget assets, no hand-drawn art)
+- Did: researched the marker drawn around a selected target (not the HUD):
+  the represent layer's KRLTarget. Config is
+  `represent/common/force_relation_care.txt` (ForceRelationCareTable): one row
+  per relation with SFXFile (relation-coloured selection ring,
+  `选择特效aXXX_hd.pss`), SFXEn (`J_角色箭头面向.pss` facing cone),
+  SFXScale 1.8 and the relation colours; KRLTarget::Init/LoadFile/Show drive it
+  and EnableBraceSfx attaches the CommonCursorEffect ring (`鼠标移动.Sfx`);
+  the UI Lua (GlobalEventHandler.lua) calls TargetSelection_ShowSFX(relation,
+  flag). Implemented in client/RebornClient.cs: on selection change spawn the
+  client's own ring + facing cone at the target via AddDummyModel, remove on
+  deselect; RC_TARGET_HUD default off (the request is the in-world marker).
+- Evidence: run reborn_20261001_173107.log (Tab selects 初级试炼木桩 at 3s,
+  indicator h>0), proof/controls/target_indicator_client_20261001.txt
+  (before/after PNGs + 4x4 RGB; red px 10->128, yellow 150->7852).
+- Dead end (documented): the native KRLTarget attach needs the represent game
+  world; in the MovieEditor-hosted engine the represent singleton is null
+  (JX3RepresentX64.dll RVA 0xF06A50 = 0), so AttachSceneObject/Show cannot run;
+  the cursor-ring brace is a compiled .Sfx (AddDummyModel rejects it). Also the
+  game-client JX3RepresentX64.dll is a different build than MovieEditor's -
+  RVAs must come from the loaded copy. Re-open criteria in
+  docs/controls/JX3_TARGET_SELECTION.md §10.
+- Outcome: solved for the ring + facing cone; the brace/arrow composition waits
+  on represent-world host support.
