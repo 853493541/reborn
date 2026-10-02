@@ -1477,3 +1477,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   Stalled step still unidentified.
 - Evidence: doc §12; temp `probe_stdout.py`, `client_stdout.txt`; this commit (local).
 - Outcome: partial (technique + data; gate open).
+
+### 2026-10-01 — netcode — Step framework is anonymous lambdas; probe never spawns cefrender
+- Did: decoded the startup step framework (step_internal, RTTI->handler registry at
+  0x140a8c1f0, steps are lambdas); PlatformLoad enqueues a step + waits 10 s. Found the
+  probe client never spawns cefrender.exe (10 ms poll), while the real client does —
+  the startup stalls before/at the login/browser-UI stage (launcher session/URL likely
+  required). Static step naming is impractical (anonymous lambdas).
+- Evidence: doc §13; disasm of 0x14009c890 / 0x14009f480; CEF poll; this commit (local).
+- Outcome: partial (framework + stall region identified; exact step needs runtime read).

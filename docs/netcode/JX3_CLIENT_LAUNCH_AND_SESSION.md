@@ -224,3 +224,18 @@ what completes it (likely the launcher/security handshake).
 - Still open: which startup step never completes. Next probes: trace the stage functions
   (`PlatformLoad` `0x14009f480` enqueues steps and waits itself), or read the probe
   client's pending task at ~1.9 s (memory read of our own child, needs user OK).
+
+## 13. Step framework + CEF finding (2026-10-01, seventh pass)
+
+- The startup step framework is `step_internal`: classes `Step`/`StepGroup`/
+  `StepGroupFull`/`Async`/`Watchdog` plus anonymous `StepImpl<lambda_...>` instances,
+  dispatched through an RTTI->handler registry at `0x140a8c1f0` (`0x14009c890` looks up
+  `typeid(step)` and calls the handler). The steps are lambdas with no descriptive names
+  — naming the stalled step statically is impractical.
+- `PlatformLoad` (`0x14009f480`) enqueues a step and runs its own 10 s wait.
+- **The probe client never spawns `cefrender.exe`** (10 ms poll over a full run), while
+  the real client does (child of JX3ClientX64). A CEF job object appears but no browser
+  process. So the startup stalls **before/at the login/browser-UI stage** — consistent
+  with a launcher-provided session/URL being required.
+- Next: runtime read of the pending step (memory read of our own child, needs user OK),
+  or test whether a launcher-provided URL/session is the missing input.
