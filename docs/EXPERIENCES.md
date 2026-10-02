@@ -1431,3 +1431,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `proof/netcode/disasm/{multiprocess_toolhelp,exit_calls,watchdog_callers,exit2_callers,dotnotstart_va}.txt`;
   observe probe (90 modules incl. X3DEngine.dll, 0 windows, exit 2.31 s); this commit (local).
 - Outcome: partial (gate narrowed; cause open).
+
+### 2026-10-01 — process/netcode — purpose statement locked; protocol-layout miner; named-object enumerator
+- Did: (1) locked the project purpose/legal statement in `AGENTS.md` §1 and
+  `PLAN_REBORN_ONLINE.md` Rules — purely personal interest, will never earn money, purely
+  for fun, no commercial use/distribution. (2) #4: added `tools/netcode/mine_protocol_layouts.py`
+  (tracks the packet pointer through handler disassembly, filters offsets to the declared
+  size) -> `proof/netcode/protocol_layouts_s2c.tsv` (810 handlers, 447 with packet-relative
+  fields; common +3/+7/+11 frame fields match the known spec). (3) #5 readiness: added
+  `tools/netcode/enum_named_objects.py` (NtQueryDirectoryObject over session/global
+  namespaces); verified live — found `XLauncherV2ExistEvent`, per-exe `Startup/Quit`
+  events, `KGPK4-IPC-MQ-*`/`KGPK4-SHMM-*` sections. Also found the client's
+  `KJX3LaunchUpdaterModule::Initialize` launcher-file checks (`\xlancher\XLauncher.exe`,
+  `\XLauncher.exe`, `\gameupdater.exe`, WeGame message) — none exist on disk, so not the
+  fatal gate (real launches work).
+- Evidence: `AGENTS.md` §1, `PLAN_REBORN_ONLINE.md`, `proof/netcode/protocol_layouts_s2c.tsv`,
+  `tools/netcode/{mine_protocol_layouts,enum_named_objects}.py`, this commit (local).
+- Outcome: solved (statement + tooling ready).

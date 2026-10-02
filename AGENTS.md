@@ -9,6 +9,12 @@ JX3 "Reborn": research plus desktop prototypes that recreate JX3 runtime systems
 engine DLLs and original game data. The product is a desktop client — not a website.
 Game assets are private and are not in the repo.
 
+**Purpose & legal (locked, user statement):** this project is **purely for personal
+interest — it will NEVER earn any money; it is purely for fun.** No commercial use, no
+monetization, no distribution, no sale of any kind. Game assets stay private and are
+never redistributed. Any proposal that would commercialize the project is out of scope
+by this rule.
+
 ## 2. Workflow modes
 
 ### Default mode

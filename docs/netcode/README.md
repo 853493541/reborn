@@ -60,6 +60,8 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `extract_pak_paths.py`, `mine_item_scripts.py`, `dump_mode_inventory.py` | PakV4 path extraction, item-pool catalog, container inventory |
 | `extract_hpkg_member.py` | CDN `.hpkg` member extractor (LZHAM index, raw/LZHAM payload variants) |
 | `lua51_dump.py`, `gbk_grep.py`, `search_tree.py` | Lua 5.1 bytecode proto/const dump, GBK/UTF-16 binary grep, tree token search |
+| `mine_protocol_layouts.py` | per-handler packet field offsets from S2C handler disassembly -> `proof/netcode/protocol_layouts_s2c.tsv` |
+| `enum_named_objects.py` | list session named objects (mutexes/events/sections) — launcher-handoff gate hunting |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 
 ## Evidence (`proof/netcode/`)
