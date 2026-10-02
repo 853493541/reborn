@@ -595,10 +595,24 @@ int main(void)
                     logf("StartAnimation -> rc=0x%08X", (unsigned)src);
                     typedef long (__fastcall *FrameMoveFn)(void*);
                     FrameMoveFn fm = (FrameMoveFn)((BYTE*)eng + 0xBC2620);
-                    for (int f = 0; f < 120; f++)
+                    typedef long (__fastcall *EngFrameMoveFn)(void*);
+                    EngFrameMoveFn efm = (EngFrameMoveFn)((BYTE*)eng + 0x8C6330);
+                    for (int f = 0; f < 240; f++)
                     {
                         long frc = fm(ctrl);
-                        if (f == 0 || f == 59 || f == 119) logf("ctrl FrameMove[%d] -> 0x%08X", f, (unsigned)frc);
+                        long erc = efm(engine);
+                        if (f == 0 || f == 59 || f == 119 || f == 239)
+                            logf("FrameMove[%d] ctrl=0x%08X eng=0x%08X", f, (unsigned)frc, (unsigned)erc);
+                        if (f == 30 || f == 90)
+                        {
+                            typedef void* (__fastcall *GetNotifyFn)(void*);
+                            void* nt = ((GetNotifyFn)((BYTE*)eng + 0xE5560))(ctrl);
+                            logf("  notify tag=%p q0=%016llX q1=%016llX q2=%016llX q3=%016llX",
+                                 nt, nt ? *(unsigned long long*)nt : 0,
+                                 nt ? *(unsigned long long*)((BYTE*)nt+8) : 0,
+                                 nt ? *(unsigned long long*)((BYTE*)nt+0x10) : 0,
+                                 nt ? *(unsigned long long*)((BYTE*)nt+0x18) : 0);
+                        }
                         Sleep(16);
                     }
                     logf("animation frames done");

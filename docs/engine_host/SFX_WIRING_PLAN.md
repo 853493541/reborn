@@ -548,6 +548,23 @@ are the probe's own direct `.Sfx`/`.pss` tests) — next: find what evaluates th
 clip tags (controller/model update or the failing `vt+0x90` attach step) and/or
 confirm this clip carries SFX tags.
 
+**Tag system located (tag2.out/tag3.out):** during playback the controller's
+notifier tag (`?GetNotityTag@KG3D_AnimationController@@`, `0xE5560`) yields a live
+struct with advancing values; `?DispatchEvent@KG3D_AnimationController@@` (`0xBC3840`)
+is the animation-event entry. The tag implementation lives in
+**`KG3D_AnimationTagX64.dll`** (`KG3D_CreateAnimationTagSystem`): it contains
+`KG3D_AnimationSFXTag::SetTagData/GetTagInfo`, the strings `.Sfx` / `data\sound\`,
+`KG3D_AnimationCameraAniTag::GetTagInfo`, and `KG3D_AnimationTagLODInfo::Init`
+(`data\public\taniNotLod.tab`) — i.e., the SFX tags carry their `.Sfx` path and the
+engine only hands them out; **playing them is host logic**. The MovieEditor adapter
+has that reference implementation (`KG3D_EngineEventManager::_OnProcessActiveSFXTag`
+via `KG3D_MovieActor::FrameMove`, string present only in the MovieEditor build);
+the client host must do the same bridge: read the active SFX tags
+(`KG3D_AnimationSFXTag::GetTagInfo` on the notifier/dispatched tags) → create the
+effect with the engine's own `KG3D_CreateSFXFromFile`. Calling `engine->FrameMove`
+(`0x8C6330`, the engine's own per-frame update) in the loop does not create SFX by
+itself (tag3.out).
+
 Probe test: `0xB0F720(g_rootA)` after engine init **returns 0 (success)** but the
 tani still takes the raw path → `0xB101F0` still 0: the manager needs its
 path→mode mapping (what `manager->vt[0xD8]()` returns and what `obj->vt[1](path)`
