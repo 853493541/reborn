@@ -334,3 +334,16 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   WA: dyaw=2.51 dcam=-2.51; WD: dyaw=-2.52 dcam=+2.52 (1:1 both signs)
   back: cam kept (1.83), dist=96.
 - Gates: camera_smoke ALL PASS.
+
+## A/D are STRAFE-bound; RMB stick camera switches them to lateral movement (2026-10-01)
+- WHY (client data): default.txt binds A/D to STRAFELEFT/STRAFERIGHT (arrows are
+  TURN); the free-view strafe handler (hotkeys proto 76/78) delegates to
+  TurnStart, so A/D turn + carry the camera 1:1 when the camera is free. RMB
+  enables CONTROL_OBJECT_STICK_CAMERA (Scene proto 31): the heading is
+  mouse-owned, the turn intent cannot act, and the strafe intent moves the
+  character laterally -> W+D = diagonal walk, camera untouched.
+- Evidence, run reborn_20261001_222121.log (build git=9ca59b7 dirty=1):
+  WA mode=classical rmb=1 dpos=(-286,-257) dist=384 dyaw=-0.26 dcam=0.00  (diagonal, no camera turn)
+  WD mode=classical (no rmb) dpos=(68,182) dist=194 dyaw=3.77 dcam=2.51 (turn+camera curve)
+  strafe (A alone) yaw 3.14 / cam 3.14 (1:1); back dpos=(0,96) cam kept.
+- Gates: camera_smoke ALL PASS.

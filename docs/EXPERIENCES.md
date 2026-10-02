@@ -1365,3 +1365,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   TURNRIGHT 0.6 s: +1.88 / -1.88; W+A: 2.51 / -2.51; W+D mirrored; back-pedal
   camera kept. Smoke ALL PASS. Client relaunched (pid per session).
 
+
+### 2026-10-01 - controls/client - WHY W+D+RMB walks diagonally with no camera turn
+- User: W+D+RMB must walk upper-right with the camera still; find the real mechanism.
+- Decoded: shipped default.txt binds A/D to STRAFELEFT/STRAFERIGHT (arrows =
+  TURN); hotkeys proto 76/78 make the strafe handler call TurnStart ONLY when
+  Camera_IsInFreeView(), which is why A/D turn + carry the camera 1:1 without
+  RMB. RMB enables CONTROL_OBJECT_STICK_CAMERA (Scene proto 31) - stick/mouse-look
+  mode where the heading is mouse-owned: turn cannot act, strafe moves the
+  character laterally.
+- Implemented: rmbStrafe = classical && rmbDown -> A/D add lateral input and do
+  not turn; camera untouched (only the drag moves it). Evidence: WA rmb=1
+  dpos=(-286,-257) dist=384 dcam=0.00 (diagonal); WD no-rmb still curving.
+- Smoke ALL PASS; client relaunched (pid per session).
+- Note: g_Scene_bMouseMove/SetMouseMove ('CheckBox_MouseMove') is the operation
+  panel's click-to-move option, NOT this switch; MouseControlMoveEnable remains
+  the engine-side mouse-move option binding.
+

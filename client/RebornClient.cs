@@ -1932,9 +1932,16 @@ internal static class RebornClient
             // normal play. RC_FREEVIEW=0 keeps the god-camera side-step branch
             // (挪步 clips) reachable for tests.
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
-            bool turnL = pTurnL || (classicalMode && freeView && pA);
-            bool turnR = pTurnR || (classicalMode && freeView && pD);
-            bool latMoves = !(classicalMode && freeView);
+            // Decoded: A/D are STRAFE-bound (shipped default.txt); the free-view
+            // strafe handler delegates to TurnStart, which is why A/D turn (and
+            // carry the camera 1:1) WITHOUT RMB. While RMB holds the stick camera
+            // (CONTROL_OBJECT_STICK_CAMERA) the heading is mouse-owned, so the
+            // turn intent cannot act and the strafe intent moves the character
+            // laterally: W+D = diagonal walk, camera untouched.
+            bool rmbStrafe = classicalMode && rmbDown;
+            bool turnL = pTurnL || (classicalMode && freeView && pA && !rmbStrafe);
+            bool turnR = pTurnR || (classicalMode && freeView && pD && !rmbStrafe);
+            bool latMoves = !(classicalMode && freeView) || rmbStrafe;
             // sitting stands up on any movement intent (move / turn / jump)
             if (sitting && (pW || pS || pA || pD || pTurnL || pTurnR || autorunOn))
             {

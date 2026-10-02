@@ -19,7 +19,7 @@ the user-observed game behaviour):**
 |---|---|---|
 | W | run forward **along the facing** (classical; joystick keeps camera-relative) | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D · ←/→ | **decoded + implemented**: A/D/←/→ turn the character (`CONTROL_TURN_*`); the camera is never written by the keyboard. Free-view strafe→turn is OB-dungeon-only (hotkeys proto 63). **No RMB gate exists anywhere** — RMB only starts the camera drag (see §2) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
+| A/D · ←/→ | **decoded + implemented**: A/D are **STRAFE-bound** (shipped default.txt); in free view the strafe handler delegates to `TurnStart`, so A/D turn the character and carry the camera 1:1. **While RMB holds the stick camera** (`CONTROL_OBJECT_STICK_CAMERA`, mouse-look) the heading is mouse-owned: A/D become lateral movement (W+D = upper-right walk) and neither the character-turn nor the camera turns. ←/→ are TURN keys (no strafe switch) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
 | W+A / W+D | run while turning (a curve) — the view and the body rotate together (RMB does not change this) | run 320 u/s, curve radius v/ω |
 | S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
