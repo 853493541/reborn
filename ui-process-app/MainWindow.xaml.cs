@@ -523,6 +523,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, CurrentPage() ?? window.Page);
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, App.LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, App.ScriptShown(window));
+                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                 LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
@@ -535,7 +536,6 @@ namespace UiProcessApp
                     if (pageState.Hide != null && pageState.Hide.Count > 0)
                         LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", pageState.Hide));
                 }
-                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 if (plan.Filtered.Sections.Count == 0)
                 {
                     LayoutHost.Child = ShowMessage("All sections are hidden (check the 隐藏 list).");

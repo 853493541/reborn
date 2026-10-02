@@ -322,6 +322,33 @@ namespace MapUiApp.Engine
             var type = section.Get("._WndType") ?? "";
             if (SkipTypes.Contains(type)) return null;
 
+            // Item box: the engine paints the item's icon into the slot
+            // (Box:SetObjectIcon); the viewer draws the icon atlas frame when the
+            // inventory supplies one via the image override.
+            if (type == "Box")
+            {
+                var iconPath = section.Get("Image");
+                if (!string.IsNullOrWhiteSpace(iconPath))
+                {
+                    var iconFrame = section.GetInt("Frame", 0);
+                    var iconSource = textures.GetFrame(iconPath, iconFrame);
+                    if (iconSource != null)
+                    {
+                        var icon = new Image
+                        {
+                            Source = iconSource,
+                            Stretch = Stretch.Uniform,
+                            SnapsToDevicePixels = true,
+                        };
+                        var boxW = section.GetInt("Width");
+                        var boxH = section.GetInt("Height");
+                        icon.Width = boxW > 0 ? boxW : iconSource.PixelWidth;
+                        icon.Height = boxH > 0 ? boxH : iconSource.PixelHeight;
+                        return icon;
+                    }
+                }
+            }
+
             if (ContainerTypes.Contains(type))
             {
                 var container = new Canvas();
@@ -517,6 +544,22 @@ namespace MapUiApp.Engine
                     host.Children.Add(visual);
                     return host;
                 }
+                // Inventory `$BorderColor`/`$BorderWidth`: the engine's item boxes
+                // (UpdateItemBoxExtend) draw a rarity-colored frame; the viewer paints
+                // it around the authored slot art.
+                if (UiProcessApp.Engine.Fonts.TryGetColor(section.Get("$BorderColor"), out var rarityBorder))
+                {
+                    var thickness = Math.Max(1, section.GetInt("$BorderWidth", 1));
+                    var framed = new Border
+                    {
+                        BorderBrush = new SolidColorBrush(rarityBorder),
+                        BorderThickness = new Thickness(thickness),
+                        Child = visual,
+                    };
+                    if (!double.IsNaN(visual.Width)) framed.Width = visual.Width + thickness * 2;
+                    if (!double.IsNaN(visual.Height)) framed.Height = visual.Height + thickness * 2;
+                    return framed;
+                }
                 return visual;
             }
 
@@ -602,6 +645,15 @@ namespace MapUiApp.Engine
                     };
                     double offsetX = hAlign == 1 ? (width - textWidth) / 2
                         : hAlign == 2 ? width - textWidth : 0;
+                    // FormattedText under-measures some CJK strings; when the text fits
+                    // the authored box, let WPF align it exactly instead of trusting
+                    // the measured width.
+                    if (width > 0 && !overflowing && (hAlign == 1 || hAlign == 2))
+                    {
+                        block.Width = width;
+                        block.TextAlignment = hAlign == 1 ? TextAlignment.Center : TextAlignment.Right;
+                        offsetX = 0;
+                    }
                     Canvas.SetLeft(block, offsetX);
                     Canvas.SetTop(block, offsetY);
                     box.Children.Add(block);
@@ -921,6 +973,7 @@ namespace MapUiApp.Engine
 
             Canvas.SetLeft(element, left);
             Canvas.SetTop(element, top);
+            if (Wireframe && element.ToolTip == null) element.ToolTip = section.Name;
             if (Wireframe && element.ToolTip == null) element.ToolTip = section.Name;
 
             ApplyAlphaAndVisibility(element, section);

@@ -805,3 +805,123 @@ solved it, and what is still open. **Newest at the bottom.**
   `--audit` 15/0/77; fingerprint 1572x22 sha256 b66201afddb7efb9.
 - Outcome: done. Open: the glass blur itself is not reproduced (no backdrop);
   re-open if a capture shows visible glass on the message line.
+
+### 2026-09-30 — UI — 2.1 ready-confirm fix + per-map pages; 5.4 removed; 5.5 loot replay
+- Did: (a) 2.1 (ready-confirm / MB_entermap): the user reported the confirm/reject
+  label color. `Text_Option1/2` author FontScheme=1 (black) while the buttons
+  carry `NormalFont=18` (white) — the corpus convention (ExitPanel sure/cancel
+  pairs = 18) shows the button state font is the label's color source, so the
+  viewer now overrides both to 18 via the new `fontScheme` text field. Also
+  fixed the body string (the entry had 你要传送到...; the shipped
+  `STR_SWITCHMAP_GFZ_TIP` = 需要前往的"<D0>"地图吗？) and added one page per
+  battlefield map (296/297/410/512/532) whose texts override the appended body
+  (`__append_Handle_Message_1`). To let page texts reach appended sections,
+  `ApplyAppends` now runs before the text passes in all three render paths
+  (still after `ApplyLockedVisibility`, so locked ancestors can't eat the
+  synthetic sections).
+- (b) 5.4 (PVPShowPanel) removed from the viewer catalog: JSON entry deleted,
+  doc §6 row marked research-only (same treatment as the BR skill bar); the
+  selftest drops to 18 rendered.
+- (c) 5.5 (LootList) researched and corrected: the Lua rebuilds the list per
+  container (money row via `UpdateMoneyShow`, then one `Handle_Item` per entry
+  with `Text_Item` = item name colored by quality, `Box_Item` = icon + count,
+  `Image_Auction` only for the loot master) and `Btn_Sure` = STR_PICK_ALL ..
+  STR_BRACKETS(AUTOINTERACT key). The viewer now replays a sample container via
+  list clones: money row (authored 9999/99/99) + two item rows (金创药/止血草 —
+  real 沙漠风暴 drop-table names from `mode_doodad_inventory.txt`) stacked at
+  y=53/106, `Text_Sure` = 全部拾取［F］, the static templates + `Image_Auction`
+  + the hover glows hidden.
+- Evidence: `--render ready-confirm` → rc2/rc3 (body 需要前往的"龙门绝境"地图吗？/
+  ..."龙门绝境·夜"... per page; label ink #C2CFCF vs black before);
+  `--render loot-list` → `ll2.txt` (rows at y=40/93/146, no overlaps; Text_Sure
+  全部拾取［F］); `--selftest` 18/1/0; `--audit` 11/0/59.
+- Outcome: done. Open: the AUTOINTERACT key hint uses the F default (static
+  sample); loot item icons/count overlays need the item data
+  (`Table_GetItemIconID`); the pickup bar/smart-loot settings live outside this
+  window.
+
+### 2026-09-30 — UI — 2.1 pages in the GUI + 5.5 loot rows with rarity
+- Did: (a) the user reported every ready-confirm page still showed 龙门绝境 —
+  the GUI path (MainWindow) still ran `ApplyAppends` after the page texts (only
+  App.xaml.cs's three paths had been reordered); moved it there too, so the
+  page body overrides now apply in the viewer.
+- (b) 5.5 loot rows: names switched to the user's items (麻布绷带 first,
+  月影沙 second) and the rarity display implemented the way the Lua does it:
+  the item name color replays `SetFontColor(GetItemFontColorByQuality(...))`
+  through the engine's own `FontColor` key (new `fontColor` text-override field;
+  the viewer already resolves color.txt names) and the slot frame approximates
+  `UpdateItemBoxExtend` with a new `borderColor` image override (a rarity-
+  colored Border around the authored slot art). The exact item data
+  (`settings/Item/Item.tab`: quality/genre/icon id) is not in the local
+  extracts — `settings/沙漠风暴/*.tab` and the item tables MISS in every
+  extraction log — so the quality values are PROVISIONAL: 麻布绷带 普通/white,
+  月影沙 优秀/green2 (re-open: extract Item.tab or take a loot-window GT).
+- Evidence: `--render ready-confirm --page 410` → body 需要前往的"沧溟绝境"
+  地图吗？; `--render loot-list` → row0 name ink #CCCED0 + slot edge #F0F0F0
+  (white), row1 name ink #01C448 + slot edge #00C848 (green2); `--selftest`
+  18/1/0; `--audit` 11/0/59.
+- Outcome: done (rarity values provisional). Open: item icons/count overlays
+  (`Table_GetItemIconID` + the icon atlas) not reproducible yet.
+
+### 2026-10-01 — UI — 2.1 body placement root cause (append width before adjust)
+- Did: the user reported the ready-confirm body sat on the right. Root cause:
+  moving `ApplyAppends` before the text passes also moved it before the window
+  adjustments, so the appended box captured the container's AUTHORED width
+  (Handle_Message 500) instead of the adjusted 226, and the centered body was
+  offset by (500-text)/2. Fix: the append spec now carries `"width": 226`
+  explicitly (the adjusted content width). Verified against the render image:
+  the body is centered in the panel (panel pixel center 141, body ink center
+  ~137), buttons read white.
+- Also switched centered labels to exact WPF alignment (`block.Width` +
+  `TextAlignment`) when the text fits the authored box — `FormattedText`
+  under-measures some CJK strings and the offset math drifted.
+- Evidence: `--render ready-confirm` → rc10.png (body centered; DBG probes
+  showed box/host/block all at x=0 with a 226-wide block); `--selftest`
+  18/1/0; `--audit` 11/0/57.
+- Outcome: done. Open: 5.4 loot icons/rarity still blocked on the item data —
+  every extraction attempt MISSes `settings/Item/Item.tab`, the mode drop
+  tables and the icon textures (`ui/Image/System/...`); the icon registry
+  (`proof/ui/evidence/scheme/icon.txt`) exists but the item→icon mapping does
+  not. Next probe: a loot-window GT screenshot from the live client (like the
+  5.1/5.8 examples) or an extraction path for the item icon pak.
+
+### 2026-10-01 — UI — 5.4 loot icons recovered from the UI pak + Box icon support
+- Did: the user insisted the loot rows carry icons. Root cause of the earlier
+  misses: the icon textures do NOT live under `ui/Image/System/...` — the icon
+  registry `ui/Scheme/Case/icon.txt` (icon id -> FileName+frame+Kind+SubKind)
+  stores paths relative to **`ui/Image/Icon/`** (e.g. icon 18648 =
+  `System\Actionskill\skill_22_11_25_1.UITex` -> `ui/Image/Icon/System/
+  Actionskill/skill_22_11_25_1.UITex` + `.dds` atlas). The atlas extension is
+  `.dds`, not `.Tga`. Extracted the mode's icon set (the 2022-11 era: 3
+  Actionskill + 1 Coin + 2 GameplaySkill + 27 scroll items + 370 Drug icons to
+  identify them). 麻布绷带 = icon 18648 (the id from the user's own fight-stat
+  loot record `{"麻布绷带",false,1,18648,1}`); 月影沙 = icon 18652
+  (`System\GameplaySkill\item_22_11_30_2`) — the only 2022-11 gameplay-item
+  icon, provisional until the item table is reachable. Viewer: `Box` sections
+  now paint their `Image` (the icon atlas frame) so `Box_Item` rows show the
+  icon; icons copied to `ui-process-app/assets/ui/Image/Icon/...` (git-ignored).
+- Evidence: `--render loot-list` → ll6.png (麻布绷带 icon + white frame,
+  月影沙 icon + green frame, 全部拾取［F］); the extraction path HITs
+  (`ui\Image\Icon\System\Actionskill\skill_22_11_25_1.UITex/.dds`); the icon
+  contact sheets (drug/gameplay/DJ) used for identification; `--selftest`
+  18/1/0; `--audit` 11/0/57.
+- Outcome: done (月影沙 icon + both qualities still provisional). Open: the
+  exact item->icon mapping + qualities need `settings/Item/Item.tab`
+  (unreachable in every local pak) or a loot GT; count overlays not replayed.
+
+### 2026-10-01 — UI — 5.4 loot: drop the money row, re-pick icons + rarities
+- Did: the user reported the icons/rarities wrong and asked to drop the first
+  loot row. (a) The money row (a sample artifact — the real box holds only the
+  two items) is gone: the money list clone removed and the item clones now stack
+  from the top (adjust entries dropped). (b) Icons re-picked from the shipped
+  icon sets instead of the 2022-11 mode set: 麻布绷带 = icon 6011
+  (`System\Drug\CL_0417_01`, a cloth roll), 月影沙 = icon 1321
+  (`System\Drug\medicNew01b`, the blue powder — the powder series reads as a
+  sand). (c) Rarities changed to 优良/green2 (麻布绷带) and 精良/blue2
+  (月影沙) — still reasoned, not table-derived.
+- Evidence: `--render loot-list` → ll7.png (two rows only: 麻布绷带 with the
+  cloth-roll icon + green name/frame, 月影沙 with the blue-powder icon + blue
+  name/frame, 全部拾取［F］); `--selftest` 18/1/0; `--audit` 11/0/57.
+- Outcome: done. Open: the exact item->icon/quality mapping still needs the
+  item table or a loot GT — the current picks are the closest shipped-art
+  matches, clearly provisional.

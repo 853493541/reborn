@@ -66,7 +66,7 @@ updates via `OnQueuePosUpdate` / `OnSyncMapQueueInfo`.
 - **PROVEN (renderer):** the prompt is the engine's generic KGUI MessageBox
   (`ui/Config/Default/MessageBox/MessageBox.ini`, 35 sections), opened as
   `MB_entermap` by the shell `ui/script/module.lua` `ComfirmEnterQueuedMap`:
-  body `FormatString(STR_SWITCHMAP_GFZ_TIP, map)` = 你要传送到"<map>"地图吗？,
+  body `FormatString(STR_SWITCHMAP_GFZ_TIP, map)` = 需要前往的"<map>"地图吗？,
   option 1 `STR_HOTKEY_SURE` (确定) with `nCountDownTime=30` through
   `MSG_BRACKET` `<D0>(<D1>)` = 确定(30), option 2 `STR_HOTKEY_CANCEL` (取消);
   the script appends the body to `Handle_Message` (`AppendItemFromString`,
@@ -78,7 +78,12 @@ updates via `OnQueuePosUpdate` / `OnSyncMapQueueInfo`.
   `ui-process-app/Data/text/ui/String/string.txt` (8,242 ids). The viewer
   renders the 龙门绝境 sample (MapList 296/297) at the first countdown frame:
   `ui-process-app` `ready-confirm` (inventory `appends` + `texts`); render
-  `proof/ui/evidence/ready_confirm_render.png` (2026-09-29).
+  `proof/ui/evidence/ready_confirm_render.png` (2026-09-29). The viewer now
+  carries one page per battlefield map (296/297/410/512/532 — the page texts
+  override the appended body) and the option labels replay the button's
+  `NormalFont` scheme 18 (the authored `Text_Option` FontScheme=1 black is a
+  stale default — the ExitPanel sure/cancel pairs carry 18; the button state
+  fonts are the label's color source).
 - `STR_PVP_Ready` = 准备好了 is a separate label (no extracted consumer);
 - `STR_SETTING244` = 无需倒计时直接进入 (skip countdown and enter) — a user option
   that affects this transition.
@@ -143,11 +148,11 @@ PSS renderer.
 | storm countdown HUD | `STR_TIMEDESERT` 风暴倒计时： | **PARTIAL — renderer not found** (see §8) |
 | remaining players | `STR_LEFTPEELE` 剩余人数： | PARTIAL — same |
 | storm state | `STR_STORM` 风暴, `STR_STORM2` 风暴状态 | PROVEN labels |
-| loot window / pickup | `LootList.lua`, `CanPick` bar text 拾取/打开/操作, `MaxLootRange=5` | PROVEN |
+| loot window / pickup | `LootList.lua`, `CanPick` bar text 拾取/打开/操作, `MaxLootRange=5` | PROVEN — viewer replays the two loot items only (麻布绷带 / 月影沙, no money row) stacked via list clones, `Btn_Sure` = STR_PICK_ALL .. STR_BRACKETS(AUTOINTERACT key) = 全部拾取［F］; names + slot frames use the rarity colors (viewer `fontColor`/`borderColor` overrides, replaying `GetItemFontColorByQuality`/`UpdateItemBoxExtend`); icons come from the UI pak via the `icon.txt` registry (`ui/Image/Icon/System/Drug/...` — 麻布绷带 = icon 6011 `CL_0417_01`, 月影沙 = icon 1321 `medicNew01b`) and are painted on the Box slots; rarities 优良/green2 + 精良/blue2 are provisional (the item table is unreachable) |
 | smart loot / auto-pick | `STR_SETTING195/196/197/199/202` + `STR_SETTING201` (filter rules re-read every entry) | PROVEN settings |
 | buffs/debuffs | `BuffList.lua`, `DebuffList.lua`, `TargetBuff.lua` | PROVEN files |
 | team frames | `Teammate.lua`, `TeamBuff.lua`, `RaidPanel.lua` | PROVEN files |
-| damage/heal/kill stats panel | `PVPShowPanel.lua`: `GetBattleFieldStatistics` + `PQ_STATISTICS_INDEX` (`INJURY`/`HARM_OUTPUT`/`TREAT_OUTPUT`) | PROVEN |
+| damage/heal/kill stats panel | `PVPShowPanel.lua`: `GetBattleFieldStatistics` + `PQ_STATISTICS_INDEX` (`INJURY`/`HARM_OUTPUT`/`TREAT_OUTPUT`) | PROVEN — research only; removed from the viewer catalog 2026-09-30 (its window is not part of the product's UI list) |
 | kill feed / messages | `MainMessageLine.lua` (SYS_MSG); the info segments are runtime clones of `Handle_Info`/`Handle_Currency`/`Handle_Money` into `Handle_MainMessage` (addCommom/addCurrency/addMoney) driven by `Table_GetMessageLineList` (`ui/Scheme/Case/MessageLineList.txt`, 29 show/hide rows in 4 groups) + the saved `tShow` (default 网络延迟/时间/WeGame身份码, lua:100-111); `Btn_Settings` opens the numerical panel (OpenNumericalPanel, lua:1630-1657) | PROVEN — viewer replay matches the 5.8 Example capture (网络延迟：100 green, 时间：2026-08-22 00:31:45, 渲染FPS：34 orange, 逻辑FPS：34 orange, titles carrying `STR_COLON`) as five `Handle_Info` clones flowing right (`list flow row`; content-sized item widths via `adjust`); value colors replay the Lua's font switch via the new `fontScheme` text override (`getPingFont` ≤300ms → scheme 105 green2; `getFPSFont` 20-39 → 101 orange2, lua:465-531); the static template blocks hidden; the per-item `Image_HighlightI` plate (Common.UITex frame 4, no Lua driver — engine hover highlight) is dropped from the clones (`hide`), matching the 5.8 GT (no plate behind the items); `Image_Glassmorphism` (770x32, ImageType=16 backdrop blur) is hidden — its plate would overhang the 22-tall bar (GT bar uniform) |
 | streamer-mode banner | `STR_STORM3` 本场有主播玩家参与… | PROVEN label |
 | observer button | `Btn_Observer` + `UpdateObserverButton` (`Minimap.ini`, `Minimap.decompiled.lua:635,3654,7452`) | OPEN (BR gating unknown) |

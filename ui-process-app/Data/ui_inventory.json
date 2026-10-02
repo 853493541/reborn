@@ -2,7 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-  "defaultWindow": "main-message-line",
+          "defaultWindow": "ready-confirm",
   "stages": [
     {
       "id": "queue",
@@ -123,11 +123,18 @@
           "path": "Config/Default/MessageBox/MessageBox.ini",
           "hide": "CheckBox_Msg,Btn_Option3,Btn_Close",
           "appends": [
-            { "container": "Handle_Message", "text": "你要传送到\"龙门绝境\"地图吗？", "font": 18, "top": 20, "height": 17 }
+            { "container": "Handle_Message", "text": "TEST", "font": 18, "top": 20, "height": 17, "width": 226 }
           ],
           "texts": [
-            { "section": "Text_Option1", "text": "确定(30)" },
-            { "section": "Text_Option2", "text": "取消" }
+            { "section": "Text_Option1", "text": "确定(30)", "fontScheme": 18 },
+            { "section": "Text_Option2", "text": "取消", "fontScheme": 18 }
+          ],
+          "pages": [
+            { "id": "296", "label": "龙门绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"龙门绝境\"地图吗？" } ] },
+            { "id": "297", "label": "龙门绝境·夜", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"龙门绝境·夜\"地图吗？" } ] },
+            { "id": "410", "label": "沧溟绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"沧溟绝境\"地图吗？" } ] },
+            { "id": "512", "label": "白龙绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"白龙绝境\"地图吗？" } ] },
+            { "id": "532", "label": "天原绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"天原绝境\"地图吗？" } ] }
           ],
           "adjust": [
             { "section": "MessageBox", "width": 226, "height": 103 },
@@ -142,7 +149,7 @@
             { "section": "Btn_Option1", "left": 20, "top": 0 },
             { "section": "Btn_Option2", "left": 118, "top": 0 }
           ],
-          "summary": "The queue match-found prompt is the engine's generic KGUI MessageBox (ui/Config/Default/MessageBox/MessageBox.ini), opened as MB_entermap by the compiled ui/script/module.lua ComfirmEnterQueuedMap handler. Body = FormatString(STR_SWITCHMAP_GFZ_TIP, map) = 你要传送到\"<map>\"地图吗？; option 1 = STR_HOTKEY_SURE (确定) with nCountDownTime=30 rendered through MSG_BRACKET <D0>(<D1>) = 确定(30); option 2 = STR_HOTKEY_CANCEL (取消). The script appends the body to Handle_Message (AppendItemFromString, font 18), fills Text_Option1/2, hides the 不再提示 checkbox (no tCheckBoxConfig) and Btn_Close (no bShowClose), and fnAutoClose auto-confirms when the 30 s run out. Layout replays MessageBox.lua:829-842 for this state: body 205px -> content 226x83, window 226x103, panel (Image_Bg/Glassmorphism) 282x103, option row at y=55 with buttons at x=20/118 (10px gap), ornaments anchored to Image_Bg. The static render uses the 龙门绝境 sample (maps 296/297, MapList.tab) at the first countdown frame; the ids come from the global g_tStrings lib ui/String/string.lua (extracted by tools/ui/extract_lua_string_table.py).",
+          "summary": "The queue match-found prompt is the engine's generic KGUI MessageBox (ui/Config/Default/MessageBox/MessageBox.ini), opened as MB_entermap by the compiled ui/script/module.lua ComfirmEnterQueuedMap handler. Body = FormatString(STR_SWITCHMAP_GFZ_TIP, map) = 需要前往的\"<map>\"地图吗？; option 1 = STR_HOTKEY_SURE (确定) with nCountDownTime=30 rendered through MSG_BRACKET <D0>(<D1>) = 确定(30); option 2 = STR_HOTKEY_CANCEL (取消). The script appends the body to Handle_Message (AppendItemFromString, font 18), fills Text_Option1/2, hides the 不再提示 checkbox (no tCheckBoxConfig) and Btn_Close (no bShowClose), and fnAutoClose auto-confirms when the 30 s run out. Layout replays MessageBox.lua:829-842 for this state: body 205px -> content 226x83, window 226x103, panel (Image_Bg/Glassmorphism) 282x103, option row at y=55 with buttons at x=20/118 (10px gap), ornaments anchored to Image_Bg. Viewer pages 296/297/410/512/532 replay each map's body (the page texts override the appended body); the option labels use the button's NormalFont scheme 18 (the authored Text_Option FontScheme=1 black is a stale default — the ExitPanel sure/cancel pairs carry 18); the ids come from the global g_tStrings lib ui/String/string.lua (extracted by tools/ui/extract_lua_string_table.py).",
           "evidence": [
             "ui/Config/Default/MessageBox/MessageBox.ini",
             "ui/String/string.lua (g_tStrings: STR_SWITCHMAP_GFZ_TIP, STR_HOTKEY_SURE/CANCEL, MSG_BRACKET)",
@@ -397,36 +404,30 @@
           ]
         },
         {
-          "id": "pvp-show-panel",
-          "title": "PVPShowPanel",
-          "cn": "对局统计面板",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/PVPShowPanel.ini",
-          "anchors": [
-            { "section": "Wnd_HPListL", "s": "LEFTCENTER", "r": "LEFTCENTER", "x": 0, "y": 10 },
-            { "section": "Wnd_HPListR", "s": "RIGHTCENTER", "r": "RIGHTCENTER", "x": 0, "y": 10 },
-            { "section": "Wnd_PlayerInfo", "s": "BOTTOMCENTER", "r": "BOTTOMCENTER", "x": 0, "y": 0 }
-          ],
-          "summary": "In-match statistics table fed by GetBattleFieldStatistics + PQ_STATISTICS_INDEX slices (INJURY / HARM_OUTPUT / TREAT_OUTPUT / SPECIAL_OP_7). UpdatePos (PVPShowPanel.lua:155-183) anchors the team HP lists to LEFTCENTER/RIGHTCENTER and the player info to BOTTOMCENTER at runtime; the inventory anchors replay that.",
-          "evidence": [
-            "ui/Config/Default/PVPShowPanel.ini",
-            "proof/netcode/ui/PVPShowPanel.dump.txt:40,70-72"
-          ],
-          "elements": [
-            "Per-player rows: name / kills / damage / healing",
-            "BATTLE_FIELD_SYNC_STATISTICS event refresh"
-          ],
-          "labels": []
-        },
-        {
           "id": "loot-list",
           "title": "LootList",
           "cn": "拾取窗口",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/LootList.ini",
-          "summary": "Container loot window (OnSyncLootList), pickup bar (拾取/打开/操作), smart-loot and filter options; MaxLootRange = 5.",
+          "hide": "Handle_Money,Handle_Item,Handle_Currency",
+          "lists": [
+            { "container": "Handle_LootList", "ini": "LootList.ini", "item": "Handle_Item", "count": 2, "textSection": "Text_Item",
+              "rowTexts": ["麻布绷带", "月影沙"],
+              "hide": ["Image_Auction", "Image_ItemMO"] }
+          ],
+          "texts": [
+            { "section": "Text_Sure", "text": "全部拾取［F］" },
+            { "section": "__lt_Handle_LootList_0_Text_Item", "fontColor": "green2" },
+            { "section": "__lt_Handle_LootList_1_Text_Item", "fontColor": "blue2" }
+          ],
+          "images": [
+            { "section": "__lt_Handle_LootList_0_Image_ItemBg", "borderColor": "green2" },
+            { "section": "__lt_Handle_LootList_1_Image_ItemBg", "borderColor": "blue2" },
+            { "section": "__lt_Handle_LootList_0_Box_Item", "image": "ui/Image/Icon/System/Drug/CL_0417_01.UITex" },
+            { "section": "__lt_Handle_LootList_1_Box_Item", "image": "ui/Image/Icon/System/Drug/medicNew01b.UITex" }
+          ],
+          "summary": "Container loot window (OnSyncLootList): the Lua rebuilds the list per container - a money row when GetLootMoney>0 (UpdateMoneyShow splits gold/silver/copper, lua:616+) then one Handle_Item row per GetLootList entry (Text_Item = GetItemNameByItem colored by GetItemFontColorByQuality; Box_Item gets SetObject/SetObjectIcon/SetOverText count, lua:479-577); Image_Auction shows only for the loot master (IsDistributeMan, lua:585-604). Btn_Sure label = STR_PICK_ALL .. FormatString(STR_BRACKETS, GetKeyShow(AUTOINTERACT)) = 全部拾取［F］ (lua:112-124). Viewer replays a sample container with the two requested items only (no money row): 麻布绷带 / 月影沙 stacked via the list clones; the item names replay SetFontColor via the engine's FontColor key (viewer `fontColor` text override) and the slot art carries a rarity frame (viewer `borderColor` image override, approximating UpdateItemBoxExtend); the rarities are 麻布绷带 = 优良/green2, 月影沙 = 精良/blue2 (provisional — settings/Item/Item.tab is not in the local extracts). The static templates, Image_Auction and the mouse-over glows are hidden. The item icons are extracted from the UI pak (`ui/Image/Icon/System/Drug/...`; the icon registry `ui/Scheme/Case/icon.txt` maps icon id -> UITex+frame): 麻布绷带 = icon 6011 (`System\\Drug\\CL_0417_01`, a cloth roll), 月影沙 = icon 1321 (`System\\Drug\\medicNew01b`, the blue powder) — both reasoned picks from the shipped icon sets, provisional until the item table is reachable; the viewer paints them on the Box slots (new Box `Image` support). Count overlays (Box:SetOverText) are not reproduced. Pickup bar (拾取/打开/操作) + smart-loot settings live outside this window; MaxLootRange = 5.",
           "evidence": [
             "ui/Config/Default/LootList.ini",
             "docs/netcode/JX3_LOOT_PROTOCOL_LAYOUTS.md",

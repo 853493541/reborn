@@ -131,6 +131,13 @@ namespace UiProcessApp.Engine
         /// 105 green2 by the live value). Null keeps the authored FontScheme.
         /// </summary>
         public int? FontScheme { get; set; }
+
+        /// <summary>
+        /// Replays the Lua's SetFontColor calls (e.g. the loot rows use
+        /// GetItemFontColorByQuality): a shipped color.txt name written to the
+        /// engine's own FontColor key, which overrides the scheme's fill.
+        /// </summary>
+        public string FontColor { get; set; }
     }
 
     /// <summary>
@@ -147,6 +154,15 @@ namespace UiProcessApp.Engine
         public string Image { get; set; }
         public int? Frame { get; set; }
         public bool? Checked { get; set; }
+
+        /// <summary>
+        /// Rarity frame for item slots: the engine's `UpdateItemBoxExtend` draws a
+        /// quality-colored border around an item box; the viewer paints it around
+        /// the authored slot art. `BorderColor` is a shipped color.txt name,
+        /// `BorderWidth` the frame thickness (default 1).
+        /// </summary>
+        public string BorderColor { get; set; }
+        public int? BorderWidth { get; set; }
     }
 
     /// <summary>
@@ -407,12 +423,14 @@ namespace UiProcessApp.Engine
                     var table = TabTable.Load(text.Table);
                     value = table?.Lookup(text.TableKeyColumn, text.TableKey, text.TableColumn);
                 }
-                if (string.IsNullOrWhiteSpace(value)) continue;
                 if (!filtered.ByName.TryGetValue(text.Section, out var section)) continue;
-                section.Values["$Text"] = value;
+                if (!string.IsNullOrWhiteSpace(value))
+                    section.Values["$Text"] = value;
                 if (text.FontScheme.HasValue)
                     section.Values["FontScheme"] = text.FontScheme.Value
                         .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (!string.IsNullOrWhiteSpace(text.FontColor))
+                    section.Values["FontColor"] = text.FontColor;
             }
         }
 
@@ -429,6 +447,11 @@ namespace UiProcessApp.Engine
                     section.Values["Frame"] = image.Frame.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 if (image.Checked.HasValue)
                     section.Values["CheckedWhenCreate"] = image.Checked.Value ? "1" : "0";
+                if (!string.IsNullOrWhiteSpace(image.BorderColor))
+                    section.Values["$BorderColor"] = image.BorderColor;
+                if (image.BorderWidth.HasValue)
+                    section.Values["$BorderWidth"] = image.BorderWidth.Value
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 

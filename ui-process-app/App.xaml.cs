@@ -172,6 +172,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                 LayoutPlanBuilder.ApplyOnly(plan.Filtered, only);
+                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                 LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
@@ -183,7 +184,6 @@ namespace UiProcessApp
                     if (pageState.Hide != null && pageState.Hide.Count > 0)
                         LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", pageState.Hide));
                 }
-                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
@@ -439,6 +439,7 @@ namespace UiProcessApp
                         LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
                         LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                         LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                        LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                         LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                         LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                         LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
@@ -450,7 +451,6 @@ namespace UiProcessApp
                             LayoutPlanBuilder.ApplyImages(plan.Filtered, auditPage.Images);
                             LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, auditPage.Adjust);
                         }
-                        LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                         var build = UiLayout.Build(plan.Filtered, assets, textures);
 
                         double width = plan.Filtered.Sections[0].GetInt("Width");
@@ -615,6 +615,7 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
                             LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                             LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
                             LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                             LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
@@ -626,7 +627,6 @@ namespace UiProcessApp
                                 LayoutPlanBuilder.ApplyImages(plan.Filtered, selfPage.Images);
                                 LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, selfPage.Adjust);
                             }
-                            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                             var build = UiLayout.Build(plan.Filtered, assets, textures);
                             rendered++;
                             report.AppendLine($"OK   {window.Id,-22} sections={plan.Filtered.Sections.Count,-5} " +
