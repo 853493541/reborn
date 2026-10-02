@@ -161,6 +161,15 @@ for school 4) is modelled in `client/RebornClient.cs` (`jipaoActive`), verified
 
 ### 7.1 万花大轻功「点墨江山」 in the sandbox (implemented 2026-09-30)
 
+> **FAILED 2026-10-01 — branch `feature/ww-sandbox` abandoned.** The sandbox
+> reconstruction below (and the later 八大派 SkillMove chain that replaced it)
+> was rejected as not matching the live game; the user declared the branch a
+> complete failure. Engine-side truth decoded too late, for a next attempt:
+> SkillMove rows apply per 15 Hz logic frame with per-move scale factors at
+> `[rbx+r10*8+0x2D8/+0x2DC]` (undecoded), and the sandbox never applied
+> DirectionXY or the end-of-move base velocity. See `docs/EXPERIENCES.md`
+> 2026-10-01 failure entry for the full analysis and re-open criteria.
+
 Sources: `proof/controls/sprint/out/scripts/skill/轻功/轻功通用/万花轻功触发.lua`,
 `万花轻功急坠.lua`; `settings/JumpParam.tab` school 4; `Sprint/Condition.tab`
 school 4 JC1..JC5; `Sprint/Action.tab` actions 5/8/9/10/11.

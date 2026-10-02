@@ -1297,3 +1297,50 @@ eborn_client_daqinggong carries these changes — other
 - Open: the base chain (the 小跳 -> the 一段..) vs the special 棋弈 entry (the
   切入) - both cast from the 疾跑段; the water 冲刺 (183) not wired.
 - Outcome: the chain now runs the real current stage moves.
+
+### 2026-10-01 — client — FAILED: 万花大轻功 sandbox (branch `feature/ww-sandbox`)
+
+**Problem:** Recreate the live 万花大轻功 (点墨江山) in the sandbox from the
+client's own data. Every iteration was rejected by the user as "nothing like" the
+live game ("every single step is just not what I expect"); the user declared the
+branch a complete failure and it is abandoned.
+
+**Tried:** (1) The WwRules model: WW/疾跑段 + Space chain from JumpParam J1..J5 +
+End triple, 急坠, air dash, fly costs, release-W exit. (2) Deleted it all
+(`c1c266b`), rebuilt the 八大派 chain from the real exec scripts: entry 切入
+(15554/SkillMove 126, cost 5000), Space = 纵跃段 (15835/175) -> 一段..四段
+(15577/15579/15581/15688 = 127/128/129/163), Shift at 一段 -> 棋弈 (float cycle
+一段..五段, 五段+Space -> 一段), Shift in 棋弈 -> 六段 fall, release W = 登顶,
+fall between stages (`31cdd5b`, `b851d65`, `cad696d`, `cba150d`). (3) Stage motion
+from `SkillMove.tab` per-frame VelocityXY/Z, first at 15 Hz then at 30 fps
+(uncommitted until this entry) — the resulting numbers table (一段 1.23 s / 32 m
+rise; 二段 1.47 s / 112 m; 切入 214 m) was implausible at every setting.
+
+**Outcome:** dead end (branch abandoned, user-declared failure).
+
+**Why:** the engine-side application of the SkillMove rows was never decoded
+before implementing; the late decode (`proof/gravity/disasm/on_parkour.txt`,
+`get_skill_move_setting_callers.txt`) shows: `KCharacter::OnParkour` advances the
+row per **logic frame (15 Hz)** — frame index = TotalFrame − counter `[+0xC08]` —
+and applies `VelocityXY (int16 row[+2+2i]) × scale_xy` -> speed `[+0x268]` (x16,
+clamp 0..0x7FF) / `[+0x2F8]` (clamp 0..0x7F), `VelocityZ (int32 row[+0x144+4i]) ×
+scale_z` -> `[+0x270]` (clamp ±0x7FF), and `heading += DirectionXY (int16
+row[+0x3C4+2i])`; at the end the base velocity `[+0x2D0]<<4` / `[+0x2D4]` is kept;
+`IngoreGravity` = row `+0x5A7`. The scale floats at `[rbx+r10*8+0x2D8/+0x2DC]`
+(`r10` from `0x1403A23E0(moveID, frame)`, row getter `0x1403A2380`) are still
+undecoded — the raw table values are not necessarily the final velocities. The
+sandbox ignored DirectionXY and the end-of-move base velocity, and ran the frames
+at 30 fps (2x the logic rate). `ParkourMove.tab` (IDs 1..100) and
+`JumpFrameParam.tab` (SchoolID x JumpCount x DoublePlayer) are separate systems,
+not the stage rows.
+
+**Re-open criteria:** decode `0x1403A2380` / `0x1403A23E0` and the writers of
+`+0x2D8/+0x2DC`; confirm the OnParkour caller cadence (15 Hz); then derive
+duration/Δy/Δforward/heading per stage from `SkillMove.tab × scale` and implement
+exactly that, verified by demo logs (per-stage Δy/Δforward vs the derived table).
+
+**Links:** branch `feature/ww-sandbox` (`c1c266b`, `31cdd5b`, `b851d65`, `cad696d`,
+`cba150d` + the 30 fps commit); `proof/gravity/disasm/on_parkour.txt`,
+`proof/gravity/disasm/get_skill_move_setting_callers.txt`,
+`proof/gravity/SkillMove.tab`,
+`proof/controls/sprint/out/scripts/skill/轻功/八大派/万花/`.
