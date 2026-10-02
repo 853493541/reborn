@@ -790,7 +790,30 @@ int main(void)
                                     sprintf_s(taniPath, sizeof(taniPath),
                                               "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
                                     void* anim = NULL;
-                                    // does the engine's own KG3D_LoadFile unwrap the GATA tani?
+                                    // game-layer file open: does it unwrap the GATA tani?
+                                    {
+                                        typedef void* (__cdecl *KGOpenFileFn)(const char*);
+                                        HMODULE luaM = GetModuleHandleA("Engine_Lua5X64.dll");
+                                        KGOpenFileFn kgopen = (KGOpenFileFn)((BYTE*)luaM + 0xC02E0);
+                                        void* ifile = kgopen(taniPath);
+                                        logf("  KG_OpenFile(tani) -> %p", ifile);
+                                        if (ifile != NULL)
+                                        {
+                                            __try
+                                            {
+                                                void** ivt = *(void***)ifile;
+                                                logf("  ifile vtable=%p", ivt);
+                                                for (int i = 0; i < 16; i++)
+                                                    logf("  ifile vt[%d] = 0x%llX", i,
+                                                         (unsigned long long)((BYTE*)ivt[i] - (BYTE*)luaM));
+                                                BYTE* ib = (BYTE*)ifile;
+                                                logf("  ifile bytes[0..0x30]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                     ib[0],ib[1],ib[2],ib[3],ib[4],ib[5],ib[6],ib[7],
+                                                     ib[8],ib[9],ib[10],ib[11],ib[12],ib[13],ib[14],ib[15]);
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  ifile read fault"); }
+                                        }
+                                    }
                                     {
                                         typedef void* (__fastcall *LoadFileFn2)(const char* path, int flags);
                                         LoadFileFn2 lf2 = (LoadFileFn2)((BYTE*)eng + 0xB0F870);
@@ -866,8 +889,8 @@ int main(void)
                                 gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", sp, sizeof(sp));
                                 gbk(L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", sf, sizeof(sf));
                                 gbk(L"data\\source\\other\\特效\\技能\\sfx\\增益\\c纯阳坐忘.sfx", sfLow, sizeof(sfLow));
-                                logf("g_IsFileExist(mesh)=%d sfx=%d sfxLow=%d",
-                                     exist(sp), exist(sf), exist(sfLow));
+                                logf("g_IsFileExist(mesh)=%d sfx=%d sfxLow=%d loose=%d",
+                                     exist(sp), exist(sf), exist(sfLow), exist("data\\zz_loose_test.txt"));
                                 typedef void* (__fastcall *LoadFileFn)(const char* path, int flags);
                                 LoadFileFn lf = (LoadFileFn)((BYTE*)eng + 0xB0F870);
                                 void* r1 = lf(sp, 0);
@@ -991,6 +1014,8 @@ int main(void)
     logf("probe done");
     return 0;
 }
+
+
 
 
 

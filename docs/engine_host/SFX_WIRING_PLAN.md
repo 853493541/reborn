@@ -429,6 +429,15 @@ manager checks the **unwrapped** payload magic (`ANIM`), so the GATA unwrap must
 from the layer the game uses for streamed/packed files (streaming file manager / game
 `g_OpenFile` `IFile` read). Load flags a4 = 0/1/2 all fail identically.
 
+Container details (`loose2.out`, `kgopen.out`): the `.tani` GATA wrapper's inner name is
+**`.ani`** (`data\source\player\f1\动作\f1b01ty…02.ani`), payload after the path is not
+`ANIM` (likely compressed) — the extractor dumps the raw PakV4 record. **Loose files ARE
+served** by the game layer (`g_IsFileExist("data\zz_loose_test.txt") = 1` — the earlier
+"pak-only" conclusion was a wrong-path artifact), so writing an unwrapped file into the
+working root is a viable route if pak precedence allows. `KG_OpenFile(tani)` (game-layer
+`0xC02E0`) returned NULL — needs the right API/args; the GATA unwrap layer is the last
+blocker for the original tag-driven playback.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
