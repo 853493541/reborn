@@ -1561,3 +1561,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc 21; probe_queue.py runs; RTTI name resolution over 52 vtables.
 - Outcome: step 1 done; step 2 shows the group's own queue; step 3 next (which module creates
   state_sub+0x18).
+### 2026-10-02 — V2 — log-visibility probe: the log path is gated by the startup gate
+- Did: `tools/netcode/probe_logpatch.py` — spawns the client suspended (block + resume), then
+  patches our own probe child only: engine ANSI root -> C:\jx3t\, KJX3ConfigModule +0x224=1,
+  engine log flags |= 6, and the fixed 16-byte viewer literal -> \bin64\lv.exe.
+- Findings: (1) the engine's g_GetRootPath is a copy helper over an **ANSI** root at
+  engine+0x170060 (corrects the sec.26 "UTF-16" note); (2) with everything patched from
+  0.66 s and held, no viewer spawns and no client_log.txt appears — because the 52 modules'
+  Initialize handlers are only *registered*, never called, in the probe (no window/log dir/CEF
+  either). Module Initialize waits on the same missing `state_sub+0x18` platform object.
+- Evidence: doc sec.27; probe runs (patches verified applied + read back); child exit ~2.2 s.
+- Lesson: log visibility cannot precede the startup gate — do not spend more time on the log
+  channel before the gate is solved.
+- Outcome: negative result recorded; next = find the writer of state_sub+0x18 (launcher IPC /
+  security handshake candidates).

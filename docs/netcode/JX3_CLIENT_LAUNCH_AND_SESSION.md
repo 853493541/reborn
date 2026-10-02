@@ -491,3 +491,33 @@ KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX
   (`C:\SeasunGame\Game\JX3\bin\zhcn_hd\...` at e.g. 0xE6C89FF1FE) and `g_GetRootPath` converts it.
 - Next: patch the UTF-16 root (or find g_GetRootPath's ANSI source) so `<root>bin64\xlogv.exe`
   resolves to our viewer; then the client's full log stream lands in `C:\jx3tmp\client_log.txt`.
+
+## 27. Log-visibility probe: the log path is gated by the startup gate (2026-10-02, twenty-first pass)
+
+Tool: `tools/netcode/probe_logpatch.py` (extends `probe_state_timeline`'s spawn/block/read
+machinery; patches our own probe child only, transient, no disk writes).
+
+- **Engine root is ANSI, not UTF-16** (corrects sec.26): `g_GetRootPath` (Engine_Lua5X64.dll,
+  called through exe IAT `0x1407B84B8`) is a 9-instruction copy helper that copies the
+  **ANSI** string at **`engine+0x170060`** (already the real root by 0.66 s) into the
+  caller's buffer. The UTF-16 root strings found in the client heap are the client's own
+  copies, not the engine's.
+- Probe patches (all verified applied and held): engine ANSI root -> `C:\jx3t\`;
+  `KJX3ConfigModule` (+0x224 = 1) so `KJX3ConsoleModule::OnInitialize` may run; engine log
+  flags `[Engine+0x174020] |= 0x6`; and the fixed 16-byte viewer literal at
+  `exe+0x955228` -> `\bin64\lv.exe` (viewer at `C:\jx3t\bin64\lv.exe`) as a reachability
+  test that does not depend on the root.
+- **Result: no viewer spawn, no `client_log.txt`, exit unchanged (~2.2 s).** The patch
+  window is not the issue: the patches were applied from 0.66 s and re-applied through the
+  group, and the config flag/root were read back as patched.
+- **Root cause of the negative result**: the 52 modules' Initialize handlers are only
+  *registered* (registry 44 -> 185 entries); their Initialize calls never run in the probe -
+  no window (sec.23), no new log dir (sec.25), no CEF (sec.13), no console module. The
+  `game.startup` group runs and completes, but the per-module Initialize dispatch (and with
+  it `KJX3ConsoleModule::OnInitialize` -> `OpenXLogV`) waits on the same missing platform
+  object (`state_sub+0x18`) as the pump's success test. Module Initialize is a consequence
+  of the gate, not a step before it.
+- **Consequence**: log visibility cannot be obtained before the startup gate. The gate is
+  the single blocker for logs, window, CEF and login; the next work is to find what creates
+  `state_sub+0x18` (candidates: the launcher IPC - loopback TCP pairs in sec.2 - or the
+  security/report handshake in sec.10).
