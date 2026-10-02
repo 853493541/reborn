@@ -548,22 +548,23 @@ are the probe's own direct `.Sfx`/`.pss` tests) — next: find what evaluates th
 clip tags (controller/model update or the failing `vt+0x90` attach step) and/or
 confirm this clip carries SFX tags.
 
-**Tag system located (tag2.out/tag3.out):** during playback the controller's
-notifier tag (`?GetNotityTag@KG3D_AnimationController@@`, `0xE5560`) yields a live
-struct with advancing values; `?DispatchEvent@KG3D_AnimationController@@` (`0xBC3840`)
-is the animation-event entry. The tag implementation lives in
-**`KG3D_AnimationTagX64.dll`** (`KG3D_CreateAnimationTagSystem`): it contains
-`KG3D_AnimationSFXTag::SetTagData/GetTagInfo`, the strings `.Sfx` / `data\sound\`,
-`KG3D_AnimationCameraAniTag::GetTagInfo`, and `KG3D_AnimationTagLODInfo::Init`
-(`data\public\taniNotLod.tab`) — i.e., the SFX tags carry their `.Sfx` path and the
-engine only hands them out; **playing them is host logic**. The MovieEditor adapter
-has that reference implementation (`KG3D_EngineEventManager::_OnProcessActiveSFXTag`
-via `KG3D_MovieActor::FrameMove`, string present only in the MovieEditor build);
-the client host must do the same bridge: read the active SFX tags
-(`KG3D_AnimationSFXTag::GetTagInfo` on the notifier/dispatched tags) → create the
-effect with the engine's own `KG3D_CreateSFXFromFile`. Calling `engine->FrameMove`
-(`0x8C6330`, the engine's own per-frame update) in the loop does not create SFX by
-itself (tag3.out).
+**Client tag→effect implementation found (JX3RepresentX64.dll).** The client's own
+animation-tag bridge lives in the represent module: `KRLAnimationFactory::CreateSFXTag`
+(0x37F400, internal — `[factory+0x218]` sub-object + `0xC874` build), plus
+`ReactivatedCreateSFXTag` (0x37F490 region), `CreateMovieObjectTag` (0x37F2xx) and
+`CreateFaceMotionTag` — a per-tag-type factory set invoked from a tag dispatcher at
+0x37F2C0-0x37F6D6 (each logs its name on failure). The tag system
+(`KG3D_AnimationTagX64.dll`, vtable 0x49730, 27 slots) holds default footstep SFX
+roots in GBK at 0x4AAC0/0x4AAF8/0x4AB30/0x4AB68
+(`data\sound\角色\人物\脚步\脚步声_{小型/中等/大型}体型人类_十路.Sfx`, `..._马蹄_十路.Sfx`)
+wired into members +0x20..+0x38; `KG3D_AnimationSFXTag::GetTagInfo` (0x4910) fills
+`{+0: tag, +8: int, +0xC: bool, +0x10: bool, +0x14: 1}` from `[tag+0x30]`.
+Consequence: the engine parses/hands out tags; the **represent module is the client's
+own consumer** that turns them into playable effects. Next (Phase 2): either (a) drive
+the represent module's factory/ECS with the engine's animation update info (most
+faithful; `CreateSO3Represent` already boots), or (b) host-side bridge: read the
+animation's SFX tags from the tag system and play them with the engine's own
+`KG3D_CreateSFXFromFile` (the MovieEditor adapter's `_OnProcessActiveSFXTag` pattern).
 
 Probe test: `0xB0F720(g_rootA)` after engine init **returns 0 (success)** but the
 tani still takes the raw path → `0xB101F0` still 0: the manager needs its
