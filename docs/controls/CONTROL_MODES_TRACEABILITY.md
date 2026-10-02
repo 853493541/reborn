@@ -137,7 +137,7 @@ P7 data · P8 verification · P9 publish.
 | Gap | Owner | Closure |
 |---|---|---|
 | G1 exe per-frame input loop (runtime interface boundary) | P3 | **static chain mapped** (`CONTROL_MODES_P3_STATIC.md`): KEventCommonMgr → AjustCtrlInput → controller apply → tick-ordered queue drain → appliers; CommitInput caller + vtable wiring dynamic-probe step remains |
-| G2 `CONTROL_CAMERA`/`OBJECT_STICK` → `+0x1AC`/`+0x1B0` | P3 | writer watchpoint |
+| G2 `CONTROL_CAMERA`/`OBJECT_STICK` → `+0x1AC`/`+0x1B0` | P3/P4 | **static DONE**: controls drive the dynamic-follow state machine; `+0x1AC` written by `0x180B1A6ED/0x180B1B3CB/0x180B1D31F/0x180B1D3EB`, `+0x1B0` zero-only (`0x180B09132`); mouse pipeline reads both (P4 doc). Per-state behavioral mapping via probe (open) |
 | G3 `[mgr+0x5C]` state enum 1..7 | P3/P4 | transition table |
 | G4 follow mode `[0..3]` consumer | P4 | per-value behavior |
 | G5 reset-speed consumers/order | P4 | release path behavior |
@@ -178,3 +178,7 @@ P7 data · P8 verification · P9 publish.
   (ResponseWASDKey+CONTROL_STRAFE), joystick A/D = turn (free-view
   TurnLeftStart); `Camera_IsClientControlDisabled` = flag written by
   `CameraStatus_Set` (`dis_ctrl == 1`); binding-name registry gap G11 opened.
+- 2026-10-02: **P4 static** (`CONTROL_MODES_P4_PROBE.md`): host-build diff
+  table (probe uses host RVAs), camera-manager `+0x1AC` writers = dynamic-follow
+  state machine, `+0x1B0` zero-only, readers = mouse pipeline; probe plan
+  (shim module/read exports + `RC_PROBE_CONTROL` telemetry + scripted runs).
