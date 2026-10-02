@@ -795,6 +795,34 @@ internal static class RebornClient
         catch (Exception e) { Log("target ui ex: " + e.Message); }
         var targetFrame = new TargetFrameControl(targetUi);
         targetFrame.PlaceOver(form);
+        bool targetHudOn = Env("RC_TARGET_HUD", "0") != "0";
+
+        // ---------------- in-world target indicator (KRLTarget visuals) ----------------
+        // The game's own selection visuals come from ForceRelationCareTable
+        // (represent/common/force_relation_care.txt, loaded by KRLTarget): each
+        // relation row maps to
+        //   SFXFile = data/source/other/HD特效/其他/Pss/选择特效aXXX_hd.pss
+        //   SFXEn   = data/source/other/HD特效/其他/Pss/J_角色箭头面向.pss
+        // (relation 2 = Enemy -> a002). The engine shows them attached to the
+        // target; we spawn the same client assets at the selected target via
+        // AddDummyModel (the engine loads PSS + textures from the game client's
+        // own VFS). No hand-drawn substitute: missing art draws nothing.
+        bool indEnabled = Env("RC_INDICATOR", "1") != "0";
+        string indSel = Env("RC_INDICATOR_SEL",
+            "data\\source\\other\\HD\u7279\u6548\\\u5176\u4ED6\\Pss\\\u9009\u62E9\u7279\u6548a002_hd.pss");
+        string indArrow = Env("RC_INDICATOR_ARROW",
+            "data\\source\\other\\HD\u7279\u6548\\\u5176\u4ED6\\Pss\\J_\u89D2\u8272\u7BAD\u5934\u9762\u5411.pss");
+        float indY = 0f, indArrowY = 8f, indArrowScale = 0.5f, indArrowYaw = 0f;
+        {
+            float v;
+            if (float.TryParse(Env("RC_INDICATOR_Y", ""), out v)) indY = v;
+            if (float.TryParse(Env("RC_INDICATOR_ARROW_Y", ""), out v)) indArrowY = v;
+            if (float.TryParse(Env("RC_INDICATOR_ARROW_SCALE", ""), out v)) indArrowScale = v;
+            if (float.TryParse(Env("RC_INDICATOR_ARROW_YAW", ""), out v)) indArrowYaw = v;
+        }
+        bool indAlways = Env("RC_INDICATOR_ALWAYS", "0") == "1";
+        TargetEntity dummyTarget = null;
+        float dummyYaw = 0f;
 
         // ---------------- target dummy (sandbox-target-dummy) ----------------
         // One 试炼木桩 near the spawn point: RepresentID -> engine model path
@@ -820,6 +848,7 @@ internal static class RebornClient
                 string dummyAni = scene.GetRepresentAniPath(dummyRid);
                 var tpos = new CLRfloat3(); tpos.x = tx; tpos.y = ty; tpos.z = tz;
                 float tyaw = (float)Math.Atan2(-dx, -dz);   // face the player
+                dummyYaw = tyaw;
                 float thalf = tyaw * 0.5f;
                 var trot = new CLRfloat4(); trot.x = 0f; trot.y = (float)Math.Sin(thalf); trot.z = 0f; trot.w = (float)Math.Cos(thalf);
                 var tscl = new CLRfloat3(); tscl.x = 1f; tscl.y = 1f; tscl.z = 1f;
@@ -841,6 +870,7 @@ internal static class RebornClient
                     tent.Hp = tent.MaxHp;
                     tent.X = tx; tent.Y = ty; tent.Z = tz;
                     targetSelector.Add(tent);
+                    dummyTarget = tent;
                     Log(string.Format("target entity registered: {0} lv{1} hp={2} (Tab = facing cone search)",
                         tent.Name, tent.Level, tent.MaxHp));
                 }
@@ -885,6 +915,7 @@ internal static class RebornClient
         }
         bool cDown = false, teleportToStructure = false;
         bool divDown = false;
+        TargetEntity indTarget = null;
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
         bool dragArmed = false;
@@ -2949,7 +2980,7 @@ internal static class RebornClient
                     curClip == null ? "-" : Path.GetFileName(curClip));
             }
             // target frame (Targeting.cs): real client UI composited over the viewport
-            if (targetFrame != null)
+            if (targetFrame != null && targetHudOn)
             {
                 targetFrame.Target = targetSelector.Current;
                 if (targetSelector.Current != null)
@@ -2959,6 +2990,44 @@ internal static class RebornClient
                     targetFrame.PlaceOver(form);
                 }
                 targetFrame.UpdateLayered();
+            }
+            // in-world indicator (KRLTarget visuals): selection effect + arrow
+            // at the current target, removed when the selection changes
+            if (indEnabled)
+            {
+                TargetEntity want = indAlways ? dummyTarget : targetSelector.Current;
+                if (want != indTarget)
+                {
+                    try
+                    {
+                        if (indTarget != null)
+                        {
+                            scene.RemoveDummyModel("target_indicator_sel");
+                            scene.RemoveDummyModel("target_indicator_arrow");
+                        }
+                        indTarget = want;
+                        if (want != null)
+                        {
+                            var irot = new CLRfloat4(); irot.x = 0f; irot.y = 0f; irot.z = 0f; irot.w = 1f;
+                            var iscl = new CLRfloat3(); iscl.x = 1f; iscl.y = 1f; iscl.z = 1f;
+                            var spos = new CLRfloat3(); spos.x = want.X; spos.y = want.Y + indY; spos.z = want.Z;
+                            long hs = scene.AddDummyModel("target_indicator_sel", indSel, spos, irot, iscl);
+                            // facing arrow: authored in the ground plane (XZ), so
+                            // it sits at the feet and yaws with the target facing
+                            double ah = (dummyYaw + indArrowYaw) * 0.5;
+                            var arot = new CLRfloat4();
+                            arot.x = 0f; arot.y = (float)Math.Sin(ah); arot.z = 0f; arot.w = (float)Math.Cos(ah);
+                            var ascl = new CLRfloat3();
+                            ascl.x = indArrowScale; ascl.y = indArrowScale; ascl.z = indArrowScale;
+                            var apos = new CLRfloat3(); apos.x = want.X; apos.y = want.Y + indArrowY; apos.z = want.Z;
+                            long ha = scene.AddDummyModel("target_indicator_arrow", indArrow, apos, arot, ascl);
+                            Log(string.Format("target indicator '{0}' h={1} y=+{2:F0} | arrow h={3} y=+{4:F0} s={5:F2} yaw={6:F2}",
+                                indSel, hs, indY, ha, indArrowY, indArrowScale, dummyYaw + indArrowYaw));
+                        }
+                        else Log("target indicator removed");
+                    }
+                    catch (Exception e) { Log("target indicator ex: " + e.Message); }
+                }
             }
             while (tabAt.Count > 0 && now >= tabAt[0])
             {
