@@ -1542,3 +1542,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   debug output). The platform object creation (state_sub+0x18) remains the gate.
 - Evidence: doc 19; probe_registry.py runs; COL/type-descriptor resolution; log dir inspection.
 - Outcome: partial; next = observe dispatcher return values or diff against a real launch.
+
+### 2026-10-01 — netcode — Real launch capture (protected) + KSO3ClientEvents registry decoded
+- Did: monitored the real launch (pid 19552): protected process (no VM_READ/DUP_HANDLE/module snap),
+  block payload = random 64-bit session key. Decoded the registry: KSO3ClientEvents module event
+  system, 185 entries over 15 event types (Initialize 52 etc.); handler {vt,f fn,ctx}; dispatch
+  queues a per-module task node into the state. Next: name the modules via handler ctx and find
+  which task should create the platform object.
+- Evidence: doc 20; real_launch_capture.txt; registry dumps; disasm 0x1400A2830/0x1400A3750.
+- Outcome: event system understood; real-client live introspection blocked by protection.

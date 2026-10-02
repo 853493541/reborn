@@ -360,3 +360,23 @@ what completes it (likely the launcher/security handshake).
   through files or OutputDebugString.
 - Open: the platform object (`state_sub+0x18`) is still never created - next is to instrument the
   dispatcher's return values / compare registry contents against a real launch.
+
+## 20. Real-launch capture + module event system (2026-10-01, fourteenth pass)
+
+- Real launch (user clicked): client pid 19552, parent launcher 13724. The real client is
+  **protected**: `PROCESS_VM_READ`/`PROCESS_DUP_HANDLE` denied (err=5), toolhelp module snapshot
+  returns 0 modules; only `PROCESS_QUERY_LIMITED_INFORMATION` succeeds. Live state comparison of
+  the real client is therefore not possible without bypassing protection (not done).
+- Launch block captured at spawn: launcher payload decrypts to `0x4D914010DD4DE3EB` (random
+  64-bit session key), rest zeros - a key, not a boot gate (payload variants had no effect).
+- Registry decoded completely: it is the **KSO3ClientEvents module event system**, 185 handler
+  entries over 15 event types: Initialize 52, Finalize 52, RegisterLua 21, Update 14, Start 9,
+  Message 8, Update@Background 7, Stop 6, Loaded 4, Start@Background 3, Reset 3, Stop@Background 2,
+  Unloading 2, Unloaded 1, Loading 1. Each entry: handler object `{vt=exe+0x954C48,
+  fn=exe+0xA3750, ctx}`, keyed by the RTTI name string (e.g. `.?AUInitialize@Module@KSO3ClientEvents@@`).
+- Dispatch: vtable[0x10] = `0x1400A2830` -> `jmp [handler+8]` (thunk `0x1400A3750`), which allocates
+  a 0x20 node `{vt=0x140954C80, handler_ctx, event_id, state}` and appends it (via `0x14009CF70`)
+  to a container derived from the descriptor's state - i.e. dispatching "Initialize" **queues a
+  per-module task**; those queued tasks are the work the state's pump then runs.
+- Next: read the handler ctx objects to name the 52 modules, find which module's task creates the
+  platform object (`state_sub+0x18`), and check why it does not in the probe.
