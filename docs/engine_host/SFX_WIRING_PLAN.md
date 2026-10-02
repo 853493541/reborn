@@ -440,6 +440,18 @@ blocker for the original tag-driven playback. Leads for the unwrap: game-layer
 `KG_OpenPakV4File` (`0xCC670`), `g_OpenFile` (`0xB2F50`), `g_OpenAloneFile` (`0xB2EA0`),
 and the PakV4 manager's `KG_PAKFS_*` APIs.
 
+Latest probes (2026-10-01 late): **pak wins over loose** — a fake `ANIM` file written to
+the tani's loose path did not change the load error, so the loose-file route cannot
+override a pak-resident file. The "unsupport ani type" value `0x75736F5C` is literally
+the GATA header's **path bytes at offset 12** (`…data\source…` → `\sou`), i.e. the
+animation data manager reads a **type field at offset 12** of the buffer while the pak
+`.tani` layout has the path there (`GATA` + flags + path + NUL + payload) — the manager
+expects a different container layout than the extractor's raw pak record. The engine's
+own `KG3D_DataContainer` (`GetData/PopData`, engine `0xB3D940/0xB3DB90/0xB3DCD0`, type
+count 0xD) parses GATA, and `KG3D_CreateAnimationFromFile` (`0xC41840` → `0xC41EA0`)
+uses it — the remaining piece is making the animation path use the container parser (or
+reproducing the pak record layout the manager expects).
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
