@@ -226,6 +226,22 @@ remain to be pinned by register provenance; the bridge will use the public
 PhysX 3.3.4 vtable order and validate each call at runtime (e.g. cooked mesh
 triangle count vs input) with these sites as spot-checks.
 
+### Update 2026-10-01f: CreateCacheShapeFromFile call pattern (bridge entry)
+
+`PhysicsShapeFactory::CreateCacheShapeFromFile` (`0x1DC70`) is called with a
+**global factory singleton** as `this` (`lea rcx,[rip+...]` at both internal
+call sites: 0x18000659B -> 0x180129590 and 0x18003530F -> 0x18010F490; the two
+sites use different statics - likely factory vs loader instance). Observed call
+shape (site 0x35316): `(this, rdx=name/path from a list node, r8=path,
+r9=[+0x24], stack: 0, &byte, &byte, 1, float)` with the result in eax and an
+out-shape pointer at [rbp-0x40]. The second site (0x65A2) adds two out-params
+(`&pPhysXShape` etc.) and a bool flag from [rsi+0x22].
+
+**Bridge step:** call the factory singleton by RVA with a game mesh path
+(e.g. the shed `.mesh`), let the engine's FS load + cook it, and compare the
+resulting geometry against our baked FCOL mesh (triangle count / bounds) - a
+pure engine-pipeline validation before building the scene/controller layer.
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
