@@ -1299,3 +1299,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   gc_rowxref.txt, gc_camrow_loader.txt, gc_ctrl_apply.txt,
   exe_eventcommon_camera.txt; OPERATION_MODES_PLAN.md sec 7d (+addendum).
 
+
+### 2026-10-01 - controls/client - final decode pieces: face yaw, move-state, UpdateRotation
+- Closed the three open items as far as static analysis allows:
+  (a) [char+0x30] = KRLLocalCharacter face yaw (setter 0x180530F00 via
+  0x18001F05F; consumer UpdateFaceFootDirection 0x180534699 -> 0x1800236D7);
+  (b) [controller+0x5C] = object move-state (UpdateObjectState 0x180B24F0A;
+  states 5..7 = the water/air cluster; entering/leaving resets face yaw; the
+  alternate camera applier's face write is gated to 5..7);
+  (c) per-frame pipeline = UpdateRotation (carrier/glider/telescope + base
+  0x180B20C30 + ApplyRotation 0x180B1FA30).
+  SetControlOther (0x180530E40, KRLLocalCharacter) is the controller-switch
+  target-id setter, not the control-flag sink.
+- Consequence: the engine rule set is complete for the host; only exact
+  per-state body-carry tuning (which states carry, at what dead zone) rests
+  on the states 5..7 gate + the row CameraAdjustYawWhenMoveTurn.
+- Evidence: modes-re\gc_applyrotation.txt, gc_applyalt.txt, gc_clampmouse.txt,
+  gc_charyaw_thunk.txt, gc_setcontrolother_thunk.txt, exe_createso3.txt;
+  OPERATION_MODES_PLAN.md sec 7d addendum 3.
+

@@ -409,3 +409,29 @@ here: in normal play the ApplyMouse alternate branch is driven by `+0x1AC`
 (dynamic follow) alone. `[character+0x30]` (written by 0x180530F00 via the
 four sites above) is the engine's character-facing/camera-yaw field; the
 write is gated by the follow/state machine, not by A/D.
+
+**7d addendum 3 (final pieces).** The per-frame rotation pipeline is
+`UpdateRotation` (assert string; region 0x180B22740+): it resolves
+`pCarrierCameraController` / `pGliderCameraController` /
+`pTelescopeCameraController`, applies the carrier/glider speeds
+(`fRotationSpeed`, asserted > 0), then calls the base applier
+`0x180B20C30` and `ApplyRotation 0x180B1FA30` with the frame context from
+`[0x180EDDFE0+0x25C10]`. Character-class facts:
+- `[controller+0x20]` = `KRLLocalCharacter` (render character);
+- `KRLLocalCharacter +0x30` = **face yaw** (float): written by
+  `0x180530F00` via `0x18001F05F`, read by
+  `KRLLocalCharacter::UpdateFaceFootDirection` (assert string at 0x180534699)
+  and passed to `0x1800236D7` as the facing input;
+- `[controller+0x5C]` = **move/object state** (set by `UpdateObjectState`,
+  assert at 0x180B24F0A; compared against 8, 0x10, and the 5..7 range);
+  entering/leaving states 5..7 resets the face yaw, and the alternate
+  applier's camera→face write is gated to those states.
+So the complete engine rule is: keyboard A/D drive `CONTROL_TURN_*` into the
+character command queue (never the camera); the camera is moved only by the
+mouse pipeline (`MouseMove`/`ApplyMouse`/`ClampMouse`/`UpdateRotation`) and
+may carry the character's face yaw only under the follow/water-air state
+conditions above. Host consequence: A/D must not rotate the camera; body
+carry belongs to RMB/follow states.
+Evidence: `%TEMP%\opencode\modes-re\gc_applyrotation.txt`,
+`gc_applyalt.txt`, `gc_clampmouse.txt`, `gc_charyaw_thunk.txt`,
+`gc_setcontrolother_thunk.txt`, `exe_createso3.txt`.
