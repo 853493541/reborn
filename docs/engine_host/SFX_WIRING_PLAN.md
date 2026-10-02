@@ -347,6 +347,16 @@ Practical takeaway: engine-driven playback should go through the owner used by t
 engine's own SFX flow (the singleton `[engine+0x2CF1038] -> vt[8]()`), which already
 creates the `.Sfx` cleanly; the bind/attach context remains the open piece.
 
+### `KG3D_SFXModel` method map (2026-10-01)
+
+Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
+`0xE345E0`; creates+casts+binds, calls `vt[0xD58]/[0xD60]/[0x180]/[0x190]`),
+`GetRenderUnit 0x2257AC8`, `_UpdateAniInfo 0x2257AE8`, `_SeekAniBySFXFrame 0x2257B28`,
+`FrameMove 0x2257B70` (code around `0xE34C91`), `Update 0x2257B90` (code around
+`0xE25C70`), `UpdateTargetRenderData 0x2257BA8`. No static vtable/factory found for the
+class (instances are created via runtime registration / owner context), which is why the
+engine's actor-from-file path and a standalone bind cannot be driven yet.
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
