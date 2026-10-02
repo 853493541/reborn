@@ -33,6 +33,8 @@ internal static class PhysicsProbe
     delegate IntPtr GetPtrFn();
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr MethodPtrFn(IntPtr self);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int Float2Fn(IntPtr self, float x, float z);
 
     [StructLayout(LayoutKind.Sequential)]
     struct MEMORY_BASIC_INFORMATION
@@ -97,6 +99,13 @@ internal static class PhysicsProbe
         }
         finally { Marshal.FreeHGlobal(cfg); }
         if (terrain == IntPtr.Zero) return;
+        log("physprobe: terrain vtable rva=0x" + (Marshal.ReadIntPtr(terrain).ToInt64() - h.ToInt64()).ToString("X"));
+        for (int i = 0; i < 16; i++)
+        {
+            long vr = Vt(terrain, i).ToInt64() - h.ToInt64();
+            if (vr > 0x1000 && vr < 0x100000)
+                log(string.Format("physprobe:   terr vt[{0}] rva=0x{1:X}", i, vr));
+        }
 
         // Engine-side scene argument for CreatePhysicsScene (manager vt[14]):
         // the adapter's KG3DEngineManager::Init @0x737da calls
@@ -192,6 +201,23 @@ internal static class PhysicsProbe
         }
         catch (Exception e) { log("physprobe: UpdateTerrain ex: " + e.Message); }
         finally { Marshal.FreeHGlobal(posBuf); }
+
+        // first LIVE engine-physics call: the engine terrain's own point query
+        // (PhysicsTerrain vt[7], decoded 2026-10-01: world->cell via the
+        // terrain matrix, tile array [+0x48], 8x8 sub-cell bit test -> bool).
+        // Guarded: only called after LoadTerrain + streaming.
+        try
+        {
+            var pointQuery = Fn<Float2Fn>(Vt(terrain, 7));
+            float[] xs = new float[] { px, 23334f, 18915f, 20450f, 0f };
+            float[] zs = new float[] { pz, 24224f, 36850f, 31000f, 0f };
+            for (int i = 0; i < xs.Length; i++)
+            {
+                int r = pointQuery(terrain, xs[i], zs[i]);
+                log(string.Format("physprobe: terrain vt[7] point({0:F0},{1:F0}) -> {2}", xs[i], zs[i], r));
+            }
+        }
+        catch (Exception e) { log("physprobe: terrain vt[7] ex: " + e.Message); }
 
         IntPtr posBuf2 = Marshal.AllocHGlobal(12);
         Marshal.WriteInt32(posBuf2, 0, BitConverter.ToInt32(BitConverter.GetBytes(px), 0));

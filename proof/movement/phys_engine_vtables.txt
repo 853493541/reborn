@@ -242,6 +242,17 @@ out-shape pointer at [rbp-0x40]. The second site (0x65A2) adds two out-params
 resulting geometry against our baked FCOL mesh (triangle count / bounds) - a
 pure engine-pipeline validation before building the scene/controller layer.
 
+### Update 2026-10-01g: first live engine-physics call executed in-host
+
+`PhysicsProbe` now calls the engine terrain's own point query
+(`PhysicsTerrain vt[7]`, runtime vtable confirmed identical to the static dump:
+vt[7]=0x2E340) with `(this, x, z)` from our process. It executed safely for
+five points (RC_PHYS_POS + the three field spots + origin) and returned 0 for
+all - the call mechanism is proven (no crash, correct dispatch); the returned
+bool semantics need one more iteration (the internal tile-type check
+`cmp dword [tile],2` / bounds fields - likely the tile state or a second arg).
+Evidence: `reborn_20261001_201721.log` (terr vt[0..15] + the five results).
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
