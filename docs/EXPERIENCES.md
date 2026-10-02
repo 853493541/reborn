@@ -1419,3 +1419,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `proof/netcode/launch_block_cipher_table.txt`; worktree `reborn-iso-v2` branch
   `agent/v2`; this commit (local).
 - Outcome: partial (cipher solved; exit gate still open).
+
+### 2026-10-01 — netcode — Early-exit gate hunt (client exits ~2.3 s; block ruled out)
+- Did: with a cipher-verified block (fresh timestamp + `+8` set), the real client still exits
+  cleanly ~2.2–2.3 s after start, before engine init (no window, no child processes, no
+  minidump). Ruled out: the block header (valid), the multi-process count (KGPK4 downloader
+  was running), the `JDYinput` service watchdog (fires only if the service exists), network
+  availability (no firewall block during probes). Startup path 0x1401008xx parses launch
+  params and formats "0;%s" strings; the parser is polled (caller 0x140100530) — the wait
+  that ends the process is still unidentified.
+- Evidence: `proof/netcode/disasm/{multiprocess_toolhelp,exit_calls,watchdog_callers,exit2_callers,dotnotstart_va}.txt`;
+  observe probe (90 modules incl. X3DEngine.dll, 0 windows, exit 2.31 s); this commit (local).
+- Outcome: partial (gate narrowed; cause open).

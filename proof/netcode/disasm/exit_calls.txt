@@ -1,0 +1,173 @@
+# JX3ClientX64.exe xrefs to 0x1407b8848, 0x1407b9818, 0x1407b9880
+
+## ref @ 0x140108051 -> 0x1407b8848
+  0x140108015: lea      eax, [rsp + 0x3c]
+  0x140108019: mov      qword ptr [rsp + 0x28], rax
+  0x14010801e: mov      dword ptr [rsp + 0x20], 0
+  0x140108026: xor      r9d, r9d
+  0x140108029: lea      r8, [rip + 0x50]
+  0x140108030: xor      edx, edx
+  0x140108032: xor      ecx, ecx
+  0x140108034: call     qword ptr [rip + 0x6b07f6]
+  0x14010803a: mov      qword ptr [rsp + 0x30], rax
+  0x14010803f: mov      edx, 0x2710
+  0x140108044: mov      rcx, qword ptr [rsp + 0x30]
+  0x140108049: call     qword ptr [rip + 0x6b05b1]
+  0x14010804f: xor      ecx, ecx
+  0x140108051: call     qword ptr [rip + 0x6b07f1]
+  0x140108057: mov      ecx, 0xea60
+  0x14010805c: call     qword ptr [rip + 0x6b0576]
+  0x140108062: jmp      0x140107fe9
+  0x140108064: .byte    0x33
+
+## ref @ 0x1401080a7 -> 0x1407b8848
+  0x14010806b: xor      rcx, rsp
+  0x14010806e: call     0x14079ae80
+  0x140108073: add      rsp, 0x58
+  0x140108077: ret      
+  0x140108078: int3     
+  0x140108079: int3     
+  0x14010807a: int3     
+  0x14010807b: int3     
+  0x14010807c: int3     
+  0x14010807d: int3     
+  0x14010807e: int3     
+  0x14010807f: int3     
+  0x140108080: mov      qword ptr [rsp + 8], rcx
+  0x140108085: sub      rsp, 0x28
+  0x140108089: mov      r9d, 0x40000
+  0x14010808f: lea      r8, [rip + 0x85c8ba]
+  0x140108096: lea      rdx, [rip + 0x85c863]
+  0x14010809d: xor      ecx, ecx
+  0x14010809f: call     qword ptr [rip + 0x6b10b3]
+  0x1401080a5: xor      ecx, ecx
+  0x1401080a7: call     qword ptr [rip + 0x6b079b]
+  0x1401080ad: add      rsp, 0x28
+  0x1401080b1: ret      
+  0x1401080b2: int3     
+  0x1401080b3: int3     
+  0x1401080b4: int3     
+  0x1401080b5: int3     
+  0x1401080b6: int3     
+  0x1401080b7: int3     
+  0x1401080b8: int3     
+  0x1401080b9: int3     
+  0x1401080ba: int3     
+
+## ref @ 0x140116155 -> 0x1407b9818
+  0x140116119: ret      
+  0x14011611a: int3     
+  0x14011611b: int3     
+  0x14011611c: int3     
+  0x14011611d: int3     
+  0x14011611e: int3     
+  0x14011611f: int3     
+  0x140116120: sub      rsp, 0x28
+  0x140116124: mov      rax, qword ptr [rcx + 0xe8]
+  0x14011612b: test     rax, rax
+  0x14011612e: je       0x14011614c
+  0x140116130: mov      dword ptr [rax + 0x110], edx
+  0x140116136: mov      edx, 1
+  0x14011613b: mov      rcx, qword ptr [rcx + 0xe8]
+  0x140116142: add      rcx, 0x10
+  0x140116146: call     0x14079c38c
+  0x14011614b: int3     
+  0x14011614c: mov      rax, qword ptr [rip + 0x93633d]
+  0x140116153: mov      ecx, dword ptr [rax]
+  0x140116155: call     qword ptr [rip + 0x6a36bd]
+  0x14011615b: int3     
+  0x14011615c: int3     
+  0x14011615d: int3     
+  0x14011615e: int3     
+  0x14011615f: int3     
+  0x140116160: mov      qword ptr [rsp + 8], rbx
+  0x140116165: .byte    0x48
+  0x140116166: .byte    0x89
+  0x140116167: je       0x14011618d
+
+## ref @ 0x1406ecab6 -> 0x1407b9818
+  0x1406eca7a: add      byte ptr [rax], al
+  0x1406eca7c: call     qword ptr [rip + 0xcbbbe]
+  0x1406eca82: lea      rcx, [rbx + 0x98]
+  0x1406eca89: mov      dword ptr [rbx + 0x1b4], ebp
+  0x1406eca8f: inc      esi
+  0x1406eca91: call     0x1406ee270
+  0x1406eca96: jmp      0x1406eca10
+  0x1406eca9b: call     0x1406ee020
+  0x1406ecaa0: lea      rcx, [rbx + 0x88]
+  0x1406ecaa7: call     0x1406ee120
+  0x1406ecaac: jmp      0x1406eca00
+  0x1406ecab1: mov      ecx, 1
+  0x1406ecab6: call     qword ptr [rip + 0xccd5c]
+  0x1406ecabc: int3     
+  0x1406ecabd: mov      rbx, qword ptr [rsp + 0x30]
+  0x1406ecac2: mov      rbp, qword ptr [rsp + 0x38]
+  0x1406ecac7: .byte    0x48
+  0x1406ecac8: .byte    0x8b
+  0x1406ecac9: .byte    0x74
+
+## ref @ 0x1406edfaf -> 0x1407b9818
+  0x1406edf73: adc      ebp, eax
+  0x1406edf75: test     dword ptr [rdx], 0x8b480000
+  0x1406edf7b: call     0x1406ee1a0
+  0x1406edf82: cmp      dword ptr [rbx + 0x24], 0
+  0x1406edf86: jne      0x1406edfaa
+  0x1406edf88: mov      rcx, rsi
+  0x1406edf8b: call     qword ptr [rip + 0xca6b7]
+  0x1406edf91: mov      rsi, qword ptr [rsp + 0x38]
+  0x1406edf96: mov      eax, edi
+  0x1406edf98: mov      dword ptr [rbx + 0x24], 1
+  0x1406edf9f: mov      rbx, qword ptr [rsp + 0x30]
+  0x1406edfa4: add      rsp, 0x20
+  0x1406edfa8: pop      rdi
+  0x1406edfa9: ret      
+  0x1406edfaa: mov      ecx, 1
+  0x1406edfaf: call     qword ptr [rip + 0xcb863]
+  0x1406edfb5: int3     
+  0x1406edfb6: int3     
+  0x1406edfb7: int3     
+  0x1406edfb8: int3     
+  0x1406edfb9: int3     
+  0x1406edfba: int3     
+  0x1406edfbb: int3     
+  0x1406edfbc: int3     
+  0x1406edfbd: int3     
+  0x1406edfbe: int3     
+  0x1406edfbf: int3     
+  0x1406edfc0: .byte    0x48
+  0x1406edfc1: .byte    0x89
+  0x1406edfc2: pop      rsp
+
+## ref @ 0x14079c458 -> 0x1407b9818
+  0x14079c41c: jmp      qword ptr [rip + 0x1d556]
+  0x14079c422: jmp      qword ptr [rip + 0x1d558]
+  0x14079c428: jmp      qword ptr [rip + 0x1d57a]
+  0x14079c42e: jmp      qword ptr [rip + 0x1d594]
+  0x14079c434: jmp      qword ptr [rip + 0x1d5a6]
+  0x14079c43a: jmp      qword ptr [rip + 0x1d5b8]
+  0x14079c440: jmp      qword ptr [rip + 0x1d5a2]
+  0x14079c446: jmp      qword ptr [rip + 0x1d5e4]
+  0x14079c44c: jmp      qword ptr [rip + 0x1d1f6]
+  0x14079c452: jmp      qword ptr [rip + 0x1d5c8]
+  0x14079c458: jmp      qword ptr [rip + 0x1d3ba]
+  0x14079c45e: jmp      qword ptr [rip + 0x1d30c]
+  0x14079c464: jmp      qword ptr [rip + 0x1d30e]
+  0x14079c46a: .byte    0xff
+  0x14079c46b: .byte    0x25
+
+## ref @ 0x14079c4f4 -> 0x1407b9880
+  0x14079c4b8: jmp      qword ptr [rip + 0x1d6aa]
+  0x14079c4be: jmp      qword ptr [rip + 0x1d44c]
+  0x14079c4c4: jmp      qword ptr [rip + 0x1d43e]
+  0x14079c4ca: jmp      qword ptr [rip + 0x1d418]
+  0x14079c4d0: jmp      qword ptr [rip + 0x1d592]
+  0x14079c4d6: jmp      qword ptr [rip + 0x1d4e4]
+  0x14079c4dc: jmp      qword ptr [rip + 0x1d3de]
+  0x14079c4e2: jmp      qword ptr [rip + 0x1d140]
+  0x14079c4e8: jmp      qword ptr [rip + 0x1d39a]
+  0x14079c4ee: jmp      qword ptr [rip + 0x1d57c]
+  0x14079c4f4: jmp      qword ptr [rip + 0x1d386]
+  0x14079c4fa: jmp      qword ptr [rip + 0x1d370]
+  0x14079c500: jmp      qword ptr [rip + 0x1d16a]
+  0x14079c506: .byte    0xff
+  0x14079c507: .byte    0x25

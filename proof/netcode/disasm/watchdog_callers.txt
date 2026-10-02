@@ -1,0 +1,22 @@
+# JX3ClientX64.exe xrefs to 0x140107fc0
+
+## ref @ 0x140107d95 -> 0x140107fc0
+  0x140107d59: and      al, 0x30
+  0x140107d5b: mov      rcx, qword ptr [rip + 0x985146]
+  0x140107d62: call     qword ptr [rip + 0x6b0d60]
+  0x140107d68: mov      qword ptr [rip + 0x985135], 0
+  0x140107d73: cmp      dword ptr [rsp + 0x30], 0
+  0x140107d78: je       0x140107d7e
+  0x140107d7a: xor      eax, eax
+  0x140107d7c: jmp      0x140107dbc
+  0x140107d7e: lea      rax, [rip + 0x9850ef]
+  0x140107d85: mov      qword ptr [rsp + 0x28], rax
+  0x140107d8a: mov      dword ptr [rsp + 0x20], 0
+  0x140107d92: xor      r9d, r9d
+  0x140107d95: lea      r8, [rip + 0x224]
+  0x140107d9c: xor      edx, edx
+  0x140107d9e: xor      ecx, ecx
+  0x140107da0: call     qword ptr [rip + 0x6b0a8a]
+  0x140107da6: mov      qword ptr [rsp + 0x40], rax
+  0x140107dab: cmp      qword ptr [rsp + 0x40], 0
+  0x140107db1: jne      0x140107db7
