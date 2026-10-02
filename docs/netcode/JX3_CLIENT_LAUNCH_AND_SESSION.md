@@ -453,3 +453,21 @@ KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX
   reached from Lua (`Lua_ZZQStart` binding at 0x1400DA1E0) - not from the event handler.
 - Open: which step/handler should set `state+0x18`; candidate = the platform stage steps in the
   group (PlatformStartup/BeforeLoad/Load) or a module Initialize handler.
+
+## 25. KGLog internals - why the client's logs are invisible (2026-10-01, nineteenth pass)
+
+- `Engine_Lua5X64.dll!KGLogPrintf` (RVA 0xE52D0) decoded:
+  - `priority & 7` indexes a **global level bitmask** at `Engine+0x16C440`; unset bit -> message
+    dropped. Runtime value: `0x16E62E` (bits 1,2,3,5 set - error priority 3 IS enabled).
+  - If the **sink global** (`Engine+0x177598`) is non-null, the sink object's vt[0] handles the
+    message; if null, the message is formatted (0x800 buffer) and the **console path** requires a
+    global **flags** word (`Engine+0x174020`) with bit 1 or 2 set; then GetStdHandle(STD_OUTPUT)
+    + GetFileType==FILE_TYPE_CHAR -> WriteFile.
+- Runtime checks: sink = NULL, flags = 0x0, mask = 0x16E62E. Our probe runs with piped stdout, so
+  the console branch never fires; setting flags (VirtualProtectEx + write 0x6) with an inherited
+  console still produced no output - the client likely detaches/has no valid stdout, or another
+  TLS/rate-limit gate in the null path applies.
+- Client log files: `logs/JX3Client_2052-zhcn/<date>` dirs exist (old) but no new files are
+  written during the probe; the file logger is not active before the gate.
+- Next: decode the null-path gates (`0x180127B52`, TEB/TLS check) or set the sink global to a
+  target; alternatively instrument the module Initialize steps directly (vt[0x30]/group results).
