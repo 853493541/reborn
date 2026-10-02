@@ -1058,3 +1058,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   name is runtime-registered (not a binary string); re-open criteria in
   docs/controls/JX3_TARGET_SELECTION.md section 6.
 - Outcome: solved for the sandbox; the selection model follows the client.
+
+### 2026-10-01 - client - click pick hit volume (off-target click deselects)
+- Did: the deselect click kept the target when clicking NEAR the dummy because
+  TargetSelector.Pick used a 12-degree cone around the entity direction. Replaced
+  it with a ray-vs-vertical-body-cylinder test (radius 90 u, height 220 u,
+  nearest ray hit; client/Targeting.cs) - any ray missing every body is an empty
+  pick -> deselect. Extended RC_CLICK_AT to a list (ms,x,y;ms,x,y) for scripted
+  click sequences.
+- Evidence: run reborn_20261001_203922.log - Tab at 3s selects, click 620,430
+  (~80 px off the body) -> "click: deselect" + indicator removed, click 700,440
+  (on the body) -> "target=... (click pick)" + indicator back;
+  proof/controls/target_deselect_hit_test_20261001.txt (warm px 13393 -> 7904 ->
+  13392, 3 PNGs). Gates: jx3_model 10x PASS, gravity, loot selftest PASS.
+- Open: the body cylinder is the host's stand-in for the engine's model pick
+  (KCharacter::OnPickPrepare); re-open when the host exposes a real model pick
+  (docs/controls/JX3_TARGET_SELECTION.md section 6).
+- Outcome: solved; the user rule "not clicking on target = deselect" holds.

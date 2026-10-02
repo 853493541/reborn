@@ -117,6 +117,18 @@ deselect (nothing under cursor)`), mirroring the client's select-under-cursor +
 NO_TARGET clear. Scripted verify: `RC_TAB_AT=3000 RC_CLICK_AT=5000,10,10`
 (proof/controls/target_deselect_click_20261001.txt).
 
+**Click hit volume (host approximation, MED).** The real client picks the
+character model (`KCharacter::OnPickPrepare` / represent `PickDoodad`); the
+host exposes no world→screen or model pick, so `TargetSelector.Pick` tests the
+cursor ray against each entity's **vertical body cylinder** (radius 90 u,
+height 220 u; `client/Targeting.cs`) and takes the nearest ray hit — any ray
+that misses every body is an empty pick → deselect. This replaced an earlier
+12° cone test that selected on near-misses (clicks ~1 m off the dummy).
+Scripted verify: `RC_CLICK_AT=5000,620,430;7000,700,440` — 620,430 (~80 px off
+the body) deselects, 700,440 (on the body) selects
+(proof/controls/target_deselect_hit_test_20261001.txt). Re-open when the host
+exposes a real model pick, then use it instead of the cylinder.
+
 ## 7. Open items
 
 1. **Angle unit / half-angle** — MED. Candidates: degrees as written (MidAxis

@@ -165,13 +165,18 @@ internal sealed class TargetSelector
         return "Outer";
     }
 
-    // Cursor-ray pick (host approximation): the entity nearest to the ray from
-    // the camera through the cursor, inside PickConeDeg. The real client uses
-    // the engine pick (KCharacter::OnPickPrepare); the host exposes no
-    // world->screen, so the ray is rebuilt from the camera basis + 广角 (FOV).
+    // Cursor-ray pick: ray vs each entity's vertical body cylinder, nearest hit
+    // wins. The real client picks the character model (KCharacter::OnPickPrepare
+    // / represent PickDoodad); the host exposes no world->screen or model pick,
+    // so the hit volume is the entity's body cylinder. Any click whose ray
+    // misses every body is an empty pick -> deselect (CAMERAORSELECTORMOVE:
+    // select under cursor; NO_TARGET clear).
+    public const double PickRadius = 90.0;   // body radius (u)
+    public const double PickHeight = 220.0;  // body height (u)
+
     public TargetEntity Pick(float camX, float camY, float camZ,
                              float aimX, float aimY, float aimZ,
-                             float nx, float ny, double fovDeg, double pickConeDeg)
+                             float nx, float ny, double fovDeg)
     {
         double fx = aimX - camX, fy = aimY - camY, fz = aimZ - camZ;
         double fl = Math.Sqrt(fx * fx + fy * fy + fz * fz);
@@ -192,21 +197,25 @@ internal sealed class TargetSelector
         double dl = Math.Sqrt(dx * dx + dy * dy + dz * dz);
         if (dl < 1e-6) return null;
         dx /= dl; dy /= dl; dz /= dl;
-        double cosLimit = Math.Cos(pickConeDeg * Math.PI / 180.0);
+        // ray vs vertical cylinder (XZ circle + Y band); nearest positive hit
         TargetEntity best = null;
-        double bestDot = cosLimit;
+        double bestT = double.MaxValue;
         foreach (TargetEntity e in Entities)
         {
-            double ex = e.X - camX, ey = (e.Y + 100.0) - camY, ez = e.Z - camZ;
-            double el = Math.Sqrt(ex * ex + ey * ey + ez * ez);
-            if (el < 1e-6) continue;
-            ex /= el; ey /= el; ez /= el;
-            double dot = ex * dx + ey * dy + ez * dz;
-            if (dot > bestDot)
-            {
-                bestDot = dot;
-                best = e;
-            }
+            double ox = camX - e.X, oz = camZ - e.Z;
+            double a = dx * dx + dz * dz;
+            if (a < 1e-9) continue;
+            double b = 2.0 * (ox * dx + oz * dz);
+            double c = ox * ox + oz * oz - PickRadius * PickRadius;
+            double disc = b * b - 4.0 * a * c;
+            if (disc < 0) continue;
+            double sq = Math.Sqrt(disc);
+            double t = (-b - sq) / (2.0 * a);
+            if (t < 0) t = (-b + sq) / (2.0 * a);   // origin inside the footprint
+            if (t < 0) continue;
+            double hy = camY + t * dy;
+            if (hy < e.Y || hy > e.Y + PickHeight) continue;
+            if (t < bestT) { bestT = t; best = e; }
         }
         return best;
     }

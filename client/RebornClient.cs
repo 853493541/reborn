@@ -113,15 +113,16 @@ internal static class RebornClient
             long tt;
             if (long.TryParse(s.Trim(), out tt)) tabAt.Add(tt);
         }
-        // RC_CLICK_AT=ms,x,y  smoke: left click at panel pixel (x,y) at time ms
+        // RC_CLICK_AT=ms,x,y[;ms,x,y...]  smoke: left click at panel pixel (x,y)
         // (same path as the real LMB click: pick under cursor, else deselect)
-        int[] clickAt = null;
+        var clickAt = new System.Collections.Generic.List<int[]>();
+        foreach (string s in Env("RC_CLICK_AT", "").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            string[] parts = Env("RC_CLICK_AT", "").Split(',');
+            string[] parts = s.Trim().Split(',');
             int ms0, cx0, cy0;
             if (parts.Length == 3 && int.TryParse(parts[0].Trim(), out ms0)
                 && int.TryParse(parts[1].Trim(), out cx0) && int.TryParse(parts[2].Trim(), out cy0))
-                clickAt = new int[] { ms0, cx0, cy0 };
+                clickAt.Add(new int[] { ms0, cx0, cy0 });
         }
 
         outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
@@ -1058,7 +1059,7 @@ internal static class RebornClient
             double ny = (h / 2.0 - cyp) / (h / 2.0);
             double fov = cameraSettings.WidAngleDeg > 0 ? cameraSettings.WidAngleDeg : 50.0;
             TargetEntity picked = targetSelector.Pick(ccx, ccy, ccz, px, py + 90f, pz,
-                (float)nx, (float)ny, fov, 12.0);
+                (float)nx, (float)ny, fov);
             if (picked != null)
             {
                 targetSelector.Current = picked;
@@ -3060,10 +3061,10 @@ internal static class RebornClient
                 Log("RC_TAB_AT -> Tab (target next)");
                 targetSelector.Cycle(px, pz, curYaw, false, Log);
             }
-            if (clickAt != null && now >= clickAt[0])
+            while (clickAt.Count > 0 && now >= clickAt[0][0])
             {
-                int cx = clickAt[1], cy = clickAt[2];
-                clickAt = null;
+                int cx = clickAt[0][1], cy = clickAt[0][2];
+                clickAt.RemoveAt(0);
                 Log(string.Format("RC_CLICK_AT -> click at {0},{1}", cx, cy));
                 clickSelectAt(cx, cy);
             }
