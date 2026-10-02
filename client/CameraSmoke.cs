@@ -4,6 +4,7 @@
 // Uses UnitsPerMeter = 1 so the numbers match the reference exactly.
 
 using System;
+using System.IO;
 
 internal static class CameraSmoke
 {
@@ -290,6 +291,49 @@ internal static class CameraSmoke
         Check("camera springs out along a receding wall (stays in front)",
               obstD.Obstructed && Math.Abs(obstD.Distance - 532.0) < 1.0 && minOut >= 32.0 - 0.5,
               string.Format("dist={0:F1} min={1:F1}", obstD.Distance, minOut));
+
+        // Hotkey table: context-aware matching (rows from another context must
+        // not fire in normal play) and the shipped movement defaults.
+        HotkeyTable hk = HotkeyTable.Load(null, null);
+        hk.Context = "";
+        System.Collections.Generic.List<string> wNorm = hk.Match(87, false, false, false);
+        Check("hotkeys W normal -> MOVEFORWARD (not MINIGAME_JUMP)",
+              hk.Count == 286 && wNorm.Contains("MOVEFORWARD") && !wNorm.Contains("MINIGAME_JUMP"),
+              "rows=" + hk.Count + " m=" + string.Join(",", wNorm.ToArray()));
+        hk.Context = "minigame";
+        System.Collections.Generic.List<string> wMini = hk.Match(87, false, false, false);
+        Check("hotkeys W minigame context -> MINIGAME_JUMP only",
+              wMini.Contains("MINIGAME_JUMP") && !wMini.Contains("MOVEFORWARD"),
+              "m=" + string.Join(",", wMini.ToArray()));
+        hk.Context = "";
+        System.Collections.Generic.List<string> aNorm = hk.Match(65, false, false, false);
+        Check("hotkeys A normal -> STRAFELEFT",
+              aNorm.Contains("STRAFELEFT") && !aNorm.Contains("MINIGAME_STRAFELEFT"),
+              "m=" + string.Join(",", aNorm.ToArray()));
+
+        // Per-role override file (real userdata dirs contain ONLY this file):
+        // hotkey_newlast.txt = name \t context \t index \t key.
+        string tmpDir = Path.Combine(Path.GetTempPath(), "rc_hotkey_smoke");
+        try
+        {
+            Directory.CreateDirectory(tmpDir);
+            File.WriteAllText(Path.Combine(tmpDir, "hotkey_newlast.txt"),
+                "MOVEFORWARD\t\t1\t83\nSTRAFELEFT\t\t1\t\n");
+            HotkeyTable ov = HotkeyTable.Load(tmpDir, null);
+            System.Collections.Generic.List<string> w82 = ov.Match(83, false, false, false);
+            System.Collections.Generic.List<string> w87 = ov.Match(87, false, false, false);
+            System.Collections.Generic.List<string> a65 = ov.Match(65, false, false, false);
+            Check("hotkeys override file applies over embedded defaults",
+                  ov.Count == 286 && ov.Overrides == 2 &&
+                  w82.Contains("MOVEFORWARD") && !w87.Contains("MOVEFORWARD") &&
+                  !a65.Contains("STRAFELEFT"),
+                  "rows=" + ov.Count + " overrides=" + ov.Overrides +
+                  " w83=" + string.Join(",", w82.ToArray()));
+        }
+        catch (Exception e)
+        {
+            Check("hotkeys override file applies over embedded defaults", false, e.Message);
+        }
 
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
         Environment.Exit(_fail == 0 ? 0 : 1);

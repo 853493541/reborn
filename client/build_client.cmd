@@ -52,6 +52,8 @@ if "%RC_CLIENT_EXE%"=="" goto :smoke
 if "%RC_SMOKE_EXE%"=="" goto :done
 :smoke
 "%CSC%" /nologo /platform:x64 /target:exe /out:"%BIN%\%SMOKE%" ^
-  client\CameraSystem.cs client\CameraSmoke.cs
+  /resource:proof\movement\extracted\ui_hotkey_default.txt,ui_hotkey_default.txt ^
+  /resource:proof\movement\extracted\ui_hotkey_bindings.ini,ui_hotkey_bindings.ini ^
+  client\CameraSystem.cs client\CameraSmoke.cs client\HotkeyTable.cs
 :done
 echo build exit=%ERRORLEVEL%

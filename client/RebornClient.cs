@@ -869,6 +869,11 @@ internal static class RebornClient
         // bindings.ini) is decoded at startup; movement commands below are
         // dispatched from it instead of hardcoded keys.
         HotkeyTable hotkeys = HotkeyTable.Load(Env("RC_HOTKEY_DIR", ""), Log);
+        // binding context ("" = normal play). Rows from other contexts must not
+        // fire here (e.g. MINIGAME_JUMP on W). RC_HOTKEY_CTX is the test path
+        // until the runtime contexts (morph/summon/minigame) exist.
+        hotkeys.Context = Env("RC_HOTKEY_CTX", "").Trim();
+        Log("hotkeys: context='" + hotkeys.Context + "'");
         {
             string[] probe = new string[] { "MOVEFORWARD", "MOVEBACKWARD", "STRAFELEFT",
                 "STRAFERIGHT", "TURNLEFT", "TURNRIGHT", "JUMP", "TOGGLERUN", "TOGGLEAUTORUN" };
@@ -3297,13 +3302,14 @@ internal static class RebornClient
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24}{11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}'{11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz,
                     unhandledCmd, lastUnhandled, gait,
-                    CameraOperationMode.Name(cameraSettings.OperationMode)));
+                    CameraOperationMode.Name(cameraSettings.OperationMode),
+                    hotkeys.Context));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {

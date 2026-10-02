@@ -1669,3 +1669,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   targeting 10, rogue/BR 6, minigame 4. Movement+camera control plane is
   complete; the rest need their own systems (action bar/targeting/UI/stance).
   CLASSIC_CONTROLS_AUDIT.md section 5b updated (old '176 unhandled' stale).
+
+### 2026-10-02 - controls - apply input core + full control plan
+- FULL_CONTROL_PLAN.md: all 286 shipped bindings grouped (movement/camera 18
+  done; input core P0; targeting P1; action bars P2; UI panels P3; stance/talent/
+  NPC/capture P4; contexts P5) with dependencies and verification.
+- Applied P0: HotkeyTable now context-aware (Match filters by the active
+  context; MINIGAME_JUMP no longer aliases MOVEFORWARD), loads per-role
+  hotkey_newlast.txt overrides (decoded format name/context/index/key; empty
+  key = unbound; works with an override-only dir), and logs overrides count.
+  Client: RC_HOTKEY_CTX sets the context, periodic log now carries ctx=.
+- Smoke extended (camera_smoke now compiles HotkeyTable.cs + embeds the two
+  hotkey resources): 4 new checks - W normal/MINIGAME_JUMP separation, W
+  minigame context, A normal, override file applies over embedded defaults
+  (2 overrides, W unbound from slot 1). Build exit 0; ALL PASS.

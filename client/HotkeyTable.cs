@@ -49,6 +49,13 @@ internal sealed class HotkeyTable
 
     public int Count { get { return rows.Count; } }
 
+    // Active binding context ("" = normal play). Rows in another context must
+    // not fire in normal play (e.g. MINIGAME_JUMP on W would alias
+    // MOVEFORWARD). Contexts come from the shipped table and custom.dat-era
+    // runtime events (morph/summon/minigame/BR).
+    public string Context = "";
+    public int Overrides;
+
     public HotkeyRow Get(string name)
     {
         HotkeyRow r;
@@ -77,20 +84,54 @@ internal sealed class HotkeyTable
         HotkeyTable t = new HotkeyTable();
         if (defaultText != null) t.ParseDefault(defaultText);
         if (bindingsText != null) t.ParseBindings(bindingsText);
+        // per-role user overrides: hotkey_newlast.txt (name \t context \t
+        // index \t key; index 1/2; empty key = unbound). Decoded in
+        // docs/controls/RESEARCH_RESOLVED_GAPS.md §1 - never written here.
+        // The dir may contain ONLY the override file (real role dirs do not
+        // ship the base tables): apply it over whichever base source loaded.
+        string ufile = string.IsNullOrEmpty(dir) ? null : Path.Combine(dir, "hotkey_newlast.txt");
+        if (ufile != null && File.Exists(ufile))
+            t.Overrides = t.ParseOverrides(Decode(File.ReadAllBytes(ufile)));
         if (log != null)
             log("hotkeys: source=" + source + " rows=" + t.rows.Count +
-                " commands=" + t.byName.Count);
+                " commands=" + t.byName.Count + " overrides=" + t.Overrides);
         return t;
     }
 
+    private int ParseOverrides(string text)
+    {
+        int n = 0;
+        string[] lines = text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            if (line.Length == 0 || line[0] == ';') continue;
+            string[] f = line.Split('\t');
+            if (f.Length < 4) continue;
+            string name = f[0].Trim();
+            int index;
+            if (!int.TryParse(f[2].Trim(), out index)) continue;
+            if (index != 1 && index != 2) continue;
+            HotkeyRow r;
+            if (!byName.TryGetValue(name, out r)) continue;
+            int key = ParseKey(f[3]);
+            if (index == 1) r.Key1 = key; else r.Key2 = key;
+            n++;
+        }
+        return n;
+    }
+
     // Commands bound to this key + modifier state (may be several rows; the
-    // real table is a flat list, e.g. MOVEFORWARD on W and Up).
+    // real table is a flat list, e.g. MOVEFORWARD on W and Up). Only rows in
+    // the active context fire ("" = normal play).
     public List<string> Match(int vk, bool ctrl, bool shift, bool alt)
     {
         List<string> res = new List<string>();
         for (int i = 0; i < rows.Count; i++)
         {
             HotkeyRow r = rows[i];
+            if (!string.Equals(r.Context, Context, StringComparison.OrdinalIgnoreCase))
+                continue;
             if (KeyMatches(r.Name, r.Key1, vk, ctrl, shift, alt) ||
                 KeyMatches(r.Name, r.Key2, vk, ctrl, shift, alt))
                 res.Add(r.Name);
