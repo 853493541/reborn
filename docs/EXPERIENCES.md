@@ -1628,3 +1628,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (0x180CD02A0); filename not an in-binary string -> entry enumeration goes via
   the runtime probe / table extractor. 0x26466 sentinel flag set from a config
   option query at 0x1803185E0.
+
+### 2026-10-02 - controls - P4 static: field map + host build diff
+- Host build diff (MovieEditor JX3RepresentX64 09-14): all anchors present
+  (EnableControlCameraOnly ref 0x1802EE4FA, CameraAdjustYawWhenMoveTurn
+  0x1803420EC, UpdateMoveAnimation 0x1804D04D3, GetMoveInfo 0x1805F2A49,
+  ApplyRotation 0x180B373B5) - probe must use host RVAs, not game RVAs.
+- Field writers (game client): +0x1B0 written only as zero in
+  ResetCharacterCamera; +0x1AC written by the dynamic-follow state machine
+  (0x180B1A6ED=1, 0x180B1B3CB var, 0x180B1D31F=0, 0x180B1D3EB var);
+  ApplyMouse/UpdateRotation only read +0x1AC/+0x1B0. G2/G3 static conclusion:
+  controls drive the state machine, not the flags.
+- Probe plan documented (shim module-base/read exports + RC_PROBE_CONTROL
+  telemetry + scripted runs).
