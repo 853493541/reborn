@@ -123,6 +123,26 @@ internal static class CollisionSelfTest
             float wdz = float.Parse(args[6], System.Globalization.CultureInfo.InvariantCulture);
             float wg = wy;
             bool wgr = false;
+            System.Globalization.CultureInfo ci2 = System.Globalization.CultureInfo.InvariantCulture;
+            if (Environment.GetEnvironmentVariable("RC_WALL_DBG") == "1")
+            {
+                float len2 = (float)Math.Sqrt(wdx * wdx + wdz * wdz);
+                int n2 = (int)Math.Ceiling(len2 / 15f);
+                if (n2 < 1) n2 = 1;
+                Console.WriteLine(string.Format(ci2, "start p=({0:F1},{1:F1},{2:F1}) static={3}",
+                    wx, wy, wz, wc.CapsuleTouches(wx, wy, wz, 17f, 116f)));
+                for (int i = 0; i < n2; i++)
+                {
+                    wx += wdx / n2;
+                    wz += wdz / n2;
+                    bool b = wc.Resolve(ref wx, ref wy, ref wz, 17f, 116f, ref wg, ref wgr, 70f, 0f, wdx, wdz);
+                    bool st = wc.CapsuleTouches(wx, wy, wz, 17f, 116f);
+                    Console.WriteLine(string.Format(ci2,
+                        "sub{0} p=({1:F1},{2:F1},{3:F1}) grounded={4} ground={5:F1} blocked={6} static={7} lastInst={8} lastDepth={9:F1} lastN=({10:F2},{11:F2})",
+                        i, wx, wy, wz, wgr, wg, b, st, wc.LastBlockedInst, wc.LastBlockedDepth, wc.LastBlockedNx, wc.LastBlockedNz));
+                }
+                Environment.Exit(0);
+            }
             bool wb = wc.MoveResolved(ref wx, ref wy, ref wz, wdx, wdz, 17f, 116f, 15f, ref wg, ref wgr);
             float adv = (float)Math.Sqrt((wx - (float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture))) * (wx - (float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture))) + (wz - (float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture))) * (wz - (float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture))));
             Console.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture,

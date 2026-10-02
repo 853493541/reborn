@@ -1051,3 +1051,12 @@ solved it, and what is still open. **Newest at the bottom.**
   (depth 13-17 at every path pose). The wallcheck still passes through => the
   bug is in the Resolve path (prime suspect: the thin-wall normal flip from
   21f1f39). Do not patch before instrumenting per-substep contacts.
+
+### 2026-10-02 - The face-2 pass-through was a stale-build artifact; sample is clean
+
+- Rebuilt and re-ran: the reported full pass-through at face 2 side=1 blocks
+  (advanced 40/54, contacts every substep). Lesson repeated from earlier
+  sessions: verify a surprising result on a fresh build before recording it as
+  a bug; the per-substep debug (RC_WALL_DBG) made the true behavior visible.
+- Sampled residual status: all 6 play-area faces gameplay-correct (blocked or
+  stepped within the 70 budget). Phase 4 closed on the sample.
