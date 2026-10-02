@@ -553,7 +553,12 @@ wording HIGH as official documentation):
 - 摇杆模式 = camera-direction movement + auto-face; classic keeps the
   character-relative scheme.
 
-Consequence for the host: our "A/D = turn" is the TURN habit; the official
-default help text and default.txt are the STRAFE habit. The host must model
-the habit (option), not bake one in - that is the likely source of the
-"so many things wrong" reports. No game-side control change in the window.
+Consequence for the host: the habit is an option, not a constant. Final host
+model (2026-10-02): **classic A/D default = TURN** (rotate in place, no
+lateral movement; user-confirmed for their game), `RC_ADHABIT=strafe` opts
+into the side-step habit (the shipped default.txt binding). Turn keys rotate
+the `moveYaw` control frame (so W+A/D curves) while the camera follows through
+the move+turn row or is moved by the mouse drag only. Verified: A-alone
+`dpos=(0,0)`, straight diagonals in the strafe habit, curves in the turn habit
+(`proof/controls/control_modes_run.txt`, runs 133226 / 133609). No game-side
+control change in the window.
