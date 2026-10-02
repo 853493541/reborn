@@ -42,6 +42,8 @@ internal static class PhysicsProbe
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int CookFn(IntPtr self, IntPtr name, IntPtr path, IntPtr r9,
                         IntPtr s5, IntPtr s6, IntPtr s7, IntPtr s8, IntPtr s9);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate ulong HashFn(IntPtr s);
 
     [StructLayout(LayoutKind.Sequential)]
     struct MEMORY_BASIC_INFORMATION
@@ -253,36 +255,51 @@ internal static class PhysicsProbe
         }
         catch (Exception e) { log("physprobe: terrain vt[7] ex: " + e.Message); }
 
-        // Stage-1 attempt (opt-in RC_PX_COOK=1, test exe only): call the
-        // engine's own shape factory CreateCacheShapeFromFile (@0x1DC70) with a
-        // game mesh path. this = the global singleton at RVA 0x129590; observed
-        // call shape (site 0x35316): (this, name, path, r9, 0, &byte, &outShape,
-        // 1, &byte). KNOWN RESULT 2026-10-01: CRASHES with plain char* args -
-        // the factory expects the engine's own string objects (rdx = a list-node
-        // payload), not ANSI C strings. Route parked (stage-1 abandon criteria);
-        // kept opt-in as the repro for a future string-object implementation.
+        // Stage-1 attempt v2 (opt-in RC_PX_COOK=1, test exe only): the factory's
+        // name/path args are STANDARD HASH STRINGS (KG3D_ConvertToStandardHashString
+        // returns the 64-bit hash; the list nodes carry the hash at +0x10). The
+        // hash conversion works in-host (h1=h2=4F65C0E9) but the factory call
+        // still CRASHES: its r9/stack args are engine-internal objects (the actor
+        // option etc.) built by the engine's own collision pipeline. Piecemeal
+        // calling is not viable; the route needs the engine's internal init
+        // chain (represent/scene) or the PhysX-direct ABI. Parked (2nd stage-1
+        // abandon data point, 2026-10-01).
         if (Environment.GetEnvironmentVariable("RC_PX_COOK") == "1")
         {
             IntPtr factory = h + 0x129590;
             string meshPath = "data/source/maps_source/建筑配套/pj_玉门草棚001_hd.mesh";
-            log("physprobe: PX_COOK try factory=" + Hex(factory) + " path=" + meshPath);
-            IntPtr pathBuf = Marshal.StringToHGlobalAnsi(meshPath);
-            IntPtr outShape = Marshal.AllocHGlobal(IntPtr.Size);
-            Marshal.WriteIntPtr(outShape, IntPtr.Zero);
-            IntPtr b1 = Marshal.AllocHGlobal(8); Marshal.WriteByte(b1, 0);
-            IntPtr b2 = Marshal.AllocHGlobal(8); Marshal.WriteByte(b2, 0);
-            try
+            log("physprobe: PX_COOK v2 try factory=" + Hex(factory) + " path=" + meshPath);
+            IntPtr hCommon = GetModuleHandleA("KGCommonX64.dll");
+            IntPtr pConv = hCommon == IntPtr.Zero ? IntPtr.Zero
+                : GetProcAddress(hCommon, "KG3D_ConvertToStandardHashString");
+            if (pConv == IntPtr.Zero) { log("physprobe: PX_COOK: no KGCommon hash export"); }
+            else
             {
-                var cook = Fn<CookFn>(h + 0x1DC70);
-                int r = cook(factory, pathBuf, pathBuf, IntPtr.Zero,
-                             IntPtr.Zero, b1, outShape, (IntPtr)1, b2);
-                log("physprobe: PX_COOK ret=" + r + " outShape=" + Hex(Marshal.ReadIntPtr(outShape)));
-            }
-            catch (Exception e) { log("physprobe: PX_COOK ex: " + e.Message); }
-            finally
-            {
-                Marshal.FreeHGlobal(pathBuf); Marshal.FreeHGlobal(outShape);
-                Marshal.FreeHGlobal(b1); Marshal.FreeHGlobal(b2);
+                var conv = Fn<HashFn>(pConv);
+                IntPtr pathBuf = Marshal.StringToHGlobalAnsi(meshPath);
+                try
+                {
+                    ulong h1 = conv(pathBuf);
+                    ulong h2 = conv(pathBuf);
+                    log(string.Format("physprobe: PX_COOK hashes h1={0:X} h2={1:X}", h1, h2));
+                    IntPtr outShape = Marshal.AllocHGlobal(IntPtr.Size);
+                    Marshal.WriteIntPtr(outShape, IntPtr.Zero);
+                    IntPtr b1 = Marshal.AllocHGlobal(8); Marshal.WriteByte(b1, 0);
+                    IntPtr b2 = Marshal.AllocHGlobal(8); Marshal.WriteByte(b2, 0);
+                    try
+                    {
+                        var cook = Fn<CookFn>(h + 0x1DC70);
+                        int r = cook(factory, (IntPtr)(long)h1, (IntPtr)(long)h2, IntPtr.Zero,
+                                     IntPtr.Zero, b1, outShape, (IntPtr)1, b2);
+                        log("physprobe: PX_COOK ret=" + r + " outShape=" + Hex(Marshal.ReadIntPtr(outShape)));
+                    }
+                    finally
+                    {
+                        Marshal.FreeHGlobal(outShape);
+                        Marshal.FreeHGlobal(b1); Marshal.FreeHGlobal(b2);
+                    }
+                }
+                finally { Marshal.FreeHGlobal(pathBuf); }
             }
         }
 

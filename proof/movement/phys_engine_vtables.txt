@@ -288,3 +288,16 @@ the remaining option but is a multi-day ABI project, not an in-session build.
 The measured state stands: play-layer behavior ~85-90% (tested classes A/B
 proven, map-wide audit ~96% of sampled faces), exact engine-solver parity still
 unproven.
+
+### Update 2026-10-01i: string mystery solved (hashes) - factory still not callable piecemeal
+
+The factory's name/path args are **standard hash strings**:
+`KGCommonX64!KG3D_ConvertToStandardHashString(char* s) -> uint64` (export, RVA
+0x50230; the collision-file list nodes carry the hash at +0x10). The hash
+conversion now runs correctly in-host (`h1=h2=4F65C0E9` for the shed path,
+`reborn_20261001_211226.log`), but the factory call STILL crashes: its r9 and
+stack args are engine-internal objects (the actor option/geometry structures)
+built by the engine's own collision pipeline. **Verdict: the shape-factory
+route is not callable piecemeal from the host - it requires the engine's
+internal init chain (represent/scene) or the PhysX-direct ABI project.** Two
+crash data points recorded; the opt-in repro stays (`RC_PX_COOK=1`).
