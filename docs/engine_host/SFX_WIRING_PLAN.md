@@ -378,6 +378,14 @@ actor/model context) that our host does not set up. The working owner remains th
 singleton (`[engine+0x2CF1038] -> vt[8]()`). Loose files under the working root stay
 invisible to both FS layers (pak-only), confirmed with the copied player mesh.
 
+Scene setup now works in the probe (`view.out`): `CreateEmptyScene(0, &scene) -> 0`,
+`CreateSceneViewFrom3DScene(scene, "probe_view", NULL, &view, 0) -> 0`,
+`AddSceneView_SceneView(window, view, 0, 1) -> 0` → **`Get3DScene2(window)` returns the
+scene**. The SFX bind still returns `E_NOINTERFACE` with a scene present — the missing
+piece is the SFX model's attach/bind context (its `vt[0xD60]` is the shared stub on the
+directly-created object), i.e. registration through the engine's own SFX flow
+(scene-object/SFX-model context), not scene availability.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
