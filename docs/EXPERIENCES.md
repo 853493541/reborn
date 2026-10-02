@@ -1276,3 +1276,26 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ui_enablecontrol.txt, ui_begindrag.txt, ui_lockcontrol.txt, hk_proto61.txt,
   hk_proto63.txt, control_full.txt; OPERATION_MODES_PLAN.md sec 7d.
 
+
+### 2026-10-01 - controls/client - dig continued: full mouse/rotation pipeline + character-yaw coupling
+- Kept decoding (user: until the full system). New (game-client build):
+  MouseMove 0x180B21300 -> ApplyMouse 0x180B1F520 -> ClampMouse 0x180B1FE70
+  (five named controllers: carrier, "camera", sprint kind 0x1B, glider,
+  npc-dialog) + ApplyRotation 0x180B1FA30 (dynamic-follow; calls
+  pDynamicFollowCameraController) + alternate applier 0x180B211D0; the
+  engine writes the CHARACTER yaw via 0x18001F05F -> 0x180530F00
+  (`[character+0x30] = yaw`) from four sites (0x180B1FCC1 ApplyRotation,
+  0x180B21282 alt applier, 0x180B10115 state-step, 0x180B24EDE reset),
+  conditioned on dynamic-follow/stick state ([mgr+0x1AC]/[+0x1B0], state
+  [mgr+0x5C], dead-zone test), NOT on keyboard A/D.
+  Also: CreateSO3Represent allocates the global 0x180EDDFE0 object (0x26470 B)
+  and CreateRLLoader the RLLoader; character controller input applier
+  (0x1805DF350 -> 0x1805DF7E0) applies 8 command types into +0x7C..+0x98.
+- Precise remaining unknowns (3): which control id (6 vs 7) sets [mgr+0x1B0]
+  / [mgr+0x1AC]; the [mgr+0x5C] state enum 1..7; the character movement
+  direction (facing vs camera) in the controller update.
+- Evidence: modes-re\gc_applyrotation.txt, gc_clampmouse.txt, gc_applyalt.txt,
+  gc_mousemove.txt, gc_applymouse_fn.txt, gc_charyaw_thunk.txt,
+  gc_rowxref.txt, gc_camrow_loader.txt, gc_ctrl_apply.txt,
+  exe_eventcommon_camera.txt; OPERATION_MODES_PLAN.md sec 7d (+addendum).
+

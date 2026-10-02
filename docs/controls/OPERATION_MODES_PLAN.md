@@ -370,3 +370,31 @@ Evidence dumps: `%TEMP%\opencode\modes-re\gc_mousemove.txt`,
 `gc_applymouse_fn.txt`, `gc_camrow_loader.txt`, `gc_ctrl_apply.txt`,
 `exe_eventcommon_camera.txt`, `ui_enablecontrol.txt`, `ui_begindrag.txt`,
 `ui_lockcontrol.txt`, `hk_proto61.txt`, `hk_proto63.txt`, `control_full.txt`.
+
+**7d addendum (same dig, later): the mouse/rotation pipeline in full.**
+`MouseMove 0x180B21300` → `ApplyMouse 0x180B1F520` → two appliers:
+- `ClampMouse 0x180B1FE70`: resolves five named controllers
+  (`pCarrierCameraController`, `"camera"`, `pSprintCameraController` kind 0x1B,
+  `pGliderCameraController`, `pNPCDialogCameraController`) and clamps/applies
+  the deltas to the active one;
+- `ApplyRotation 0x180B1FA30` (assert string; called from 0x180B22922):
+  dynamic-follow path; checks `[this+0x28C]`, `[this+0x1B0]`, reads state
+  `[ctrl+0x17C]`, fetches `pDynamicFollowCameraController`, and — past a
+  dead-zone test — writes the **character** yaw: `[character+0x20]` +
+  `0x18001F05F` = `mov [rcx+0x30], xmm1` (`0x180530F00`).
+- a third applier `0x180B211D0` (alternate branch, entered when
+  `[mgr+0x1AC]`/`[mgr+0x1B0]` are set) also writes `[character+0x30]` under
+  states `[mgr+0x5C] == 5..7`.
+Character-yaw writers (`0x18001F05F` thunk xrefs, HIGH): `0x180B1FCC1`
+(ApplyRotation), `0x180B21282` (alternate applier), `0x180B10115`
+(state machine step `[obj+0xC0]==3`), `0x180B24EDE` (state transition → 0).
+So the engine **does** turn the character from the camera path — conditioned
+on the dynamic-follow/stick state, not on keyboard A/D.
+Manager fields consolidated: `+0x20` character, `+0x5C` camera state,
+`+0x90..0x9C` accumulators, `+0xA4/+0xA8` pitch clamps, `+0x1A8` moved flag,
+`+0x1AC` dynamic-follow, `+0x1B0` checked by both ApplyRotation and ApplyMouse,
+`+0x25C` enable, `+0x2D0`/`+0x2F0` controller array, `+0x318` flag.
+Remaining precise unknowns (3): (1) which of `CONTROL_CAMERA`/`OBJECT_STICK_CAMERA`
+sets `[mgr+0x1B0]` vs `[mgr+0x1AC]` (writer not yet located; the vtable slot is
+runtime-built), (2) the `[mgr+0x5C]` state enum values 1..7, (3) the character
+controller's movement-direction application (facing vs camera-relative).
