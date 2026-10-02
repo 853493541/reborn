@@ -347,6 +347,28 @@ Practical takeaway: engine-driven playback should go through the owner used by t
 engine's own SFX flow (the singleton `[engine+0x2CF1038] -> vt[8]()`), which already
 creates the `.Sfx` cleanly; the bind/attach context remains the open piece.
 
+### Data/FS boundary found (2026-10-01)
+
+Direct FS probes on the live client engine:
+```
+g_IsFileExist(mesh)=0   sfx=1          (game layer, Engine_Lua5X64 0xB5060)
+KG3D_LoadFile(mesh)=0   sfx=<non-null> (engine file manager, engine 0xB0F870)
+```
+The **game file layer serves the PakV4 store only** — a loose file copied into the
+working root (`client_root\data\source\player\f1\测试\f1_3094_body_hd.mesh`) is **not**
+visible, even after `g_SetRootPath` + `g_SetFilePath` (`Lua+0x170060` / `Lua+0x170170`).
+Consequence: engine-driven actor/animation/tag playback can only use **PakV4-resident**
+assets; the player models are not in PakV4 (they exist only in the updater's
+`_HttpFileForDebug_` cache — the local install is a partial client, models streamed on
+demand). The engine's animation tag system **does exist** (engine `GetAnimTagSystem`
+non-null, vtable 28 slots in `KG3D_AnimationTagX64.dll`, RVAs `0xAA40…0xCD90`), but with
+no loadable actor/animation the tag path cannot fire.
+
+Achievable locally with current data: engine-driven playback of **PakV4-resident
+effects** (e.g., `c纯阳坐忘.Sfx` — create proven) once the bind context is cracked;
+actor/animation-driven authored effects need runtime model assets the local install
+lacks. Evidence `fs.out`, `fspath.out`, `tag3.out`.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
