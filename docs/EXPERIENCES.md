@@ -1044,3 +1044,10 @@ solved it, and what is still open. **Newest at the bottom.**
   grid vs the resolve at that exact height.
 - New tools: `wallcheck` (global-resolve path test), RC_PX_POSES (arbitrary
   pose queries) - both reused for future triage.
+
+### 2026-10-02 - Face-2 triage correction: static contact OK, Resolve path at fault
+
+- First read suggested a triangle-grid miss; the correct-bin tinfo disproved it
+  (depth 13-17 at every path pose). The wallcheck still passes through => the
+  bug is in the Resolve path (prime suspect: the thin-wall normal flip from
+  21f1f39). Do not patch before instrumenting per-substep contacts.

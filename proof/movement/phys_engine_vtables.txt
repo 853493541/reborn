@@ -652,3 +652,17 @@ paths (RC_PX_POSES, 48-144 poses per face, world-baked cook):
 - **Residual status: OPEN** with the exact reproduction recorded (wallcheck
   commands + face identity). 5/6 sampled faces are gameplay-correct (blocked or
   stepped within budget); 1/6 is a genuine discrepancy vs the engine.
+
+### Update 2026-10-02k: face-2 pass-through narrowed to the Resolve path (not a grid miss)
+
+Correction to 2026-10-02j: with the correct day bin (龙门寻宝), tinfo at the
+face-2 path poses hits at ALL heights (depth 13.09-17.0, inst=332, mesh
+jz_xb楼...台001_003_hd) - the static contact exists along the whole path. The
+global `wallcheck` (MoveResolved) still advances the full 54 u at constant
+height. => the per-instance contact test and its triangle grid are FINE; the
+**Resolve path fails to block** on this face class. Prime suspect: the
+thin-wall normal-opposition logic (commit 21f1f39) interacting with this face's
+contact normal/geometry - needs instrumentation (per-substep contact log via
+the existing RC_COL_PROF path) before any fix. Reproduction: `wallcheck <day
+bin> 18671.0 1612.8 26077.4 20.2 -50.2` (expect blocked; currently advances
+54/54); `tinfo <day bin> 18678.1 1670.8 26059.8` (depth 13.09).
