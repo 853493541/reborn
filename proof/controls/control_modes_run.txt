@@ -457,3 +457,16 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   back: 96; TURNRIGHT: yaw -0.33 camd=-1.89 (arrows turn)
   WA: dpos=(-346,169) dist=385 dcam=0.00; WD: 384 dcam=0.00
 - Gates: camera_smoke ALL PASS (incl. hotkey context/override checks).
+
+## Joystick baseline evidence (current host), 2026-10-02
+- run reborn_20261002_164838.log (RC_MODE=joystick, default habit):
+  opmode applied: followMode=0 springReset=1.00 cameraReset=1.00
+  A-alone: yaw -1.57 cam kept dpos=(-319,0) dist=319  <-- HOST BUG: joystick
+    A/D must TURN in place (client 0/76 joystick branch = free-view
+    TurnLeftStart), not run laterally.
+  TURNRIGHT: yaw 1.88 camd=-1.88  <-- host rotates the camera with turn keys;
+    client decode says the keyboard never writes the camera (mouse owns it).
+  WA: 383 dyaw=0.14 dcam=0.00; WD: 384 dyaw=1.57 dcam=0.00 (auto-face works)
+- Patch list: joystick A/D turn; turn keys character-only in joystick;
+  StartSprint (double-tap); OperationModeBase vector/atan math; G4 follow
+  mode [0..3]; G5 reset speeds; G8 UseFullAngle; morph contexts.

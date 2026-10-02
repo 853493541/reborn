@@ -1690,3 +1690,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the host default flipped from turn to strafe; RC_ADHABIT=turn keeps the turn
   habit. Verified: A-alone d=0.00 side-step dist=96 camera kept; WA/WD straight
   385/384 dcam=0.00; arrows still turn (camd=-1.89). Smoke ALL PASS.
+
+### 2026-10-02 - controls - joystick baseline assessed
+- Kept version committed (HEAD 8b4e7d7); joystick evidence run
+  reborn_20261002_164838.log: per-mode apply ok, auto-face ok (WA/WD straight,
+  dcam=0); found two host bugs vs client truth: (1) joystick A/D run laterally
+  instead of turning in place (client 0/76 joystick branch = free-view
+  TurnLeftStart); (2) turn keys rotate the camera in joystick (decode: keyboard
+  never writes the camera; mouse owns it). Patch list recorded in
+  proof/controls/control_modes_run.txt.
