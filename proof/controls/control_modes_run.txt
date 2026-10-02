@@ -323,3 +323,14 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   WD mode=classical dpos=(3,-194) dist=194 dyaw=-2.51 dcam=-2.54
 - Gates: camera_smoke_control_modes ALL PASS; jx3_model 10x PASS;
   verify_model exit 0; capture selftest PASS.
+
+## A/D also turn the camera 1:1 (2026-10-01, user request; client's historic coupling)
+- Speed = the character turn rate (local RotationSpeed row, 0.00314 rad/ms =
+  pi rad/s), i.e. the camera yaw delta equals the character yaw delta; while
+  RMB holds the drag the camera is not keyboard-turned (character still turns).
+- Evidence, run reborn_20261001_220719.log (build git=4501215 dirty=1):
+  strafe (A 1 s): yaw0=0.00 yaw1=3.14 d=3.14 cam0=-1.31 cam1=1.83 (cam d=+3.14)
+  turn (0.6 s): yaw 3.14->5.02(wrapped -1.26) cam 1.83->-0.05 (d=+1.88/-1.88)
+  WA: dyaw=2.51 dcam=-2.51; WD: dyaw=-2.52 dcam=+2.52 (1:1 both signs)
+  back: cam kept (1.83), dist=96.
+- Gates: camera_smoke ALL PASS.

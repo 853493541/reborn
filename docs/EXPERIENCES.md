@@ -1354,3 +1354,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   moving forward) is the current client truth and is what the host implements.
 - Evidence: docs section 7d addendum 4; old_applyrot.txt / old_updrot.txt in
   %TEMP%\opencode\modes-re\; GameInfo.dat; jx3.xoyo.com latest notes.
+
+### 2026-10-01 - controls/client - A/D also turn the camera 1:1 (user request)
+- User: "just add AD to also turn camera as well, but at what speed?" Answer
+  from client data: 1:1 with the character turn - the local camera-controller
+  RotationSpeed row (0.00314 rad/ms = pi rad/s); the old ApplyRotation wrote
+  the identical yaw delta to both. Implemented: curYaw += dturn; camSys.Yaw -=
+  dturn, except while RMB holds the drag (the observed classic rule).
+- Evidence: run reborn_20261001_220719.log - A 1 s: yaw +3.14 / cam +3.14;
+  TURNRIGHT 0.6 s: +1.88 / -1.88; W+A: 2.51 / -2.51; W+D mirrored; back-pedal
+  camera kept. Smoke ALL PASS. Client relaunched (pid per session).
+

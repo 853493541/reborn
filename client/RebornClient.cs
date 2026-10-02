@@ -1920,9 +1920,10 @@ internal static class RebornClient
             // camera-relative). A/D in classical are TURN keys (decoded:
             // TurnLeftStart -> Camera_EnableControl(CONTROL_TURN_*); the strafe
             // handler's free-view Turn call is an OB-dungeon-only branch,
-            // hotkeys proto 63), NOT lateral movement in free view. The camera
-            // is written only by the mouse pipeline; a moving classical
-            // character is followed by the camera through the cached
+            // hotkeys proto 63), NOT lateral movement in free view. A/D also
+            // turn the camera 1:1 with the character (local RotationSpeed =
+            // pi rad/s), except while RMB owns the camera; a moving character
+            // is additionally followed through the cached
             // CameraAdjustYawWhenMoveTurn row (see the follow call below).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
@@ -2072,10 +2073,13 @@ internal static class RebornClient
                 if (turnL && !turnR) dturn = -tstep;
                 else if (turnR && !turnL) dturn = tstep;
                 curYaw += dturn;
-                // The keyboard never writes the camera (decoded). Joystick keeps
-                // its historic coupling (mouse always looks; the camera follows
-                // the body); classical lets the move-follow row drag the camera.
-                if (followsHeading) camSys.Yaw -= dturn;
+                // A/D also turn the camera at the SAME rate as the character -
+                // the client's own 1:1 coupling (the old ApplyRotation wrote the
+                // identical yaw delta to the camera controller; the rate is the
+                // local RotationSpeed row, 0.00314 rad/ms = pi rad/s). While RMB
+                // is held the drag owns the camera: the character still turns,
+                // the camera is not keyboard-turned (the observed classic rule).
+                if (!classicalMode || !rmbDown) camSys.Yaw -= dturn;
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes

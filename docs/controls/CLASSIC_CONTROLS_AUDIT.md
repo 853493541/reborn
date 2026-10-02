@@ -126,17 +126,20 @@ skill 9007).
   fields `+0x7C..+0x98`, vtable `[obj+0xA8]` slots `+0x88/+0x98/+0xA0…`) is the
   next trace target. Host has **no provisional rule** on this path; A/D behave
   the same with and without RMB.
-- **Host model gap — IMPLEMENTED 2026-10-01**: the host now follows the
-  decoded split. Classical movement runs along the **character facing**
-  (`KRLLocalCharacter+0x30` semantics), A/D + arrows turn the character and
-  never write the camera; the camera follows a moving forward character
-  through the cached `CameraAdjustYawWhenMoveTurn` row (15° dead zone,
-  rate-limited, skipped while the mouse owns the camera - LMB/RMB drag or
-  RMB body-carry). Spawn syncs the facing to the initial camera view.
-  Evidence: run `reborn_20261001_214418.log` - A-alone turns 3.13 rad with
-  `dpos=(0,0)` and `camd=0.00`; back-pedal keeps `cam` and moves 96 u;
-  W+A curves 194 u with the camera following; W+D mirrored. Gates: smoke
-  ALL PASS, jx3_model 10x PASS, verify_model exit 0, loot selftest PASS.
+- **Host model — IMPLEMENTED 2026-10-01 (final form)**: classical movement
+  runs along the **character facing** (`KRLLocalCharacter+0x30` semantics),
+  spawn-synced to the initial camera view. A/D + arrows turn the character
+  **and the camera at the same rate (1:1)** - the client's historic coupling
+  (the old `ApplyRotation` wrote the identical yaw delta to the camera
+  controller; the rate is the local `RotationSpeed` row, 0.00314 rad/ms =
+  π rad/s). While **RMB holds the camera drag**, A/D turn the character but
+  the camera is not keyboard-turned (the observed classic rule). The camera
+  additionally follows a moving forward character through the cached
+  `CameraAdjustYawWhenMoveTurn` row (15° dead zone, rate-limited, skipped
+  while a drag is active). Evidence: run `reborn_20261001_220719.log` -
+  A-alone: yaw +3.14, cam -3.14, `dpos=(0,0)`; TURNRIGHT 0.6 s: +1.88/-1.88;
+  W+A/W+D: ±2.51 on both; back-pedal: camera kept, dist 96. Gates: smoke
+  ALL PASS; jx3_model 10x PASS; verify_model exit 0; loot selftest PASS.
 
 ## 6. Recommended order
 
