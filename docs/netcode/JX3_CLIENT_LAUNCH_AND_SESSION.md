@@ -416,3 +416,20 @@ KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX
 - Next for step 3: resolve the bound method (vtable index) for KJX3WindowsApplicationModule /
   KJX3LoadingModule / KJX3RenderModule, dump those Initialize methods, and find which one writes
   the platform object (`state_sub+0x18`) and under what condition it fails.
+
+## 23. Module event dispatch + window path (2026-10-01, seventeenth pass)
+
+- Event dispatch: each module's handler thunk (e.g. `KJX3BaseModule::Finalize` at `0x1400A3A00`)
+  calls **`module->vtable[0x30](event_id)`**; the module vtable[0x30] is the per-module event
+  handler. Observed: `KJX3WindowsApplicationModule` vt[0x30] = `0x1400DFD40` handles only
+  `event_id == 3` (CloseHandle on module+0x70) and otherwise returns 1 - so the app object is not
+  created by this event handler.
+- The Initialize path: registry dispatch -> task `{vt=0x954C80, handler_ctx, ...}` -> run
+  `0x1400A3FD0` -> `KJX3BaseModule::Initialize` lambda `0x1400A37D0(ctx)` -> builds a per-module
+  step group and runs it via `ctx->vtable[0x20]` (`0x1400A3AA0` = run-group for most modules).
+- Window creation: `CreateWindowExA` callers are in the app module region - `0x140089BD3`,
+  `0x1400DB786`; message pump `PeekMessageW`/`DispatchMessageW` at `0x1400E023F`/`0x1400E0334`;
+  `ShowWindow` callers include `0x1400DA54D`, `0x1400DB9E4`, `0x1400DC816`, `0x1400DF1F5`.
+  Our probe never creates a window, so this path is never reached (or fails earlier).
+- Still open: the writer of `state_sub+0x18` (the pump's success gate) is not yet identified;
+  candidate paths: the app module's Initialize step group (window creation) or the platform code.
