@@ -25,7 +25,7 @@ if not "%RC_CLIENT_EXE%"=="" set BINFO=build_info_%EXE%.txt
   /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
   client\RebornClient.cs client\JumpTable.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
   client\CameraSystem.cs client\CameraSettings.cs client\EngineRay.cs ^
-  client\CameraShim.cs client\VideoSettings.cs client\Targeting.cs client\UiClient.cs
+  client\CameraShim.cs client\VideoSettings.cs client\Targeting.cs client\UiClient.cs client\HudOverlay.cs
 if errorlevel 1 goto :eof
 rem Shared bin64 configs are only written by the canonical build; feature builds
 rem must not clobber them while another workstream runs.
