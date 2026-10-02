@@ -529,6 +529,25 @@ The mode manager is the global `0x2D22598`, created by the engine's lazy getter
 callers pass `engine+0xEEC`, `0x135760`, `0x1359EB`), allocates 0x170 bytes,
 `runtime class` wrapper stored back after `0xB524A0`. Called from `0x8BA0CD`
 (engine working-root setter) and `0x135767/0x1359F2`.
+**REACHED — engine-driven animation play works (iat2.out/tag.out).** The engine's
+own `.tani` path is `KG3D_Actor::_InitAttachTani` (`0x83A6F0`, the `.tani` branch of
+the animation-create dispatch at `0x836CAE`): it asks `engine->vt[0x230]()` for the
+attach manager, `manager->vt[0xC](taniPath)` for the descriptor, then
+`descriptor->vt[3]()` returns the **resolved inner path** — the tani
+`data\source\player\f1\动作\F1HA393_start01.tani` resolves to
+`data\source\player\f1\动作\f1ha393_start01.ani` (the GATA container's inner file).
+`0xC41EA0(resolvedPath)` then loads successfully (the file layer serves the `.ani`
+from the `.tani` container decompressed), the animation object lands at
+`actor+0x368`, `StartAnimation` (`0xBC1C70`) returns 0 and 120 `FrameMove`
+(`0xBC2620`) calls return 0 — the authored clip plays on the client engine.
+`_InitAttachTani` still reports `KGLOG_COM_PROCESS_ERROR(0x80004005)` at line
+11447 (`call [anim vtable+0x90]`, the post-load attach/speed step), but the
+animation object is valid and playable.
+Tag-driven SFX: none fired during the 120 frames (the `[TagSfx]` lines in tag.out
+are the probe's own direct `.Sfx`/`.pss` tests) — next: find what evaluates the
+clip tags (controller/model update or the failing `vt+0x90` attach step) and/or
+confirm this clip carries SFX tags.
+
 Probe test: `0xB0F720(g_rootA)` after engine init **returns 0 (success)** but the
 tani still takes the raw path → `0xB101F0` still 0: the manager needs its
 path→mode mapping (what `manager->vt[0xD8]()` returns and what `obj->vt[1](path)`

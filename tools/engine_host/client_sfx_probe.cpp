@@ -179,6 +179,22 @@ static void tryCreate(HMODULE eng, const char* tag, const wchar_t* wpath, void* 
     }
 }
 
+// ---- tag-driven SFX create hook (engine-internal effect creation) ----------
+static BYTE g_csSaved[48];
+static BYTE* g_csTramp = NULL;
+typedef void* (__fastcall *CreateSfxHookFn)(void*, const char*, void*, void*, void*, void*, int, void**);
+static void* __fastcall hookCreateSfx(void* owner, const char* path, void* a3, void* a4,
+                                      void* a5, void* mtx, int a6, void** out)
+{
+    void* r = ((CreateSfxHookFn)g_csTramp)(owner, path, a3, a4, a5, mtx, a6, out);
+    if (path != NULL && (strstr(path, ".Sfx") != NULL || strstr(path, ".pss") != NULL))
+    {
+        printf("[TagSfx] create path=%s -> %p\n", path, r);
+        fflush(stdout);
+    }
+    return r;
+}
+
 int main(void)
 {
     static char g_rootA[MAX_PATH];
@@ -238,9 +254,10 @@ int main(void)
         }
         int pc = installInlineHook(eng, 0x8AEF30, (void*)hookCreateTargetWindow,
                                    g_ctwSaved, &g_ctwTramp, 15);
-        g_lfForceMode = 1;
+        g_lfForceMode = 0;
         int plf = installInlineHook(eng, 0xB0F870, (void*)hookLoadFile, g_lfSaved, &g_lfTramp, 20);
-        logf("hooks: CreateTargetWindow=%d LoadFile=%d", pc, plf);
+        int pcs = installInlineHook(eng, 0xBE5610, (void*)hookCreateSfx, g_csSaved, &g_csTramp, 21);
+        logf("hooks: CreateTargetWindow=%d LoadFile=%d CreateSfx=%d", pc, plf, pcs);
     }
 
     // 4) game file layer (Engine_Lua5X64): root + pak store
@@ -336,6 +353,102 @@ int main(void)
                 __except (EXCEPTION_EXECUTE_HANDLER) { logf("  mode %d read fault", mode); }
             }
         }
+        // API matrix: which game APIs read the tani, and do any decompress?
+        {
+            HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
+            char taniPath[512];
+            char dirAni[64];
+            gbk(L"动作", dirAni, sizeof(dirAni));
+            sprintf_s(taniPath, sizeof(taniPath),
+                      "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
+            if (lua != NULL)
+            {
+                __try
+                {
+                    void* (*kof)(const char*) = (void* (*)(const char*))((BYTE*)lua + 0xC02E0);
+                    void* buf = kof(taniPath);
+                    logf("KG_OpenFile -> %p", buf);
+                    if (buf != NULL)
+                    {
+                        BYTE* b = (BYTE*)buf;
+                        logf("  q0=%016llX q1=%016llX q2=%016llX",
+                             *(unsigned long long*)b, *(unsigned long long*)(b + 8),
+                             *(unsigned long long*)(b + 0x10));
+                        void* dp = *(void**)(b + 0x10);
+                        unsigned sz = *(unsigned*)(b + 0x18);
+                        if (dp != NULL)
+                        {
+                            BYTE* p = (BYTE*)dp;
+                            logf("  +10=%p +18=0x%X head=%c%c%c%c %02X %02X %02X %02X", dp, sz,
+                                 (p[0]>=32&&p[0]<127)?p[0]:'.',(p[1]>=32&&p[1]<127)?p[1]:'.',
+                                 (p[2]>=32&&p[2]<127)?p[2]:'.',(p[3]>=32&&p[3]<127)?p[3]:'.',
+                                 p[4],p[5],p[6],p[7]);
+                        }
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER) { logf("KG_OpenFile fault"); }
+                for (int gf = 0; gf <= 1; gf++)
+                {
+                    __try
+                    {
+                        void* (*gof)(const char*, int, int) =
+                            (void* (*)(const char*, int, int))((BYTE*)lua + 0xB2F50);
+                        void* r = gof(taniPath, gf, 0);
+                        logf("g_OpenFile(flag=%d) -> %p", gf, r);
+                        if (r != NULL)
+                        {
+                            BYTE* p = (BYTE*)r;
+                            logf("  q0=%016llX head=%c%c%c%c", *(unsigned long long*)p,
+                                 (p[0]>=32&&p[0]<127)?p[0]:'.',(p[1]>=32&&p[1]<127)?p[1]:'.',
+                                 (p[2]>=32&&p[2]<127)?p[2]:'.',(p[3]>=32&&p[3]<127)?p[3]:'.');
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("g_OpenFile(flag=%d) fault", gf); }
+                }
+                __try
+                {
+                    void* (*kop)(const char*, int) =
+                        (void* (*)(const char*, int))((BYTE*)lua + 0xCC670);
+                    void* fo = kop(taniPath, 1);
+                    logf("KG_OpenPakV4File(1) -> %p", fo);
+                    if (fo != NULL)
+                    {
+                        void* inner = *(void**)((BYTE*)fo + 8);
+                        if (inner != NULL)
+                        {
+                            typedef unsigned (__fastcall *SizeFn)(void*);
+                            unsigned sz = ((SizeFn)(*(void***)inner)[4])(inner);
+                            void* rec = ((void* (__fastcall *)(void*, void*, unsigned))
+                                         (*(void***)inner)[2])(inner, NULL, 0);
+                            logf("  inner=%p size=0x%X rec=%p", inner, sz, rec);
+                        }
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER) { logf("KG_OpenPakV4File fault"); }
+                for (int m = 1; m <= 12; m++)
+                {
+                    __try
+                    {
+                        void* (*ld2)(const char*, int) =
+                            (void* (*)(const char*, int))((BYTE*)eng + 0xB0FC60);
+                        void* w = ld2(taniPath, m);
+                        if (w == NULL) { logf("LD2 mode %2d -> NULL", m); continue; }
+                        void* out = NULL;
+                        typedef long (__fastcall *Wfn)(void*, int, void**);
+                        long hr = ((Wfn)(*(void***)w)[4])(w, 0, &out);
+                        logf("LD2 mode %2d -> w=%p vt4=0x%08X out=%p", m, w, (unsigned)hr, out);
+                        if (out != NULL)
+                        {
+                            BYTE* o = (BYTE*)out;
+                            logf("   out q0=%016llX q1=%016llX q2=%016llX q3=%016llX",
+                                 *(unsigned long long*)o, *(unsigned long long*)(o+8),
+                                 *(unsigned long long*)(o+0x10), *(unsigned long long*)(o+0x18));
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("LD2 mode %2d fault", m); }
+                }
+            }
+        }
         // wrapper OpenFile with a decompress flag: wrapper = Lua+0x1730B8
         {
             HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
@@ -402,8 +515,78 @@ int main(void)
                           "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
                 typedef long (__fastcall *CreateAnimFn)(void*, const char*, void**, int, int);
                 void* anim = NULL;
-                long arc = ((CreateAnimFn)((BYTE*)eng + 0x8B6EB0))(engine, taniPath, &anim, 1, 1);
-                logf("CreateAnimationFromFile(a4=1,a5=1) -> rc=0x%08X anim=%p", (unsigned)arc, anim);
+                {
+                    wchar_t ip[MAX_PATH];
+                    wchar_t rootW[MAX_PATH];
+                    MultiByteToWideChar(CP_ACP, 0, g_rootA, -1, rootW, MAX_PATH);
+                    swprintf_s(ip, MAX_PATH, L"%s\\bin64\\KIndexpackX64.dll", rootW);
+                    HMODULE ipk = LoadLibraryExW(ip, NULL,
+                        LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                    logf("KIndexpackX64.dll -> %p (err=%u)", ipk, ipk ? 0 : GetLastError());
+                    if (ipk != NULL)
+                    {
+                        typedef long (__cdecl *InitIpmFn)(void*, void*);
+                        InitIpmFn initIpm = (InitIpmFn)GetProcAddress(ipk, "g_InitIndexPackManager");
+                        long ihr = (initIpm != NULL) ? initIpm(NULL, NULL) : -1;
+                        logf("g_InitIndexPackManager -> 0x%08X", (unsigned)ihr);
+                        void* sing = *(void**)((BYTE*)ipk + 0x3D220);
+                        typedef long (__cdecl *GetReaderFn)(void**);
+                        GetReaderFn gr = (GetReaderFn)GetProcAddress(ipk, "g_GetIndexPackageReader");
+                        void* rout = NULL;
+                        long rhr = (gr != NULL) ? gr(&rout) : -1;
+                        logf("index singleton=%p g_GetIndexPackageReader -> 0x%08X out=%p",
+                             sing, (unsigned)rhr, rout);
+                    }
+                }
+                void* mm = ((void* (__cdecl *)(const char*))((BYTE*)eng + 0xB0F720))(g_rootA);
+                logf("mode manager -> %p", mm);
+                {
+                    void* wrapper = *(void**)((BYTE*)eng + 0x2D22598);
+                    void* inner = (wrapper != NULL) ? *(void**)((BYTE*)wrapper + 0x10) : NULL;
+                    void* cb = (inner != NULL) ? *(void**)((BYTE*)inner + 0x160) : NULL;
+                    void* mod = (inner != NULL) ? *(void**)((BYTE*)inner + 0x168) : NULL;
+                    void* out = NULL;
+                    long hr = (cb != NULL) ? ((long (__fastcall *)(void**))cb)(&out) : -1;
+                    void* mapper = NULL;
+                    if (wrapper != NULL)
+                        mapper = ((void* (__fastcall *)(void*))(((void***)wrapper)[0][27]))(wrapper);
+                    long mc = -1;
+                    if (mapper != NULL)
+                        mc = ((long (__fastcall *)(void*, const char*, void*, void*))
+                              (((void***)mapper)[0][1]))(mapper, taniPath, NULL, NULL);
+                    logf("mm: wrapper=%p inner=%p cb=%p mod=%p hr=0x%08X out=%p mapper=%p check=%ld",
+                         wrapper, inner, cb, mod, (unsigned)hr, out, mapper, mc);
+                }
+                long arc = -1;
+                {
+                    typedef long (__fastcall *InitAttachTaniFn)(void* actor, const char* path,
+                                                               unsigned flags);
+                    long iat = ((InitAttachTaniFn)((BYTE*)eng + 0x83A6F0))(actor, taniPath, 0);
+                    void* a2 = *(void**)((BYTE*)actor + 0x368);
+                    logf("_InitAttachTani -> rc=0x%08X actor+368=%p", (unsigned)iat, a2);
+                    __try
+                    {
+                        void** singleton = *(void***)((BYTE*)eng + 0x2CF1038);
+                        void* mgr = ((void* (__fastcall *)(void*))
+                                     ((*(void***)singleton)[0x460 / 8]))(singleton);
+                        logf("  attach mgr=%p", mgr);
+                        if (mgr != NULL)
+                        {
+                            void* desc = ((void* (__fastcall *)(void*, const char*, int))
+                                          ((*(void***)mgr)[0x60 / 8]))(mgr, taniPath, 0);
+                            logf("  desc=%p", desc);
+                            if (desc != NULL)
+                            {
+                                const char* rp = ((const char* (__fastcall *)(void*))
+                                                  ((*(void***)desc)[3]))(desc);
+                                logf("  resolved='%s'", rp ? rp : "(null)");
+                            }
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  attach resolve fault"); }
+                    if (a2 != NULL) { arc = 0; anim = a2; }
+                }
+                logf("CreateAnimationFromFile(a4=0,a5=0) -> rc=0x%08X anim=%p", (unsigned)arc, anim);
                 if (anim != NULL)
                 {
                     typedef long (__fastcall *StartAnimFn)(void*, void*, int, float,
@@ -442,3 +625,5 @@ int main(void)
     logf("probe done");
     return 0;
 }
+
+
