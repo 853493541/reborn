@@ -229,6 +229,20 @@ static void* __fastcall hookCreateSfx(void* owner, const char* path, void* a3, v
     return r;
 }
 
+// ---- animation update callback (controller tag events) ---------------------
+static long __fastcall onAnimUpdate(void* actor, unsigned a2, unsigned a3, const char* name,
+                                    void* a5, unsigned a6, unsigned a7, unsigned a8,
+                                    unsigned a9, int a10)
+{
+    if (name != NULL)
+    {
+        printf("[AnimCb] actor=%p a2=%u a3=%u name='%s' a5=%p %u %u %u %u %d\n",
+               actor, a2, a3, name, a5, a6, a7, a8, a9, a10);
+        fflush(stdout);
+    }
+    return 0;
+}
+
 int main(void)
 {
     static char g_rootA[MAX_PATH];
@@ -399,6 +413,78 @@ int main(void)
                 }
                 __except (EXCEPTION_EXECUTE_HANDLER) { logf("  tagSys vt[%d] fault", slot); }
             }
+            // tagged .ani reader -> KG3D_AnimationTani_Data::LoadFromFile(reader, out)
+            char aniPath[512];
+            sprintf_s(aniPath, sizeof(aniPath),
+                      "data\\source\\player\\f1\\%s\\F1stm09通道02连环弩.ani", dirAni);
+            const char* cands[3];
+            char c0[512], c1[512], c2[512];
+            sprintf_s(c0, sizeof(c0), "data\\source\\player\\f1\\%s\\F1stm09通道02连环弩.tani", dirAni);
+            sprintf_s(c1, sizeof(c1), "data\\source\\player\\f1\\%s\\f1stm09通道02连环弩.tani", dirAni);
+            sprintf_s(c2, sizeof(c2), "data\\source\\player\\m2\\%s\\M2scy03九转归一.tani", dirAni);
+            cands[0] = c0; cands[1] = c1; cands[2] = c2;
+            const char* resolved = NULL;
+            for (int ci = 0; ci < 3 && resolved == NULL; ci++)
+            {
+                __try
+                {
+                    void** singleton = *(void***)((BYTE*)eng + 0x2CF1038);
+                    void* mgr = ((void* (__fastcall *)(void*))
+                                 ((*(void***)singleton)[0x460 / 8]))(singleton);
+                    void* desc = (mgr != NULL)
+                        ? ((void* (__fastcall *)(void*, const char*, int))
+                           ((*(void***)mgr)[0x60 / 8]))(mgr, cands[ci], 0) : NULL;
+                    logf("  resolve[%d] mgr=%p desc=%p", ci, mgr, desc);
+                    if (desc != NULL)
+                        resolved = ((const char* (__fastcall *)(void*))
+                                    ((*(void***)desc)[3]))(desc);
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER) { logf("  attach resolve[%d] fault", ci); }
+            }
+            logf("  resolved tagged='%s'", resolved ? resolved : "(null)");
+            void* rd = (resolved != NULL) ? ((LoadFileFn)g_lfTramp)(resolved, 0) : NULL;
+            logf("tagged ani reader=%p", rd);
+            __try
+            {
+                void* td = ((void* (__fastcall *)(void*))vt[11])(tagSys);
+                logf("  taniData=%p", td);
+                if (td != NULL && rd != NULL)
+                {
+                    void** tvt = *(void***)td;
+                    void* out = NULL;
+                    long lrc = ((long (__fastcall *)(void*, void*, void**))tvt[0])(td, rd, &out);
+                    logf("  taniData vt[0] LoadFromFile -> 0x%08X out=%p", (unsigned)lrc, out);
+                    unsigned long long offs[] = { 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50 };
+                    for (int oi = 0; oi < 7; oi++)
+                    {
+                        void* p = *(void**)((BYTE*)td + offs[oi]);
+                        logf("    after +%02X -> %p", (unsigned)offs[oi], p);
+                        if (p != NULL)
+                        {
+                            unsigned long long q0 = *(unsigned long long*)p;
+                            unsigned long long q1 = *(unsigned long long*)((BYTE*)p + 8);
+                            unsigned long long q2 = *(unsigned long long*)((BYTE*)p + 0x10);
+                            logf("       q0=%016llX q1=%016llX q2=%016llX", q0, q1, q2);
+                            if (q0 > 0x10000 && q1 > q0 && q2 >= q1)
+                            {
+                                unsigned count = (unsigned)((q1 - q0) / 8);
+                                logf("       count(8B)=%u", count);
+                                for (unsigned ei = 0; ei < count && ei < 6; ei++)
+                                {
+                                    void* e = *(void**)(q0 + ei * 8ULL);
+                                    if (e != NULL)
+                                        logf("         e[%u]=%p evtRva=0x%llX", ei, e,
+                                             (unsigned long long)(tagMod != NULL
+                                                 ? ((BYTE*)*(void**)e - (BYTE*)tagMod) : 0));
+                                    else
+                                        logf("         e[%u]=null", ei);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  taniData load fault"); }
         }
     }
 
@@ -609,6 +695,63 @@ int main(void)
                 ((void (__fastcall *)(void*))((BYTE*)eng + 0xBC1100))(ctrl);
                 long sar = ((long (__fastcall *)(void*, void*))((BYTE*)eng + 0xBC2120))(ctrl, actor);
                 logf("controller=%p SetActor=0x%08X", ctrl, (unsigned)sar);
+                {
+                    typedef long (__fastcall *SetAnimCbFn)(void*, void*);
+                    long scr = ((SetAnimCbFn)((BYTE*)eng + 0xBC2110))(ctrl, (void*)onAnimUpdate);
+                    logf("SetAnimationUpdateCallBack -> 0x%08X", (unsigned)scr);
+                }
+                // tagged clip candidates: animation (.ani) and tag data (.tani)
+                {
+                    char dirAni2[64];
+                    gbk(L"动作", dirAni2, sizeof(dirAni2));
+                    char aniPath[512];
+                    sprintf_s(aniPath, sizeof(aniPath),
+                              "data\\source\\player\\f1\\%s\\F1stm09通道02.ani", dirAni2);
+                    char taniFull[512];
+                    sprintf_s(taniFull, sizeof(taniFull),
+                              "data\\source\\player\\f1\\%s\\F1stm09通道02连环弩.tani", dirAni2);
+                    HMODULE lua3 = GetModuleHandleA("Engine_Lua5X64.dll");
+                    if (lua3 != NULL)
+                    {
+                        __try
+                        {
+                            void* (*kop)(const char*, int) =
+                                (void* (*)(const char*, int))((BYTE*)lua3 + 0xCC670);
+                            void* fo = kop(taniFull, 1);
+                            logf("KG_OpenPakV4File(tagged tani) -> %p", fo);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER) { logf("KG_OpenPakV4File fault"); }
+                    }
+                    void* rd0 = ((LoadFileFn)g_lfTramp)(aniPath, 0);
+                    logf("tagged .ani direct reader=%p", rd0);
+                    if (rd0 != NULL)
+                    {
+                        __try
+                        {
+                            BYTE* rb = (BYTE*)rd0;
+                            BYTE* buf = *(BYTE**)(rb + 0x10);
+                            unsigned sz = *(unsigned*)(rb + 0x18);
+                            logf("  reader buf=%p size=0x%X head=%.4s", buf, sz,
+                                 buf ? buf : (BYTE*)"");
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER) { logf("  reader dump fault"); }
+                    }
+                    typedef long (__fastcall *CreateAnimFn2)(void*, const char*, void**, int, int);
+                    typedef long (__fastcall *StartAnimFn2)(void*, void*, int, float,
+                        unsigned, unsigned, void*, void*, void*);
+                    void* a2 = NULL;
+                    long rc2 = ((CreateAnimFn2)((BYTE*)eng + 0x8B6EB0))(engine, aniPath, &a2, 0, 0);
+                    logf("tagclip direct %s -> rc=0x%08X anim=%p", aniPath, (unsigned)rc2, a2);
+                    if (a2 != NULL)
+                    {
+                        long src2 = ((StartAnimFn2)((BYTE*)eng + 0xBC1C70))(ctrl, a2, 0, 1.0f,
+                            0, 0, NULL, NULL, NULL);
+                        logf("  StartAnimation -> 0x%08X; 120 frames", (unsigned)src2);
+                        typedef long (__fastcall *FrameMoveFn2)(void*);
+                        FrameMoveFn2 fm2 = (FrameMoveFn2)((BYTE*)eng + 0xBC2620);
+                        for (int f = 0; f < 120; f++) { fm2(ctrl); Sleep(16); }
+                    }
+                }
                 char taniPath[512];
                 char dirAni[64];
                 gbk(L"动作", dirAni, sizeof(dirAni));

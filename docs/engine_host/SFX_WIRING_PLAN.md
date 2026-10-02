@@ -567,19 +567,26 @@ tag query) in the probe to enumerate SFX tags with their paths, then bridge acti
 tags to `KG3D_CreateSFXFromFile`; or drive `KRLAnimationFactory` from
 JX3RepresentX64 for the full client behavior.
 
-**Tag-system runtime probe (tsys.out/tani2.out).** Runtime tag-system vtable is the
-0x49730 table **minus its first 2 entries** (runtime slot N = table index N-2).
-Calling the "create" slots on
-`data\source\player\f1\动作\F1stm09通道02连环弩.tani` (11 `.sfx` tags):
-vt[7] (`0xBC50`), vt[9] (`0xBD30`), vt[10] (`0xBD80`), vt[12] (`0xBF10`) → null;
-vt[11] (`0xBE60`) → an **empty `KG3D_AnimationTani_Data`** (vtable `0x4A638`;
-member getters +0x20..+0x50 all null; slots: `LoadFromFile`, `SaveToFile`,
-`_NewTagData(KG3D_ANIMTAG_TYPE)`, tag-list getters). The file-load path needs more
-than a bare path (reader/data or the 3D-engine/sound shell — `SetSoundShell` guards
-`m_pi3DEngine == nullptr`). The represent module (`JX3RepresentX64.dll`) remains the
-client's own full consumer (`KRLAnimationFactory` + tag dispatcher 0x37F2C0-0x37F6D6)
-— adopting it is the reliable route; the tani-data object is the fallback once its
-load API is wired.
+**Tagged-clip architecture + mount blocker (animcb.out/ani1.out/ani2.out).**
+`.ani` and `.tani` are **separate pak entries**: `.ani` = the animation (raw `MIN2`
+container, e.g. `f1ha393_start01.ani` 74,366 B; `F1stm09通道02.ani` 149,469 B), `.tani`
+= the tag data (GATA container; flags=0 payload is the tag blob with full `.sfx`
+paths). `KG3D_AnimationController::SetAnimationUpdateCallBack` (`0xBC2110`, raw fn
+ptr `long(*)(IKG3D_Actor*, u32, u32, const char*, void*, u32×4, int)`) registers
+successfully (`rc=0`) — it is the client's tag-event delivery into the host.
+**Blocker:** our PakV4 FS mount does not serve the tagged skill clips —
+`KG_OpenPakV4File("…F1stm09通道02连环弩.tani",1)` → null and direct
+`KG3D_LoadFile("…F1stm09通道02.ani",0)` → null (LoadFile line 217), while the
+official `PakV4SfxExtract.exe` extracts both from the same install, and base clips
+(`F1HA393_start01.tani`) open fine. `Trunk.dir` is a hashed index (no plaintext
+names). `Pakv4\Package.cfg` (package list: `tex_base_0`, `common_map`,
+`npc_sd_mesh`, …) and `Pakv4\versionmap.cfg` (versions `1.0.0.997…`) are the
+package/version config; `KG_InitPakV4FileSystem`'s 3rd arg (configStr — we pass
+`""`) and flags are the prime suspects for the incomplete mount. Next: recover the
+game's/extractor's `KG_InitPakV4FileSystem` arguments (call site in
+`JX3ClientX64.exe`, string refs via GetProcAddress) and mount the full package set,
+then re-run the tagged clip (load `.ani` → `SetAnimationUpdateCallBack` → watch
+tag events → `KG3D_CreateSFXFromFile`).
 
 Client tag→effect implementation found (JX3RepresentX64.dll). The client's own
 animation-tag bridge lives in the represent module: `KRLAnimationFactory::CreateSFXTag`
