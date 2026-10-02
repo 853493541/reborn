@@ -598,3 +598,17 @@ reference is a thunk jmp at 0x18001FC30). Its frame is authoritative:
 - Edge cases: 0-triangle sweeps return true with a zeroed hit buffer
   (uninitialized-return path - ignore); sweeps of 600/3000 u do not return
   (short 250 u works) - keep sweep specs short until root-caused.
+
+### Update 2026-10-02h: sweep instability is candidate-set dependent (boundary recorded)
+
+Reproducible: sweep (18700,975,36850)+X250 (256 candidates) and
+(17000,975,36850)+X250 (0 candidates) return; sweep (18300,975,36850)+X250
+(74 candidates) and (18500)+X600 / (17000)+X3000 do NOT return (no hit line,
+process must be killed). So the non-return depends on the triangle set handed
+to the sweep, not the distance. Every returned call so far agrees with the
+solver (initial-overlap -> distance 0; our path scan puts the first touch
+between x=18450 (clear) and x=18500 (depth 7.5), so a working sweep from
+18300 would be expected to report ~193 - pending the candidate-set issue).
+Do not feed arbitrary fat-capsule candidate sets until the crashing triangle
+class is isolated; prefer the caller's own pattern (per-region candidate
+lists).
