@@ -1507,3 +1507,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   animation matrix, data ledger, gaps G1-G10 + A1-A20 with owner phases
   (P1 Lua ... P9 publish), verification plan. Registered in controls README.
 - No behavior claims changed; host observations marked as verification only.
+
+### 2026-10-02 - controls - P1: Lua handler decode (joystick vector + mode routing)
+- New `tools/controls/lua_index.py` (batch proto index); ran it over the full
+  extracted UI script set (1549 files, 56,688 protos) -> proof/controls/
+  lua_index_all.txt + lua_index_control.txt (committed recon).
+- Decoded bodies (annex `CONTROL_MODES_LUA_ANNEX.md`, dumps committed):
+  hotkeys 0/61 mode wrapper (CLASSICAL= Camera_EnableControl, else
+  Scene_EnableFreeMoveControl); hotkeys 0/46 ResponseWASDKey = joystick
+  analog vector (Turn+Strafe share axes, 8-way MOVE_* + MOVE_STOP on overflow,
+  ResponseDisplacementHotkey routing, double-tap Forward -> StartSprint with
+  tower/bird/horse guards); OperationModeBase 0/5 mode apply (persisted key
+  StorageServer('CurrentOperationMode'), UseFullAngle/LockMouseRotation per
+  mode, Camera_SetResetSpeed(1.0) classical, IsMobileKungfu gate open);
+  0/19 toggle (SetCameraMode(nCameraModeIn<Mode>,true); mobile-kungfu forces
+  JOYSTICK + NEVER_FOLLOW); UISetting_Operation_Switch 0/12 setter.
+- Traceability statuses updated (R4/R6/R8 done, G9 Lua side done).

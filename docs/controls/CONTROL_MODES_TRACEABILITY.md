@@ -45,7 +45,7 @@ P7 data · P8 verification · P9 publish.
 | M8 | AUTORUN (G/NumLock; both mouse buttons) | `ControlId.AutoRun`; cancel set (backward/strafe) | stays run | PART |
 | M9 | TOGGLERUN (Numpad /) | walk/run tier (`number.krl` +0x48/+0x4C) | walk 56 / run 5 | DONE |
 | M10 | CAMERAUP/DOWN (MoveUp/Down) | unbound default; `MoveUpStart/Stop` exists | fly/swim tiers | OPEN(P1) |
-| M11 | double-tap W sprint/dash | joystick `ResponseWASDKey(double)`; classical ? | SPRINT_* states | OPEN(P1/P4) |
+| M11 | double-tap W sprint/dash | **decoded**: `ResponseWASDKey` (hotkeys 0/46) calls `StartSprint()` on `Forward` + down + `isDouble`, blocked on tower/bird/horse; classical path ? | SPRINT_* states | PART: Lua DONE(annex A2), classical + engine consumer OPEN(P4) |
 | M12 | movement tick model | character 15 Hz, combat 16 fps; `CommitInput` per frame | — | PART (G11) |
 | M13 | turn rate + >112.5° penalty | `WalkTo/RunTo` `+0x44/+0x48` mask `0x1000011E` | — | DONE (model); consumer OPEN(P4) |
 | M14 | movement-direction application (facing vs camera-relative) | — | — | OPEN(P4, G6) |
@@ -88,11 +88,11 @@ P7 data · P8 verification · P9 publish.
 | R1 | camera rotation | LMB/RMB only | mouse always (`Scene_LockMouseRotation`) | PART: joystick path OPEN(P4, G9) |
 | R2 | LMB / RMB semantics | camera / camera+body (scripts: `BeginDrag` only) | camera | G2/P4 |
 | R3 | movement keys | WASD camera-relative; A/D habit (default.txt STRAFE; turn habit observed) | WASD + auto-face heading | G6/G10/P4 |
-| R4 | control API | `Camera_EnableControl` | `Scene_EnableFreeMoveControl` | Lua DONE(P1 verify body) |
+| R4 | control API | `Camera_EnableControl` | `Scene_EnableFreeMoveControl` | **DONE** (annex A1: wrapper proto 0/61 branches on `GetOperationMode()==CLASSICAL_MODE`) |
 | R5 | free view | `Camera_IsInFreeView` (Lua getter) | n/a | DONE |
-| R6 | persisted follow mode | `nCameraModeInClassicMode` | `nCameraModeInJoystickMode` | parse DONE; consumer G4 |
+| R6 | persisted follow mode | `nCameraModeInClassicMode` | `nCameraModeInJoystickMode` | **DONE** script-side (annex A4: `SetCameraMode(cm,true)` on switch); consumer G4 |
 | R7 | switch | UI-only `SetOperationMode`; no default key | same + host F7 | DONE (host key documented) |
-| R8 | persisted mode key | unrecovered | unrecovered | OPEN(P7, G8) |
+| R8 | persisted mode key | `StorageServer` key **`CurrentOperationMode`** (annex A3) | same | DONE (storage side); `custom.dat` mapping OPEN(P7) |
 
 ## 6. Animation matrix (locomotion + base actions)
 
@@ -143,8 +143,8 @@ P7 data · P8 verification · P9 publish.
 | G5 reset-speed consumers/order | P4 | release path behavior |
 | G6 movement-direction application per mode | P4 | intent→facing/heading rule |
 | G7 animation selection criteria | P6 | thresholds/curves from params |
-| G8 `Camera_UseFullAngle`; persisted mode key | P4/P7 | consumer; custom.dat key |
-| G9 joystick internals (`Scene_EnableFreeMoveControl`, `ResponseWASDKey`, always-rotate) | P1/P4 | Lua body + engine consumer |
+| G8 `Camera_UseFullAngle`; persisted mode key | P4/P7 | consumer open; mode key = `StorageServer('CurrentOperationMode')` DONE, custom.dat mapping open |
+| G9 joystick internals (`Scene_EnableFreeMoveControl`, `ResponseWASDKey`, always-rotate) | P1/P4 | **Lua side DONE** (annex A1/A2/A3): wrapper, axis/8-way MOVE_* builder, mode apply; engine consumer open (P4) |
 | G10 free-view/OB vs normal A/D routing truth | P4 | engine + script cross-proof |
 | A1..A20 | P5/P6 | per section 6 |
 
@@ -161,3 +161,9 @@ P7 data · P8 verification · P9 publish.
 
 - 2026-10-02: created (P0) — baseline audit from the controls docs; G1–G10 and
   A1–A20 registered; animation matrix added per user request.
+- 2026-10-02: P1 start — batch Lua index (`tools/controls/lua_index.py`),
+  committed indexes + body dumps; annex `CONTROL_MODES_LUA_ANNEX.md`:
+  wrapper proto 0/61 (R4), `ResponseWASDKey` 0/46 (R3/M11 joystick), mode apply
+  0/5 + toggle 0/19 + settings setter (R6/R8; mode key
+  `StorageServer('CurrentOperationMode')`), `Camera_SetResetSpeed(1.0)`
+  classical, `UseFullAngle`/`LockMouseRotation` per mode.

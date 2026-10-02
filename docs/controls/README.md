@@ -28,6 +28,7 @@ state of our own client, so the full control system can be implemented later.
 | `controls/CONTROLS_GAP_REGISTER.md` | every open gap with ID, status, dependency |
 | `controls/CLASSIC_CONTROLS_AUDIT.md` | classic-mode control surface audit: shipped default bindings vs client handlers (2026-10-01) |
 | `controls/CONTROL_MODES_TRACEABILITY.md` | **live matrix for the full CLASSICAL+JOYSTICK decode (incl. animation)** — layers, rows, gaps G1–G10 / A1–A20, verification plan (2026-10-02) |
+| `controls/CONTROL_MODES_LUA_ANNEX.md` | **P1 Lua annex** — decoded control handler bodies: mode wrapper, `ResponseWASDKey` joystick vector, mode apply/toggle/persistence (2026-10-02) |
 
 ## The one-paragraph summary
 
@@ -64,6 +65,7 @@ customization. Research is ~85–90% complete; implementation ~35–40%.
 | `tools/controls/hotkey_parse.py` | decode `ui/hotkey/default.txt` + `bindings.ini` into the proof annexes; `--movement-check` prints and asserts the decoded movement key map (offline gate for C1/C2) |
 | `tools/controls/registry_summary.py` | summarise the generated hotkey command registry (context groups/categories) |
 | `tools/controls/lua51_probe.py` | instruction-level Lua 5.1 bytecode probe (packed UI scripts) |
+| `tools/controls/lua_index.py` | batch proto/name/global index for a directory of packed UI scripts (P1 substrate; writes `proof/controls/lua_index_*.txt`) |
 
 ## Rules for implementing later
 

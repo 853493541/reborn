@@ -1,0 +1,65 @@
+
+===== function 0/78 | line 876-904 | params=0 nups=3 stack=4 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'GetOperationMode'
+pc=   1 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   2 L0     GETGLOBAL A=1   B=0    C=1    'CLASSICAL_MODE'
+pc=   3 L0     EQ        A=1   B=0    C=1    R0 R1
+pc=   4 L0     JMP       A=0   B=256  C=13   to pc 19
+pc=   5 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   6 L0     GETGLOBAL A=1   B=0    C=2    'CONTROL_STRAFE_RIGHT'
+pc=   7 L0     LOADBOOL  A=2   B=1    C=0    
+pc=   8 L0     CALL      A=0   B=3    C=2    args=2 ret=1
+pc=   9 L0     TEST      A=0   B=0    C=0    
+pc=  10 L0     JMP       A=0   B=256  C=0    to pc 12
+pc=  11 L0     RETURN    A=0   B=1    C=0    
+pc=  12 L0     GETGLOBAL A=0   B=0    C=3    'Camera_IsInFreeView'
+pc=  13 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=  14 L0     TEST      A=0   B=0    C=1    
+pc=  15 L0     JMP       A=0   B=256  C=1    to pc 18
+pc=  16 L0     GETGLOBAL A=0   B=0    C=4    'TurnRightStart'
+pc=  17 L0     CALL      A=0   B=1    C=1    args=0 ret=0
+pc=  18 L0     RETURN    A=0   B=1    C=0    
+pc=  19 L0     GETUPVAL  A=0   B=1    C=0    
+pc=  20 L0     TEST      A=0   B=0    C=0    
+pc=  21 L0     JMP       A=0   B=256  C=7    to pc 30
+pc=  22 L0     LOADK     A=0   B=0    C=5    3802.0
+pc=  23 L0     GETGLOBAL A=1   B=0    C=6    'OnUseSkill'
+pc=  24 L0     MOVE      A=2   B=0    C=0    
+pc=  25 L0     MOD       A=3   B=0    C=263  R0 K7(10.0)
+pc=  26 L0     ADD       A=3   B=3    C=264  R3 K8(1.0)
+pc=  27 L0     MUL       A=3   B=0    C=3    R0 R3
+pc=  28 L0     CALL      A=1   B=3    C=1    args=2 ret=0
+pc=  29 L0     JMP       A=0   B=256  C=31   to pc 62
+pc=  30 L0     GETUPVAL  A=0   B=2    C=0    
+pc=  31 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=  32 L0     TEST      A=0   B=0    C=0    
+pc=  33 L0     JMP       A=0   B=256  C=0    to pc 35
+pc=  34 L0     RETURN    A=0   B=1    C=0    
+pc=  35 L0     GETGLOBAL A=0   B=0    C=9    'IsKeyDoubleDown'
+pc=  36 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=  37 L0     TEST      A=0   B=0    C=0    
+pc=  38 L0     JMP       A=0   B=256  C=11   to pc 51
+pc=  39 L0     GETGLOBAL A=0   B=0    C=10   'ResponseWASDKey'
+pc=  40 L0     LOADK     A=1   B=0    C=11   'StrafeRight'
+pc=  41 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  42 L0     LOADBOOL  A=3   B=1    C=0    
+pc=  43 L0     CALL      A=0   B=4    C=2    args=3 ret=1
+pc=  44 L0     TEST      A=0   B=0    C=1    
+pc=  45 L0     JMP       A=0   B=256  C=15   to pc 62
+pc=  46 L0     GETGLOBAL A=0   B=0    C=12   'Camera_EnableControl'
+pc=  47 L0     GETGLOBAL A=1   B=0    C=2    'CONTROL_STRAFE_RIGHT'
+pc=  48 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  49 L0     CALL      A=0   B=3    C=1    args=2 ret=0
+pc=  50 L0     JMP       A=0   B=256  C=10   to pc 62
+pc=  51 L0     GETGLOBAL A=0   B=0    C=10   'ResponseWASDKey'
+pc=  52 L0     LOADK     A=1   B=0    C=11   'StrafeRight'
+pc=  53 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  54 L0     LOADBOOL  A=3   B=0    C=0    
+pc=  55 L0     CALL      A=0   B=4    C=2    args=3 ret=1
+pc=  56 L0     TEST      A=0   B=0    C=1    
+pc=  57 L0     JMP       A=0   B=256  C=3    to pc 62
+pc=  58 L0     GETGLOBAL A=0   B=0    C=12   'Camera_EnableControl'
+pc=  59 L0     GETGLOBAL A=1   B=0    C=2    'CONTROL_STRAFE_RIGHT'
+pc=  60 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  61 L0     CALL      A=0   B=3    C=1    args=2 ret=0
+pc=  62 L0     RETURN    A=0   B=1    C=0    
