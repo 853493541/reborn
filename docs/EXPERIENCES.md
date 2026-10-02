@@ -1661,3 +1661,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   loaded by KTableList::LoadBinTextTab. Next: xref the loader string in the
   game client to find caller-supplied table names; enumerate the PakV4 index
   (Data\filepath.ini variants not present); hpkg extractor if packed.
+
+### 2026-10-02 - controls - default-binding coverage count
+- Fresh audit (proof/controls/hotkey_coverage.txt): 286 bound commands, 18
+  handled (movement 9 + sit/sheath 2 + camera 7 incl. mouse drag), 268
+  unhandled grouped: action bars 106, UI panels 60, other combat/state 82,
+  targeting 10, rogue/BR 6, minigame 4. Movement+camera control plane is
+  complete; the rest need their own systems (action bar/targeting/UI/stance).
+  CLASSIC_CONTROLS_AUDIT.md section 5b updated (old '176 unhandled' stale).

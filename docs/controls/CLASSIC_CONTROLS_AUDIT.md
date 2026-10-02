@@ -152,6 +152,32 @@ skill 9007).
   RMB strafe dist=96 camd=0.00; WA rmb=1 dist=317 camd=0.00; WD (no RMB) curve
   with row follow (dcam=0.15). Gates: smoke ALL PASS.
 
+## 5b. Coverage count — 2026-10-02 (fresh)
+
+`proof/controls/hotkey_coverage.txt` (generated from
+`hotkey_default_decoded.tsv` vs the client's handlers):
+
+- **bound rows: 286 · unique commands: 286**
+- **handled: 18** — MOVEFORWARD, MOVEBACKWARD, STRAFELEFT, STRAFERIGHT,
+  TURNLEFT, TURNRIGHT, JUMP, TOGGLERUN, TOGGLEAUTORUN, TOGGLESITDOWN,
+  TOGGLESHEATH, CAMERAZOOMIN/OUT, CAMERARESET, CAMERA_SET_VIEW_1/2,
+  CAMERAORSELECTORMOVE/STICKY (mouse drag).
+- **unhandled: 268**, by subject:
+  | subject | count | examples |
+  |---|---|---|
+  | action bars (static + dynamic + VK/battle) | 106 | `ACTIONBAR1_BUTTON1-16`, `DYNAMICACTIONBAR*`, `BATTLEACTIONBAR_BUTTON*`, `VKACTIONBAR_BUTTON_*` |
+  | UI panels | 60 | `TOGGLE_*_PANEL`, bags, `TOGGLE_UI`, worldmap |
+  | other combat/state keys | 82 | `KUNG_FU_*` (stance), `TALENT_SET1-5`, `SKILL_CAST_*` (direction), `RIDEHORSE`, `AUTOINTERACT`, `SELFSKILLGUIDE`, `NPC_SUMMON_*`, `SCREENSHOT`, `KINESCOPE` |
+  | targeting | 10 | `SEARCH_ENEMY` (Tab), `SELECT_SELF/TEAMMATE*`, `ATTACKTARGET`, … |
+  | rogue/BR contexts | 6 | `ROUGEACTIONBAR*` |
+  | minigame contexts | 4 | `MINIGAME_*` |
+
+So the whole **movement + camera + base-locomotion control plane is complete
+(18/18 of its bound commands)**; every remaining binding belongs to the
+action-bar / targeting / UI / stance subjects and needs those systems first.
+The client already *loads and matches* all 286 rows (`client/HotkeyTable.cs`);
+unmatched commands are counted (`unhandledCmd` / `lastUnhandled`).
+
 ## 6. Recommended order
 
 1. Camera obstruction S9 + FOV S8 (classic camera feel; camera subject).
