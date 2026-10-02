@@ -1,81 +1,35 @@
-﻿// client_sfx_probe.cpp — test the CLIENT engine's KG3D_CreateSFXFromFile on a real
-// .Sfx, read-only, no editor shell. Boots X3DEngine (PreInit/Load), gets the engine
-// interface from the client adapter, then calls the client's create with GBK paths.
+﻿// client_sfx_probe.cpp — client-stack recon probe (read-only; see
+// docs/engine_host/SFX_WIRING_PLAN.md).
+//
+// Boots the client engine the way the game does:
+//   X3DEngine facade -> adapter -> game file layer (Engine_Lua5X64) -> engine
+//   (window provided by the host via a CreateTargetWindow hook),
+// then runs the engine's own actor/model/animation path and the direct
+// KG3D_CreateSFXFromFile tests.
+//
+// Runtime root: set RC_PROBE_ROOT to a client-root copy
+// (default: %TEMP%\opencode\skillv2\client_root).
 #include <windows.h>
 #include <intrin.h>
-#include <tlhelp32.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-extern "C" __declspec(dllimport) unsigned short __stdcall RtlCaptureStackBackTrace(
-    unsigned long FramesToSkip, unsigned long FramesToCapture, void** BackTrace, unsigned long* BackTraceHash);
-
-static int __cdecl hookPrintfLog(int channel, const char* fmt, ...)
+static void logf(const char* fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    printf("[KGLOG ch=%d] ", channel);
-    vprintf(fmt, ap);
-    printf("\n");
+    vfprintf(stdout, fmt, ap);
+    fprintf(stdout, "\n");
     fflush(stdout);
     va_end(ap);
-    return 0;
 }
 
-typedef HANDLE (WINAPI *CreateFileWFn)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
-static CreateFileWFn g_realCreateFileW = NULL;
-static HANDLE WINAPI hookCreateFileW(LPCWSTR name, DWORD access, DWORD share, LPSECURITY_ATTRIBUTES sa, DWORD disp, DWORD flags, HANDLE tmpl)
+static void gbk(const wchar_t* src, char* out, int cap)
 {
-    HANDLE h = g_realCreateFileW(name, access, share, sa, disp, flags, tmpl);
-    if (name != NULL && wcsstr(name, L"aterial") != NULL)
-    {
-        wprintf(L"[CreateFileW] %s -> %p\n", name, h);
-        fflush(stdout);
-    }
-    return h;
+    WideCharToMultiByte(936, 0, src, -1, out, cap, NULL, NULL);
 }
 
-typedef HANDLE (WINAPI *CreateFileAFn)(LPCSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
-static CreateFileAFn g_realCreateFileA = NULL;
-static HANDLE WINAPI hookCreateFileA(LPCSTR name, DWORD access, DWORD share,
-                                     LPSECURITY_ATTRIBUTES sa, DWORD disp, DWORD flags, HANDLE tmpl)
-{
-    HANDLE h = g_realCreateFileA(name, access, share, sa, disp, flags, tmpl);
-    if (name != NULL && (strstr(name, "aterial") != NULL || strstr(name, "Shader") != NULL || strstr(name, "hlsl") != NULL))
-    {
-        printf("[CreateFileA] %s -> %p\n", name, h);
-        fflush(stdout);
-    }
-    return h;
-}
-
-static BYTE g_fsSaved[24];
-static BYTE* g_fsTramp = NULL;
-
-typedef long (__fastcall *FsCreateFn)(const char* root);
-static long __fastcall hookFsCreate(const char* root)
-{
-    printf("[FsCreate] root='%s' caller=%p\n", root ? root : "(null)", _ReturnAddress());
-    fflush(stdout);
-    return ((FsCreateFn)g_fsTramp)(root);
-}
-
-static BYTE g_ceSaved[24];
-static BYTE* g_ceTramp = NULL;
-
-typedef long (__fastcall *CreateEngineFn)(void* param, void** out);
-static long __fastcall hookCreateEngine(void* param, void** out)
-{
-    __try
-    {
-        printf("[CreateEngine] param=%p out=%p root='%s' fs@param+8=%p\n",
-               param, out, (char*)((BYTE*)param + 0xeec), *(void**)((BYTE*)param + 8));
-        fflush(stdout);
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER) { printf("[CreateEngine] param read fault\n"); fflush(stdout); }
-    return ((CreateEngineFn)g_ceTramp)(param, out);
-}
-
+// ---- inline hook -----------------------------------------------------------
 static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved, BYTE** trampOut, int len)
 {
     BYTE* target = (BYTE*)mod + rva;
@@ -102,14 +56,7 @@ static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved, BY
     return 1;
 }
 
-static int installFsHook(HMODULE eng, DWORD rva)
-{
-    return installInlineHook(eng, rva, (void*)hookFsCreate, g_fsSaved, &g_fsTramp, 17);
-}
-
-static void logModules(const char* tag);
-
-// ---- host window + CreateTargetWindow HWND substitution --------------------
+// ---- hooks -----------------------------------------------------------------
 static HWND g_probeHwnd = NULL;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
@@ -117,61 +64,37 @@ static BYTE* g_ctwTramp = NULL;
 typedef long (__fastcall *CreateTargetWindowFn)(void* self, void* hwnd, void** out);
 static long __fastcall hookCreateTargetWindow(void* self, void* hwnd, void** out)
 {
-    printf("[CreateTargetWindow] self=%p hwnd=%p -> using %p\n", self, hwnd, g_probeHwnd);
-    fflush(stdout);
+    logf("[CreateTargetWindow] hwnd=%p -> using %p", hwnd, g_probeHwnd);
     if (g_probeHwnd != NULL) hwnd = g_probeHwnd;
     return ((CreateTargetWindowFn)g_ctwTramp)(self, hwnd, out);
 }
 
-static HWND createProbeWindow(void)
+static BYTE g_lfSaved[32];
+static BYTE* g_lfTramp = NULL;
+static int g_lfForceMode = 0;
+
+typedef void* (__fastcall *LoadFileFn)(const char* path, int flags);
+static void* __fastcall hookLoadFile(const char* path, int flags)
 {
-    WNDCLASSEXA wc;
-    memset(&wc, 0, sizeof(wc));
-    wc.cbSize = sizeof(wc);
-    wc.style = CS_OWNDC;
-    wc.lpfnWndProc = DefWindowProcA;
-    wc.hInstance = GetModuleHandleA(NULL);
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = "client_sfx_probe_wnd";
-    if (!RegisterClassExA(&wc) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
-        printf("[window] RegisterClassEx failed err=%lu\n", GetLastError());
-    HWND h = CreateWindowExA(0, "client_sfx_probe_wnd", "client_sfx_probe",
-                             WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
-                             NULL, NULL, wc.hInstance, NULL);
-    printf("[window] CreateWindowExA -> %p err=%lu\n", h, GetLastError());
-    if (h != NULL) ShowWindow(h, SW_SHOW);
-    return h;
+    if (g_lfForceMode > 0 && flags == 0 && path != NULL &&
+        (strstr(path, ".tani") != NULL || strstr(path, ".ani") != NULL))
+        flags = g_lfForceMode;
+    return ((LoadFileFn)g_lfTramp)(path, flags);
 }
 
-static BYTE g_iwSaved[24];
-static BYTE* g_iwTramp = NULL;
-
-static void __cdecl hookInvokeWatson(const wchar_t* expr, const wchar_t* func, unsigned line, unsigned long long reserved)
+static int __cdecl hookPrintfLog(int channel, const char* fmt, ...)
 {
-    printf("[WATSON] expr=%ls func=%ls line=%u caller=%p\n",
-           expr ? expr : L"(null)", func ? func : L"(null)", line, _ReturnAddress());
+    va_list ap;
+    va_start(ap, fmt);
+    printf("[KGLOG ch=%d] ", channel);
+    vprintf(fmt, ap);
+    printf("\n");
     fflush(stdout);
-    // do not call the original - it fast-fails; just hang for stack capture
-    for (;;) Sleep(1000);
+    va_end(ap);
+    return 0;
 }
 
-static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
-{
-    if (true)
-    {
-        printf("[VEH] code=0x%08X at=%p\n", (unsigned)ep->ExceptionRecord->ExceptionCode,
-               ep->ExceptionRecord->ExceptionAddress);
-        void* frames[24];
-        unsigned short nf = RtlCaptureStackBackTrace(0, 24, frames, NULL);
-        for (unsigned short i = 0; i < nf; i++)
-            printf("[VEH]   frame[%u]=%p\n", (unsigned)i, frames[i]);
-        logModules("at-veh");
-        fflush(stdout);
-    }
-    return EXCEPTION_CONTINUE_SEARCH;
-}
-
-static int patchLogIat(HMODULE mod, void* realFn, void* replacement)
+static int patchIat(HMODULE mod, void* realFn, void* replacement)
 {
     if (mod == NULL || realFn == NULL) return 0;
     BYTE* base = (BYTE*)mod;
@@ -199,134 +122,63 @@ static int patchLogIat(HMODULE mod, void* realFn, void* replacement)
     return patched;
 }
 
-static void logModules(const char* tag)
+static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
 {
-    HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
-    if (snap == INVALID_HANDLE_VALUE) { printf("[mods %s] snapshot failed\n", tag); return; }
-    MODULEENTRY32 me;
-    me.dwSize = sizeof(me);
-    if (Module32First(snap, &me))
-    {
-        do
-        {
-            const char* n = me.szModule;
-            printf("[mods %s] %p size=0x%X %s\n", tag, me.modBaseAddr, (unsigned)me.modBaseSize, n);
-        } while (Module32Next(snap, &me));
-    }
-    CloseHandle(snap);
+    if (ep->ExceptionRecord->ExceptionCode == 0xC0000409)
+        logf("[VEH] fast-fail at=%p", ep->ExceptionRecord->ExceptionAddress);
+    return EXCEPTION_CONTINUE_SEARCH;
 }
 
-static void logf(const char* fmt, ...)
+static HWND createProbeWindow(void)
 {
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(stdout, fmt, ap);
-    fprintf(stdout, "\n");
-    fflush(stdout);
-    va_end(ap);
+    WNDCLASSEXA wc;
+    memset(&wc, 0, sizeof(wc));
+    wc.cbSize = sizeof(wc);
+    wc.style = CS_OWNDC;
+    wc.lpfnWndProc = DefWindowProcA;
+    wc.hInstance = GetModuleHandleA(NULL);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = "client_sfx_probe_wnd";
+    RegisterClassExA(&wc);
+    HWND h = CreateWindowExA(0, "client_sfx_probe_wnd", "client_sfx_probe",
+                             WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
+                             NULL, NULL, wc.hInstance, NULL);
+    if (h != NULL) ShowWindow(h, SW_SHOW);
+    return h;
 }
 
-typedef void* (__stdcall* GetEngine2Fn)(void);
-typedef void* (__stdcall* EngineMethodFn)(void* self);
-typedef void* (__fastcall* CreateSfxFromFileFn)(void* owner, const char* path,
-    void* a3, void* a4, void* a5, void* a6, int a7, void* a8);
-
-static const DWORD CLIENT_RVA_CREATE_SFX_FROM_FILE = 0xBE5610;
-
-static void gbk(const wchar_t* src, char* out, int cap)
+// ---- direct SFX create test ------------------------------------------------
+static void tryCreate(HMODULE eng, const char* tag, const wchar_t* wpath, void* owner)
 {
-    WideCharToMultiByte(936, 0, src, -1, out, cap, NULL, NULL);
-}
-
-static void tryCreate(const char* tag, const wchar_t* wpath, void* owner)
-{
-    HMODULE eng = GetModuleHandleA("KG3DEngineDX11EX64.dll");
-    if (eng == NULL) { logf("%s: engine module not loaded", tag); return; }
     char path[512];
     gbk(wpath, path, sizeof(path));
-    CreateSfxFromFileFn create = (CreateSfxFromFileFn)((BYTE*)eng + CLIENT_RVA_CREATE_SFX_FROM_FILE);
     void* sfx = NULL;
     void* out = NULL;
     float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
     DWORD exc = 0;
     DWORD64 fault = 0;
+    typedef void* (__fastcall *CreateFn)(void*, const char*, void*, void*, void*, void*, int, void*);
+    CreateFn create = (CreateFn)((BYTE*)eng + 0xBE5610);
     __try { sfx = create(owner, path, NULL, NULL, NULL, mtx, 0, &out); }
     __except (exc = GetExceptionCode(),
               fault = (DWORD64)((PEXCEPTION_POINTERS)GetExceptionInformation())->ExceptionRecord->ExceptionAddress,
               EXCEPTION_EXECUTE_HANDLER) { sfx = NULL; }
-    logf("%s: owner=%p -> obj=%p out=%p exc=0x%08X fault_rva=0x%llX",
-         tag, owner, sfx, out, (unsigned)exc,
+    logf("%s: obj=%p exc=0x%08X fault_rva=0x%llX", tag, sfx, (unsigned)exc,
          (unsigned long long)(fault > (DWORD64)eng ? (fault - (DWORD64)eng) : 0));
     if (sfx != NULL)
     {
         __try
         {
             void** vt = *(void***)sfx;
-            logf("   vtable=%p vt0=0x%llX vt1=0x%llX vt121=0x%llX",
-                 vt,
-                 (unsigned long long)((BYTE*)vt[0] - (BYTE*)eng),
-                 (unsigned long long)((BYTE*)vt[1] - (BYTE*)eng),
-                 (unsigned long long)((BYTE*)vt[121] - (BYTE*)eng));
+            logf("   vtable=%p vt0=0x%llX", vt, (unsigned long long)((BYTE*)vt[0] - (BYTE*)eng));
         }
         __except (EXCEPTION_EXECUTE_HANDLER) { logf("   vtable unreadable"); }
-        // play step (mirrors the engine tag update): __RTDynamicCast to
-        // IKG3D_NormalModel, then vt[0xD58](model,1,1,0) and vt[0xD60](model,...)
-        {
-            DWORD pexc = 0;
-            void* model = NULL;
-            DWORD64 pfault = 0;
-            __try
-            {
-                HMODULE vc = GetModuleHandleA("VCRUNTIME140.dll");
-                typedef void* (__cdecl *CastFn)(void*, long, void*, void*, int);
-                CastFn cast = vc ? (CastFn)GetProcAddress(vc, "__RTDynamicCast") : NULL;
-                if (cast != NULL)
-                    model = cast(sfx, 0, (void*)((BYTE*)eng + 0x26080A0),
-                                 (void*)((BYTE*)eng + 0x2608B40), 0);
-                logf("   cast -> model=%p (cast=%p)", model, cast);
-                if (model != NULL)
-                {
-                    void** mvt = *(void***)model;
-                    typedef long (__fastcall *PlayFn)(void* self, char a, char b, int c);
-                    typedef long (__fastcall *AttachFn)(void* self, void* ctx, void* r8);
-                    typedef long (__fastcall *PlayMtxFn)(void* self, void* mtx, void* r8);
-                    typedef void* (__fastcall *HandleFn)(void* self);
-                    PlayFn play = (PlayFn)mvt[0xD58 / 8];
-                    AttachFn attach = (AttachFn)mvt[0xD60 / 8];
-                    PlayMtxFn playMtx = (PlayMtxFn)mvt[0x180 / 8];
-                    HandleFn getHandle = (HandleFn)mvt[0x190 / 8];
-                    long prc = 0;
-                    if (play != NULL) prc = play(model, 1, 1, 0);
-                    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-                    long arc = attach ? attach(model, NULL, NULL) : -1;
-                    long mrc = playMtx ? playMtx(model, mtx, NULL) : -1;
-                    void* h = getHandle ? getHandle(model) : NULL;
-                    logf("   model mvt0=0x%llX slots: play=0x%llX attach=0x%llX playMtx=0x%llX handle=0x%llX",
-                         (unsigned long long)((BYTE*)mvt[0] - (BYTE*)eng),
-                         (unsigned long long)((BYTE*)play - (BYTE*)eng),
-                         (unsigned long long)((BYTE*)attach - (BYTE*)eng),
-                         (unsigned long long)((BYTE*)playMtx - (BYTE*)eng),
-                         (unsigned long long)((BYTE*)getHandle - (BYTE*)eng));
-                    logf("   rc: play=0x%08X attach=0x%08X playMtx=0x%08X handle=%p",
-                         (unsigned)prc, (unsigned)arc, (unsigned)mrc, h);
-                }
-            }
-            __except (pexc = GetExceptionCode(),
-                      pfault = (DWORD64)((PEXCEPTION_POINTERS)GetExceptionInformation())->ExceptionRecord->ExceptionAddress,
-                      EXCEPTION_EXECUTE_HANDLER)
-            {
-                logf("   play exc=0x%08X fault_rva=0x%X",
-                     (unsigned)pexc,
-                     (unsigned)(pfault > (DWORD64)eng ? (pfault - (DWORD64)eng) : 0));
-            }
-        }
     }
 }
 
-static char g_rootA[MAX_PATH];
-
 int main(void)
 {
+    static char g_rootA[MAX_PATH];
     if (GetEnvironmentVariableA("RC_PROBE_ROOT", g_rootA, MAX_PATH) == 0)
     {
         GetTempPathA(MAX_PATH, g_rootA);
@@ -334,17 +186,18 @@ int main(void)
     }
     wchar_t root[MAX_PATH];
     MultiByteToWideChar(CP_ACP, 0, g_rootA, -1, root, MAX_PATH);
-    wchar_t bin64[MAX_PATH];
-    wchar_t dll[MAX_PATH];
+    wchar_t bin64[MAX_PATH], dll[MAX_PATH];
     swprintf_s(bin64, MAX_PATH, L"%s\\bin64", root);
     swprintf_s(dll, MAX_PATH, L"%s\\X3DEngine.dll", bin64);
 
     SetCurrentDirectoryW(root);
     AddVectoredExceptionHandler(1, vehHandler);
     g_probeHwnd = createProbeWindow();
+    logf("[window] hwnd=%p", g_probeHwnd);
     SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     AddDllDirectory(bin64);
 
+    // 1) facade boot (the game's entry)
     HMODULE x3d = LoadLibraryExW(dll, NULL,
         LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     if (!x3d) { logf("X3DEngine load failed err=%lu", GetLastError()); return 2; }
@@ -352,801 +205,171 @@ int main(void)
     fn_void pre = (fn_void)GetProcAddress(x3d, "?PreInitX3DEngine@NSX3DEngine@@YAHXZ");
     fn_void load = (fn_void)GetProcAddress(x3d, "?LoadX3DEngine@NSX3DEngine@@YAHXZ");
     if (pre) logf("PreInitX3DEngine -> %d", pre());
-    if (load) logf("LoadX3DEngine -> %d", load()); logModules("after-load");
+    if (load) logf("LoadX3DEngine -> %d", load());
 
-    // engine interface from the client adapter (loaded by the facade)
+    // 2) adapter interface
     HMODULE adapter = GetModuleHandleA("KG3DEngineAdapterX64.dll");
     void* engIface = NULL;
     if (adapter != NULL)
     {
         typedef long (__cdecl *fn_out)(void** out);
         fn_out get3d = (fn_out)GetProcAddress(adapter, "Get3DEngineInterface");
-        fn_out getMovie = (fn_out)GetProcAddress(adapter, "GetMovieEngine");
-        void* p = NULL;
-        if (get3d) { long r = get3d(&p); logf("adapter Get3DEngineInterface r=%d -> %p", (int)r, p); }
-        engIface = p;
-        p = NULL;
-        if (getMovie) { long r = getMovie(&p); logf("adapter GetMovieEngine r=%d -> %p", (int)r, p); }
+        if (get3d) { long r = get3d(&engIface); logf("Get3DEngineInterface r=%d -> %p", (int)r, engIface); }
     }
-    else logf("adapter module not loaded");
 
-    wchar_t engPath[MAX_PATH]; swprintf_s(engPath, MAX_PATH, L"%s\\KG3DEngineDX11EX64.dll", bin64); HMODULE eng = LoadLibraryExW(engPath, NULL,
+    // 3) engine DLL + hooks (log capture, window, load-file mode)
+    wchar_t engPath[MAX_PATH];
+    swprintf_s(engPath, MAX_PATH, L"%s\\KG3DEngineDX11EX64.dll", bin64);
+    HMODULE eng = LoadLibraryExW(engPath, NULL,
         LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-    logf("client engine load -> %p err=%lu", eng, GetLastError()); logModules("after-engine-load");
-
-    // manager object the facade uses (facade global RVA 0xFA418) + GetK3EngineMgr
+    logf("client engine load -> %p", eng);
+    if (eng == NULL) return 3;
     {
-        typedef void* (__cdecl *GetMgrFn)(void);
-        GetMgrFn getMgr = (GetMgrFn)GetProcAddress(x3d, "?GetK3EngineMgr@NSX3DEngine@@YAPEAVIX3DEngineManager@@XZ");
-        void* mgr = getMgr ? getMgr() : NULL;
-        void* obj = *(void**)((BYTE*)x3d + 0xFA418);
-        logf("GetK3EngineMgr -> %p   facade global 0xFA418 -> %p", mgr, obj);
-        if (obj != NULL)
+        HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
+        if (kgc != NULL)
         {
-            DWORD mexc = 0;
-            __try
-            {
-            void** vt = *(void***)obj;
-            logf("obj vtable=%p slot0=%p slot1=%p slot82=%p", vt, vt[0], vt[1], vt[82]);
-            logf("  (no vt[0] call - it unloads the adapter; exploratory only)");
-            }
-            __except (mexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER)
-            {
-                logf("obj vt call exc=0x%08X", (unsigned)mexc);
-            }
+            void* realLog = GetProcAddress(kgc, "KG_PrintfLog");
+            logf("KG_PrintfLog hooked engine=%d adapter=%d",
+                 patchIat(eng, realLog, (void*)hookPrintfLog),
+                 patchIat(adapter, realLog, (void*)hookPrintfLog));
         }
-        if (eng != NULL)
+        int pc = installInlineHook(eng, 0x8AEF30, (void*)hookCreateTargetWindow,
+                                   g_ctwSaved, &g_ctwTramp, 15);
+        g_lfForceMode = 1;
+        int plf = installInlineHook(eng, 0xB0F870, (void*)hookLoadFile, g_lfSaved, &g_lfTramp, 20);
+        logf("hooks: CreateTargetWindow=%d LoadFile=%d", pc, plf);
+    }
+
+    // 4) game file layer (Engine_Lua5X64): root + pak store
+    {
+        HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
+        if (lua == NULL)
         {
-            typedef void* (__stdcall *GetEngine2Fn)(void);
-            GetEngine2Fn ge2 = (GetEngine2Fn)GetProcAddress(eng, "KG3D_GetEngine2");
-            logf("KG3D_GetEngine2 -> %p", ge2 ? ge2() : NULL);
+            wchar_t lp[MAX_PATH];
+            swprintf_s(lp, MAX_PATH, L"%s\\Engine_Lua5X64.dll", bin64);
+            lua = LoadLibraryExW(lp, NULL,
+                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+        }
+        if (lua != NULL)
+        {
+            typedef void (__cdecl *SetRootFn)(const char*);
+            ((SetRootFn)((BYTE*)lua + 0xB5400))(g_rootA);
+            ((SetRootFn)((BYTE*)lua + 0xB5220))(g_rootA);
+            typedef int (__cdecl *InitPakFn)(const char*, const char*, const char*,
+                                             int, int, int, int, int, void*);
+            int pr = ((InitPakFn)((BYTE*)lua + 0xCC2D0))(
+                "C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0, 0, 0, 0, (void*)"");
+            logf("file layer: root set, KG_InitPakV4FileSystem -> %d", pr);
         }
     }
 
-    // adapter interface object (built by adapter ctor 0x72AF0, vtable 0x29FFF0);
-    // vt[0] is the big Init that builds KG3D_ENGINE_INIT_PARAM + calls KG3D_CreateEngine
-    if (adapter != NULL && engIface != NULL)
+    // 5) create the engine (the game's call: iface->vt[0](0, 4))
+    void* engine = NULL;
+    if (engIface != NULL)
     {
-        DWORD aexc = 0;
-        void* aat = NULL;
-        void* aav = NULL;
-        CONTEXT* actx = NULL;
-        logf("iface block: iface=%p adapter=%p", engIface, adapter);
-        if (eng != NULL)
+        void** ivt = *(void***)engIface;
+        logf("iface vtable=%p slot0=%p", ivt, ivt[0]);
+        if (ivt == (void**)((BYTE*)adapter + 0x29FFF0))
         {
-            __try
-            {
-                void* fm0 = *(void**)((BYTE*)eng + 0x2D22598);
-                logf("engine FS manager BEFORE init = %p", fm0);
-                if (fm0 != NULL)
-                    logf("  FS root before init = '%s'", (char*)((BYTE*)fm0 + 0xC));
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER) { logf("pre-init FS read failed"); }
+            typedef long (__fastcall *InitFn)(void* self, void* rdx, int r8d);
+            long r = ((InitFn)ivt[0])(engIface, NULL, 4);
+            logf("iface->vt[0](0,4) -> %ld", r);
         }
+        typedef void* (__stdcall *GetEngine2Fn)(void);
+        GetEngine2Fn ge2 = (GetEngine2Fn)GetProcAddress(eng, "KG3D_GetEngine2");
+        engine = ge2 ? ge2() : NULL;
+        logf("KG3D_GetEngine2 -> %p", engine);
+    }
+
+    // 6) scene + view (host setup the game does)
+    void* scene = NULL;
+    if (engine != NULL)
+    {
+        typedef long (__fastcall *CreateEmptySceneFn)(void* self, size_t size, void** out);
+        ((CreateEmptySceneFn)((BYTE*)eng + 0x8AFAE0))(engine, 0, &scene);
+        typedef void* (__fastcall *GetWinFn)(void* self);
+        typedef void* (__fastcall *GetSceneFn)(void* self);
+        void* window = ((GetWinFn)GetProcAddress(eng,
+            "?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ"))(engine);
+        if (window != NULL && scene != NULL)
         {
-            HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
-            if (kgc != NULL)
-            {
-                typedef void* (__cdecl *CreateConsoleFn)(void);
-                typedef void* (__cdecl *CreateFileFn)(const wchar_t*, const wchar_t*, int, int);
-                typedef void (__cdecl *RegisterFn)(void* stream);
-                typedef void (__cdecl *SetMaskFn)(unsigned mask);
-                CreateConsoleFn cc = (CreateConsoleFn)GetProcAddress(kgc, "KG_CreateConsoleLogStream");
-                CreateFileFn cf = (CreateFileFn)GetProcAddress(kgc, "KG_CreateFileLogStream");
-                RegisterFn reg = (RegisterFn)GetProcAddress(kgc, "KG_RegisterLogStream");
-                SetMaskFn sm = (SetMaskFn)GetProcAddress(kgc, "KG_SetLogMask");
-                void* st = NULL;
-                if (cf)
-                {
-                    wchar_t logPath[MAX_PATH]; swprintf_s(logPath, MAX_PATH, L"%s\\logs\\engine", root); st = cf(logPath,
-                            L"client_sfx_probe", 1, 1);
-                    logf("file log stream -> %p", st);
-                }
-                if (st == NULL && cc)
-                {
-                    st = cc();
-                    logf("console log stream -> %p", st);
-                }
-                if (st != NULL && reg) reg(st);
-                if (sm) sm(0xFFFFFFFF);
-                logf("KG log stream registered");
-                // hook KG_PrintfLog in the engine + adapter IATs so engine log goes to stdout
-                void* realLog = GetProcAddress(kgc, "KG_PrintfLog");
-                HMODULE engMod = GetModuleHandleA("KG3DEngineDX11EX64.dll");
-                int p1 = patchLogIat(engMod, realLog, (void*)hookPrintfLog);
-                int p2 = patchLogIat(adapter, realLog, (void*)hookPrintfLog);
-                logf("KG_PrintfLog hooked: engine=%d adapter=%d (real=%p)", p1, p2, realLog);
-                // hook CreateFileW/A in the engine IAT to trace file lookups
-                g_realCreateFileW = (CreateFileWFn)GetProcAddress(GetModuleHandleA("KERNEL32.dll"), "CreateFileW");
-                g_realCreateFileA = (CreateFileAFn)GetProcAddress(GetModuleHandleA("KERNEL32.dll"), "CreateFileA");
-                int p3 = patchLogIat(engMod, (void*)g_realCreateFileW, (void*)hookCreateFileW);
-                int p4 = patchLogIat(engMod, (void*)g_realCreateFileA, (void*)hookCreateFileA);
-                logf("CreateFile hooked: W=%d A=%d", p3, p4);
-                // substitute the host window in KG3D_Engine::CreateTargetWindow (15-byte prologue)
-                {
-                    int pc = installInlineHook(engMod, 0x8AEF30, (void*)hookCreateTargetWindow,
-                                               g_ctwSaved, &g_ctwTramp, 15);
-                    logf("CreateTargetWindow hook=%d hwnd=%p tramp=%p", pc, g_probeHwnd, g_ctwTramp);
-                }
-                // MSVCR110 (_invoke_watson) hook - installed after the engine load
-                {
-                    HMODULE crt = GetModuleHandleA("MSVCR110.dll");
-                    if (crt == NULL) crt = LoadLibraryA("MSVCR110.dll");
-                    if (crt != NULL)
-                    {
-                        void* iw = GetProcAddress(crt, "abort"); if (iw == NULL) iw = GetProcAddress(crt, "_invoke_watson");
-                        logf("MSVCR110=%p _invoke_watson=%p", crt, iw);
-                        if (iw)
-                        {
-                            int pi = installInlineHook(crt, (DWORD)((BYTE*)iw - (BYTE*)crt),
-                                                      (void*)hookInvokeWatson, g_iwSaved, &g_iwTramp, 12);
-                            logf("  watson hook=%d", pi);
-                        }
-                    }
-                }
-                (void)installFsHook; (void)hookFsCreate; (void)hookCreateEngine;
-            }
-            else logf("KGCommonX64.dll not loaded");
-        }
-        if (adapter != NULL)
-        {
-            typedef long (__cdecl *SetRootFn)(const char* path);
-            SetRootFn setRoot = (SetRootFn)GetProcAddress(adapter, "SetEngineWorkingRootDirectory");
-            if (setRoot)
-            {
-                long rr = setRoot(g_rootA);
-                logf("SetEngineWorkingRootDirectory -> %ld", rr);
-            }
-            // Game file layer (Engine_Lua5X64) init - the adapter FS delegates to it.
-            // Must run before the engine init, like KJX3PackageModule::Initialize does.
-            {
-                HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
-                if (lua == NULL)
-                {
-                    wchar_t lp[MAX_PATH];
-                    swprintf_s(lp, MAX_PATH, L"%s\\Engine_Lua5X64.dll", bin64);
-                    lua = LoadLibraryExW(lp, NULL, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-                }
-                logf("Engine_Lua5X64 -> %p err=%lu", lua, GetLastError());
-                if (lua != NULL)
-                {
-                    typedef void (__cdecl *LuaSetRootFn)(const char*);
-                    LuaSetRootFn luaSetRoot = (LuaSetRootFn)((BYTE*)lua + 0xB5400);
-                    luaSetRoot(g_rootA);
-                    logf("g_SetRootPath done");
-                    typedef void (__cdecl *LuaSetFileFn)(const char*);
-                    LuaSetFileFn luaSetFile = (LuaSetFileFn)((BYTE*)lua + 0xB5220);
-                    luaSetFile(g_rootA);
-                    logf("g_SetFilePath done");
-                    typedef int (__cdecl *InitPakFn)(const char*, const char*, const char*,
-                                                     int, int, int, int, int, void*);
-                    InitPakFn initPak = (InitPakFn)((BYTE*)lua + 0xCC2D0);
-                    int pr = initPak("C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0, 0, 0, 0, (void*)"");
-                    logf("KG_InitPakV4FileSystem -> %d", pr);
-                }
-            }
-            // inspect the iface fields the adapter init reads (rbx+0x20, rbx+0x2018)
-            __try
-            {
-                BYTE* b = (BYTE*)engIface;
-                logf("iface hexdump +0x2000..+0x2060:");
-                for (int row = 0; row < 6; row++)
-                {
-                    BYTE* p = b + 0x2000 + row * 0x10;
-                    logf("  +0x%04X: %016llX %016llX", 0x2000 + row * 0x10,
-                         *(unsigned long long*)p, *(unsigned long long*)(p + 8));
-                }
-                char* dataPtr = *(char**)(b + 0x2020);
-                if (dataPtr != NULL)
-                    logf("  [iface+0x2020] -> '%s'", dataPtr);
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER) { logf("iface field read failed"); }
-            // root source: object at iface+0x9d8, vt[2](&buf) should return the working root
-            __try
-            {
-                void* cfg = *(void**)((BYTE*)engIface + 0x9d8);
-                logf("iface+0x9d8 cfg object = %p", cfg);
-                if (cfg != NULL)
-                {
-                    char buf[512];
-                    buf[0] = 0;
-                    void** vt = *(void***)cfg;
-                    logf("cfg vtable=%p vt0=%p vt1=%p vt2=%p", vt, vt[0], vt[1], vt[2]);
-                    typedef long (__fastcall *GetStrFn)(void* self, char* out);
-                    long r = ((GetStrFn)vt[2])(cfg, buf);
-                    logf("cfg vt[2] -> %ld buf='%s'", r, buf);
-                }
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER) { logf("cfg object read failed"); }
-            // facade objects that the host may pass into the manager init
-            __try
-            {
-                typedef void* (__cdecl *GetObjFn)(void);
-                GetObjFn getFilePath = (GetObjFn)GetProcAddress(x3d, "?GetFilePath@NSX3DEngine@@YAPEAVIFilePath@1@XZ");
-                GetObjFn getClipboard = (GetObjFn)GetProcAddress(x3d, "?GetClipboard@NSX3DEngine@@YAPEAVIClipboard@@XZ");
-                void* fp = getFilePath ? getFilePath() : NULL;
-                void* cb = getClipboard ? getClipboard() : NULL;
-                logf("facade GetFilePath -> %p  GetClipboard -> %p", fp, cb);
-                if (fp != NULL)
-                {
-                    void** fvt = *(void***)fp;
-                    logf("  filepath vtable=%p vt0=%p vt1=%p vt2=%p", fvt, fvt[0], fvt[1], fvt[2]);
-                }
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER) { logf("facade object probe failed"); }
-        }
-        __try
-        {
-            void** ivt = *(void***)engIface;
-            logf("iface vtable=%p slot0=%p (adapter+0x29FFF0=%p)",
-                 ivt, ivt[0], (BYTE*)adapter + 0x29FFF0);
-            if (ivt == (void**)((BYTE*)adapter + 0x29FFF0))
-            {
-                // the game's path: NSX3DEngine::KWindowsX3DEngine::Init ->
-                // iface->vt[0](rdx=0, r8d=4)  (JX3ClientX64.exe 0x1F822..0x1F82F)
-                typedef long (__fastcall *InitFn)(void* self, void* rdx, int r8d);
-                long r = ((InitFn)ivt[0])(engIface, NULL, 4);
-                logf("iface->vt[0](0, 4) -> %ld", r);
-            }
-            else logf("iface vtable mismatch");
-        }
-        __except (aexc = GetExceptionCode(),
-                  aat = GetExceptionInformation()->ExceptionRecord->ExceptionAddress,
-                  aav = (void*)(GetExceptionInformation()->ExceptionRecord->NumberParameters > 1 ? GetExceptionInformation()->ExceptionRecord->ExceptionInformation[1] : 0),
-                  actx = GetExceptionInformation()->ContextRecord,
-                  EXCEPTION_EXECUTE_HANDLER)
-        {
-            logf("iface vt[0] exc=0x%08X at=%p av_addr=%p", (unsigned)aexc, aat, aav);
-            if (actx != NULL)
-            {
-                logf("  ctx rip=%p rsp=%p rbp=%p", (void*)actx->Rip, (void*)actx->Rsp, (void*)actx->Rbp);
-                DWORD64* sp = (DWORD64*)actx->Rsp;
-                for (int si = 0; si < 40; si++)
-                {
-                    DWORD64 v = sp[si];
-                    if (v > 0x10000 && v < 0x00007FFFFFFFFFFF)
-                        logf("  stack[%d]=%p", si, (void*)v);
-                }
-            }
-            logModules("at-exception");
-        }
-        if (eng != NULL)
-        {
-            typedef void* (__stdcall *GetEngine2Fn)(void);
-            GetEngine2Fn ge2 = (GetEngine2Fn)GetProcAddress(eng, "KG3D_GetEngine2");
-            logf("KG3D_GetEngine2 (after iface init) -> %p", ge2 ? ge2() : NULL);
-            // engine's own scene + actor-from-file path with the real .Sfx
-            {
-                void* engine = ge2 ? ge2() : NULL;
-                if (engine != NULL)
-                {
-                    __try
-                    {
-                        typedef void* (__fastcall *GetWindowFn)(void* self);
-                        typedef void* (__fastcall *GetSceneFn)(void* self);
-                        GetWindowFn getWin = (GetWindowFn)GetProcAddress(eng,
-                            "?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ");
-                        GetSceneFn getScene = (GetSceneFn)GetProcAddress(eng,
-                            "?Get3DScene2@KG3D_Window@@UEAAPEAVKG3D_Scene@@XZ");
-                        void* window = getWin ? getWin(engine) : NULL;
-                        void* scene = (window && getScene) ? getScene(window) : NULL;
-                        logf("window=%p scene=%p", window, scene);
-                        // create an empty scene + scene view (the SFX bind context likely needs one)
-                        if (engine != NULL)
-                        {
-                            typedef long (__fastcall *CreateEmptySceneFn)(void* self, size_t size, void** out);
-                            CreateEmptySceneFn createScene = (CreateEmptySceneFn)((BYTE*)eng + 0x8AFAE0);
-                            void* newScene = NULL;
-                            long src = createScene(engine, 0, &newScene);
-                            logf("CreateEmptyScene -> rc=0x%08X scene=%p", (unsigned)src, newScene);
-                            if (newScene != NULL && window != NULL)
-                            {
-                                typedef long (__fastcall *CreateViewFn)(void* self, void* sc,
-                                    const char* name, void* physics, void** out, int flags);
-                                CreateViewFn createView = (CreateViewFn)((BYTE*)eng + 0x8AF3A0);
-                                void* view = NULL;
-                                long vrc = createView(engine, newScene, "probe_view", NULL, &view, 0);
-                                logf("CreateSceneViewFrom3DScene -> rc=0x%08X view=%p", (unsigned)vrc, view);
-                                if (view != NULL)
-                                {
-                                    typedef long (__fastcall *AddView2Fn)(void* win, void* vw, int source, int flag);
-                                    AddView2Fn addView2 = (AddView2Fn)((BYTE*)eng + 0xA6B870);
-                                    long a2 = addView2(window, view, 0, 1);
-                                    logf("AddSceneView_SceneView -> rc=0x%08X; Get3DScene2 now=%p",
-                                         (unsigned)a2, getScene ? getScene(window) : NULL);
-                                }
-                            }
-                        }
-                        // animation tag system state (game's own SFX-tag path)
-                        typedef void* (__fastcall *GetTagFn)(void* self);
-                        GetTagFn getTag = (GetTagFn)GetProcAddress(eng,
-                            "?GetAnimTagSystem@KG3D_Engine@@UEBAPEAUIKG3D_AnimationTagSystem@@XZ");
-                        void* tagSys = getTag ? getTag(engine) : NULL;
-                        logf("AnimTagSystem = %p", tagSys);
-                        if (tagSys != NULL)
-                        {
-                            HMODULE tagMod2 = GetModuleHandleA("KG3D_AnimationTagX64.dll");
-                            void** tvt = *(void***)tagSys;
-                            logf("  tag vtable=%p", tvt);
-                            for (int i = 0; i < 28; i++)
-                                logf("  tag vt[%d] = %p (rva 0x%llX)", i, tvt[i],
-                                     (unsigned long long)((BYTE*)tvt[i] - (BYTE*)tagMod2));
-                        }
-                        if (tagSys == NULL)
-                        {
-                            HMODULE tagMod = GetModuleHandleA("KG3D_AnimationTagX64.dll");
-                            if (tagMod == NULL)
-                            {
-                                wchar_t tp[MAX_PATH];
-                                swprintf_s(tp, MAX_PATH, L"%s\\KG3D_AnimationTagX64.dll", bin64);
-                                tagMod = LoadLibraryExW(tp, NULL,
-                                    LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-                            }
-                            typedef void* (__cdecl *CreateTagFn)(void);
-                            CreateTagFn createTag = tagMod
-                                ? (CreateTagFn)GetProcAddress(tagMod, "KG3D_CreateAnimationTagSystem") : NULL;
-                            void* made = createTag ? createTag() : NULL;
-                            logf("KG3D_CreateAnimationTagSystem -> %p (mod=%p)", made, tagMod);
-                            if (made != NULL)
-                            {
-                                typedef long (__fastcall *SetTagFn)(void* self, void* tag);
-                                SetTagFn setTag = (SetTagFn)GetProcAddress(eng,
-                                    "?SetAnimTagSystem@KG3D_Engine@@UEAAJPEAUIKG3D_AnimationTagSystem@@@Z");
-                                long trc = setTag ? setTag(engine, made) : -1;
-                                logf("SetAnimTagSystem -> 0x%08X, now GetAnimTagSystem=%p",
-                                     (unsigned)trc, getTag ? getTag(engine) : NULL);
-                            }
-                        }
-                        // CreateActorFromFile(this, path, arg3, out, flags, options)
-                        typedef long (__fastcall *CreateActorFn)(void* self, const char* path,
-                            void* arg3, void** out, unsigned flags, void* options);
-                        CreateActorFn createActor = (CreateActorFn)((BYTE*)eng + 0x8B2DA0);
-                        void* actor = NULL;
-                        long rc = createActor(engine,
-                            "data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx",
-                            NULL, &actor, 0, NULL);
-                        logf("CreateActorFromFile(.Sfx) -> rc=0x%08X actor=%p", (unsigned)rc, actor);
-                        // model actor (player mesh) - should load; dump its vtable
-                        char mpath[512];
-                        gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
-                        void* mactor = NULL;
-                        long mrc = createActor(engine, mpath, NULL, &mactor, 0, NULL);
-                        logf("CreateActorFromFile(mesh) -> rc=0x%08X actor=%p", (unsigned)mrc, mactor);
-                        if (mactor != NULL)
-                        {
-                            void** avt = *(void***)mactor;
-                            logf("  actor vtable=%p", avt);
-                            for (int i = 0; i < 40; i++)
-                                logf("  actor vt[%d] = 0x%llX", i,
-                                     (unsigned long long)((BYTE*)avt[i] - (BYTE*)eng));
-                            // m_piCurModel is at actor+0x358 (from KG3D_Actor::_FindSocketInBaseModel)
-                            void* model = *(void**)((BYTE*)mactor + 0x358);
-                            logf("  actor+0x358 model -> %p", model);
-                            if (model != NULL)
-                            {
-                                void** mvt = *(void***)model;
-                                logf("  model vtable=%p", mvt);
-                                for (int i = 0; i < 48; i++)
-                                    logf("  model vt[%d] = 0x%llX", i,
-                                         (unsigned long long)((BYTE*)mvt[i] - (BYTE*)eng));
-                                // find the animation controller: any object whose vtable's
-                                // slot 22 (StartAnimation, eng+0xBC1C70) matches
-                                void* ctrl = NULL;
-                                __try
-                                {
-                                    BYTE* bases[2] = { (BYTE*)model, (BYTE*)mactor };
-                                    for (int b = 0; b < 2 && ctrl == NULL; b++)
-                                    {
-                                        for (int o = 0; o < 0x2000 && ctrl == NULL; o += 8)
-                                        {
-                                            void* vt = *(void**)(bases[b] + o);
-                                            if (vt == NULL) continue;
-                                            __try
-                                            {
-                                                void* s22 = ((void**)vt)[22];
-                                                if (s22 == (void*)((BYTE*)eng + 0xBC1C70))
-                                                    ctrl = bases[b] + o;
-                                            }
-                                            __except (EXCEPTION_EXECUTE_HANDLER) { }
-                                        }
-                                    }
-                                }
-                                __except (EXCEPTION_EXECUTE_HANDLER) { logf("  ctrl scan fault"); }
-                                logf("  animation controller (scanned) -> %p", ctrl);
-                                // original path: allocate+ctor the controller (0x3A8, engine ctor),
-                                // SetActor, CreateAnimationFromFile(tani), StartAnimation, FrameMove
-                                if (ctrl == NULL)
-                                {
-                                    __try
-                                    {
-                                        typedef void* (__fastcall *AllocFn)(void* a, size_t size, size_t align);
-                                        AllocFn alloc = (AllocFn)((BYTE*)eng + 0xB0F300);
-                                        void* c = alloc(NULL, 0x3A8, 8);
-                                        logf("  controller alloc -> %p", c);
-                                        if (c != NULL)
-                                        {
-                                            typedef void (__fastcall *CtorFn)(void* self);
-                                            CtorFn ctor = (CtorFn)((BYTE*)eng + 0xBC1100);
-                                            ctor(c);
-                                            logf("  controller ctor done, vtable=%p", *(void**)c);
-                                            typedef long (__fastcall *SetActorFn)(void* self, void* actor);
-                                            SetActorFn setActor = (SetActorFn)((BYTE*)eng + 0xBC2120);
-                                            long sar = setActor(c, mactor);
-                                            logf("  SetActor -> 0x%08X", (unsigned)sar);
-                                            ctrl = c;
-                                        }
-                                    }
-                                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  controller create fault"); }
-                                }
-                                // original play path: CreateAnimationFromFile(tani) + StartAnimation + FrameMove
-                                if (ctrl != NULL)
-                                {
-                                    typedef long (__fastcall *CreateAnimFn)(void* self, const char* path,
-                                        void** out, int a4, int a5);
-                                    CreateAnimFn createAnim = (CreateAnimFn)((BYTE*)eng + 0x8B6EB0);
-                                    char taniPath[512];
-                                    char dirAni[64];
-                                    gbk(L"动作", dirAni, sizeof(dirAni));
-                                    sprintf_s(taniPath, sizeof(taniPath),
-                                              "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
-                                    void* anim = NULL;
-                                    // pak-level open: KG_OpenPakV4File(path, 1) -> wrapper file object
-                                    {
-                                        HMODULE luaP = GetModuleHandleA("Engine_Lua5X64.dll");
-                                        typedef void* (__cdecl *PakOpenFn)(const char*, int);
-                                        PakOpenFn pakOpen = (PakOpenFn)((BYTE*)luaP + 0xCC670);
-                                        void* pf = pakOpen(taniPath, 1);
-                                        logf("  KG_OpenPakV4File(tani,1) -> %p", pf);
-                                        if (pf != NULL)
-                                        {
-                                            __try
-                                            {
-                                                void** pvt = *(void***)pf;
-                                                logf("  pakfile vtable=%p", pvt);
-                                                for (int i = 0; i < 12; i++)
-                                                    logf("  pakfile vt[%d] = 0x%llX", i,
-                                                         (unsigned long long)((BYTE*)pvt[i] - (BYTE*)luaP));
-                                                BYTE* pb = (BYTE*)pf;
-                                                logf("  pakfile bytes[0..0x40]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                     pb[0],pb[1],pb[2],pb[3],pb[4],pb[5],pb[6],pb[7],
-                                                     pb[8],pb[9],pb[10],pb[11],pb[12],pb[13],pb[14],pb[15]);
-                                                // inner file object at +8
-                                                void* inner = *(void**)(pb + 8);
-                                                logf("  pakfile inner=%p", inner);
-                                                if (inner != NULL)
-                                                {
-                                                    void** ivt2 = *(void***)inner;
-                                                    logf("  inner vtable=%p", ivt2);
-                                                    for (int i = 0; i < 16; i++)
-                                                    {
-                                                        BYTE* fn = (BYTE*)ivt2[i];
-                                                        logf("  inner vt[%d] = %p", i, fn);
-                                                    }
-                                                    // vt[2] forwards to storage->vt[0x20] - returns a pointer
-                                                    __try
-                                                    {
-                                                        typedef void* (__fastcall *GetDataFn)(void* self, void* buf, unsigned size);
-                                                        void* data = ((GetDataFn)ivt2[2])(inner, NULL, 0);
-                                                        logf("  inner vt[2](NULL,0) -> %p", data);
-                                                        if (data != NULL)
-                                                        {
-                                                            BYTE* dp = (BYTE*)data;
-                                                            logf("  data head: %c%c%c%c %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                                 (dp[0]>=32&&dp[0]<127)?dp[0]:'.',(dp[1]>=32&&dp[1]<127)?dp[1]:'.',
-                                                                 (dp[2]>=32&&dp[2]<127)?dp[2]:'.',(dp[3]>=32&&dp[3]<127)?dp[3]:'.',
-                                                                 dp[4],dp[5],dp[6],dp[7],dp[8],dp[9],dp[10],dp[11],dp[12],dp[13],dp[14],dp[15]);
-                                                            for (int o = 0; o < 0x400; o++)
-                                                            {
-                                                                if (dp[o]=='A'&&dp[o+1]=='N'&&dp[o+2]=='I'&&dp[o+3]=='M')
-                                                                { logf("  ANIM found at 0x%X", o); break; }
-                                                            }
-                                                            // GATA header: magic(4) + flags(4) + path + NUL + payload
-                                                            int nul = 8;
-                                                            while (nul < 0x300 && dp[nul] != 0) nul++;
-                                                            logf("  path NUL at 0x%X; payload head:", nul + 1);
-                                                            BYTE* pl = dp + nul + 1;
-                                                            logf("   %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                                 pl[0],pl[1],pl[2],pl[3],pl[4],pl[5],pl[6],pl[7],
-                                                                 pl[8],pl[9],pl[10],pl[11],pl[12],pl[13],pl[14],pl[15]);
-                                                        }
-                                                    }
-                                                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  inner vt[2] fault"); }
-                                                    char rbuf[64];
-                                                    memset(rbuf, 0, sizeof(rbuf));
-                                                    typedef long (__fastcall *ReadFn)(void* self, void* buf, unsigned size);
-                                                    for (int si = 3; si <= 9; si++)
-                                                    {
-                                                        __try
-                                                        {
-                                                            memset(rbuf, 0xCC, sizeof(rbuf));
-                                                            long rr2 = ((ReadFn)ivt2[si])(inner, rbuf, 32);
-                                                            logf("  inner vt[%d] read rc=0x%08X head=%02X %02X %02X %02X",
-                                                                 si, (unsigned)rr2, (BYTE)rbuf[0],(BYTE)rbuf[1],(BYTE)rbuf[2],(BYTE)rbuf[3]);
-                                                        }
-                                                        __except (EXCEPTION_EXECUTE_HANDLER) { logf("  inner vt[%d] fault", si); }
-                                                    }
-                                                    // vt[8] returned a pointer - read it as the record buffer
-                                                    __try
-                                                    {
-                                                        typedef void* (__fastcall *GetPtrFn)(void* self);
-                                                        void* rec = ((GetPtrFn)ivt2[8])(inner);
-                                                        logf("  inner vt[8]() -> %p", rec);
-                                                        if (rec != NULL)
-                                                        {
-                                                            BYTE* rp = (BYTE*)rec;
-                                                            logf("  record head: %c%c%c%c  %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                                 (rp[0]>=32&&rp[0]<127)?rp[0]:'.',(rp[1]>=32&&rp[1]<127)?rp[1]:'.',
-                                                                 (rp[2]>=32&&rp[2]<127)?rp[2]:'.',(rp[3]>=32&&rp[3]<127)?rp[3]:'.',
-                                                                 rp[4],rp[5],rp[6],rp[7],rp[8],rp[9],rp[10],rp[11],
-                                                                 rp[12],rp[13],rp[14],rp[15],rp[16],rp[17],rp[18],rp[19]);
-                                                        }
-                                                    }
-                                                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  inner vt[8] fault"); }
-                                                }
-                                                // look for a data pointer in the object fields
-                                                for (int o = 8; o < 0x60; o += 8)
-                                                {
-                                                    void* v = *(void**)(pb + o);
-                                                    if (v == NULL) continue;
-                                                    MEMORY_BASIC_INFORMATION mbi;
-                                                    if (VirtualQuery(v, &mbi, sizeof(mbi)) && mbi.State == MEM_COMMIT)
-                                                    {
-                                                        __try
-                                                        {
-                                                            BYTE* vb = (BYTE*)v;
-                                                            logf("  pakfile[+0x%X] -> %p: %02X %02X %02X %02X %c%c%c%c", o, v,
-                                                                 vb[0],vb[1],vb[2],vb[3],
-                                                                 (vb[0]>=32&&vb[0]<127)?vb[0]:'.',(vb[1]>=32&&vb[1]<127)?vb[1]:'.',
-                                                                 (vb[2]>=32&&vb[2]<127)?vb[2]:'.',(vb[3]>=32&&vb[3]<127)?vb[3]:'.');
-                                                        }
-                                                        __except (EXCEPTION_EXECUTE_HANDLER) { }
-                                                    }
-                                                }
-                                            }
-                                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  pakfile read fault"); }
-                                        }
-                                    }
-                                    // game-layer file open: does it unwrap the GATA tani?
-                                    {
-                                        typedef void* (__cdecl *KGOpenFileFn)(const char*);
-                                        HMODULE luaM = GetModuleHandleA("Engine_Lua5X64.dll");
-                                        KGOpenFileFn kgopen = (KGOpenFileFn)((BYTE*)luaM + 0xC02E0);
-                                        void* ifile = kgopen(taniPath);
-                                        logf("  KG_OpenFile(tani) -> %p", ifile);
-                                        if (ifile != NULL)
-                                        {
-                                            __try
-                                            {
-                                                void** ivt = *(void***)ifile;
-                                                logf("  ifile vtable=%p", ivt);
-                                                for (int i = 0; i < 16; i++)
-                                                    logf("  ifile vt[%d] = 0x%llX", i,
-                                                         (unsigned long long)((BYTE*)ivt[i] - (BYTE*)luaM));
-                                                BYTE* ib = (BYTE*)ifile;
-                                                logf("  ifile bytes[0..0x30]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                     ib[0],ib[1],ib[2],ib[3],ib[4],ib[5],ib[6],ib[7],
-                                                     ib[8],ib[9],ib[10],ib[11],ib[12],ib[13],ib[14],ib[15]);
-                                            }
-                                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  ifile read fault"); }
-                                        }
-                                    }
-                                    {
-                                        typedef void* (__fastcall *LoadFileFn2)(const char* path, int flags);
-                                        LoadFileFn2 lf2 = (LoadFileFn2)((BYTE*)eng + 0xB0F870);
-                                        void* reader = lf2(taniPath, 0);
-                                        logf("  KG3D_LoadFile(tani) -> %p", reader);
-                                        if (reader != NULL)
-                                        {
-                                            __try
-                                            {
-                                                BYTE* rb = (BYTE*)reader;
-                                                logf("  reader[0..0x40]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                     rb[0],rb[1],rb[2],rb[3],rb[4],rb[5],rb[6],rb[7],
-                                                     rb[8],rb[9],rb[10],rb[11],rb[12],rb[13],rb[14],rb[15]);
-                                                logf("  reader[0x10..0x20]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                     rb[16],rb[17],rb[18],rb[19],rb[20],rb[21],rb[22],rb[23],
-                                                     rb[24],rb[25],rb[26],rb[27],rb[28],rb[29],rb[30],rb[31]);
-                                                void* buf = *(void**)(rb + 0x10);
-                                                logf("  reader buffer -> %p", buf);
-                                                if (buf != NULL)
-                                                {
-                                                    BYTE* bb = (BYTE*)buf;
-                                                    logf("  buffer head: %c%c%c%c  %02X %02X %02X %02X %02X %02X %02X %02X",
-                                                         bb[0],bb[1],bb[2],bb[3],bb[4],bb[5],bb[6],bb[7],
-                                                         bb[8],bb[9],bb[10],bb[11],bb[12],bb[13],bb[14],bb[15]);
-                                                }
-                                            }
-                                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  reader read fault"); }
-                                        }
-                                    }
-                                    long arc2 = createAnim(engine, taniPath, &anim, 0, 0);
-                                    logf("  CreateAnimationFromFile(a4=0) -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
-                                    if (anim == NULL)
-                                    {
-                                        arc2 = createAnim(engine, taniPath, &anim, 1, 0);
-                                        logf("  CreateAnimationFromFile(a4=1) -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
-                                    }
-                                    if (anim == NULL)
-                                    {
-                                        arc2 = createAnim(engine, taniPath, &anim, 2, 0);
-                                        logf("  CreateAnimationFromFile(a4=2) -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
-                                    }
-                                    if (anim != NULL)
-                                    {
-                                        typedef long (__fastcall *StartAnimFn)(void* self, void* ani,
-                                            int playType, float speed, unsigned a5, unsigned a6,
-                                            void* userdata, void* ik, void* dbone);
-                                        StartAnimFn startAnim = (StartAnimFn)((BYTE*)eng + 0xBC1C70);
-                                        long src2 = startAnim(ctrl, anim, 0, 1.0f, 0, 0, NULL, NULL, NULL);
-                                        logf("  StartAnimation -> rc=0x%08X", (unsigned)src2);
-                                        // run the engine's own animation update for a while
-                                        typedef long (__fastcall *FrameMoveFn)(void* self);
-                                        FrameMoveFn ctrlMove = (FrameMoveFn)((BYTE*)eng + 0xBC2620);
-                                        for (int f = 0; f < 120; f++)
-                                        {
-                                            long frc = ctrlMove(ctrl);
-                                            if (f == 0 || f == 59 || f == 119)
-                                                logf("  ctrl FrameMove[%d] -> 0x%08X", f, (unsigned)frc);
-                                            Sleep(16);
-                                        }
-                                        logf("  animation frames done");
-                                    }
-                                }
-                            }
-                        }
-                        // FS-layer test: game layer (g_IsFileExist) vs engine loader (KG3D_LoadFile)
-                        {
-                            HMODULE lua2 = GetModuleHandleA("Engine_Lua5X64.dll");
-                            if (lua2 != NULL)
-                            {
-                                typedef int (__cdecl *ExistFn)(const char*);
-                                ExistFn exist = (ExistFn)((BYTE*)lua2 + 0xB5060);
-                                char sp[512], sf[512], sfLow[512];
-                                gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", sp, sizeof(sp));
-                                gbk(L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", sf, sizeof(sf));
-                                gbk(L"data\\source\\other\\特效\\技能\\sfx\\增益\\c纯阳坐忘.sfx", sfLow, sizeof(sfLow));
-                                logf("g_IsFileExist(mesh)=%d sfx=%d sfxLow=%d loose=%d",
-                                     exist(sp), exist(sf), exist(sfLow), exist("data\\zz_loose_test.txt"));
-                                typedef void* (__fastcall *LoadFileFn)(const char* path, int flags);
-                                LoadFileFn lf = (LoadFileFn)((BYTE*)eng + 0xB0F870);
-                                void* r1 = lf(sp, 0);
-                                void* r2 = lf(sf, 0);
-                                void* r3 = lf(sfLow, 0);
-                                logf("KG3D_LoadFile(mesh)=%p sfx=%p sfxLow=%p", r1, r2, r3);
-                            }
-                        }
-                    }
-                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("scene/actor probe fault"); }
-                }
-            }
-            // The game's own represent layer (most original path):
-            // JX3RepresentX64!CreateSO3Represent -> ECS root -> actors/animations/tags/SFX
-            {
-                HMODULE rep = GetModuleHandleA("JX3RepresentX64.dll");
-                if (rep == NULL)
-                {
-                    wchar_t rp[MAX_PATH];
-                    swprintf_s(rp, MAX_PATH, L"%s\\JX3RepresentX64.dll", bin64);
-                    rep = LoadLibraryExW(rp, NULL,
-                        LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-                }
-                logf("JX3RepresentX64 -> %p err=%lu", rep, GetLastError());
-                if (rep != NULL)
-                {
-                    typedef void* (__cdecl *CreateRepFn)(void);
-                    CreateRepFn createRep = (CreateRepFn)GetProcAddress(rep, "CreateSO3Represent");
-                    void* r = createRep ? createRep() : NULL;
-                    logf("CreateSO3Represent -> %p", r);
-                    if (r != NULL)
-                    {
-                        void** rvt = *(void***)r;
-                        logf("  represent vtable=%p (rep=%p)", rvt, rep);
-                        for (int i = 0; i < 64; i++)
-                            logf("  rep vt[%d] = 0x%llX", i,
-                                 (unsigned long long)((BYTE*)rvt[i] - (BYTE*)rep));
-                    }
-                    typedef void* (__cdecl *RootFn)(void);
-                    RootFn rootFn = (RootFn)GetProcAddress(rep, "GetRepresentECSRootEntity");
-                    void* root = rootFn ? rootFn() : NULL;
-                    logf("GetRepresentECSRootEntity -> %p", root);
-                }
-            }
-            // SFX manager (engine+0x2c10) vtable dump
-            {
-                void* engine = ge2 ? ge2() : NULL;
-                if (engine != NULL)
-                {
-                    __try
-                    {
-                        void* mgr = *(void**)((BYTE*)engine + 0x2c10);
-                        logf("SFX manager = %p", mgr);
-                        if (mgr != NULL)
-                        {
-                            void** mvt = *(void***)mgr;
-                            logf("  vtable = %p", mvt);
-                            for (int i = 0; i < 15; i++)
-                                logf("  sfxmgr vt[%d] = 0x%llX", i,
-                                     (unsigned long long)((BYTE*)mvt[i] - (BYTE*)eng));
-                            // sub-manager the slots forward to ([mgr+0xbd8]+off)
-                            void* sub = *(void**)((BYTE*)mgr + 0xbd8);
-                            logf("  sub-mgr [mgr+0xbd8] = %p", sub);
-                            if (sub != NULL)
-                            {
-                                void** svt = *(void***)sub;
-                                logf("  sub vtable = %p", svt);
-                                for (int i = 0; i < 32; i++)
-                                    logf("  submgr vt[%d] = 0x%llX", i,
-                                         (unsigned long long)((BYTE*)svt[i] - (BYTE*)eng));
-                            }
-                        }
-                    }
-                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("SFX manager dump failed"); }
-                }
-            }
-            // engine file manager global (0x2D22598) stores root at +0xC
-            __try
-            {
-                void* fm = *(void**)((BYTE*)eng + 0x2D22598);
-                logf("engine FS manager = %p", fm);
-                if (fm != NULL)
-                    logf("  FS root stored = '%s'", (char*)((BYTE*)fm + 0xC));
-                void* fs2018 = *(void**)((BYTE*)engIface + 0x2018);
-                logf("iface+0x2018 after init = %p", fs2018);
-                if (fs2018 != NULL)
-                    logf("  fs vtable = %p (facade=%p adapter=%p engine=%p)", *(void**)fs2018, x3d, adapter, eng);
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER) { logf("FS manager read failed"); }
+            typedef long (__fastcall *CreateViewFn)(void*, void*, const char*, void*, void**, int);
+            void* view = NULL;
+            long vrc = ((CreateViewFn)((BYTE*)eng + 0x8AF3A0))(engine, scene, "probe_view", NULL, &view, 0);
+            long arc = view ? ((long (__fastcall *)(void*, void*, int, int))
+                ((BYTE*)eng + 0xA6B870))(window, view, 0, 1) : -1;
+            logf("scene=%p view=%p (create=0x%08X add=0x%08X) Get3DScene2=%p", scene, view,
+                 (unsigned)vrc, (unsigned)arc,
+                 ((GetSceneFn)GetProcAddress(eng,
+                    "?Get3DScene2@KG3D_Window@@UEAAPEAVKG3D_Scene@@XZ"))(window));
         }
     }
 
-    // owner chain (mirrors the ME caller): singleton @RVA 0x2CF1038 -> vt[8]()
-    void* owner = engIface;
-    if (eng != NULL)
+    // 7) actor from a real client model + engine animation controller + play
+    if (engine != NULL)
     {
-        DWORD oexc = 0;
-        void* o = NULL;
+        typedef long (__fastcall *CreateActorFn)(void* self, const char* path, void* a3,
+                                                 void** out, unsigned flags, void* opts);
+        char mpath[512];
+        gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
+        void* actor = NULL;
+        long mrc = ((CreateActorFn)((BYTE*)eng + 0x8B2DA0))(engine, mpath, NULL, &actor, 0, NULL);
+        logf("CreateActorFromFile(mesh) -> rc=0x%08X actor=%p", (unsigned)mrc, actor);
+        if (actor != NULL)
+        {
+            void* model = *(void**)((BYTE*)actor + 0x358);
+            logf("actor+0x358 model=%p", model);
+            if (model != NULL)
+            {
+                typedef void* (__fastcall *AllocFn)(void*, size_t, size_t);
+                void* ctrl = ((AllocFn)((BYTE*)eng + 0xB0F300))(NULL, 0x3A8, 8);
+                ((void (__fastcall *)(void*))((BYTE*)eng + 0xBC1100))(ctrl);
+                long sar = ((long (__fastcall *)(void*, void*))((BYTE*)eng + 0xBC2120))(ctrl, actor);
+                logf("controller=%p SetActor=0x%08X", ctrl, (unsigned)sar);
+                char taniPath[512];
+                char dirAni[64];
+                gbk(L"动作", dirAni, sizeof(dirAni));
+                sprintf_s(taniPath, sizeof(taniPath),
+                          "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
+                typedef long (__fastcall *CreateAnimFn)(void*, const char*, void**, int, int);
+                void* anim = NULL;
+                long arc = ((CreateAnimFn)((BYTE*)eng + 0x8B6EB0))(engine, taniPath, &anim, 1, 1);
+                logf("CreateAnimationFromFile(a4=1,a5=1) -> rc=0x%08X anim=%p", (unsigned)arc, anim);
+                if (anim != NULL)
+                {
+                    typedef long (__fastcall *StartAnimFn)(void*, void*, int, float,
+                        unsigned, unsigned, void*, void*, void*);
+                    long src = ((StartAnimFn)((BYTE*)eng + 0xBC1C70))(ctrl, anim, 0, 1.0f, 0, 0, NULL, NULL, NULL);
+                    logf("StartAnimation -> rc=0x%08X", (unsigned)src);
+                    typedef long (__fastcall *FrameMoveFn)(void*);
+                    FrameMoveFn fm = (FrameMoveFn)((BYTE*)eng + 0xBC2620);
+                    for (int f = 0; f < 120; f++)
+                    {
+                        long frc = fm(ctrl);
+                        if (f == 0 || f == 59 || f == 119) logf("ctrl FrameMove[%d] -> 0x%08X", f, (unsigned)frc);
+                        Sleep(16);
+                    }
+                    logf("animation frames done");
+                }
+            }
+        }
+    }
+
+    // 8) direct .Sfx create tests with the engine singleton owner
+    if (engine != NULL)
+    {
+        void* owner = NULL;
         __try
         {
             void** g = *(void***)((BYTE*)eng + 0x2CF1038);
-            if (g != NULL)
-            {
-                typedef void* (__fastcall *GetFn)(void* self);
-                GetFn getOwner = (GetFn)(*(void***)g)[8];
-                o = getOwner(g);
-            }
+            if (g != NULL) owner = ((void* (__fastcall *)(void*))((*(void***)g)[8]))(g);
         }
-        __except (oexc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { o = NULL; }
-        logf("client owner chain -> %p exc=0x%08X", o, (unsigned)oexc);
-        if (o != NULL) owner = o;
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+        logf("owner chain -> %p", owner);
+        tryCreate(eng, "existing .Sfx", L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", owner);
+        tryCreate(eng, "pss", L"data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策撼如雷02_重制.pss", owner);
     }
-
-    tryCreate("existing .Sfx (client owner)",
-              L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", owner);
-    tryCreate("existing .Sfx lowercased",
-              L"data\\source\\other\\特效\\技能\\sfx\\增益\\c纯阳坐忘.sfx", owner);
-    tryCreate("pss (client owner)",
-              L"data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策撼如雷02_重制.pss", owner);
 
     logf("probe done");
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

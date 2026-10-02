@@ -467,6 +467,18 @@ form) or a container parser that honours the flags; the unwrap/decompress step o
 PakV4 read path is the exact last layer. Next: the PakV4 manager's decompressing read
 (`KG_PAKFS_*` record APIs / storage read modes).
 
+Read-mode discovery (`flags.out`, `clean.out`): **`KG3D_LoadFile(path, flag)` selects the
+read mode** — mode 0 returns the raw pak record (`GATA` flags=1, 3912 B), mode 1/2
+return a **204-byte `ANIM` chunk** (`size=0xCC head=ANIM`). Hooking `KG3D_LoadFile` to
+force mode 1 for `.ani`/`.tani` removes the "unsupport ani type" error but the animation
+still fails (`*ppiRetAnimation`), so the manager needs a different mode/container than
+the 204-byte chunk (likely the full decompressed container). The probe is now clean and
+focused (`tools/engine_host/client_sfx_probe.cpp`): window hook → facade/adapter/file
+layer → engine (`vt[0](0,4) -> 0`) → scene+view → actor from a PakV4 model
+(`actor+0x358` model) → controller (`0x3A8` alloc + ctor, `SetActor` S_OK) →
+`CreateAnimationFromFile` → `StartAnimation`/`FrameMove`, plus the direct `.Sfx`/`.pss`
+create tests (both `exc=0`).
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
