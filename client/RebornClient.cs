@@ -798,6 +798,7 @@ internal static class RebornClient
         bool qgEnded = false;             // 四段 ended: Space inert until the ground
         float qgT = 0f;                   // the SkillMove elapsed seconds
         bool qgMoveRunning = false;       // the SkillMove frames are playing (IgnoreGravity)
+        float qgFps = 30f;                // SkillMove frames are animation-synced (30 fps)
         float qgLeapSpeedXY = 0f;         // the move's forward speed (along the facing)
         bool qgSpacePressed = false;
         bool qgDemo = Env("RC_QG_DEMO", "0") == "1";
@@ -808,6 +809,7 @@ internal static class RebornClient
         long lastWUp = 0, lastWDown = 0;
         {
             float v;
+            if (float.TryParse(Env("RC_QG_FPS", ""), out v)) qgFps = v;
             if (float.TryParse(Env("RC_QG_RUN_SPEED", ""), out v)) qgRunSpeed = v;
             if (float.TryParse(Env("RC_QG_DRAIN", ""), out v)) qgDrainPerSecond = v;
             if (float.TryParse(Env("RC_QG_REGEN", ""), out v)) qgRegenPerSecond = v;
@@ -1902,7 +1904,7 @@ internal static class RebornClient
             if (qgMove >= 0 && qgMoveRunning)
             {
                 qgT += dt;
-                int qf = (int)(qgT * 15f);
+                int qf = (int)(qgT * qgFps);
                 if (qf < QinggongData.MoveXY[qgMove].Length)
                 {
                     vy = QinggongData.MoveZ[qgMove][qf] * 15f;
