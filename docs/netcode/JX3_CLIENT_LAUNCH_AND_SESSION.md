@@ -164,3 +164,26 @@ termination at ~2.2–2.4 s that is independent of the block; the block is read 
 marker) but a filled block is not consumed. Next probes: compare zero-vs-filled object
 timelines, decode the launch-info entry map consumers, or capture one real filled block
 (the writer is still unidentified).
+
+## 10. Real block capture (2026-10-01, user-approved)
+
+Captured during a real launcher launch (client reached in-game):
+
+- The real block contains **only 8 nonzero bytes**, changing ~2x/s; everything else is zero
+  (`+8=0`, `count=0`, no entries, no strings).
+- Conclusion: the block is an **output/heartbeat channel** (client -> launcher), not a
+  session container. Our synthesized header/entries model was over-built; the client
+  neither needs nor consumes launcher entries.
+- Feeding a changing 8-byte heartbeat does not keep the client alive in our probe
+  (still exits ~2.8 s), so the exit gate is elsewhere.
+
+**Security/report module discovered** (strings obfuscated with XOR 0xAD, built from dword
+immediates): `settings\BlackProcess.tab`, `settings\WhiteDLL.tab`, module MD5/SHA256
+hashing, machine UUID/MAC fingerprints, `SYSTEM\CurrentControlSet\Services\DD63330`
+driver check, and report formats `AlwaysReportLogInV1;%s`, `;;MultiProcess counts:%d`,
+`SharedMemoryError;k`, `;IntervalTime:k`. The client runs a periodic (16-iteration)
+security check loop at startup.
+
+**Open**: why the client exits ~2.3 s after start when launched outside the launcher.
+Leads: the security/report handshake (block heartbeat + launcher response), the DD63330
+service check path, and the launcher's inherited environment/session.

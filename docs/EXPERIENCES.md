@@ -1448,3 +1448,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `AGENTS.md` §1, `PLAN_REBORN_ONLINE.md`, `proof/netcode/protocol_layouts_s2c.tsv`,
   `tools/netcode/{mine_protocol_layouts,enum_named_objects}.py`, this commit (local).
 - Outcome: solved (statement + tooling ready).
+
+### 2026-10-01 — netcode — Real block captured; security/report module found; exit gate still open
+- Did: user-approved capture during a real launch (client in-game): the block holds only
+  an 8-byte value changing ~2x/s (heartbeat/report), no entries. Heartbeat feeding does
+  not keep the client alive. Decoded the client's XOR-0xAD obfuscated strings: a
+  security/report module (BlackProcess.tab / WhiteDLL.tab process+DLL lists, module
+  hashing, UUID/MAC fingerprints, DD63330 driver check, AlwaysReportLogInV1 /
+  SharedMemoryError / MultiProcess report formats, 16-iteration periodic check).
+- Evidence: `block_capture/real_block_20156_*.bin` (temp), doc §10; this commit (local).
+- Outcome: partial (block model corrected; security handshake is the next lead).
