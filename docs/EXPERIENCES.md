@@ -1096,3 +1096,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ALL PASS; jx3_model 10x PASS; verify/capture selftest exit 0.
 - Lesson: the answer was in another shipped script (mainscene.lua), not the
   engine binary - extract the whole ui/Script set before concluding.
+
+### 2026-10-01 - controls/client - W+A + RMB-hold interaction verified; yaw-turn-rate probe negative
+- Did: added RC_DEMO_RMBWA test knob (holds W+A and feeds a simulated RMB orbit
+  drag through the same queue the mouse uses) and ran it; also re-attempted the
+  CharacterYawTurnSpeed (+0x58) consumer hunt: CommonNumber accessor
+  (0x180338bf0 = [0x180EDDFE0]+0x24C14) xref -> 95 call sites scanned for
+  +0x4c/0x50/0x54/0x58 reads; none is the yaw-turn consumer.
+- Result: W+A+RMB is additive and coherent - keyboard A rotates the view, the
+  RMB drag rotates it further, the body follows the camera (RMB body-turn +
+  movement model); simulated run WA rmb=1 dpos=(183,194) dist=266 dyaw=-2.84
+  dcam=-3.44 (same direction, no fight/flip), exit 0.
+- Open: the official A/D turn rate is still not pinned; the host uses the
+  registered S6 fallback (pi rad/s). number.krl ships CharacterYawTurnSpeed =
+  0.007465 but its unit/consumer is unlocated; in live play the per-frame turn
+  step is also delivered by the server sync byte (+0x48). Next probe: live
+  debug on the real client (or the engine's input payload commit path).

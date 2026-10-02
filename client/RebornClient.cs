@@ -851,6 +851,7 @@ internal static class RebornClient
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
+        bool demoRmbWa = Env("RC_DEMO_RMBWA", "0") == "1";
         float strafeX0 = 0f, strafeZ0 = 0f, backX0 = 0f, backZ0 = 0f, waX0 = 0f, waZ0 = 0f, wdX0 = 0f, wdZ0 = 0f;
         float waYaw0 = 0f, wdYaw0 = 0f;
         double waCam0 = 0.0, wdCam0 = 0.0;
@@ -1701,8 +1702,9 @@ internal static class RebornClient
                 if (now >= 13600 && !mvSheath) { mvSheath = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); }
                 if (now >= 14600 && !mvSheathDone) { mvSheathDone = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); Log("movetest sheath done"); }
                 // W+A / W+D free-view windows: A/D turn while W runs -> curve
-                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); }
-                if (now >= 16300 && !mvWADone) { mvWADone = true; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw - waYaw0, camSys.Yaw - waCam0)); }
+                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); if (demoRmbWa) rmbDown = true; }
+                if (mvWA && !mvWADone && demoRmbWa) orbitQueue.Enqueue(new int[] { 2, 0 });   // simulated RMB drag
+                if (now >= 16300 && !mvWADone) { mvWADone = true; rmbDown = false; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} rmb={1} dpos=({2:F0},{3:F0}) dist={4:F0} dyaw={5:F2} dcam={6:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbWa ? 1 : 0, px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw - waYaw0, camSys.Yaw - waCam0)); }
                 if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
                 if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), curYaw - wdYaw0, camSys.Yaw - wdCam0)); }
                 if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
