@@ -51,11 +51,29 @@ Decoded facts:
 - Gate fields: `[this+0x7C]`, `[this+0x80]`, `[this+0xA0]`, `[this+0x74]`
   (feeds the param lookup), `[this+0xBC]` (transition enable), `[this+0x1C]`.
 
-## 2. Param lookup — `sub_1801252B` (OPEN, next)
+## 2. Param lookup chain — `sub_1801252B` → `0x18085CE60` (PART)
 
-Resolves the animation param struct from `([this+0xAC], [this+0xB0],
-[this+0xB4], [this+0x74] != 0)`. Decoding it gives the state→param table
-(kind ids, thresholds, clips) — the core of A2/A3.
+`sub_1801252B` is a thunk to `0x18085CE60`:
+
+```
+sub_18085CE60(ecx = [this+0xAC], edx = [this+0xB0],
+              r8d = [this+0xB4], r9b = ([this+0x74] != 0)):
+  base = [0x180EDDFE0]            ; same singleton as the camera rows
+  if r9b && [base+0x26466] != 0:
+      index = 0x3E7                ; 999 sentinel (mounted/vehicle override)
+  else:
+      index = edx                  ; state index
+  return sub_180005204(base + 0x1A0, mode = ecx, index, ?)
+```
+
+The sibling routine at `0x18085CEB0` maps a raw index into a **10-entry
+{u32 id, u32 limit} table** (`[table+4]` count, entries at `+0`/`+4`,
+`index % count` when a flag is set, first 10 scanned linearly), i.e. the
+state→kind mapping table behind the param struct.
+
+Next: decode `sub_180005204` (final param fetch) and the table at
+`[singleton+0x1A0]` / `+0x2158` to enumerate every state's param struct
+(id, thresholds, clips). Dumps: `proof/controls/p5/sub_18085CE60.txt`.
 
 ## 3. `UpdateDirection` (`0x180533D40`) and `UpdateFaceFootDirection`
 

@@ -1611,3 +1611,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (moving id [param+0x4C]); blend call 0x180003D50; two slots +0x1B8/+0x1C0.
 - Dumps: proof/controls/p5/*.txt; doc docs/controls/CONTROL_MODES_P5_ANIM.md.
   Next: decode sub_1801252B (state->param table) and UpdateDirection.
+
+### 2026-10-02 - controls - P5 lookup chain
+- sub_1801252B thunks to 0x18085CE60: state->param lookup via the singleton
+  [0x180EDDFE0]: index = [this+0xB0] (or 999 sentinel when the [this+0x74]
+  flag is set and [base+0x26466]!=0), lookup sub_180005204(base+0x1A0, mode,
+  index). Sibling 0x18085CEB0 maps raw index through a 10-entry {id,limit}
+  table ([+4] count, index%count when flagged). Next: sub_180005204 + the
+  singleton table to enumerate state param structs.
