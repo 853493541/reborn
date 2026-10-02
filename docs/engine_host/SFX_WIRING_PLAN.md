@@ -506,6 +506,16 @@ reader is created by the helper's **caller**; the parse (type check `ANIM` at
 creation — game-layer `KG_OpenFile`/wrapper OpenFile mode) and make it read the
 decompressed container (or pass the extractor-form data).
 
+Template-instantiation probe (`dcl3.out`): the container loader `KG3D_DataManager<T>`
+is instantiated at least at **`0x437AD0`** (init path — fires for
+`data\source\npc_source\a021\模型\A021.txt`) and **`0xA4D010`** (animation-shaped
+instance) — but the ability `.tani` failure goes through **neither**; the
+`unsupport ani type` log has 5 string refs (`0x437D0C/0xA4D0E6/0xA4D129/0xA54E01/
+0xA63B9A`), so the tani's instantiation is another site. Next: identify the tani's
+instantiation by hooking the type-check log site (`0xC3157E`, the
+`unsupport ani type` emitter) and walking its caller, or by scanning all five refs'
+function entries.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
