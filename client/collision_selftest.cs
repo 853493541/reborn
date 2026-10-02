@@ -110,6 +110,25 @@ internal static class CollisionSelfTest
 
     static void Main(string[] args)
     {
+        // Phase-4 triage: `wallcheck <sbin> <x> <feetY> <z> <dx> <dz>` moves the
+        // capsule through the global Resolve path (all instances) and reports
+        // whether it was blocked (the real gameplay test for audit flags).
+        if (args.Length > 0 && args[0] == "wallcheck")
+        {
+            FoliageCollision wc = new FoliageCollision(null, args[1]);
+            float wx = float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture);
+            float wy = float.Parse(args[3], System.Globalization.CultureInfo.InvariantCulture);
+            float wz = float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture);
+            float wdx = float.Parse(args[5], System.Globalization.CultureInfo.InvariantCulture);
+            float wdz = float.Parse(args[6], System.Globalization.CultureInfo.InvariantCulture);
+            float wg = wy;
+            bool wgr = false;
+            bool wb = wc.MoveResolved(ref wx, ref wy, ref wz, wdx, wdz, 17f, 116f, 15f, ref wg, ref wgr);
+            float adv = (float)Math.Sqrt((wx - (float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture))) * (wx - (float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture))) + (wz - (float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture))) * (wz - (float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture))));
+            Console.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "wallcheck blocked={0} advanced={1:F1} end=({2:F1},{3:F1},{4:F1})", wb, adv, wx, wy, wz));
+            Environment.Exit(0);
+        }
         // Diagnostic: `tinfo <sbin> x centerY z` prints the contacting instance.
         if (args.Length > 0 && args[0] == "tinfo")
         {

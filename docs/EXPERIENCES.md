@@ -1032,3 +1032,15 @@ solved it, and what is still open. **Newest at the bottom.**
   COLLISION_SYSTEM_COMPARISON.md 9: solver stays runtime, engine PhysX is the
   re-runnable calibration gate; re-open criteria stated. Phases 4-5 pending.
 - Audit also fixed stale Reproduce text (22/22 -> 33/33).
+
+### 2026-10-02 - Phase-4 triage: audit residual is 1 real pass-through, 5 fine
+
+- Reproduced the day-map audit (3.83% at stride 64) and triaged 6 play-area
+  faces against the engine: all faces exist (engine overlaps along the paths);
+  global Resolve blocks 5/6; one (mesh jz_lmxb...台001) passes through at a
+  constant height while a static query at a 3.2u-higher pose contacts it.
+- Kept the item OPEN rather than claiming closure: recorded the exact
+  wallcheck/tinfo reproductions; the next probe is the per-instance triangle
+  grid vs the resolve at that exact height.
+- New tools: `wallcheck` (global-resolve path test), RC_PX_POSES (arbitrary
+  pose queries) - both reused for future triage.

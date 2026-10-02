@@ -630,3 +630,25 @@ call path or do not use it. The call, arg frame (+0xD0 hit / +0xD8 arg8 /
 +0xE0 cachedIndex / +0xE8 inflation / +0xF0 anyHit) and hit layout (+0x10
 triangle index, +0x1C position, +0x28 normal, +0x34 distance) remain recorded;
 probe call re-parked (diagnostics only).
+
+### Update 2026-10-02j: Phase-4 audit-residual triage - 5/6 sampled flags fine, 1 confirmed pass-through (OPEN)
+
+Ran the day-map audit (龙门寻宝, stride 64): tested=200038 failed=7670 (3.83%,
+matches the recorded residual). Sampled 10 play-area FAIL lines -> 6 distinct
+faces. For each face the engine was queried along the audit's own approach
+paths (RC_PX_POSES, 48-144 poses per face, world-baked cook):
+
+- Engine sees geometry along ALL 6 faces' paths (34-48/48 or 117/144 samples
+  with overlap > 0) -> the flags are not phantom faces.
+- Global Resolve (all instances) per face (`wallcheck` mode):
+  - face 1 (18318,30373): blocked, advanced 12/54
+  - face 2 (18671-18688, 26027-26084, mesh jz_lmxb...台001_001): **NOT blocked,
+    full 54 u advance at constant height** (5 of 6 hh/side combos; the 6th
+    stepped +69 within the 70 budget)
+  - faces 3-6: blocked (advanced 43-48/54)
+- tinfo at the face-2 path shows contacts at some heights (depth 13-17) yet the
+  wallcheck passes at feet 1612.8 - a height/semantics interaction that needs a
+  focused probe (grid-lookup vs resolve at the exact height), not a guess.
+- **Residual status: OPEN** with the exact reproduction recorded (wallcheck
+  commands + face identity). 5/6 sampled faces are gameplay-correct (blocked or
+  stepped within budget); 1/6 is a genuine discrepancy vs the engine.

@@ -1296,6 +1296,34 @@ internal static class PhysicsProbe
                                 log("physprobe: PX_SWEEP3 call skipped (hit path needs engine-internal state - proof 2026-10-02i)");
                             }
                         }
+                        string posesSpec = Environment.GetEnvironmentVariable("RC_PX_POSES");
+                        if (!string.IsNullOrEmpty(posesSpec))
+                        {
+                            IntPtr pOverlap2 = GetProcAddress(GetModuleHandleA("PhysX3Common_x64.dll"),
+                                "?findOverlapTriangleMesh@PxMeshQuery@physx@@SAIAEBVPxGeometry@2@AEBVPxTransform@2@AEBVPxTriangleMeshGeometry@2@1PEAIIIAEA_N@Z");
+                            IntPtr c2 = Marshal.AllocHGlobal(0x20);
+                            Marshal.WriteInt32(c2, 0x00, 2);
+                            Marshal.WriteInt32(c2, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(17f), 0));
+                            Marshal.WriteInt32(c2, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(41f), 0));
+                            IntPtr cp = Marshal.AllocHGlobal(0x20);
+                            IntPtr res2 = Marshal.AllocHGlobal(64 * 4);
+                            IntPtr ov2 = Marshal.AllocHGlobal(4);
+                            string[] poses = posesSpec.Split(';');
+                            for (int pi = 0; pi < poses.Length; pi++)
+                            {
+                                string[] pc = poses[pi].Split(',');
+                                if (pc.Length < 3) continue;
+                                float qx = float.Parse(pc[0], ci), qy = float.Parse(pc[1], ci), qz = float.Parse(pc[2], ci);
+                                for (int i = 0; i < 8; i++) Marshal.WriteInt32(cp, i * 4, 0);
+                                Marshal.WriteInt32(cp, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                Marshal.WriteInt32(cp, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                Marshal.WriteInt32(cp, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(qx), 0));
+                                Marshal.WriteInt32(cp, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(qy), 0));
+                                Marshal.WriteInt32(cp, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(qz), 0));
+                                uint pcn = Fn<FindOverlapFn>(pOverlap2)(c2, cp, geom, mpose, res2, 64, 0, ov2);
+                                log("PX_POSES " + pi + " " + qx.ToString("0.#") + " " + qy.ToString("0.#") + " " + qz.ToString("0.#") + " " + pcn);
+                            }
+                        }
                     }
                 }
             }
