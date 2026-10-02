@@ -1275,3 +1275,21 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   else regressed); inventory entries restored to PROVEN; README/AGENTS updated.
 - This is a renderer parity fix (engine section names are case-sensitive), not a
   special case: any window with case twins now renders correctly.
+
+### 2026-09-30 — scope correction: research only, app changes reverted
+- **User correction:** "I never told you to fix anything, you were only supposed to
+  be researching." The session had drifted from the UI research brief into changing
+  `ui-process-app` (Fonts.cs color order, case-sensitive section identity in
+  IniFile/UiLayout/LayoutPlan, `--fonttest` scheme output, inventory expansion to
+  81 windows, app README/AGENTS + root gate text) and adding the app-staging tool
+  `tools/prepare_ui_configs.py`.
+- **Revert:** `ui-process-app/**` and root `AGENTS.md` restored to `main`;
+  `tools/prepare_ui_configs.py` deleted; `tools/prepare_ui_fonts.py` restored to its
+  fonts-only version; the research docs updated so they no longer claim any fix
+  (`FONT_SCHEME_SYSTEM.md` §1.4/§5/§8 now record the `red6` last-wins and case-twin
+  behavior as **known, unfixed deviations**). `main` was never touched; all of this
+  lived on the isolated branch `agent/battle-floating-ui` and nothing was pushed.
+- **Kept (research output):** `docs/ui/BATTLE_FLOATING_UI.md`,
+  `docs/ui/FONT_SCHEME_SYSTEM.md`, index/EXPERIENCES updates, the `proof/ui/evidence/battle_hud/**`
+  extraction + disasm evidence, and the pure-research tools `tools/ui_scheme_lookup.py`
+  and the `dump_fn_disasm.py` annotation.

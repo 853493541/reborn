@@ -12,9 +12,8 @@ namespace MapUiApp.Engine
     public sealed class UiBuildResult
     {
         public FrameworkElement Root;
-        // Section names are case-sensitive identities (case-variant twins exist).
-        public readonly Dictionary<string, FrameworkElement> Elements = new Dictionary<string, FrameworkElement>(StringComparer.Ordinal);
-        public readonly Dictionary<string, IniSection> Sections = new Dictionary<string, IniSection>(StringComparer.Ordinal);
+        public readonly Dictionary<string, FrameworkElement> Elements = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, IniSection> Sections = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Sections whose atlas/frame did not resolve (drawn as placeholders).</summary>
         public readonly List<string> Placeholders = new List<string>();
@@ -64,7 +63,7 @@ namespace MapUiApp.Engine
             // Every section referenced as a parent must exist as a container even when
             // its own type is unknown to us (WndPage/WndList/...), or its whole subtree
             // would be orphaned.
-            var parentNames = new HashSet<string>(StringComparer.Ordinal);
+            var parentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var section in ini.Sections)
             {
                 var parent = section.Get("._Parent");
@@ -87,7 +86,7 @@ namespace MapUiApp.Engine
 
             // KGUI containers often omit Width/Height. Handles auto-size to their
             // content, other containers inherit the nearest sized ancestor.
-            var intrinsic = new Dictionary<string, (double W, double H)>(StringComparer.Ordinal);
+            var intrinsic = new Dictionary<string, (double W, double H)>(StringComparer.OrdinalIgnoreCase);
             (double W, double H) Intrinsic(IniSection section, int depth)
             {
                 if (intrinsic.TryGetValue(section.Name, out var cached)) return cached;
@@ -99,7 +98,7 @@ namespace MapUiApp.Engine
                     bool any = false;
                     foreach (var child in ini.Sections)
                     {
-                        if (!string.Equals(child.Get("._Parent"), section.Name, StringComparison.Ordinal)) continue;
+                        if (!string.Equals(child.Get("._Parent"), section.Name, StringComparison.OrdinalIgnoreCase)) continue;
                         any = true;
                         var childSize = Intrinsic(child, depth + 1);
                         if (childSize.W <= 0 || childSize.H <= 0)
@@ -141,7 +140,7 @@ namespace MapUiApp.Engine
                 return own.H > 0 ? own.H : (string.IsNullOrWhiteSpace(section.Get("$Text")) ? 0 : 16);
             }
 
-            var sizeCache = new Dictionary<string, (double W, double H)>(StringComparer.Ordinal);
+            var sizeCache = new Dictionary<string, (double W, double H)>(StringComparer.OrdinalIgnoreCase);
             // Content size when the INI authors none: the frame's pixel size for images,
             // the measured text for labels (the engine lays items out by their content).
             (double W, double H) MeasuredSize(IniSection section)
@@ -189,14 +188,14 @@ namespace MapUiApp.Engine
             // WndPageSet arranges its WndCheckBox children as a tab strip; the INI
             // authors every tab at the same origin, the control flows them. Tabs the
             // Lua pinned explicitly (ShowModeTabs -> SetRelX) keep their Left.
-            var tabX = new Dictionary<string, double>(StringComparer.Ordinal);
+            var tabX = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
             foreach (var pageSet in ini.Sections)
             {
                 if (!string.Equals(pageSet.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
                 double x = -1;
                 foreach (var child in ini.Sections)
                 {
-                    if (!string.Equals(child.Get("._Parent"), pageSet.Name, StringComparison.Ordinal)) continue;
+                    if (!string.Equals(child.Get("._Parent"), pageSet.Name, StringComparison.OrdinalIgnoreCase)) continue;
                     if (!string.Equals(child.Get("._WndType"), "WndCheckBox", StringComparison.OrdinalIgnoreCase)) continue;
                     if (child.Get("TabFixed") != null) continue;
                     if (x < 0) x = child.GetInt("Left");
@@ -210,7 +209,7 @@ namespace MapUiApp.Engine
             // items flow left-to-right, wrap when the next one would exceed the
             // container width, then each row is aligned by HAlign/VAlign. The authored
             // Left/PosType of an item is ignored.
-            var listPos = new Dictionary<string, (double X, double Y)>(StringComparer.Ordinal);
+            var listPos = new Dictionary<string, (double X, double Y)>(StringComparer.OrdinalIgnoreCase);
             foreach (var list in ini.Sections)
             {
                 var handleType = list.GetInt("HandleType");
@@ -219,7 +218,7 @@ namespace MapUiApp.Engine
                 if (listW <= 0) continue;
                 // Invisible alternatives (Alpha=0 state variants) do not take list space.
                 var items = ini.Sections.Where(s => !ReferenceEquals(s, list) &&
-                    string.Equals(s.Get("._Parent"), list.Name, StringComparison.Ordinal) &&
+                    string.Equals(s.Get("._Parent"), list.Name, StringComparison.OrdinalIgnoreCase) &&
                     s.GetInt("Alpha", 255) > 0 &&
                     !(s.Get("Visible") != null && s.GetBool("Visible") == false)).ToList();
                 if (items.Count == 0) continue;
@@ -279,7 +278,7 @@ namespace MapUiApp.Engine
             {
                 int depth = 0;
                 var cursor = section.Get("._Parent");
-                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                 {
                     depth++;
@@ -288,14 +287,14 @@ namespace MapUiApp.Engine
                 return depth;
             }
 
-            var absPos = new Dictionary<string, (double X, double Y)>(StringComparer.Ordinal)
+            var absPos = new Dictionary<string, (double X, double Y)>(StringComparer.OrdinalIgnoreCase)
             {
                 [rootSection.Name] = (0, 0),
             };
             // Previous sibling per parent, in INI order (the engine's item list order),
             // which PosType 7/9 anchor against.
-            var prevSibling = new Dictionary<string, string>(StringComparer.Ordinal);
-            var lastByParent = new Dictionary<string, string>(StringComparer.Ordinal);
+            var prevSibling = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var lastByParent = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (var section in ini.Sections)
             {
                 var parent = section.Get("._Parent") ?? "";
@@ -480,7 +479,7 @@ namespace MapUiApp.Engine
                     else host.Height = visual.Height;
                     Canvas.SetLeft(visual, section.GetInt("ImageRelX"));
                     Canvas.SetTop(visual, section.GetInt("ImageRelY"));
-                    AddChild(host, visual, section);
+                    host.Children.Add(visual);
                     return host;
                 }
                 return visual;
@@ -787,7 +786,7 @@ namespace MapUiApp.Engine
                 Canvas.SetTop(element, top);
                 if (Wireframe && element.ToolTip == null) element.ToolTip = section.Name;
                 ApplyAlphaAndVisibility(element, section);
-                AddChild(parent, element, section);
+                parent.Children.Add(element);
                 return;
             }
 
@@ -799,7 +798,7 @@ namespace MapUiApp.Engine
                 Canvas.SetTop(element, top);
                 if (Wireframe && element.ToolTip == null) element.ToolTip = section.Name;
                 ApplyAlphaAndVisibility(element, section);
-                AddChild(parent, element, section);
+                parent.Children.Add(element);
                 return;
             }
 
@@ -865,7 +864,7 @@ namespace MapUiApp.Engine
                 bool taken = false;
                 foreach (var slot in buttonSlots)
                 {
-                    if (!slot.StartsWith(parentSection.Name + "|", StringComparison.Ordinal)) continue;
+                    if (!slot.StartsWith(parentSection.Name + "|", StringComparison.OrdinalIgnoreCase)) continue;
                     var parts = slot.Substring(parentSection.Name.Length + 1).Split(',');
                     if (parts.Length != 2) continue;
                     if (Math.Abs(double.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture) - left) <= 8 &&
@@ -879,21 +878,7 @@ namespace MapUiApp.Engine
                 else buttonSlots.Add($"{parentSection.Name}|{left:0.#},{top:0.#}");
             }
 
-            AddChild(parent, element, section);
-        }
-
-        /// <summary>Adds a child with the section name in the error context (a WPF
-        /// "already the logical child" means the same visual was added twice).</summary>
-        private static void AddChild(Panel parent, UIElement element, IniSection section)
-        {
-            try
-            {
-                parent.Children.Add(element);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("child add failed for [" + section.Name + "]: " + ex.Message, ex);
-            }
+            parent.Children.Add(element);
         }
 
         /// <summary>Authored size, else the measured text size, else the intrinsic subtree size.</summary>

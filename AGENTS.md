@@ -118,10 +118,14 @@ State check before work: `git status`, `git log -5 --oneline`, confirm the branc
   into the installs or their running processes — on disk or in memory. The only writes
   under `C:\SeasunGame` are our documented build outputs into `MovieEditor\bin64` (§8);
   those are our binaries, not the client's.
-- MovieEditor `C:\SeasunGame\MovieEditor` is the canonical engine/resource host.
-  Client-bundled `...\zhcn_hd\MovieEditor` is an older build (2026-04-28).
-- Evidence hierarchy: repo docs → game client code/IL → MovieEditor behavior/IL → raw
-  extracted caches. Never answer from assumption.
+- **Game client is primary; MovieEditor is a visual resource.** For any mechanism,
+  behavior, format, or value question, the game client (`...\zhcn_hd` binaries/IL/paks)
+  is the source of truth — do not answer a game-client question by digging into
+  MovieEditor. MovieEditor is used for rendering/preview (visual resources) and as
+  supporting host-behavior evidence only. Client-bundled `...\zhcn_hd\MovieEditor` is an
+  older build (2026-04-28).
+- Evidence hierarchy: repo docs → game client code/IL → raw extracted caches; MovieEditor
+  behavior/IL supports visuals and host behavior only. Never answer from assumption.
 - **Local-first: everything needed is in the client/MovieEditor installs.** Whatever the
   game needs to run (prediction, UI data, tables, configs, formats) exists locally in the
   client binaries/IL/paks or the MovieEditor engine — "it comes from the server / we
@@ -148,6 +152,13 @@ Adopt from IL/engine before writing anything (`engine_host_spike/EXPERIENCE_MAP_
 unavoidable: label it *provisional*, state why no native path exists, and log it in
 `docs/EXPERIENCES.md` with re-open criteria. No guess-scoring, no closest-match-by-name,
 no procedural stand-ins presented as authored data.
+
+**Explore the whole system; never patch the reported spot.** When part of a system's
+behaviour is incorrect, the system was wired up wrong — not only the place that shows it.
+Explore the full system first (inputs → state → outputs, the data it reads, the engine
+calls it makes) before changing anything. When the user points at a specific wrong spot,
+that is a symptom location, not the fix target: fixing only there produces a band-aid.
+Trace the full chain to the root cause and fix the wiring.
 
 ## 7. Map-viewer disposition
 
@@ -213,7 +224,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 .venv\Scripts\python.exe tools\netcode\loot\capture.py selftest   # 8 checks
 native\build_shim.cmd                                             # bin64\camera_shim.dll, RC_Shim exports
 # UI gate (after dotnet build ui-process-app -c Release):
-ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # rendered=79 skipped=2 failed=0
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 15/15 windows
 
 # builds
 client\build_client.cmd        # bin64\reborn_client.exe + camera_smoke.exe

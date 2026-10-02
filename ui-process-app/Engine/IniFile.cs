@@ -25,10 +25,7 @@ namespace MapUiApp.Engine
     public sealed class IniFile
     {
         public readonly List<IniSection> Sections = new List<IniSection>();
-        // Section names are case-sensitive identities: real files contain case-variant
-        // twins (e.g. Handle_BG vs Handle_Bg, Image_Line1 vs Image_line1) that must
-        // render as separate elements.
-        public readonly Dictionary<string, IniSection> ByName = new Dictionary<string, IniSection>(StringComparer.Ordinal);
+        public readonly Dictionary<string, IniSection> ByName = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
 
         public static IniFile Load(string path)
         {
@@ -72,20 +69,7 @@ namespace MapUiApp.Engine
                     else if (name.EndsWith("!", StringComparison.OrdinalIgnoreCase)) baseName = name.Substring(0, name.Length - 1);
                     if (baseName == null) break;
                     name = baseName;
-                    if (!ini.ByName.TryGetValue(baseName, out var baseSection))
-                    {
-                        // Fall back to a unique case-insensitive match (authored names
-                        // are normally consistent, but be tolerant).
-                        baseSection = null;
-                        int hits = 0;
-                        foreach (var candidate in ini.Sections)
-                        {
-                            if (!string.Equals(candidate.Name, baseName, StringComparison.OrdinalIgnoreCase)) continue;
-                            baseSection = candidate;
-                            hits++;
-                        }
-                        if (hits != 1) continue;
-                    }
+                    if (!ini.ByName.TryGetValue(baseName, out var baseSection)) continue;
                     bool hasSize = section.Values.ContainsKey("Width") || section.Values.ContainsKey("Height");
                     bool autoSize = section.GetBool("AutoSize") || (!hasSize && baseSection.GetBool("AutoSize"));
                     foreach (var pair in baseSection.Values)

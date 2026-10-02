@@ -108,8 +108,10 @@ lookups are a linear first-match scan (the `LoadScheme` color loop at
 
 - **`red6` is defined twice** (`255,27,27` then `239,55,12`) → the engine resolves
   `red6` = **255,27,27 (first row wins)**. Scheme 208 uses it and is referenced by one
-  shipped layout, so this is a real (if tiny) rendering difference; the renderer and
-  `tools/ui_scheme_lookup.py` now both use first-wins (fixed 2026-09-30).
+  shipped layout, so this is a real (if tiny) rendering difference;
+  `tools/ui_scheme_lookup.py` follows the engine (first-wins), while
+  `ui-process-app` still resolves duplicates last-wins — a **known, unfixed deviation**
+  recorded here (research only; no code changes were made).
 - 21 names mix case (`lightGrayYellow1`, `Yellow14`, `Brown6`, …) — lookup is
   case-insensitive (a scheme uses `Yellow2` while the table defines `yellow2`).
 
@@ -383,11 +385,13 @@ Per-state keys per §2.3. Inline `font=` per §2.4.
 
 ## 5. Renderer status (`ui-process-app`)
 
-Implemented (`Engine/Fonts.cs`, `Engine/UiLayout.cs`):
+Implemented as shipped (`Engine/Fonts.cs`, `Engine/UiLayout.cs` — unchanged by this
+research):
 scheme id → `FontID` → file + base size; scheme `Color`/`Size`/`BorderColor`/`BorderSize`;
 `FontColor` override; fallback scheme **212**; border approximated by a
-`DropShadowEffect` (blur 1, depth 0); color name lookup first-wins and
-case-insensitive, matching the engine (`red6` fixed 2026-09-30).
+`DropShadowEffect` (blur 1, depth 0). Deviations from the decoded engine behavior are
+recorded, not fixed: duplicate color names resolve **last-wins** (engine: first-wins,
+see §1.4) and projection is not drawn.
 
 Not implemented (gaps; data now decoded where noted):
 - `Projection*` (阴影) rendering — 149 schemes enable it (the most-used scheme #18 is
@@ -454,10 +458,7 @@ Not implemented (gaps; data now decoded where noted):
 | `tools/ui_scheme_lookup.py` | resolver + census tool (committed 2026-09-30) |
 | `tools/pvp/dump_fn_disasm.py` | added RIP-relative string annotation (2026-09-30) |
 
-**Verified (2026-09-30):** renderer scheme resolution — `tools/prepare_ui_fonts.py`
-now also stages the scheme tables and `UiProcessApp --fonttest` prints
-`#18 size=15 #F0F0F0`, `#43 size=20 #000000`, `#212 size=14 #F0F0F0`, all
-`fzht_GBK.ttf` (matches the decoded client values); `ui_scheme_lookup.py 43` → `方正黑体20黑 / fzht_GBK.ttf`;
+**Verified (2026-09-30):** `tools/ui_scheme_lookup.py 43` → `方正黑体20黑 / fzht_GBK.ttf`;
 `--census` over the battle-HUD extraction → `schemes=421 fontlistSlots=36`,
 `0 unknown ids`, `0 unresolved FontColor`; combined 160-INI census → 4,595 refs /
 125 schemes; xrefs → `LoadScheme 0x1801F5C30`, `LoadFontList 0x1801F5790`,
@@ -469,6 +470,7 @@ unused by shipped layouts.
 **Game-design check:** Does this follow the client's own truth — no invented fixes or
 band-aids? **Yes** — decoded from the shipped tables and engine disassembly; the one
 still-open engine detail (the exact glyph-size consumer for `Size>0` overrides) is
-marked with its next probe and shown to be unused by every shipped layout. The `red6`
-first-wins fix follows the engine's own loader (`KColorSchemeMgr::Init`), it is not a
-workaround.
+marked with its next probe and shown to be unused by every shipped layout. No code
+fixes were applied or kept: the app-side changes made mid-session were reverted to
+`main` on 2026-09-30 (scope correction — research only), and the `red6`/case-twin
+deviations are recorded as findings for a future, explicitly requested fix.

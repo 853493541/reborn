@@ -103,11 +103,11 @@ namespace UiProcessApp.Engine
     {
         public static LayoutPlan Build(IniFile ini, string selectedPage)
         {
-            var pageCache = new Dictionary<string, string>(StringComparer.Ordinal);
+            var pageCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             string PageOf(string name)
             {
                 if (pageCache.TryGetValue(name, out var cached)) return cached;
-                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var current = name;
                 string result = null;
                 while (!string.IsNullOrWhiteSpace(current) && seen.Add(current))
@@ -120,7 +120,7 @@ namespace UiProcessApp.Engine
                 return result;
             }
 
-            var chain = new HashSet<string>(StringComparer.Ordinal);
+            var chain = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var cursor = selectedPage;
             while (!string.IsNullOrWhiteSpace(cursor))
             {
@@ -133,7 +133,7 @@ namespace UiProcessApp.Engine
                 if (string.IsNullOrWhiteSpace(selectedPage)) return true;
                 if (chain.Contains(name)) return true;
                 var page = PageOf(name);
-                return page == null || string.Equals(page, selectedPage, StringComparison.Ordinal);
+                return page == null || string.Equals(page, selectedPage, StringComparison.OrdinalIgnoreCase);
             }
 
             var pages = ini.Sections
@@ -163,10 +163,10 @@ namespace UiProcessApp.Engine
                 StringComparer.OrdinalIgnoreCase);
             if (wanted.Count == 0) return;
 
-            var keep = new HashSet<string>(StringComparer.Ordinal);
+            var keep = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var section in filtered.Sections)
             {
-                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var cursor = section.Name;
                 var chain = new List<string>();
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
@@ -215,7 +215,7 @@ namespace UiProcessApp.Engine
 
             bool Dropped(string name)
             {
-                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var cursor = name;
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                 {
@@ -251,7 +251,7 @@ namespace UiProcessApp.Engine
             var keep = new HashSet<string>(shown ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
             bool Locked(string name)
             {
-                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var cursor = name;
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                 {
@@ -352,16 +352,16 @@ namespace UiProcessApp.Engine
             foreach (var name in strip.Show)
             {
                 if (gated.Contains(name) &&
-                    !string.Equals(name, TabForPage(selectedPage), StringComparison.Ordinal))
+                    !string.Equals(name, TabForPage(selectedPage), StringComparison.OrdinalIgnoreCase))
                     continue;
                 wanted.Add(name);
             }
             var wantedSet = new HashSet<string>(wanted, StringComparer.OrdinalIgnoreCase);
             bool IsTab(IniSection section) =>
-                string.Equals(section.Get("._Parent"), strip.Parent, StringComparison.Ordinal) &&
+                string.Equals(section.Get("._Parent"), strip.Parent, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(section.Get("._WndType"), "WndCheckBox", StringComparison.OrdinalIgnoreCase);
 
-            var hiddenTabs = new HashSet<string>(StringComparer.Ordinal);
+            var hiddenTabs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var section in filtered.Sections)
                 if (IsTab(section) && !wantedSet.Contains(section.Name)) hiddenTabs.Add(section.Name);
 
@@ -369,7 +369,7 @@ namespace UiProcessApp.Engine
             {
                 bool UnderHiddenTab(string name)
                 {
-                    var seen = new HashSet<string>(StringComparer.Ordinal);
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     var cursor = name;
                     while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                     {
@@ -420,7 +420,7 @@ namespace UiProcessApp.Engine
         {
             if (!string.Equals(skin, "uitimate", StringComparison.OrdinalIgnoreCase)) return;
 
-            var byParent = new Dictionary<string, List<IniSection>>(StringComparer.Ordinal);
+            var byParent = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
             foreach (var section in filtered.Sections)
             {
                 var parent = section.Get("._Parent") ?? "";
@@ -429,7 +429,7 @@ namespace UiProcessApp.Engine
             }
 
             // Art kind of a section subtree: 0 none, 1 old, 2 UItimate, 3 both.
-            var kind = new Dictionary<string, int>(StringComparer.Ordinal);
+            var kind = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             int Kind(IniSection section)
             {
                 if (kind.TryGetValue(section.Name, out var cached)) return cached;
@@ -455,7 +455,7 @@ namespace UiProcessApp.Engine
             {
                 if (!test(section) || exclude(section)) return false;
                 var cursor = section.Get("._Parent");
-                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                 {
                     if (filtered.ByName.TryGetValue(cursor, out var parent) && test(parent) && !exclude(parent)) return false;
@@ -510,7 +510,7 @@ namespace UiProcessApp.Engine
             var newRoots = filtered.Sections
                 .Where(s => OwnNewImage(s) || IsRootOf(s, HasNew, HasOld))
                 .ToList();
-            var drop = new HashSet<string>(StringComparer.Ordinal);
+            var drop = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var oldRoot in filtered.Sections.Where(s => IsRootOf(s, HasOld, HasNew) && HasLargeOldArt(s)))
             {
                 if (!newRoots.Any(n => !ReferenceEquals(n, oldRoot) && SameArea(oldRoot, n))) continue;
@@ -556,7 +556,7 @@ namespace UiProcessApp.Engine
                 catch { continue; }
                 if (source == null || !source.ByName.TryGetValue(template.Item, out var prototype)) continue;
 
-                var byParent = new Dictionary<string, List<IniSection>>(StringComparer.Ordinal);
+                var byParent = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
                 foreach (var section in source.Sections)
                 {
                     var parent = section.Get("._Parent") ?? "";

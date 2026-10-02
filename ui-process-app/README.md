@@ -28,28 +28,8 @@ extracted INI, writes `ui_process_selftest.txt` next to the exe):
 UiProcessApp.exe --selftest
 ```
 
-App assets (layout INIs, fonts, scheme tables) are game data and are not
-committed. Stage them once per checkout — without them the selftest cannot build
-windows and text falls back to Microsoft YaHei UI / default schemes. Also run
-`tools/prepare_ui_text.py` for the map text copies:
-
-```powershell
-.venv\Scripts\python.exe tools\prepare_ui_configs.py   # layouts/settlement INIs from the inventory
-.venv\Scripts\python.exe tools\prepare_ui_fonts.py     # fonts + scheme tables
-UiProcessApp.exe --fonttest
-# expect: family=FZHei-B01 resolved=True
-#         scheme #18: size=15 color=#F0F0F0 file=fzht_GBK.ttf
-#         scheme #43: size=20 color=#000000 file=fzht_GBK.ttf
-#         scheme #212: size=14 color=#F0F0F0 file=fzht_GBK.ttf
-```
-
-Current selftest: **rendered=79 skipped=2 failed=0** over the 81-window inventory
-(the two skipped windows have no INI by design — the ready prompt is native and
-the staging countdown has no renderer). Stages 9-11 render the battle-HUD appendix
-from `docs/ui/BATTLE_FLOATING_UI.md` §A (60 modules: objective/score panels,
-warnings, team/raid lists, buff monitors, loot rolls, death/revive, skill
-bars/hints/panels, mode HUD). Section names are case-sensitive identities (real
-files contain twins like `Handle_BG` vs `Handle_Bg`).
+Current selftest: **15/15 windows rendered**, e.g. NewBattleFieldQueue 1,129
+sections / 1,016 elements, BattleFieldMap 367 sections.
 
 ## What it shows
 
@@ -74,9 +54,8 @@ Search box filters windows by name/summary/label.
 
 The renderer follows the engine's own rules where decoded: `AnchorArgs` uses the
 KGUI side names (TOPRIGHT/LEFTCENTER/…), containers inherit the nearest sized
-ancestor, re-issued suffixed sections render once (newest wins), section names
-are **case-sensitive** (twins such as `Handle_BG`/`Handle_Bg` both render),
-`PosType` alignments follow the map-ui-app-verified mapping, and every extracted
+ancestor, re-issued suffixed sections render once (newest wins), `PosType`
+alignments follow the map-ui-app-verified mapping, and every extracted
 `ui/Scheme/Case/*.txt` string table is loaded (6,900+ ids).
 
 Offscreen verification (no GUI), useful for diffing renders:
@@ -95,12 +74,6 @@ and unresolved string ids are hidden instead of shown raw.
   from `docs/netcode/JX3_MODE_UI_INVENTORY.md` (evidence paths included).
 - `assets/ui/Config/**` — extracted KGUI layouts (converted to UTF-8).
 - `assets/ui/Scheme/Case/string.txt` — official UI strings (UTF-8 copy).
-- `assets/ui/Font/**` — the 5 shipped client UI fonts, copied locally by
-  `tools/prepare_ui_fonts.py` (game assets, never committed).
-- `assets/ui/Scheme/Case/{font.ini,fontlist.ini,fontpathlist.ini,color.txt}` —
-  the shipped scheme tables (taken from the tracked extraction), copied by the
-  same tool so `FontScheme`/`FontColor` codes resolve (see
-  `docs/ui/FONT_SCHEME_SYSTEM.md`).
 - `assets/pak/**` — settlement panel (`PVPShowFinal*`) + `string_PVPAcount.txt`.
 
 ## Notes
