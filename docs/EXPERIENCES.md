@@ -1486,3 +1486,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   required). Static step naming is impractical (anonymous lambdas).
 - Evidence: doc §13; disasm of 0x14009c890 / 0x14009f480; CEF poll; this commit (local).
 - Outcome: partial (framework + stall region identified; exact step needs runtime read).
+
+### 2026-10-01 — netcode — WinMain wait loop decoded; job hypothesis ruled out
+- Did: decoded the WinMain wait loop (return 0 = idle state -> exit; the game.startup
+  step group never becomes active in our probe); built a DBWIN OutputDebugString capture
+  (works, read-only); tested the job-object hypothesis (probe outside our shell job still
+  exits at 2.2 s); confirmed launcher UI = CefViewWing while the game client uses
+  cefrender; probe Dumper/DumpReport logs are routine.
+- Evidence: doc §14; disasm 0x1400e1380-0x1400e1440, 0x14009f6d0; WMI job-free probe
+  (`in_job=False`, `client exited at 2.2s`); DBWIN capture; this commit (local).
+- Outcome: partial (wait semantics clear; the missing input is still unidentified).

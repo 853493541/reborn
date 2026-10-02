@@ -239,3 +239,24 @@ what completes it (likely the launcher/security handshake).
   with a launcher-provided session/URL being required.
 - Next: runtime read of the pending step (memory read of our own child, needs user OK),
   or test whether a launcher-provided URL/session is the missing input.
+
+## 14. WinMain wait-loop decode + CEF/job negatives (2026-10-01, eighth pass)
+
+- WinMain (`0x1400e1383..0x1400e1428`): starts the state-A pool, builds the
+  `game.startup` step group (`0x14009f6d0`; parent step vtable `0x140953e70`, 4 sub-steps
+  ids 2..5 vtable `0x140953e00`, plus two marker nodes `0x140953dc0`/`0x140953de0` and a
+  profiler node vtable `0x140953da0` tagged `"game.startup"`), then **loops**
+  `wait(stateA, 2000)`: ret 1 = startup done -> stop pool -> global->vtable[0x38]() (enter
+  game); ret 2 = call `0x1400ad460` and continue; ret 3 = keep waiting; **ret 0 =
+  state idle for 2 s -> log `WinMain`/`false` -> return 0 (exit)**. In our probe the
+  state stays idle - the group never becomes active.
+- DBWIN OutputDebugString capture works (clean, read-only) and is a new runtime channel
+  for the client.
+- CEF: the launcher UI is `CefViewWing.exe` (5 procs under SeasunGame); the real game
+  client spawned `cefrender.exe` as its child. Our probe spawns neither.
+- Job-object hypothesis tested and ruled out: our shell is inside a Windows job
+  (`in_job=True`) and CEF logged `Failed to assign current process to windows job
+  object: 5`, but a WMI-launched probe outside the job (`in_job=False`) still exited at
+  2.2 s.
+- Dumper/DumpReport logs from probe runs are routine (no fresh minidump; newest crash
+  XMLs are from 2025-12).
