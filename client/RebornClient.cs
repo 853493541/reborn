@@ -1738,7 +1738,7 @@ internal static class RebornClient
                 if (now >= 8100 && !mvBack) { mvBack = true; backYaw0 = curYaw; backCam0 = camSys.Yaw; backX0 = px; backZ0 = pz; runCommand("MOVEBACKWARD", true); }
                 if (now >= 9100 && !mvBackDone) { mvBackDone = true; runCommand("MOVEBACKWARD", false); Log(string.Format("movetest back mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2} dpos=({6:F0},{7:F0}) dist={8:F0}", CameraOperationMode.Name(cameraSettings.OperationMode), backYaw0, curYaw, curYaw - backYaw0, backCam0, camSys.Yaw, px - backX0, pz - backZ0, (float)Math.Sqrt((px - backX0) * (px - backX0) + (pz - backZ0) * (pz - backZ0)))); }
                 if (now >= 9500 && !mvTurn) { mvTurn = true; turnYaw0 = curYaw; turnCam0 = camSys.Yaw; runCommand("TURNRIGHT", true); }
-                if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, curYaw - turnYaw0, turnCam0, camSys.Yaw, camSys.Yaw - turnCam0)); }
+                if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, WrapAngle(curYaw - turnYaw0), turnCam0, camSys.Yaw, WrapAngle(camSys.Yaw - turnCam0))); }
                 if (now >= 10800 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
                 if (now >= 12600 && !mvSit) { mvSit = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); }
                 if (now >= 13300 && !mvSitDone) { mvSitDone = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); Log("movetest sit done"); }
@@ -1747,9 +1747,9 @@ internal static class RebornClient
                 // W+A / W+D free-view windows: A/D turn while W runs -> curve
                 if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); if (demoRmbWa >= 1) rmbDown = true; }
                 if (mvWA && !mvWADone && demoRmbWa >= 2) orbitQueue.Enqueue(new int[] { 2, 0 });   // simulated RMB drag
-                if (now >= 16300 && !mvWADone) { mvWADone = true; rmbDown = false; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} rmb={1} dpos=({2:F0},{3:F0}) dist={4:F0} dyaw={5:F2} dcam={6:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbWa, px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw - waYaw0, camSys.Yaw - waCam0)); }
+                if (now >= 16300 && !mvWADone) { mvWADone = true; rmbDown = false; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} rmb={1} dpos=({2:F0},{3:F0}) dist={4:F0} dyaw={5:F2} dcam={6:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbWa, px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), WrapAngle(curYaw - waYaw0), WrapAngle(camSys.Yaw - waCam0))); }
                 if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
-                if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), curYaw - wdYaw0, camSys.Yaw - wdCam0)); }
+                if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), WrapAngle(curYaw - wdYaw0), WrapAngle(camSys.Yaw - wdCam0))); }
                 if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
             }
             if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
@@ -2124,13 +2124,24 @@ internal static class RebornClient
             if (grounded && rotAxis != 0f)
             {
                 float tstep = charTurnRate * (float)dt;
-                float dstep = rotAxis > 0f ? tstep : -tstep;
-                // Turn keys rotate the CHARACTER and the movement/control frame
-                // (so W+A/D curves); the camera is not written here - it follows
-                // moveYaw through the CameraAdjustYawWhenMoveTurn row, or is
-                // moved by the mouse drag only.
-                curYaw += dstep;
-                moveYaw += dstep;
+                // Turn keys (turn-habit A/D and the arrow keys) rotate the
+                // VIEW: the camera yaw changes exactly like a mouse drag does
+                // (drag right = yaw decreases), and the engine camera is fed
+                // through the same orbit-pixel path so the rotation is real.
+                double dyawKey = -rotAxis * tstep;
+                camSys.Yaw += dyawKey;
+                adjYawPx += (int)Math.Round(-dyawKey / 0.0018);
+                // the movement frame follows the view (W after a turn goes
+                // where the camera looks), and the character turns to the
+                // camera direction - the same relation as the RMB carry below.
+                moveYaw = camSys.Yaw;
+                float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+                float d = targetYaw - curYaw;
+                while (d > Math.PI) d -= 2f * (float)Math.PI;
+                while (d < -Math.PI) d += 2f * (float)Math.PI;
+                float cstep = charTurnRate * (float)dt;
+                if (Math.Abs(d) <= cstep) curYaw = targetYaw;
+                else curYaw += Math.Sign(d) * cstep;
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
@@ -2352,17 +2363,9 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
-                // Decoded camera follow (row CameraAdjustYawWhenMoveTurn +0x14,
-                // dead zone +0x18, cached per mode): while MOVING, pull the
-                // camera toward the run yaw (classical run yaw = the facing) -
-                // only when the mouse does not own the camera (drag active).
-                // Standing turns never move the camera (row: "when move turn").
-                // Row semantics: adjust WHEN MOVE+TURN - it follows the character
-                // only while a rotation intent is active (turn-habit A/D or the
-                // arrow keys), never for pure strafe movement (a camera-follow on
-                // a strafe diagonal would feed back and spiral).
-                if (classicalMode && movingNow && rotAxis != 0f && !lmbDown && !rmbDown)
-                    camSys.FollowYaw(moveYaw, dt);   // moveYaw is camera-convention
+                // Keyboard turns rotate the camera directly (turn block above);
+                // the CameraAdjustYawWhenMoveTurn row is therefore not applied
+                // on top of them - the old row-follow here would double-turn.
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the

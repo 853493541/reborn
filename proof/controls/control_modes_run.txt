@@ -434,3 +434,17 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   back: dist=96 cam kept; arrows turn camd=0.00
   WA: dpos=(-31,-191) dist=193 dyaw=3.93 (curve); WD: dist=192 dyaw=-4.04
 - Gates: camera_smoke ALL PASS.
+
+## Turn keys rotate the camera (user: "AD should turn camera"), 2026-10-02
+- Turn-habit A/D and the arrow keys now rotate the VIEW like the mouse does
+  (right = yaw decrease, same sign as a rightward drag); the engine camera is
+  fed through the orbit-pixel path so the rotation is real, and the character
+  turns to the camera direction (the same relation as the RMB carry).
+  Strafe-habit A/D still side-step with no camera rotation.
+- Evidence, strafe habit (run reborn_20261002_134703.log):
+  A/D: dpos=(-96,0) dist=96 cam kept; TURNRIGHT 0.6s: yaw -0.33 camd=-1.89;
+  WA/WD: straight 384 dcam=0.00
+- Evidence, turn habit (run reborn_20261002_134431.log):
+  A-alone: yaw d=-3.14 camd=-3.15 dpos=(0,0) (turn in place, camera follows)
+  TURNRIGHT 0.6s: camd=-1.88 (mod 2pi; the old unwrapped log artifact fixed)
+- Gates: camera_smoke ALL PASS.

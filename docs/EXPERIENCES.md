@@ -1490,3 +1490,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   canceling the turn.
 - Evidence: A-alone yaw 3.13 dpos=(0,0) camd=0; WA curve dist=193 dyaw=3.93;
   WD dist=192 dyaw=-4.04; back 96. Smoke ALL PASS. Relaunched (turn default).
+
+### 2026-10-02 - controls/client - turn keys rotate the camera (classic turn)
+- User: "AD should turn camera". Turn-habit A/D and arrows now rotate the view
+  exactly like a mouse drag (right = yaw decrease) and feed the engine through
+  the orbit-pixel path; the character turns to the camera direction (RMB-carry
+  relation). Strafe-habit A/D keep side-stepping with no camera rotation.
+- Evidence: turn habit A-alone yaw -3.14 camd -3.15 dpos=(0,0); TURNRIGHT 0.6s
+  camd=-1.89; strafe habit A/D dpos=(-96,0) camd=0, TURNRIGHT camd=-1.89,
+  WA/WD straight 384 dcam=0.00. Smoke ALL PASS. Relaunched (turn default).
