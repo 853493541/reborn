@@ -207,3 +207,20 @@ So the ~2.3 s exit is a **startup-task timeout**, not a crash and not the launch
 Next: identify which task stalls in the queue (the tasks enqueued between
 `0x1400e1250` and `0x1400e13ac`, via `0x14009d860` / `0x14009c890` / `0x14009f6d0`) and
 what completes it (likely the launcher/security handshake).
+
+## 12. Startup-task gate — probe findings (2026-10-01, sixth pass)
+
+- The startup queue is a **thread pool** (`0x14009d860` = `_beginthreadex` pool; worker
+  loop `0x14009ce40`; task execute via `[task+8]->[rax+8]`; class tag `KStep_Async`).
+- The probe client opens **no TCP connections** during its life — the stalled step is not
+  a socket handshake.
+- **New technique: stdout capture.** Launching the probe client with
+  `STARTF_USESTDHANDLES` redirected to a file surfaces client/GameDoctor output. Captured
+  for a failing run: `[%commonstartup%:174] Hash conflict!`, `Use jemalloc.`, and
+  `KG3DEngineManager::UnInit ... (FALSE)` — the tag/strings live in GameDoctor
+  (`GameDoctor.exe`/`GameDoctorSDK.dll`), i.e. this is a shutdown diagnostic, not proven
+  causal. The engine DLL's own `string hash confliction, consider to change name` error
+  exists but is unrelated to this line (exact `hash conflict!` is not in the engine).
+- Still open: which startup step never completes. Next probes: trace the stage functions
+  (`PlatformLoad` `0x14009f480` enqueues steps and waits itself), or read the probe
+  client's pending task at ~1.9 s (memory read of our own child, needs user OK).

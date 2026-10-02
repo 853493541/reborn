@@ -1468,3 +1468,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: disasm 0x14079b9fe-0x14079ba28 (WinMain call), 0x1400e11f0-0x1400e1543,
   0x14009d9a0, 0x14009d120, 0x14009d6d0 (vtable 0x140953e50); doc §11; this commit (local).
 - Outcome: solved (mechanism); next = identify the stalling task.
+
+### 2026-10-01 — netcode — Startup-task gate probes: thread-pool queue, stdout capture, GameDoctor hash line
+- Did: identified the startup queue as a worker-thread pool (KStep_Async, worker
+  0x14009ce40); confirmed the probe client opens no TCP; built a stdout-capture probe
+  (STARTF_USESTDHANDLES) and captured `[%commonstartup%:174] Hash conflict!` +
+  `KG3DEngineManager::UnInit (FALSE)` (GameDoctor shutdown diagnostic, not proven causal).
+  Stalled step still unidentified.
+- Evidence: doc §12; temp `probe_stdout.py`, `client_stdout.txt`; this commit (local).
+- Outcome: partial (technique + data; gate open).
