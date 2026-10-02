@@ -18,10 +18,12 @@
 //   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
 // RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using MovieEngineCLR;
+using Reborn.Rules;
 
 internal static class RebornClient
 {
@@ -765,6 +767,25 @@ internal static class RebornClient
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
+
+        // ---------------- reborn netcode (M2): RC_NET=host:port ----------------
+        NetClient net = null;
+        bool netAuth = false;
+        long netLastSend = 0, netLastKeys = 0;
+        Dictionary<int, long> netHandles = new Dictionary<int, long>();
+        string netAddr = Env("RC_NET", "");
+        if (netAddr.Length > 0)
+        {
+            netAuth = Env("RC_NET_AUTH", "0") == "1";
+            int ncolon = netAddr.LastIndexOf(':');
+            string nhost = ncolon > 0 ? netAddr.Substring(0, ncolon) : netAddr;
+            int nport = 5599;
+            if (ncolon > 0) int.TryParse(netAddr.Substring(ncolon + 1), out nport);
+            net = new NetClient();
+            string nerr;
+            if (net.Connect(nhost, nport, out nerr)) Log("net: connect " + nhost + ":" + nport + " ok auth=" + (netAuth ? 1 : 0));
+            else { Log("net: connect failed: " + nerr); net = null; }
+        }
 
         // ---------------- target selection state (Targeting.cs) ----------------
         // Target HUD art/layout comes from the game client's own UI files
@@ -2992,6 +3013,59 @@ internal static class RebornClient
                     curClip == null ? "-" : Path.GetFileName(curClip)));
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
+            }
+            // ---------------- reborn netcode (M2) ----------------
+            if (net != null)
+            {
+                long netKeys = (pW ? (long)Movement.KFwd : 0L) | (pS ? (long)Movement.KBack : 0L)
+                             | (pA ? (long)Movement.KLeft : 0L) | (pD ? (long)Movement.KRight : 0L);
+                if (netKeys != netLastKeys || now - netLastSend >= 100)
+                {
+                    net.SendMoveInput((int)netKeys, 0);
+                    netLastKeys = netKeys;
+                    netLastSend = now;
+                }
+                string netEv;
+                while (net.Events.TryDequeue(out netEv)) Log(netEv);
+                List<NetRemote> remotes = net.RemoteSnapshot();
+                for (int ri = 0; ri < remotes.Count; ri++)
+                {
+                    NetRemote r = remotes[ri];
+                    string rname = "net_" + r.Eid;
+                    CLRfloat3 rp = new CLRfloat3(); rp.x = (float)r.Pos[0]; rp.y = (float)r.Pos[1]; rp.z = (float)r.Pos[2];
+                    CLRfloat4 rr = new CLRfloat4(); rr.x = 0f; rr.y = 0f; rr.z = 0f; rr.w = 1f;
+                    CLRfloat3 rs = new CLRfloat3(); rs.x = scale; rs.y = scale; rs.z = scale;
+                    if (!netHandles.ContainsKey(r.Eid))
+                    {
+                        netHandles[r.Eid] = scene.AddDummyModel(rname, actorPath, rp, rr, rs);
+                        Log("net actor add eid=" + r.Eid + " handle=" + netHandles[r.Eid]);
+                    }
+                    else
+                    {
+                        scene.AddDummyModel(rname, actorPath, rp, rr, rs);   // re-place at server pos
+                    }
+                }
+                List<int> netGone = new List<int>();
+                foreach (KeyValuePair<int, long> kv in netHandles)
+                    if (!net.RemoteHas(kv.Key)) netGone.Add(kv.Key);
+                for (int gi = 0; gi < netGone.Count; gi++)
+                {
+                    scene.RemoveDummyModel("net_" + netGone[gi]);
+                    netHandles.Remove(netGone[gi]);
+                    Log("net actor remove eid=" + netGone[gi]);
+                }
+                if (netAuth && net.Joined)
+                {
+                    double ndx = net.ServerPos[0] - px, ndy = net.ServerPos[1] - py, ndz = net.ServerPos[2] - pz;
+                    double drift = Math.Sqrt(ndx * ndx + ndy * ndy + ndz * ndz);
+                    if (drift > 96.0)
+                    {
+                        px = (float)net.ServerPos[0]; py = (float)net.ServerPos[1]; pz = (float)net.ServerPos[2];
+                        net.Corrections++;
+                        Log(string.Format("net correction drift={0:F0}u n={1}", drift, net.Corrections));
+                        placePlayer(px, py, pz, curYaw);
+                    }
+                }
             }
             // target frame (Targeting.cs): real client UI composited over the viewport
             if (targetFrame != null && targetHudOn)

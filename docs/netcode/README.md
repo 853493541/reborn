@@ -43,6 +43,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `JX3_DROPS_RESEARCH.md` | **drops session record (audited)**: containers, tables, wire formats, dead ends, confidence |
 | `JX3_MODE_LOOT_SYSTEM.md`, `JX3_MODE_SPAWN_RULES_SEARCH.md` | loot container schema / spawn-rule hunt + dead-end log |
 | `JX3_CLIENT_LAUNCH_AND_SESSION.md` | **client launch + session handoff reality check** (launcher chain, no-arg launch, live endpoints, offline verdict) |
+| `M2_SHARED_RULES.md` | **M2 shared rules library (C#)** + parity gate vs the Python reference (41 PASS) |
 
 ## Tools (`tools/netcode/`)
 
@@ -62,6 +63,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `extract_hpkg_member.py` | CDN `.hpkg` member extractor (LZHAM index, raw/LZHAM payload variants) |
 | `lua51_dump.py`, `gbk_grep.py`, `search_tree.py` | Lua 5.1 bytecode proto/const dump, GBK/UTF-16 binary grep, tree token search |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
+| `reference/gen_parity_vectors.py` | emit `proof/netcode/parity/rules_vectors.txt` from the reference model (C# parity gate input) |
 
 ## Evidence (`proof/netcode/`)
 

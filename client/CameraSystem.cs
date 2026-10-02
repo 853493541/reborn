@@ -730,10 +730,11 @@ public sealed class CameraObstruction
 // tiny JSON reader for the flat camera config (objects of numbers/bools/strings)
 internal static class MiniJson
 {
+    // Existing entry point (camera JSON): top-level object of objects.
     public static Dictionary<string, Dictionary<string, object>> ParseObject(string text)
     {
         int i = 0;
-        var raw = ParseValue(text, ref i, true) as Dictionary<string, object>;
+        var raw = ParseValue(text, ref i) as Dictionary<string, object>;
         var outd = new Dictionary<string, Dictionary<string, object>>();
         if (raw == null) return outd;
         foreach (var kv in raw)
@@ -744,31 +745,94 @@ internal static class MiniJson
         return outd;
     }
 
-    static object ParseValue(string s, ref int i, bool expectObject)
+    // General entry point (netcode payloads): object/array/scalar.
+    public static object Parse(string text)
+    {
+        int i = 0;
+        return ParseValue(text, ref i);
+    }
+
+    public static Dictionary<string, object> AsObject(object v) { return v as Dictionary<string, object>; }
+    public static List<object> AsArray(object v) { return v as List<object>; }
+
+    public static double Num(Dictionary<string, object> o, string key, double fallback)
+    {
+        object v;
+        if (o != null && o.TryGetValue(key, out v) && v is double) return (double)v;
+        return fallback;
+    }
+
+    public static int Int(Dictionary<string, object> o, string key, int fallback)
+    {
+        return (int)Num(o, key, fallback);
+    }
+
+    public static string Str(Dictionary<string, object> o, string key, string fallback)
+    {
+        object v;
+        if (o != null && o.TryGetValue(key, out v) && v is string) return (string)v;
+        return fallback;
+    }
+
+    public static double[] Vec3(Dictionary<string, object> o, string key)
+    {
+        object v;
+        if (o == null || !o.TryGetValue(key, out v)) return null;
+        List<object> a = v as List<object>;
+        if (a == null || a.Count < 3) return null;
+        return new double[] { (double)a[0], (double)a[1], (double)a[2] };
+    }
+
+    static object ParseValue(string s, ref int i)
     {
         SkipWs(s, ref i);
         if (i >= s.Length) return null;
         char c = s[i];
-        if (c == '{')
+        if (c == '{') return ParseObj(s, ref i);
+        if (c == '[') return ParseArray(s, ref i);
+        if (c == '"') return ParseString(s, ref i);
+        if (c == 't') { i += 4; return true; }
+        if (c == 'f') { i += 5; return false; }
+        if (c == 'n') { i += 4; return null; }
+        return ParseScalar(s, ref i);
+    }
+
+    static Dictionary<string, object> ParseObj(string s, ref int i)
+    {
+        var obj = new Dictionary<string, object>();
+        i++;
+        SkipWs(s, ref i);
+        if (i < s.Length && s[i] == '}') { i++; return obj; }
+        while (i < s.Length)
         {
-            i++;
-            var obj = new Dictionary<string, object>();
-            while (true)
-            {
-                SkipWs(s, ref i);
-                if (i < s.Length && s[i] == '}') { i++; break; }
-                string key = ParseString(s, ref i);
-                SkipWs(s, ref i);
-                if (i < s.Length && s[i] == ':') i++;
-                SkipWs(s, ref i);
-                if (i < s.Length && s[i] == '{') obj[key] = ParseValue(s, ref i, true);
-                else obj[key] = ParseScalar(s, ref i);
-                SkipWs(s, ref i);
-                if (i < s.Length && s[i] == ',') { i++; continue; }
-            }
-            return obj;
+            SkipWs(s, ref i);
+            string key = ParseString(s, ref i);
+            SkipWs(s, ref i);
+            if (i < s.Length && s[i] == ':') i++;
+            obj[key] = ParseValue(s, ref i);
+            SkipWs(s, ref i);
+            if (i < s.Length && s[i] == ',') { i++; continue; }
+            if (i < s.Length && s[i] == '}') { i++; break; }
+            break;
         }
-        return null;
+        return obj;
+    }
+
+    static List<object> ParseArray(string s, ref int i)
+    {
+        var a = new List<object>();
+        i++;
+        SkipWs(s, ref i);
+        if (i < s.Length && s[i] == ']') { i++; return a; }
+        while (i < s.Length)
+        {
+            a.Add(ParseValue(s, ref i));
+            SkipWs(s, ref i);
+            if (i < s.Length && s[i] == ',') { i++; continue; }
+            if (i < s.Length && s[i] == ']') { i++; break; }
+            break;
+        }
+        return a;
     }
 
     static object ParseScalar(string s, ref int i)
@@ -777,7 +841,7 @@ internal static class MiniJson
         if (i >= s.Length) return null;
         if (s[i] == '"') return ParseString(s, ref i);
         int start = i;
-        while (i < s.Length && s[i] != ',' && s[i] != '}' && !char.IsWhiteSpace(s[i])) i++;
+        while (i < s.Length && s[i] != ',' && s[i] != '}' && s[i] != ']' && !char.IsWhiteSpace(s[i])) i++;
         string tok = s.Substring(start, i - start).Trim();
         if (tok == "true") return true;
         if (tok == "false") return false;

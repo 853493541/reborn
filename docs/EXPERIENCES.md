@@ -1641,3 +1641,37 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: merge `665e01c`; branch commits `97f0ce6` + `623ffe3`; proof
   `docs/engine_host/M1_SOLO5_PROOF.md`.
 - Outcome: M1 exit criteria met on main (local, not pushed).
+
+### 2026-10-02 — netcode — M2 shared rules library (C#) + parity gate (slice 1)
+- Did: ported the reference contract (tools/netcode/reference/jx3_model.py, 10x PASS) to
+  `netcode/Reborn.Rules/` (netstandard2.0: Protocol, ReliableChannel, Movement, Combat,
+  GameState) and added a parity gate: `tools/netcode/reference/gen_parity_vectors.py`
+  generates `proof/netcode/parity/rules_vectors.txt` from the Python model (fake clock for
+  the channel); `netcode/Reborn.Rules.Selftest` replays every vector against the C# rules.
+- Evidence: selftest `41 PASS, 0 FAIL` (movement 12, framing 8, channel 11, cast 8, tick 3);
+  doc `docs/netcode/M2_SHARED_RULES.md`; gate registered in AGENTS §12.
+- Note: machine has dotnet SDK 5.0.408 (plan says .NET 8 server) — slice uses it with no new
+  dependencies; ask before installing .NET 8 at the server slice.
+- Outcome: solved (local branch `agent/m2-model`, not pushed).
+
+### 2026-10-02 — netcode — M2 server app + end-to-end smoke (slice 2)
+- Did: `netcode/Reborn.Server/` — TCP server on `Reborn.Rules` (framed IO, handshake with
+  session resume, 30 Hz tick, 10 Hz move state + distance AOI, ping/pong, JSON payloads);
+  `--selftest` runs an in-process two-client smoke.
+- Evidence: `8 PASS, 0 FAIL` (handshake, join, prediction drift 0.000, moved z=5.00, AOI both
+  ways, ping/pong, reconnect recovered, position kept); doc `docs/netcode/M2_SHARED_RULES.md`
+  (slice 2); gate registered in AGENTS §12.
+- Outcome: solved (local branch `agent/m2-model`, not pushed).
+
+### 2026-10-02 — netcode — M2 client integration + two-client in-engine smoke (slice 3)
+- Did: `client/NetClient.cs` (net48/C#5 on the shared rules; RC_NET=host:port, off by default)
+  + MiniJson extended for arrays/nested payloads; input upstream 10 Hz, move-state downstream,
+  AOI entities rendered as engine actors; server `--spawn`; exact jump model ported to
+  `GameMovement` (M1.3) and pinned by generated vectors.
+- Evidence: parity 51 PASS (incl. jump apex 414 u = 2.16 m); server smoke 8 PASS; two-client
+  in-engine smoke — a/b both `join` + `net entity add` + `net actor add` for each other, no
+  disconnects over 129 s runs. Doc `docs/netcode/M2_SHARED_RULES.md`.
+- Lesson: never `git add -A` over dotnet projects — `bin/`+`obj/` slipped into three local
+  commits; fixed by gitignore + re-committing the branch clean (unpushed, so rewritten locally).
+- Outcome: solved (local branch `agent/m2-model`, not pushed); authoritative movement (server
+  terrain/collision) is the next M2 slice.
