@@ -110,6 +110,55 @@ internal static class CollisionSelfTest
 
     static void Main(string[] args)
     {
+        // Diagnostic: `tinfo <sbin> x centerY z` prints the contacting instance.
+        if (args.Length > 0 && args[0] == "tinfo")
+        {
+            FoliageCollision tc = new FoliageCollision(null, args[1]);
+            float tx = float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture);
+            float ty = float.Parse(args[3], System.Globalization.CultureInfo.InvariantCulture);
+            float tz = float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture);
+            bool hit = tc.CapsuleTouches(tx, ty - 58f, tz, 17f, 116f);
+            string mp = tc.LastTouchInst >= 0 ? tc.GetMeshPath(tc.LastTouchInst) : "";
+            Console.WriteLine("tinfo hit=" + hit + " inst=" + tc.LastTouchInst + " depth=" + tc.LastTouchDepth + " mesh=" + mp);
+            Environment.Exit(0);
+        }
+        // Phase-1 A/B grid: `grid <sbin> x0 z0 x1 z1 pitch yStep [yMax]`
+        // prints one line per lattice point: GRID x z <centerY:mode transitions>
+        // with the capsule (r=17, h=116) center y scanned 0..yMax.
+        if (args.Length > 0 && args[0] == "grid")
+        {
+            if (args.Length < 8)
+            {
+                Console.WriteLine("usage: grid <structuresBin> x0 z0 x1 z1 pitch yStep [yMax]");
+                Environment.Exit(64);
+            }
+            string sbin = args[1];
+            float x0 = float.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture);
+            float z0 = float.Parse(args[3], System.Globalization.CultureInfo.InvariantCulture);
+            float x1 = float.Parse(args[4], System.Globalization.CultureInfo.InvariantCulture);
+            float z1 = float.Parse(args[5], System.Globalization.CultureInfo.InvariantCulture);
+            float pitch = float.Parse(args[6], System.Globalization.CultureInfo.InvariantCulture);
+            int yStep = int.Parse(args[7], System.Globalization.CultureInfo.InvariantCulture);
+            int yMax = args.Length > 8 ? int.Parse(args[8], System.Globalization.CultureInfo.InvariantCulture) : 1500;
+            FoliageCollision gc = new FoliageCollision(null, sbin);
+            for (float x = x0; x <= x1 + 0.5f; x += pitch)
+            {
+                for (float z = z0; z <= z1 + 0.5f; z += pitch)
+                {
+                    int prev = -1;
+                    string trans = "";
+                    for (int cy = 0; cy <= yMax; cy += yStep)
+                    {
+                        float feet = cy - 58f;   // engine capsule center -> feet
+                        bool t = gc.CapsuleTouches(x, feet, z, 17f, 116f);
+                        int c = t ? 1 : 0;
+                        if (c != prev) { trans += " y" + cy + ":" + c; prev = c; }
+                    }
+                    Console.WriteLine("GRID " + (int)x + " " + (int)z + trans);
+                }
+            }
+            Environment.Exit(0);
+        }
         // Map-wide wall audit: `collision_selftest_<exe>.exe audit <structuresBin> [foliageBin] [stride]`
         if (args.Length > 0 && args[0] == "audit")
         {

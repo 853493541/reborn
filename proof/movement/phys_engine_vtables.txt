@@ -499,3 +499,32 @@ the same surfaces (wall top band, pile top band + an upper surface).
 
 The A/B reference now exists end-to-end: engine cooker -> engine mesh ->
 PxMeshQuery -> field scans, and our solver agrees at all three reported spots.
+
+### Update 2026-10-02d: Phase-1 region grid A/B - 0.15% mismatch (gate < 0.5% MET)
+
+**Two corrections found while scaling the A/B (the step-7 spot result was invalid):**
+1. The structure bin v2 stores LOCAL mesh verts + per-instance l2w matrices
+   (mi, 16 floats, flag, AABB). Step-7 cooked raw local verts -> wrong world
+   placement. RC_PX_FIELD2 world-bakes each instance (l2w) and applies the
+   oflags instance rule (bit0/bit1 + sibling bit5) before cooking.
+2. **PhysX capsule axis = local X** (3.3.4): an identity-pose capsule is
+   HORIZONTAL. The vertical scan needs the pose rotated (quat z=w=0.70710678);
+   without it the probe measured a horizontal capsule (the +-50u transition
+   offsets seen before). Corrected in RC_PX_FIELD2.
+
+**Phase-1 grid**: lattice x 18000..24000, z 24000..37000, pitch 250 (1325
+points), capsule r=17 h=116 center-y scan 0..1500 step 25; engine =
+findOverlapTriangleMesh on the world-baked cook (region: 76 instances baked,
+179 oflags-skipped), solver = collision_grid_probe `grid` (FoliageCollision
+CapsuleTouches, propSolid forced to faces, same skip rule).
+
+Result (engine log reborn_20261002_135554, solver tools/collision/pxdiff.py):
+**2 / 1325 mismatched (0.15%)** - both single-step tangential-contact
+boundaries, triaged with an exact world-baked capsule-vs-triangle test:
+e.g. (19500,29750) exact distance at start y=925 is 16.997 vs radius 17
+(penetration 0.003) - the engine reports it, the probe depth>0.01 filter
+drops it; solver blocks from the next step. No walk-through/phasing class.
+
+Tools: `collision_grid_probe.exe grid <bin> x0 z0 x1 z1 pitch yStep [yMax]`
+and `tools/collision/pxdiff.py <engine_log> <solver_out> <yStep> [yMax]`.
+Next: sweep-semantics A/B (Phase 2) at the wall move sets.

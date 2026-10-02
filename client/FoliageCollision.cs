@@ -531,6 +531,39 @@ public sealed class FoliageCollision
         }
     }
 
+    // Phase-1 A/B grid probe: true when a capsule contact exists at feet
+    // position (x,y,z) with the given radius/height. Same InstanceContact
+    // contract as the solver (py = feet, height = total capsule height).
+    // Forcefaces: ignore the solid-prop AABB proxy and test the baked
+    // triangles (the engine-side A/B cooks the same triangles).
+    readonly List<int> _abCand = new List<int>(16);
+    bool _abForceFaces = false;
+    public int LastTouchInst = -1;
+    public float LastTouchDepth = 0f;
+    public bool CapsuleTouches(float x, float y, float z, float radius, float height)
+    {
+        GatherCandidates(x, z, radius + 64f, _abCand);
+        bool found = false;
+        _abForceFaces = true;
+        try
+        {
+            for (int k = 0; k < _abCand.Count; k++)
+            {
+                Contact c = new Contact();
+                c.lowTop = float.MaxValue;
+                if (InstanceContact(_inst[_abCand[k]], x, y, z, radius, height, ref c) && c.depth > 0.01f)
+                {
+                    found = true;
+                    LastTouchInst = _abCand[k];
+                    LastTouchDepth = c.depth;
+                    break;
+                }
+            }
+        }
+        finally { _abForceFaces = false; }
+        return found;
+    }
+
     // Nearest world-space hit of the segment A->B against the structure and
     // foliage instances (camera obstruction). Returns the distance from A
     // along A->B in world units, or -1 when nothing is hit.
@@ -782,7 +815,7 @@ public sealed class FoliageCollision
         // the render mesh of a stacked prop has air gaps and tiered faces the
         // capsule can slip or step through (wj_木堆001_hd); a solid box blocks
         // like furniture and can only be climbed within the step budget.
-        if (it.mesh.propSolid)
+        if (it.mesh.propSolid && !_abForceFaces)
             return AabbContact(it, px, py, pz, radius, height, ref best);
         float[] w2l = it.w2l;
         if (w2l == null) return false;

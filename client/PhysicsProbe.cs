@@ -993,6 +993,201 @@ internal static class PhysicsProbe
             }
             catch (Exception e) { log("physprobe: PX_FIELD ex: " + e.Message); }
         }
+        // PhysX-direct step 8 (opt-in RC_PX_FIELD2=1): like RC_PX_FIELD but the
+        // bin is parsed fully (locals + per-instance l2w + oflags rule) and the
+        // world-baked instance triangles are cooked - apples-to-apples with the
+        // solver's world placement (the step-7 cook used raw local verts and is
+        // invalid for placement). Grid mode via RC_PX_GRID="x0,z0,x1,z1[,pitch,yStep]".
+        if (Environment.GetEnvironmentVariable("RC_PX_FIELD2") == "1")
+        {
+            try
+            {
+                System.Globalization.CultureInfo ci = System.Globalization.CultureInfo.InvariantCulture;
+                string binPath = Environment.GetEnvironmentVariable("RC_PX_FIELD_BIN");
+                if (string.IsNullOrEmpty(binPath))
+                    binPath = @"C:\SeasunGame\MovieEditor\bin64\collision_data\龙门寻宝_夜晚_structure_collision.bin";
+                string gridSpec = Environment.GetEnvironmentVariable("RC_PX_GRID");
+                float gx0 = 0, gz0 = 0, gx1 = 0, gz1 = 0, gpitch = 200f;
+                int gyStep = 50, gyMax = 1500;
+                bool grid = !string.IsNullOrEmpty(gridSpec);
+                if (grid)
+                {
+                    string[] gp = gridSpec.Split(',');
+                    gx0 = float.Parse(gp[0], ci); gz0 = float.Parse(gp[1], ci);
+                    gx1 = float.Parse(gp[2], ci); gz1 = float.Parse(gp[3], ci);
+                    if (gp.Length > 4) gpitch = float.Parse(gp[4], ci);
+                    if (gp.Length > 5) gyStep = int.Parse(gp[5], ci);
+                    if (gp.Length > 6) gyMax = int.Parse(gp[6], ci);
+                }
+                System.IO.BinaryReader br = new System.IO.BinaryReader(System.IO.File.OpenRead(binPath));
+                br.ReadUInt32();
+                int ver = br.ReadInt32();
+                int meshCount = br.ReadInt32();
+                int instCount = br.ReadInt32();
+                log("physprobe: PX_FIELD2 v" + ver + " meshes=" + meshCount + " insts=" + instCount);
+                float[][] mv = new float[meshCount][];
+                int[][] mt = new int[meshCount][];
+                for (int i = 0; i < meshCount; i++)
+                {
+                    int vc = br.ReadInt32(), tc = br.ReadInt32();
+                    float[] vv = new float[vc * 3];
+                    for (int k = 0; k < vc * 3; k++) vv[k] = br.ReadSingle();
+                    int[] tt = new int[tc * 3];
+                    for (int k = 0; k < tc * 3; k++) tt[k] = br.ReadInt32();
+                    mv[i] = vv; mt[i] = tt;
+                }
+                byte[] oflags = null;
+                string ofp = binPath + ".oflags";
+                if (System.IO.File.Exists(ofp))
+                {
+                    byte[] raw = System.IO.File.ReadAllBytes(ofp);
+                    if (raw.Length >= 8 + meshCount && BitConverter.ToUInt32(raw, 0) == 0x474C464F)
+                        oflags = raw;
+                }
+                float rx0, rz0, rx1, rz1;
+                if (grid) { rx0 = gx0 - 120; rz0 = gz0 - 120; rx1 = gx1 + 120; rz1 = gz1 + 120; }
+                else { rx0 = 18915 - 700; rz0 = 24224 - 700; rx1 = 23334 + 700; rz1 = 36850 + 700; }
+                System.Collections.Generic.List<float> wv = new System.Collections.Generic.List<float>(1 << 20);
+                System.Collections.Generic.List<int> wt = new System.Collections.Generic.List<int>(1 << 20);
+                int used = 0, skipped = 0;
+                for (int i = 0; i < instCount; i++)
+                {
+                    int mi = br.ReadInt32();
+                    float[] m = new float[16];
+                    for (int k = 0; k < 16; k++) m[k] = br.ReadSingle();
+                    br.ReadInt32();
+                    float bx0 = br.ReadSingle(), by0 = br.ReadSingle(), bz0 = br.ReadSingle();
+                    float bx1 = br.ReadSingle(), by1 = br.ReadSingle(), bz1 = br.ReadSingle();
+                    if (mi < 0 || mi >= meshCount) continue;
+                    if (oflags != null
+                        && ((oflags[8 + mi] & 0x01) == 0 || (oflags[8 + mi] & 0x02) == 0)
+                        && (oflags[8 + mi] & 0x20) == 0)
+                    { skipped++; continue; }
+                    if (bx1 < rx0 || bx0 > rx1 || bz1 < rz0 || bz0 > rz1) continue;
+                    float[] vv = mv[mi];
+                    int voff = wv.Count / 3;
+                    for (int k = 0; k < vv.Length; k += 3)
+                    {
+                        float lx = vv[k], ly = vv[k + 1], lz = vv[k + 2];
+                        wv.Add(lx * m[0] + ly * m[4] + lz * m[8] + m[12]);
+                        wv.Add(lx * m[1] + ly * m[5] + lz * m[9] + m[13]);
+                        wv.Add(lx * m[2] + ly * m[6] + lz * m[10] + m[14]);
+                    }
+                    int[] tt = mt[mi];
+                    for (int k = 0; k < tt.Length; k++) wt.Add(tt[k] + voff);
+                    used++;
+                }
+                br.Close();
+                log("physprobe: PX_FIELD2 baked insts=" + used + " (oflagsSkipped=" + skipped +
+                    ") verts=" + (wv.Count / 3) + " tris=" + (wt.Count / 3));
+                int nv2 = wv.Count / 3, nt2 = wt.Count / 3;
+                if (nt2 < 3) { log("physprobe: PX_FIELD2 nothing to cook"); }
+                else
+                {
+                    IntPtr verts2 = Marshal.AllocHGlobal(nv2 * 12);
+                    float[] wa = wv.ToArray();
+                    Marshal.Copy(wa, 0, verts2, wa.Length);
+                    IntPtr tris2 = Marshal.AllocHGlobal(nt2 * 12);
+                    int[] ia = wt.ToArray();
+                    Marshal.Copy(ia, 0, tris2, ia.Length);
+                    s_pxStreamBuf = new byte[1 << 28];
+                    IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+                    IntPtr pxPhysics = Marshal.ReadIntPtr(mgr, 0x38);
+                    IntPtr desc = Marshal.AllocHGlobal(0x60);
+                    for (int i = 0; i < 0x60 / 4; i++) Marshal.WriteInt32(desc, i * 4, 0);
+                    Marshal.WriteInt32(desc, 0x00, 12);
+                    Marshal.WriteIntPtr(desc, 0x08, verts2);
+                    Marshal.WriteInt32(desc, 0x10, nv2);
+                    Marshal.WriteInt32(desc, 0x18, 12);
+                    Marshal.WriteIntPtr(desc, 0x20, tris2);
+                    Marshal.WriteInt32(desc, 0x28, nt2);
+                    Marshal.WriteInt32(desc, 0x48, unchecked((int)0x3A83126F));
+                    s_pxStreamLen = 0;
+                    IntPtr ostream = MakePxStream();
+                    int cr = Fn<Bool2Fn>(Vt(pxCook, 4))(pxCook, desc, ostream);
+                    log("physprobe: PX_FIELD2 cook=" + cr + " cookedBytes=" + s_pxStreamLen);
+                    byte[] cooked = new byte[s_pxStreamLen];
+                    Array.Copy(s_pxStreamBuf, cooked, s_pxStreamLen);
+                    IntPtr mesh = Fn<Ptr2Fn>(Vt(pxPhysics, 8))(pxPhysics, MakePxInStream(cooked, cooked.Length));
+                    log("physprobe: PX_FIELD2 mesh=0x" + mesh.ToInt64().ToString("X"));
+                    if (mesh != IntPtr.Zero)
+                    {
+                        IntPtr geom = Marshal.AllocHGlobal(0x50);
+                        for (int i = 0; i < 0x50 / 4; i++) Marshal.WriteInt32(geom, i * 4, 0);
+                        Marshal.WriteInt32(geom, 0x00, 5);
+                        Marshal.WriteInt32(geom, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+                        Marshal.WriteInt32(geom, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+                        Marshal.WriteInt32(geom, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+                        Marshal.WriteInt32(geom, 0x1C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+                        Marshal.WriteIntPtr(geom, 0x28, mesh);
+                        IntPtr mpose = Marshal.AllocHGlobal(0x20);
+                        for (int i = 0; i < 8; i++) Marshal.WriteInt32(mpose, i * 4, 0);
+                        Marshal.WriteInt32(mpose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+                        IntPtr hCommon = GetModuleHandleA("PhysX3Common_x64.dll");
+                        IntPtr pOverlap = GetProcAddress(hCommon, "?findOverlapTriangleMesh@PxMeshQuery@physx@@SAIAEBVPxGeometry@2@AEBVPxTransform@2@AEBVPxTriangleMeshGeometry@2@1PEAIIIAEA_N@Z");
+                        IntPtr cap = Marshal.AllocHGlobal(0x20);
+                        Marshal.WriteInt32(cap, 0x00, 2);
+                        Marshal.WriteInt32(cap, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(17f), 0));
+                        Marshal.WriteInt32(cap, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(41f), 0));
+                        Marshal.WriteInt32(cap, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(17f), 0));
+                        Marshal.WriteInt32(cap, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(41f), 0));
+                        IntPtr capPose = Marshal.AllocHGlobal(0x20);
+                        IntPtr results = Marshal.AllocHGlobal(256 * 4);
+                        IntPtr overflow = Marshal.AllocHGlobal(4);
+                        if (grid)
+                        {
+                            for (float gx = gx0; gx <= gx1 + 0.5f; gx += gpitch)
+                            {
+                                for (float gz = gz0; gz <= gz1 + 0.5f; gz += gpitch)
+                                {
+                                    int prev = -1;
+                                    string trans = "";
+                                    for (int cy = 0; cy <= gyMax; cy += gyStep)
+                                    {
+                                        for (int i = 0; i < 8; i++) Marshal.WriteInt32(capPose, i * 4, 0);
+                                        Marshal.WriteInt32(capPose, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                        Marshal.WriteInt32(capPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                        Marshal.WriteInt32(capPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(gx), 0));
+                                        Marshal.WriteInt32(capPose, 0x14, BitConverter.ToInt32(BitConverter.GetBytes((float)cy), 0));
+                                        Marshal.WriteInt32(capPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(gz), 0));
+                                        uint cnt = Fn<FindOverlapFn>(pOverlap)(cap, capPose, geom, mpose, results, 256, 0, overflow);
+                                        int c = cnt > 0 ? 1 : 0;
+                                        if (c != prev) { trans += " y" + cy + ":" + c; prev = c; }
+                                    }
+                                    log("PX_GRID " + (int)gx + " " + (int)gz + trans);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            float[][] spots = new float[][] {
+                                new float[] { 23334f, 24224f }, new float[] { 18915f, 36850f },
+                                new float[] { 20450f, 31000f } };
+                            for (int s = 0; s < spots.Length; s++)
+                            {
+                                float x = spots[s][0], z = spots[s][1];
+                                int prev = -1;
+                                string trans = "";
+                                for (int cy = 0; cy <= gyMax; cy += gyStep)
+                                {
+                                    for (int i = 0; i < 8; i++) Marshal.WriteInt32(capPose, i * 4, 0);
+                                    Marshal.WriteInt32(capPose, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                    Marshal.WriteInt32(capPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                                    Marshal.WriteInt32(capPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(x), 0));
+                                    Marshal.WriteInt32(capPose, 0x14, BitConverter.ToInt32(BitConverter.GetBytes((float)cy), 0));
+                                    Marshal.WriteInt32(capPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(z), 0));
+                                    uint cnt = Fn<FindOverlapFn>(pOverlap)(cap, capPose, geom, mpose, results, 256, 0, overflow);
+                                    int c = cnt > 0 ? 1 : 0;
+                                    if (c != prev) { trans += " y" + cy + ":" + c; prev = c; }
+                                }
+                                log("physprobe: PX_FIELD2 spot" + s + " (" + x + "," + z + ") transitions:" + trans);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { log("physprobe: PX_FIELD2 ex: " + e.Message); }
+        }
         IntPtr posBuf2 = Marshal.AllocHGlobal(12);
         Marshal.WriteInt32(posBuf2, 0, BitConverter.ToInt32(BitConverter.GetBytes(px), 0));
         Marshal.WriteInt32(posBuf2, 4, BitConverter.ToInt32(BitConverter.GetBytes(py), 0));

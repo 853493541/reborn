@@ -27,3 +27,4 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `tools/export_camera_flags.py` | Per-mesh `bObscatleCamera` extraction → `camera_mesh_flags.json` → `.cflags` sidecar |
 | `tools/bake_map_collision.py` | Bake per-map foliage/structure collision bins from the pak |
 | `tools/gravity/verify_model.py` | Jump/fall integer model verification |
+| `tools/collision/pxdiff.py` | Phase-1 grid A/B diff: parse engine `PX_GRID` lines vs solver `GRID` lines, per-y state compare + mismatch report |

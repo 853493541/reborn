@@ -978,3 +978,15 @@ solved it, and what is still open. **Newest at the bottom.**
 - Result: engine vs our solver agree at spawn/wall/pile (tool
   tools/collision/spot_ab.py). The engine-side reference is now reproducible.
 - Note: cooked streams can exceed 64 MB; the probe uses a 256 MB buffer.
+
+### 2026-10-02 - Phase-1 grid A/B: two wrong assumptions caught, then 0.15% match
+
+- The structure bin is NOT world-baked: v2 = local meshes + per-instance l2w.
+  The earlier "A/B positive" compared raw (untransformed) vertices on both
+  sides - invalid; corrected by baking l2w (and the oflags rule) before cooking.
+- PhysX 3.3 capsules run along the LOCAL X axis: an identity pose is a
+  horizontal capsule. Corrected pose quaternion (z=w=sqrt(1/2)) gave exact
+  per-point matches (25/25), then 1313/1325 region lattice (0.15%, both
+  tangential-contact threshold artifacts, no phasing class).
+- Rule of thumb reinforced: compare only after both sides use identical
+  transforms, identical instance rules, and identical shape conventions.
