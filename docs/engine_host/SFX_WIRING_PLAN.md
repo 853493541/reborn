@@ -309,6 +309,29 @@ missing piece for engine-driven playback.
 
 Probe: `%TEMP%\opencode\skillv2\client_sfx_probe.cpp` (evidence `win2.out`, `play3.out`).
 
+### Client SFX manager vtable map (2026-10-01, live probe)
+
+`engine+0x2c10` = the SFX manager (COM-like). Its vtable has **15 slots** (engine RVAs):
+`vt0 0xB71AC0` = QueryInterface (matches interface vtables against globals
+`0x1FC9D50/0x1FC9D58`, `0x1CCA7F0/0x1CCA7F8`; stores the adjusted pointer, AddRefs);
+`vt1 0xE7370` = AddRef; `vt2 0xB71B40` = Release; `vt3 0xB727B0`; `vt4 0xB71BA0`;
+`vt5 0xB71D50`; `vt6 0xB71EF0`; `vt7 0xB71FD0`; `vt8 0xB720A0`; `vt9 0xB721D0`;
+`vt10 0xB72310`; `vt11 0xB72480` (copies a matrix from rdx); `vt12 0xB72600`;
+`vt13 0xB726E0` (CreateScreen3DSFX forward target, `+0x68`); `vt14 0xB729D0` (dtor).
+Most slots forward to sub-objects at `[mgr+0xbd8]+off` (`+0x210/+0x420/+0x4d0/+0x580/+0x630`).
+
+`[mgr+0xbd8]` = a sub-manager whose vtable is a repeating 4-slot pattern ×8 entries
+(`[0xB75400, 0xB75370, 0xB76780, 0x22F8690]`, `[0xB75270, 0xB75370, 0xB76730, 0x22F8828]`,
+`[0xB75C50, 0xB75370, 0xB76960, 0x22F8668]`, `[0xB75C50, …, 0xB76910, 0x22F8640]`,
+`[0xB758F0, …, 0xB768C0, 0x22F85F0]`, `[0xB75590, …, 0xB76870, 0x22F8798]`,
+`[0xB76610, …, 0xB76A50, 0x22F88A0]`, `[0xB758F0, …, 0xB76A00, 0x22F8878]`) — 8 SFX
+type entries, each with a shared helper (`0xB75370`) and a small type function.
+
+The engine's own bind entry `KG3D_SFXModel::BindData` (client `0xE345DC`, called via a
+runtime function pointer — no static callers/vtable slot) is the path that creates+casts+
+attaches+plays; driving it needs the SFX-model context object. This object graph is the
+next RE chunk for engine-driven playback (evidence `submgr.out`, `play3.out`).
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
