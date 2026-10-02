@@ -448,9 +448,24 @@ animation data manager reads a **type field at offset 12** of the buffer while t
 `.tani` layout has the path there (`GATA` + flags + path + NUL + payload) — the manager
 expects a different container layout than the extractor's raw pak record. The engine's
 own `KG3D_DataContainer` (`GetData/PopData`, engine `0xB3D940/0xB3DB90/0xB3DCD0`, type
-count 0xD) parses GATA, and `KG3D_CreateAnimationFromFile` (`0xC41840` → `0xC41EA0`)
+count 0xD) parses GATA, and `KG3D_CreateAnimationFromFile` (`0xC41840 → 0xC41EA0`)
 uses it — the remaining piece is making the animation path use the container parser (or
 reproducing the pak record layout the manager expects).
+
+### Pak record vs extractor output — compression (2026-10-01)
+
+`KG_OpenPakV4File(tani, 1)` returns the PakV4 file object (`KGPK4_FileSystemX64` class;
+inner object at `pakfile+8`, vtable `KGPK4` base+`0xA7540…`; `vt[3]`=`KPakV4File::Seek`,
+`vt[4]`=size getter, `vt[2]`→storage `vt[0x20]` = record pointer). Its record buffer:
+`GATA` + **flags=1** + path + NUL + payload, size **0xF48 (3912)**. The extractor's file
+is `GATA` + **flags=0** + path + NUL + payload, size **5532** — i.e. the pak record is
+**compressed** (flags=1) and the extractor writes the **decompressed** form (flags=0);
+payload heads differ (`00 00 10 00 …` in the pak vs `0e a0 00 00 …` from the extractor).
+The engine's `KG3D_LoadFile` reader also returned the compressed record (flags=1, 3912).
+Conclusion: the animation manager expects the **decompressed inner file** (extractor
+form) or a container parser that honours the flags; the unwrap/decompress step of the
+PakV4 read path is the exact last layer. Next: the PakV4 manager's decompressing read
+(`KG_PAKFS_*` record APIs / storage read modes).
 
 ### `KG3D_SFXModel` method map (2026-10-01)
 

@@ -790,6 +790,122 @@ int main(void)
                                     sprintf_s(taniPath, sizeof(taniPath),
                                               "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
                                     void* anim = NULL;
+                                    // pak-level open: KG_OpenPakV4File(path, 1) -> wrapper file object
+                                    {
+                                        HMODULE luaP = GetModuleHandleA("Engine_Lua5X64.dll");
+                                        typedef void* (__cdecl *PakOpenFn)(const char*, int);
+                                        PakOpenFn pakOpen = (PakOpenFn)((BYTE*)luaP + 0xCC670);
+                                        void* pf = pakOpen(taniPath, 1);
+                                        logf("  KG_OpenPakV4File(tani,1) -> %p", pf);
+                                        if (pf != NULL)
+                                        {
+                                            __try
+                                            {
+                                                void** pvt = *(void***)pf;
+                                                logf("  pakfile vtable=%p", pvt);
+                                                for (int i = 0; i < 12; i++)
+                                                    logf("  pakfile vt[%d] = 0x%llX", i,
+                                                         (unsigned long long)((BYTE*)pvt[i] - (BYTE*)luaP));
+                                                BYTE* pb = (BYTE*)pf;
+                                                logf("  pakfile bytes[0..0x40]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                     pb[0],pb[1],pb[2],pb[3],pb[4],pb[5],pb[6],pb[7],
+                                                     pb[8],pb[9],pb[10],pb[11],pb[12],pb[13],pb[14],pb[15]);
+                                                // inner file object at +8
+                                                void* inner = *(void**)(pb + 8);
+                                                logf("  pakfile inner=%p", inner);
+                                                if (inner != NULL)
+                                                {
+                                                    void** ivt2 = *(void***)inner;
+                                                    logf("  inner vtable=%p", ivt2);
+                                                    for (int i = 0; i < 16; i++)
+                                                    {
+                                                        BYTE* fn = (BYTE*)ivt2[i];
+                                                        logf("  inner vt[%d] = %p", i, fn);
+                                                    }
+                                                    // vt[2] forwards to storage->vt[0x20] - returns a pointer
+                                                    __try
+                                                    {
+                                                        typedef void* (__fastcall *GetDataFn)(void* self, void* buf, unsigned size);
+                                                        void* data = ((GetDataFn)ivt2[2])(inner, NULL, 0);
+                                                        logf("  inner vt[2](NULL,0) -> %p", data);
+                                                        if (data != NULL)
+                                                        {
+                                                            BYTE* dp = (BYTE*)data;
+                                                            logf("  data head: %c%c%c%c %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                                 (dp[0]>=32&&dp[0]<127)?dp[0]:'.',(dp[1]>=32&&dp[1]<127)?dp[1]:'.',
+                                                                 (dp[2]>=32&&dp[2]<127)?dp[2]:'.',(dp[3]>=32&&dp[3]<127)?dp[3]:'.',
+                                                                 dp[4],dp[5],dp[6],dp[7],dp[8],dp[9],dp[10],dp[11],dp[12],dp[13],dp[14],dp[15]);
+                                                            for (int o = 0; o < 0x400; o++)
+                                                            {
+                                                                if (dp[o]=='A'&&dp[o+1]=='N'&&dp[o+2]=='I'&&dp[o+3]=='M')
+                                                                { logf("  ANIM found at 0x%X", o); break; }
+                                                            }
+                                                            // GATA header: magic(4) + flags(4) + path + NUL + payload
+                                                            int nul = 8;
+                                                            while (nul < 0x300 && dp[nul] != 0) nul++;
+                                                            logf("  path NUL at 0x%X; payload head:", nul + 1);
+                                                            BYTE* pl = dp + nul + 1;
+                                                            logf("   %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                                 pl[0],pl[1],pl[2],pl[3],pl[4],pl[5],pl[6],pl[7],
+                                                                 pl[8],pl[9],pl[10],pl[11],pl[12],pl[13],pl[14],pl[15]);
+                                                        }
+                                                    }
+                                                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  inner vt[2] fault"); }
+                                                    char rbuf[64];
+                                                    memset(rbuf, 0, sizeof(rbuf));
+                                                    typedef long (__fastcall *ReadFn)(void* self, void* buf, unsigned size);
+                                                    for (int si = 3; si <= 9; si++)
+                                                    {
+                                                        __try
+                                                        {
+                                                            memset(rbuf, 0xCC, sizeof(rbuf));
+                                                            long rr2 = ((ReadFn)ivt2[si])(inner, rbuf, 32);
+                                                            logf("  inner vt[%d] read rc=0x%08X head=%02X %02X %02X %02X",
+                                                                 si, (unsigned)rr2, (BYTE)rbuf[0],(BYTE)rbuf[1],(BYTE)rbuf[2],(BYTE)rbuf[3]);
+                                                        }
+                                                        __except (EXCEPTION_EXECUTE_HANDLER) { logf("  inner vt[%d] fault", si); }
+                                                    }
+                                                    // vt[8] returned a pointer - read it as the record buffer
+                                                    __try
+                                                    {
+                                                        typedef void* (__fastcall *GetPtrFn)(void* self);
+                                                        void* rec = ((GetPtrFn)ivt2[8])(inner);
+                                                        logf("  inner vt[8]() -> %p", rec);
+                                                        if (rec != NULL)
+                                                        {
+                                                            BYTE* rp = (BYTE*)rec;
+                                                            logf("  record head: %c%c%c%c  %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                                 (rp[0]>=32&&rp[0]<127)?rp[0]:'.',(rp[1]>=32&&rp[1]<127)?rp[1]:'.',
+                                                                 (rp[2]>=32&&rp[2]<127)?rp[2]:'.',(rp[3]>=32&&rp[3]<127)?rp[3]:'.',
+                                                                 rp[4],rp[5],rp[6],rp[7],rp[8],rp[9],rp[10],rp[11],
+                                                                 rp[12],rp[13],rp[14],rp[15],rp[16],rp[17],rp[18],rp[19]);
+                                                        }
+                                                    }
+                                                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  inner vt[8] fault"); }
+                                                }
+                                                // look for a data pointer in the object fields
+                                                for (int o = 8; o < 0x60; o += 8)
+                                                {
+                                                    void* v = *(void**)(pb + o);
+                                                    if (v == NULL) continue;
+                                                    MEMORY_BASIC_INFORMATION mbi;
+                                                    if (VirtualQuery(v, &mbi, sizeof(mbi)) && mbi.State == MEM_COMMIT)
+                                                    {
+                                                        __try
+                                                        {
+                                                            BYTE* vb = (BYTE*)v;
+                                                            logf("  pakfile[+0x%X] -> %p: %02X %02X %02X %02X %c%c%c%c", o, v,
+                                                                 vb[0],vb[1],vb[2],vb[3],
+                                                                 (vb[0]>=32&&vb[0]<127)?vb[0]:'.',(vb[1]>=32&&vb[1]<127)?vb[1]:'.',
+                                                                 (vb[2]>=32&&vb[2]<127)?vb[2]:'.',(vb[3]>=32&&vb[3]<127)?vb[3]:'.');
+                                                        }
+                                                        __except (EXCEPTION_EXECUTE_HANDLER) { }
+                                                    }
+                                                }
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  pakfile read fault"); }
+                                        }
+                                    }
                                     // game-layer file open: does it unwrap the GATA tani?
                                     {
                                         typedef void* (__cdecl *KGOpenFileFn)(const char*);
