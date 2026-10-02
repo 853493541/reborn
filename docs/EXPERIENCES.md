@@ -1608,3 +1608,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   handle=5733249480 at (23334,740,24624)`, Tab pick `zone=MidAxis dist=400u`,
   indicator spawned (`选择特效a002_hd.pss`), DONE; exit 0.
 - Outcome: solved (local, not pushed).
+
+### 2026-10-01 — repo — target-dummy worktree/branch removed after merge
+- Did: removed the merged `reborn-iso-sandbox-target-dummy` worktree and deleted
+  `agent/sandbox-target-dummy` (`branch -d`, tip 43a3398 = merge parent, 0 ahead
+  of main, worktree clean). Desktop worktree folders: 8 -> 7; git worktrees 8 -> 7.
+- Evidence: `git worktree list` (main + 6 in-flight), branch list has no
+  `agent/sandbox-target-dummy`.
+- Outcome: solved (local, not pushed).
