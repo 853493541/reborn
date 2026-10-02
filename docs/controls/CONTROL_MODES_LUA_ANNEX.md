@@ -206,8 +206,12 @@ next P1 item.)
 Reproduce:
 
 ```
-.venv\Scripts\python.exe tools/controls/lua_index.py %TEMP%\opencode\ui_ex\core --out proof/controls/lua_index_all.txt
+.venv\Scripts\python.exe tools/controls/lua_index.py %TEMP%\opencode\ui_ex\core --out %TEMP%\opencode\lua_index_all.txt
 .venv\Scripts\python.exe tools/controls/lua51_probe.py <script>.lua --index 0/46 --out proof/controls/lua_dump/hotkeys_0_46_ResponseWASDKey.txt
 ```
+
+The full 1549-file index (11 MB) is regenerated on demand and not tracked
+(`.gitignore`); the committed control-set index is
+`proof/controls/lua_index_control.txt`.
 
 Last verified: 2026-10-02.
