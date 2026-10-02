@@ -457,3 +457,27 @@ its own factory; that hunt is parked, not needed for queries).
 parity already proven) into cook->createTriangleMesh->findOverlap/sweep at the
 field spots (spawn 23334,24224; wall 18915,36850; pile 20450,31000) and diff
 against our solver's CapsuleBlocked/SupportHeight results.
+
+### Update 2026-10-02b: full-map cook + engine-side field scans (the A/B reference)
+
+**Full-map cook works**: 龙门寻宝_夜晚 structure bin (2.26M verts / 2.27M tris)
+cooked by the engine PxCooking in ~9 s -> 105 MB cooked stream -> mesh created;
+capsule query self-test at triangle-0 centroid overlaps (count=1) and
+getTriangle(0) returns world-space map coords (-1651865,-16469,410292)...
+(reborn_20261002_131727.log). Buffer note: cooked streams can exceed 64 MB -
+the probe now uses a 256 MB stream buffer.
+
+**Capsule (r=17, hh=41) vertical scans, y=0..1500 step 25** via
+findOverlapTriangleMesh on the cooked map mesh:
+- spot wall (18915,36850): count 0 for y<1325, =1 for y 1325..1399, 0 at 1400+
+- spot pile (20450,31000): =1 for y 275..324, =1 again from 1425
+- spot spawn (23334,24224): 0 everywhere (spawn stands on terrain, not on
+  structure meshes - consistent with terrain being a separate system)
+Map identification: the field spots belong to 龙门寻宝_夜晚 (closest-vertex scan
+over all 5 bins; distances 202..1173 vs >16000 elsewhere).
+
+**Next**: produce the numeric solver-vs-engine table at these spots: port the
+audit's capsule-vs-triangle test to the engine-reported triangles (getTriangle)
+and compare per-pose contact sets; then decide the integration (engine
+PxMeshQuery as the query backend behind FoliageCollision, or keep our solver
+with this as the calibration reference).
