@@ -887,3 +887,16 @@ solved it, and what is still open. **Newest at the bottom.**
 - Next: recover the query ABI (disasm the vt[16]/raycast call sites), call the
   engine's sweep/raycast against the loaded terrain + our baked geometry, then
   A/B vs `TerrainSampler`/our solver at the field spots.
+
+### 2026-10-01 - collision - Gameplay query API found (SIMWorldX64 exports)
+- Scene query functions mapped by their KGLOG strings: scene vt[16] =
+  `PhysicsScene::SweepEx` (9 args; caller outside PhysicsEngineX64),
+  vt[8]/vt[9] = `Overlap`, vt[18] = `ComputePenetrations`.
+- Better: the game's own gameplay queries are EXPORTED by `SIMWorldX64.dll` -
+  `PxWorld::GetFloorHeight` (0x31F20), `PxWorld::RayCast` (0x32FB0),
+  `PxWorld::RayCastDirect` (0x332D0) - with the setup chain ctor 0x319F0 /
+  Initialize(KVTable@Semantic) 0x32070 / Setup 0x337A0 / SetupPhysic(PEAX,PEAX)
+  0x33D70. Recorded in `proof/movement/phys_engine_vtables.txt`.
+- Next: LoadLibrary SIMWorldX64 in the host, build a PxWorld, Initialize +
+  SetupPhysic with our in-host engine scene, then A/B GetFloorHeight /
+  RayCastDirect vs TerrainSampler at the field spots.

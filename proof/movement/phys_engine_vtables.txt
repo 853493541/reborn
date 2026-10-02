@@ -122,6 +122,28 @@ vt[8]=0x1A580, vt[9]=0x196E0, vt[2]=0x1CBC0, vt[4]=0x18D20. Strings
 `PhysicsScene::Overlap` / `ComputePenetrations` / `SweepEx` (0xF9770/0xF97B0/
 0xF9858) belong to these.
 
+## Gameplay query API (SIMWorldX64.dll exports, 2026-10-01)
+
+The game's own floor/ray queries are EXPORTED by `SIMWorldX64.dll`
+(`proof/gravity/SIMWorldX64_exports.txt`, RVAs there):
+
+| export | RVA | signature (demangled) |
+|---|---|---|
+| `?GetFloorHeight@PxWorld@@QEAAHAEBVFVECTOR3@@HPEAM@Z` | 0x31F20 | `int PxWorld::GetFloorHeight(const FVECTOR3& pos, int flag, float* outHeight)` |
+| `?RayCast@PxWorld@@QEAAHPEAURayCastResult@@AEBVFVECTOR3@@1MMHHHHHPEAX@Z` | 0x32FB0 | `int RayCast(RayCastResult*, const FVECTOR3& org, const FVECTOR3& dir, float f1, float f2, int,int,int,int,int, void*)` |
+| `?RayCastDirect@PxWorld@@QEAAHAEBVFVECTOR3@@0MMHAEAV2@@1@Z` | 0x332D0 | `int RayCastDirect(const FVECTOR3& org, const FVECTOR3& dir, float maxDist, float f, int mask, FVECTOR3& outPos, FVECTOR3& outNormal)` |
+
+Setup chain: `??0PxWorld` @0x319F0 (ctor) -> `?Initialize@PxWorld@@QEAAHUKVTable@Semantic@@@Z`
+@0x32070 (takes a Semantic KVTable BY VALUE) -> `?Setup` @0x337A0 ->
+`?SetupPhysic` @0x33D70(PEAX, PEAX) (the engine physics objects) -> queries.
+`LoadScene` (server scene set) stays the boundary; the TERRAIN comes from the
+engine's PhysicsTerrain/PhysicsScene we already create in-host.
+
+**Next step:** LoadLibrary `SIMWorldX64.dll` in the host, construct a PxWorld,
+Initialize with a Semantic KVTable, Setup/SetupPhysic with our in-host engine
+scene, then A/B `GetFloorHeight`/`RayCastDirect` against `TerrainSampler` at
+the field spots.
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
