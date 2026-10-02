@@ -913,3 +913,17 @@ solved it, and what is still open. **Newest at the bottom.**
   vt[0x20]. So calling `SIMWorldX64+0x1A6E0(arg1,arg2)` in-host + the wrapper's
   vt[0x20] gives the engine's floor query without PxWorld/semantic tables.
 - Next: pin arg1/arg2 from the SetupPhysic caller, then A/B vs TerrainSampler.
+
+### 2026-10-01 - collision - Engine-physics track: route 1 parked (semantic dependency), route 2 scoped
+- Traced `PxWorld::Setup` (0x3380B..0x33D54): the wrapper's two physics objects
+  are created by the SEMANTIC table factory (`table.vt[0x170](key,1)` ->
+  [this+8]/[this+0x10]; callbacks via vt[0x3A8]), then `0x1A6E0(objA,objB)`.
+  The same two objects `PhysicScene::_Init` consumes. So the SIMWorld query
+  layer depends on the game's represent semantic factories - not bootable from
+  our host without the represent layer. Route 1 parked (documented).
+- Route 2 (scoped): drive the engine's own PhysX 3.3.4 directly - the engine's
+  PxPhysics/PxCooking objects are reachable from the PhysicsManager fields
+  (`_InitPhysX` strings 0xf91e8/0xf9210); cook our baked triangles and run the
+  engine's own character sweep. Self-contained, no represent dependency.
+- Multi-step outcome: engine PhysicsScene in-host (kept), query API mapped,
+  wrapper/semantic boundary documented, route 2 defined as the next build.

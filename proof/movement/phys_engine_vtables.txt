@@ -174,6 +174,23 @@ scene) -> GetFloorHeight/RayCastDirect A/B vs TerrainSampler.
 - Next: pin arg1/arg2 from the `SetupPhysic` caller (client exe / represent
   chain), then A/B the wrapper floor query vs `TerrainSampler`.
 
+### Update 2026-10-01c: Setup traced - the wrapper args are semantic components
+
+`PxWorld::Setup` (0x3380B..0x33D54) creates its physics objects THROUGH the
+semantic table's factory: `table.vt[0x170](key, 1)` (create-by-key) fills
+`[this+8]` and `[this+0x10]`, registers callbacks via `vt[0x3A8]`, then calls
+the wrapper creator `0x1A6E0(rsi=objA, rbp=objB)` where objA/objB are those
+semantic-created components - the same two objects `PhysicScene::_Init` stores.
+So the SIMWorld/PxWorld query layer is built on the game's semantic component
+factories (registered by the represent layer we do not boot). **Route 1 (PxWorld
+/ wrapper) is represent-dependent - parked.**
+
+Remaining viable route: **route 2 - drive the engine's own PhysX directly**
+(the engine's PxPhysics/PxCooking objects from the manager fields; cook our
+baked triangles; engine version PhysX 3.3.4) or recover the engine scene
+`SweepEx` ABI from a real call site (generic `call [reg+0x80]` scans hit other
+vtables; the clean site is inside the wrapper methods).
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
