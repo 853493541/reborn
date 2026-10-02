@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public sealed class FoliageCollision
+public sealed class FoliageCollision : Reborn.Rules.ICollision
 {
     const uint MAGIC = 0x4C4F4346; // 'FCOL'
 

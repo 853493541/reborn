@@ -25,10 +25,22 @@ namespace Reborn.Server
             int port = 0;
             bool selftest = false;
             double[] spawn = null;
+            string heightmap = null;
+            string collisionDir = null;
+            string mapName = "龙门寻宝";
+            double speed = 0.0;
+            double aoi = 0.0;
             for (int i = 0; i < args.Length; i++)
             {
                 if (args[i] == "--port" && i + 1 < args.Length) port = int.Parse(args[++i]);
                 else if (args[i] == "--selftest") selftest = true;
+                else if (args[i] == "--aoi" && i + 1 < args.Length)
+                    aoi = double.Parse(args[++i], System.Globalization.CultureInfo.InvariantCulture);
+                else if (args[i] == "--heightmap" && i + 1 < args.Length) heightmap = args[++i];
+                else if (args[i] == "--collision" && i + 1 < args.Length) collisionDir = args[++i];
+                else if (args[i] == "--mapname" && i + 1 < args.Length) mapName = args[++i];
+                else if (args[i] == "--speed" && i + 1 < args.Length)
+                    speed = double.Parse(args[++i], System.Globalization.CultureInfo.InvariantCulture);
                 else if (args[i] == "--spawn" && i + 1 < args.Length)
                 {
                     string[] p = args[++i].Split(',');
@@ -41,6 +53,37 @@ namespace Reborn.Server
 
             GameServer server = new GameServer();
             if (spawn != null) server.State.SpawnPos = spawn;
+            if (speed > 0.0) server.State.MoveSpeed = speed;
+            if (aoi > 0.0) server.State.AoiRange = aoi;
+            if (heightmap != null)
+            {
+                string hmErr;
+                Heightmap hm = Heightmap.Load(heightmap, out hmErr);
+                if (hm == null) Console.WriteLine("heightmap load failed: " + hmErr);
+                else
+                {
+                    server.State.Ground = hm.Sample;
+                    Console.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        "heightmap {0} nx={1} nz={2} step={3:F0} (ground follow on)", heightmap, hm.Nx, hm.Nz, hm.Step));
+                }
+            }
+            if (collisionDir != null)
+            {
+                string fol = Path.Combine(collisionDir, mapName + "_foliage_collision.bin");
+                string str = Path.Combine(collisionDir, mapName + "_structure_collision.bin");
+                if (File.Exists(fol))
+                {
+                    try
+                    {
+                        FoliageCollision col = new FoliageCollision(fol, File.Exists(str) ? str : null);
+                        server.State.Collision = col;
+                        Console.WriteLine("collision " + mapName + " instances=" + col.InstanceCount +
+                                          " structure=" + (File.Exists(str) ? 1 : 0));
+                    }
+                    catch (Exception ce) { Console.WriteLine("collision load failed: " + ce.Message); }
+                }
+                else Console.WriteLine("collision bin not found: " + fol);
+            }
             int bound = server.Start(port);
             Console.WriteLine("reborn server listening on 127.0.0.1:" + bound);
             if (selftest)
@@ -104,15 +147,32 @@ namespace Reborn.Server
 
         async Task TickLoop()
         {
-            double dt = 1.0 / Protocol.TickHz;
-            int n = 0;
+            // Real-time simulation: dt is the measured wall delta, not a nominal 1/TickHz.
+            // With the full movement (object collision, heightmap) a nominal-dt loop ran
+            // at ~21 Hz and the server moved ~29% slower than the client in real time.
+            // Snapshots stay time-based (10 Hz) so wire cadence is unaffected.
+            double lastS = ReliableChannel.DefaultClockMs() / 1000.0;
+            double lastLog = lastS, lastSnap = lastS;
             while (running)
             {
-                await Task.Delay((int)(dt * 1000.0));
+                await Task.Delay(5);
                 double nowS = ReliableChannel.DefaultClockMs() / 1000.0;
+                double dt = nowS - lastS;
+                if (dt < 0.001) continue;
+                if (dt > 0.25) dt = 0.25;
+                lastS = nowS;
                 state.Step(nowS, dt);
-                n++;
-                if (n % Protocol.SnapshotEvery != 0) continue;
+                if (nowS - lastLog >= 1.0)
+                {
+                    lastLog = nowS;
+                    foreach (Entity de in state.Entities.Values)
+                        Console.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                            "[srv {9:HH:mm:ss.fff} t={0}] eid={1} keys={2} run={3} yaw={10:F3} pos=({4:F0},{5:F0},{6:F0}) vy={7:F0} gr={8}",
+                            state.ServerTick, de.Eid, de.Keys, de.Run ? 1 : 0, de.Pos[0], de.Pos[1], de.Pos[2], de.Vy, de.Grounded ? 1 : 0,
+                            DateTime.Now, de.Yaw));
+                }
+                if (nowS - lastSnap < Protocol.SnapshotEvery / (double)Protocol.TickHz) continue;
+                lastSnap = nowS;
                 List<Peer> snapshot;
                 lock (peers) snapshot = new List<Peer>(peers);
                 foreach (Peer p in snapshot) await p.PushState(nowS);
@@ -298,6 +358,14 @@ namespace Reborn.Server
                         JsonElement root = doc.RootElement;
                         Entity.Keys = root.TryGetProperty("keys", out JsonElement k) ? k.GetInt32() : 0;
                         Entity.Facing = root.TryGetProperty("facing", out JsonElement fa) ? fa.GetInt32() : 0;
+                        if (root.TryGetProperty("fx", out JsonElement fxe) && root.TryGetProperty("fz", out JsonElement fze))
+                        {
+                            Entity.CamFx = fxe.GetDouble();
+                            Entity.CamFz = fze.GetDouble();
+                        }
+                        Entity.Run = root.TryGetProperty("run", out JsonElement ru) && ru.GetInt32() != 0;
+                        if (root.TryGetProperty("jump", out JsonElement ju) && ju.GetInt32() != 0)
+                            Entity.JumpRequest = true;
                     }
                     Entity.LastInputSeq = (int)f.Param;
                     break;
@@ -321,6 +389,7 @@ namespace Reborn.Server
             {
                 pos = ent.Pos,
                 vel = ent.Vel,
+                yaw = ent.Yaw,
                 flags = ent.Locked(nowS) ? 1 : 0,
                 server_tick = server.State.ServerTick,
             });
@@ -336,7 +405,7 @@ namespace Reborn.Server
             {
                 Entity e = visible[i];
                 if (!known.Contains(e.Eid))
-                    SendJson(Protocol.OpEntityAdd, (uint)e.Eid, new { eid = e.Eid, name = e.Name, pos = e.Pos, hp = e.Hp });
+                    SendJson(Protocol.OpEntityAdd, (uint)e.Eid, new { eid = e.Eid, name = e.Name, pos = e.Pos, hp = e.Hp, yaw = e.Yaw });
             }
             known.Clear();
             foreach (int eid in current) known.Add(eid);
@@ -346,7 +415,7 @@ namespace Reborn.Server
                 for (int i = 0; i < visible.Count; i++)
                 {
                     Entity e = visible[i];
-                    recs.Add(new { eid = e.Eid, pos = e.Pos, facing = e.Facing, hp = e.Hp });
+                    recs.Add(new { eid = e.Eid, pos = e.Pos, facing = e.Facing, hp = e.Hp, yaw = e.Yaw });
                 }
                 SendJson(Protocol.OpEntitySnapshot, 0, new { entities = recs });
             }

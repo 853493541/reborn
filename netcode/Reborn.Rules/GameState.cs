@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Reborn.Rules
@@ -13,6 +14,16 @@ namespace Reborn.Rules
         public int LastInputSeq;
         public double CtrlLockUntil;
         public double CastingUntil;
+        // movement state (client movement block, GameMovement.StepEntity)
+        public double Yaw;
+        public double CamFx = 0.0;   // movement frame: camera forward (wire "fx")
+        public double CamFz = 1.0;   // default north, matching the reference model
+        public double Vy;
+        public double Gravity;
+        public bool Grounded = true;
+        public int JumpCount;
+        public bool Run;
+        public bool JumpRequest;
         public readonly Dictionary<int, double> Cooldowns = new Dictionary<int, double>();
         public readonly List<int> Buffs = new List<int>();
         public int Hp = 100;
@@ -39,6 +50,15 @@ namespace Reborn.Rules
         /// <summary>Where new entities spawn (the reborn server sets the map spawn).</summary>
         public double[] SpawnPos = new double[] { 0.0, 0.0, 0.0 };
 
+        /// <summary>Optional ground height (x,z) -> y; the reborn server wires the baked heightfield.</summary>
+        public Func<double, double, double> Ground;
+
+        /// <summary>Interest radius in world units (reference default 100 m; the reborn game sets ~5000 u = 50 m).</summary>
+        public double AoiRange = Protocol.AoiRange;
+
+        /// <summary>Optional object/foliage collision (the reborn server loads the baked bins).</summary>
+        public ICollision Collision;
+
         public Entity Spawn(string name)
         {
             Entity ent = new Entity();
@@ -60,12 +80,20 @@ namespace Reborn.Rules
                     ent.Vel = new double[] { 0.0, 0.0, 0.0 };
                     continue;
                 }
-                double[] old = ent.Pos;
-                ent.Pos = Movement.ApplyInput(ent.Pos, ent.Keys, dt, MoveSpeed);
-                ent.Vel = new double[] { (ent.Pos[0] - old[0]) / dt, 0.0, (ent.Pos[2] - old[2]) / dt };
-                if (ent.Pos[1] < 0.0)
+                if (Ground != null || Collision != null)
                 {
-                    ent.Pos = new double[] { ent.Pos[0], 0.0, ent.Pos[2] };
+                    GameMovement.StepEntity(ent, Ground, Collision, dt, GameMovement.TurnRate);
+                }
+                else
+                {
+                    // reference model (flat plane, horizontal only) - parity vectors
+                    double[] old = ent.Pos;
+                    ent.Pos = Movement.ApplyInput(ent.Pos, ent.Keys, dt, MoveSpeed);
+                    ent.Vel = new double[] { (ent.Pos[0] - old[0]) / dt, 0.0, (ent.Pos[2] - old[2]) / dt };
+                    if (ent.Pos[1] < 0.0)
+                    {
+                        ent.Pos = new double[] { ent.Pos[0], 0.0, ent.Pos[2] };
+                    }
                 }
             }
         }
@@ -77,7 +105,7 @@ namespace Reborn.Rules
             foreach (Entity e in Entities.Values)
             {
                 if (e.Eid == observer.Eid) continue;
-                if (Movement.Dist(e.Pos, observer.Pos) <= Protocol.AoiRange) outList.Add(e);
+                if (Movement.Dist(e.Pos, observer.Pos) <= AoiRange) outList.Add(e);
             }
             return outList;
         }

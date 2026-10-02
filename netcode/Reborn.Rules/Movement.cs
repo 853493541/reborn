@@ -36,6 +36,33 @@ namespace Reborn.Rules
             };
         }
 
+        /// <summary>Normalized input direction from the key bits (0,0 when idle).</summary>
+        public static void InputDir(int keys, out double ux, out double uz)
+        {
+            int dx = ((keys & KRight) != 0 ? 1 : 0) - ((keys & KLeft) != 0 ? 1 : 0);
+            int dz = ((keys & KFwd) != 0 ? 1 : 0) - ((keys & KBack) != 0 ? 1 : 0);
+            double n = Math.Sqrt((double)dx * dx + (double)dz * dz);
+            if (n == 0.0) { ux = 0.0; uz = 0.0; }
+            else { ux = dx / n; uz = dz / n; }
+        }
+
+        /// <summary>
+        /// World-space input direction: the camera-relative combo the client uses
+        /// (RebornClient input block: W = camera forward, A/D = camera right).
+        /// <paramref name="fx"/>/<paramref name="fz"/> is the camera forward vector
+        /// as sent on the wire; right = (fz, -fx).
+        /// </summary>
+        public static void WorldDir(int keys, double fx, double fz, out double ux, out double uz)
+        {
+            int dx = ((keys & KRight) != 0 ? 1 : 0) - ((keys & KLeft) != 0 ? 1 : 0);
+            int dz = ((keys & KFwd) != 0 ? 1 : 0) - ((keys & KBack) != 0 ? 1 : 0);
+            double x = dx * fz + dz * fx;
+            double z = dx * (-fx) + dz * fz;
+            double n = Math.Sqrt(x * x + z * z);
+            if (n == 0.0) { ux = 0.0; uz = 0.0; }
+            else { ux = x / n; uz = z / n; }
+        }
+
         public static double Dist(double[] a, double[] b)
         {
             double dx = a[0] - b[0];

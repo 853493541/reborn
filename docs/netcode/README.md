@@ -1,4 +1,4 @@
-# JX3 / reborn research index
+﻿# JX3 / reborn research index
 
 All static, read-only research on the local JX3 client (client build on this
 machine), used to recreate the runtime model for reborn. Branch:
@@ -64,6 +64,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `lua51_dump.py`, `gbk_grep.py`, `search_tree.py` | Lua 5.1 bytecode proto/const dump, GBK/UTF-16 binary grep, tree token search |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 | `reference/gen_parity_vectors.py` | emit `proof/netcode/parity/rules_vectors.txt` from the reference model (C# parity gate input) |
+| ../proof/run_m2_auth_smoke.py | M2 smoke: server (heightmap + game speed) + two engine clients with RC_NET_AUTH, prints net evidence |
 
 ## Evidence (`proof/netcode/`)
 
@@ -80,3 +81,4 @@ Reproduce commands live at the bottom of each doc.
   every 绝境战场 UI recovered so far (queue → loading → HUD → settlement), built from the
   real KGUI INIs (`dotnet run --project ui-process-app`; headless `--selftest` = 15/15
   windows). See `JX3_MODE_UI_INVENTORY.md`.
+

@@ -9,6 +9,12 @@ using System.Text;
 using System.Threading;
 using Reborn.Rules;
 
+internal sealed class NetSample
+{
+    public long Ms;
+    public double X, Y, Z;
+}
+
 internal sealed class NetRemote
 {
     public int Eid;
@@ -16,6 +22,7 @@ internal sealed class NetRemote
     public double[] Pos = new double[] { 0, 0, 0 };
     public int Facing;
     public int Hp;
+    public readonly List<NetSample> Samples = new List<NetSample>();
 }
 
 internal sealed class NetClient
@@ -71,6 +78,60 @@ internal sealed class NetClient
         }
     }
 
+    void AddSample(NetRemote r, double[] p)
+    {
+        lock (sync)
+        {
+            NetSample s = new NetSample();
+            s.Ms = Environment.TickCount;
+            s.X = p[0]; s.Y = p[1]; s.Z = p[2];
+            r.Samples.Add(s);
+            if (r.Samples.Count > 32) r.Samples.RemoveAt(0);
+        }
+    }
+
+    /// <summary>Interpolated render position at (now - delayMs) from the sample buffer.</summary>
+    public double[] InterpPos(NetRemote r, long nowMs, int delayMs)
+    {
+        lock (sync)
+        {
+            if (r.Samples.Count == 0) return r.Pos;
+            long target = nowMs - delayMs;
+            if (r.Samples.Count == 1 || target <= r.Samples[0].Ms)
+            {
+                NetSample s0 = r.Samples[0];
+                return new double[] { s0.X, s0.Y, s0.Z };
+            }
+            for (int i = 0; i + 1 < r.Samples.Count; i++)
+            {
+                NetSample a = r.Samples[i];
+                NetSample b = r.Samples[i + 1];
+                if (target >= a.Ms && target <= b.Ms)
+                {
+                    double t = b.Ms == a.Ms ? 0.0 : (double)(target - a.Ms) / (double)(b.Ms - a.Ms);
+                    return new double[] { a.X + (b.X - a.X) * t, a.Y + (b.Y - a.Y) * t, a.Z + (b.Z - a.Z) * t };
+                }
+            }
+            NetSample last = r.Samples[r.Samples.Count - 1];
+            return new double[] { last.X, last.Y, last.Z };
+        }
+    }
+
+    /// <summary>Speed in u/s from the last two samples (drives the remote clip).</summary>
+    public double Speed(NetRemote r)
+    {
+        lock (sync)
+        {
+            if (r.Samples.Count < 2) return 0.0;
+            NetSample a = r.Samples[r.Samples.Count - 2];
+            NetSample b = r.Samples[r.Samples.Count - 1];
+            long dt = b.Ms - a.Ms;
+            if (dt <= 0) return 0.0;
+            double dx = b.X - a.X, dy = b.Y - a.Y, dz = b.Z - a.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz) / (dt / 1000.0);
+        }
+    }
+
     public bool RemoteHas(int eid)
     {
         lock (sync) return Remote.ContainsKey(eid);
@@ -88,11 +149,22 @@ internal sealed class NetClient
         Connected = false;
     }
 
-    public void SendMoveInput(int keys, int facing)
+    public void SendMoveInput(int keys, double fx, double fz, int run)
     {
         if (!Connected) return;
         inputSeq++;
-        byte[] payload = Encoding.UTF8.GetBytes("{\"keys\":" + keys + ",\"facing\":" + facing + "}");
+        byte[] payload = Encoding.UTF8.GetBytes("{\"keys\":" + keys
+            + ",\"fx\":" + fx.ToString("F5", System.Globalization.CultureInfo.InvariantCulture)
+            + ",\"fz\":" + fz.ToString("F5", System.Globalization.CultureInfo.InvariantCulture)
+            + ",\"run\":" + run + "}");
+        SendFrame(Protocol.OpMoveInput, (uint)inputSeq, payload);
+    }
+
+    public void SendJump()
+    {
+        if (!Connected) return;
+        inputSeq++;
+        byte[] payload = Encoding.UTF8.GetBytes("{\"keys\":0,\"facing\":0,\"run\":0,\"jump\":1}");
         SendFrame(Protocol.OpMoveInput, (uint)inputSeq, payload);
     }
 
@@ -201,6 +273,7 @@ internal sealed class NetClient
                 if (p != null) r.Pos = p;
                 r.Hp = MiniJson.Int(msg, "hp", 0);
                 lock (sync) Remote[r.Eid] = r;
+                AddSample(r, r.Pos);
                 Events.Enqueue("net entity add eid=" + r.Eid + " name=" + r.Name);
                 break;
             }
@@ -228,7 +301,7 @@ internal sealed class NetClient
                         if (have)
                         {
                             double[] p = MiniJson.Vec3(rec, "pos");
-                            if (p != null) r.Pos = p;
+                            if (p != null) { r.Pos = p; AddSample(r, p); }
                             r.Facing = MiniJson.Int(rec, "facing", 0);
                             r.Hp = MiniJson.Int(rec, "hp", 0);
                         }
@@ -242,5 +315,8 @@ internal sealed class NetClient
         }
     }
 }
+
+
+
 
 
