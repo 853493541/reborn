@@ -14,7 +14,10 @@
 //   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
 // RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using MovieEngineCLR;
@@ -43,6 +46,12 @@ internal static class RebornClient
     static Action<string> Log;
     static string adHabit = "turn";     // classic A/D: turn (rotate, no move) | strafe
     static double moveYaw = 0.0;        // movement/control frame; turn keys rotate it
+    // P4 control probe (RC_PROBE_CONTROL=1): read-only engine field capture.
+    // Host JX3RepresentX64.dll RVAs come from docs/controls/CONTROL_MODES_P4_PROBE.md
+    // (MovieEditor build 2026-09-14, not the game-client RVAs).
+    static bool probeControl = false;
+    static long nextProbeMs = 0;
+    static bool probeTableDone = false;
 
     [STAThread]
     private static void Main(string[] args)
@@ -876,6 +885,7 @@ internal static class RebornClient
         int unhandledCmd = 0;
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
+        probeControl = Env("RC_PROBE_CONTROL", "0") == "1";
         bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
@@ -1751,6 +1761,11 @@ internal static class RebornClient
                 if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
                 if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), WrapAngle(curYaw - wdYaw0), WrapAngle(camSys.Yaw - wdCam0))); }
                 if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
+            }
+            if (probeControl && now >= nextProbeMs)
+            {
+                nextProbeMs = now + 2000;
+                ProbeControl();
             }
             if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
             {
@@ -3353,6 +3368,89 @@ internal static class RebornClient
                 n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0)
                 Log("api " + label + "." + n + "(" + mi.ReturnType.Name + ")");
         }
+    }
+
+    // P4 probe: read-only snapshot of the engine animation param table
+    // (KTableList vector at [singleton]+0x1A0+0x1E2B8, 0x54-byte entries).
+    // Entry fields decoded in docs/controls/CONTROL_MODES_P5_ANIM.md.
+    [HandleProcessCorruptedStateExceptions]
+    static void ProbeControl()
+    {
+        try
+        {
+            long repBase = 0;
+            Process proc = Process.GetCurrentProcess();
+            foreach (ProcessModule m in proc.Modules)
+            {
+                if (string.Equals(m.ModuleName, "JX3RepresentX64.dll",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    repBase = m.BaseAddress.ToInt64();
+                    break;
+                }
+            }
+            if (repBase == 0)
+            {
+                Log("probe: JX3RepresentX64.dll not loaded");
+                return;
+            }
+            long singleton = ReadQWord(repBase + 0xF06A50);
+            if (singleton == 0)
+            {
+                Log("probe animtable: singleton null base=0x" + repBase.ToString("X"));
+                return;
+            }
+            long container = singleton + 0x1A0;
+            long data = ReadQWord(container + 0x1E2B8);
+            uint count = ReadU32(container + 0x1E2C0);
+            Log(string.Format("probe animtable base=0x{0:X} singleton=0x{1:X} data=0x{2:X} count={3}",
+                repBase, singleton, data, count));
+            if (!probeTableDone && data != 0 && count > 0 && count <= 2048)
+            {
+                probeTableDone = true;
+                int stride = 0x54;
+                byte[] buf = new byte[(int)count * stride];
+                Marshal.Copy(new IntPtr(data), buf, 0, buf.Length);
+                for (int i = 0; i < count; i++)
+                {
+                    int o = i * stride;
+                    Log(string.Format(
+                        "probe entry {0}: mode={1} index={2} id0={3} clip0=0x{4:X} idMove={5} thrLo={6:F4} spdLo={7:F4} clipLo=0x{8:X} thrHi={9:F4} spdHi={10:F4} clipHi=0x{11:X}",
+                        i,
+                        BitConverter.ToUInt32(buf, o),
+                        BitConverter.ToUInt32(buf, o + 4),
+                        BitConverter.ToUInt32(buf, o + 0x30),
+                        BitConverter.ToUInt32(buf, o + 0x34),
+                        BitConverter.ToUInt32(buf, o + 0x4C),
+                        BitConverter.ToSingle(buf, o + 0x50),
+                        BitConverter.ToSingle(buf, o + 0x54),
+                        BitConverter.ToUInt32(buf, o + 0x58),
+                        BitConverter.ToSingle(buf, o + 0x68),
+                        BitConverter.ToSingle(buf, o + 0x6C),
+                        BitConverter.ToUInt32(buf, o + 0x70)));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log("probe ex: " + e.Message);
+        }
+    }
+
+    [HandleProcessCorruptedStateExceptions]
+    static long ReadQWord(long va)
+    {
+        byte[] b = new byte[8];
+        Marshal.Copy(new IntPtr(va), b, 0, 8);
+        return BitConverter.ToInt64(b, 0);
+    }
+
+    [HandleProcessCorruptedStateExceptions]
+    static uint ReadU32(long va)
+    {
+        byte[] b = new byte[4];
+        Marshal.Copy(new IntPtr(va), b, 0, 4);
+        return BitConverter.ToUInt32(b, 0);
     }
 
     static double WrapAngle(double angle)

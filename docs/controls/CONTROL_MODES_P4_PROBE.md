@@ -49,7 +49,36 @@ functions (`0x180B1A…0x180B1D`), whose writers toggle `+0x1AC`; `+0x1B0` stays
 zero in normal play; the mouse pipeline only reads both. Behavioural
 per-state mapping needs the probe (below).
 
-## 3. Probe plan (next executable step)
+## 2b. Probe run result (2026-10-02) — host has no game-world layer
+
+`RC_PROBE_CONTROL=1` implemented and run
+(`reborn_20261002_155820.log`): the probe found the loaded module
+`C:\SeasunGame\MovieEditor\bin64\JX3RepresentX64.dll` (base `0x7FF8E4BC0000`,
+verified via `Get-Process … .Modules`), but the game-world singleton global
+`[base+0xF06A50]` is **null for the whole run** (checked every 2 s for 45 s).
+
+Conclusion: the MovieEditor host links the Represent DLL but **does not
+instantiate the JX3 game-world layer** (the KTableList singleton at
+`0x180F06A50`, the character controller, the animation param table). That
+layer is game-client-only.
+
+Consequences:
+- Runtime probing of the animation param table / controller intents in the
+  host is **not possible**; P5's entry enumeration must come from the shipped
+  BinText tables themselves (plus static decode), and P3's per-frame loop
+  stays at the static/behavioural level.
+- The probe code stays in the client (env-gated, read-only) so the same
+  capture can run if a host ever loads the game world; it logs the singleton
+  status each sample.
+- The F1 catalog (`samples/player/catalog/player_animation_f1.txt`) is the
+  per-kind animation table (columns AnimationID, KindID, SheathType,
+  AnimationRatio, AnimationSpeed, IsLoop, AnimationFile, ShadowFile,
+  是否禁止自动转头, IsLookAtCamera, PoseState, 锁定朝向); the 84-byte
+  locomotion param table (two thresholds + three clip pairs) is a **separate
+  BinText table** whose filename is still to be identified (next P5 step:
+  locate it in the client paks by its column shape).
+
+## 3. Probe plan (superseded in part by 2b; kept for completeness)
 
 Feature build `#iso`? No: probe code is host instrumentation and can live in
 the current worktree behind an env gate.

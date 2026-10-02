@@ -1641,3 +1641,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   controls drive the state machine, not the flags.
 - Probe plan documented (shim module-base/read exports + RC_PROBE_CONTROL
   telemetry + scripted runs).
+
+### 2026-10-02 - controls - P4 probe run: host has no JX3 game-world layer
+- Implemented RC_PROBE_CONTROL=1 (client, read-only: module base via .NET
+  Process.Modules, Marshal.Copy reads; host RVA 0xF06A50 for the game-world
+  singleton). Build exit 0, smoke ALL PASS.
+- Result: the host loads the exact scanned MovieEditor JX3RepresentX64.dll but
+  [base+0xF06A50] is null for the whole run - MovieEditor never instantiates
+  the JX3 game-world (KTableList/animation params/character controller).
+  Therefore runtime animation-table capture in the host is impossible; P5 must
+  enumerate from the shipped BinText tables + static decode. The F1 catalog
+  columns were documented; the 84-byte locomotion table (2 thresholds, 3 clip
+  pairs) is a separate BinText table still to be found in the paks.
