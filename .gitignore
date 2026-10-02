@@ -79,3 +79,4 @@ perf_config.ini
 launch_out.txt
 launch_err.txt
 log/
+tools/engine_host/out/
