@@ -1509,6 +1509,14 @@ internal static class RebornClient
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
                 pW = now >= 3000 && now < 9000;
             }
+            // scripted jump-only probe (RC_DEMO_JUMP=1): one full jump at t=5.5 s
+            // (lands on a heartbeat sample mid-air), no walking - vertical
+            // penetration test (roofs) at a spawn.
+            if (Env("RC_DEMO_JUMP", "0") == "1" && now >= 5500 && !demoJumped)
+            {
+                demoJumped = true;
+                jumpPressed = true;
+            }
             if (rotTest)
             {
                 if (rotTestStart == 0) rotTestStart = now;
