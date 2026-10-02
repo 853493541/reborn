@@ -719,10 +719,9 @@ int main(void)
                             for (int i = 0; i < 40; i++)
                                 logf("  actor vt[%d] = 0x%llX", i,
                                      (unsigned long long)((BYTE*)avt[i] - (BYTE*)eng));
-                            // vt[26] looks like a pointer getter ([this+0x2b0]) - try it
-                            typedef void* (__fastcall *GetObjFn)(void* self);
-                            void* model = ((GetObjFn)avt[26])(mactor);
-                            logf("  actor vt[26] -> %p", model);
+                            // m_piCurModel is at actor+0x358 (from KG3D_Actor::_FindSocketInBaseModel)
+                            void* model = *(void**)((BYTE*)mactor + 0x358);
+                            logf("  actor+0x358 model -> %p", model);
                             if (model != NULL)
                             {
                                 void** mvt = *(void***)model;
@@ -730,6 +729,90 @@ int main(void)
                                 for (int i = 0; i < 48; i++)
                                     logf("  model vt[%d] = 0x%llX", i,
                                          (unsigned long long)((BYTE*)mvt[i] - (BYTE*)eng));
+                                // find the animation controller: any object whose vtable's
+                                // slot 22 (StartAnimation, eng+0xBC1C70) matches
+                                void* ctrl = NULL;
+                                __try
+                                {
+                                    BYTE* bases[2] = { (BYTE*)model, (BYTE*)mactor };
+                                    for (int b = 0; b < 2 && ctrl == NULL; b++)
+                                    {
+                                        for (int o = 0; o < 0x2000 && ctrl == NULL; o += 8)
+                                        {
+                                            void* vt = *(void**)(bases[b] + o);
+                                            if (vt == NULL) continue;
+                                            __try
+                                            {
+                                                void* s22 = ((void**)vt)[22];
+                                                if (s22 == (void*)((BYTE*)eng + 0xBC1C70))
+                                                    ctrl = bases[b] + o;
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER) { }
+                                        }
+                                    }
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER) { logf("  ctrl scan fault"); }
+                                logf("  animation controller (scanned) -> %p", ctrl);
+                                // original path: allocate+ctor the controller (0x3A8, engine ctor),
+                                // SetActor, CreateAnimationFromFile(tani), StartAnimation, FrameMove
+                                if (ctrl == NULL)
+                                {
+                                    __try
+                                    {
+                                        typedef void* (__fastcall *AllocFn)(void* a, size_t size, size_t align);
+                                        AllocFn alloc = (AllocFn)((BYTE*)eng + 0xB0F300);
+                                        void* c = alloc(NULL, 0x3A8, 8);
+                                        logf("  controller alloc -> %p", c);
+                                        if (c != NULL)
+                                        {
+                                            typedef void (__fastcall *CtorFn)(void* self);
+                                            CtorFn ctor = (CtorFn)((BYTE*)eng + 0xBC1100);
+                                            ctor(c);
+                                            logf("  controller ctor done, vtable=%p", *(void**)c);
+                                            typedef long (__fastcall *SetActorFn)(void* self, void* actor);
+                                            SetActorFn setActor = (SetActorFn)((BYTE*)eng + 0xBC2120);
+                                            long sar = setActor(c, mactor);
+                                            logf("  SetActor -> 0x%08X", (unsigned)sar);
+                                            ctrl = c;
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER) { logf("  controller create fault"); }
+                                }
+                                // original play path: CreateAnimationFromFile(tani) + StartAnimation + FrameMove
+                                if (ctrl != NULL)
+                                {
+                                    typedef long (__fastcall *CreateAnimFn)(void* self, const char* path,
+                                        void** out, int a4, int a5);
+                                    CreateAnimFn createAnim = (CreateAnimFn)((BYTE*)eng + 0x8B6EB0);
+                                    char taniPath[512];
+                                    char dirAni[64];
+                                    gbk(L"动作", dirAni, sizeof(dirAni));
+                                    sprintf_s(taniPath, sizeof(taniPath),
+                                              "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
+                                    void* anim = NULL;
+                                    long arc2 = createAnim(engine, taniPath, &anim, 0, 0);
+                                    logf("  CreateAnimationFromFile -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
+                                    if (anim != NULL)
+                                    {
+                                        typedef long (__fastcall *StartAnimFn)(void* self, void* ani,
+                                            int playType, float speed, unsigned a5, unsigned a6,
+                                            void* userdata, void* ik, void* dbone);
+                                        StartAnimFn startAnim = (StartAnimFn)((BYTE*)eng + 0xBC1C70);
+                                        long src2 = startAnim(ctrl, anim, 0, 1.0f, 0, 0, NULL, NULL, NULL);
+                                        logf("  StartAnimation -> rc=0x%08X", (unsigned)src2);
+                                        // run the engine's own animation update for a while
+                                        typedef long (__fastcall *FrameMoveFn)(void* self);
+                                        FrameMoveFn ctrlMove = (FrameMoveFn)((BYTE*)eng + 0xBC2620);
+                                        for (int f = 0; f < 120; f++)
+                                        {
+                                            long frc = ctrlMove(ctrl);
+                                            if (f == 0 || f == 59 || f == 119)
+                                                logf("  ctrl FrameMove[%d] -> 0x%08X", f, (unsigned)frc);
+                                            Sleep(16);
+                                        }
+                                        logf("  animation frames done");
+                                    }
+                                }
                             }
                         }
                         // FS-layer test: game layer (g_IsFileExist) vs engine loader (KG3D_LoadFile)

@@ -405,6 +405,23 @@ controller is created internally).
 each model. This is the bind context to replicate: load the SFX data (direct create
 works), then run this per-model allocate+bind with the engine's own data object.
 
+### Original play path wired (2026-10-01)
+
+- The model inside the actor is at **`actor+0x358`** (`m_piCurModel`); it is a
+  `KG3D_SkinModel` (vtable mapped; `Update(pAniInfo)`, `FrameMove`, `SetBoneTransform`).
+- The **animation controller** is `alloc(0x3A8)` + ctor `0xBC1100` (engine's own
+  allocation site at `0x81D3C7`); `SetActor(actor)` (export `0xBC2120`) returned
+  **S_OK**; the play entry is
+  `?StartAnimation@KG3D_AnimationController@@…(KG3D_Animation*, KG3D_ANI_PLAY_TYPE, float, …)`
+  at `0xBC1C70` (controller vtable slot 22), advanced with `FrameMove` (`0xBC2620`).
+- `KG3D_Engine::CreateAnimationFromFile` (`0x8B6EB0`) **fails on the pak `.tani`**:
+  `unsupport ani type 1970238300` — the loader checks the buffer magic against **`ANIM`**
+  (`0x4D494E41`, code `0xC31538`) but the pak `.tani` files start with **`GATA`**
+  (`data\source\player\f1\动作\…tani` head = `GATA\0\0\0\0data\source\…`) — the GATA
+  container must be unwrapped to the raw ANIM payload before the animation loader runs
+  (the engine's data-manager reader path does not unwrap it in our host). Next piece:
+  the GATA unwrap layer (engine `KG3D_BufferReader` / data-manager type registration).
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
