@@ -79,3 +79,6 @@ perf_config.ini
 launch_out.txt
 launch_err.txt
 log/
+
+# regenerable full Lua proto index (11MB; command in docs/controls/CONTROL_MODES_LUA_ANNEX.md)
+proof/controls/lua_index_all.txt
