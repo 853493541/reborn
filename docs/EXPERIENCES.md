@@ -1515,3 +1515,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   frame attribution before the handle can be trusted.
 - Evidence: doc §16; probe_wait_trace.py; sample logs.
 - Outcome: partial (wait owner localized to the engine FS layer; exact object still unnamed).
+
+### 2026-10-01 — netcode — .pdata unwinder; startup chain mapped; gate = NULL client object
+- Did: built unwind.py (PE .pdata + chain-info unwinder) and probe_unwind.py (read-only stack walk
+  of our own probe child). Mapped the full live chain WinMain -> PlatformLoad -> wait -> pump ->
+  KJX3BaseModule::Initialize -> InitPackage -> device enumeration; the exit path (wait ret 0 ->
+  shutdown incl. 2 s worker wait -> Dumper64 -> clean exit). Found the pump's success test
+  `state_sub[0x18]->vtable[8](0)`; in our probe state_sub[0x18] is NULL, so the chain completes
+  without creating the client/game instance -> pump returns 0 -> exit.
+- Evidence: doc §17; probe_unwind.py runs; state dump at 1.96 s.
+- Outcome: major step (startup chain + gate identified); setter of state_sub[0x18] is next.

@@ -299,3 +299,25 @@ what completes it (likely the launcher/security handshake).
   the wait to a concrete frame before trusting the handle.
 - No WinMain frame (`0x1400E13DF`) was found on any thread at 0.5/1.0/1.3/1.4/1.8/2.05 s; the
   exe never appears in the sampled wait stacks. Exit stays clean at ~2.2 s.
+
+## 17. .pdata unwinder + full startup chain (2026-10-01, eleventh pass)
+
+- Tools: `tools/netcode/unwind.py` (PE .pdata parser + x64 unwinder incl. UNW_FLAG_CHAININFO
+  fragments) and `tools/netcode/probe_unwind.py` (suspends our own probe child, walks the main
+  thread's stack with real unwind info, reads the WinMain frame's state object).
+- Full chain observed (all live, no injection):
+  `WinMain -> PlatformLoad (0x14009F480) -> wait (0x14009D9A0) -> pump (0x14009D120) ->
+   game.startup step group -> KJX3BaseModule::Initialize step (0xA37D0..) -> InitPackage
+   (0xB3DE2/0xB5D60) -> device/driver enumeration (SetupAPI/SPINF/windows.storage/drvstore)`.
+  At ~1.9 s the chain is still live (WinMain at the wait-loop return 0x1400E13DF, step running).
+- Exit path: the wait returns 0 -> WinMain logs "WinMain"/"false" -> shutdown: stop state
+  (0x14009D7C0), module notifications (ids 0x12/0x13), a 6-iteration cleanup loop (0x1400E14D1),
+  module vector teardown, a **2 s worker wait** (0x14010041E, `WaitForSingleObject(thread,2000)`
+  with TerminateThread fallback), Dumper64 shutdown -> clean exit at ~2.2 s.
+- **The gate**: the pump's success test is `state_sub[0x18]->vtable[8](0)` (return 1 = start the
+  game). In our probe **state_sub[0x18] is NULL** and the done flag (sub+0x61) is 0 while the
+  current step (sub+0x70) is still non-null; when the chain finishes with that pointer NULL the
+  pump returns 0 -> WinMain exits. So the missing piece is the **client/game instance object**
+  at state_sub+0x18, which the startup chain is supposed to create.
+- Next: find the writer of state_sub+0x18 (the step/condition that creates the client object)
+  and why it is skipped/fails without the launcher session.
