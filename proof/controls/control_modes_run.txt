@@ -229,3 +229,25 @@ run; WA dist=348 no camera turn.
 Also corrected while digging: the number.krl field offsets are walk +0x48,
 run +0x4C, swim +0x50, **yaw turn +0x54**, yaw reset +0x58 (the movement
 research doc lists them 4 bytes high).
+
+## CORRECTION (2026-10-01, later): RMB rule is a PROVISIONAL host rule
+
+The earlier entry below claimed the RMB-held keyboard-turn suppression was
+"exactly the observed game behaviour" / decoded. It is NOT decoded. What is
+actually decoded:
+- hotkeys.lua: in classical free view, StrafeLeft/Right call
+  SetControl(CONTROL_STRAFE_*) and TurnLeftStart/RightStart; TurnLeftStart
+  calls SetControl(CONTROL_TURN_*) - the turn is a CHARACTER control.
+- No Lua gate suppresses the turn while RMB is held (searched all 1551
+  extracted ui/Script + ui/Config scripts).
+- Hotkey_EnableTurnLeft/Right are tutorial-only gates (Teaching.lua).
+- The engine consumer of CONTROL_TURN_* while CONTROL_OBJECT_STICK_CAMERA is
+  active is not decoded (Represent SetControl binding + event path; client exe
+  consumer not traced).
+
+The host therefore implements the observed behaviour (A/D inert while RMB is
+held) as a PROVISIONAL host rule (classicalMode && rmbDown), registered in
+CLASSIC_CONTROLS_AUDIT.md with re-open criteria; it is not presented as client
+truth. Host verification: with RMB held and no mouse motion, W+A gives
+dcam=0.00 dyaw=0.00 dist=384 (log 20261001_173338); without RMB, W+A curves
+and A-alone turns at the local rate.

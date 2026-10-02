@@ -19,7 +19,7 @@ the user-observed game behaviour):**
 |---|---|---|
 | W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D · ←/→ | **turn the view (camera) at the local turn rate**; standing still the body turns with it, while moving the body follows the rotating camera-relative heading. **While RMB is held the mouse owns the camera: keyboard turn does not rotate the view.** | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
+| A/D · ←/→ | **decoded**: the turn keys are a CHARACTER control (`TurnLeftStart` → `SetControl(CONTROL_TURN_LEFT)`; in classical free view the strafe handler calls `TurnLeftStart` too). Host camera follow-on-turn is a host coupling; while RMB is held the keyboard turn is inert (**provisional host rule** from the observed real client — see §5) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
 | W+A / W+D | run while turning (a curve) — the view and the body rotate together (no turn while RMB held) | run 320 u/s, curve radius v/ω |
 | S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
@@ -91,10 +91,16 @@ with `RC_FREEVIEW=0` for tests.
 - **Turn rate is local data**: derived from the camera-controller row
   `RotationSpeed` (loader default `0.00314` rad/ms = π rad/s); no server byte is
   involved in the keyboard turn. Fallback π only if the row is absent.
-- **RMB-held camera ownership**: with RMB held
-  (`CONTROL_OBJECT_STICK_CAMERA` / the "sticky" camera), A/D do not rotate the
-  view (verified `dcam=0.00` with RMB held and no mouse motion); only mouse
-  movement rotates the camera+character.
+- **RMB-held keyboard turn inert — PROVISIONAL host rule** (registered
+  deviation): the observed real client does not rotate the camera from A/D
+  while RMB is held. **No client code gate has been found for this**: the
+  shipped Lua has no suppression (the strafe handler runs
+  `SetControl` + `TurnLeftStart` unconditionally in free view), and
+  `Hotkey_EnableTurnLeft/Right` are tutorial gates only (`Teaching.lua`). The
+  host implements the observed behaviour as `classicalMode && rmbDown` ⇒
+  keyboard turn skipped; re-open when the engine's control consumer (what the
+  client does with `CONTROL_TURN_*` while `CONTROL_OBJECT_STICK_CAMERA` is
+  active) is decoded. See `docs/EXPERIENCES.md` 2026-10-01 entry.
 
 ## 6. Recommended order
 

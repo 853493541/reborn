@@ -1128,3 +1128,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: run 20261001_172009 (RM BWA=1: W+A with RMB, no mouse motion ->
   dcam=0.00 dyaw=0.00 dist=385 straight); RM BWA=2 drag -> dcam=-1.08
   mouse-only; A-alone still d=3.14/s and back dist=96; all gates PASS.
+
+### 2026-10-01 - controls/client - CORRECTION: RMB turn rule was not decoded (process error)
+- Error: after the user observed "classic RMB-hold + A/D does not turn the
+  camera", I coded a suppression rule and labeled it "observed game
+  behaviour"/"verified", implying a client mechanism. No such mechanism was
+  found: the shipped Lua has no gate (strafe handlers run unconditionally), and
+  Hotkey_EnableTurnLeft/Right are used only by Teaching.lua (tutorial).
+- What is decoded: turn keys are a CHARACTER control (TurnLeftStart ->
+  SetControl(CONTROL_TURN_*)); free view = all camera modes except god camera;
+  the keyboard turn rate is local (camera row RotationSpeed).
+- What is not: the engine consumer of CONTROL_TURN while
+  CONTROL_OBJECT_STICK_CAMERA is active (Represent SetControl binding + event
+  adaptor; client-exe consumer not traced).
+- Fix: the rule stays (it matches the user-observed behaviour) but is now
+  labeled a PROVISIONAL host rule with re-open criteria in
+  docs/controls/CLASSIC_CONTROLS_AUDIT.md; the proof file carries a correction
+  section. All 1551 core UI scripts were extracted and searched for a gate.
+- Lesson: "verified" may only describe what the evidence shows; a user
+  observation is a reproduction target, not a decoded mechanism.

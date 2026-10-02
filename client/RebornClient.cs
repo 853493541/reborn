@@ -2060,24 +2060,26 @@ internal static class RebornClient
                 vjx = 0f; vjz = 0f;
             }
 
-            // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D: keyboard
-            // turn rotates the VIEW (camera yaw) at the char turn rate; the
-            // heading<->camera-yaw reflection (Forward(yaw)=(-cos,-sin)) makes
-            // the camera yaw move opposite to the facing step. Standing still,
-            // the body turns with it; while moving, the movement turn model
-            // aligns the body to the rotating camera-relative heading - only
-            // one driver per case.
-            // While RMB (CAMERAORSELECTORMOVESTICKY / CONTROL_OBJECT_STICK_CAMERA)
-            // is held the mouse owns the camera: keyboard turn does not rotate
-            // the view (observed game behaviour).
+            // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D.
+            // DECODED (hotkeys.lua): the turn keys are a CHARACTER control -
+            // TurnLeftStart -> SetControl(CONTROL_TURN_LEFT); in classical free
+            // view the strafe handler calls TurnLeftStart too.
+            // While RMB is held the mouse owns the camera and the heading
+            // (CAMERAORSELECTORMOVESTICKY / CONTROL_OBJECT_STICK_CAMERA):
+            // the keyboard turn is inert then. PROVISIONAL host rule - taken
+            // from the observed real-client behaviour (A/D do not turn the
+            // camera while RMB is held); no Lua/engine gate has been found yet
+            // (Hotkey_EnableTurnLeft is only the tutorial gate, Teaching.lua).
+            // Re-open when the engine control consumer is decoded.
+            // TV: docs/controls/CLASSIC_CONTROLS_AUDIT.md, docs/EXPERIENCES.md.
             if (grounded && (turnL || turnR) && !(classicalMode && rmbDown))
             {
                 float tstep = charTurnRate * (float)dt;
                 float dturn = 0f;
                 if (turnL && !turnR) dturn = -tstep;
                 else if (turnR && !turnL) dturn = tstep;
+                curYaw += dturn;
                 camSys.Yaw -= dturn;
-                if (!moving) curYaw += dturn;
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
