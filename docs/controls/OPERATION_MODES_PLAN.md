@@ -528,3 +528,32 @@ itself is runtime-wired (no static names) and behaviourally equals the model in
   no static xrefs - this is the data-driven boundary).
 - Evidence: gc_handlrlaction.txt, gc_ctrl_action6.txt, gc_ctrl_action7.txt,
   gc_enablecontrolonly.txt, gc_getmoveinfo_*.txt, gc_intent_*.txt.
+
+### 7g. Official documentation check (2-month window + control scheme) - 2026-10-02
+
+Patch notes Aug 2 - Oct 2 2026 (official latest + 17173 full notes):
+1.5.0.9912 (8/17), 1.5.0.9920 (8/24), 1.5.0.9948 (9/3), 9/16 update,
+1.5.0.9971 (9/28, official `jx3.xoyo.com/launcher/update/latest.html`) -
+**no control-scheme/camera/turn changes**; items were content/fixes (mid-
+autumn, 武学助手精修版, 鹅鸭杀 move-speed balance, protocol-animation camera
+lighting). Our installed 1.5.0.9975 is a hotfix on top.
+
+Official control-scheme sources (`jx3.xoyo.com/zl/new-crjh.html` help page,
+wording HIGH as official documentation):
+- "W/S/A/D 向前后左右方移动", arrow keys also move, "Q/E 左右平行移动",
+  "移动的同时按住右键拖动便可以转向" (RMB drag = turn the character while
+  moving), "同时按住鼠标左右键或 NumLock 自动前进".
+- "按住鼠标左键拖动可以转动视角但不转动角色面向；按住鼠标右键拖动可以在
+  转动视角的同时让角色转身" -> LMB = camera only, RMB = camera + character
+  turn. This confirms the host's drag split.
+- Older but official: the 稻香村 control-choice popup teaches "两种不同的
+  'A''D' 键操控习惯" (A/D = turn vs A/D = strafe); default.txt binds A/D to
+  STRAFELEFT/STRAFERIGHT. The 2019 joystick-mode article describes classic as
+  "前进/左转(左平移)/后退/右转(右平移)" - i.e. the A/D habit is a USER choice.
+- 摇杆模式 = camera-direction movement + auto-face; classic keeps the
+  character-relative scheme.
+
+Consequence for the host: our "A/D = turn" is the TURN habit; the official
+default help text and default.txt are the STRAFE habit. The host must model
+the habit (option), not bake one in - that is the likely source of the
+"so many things wrong" reports. No game-side control change in the window.

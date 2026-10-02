@@ -1460,3 +1460,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the camera anywhere; camera = mouse drag + CameraAdjustYawWhenMoveTurn row.
 - Evidence: turn/A-alone camd=0.00; RMB strafe 96 camd=0.00; WA rmb=1 317
   camd=0.00; WD row curve. Smoke ALL PASS. Relaunched.
+
+### 2026-10-02 - controls - official docs check (2 months): no control change; A/D habit is a choice
+- Researched official notes Aug-Oct 2026: 9912/9920/9948/9-16/9971 - content
+  and fixes only, no control/camera/turn changes (9975 installed = hotfix).
+- Official help (zl/new-crjh): LMB = view only, RMB = view + character turn;
+  WASD move, arrows move, Q/E strafe, both buttons/NumLock autorun. Older
+  official posts document the A/D habit choice (turn vs strafe) and joystick
+  mode's camera-direction movement.
+- Consequence: the host's A/D=turn is the TURN habit, not the default; model
+  the habit as an option. No game-side change to blame for the mismatches.
