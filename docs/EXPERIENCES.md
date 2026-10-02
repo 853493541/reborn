@@ -1421,3 +1421,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   diagonal stays run; joystick always forward-family (body faces travel).
 - Evidence: strafe rmb=1 dist=96 dcam=0; WA rmb=1 dist=384 dcam=0.00; turn
   1.88/-1.88; smoke ALL PASS. Relaunched.
+
+### 2026-10-01 - controls/client - FULL movement system decoded across all layers
+- Kept decoding per user request. Mapped: script bindings -> Camera_EnableControl
+  (14 ids); the character-controller API (Move/Run/Jump/SetYaw/SetPitch/SetRoll/
+  ToggleCharacterControl/GetMoveInfo) with intents fForward +0x50, fStrafeRight
+  +0x4C, fRotationRight +0x3C; the setters push queue commands 5/6/7 into the
+  applier 0x1805DF7E0; CommitInput 0x1805E3270 posts the frame commit; the anim
+  state table (RunForward/WalkForward/RunBackward/WalkBackward + jump/swim/fly)
+  with pnForward/pnStrafeRight/pnRotationRight blend params (lateral = blend;
+  pure lateral = walk-tier 挪步; no strafe-run state); camera pipeline and the
+  LMB/RMB heading-ownership rule.
+- Boundary: the exe-side per-frame control->intent loop runs behind runtime-built
+  interface tables (no static names), so it is characterized behaviorally, not
+  symbolically; the host implements the same model.
+- Docs: OPERATION_MODES_PLAN.md section 7e (full system); evidence in
+  modes-re gc_strafe/gc_runforward/gc_pnstrafe/gc_getmoveinfo_*/gc_intent_*.

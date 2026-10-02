@@ -453,3 +453,43 @@ completely (e.g. thunk 0x18001F05F: old -> 0x180762DA0, new -> 0x180530F00).
 => A camera->body coupling change between March and September is real at code
 level; the current (decoded) behavior stands: A/D = character turn, camera
 follow moving-forward only.
+
+### 7e. The full movement system as decoded (2026-10-01, game-client build)
+
+**Layer 1 - scripts:** bindings (default.txt) A/D=STRAFE*, arrows=TURN*,
+W/S=FORWARD/BACKWARD, mouse=CAMERA/OBJECT_STICK; hotkeys.lua handlers route
+classical -> Camera_EnableControl(controlId,flag) (wrapper proto 61) and
+delegate the strafe key to TurnStart only in free view (proto 76/78, guard
+proto 63); joystick -> Scene_EnableFreeMoveControl; OperationModeBase.lua
+drives the joystick vector and the mode switches.
+
+**Layer 2 - script API (JX3UIX64 bindings):** Camera_EnableControl(id,flag)
+[14 ids 0..13], Camera_BeginDrag/EndDrag, Camera_LockControl,
+MouseControlMoveEnable, and the character-controller API **Move, Run, Jump,
+SetYaw, SetPitch, SetRoll, ToggleCharacterControl, GetMoveInfo**. GetMoveInfo
+returns the engine's three intents: forward, strafeRight, rotationRight.
+
+**Layer 3 - engine (JX3Represent):**
+- KGameWorldCharacterController stores fForward +0x50, fStrafeRight +0x4C,
+  fRotationRight +0x3C; the setters (Move 0x1805E0010 / Jump 0x1805DFFF0 /
+  clear 0x1805E0030) also push queue commands types 5/6/7; the applier
+  0x1805DF7E0 applies them; CommitInput 0x1805E3270 posts the frame commit;
+  GetMoveInfo 0x1805DFE90 reads the three floats.
+- Character state: move state +0x5C (UpdateObjectState), face yaw +0x30
+  (KRLLocalCharacter; UpdateFaceFootDirection).
+- Animation: state-name table (RunForward/WalkForward/RunBackward/
+  WalkBackward/TurnLeft/TurnRight/jump/swim/fly) + blend params
+  pnForward/pnStrafeRight/pnRotationRight -> lateral is a strafe BLEND, pure
+  lateral uses the walk-tier 挪步 cadence; there is no strafe-run state.
+- Camera: MouseMove/ApplyMouse/ClampMouse/ApplyRotation; per-mode drag speeds;
+  CameraAdjustYawWhenMoveTurn row; dynamic-follow; camera->face writes gated
+  by mouse deltas/follow state.
+
+**Layer 4 - ownership:** CONTROL_OBJECT_STICK_CAMERA (RMB) / CONTROL_CAMERA
+(LMB) hold = the mouse owns the heading; the strafe-bound A/D then move
+laterally without turning anything.
+
+**Boundary:** the per-frame exe-side input loop that reads the control states
+and calls Move()/SetYaw()/CommitInput goes through runtime-built interface
+tables (no static symbols/xrefs); its behaviour is fully characterized by the
+API + intent model above and is what the host implements.
