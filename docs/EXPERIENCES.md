@@ -1112,3 +1112,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   0.007465 but its unit/consumer is unlocated; in live play the per-frame turn
   step is also delivered by the server sync byte (+0x48). Next probe: live
   debug on the real client (or the engine's input payload commit path).
+
+### 2026-10-01 - controls/client - Keyboard turn is local; RMB owns the camera
+- Problem: user corrections - the A/D turn rate is NOT server-fed (fully local
+  action), and classic RMB-hold + A/D must NOT turn the camera.
+- Research: parsed the sLoadNumberFromFile loader (0x180857df0) key map: the
+  real offsets are walk +0x48 / run +0x4C / yawTurn +0x54 / yawReset +0x58
+  (movement doc was +4 off). The camera-controller default table
+  (Represent .rdata VA 0x180d09f40) holds RotationSpeed=0.00314 rad/ms =
+  pi rad/s - the local keyboard/camera turn rate. The mouse-camera hold
+  (CONTROL_OBJECT_STICK_CAMERA, id 7) owns the camera while RMB is down.
+  Hotkey_EnableTurnLeft/Right are tutorial gates only (Teaching.lua).
+- Fix: charTurnRate = camera row RotationSpeed * 1000 (pi only as fallback);
+  keyboard turn (A/D, arrows) suppressed while RMB is held in classical mode.
+- Evidence: run 20261001_172009 (RM BWA=1: W+A with RMB, no mouse motion ->
+  dcam=0.00 dyaw=0.00 dist=385 straight); RM BWA=2 drag -> dcam=-1.08
+  mouse-only; A-alone still d=3.14/s and back dist=96; all gates PASS.

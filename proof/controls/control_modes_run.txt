@@ -207,3 +207,25 @@ movetest WD     dpos=(53,186) dist=194 dyaw=3.71  dcam=2.52 (=-3.77 wrapped)    
 
 Joystick sanity: strafe d=4.71 turn-to-heading cam unchanged; back dist=320
 run; WA dist=348 no camera turn.
+
+## Turn rate = local data; RMB owns the camera (2026-10-01)
+
+1. Turn rate: the keyboard turn is a LOCAL action. The camera-controller row
+   default table (.rdata 0x180d0 a table: 0.00314, 1.56, 6.28...) holds
+   RotationSpeed = 0.00314 rad/ms = pi rad/s; the host now derives
+   charTurnRate = RotationSpeed * 1000 (pi only as missing-row fallback).
+   Verified unchanged: A-alone turn d=3.14 in 1 s (log 20261001_172009).
+
+2. RMB hold: while RMB (CAMERAORSELECTORMOVESTICKY /
+   CONTROL_OBJECT_STICK_CAMERA) is held, the mouse owns the camera - keyboard
+   turn must NOT rotate the view. Verified (RC_DEMO_RMBWA=1, W+A held, RMB
+   held, no mouse motion):
+     movetest WA mode=classical rmb=1 dpos=(315,-221) dist=385 dyaw=0.00 dcam=0.00
+   i.e. no camera turn, no body turn, straight run - exactly the observed game
+   behaviour. With a simulated mouse drag (RC_DEMO_RMBWA=2) only the mouse
+   rotates the camera: dcam=-1.08 (was -3.44 before the fix, which wrongly
+   included the keyboard turn).
+
+Also corrected while digging: the number.krl field offsets are walk +0x48,
+run +0x4C, swim +0x50, **yaw turn +0x54**, yaw reset +0x58 (the movement
+research doc lists them 4 bytes high).

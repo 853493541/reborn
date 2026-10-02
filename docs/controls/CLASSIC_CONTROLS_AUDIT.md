@@ -19,8 +19,8 @@ the user-observed game behaviour):**
 |---|---|---|
 | W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D · ←/→ | **turn: the view (camera) rotates at the char turn rate; standing still the body turns with it, while moving the body follows the rotating camera-relative heading** | yaw rate |
-| W+A / W+D | **run while turning (a curve)** — the view and the body rotate together | run 320 u/s, curve radius v/ω |
+| A/D · ←/→ | **turn the view (camera) at the local turn rate**; standing still the body turns with it, while moving the body follows the rotating camera-relative heading. **While RMB is held the mouse owns the camera: keyboard turn does not rotate the view.** | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
+| W+A / W+D | run while turning (a curve) — the view and the body rotate together (no turn while RMB held) | run 320 u/s, curve radius v/ω |
 | S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
 
@@ -88,6 +88,13 @@ with `RC_FREEVIEW=0` for tests.
   打坐, stand = `Stand()`), with the looping 打坐 clip and stand-on-move.
 - **`TOGGLESHEATH` (Z)** implemented from the decoded body (SetSheath toggle,
   sit gate), with the b02 draw transition + drawn-stance loop.
+- **Turn rate is local data**: derived from the camera-controller row
+  `RotationSpeed` (loader default `0.00314` rad/ms = π rad/s); no server byte is
+  involved in the keyboard turn. Fallback π only if the row is absent.
+- **RMB-held camera ownership**: with RMB held
+  (`CONTROL_OBJECT_STICK_CAMERA` / the "sticky" camera), A/D do not rotate the
+  view (verified `dcam=0.00` with RMB held and no mouse motion); only mouse
+  movement rotates the camera+character.
 
 ## 6. Recommended order
 

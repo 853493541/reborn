@@ -851,7 +851,8 @@ internal static class RebornClient
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
-        bool demoRmbWa = Env("RC_DEMO_RMBWA", "0") == "1";
+        int demoRmbWa = 0;
+        int.TryParse(Env("RC_DEMO_RMBWA", "0"), out demoRmbWa);   // 1 = hold RMB, 2 = + orbit drag
         float strafeX0 = 0f, strafeZ0 = 0f, backX0 = 0f, backZ0 = 0f, waX0 = 0f, waZ0 = 0f, wdX0 = 0f, wdZ0 = 0f;
         float waYaw0 = 0f, wdYaw0 = 0f;
         double waCam0 = 0.0, wdCam0 = 0.0;
@@ -1702,9 +1703,9 @@ internal static class RebornClient
                 if (now >= 13600 && !mvSheath) { mvSheath = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); }
                 if (now >= 14600 && !mvSheathDone) { mvSheathDone = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); Log("movetest sheath done"); }
                 // W+A / W+D free-view windows: A/D turn while W runs -> curve
-                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); if (demoRmbWa) rmbDown = true; }
-                if (mvWA && !mvWADone && demoRmbWa) orbitQueue.Enqueue(new int[] { 2, 0 });   // simulated RMB drag
-                if (now >= 16300 && !mvWADone) { mvWADone = true; rmbDown = false; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} rmb={1} dpos=({2:F0},{3:F0}) dist={4:F0} dyaw={5:F2} dcam={6:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbWa ? 1 : 0, px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw - waYaw0, camSys.Yaw - waCam0)); }
+                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); if (demoRmbWa >= 1) rmbDown = true; }
+                if (mvWA && !mvWADone && demoRmbWa >= 2) orbitQueue.Enqueue(new int[] { 2, 0 });   // simulated RMB drag
+                if (now >= 16300 && !mvWADone) { mvWADone = true; rmbDown = false; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} rmb={1} dpos=({2:F0},{3:F0}) dist={4:F0} dyaw={5:F2} dcam={6:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbWa, px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), curYaw - waYaw0, camSys.Yaw - waCam0)); }
                 if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
                 if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), curYaw - wdYaw0, camSys.Yaw - wdCam0)); }
                 if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
@@ -1961,11 +1962,12 @@ internal static class RebornClient
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
-            // character yaw turn rate (rad/s): the game's per-frame turn step
-            // (+0x48) is a server sync byte and not decoded; the host uses the
-            // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
-            float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
-            if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
+            // keyboard turn rate: the LOCAL camera-controller rotation speed
+            // (row RotationSpeed; loader default 0.00314 rad/ms = pi rad/s, both
+            // values are local data - no server involvement). pi stays only as
+            // the missing-row fallback.
+            float charTurnRate = (float)(camSys.Row.F("RotationSpeed", 0.0) * 1000.0);
+            if (charTurnRate < 0.1f) charTurnRate = (float)Math.PI;
 
             // horizontal move + slope blocking (map-host rules).
             // Ground: input direction at run/walk speed with the RunTo turn
@@ -2065,7 +2067,10 @@ internal static class RebornClient
             // the body turns with it; while moving, the movement turn model
             // aligns the body to the rotating camera-relative heading - only
             // one driver per case.
-            if (grounded && (turnL || turnR))
+            // While RMB (CAMERAORSELECTORMOVESTICKY / CONTROL_OBJECT_STICK_CAMERA)
+            // is held the mouse owns the camera: keyboard turn does not rotate
+            // the view (observed game behaviour).
+            if (grounded && (turnL || turnR) && !(classicalMode && rmbDown))
             {
                 float tstep = charTurnRate * (float)dt;
                 float dturn = 0f;
