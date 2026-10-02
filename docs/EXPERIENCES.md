@@ -1243,3 +1243,36 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ui_lockcontrol.txt, hk_proto61.txt, hk_proto63.txt, control_full.txt,
   apply_input.txt; docs/controls/CLASSIC_CONTROLS_AUDIT.md section 5.
 
+
+### 2026-10-01 - controls/client - RESTARTED DIG: game-client camera manager + command chain found
+- User: restart the research, find something.
+- Did (game-client build, SHA-verified copies): mapped the Lua→C binding layer
+  in JX3UIX64.dll (Camera_EnableControl 0x1800AC1F0 = pure setter,
+  Camera_BeginDrag 0x1800ABFD0 = represent vtable +0x118 bridge,
+  Camera_LockControl = timed 轻功 lock, MouseControlMoveEnable 0x1800ACF90 =
+  type-0x54 state + notify; MoveControlStart/Stop = Scene_SetMoveControl);
+  the exe command forwarders (KEventCommonMgr::BeginDragCamera/EndDragCamera/
+  SetCameraDragParams/ForceResetCamera/EnableControlCamera ->
+  world vtable +0x3D0/+0x3D8/+0x3E8/+0x428/+0x450); the character-controller
+  input applier (AjustCtrlInput -> 0x1805DF350 -> 0x1805DF7E0, 8 event types);
+  and the game-client camera mouse path: MouseMove 0x180B21300 + ApplyMouse
+  0x180B1F520 with the manager fields (+0x2F0 controller array stride 0x20,
+  +0x90/+0x94/+0x98/+0x9C accumulators, +0x1A8 moved flag, +0x1AC/+0x1B0
+  yaw/pitch source-select flags), per-mode drag speeds applied from ctx
+  +0x6C/+0x70 (classic) / +0x84/+0x88 (joystick), gate words
+  [0x180EDDFE0+0x25CD0]/[+0x25CF0]. Camera rows (10x0x24 at
+  [0x180EDDFE0+0x262F0], loader 0x180338C10) confirm
+  CameraAdjustYawWhenMoveTurn +0x14 and DisableAngle +0x18.
+- Also corrected: the strafe handler's classical free-view Turn call is
+  OB-dungeon-only (hotkeys proto 63 = IsPlayerInOBDungeon guard), and the
+  hotkeys proto-61 wrapper routes classical -> Camera_EnableControl,
+  joystick -> Scene_EnableFreeMoveControl.
+- Result: the only camera-yaw writer on the input path is the mouse drag
+  (ApplyMouse); TURN controls feed the character controller queue. The host's
+  A/D -> camSys.Yaw coupling is the deviation; camera follow belongs to the
+  cached CameraAdjustYawWhenMoveTurn row. No return of the provisional gate.
+- Evidence: modes-re\gc_mousemove.txt, gc_applymouse_fn.txt,
+  gc_camrow_loader.txt, gc_ctrl_apply.txt, exe_eventcommon_camera.txt,
+  ui_enablecontrol.txt, ui_begindrag.txt, ui_lockcontrol.txt, hk_proto61.txt,
+  hk_proto63.txt, control_full.txt; OPERATION_MODES_PLAN.md sec 7d.
+

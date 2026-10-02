@@ -309,3 +309,64 @@ is plain Lua in `mainscene.lua` (proto 0/1, set by `CameraStatus_Animation`).
 verified). Next probe: the engine consumer of `CONTROL_TURN_*` /
 `CONTROL_OBJECT_STICK_CAMERA` (`JX3RepresentX64.dll`: commit 0x1805df660 →
 applier 0x1805df7e0, 8-type input switch) to settle the RMB-drag interaction.
+
+### 7d. Engine binding + camera-manager decode (2026-10-01, game-client build)
+
+**Command chain (HIGH, `JX3UIX64.dll` + `JX3ClientX64.exe` + `JX3RepresentX64.dll`):**
+Lua bindings live in `JX3UIX64.dll` (`KRepresentScriptTable::Lua*`): 
+`Camera_EnableControl` `0x1800AC1F0` is a pure control-state setter (ids 6/7
+additionally call camera vtable `+0x110`; returns no values), `Camera_BeginDrag`
+`0x1800ABFD0` bridges the represent vtable `+0x118` (returns tx/ty numbers),
+`Camera_LockControl` `0x1800ACEE0` is the timed 轻功 lock (skill 9007),
+`MouseControlMoveEnable` `0x1800ACF90` stores `{id,flag}` into a type-`0x54`
+object and notifies (cmd `0x10`). `MoveControlStart/Stop` (hotkeys 0/94-95) =
+`Scene_SetMoveControl(true/false)`. The exe's `KEventCommonMgr` forwards to the
+engine world interface by vtable slot: `BeginDragCamera +0x3D0`,
+`EndDragCamera +0x3D8`, `SetCameraDragParams +0x3E8`, `ForceResetCamera +0x428`,
+`EnableControlCamera +0x450` (`KEventCommonMgr::*` 0x1400EFD60..0x1400F000B).
+
+**Control interpreter (HIGH):** `KGameWorldHandler::AjustCtrlInput`
+(`0x1805E1ED0`) forwards to the character controller `0x1805DF350`, which
+applies the queued input commands (`0x1805DF7E0`, 8 event types) into controller
+fields `+0x7C..+0x98` and calls vtable `[obj+0xA8]` slots
+`+0x88/+0x98/+0xA0/+0xA8/+0xB0/+0xB8`. This queue carries move/turn commands;
+no mouse-button condition exists at this level.
+
+**Camera manager, game-client build (HIGH):** `MouseMove` `0x180B21300` +
+`ApplyMouse` `0x180B1F520` (assert strings; game-client RVAs, not the
+MovieEditor build): the manager keeps a per-mode controller array
+(`[this+0x2F0]`, stride `0x20`, active index `[this+0x2D0]`), movement
+accumulators `+0x98/+0x9C` with clamps `+0x90/+0x94`, a "camera moved" flag
+`+0x1A8`, and two source-select flags `+0x1AC/+0x1B0` that choose which
+yaw/pitch pair ApplyMouse writes. Mouse deltas are divided by the frame delta,
+clamped, then scaled by the **per-mode drag speeds** `[ctx+0x6C]`/`[ctx+0x70]`
+(classic) or `[ctx+0x84]`/`[ctx+0x88]` (joystick/other) before ApplyMouse —
+matching the camera-node fields from §7c. The path is gated by two global words
+`[0x180EDDFE0+0x25CD0]`/`+0x25CF0` and by `[this+0x25C]` + controller `[+8]`.
+After ApplyMouse both follow controllers update (`0x18001C035`, `0x18000B7DA`).
+
+**Camera rows (HIGH):** the 10 per-mode camera rows are cached in a
+`10 x 0x24` array reached from `[0x180EDDFE0+0x262F0]`; loader `0x180338C10`
+fetches each by name from the value source (`[base+0x490]` vtable `+0x98/+0x50`):
+`ZoomLength +0x0`, `CameraMovePitchApplyAngle +0x4`, `SmoothTime +0x8`,
+`AdjustPitch +0xC`, `ApplyTimeInterval +0x10`,
+**`CameraAdjustYawWhenMoveTurn +0x14`**, **`DisableAngle +0x18`**,
+`AdjustMaxPitch +0x1C`, `ApplyMaxPitch +0x20`. This confirms the host row
+semantics (`FollowYaw` dead zone 0.26) come from real cached per-mode data.
+
+**Implication for the host model (decoded direction):** the only camera-yaw
+writer found on the mouse path is ApplyMouse (mouse deltas, gated by the manager
+flags); `CONTROL_TURN_*` feeds the character controller queue. No TURN→camera
+path was found in the game-client build. Therefore A/D should drive the
+character (and the run frame) and must not rotate the camera; the camera is
+owned by the mouse/manager drag path. The host's 1:1 `camSys.Yaw -= dturn`
+coupling is the deviation (documented in `CLASSIC_CONTROLS_AUDIT.md` §5); the
+camera follow should use the cached `CameraAdjustYawWhenMoveTurn` row while
+moving. Next probe if needed: identify the writers of the manager flags
+`+0x1AC/+0x1B0` and the gate words `+0x25CD0/+0x25CF0` (dynamic scan; static
+xref shows only constructors).
+
+Evidence dumps: `%TEMP%\opencode\modes-re\gc_mousemove.txt`,
+`gc_applymouse_fn.txt`, `gc_camrow_loader.txt`, `gc_ctrl_apply.txt`,
+`exe_eventcommon_camera.txt`, `ui_enablecontrol.txt`, `ui_begindrag.txt`,
+`ui_lockcontrol.txt`, `hk_proto61.txt`, `hk_proto63.txt`, `control_full.txt`.
