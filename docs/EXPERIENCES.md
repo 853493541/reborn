@@ -1675,3 +1675,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   commits; fixed by gitignore + re-committing the branch clean (unpushed, so rewritten locally).
 - Outcome: solved (local branch `agent/m2-model`, not pushed); authoritative movement (server
   terrain/collision) is the next M2 slice.
+
+### 2026-10-02 — merge — agent/m2-model -> main (M2 shared rules + server + client integration)
+- Did: merged `agent/m2-model` (`--no-ff`, no conflicts). Rebuilt canonical `reborn_client.exe`
+  + `reborn_client_mini.exe`; gates: `camera_smoke.exe` ALL PASS, `jx3_model.py` 10x PASS,
+  `verify_model.py` pass, loot `selftest` PASS, parity `Reborn.Rules.Selftest` 51 PASS,
+  `Reborn.Server --selftest` 8 PASS. Relaunch check: canonical logs `build=reborn_client.exe`
+  (netcode off by default, M1 behaviour unchanged).
+- Evidence: merge `3da9fc1`; branch commits `c0179a5` + `96cc4a5`; docs `M2_SHARED_RULES.md`.
+- Outcome: M2 structural slice complete on main (local, not pushed); authoritative server
+  movement (terrain/collision) is the next M2 slice.
