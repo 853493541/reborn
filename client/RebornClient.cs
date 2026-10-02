@@ -2063,16 +2063,11 @@ internal static class RebornClient
             // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D.
             // DECODED (hotkeys.lua): the turn keys are a CHARACTER control -
             // TurnLeftStart -> SetControl(CONTROL_TURN_LEFT); in classical free
-            // view the strafe handler calls TurnLeftStart too.
-            // While RMB is held the mouse owns the camera and the heading
-            // (CAMERAORSELECTORMOVESTICKY / CONTROL_OBJECT_STICK_CAMERA):
-            // the keyboard turn is inert then. PROVISIONAL host rule - taken
-            // from the observed real-client behaviour (A/D do not turn the
-            // camera while RMB is held); no Lua/engine gate has been found yet
-            // (Hotkey_EnableTurnLeft is only the tutorial gate, Teaching.lua).
-            // Re-open when the engine control consumer is decoded.
-            // TV: docs/controls/CLASSIC_CONTROLS_AUDIT.md, docs/EXPERIENCES.md.
-            if (grounded && (turnL || turnR) && !(classicalMode && rmbDown))
+            // view the strafe handler calls TurnLeftStart too. The camera
+            // follow-on-turn is the host coupling (see the camera workstream).
+            // No RMB/Mouse gate exists in the shipped UI scripts; the engine's
+            // own consumer of CONTROL_TURN_* is still being traced.
+            if (grounded && (turnL || turnR))
             {
                 float tstep = charTurnRate * (float)dt;
                 float dturn = 0f;
