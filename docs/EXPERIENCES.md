@@ -1073,3 +1073,26 @@ all tags should fire. Editor config to adopt when initializing the host
 - Evidence: `%TEMP%\opencode\skillv2\{win2,play3}.out`; probe `client_sfx_probe.cpp`;
   plan `docs/engine_host/SFX_WIRING_PLAN.md`.
 - Re-open: attach context + scene binding -> engine-driven playback A/B in the app.
+
+### 2026-10-01 - engine host - client-stack probe: scene live, FS/data boundary, bind context open
+- Scene: the probe now creates an empty scene + scene view (`CreateEmptyScene(0) -> 0`,
+  `CreateSceneViewFrom3DScene -> 0`, `AddSceneView_SceneView -> 0`) so
+  `Get3DScene2(window)` returns a live scene; the SFX bind (`vt[0x180]`) still
+  returns `E_NOINTERFACE` - the missing piece is the SFX-model attach/bind context
+  (`KG3D_SFXModel::BindData`, engine `0xE345E0`, called via a runtime pointer; the
+  direct object's `vt[0xD60]` is the shared stub).
+- FS/data boundary: the game file layer serves the **PakV4 store only** - loose files
+  copied into the working root stay invisible (`g_IsFileExist(mesh)=0` vs `sfx=1`;
+  `KG3D_LoadFile` same) even after `g_SetRootPath` + `g_SetFilePath`. Player models
+  are not in PakV4 (only in the updater cache) - the local install is a partial client,
+  models streamed on demand. Both case variants of the SFX load fine; the actor path's
+  failure is its **owner/context FS**, not case. The engine's animation tag system exists
+  (`GetAnimTagSystem` non-null; `KG3D_AnimationTagX64.dll` vtable 28 slots) but
+  cannot fire without a loadable actor/animation.
+- The probe is preserved in-repo: `tools/engine_host/client_sfx_probe.cpp` +
+  `build_client_sfx_probe.cmd` (root via `RC_PROBE_ROOT`; registered in the area
+  README tools table).
+- Evidence: `%TEMP%\opencode\skillv2\{fs2,view,envroot}.out`; commits `8d9c529`,
+  `6346af5`, `1365b98`.
+- Re-open: SFX-model attach context (or runtime assets from a full client update) ->
+  engine-driven playback A/B in the app.
