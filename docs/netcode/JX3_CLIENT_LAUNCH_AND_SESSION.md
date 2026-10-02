@@ -92,18 +92,26 @@ Header (after the client's in-place decrypt of the first 8 bytes):
 - `+0x10 + i*0x1F7` — slot payload (0x1E7 bytes) + 16-byte key at `+0x1E7`; parsed
   into a map keyed by the 16-byte pair (values copied into 0x208-byte nodes).
 
-Crypto: the first 8 bytes are decrypted by a **custom 16-round TEA variant**
-(`0x140101450`): sum starts `0xC6EF3720`, 32 delta steps of `0x61C88647`, key words
-`a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f`; `mx = (((x>>5)^(x<<4)) + x) ^ (key[idx] + sum)`.
-**Only the decrypt direction exists** in `JX3ClientX64.exe` / `JX3LogicEditOperationX64.dll`
-(no `0x9E3779B9` immediate anywhere); the writer (which must encrypt) is still
-unidentified — the launcher binaries do not contain the block GUID.
+Crypto: the first 8 bytes are decrypted by a **custom TEA variant** (`0x140101450`)
+whose exact 64-step update table was recovered by emulating the disassembly
+(`proof/netcode/launch_block_cipher_table.txt`):
+
+```
+mx = (((x>>5) ^ (x<<4)) + x) ^ (key[e] + sum)     # x = the other word
+v[target] -= mx                                    # decrypt; encrypt = reverse with +=
+key = { a0b1c2d3, e4f5a6b7, c8d9eafb, 0c1d2e3f }; sum per step in the table
+```
+
+The table model reproduces the emulated function exactly on all test vectors and the
+inverse round-trips. **Still only the decrypt direction exists** in
+`JX3ClientX64.exe` / `JX3LogicEditOperationX64.dll`; the writer (which must encrypt)
+remains unidentified.
 
 Client behaviour: the parser is **polled** (caller `0x140100530`, timeout-guarded) and
 the client gives up ~2.2–2.4 s after start. Launcher-emulator mechanics work
-(suspended start → create PID-keyed mapping → write → resume), but a synthesized
-header-only block (both key-index variants, `+8` set) still exits at 2.4 s — the
-remaining required content/cipher details are unresolved.
+(suspended start → create PID-keyed mapping → write → resume), but a synthesized block
+with a **cipher-verified fresh timestamp + `+8` set** still exits at 2.4 s — the exit is
+therefore gated by something else (network/launcher presence), not the block header.
 
 ## 8. Verdict (2026-10-01, updated)
 

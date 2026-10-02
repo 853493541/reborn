@@ -1403,3 +1403,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   proof/netcode/disasm/{launchblock_parser,launchblock_decrypt,parser_caller,logic_reader_callers,logic_mapping_refs}.txt;
   this commit (local).
 - Outcome: partial (format decoded; writer open).
+
+### 2026-10-01 — netcode — Launch block header cipher solved (emulator-derived table)
+- Did: emulated `0x140101450` (custom TEA variant) instruction-by-instruction with a
+  capstone interpreter; solved the exact 64-step update table
+  (`mx = (((x>>5)^(x<<4)) + x) ^ (key[e] + sum)`, per-step key/sum in
+  `proof/netcode/launch_block_cipher_table.txt`); the table reproduces the emulated
+  decrypt on all vectors and the inverse round-trips. Built the launcher-emulator probe
+  (suspended start + pre-created PID-keyed mapping + cipher-encrypted block + resume).
+- Result: even with a cipher-verified fresh timestamp and `+8` set, the client still
+  exits ~2.4 s after start -> the exit is gated by something other than the block
+  header (network/launcher presence); the block writer (encrypt side) is still
+  unidentified.
+- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md` §7;
+  `proof/netcode/launch_block_cipher_table.txt`; worktree `reborn-iso-v2` branch
+  `agent/v2`; this commit (local).
+- Outcome: partial (cipher solved; exit gate still open).

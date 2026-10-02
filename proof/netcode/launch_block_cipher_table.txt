@@ -1,0 +1,70 @@
+eax 0 C6EF3720
+r10d 0 28B7BD67
+eax 3 28B7BD67
+r10d 0 8A8043AE
+eax 2 8A8043AE
+r10d 0 EC48C9F5
+eax 1 EC48C9F5
+r10d 0 4E11503C
+eax 0 4E11503C
+r10d 0 AFD9D683
+eax 3 AFD9D683
+r10d 0 11A25CCA
+eax 2 11A25CCA
+r10d 0 736AE311
+eax 1 736AE311
+r10d 0 D5336958
+eax 0 D5336958
+r10d 0 36FBEF9F
+eax 3 36FBEF9F
+r10d 0 98C475E6
+eax 2 98C475E6
+r10d 0 FA8CFC2D
+eax 1 FA8CFC2D
+r10d 0 5C558274
+eax 0 5C558274
+r10d 0 BE1E08BB
+eax 3 BE1E08BB
+r10d 0 1FE68F02
+eax 2 1FE68F02
+r10d 0 81AF1549
+eax 1 81AF1549
+r10d 0 E3779B90
+eax 0 E3779B90
+r10d 0 454021D7
+eax 3 454021D7
+r10d 0 A708A81E
+eax 2 A708A81E
+r10d 0 08D12E65
+eax 1 08D12E65
+r10d 0 6A99B4AC
+eax 0 6A99B4AC
+r10d 0 CC623AF3
+eax 3 CC623AF3
+r10d 0 2E2AC13A
+eax 2 2E2AC13A
+r10d 0 8FF34781
+eax 1 8FF34781
+r10d 0 F1BBCDC8
+eax 0 F1BBCDC8
+r10d 0 5384540F
+eax 3 5384540F
+r10d 0 B54CDA56
+eax 2 B54CDA56
+r10d 0 1715609D
+eax 1 1715609D
+r10d 0 78DDE6E4
+eax 0 78DDE6E4
+r10d 0 DAA66D2B
+eax 3 DAA66D2B
+r10d 0 3C6EF372
+eax 2 3C6EF372
+r10d 0 9E3779B9
+eax 1 9E3779B9
+r10d 0 00000000
+# launch block header cipher - solved update table (64 steps)
+# source: JX3ClientX64.exe 0x140101450 (decrypt), emulated from disasm and solved
+# formula: v[target] -= (((x>>5) ^ (x<<4)) + x) ^ (key[e] + sum)   (decrypt)
+#          x = the other word; sum = the per-step value below; key = {a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f}
+# encrypt = apply the same steps in reverse with +=
+# columns: target keyidx sum_used
