@@ -251,3 +251,38 @@ CLASSIC_CONTROLS_AUDIT.md with re-open criteria; it is not presented as client
 truth. Host verification: with RMB held and no mouse motion, W+A gives
 dcam=0.00 dyaw=0.00 dist=384 (log 20261001_173338); without RMB, W+A curves
 and A-alone turns at the local rate.
+
+## RESOLUTION (2026-10-01, final): gate REVERTED; op-mode script layer fully decoded
+
+Commit bb91c08 reverts the provisional gate: `classicalMode && rmbDown` removed;
+A/D turn exactly as without RMB. Rebuilt `reborn_client_control_modes.exe`
+(exit 0) + `camera_smoke_control_modes.exe` ALL PASS; jx3_model 10x PASS;
+verify_model exit 0; capture selftest PASS; client relaunched.
+
+Decoded from the game client's shipped scripts (extracted with the game
+client's own PakV4 extractor; dumps under %TEMP%\opencode\modes-re\):
+
+- `mainscene.lua`: `Camera_IsInFreeView` (proto 0/1) returns the flag stored by
+  `CameraStatus_Animation` (proto 0/0); `CameraStatus_Set` (proto 0/3) calls
+  `CameraStatus_Animation(mode ~= "god camera")`. Normal play (`local camera`)
+  -> free view TRUE -> the real `TurnLeftStart/Stop` + `TurnRightStart/Stop`
+  globals are active. God camera -> FALSE -> globals swapped to `Strafe*`.
+- `hotkeys.lua`: turn handlers (protos 0/71-0/74) and forward/back (0/65-0/68)
+  have no mode branch; `StrafeLeftStart` (0/76) is the only mode-branched
+  handler: CLASSICAL -> `Camera_EnableControl(CONTROL_STRAFE_*, true)` then
+  `if Camera_IsInFreeView() then TurnLeftStart/RightStart() end`; JOYSTICK ->
+  `ResponseWASDKey("StrafeLeft", ...)`. `ResponseWASDKey` (0/46) refcounts the
+  active move actions into the 8-way MOVE_* displacement dispatch.
+- `OperationModeBase.lua`: `FreeMoveControl` (joystick vector), `RotatePlayer`
+  (0.3 smoothing + FastArcTan table = tan(i*pi/128), 64 entries),
+  `SetPlayerRotation` -> `TurnTo`; `ClearMoveState` disables the six camera
+  controls; CLASSICAL switch = `Camera_SetResetSpeed(1.0)` + `UseFullAngle(false)`
+  + `Scene_LockMouseRotation(false)`; JOYSTICK flips them true.
+- `Scene.lua`: RMB down -> `Camera_BeginDrag(2.0)` +
+  `Camera_EnableControl(CONTROL_OBJECT_STICK_CAMERA, true)` only. NO branch
+  anywhere makes turning depend on RMB.
+
+Conclusion: no script-level RMB turn gate exists; the host now follows the
+scripts. The engine consumer of `CONTROL_TURN_*` while
+`CONTROL_OBJECT_STICK_CAMERA` is active remains the next probe
+(`JX3RepresentX64.dll` commit 0x1805df660 -> applier 0x1805df7e0).

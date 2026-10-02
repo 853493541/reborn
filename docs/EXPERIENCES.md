@@ -1147,3 +1147,49 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   section. All 1551 core UI scripts were extracted and searched for a gate.
 - Lesson: "verified" may only describe what the evidence shows; a user
   observation is a reproduction target, not a decoded mechanism.
+
+### 2026-10-01 - controls/client - RMB turn gate REVERTED; the op-mode script layer fully decoded
+- User: the RMB-held turn suppression is an invented rule, not the client's.
+  Revert and get the real behavior from the game client.
+- Did (game-client scripts, game client's own PakV4 extractor):
+  1. Reverted the gate (commit bb91c08: `classicalMode && rmbDown` removed;
+     A/D turn exactly as without RMB).
+  2. Decoded the whole operation-mode layer from the shipped UI scripts:
+     - OperationModeBase.lua: FreeMoveControl builds the joystick direction
+       vector (W=(0,1) S=(0,-1) A=(-1,0) D=(1,0)), RotatePlayer smooths it at
+       0.3/frame, heading from the FastArcTan table (tan(i*pi/128), 64 entries),
+       SetPlayerRotation -> Camera_GetRTParams/ConvertYawToDirection -> TurnTo;
+       ClearMoveState disables all six camera controls via Camera_EnableControl
+       and resets the direction vectors; SetOperationMode(CLASSICAL) applies
+       Camera_SetResetSpeed(1.0) + UseFullAngle(false) +
+       Scene_LockMouseRotation(false), joystick flips both to true.
+     - hotkeys.lua: MoveForward/BackwardStart/Stop (0/65-68) and
+       TurnLeft/TurnRightStart/Stop (0/71-74) have no mode branch;
+       StrafeLeftStart (0/76) is the only mode-branched handler - classical:
+       wrapper(CONTROL_STRAFE_*, true) then if Camera_IsInFreeView() then
+       TurnLeftStart/RightStart(); joystick: ResponseWASDKey('StrafeLeft',...)
+       with Camera_EnableControl fallback. ResponseWASDKey (0/46) is the
+       per-action key refcount -> 8-way MOVE_* displacement dispatcher.
+     - mainscene.lua: Camera_IsInFreeView (proto 0/1) returns the flag stored
+       by CameraStatus_Animation (proto 0/0); CameraStatus_Set (proto 0/3)
+       ends with CameraStatus_Animation(mode ~= 'god camera'), so free view is
+       true in normal play and false only in the god camera; true restores the
+       real Turn* handler globals, false swaps in Strafe* (god camera).
+     - Scene.lua: OnSceneRButtonDown -> Camera_BeginDrag(2.0) +
+       Camera_EnableControl(CONTROL_OBJECT_STICK_CAMERA, true) (LMB ->
+       CONTROL_CAMERA); Scene_SetMoveControl stores the flag and routes
+       non-FORWARD controls to FreeMoveControl. No RMB branch anywhere.
+- Result: no script-level RMB gate exists in any of the five consumers; the
+  host now matches the scripts (turn works with RMB down). The engine consumer
+  of CONTROL_TURN_* vs CONTROL_OBJECT_STICK_CAMERA (JX3RepresentX64.dll commit
+  0x1805df660 -> applier 0x1805df7e0, 8-type switch) stays open and is the next
+  probe; host has no provisional rule on this path any more.
+- Evidence: rebuilt reborn_client_control_modes.exe + camera_smoke ALL PASS;
+  jx3_model 10x PASS; verify_model exit 0; capture selftest PASS; relaunched
+  (pid recorded in-session). Script dumps under
+  %TEMP%\opencode\modes-re\ (opbase_full, hotkeys_full, scene_full,
+  camcommon_full, mainscene_full); extracted scripts in %TEMP%\opencode\ui_ex.
+- Lesson: the whole control truth was in the shipped scripts, not the exe;
+  decode the mode/camera state machines (mainscene CameraStatus_*) before
+  judging any observed input behavior.
+

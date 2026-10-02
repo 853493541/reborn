@@ -16,7 +16,7 @@ and `hotkeys.lua`), `proof/controls/ui_lua/OperationSwitch.joystick.txt`,
 |---|---|---|
 | Camera rotation | only while holding LMB/RMB | **mouse always rotates** (`Scene_LockMouseRotation`) |
 | LMB drag | camera only | camera (+ selection semantics) |
-| RMB drag | camera + character turn | camera (character faces movement) |
+| RMB drag | camera orbit: `Camera_BeginDrag(2.0)` + `CONTROL_OBJECT_STICK_CAMERA` (script-verified; **no script-level body turn**) | camera (character faces movement) |
 | Movement keys | camera-relative WASD; A/D strafe; in free view A/D = turn-in-place (`TurnLeftStart/TurnRightStart`) | camera-relative WASD; character turns to face the movement heading |
 | Control API | `Camera_EnableControl(flag, …)` | `Scene_EnableFreeMoveControl(flag, …)` |
 | Reset speeds | `Camera_SetResetSpeed(3.5, 3.75)` (classic, joystick — order per call, [MED]) | same call |
@@ -223,10 +223,14 @@ or merge that subject to main first and branch `agent/control-modes`.
   `TurnLeftStart/TurnRightStart` when `Camera_IsInFreeView()`; JOYSTICK calls
   `ResponseWASDKey('StrafeLeft/Right', true, double)` (double-tap aware), with
   `Camera_EnableControl` only as the failure fallback. Forward/back/turn
-  handlers (protos 0/65-0/74) have no mode branch. The host maps the undecoded
-  free-view state to `RC_FREEVIEW`: **1 (default) = A/D turn in classical**
-  (the observed game behaviour; camera drags behind through the 15 deg dead
-  zone), 0 = the decoded side-step branch with the authored `挪步左/右` clips.
+  handlers (protos 0/65-0/74) have no mode branch. Free view is now **decoded**
+  (`Camera_IsInFreeView` = `CameraStatus_Animation` flag, true except the god
+  camera); in normal play the global `TurnLeftStart/RightStart` handlers are
+  the real turn controls, so the default A/D keys (bound to STRAFE) run
+  strafe + `TurnLeftStart/RightStart`. The host maps this to `RC_FREEVIEW`:
+  **1 (default) = normal play (A/D turn + strafe)** (camera drags behind
+  through the 15 deg dead zone), 0 = the god-camera side-step branch with the
+  authored `挪步左/右` clips. **No RMB gate exists** (reverted `bb91c08`).
   Classical S back-pedals (`后退01` clip); joystick A/D/S turn to the travel
   heading. Proof: `proof/controls/control_modes_run.txt`.
 - **Mode-matched locomotion animation (2026-10-01)** — the locomotion clip is
@@ -251,9 +255,17 @@ or merge that subject to main first and branch `agent/control-modes`.
   no application, no invented modes.
 - **M2 open** — the drag-release reset path (`Camera_SetResetSpeed(3.5, 3.75)`)
   is not implemented in the host yet; values loaded but unused.
-- **Free view open** — `Camera_IsInFreeView` (classical A/D -> turn-in-place)
-  still not located in the game-client strings/dumps; classical A/D is always
-  strafe until it is decoded. No approximation.
+- **Free view DECODED (2026-10-01)** — `Camera_IsInFreeView` is a **Lua**
+  getter in `mainscene.lua` (proto 0/1: returns the flag stored by
+  `CameraStatus_Animation`, proto 0/0), not a C binding; `CameraStatus_Set`
+  sets it to `mode ~= 'god camera'`. True in normal play, false in the god
+  camera. When true, `CameraStatus_Animation` restores the real
+  `TurnLeftStart/Stop`+`TurnRightStart/Stop` globals; when false it swaps in
+  `Strafe*`. So A/D (STRAFE-bound default keys) hit the strafe handler whose
+  free-view branch also calls `TurnLeftStart/RightStart`; god camera swaps A/D
+  to strafe-only. Host `RC_FREEVIEW` maps 1 = normal play, 0 = god-camera
+  strafe-only. **RMB gate reverted** (`bb91c08`): no script-level RMB
+  interaction with turn/strafe exists; RMB only starts camera drag.
 - Gates: camera_smoke (incl. mode gating) ALL PASS; jx3_model 10x PASS;
   verify_model exit 0; capture selftest PASS.
 
@@ -282,8 +294,10 @@ the role's per-mode follow mode + spring/camera reset speeds on every switch
 (proof: `proof/controls/control_modes_run.txt`).
 
 **Still open (no invention):** the per-frame *consumer* of follow mode [0..3]
-(what each value changes) and of the reset speeds; the `Camera_IsInFreeView`
-global is absent from every candidate binary's string table (JX3ClientX64.exe,
-JX3RepresentX64.dll, KGUIX64.dll, KG3DEngineX64.dll, Engine_Lua5X64.dll) —
-likely hashed Lua registration. Next probe: trace the type-0xD node's update
-(vtable) or a live debug session on the real client.
+(what each value changes) and of the reset speeds. **Correction
+(2026-10-01):** `Camera_IsInFreeView` is **not** a hashed C registration — it
+is plain Lua in `mainscene.lua` (proto 0/1, set by `CameraStatus_Animation`).
+`Camera_EnableControl` is the C binding (found in `JX3UIX64.dll`, string
+verified). Next probe: the engine consumer of `CONTROL_TURN_*` /
+`CONTROL_OBJECT_STICK_CAMERA` (`JX3RepresentX64.dll`: commit 0x1805df660 →
+applier 0x1805df7e0, 8-type input switch) to settle the RMB-drag interaction.

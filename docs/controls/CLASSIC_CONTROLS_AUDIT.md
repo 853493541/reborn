@@ -19,18 +19,23 @@ the user-observed game behaviour):**
 |---|---|---|
 | W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D · ←/→ | **decoded**: the turn keys are a CHARACTER control (`TurnLeftStart` → `SetControl(CONTROL_TURN_LEFT)`; in classical free view the strafe handler calls `TurnLeftStart` too). Host camera follow-on-turn is a host coupling; while RMB is held the keyboard turn is inert (**provisional host rule** from the observed real client — see §5) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
-| W+A / W+D | run while turning (a curve) — the view and the body rotate together (no turn while RMB held) | run 320 u/s, curve radius v/ω |
+| A/D · ←/→ | **decoded**: the turn keys are a CHARACTER control (`TurnLeftStart` → `SetControl(CONTROL_TURN_LEFT)`); in classical free view the strafe handler calls `TurnLeftStart` too. **No RMB gate exists anywhere in the shipped scripts** (Scene/OperationModeBase/hotkeys/mainscene/CameraCommon) — RMB only starts camera drag (see §2) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
+| W+A / W+D | run while turning (a curve) — the view and the body rotate together (RMB does not change this) | run 320 u/s, curve radius v/ω |
 | S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
 
-**Decoded gate:** `mainscene.lua`'s `CameraStatus_Set` calls
-`CameraStatus_Animation(mode ~= 'god camera')`; `CameraCommon.lua` enters
-`'local camera'` for the player, so `Camera_IsInFreeView()` is **true in normal
-play**. In free view the strafe handler (proto 0/76) calls
-`TurnLeftStart/RightStart`, i.e. **A/D turn**; the non-free branch
-(`SetControl` side-step) only applies to the god camera and stays reachable
-with `RC_FREEVIEW=0` for tests.
+**Decoded gate (2026-10-01, full script decode):** `mainscene.lua` defines
+`Camera_IsInFreeView()` as a getter for the flag stored by
+`CameraStatus_Animation` (proto 0/1 returns upval = the flag; proto 0/0 stores
+it). `CameraStatus_Set` ends with `CameraStatus_Animation(mode ~= 'god camera')`,
+so `Camera_IsInFreeView()` is **true in normal play** (`'local camera'`) and
+false only in the god camera. With the flag true, `CameraStatus_Animation`
+**restores** the real `TurnLeftStart/Stop` + `TurnRightStart/Stop` globals
+(false swaps in `Strafe*` for the god camera). The strafe handler (proto 0/76)
+additionally calls `TurnLeftStart/RightStart` when the flag is true, i.e. the
+A/D (STRAFE-bound) keys give strafe + turn; god camera swaps A/D to strafe
+only. The host maps this to `RC_FREEVIEW` (1 = normal play, 0 = god-camera
+strafe-only).
 
 | Command | Default key | Status | Note |
 |---|---|---|---|
@@ -48,7 +53,7 @@ with `RC_FREEVIEW=0` for tests.
 | Command | Default key | Status | Note |
 |---|---|---|---|
 | `CAMERAORSELECTORMOVE` | LMB | PARTIAL | drag = camera only, DONE; **click select/move missing** (`docs/controls/CONTROLS_GAP_REGISTER.md` S7, targeting subject) |
-| `CAMERAORSELECTORMOVESTICKY` | RMB | DONE | camera + character turn (classical) |
+| `CAMERAORSELECTORMOVESTICKY` | RMB | DONE | **script-verified**: `Scene_OnSceneRButtonDown` → `Camera_BeginDrag(2.0)` + `Camera_EnableControl(CONTROL_OBJECT_STICK_CAMERA, true)` (gated by `Hotkey_IsRMouseEnabled`); no script-level body turn. Camera orbit in-classic is the engine's consumer of `CONTROL_OBJECT_STICK_CAMERA` (host coupling) |
 | `CAMERAZOOMIN` / `CAMERAZOOMOUT` | wheel up/down | **DONE (restored 2026-10-01)** | real default `Camera_Zoom(0.9/1.1)`; `+/-` keys kept as host extra, wheel-inert host deviation A12 superseded |
 | `CAMERARESET` | F11 | DONE | behind, game pitch −15° |
 | `CAMERA_SET_VIEW_1/2` | Home / End | DONE | behind / front presets |
@@ -91,16 +96,17 @@ with `RC_FREEVIEW=0` for tests.
 - **Turn rate is local data**: derived from the camera-controller row
   `RotationSpeed` (loader default `0.00314` rad/ms = π rad/s); no server byte is
   involved in the keyboard turn. Fallback π only if the row is absent.
-- **RMB-held keyboard turn inert — PROVISIONAL host rule** (registered
-  deviation): the observed real client does not rotate the camera from A/D
-  while RMB is held. **No client code gate has been found for this**: the
-  shipped Lua has no suppression (the strafe handler runs
-  `SetControl` + `TurnLeftStart` unconditionally in free view), and
-  `Hotkey_EnableTurnLeft/Right` are tutorial gates only (`Teaching.lua`). The
-  host implements the observed behaviour as `classicalMode && rmbDown` ⇒
-  keyboard turn skipped; re-open when the engine's control consumer (what the
-  client does with `CONTROL_TURN_*` while `CONTROL_OBJECT_STICK_CAMERA` is
-  active) is decoded. See `docs/EXPERIENCES.md` 2026-10-01 entry.
+- **RMB-held keyboard turn gate — REVERTED 2026-10-01** (commit `bb91c08`).
+  The shipped scripts contain **no RMB-conditional turn/strafe logic**
+  (checked: `Scene.lua`, `OperationModeBase.lua`, `hotkeys.lua`,
+  `mainscene.lua`, `CameraCommon.lua` — all extracted from the game client's
+  own paks): RMB only starts camera drag (`Camera_BeginDrag(2.0)` +
+  `CONTROL_OBJECT_STICK_CAMERA`). A/D resolve to the real turn handlers in
+  normal play exactly as without RMB. The host now behaves identically with
+  RMB down. Remaining engine question (open, no host rule): what the engine's
+  consumer does with `CONTROL_TURN_*` while `CONTROL_OBJECT_STICK_CAMERA` is
+  active — trace target `JX3RepresentX64.dll` commit path (0x1805df660 →
+  applier 0x1805df7e0). Docs: `OPERATION_MODES_PLAN.md` §7b, `EXPERIENCES.md`.
 
 ## 6. Recommended order
 
