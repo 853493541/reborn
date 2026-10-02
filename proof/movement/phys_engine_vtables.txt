@@ -370,3 +370,26 @@ their helpers; validated live via `RC_PX_COOK2=1` in
 
 FIRST LIVE ENGINE-PHYSICS COOK - the PhysX-direct bridge is real; the
 remaining steps are the mesh-create/actor/CCT ABI, not blockers of principle.
+
+### Update 2026-10-01k: createTriangleMesh identified (pxPhysics vt[8]) - mesh bridge complete
+
+Empirical vtable sweep (`RC_PX_MESH=1`, `RC_PX_MESH_IDX=...`) calling every
+PxPhysics entry with the cooked mesh on a managed PxInputStream
+(`reborn_20261001_234837.log`):
+
+- **vt[8] (PhysX3_x64 RVA 0x6F950) = `createTriangleMesh(PxInputStream&)`**:
+  consumed the whole 620-byte cooked stream (reads=95, 620/620) and returned a
+  live mesh pointer 0x169316F10. No crash.
+- Safety notes for the sweep: vt[2] HANGS (spin/lock - exclude), vt[1] is a
+  global decref (returns the new count), vt[5]/[6]/[7] return non-null garbage
+  without reading the stream (other creators), vt[11] reads 8 bytes only.
+- **Live PhysX-direct pipeline so far (all in-host):**
+  1. `PxCooking` vt[4] + managed PxOutputStream -> cooked triangle mesh
+     (NXS1/MESH, 620 B) - proven 23:42
+  2. `PxPhysics` vt[8] + managed PxInputStream -> `PxTriangleMesh*` - proven 23:48
+  3. TODO: PxShape (PxTriangleMeshGeometry + scale) -> PxRigidStatic ->
+     PxScene (engine-arg scene or PxPhysics createScene slot) -> scene queries /
+     PxControllerManager CCT -> A/B sweep/floor vs our solver at field spots.
+
+This closes the "PhysX-direct is not callable piecemeal" concern for the mesh
+half: create+load are ordinary vtable calls with managed stream ABI.

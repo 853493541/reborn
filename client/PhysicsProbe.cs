@@ -53,9 +53,78 @@ internal static class PhysicsProbe
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate uint WriteFn(IntPtr self, IntPtr src, uint count);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate uint ReadFn(IntPtr self, IntPtr dest, uint count);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr Ptr2Fn(IntPtr self, IntPtr a);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate void Void1Fn(IntPtr self);
-    static byte[] s_pxStreamBuf = new byte[1 << 20];
+    static byte[] s_pxInBuf;
+    static int s_pxInPos, s_pxInLen, s_readCalls;
+    static uint PxStreamRead(IntPtr self, IntPtr dest, uint count)
+    {
+        s_readCalls++;
+        int want = (int)count, avail = s_pxInLen - s_pxInPos;
+        int n = want < avail ? want : (avail > 0 ? avail : 0);
+        if (n > 0) { Marshal.Copy(s_pxInBuf, s_pxInPos, dest, n); s_pxInPos += n; }
+        return (uint)n;
+    }
+    static ReadFn s_readKeep;
+    static IntPtr MakePxInStream(byte[] data, int len)
+    {
+        s_readKeep = PxStreamRead;
+        s_pxInBuf = data; s_pxInLen = len; s_pxInPos = 0; s_readCalls = 0;
+        IntPtr vtbl = Marshal.AllocHGlobal(16);
+        Marshal.WriteIntPtr(vtbl, 0, Marshal.GetFunctionPointerForDelegate(s_readKeep));
+        Marshal.WriteIntPtr(vtbl, 8, Marshal.GetFunctionPointerForDelegate(s_dtorKeep));
+        IntPtr s = Marshal.AllocHGlobal(16);
+        Marshal.WriteIntPtr(s, 0, vtbl);
+        Marshal.WriteIntPtr(s, 8, IntPtr.Zero);
+        return s;
+    }
+    static IntPtr PxCookOk(IntPtr pxCook, IntPtr pxPhysics, Action<string> log)
+    {
+        IntPtr desc = Marshal.AllocHGlobal(0x60);
+        for (int i = 0; i < 0x60 / 4; i++) Marshal.WriteInt32(desc, i * 4, 0);
+        IntPtr verts = Marshal.AllocHGlobal(12 * 12);
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                int o = (i + j * 4) * 12;
+                Marshal.WriteInt32(verts, o + 0, BitConverter.ToInt32(BitConverter.GetBytes(i * 100f), 0));
+                Marshal.WriteInt32(verts, o + 4, BitConverter.ToInt32(BitConverter.GetBytes(0f), 0));
+                Marshal.WriteInt32(verts, o + 8, BitConverter.ToInt32(BitConverter.GetBytes(j * 100f), 0));
+            }
+        IntPtr tris = Marshal.AllocHGlobal(12 * 6);
+        int ti = 0;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 2; j++)
+            {
+                ushort a = (ushort)(i + j * 4), b = (ushort)(i + 1 + j * 4);
+                ushort c = (ushort)(i + 1 + (j + 1) * 4), d = (ushort)(i + (j + 1) * 4);
+                Marshal.WriteInt16(tris, ti++ * 2, (short)a);
+                Marshal.WriteInt16(tris, ti++ * 2, (short)b);
+                Marshal.WriteInt16(tris, ti++ * 2, (short)c);
+                Marshal.WriteInt16(tris, ti++ * 2, (short)a);
+                Marshal.WriteInt16(tris, ti++ * 2, (short)c);
+                Marshal.WriteInt16(tris, ti++ * 2, (short)d);
+            }
+        Marshal.WriteInt32(desc, 0x00, 12);
+        Marshal.WriteIntPtr(desc, 0x08, verts);
+        Marshal.WriteInt32(desc, 0x10, 12);
+        Marshal.WriteInt32(desc, 0x18, 6);
+        Marshal.WriteIntPtr(desc, 0x20, tris);
+        Marshal.WriteInt32(desc, 0x28, 12);
+        Marshal.WriteInt16(desc, 0x30, 2);
+        Marshal.WriteInt32(desc, 0x48, unchecked((int)0x3A83126F));
+        s_pxStreamLen = 0;
+        IntPtr stream = MakePxStream();
+        int r = Fn<Bool2Fn>(Vt(pxCook, 4))(pxCook, desc, stream);
+        Marshal.FreeHGlobal(verts); Marshal.FreeHGlobal(tris); Marshal.FreeHGlobal(desc);
+        log("physprobe: PX_MESH cook=" + r + " bytes=" + s_pxStreamLen);
+        return (r != 0 && s_pxStreamLen > 0) ? IntPtr.Add(pxPhysics, 0) : IntPtr.Zero;
+    }
     static int s_pxStreamLen;
+    static byte[] s_pxStreamBuf = new byte[1 << 20];
     static uint PxStreamWrite(IntPtr self, IntPtr src, uint count)
     {
         int n = (int)count;
@@ -453,6 +522,28 @@ internal static class PhysicsProbe
             }
             catch (Exception e) { log("physprobe: PX_COOK2 ex: " + e.Message); }
             finally { Marshal.FreeHGlobal(verts); Marshal.FreeHGlobal(tris); Marshal.FreeHGlobal(desc); }
+        }
+        // PhysX-direct step 3 (opt-in RC_PX_MESH=1, test exe): identify and call
+        // pxPhysics::createTriangleMesh(PxInputStream&) by sweeping vtable entries
+        // with the cooked mesh stream. RC_PX_MESH_IDX restricts the sweep.
+        if (Environment.GetEnvironmentVariable("RC_PX_MESH") == "1")
+        {
+            IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+            IntPtr pxPhysics = Marshal.ReadIntPtr(mgr, 0x38);
+            PxCookOk(pxCook, pxPhysics, log);
+            byte[] cooked = new byte[s_pxStreamLen];
+            Array.Copy(s_pxStreamBuf, cooked, s_pxStreamLen);
+            string only = Environment.GetEnvironmentVariable("RC_PX_MESH_IDX");
+            for (int idx = 0; idx < 45; idx++)
+            {
+                if (only != null && !("," + only + ",").Contains("," + idx + ",")) continue;
+                IntPtr inStream = MakePxInStream(cooked, cooked.Length);
+                log("physprobe: PX_MESH try vt[" + idx + "] rva=" + Vt(pxPhysics, idx).ToString("X"));
+                var fn = Fn<Ptr2Fn>(Vt(pxPhysics, idx));
+                IntPtr ret = fn(pxPhysics, inStream);
+                log("physprobe: PX_MESH vt[" + idx + "] ret=0x" + ret.ToInt64().ToString("X") +
+                    " reads=" + s_readCalls + " consumed=" + s_pxInPos + "/" + s_pxInLen);
+            }
         }
 
         // through the engine's own loader and compare vertex/triangle counts.
