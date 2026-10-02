@@ -27,6 +27,7 @@ state of our own client, so the full control system can be implemented later.
 | `controls/OPERATION_MODES_PLAN.md` | CLASSICAL/JOYSTICK operation modes — game truth, routing matrix, switch key, P0–P4 |
 | `controls/CONTROLS_GAP_REGISTER.md` | every open gap with ID, status, dependency |
 | `controls/CLASSIC_CONTROLS_AUDIT.md` | classic-mode control surface audit: shipped default bindings vs client handlers (2026-10-01) |
+| `controls/CONTROL_MODES_TRACEABILITY.md` | **live matrix for the full CLASSICAL+JOYSTICK decode (incl. animation)** — layers, rows, gaps G1–G10 / A1–A20, verification plan (2026-10-02) |
 
 ## The one-paragraph summary
 

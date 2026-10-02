@@ -1499,3 +1499,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: turn habit A-alone yaw -3.14 camd -3.15 dpos=(0,0); TURNRIGHT 0.6s
   camd=-1.89; strafe habit A/D dpos=(-96,0) camd=0, TURNRIGHT camd=-1.89,
   WA/WD straight 384 dcam=0.00. Smoke ALL PASS. Relaunched (turn default).
+
+### 2026-10-02 - controls - P0: full control-modes decode traceability matrix
+- Started the full CLASSICAL+JOYSTICK decode (user: "full is EVERYTHING",
+  animations included). P0 = `docs/controls/CONTROL_MODES_TRACEABILITY.md`:
+  layer ledger, movement/camera/actions/mode-routing matrices, a 20-row
+  animation matrix, data ledger, gaps G1-G10 + A1-A20 with owner phases
+  (P1 Lua ... P9 publish), verification plan. Registered in controls README.
+- No behavior claims changed; host observations marked as verification only.
