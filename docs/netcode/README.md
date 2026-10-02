@@ -42,6 +42,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `JX3_MODE_UI_FLOW.md` | **screen-level flow**: queue UI → loading window (art/progress) → first HUD frame → result; per-map loading art extraction + consumer scan |
 | `JX3_DROPS_RESEARCH.md` | **drops session record (audited)**: containers, tables, wire formats, dead ends, confidence |
 | `JX3_MODE_LOOT_SYSTEM.md`, `JX3_MODE_SPAWN_RULES_SEARCH.md` | loot container schema / spawn-rule hunt + dead-end log |
+| `JX3_CLIENT_LAUNCH_AND_SESSION.md` | **client launch + session handoff reality check** (launcher chain, no-arg launch, live endpoints, offline verdict) |
 
 ## Tools (`tools/netcode/`)
 

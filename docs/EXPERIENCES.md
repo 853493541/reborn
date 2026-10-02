@@ -971,3 +971,34 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   changing anything; trace the full chain to the root cause and fix the wiring.
 - Evidence: `AGENTS.md` §6 (new paragraph); this commit (local).
 - Outcome: solved (rule added).
+
+### 2026-10-01 — repo — Cleanup: remove 4 merged worktrees/branches
+- Did: verified containment (`git branch --merged main`, `git merge-base --is-ancestor`
+  exit 0, `main..branch` = 0, worktrees clean) then removed worktrees
+  `reborn-iso-cam-wwdrag`, `reborn-iso-camera-wall-clip`, `reborn-iso-double-jump`,
+  `reborn-iso-mini-sandbox` and deleted `agent/cam-wwdrag`, `agent/camera-wall-clip`,
+  `agent/double-jump`, `agent/mini-sandbox`. `branch -d` refused camera-wall-clip only
+  because local was 15 ahead of its lagging upstream while fully merged to `main`;
+  re-verified ancestor-of-main then `-D`. Origin refs untouched; only regenerable
+  ignored artifacts (`__pycache__/`, `native/obj/`) were in the removed dirs.
+- Evidence: `git worktree list` now 9 (main + 8 in-flight); remaining 8 branches
+  unmerged/dirty and left alone.
+- Outcome: solved (not committed; main checkout stays local-only).
+
+### 2026-10-01 — netcode — JX3 client launch/session reality check (offline client verdict)
+- Did: bounded probe (Stage A static + Stage B observation) of "take the real client,
+  cut connections, private server". Recovered the streaming launch contract
+  (`/u:/t:`, `/c`, `/wg`), proved the normal launch is **arg-less** (Dumper `-c`
+  absent; WMI cmdline scrubbed) and gated on launcher/session presence: bare and
+  `/u:/t:`/`/c` launches exit in ~2 s, code 0, before any network. Observed a normal
+  run: explorer -> SeasunGame.exe -> JX3ClientX64.exe (+cefrender), game endpoint
+  `109.244.61.154:3724`, XGSDK/xoyo HTTP(S), loopback IPC pairs. Protocol table
+  (814 SIDs + sizes) already in-repo.
+- Verdict: **not a cheap pivot** — requires launcher emulation (IPC handoff), XGSDK
+  auth stub, server-list interception, and 814-message protocol implementation, plus
+  protection layers (Dumper64/VMProtect/TP3) and rule changes. Current engine-host
+  plan stays the cheaper/cleaner path.
+- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md`,
+  `proof/netcode/disasm/streaming_parsecmdline.txt` + gateway/serverlist dumps,
+  `proof/netcode/JX3Browser_strings.txt`; this commit (local).
+- Outcome: solved (feasibility answered; no pivot).
