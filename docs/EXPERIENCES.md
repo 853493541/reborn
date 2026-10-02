@@ -1306,3 +1306,36 @@ solved it, and what is still open. **Newest at the bottom.**
   CheckBox_Switch toggle with the chevrons) - hidden. Btn_Selfie (the round swirl at the ring edge) restored
   again; it was not the target.
 - Evidence: minimap_v13.png (clean top-right outside the lens, swirl back), --selftest 16/1/0.
+
+### 2026-10-02 — UI — 4.1 staging research: the countdown IS a KGUI window (RemainingTimeNotify)
+- Answer to "do we really have nothing to display": NO. Traced the staging family via the module
+  manifest: LoadingWaiting (spinner), FBCountDown (FB 10:58:59 generic), ChallengeCountDown (duel),
+  TeamCountdown (team timer), PQNextStage/PQwarning (regional PQ), DynamicBattleRoyale (BR skill bar),
+  and - the find - `RemainingTimeNotify` (ui/Config/Default/RemainingTimeNotify.{ini,lua}, PakV4):
+  anchored TOPCENTER,0,150; Open(nSeconds) draws the remaining time as big RougeLike.UITex digit frames
+  (frame = digit; verified frame 3 = the digit 3) plus SFX_Num ROUGELIKE_KILL<digit>.pss, switching the
+  Image_Minute/Image_Second labels (n%60==0 -> minutes), auto-close ~5s (OnFrameBreathe).
+- Also recovered `BattleFieldHSLHNotice` (黑山绝境 notice panel, 毒蘑菇即将出现/方位提示 art) - the
+  mode's event notice window; the phase announcements (绝境将在30/20/10秒后开始) arrive as system
+  messages on MainMessageLine (already built as 5.8); safe zone stays engine-drawn.
+- Catalog: `staging-countdown` gets the RemainingTimeNotify layout (30s sample, digits 3/0, list flow,
+  Image_Second shown/Image_Minute hidden; digit clones shown via the show list since Image_Num is
+  LSH=1). Engine tweak: AutoSize list handles no longer wrap their items (Handle_Count is 61px for two
+  32px digits; before, the digits stacked into two rows).
+- Evidence: staging_v5.png (剩余时间 [3][0] 秒钟); --selftest 17/0/0 now includes the new render.
+
+### 2026-10-02 — UI — 4.1 countdown: digits visible + label size (AutoSize images, clone alpha)
+- User: the seconds label resolution looked wrong and the actual numbers were missing. Causes found:
+  (1) Image_Num is authored `Alpha=0` (the parked prototype); the script's cloned digits render in game,
+  our clones inherited alpha 0 -> invisible. AdjustSpec gained `Alpha`; the two clone digits get alpha 255.
+  (2) Image_Minute/Image_Second are `AutoSize=1` with authored 123x41 but frame 73 is 69x41 - the viewer
+  stretched them (blurry). Image creation now prefers the frame's natural pixel size for AutoSize images
+  (engine semantics; the authored box is the editor box).
+- Evidence: staging_v6.png reads 剩余时间 30 秒钟 with the big digit glyphs; --selftest 17/0/0;
+  --audit placeholders=11 unresolved=0 outOfBounds=57 (unchanged totals).
+
+### 2026-10-02 — UI — 4.1 countdown pages (5/10/15/20/30 s)
+- Added five viewer pages to `staging-countdown`, each setting the clone digit frames
+  (frame = digit; verified frame 5 = the "5" glyph) and hiding the tens clone for the single-digit
+  5s state (the hidden clone drops out of the list layout, so the lone digit centres itself).
+- Evidence: stage_p5.png reads 剩余时间 5 秒钟; 10/15/20/30 render the two-digit states; --selftest 17/0/0.

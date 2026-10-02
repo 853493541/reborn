@@ -229,31 +229,52 @@
       "windows": [
         {
           "id": "staging-countdown",
-          "title": "Staging countdown (no KGUI renderer)",
-          "cn": "开局倒计时 / 安全区",
-          "status": "OPEN",
-          "root": null,
-          "path": null,
-          "summary": "Decoded 2026-09-29: the phase clock exists (S2C 0x11B writes the absolute end time to +0x1b490; GetBattleFieldPQInfo returns it) but its only KGUI consumer, BattleFieldMap.UpdateTime -> Wnd_Title/Text_Time, is hidden in this mode: BattleFieldMap.Init hides Text_Time when IsInTreasureBattleFieldMap() is true (decompiled 1352-1359) and the treasure table covers 296/297/410/512/532/645/676/677/709/715 (CheckTreasureBattleFieldMap dump). The countdown frame UI_黑山绝境_倒计时通用底框.pss is an editor/runtime effect (no extracted INI references it). The safe-zone boundary on the M-map is engine-drawn: InitMapData shows Handle_CircleNew + Handle_StormLine and registers MapCircle with SFX_CircleNew (C_自己圈范围_677.pss) for treasure maps (decompiled 5317-5341) — no KGUI image renderer. Staging announcements are server system messages (observed at T-30/20/10 in interface addon configs, LOW).",
+          "title": "RemainingTimeNotify",
+          "cn": "开局倒计时通知",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/RemainingTimeNotify.ini",
+          "hide": "Handle_Num,Image_Minute,Image_Num",
+          "show": [ "__lt_Handle_Count_0_Image_Num", "__lt_Handle_Count_1_Image_Num", "Image_Second" ],
+          "lists": [
+            { "container": "Handle_Count", "ini": "RemainingTimeNotify.ini", "item": "Handle_Num", "count": 2, "flow": "row" }
+          ],
+          "adjust": [
+            { "section": "__lt_Handle_Count_0_Image_Num", "alpha": 255 },
+            { "section": "__lt_Handle_Count_1_Image_Num", "alpha": 255 }
+          ],
+          "images": [
+            { "section": "__lt_Handle_Count_0_Image_Num", "frame": 3 },
+            { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 }
+          ],
+          "pages": [
+            { "id": "5", "label": "5秒", "images": [ { "section": "__lt_Handle_Count_1_Image_Num", "frame": 5 } ], "hide": [ "__lt_Handle_Count_0_Handle_Num" ] },
+            { "id": "10", "label": "10秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 1 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 } ] },
+            { "id": "15", "label": "15秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 1 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 5 } ] },
+            { "id": "20", "label": "20秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 2 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 } ] },
+            { "id": "30", "label": "30秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 3 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 } ] }
+          ],
+          "summary": "The staging/phase countdown notify (ui/Config/Default/RemainingTimeNotify.ini + .lua, PakV4, recovered 2026-10-02): anchored TOPCENTER,0,150; Open(nSeconds) renders the remaining time as big RougeLike.UITex digit frames (frame = digit 0-9, verified frame 3 shows the digit 3) and auto-closes ~5s (OnFrameBreathe); n%60==0 shows Image_Minute + the minutes digits, otherwise Image_Second + the seconds (the lua switches the 分/秒 labels; SFX_Num plays ROUGELIKE_KILL<digit>.pss per digit; Scene/MapWindow8 frames the label). Static render = the 30s state (seconds mode, digits 3/0). The staging phase therefore DOES have displays: this notify (server-driven remaining time), the mode notice panel BattleFieldHSLHNotice (黑山绝境 event notices e.g. 毒蘑菇即将出现/方位提示), and the phase announcements (绝境将在30/20/10秒后开始) which arrive as system messages and render on MainMessageLine (5.8); the safe-zone boundary is engine-drawn (MapCircle + SFX_CircleNew) and BattleFieldMap.Text_Time stays hidden for treasure maps.",
           "evidence": [
-            "ui/Config/Default/BattleField/BattleFieldMap.decompiled.lua:1352-1359 (Text_Time hidden for treasure maps), :1578-1627 (UpdateTime), :5317-5341 (MapCircle + SFX_CircleNew)",
-            "proof/netcode/mode_juejing/CheckTreasureBattleFieldMap.dump.txt (map ids 296/297/410/512/532/645/676/677/709/715)",
-            "ui/String/string.txt:696 STR_BUFF_H_LEFT_TIME_MSG",
-            "docs/netcode/JX3_MODE_MATCH_LIFECYCLE.md stage 3 (0x11B -> +0x1b490)",
-            "proof/netcode/mode_juejing/editor_assets_juejing.txt:72-77 (countdown PSS)",
-            "interface MY#DATA team_mon countdown entries 绝境将在30/20/10秒后开始 (LOW, interface-addon)"
+            "ui/Config/Default/RemainingTimeNotify.ini + RemainingTimeNotify.lua (Open(n)/Update digits/OnFrameBreathe auto-close, ROUGELIKE_KILL SFX)",
+            "ui/Config/Default/BattleFieldHSLHNotice.ini (毒蘑菇即将出现/西南边北偏50° notice panel)",
+            "assets/ui/Scheme/Case/string.txt: STR_PQ_PROTIME 阶段倒计时： / STR_PQ_TIMETITLE 挑战倒计时： / STR_TIMEDESERT 风暴倒计时： / STR_LEFTPEPLE 剩余人数： (strings; their consumers are not in the extracted subset)",
+            "ui/Config/Default/BattleFieldMap.decompiled.lua:1352-1359 (Text_Time hidden for treasure maps), :5317-5341 (MapCircle + SFX_CircleNew)",
+            "docs/netcode/JX3_MODE_MATCH_LIFECYCLE.md stage 3/4 (0x11B -> +0x1b490 phase end time)"
           ],
           "elements": [
-            "Phase clock cache +0x1b490 (absolute end time, server value)",
-            "BattleFieldMap Wnd_Title/Text_Time — hidden in this mode",
-            "Countdown frame PSS (editor/runtime effect, not extracted)",
-            "Engine safe-zone circle MapCircle + SFX_CircleNew (PSS)",
-            "Staging pose animation set 龙门绝境_站姿01..05 (world, not UI)"
+            "Big-digit remaining-time notify (RemainingTimeNotify, RougeLike digit frames + ROUGELIKE_KILL SFX)",
+            "Mode notice panel (BattleFieldHSLHNotice)",
+            "Phase announcements via MainMessageLine (system messages)",
+            "Engine safe-zone circle (MapCircle + SFX_CircleNew, world effect)",
+            "Phase clock +0x1b490 (server end time)"
           ],
           "labels": [
-            "STR_BUFF_H_LEFT_TIME_MSG",
             "STR_PQ_PROTIME",
             "STR_PQ_TIMETITLE",
+            "STR_TIMEDESERT",
+            "STR_LEFTPEPLE",
+            "STR_BUFF_H_LEFT_TIME_MSG",
             "STR_SAFEZONE"
           ]
         }

@@ -237,6 +237,11 @@ namespace UiProcessApp.Engine
         /// default (ExitPanel's Text_ExitGame box is 241 wide for a ~150px message and
         /// the icon+box group is centred on the dialog).</summary>
         public int? HAlign { get; set; }
+        /// <summary>Overrides Alpha. The authored prototypes of runtime clones are often
+        /// parked invisible (RemainingTimeNotify's Image_Num is Alpha=0 in the INI) while
+        /// the script's cloned items render fully — the inventory replays the visible
+        /// state for the clone sections.</summary>
+        public int? Alpha { get; set; }
     }
 
     /// <summary>
@@ -585,6 +590,8 @@ namespace UiProcessApp.Engine
                     section.Values["ImageType"] = adjust.ImageType.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 if (adjust.HAlign.HasValue)
                     section.Values["HAlign"] = adjust.HAlign.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.Alpha.HasValue)
+                    section.Values["Alpha"] = adjust.Alpha.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 

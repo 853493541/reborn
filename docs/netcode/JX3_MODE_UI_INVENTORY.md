@@ -136,10 +136,7 @@ frames 20-24 (track) and `CharButton.UITex` frames 18/19 (fill). The viewer repl
 | staging pose | `龙门绝境_站姿01..05` animation set | PROVEN asset |
 | mode HUD activation | minimap + main bar + BR skill bar appear after load | PARTIAL (activation trigger not proven) |
 
-**Viewer state (2026-09-29):** `staging-countdown` stays a research entry (no render):
-the countdown is not a KGUI window in this mode and the safe-zone circle is an
-engine/PSS effect. Re-open with a client GT screenshot of the staging moment or a
-PSS renderer.
+**Viewer state (2026-10-02):** the countdown display IS a KGUI window after all: `RemainingTimeNotify` (`ui/Config/Default/RemainingTimeNotify.{ini,lua}`, extracted 2026-10-02) — anchored TOPCENTER,0,150; `Open(nSeconds)` renders the remaining time as big `RougeLike.UITex` digit frames (frame = digit 0-9; 剩余时间/秒钟 labels from MapWindow8) with `ROUGELIKE_KILL<digit>.pss` SFX and auto-closes ~5 s. The viewer renders it as `staging-countdown` (30 s sample: digits 3/0, seconds mode). The staging phase also has the mode notice panel `BattleFieldHSLHNotice` (黑山绝境 notices, e.g. 毒蘑菇即将出现/方位提示) and the T-30/20/10 phase announcements, which arrive as system messages and render on `MainMessageLine` (5.8). The safe-zone boundary stays engine-drawn (`MapCircle` + `SFX_CircleNew`).
 
 ## 6. In-match HUD
 

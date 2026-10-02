@@ -220,6 +220,10 @@ namespace MapUiApp.Engine
                 double rowSpacing = list.GetInt("RowSpacing");
                 int hAlign = list.GetInt("HAlign");
                 int vAlign = list.GetInt("VAlign");
+                // An AutoSize list handle grows to its items instead of wrapping them
+                // (RemainingTimeNotify's Handle_Count is 61px wide but holds two 32px
+                // digit items; without this they wrapped into two rows).
+                bool autoSizeList = list.GetBool("AutoSize");
 
                 var rows = new List<List<IniSection>>();
                 var rowWidths = new List<double>();
@@ -229,7 +233,7 @@ namespace MapUiApp.Engine
                 foreach (var item in items)
                 {
                     var size = SizeOf(item);
-                    if (currentRow.Count > 0 && cursor + size.W > listW + 0.5)
+                    if (!autoSizeList && currentRow.Count > 0 && cursor + size.W > listW + 0.5)
                     {
                         rows.Add(currentRow); rowWidths.Add(cursor); rowHeights.Add(rowHeight);
                         currentRow = new List<IniSection>(); cursor = 0; rowHeight = 0;
@@ -550,6 +554,14 @@ namespace MapUiApp.Engine
                 var imageHeight = section.GetInt("ImageHeight");
                 var drawWidth = imageWidth > 0 ? imageWidth : width;
                 var drawHeight = imageHeight > 0 ? imageHeight : height;
+                // AutoSize image: the engine draws the frame at its natural pixel size
+                // (the authored Width/Height is just the editor box; RemainingTimeNotify's
+                // 123x41 labels stretched small MapWindow8 frames and read blurry).
+                if (autoSize)
+                {
+                    drawWidth = source.PixelWidth;
+                    drawHeight = source.PixelHeight;
+                }
                 FrameworkElement visual;
                 if (imageType == 16)
                 {
