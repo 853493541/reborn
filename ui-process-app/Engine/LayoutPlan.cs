@@ -181,6 +181,11 @@ namespace UiProcessApp.Engine
         public double? Top { get; set; }
         public int? HAlign { get; set; }
         public int? VAlign { get; set; }
+        /// <summary>Horizontal flow (PosType 9, measured width, no authored box): the
+        /// runtime AppendItemFromString + FormatAllItemPos sequence in a HandleType 3
+        /// row, e.g. ACC_TreasureFinal's banishing countdown = 将在(f257) / seconds(f258)
+        /// / 秒后传出战场(f257).</summary>
+        public bool? Flow { get; set; }
     }
 
     /// <summary>
@@ -220,6 +225,11 @@ namespace UiProcessApp.Engine
         /// <summary>Overrides the authored ImageType (10 = nine-slice) when the
         /// client's render proves a frame is diced but the INI omits the key.</summary>
         public int? ImageType { get; set; }
+        /// <summary>Overrides the authored text alignment. The engine draws runtime-set
+        /// messages centred in their box even where the INI leaves HAlign at the left
+        /// default (ExitPanel's Text_ExitGame box is 241 wide for a ~150px message and
+        /// the icon+box group is centred on the dialog).</summary>
+        public int? HAlign { get; set; }
     }
 
     /// <summary>
@@ -231,6 +241,28 @@ namespace UiProcessApp.Engine
     /// </summary>
     public static class LayoutPlanBuilder
     {
+        /// <summary>
+        /// Section lookup for inventory-supplied names: exact match first, then a
+        /// case-insensitive scan. Section identity is case-sensitive in the engine
+        /// (shipped INIs carry case-differing twins), so the plan's ByName must not
+        /// fold them together; the fallback keeps override entries authored with
+        /// sloppy casing working.
+        /// </summary>
+        private static bool TryFind(IniFile file, string name, out IniSection section)
+        {
+            if (file.ByName.TryGetValue(name, out section)) return true;
+            foreach (var candidate in file.Sections)
+            {
+                if (string.Equals(candidate.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    section = candidate;
+                    return true;
+                }
+            }
+            section = null;
+            return false;
+        }
+
         public static LayoutPlan Build(IniFile ini, string selectedPage)
         {
             var pageCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -423,7 +455,7 @@ namespace UiProcessApp.Engine
                     var table = TabTable.Load(text.Table);
                     value = table?.Lookup(text.TableKeyColumn, text.TableKey, text.TableColumn);
                 }
-                if (!filtered.ByName.TryGetValue(text.Section, out var section)) continue;
+                if (!TryFind(filtered, text.Section, out var section)) continue;
                 if (!string.IsNullOrWhiteSpace(value))
                     section.Values["$Text"] = value;
                 if (text.FontScheme.HasValue)
@@ -441,7 +473,7 @@ namespace UiProcessApp.Engine
             foreach (var image in images)
             {
                 if (image == null || string.IsNullOrWhiteSpace(image.Section)) continue;
-                if (!filtered.ByName.TryGetValue(image.Section, out var section)) continue;
+                if (!TryFind(filtered, image.Section, out var section)) continue;
                 if (!string.IsNullOrWhiteSpace(image.Image)) section.Values["Image"] = image.Image;
                 if (image.Frame.HasValue)
                     section.Values["Frame"] = image.Frame.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -471,11 +503,12 @@ namespace UiProcessApp.Engine
                 index++;
                 if (append == null || string.IsNullOrWhiteSpace(append.Container) ||
                     string.IsNullOrWhiteSpace(append.Text)) continue;
-                if (!filtered.ByName.TryGetValue(append.Container, out var container)) continue;
+                if (!TryFind(filtered, append.Container, out var container)) continue;
 
                 var name = $"__append_{append.Container}_{index}";
                 if (filtered.ByName.ContainsKey(name)) continue;
-                var width = append.Width ?? container.GetInt("Width");
+                var flow = append.Flow == true;
+                var width = append.Width ?? (flow ? 0 : container.GetInt("Width"));
                 var height = append.Height ?? 20;
                 var top = append.Top ?? 0;
                 var parent = append.Container;
@@ -503,10 +536,11 @@ namespace UiProcessApp.Engine
                 if (width > 0)
                     section.Values["Width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 section.Values["Height"] = height.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                section.Values["HAlign"] = (append.HAlign ?? 1)
+                section.Values["HAlign"] = (append.HAlign ?? (flow ? 0 : 1))
                     .ToString(System.Globalization.CultureInfo.InvariantCulture);
                 section.Values["VAlign"] = (append.VAlign ?? 1)
                     .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (flow) section.Values["PosType"] = "9";
                 filtered.Sections.Add(section);
                 filtered.ByName[name] = section;
             }
@@ -519,7 +553,7 @@ namespace UiProcessApp.Engine
             foreach (var adjust in adjustments)
             {
                 if (adjust == null || string.IsNullOrWhiteSpace(adjust.Section)) continue;
-                if (!filtered.ByName.TryGetValue(adjust.Section, out var section)) continue;
+                if (!TryFind(filtered, adjust.Section, out var section)) continue;
                 void Set(string key, double? value)
                 {
                     if (value.HasValue)
@@ -533,6 +567,8 @@ namespace UiProcessApp.Engine
                 Set("RelY", adjust.RelY);
                 if (adjust.ImageType.HasValue)
                     section.Values["ImageType"] = adjust.ImageType.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.HAlign.HasValue)
+                    section.Values["HAlign"] = adjust.HAlign.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -547,7 +583,7 @@ namespace UiProcessApp.Engine
             {
                 if (anchor == null || string.IsNullOrWhiteSpace(anchor.Section) ||
                     string.IsNullOrWhiteSpace(anchor.S) || string.IsNullOrWhiteSpace(anchor.R)) continue;
-                if (!filtered.ByName.TryGetValue(anchor.Section, out var section)) continue;
+                if (!TryFind(filtered, anchor.Section, out var section)) continue;
                 section.Values["AnchorArgs"] = string.Format(System.Globalization.CultureInfo.InvariantCulture,
                     "{0},{1},{2},{3}", anchor.R, anchor.S, anchor.X, anchor.Y);
             }
@@ -612,17 +648,17 @@ namespace UiProcessApp.Engine
             var selectedTab = TabForPage(selectedPage);
             for (int i = 0; i < wanted.Count; i++)
             {
-                if (!filtered.ByName.TryGetValue(wanted[i], out var section)) continue;
+                if (!TryFind(filtered, wanted[i], out var section)) continue;
                 section.Values["Left"] = (strip.X0 + i * strip.Step).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 section.Values["TabFixed"] = "1";
             }
 
             if (selectedTab != null && wantedSet.Contains(selectedTab) &&
-                filtered.ByName.TryGetValue(selectedTab, out var selectedSection) &&
+                TryFind(filtered, selectedTab, out var selectedSection) &&
                 selectedSection.GetInt("CheckedWhenCreate") == 0)
             {
                 foreach (var name in wanted)
-                    if (filtered.ByName.TryGetValue(name, out var tab))
+                    if (TryFind(filtered, name, out var tab))
                         tab.Values["CheckedWhenCreate"] = "0";
                 selectedSection.Values["CheckedWhenCreate"] = "1";
             }
@@ -775,12 +811,13 @@ namespace UiProcessApp.Engine
             {
                 if (template == null || string.IsNullOrWhiteSpace(template.Container) ||
                     string.IsNullOrWhiteSpace(template.Ini) || string.IsNullOrWhiteSpace(template.Item)) continue;
-                if (!filtered.ByName.ContainsKey(template.Container)) continue;
+                if (!filtered.ByName.ContainsKey(template.Container) &&
+                    !filtered.Sections.Any(s => string.Equals(s.Name, template.Container, StringComparison.OrdinalIgnoreCase))) continue;
 
                 IniFile source;
                 try { source = load(template.Ini); }
                 catch { continue; }
-                if (source == null || !source.ByName.TryGetValue(template.Item, out var prototype)) continue;
+                if (source == null || !TryFind(source, template.Item, out var prototype)) continue;
 
                 var byParent = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
                 foreach (var section in source.Sections)

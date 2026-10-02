@@ -2,7 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-          "defaultWindow": "ready-confirm",
+  "defaultWindow": "treasure-final",
   "stages": [
     {
       "id": "queue",
@@ -45,11 +45,6 @@
             { "section": "Text_FeiShaLingAvailable_K", "text": "(本周还可获得：1010)" },
             { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
             { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
-          ],
-          "images": [
-            { "section": "Image_AnniversaryIcon1", "frame": 23 },
-            { "section": "Image_AnniversaryIcon2", "frame": 23 },
-            { "section": "Image_AnniversaryIcon3", "frame": 23 }
           ],
           "summary": "1,129 sections. The mode tab strip is not authored as a strip: ShowModeTabs (NewBattleFieldQueue.decompiled.lua:4374-4451) hides every tab, then shows only the battlefield ids bound to the entry point and pins them at SetRelX(18 + i*100). InitWndBattleField (lua:4713-4744) drops modes whose IsActivityOn is false, which is why the live queue window shows 五人模式/单人模式/寻宝模式/自定义模式 (乱武模式 676 is off). Visibility follows the engine's LockShowAndHide flag (KGUI decoder clears the visible flag of locked sections; the window script is the only thing that shows them), so locked state widgets stay hidden and the script-shown ones (tabs, activity badges) are listed. The 五人模式 tab handler also sets Text_SkillTitle to STR_DESERTSTORM_TITLE (lua:4477-4488) and Text_TIP_DSTime to the schedule (lua:4350-4372). The reference screenshot state (proof/minimap/screenshots/Screenshot-given-1.png) additionally pins the 赛季 tab badges (Image_AnniversaryIcon1/2/3 at frame 23 of PartnerTeam.UITex, UpdateAnniversaryTabIcon lua:6506-6553; the INI default frame 21 is 周年), the player sample values (个人评分 1873, 飞沙令 10000/10000 via inventory `texts`), and the window's own string table string_ArenaCorpsPanel.txt, whose committed UTF-8 copy in Data/text resolves the labels the generic string.txt lacks.",
           "evidence": [
@@ -604,85 +599,108 @@
     {
       "id": "settlement",
       "title": "7. 结算 Settlement",
-      "summary": "PVPShowFinal 结算面板（左右两列玩家行），由 BATTLE_FIELD_SYNC_STATISTICS 驱动，展示击伤/伤害/治疗/濒危与奖励。",
+      "summary": "绝境结算 ACC_TreasureFinal（队伍排名与队员战绩）。",
       "windows": [
         {
-          "id": "pvp-show-final",
-          "title": "PVPShowFinal",
-          "cn": "结算面板",
+          "id": "treasure-final",
+          "title": "ACC_TreasureFinal",
+          "cn": "绝境结算",
           "status": "PROVEN",
           "root": "pak",
-          "path": "PVPShowFinal.ini",
-          "hide": "Handle_Player*,Handle_Title,Image_ScoreL,Image_ScoreR,Image_Bglogo_1",
+          "path": "ACC_TreasureFinal.ini",
+          "hide": "Handle_Player,Image_On,Image_Select,Wnd_PersonCard,Text_WarningTime,Btn_Export",
+          "adjust": [
+            { "section": "Handle_Titile", "left": 403 },
+            { "section": "Handle_FinalList", "left": 415 },
+            { "section": "Text_JJFen", "left": 609, "width": 72 },
+            { "section": "Text_Result", "left": 721, "width": 84 }
+          ],
+          "appends": [
+            { "container": "Handle_WarningTime", "text": "将在", "font": 257, "flow": true },
+            { "container": "Handle_WarningTime", "text": "29", "font": 258, "flow": true },
+            { "container": "Handle_WarningTime", "text": "秒后传出战场", "font": 257, "flow": true }
+          ],
+          "backdrop": "#33393E",
           "lists": [
-            { "container": "Handle_FinalListL", "ini": "PVPShowFinalL.ini", "item": "Handle_Player", "count": 1 },
-            { "container": "Handle_FinalListR", "ini": "PVPShowFinalR.ini", "item": "Handle_Player", "count": 1 }
+            { "container": "Handle_FinalList", "ini": "ACC_TreasureFinal.ini", "item": "Handle_Player", "count": 5 }
           ],
-          "summary": "Panel frame; the Lua driver registers BATTLE_FIELD_SYNC_STATISTICS -> OnSyncPQ -> GetBattleFieldStatistics, then MergeData/UpdateList; opens with ApplyBattleFieldStatistics. The Handle_Player* rows parked at the window edge are item prototypes cloned at runtime (InitPanel hides the arena score/title; UpdateOneSideList appends rows from PVPShowFinalL/R.ini), so the default state shows the authored row layout via the cloned prototypes instead of the parked originals.",
+          "texts": [
+            { "section": "Text_Rank", "text": "队伍排名：18/20" },
+            { "section": "Text_Time", "text": "已用时间： 12分45秒" },
+            { "section": "__lt_Handle_FinalList_0_Text_PlayerName", "text": "云舟过影" },
+            { "section": "__lt_Handle_FinalList_0_Text_KillNum", "text": "2" },
+            { "section": "__lt_Handle_FinalList_0_Text_Line", "text": "/" },
+            { "section": "__lt_Handle_FinalList_0_Text_XSNum", "text": "4" },
+            { "section": "__lt_Handle_FinalList_0_Text_BestZGNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_0_Text_HarmNum", "text": "1234.5万" },
+            { "section": "__lt_Handle_FinalList_0_Text_JJFenNum", "text": "12345" },
+            { "section": "__lt_Handle_FinalList_0_Text_ResultNum", "text": "24" },
+            { "section": "__lt_Handle_FinalList_0_Text_AwardNum", "text": "100" },
+            { "section": "__lt_Handle_FinalList_1_Text_PlayerName", "text": "剑影流光" },
+            { "section": "__lt_Handle_FinalList_1_Text_KillNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_1_Text_Line", "text": "/" },
+            { "section": "__lt_Handle_FinalList_1_Text_XSNum", "text": "3" },
+            { "section": "__lt_Handle_FinalList_1_Text_BestZGNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_1_Text_HarmNum", "text": "987.6万" },
+            { "section": "__lt_Handle_FinalList_1_Text_JJFenNum", "text": "9876" },
+            { "section": "__lt_Handle_FinalList_1_Text_ResultNum", "text": "24" },
+            { "section": "__lt_Handle_FinalList_1_Text_AwardNum", "text": "100" },
+            { "section": "__lt_Handle_FinalList_2_Text_PlayerName", "text": "清风明月" },
+            { "section": "__lt_Handle_FinalList_2_Text_KillNum", "text": "2" },
+            { "section": "__lt_Handle_FinalList_2_Text_Line", "text": "/" },
+            { "section": "__lt_Handle_FinalList_2_Text_XSNum", "text": "3" },
+            { "section": "__lt_Handle_FinalList_2_Text_BestZGNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_2_Text_HarmNum", "text": "657.7万" },
+            { "section": "__lt_Handle_FinalList_2_Text_JJFenNum", "text": "6777" },
+            { "section": "__lt_Handle_FinalList_2_Text_ResultNum", "text": "20" },
+            { "section": "__lt_Handle_FinalList_2_Text_AwardNum", "text": "80" },
+            { "section": "__lt_Handle_FinalList_3_Text_PlayerName", "text": "暮色苍茫" },
+            { "section": "__lt_Handle_FinalList_3_Text_KillNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_3_Text_Line", "text": "/" },
+            { "section": "__lt_Handle_FinalList_3_Text_XSNum", "text": "5" },
+            { "section": "__lt_Handle_FinalList_3_Text_BestZGNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_3_Text_HarmNum", "text": "555.5万" },
+            { "section": "__lt_Handle_FinalList_3_Text_JJFenNum", "text": "5555" },
+            { "section": "__lt_Handle_FinalList_3_Text_ResultNum", "text": "24" },
+            { "section": "__lt_Handle_FinalList_3_Text_AwardNum", "text": "80" },
+            { "section": "__lt_Handle_FinalList_4_Text_PlayerName", "text": "星河长明" },
+            { "section": "__lt_Handle_FinalList_4_Text_KillNum", "text": "2" },
+            { "section": "__lt_Handle_FinalList_4_Text_Line", "text": "/" },
+            { "section": "__lt_Handle_FinalList_4_Text_XSNum", "text": "5" },
+            { "section": "__lt_Handle_FinalList_4_Text_BestZGNum", "text": "0" },
+            { "section": "__lt_Handle_FinalList_4_Text_HarmNum", "text": "444.4万" },
+            { "section": "__lt_Handle_FinalList_4_Text_JJFenNum", "text": "4444" },
+            { "section": "__lt_Handle_FinalList_4_Text_ResultNum", "text": "24" },
+            { "section": "__lt_Handle_FinalList_4_Text_AwardNum", "text": "60" }
+          ],
+          "summary": "寻宝（绝境）最终结算 (1920x700, module ACC_TreasureFinal, script ui/Config/Default/BattleField/ACC_TreasureFinal.lua). The title band (Handle_Title) shows the team rank (Text_Rank = FormatString(STR_TREASURE_RANK, nRank, nTotal), badge art Image_Title/Image_TitleBg1 from Table_GetTreasureInfoTitle and the big digits Handle_Rank Image_Num1/Num2/Image_Ming), rank 1-3 also play Handle_SFX SFX_Copper/Silver/Gold. The my-team rows clone Handle_Player inside Handle_FinalList (Update: rows = GetMyTeamMemberData(nTeamID) sorted by field 12; TemplateGetRowData maps Name->Text_PlayerName, DECAPITATE_COUNT->Text_KillNum, KILL_COUNT->Text_XSNum, BEST_ASSIST_KILL_COUNT->Text_BestZGNum, HARM_OUTPUT->Text_HarmNum, SPECIAL_OP_3->Text_JJFenNum, SPECIAL_OP_6->Text_ResultNum; per-row AWARD_1/2/3 in Handle_Reward -> Image_AwardIcon frames on ui/Image/UITga/DesertStorm.UITex + Text_AwardNum). Handle_Fail/Handle_Win carry the ZS ribbon state art, the header labels live in Handle_Titile (STR_FBLIST_DUIYUANMINGZI/STR_TIPS7/STR_BF_KILL1/STR_BF_ZJZG/STR_BF_DAMAGE/STR_SHOW/STR_SHOW2/STR_GETCITY_JIANGLI), Text_Time = STR_BATTLEFIELD_TIME_USED, Text_WarningTime = STR_NEW_BANISH_1..2 banishing countdown, Btn_Leave -> LeaveALLBattleField (Text_Leave = STR_UISET_BFCENCEL), Btn_Export -> ExportData (Text_Export = STR_FACELIST_DAOCHUMIANJU, STR_CONTENST_INFO_EXPORT_SUCCESS), Wnd_PersonCard opens the clicked member's PersonalCard. Sample rows are placeholders in the window's real formats: Text_Line = '/' so Text_KillNum+Line+XSNum read as the 击/助 pair, Text_BestZGNum = 最佳助攻, Text_HarmNum is 万-formatted, Text_JJFenNum = 本场表现分, Text_ResultNum = 个人评分结算; the rank badge keeps the INI's authored digits (第18名) and Text_Rank carries the matching 队伍排名 text. The PVPUI12 chrome (LockShowAndHide=1) stays off. The window ships no opaque background: its only backdrop art is the semi-transparent veil Image_Bg1 (PVPShowFinal1 frame 11, ImageType=12, ~23% alpha) plus the row bands, composed over the live game world on the client, so the viewer renders it over a neutral tone (`backdrop` #33393E) instead of black; with the personal-card column out of scope the table block is centered on the window (Handle_Titile 403, Handle_FinalList 415). Verified against the capture (downscaled 1/1.73 to design px): button labels follow the engine's WndButton NormalFont, not the child Text scheme (Btn_Leave scheme 3 = 16px white, Btn_Export scheme 18 = 15px white - the authored Text_Leave 28/Text_Export 27 are copy-paste leftovers; 25% of shipped buttons differ), the banishing countdown is the runtime AppendItemFromString sequence in Handle_WarningTime (将在 f257 / seconds f258 yellow2 / 秒后传出战场 f257, viewer `appends` with flow), and the 击/助 pair packs tight because Text_Line is AutoSize=1 PosType=9 (the viewer now measures AutoSize text instead of using the authored box). 导出数据 is hidden per the user's call (the capture shows it, but the viewer drops it: hide Btn_Export). The window is a full-screen overlay centred on the screen (the editor parks the root at (screen-window)/2), so the viewer renders it inside a 1920x1080 screen frame (`screenWidth`/`screenHeight`) with the window centred on the neutral backdrop - the veil reads as the in-game band instead of filling the render.",
           "evidence": [
-            "proof/netcode/ui/pak_candidates/PVPShowFinal.ini",
-            "proof/netcode/ui/PVPShowFinal.dump.txt",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md §7"
+            "ui/Config/Default/BattleField/ACC_TreasureFinal.ini",
+            "ui/Config/Default/BattleField/ACC_TreasureFinal.lua",
+            "ui/module_info.xml (module ACC_TreasureFinal)",
+            "ui/scheme/case/string_PVPAcount.txt"
           ],
           "elements": [
-            "Window frame",
-            "Two-column player lists (L/R)",
-            "Open animation + sound"
+            "My-team rows (队员名字/击杀/助攻/最佳助攻/伤害/本场表现/个人评分/奖励)",
+            "队伍排名 N/20 + rank badge digits",
+            "已用时间 + 将在N秒后传出战场 countdown",
+            "离开战场 / 导出数据 buttons",
+            "单击队员打开 Wnd_PersonCard",
+            "PVPUI12 panel chrome (Outline/BgL1/Bgr2/ZSL/ZSR) shown + centered viewer-side (provisional)"
           ],
           "labels": [
-            "STR_JIESUAN_TITLE",
+            "STR_TREASURE_RANK",
+            "STR_FBLIST_DUIYUANMINGZI",
+            "STR_TIPS7",
+            "STR_BF_KILL1",
+            "STR_BF_ZJZG",
+            "STR_BF_DAMAGE",
+            "STR_SHOW",
             "STR_SHOW2",
-            "STR_BF_REWARD",
-            "STR_BF_MONEY",
-            "STR_BF_EXP",
-            "STR_BF_PRESTAGE"
-          ]
-        },
-        {
-          "id": "pvp-show-final-l",
-          "title": "PVPShowFinalL",
-          "cn": "结算列表（左）",
-          "status": "PROVEN",
-          "root": "pak",
-          "path": "PVPShowFinalL.ini",
-          "summary": "Item prototype INI (not a standalone window): Handle_Player is appended into PVPShowFinal's Handle_FinalListL by AppendItemFromIni. Rendered standalone it shows the parked prototype row.",
-          "evidence": [
-            "proof/netcode/ui/pak_candidates/PVPShowFinalL.ini"
-          ],
-          "elements": [
-            "Handle_Player rows",
-            "Text_Name / Text_Kill / Text_Damage / Text_Health / Text_NearDeathNum"
-          ],
-          "labels": [
-            "STR_FBLIST_DUIYUANMINGZI",
-            "STR_BF_DAMAGE",
-            "STR_BF_HEALTH",
-            "STR_BF_KILL2",
-            "STR_NEAR_DEATH"
-          ]
-        },
-        {
-          "id": "pvp-show-final-r",
-          "title": "PVPShowFinalR",
-          "cn": "结算列表（右）",
-          "status": "PROVEN",
-          "root": "pak",
-          "path": "PVPShowFinalR.ini",
-          "summary": "Item prototype INI (not a standalone window): Handle_Player is appended into PVPShowFinal's Handle_FinalListR by AppendItemFromIni (StringTable=ui/Scheme/Case/string_PVPAcount.txt).",
-          "evidence": [
-            "proof/netcode/ui/pak_candidates/PVPShowFinalR.ini",
-            "proof/netcode/ui/string_PVPAcount.utf8.txt"
-          ],
-          "elements": [
-            "Handle_Player rows",
-            "Image_Bg / school icon / name / kills"
-          ],
-          "labels": [
-            "STR_FBLIST_DUIYUANMINGZI",
-            "STR_BF_DAMAGE",
-            "STR_BF_HEALTH",
-            "STR_BF_KILL2",
-            "STR_NEAR_DEATH"
+            "STR_GETCITY_JIANGLI",
+            "STR_BATTLEFIELD_TIME_USED",
+            "STR_UISET_BFCENCEL",
+            "STR_FACELIST_DAOCHUMIANJU"
           ]
         }
       ]
@@ -695,24 +713,37 @@
         {
           "id": "leave-menu",
           "title": "ExitPanel",
-          "cn": "离开战场",
+          "cn": "退出游戏",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/ExitPanel.ini",
-          "summary": "Located in PakV4 as ui/Config/Default/ExitPanel.ini (15 sections, CommonPanel2/PanelBg atlases). The leave-battlefield confirm menu (LEAVE_BATTLE_FIELD event).",
+          "texts": [
+            { "section": "Text_ExitGame", "text": "你确定要退出游戏吗？" }
+          ],
+          "adjust": [
+            { "section": "Text_ExitGame", "hAlign": 1 },
+            { "section": "Image_Warning", "left": 124 }
+          ],
+          "summary": "Client exit / return confirm dialog (420x108, anchored TOPCENTER,TOPCENTER,0,360 below the screen top; ShowModeID 27,26,24,22,12,36). OpenExitPanel(szReason) sets Text_ExitGame from g_tStrings: close -> EXIT_QUIT 你确定要退出游戏吗？, loginclose -> EXIT_LOGIN_QUIT 你确定要退出游戏吗？, returntologin -> EXIT_RETURN_LOGIN 你确定要返回到登录吗？, returntorole -> EXIT_RETURN_CHOOSE 你确定要返回到角色选择吗？ (ExitPanel.lua). Btn_Sure (确定, STR_SURE) exits the game / ReInitUI by the reason, Btn_Cancel (取消, STR_CANCEL) plus Esc/Enter close it. Image_Back is a runtime full-screen dimmer: UpdateBgImageSize sizes it to Station.GetClientSize() and pins it to the window origin; it stays hidden in the static render (screen context, like the world backdrop). The warning icon and the glass PanelBg/PanelBg18 ornaments come from UItimate. The shipped Text_ExitGame leaves HAlign at the left default although its 241-wide box is glued to the icon (76..348, group centred on the 420 dialog) and no shipped reason fills it, so the viewer centres the message in its box (`adjust hAlign=1`) and moves the icon to the message's left edge (Image_Warning left=124, the authored 76 assumed a full-width message); re-open when a capture of the live dialog is available.",
           "evidence": [
             "ui/Config/Default/ExitPanel.ini",
-            "ui/Image/UICommon/CommonPanel2.UITex",
-            "proof/minimap/ui/Config/Default/decompiled/Minimap.decompiled.lua"
+            "ui/Config/Default/ExitPanel.lua",
+            "ui/Image/UItimate/UICommon/PanelBg.UITex + PanelBg18.UITex + Common.UITex (warning icon)",
+            "ui/Image/UICommon/CommonPanel2.UITex (Image_Back dimmer art)"
           ],
           "elements": [
-            "Minimap leave menu",
-            "Leave-queue confirm dialogs",
-            "LEAVE_BATTLE_FIELD event"
+            "你确定要退出游戏吗？ prompt (Text_ExitGame, runtime-set from EXIT_*)",
+            "确定 / 取消 buttons (Btn_Sure / Btn_Cancel)",
+            "Warning icon (Image_Warning)",
+            "Runtime full-screen dimmer (Image_Back, client-size at runtime)"
           ],
           "labels": [
-            "STR_BATTLEFIELD_MENU_LEAVE",
-            "STR_BATTLEFIELD_LEAVE_QUEUE"
+            "EXIT_QUIT",
+            "EXIT_LOGIN_QUIT",
+            "EXIT_RETURN_LOGIN",
+            "EXIT_RETURN_CHOOSE",
+            "STR_SURE",
+            "STR_CANCEL"
           ]
         }
       ]

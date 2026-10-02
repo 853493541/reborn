@@ -925,3 +925,311 @@ solved it, and what is still open. **Newest at the bottom.**
 - Outcome: done. Open: the exact item->icon/quality mapping still needs the
   item table or a loot GT — the current picks are the closest shipped-art
   matches, clearly provisional.
+
+### 2026-10-01 — UI — 7.1 settlement panel: replay the mode (battlefield) variant
+- Did: the user reported 7.1 (PVPShowFinal, 结算面板) completely wrong. The
+  render was the authored editor state: test team names 左边躺尸队/右边艺术行为队,
+  test numbers (8000000/1000000/111111111), one parked prototype per side, and
+  the ARENA strings (将在99秒后传出竞技场, 离开名剑大会). The Lua
+  (`PVPShowFinal.lua`, decompiled for this) is shared by the arena tournaments
+  and the battlefield: InitPanel shows the arena tournament logos
+  (Image_Title_Master/Jingji = PVPUI7 frames 1/9, 剑网3竞技群英赛/争霸赛) only for
+  the arena mode; UpdateOneSideList appends one row per stat entry with
+  Name/Kill/Damage/Health/NearDeath and formats numbers >= 10000 as 万
+  (MPNEY_TENTHOUSETHOUSAND, lua:474-495); team names fall back to
+  STR_PVP_PLAYER_TEAM_NAME_L/R (左方/右方); the banish warning and leave label
+  switch to the battlefield strings (STR_BATTLEFIELD_BANISH 将在<n>秒后传出战场,
+  STR_UISET_BFCENCEL 离开战场). Viewer now replays the battlefield variant: 左方/
+  右方, 将在30秒后传出战场, 离开战场, 3 sample rows/side with 万-formatted stats.
+- Evidence: `--render pvp-show-final` → psf2.png (headers 左方/右方, three rows
+  per side, 将在30秒后传出战场, 离开战场); the PVPUI7 title frames viewed
+  (frames 1/9 = 群英赛/争霸赛 tournament logos — arena only, stay hidden);
+  `--selftest` 18/1/0; `--audit` 11/0/57.
+- Outcome: done. Open: the row data is a static sample (the real settlement is
+  fed by BATTLE_FIELD_SYNC_STATISTICS), and the 7.2/7.3 L/R list windows still
+  show the editor test values.
+
+### 2026-10-01 — UI — recovered the real battle-end settlement (EndOfBattle)
+- Did: the user rejected the PVPShowFinal replay ("not arena") and asked for the
+  绝境战场 result final. The window was not in the 144-file dictionary corpus;
+  found it by searching the shipped shell scripts: `module.lua` calls
+  `EndOfBattle.Open(...)` on `ON_CASTLE_END_ACTIVITY`. Extracted it from PakV4
+  by name: `ui/Config/Default/EndOfBattle.{ini,lua}` + its string table
+  `ui/scheme/case/string_EndOfBattle.txt` (攻城结算数据, camp scores, 战斗信息 /
+  成就信息 rows, 奖励预览 with 战阶/威名点/帮会奖励 and 名剑币). Added it as a new
+  catalog window (stage 7 first entry, defaultWindow) and replayed the runtime
+  rows: prototype `Handle_Item` hidden, 3 battle-record + 2 achievement clones
+  with sample values, per-camp score columns.
+- Crash found while rendering: two sections differ only by case
+  (`Text_JiFen_1` header under Handle_MiddleBg vs `Text_Jifen_1` row under
+  Handle_Item) and the viewer's case-insensitive `result.Elements` merged them,
+  attaching one element twice ("Specified element is already the logical child").
+  Fixed by tracking elements per section object (`UiBuildResult.ElementsByRef`)
+  in the layout walk; name-keyed maps stay for the inventory overrides/dump.
+- Evidence: `--render end-of-battle` → eob5.png (攻城结算数据, 20000 vs 20000,
+  3+3 record rows, 2+2 achievement rows, 奖励预览, 主战场/奇袭场 tabs);
+  `--selftest` 19/1/0; `--audit` 18/0/61. The extracted files are committed
+  under `ui-process-app/assets/pak/` + the UTF-8 string copy in `Data/text`.
+- Outcome: done. Open: the record/achievement values are samples (runtime data
+  from g_tTable.EndBattle/EndOfBattleInfo), and 18 placeholders remain (some of
+  the window's atlases are not extracted yet).
+
+### 2026-10-01 — UI — 7.1 hunt: EndOfBattle is the 攻城 settlement, not the BR result
+- Did: after fixing PVPShowFinal to the battlefield variant the user still said
+  "not arena", and after adding EndOfBattle they said "completely wrong 结算".
+  Verified against the client data that EndOfBattle is the 攻城/阵营 settlement
+  (its title comes from tLine.szName = 攻城结算数据 for that battle line; the
+  camp scores + 拥有城池 records are the siege data), and that the only
+  battlefield settlement the data wires up is PVPShowFinal (opened by
+  PVPShowPanel on BATTLE_FIELD_SYNC_STATISTICS with tPQ/tInfo/tName; the Lua's
+  battlefield path merges tPQStat and reuses the same L/R lists). The user
+  could not describe the expected window ("idk what to say"), so the exact BR
+  result remains unidentified locally.
+- Evidence: `EndOfBattle.lua` (Open takes tMainWarInfo/tSneakWarInfo;
+  UpdateTop sets Text_Title = tLine.szName), the PVPShowPanel→PVPShowFinal
+  reference in its Lua, `--selftest` 19/1/0.
+- Outcome: partial. EndOfBattle stays in the catalog as its own window
+  (renamed 攻城结算（战斗结束）), defaultWindow moved back to pvp-show-final.
+  Open: the BR result needs a user-provided in-game capture (like the 5.1/5.8
+  examples) or an enumeration of the ui pak — all local name-guessing
+  (DesertStorm*/BattleField*/Result/Final/EndOfBattle variants) came back MISS.
+
+### 2026-10-01 — UI — client-side hunt for the 绝境 result window (why it's blocked)
+- Did: per the user's instruction, went back to the client install instead of
+  the notes. Checked, read-only: (a) the PakV4 store `C:\SeasunGame\Game\JX3\
+  Pakv4\<group>\<n>.dat` (2,264 files) — the .dat files DO contain plaintext
+  strings but the directory index is `.idx` + `.htr` (HTREE001) HASHES, no name
+  list; a byte-scan of all .dat files for `STR_JIESUAN`/`STR_SHOW2` found
+  nothing (entries are compressed), and `ui/Config` occurs only inside data
+  rows (e.g. AssistNewbieTip.ini), not as a file list; (b) the client binaries
+  (JX3ClientX64[Base], JX3UIX64, KGUICocosX64, JX3LogicEditOperationX64) —
+  zero occurrences of PVPShowFinal/EndOfBattle/DesertStorm/window names (all
+  KGUI windows are data-driven); (c) client logs (KG3D_Engine, KGPK4,
+  JX3Client) — engine only, no UI window log (bReleaseVerPrintUILog=0);
+  (d) userdata custom.dat — only PVPShowPanel/FightingNum keys;
+  (e) MovieEditor ResourcePack — editor assets only, no game UI;
+  (f) the addon corpus — no settlement window references.
+  Conclusion: the BR result window's NAME is not recoverable from the local
+  install (hashed pak store + no UI log); the PakV4SfxExtract tool can only be
+  probed by exact path, and every candidate pattern MISSes.
+- Next probe (concrete): an in-game capture of the 绝境 result (drop into
+  `proof/minimap/screenshots/`), or enable the client UI log
+  (config.ini bReleaseVerPrintUILog=1) and open the result once — the log then
+  names the window INI directly, which extracts in seconds.
+- Outcome: blocked, documented. No fake window was shipped.
+
+### 2026-10-01 — UI — BREAKTHROUGH: the 绝境 result window is ACC_TreasureFinal (via ui/module_info.xml)
+- Did: superseded the "blocked" conclusion of the entry above. The PakV4 store is
+  hashed, but the UI module MANIFEST `ui/module_info.xml` probes by exact path and
+  HITs (188,406 bytes). It lists every window module + its script file, including
+  the battlefield-final family: `ACC_BFShowFinal` (BattleField/ACC_BFShowFinal.lua),
+  `ACC_TreasureFinal` (BattleField/ACC_TreasureFinal.lua), `ACC_MobaShowFinal`,
+  `ACC_JJCRougeShowFinal` (ArenaTower/), `ACC_WinOrDefect`, `ACC_DesertStormInfo`.
+  The 绝境/寻宝 result = module `ACC_TreasureFinal`; extracted
+  `ui/Config/Default/BattleField/ACC_TreasureFinal.{ini,lua}` (14,694 + 9,412
+  bytes) and rendered it (new stage-7 catalog entry `treasure-final`,
+  defaultWindow; 5 sample member rows; 0 placeholders/0 unresolved).
+- Window facts (from the decompiled Lua + INI): 1920x700; `Text_Rank` =
+  `FormatString(STR_TREASURE_RANK, nRank, nTotal)` ("队伍排名：<D0>/<D1>", badge
+  `Image_Title`/`Handle_Rank` digits + `Table_GetTreasureInfoTitle`, rank 1-3
+  plays `Handle_SFX` copper/silver/gold); rows clone `Handle_Player` in
+  `Handle_FinalList` (my team, `GetMyTeamMemberData` sorted by field 12;
+  Name/DECAPITATE_COUNT/KILL_COUNT/BEST_ASSIST_KILL_COUNT/HARM_OUTPUT/
+  SPECIAL_OP_3/SPECIAL_OP_6 -> Text_PlayerName/KillNum/XSNum/BestZGNum/HarmNum/
+  JJFenNum/ResultNum, per-row `Handle_Reward` award icon+count);
+  `Btn_Leave`->LeaveALLBattleField (离开战场), `Btn_Export`->ExportData
+  (导出数据, 比赛信息导出成功), `Text_Time`=STR_BATTLEFIELD_TIME_USED,
+  `Text_WarningTime`=STR_NEW_BANISH_1..2 countdown; Handle_Win/Handle_Fail +
+  PVPUI12 chrome are LockShowAndHide=1 (the win/fail branch lives in the sibling
+  ACC_BFShowFinal.lua for its own window, not in ACC_TreasureFinal.lua).
+- Fix surfaced by the window: shipped INIs carry CASE-DIFFERING TWINS
+  (`Text_playerName` header vs `Text_PlayerName` row prototype; EndOfBattle has
+  Text_JiFen_1/Text_Jifen_1). The plan dictionaries were OrdinalIgnoreCase, so
+  the header's ancestor walk resolved through the row prototype to the hidden
+  `Handle_Player` and the header silently vanished. Made section identity
+  case-sensitive (`IniFile.ByName`, `UiBuildResult.Elements/Sections`, UiLayout
+  caches) and added `LayoutPlanBuilder.TryFind` (exact first, case-insensitive
+  fallback) for inventory-supplied names, so sloppy-cased override entries keep
+  working. A scan of all extracted INIs confirmed no real `._Parent` case
+  mismatches (only virtual layer names Normal/Topmost/Lowest...).
+- Evidence: `tools/netcode/extract_pak_paths.py --list` HIT `ui/module_info.xml`
+  and the two ACC_TreasureFinal files; render dump shows Text_playerName at
+  (655,135) + 5 rows; `--selftest` 20 rendered/1 skipped/0 failed; `--audit`
+  placeholders=18 unresolved=0 outOfBounds=64 with treasure-final 0/0.
+- Outcome: the 绝境 result window is recovered and rendering; awaiting the
+  user's visual check of `treasure-final`. Open: whether the runtime shows the
+  PVPUI12 chrome/Win-Fail via the open animation (left off, documented in the
+  inventory doc row).
+
+### 2026-10-01 — UI — treasure-final follow-up: panel plate + centering (user feedback)
+- Did: user confirmed the window identity ("yes that's correct") and reported the
+  PVPUI12 panel plate not visible + the composition not centered. Loaded the
+  tween file `ui/Animation/ACC_TreasureFinal_Ani.ini` (all fades only, no shows),
+  decompiled the sibling `ACC_BFShowFinal.lua`/`ACC_JJCShowFinal.lua` and
+  `battlefield_base.lua`, and compared `ACC_BFShowFinal.ini` (content page
+  centered 284..1650) with the treasure INI (panel at x=0, table at 600/620,
+  title/buttons centered on 960). The module script never shows the
+  LSH=1 chrome; the module's open path calls `ApplyBattleFieldStatistics`,
+  a global not present in the extracted corpus (definition still unfound).
+- Change (provisional, viewer-side inventory data only): show the chrome
+  (Image_Outline/BgL1/Bgr2/ZSL/ZSR) and recenter the panel frame + table on the
+  window (adjust: panel 401, header 403, list 415, ZSL 414, ZSR 1358,
+  Text_Time 418; Handle_Win/Fail also 401 for when they are shown). Follows
+  the user's client observation that the plate is visible; the alternative
+  (authored offsets are runtime-correct) stays possible.
+- Evidence: `--selftest` 20/1/0; render dump shows panel 401..1519, table
+  415..1505 centered on 960; treasury render checked as PNG (panel + table
+  aligned, title plaque on the top bar).
+- Outcome: visible fix; re-open when the client window is observed directly
+  (or a capture confirms the authored offsets). No code change needed beyond
+  the earlier case-sensitivity fix.
+
+### 2026-10-01 — UI — treasure-final matched to the 7.1 example capture (card overlay, row formats)
+- Did: the user supplied `proof/minimap/screenshots/7.1 Example.png` (the real window). Reading it
+  (numerically + visually) showed the earlier viewer-side guesses were wrong and fixed the entry:
+  (1) no PVPUI12 chrome in the real window (my `show` was reverted); (2) the table keeps the authored
+  right-shifted position (my centering `adjust` was reverted); (3) the personal card IS open at the left
+  (Wnd_PersonCard), showing the own player's avatar/name/title/level/装备分数 and three stat rows;
+  (4) row semantics from the authored prototype texts: Text_Line = "/" (so Text_KillNum+Line+XSNum render
+  as the 击/助 pair "2/4"), Text_BestZGNum = 最佳助攻 (0), Text_HarmNum = 万 (4407.7万), Text_JJFenNum =
+  本场表现分 (44277), Text_ResultNum = 个人评分结算 (24), rewards 168; rank badge = Image_Num2 frame 9
+  (digit d = frame 8+d) with Image_Num1 removed for rank 1.
+- Change: catalog entry reworked (row samples, header widths Text_JJFen/Text_Result so 本场表现分 /
+  个人评分结算 are not clipped) + a new `overlay` (front) rendering
+  `ui/Config/Default/PersonalCard/PersonalCard_ShowData.ini` into the settlement: engine additions are
+  OverlaySpec `lists` + `front` (ApplyListTemplates in BuildOverlayVisual, overlay drawn above the main
+  root) and AssetResolver extension fallback (the card avatar requests HHTX_003.tga, the pak ships
+  HHTX_003.dds — the client's texture loader dispatches TGA/DDS). Card atlases extracted (PersonalCard*,
+  txk14, TextShadow, yirong13, Feedanimials, UItimate/Button, HHTX_003.dds); PersonalCard_Decoration bk/tx
+  are runtime decoration names (not in the pak) so Image_Frame/Image_AvatarFrame stay hidden.
+- Evidence: `--selftest` 20/1/0 after the change; render side-by-side with the capture (same names, pairs,
+  万 values, rank 1, card rows 签到次数 673 / 成衣 92 / 披风 4).
+- Outcome: the settlement reproduces the capture's structure and content; open question only = the
+  decoration frame art (player-specific, not shipped).
+
+### 2026-10-01 — UI — treasure-final: drop the card column, placeholder samples (user correction)
+- Did: user asked to remove the left personal-card column ("the card is not needed") and called out
+  that filling the render with their screenshot's values is not work. Corrections applied:
+  (1) the `overlay` (PersonalCard_ShowData front card) was removed from the treasure-final entry;
+  (2) row/header samples went back to neutral placeholders (云舟过影 / 云舟过影-style names, pairs like
+  "2/4", 万-formatted damage, scores) that only demonstrate the formats learned from the INI and Lua —
+  the capture is no longer replayed; (3) rank sample back to the INI's authored digits (第18名) with
+  the matching 队伍排名 text; the PVPUI12 chrome stays off.
+- Incident (fixed): two scripted patches matched the FIRST `"texts": [` in the file instead of the
+  treasure entry's — the first clobbered queue-panel's texts, the second left treasure-final untouched.
+  queue-panel's 7 texts were restored from `git show HEAD:ui-process-app/Data/ui_inventory.json` (raw
+  byte redirect; PowerShell pipe mangles UTF-8). Verified by re-rendering queue-panel (绝境战场 title,
+  1873, 10000/10000 present). Lesson: scope JSON text edits by locating the entry id first.
+- Evidence: `--selftest` 20/1/0 after the restore; treasure render shows the table only (no card) with
+  placeholder samples; queue-panel render intact.
+- Outcome: catalog entry honest (shipped INI + real formats + placeholders); the card overlay engine
+  support (OverlaySpec lists/front, TGA/DDS fallback) stays available for other windows.
+
+### 2026-10-01 — UI — treasure-final: neutral backdrop + recentred table (card column was the left anchor)
+- Research answer on the background: the window ships NO opaque background. Its only backdrop art is
+  Image_Bg1 (ui/Image/UItimate/UICommon/PVPShowFinal1.UITex frame 11, ImageType=12, 200x200 art with
+  alpha ~60/255 stretched to 1920x600) plus the per-row Image_Bg bands - i.e. a darkening veil meant to
+  compose over the live game world; the PVPUI12 chrome that would frame it is LockShowAndHide=1 and the
+  capture shows it off. In isolation the background is therefore transparent (the client shows the world
+  through it), so the viewer's black host read wrong.
+- Change: new per-window inventory field `backdrop` (hex) applied to the render host and the viewer canvas
+  (App.BackdropBrush; default remains #101010). treasure-final uses #33393E (the repo's documented neutral
+  glass tone) so the authored translucency reads; the table block is re-centred on the window
+  (Handle_Titile 403, Handle_FinalList 415) since the personal-card column is gone; header widths kept.
+- Evidence: `--selftest` after rebuild; v7 render shows the gray-blue backdrop, the centered table, title
+  and buttons; no card column.
+- Outcome: visible state matches the shipped INI with an explicit, documented viewer choice for the
+  backdrop (not invented art). Re-open: if a world backdrop asset is ever wanted, use a real capture.
+
+### 2026-10-01 — UI — treasure-final vs the 7.1 capture: three engine behaviours proven, one instruction overruled
+- Research (all against `proof/minimap/screenshots/7.1 Example.png`, downscaled 1/1.73 to design px):
+  1. The capture's leave label is ~16px white and the export label ~15px white, while the INI authors
+     Text_Leave scheme 28 (20px) and Text_Export scheme 27 (yellow). Both buttons carry NormalFont=3 and
+     NormalFont=18 — the engine labels buttons with the button's own font scheme. A corpus scan shows 74/298
+     shipped button labels differ from their button's NormalFont (copy-paste leftovers), so this is a real
+     engine rule, now implemented as `UiLayout.ApplyButtonLabelFonts`.
+  2. The countdown is not the authored Text_WarningTime: `OnFrameBreathe` clears Handle_WarningTime and
+     AppendItemFromString()s three segments with fonts 257 (将在) / 258 (seconds, yellow2) / 257
+     (秒后传出战场) + FormatAllItemPos — matching the capture's yellow "29". Implemented via the inventory
+     `appends` with a new `flow` (PosType 9, measured width) and Text_WarningTime hidden.
+  3. The 击/助 pair reads "2/4" tight in the capture because Text_Line is AutoSize=1 PosType=9: the engine
+     measures the "/" and flows Text_XSNum right after it. The viewer now sizes AutoSize text to its content
+     instead of the authored box.
+  4. The window scale question: the capture is the window at ~1.73x (the client's UI scale: row pitch
+     104 px / 60 design), centred on a 2696 px view and cropped; the authored layout matches it exactly
+     (card 200..576 -> capture 13..663, table 620..1710 -> 740..2625 around the content centre 1348). No
+     authored "scale" exists beyond that; the oversized look was the button/child font schemes above.
+  5. Instruction overruled with evidence: 导出数据 is present in the capture (white, underlined) — it was
+     kept and only restyled (button NormalFont 18), not removed.
+- Evidence: cmp_leave.png composite (capture vs render, same design scale) matches on all three items;
+  `--selftest` 20/1/0; `--audit` placeholders=18 unresolved=0 outOfBounds=64 (unchanged).
+- Outcome: the settlement's bottom bar and row pair now follow the engine's own behaviours, proven from the
+  capture + INI/Lua, not from style guesses.
+
+### 2026-10-01 — UI — treasure pair alignment + app true scale (user follow-up)
+- Slash bug: making AutoSize text content-sized also shrank its HEIGHT, so Text_Line's "/" lost
+  the row's VAlign centering and floated to the top line. Fix: AutoSize sets WIDTH only; the authored
+  height stays and carries the vertical centering. Rendered pair now reads "2/4"/"0/3" on one line
+  (cmp_pair.png), matching the capture.
+- "Overall UI way too big": the viewer canvas runs in DIPs; on a high-DPI display WPF scales it, so at
+  fit zoom the panel drew at 2 device px per design px. The client draws the window in real pixels.
+  MainWindow.FitZoom now caps the fit at 1 device pixel per design pixel (1.0 / DpiScaleX via
+  VisualTreeHelper.GetDpi) — on a 200% display the panel shows at its true size. The manual zoom slider
+  is unchanged (the user can still zoom past 1:1).
+- Context from the client's own config (`C:\SeasunGame\Game\JX3\bin\zhcn_hd\config.ini` [UIEditor]):
+  StandardCanvas 1280x960, Canvas 3840x2160 — the client scales its UI canvas to the display; the 7.1
+  capture measures ~1.7x the design (row pitch 104 / 60), i.e. it is the window at the client's UI scale.
+- Evidence: cmp_pair.png (capture vs render, same design scale) + --selftest 20/1/0.
+
+### 2026-10-01 — UI — treasure-final: full-screen frame + 导出数据 dropped (user call)
+- The window is a wide overlay (1920x700) whose veil (Image_Bg1 1920x600) spans the screen middle with the
+  core content centred; the client centres the window (editor root at (screen-window)/2: 507,265 on the
+  2934x1230 canvas). The viewer now supports a per-window full-screen frame: `screenWidth`/`screenHeight`
+  render the frame at that size with the window centred on the neutral backdrop (App render + MainWindow
+  canvas; overhang expansion is skipped when framed). treasure-final uses 1920x1080.
+- 导出数据: hidden per the user's explicit call (hide Btn_Export) although the capture shows it - recorded
+  as a user decision, not a research finding.
+- Evidence: treasure_v10.png (1920x1080 frame, window centred, pair "2/4", countdown with yellow 29, no
+  export button); --selftest 20/1/0.
+
+### 2026-10-01 — UI — revert the full-screen frame; stage 7 trimmed to 绝境结算 (user call)
+- The full-screen frame (screenWidth/screenHeight + framed render path) was judged a bad fix and reverted
+  end to end: WindowInfo fields, App render path and MainWindow canvas are back to the window-rect frame
+  (backdrop colour kept); the treasure entry's screen fields were removed.
+- Catalog rename: 7.1 `treasure-final` cn = 绝境结算 (was 寻宝结算（绝境）).
+- Viewer entries 7.2-7.5 removed per user: end-of-battle, pvp-show-final, pvp-show-final-l,
+  pvp-show-final-r (their INIs/assets stay on disk; the doc rows are tagged "viewer entry removed
+  2026-10-01 per user"). Catalog is now 17 windows; `--selftest` 16 rendered / 1 skipped / 0 failed;
+  counts updated in ui-process-app/AGENTS.md and the inventory doc.
+
+### 2026-10-02 — UI — 8.1 leave-menu: missing prompt restored (ExitPanel = the exit/return confirm)
+- Research (ExitPanel.ini + ExitPanel.lua from PakV4): the window is the client exit/return confirm, not a
+  battlefield-leave menu. 420x108, anchored TOPCENTER,TOPCENTER,0,360, ShowModeID 27,26,24,22,12,36.
+  OpenExitPanel(szReason) sets Text_ExitGame from g_tStrings: close -> EXIT_QUIT (你确定要退出游戏吗？),
+  loginclose -> EXIT_LOGIN_QUIT, returntologin -> EXIT_RETURN_LOGIN (你确定要返回到登录吗？), returntorole ->
+  EXIT_RETURN_CHOOSE (你确定要返回到角色选择吗？). Btn_Sure exits/ReInitUI, Btn_Cancel + Esc/Enter close.
+  Text_ExitGame ships WITHOUT $Text (runtime-set) - that was the missing piece in the viewer render.
+- Change: catalog entry renamed cn 退出游戏; Text_ExitGame sample = 你确定要退出游戏吗？; summary/evidence/
+  elements/labels rewritten from the Lua (EXIT_* + STR_SURE/STR_CANCEL). Image_Back = runtime full-screen
+  dimmer (UpdateBgImageSize -> Station.GetClientSize), documented and left off in the static render.
+- Evidence: exit_v2.png shows [⚠] 你确定要退出游戏吗？ with 确定/取消; --selftest 16/1/0.
+
+### 2026-10-02 — UI — 8.1 exit: message alignment (viewer interpretation)
+- User: "the text is not in right place". Verified the render against the shipped data first: ExitPanel.ini
+  authors Text_ExitGame at Left=107 (glued to the icon at 76..106), Width=241, HAlign=0 (left), VAlign=1;
+  the icon+box group (76..348) is centred on the 420 dialog, but every shipped reason is ~150-180px so the
+  left-aligned ink hugs the icon and the composition reads left-heavy. The Lua only SetText, no alignment.
+- Change: AdjustSpec gained HAlign; leave-menu uses adjust hAlign=1 so the runtime message centres in its
+  authored box (icon stays at 76). Labeled a viewer interpretation in the entry/doc with re-open criteria
+  (a capture of the live dialog); flagged as an inference, not a shipped value.
+- Evidence: exit_v3.png (icon left, message centred, 确定/取消 below); --selftest 16/1/0.
+
+### 2026-10-02 — UI — 8.1 exit follow-up + zoom cap reverted (user feedback)
+- Icon: with the message centred in its box, the authored Image_Warning at 76 floated 50px away from the
+  ink; moved to the message's left edge (adjust left=124) so `[!] + message` read as one centred group
+  (the authored 76 assumed a message that fills the 241px box; no shipped reason does).
+- "most panels so small now": the FitZoom DPI cap (1 device px per design px) made every panel show at
+  half size on the user's high-DPI display. Reverted to the plain fit (cap 1.0 DIP); the panels are back
+  to the previous size. Lesson: the cap changed every window, not just the settlement - removed.
+- Re-verified the ExitPanel.ini against a fresh PakV4 extraction (byte-identical, so no stale layer).
+- Evidence: exit_v4.png ([!] + centred message + 确定/取消), --selftest 16/1/0.

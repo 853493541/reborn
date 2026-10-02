@@ -12,8 +12,15 @@ namespace MapUiApp.Engine
     public sealed class UiBuildResult
     {
         public FrameworkElement Root;
-        public readonly Dictionary<string, FrameworkElement> Elements = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase);
-        public readonly Dictionary<string, IniSection> Sections = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, FrameworkElement> Elements = new Dictionary<string, FrameworkElement>(StringComparer.Ordinal);
+        public readonly Dictionary<string, IniSection> Sections = new Dictionary<string, IniSection>(StringComparer.Ordinal);
+
+        /// <summary>
+        /// Element per section object. A few shipped INIs carry case-differing twins
+        /// (e.g. EndOfBattle's header `Text_JiFen_1` vs row `Text_Jifen_1`), which the
+        /// name-keyed maps collapse; the layout walk must stay per-section.
+        /// </summary>
+        public readonly Dictionary<IniSection, FrameworkElement> ElementsByRef = new Dictionary<IniSection, FrameworkElement>();
 
         /// <summary>Sections whose atlas/frame did not resolve (drawn as placeholders).</summary>
         public readonly List<string> Placeholders = new List<string>();
@@ -58,6 +65,7 @@ namespace MapUiApp.Engine
         {
             var result = new UiBuildResult();
             if (ini.Sections.Count == 0) throw new InvalidOperationException("Layout INI has no sections");
+            ApplyButtonLabelFonts(ini);
             var rootSection = ini.Sections[0];
 
             // Every section referenced as a parent must exist as a container even when
@@ -77,16 +85,17 @@ namespace MapUiApp.Engine
                 if (element == null) continue;
                 result.Elements[section.Name] = element;
                 result.Sections[section.Name] = section;
+                result.ElementsByRef[section] = element;
             }
 
             result.Root = result.Elements[rootSection.Name];
-            var buttonSlots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var buttonSlots = new HashSet<string>(StringComparer.Ordinal);
             var rootWidth = (double)rootSection.GetInt("Width");
             var rootHeight = (double)rootSection.GetInt("Height");
 
             // KGUI containers often omit Width/Height. Handles auto-size to their
             // content, other containers inherit the nearest sized ancestor.
-            var intrinsic = new Dictionary<string, (double W, double H)>(StringComparer.OrdinalIgnoreCase);
+            var intrinsic = new Dictionary<string, (double W, double H)>(StringComparer.Ordinal);
             (double W, double H) Intrinsic(IniSection section, int depth)
             {
                 if (intrinsic.TryGetValue(section.Name, out var cached)) return cached;
@@ -125,7 +134,7 @@ namespace MapUiApp.Engine
                 return size;
             }
 
-            var sizeCache = new Dictionary<string, (double W, double H)>(StringComparer.OrdinalIgnoreCase);
+            var sizeCache = new Dictionary<string, (double W, double H)>(StringComparer.Ordinal);
             // Content size when the INI authors none: the frame's pixel size for images,
             // the measured text for labels (the engine lays items out by their content).
             (double W, double H) MeasuredSize(IniSection section)
@@ -173,7 +182,7 @@ namespace MapUiApp.Engine
             // WndPageSet arranges its WndCheckBox children as a tab strip; the INI
             // authors every tab at the same origin, the control flows them. Tabs the
             // Lua pinned explicitly (ShowModeTabs -> SetRelX) keep their Left.
-            var tabX = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            var tabX = new Dictionary<string, double>(StringComparer.Ordinal);
             foreach (var pageSet in ini.Sections)
             {
                 if (!string.Equals(pageSet.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
@@ -194,7 +203,7 @@ namespace MapUiApp.Engine
             // items flow left-to-right, wrap when the next one would exceed the
             // container width, then each row is aligned by HAlign/VAlign. The authored
             // Left/PosType of an item is ignored.
-            var listPos = new Dictionary<string, (double X, double Y)>(StringComparer.OrdinalIgnoreCase);
+            var listPos = new Dictionary<string, (double X, double Y)>(StringComparer.Ordinal);
             foreach (var list in ini.Sections)
             {
                 var handleType = list.GetInt("HandleType");
@@ -272,14 +281,14 @@ namespace MapUiApp.Engine
                 return depth;
             }
 
-            var absPos = new Dictionary<string, (double X, double Y)>(StringComparer.OrdinalIgnoreCase)
+            var absPos = new Dictionary<string, (double X, double Y)>(StringComparer.Ordinal)
             {
                 [rootSection.Name] = (0, 0),
             };
             // Previous sibling per parent, in INI order (the engine's item list order),
             // which PosType 7/9 anchor against.
-            var prevSibling = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var lastByParent = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var prevSibling = new Dictionary<string, string>(StringComparer.Ordinal);
+            var lastByParent = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (var section in ini.Sections)
             {
                 var parent = section.Get("._Parent") ?? "";
@@ -289,12 +298,12 @@ namespace MapUiApp.Engine
             }
             foreach (var section in ini.Sections.OrderBy(Depth))
             {
-                if (!result.Elements.TryGetValue(section.Name, out var element)) continue;
+                if (!result.ElementsByRef.TryGetValue(section, out var element)) continue;
                 if (element == result.Root) continue;
                 var parentName = section.Get("._Parent");
                 if (string.IsNullOrWhiteSpace(parentName)) continue;
-                if (!result.Elements.TryGetValue(parentName, out var parent) || parent is not Canvas parentCanvas) continue;
-                var parentSection = result.Sections[parentName];
+                if (!result.Sections.TryGetValue(parentName, out var parentSection)) continue;
+                if (!result.ElementsByRef.TryGetValue(parentSection, out var parent) || parent is not Canvas parentCanvas) continue;
                 var parentAbs = absPos.TryGetValue(parentName, out var pa) ? pa : (0, 0);
                 Attach(parentCanvas, parentSection, element, section, buttonSlots, rootWidth, rootHeight, SizeOf, tabX, listPos, parentAbs, prevSibling, result, absPos);
                 double ax = Canvas.GetLeft(element); if (double.IsNaN(ax)) ax = 0;
@@ -302,6 +311,51 @@ namespace MapUiApp.Engine
                 absPos[section.Name] = (parentAbs.X + ax, parentAbs.Y + ay);
             }
             return result;
+        }
+
+        /// <summary>
+        /// The engine draws a button's label with the button's own state font scheme
+        /// (WndButton NormalFont), not with the child Text's authored FontScheme. The
+        /// 7.1 capture shows ACC_TreasureFinal's Btn_Leave label at scheme 3 (16px
+        /// white) although Text_Leave authors scheme 28 (20px), and Btn_Export at
+        /// scheme 18 (15px white) although Text_Export authors 27 (yellow) — both
+        /// children are copy-paste leftovers (25% of the shipped buttons carry such
+        /// mismatches). Normalize the label schemes here so size and colour follow the
+        /// button.
+        /// </summary>
+        private static void ApplyButtonLabelFonts(IniFile ini)
+        {
+            var byParent = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var section in ini.Sections)
+            {
+                var parent = section.Get("._Parent") ?? "";
+                if (!byParent.TryGetValue(parent, out var children))
+                    byParent[parent] = children = new List<IniSection>();
+                children.Add(section);
+            }
+
+            foreach (var button in ini.Sections)
+            {
+                var type = button.Get("._WndType") ?? "";
+                if (!type.Equals("WndButton", StringComparison.OrdinalIgnoreCase) &&
+                    !type.Equals("WndCheckBox", StringComparison.OrdinalIgnoreCase)) continue;
+                var normalFont = button.GetInt("NormalFont", 0);
+                if (normalFont <= 0) continue;
+
+                var stack = new Stack<IniSection>();
+                if (byParent.TryGetValue(button.Name, out var direct))
+                    foreach (var child in direct) stack.Push(child);
+                while (stack.Count > 0)
+                {
+                    var section = stack.Pop();
+                    if (string.Equals(section.Get("._WndType"), "Text", StringComparison.OrdinalIgnoreCase) &&
+                        !string.IsNullOrWhiteSpace(section.Get("$Text")))
+                        section.Values["FontScheme"] = normalFont
+                            .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    if (byParent.TryGetValue(section.Name, out var children))
+                        foreach (var child in children) stack.Push(child);
+                }
+            }
         }
 
         /// <summary>Container stand-in for section types we do not implement (WndPage,
@@ -628,6 +682,15 @@ namespace MapUiApp.Engine
                 // ink down ~3px, so position the block explicitly in a canvas host.
                 double textWidth = MeasureTextWidth(block, text, fontSize);
                 double textHeight = MeasureTextHeight(block, text, fontSize);
+                // AutoSize text takes its WIDTH from the measured content (the engine's
+                // KItemText measures the string and the PosType 9 flow packs items at
+                // the measured width): ACC_TreasureFinal's Text_Line is AutoSize=1
+                // PosType=9, so the 击/助 pair reads "2/4" — the authored 34px box left
+                // "/" centred in its own box and the columns apart. The authored HEIGHT
+                // is kept: it carries the row's vertical centering (VAlign=1), and
+                // shrinking it would float the "/" above the digits.
+                if (section.GetBool("AutoSize") && textWidth > 0)
+                    width = (int)Math.Ceiling(textWidth);
                 double offsetY = 0;
                 if (height > 0)
                 {

@@ -200,8 +200,16 @@ namespace UiProcessApp
                 if (overlayRoot != null)
                 {
                     var grid = new Grid { Width = width, Height = height };
-                    grid.Children.Add(overlayRoot);
-                    grid.Children.Add(build.Root);
+                    if (window.Overlay != null && window.Overlay.Front == true)
+                    {
+                        grid.Children.Add(build.Root);
+                        grid.Children.Add(overlayRoot);
+                    }
+                    else
+                    {
+                        grid.Children.Add(overlayRoot);
+                        grid.Children.Add(build.Root);
+                    }
                     composedRoot = grid;
                 }
 
@@ -226,7 +234,7 @@ namespace UiProcessApp
 
                 var host = new Border
                 {
-                    Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                    Background = BackdropBrush(window),
                     Width = width,
                     Height = height,
                     Child = composedRoot,
@@ -247,7 +255,7 @@ namespace UiProcessApp
                     {
                         Width = width + overhang.L + overhang.R,
                         Height = height + overhang.T + overhang.B,
-                        Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                        Background = BackdropBrush(window),
                     };
                     host.Child = null;
                     Canvas.SetLeft(composedRoot, overhang.L);
@@ -541,6 +549,7 @@ namespace UiProcessApp
             var plan = LayoutPlanBuilder.Build(ini, null);
             LayoutPlanBuilder.ApplyHide(plan.Filtered, spec.Hide);
             LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, spec.Show ?? new List<string>());
+            LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, spec.Lists, LoadTemplateIni);
             LayoutPlanBuilder.ApplyTexts(plan.Filtered, spec.Texts);
             LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, spec.Adjust);
             var build = UiLayout.Build(plan.Filtered, assets, textures);
@@ -551,8 +560,25 @@ namespace UiProcessApp
             return build.Root;
         }
 
-        internal static IniFile LoadTemplateIni(string relative)
-        {            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
+        /// <summary>
+        /// Host backdrop for a window render: the inventory `backdrop` hex colour when set
+        /// (semi-transparent windows composite over the game world on the client), else
+        /// the viewer's default dark host.
+        /// </summary>
+        internal static SolidColorBrush BackdropBrush(WindowInfo window)
+        {
+            var hex = window?.Backdrop;
+            if (!string.IsNullOrWhiteSpace(hex))
+            {
+                var s = hex.TrimStart('#');
+                if (s.Length == 6 && uint.TryParse(s, System.Globalization.NumberStyles.HexNumber,
+                        System.Globalization.CultureInfo.InvariantCulture, out var v))
+                    return new SolidColorBrush(Color.FromRgb((byte)(v >> 16), (byte)(v >> 8), (byte)v));
+            }
+            return new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10));
+        }
+
+        internal static IniFile LoadTemplateIni(string relative)        {            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
             var candidates = new[]
             {
                 Path.Combine(Paths.PakRoot, rel),

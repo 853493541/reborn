@@ -558,12 +558,15 @@ namespace UiProcessApp
                 {
                     Width = width,
                     Height = height,
-                    Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                    Background = App.BackdropBrush(window),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                 };
-                if (overlayRoot != null) _layoutCanvas.Children.Add(overlayRoot);
+                if (overlayRoot != null && (window.Overlay == null || window.Overlay.Front != true))
+                    _layoutCanvas.Children.Add(overlayRoot);
                 _layoutCanvas.Children.Add(build.Root);
+                if (overlayRoot != null && window.Overlay != null && window.Overlay.Front == true)
+                    _layoutCanvas.Children.Add(overlayRoot);
                 double offsetX = window.OffsetX ?? 0;
                 double offsetY = window.OffsetY ?? 0;
                 if (offsetX != 0 || offsetY != 0)
@@ -802,6 +805,11 @@ namespace UiProcessApp
         public List<string> Evidence { get; set; }
         public List<string> Elements { get; set; }
         public List<string> Labels { get; set; }
+        /// <summary>Host backdrop colour behind the window (hex, e.g. "#33393E"). The
+        /// client composites semi-transparent windows (the battlefield settlement) over
+        /// the live game world; the viewer uses a neutral tone for those instead of the
+        /// default black so the authored translucency reads. Null = default dark host.</summary>
+        public string Backdrop { get; set; }
     }
 
     public sealed class OverlaySpec
@@ -811,6 +819,12 @@ namespace UiProcessApp
         public List<string> Show { get; set; }
         public List<TextOverride> Texts { get; set; }
         public List<AdjustSpec> Adjust { get; set; }
+        /// <summary>Row clones for the overlay window (e.g. the personal card's three
+        /// stat message buttons appended at runtime by PersonalCard_ShowData).</summary>
+        public List<ListTemplate> Lists { get; set; }
+        /// <summary>Draw the overlay above the main window instead of behind it (the
+        /// settlement's Wnd_PersonCard is a child window drawn over the panel veil).</summary>
+        public bool? Front { get; set; }
     }
 
     public sealed class LabelRow

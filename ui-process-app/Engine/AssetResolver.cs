@@ -71,6 +71,14 @@ namespace MapUiApp.Engine
                 {
                     var index = NameIndex(root);
                     if (index.TryGetValue(fileName, out var hit)) return hit;
+                    // The client's texture loader dispatches TGA/DDS: a section may
+                    // request X.tga while the pak ships X.dds (e.g. the personal-card
+                    // avatar HHTX_003). Try the sibling extension names.
+                    var stem = Path.GetFileNameWithoutExtension(fileName);
+                    foreach (var extension in new[] { ".UITex", ".tga", ".dds", ".png" })
+                    {
+                        if (index.TryGetValue(stem + extension, out var alt)) return alt;
+                    }
                 }
             }
             return null;
