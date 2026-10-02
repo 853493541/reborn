@@ -1233,3 +1233,76 @@ solved it, and what is still open. **Newest at the bottom.**
   to the previous size. Lesson: the cap changed every window, not just the settlement - removed.
 - Re-verified the ExitPanel.ini against a fresh PakV4 extraction (byte-identical, so no stale layer).
 - Evidence: exit_v4.png ([!] + centred message + 确定/取消), --selftest 16/1/0.
+
+### 2026-10-02 — UI — commit bb10ed6; 3.1 tip area check; 5.2 minimap first pass
+- Commit: bb10ed6 "UI process app: ACC_TreasureFinal 绝境结算 ... ExitPanel ... stage 7 trimmed"
+  (10 files, +628/-119; the untracked string_EndOfBattle.txt stays out - its window left the catalog).
+- 3.1 loading tip area: the top-right box is Handle_Tip/Text_Tip 510x101 (scheme 160 = 15px); the module's
+  UpdateLayout right-anchors it at SetRelPos(clientW - w - 100, 115) - the POSITION follows the resolution,
+  the box size does not (scaled only by the UI scale). At 15px the box holds ~34 CJK chars/line x 4-5 lines,
+  enough for the loading stories; content = g_tLoadingStory -> minimap/loadingstory.tab per map (not in the
+  local extractions, so the area renders empty). Entry adjusted to the exact 1280 anchor (670,115).
+- 5.2 minimap first pass: the engine's WndMinimap behaviour implemented - defaulttexture painted in the lens,
+  sharptexture (MinimapSharp.tga) as the AlphaShap mask, self marker (`image` frame `selfframe`) pinned at
+  the lens centre; image overrides now target `defaulttexture` for WndMinimap sections; the entry gained the
+  five map pages using the same middlemap.png art as MiddleMap. Reference for the next pass:
+  proof/minimap/screenshots/05_minimap_ingame_crop.png (player-era capture) shows the live state - centred
+  arrow, green vision ring (Handle_EYSOver), expanded side button columns left/right, 全图 label - the
+  module parks the side containers at negative X and animates them in; replicate that state next.
+- Evidence: minimap_v3.png (map in the lens + arrow + mask), --selftest 16/1/0.
+
+### 2026-10-02 — UI — 5.2 minimap full trace: the missing piece is the Wnd_Over sub-window
+- Traced MiniMap.ini + Minimap.decompiled.lua end to end. Everything the live capture shows (map name,
+  全图/big-map button, the button columns, the timer) lives inside the `Wnd_Over` WndWindow, which carries
+  LockShowAndHide=1 - the viewer's blanket rule hid the whole sub-window, hence "5.2 incomplete".
+- Engine rule corrected: LockShowAndHide hides item-type sections (the queue tabs/badges evidence stands),
+  but a WndWindow/WndFrame sub-window is shown together with its parent - the script toggles the individual
+  buttons (ShowBtnCmd/UpdateBattleFieldButton/UpdateArenaButton/UpdatePVPButton/...). Evidence: the live
+  capture 05_minimap_ingame_crop.png shows the Wnd_Over button columns; BattleFieldMap's Wnd_BigMap
+  (also LSH=1, WndWindow) must equally show when the map is open.
+- Effect: minimap 38 -> 75 sections (name + full button set + timer + map), BattleFieldMap 55 -> 76
+  (Wnd_BigMap), buff-list +3, death-revive +2; placeholders drop 18 -> 11 (hidden sub-windows carried some);
+  --selftest still 16/1/0. Entry summary rewritten with the Wnd_Over inventory + runtime name source
+  (MiddleMap.GetMapAreaName on UPDATE_REGION_INFO).
+
+### 2026-10-02 — UI — 5.2 lens zoom + 5.3 regression reverted (user feedback)
+- 5.3 regression: the blanket "sub-windows are exempt from LockShowAndHide" rule changed BattleFieldMap
+  (Wnd_BigMap appeared). Reverted to the original all-types rule; BattleFieldMap is back to its correct
+  state (55/52). The minimap's Wnd_Over is now shown per-entry (`show: ["Wnd_Over"]`, the same mechanism
+  the queue tabs use) instead of by a global rule change.
+- 5.2 lens map: the whole-map background was wrong. The engine draws the map texture at the map config's
+  [config] scale (0.02) while the middlemap art uses [middlemap0] scale (0.005867), i.e. the lens shows
+  ~3.41x the middlemap art (a local region around the player). ImageOverride gained `Zoom`; the WndMinimap
+  brush applies it around the centre; the pages carry zoom 3.41. The render now shows a local area
+  (鸣沙山 label) instead of the whole map.
+- Evidence: minimap_v5.png (local region + arrow); --selftest 16/1/0 with battlefield-map 55/52 restored.
+
+### 2026-10-02 — UI — 5.2 minimap cleanups (user call)
+- Hidden per user: Text_ct (the yellow 00:30 timer), Text_Fresher (the 分线 stub - the module sets it at
+  runtime per fresher room), WndContainer_Emergency (the 鹈鹕时刻/灯火还/急救 emergency bar), Image_AIGenerate
+  (the baked "生成中" label under the selfie button), and the red hot-point badges (Handle_warning, Handle_num,
+  Handle_Tuisong + its Storage/Point children, Image_hotPoint, Image_HotPointSelfie, Image_HotPointCalender).
+- Text_Name now shows the page's map name (龙门绝境 / 龙门绝境·夜 / 沧溟绝境 / 白龙绝境 / 天原绝境 from the page
+  labels) instead of the authored 稻香村 leftover; the runtime value = MiddleMap.GetMapAreaName on
+  UPDATE_REGION_INFO (the player's sub-area), so a static page can only show the map's own name.
+- Evidence: minimap_v6.png (43 sections; clean buttons, map name, local map + arrow); --selftest 16/1/0.
+
+### 2026-10-02 — UI — 5.2: remove the lens "?" icon; defaultWindow = minimap
+- The big "?" inside the lens = Btn_Selfie's round icon (the AI-selfie button; its atlas glyph reads as a
+  question mark) - hidden, together with Btn_Help (its "?" art also overlapped the lens) and Btn_WBLou.
+- defaultWindow set to `minimap` so the viewer opens on the active 5.2 item (the working-item rule).
+- Evidence: minimap_v10.png (38 sections; no ? icon; teal-pixel scan finds none in the lens), --selftest 16/1/0.
+
+### 2026-10-02 — UI — 5.2: the green "?" is Btn_Questionnaire (correction)
+- The user clarified: the target was the GREEN question mark INSIDE the lens, not the surrounding buttons.
+  Restored Btn_Selfie / Btn_Help / Btn_WBLou (wrongly hidden before); the green "?" = Btn_Questionnaire
+  (survey button, art SystemButton_1.UITex frame 17, 48x48, authored 0x0 -> module shows it only when a
+  survey is available; the viewer drew it at (26,86) over the lens) - hidden now.
+- Evidence: green-pixel scan inside the lens 83 -> 1; minimap_v11.png shows the clean lens with the
+  surrounding buttons back; --selftest 16/1/0.
+
+### 2026-10-02 — UI — 5.2: top-right corner widget removed (outside the ring)
+- Clarified target: the thing outside the ring at the top right = the corner widget (Image_Coner + its
+  CheckBox_Switch toggle with the chevrons) - hidden. Btn_Selfie (the round swirl at the ring edge) restored
+  again; it was not the target.
+- Evidence: minimap_v13.png (clean top-right outside the lens, swirl back), --selftest 16/1/0.

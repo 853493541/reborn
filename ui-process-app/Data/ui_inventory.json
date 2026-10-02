@@ -2,7 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-  "defaultWindow": "treasure-final",
+  "defaultWindow": "minimap",
   "stages": [
     {
       "id": "queue",
@@ -199,12 +199,12 @@
             { "section": "Handle_Msg", "left": 128, "top": 646, "width": 1024, "height": 60 },
             { "section": "Handle_MPakInfo", "left": 128, "top": 646, "width": 1024, "height": 60 },
             { "section": "Handle_PakV4Msg", "left": 470, "top": 709 },
-            { "section": "Handle_Tip", "left": 655, "top": 115 },
-            { "section": "Text_Tip", "left": 655, "top": 115 },
+            { "section": "Handle_Tip", "left": 670, "top": 115 },
+            { "section": "Text_Tip", "left": 670, "top": 115 },
             { "section": "Image_Progress", "width": 912 },
             { "section": "Image_ProgressT", "width": 615 }
           ],
-          "summary": "Full-screen loading overlay for a map transfer, 1280x720. One viewer entry with the Page selector switching the destination map (296 龙门绝境 / 297 龙门绝境·夜 / 410 沧溟绝境 / 512 白龙绝境 / 532 天原绝境): Image_Bg = the map's own [loading] image art (CDN _mb PNG, full-bleed 1284x722 at -3,-1), Handle_Traffic and Handle_PakV4Msg hidden (normal map load; the traffic bar and the PakV4 download tips show only while the client is streaming resources), progress bar at (10% w, 89.4% h) with an 80%-wide track and a 912px fill, message/tip handles at (128,646), tip panel at (655,115) — all from LoadingPanel.lua CorrectShow/ShowProgress. Map art pulled from the CDN hpkg with tools/netcode/extract_hpkg_member.py.",
+          "summary": "Full-screen loading overlay for a map transfer, 1280x720. One viewer entry with the Page selector switching the destination map (296 龙门绝境 / 297 龙门绝境·夜 / 410 沧溟绝境 / 512 白龙绝境 / 532 天原绝境): Image_Bg = the map's own [loading] image art (CDN _mb PNG, full-bleed 1284x722 at -3,-1), Handle_Traffic and Handle_PakV4Msg hidden (normal map load; the traffic bar and the PakV4 download tips show only while the client is streaming resources), progress bar at (10% w, 89.4% h) with an 80%-wide track and a 912px fill, message/tip handles at (128,646), tip panel at (670,115) = the exact 1280-wide runtime anchor (UpdateLayout: Text_Tip/Handle_Tip SetRelPos(clientW - w - 100, 115), so the position follows the resolution while the 510x101 box size is fixed; the content is the map's loading story from g_tLoadingStory/minimap/loadingstory.tab with the map font, ~34 CJK chars/line x 4-5 lines at the shipped fonts; that table is not in the local extractions so the area renders empty) — all from LoadingPanel.lua CorrectShow/ShowProgress. Map art pulled from the CDN hpkg with tools/netcode/extract_hpkg_member.py.",
           "evidence": [
             "ui/Config/Default/LoadingPanel.ini",
             "ui/Config/Default/LoadingPanel.lua (GetLoadingImage / CorrectShow / ShowProgress)",
@@ -336,13 +336,22 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MiniMap.ini",
+          "show": [ "Wnd_Over" ],
+          "hide": "Text_ct,Text_Fresher,WndContainer_Emergency,Image_AIGenerate,Btn_Questionnaire,Image_Coner,CheckBox_Switch,Handle_warning,Handle_num,Handle_Tuisong,Image_hotPoint,Image_HotPointSelfie,Image_HotPointCalender",
           "adjust": [
             { "section": "Wnd_Corner", "left": 27, "top": 0 },
             { "section": "Wnd_Minimap", "left": 0, "top": 32 },
             { "section": "CheckBox_Switch", "left": 205, "top": -2 },
             { "section": "Image_Coner", "left": 153, "top": 0 }
           ],
-          "summary": "Top-right lens with the battlefield button, observer button, storm circle range hint and outside-safe-zone warning options. The INI parks the lens at Left=-200 (the slide-in start); the module's UpdateAnchorCorner (Minimap.decompiled.lua:1542-1770) sets the TOPRIGHT corner layout: Wnd_Corner (27,0), Wnd_Minimap (0,32), CheckBox_Switch (205,-2), Image_Coner (153,0) — replayed in `adjust`. The slide-out side panels stay parked at negative X (their module animates them in).",
+          "pages": [
+            { "id": "296", "label": "龙门绝境", "texts": [ { "section": "Text_Name", "text": "龙门绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png", "zoom": 3.41 } ] },
+            { "id": "297", "label": "龙门绝境·夜", "texts": [ { "section": "Text_Name", "text": "龙门绝境·夜" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png", "zoom": 3.41 } ] },
+            { "id": "410", "label": "沧溟绝境", "texts": [ { "section": "Text_Name", "text": "沧溟绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png", "zoom": 3.41 } ] },
+            { "id": "512", "label": "白龙绝境", "texts": [ { "section": "Text_Name", "text": "白龙绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png", "zoom": 3.41 } ] },
+            { "id": "532", "label": "天原绝境", "texts": [ { "section": "Text_Name", "text": "天原绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/天原绝境minimap_mb/middlemap.png", "zoom": 3.41 } ] }
+          ],
+          "summary": "Top-right lens with the battlefield button, observer button, storm circle range hint and outside-safe-zone warning options. The INI parks the lens at Left=-200 (the slide-in start); the module's UpdateAnchorCorner (Minimap.decompiled.lua:1542-1770) sets the TOPRIGHT corner layout: Wnd_Corner (27,0), Wnd_Minimap (0,32), CheckBox_Switch (205,-2), Image_Coner (153,0) — replayed in `adjust`. The Wnd_Over sub-window (WndWindow, LockShowAndHide=1) is VISIBLE: it carries the whole control set - Text_Name (runtime = MiddleMap.GetMapAreaName on UPDATE_REGION_INFO; authored sample 稻香村), Text_Fresher 分线, Text_ct timer, Btn_BigMap 全图, ZoomIn/Out, Mail, RMain/RFlower/RCraft/RSearch/RCopy, NpcSearch, BattleField(+Forbid)/Arena(+Forbid)/FindTeam, WBLou, Trade(+Tuisong/Storage/Point), WarMaps, Sns, PayPath, Help, Selfie(+AI), Calender, ArenaLive, LeavePVP/LeaveFB/LeaveStudio/LeaveJJCRouge - the module shows/hides them per mode (ShowBtnCmd/UpdateBattleFieldButton/UpdateArenaButton/...); the parked side panels animate in from negative X. The EYS overlay (Wnd_EYSOver, LSH=0) supplies the vision lens art (Image_EYSBg = Minimap.UITex frame 0) and the emergency container (Pellet 鹤翼/LightOff/Emergency). The lens (Minimap_Map, WndMinimap 202x202, AlphaShap=1 + sharptexture MinimapSharp.tga) paints the map texture; with no live map the viewer uses the map pack art per page (the same middlemap.png as MiddleMap) and pins the self marker (`image` frame `selfframe`) at the lens centre, falling back to the shipped defualtminimap texture when a page has none.",
           "evidence": [
             "ui/Config/Default/MiniMap.ini",
             "proof/minimap/ui/Config/Default/decompiled/Minimap.decompiled.lua",

@@ -163,6 +163,13 @@ namespace UiProcessApp.Engine
         /// </summary>
         public string BorderColor { get; set; }
         public int? BorderWidth { get; set; }
+
+        /// <summary>
+        /// Zoom for a WndMinimap lens background (the engine draws the map texture at
+        /// the map config's [config] scale around the player; the inventory passes the
+        /// derived factor so the lens shows a local region instead of the whole map).
+        /// </summary>
+        public double? Zoom { get; set; }
     }
 
     /// <summary>
@@ -418,7 +425,9 @@ namespace UiProcessApp.Engine
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                 {
                     // A script-shown section unlocks its whole subtree (the tab
-                    // checkboxes carry LockShowAndHide=1 and own the tab label).
+                    // checkboxes carry LockShowAndHide=1 and own the tab label; the
+                    // minimap's Wnd_Over button column is shown from the inventory in
+                    // the same way the module toggles its buttons).
                     if (keep.Contains(cursor)) return false;
                     if (filtered.ByName.TryGetValue(cursor, out var section) &&
                         section.GetInt("LockShowAndHide") == 1)
@@ -474,7 +483,14 @@ namespace UiProcessApp.Engine
             {
                 if (image == null || string.IsNullOrWhiteSpace(image.Section)) continue;
                 if (!TryFind(filtered, image.Section, out var section)) continue;
-                if (!string.IsNullOrWhiteSpace(image.Image)) section.Values["Image"] = image.Image;
+                // A WndMinimap paints its texture from `defaulttexture` (no live map in
+                // the viewer), so an image override targets that key for lens sections.
+                var textureKey = string.Equals(section.Get("._WndType"), "WndMinimap",
+                    StringComparison.OrdinalIgnoreCase) ? "defaulttexture" : "Image";
+                if (!string.IsNullOrWhiteSpace(image.Image)) section.Values[textureKey] = image.Image;
+                if (image.Zoom.HasValue)
+                    section.Values["$LensZoom"] = image.Zoom.Value
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
                 if (image.Frame.HasValue)
                     section.Values["Frame"] = image.Frame.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 if (image.Checked.HasValue)

@@ -421,6 +421,44 @@ namespace MapUiApp.Engine
                 // and the minimap lens uses MinimapSharp.tga. Without the mask the
                 // map shows its hard-edged source rectangle.
                 var shapeTexture = section.Get("ShapTexture");
+                // KGUI WndMinimap names the lens mask `sharptexture` and paints the
+                // active map itself; without a live map the engine falls back to
+                // `defaulttexture` (defualtminimap) with the self marker (`image`
+                // frame `selfframe`) pinned at the lens centre (MiniMap.ini
+                // Minimap_Map: defaulttexture/sharptexture/image/selfframe).
+                if (type.Equals("WndMinimap", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.IsNullOrWhiteSpace(shapeTexture)) shapeTexture = section.Get("sharptexture");
+                    var defaultTexture = section.Get("defaulttexture");
+                    if (!string.IsNullOrWhiteSpace(defaultTexture))
+                    {
+                        var mapImage = textures.GetFrame(defaultTexture, 0);
+                        if (mapImage != null)
+                        {
+                            var mapBrush = new ImageBrush(mapImage) { Stretch = Stretch.UniformToFill };
+                            // The engine draws the map texture around the player at the
+                            // map config's scale ([config] scale=0.02 vs the middlemap
+                            // art's 0.005867 -> ~3.4x), so the lens shows a local region.
+                            var lensZoom = section.GetDouble("$LensZoom", 1.0);
+                            if (lensZoom > 1.0)
+                                mapBrush.RelativeTransform = new ScaleTransform(lensZoom, lensZoom, 0.5, 0.5);
+                            container.Background = mapBrush;
+                        }
+                    }
+                    var selfTexture = section.Get("image");
+                    if (!string.IsNullOrWhiteSpace(selfTexture))
+                    {
+                        var selfImage = textures.GetFrame(selfTexture, section.GetInt("selfframe", 0));
+                        if (selfImage != null)
+                        {
+                            var arrow = new Image { Source = selfImage, Stretch = Stretch.None };
+                            double aw = selfImage.PixelWidth, ah = selfImage.PixelHeight;
+                            Canvas.SetLeft(arrow, width > 0 ? (width - aw) / 2 : 0);
+                            Canvas.SetTop(arrow, height > 0 ? (height - ah) / 2 : 0);
+                            container.Children.Add(arrow);
+                        }
+                    }
+                }
                 if (!string.IsNullOrWhiteSpace(shapeTexture) && section.GetInt("AlphaShap") == 1)
                 {
                     var shape = textures.GetFrame(shapeTexture, 0);
