@@ -260,6 +260,55 @@ window) is the remaining host work.
 Adapter manager vtable: slot 0 = Init1 `0x730C0`, slot 1 = Init2 `0x75650`, slot 2 =
 UnInit `0x75A40`, slots 3/4 = `0x1BE40`/`0x1BBA0` (the host-object setters).
 
+## CLIENT ENGINE INSTANCE LIVE + `.Sfx` CREATE PROVEN (2026-10-01)
+
+**Window substitution solved the last init blocker.** The adapter passes a bad HWND to
+`KG3D_Engine::CreateTargetWindow` (client engine export `0x8AEF30`); the probe now creates
+a real Win32 window (`CreateWindowExA`, 1280x720, class `client_sfx_probe_wnd`) and
+substitutes it with a 15-byte inline hook on `0x8AEF30` (prologue `push rbx…push r15` +
+`sub rsp,0x40` = 15 bytes, no RIP-relative instructions → safe to relocate). Result:
+
+```
+[CreateTargetWindow] self=… hwnd=… -> using 0x1B0774
+[KGLOG] window init, size is :1264, 681
+[KGLOG] -- [Adapter] version=1.1.9.9 init success. --
+iface->vt[0](0, 4) -> 0                      ← S_OK
+KG3D_GetEngine2 (after iface init) -> 0x…    ← LIVE CLIENT ENGINE INSTANCE
+```
+
+**Decisive `.Sfx` test on the live client engine** (`c纯阳坐忘.Sfx`, the file that AVs the
+ME 09-14 build), owner = client singleton `[engine+0x2CF1038] -> vt[8]()`:
+
+```
+existing .Sfx (client owner): obj=0x1E5C64A5A60 exc=0x00000000 fault_rva=0x0
+pss (client owner):           obj=0x1E5D9809058 exc=0x00000000 fault_rva=0x0
+```
+
+**No AV — the client 09-27 engine creates the real `.Sfx` cleanly; the ME 09-14 build
+AVs on the same file.** The core bug is a build difference, and the client engine is the
+fix. (Probe note: the create's return is a full pointer — declaring it `long` truncates
+it; use `void*`.)
+
+**Play-path mapping on the client build** (from the engine's own bind code at
+`0xE348CA`, client engine):
+1. `KG3D_CreateSFXFromFile` (`0xBE5610`).
+2. `__RTDynamicCast(sfx, 0, IKG3D_Model @0x26080A0, IKG3D_NormalModel @0x2608B40, 0)`
+   — descriptors found as `_TypeDescriptor` structs (`.?AUIKG3D_Model@@` /
+   `.?AUIKG3D_NormalModel@@`; ME equivalents shifted by `-0x6000`).
+3. `model->vt[0xD58](model,1,1,0)` — a hook; result ignored by the engine.
+4. `model->vt[0xD60](model, ctx, …)` — attach.
+5. `model->vt[0x180](model, worldMatrix, …)` — the real bind/play entry.
+6. `model->vt[0x190](model)` — handle.
+
+Slot reality on the probe's created objects: `.Sfx` (`c纯阳坐忘`) has a **real**
+`vt[0x180]` (`0xBCC9F0`) while `vt[0xD58]/[0xD60]/[0x190]` are the shared stub `0xE5420`
+(`xor eax,eax; ret`); bare `.pss` is stubbed at all four. Calling `vt[0x180]` with an
+identity matrix and no prior bind returns `0x80004002` (E_NOINTERFACE) — the attach
+context/scene binding (the engine passes its SFX context at `[ctx+8]`) is the next
+missing piece for engine-driven playback.
+
+Probe: `%TEMP%\opencode\skillv2\client_sfx_probe.cpp` (evidence `win2.out`, `play3.out`).
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,

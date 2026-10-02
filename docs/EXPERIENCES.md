@@ -1053,3 +1053,23 @@ all tags should fire. Editor config to adopt when initializing the host
   scoped with its first RE step done (factories + forwarder chain).
 - Re-open: SFX vtable mapping → shim → A/B proof.
 
+
+### 2026-10-01 - engine host - client engine instance live + real `.Sfx` create proven
+- Window: the adapter passed a bad HWND to `KG3D_Engine::CreateTargetWindow` (client
+  export `0x8AEF30`); a real Win32 window (1280x720) substituted via a 15-byte inline
+  hook unblocked init: `iface->vt[0](0,4) -> 0` and `KG3D_GetEngine2()` returns a live
+  client engine instance (log: `window init, size is :1264, 681`,
+  `[Adapter] version=1.1.9.9 init success`).
+- Decisive SFX test on the live client engine (`c纯阳坐忘.Sfx`, owner = client singleton
+  `[engine+0x2CF1038] -> vt[8]()`): **no AV** (`obj` non-null, `exc=0`) - the ME
+  09-14 build AVs on the same file. The core bug is a build difference; the client
+  engine is the fix.
+- Client play-path mapped from the engine's own bind code (`0xE348CA`): create
+  (`0xBE5610`) -> `__RTDynamicCast` (descriptors `0x26080A0`/`0x2608B40`) ->
+  `vt[0xD58]` hook -> `vt[0xD60]` attach -> `vt[0x180]` bind/play with the world
+  matrix -> `vt[0x190]` handle. `.Sfx` has a real `vt[0x180]` (`0xBCC9F0`);
+  bare `.pss` is stubbed at all four slots. `vt[0x180]` without the engine's attach
+  context returns `E_NOINTERFACE` - attach/scene binding is the next step.
+- Evidence: `%TEMP%\opencode\skillv2\{win2,play3}.out`; probe `client_sfx_probe.cpp`;
+  plan `docs/engine_host/SFX_WIRING_PLAN.md`.
+- Re-open: attach context + scene binding -> engine-driven playback A/B in the app.
