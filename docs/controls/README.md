@@ -30,6 +30,7 @@ state of our own client, so the full control system can be implemented later.
 | `controls/CONTROL_MODES_TRACEABILITY.md` | **live matrix for the full CLASSICAL+JOYSTICK decode (incl. animation)** — layers, rows, gaps G1–G10 / A1–A20, verification plan (2026-10-02) |
 | `controls/CONTROL_MODES_LUA_ANNEX.md` | **P1 Lua annex** — decoded control handler bodies: mode wrapper, `ResponseWASDKey` joystick vector, mode apply/toggle/persistence (2026-10-02) |
 | `controls/CONTROL_MODES_P3_STATIC.md` | **P3 static** — thunk table, script-API wrappers, input apply chain; dynamic probe plan (2026-10-02) |
+| controls/CONTROL_MODES_P5_ANIM.md | **P5 animation** — locomotion selection algorithm (speed-tier thresholds, transition clip sets, two slots; param lookup next) (2026-10-02) |
 
 ## The one-paragraph summary
 
@@ -77,4 +78,3 @@ customization. Research is ~85–90% complete; implementation ~35–40%.
 3. Server owns combat/movement truth; the client sends intents and predicts
    animation/UI only.
 4. Every fix gets a note here + an acceptance test before code.
-| `controls/CONTROL_MODES_P5_ANIM.md` | **P5 animation** — locomotion selection algorithm (speed-tier thresholds, transition clip sets, two slots; param lookup next) (2026-10-02) |
