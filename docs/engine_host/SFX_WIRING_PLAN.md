@@ -567,6 +567,25 @@ tag query) in the probe to enumerate SFX tags with their paths, then bridge acti
 tags to `KG3D_CreateSFXFromFile`; or drive `KRLAnimationFactory` from
 JX3RepresentX64 for the full client behavior.
 
+**FS mount investigation (fsx/fsx2/rel/cwd.out).** `PakV4SfxExtract.exe` is a small
+**.NET launcher** (CLR, 8 KB) that P/Invokes `Engine_Lua5X64!KG_InitPakV4FileSystem`
+with **relative `../../PakV4` + `Trunk.Dir`** after `SetCurrentDirectory(exeDir)` +
+`SetDllDirectoryA`, then reads files via `g_IsFileExist(path,category)` /
+`g_OpenFile(path,category,index)`. Probe results:
+- absolute pakDir + cwd=client_root: init=1, base clips load (`f1ha393_start01.ani`
+  74,366 B via pak) but tagged skill clips fail (`KG3D_LoadFile` line 217).
+- relative `../../PakV4` in the probe: init=0 (pakDir resolves against the
+  **module/process dir**, not cwd — probe module dir is client_root\bin64).
+- cwd=game bin64 + absolute pakDir: init=1 but even base clips fail (cwd affects
+  resolution).
+- `g_IsFileExist(path,0/1)` returns 0 even for files the engine loads → it is not
+  the engine's active lookup.
+Conclusion: the mount/version layer selection differs between the extractor and the
+probe; the extractor's extra ingredients are **cwd=game bin64**, **SetDllDirectoryA**
+and the **relative pakDir**. Next: replicate the extractor's exact environment (run
+the probe from the game bin64 dir with SetDllDirectory(bin64) + relative pakDir, or
+find which arg selects the update layer) and re-test the tagged clip visibility.
+
 **Tagged-clip architecture + mount blocker (animcb.out/ani1.out/ani2.out).**
 `.ani` and `.tani` are **separate pak entries**: `.ani` = the animation (raw `MIN2`
 container, e.g. `f1ha393_start01.ani` 74,366 B; `F1stm09通道02.ani` 149,469 B), `.tani`
