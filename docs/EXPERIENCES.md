@@ -900,3 +900,16 @@ solved it, and what is still open. **Newest at the bottom.**
 - Next: LoadLibrary SIMWorldX64 in the host, build a PxWorld, Initialize +
   SetupPhysic with our in-host engine scene, then A/B GetFloorHeight /
   RayCastDirect vs TerrainSampler at the field spots.
+
+### 2026-10-01 - collision - PxWorld needs semantic factories; direct wrapper route found
+- Follow-up on the query API: `CreateSIMWorld` (SIMWorldX64 @0x351C0) takes a
+  Semantic TABLE object and drives its factory calls (vt[0x170]/0x168/0x3A8)
+  plus `represent\simworld.json` - the PxWorld route needs the game's semantic
+  component factories (the represent layer we do not boot). Parked.
+- Direct route: `PxWorld::SetupPhysic` -> `0x18001A6E0(arg1,arg2)` (singleton,
+  0x2043B8 bytes) -> `PhysicScene::_Init` @0x180024140 (assert-named): stores
+  arg1/arg2, calls `arg2.vt[0x38]()` for the terrain desc (cell/counts) and
+  builds the PhysX scene at [this+0x18]; `GetFloorHeight` calls the wrapper's
+  vt[0x20]. So calling `SIMWorldX64+0x1A6E0(arg1,arg2)` in-host + the wrapper's
+  vt[0x20] gives the engine's floor query without PxWorld/semantic tables.
+- Next: pin arg1/arg2 from the SetupPhysic caller, then A/B vs TerrainSampler.

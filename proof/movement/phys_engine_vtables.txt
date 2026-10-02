@@ -154,6 +154,26 @@ vt[0x50] = get-by-key). Candidate source: the engine's SemanticX64 table
 LoadLibrary SIMWorldX64 -> ctor -> Initialize(table) -> SetupPhysic(manager,
 scene) -> GetFloorHeight/RayCastDirect A/B vs TerrainSampler.
 
+### Update 2026-10-01b: PxWorld route needs the semantic factories; wrapper route found
+
+- `CreateSIMWorld` (SIMWorldX64 export @0x351C0) takes a Semantic TABLE object
+  (calls its vt[0x170]/vt[0x168]/vt[0x3A8] factory/get calls) and loads
+  `represent\simworld.json` - i.e. the PxWorld route needs the game's semantic
+  component factories registered (the represent layer we do not boot). Deeper
+  than it looked.
+- Direct route: `PxWorld::SetupPhysic` (export @0x33D70) -> `0x18001A6E0(arg1,
+  arg2)` = a singleton creator (0x2043B8-byte object) -> `PhysicScene::_Init`
+  (`0x180024140`, assert-named) with `(this, arg1, arg2)`; it stores
+  `[this+8]=arg1`, `[this+0x10]=arg2`, calls `arg2.vt[0x38]()` (returns the
+  terrain desc: cell size/counts) and creates the PhysX scene into
+  `[this+0x18]`. `PxWorld::GetFloorHeight` calls the wrapper's `vt[0x20]`.
+- So the engine floor query is reachable as: call `SIMWorldX64+0x1A6E0(arg1,
+  arg2)` in-host (args = the engine physics objects: the terrain-desc provider
+  + the manager/scene) and call the returned wrapper's `vt[0x20]` - no PxWorld,
+  no semantic table.
+- Next: pin arg1/arg2 from the `SetupPhysic` caller (client exe / represent
+  chain), then A/B the wrapper floor query vs `TerrainSampler`.
+
 ## Next steps for engine-physics-in-host
 
 1. `CreatePhysicsScene(out, engineArg)`: find what `engineArg` is in the real caller
