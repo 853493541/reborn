@@ -1,0 +1,34 @@
+# JX3LogicEditOperationX64.dll xrefs to 0x180116210
+
+## ref @ 0x18011902d -> 0x180116210
+  0x180118ff1: mov      dword ptr [rsp + 0x10], ebx
+  0x180118ff5: mov      qword ptr [rsp + 0x18], rbp
+  0x180118ffa: mov      qword ptr [rsp + 0x20], rsi
+  0x180118fff: push     rdi
+  0x180119000: push     r12
+  0x180119002: push     r13
+  0x180119004: push     r14
+  0x180119006: push     r15
+  0x180119008: sub      rsp, 0xa0
+  0x18011900f: mov      rax, qword ptr [rip + 0x89d20a]
+  0x180119016: xor      rax, rsp
+  0x180119019: mov      qword ptr [rsp + 0x90], rax
+  0x180119021: mov      r13, rcx
+  0x180119024: xor      esi, esi
+  0x180119026: mov      rdx, qword ptr [rcx + 0x100]
+  0x18011902d: call     0x180116210
+  0x180119032: test     eax, eax
+  0x180119034: je       0x180119398
+  0x18011903a: mov      rbp, qword ptr [r13 + 0x100]
+  0x180119041: test     rbp, rbp
+  0x180119044: je       0x180119398
+  0x18011904a: mov      eax, dword ptr [rbp + 8]
+  0x18011904d: mov      dword ptr [r13 + 0x108], eax
+  0x180119054: mov      eax, dword ptr [rbp + 0xc]
+  0x180119057: cmp      eax, 0x14
+  0x18011905a: jle      0x180119064
+  0x18011905c: mov      eax, 0x14
+  0x180119061: mov      dword ptr [rbp + 0xc], eax
+  0x180119064: test     eax, eax
+  0x180119066: jns      0x18011906d
+  0x180119068: .byte    0x89

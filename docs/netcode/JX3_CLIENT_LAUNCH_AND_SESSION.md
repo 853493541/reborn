@@ -79,7 +79,33 @@ command line (the real launch had no `-c`; WMI cmdlines empty).
 write XTEA block) is reproducible **without modifying the client**. Remaining unknowns: the
 0x275C plaintext layout and the gateway protocol implementation.
 
-## 6. Verdict (2026-10-01, updated)
+## 7. Block format (static decode, 2026-10-01 third pass)
+
+Block = **0x275C bytes = 16-byte header + 20 slots × 0x1F7 bytes**.
+
+Header (after the client's in-place decrypt of the first 8 bytes):
+- `+2` dword — `GetTickCount()/1000` at fill time; the parser fails unless
+  `(GetTickCount()/1000 - value) <= 10` (freshness gate; a zero block always fails).
+- `+8` dword — copied to `obj+0x108`; a caller checks it is **non-zero**.
+- `+0xc` dword — entry count, clamped to ≤ 0x14; the client **zeroes it in the shared
+  view after reading** (consume marker).
+- `+0x10 + i*0x1F7` — slot payload (0x1E7 bytes) + 16-byte key at `+0x1E7`; parsed
+  into a map keyed by the 16-byte pair (values copied into 0x208-byte nodes).
+
+Crypto: the first 8 bytes are decrypted by a **custom 16-round TEA variant**
+(`0x140101450`): sum starts `0xC6EF3720`, 32 delta steps of `0x61C88647`, key words
+`a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f`; `mx = (((x>>5)^(x<<4)) + x) ^ (key[idx] + sum)`.
+**Only the decrypt direction exists** in `JX3ClientX64.exe` / `JX3LogicEditOperationX64.dll`
+(no `0x9E3779B9` immediate anywhere); the writer (which must encrypt) is still
+unidentified — the launcher binaries do not contain the block GUID.
+
+Client behaviour: the parser is **polled** (caller `0x140100530`, timeout-guarded) and
+the client gives up ~2.2–2.4 s after start. Launcher-emulator mechanics work
+(suspended start → create PID-keyed mapping → write → resume), but a synthesized
+header-only block (both key-index variants, `+8` set) still exits at 2.4 s — the
+remaining required content/cipher details are unresolved.
+
+## 8. Verdict (2026-10-01, updated)
 
 The earlier "blocked on launcher emulation" verdict is **superseded**: the handoff is a
 reproducible shared-memory protocol with a hardcoded key (§5), so a launcher emulator can

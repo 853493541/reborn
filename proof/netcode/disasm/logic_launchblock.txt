@@ -1,0 +1,523 @@
+# JX3LogicEditOperationX64.dll xrefs for '400BBBA7'
+# image base 0x180000000
+
+## xref @ 0x180116254 -> 0x1808f9bc8 '400BBBA7-F29F-4357-9B07-%04X-D62109852BD6'  fn start 0x180116210
+  0x180116210: mov      qword ptr [rsp + 0x20], rsi
+  0x180116215: push     rdi
+  0x180116216: sub      rsp, 0x40
+  0x18011621a: xor      esi, esi
+  0x18011621c: mov      qword ptr [rsp + 0x60], r14
+  0x180116221: mov      r14, rdx
+  0x180116224: mov      rdi, rcx
+  0x180116227: test     rdx, rdx
+  0x18011622a: je       0x180116424
+  0x180116230: mov      qword ptr [rsp + 0x50], rbx
+  0x180116235: lea      rbx, [rip + 0x8eb814]
+  0x18011623c: cmp      qword ptr [rcx + 0xf8], rsi
+  0x180116243: jne      0x18011628e
+  0x180116245: cmp      byte ptr [rip + 0x8eb884], sil
+  0x18011624c: jne      0x180116277
+  0x18011624e: call     qword ptr [rip + 0x64f194]  ; KERNEL32.dll!GetCurrentProcessId
+  0x180116254: lea      r8, [rip + 0x7e396d]  ; '400BBBA7-F29F-4357-9B07-%04X-D62109852BD6'
+  0x18011625b: mov      rcx, rbx
+  0x18011625e: mov      r9d, eax
+  0x180116261: lea      edx, [rsi + 0x40]
+  0x180116264: call     0x18008b620
+  0x180116269: mov      byte ptr [rip + 0x8eb81f], sil
+  0x180116270: mov      byte ptr [rip + 0x8eb859], 1
+  0x180116277: mov      r8, rbx
+  0x18011627a: xor      edx, edx
+  0x18011627c: mov      ecx, 0xf001f
+  0x180116281: call     qword ptr [rip + 0x64f329]  ; KERNEL32.dll!OpenFileMappingA
+  0x180116287: mov      qword ptr [rdi + 0xf8], rax
+  0x18011628e: mov      rcx, qword ptr [rdi + 0xf8]
+  0x180116295: test     rcx, rcx
+  0x180116298: jne      0x18011633d
+  0x18011629e: cmp      byte ptr [rip + 0x8eb82b], sil
+  0x1801162a5: jne      0x1801162d2
+  0x1801162a7: call     qword ptr [rip + 0x64f13b]  ; KERNEL32.dll!GetCurrentProcessId
+  0x1801162ad: lea      r8, [rip + 0x7e3914]  ; '400BBBA7-F29F-4357-9B07-%04X-D62109852BD6'
+  0x1801162b4: mov      edx, 0x40
+  0x1801162b9: mov      r9d, eax
+  0x1801162bc: mov      rcx, rbx
+  0x1801162bf: call     0x18008b620
+  0x1801162c4: mov      byte ptr [rip + 0x8eb7c4], sil
+  0x1801162cb: mov      byte ptr [rip + 0x8eb7fe], 1
+  0x1801162d2: xor      r9d, r9d
+  0x1801162d5: mov      qword ptr [rsp + 0x28], rbx
+  0x1801162da: xor      edx, edx
+  0x1801162dc: mov      dword ptr [rsp + 0x20], 0x275c
+  0x1801162e4: lea      r8d, [r9 + 4]
+  0x1801162e8: lea      rcx, [rdx - 1]
+  0x1801162ec: call     qword ptr [rip + 0x64f2c6]  ; KERNEL32.dll!CreateFileMappingA
+  0x1801162f2: mov      qword ptr [rdi + 0xf8], rax
+  0x1801162f9: test     rax, rax
+  0x1801162fc: je       0x18011641f
+  0x180116302: xor      r9d, r9d
+  0x180116305: mov      qword ptr [rsp + 0x20], 0x275c
+  0x18011630e: xor      r8d, r8d
+  0x180116311: mov      edx, 0xf001f
+  0x180116316: mov      rcx, rax
+  0x180116319: call     qword ptr [rip + 0x64f1a9]  ; KERNEL32.dll!MapViewOfFile
+  0x18011631f: mov      rbx, rax
+  0x180116322: test     rax, rax
+  0x180116325: je       0x18011641f
+  0x18011632b: xor      edx, edx
+  0x18011632d: mov      r8d, 0x275c
+  0x180116333: mov      rcx, rax
+  0x180116336: call     0x1807417e4
+  0x18011633b: jmp      0x180116363
+  0x18011633d: xor      r9d, r9d
+  0x180116340: mov      qword ptr [rsp + 0x20], 0x275c
+  0x180116349: xor      r8d, r8d
+  0x18011634c: mov      edx, 0xf001f
+  0x180116351: call     qword ptr [rip + 0x64f171]  ; KERNEL32.dll!MapViewOfFile
+  0x180116357: mov      rbx, rax
+  0x18011635a: test     rax, rax
+  0x18011635d: je       0x18011641f
+  0x180116363: cmp      byte ptr [rip + 0x8eb6d8], sil
+  0x18011636a: mov      qword ptr [rsp + 0x58], rbp
+  0x18011636f: jne      0x1801163a0
+  0x180116371: call     qword ptr [rip + 0x64f071]  ; KERNEL32.dll!GetCurrentProcessId
+  0x180116377: lea      r8, [rip + 0x7e381a]  ; '56992E93-3828-415E-AB04-%04X-33107B63107D'
+  0x18011637e: mov      edx, 0x40
+  0x180116383: mov      r9d, eax
+  0x180116386: lea      rcx, [rip + 0x8eb703]
+  0x18011638d: call     0x18008b620
+  0x180116392: mov      byte ptr [rip + 0x8eb736], sil
+  0x180116399: mov      byte ptr [rip + 0x8eb6a2], 1
+  0x1801163a0: lea      r8, [rip + 0x8eb6e9]
+  0x1801163a7: xor      edx, edx
+  0x1801163a9: xor      ecx, ecx
+  0x1801163ab: call     qword ptr [rip + 0x64f2cf]  ; KERNEL32.dll!CreateMutexA
+  0x1801163b1: mov      rbp, rax
+  0x1801163b4: test     rax, rax
+  0x1801163b7: je       0x18011640c
+  0x1801163b9: mov      edx, 0xffffffff
+  0x1801163be: mov      rcx, rax
+  0x1801163c1: call     qword ptr [rip + 0x64f0d1]  ; KERNEL32.dll!WaitForSingleObject
+  0x1801163c7: mov      r8d, 0x275c
+  0x1801163cd: mov      rdx, rbx
+  0x1801163d0: mov      rcx, r14
+  0x1801163d3: call     0x1807417f0
+  0x1801163d8: movups   xmm0, xmmword ptr [r14]
+  0x1801163dc: mov      rcx, r14
+  0x1801163df: movups   xmmword ptr [rsp + 0x30], xmm0
+  0x1801163e4: mov      dword ptr [rsp + 0x3c], esi
+  0x1801163e8: movups   xmm0, xmmword ptr [rsp + 0x30]
+  0x1801163ed: movups   xmmword ptr [rbx], xmm0
+  0x1801163f0: call     0x1801158a0
+  0x1801163f5: mov      esi, 1
+  0x1801163fa: mov      rcx, rbp
+  0x1801163fd: call     qword ptr [rip + 0x64f1bd]  ; KERNEL32.dll!ReleaseMutex
+  0x180116403: mov      rcx, rbp
+  0x180116406: call     qword ptr [rip + 0x64f2ac]  ; KERNEL32.dll!CloseHandle
+  0x18011640c: mov      rbp, qword ptr [rsp + 0x58]
+  0x180116411: test     rbx, rbx
+  0x180116414: je       0x18011641f
+  0x180116416: mov      rcx, rbx
+  0x180116419: call     qword ptr [rip + 0x64f351]  ; KERNEL32.dll!UnmapViewOfFile
+  0x18011641f: mov      rbx, qword ptr [rsp + 0x50]
+  0x180116424: mov      rcx, qword ptr [rdi + 0xf8]
+  0x18011642b: mov      r14, qword ptr [rsp + 0x60]
+  0x180116430: test     rcx, rcx
+  0x180116433: je       0x180116446
+  0x180116435: call     qword ptr [rip + 0x64f27d]  ; KERNEL32.dll!CloseHandle
+  0x18011643b: mov      qword ptr [rdi + 0xf8], 0
+  0x180116446: mov      eax, esi
+  0x180116448: mov      rsi, qword ptr [rsp + 0x68]
+  0x18011644d: add      rsp, 0x40
+  0x180116451: pop      rdi
+  0x180116452: ret      
+  0x180116453: int3     
+  0x180116454: int3     
+  0x180116455: int3     
+  0x180116456: int3     
+  0x180116457: int3     
+  0x180116458: int3     
+  0x180116459: int3     
+  0x18011645a: int3     
+  0x18011645b: int3     
+  0x18011645c: int3     
+  0x18011645d: int3     
+  0x18011645e: int3     
+  0x18011645f: int3     
+  0x180116460: mov      qword ptr [rsp + 8], rbx
+  0x180116465: mov      qword ptr [rsp + 0x10], rsi
+  0x18011646a: mov      qword ptr [rsp + 0x18], rdi
+  0x18011646f: push     rbp
+  0x180116470: push     r12
+  0x180116472: push     r13
+  0x180116474: push     r14
+  0x180116476: push     r15
+  0x180116478: lea      rbp, [rsp - 0x280]
+  0x180116480: sub      rsp, 0x380
+  0x180116487: mov      rax, qword ptr [rip + 0x89fd92]
+  0x18011648e: xor      rax, rsp
+  0x180116491: mov      qword ptr [rbp + 0x278], rax
+  0x180116498: mov      rdi, rcx
+  0x18011649b: mov      qword ptr [rsp + 0x38], rcx
+  0x1801164a0: xor      r13d, r13d
+  0x1801164a3: mov      qword ptr [rbp + 0x1f0], r13
+  0x1801164aa: mov      qword ptr [rbp + 0x1f8], 0xf
+  0x1801164b5: mov      byte ptr [rbp + 0x1e0], r13b
+  0x1801164bc: xor      r8d, r8d
+  0x1801164bf: lea      rdx, [rip + 0x7d8e64]
+  0x1801164c6: lea      rcx, [rbp + 0x1e0]
+  0x1801164cd: call     0x180087640
+  0x1801164d2: nop      
+  0x1801164d3: mov      dword ptr [rsp + 0x30], r13d
+  0x1801164d8: xor      edx, edx
+  0x1801164da: mov      r8d, 0x1f7
+  0x1801164e0: lea      rcx, [rbp - 0x20]
+  0x1801164e4: call     0x1807417e4
+  0x1801164e9: mov      rax, qword ptr [rdi + 0xe8]
+  0x1801164f0: mov      rbx, qword ptr [rax]
+  0x1801164f3: cmp      rbx, rax
+  0x1801164f6: je       0x180117153
+  0x1801164fc: lea      r15, [rip - 0x116503]
+  0x180116503: mov      r14, qword ptr [rip + 0x8aae16]
+  0x18011650a: nop      word ptr [rax + rax]
+  0x180116510: mov      eax, dword ptr [r14 + 4]
+  0x180116514: cmp      dword ptr [rbx + 0x30], eax
+  0x180116517: je       0x1801170ec
+  0x18011651d: mov      rcx, qword ptr [rbx + 0x38]
+  0x180116521: test     rcx, rcx
+  0x180116524: je       0x1801170ec
+  0x18011652a: lea      rdx, [rbp - 0x20]
+  0x18011652e: mov      eax, 3
+  0x180116533: nop      dword ptr [rax]
+  0x180116537: nop      word ptr [rax + rax]
+  0x180116540: movups   xmm0, xmmword ptr [rcx]
+  0x180116543: movups   xmmword ptr [rdx], xmm0
+  0x180116546: movups   xmm1, xmmword ptr [rcx + 0x10]
+  0x18011654a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011654e: movups   xmm0, xmmword ptr [rcx + 0x20]
+  0x180116552: movups   xmmword ptr [rdx + 0x20], xmm0
+  0x180116556: movups   xmm1, xmmword ptr [rcx + 0x30]
+  0x18011655a: movups   xmmword ptr [rdx + 0x30], xmm1
+  0x18011655e: movups   xmm0, xmmword ptr [rcx + 0x40]
+  0x180116562: movups   xmmword ptr [rdx + 0x40], xmm0
+  0x180116566: movups   xmm1, xmmword ptr [rcx + 0x50]
+  0x18011656a: movups   xmmword ptr [rdx + 0x50], xmm1
+  0x18011656e: movups   xmm0, xmmword ptr [rcx + 0x60]
+  0x180116572: movups   xmmword ptr [rdx + 0x60], xmm0
+  0x180116576: lea      rdx, [rdx + 0x80]
+  0x18011657d: movups   xmm1, xmmword ptr [rcx + 0x70]
+  0x180116581: movups   xmmword ptr [rdx - 0x10], xmm1
+  0x180116585: lea      rcx, [rcx + 0x80]
+  0x18011658c: sub      rax, 1
+  0x180116590: jne      0x180116540
+  0x180116592: movups   xmm0, xmmword ptr [rcx]
+  0x180116595: movups   xmmword ptr [rdx], xmm0
+  0x180116598: movups   xmm1, xmmword ptr [rcx + 0x10]
+  0x18011659c: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801165a0: movups   xmm0, xmmword ptr [rcx + 0x20]
+  0x1801165a4: movups   xmmword ptr [rdx + 0x20], xmm0
+  0x1801165a8: movups   xmm1, xmmword ptr [rcx + 0x30]
+  0x1801165ac: movups   xmmword ptr [rdx + 0x30], xmm1
+  0x1801165b0: movups   xmm0, xmmword ptr [rcx + 0x40]
+  0x1801165b4: movups   xmmword ptr [rdx + 0x40], xmm0
+  0x1801165b8: movups   xmm1, xmmword ptr [rcx + 0x50]
+  0x1801165bc: movups   xmmword ptr [rdx + 0x50], xmm1
+  0x1801165c0: movups   xmm0, xmmword ptr [rcx + 0x60]
+  0x1801165c4: movups   xmmword ptr [rdx + 0x60], xmm0
+  0x1801165c8: mov      eax, dword ptr [rcx + 0x70]
+  0x1801165cb: mov      dword ptr [rdx + 0x70], eax
+  0x1801165ce: movzx    eax, word ptr [rcx + 0x74]
+  0x1801165d2: mov      word ptr [rdx + 0x74], ax
+  0x1801165d6: .byte    0x0f
+  0x1801165d7: .byte    0xb6
+
+## xref @ 0x18012245e -> 0x1808f9bc8 '400BBBA7-F29F-4357-9B07-%04X-D62109852BD6'  fn start 0x1801223d0
+  0x1801223d0: mov      qword ptr [rsp + 0x20], rbx
+  0x1801223d5: mov      qword ptr [rsp + 8], rcx
+  0x1801223da: push     rbp
+  0x1801223db: push     rsi
+  0x1801223dc: push     rdi
+  0x1801223dd: sub      rsp, 0x40
+  0x1801223e1: mov      rsi, rcx
+  0x1801223e4: lea      rax, [rip + 0x7d7bdd]
+  0x1801223eb: mov      qword ptr [rcx], rax
+  0x1801223ee: lea      rbx, [rcx + 0x28]
+  0x1801223f2: mov      qword ptr [rsp + 0x68], rbx
+  0x1801223f7: xor      ebp, ebp
+  0x1801223f9: mov      qword ptr [rbx], rbp
+  0x1801223fc: mov      qword ptr [rbx + 8], rbp
+  0x180122400: mov      qword ptr [rbx + 0x10], rbp
+  0x180122404: mov      qword ptr [rbx + 0x18], rbp
+  0x180122408: mov      qword ptr [rbx + 0x20], rbp
+  0x18012240c: lea      ecx, [rbp + 0x10]
+  0x18012240f: call     0x18073aa70
+  0x180122414: mov      qword ptr [rax + 8], rbp
+  0x180122418: mov      qword ptr [rbx], rax
+  0x18012241b: mov      qword ptr [rax], rbx
+  0x18012241e: call     qword ptr [rip + 0x642fc4]  ; KERNEL32.dll!GetCurrentProcessId
+  0x180122424: mov      dword ptr [rsi + 8], eax
+  0x180122427: lea      ecx, [rbp + 0x30]
+  0x18012242a: call     0x18073aa70
+  0x18012242f: mov      rdi, rax
+  0x180122432: mov      qword ptr [rsp + 0x68], rax
+  0x180122437: xorps    xmm0, xmm0
+  0x18012243a: movups   xmmword ptr [rax], xmm0
+  0x18012243d: movups   xmmword ptr [rax + 0x10], xmm0
+  0x180122441: movups   xmmword ptr [rax + 0x20], xmm0
+  0x180122445: lea      rbx, [rip + 0x8df604]
+  0x18012244c: cmp      byte ptr [rip + 0x8df67d], bpl
+  0x180122453: jne      0x18012247e
+  0x180122455: call     qword ptr [rip + 0x642f8d]  ; KERNEL32.dll!GetCurrentProcessId
+  0x18012245b: mov      r9d, eax
+  0x18012245e: lea      r8, [rip + 0x7d7763]  ; '400BBBA7-F29F-4357-9B07-%04X-D62109852BD6'
+  0x180122465: lea      edx, [rbp + 0x40]
+  0x180122468: mov      rcx, rbx
+  0x18012246b: call     0x18008b620
+  0x180122470: mov      byte ptr [rip + 0x8df618], bpl
+  0x180122477: mov      byte ptr [rip + 0x8df652], 1
+  0x18012247e: mov      qword ptr [rsp + 0x30], rbp
+  0x180122483: mov      qword ptr [rsp + 0x38], 0xf
+  0x18012248c: mov      byte ptr [rsp + 0x20], 0
+  0x180122491: mov      r8, 0xffffffffffffffff
+  0x180122498: nop      dword ptr [rax + rax]
+  0x1801224a0: inc      r8
+  0x1801224a3: cmp      byte ptr [rbx + r8], 0
+  0x1801224a8: jne      0x1801224a0
+  0x1801224aa: mov      rdx, rbx
+  0x1801224ad: lea      rcx, [rsp + 0x20]
+  0x1801224b2: call     0x180087640
+  0x1801224b7: lea      rax, [rsp + 0x20]
+  0x1801224bc: mov      qword ptr [rsp + 0x70], rax
+  0x1801224c1: lea      rbx, [rdi + 0x10]
+  0x1801224c5: mov      qword ptr [rbx + 0x10], rbp
+  0x1801224c9: mov      qword ptr [rbx + 0x18], 0xf
+  0x1801224d1: mov      byte ptr [rbx], 0
+  0x1801224d4: mov      qword ptr [rdi], rbp
+  0x1801224d7: mov      qword ptr [rdi + 8], rbp
+  0x1801224db: lea      rax, [rsp + 0x20]
+  0x1801224e0: cmp      rbx, rax
+  0x1801224e3: je       0x180122503
+  0x1801224e5: lea      rdx, [rsp + 0x20]
+  0x1801224ea: cmp      qword ptr [rsp + 0x38], 0x10
+  0x1801224f0: cmovae   rdx, qword ptr [rsp + 0x20]
+  0x1801224f6: mov      r8, qword ptr [rsp + 0x30]
+  0x1801224fb: mov      rcx, rbx
+  0x1801224fe: call     0x180087640
+  0x180122503: cmp      qword ptr [rbx + 0x18], 0x10
+  0x180122508: jb       0x18012250d
+  0x18012250a: mov      rbx, qword ptr [rbx]
+  0x18012250d: mov      r8, rbx
+  0x180122510: xor      edx, edx
+  0x180122512: mov      ecx, 0xf001f
+  0x180122517: call     qword ptr [rip + 0x643093]  ; KERNEL32.dll!OpenFileMappingA
+  0x18012251d: mov      qword ptr [rdi], rax
+  0x180122520: lea      rcx, [rsp + 0x20]
+  0x180122525: call     0x1800879a0
+  0x18012252a: nop      
+  0x18012252b: mov      qword ptr [rsi + 0x10], rdi
+  0x18012252f: mov      dword ptr [rsi + 0x20], 0x275c
+  0x180122536: mov      ecx, 0x275c
+  0x18012253b: call     0x18073aa34
+  0x180122540: mov      qword ptr [rsi + 0x18], rax
+  0x180122544: mov      rax, rsi
+  0x180122547: mov      rbx, qword ptr [rsp + 0x78]
+  0x18012254c: add      rsp, 0x40
+  0x180122550: pop      rdi
+  0x180122551: pop      rsi
+  0x180122552: pop      rbp
+  0x180122553: ret      
+  0x180122554: int3     
+  0x180122555: int3     
+  0x180122556: int3     
+  0x180122557: int3     
+  0x180122558: int3     
+  0x180122559: int3     
+  0x18012255a: int3     
+  0x18012255b: int3     
+  0x18012255c: int3     
+  0x18012255d: int3     
+  0x18012255e: int3     
+  0x18012255f: int3     
+  0x180122560: mov      qword ptr [rsp + 8], rbx
+  0x180122565: push     rdi
+  0x180122566: sub      rsp, 0x20
+  0x18012256a: mov      ebx, edx
+  0x18012256c: mov      rdi, rcx
+  0x18012256f: call     0x1801225b0
+  0x180122574: test     bl, 1
+  0x180122577: je       0x180122586
+  0x180122579: mov      edx, 0x50
+  0x18012257e: mov      rcx, rdi
+  0x180122581: call     0x18073aa3c
+  0x180122586: mov      rbx, qword ptr [rsp + 0x30]
+  0x18012258b: mov      rax, rdi
+  0x18012258e: add      rsp, 0x20
+  0x180122592: pop      rdi
+  0x180122593: ret      
+  0x180122594: int3     
+  0x180122595: int3     
+  0x180122596: int3     
+  0x180122597: int3     
+  0x180122598: int3     
+  0x180122599: int3     
+  0x18012259a: int3     
+  0x18012259b: int3     
+  0x18012259c: int3     
+  0x18012259d: int3     
+  0x18012259e: int3     
+  0x18012259f: int3     
+  0x1801225a0: jmp      0x180122e60
+  0x1801225a5: int3     
+  0x1801225a6: int3     
+  0x1801225a7: int3     
+  0x1801225a8: int3     
+  0x1801225a9: int3     
+  0x1801225aa: int3     
+  0x1801225ab: int3     
+  0x1801225ac: int3     
+  0x1801225ad: int3     
+  0x1801225ae: int3     
+  0x1801225af: int3     
+  0x1801225b0: mov      qword ptr [rsp + 8], rbx
+  0x1801225b5: mov      qword ptr [rsp + 0x10], rsi
+  0x1801225ba: push     rdi
+  0x1801225bb: sub      rsp, 0x20
+  0x1801225bf: lea      rax, [rip + 0x7d7a02]
+  0x1801225c6: mov      rdi, rcx
+  0x1801225c9: mov      qword ptr [rcx], rax
+  0x1801225cc: xor      esi, esi
+  0x1801225ce: mov      rcx, qword ptr [rcx + 0x18]
+  0x1801225d2: test     rcx, rcx
+  0x1801225d5: je       0x1801225e3
+  0x1801225d7: call     0x18073aa3c
+  0x1801225dc: mov      qword ptr [rdi + 0x18], rsi
+  0x1801225e0: mov      dword ptr [rdi + 0x20], esi
+  0x1801225e3: mov      rbx, qword ptr [rdi + 0x10]
+  0x1801225e7: test     rbx, rbx
+  0x1801225ea: je       0x180122642
+  0x1801225ec: mov      rcx, qword ptr [rbx + 8]
+  0x1801225f0: test     rcx, rcx
+  0x1801225f3: je       0x180122603
+  0x1801225f5: call     qword ptr [rip + 0x643175]  ; KERNEL32.dll!UnmapViewOfFile
+  0x1801225fb: mov      qword ptr [rbx + 8], rsi
+  0x1801225ff: mov      rbx, qword ptr [rdi + 0x10]
+  0x180122603: test     rbx, rbx
+  0x180122606: je       0x180122642
+  0x180122608: mov      rcx, qword ptr [rbx + 8]
+  0x18012260c: test     rcx, rcx
+  0x18012260f: je       0x18012261b
+  0x180122611: call     qword ptr [rip + 0x643159]  ; KERNEL32.dll!UnmapViewOfFile
+  0x180122617: mov      qword ptr [rbx + 8], rsi
+  0x18012261b: mov      rcx, qword ptr [rbx]
+  0x18012261e: test     rcx, rcx
+  0x180122621: je       0x18012262c
+  0x180122623: call     qword ptr [rip + 0x64308f]  ; KERNEL32.dll!CloseHandle
+  0x180122629: mov      qword ptr [rbx], rsi
+  0x18012262c: lea      rcx, [rbx + 0x10]
+  0x180122630: call     0x1800879a0
+  0x180122635: mov      edx, 0x30
+  0x18012263a: mov      rcx, rbx
+  0x18012263d: call     0x18073aa3c
+  0x180122642: lea      rcx, [rdi + 0x28]
+  0x180122646: mov      rbx, qword ptr [rsp + 0x30]
+  0x18012264b: mov      rsi, qword ptr [rsp + 0x38]
+  0x180122650: add      rsp, 0x20
+  0x180122654: pop      rdi
+  0x180122655: jmp      0x180122e60
+  0x18012265a: int3     
+  0x18012265b: int3     
+  0x18012265c: int3     
+  0x18012265d: int3     
+  0x18012265e: int3     
+  0x18012265f: int3     
+  0x180122660: mov      qword ptr [rsp + 0x20], rbx
+  0x180122665: push     rbp
+  0x180122666: push     rsi
+  0x180122667: push     rdi
+  0x180122668: push     r12
+  0x18012266a: push     r13
+  0x18012266c: push     r14
+  0x18012266e: push     r15
+  0x180122670: lea      rbp, [rsp - 0x240]
+  0x180122678: sub      rsp, 0x340
+  0x18012267f: mov      rax, qword ptr [rip + 0x893b9a]
+  0x180122686: xor      rax, rsp
+  0x180122689: mov      qword ptr [rbp + 0x230], rax
+  0x180122690: movzx    ebx, r8b
+  0x180122694: mov      rsi, rdx
+  0x180122697: mov      r13, rcx
+  0x18012269a: xor      edx, edx
+  0x18012269c: mov      r8d, 0x1f7
+  0x1801226a2: lea      rcx, [rbp - 0x50]
+  0x1801226a6: call     0x1807417e4
+  0x1801226ab: xorps    xmm0, xmm0
+  0x1801226ae: movups   xmmword ptr [rbp + 0x1f0], xmm0
+  0x1801226b5: movups   xmmword ptr [rbp + 0x200], xmm0
+  0x1801226bc: movups   xmmword ptr [rbp + 0x210], xmm0
+  0x1801226c3: movups   xmmword ptr [rbp + 0x220], xmm0
+  0x1801226ca: xorps    xmm1, xmm1
+  0x1801226cd: movups   xmmword ptr [rbp + 0x1b0], xmm1
+  0x1801226d4: movups   xmmword ptr [rbp + 0x1c0], xmm1
+  0x1801226db: movups   xmmword ptr [rbp + 0x1d0], xmm1
+  0x1801226e2: movups   xmmword ptr [rbp + 0x1e0], xmm1
+  0x1801226e9: xor      r12d, r12d
+  0x1801226ec: mov      qword ptr [rbp - 0x60], r12
+  0x1801226f0: mov      qword ptr [rbp - 0x58], 0xf
+  0x1801226f8: mov      byte ptr [rbp - 0x70], r12b
+  0x1801226fc: xor      r8d, r8d
+  0x1801226ff: lea      rdx, [rip + 0x7ccc24]
+  0x180122706: lea      rcx, [rbp - 0x70]
+  0x18012270a: call     0x180087640
+  0x18012270f: nop      
+  0x180122710: mov      qword ptr [rbp - 0x80], r12
+  0x180122714: mov      qword ptr [rbp - 0x78], 0xf
+  0x18012271c: mov      byte ptr [rsp + 0x70], r12b
+  0x180122721: xor      r8d, r8d
+  0x180122724: lea      rdx, [rip + 0x7ccbff]
+  0x18012272b: lea      rcx, [rsp + 0x70]
+  0x180122730: call     0x180087640
+  0x180122735: nop      
+  0x180122736: test     rsi, rsi
+  0x180122739: je       0x180122b5d
+  0x18012273f: mov      byte ptr [rbp - 0x50], bl
+  0x180122742: lea      edx, [r12 + 0x5c]
+  0x180122747: mov      rcx, rsi
+  0x18012274a: call     qword ptr [rip + 0x643658]  ; VCRUNTIME140.dll!strrchr
+  0x180122750: test     rax, rax
+  0x180122753: je       0x180122778
+  0x180122755: lea      r9, [rax + 1]
+  0x180122759: lea      r8, [rip + 0x7cb9a8]  ; '%s'
+  0x180122760: lea      edx, [r12 + 0x40]
+  0x180122765: lea      rcx, [rbp + 0x1b0]
+  0x18012276c: call     0x18008b620
+  0x180122771: mov      byte ptr [rbp + 0x1ef], r12b
+  0x180122778: mov      qword ptr [rsp + 0x68], r12
+  0x18012277d: mov      edi, r12d
+  0x180122780: mov      r15d, r12d
+  0x180122783: mov      r14d, r12d
+  0x180122786: xor      edx, edx
+  0x180122788: mov      rcx, rsi
+  0x18012278b: call     qword ptr [rip + 0x64366f]  ; VERSION.dll!GetFileVersionInfoSizeA
+  0x180122791: mov      dword ptr [rsp + 0x60], eax
+  0x180122795: lea      ecx, [rax + 1]
+  0x180122798: call     0x18073aa34
+  0x18012279d: mov      rbx, rax
+  0x1801227a0: test     rax, rax
+  0x1801227a3: je       0x180122836
+  0x1801227a9: mov      r9, rax
+  0x1801227ac: mov      r8d, dword ptr [rsp + 0x60]
+  0x1801227b1: xor      edx, edx
+  0x1801227b3: mov      rcx, rsi
+  0x1801227b6: call     qword ptr [rip + 0x64363c]  ; VERSION.dll!GetFileVersionInfoA
+  0x1801227bc: test     eax, eax
+  0x1801227be: je       0x18012282e
+  0x1801227c0: lea      r9, [rsp + 0x60]
+  0x1801227c5: lea      r8, [rsp + 0x68]
+  0x1801227ca: lea      rdx, [rip + 0x7d775f]  ; '\\'
+  0x1801227d1: mov      rcx, rbx
+  0x1801227d4: call     qword ptr [rip + 0x643616]  ; VERSION.dll!VerQueryValueA
+  0x1801227da: test     eax, eax
+  0x1801227dc: je       0x1801227fd
+  0x1801227de: .byte    0x48
+  0x1801227df: .byte    0x8b
+  0x1801227e0: .byte    0x4c
+  0x1801227e1: .byte    0x24
+

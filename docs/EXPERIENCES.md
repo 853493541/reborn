@@ -1388,3 +1388,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `proof/netcode/disasm/{xcommon_detach,detach_events,client_mappings,launchblock_callers}.txt`;
   `proof/netcode/launcher_*.txt`, `SeasunGame_launcher_strings.txt`; this commit (local).
 - Outcome: solved (mechanism recovered; next gate = block capture).
+
+### 2026-10-01 — netcode — Launch block format decoded (header + slots + custom TEA); writer still open
+- Did: static decode of the launch block: 0x275C = 16-byte header + 20 slots × 0x1F7
+  (payload 0x1E7 + 16-byte key); header +2 = GetTickCount()/1000 (freshness ≤ 10 s),
+  +8 must be non-zero, +0xc = entry count (client zeroes it after read); first 8 bytes
+  decrypted by a custom 16-round TEA variant (sum 0xC6EF3720, delta 0x61C88647, key
+  a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f). Parser is polled; client gives up ~2.4 s.
+- Launcher-emulator mechanics proven (suspended start + pre-created PID-keyed mapping +
+  write + resume); synthesized header-only block (both key-index variants) still exits
+  at 2.4 s — the writer/encrypt is unidentified (no encrypt direction in client/logic
+  DLL; launcher binaries lack the block GUID).
+- Evidence: docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md §7;
+  proof/netcode/disasm/{launchblock_parser,launchblock_decrypt,parser_caller,logic_reader_callers,logic_mapping_refs}.txt;
+  this commit (local).
+- Outcome: partial (format decoded; writer open).
