@@ -1699,3 +1699,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   TurnLeftStart); (2) turn keys rotate the camera in joystick (decode: keyboard
   never writes the camera; mouse owns it). Patch list recorded in
   proof/controls/control_modes_run.txt.
+
+### 2026-10-02 - controls - joystick J1+J2 (A/D turn, character-only turns)
+- adStrafe now `classicalMode && (...)`: joystick A/D = turn-in-place per the
+  decoded 0/76 joystick branch; classical keeps strafe default / RC_ADHABIT=turn
+  option. Joystick turn keys rotate only the character (no camera write).
+- Verified: joystick A-alone d=3.14 dpos=(0,0) cam kept; TURNRIGHT camd=0.00;
+  classical regression unchanged (A strafe 96, arrows camd=-1.89). Smoke PASS.

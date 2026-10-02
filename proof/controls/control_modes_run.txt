@@ -470,3 +470,15 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
 - Patch list: joystick A/D turn; turn keys character-only in joystick;
   StartSprint (double-tap); OperationModeBase vector/atan math; G4 follow
   mode [0..3]; G5 reset speeds; G8 UseFullAngle; morph contexts.
+
+## Joystick J1+J2 applied (A/D turn, camera untouched), 2026-10-02
+- J1: classical A/D = strafe (default.txt); joystick A/D = turn-in-place
+  (client 0/76 joystick branch). J2: joystick turn keys rotate the CHARACTER
+  only (mouse owns the camera).
+- Evidence run reborn_20261002_165421.log (joystick):
+  A-alone: yaw d=3.14 dpos=(0,0) dist=0 cam kept   (turn in place, no move)
+  TURNRIGHT: yaw -1.88 camd=0.00                   (camera untouched)
+  WA: 383 dyaw=0.00 dcam=0.00; WD: 384 dyaw=-1.31 dcam=0.00 (auto-face; the
+  turn-vs-RunTo interaction is J4 territory)
+- Classical regression reborn_20261002_165606.log: A strafe 96 d=0; arrows
+  turn camd=-1.89; WA/WD 384 dcam=0.00. Smoke ALL PASS.

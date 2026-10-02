@@ -1993,12 +1993,12 @@ internal static class RebornClient
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
             // Control table (decoded): ids 0..13, built from keys/mouse exactly
             // like Camera_EnableControl fills the client's control store.
-            // A/D habit: "strafe" (shipped default.txt: A/D side-step; steering
-            // is mouse-driven, RMB drag turns the character) or "turn" (A/D
-            // rotate; the tutorial's other habit). Arrows always rotate. Under
-            // the stick camera the mouse owns the heading and the god camera
-            // swaps the handlers, so the turn intent cannot act there -> strafe.
-            bool adStrafe = !classicalMode || adHabit != "turn" || rmbDown || !freeView;
+            // Decoded (hotkeys 0/76/0/78, annex A6.2/A8): CLASSICAL A/D are
+            // STRAFE-bound -> strafe; JOYSTICK A/D -> free-view TurnLeftStart
+            // (turn). The host keeps the "turn" habit as a CLASSICAL option
+            // (RC_ADHABIT=turn, the tutorial's other habit); under the stick
+            // camera / god camera the turn intent cannot act -> strafe.
+            bool adStrafe = classicalMode && (adHabit != "turn" || rmbDown || !freeView);
             bool turnL = pTurnL || (pA && !adStrafe);
             bool turnR = pTurnR || (pD && !adStrafe);
             int ctrl = 0;
@@ -2138,32 +2138,39 @@ internal static class RebornClient
 
             // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D.
             // DECODED (hotkeys.lua): the turn keys are a CHARACTER control -
-            // TurnLeftStart -> SetControl(CONTROL_TURN_LEFT); in classical free
-            // view the strafe handler calls TurnLeftStart too. The camera
-            // follow-on-turn is the host coupling (see the camera workstream).
-            // No RMB/Mouse gate exists in the shipped UI scripts; the engine's
-            // own consumer of CONTROL_TURN_* is still being traced.
+            // TurnLeftStart -> SetControl(CONTROL_TURN_LEFT) via the mode
+            // wrapper; in JOYSTICK the strafe-bound A/D take this branch
+            // (free view), in CLASSICAL the host turns the view too (the
+            // user-requested turn-habit/arrow behavior; the game client's
+            // keyboard never writes the camera - J2/J4 workstream).
             if (grounded && rotAxis != 0f)
             {
                 float tstep = charTurnRate * (float)dt;
-                // Turn keys (turn-habit A/D and the arrow keys) rotate the
-                // VIEW: the camera yaw changes exactly like a mouse drag does
-                // (drag right = yaw decreases), and the engine camera is fed
-                // through the same orbit-pixel path so the rotation is real.
                 double dyawKey = -rotAxis * tstep;
-                camSys.Yaw += dyawKey;
-                adjYawPx += (int)Math.Round(-dyawKey / 0.0018);
-                // the movement frame follows the view (W after a turn goes
-                // where the camera looks), and the character turns to the
-                // camera direction - the same relation as the RMB carry below.
-                moveYaw = camSys.Yaw;
-                float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
-                float d = targetYaw - curYaw;
-                while (d > Math.PI) d -= 2f * (float)Math.PI;
-                while (d < -Math.PI) d += 2f * (float)Math.PI;
-                float cstep = charTurnRate * (float)dt;
-                if (Math.Abs(d) <= cstep) curYaw = targetYaw;
-                else curYaw += Math.Sign(d) * cstep;
+                if (classicalMode)
+                {
+                    // classical: turn keys rotate the VIEW (mouse sign); the
+                    // engine camera is fed through the orbit path and the
+                    // character turns to the camera direction (RMB-carry
+                    // relation).
+                    camSys.Yaw += dyawKey;
+                    adjYawPx += (int)Math.Round(-dyawKey / 0.0018);
+                    moveYaw = camSys.Yaw;
+                    float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+                    float d = targetYaw - curYaw;
+                    while (d > Math.PI) d -= 2f * (float)Math.PI;
+                    while (d < -Math.PI) d += 2f * (float)Math.PI;
+                    float cstep = charTurnRate * (float)dt;
+                    if (Math.Abs(d) <= cstep) curYaw = targetYaw;
+                    else curYaw += Math.Sign(d) * cstep;
+                }
+                else
+                {
+                    // joystick: turn the CHARACTER in place; the mouse owns
+                    // the view (the decoded keyboard path never writes the
+                    // camera). Facing delta = -camera delta = dyawKey.
+                    curYaw += (float)dyawKey;
+                }
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
