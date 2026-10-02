@@ -1397,3 +1397,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   45-deg camera-frame diagonal, body aligned to the travel (run clip); WD no-rmb
   curve unchanged; strafe/turn 1:1 preserved. Smoke ALL PASS. Relaunched.
 
+
+### 2026-10-01 - controls/client - animation from the engine's input octant; LMB owns the camera
+- User: LMB hold must also stop the camera turning; and stop matching animation
+  from described behaviour - decode the system.
+- Decoded: represent locomotion state table (RunForward/WalkForward/RunBackward/
+  WalkBackward + ComputeStrafe/pnStrafeRight lateral blend): the clip family
+  follows the INPUT octant (ResponseWASDKey MOVE_* names), not the facing angle.
+- Fix: gait from fwdAxis/latAxis (W=run/walk, S=后退, lateral=挪步); camera
+  keyboard coupling suppressed while either mouse button holds the drag.
+- Evidence: run 224006 - WA rmb=1 gait=0 clip=跑动 during the diagonal; numbers
+  unchanged otherwise. Smoke ALL PASS. Relaunched (pid per session).
+

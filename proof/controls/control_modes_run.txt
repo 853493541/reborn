@@ -362,3 +362,18 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
     (45 deg camera-frame diagonal, body turned 45 deg to the travel -> gait ~0 -> run clip)
   WD (no rmb) dpos=(-109,164) dist=197 dyaw=4.32 dcam=-3.53 (turn+camera curve)
 - Gates: camera_smoke ALL PASS.
+
+## Animation matches the engine classification (2026-10-01): input-octant gait + LMB camera ownership
+- Decoded: the engine's locomotion states are RunForward/WalkForward/RunBackward/
+  WalkBackward (represent anim state table 0xCD88xx) with a lateral strafe blend
+  (ComputeStrafe, pnStrafeRight), i.e. the clip family follows the INPUT octant
+  (hotkeys ResponseWASDKey -> MOVE_FORWARD/RIGHTFORWARD/RIGHT/...): W = forward
+  family (run/walk), S = backward family (后退01), no W/S = 挪步 L/R.
+- Host: gait now selected from fwdAxis/latAxis (intent), not the facing angle;
+  the facing-lag no longer picks the side-step for forward-right. LMB hold also
+  owns the camera (A/D stop keyboard-turning it), same as RMB.
+- Evidence, run reborn_20261001_224006.log (build git=94662ea dirty=1):
+  t=16s WA rmb=1: spd=320u/s(RUN) dir=(-0.12,-0.99) gait=0 clip=f1b02yd跑动.ani
+  movetest WA rmb=1 dpos=(-47,-380) dist=383 dyaw=-0.79 dcam=0.00
+  strafe A: yaw/cam 3.14/3.14; back dist=96 cam kept; turn 1.88/1.88; WD no-rmb curve.
+- Gates: camera_smoke ALL PASS.

@@ -1965,6 +1965,11 @@ internal static class RebornClient
             if (pW) fwdAxis += 1f;
             if (pS) fwdAxis -= 1f;
             if (autorunOn) fwdAxis += 1f;
+            // lateral intent sign (right positive): feeds the decoded
+            // input-octant locomotion classification below
+            float latAxis = 0f;
+            if (pA && latMoves) latAxis -= 1f;
+            if (pD && latMoves) latAxis += 1f;
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
             float dirX = inX, dirZ = inZ;
@@ -2021,20 +2026,18 @@ internal static class RebornClient
                 // else: CLASSICAL lateral/back input keeps the facing (the
                 // decoded Camera_IsInFreeView side-step branch) - no turn.
                 //
-                // Mode-matched locomotion clip (kind map, F1 catalog):
-                // 6 = 挪步 left/right, 57 = 后退 back-pedal. Whenever the body
-                // travels sideways or backwards relative to its facing it plays
-                // the authored side-step / back-pedal clip: this covers the
-                // classical side-step (RC_FREEVIEW=0) and back-pedal (S), and
-                // the joystick pivot while the body is still catching up with
-                // the heading. Thresholds are host values pending the engine's
-                // criteria (OPERATION_MODES_PLAN.md §7b).
-                float gaitAng = heading - curYaw;
-                while (gaitAng > Math.PI) gaitAng -= 2f * (float)Math.PI;
-                while (gaitAng < -Math.PI) gaitAng += 2f * (float)Math.PI;
-                float gaitAbs = Math.Abs(gaitAng);
-                if (gaitAbs > 2.3562f) gait = 3;                        // >135 deg: back-pedal
-                else if (gaitAbs > 0.7854f) gait = gaitAng > 0f ? 2 : 1; // >45 deg: strafe R/L
+                // Locomotion clip by INPUT OCTANT - the engine's own
+                // classification (hotkeys ResponseWASDKey builds the 8-way
+                // MOVE_* from the forward/back and turn/strafe intents:
+                // MOVE_FORWARD/RIGHTFORWARD/... are forward-family states):
+                // any forward intent = forward run/walk, any backward intent =
+                // 后退01 back-pedal, no forward/back but lateral = 挪步 L/R.
+                // Facing lag must NOT pick the clip (that mismatch is what put
+                // the side-step on forward-right).
+                if (fwdAxis > 0f) gait = 0;
+                else if (fwdAxis < 0f) gait = 3;
+                else if (latAxis > 0.01f) gait = 2;
+                else if (latAxis < -0.01f) gait = 1;
                 float step = sp * dt;
                 float tryX = px + ux * step, tryZ = pz + uz * step;
                 float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
@@ -2086,10 +2089,12 @@ internal static class RebornClient
                 // A/D also turn the camera at the SAME rate as the character -
                 // the client's own 1:1 coupling (the old ApplyRotation wrote the
                 // identical yaw delta to the camera controller; the rate is the
-                // local RotationSpeed row, 0.00314 rad/ms = pi rad/s). While RMB
-                // is held the drag owns the camera: the character still turns,
-                // the camera is not keyboard-turned (the observed classic rule).
-                if (!classicalMode || !rmbDown) camSys.Yaw -= dturn;
+                // local RotationSpeed row, 0.00314 rad/ms = pi rad/s). While a
+                // mouse button holds the camera drag (LMB CONTROL_CAMERA or RMB
+                // CONTROL_OBJECT_STICK_CAMERA) the drag owns the camera: the
+                // character still turns, the camera is not keyboard-turned.
+                bool mouseOwnsCamera = lmbDown || rmbDown;
+                if (!mouseOwnsCamera) camSys.Yaw -= dturn;
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
