@@ -82,7 +82,41 @@ static void* __fastcall hookLoadFile(const char* path, int flags)
         fflush(stdout);
         if (g_lfForceMode > 0 && flags == 0) flags = g_lfForceMode;
     }
-    return ((LoadFileFn)g_lfTramp)(path, flags);
+    void* rd = ((LoadFileFn)g_lfTramp)(path, flags);
+    if (rd != NULL && path != NULL && strstr(path, ".ani") != NULL)
+    {
+        __try
+        {
+            BYTE* rb = (BYTE*)rd;
+            BYTE* buf = *(BYTE**)(rb + 0x10);
+            unsigned sz = *(unsigned*)(rb + 0x18);
+            if (buf != NULL && sz > 0)
+            {
+                int hits = 0;
+                unsigned lim = (sz > 0x40000) ? 0x40000 : sz;
+                for (unsigned i = 0; i + 4 < lim; i++)
+                    if (buf[i] == '.' && buf[i+1] == 'S' && buf[i+2] == 'f' && buf[i+3] == 'x')
+                        hits++;
+                if (hits > 0 || strstr(path, "ha393") != NULL)
+                    printf("  [reader] %s size=0x%X head=%.4s sfxHits=%d\n",
+                           path, sz, buf, hits);
+                fflush(stdout);
+                if (strstr(path, "ha393") != NULL)
+                {
+                    FILE* f = NULL;
+                    if (fopen_s(&f, "C:\\Users\\ZHIBIN~1\\AppData\\Local\\Temp\\opencode\\skillv2\\ha393.dec.ani", "wb") == 0 && f != NULL)
+                    {
+                        fwrite(buf, 1, sz, f);
+                        fclose(f);
+                        printf("  [reader] dumped ha393.dec.ani\n");
+                        fflush(stdout);
+                    }
+                }
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+    return rd;
 }
 
 static int __cdecl hookPrintfLog(int channel, const char* fmt, ...)

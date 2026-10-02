@@ -548,7 +548,26 @@ are the probe's own direct `.Sfx`/`.pss` tests) — next: find what evaluates th
 clip tags (controller/model update or the failing `vt+0x90` attach step) and/or
 confirm this clip carries SFX tags.
 
-**Client tag→effect implementation found (JX3RepresentX64.dll).** The client's own
+**Tag-system API map (labeled from embedded name strings).** `KG3D_AnimationTagX64.dll`
+vtable `0x49730` (27 slots): slot0 `0xAAD0` `Init`, slot1 `0xBA00` `FrameMove`,
+slots2-4 `ClearWithRefZero*`, slots5-6 `CreateAnimationTaniFromFile`
+(`0xBC50/0xBCB0`, `KG3D_AnimationTani_DataTable::SetSoundShell` inlined), slots7-10
+`CreateAnimationTaniFromFile/FromData` (`0xBD30..0xBF10`), slot11 `0xC050`
+`CreateAnimationTaniFromData`, slots13-23 TagTexture.ini helpers
+(`data\public\TagEditor\TagTexture.ini`), slots24-25 `0xCD80/0xCD90`
+`KG3D_AnimationTani::GenerateTagFromData` / `CreateAnimationTagFromData`.
+SFX tag payload sample (uncompressed tani, `F1stm09通脉02…tani`): a tag entry
+contains `01 00 00 00 | 0B 00 00 00 | 0B 00 00 00 | "data\source\other\特效\技能\sfx\<name>.sfx"` —
+full lowercase-`.sfx` paths (GBK), e.g.
+`data\source\other\特效\技能\sfx\尚武\尚武_...f301.sfx`. 143 of 1478 extracted tanis
+contain `.sfx` strings; `F1HA393_start01` does **not** (that clip has no SFX tags —
+pick a tagged clip, e.g. `f1stm09通脉02`, for the firing test).
+Next: call `tagSystem->CreateAnimationTaniFromFile(taniPath)` (+ the tani object's
+tag query) in the probe to enumerate SFX tags with their paths, then bridge active
+tags to `KG3D_CreateSFXFromFile`; or drive `KRLAnimationFactory` from
+JX3RepresentX64 for the full client behavior.
+
+Client tag→effect implementation found (JX3RepresentX64.dll). The client's own
 animation-tag bridge lives in the represent module: `KRLAnimationFactory::CreateSFXTag`
 (0x37F400, internal — `[factory+0x218]` sub-object + `0xC874` build), plus
 `ReactivatedCreateSFXTag` (0x37F490 region), `CreateMovieObjectTag` (0x37F2xx) and
