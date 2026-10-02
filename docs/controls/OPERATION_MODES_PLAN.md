@@ -267,14 +267,14 @@ or merge that subject to main first and branch `agent/control-modes`.
   dungeons), so it is NOT the normal classical A/D path: normal classical
   WASD is handled by the engine input layer and the Lua handlers are overrides
   (joystick free-move, OB camera, displacement). Host `RC_FREEVIEW` maps
-  1 = normal play, 0 = god-camera/OB strafe-only. **BRANCH MAPPING OPEN
-  (2026-10-02):** with the Lua 5.1 VM jump rule confirmed (lua.org `lvm.c`),
-  `0/76` reads: `mode == CLASSICAL` → `ResponseWASDKey` + `Camera_EnableControl
-  (CONTROL_STRAFE_*)`; else → OB wrapper + free-view `TurnLeftStart`. Both
-  earlier mappings are superseded; the observable behavior per mode is settled
-  in P2/P3/P4. See `CONTROL_MODES_LUA_ANNEX.md` §A6.2 mapping caveat and dumps
-  `proof/controls/lua_dump/hotkeys_0_63.txt` / `hotkeys_0_76_StrafeLeftStart.txt`.
-  **RMB gate reverted**
+  1 = normal play, 0 = god-camera/OB strafe-only. **RESOLVED 2026-10-02 (P2):**
+  `CLASSICAL_MODE = 0`, `JOYSTICK_MODE = 1` (Lua, `OperationModeBase.lua`);
+  `0/76` reads: CLASSICAL → `ResponseWASDKey` + `Camera_EnableControl
+  (CONTROL_STRAFE_*)` (A/D strafe); JOYSTICK → OB wrapper + free-view
+  `TurnLeftStart` (A/D turn). The host's turn default matches JOYSTICK. See
+  `CONTROL_MODES_LUA_ANNEX.md` §A6.2/§A8 and dumps
+  `proof/controls/lua_dump/hotkeys_0_76_StrafeLeftStart.txt` /
+  `opmodebase_0_chunk.txt`. **RMB gate reverted**
   (`bb91c08`): no RMB interaction with turn/strafe exists in the scripts or
   the UI C bindings (`Camera_EnableControl` 0x1800AC1F0 is a plain state
   setter; `Camera_BeginDrag` 0x1800ABFD0 only bridges the drag vtable +0x118).

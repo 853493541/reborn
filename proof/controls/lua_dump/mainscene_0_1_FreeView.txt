@@ -1,0 +1,5 @@
+
+===== function 0/1 | line 90-92 | params=0 nups=1 stack=2 =====
+pc=   0 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   1 L0     RETURN    A=0   B=2    C=0    
+pc=   2 L0     RETURN    A=0   B=1    C=0    

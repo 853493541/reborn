@@ -1554,3 +1554,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ClientControlEnabled. Dumps committed (0/62, 0/64, 0/75).
 - Lesson: never infer branch polarity from "obvious" intent; cite the VM rule
   first, then re-check every earlier decode that assumed it.
+
+### 2026-10-02 - controls - P2: mode constants are Lua; mapping resolved
+- Found `CLASSICAL_MODE = 0` / `JOYSTICK_MODE = 1` defined in the
+  OperationModeBase.lua chunk (pc0-3) and `GetOperationMode` as a Lua closure
+  over the shared current-mode upvalue (initial CLASSICAL; SetOperationMode
+  writes it). No C binding involved for the mode itself.
+- Consequence (with the confirmed VM jump rule): CLASSICAL A/D (STRAFE-bound)
+  = ResponseWASDKey + Camera_EnableControl(CONTROL_STRAFE_*) = strafe habit;
+  JOYSTICK A/D = OB wrapper + free-view TurnLeftStart = turn. The host's
+  default "turn" corresponds to JOYSTICK mode, not CLASSICAL - corrected in
+  CLASSIC_CONTROLS_AUDIT + OPERATION_MODES_PLAN + traceability (M4/G10).
+- `Camera_IsClientControlDisabled` (mainscene 0/2) is a getter; CameraStatus_Set
+  (0/3) writes the flag as (params.dis_ctrl == 1) and sets the free-view flag
+  to (mode ~= 'god camera'). Full camera-param table inventory recorded (A8)
+  for P4.
+- P2 gap G11: C Lua-binding names (Scene_EnableFreeMoveControl etc.) are not
+  plaintext in any bin64 module -> hash/registration table to be located;
+  `KCharacter::LuaHoldW` and `KEventCommonMgr::EnableControlCamera` ARE
+  present and give direct anchors for those.

@@ -38,7 +38,7 @@ P7 data · P8 verification · P9 publish.
 | M1 | Binding table loaded (286 rows) | C1: `HotkeyTable.cs`; `default.txt` + `bindings.ini` | — | DONE (C1/C2) |
 | M2 | MOVEFORWARD (W/Up) | Lua handler 0/65-74 (no mode branch); intent `fForward +0x50` | run/walk clip (§6) | PART: direction application OPEN(P4, G6) |
 | M3 | MOVEBACKWARD (S/Down) | `后退01` clip, walk-tier 96 u/s; S cancels autorun (cancel set open) | kind 57/58 | PART |
-| M4 | STRAFELEFT/RIGHT (A/D) | **decoded (annex A6)** with confirmed VM rule: `mode==CLASSICAL` → `ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)` fallback; else → OB wrapper 0/63 + free-view `TurnLeftStart`; dead skill branch (const false) | turn = model rotate (no clip) | PART: Lua structure DONE; **mode→behavior mapping OPEN (P2/P3/P4)** |
+| M4 | STRAFELEFT/RIGHT (A/D) | **decoded (annex A6/A8)**: CLASSICAL(0) → `ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)` fallback (strafe); JOYSTICK(1) → OB wrapper 0/63 + free-view `TurnLeftStart` (turn); dead skill branch (const false) | turn = model rotate (no clip) | Lua DONE; engine application OPEN(P4) |
 | M5 | TURNLEFT/TURNRIGHT (arrows) | same keyboard turn; `RotationSpeed` row 0.00314 rad/ms | no ground turn clip (model rotate) | DONE (rate), engine consumer OPEN(P4) |
 | M6 | JUMP (Space) | +0x50 jump; 二段跳; takeoff XY; `JumpParam` | kinds 16-19 | PART (jump/land anim transitions OPEN(P5)) |
 | M7 | Q/E strafe | official help "Q/E 左右平行移动"; binding rows | as M4 | OPEN(P1) |
@@ -145,7 +145,8 @@ P7 data · P8 verification · P9 publish.
 | G7 animation selection criteria | P6 | thresholds/curves from params |
 | G8 `Camera_UseFullAngle`; persisted mode key | P4/P7 | consumer open; mode key = `StorageServer('CurrentOperationMode')` DONE, custom.dat mapping open |
 | G9 joystick internals (`Scene_EnableFreeMoveControl`, `ResponseWASDKey`, always-rotate) | P1/P4 | **Lua side DONE** (annex A1/A2/A3): wrapper, axis/8-way MOVE_* builder, mode apply; engine consumer open (P4) |
-| G10 free-view/OB vs normal A/D routing truth | P4 | engine + script cross-proof |
+| G10 free-view/OB vs normal A/D routing truth | P4 | **script mapping DONE** (A8 constants: classical=strafe, joystick=turn); engine application P4 |
+| G11 Lua binding registration (no plaintext binding names in any binary: `GetOperationMode` etc. are Lua globals; C-bound names like `Scene_EnableFreeMoveControl` resolve through a registry) | P2 | locate the registry/hash mechanism; enumerate bindings used by hotkeys.lua |
 | A1..A20 | P5/P6 | per section 6 |
 
 ## 9. Verification plan
@@ -172,3 +173,8 @@ P7 data · P8 verification · P9 publish.
   drag + control ids, `0/61` rlcmd lock, `0/25` both-buttons autorun); the
   older "OB-only free-view turn" correction was **inverted** and is superseded;
   M4/C1/C2 updated.
+- 2026-10-02: **P2 mode constants resolved** (annex A8): CLASSICAL_MODE=0,
+  JOYSTICK_MODE=1, `GetOperationMode` = Lua closure; classical A/D = strafe
+  (ResponseWASDKey+CONTROL_STRAFE), joystick A/D = turn (free-view
+  TurnLeftStart); `Camera_IsClientControlDisabled` = flag written by
+  `CameraStatus_Set` (`dis_ctrl == 1`); binding-name registry gap G11 opened.

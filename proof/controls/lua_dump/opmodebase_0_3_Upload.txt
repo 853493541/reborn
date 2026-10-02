@@ -1,0 +1,39 @@
+
+===== function 0/3 | line 147-169 | params=1 nups=1 stack=10 =====
+pc=   0 L0     GETGLOBAL A=1   B=0    C=0    'StorageServer'
+pc=   1 L0     GETTABLE  A=1   B=1    C=257  R1 K1('GetData')
+pc=   2 L0     LOADK     A=2   B=0    C=2    'CurrentOperationMode'
+pc=   3 L0     CALL      A=1   B=2    C=2    args=1 ret=1
+pc=   4 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   5 L0     TEST      A=2   B=0    C=1    
+pc=   6 L0     JMP       A=0   B=256  C=2    to pc 10
+pc=   7 L0     EQ        A=0   B=1    C=0    R1 R0
+pc=   8 L0     JMP       A=0   B=256  C=0    to pc 10
+pc=   9 L0     RETURN    A=0   B=1    C=0    
+pc=  10 L0     GETGLOBAL A=2   B=0    C=3    'GetClientPlayerMapID'
+pc=  11 L0     CALL      A=2   B=1    C=2    args=0 ret=1
+pc=  12 L0     GETGLOBAL A=3   B=0    C=4    'GetUserAccount'
+pc=  13 L0     CALL      A=3   B=1    C=2    args=0 ret=1
+pc=  14 L0     GETGLOBAL A=4   B=0    C=5    'GetVersion'
+pc=  15 L0     CALL      A=4   B=1    C=2    args=0 ret=1
+pc=  16 L0     NEWTABLE  A=5   B=0    C=6    
+pc=  17 L0     SETTABLE  A=5   B=262  C=263  K6('client_time') K7(0.0)
+pc=  18 L0     SETTABLE  A=5   B=264  C=4    K8('version_number') R4
+pc=  19 L0     SETTABLE  A=5   B=265  C=3    K9('account') R3
+pc=  20 L0     GETGLOBAL A=6   B=0    C=11   'GetNewUUID'
+pc=  21 L0     CALL      A=6   B=1    C=2    args=0 ret=1
+pc=  22 L0     SETTABLE  A=5   B=266  C=6    K10('uuid') R6
+pc=  23 L0     SETTABLE  A=5   B=268  C=2    K12('map_id') R2
+pc=  24 L0     LOADK     A=6   B=0    C=14   'operationg='
+pc=  25 L0     MOVE      A=7   B=0    C=0    
+pc=  26 L0     CONCAT    A=6   B=6    C=7    
+pc=  27 L0     SETTABLE  A=5   B=269  C=6    K13('videosetting') R6
+pc=  28 L0     LOADBOOL  A=6   B=0    C=0    
+pc=  29 L0     SETUPVAL  A=6   B=0    C=0    
+pc=  30 L0     GETGLOBAL A=6   B=0    C=15   'CURL_HttpPost'
+pc=  31 L0     LOADK     A=7   B=0    C=16   'VideoSetting'
+pc=  32 L0     GETGLOBAL A=8   B=0    C=17   'tUrl'
+pc=  33 L0     GETTABLE  A=8   B=8    C=274  R8 K18('VideoSettingLog')
+pc=  34 L0     MOVE      A=9   B=5    C=0    
+pc=  35 L0     CALL      A=6   B=4    C=1    args=3 ret=0
+pc=  36 L0     RETURN    A=0   B=1    C=0    

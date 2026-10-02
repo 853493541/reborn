@@ -1,0 +1,221 @@
+
+===== function 0 | line 0-0 | params=0 nups=0 stack=70 =====
+pc=   0 L0     LOADK     A=0   B=0    C=1    0.0
+pc=   1 L0     SETGLOBAL A=0   B=0    C=0    'CLASSICAL_MODE'
+pc=   2 L0     LOADK     A=0   B=0    C=3    1.0
+pc=   3 L0     SETGLOBAL A=0   B=0    C=2    'JOYSTICK_MODE'
+pc=   4 L0     GETGLOBAL A=0   B=0    C=0    'CLASSICAL_MODE'
+pc=   5 L0     LOADNIL   A=1   B=1    C=0    
+pc=   6 L0     NEWTABLE  A=2   B=1    C=0    
+pc=   7 L0     MOVE      A=3   B=0    C=0    
+pc=   8 L0     SETLIST   A=2   B=1    C=1    
+pc=   9 L0     LOADBOOL  A=3   B=0    C=0    
+pc=  10 L0     LOADBOOL  A=4   B=0    C=0    
+pc=  11 L0     LOADBOOL  A=5   B=0    C=0    
+pc=  12 L0     LOADBOOL  A=6   B=0    C=0    
+pc=  13 L0     LOADBOOL  A=7   B=0    C=0    
+pc=  14 L0     LOADNIL   A=8   B=8    C=0    
+pc=  15 L0     LOADK     A=9   B=0    C=4    0.3
+pc=  16 L0     LOADK     A=10  B=0    C=5    10.0
+pc=  17 L0     LOADK     A=11  B=0    C=6    0.00125
+pc=  18 L0     LOADK     A=12  B=0    C=7    3.0
+pc=  19 L0     LOADK     A=13  B=0    C=8    -0.8
+pc=  20 L0     GETGLOBAL A=14  B=0    C=9    'CONTROL_FORWARD'
+pc=  21 L0     LOADNIL   A=15  B=15   C=0    
+pc=  22 L0     LOADBOOL  A=16  B=1    C=0    
+pc=  23 L0     NEWTABLE  A=17  B=0    C=2    
+pc=  24 L0     SETTABLE  A=17  B=266  C=257  K10('nX') K1(0.0)
+pc=  25 L0     SETTABLE  A=17  B=267  C=257  K11('nY') K1(0.0)
+pc=  26 L0     NEWTABLE  A=18  B=0    C=2    
+pc=  27 L0     SETTABLE  A=18  B=266  C=257  K10('nX') K1(0.0)
+pc=  28 L0     SETTABLE  A=18  B=267  C=257  K11('nY') K1(0.0)
+pc=  29 L0     NEWTABLE  A=19  B=32   C=0    
+pc=  30 L0     LOADK     A=20  B=0    C=1    0.0
+pc=  31 L0     LOADK     A=21  B=0    C=12   0.024548622108925
+pc=  32 L0     LOADK     A=22  B=0    C=13   0.049126849769467
+pc=  33 L0     LOADK     A=23  B=0    C=14   0.073764431522449
+pc=  34 L0     LOADK     A=24  B=0    C=15   0.098491403357164
+pc=  35 L0     LOADK     A=25  B=0    C=16   0.12333823613674
+pc=  36 L0     LOADK     A=26  B=0    C=17   0.14833598753835
+pc=  37 L0     LOADK     A=27  B=0    C=18   0.17351646013786
+pc=  38 L0     LOADK     A=28  B=0    C=19   0.19891236737966
+pc=  39 L0     LOADK     A=29  B=0    C=20   0.22455750931713
+pc=  40 L0     LOADK     A=30  B=0    C=21   0.25048696019131
+pc=  41 L0     LOADK     A=31  B=0    C=22   0.27673727014041
+pc=  42 L0     LOADK     A=32  B=0    C=23   0.30334668360734
+pc=  43 L0     LOADK     A=33  B=0    C=24   0.33035537734433
+pc=  44 L0     LOADK     A=34  B=0    C=25   0.35780572131452
+pc=  45 L0     LOADK     A=35  B=0    C=26   0.38574256627112
+pc=  46 L0     LOADK     A=36  B=0    C=27   0.4142135623731
+pc=  47 L0     LOADK     A=37  B=0    C=28   0.44326951389086
+pc=  48 L0     LOADK     A=38  B=0    C=29   0.47296477589132
+pc=  49 L0     LOADK     A=39  B=0    C=30   0.50335769979929
+pc=  50 L0     LOADK     A=40  B=0    C=31   0.53451113595079
+pc=  51 L0     LOADK     A=41  B=0    C=32   0.56649300273034
+pc=  52 L0     LOADK     A=42  B=0    C=33   0.59937693368192
+pc=  53 L0     LOADK     A=43  B=0    C=34   0.63324301617757
+pc=  54 L0     LOADK     A=44  B=0    C=35   0.6681786379193
+pc=  55 L0     LOADK     A=45  B=0    C=36   0.70427946086504
+pc=  56 L0     LOADK     A=46  B=0    C=37   0.74165054627204
+pc=  57 L0     LOADK     A=47  B=0    C=38   0.78040765965394
+pc=  58 L0     LOADK     A=48  B=0    C=39   0.82067879082866
+pc=  59 L0     LOADK     A=49  B=0    C=40   0.86260593225674
+pc=  60 L0     LOADK     A=50  B=0    C=41   0.90634716901915
+pc=  61 L0     LOADK     A=51  B=0    C=42   0.95207914670093
+pc=  62 L0     LOADK     A=52  B=0    C=3    1.0
+pc=  63 L0     LOADK     A=53  B=0    C=43   1.0503328462399
+pc=  64 L0     LOADK     A=54  B=0    C=44   1.1033299757335
+pc=  65 L0     LOADK     A=55  B=0    C=45   1.1592779073334
+pc=  66 L0     LOADK     A=56  B=0    C=46   1.218503525588
+pc=  67 L0     LOADK     A=57  B=0    C=47   1.2813815800366
+pc=  68 L0     LOADK     A=58  B=0    C=48   1.3483439134867
+pc=  69 L0     LOADK     A=59  B=0    C=49   1.4198909034941
+pc=  70 L0     LOADK     A=60  B=0    C=50   1.4966057626655
+pc=  71 L0     LOADK     A=61  B=0    C=51   1.5791725679602
+pc=  72 L0     LOADK     A=62  B=0    C=52   1.6683992055835
+pc=  73 L0     LOADK     A=63  B=0    C=53   1.7652468700942
+pc=  74 L0     LOADK     A=64  B=0    C=54   1.8708684117894
+pc=  75 L0     LOADK     A=65  B=0    C=55   1.9866587923434
+pc=  76 L0     LOADK     A=66  B=0    C=56   2.1143223575486
+pc=  77 L0     LOADK     A=67  B=0    C=57   2.2559638519292
+pc=  78 L0     LOADK     A=68  B=0    C=58   2.4142135623731
+pc=  79 L0     LOADK     A=69  B=0    C=59   2.5924025177381
+pc=  80 L0     SETLIST   A=19  B=50   C=1    
+pc=  81 L0     LOADK     A=20  B=0    C=60   2.7948127724905
+pc=  82 L0     LOADK     A=21  B=0    C=61   3.0270432043178
+pc=  83 L0     LOADK     A=22  B=0    C=62   3.2965582089383
+pc=  84 L0     LOADK     A=23  B=0    C=63   3.6135356813074
+pc=  85 L0     LOADK     A=24  B=0    C=64   3.9922237837701
+pc=  86 L0     LOADK     A=25  B=0    C=65   4.4532022244144
+pc=  87 L0     LOADK     A=26  B=0    C=66   5.0273394921258
+pc=  88 L0     LOADK     A=27  B=0    C=67   5.7631420051188
+pc=  89 L0     LOADK     A=28  B=0    C=68   6.741452405415
+pc=  90 L0     LOADK     A=29  B=0    C=69   8.1077858036769
+pc=  91 L0     LOADK     A=30  B=0    C=70   10.153170387609
+pc=  92 L0     LOADK     A=31  B=0    C=71   13.556669242352
+pc=  93 L0     LOADK     A=32  B=0    C=72   20.355467624987
+pc=  94 L0     LOADK     A=33  B=0    C=73   40.735483872083
+pc=  95 L0     SETLIST   A=19  B=14   C=2    
+pc=  96 L0     LEN       A=20  B=19   C=0    
+pc=  97 L0     CLOSURE   A=21  B=0    C=0    proto 0
+pc=  98 L0     MOVE      A=0   B=15   C=0    
+pc=  99 L0     MOVE      A=0   B=1    C=0    
+pc= 100 L0     MOVE      A=0   B=2    C=0    
+pc= 101 L0     MOVE      A=0   B=0    C=0    
+pc= 102 L0     SETGLOBAL A=21  B=0    C=74   'GetOperationMode'
+pc= 103 L0     LOADNIL   A=21  B=22   C=0    
+pc= 104 L0     CLOSURE   A=23  B=0    C=1    proto 1
+pc= 105 L0     MOVE      A=0   B=15   C=0    
+pc= 106 L0     MOVE      A=0   B=21   C=0    
+pc= 107 L0     MOVE      A=0   B=22   C=0    
+pc= 108 L0     SETGLOBAL A=23  B=0    C=75   'ClearMoveStateByPlayerState'
+pc= 109 L0     CLOSURE   A=23  B=0    C=2    proto 2
+pc= 110 L0     MOVE      A=0   B=3    C=0    
+pc= 111 L0     MOVE      A=0   B=4    C=0    
+pc= 112 L0     MOVE      A=0   B=5    C=0    
+pc= 113 L0     MOVE      A=0   B=6    C=0    
+pc= 114 L0     MOVE      A=0   B=7    C=0    
+pc= 115 L0     MOVE      A=0   B=17   C=0    
+pc= 116 L0     MOVE      A=0   B=18   C=0    
+pc= 117 L0     MOVE      A=0   B=15   C=0    
+pc= 118 L0     SETGLOBAL A=23  B=0    C=76   'ClearMoveState'
+pc= 119 L0     CLOSURE   A=23  B=0    C=3    proto 3
+pc= 120 L0     MOVE      A=0   B=16   C=0    
+pc= 121 L0     SETGLOBAL A=23  B=0    C=77   'UploadOperationMode'
+pc= 122 L0     CLOSURE   A=23  B=0    C=4    proto 4
+pc= 123 L0     SETGLOBAL A=23  B=0    C=78   'UploadOperationModeData'
+pc= 124 L0     CLOSURE   A=23  B=0    C=5    proto 5
+pc= 125 L0     MOVE      A=0   B=0    C=0    
+pc= 126 L0     CLOSURE   A=24  B=0    C=6    proto 6
+pc= 127 L0     MOVE      A=0   B=2    C=0    
+pc= 128 L0     MOVE      A=0   B=23   C=0    
+pc= 129 L0     SETGLOBAL A=24  B=0    C=79   'SetOperationMode'
+pc= 130 L0     CLOSURE   A=24  B=0    C=7    proto 7
+pc= 131 L0     MOVE      A=0   B=0    C=0    
+pc= 132 L0     MOVE      A=0   B=2    C=0    
+pc= 133 L0     MOVE      A=0   B=23   C=0    
+pc= 134 L0     SETGLOBAL A=24  B=0    C=80   'PushOperationMode'
+pc= 135 L0     CLOSURE   A=24  B=0    C=8    proto 8
+pc= 136 L0     MOVE      A=0   B=2    C=0    
+pc= 137 L0     MOVE      A=0   B=23   C=0    
+pc= 138 L0     SETGLOBAL A=24  B=0    C=81   'PopOperationMode'
+pc= 139 L0     CLOSURE   A=24  B=0    C=9    proto 9
+pc= 140 L0     MOVE      A=0   B=17   C=0    
+pc= 141 L0     SETGLOBAL A=24  B=0    C=82   'AddDirectionVector'
+pc= 142 L0     CLOSURE   A=24  B=0    C=10   proto 10
+pc= 143 L0     MOVE      A=0   B=15   C=0    
+pc= 144 L0     SETGLOBAL A=24  B=0    C=83   'SetPlayerRotation'
+pc= 145 L0     CLOSURE   A=24  B=0    C=11   proto 11
+pc= 146 L0     MOVE      A=0   B=15   C=0    
+pc= 147 L0     MOVE      A=0   B=8    C=0    
+pc= 148 L0     MOVE      A=0   B=13   C=0    
+pc= 149 L0     CLOSURE   A=25  B=0    C=12   proto 12
+pc= 150 L0     MOVE      A=0   B=19   C=0    
+pc= 151 L0     MOVE      A=0   B=25   C=0    
+pc= 152 L0     CLOSURE   A=26  B=0    C=13   proto 13
+pc= 153 L0     MOVE      A=0   B=20   C=0    
+pc= 154 L0     MOVE      A=0   B=25   C=0    
+pc= 155 L0     SETGLOBAL A=26  B=0    C=84   'FastArcTan'
+pc= 156 L0     CLOSURE   A=26  B=0    C=14   proto 14
+pc= 157 L0     MOVE      A=0   B=3    C=0    
+pc= 158 L0     MOVE      A=0   B=18   C=0    
+pc= 159 L0     MOVE      A=0   B=17   C=0    
+pc= 160 L0     MOVE      A=0   B=9    C=0    
+pc= 161 L0     MOVE      A=0   B=15   C=0    
+pc= 162 L0     MOVE      A=0   B=12   C=0    
+pc= 163 L0     MOVE      A=0   B=10   C=0    
+pc= 164 L0     MOVE      A=0   B=11   C=0    
+pc= 165 L0     SETGLOBAL A=26  B=0    C=85   'RotatePlayer'
+pc= 166 L0     CLOSURE   A=26  B=0    C=15   proto 15
+pc= 167 L0     MOVE      A=0   B=17   C=0    
+pc= 168 L0     MOVE      A=0   B=3    C=0    
+pc= 169 L0     MOVE      A=0   B=14   C=0    
+pc= 170 L0     SETGLOBAL A=26  B=0    C=86   'SetDirectionVector'
+pc= 171 L0     CLOSURE   A=26  B=0    C=16   proto 16
+pc= 172 L0     MOVE      A=0   B=4    C=0    
+pc= 173 L0     MOVE      A=0   B=5    C=0    
+pc= 174 L0     MOVE      A=0   B=6    C=0    
+pc= 175 L0     MOVE      A=0   B=7    C=0    
+pc= 176 L0     MOVE      A=0   B=3    C=0    
+pc= 177 L0     MOVE      A=0   B=17   C=0    
+pc= 178 L0     MOVE      A=0   B=14   C=0    
+pc= 179 L0     SETGLOBAL A=26  B=0    C=87   'FreeMoveControl'
+pc= 180 L0     CLOSURE   A=26  B=0    C=17   proto 17
+pc= 181 L0     MOVE      A=0   B=1    C=0    
+pc= 182 L0     MOVE      A=0   B=0    C=0    
+pc= 183 L0     MOVE      A=0   B=15   C=0    
+pc= 184 L0     MOVE      A=0   B=24   C=0    
+pc= 185 L0     CLOSURE   A=27  B=0    C=18   proto 18
+pc= 186 L0     MOVE      A=0   B=1    C=0    
+pc= 187 L0     MOVE      A=0   B=0    C=0    
+pc= 188 L0     MOVE      A=0   B=15   C=0    
+pc= 189 L0     MOVE      A=0   B=14   C=0    
+pc= 190 L0     MOVE      A=0   B=3    C=0    
+pc= 191 L0     CLOSURE   A=28  B=0    C=19   proto 19
+pc= 192 L0     MOVE      A=0   B=1    C=0    
+pc= 193 L0     MOVE      A=0   B=0    C=0    
+pc= 194 L0     CLOSURE   A=29  B=0    C=20   proto 20
+pc= 195 L0     MOVE      A=0   B=15   C=0    
+pc= 196 L0     MOVE      A=0   B=26   C=0    
+pc= 197 L0     CLOSURE   A=30  B=0    C=21   proto 21
+pc= 198 L0     MOVE      A=0   B=15   C=0    
+pc= 199 L0     MOVE      A=0   B=2    C=0    
+pc= 200 L0     MOVE      A=0   B=28   C=0    
+pc= 201 L0     GETGLOBAL A=31  B=0    C=88   'RegisterEvent'
+pc= 202 L0     LOADK     A=32  B=0    C=89   'FIRST_LOADING_END'
+pc= 203 L0     MOVE      A=33  B=29   C=0    
+pc= 204 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 205 L0     GETGLOBAL A=31  B=0    C=88   'RegisterEvent'
+pc= 206 L0     LOADK     A=32  B=0    C=90   'LOADING_END'
+pc= 207 L0     MOVE      A=33  B=30   C=0    
+pc= 208 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 209 L0     GETGLOBAL A=31  B=0    C=88   'RegisterEvent'
+pc= 210 L0     LOADK     A=32  B=0    C=91   'PLAYER_REVERSE_MOVE'
+pc= 211 L0     MOVE      A=33  B=27   C=0    
+pc= 212 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 213 L0     GETGLOBAL A=31  B=0    C=88   'RegisterEvent'
+pc= 214 L0     LOADK     A=32  B=0    C=92   'SKILL_MOUNT_KUNG_FU'
+pc= 215 L0     CLOSURE   A=33  B=0    C=22   proto 22
+pc= 216 L0     MOVE      A=0   B=28   C=0    
+pc= 217 L0     CALL      A=31  B=3    C=1    args=2 ret=0
+pc= 218 L0     RETURN    A=0   B=1    C=0    

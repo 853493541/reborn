@@ -152,6 +152,45 @@ Decoded facts:
   classical applies. What `IsMobileKungfu` is on desktop builds stays open
   (implementation pending; do not assume "mobile-only" yet).
 
+## A8. Mode constants, getter, and the control-disabled flag (P2) HIGH
+
+**Constants are Lua, not C.** `OperationModeBase.lua` chunk (proto 0) pc0-3:
+
+```lua
+CLASSICAL_MODE = 0.0
+JOYSTICK_MODE  = 1.0
+```
+
+`GetOperationMode` is a closure over the shared current-mode upvalue
+(`CLOSURE proto 0/0; SETGLOBAL 'GetOperationMode'`, chunk pc97-102); the initial
+value is CLASSICAL (0), and `SetOperationMode` (`0/5`) writes the same upvalue
+(`SETUPVAL`). So all mode checks are plain Lua number comparisons.
+
+Consequences (with the VM rule confirmed — jump iff comparison == A):
+
+| Site | CLASSICAL (0) | JOYSTICK (1) |
+|---|---|---|
+| `hotkeys 0/61` wrapper (`EQ A=0`) | `Camera_EnableControl(control,flag)` | `Scene_EnableFreeMoveControl(control,flag)` |
+| `hotkeys 0/76/78` strafe handlers (`EQ A=1`) | `ResponseWASDKey('StrafeLeft/Right',…)` + `Camera_EnableControl(CONTROL_STRAFE_*)` fallback | OB wrapper + free-view `TurnLeftStart/RightStart` |
+| `Scene 0/25` both-buttons autorun (`EQ A=1`) | returns | `FreeMoveControl(CONTROL_FORWARD, true/false)` |
+
+**Control-disabled flag:** `mainscene 0/2 Camera_IsClientControlDisabled` is a
+getter over a flag slot; `CameraStatus_Set` (`0/3`) writes it at pc404-409:
+`flag = (params.dis_ctrl == 1)` and then calls its `CameraStatus_Animation`
+upvalue with `mode ~= 'god camera'` (the free-view flag read by
+`Camera_IsInFreeView`, `0/1`). `hotkeys 0/62 ClientControlEnabled()` = that
+flag, gating the double-tap branch in `ResponseWASDKey` call sites.
+
+`CameraStatus_Set` camera-param table keys (for P4 camera work): `mode`
+('local camera' | 'remote camera' | 'god camera' | 'delay camera'),
+`dis_ctrl`, `localdis_ctrl`, `maxheight` (default 5000), `movespeed` (15),
+`Limit`, `limitx/y/z`, `lock`, `height`, `fix_camera`, `lock_zoom`,
+`shortpath`, `x/y/z`, `scale`, `yaw`, `pitch` (clamped ±π), `offsetx/y/z`,
+`offsetangle`, `tick`, `remoteid`; drives `rlcmd` commands
+(`ob -camera params %f %f %f %f`, `set local camera mode %d %d`,
+`set remote camera mode …`, `set god camera mode …`, `enable fix camera %d`,
+`disable camera zoom %d`).
+
 ## A4. Mode toggle — `OperationModeBase.lua` proto `0/19` (L463-488) MED/HIGH
 
 ```lua
@@ -245,18 +284,14 @@ end
 `0/78 StrafeRightStart` mirrors it (`CONTROL_STRAFE_RIGHT`, `TurnRightStart`);
 its upvalues are identical in kind (`[1]=false` constant, `[2]=0/75`).
 
-**MAPPING CAVEAT (open, owner P2/P3/P4):** this mode→block mapping was re-read
-after confirming the Lua 5.1 VM rule against lua.org `lvm.c`
-(`OP_EQ`: jump iff comparison == A; `OP_TEST`: jump iff `l_isfalse` != C) and
-it **inverts** the mapping recorded in the earlier docs (which had
-CLASSICAL → free-view turn). Per the bytecode as named: CLASSICAL (A/D are
-STRAFE-bound in `default.txt`) → `ResponseWASDKey` + `Camera_EnableControl`
-fallback; JOYSTICK → OB-wrapper + free-view `TurnLeftStart`. What each mode
-observably *does* (and what `GetOperationMode()`/the two constants really
-return) is settled in P2 (C bindings) + P3/P4 (engine consumer), not here.
-Cross-checks that already look mode-consistent: `OperationModeBase 0/5`'s
-self-identifying blocks (pc27-41 writes CLASSICAL to storage, pc45-55 writes
-JOYSTICK) and `Scene 0/66`/`0/67` forcing `JOYSTICK_MODE` for morph cameras.
+**RESOLVED (P2, 2026-10-02) — see A8 for the constants.** With
+`CLASSICAL_MODE = 0`, `JOYSTICK_MODE = 1` and the confirmed VM rule, the
+mapping is: **CLASSICAL** (A/D are STRAFE-bound in `default.txt`) →
+`ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)` fallback (the
+strafe habit); **JOYSTICK** → OB-wrapper + free-view `TurnLeftStart` (A/D
+turn to face movement). The earlier docs' "classical = turn" belonged to the
+joystick mode; the host's default turn habit therefore matches JOYSTICK, not
+CLASSICAL — flagged for the host model.
 
 **Correction (2026-10-02):** the earlier doc correction that this free-view
 `TurnLeftStart/RightStart` branch is OB-only is **inverted**. Direct bytecode:

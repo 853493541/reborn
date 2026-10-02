@@ -1,0 +1,31 @@
+
+===== function 0/4 | line 171-182 | params=2 nups=0 stack=8 =====
+pc=   0 L0     GETGLOBAL A=2   B=0    C=0    'CLASSICAL_MODE'
+pc=   1 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=   2 L0     JMP       A=0   B=256  C=2    to pc 6
+pc=   3 L0     LOADK     A=2   B=0    C=1    1.0
+pc=   4 L0     TEST      A=2   B=0    C=1    
+pc=   5 L0     JMP       A=0   B=256  C=0    to pc 7
+pc=   6 L0     LOADK     A=2   B=0    C=2    2.0
+pc=   7 L0     NEWTABLE  A=3   B=0    C=6    
+pc=   8 L0     GETGLOBAL A=4   B=0    C=4    'GetCurrentTime'
+pc=   9 L0     CALL      A=4   B=1    C=2    args=0 ret=1
+pc=  10 L0     SETTABLE  A=3   B=259  C=4    K3('record_date') R4
+pc=  11 L0     GETGLOBAL A=4   B=0    C=6    'GetServerIP'
+pc=  12 L0     CALL      A=4   B=1    C=2    args=0 ret=1
+pc=  13 L0     SETTABLE  A=3   B=261  C=4    K5('server_ip') R4
+pc=  14 L0     GETGLOBAL A=4   B=0    C=8    'GetUserAccount'
+pc=  15 L0     CALL      A=4   B=1    C=2    args=0 ret=1
+pc=  16 L0     SETTABLE  A=3   B=263  C=4    K7('account') R4
+pc=  17 L0     GETGLOBAL A=4   B=0    C=10   'GetNewUUID'
+pc=  18 L0     CALL      A=4   B=1    C=2    args=0 ret=1
+pc=  19 L0     SETTABLE  A=3   B=265  C=4    K9('uuid') R4
+pc=  20 L0     SETTABLE  A=3   B=267  C=2    K11('operatesetting') R2
+pc=  21 L0     SETTABLE  A=3   B=268  C=1    K12('option') R1
+pc=  22 L0     GETGLOBAL A=4   B=0    C=13   'CURL_HttpPost'
+pc=  23 L0     LOADK     A=5   B=0    C=14   'UserPreferencesLog'
+pc=  24 L0     GETGLOBAL A=6   B=0    C=15   'tUrl'
+pc=  25 L0     GETTABLE  A=6   B=6    C=270  R6 K14('UserPreferencesLog')
+pc=  26 L0     MOVE      A=7   B=3    C=0    
+pc=  27 L0     CALL      A=4   B=4    C=1    args=3 ret=0
+pc=  28 L0     RETURN    A=0   B=1    C=0    

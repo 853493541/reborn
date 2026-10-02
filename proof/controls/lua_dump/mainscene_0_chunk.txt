@@ -1,0 +1,175 @@
+
+===== function 0 | line 0-0 | params=0 nups=0 stack=50 =====
+pc=   0 L0     NEWTABLE  A=0   B=0    C=0    
+pc=   1 L0     SETGLOBAL A=0   B=0    C=0    'g_tSelfieSave'
+pc=   2 L0     GETGLOBAL A=0   B=0    C=1    'RegisterCustomData'
+pc=   3 L0     LOADK     A=1   B=0    C=0    'g_tSelfieSave'
+pc=   4 L0     CALL      A=0   B=2    C=1    args=1 ret=0
+pc=   5 L0     NEWTABLE  A=0   B=0    C=0    
+pc=   6 L0     LOADK     A=1   B=0    C=2    0.0
+pc=   7 L0     LOADBOOL  A=2   B=0    C=0    
+pc=   8 L0     LOADK     A=3   B=0    C=3    'CameraStatus_Animation'
+pc=   9 L0     LOADNIL   A=4   B=9    C=0    
+pc=  10 L0     CLOSURE   A=10  B=0    C=0    proto 0
+pc=  11 L0     MOVE      A=0   B=4    C=0    
+pc=  12 L0     MOVE      A=0   B=6    C=0    
+pc=  13 L0     MOVE      A=0   B=7    C=0    
+pc=  14 L0     MOVE      A=0   B=8    C=0    
+pc=  15 L0     MOVE      A=0   B=9    C=0    
+pc=  16 L0     CLOSURE   A=11  B=0    C=1    proto 1
+pc=  17 L0     MOVE      A=0   B=4    C=0    
+pc=  18 L0     SETGLOBAL A=11  B=0    C=4    'Camera_IsInFreeView'
+pc=  19 L0     CLOSURE   A=11  B=0    C=2    proto 2
+pc=  20 L0     MOVE      A=0   B=5    C=0    
+pc=  21 L0     SETGLOBAL A=11  B=0    C=5    'Camera_IsClientControlDisabled'
+pc=  22 L0     CLOSURE   A=11  B=0    C=3    proto 3
+pc=  23 L0     MOVE      A=0   B=2    C=0    
+pc=  24 L0     MOVE      A=0   B=0    C=0    
+pc=  25 L0     MOVE      A=0   B=1    C=0    
+pc=  26 L0     MOVE      A=0   B=3    C=0    
+pc=  27 L0     MOVE      A=0   B=5    C=0    
+pc=  28 L0     MOVE      A=0   B=10   C=0    
+pc=  29 L0     SETGLOBAL A=11  B=0    C=6    'CameraStatus_Set'
+pc=  30 L0     CLOSURE   A=11  B=0    C=4    proto 4
+pc=  31 L0     MOVE      A=0   B=1    C=0    
+pc=  32 L0     MOVE      A=0   B=0    C=0    
+pc=  33 L0     MOVE      A=0   B=2    C=0    
+pc=  34 L0     MOVE      A=0   B=3    C=0    
+pc=  35 L0     SETGLOBAL A=11  B=0    C=7    'CameraStatus_Push'
+pc=  36 L0     CLOSURE   A=11  B=0    C=5    proto 5
+pc=  37 L0     MOVE      A=0   B=1    C=0    
+pc=  38 L0     MOVE      A=0   B=2    C=0    
+pc=  39 L0     MOVE      A=0   B=0    C=0    
+pc=  40 L0     SETGLOBAL A=11  B=0    C=8    'CameraStatus_Backward'
+pc=  41 L0     CLOSURE   A=11  B=0    C=6    proto 6
+pc=  42 L0     MOVE      A=0   B=1    C=0    
+pc=  43 L0     MOVE      A=0   B=0    C=0    
+pc=  44 L0     MOVE      A=0   B=2    C=0    
+pc=  45 L0     SETGLOBAL A=11  B=0    C=9    'CameraStatus_Forward'
+pc=  46 L0     CLOSURE   A=11  B=0    C=7    proto 7
+pc=  47 L0     SETGLOBAL A=11  B=0    C=10   'GetCameraRTParams'
+pc=  48 L0     LOADK     A=11  B=0    C=2    0.0
+pc=  49 L0     LOADK     A=12  B=0    C=2    0.0
+pc=  50 L0     LOADK     A=13  B=0    C=2    0.0
+pc=  51 L0     LOADK     A=14  B=0    C=2    0.0
+pc=  52 L0     LOADK     A=15  B=0    C=2    0.0
+pc=  53 L0     LOADK     A=16  B=0    C=11   600.0
+pc=  54 L0     LOADK     A=17  B=0    C=12   -120.0
+pc=  55 L0     LOADK     A=18  B=0    C=13   2400.0
+pc=  56 L0     LOADK     A=19  B=0    C=14   50.0
+pc=  57 L0     CLOSURE   A=20  B=0    C=8    proto 8
+pc=  58 L0     SETGLOBAL A=20  B=0    C=15   'GetCameraDistance'
+pc=  59 L0     CLOSURE   A=20  B=0    C=9    proto 9
+pc=  60 L0     MOVE      A=0   B=15   C=0    
+pc=  61 L0     CLOSURE   A=21  B=0    C=10   proto 10
+pc=  62 L0     MOVE      A=0   B=16   C=0    
+pc=  63 L0     MOVE      A=0   B=13   C=0    
+pc=  64 L0     MOVE      A=0   B=17   C=0    
+pc=  65 L0     CLOSURE   A=22  B=0    C=11   proto 11
+pc=  66 L0     MOVE      A=0   B=18   C=0    
+pc=  67 L0     CLOSURE   A=23  B=0    C=12   proto 12
+pc=  68 L0     MOVE      A=0   B=19   C=0    
+pc=  69 L0     CLOSURE   A=24  B=0    C=13   proto 13
+pc=  70 L0     MOVE      A=0   B=11   C=0    
+pc=  71 L0     MOVE      A=0   B=22   C=0    
+pc=  72 L0     MOVE      A=0   B=12   C=0    
+pc=  73 L0     MOVE      A=0   B=13   C=0    
+pc=  74 L0     MOVE      A=0   B=14   C=0    
+pc=  75 L0     MOVE      A=0   B=23   C=0    
+pc=  76 L0     MOVE      A=0   B=21   C=0    
+pc=  77 L0     MOVE      A=0   B=20   C=0    
+pc=  78 L0     SETGLOBAL A=24  B=0    C=16   'Camera_TranslationMove'
+pc=  79 L0     CLOSURE   A=24  B=0    C=14   proto 14
+pc=  80 L0     MOVE      A=0   B=11   C=0    
+pc=  81 L0     MOVE      A=0   B=12   C=0    
+pc=  82 L0     MOVE      A=0   B=13   C=0    
+pc=  83 L0     MOVE      A=0   B=14   C=0    
+pc=  84 L0     MOVE      A=0   B=20   C=0    
+pc=  85 L0     SETGLOBAL A=24  B=0    C=17   'Camera_TranslationOffset'
+pc=  86 L0     CLOSURE   A=24  B=0    C=15   proto 15
+pc=  87 L0     MOVE      A=0   B=20   C=0    
+pc=  88 L0     MOVE      A=0   B=11   C=0    
+pc=  89 L0     MOVE      A=0   B=12   C=0    
+pc=  90 L0     MOVE      A=0   B=13   C=0    
+pc=  91 L0     MOVE      A=0   B=14   C=0    
+pc=  92 L0     MOVE      A=0   B=15   C=0    
+pc=  93 L0     SETGLOBAL A=24  B=0    C=18   'Camera_ResetOffset'
+pc=  94 L0     GETGLOBAL A=24  B=0    C=19   'MAIN_SCENE_DOF_DIST_MIN'
+pc=  95 L0     LOADK     A=25  B=0    C=20   1500.0
+pc=  96 L0     LOADK     A=26  B=0    C=14   50.0
+pc=  97 L0     MOVE      A=27  B=26   C=0    
+pc=  98 L0     CLOSURE   A=28  B=0    C=16   proto 16
+pc=  99 L0     MOVE      A=0   B=24   C=0    
+pc= 100 L0     MOVE      A=0   B=25   C=0    
+pc= 101 L0     MOVE      A=0   B=27   C=0    
+pc= 102 L0     SETGLOBAL A=28  B=0    C=21   'Camera_SetPostRenderDoFParam'
+pc= 103 L0     CLOSURE   A=28  B=0    C=17   proto 17
+pc= 104 L0     MOVE      A=0   B=26   C=0    
+pc= 105 L0     SETGLOBAL A=28  B=0    C=22   'Camera_GetDofDegreeMin'
+pc= 106 L0     CLOSURE   A=28  B=0    C=18   proto 18
+pc= 107 L0     SETGLOBAL A=28  B=0    C=23   'Camera_GetSave'
+pc= 108 L0     LOADNIL   A=28  B=43   C=0    
+pc= 109 L0     CLOSURE   A=44  B=0    C=19   proto 19
+pc= 110 L0     MOVE      A=0   B=28   C=0    
+pc= 111 L0     MOVE      A=0   B=29   C=0    
+pc= 112 L0     MOVE      A=0   B=30   C=0    
+pc= 113 L0     MOVE      A=0   B=31   C=0    
+pc= 114 L0     MOVE      A=0   B=32   C=0    
+pc= 115 L0     MOVE      A=0   B=33   C=0    
+pc= 116 L0     MOVE      A=0   B=34   C=0    
+pc= 117 L0     MOVE      A=0   B=35   C=0    
+pc= 118 L0     MOVE      A=0   B=36   C=0    
+pc= 119 L0     MOVE      A=0   B=37   C=0    
+pc= 120 L0     MOVE      A=0   B=38   C=0    
+pc= 121 L0     MOVE      A=0   B=39   C=0    
+pc= 122 L0     MOVE      A=0   B=40   C=0    
+pc= 123 L0     MOVE      A=0   B=41   C=0    
+pc= 124 L0     MOVE      A=0   B=42   C=0    
+pc= 125 L0     MOVE      A=0   B=43   C=0    
+pc= 126 L0     SETGLOBAL A=44  B=0    C=24   'HideGlobalHeadTop'
+pc= 127 L0     CLOSURE   A=44  B=0    C=20   proto 20
+pc= 128 L0     MOVE      A=0   B=28   C=0    
+pc= 129 L0     MOVE      A=0   B=29   C=0    
+pc= 130 L0     MOVE      A=0   B=30   C=0    
+pc= 131 L0     MOVE      A=0   B=31   C=0    
+pc= 132 L0     MOVE      A=0   B=32   C=0    
+pc= 133 L0     MOVE      A=0   B=33   C=0    
+pc= 134 L0     MOVE      A=0   B=34   C=0    
+pc= 135 L0     MOVE      A=0   B=35   C=0    
+pc= 136 L0     MOVE      A=0   B=36   C=0    
+pc= 137 L0     MOVE      A=0   B=37   C=0    
+pc= 138 L0     MOVE      A=0   B=38   C=0    
+pc= 139 L0     MOVE      A=0   B=39   C=0    
+pc= 140 L0     MOVE      A=0   B=40   C=0    
+pc= 141 L0     MOVE      A=0   B=41   C=0    
+pc= 142 L0     MOVE      A=0   B=42   C=0    
+pc= 143 L0     MOVE      A=0   B=43   C=0    
+pc= 144 L0     SETGLOBAL A=44  B=0    C=25   'ResumeGlobalHeadTop'
+pc= 145 L0     CLOSURE   A=44  B=0    C=21   proto 21
+pc= 146 L0     SETGLOBAL A=44  B=0    C=26   'Camera_RevertAnimation'
+pc= 147 L0     CLOSURE   A=44  B=0    C=22   proto 22
+pc= 148 L0     SETGLOBAL A=44  B=0    C=27   'Camera_RevertLookAt'
+pc= 149 L0     CLOSURE   A=44  B=0    C=23   proto 23
+pc= 150 L0     SETGLOBAL A=44  B=0    C=28   'Camera_EnableAnimation'
+pc= 151 L0     NEWTABLE  A=44  B=0    C=0    
+pc= 152 L0     NEWTABLE  A=45  B=0    C=0    
+pc= 153 L0     LOADNIL   A=46  B=46   C=0    
+pc= 154 L0     CLOSURE   A=47  B=0    C=24   proto 24
+pc= 155 L0     CLOSURE   A=48  B=0    C=25   proto 25
+pc= 156 L0     MOVE      A=0   B=44   C=0    
+pc= 157 L0     MOVE      A=0   B=45   C=0    
+pc= 158 L0     MOVE      A=0   B=46   C=0    
+pc= 159 L0     MOVE      A=0   B=47   C=0    
+pc= 160 L0     CLOSURE   A=49  B=0    C=26   proto 26
+pc= 161 L0     MOVE      A=0   B=46   C=0    
+pc= 162 L0     MOVE      A=0   B=47   C=0    
+pc= 163 L0     MOVE      A=0   B=48   C=0    
+pc= 164 L0     MOVE      A=0   B=45   C=0    
+pc= 165 L0     SETGLOBAL A=49  B=0    C=29   'SceneSfx_Insert'
+pc= 166 L0     CLOSURE   A=49  B=0    C=27   proto 27
+pc= 167 L0     MOVE      A=0   B=46   C=0    
+pc= 168 L0     MOVE      A=0   B=45   C=0    
+pc= 169 L0     MOVE      A=0   B=48   C=0    
+pc= 170 L0     SETGLOBAL A=49  B=0    C=30   'SceneSfx_Delete'
+pc= 171 L0     CLOSE     A=44  B=0    C=0    
+pc= 172 L0     RETURN    A=0   B=1    C=0    
