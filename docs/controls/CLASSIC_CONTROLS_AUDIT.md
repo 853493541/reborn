@@ -19,23 +19,37 @@ the user-observed game behaviour):**
 |---|---|---|
 | W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D · ←/→ | **decoded**: the turn keys are a CHARACTER control (`TurnLeftStart` → `SetControl(CONTROL_TURN_LEFT)`); in classical free view the strafe handler calls `TurnLeftStart` too. **No RMB gate exists anywhere in the shipped scripts** (Scene/OperationModeBase/hotkeys/mainscene/CameraCommon) — RMB only starts camera drag (see §2) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
+| A/D · ←/→ | **decoded**: the turn keys are a CHARACTER control (`TurnLeftStart` → `SetMoveControl(CONTROL_TURN_*)`; classical → `Camera_EnableControl`). In **classical normal play the engine handles A/D itself** — the Lua handlers are overrides (joystick free-move, OB-dungeon camera, displacement). **No RMB gate exists anywhere** (Scene/OperationModeBase/hotkeys/mainscene/CameraCommon + the C bindings) — RMB only starts camera drag (see §2) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
 | W+A / W+D | run while turning (a curve) — the view and the body rotate together (RMB does not change this) | run 320 u/s, curve radius v/ω |
 | S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
 
-**Decoded gate (2026-10-01, full script decode):** `mainscene.lua` defines
-`Camera_IsInFreeView()` as a getter for the flag stored by
+**Decoded gate (2026-10-01, full script + binding decode):** `mainscene.lua`
+defines `Camera_IsInFreeView()` as a getter for the flag stored by
 `CameraStatus_Animation` (proto 0/1 returns upval = the flag; proto 0/0 stores
 it). `CameraStatus_Set` ends with `CameraStatus_Animation(mode ~= 'god camera')`,
 so `Camera_IsInFreeView()` is **true in normal play** (`'local camera'`) and
 false only in the god camera. With the flag true, `CameraStatus_Animation`
 **restores** the real `TurnLeftStart/Stop` + `TurnRightStart/Stop` globals
-(false swaps in `Strafe*` for the god camera). The strafe handler (proto 0/76)
-additionally calls `TurnLeftStart/RightStart` when the flag is true, i.e. the
-A/D (STRAFE-bound) keys give strafe + turn; god camera swaps A/D to strafe
-only. The host maps this to `RC_FREEVIEW` (1 = normal play, 0 = god-camera
-strafe-only).
+(false swaps in `Strafe*` for the god camera). **Correction 2026-10-01 (later):**
+the strafe handler's `TurnLeftStart/RightStart` call is **not** the normal
+classical turn path — its guard (hotkeys proto 63) is
+`if IsPlayerInOBDungeon() then Camera_EnableControl(control, flag); return true
+end` (nil otherwise), so the free-view strafe+turn branch fires **only in OB
+(spectator) dungeons**. Normal classical WASD is consumed by the **engine**
+input layer; the Lua handlers are overrides for joystick free-move, OB camera
+and displacement skills. Host `RC_FREEVIEW` stays as the host knob for the
+god-camera/OB strafe branch.
+**Binding map (JX3UIX64.dll, `KRepresentScriptTable::Lua*`, HIGH):**
+`Camera_EnableControl(id,bool)` is a pure state setter (returns nothing; ids
+6/7 additionally call a camera vtable `+0x110`); control ids 0..13 are
+Lua-defined (`control.lua`: FORWARD 0 … OBJECT_STICK_CAMERA 7 … DOWN 13).
+`hotkeys`' unnamed wrapper (proto 61) routes CLASSICAL →
+`Camera_EnableControl`, JOYSTICK → `Scene_EnableFreeMoveControl`;
+`MoveControlStart/Stop` = `Scene_SetMoveControl(true/false)`;
+`Camera_BeginDrag` bridges vtable `+0x118` and returns two numbers;
+`Camera_LockControl(sec)` = 轻功 camera lock (`IsCharacterMoving(BACKWARD)` +
+skill 9007).
 
 | Command | Default key | Status | Note |
 |---|---|---|---|
@@ -99,14 +113,27 @@ strafe-only).
 - **RMB-held keyboard turn gate — REVERTED 2026-10-01** (commit `bb91c08`).
   The shipped scripts contain **no RMB-conditional turn/strafe logic**
   (checked: `Scene.lua`, `OperationModeBase.lua`, `hotkeys.lua`,
-  `mainscene.lua`, `CameraCommon.lua` — all extracted from the game client's
-  own paks): RMB only starts camera drag (`Camera_BeginDrag(2.0)` +
-  `CONTROL_OBJECT_STICK_CAMERA`). A/D resolve to the real turn handlers in
-  normal play exactly as without RMB. The host now behaves identically with
-  RMB down. Remaining engine question (open, no host rule): what the engine's
-  consumer does with `CONTROL_TURN_*` while `CONTROL_OBJECT_STICK_CAMERA` is
-  active — trace target `JX3RepresentX64.dll` commit path (0x1805df660 →
-  applier 0x1805df7e0). Docs: `OPERATION_MODES_PLAN.md` §7b, `EXPERIENCES.md`.
+  `mainscene.lua`, `CameraCommon.lua`, `control.lua` — all extracted from the
+  game client's own paks): RMB only starts camera drag (`Camera_BeginDrag(2.0)`
+  + `CONTROL_OBJECT_STICK_CAMERA`). **Binding layer checked too** (2026-10-01):
+  `Camera_EnableControl` (`JX3UIX64.dll` `0x1800AC1F0`) is a plain control-state
+  setter (ids 6/7 also call a camera vtable `+0x110`; no turn interaction, no
+  return value); `Camera_BeginDrag` (`0x1800ABFD0`) only bridges vtable `+0x118`
+  (drag) and returns two numbers; `Camera_LockControl` is the 轻功 timed lock
+  (skill 9007). The engine's own WASD/classical handling (where an RMB
+  interaction could still live) is in the represent/input layer, not the UI
+  bindings: the input-state applier `0x1805df7e0` (8 event types → controller
+  fields `+0x7C..+0x98`, vtable `[obj+0xA8]` slots `+0x88/+0x98/+0xA0…`) is the
+  next trace target. Host has **no provisional rule** on this path; A/D behave
+  the same with and without RMB.
+- **Host model gap (open, decoded direction)**: the host couples A/D 1:1 to
+  `camSys.Yaw` (camera rotation steers the camera-relative run frame). The
+  decoded split is: TURN = character control (always); camera follow =
+  `CameraAdjustYawWhenMoveTurn` (only **while moving**, 15° dead zone,
+  rate-limited — `CameraSystem.FollowYaw` exists but is test-gated today).
+  Implementing the split (separate movement frame; camera follows per the row;
+  RMB drag owns the camera) is the next host change; the current code keeps the
+  old coupling so the verified W+A curve is not broken.
 
 ## 6. Recommended order
 

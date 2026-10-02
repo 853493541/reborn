@@ -1193,3 +1193,53 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   decode the mode/camera state machines (mainscene CameraStatus_*) before
   judging any observed input behavior.
 
+
+### 2026-10-01 - controls/client - engine dig: the C binding layer has no RMB gate either; classical WASD is engine-side
+- User: "keep digging" after the RMB script sweep.
+- Did: decoded the Lua->C bridge in the game client's own UI DLL and the
+  remaining movement handlers:
+  - control.lua (new extraction): defines the control ids 0..13
+    (FORWARD 0, BACKWARD 1, TURN_LEFT 2, TURN_RIGHT 3, STRAFE_LEFT 4,
+    STRAFE_RIGHT 5, CAMERA 6, OBJECT_STICK_CAMERA 7, WALK 8, JUMP 9,
+    AUTO_RUN 10, FOLLOW 11, UP 12, DOWN 13) and the Ctrl_Camera* stubs.
+  - hotkeys proto 61 (the unnamed wrapper used by Move*/Turn* handlers):
+    CLASSICAL -> Camera_EnableControl(control, flag);
+    JOYSTICK -> Scene_EnableFreeMoveControl(control, flag).
+  - hotkeys proto 63 (guard of the strafe handler's free-view branch):
+    returns true (and calls Camera_EnableControl) ONLY when
+    IsPlayerInOBDungeon(); nil otherwise. => the "classical free view A/D =
+    strafe+turn" claim from earlier today is WRONG outside OB dungeons:
+    normal classical WASD is consumed by the engine, Lua handlers are
+    overrides (joystick free-move, OB camera, displacement).
+  - JX3UIX64.dll (SHA256-verified copy): Camera_EnableControl = Lua* binding
+    at 0x1800AC1F0 (name in the luaL_Reg table at file 0x4A1F70, func
+    0x1800AC1F0): args (id, bool[, self]); ids 6/7 additionally call the
+    camera vtable +0x110 and check the HRESULT; otherwise a core setter
+    0x18011D820(self,id,bool); returns NOTHING to Lua. Camera_BeginDrag
+    0x1800ABFD0: 1-4 args, bridges the represent interface vtable +0x118
+    (mode, &x, &y, opt) and pushes 2 numbers back. Camera_LockControl
+    0x1800ACEE0: timed lock (used by the 轻功 path: IsCharacterMoving(
+    CONTROL_BACKWARD) + skill 9007). Camera_ToggleControl = AUTO_RUN/WALK
+    toggles. MoveControlStart/Stop (hotkeys 0/94-95) = Scene_SetMoveControl
+    (true/false).
+  - JX3RepresentX64.dll 0x1805DF7E0 (input-state applier, 8 event types):
+    writes controller fields +0x7C/+0x80/+0x84/+0x88/+0x8C..+0x94/+0x98 and
+    calls vtable slots +0x88/+0x98/+0xA0/+0xA8/+0xB0/+0xB8 on [obj+0xA8].
+    This is the engine input->character path, no RMB condition visible at
+    this level (types are command kinds, not keys).
+- Result: there is no RMB turn gate in the scripts nor in the UI C bindings;
+  classical A/D is engine-side, so an RMB interaction could only live deeper
+  in the represent input/controller (next probe: the key->input dispatch and
+  the character controller consumer of the fields above).
+- Host model gap (decoded direction, not yet implemented): TURN is a
+  character control; the camera should follow per CameraAdjustYawWhenMoveTurn
+  (moving-only, 15 deg dead zone) and RMB drag owns the camera. The host
+  currently couples A/D 1:1 into camSys.Yaw (the camera-relative run frame),
+  which keeps W+A curves working but makes A/D rotate the camera even while
+  RMB is held. Moving the run frame to its own yaw + enabling FollowYaw while
+  moving (skip while RMB) is the next change; needs the RC_DEMO_MOVE WA/turn
+  fingerprints re-baselined.
+- Evidence: %TEMP%\opencode\modes-re\ui_enablecontrol.txt, ui_begindrag.txt,
+  ui_lockcontrol.txt, hk_proto61.txt, hk_proto63.txt, control_full.txt,
+  apply_input.txt; docs/controls/CLASSIC_CONTROLS_AUDIT.md section 5.
+

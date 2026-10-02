@@ -261,11 +261,19 @@ or merge that subject to main first and branch `agent/control-modes`.
   sets it to `mode ~= 'god camera'`. True in normal play, false in the god
   camera. When true, `CameraStatus_Animation` restores the real
   `TurnLeftStart/Stop`+`TurnRightStart/Stop` globals; when false it swaps in
-  `Strafe*`. So A/D (STRAFE-bound default keys) hit the strafe handler whose
-  free-view branch also calls `TurnLeftStart/RightStart`; god camera swaps A/D
-  to strafe-only. Host `RC_FREEVIEW` maps 1 = normal play, 0 = god-camera
-  strafe-only. **RMB gate reverted** (`bb91c08`): no script-level RMB
-  interaction with turn/strafe exists; RMB only starts camera drag.
+  `Strafe*`. **Correction (later 2026-10-01):** the strafe handler's
+  free-view branch that calls `TurnLeftStart/RightStart` is guarded by
+  `IsPlayerInOBDungeon()` (hotkeys proto 63, true only in OB/spectator
+  dungeons), so it is NOT the normal classical A/D path: normal classical
+  WASD is handled by the engine input layer and the Lua handlers are overrides
+  (joystick free-move, OB camera, displacement). Host `RC_FREEVIEW` maps
+  1 = normal play, 0 = god-camera/OB strafe-only. **RMB gate reverted**
+  (`bb91c08`): no RMB interaction with turn/strafe exists in the scripts or
+  the UI C bindings (`Camera_EnableControl` 0x1800AC1F0 is a plain state
+  setter; `Camera_BeginDrag` 0x1800ABFD0 only bridges the drag vtable +0x118).
+  Host model gap recorded in `CLASSIC_CONTROLS_AUDIT.md` §5: the run frame
+  should be decoupled from the camera and follow per
+  `CameraAdjustYawWhenMoveTurn` (moving-only, 15 deg dead zone).
 - Gates: camera_smoke (incl. mode gating) ALL PASS; jx3_model 10x PASS;
   verify_model exit 0; capture selftest PASS.
 

@@ -286,3 +286,24 @@ Conclusion: no script-level RMB turn gate exists; the host now follows the
 scripts. The engine consumer of `CONTROL_TURN_*` while
 `CONTROL_OBJECT_STICK_CAMERA` is active remains the next probe
 (`JX3RepresentX64.dll` commit 0x1805df660 -> applier 0x1805df7e0).
+
+## DIG (2026-10-01, later): C binding layer + engine input applier
+- JX3UIX64.dll (copy SHA256-verified 859E91C9...): Camera_EnableControl
+  luaL_Reg entry @file 0x4A1F70 -> func 0x1800AC1F0: pure control-state setter
+  (ids 6/7 also call camera vtable +0x110), returns nothing. Camera_BeginDrag
+  0x1800ABFD0 -> represent vtable +0x118, returns 2 numbers. Camera_LockControl
+  0x1800ACEE0 = timed 轻功 lock (skill 9007). MoveControlStart/Stop =
+  Scene_SetMoveControl(true/false).
+- hotkeys.lua proto 61 (wrapper): CLASSICAL -> Camera_EnableControl;
+  JOYSTICK -> Scene_EnableFreeMoveControl. proto 63 (strafe free-view guard):
+  true ONLY in IsPlayerInOBDungeon() -> the classical free-view strafe+turn
+  branch is an OB-dungeon special case, not normal play.
+- JX3RepresentX64.dll 0x1805DF7E0: 8-type input-state applier into controller
+  fields +0x7C..+0x98 via vtable [obj+0xA8] (+0x88/+0x98/+0xA0/+0xA8/+0xB0/
+  +0xB8); no RMB condition at this level. Normal classical WASD is handled by
+  the engine input layer (Lua handlers are overrides).
+- Conclusion: no RMB turn gate exists in scripts or UI bindings; host keeps
+  the reverted (ungated) behavior. Next probe: engine key->input dispatch /
+  character-controller consumer. Host model gap recorded in
+  CLASSIC_CONTROLS_AUDIT.md section 5 (run frame vs camera follow).
+
