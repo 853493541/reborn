@@ -435,3 +435,21 @@ carry belongs to RMB/follow states.
 Evidence: `%TEMP%\opencode\modes-re\gc_applyrotation.txt`,
 `gc_applyalt.txt`, `gc_clampmouse.txt`, `gc_charyaw_thunk.txt`,
 `gc_setcontrolother_thunk.txt`, `exe_createso3.txt`.
+
+**7d addendum 4 (2026-10-01): build diff - the camera->body coupling was refactored.**
+Installed client: `GameInfo.dat` = 1.5.0.9975 (`PreVersion=1.5.0.9702`), paks
+(`Pakv4\Trunk.dir`) updated the same day; official latest notes (2026-09-28,
+1.5.0.9971) list no control/camera change. Local build genealogy (all contain
+`CameraAdjustYawWhenMoveTurn`/`ApplyRotation`/`UpdateRotation`/
+`MouseControlMoveEnable`/dynamic-follow): current 09-27, MovieEditor 09-14,
+client-MovieEditor 04-28, bundled old client 03-31. **Difference found** in
+`ApplyRotation`: the old 03-31 build (0x180B29A40) applies up to four rotation
+channels (yaw, a second yaw computed from [obj+0x244]/[obj+0x248] one-shot
+state, and two more from args) to the character `[obj+0x20]` (or `[obj+0x28]`)
+whenever the deltas are nonzero; the current build (0x180B1FA30) is gated by
+`[obj+0x28C]`/`[obj+0x1B0]` and applies a single face-yaw write
+(`[char+0x20] -> 0x180530F00`). The character-API thunk targets differ
+completely (e.g. thunk 0x18001F05F: old -> 0x180762DA0, new -> 0x180530F00).
+=> A camera->body coupling change between March and September is real at code
+level; the current (decoded) behavior stands: A/D = character turn, camera
+follow moving-forward only.

@@ -1337,3 +1337,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   gate; the follow input needed the facing->camera-yaw conversion atan2(-cos,
   -sin), the same involution the RMB body-carry uses).
 
+
+### 2026-10-01 - controls/client - CHECK: was there a recent change to classic A/D/camera?
+- User: "classic does not change camera with A/D - it used to be not like this,
+  feel like a recent change, check."
+- Checked: installed client GameInfo.dat = 1.5.0.9975 (PreVersion 1.5.0.9702),
+  paks updated the same day; official 2026-09-28 notes (1.5.0.9971) have no
+  control/camera item. Local build genealogy (game 09-27, MovieEditor 09-14,
+  client-MovieEditor 04-28, bundled client 03-31) all carry the same camera
+  systems; but ApplyRotation differs: old 03-31 applied up to four rotation
+  channels to the character on any nonzero delta; current 09-27 is
+  follow-state gated and writes a single face-yaw. Character-API thunks differ.
+- Conclusion: a real camera->body coupling change exists between the March and
+  September builds (public notes silent), consistent with the user's feeling;
+  the current decoded behavior (A/D = character turn, camera follows only while
+  moving forward) is the current client truth and is what the host implements.
+- Evidence: docs section 7d addendum 4; old_applyrot.txt / old_updrot.txt in
+  %TEMP%\opencode\modes-re\; GameInfo.dat; jx3.xoyo.com latest notes.
