@@ -24,6 +24,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 
 | Doc | Content |
 |---|---|
+| `V2_PLAN.md` | **V2 phased plan** — run the real JX3 client (P0 done, P1 startup gate next) |
 | `UNIT_SCALE_AND_CHARACTER_SIZE.md` | **canonical unit system**: 1 u = 1 cm, 尺 = 0.64 m, character vs map sizes |
 | `JX3_NETCODE_RESEARCH.md` | static map of client/server netcode (CoreNet, KPlayerClient, sync/reconnect) |
 | `JX3_PROTOCOL_SPEC.md` | frame layout, serial/ack reliability, handshake, ping, protocol IDs |
