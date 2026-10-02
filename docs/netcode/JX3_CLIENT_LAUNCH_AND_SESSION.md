@@ -403,3 +403,16 @@ KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX
   in the pump queue - the Initialize dispatch executes them within the step (or via another list).
 - Next (step 3): find which module's Initialize creates the platform object (state_sub+0x18);
   leading hypothesis: KJX3WindowsApplicationModule (window/app object) or KJX3LoadingModule.
+
+## 22. Module handler contexts (2026-10-01, sixteenth pass)
+
+- Each Initialize handler ctx = `std::_Func_impl_no_alloc<_Binder<...>>` whose vtable RTTI names
+  the module (all 52 resolved). Fields: an inline small string at +8, heap pointers at +0x10+;
+  related objects found in ctx fields: `KJX3ClientMessageHandler` (CoreDump ctx+0x50),
+  `KJX3ClientLoadProgressImpl` (Loading ctx+0x28), a `type_info` (Render ctx+0x68).
+- No raw code pointer appears in the scanned ctx range: the bound Initialize methods are
+  member-function pointers that are likely **virtual** (stored as vtable indices), so resolving
+  the concrete Initialize method requires reading the module object's vtable + index.
+- Next for step 3: resolve the bound method (vtable index) for KJX3WindowsApplicationModule /
+  KJX3LoadingModule / KJX3RenderModule, dump those Initialize methods, and find which one writes
+  the platform object (`state_sub+0x18`) and under what condition it fails.
