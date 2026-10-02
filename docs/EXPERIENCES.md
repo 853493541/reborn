@@ -1355,3 +1355,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `proof/netcode/disasm/streaming_parsecmdline.txt` + gateway/serverlist dumps,
   `proof/netcode/JX3Browser_strings.txt`; this commit (local).
 - Outcome: solved (feasibility answered; no pivot).
+
+### 2026-10-01 — repo — Merge: battle-floating-ui research → main
+- Did: merged `agent/battle-floating-ui` (battle floating UI + KGUI font/color
+  scheme research) into `main` as `0c750cc` (`--no-ff`). Sole conflict
+  `docs/EXPERIENCES.md` (append-tail): kept the branch's 2026-09-30 blocks then
+  main's 2026-10-01 blocks — chronological, both preserved. Net diff: 146 files,
+  +36,812/−13 (`proof/` 136, `docs/` 6, `tools/` 3, `.gitignore` 1);
+  `ui-process-app/**` and root `AGENTS.md` byte-identical to pre-merge main.
+  Registered the three research tools in the `docs/ui/README.md` tools table.
+  Also caught pre-merge: `tools/prepare_ui_fonts.py` had been written UTF-16 by
+  PowerShell redirection — restored as UTF-8 (`8309d3a`).
+- Verified: `jx3_model` 10/10 PASS; `verify_model` self-consistent; loot
+  `SELFTEST PASS`; no client/native/app code in the merge, so no rebuild/smoke.
+- Evidence: merge commit `0c750cc`; `docs/ui/BATTLE_FLOATING_UI.md`,
+  `docs/ui/FONT_SCHEME_SYSTEM.md`, `proof/ui/evidence/battle_hud/**`.
+- Outcome: solved (merged; pushed to `origin/main` at user request).
