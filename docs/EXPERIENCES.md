@@ -946,3 +946,22 @@ solved it, and what is still open. **Newest at the bottom.**
   entries by behavior (consumed bytes + return), log-before-call so a hang's
   culprit is visible in the last log line.
 - Next: PxShape/PxRigidStatic/PxScene + queries, then A/B vs our solver.
+
+### 2026-10-01 - PhysX shape slot: actor vtable decoded; identify objects by getConcreteTypeName
+
+- Continue of the PhysX-direct build: after cook+createTriangleMesh, the actor
+  side is mapped. PxRigidStatic vtable (RVA 0x273890, 16 entries): [1] =
+  getConcreteTypeName, [6] = attachShape (crashes on non-shape), [3] = the
+  destructor (calling it destroys the actor - it returns `this`), [5] hangs.
+- Trick worth keeping: any PhysX object can be identified at runtime by calling
+  its vt[1]() -> const char*; used to catch that physics vt[12] is
+  createHeightField, not createShape.
+- Empirically found: physics vt[6]=rigid actor creator, vt[8]=createTriangleMesh,
+  vt[12]=createHeightField, vt[24]=getMaterials. createShape not yet found;
+  sweep safety map recorded in proof/movement/phys_engine_vtables.txt.
+- Incident + rule: rewrote PhysicsProbe.cs once with PowerShell
+  Get-Content|Set-Content - it mangled the UTF-8 Chinese mesh paths. Restored
+  line-wise from HEAD. NEVER touch source files with PS text cmdlets (AGENTS
+  already says this; this is the second reminder).
+- Next: sweep physics vt[23,25..44] for createShape, or trace the engine's own
+  shape factory object used at PhysicsEngineX64 ~0x144CF.
