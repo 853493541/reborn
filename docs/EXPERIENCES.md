@@ -869,3 +869,21 @@ solved it, and what is still open. **Newest at the bottom.**
   (b) else reuse the engine's own PxPhysics/PxCooking (manager fields) to
   build a private scene with our baked geometry, then A/B the engine's
   floor/sweep vs our solver at the field spots.
+
+### 2026-10-01 - collision - Engine PhysicsScene CREATED in-host (endgame unblocked)
+- The P5 probe now creates the engine's own PhysicsScene inside our client:
+  `CreatePhysicsScene` (manager vt[16], hr=0) with the engineArg = the active
+  engine scene resolved exactly like EngineRay does
+  (`KG3DEngineDX11EX64!KG3D_GetEngine2 -> GetActiveWindow2 -> Get3DScene2`).
+  The adapter's own recipe was decoded first (`KG3DEngineManager::Init` @0x737da:
+  LoadLibrary PhysicsEngineX64 -> GetPhysicsManager -> mgr vt[0] Init(cfg,
+  engineArg=[engineMgr+0x2018], 0) -> SetWorkingDir).
+- Scene vtable runtime-confirmed 1:1 with the static dump; the manager dump was
+  shifted by 2 (runtime vt[14]=CreatePhysXTerrain, vt[15]=dynLoader,
+  vt[16]=CreatePhysicsScene - all working in-host). Query candidates recorded
+  (vt[16]=SweepEx 0x1C5B0 anchor 0x1C7FB + 11 more) in
+  `proof/movement/phys_engine_vtables.txt`.
+- Evidence: `reborn_20261001_170644.log` / `_170929.log` (physprobe lines).
+- Next: recover the query ABI (disasm the vt[16]/raycast call sites), call the
+  engine's sweep/raycast against the loaded terrain + our baked geometry, then
+  A/B vs `TerrainSampler`/our solver at the field spots.

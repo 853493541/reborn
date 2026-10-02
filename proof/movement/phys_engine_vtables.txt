@@ -69,18 +69,58 @@ No height/floor query exists in the terrain vtable; the heightfield is a PhysX o
 
 ## PhysicsManager vtable @ RVA 0xFA6C0
 
+NOTE: the runtime/docs index for `CreatePhysXTerrain` is vt[14] (probe uses it and
+works), so this static dump is shifted by 2 entries vs the runtime vtable indexing
+(the real vtable start is 0xFA6D0, or the first two pointers are RTTI). Index map:
+runtime vt[14] = dump[12] = 0x108B0 (CreatePhysXTerrain); runtime vt[15] =
+dump[13] = 0x10930 (CreatePhysicsSceneDynamicLoader); runtime vt[16] =
+dump[14] = 0x10460 (**CreatePhysicsScene(out, engineArg)**); runtime vt[17] =
+dump[15] = 0x105E0.
+
 | idx | RVA | function |
 |---|---|---|
 | 0 | 0x109B0 | `Init` |
 | 1 | 0x10A80 | thunk |
 | 2 | 0x10300 | `SetWorkingDir` |
 | 3-11 | getters/setters (offsets 0x10/0x20/0x38/0x40/0x28/0x30/0x60/0xC8) |
-| 12 | 0x108B0 | `CreatePhysXTerrain(out, cfg)` |
-| 13 | 0x10930 | `CreatePhysicsSceneDynamicLoader(out, cfg)` |
-| 14 | 0x10460 | `CreatePhysicsScene(out, engineArg)` - needs a real engine-side arg (not 0) |
+| 12 | 0x108B0 | `CreatePhysXTerrain(out, cfg)` (= runtime vt[14]) |
+| 13 | 0x10930 | `CreatePhysicsSceneDynamicLoader(out, cfg)` (= runtime vt[15]) |
+| 14 | 0x10460 | `CreatePhysicsScene(out, engineArg)` (= runtime vt[16]) - needs a real engine-side arg (not 0) |
 | 15 | 0x105E0 | large |
 | 16 | 0x10A90 | large |
 | 17 | 0x10BE0 | large |
+
+### Adapter init chain (KG3DEngineAdapterX64.dll `KG3DEngineManager::Init` @0x737da)
+
+```
+LoadLibrary("PhysicsEngineX64.dll") -> GetProcAddress("GetPhysicsManager")
+-> mgr = [engineMgr+0x9D8]
+-> mgr vt[0] Init(rdx=[rbp+0x21B0] cfg, r8=[engineMgr+0x2018] engineArg, r9=0)
+-> mgr vt[2] SetWorkingDir(rdx=[rbp+0x31A0])
+-> 0x18007A4C0(engineMgr, ...)  (later init step)
+```
+The engineArg pattern `[engineMgr+0x2018]` is the adapter's engine object; the host
+equivalent = the active engine scene (KG3DEngineDX11EX64!KG3D_GetEngine2 ->
+GetActiveWindow2 -> Get3DScene2), which `PhysicsProbe` now resolves and passes to
+`CreatePhysicsScene`.
+
+## Runtime confirmation (2026-10-01, RC_PHYS_PROBE=1, reborn_client_colltest4)
+
+`CreatePhysicsScene` (manager vt[16], runtime indexing) now succeeds IN-HOST:
+`hr=0 scene=0x...` with the engineArg = the active engine scene resolved via
+`KG3DEngineDX11EX64!KG3D_GetEngine2 -> GetActiveWindow2 -> Get3DScene2`
+(`reborn_20261001_170644/170929.log`). The scene's runtime vtable matches this
+dump 1:1 (vt[0]=0x18870 ... vt[23]=0x18680) - so the PhysicsScene table needs no
+index shift; only the PhysicsManager dump was shifted by 2 (runtime vt[14] =
+CreatePhysXTerrain, vt[15] = CreatePhysicsSceneDynamicLoader, vt[16] =
+CreatePhysicsScene - all confirmed working in-host).
+
+Scene query candidates for the next step (ABI to recover from the call sites):
+vt[16]=0x1C5B0 (`SweepEx` anchor 0x1C7FB), vt[17]=0x1C4E0, vt[10]=0x1BE30,
+vt[11]=0x1B4A0, vt[18]=0x1B210, vt[19]=0x1B180, vt[6]=0x19420, vt[7]=0x18EA0,
+vt[8]=0x1A580, vt[9]=0x196E0, vt[2]=0x1CBC0, vt[4]=0x18D20. Strings
+`PhysicsScene::Overlap` / `ComputePenetrations` / `SweepEx` (0xF9770/0xF97B0/
+0xF9858) belong to these.
 
 ## Next steps for engine-physics-in-host
 

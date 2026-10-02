@@ -29,6 +29,10 @@ internal static class PhysicsProbe
     delegate int BoolArgFn(IntPtr self, IntPtr arg);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int FourArgFn(IntPtr self, IntPtr a, IntPtr b, IntPtr c);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr GetPtrFn();
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr MethodPtrFn(IntPtr self);
 
     [StructLayout(LayoutKind.Sequential)]
     struct MEMORY_BASIC_INFORMATION
@@ -88,6 +92,63 @@ internal static class PhysicsProbe
         }
         finally { Marshal.FreeHGlobal(cfg); }
         if (terrain == IntPtr.Zero) return;
+
+        // Engine-side scene argument for CreatePhysicsScene (manager vt[14]):
+        // the adapter's KG3DEngineManager::Init @0x737da calls
+        // mgr vt[0] Init(cfg, [engineMgr+0x2018], 0) then SetWorkingDir - the
+        // engine object is our active engine scene, resolved exactly like
+        // EngineRay does (KG3DEngineDX11EX64!KG3D_GetEngine2 ->
+        // GetActiveWindow2 -> Get3DScene2).
+        IntPtr engScene = IntPtr.Zero;
+        try
+        {
+            IntPtr hEng = GetModuleHandleA("KG3DEngineDX11EX64.dll");
+            if (hEng != IntPtr.Zero)
+            {
+                IntPtr pGet = GetProcAddress(hEng, "KG3D_GetEngine2");
+                IntPtr pWin = GetProcAddress(hEng, "?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ");
+                IntPtr pScene = GetProcAddress(hEng, "?Get3DScene2@KG3D_Window@@UEAAPEAVKG3D_Scene@@XZ");
+                log("physprobe: engine exports get=" + (pGet != IntPtr.Zero) + " win=" + (pWin != IntPtr.Zero) + " scene=" + (pScene != IntPtr.Zero));
+                if (pGet != IntPtr.Zero && pWin != IntPtr.Zero && pScene != IntPtr.Zero)
+                {
+                    var getEngine = Fn<GetPtrFn>(pGet);
+                    var getWindow = Fn<MethodPtrFn>(pWin);
+                    var getScene = Fn<MethodPtrFn>(pScene);
+                    IntPtr eng = getEngine();
+                    IntPtr win = eng == IntPtr.Zero ? IntPtr.Zero : getWindow(eng);
+                    engScene = win == IntPtr.Zero ? IntPtr.Zero : getScene(win);
+                    log("physprobe: engine=" + Hex(eng) + " window=" + Hex(win) + " engScene=" + Hex(engScene));
+                }
+            }
+        }
+        catch (Exception e) { log("physprobe: engine scene resolve ex: " + e.Message); }
+
+        if (engScene != IntPtr.Zero)
+        {
+            IntPtr outBuf = Marshal.AllocHGlobal(IntPtr.Size);
+            try
+            {
+                Marshal.WriteIntPtr(outBuf, IntPtr.Zero);
+                var createScene = Fn<FourArgFn>(Vt(mgr, 16));
+                int hr2 = createScene(mgr, outBuf, engScene, IntPtr.Zero);
+                IntPtr scene = Marshal.ReadIntPtr(outBuf);
+                log("physprobe: CreatePhysicsScene(vt16) hr=" + hr2 + " scene=" + Hex(scene));
+                if (scene != IntPtr.Zero)
+                {
+                    log("physprobe: scene vtable rva=0x" + (Marshal.ReadIntPtr(scene).ToInt64() - h.ToInt64()).ToString("X"));
+                    for (int i = 0; i < 24; i++)
+                    {
+                        long vr = Vt(scene, i).ToInt64() - h.ToInt64();
+                        if (vr > 0x1000 && vr < 0x100000)
+                            log(string.Format("physprobe:   scene vt[{0}] rva=0x{1:X}", i, vr));
+                        else
+                            log(string.Format("physprobe:   scene vt[{0}] (not code) 0x{1:X}", i, Vt(scene, i).ToInt64()));
+                    }
+                }
+            }
+            catch (Exception e) { log("physprobe: CreatePhysicsScene ex: " + e.Message); }
+            finally { Marshal.FreeHGlobal(outBuf); }
+        }
 
         IntPtr p2 = Marshal.StringToHGlobalAnsi(mapPath);
         try
