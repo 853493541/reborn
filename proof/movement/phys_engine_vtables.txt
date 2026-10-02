@@ -393,3 +393,34 @@ PxPhysics entry with the cooked mesh on a managed PxInputStream
 
 This closes the "PhysX-direct is not callable piecemeal" concern for the mesh
 half: create+load are ordinary vtable calls with managed stream ABI.
+
+### Update 2026-10-01l: shape-slot hunt - actor vtable mapped, class-name probe, crash/hang map
+
+Live sweeps (`RC_PX_MK=1`, `RC_PX_SHAPE_IDX=...`, `RC_PX_AVT=1`) gave:
+
+**PxPhysics vtable (mgr+0x38) known slots (all empirically verified):**
+- [6] = createRigidStatic/createRigidDynamic (PxTransform arg) - returns real actor
+- [8] = createTriangleMesh(PxInputStream&) - consumes stream (proven)
+- [11] = another stream create (reads 8 bytes, rejects triangle data)
+- [12] = createHeightField (class-name probe says 'PxHeightField')
+- [24] = getMaterials(dst, max, start) -> count (engine has 7 materials)
+- [9] returns 1; [16]/[17]/[20]/[21] return 0 with shape args.
+- **createShape NOT yet found** among [3,4,5,7,9,10,12,13,14,15..23].
+- SWEEP SAFETY: [2] hangs (spin/lock); [11],[15],[18],[19],[22] CRASH with
+  5-arg shape-shaped calls; [8] must only get a real PxInputStream.
+
+**PxRigidStatic vtable (RVA 0x273890, 16 entries) - decoded:**
+- [0] release/dtor-ish, [1] getConcreteTypeName (static string), [2] type,
+  [3] ~dtor (calling returns this and DESTROYS the actor - do not call),
+  [4] isKindOf, [5] HANGS (error report path), [6] attachShape(PxShape&)
+  (needs a real shape or CRASHES), [7] detachShape(PxShape&),
+  [9] getNbShapes, [10] count field, [11] getShapes(dst,...), [12] getScene-ish,
+  [13] bool getter, [14]/[15] serialize/iterate.
+- Class identification trick: call obj->vt[1]() -> const char* concrete type
+  name (used to identify PxHeightField).
+
+**Engine's own shape path** (PhysicsEngineX64 ~0x144CF): an engine factory
+object rbx->vt[14](int,int,int) returns a shape, then actor->vt[6](shape)
+attaches it - the engine does not call a raw PxPhysics::createShape there.
+**Next**: sweep physics vt[23,25..44] for createShape OR follow the engine
+factory object's identity (rbx in that function - find where it is set).

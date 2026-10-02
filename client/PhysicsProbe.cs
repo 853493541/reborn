@@ -49,6 +49,8 @@ internal static class PhysicsProbe
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Bool1Fn(IntPtr self);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr Ptr1Fn(IntPtr self);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Bool2Fn(IntPtr self, IntPtr a, IntPtr b);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate uint WriteFn(IntPtr self, IntPtr src, uint count);
@@ -56,6 +58,10 @@ internal static class PhysicsProbe
     delegate uint ReadFn(IntPtr self, IntPtr dest, uint count);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr Ptr2Fn(IntPtr self, IntPtr a);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr ShapeFn(IntPtr self, IntPtr geom, IntPtr materials, ushort count, IntPtr isExclusive, uint shapeFlags);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr MatFn(IntPtr self, IntPtr dst, uint maxCount, uint startIdx);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate void Void1Fn(IntPtr self);
     static byte[] s_pxInBuf;
@@ -523,7 +529,135 @@ internal static class PhysicsProbe
             catch (Exception e) { log("physprobe: PX_COOK2 ex: " + e.Message); }
             finally { Marshal.FreeHGlobal(verts); Marshal.FreeHGlobal(tris); Marshal.FreeHGlobal(desc); }
         }
-        // PhysX-direct step 3 (opt-in RC_PX_MESH=1, test exe): identify and call
+        // PhysX-direct step 5 (opt-in RC_PX_ACTOR2=1, test exe): actor->createShape
+        // sweep (actor createShape attaches the shape automatically in PhysX 3.3).
+        if (Environment.GetEnvironmentVariable("RC_PX_ACTOR2") == "1")
+        {
+            IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+            IntPtr pxPhysics = Marshal.ReadIntPtr(mgr, 0x38);
+            PxCookOk(pxCook, pxPhysics, log);
+            byte[] cooked = new byte[s_pxStreamLen];
+            Array.Copy(s_pxStreamBuf, cooked, s_pxStreamLen);
+            IntPtr mesh = Fn<Ptr2Fn>(Vt(pxPhysics, 8))(pxPhysics, MakePxInStream(cooked, cooked.Length));
+            log("physprobe: PX_ACTOR2 mesh=0x" + mesh.ToInt64().ToString("X"));
+            IntPtr xf = Marshal.AllocHGlobal(0x20);
+            for (int i = 0; i < 8; i++) Marshal.WriteInt32(xf, i * 4, 0);
+            Marshal.WriteInt32(xf, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+            IntPtr actor = Fn<Ptr2Fn>(Vt(pxPhysics, 6))(pxPhysics, xf);
+            log("physprobe: PX_ACTOR2 actor=0x" + actor.ToInt64().ToString("X"));
+            IntPtr mats = Marshal.AllocHGlobal(16 * 8);
+            var matFn = Fn<MatFn>(Vt(pxPhysics, 24));
+            IntPtr matRet = matFn(pxPhysics, mats, 16, 0);
+            log("physprobe: PX_ACTOR2 materials ret=" + matRet.ToInt64() +
+                " first=0x" + Marshal.ReadIntPtr(mats).ToInt64().ToString("X"));
+            IntPtr geom = Marshal.AllocHGlobal(0x50);
+            for (int i = 0; i < 0x50 / 4; i++) Marshal.WriteInt32(geom, i * 4, 0);
+            Marshal.WriteInt32(geom, 0x00, 5);
+            Marshal.WriteInt32(geom, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+            Marshal.WriteInt32(geom, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+            Marshal.WriteInt32(geom, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+            Marshal.WriteInt32(geom, 0x2C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+            Marshal.WriteIntPtr(geom, 0x30, mesh);
+            string li = Environment.GetEnvironmentVariable("RC_PX_ACTOR_IDX");
+            if (Environment.GetEnvironmentVariable("RC_PX_AVT") == "1")
+            {
+                IntPtr pxBase = GetModuleHandleA("PhysX3_x64.dll");
+                long b = pxBase.ToInt64();
+                IntPtr vtbl = Marshal.ReadIntPtr(actor);
+                log("physprobe: PX_AVT actor vtbl=0x" + vtbl.ToInt64().ToString("X"));
+                for (int k = 0; k < 60; k++)
+                {
+                    long e = Marshal.ReadIntPtr(vtbl, k * 8).ToInt64();
+                    log("physprobe: PX_AVT actor vt[" + k + "] rva=0x" + (e - b).ToString("X"));
+                }
+            }
+            foreach (string tok in li.Split(','))
+            {
+                int k = int.Parse(tok);
+                log("physprobe: PX_ACTOR2 try vt[" + k + "]");
+                IntPtr s = Fn<ShapeFn>(Vt(actor, k))(actor, geom, mats, 1, IntPtr.Zero, 3);
+                log("physprobe: PX_ACTOR2 vt[" + k + "] =0x" + s.ToInt64().ToString("X"));
+            }
+        }
+        // shape from the cooked mesh. Indices via RC_PX_RIGID_IDX / RC_PX_SHAPE_IDX.
+        if (Environment.GetEnvironmentVariable("RC_PX_MK") == "1")
+        {
+            IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+            IntPtr pxPhysics = Marshal.ReadIntPtr(mgr, 0x38);
+            PxCookOk(pxCook, pxPhysics, log);
+            byte[] cooked = new byte[s_pxStreamLen];
+            Array.Copy(s_pxStreamBuf, cooked, s_pxStreamLen);
+            IntPtr mesh = Fn<Ptr2Fn>(Vt(pxPhysics, 8))(pxPhysics, MakePxInStream(cooked, cooked.Length));
+            log("physprobe: PX_MK mesh=0x" + mesh.ToInt64().ToString("X"));
+            IntPtr xf = Marshal.AllocHGlobal(0x20);
+            for (int i = 0; i < 8; i++) Marshal.WriteInt32(xf, i * 4, 0);
+            Marshal.WriteInt32(xf, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // quat w
+            int rigidIdx = 6;
+            string ri = Environment.GetEnvironmentVariable("RC_PX_RIGID_IDX");
+            if (ri != null) rigidIdx = int.Parse(ri);
+            IntPtr actor = Fn<Ptr2Fn>(Vt(pxPhysics, rigidIdx))(pxPhysics, xf);
+            log("physprobe: PX_MK rigid(vt[" + rigidIdx + "]) actor=0x" + actor.ToInt64().ToString("X"));
+            IntPtr geom = Marshal.AllocHGlobal(0x50);
+            for (int i = 0; i < 0x50 / 4; i++) Marshal.WriteInt32(geom, i * 4, 0);
+            Marshal.WriteInt32(geom, 0x00, 5);   // eTRIANGLEMESH
+            Marshal.WriteInt32(geom, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // scale.x
+            Marshal.WriteInt32(geom, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // scale.y
+            Marshal.WriteInt32(geom, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // scale.z
+            Marshal.WriteInt32(geom, 0x2C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // quat.w
+            Marshal.WriteIntPtr(geom, 0x30, mesh);
+            IntPtr mats = Marshal.AllocHGlobal(16 * 8);
+            IntPtr matCount = Fn<MatFn>(Vt(pxPhysics, 24))(pxPhysics, mats, 16, 0);
+            log("physprobe: PX_MK materials=" + matCount.ToInt64() + " first=0x" + Marshal.ReadIntPtr(mats).ToInt64().ToString("X"));
+            int shapeIdx = 9;
+            IntPtr lastShape = IntPtr.Zero;
+            string si = Environment.GetEnvironmentVariable("RC_PX_SHAPE_IDX");
+            if (si != null && si.Contains(","))
+            {
+                foreach (string tok in si.Split(','))
+                {
+                    int k = int.Parse(tok);
+                    log("physprobe: PX_MK shape try vt[" + k + "]");
+                    IntPtr s = Fn<ShapeFn>(Vt(pxPhysics, k))(pxPhysics, geom, mats, 1, IntPtr.Zero, 3);
+                    log("physprobe: PX_MK shape vt[" + k + "] =0x" + s.ToInt64().ToString("X"));
+                    if (s.ToInt64() > 0x10000) lastShape = s;
+                }
+            }
+            else
+            {
+                if (si != null) shapeIdx = int.Parse(si);
+                var shFn = Fn<ShapeFn>(Vt(pxPhysics, shapeIdx));
+                IntPtr shape = shFn(pxPhysics, geom, mats, 1, IntPtr.Zero, 3);
+                log("physprobe: PX_MK shape(vt[" + shapeIdx + "]) =0x" + shape.ToInt64().ToString("X"));
+                if (shape.ToInt64() > 0x10000) lastShape = shape;
+            }
+            if (lastShape != IntPtr.Zero)
+            {
+                IntPtr pxBase = GetModuleHandleA("PhysX3_x64.dll");
+                IntPtr svt = Marshal.ReadIntPtr(lastShape);
+                log("physprobe: PX_MK shape vt rva=0x" + (svt.ToInt64() - pxBase.ToInt64()).ToString("X"));
+                foreach (System.Diagnostics.ProcessModule m in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                {
+                    long lo = m.BaseAddress.ToInt64(), hi = lo + m.ModuleMemorySize;
+                    if (svt.ToInt64() >= lo && svt.ToInt64() < hi)
+                        log("physprobe: PX_MK shape vt in " + m.ModuleName + " +0x" + (svt.ToInt64() - lo).ToString("X"));
+                }
+                if (pxBase != IntPtr.Zero)
+                {
+                    IntPtr namePtr = Fn<Ptr1Fn>(Vt(lastShape, 1))(lastShape);
+                    string cn = "";
+                    if (namePtr != IntPtr.Zero)
+                        for (int i = 0; i < 48; i++)
+                        {
+                            byte b = Marshal.ReadByte(namePtr, i);
+                            if (b == 0) break;
+                            cn += (char)b;
+                        }
+                    log("physprobe: PX_MK shape class = '" + cn + "'");
+                }
+                int att = Fn<Bool2Fn>(Vt(actor, 6))(actor, lastShape, IntPtr.Zero);
+                log("physprobe: PX_MK attachShape(vt6) -> " + att);
+            }
+        }
         // pxPhysics::createTriangleMesh(PxInputStream&) by sweeping vtable entries
         // with the cooked mesh stream. RC_PX_MESH_IDX restricts the sweep.
         if (Environment.GetEnvironmentVariable("RC_PX_MESH") == "1")
