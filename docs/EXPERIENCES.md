@@ -1573,3 +1573,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   plaintext in any bin64 module -> hash/registration table to be located;
   `KCharacter::LuaHoldW` and `KEventCommonMgr::EnableControlCamera` ARE
   present and give direct anchors for those.
+
+### 2026-10-02 - controls - P1 complete: full movement handler roster
+- Decoded the remaining handlers (annex A6.5/A7.6): forward/back start+stop
+  (HoldW, OB short-circuit on backward, double-tap, CheckEndSprint), turn
+  start+stop (enable flag + ResponseWASDKey + mode wrapper, no mode branch),
+  strafe stop mirroring start; Scene 0/24 autorun clear, 0/26 control-setter
+  helper (FORWARD routed to the both-buttons function), 0/6 IsInStickCamera =
+  Hotkey_IsRMouseEnabled and bRDown, 0/94/0/95 Scene_SetMoveControl, and the
+  mouse-move setting persistence key StorageServer('SceneMouseMove') (0/50/0/51).
+- All skill-displacement branches are dead in this build (captured const false);
+  enable flags all captured true. P1 Lua layer is complete for the movement /
+  camera / mode handler set.

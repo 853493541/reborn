@@ -352,6 +352,28 @@ function CanStrafeMove()
 end
 ```
 
+### A6.5 Handler roster (P1 complete) HIGH
+
+All movement handlers share one pattern: **enable flag → OB wrapper → dead
+skill flag (const false) → double-tap-aware `ResponseWASDKey` → mode wrapper
+fallback**. Only the strafe pair branches on the operation mode (A6.2).
+
+| Handler | Protos | Decoded body |
+|---|---|---|
+| `MoveForwardStart` | 0/65 | `p.HoldW(1.0)`; dead skill flag; `wrapper(CONTROL_FORWARD,true)`; `ResponseWASDKey('Forward',true,isDouble)` gated by `0/62` |
+| `MoveForwardStop` | 0/66 | `p.HoldW(0.0)`; `ResponseWASDKey('Forward',false,false)`; if not handled → `CheckEndSprint()`; `wrapper(CONTROL_FORWARD,false)` |
+| `MoveBackwardStart` | 0/67 | enable flag (true); `SetControlInOB(CONTROL_BACKWARD,true)` (OB short-circuit); dead skill flag; `ResponseWASDKey('Backward',true,isDouble)`; if not handled `wrapper(CONTROL_BACKWARD,true)`; `CheckEndSprint()` on the single-tap path |
+| `MoveBackwardStop` | 0/68 | `wrapper(CONTROL_BACKWARD,false)` + the ResponseWASDKey/stop pattern |
+| `TurnLeftStart/Stop` | 0/71/0/72 | enable flag (true); `ResponseWASDKey('TurnLeft',down,isDouble)`; if not handled `wrapper(CONTROL_TURN_LEFT,flag)` — **no mode branch** (wrapper routes) |
+| `TurnRightStart/Stop` | 0/73/0/74 | mirror of TurnLeft |
+| `StrafeLeftStart/Stop` | 0/76/0/77 | mode-branched (A6.2): CLASSICAL → `ResponseWASDKey('StrafeLeft',…)`/`Camera_EnableControl`; JOYSTICK → OB wrapper + free-view `TurnLeftStart/Stop` |
+| `StrafeRightStart/Stop` | 0/78/0/79 | mirror of StrafeLeft |
+
+Captured constants: `Hotkey_EnableTurnLeft/Right`, `Hotkey_EnableMoveBack`,
+`Hotkey_EnableSprint` closures all capture `true`; the skill branches capture
+`false` (disabled in this build). Wrapper `0/61` used by forward/turn/backward
+handlers; OB wrapper `0/63` by strafe/backward.
+
 ## A7. Scene.lua drag / control handlers (G2 script side)
 
 ### A7.1 `Scene` update (L614-622) — proto `0/27` HIGH
@@ -394,12 +416,25 @@ else        rlcmd('lock input control mouse object rotation 0') end
 Joystick mode locks the mouse-object rotation through the engine console
 command (called from `ApplyOperationMode`, annex A3).
 
-### A7.5 Classical both-buttons autorun — proto `0/25` (L585-599) MED
+### A7.5 Both-buttons autorun — proto `0/25` (L585-599) MED/HIGH
 
-Joystick returns immediately; classical path enables
-`FreeMoveControl(CONTROL_FORWARD, true)` when both mouse buttons are down
-(with an extra `upval0[CONTROL_FORWARD]` condition) and clears it via the
-`bMoveStart` latch otherwise. Exact upvalue identity open (P1 next).
+Per A8 the mode test means **JOYSTICK runs this** (classical returns early):
+enables `FreeMoveControl(CONTROL_FORWARD, true)` when both mouse buttons are
+down (plus an extra `upval0[CONTROL_FORWARD]` condition on the L-only path)
+and clears it via the `bMoveStart` latch otherwise. Upvalue identity of that
+extra condition stays open (low impact).
+
+### A7.6 Autorun clear + persistence + stick camera HIGH
+
+- `0/24` (per-frame): if `not bLDown and not bRDown and not Hotkey_IsAutoRun()`
+  → `Camera_EnableControl(CONTROL_AUTO_RUN, false)`.
+- `0/26`: control-setter helper; `CONTROL_FORWARD` is routed to the per-frame
+  both-buttons function (upval1), all other controls to `FreeMoveControl`.
+- `0/6 IsInStickCamera() = Hotkey_IsRMouseEnabled() and scene.bRDown`.
+- `0/94/0/95 MoveControlStart/Stop` = `Scene_SetMoveControl(true/false)`.
+- `0/50 SetMouseMove(v)`: sets `g_Scene_bMouseMove` and persists
+  `StorageServer('SceneMouseMove', v)`; `0/51 SetMouseMoveData()` restores it
+  when the storage server is available, else applies the current global.
 
 ---
 

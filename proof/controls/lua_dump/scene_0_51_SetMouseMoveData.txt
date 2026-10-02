@@ -1,0 +1,17 @@
+
+===== function 0/51 | line 871-877 | params=0 nups=0 stack=2 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'StorageServer'
+pc=   1 L0     GETTABLE  A=0   B=0    C=257  R0 K1('IsNull')
+pc=   2 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   3 L0     TEST      A=0   B=0    C=0    
+pc=   4 L0     JMP       A=0   B=256  C=3    to pc 9
+pc=   5 L0     GETGLOBAL A=0   B=0    C=2    'SetMouseMove'
+pc=   6 L0     GETGLOBAL A=1   B=0    C=3    'g_Scene_bMouseMove'
+pc=   7 L0     CALL      A=0   B=2    C=1    args=1 ret=0
+pc=   8 L0     JMP       A=0   B=256  C=4    to pc 14
+pc=   9 L0     GETGLOBAL A=0   B=0    C=0    'StorageServer'
+pc=  10 L0     GETTABLE  A=0   B=0    C=260  R0 K4('GetData')
+pc=  11 L0     LOADK     A=1   B=0    C=5    'SceneMouseMove'
+pc=  12 L0     CALL      A=0   B=2    C=2    args=1 ret=1
+pc=  13 L0     SETGLOBAL A=0   B=0    C=3    'g_Scene_bMouseMove'
+pc=  14 L0     RETURN    A=0   B=1    C=0    
