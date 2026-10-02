@@ -144,3 +144,23 @@ client**, not "impossible".
 # observed: normal launch (user launches the game); read the run's Dumper log
 # logs\Dumper\<date>\Dumper_<date>_<HH_MM_SS>.log -> no -c field; WMI cmdline empty
 ```
+
+## 9. Gate hunt #5 (2026-10-01, fourth pass)
+
+Facts from the probe matrix (all with the launch block pre-created by us):
+
+| Probe | Result |
+|---|---|
+| zero block | client writes 8 random-looking bytes into the block at ~2.0 s, exits ~2.4 s |
+| cipher-valid block (fresh ts, +8=1, count=0 or 1) | block left **untouched** (count not zeroed), exits ~2.2 s |
+| fresh KGPK4 downloader running | no change (~2.2 s) |
+| cwd = `C:\SeasunGame`, `Game\JX3`, version dir | no change (~2.4 s) |
+| emulator process renamed `SeasunGame.exe` (parent name) | no change (~2.3 s) |
+| live namespace during run | client creates `KG3D_Memory_Buffer_*`, connects `KGPK4-IPC-MQ-OUT-1`, spawns CEF (`CefView-Job-*`), then exits |
+
+Ruled out: block content/cipher, downloader freshness, cwd, parent process name, the
+`JDYinput` watchdog, network availability, self-relaunch. The exit is a deliberate early
+termination at ~2.2–2.4 s that is independent of the block; the block is read (zero-block
+marker) but a filled block is not consumed. Next probes: compare zero-vs-filled object
+timelines, decode the launch-info entry map consumers, or capture one real filled block
+(the writer is still unidentified).
