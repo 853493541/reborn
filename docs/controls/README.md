@@ -77,3 +77,4 @@ customization. Research is ~85–90% complete; implementation ~35–40%.
 3. Server owns combat/movement truth; the client sends intents and predicts
    animation/UI only.
 4. Every fix gets a note here + an acceptance test before code.
+| `controls/CONTROL_MODES_P5_ANIM.md` | **P5 animation** — locomotion selection algorithm (speed-tier thresholds, transition clip sets, two slots; param lookup next) (2026-10-02) |

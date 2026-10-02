@@ -1600,3 +1600,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   node tick [node+0x10] compare = tick-ordered queue drain). CommitInput
   callers are vtable/runtime (boundary remains dynamic).
 - Doc: docs/controls/CONTROL_MODES_P3_STATIC.md; proof/controls/p3/*.
+
+### 2026-10-02 - controls - P5 start: animation selection algorithm
+- Disassembled KRLRushState::UpdateMoveAnimation (0x1804C0700): clip selection is
+  data-driven per state via a param struct from sub_1801252B: two speed
+  thresholds ([param+0x50] low, [param+0x68] high) vs character speed
+  [this+0xD0] select default/low/high tiers; tiers set playback speed
+  [this+0x34] and transition clips (set A +0x34/+0x58/+0x70, set B
+  +0x44/+0x60/+0x78, combat/stance selector [this+0x114]); anim id [this+0x30]
+  (moving id [param+0x4C]); blend call 0x180003D50; two slots +0x1B8/+0x1C0.
+- Dumps: proof/controls/p5/*.txt; doc docs/controls/CONTROL_MODES_P5_ANIM.md.
+  Next: decode sub_1801252B (state->param table) and UpdateDirection.
