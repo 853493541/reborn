@@ -424,3 +424,36 @@ object rbx->vt[14](int,int,int) returns a shape, then actor->vt[6](shape)
 attaches it - the engine does not call a raw PxPhysics::createShape there.
 **Next**: sweep physics vt[23,25..44] for createShape OR follow the engine
 factory object's identity (rbx in that function - find where it is set).
+
+### Update 2026-10-02a: PxMeshQuery midphase WORKS in-host - capsule vs cooked mesh, no scene
+
+**Route change (better than scene/actor/shape)**: PhysX3Common_x64.dll exports the
+full PxMeshQuery static API by mangled name (987 exports total):
+- `?getTriangle@PxMeshQuery@physx@@SAX...` @ RVA 0xFBEC0
+- `?findOverlapTriangleMesh@PxMeshQuery@physx@@SAI...` @ RVA 0xFC320
+- `?sweep@PxMeshQuery@physx@@SA_N...` @ RVA 0xFCCE0
+- `?findOverlapHeightField@...` @ RVA 0xFC790
+Resolved via GetProcAddress on the mangled names.
+
+**CRITICAL geometry layout** (from getTriangle disasm 0xFBEE3: `mov rdi,[rcx+0x28]`):
+PxTriangleMeshGeometry = { mType u32 @+0x00, PxMeshScale @+0x04 (scale PxVec3
++0x04..0x0F, rotation PxQuat +0x10..0x1F, w at +0x1C), pad @+0x20, triangleMesh
+ptr @+0x28, flags @+0x30 }. (My earlier +0x10/+0x30 guess crashed with a null
+mesh deref - fixed.)
+
+**Proof (reborn_20261002_130739.log, RC_PX_QUERY=1):**
+- mesh = physics vt[8] + cooked 620B stream
+- capsule (r=17, hh=41) at (100,0,100) vs the 12-tri test grid:
+  `findOverlapTriangleMesh -> count=6, triangles 5 6 3 4 0 1`
+- `getTriangle(geom, identity, 0) = (0,0,0)(100,0,0)(100,0,100) idx=0,1,5`
+  = exactly the input geometry - cook/load/query chain is engine-exact.
+
+**Why this matters**: capsule-vs-real-mesh overlap + sweep are the exact tests
+the A/B needs; no PxScene/PxRigidStatic/PxShape wiring required (createShape is
+not exposed as a plain vtable slot in this build - the engine routes shapes via
+its own factory; that hunt is parked, not needed for queries).
+
+**Next**: feed the ENGINE-loaded real shed/pile geometry (mesh loader 0x3B3F0,
+parity already proven) into cook->createTriangleMesh->findOverlap/sweep at the
+field spots (spawn 23334,24224; wall 18915,36850; pile 20450,31000) and diff
+against our solver's CapsuleBlocked/SupportHeight results.

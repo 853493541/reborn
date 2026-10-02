@@ -50,6 +50,9 @@ internal static class PhysicsProbe
     delegate int Bool1Fn(IntPtr self);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate IntPtr Ptr1Fn(IntPtr self);
+    delegate void GetTriFn(IntPtr meshGeom, IntPtr pose, uint index, IntPtr outTri, IntPtr outIndices);
+    delegate uint FindOverlapFn(IntPtr geom, IntPtr geomPose, IntPtr meshGeom, IntPtr meshPose,
+        IntPtr results, uint maxResults, uint startIndex, IntPtr overflow);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Bool2Fn(IntPtr self, IntPtr a, IntPtr b);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
@@ -580,6 +583,67 @@ internal static class PhysicsProbe
             }
         }
         // shape from the cooked mesh. Indices via RC_PX_RIGID_IDX / RC_PX_SHAPE_IDX.
+        // PhysX-direct step 6 (opt-in RC_PX_QUERY=1, test exe): PxMeshQuery midphase
+        // exports of PhysX3Common_x64.dll - capsule vs our cooked mesh, no scene.
+        if (Environment.GetEnvironmentVariable("RC_PX_QUERY") == "1")
+        {
+            IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
+            IntPtr pxPhysics = Marshal.ReadIntPtr(mgr, 0x38);
+            PxCookOk(pxCook, pxPhysics, log);
+            byte[] cooked = new byte[s_pxStreamLen];
+            Array.Copy(s_pxStreamBuf, cooked, s_pxStreamLen);
+            IntPtr mesh = Fn<Ptr2Fn>(Vt(pxPhysics, 8))(pxPhysics, MakePxInStream(cooked, cooked.Length));
+            log("physprobe: PX_QUERY mesh=0x" + mesh.ToInt64().ToString("X"));
+            IntPtr geom = Marshal.AllocHGlobal(0x50);
+            for (int i = 0; i < 0x50 / 4; i++) Marshal.WriteInt32(geom, i * 4, 0);
+            Marshal.WriteInt32(geom, 0x00, 5);   // eTRIANGLEMESH
+            Marshal.WriteInt32(geom, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // scale.x
+            Marshal.WriteInt32(geom, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // scale.y
+            Marshal.WriteInt32(geom, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // scale.z
+            Marshal.WriteInt32(geom, 0x1C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0)); // quat.w
+            Marshal.WriteIntPtr(geom, 0x28, mesh);  // mesh ptr (authoritative: read at +0x28 in getTriangle)
+            IntPtr pose = Marshal.AllocHGlobal(0x20);
+            for (int i = 0; i < 8; i++) Marshal.WriteInt32(pose, i * 4, 0);
+            Marshal.WriteInt32(pose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+            IntPtr hCommon = GetModuleHandleA("PhysX3Common_x64.dll");
+            IntPtr pGetTri = GetProcAddress(hCommon, "?getTriangle@PxMeshQuery@physx@@SAXAEBVPxTriangleMeshGeometry@2@AEBVPxTransform@2@IAEAVPxTriangle@2@PEAI3@Z");
+            IntPtr pOverlap = GetProcAddress(hCommon, "?findOverlapTriangleMesh@PxMeshQuery@physx@@SAIAEBVPxGeometry@2@AEBVPxTransform@2@AEBVPxTriangleMeshGeometry@2@1PEAIIIAEA_N@Z");
+            log("physprobe: PX_QUERY exports getTri=0x" + pGetTri.ToInt64().ToString("X") + " overlap=0x" + pOverlap.ToInt64().ToString("X"));
+            if (pOverlap != IntPtr.Zero)
+            {
+                IntPtr cap = Marshal.AllocHGlobal(0x10);
+                Marshal.WriteInt32(cap, 0x00, 2);
+                Marshal.WriteInt32(cap, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(17f), 0));
+                Marshal.WriteInt32(cap, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(41f), 0));
+                IntPtr capPose = Marshal.AllocHGlobal(0x20);
+                for (int i = 0; i < 8; i++) Marshal.WriteInt32(capPose, i * 4, 0);
+                Marshal.WriteInt32(capPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(1f), 0));
+                Marshal.WriteInt32(capPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(100f), 0));
+                Marshal.WriteInt32(capPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(100f), 0));
+                IntPtr results = Marshal.AllocHGlobal(64 * 4);
+                IntPtr overflow = Marshal.AllocHGlobal(4);
+                uint cnt = Fn<FindOverlapFn>(pOverlap)(cap, capPose, geom, pose, results, 64, 0, overflow);
+                log("physprobe: PX_QUERY capsule overlap count=" + cnt + " overflow=" + Marshal.ReadInt32(overflow));
+                string ids = "";
+                for (int i = 0; i < cnt && i < 12; i++) ids += Marshal.ReadInt32(results, i * 4) + " ";
+                log("physprobe: PX_QUERY overlap triangles = " + ids);
+            }
+            if (pGetTri != IntPtr.Zero)
+            {
+                IntPtr tri = Marshal.AllocHGlobal(0x30);
+                IntPtr triIdx = Marshal.AllocHGlobal(12);
+                for (int i = 0; i < 0x30 / 4; i++) Marshal.WriteInt32(tri, i * 4, 0);
+                for (int i = 0; i < 3; i++) Marshal.WriteInt32(triIdx, i * 4, 0);
+                Fn<GetTriFn>(pGetTri)(geom, pose, 0, tri, triIdx);
+                string vs = "";
+                for (int v = 0; v < 3; v++)
+                    vs += "(" + BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(tri, v * 12 + 0)), 0).ToString("0.#") + "," +
+                          BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(tri, v * 12 + 4)), 0).ToString("0.#") + "," +
+                          BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(tri, v * 12 + 8)), 0).ToString("0.#") + ") ";
+                log("physprobe: PX_QUERY triangle0 = " + vs + " idx=" +
+                    Marshal.ReadInt32(triIdx) + "," + Marshal.ReadInt32(triIdx, 4) + "," + Marshal.ReadInt32(triIdx, 8));
+            }
+        }
         if (Environment.GetEnvironmentVariable("RC_PX_MK") == "1")
         {
             IntPtr pxCook = Marshal.ReadIntPtr(mgr, 0x40);
@@ -619,7 +683,30 @@ internal static class PhysicsProbe
                     log("physprobe: PX_MK shape try vt[" + k + "]");
                     IntPtr s = Fn<ShapeFn>(Vt(pxPhysics, k))(pxPhysics, geom, mats, 1, IntPtr.Zero, 3);
                     log("physprobe: PX_MK shape vt[" + k + "] =0x" + s.ToInt64().ToString("X"));
-                    if (s.ToInt64() > 0x10000) lastShape = s;
+                    if (s.ToInt64() > 0x10000)
+                    {
+                        lastShape = s;
+                        IntPtr svt = Marshal.ReadIntPtr(s);
+                        foreach (System.Diagnostics.ProcessModule m in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                        {
+                            long lo = m.BaseAddress.ToInt64(), hi = lo + m.ModuleMemorySize;
+                            if (svt.ToInt64() >= lo && svt.ToInt64() < hi)
+                            {
+                                log("physprobe: PX_MK vt[" + k + "] obj vt in " + m.ModuleName + " +0x" + (svt.ToInt64() - lo).ToString("X"));
+                                IntPtr namePtr = Fn<Ptr1Fn>(Vt(s, 1))(s);
+                                string cn = "";
+                                if (namePtr != IntPtr.Zero)
+                                    for (int i = 0; i < 48; i++)
+                                    {
+                                        byte b = Marshal.ReadByte(namePtr, i);
+                                        if (b == 0) break;
+                                        cn += (char)b;
+                                    }
+                                log("physprobe: PX_MK vt[" + k + "] obj class = '" + cn + "'");
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             else
