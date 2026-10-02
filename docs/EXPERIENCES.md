@@ -1458,3 +1458,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   SharedMemoryError / MultiProcess report formats, 16-iteration periodic check).
 - Evidence: `block_capture/real_block_20156_*.bin` (temp), doc §10; this commit (local).
 - Outcome: partial (block model corrected; security handshake is the next lead).
+
+### 2026-10-01 — netcode — Exit mechanism located: WinMain startup-task timeout
+- Did: traced the CRT entry (0x14079BA78) to WinMain (0x1400e11f0); WinMain polls a
+  startup task queue via 0x14009d9a0(state, ms) (queue vtable 0x140953e50, processor
+  0x14009d120). Second wait = 2000 ms; timeout leaves r15d=0 -> WinMain returns 0 ->
+  clean exit at ~2.3 s. On success WinMain proceeds to the UI path. The exit is a
+  startup-task timeout, not a crash and not the launch block.
+- Evidence: disasm 0x14079b9fe-0x14079ba28 (WinMain call), 0x1400e11f0-0x1400e1543,
+  0x14009d9a0, 0x14009d120, 0x14009d6d0 (vtable 0x140953e50); doc §11; this commit (local).
+- Outcome: solved (mechanism); next = identify the stalling task.

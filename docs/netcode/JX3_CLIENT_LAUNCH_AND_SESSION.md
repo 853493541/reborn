@@ -187,3 +187,23 @@ security check loop at startup.
 **Open**: why the client exits ~2.3 s after start when launched outside the launcher.
 Leads: the security/report handshake (block heartbeat + launcher response), the DD63330
 service check path, and the launcher's inherited environment/session.
+
+## 11. Exit mechanism located (2026-10-01, fifth pass)
+
+WinMain = `0x1400e11f0` (called from the CRT at `0x14079ba05` with
+`hInstance=image base, hPrevInstance=0, cmdLine, nCmdShow`).
+
+- WinMain waits on a **startup task queue** via `0x14009d9a0(state, timeout_ms)`: it
+  polls a virtual check method (queue object vtable `0x140953e50`, processor
+  `0x14009d120`, task execute via `[task+8]->[rax+8]`) until the queue reaches a
+  terminal state or the deadline passes.
+- First wait: **10000 ms** (failure logs `PlatformBeforeLoad`). Second wait:
+  **2000 ms**; on timeout it logs `WinMain` + `false` and leaves `r15d = 0`, so
+  **WinMain returns 0** -> clean exit. Startup (~0.3 s) + 2 s timeout = the observed
+  ~2.3 s exit.
+- On success (`r15d = 1`) WinMain proceeds to the real UI/startup path.
+
+So the ~2.3 s exit is a **startup-task timeout**, not a crash and not the launch block.
+Next: identify which task stalls in the queue (the tasks enqueued between
+`0x1400e1250` and `0x1400e13ac`, via `0x14009d860` / `0x14009c890` / `0x14009f6d0`) and
+what completes it (likely the launcher/security handshake).
