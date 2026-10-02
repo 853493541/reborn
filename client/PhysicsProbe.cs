@@ -35,6 +35,10 @@ internal static class PhysicsProbe
     delegate IntPtr MethodPtrFn(IntPtr self);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Float2Fn(IntPtr self, float x, float z);
+    [StructLayout(LayoutKind.Sequential)]
+    struct F2 { public float a; public float b; }
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int F2Fn(IntPtr self, F2 p, F2 q);
 
     [StructLayout(LayoutKind.Sequential)]
     struct MEMORY_BASIC_INFORMATION
@@ -208,13 +212,40 @@ internal static class PhysicsProbe
         // Guarded: only called after LoadTerrain + streaming.
         try
         {
-            var pointQuery = Fn<Float2Fn>(Vt(terrain, 7));
+            log(string.Format("physprobe: terr fields cell={0:F0} countX={1} countZ={2} stepX={3:F1} stepZ={4:F1} originX={5:F0} originZ={6:F0}",
+                Marshal.PtrToStructure<float>(terrain + 0x20),
+                Marshal.ReadInt32(terrain, 0x24), Marshal.ReadInt32(terrain, 0x28),
+                Marshal.PtrToStructure<float>(terrain + 0x30),
+                Marshal.PtrToStructure<float>(terrain + 0x34),
+                Marshal.PtrToStructure<float>(terrain + 0x38),
+                Marshal.PtrToStructure<float>(terrain + 0x3C)));
+            log(string.Format("physprobe: terr matrix row0=({0:F2},{1:F2},{2:F2},{3:F1}) row3=({4:F1},{5:F1},{6:F1},{7:F1})",
+                Marshal.PtrToStructure<float>(terrain + 0xB0), Marshal.PtrToStructure<float>(terrain + 0xB4),
+                Marshal.PtrToStructure<float>(terrain + 0xB8), Marshal.PtrToStructure<float>(terrain + 0xBC),
+                Marshal.PtrToStructure<float>(terrain + 0xE0), Marshal.PtrToStructure<float>(terrain + 0xE4),
+                Marshal.PtrToStructure<float>(terrain + 0xE8), Marshal.PtrToStructure<float>(terrain + 0xEC)));
+            var pointQuery = Fn<F2Fn>(Vt(terrain, 7));
             float[] xs = new float[] { px, 23334f, 18915f, 20450f, 0f };
             float[] zs = new float[] { pz, 24224f, 36850f, 31000f, 0f };
             for (int i = 0; i < xs.Length; i++)
             {
-                int r = pointQuery(terrain, xs[i], zs[i]);
+                F2 p = new F2(); p.a = xs[i]; p.b = zs[i];
+                F2 q = new F2(); q.a = 0f; q.b = 0f;
+                int r = pointQuery(terrain, p, q);
                 log(string.Format("physprobe: terrain vt[7] point({0:F0},{1:F0}) -> {2}", xs[i], zs[i], r));
+            }
+            // tile entries: [terrain+0x48] array, stride 0x30, index regionZ*8+regionX
+            IntPtr tileArr = Marshal.ReadIntPtr(terrain, 0x48);
+            log("physprobe: tileArr=" + Hex(tileArr));
+            for (int i = 0; i < xs.Length; i++)
+            {
+                int rx = (int)((xs[i] + 102400f) / 51200f);
+                int rz = (int)((zs[i] + 102400f) / 51200f);
+                int idx = rz * 8 + rx;
+                if (idx < 0 || idx > 63) { log(string.Format("physprobe: tile idx {0} out of range", idx)); continue; }
+                IntPtr te = tileArr + idx * 0x30;
+                log(string.Format("physprobe: tile[{0}] (r{1},{2}) type={3} f4={4} f8={5} p10={6}",
+                    idx, rx, rz, Marshal.ReadInt32(te), Marshal.ReadInt32(te, 4), Marshal.ReadInt32(te, 8), Hex(Marshal.ReadIntPtr(te, 0x10))));
             }
         }
         catch (Exception e) { log("physprobe: terrain vt[7] ex: " + e.Message); }

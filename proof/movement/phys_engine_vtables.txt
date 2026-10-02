@@ -246,12 +246,19 @@ pure engine-pipeline validation before building the scene/controller layer.
 
 `PhysicsProbe` now calls the engine terrain's own point query
 (`PhysicsTerrain vt[7]`, runtime vtable confirmed identical to the static dump:
-vt[7]=0x2E340) with `(this, x, z)` from our process. It executed safely for
-five points (RC_PHYS_POS + the three field spots + origin) and returned 0 for
-all - the call mechanism is proven (no crash, correct dispatch); the returned
-bool semantics need one more iteration (the internal tile-type check
-`cmp dword [tile],2` / bounds fields - likely the tile state or a second arg).
-Evidence: `reborn_20261001_201721.log` (terr vt[0..15] + the five results).
+vt[7]=0x2E340) from our process - the call mechanism is PROVEN (correct
+dispatch, guarded, no crash, repeatable across runs). Iterations:
+- plain float args -> 0 (the function reads the packed second lane);
+- packed F2 pairs -> still 0, but the tile evidence explains it: at
+  RC_PHYS_POS the tile is loaded (tile[20] type=2, data ptr non-null) while the
+  function's tail is a per-cell BIT test (`test byte [r8+r10], dl; cmovne`) -
+  so vt[7] is a **cell-mask query** (0 = the bit is clear, normal for ordinary
+  ground), not a floor/height query. Fields confirmed at runtime: cell size
+  100/100, counts 8x8, origin (-102400,-102400), identity matrix, tile stride
+  0x30, index = regionZ*8 + regionX.
+- The floor/height query therefore lives in the PhysX heightfield/scene (route
+  2's remaining build: cook/heightfield query via the engine's PxPhysics), not
+  in this method. Evidence: `reborn_20261001_201721/202248/202608.log`.
 
 ## Next steps for engine-physics-in-host
 
