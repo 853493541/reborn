@@ -21,7 +21,7 @@ BIN = Path(r"C:\SeasunGame\MovieEditor\bin64")
 OUT = BIN / "reborn_out"
 SERVER = ROOT / "netcode" / "Reborn.Server" / "bin" / "Debug" / "net5.0" / "Reborn.Server.exe"
 HF = ROOT / "netcode" / "data" / "龙门寻宝_hf.tsv"
-SPAWN = "23334,761,24424"
+SPAWN = "23334,761,24224"
 PORT = 5599
 
 u32 = ctypes.windll.user32
@@ -91,9 +91,12 @@ def main():
     env["RC_NET_AUTH"] = "1"
     env["RC_DEMO"] = "0"
     env["RC_AUTORUN"] = "90000"
+    srvlog = open(ROOT / "reborn_out_m2_srv.txt", "w", encoding="utf-8")
     srv = subprocess.Popen([str(SERVER), "--port", str(PORT), "--heightmap", str(HF),
-                            "--speed", "320", "--aoi", "5000", "--spawn", SPAWN],
-                           cwd=str(ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                            "--speed", "320", "--aoi", "5000", "--spawn", SPAWN,
+                            "--collision", str(BIN / "collision_data"),
+                            "--mapname", "龙门寻宝"],
+                           cwd=str(ROOT), stdout=srvlog, stderr=subprocess.STDOUT)
     time.sleep(2)
     a = subprocess.Popen([str(BIN / "reborn_client_m2-a.exe")], cwd=r"C:\SeasunGame\MovieEditor", env=env)
     time.sleep(6)
@@ -130,6 +133,17 @@ def main():
             pass
     time.sleep(2)
     kill(["reborn_client_m2-a.exe", "reborn_client_m2-b.exe", "Reborn.Server.exe"])
+    srvlog.close()
+    srvl = (ROOT / "reborn_out_m2_srv.txt").read_text(encoding="utf-8", errors="ignore").splitlines()
+    print("== server pos (1 Hz) ==")
+    for line in srvl[-14:]:
+        print("   " + line)
+    print("== client A pos (2 s) ==")
+    la = newest_log("reborn_client_m2-a.exe")
+    if la:
+        tlines = [l for l in la.read_text(encoding="utf-8", errors="ignore").splitlines() if "t=" in l and "pos=" in l]
+        for line in tlines[-14:]:
+            print("   " + line)
 
     for tag in ("reborn_client_m2-a.exe", "reborn_client_m2-b.exe"):
         log = newest_log(tag)

@@ -14,6 +14,16 @@ namespace Reborn.Rules
         public int LastInputSeq;
         public double CtrlLockUntil;
         public double CastingUntil;
+        // movement state (client movement block, GameMovement.StepEntity)
+        public double Yaw;
+        public double CamFx = 0.0;   // movement frame: camera forward (wire "fx")
+        public double CamFz = 1.0;   // default north, matching the reference model
+        public double Vy;
+        public double Gravity;
+        public bool Grounded = true;
+        public int JumpCount;
+        public bool Run;
+        public bool JumpRequest;
         public readonly Dictionary<int, double> Cooldowns = new Dictionary<int, double>();
         public readonly List<int> Buffs = new List<int>();
         public int Hp = 100;
@@ -46,6 +56,9 @@ namespace Reborn.Rules
         /// <summary>Interest radius in world units (reference default 100 m; the reborn game sets ~5000 u = 50 m).</summary>
         public double AoiRange = Protocol.AoiRange;
 
+        /// <summary>Optional object/foliage collision (the reborn server loads the baked bins).</summary>
+        public ICollision Collision;
+
         public Entity Spawn(string name)
         {
             Entity ent = new Entity();
@@ -67,16 +80,20 @@ namespace Reborn.Rules
                     ent.Vel = new double[] { 0.0, 0.0, 0.0 };
                     continue;
                 }
-                double[] old = ent.Pos;
-                ent.Pos = Movement.ApplyInput(ent.Pos, ent.Keys, dt, MoveSpeed);
-                ent.Vel = new double[] { (ent.Pos[0] - old[0]) / dt, 0.0, (ent.Pos[2] - old[2]) / dt };
-                if (Ground != null)
+                if (Ground != null || Collision != null)
                 {
-                    ent.Pos[1] = Ground(ent.Pos[0], ent.Pos[2]);
+                    GameMovement.StepEntity(ent, Ground, Collision, dt, GameMovement.TurnRate);
                 }
-                else if (ent.Pos[1] < 0.0)
+                else
                 {
-                    ent.Pos = new double[] { ent.Pos[0], 0.0, ent.Pos[2] };
+                    // reference model (flat plane, horizontal only) - parity vectors
+                    double[] old = ent.Pos;
+                    ent.Pos = Movement.ApplyInput(ent.Pos, ent.Keys, dt, MoveSpeed);
+                    ent.Vel = new double[] { (ent.Pos[0] - old[0]) / dt, 0.0, (ent.Pos[2] - old[2]) / dt };
+                    if (ent.Pos[1] < 0.0)
+                    {
+                        ent.Pos = new double[] { ent.Pos[0], 0.0, ent.Pos[2] };
+                    }
                 }
             }
         }

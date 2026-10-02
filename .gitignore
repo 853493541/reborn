@@ -85,3 +85,6 @@ log/
 # dotnet build outputs (netcode area)
 netcode/**/bin/
 netcode/**/obj/
+
+# smoke runtime logs
+reborn_out_*.txt

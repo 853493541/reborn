@@ -25,7 +25,7 @@ namespace Reborn.Server
                 string[] lines = File.ReadAllLines(path);
                 if (lines.Length < 2) { err = "empty heightmap"; return null; }
                 string[] head = lines[0].Split(' ');
-                if (head.Length != 8 || head[0] != "origin")
+                if (head.Length != 9 || head[0] != "origin")
                 {
                     err = "bad heightmap header";
                     return null;
@@ -34,7 +34,7 @@ namespace Reborn.Server
                 m.z0 = float.Parse(head[2], CultureInfo.InvariantCulture);
                 m.step = float.Parse(head[4], CultureInfo.InvariantCulture);
                 m.nx = int.Parse(head[6], CultureInfo.InvariantCulture);
-                m.nz = int.Parse(head[8 - 1], CultureInfo.InvariantCulture);
+                m.nz = int.Parse(head[8], CultureInfo.InvariantCulture);
                 if (lines.Length < 1 + m.nz) { err = "truncated heightmap"; return null; }
                 m.h = new float[m.nx * m.nz];
                 for (int j = 0; j < m.nz; j++)

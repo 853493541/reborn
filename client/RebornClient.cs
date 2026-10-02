@@ -819,6 +819,8 @@ internal static class RebornClient
         NetClient net = null;
         bool netAuth = false;
         long netLastSend = 0, netLastKeys = 0, netLastCorr = 0;
+        double netLastFx = 0.0, netLastFz = 1.0;
+        bool netJumpQueued = false;
         Dictionary<int, long> netHandles = new Dictionary<int, long>();
         Dictionary<int, KGModelCLR> netModels = new Dictionary<int, KGModelCLR>();
         Dictionary<int, string> netClips = new Dictionary<int, string>();
@@ -2074,6 +2076,7 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
+                netJumpQueued = true;
                 if (grounded) jumpCount = 0;
                 int nextJump = jumpCount + 1;
                 bool chainMode = djumpMode == "chain";
@@ -3068,11 +3071,20 @@ internal static class RebornClient
             {
                 long netKeys = (pW ? (long)Movement.KFwd : 0L) | (pS ? (long)Movement.KBack : 0L)
                              | (pA ? (long)Movement.KLeft : 0L) | (pD ? (long)Movement.KRight : 0L);
-                if (netKeys != netLastKeys || now - netLastSend >= 100)
+                if (netKeys != netLastKeys || now - netLastSend >= 100
+                    || Math.Abs(cfx - netLastFx) > 0.001 || Math.Abs(cfz - netLastFz) > 0.001)
                 {
-                    net.SendMoveInput((int)netKeys, 0);
+                    // movement frame: the exact camera forward used by the input block
+                    // (cfx, cfz) so the server rotates the keys identically
+                    net.SendMoveInput((int)netKeys, cfx, cfz, walkMode ? 0 : 1);
                     netLastKeys = netKeys;
+                    netLastFx = cfx; netLastFz = cfz;
                     netLastSend = now;
+                }
+                if (netJumpQueued)
+                {
+                    netJumpQueued = false;
+                    net.SendJump();
                 }
                 string netEv;
                 while (net.Events.TryDequeue(out netEv)) Log(netEv);

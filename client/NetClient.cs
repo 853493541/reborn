@@ -149,11 +149,22 @@ internal sealed class NetClient
         Connected = false;
     }
 
-    public void SendMoveInput(int keys, int facing)
+    public void SendMoveInput(int keys, double fx, double fz, int run)
     {
         if (!Connected) return;
         inputSeq++;
-        byte[] payload = Encoding.UTF8.GetBytes("{\"keys\":" + keys + ",\"facing\":" + facing + "}");
+        byte[] payload = Encoding.UTF8.GetBytes("{\"keys\":" + keys
+            + ",\"fx\":" + fx.ToString("F5", System.Globalization.CultureInfo.InvariantCulture)
+            + ",\"fz\":" + fz.ToString("F5", System.Globalization.CultureInfo.InvariantCulture)
+            + ",\"run\":" + run + "}");
+        SendFrame(Protocol.OpMoveInput, (uint)inputSeq, payload);
+    }
+
+    public void SendJump()
+    {
+        if (!Connected) return;
+        inputSeq++;
+        byte[] payload = Encoding.UTF8.GetBytes("{\"keys\":0,\"facing\":0,\"run\":0,\"jump\":1}");
         SendFrame(Protocol.OpMoveInput, (uint)inputSeq, payload);
     }
 
@@ -304,6 +315,8 @@ internal sealed class NetClient
         }
     }
 }
+
+
 
 
 

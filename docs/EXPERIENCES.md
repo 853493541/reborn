@@ -1688,3 +1688,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   immediately — game AOI must be ~5000 u. Also: an edit targeted the main checkout by
   mistake; reverted before commit (worktree discipline).
 - Outcome: solved (local branch `agent/m2-model`, not pushed).
+
+### 2026-10-02 — netcode — M2 movement port complete (client prediction == server sim)
+- Did: server runs `GameMovement.StepEntity` (turn model, slope/ledge, `ICollision` —
+  `client/FoliageCollision.cs` now implements it; server links it and loads
+  `--collision <dir> --mapname <map>`); `MoveInput` carries the exact camera-forward
+  (`fx`,`fz`) the client's input block used plus `run`/`jump`; server tick integrates the
+  measured wall dt (5 ms poll, 0.25 s clamp) instead of nominal 1/30 s; heightfield re-baked
+  381x321 @ 10 u over the run path; smoke server spawn aligned to the client default.
+- Evidence: 11 s / ~3000 u held-W run — server a (20720,842,22251) vs client a
+  (20722,842,22252) = 2.4 u apart, zero corrections on either client; gates
+  `Reborn.Server --selftest` 8 PASS + `Rules.Selftest` 51 PASS. Doc
+  `docs/netcode/M2_SHARED_RULES.md` §Movement port complete.
+- Lesson: three silent wiring bugs hid behind "drift": (1) the nominal-dt loop actually ran
+  at ~21 Hz with the full collision loaded, so the server moved ~29 % slower than the client
+  in real time — always compare wall-clock tick rate against the nominal rate; (2)
+  `Heightmap.Load` required 8 header tokens but the bake writes 9 and read `head[8-1]`, so
+  ground follow never loaded ("bad heightmap header" was swallowed by the smoke's DEVNULL);
+  (3) the smoke's server `--spawn` z 24424 vs the client's 24224 gave a constant ~200 u
+  perpendicular offset. Check spawn/timing before tuning movement math.
+- Outcome: solved (local branch `agent/m2-model`, not pushed).
