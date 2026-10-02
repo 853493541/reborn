@@ -44,6 +44,8 @@ internal static class PhysicsProbe
                         IntPtr s5, IntPtr s6, IntPtr s7, IntPtr s8, IntPtr s9);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate ulong HashFn(IntPtr s);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate IntPtr LoadMeshFn(IntPtr path);
 
     [StructLayout(LayoutKind.Sequential)]
     struct MEMORY_BASIC_INFORMATION
@@ -300,6 +302,37 @@ internal static class PhysicsProbe
                     }
                 }
                 finally { Marshal.FreeHGlobal(pathBuf); }
+            }
+        }
+
+        // Stage-1 v3 (opt-in RC_PX_LOAD=1): the engine's OWN mesh-file loader
+        // (PhysicsEngineX64 0x3B3F0(char* path) -> mesh file data, via the
+        // engine FS/paks; logs 'Mesh file "%s" not exist' and returns null when
+        // missing - low risk). Compare its geometry counts with our bake.
+        if (Environment.GetEnvironmentVariable("RC_PX_LOAD") == "1")
+        {
+            string[] meshPaths = new string[]
+            {
+                "data/source/maps_source/建筑配套/pj_玉门草棚001_hd.mesh",
+                "data/source/maps_source/小物件/室内/wj_木堆001_hd.mesh",
+            };
+            var loadMesh = Fn<LoadMeshFn>(h + 0x3B3F0);
+            foreach (string mp in meshPaths)
+            {
+                IntPtr pb = Marshal.StringToHGlobalAnsi(mp);
+                try
+                {
+                    IntPtr data = loadMesh(pb);
+                    if (data == IntPtr.Zero)
+                    {
+                        log("physprobe: PX_LOAD " + mp + " -> null");
+                        continue;
+                    }
+                    log(string.Format("physprobe: PX_LOAD {0} -> data={1} f0={2} f4={3} p10={4} p88={5}",
+                        mp, Hex(data), Marshal.ReadInt32(data), Marshal.ReadInt32(data, 4),
+                        Hex(Marshal.ReadIntPtr(data, 0x10)), Hex(Marshal.ReadIntPtr(data, 0x88))));
+                }
+                finally { Marshal.FreeHGlobal(pb); }
             }
         }
 

@@ -289,6 +289,24 @@ The measured state stands: play-layer behavior ~85-90% (tested classes A/B
 proven, map-wide audit ~96% of sampled faces), exact engine-solver parity still
 unproven.
 
+### Update 2026-10-01j: MILESTONE - engine mesh loader callable in-host; our bake == engine geometry (measured)
+
+`PhysicsEngineX64 0x3B3F0(char* path) -> mesh file data` is the engine's own
+mesh loader (creates the FS reader `piBufferReader`, parses via
+`0x18003B030`; logs `Mesh file "%s" not exist` and returns null on failure).
+Called in-host with plain relative paths it WORKS (no crash, process alive):
+
+| mesh | engine loader | our baked bin |
+|---|---|---|
+| `pj_玉门草棚001_hd.mesh` (shed) | verts **2169**, tris **2350** | mesh 388: 2169 / 2350 |
+| `wj_木堆001_hd.mesh` (pile) | verts **1261**, tris **1692** | mesh 117: 1261 / 1692 |
+
+**Exact parity, measured** - the engine's own geometry (via its own FS/paks)
+matches our baked collision data vertex/triangle-for-vertex/triangle on both
+test meshes. Evidence: `reborn_20261001_214338.log` (`RC_PX_LOAD=1`).
+This is the bridge's proven geometry source; next: widen the comparison to
+more meshes (scripted over the bin sidecar) and then the cook/scene layer.
+
 ### Update 2026-10-01i: string mystery solved (hashes) - factory still not callable piecemeal
 
 The factory's name/path args are **standard hash strings**:
