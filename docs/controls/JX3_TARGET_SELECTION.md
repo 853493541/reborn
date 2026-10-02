@@ -94,6 +94,29 @@ The click path uses the engine pick (cursor ray) rather than the cone:
 player, respecting `g_nTabPlayerPriority` and `dwEmployer`. `InteractTarget`
 dispatches `InteractPlayer/Npc/Doodad/LandObject`.
 
+**Left click = `CAMERAORSELECTORMOVE` (HIGH binding, MED clear branch).** The
+client's hotkey table binds LMB to the action `CAMERAORSELECTORMOVE` (=1;
+`proof/movement/extracted/ui_hotkey_default.txt:35-36`, RMB =
+`CAMERAORSELECTORMOVESTICKY`), and `ui/hotkey/bindings.ini:309-313` maps
+`down=CameraOrSelectOrMoveStart(0); up=CameraOrSelectOrMoveStop(0);` — i.e.
+"rotate camera **or select under cursor**" (`docs/movement/JX3_COLLISION_SYSTEM.md`
+§16.1). The Lua handlers are the client functions surfaced as
+`Ctrl_CameraOrSelectOrMoveStart/Stop` (`ui/script/control.lua` stubs + wrappers
+`ui/script/hotkeys.lua` protos 141/142; PakV4-extracted bytecode). Clearing uses
+the same target setter as selection: `KTarget::SetTarget` accepts type 1 =
+`NO_TARGET` (enum 1/3/4/5/6 = NO_TARGET/DOODAD/PLAYER/NPC/ITEM; `0x140241C00`)
+and the client itself calls `SetTarget(player, NO_TARGET, 0)` at `0x140318C33`
+(auto-clear when the target leaves the frontal cone). The exact empty-pick
+branch of `CameraOrSelectOrMoveStop` is not pinned in the binaries (the handler
+name is not a string in `JX3ClientX64.exe`/bin64 DLLs; it is registered at
+runtime) — confidence MED; re-open if a script/IL dump shows otherwise.
+
+Implemented in `client/RebornClient.cs` (2026-10-01): a left click without drag
+runs the cursor pick; a hit selects, an empty pick **deselects** (`click:
+deselect (nothing under cursor)`), mirroring the client's select-under-cursor +
+NO_TARGET clear. Scripted verify: `RC_TAB_AT=3000 RC_CLICK_AT=5000,10,10`
+(proof/controls/target_deselect_click_20261001.txt).
+
 ## 7. Open items
 
 1. **Angle unit / half-angle** — MED. Candidates: degrees as written (MidAxis

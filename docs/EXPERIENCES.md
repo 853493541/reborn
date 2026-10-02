@@ -1037,3 +1037,24 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: git rm of 4 files; client rebuild exit 0; grep shows no live
   references outside historical proof/EXPERIENCES.
 - Outcome: branch carries only the client sandbox with the target dummy.
+
+### 2026-10-01 - client - left click anywhere deselects the target
+- Did: added the client's own click semantics to the sandbox. Proof chain found
+  first: LMB is bound to `CAMERAORSELECTORMOVE` (=1, "rotate camera or select
+  under cursor"; ui_hotkey_default.txt:35-36 + docs/movement/JX3_COLLISION_SYSTEM.md
+  section 16.1), bindings.ini:309-313 maps down/up to
+  CameraOrSelectOrMoveStart/Stop(0) (Lua handlers Ctrl_CameraOrSelectOrMoveStart/Stop
+  in ui/script/control.lua + hotkeys.lua), and the clear path is the same setter
+  with TARGET.NO_TARGET=1 (KTarget::SetTarget 0x140241C00; client calls
+  SetTarget(player, NO_TARGET, 0) at 0x140318C33). Implemented in
+  client/RebornClient.cs: a left click without drag runs the cursor pick; a hit
+  selects, an empty pick clears (`click: deselect`), removing the in-world
+  indicator. Added RC_CLICK_AT=ms,x,y so the click path is scriptable.
+- Evidence: run reborn_20261001_203137.log (Tab at 3s selects; click at 5s ->
+  "click: deselect (nothing under cursor)" -> "target indicator removed"),
+  proof/controls/target_deselect_click_20261001.txt (+ before/after PNGs and
+  4x4 RGB; warm pixels 463 -> 154, frame diff 6469 px at the dummy).
+- Open: the empty-pick branch of CameraOrSelectOrMoveStop is MED - the handler
+  name is runtime-registered (not a binary string); re-open criteria in
+  docs/controls/JX3_TARGET_SELECTION.md section 6.
+- Outcome: solved for the sandbox; the selection model follows the client.

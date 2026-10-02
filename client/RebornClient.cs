@@ -113,6 +113,16 @@ internal static class RebornClient
             long tt;
             if (long.TryParse(s.Trim(), out tt)) tabAt.Add(tt);
         }
+        // RC_CLICK_AT=ms,x,y  smoke: left click at panel pixel (x,y) at time ms
+        // (same path as the real LMB click: pick under cursor, else deselect)
+        int[] clickAt = null;
+        {
+            string[] parts = Env("RC_CLICK_AT", "").Split(',');
+            int ms0, cx0, cy0;
+            if (parts.Length == 3 && int.TryParse(parts[0].Trim(), out ms0)
+                && int.TryParse(parts[1].Trim(), out cx0) && int.TryParse(parts[2].Trim(), out cy0))
+                clickAt = new int[] { ms0, cx0, cy0 };
+        }
 
         outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
         Directory.CreateDirectory(outDir);
@@ -1032,6 +1042,35 @@ internal static class RebornClient
             pressPoint = panelPoint(s, e);
             dragArmed = true;
         };
+        // Click = select under cursor; an empty pick clears the target. This is
+        // the client's own CAMERAORSELECTORMOVE semantics (LMB: rotate camera or
+        // select under cursor; down/up -> CameraOrSelectOrMoveStart/Stop(0),
+        // ui/hotkey/bindings.ini:309-313) with the client's clear path
+        // SetTarget(player, NO_TARGET, 0) (KTarget::SetTarget accepts NO_TARGET=1;
+        // docs/controls/JX3_TARGET_SELECTION.md section 6).
+        Action<int, int> clickSelectAt = delegate(int cxp, int cyp)
+        {
+            float ccx = 0f, ccy = 0f, ccz = 0f;
+            scene.GetCameraPos(ref ccx, ref ccy, ref ccz);
+            double w = Math.Max(1, panel.ClientSize.Width);
+            double h = Math.Max(1, panel.ClientSize.Height);
+            double nx = (cxp - w / 2.0) / (w / 2.0);
+            double ny = (h / 2.0 - cyp) / (h / 2.0);
+            double fov = cameraSettings.WidAngleDeg > 0 ? cameraSettings.WidAngleDeg : 50.0;
+            TargetEntity picked = targetSelector.Pick(ccx, ccy, ccz, px, py + 90f, pz,
+                (float)nx, (float)ny, fov, 12.0);
+            if (picked != null)
+            {
+                targetSelector.Current = picked;
+                Log("target=" + picked.Name + " (click pick, cursor)");
+            }
+            else if (targetSelector.Current != null)
+            {
+                targetSelector.Current = null;
+                Log("click: deselect (nothing under cursor)");
+            }
+            else Log("click: no target under cursor");
+        };
         MouseEventHandler onMouseUp = delegate(object s, MouseEventArgs e)
         {
             // S7: a press that never moved never locked the cursor - that press
@@ -1043,28 +1082,14 @@ internal static class RebornClient
             // joystick mode keeps the cursor locked between drags
             if (!lmbDown && !rmbDown && mouseLocked &&
                 !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
-            // click (no drag) = select the target under the cursor. Host ray
-            // approximation (no world->screen in the managed host); rendering
-            // medium only, the selection model follows the client
-            // (docs/controls/JX3_TARGET_SELECTION.md §6).
+            // click (no drag) = select the target under the cursor; an empty
+            // pick deselects. Host ray approximation (no world->screen in the
+            // managed host); rendering medium only, the selection model follows
+            // the client (docs/controls/JX3_TARGET_SELECTION.md section 6).
             if (leftClick)
             {
                 System.Drawing.Point cp = panelPoint(s, e);
-                float ccx = 0f, ccy = 0f, ccz = 0f;
-                scene.GetCameraPos(ref ccx, ref ccy, ref ccz);
-                double w = Math.Max(1, panel.ClientSize.Width);
-                double h = Math.Max(1, panel.ClientSize.Height);
-                double nx = (cp.X - w / 2.0) / (w / 2.0);
-                double ny = (h / 2.0 - cp.Y) / (h / 2.0);
-                double fov = cameraSettings.WidAngleDeg > 0 ? cameraSettings.WidAngleDeg : 50.0;
-                TargetEntity picked = targetSelector.Pick(ccx, ccy, ccz, px, py + 90f, pz,
-                    (float)nx, (float)ny, fov, 12.0);
-                if (picked != null)
-                {
-                    targetSelector.Current = picked;
-                    Log("target=" + picked.Name + " (click pick, cursor)");
-                }
-                else Log("click: no target under cursor");
+                clickSelectAt(cp.X, cp.Y);
             }
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
@@ -3034,6 +3059,13 @@ internal static class RebornClient
                 tabAt.RemoveAt(0);
                 Log("RC_TAB_AT -> Tab (target next)");
                 targetSelector.Cycle(px, pz, curYaw, false, Log);
+            }
+            if (clickAt != null && now >= clickAt[0])
+            {
+                int cx = clickAt[1], cy = clickAt[2];
+                clickAt = null;
+                Log(string.Format("RC_CLICK_AT -> click at {0},{1}", cx, cy));
+                clickSelectAt(cx, cy);
             }
             if (now - lastLog >= 2000)
             {
