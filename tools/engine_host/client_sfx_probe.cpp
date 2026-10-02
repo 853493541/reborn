@@ -708,7 +708,7 @@ int main(void)
                         logf("CreateActorFromFile(.Sfx) -> rc=0x%08X actor=%p", (unsigned)rc, actor);
                         // model actor (player mesh) - should load; dump its vtable
                         char mpath[512];
-                        gbk(L"data\\source\\player\\f1\\测试\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
+                        gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
                         void* mactor = NULL;
                         long mrc = createActor(engine, mpath, NULL, &mactor, 0, NULL);
                         logf("CreateActorFromFile(mesh) -> rc=0x%08X actor=%p", (unsigned)mrc, mactor);
@@ -719,6 +719,18 @@ int main(void)
                             for (int i = 0; i < 40; i++)
                                 logf("  actor vt[%d] = 0x%llX", i,
                                      (unsigned long long)((BYTE*)avt[i] - (BYTE*)eng));
+                            // vt[26] looks like a pointer getter ([this+0x2b0]) - try it
+                            typedef void* (__fastcall *GetObjFn)(void* self);
+                            void* model = ((GetObjFn)avt[26])(mactor);
+                            logf("  actor vt[26] -> %p", model);
+                            if (model != NULL)
+                            {
+                                void** mvt = *(void***)model;
+                                logf("  model vtable=%p", mvt);
+                                for (int i = 0; i < 48; i++)
+                                    logf("  model vt[%d] = 0x%llX", i,
+                                         (unsigned long long)((BYTE*)mvt[i] - (BYTE*)eng));
+                            }
                         }
                         // FS-layer test: game layer (g_IsFileExist) vs engine loader (KG3D_LoadFile)
                         {
@@ -728,7 +740,7 @@ int main(void)
                                 typedef int (__cdecl *ExistFn)(const char*);
                                 ExistFn exist = (ExistFn)((BYTE*)lua2 + 0xB5060);
                                 char sp[512], sf[512], sfLow[512];
-                                gbk(L"data\\source\\player\\f1\\测试\\f1_3094_body_hd.mesh", sp, sizeof(sp));
+                                gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", sp, sizeof(sp));
                                 gbk(L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", sf, sizeof(sf));
                                 gbk(L"data\\source\\other\\特效\\技能\\sfx\\增益\\c纯阳坐忘.sfx", sfLow, sizeof(sfLow));
                                 logf("g_IsFileExist(mesh)=%d sfx=%d sfxLow=%d",
@@ -743,6 +755,38 @@ int main(void)
                         }
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER) { logf("scene/actor probe fault"); }
+                }
+            }
+            // The game's own represent layer (most original path):
+            // JX3RepresentX64!CreateSO3Represent -> ECS root -> actors/animations/tags/SFX
+            {
+                HMODULE rep = GetModuleHandleA("JX3RepresentX64.dll");
+                if (rep == NULL)
+                {
+                    wchar_t rp[MAX_PATH];
+                    swprintf_s(rp, MAX_PATH, L"%s\\JX3RepresentX64.dll", bin64);
+                    rep = LoadLibraryExW(rp, NULL,
+                        LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                }
+                logf("JX3RepresentX64 -> %p err=%lu", rep, GetLastError());
+                if (rep != NULL)
+                {
+                    typedef void* (__cdecl *CreateRepFn)(void);
+                    CreateRepFn createRep = (CreateRepFn)GetProcAddress(rep, "CreateSO3Represent");
+                    void* r = createRep ? createRep() : NULL;
+                    logf("CreateSO3Represent -> %p", r);
+                    if (r != NULL)
+                    {
+                        void** rvt = *(void***)r;
+                        logf("  represent vtable=%p (rep=%p)", rvt, rep);
+                        for (int i = 0; i < 64; i++)
+                            logf("  rep vt[%d] = 0x%llX", i,
+                                 (unsigned long long)((BYTE*)rvt[i] - (BYTE*)rep));
+                    }
+                    typedef void* (__cdecl *RootFn)(void);
+                    RootFn rootFn = (RootFn)GetProcAddress(rep, "GetRepresentECSRootEntity");
+                    void* root = rootFn ? rootFn() : NULL;
+                    logf("GetRepresentECSRootEntity -> %p", root);
                 }
             }
             // SFX manager (engine+0x2c10) vtable dump
@@ -824,6 +868,7 @@ int main(void)
     logf("probe done");
     return 0;
 }
+
 
 
 

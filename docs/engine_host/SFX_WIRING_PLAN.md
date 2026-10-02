@@ -386,6 +386,25 @@ piece is the SFX model's attach/bind context (its `vt[0xD60]` is the shared stub
 directly-created object), i.e. registration through the engine's own SFX flow
 (scene-object/SFX-model context), not scene availability.
 
+### Actor from a real client model + engine's own SFX-model bind site (2026-10-01)
+
+Path bug fixed: the player model dirs are `动作`/`部件` (not what the mojibake suggested);
+`data\source\player\f1\部件\f1_3094_body_hd.mesh` **is PakV4-resident** and
+`CreateActorFromFile(mesh) -> rc=0, actor=<live>` now succeeds (actor vtable mapped,
+40 slots; `g_IsFileExist(mesh)=1`). All **757 ability tanis are PakV4-resident**
+(`PakV4SfxExtract`: extracted 757 / not found 0). The engine's animation tag system is
+present (`GetAnimTagSystem` non-null). Remaining for the original tag path: the
+animation-play entry (the controller/`IKG3D_Model` play method; the actor's animation
+controller is created internally).
+
+**Engine's own SFX-model creation+bind** (client engine): function `0xE272B4`
+(runtime-dispatched; direct `BindData` caller at `0xE28414`) allocates a **0xC8-byte
+`KG3D_SFXModel`**, initialises matrices from `0x1F6D740` (identity), then calls
+`KG3D_SFXModel::BindData (0xE345E0)` with `(model, r12, [rsp+0x48], [r15+0x128][rdi*8])`
+— i.e. the engine iterates a per-index model list from the loaded SFX data and binds
+each model. This is the bind context to replicate: load the SFX data (direct create
+works), then run this per-model allocate+bind with the engine's own data object.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
