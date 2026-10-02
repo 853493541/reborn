@@ -1551,3 +1551,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   which task should create the platform object.
 - Evidence: doc 20; real_launch_capture.txt; registry dumps; disasm 0x1400A2830/0x1400A3750.
 - Outcome: event system understood; real-client live introspection blocked by protection.
+
+### 2026-10-01 — netcode — 52 client modules named; group queue snapshot
+- Did: resolved all 52 Initialize handler owners by RTTI (ctx vtable -> COL -> type name): the full
+  KJX3 module list (Locale/Memory/Path/Log/Engine/PakV5/Config/Console/CoreDump/Dll/Ecs/Streaming/
+  MultiInstance/WeGame/Ole/WindowsApplication/Package/Loading/Render/Logic/UICore/UIShell/...).
+  Froze the probe mid-group and walked the state queue: exactly the group's 6 nodes pending at
+  1.88/1.96 s, done at 2.04 s; module tasks are not in the pump queue.
+- Evidence: doc 21; probe_queue.py runs; RTTI name resolution over 52 vtables.
+- Outcome: step 1 done; step 2 shows the group's own queue; step 3 next (which module creates
+  state_sub+0x18).

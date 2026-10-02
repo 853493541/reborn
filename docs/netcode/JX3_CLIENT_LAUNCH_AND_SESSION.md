@@ -380,3 +380,26 @@ what completes it (likely the launcher/security handshake).
   per-module task**; those queued tasks are the work the state's pump then runs.
 - Next: read the handler ctx objects to name the 52 modules, find which module's task creates the
   platform object (`state_sub+0x18`), and check why it does not in the probe.
+
+## 21. The 52 client modules + queue snapshot (2026-10-01, fifteenth pass)
+
+- All 52 Initialize handler owners resolved by RTTI (ctx vtable -> COL -> type descriptor name):
+KJX3LocaleModule KJX3MemoryModule KJX3PathModule KJX3LogModule KX3DEngineModule KX3PakV5Module
+KJX3ConfigModule KJX3ConsoleModule KJX3CoreDumpModule KJX3DllModule KJX3EcsModule KJX3StreamingModule
+KJX3MultiInstanceModule KJX3WeGameModule KJX3OleModule KJX3WindowsApplicationModule KHotPointReader
+KJX3WindowsViewModule KJX3WindowsMouseModule KJX3WindowsClipboardModule KJX3WindowsEmbededWebPageModule
+KJX3WindowsDpiModule KJX3WindowsMultimediaModule KJX3WindowsCompositionModule KJX3WindowsLfhModule
+KJX3PackageModule KJX3LoadingModule KJX3VideoCardScoreModule KJX3ZZQModule KJX3LaptopModule
+KJX3LaunchUpdaterModule KJX3LuaModule KJX3ConvertResourceModule KJX3CpuUsageModule KJX3ProcessMemoryModule
+KJX3FileRecordModule KJX3ReportModule KJX3SoundModule KJX3VoiceModule KJX3RenderModule KJX3AsyncTaskModule
+KJX3FileModule KJX3VideoModule KJX3RepresentEventModule KJX3LogicModule KJX3RepresentModule KJX3UICoreModule
+KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX3MessageModule
+- These are the client's own engine modules (KSO3ClientEvents event system: Initialize/Finalize/
+  RegisterLua/Update/Start/Stop/...). Their Initialize callbacks are std::function-wrapped bound
+  member functions (RTTI ?_Binder@...P8<Module>@@EAAHAEAUKSO3ClientBaseEvent@@@Z).
+- Queue snapshot during the game.startup group (freeze-all-threads walk of state+0x70 chain):
+  1.88 s and 1.96 s show exactly **6 pending nodes** (the group's 4 sub-steps + 2 markers,
+  tasks' ctx = the state sub-object); 2.04 s done=1 and queue empty. The 52 module tasks are not
+  in the pump queue - the Initialize dispatch executes them within the step (or via another list).
+- Next (step 3): find which module's Initialize creates the platform object (state_sub+0x18);
+  leading hypothesis: KJX3WindowsApplicationModule (window/app object) or KJX3LoadingModule.
