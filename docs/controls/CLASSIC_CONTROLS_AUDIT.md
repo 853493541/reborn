@@ -46,9 +46,9 @@ the Lua 5.1 VM rule confirmed from lua.org `lvm.c`, `0/76` branches as:
 **CLASSICAL (0)** → `ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)`
 fallback = the strafe habit; **JOYSTICK (1)** → OB wrapper + free-view
 `TurnLeftStart/RightStart` = A/D turn. The "classical = turn" behavior belongs
-to JOYSTICK mode; the host's default turn habit matches JOYSTICK. Engine
-application of the controls stays P4. Evidence:
-`CONTROL_MODES_LUA_ANNEX.md` §A6.2/§A8; dumps
+to JOYSTICK mode. **Host default now matches the client: A/D = STRAFE**
+(`RC_ADHABIT=turn` opts into the turn habit). Engine application of the
+controls stays P4. Evidence: `CONTROL_MODES_LUA_ANNEX.md` §A6.2/§A8; dumps
 `proof/controls/lua_dump/hotkeys_0_76_StrafeLeftStart.txt`,
 `opmodebase_0_chunk.txt`.
 **Binding map (JX3UIX64.dll, `KRepresentScriptTable::Lua*`, HIGH):**

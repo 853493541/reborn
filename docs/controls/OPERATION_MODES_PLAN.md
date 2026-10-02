@@ -561,11 +561,13 @@ wording HIGH as official documentation):
   character-relative scheme.
 
 Consequence for the host: the habit is an option, not a constant. Final host
-model (2026-10-02): **classic A/D default = TURN** (rotate in place, no
-lateral movement; user-confirmed for their game), `RC_ADHABIT=strafe` opts
-into the side-step habit (the shipped default.txt binding). Turn keys rotate
-the `moveYaw` control frame (so W+A/D curves) while the camera follows through
-the move+turn row or is moved by the mouse drag only. Verified: A-alone
-`dpos=(0,0)`, straight diagonals in the strafe habit, curves in the turn habit
-(`proof/controls/control_modes_run.txt`, runs 133226 / 133609). No game-side
+model (2026-10-02, aligned to the client decode): **classic A/D default =
+STRAFE** (the shipped `default.txt` binding; decoded hotkeys `0/76` classical
+branch = `ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)`).
+`RC_ADHABIT=turn` opts into the turn-in-place habit (the free-view
+`TurnLeft/RightStart` branch used by joystick). Turn keys (arrows, or A/D with
+the turn habit) rotate the `moveYaw` control frame (so W+A/D curves). Verified
+(strafe default): A-alone `d=0.00` side-step `dist=96` camera kept; W+A/W+D
+straight `385/384 dcam=0.00`; arrows turn `camd=-1.89`
+(`proof/controls/control_modes_run.txt`; turn habit run 133226). No game-side
 control change in the window.

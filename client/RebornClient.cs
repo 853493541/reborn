@@ -44,7 +44,7 @@ internal static class RebornClient
 {
     static string outDir;
     static Action<string> Log;
-    static string adHabit = "turn";     // classic A/D: turn (rotate, no move) | strafe
+    static string adHabit = "strafe";   // classic A/D: strafe (default.txt) | turn
     static double moveYaw = 0.0;        // movement/control frame; turn keys rotate it
     // P4 control probe (RC_PROBE_CONTROL=1): read-only engine field capture.
     // Host JX3RepresentX64.dll RVAs come from docs/controls/CONTROL_MODES_P4_PROBE.md
@@ -629,11 +629,13 @@ internal static class RebornClient
             }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            // Classic A/D default: TURN (rotate in place, no lateral movement);
-            // under the RMB stick camera the mouse owns the heading and A/D
-            // become strafe. RC_ADHABIT=strafe opts into the side-step habit.
-            adHabit = Env("RC_ADHABIT", "turn").Trim().ToLowerInvariant();
-            if (adHabit != "strafe") adHabit = "turn";
+            // Classic A/D default: STRAFE (shipped default.txt binds A/D to
+            // STRAFELEFT/RIGHT; decoded hotkeys 0/76 classical branch =
+            // ResponseWASDKey + Camera_EnableControl(CONTROL_STRAFE_*)).
+            // RC_ADHABIT=turn opts into the turn-in-place habit (the free-view
+            // TurnLeft/RightStart branch used by the joystick mode).
+            adHabit = Env("RC_ADHABIT", "strafe").Trim().ToLowerInvariant();
+            if (adHabit != "turn") adHabit = "strafe";
             string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {

@@ -1683,3 +1683,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   hotkey resources): 4 new checks - W normal/MINIGAME_JUMP separation, W
   minigame context, A normal, override file applies over embedded defaults
   (2 overrides, W unbound from slot 1). Build exit 0; ALL PASS.
+
+### 2026-10-02 - controls - classic A/D default = strafe (client truth)
+- User: "AD is not supposed to be turning by default". Per the P2 decode
+  (CLASSICAL=0: A/D strafe via ResponseWASDKey + CONTROL_STRAFE; joystick=turn)
+  the host default flipped from turn to strafe; RC_ADHABIT=turn keeps the turn
+  habit. Verified: A-alone d=0.00 side-step dist=96 camera kept; WA/WD straight
+  385/384 dcam=0.00; arrows still turn (camd=-1.89). Smoke ALL PASS.

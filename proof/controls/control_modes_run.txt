@@ -448,3 +448,12 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   A-alone: yaw d=-3.14 camd=-3.15 dpos=(0,0) (turn in place, camera follows)
   TURNRIGHT 0.6s: camd=-1.88 (mod 2pi; the old unwrapped log artifact fixed)
 - Gates: camera_smoke ALL PASS.
+
+## Classic A/D default = STRAFE (client truth), 2026-10-02
+- Host default flipped to strafe (default.txt binding; decoded 0/76 classical
+  branch). RC_ADHABIT=turn keeps the turn-in-place habit.
+- Evidence, run reborn_20261002_164018.log (default):
+  A-alone: d=0.00 cam kept dpos=(-96,0) dist=96 (side-step)
+  back: 96; TURNRIGHT: yaw -0.33 camd=-1.89 (arrows turn)
+  WA: dpos=(-346,169) dist=385 dcam=0.00; WD: 384 dcam=0.00
+- Gates: camera_smoke ALL PASS (incl. hotkey context/override checks).
