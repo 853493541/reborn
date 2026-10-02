@@ -332,6 +332,21 @@ runtime function pointer — no static callers/vtable slot) is the path that cre
 attaches+plays; driving it needs the SFX-model context object. This object graph is the
 next RE chunk for engine-driven playback (evidence `submgr.out`, `play3.out`).
 
+### Actor-from-file probe + case finding (2026-10-01)
+
+`KG3D_Engine::CreateActorFromFile` (client export `0x8B2DA0`) with the real `.Sfx`:
+`KG3D_CreateModelFromFile` → `KG3D_SFX::Init` → `KG3D_CreateSFXFromFile` **fails**
+(`KG3D_LoadFile failed … sfx\增益\c纯阳坐忘.sfx`; note the engine **lowercases** the path).
+The same path via the **direct create with the engine-singleton owner works in both
+cases** (mixed `SFX\…Sfx` and lowercase `sfx\….sfx` both produce a non-null object,
+`exc=0`) — so the actor path's failure is its **owner/FS context**, not the case: the
+owner passed by the actor/model path resolves through a different file layer than the
+singleton owner used by the engine's own SFX flow. Evidence `actor.out`, `case.out`.
+
+Practical takeaway: engine-driven playback should go through the owner used by the
+engine's own SFX flow (the singleton `[engine+0x2CF1038] -> vt[8]()`), which already
+creates the `.Sfx` cleanly; the bind/attach context remains the open piece.
+
 ## Core bug isolated (2026-09-30, direct create-call tests)
 
 `RC_Shim_SfxPlay` now accepts **both** engine builds (ME 09-14 and client 09-27,
