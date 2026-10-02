@@ -436,7 +436,9 @@ served** by the game layer (`g_IsFileExist("data\zz_loose_test.txt") = 1` — th
 "pak-only" conclusion was a wrong-path artifact), so writing an unwrapped file into the
 working root is a viable route if pak precedence allows. `KG_OpenFile(tani)` (game-layer
 `0xC02E0`) returned NULL — needs the right API/args; the GATA unwrap layer is the last
-blocker for the original tag-driven playback.
+blocker for the original tag-driven playback. Leads for the unwrap: game-layer
+`KG_OpenPakV4File` (`0xCC670`), `g_OpenFile` (`0xB2F50`), `g_OpenAloneFile` (`0xB2EA0`),
+and the PakV4 manager's `KG_PAKFS_*` APIs.
 
 ### `KG3D_SFXModel` method map (2026-10-01)
 
