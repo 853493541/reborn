@@ -1596,3 +1596,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   merged feature; a separate `reborn_client_colltest4.exe` session ran
   concurrently in its own namespace during the run.
 - Outcome: solved (local main, not pushed); branch + worktree left intact.
+
+### 2026-10-01 — repo — sandbox client rebuilt from merged main
+- Did: rebuilt the mini-sandbox feature client `reborn_client_mini.exe`
+  (`RC_CLIENT_EXE=reborn_client_mini.exe`, title sandbox-mini) from merged main
+  so the sandbox carries the target-dummy work; canonical `reborn_client.exe`
+  was already rebuilt from the merge commit `fe57fd5`.
+- Evidence: `build_info_reborn_client_mini.exe.txt` git=`e30edd8` built
+  21:23:42; sandbox run log `reborn_out/reborn_20261001_212351.log` on the
+  cropped map (`RC_MAP=...龙门寻宝_s.jsonmap`): `target dummy rid=35901
+  handle=5733249480 at (23334,740,24624)`, Tab pick `zone=MidAxis dist=400u`,
+  indicator spawned (`选择特效a002_hd.pss`), DONE; exit 0.
+- Outcome: solved (local, not pushed).
