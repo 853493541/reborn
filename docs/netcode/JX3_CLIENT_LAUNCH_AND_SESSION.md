@@ -433,3 +433,23 @@ KJX3UIShellModule KJX3CommonEventModule KJX3LogicEventModule KJX3ImageModule KJX
   Our probe never creates a window, so this path is never reached (or fails earlier).
 - Still open: the writer of `state_sub+0x18` (the pump's success gate) is not yet identified;
   candidate paths: the app module's Initialize step group (window creation) or the platform code.
+
+## 24. game.startup group structure + module globals (2026-10-01, eighteenth pass)
+
+- WinMain flow re-read: wait(state B, 10 s) "PlatformBeforeLoad" -> destroy B -> PlatformLoad
+  (`0x14009F480`) -> pool for state A -> build `game.startup` group into `[rbp+0x60]` -> wait(state A,
+  2 s) loop. WinMain never writes state A `+0x18` - a step must.
+- Module globals (runtime, all resolved): `0xA8C1B0`=KJX3WindowsApplicationModule,
+  `0xA8C1C0`=KJX3CommonEventModule, `0xA8C1C8`=KJX3ConfigModule, `0xA8C210`=KJX3LogicEventModule,
+  `0xA8C218`=KJX3LogModule, `0xA8C220`=KJX3MessageModule, `0xA8C260`=KJX3RepresentEventModule,
+  `0xA8C1F0`=registry map. WinMain's success path calls `appModule->vt[0x38]` (`0x1400E0780`, app Run).
+- Module vtables: `vt[+8]` = `0x1400A3730` (destroy: calls `[obj]->vt[0](obj,1)` and returns 0),
+  `vt[0x20]` = `0x1400A3AA0` (run step group), `vt[0x30]` = per-module event handler
+  (e.g. WindowsApplication `0x1400DFD40` handles only id 3 = CloseHandle).
+- Queue walk during the group (freeze-all): the `game.startup` group is **3 pump-type steps
+  (vt=0x953E70, task fields {vt, state, state+0x170}) + 3 markers (vt 0x953DC0/0x953DE0/0x953DA0)**;
+  the queue does not advance for >0.1 s (first step running device enumeration), then done=1 ~2.05 s.
+- ZZQ window: `CreateWindowExA` in `0x1400DB62D` registers class "ZZQ_WINDOW_CLASS" (KJX3ZZQModule);
+  reached from Lua (`Lua_ZZQStart` binding at 0x1400DA1E0) - not from the event handler.
+- Open: which step/handler should set `state+0x18`; candidate = the platform stage steps in the
+  group (PlatformStartup/BeforeLoad/Load) or a module Initialize handler.
