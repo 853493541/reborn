@@ -1631,3 +1631,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   game-side hotkey with no client handler - use W-hold for movement; the shared
   `reborn_out` log dir mixes concurrent clients, select the log by `build=` fingerprint.
 - Outcome: M1 exit criteria met (local branch `agent/m1-final`, not pushed).
+
+### 2026-10-02 — merge — agent/m1-final -> main (M1.7 HUD overlay + solo-5 proof)
+- Did: merged `agent/m1-final` (`--no-ff`, no conflicts) after a clean preflight
+  (`merge-tree` exit 0). Rebuilt canonical `reborn_client.exe` + `reborn_client_mini.exe`;
+  gates: `camera_smoke.exe` ALL PASS, `verify_model.py` pass, loot `selftest` PASS,
+  `jx3_model.py` 10x PASS. Relaunch check: canonical client logs `build=reborn_client.exe`
+  and shows the HUD overlay window (collapsed 44x44, LAYERED|TRANSPARENT) over the viewport.
+- Evidence: merge `665e01c`; branch commits `97f0ce6` + `623ffe3`; proof
+  `docs/engine_host/M1_SOLO5_PROOF.md`.
+- Outcome: M1 exit criteria met on main (local, not pushed).
