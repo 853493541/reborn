@@ -398,3 +398,14 @@ Remaining precise unknowns (3): (1) which of `CONTROL_CAMERA`/`OBJECT_STICK_CAME
 sets `[mgr+0x1B0]` vs `[mgr+0x1AC]` (writer not yet located; the vtable slot is
 runtime-built), (2) the `[mgr+0x5C]` state enum values 1..7, (3) the character
 controller's movement-direction application (facing vs camera-relative).
+
+**7d addendum 2.** `ResetCharacterCamera` (assert string; body at 0x180B090A0+)
+bulk-zeroes the per-character camera: state `+0x5C`, `+0x68`, `+0x88`,
+`+0xA4/+0xA8` (later pitch clamps), `+0x1A8` (moved), `+0x1AC` (dynamic
+follow), `+0x1B0`, `+0x1B4`, `+0xAC`, `+0x1C4..`, and reinitialises
+`+0x70/+0x158/+0x1A0` — so `+0x1B0` is a camera-state field, not a control.
+A full-binary dword/qword-store scan shows `+0x1B0` is only ever *zeroed*
+here: in normal play the ApplyMouse alternate branch is driven by `+0x1AC`
+(dynamic follow) alone. `[character+0x30]` (written by 0x180530F00 via the
+four sites above) is the engine's character-facing/camera-yaw field; the
+write is gated by the follow/state machine, not by A/D.
