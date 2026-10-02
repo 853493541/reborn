@@ -1,0 +1,57 @@
+Target in-world indicator - client capture 2026-10-01
+Build: reborn_client_target-dummy.exe (RC_TITLE=targeting), run log reborn_20261001_173107.log
+Map: data\source\maps\龙门寻宝\龙门寻宝.jsonmap, spawn (23334,761,24224), camera yaw 1.283
+Scenario: dummy 初级试炼木桩 rid=35901 at spawn+400u; Tab at t=3s selects it
+(RC_TAB_AT=3000), shots at 2500ms (before), 5000ms / 9000ms (after).
+
+Assets (game client's own, spawned via scene.AddDummyModel):
+  selection ring : data\source\other\HD特效\其他\Pss\选择特效a002_hd.pss (Enemy/red row of
+                   represent/common/force_relation_care.txt SFXFile)
+  facing cone    : data\source\other\HD特效\其他\Pss\J_角色箭头面向.pss
+                   (ForceRelationCareTable SFXEn row; ground-plane cone, yaw = target facing)
+  spawned at the target base (ring y+0, cone y+8, cone scale 0.5)
+  removed when the selection is cleared
+
+Log evidence:
+17:31:39.554 target=初级试炼木桩 lv131 zone=MidAxis dist=400u axis=0u
+17:31:39.568 target indicator 'data\source\other\HD特效\其他\Pss\选择特效a002_hd.pss' h=5821919944 y=+0 | arrow h=4326170904 y=+8 s=0.50 yaw=-3.14
+
+Numeric fingerprints (tools/proof/image_stats.py, 4x4 grid):
+before (rc_00_2500ms.png) -> proof/controls/target_indicator_before_20261001.png
+  size=1280x720 mode=RGB bytes=968150 sha256=8cf8a211f7e14cb5
+  mean=#9E8672
+  5C3A29 856A59 8D7763 9D8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AF94 AE9C87
+  9F8B79 876D5D 9D8672 A89682
+after  (rc_01_5000ms.png) -> proof/controls/target_indicator_client_20261001.png
+  size=1280x720 mode=RGB bytes=971684 sha256=29c12087bd2fc478
+  mean=#9F8671
+  5C3A29 856A59 8D7763 9E8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AD92 AE9C87
+  9F8B79 876D5D 9E8570 A89682
+
+Region deltas (before -> after, 1280x720):
+  red   pixels (R>150,G<110,B<110,R-G>60):    10 -> 128   bbox x636-708 y350-465
+  yellow pixels (R>180,G>150,B<140,R-B>70):  150 -> 7852  bbox x535-755 y295-456
+  the ring sits at the dummy base (x~700,y~455); the cone spreads toward the
+  camera at the base; both disappear before selection.
+
+Host limitation (documented, re-open criteria): the full game indicator is driven
+by the represent layer (KRLTarget in JX3RepresentX64.dll, AttachSceneObject ->
+EnableBraceSfx -> Show). In the MovieEditor-hosted engine that singleton is null
+(MovieEditor JX3RepresentX64.dll RVA 0xF06A50 reads 0), so KRLTarget cannot be
+attached; the cursor-ring "brace" (CommonCursorEffect -> 鼠标移动.Sfx) is a
+compiled .Sfx and cannot be spawned through AddDummyModel. Re-open when the host
+initializes the represent game world (or AddRepresentModel returns a usable
+character id), then re-run the native path.
+
+Reproduce:
+  set RC_CLIENT_EXE=reborn_client_target-dummy.exe && client\build_client.cmd
+  set RC_TITLE=targeting
+  set RC_TAB_AT=3000
+  set RC_SHOTS=2500,5000,9000
+  set RC_AUTORUN=11000
+  cd /d C:\SeasunGame\MovieEditor
+  bin64\reborn_client_target-dummy.exe

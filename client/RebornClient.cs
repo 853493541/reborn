@@ -5,6 +5,10 @@
 // Env:
 //   RC_MAP=<vfs jsonmap>          default 龙门寻宝
 //   RC_SPAWN=x,y,z                optional spawn (y optional -> terrain)
+//   RC_DUMMY=<representid>        spawn one 试炼木桩 near spawn (default 35901; 0 = off)
+//   RC_DUMMY_DIST=<units>         dummy distance along the view dir (default 400)
+//   RC_DUMMY_NAME/LEVEL/HP        target-frame values (default 初级试炼木桩/131/500000000)
+//   RC_TAB_AT=ms,ms               smoke: target-next (Tab) at these times
 //   RC_AUTORUN=ms                 exit after N ms (0 = until window closed)
 //   RC_SHOTS=2000,5000,...        screenshot times (ms)
 //   RC_CLIP_IDLE/WALK/RUN/JUMP/FALL/SKILL=<vfs .ani/.tani path>
@@ -103,6 +107,23 @@ internal static class RebornClient
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
+        var tabAt = new System.Collections.Generic.List<long>();
+        foreach (string s in Env("RC_TAB_AT", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            long tt;
+            if (long.TryParse(s.Trim(), out tt)) tabAt.Add(tt);
+        }
+        // RC_CLICK_AT=ms,x,y[;ms,x,y...]  smoke: left click at panel pixel (x,y)
+        // (same path as the real LMB click: pick under cursor, else deselect)
+        var clickAt = new System.Collections.Generic.List<int[]>();
+        foreach (string s in Env("RC_CLICK_AT", "").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            string[] parts = s.Trim().Split(',');
+            int ms0, cx0, cy0;
+            if (parts.Length == 3 && int.TryParse(parts[0].Trim(), out ms0)
+                && int.TryParse(parts[1].Trim(), out cx0) && int.TryParse(parts[2].Trim(), out cy0))
+                clickAt.Add(new int[] { ms0, cx0, cy0 });
+        }
 
         outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
         Directory.CreateDirectory(outDir);
@@ -761,6 +782,120 @@ internal static class RebornClient
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
+
+        // ---------------- target selection state (Targeting.cs) ----------------
+        // Target HUD art/layout comes from the game client's own UI files
+        // (TargetTarget.ini + .UITex atlases + ui/Font), extracted by
+        // tools/netcode/ui/extract_target_frame.py; RC_UI_ROOT points at the
+        // extracted tree. No hand-drawn substitute: missing art draws nothing.
+        var targetSelector = new TargetSelector();
+        UiTargetFrameRenderer targetUi = null;
+        try
+        {
+            string uiRoot = Env("RC_UI_ROOT", "");
+            if (uiRoot.Length > 0)
+            {
+                string fontDir = Env("RC_UI_FONT_DIR",
+                    @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\ui\Font");
+                targetUi = new UiTargetFrameRenderer(uiRoot, fontDir,
+                    Path.Combine(uiRoot, "ui", "Scheme", "Elem"));
+                foreach (string w in targetUi.Warnings) Log("target ui: " + w);
+            }
+            else Log("target ui: RC_UI_ROOT not set - target HUD art disabled");
+        }
+        catch (Exception e) { Log("target ui ex: " + e.Message); }
+        var targetFrame = new TargetFrameControl(targetUi);
+        targetFrame.PlaceOver(form);
+        bool targetHudOn = Env("RC_TARGET_HUD", "0") != "0";
+
+        // ---------------- in-world target indicator (KRLTarget visuals) ----------------
+        // The game's own selection visuals come from ForceRelationCareTable
+        // (represent/common/force_relation_care.txt, loaded by KRLTarget): each
+        // relation row maps to
+        //   SFXFile = data/source/other/HD特效/其他/Pss/选择特效aXXX_hd.pss
+        //   SFXEn   = data/source/other/HD特效/其他/Pss/J_角色箭头面向.pss
+        // (relation 2 = Enemy -> a002). The engine shows them attached to the
+        // target; we spawn the same client assets at the selected target via
+        // AddDummyModel (the engine loads PSS + textures from the game client's
+        // own VFS). No hand-drawn substitute: missing art draws nothing.
+        bool indEnabled = Env("RC_INDICATOR", "1") != "0";
+        string indSel = Env("RC_INDICATOR_SEL",
+            "data\\source\\other\\HD\u7279\u6548\\\u5176\u4ED6\\Pss\\\u9009\u62E9\u7279\u6548a002_hd.pss");
+        string indArrow = Env("RC_INDICATOR_ARROW",
+            "data\\source\\other\\HD\u7279\u6548\\\u5176\u4ED6\\Pss\\J_\u89D2\u8272\u7BAD\u5934\u9762\u5411.pss");
+        float indY = 0f, indArrowY = 8f, indArrowScale = 0.5f, indArrowYaw = 0f;
+        {
+            float v;
+            if (float.TryParse(Env("RC_INDICATOR_Y", ""), out v)) indY = v;
+            if (float.TryParse(Env("RC_INDICATOR_ARROW_Y", ""), out v)) indArrowY = v;
+            if (float.TryParse(Env("RC_INDICATOR_ARROW_SCALE", ""), out v)) indArrowScale = v;
+            if (float.TryParse(Env("RC_INDICATOR_ARROW_YAW", ""), out v)) indArrowYaw = v;
+        }
+        bool indAlways = Env("RC_INDICATOR_ALWAYS", "0") == "1";
+        TargetEntity dummyTarget = null;
+        float dummyYaw = 0f;
+
+        // ---------------- target dummy (sandbox-target-dummy) ----------------
+        // One 试炼木桩 near the spawn point: RepresentID -> engine model path
+        // (same actor space the editor NPC palette uses), placed RC_DUMMY_DIST
+        // units along the measured view direction, standing on sampled terrain.
+        // RC_DUMMY=0 disables. Idle animation via GetRepresentAniPath.
+        try
+        {
+            int dummyRid = 35901;   // 初级试炼木桩 (ZhuChengMuZhuang zone)
+            int.TryParse(Env("RC_DUMMY", "35901"), out dummyRid);
+            if (dummyRid > 0)
+            {
+                float dummyDist = 400f;
+                float.TryParse(Env("RC_DUMMY_DIST", "400"), out dummyDist);
+                float dx = viewX, dz = viewZ;
+                float dl = (float)Math.Sqrt(dx * dx + dz * dz);
+                if (dl < 1e-4f) { dx = 0f; dz = 1f; } else { dx /= dl; dz /= dl; }
+                float tx = px + dx * dummyDist;
+                float tz = pz + dz * dummyDist;
+                float ty = sampler != null ? sampler.Sample(tx, tz) : py;
+                if (ty == 0f) ty = py;
+                string dummyModel = scene.GetRepresentModelPath(dummyRid);
+                string dummyAni = scene.GetRepresentAniPath(dummyRid);
+                var tpos = new CLRfloat3(); tpos.x = tx; tpos.y = ty; tpos.z = tz;
+                float tyaw = (float)Math.Atan2(-dx, -dz);   // face the player
+                dummyYaw = tyaw;
+                float thalf = tyaw * 0.5f;
+                var trot = new CLRfloat4(); trot.x = 0f; trot.y = (float)Math.Sin(thalf); trot.z = 0f; trot.w = (float)Math.Cos(thalf);
+                var tscl = new CLRfloat3(); tscl.x = 1f; tscl.y = 1f; tscl.z = 1f;
+                long dummyHandle = 0;
+                if (dummyModel != null && dummyModel.Length > 0)
+                    dummyHandle = scene.AddDummyModel("target_dummy", dummyModel.Replace('/', '\\'), tpos, trot, tscl);
+                Log(string.Format("target dummy rid={0} model='{1}' ani='{2}' handle={3} at ({4:F0},{5:F0},{6:F0})",
+                    dummyRid, dummyModel, dummyAni, dummyHandle, tx, ty, tz));
+                if (dummyHandle > 0)
+                {
+                    // Target-frame values from the shipped sNpcTemplate row
+                    // (docs/pvp/TARGET_DUMMY_RESEARCH.md: 初级试炼木桩 Lv131,
+                    // MaxLife 500,000,000); RC_DUMMY_* overrides.
+                    var tent = new TargetEntity();
+                    tent.Handle = dummyHandle;
+                    tent.Name = Env("RC_DUMMY_NAME", "\u521D\u7EA7\u8BD5\u70BC\u6728\u6869"); // 初级试炼木桩
+                    if (!int.TryParse(Env("RC_DUMMY_LEVEL", "131"), out tent.Level)) tent.Level = 131;
+                    if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
+                    tent.Hp = tent.MaxHp;
+                    tent.X = tx; tent.Y = ty; tent.Z = tz;
+                    targetSelector.Add(tent);
+                    dummyTarget = tent;
+                    Log(string.Format("target entity registered: {0} lv{1} hp={2} (Tab = facing cone search)",
+                        tent.Name, tent.Level, tent.MaxHp));
+                }
+                if (dummyHandle > 0 && dummyAni != null && dummyAni.Length > 0)
+                {
+                    var dummyAnim = new KGModelCLR();
+                    dummyAnim.AttachModel(dummyHandle);
+                    Log("target dummy ani -> " + dummyAnim.PlayAnimation(dummyAni.Replace('/', '\\'), 0, 1.0f, 0));
+                }
+            }
+            else Log("target dummy disabled (RC_DUMMY=0)");
+        }
+        catch (Exception e) { Log("target dummy ex: " + e.Message); }
+
         // camera yaw from the measured engine view direction (camera -> anchor)
         if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
         {
@@ -791,6 +926,7 @@ internal static class RebornClient
         }
         bool cDown = false, teleportToStructure = false;
         bool divDown = false;
+        TargetEntity indTarget = null;
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
         bool dragArmed = false;
@@ -907,16 +1043,55 @@ internal static class RebornClient
             pressPoint = panelPoint(s, e);
             dragArmed = true;
         };
+        // Click = select under cursor; an empty pick clears the target. This is
+        // the client's own CAMERAORSELECTORMOVE semantics (LMB: rotate camera or
+        // select under cursor; down/up -> CameraOrSelectOrMoveStart/Stop(0),
+        // ui/hotkey/bindings.ini:309-313) with the client's clear path
+        // SetTarget(player, NO_TARGET, 0) (KTarget::SetTarget accepts NO_TARGET=1;
+        // docs/controls/JX3_TARGET_SELECTION.md section 6).
+        Action<int, int> clickSelectAt = delegate(int cxp, int cyp)
+        {
+            float ccx = 0f, ccy = 0f, ccz = 0f;
+            scene.GetCameraPos(ref ccx, ref ccy, ref ccz);
+            double w = Math.Max(1, panel.ClientSize.Width);
+            double h = Math.Max(1, panel.ClientSize.Height);
+            double nx = (cxp - w / 2.0) / (w / 2.0);
+            double ny = (h / 2.0 - cyp) / (h / 2.0);
+            double fov = cameraSettings.WidAngleDeg > 0 ? cameraSettings.WidAngleDeg : 50.0;
+            TargetEntity picked = targetSelector.Pick(ccx, ccy, ccz, px, py + 90f, pz,
+                (float)nx, (float)ny, fov);
+            if (picked != null)
+            {
+                targetSelector.Current = picked;
+                Log("target=" + picked.Name + " (click pick, cursor)");
+            }
+            else if (targetSelector.Current != null)
+            {
+                targetSelector.Current = null;
+                Log("click: deselect (nothing under cursor)");
+            }
+            else Log("click: no target under cursor");
+        };
         MouseEventHandler onMouseUp = delegate(object s, MouseEventArgs e)
         {
             // S7: a press that never moved never locked the cursor - that press
             // was a click and the camera was not rotated.
+            bool leftClick = e.Button == MouseButtons.Left && lmbDown && !mouseLocked;
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
             // joystick mode keeps the cursor locked between drags
             if (!lmbDown && !rmbDown && mouseLocked &&
                 !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
+            // click (no drag) = select the target under the cursor; an empty
+            // pick deselects. Host ray approximation (no world->screen in the
+            // managed host); rendering medium only, the selection model follows
+            // the client (docs/controls/JX3_TARGET_SELECTION.md section 6).
+            if (leftClick)
+            {
+                System.Drawing.Point cp = panelPoint(s, e);
+                clickSelectAt(cp.X, cp.Y);
+            }
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
@@ -959,7 +1134,14 @@ internal static class RebornClient
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) unlockMouse();
+            if (e.KeyCode == Keys.Escape) { unlockMouse(); targetSelector.Current = null; }
+            else if (e.KeyCode == Keys.Tab)
+            {
+                // SEARCH_ENEMY (Tab) / SELECT_PREV_TARGET (Ctrl+Tab), target.lua
+                targetSelector.Cycle(px, pz, curYaw, e.Control, Log);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
             if (e.KeyCode == Keys.W) pW = true;
             else if (e.KeyCode == Keys.S) pS = true;
             else if (e.KeyCode == Keys.A) pA = true;
@@ -2822,6 +3004,69 @@ internal static class RebornClient
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip));
+            }
+            // target frame (Targeting.cs): real client UI composited over the viewport
+            if (targetFrame != null && targetHudOn)
+            {
+                targetFrame.Target = targetSelector.Current;
+                if (targetSelector.Current != null)
+                {
+                    double tdx = targetSelector.Current.X - px, tdz = targetSelector.Current.Z - pz;
+                    targetFrame.Distance = Math.Sqrt(tdx * tdx + tdz * tdz);
+                    targetFrame.PlaceOver(form);
+                }
+                targetFrame.UpdateLayered();
+            }
+            // in-world indicator (KRLTarget visuals): selection effect + arrow
+            // at the current target, removed when the selection changes
+            if (indEnabled)
+            {
+                TargetEntity want = indAlways ? dummyTarget : targetSelector.Current;
+                if (want != indTarget)
+                {
+                    try
+                    {
+                        if (indTarget != null)
+                        {
+                            scene.RemoveDummyModel("target_indicator_sel");
+                            scene.RemoveDummyModel("target_indicator_arrow");
+                        }
+                        indTarget = want;
+                        if (want != null)
+                        {
+                            var irot = new CLRfloat4(); irot.x = 0f; irot.y = 0f; irot.z = 0f; irot.w = 1f;
+                            var iscl = new CLRfloat3(); iscl.x = 1f; iscl.y = 1f; iscl.z = 1f;
+                            var spos = new CLRfloat3(); spos.x = want.X; spos.y = want.Y + indY; spos.z = want.Z;
+                            long hs = scene.AddDummyModel("target_indicator_sel", indSel, spos, irot, iscl);
+                            // facing arrow: authored in the ground plane (XZ), so
+                            // it sits at the feet and yaws with the target facing
+                            double ah = (dummyYaw + indArrowYaw) * 0.5;
+                            var arot = new CLRfloat4();
+                            arot.x = 0f; arot.y = (float)Math.Sin(ah); arot.z = 0f; arot.w = (float)Math.Cos(ah);
+                            var ascl = new CLRfloat3();
+                            ascl.x = indArrowScale; ascl.y = indArrowScale; ascl.z = indArrowScale;
+                            var apos = new CLRfloat3(); apos.x = want.X; apos.y = want.Y + indArrowY; apos.z = want.Z;
+                            long ha = scene.AddDummyModel("target_indicator_arrow", indArrow, apos, arot, ascl);
+                            Log(string.Format("target indicator '{0}' h={1} y=+{2:F0} | arrow h={3} y=+{4:F0} s={5:F2} yaw={6:F2}",
+                                indSel, hs, indY, ha, indArrowY, indArrowScale, dummyYaw + indArrowYaw));
+                        }
+                        else Log("target indicator removed");
+                    }
+                    catch (Exception e) { Log("target indicator ex: " + e.Message); }
+                }
+            }
+            while (tabAt.Count > 0 && now >= tabAt[0])
+            {
+                tabAt.RemoveAt(0);
+                Log("RC_TAB_AT -> Tab (target next)");
+                targetSelector.Cycle(px, pz, curYaw, false, Log);
+            }
+            while (clickAt.Count > 0 && now >= clickAt[0][0])
+            {
+                int cx = clickAt[0][1], cy = clickAt[0][2];
+                clickAt.RemoveAt(0);
+                Log(string.Format("RC_CLICK_AT -> click at {0},{1}", cx, cy));
+                clickSelectAt(cx, cy);
             }
             if (now - lastLog >= 2000)
             {

@@ -11,6 +11,8 @@
 
 There is **no target-select opcode** — the server never receives "I selected X";
 the client tracks the target and sends it with cast intents.
+Detailed mechanics (3 cone zones, engine `SearchForEnemy`, sort order):
+`JX3_TARGET_SELECTION.md`.
 
 | Input | Command | Action |
 |---|---|---|

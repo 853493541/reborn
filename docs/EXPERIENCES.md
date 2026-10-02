@@ -1403,3 +1403,171 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   proof/netcode/disasm/{launchblock_parser,launchblock_decrypt,parser_caller,logic_reader_callers,logic_mapping_refs}.txt;
   this commit (local).
 - Outcome: partial (format decoded; writer open).
+
+### 2026-09-30 — pvp/sandbox — 江湖木桩 target-dummy sandbox (dummies only)
+- Did: extracted the shipped
+  `settings\NpcTemplate\{ZhuChengMuZhuang,GongNengTongYongNPC}\sNpcTemplate.tab`
+  dummy rows (14 dummies, 3 groups: 江湖木桩/试炼木桩/其他木桩; 试炼教官 rows are
+  NPCs and excluded) via new `tools/netcode/mode/extract_target_dummies.py`; built
+  `target_dummy_sandbox/` (own namespace `TargetDummySandbox.memory`, own out dir
+  `target_dummy_sandbox_out`) listing name/RepresentID/NPCID/level/HP/defence and
+  displaying the selected dummy. Display is represent-first
+  (`AddRepresentModel(RepresentID)`), fallback
+  `AddDummyModel(GetRepresentModelPath)` + `GetRepresentAniPath` idle ani
+  (`TD_PATH=1`).
+- Evidence: `proof/pvp/target_dummy_sandbox_smoke_20260930.txt` — all 14 IDs probe
+  to `data\source\npc_source\练功木桩001\模型\wj_练功木桩001|002.mdl`, all spawn
+  handles valid, screenshots non-empty (`target_dummy_sandbox_shots_20260930.txt`);
+  fallback `target_dummy_sandbox_fallback_20260930.txt`. Gates: jx3_model 10x PASS,
+  gravity model, loot selftest PASS.
+- Note: PvP basis = live sNpcTemplate stats (主城试炼木桩 `MaxLife=500,000,000`,
+  def 33k-83k) + buff 28496 木桩心法属性 化劲/御劲
+  (`proof/pvp/attributes/buff_pvp_rows.txt:49`); the stale `pak_out4/Buff.tab`
+  copy lacks that ID — re-extract the live `skill\Buff.tab` when combat lands
+  (re-open criterion in `docs/pvp/TARGET_DUMMY_RESEARCH.md`).
+- Outcome: solved (sandbox + docs delivered; model display verified).
+
+### 2026-09-30 — client — one 试炼木桩 at the player spawn (sandbox-target-dummy)
+- Did: user clarified "sandbox" = the client, so `client/RebornClient.cs` now
+  spawns one dummy right after the player is placed: `RC_DUMMY` (default 35901
+  初级试炼木桩; 0 = off) at `RC_DUMMY_DIST` (default 400 u) along the measured
+  view direction, terrain-sampled; model via `GetRepresentModelPath`, idle clip
+  via `GetRepresentAniPath` + `KGModelCLR`. Feature build
+  `reborn_client_target-dummy.exe` (title `sandbox-target-dummy`, ns
+  `reborn_client_target-dummy.memory`); canonical exe/configs untouched.
+- Evidence: `proof/pvp/target_dummy_client_run_20260930.txt` — dummy handle valid
+  at (23334,740,24624) vs player spawn (23334,761,24224); screenshot
+  `rc_02_14000ms.png` shows the player and dummy together
+  (`target_dummy_client_shots_20260930.txt`).
+- Outcome: solved (requested in-client dummy delivered; the §4 browse sandbox
+  stays as a separate research tool, not the deliverable).
+
+### 2026-09-30 — controls — target selection research (how to target someone in front)
+- Did: decompiled the shipped b03 targeting script and disassembled the engine
+  Lua bindings; documented the real mechanism in
+  `docs/controls/JX3_TARGET_SELECTION.md`: Tab runs `SearchForEnemy(player,
+  nRadius, nAngle)` over 3 facing-axis cone zones (MidAxis 2560 u/15/level 3,
+  Inner 512 u/85/level 2, Outer 1280 u/114/level 1), filters via
+  `CanSelectNpc/Player` + `SELECTABLE_*`, sorts by player/screen/level then
+  axis-offset weight `dist × sin(angle from facing)`, and calls
+  `SelectTarget(TARGET.NPC|PLAYER, id)`; click uses the engine pick; selection is
+  client-local (no opcode; target rides with cast intents).
+- Evidence: `proof/pvp/disasm_targeting/` (7 functions incl.
+  `KPlayer::LuaSearchForEnemy` @ 0x1403F03D0), decompiled
+  `proof/collision/ui_scripts/target_b03.utf8.lua:17-113,234-317,335-423,862-913`,
+  bytecode dump `proof/controls/ui_lua/target_script.dump.txt`.
+- Open: `nAngle` unit (deg vs legacy 1.40625 unit, MED) — next probe disasm
+  0x140242220; mouseover-cast.
+- Outcome: research delivered (doc registered in `docs/controls/README.md`).
+
+### 2026-09-30 — controls — target-selected HUD (what appears on select)
+- Did: extracted the target-frame layout `ui/config/default/Player.ini` (88
+  sections) + element library `TargetCommon.ini` (878 sections) and mapped the
+  target module `ui/script/Target.lua` onto them; documented the HUD in
+  `docs/controls/JX3_TARGET_SELECTION.md` §9: avatar+school icon, name/level,
+  HP bar (hit flash, animated fill) + text, mana bar/no-mana state, absorb/shield
+  overlays, camp/team relation icon, party/NPC marks, boss variant, invincible,
+  in-combat glow, custom-mode label; buff/debuff rows via `BuffMgr` (timers,
+  dispel highlight); action/cast progress bar (`ACTION_STATE`/`PROGRESS_BAR_TYPE`);
+  per-school target handles (`Handle_TM/CJ/MJ/...` under `Handle_tot`).
+- Evidence: `proof/controls/target_frame_elements_20260930.txt` (parsed summary);
+  raw INIs not committed (game assets).
+- Outcome: question answered; HUD inventory registered in the targeting doc.
+
+### 2026-09-30 — client — real target HUD (client UI assets, no hand-drawn art)
+- Did: replaced the hand-drawn target frame with a renderer that draws the
+  client's own selected-target window `ui/Config/Default/TargetTarget.ini`
+  (50 sections, script Target.lua) using its real `.UITex` atlases + `ui/Font`
+  text schemes. New `tools/netcode/ui/extract_target_frame.py` pulls the
+  layout + atlases + textures + scheme files from the client PakV4 into the
+  git-ignored `assets/ui/targetframe/`; `client/UiClient.cs` parses the INI,
+  resolves PosType placement, decodes UITex/TGA/DDS, and draws with the real
+  fonts/colors. The HUD is composited by a per-pixel-alpha layered window
+  (`TargetFrameControl : Form`, WS_EX_LAYERED + UpdateLayeredWindow) because a
+  WinForms child control cannot blend over the engine's child HWND.
+- Evidence: client run `reborn_20260930_233743.log` (`target=初级试炼木桩 ...
+  zone=MidAxis`, no `target ui` warnings); window capture fingerprint
+  `proof/controls/target_hud_client_20260930.txt` (TargetBg plate + HP bar +
+  game-font name/level/camp visible). Gates: jx3_model 10x PASS, gravity,
+  loot selftest PASS.
+- Note: `Player.ini` (the first pick) is the player's own frame; the selected
+  target window is `TargetTarget.ini` — corrected in
+  `docs/controls/JX3_TARGET_SELECTION.md` §9.
+- Outcome: solved; runtime-set portrait face / buff rows / cast bar are
+  skipped until their state exists (missing art draws nothing, per §6).
+
+### 2026-10-01 - client - in-world target indicator (KRLTarget assets, no hand-drawn art)
+- Did: researched the marker drawn around a selected target (not the HUD):
+  the represent layer's KRLTarget. Config is
+  `represent/common/force_relation_care.txt` (ForceRelationCareTable): one row
+  per relation with SFXFile (relation-coloured selection ring,
+  `选择特效aXXX_hd.pss`), SFXEn (`J_角色箭头面向.pss` facing cone),
+  SFXScale 1.8 and the relation colours; KRLTarget::Init/LoadFile/Show drive it
+  and EnableBraceSfx attaches the CommonCursorEffect ring (`鼠标移动.Sfx`);
+  the UI Lua (GlobalEventHandler.lua) calls TargetSelection_ShowSFX(relation,
+  flag). Implemented in client/RebornClient.cs: on selection change spawn the
+  client's own ring + facing cone at the target via AddDummyModel, remove on
+  deselect; RC_TARGET_HUD default off (the request is the in-world marker).
+- Evidence: run reborn_20261001_173107.log (Tab selects 初级试炼木桩 at 3s,
+  indicator h>0), proof/controls/target_indicator_client_20261001.txt
+  (before/after PNGs + 4x4 RGB; red px 10->128, yellow 150->7852).
+- Dead end (documented): the native KRLTarget attach needs the represent game
+  world; in the MovieEditor-hosted engine the represent singleton is null
+  (JX3RepresentX64.dll RVA 0xF06A50 = 0), so AttachSceneObject/Show cannot run;
+  the cursor-ring brace is a compiled .Sfx (AddDummyModel rejects it). Also the
+  game-client JX3RepresentX64.dll is a different build than MovieEditor's -
+  RVAs must come from the loaded copy. Re-open criteria in
+  docs/controls/JX3_TARGET_SELECTION.md §10.
+- Outcome: solved for the ring + facing cone; the brace/arrow composition waits
+  on represent-world host support.
+
+### 2026-10-01 - cleanup - remove target_dummy_sandbox browse app
+- Did: deleted the separate browse/display app (	arget_dummy_sandbox/, added in
+  30e458e) per request - the client sandbox (one 试炼木桩 + in-world indicator in
+  client/RebornClient.cs) is the vehicle. Updated references: root AGENTS area
+  map, docs/pvp/README tools line, docs/netcode/README tools table,
+  docs/pvp/TARGET_DUMMY_RESEARCH.md (scope/§4/§5/Reproduce), and the target UI
+  paint-error path in client/Targeting.cs (now bin64\reborn_out). Historical
+  proof files (proof/pvp/target_dummy_sandbox_*) and the older EXPERIENCES entry
+  stay untouched.
+- Evidence: git rm of 4 files; client rebuild exit 0; grep shows no live
+  references outside historical proof/EXPERIENCES.
+- Outcome: branch carries only the client sandbox with the target dummy.
+
+### 2026-10-01 - client - left click anywhere deselects the target
+- Did: added the client's own click semantics to the sandbox. Proof chain found
+  first: LMB is bound to `CAMERAORSELECTORMOVE` (=1, "rotate camera or select
+  under cursor"; ui_hotkey_default.txt:35-36 + docs/movement/JX3_COLLISION_SYSTEM.md
+  section 16.1), bindings.ini:309-313 maps down/up to
+  CameraOrSelectOrMoveStart/Stop(0) (Lua handlers Ctrl_CameraOrSelectOrMoveStart/Stop
+  in ui/script/control.lua + hotkeys.lua), and the clear path is the same setter
+  with TARGET.NO_TARGET=1 (KTarget::SetTarget 0x140241C00; client calls
+  SetTarget(player, NO_TARGET, 0) at 0x140318C33). Implemented in
+  client/RebornClient.cs: a left click without drag runs the cursor pick; a hit
+  selects, an empty pick clears (`click: deselect`), removing the in-world
+  indicator. Added RC_CLICK_AT=ms,x,y so the click path is scriptable.
+- Evidence: run reborn_20261001_203137.log (Tab at 3s selects; click at 5s ->
+  "click: deselect (nothing under cursor)" -> "target indicator removed"),
+  proof/controls/target_deselect_click_20261001.txt (+ before/after PNGs and
+  4x4 RGB; warm pixels 463 -> 154, frame diff 6469 px at the dummy).
+- Open: the empty-pick branch of CameraOrSelectOrMoveStop is MED - the handler
+  name is runtime-registered (not a binary string); re-open criteria in
+  docs/controls/JX3_TARGET_SELECTION.md section 6.
+- Outcome: solved for the sandbox; the selection model follows the client.
+
+### 2026-10-01 - client - click pick hit volume (off-target click deselects)
+- Did: the deselect click kept the target when clicking NEAR the dummy because
+  TargetSelector.Pick used a 12-degree cone around the entity direction. Replaced
+  it with a ray-vs-vertical-body-cylinder test (radius 90 u, height 220 u,
+  nearest ray hit; client/Targeting.cs) - any ray missing every body is an empty
+  pick -> deselect. Extended RC_CLICK_AT to a list (ms,x,y;ms,x,y) for scripted
+  click sequences.
+- Evidence: run reborn_20261001_203922.log - Tab at 3s selects, click 620,430
+  (~80 px off the body) -> "click: deselect" + indicator removed, click 700,440
+  (on the body) -> "target=... (click pick)" + indicator back;
+  proof/controls/target_deselect_hit_test_20261001.txt (warm px 13393 -> 7904 ->
+  13392, 3 PNGs). Gates: jx3_model 10x PASS, gravity, loot selftest PASS.
+- Open: the body cylinder is the host's stand-in for the engine's model pick
+  (KCharacter::OnPickPrepare); re-open when the host exposes a real model pick
+  (docs/controls/JX3_TARGET_SELECTION.md section 6).
+- Outcome: solved; the user rule "not clicking on target = deselect" holds.

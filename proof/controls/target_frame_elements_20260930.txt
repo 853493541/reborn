@@ -1,0 +1,147 @@
+# Target HUD element inventory (JX3 client, 2026-09-30)
+#
+# Sources (read-only extraction, official PakV4SfxExtract; game client paks):
+#   ui/Config/Default/TargetTarget.ini    selected-target window (Target.lua), 50 sections
+#   ui/Config/Default/TargetCommon.ini    per-school/buff element library, 878 sections
+#   ui/Scheme/Elem/{font.ini,fontlist.ini,color.txt}  text schemes
+#   ui/Font/*.ttf                         fonts (read from the client install)
+# Raw game files are NOT committed; this is the parsed summary.
+
+## TargetTarget.ini sections (name | type | parent | left,top,w,h | image frame)
+TargetTarget             | WndFrame  | Normal           | 500,124,325,115 |  f
+Handle_Target            | Handle    | TargetTarget     | 0,0,325,115 |  f
+Image_TarBg              | Image     | Handle_Target    | 4,10,220,51 | ui\Image\UItimate\UICommon\TargetBg.UITex f13
+Image_TarBgF             | Image     | Handle_Target    | 4,10,220,51 | ui\Image\UItimate\UICommon\TargetBg.UITex f13
+Image_Target             | Image     | Handle_Target    | 58,0,28,28 |  f67
+Image_NewTarget          | Image     | Handle_Target    | 7,0,56,63 |  f6
+Handle_BuyBg             | Handle    | Handle_Target    | 3,15,,115 |  f
+Image_BuyBG1             | Image     | Handle_BuyBg     | 1,0,81,47 | ui\Image\PlayerAvatar\CHGJ_1_DK_2.UITex f0
+Image_BuyBG2             | Image     | Handle_BuyBg     | 82,3,101,37 | ui\Image\PlayerAvatar\CHGJ_1_DK_2.UITex f1
+Image_BuyBG3             | Image     | Handle_BuyBg     | 183,2,38,40 | ui\Image\PlayerAvatar\CHGJ_1_DK_2.UITex f2
+SFX_BuyBG1               | SFX       | Handle_BuyBg     | 3,0,, |  f
+SFX_BuyBG3               | SFX       | Handle_BuyBg     | 183,2,, |  f
+Animate_Whole            | Animate   | Handle_BuyBg     | 0,-5,221,52 | ui\Image\PlayerAvatar\AvatarBgTest.UITex f
+SFX_Whole                | SFX       | Handle_BuyBg     | 0,-5,, |  f
+Handle_Avatar            | Handle    | Handle_Target    | 17,-8,56,63 |  f
+Image_Avatar             | Image     | Handle_Avatar    | -7,0,56,63 |  f0
+Animate_Avatar           | Animate   | Handle_Avatar    | 0,0,56,63 |  f
+Image_School             | Image     | Handle_Avatar    | 3,15,42,42 | ui\Image\TargetPanel\Target.UITex f107
+SFX_Avatar               | SFX       | Handle_Avatar    | 0,0,0,0 |  f
+Image_Danger             | Image     | Handle_Target    | 50,36,, | ui\Image\TargetPanel\Target.UITex f21
+Image_SubHealth          | Image     | Handle_Target    | 70,27,138,10 | ui\Image\TargetPanel\Target.UITex f82
+Image_Health             | Image     | Handle_Target    | 71,27,138,10 | ui\Image\UItimate\UICommon\Player.UITex f7
+Image_Mana               | Image     | Handle_Target    | 83,38,111,8 | ui\Image\UItimate\UICommon\Player.UITex f6
+Image_NPCMark            | Image     | Handle_Target    | 78,0,26,26 |  f67
+Handle_Buff              | Handle    | Handle_Target    | 0,64,325,20 |  f
+Box                      | Box       | Handle_Buff      | ,,20,20 |  f
+Handle_Debuff            | Handle    | Handle_Target    | 0,85,325,20 |  f
+Handle_Name              | Handle    | Handle_Target    | 81,3,130,17 |  f
+Text_Target              | Text      | Handle_Name      | ,,120,17 |  f
+Null_New                 | Null      | Handle_Name      | ,,4,17 |  f
+Image_Cloud              | Image     | Handle_Name      | ,,20,20 | ui\Image\UICommon\CommonPanel.UITex f109
+Image_Invincible         | Image     | Handle_Target    | 71,27,138,10 | ui\Image\UICommon\Baizhan.UITex f52
+Text_Level               | Text      | Handle_Target    | 54,38,20,20 |  f
+Text_Health              | Text      | Handle_Target    | 71,24,138,12 |  f
+Text_Mana                | Text      | Handle_Target    | 83,39,111,10 |  f
+Image_Camp               | Image     | Handle_Target    | 1,39,26,26 | ui\Image\UICommon\CommonPanel2.UITex f5
+Image_HPmark             | Image     | Handle_Target    | 100,18,, | ui\Image\TargetPanel\Target.UITex f7
+SFX_HPmark               | SFX       | Handle_Target    | 133,31,, |  f
+Handle_Bar               | Handle    | Handle_Target    | 58,110,154,17 |  f
+Image_BarShieldBg        | Image     | Handle_Bar       | -29,-12,, | ui\Image\Common\ProgressBar.UITex f5
+Image_Bg                 | Image     | Handle_Bar       | 0,2,154,14 | ui\Image\Common\ProgressBar.UITex f4
+Image_Progress           | Image     | Handle_Bar       | 3,6,148,6 | ui\Image\Common\ProgressBar.UITex f7
+Image_FlashS             | Image     | Handle_Bar       | 3,6,148,6 | ui\Image\Common\ProgressBar.UITex f9
+Image_FlashF             | Image     | Handle_Bar       | 3,6,148,6 | ui\Image\Common\ProgressBar.UITex f6
+Text_Name                | Text      | Handle_Bar       | 5,4,145,10 |  f
+Wnd_CustomMode           | WndWindow | TargetTarget     | 0,0,0,0 |  f
+Handle_CustomMode        | Handle    | Wnd_CustomMode   | 0,0,, |  f
+Image_CMNormal           | Image     | Handle_CustomMode | 0,0,, | ui\Image\Minimap\Minimap.UITex f158
+Image_CMOver             | Image     | Handle_CustomMode | 0,0,, | ui\Image\Minimap\Minimap.UITex f157
+Text_CMName              | Text      | Handle_CustomMode | 0,0,, |  f
+
+## Target.lua element refs (22)
+  Handle_BaDao
+  Handle_Buff
+  Handle_CG
+  Handle_CJ
+  Handle_CY
+  Handle_CangYun
+  Handle_DS
+  Handle_DZ
+  Handle_Debuff
+  Handle_GB
+  Handle_MJ
+  Handle_SL
+  Handle_TC
+  Handle_TM
+  Handle_WD
+  Handle_WH
+  Handle_WL
+  Handle_Wx
+  Handle_YT
+  Handle_YZ
+  Image_Flash
+  Image_NPCMark
+
+## Target.lua registered events (34)
+  BUFF_UPDATE
+  CHANGE_CAMP
+  CHANGE_CAMP_FLAG
+  CUSTOM_DATA_LOADED
+  NPC_DROP_TARGET_UPDATE
+  NPC_LEAVE_SCENE
+  NPC_STATE_UPDATE
+  ON_CLEAR_PROXY_SKILL_LIST_NOTIFY
+  ON_ENTER_CUSTOM_UI_MODE
+  ON_LEAVE_CUSTOM_UI_MODE
+  ON_NEW_PROXY_SKILL_LIST_NOTIFY
+  ON_NPC_LEAVE_FIGHT
+  OT_ACTION_PROGRESS_BREAK
+  PARTY_SET_MARK
+  PARTY_UPDATE_BASE_INFO
+  PLAYER_ENTER_SCENE
+  PLAYER_LEAVE_SCENE
+  PLAYER_LEVEL_UP
+  PLAYER_STATE_UPDATE
+  SET_MINI_AVATAR
+  SET_SHOW_STANDARD_TARGET
+  SET_SHOW_VALUE_BY_PERCENTAGE
+  SET_SHOW_VALUE_SIMPLE_BLOOD
+  SET_SHOW_VALUE_TWO_FORMAT
+  SET_TARGET_SHOW_STATE_VALUE
+  SKILL_MOUNT_KUNG_FU
+  SKILL_UNMOUNT_KUNG_FU
+  TARGET_ANCHOR_CHANGED
+  TARGET_MINI_AVATAR_MISC
+  UI_ON_DAMAGE_EVENT
+  UI_SCALED
+  UPDATE_ALL_RELATION
+  UPDATE_PLAYER_SCHOOL_ID
+  UPDATE_RELATION
+
+## TargetCommon.ini (target-of-target + school resource handles)
+  Handle_BaDao      present_in_TargetCommon=True
+  Handle_Buff       present_in_TargetCommon=False
+  Handle_CG         present_in_TargetCommon=True
+  Handle_CJ         present_in_TargetCommon=True
+  Handle_CY         present_in_TargetCommon=True
+  Handle_CangYun    present_in_TargetCommon=True
+  Handle_DS         present_in_TargetCommon=True
+  Handle_DZ         present_in_TargetCommon=True
+  Handle_Debuff     present_in_TargetCommon=False
+  Handle_GB         present_in_TargetCommon=True
+  Handle_MJ         present_in_TargetCommon=True
+  Handle_SL         present_in_TargetCommon=True
+  Handle_TC         present_in_TargetCommon=True
+  Handle_TM         present_in_TargetCommon=True
+  Handle_WD         present_in_TargetCommon=True
+  Handle_WH         present_in_TargetCommon=True
+  Handle_WL         present_in_TargetCommon=True
+  Handle_Wx         present_in_TargetCommon=True
+  Handle_YT         present_in_TargetCommon=True
+  Handle_YZ         present_in_TargetCommon=True
+  Image_BuffBG parent=Handle_tot image=ui\Image\Common\MainPanel_1.UITex
+  Image_DebuffBG parent=Handle_tot image=ui\Image\Common\MainPanel_1.UITex
+
+Reproduce: python tools/netcode/ui/extract_target_frame.py  (then parse sections
+with GB18030; see docs/controls/JX3_TARGET_SELECTION.md Reproduce section).

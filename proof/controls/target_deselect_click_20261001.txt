@@ -1,0 +1,52 @@
+Target deselect on empty left click - client capture 2026-10-01
+Build: reborn_client_target-dummy.exe (RC_TITLE=targeting), run log reborn_20261001_203137.log
+Map: data\source\maps\龙门寻宝\龙门寻宝.jsonmap; dummy 初级试炼木桩 rid=35901 at spawn+400u
+
+Client mechanism (proof chain):
+- LMB action = CAMERAORSELECTORMOVE (=1): proof/movement/extracted/ui_hotkey_default.txt:35-36
+  ("rotate camera or select under cursor", docs/movement/JX3_COLLISION_SYSTEM.md section 16.1)
+- ui/hotkey/bindings.ini:309-313: down=CameraOrSelectOrMoveStart(0); up=CameraOrSelectOrMoveStop(0);
+- Lua handlers surfaced as Ctrl_CameraOrSelectOrMoveStart/Stop
+  (ui/script/control.lua stubs; ui/script/hotkeys.lua protos 141/142, PakV4-extracted)
+- clear path: KTarget::SetTarget accepts type 1 = NO_TARGET (0x140241C00); the client itself
+  calls SetTarget(player, NO_TARGET, 0) at 0x140318C33 (auto-clear on facing cone exit)
+- empty-pick branch of CameraOrSelectOrMoveStop: MED (handler name is runtime-registered, not a
+  binary string) - re-open criteria in docs/controls/JX3_TARGET_SELECTION.md section 6
+
+Scripted run (RC_TAB_AT=3000, RC_CLICK_AT=5000,10,10, RC_SHOTS=4500,7000, RC_AUTORUN=9000):
+20:32:09.197 target=初级试炼木桩 lv131 zone=MidAxis dist=400u axis=0u
+20:32:09.210 target indicator '...选择特效a002_hd.pss' h=5794357304 y=+0 | arrow h=5798006424 y=+8 s=0.50 yaw=-3.14
+20:32:10.753 shot -> rc_00_4500ms.png          (targeted: indicator present)
+20:32:11.196 RC_CLICK_AT -> click at 10,10
+20:32:11.198 click: deselect (nothing under cursor)
+20:32:11.204 target indicator removed
+20:32:13.251 shot -> rc_01_7000ms.png          (after empty click: indicator gone)
+
+Numeric fingerprints (tools/proof/image_stats.py, 4x4 grid):
+before (rc_00_4500ms.png) -> proof/controls/target_deselect_before_20261001.png
+  size=1280x720 mode=RGB bytes=972112 sha256=9de2db7d378df342
+  mean=#9F8671
+  5C3A29 856A59 8D7763 9E8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AD92 AE9C87
+  9F8B79 876D5D 9E8570 A89682
+after  (rc_01_7000ms.png) -> proof/controls/target_deselect_after_20261001.png
+  size=1280x720 mode=RGB bytes=967854 sha256=cb6efdaf59f3f5f3
+  mean=#9E8672
+  5C3A29 856A59 8D7763 9E8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AF94 AE9C87
+  9F8B79 876D5D 9D8672 A89682
+
+Delta: warm (indicator) pixels 463 -> 154; frame diff 6469 px in bbox x624-990 y59-577
+(the indicator cone/ring region at the dummy). Deselected state matches the pre-selection
+baseline in proof/controls/target_indicator_before_20261001.png.
+
+Reproduce:
+  set RC_CLIENT_EXE=reborn_client_target-dummy.exe && client\build_client.cmd
+  set RC_TITLE=targeting
+  set RC_TAB_AT=3000
+  set RC_CLICK_AT=5000,10,10
+  set RC_SHOTS=4500,7000
+  set RC_AUTORUN=9000
+  cd /d C:\SeasunGame\MovieEditor && bin64\reborn_client_target-dummy.exe
