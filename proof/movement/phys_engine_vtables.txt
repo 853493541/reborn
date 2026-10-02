@@ -551,3 +551,28 @@ gather + getTriangle collection) stay as diagnostics (RC_PX_SWEEP3).
 Continuous motion is covered by the per-pose equivalence (0.00% / 7991
 poses) plus the solver-side wall/thin-wall A/Bs; sweep-specific semantics
 (inflation, initial-overlap) remain unverified.
+
+### Update 2026-10-02f: sweep ABI partially cracked (hitFlags is a POINTER arg in this build)
+
+Follow-up to 2026-10-02e. Frame analysis of the sweep prologue with correct
+shadow-space accounting: stack args start at callee [rsp+0xC0]:
+- arg5 triCount @0xC0, arg6 triangles @0xC8, arg7 hit @0xD0 (fields written at
+  +0x10/+0x1C/+0x28/+0x34), arg8 @0xD8 is DEREFERENCED as a word -> in THIS
+  build PxHitFlags is passed AS A POINTER, not by value; arg9 cachedIndex
+  @0xE0 (word deref), arg10 inflation @0xE8 (float).
+- The two earlier crashes were both null derefs: NULL cachedIndex and, in the
+  second variant, a null hitFlags pointer (value 0). Passing a valid 4-byte
+  flags buffer (value 3) + valid cachedIndex makes the call EXECUTE cleanly
+  (`reborn_20261002_143155.log`, specs 1-2). This is the ABI crack.
+
+**Still ambiguous (do not use results as truth yet):**
+- With 0 candidate triangles the call still returned true with an all-zero hit
+  buffer - the bool may not mean "hit" (or an early-out returns true).
+- Hit buffer values for the 18700/18865 wall starts: +0x10 = 2, +0x28 = -1.0,
+  +0x2C/+0x30 = -0.0, rest 0 - not the public PxSweepHit layout; our solver
+  shows those starts are already INSIDE the wj_erg prop (depth 12-17), so an
+  immediate hit is plausible but the distance field is unconfirmed.
+- A 3000 u sweep with 256 candidates hung (>85 s, no return) - limit specs to
+  short moves.
+**Next**: copy the engine's own caller (PhysX3CharacterKinematic or a scene
+query site) to confirm the return semantics + hit layout before any use.

@@ -55,7 +55,7 @@ internal static class PhysicsProbe
         IntPtr results, uint maxResults, uint startIndex, IntPtr overflow);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate bool SweepFn(IntPtr unitDir, float distance, IntPtr geom, IntPtr pose, uint triCount,
-        IntPtr triangles, IntPtr hit, ushort hitFlags, IntPtr cachedIndex, float inflation, bool anyHit);
+        IntPtr triangles, IntPtr hit, IntPtr hitFlagsPtr, IntPtr cachedIndex, float inflation, bool anyHit);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Bool2Fn(IntPtr self, IntPtr a, IntPtr b);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
@@ -1188,8 +1188,9 @@ internal static class PhysicsProbe
                         }
                         string sweepSpec = Environment.GetEnvironmentVariable("RC_PX_SWEEP3");
                         if (!string.IsNullOrEmpty(sweepSpec))
+                        foreach (string specOne in sweepSpec.Split(';'))
                         {
-                            string[] sp = sweepSpec.Split(',');
+                            string[] sp = specOne.Split(',');
                             float sx = float.Parse(sp[0], ci), sy = float.Parse(sp[1], ci), sz = float.Parse(sp[2], ci);
                             float sdx = float.Parse(sp[3], ci), sdy = float.Parse(sp[4], ci), sdz = float.Parse(sp[5], ci);
                             float sdist = float.Parse(sp[6], ci);
@@ -1236,14 +1237,22 @@ internal static class PhysicsProbe
                             IntPtr hit = Marshal.AllocHGlobal(0x40);
                             for (int i = 0; i < 0x40 / 4; i++) Marshal.WriteInt32(hit, i * 4, 0);
                             IntPtr pSweep = GetProcAddress(hCommon, "?sweep@PxMeshQuery@physx@@SA_NAEBVPxVec3@2@MAEBVPxGeometry@2@AEBVPxTransform@2@IPEBVPxTriangle@2@AEAUPxSweepHit@2@V?$PxFlags@W4Enum@PxHitFlag@physx@@G@2@PEBIM_N@Z");
-                            log("physprobe: PX_SWEEP3 spec=" + sweepSpec + " candidates=" + nc + " pSweep=0x" + pSweep.ToInt64().ToString("X"));
+                            log("physprobe: PX_SWEEP3 spec=" + specOne + " candidates=" + nc + " pSweep=0x" + pSweep.ToInt64().ToString("X"));
                             if (pSweep != IntPtr.Zero)
                             {
-                                // PARKED: the 11-arg mangled ABI crashes on call even
-                                // with a valid cachedIndex and zero triangles (stack
-                                // arg frame differs from the demangling; needs the
-                                // engine's own caller to copy). Diagnostic only.
-                                log("physprobe: PX_SWEEP3 call skipped (parked ABI - see proof doc)");
+                                IntPtr flagsBuf = Marshal.AllocHGlobal(4);
+                                Marshal.WriteInt32(flagsBuf, 3);
+                                IntPtr cached = Marshal.AllocHGlobal(4);
+                                Marshal.WriteInt32(cached, unchecked((int)0xFFFFFFFF));
+                                bool sh = Fn<SweepFn>(pSweep)(unit, sdist, cap, sPose, nc, triArr, hit, flagsBuf, cached, 0f, false);
+                                string hf = "";
+                                for (int i = 0; i < 16; i++)
+                                    hf += BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(hit, i * 4)), 0).ToString("0.###") + " ";
+                                string hi = "";
+                                for (int i = 0; i < 16; i++)
+                                    hi += Marshal.ReadInt32(hit, i * 4).ToString("X8") + " ";
+                                log("physprobe: PX_SWEEP3 hit=" + sh + " hitbufF=" + hf);
+                                log("physprobe: PX_SWEEP3 hitbufX=" + hi);
                             }
                         }
                     }

@@ -1002,3 +1002,13 @@ solved it, and what is still open. **Newest at the bottom.**
 - Lesson: for an exported C++ static with a long mixed int/float arg list,
   the mangling is necessary but not sufficient - the binary ABI (stack frame)
   must be confirmed from a real caller when the first call crashes.
+
+### 2026-10-02 - Sweep ABI: the crash was a POINTER arg (hitFlags), semantics still open
+
+- Correct frame accounting (arg5 starts at callee rsp+0xC0) showed PxHitFlags is
+  a POINTER in this build; passing a valid buffer made the sweep execute.
+  Prove regressions: the two prior crashes were null derefs of cachedIndex and
+  of the flags pointer passed as a value.
+- The return bool/fields do not yet match the public 3.3.4 semantics (true with
+  zero triangles; unfamiliar hit field offsets; long sweeps hang). Unverified -
+  next is copying the engine's own caller frame.
