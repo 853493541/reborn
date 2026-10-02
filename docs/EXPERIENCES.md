@@ -1506,3 +1506,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   probe clients write `(uptime_s<<16)|ticks` heartbeat; real run held random 8-byte values.
 - Evidence: doc §15; runtime samples; KG3DEngineDX11EX64.dll string + context; block decrypt run.
 - Outcome: partial (timeline/owners clarified; the waited-on object is still unidentified).
+
+### 2026-10-01 — netcode — Wait trace: engine FS waits, WinMain frame never observed
+- Did: built probe_wait_trace.py (register + handle + stack sampling of our own child in waits).
+  Early boot = Sleep loop; ~1.33 s = infinite wait inside Engine_Lua5X64 async FS layer
+  (kernelbase!WaitForSingleObject -> engine_lua5x64+0x12DDA8). WinMain's wait frame was never
+  found on any thread; handle naming in-wait kept failing (invalid handle) - needs unwind-based
+  frame attribution before the handle can be trusted.
+- Evidence: doc §16; probe_wait_trace.py; sample logs.
+- Outcome: partial (wait owner localized to the engine FS layer; exact object still unnamed).

@@ -280,3 +280,22 @@ what completes it (likely the launcher/security handshake).
 - Net: the missing input is consumed early (before/at PakV4 FS init); the exit is a clean
   teardown. The wait/pump loop appears to spend the ~2 s inside a step that waits (ntdll) with a
   timeout, then reports idle -> WinMain exits.
+
+## 16. Wait trace (2026-10-01, tenth pass)
+
+- Tool: `tools/netcode/probe_wait_trace.py` - spawns the client suspended, writes the block,
+  resumes, then samples the main thread every 10 ms; when RIP is inside an ntdll wait stub it
+  reads registers (R10 = handle), the timeout LARGE_INTEGER, the handle object (dup +
+  NtQueryObject, done while the thread is suspended), and the stack (module-mapped).
+- Observed: early boot is a **Sleep loop** (`NtDelayExecution`, same timeout pointer repeated,
+  0.02-0.13 s); then short `NtWaitForSingleObject` catches; at ~1.33-1.37 s a stable
+  **infinite wait** (`timeout = 0`) whose stack is
+  `ucrtbase -> kernelbase!WaitForSingleObject -> engine_lua5x64.dll+0x12DDA8 -> ...` - i.e. the
+  wait happens inside the **Engine_Lua5X64** async file-system layer, not the exe.
+- Handle naming: duplicate-from-child works with `OpenProcess(PROCESS_DUP_HANDLE)` for some
+  handles (e.g. 0x1B70) but the handles caught in-wait fail to duplicate (`ERROR_INVALID_HANDLE`),
+  so the exact waited-on object is still unnamed; the wait-stub offset match may also be
+  ambiguous between adjacent ntdll exports. Follow-up: use .pdata unwind walking to attribute
+  the wait to a concrete frame before trusting the handle.
+- No WinMain frame (`0x1400E13DF`) was found on any thread at 0.5/1.0/1.3/1.4/1.8/2.05 s; the
+  exe never appears in the sampled wait stacks. Exit stays clean at ~2.2 s.
