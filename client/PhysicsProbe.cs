@@ -54,6 +54,9 @@ internal static class PhysicsProbe
     delegate uint FindOverlapFn(IntPtr geom, IntPtr geomPose, IntPtr meshGeom, IntPtr meshPose,
         IntPtr results, uint maxResults, uint startIndex, IntPtr overflow);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate bool SweepFn(IntPtr unitDir, float distance, IntPtr geom, IntPtr pose, uint triCount,
+        IntPtr triangles, IntPtr hit, ushort hitFlags, IntPtr cachedIndex, float inflation, bool anyHit);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Bool2Fn(IntPtr self, IntPtr a, IntPtr b);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate uint WriteFn(IntPtr self, IntPtr src, uint count);
@@ -1181,6 +1184,66 @@ internal static class PhysicsProbe
                                     if (c != prev) { trans += " y" + cy + ":" + c; prev = c; }
                                 }
                                 log("physprobe: PX_FIELD2 spot" + s + " (" + x + "," + z + ") transitions:" + trans);
+                            }
+                        }
+                        string sweepSpec = Environment.GetEnvironmentVariable("RC_PX_SWEEP3");
+                        if (!string.IsNullOrEmpty(sweepSpec))
+                        {
+                            string[] sp = sweepSpec.Split(',');
+                            float sx = float.Parse(sp[0], ci), sy = float.Parse(sp[1], ci), sz = float.Parse(sp[2], ci);
+                            float sdx = float.Parse(sp[3], ci), sdy = float.Parse(sp[4], ci), sdz = float.Parse(sp[5], ci);
+                            float sdist = float.Parse(sp[6], ci);
+                            float slen = (float)Math.Sqrt(sdx * sdx + sdy * sdy + sdz * sdz);
+                            if (slen < 1e-6f) slen = 1f;
+                            sdx /= slen; sdy /= slen; sdz /= slen;
+                            IntPtr fat = Marshal.AllocHGlobal(0x20);
+                            float fatR = sdist * 0.5f + 24f;
+                            Marshal.WriteInt32(fat, 0x00, 2);
+                            Marshal.WriteInt32(fat, 0x04, BitConverter.ToInt32(BitConverter.GetBytes(fatR), 0));
+                            Marshal.WriteInt32(fat, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(41f), 0));
+                            IntPtr fatPose = Marshal.AllocHGlobal(0x20);
+                            for (int i = 0; i < 8; i++) Marshal.WriteInt32(fatPose, i * 4, 0);
+                            Marshal.WriteInt32(fatPose, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                            Marshal.WriteInt32(fatPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                            Marshal.WriteInt32(fatPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(sx + sdx * sdist * 0.5f), 0));
+                            Marshal.WriteInt32(fatPose, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(sy + sdy * sdist * 0.5f), 0));
+                            Marshal.WriteInt32(fatPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(sz + sdz * sdist * 0.5f), 0));
+                            IntPtr cand = Marshal.AllocHGlobal(256 * 4);
+                            IntPtr ovf = Marshal.AllocHGlobal(4);
+                            uint nc = Fn<FindOverlapFn>(pOverlap)(fat, fatPose, geom, mpose, cand, 256, 0, ovf);
+                            IntPtr triArr = Marshal.AllocHGlobal((int)nc * 36 + 36);
+                            IntPtr oneTri = Marshal.AllocHGlobal(0x30);
+                            IntPtr triIdx = Marshal.AllocHGlobal(12);
+                            IntPtr pGetTri3 = GetProcAddress(hCommon, "?getTriangle@PxMeshQuery@physx@@SAXAEBVPxTriangleMeshGeometry@2@AEBVPxTransform@2@IAEAVPxTriangle@2@PEAI3@Z");
+                            for (int k = 0; k < nc; k++)
+                            {
+                                uint ti = (uint)Marshal.ReadInt32(cand, k * 4);
+                                Fn<GetTriFn>(pGetTri3)(geom, mpose, ti, oneTri, triIdx);
+                                for (int b = 0; b < 9; b++)
+                                    Marshal.WriteInt32(triArr, k * 36 + b * 4, Marshal.ReadInt32(oneTri, b * 4));
+                            }
+                            IntPtr sPose = Marshal.AllocHGlobal(0x20);
+                            for (int i = 0; i < 8; i++) Marshal.WriteInt32(sPose, i * 4, 0);
+                            Marshal.WriteInt32(sPose, 0x08, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                            Marshal.WriteInt32(sPose, 0x0C, BitConverter.ToInt32(BitConverter.GetBytes(0.70710678f), 0));
+                            Marshal.WriteInt32(sPose, 0x10, BitConverter.ToInt32(BitConverter.GetBytes(sx), 0));
+                            Marshal.WriteInt32(sPose, 0x14, BitConverter.ToInt32(BitConverter.GetBytes(sy), 0));
+                            Marshal.WriteInt32(sPose, 0x18, BitConverter.ToInt32(BitConverter.GetBytes(sz), 0));
+                            IntPtr unit = Marshal.AllocHGlobal(12);
+                            Marshal.WriteInt32(unit, 0, BitConverter.ToInt32(BitConverter.GetBytes(sdx), 0));
+                            Marshal.WriteInt32(unit, 4, BitConverter.ToInt32(BitConverter.GetBytes(sdy), 0));
+                            Marshal.WriteInt32(unit, 8, BitConverter.ToInt32(BitConverter.GetBytes(sdz), 0));
+                            IntPtr hit = Marshal.AllocHGlobal(0x40);
+                            for (int i = 0; i < 0x40 / 4; i++) Marshal.WriteInt32(hit, i * 4, 0);
+                            IntPtr pSweep = GetProcAddress(hCommon, "?sweep@PxMeshQuery@physx@@SA_NAEBVPxVec3@2@MAEBVPxGeometry@2@AEBVPxTransform@2@IPEBVPxTriangle@2@AEAUPxSweepHit@2@V?$PxFlags@W4Enum@PxHitFlag@physx@@G@2@PEBIM_N@Z");
+                            log("physprobe: PX_SWEEP3 spec=" + sweepSpec + " candidates=" + nc + " pSweep=0x" + pSweep.ToInt64().ToString("X"));
+                            if (pSweep != IntPtr.Zero)
+                            {
+                                // PARKED: the 11-arg mangled ABI crashes on call even
+                                // with a valid cachedIndex and zero triangles (stack
+                                // arg frame differs from the demangling; needs the
+                                // engine's own caller to copy). Diagnostic only.
+                                log("physprobe: PX_SWEEP3 call skipped (parked ABI - see proof doc)");
                             }
                         }
                     }

@@ -990,3 +990,15 @@ solved it, and what is still open. **Newest at the bottom.**
   tangential-contact threshold artifacts, no phasing class).
 - Rule of thumb reinforced: compare only after both sides use identical
   transforms, identical instance rules, and identical shape conventions.
+
+### 2026-10-02 - Phase-1 reaches 0.00% (7991 poses); sweep ABI parked
+
+- Dense grid (pitch 100) over the play region: 0/7991 mismatch after the
+  world-bake + capsule-axis corrections. The coarse pitch-250 result (0.15%)
+  was two tangential-contact threshold artifacts, not reproduced dense.
+- PxMeshQuery::sweep direct call: the demangled 11-arg signature crashes in
+  this build's frame layout (zero-triangle + valid-cachedIndex variants both
+  crash). Parked with the diagnostic path; copy the engine's own caller next.
+- Lesson: for an exported C++ static with a long mixed int/float arg list,
+  the mangling is necessary but not sufficient - the binary ABI (stack frame)
+  must be confirmed from a real caller when the first call crashes.

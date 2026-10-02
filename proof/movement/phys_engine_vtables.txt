@@ -528,3 +528,26 @@ drops it; solver blocks from the next step. No walk-through/phasing class.
 Tools: `collision_grid_probe.exe grid <bin> x0 z0 x1 z1 pitch yStep [yMax]`
 and `tools/collision/pxdiff.py <engine_log> <solver_out> <yStep> [yMax]`.
 Next: sweep-semantics A/B (Phase 2) at the wall move sets.
+
+### Update 2026-10-02e: Phase-1 densified to 0.00% (7991 points); Phase-2 sweep ABI parked
+
+**Densified Phase-1 grid** (pitch 100): x 18000..24000 x z 24000..37000 =
+7991 lattice points, y 0..1500 step 25, engine vs solver (same setup as
+2026-10-02d): **0 / 7991 mismatched (0.00%)**. The two coarse-grid boundary
+artifacts do not recur on the dense lattice. Body: reborn_20261002_141*,
+solver `collision_grid_probe grid ... 100 25`; diff tools/collision/pxdiff.py.
+
+**Phase-2 (engine sweep) status: PARKED, ABI unresolved.** The exported
+`?sweep@PxMeshQuery@physx@@SA_N...` (RVA 0xFCCE0) was called with the
+demangled 11-arg signature (unitDir, distance, geom, pose, triCount,
+PxTriangle*, PxSweepHit&, PxHitFlags(u16), cachedIndex, inflation, anyHit):
+crashes inside the call even with zero triangles and a valid cachedIndex
+(two variants tried, `reborn_20261002_141414/141757`). Disasm of the
+prologue shows the geometry-type switch works (sphere/capsule/box) and a
+`word [cachedIndex]` dereference - the stack-arg frame differs from the
+public 3.3.4 signature in this build; copying the engine's own caller (or
+its exact frame) is required. The working parts (fat-capsule candidate
+gather + getTriangle collection) stay as diagnostics (RC_PX_SWEEP3).
+Continuous motion is covered by the per-pose equivalence (0.00% / 7991
+poses) plus the solver-side wall/thin-wall A/Bs; sweep-specific semantics
+(inflation, initial-overlap) remain unverified.
