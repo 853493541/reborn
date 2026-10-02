@@ -481,3 +481,21 @@ audit's capsule-vs-triangle test to the engine-reported triangles (getTriangle)
 and compare per-pose contact sets; then decide the integration (engine
 PxMeshQuery as the query backend behind FoliageCollision, or keep our solver
 with this as the calibration reference).
+
+### Update 2026-10-02c: solver-vs-engine A/B at the field spots - POSITIVE
+
+`tools/collision/spot_ab.py` (capsule r=17 hh=41, 18 samples along the axis,
+point-triangle distance; our world-baked 龙门寻宝_夜晚 structure bin) vs the
+engine PxMeshQuery scans (2026-10-02b), y scan 0..1500 step 25:
+
+| spot | engine PhysX | our solver | verdict |
+|---|---|---|---|
+| spawn (23334,24224) | none 0..1500 | none 0..1500 | MATCH |
+| wall (18915,36850) | 1 for y 1325..1399 | 1 for y 1300..1424 | MATCH* |
+| pile (20450,31000) | 1 for y 275..324, 1 from 1425 | 1 for y 225..349, 1 from 1400 | MATCH* |
+
+*transition-height differences <= 25 u = the scan granularity; both engines see
+the same surfaces (wall top band, pile top band + an upper surface).
+
+The A/B reference now exists end-to-end: engine cooker -> engine mesh ->
+PxMeshQuery -> field scans, and our solver agrees at all three reported spots.

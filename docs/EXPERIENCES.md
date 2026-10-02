@@ -965,3 +965,16 @@ solved it, and what is still open. **Newest at the bottom.**
   already says this; this is the second reminder).
 - Next: sweep physics vt[23,25..44] for createShape, or trace the engine's own
   shape factory object used at PhysicsEngineX64 ~0x144CF.
+
+### 2026-10-02 - PhysX midphase A/B: the solver matches the engine at the field spots
+
+- Completed the PhysX-direct path without a scene: PhysX3Common_x64.dll exports
+  PxMeshQuery static functions by mangled name (987 exports); getTriangle +
+  findOverlapTriangleMesh + sweep. Geometry layout corrected from getTriangle
+  disasm: mesh ptr at +0x28, scale at +0x04 (live null-deref taught this).
+- Full-map cook (2.26M tris -> 105 MB cooked stream, ~9 s); capsule self-test at
+  triangle-0 centroid overlaps; vertical scans at the field spots on the right
+  map (龙门寻宝_夜晚 - identified by closest-vertex scan across the 5 bins).
+- Result: engine vs our solver agree at spawn/wall/pile (tool
+  tools/collision/spot_ab.py). The engine-side reference is now reproducible.
+- Note: cooked streams can exceed 64 MB; the probe uses a 256 MB buffer.
