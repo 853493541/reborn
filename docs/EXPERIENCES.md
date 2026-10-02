@@ -1318,3 +1318,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   gc_charyaw_thunk.txt, gc_setcontrolother_thunk.txt, exe_createso3.txt;
   OPERATION_MODES_PLAN.md sec 7d addendum 3.
 
+
+### 2026-10-01 - controls/client - IMPLEMENTED the decoded classical model
+- User: implement the fully decoded system.
+- Change (client/RebornClient.cs): classical movement now runs along the
+  character facing (spawn-synced at the three camera-init sites); the turn
+  block writes curYaw only (joystick keeps its historic camera coupling); the
+  camera follows a moving forward character via CameraSystem.FollowYaw
+  (CameraAdjustYawWhenMoveTurn row, dead zone, moving-forward + no-drag gate).
+- Evidence (run reborn_20261001_214418.log, build git=2a1191e dirty=1):
+  A-alone: dyaw=3.13, dpos=(0,0), camd=0.00 (camera untouched - the decoded
+  rule); back-pedal: cam unchanged, dist=96; W+A/W+D: 194 u curves, camera
+  follows (dcam larger than dyaw because the pre-test facing offset is
+  converged by the row). Gates: smoke ALL PASS, jx3_model 10x PASS,
+  verify_model exit 0, loot selftest PASS. Client relaunched (pid per session).
+- Note: two intermediate behaviors were caught by the demo harness and fixed
+  before landing (back-pedal must not drag the camera -> forward-only follow
+  gate; the follow input needed the facing->camera-yaw conversion atan2(-cos,
+  -sin), the same involution the RMB body-carry uses).
+

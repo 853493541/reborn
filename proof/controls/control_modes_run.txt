@@ -307,3 +307,19 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   character-controller consumer. Host model gap recorded in
   CLASSIC_CONTROLS_AUDIT.md section 5 (run frame vs camera follow).
 
+
+## IMPLEMENTED (2026-10-01): classical = facing-frame movement + decoded camera follow
+- Host change (client/RebornClient.cs): classical movement frame = character
+  facing (spawn-synced to the initial view); A/D + arrows turn the character
+  only (no camera write); camera follows a moving FORWARD character through
+  CameraSystem.FollowYaw (row CameraAdjustYawWhenMoveTurn, 15 deg dead zone),
+  skipped while the mouse owns the camera (LMB/RMB drag / RMB body-carry).
+  Joystick unchanged (camera-relative frame, historic coupling).
+- Evidence, run reborn_20261001_214418.log (build git=2a1191e dirty=1):
+  strafe mode=classical yaw0=0.00 yaw1=3.13 d=3.13 cam0=-1.31 cam1=-1.31 dpos=(0,0)
+  back   mode=classical yaw0=3.13 yaw1=3.13 d=0.00 cam0=-1.31 cam1=-1.31 dpos=(-1,96) dist=96
+  turn   yaw0=3.13 yaw1=-1.26 d=-4.40 cam0=-1.31 cam1=-1.31 camd=0.00
+  WA mode=classical rmb=0 dpos=(0,-194) dist=194 dyaw=2.51 dcam=4.16
+  WD mode=classical dpos=(3,-194) dist=194 dyaw=-2.51 dcam=-2.54
+- Gates: camera_smoke_control_modes ALL PASS; jx3_model 10x PASS;
+  verify_model exit 0; capture selftest PASS.

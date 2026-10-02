@@ -816,6 +816,8 @@ internal static class RebornClient
         if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
         {
             camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            // classical movement runs along the facing: spawn facing the view
+            curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
             Log(string.Format("camera yaw init={0:F3} (view dir {1:F2},{2:F2})", camSys.Yaw, viewX, viewZ));
         }
 
@@ -983,6 +985,7 @@ internal static class RebornClient
             measureView();
             if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                 camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
             camSys.Pitch = targetPitch;
         };
 
@@ -1383,6 +1386,7 @@ internal static class RebornClient
             measureView();
             if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                 camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
             Log(string.Format("camera init skipped mapId={0} (no scene_init_param row; keeping spawn view)",
                 cameraSettings.MapId));
         }
@@ -1886,9 +1890,16 @@ internal static class RebornClient
                 forceDiag = false;
             }
 
-            // movement is camera-relative: forward = camera -> anchor
+            // Movement frame (decoded, OPERATION_MODES_PLAN.md 7d): CLASSICAL
+            // movement runs along the CHARACTER facing (KRLLocalCharacter+0x30
+            // face yaw), JOYSTICK keeps the camera-relative frame (mouse always
+            // looks; the body turns to the travel heading). CONTROL_TURN_* is a
+            // character control - the keyboard never writes the camera.
+            bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
+            bool classicalMode = !followsHeading;
             double cfx, cfz;
-            camSys.Forward(out cfx, out cfz);
+            if (followsHeading) camSys.Forward(out cfx, out cfz);
+            else { cfx = Math.Sin(curYaw); cfz = Math.Cos(curYaw); }
             float hx = (float)cfx;
             float hz = (float)cfz;
 
@@ -1905,33 +1916,20 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction. The game recomputes camera-relative movement
-            // every frame (MOVEFORWARD = camera forward; A/D strafe), so rotating
-            // the camera steers the run (docs/controls/JX3_MOVEMENT_CONTROLS.md §2;
-            // RMB = CAMERAORSELECTORMOVESTICKY rotates camera + character).
+            // input -> direction (classical: along the facing; joystick:
+            // camera-relative). A/D in classical are TURN keys (decoded:
+            // TurnLeftStart -> Camera_EnableControl(CONTROL_TURN_*); the strafe
+            // handler's free-view Turn call is an OB-dungeon-only branch,
+            // hotkeys proto 63), NOT lateral movement in free view. The camera
+            // is written only by the mouse pipeline; a moving classical
+            // character is followed by the camera through the cached
+            // CameraAdjustYawWhenMoveTurn row (see the follow call below).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
-            // Operation-mode routing, decoded from the packed hotkeys.lua
-            // bytecode (StrafeLeftStart proto 0/76, StrafeRightStart 0/78):
-            // STRAFE is the only mode-branched command. CLASSICAL:
-            // SetControl(CONTROL_STRAFE_*) and, when Camera_IsInFreeView(),
-            // TurnLeftStart/TurnRightStart (A/D turn); JOYSTICK:
-            // ResponseWASDKey('StrafeLeft/Right') free-move (A/D turn to the
-            // travel heading). The free-view state is not locatable in the
-            // client binaries, so it is a host knob: RC_FREEVIEW=1 (default) =
-            // the observed game behaviour (A/D turn in classical); 0 = the
-            // decoded side-step branch (provisional; re-open when
-            // Camera_IsInFreeView is found - OPERATION_MODES_PLAN.md §7c).
-            bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
-            bool classicalMode = !followsHeading;
             // Free view: mainscene.lua's CameraStatus_Set calls
-            // CameraStatus_Animation(mode ~= 'god camera'); CameraCommon.lua
-            // enters 'local camera' for the player, so free view is ON in
-            // normal play. In free view the classical strafe handler calls
-            // TurnLeft/RightStart -> A/D TURN (also while W is held, producing
-            // a run curve); A/D are never lateral movement in free view.
-            // RC_FREEVIEW=0 keeps the decoded non-free branch (SetControl
-            // side-step) reachable for tests.
+            // CameraStatus_Animation(mode ~= 'god camera'); free view is ON in
+            // normal play. RC_FREEVIEW=0 keeps the god-camera side-step branch
+            // (挪步 clips) reachable for tests.
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
             bool turnL = pTurnL || (classicalMode && freeView && pA);
             bool turnR = pTurnR || (classicalMode && freeView && pD);
@@ -2074,7 +2072,10 @@ internal static class RebornClient
                 if (turnL && !turnR) dturn = -tstep;
                 else if (turnR && !turnL) dturn = tstep;
                 curYaw += dturn;
-                camSys.Yaw -= dturn;
+                // The keyboard never writes the camera (decoded). Joystick keeps
+                // its historic coupling (mouse always looks; the camera follows
+                // the body); classical lets the move-follow row drag the camera.
+                if (followsHeading) camSys.Yaw -= dturn;
             }
             // keep the facing and camera yaw wrapped: the movement turn model
             // compares against wrapped headings, and an unwrapped facing makes
@@ -2294,6 +2295,13 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
+                // Decoded camera follow (row CameraAdjustYawWhenMoveTurn +0x14,
+                // dead zone +0x18, cached per mode): while MOVING, pull the
+                // camera toward the run yaw (classical run yaw = the facing) -
+                // only when the mouse does not own the camera (drag active).
+                // Standing turns never move the camera (row: "when move turn").
+                if (classicalMode && movingNow && fwdAxis > 0f && !lmbDown && !rmbDown)
+                    camSys.FollowYaw(Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw)), dt);
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the

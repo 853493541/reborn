@@ -17,9 +17,9 @@ the user-observed game behaviour):**
 
 | Input | Behaviour | Speed |
 |---|---|---|
-| W | run forward (camera-relative), facing follows | run 320 u/s (walk 96 when `/` toggled) |
+| W | run forward **along the facing** (classical; joystick keeps camera-relative) | run 320 u/s (walk 96 when `/` toggled) |
 | S | **back-pedal, facing kept** (`后退01` clip) | **walk 96 u/s (slower than forward)** |
-| A/D · ←/→ | **decoded**: the turn keys are a CHARACTER control (`TurnLeftStart` → `SetMoveControl(CONTROL_TURN_*)`; classical → `Camera_EnableControl`). In **classical normal play the engine handles A/D itself** — the Lua handlers are overrides (joystick free-move, OB-dungeon camera, displacement). **No RMB gate exists anywhere** (Scene/OperationModeBase/hotkeys/mainscene/CameraCommon + the C bindings) — RMB only starts camera drag (see §2) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
+| A/D · ←/→ | **decoded + implemented**: A/D/←/→ turn the character (`CONTROL_TURN_*`); the camera is never written by the keyboard. Free-view strafe→turn is OB-dungeon-only (hotkeys proto 63). **No RMB gate exists anywhere** — RMB only starts the camera drag (see §2) | local `RotationSpeed` 0.00314 rad/ms = π rad/s |
 | W+A / W+D | run while turning (a curve) — the view and the body rotate together (RMB does not change this) | run 320 u/s, curve radius v/ω |
 | S+A / S+D | back-pedal while turning (facing kept) | walk 96 u/s |
 | G autorun | forward run | run |
@@ -126,14 +126,17 @@ skill 9007).
   fields `+0x7C..+0x98`, vtable `[obj+0xA8]` slots `+0x88/+0x98/+0xA0…`) is the
   next trace target. Host has **no provisional rule** on this path; A/D behave
   the same with and without RMB.
-- **Host model gap (open, decoded direction)**: the host couples A/D 1:1 to
-  `camSys.Yaw` (camera rotation steers the camera-relative run frame). The
-  decoded split is: TURN = character control (always); camera follow =
-  `CameraAdjustYawWhenMoveTurn` (only **while moving**, 15° dead zone,
-  rate-limited — `CameraSystem.FollowYaw` exists but is test-gated today).
-  Implementing the split (separate movement frame; camera follows per the row;
-  RMB drag owns the camera) is the next host change; the current code keeps the
-  old coupling so the verified W+A curve is not broken.
+- **Host model gap — IMPLEMENTED 2026-10-01**: the host now follows the
+  decoded split. Classical movement runs along the **character facing**
+  (`KRLLocalCharacter+0x30` semantics), A/D + arrows turn the character and
+  never write the camera; the camera follows a moving forward character
+  through the cached `CameraAdjustYawWhenMoveTurn` row (15° dead zone,
+  rate-limited, skipped while the mouse owns the camera - LMB/RMB drag or
+  RMB body-carry). Spawn syncs the facing to the initial camera view.
+  Evidence: run `reborn_20261001_214418.log` - A-alone turns 3.13 rad with
+  `dpos=(0,0)` and `camd=0.00`; back-pedal keeps `cam` and moves 96 u;
+  W+A curves 194 u with the camera following; W+D mirrored. Gates: smoke
+  ALL PASS, jx3_model 10x PASS, verify_model exit 0, loot selftest PASS.
 
 ## 6. Recommended order
 
