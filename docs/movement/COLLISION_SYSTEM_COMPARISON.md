@@ -254,11 +254,42 @@ P0 is small and immediate; P2 is the biggest feel win; P1/P4 are the research
 that removes the remaining proxies; P5 is the only "rebuild" that reaches full
 fidelity and should be its own milestone decision.
 
+## 9. Integration decision (2026-10-02): solver stays runtime; engine PhysX is the calibration gate
+
+Evidence: `proof/movement/phys_engine_vtables.txt` 2026-10-02d/e/i; commits
+`8d7e358`, `c1df994` (Phase-1 grid A/B) and `8cccdb6` (sweep boundary).
+
+- **Decision**: the host keeps `FoliageCollision` (our solver) as the runtime
+  collision backend. The engine's own PhysX (world-baked cook + `PxMeshQuery`
+  midphase, opt-in `RC_PX_FIELD2`) remains the **calibration gate**, re-runnable
+  on demand (`collision_grid_probe grid` + `tools/collision/pxdiff.py`).
+- **Why**:
+  1. Equivalence is measured: 0/7991 lattice poses at pitch 100 (0.00%); the
+     coarse pitch-250 pair was triaged to the probe's 0.01-depth threshold.
+  2. Runtime cost of the engine route: full-map cook ~9 s / ~105 MB cooked
+     stream per map at startup - unacceptable for client boot; per-region lazy
+     cooking is untested complexity.
+  3. The solver is engine-rule-derived (oflags rule, baked geometry) and now
+     calibrated against the engine rather than standing in for it.
+- **Sweep closure**: the exported `PxMeshQuery::sweep` needs engine-internal
+  state for its hit path (synthetic-triangle proof, 2026-10-02i); its
+  in-penetration path matches the solver. Continuous motion is covered by the
+  per-pose equivalence plus the solver-side wall/thin-wall A/Bs; no
+  approximation is used in place of the sweep.
+- **Re-open criteria**: a future grid run showing >0.5% systematic mismatches,
+  or a reproduced walk-through class in play, re-opens an engine-backed query
+  path (with per-region cooking) as a scoped task.
+
 ## 7. Reproduce
 
 ```powershell
 client\build_client.cmd
-C:\SeasunGame\MovieEditor\bin64\collision_selftest_reborn_client_collision.exe   # 22/22
+C:\SeasunGame\MovieEditor\bin64\collision_selftest_reborn_client_collision.exe   # 33/33
 # in-game: RC_DEMO_COLLIDE=1 RC_SPAWN=<x,y,z> RC_DEMO_DIR=<dx,dz> (logs in bin64\reborn_out)
 # flag census: %TEMP%\opencode\flag_stats.py (fetches the 587 sibling inis via pss_assets.run_pakv4)
+# engine-side calibration gate (Phase 1):
+#   solver: collision_grid_probe.exe grid <night bin> x0 z0 x1 z1 pitch yStep [yMax]
+#   engine: reborn_client_colltest5.exe with RC_PHYS_PROBE=1 RC_PX_FIELD2=1 RC_PX_GRID="x0,z0,x1,z1,pitch,yStep"
+#   diff:   .venv\Scripts\python.exe tools\collision\pxdiff.py <engine log> <solver out> <yStep> [yMax]
+#   last full run: pitch 100 over 18000..24000 x 24000..37000 = 0/7991 mismatch
 ```

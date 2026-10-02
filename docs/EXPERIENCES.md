@@ -1021,3 +1021,14 @@ solved it, and what is still open. **Newest at the bottom.**
   caller in one look (flags arg is a POINTER in this build; distance at hit+0x34).
 - First validated data point matches our solver (initial-overlap -> distance 0).
 - Long sweeps (600/3000u) do not return - respect the short-move boundary.
+
+### 2026-10-02 - Re-audit against the plan + Phase 3 integration decision
+
+- User call-out: offering (a)/(b)/(c) at the end of the sweep work contradicted
+  the agreed phase plan. Corrected: re-audited and continued on the plan.
+- Phase 1 DONE (0/7991 dense; coarse pair triaged). Phase 2 CLOSED with the
+  engine-internal-state boundary for the sweep hit path (intent covered by the
+  per-pose equivalence + solver A/Bs). Phase 3 recorded in
+  COLLISION_SYSTEM_COMPARISON.md 9: solver stays runtime, engine PhysX is the
+  re-runnable calibration gate; re-open criteria stated. Phases 4-5 pending.
+- Audit also fixed stale Reproduce text (22/22 -> 33/33).
