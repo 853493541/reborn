@@ -332,3 +332,41 @@ built by the engine's own collision pipeline. **Verdict: the shape-factory
 route is not callable piecemeal from the host - it requires the engine's
 internal init chain (represent/scene) or the PhysX-direct ABI project.** Two
 crash data points recorded; the opt-in repro stays (`RC_PX_COOK=1`).
+
+### Update 2026-10-01j: PxCooking CRACKED in-host - cookTriangleMesh works (620B cooked mesh)
+
+The engine's own `PxCooking` (PhysicsManager+0x40) now cooks a test mesh
+in-host. Decoded from the cooking DLL (MovieEditor copy
+`PhysX3Cooking_x64.dll`, v3.3.4) by disassembly of the vtable entries and
+their helpers; validated live via `RC_PX_COOK2=1` in
+`reborn_client_colltest5.exe` (`reborn_20261001_234205.log`):
+
+- **PxCooking vtable**: [4] = `cookTriangleMesh(desc, PxOutputStream&,
+  PxTriangleMeshCookingResult*)` (stream variant); [5] = second triangle-cook
+  entry (immediate candidate, same helper); [6] = `validateTriangleMesh`
+  (0x1EEE0, string xref); [7] = `cookConvexMesh` (0x1EFA0); [2] = params
+  getter (returns this+8); [0]/[1] release + inline allocator.
+- **PxTriangleMeshDesc layout** (decoded from validator 0x7E40 checks +
+  cooker 0x7970 field reads; NOT the public 3.3.4 header order):
+  - +0x00 pointsStride (>=12; used as the vertex stride)
+  - +0x08 points (PxVec3*)
+  - +0x10 nbVertices
+  - +0x18 trianglesStride (>=6 with 16-bit flag, else >=12)
+  - +0x20 triangles pointer (16-bit indices when flag set)
+  - +0x28 nbTriangles
+  - +0x30 flags (u16; bit1 = e16_BIT_INDICES)
+  - +0x38 materialIndexStride, +0x40 materialIndices (0/0 here)
+  - +0x48 convexEdgeThreshold (f32, MUST be 0.001 or the helper errors out)
+- **PxOutputStream** = 2-slot vtable [write(void*,u32)->u32, dtor]; a managed
+  thunk works (`PxStreamWrite`); the writer 0x7540 emits the cooked binary
+  ("NXS\x01"+"MESH" + u32 counts) through `stream->vt[0]`.
+- **Evidence**: cook returned 1 with 620 stream bytes; header
+  `4E585301 4D455348 0C000000` ("NXS1" "MESH" 12) - the PhysX 3.3 triangle
+  mesh serialized format.
+- **Next**: PxPhysics::createTriangleMesh(PxInputStream) with a managed
+  input stream (read thunk) -> PxShape/PxRigidStatic -> PxScene from the
+  engine-arg scene or PxPhysics::createScene -> PxCreateControllerManager +
+  capsule CCT -> A/B engine sweep/floor vs our solver at the field spots.
+
+FIRST LIVE ENGINE-PHYSICS COOK - the PhysX-direct bridge is real; the
+remaining steps are the mesh-create/actor/CCT ABI, not blockers of principle.
