@@ -267,11 +267,12 @@ or merge that subject to main first and branch `agent/control-modes`.
   dungeons), so it is NOT the normal classical A/D path: normal classical
   WASD is handled by the engine input layer and the Lua handlers are overrides
   (joystick free-move, OB camera, displacement). Host `RC_FREEVIEW` maps
-  1 = normal play, 0 = god-camera/OB strafe-only. **THE PARAGRAPH ABOVE IS
-  SUPERSEDED (2026-10-02, direct bytecode):** proto 0/63 returns `true` only
-  in OB; normal play returns nil, so `StrafeLeftStart` (0/76) continues to
-  `Camera_IsInFreeView()` → `TurnLeftStart()` — normal classical A/D = turn
-  (+ STRAFE control set). See `CONTROL_MODES_LUA_ANNEX.md` §A6.2 and dumps
+  1 = normal play, 0 = god-camera/OB strafe-only. **BRANCH MAPPING OPEN
+  (2026-10-02):** with the Lua 5.1 VM jump rule confirmed (lua.org `lvm.c`),
+  `0/76` reads: `mode == CLASSICAL` → `ResponseWASDKey` + `Camera_EnableControl
+  (CONTROL_STRAFE_*)`; else → OB wrapper + free-view `TurnLeftStart`. Both
+  earlier mappings are superseded; the observable behavior per mode is settled
+  in P2/P3/P4. See `CONTROL_MODES_LUA_ANNEX.md` §A6.2 mapping caveat and dumps
   `proof/controls/lua_dump/hotkeys_0_63.txt` / `hotkeys_0_76_StrafeLeftStart.txt`.
   **RMB gate reverted**
   (`bb91c08`): no RMB interaction with turn/strafe exists in the scripts or

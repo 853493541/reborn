@@ -1538,3 +1538,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   M4/C1/C2 updated.
 - Lesson: bytecode TEST/JMP convention (JMP taken iff bool(R[A]) == C) matters;
   re-derive from a known body before trusting a chain.
+
+### 2026-10-02 - controls - VM jump rule confirmed; mode branch mapping reopened
+- Confirmed Lua 5.1 conditional semantics from lua.org lvm.c (OP_EQ: jump iff
+  comparison == A; OP_TEST: jump iff l_isfalse != C) after two self-doctored
+  readings collided. Applying it to hotkeys 0/76 INVERTS the mode->block
+  mapping recorded in both older docs: mode==CLASSICAL -> ResponseWASDKey +
+  Camera_EnableControl(STRAFE) fallback; else -> OB wrapper + free-view
+  TurnLeftStart. Observable per-mode behavior now explicitly OPEN until the
+  C-binding constants (P2) and engine consumer (P3/P4) are decoded; docs
+  updated to stop asserting either direction.
+- Resolved CLOSURE upvalues from the chunk pseudo-instructions: 0/76 [0]=0/63,
+  [1]=false constant (skill branch dead), [2]=0/75 CanStrafeMove (fly-jump/
+  sprint/horse); 0/65 [0]=false constant, [1]=wrapper 0/61, [2]=0/62
+  ClientControlEnabled. Dumps committed (0/62, 0/64, 0/75).
+- Lesson: never infer branch polarity from "obvious" intent; cite the VM rule
+  first, then re-check every earlier decode that assumed it.

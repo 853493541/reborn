@@ -40,13 +40,16 @@ end` (nil otherwise), so the free-view strafe+turn branch fires **only in OB
 input layer; the Lua handlers are overrides for joystick free-move, OB camera
 and displacement skills. Host `RC_FREEVIEW` stays as the host knob for the
 god-camera/OB strafe branch.
-**CORRECTED 2026-10-02 by direct bytecode — the paragraph above is inverted
-and is superseded** (`CONTROL_MODES_LUA_ANNEX.md` §A6.1/A6.2, dumps
-`proof/controls/lua_dump/hotkeys_0_63.txt`, `hotkeys_0_76_StrafeLeftStart.txt`):
-proto 0/63 returns `true` only in OB, so in **normal play** it returns nil and
-`StrafeLeftStart` falls through to `Camera_IsInFreeView()` (true in normal play)
-→ `TurnLeftStart()`; OB short-circuits to `Camera_EnableControl(CONTROL_STRAFE_*)`
-with no turn. Normal classical A/D = turn-in-place (+ the STRAFE control set).
+**CORRECTED 2026-10-02 — branch mapping OPEN (both earlier readings were
+affected by an unstated jump convention).** With the Lua 5.1 VM rule confirmed
+from lua.org `lvm.c` (`OP_EQ`: jump iff comparison == A; `OP_TEST`: jump iff
+`l_isfalse` != C), `0/76` branches as: `mode == CLASSICAL` → the
+`ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)` block; else
+(JOYSTICK) → OB wrapper + free-view `TurnLeftStart`. The observed behavior per
+mode is NOT claimed here until the C-binding constants (P2) and the engine
+consumer (P3/P4) are decoded — see `CONTROL_MODES_LUA_ANNEX.md` §A6.2 mapping
+caveat; dumps `proof/controls/lua_dump/hotkeys_0_63.txt`,
+`hotkeys_0_76_StrafeLeftStart.txt`.
 **Binding map (JX3UIX64.dll, `KRepresentScriptTable::Lua*`, HIGH):**
 `Camera_EnableControl(id,bool)` is a pure state setter (returns nothing; ids
 6/7 additionally call a camera vtable `+0x110`); control ids 0..13 are

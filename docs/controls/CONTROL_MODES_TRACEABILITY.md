@@ -38,7 +38,7 @@ P7 data · P8 verification · P9 publish.
 | M1 | Binding table loaded (286 rows) | C1: `HotkeyTable.cs`; `default.txt` + `bindings.ini` | — | DONE (C1/C2) |
 | M2 | MOVEFORWARD (W/Up) | Lua handler 0/65-74 (no mode branch); intent `fForward +0x50` | run/walk clip (§6) | PART: direction application OPEN(P4, G6) |
 | M3 | MOVEBACKWARD (S/Down) | `后退01` clip, walk-tier 96 u/s; S cancels autorun (cancel set open) | kind 57/58 | PART |
-| M4 | STRAFELEFT/RIGHT (A/D) | **decoded (annex A6)**: proto 76/78; classical → OB wrapper 0/63 (nil in normal play) → `Camera_IsInFreeView()` → `TurnLeftStart`; joystick → `ResponseWASDKey` + `Camera_EnableControl` fallback; displacement branch `OnUseSkill(3801…)` | turn = model rotate (no clip) | PART: Lua DONE, upvalue identity + engine consumer OPEN(P4) |
+| M4 | STRAFELEFT/RIGHT (A/D) | **decoded (annex A6)** with confirmed VM rule: `mode==CLASSICAL` → `ResponseWASDKey` + `Camera_EnableControl(CONTROL_STRAFE_*)` fallback; else → OB wrapper 0/63 + free-view `TurnLeftStart`; dead skill branch (const false) | turn = model rotate (no clip) | PART: Lua structure DONE; **mode→behavior mapping OPEN (P2/P3/P4)** |
 | M5 | TURNLEFT/TURNRIGHT (arrows) | same keyboard turn; `RotationSpeed` row 0.00314 rad/ms | no ground turn clip (model rotate) | DONE (rate), engine consumer OPEN(P4) |
 | M6 | JUMP (Space) | +0x50 jump; 二段跳; takeoff XY; `JumpParam` | kinds 16-19 | PART (jump/land anim transitions OPEN(P5)) |
 | M7 | Q/E strafe | official help "Q/E 左右平行移动"; binding rows | as M4 | OPEN(P1) |

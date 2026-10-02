@@ -215,32 +215,48 @@ end
 ### A6.2 `StrafeLeftStart` — proto `0/76` (L825-854) HIGH
 
 ```lua
--- upvalues: [0]=OB wrapper (0/63), [1]=?, [2]=? (mode/state predicates)
+-- upvalues RESOLVED from the chunk CLOSURE pseudo-instructions (pc547-551):
+--   [0]=OB wrapper (0/63), [1]=false CONSTANT, [2]=closure 0/75 (CanStrafeMove)
 function StrafeLeftStart()
     if GetOperationMode() == CLASSICAL_MODE then
-        if SetControlInOB(CONTROL_STRAFE_LEFT, true) then return end   -- OB: set + done
-        if Camera_IsInFreeView() then TurnLeftStart() end              -- normal play: turn
-        return
-    end
-    if upval1 then
-        OnUseSkill(3801, 3801 * ((3801 % 10) + 1))                     -- 3801, 37990
-        return
-    end
-    if upval2() then return end                                        -- mode/state guard
-    if IsKeyDoubleDown() then
-        if not ResponseWASDKey('StrafeLeft', true, true) then
-            Camera_EnableControl(CONTROL_STRAFE_LEFT, true)            -- fallback
+        -- CLASSICAL block (pc19-62), see the mapping caveat below:
+        if upval1 then                                  -- false in the shipped build:
+            OnUseSkill(3801, 3801 * ((3801 % 10) + 1))  -- DEAD branch (flag off)
+            return
+        end
+        if CanStrafeMove() then return end              -- 0/75 gate (A6.4)
+        if IsKeyDoubleDown() then
+            if not ResponseWASDKey('StrafeLeft', true, true) then
+                Camera_EnableControl(CONTROL_STRAFE_LEFT, true)        -- fallback
+            end
+        else
+            if not ResponseWASDKey('StrafeLeft', true, false) then
+                Camera_EnableControl(CONTROL_STRAFE_LEFT, true)
+            end
         end
     else
-        if not ResponseWASDKey('StrafeLeft', true, false) then
-            Camera_EnableControl(CONTROL_STRAFE_LEFT, true)
-        end
+        -- JOYSTICK block (pc5-18):
+        if SetControlInOB(CONTROL_STRAFE_LEFT, true) then return end   -- OB: set + done
+        if Camera_IsInFreeView() then TurnLeftStart() end              -- else: turn
     end
 end
 ```
 
-`0/78 StrafeRightStart` mirrors it (`CONTROL_STRAFE_RIGHT`, `TurnRightStart`,
-`'StrafeRight'`, skill 3802 family).
+`0/78 StrafeRightStart` mirrors it (`CONTROL_STRAFE_RIGHT`, `TurnRightStart`);
+its upvalues are identical in kind (`[1]=false` constant, `[2]=0/75`).
+
+**MAPPING CAVEAT (open, owner P2/P3/P4):** this mode→block mapping was re-read
+after confirming the Lua 5.1 VM rule against lua.org `lvm.c`
+(`OP_EQ`: jump iff comparison == A; `OP_TEST`: jump iff `l_isfalse` != C) and
+it **inverts** the mapping recorded in the earlier docs (which had
+CLASSICAL → free-view turn). Per the bytecode as named: CLASSICAL (A/D are
+STRAFE-bound in `default.txt`) → `ResponseWASDKey` + `Camera_EnableControl`
+fallback; JOYSTICK → OB-wrapper + free-view `TurnLeftStart`. What each mode
+observably *does* (and what `GetOperationMode()`/the two constants really
+return) is settled in P2 (C bindings) + P3/P4 (engine consumer), not here.
+Cross-checks that already look mode-consistent: `OperationModeBase 0/5`'s
+self-identifying blocks (pc27-41 writes CLASSICAL to storage, pc45-55 writes
+JOYSTICK) and `Scene 0/66`/`0/67` forcing `JOYSTICK_MODE` for morph cameras.
 
 **Correction (2026-10-02):** the earlier doc correction that this free-view
 `TurnLeftStart/RightStart` branch is OB-only is **inverted**. Direct bytecode:
@@ -254,29 +270,52 @@ text in `CLASSIC_CONTROLS_AUDIT.md` §1 and `OPERATION_MODES_PLAN.md` §7b.
 ### A6.3 `MoveForwardStart` — proto `0/65` (L703-719) HIGH
 
 ```lua
+-- upvalues RESOLVED (pc506-510): [0]=false CONSTANT, [1]=wrapper 0/61,
+-- [2]=closure 0/62 (ClientControlEnabled)
 function MoveForwardStart()
     local p = GetClientPlayer()
     if p then p.HoldW(1.0) end
-    if upval0 then                                   -- normal path
-        upval1(CONTROL_FORWARD, true)                -- mode wrapper (0/61)
-        if upval2() then
+    if upval0 then                                   -- false in the shipped build:
+        OnUseSkill(3799, 3799 * ((3799 % 10) + 1))   -- DEAD branch (feature flag off)
+    else
+        upval1(CONTROL_FORWARD, true)                -- mode wrapper (0/61): both modes
+        if ClientControlEnabled() then               -- 0/62: not Camera_IsClientControlDisabled()
             if IsKeyDoubleDown() then
                 ResponseWASDKey('Forward', true, true)   -- double-tap (A2)
             else
                 ResponseWASDKey('Forward', true, false)
             end
         else
-            ResponseWASDKey('Forward', true, false)
+            ResponseWASDKey('Forward', true, false)  -- no double-tap while control-disabled
         end
-    else
-        OnUseSkill(3799, 3799 * ((3799 % 10) + 1))   -- 3799, 37990
     end
 end
 ```
 
-`p.HoldW` (client-player hold state); the wrapper + joystick vector path when
-`upval0` is truthy, the displacement skill when it is falsy. Stop handlers call
-the wrapper with `false` and `ResponseWASDKey(..., false, ...)`.
+Notes: `p.HoldW(1.0)` on the client player; the wrapper runs in **both** modes,
+then the joystick vector builder runs too (its double-tap branch is gated by
+`0/62`). Stop handlers call the wrapper with `false` and
+`ResponseWASDKey(..., false, ...)`.
+
+## A6.4 Gate closures (resolved upvalues)
+
+```lua
+-- 0/62 (upvalue=true captured)
+function ClientControlEnabled()
+    if upval then return true end              -- const true in this build
+    return not Camera_IsClientControlDisabled()
+end
+
+-- 0/75 (no upvalues)
+function CanStrafeMove()
+    local p = GetClientPlayer()
+    if not p then return false end
+    if p.nMoveState == MOVE_STATE.ON_FLY_JUMP then return false end
+    if p.bSprintFlag then return false end
+    if p.bOnHorse then return false end
+    return true
+end
+```
 
 ## A7. Scene.lua drag / control handlers (G2 script side)
 
