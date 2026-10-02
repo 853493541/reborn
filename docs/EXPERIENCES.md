@@ -1653,3 +1653,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   enumerate from the shipped BinText tables + static decode. The F1 catalog
   columns were documented; the 84-byte locomotion table (2 thresholds, 3 clip
   pairs) is a separate BinText table still to be found in the paks.
+
+### 2026-10-02 - controls - P5 data source status
+- No loose locomotion table on disk (depth-3 scan): only MovieEditor editor
+  templates and the extracted samples catalogs (F1 per-kind rows + serial
+  phased sets). The 84-byte locomotion param entry is a separate BinText table
+  loaded by KTableList::LoadBinTextTab. Next: xref the loader string in the
+  game client to find caller-supplied table names; enumerate the PakV4 index
+  (Data\filepath.ini variants not present); hpkg extractor if packed.

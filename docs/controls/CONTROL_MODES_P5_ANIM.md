@@ -100,6 +100,28 @@ probe or the table extractor), not further static disasm.
 `[singleton+0x26466]` (the 999-sentinel mounted override) is set from a config
 option lookup (`0x1803185E0`: option query at `0x180318607` → byte).
 
+## 2b. Locomotion table data source — status (2026-10-02)
+
+- The runtime host cannot enumerate the table (P4 probe: the MovieEditor host
+  never instantiates the game-world singleton — `CONTROL_MODES_P4_PROBE.md` §2b).
+- No loose locomotion table exists on disk: a depth-3 scan of the client
+  install found only MovieEditor `PropertyTemplate\Action*.tab` (editor UI
+  templates) and the extracted catalogs under `samples/player/catalog/`
+  (`player_animation_f*.txt` = per-kind animation rows: AnimationID, KindID,
+  SheathType, AnimationRatio, AnimationSpeed, IsLoop, AnimationFile,
+  ShadowFile, 是否禁止自动转头, IsLookAtCamera, PoseState, 锁定朝向;
+  `player_serial_animation_table.txt` = phased A/B/C animation sets, unrelated).
+- The 84-byte locomotion param entry (two speed thresholds, three clip pairs)
+  is a **separate BinText table**; its rows are loaded by
+  `KTableList::LoadBinTextTab`. Next probes, in order:
+  1. In the **game client** binary, xref the `KTableList::LoadBinTextTab`
+     assert string to the loader and inspect caller-supplied table names
+     (the name may be a plain string at the call site).
+  2. Enumerate the PakV4 index (the guessed `Data\filepath.ini` variants are
+     not present) via the official PakV4 tooling; grep for `.tab` names.
+  3. If the table ships in an hpkg pack, use `tools/netcode/extract_hpkg_member.py`
+     once the pack/member name is known from (1).
+
 ## 3. `UpdateDirection` (`0x180533D40`) and `UpdateFaceFootDirection`
 
 Dumps committed (`proof/controls/p5/`); decode next: the turn interpolation
