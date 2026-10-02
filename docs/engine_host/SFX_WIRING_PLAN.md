@@ -422,6 +422,13 @@ works), then run this per-model allocate+bind with the engine's own data object.
   (the engine's data-manager reader path does not unwrap it in our host). Next piece:
   the GATA unwrap layer (engine `KG3D_BufferReader` / data-manager type registration).
 
+GATA follow-up (`reader2.out`): the engine's own `KG3D_LoadFile(tani)` returns a reader
+whose buffer **still starts with `GATA`** (`buffer head: GATA 01 00 00 00 64 61 74 61` =
+`GATA` + flags + `data…`), i.e. the engine FS does not unwrap either. The animation data
+manager checks the **unwrapped** payload magic (`ANIM`), so the GATA unwrap must come
+from the layer the game uses for streamed/packed files (streaming file manager / game
+`g_OpenFile` `IFile` read). Load flags a4 = 0/1/2 all fail identically.
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code

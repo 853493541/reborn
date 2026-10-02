@@ -790,8 +790,48 @@ int main(void)
                                     sprintf_s(taniPath, sizeof(taniPath),
                                               "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
                                     void* anim = NULL;
+                                    // does the engine's own KG3D_LoadFile unwrap the GATA tani?
+                                    {
+                                        typedef void* (__fastcall *LoadFileFn2)(const char* path, int flags);
+                                        LoadFileFn2 lf2 = (LoadFileFn2)((BYTE*)eng + 0xB0F870);
+                                        void* reader = lf2(taniPath, 0);
+                                        logf("  KG3D_LoadFile(tani) -> %p", reader);
+                                        if (reader != NULL)
+                                        {
+                                            __try
+                                            {
+                                                BYTE* rb = (BYTE*)reader;
+                                                logf("  reader[0..0x40]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                     rb[0],rb[1],rb[2],rb[3],rb[4],rb[5],rb[6],rb[7],
+                                                     rb[8],rb[9],rb[10],rb[11],rb[12],rb[13],rb[14],rb[15]);
+                                                logf("  reader[0x10..0x20]: %02X %02X %02X %02X %02X %02X %02X %02X  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                     rb[16],rb[17],rb[18],rb[19],rb[20],rb[21],rb[22],rb[23],
+                                                     rb[24],rb[25],rb[26],rb[27],rb[28],rb[29],rb[30],rb[31]);
+                                                void* buf = *(void**)(rb + 0x10);
+                                                logf("  reader buffer -> %p", buf);
+                                                if (buf != NULL)
+                                                {
+                                                    BYTE* bb = (BYTE*)buf;
+                                                    logf("  buffer head: %c%c%c%c  %02X %02X %02X %02X %02X %02X %02X %02X",
+                                                         bb[0],bb[1],bb[2],bb[3],bb[4],bb[5],bb[6],bb[7],
+                                                         bb[8],bb[9],bb[10],bb[11],bb[12],bb[13],bb[14],bb[15]);
+                                                }
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("  reader read fault"); }
+                                        }
+                                    }
                                     long arc2 = createAnim(engine, taniPath, &anim, 0, 0);
-                                    logf("  CreateAnimationFromFile -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
+                                    logf("  CreateAnimationFromFile(a4=0) -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
+                                    if (anim == NULL)
+                                    {
+                                        arc2 = createAnim(engine, taniPath, &anim, 1, 0);
+                                        logf("  CreateAnimationFromFile(a4=1) -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
+                                    }
+                                    if (anim == NULL)
+                                    {
+                                        arc2 = createAnim(engine, taniPath, &anim, 2, 0);
+                                        logf("  CreateAnimationFromFile(a4=2) -> rc=0x%08X anim=%p", (unsigned)arc2, anim);
+                                    }
                                     if (anim != NULL)
                                     {
                                         typedef long (__fastcall *StartAnimFn)(void* self, void* ani,
