@@ -498,6 +498,14 @@ with the mode from `engine->vt[0xa10]()`), but for the ability `.tani` **neither
 the fix target is that shared data-manager load helper (its reader/mode), not the
 animation class. Probe restored to the clean committed state.
 
+Helper internals (`0x437CFC`): the helper calls the data object's **`vt[5]`** with the
+reader (`this->vt[5](reader)`; `KG3D_Animation` vt[5] = `0xA49680`, the templated
+`KG3D_DataManager<T>` parse) and logs `KG3D_DataManager::Load` line 75 on failure. The
+reader is created by the helper's **caller**; the parse (type check `ANIM` at
+`0xC31538`) rejects the `GATA` pak record. Remaining: find the helper's caller (reader
+creation — game-layer `KG_OpenFile`/wrapper OpenFile mode) and make it read the
+decompressed container (or pass the extractor-form data).
+
 ### `KG3D_SFXModel` method map (2026-10-01)
 
 Method-name strings (registered names, engine RVAs): `BindData 0x2257A40` (code
