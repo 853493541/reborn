@@ -133,16 +133,26 @@ The game's own floor/ray queries are EXPORTED by `SIMWorldX64.dll`
 | `?RayCast@PxWorld@@QEAAHPEAURayCastResult@@AEBVFVECTOR3@@1MMHHHHHPEAX@Z` | 0x32FB0 | `int RayCast(RayCastResult*, const FVECTOR3& org, const FVECTOR3& dir, float f1, float f2, int,int,int,int,int, void*)` |
 | `?RayCastDirect@PxWorld@@QEAAHAEBVFVECTOR3@@0MMHAEAV2@@1@Z` | 0x332D0 | `int RayCastDirect(const FVECTOR3& org, const FVECTOR3& dir, float maxDist, float f, int mask, FVECTOR3& outPos, FVECTOR3& outNormal)` |
 
-Setup chain: `??0PxWorld` @0x319F0 (ctor) -> `?Initialize@PxWorld@@QEAAHUKVTable@Semantic@@@Z`
-@0x32070 (takes a Semantic KVTable BY VALUE) -> `?Setup` @0x337A0 ->
-`?SetupPhysic` @0x33D70(PEAX, PEAX) (the engine physics objects) -> queries.
-`LoadScene` (server scene set) stays the boundary; the TERRAIN comes from the
-engine's PhysicsTerrain/PhysicsScene we already create in-host.
+Setup chain (disasm-refined 2026-10-01):
+- `??0PxWorld` @0x319F0 (ctor)
+- `?Initialize@PxWorld` @0x32070(this, rdx=Semantic KVTable*) - rejects null,
+  stores [this]=table, calls Setup; then writes default clamps
+  (+0x38/0x3C/0x40 = -10000.0f each, +0xA6 = 0)
+- `?Setup` @0x337A0 - reads [this] (the table) and calls its vt[0x50]
+  (get-by-key) for the world keys
+- `?SetupPhysic` @0x33D70(this, rdx, r8) - calls 0x18001A6E0(rdx, r8) and stores
+  the result at [this+0xA8] = **m_piPxScene** (the physics wrapper) - so the two
+  args are the engine physics objects (candidate: PhysicsManager*, PhysicsScene*)
+- `?GetFloorHeight` @0x31F20(this, const FVECTOR3& pos, int flag, float* out) -
+  reads [this+0xA8], converts pos by two scale constants (0x1F71D/0x1F728),
+  calls the wrapper's vt[0x20], scales back into *out, returns 1.
+- `?RayCastDirect` @0x332D0(origin, dir, maxDist, f, mask, outPos, outNormal).
 
-**Next step:** LoadLibrary `SIMWorldX64.dll` in the host, construct a PxWorld,
-Initialize with a Semantic KVTable, Setup/SetupPhysic with our in-host engine
-scene, then A/B `GetFloorHeight`/`RayCastDirect` against `TerrainSampler` at
-the field spots.
+**Remaining unknown:** the Semantic KVTable object (needed by Initialize; its
+vt[0x50] = get-by-key). Candidate source: the engine's SemanticX64 table
+(loaded in-host) - find its creation/global. Next step after that:
+LoadLibrary SIMWorldX64 -> ctor -> Initialize(table) -> SetupPhysic(manager,
+scene) -> GetFloorHeight/RayCastDirect A/B vs TerrainSampler.
 
 ## Next steps for engine-physics-in-host
 
