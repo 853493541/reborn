@@ -41,6 +41,7 @@ internal static class RebornClient
 {
     static string outDir;
     static Action<string> Log;
+    static string adHabit = "strafe";   // A/D habit: strafe (default.txt) | turn
 
     [STAThread]
     private static void Main(string[] args)
@@ -618,12 +619,17 @@ internal static class RebornClient
             }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
+            // A/D habit (official tutorial choice; default = shipped default.txt):
+            // "strafe" = A/D side-step (mouse steers), "turn" = A/D rotate.
+            adHabit = Env("RC_ADHABIT", "strafe").Trim().ToLowerInvariant();
+            if (adHabit != "turn") adHabit = "strafe";
             string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
                 catch (Exception e) { Log("camera config ex: " + e.Message); }
             }
+            Log("ad habit: " + adHabit + " (RC_ADHABIT=strafe|turn)");
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
             cameraSettings = CameraSettings.Load(
                 editorRoot, mapPath, cfgDir, Log);
@@ -1940,34 +1946,36 @@ internal static class RebornClient
             }
 
             // input -> direction (camera controls in both modes; the body faces
-            // the travel). A/D in classical free view are TURN intents (the
-            // strafe-bound key delegates to TurnStart, hotkeys proto 76/78),
-            // NOT lateral movement. The keyboard never writes the camera; a
+            // the travel). A/D follow the player's A/D HABIT (official: the
+            // tutorial teaches the turn vs strafe habits; shipped default.txt
+            // binds A/D to STRAFE*). The keyboard never writes the camera; a
             // moving character is followed through the cached
             // CameraAdjustYawWhenMoveTurn row (see the follow call below).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
             // Free view: mainscene.lua's CameraStatus_Set calls
             // CameraStatus_Animation(mode ~= 'god camera'); free view is ON in
-            // normal play. RC_FREEVIEW=0 keeps the god-camera side-step branch
-            // (挪步 clips) reachable for tests.
+            // normal play. RC_FREEVIEW=0 keeps the god-camera branch (the
+            // Turn<->Strafe handler swap) reachable for tests.
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
             // Control table (decoded): ids 0..13, built from keys/mouse exactly
-            // like Camera_EnableControl fills the client's control store. A/D
-            // are STRAFE-bound (default.txt); free view delegates the strafe key
-            // to TURN (hotkeys proto 76/78), while the RMB stick camera makes
-            // the mouse own the heading and the strafe intent moves laterally.
-            bool stickCam = classicalMode && rmbDown;
-            bool turnL = pTurnL || (classicalMode && freeView && pA && !stickCam);
-            bool turnR = pTurnR || (classicalMode && freeView && pD && !stickCam);
-            bool latMoves = !(classicalMode && freeView) || stickCam;
+            // like Camera_EnableControl fills the client's control store.
+            // A/D habit: "strafe" (shipped default.txt: A/D side-step; steering
+            // is mouse-driven, RMB drag turns the character) or "turn" (A/D
+            // rotate; the tutorial's other habit). Arrows always rotate. Under
+            // the stick camera the mouse owns the heading and the god camera
+            // swaps the handlers, so the turn intent cannot act there -> strafe.
+            bool adStrafe = !classicalMode || adHabit != "turn" || rmbDown || !freeView;
+            bool turnL = pTurnL || (pA && !adStrafe);
+            bool turnR = pTurnR || (pD && !adStrafe);
             int ctrl = 0;
-            Ctrl.Set(ref ctrl, ControlId.Forward, pW || autorunOn);
+            // both mouse buttons held = auto-forward (official classic scheme)
+            Ctrl.Set(ref ctrl, ControlId.Forward, pW || autorunOn || (lmbDown && rmbDown));
             Ctrl.Set(ref ctrl, ControlId.Backward, pS);
             Ctrl.Set(ref ctrl, ControlId.TurnLeft, turnL);
             Ctrl.Set(ref ctrl, ControlId.TurnRight, turnR);
-            Ctrl.Set(ref ctrl, ControlId.StrafeLeft, pA && latMoves);
-            Ctrl.Set(ref ctrl, ControlId.StrafeRight, pD && latMoves);
+            Ctrl.Set(ref ctrl, ControlId.StrafeLeft, pA && adStrafe);
+            Ctrl.Set(ref ctrl, ControlId.StrafeRight, pD && adStrafe);
             Ctrl.Set(ref ctrl, ControlId.Camera, lmbDown);
             Ctrl.Set(ref ctrl, ControlId.StickCamera, rmbDown);
             Ctrl.Set(ref ctrl, ControlId.AutoRun, autorunOn);
@@ -2336,7 +2344,11 @@ internal static class RebornClient
                 // camera toward the run yaw (classical run yaw = the facing) -
                 // only when the mouse does not own the camera (drag active).
                 // Standing turns never move the camera (row: "when move turn").
-                if (classicalMode && movingNow && fwdAxis > 0f && !lmbDown && !rmbDown)
+                // Row semantics: adjust WHEN MOVE+TURN - it follows the character
+                // only while a rotation intent is active (turn-habit A/D or the
+                // arrow keys), never for pure strafe movement (a camera-follow on
+                // a strafe diagonal would feed back and spiral).
+                if (classicalMode && movingNow && rotAxis != 0f && !lmbDown && !rmbDown)
                     camSys.FollowYaw(Math.Atan2(-Math.Cos(curYaw), -Math.Sin(curYaw)), dt);
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers

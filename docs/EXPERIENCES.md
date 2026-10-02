@@ -1470,3 +1470,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   mode's camera-direction movement.
 - Consequence: the host's A/D=turn is the TURN habit, not the default; model
   the habit as an option. No game-side change to blame for the mismatches.
+
+### 2026-10-02 - controls/client - complete real control scheme: A/D habit + official bindings
+- Per user: remove the prebuilt control approximations and re-add the real
+  scheme. Implemented: ControlId/Ctrl table; **A/D habit** (RC_ADHABIT=
+  strafe|turn; default "strafe" = shipped default.txt); arrows turn; both
+  mouse buttons = auto-forward (official help); RMB stick camera = mouse owns
+  the heading (turn-habit A/D become strafe there); row follow only on the
+  rotation intent (move+turn) - this fixed a strafe-diagonal feedback spiral.
+- Evidence: strafe habit A-alone side-step 96 dist camd=0; WA/WD straight
+  315/385 dcam=0.00; turn habit A-alone turn 3.14 camd=0; WA curve 375 dcam=1.
+  Smoke ALL PASS. Default relaunched (strafe habit).
