@@ -53,19 +53,52 @@ explorer.exe
 `TP3Helper.exe` (TenProtect 3). No TP driver/service observed; TP did not block direct
 launches.
 
-## 5. Verdict (2026-10-01)
+## 5. Launcher handoff mechanism (second pass, 2026-10-01)
 
-Taking the real client offline is **not a cheap pivot**. It requires, in order:
+The launcher→client session handoff is a **PID-keyed named shared memory + mutex**, not a
+command line (the real launch had no `-c`; WMI cmdlines empty).
 
-1. **Launcher emulation** — reproduce the `SeasunGame.exe` → client session handoff
-   (IPC/loopback; new RE on the launcher).
-2. **Auth stub** — satisfy XGSDK account verification offline (`xgdata.xgsdk.com`).
-3. **Server-list interception** — replace the remote list source.
-4. **Protocol implementation** — 814 messages; sizes known, field layouts unknown.
+- **Mapping**: `400BBBA7-F29F-4357-9B07-%04X-D62109852BD6` (PID hex), size **0x275C**
+  (10076) bytes. Client side (`0x140101dc0`): `OpenFileMappingA(FILE_MAP_ALL_ACCESS,
+  FALSE, name)`; if absent it **creates** it itself
+  (`CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 0x275C, name)`),
+  zeroes it, then `UnmapViewOfFile`.
+- **Mutex**: `56992E93-3828-415E-AB04-%04X-33107B63107D` — client `CreateMutexA` +
+  `WaitForSingleObject(INFINITE)` around the block copy.
+- **Block crypto**: XTEA decrypt in place (`0x140101450`, 32 rounds, delta `0x61C88647`,
+  key words `a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f`); caller `0x140104b71` reads fields
+  at +8/+0xc. Launcher must XTEA-**encrypt** the same layout.
+- **Launcher side**: `XCommonX64.dll` `[XCommon] DetachProgram` → `OSUtil::_LaunchProgram`
+  (`0x1800a82f0`): plain `CreateProcessW(appPath, args, NULL, NULL, inherit=FALSE,
+  env=NULL, workDir, ...)` — no args in the observed run; the session is filled into the
+  block afterwards (the launcher receives the PID via the out-param).
+- `KGatewayClient::OnSyncLoginKey` carries `pcszGameServerIP` — the server tells the
+  client which game-server IP to use; a private gateway controls this.
 
-All four are needed before one map loads, plus protection layers, and it would require
-changing the locked rules (launcher emulation, protocol work). The current engine-host
-plan stays the cheaper and cleaner path.
+**Implication:** a launcher emulator (own program: start client → open PID-keyed mapping →
+write XTEA block) is reproducible **without modifying the client**. Remaining unknowns: the
+0x275C plaintext layout and the gateway protocol implementation.
+
+## 6. Verdict (2026-10-01, updated)
+
+The earlier "blocked on launcher emulation" verdict is **superseded**: the handoff is a
+reproducible shared-memory protocol with a hardcoded key (§5), so a launcher emulator can
+produce a session **without modifying the client**.
+
+What still stands between here and a playable private server:
+
+1. **Block layout** — decode the 0x275C plaintext (fields at +8/+0xc and the string
+   fields). Ground truth: capture one real block and XTEA-decrypt it (key known).
+2. **Token semantics** — whether the client verifies the account/token locally or simply
+   forwards it to the gateway (if server-side, any token works).
+3. **Gateway + game protocol** — implement the real messages (814 IDs, sizes extracted;
+   field layouts unknown). `OnSyncLoginKey.pcszGameServerIP` lets our gateway point the
+   client at our game server.
+4. **Legal posture** — private-server territory; no Seasun contact, no client
+   modification, no anti-cheat bypass (stop if TP blocks).
+
+Still a large project — but the feasibility answer is now **yes, without touching the
+client**, not "impossible".
 
 ## Reproduce
 

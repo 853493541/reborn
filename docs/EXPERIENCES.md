@@ -1371,3 +1371,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: merge commit `0c750cc`; `docs/ui/BATTLE_FLOATING_UI.md`,
   `docs/ui/FONT_SCHEME_SYSTEM.md`, `proof/ui/evidence/battle_hud/**`.
 - Outcome: solved (merged; pushed to `origin/main` at user request).
+
+### 2026-10-01 — netcode — Launcher handoff mechanism recovered (shared memory + XTEA)
+- Did: second-pass static RE of the launcher handoff. Found it is **not** a command line:
+  PID-keyed named mapping `400BBBA7-F29F-4357-9B07-%04X-D62109852BD6` (0x275C bytes) +
+  mutex `56992E93-3828-415E-AB04-%04X-33107B63107D`; the client opens/creates the mapping,
+  copies it, and XTEA-decrypts in place (32 rounds, key words a0b1c2d3 e4f5a6b7 c8d9eafb
+  0c1d2e3f). Launcher: `XCommonX64.dll` DetachProgram -> `OSUtil::_LaunchProgram`
+  (`0x1800a82f0`) = plain `CreateProcessW` with no args; the session is filled into the
+  block after (PID out-param). `KGatewayClient::OnSyncLoginKey` carries
+  `pcszGameServerIP` (server points the client at the game server).
+- Verdict update: launcher emulation is **reproducible without modifying the client**;
+  the remaining work is the 0x275C block layout + the gateway protocol (814 IDs, sizes
+  extracted). Feasibility answer changed from "blocked" to "possible, still large".
+- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md` §5-6;
+  `proof/netcode/disasm/{xcommon_detach,detach_events,client_mappings,launchblock_callers}.txt`;
+  `proof/netcode/launcher_*.txt`, `SeasunGame_launcher_strings.txt`; this commit (local).
+- Outcome: solved (mechanism recovered; next gate = block capture).
