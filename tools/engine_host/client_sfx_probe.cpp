@@ -612,6 +612,29 @@ int main(void)
                                  nt ? *(unsigned long long*)((BYTE*)nt+8) : 0,
                                  nt ? *(unsigned long long*)((BYTE*)nt+0x10) : 0,
                                  nt ? *(unsigned long long*)((BYTE*)nt+0x18) : 0);
+                            if (nt != NULL && f == 30)
+                            {
+                                __try
+                                {
+                                    for (int q = 0; q < 24; q++)
+                                    {
+                                        unsigned long long v =
+                                            *(unsigned long long*)((BYTE*)nt + q * 8);
+                                        if (v > 0x10000 && v < 0x7FFFFFFFFFFFULL)
+                                        {
+                                            __try
+                                            {
+                                                char* sp = (char*)v;
+                                                if (sp[0] >= 32 && sp[0] < 127)
+                                                    logf("    +%02X ptr=%p str='%.70s'", q * 8,
+                                                         (void*)v, sp);
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER) { }
+                                        }
+                                    }
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER) { logf("  tag dump fault"); }
+                            }
                         }
                         Sleep(16);
                     }
