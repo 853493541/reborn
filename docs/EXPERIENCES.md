@@ -927,3 +927,22 @@ solved it, and what is still open. **Newest at the bottom.**
   engine's own character sweep. Self-contained, no represent dependency.
 - Multi-step outcome: engine PhysicsScene in-host (kept), query API mapped,
   wrapper/semantic boundary documented, route 2 defined as the next build.
+
+### 2026-10-01 - Physician route 2: the engine's own PhysX cook+mesh bridge works in-host
+
+- Goal: stop guessing ABI; the engine binaries carry the exact answer. The
+  PxCooking/PxPhysics vtables were dumped live (`RC_PX_VT=1`) and then explained
+  by disassembly of the MovieEditor-copy DLLs, not by SDK headers.
+- What cracked it: the cooking desc layout is NOT the public 3.3.4 header order.
+  The validator (0x7E40) + cooker (0x7970) field reads gave the real one:
+  +0x00 pointsStride, +0x08 points, +0x10 nbVertices, +0x18 trianglesStride,
+  +0x20 triangles, +0x28 nbTriangles, +0x30 u16 flags (bit1=16-bit),
+  +0x48 convexEdgeThreshold (MUST be 0.001f or the helper errors).
+- Managed stream ABI: PxOutputStream/PxInputStream = one method + dtor; a
+  GetFunctionPointerForDelegate thunk works for both directions.
+- Results (all in-host, test exe): `PxCooking vt[4]` + out-stream -> 620 B
+  NXS1/MESH cooked mesh; `PxPhysics vt[8]` + in-stream -> PxTriangleMesh*.
+- Sweep safety: vt[2] hangs (spin/lock), vt[1] is a global decref; identify
+  entries by behavior (consumed bytes + return), log-before-call so a hang's
+  culprit is visible in the last log line.
+- Next: PxShape/PxRigidStatic/PxScene + queries, then A/B vs our solver.
