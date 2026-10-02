@@ -335,6 +335,73 @@ int main(void)
         logf("KG3D_GetEngine2 -> %p", engine);
     }
 
+    // 6.5) tag system API probe on a tagged tani
+    if (engine != NULL)
+    {
+        char taniPath[512];
+        char dirAni[64];
+        gbk(L"动作", dirAni, sizeof(dirAni));
+        sprintf_s(taniPath, sizeof(taniPath),
+                  "data\\source\\player\\f1\\%s\\F1stm09通道02连环弩.tani", dirAni);
+        void* tagSys = ((void* (__fastcall *)(void*))((BYTE*)eng + 0x8B88A0))(engine);
+        HMODULE tagMod = GetModuleHandleA("KG3D_AnimationTagX64.dll");
+        logf("tagSys=%p tagModule=%p", tagSys, tagMod);
+        if (tagSys != NULL)
+        {
+            void** vt = *(void***)tagSys;
+            for (int slot = 5; slot <= 12; slot++)
+            {
+                __try
+                {
+                    typedef void* (__fastcall *F1)(void*, const char*);
+                    void* r = ((F1)(vt[slot]))(tagSys, taniPath);
+                    logf("  tagSys vt[%d] rva=0x%llX -> %p", slot,
+                         (unsigned long long)(tagMod != NULL ? ((BYTE*)vt[slot] - (BYTE*)tagMod) : 0), r);
+                    if (r != NULL)
+                        logf("     obj=%p vtable=%p q0=%016llX q1=%016llX",
+                             r, *(void**)r, *(unsigned long long*)r,
+                             *(unsigned long long*)((BYTE*)r + 8));
+                    if (r != NULL && slot == 11)
+                    {
+                        unsigned long long offs[] = { 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50 };
+                        for (int oi = 0; oi < 7; oi++)
+                        {
+                            __try
+                            {
+                                void* p = *(void**)((BYTE*)r + offs[oi]);
+                                logf("    tani +%02X -> %p", (unsigned)offs[oi], p);
+                                if (p != NULL)
+                                {
+                                    unsigned long long q0 = *(unsigned long long*)p;
+                                    unsigned long long q1 = *(unsigned long long*)((BYTE*)p + 8);
+                                    unsigned long long q2 = *(unsigned long long*)((BYTE*)p + 0x10);
+                                    logf("       q0=%016llX q1=%016llX q2=%016llX", q0, q1, q2);
+                                    if (q0 > 0x10000 && q1 > q0 && q2 >= q1)
+                                    {
+                                        unsigned count = (unsigned)((q1 - q0) / 8);
+                                        logf("       count(8B)=%u", count);
+                                        for (unsigned ei = 0; ei < count && ei < 6; ei++)
+                                        {
+                                            void* e = *(void**)(q0 + ei * 8ULL);
+                                            if (e != NULL)
+                                                logf("         e[%u]=%p evtRva=0x%llX", ei, e,
+                                                     (unsigned long long)(tagMod != NULL
+                                                         ? ((BYTE*)*(void**)e - (BYTE*)tagMod) : 0));
+                                            else
+                                                logf("         e[%u]=null", ei);
+                                        }
+                                    }
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER) { logf("    tani +%02X fault", (unsigned)offs[oi]); }
+                        }
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER) { logf("  tagSys vt[%d] fault", slot); }
+            }
+        }
+    }
+
     // 6) scene + view (host setup the game does)
     void* scene = NULL;
     if (engine != NULL)

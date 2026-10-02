@@ -567,6 +567,20 @@ tag query) in the probe to enumerate SFX tags with their paths, then bridge acti
 tags to `KG3D_CreateSFXFromFile`; or drive `KRLAnimationFactory` from
 JX3RepresentX64 for the full client behavior.
 
+**Tag-system runtime probe (tsys.out/tani2.out).** Runtime tag-system vtable is the
+0x49730 table **minus its first 2 entries** (runtime slot N = table index N-2).
+Calling the "create" slots on
+`data\source\player\f1\动作\F1stm09通道02连环弩.tani` (11 `.sfx` tags):
+vt[7] (`0xBC50`), vt[9] (`0xBD30`), vt[10] (`0xBD80`), vt[12] (`0xBF10`) → null;
+vt[11] (`0xBE60`) → an **empty `KG3D_AnimationTani_Data`** (vtable `0x4A638`;
+member getters +0x20..+0x50 all null; slots: `LoadFromFile`, `SaveToFile`,
+`_NewTagData(KG3D_ANIMTAG_TYPE)`, tag-list getters). The file-load path needs more
+than a bare path (reader/data or the 3D-engine/sound shell — `SetSoundShell` guards
+`m_pi3DEngine == nullptr`). The represent module (`JX3RepresentX64.dll`) remains the
+client's own full consumer (`KRLAnimationFactory` + tag dispatcher 0x37F2C0-0x37F6D6)
+— adopting it is the reliable route; the tani-data object is the fallback once its
+load API is wired.
+
 Client tag→effect implementation found (JX3RepresentX64.dll). The client's own
 animation-tag bridge lives in the represent module: `KRLAnimationFactory::CreateSFXTag`
 (0x37F400, internal — `[factory+0x218]` sub-object + `0xC874` build), plus
