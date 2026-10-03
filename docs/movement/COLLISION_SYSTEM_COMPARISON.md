@@ -186,12 +186,12 @@ where they affect collision/camera geometry. Excludes harness switches
 | 1 | per-frame float integration instead of 15 Hz integer | rule | `RebornClient` loop |
 | 2 | no slope projection/air-stop (`ProcessDropSpeed`) | rule | ground step |
 | 3 | 64 u step budget applied to mesh obstacles (engine `stepOffset` is 0.5 m) | number | `RC_STEP_HEIGHT` |
-| 4 | `lowTop` fallback in the step rule | rule | `FoliageCollision.Resolve` |
+| 4 | ~~`lowTop` fallback in the step rule~~ **REMOVED 2026-10-02** (census audit): the engine CCT steps onto the actual contact surface only. The step is now the engine sequence: up-sweep → forward sweep by the move at the raised height → down-sweep landing (highest surface within stepOffset, terrain included), with the engine slopeLimit 0.707 enforced on the landing and on ground support | rule | `FoliageCollision.Resolve` |
 | 4b | step raise requires CCT up-sweep clearance (raised capsule must not overlap the blocker; else block+push-out, no embedding); support raise only to a standable surface (downward contacts reject; horizontal overlaps left to the prop push) | rule | `FoliageCollision.CapsuleBlocked/CapsuleBlockedDown` |
 | 4c | horizontal faces resist the horizontal motion (a face whose normal points along the move is flipped - thin-wall pop-through prevented, field case z~33870 building 001_002) | rule | `FoliageCollision.Resolve` (hMove) |
 | 4d | movement substeps capped below the capsule radius (`min(20, 0.9*radius)`) - thin small faces (foliage/rock slivers) no longer creep at 20 u substeps | number | `RebornClient` loop + audit |
 | 4e | tree trunk prisms measured from the VISUAL mesh when the shipped `.CollisionMesh` is degenerate (62/68 trees in 龙门寻宝); not game data, kept to avoid a walk-through hole. Recover via `.srt` decode or engine obstacle production | proxy | `export_structure_collision.trunk_prism_from_mesh` |
-| 4f | step budget 64 u (the engine's landing tolerance `0x14031A25E`) instead of the PhysX `stepOffset` 50 u: a live-game field case (51 u house floors walkable) proves the gameplay step exceeds 50; the CCT value's gameplay applicability is unproven (`G-1/G-13`) | number | `RC_STEP_HEIGHT` |
+| 4f | **RESOLVED 2026-10-02**: step budget = 50 u, the engine PxControllerDesc ctor value (stepOffset 0.5 m; ctor dump proof/collision/disasm/pxcontrollerdesc_ctor.txt; slopeLimit 0.707 and contactOffset 0.1 also enforced). The old 64 u host value is gone; RC_STEP_HEIGHT overrides. A ~51 u house-floor step now blocks unless the server movement proves a larger step | number | RC_STEP_HEIGHT |
 | 5 | 20 u movement substep | number | `RebornClient` loop |
 | 6 | floor source = terrain sample + `SupportHeight` (not native `GetFloorHeight`) | proxy | both |
 | 7 | winding-agnostic floor query (game winding is inverted) | rule | `SupportHeight` |
