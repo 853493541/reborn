@@ -64,6 +64,10 @@ proof/netcode/mode_ui/loading/**/*.dds
 # Native camera shim build output (MSVC)
 native/obj/
 
+# Phase 3 client-host build output + engine runtime snap
+native/client_host/out/
+native/client_host/engineoptionsnap.ini
+
 # collision extractor scratch (PakV4 out dir)
 proof/collision/**/_work/
 
