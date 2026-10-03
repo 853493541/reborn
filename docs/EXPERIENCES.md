@@ -1588,3 +1588,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.28; EV_ID sweep 0/1 -> viewer spawns, 2-8 -> none; log file bytes.
 - Outcome: log channel works; startup question narrowed to which module Initialize fails and
   what creates state_sub+0x18.
+### 2026-10-02 — V2 — the startup gate decoded exactly (wait/pump/sub+0x18)
+- Did: static decode of wait 0x14009D9A0 -> pump 0x14009D120 -> terminal 0x14009D2E0; live
+  5 ms polling of the real sub fields (sub = state+0xE8).
+- Findings: the gate is `[sub+0x18] != 0 && [sub+0x18]->vt[8](0) != 0` -> wait returns 1
+  (startup done); the group runs 1.88-2.05 s (step non-null, done=1 at 2.05) but nothing
+  creates sub+0x18 -> return 0 -> clean exit at ~2.2 s. (My mid-pass "gate is state+0x18"
+  guess was wrong - the pump receives &sub, so sub+0x18 is correct after all.)
+- Evidence: doc sec.29; probe_subvt.py run timeline.
+- Next: find the writer of sub+0x18 (group step processors / module Initialize result
+  handler); hardware write-watchpoint on sub+0x18 during 1.8-2.1 s is the direct probe.

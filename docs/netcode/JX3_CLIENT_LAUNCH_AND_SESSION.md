@@ -558,3 +558,25 @@ machinery; patches our own probe child only, transient, no disk writes).
   failing or skipping).
 - Next: instrument the module Initialize results (which modules run, which return failure)
   and find the writer of `state_sub+0x18`.
+
+## 29. The gate, exactly (2026-10-02, twenty-third pass)
+
+Static decode of the wait/pump chain:
+
+- `wait` (`0x14009D9A0`) calls `sub->vt[8]` with `rcx = &sub` (`state+0xE8`); `sub->vt[8]`
+  (`0x14009D120`) is the **pump**: it walks the step chain at `sub+0x70`, calling each step's
+  `[step+8]->vt[8]`; step return 0 = all done (`sub+0x61 = 1`), 1 = advance to the next step
+  (`sub+0x70 = next`), 2 = keep waiting; the terminal handler is `0x14009D2E0`.
+- **The gate** is `0x14009D2E0`: `if [sub+0x64] > 0 -> return 3`; else `[sub+0x60]=1`;
+  if done (`sub+0x61`): `state->vt[0x10]()`, optional `[sub+0x58]->vt[0x10]()`, then
+  `mov rcx, [sub+0x18]; test rcx; je -> return 0`; `call [rcx]->vt[8](0)`; nonzero ->
+  **return 1 (startup done -> WinMain enters the game)**; zero -> return 0 (WinMain exits).
+  So `sub+0x18` is a platform/client object whose `vt[8]` answers "ready".
+- **Timeline (5 ms polling of the real fields)**: `sub+0x18` stays 0 from 0.56 s through
+  2.05 s; `sub+0x70` (step) is non-null only 1.88-2.05 s (the `game.startup` group);
+  `sub+0x61` (done) = 1 at 2.05 s; after that the object is torn down (the field then shows
+  garbage code addresses at 2.21 s). So the group runs and completes, but nothing ever
+  creates `sub+0x18` - the writer is skipped or fails silently.
+- Next: find the writer of `sub+0x18` - candidates: the group's step processors
+  (`0x1400A0870` runner / dispatcher `0x14009C890`) or a module Initialize result handler;
+  a hardware write-watchpoint on `sub+0x18` during 1.8-2.1 s would identify it exactly.
