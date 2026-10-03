@@ -375,8 +375,8 @@ int main(void)
                 void* camera = NULL;
                 long grc = ((long (__fastcall *)(void*, void**))vvt[10])(view, &camera);
                 float pose[9] = {
-                    23334.0f, 761.0f + 3.0f, 24224.0f + 7.0f,
-                    23334.0f, 761.0f + 1.0f, 24224.0f,
+                    23334.0f, 761.0f + 6.0f, 24224.0f + 16.0f,
+                    23334.0f, 761.0f + 1.5f, 24224.0f,
                     0.0f, 1.0f, 0.0f
                 };
                 long prc = -1;

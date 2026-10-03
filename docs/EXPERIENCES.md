@@ -1121,3 +1121,19 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   view create=0x0 add=0x0, actor/animation/SFX all rc=0); commit 57e3268 + this one.
 - Remaining: black render (no camera pose) -> KG3D_Engine::CreateCamera (0x8AF8E0)
   with the spawn/camera data, then the app port.
+
+## 2026-10-02 ¡ª Phase 3 render breakthrough: SceneViewEx paint pair
+
+- The client host's window paint crashed at frame 14 in a lazy shadow update
+  ( x70FDE9, helper 0x70E700 reading [r8+0x10] from a bad object) when using
+  BeginPaintView/EndPaintView (0xA6BEF0/0xA6C3C0).
+- **Fix**: use the SceneViewEx pair BeginPaintSceneViewEx (0xA6C1B0) /
+  EndPaintSceneViewEx (0xA6C480). 240 frames paint cleanly and the engine
+  screenshot shows the real sandbox map (terrain/ruins/sky; host_shot24.png).
+- Also fixed before it: sandbox data gaps (d/env_probe/*.dds from the pak;
+  d/shadowparam.json from the engine's global rcdata default) ¡ª builder updated.
+- Camera pose: KG3D_CAMERA_POSE = {eye[3], target[3], up[3]} (0x24 bytes) via
+  KG3D_Camera::SetPose (0xB36540); the view re-derives its camera from the map's
+  systemCamera.json, so host pose control is the next item.
+- Evidence: %TEMP%\opencode\skillv2\host24.out, host_shot24/25.png; commits
+  cda0b6c, 94f2955, ec50b37.

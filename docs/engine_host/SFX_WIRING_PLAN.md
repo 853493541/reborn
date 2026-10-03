@@ -592,6 +592,18 @@ existence predicate to the host's loose-file layout (host file-layer bridge, to 
 registered as a deviation with re-open criteria), or find the missing wiring that
 lets the wrapper see loose files; then the map renders and the app port proceeds.
 
+**Phase 3 — RENDER WORKS (host24/25.out).** The shadow-pass crash is avoided by
+using the **SceneViewEx paint pair**: `BeginPaintSceneViewEx` (`0xA6C1B0`) /
+`EndPaintSceneViewEx` (`0xA6C480`) instead of `BeginPaintView`/`EndPaintView`.
+With that, 240 paint frames complete without fault and the engine screenshot is a
+**real frame of the sandbox map** (terrain, ruins, buildings, sky;
+`host_shot24/25.png`, 1264x681, ~330 KB PNG, mean `#8A9998` — not black).
+The host now renders the real client engine: map + view + camera + actor +
+authored animation + real `.Sfx`, in one process.
+Note: the framing follows the map's `systemCamera.json` (the view re-derives its
+camera; our `SetPose` is overridden) — camera control is the next polish item,
+together with porting this host into the app.
+
 **Phase 3 — env/shadow data gaps fixed; paint crash isolated (host22/23.out).**
 Two map data gaps that the sandbox builder dropped are now provided:
 `bd\env_probe\skybox_*.dds` (extracted from the PakV4; the builder now includes
