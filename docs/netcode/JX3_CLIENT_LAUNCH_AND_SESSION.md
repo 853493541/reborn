@@ -817,3 +817,21 @@ context's RTTI + event id + handler function.
   created before resume, no extra patches) and the client should then avoid the race; the
   diagnostic patches (MOD_OK etc.) must be off. Next: build the emulator and measure the
   abort rate under it; then handle the relaunch/launcher-session path.
+## 40. P1.3 emulator v1: production conditions (2026-10-03, 34th pass)
+
+Tool `tools/netcode/launcher_emulator.py`: launches `KGPK4_StreamDownloaderX64.exe` first,
+then `JX3ClientX64.exe` with a plain non-suspended CreateProcess (no args, inherit=FALSE,
+env=NULL, workdir = the client root), creates **no** block (the client makes its own), and
+applies **no** patches. Monitoring: windows/children/exit.
+
+Result: downloader + client up; the client spawns its own downloader, the loading window
+(1.66 s) and the `KGWin32App` window (1.77 s), spawns `SeasunGame.exe` (1.99 s), then exits
+cleanly (code 0) at 2.67 s. The dispatch race is still lost at normal speed, so production
+conditions alone do not avoid the LaunchUpdater abort.
+
+Options considered next: (a) find the real launcher-context property that wins the race
+(parent process / environment / timing) - the launcher process is protected, so only
+external comparison is possible; (b) investigate what makes the module-step context's low
+byte 0 in the racing task (the abort trigger); (c) test under a running real launcher again
+(earlier test still exited). Until then the client cannot stay up without the MOD_OK-class
+diagnostic, which is not shippable.
