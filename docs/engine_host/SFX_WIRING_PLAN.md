@@ -592,6 +592,22 @@ existence predicate to the host's loose-file layout (host file-layer bridge, to 
 registered as a deviation with re-open criteria), or find the missing wiring that
 lets the wrapper see loose files; then the map renders and the app port proceeds.
 
+**Phase 3 — env/shadow data gaps fixed; paint crash isolated (host22/23.out).**
+Two map data gaps that the sandbox builder dropped are now provided:
+`bd\env_probe\skybox_*.dds` (extracted from the PakV4; the builder now includes
+them) and `bd\shadowparam.json` (the map-level file is absent from the PakV4 — the
+engine's own global default `data\rcdata\shadowparam\shadowparam.json` from the
+updater cache is used; the builder now copies it best-effort). Both engine errors
+(`KG3D_EnvironmentProbe::LoadFromFile` 655 / `EnvironmentProbeManager::Init` 303,
+`SceneShadowManager::LoadShadowParamForSceneConfig` 107) are gone.
+Remaining: the window paint faults at **frame 14** at `0x70FDE9` (`mov rax,[rdx]`)
+in a lazy shadow update; the object comes from `[shadowMgr+0x10]` and the ctor
+(`0x9A8590`) stores an int `1` there, which the render helper treats as a pointer —
+a wrong object/state in the shadow-manager init path (skipping engine FrameMove does
+not avoid it; it is paint-frame-count driven). Next: trace the shadow manager init
+(`0x993D3x`, ctor `0x9A8590`) or use the engine's offscreen capture path
+(`Create2DSceneCapture`) which may bypass the shadow pass.
+
 **Phase 3 — camera set; paint blocked on sun/shadow camera (host20.out).** The view
 exposes its camera (`view->vt[10](&camera)` → non-null); `KG3D_Camera::SetPose`
 (`0xB36540`) with `KG3D_CAMERA_POSE = {float eye[3]; float target[3]; float up[3]}`

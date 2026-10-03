@@ -461,7 +461,7 @@ int main(void)
         for (int f = 0; f < 240; f++)
         {
             if (ctrl != NULL) ctrlFm(ctrl);
-            engFm(engine);
+            if (f < 8) engFm(engine);
             if (window != NULL && view != NULL)
             {
                 __try
