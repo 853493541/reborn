@@ -1005,13 +1005,18 @@ internal static class RebornClient
         float playerRadius = 17f, playerHeight = 116f;
         float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
         float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
-        // Character step budget: the engine's PxControllerDesc ctor (recovered
-        // dump, proof/collision/disasm/pxcontrollerdesc_ctor.txt) sets
-        // stepOffset = 0.5 m = 50 u (slopeLimit 0.707, contactOffset 0.1).
-        // RC_STEP_HEIGHT overrides. (Was 64 u - registered deviation 4f; its
-        // re-open criterion "CCT gameplay step recovered" is met by the dump.)
-        float stepHeight = 50f;
-        float.TryParse(Env("RC_STEP_HEIGHT", "50"), out stepHeight);
+        // Character step budget (host proxy for the server-authoritative step;
+        // the client's own prediction has no capsule-vs-mesh blocking at all,
+        // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
+        // tolerance constant (KCharacter::ProcessVerticalMove 0x14031A25E,
+        // 1 尺) and the value covering the 51 u house-floor field case. The
+        // PhysX PxControllerDesc ctor default (stepOffset 0.5 m = 50 u; dump
+        // proof/collision/disasm/pxcontrollerdesc_ctor.txt) belongs to the
+        // PhysX controller layer only - G-1: no proof the player uses a
+        // PxController (the gameplay body is the SIMWorld/KCharacter solver).
+        // RC_STEP_HEIGHT overrides. Registered deviation 4f (OPEN).
+        float stepHeight = 64f;
+        float.TryParse(Env("RC_STEP_HEIGHT", "64"), out stepHeight);
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";

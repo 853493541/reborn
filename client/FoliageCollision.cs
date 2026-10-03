@@ -1378,7 +1378,7 @@ public sealed class FoliageCollision
     public bool MoveResolved(ref float px, ref float py, ref float pz,
                              float dx, float dz, float radius, float height,
                              float maxSubStep, ref float ground, ref bool grounded,
-                             float stepHeight = 70f)
+                             float stepHeight = 64f)
     {
         float len = (float)Math.Sqrt(dx * dx + dz * dz);
         int n = 1;

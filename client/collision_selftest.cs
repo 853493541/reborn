@@ -135,7 +135,7 @@ internal static class CollisionSelfTest
                 {
                     wx += wdx / n2;
                     wz += wdz / n2;
-                    bool b = wc.Resolve(ref wx, ref wy, ref wz, 17f, 116f, ref wg, ref wgr, 70f, 0f, wdx, wdz);
+                    bool b = wc.Resolve(ref wx, ref wy, ref wz, 17f, 116f, ref wg, ref wgr, 64f, 0f, wdx, wdz);
                     bool st = wc.CapsuleTouches(wx, wy, wz, 17f, 116f);
                     Console.WriteLine(string.Format(ci2,
                         "sub{0} p=({1:F1},{2:F1},{3:F1}) grounded={4} ground={5:F1} blocked={6} static={7} lastInst={8} lastDepth={9:F1} lastN=({10:F2},{11:F2})",

@@ -1152,3 +1152,28 @@ walk-up. Findings and fixes (all engine-grounded, branch only, no merge):
 - Client data checks: wj_木堆001 pak probe = only the render .mesh (no
   CollisionMesh/proxymesh sibling) so the engine cooks the render mesh; the
   climb came from our rules, not the geometry.
+
+### 2026-10-02 - Audit correction: step budget stays 64 u (PhysX ctor default is not the gameplay value)
+
+Second audit pass on the step rule conflict, after the ctor dump was read as
+"stepOffset 0.5 m = 50 u":
+
+- The PhysX `PxControllerDesc` ctor defaults (0.5/0.1/0.707) are the **PhysX
+  library defaults**, statically linked into PhysicsEngineX64.dll; a call-site
+  scan of that DLL shows the game code there never calls the desc ctor or
+  setToDefault - the desc construction, if any, is elsewhere (G-1 open).
+- The docs already state the gameplay body is a kinematic capsule +
+  SIMWorld/KCharacter solver, and the client's own prediction has **no
+  capsule-vs-mesh blocking at all** (wall blocking is server-authoritative,
+  CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3) - so no client-side step constant
+  exists; the host step is a server proxy.
+- The game-side movement constant is 64 u = 1 尺 (`ProcessVerticalMove`
+  0x14031A25E ground/landing tolerance) and the 51 u house-floor field case
+  needs 64.
+- Corrected: client step budget back to 64 u (RC_STEP_HEIGHT overrides),
+  MoveResolved default 70 -> 64, probe wallcheck debug path 70 -> 64. The
+  structural audit fixes stay: engine step sequence (up -> forward -> down
+  sweep), slopeLimit 0.707 on the step landing + ground support (the pile
+  climb root), lowTop heuristic removed.
+- Verified: selftest 36/36; pile wallcheck (grounded, +300) still blocked at
+  the base with 64; wall-ledge field case still blocks cleanly.
