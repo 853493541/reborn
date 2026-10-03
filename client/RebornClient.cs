@@ -2470,9 +2470,38 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
-                // Keyboard turns rotate the camera directly (turn block above);
-                // the CameraAdjustYawWhenMoveTurn row is therefore not applied
-                // on top of them - the old row-follow here would double-turn.
+                // Camera follow mode (client CAMERA_MODE enum, enum_ui.lua
+                // pc2977-2987: 0 NEVER_FOLLOW, 1 AUTO_FOLLOW, 2 ALWAYS_FOLLOW;
+                // the per-mode value nCameraModeIn<Mode> reaches the camera node
+                // via the decoded Camera_SetFollowMode binding -> +0x80/+0x98).
+                // AUTO = the move+turn row (CameraAdjustYawWhenMoveTurn);
+                // ALWAYS also follows a plain move; NEVER is mouse-only.
+                // Joystick follows the TRAVEL direction (the client's
+                // RotatePlayer drives Camera_SetResetSpeed per frame from the
+                // movement direction), classical follows the control frame.
+                // RC_FOLLOW_MODE overrides for scripted tests.
+                int followMode = cameraSettings.ActiveFollowMode;
+                string followEnv = Env("RC_FOLLOW_MODE", "");
+                if (followEnv.Length > 0)
+                {
+                    int fv;
+                    if (int.TryParse(followEnv, out fv)) followMode = fv;
+                }
+                if (followMode < 0) followMode = 0;
+                else if (followMode > 2) followMode = 2;
+                if (followMode != 0 && movingNow && !lmbDown && !rmbDown)
+                {
+                    bool followNow = classicalMode
+                        ? (followMode == 2 || rotAxis != 0f)
+                        : true;   // joystick: AUTO and ALWAYS follow the travel
+                    if (followNow)
+                    {
+                        double followYaw = classicalMode
+                            ? moveYaw
+                            : Math.Atan2(-dirZ, -dirX);
+                        camSys.FollowYaw(followYaw, dt);
+                    }
+                }
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the

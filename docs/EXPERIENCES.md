@@ -1755,3 +1755,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   boundary). UseFullAngle: no plaintext strings anywhere (hash-registered).
 - Conclusion recorded in P4 doc 2c + OPERATION_MODES_PLAN 7h: these consumers
   need runtime tracing of the game-world layer, which the host cannot provide.
+
+### 2026-10-02 - controls - J5 solved: camera follow mode pipe + gating
+- Found the follow-mode enum (NEVER=0/AUTO=1/ALWAYS=2, enum_ui.lua) and the
+  full native pipe: SetCameraMode -> UI_Camera_SetParams_S -> Camera_SetFollowMode
+  (gc 0x1802EB1C0) -> node setter 0x180ACE3F0. Host now gates the camera follow
+  by the per-mode value (custom.dat), joystick following the travel direction
+  per the decoded RotatePlayer rate; RC_FOLLOW_MODE override for tests.
+- Verified: joystick ALWAYS follows (A dcam 1.06, TURNRIGHT 1.57, WD -1.05);
+  classical default 0 unchanged; smoke ALL PASS. Interpretation note + re-open
+  criteria in annex A12.

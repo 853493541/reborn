@@ -297,6 +297,45 @@ Decoded consequences:
 Remaining: port the math to the host (facing byte-angle from `FastArcTan` +
 the per-frame camera follow rate `Camera_SetResetSpeed(dir*scale*0.00125)`).
 
+## A12. Camera follow mode (CAMERA_MODE) — full pipe + host gating HIGH
+
+**Enum (game client `enum_ui.lua` chunk pc2977-2987):**
+```lua
+CAMERA_MODE = { NEVER_FOLLOW = 0, AUTO_FOLLOW = 1, ALWAYS_FOLLOW = 2 }
+```
+
+**Pipe:** `UISetting_Comprehensive:SetCameraMode(nCameraMode, announce)` (0/53)
+stores `nCameraMode`, updates the settings checkboxes, then calls the native
+`UI_Camera_SetParams_S(fDragSpeed, fMaxCameraDistance, ?, ?, nCameraMode)`.
+The native camera Lua bindings live in the game client `JX3RepresentX64.dll`
+(assert strings, `docs/controls/CONTROL_MODES_P4_PROBE.md`):
+`SetCameraFollowMode` wrapper `0x1802EB1C0` (L179, nArgs==1) -> thunk
+`0x18000D909` -> **node setter `0x180ACE3F0`** (clamp 0..3, field `+0x80`
+classic / `+0x98` joystick per `[node+0x34]`). `SetCameraMaxDistance`
+`0x1802EB220`, `SetCameraParams` `0x1802EB300`, `SetCameraPitch`
+`0x1802EB3C0`, `SetCameraRTParams` `0x1802EB4E0` are the sibling bindings.
+
+**Host gating (implemented):** per-mode values already come from
+`custom.dat` (`nCameraModeInClassicMode/InJoystickMode`, applied on switch).
+The client now gates the camera follow by the mode:
+- `NEVER_FOLLOW (0)` - mouse-only (no follow).
+- `AUTO_FOLLOW (1)` - follow on the move+turn row (classical); joystick
+  follows the travel while moving (the decoded `RotatePlayer` per-frame
+  `Camera_SetResetSpeed` behavior).
+- `ALWAYS_FOLLOW (2)` - also follows a plain move.
+Joystick follows the **travel direction**; classical follows the control frame.
+`RC_FOLLOW_MODE=0|1|2` overrides for scripted tests.
+
+Host interpretation register: AUTO/ALWAYS semantics come from the client's own
+enum names plus the decoded joystick rate behavior; the exact native per-frame
+consumer of the node field was not located (no direct reads). Re-open when the
+consumer is traced.
+
+Evidence runs: `reborn_20261002_173504.log` (joystick ALWAYS: A-alone camera
+follows `dcam≈1.06`, TURNRIGHT `camd=1.57`, W+D `dcam=-1.05`);
+`reborn_20261002_173637.log` (classical default `followMode=0`, all control
+fingerprints unchanged).
+
 ## A4. Mode toggle — `OperationModeBase.lua` proto `0/19` (L463-488) MED/HIGH
 
 ```lua

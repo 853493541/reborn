@@ -517,3 +517,14 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
 - 'FullAngle' has zero plaintext strings in Represent/exe: UseFullAngle is
   hash-registered (G11); consumer open.
 - Status table: docs/controls/OPERATION_MODES_PLAN.md 7h.
+
+## J5 SOLVED: CAMERA_MODE pipe + host follow gating, 2026-10-02
+- Enum (enum_ui.lua pc2977-2987): NEVER_FOLLOW=0, AUTO_FOLLOW=1, ALWAYS_FOLLOW=2.
+- Pipe: SetCameraMode (UISetting_Comprehensive 0/53) -> UI_Camera_SetParams_S
+  (native) -> Camera_SetFollowMode wrapper (gc 0x1802EB1C0, L179) -> thunk
+  0x18000D909 -> node setter 0x180ACE3F0 (clamp 0..3; +0x80/+0x98).
+- Host: follow gated by mode; joystick follows the travel direction (decoded
+  RotatePlayer per-frame Camera_SetResetSpeed behavior), classical the control
+  frame; RC_FOLLOW_MODE=0|1|2 override.
+- Evidence: 173504 (joystick ALWAYS: A dcam=1.06, TURNRIGHT camd=1.57, WD
+  dcam=-1.05); 173637 (classical default 0: fingerprints unchanged). Smoke PASS.
