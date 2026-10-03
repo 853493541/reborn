@@ -1575,3 +1575,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   channel before the gate is solved.
 - Outcome: negative result recorded; next = find the writer of state_sub+0x18 (launcher IPC /
   security handshake candidates).
+### 2026-10-02 — V2 — log channel live + Initialize IS dispatched (corrects the earlier read)
+- Did: fixed the viewer spawn contract (`xlogv -i <read> -o <write>`; lv.c had -i/-o swapped
+  -> EBADF), rebuilt it, added stdout capture to probe_logpatch; event-id sweep by patching
+  only the `cmp edx,1` immediate.
+- Findings: (1) `C:\jx3tmp\client_log.txt` now receives the client's stdout stream (Dumper64
+  startup/shutdown proven, ~2.3 KB/run); (2) `KGLogAddOption(2)` is `or [Engine+0x174020],2`
+  and OnInitialize's success path is `OpenXLogV` -> `KGLogAddOption(2)` (or `AllocConsole` +
+  `freopen CONOUT$` in the alternate branch); (3) the console module's handler is called with
+  edx=0 and edx=1 -> **Initialize IS dispatched** (~1.2 s); the sec.27 "never runs" was an
+  artifact of the config flag racing (the config module re-initializes +0x224).
+- Evidence: doc sec.28; EV_ID sweep 0/1 -> viewer spawns, 2-8 -> none; log file bytes.
+- Outcome: log channel works; startup question narrowed to which module Initialize fails and
+  what creates state_sub+0x18.

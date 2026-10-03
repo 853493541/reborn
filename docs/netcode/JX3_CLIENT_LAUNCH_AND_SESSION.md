@@ -542,11 +542,19 @@ machinery; patches our own probe child only, transient, no disk writes).
   (0.3-1.5 s) are lost when `freopen` discards the CRT stdout buffer. Capturing engine KGLog
   needs a console-typed stdout (CREATE_NEW_CONSOLE + read the console buffer) or a later
   flush point.
-- **Module events DO run, Initialize does not**: the console module's event handler is called
-  at ~1.2 s (inside PlatformLoad's module phases): with the event-id check NOPed the viewer
-  spawns; with the check intact and the config flag set to 1 it does not -> the dispatched
-  event id is **not 1 (Initialize)**. The startup chain reaches per-module events but never
-  dispatches Initialize, consistent with the missing platform object (`state_sub+0x18`).
-- Next: identify the exact event id(s) dispatched to the modules (vary the immediate in the
-  event check / instrument the dispatcher node's event_id) and which event should create
-  `state_sub+0x18`.
+- **Module events DO run** (corrects sec.27): an event-id sweep (patch only the immediate in
+  `cmp edx, 1`; spawn happens iff the dispatched id matches) shows the console module's
+  handler is called with **edx = 0 and edx = 1** - i.e. **Initialize IS dispatched** at
+  ~1.2 s, inside PlatformLoad's module phases (two calls, matching the two viewer spawns).
+- The sec.27 "Initialize never runs" conclusion was an artifact: the config flag
+  `[configModule+0x224]` reads 0 at call time because the config module re-initializes the
+  field when it loads config, overwriting our early write; the flag check is a policy gate,
+  not a dispatch gate. With the flag check NOPed and the event check intact (EV_ID=1) the
+  viewer spawns -> the whole OnInitialize path is reachable.
+- **Corrected picture**: the startup chain does dispatch module Initialize (~1.2 s). The
+  remaining startup blocker is still the pump's `state_sub+0x18` (platform object); the
+  question shifts from "why is Initialize never dispatched" to "which module Initialize
+  fails/what it needs" (no window per sec.23, no CEF per sec.13 - some module's init must be
+  failing or skipping).
+- Next: instrument the module Initialize results (which modules run, which return failure)
+  and find the writer of `state_sub+0x18`.

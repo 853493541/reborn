@@ -33,6 +33,7 @@ ROOT_STR = "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd"
 ROOT_WIDE = ROOT_STR.encode("utf-16-le")
 NEW_WIDE = "C:\\jx3t\\".encode("utf-16-le")
 LOG_FILE = r"C:\jx3tmp\client_log.txt"
+EV_ID = os.environ.get("EV_ID", "")
 SCAN_START = 1.0
 PATCH_AT = 1.78
 RUN_UNTIL = 3.6
@@ -196,7 +197,10 @@ def main():
             break
         time.sleep(0.02)
     if exe_base0:
-        ok1 = write_mem(h, exe_base0 + 0xA5959, b"\x90" * 9)
+        if EV_ID:
+            ok1 = write_mem(h, exe_base0 + 0xA595B, bytes([int(EV_ID)]))
+        else:
+            ok1 = write_mem(h, exe_base0 + 0xA5959, b"\x90" * 9)
         ok2 = write_mem(h, exe_base0 + 0xA5969, b"\x90" * 13)
         ok3 = write_mem(h, exe_base0 + 0x955228, b"\\bin64\\lv.exe" + b"\x00" * 3)
         print("pre-resume exe patches (base=0x%X): event=%s flag=%s literal=%s"
@@ -291,10 +295,18 @@ def main():
             # module event handler with other event ids only, so NOP the event-id check:
             # then the full OnInitialize runs on any event (OpenXLogV is idempotent via
             # module+0x18) and its success path installs the log sink -> viewer gets data.
-            ev = read_mem(h, exe_base + 0xA5959, 9)
-            if ev and ev != b"\x90" * 9:
-                ok = write_mem(h, exe_base + 0xA5959, b"\x90" * 9)
-                print("[%.2f] OnInitialize event-id check NOPed %s" % (el, "ok" if ok else "FAIL"))
+            if EV_ID:
+                # keep the cmp edx, imm; only the immediate is patched: the viewer
+                # spawns iff the dispatched event id equals EV_ID
+                ev = read_mem(h, exe_base + 0xA595B, 1)
+                if ev != bytes([int(EV_ID)]):
+                    ok = write_mem(h, exe_base + 0xA595B, bytes([int(EV_ID)]))
+                    print("[%.2f] event-id immediate -> %s %s" % (el, EV_ID, "ok" if ok else "FAIL"))
+            else:
+                ev = read_mem(h, exe_base + 0xA5959, 9)
+                if ev and ev != b"\x90" * 9:
+                    ok = write_mem(h, exe_base + 0xA5959, b"\x90" * 9)
+                    print("[%.2f] OnInitialize event-id check NOPed %s" % (el, "ok" if ok else "FAIL"))
             # also NOP the config-flag check (13 bytes at 0xA5969) - the event calls race
             # the flag write, and the flag is only a policy gate for the log viewer
             fc = read_mem(h, exe_base + 0xA5969, 13)
