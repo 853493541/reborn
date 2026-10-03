@@ -1301,7 +1301,7 @@ internal static class RebornClient
         // "16帧等于1秒", UNIT_SCALE...md §2): walk 6 / run 20 u/frame -> 96 / 320
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
-        // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
+        // default RUN, Num/ toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
         // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
         // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
@@ -2941,7 +2941,6 @@ internal static class RebornClient
                             if (camDebug && now - lastSetLog >= 500)
                             {
                                 lastSetLog = now;
-                                float mrx = 0f, mry = 0f, mrz = 0f;
                                 Log(string.Format("enginelook rc=0 moved={0:F1} native={1} k={2:F0}",
                                     rmove, usedNativeCam, k));
                             }

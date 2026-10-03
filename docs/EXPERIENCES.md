@@ -1815,3 +1815,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   classical RunTo path (rate + >112.5deg penalty) is unchanged.
 - Verified: joystick A-alone snap yaw -1.57 dist=320; WA/WD 383 both (no
   penalty); classical regression identical; smoke ALL PASS.
+
+### 2026-10-02 - controls - full audit (movement+camera+joystick)
+- Gates: jx3_model 10 PASS, gravity exit 0, loot SELFTEST PASS, smoke ALL PASS,
+  build exit 0 warning-free; parity/rules/server gates N/A in this worktree
+  (no netcode/ tree).
+- Scripted runs on the audited build: default joystick; joystick instant turn
+  (A yaw snap -1.57 dist=320; WA/WD 383 no penalty); classical regression
+  unchanged; sprint input Start/End; follow ALWAYS dcam 1.06/1.57/-1.05;
+  mode persistence read. Hygiene: removed unused vars, fixed stale / text.
+- Residuals: A11 rate integration (node slot reader), engine Sprint state,
+  locomotion BinText filename, G11 registry, classical turn-key camera
+  deviation (host-requested), camera-drift flake watch. Report:
+  docs/controls/CONTROL_AUDIT_20261002.md.

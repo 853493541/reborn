@@ -33,6 +33,7 @@ state of our own client, so the full control system can be implemented later.
 | controls/CONTROL_MODES_P5_ANIM.md | **P5 animation** — locomotion selection algorithm (speed-tier thresholds, transition clip sets, two slots; param lookup next) (2026-10-02) |
 | controls/CONTROL_MODES_P4_PROBE.md | **P4 field map + host-build diff + probe plan** — camera-manager writers/readers, host RVAs, probe steps (2026-10-02) |
 | controls/FULL_CONTROL_PLAN.md | **full control plan** — all 286 bindings by subject, phases P0–P5 with dependencies + verification (2026-10-02) |
+| controls/CONTROL_AUDIT_20261002.md | **full audit (movement+camera+joystick)** — gates, scripted runs, feature matrix, residuals (2026-10-02) |
 
 ## The one-paragraph summary
 
