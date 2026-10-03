@@ -1745,3 +1745,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   application, follow [0..3], UseFullAngle) sit behind the engine property
   system / hashed bindings and are documented OPEN rather than approximated
   (OPERATION_MODES_PLAN 7h).
+
+### 2026-10-02 - controls - spring integrator candidate; joystick consumers stay open
+- 0x180B11E40 (camera region) is a spring/interpolation step over
+  fields +0x74/+0x78/+0x7C (time) / +0x80..+0x88 (velocity) / +0x8C..+0x94
+  (target) - offsets overlap the camera-node per-mode block but are reused as
+  time/velocity, so it does NOT prove the per-mode springResetSpeed wiring.
+- Follow-mode reads: none direct in the camera region (property-system
+  boundary). UseFullAngle: no plaintext strings anywhere (hash-registered).
+- Conclusion recorded in P4 doc 2c + OPERATION_MODES_PLAN 7h: these consumers
+  need runtime tracing of the game-world layer, which the host cannot provide.

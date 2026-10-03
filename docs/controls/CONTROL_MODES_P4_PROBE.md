@@ -78,6 +78,27 @@ Consequences:
   BinText table** whose filename is still to be identified (next P5 step:
   locate it in the client paks by its column shape).
 
+## 2c. Spring/smoothing integrator candidate (static, 2026-10-02)
+
+`0x180B11E40` (camera-region float math; dump
+`proof/controls/p4/spring_fn_180B11E40.txt`) is a spring/interpolation step
+that consumes a per-component state:
+
+```
++0x74 active flag;  +0x78 time/speed param;  +0x7C remaining time
++0x80/+0x84/+0x88 velocity components;  +0x8C/+0x90/+0x94 target components
++0x38/+0x3C/+0x40 current components;  +0x5C/+0x60 state
+step: v = (target - current) * k / remaining ... ; remaining -= dt
+```
+
+The offsets overlap the camera-node per-mode block but reuse fields as
+time/velocity, so this is a **spring interpolator helper**, not proof that the
+per-mode `springResetSpeed` feeds the camera directly. The link between the
+four per-mode setters (`+0x78/+0x90` spring, `+0x7C/+0x94` camera reset) and
+this helper is **not established statically** — the remaining consumer decode
+needs runtime tracing, which the host cannot do for the JX3 game-world layer
+(§2b). Recorded as the best candidate; do not wire a rate from it.
+
 ## 3. Probe plan (superseded in part by 2b; kept for completeness)
 
 Feature build `#iso`? No: probe code is host instrumentation and can live in
