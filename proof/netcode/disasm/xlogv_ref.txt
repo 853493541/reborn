@@ -1,0 +1,215 @@
+# JX3ClientX64.exe xrefs for 'bin64\\xlogv.exe'
+# image base 0x140000000
+
+## xref @ 0x1400a5b11 -> 0x140955228 '\\bin64\\xlogv.exe'  fn start 0x1400a5aa0
+  0x1400a5aa0: push     rbp
+  0x1400a5aa2: lea      rbp, [rsp - 0x180]
+  0x1400a5aaa: sub      rsp, 0x280
+  0x1400a5ab1: mov      rax, qword ptr [rip + 0x98e940]
+  0x1400a5ab8: xor      rax, rsp
+  0x1400a5abb: mov      qword ptr [rbp + 0x170], rax
+  0x1400a5ac2: xor      eax, eax
+  0x1400a5ac4: mov      dword ptr [rsp + 0x40], 0xffffffff
+  0x1400a5acc: mov      dword ptr [rsp + 0x44], eax
+  0x1400a5ad0: mov      dword ptr [rsp + 0x48], 0xffffffff
+  0x1400a5ad8: mov      dword ptr [rsp + 0x4c], eax
+  0x1400a5adc: cmp      dword ptr [rcx + 0x18], eax
+  0x1400a5adf: jne      0x1400a5e34
+  0x1400a5ae5: lea      rcx, [rsp + 0x70]
+  0x1400a5aea: call     qword ptr [rip + 0x7129c8]  ; Engine_Lua5X64.dll!g_GetRootPath
+  0x1400a5af0: lea      rax, [rsp + 0x70]
+  0x1400a5af5: dec      rax
+  0x1400a5af8: nop      dword ptr [rax + rax]
+  0x1400a5b00: cmp      byte ptr [rax + 1], 0
+  0x1400a5b04: lea      rax, [rax + 1]
+  0x1400a5b08: jne      0x1400a5b00
+  0x1400a5b0a: movzx    ecx, byte ptr [rip + 0x8af727]
+  0x1400a5b11: movups   xmm0, xmmword ptr [rip + 0x8af710]  ; '\\bin64\\xlogv.exe'
+  0x1400a5b18: mov      qword ptr [rsp + 0x290], rbx
+  0x1400a5b20: movups   xmmword ptr [rax], xmm0
+  0x1400a5b23: mov      byte ptr [rax + 0x10], cl
+  0x1400a5b26: lea      rcx, [rsp + 0x70]
+  0x1400a5b2b: call     qword ptr [rip + 0x71286f]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1400a5b31: test     eax, eax
+  0x1400a5b33: jne      0x1400a5b44
+  0x1400a5b35: mov      r9d, 0xc3
+  0x1400a5b3b: lea      r8, [rip + 0x8a93e6]  ; 'nRetCode'
+  0x1400a5b42: jmp      0x1400a5b8f
+  0x1400a5b44: mov      edx, 0x800
+  0x1400a5b49: lea      rcx, [rsp + 0x40]
+  0x1400a5b4e: mov      r8d, 0x8000
+  0x1400a5b54: call     qword ptr [rip + 0x713d86]  ; api-ms-win-crt-stdio-l1-1-0.dll!_pipe
+  0x1400a5b5a: cmp      eax, -1
+  0x1400a5b5d: jne      0x1400a5b67
+  0x1400a5b5f: mov      r9d, 0xc6
+  0x1400a5b65: jmp      0x1400a5b88
+  0x1400a5b67: mov      edx, 0x400
+  0x1400a5b6c: lea      rcx, [rsp + 0x48]
+  0x1400a5b71: mov      r8d, 0x8000
+  0x1400a5b77: call     qword ptr [rip + 0x713d63]  ; api-ms-win-crt-stdio-l1-1-0.dll!_pipe
+  0x1400a5b7d: cmp      eax, -1
+  0x1400a5b80: jne      0x1400a5bb4
+  0x1400a5b82: mov      r9d, 0xc9
+  0x1400a5b88: lea      r8, [rip + 0x8af6b1]  ; 'nRetCode != -1'
+  0x1400a5b8f: lea      rbx, [rip + 0x8af672]  ; 'KJX3ConsoleModule::OpenXLogV'
+  0x1400a5b96: mov      ecx, 3
+  0x1400a5b9b: lea      rdx, [rip + 0x8a9396]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1400a5ba2: mov      qword ptr [rsp + 0x20], rbx
+  0x1400a5ba7: call     qword ptr [rip + 0x71289b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400a5bad: xor      eax, eax
+  0x1400a5baf: jmp      0x1400a5e2c
+  0x1400a5bb4: mov      ecx, dword ptr [rsp + 0x40]
+  0x1400a5bb8: lea      rdx, [rsp + 0x60]
+  0x1400a5bbd: mov      r9d, 0xa
+  0x1400a5bc3: mov      r8d, r9d
+  0x1400a5bc6: call     qword ptr [rip + 0x713a4c]  ; api-ms-win-crt-convert-l1-1-0.dll!_itoa_s
+  0x1400a5bcc: mov      ecx, dword ptr [rsp + 0x4c]
+  0x1400a5bd0: lea      rdx, [rsp + 0x50]
+  0x1400a5bd5: mov      r9d, 0xa
+  0x1400a5bdb: mov      r8d, r9d
+  0x1400a5bde: call     qword ptr [rip + 0x713a34]  ; api-ms-win-crt-convert-l1-1-0.dll!_itoa_s
+  0x1400a5be4: mov      qword ptr [rsp + 0x38], 0
+  0x1400a5bed: lea      rax, [rsp + 0x50]
+  0x1400a5bf2: mov      qword ptr [rsp + 0x30], rax
+  0x1400a5bf7: lea      r9, [rip + 0x8af662]  ; '-i'
+  0x1400a5bfe: lea      rax, [rip + 0x8af637]  ; '-o'
+  0x1400a5c05: mov      ecx, 1
+  0x1400a5c0a: mov      qword ptr [rsp + 0x28], rax
+  0x1400a5c0f: lea      r8, [rsp + 0x70]
+  0x1400a5c14: lea      rax, [rsp + 0x60]
+  0x1400a5c19: lea      rdx, [rsp + 0x70]
+  0x1400a5c1e: mov      qword ptr [rsp + 0x20], rax
+  0x1400a5c23: call     qword ptr [rip + 0x713bb7]  ; api-ms-win-crt-process-l1-1-0.dll!_spawnl
+  0x1400a5c29: cmp      rax, -1
+  0x1400a5c2d: jne      0x1400a5c5f
+  0x1400a5c2f: lea      rbx, [rip + 0x8af5d2]  ; 'KJX3ConsoleModule::OpenXLogV'
+  0x1400a5c36: mov      r9d, 0xce
+  0x1400a5c3c: lea      r8, [rip + 0x8af60d]  ; 'xLogVId != -1'
+  0x1400a5c43: mov      qword ptr [rsp + 0x20], rbx
+  0x1400a5c48: lea      rdx, [rip + 0x8a92e9]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1400a5c4f: lea      ecx, [rax + 4]
+  0x1400a5c52: call     qword ptr [rip + 0x7127f0]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400a5c58: xor      eax, eax
+  0x1400a5c5a: jmp      0x1400a5e2c
+  0x1400a5c5f: lea      rdx, [rsp + 0x70]
+  0x1400a5c64: mov      ecx, 0x200
+  0x1400a5c69: call     qword ptr [rip + 0x712999]  ; KERNEL32.dll!GetTempPathA
+  0x1400a5c6f: lea      rcx, [rsp + 0x70]
+  0x1400a5c74: dec      rcx
+  0x1400a5c77: nop      word ptr [rax + rax]
+  0x1400a5c80: cmp      byte ptr [rcx + 1], 0
+  0x1400a5c84: lea      rcx, [rcx + 1]
+  0x1400a5c88: jne      0x1400a5c80
+  0x1400a5c8a: mov      eax, dword ptr [rip + 0x8af5e0]  ; 't.io'
+  0x1400a5c90: movsd    xmm0, qword ptr [rip + 0x8af5d0]  ; 'JX3Client.io'
+  0x1400a5c98: movsd    qword ptr [rcx], xmm0
+  0x1400a5c9c: mov      dword ptr [rcx + 8], eax
+  0x1400a5c9f: movzx    eax, byte ptr [rip + 0x8af5ce]
+  0x1400a5ca6: mov      byte ptr [rcx + 0xc], al
+  0x1400a5ca9: mov      ecx, 1
+  0x1400a5cae: call     qword ptr [rip + 0x713c84]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5cb4: mov      r8, rax
+  0x1400a5cb7: lea      rdx, [rip + 0x8af5a6]  ; 'w+t'
+  0x1400a5cbe: lea      rcx, [rsp + 0x70]
+  0x1400a5cc3: call     qword ptr [rip + 0x713c2f]  ; api-ms-win-crt-stdio-l1-1-0.dll!freopen
+  0x1400a5cc9: mov      ecx, 2
+  0x1400a5cce: call     qword ptr [rip + 0x713c64]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5cd4: mov      r8, rax
+  0x1400a5cd7: lea      rdx, [rip + 0x8af586]  ; 'w+t'
+  0x1400a5cde: lea      rcx, [rsp + 0x70]
+  0x1400a5ce3: call     qword ptr [rip + 0x713c0f]  ; api-ms-win-crt-stdio-l1-1-0.dll!freopen
+  0x1400a5ce9: xor      ecx, ecx
+  0x1400a5ceb: call     qword ptr [rip + 0x713c47]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5cf1: mov      r8, rax
+  0x1400a5cf4: lea      rdx, [rip + 0x8af59d]  ; 'r+t'
+  0x1400a5cfb: lea      rcx, [rsp + 0x70]
+  0x1400a5d00: call     qword ptr [rip + 0x713bf2]  ; api-ms-win-crt-stdio-l1-1-0.dll!freopen
+  0x1400a5d06: mov      ecx, 1
+  0x1400a5d0b: call     qword ptr [rip + 0x713c27]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5d11: mov      rcx, rax
+  0x1400a5d14: call     qword ptr [rip + 0x713c06]  ; api-ms-win-crt-stdio-l1-1-0.dll!_fileno
+  0x1400a5d1a: mov      ecx, dword ptr [rsp + 0x44]
+  0x1400a5d1e: mov      edx, eax
+  0x1400a5d20: call     qword ptr [rip + 0x713bda]  ; api-ms-win-crt-stdio-l1-1-0.dll!_dup2
+  0x1400a5d26: lea      rbx, [rip + 0x8af4db]  ; 'KJX3ConsoleModule::OpenXLogV'
+  0x1400a5d2d: test     eax, eax
+  0x1400a5d2f: je       0x1400a5d55
+  0x1400a5d31: mov      r9d, 0xd8
+  0x1400a5d37: mov      qword ptr [rsp + 0x20], rbx
+  0x1400a5d3c: lea      r8, [rip + 0x8af185]  ; 'nRetCode == 0'
+  0x1400a5d43: mov      ecx, 4
+  0x1400a5d48: lea      rdx, [rip + 0x8a9821]  ; 'KGLOG_CHECK_ERROR(%s) at line %d in %s\n'
+  0x1400a5d4f: call     qword ptr [rip + 0x7126f3]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400a5d55: mov      ecx, 2
+  0x1400a5d5a: call     qword ptr [rip + 0x713bd8]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5d60: mov      rcx, rax
+  0x1400a5d63: call     qword ptr [rip + 0x713bb7]  ; api-ms-win-crt-stdio-l1-1-0.dll!_fileno
+  0x1400a5d69: mov      ecx, dword ptr [rsp + 0x44]
+  0x1400a5d6d: mov      edx, eax
+  0x1400a5d6f: call     qword ptr [rip + 0x713b8b]  ; api-ms-win-crt-stdio-l1-1-0.dll!_dup2
+  0x1400a5d75: test     eax, eax
+  0x1400a5d77: je       0x1400a5d9d
+  0x1400a5d79: mov      r9d, 0xda
+  0x1400a5d7f: mov      qword ptr [rsp + 0x20], rbx
+  0x1400a5d84: lea      r8, [rip + 0x8af13d]  ; 'nRetCode == 0'
+  0x1400a5d8b: mov      ecx, 4
+  0x1400a5d90: lea      rdx, [rip + 0x8a97d9]  ; 'KGLOG_CHECK_ERROR(%s) at line %d in %s\n'
+  0x1400a5d97: call     qword ptr [rip + 0x7126ab]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400a5d9d: xor      ecx, ecx
+  0x1400a5d9f: call     qword ptr [rip + 0x713b93]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5da5: mov      rcx, rax
+  0x1400a5da8: call     qword ptr [rip + 0x713b72]  ; api-ms-win-crt-stdio-l1-1-0.dll!_fileno
+  0x1400a5dae: mov      ecx, dword ptr [rsp + 0x48]
+  0x1400a5db2: mov      edx, eax
+  0x1400a5db4: call     qword ptr [rip + 0x713b46]  ; api-ms-win-crt-stdio-l1-1-0.dll!_dup2
+  0x1400a5dba: test     eax, eax
+  0x1400a5dbc: je       0x1400a5de2
+  0x1400a5dbe: mov      r9d, 0xdc
+  0x1400a5dc4: mov      qword ptr [rsp + 0x20], rbx
+  0x1400a5dc9: lea      r8, [rip + 0x8af0f8]  ; 'nRetCode == 0'
+  0x1400a5dd0: mov      ecx, 4
+  0x1400a5dd5: lea      rdx, [rip + 0x8a9794]  ; 'KGLOG_CHECK_ERROR(%s) at line %d in %s\n'
+  0x1400a5ddc: call     qword ptr [rip + 0x712666]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400a5de2: mov      ecx, dword ptr [rsp + 0x40]
+  0x1400a5de6: call     qword ptr [rip + 0x713b3c]  ; api-ms-win-crt-stdio-l1-1-0.dll!_close
+  0x1400a5dec: mov      ecx, dword ptr [rsp + 0x44]
+  0x1400a5df0: call     qword ptr [rip + 0x713b32]  ; api-ms-win-crt-stdio-l1-1-0.dll!_close
+  0x1400a5df6: mov      ecx, dword ptr [rsp + 0x48]
+  0x1400a5dfa: call     qword ptr [rip + 0x713b28]  ; api-ms-win-crt-stdio-l1-1-0.dll!_close
+  0x1400a5e00: mov      ecx, dword ptr [rsp + 0x4c]
+  0x1400a5e04: call     qword ptr [rip + 0x713b1e]  ; api-ms-win-crt-stdio-l1-1-0.dll!_close
+  0x1400a5e0a: mov      ecx, 1
+  0x1400a5e0f: call     qword ptr [rip + 0x713b23]  ; api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func
+  0x1400a5e15: xor      r9d, r9d
+  0x1400a5e18: xor      edx, edx
+  0x1400a5e1a: mov      rcx, rax
+  0x1400a5e1d: lea      r8d, [r9 + 4]
+  0x1400a5e21: call     qword ptr [rip + 0x713b09]  ; api-ms-win-crt-stdio-l1-1-0.dll!setvbuf
+  0x1400a5e27: mov      eax, 1
+  0x1400a5e2c: mov      rbx, qword ptr [rsp + 0x290]
+  0x1400a5e34: mov      rcx, qword ptr [rbp + 0x170]
+  0x1400a5e3b: xor      rcx, rsp
+  0x1400a5e3e: call     0x14079ae80
+  0x1400a5e43: add      rsp, 0x280
+  0x1400a5e4a: pop      rbp
+  0x1400a5e4b: ret      
+  0x1400a5e4c: int3     
+  0x1400a5e4d: int3     
+  0x1400a5e4e: int3     
+  0x1400a5e4f: int3     
+  0x1400a5e50: mov      qword ptr [rsp + 0x18], rbx
+  0x1400a5e55: push     rdi
+  0x1400a5e56: sub      rsp, 0xa0
+  0x1400a5e5d: mov      rdi, rdx
+  0x1400a5e60: mov      rbx, rcx
+  0x1400a5e63: mov      rax, qword ptr [rcx]
+  0x1400a5e66: call     qword ptr [rax + 0x10]
+  0x1400a5e69: mov      qword ptr [rsp + 0x30], 0
+  0x1400a5e72: mov      qword ptr [rsp + 0x38], 0xf
+  0x1400a5e7b: mov      byte ptr [rsp + 0x20], 0
+  0x1400a5e80: mov      r8, 0xffffffffffffffff
+  0x1400a5e87: nop      word ptr [rax + rax]
+  0x1400a5e90: inc      r8
+  0x1400a5e93: .byte    0x42
+  0x1400a5e94: .byte    0x80
+
