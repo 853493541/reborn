@@ -1081,3 +1081,20 @@ solved it, and what is still open. **Newest at the bottom.**
   unchanged.
 - Branch default spawn set to (18991, 962, 33853) per user request (was
   23334,761,24224). Client rebuilt from the branch: pid 31940 "JX3 [collision]".
+
+### 2026-10-02 - Invisible AABB blocks: props back to the engine rule (mesh triangles)
+
+- User report: blocked in the house where NOTHING is visible (inst=748
+  wj_erg柜子001, world AABB 655x486). Verified: the AABB is not bloated
+  (stored == mesh-derived) but the nearest mesh VERTEX to the blocked corner
+  is 394 u away - the furniture mesh is non-rectangular and the AABB proxy
+  filled its empty corners (registered deviation #10).
+- Fix: InstanceContact no longer routes propSolid to AabbContact - static
+  .mesh objects collide as their TRIANGLES (the engine rule, P1 research);
+  the AABB shover (SolidPropPush) defaults off (RC_PROP_SOLID=1 restores).
+  Sceneinfo check: the object really is at (20329,923,36603) - our placement
+  was right; only the proxy shape was wrong.
+- Verified: the blocked pose (20001,982,36335) now reports only a 0.23 u tree
+  trunk graze; the cabinet's real geometry still blocks; selftest 34/34.
+  Trade-off (engine-faithful): the log pile's mesh gaps are penetrable again
+  like the game's own cooked mesh.

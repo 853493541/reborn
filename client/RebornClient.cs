@@ -1017,7 +1017,10 @@ internal static class RebornClient
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
         // host proxy: 小物件 props are solid (RC_PROP_SOLID=0 disables)
-        bool propSolid = Env("RC_PROP_SOLID", "1") == "1";
+        // Default OFF since 2026-10-02: props now collide as their mesh
+        // triangles (the engine rule), so the AABB shover is redundant and
+        // ejected players from empty AABB corners.
+        bool propSolid = Env("RC_PROP_SOLID", "0") == "1";
         int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
         double[] camOffSmooth = new double[3];

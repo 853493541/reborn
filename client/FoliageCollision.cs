@@ -815,8 +815,11 @@ public sealed class FoliageCollision
         // the render mesh of a stacked prop has air gaps and tiered faces the
         // capsule can slip or step through (wj_木堆001_hd); a solid box blocks
         // like furniture and can only be climbed within the step budget.
-        if (it.mesh.propSolid && !_abForceFaces)
-            return AabbContact(it, px, py, pz, radius, height, ref best);
+        // Engine rule: static .mesh objects collide as their triangles (P1
+        // research: the game cooks the render mesh as the obstacle). The old
+        // AABB proxy blocked the empty corners of non-rectangular furniture
+        // (field case 2026-10-02: wj_erg柜子001, nearest vertex 394 u from the
+        // blocked corner) - props use faces like everything else.
         float[] w2l = it.w2l;
         if (w2l == null) return false;
         ProfInstTouches++;
