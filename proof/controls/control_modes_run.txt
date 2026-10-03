@@ -496,3 +496,14 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   WA: dist=348 dyaw=-2.36 dcam=0.00; WD: dist=383 dyaw=1.57 dcam=0.00
 - Note: the first run of this build (165931) showed an unstable camera drift
   (camd up to 1.98) that did not reproduce (measure-sync transient); watch it.
+
+## J3 sprint input ported (double-tap 250ms), 2026-10-02
+- Decoded: IsKeyDoubleDown = Hotkey.IsKeyDoubleDown and GetKeyTimeInterval
+  < 250.0 (0/36); StartSprint 0/164 = skill 6754 (non-GAI_BANG) + Sprint(true);
+  CheckEndSprint 0/165 -> EndSprint 0/166 = SetSprintTopPoint + Sprint(false).
+- Host: fresh-press double-tap detection on the six movement commands (250ms),
+  StartSprint/EndSprint logged, sprint= telemetry; engine Sprint state + skill
+  cast not modeled (open, no invented speed).
+- Evidence reborn_20261002_170648.log (RC_SPRINT_TEST=1):
+  12.150s down (150ms after the first press) -> "sprint: StartSprint"
+  12.650s release -> "sprint: EndSprint"; smoke ALL PASS.

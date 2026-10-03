@@ -52,6 +52,9 @@ internal static class RebornClient
     static bool probeControl = false;
     static long nextProbeMs = 0;
     static bool probeTableDone = false;
+    // J3 sprint input state (decoded: IsKeyDoubleDown window 250 ms; StartSprint
+    // casts skill 6754 + player:Sprint(true); CheckEndSprint -> EndSprint).
+    static bool sprintOn = false;
 
     [STAThread]
     private static void Main(string[] args)
@@ -893,6 +896,8 @@ internal static class RebornClient
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
         probeControl = Env("RC_PROBE_CONTROL", "0") == "1";
+        bool sprintTest = Env("RC_SPRINT_TEST", "0") == "1";
+        bool sprintT1 = false, sprintT2 = false, sprintT3 = false, sprintT4 = false;
         bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
@@ -983,6 +988,53 @@ internal static class RebornClient
                     unhandledCmd++;
                     lastUnhandled = name;
                     break;
+            }
+        };
+        // J3 sprint: double-tap detection on the movement command set, exact
+        // decoded window 250 ms (hotkeys 0/36 Hotkey.GetKeyTimeInterval < 250),
+        // gated by the ResponseWASDKey rules (down + isDouble; tower/bird/horse
+        // are always false in the host). Engine Sprint(true)/skill 6754 are
+        // not modeled (J3 open) - logged, never faked as a speed.
+        System.Collections.Generic.Dictionary<string, long> cmdDownAt =
+            new System.Collections.Generic.Dictionary<string, long>();
+        System.Collections.Generic.Dictionary<string, bool> cmdHeld =
+            new System.Collections.Generic.Dictionary<string, bool>();
+        Func<string, bool> sprintKey = delegate(string name)
+        {
+            return name == "MOVEFORWARD" || name == "MOVEBACKWARD"
+                || name == "STRAFELEFT" || name == "STRAFERIGHT"
+                || name == "TURNLEFT" || name == "TURNRIGHT";
+        };
+        Action<string, bool> keyCommand = delegate(string name, bool down)
+        {
+            bool isDouble = false;
+            if (down)
+            {
+                bool held;
+                if (!cmdHeld.TryGetValue(name, out held) || !held)
+                {
+                    long last;
+                    long t = (long)Environment.TickCount;
+                    if (cmdDownAt.TryGetValue(name, out last) && t - last < 250)
+                        isDouble = true;
+                    cmdDownAt[name] = t;
+                    cmdHeld[name] = true;
+                }
+            }
+            else
+            {
+                cmdHeld[name] = false;
+            }
+            runCommand(name, down);
+            if (isDouble && sprintKey(name) && !sprintOn)
+            {
+                sprintOn = true;
+                Log("sprint: StartSprint (" + name + " double-tap 250ms; skill 6754, Sprint(true) engine state not modeled - J3 open)");
+            }
+            if (!down && sprintOn && sprintKey(name))
+            {
+                sprintOn = false;
+                Log("sprint: EndSprint (Sprint(false), SetSprintTopPoint)");
             }
         };
         bool mouseLocked = false;
@@ -1169,7 +1221,7 @@ internal static class RebornClient
             // game's own rows (W/Up, S/Down, A, D, Left, Right, Space, Num/, G)
             System.Collections.Generic.List<string> hcmds =
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
-            for (int hi = 0; hi < hcmds.Count; hi++) runCommand(hcmds[hi], true);
+            for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], true);
             // host convenience: main "/" also toggles run (real binding Num/)
             if (e.KeyCode == Keys.OemQuestion && hcmds.Count == 0) runCommand("TOGGLERUN", true);
             // host/test keys outside the movement command set
@@ -1228,7 +1280,7 @@ internal static class RebornClient
             if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
             System.Collections.Generic.List<string> hcmds =
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
-            for (int hi = 0; hi < hcmds.Count; hi++) runCommand(hcmds[hi], false);
+            for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], false);
             if (e.KeyCode == Keys.OemQuestion && hcmds.Count == 0) runCommand("TOGGLERUN", false);
             if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
@@ -1768,6 +1820,16 @@ internal static class RebornClient
                 if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
                 if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), WrapAngle(curYaw - wdYaw0), WrapAngle(camSys.Yaw - wdCam0))); }
                 if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
+            }
+            if (sprintTest)
+            {
+                // scripted double-tap sprint input test (same keyCommand path
+                // as real key events): 12000 down, 12100 up, 12150 down
+                // (150 ms gap < 250 ms window), 12650 up.
+                if (now >= 12000 && !sprintT1) { sprintT1 = true; keyCommand("MOVEFORWARD", true); }
+                if (now >= 12100 && !sprintT2) { sprintT2 = true; keyCommand("MOVEFORWARD", false); }
+                if (now >= 12150 && !sprintT3) { sprintT3 = true; keyCommand("MOVEFORWARD", true); }
+                if (now >= 12650 && !sprintT4) { sprintT4 = true; keyCommand("MOVEFORWARD", false); }
             }
             if (probeControl && now >= nextProbeMs)
             {
@@ -3327,14 +3389,14 @@ internal static class RebornClient
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}'{11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26}{11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz,
                     unhandledCmd, lastUnhandled, gait,
                     CameraOperationMode.Name(cameraSettings.OperationMode),
-                    hotkeys.Context));
+                    hotkeys.Context, sprintOn ? 1 : 0));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {

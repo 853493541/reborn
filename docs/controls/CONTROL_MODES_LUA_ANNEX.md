@@ -226,6 +226,27 @@ Host mapping applied: joystick turn controls fold into the strafe axis
 (`strafeL/R = ... || pTurnL/R`), `rotAxis = 0`, and the turn block never runs
 in joystick (mouse owns the camera).
 
+## A10. Sprint input (`hotkeys.lua` 0/36, 0/164, 0/165, 0/166) HIGH
+
+- `IsKeyDoubleDown` (0/36): `Hotkey.IsKeyDoubleDown() and
+  Hotkey.GetKeyTimeInterval() < 250.0` — **the double-tap window is 250 ms**.
+- `StartSprint` (0/164): if the player exists and not `bIgnoreGravity`:
+  set the sprint flag; if `dwJumpType ~= SCHOOL_TYPE.GAI_BANG` cast
+  `OnUseSkill(6754, 6754*5)`; `player:Sprint(true)`.
+- `CheckEndSprint(force)` (0/165): if the flag -> `EndSprint(force)`; clear it.
+- `EndSprint(force)` (0/166): `SprintGetSummitID()` -> `SetSprintTopPoint(x,y,z)`;
+  `player:Sprint(false)`.
+- Trigger site: `ResponseWASDKey` (A2) on key-down + `isDouble`, off-tower any
+  of the six movement keys, on-tower only `Forward`; blocked while
+  `bBirdMove`/`bHoldHorse`.
+
+Host status (J3): the input side is ported exactly — per-command fresh-press
+double-tap detection over the six movement commands with the decoded 250 ms
+window, `StartSprint`/`EndSprint` logged, `sprint=` telemetry. The engine
+`Sprint(true)` state and skill 6754 cast are **not modeled (open)**; no speed
+was invented. Scripted check: `RC_SPRINT_TEST=1` (down 12000 / up 12100 /
+down 12150 / up 12650) logs the expected Start/End pair.
+
 ## A4. Mode toggle — `OperationModeBase.lua` proto `0/19` (L463-488) MED/HIGH
 
 ```lua

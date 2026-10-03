@@ -1717,3 +1717,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Verified run 170201: A-alone dist=318 auto-face, camera untouched; WA/WD
   diagonals 348/383 camd=0.00. One non-reproducible camera-drift run (165931)
   noted as a transient.
+
+### 2026-10-02 - controls - J3 sprint input ported
+- Decoded the sprint chain (hotkeys 0/36/164/165/166): double-tap window is
+  exactly 250 ms; StartSprint casts 6754 (non-GAI_BANG) + player:Sprint(true);
+  EndSprint = SetSprintTopPoint + Sprint(false). Host ports the input side
+  (fresh-press detection on the six movement commands, decoded window,
+  Start/End logs, sprint= telemetry); engine Sprint state left open.
+- Verified via RC_SPRINT_TEST scripted double-tap (150 ms gap) -> StartSprint/
+  EndSprint logged; build exit 0, smoke ALL PASS.
