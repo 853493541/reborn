@@ -1785,3 +1785,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   action table[0x1E] 0x1802EA9B0 -> selector table 0x180E92360 -> sel[0]
   0x1802EE050 (4-field apply) / sel[1] 0x1802EE250. One hop left (what sel[0]
   does with the value) before porting the A11 joystick rate.
+
+### 2026-10-02 - controls - reset-speed lands in the camera-node command slot
+- sel[0] (0x1802EE050) normalizes the event and calls applier 0x180AE75C0:
+  walks the entity to the type-0xD camera node + type-0xE companion, then
+  node[+0x30]=float value, node[+0x2C]=prop, node[+0x24]=1 (command slot);
+  companion[+0x2C]=1; optional +0x64/+0x68; follow-up 0x180019A60.
+- So the joystick/per-mode reset speed is queued in the camera node command
+  slot and consumed by the camera update. Last hunt: the slot reader (narrow).
+- Proof: proof/controls/p4/reset_speed_applier.txt, reset_speed_sel0_tail.txt.

@@ -135,15 +135,27 @@ Camera_SetResetSpeed / SetSpringResetSpeed  (Lua, JX3UIX64 bindings)
  -> action table[0x1E] thunk 0x180026A58 -> 0x1802EA9B0
       resolves the player (0x18001C404), dispatches on the selector field
       through the per-type table 0x180E92360
- -> sel[0] = 0x1802EE050  (4-field apply: playerId + selector + prop + float;
-      resolves the entity via 0x18001DB3D and forwards)
+ -> sel[0] = 0x1802EE050
+      normalizes the event (rewrites {playerId, selector}) and calls the
+      applier thunk 0x18001DB3D -> 0x180AE75C0
+ -> applier 0x180AE75C0:
+      walks [entity+0x20] to the type-0xD camera node (rbx) and a type-0xE
+      companion (rdi); resolves two dwords via 0x18001697D;
+      **node[+0x30] = the float value; node[+0x2C] = the property id;
+       node[+0x24] = 1 (command slot active)**; companion[+0x2C] = 1;
+      optional node[+0x64/+0x68] when [singleton+0x24F2C] is set; then calls
+      0x180019A60(entity, ...) for the follow-up.
     sel[1] = 0x1802EE250  (6-field variant)
 ```
 
+So the per-mode/joystick reset speed is queued in the camera node's **command
+slot** (`+0x24` active / `+0x2C` prop / `+0x30` value) and consumed by the
+camera update. The only remaining hunt is the reader of that slot (narrow,
+well-defined) - then the A11 joystick rate can be ported exactly.
+
 Evidence: `proof/controls/p4/handle_rl_action.txt`,
-`rl_handler_lookup.txt`, `rl_lookup_impl.txt`, `reset_speed_handler.txt`.
-Remaining hop: what `sel[0]` does with the float (next), then the host can apply
-the decoded A11 joystick rate exactly.
+`rl_handler_lookup.txt`, `rl_lookup_impl.txt`, `reset_speed_handler.txt`,
+`reset_speed_sel0_tail.txt`, `reset_speed_applier.txt`.
 
 ## 3. Probe plan (superseded in part by 2b; kept for completeness)
 
