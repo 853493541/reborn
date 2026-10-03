@@ -662,7 +662,7 @@ internal static class RebornClient
             else
             {
                 // default test spawn on 龙门寻宝 (override with RC_SPAWN=x,y,z)
-                px = 23334f; py = 761f; pz = 24224f;
+                px = 18991f; py = 962f; pz = 33853f;
             }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
@@ -1824,7 +1824,7 @@ internal static class RebornClient
             if (col != null && propSolid)
             {
                 int pfInst;
-                if (col.SolidPropPush(ref px, ref py, ref pz, playerRadius, playerHeight, ground, out pfInst))
+                if (col.SolidPropPush(ref px, ref py, ref pz, playerRadius, playerHeight, ground, grounded, 70f, out pfInst))
                 {
                     propFixEvents++;
                     if (propFixEvents <= 20)

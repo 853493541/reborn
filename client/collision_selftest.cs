@@ -436,7 +436,7 @@ internal static class CollisionSelfTest
             FoliageCollision col = new FoliageCollision(null, pb);
             float px = 80f, py = 0f, pz = 0f;
             int ei;
-            bool ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
+            bool ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, true, 70f, out ei);
             Check("prop_solid_eject", ej && (px < 14f || px > 146f),
                 string.Format("eject={0} px={1:F1}", ej, px));
 
@@ -444,7 +444,7 @@ internal static class CollisionSelfTest
             WriteMeshSidecar(pb2, new string[] { "data/source/maps_source/建筑/test_house.mesh" });
             col = new FoliageCollision(null, pb2);
             px = 80f; py = 0f; pz = 0f;
-            ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
+            ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, true, 70f, out ei);
             Check("prop_solid_building_kept", !ej && Math.Abs(px - 80f) < 0.01f,
                 string.Format("eject={0} px={1:F1}", ej, px));
 
@@ -459,9 +459,20 @@ internal static class CollisionSelfTest
                 "data/source/maps_source/建筑/test_wall.mesh" });
             col = new FoliageCollision(null, pw);
             px = 80f; py = 0f; pz = 0f;
-            ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, out ei);
+            ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, true, 70f, out ei);
             Check("prop_solid_free_exit", ej && px > 146f,
                 string.Format("eject={0} px={1:F1}", ej, px));
+
+            // low prop + grounded: CCT steps onto the top (no sideways eject)
+            MeshBuilder low = new MeshBuilder();
+            low.AddBox(30f, -10f, -200f, 130f, 30f, 200f);
+            string plb = WriteBin("proplow", new MeshBuilder[] { low }, new float[][] { M(0f, 0f, 0f) });
+            WriteMeshSidecar(plb, new string[] { "data/source/maps_source/小物件/木箱/test_low.mesh" });
+            col = new FoliageCollision(null, plb);
+            px = 40f; py = 0f; pz = 0f;
+            ej = col.SolidPropPush(ref px, ref py, ref pz, 17f, 116f, 0f, true, 70f, out ei);
+            Check("prop_solid_step_low", ej && Math.Abs(py - 30f) < 0.05f && px > 14f && px < 146f,
+                string.Format("eject={0} px={1:F1} py={2:F1}", ej, px, py));
         }
 
         // 12. shipped obstacle flags (plan P0): a mesh whose .mesh.ini says

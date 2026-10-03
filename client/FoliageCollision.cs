@@ -1449,6 +1449,7 @@ public sealed class FoliageCollision
     // no winding is used anywhere here.
     public bool SolidPropPush(ref float px, ref float py, ref float pz,
                               float radius, float height, float ground,
+                              bool grounded, float stepHeight,
                               out int outInst)
     {
         outInst = -1;
@@ -1466,6 +1467,16 @@ public sealed class FoliageCollision
             if (oz <= 0.01f) continue;
             float oy = Math.Min(py + height, it.maxY) - Math.Max(py, it.minY);
             if (oy <= 0.01f) continue;
+            // CCT step semantics: while GROUNDED, a prop whose top is within the
+            // step budget is stepped onto - never ejected sideways (field case
+            // 2026-10-02: 30 u props in the house pushed the sprinting player).
+            if (grounded && it.maxY > py + 0.1f && it.maxY - py <= stepHeight)
+            {
+                py = it.maxY;
+                LastEjectDbg += string.Format(" step oy={0:F0}", oy);
+                outInst = _cand[ci];
+                return true;
+            }
             if (ox <= oz && ox <= oy)
             {
                 float cx2 = (it.minX + it.maxX) * 0.5f;

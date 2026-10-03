@@ -1068,3 +1068,16 @@ solved it, and what is still open. **Newest at the bottom.**
   PASS, loot SELFTEST PASS. Shared shim untouched (build script does not touch
   it). Merge to main is the only remaining step and needs the user's explicit
   go (locked repo rule).
+
+### 2026-10-02 - Prop step-onto-top (can't-walk-over fix) + branch spawn
+
+- User report on the branch build: sprinting in the house, low props (inst
+  529/701/997: oy=30/116/6) ejected the player sideways ("propfix push") where
+  the CCT should step onto a grounded-low obstacle. SolidPropPush picked the
+  min-penetration axis and never used the step rule.
+- Fix: SolidPropPush takes (grounded, stepHeight); while grounded, a prop whose
+  top is within the budget is stepped onto (py = it.maxY) before the min-axis
+  eject. Selftest prop_solid_step_low (34/34); the tall-prop eject tests
+  unchanged.
+- Branch default spawn set to (18991, 962, 33853) per user request (was
+  23334,761,24224). Client rebuilt from the branch: pid 31940 "JX3 [collision]".
