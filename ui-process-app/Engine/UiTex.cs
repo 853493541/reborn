@@ -154,6 +154,70 @@ namespace MapUiApp.Engine
             return result;
         }
 
+        private readonly Dictionary<int, (int L, int R)> _hCaps =
+            new Dictionary<int, (int L, int R)>();
+
+        /// <summary>
+        /// Cap widths for ImageType=11 (horizontal three-slice): the number of leading and
+        /// trailing columns whose vertical extent differs from the flat middle. The frame's
+        /// outside tone is opaque (the corners of PVPUI22's plaques are (16,16,16) vs the
+        /// shape's (13,13,13)), so the shape is detected by color, not alpha. Verified
+        /// against the live capture: PVPUI22 frame 11 (48x20 drawn at 68x20) keeps 10 px
+        /// caps, only the middle stretches (plain stretch flattened the pointed caps).
+        /// </summary>
+        public (int L, int R) GetHorizontalCaps(int index)
+        {
+            if (_hCaps.TryGetValue(index, out var cached)) return cached;
+            var result = (0, 0);
+            var frame = GetFrame(index);
+            if (frame != null && frame.PixelWidth > 4 && frame.PixelHeight > 2)
+            {
+                int w = frame.PixelWidth, h = frame.PixelHeight;
+                var pixels = new int[w * h];
+                frame.CopyPixels(pixels, w * 4, 0);
+                int reference = pixels[(h / 2) * w + w / 2];
+                int refAlpha = (reference >> 24) & 0xFF;
+                // Translucent art carries its shape in the alpha channel (PVPUI22's
+                // plaques are ~alpha 45 black veils over the world); opaque art carries
+                // it in the color (the frame dump composites over a background, so the
+                // alpha cannot be read from it - the render's own pixels are used).
+                bool byAlpha = refAlpha > 0 && refAlpha < 200;
+                int alphaFloor = Math.Max(8, refAlpha / 2);
+
+                bool MatchesShape(int color)
+                {
+                    if (byAlpha) return ((color >> 24) & 0xFF) >= alphaFloor;
+                    return Math.Abs(((color >> 16) & 0xFF) - ((reference >> 16) & 0xFF)) <= 2 &&
+                           Math.Abs(((color >> 8) & 0xFF) - ((reference >> 8) & 0xFF)) <= 2 &&
+                           Math.Abs((color & 0xFF) - (reference & 0xFF)) <= 2;
+                }
+
+                int CountEdge(bool fromStart)
+                {
+                    int count = 0;
+                    for (; count < w / 2; count++)
+                    {
+                        int x = fromStart ? count : w - 1 - count;
+                        int top = -1, bottom = -1;
+                        for (int y = 0; y < h; y++)
+                        {
+                            if (!MatchesShape(pixels[y * w + x])) continue;
+                            if (top < 0) top = y;
+                            bottom = y;
+                        }
+                        if (top == 0 && bottom == h - 1) break;
+                    }
+                    return count;
+                }
+
+                int l = CountEdge(true);
+                int r = CountEdge(false);
+                if (l + r < w - 1) result = (l, r);
+            }
+            _hCaps[index] = result;
+            return result;
+        }
+
         private static int DetectEdge(int[] pixels, int w, int h, bool horizontal, bool fromStart)
         {
             int limit = horizontal ? w : h;
@@ -261,6 +325,12 @@ namespace MapUiApp.Engine
         {
             var tex = Get(uitPath);
             return tex != null ? tex.GetDicedBorders(frame) : (0, 0, 0, 0);
+        }
+
+        public (int L, int R) GetHorizontalCaps(string uitPath, int frame)
+        {
+            var tex = Get(uitPath);
+            return tex != null ? tex.GetHorizontalCaps(frame) : (0, 0);
         }
     }
 }

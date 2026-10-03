@@ -874,6 +874,9 @@ namespace UiProcessApp.Engine
                     if (clones.Count == 0) continue;
 
                     var root = clones[0];
+                    bool engineItemFlow = prototype.GetInt("PosType") == 10 &&
+                        filtered.ByName.TryGetValue(template.Container, out var containerSection) &&
+                        containerSection.GetInt("FirstItemPosType") != 0;
                     if (string.Equals(template.Flow, "row", StringComparison.OrdinalIgnoreCase))
                     {
                         // Horizontal flow (the message line's items): PosType 9 places
@@ -881,6 +884,13 @@ namespace UiProcessApp.Engine
                         root.Values["PosType"] = "9";
                         root.Values["Left"] = "0";
                         root.Values["Top"] = "0";
+                    }
+                    else if (engineItemFlow)
+                    {
+                        // The prototype is an engine item (PosType 10 in a handle with
+                        // FirstItemPosType != 0, e.g. LootList's rows): the view stacks
+                        // each clone below the previous item, mixing authored rows
+                        // (LootList's money row) and clones in order.
                     }
                     else
                     {

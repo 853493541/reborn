@@ -1339,3 +1339,99 @@ solved it, and what is still open. **Newest at the bottom.**
   (frame = digit; verified frame 5 = the "5" glyph) and hiding the tens clone for the single-digit
   5s state (the hidden clone drops out of the list layout, so the lone digit centres itself).
 - Evidence: stage_p5.png reads 剩余时间 5 秒钟; 10/15/20/30 render the two-digit states; --selftest 17/0/0.
+
+### 2026-10-02 — UI — 5.4 loot-list re-decoded from the client (money row, exact quality colors, item flow)
+- Re-extracted LootList.{ini,lua} (byte-identical to the assets) and decompiled the Lua end to end:
+  (1) the money row is a real runtime row (Handle_Money appended when GetLootMoney>0; UpdateMoneyShow splits
+  gold/silver/copper, shows Image_Gold/Silver/Copper (LootPanel frames 11/10/12) and sets Box_Money icon =
+  GetMoneyIcon: gold>10 -> icon 94 System\Coin\coin01 (ui_extensions.lua), silver 96/97, copper 98/99);
+  (2) item names use SetFontColor(GetItemFontColorByQuality) - exact engine RGB: q1 (250,250,250),
+  q2 (0,210,75), q3 (0,126,255), q4 (255,45,255), q5 (255,165,0) (ui/script/item.lua) - the earlier
+  green2/blue2 guesses were close but not the shipped values; (3) rows are engine items: PosType 10 under a
+  handle with FirstItemPosType 2/4, which APPENDS below the previous item - the viewer now implements that
+  (Attach case 10 branches on the parent's FirstItemPosType) and ApplyListTemplates no longer overrides
+  PosType-10 prototypes, so the view stacks money row + clones in append order.
+- Viewer: Fonts.TryGetColor accepts #RRGGBB (engine Lua RGB values); extracted LootPanel + the six Coin
+  atlases from the pak.
+- Evidence: loot_v3.png (money 12/34/56 + coin icon, 麻布绷带 green #00D24B, 月影沙 blue #007EFF, correct
+  row order y=40/93/146); --selftest 17/0/0; --audit outOfBounds 57->58 (row stacking), placeholders=11.
+- Known gaps (documented in the entry): Box over-text stack overlay and UpdateItemBoxExtend box art
+  (borderColor approximation), money coin glyphs overlap at the authored PosType 8 spot.
+
+### 2026-10-02 — UI — 5.4 money row: the engine item flow lays it inline
+- User: the money texts and the gold icon were in the wrong place. Cause: the money children use
+  PosType 8 (Image_Gold, Image_Silver, Text_Copper, Image_Copper) which the viewer treated as
+  window-right (the documented rule for plain handles), parking the glyphs at the panel edge and
+  hiding the copper behind one. In an ITEM-FLOW handle (FirstItemPosType != 0, Handle_Money = 4) PosType 8
+  means "continue the previous item's line": the row lays out as 12 [gold ingot] on line 1 and
+  34 [silver ingot] 56 [copper coin] inline on line 2, all right-aligned to x=197. The frames: LootPanel
+  10/11/12 = silver ingot / gold ingot / copper coin (verified by frame dumps).
+- Viewer: Attach case 8 now continues the previous item when the parent has FirstItemPosType != 0 (the
+  window-right rule still applies to plain handles - the queue/飞沙令 validation stands).
+- Evidence: loot_v4.png (12+ingot / 34+ingot 56+coin, money row first, items below); --selftest 17/0/0.
+
+### 2026-10-02 — UI — 5.4 rarity frame fully visible (Box overlay)
+- The rarity border was a wrapping Border around Image_ItemBg: the icon art (Box_Item, drawn later
+  in the row, with its own full-bleed dark background) covered the frame's top line and the row
+  divider covered the bottom. Moved the rarity frame onto the Box_Item and made it an overlay Grid
+  drawn ON TOP of the icon (icon inset by the border thickness) - all four sides now visible.
+- Verified by pixel probe: top/bottom/left/right of the green frame all read (0,210,75) = #00D24B;
+  --selftest 17/0/0.
+
+### 2026-10-02 — UI — 1.1 queue-panel: activity badges off + GT-measured 个人评分 / ? offsets
+- User: remove the 周年 tab badges; the 个人评分 row and a question-mark icon sat wrong.
+- Badges: UpdateAnniversaryTabIcon (NewBattleFieldQueue.decompiled.lua:6506-6553) shows
+  Image_AnniversaryIcon1/2/3 (PartnerTeam.UITex frame 21 = 周年 / 23 = 赛季, LockShowAndHide=1); the
+  inventory previously pinned them via a window-level `show` list. Removed, so the LSH default keeps
+  them hidden (user decision 2026-10-02: the queue window renders without the activity badges; the
+  reference capture happened during the anniversary event).
+- Offsets measured on the live reference (Screenshot-given-1.png; 1720/960 = 1.7917): the 个人评分
+  label ink starts at 25.5 (app 30.5) while 1873 and its ? match within 1px - the engine's
+  format-table spacing sits the AutoSize label at parent-11 (authored -6). The 随机地图 ? (Btn_Rull_DS)
+  measures box 610 (authored 605), and the whole 技能平衡 row (? Image_BuffRule, gem Box_Buff, right-
+  aligned Text_Buff) sits 9px right of the authored WndContainer_Buff (744 -> 753).
+- Viewer inventory: three `adjust` entries (Text_MyScore left=-11, Btn_Rull_DS left=601,
+  WndContainer_Buff left=753). Provisional (AdjustSpec sets the authored Left, not canvas x):
+  re-open when the KGUI FormatAllItemPos item-spacing algorithm is RE'd - the engine positions
+  these from its own font metrics + format rules, the viewer previews the authored INI.
+- Verified: ink-column probes before/after - label GT (25..37)(41..53)(55..68)(71..83)(88..89) vs APP
+  (25..38)(41..53)(56..68)(71..83)(88..89); 随机地图 ? GT 619..624 vs APP 618..624; 技能平衡 row ?
+  GT 919..924 vs APP 917..923; --selftest 17/0/0.
+- Known minor gaps: Box_Buff gem art lacks the reference's bright sparkle (icon 10000 frame), and the
+  个人评分 row sits ~2px high vs the reference (within downscale noise; not adjusted).
+
+### 2026-10-02 — UI — 真传模式 queue page (design variant based on 五人模式)
+- User: on the queue page remove the 3 tooltip ? icons + 技能平衡, reduce the mode strip to a single
+  tab 经典模式, rename the bottom-right 快捷组队 to 绝境武学, and expose the result as a NEW page
+  真传模式 loaded by default - all based on the current 五人模式 (Page_DesertStorm) state.
+- Implementation is viewer-only: new `zhenzhuan-queue` entry (cn 真传模式, status DESIGN) in
+  Data/ui_inventory.json - same INI/page/sample state as queue-panel plus:
+  tabs.show reduced to CheckBox_DesertStorm with Text_DesertStorm overridden to 经典模式;
+  hide "Image_Rule_4,Btn_Rull_DS,Image_BuffRule,WndContainer_Buff"; text override
+  Text_BtnQuickTeam_D = 绝境武学; the queue-panel's Text_MyScore adjust kept. No INI or asset edits.
+- This is an intentional project design deviation (NOT client truth) - flagged in the entry summary,
+  the §1 note in docs/netcode/JX3_MODE_UI_INVENTORY.md, and here, so it can never be mistaken for the
+  shipped queue window.
+- Verified: zz_v1 dump - only CheckBox_DesertStorm/Text_DesertStorm (经典模式) drawn, no Image_Rule_4 /
+  Btn_Rull_DS / Image_BuffRule / WndContainer_Buff sections, Text_BtnQuickTeam_D = 绝境武学;
+  --selftest 18/0/0; defaultWindow = zhenzhuan-queue.
+
+### 2026-10-02 — UI — 单场奖励 plaque: ImageType=11 decoded (caps were flattened by the stretch)
+- User: "the effect below 单场奖励 is a bracket, that thing is broken on right side, it doesn't close,
+  left is fine" - the reward plaque's pointed caps.
+- Root cause: Image_DoubleBg_5 (PVPUI22 frame 11, 48x20) is drawn at Width=68 with ImageType=11; the
+  viewer plain-stretched the whole frame, which widens the pointed caps and flattens their slopes so
+  the right cap reads as open. The engine's draw dispatch (KGUIX64 0x180117D7C, `mov eax,[rbx+0x410]`)
+  puts ImageType 10/11/12 (and 17/18/19) on ONE diced path, and the live capture keeps the caps at
+  native size - only the middle stretches. Frame dumps: PVPUI22 frame 8 (68x20) is the same art at the
+  authored size, i.e. a native-caps/wide-middle version of frame 11.
+- Viewer: new HorizontalSliceImage (left/right caps fixed, middle star-stretched) + UiTex
+  GetHorizontalCaps - the cap widths are detected from the frame's vertical profile (alpha when the
+  art is translucent, color when opaque). Lesson: the --frame dump composites over an opaque host, so
+  a translucent frame's alpha is invisible there (PVPUI22's plaque is a ~alpha-45 black veil; the
+  dump read (13,13,13) vs (16,16,16) - the shape only shows in the render's own pixels).
+- GT-verified: caps 10/10 for frame 11; diff before/after is confined to the plaque bbox
+  (447,575)-(513,595); the left cap and the closing right cap now match Screenshot-given-1.
+- Scope check: only this element changes across the whole catalog (the selftest's type-11 debug:
+  Image_Line, Image_New_2_2_2_0, MiddleMap Image_Alpha/_1 all detect caps=0 -> unchanged plain
+  stretch); --selftest 18/0/0. UI_SYSTEM_REPORT.md item 3 updated (11 = horizontal three-slice).

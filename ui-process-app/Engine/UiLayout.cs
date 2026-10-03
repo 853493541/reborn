@@ -402,6 +402,27 @@ namespace MapUiApp.Engine
                         var boxH = section.GetInt("Height");
                         icon.Width = boxW > 0 ? boxW : iconSource.PixelWidth;
                         icon.Height = boxH > 0 ? boxH : iconSource.PixelHeight;
+                        // Rarity frame (UpdateItemBoxExtend): an overlay ON TOP of the
+                        // icon so all four sides stay visible; the icon sits inside the
+                        // frame by the border thickness.
+                        if (UiProcessApp.Engine.Fonts.TryGetColor(section.Get("$BorderColor"), out var boxBorder))
+                        {
+                            var boxTh = Math.Max(1, section.GetInt("$BorderWidth", 1));
+                            var framedBox = new Grid
+                            {
+                                Width = icon.Width + boxTh * 2,
+                                Height = icon.Height + boxTh * 2,
+                            };
+                            icon.Margin = new Thickness(boxTh);
+                            framedBox.Children.Add(icon);
+                            framedBox.Children.Add(new Border
+                            {
+                                BorderBrush = new SolidColorBrush(boxBorder),
+                                BorderThickness = new Thickness(boxTh),
+                                IsHitTestVisible = false,
+                            });
+                            return framedBox;
+                        }
                         return icon;
                     }
                 }
@@ -606,6 +627,16 @@ namespace MapUiApp.Engine
                         visual = plain;
                     }
                 }
+                else if (imageType == 11 && drawWidth > 0 && drawHeight > 0 &&
+                         textures.GetHorizontalCaps(imagePath, frame) is var caps11 &&
+                         caps11.L > 0 && caps11.R > 0 &&
+                         caps11.L + caps11.R < source.PixelWidth - 1)
+                {
+                    // ImageType=11: the caps keep their pixel size, only the middle
+                    // stretches (the KGUI dispatch groups 10/11/12; GT-verified on the
+                    // queue panel's reward plaque - a plain stretch flattened its caps).
+                    visual = new HorizontalSliceImage(source, drawWidth, drawHeight, caps11.L, caps11.R);
+                }
                 else
                 {
                     var image = new Image
@@ -649,19 +680,23 @@ namespace MapUiApp.Engine
                     return host;
                 }
                 // Inventory `$BorderColor`/`$BorderWidth`: the engine's item boxes
-                // (UpdateItemBoxExtend) draw a rarity-colored frame; the viewer paints
-                // it around the authored slot art.
+                // (UpdateItemBoxExtend) draw a rarity-colored frame around the cell.
+                // The frame is an overlay ON TOP of the art (a wrapping Border hid its
+                // top/bottom lines under the sibling icon art drawn later in the row).
                 if (UiProcessApp.Engine.Fonts.TryGetColor(section.Get("$BorderColor"), out var rarityBorder))
                 {
                     var thickness = Math.Max(1, section.GetInt("$BorderWidth", 1));
-                    var framed = new Border
+                    var framed = new Grid();
+                    visual.Margin = new Thickness(thickness);
+                    if (!double.IsNaN(visual.Width)) framed.Width = visual.Width + thickness * 2;
+                    if (!double.IsNaN(visual.Height)) framed.Height = visual.Height + thickness * 2;
+                    framed.Children.Add(visual);
+                    framed.Children.Add(new Border
                     {
                         BorderBrush = new SolidColorBrush(rarityBorder),
                         BorderThickness = new Thickness(thickness),
-                        Child = visual,
-                    };
-                    if (!double.IsNaN(visual.Width)) framed.Width = visual.Width + thickness * 2;
-                    if (!double.IsNaN(visual.Height)) framed.Height = visual.Height + thickness * 2;
+                        IsHitTestVisible = false,
+                    });
                     return framed;
                 }
                 return visual;
@@ -1043,7 +1078,23 @@ namespace MapUiApp.Engine
                 case 2: // left-center aligned in the parent (keeps authored x)
                     if (parentHeight > 0) top += (parentHeight - elementHeight) / 2;
                     break;
-                case 10: // right-center aligned in the parent
+                case 10: // engine item-flow when the parent lays out items
+                         // (FirstItemPosType != 0): below the previous item; otherwise
+                         // right-center aligned in the parent (Map window art rows).
+                    if (parentSection != null && parentSection.GetInt("FirstItemPosType") != 0)
+                    {
+                        if (prevSibling != null && prevSibling.TryGetValue(section.Name, out var prevName10) &&
+                            build != null && build.Elements.TryGetValue(prevName10, out var prevEl10) &&
+                            prevEl10 is FrameworkElement pe10 && pe10.Visibility == Visibility.Visible &&
+                            build.Sections.TryGetValue(prevName10, out var prevSec10))
+                        {
+                            double px10 = Canvas.GetLeft(pe10); if (double.IsNaN(px10)) px10 = 0;
+                            double py10 = Canvas.GetTop(pe10); if (double.IsNaN(py10)) py10 = 0;
+                            left = px10;
+                            top = py10 + ElementHeight(pe10, prevSec10, sizeOf);
+                        }
+                        break;
+                    }
                     if (parentWidth > 0) left += parentWidth - elementWidth;
                     if (parentHeight > 0) top += (parentHeight - elementHeight) / 2;
                     break;
@@ -1056,7 +1107,14 @@ namespace MapUiApp.Engine
                         left == 0 && parentWidth > 0)
                         left = parentWidth - elementWidth;
                     break;
-                case 8: // right-aligned in the window when no offset is authored
+                case 8: // right-aligned in the window when no offset is authored...
+                    // ...for plain handles. In an item-flow handle (FirstItemPosType != 0)
+                    // it continues the previous item's line instead: LootList's money row
+                    // lays "12 [gold] / 34 [silver] 56 [copper]" that way (the glyph items
+                    // are PosType 8 after their numbers).
+                    if (parentSection != null && parentSection.GetInt("FirstItemPosType") != 0 &&
+                        TryFlowAfterPrevious(parent, section, prevSibling, build, sizeOf, ref left, ref top))
+                        break;
                     // Tiny auto-size parents (e.g. MapQueue's Handle_Dots) mean "keep
                     // the authored origin"; window-right would park them at the edge.
                     if (left == 0 && rootWidth > 0 && parentWidth >= 32)

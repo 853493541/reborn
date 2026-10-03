@@ -331,8 +331,15 @@ Note `WndButon` appears as a typo key in some assets; treat case-insensitively
 3. `ImageType` (17 values observed) is the render mode. Verified for map
    windows: `8` = horizontal mirror, `10` = nine-slice ("diced", native
    `BuildDicedImage`/`SetFrameDiecedInfo`/`GetFrameDiecedSize`). Most common
-   values: `0(1209), 10(1046), 11(351), 1(257), 8(138)`. **`ImageType=11`
-   is undecoded; the rest of the enum is UNKNOWN** (`notes/gaps.md`).
+   values: `0(1209), 10(1046), 11(351), 1(257), 8(138)`. **`ImageType=11` =
+   horizontal three-slice** (the caps keep their pixel size, only the middle
+   stretches): the KGUI draw dispatch (`KGUIX64.dll` `0x180117D7C`) groups
+   10/11/12 and 17/18/19 on one diced path, and the queue panel's reward
+   plaque (PVPUI22 frame 11, 48x20 authored 68x20) renders with native caps
+   in the live capture — a plain stretch flattened them so the right cap read
+   as open (verified 2026-10-02; the viewer detects the cap widths from the
+   frame's alpha/color profile, since this atlas ships no diced blocks). The
+   rest of the enum is UNKNOWN (`notes/gaps.md`).
 4. Related keys: `Alpha`, `DisableScale`, `ImagePercent`, `TimeStartAngle`,
    `PivotRotate/PivotScaleX/Y/PivotX/Y`, `Rotate*`, `RenderSampling`,
    `Blur`, `GrayColor`, `ReverseMask`, `R/G/B`, `ShapTexture*`.

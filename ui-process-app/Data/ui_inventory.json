@@ -2,7 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-  "defaultWindow": "minimap",
+  "defaultWindow": "zhenzhuan-queue",
   "stages": [
     {
       "id": "queue",
@@ -32,10 +32,10 @@
               "CheckBox_DesertStorm_Skill"
             ]
           },
-          "show": [
-            "Image_AnniversaryIcon1",
-            "Image_AnniversaryIcon2",
-            "Image_AnniversaryIcon3"
+          "adjust": [
+            { "section": "Text_MyScore", "left": -11 },
+            { "section": "Btn_Rull_DS", "left": 601 },
+            { "section": "WndContainer_Buff", "left": 753 }
           ],
           "texts": [
             { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" },
@@ -46,7 +46,7 @@
             { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
             { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
           ],
-          "summary": "1,129 sections. The mode tab strip is not authored as a strip: ShowModeTabs (NewBattleFieldQueue.decompiled.lua:4374-4451) hides every tab, then shows only the battlefield ids bound to the entry point and pins them at SetRelX(18 + i*100). InitWndBattleField (lua:4713-4744) drops modes whose IsActivityOn is false, which is why the live queue window shows 五人模式/单人模式/寻宝模式/自定义模式 (乱武模式 676 is off). Visibility follows the engine's LockShowAndHide flag (KGUI decoder clears the visible flag of locked sections; the window script is the only thing that shows them), so locked state widgets stay hidden and the script-shown ones (tabs, activity badges) are listed. The 五人模式 tab handler also sets Text_SkillTitle to STR_DESERTSTORM_TITLE (lua:4477-4488) and Text_TIP_DSTime to the schedule (lua:4350-4372). The reference screenshot state (proof/minimap/screenshots/Screenshot-given-1.png) additionally pins the 赛季 tab badges (Image_AnniversaryIcon1/2/3 at frame 23 of PartnerTeam.UITex, UpdateAnniversaryTabIcon lua:6506-6553; the INI default frame 21 is 周年), the player sample values (个人评分 1873, 飞沙令 10000/10000 via inventory `texts`), and the window's own string table string_ArenaCorpsPanel.txt, whose committed UTF-8 copy in Data/text resolves the labels the generic string.txt lacks.",
+          "summary": "1,129 sections. The mode tab strip is not authored as a strip: ShowModeTabs (NewBattleFieldQueue.decompiled.lua:4374-4451) hides every tab, then shows only the battlefield ids bound to the entry point and pins them at SetRelX(18 + i*100). InitWndBattleField (lua:4713-4744) drops modes whose IsActivityOn is false, which is why the live queue window shows 五人模式/单人模式/寻宝模式/自定义模式 (乱武模式 676 is off). Visibility follows the engine's LockShowAndHide flag (KGUI decoder clears the visible flag of locked sections; the window script is the only thing that shows them), so locked state widgets stay hidden and the script-shown ones (tabs, activity badges) are listed. The 五人模式 tab handler also sets Text_SkillTitle to STR_DESERTSTORM_TITLE (lua:4477-4488) and Text_TIP_DSTime to the schedule (lua:4350-4372). UpdateAnniversaryTabIcon (lua:6506-6553) would pin the activity tab badges (Image_AnniversaryIcon1/2/3, PartnerTeam.UITex frame 21 周年 / 23 赛季, LockShowAndHide=1) - intentionally NOT shown (user decision 2026-10-02: the queue window renders without the activity badges), plus the player sample values (个人评分 1873, 飞沙令 10000/10000 via inventory `texts`), and the window's own string table string_ArenaCorpsPanel.txt, whose committed UTF-8 copy in Data/text resolves the labels the generic string.txt lacks. GT-measured viewer adjusts (2026-10-02, provisional; re-open when the KGUI engine's format-table item spacing is RE'd): Text_MyScore Left -6->-11 (the reference sits the 个人评分： label 5px left of the authored offset, restoring the label-to-1873 gap), Btn_Rull_DS 596->601 and WndContainer_Buff 744->753 (the 随机地图 ? and the whole 技能平衡 row - Text_Buff right-aligned label, Box_Buff gem, Image_BuffRule ? - measure 5-9px right in the reference).",
           "evidence": [
             "ui/Config/Default/NewBattleFieldQueue.ini",
             "proof/minimap/ui/Config/Default/decompiled/NewBattleFieldQueue.decompiled.lua",
@@ -61,6 +61,57 @@
             "WndContainer_Buff / Handle_Buff — queue buffs",
             "Wnd_ListMaps / Handle_BattlefieldList — map rows",
             "Bool_CreateRoom / JoinRoom / StartGame / DisbandRoom / ExitRoom — room dialogs"
+          ],
+          "labels": [
+            "STR_BATTLEFIELD_DGPAGE",
+            "STR_SETTING197",
+            "STR_SETTING201"
+          ]
+        },
+        {
+          "id": "zhenzhuan-queue",
+          "title": "NewBattleFieldQueue",
+          "cn": "真传模式",
+          "status": "DESIGN",
+          "root": "ui",
+          "path": "Config/Default/NewBattleFieldQueue.ini",
+          "page": "Page_DesertStorm",
+          "tabs": {
+            "parent": "PageSet_Total",
+            "x0": 18,
+            "step": 100,
+            "show": [
+              "CheckBox_DesertStorm"
+            ]
+          },
+          "hide": "Image_Rule_4,Btn_Rull_DS,Image_BuffRule,WndContainer_Buff",
+          "adjust": [
+            { "section": "Text_MyScore", "left": -11 }
+          ],
+          "texts": [
+            { "section": "Text_DesertStorm", "text": "经典模式" },
+            { "section": "Text_BtnQuickTeam_D", "text": "绝境武学" },
+            { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" },
+            { "section": "Text_PersonalScore", "text": "1873" },
+            { "section": "Text_FeiShaLing", "text": "10000/10000" },
+            { "section": "Text_FeiShaLingAvailable", "text": "(本周还可获得：1010)" },
+            { "section": "Text_FeiShaLingAvailable_K", "text": "(本周还可获得：1010)" },
+            { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
+            { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
+          ],
+          "summary": "PROJECT DESIGN VARIANT (not a game-authored state; user request 2026-10-02) - 真传模式 is a new queue page built on the current 五人模式 layout: same INI (NewBattleFieldQueue.ini, page Page_DesertStorm) and the same sample state as queue-panel (个人评分 1873, 飞沙令 10000/10000, 单场奖励/crest art). Four designed differences, all viewer-side (entry hide/texts/tabs/adjust - no INI or asset edits): (1) the mode strip is reduced to a single tab, Text_DesertStorm renamed 经典模式 (the other CheckBox_DesertStorm_* tabs stay hidden); (2) the three tooltip ? icons are removed (Image_Rule_4 个人评分, Btn_Rull_DS 随机地图, Image_BuffRule 技能平衡); (3) the 技能平衡 row (WndContainer_Buff) is removed; (4) the bottom-right button 快捷组队 reads 绝境武学 (Text_BtnQuickTeam_D). The base window data stays the game's own (INI + lua); this entry is a deliberately designed variant for the Reborn project, not client truth - do not cite it as the shipped queue window.",
+          "evidence": [
+            "ui/Config/Default/NewBattleFieldQueue.ini",
+            "proof/minimap/ui/Config/Default/decompiled/NewBattleFieldQueue.decompiled.lua",
+            "project design variant (user request 2026-10-02) - no client counterpart"
+          ],
+          "elements": [
+            "Single mode tab 经典模式 (CheckBox_DesertStorm)",
+            "Handle_FEISHA / Text_MyScore - 飞沙 currency + 个人评分 (same sample state as queue-panel)",
+            "Btn_SingleQueue / Btn_TeamQueue / Btn_RoomQueue + Handle_Mathing_* / Text_Time_*",
+            "Btn_DesertStormMask / Btn_DesertStormInfo / Btn_QuickTeam_D (快捷组队 -> 绝境武学)",
+            "Wnd_ListMaps / Handle_BattlefieldList - map rows",
+            "No tooltip ? icons, no 技能平衡 row (designed)"
           ],
           "labels": [
             "STR_BATTLEFIELD_DGPAGE",
@@ -435,7 +486,8 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/LootList.ini",
-          "hide": "Handle_Money,Handle_Item,Handle_Currency",
+          "hide": "Handle_Item,Handle_Currency",
+          "show": [ "Image_Gold", "Image_Silver", "Image_Copper" ],
           "lists": [
             { "container": "Handle_LootList", "ini": "LootList.ini", "item": "Handle_Item", "count": 2, "textSection": "Text_Item",
               "rowTexts": ["麻布绷带", "月影沙"],
@@ -443,16 +495,20 @@
           ],
           "texts": [
             { "section": "Text_Sure", "text": "全部拾取［F］" },
-            { "section": "__lt_Handle_LootList_0_Text_Item", "fontColor": "green2" },
-            { "section": "__lt_Handle_LootList_1_Text_Item", "fontColor": "blue2" }
+    { "section": "Text_Gold", "text": "12" },
+    { "section": "Text_Silver", "text": "34" },
+    { "section": "Text_Copper", "text": "56" },
+            { "section": "__lt_Handle_LootList_0_Text_Item", "fontColor": "#00D24B" },
+            { "section": "__lt_Handle_LootList_1_Text_Item", "fontColor": "#007EFF" }
           ],
           "images": [
-            { "section": "__lt_Handle_LootList_0_Image_ItemBg", "borderColor": "green2" },
-            { "section": "__lt_Handle_LootList_1_Image_ItemBg", "borderColor": "blue2" },
-            { "section": "__lt_Handle_LootList_0_Box_Item", "image": "ui/Image/Icon/System/Drug/CL_0417_01.UITex" },
+            { "section": "__lt_Handle_LootList_0_Box_Item", "borderColor": "#00D24B" },
+            { "section": "__lt_Handle_LootList_1_Box_Item", "borderColor": "#007EFF" },
+            { "section": "Box_Money", "image": "ui/Image/Icon/System/Coin/coin01.UITex" },
+    { "section": "__lt_Handle_LootList_0_Box_Item", "image": "ui/Image/Icon/System/Drug/CL_0417_01.UITex" },
             { "section": "__lt_Handle_LootList_1_Box_Item", "image": "ui/Image/Icon/System/Drug/medicNew01b.UITex" }
           ],
-          "summary": "Container loot window (OnSyncLootList): the Lua rebuilds the list per container - a money row when GetLootMoney>0 (UpdateMoneyShow splits gold/silver/copper, lua:616+) then one Handle_Item row per GetLootList entry (Text_Item = GetItemNameByItem colored by GetItemFontColorByQuality; Box_Item gets SetObject/SetObjectIcon/SetOverText count, lua:479-577); Image_Auction shows only for the loot master (IsDistributeMan, lua:585-604). Btn_Sure label = STR_PICK_ALL .. FormatString(STR_BRACKETS, GetKeyShow(AUTOINTERACT)) = 全部拾取［F］ (lua:112-124). Viewer replays a sample container with the two requested items only (no money row): 麻布绷带 / 月影沙 stacked via the list clones; the item names replay SetFontColor via the engine's FontColor key (viewer `fontColor` text override) and the slot art carries a rarity frame (viewer `borderColor` image override, approximating UpdateItemBoxExtend); the rarities are 麻布绷带 = 优良/green2, 月影沙 = 精良/blue2 (provisional — settings/Item/Item.tab is not in the local extracts). The static templates, Image_Auction and the mouse-over glows are hidden. The item icons are extracted from the UI pak (`ui/Image/Icon/System/Drug/...`; the icon registry `ui/Scheme/Case/icon.txt` maps icon id -> UITex+frame): 麻布绷带 = icon 6011 (`System\\Drug\\CL_0417_01`, a cloth roll), 月影沙 = icon 1321 (`System\\Drug\\medicNew01b`, the blue powder) — both reasoned picks from the shipped icon sets, provisional until the item table is reachable; the viewer paints them on the Box slots (new Box `Image` support). Count overlays (Box:SetOverText) are not reproduced. Pickup bar (拾取/打开/操作) + smart-loot settings live outside this window; MaxLootRange = 5.",
+          "summary": "Container loot window (OnSyncLootList): the Lua rebuilds the list per container - a money row when GetLootMoney>0 (UpdateMoneyShow splits gold/silver/copper, lua:616-713, Box_Money icon = GetMoneyIcon: gold>10 -> icon 94 System\\Coin\\coin01, silver -> 96/97, copper -> 98/99) then one Handle_Item row per GetLootList entry (Text_Item = GetItemNameByItem + SetFontColor(GetItemFontColorByQuality): q1 250,250,250 / q2 0,210,75 / q3 0,126,255 / q4 255,45,255 / q5 255,165,0 (item.lua); Box_Item gets SetObject/SetObjectIcon(Table_GetItemIconID)/SetOverText(stack count, RIGHT_BOTTOM font 15)/UpdateItemBoxExtend(genre, quality) which paints the quality box; Image_Auction shows only for the loot master). Rows are engine items: PosType 10 in a handle with FirstItemPosType 2/4, so the view stacks them in append order below the previous item (money row first). Viewer replays a container with 12金34银56铜 + 麻布绷带/q2 and 月影沙/q3: exact quality RGB via #hex fontColor/borderColor, Box icons from the pak (icon 6011 System\\Drug\\CL_0417_01, 1321 System\\Drug\\medicNew01b, coin 94 System\\Coin\\coin01); Btn_Sure = 全部拾取［F］ (STR_PICK_ALL + STR_BRACKETS [GetKeyShow]). Known gaps: the Box over-text stack overlay and UpdateItemBoxExtend's box art are approximated (borderColor) / not drawn; the money coin glyphs (LootPanel frames 10-12) overlap at the authored PosType 8 spot.",
           "evidence": [
             "ui/Config/Default/LootList.ini",
             "docs/netcode/JX3_LOOT_PROTOCOL_LAYOUTS.md",

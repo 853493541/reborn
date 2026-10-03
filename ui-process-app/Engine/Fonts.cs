@@ -84,11 +84,23 @@ namespace UiProcessApp.Engine
         /// <summary>
         /// Resolves a named color from the shipped color.txt (the engine's
         /// `FontColor` key overrides the font scheme's fill color with one of these).
+        /// A literal `#RRGGBB` is accepted too: quality colors are engine Lua RGB
+        /// values (GetItemFontColorByQuality in ui/script/item.lua) that have no
+        /// color.txt name, e.g. quality 2 = #00D24B.
         /// </summary>
         public static bool TryGetColor(string name, out Color color)
         {
             color = default;
-            return !string.IsNullOrWhiteSpace(name) && Colors.TryGetValue(name.Trim(), out color);
+            if (string.IsNullOrWhiteSpace(name)) return false;
+            var trimmed = name.Trim();
+            if (trimmed.StartsWith("#") && trimmed.Length == 7 &&
+                uint.TryParse(trimmed.Substring(1), System.Globalization.NumberStyles.HexNumber,
+                    System.Globalization.CultureInfo.InvariantCulture, out var rgb))
+            {
+                color = Color.FromRgb((byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
+                return true;
+            }
+            return Colors.TryGetValue(trimmed, out color);
         }
 
         /// <summary>
