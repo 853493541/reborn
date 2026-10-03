@@ -654,3 +654,47 @@ Result:
 Consequence for the plan: P1.2 (launcher-provided input: loopback IPC / security handshake)
 is now the only path - find what the real launcher supplies and emulate it; the client then
 creates the platform object itself.
+
+## 33. P1.2 static pass: launcher launch sequence + the startup chain (2026-10-02, 27th pass)
+
+- **Launcher launch sequence** (from its own live log, `logs/XLauncherV2/<date>/*.log`):
+  user click -> `Post CreateGame [JX3 0]` -> `DetachProgram(...\KGPK4_StreamDownloaderX64.exe)`
+  then `DetachProgram(...\JX3ClientX64.exe)` (26 ms apart). The launcher starts the streaming
+  downloader first, then the client; both with no args. The downloader is a long-running
+  service (its KGPK4 IPC queues are visible in `\Sessions\1\BaseNamedObjects`).
+- **The launcher never touches the block**: the mapping/mutex GUID strings exist only in the
+  client binaries (JX3ClientX64.exe, JX3LogicEditOperationX64.dll), not in any launcher
+  binary (ASCII or UTF-16) - the block really is client-side (output/heartbeat only).
+- **Privileges**: the launcher runs **elevated** (integrity High 0x3000); our shell/probe is
+  Medium (0x2000). The client manifest is `asInvoker` and it imports no token/privilege
+  APIs, so elevation is not obviously checked - parked as a weak lead (an elevated probe run
+  was not performed; the user chose the static route).
+- **Live observations of a real launch**: the client's loopback TCP pairs are both ends owned
+  by the client itself (event-loop self-pipe, not launcher IPC); it spawns `cefrender.exe`;
+  its block contains only the 8-byte heartbeat (session consumed/never present).
+- **Startup stage lambdas** (the `game.startup` group's steps):
+  `game.startup.start` `0x1400A0750` -> calls `0x1400FF8A0` (sends messages 0x10/0x11 to
+  KJX3MessageModule, dispatches events 0/1 to the KJX3DllModule handlers; returns 0 if a
+  dispatch fails); `game.startup.loaded` `0x1400A05D0` (dispatches events 0/1);
+  runner `0x1400A0870` (dispatches ids 2..5). A failed stage still returns 0 -> the pump
+  treats 0 as "done", so the group completes even when the platform startup fails.
+- **App module** `KJX3WindowsApplicationModule` vtable `0x14095FDE0`: vt+0x28 `0x1400DFBF0`
+  (handles events 3/4: creates the app window/waitable timer + reads config), vt+0x30
+  `0x1400DFD40`, vt+0x38 `0x1400E0780` = **app Run** (message pump while `[app+0x78] != 0`;
+  our forced-gate run returned immediately because the app was never initialized),
+  vt+0x40 `0x1400E0950`.
+- **PlatformStartup** (the big function `0x14009DB60..0x14009F477`, error string
+  "PlatformStartup" at `0x14009F3D1`): creates the module objects (constructors
+  `0x1400BF170`, `0x1400C0250`, `0x1400A4700`, `0x1400AFD60`, `0x1400AB670`, `0x1400B2FA0`,
+  ...), appends them to the global module vector (`0xA8C430`/`0xA8C438`), then hands the
+  platform/client object to the app module: `[KJX3WindowsApplicationModule+0x20] = [rsi+0x20]`
+  and calls `0x1400B59C0` before returning 1. Its two tail checks (`0x1400A4ED0`,
+  `0x1400C6240`) always return 1 (they only copy config strings), so the failure must be
+  earlier: either a module constructor returns null (a module object is skipped) or
+  `[rsi+0x20]` (the platform object) is never created.
+- **DLL paths are module-relative**: the path builder `0x1400B5660` uses
+  `GetModuleFileNameA(NULL)` (`0x1400B5420`), not the engine root - our probe's root patches
+  do not affect DLL loading.
+- Next: find where `[rsi+0x20]` (the platform/client object) is created inside
+  `0x14009DB60..0x14009F477` and which module constructor fails in the probe (compare the
+  global module vector contents between probe and a real launch if possible).

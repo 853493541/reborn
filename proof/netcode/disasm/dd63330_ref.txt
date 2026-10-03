@@ -1,0 +1,247 @@
+# JX3ClientX64.exe xrefs for 'DD63330'
+# image base 0x140000000
+
+## xref @ 0x140103009 -> 0x1409647d0 'SYSTEM\\CurrentControlSet\\Services\\DD63330'  fn start 0x140102f90
+  0x140102f90: mov      qword ptr [rsp + 8], rbx
+  0x140102f95: mov      qword ptr [rsp + 0x18], rsi
+  0x140102f9a: mov      qword ptr [rsp + 0x20], rdi
+  0x140102f9f: push     rbp
+  0x140102fa0: push     r12
+  0x140102fa2: push     r13
+  0x140102fa4: push     r14
+  0x140102fa6: push     r15
+  0x140102fa8: lea      rbp, [rsp - 0x190]
+  0x140102fb0: sub      rsp, 0x290
+  0x140102fb7: mov      rax, qword ptr [rip + 0x93143a]
+  0x140102fbe: xor      rax, rsp
+  0x140102fc1: mov      qword ptr [rbp + 0x180], rax
+  0x140102fc8: mov      r12, rdx
+  0x140102fcb: mov      qword ptr [rsp + 0x30], rdx
+  0x140102fd0: xor      ebx, ebx
+  0x140102fd2: mov      qword ptr [rsp + 0x38], rbx
+  0x140102fd7: xor      edx, edx
+  0x140102fd9: mov      r8d, 0x200
+  0x140102fdf: lea      rcx, [rbp - 0x80]
+  0x140102fe3: call     0x14079c37a
+  0x140102fe8: mov      dword ptr [rsp + 0x70], 0x200
+  0x140102ff0: mov      dword ptr [rsp + 0x74], ebx
+  0x140102ff4: test     r12, r12
+  0x140102ff7: je       0x1401032af
+  0x140102ffd: mov      byte ptr [r12], bl
+  0x140103001: cmp      byte ptr [rip + 0x98a033], bl
+  0x140103007: jne      0x140103023
+  0x140103009: lea      rdx, [rip + 0x8617c0]  ; 'SYSTEM\\CurrentControlSet\\Services\\DD63330'
+  0x140103010: lea      rcx, [rip + 0x98a029]
+  0x140103017: call     0x140106860
+  0x14010301c: mov      byte ptr [rip + 0x98a017], 1
+  0x140103023: xorps    xmm0, xmm0
+  0x140103026: movups   xmmword ptr [rsp + 0x40], xmm0
+  0x14010302b: mov      qword ptr [rsp + 0x40], rbx
+  0x140103030: mov      qword ptr [rsp + 0x48], rbx
+  0x140103035: mov      qword ptr [rsp + 0x50], rbx
+  0x14010303a: mov      edx, 0x2a
+  0x14010303f: lea      rcx, [rsp + 0x40]
+  0x140103044: call     0x1401082a0
+  0x140103049: mov      r15, qword ptr [rsp + 0x40]
+  0x14010304e: mov      byte ptr [r15], bl
+  0x140103051: mov      rdi, rbx
+  0x140103054: mov      r14, qword ptr [rsp + 0x50]
+  0x140103059: mov      rax, qword ptr [rsp + 0x48]
+  0x14010305e: lea      r12, [rip + 0x989fdb]
+  0x140103065: movzx    esi, byte ptr [rdi + r12]
+  0x14010306a: xor      sil, 0xad
+  0x14010306e: je       0x1401030a8
+  0x140103070: lea      r13, [rax + 1]
+  0x140103074: lea      rdx, [r13 + 1]
+  0x140103078: cmp      rdx, r14
+  0x14010307b: jbe      0x140103096
+  0x14010307d: lea      rcx, [rsp + 0x40]
+  0x140103082: call     0x1401082a0
+  0x140103087: mov      r14, qword ptr [rsp + 0x50]
+  0x14010308c: mov      rax, qword ptr [rsp + 0x48]
+  0x140103091: mov      r15, qword ptr [rsp + 0x40]
+  0x140103096: mov      byte ptr [rax + r15], sil
+  0x14010309a: mov      byte ptr [rax + r15 + 1], 0
+  0x1401030a0: mov      rax, r13
+  0x1401030a3: mov      qword ptr [rsp + 0x48], rax
+  0x1401030a8: inc      rdi
+  0x1401030ab: cmp      rdi, 0x29
+  0x1401030af: jb       0x140103065
+  0x1401030b1: mov      qword ptr [rsp + 0x40], rbx
+  0x1401030b6: mov      qword ptr [rsp + 0x48], rbx
+  0x1401030bb: mov      qword ptr [rsp + 0x50], rbx
+  0x1401030c0: xor      ecx, ecx
+  0x1401030c2: call     0x14079aeac
+  0x1401030c7: lea      rdx, [rip + 0x84d28f]
+  0x1401030ce: test     r15, r15
+  0x1401030d1: cmovne   rdx, r15
+  0x1401030d5: mov      rdi, r15
+  0x1401030d8: cmove    rdi, rbx
+  0x1401030dc: lea      rax, [rsp + 0x38]
+  0x1401030e1: mov      qword ptr [rsp + 0x20], rax
+  0x1401030e6: mov      r9d, 0x20119
+  0x1401030ec: xor      r8d, r8d
+  0x1401030ef: mov      rcx, 0xffffffff80000002
+  0x1401030f6: call     qword ptr [rip + 0x6b4f54]  ; ADVAPI32.dll!RegOpenKeyExA
+  0x1401030fc: mov      esi, eax
+  0x1401030fe: test     rdi, rdi
+  0x140103101: mov      r12, qword ptr [rsp + 0x30]
+  0x140103106: je       0x140103120
+  0x140103108: test     r14, r14
+  0x14010310b: je       0x140103120
+  0x14010310d: mov      rdx, rbx
+  0x140103110: mov      byte ptr [rdi + rdx], 0
+  0x140103114: inc      rdx
+  0x140103117: cmp      rdx, r14
+  0x14010311a: jb       0x140103110
+  0x14010311c: mov      byte ptr [r15], 0
+  0x140103120: mov      rcx, r15
+  0x140103123: call     0x14079aeac
+  0x140103128: test     esi, esi
+  0x14010312a: jne      0x14010329f
+  0x140103130: cmp      byte ptr [rip + 0x989fad], sil
+  0x140103137: jne      0x14010315d
+  0x140103139: mov      dword ptr [rip + 0x989fa5], 0xcaccc0e4
+  0x140103143: mov      dword ptr [rip + 0x989f9f], 0xd9ccfdc8
+  0x14010314d: mov      word ptr [rip + 0x989f9a], 0xc5
+  0x140103156: mov      byte ptr [rip + 0x989f87], 1
+  0x14010315d: xorps    xmm0, xmm0
+  0x140103160: movups   xmmword ptr [rsp + 0x58], xmm0
+  0x140103165: mov      qword ptr [rsp + 0x58], rbx
+  0x14010316a: mov      qword ptr [rsp + 0x60], rbx
+  0x14010316f: mov      qword ptr [rsp + 0x68], rbx
+  0x140103174: mov      edx, 0xa
+  0x140103179: lea      rcx, [rsp + 0x58]
+  0x14010317e: call     0x1401082a0
+  0x140103183: mov      r15, qword ptr [rsp + 0x58]
+  0x140103188: mov      byte ptr [r15], 0
+  0x14010318c: mov      rdi, rbx
+  0x14010318f: lea      rcx, [rip + 0x989f52]
+  0x140103196: mov      r14, qword ptr [rsp + 0x68]
+  0x14010319b: mov      rax, qword ptr [rsp + 0x60]
+  0x1401031a0: movzx    esi, byte ptr [rdi + rcx]
+  0x1401031a4: xor      sil, 0xad
+  0x1401031a8: je       0x1401031e9
+  0x1401031aa: lea      r13, [rax + 1]
+  0x1401031ae: lea      rdx, [r13 + 1]
+  0x1401031b2: cmp      rdx, r14
+  0x1401031b5: jbe      0x1401031d7
+  0x1401031b7: lea      rcx, [rsp + 0x58]
+  0x1401031bc: call     0x1401082a0
+  0x1401031c1: mov      r14, qword ptr [rsp + 0x68]
+  0x1401031c6: mov      rax, qword ptr [rsp + 0x60]
+  0x1401031cb: mov      r15, qword ptr [rsp + 0x58]
+  0x1401031d0: lea      rcx, [rip + 0x989f11]
+  0x1401031d7: mov      byte ptr [rax + r15], sil
+  0x1401031db: mov      byte ptr [rax + r15 + 1], 0
+  0x1401031e1: mov      rax, r13
+  0x1401031e4: mov      qword ptr [rsp + 0x60], rax
+  0x1401031e9: inc      rdi
+  0x1401031ec: cmp      rdi, 9
+  0x1401031f0: jb       0x1401031a0
+  0x1401031f2: mov      qword ptr [rsp + 0x58], rbx
+  0x1401031f7: mov      qword ptr [rsp + 0x60], rbx
+  0x1401031fc: mov      qword ptr [rsp + 0x68], rbx
+  0x140103201: xor      ecx, ecx
+  0x140103203: call     0x14079aeac
+  0x140103208: test     r15, r15
+  0x14010320b: lea      rdx, [rip + 0x84d14b]
+  0x140103212: cmovne   rdx, r15
+  0x140103216: mov      rdi, r15
+  0x140103219: cmove    rdi, rbx
+  0x14010321d: lea      rcx, [rsp + 0x70]
+  0x140103222: mov      qword ptr [rsp + 0x28], rcx
+  0x140103227: lea      rcx, [rbp - 0x80]
+  0x14010322b: mov      qword ptr [rsp + 0x20], rcx
+  0x140103230: lea      r9, [rsp + 0x74]
+  0x140103235: xor      r8d, r8d
+  0x140103238: mov      rcx, qword ptr [rsp + 0x38]
+  0x14010323d: call     qword ptr [rip + 0x6b4e6d]  ; ADVAPI32.dll!RegQueryValueExA
+  0x140103243: mov      esi, eax
+  0x140103245: test     rdi, rdi
+  0x140103248: je       0x140103260
+  0x14010324a: test     r14, r14
+  0x14010324d: je       0x140103260
+  0x14010324f: nop      
+  0x140103250: mov      byte ptr [rdi + rbx], 0
+  0x140103254: inc      rbx
+  0x140103257: cmp      rbx, r14
+  0x14010325a: jb       0x140103250
+  0x14010325c: mov      byte ptr [r15], 0
+  0x140103260: mov      rcx, r15
+  0x140103263: call     0x14079aeac
+  0x140103268: test     esi, esi
+  0x14010326a: jne      0x14010329f
+  0x14010326c: mov      byte ptr [rbp + 0x17f], sil
+  0x140103273: lea      rax, [rbp - 0x80]
+  0x140103277: mov      qword ptr [rsp + 0x20], rax
+  0x14010327c: lea      r9, [rip + 0x84f635]  ; '%s'
+  0x140103283: mov      edx, 0x400
+  0x140103288: mov      r8, 0xffffffffffffffff
+  0x14010328f: mov      rcx, r12
+  0x140103292: call     0x140107080
+  0x140103297: mov      byte ptr [r12 + 0x3ff], sil
+  0x14010329f: mov      rcx, qword ptr [rsp + 0x38]
+  0x1401032a4: test     rcx, rcx
+  0x1401032a7: je       0x1401032af
+  0x1401032a9: call     qword ptr [rip + 0x6b4d99]  ; ADVAPI32.dll!RegCloseKey
+  0x1401032af: mov      rcx, qword ptr [rbp + 0x180]
+  0x1401032b6: xor      rcx, rsp
+  0x1401032b9: call     0x14079ae80
+  0x1401032be: lea      r11, [rsp + 0x290]
+  0x1401032c6: mov      rbx, qword ptr [r11 + 0x30]
+  0x1401032ca: mov      rsi, qword ptr [r11 + 0x40]
+  0x1401032ce: mov      rdi, qword ptr [r11 + 0x48]
+  0x1401032d2: mov      rsp, r11
+  0x1401032d5: pop      r15
+  0x1401032d7: pop      r14
+  0x1401032d9: pop      r13
+  0x1401032db: pop      r12
+  0x1401032dd: pop      rbp
+  0x1401032de: ret      
+  0x1401032df: int3     
+  0x1401032e0: test     rdx, rdx
+  0x1401032e3: je       0x140104367
+  0x1401032e9: mov      qword ptr [rsp + 8], rbx
+  0x1401032ee: mov      qword ptr [rsp + 0x18], rsi
+  0x1401032f3: mov      qword ptr [rsp + 0x20], rdi
+  0x1401032f8: push     rbp
+  0x1401032f9: push     r12
+  0x1401032fb: push     r13
+  0x1401032fd: push     r14
+  0x1401032ff: push     r15
+  0x140103301: lea      rbp, [rsp - 0x3a0]
+  0x140103309: sub      rsp, 0x4a0
+  0x140103310: mov      rax, qword ptr [rip + 0x9310e1]
+  0x140103317: xor      rax, rsp
+  0x14010331a: mov      qword ptr [rbp + 0x390], rax
+  0x140103321: mov      rdi, rdx
+  0x140103324: mov      qword ptr [rbp - 0x80], rdx
+  0x140103328: xor      ebx, ebx
+  0x14010332a: mov      r14d, ebx
+  0x14010332d: mov      dword ptr [rbp + 0x7c], ebx
+  0x140103330: mov      dword ptr [rbp + 0x78], ebx
+  0x140103333: mov      dword ptr [rbp + 0x80], ebx
+  0x140103339: mov      rcx, qword ptr [rip + 0x972288]
+  0x140103340: test     rcx, rcx
+  0x140103343: je       0x140104338
+  0x140103349: mov      byte ptr [rdx], bl
+  0x14010334b: mov      rax, qword ptr [rcx]
+  0x14010334e: lea      r8, [rbp + 0x78]
+  0x140103352: lea      rdx, [rbp + 0x7c]
+  0x140103356: call     qword ptr [rax + 0x10]
+  0x140103359: mov      rcx, qword ptr [rip + 0x972268]
+  0x140103360: mov      rax, qword ptr [rcx]
+  0x140103363: call     qword ptr [rax + 8]
+  0x140103366: mov      qword ptr [rsp + 0x78], rax
+  0x14010336b: call     qword ptr [rip + 0x6b50af]  ; Engine_Lua5X64.dll!g_IsPakV4Enable
+  0x140103371: mov      dword ptr [rsp + 0x70], eax
+  0x140103375: test     eax, eax
+  0x140103377: je       0x1401042e9
+  0x14010337d: cmp      byte ptr [rip + 0x989d3d], bl
+  0x140103383: jne      0x1401033d2
+  0x140103385: .byte    0xc7
+  0x140103386: add      eax, 0x989d39
+  0x14010338b: std      
+  0x14010338c: int3     
+

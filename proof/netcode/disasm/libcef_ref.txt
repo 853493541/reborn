@@ -1,0 +1,250 @@
+# JX3ClientX64.exe xrefs for 'libcef'
+# image base 0x140000000
+
+## xref @ 0x1400b56eb -> 0x140958378 'libcef'  fn start 0x1400b5660
+  0x1400b5660: mov      qword ptr [rsp + 0x10], rbx
+  0x1400b5665: mov      qword ptr [rsp + 0x18], rsi
+  0x1400b566a: push     rdi
+  0x1400b566b: sub      rsp, 0x30
+  0x1400b566f: mov      rbx, rcx
+  0x1400b5672: call     0x1400b5420
+  0x1400b5677: mov      rsi, rax
+  0x1400b567a: call     0x1400b54e0
+  0x1400b567f: mov      rdi, rax
+  0x1400b5682: test     rsi, rsi
+  0x1400b5685: je       0x1400b595c
+  0x1400b568b: lea      rax, [rip + 0x8a2cfe]  ; 'KG3DEngineAdapter'
+  0x1400b5692: mov      qword ptr [rsp + 0x40], rbp
+  0x1400b5697: lea      rbp, [rip + 0x8a2cb2]  ; 'X64.dll'
+  0x1400b569e: mov      r9, rsi
+  0x1400b56a1: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b56a6: lea      r8, [rip + 0x8a2cf7]  ; '%s%s%s'
+  0x1400b56ad: mov      edx, 0x104
+  0x1400b56b2: mov      qword ptr [rsp + 0x20], rax
+  0x1400b56b7: mov      rcx, rbx
+  0x1400b56ba: call     0x14008d080
+  0x1400b56bf: lea      rax, [rip + 0x8a2cba]  ; 'KG3DWwiseSound'
+  0x1400b56c6: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b56cb: lea      rcx, [rbx + 0x514]
+  0x1400b56d2: mov      qword ptr [rsp + 0x20], rax
+  0x1400b56d7: mov      r9, rsi
+  0x1400b56da: lea      r8, [rip + 0x8a2cc3]  ; '%s%s%s'
+  0x1400b56e1: mov      edx, 0x104
+  0x1400b56e6: call     0x14008d080
+  0x1400b56eb: lea      rax, [rip + 0x8a2c86]  ; 'libcef'
+  0x1400b56f2: mov      r9, rsi
+  0x1400b56f5: lea      rcx, [rbx + 0x208]
+  0x1400b56fc: mov      qword ptr [rsp + 0x20], rax
+  0x1400b5701: lea      r8, [rip + 0x8a2c50]  ; '%s%s.dll'
+  0x1400b5708: mov      edx, 0x104
+  0x1400b570d: call     0x14008d080
+  0x1400b5712: lea      rax, [rip + 0x89f363]  ; 'KGUI'
+  0x1400b5719: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b571e: lea      rcx, [rbx + 0x30c]
+  0x1400b5725: mov      qword ptr [rsp + 0x20], rax
+  0x1400b572a: mov      r9, rsi
+  0x1400b572d: lea      r8, [rip + 0x8a2c70]  ; '%s%s%s'
+  0x1400b5734: mov      edx, 0x104
+  0x1400b5739: call     0x14008d080
+  0x1400b573e: lea      rax, [rip + 0x8a2ca3]  ; 'JX3UI'
+  0x1400b5745: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b574a: lea      rcx, [rbx + 0x410]
+  0x1400b5751: mov      qword ptr [rsp + 0x20], rax
+  0x1400b5756: mov      r9, rsi
+  0x1400b5759: lea      r8, [rip + 0x8a2c44]  ; '%s%s%s'
+  0x1400b5760: mov      edx, 0x104
+  0x1400b5765: call     0x14008d080
+  0x1400b576a: lea      rax, [rip + 0x8a2c67]  ; 'JX3Represent'
+  0x1400b5771: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b5776: lea      rcx, [rbx + 0x104]
+  0x1400b577d: mov      qword ptr [rsp + 0x20], rax
+  0x1400b5782: mov      r9, rsi
+  0x1400b5785: lea      r8, [rip + 0x8a2c18]  ; '%s%s%s'
+  0x1400b578c: mov      edx, 0x104
+  0x1400b5791: call     0x14008d080
+  0x1400b5796: lea      rax, [rip + 0x8a2c2b]  ; 'JX3Interaction'
+  0x1400b579d: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b57a2: lea      rcx, [rbx + 0x71c]
+  0x1400b57a9: mov      qword ptr [rsp + 0x20], rax
+  0x1400b57ae: mov      r9, rsi
+  0x1400b57b1: lea      r8, [rip + 0x8a2bec]  ; '%s%s%s'
+  0x1400b57b8: mov      edx, 0x104
+  0x1400b57bd: call     0x14008d080
+  0x1400b57c2: lea      rax, [rip + 0x8a2be7]  ; 'JX3ResourceConvert'
+  0x1400b57c9: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b57ce: lea      rcx, [rbx + 0x618]
+  0x1400b57d5: mov      qword ptr [rsp + 0x20], rax
+  0x1400b57da: mov      r9, rsi
+  0x1400b57dd: lea      r8, [rip + 0x8a2bc0]  ; '%s%s%s'
+  0x1400b57e4: mov      edx, 0x104
+  0x1400b57e9: call     0x14008d080
+  0x1400b57ee: lea      rax, [rip + 0x8a2c3b]  ; 'rail_sdk'
+  0x1400b57f5: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b57fa: lea      rcx, [rbx + 0x820]
+  0x1400b5801: mov      qword ptr [rsp + 0x20], rax
+  0x1400b5806: mov      r9, rsi
+  0x1400b5809: lea      r8, [rip + 0x8a2b94]  ; '%s%s%s'
+  0x1400b5810: mov      edx, 0x104
+  0x1400b5815: call     0x14008d080
+  0x1400b581a: lea      rax, [rip + 0x8a2bff]  ; 'KGUICocos'
+  0x1400b5821: mov      qword ptr [rsp + 0x28], rbp
+  0x1400b5826: lea      rcx, [rbx + 0x924]
+  0x1400b582d: mov      qword ptr [rsp + 0x20], rax
+  0x1400b5832: mov      r9, rsi
+  0x1400b5835: lea      r8, [rip + 0x8a2b68]  ; '%s%s%s'
+  0x1400b583c: mov      edx, 0x104
+  0x1400b5841: call     0x14008d080
+  0x1400b5846: mov      rbp, qword ptr [rsp + 0x40]
+  0x1400b584b: test     rdi, rdi
+  0x1400b584e: je       0x1400b595c
+  0x1400b5854: lea      rcx, [rbx + 0xa28]
+  0x1400b585b: mov      r9, rdi
+  0x1400b585e: lea      r8, [rip + 0x8a2bab]  ; '%spackage.ini'
+  0x1400b5865: mov      edx, 0x104
+  0x1400b586a: call     0x14008d080
+  0x1400b586f: lea      rcx, [rbx + 0xb2c]
+  0x1400b5876: mov      r9, rdi
+  0x1400b5879: lea      r8, [rip + 0x8a2ae8]  ; '%sconfig.ini'
+  0x1400b5880: mov      edx, 0x104
+  0x1400b5885: call     0x14008d080
+  0x1400b588a: lea      rcx, [rbx + 0xc30]
+  0x1400b5891: mov      r9, rdi
+  0x1400b5894: lea      r8, [rip + 0x8a2b55]  ; '%sconfig/config.default.ini'
+  0x1400b589b: mov      edx, 0x104
+  0x1400b58a0: call     0x14008d080
+  0x1400b58a5: lea      rcx, [rbx + 0xd34]
+  0x1400b58ac: mov      r9, rdi
+  0x1400b58af: lea      r8, [rip + 0x8a2bea]  ; '%sclientconfig.ini'
+  0x1400b58b6: mov      edx, 0x104
+  0x1400b58bb: call     0x14008d080
+  0x1400b58c0: lea      rcx, [rbx + 0xf3c]
+  0x1400b58c7: mov      r9, rdi
+  0x1400b58ca: lea      r8, [rip + 0x8a2baf]  ; '%sconfig/machine_config.ini'
+  0x1400b58d1: mov      edx, 0x104
+  0x1400b58d6: call     0x14008d080
+  0x1400b58db: lea      rcx, [rbx + 0x1040]
+  0x1400b58e2: mov      r9, rdi
+  0x1400b58e5: lea      r8, [rip + 0x8a2b74]  ; '%sconfig/cocos_config.ini'
+  0x1400b58ec: mov      edx, 0x104
+  0x1400b58f1: call     0x14008d080
+  0x1400b58f6: lea      rcx, [rbx + 0x1144]
+  0x1400b58fd: mov      r9, rdi
+  0x1400b5900: lea      r8, [rip + 0x8a2b39]  ; '%sconfig/gray_config.ini'
+  0x1400b5907: mov      edx, 0x104
+  0x1400b590c: call     0x14008d080
+  0x1400b5911: lea      rcx, [rbx + 0x1248]
+  0x1400b5918: mov      r9, rdi
+  0x1400b591b: lea      r8, [rip + 0x8a2be6]  ; '%sconfig/gray_usersettings.ini'
+  0x1400b5922: mov      edx, 0x104
+  0x1400b5927: call     0x14008d080
+  0x1400b592c: lea      rcx, [rbx + 0xe38]
+  0x1400b5933: mov      r9, rdi
+  0x1400b5936: lea      r8, [rip + 0x8a2bbb]  ; '%sversion.cfg'
+  0x1400b593d: mov      edx, 0x104
+  0x1400b5942: call     0x14008d080
+  0x1400b5947: mov      eax, 1
+  0x1400b594c: mov      rbx, qword ptr [rsp + 0x48]
+  0x1400b5951: mov      rsi, qword ptr [rsp + 0x50]
+  0x1400b5956: add      rsp, 0x30
+  0x1400b595a: pop      rdi
+  0x1400b595b: ret      
+  0x1400b595c: xor      eax, eax
+  0x1400b595e: mov      rbx, qword ptr [rsp + 0x48]
+  0x1400b5963: mov      rsi, qword ptr [rsp + 0x50]
+  0x1400b5968: add      rsp, 0x30
+  0x1400b596c: pop      rdi
+  0x1400b596d: ret      
+  0x1400b596e: int3     
+  0x1400b596f: int3     
+  0x1400b5970: sub      rsp, 0x28
+  0x1400b5974: cmp      edx, 3
+  0x1400b5977: jne      0x1400b59ad
+  0x1400b5979: call     0x1400b5420
+  0x1400b597e: mov      r8, rax
+  0x1400b5981: lea      rdx, [rip + 0x8a2b50]  ; '[JX3 Client] Exe path:%s\n'
+  0x1400b5988: mov      ecx, 6
+  0x1400b598d: call     qword ptr [rip + 0x702ab5]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400b5993: call     0x1400b54e0
+  0x1400b5998: mov      r8, rax
+  0x1400b599b: lea      rdx, [rip + 0x8a2b16]  ; '[JX3 Client] Run path:%s\n'
+  0x1400b59a2: mov      ecx, 6
+  0x1400b59a7: call     qword ptr [rip + 0x702a9b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400b59ad: mov      eax, 1
+  0x1400b59b2: add      rsp, 0x28
+  0x1400b59b6: ret      
+  0x1400b59b7: int3     
+  0x1400b59b8: int3     
+  0x1400b59b9: int3     
+  0x1400b59ba: int3     
+  0x1400b59bb: int3     
+  0x1400b59bc: int3     
+  0x1400b59bd: int3     
+  0x1400b59be: int3     
+  0x1400b59bf: int3     
+  0x1400b59c0: sub      rsp, 0x28
+  0x1400b59c4: call     qword ptr [rip + 0x703bf6]  ; X3DEngine.dll!?GetFilePath@NSX3DEngine@@YAPEAVIFilePath@1@XZ
+  0x1400b59ca: lea      rdx, [rip + 0x89f4eb]  ; 'cache'
+  0x1400b59d1: mov      rcx, rax
+  0x1400b59d4: mov      r8, qword ptr [rax]
+  0x1400b59d7: add      rsp, 0x28
+  0x1400b59db: jmp      qword ptr [r8 + 0x98]
+  0x1400b59e2: int3     
+  0x1400b59e3: int3     
+  0x1400b59e4: int3     
+  0x1400b59e5: int3     
+  0x1400b59e6: int3     
+  0x1400b59e7: int3     
+  0x1400b59e8: int3     
+  0x1400b59e9: int3     
+  0x1400b59ea: int3     
+  0x1400b59eb: int3     
+  0x1400b59ec: int3     
+  0x1400b59ed: int3     
+  0x1400b59ee: int3     
+  0x1400b59ef: int3     
+  0x1400b59f0: lea      rdx, [rip + 0x9d65c9]
+  0x1400b59f7: lea      rcx, [rip + 0x98f5f2]
+  0x1400b59fe: jmp      qword ptr [rip + 0x70395b]  ; VCRUNTIME140.dll!__std_type_info_name
+  0x1400b5a05: int3     
+  0x1400b5a06: int3     
+  0x1400b5a07: int3     
+  0x1400b5a08: int3     
+  0x1400b5a09: int3     
+  0x1400b5a0a: int3     
+  0x1400b5a0b: int3     
+  0x1400b5a0c: int3     
+  0x1400b5a0d: int3     
+  0x1400b5a0e: int3     
+  0x1400b5a0f: int3     
+  0x1400b5a10: mov      qword ptr [rsp + 8], rbx
+  0x1400b5a15: push     rdi
+  0x1400b5a16: sub      rsp, 0x20
+  0x1400b5a1a: lea      rax, [rip + 0x8a2b87]
+  0x1400b5a21: mov      qword ptr [rip + 0x9d6814], 0
+  0x1400b5a2c: mov      qword ptr [rcx], rax
+  0x1400b5a2f: mov      ebx, edx
+  0x1400b5a31: mov      rdi, rcx
+  0x1400b5a34: call     0x1400a3650
+  0x1400b5a39: test     bl, 1
+  0x1400b5a3c: je       0x1400b5a4b
+  0x1400b5a3e: mov      edx, 0x28
+  0x1400b5a43: mov      rcx, rdi
+  0x1400b5a46: call     0x14079aeac
+  0x1400b5a4b: mov      rbx, qword ptr [rsp + 0x30]
+  0x1400b5a50: mov      rax, rdi
+  0x1400b5a53: add      rsp, 0x20
+  0x1400b5a57: pop      rdi
+  0x1400b5a58: ret      
+  0x1400b5a59: int3     
+  0x1400b5a5a: int3     
+  0x1400b5a5b: int3     
+  0x1400b5a5c: int3     
+  0x1400b5a5d: int3     
+  0x1400b5a5e: int3     
+  0x1400b5a5f: int3     
+  0x1400b5a60: push     rbx
+  0x1400b5a62: sub      rsp, 0x20
+  0x1400b5a66: cmp      dword ptr [rdx + 8], 0
+  0x1400b5a6a: mov      rbx, rcx
+  0x1400b5a6d: jne      0x1400b5a80
+

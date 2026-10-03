@@ -1630,3 +1630,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the missing launcher input, not a branch we can flip. Debugger tolerated (~2x slower boot).
 - Evidence: doc sec.32; probe run output (SINGLE_STEP dr6=0xFFFF0FF1 RIP=0x...9D115).
 - Outcome: P1.2 (launcher IPC/handshake) is the only path forward; the gate itself is solved.
+### 2026-10-02 — V2 P1.2 static pass: launcher sequence + startup chain mapped
+- Did: launcher log analysis (DetachProgram downloader + client); block GUID search across
+  launcher binaries; privilege comparison; live launch observation (TCP table, children);
+  static chain: stage lambdas, app module vtable, app Run, PlatformStartup, path builder.
+- Findings: launcher starts KGPK4_StreamDownloaderX64.exe then JX3ClientX64.exe (no args);
+  it never touches the block; it runs elevated (High) while the client manifest is asInvoker
+  and uses no token APIs; the client's loopback pairs are its own self-pipe; app Run pumps
+  while [app+0x78]!=0; PlatformStartup creates the module vector and hands [rsi+0x20] to the
+  app module at +0x20; a failed stage still yields "done" so the group completes.
+- Evidence: doc sec.33; launcher logs; disasm proofs (lambda_*, dd63330_ref, cefrender_ref).
+- Outcome: startup chain mapped; next = find where the platform object ([rsi+0x20] /
+  sub+0x18) is created and which module constructor fails in the probe.
