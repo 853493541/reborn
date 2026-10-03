@@ -69,6 +69,47 @@ evidence from the game client (`JX3 1.5.0.9975`, hash in
   proof files exist; `proof/controls/PROVENANCE.txt` pins the decode source.
 - Tree clean apart from the audit commit itself.
 
+## 6. Plan audit (full plan, band-aid check) — 2026-10-02
+
+Every plan item and host behavior was checked against the client decode and
+classified. Findings:
+
+**F1 — BUG found and fixed (band-aid removed).** The J5 follow gating used the
+*control frame* (`moveYaw`) as the follow target in CLASSICAL, which equals the
+camera unless dragging - the classical AUTO/ALWAYS follow was a silent no-op.
+Fixed to the **travel heading** (`atan2(-dirZ,-dirX)`, camera convention) for
+both modes. Evidence: before `184457.log` (classical fm=2: strafe/WA/WD all
+`camd=0.00`), after `184651.log` (strafe camera follows `+1.05`, WA `0.53`,
+WD `-1.06`); fm=0 regression `184824.log` unchanged; joystick fm=2 unchanged
+(travel target was already correct); smoke ALL PASS.
+
+**F2 — deviations registered (not hidden).**
+- Classical turn-key camera coupling (user request; contradicts the decoded
+  "keyboard never writes the camera") is now registered as camera deviation
+  **A13** in `docs/camera/HOST_DEVIATIONS.md` with re-open criteria.
+- The J5 follow-mode semantics (enum names + row behavior) stay registered in
+  annex A12 with re-open criteria (native node-field consumer unlocated).
+- Host-only additions are labelled host where they appear: HUD mode label,
+  default joystick, `/` + F7 switch (`OPERATION_MODES_PLAN.md` §7h),
+  `RC_ADHABIT=turn` classical option (host option of the tutorial's other
+  habit; the client's classical handler is strafe-only), `RC_FOLLOW_MODE`,
+  `RC_SPRINT_TEST` (test knobs).
+
+**F3 — no other band-aids in the control path.** Checked: sprint (input ported,
+engine state explicitly open + logged), A11 rate (residual, no guessed value),
+animation table (data hunt, no procedural stand-in), locomotion clips (authored
+F1 clips only, no invented clip for ground turn), joystick instant turn
+(client-derived `TurnTo` target-heading write, not an approximation), movement
+speeds/turn rates (number.krl / row values), strafe/back clips (authored
+kinds), hotkey table (shipped files).
+
+**F4 — plan phase status.** `FULL_CONTROL_PLAN.md`: P0 (input core) done and
+verified; P1-P5 (targeting/action bars/UI panels/stance/contexts) are out of
+the current camera+movement scope per the user; the plan remains the index for
+those subjects. Traceability §8 gap statuses match the evidence (G1 static
+done/dynamic residual, G2 done, G3 partial, G4/G5/G8 closed to their documented
+residuals, G6/A9 done, G7 open, G9/G10 done, G11 open).
+
 **Verdict:** PASS for the camera + movement scope; residuals are listed above
 and tracked in `CONTROL_MODES_TRACEABILITY.md` §8 and
 `OPERATION_MODES_PLAN.md` §7h.

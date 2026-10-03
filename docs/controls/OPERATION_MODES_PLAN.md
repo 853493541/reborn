@@ -553,6 +553,18 @@ itself is runtime-wired (no static names) and behaviourally equals the model in
   `Camera_SetResetSpeed` is the per-frame joystick camera-follow rate (A11).
 - Follow-mode setter confirmed (game client `0x180ACE3F0`): `clamp(v,0,3)`
   into `+0x80` (classic) / `+0x98` (joystick, `[node+0x34]==0`).
+- **Host UX (host additions, 2026-10-02):** top-left always-visible label
+  `CONTROL: JOYSTICK|CLASSICAL [/] switch`; **default operation mode =
+  JOYSTICK** (`RC_MODE` / `RC_USER_PREFS` override); `/` and F7 switch the
+  mode (the old `/` run-toggle convenience removed; `Num/` is the run toggle);
+  joystick facing is **instant** per `KCharacter::TurnTo` (target heading
+  `[char+0x44]`, exe `0x14031E7C0`; display blends via `tabCGAni`
+  `KeepTurningFrame`/`TurningEpsilon` - no ground turn clip ships). Classical
+  turn-key camera coupling = registered deviation
+  `docs/camera/HOST_DEVIATIONS.md` A13.
+- **Follow target fixed (2026-10-02):** the AUTO/ALWAYS row follow uses the
+  travel heading for both modes; the control-frame target was a silent no-op
+  in classical (audit F1, runs `184457` before / `184651` after).
 
 **Update (same day, after further decode):**
 - **J5 SOLVED**: `CAMERA_MODE` enum (NEVER=0/AUTO=1/ALWAYS=2) + pipe

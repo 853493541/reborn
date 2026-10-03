@@ -1828,3 +1828,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   locomotion BinText filename, G11 registry, classical turn-key camera
   deviation (host-requested), camera-drift flake watch. Report:
   docs/controls/CONTROL_AUDIT_20261002.md.
+
+### 2026-10-02 - controls - full plan audit + follow-target bug fix
+- F1 BUG fixed: the classical AUTO/ALWAYS follow used the control frame
+  (moveYaw) as target -> silent no-op; now the travel heading for both modes.
+  Before 184457 (classical fm=2 camd=0.00 everywhere); after 184651 (strafe
+  camera follows +1.05, WA 0.53, WD -1.06); fm=0 regression 184824 unchanged;
+  joystick fm=2 unchanged; smoke ALL PASS.
+- F2 deviations registered: classical turn-key camera coupling -> camera
+  HOST_DEVIATIONS A13 (re-open criteria); host UX additions (HUD/default//`/`/
+  instant turn) labelled host in OPERATION_MODES_PLAN 7h; RC_* test knobs noted.
+- F3 no other band-aids found (sprint engine state open+logged, A11 residual,
+  animation table data hunt, authored clips only, client-derived TurnTo).
+- F4 plan phases: P0 done; P1-P5 out of the camera/movement scope.
+- Audit section appended to docs/controls/CONTROL_AUDIT_20261002.md.

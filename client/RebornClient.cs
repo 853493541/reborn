@@ -2515,9 +2515,12 @@ internal static class RebornClient
                         : true;   // joystick: AUTO and ALWAYS follow the travel
                     if (followNow)
                     {
-                        double followYaw = classicalMode
-                            ? moveYaw
-                            : Math.Atan2(-dirZ, -dirX);
+                        // Target = the TRAVEL heading (camera convention). Using
+                        // the control frame here was a no-op (it equals the
+                        // camera unless dragging); the client's row follows the
+                        // run direction. Forward W: travel == camera -> no-op;
+                        // strafe/diagonal: the camera swings behind the travel.
+                        double followYaw = Math.Atan2(-dirZ, -dirX);
                         camSys.FollowYaw(followYaw, dt);
                     }
                 }
