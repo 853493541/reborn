@@ -1706,3 +1706,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   option. Joystick turn keys rotate only the character (no camera write).
 - Verified: joystick A-alone d=3.14 dpos=(0,0) cam kept; TURNRIGHT camd=0.00;
   classical regression unchanged (A strafe 96, arrows camd=-1.89). Smoke PASS.
+
+### 2026-10-02 - controls - joystick corrected model (turn controls = lateral axis)
+- Decoded OperationModeBase FreeMoveControl (0/16): the joystick builds a
+  discrete vector - TURN_LEFT/RIGHT add nX, FORWARD/BACKWARD add nY - with
+  SetPlayerRotation/TurnTo auto-facing and the camera mouse-only. So joystick
+  A/D (via the strafe handler -> TurnLeftStart -> wrapper) and arrows are
+  lateral movement with auto-face; my J1 (turn-in-place) was wrong and was
+  corrected in the host (joystick turn controls fold into the strafe axis).
+- Verified run 170201: A-alone dist=318 auto-face, camera untouched; WA/WD
+  diagonals 348/383 camd=0.00. One non-reproducible camera-drift run (165931)
+  noted as a transient.

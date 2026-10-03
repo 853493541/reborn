@@ -1993,22 +1993,37 @@ internal static class RebornClient
             bool freeView = Env("RC_FREEVIEW", "1") != "0";
             // Control table (decoded): ids 0..13, built from keys/mouse exactly
             // like Camera_EnableControl fills the client's control store.
-            // Decoded (hotkeys 0/76/0/78, annex A6.2/A8): CLASSICAL A/D are
-            // STRAFE-bound -> strafe; JOYSTICK A/D -> free-view TurnLeftStart
-            // (turn). The host keeps the "turn" habit as a CLASSICAL option
-            // (RC_ADHABIT=turn, the tutorial's other habit); under the stick
-            // camera / god camera the turn intent cannot act -> strafe.
+            // Decoded: CLASSICAL A/D are STRAFE-bound -> strafe (default.txt);
+            // the "turn" habit is a CLASSICAL option (RC_ADHABIT=turn). In
+            // JOYSTICK the free-move handler (OperationModeBase 0/16
+            // FreeMoveControl) maps the TURN controls to the LATERAL vector
+            // axis - A/D (strafe handler -> TurnLeftStart) and the arrows both
+            // feed strafe; there is no in-place keyboard rotation (auto-face
+            // turns the body to the travel), and the mouse owns the camera.
             bool adStrafe = classicalMode && (adHabit != "turn" || rmbDown || !freeView);
-            bool turnL = pTurnL || (pA && !adStrafe);
-            bool turnR = pTurnR || (pD && !adStrafe);
+            bool turnL, turnR, strafeL, strafeR;
+            if (classicalMode)
+            {
+                turnL = pTurnL || (pA && !adStrafe);
+                turnR = pTurnR || (pD && !adStrafe);
+                strafeL = pA && adStrafe;
+                strafeR = pD && adStrafe;
+            }
+            else
+            {
+                turnL = false;
+                turnR = false;
+                strafeL = pA || pTurnL;
+                strafeR = pD || pTurnR;
+            }
             int ctrl = 0;
             // both mouse buttons held = auto-forward (official classic scheme)
             Ctrl.Set(ref ctrl, ControlId.Forward, pW || autorunOn || (lmbDown && rmbDown));
             Ctrl.Set(ref ctrl, ControlId.Backward, pS);
             Ctrl.Set(ref ctrl, ControlId.TurnLeft, turnL);
             Ctrl.Set(ref ctrl, ControlId.TurnRight, turnR);
-            Ctrl.Set(ref ctrl, ControlId.StrafeLeft, pA && adStrafe);
-            Ctrl.Set(ref ctrl, ControlId.StrafeRight, pD && adStrafe);
+            Ctrl.Set(ref ctrl, ControlId.StrafeLeft, strafeL);
+            Ctrl.Set(ref ctrl, ControlId.StrafeRight, strafeR);
             Ctrl.Set(ref ctrl, ControlId.Camera, lmbDown);
             Ctrl.Set(ref ctrl, ControlId.StickCamera, rmbDown);
             Ctrl.Set(ref ctrl, ControlId.AutoRun, autorunOn);
@@ -2137,12 +2152,13 @@ internal static class RebornClient
             }
 
             // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D.
-            // DECODED (hotkeys.lua): the turn keys are a CHARACTER control -
+            // DECODED (hotkeys.lua): turn keys are a CHARACTER control -
             // TurnLeftStart -> SetControl(CONTROL_TURN_LEFT) via the mode
-            // wrapper; in JOYSTICK the strafe-bound A/D take this branch
-            // (free view), in CLASSICAL the host turns the view too (the
-            // user-requested turn-habit/arrow behavior; the game client's
-            // keyboard never writes the camera - J2/J4 workstream).
+            // wrapper. In CLASSICAL the host turns the view too (the
+            // user-requested turn-habit/arrow behavior); in JOYSTICK the input
+            // layer above feeds the turn controls into the lateral vector
+            // (OperationModeBase 0/16), so rotAxis stays 0 and the mouse owns
+            // the camera (the decoded keyboard path never writes it).
             if (grounded && rotAxis != 0f)
             {
                 float tstep = charTurnRate * (float)dt;

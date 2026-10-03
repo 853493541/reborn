@@ -191,6 +191,41 @@ flag, gating the double-tap branch in `ResponseWASDKey` call sites.
 `set remote camera mode …`, `set god camera mode …`, `enable fix camera %d`,
 `disable camera zoom %d`).
 
+## A9. Joystick free-move vector (`OperationModeBase.lua` 0/9, 0/10, 0/16) HIGH
+
+The joystick movement is a **discrete direction vector** maintained in Lua:
+
+- `AddDirectionVector(dx, dy)` (0/9): `vector.nX += dx; vector.nY += dy`.
+- `FreeMoveControl(control, down)` (0/16, the free-move control handler):
+
+```lua
+if control == CONTROL_FORWARD      then edge: AddDirectionVector(0, +1) end
+if control == CONTROL_BACKWARD     then edge: AddDirectionVector(0, -1) end
+if control == CONTROL_TURN_LEFT    then edge: AddDirectionVector(-1, 0) end
+if control == CONTROL_TURN_RIGHT   then edge: AddDirectionVector(+1, 0) end
+-- (each latched once per press; release adds the inverse)
+hasVector = (vector.nX ~= 0 or vector.nY ~= 0)
+Camera_EnableControl(freeMoveControlId, hasVector)
+```
+
+- `SetPlayerRotation` (0/10): `Camera_GetRTParams` -> `ConvertYawToDirection` -> byte-angle
+  arithmetic (<=255, +128 when `bReverseMove`, -1 when the base is 128) -> `TurnTo(dir)`.
+- `RotatePlayer` (0/14), `SetDirectionVector` (0/15), `FastArcTan` (0/13, the
+  precomputed atan table): consume the vector for the auto-face/travel.
+
+**Consequence (corrected model):** in JOYSTICK the **turn controls are the
+lateral axis**: A/D (STRAFE-bound -> strafe handler -> `TurnLeftStart` ->
+wrapper -> `Scene_EnableFreeMoveControl(CONTROL_TURN_*)`) and the arrow keys
+(TURN-bound) both add to `nX`; W/S add to `nY`. There is **no in-place
+keyboard rotation** - the body auto-faces the travel (`TurnTo`), and the
+camera is mouse-only. So joystick A/D = lateral run with auto-face, not a
+turn-in-place (this corrects the earlier A6.2 reading of the free-view
+`TurnLeftStart` branch).
+
+Host mapping applied: joystick turn controls fold into the strafe axis
+(`strafeL/R = ... || pTurnL/R`), `rotAxis = 0`, and the turn block never runs
+in joystick (mouse owns the camera).
+
 ## A4. Mode toggle — `OperationModeBase.lua` proto `0/19` (L463-488) MED/HIGH
 
 ```lua

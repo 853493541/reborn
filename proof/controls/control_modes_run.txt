@@ -482,3 +482,17 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   turn-vs-RunTo interaction is J4 territory)
 - Classical regression reborn_20261002_165606.log: A strafe 96 d=0; arrows
   turn camd=-1.89; WA/WD 384 dcam=0.00. Smoke ALL PASS.
+
+## Joystick corrected model (A9): turn controls = lateral vector, 2026-10-02
+- Decode: OperationModeBase FreeMoveControl (0/16) adds nX from TURN_LEFT/RIGHT
+  (and thus from A/D via the strafe handler -> TurnLeftStart), nY from
+  FORWARD/BACKWARD; SetPlayerRotation/TurnTo auto-face; camera mouse-only.
+- Correction: J1's "A/D turn in place" was wrong; joystick A/D/arrows are
+  lateral run + auto-face. Implemented: joystick turn controls fold into the
+  strafe axis, rotAxis=0, camera untouched.
+- Evidence reborn_20261002_170201.log (joystick):
+  A-alone: yaw -1.57 cam0=cam1=0.65 dpos=(-318,0) dist=318 (lateral + auto-face)
+  back: dist=319; TURNRIGHT: yaw -1.57 camd=0.00
+  WA: dist=348 dyaw=-2.36 dcam=0.00; WD: dist=383 dyaw=1.57 dcam=0.00
+- Note: the first run of this build (165931) showed an unstable camera drift
+  (camd up to 1.98) that did not reproduce (measure-sync transient); watch it.
