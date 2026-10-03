@@ -554,17 +554,24 @@ itself is runtime-wired (no static names) and behaviourally equals the model in
 - Follow-mode setter confirmed (game client `0x180ACE3F0`): `clamp(v,0,3)`
   into `+0x80` (classic) / `+0x98` (joystick, `[node+0x34]==0`).
 
-**Open (blocked on the engine/property-system consumer, not guessable):**
-1. Camera follow rate application: what the engine does with the per-frame
-   `Camera_SetResetSpeed` value (units/consumer) — needs the camera-spring
-   update decode.
-2. Follow mode `[0..3]` consumer: no direct `[node+0x80/0x98]` reads found in
-   the camera region; the value is likely consumed through the property
-   system (same data-driven boundary as P3).
-3. `UseFullAngle`: no plaintext binding string in Represent or the exe
-   (hashed registration; G11).
-4. Morph/OB contexts (force JOYSTICK + NEVER_FOLLOW) and
-   `CurrentOperationMode` persistence need their host systems.
+**Update (same day, after further decode):**
+- **J5 SOLVED**: `CAMERA_MODE` enum (NEVER=0/AUTO=1/ALWAYS=2) + pipe
+  (`SetCameraMode` -> `UI_Camera_SetParams_S` -> `Camera_SetFollowMode`
+  0x1802EB1C0 -> node `+0x80/+0x98`); host gates the follow by mode and
+  follows the travel in joystick. Verified (annex A12).
+- **J6 pipes closed**: reset/spring speeds are action events
+  {playerId, selector, prop 0x17, float} -> `HandleRLAction` -> action table
+  [0x1E] -> selector table 0x180E92360 -> sel[0] -> applier 0x180AE75C0 ->
+  camera node command slot (`+0x24` active / `+0x2C` prop / `+0x30` value).
+  `UseFullAngle` is the logic-layer air flag (`ProcessFullAnglePlayer`).
+- **J8 SOLVED**: `StorageServer('CurrentOperationMode')` maps to the per-role
+  `userpreferences.jx3dat` (`CurrentOperationMode={0|1}`); the host reads it
+  via `RC_USER_PREFS` (read-only) and applies the mode at startup. Verified.
+- **J7 N/A in the host**: no morph/OB camera system exists to force
+  JOYSTICK + NEVER_FOLLOW; documented, not stubbed.
+- **Residual (1)**: the camera-node command-slot reader (the per-frame
+  integration of the A11 rate). Narrow static hunt; no host approximation
+  until it is decoded.
 
 ### 7g. Official documentation check (2-month window + control scheme) - 2026-10-02
 

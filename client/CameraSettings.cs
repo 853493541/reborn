@@ -97,9 +97,40 @@ internal sealed class CameraSettings
             catch (Exception e) { log("CameraSettings custom.dat ex: " + e.Message); }
         }
 
-        // operation mode is runtime-session state: set via RC_MODE, toggled by
-        // F7; the custom.dat key for the persisted mode itself is unrecovered
-        // (docs/controls/OPERATION_MODES_PLAN.md), so nothing is written back.
+        // persisted operation mode: the client's StorageServer key
+        // 'CurrentOperationMode' maps to the per-role userpreferences.jx3dat
+        // (decoded 2026-10-02: a GBK text map with "CurrentOperationMode={0|1}";
+        // 0 = classical, 1 = joystick). RC_USER_PREFS points at that file;
+        // read-only - the host never writes it back. RC_MODE overrides (tests).
+        string prefsPath = Environment.GetEnvironmentVariable("RC_USER_PREFS");
+        if (!string.IsNullOrEmpty(prefsPath) && File.Exists(prefsPath))
+        {
+            try
+            {
+                byte[] pb = File.ReadAllBytes(prefsPath);
+                byte[] key = Encoding.ASCII.GetBytes("CurrentOperationMode={");
+                int idx = -1;
+                for (int i = 0; i + key.Length <= pb.Length && idx < 0; i++)
+                {
+                    bool m = true;
+                    for (int j = 0; j < key.Length; j++)
+                        if (pb[i + j] != key[j]) { m = false; break; }
+                    if (m) idx = i + key.Length;
+                }
+                if (idx >= 0 && idx < pb.Length)
+                {
+                    int val = pb[idx] - (byte)'0';
+                    if (val == 0 || val == 1)
+                    {
+                        result.OperationMode = val == 1
+                            ? CameraOperationMode.Joystick : CameraOperationMode.Classical;
+                        log("CameraSettings: userprefs CurrentOperationMode=" + val
+                            + " (" + CameraOperationMode.Name(result.OperationMode) + ")");
+                    }
+                }
+            }
+            catch (Exception e) { log("CameraSettings userprefs ex: " + e.Message); }
+        }
         string opEnv = Environment.GetEnvironmentVariable("RC_MODE");
         if (!string.IsNullOrEmpty(opEnv)) result.OperationMode = CameraOperationMode.Parse(opEnv);
 

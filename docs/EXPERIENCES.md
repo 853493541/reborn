@@ -1794,3 +1794,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - So the joystick/per-mode reset speed is queued in the camera node command
   slot and consumed by the camera update. Last hunt: the slot reader (narrow).
 - Proof: proof/controls/p4/reset_speed_applier.txt, reset_speed_sel0_tail.txt.
+
+### 2026-10-02 - controls - J8 solved (mode persistence) + J7 N/A; all joystick items closed but one
+- J8: StorageServer('CurrentOperationMode') maps to per-role userpreferences.jx3dat
+  (GBK text map, CurrentOperationMode={0|1}); host reads it read-only via
+  RC_USER_PREFS and applies at startup. Verified: real role file parsed
+  (CurrentOperationMode=0 classical), smoke ALL PASS.
+- J7: no morph/OB camera system in the host -> N/A, documented (not stubbed).
+- Residual: the camera-node command-slot reader (+0x24/+0x2C/+0x30) for the
+  exact A11 rate integration; the slot applier is decoded, the reader needs a
+  proper function-start finder.
