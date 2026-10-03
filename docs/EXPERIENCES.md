@@ -1777,3 +1777,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   outside ground joystick scope.
 - Proof: proof/controls/p4/gc_SetCameraResetSpeed.txt, exe_ProcessFullAnglePlayer.txt,
   exe_DoUseFullAngle.txt.
+
+### 2026-10-02 - controls - reset-speed consumer chain decoded to one hop
+- Chain: Camera_SetResetSpeed -> KGameWorldHandler::SetCameraResetSpeed
+  (0x1805FA810; 4-field event {playerId, selector, prop 0x17, float}) ->
+  HandleRLAction (0x1802F54B0; lookup 0x1805D9A70 over table 0x180E96C00) ->
+  action table[0x1E] 0x1802EA9B0 -> selector table 0x180E92360 -> sel[0]
+  0x1802EE050 (4-field apply) / sel[1] 0x1802EE250. One hop left (what sel[0]
+  does with the value) before porting the A11 joystick rate.

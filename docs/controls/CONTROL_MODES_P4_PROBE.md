@@ -122,6 +122,29 @@ layer (`JX3ClientX64.exe` `ProcessFullAnglePlayer` `0x1403AC990`,
 or clears `+0x20038` when disabled (plus a `+0x3B0` bool variant). It is the
 air/轻功 full-angle camera flag, outside the ground joystick scope.
 
+## 2e. Reset-speed consumer chain (static, 2026-10-02) — G5/J6 closed to one hop
+
+```
+Camera_SetResetSpeed / SetSpringResetSpeed  (Lua, JX3UIX64 bindings)
+ -> KGameWorldHandler::SetCameraResetSpeed  0x1805FA810
+      builds a 4-entry field array {playerId 0x1E, selector, prop 0x17, float}
+      posts via world vtbl +0x7D0
+ -> HandleRLAction 0x1802F54B0
+      key = event[0]; handler = lookup table 0x180E96C00 (0..0x2E, 47 entries)
+      lookup impl 0x1805D9A70; handler(handler(evt+0x10, count-1))
+ -> action table[0x1E] thunk 0x180026A58 -> 0x1802EA9B0
+      resolves the player (0x18001C404), dispatches on the selector field
+      through the per-type table 0x180E92360
+ -> sel[0] = 0x1802EE050  (4-field apply: playerId + selector + prop + float;
+      resolves the entity via 0x18001DB3D and forwards)
+    sel[1] = 0x1802EE250  (6-field variant)
+```
+
+Evidence: `proof/controls/p4/handle_rl_action.txt`,
+`rl_handler_lookup.txt`, `rl_lookup_impl.txt`, `reset_speed_handler.txt`.
+Remaining hop: what `sel[0]` does with the float (next), then the host can apply
+the decoded A11 joystick rate exactly.
+
 ## 3. Probe plan (superseded in part by 2b; kept for completeness)
 
 Feature build `#iso`? No: probe code is host instrumentation and can live in

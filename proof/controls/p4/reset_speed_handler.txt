@@ -1,0 +1,186 @@
+0x1805D8F70  sub rsp, 0x48
+0x1805D8F74  cmp edx, 7
+0x1805D8F77  jne 0x1805d9006
+0x1805D8F7D  mov r11, qword ptr [rip + 0x9391fc]
+0x1805D8F84  test r11, r11
+0x1805D8F87  je 0x1805d9006
+0x1805D8F89  mov r9d, dword ptr [rcx + 0x20]
+0x1805D8F8D  mov edx, dword ptr [rcx]
+0x1805D8F8F  mov r8d, dword ptr [rcx + 0x10]
+0x1805D8F93  mov qword ptr [rsp + 0x50], rbx
+0x1805D8F98  mov ebx, dword ptr [rcx + 0x50]
+0x1805D8F9B  mov qword ptr [rsp + 0x40], rdi
+0x1805D8FA0  mov edi, dword ptr [rcx + 0x60]
+0x1805D8FA3  test r9d, r9d
+0x1805D8FA6  je 0x1805d8fdf
+0x1805D8FA8  mov eax, dword ptr [rcx + 0x40]
+0x1805D8FAB  mov r10, qword ptr [r11]
+0x1805D8FAE  mov dword ptr [rsp + 0x38], edi
+0x1805D8FB2  mov dword ptr [rsp + 0x30], ebx
+0x1805D8FB6  mov dword ptr [rsp + 0x28], eax
+0x1805D8FBA  mov eax, dword ptr [rcx + 0x30]
+0x1805D8FBD  mov rcx, r11
+0x1805D8FC0  mov dword ptr [rsp + 0x20], eax
+0x1805D8FC4  call qword ptr [r10 + 0x260]
+0x1805D8FCB  mov rdi, qword ptr [rsp + 0x40]
+0x1805D8FD0  mov eax, 1
+0x1805D8FD5  mov rbx, qword ptr [rsp + 0x50]
+0x1805D8FDA  add rsp, 0x48
+0x1805D8FDE  ret 
+0x1805D8FDF  mov rax, qword ptr [r11]
+0x1805D8FE2  mov r9d, ebx
+0x1805D8FE5  mov rcx, r11
+0x1805D8FE8  mov dword ptr [rsp + 0x20], edi
+0x1805D8FEC  call qword ptr [rax + 0x268]
+0x1805D8FF2  mov rdi, qword ptr [rsp + 0x40]
+0x1805D8FF7  mov eax, 1
+0x1805D8FFC  mov rbx, qword ptr [rsp + 0x50]
+0x1805D9001  add rsp, 0x48
+0x1805D9005  ret 
+0x1805D9006  xor eax, eax
+0x1805D9008  add rsp, 0x48
+0x1805D900C  ret 
+0x1805D900D  int3 
+0x1805D900E  int3 
+0x1805D900F  int3 
+0x1805D9010  int3 
+0x1805D9011  int3 
+0x1805D9012  int3 
+0x1805D9013  int3 
+0x1805D9014  int3 
+0x1805D9015  int3 
+0x1805D9016  int3 
+0x1805D9017  int3 
+0x1805D9018  int3 
+0x1805D9019  int3 
+0x1805D901A  int3 
+0x1805D901B  int3 
+0x1805D901C  int3 
+0x1805D901D  int3 
+0x1805D901E  int3 
+0x1805D901F  int3 
+0x1805D9020  int3 
+0x1805D9021  int3 
+0x1805D9022  int3 
+0x1805D9023  int3 
+0x1805D9024  int3 
+0x1805D9025  int3 
+0x1805D9026  int3 
+0x1805D9027  int3 
+0x1805D9028  int3 
+0x1805D9029  int3 
+0x1805D902A  int3 
+0x1805D902B  int3 
+0x1805D902C  int3 
+0x1805D902D  int3 
+0x1805D902E  int3 
+0x1805D902F  int3 
+0x1805D9030  int3 
+0x1805D9031  int3 
+0x1805D9032  int3 
+0x1805D9033  int3 
+0x1805D9034  int3 
+0x1805D9035  int3 
+0x1805D9036  int3 
+0x1805D9037  int3 
+0x1805D9038  int3 
+0x1805D9039  int3 
+0x1805D903A  int3 
+0x1805D903B  int3 
+0x1805D903C  int3 
+0x1805D903D  int3 
+0x1805D903E  int3 
+0x1805D903F  int3 
+0x1805D9040  sub rsp, 0x38
+0x1805D9044  mov r11, rcx
+0x1805D9047  cmp edx, 4
+0x1805D904A  jne 0x1805d907f
+0x1805D904C  mov rcx, qword ptr [rip + 0x93912d]
+0x1805D9053  test rcx, rcx
+0x1805D9056  je 0x1805d907f
+0x1805D9058  mov eax, dword ptr [r11 + 0x30]
+0x1805D905C  mov r10, qword ptr [rcx]
+0x1805D905F  mov r9d, dword ptr [r11 + 0x20]
+0x1805D9063  mov r8d, dword ptr [r11 + 0x10]
+0x1805D9067  mov edx, dword ptr [r11]
+0x1805D906A  mov dword ptr [rsp + 0x20], eax
+0x1805D906E  call qword ptr [r10 + 0x280]
+0x1805D9075  mov eax, 1
+0x1805D907A  add rsp, 0x38
+0x1805D907E  ret 
+0x1805D907F  xor eax, eax
+0x1805D9081  add rsp, 0x38
+0x1805D9085  ret 
+0x1805D9086  int3 
+0x1805D9087  int3 
+0x1805D9088  int3 
+0x1805D9089  int3 
+0x1805D908A  int3 
+0x1805D908B  int3 
+0x1805D908C  int3 
+0x1805D908D  int3 
+0x1805D908E  int3 
+0x1805D908F  int3 
+0x1805D9090  int3 
+0x1805D9091  int3 
+0x1805D9092  int3 
+0x1805D9093  int3 
+0x1805D9094  int3 
+0x1805D9095  int3 
+0x1805D9096  int3 
+0x1805D9097  int3 
+0x1805D9098  int3 
+0x1805D9099  int3 
+0x1805D909A  int3 
+0x1805D909B  int3 
+0x1805D909C  int3 
+0x1805D909D  int3 
+0x1805D909E  int3 
+0x1805D909F  int3 
+0x1805D90A0  sub rsp, 0x38
+0x1805D90A4  mov r11, rcx
+0x1805D90A7  cmp edx, 4
+0x1805D90AA  jne 0x1805d90e3
+0x1805D90AC  mov rcx, qword ptr [rip + 0x9390cd]
+0x1805D90B3  test rcx, rcx
+0x1805D90B6  je 0x1805d90e3
+0x1805D90B8  mov r9, qword ptr [r11 + 0x20]
+0x1805D90BC  mov eax, dword ptr [r11 + 0x30]
+0x1805D90C0  add r9, 8
+0x1805D90C4  mov r10, qword ptr [rcx]
+0x1805D90C7  mov r8d, dword ptr [r11 + 0x10]
+0x1805D90CB  mov edx, dword ptr [r11]
+0x1805D90CE  mov dword ptr [rsp + 0x20], eax
+0x1805D90D2  call qword ptr [r10 + 0x288]
+0x1805D90D9  mov eax, 1
+0x1805D90DE  add rsp, 0x38
+0x1805D90E2  ret 
+0x1805D90E3  xor eax, eax
+0x1805D90E5  add rsp, 0x38
+0x1805D90E9  ret 
+0x1805D90EA  int3 
+0x1805D90EB  int3 
+0x1805D90EC  int3 
+0x1805D90ED  int3 
+0x1805D90EE  int3 
+0x1805D90EF  int3 
+0x1805D90F0  int3 
+0x1805D90F1  int3 
+0x1805D90F2  int3 
+0x1805D90F3  int3 
+0x1805D90F4  int3 
+0x1805D90F5  int3 
+0x1805D90F6  int3 
+0x1805D90F7  int3 
+0x1805D90F8  int3 
+0x1805D90F9  int3 
+0x1805D90FA  int3 
+0x1805D90FB  int3 
+0x1805D90FC  int3 
+0x1805D90FD  int3 
+0x1805D90FE  int3 
+0x1805D90FF  int3 
+0x1805D9100  sub rsp, 0x28
+0x1805D9104  mov r10, rcx
+0x1805D9107  cmp edx, 3
+0x1805D910A  jne 0x1805d9138
