@@ -613,3 +613,20 @@ Static decode of the wait/pump chain:
   run) - that channel works; the engine's own log does not emit before the gate.
 - Next: hardware write-watchpoint on `sub+0x18` (debug API, needs user OK) or extend the
   static store search (xmm stores, indirect writes) to find the creator.
+
+## 31. The real client's loading window appears in the harness (2026-10-02, twenty-fifth pass)
+
+- **Visible milestone**: with no gate forcing, our standard probe run makes the real client
+  create its loading window: class `剑网3_LoadingClass`, title `剑网3`, visible=True at
+  ~1.84 s (window enumeration by PID; also seen in the forced run at 1.81 s). The window is
+  300x167 and its content is still dark (no rendered frame before the gate kills the client
+  at ~2.35 s). Captures: `C:\jx3tmp\real2_win_1.png` (window, flat #0C0C0C),
+  `C:\jx3tmp\real2_screen_1.png` (full screen, window visible on the desktop).
+- **Diagnostic gate-force** (`FORCE_GATE=1` in `probe_logpatch.py`: patch the `je` after the
+  `sub+0x18` null-check to jump to the success return, probe child only, not a fix) makes the
+  wait return 1 (startup done -> enter game) - the client still exits at ~2.4 s with a clean
+  shutdown (no minidump): the app Run (`global->vt[0x38]`) returns immediately because the
+  platform object is genuinely missing. So forcing the gate is not a substitute for the
+  object; the creator of `sub+0x18` is the real remaining blocker.
+- This is the first visible V2 milestone: the real client runs in our harness and shows its
+  loading window; everything after it waits on the platform object.

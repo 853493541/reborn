@@ -34,9 +34,13 @@ ROOT_WIDE = ROOT_STR.encode("utf-16-le")
 NEW_WIDE = "C:\\jx3t\\".encode("utf-16-le")
 LOG_FILE = r"C:\jx3tmp\client_log.txt"
 EV_ID = os.environ.get("EV_ID", "")
+# DIAGNOSTIC ONLY: force the startup gate to report success (patch the je after the
+# sub+0x18 null-check to jump to the success return) so we can observe what the client
+# does next. This is not a fix - the real creator of sub+0x18 is still unknown.
+FORCE_GATE = os.environ.get("FORCE_GATE", "")
 SCAN_START = 1.0
 PATCH_AT = 1.78
-RUN_UNTIL = 3.6
+RUN_UNTIL = 3.6 if not FORCE_GATE else 20.0
 
 MEM_COMMIT = 0x1000
 PAGE_READABLE = {0x02, 0x04, 0x08, 0x20, 0x40, 0x80}
@@ -221,6 +225,8 @@ def main():
     dumped_rootfn = False
     ring_done = False
     globals_logged = False
+    win_seen = set()
+    child_seen = set()
     moddump_done = False
     early_done = False
     rootbuf_last = [None]
@@ -293,6 +299,13 @@ def main():
             if lit and not lit.startswith(b"\\bin64\\lv.exe"):
                 ok = write_mem(h, exe_base + 0x955228, b"\\bin64\\lv.exe" + b"\x00" * 3)
                 print("[%.2f] literal -> \\bin64\\lv.exe %s" % (el, "ok" if ok else "FAIL"))
+            if FORCE_GATE:
+                # terminal 0x14009D2E0: `je 0x14009d346` (fail path) -> jump to the
+                # success `mov eax,1` at 0x14009d33b instead (rel32 0x13 -> 0x08)
+                gb = read_mem(h, exe_base + 0x9D331, 1)
+                if gb != b"\x08":
+                    ok = write_mem(h, exe_base + 0x9D331, b"\x08")
+                    print("[%.2f] FORCE_GATE: je -> success %s" % (el, "ok" if ok else "FAIL"))
             # OnInitialize gates on edx == 1 (Initialize); the probe's dispatch calls the
             # module event handler with other event ids only, so NOP the event-id check:
             # then the full OnInitialize runs on any event (OpenXLogV is idempotent via
@@ -400,6 +413,30 @@ def main():
                 if cm:
                     fl = read_mem(h, cm + 0x224, 4)
                     print("   config +0x224 now = %s" % (fl.hex() if fl else "?"))
+        if True:
+            user32 = ctypes.windll.user32
+            WNDENUMPROC = ctypes.WINFUNCTYPE(w.BOOL, w.HWND, w.LPARAM)
+            found = []
+
+            def cb(hwnd, lparam):
+                wpid = w.DWORD()
+                user32.GetWindowThreadProcessId(hwnd, ctypes.byref(wpid))
+                if wpid.value == pid:
+                    buf = ctypes.create_unicode_buffer(256)
+                    user32.GetWindowTextW(hwnd, buf, 256)
+                    cls = ctypes.create_unicode_buffer(256)
+                    user32.GetClassNameW(hwnd, cls, 256)
+                    found.append((hwnd, bool(user32.IsWindowVisible(hwnd)), cls.value, buf.value))
+                return True
+            user32.EnumWindows(WNDENUMPROC(cb), 0)
+            for hwnd, vis, cls, title in found:
+                if hwnd not in win_seen:
+                    win_seen.add(hwnd)
+                    print("[%.2f] WINDOW 0x%X visible=%s class=%r title=%r" % (el, hwnd, vis, cls, title))
+            for ppid, par, nm in process_names():
+                if par == pid and ppid not in child_seen:
+                    child_seen.add(ppid)
+                    print("[%.2f] CHILD PROCESS %s pid=%d" % (el, nm, ppid))
         if patched:
             for ppid, par, nm in process_names():
                 low = nm.lower()

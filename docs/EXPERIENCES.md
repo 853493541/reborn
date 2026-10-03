@@ -1611,3 +1611,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.30; scan script output (7 candidate fns); probe run globals.
 - Outcome: writer of sub+0x18 still open; next = hardware write-watchpoint (needs OK) or
   extended static store search.
+### 2026-10-02 — V2 — the real client shows its loading window in the harness
+- Did: window enumeration in probe_logpatch (always on); diagnostic FORCE_GATE patch; screen
+  capture of the real client window.
+- Findings: the real client creates `剑网3_LoadingClass` / title `剑网3`, visible at ~1.84 s in
+  our harness (content dark, no rendered frame); it still exits ~2.35 s at the gate. Forcing
+  the gate (je -> success) does NOT keep it alive - the app Run returns immediately without
+  the platform object, proving the object (sub+0x18) is the real blocker, not the wait.
+- Evidence: doc sec.31; proof/netcode/v2_real_loading_window_20261002.png (flat #0C0C0C,
+  300x167); screen capture kept local.
+- Outcome: first visible V2 milestone; next = find the creator of sub+0x18.
