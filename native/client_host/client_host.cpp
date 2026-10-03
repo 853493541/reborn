@@ -348,8 +348,13 @@ int main(void)
                                                            NULL, &view, 0);
         long arc = view ? ((long (__fastcall *)(void*, void*, int, int))
                            ((BYTE*)eng + 0xA6B870))(window, view, 0, 1) : -1;
-        logf("[host] window=%p view=%p arg=%s (create=0x%08X add=0x%08X)", window, view,
-             viewArg ? viewArg : "(null)", (unsigned)vrc, (unsigned)arc);
+        long crc = (view != NULL) ? ((long (__fastcall *)(void*, void*, int))
+                      ((BYTE*)eng + 0xA74BB0))(window, view, 0) : -1;
+        long aw = (window != NULL) ? ((long (__fastcall *)(void*, void*))
+                      ((BYTE*)eng + 0x8C7300))(engine, window) : -1;
+        logf("[host] window=%p view=%p arg=%s (create=0x%08X add=0x%08X camera=0x%08X active=0x%08X)",
+             window, view, viewArg ? viewArg : "(null)",
+             (unsigned)vrc, (unsigned)arc, (unsigned)crc, (unsigned)aw);
     }
 
     // actor from a PakV4 model
