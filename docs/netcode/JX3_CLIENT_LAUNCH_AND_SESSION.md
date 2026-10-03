@@ -802,3 +802,18 @@ context's RTTI + event id + handler function.
   LaunchUpdater module expects). Next: breakpoint the LaunchUpdater handler `0x1400B1C40`
   to record its gate value/branch at runtime and compare with the real launch; then emulate
   the session in the launcher emulator.
+## 39. S5: the LaunchUpdater abort is a dispatch race (2026-10-03, 33rd pass)
+
+- Breakpoint on the LaunchUpdater handler entry (`0x1400B1C40`): in the latest run the
+  handler was **never called** - no module failure, no abort, client ran 7.29 s under the
+  debugger (vs the usual ~3.5 s abort runs). In earlier runs the handler WAS called with
+  event 3 and the step context yielded 0 -> abort.
+- So both the handler invocation and the abort are **timing-dependent** (thread-pool task
+  race). At normal (non-debugger) speed our harness consistently loses the race; the real
+  launch consistently wins it. The differentiator is therefore a timing/context property of
+  the launcher environment, not a data value we can patch (CFG_E10/BLOCK8 had no effect).
+- Practical conclusion: the launcher emulator (P1.3) should reproduce the launcher launch
+  conditions as closely as possible (same CreateProcess shape, same workdir/env, block
+  created before resume, no extra patches) and the client should then avoid the race; the
+  diagnostic patches (MOD_OK etc.) must be off. Next: build the emulator and measure the
+  abort rate under it; then handle the relaunch/launcher-session path.

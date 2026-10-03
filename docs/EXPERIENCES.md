@@ -1694,3 +1694,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: the stable-client blocker converges on the launcher session (what the LaunchUpdater
   module expects); next = breakpoint the LaunchUpdater handler (0x1400B1C40) to record its
   gate/branch at runtime and compare with the real launch, then emulate the session.
+### 2026-10-03 — V2 S5: the LaunchUpdater abort is a dispatch race (timing-dependent)
+- Did: breakpoint on the LaunchUpdater handler entry 0x1400B1C40 (gate/event capture).
+- Findings: latest run - handler never called, no failure, client 7.29 s; earlier runs -
+  handler called (event 3), step context 0 -> abort. The abort is a thread-pool task race;
+  our normal-speed harness loses it, the real launch wins it. CFG_E10/BLOCK8 had no effect.
+- Evidence: doc sec.39.
+- Outcome: pivot to the launcher emulator (P1.3) with production conditions only (no
+  diagnostics) and measure; then the relaunch/launcher-session path.

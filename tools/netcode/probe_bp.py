@@ -32,6 +32,7 @@ EXCEPTION_SINGLE_STEP = 0x80000004
 FAIL_BRANCH = 0xA38FF          # mov qword [rsp+0x20], r9 in the failure path
 SUCCESS_BRANCH = 0xA3975       # mov r12b, 1 (optional, unused)
 STEP_PROC = 0xA3FF0            # module-step process: returns 0 when low byte of rdx == 0
+UPD_HANDLER = 0xB1C40          # KJX3LaunchUpdaterModule handler entry
 CTX_FULL = 0x10000B
 
 
@@ -128,6 +129,14 @@ def main():
                     orig_bytes[FAIL_BRANCH] = original
                     armed = True
                     print("[%.2f] failure breakpoint armed" % el, flush=True)
+            if armed and hproc and exe_base and UPD_HANDLER not in orig_bytes and el > 1.2:
+                orig_u = read_mem(hproc.value, exe_base + UPD_HANDLER, 1)
+                if orig_u:
+                    write = ctypes.c_size_t()
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + UPD_HANDLER),
+                                           b"\xCC", 1, ctypes.byref(write))
+                    orig_bytes[UPD_HANDLER] = orig_u
+                    print("[%.2f] updater-handler breakpoint armed" % el, flush=True)
             if armed and hproc and exe_base and STEP_PROC not in orig_bytes and el > 2.5:
                 orig_step = read_mem(hproc.value, exe_base + STEP_PROC, 1)
                 if orig_step:
@@ -157,6 +166,30 @@ def main():
         if code == EXCEPTION_DEBUG_EVENT:
             ec = struct.unpack_from("<I", de.u, 0)[0]
             addr = struct.unpack_from("<Q", de.u, 16)[0]
+            if ec == EXCEPTION_BREAKPOINT and exe_base and addr == exe_base + UPD_HANDLER:
+                cm = read_u64(hproc.value, exe_base + 0xA8C1C8)
+                gate = None
+                if cm:
+                    gb = read_mem(hproc.value, cm + 0xE10, 4)
+                    gate = struct.unpack("<I", gb)[0] if gb else None
+                ev = read_u64(hproc.value, exe_base + 0xA8C230)
+                eid = None
+                if ev:
+                    eb = read_mem(hproc.value, ev + 0x18, 4)
+                    eid = struct.unpack("<I", eb)[0] if eb else None
+                print("[%.2f] UPD_HANDLER gate(config+0xe10)=%s event=%s" % (el, gate, eid), flush=True)
+                ht = k32.OpenThread(THREAD_ACCESS, False, de.dwThreadId)
+                struct.pack_into("<I", ctx, 0x30, CTX_FULL)
+                k32.GetThreadContext(ht, ctx)
+                write = ctypes.c_size_t()
+                k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + UPD_HANDLER),
+                                       orig_bytes[UPD_HANDLER], 1, ctypes.byref(write))
+                flags = struct.unpack_from("<I", ctx, 0x44)[0]
+                struct.pack_into("<I", ctx, 0x44, flags | 0x100)
+                k32.SetThreadContext(ht, ctx)
+                k32.CloseHandle(ht)
+                k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_CONTINUE)
+                continue
             if ec == EXCEPTION_BREAKPOINT and exe_base and addr == exe_base + STEP_PROC:
                 ht = k32.OpenThread(THREAD_ACCESS, False, de.dwThreadId)
                 struct.pack_into("<I", ctx, 0x30, CTX_FULL)
@@ -224,6 +257,9 @@ def main():
                                            b"\xCC", 1, ctypes.byref(write))
                 elif rip == exe_base + STEP_PROC + 1:
                     k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + STEP_PROC),
+                                           b"\xCC", 1, ctypes.byref(write))
+                elif rip == exe_base + UPD_HANDLER + 1:
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + UPD_HANDLER),
                                            b"\xCC", 1, ctypes.byref(write))
                 k32.CloseHandle(ht)
                 k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_CONTINUE)
