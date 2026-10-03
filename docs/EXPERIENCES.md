@@ -1112,3 +1112,17 @@ solved it, and what is still open. **Newest at the bottom.**
   sites already pass the motion hints.
 - Verified: creep wallcheck blocks at 4.7 u; selftest 35/35; client rebuilt
   (pid 2924 -> rebuilt).
+
+### 2026-10-02 - Step budget = the engine's CCT value (50 u), not the host 64
+
+- User: "i can walk go up this pile of thing, how can this happen". Client
+  data answer: the pile mesh (wj_木堆001) is a staircase of 8-15 u ledges
+  (levels 828,836,844,...) - every ledge is inside the engine CCT stepOffset
+  (0.5 m = 50 u, recovered from the PxControllerDesc ctor dump), so the
+  engine's own controller climbs it. The old AABB proxy that "fixed" it was a
+  host invention (deviation #10), now removed.
+- Deviation 4f re-open criterion met (the ctor dump: stepOffset 0.5 m,
+  slopeLimit 0.707, contactOffset 0.1): the client step budget is now 50 u
+  (was the host 64; RC_STEP_HEIGHT overrides). Note: a ~51 u house-floor step
+  will now block unless the gameplay step turns out larger in the server
+  movement - flagged for the field.
