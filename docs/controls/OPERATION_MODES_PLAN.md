@@ -536,6 +536,36 @@ itself is runtime-wired (no static names) and behaviourally equals the model in
 - Evidence: gc_handlrlaction.txt, gc_ctrl_action6.txt, gc_ctrl_action7.txt,
   gc_enablecontrolonly.txt, gc_getmoveinfo_*.txt, gc_intent_*.txt.
 
+### 7h. Joystick completion status (2026-10-02)
+
+**Done (client-decoded, host-verified):**
+- Input model: `FreeMoveControl` 0/16 = lateral axis from the TURN controls,
+  forward axis from W/S; A/D + arrows are lateral movement with auto-face;
+  the mouse owns the camera (A9). Host folds joystick turn controls into the
+  strafe axis (`rotAxis=0`); verified A-alone `dist=318` auto-face, camera
+  untouched.
+- Per-mode apply at switch: follow mode + spring/camera reset values
+  (logged); cursor lock; RMB camera-only.
+- Sprint input: 250 ms double-tap detection, `StartSprint`/`EndSprint` logs,
+  `sprint=` telemetry (A10); engine `Sprint(true)` state open.
+- `RotatePlayer` 0/14 math decoded with constants (smooth 0.3, sprint scale
+  3.0, threshold 10.0, k 0.00125) and the finding that
+  `Camera_SetResetSpeed` is the per-frame joystick camera-follow rate (A11).
+- Follow-mode setter confirmed (game client `0x180ACE3F0`): `clamp(v,0,3)`
+  into `+0x80` (classic) / `+0x98` (joystick, `[node+0x34]==0`).
+
+**Open (blocked on the engine/property-system consumer, not guessable):**
+1. Camera follow rate application: what the engine does with the per-frame
+   `Camera_SetResetSpeed` value (units/consumer) — needs the camera-spring
+   update decode.
+2. Follow mode `[0..3]` consumer: no direct `[node+0x80/0x98]` reads found in
+   the camera region; the value is likely consumed through the property
+   system (same data-driven boundary as P3).
+3. `UseFullAngle`: no plaintext binding string in Represent or the exe
+   (hashed registration; G11).
+4. Morph/OB contexts (force JOYSTICK + NEVER_FOLLOW) and
+   `CurrentOperationMode` persistence need their host systems.
+
 ### 7g. Official documentation check (2-month window + control scheme) - 2026-10-02
 
 Patch notes Aug 2 - Oct 2 2026 (official latest + 17173 full notes):

@@ -507,3 +507,13 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
 - Evidence reborn_20261002_170648.log (RC_SPRINT_TEST=1):
   12.150s down (150ms after the first press) -> "sprint: StartSprint"
   12.650s release -> "sprint: EndSprint"; smoke ALL PASS.
+
+## Joystick remaining items: property-system boundary, 2026-10-02
+- Follow-mode setter (game client 0x180ACE3F0) confirmed: clamp(value,0,3)
+  written to camera-node +0x80 (classic) or +0x98 (joystick, [node+0x34]==0).
+- No direct [node+0x80/0x98] reads found in the camera region
+  (0x180AC8000-0x180AE8000): consumer goes through the property system
+  (same boundary as P3).
+- 'FullAngle' has zero plaintext strings in Represent/exe: UseFullAngle is
+  hash-registered (G11); consumer open.
+- Status table: docs/controls/OPERATION_MODES_PLAN.md 7h.

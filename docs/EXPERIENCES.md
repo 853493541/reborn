@@ -1738,3 +1738,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ambiguity; per-mode value at switch is only the base.
 - Host port of the rate pending (no invented rate); decode committed in annex
   A11.
+
+### 2026-10-02 - controls - joystick status close
+- J1/J2/J3/J4 decode+input landed; follow-mode setter confirmed (clamp 0..3,
+  +0x80 classic / +0x98 joystick); the remaining consumers (reset-speed
+  application, follow [0..3], UseFullAngle) sit behind the engine property
+  system / hashed bindings and are documented OPEN rather than approximated
+  (OPERATION_MODES_PLAN 7h).
