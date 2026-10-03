@@ -314,7 +314,8 @@ internal static class CollisionSelfTest
             Check("step_blocks_over_budget", blocked && ground <= 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
             px = 29.9f; py = 0f; pz = 0f; ground = 0f; grounded = true;
-            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
+            px += 10f;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f, 0f, 10f, 0f);
             Check("step_onto_low_edge", !blocked && grounded && Math.Abs(ground - 35f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
         }
@@ -327,9 +328,23 @@ internal static class CollisionSelfTest
             FoliageCollision col = new FoliageCollision(null, p);
             float px = 29.9f, py = 0f, pz = 0f, ground = 0f;
             bool grounded = true;
-            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f);
+            px += 10f;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 64f, 0f, 10f, 0f);
             Check("step_51u_with_64_budget", !blocked && Math.Abs(ground - 51f) < 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
+
+            // steep landing: engine slopeLimit 0.707 - a landing surface steeper
+            // than the limit is rejected (a low obstacle within the budget is
+            // stepped over instead - its landing is the flat floor beyond)
+            MeshBuilder steep = new MeshBuilder();
+            steep.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 60f, 40f, 200f, 60f, 40f, -200f);
+            string ps = WriteBin("steep", new MeshBuilder[] { steep }, new float[][] { M(0f, 0f, 0f) });
+            col = new FoliageCollision(null, ps);
+            px = 20f; py = 0f; pz = 0f; ground = 0f; grounded = true;
+            px += 30f;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f, 0f, 30f, 0f);
+            Check("step_over_low_steep_obstacle", !blocked && ground <= 0.05f && px > 60f,
+                string.Format("blocked={0} ground={1:F2} px={2:F1}", blocked, ground, px));
         }
 
         // 8. CCT top rule on face-only geometry: a thin plate with no up-facing
@@ -341,9 +356,10 @@ internal static class CollisionSelfTest
             FoliageCollision col = new FoliageCollision(null, pl);
             float px = 25f, py = 0f, pz = 0f, ground = 0f;
             bool grounded = true;
-            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
-            Check("thin_low_plate_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
-                string.Format("blocked={0} ground={1:F2}", blocked, ground));
+            px += 15f;
+            bool blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f, 0f, 15f, 0f);
+            Check("thin_low_plate_passes", !blocked && ground <= 0.05f && px > 45f,
+                string.Format("blocked={0} ground={1:F2} px={2:F1}", blocked, ground, px));
 
             MeshBuilder tall = new MeshBuilder();
             tall.AddQuad(30f, 0f, -200f, 30f, 0f, 200f, 30f, 200f, 200f, 30f, 200f, -200f);
@@ -379,8 +395,9 @@ internal static class CollisionSelfTest
             string pm = WriteBin("plate_mixed", new MeshBuilder[] { mixed }, new float[][] { M(0f, 0f, 0f) });
             col = new FoliageCollision(null, pm);
             px = 25f; py = 0f; pz = 0f; ground = 0f; grounded = true;
-            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f);
-            Check("low_plank_open_top_passes", !blocked && Math.Abs(ground - 20f) < 0.05f,
+            px += 15f;
+            blocked = col.Resolve(ref px, ref py, ref pz, 17f, 116f, ref ground, ref grounded, 50f, 0f, 15f, 0f);
+            Check("low_plank_wall_blocks_forward", blocked && ground <= 0.05f,
                 string.Format("blocked={0} ground={1:F2}", blocked, ground));
 
             // step face with the wall continuing above it: not a step, it is a
@@ -547,7 +564,8 @@ internal static class CollisionSelfTest
             WriteMeshSidecar(splPath, new string[] { "data/source/maps_source/小物件/木箱/test_solid2.mesh" });
             spc = new FoliageCollision(null, splPath);
             spx = 29.9f; spy = 0f; spz = 0f; spg = 0f; spGrounded = true;
-            spBlocked = spc.Resolve(ref spx, ref spy, ref spz, 17f, 116f, ref spg, ref spGrounded, 64f);
+            spx += 10f;
+            spBlocked = spc.Resolve(ref spx, ref spy, ref spz, 17f, 116f, ref spg, ref spGrounded, 64f, 0f, 10f, 0f);
             Check("solid_prop_step_low", !spBlocked && Math.Abs(spg - 35f) < 0.05f,
                 string.Format("blocked={0} ground={1:F1}", spBlocked, spg));
             // vertical motion: a thin slab inside the capsule must oppose the

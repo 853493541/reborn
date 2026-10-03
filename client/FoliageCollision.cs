@@ -71,7 +71,8 @@ public sealed class FoliageCollision
     readonly List<Instance> _inst = new List<Instance>();
     readonly Dictionary<long, List<int>> _grid = new Dictionary<long, List<int>>();
     readonly float _cell;
-    readonly List<int> _cand = new List<int>(64);
+    List<int> _cand = new List<int>(64);
+    readonly List<int> _stepScratch = new List<int>(64);
     readonly bool _useObstacleFlags;
     // meshes skipped because the shipped .mesh.ini says bAutoProduceObstacle=0
     public int NoObstacleSkipped;
@@ -1017,9 +1018,10 @@ public sealed class FoliageCollision
                     // Airborne moves never step (the CCT steps only off a floor
                     // contact), otherwise a jump would let the player climb any
                     // wall whose top is below the current jump height.
+                    // (The old lowTop fallback - step onto the lowest top of a
+                    // contact cluster - was a host heuristic, census #4; the
+                    // engine CCT steps onto the actual contact surface only.)
                     float top = best.triTop;
-                    if (top > py + stepHeight && best.lowTop <= py + stepHeight)
-                        top = best.lowTop;
                     if (top > ground && top <= py + stepHeight)
                     {
                         // CCT up-sweep: the raise must actually clear the
@@ -1029,14 +1031,43 @@ public sealed class FoliageCollision
                         // building back wall ledge ladder y 975/990/1030/1040,
                         // 2026-09-30) - climbing it ratchets the player up the
                         // wall with the capsule embedded in the face.
-                        if (!CapsuleBlocked(px, top + 0.1f, pz, radius, height))
+                        // Engine CCT step (PxControllerDesc: stepOffset 0.5 m,
+                        // slopeLimit 0.707): up-sweep clear -> forward sweep by
+                        // the move at the raised height -> down-sweep lands on
+                        // the highest surface within the step range; the landing
+                        // must be walkable (slopeLimit). The queries use a
+                        // scratch candidate list - the resolve loop iterates
+                        // _cand.
+                        System.Collections.Generic.List<int> savedCand = _cand;
+                        _cand = _stepScratch;
+                        try
                         {
-                            py = top + 0.1f;
-                            ground = top;
-                            grounded = true;
-                            stepUp = true;
+                            float lox = px + hMoveX, loz = pz + hMoveZ;
+                            if (!CapsuleBlocked(px, top + 0.1f, pz, radius, height)
+                                && !CapsuleBlocked(lox, top + 0.1f, loz, radius, height))
+                            {
+                                // down-sweep: highest surface within the step
+                                // range - the mesh support or the caller's
+                                // terrain ground (the terrain is not in the
+                                // collision mesh set).
+                                float landY = ground;
+                                float sh = SupportHeight(lox, loz, top - stepHeight, top + 0.1f);
+                                bool meshLanding = sh > ground + 0.01f;
+                                if (meshLanding) landY = sh;
+                                if (landY > float.MinValue + 1f
+                                    && (!meshLanding
+                                        || SurfaceNormalY(lox, landY - 0.05f, loz, radius, height) >= 0.707f))
+                                {
+                                    px = lox; pz = loz;
+                                    py = landY + 0.1f;
+                                    ground = landY;
+                                    grounded = true;
+                                    stepUp = true;
+                                }
+                            }
                         }
-                        else
+                        finally { _cand = savedCand; }
+                        if (!stepUp)
                         {
                             StepRejectCount++;
                             LastStepRejectTop = top;
@@ -1095,7 +1126,11 @@ public sealed class FoliageCollision
                     LastBlockedTriTop = best.triTop;
                 }
             }
-            if (best.ny > 0.55f && best.py > ground && best.py <= py + 60f)
+            // Support from a contact only when the surface is walkable: the
+            // engine's slopeLimit is 0.707 (cos 45 deg, PxControllerDesc ctor);
+            // steeper surfaces (log-pile curves, >45 deg slopes) never carry
+            // the ground - the controller slides instead of climbing.
+            if (best.ny > 0.707f && best.py > ground && best.py <= py + 60f)
             {
                 ground = best.py;
                 if (py <= ground + 2f) grounded = true;
@@ -1165,6 +1200,31 @@ public sealed class FoliageCollision
             }
         }
         return false;
+    }
+
+    // Landing surface slope (engine PxControllerDesc ctor: slopeLimit 0.707 =
+    // cos 45 deg). Returns the most up-facing contact normal under the capsule;
+    // the step branch rejects landings steeper than the limit (log-pile curved
+    // tops: 51% of the up faces are steeper - the engine controller would not
+    // climb them).
+    public float SurfaceNormalY(float px, float py, float pz, float radius, float height)
+    {
+        GatherCandidates(px, pz, radius + 600f, _cand);
+        float bestNy = 0f;
+        for (int k = 0; k < _cand.Count; k++)
+        {
+            Instance it = _inst[_cand[k]];
+            if (py + height < it.minY - 60f || py > it.maxY + 60f) continue;
+            if (px < it.minX - radius || px > it.maxX + radius) continue;
+            if (pz < it.minZ - radius || pz > it.maxZ + radius) continue;
+            Contact probe = new Contact();
+            probe.lowTop = float.MaxValue;
+            if (InstanceContact(it, px, py, pz, radius, height, ref probe) && probe.depth > 0.01f)
+            {
+                if (probe.ny > bestNy) bestNy = probe.ny;
+            }
+        }
+        return bestNy;
     }
 
     // Offline wall-sweep audit (map-wide walk-through detector): every

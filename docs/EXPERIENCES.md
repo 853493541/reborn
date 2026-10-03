@@ -1126,3 +1126,29 @@ solved it, and what is still open. **Newest at the bottom.**
   (was the host 64; RC_STEP_HEIGHT overrides). Note: a ~51 u house-floor step
   will now block unless the gameplay step turns out larger in the server
   movement - flagged for the field.
+
+### 2026-10-02 - Post-version audit: conflicting rules vs the engine (pile climb root)
+
+User asked for a full audit of conflicting (invented + real) rules after the pile
+walk-up. Findings and fixes (all engine-grounded, branch only, no merge):
+
+1. **Step budget**: host 64 u vs the engine PxControllerDesc ctor value
+   stepOffset 0.5 m = 50 u (ctor dump pxcontrollerdesc_ctor.txt). Now 50.
+2. **Step sequence**: our step = contact + up-sweep only; the engine CCT does
+   up-sweep -> forward sweep by the move at the raised height -> down-sweep
+   landing (highest surface within stepOffset, terrain included). Implemented.
+3. **slopeLimit 0.707 (cos 45 deg)** was ignored: the landing and the ground
+   support accepted ny > 0.55. Now 0.707 enforced - steep surfaces (the log
+   pile's curved tops: 51% of its up faces are steeper than 45 deg) never
+   carry the player. THE PILE CLIMB ROOT CAUSE: a host threshold let the
+   capsule stand/step on the logs.
+4. **lowTop fallback (census #4)** removed - the engine steps onto the actual
+   contact surface, not the lowest top of a contact cluster.
+- Verified: selftest 36/36 (new step_over_low_steep_obstacle; thin-plate and
+  plank tests updated to the engine semantics: low obstacles are stepped over
+  when the forward landing is walkable); pile wallcheck (grounded, +300):
+  blocked at the base (y 801-814, no climb); wall-ledge field case still
+  blocks cleanly. Client rebuilt pid 34176.
+- Client data checks: wj_木堆001 pak probe = only the render .mesh (no
+  CollisionMesh/proxymesh sibling) so the engine cooks the render mesh; the
+  climb came from our rules, not the geometry.
