@@ -1098,3 +1098,17 @@ solved it, and what is still open. **Newest at the bottom.**
   trunk graze; the cabinet's real geometry still blocks; selftest 34/34.
   Trade-off (engine-faithful): the log pile's mesh gaps are penetrable again
   like the game's own cooked mesh.
+
+### 2026-10-02 - Creep guard ported to the branch (sprint-through-wall fix)
+
+- User report: on the branch client they could sprint INTO a building/display
+  case mesh (tui at 19928,921,36797: capsule depth 17 inside inst=135 展柜 and
+  inst=365 building). The creep guard (excess-only CCT slide) existed only on
+  the merged main (tag postmerge-collision-fixes-20261002); the branch never
+  had it, and the branch client already feeds (mvx, mvz) to Resolve.
+- Ported: FoliageCollision.Resolve guard (cancel only the advance beyond the
+  push capacity) + MoveResolved passes the substep delta; selftest
+  fast_thin_face_no_creep (35/35 on the branch). The client's two Resolve call
+  sites already pass the motion hints.
+- Verified: creep wallcheck blocks at 4.7 u; selftest 35/35; client rebuilt
+  (pid 2924 -> rebuilt).

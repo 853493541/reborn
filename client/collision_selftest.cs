@@ -285,6 +285,16 @@ internal static class CollisionSelfTest
                 17f, 116f, 10f, ref ground, ref grounded);
             Check("substep_no_tunnel", blocked && px <= -16.9f,
                 string.Format("blocked={0} px={1:F2}", blocked, px));
+
+            // 6b. fast substeps (larger than the push capacity) must not creep
+            // through a thin face: depth 5-8 vs a 13.5 u substep advanced 54/54
+            // with blocked=true. The guard cancels the advance beyond the push.
+            col = new FoliageCollision(null, wallPath);
+            px = -50f; py = 0f; pz = 0f; ground = 0f; grounded = false;
+            blocked = col.MoveResolved(ref px, ref py, ref pz, 100f, 0f,
+                17f, 116f, 40f, ref ground, ref grounded);
+            Check("fast_thin_face_no_creep", blocked && px <= -16.9f,
+                string.Format("blocked={0} px={1:F2}", blocked, px));
         }
 
         // 7. step budget (recovered engine stepOffset, passed by the client):

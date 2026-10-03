@@ -1067,6 +1067,23 @@ public sealed class FoliageCollision
                 px += best.nx * best.depth;
                 py += best.ny * best.depth;
                 pz += best.nz * best.depth;
+                // Creep guard (2026-10-02): a move larger than the push capacity
+                // crosses a thin face (sprint into a wall = embedded in the mesh).
+                // CCT slide: cancel only the advance BEYOND the push capacity; the
+                // normal contact push+slide is untouched.
+                if (bestIdx >= 0 && hMoveX * hMoveX + hMoveZ * hMoveZ > 1e-8f)
+                {
+                    float chx = best.nx, chz = best.nz;
+                    float chl = (float)Math.Sqrt(chx * chx + chz * chz);
+                    if (chl > 0.5f)
+                    {
+                        chx /= chl; chz /= chl;
+                        if (chx * hMoveX + chz * hMoveZ > 0f) { chx = -chx; chz = -chz; }
+                        float into = -(hMoveX * chx + hMoveZ * chz);
+                        float excess = into - best.depth;
+                        if (excess > 0f) { px += excess * chx; pz += excess * chz; }
+                    }
+                }
                 float horiz = (float)Math.Sqrt(best.nx * best.nx + best.nz * best.nz);
                 if (horiz > 0.5f)
                 {
@@ -1315,7 +1332,7 @@ public sealed class FoliageCollision
         {
             px += dx / n;
             pz += dz / n;
-            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded, stepHeight, 0f, dx, dz))
+            if (Resolve(ref px, ref py, ref pz, radius, height, ref ground, ref grounded, stepHeight, 0f, dx / n, dz / n))
                 blocked = true;
         }
         return blocked;
