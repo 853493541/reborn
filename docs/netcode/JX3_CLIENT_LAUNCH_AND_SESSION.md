@@ -521,3 +521,32 @@ machinery; patches our own probe child only, transient, no disk writes).
   the single blocker for logs, window, CEF and login; the next work is to find what creates
   `state_sub+0x18` (candidates: the launcher IPC - loopback TCP pairs in sec.2 - or the
   security/report handshake in sec.10).
+
+## 28. Log channel works + module events run (2026-10-02, twenty-second pass)
+
+- **Viewer spawn contract corrected**: the client spawns `xlogv -i <fd1_read> -o <fd2_write>`
+  (from the `_spawnl` arg setup at `0x1400A5C19`). `-i` is the input stream (the client's
+  stdout, where logs are written); `-o` is the output stream (client stdin). The first lv.c
+  had `-i`/`-o` swapped, so it read the write end and got `_read == -1` (EBADF) instantly.
+  Fixed viewer source: `tools/netcode/xlogv_lv.c`; binary at `C:\jx3t\bin64\lv.exe`.
+- **Channel works**: with the event-id and config-flag checks NOPed (probe patches), the
+  viewer spawns and `C:\jx3tmp\client_log.txt` receives the client's stdout stream (proven
+  with Dumper64/protection/GameDoctor startup+shutdown lines, ~2.3 KB per run).
+- **OnInitialize success path decoded** (see sec.26): `OpenXLogV` returns nonzero on success
+  -> `OnInitialize` calls `KGLogAddOption(2)`, which is exactly
+  `or dword [Engine+0x174020], 2` (sets the console-output flag bit). The alternate path
+  (`OpenXLogV` returns 0 and `module+0x18 == 0`) calls `AllocConsole` and continues only if
+  it succeeds - a process that already has a console skips the whole success block.
+- **Engine KGLog still not in the stream**: the console path needs a CHAR stdout; after the
+  console module, stdout is the pipe (`FILE_TYPE_PIPE`) and the engine's early boot logs
+  (0.3-1.5 s) are lost when `freopen` discards the CRT stdout buffer. Capturing engine KGLog
+  needs a console-typed stdout (CREATE_NEW_CONSOLE + read the console buffer) or a later
+  flush point.
+- **Module events DO run, Initialize does not**: the console module's event handler is called
+  at ~1.2 s (inside PlatformLoad's module phases): with the event-id check NOPed the viewer
+  spawns; with the check intact and the config flag set to 1 it does not -> the dispatched
+  event id is **not 1 (Initialize)**. The startup chain reaches per-module events but never
+  dispatches Initialize, consistent with the missing platform object (`state_sub+0x18`).
+- Next: identify the exact event id(s) dispatched to the modules (vary the immediate in the
+  event check / instrument the dispatcher node's event_id) and which event should create
+  `state_sub+0x18`.

@@ -153,25 +153,61 @@ def process_names():
     return out
 
 
+class SECURITY_ATTRIBUTES(ctypes.Structure):
+    _fields_ = [("nLength", w.DWORD), ("lpSecurityDescriptor", ctypes.c_void_p),
+                ("bInheritHandle", w.BOOL)]
+
+
 def main():
     si = STARTUPINFO()
     si.cb = ctypes.sizeof(STARTUPINFO)
+    # capture the engine's early stdout (before the console module takes over):
+    # the child must inherit an explicit stdout handle, else those writes are lost
+    sa = SECURITY_ATTRIBUTES()
+    sa.nLength = ctypes.sizeof(SECURITY_ATTRIBUTES)
+    sa.bInheritHandle = True
+    early = r"C:\jx3tmp\client_early.txt"
+    k32.CreateFileW.restype = w.HANDLE
+    k32.CreateFileW.argtypes = [w.LPCWSTR, w.DWORD, w.DWORD, ctypes.c_void_p, w.DWORD, w.DWORD, w.HANDLE]
+    hout = k32.CreateFileW(early, 0x40000000, 0x3, ctypes.byref(sa), 2, 0x80, None)
+    si.dwFlags = 0x100  # STARTF_USESTDHANDLES
+    si.hStdOutput = hout
+    si.hStdError = hout
+    si.hStdInput = hout
     pi = PROCESS_INFORMATION()
-    k32.CreateProcessW(EXE, None, None, None, False, CREATE_SUSPENDED, None, CWD,
+    k32.CreateProcessW(EXE, None, None, None, True, CREATE_SUSPENDED, None, CWD,
                        ctypes.byref(si), ctypes.byref(pi))
+    k32.CloseHandle(hout)
     pid = pi.dwProcessId
+    h = k32.OpenProcess(OPEN_RIGHTS, False, pid)
+    print("pid=%d handle=%d" % (pid, h))
+    if not h:
+        print("OpenProcess failed err=%d" % k32.GetLastError())
+        return 1
+    # pre-resume exe patches: the module event calls happen ~0.5 s and race the loop's
+    # first module enumeration, so patch the exe while the child is still suspended
+    exe_base0 = None
+    for _ in range(25):
+        for base, size, nm, path in module_list(pid):
+            if nm.lower().startswith("jx3client"):
+                exe_base0 = base
+                break
+        if exe_base0:
+            break
+        time.sleep(0.02)
+    if exe_base0:
+        ok1 = write_mem(h, exe_base0 + 0xA5959, b"\x90" * 9)
+        ok2 = write_mem(h, exe_base0 + 0xA5969, b"\x90" * 13)
+        ok3 = write_mem(h, exe_base0 + 0x955228, b"\\bin64\\lv.exe" + b"\x00" * 3)
+        print("pre-resume exe patches (base=0x%X): event=%s flag=%s literal=%s"
+              % (exe_base0, ok1, ok2, ok3))
     name = (NAME_FMT % pid).encode()
     hmap = k32.CreateFileMappingA(INVALID_HANDLE_VALUE, None, 4, 0, BLOCK, name)
     p = k32.MapViewOfFile(hmap, FILE_MAP_ALL_ACCESS, 0, 0, BLOCK)
     ctypes.memmove(p, bytes(build_block()), BLOCK)
     k32.UnmapViewOfFile(p)
     k32.ResumeThread(pi.hThread)
-    h = k32.OpenProcess(OPEN_RIGHTS, False, pid)
     t0 = time.time()
-    print("pid=%d handle=%d" % (pid, h))
-    if not h:
-        print("OpenProcess failed err=%d" % k32.GetLastError())
-        return 1
 
     hits = []
     exe_base = None
@@ -182,18 +218,24 @@ def main():
     moddump_done = False
     early_done = False
     rootbuf_last = [None]
+    log_size_last = [0]
     while time.time() - t0 < RUN_UNTIL:
         el = time.time() - t0
         if k32.WaitForSingleObject(pi.hProcess, 0) == 0:
             print("[%.2f] child EXITED" % el)
             break
-        if exe_base is None and el > 0.5:
+        if exe_base is None and el > 0.15:
             for base, size, nm, path in module_list(pid):
                 low = nm.lower()
                 if low.startswith("jx3client"):
                     exe_base = base
                 elif low.startswith("engine_lua5x64"):
                     eng_base = base
+        if el >= 0.2 and os.path.exists(LOG_FILE):
+            sz = os.path.getsize(LOG_FILE)
+            if sz != log_size_last[0]:
+                log_size_last[0] = sz
+                print("[%.2f] log size=%d" % (el, sz))
         if not dumped_rootfn and el >= 0.9 and exe_base:
             dumped_rootfn = True
             fn = read_u64(h, exe_base + 0x7B84B8)
@@ -230,7 +272,7 @@ def main():
         # early window: module Initialize runs inside PlatformLoad (0.3-1.86 s per the
         # timeline doc), so the config flag + engine root must be in place well before
         # the 1.9 s game.startup group - and kept applied (the engine may rewrite them)
-        if not early_done and el >= 0.65 and exe_base and eng_base:
+        if not early_done and exe_base and eng_base:
             early_done = True
             print("[%.2f] EARLY patch (exe=0x%X eng=0x%X)" % (el, exe_base, eng_base))
         if early_done and el < 1.6:
@@ -245,6 +287,20 @@ def main():
             if lit and not lit.startswith(b"\\bin64\\lv.exe"):
                 ok = write_mem(h, exe_base + 0x955228, b"\\bin64\\lv.exe" + b"\x00" * 3)
                 print("[%.2f] literal -> \\bin64\\lv.exe %s" % (el, "ok" if ok else "FAIL"))
+            # OnInitialize gates on edx == 1 (Initialize); the probe's dispatch calls the
+            # module event handler with other event ids only, so NOP the event-id check:
+            # then the full OnInitialize runs on any event (OpenXLogV is idempotent via
+            # module+0x18) and its success path installs the log sink -> viewer gets data.
+            ev = read_mem(h, exe_base + 0xA5959, 9)
+            if ev and ev != b"\x90" * 9:
+                ok = write_mem(h, exe_base + 0xA5959, b"\x90" * 9)
+                print("[%.2f] OnInitialize event-id check NOPed %s" % (el, "ok" if ok else "FAIL"))
+            # also NOP the config-flag check (13 bytes at 0xA5969) - the event calls race
+            # the flag write, and the flag is only a policy gate for the log viewer
+            fc = read_mem(h, exe_base + 0xA5969, 13)
+            if fc and fc != b"\x90" * 13:
+                ok = write_mem(h, exe_base + 0xA5969, b"\x90" * 13)
+                print("[%.2f] OnInitialize flag check NOPed %s" % (el, "ok" if ok else "FAIL"))
             rb = read_mem(h, eng_base + 0x170060, 16)
             if rb and not rb.startswith(b"C:\\jx3t\\"):
                 write_mem(h, eng_base + 0x170060, b"C:\\jx3t\\\x00")
@@ -317,6 +373,12 @@ def main():
         time.sleep(0.05)
 
     time.sleep(1.0)
+    # the viewer can hold the inherited write end and block forever - kill our viewers
+    for ppid, par, nm in process_names():
+        if nm.lower() in ("lv.exe", "xlogv.exe") and par == pid:
+            hp = k32.OpenProcess(1, False, ppid)
+            if hp:
+                k32.TerminateProcess(hp, 1)
     if os.path.exists(LOG_FILE):
         data = open(LOG_FILE, "rb").read()
         print("=== client_log.txt: %d bytes ===" % len(data))
