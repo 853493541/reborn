@@ -528,3 +528,16 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   frame; RC_FOLLOW_MODE=0|1|2 override.
 - Evidence: 173504 (joystick ALWAYS: A dcam=1.06, TURNRIGHT camd=1.57, WD
   dcam=-1.05); 173637 (classical default 0: fingerprints unchanged). Smoke PASS.
+
+## Mode HUD + default joystick + "/" switch + joystick instant turn, 2026-10-02
+- Top-left always-visible label "CONTROL: JOYSTICK|CLASSICAL  [/] switch".
+- Default operation mode = JOYSTICK (RC_MODE / RC_USER_PREFS override).
+- "/" and F7 both switch the control mode (the old "/" run-toggle convenience
+  removed; Num/ remains the run toggle).
+- Joystick facing is INSTANT: the Lua SetPlayerRotation -> KCharacter::TurnTo
+  (exe 0x14031E7C0) writes the target heading [char+0x44] directly (clamped),
+  no RunTo rate/hard-turn penalty. The display blends the visual turn via
+  tabCGAni KeepTurningFrame/TurningEpsilon (no ground turn clip - F1 negative).
+- Evidence run reborn_20261002_180750.log (joystick): A-alone yaw -1.57 instant
+  dist=320 cam kept; back yaw 3.14; WA 383 dyaw=-2.36; WD 383 dyaw=1.57
+  (full distance, no penalty); classical regression 180923 unchanged.

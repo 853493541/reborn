@@ -17,7 +17,7 @@ internal sealed class CameraSettings
     public double SpringResetSpeed = 1.0;   // fSpringResetSpeed (read-only for now)
     public double CameraResetSpeed = 1.0;   // fCameraResetSpeed (read-only for now)
     public int CameraMode = 0;              // tCameraStatic.nCameraMode (follow mode 0..3)
-    public int OperationMode = CameraOperationMode.Classical; // CLASSICAL/JOYSTICK (runtime, RC_MODE)
+    public int OperationMode = CameraOperationMode.Joystick;  // default joystick (current focus; RC_MODE / userprefs override)
     public int FollowModeClassic = 0;       // nCameraModeInClassicMode (per-mode follow mode)
     public int FollowModeJoystick = 0;      // nCameraModeInJoystickMode
     public bool CameraSmoothing = true;     // bCameraSmoothing

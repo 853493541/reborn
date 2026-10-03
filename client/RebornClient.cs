@@ -235,7 +235,7 @@ internal static class RebornClient
                 Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
                 Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80"),
                 Env("RC_CAM_BACKFACE", "1"), Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")),
-                Env("RC_MODE", "classical")));
+                Env("RC_MODE", "joystick")));
         }
         Log("start map=" + mapPath);
         Log("asset_root=" + workingDir + " phys=" + physDll);
@@ -267,10 +267,20 @@ internal static class RebornClient
         hud.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
         hud.Font = new System.Drawing.Font("Consolas", 10f);
         hud.Padding = new Padding(6);
-        hud.Location = new System.Drawing.Point(38, 10);
+        hud.Location = new System.Drawing.Point(38, 44);
         hud.Text = "loading...";
         hud.Visible = false;   // info window starts collapsed; "I" toggles it
         panel.Controls.Add(hud);
+        // top-left control-mode name (always visible; "/" or F7 switches)
+        var modeLabel = new Label();
+        modeLabel.AutoSize = true;
+        modeLabel.ForeColor = System.Drawing.Color.FromArgb(255, 220, 120);
+        modeLabel.BackColor = System.Drawing.Color.FromArgb(160, 0, 0, 0);
+        modeLabel.Font = new System.Drawing.Font("Consolas", 12f, System.Drawing.FontStyle.Bold);
+        modeLabel.Padding = new Padding(6);
+        modeLabel.Location = new System.Drawing.Point(38, 10);
+        modeLabel.Text = "CONTROL: ...";
+        panel.Controls.Add(modeLabel);
         // "I" toggle in the top-left corner: expands/collapses the info window
         var infoToggle = new Label();
         infoToggle.AutoSize = false;
@@ -1222,16 +1232,14 @@ internal static class RebornClient
             System.Collections.Generic.List<string> hcmds =
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], true);
-            // host convenience: main "/" also toggles run (real binding Num/)
-            if (e.KeyCode == Keys.OemQuestion && hcmds.Count == 0) runCommand("TOGGLERUN", true);
             // host/test keys outside the movement command set
             if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
-            else if (e.KeyCode == Keys.F7)
+            else if (e.KeyCode == Keys.F7 || e.KeyCode == Keys.OemQuestion)
             {
-                // operation-mode switch (host key; the real client switches in
-                // the UISetting_Operation_Switch panel and has no default
-                // hotkey - docs/controls/OPERATION_MODES_PLAN.md)
+                // operation-mode switch (host keys: "/" and F7; the real client
+                // switches in the UISetting_Operation_Switch panel and has no
+                // default hotkey - docs/controls/OPERATION_MODES_PLAN.md)
                 cameraSettings.OperationMode =
                     cameraSettings.OperationMode == CameraOperationMode.Joystick
                         ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
@@ -1281,7 +1289,6 @@ internal static class RebornClient
             System.Collections.Generic.List<string> hcmds =
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], false);
-            if (e.KeyCode == Keys.OemQuestion && hcmds.Count == 0) runCommand("TOGGLERUN", false);
             if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
         };
@@ -2152,7 +2159,19 @@ internal static class RebornClient
                 // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
                 // and the turn step that frame.
                 bool forwardish = fwdAxis > 0f || demoCollide;
-                if (followsHeading || forwardish)
+                if (followsHeading)
+                {
+                    // JOYSTICK: the Lua layer calls SetPlayerRotation(dir) ->
+                    // KCharacter::TurnTo (exe 0x14031E7C0), which writes the
+                    // character's target heading [char+0x44] DIRECTLY (clamped)
+                    // - no RunTo rate/hard-turn penalty. Rapid WASD presses
+                    // therefore snap the heading instantly; the display blends
+                    // the visual turn via tabCGAni KeepTurningFrame/
+                    // TurningEpsilon (no ground turn clip ships - F1 negative
+                    // result). The host sets the facing directly (instant).
+                    curYaw = heading;
+                }
+                else if (forwardish)
                 {
                     float dYaw = heading - curYaw;
                     while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
@@ -3383,12 +3402,17 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.Text = string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | / run-walk | V sit | Z sheath | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel or +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0} op {12}\nclip {11}\nWASD move | </> turn | G autorun | Num/ run-walk | / or F7 control mode | V sit | Z sheath | Shift 10x | Space jump | 1 skill | C teleport\nLMB drag = camera | RMB drag = camera+turn | wheel or +/- zoom | F11 reset | Home/End view (Esc unlock)",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     CameraOperationMode.Name(cameraSettings.OperationMode));
+                // top-left mode name (always visible)
+                modeLabel.Text = "CONTROL: "
+                    + (cameraSettings.OperationMode == CameraOperationMode.Joystick
+                        ? "JOYSTICK" : "CLASSICAL")
+                    + "   [/] switch";
             }
             if (now - lastLog >= 2000)
             {

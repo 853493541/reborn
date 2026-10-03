@@ -1804,3 +1804,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Residual: the camera-node command-slot reader (+0x24/+0x2C/+0x30) for the
   exact A11 rate integration; the slot applier is decoded, the reader needs a
   proper function-start finder.
+
+### 2026-10-02 - controls - mode HUD, joystick default, "/" switch, instant joystick turn
+- Top-left label shows CONTROL: JOYSTICK|CLASSICAL [/] switch; default mode is
+  now joystick; "/" (and F7) switch the mode; the old "/" run-toggle removed.
+- Joystick facing is instant per the client design: SetPlayerRotation ->
+  KCharacter::TurnTo (0x14031E7C0) writes the target heading [char+0x44]
+  directly; the display blends via tabCGAni KeepTurningFrame/TurningEpsilon
+  (no ground turn clip ships). Host sets the facing directly in joystick; the
+  classical RunTo path (rate + >112.5deg penalty) is unchanged.
+- Verified: joystick A-alone snap yaw -1.57 dist=320; WA/WD 383 both (no
+  penalty); classical regression identical; smoke ALL PASS.
