@@ -166,3 +166,52 @@ internal sealed class HudOverlay : Form
     [StructLayout(LayoutKind.Sequential)]
     struct BLENDFUNCTION { public byte BlendOp, BlendFlags, SourceConstantAlpha, AlphaFormat; }
 }
+
+// Clickable COPY LOG widget (top-right, owned by the host form): a small
+// top-level form - NOT click-through - so the button receives mouse input over
+// the engine viewport; WS_EX_NOACTIVATE keeps focus with the game. The old
+// panel Label cannot be used: WinForms children sit behind the engine child
+// window (see the HudOverlay header).
+internal sealed class CopyLogOverlay : Form
+{
+    public Action OnClick;
+
+    public CopyLogOverlay()
+    {
+        FormBorderStyle = FormBorderStyle.None;
+        ShowInTaskbar = false;
+        StartPosition = FormStartPosition.Manual;
+        ClientSize = new Size(90, 24);
+        BackColor = Color.Black;
+        var b = new Label();
+        b.Dock = DockStyle.Fill;
+        b.Text = "COPY LOG";
+        b.TextAlign = ContentAlignment.MiddleCenter;
+        b.ForeColor = Color.White;
+        b.BackColor = Color.Black;
+        b.Font = new Font("Consolas", 9f, FontStyle.Bold);
+        b.Cursor = Cursors.Hand;
+        b.Click += delegate { if (OnClick != null) OnClick(); };
+        Controls.Add(b);
+    }
+
+    protected override CreateParams CreateParams
+    {
+        get
+        {
+            CreateParams cp = base.CreateParams;
+            cp.ExStyle |= 0x00000080    // WS_EX_TOOLWINDOW
+                        | 0x08000000    // WS_EX_NOACTIVATE
+                        | 0x00000008;   // WS_EX_TOPMOST
+            return cp;
+        }
+    }
+
+    public void PlaceOver(Form owner)
+    {
+        Point origin = owner.PointToScreen(Point.Empty);
+        Point want = new Point(origin.X + owner.ClientSize.Width - 100, origin.Y + 10);
+        if (Location != want) Location = want;
+        if (!Visible) { Owner = owner; Show(); }
+    }
+}

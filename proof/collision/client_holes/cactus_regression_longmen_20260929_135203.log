@@ -1,0 +1,57 @@
+13:52:03.696 build=reborn_client_colimp.exe 2026-09-29 13:51:40 git=48ee9a6 dirty=4 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+13:52:03.696 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+13:52:04.143 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_colimp.memory
+13:52:28.479 Init3DEngine=1 err=1
+13:52:28.514 editor.Init result=0
+13:52:30.178 LoadMap result=0
+13:52:30.501 winId=9241228
+13:52:30.502 clr m_pScene=0x5260FE08 unmapped exec=0
+13:52:30.504 clr scene.vt=0x7FFF365AF278 KG_EngineEditorX64.dll+0x6F278
+13:52:30.504 clr scene: obj=000000005260FE08 vt=00007FFF365AF278 48=00007FFF3657D5F0(0) 50=00007FFF3657D710(0) 58=00007FFF3657D7E0(0) 60=00007FFF3657D810(0)
+13:52:30.504 clr sceneCam=0x194667868 unmapped exec=0
+13:52:30.504 clr cam: obj=0000000194667868 vt=00007FFF365B1FA8 48=00007FFF365903A0(0) 50=00007FFF365903E0(0) 58=00007FFF36590440(0) 60=00007FFF365904A0(0)
+13:52:30.505 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+13:52:30.508 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400)
+13:52:31.175 FoliageCollision: instances=5351 meshes=699 camflag0=317 foliage=龙门寻宝_foliage_collision.bin structures=龙门寻宝_structure_collision.bin
+13:52:31.176 EngineRay: exports ok, waiting for engine/scene
+13:52:31.177 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+13:52:31.178 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=0000000194667868 vt=00007FFF365B1FA8 48=00007FFF365903A0(0) 50=00007FFF365903E0(0) 58=00007FFF36590440(0) 60=00007FFF365904A0(0)
+13:52:31.181 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+13:52:31.239 CameraSettings: loaded real per-role camera settings
+13:52:31.240 CameraSettings: mapId=296 sceneInit=0 yaw=0.502262 pitch=-0.170 max=2000 drag=1.00/1.00 eyeScale=1.00
+13:52:31.240 CameraSettings extra: mode=0 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+13:52:31.240 CameraSystem ready: mode=character dist=600u height=200u units/m=100
+13:52:31.240 view angle factor=1
+13:52:31.242 fov source=max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+13:52:31.242 view angle factor applied=1.250002
+13:52:31.932 spawn=(62724,256,53206) view=(0.00,1.00)
+13:52:32.564 player handle=5834736600
+13:52:32.566 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+13:52:33.089 camera yaw init=-1.571 (view dir 0.00,1.00)
+13:52:33.092 camera init skipped mapId=296 (no scene_init_param row; keeping spawn view)
+13:52:33.096 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+13:52:33.102 EngineRay: ready scene=0x101DEEBB0 terrain+950=0x7881E4B0 terrain+A28=0x0 vtB8=True space=0x78689FE8 spaceRay=True entity=0x11AA26488 entityRay=True entCount=10 guardCell=0x40B309E0
+13:52:34.609 camBind rc=0 pos=(62705.7,440.1,52697.0) cam=0000000101DEEBB0 posOff=0x9E0 bound=1
+13:52:34.610 camObjDump: obj=0000000101DEEBB0 vt=00007FFEF73A5598 48=00007FFEF5B53870(1) 50=00007FFEF5B53A40(1) 58=00007FFEF5B78810(1) 60=00007FFEF5B53C70(1)
+13:52:34.611 slot50: slot50=00007FFEF5B53A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+13:52:34.611 slot58: slot58=00007FFEF5B78810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+13:52:34.611 slot60: slot60=00007FFEF5B53C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+13:52:34.611 slot68: slot68=00007FFEF5B53D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+13:52:35.105 t=2s fps=152 pos=(62706,252,53288) vy=0 grounded=True blocked=True hits=264 colCalls=275 colBlocked=264 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:37.107 t=4s fps=153 pos=(62706,252,53288) vy=0 grounded=True blocked=True hits=564 colCalls=575 colBlocked=564 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:39.110 t=6s fps=141 pos=(62705,252,53288) vy=0 grounded=True blocked=True hits=867 colCalls=878 colBlocked=867 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:40.100 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+13:52:41.107 t=8s fps=150 pos=(62706,252,53288) vy=0 grounded=True blocked=True hits=1216 colCalls=1227 colBlocked=1216 spd=96u/s(WALK) clip=f1b02yd行走.ani
+13:52:43.108 t=10s fps=259 pos=(62706,252,53288) vy=0 grounded=True blocked=True hits=1730 colCalls=1741 colBlocked=1730 spd=96u/s(WALK) clip=f1b02yd行走.ani
+13:52:45.095 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+13:52:45.109 t=12s fps=257 pos=(62706,252,53288) vy=0 grounded=True blocked=True hits=2261 colCalls=2272 colBlocked=2261 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:45.597 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+13:52:46.142 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+13:52:46.688 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+13:52:47.109 t=14s fps=273 pos=(62720,242,53732) vy=0 grounded=True blocked=False hits=2437 colCalls=2811 colBlocked=2437 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:48.167 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_15000ms.png
+13:52:49.110 t=16s fps=244 pos=(62727,240,54362) vy=0 grounded=True blocked=False hits=2456 colCalls=3320 colBlocked=2456 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:51.113 t=18s fps=277 pos=(62727,237,55004) vy=0 grounded=True blocked=False hits=2456 colCalls=3870 colBlocked=2456 spd=320u/s(RUN) clip=f1b02yd奔跑.ani
+13:52:51.596 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+13:52:51.596 skill cast
+13:52:53.098 DONE

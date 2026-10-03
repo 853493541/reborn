@@ -1,0 +1,201 @@
+00032e90  4c894c2420             mov     qword ptr [rsp + 0x20], r9
+00032e95  55                     push    rbp
+00032e96  4155                   push    r13
+00032e98  4156                   push    r14
+00032e9a  4157                   push    r15
+00032e9c  4883ec38               sub     rsp, 0x38
+00032ea0  4d8bf8                 mov     r15, r8
+00032ea3  488bea                 mov     rbp, rdx
+00032ea6  4c8be9                 mov     r13, rcx
+00032ea9  41be01000000           mov     r14d, 1
+00032eaf  4885d2                 test    rdx, rdx
+00032eb2  7537                   jne     0x180032eeb
+00032eb4  488d0da5a80c00         lea     rcx, [rip + 0xca8a5]
+00032ebb  41b994010000           mov     r9d, 0x194
+00032ec1  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00032ec6  4c8d05bba70c00         lea     r8, [rip + 0xca7bb]
+00032ecd  8d4d03                 lea     ecx, [rbp + 3]
+00032ed0  488d1571450c00         lea     rdx, [rip + 0xc4571]
+00032ed7  ff15d3d20b00           call    qword ptr [rip + 0xbd2d3]  ; imp:KGCommonX64.dll!KG_PrintfLog
+00032edd  33c0                   xor     eax, eax
+00032edf  4883c438               add     rsp, 0x38
+00032ee3  415f                   pop     r15
+00032ee5  415e                   pop     r14
+00032ee7  415d                   pop     r13
+00032ee9  5d                     pop     rbp
+00032eea  c3                     ret     
+00032eeb  4d85ff                 test    r15, r15
+00032eee  7538                   jne     0x180032f28
+00032ef0  488d0d69a80c00         lea     rcx, [rip + 0xca869]
+00032ef7  41b995010000           mov     r9d, 0x195
+00032efd  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00032f02  4c8d059fa80c00         lea     r8, [rip + 0xca89f]
+00032f09  418d4f03               lea     ecx, [r15 + 3]
+00032f0d  488d1534450c00         lea     rdx, [rip + 0xc4534]
+00032f14  ff1596d20b00           call    qword ptr [rip + 0xbd296]  ; imp:KGCommonX64.dll!KG_PrintfLog
+00032f1a  33c0                   xor     eax, eax
+00032f1c  4883c438               add     rsp, 0x38
+00032f20  415f                   pop     r15
+00032f22  415e                   pop     r14
+00032f24  415d                   pop     r13
+00032f26  5d                     pop     rbp
+00032f27  c3                     ret     
+00032f28  48634914               movsxd  rcx, dword ptr [rcx + 0x14]
+00032f2c  8bc1                   mov     eax, ecx
+00032f2e  4889742468             mov     qword ptr [rsp + 0x68], rsi
+00032f33  99                     cdq     
+00032f34  4c89642430             mov     qword ptr [rsp + 0x30], r12
+00032f39  83e207                 and     edx, 7
+00032f3c  4c8bc1                 mov     r8, rcx
+00032f3f  03c2                   add     eax, edx
+00032f41  498bcf                 mov     rcx, r15
+00032f44  c1f803                 sar     eax, 3
+00032f47  33d2                   xor     edx, edx
+00032f49  4c63e0                 movsxd  r12, eax
+00032f4c  4d0fafc4               imul    r8, r12
+00032f50  e899a20b00             call    0x1800ed1ee
+00032f55  458b5514               mov     r10d, dword ptr [r13 + 0x14]
+00032f59  33f6                   xor     esi, esi
+00032f5b  4585d2                 test    r10d, r10d
+00032f5e  0f8eb3000000           jle     0x180033017
+00032f64  48895c2460             mov     qword ptr [rsp + 0x60], rbx
+00032f69  48897c2470             mov     qword ptr [rsp + 0x70], rdi
+00032f6e  33ff                   xor     edi, edi
+00032f70  33c0                   xor     eax, eax
+00032f72  418bd2                 mov     edx, r10d
+00032f75  4585d2                 test    r10d, r10d
+00032f78  0f8e7f000000           jle     0x180032ffd
+00032f7e  6690                   nop     
+00032f80  458d4a01               lea     r9d, [r10 + 1]
+00032f84  418bd2                 mov     edx, r10d
+00032f87  440fafce               imul    r9d, esi
+00032f8b  4403c8                 add     r9d, eax
+00032f8e  418d4901               lea     ecx, [r9 + 1]
+00032f92  440fb61c29             movzx   r11d, byte ptr [rcx + rbp]
+00032f97  458d4101               lea     r8d, [r9 + 1]
+00032f9b  4503c2                 add     r8d, r10d
+00032f9e  41803c297f             cmp     byte ptr [r9 + rbp], 0x7f
+00032fa3  410fb61c28             movzx   ebx, byte ptr [r8 + rbp]
+00032fa8  418d4801               lea     ecx, [r8 + 1]
+00032fac  440fb60429             movzx   r8d, byte ptr [rcx + rbp]
+00032fb1  7741                   ja      0x180032ff4
+00032fb3  4180fb7f               cmp     r11b, 0x7f
+00032fb7  773b                   ja      0x180032ff4
+00032fb9  80fb7f                 cmp     bl, 0x7f
+00032fbc  7736                   ja      0x180032ff4
+00032fbe  4180f87f               cmp     r8b, 0x7f
+00032fc2  7730                   ja      0x180032ff4
+00032fc4  448bc0                 mov     r8d, eax
+00032fc7  8bc8                   mov     ecx, eax
+00032fc9  4183e007               and     r8d, 7
+00032fcd  85c0                   test    eax, eax
+00032fcf  7907                   jns     0x180032fd8
+00032fd1  8d4807                 lea     ecx, [rax + 7]
+00032fd4  4183e808               sub     r8d, 8
+00032fd8  c1f903                 sar     ecx, 3
+00032fdb  03cf                   add     ecx, edi
+00032fdd  4863d1                 movsxd  rdx, ecx
+00032fe0  420fb60c3a             movzx   ecx, byte ptr [rdx + r15]
+00032fe5  440fabc1               bts     ecx, r8d
+00032fe9  42880c3a               mov     byte ptr [rdx + r15], cl
+00032fed  4533f6                 xor     r14d, r14d
+00032ff0  418b5514               mov     edx, dword ptr [r13 + 0x14]
+00032ff4  ffc0                   inc     eax
+00032ff6  448bd2                 mov     r10d, edx
+00032ff9  3bc2                   cmp     eax, edx
+00032ffb  7c83                   jl      0x180032f80
+00032ffd  ffc6                   inc     esi
+00032fff  4103fc                 add     edi, r12d
+00033002  448bd2                 mov     r10d, edx
+00033005  3bf2                   cmp     esi, edx
+00033007  0f8c63ffffff           jl      0x180032f70
+0003300d  488b7c2470             mov     rdi, qword ptr [rsp + 0x70]
+00033012  488b5c2460             mov     rbx, qword ptr [rsp + 0x60]
+00033017  488b4c2478             mov     rcx, qword ptr [rsp + 0x78]
+0003301c  b801000000             mov     eax, 1
+00033021  4c8b642430             mov     r12, qword ptr [rsp + 0x30]
+00033026  488b742468             mov     rsi, qword ptr [rsp + 0x68]
+0003302b  448931                 mov     dword ptr [rcx], r14d
+0003302e  4883c438               add     rsp, 0x38
+00033032  415f                   pop     r15
+00033034  415e                   pop     r14
+00033036  415d                   pop     r13
+00033038  5d                     pop     rbp
+00033039  c3                     ret     
+0003303a  cc                     int3    
+0003303b  cc                     int3    
+0003303c  cc                     int3    
+0003303d  cc                     int3    
+0003303e  cc                     int3    
+0003303f  cc                     int3    
+00033040  4055                   push    rbp
+00033042  56                     push    rsi
+00033043  57                     push    rdi
+00033044  4156                   push    r14
+00033046  4157                   push    r15
+00033048  4881ec70010000         sub     rsp, 0x170
+0003304f  488b0582830e00         mov     rax, qword ptr [rip + 0xe8382]
+00033056  4833c4                 xor     rax, rsp
+00033059  4889842450010000       mov     qword ptr [rsp + 0x150], rax
+00033061  4c8bb424c8010000       mov     r14, qword ptr [rsp + 0x1c8]
+00033069  33ff                   xor     edi, edi
+0003306b  4c8bbc24d0010000       mov     r15, qword ptr [rsp + 0x1d0]
+00033073  498be9                 mov     rbp, r9
+00033076  488bf1                 mov     rsi, rcx
+00033079  4d85c9                 test    r9, r9
+0003307c  7530                   jne     0x1800330ae
+0003307e  41b9ba010000           mov     r9d, 0x1ba
+00033084  4c8d057da70c00         lea     r8, [rip + 0xca77d]
+0003308b  488d0d2ea70c00         lea     rcx, [rip + 0xca72e]
+00033092  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00033097  488d15aa430c00         lea     rdx, [rip + 0xc43aa]
+0003309e  b903000000             mov     ecx, 3
+000330a3  ff1507d10b00           call    qword ptr [rip + 0xbd107]  ; imp:KGCommonX64.dll!KG_PrintfLog
+000330a9  e9e2000000             jmp     0x180033190
+000330ae  85d2                   test    edx, edx
+000330b0  0f88ad010000           js      0x180033263
+000330b6  3b512c                 cmp     edx, dword ptr [rcx + 0x2c]
+000330b9  0f8da4010000           jge     0x180033263
+000330bf  4585c0                 test    r8d, r8d
+000330c2  0f8889010000           js      0x180033251
+000330c8  443b4130               cmp     r8d, dword ptr [rcx + 0x30]
+000330cc  0f8d7f010000           jge     0x180033251
+000330d2  488d8144010000         lea     rax, [rcx + 0x144]
+000330d9  4c8d4940               lea     r9, [rcx + 0x40]
+000330dd  488d4c2440             lea     rcx, [rsp + 0x40]
+000330e2  403838                 cmp     byte ptr [rax], dil
+000330e5  7421                   je      0x180033108
+000330e7  4489442430             mov     dword ptr [rsp + 0x30], r8d
+000330ec  4c8d0525a70c00         lea     r8, [rip + 0xca725]
+000330f3  89542428               mov     dword ptr [rsp + 0x28], edx
+000330f7  ba04010000             mov     edx, 0x104
+000330fc  4889442420             mov     qword ptr [rsp + 0x20], rax
+00033101  e82af5feff             call    0x180022630
+00033106  eb1a                   jmp     0x180033122
+00033108  4489442428             mov     dword ptr [rsp + 0x28], r8d
+0003310d  4c8d0524a70c00         lea     r8, [rip + 0xca724]
+00033114  89542420               mov     dword ptr [rsp + 0x20], edx
+00033118  ba04010000             mov     edx, 0x104
+0003311d  e80ef5feff             call    0x180022630
+00033122  488b0dcfc30e00         mov     rcx, qword ptr [rip + 0xec3cf]
+00033129  4885c9                 test    rcx, rcx
+0003312c  0f840d010000           je      0x18003323f
+00033132  488b01                 mov     rax, qword ptr [rcx]
+00033135  488d542440             lea     rdx, [rsp + 0x40]
+0003313a  ff5040                 call    qword ptr [rax + 0x40]
+0003313d  85c0                   test    eax, eax
+0003313f  0f84fa000000           je      0x18003323f
+00033145  488d4c2440             lea     rcx, [rsp + 0x40]
+0003314a  48899c2468010000       mov     qword ptr [rsp + 0x168], rbx
+00033152  e8e96b0000             call    0x180039d40
+00033157  488bd8                 mov     rbx, rax
+0003315a  4885c0                 test    rax, rax
+0003315d  7552                   jne     0x1800331b1
+0003315f  488d0d5aa60c00         lea     rcx, [rip + 0xca65a]
+00033166  41b9cb010000           mov     r9d, 0x1cb
+0003316c  48894c2420             mov     qword ptr [rsp + 0x20], rcx
+00033171  4c8d0500a50c00         lea     r8, [rip + 0xca500]
+00033178  8d4803                 lea     ecx, [rax + 3]
+0003317b  488d15c6420c00         lea     rdx, [rip + 0xc42c6]
+00033182  ff1528d00b00           call    qword ptr [rip + 0xbd028]  ; imp:KGCommonX64.dll!KG_PrintfLog
+00033188  488b9c2468010000       mov     rbx, qword ptr [rsp + 0x168]

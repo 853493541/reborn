@@ -140,9 +140,18 @@ internal static class RebornClient
             lock (logLines)
             {
                 logLines.Add(DateTime.Now.ToString("HH:mm:ss") + " " + s);
-                if (logLines.Count > 200) logLines.RemoveRange(0, logLines.Count - 200);
+                if (logLines.Count > 400) logLines.RemoveRange(0, logLines.Count - 400);
             }
         };
+        // short visible tag from the exe name: reborn_client_collision.exe ->
+        // "collision" (canonical reborn_client.exe -> "canonical"); shown in
+        // the window title and the HUD's first line so parallel clients are
+        // distinguishable at a glance
+        string buildTag = Path.GetFileNameWithoutExtension(
+            System.Reflection.Assembly.GetExecutingAssembly().Location);
+        if (buildTag.StartsWith("reborn_client_")) buildTag = buildTag.Substring("reborn_client_".Length);
+        else if (buildTag == "reborn_client") buildTag = "canonical";
+
         // Build fingerprint (camera workstream logs are the camFP=True set):
         // exe name + mtime + build_info git hash + the active camera flag
         // defaults. Ends "which build/flags produced this log" ambiguity.
@@ -209,6 +218,22 @@ internal static class RebornClient
         var hud = new HudOverlay();
         form.Show();
         hud.PlaceOver(form);
+        // COPY LOG widget: clickable (the HUD overlay is click-through), owned
+        // by the host form; copies the recent run log to the clipboard.
+        var copyLog = new CopyLogOverlay();
+        copyLog.OnClick = delegate
+        {
+            try
+            {
+                string text;
+                lock (logLines) { text = string.Join("\r\n", logLines.ToArray()); }
+                if (text.Length == 0) text = "(no log yet)";
+                Clipboard.SetText(text);
+                Log("copied " + text.Length + " chars of log to clipboard");
+            }
+            catch (Exception e) { Log("clipboard copy failed: " + e.Message); }
+        };
+        copyLog.PlaceOver(form);
         Application.DoEvents();
 
         var baselib = new KGBaseCLR();
@@ -347,6 +372,13 @@ internal static class RebornClient
             sampler.Sample(0f, 0f);
         }
 
+        // P5 probe: drive the game's own physics stack inside this host
+        if (Env("RC_PHYS_PROBE", "0") == "1")
+        {
+            try { PhysicsProbe.Run(Log, mapPath); }
+            catch (Exception e) { Log("physprobe ex: " + e.Message); }
+        }
+
         // baked object/foliage collision (derived from the game's own map files)
         FoliageCollision col = null;
         try
@@ -359,7 +391,7 @@ internal static class RebornClient
             if (!File.Exists(sp)) sp = Path.Combine(colDir, "structure_collision.bin");
             if (File.Exists(fp) || File.Exists(sp))
             {
-                col = new FoliageCollision(fp, sp);
+                col = new FoliageCollision(fp, sp, 800f, Env("RC_OBST_FLAGS", "1") == "1");
                 Log("FoliageCollision: " + col.Describe()
                     + " foliage=" + (File.Exists(fp) ? Path.GetFileName(fp) : "(none)")
                     + " structures=" + (File.Exists(sp) ? Path.GetFileName(sp) : "(none)"));
@@ -506,7 +538,7 @@ internal static class RebornClient
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
         CameraObstruction camObst = new CameraObstruction();
-        double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")), out camObst.HitWindow);
+        double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0.4")), out camObst.HitWindow);
         CameraShake camShake = new CameraShake();
         // near-plane ladder knob: clearance used by the obstruction response
         double clearanceOverride;
@@ -624,6 +656,12 @@ internal static class RebornClient
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
+        // P2-T1: fixed 15 Hz logic tick (engine KCharacter model) + integer cm.
+        // Physics runs in whole 1/15 s ticks; the render/camera interpolate the
+        // remaining fraction (P2-T3).
+        float moveAcc = 0f;
+        float lastTickX = 0f, lastTickY = 0f, lastTickZ = 0f;
+        bool lastTickInit = false;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
         string curClip = null;
@@ -720,23 +758,28 @@ internal static class RebornClient
             else
             {
                 // default test spawn on 龙门寻宝 (override with RC_SPAWN=x,y,z)
-                px = 23334f; py = 761f; pz = 24224f;
+                px = 18991f; py = 962f; pz = 33853f;
             }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
             // the spawn region (observed on 龙门寻宝). Pump frames and retry
             // through the neighbouring region until real heights arrive.
-            py = sampler != null ? sampler.Sample(px, pz) : 0f;
-            if (sampler != null && py == 0f)
+            // RC_SPAWN_Y=1 keeps the provided absolute Y (indoor test spawns:
+            // floors above terrain are scene meshes, not terrain).
+            if (Env("RC_SPAWN_Y", "0") != "1")
             {
-                long warm = Environment.TickCount;
-                while (py == 0f && Environment.TickCount - warm < 10000)
+                py = sampler != null ? sampler.Sample(px, pz) : 0f;
+                if (sampler != null && py == 0f)
                 {
-                    Pump(engine, 250);
-                    sampler.Sample(px - 51200f, pz);
-                    py = sampler.Sample(px, pz);
+                    long warm = Environment.TickCount;
+                    while (py == 0f && Environment.TickCount - warm < 10000)
+                    {
+                        Pump(engine, 250);
+                        sampler.Sample(px - 51200f, pz);
+                        py = sampler.Sample(px, pz);
+                    }
+                    Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
                 }
-                Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
             }
             Log(string.Format("spawn=({0:F0},{1:F0},{2:F0}) view=({3:F2},{4:F2})", px, py, pz, viewX, viewZ));
         }
@@ -896,6 +939,8 @@ internal static class RebornClient
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
+        bool supDbg = Env("RC_SUPDBG", "0") == "1";
+        int supDbgN = 0;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
         bool camZoomSeq = Env("RC_CAM_ZOOMSEQ", "0") == "1";
         int zoomSeqStep = -1;
@@ -1240,7 +1285,12 @@ internal static class RebornClient
         float curJumpGravity = -pGravity;
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
-        float pSpeed = 96f, pRun = 320f;
+        // Real locomotion speeds from the shipped CommonNumber table
+        // (proof/gravity/number.krl.txt): CharacterWalkSpeed=6, CharacterRunSpeed=20
+        // in units per 15 Hz logic frame -> 90 / 300 u/s (exact integer per tick;
+        // the merge reconciles the old 16 fps 96/320 conversion to the engine's
+        // verified 15 Hz tick).
+        float pSpeed = 90f, pRun = 300f;
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
@@ -1249,10 +1299,40 @@ internal static class RebornClient
         float playerRadius = 17f, playerHeight = 116f;
         float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
         float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
+        // Character step budget (host proxy for the server-authoritative step;
+        // the client's own prediction has no capsule-vs-mesh blocking at all,
+        // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
+        // tolerance constant (KCharacter::ProcessVerticalMove 0x14031A25E,
+        // 1 尺) and the value covering the 51 u house-floor field case. The
+        // PhysX PxControllerDesc ctor default (stepOffset 0.5 m = 50 u; dump
+        // proof/collision/disasm/pxcontrollerdesc_ctor.txt) belongs to the
+        // PhysX controller layer only - G-1: no proof the player uses a
+        // PxController (the gameplay body is the SIMWorld/KCharacter solver).
+        // RC_STEP_HEIGHT overrides. Registered deviation 4f (OPEN).
+        float stepHeight = 64f;
+        float.TryParse(Env("RC_STEP_HEIGHT", "64"), out stepHeight);
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
+        // host proxy: 小物件 props are solid (RC_PROP_SOLID=0 disables)
+        // Default OFF since 2026-10-02: props now collide as their mesh
+        // triangles (the engine rule), so the AABB shover is redundant and
+        // ejected players from empty AABB corners.
+        bool propSolid = Env("RC_PROP_SOLID", "0") == "1";
+        int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
+        // camera anchor-Y smooth-follow (B14): the engine smooths the followed
+        // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition",
+        // CharacterCameraSmoothTime=60 ms in Represent/common/number.krl.txt).
+        // The host feeds the raw physics py as the anchor, so a discrete step
+        // snap (up to the 64 u ground tolerance) teleported the camera. Only
+        // discrete snaps are eased; continuous slope/jump motion passes through.
+        double camYSmooth = 0.0, camYPrevRaw = 0.0;
+        bool camYInit = false, camYEasing = false;
+        bool camYFollow = Env("RC_CAM_YFOLLOW", "1") == "1";
+        bool camYDbg = Env("RC_CAM_YDBG", "0") == "1";
+        double camYMaxRate = 1200.0;
+        double.TryParse(Env("RC_CAM_YRATE", "1200"), out camYMaxRate);
         double[] rSm = new double[3];
         bool rSmInit = false;
         bool shakeDbg = Env("RC_CAM_SHAKEDBG", "0") == "1";
@@ -1271,6 +1351,40 @@ internal static class RebornClient
         bool penDbg = Env("RC_CAM_PENDBG", "0") == "1";
         string penMapName = "";
         try { penMapName = System.IO.Path.GetFileNameWithoutExtension(mapPath); } catch { }
+        // terrain-hole A/B dump (RC_HOLE_DUMP=<dir>): writes the packed mask
+        // of every hole region the terrain sampler loads, for comparison with
+        // the extracted .hlb files (proof/collision/terrain_extra)
+        string holeDumpDir = Env("RC_HOLE_DUMP", "");
+        int lastHoleIx = int.MinValue, lastHoleIz = int.MinValue;
+        int lastBlkInstLogged = -1;
+        // collision profile (RC_COL_PROF=1): per-frame collision cost and the
+        // deepest contact that last blocked the move
+        bool colProf = Env("RC_COL_PROF", "0") == "1";
+        var colSw = new System.Diagnostics.Stopwatch();
+        double colMsSum = 0, colMsMax = 0;
+        long colProfFrames = 0, colCallsPrev = 0;
+        var camSw = new System.Diagnostics.Stopwatch();
+        double camMsSum = 0, camMsMax = 0;
+        long camProfFrames = 0;
+        // camera obstruction query cadence: the native ray set costs ~1.3-2.4 ms
+        // per query and up to ~10 ms on stall frames next to large buildings
+        // (RC_COL_PROF: nat+vert), which halved the frame rate at the 玉门关
+        // building (122 vs 240 fps). The game's camera runs at its render
+        // cadence; the host caps the managed query set to 20 Hz (env
+        // RC_CAM_OBSTHZ, 0 = every frame); placement smoothing/hysteresis still
+        // run every frame on the last hit. PROVISIONAL host policy - re-open
+        // when the engine's own camera query cadence is recovered.
+        double camQueryHz = 20.0;
+        {
+            double cv;
+            if (double.TryParse(Env("RC_CAM_OBSTHZ", "20"), out cv)) camQueryHz = cv;
+        }
+        double camQueryAcc = 0, lastCamHit = -1.0;
+        var bakeSw = new System.Diagnostics.Stopwatch();
+        var natSw = new System.Diagnostics.Stopwatch();
+        var vertSw = new System.Diagnostics.Stopwatch();
+        var sampSw = new System.Diagnostics.Stopwatch();
+        double bakeMsSum = 0, natMsSum = 0, vertMsSum = 0, sampMsSum = 0;
         var penRing = new System.Collections.Generic.List<string>();
         var penCur = new System.Text.StringBuilder();
         long penLastLog = 0, penLastSummary = 0;
@@ -1701,6 +1815,14 @@ internal static class RebornClient
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
                 pW = now >= 3000 && now < 9000;
             }
+            // scripted jump-only probe (RC_DEMO_JUMP=1): one full jump at t=5.5 s
+            // (lands on a heartbeat sample mid-air), no walking - vertical
+            // penetration test (roofs) at a spawn.
+            if (Env("RC_DEMO_JUMP", "0") == "1" && now >= 5500 && !demoJumped)
+            {
+                demoJumped = true;
+                jumpPressed = true;
+            }
             if (rotTest)
             {
                 if (rotTestStart == 0) rotTestStart = now;
@@ -1908,9 +2030,33 @@ internal static class RebornClient
             float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
             if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
 
-            // horizontal move + slope blocking (map-host rules)
-            float ground = sampler != null ? sampler.Sample(px, pz) : py;
+            // P2-T1: whole logic ticks only (66.7 ms); remaining time is the
+            // render interpolation fraction (P2-T3).
+            const float MOVE_TICK = 1f / 15f;
+            moveAcc += dt;
+            int moveTicks = (int)(moveAcc / MOVE_TICK);
+            if (moveTicks > 4) moveTicks = 4;          // hitch guard
+            moveAcc -= moveTicks * MOVE_TICK;
+            if (moveTicks > 0)
+            {
+                lastTickX = px; lastTickY = py; lastTickZ = pz;
+                lastTickInit = true;
+            }
             bool blocked = false;
+            for (int mti = 0; mti < moveTicks; mti++)
+            {
+            float pdt = MOVE_TICK;
+            // horizontal move + slope blocking (map-host rules); terrain holes
+            // (real LoadHoleRegion data) carry no ground at all. Long moves are
+            // split into substeps so a step cannot tunnel a thin collider, and
+            // the climb check uses a fixed 40 u look-ahead so the slope limit
+            // does not depend on speed/framerate (map-host rule, C-3/C-4).
+            float ground = py;
+            bool groundOk = true;
+            if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+            float mvx = 0f, mvz = 0f;
+            float subStep = 0f;
+            int subCount = 1;
             if (moving)
             {
                 float sp = (shiftDown ? pRun * 10f
@@ -1921,29 +2067,106 @@ internal static class RebornClient
                 // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
                 // direction; facing turns toward it at the turn rate; a turn
                 // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
-                // and the turn step that frame.
+                // and the turn step that tick.
                 float heading = (float)Math.Atan2(ux, uz);
                 float dYaw = heading - curYaw;
                 while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
                 while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
                 bool hardTurn = Math.Abs(dYaw) > 2.0071f;
                 if (hardTurn) sp *= 0.5f;
-                float turnStep = charTurnRate * dt * (hardTurn ? 0.5f : 1f);
+                float turnStep = charTurnRate * pdt * (hardTurn ? 0.5f : 1f);
                 if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
                 else curYaw += Math.Sign(dYaw) * turnStep;
-                float step = sp * dt;
-                float tryX = px + ux * step, tryZ = pz + uz * step;
-                float gh = sampler != null ? sampler.Sample(tryX, tryZ) : ground;
-                if (gh - ground > 70f)
-                {
-                    blocked = true;
-                    float gx2 = sampler != null ? sampler.Sample(tryX, pz) : ground;
-                    float gz2 = sampler != null ? sampler.Sample(px, tryZ) : ground;
-                    if (gx2 - ground <= 70f) { px = tryX; }
-                    else if (gz2 - ground <= 70f) { pz = tryZ; }
-                }
-                else { px = tryX; pz = tryZ; }
+                // the engine moves integer units per logic frame (u/f); make
+                // the per-tick displacement integral too
+                float step = (float)Math.Round(sp * pdt);
+                if (step < 1f && sp > 0f) step = 1f;
+                mvx = ux; mvz = uz;
+                // substep cap stays BELOW the capsule radius: at >= radius a
+                // thin small face (foliage leaf/branch) lets the centre pass
+                // the sheet inside one substep and the contact degenerates to
+                // an edge push - the capsule creeps through (audit class
+                // 2026-09-30, full-map sweep).
+                float subCap = Math.Min(20f, playerRadius * 0.9f);
+                if (subCap < 1f) subCap = 1f;
+                if (step > subCap) subCount = (int)Math.Ceiling(step / subCap);
+                if (subCount > 64) subCount = 64;
+                subStep = step / subCount;
             }
+            if (colProf) colSw.Restart();
+            for (int si = 0; si < subCount; si++)
+            {
+                float sdx = 0f, sdz = 0f;
+                if (moving)
+                {
+                    sdx = mvx * subStep;
+                    sdz = mvz * subStep;
+                    // Engine ground rule (KCharacter::ProcessVerticalMove,
+                    // 0x140318E73: y = min(y, ground); ground = terrain cell
+                    // height): terrain rises never block horizontally, they
+                    // raise the character. No rise-budget check here.
+                }
+                px += sdx;
+                pz += sdz;
+                if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+
+                // object/foliage collision (walls, buildings, rocks, trees)
+                if (col != null)
+                {
+                    // CCT semantics only: movement climbs via faces the
+                    // capsule actually contacts (Resolve's step branch).
+                    // (The caller-side SupportHeight raise was a host shortcut:
+                    // any surface within +64 u under the capsule centre lifted
+                    // the player every tick, which chained up stepped props
+                    // like the 270 u wood pile.)
+                    colCalls++;
+                    float gBefore = ground;
+                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
+                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
+                        0f, mvx, mvz);
+                    if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                    if (ground > gBefore + 0.01f) groundOk = true;   // structure support
+                    if (grounded)
+                    {
+                        // Support raise: only to a surface the capsule can
+                        // actually stand on. Without the fit test an overhang
+                        // underside (a stepped wall's molding) under the
+                        // capsule centre lifted the player every tick - field
+                        // case: the Yumen building back wall (2026-09-30).
+                        float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
+                        if (sh > ground && !col.CapsuleBlockedDown(px, sh, pz, playerRadius, playerHeight))
+                        { ground = sh; groundOk = true; }
+                        else if (sh > ground && supDbg && supDbgN < 40)
+                        {
+                            supDbgN++;
+                            Log(string.Format(
+                                "suprej sh={0:F1} py={1:F1} pos=({2:F0},{3:F0}) depth={4:F2} cpy={5:F1} triTop={6:F1} inst={7} stepRej={8} stepTop={9:F1}",
+                                sh, py, px, pz, col.LastProbeDepth, col.LastProbePy,
+                                col.LastProbeTriTop, col.LastProbeInst, col.StepRejectCount, col.LastStepRejectTop));
+                        }
+                    }
+                }
+            }
+            if (col != null && propSolid)
+            {
+                int pfInst;
+                if (col.SolidPropPush(ref px, ref py, ref pz, playerRadius, playerHeight, ground, grounded, 70f, out pfInst))
+                {
+                    propFixEvents++;
+                    if (propFixEvents <= 20)
+                        Log(string.Format("propfix inst={0} pos=({1:F0},{2:F0},{3:F0}) dbg={4}",
+                            pfInst, px, py, pz, col.LastEjectDbg));
+                }
+            }
+            if (colProf)
+            {
+                colSw.Stop();
+                double msProf = colSw.Elapsed.TotalMilliseconds;
+                colMsSum += msProf;
+                colProfFrames++;
+                if (msProf > colMsMax) colMsMax = msProf;
+            }
+            if (moving) curYaw = (float)Math.Atan2(mvx, mvz);
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
             // camera direction; LMB drag rotates the camera only. The turn is
@@ -1954,49 +2177,25 @@ internal static class RebornClient
                 float d = targetYaw - curYaw;
                 while (d > Math.PI) d -= 2f * (float)Math.PI;
                 while (d < -Math.PI) d += 2f * (float)Math.PI;
-                float step = charTurnRate * (float)dt;
+                float step = charTurnRate * (float)pdt;
                 if (Math.Abs(d) <= step) curYaw = targetYaw;
                 else curYaw += Math.Sign(d) * step;
             }
 
-            // object/foliage collision (walls, buildings, rocks, trees)
-            if (col != null)
-            {
-                float stepGround = col.SupportHeight(px, pz, py - 20f, py + 70f);
-                if (moving)
-                {
-                    float ux2 = dirX / len, uz2 = dirZ / len;
-                    for (int si = 1; si <= 3; si++)
-                    {
-                        float sd = playerRadius + si * 25f;
-                        float sh2 = col.SupportHeight(px + ux2 * sd, pz + uz2 * sd, py - 20f, py + 70f);
-                        if (sh2 > stepGround) stepGround = sh2;
-                    }
-                }
-                if (stepGround > ground)
-                {
-                    ground = stepGround;
-                }
-                else
-                {
-                    colCalls++;
-                    bool sBlocked = col.Resolve(ref px, ref py, ref pz,
-                        playerRadius, playerHeight, ref ground, ref grounded);
-                    if (sBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
-                    if (grounded)
-                    {
-                        float sh = col.SupportHeight(px, pz, py - 150f, py + 60f);
-                        if (sh > ground) ground = sh;
-                    }
-                }
-            }
-
-            // grounded / ledge / step (map-host rules)
+            // grounded / step / drop - engine rules (KCharacter::ProcessVerticalMove
+            // 0x140318E73 clamps y = min(y, ground); the 64 u = 1 尺 landing
+            // tolerance at 0x14031A25E):
+            //  - higher ground raises the character (no rise-budget on terrain
+            //    or steppable structures);
+            //  - drops up to 64 u stay snapped (walking down slopes);
+            //  - larger drops make the character airborne.
             if (grounded)
             {
-                if (py - ground > 150f) { grounded = false; vy = 0f; }
-                else if (py > ground) py = ground;
-                else if (ground - py <= 70f) py = ground;
+                if (!groundOk) { grounded = false; vy = 0f; }
+                else if (py < ground) py = ground;
+                else if (vy > 0f) grounded = false;          // ascending: a jump is never re-grounded
+                else if (py - ground <= 64f) py = ground;
+                else { grounded = false; vy = 0f; }
             }
 
             // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
@@ -2036,13 +2235,20 @@ internal static class RebornClient
             if (!grounded)
             {
                 float vyBefore = vy;
-                vy -= curJumpGravity * dt;
-                py += vy * dt;
+                vy -= curJumpGravity * pdt;
+                py += vy * pdt;
                 // apex sample: the model transform must have followed the physics
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
                     "djb apex n={0} py={1:F0} modelY={2:F0}", jumpCount, py, lastModelY));
-                if (py <= ground)
+                // rising motion is resolved too (field case: a jump must not
+                // pass up through a thin roof slab; horizontal faces oppose the
+                // rise). Falling keeps the existing ground snap - resolving it
+                // here created a fall->push-up ratchet at overlapping ledges.
+                if (col != null && vy > 0f)
+                    col.Resolve(ref px, ref py, ref pz,
+                        playerRadius, playerHeight, ref ground, ref grounded, stepHeight, vy, mvx, mvz);
+                if (py <= ground && groundOk)
                 {
                     py = ground;
                     float impact = vy;
@@ -2055,6 +2261,17 @@ internal static class RebornClient
                 }
             }
             else jumpCount = 0;
+            // engine integer positions (u = cm)
+            px = (float)Math.Round(px);
+            py = (float)Math.Round(py);
+            pz = (float)Math.Round(pz);
+            }
+            // P2-T3 render position: interpolate between the pre-tick state and
+            // the current tick state by the remaining tick fraction.
+            float rAlpha = lastTickInit ? Math.Min(1f, moveAcc / MOVE_TICK) : 0f;
+            float rpx = lastTickX + (px - lastTickX) * rAlpha;
+            float rpy = lastTickY + (py - lastTickY) * rAlpha;
+            float rpz = lastTickZ + (pz - lastTickZ) * rAlpha;
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
@@ -2066,12 +2283,12 @@ internal static class RebornClient
             // Y must be part of the gate: a standing jump changes py only, and
             // without it the model stays at the takeoff height (stutter/"stuck
             // in the middle"); moving jumps updated via X/Z and looked fine.
-            if (Math.Abs(px - lastModelX) > 0.5f || Math.Abs(py - lastModelY) > 0.5f ||
-                Math.Abs(pz - lastModelZ) > 0.5f ||
+            if (Math.Abs(rpx - lastModelX) > 0.5f || Math.Abs(rpy - lastModelY) > 0.5f ||
+                Math.Abs(rpz - lastModelZ) > 0.5f ||
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
-                placePlayer(px, py, pz, curYaw);
-                lastModelX = px; lastModelY = py; lastModelZ = pz; lastModelYaw = curYaw;
+                placePlayer(rpx, rpy, rpz, curYaw);
+                lastModelX = rpx; lastModelY = rpy; lastModelZ = rpz; lastModelYaw = curYaw;
             }
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
@@ -2146,16 +2363,6 @@ internal static class RebornClient
                 // term. Never use tan(pitch) here (the old bug scaled the orbit
                 // radius while dragging, so dragging changed the distance).
                 double camHeight = camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter;
-                double ax2 = px, ay2 = py + 90.0, az2 = pz;
-                // Camera probes + obstruction use the candidate (desired) camera
-                // line, not the per-axis smoothed offset: smoothing a rotating
-                // vector through its chord shortens it, and feeding that to the
-                // obstruction state machine snapped the camera in on fast flicks
-                // (immediate "shortening") with a slow flex return (HOST_DEVIATIONS
-                // B15). The game's per-axis SmoothTime now applies once, to the
-                // resolved offset (rSm) below.
-                double[] camOff = new double[3];
-                CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 bool doSmooth = (cameraSettings == null || cameraSettings.CameraSmoothing) &&
                                 Env("RC_CAM_NOSMOOTH", "0") != "1";
                 // Placement smoothing is one shared state in every camera mode
@@ -2166,6 +2373,61 @@ internal static class RebornClient
                 // dragging in sprint mode (2026-09-30 camera-wwdrag repro).
                 double stime = Math.Max(
                     camSys.Rows[CameraSystem.MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
+                // B14 anchor-Y smooth-follow: the engine smooths the followed
+                // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition";
+                // CharacterCameraSmoothTime = 60 ms, Represent/common/number.krl.txt).
+                // The host feeds raw physics py + 90 as the anchor, so a discrete
+                // vertical snap (step/ledge, up to the 64 u ground tolerance)
+                // teleported the camera. Only one-frame snaps (|dy| > 5 u while
+                // grounded) are eased over SmoothTime; continuous slope motion and
+                // airborne frames pass through. Kill switch RC_CAM_YFOLLOW=0.
+                double ay2Raw = py + 90.0;
+                if (!camYInit)
+                {
+                    camYSmooth = ay2Raw; camYPrevRaw = ay2Raw; camYInit = true;
+                }
+                if (grounded && Math.Abs(ay2Raw - camYPrevRaw) > 5.0) camYEasing = true;
+                double camYBefore = camYSmooth;
+                if (camYEasing && camYFollow && doSmooth)
+                {
+                    double dy3 = ay2Raw - camYSmooth;
+                    if (Math.Abs(dy3) > 0.05)
+                    {
+                        // exponential follow (native rule) with a frame-time
+                        // clamp; the catch-up rate is capped so a multi-snap
+                        // climb (hundreds of u in a few frames) is traversed at
+                        // a bounded speed instead of teleporting (RC_CAM_YRATE).
+                        double yFrac = Math.Min(dt, 0.005) / stime;
+                        double yStep = dy3 * yFrac;
+                        double yCap = camYMaxRate * Math.Min(dt, 0.02);
+                        if (Math.Abs(yStep) > yCap) yStep = (yStep > 0.0 ? yCap : -yCap);
+                        camYSmooth += yStep;
+                    }
+                    else
+                    {
+                        camYSmooth = ay2Raw;
+                        camYEasing = false;
+                    }
+                }
+                else
+                {
+                    camYSmooth = ay2Raw;
+                    camYEasing = false;
+                }
+                if (camYDbg && Math.Abs(ay2Raw - camYPrevRaw) > 4.0)
+                    Log(string.Format("ydbg rawstep={0:F1} sm={1:F1} grounded={2}",
+                        ay2Raw - camYPrevRaw, camYSmooth - camYBefore, grounded));
+                camYPrevRaw = ay2Raw;
+                double ax2 = rpx, ay2 = camYSmooth, az2 = rpz;
+                // Camera probes + obstruction use the candidate (desired) camera
+                // line, not the per-axis smoothed offset: smoothing a rotating
+                // vector through its chord shortens it, and feeding that to the
+                // obstruction state machine snapped the camera in on fast flicks
+                // (immediate "shortening") with a slow flex return (HOST_DEVIATIONS
+                // B15). The game's per-axis SmoothTime now applies once, to the
+                // resolved offset (rSm) below.
+                double[] camOff = new double[3];
+                CameraSystem.DesiredOffset(camSys.Yaw, camSys.Pitch, dist, camHeight, camOff);
                 double offLen = Math.Sqrt(camOff[0] * camOff[0] + camOff[1] * camOff[1] + camOff[2] * camOff[2]);
                 if (offLen < 1e-3) offLen = 1e-3;
                 double ux = camOff[0] / offLen, uy = camOff[1] / offLen, uz = camOff[2] / offLen;
@@ -2177,7 +2439,16 @@ internal static class RebornClient
                 double hitDist = -1.0;
                 string hitSrc = "";
                 bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
-                if (col != null)
+                if (colProf) camSw.Restart();
+                bool doCamQuery = true;
+                if (camQueryHz > 0.0)
+                {
+                    camQueryAcc += dt;
+                    if (camQueryAcc >= 1.0 / camQueryHz) camQueryAcc = 0.0;
+                    else doCamQuery = false;
+                }
+                if (!doCamQuery) hitDist = lastCamHit;
+                if (col != null && doCamQuery)
                 {
                     double rx = uz, rz = -ux;
                     double rl = Math.Sqrt(rx * rx + rz * rz);
@@ -2190,6 +2461,7 @@ internal static class RebornClient
                     // perimeter at 45 deg). The +0x15c trigger that selects the
                     // 9-ray mode is not recovered, so it stays opt-in.
                     int probeCount = nineRay ? 9 : 5;
+                    if (colProf) { bakeSw.Restart(); natSw.Restart(); }
                     for (int p = 0; p < probeCount; p++)
                     {
                         double ox2 = 0, oy2 = 0, oz2 = 0;
@@ -2216,9 +2488,11 @@ internal static class RebornClient
                         bool bBlk = col.LastBlocksCamera, bFol = col.LastFromFoliage;
                         // engine rays: the game's camera mask 0x301 covers terrain
                         // and scene entities, which the baked set cannot fully cover
+                        if (colProf) { bakeSw.Stop(); natSw.Start(); }
                         float th = engineRay.RayTerrain(px2, py2, pz2, qx2, qy2, qz2);
                         if (th > 0f && (h <= 0f || th < h)) h = th;
                         float sh = sceneRayCam ? engineRay.RayScene(px2, py2, pz2, qx2, qy2, qz2) : -1f;
+                        if (colProf) { natSw.Stop(); bakeSw.Start(); }
                         if (sh > 0f && sh < sceneMin) sh = -1f;   // self/exit faces (B12)
                         if (sh > 0f && (h <= 0f || sh < h)) h = sh;
                         // degenerate-hit guard (registered, RC_CAM_HITMIN=0
@@ -2252,6 +2526,19 @@ internal static class RebornClient
                 // engine vertical backend: the game mask's vertical probe.
                 // Sampling it along the camera line catches vertical/cliff
                 // geometry no horizontal ray reports.
+                if (colProf && doCamQuery)
+                {
+                    bakeSw.Stop(); natSw.Stop();
+                    bakeMsSum += bakeSw.Elapsed.TotalMilliseconds;
+                    natMsSum += natSw.Elapsed.TotalMilliseconds;
+                }
+                // The vertical ladder is a host-authored extra (not in the
+                // recovered engine probe set); when the horizontal probes
+                // already found a wall it is skipped - next to the big 玉门关
+                // building it alone cost ~1.9 ms/frame (RC_COL_PROF).
+                if (doCamQuery && hitDist < 0.0)
+                {
+                if (colProf) vertSw.Restart();
                 for (int i = 2; i <= 14; i++)
                 {
                     double t = (double)i / 14.0;
@@ -2275,9 +2562,12 @@ internal static class RebornClient
                         break;
                     }
                 }
+                if (colProf) { vertSw.Stop(); vertMsSum += vertSw.Elapsed.TotalMilliseconds; }
+                }
                 // terrain read as another obstruction ray (center probe march)
-                if (sampler != null)
+                if (sampler != null && doCamQuery)
                 {
+                    if (colProf) sampSw.Restart();
                     const double margin = 20.0;
                     const int steps = 14;
                     for (int i = 2; i <= steps; i++)
@@ -2297,10 +2587,20 @@ internal static class RebornClient
                         }
                     }
                 }
+                if (colProf && doCamQuery) { sampSw.Stop(); sampMsSum += sampSw.Elapsed.TotalMilliseconds; }
+                lastCamHit = hitDist;
                 hitDist = camObst.Stabilize(dt, hitDist);
                 double camLen = camObst.Update(dt, offLen, hitDist);
                 dbgHit = hitDist; dbgLen = camLen; dbgObst = camObst.Obstructed;
                 dbgEffDist = dist; dbgSrc = hitSrc;
+                if (colProf && doCamQuery)
+                {
+                    camSw.Stop();
+                    double cms = camSw.Elapsed.TotalMilliseconds;
+                    camMsSum += cms;
+                    camProfFrames++;
+                    if (cms > camMsMax) camMsMax = cms;
+                }
                 // resolved-offset smoothing (their plan step 3): the pull result
                 // moves at the same per-axis limited rate as the orbit offset,
                 // so a one-frame hit change (corner-probe graze 123->88, backend
@@ -3059,6 +3359,41 @@ internal static class RebornClient
             if (now - lastLog >= 2000)
             {
                 lastLog = now;
+                // name the first blocker of each new contact (evidence: which
+                // source model blocks the player, from the .meshes.txt sidecar)
+                if (col != null && blocked && col.LastBlockedInst >= 0 &&
+                    col.LastBlockedInst != lastBlkInstLogged)
+                {
+                    lastBlkInstLogged = col.LastBlockedInst;
+                    int bmi = col.GetInstanceMesh(col.LastBlockedInst);
+                    string bmp = col.GetMeshPath(bmi);
+                    Log(string.Format("blocked by inst={0} mesh={1} top={2:F1} feet={3:F1} {4}",
+                        col.LastBlockedInst, bmi, col.LastBlockedTriTop, py,
+                        bmp == null ? "(no name sidecar)" : bmp));
+                }
+                if (holeDumpDir.Length > 0 && sampler != null && sampler.HasHoles &&
+                    (sampler.HoleRegionX != lastHoleIx || sampler.HoleRegionZ != lastHoleIz))
+                {
+                    lastHoleIx = sampler.HoleRegionX;
+                    lastHoleIz = sampler.HoleRegionZ;
+                    try
+                    {
+                        byte[] mask = sampler.HoleMaskCopy();
+                        string fp = Path.Combine(holeDumpDir,
+                            string.Format("holes_{0}_{1:D3}_{2:D3}.bin", penMapName, lastHoleIx, lastHoleIz));
+                        using (System.IO.BinaryWriter w = new System.IO.BinaryWriter(System.IO.File.Create(fp)))
+                        {
+                            w.Write(1);
+                            w.Write(sampler.RegionSize);
+                            w.Write(lastHoleIx);
+                            w.Write(lastHoleIz);
+                            w.Write(mask.Length);
+                            w.Write(mask);
+                        }
+                        Log("hole dump -> " + fp + " bytes=" + mask.Length);
+                    }
+                    catch (Exception e) { Log("hole dump ex: " + e.Message); }
+                }
                 string nearInfo = "";
                 if (colDebug && col != null)
                 {
@@ -3075,6 +3410,39 @@ internal static class RebornClient
                                 cand[ci], ax, ay, az, bx, by, bz);
                     }
                     nearInfo += string.Format(" py={0:F0}", py);
+                }
+                if (colProf)
+                {
+                    long profTri = 0, profInst = 0;
+                    if (col != null)
+                    {
+                        profTri = col.ProfTriTests;
+                        profInst = col.ProfInstTouches;
+                        col.ProfTriTests = 0;
+                        col.ProfInstTouches = 0;
+                    }
+                    nearInfo += string.Format(" colms=avg{0:F2}/max{1:F2} tri={2} inst={3} calls={4}",
+                        colProfFrames > 0 ? colMsSum / colProfFrames : 0.0, colMsMax,
+                        profTri, profInst, colCalls - colCallsPrev);
+                    nearInfo += string.Format(" camms=avg{0:F2}/max{1:F2} n={6} bake={2:F2} nat={3:F2} vert={4:F2} samp={5:F2}",
+                        camProfFrames > 0 ? camMsSum / camProfFrames : 0.0, camMsMax,
+                        camProfFrames > 0 ? bakeMsSum / camProfFrames : 0.0,
+                        camProfFrames > 0 ? natMsSum / camProfFrames : 0.0,
+                        camProfFrames > 0 ? vertMsSum / camProfFrames : 0.0,
+                        camProfFrames > 0 ? sampMsSum / camProfFrames : 0.0,
+                        camProfFrames);
+                    colMsSum = 0; colMsMax = 0; colProfFrames = 0; colCallsPrev = colCalls;
+                    camMsSum = 0; camMsMax = 0; camProfFrames = 0;
+                    bakeMsSum = 0; natMsSum = 0; vertMsSum = 0; sampMsSum = 0;
+                    if (col != null && blocked && col.LastBlockedInst >= 0)
+                    {
+                        float bx0, by0, bz0, bx1, by1, bz1;
+                        col.GetInstanceBounds(col.LastBlockedInst, out bx0, out by0, out bz0, out bx1, out by1, out bz1);
+                        nearInfo += string.Format(" blkInst={0} depth={1:F1} n=({2:F2},{3:F2},{4:F2}) py={5:F0} AABB({6:F0},{7:F0},{8:F0})-({9:F0},{10:F0},{11:F0})",
+                            col.LastBlockedInst, col.LastBlockedDepth,
+                            col.LastBlockedNx, col.LastBlockedNy, col.LastBlockedNz, col.LastBlockedPy,
+                            bx0, by0, bz0, bx1, by1, bz1);
+                    }
                 }
                 float curSpd = !moving ? 0f
                              : shiftDown ? pRun * 10f
