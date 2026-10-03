@@ -1621,3 +1621,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.31; proof/netcode/v2_real_loading_window_20261002.png (flat #0C0C0C,
   300x167); screen capture kept local.
 - Outcome: first visible V2 milestone; next = find the creator of sub+0x18.
+### 2026-10-02 — V2 — write-watchpoint on sub+0x18: no creator runs
+- Did: probe_watchwrite.py - DEBUG_ONLY_THIS_PROCESS, launch block, vtable-scan for the state
+  sub (exe+0x953E50, state+0xE8==sub), DR0/DR1 write watchpoints on sub+0x18 on all threads.
+- Findings: only the teardown writes (exe+0x9D111 mov [rsi+0x18],rbp -> 0) in the cleanup
+  function 0x9D090-0x9D11C (which destroys the object via vt[0] if present); NO non-zero
+  write ever - the platform object is never created in the probe. So the creator is gated by
+  the missing launcher input, not a branch we can flip. Debugger tolerated (~2x slower boot).
+- Evidence: doc sec.32; probe run output (SINGLE_STEP dr6=0xFFFF0FF1 RIP=0x...9D115).
+- Outcome: P1.2 (launcher IPC/handshake) is the only path forward; the gate itself is solved.

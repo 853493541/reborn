@@ -630,3 +630,27 @@ Static decode of the wait/pump chain:
   object; the creator of `sub+0x18` is the real remaining blocker.
 - This is the first visible V2 milestone: the real client runs in our harness and shows its
   loading window; everything after it waits on the platform object.
+
+## 32. Hardware write-watchpoint on sub+0x18: no creator runs (2026-10-02, twenty-sixth pass)
+
+Tool: `tools/netcode/probe_watchwrite.py` (new). Spawns the client under
+`DEBUG_ONLY_THIS_PROCESS` (our own probe child; the debugger attach was tolerated - no
+anti-debug stop, timeline ~2x slower), creates the launch block before continuing, finds the
+state sub-object by scanning memory for its vtable (`exe+0x953E50`) with the self-consistency
+`state+0xE8 == sub` (two state instances exist), and arms DR0/DR1 as 8-byte write
+watchpoints on `sub+0x18` on every thread (DR7 RW=01, LEN=11).
+
+Result:
+
+- The **only** write that fires is the teardown at `exe+0x9D111` (`mov [rsi+0x18], rbp`,
+  clearing the field to 0) inside the state-cleanup function `0x14009D090-0x14009D11C`
+  (which also destroys the object via `[sub+0x18]->vt[0]` when it is non-null).
+- **No non-zero write ever occurs** - the platform object is not created in the probe, not
+  even transiently. The creator is therefore gated by the missing launcher input (the
+  PlatformInitialize/login handshake), not by a skippable branch we could flip.
+- The teardown confirms the intended lifecycle: `sub+0x18` is expected to hold an object
+  with a vtable whose slot 0 is the destructor and slot 8 the "ready" check.
+
+Consequence for the plan: P1.2 (launcher-provided input: loopback IPC / security handshake)
+is now the only path - find what the real launcher supplies and emulate it; the client then
+creates the platform object itself.
