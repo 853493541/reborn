@@ -592,6 +592,19 @@ existence predicate to the host's loose-file layout (host file-layer bridge, to 
 registered as a deviation with re-open criteria), or find the missing wiring that
 lets the wrapper see loose files; then the map renders and the app port proceeds.
 
+**Phase 3 — camera set; paint blocked on sun/shadow camera (host20.out).** The view
+exposes its camera (`view->vt[10](&camera)` → non-null); `KG3D_Camera::SetPose`
+(`0xB36540`) with `KG3D_CAMERA_POSE = {float eye[3]; float target[3]; float up[3]}`
+(0x24 bytes; eye != target asserted) returns 0 for the sandbox spawn
+(23334,761,24224, Y-up). The window paint sequence
+(`BeginPaint 0xA6C6E0` → `BeginPaintView 0xA6BEF0` → `EndPaintView 0xA6C3C0` →
+`EndPaint 0xA6FCD0`) still faults at `0x70FDE9` (`mov rax,[rdx]`, rdx null) — the
+callers (`0x70E78F`/`0x70E80E`) pass `[sceneView+0x10]`, i.e. a **sun/shadow camera
+that is null** because the map's lighting/sun state is not initialized in the host.
+The guarded paint breaks at frame 14 and the host finishes cleanly.
+Next: initialize the scene's sun/lighting (environment/sun setup the game performs)
+or use the engine's offscreen capture path; then the render is visible.
+
 **Phase 3 — map loads in the client host (host15.out).** Host adaptations that made
 the loose sandbox map work in the client engine:
 1. **Loose-file bridge**: the file-mode wrapper's existence predicates

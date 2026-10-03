@@ -165,6 +165,15 @@ static long __fastcall wrapExistsHash(void* self, const char* path)
     return r;
 }
 
+static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
+{
+    if (ep->ExceptionRecord->ExceptionCode == 0xC0000005 ||
+        ep->ExceptionRecord->ExceptionCode == 0xC0000409)
+        logf("[VEH] exc=0x%08X at=%p", ep->ExceptionRecord->ExceptionCode,
+             ep->ExceptionRecord->ExceptionAddress);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
@@ -197,6 +206,7 @@ int main(void)
     swprintf_s(bin64, MAX_PATH, L"%s\\bin64", root);
     swprintf_s(dll, MAX_PATH, L"%s\\X3DEngine.dll", bin64);
 
+    AddVectoredExceptionHandler(1, vehHandler);
     SetCurrentDirectoryW(root);
     g_hostHwnd = createHostWindow();
     logf("[host] window=%p root=%s", g_hostHwnd, rootA);
@@ -339,10 +349,10 @@ int main(void)
     typedef void* (__fastcall *GetWinFn)(void* self);
     void* window = ((GetWinFn)GetProcAddress(eng,
         "?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ"))(engine);
+    void* view = NULL;
     if (window != NULL)
     {
         typedef long (__fastcall *CreateViewFn)(void*, void*, const char*, void*, void**, int);
-        void* view = NULL;
         const char* viewArg = (mapPath[0] != 0) ? NULL : "host_view";
         long vrc = ((CreateViewFn)((BYTE*)eng + 0x8AF3A0))(engine, scene, viewArg,
                                                            NULL, &view, 0);
@@ -355,6 +365,29 @@ int main(void)
         logf("[host] window=%p view=%p arg=%s (create=0x%08X add=0x%08X camera=0x%08X active=0x%08X)",
              window, view, viewArg ? viewArg : "(null)",
              (unsigned)vrc, (unsigned)arc, (unsigned)crc, (unsigned)aw);
+
+        // camera pose from the sandbox spawn (Y-up), via the view's camera
+        if (view != NULL)
+        {
+            __try
+            {
+                void** vvt = *(void***)view;
+                void* camera = NULL;
+                long grc = ((long (__fastcall *)(void*, void**))vvt[10])(view, &camera);
+                float pose[9] = {
+                    23334.0f, 761.0f + 3.0f, 24224.0f + 7.0f,
+                    23334.0f, 761.0f + 1.0f, 24224.0f,
+                    0.0f, 1.0f, 0.0f
+                };
+                long prc = -1;
+                if (camera != NULL)
+                    prc = ((long (__fastcall *)(void*, float*, int))
+                           ((BYTE*)eng + 0xB36540))(camera, pose, 0);
+                logf("[host] view camera=%p get=0x%08X SetPose=0x%08X",
+                     camera, (unsigned)grc, (unsigned)prc);
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] camera setup fault"); }
+        }
     }
 
     // actor from a PakV4 model
@@ -414,15 +447,36 @@ int main(void)
         logf("[host] .Sfx create -> obj=%p exc=0x%08X owner=%p", sfx, (unsigned)exc, owner);
     }
 
-    // frame loop: controller + engine FrameMove
+    // frame loop: controller + engine FrameMove + window paint
     {
         typedef long (__fastcall *FrameMoveFn)(void*);
         FrameMoveFn ctrlFm = (FrameMoveFn)((BYTE*)eng + 0xBC2620);
         FrameMoveFn engFm = (FrameMoveFn)((BYTE*)eng + 0x8C6330);
+        typedef long (__fastcall *PaintFn)(void*);
+        typedef long (__fastcall *PaintViewFn)(void*, void*);
+        PaintFn beginPaint = (PaintFn)((BYTE*)eng + 0xA6C6E0);
+        PaintViewFn beginView = (PaintViewFn)((BYTE*)eng + 0xA6BEF0);
+        PaintViewFn endView = (PaintViewFn)((BYTE*)eng + 0xA6C3C0);
+        PaintFn endPaint = (PaintFn)((BYTE*)eng + 0xA6FCD0);
         for (int f = 0; f < 240; f++)
         {
             if (ctrl != NULL) ctrlFm(ctrl);
             engFm(engine);
+            if (window != NULL && view != NULL)
+            {
+                __try
+                {
+                    beginPaint(window);
+                    beginView(window, view);
+                    endView(window, view);
+                    endPaint(window);
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                {
+                    logf("[host] paint fault at frame %d", f);
+                    break;
+                }
+            }
             Sleep(16);
         }
         logf("[host] frame loop done");
@@ -444,3 +498,4 @@ int main(void)
     logf("[host] done");
     return 0;
 }
+
