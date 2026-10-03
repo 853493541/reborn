@@ -788,3 +788,17 @@ context's RTTI + event id + handler function.
 - Next: reproduce the relaunch deterministically (MOD_OK + long window), capture the child's
   exit code / crash signature, and identify what the relaunched instance needs (likely the
   launcher session/block for its own PID).
+## 38. S4: the self-relaunch is a launcher-session artifact (2026-10-03, 32nd pass)
+
+- The client spawns a second `JX3ClientX64.exe` (~6-7.5 s with MOD_OK); the child is
+  protected (no handle even with QUERY_LIMITED|SYNCHRONIZE) and **crashes within ~130 ms**
+  (WerFault) - far too fast to be the startup gate. Creating the PID-keyed block for the
+  child does not help.
+- The real launch has exactly one client (`SeasunGame -> JX3Client -> cefrender`), so the
+  self-relaunch is an artifact of the missing launcher session: without it the client falls
+  into a launcher/updater path (also visible as the `SeasunGame.exe` spawn from the
+  LaunchUpdater module at ~2 s).
+- Conclusion: the stable-client blocker converges on the launcher session (what the
+  LaunchUpdater module expects). Next: breakpoint the LaunchUpdater handler `0x1400B1C40`
+  to record its gate value/branch at runtime and compare with the real launch; then emulate
+  the session in the launcher emulator.

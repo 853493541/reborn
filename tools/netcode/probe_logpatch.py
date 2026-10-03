@@ -238,6 +238,7 @@ def main():
     globals_logged = False
     win_seen = set()
     child_seen = set()
+    child_handles = {}
     moddump_done = False
     early_done = False
     rootbuf_last = [None]
@@ -470,6 +471,30 @@ def main():
                 if par == pid and ppid not in child_seen:
                     child_seen.add(ppid)
                     print("[%.2f] CHILD PROCESS %s pid=%d" % (el, nm, ppid))
+                if par == pid and nm.lower() == "jx3clientx64.exe" and ppid not in child_handles:
+                    h2 = k32.OpenProcess(0x1000 | 0x00100000, False, ppid)  # QUERY_LIMITED|SYNCHRONIZE
+                    child_handles[ppid] = h2
+                    print("[%.2f] child client pid=%d handle=%s" % (el, ppid, h2))
+                    # mimic the launcher: create the PID-keyed block for the new client too
+                    try:
+                        cname = (NAME_FMT % ppid).encode()
+                        chmap = k32.CreateFileMappingA(INVALID_HANDLE_VALUE, None, 4, 0, BLOCK, cname)
+                        cp = k32.MapViewOfFile(chmap, FILE_MAP_ALL_ACCESS, 0, 0, BLOCK)
+                        cblk = bytearray(build_block())
+                        if b8 != "":
+                            struct.pack_into("<I", cblk, 8, int(b8))
+                        ctypes.memmove(cp, bytes(cblk), BLOCK)
+                        k32.UnmapViewOfFile(cp)
+                        print("[%.2f] child block created for pid=%d" % (el, ppid))
+                    except Exception as ce:
+                        print("[%.2f] child block failed: %s" % (el, ce))
+            for cp, h2 in list(child_handles.items()):
+                if h2 and k32.WaitForSingleObject(h2, 0) == 0:
+                    code = ctypes.c_ulong()
+                    k32.GetExitCodeProcess(h2, ctypes.byref(code))
+                    print("[%.2f] child client pid=%d EXITED code=0x%X" % (el, cp, code.value))
+                    k32.CloseHandle(h2)
+                    del child_handles[cp]
         if patched:
             for ppid, par, nm in process_names():
                 low = nm.lower()

@@ -1683,3 +1683,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   ExceptionNotCapture marker only).
 - Evidence: doc sec.37; probe_bp runs.
 - Outcome: abort path understood as racy; next = reproduce/capture the relaunch crash.
+### 2026-10-03 — V2 S4: the relaunch is a launcher-session artifact (crashes in ~130 ms)
+- Did: probe_logpatch now tracks child JX3ClientX64 processes (protected: no handle) and
+  creates the PID-keyed block for them (mimicking the launcher).
+- Findings: the relaunched client spawns at ~6-7.5 s and crashes within ~130 ms (WerFault) -
+  too fast to be the startup gate; creating its block does not help. The real launcher only
+  ever has ONE client (SeasunGame -> JX3Client -> cefrender), so the self-relaunch is an
+  artifact of the missing launcher session (the client falls into a launcher/updater path).
+- Evidence: doc sec.38; relaunch runs.
+- Outcome: the stable-client blocker converges on the launcher session (what the LaunchUpdater
+  module expects); next = breakpoint the LaunchUpdater handler (0x1400B1C40) to record its
+  gate/branch at runtime and compare with the real launch, then emulate the session.
