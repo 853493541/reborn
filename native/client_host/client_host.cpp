@@ -127,6 +127,44 @@ static int patchIat(HMODULE mod, void* realFn, void* replacement)
     return patched;
 }
 
+// Loose-file bridge for the engine's file-mode wrapper (KG3D_StdFileSystem at
+// engine+0x2D22598). The landscape loaders verify regioninfo through the
+// wrapper's existence predicates (vt[8] name / vt[9] hash), which only know
+// pak-indexed files; the sandbox map is loose. The bridge tries the original
+// first, then checks the engine root on disk (host file-layer adaptation,
+// registered in docs/EXPERIENCES.md).
+static char g_rootA[MAX_PATH];
+static long (__fastcall *g_wrapOrig8)(void*, const char*) = NULL;
+static long (__fastcall *g_wrapOrig9)(void*, const char*) = NULL;
+
+static long looseExists(const char* path)
+{
+    if (path == NULL || path[0] == 0) return 0;
+    char full[MAX_PATH * 2];
+    strcpy_s(full, sizeof(full), g_rootA);
+    strcat_s(full, sizeof(full), "\\");
+    strcat_s(full, sizeof(full), path);
+    for (char* p = full; *p != 0; p++)
+        if (*p == '/') *p = '\\';
+    return (GetFileAttributesA(full) != INVALID_FILE_ATTRIBUTES) ? 1 : 0;
+}
+
+static long __fastcall wrapExistsName(void* self, const char* path)
+{
+    if (g_wrapOrig8 != NULL && g_wrapOrig8(self, path) != 0) return 1;
+    long r = looseExists(path);
+    if (r != 0) { printf("[host] wrapper loose-exists: %s\n", path); fflush(stdout); }
+    return r;
+}
+
+static long __fastcall wrapExistsHash(void* self, const char* path)
+{
+    if (g_wrapOrig9 != NULL && g_wrapOrig9(self, path) != 0) return 1;
+    long r = looseExists(path);
+    if (r != 0) { printf("[host] wrapper loose-exists(hash): %s\n", path); fflush(stdout); }
+    return r;
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
@@ -155,6 +193,7 @@ int main(void)
     }
     wchar_t root[MAX_PATH], bin64[MAX_PATH], dll[MAX_PATH];
     MultiByteToWideChar(CP_ACP, 0, rootA, -1, root, MAX_PATH);
+    strcpy_s(g_rootA, MAX_PATH, rootA);
     swprintf_s(bin64, MAX_PATH, L"%s\\bin64", root);
     swprintf_s(dll, MAX_PATH, L"%s\\X3DEngine.dll", bin64);
 
@@ -260,6 +299,22 @@ int main(void)
         void* mm = ((GetModeMgrFn)((BYTE*)eng + 0xB0F720))(rootA);
         void* wrapper = *(void**)((BYTE*)eng + 0x2D22598);
         logf("[host] file-mode manager ret=%p wrapper=%p", mm, wrapper);
+        if (wrapper != NULL)
+        {
+            void** wvt = *(void***)wrapper;
+            DWORD oldp = 0;
+            if (VirtualProtect(wvt, 16 * sizeof(void*), PAGE_EXECUTE_READWRITE, &oldp))
+            {
+                g_wrapOrig8 = (long (__fastcall *)(void*, const char*))wvt[8];
+                g_wrapOrig9 = (long (__fastcall *)(void*, const char*))wvt[9];
+                wvt[8] = (void*)wrapExistsName;
+                wvt[9] = (void*)wrapExistsHash;
+                VirtualProtect(wvt, 16 * sizeof(void*), oldp, &oldp);
+                FlushInstructionCache(GetCurrentProcess(), wvt, 16 * sizeof(void*));
+                logf("[host] wrapper loose bridge installed (orig8=%p orig9=%p)",
+                     (void*)g_wrapOrig8, (void*)g_wrapOrig9);
+            }
+        }
     }
 
     // scene: try the map from RC_HOST_MAP, fall back to an empty scene
@@ -288,12 +343,13 @@ int main(void)
     {
         typedef long (__fastcall *CreateViewFn)(void*, void*, const char*, void*, void**, int);
         void* view = NULL;
-        long vrc = ((CreateViewFn)((BYTE*)eng + 0x8AF3A0))(engine, scene, "host_view",
+        const char* viewArg = (mapPath[0] != 0) ? NULL : "host_view";
+        long vrc = ((CreateViewFn)((BYTE*)eng + 0x8AF3A0))(engine, scene, viewArg,
                                                            NULL, &view, 0);
         long arc = view ? ((long (__fastcall *)(void*, void*, int, int))
                            ((BYTE*)eng + 0xA6B870))(window, view, 0, 1) : -1;
-        logf("[host] window=%p view=%p (create=0x%08X add=0x%08X)", window, view,
-             (unsigned)vrc, (unsigned)arc);
+        logf("[host] window=%p view=%p arg=%s (create=0x%08X add=0x%08X)", window, view,
+             viewArg ? viewArg : "(null)", (unsigned)vrc, (unsigned)arc);
     }
 
     // actor from a PakV4 model

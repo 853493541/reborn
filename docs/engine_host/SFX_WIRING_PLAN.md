@@ -592,6 +592,27 @@ existence predicate to the host's loose-file layout (host file-layer bridge, to 
 registered as a deviation with re-open criteria), or find the missing wiring that
 lets the wrapper see loose files; then the map renders and the app port proceeds.
 
+**Phase 3 — map loads in the client host (host15.out).** Host adaptations that made
+the loose sandbox map work in the client engine:
+1. **Loose-file bridge**: the file-mode wrapper's existence predicates
+   (`wrapper->vt[8]` name / `vt[9]` hash, mode 0) are patched in memory to try the
+   original first and then check the engine root on disk (`GetFileAttributesA`);
+   without it the landscape loaders reject every loose map file
+   (`Landscape System lost file`). Log shows the bridge accepting
+   `...landscape\\regioninfo\\...json` and `CreateSceneFromSource -> 0x00000000`.
+2. **Source landscape loader**: hiding `heightmap_bc` in the LoadFile hook makes the
+   engine choose its own source-format loader (the BC loader requires pak-indexed
+   baked data).
+3. **View for a source scene**: `CreateSceneViewFrom3DScene(engine, scene, name, ...)`
+   must get **NULL** as the name for a map-backed scene (a name makes it try
+   `KG3D_CreateMapFromFile(name)` and expect the packed map, mask `0x10203040`);
+   NULL → `create=0x0 add=0x0`.
+Result: map + view + actor + authored animation + real `.Sfx` (`exc=0`) + frame loop +
+screenshot all succeed. **Remaining:** the render is black — no camera pose is set
+(engine `CreateCamera` 0x8AF8E0 takes `KG3D_CAMERA_POSE/PROPERTY/VIEWPORT`; the app's
+spawn/camera data is in `systemCamera.json` / `scene_init_param.txt`). Next: create a
+camera at the spawn and attach it to the view, then port the host into the app.
+
 **FS mount investigation (fsx/fsx2/rel/cwd.out).** `PakV4SfxExtract.exe` is a small
 **.NET launcher** (CLR, 8 KB) that P/Invokes `Engine_Lua5X64!KG_InitPakV4FileSystem`
 with **relative `../../PakV4` + `Trunk.Dir`** after `SetCurrentDirectory(exeDir)` +

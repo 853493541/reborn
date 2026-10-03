@@ -1096,3 +1096,28 @@ all tags should fire. Editor config to adopt when initializing the host
   `6346af5`, `1365b98`.
 - Re-open: SFX-model attach context (or runtime assets from a full client update) ->
   engine-driven playback A/B in the app.
+
+## 2026-10-02 ¡ª Phase 3 client host: loose-map bridge + source landscape loader (deviation)
+
+- Built 
+ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
+  the game way (facade -> adapter -> file layer -> engine, host window via the
+  CreateTargetWindow hook), then map -> view -> actor -> authored animation
+  (_InitAttachTani -> StartAnimation) -> real .Sfx (KG3D_CreateSFXFromFile, exc=0)
+  -> 240-frame loop -> engine screenshot API.
+- **Provisional deviations (host file layer, in-memory, no install writes):**
+  1. file-mode wrapper (KG3D_StdFileSystem, engine+0x2D22598) existence predicates
+     (vt[8]/vt[9]) are patched to also accept loose files under the engine root ¡ª
+     otherwise the landscape loaders reject every loose sandbox-map file
+     (Landscape System lost file). Original predicates are tried first.
+  2. heightmap_bc hidden from KG3D_LoadFile so the engine selects its own
+     source-format landscape loader (BC loader requires pak-indexed baked data).
+  3. View for a source scene: CreateSceneViewFrom3DScene(engine, scene, NULL, ...)
+     (a name makes the engine try to load a packed map, mask 0x10203040).
+- Why: the sandbox map is intentionally loose (	ools/sandbox/build_sandbox.py);
+  the client engine expects indexed/pak files for landscape checks. Re-open: if maps
+  are ever served from an indexed store (pak/cache), drop the bridge and the hide.
+- Evidence: %TEMP%\opencode\skillv2\host15.out (CreateSceneFromSource -> 0x0,
+  view create=0x0 add=0x0, actor/animation/SFX all rc=0); commit 57e3268 + this one.
+- Remaining: black render (no camera pose) -> KG3D_Engine::CreateCamera (0x8AF8E0)
+  with the spawn/camera data, then the app port.
