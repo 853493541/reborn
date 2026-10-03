@@ -43,9 +43,11 @@ FORCE_GATE = os.environ.get("FORCE_GATE", "")
 # stage -> rva of its `xor eax,eax` failure return
 STAGE_MARK = os.environ.get("STAGE_MARK", "")
 STAGE_ADDRS = {"start": 0xA080D, "loaded": 0xA0721, "runner": 0xA08DF}
+# DIAGNOSTIC: make every module Initialize task report success (patch setne al -> mov al,1)
+MOD_OK = os.environ.get("MOD_OK", "")
 SCAN_START = 1.0
 PATCH_AT = 1.78
-RUN_UNTIL = 3.6 if not FORCE_GATE else 20.0
+RUN_UNTIL = float(os.environ.get("RUN_S", "3.6")) if not FORCE_GATE else 20.0
 
 MEM_COMMIT = 0x1000
 PAGE_READABLE = {0x02, 0x04, 0x08, 0x20, 0x40, 0x80}
@@ -217,7 +219,11 @@ def main():
     name = (NAME_FMT % pid).encode()
     hmap = k32.CreateFileMappingA(INVALID_HANDLE_VALUE, None, 4, 0, BLOCK, name)
     p = k32.MapViewOfFile(hmap, FILE_MAP_ALL_ACCESS, 0, 0, BLOCK)
-    ctypes.memmove(p, bytes(build_block()), BLOCK)
+    blk = bytearray(build_block())
+    b8 = os.environ.get("BLOCK8", "")
+    if b8 != "":
+        struct.pack_into("<I", blk, 8, int(b8))
+    ctypes.memmove(p, bytes(blk), BLOCK)
     k32.UnmapViewOfFile(p)
     k32.ResumeThread(pi.hThread)
     t0 = time.time()
@@ -292,18 +298,29 @@ def main():
         if not early_done and exe_base and eng_base:
             early_done = True
             print("[%.2f] EARLY patch (exe=0x%X eng=0x%X)" % (el, exe_base, eng_base))
-        if early_done and el < 1.6:
+        if early_done and (el < 1.6 or (os.environ.get("CFG_E10", "") != "" and el < 2.4)):
             cm = read_u64(h, exe_base + 0xA8C1C8)
             if cm:
                 fl = read_mem(h, cm + 0x224, 4)
                 if fl != b"\x01\x00\x00\x00":
                     write_u32(h, cm + 0x224, 1)
+                e10v = os.environ.get("CFG_E10", "")
+                if e10v != "":
+                    cur = read_mem(h, cm + 0xE10, 4)
+                    want = struct.pack("<I", int(e10v))
+                    if cur != want:
+                        write_mem(h, cm + 0xE10, want)
             # reachability test: the fixed 16-byte viewer name -> \bin64\lv.exe
             # (we control C:\jx3t\bin64\lv.exe); if OpenXLogV runs, lv.exe spawns
             lit = read_mem(h, exe_base + 0x955228, 16)
             if lit and not lit.startswith(b"\\bin64\\lv.exe"):
                 ok = write_mem(h, exe_base + 0x955228, b"\\bin64\\lv.exe" + b"\x00" * 3)
                 print("[%.2f] literal -> \\bin64\\lv.exe %s" % (el, "ok" if ok else "FAIL"))
+            if MOD_OK:
+                mb = read_mem(h, exe_base + 0xA38F8, 3)
+                if mb and mb != b"\xB0\x01\x90":
+                    ok = write_mem(h, exe_base + 0xA38F8, b"\xB0\x01\x90")
+                    print("[%.2f] MOD_OK: module failure->success %s" % (el, "ok" if ok else "FAIL"))
             if STAGE_MARK and STAGE_MARK in STAGE_ADDRS:
                 sa = exe_base + STAGE_ADDRS[STAGE_MARK]
                 b = read_mem(h, sa, 2)
@@ -381,6 +398,11 @@ def main():
                     chk.split(b"\x00")[0].decode("latin-1") if chk else "?"))
         if eng_base and not globals_logged and el >= 1.5:
             globals_logged = True
+            cm = read_u64(h, exe_base + 0xA8C1C8)
+            if cm:
+                for off in (0xdf4, 0xdf8, 0xe0c, 0xe10, 0xe14, 0xe18, 0x224, 0x234):
+                    v = read_mem(h, cm + off, 4)
+                    print("[%.2f] config+0x%X = %s" % (el, off, struct.unpack("<I", v)[0] if v else "?"))
             for off, nm in ((0x177598, "sink"), (0x174028, "gate174028"), (0x170440, "mask"),
                             (0x174020, "flags"), (0x174430, "ring_ptr")):
                 v = read_mem(h, eng_base + off, 8)

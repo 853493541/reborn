@@ -745,3 +745,28 @@ resolution).
 - Next: resolve the app module's Initialize binder at runtime (registry ctx -> function
   pointer / module vtable index) and/or instrument the task runner `0x1400A3FD0` to record
   which module handler returns 0 and under what condition.
+
+## 36. The chain-breaker found: KJX3LaunchUpdaterModule event 3 (2026-10-02, 30th pass)
+
+Tool: `probe_bp.py` (new) - spawns the client under `DEBUG_ONLY_THIS_PROCESS`, sets an INT3
+at the module-Initialize failure branch (`exe+0xA38FF`), and on each hit resolves the handler
+context's RTTI + event id + handler function.
+
+- **The only failing task**: `KJX3LaunchUpdaterModule`, event **3**, handler = the run-group
+  thunk `0x1400A3AA0` (`ctx->vt[0x28]`) - the module's Initialize step group fails, and the
+  task queue aborts the chain on the first failure (all later modules never initialize).
+- **Diagnostic `MOD_OK=1`** (probe_logpatch: patch `setne al` -> `mov al,1` at `exe+0xA38F8`,
+  so module tasks report success): the client then runs **10.7 s** (vs 2.35 s) and:
+  spawns `KGPK4_StreamDownloaderX64.exe` (1.6 s), creates the `KGWin32App` window (1.76 s),
+  spawns `SeasunGame.exe` (1.9 s), initializes NVIDIA DLSS (`nvngx_update.exe` x20, 4.3 s),
+  **relaunches itself** (`JX3ClientX64.exe` child at 6.4 s) which crashes (WerFault), then
+  exits at 10.7 s. This is the furthest the real client has ever run in our harness.
+- The failing Initialize is the launcher-check code (`0x1400B1C40`, strings
+  "KJX3LaunchUpdaterModule::Initialize", `\xlancher\XLauncher.exe`, `\SeasunGame.exe`,
+  `\gameupdater.exe`, `\XLlauncher.exe`); its gate is `[configModule+0xe10] != 0` (runtime
+  value 1). Forcing `config+0xe10=0` (probe `CFG_E10`) did **not** unblock - the gate or the
+  write timing needs more work; block field `+8` (`BLOCK8`) changes early behavior (downloader
+  launch) but does not unblock either.
+- Next: identify the exact condition the LaunchUpdater task fails on (instrument
+  `0x1400B1C40`'s return paths / the config field source), then handle the relaunched client's
+  crash (the next gate after the module chain).

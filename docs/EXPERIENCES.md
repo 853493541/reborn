@@ -1664,3 +1664,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.35; 4 probe runs.
 - Outcome: stage-failure hypothesis eliminated; next = resolve the app module's Initialize
   binder / instrument the task runner 0x1400A3FD0.
+### 2026-10-03 — V2 — chain-breaker found: LaunchUpdater event 3; MOD_OK runs the client 10.7 s
+- Did: probe_bp.py (debug breakpoint on the module-Initialize failure branch + RTTI/eid/handler
+  resolution); MOD_OK diagnostic (module task failure -> success); BLOCK8/CFG_E10 diagnostics.
+- Findings: the only failing task is KJX3LaunchUpdaterModule event 3 (its Initialize step
+  group fails; the task queue aborts the chain). With MOD_OK the client runs 10.7 s: KGPK4
+  downloader + KGWin32App window + SeasunGame launch + DLSS updaters + self-relaunch
+  (which crashes, WerFault). CFG_E10=0 and BLOCK8=0 did not unblock.
+- Evidence: doc sec.36; probe_bp run; modok_long run (10.7 s).
+- Outcome: first real progress past the 2.35 s wall; next = exact LaunchUpdater failure
+  condition + the relaunch crash.
