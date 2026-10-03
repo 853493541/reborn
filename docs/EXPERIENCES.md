@@ -1654,3 +1654,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.34; disasm of WinMain/PlatformStartup/PlatformLoad.
 - Outcome: flow corrected; next = instrument dispatch results (KGLog ring-buffer global is
   NULL; console path silent) or patch stage failure branches to a visible marker.
+### 2026-10-02 — V2 — stage marker test: all startup stages succeed
+- Did: STAGE_MARK diagnostic in probe_logpatch (patch a stage failure return xor eax,eax ->
+  mov al,2, same length; a failing stage then returns "keep waiting" and the exit time shifts
+  from ~2.3 s to ~4.2 s); ran none/start/loaded/runner.
+- Findings: exit times 2.61/2.27/2.23/2.21 s -> no stage fails; the KGLog ring stays NULL ->
+  no failure message either. The blocker is inside a module Initialize task (dispatch only
+  queues tasks; the thunk always returns 1, so a module failure is invisible to the stage).
+- Evidence: doc sec.35; 4 probe runs.
+- Outcome: stage-failure hypothesis eliminated; next = resolve the app module's Initialize
+  binder / instrument the task runner 0x1400A3FD0.

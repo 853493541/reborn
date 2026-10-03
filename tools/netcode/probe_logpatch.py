@@ -38,6 +38,11 @@ EV_ID = os.environ.get("EV_ID", "")
 # sub+0x18 null-check to jump to the success return) so we can observe what the client
 # does next. This is not a fix - the real creator of sub+0x18 is still unknown.
 FORCE_GATE = os.environ.get("FORCE_GATE", "")
+# DIAGNOSTIC: patch a startup stage's failure return (xor eax,eax -> mov al,2, same 2 bytes)
+# so that a failing stage makes the step "keep waiting" - observable via the exit timing.
+# stage -> rva of its `xor eax,eax` failure return
+STAGE_MARK = os.environ.get("STAGE_MARK", "")
+STAGE_ADDRS = {"start": 0xA080D, "loaded": 0xA0721, "runner": 0xA08DF}
 SCAN_START = 1.0
 PATCH_AT = 1.78
 RUN_UNTIL = 3.6 if not FORCE_GATE else 20.0
@@ -299,6 +304,12 @@ def main():
             if lit and not lit.startswith(b"\\bin64\\lv.exe"):
                 ok = write_mem(h, exe_base + 0x955228, b"\\bin64\\lv.exe" + b"\x00" * 3)
                 print("[%.2f] literal -> \\bin64\\lv.exe %s" % (el, "ok" if ok else "FAIL"))
+            if STAGE_MARK and STAGE_MARK in STAGE_ADDRS:
+                sa = exe_base + STAGE_ADDRS[STAGE_MARK]
+                b = read_mem(h, sa, 2)
+                if b and b != b"\xB0\x02":
+                    ok = write_mem(h, sa, b"\xB0\x02")
+                    print("[%.2f] STAGE_MARK %s failure-return marked %s" % (el, STAGE_MARK, "ok" if ok else "FAIL"))
             if FORCE_GATE:
                 # terminal 0x14009D2E0: `je 0x14009d346` (fail path) -> jump to the
                 # success `mov eax,1` at 0x14009d33b instead (rel32 0x13 -> 0x08)

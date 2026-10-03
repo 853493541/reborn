@@ -725,3 +725,23 @@ Static re-read of WinMain (`0x1400E11F0`):
   making the engine's KGLog failure messages observable (the ring-buffer global
   `engine+0x174430` is NULL at runtime; the console path was already patched and stayed
   silent), or by patching the stage failure branches to a visible side effect.
+
+## 35. Stage-failure marker test: the stages all succeed (2026-10-02, 29th pass)
+
+Tool: `probe_logpatch.py` `STAGE_MARK=<start|loaded|runner>` - patches the stage's failure
+return `xor eax,eax` (2 bytes) to `mov al,2` (same length), so a *failing* stage returns 2
+("keep waiting") and the group never completes -> the child would exit at ~4.2 s instead of
+~2.3 s.
+
+Result (4 runs): exit times none=2.61 s, start=2.27 s, loaded=2.23 s, runner=2.21 s - **no
+stage takes its failure path**; all three stage lambdas succeed in the probe. The engine's
+KGLog ring buffer (`engine+0x174430`) is still NULL at 2.02 s, i.e. no failure message went
+through it either. The platform object's absence is therefore not a stage failure: it is
+inside a **module Initialize task** (the dispatch only queues tasks; the thunk always returns
+1, so a failing module handler does not fail the stage).
+The app module's vtable handlers are events 3/4 (`0x1400DFBF0`, `0x1400DFD40`); its
+Initialize binder is a member-function pointer inside the registry ctx (needs runtime
+resolution).
+- Next: resolve the app module's Initialize binder at runtime (registry ctx -> function
+  pointer / module vtable index) and/or instrument the task runner `0x1400A3FD0` to record
+  which module handler returns 0 and under what condition.
