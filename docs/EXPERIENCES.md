@@ -1728,3 +1728,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.43; C:\jx3tmp\product_*.png + image_stats.
 - Outcome: stable visible client achieved (one provisional config override); next P2
   (login/gateway), then P3 (world).
+### 2026-10-03 — V2 P2 recon: gateway protocol surface mapped
+- Did: extracted the KGatewayClient method-name surface (handshake/account-verify/role-list/
+  login-game/queue) and the Lua login bindings; wrote the P2 plan into doc sec.44.
+- Findings: login flow = DoHandshakeRequest -> DoAccountVerifyRequest -> GetRoleListItem ->
+  DoLoginGameRequest; address from Login_SetGatewayAddress (login UI) / login.ini LastLogin.
+- Evidence: doc sec.44; string scan 0x7CC280-0x7CC980.
+- Outcome: P2 implementation plan set (Reborn.Gateway, no client changes); next = map the
+  handshake/verify message layouts, then implement the gateway stub.

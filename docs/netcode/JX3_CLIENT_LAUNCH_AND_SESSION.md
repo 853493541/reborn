@@ -883,3 +883,33 @@ diagnostic, which is not shippable.
   / game-server redirect), then P3 (game server / enter world).
 - The `--cfg-e10 0` override remains the single provisional deviation (config source not yet
   located; the value has no direct writer in code - loaded from a config blob).
+## 44. P2 recon: gateway protocol surface (2026-10-03, 38th pass)
+
+The client's gateway client (`KGatewayClient`) exposes its full request surface as named
+methods (strings at 0x7CC280-0x7CC980):
+
+- connect: `RealConnectGateway`, `ProcessConnectGateway`, `ProcessPackage`, `Send`,
+  `DoPingSignal`; "[GatewayClient] Connection lost!".
+- login flow: **`DoHandshakeRequest`** -> **`DoAccountVerifyRequest`** (variants:
+  `DoAccountVerifyWithQRToken`, `DoMibaoVerifyRequest`, `SetAccountPassword`,
+  `TWAccountVerify`/`WGAccountVerify`/`StreamingAccountVerify` for the account channels)
+  -> **`GetRoleListItem`** / `CreateRole` / `DeleteRole` -> **`DoLoginGameRequest`**
+  -> queue/hometown (`DoQueryHometownListRequest`, `DoGiveupQueueRequest`,
+  `DoQueryMapQueueInfo`) -> rename/captcha.
+- The Lua-side bindings `Login_SetGatewayAddress` / `Login_ConnectGateway` (0x800000/0x800018)
+  drive the address/connect from the login UI; `GetServerListUrl` is a config getter
+  (0x953E90); the S2C table (814 SIDs) and frame/ack rules live in
+  `docs/netcode/JX3_PROTOCOL_SPEC.md` + `REBORN_SERVER_SPEC.md`.
+
+P2 plan (no client modification):
+
+1. Map the handshake/account-verify/role-list/login-game message layouts from the client
+   handlers (SID + field reads) - the same method used for the V1 protocol work.
+2. Implement `Reborn.Gateway` (our own process): accept the gateway connection, complete
+   handshake + a minimal account verify + a single role + login-game, returning our game
+   server address in `OnSyncLoginKey`/`pcszGameServerIP`.
+3. Point the client at our gateway: the address comes from the login UI/server list
+   (`Login_SetGatewayAddress`) or the per-account `login.ini [LastLogin] ServerIP/ServerPort`;
+   choose the path that requires no install writes (emulator-provided server list or a
+   user-side config).
+4. Then P3: our game server accepts the in-world connection and serves enter-world.
