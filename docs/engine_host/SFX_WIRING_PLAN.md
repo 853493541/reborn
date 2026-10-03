@@ -567,6 +567,31 @@ tag query) in the probe to enumerate SFX tags with their paths, then bridge acti
 tags to `KG3D_CreateSFXFromFile`; or drive `KRLAnimationFactory` from
 JX3RepresentX64 for the full client behavior.
 
+**Phase 3 — client-host core built (native/client_host).** `client_host.exe`
+(`native\client_host\build_client_host.cmd`) boots the client stack the game way
+(facade -> adapter -> file layer -> engine, host window via the CreateTargetWindow
+hook), then: scene/view, actor from a PakV4 model, authored animation
+(`_InitAttachTani` -> controller -> `StartAnimation`), **real `.Sfx` via
+`KG3D_CreateSFXFromFile` (`exc=0`)**, 240-frame loop, and a screenshot through the
+engine window API (`SetScreenShot` 0xA7C5E0 + `DoScreenShotImmediate` 0xA7C750).
+Host-verified `host12.out`: actor `rc=0`, anim non-null, `StartAnimation=0`,
+`.Sfx obj=<live> exc=0`, screenshot written.
+**Map blocker (diagnosed):** `CreateSceneFromSource` loads the map JSON but the
+landscape loader fails — `Landscape System lost file : ...landscape\\regioninfo\
+<name>_000_000.json` (line 993 `KG3D_LandscapeDataCache::PreloadRegionInfo`).
+Mechanism: both the BC and source landscape loaders verify regioninfo through the
+**file-mode wrapper** (`0x2D22598`, `KG3D_StdFileSystem`, created by `0xB0F720` +
+KIndexpack init — the host now does this): `wrapper->vt[6]()` mode (0 = hash),
+then `vt[8]/vt[9](path)`; both return 0 for loose files (the wrapper only knows
+indexed/pak files). The engine picks BC vs source by probing the **`.bch`**
+heightmap via `KG3D_LoadFile` (`0xA94D20`); hiding `heightmap_bc` in the host's
+LoadFile hook selects the engine's own **source loader** (log confirms
+`terrain system is using source format loader.`), but the source loader's
+regioninfo check uses the same wrapper -> same miss. Next: adapt the wrapper's
+existence predicate to the host's loose-file layout (host file-layer bridge, to be
+registered as a deviation with re-open criteria), or find the missing wiring that
+lets the wrapper see loose files; then the map renders and the app port proceeds.
+
 **FS mount investigation (fsx/fsx2/rel/cwd.out).** `PakV4SfxExtract.exe` is a small
 **.NET launcher** (CLR, 8 KB) that P/Invokes `Engine_Lua5X64!KG_InitPakV4FileSystem`
 with **relative `../../PakV4` + `Trunk.Dir`** after `SetCurrentDirectory(exeDir)` +

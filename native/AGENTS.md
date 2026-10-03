@@ -12,4 +12,11 @@ C++ camera shim (`camera_shim.cpp`) injected/loaded for camera work.
 - Never patch the installed client/engine binaries (on disk or in memory) as a research
   technique (root `AGENTS.md` §4). Any patch is a locked decision needing explicit
   sign-off — the broken `RC_PatchD6` trampoline is the cautionary example.
+- `client_host/` is the Phase 3 client-engine host core (boot the client stack the
+  game way, drive actor/animation/.Sfx; see `docs/engine_host/SFX_WIRING_PLAN.md`).
+  Build: `native\client_host\build_client_host.cmd` -> `native\client_host\out\`.
+  It patches the loaded engine **in memory** for two host adaptations (window
+  substitution via `CreateTargetWindow`; hiding `heightmap_bc` so the engine picks
+  its own source-format landscape loader for loose maps). These are host wiring,
+  documented, not research patches of the install.
 - Root `AGENTS.md` rules apply.
