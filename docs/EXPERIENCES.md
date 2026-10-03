@@ -1642,3 +1642,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.33; launcher logs; disasm proofs (lambda_*, dd63330_ref, cefrender_ref).
 - Outcome: startup chain mapped; next = find where the platform object ([rsi+0x20] /
   sub+0x18) is created and which module constructor fails in the probe.
+### 2026-10-02 — V2 — WinMain flow corrected (state A/B, PlatformStartup caller)
+- Did: static re-read of WinMain 0x1400E11F0 (state B ctor, PlatformStartup call, state A
+  ctor, pool, dispatch, wait, PlatformLoad, group, wait loop); scanned stage
+  lambdas/PlatformStartup/PlatformLoad for [reg+0x100] stores.
+- Findings: the gate state is state A (rbp+0x130); PlatformStartup is called by WinMain with
+  a 4-field args struct whose +0x20 is 0 (the [app+0x20] handoff is a null placeholder, not
+  the gate object); no [reg+0x100] store exists in the stage/PlatformStartup/PlatformLoad
+  code - the creator is a dispatched handler with the state as ctx; upstream dispatch
+  failure is still the silent blocker.
+- Evidence: doc sec.34; disasm of WinMain/PlatformStartup/PlatformLoad.
+- Outcome: flow corrected; next = instrument dispatch results (KGLog ring-buffer global is
+  NULL; console path silent) or patch stage failure branches to a visible marker.

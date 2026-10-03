@@ -698,3 +698,30 @@ creates the platform object itself.
 - Next: find where `[rsi+0x20]` (the platform/client object) is created inside
   `0x14009DB60..0x14009F477` and which module constructor fails in the probe (compare the
   global module vector contents between probe and a real launch if possible).
+
+## 34. WinMain flow corrected (2026-10-02, 28th pass)
+
+Static re-read of WinMain (`0x1400E11F0`):
+
+- `state B` = stack object at `rsp+0x78`, constructed by the state ctor `0x14009D6D0`
+  (which zeroes `sub+0x18` at `state+0x100`).
+- WinMain then calls **PlatformStartup (`0x14009DB60`) directly** at `0x1400E125A`, passing a
+  4-field args struct `{hInstance, hPrev, cmdLine, nCmdShow}` at `rsp+0x38`; the struct's
+  `+0x20` field is zeroed by `mov [rsp+0x54], 0`. PlatformStartup builds the event registry
+  (`0xA8C1F0`) and the module vector (`0xA8C430/438`), then copies `[args+0x20] = 0` into
+  `[KJX3WindowsApplicationModule+0x20]` - that handoff is a null placeholder, **not** the
+  gate object (red herring).
+- `state A` = second stack object at `rbp+0x130` (ctor `0x14009D6D0` at `0x1400E1285`) - the
+  state whose `sub+0x18` the pump's success test reads.
+- Then: thread pool (`0x14009D860`), an event dispatch (`0x14009C890`), `wait(stateB, 10 s)`
+  ("PlatformBeforeLoad"), destroy state B (`0x14009D7C0`), **PlatformLoad (`0x14009F480`** -
+  dispatches an event `{vt=0x140953E40}` and logs "PlatformLoad" on failure), build the
+  `game.startup` group, then the `wait(stateA, 2000)` loop.
+- No stage lambda / PlatformStartup / PlatformLoad contains a store to `[reg+0x100]` (the
+  state's gate field) - the creator must be a dispatched handler that receives the state/sub
+  as its context. The write-watchpoint already proved no non-zero write happens in the probe,
+  so the upstream dispatch/step that should create it fails silently first.
+- Next: instrument the dispatch results at runtime (which stage/handler returns 0) - e.g. by
+  making the engine's KGLog failure messages observable (the ring-buffer global
+  `engine+0x174430` is NULL at runtime; the console path was already patched and stayed
+  silent), or by patching the stage failure branches to a visible side effect.
