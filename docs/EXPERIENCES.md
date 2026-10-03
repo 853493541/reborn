@@ -1674,3 +1674,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.36; probe_bp run; modok_long run (10.7 s).
 - Outcome: first real progress past the 2.35 s wall; next = exact LaunchUpdater failure
   condition + the relaunch crash.
+### 2026-10-03 — V2 S1: module-step return is context-dependent (racy), not a deterministic input
+- Did: probe_bp extended with a second breakpoint on the module-step process 0x1400A3FF0
+  (context/arg/return-address capture, armed late to keep the boot timing).
+- Findings: the step returns 0 iff the low byte of its context pointer is 0; the failure is
+  run/timing-dependent (one run had no failure and lived to 8.19 s under the debugger). The
+  remaining hard gate is the self-relaunch crash (~6.4 s) with no full dump (48-byte
+  ExceptionNotCapture marker only).
+- Evidence: doc sec.37; probe_bp runs.
+- Outcome: abort path understood as racy; next = reproduce/capture the relaunch crash.

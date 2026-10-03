@@ -770,3 +770,21 @@ context's RTTI + event id + handler function.
 - Next: identify the exact condition the LaunchUpdater task fails on (instrument
   `0x1400B1C40`'s return paths / the config field source), then handle the relaunched client's
   crash (the next gate after the module chain).
+
+## 37. S1: the module-step return is context-dependent and racy (2026-10-03, 31st pass)
+
+- The module-step process (`0x1400A3FF0`) returns 0 when the low byte of its second argument
+  (the context pointer) is 0, and 1 otherwise (`test bpl,bpl` -> success/failure log). So the
+  "failure" is not a module Initialize verdict but a property of the context passed by the
+  caller (the step's state pointer alignment/path).
+- Breakpoint runs show the failure is **run/timing-dependent**: with the step breakpoint
+  armed late, one run had **no failure at all** and the client lived to 8.19 s under the
+  debugger (vs the usual ~3.4-4.3 s abort run) - i.e. the abort path is racy, which also
+  explains why the real launch (different timing/environment) never hits it.
+- Practical consequence: the emulator should not need to replicate a deterministic input for
+  this; the remaining hard gate is the **self-relaunch crash** (the client spawns a second
+  `JX3ClientX64.exe` at ~6.4 s which crashes; no full minidump or WER report is produced -
+  only a 48-byte marker `minidump\ExceptionNotCapture*.dat`).
+- Next: reproduce the relaunch deterministically (MOD_OK + long window), capture the child's
+  exit code / crash signature, and identify what the relaunched instance needs (likely the
+  launcher session/block for its own PID).

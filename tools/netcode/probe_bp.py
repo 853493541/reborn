@@ -31,6 +31,7 @@ EXCEPTION_BREAKPOINT = 0x80000003
 EXCEPTION_SINGLE_STEP = 0x80000004
 FAIL_BRANCH = 0xA38FF          # mov qword [rsp+0x20], r9 in the failure path
 SUCCESS_BRANCH = 0xA3975       # mov r12b, 1 (optional, unused)
+STEP_PROC = 0xA3FF0            # module-step process: returns 0 when low byte of rdx == 0
 CTX_FULL = 0x10000B
 
 
@@ -105,6 +106,7 @@ def main():
     exe_base = None
     armed = False
     original = None
+    orig_bytes = {}
     hits = []
     t0 = time.time()
     de = DEBUG_EVENT()
@@ -117,14 +119,23 @@ def main():
             break
         if not got:
             if not armed and hproc and exe_base:
-                # arm the failure-branch breakpoint once the exe is loaded
+                # arm both breakpoints once the exe is loaded
                 original = read_mem(hproc.value, exe_base + FAIL_BRANCH, 1)
                 if original:
                     write = ctypes.c_size_t()
                     k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + FAIL_BRANCH),
                                            b"\xCC", 1, ctypes.byref(write))
+                    orig_bytes[FAIL_BRANCH] = original
                     armed = True
-                    print("[%.2f] breakpoint armed at exe+0x%X (orig %s)" % (el, FAIL_BRANCH, original.hex()), flush=True)
+                    print("[%.2f] failure breakpoint armed" % el, flush=True)
+            if armed and hproc and exe_base and STEP_PROC not in orig_bytes and el > 2.5:
+                orig_step = read_mem(hproc.value, exe_base + STEP_PROC, 1)
+                if orig_step:
+                    write = ctypes.c_size_t()
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + STEP_PROC),
+                                           b"\xCC", 1, ctypes.byref(write))
+                    orig_bytes[STEP_PROC] = orig_step
+                    print("[%.2f] step breakpoint armed late" % el, flush=True)
             continue
         code = de.dwDebugEventCode
         if code == CREATE_PROCESS_DEBUG_EVENT:
@@ -146,6 +157,30 @@ def main():
         if code == EXCEPTION_DEBUG_EVENT:
             ec = struct.unpack_from("<I", de.u, 0)[0]
             addr = struct.unpack_from("<Q", de.u, 16)[0]
+            if ec == EXCEPTION_BREAKPOINT and exe_base and addr == exe_base + STEP_PROC:
+                ht = k32.OpenThread(THREAD_ACCESS, False, de.dwThreadId)
+                struct.pack_into("<I", ctx, 0x30, CTX_FULL)
+                k32.GetThreadContext(ht, ctx)
+                rcx = struct.unpack_from("<Q", ctx, 0x80)[0]
+                rdx = struct.unpack_from("<Q", ctx, 0x88)[0]
+                rsp = struct.unpack_from("<Q", ctx, 0x98)[0]
+                ret = read_u64(hproc.value, rsp) if rsp else None
+                hctx = read_u64(hproc.value, rcx + 0x10) if rcx else None
+                nm = rtti_name(hproc.value, exe_base, hctx) if hctx else None
+                if nm and "LaunchUpdater" in nm:
+                    print("[%.2f] STEP_PROC %s rcx=0x%X rdx=0x%X dl=0x%X ret=0x%X (exe+0x%X)" % (
+                        el, nm, rcx, rdx, rdx & 0xFF, ret or 0,
+                        (ret - exe_base) if ret and ret > exe_base else 0), flush=True)
+                # restore, single-step, re-arm
+                write = ctypes.c_size_t()
+                k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + STEP_PROC),
+                                       orig_bytes[STEP_PROC], 1, ctypes.byref(write))
+                flags = struct.unpack_from("<I", ctx, 0x44)[0]
+                struct.pack_into("<I", ctx, 0x44, flags | 0x100)
+                k32.SetThreadContext(ht, ctx)
+                k32.CloseHandle(ht)
+                k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_CONTINUE)
+                continue
             if ec == EXCEPTION_BREAKPOINT and exe_base and addr == exe_base + FAIL_BRANCH:
                 ht = k32.OpenThread(THREAD_ACCESS, False, de.dwThreadId)
                 struct.pack_into("<I", ctx, 0x30, CTX_FULL)
@@ -183,9 +218,12 @@ def main():
                 struct.pack_into("<I", ctx, 0x30, CTX_FULL)
                 k32.GetThreadContext(ht, ctx)
                 rip = struct.unpack_from("<Q", ctx, 0xF8)[0]
+                write = ctypes.c_size_t()
                 if rip == exe_base + FAIL_BRANCH + 1:
-                    write = ctypes.c_size_t()
                     k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + FAIL_BRANCH),
+                                           b"\xCC", 1, ctypes.byref(write))
+                elif rip == exe_base + STEP_PROC + 1:
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + STEP_PROC),
                                            b"\xCC", 1, ctypes.byref(write))
                 k32.CloseHandle(ht)
                 k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_CONTINUE)
