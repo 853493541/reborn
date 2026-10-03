@@ -1,0 +1,23 @@
+
+===== function 0/17 | line 438-448 | params=0 nups=4 stack=2 =====
+pc=   0 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   1 L0     TEST      A=0   B=0    C=1    
+pc=   2 L0     JMP       A=0   B=256  C=0    to pc 4
+pc=   3 L0     GETUPVAL  A=0   B=1    C=0    
+pc=   4 L0     GETGLOBAL A=1   B=0    C=0    'CLASSICAL_MODE'
+pc=   5 L0     EQ        A=1   B=0    C=1    R0 R1
+pc=   6 L0     JMP       A=0   B=256  C=12   to pc 20
+pc=   7 L0     GETGLOBAL A=0   B=0    C=1    'GetActualControlPlayer'
+pc=   8 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   9 L0     SETUPVAL  A=0   B=2    C=0    
+pc=  10 L0     GETUPVAL  A=0   B=2    C=0    
+pc=  11 L0     TEST      A=0   B=0    C=1    
+pc=  12 L0     JMP       A=0   B=256  C=0    to pc 14
+pc=  13 L0     RETURN    A=0   B=1    C=0    
+pc=  14 L0     GETGLOBAL A=0   B=0    C=2    'ClearMoveStateByPlayerState'
+pc=  15 L0     CALL      A=0   B=1    C=1    args=0 ret=0
+pc=  16 L0     GETUPVAL  A=0   B=3    C=0    
+pc=  17 L0     CALL      A=0   B=1    C=1    args=0 ret=0
+pc=  18 L0     GETGLOBAL A=0   B=0    C=3    'RotatePlayer'
+pc=  19 L0     CALL      A=0   B=1    C=1    args=0 ret=0
+pc=  20 L0     RETURN    A=0   B=1    C=0    
