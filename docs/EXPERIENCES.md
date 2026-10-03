@@ -1765,3 +1765,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Verified: joystick ALWAYS follows (A dcam 1.06, TURNRIGHT 1.57, WD -1.05);
   classical default 0 unchanged; smoke ALL PASS. Interpretation note + re-open
   criteria in annex A12.
+
+### 2026-10-02 - controls - J6 pipes located (reset speed = property 0x17; UseFullAngle = logic flag)
+- Camera_SetResetSpeed/SetSpringResetSpeed are plaintext bindings in JX3UIX64;
+  engine side KGameWorldHandler::SetCameraResetSpeed (gc 0x1805FA810) builds an
+  action event {0x1E playerId, value, 0x17 property, float} and posts via
+  world vtbl +0x7D0 (HandleRLAction). Consumer = the action handler for that
+  event kind (bounded next decode).
+- UseFullAngle is NOT Represent: ProcessFullAnglePlayer in JX3ClientX64.exe
+  sets player +0x20038/+0x2003C (air/轻功 full-angle camera) - logic layer,
+  outside ground joystick scope.
+- Proof: proof/controls/p4/gc_SetCameraResetSpeed.txt, exe_ProcessFullAnglePlayer.txt,
+  exe_DoUseFullAngle.txt.

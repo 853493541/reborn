@@ -99,6 +99,29 @@ this helper is **not established statically** — the remaining consumer decode
 needs runtime tracing, which the host cannot do for the JX3 game-world layer
 (§2b). Recorded as the best candidate; do not wire a rate from it.
 
+## 2d. Reset-speed pipe + UseFullAngle (static, 2026-10-02)
+
+**Camera reset/spring speed (J6):** the Lua globals are plaintext bindings in
+`JX3UIX64.dll` (`Camera_SetResetSpeed`, `Camera_SetSpringResetSpeed`,
+`KRepresentScriptTable::LuaCamera_SetResetSpeed`); the engine side is
+`KGameWorldHandler::SetCameraResetSpeed` (game client `0x1805FA810`):
+
+```
+build action event {0x1E playerId, value, 0x17 (property), float speed}
+  -> call [world vtbl +0x7D0]   (the HandleRLAction path, P3 static)
+```
+
+So the reset speed is an **action/property event (property id 0x17)** applied
+through the same property store as the control ids - the per-frame consumer is
+the action handler for that event kind (next decode; bounded).
+
+**UseFullAngle (J6):** not a Represent camera feature - it lives in the logic
+layer (`JX3ClientX64.exe` `ProcessFullAnglePlayer` `0x1403AC990`,
+`KPlayerClient::DoUseFullAngle`, `bUseFullAngle`, `bFullAngleInAir`):
+`ProcessFullAnglePlayer` sets player fields `+0x20038/+0x2003C` (two values)
+or clears `+0x20038` when disabled (plus a `+0x3B0` bool variant). It is the
+air/轻功 full-angle camera flag, outside the ground joystick scope.
+
 ## 3. Probe plan (superseded in part by 2b; kept for completeness)
 
 Feature build `#iso`? No: probe code is host instrumentation and can live in
