@@ -139,11 +139,11 @@ P7 data · P8 verification · P9 publish.
 | G1 exe per-frame input loop (runtime interface boundary) | P3 | **static chain mapped** (`CONTROL_MODES_P3_STATIC.md`): KEventCommonMgr → AjustCtrlInput → controller apply → tick-ordered queue drain → appliers; CommitInput caller + vtable wiring dynamic-probe step remains |
 | G2 `CONTROL_CAMERA`/`OBJECT_STICK` → `+0x1AC`/`+0x1B0` | P3/P4 | **static DONE**: controls drive the dynamic-follow state machine; `+0x1AC` written by `0x180B1A6ED/0x180B1B3CB/0x180B1D31F/0x180B1D3EB`, `+0x1B0` zero-only (`0x180B09132`); mouse pipeline reads both (P4 doc). Per-state behavioral mapping via probe (open) |
 | G3 `[mgr+0x5C]` state enum 1..7 | P3/P4 | transition table |
-| G4 follow mode `[0..3]` consumer | P4 | per-value behavior |
-| G5 reset-speed consumers/order | P4 | release path behavior |
-| G6 movement-direction application per mode | P4 | intent→facing/heading rule |
+| G4 follow mode `[0..3]` consumer | P4 | **DONE**: enum NEVER=0/AUTO=1/ALWAYS=2 (enum_ui) + pipe to node; host gated (A12) |
+| G5 reset-speed consumers/order | P4 | **chain DONE** to the camera node command slot (+0x24/+0x2C/+0x30) via HandleRLAction/sel[0]/applier; slot reader residual (A11 rate integration) |
+| G6 movement-direction application per mode | P4 | joystick vector model DONE (A9); engine TurnTo rate residual |
 | G7 animation selection criteria | P6 | thresholds/curves from params |
-| G8 `Camera_UseFullAngle`; persisted mode key | P4/P7 | consumer open; mode key = `StorageServer('CurrentOperationMode')` DONE, custom.dat mapping open |
+| G8 `Camera_UseFullAngle`; persisted mode key | P4/P7 | **mode key DONE** (`userpreferences.jx3dat` CurrentOperationMode, host reads via RC_USER_PREFS); UseFullAngle = logic-layer air flag (documented) |
 | G9 joystick internals (`Scene_EnableFreeMoveControl`, `ResponseWASDKey`, always-rotate) | P1/P4 | **Lua side DONE** (annex A1/A2/A3): wrapper, axis/8-way MOVE_* builder, mode apply; engine consumer open (P4) |
 | G10 free-view/OB vs normal A/D routing truth | P4 | **script mapping DONE** (A8 constants: classical=strafe, joystick=turn); engine application P4 |
 | G11 Lua binding registration (no plaintext binding names in any binary: `GetOperationMode` etc. are Lua globals; C-bound names like `Scene_EnableFreeMoveControl` resolve through a registry) | P2 | locate the registry/hash mechanism; enumerate bindings used by hotkeys.lua |
