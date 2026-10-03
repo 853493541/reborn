@@ -592,6 +592,16 @@ existence predicate to the host's loose-file layout (host file-layer bridge, to 
 registered as a deviation with re-open criteria), or find the missing wiring that
 lets the wrapper see loose files; then the map renders and the app port proceeds.
 
+**Phase 3 — camera control + actor transform (host26/27/28.out).** Per-frame
+`SetPose` (before each paint) **beats the map's systemCamera override** — distinct
+poses produce distinct frames (verified: top-down pose → sky/props view). The actor
+create options accept a **4x4 row-major matrix** (translation at indices 12/13/14):
+`CreateActorFromFile(engine, mesh, NULL, &actor, 0, actorMtx)` → rc=0 with the
+sandbox spawn in the matrix. Terrain: the source loader loads the landscape (log
+shows the procedural textures served via the bridge) but custom camera poses show
+mostly sky/props — framing/LOD to refine (the systemCamera pose still frames the map
+best). Next: actor visibility check (model streaming) + framing, then the app port.
+
 **Phase 3 — RENDER WORKS (host24/25.out).** The shadow-pass crash is avoided by
 using the **SceneViewEx paint pair**: `BeginPaintSceneViewEx` (`0xA6C1B0`) /
 `EndPaintSceneViewEx` (`0xA6C480`) instead of `BeginPaintView`/`EndPaintView`.

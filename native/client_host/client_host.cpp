@@ -390,13 +390,19 @@ int main(void)
         }
     }
 
-    // actor from a PakV4 model
+    // actor from a PakV4 model, placed at the sandbox spawn via the create
+    // options (4x4 row-major XMFLOAT4X4 translation at indices 12/13/14)
     typedef long (__fastcall *CreateActorFn)(void*, const char*, void*, void**,
                                              unsigned, void*);
     char mpath[512];
     gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
+    float actorMtx[16] = {
+        1,0,0,0, 0,1,0,0, 0,0,1,0,
+        23334.0f, 761.0f, 24224.0f, 1.0f
+    };
     void* actor = NULL;
-    long mrc = ((CreateActorFn)((BYTE*)eng + 0x8B2DA0))(engine, mpath, NULL, &actor, 0, NULL);
+    long mrc = ((CreateActorFn)((BYTE*)eng + 0x8B2DA0))(engine, mpath, NULL, &actor, 0,
+                                                        actorMtx);
     logf("[host] CreateActorFromFile -> 0x%08X actor=%p", (unsigned)mrc, actor);
 
     // authored animation on the engine's own attach path + controller
@@ -448,6 +454,19 @@ int main(void)
     }
 
     // frame loop: controller + engine FrameMove + window paint
+    void* camObj = NULL;
+    {
+        __try
+        {
+            if (view != NULL)
+            {
+                void** vvt = *(void***)view;
+                ((long (__fastcall *)(void*, void**))vvt[10])(view, &camObj);
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { camObj = NULL; }
+    }
+    logf("[host] frame camera=%p", camObj);
     {
         typedef long (__fastcall *FrameMoveFn)(void*);
         FrameMoveFn ctrlFm = (FrameMoveFn)((BYTE*)eng + 0xBC2620);
@@ -458,10 +477,17 @@ int main(void)
         PaintViewFn beginView = (PaintViewFn)((BYTE*)eng + 0xA6C1B0);
         PaintViewFn endView = (PaintViewFn)((BYTE*)eng + 0xA6C480);
         PaintFn endPaint = (PaintFn)((BYTE*)eng + 0xA6FCD0);
+        float camPose[9] = {
+            23334.0f, 761.0f + 25.0f, 24224.0f - 30.0f,
+            23334.0f, 761.0f, 24224.0f,
+            0.0f, 1.0f, 0.0f
+        };
         for (int f = 0; f < 240; f++)
         {
             if (ctrl != NULL) ctrlFm(ctrl);
             if (f < 8) engFm(engine);
+            if (camObj != NULL)
+                ((long (__fastcall *)(void*, float*, int))((BYTE*)eng + 0xB36540))(camObj, camPose, 0);
             if (window != NULL && view != NULL)
             {
                 __try
