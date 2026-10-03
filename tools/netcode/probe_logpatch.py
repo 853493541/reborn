@@ -219,6 +219,8 @@ def main():
     patched = False
     viewer_seen = set()
     dumped_rootfn = False
+    ring_done = False
+    globals_logged = False
     moddump_done = False
     early_done = False
     rootbuf_last = [None]
@@ -337,6 +339,13 @@ def main():
                 fl = read_mem(h, eng_base + 0x174020, 4)
                 cur = struct.unpack("<I", fl)[0] if fl else 0
                 print("   engine flags 0x%X | 0x6 -> %s" % (cur, "ok" if write_u32(h, eng_base + 0x174020, cur | 6) else "FAIL"))
+                # KGLogPrintf console path: the GetFileType check uses a handle cached
+                # from the first call (pre-dup2), so the type never matches - NOP the
+                # jne at 0xE550F (6 bytes) so the console fputs path always runs
+                jb = read_mem(h, eng_base + 0xE550F, 6)
+                if jb and jb != b"\x90" * 6:
+                    ok = write_mem(h, eng_base + 0xE550F, b"\x90" * 6)
+                    print("   KGLog type-check NOPed %s" % ("ok" if ok else "FAIL"))
                 # the engine's g_GetRootPath copies this ANSI buffer (verified: it is
                 # ANSI, not UTF-16 - the earlier UTF-16-only patch missed it)
                 rb = read_mem(h, eng_base + 0x170060, 64)
@@ -346,6 +355,25 @@ def main():
                 print("   engine ANSI root %r -> %s (%r)" % (
                     cur_root, "ok" if ok else "FAIL",
                     chk.split(b"\x00")[0].decode("latin-1") if chk else "?"))
+        if eng_base and not globals_logged and el >= 1.5:
+            globals_logged = True
+            for off, nm in ((0x177598, "sink"), (0x174028, "gate174028"), (0x170440, "mask"),
+                            (0x174020, "flags"), (0x174430, "ring_ptr")):
+                v = read_mem(h, eng_base + off, 8)
+                print("[%.2f] engine %s @+0x%X = %s" % (el, nm, off, v.hex() if v else "?"))
+        if eng_base and not ring_done and el >= 2.02:
+            ring_done = True
+            rp = read_u64(h, eng_base + 0x174430)
+            if rp:
+                lb = read_mem(h, rp + 4, 4)
+                n = struct.unpack("<I", lb)[0] if lb else 0
+                if 0 < n < 0x40000:
+                    data = read_mem(h, rp + 8, n)
+                    if data:
+                        print("=== engine KGLog ring (%d bytes) ===" % n)
+                        print(data.decode("gb18030", "replace")[:12000])
+                else:
+                    print("ring ptr=0x%X len=%d" % (rp, n))
         if patched and not moddump_done and el >= 2.05:
             moddump_done = True
             print("[%.2f] module globals (RTTI-resolved):" % el)

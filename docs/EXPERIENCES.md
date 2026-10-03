@@ -1598,3 +1598,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.29; probe_subvt.py run timeline.
 - Next: find the writer of sub+0x18 (group step processors / module Initialize result
   handler); hardware write-watchpoint on sub+0x18 during 1.8-2.1 s is the direct probe.
+### 2026-10-02 — V2 — static trace: group/module-init machinery + KGLog runtime state
+- Did: static decode of the runner (0x1400A0870), dispatch thunk (0x1400A3750), module
+  Initialize lambda (0x1400A37D0), game.startup builder (0x14009F6D0); 8153-store scan of
+  [reg+0x18] writes filtered by known state constants; runtime read of the KGLog globals;
+  KGLog console-path patch experiments (pipe-check immediate, then NOP).
+- Findings: module Initialize events are dispatched at ~1.27 s (during PlatformLoad); each
+  module Initialize builds its own group (vt 0x953E70) + module-step (vt 0x954CA0) and runs
+  the handler via [ctx]->vt[0x20]; on failure it KGLogPrintf's "[Initialize] %s" (invisible -
+  the engine emits no KGLog in the probe; sink NULL, mask all, flags ok, cached-handle check
+  bypassed). No static candidate writes sub+0x18 (xmm stores not covered yet).
+- Evidence: doc sec.30; scan script output (7 candidate fns); probe run globals.
+- Outcome: writer of sub+0x18 still open; next = hardware write-watchpoint (needs OK) or
+  extended static store search.

@@ -580,3 +580,36 @@ Static decode of the wait/pump chain:
 - Next: find the writer of `sub+0x18` - candidates: the group's step processors
   (`0x1400A0870` runner / dispatcher `0x14009C890`) or a module Initialize result handler;
   a hardware write-watchpoint on `sub+0x18` during 1.8-2.1 s would identify it exactly.
+
+## 30. Static trace of the startup group + module init (2026-10-02, twenty-fourth pass)
+
+- **Timing**: the console module's Initialize (`edx=1`) arrives at ~1.27 s - the 52 module
+  Initialize events are dispatched **during PlatformLoad**, before the `game.startup` group
+  (1.88-2.05 s).
+- **Runner `0x1400A0870`**: builds descriptor `{vt=0x140953EC0, id=step->[+8], ctx=&sub}`
+  and calls the dispatcher `0x14009C890`; on failure logs `PlatformInitialize...` and returns
+  0. The dispatcher thunk (`0x1400A2830` -> `0x1400A3750`) queues a task node
+  `{vt=0x140954C80, handler ctx, event id, ctx=sub}` (node+0x18 = the sub pointer).
+- **Module Initialize lambda `0x1400A37D0`**: per module it allocates a group (0x88 bytes,
+  vt `0x140953E70` - the same group class as `game.startup`) with `[+8]=[sub+8]` (the outer
+  state), `[+0x10]=[sub+0x10]`, allocates a module-step object (0x38 bytes, vt `0x140954CA0`,
+  `[+8]=sub`, `[+0x10]=handler ctx`, `[+0x18]=event id`), stores it at **group+0x18**,
+  appends the group to the sub's list, then runs the module handler via
+  `[handler_ctx]->vt[0x20](ctx, event_id, group)`. On failure it calls
+  `KGLogPrintf(3, "[Initialize] %s ...")` - the failure log (see below).
+- **Writer search (static)**: `mov [reg+0x18], reg` occurs 8153 times; filtering to
+  functions that reference the known state constants leaves 7, none of which writes the
+  sub (the `game.startup` builder `0x14009F6D0` writes zeros into its own step objects; the
+  module lambda writes the module-step pointer into the *group's* +0x18). The writer of
+  `sub+0x18` remains unidentified; stores via xmm (`movups [reg+0x18], xmm`) are not yet
+  covered.
+- **Engine KGLog runtime state** (probe child, 1.51 s): sink `[engine+0x177598] = NULL`,
+  gate `[+0x174028] = 1`, mask `[+0x170440] = 0xFFFFFFFF`, flags `[+0x174020] = 0x13`,
+  ring ptr `[+0x174430] = NULL`. `KGLogPrintf`'s console path checks `GetFileType` on a
+  handle cached at the first call (pre-`dup2`), so the check can never see the pipe; NOPing
+  the check (`engine+0xE550F`, 6 bytes) still yields **no engine output** - the engine emits
+  no KGLog messages in the probe's lifetime (no module handler failure log either).
+- The client's stdout stream is captured (Dumper64/protection/GameDoctor lines, ~2-6 KB per
+  run) - that channel works; the engine's own log does not emit before the gate.
+- Next: hardware write-watchpoint on `sub+0x18` (debug API, needs user OK) or extend the
+  static store search (xmm stores, indirect writes) to find the creator.
