@@ -455,8 +455,8 @@ int main(void)
         typedef long (__fastcall *PaintFn)(void*);
         typedef long (__fastcall *PaintViewFn)(void*, void*);
         PaintFn beginPaint = (PaintFn)((BYTE*)eng + 0xA6C6E0);
-        PaintViewFn beginView = (PaintViewFn)((BYTE*)eng + 0xA6BEF0);
-        PaintViewFn endView = (PaintViewFn)((BYTE*)eng + 0xA6C3C0);
+        PaintViewFn beginView = (PaintViewFn)((BYTE*)eng + 0xA6C1B0);
+        PaintViewFn endView = (PaintViewFn)((BYTE*)eng + 0xA6C480);
         PaintFn endPaint = (PaintFn)((BYTE*)eng + 0xA6FCD0);
         for (int f = 0; f < 240; f++)
         {
