@@ -109,6 +109,7 @@ def main():
     original = None
     orig_bytes = {}
     hits = []
+    step_hits = []
     t0 = time.time()
     de = DEBUG_EVENT()
     ctx = ctypes.create_string_buffer(1232)
@@ -119,6 +120,15 @@ def main():
             print("timeout", flush=True)
             break
         if not got:
+            cfg = os.environ.get("CFG_E10", "")
+            if cfg != "" and hproc and exe_base:
+                cm2 = read_u64(hproc.value, exe_base + 0xA8C1C8)
+                if cm2:
+                    cur = read_mem(hproc.value, cm2 + 0xE10, 4)
+                    want = struct.pack("<I", int(cfg))
+                    if cur != want:
+                        k32.WriteProcessMemory(hproc, ctypes.c_void_p(cm2 + 0xE10), want, 4,
+                                               ctypes.byref(ctypes.c_size_t()))
             if not armed and hproc and exe_base:
                 # arm both breakpoints once the exe is loaded
                 original = read_mem(hproc.value, exe_base + FAIL_BRANCH, 1)
@@ -137,7 +147,8 @@ def main():
                                            b"\xCC", 1, ctypes.byref(write))
                     orig_bytes[UPD_HANDLER] = orig_u
                     print("[%.2f] updater-handler breakpoint armed" % el, flush=True)
-            if armed and hproc and exe_base and STEP_PROC not in orig_bytes and el > 2.5:
+            if armed and hproc and exe_base and STEP_PROC not in orig_bytes and el > 2.5 \
+                    and not os.environ.get("SKIP_STEP", ""):
                 orig_step = read_mem(hproc.value, exe_base + STEP_PROC, 1)
                 if orig_step:
                     write = ctypes.c_size_t()
@@ -200,9 +211,10 @@ def main():
                 ret = read_u64(hproc.value, rsp) if rsp else None
                 hctx = read_u64(hproc.value, rcx + 0x10) if rcx else None
                 nm = rtti_name(hproc.value, exe_base, hctx) if hctx else None
-                if nm and "LaunchUpdater" in nm:
-                    print("[%.2f] STEP_PROC %s rcx=0x%X rdx=0x%X dl=0x%X ret=0x%X (exe+0x%X)" % (
-                        el, nm, rcx, rdx, rdx & 0xFF, ret or 0,
+                if len(step_hits) < 25:
+                    step_hits.append(1)
+                    print("[%.2f] STEP_PROC %s dl=0x%X rdx=0x%X ret=exe+0x%X" % (
+                        el, nm, rdx & 0xFF, rdx,
                         (ret - exe_base) if ret and ret > exe_base else 0), flush=True)
                 # restore, single-step, re-arm
                 write = ctypes.c_size_t()

@@ -166,12 +166,46 @@ def main():
                     break
                 time.sleep(0.05)
 
+    cfg_e10 = None
+    for i, a in enumerate(args):
+        if a == "--cfg-e10" and i + 1 < len(args):
+            cfg_e10 = int(args[i + 1])
+    hp = k32.OpenProcess(0x438, False, pid) if cfg_e10 is not None else None
+    exe_base = None
     t0 = time.time()
     seen_children = set()
     seen_windows = set()
     exited = None
     while time.time() - t0 < observe:
         el = time.time() - t0
+        if hp and exe_base is None:
+            TH32CS_SNAPMODULE = 0x8
+
+            class ME32(ctypes.Structure):
+                _fields_ = [("dwSize", w.DWORD), ("th32ModuleID", w.DWORD), ("th32ProcessID", w.DWORD),
+                            ("GlblcntUsage", w.DWORD), ("ProccntUsage", w.DWORD),
+                            ("modBaseAddr", ctypes.POINTER(ctypes.c_byte)), ("modBaseSize", w.DWORD),
+                            ("hModule", w.HMODULE), ("szModule", ctypes.c_char * 256),
+                            ("szExePath", ctypes.c_char * 260)]
+            snap = k32.CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid)
+            me = ME32()
+            me.dwSize = ctypes.sizeof(ME32)
+            if k32.Module32First(snap, ctypes.byref(me)):
+                while True:
+                    if me.szModule.decode("gb18030", "replace").lower().startswith("jx3client"):
+                        exe_base = ctypes.cast(me.modBaseAddr, ctypes.c_void_p).value
+                        break
+                    if not k32.Module32Next(snap, ctypes.byref(me)):
+                        break
+            k32.CloseHandle(snap)
+        if hp and exe_base:
+            buf = ctypes.create_string_buffer(8)
+            n = ctypes.c_size_t()
+            if k32.ReadProcessMemory(hp, ctypes.c_void_p(exe_base + 0xA8C1C8), buf, 8, ctypes.byref(n)):
+                cm = struct.unpack("<Q", buf.raw)[0]
+                if cm:
+                    k32.WriteProcessMemory(hp, ctypes.c_void_p(cm + 0xE10),
+                                           struct.pack("<I", cfg_e10), 4, ctypes.byref(n))
         if k32.WaitForSingleObject(cpi.hProcess, 0) == 0:
             code = ctypes.c_ulong()
             k32.GetExitCodeProcess(cpi.hProcess, ctypes.byref(code))

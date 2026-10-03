@@ -851,3 +851,21 @@ diagnostic, which is not shippable.
   `[configModule+0xe10] != 0` and the event id read from a global equals 3).
 - Next: find the real condition (gate/global value) that makes the real launch return 1 and
   reproduce it without the diagnostic byte; then the client should stay up unpatched.
+## 42. STABLE CLIENT CONDITION CONFIRMED: config+0xe10 = 0 (2026-10-03, 36th pass)
+
+- Breakpoint runs (3/3 deterministic): the LaunchUpdater handler sees
+  `[configModule+0xe10] = 1` and the shared step object `[0xA8C230]+0x18 = 4` -> it takes the
+  launcher-check path (event 4) which returns 0 in every branch -> override returns 0 -> the
+  task queue aborts the chain.
+- With `config+0xe10 = 0` maintained (no other patches): the handler returns 1 immediately
+  (skip), no module failure occurs, and in the **production emulator**
+  (`launcher_emulator.py --cfg-e10 0`) the client runs **past 22 s**, spawns no
+  `SeasunGame.exe`, no self-relaunch/crash, and **CEF/Chromium starts at 8.6 s**
+  (`Chrome_SystemMessageWindow`, `Chrome_WidgetWin_0`, `Base_PowerMessageWindow`).
+- The `[0xA8C230]` object is a step created in PlatformStartup with `+0x18 = -1` (current
+  event id, updated per dispatch); the handler reads it asynchronously - a race that our
+  harness consistently loses (event id 4) and the real launch wins.
+- `config+0xe10` has no direct store in the exe's code (scans found only reads) - it is
+  loaded from a config blob/userdata. Next: find the legitimate source (custom.dat/config
+  blob) to set it without a runtime write; until then `--cfg-e10 0` is the provisional
+  emulator condition that yields a stable, unpatched-binary client.

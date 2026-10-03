@@ -1711,3 +1711,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.41; emulator run output.
 - Outcome: the wall is one module-event branch; next = reproduce the real condition (config
   gate / event-id global) without the diagnostic.
+### 2026-10-03 — V2: STABLE CLIENT CONDITION CONFIRMED (config+0xe10 = 0)
+- Did: probe_bp deterministic capture (gate=1, shared event id=4 -> handler takes the
+  launcher path -> 0); forced gate 0 in probe_bp (no failure) and in the production emulator
+  (--cfg-e10 0).
+- Findings: with the gate 0 the client runs past 22 s, no launcher spawn, no crash, CEF
+  starts at 8.6 s. The event id comes from a shared step object [0xA8C230]+0x18 (race);
+  config+0xe10 has no direct writer in code (loaded from a config blob).
+- Evidence: doc sec.42; emulator run output.
+- Outcome: stable client achieved with one config override; next = find the config source to
+  set it legitimately, then continue P2 (login/gateway).
