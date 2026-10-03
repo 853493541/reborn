@@ -247,6 +247,56 @@ window, `StartSprint`/`EndSprint` logged, `sprint=` telemetry. The engine
 was invented. Scripted check: `RC_SPRINT_TEST=1` (down 12000 / up 12100 /
 down 12150 / up 12650) logs the expected Start/End pair.
 
+## A11. `RotatePlayer` (0/14) — joystick turn + camera follow speed HIGH
+
+`RotatePlayer` runs per frame in JOYSTICK (registered from the mode switch):
+
+```lua
+if not active then return end
+vector.nX += (target.nX - vector.nX) * up_smooth      -- per-axis smoothing
+vector.nY += (target.nY - vector.nY) * up_smooth
+dir = 64                                              -- default = 90 deg
+ax, ay = abs(nX), abs(nY)
+if ay ~= 0 then dir = FastArcTan(ax / ay) end         -- 0/13 atan lookup
+scale = player.bSprintFlag and up_sprintScale or 1.0
+if up_fwdThresh < nY then
+    Camera_SetResetSpeed(dir * scale * up_k)          -- <<< camera reset speed
+else
+    d2 = (nY < 0) and (128 - dir) or dir
+    Camera_SetResetSpeed(d2 * scale * up_k)
+end
+-- quadrant fixups into a 0..255 byte heading:
+if nX <= 0 and nY < 0 then dir = 128 - dir
+elseif nX < 0 and nY < 0 then dir = 128 + dir
+elseif nX < 0 and nY >= 0 then dir = 256 - dir end
+if dir == 256 then dir = 0 end
+SetPlayerRotation(dir)                               -- 0/10 -> TurnTo(dir)
+```
+
+Decoded consequences:
+
+- **`Camera_SetResetSpeed` is the joystick camera-follow rate, written every
+  frame** as a function of the movement direction (`dir * scale * k`), not a
+  drag-release spring setting. This resolves the G5 ambiguity: the per-mode
+  value applied at switch is the base; in joystick the Lua layer overrides it
+  per frame (sprint flag scales it).
+- The player heading is a **byte angle** (`FastArcTan` table, quadrilateral
+  fixups) passed to `SetPlayerRotation`/`TurnTo`.
+- The vector is **smoothed** toward the target with `up_smooth` (value from
+  the chunk locals; still to extract) - this is the joystick input feel.
+
+**Constants extracted from the chunk locals (pc0-28) — HIGH:**
+| upvalue | value | role |
+|---|---|---|
+| `up_smooth` (R9) | **0.3** | per-call vector smoothing factor |
+| `up_sprintScale` (R12) | **3.0** | reset-speed scale while `bSprintFlag` |
+| `up_fwdThresh` (R10) | **10.0** | forward/reverse branch threshold on `nY` |
+| `up_k` (R11) | **0.00125** | reset-speed factor (`dir * scale * 0.00125`) |
+| vector/target | tables `{nX,nY}` | current vs target vector (0/16 writes target) |
+
+Remaining: port the math to the host (facing byte-angle from `FastArcTan` +
+the per-frame camera follow rate `Camera_SetResetSpeed(dir*scale*0.00125)`).
+
 ## A4. Mode toggle — `OperationModeBase.lua` proto `0/19` (L463-488) MED/HIGH
 
 ```lua

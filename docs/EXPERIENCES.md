@@ -1726,3 +1726,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   Start/End logs, sprint= telemetry); engine Sprint state left open.
 - Verified via RC_SPRINT_TEST scripted double-tap (150 ms gap) -> StartSprint/
   EndSprint logged; build exit 0, smoke ALL PASS.
+
+### 2026-10-02 - controls - J4 decode: RotatePlayer joystick math + constants
+- RotatePlayer (0/14) per frame in joystick: smooths the vector (0.3/call)
+  toward the target built by FreeMoveControl, computes the byte heading via
+  FastArcTan(|nX|/|nY|) + quadrant fixups (0..255), calls
+  Camera_SetResetSpeed(dir * (bSprintFlag and 3.0 or 1.0) * 0.00125) and
+  SetPlayerRotation(dir) -> TurnTo. Constants extracted from the chunk locals.
+- Key insight: Camera_SetResetSpeed is the JOYSTICK CAMERA FOLLOW RATE written
+  per frame from the direction (not a drag-release setting) - resolves the G5
+  ambiguity; per-mode value at switch is only the base.
+- Host port of the rate pending (no invented rate); decode committed in annex
+  A11.
