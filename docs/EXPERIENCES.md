@@ -1702,3 +1702,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.39.
 - Outcome: pivot to the launcher emulator (P1.3) with production conditions only (no
   diagnostics) and measure; then the relaunch/launcher-session path.
+### 2026-10-03 — V2: THE BLOCKER IS ONE BRANCH (LaunchUpdater event-3 override)
+- Did: found the module vtable (rva 0x957008) and its vt+0x28 override 0x1400B1BF0 (event 3
+  -> call 0x1400B1C40 -> failure abort); flipped only `cmp edx,3` -> `cmp edx,4`
+  (exe+0xB1BF6) in the production emulator.
+- Findings: with that single byte flipped the client runs past 20 s, skips the launcher spawn
+  and the relaunch crash, and CEF windows appear (Base_PowerMessageWindow at 11.7 s).
+- Evidence: doc sec.41; emulator run output.
+- Outcome: the wall is one module-event branch; next = reproduce the real condition (config
+  gate / event-id global) without the diagnostic.

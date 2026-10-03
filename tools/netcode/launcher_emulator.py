@@ -130,6 +130,41 @@ def main():
     write_block(pid, block_kind)
     if suspend:
         k32.ResumeThread(cpi.hThread)
+    if "--patch-upd" in args:
+        # DIAGNOSTIC: flip the LaunchUpdater event-3 compare (cmp edx,3 -> cmp edx,4) so the
+        # module's event-3 override returns 1 instead of aborting the chain
+        k32.OpenProcess.restype = w.HANDLE
+        hp = k32.OpenProcess(0x438, False, pid)
+        if hp:
+            for _ in range(50):
+                base = None
+                for p, par, nm in processes():
+                    pass
+                # find the main module base via Toolhelp modules
+                TH32CS_SNAPMODULE = 0x8
+                class ME32(ctypes.Structure):
+                    _fields_ = [("dwSize", w.DWORD), ("th32ModuleID", w.DWORD), ("th32ProcessID", w.DWORD),
+                                ("GlblcntUsage", w.DWORD), ("ProccntUsage", w.DWORD),
+                                ("modBaseAddr", ctypes.POINTER(ctypes.c_byte)), ("modBaseSize", w.DWORD),
+                                ("hModule", w.HMODULE), ("szModule", ctypes.c_char * 256),
+                                ("szExePath", ctypes.c_char * 260)]
+                snap = k32.CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid)
+                me = ME32()
+                me.dwSize = ctypes.sizeof(ME32)
+                if k32.Module32First(snap, ctypes.byref(me)):
+                    while True:
+                        if me.szModule.decode("gb18030", "replace").lower().startswith("jx3client"):
+                            base = ctypes.cast(me.modBaseAddr, ctypes.c_void_p).value
+                            break
+                        if not k32.Module32Next(snap, ctypes.byref(me)):
+                            break
+                k32.CloseHandle(snap)
+                if base:
+                    n = ctypes.c_size_t()
+                    ok = k32.WriteProcessMemory(hp, ctypes.c_void_p(base + 0xB1BF6), b"\x04", 1, ctypes.byref(n))
+                    print("patch-upd: cmp edx,3 -> 4 %s (base=0x%X)" % ("ok" if ok else "FAIL", base), flush=True)
+                    break
+                time.sleep(0.05)
 
     t0 = time.time()
     seen_children = set()

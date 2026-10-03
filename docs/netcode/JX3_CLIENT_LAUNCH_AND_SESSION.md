@@ -835,3 +835,19 @@ external comparison is possible; (b) investigate what makes the module-step cont
 byte 0 in the racing task (the abort trigger); (c) test under a running real launcher again
 (earlier test still exited). Until then the client cannot stay up without the MOD_OK-class
 diagnostic, which is not shippable.
+## 41. THE BLOCKER IS ONE BRANCH: LaunchUpdater event-3 override (2026-10-03, 35th pass)
+
+- `KJX3LaunchUpdaterModule` vtable (rva 0x957008) `vt+0x28 = 0x1400B1BF0`: for event 3 it
+  calls `0x1400B1C40` (the updater/launcher checks); if that returns 0 -> override returns 0
+  -> the module lambda reports failure -> the task queue aborts the chain. Any other event ->
+  return 1.
+- Minimal diagnostic in the **production emulator** (`launcher_emulator.py --patch-upd`):
+  flip only `cmp edx,3` -> `cmp edx,4` at `exe+0xB1BF6`. Result: the client runs **past 20 s**
+  (no exit), spawns no `SeasunGame.exe`, no self-relaunch/WerFault, DLSS init at 4.3 s, and a
+  **CEF window appears** (`Base_PowerMessageWindow`, 11.7 s) - the client reaches the
+  login/browser stage.
+- So the whole 2.35 s wall is this single module-event branch; the real launcher's context
+  makes the override return 1 (the handler `0x1400B1C40` proceeds only if
+  `[configModule+0xe10] != 0` and the event id read from a global equals 3).
+- Next: find the real condition (gate/global value) that makes the real launch return 1 and
+  reproduce it without the diagnostic byte; then the client should stay up unpatched.
