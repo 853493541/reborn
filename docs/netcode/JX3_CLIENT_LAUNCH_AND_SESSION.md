@@ -869,3 +869,17 @@ diagnostic, which is not shippable.
   loaded from a config blob/userdata. Next: find the legitimate source (custom.dat/config
   blob) to set it without a runtime write; until then `--cfg-e10 0` is the provisional
   emulator condition that yields a stable, unpatched-binary client.
+## 43. PRODUCT MILESTONE: stable visible client at the login stage (2026-10-03, 37th pass)
+
+- With `launcher_emulator.py --cfg-e10 0` (provisional config override; binary unmodified):
+  the client is stable past **90 s**, runs `cefrender.exe`, holds the login-stage HTTP/SDK
+  connections and the loopback self-pipe pairs, and its main window is **visible and
+  rendering**: class `KGWin32App`, rect (0,0)-(3840,2160), title `剑网3 - 乾坤一掷 @ ...`.
+- Captures (numeric fingerprint): `C:\jx3tmp\product_win_1.png` / `product_screen_1.png`,
+  1920x1080, mean `#506068` (real rendered content; per-region RGBs recorded by
+  `tools/proof/image_stats.py`).
+- So the launcher-emulator path now yields a stable, visible real client at the login stage;
+  the remaining work is P2: make the login flow reach our own gateway (server list / login key
+  / game-server redirect), then P3 (game server / enter world).
+- The `--cfg-e10 0` override remains the single provisional deviation (config source not yet
+  located; the value has no direct writer in code - loaded from a config blob).

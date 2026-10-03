@@ -1721,3 +1721,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.42; emulator run output.
 - Outcome: stable client achieved with one config override; next = find the config source to
   set it legitimately, then continue P2 (login/gateway).
+### 2026-10-03 — V2 PRODUCT MILESTONE: stable visible real client at the login stage
+- Did: ran the stable emulator for 90 s; captured windows/connections/captures.
+- Findings: client stable >90 s, cefrender + login-stage connections, main window visible and
+  rendering (KGWin32App 3840x2160, title 剑网3 - 乾坤一掷 @ ...); captures 5.2 MB, mean #506068.
+- Evidence: doc sec.43; C:\jx3tmp\product_*.png + image_stats.
+- Outcome: stable visible client achieved (one provisional config override); next P2
+  (login/gateway), then P3 (world).
