@@ -8,13 +8,15 @@ when the client is pointed at this port.
 Usage: python gateway_stub.py [--port 3724] [--log C:\\jx3tmp\\gateway_stub.log]
 """
 import socket
+import struct
 import sys
 import threading
 import time
 
 DEFAULT_PORT = 3724
 DEFAULT_LOG = r"C:\jx3tmp\gateway_stub.log"
-HELLO_HEX = "00"
+# handshake respond frame: proto 2, result 0 (success), 12 trailing bytes
+HELLO_HEX = "0200000000000000000000000000"
 _lock = threading.Lock()
 _logf = None
 
@@ -31,13 +33,14 @@ def handle(conn, addr):
     w("[%s] CONNECT from %s:%d" % (time.strftime("%H:%M:%S"), addr[0], addr[1]))
     conn.settimeout(None)
     if HELLO_HEX:
-        time.sleep(0.2)
+        time.sleep(1.0)
         try:
-            hello = bytes.fromhex(HELLO_HEX)
-            conn.sendall(hello)
-            w("[%s] SENT hello %s" % (time.strftime("%H:%M:%S"), HELLO_HEX))
+            payload = bytes.fromhex(HELLO_HEX)
+            frame = struct.pack("<H", len(payload) + 2) + payload
+            conn.sendall(frame)
+            w("[%s] SENT frame %s" % (time.strftime("%H:%M:%S"), frame.hex()))
         except Exception as e:
-            w("[%s] hello send failed: %s" % (time.strftime("%H:%M:%S"), e))
+            w("[%s] frame send failed: %s" % (time.strftime("%H:%M:%S"), e))
     total = 0
     try:
         while True:

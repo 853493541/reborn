@@ -979,3 +979,39 @@ Probe (`tools/netcode/probe_gw_bp.py`, DEBUG_ONLY_THIS_PROCESS + INT3):
   the synthetic path, so the handshake is not sent and the client exits under the debugger.
 - next: read the gateway handler table `[gwClient+0x250]` for valid server opcodes and
   drive one clean UI login (single click) on a fresh client for the handshake capture.
+
+## 47. Gateway protocol table + handshake-respond layout + the task-handle gate (P2 step 3)
+
+**Protocol table** (runtime dump via `probe_gw_bp.py`; handler `[gwClient+0x250+proto*8]`,
+min size `[gwClient+0xa50+proto*8]`):
+
+| proto | handler (exe RVA) | min size | identified as |
+|---|---|---|---|
+| 1 | 0x188700 | 5 | rename/login-key family |
+| 2 | 0x1882E0 | 14 | **handshake respond** (version/maintenance checks) |
+| 3 | 0x187960 | 2 | account verify respond |
+| 4 | 0x1879D0 | 252 | account verify variant |
+| 6/7 | 0x1884F0/0x188470 | 15/2 | mibao verify |
+| 8/11/12 | 0x187DF0/0x187E80/0x188010 | 9/6/19 | create/delete role respond |
+| 9/15 | 0x1890B0/0x189050 | 9/14 | role list sync |
+| 10 | 0x188DD0 | 17 | newbie maps |
+| 14 | 0x188900 | 30 | **login key** (game server address) |
+| 17/26 | 0x188C00/0x188D70 | 9/3 | map queue / mibao info |
+| 19/20/22/24 | 0x188230/0x189310/0x189350/0x1893D0 | 1/2/5/74 | captcha / web sign |
+
+**Handshake respond (proto 2)** layout: `[0]=2, [1]=result, [2..5]=dword,
+[6..9]=dword (case 6), [0xa..0xd]=dword` (min 14). Result switch: 0 = success
+(notification path), 1 = Gateway Version Error, 2 = System Maintenance, 3 = Account System
+Lost, 4 = GameWorld Version Error, 5 = Source Version Error, 6 = alt success (reads
+`[6]`), 7 = "you are bad guy". Stub sends `10 00 | 02 00 00...` (proto 2, result 0).
+
+**Root cause of the missing handshake (proven by passive poll, no breakpoints):**
+the pump (`0x140185900`) is invoked once and then blocks inside `ProcessPackage`'s
+read-`select` (transport `+0x14` timeout = the observed 20 s). `Connect` sets state=1 and
+queues the `RealConnectGateway` task, storing an async handle at `[gwClient+0x1258]`
+(`h1/h2`). When the pump resumes (server frame or timeout) the state machine checks that
+handle: if the task-completion token has not resolved, it takes the timeout/destroy path
+(poll: `state=1` -> `state=3`), so `ProcessConnectState` (handshake build/send) is never
+reached. In the synthetic path RG itself also fails (`state=3`) because the remote-thread
+queue token is invalid. Next: find what resolves the task-completion token (task-queue
+pump / completion callback) and whether the login-stage main loop drives it.

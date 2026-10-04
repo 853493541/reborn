@@ -111,6 +111,9 @@ def main():
     state_last = {}
     gw_client = [None]
     triggered = [False]
+    forced = [False]
+    table_dumped = [False]
+    poll_last = {}
     t0 = time.time()
     de = DEBUG_EVENT()
     ctx = ctypes.create_string_buffer(1232)
@@ -137,6 +140,49 @@ def main():
                                                    b"\xCC", 1, ctypes.byref(ctypes.c_size_t()))
                             armed[rva] = ob
                             print("[%.2f] armed %s (exe+0x%X)" % (el, TARGETS[rva], rva), flush=True)
+                if (gw_client[0] and not table_dumped[0]
+                        and os.path.exists(r"C:\jx3tmp\dump_table")):
+                    table_dumped[0] = True
+                    try:
+                        os.remove(r"C:\jx3tmp\dump_table")
+                    except OSError:
+                        pass
+                    print("=== gateway protocol table (gwClient=0x%X) ===" % gw_client[0], flush=True)
+                    for i in range(256):
+                        h = read_u64(hproc.value, gw_client[0] + 0x250 + i * 8)
+                        if h:
+                            sz = read_u32(hproc.value, gw_client[0] + 0xa50 + i * 8)
+                            print("proto=%-3d handler=0x%X (exe+0x%X) min_size=%s"
+                                  % (i, h, (h - exe_base) if h > exe_base else 0, sz), flush=True)
+                    print("=== end table ===", flush=True)
+                if (gw_client[0] and not forced[0]
+                        and os.path.exists(r"C:\jx3tmp\force_handshake")):
+                    forced[0] = True
+                    try:
+                        os.remove(r"C:\jx3tmp\force_handshake")
+                    except OSError:
+                        pass
+                    n = ctypes.c_size_t()
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x1258),
+                                           b"\x00" * 16, 16, ctypes.byref(n))
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x1268),
+                                           b"\x00\x00\x00\x00", 4, ctypes.byref(n))
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x1250),
+                                           struct.pack("<I", 2), 4, ctypes.byref(n))
+                    p38 = read_u64(hproc.value, gw_client[0] + 0x38) or 0
+                    print("[%.2f] FORCE state=2 handle-cleared p38=0x%X" % (el, p38), flush=True)
+                if gw_client[0]:
+                    st = read_u32(hproc.value, gw_client[0] + 0x1250)
+                    f1 = read_u32(hproc.value, gw_client[0] + 0x1268)
+                    p28 = read_u64(hproc.value, gw_client[0] + 0x28) or 0
+                    p38 = read_u64(hproc.value, gw_client[0] + 0x38) or 0
+                    h1 = read_u64(hproc.value, gw_client[0] + 0x1258) or 0
+                    h2 = read_u64(hproc.value, gw_client[0] + 0x1260) or 0
+                    key = (st, f1, p28, p38, h1, h2)
+                    if poll_last.get("v") != key:
+                        poll_last["v"] = key
+                        print("[%.2f] POLL state=%s f1268=%s p28=0x%X p38=0x%X h=0x%X/0x%X"
+                              % (el, st, f1, p28, p38, h1, h2), flush=True)
                 if (not triggered[0] and gw_client[0]
                         and os.path.exists(r"C:\jx3tmp\trigger_connect")):
                     triggered[0] = True
@@ -165,6 +211,16 @@ def main():
                                                 ctypes.byref(tid))
                     print("[%.2f] TRIGGER Connect(this=0x%X) host=127.0.0.1:3724 thread=%s"
                           % (el, gw_client[0], th), flush=True)
+                    time.sleep(0.3)
+                    n2 = ctypes.c_size_t()
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x1258),
+                                           b"\x00" * 16, 16, ctypes.byref(n2))
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x1268),
+                                           b"\x00\x00\x00\x00", 4, ctypes.byref(n2))
+                    st = read_u32(hproc.value, gw_client[0] + 0x1250)
+                    p38 = read_u64(hproc.value, gw_client[0] + 0x38) or 0
+                    print("[%.2f] handle cleared after connect (state=%s p38=0x%X)"
+                          % (el, st, p38), flush=True)
             continue
         code = de.dwDebugEventCode
         if code == CREATE_PROCESS_DEBUG_EVENT:
@@ -207,11 +263,10 @@ def main():
                         f1 = read_u32(hproc.value, rcx + 0x1268)
                         p28 = read_u64(hproc.value, rcx + 0x28) or 0
                         p38 = read_u64(hproc.value, rcx + 0x38) or 0
-                        key_state = (st, f1, p28, p38)
-                        if state_last.get("v") == key_state:
-                            log_it = False
-                        state_last["v"] = key_state
-                        info = " state=%s f1268=%s p28=0x%X p38=0x%X" % (st, f1, p28, p38)
+                        h1 = read_u64(hproc.value, rcx + 0x1258) or 0
+                        h2 = read_u64(hproc.value, rcx + 0x1260) or 0
+                        info = (" state=%s f1268=%s p28=0x%X p38=0x%X h1258=0x%X h1260=0x%X"
+                                % (st, f1, p28, p38, h1, h2))
                     nm = TARGETS[rva]
                     key = (nm,)
                     hits[key] = hits.get(key, 0) + 1
