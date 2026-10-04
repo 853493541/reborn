@@ -267,6 +267,13 @@ Claims currently sourced from `interface\` addon/user data; annotate on touch:
 Loose format. Required: a `Verified:` line (command → result) for any change or finding,
 and evidence paths/confidence for factual claims. Do not present hypotheses as facts.
 
+**Autonomy (do the known next step).** When the next step is known and inside the current
+scope, **do it** — do not stop and ask the user for "go" while the job is unfinished.
+Stopping is only for: the "Ask before" list below, a genuinely ambiguous fork where the
+choice changes scope, or a hard blocker where no next probe exists (then report exactly
+what is missing). Otherwise: pick the next concrete step, execute it, verify it, commit,
+and report progress in the same turn — repeat until the goal is reached or blocked.
+
 **Full-chain ownership (the agent is the tester).** When a problem repeats, or when a fix
 is requested, the agent owns the entire chain — never hand testing back to the user:
 
