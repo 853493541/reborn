@@ -1510,3 +1510,32 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   render. `ConvertKGRLUnitToJson` (MovieEditor build export) hints the unit format.
 - Evidence: %TEMP%\opencode\skillv2\host_rl.out (loader live), le_call.txt/le_init.txt
   (client InitLogic), rl_names.txt (KGRLLoader API), rl_vt3.txt (vtable methods).
+
+## 2026-10-04 — KGRLLoader call path verified; loader errors visible; resource converter identified as the missing init
+
+- Host now calls the loader methods directly (RC_HOST_RLLOADER=1): `CreateRLLoader` ->
+  non-null, `rlvt[6]` = `KGRLLoader::LoadPlayerAllModel` -> 0 (fails at its line 408
+  init), `rlvt[16]` = `KGRLLoader::GetUnitFromPath(...f1_3094_body_hd.mesh)` -> NULL
+  (`GetRepresentIDFromPath` fails at its line 486). No crash; run completes.
+- Represent logging is now captured: the DLL logs via
+  `Engine_Lua5X64!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ`; patching that IAT in
+  JX3RepresentX64.dll routes its KGLOG errors into the host log (this is how the two
+  failures above were seen).
+- Full KGRLLoader vtable mapped (real impls after thunks): [0] 0x3F9C20 update,
+  [1]/[2] GetUnit, [3] lock/update, [4] ReleaseUnit, [5] iterate, [6] LoadPlayerAllModel
+  (0x3F5620, creates the 0x26470-byte `g_pRL` singleton + inits at +0x120/+0x1A0),
+  [7] GetEquipmentScale, [8]/[9] iterate units, [10..15] helpers, [16] GetUnitFromPath
+  (0x3F51C0), [17] LoadUnitFromFile (0x3F9940, takes a VFS file object, version <= 0x38),
+  [18] 0x3FA100.
+- Client InitLogic post-CreateRLLoader steps (JX3LogicEditOperationX64 0x11343A+):
+  logs "Init RLLoader ... ... [%s]", then loads **`JX3ResourceConvertX64.dll`**
+  (`m_hConvertModule`, present in both client and MovieEditor bin64, single export
+  `KG_GetConvertResource` at 0x1870) and calls `KG_GetConvertResource(&global)`
+  (logic-module global 0x9A0D90). This resource-converter init is the missing piece for
+  `LoadPlayerAllModel` / `GetRepresentIDFromPath`.
+- Next: replicate the post-loader step (load the converter, call KG_GetConvertResource
+  with the right env/config), then LoadPlayerAllModel -> unit -> engine actor -> render;
+  the unit file naming/extension for GetUnitFromPath is still open (no .kgrl in the pak
+  index; GetRepresentIDFromPath maps a model path to an RL id).
+- Evidence: %TEMP%\opencode\skillv2\host_unit.out / host_unit2.out (loader errors),
+  rl_full.txt (vtable map), le_post.txt (client post-loader init).

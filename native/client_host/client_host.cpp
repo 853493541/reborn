@@ -1267,8 +1267,31 @@ int main(void)
                     {
                         void** lvt = *(void***)loader;
                         logf("[host] RLLoader vtable=%p", (void*)lvt);
-                        for (int i = 0; i < 12; i++)
-                            logf("[host]   rlvt[%d] = %s", i, fnLoc(lvt[i]));
+                        // represent logging -> host log (shows the loader's own errors;
+                        // the DLL logs via Engine_Lua5X64!KGLogPrintf)
+                        HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
+                        if (lua != NULL)
+                            patchIat(rep, GetProcAddress(lua,
+                                "?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ"),
+                                (void*)hookPrintfLog);
+                        __try
+                        {
+                            long pm = ((long (__fastcall *)(void*))lvt[6])(loader);
+                            logf("[host] RLLoader::LoadPlayerAllModel -> 0x%08X", (unsigned)pm);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] LoadPlayerAllModel fault"); }
+                        __try
+                        {
+                            const char* unitPath =
+                                "data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh";
+                            void* unit = ((void* (__fastcall *)(void*, const char*))
+                                          lvt[16])(loader, unitPath);
+                            logf("[host] RLLoader::GetUnitFromPath('%s') -> %p",
+                                 unitPath, unit);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] GetUnitFromPath fault"); }
                     }
                 }
             }
