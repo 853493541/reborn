@@ -7,6 +7,10 @@ in `docs/ui/BASIC_UI_HUD.md`.
 
 - Run: `dotnet run --project ui-process-app`. Release binary:
   `ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe`.
+- **不需要 (not needed): press `X`** in the viewer to move the currently shown window into a
+  `不需要` stage at the bottom of the tree; press `X` again to restore it to its original stage.
+  State is a side file `Data/rejected.tsv` (windowId TAB originalStageId) — the catalog JSON stays
+  clean; headless equivalent: `UiProcessApp.exe --reject <windowId>` (toggles).
 - **Working on a catalog item → set it as the default**: when a session works on
   one of the windows in the list (the user's "5.x"), update the root
   `defaultWindow` in `Data/ui_inventory.json` to that window id (the viewer opens

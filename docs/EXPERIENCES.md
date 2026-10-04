@@ -1580,3 +1580,14 @@ solved it, and what is still open. **Newest at the bottom.**
 - Next fidelity step per panel: replay one sample row/slot per runtime list once the row templates are
   identified (rows are created by each panel's Lua).
 - Verified: --selftest 1037/0/0; raidpanel render 49 sections.
+
+### 2026-10-04 — UI — viewer X key: reject a view into 不需要 (not needed)
+- User: "pressing x to set a view to be in category 'not needed', to reject one from the list".
+- Implementation: new `RejectionStore` (side file `Data/rejected.tsv`: windowId TAB originalStageId) -
+  X in the viewer moves the currently shown window into a `不需要` stage appended at the bottom of the
+  tree; X again restores it to its original stage (the side file keeps the catalog JSON untouched and
+  the action reversible). The tree rebuilds (numbers update) and the window is re-selected.
+  Headless equivalent for scripting/testing: `UiProcessApp.exe --reject <windowId>` (toggles).
+  Key handler ignores presses while a TextBox has focus or with modifiers.
+- Verified: `--reject characterpanel` twice -> rejected (not-needed=1) then restored (not-needed=0),
+  rejected.tsv back to header-only; --selftest 1037/0/0 (JSON untouched).

@@ -47,7 +47,68 @@ namespace UiProcessApp
                 Shutdown(exit);
                 return;
             }
+            if (e.Args.Contains("--reject"))
+            {
+                var exit = RunReject(e.Args);
+                Shutdown(exit);
+                return;
+            }
             base.OnStartup(e);
+        }
+
+        /// <summary>
+        /// Headless 不需要 toggle (same logic as the viewer's X key):
+        ///   UiProcessApp.exe --reject &lt;windowId&gt;
+        /// Moves the window into the not-needed stage (or restores it) and saves Data/rejected.tsv.
+        /// </summary>
+        private static int RunReject(string[] args)
+        {
+            try
+            {
+                string id = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--reject") id = args[i + 1];
+                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("--reject needs a window id");
+                Paths.Locate();
+                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                Inventory inv = null;
+                foreach (var candidate in new[]
+                         {
+                             System.IO.Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json"),
+                             System.IO.Path.Combine(Paths.AppRoot, "Data", "ui_inventory.json"),
+                         })
+                {
+                    if (!System.IO.File.Exists(candidate)) continue;
+                    inv = System.Text.Json.JsonSerializer.Deserialize<Inventory>(
+                        System.IO.File.ReadAllText(candidate), options);
+                    if (inv?.Stages != null) break;
+                }
+                if (inv == null) throw new System.IO.FileNotFoundException("ui_inventory.json not found");
+
+                var rejected = RejectionStore.Load(Paths.AppRoot);
+                RejectionStore.Apply(inv, rejected);
+                var window = inv.Stages
+                    .SelectMany(s => s.Windows ?? new List<WindowInfo>())
+                    .FirstOrDefault(w => string.Equals(w.Id, id, StringComparison.OrdinalIgnoreCase));
+                if (window == null)
+                {
+                    Console.WriteLine("reject failed: no window with id '" + id + "'");
+                    return 1;
+                }
+                RejectionStore.Toggle(inv, window, rejected);
+                RejectionStore.Save(Paths.AppRoot, rejected);
+                var stage = inv.Stages.FirstOrDefault(s =>
+                    string.Equals(s.Id, RejectionStore.NotNeededStageId, StringComparison.OrdinalIgnoreCase));
+                Console.WriteLine((rejected.ContainsKey(id) ? "rejected " : "restored ") + id +
+                                  " | not-needed=" + (stage?.Windows?.Count ?? 0) +
+                                  " | total=" + inv.Stages.Sum(s => s.Windows?.Count ?? 0));
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("reject failed: " + ex.Message);
+                return 1;
+            }
         }
 
         /// <summary>

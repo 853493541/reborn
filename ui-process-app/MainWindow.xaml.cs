@@ -18,6 +18,7 @@ namespace UiProcessApp
         private Inventory _inventory;
         private Canvas _layoutCanvas;
         private WindowInfo _currentWindow;
+        private Dictionary<string, string> _rejected;
         private IniFile _currentIni;
         private LayoutPlan _currentPlan;
         private Dictionary<WindowInfo, string> _numbers;
@@ -42,10 +43,12 @@ namespace UiProcessApp
         {
             Paths.Locate();
             _inventory = LoadInventory();
+            _rejected = RejectionStore.Load(Paths.AppRoot);
+            RejectionStore.Apply(_inventory, _rejected);
             BuildTree(null);
             StatusText.Text =
                 $"assets={Paths.AppRoot}   ui={(Paths.ProofUiRoot != null ? Paths.ProofUiRoot : Path.Combine(Paths.AppRoot, "assets", "ui"))}   " +
-                $"strings={Strings.Table.Count}";
+                $"strings={Strings.Table.Count}   |   X: 标记不需要 / 再按 X 恢复";
             if (StageTree.Items.Count > 0 && StageTree.Items[0] is TreeViewItem firstStage && firstStage.Items.Count > 0)
             {
                 // Open on the catalog item currently being worked on
@@ -657,6 +660,38 @@ namespace UiProcessApp
         {
             if (e.Key != System.Windows.Input.Key.Enter || _currentWindow == null) return;
             RenderLayout(_currentWindow);
+            e.Handled = true;
+        }
+
+        /// <summary>X marks the currently shown window as 不需要 (or restores it); the
+        /// rejected set is kept in Data/rejected.tsv so the catalog JSON stays clean.</summary>
+        private void OnWindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.X || _currentWindow == null) return;
+            if (System.Windows.Input.Keyboard.FocusedElement is TextBox ||
+                System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.Primitives.TextBoxBase) return;
+            if (e.KeyboardDevice.Modifiers != System.Windows.Input.ModifierKeys.None) return;
+
+            var window = _currentWindow;
+            RejectionStore.Toggle(_inventory, window, _rejected);
+            RejectionStore.Save(Paths.AppRoot, _rejected);
+            BuildTree(SearchBox.Text.Trim());
+
+            foreach (TreeViewItem stageNode in StageTree.Items)
+            {
+                bool found = false;
+                foreach (TreeViewItem node in stageNode.Items)
+                {
+                    if (!ReferenceEquals(node.Tag, window)) continue;
+                    node.IsSelected = true;
+                    node.BringIntoView();
+                    found = true;
+                    break;
+                }
+                if (found) break;
+            }
+            StatusText.Text = (RejectionStore.IsRejected(_inventory, window) ? "已标记不需要：" : "已移回原分类：") +
+                              (string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn);
             e.Handled = true;
         }
 

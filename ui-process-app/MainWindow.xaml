@@ -4,7 +4,8 @@
         Title="JX3 绝境战场 — UI Process Explorer"
         Width="1520" Height="960"
         Background="#1E1E1E"
-        Loaded="OnLoaded">
+        Loaded="OnLoaded"
+        PreviewKeyDown="OnWindowKeyDown">
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="#252526" Padding="10,8">
             <DockPanel>
