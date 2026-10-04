@@ -3848,3 +3848,7 @@ work into main without M2 entanglement.
   633x222 RGBA with 621 yellow (mode), 1817 white (info), 335 light-blue
   (COPY LOG) px (proof/controls/hud_info_panel_open_20261003.png); a closed
   run writes no dump (nothing shown).
+- Esc toggles open/close: key-repeat guard (`escDown`, one toggle per press);
+  verified by posting WM_KEYDOWN/WM_KEYUP VK_ESCAPE to our own client (no
+  global input injection - drive_client.ps1 was NOT used): panel window
+  visible=True 633x222 after the first Esc and visible=False after the second.

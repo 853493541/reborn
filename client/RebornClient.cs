@@ -1091,7 +1091,8 @@ internal static class RebornClient
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
         bool cDown = false, teleportToStructure = false;
-        bool iDown = false;   // "I" toggles the HUD info box (M1.7 overlay)
+        bool iDown = false;   // "I" toggles the info panel (alias of Esc)
+        bool escDown = false; // Esc toggles the info panel (one toggle per press)
         bool divDown = false;
         TargetEntity indTarget = null;
         // Command executor (host equivalent of the ui/script hotkey handlers):
@@ -1416,10 +1417,13 @@ internal static class RebornClient
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
+            if (e.KeyCode == Keys.Escape && !escDown)
             {
                 // information panel (run info + control mode + COPY LOG);
-                // also frees a drag-locked cursor and clears the target
+                // Esc toggles: first press opens, next closes. One toggle per
+                // press (escDown guards key auto-repeat). Also frees a
+                // drag-locked cursor and clears the target.
+                escDown = true;
                 unlockMouse();
                 targetSelector.Current = null;
                 hud.ToggleInfo();
@@ -1499,6 +1503,7 @@ internal static class RebornClient
             if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.I) iDown = false;
+            else if (e.KeyCode == Keys.Escape) escDown = false;
         };
         panel.Focus();
 

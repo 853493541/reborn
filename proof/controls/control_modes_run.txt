@@ -615,3 +615,13 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   buffer with 621 mode-brush (yellow) px, 1817 white (info) px, 335 light-blue
   (COPY LOG text) px, 3380 copy-box px. Closed run writes no dump (nothing is
   rendered or shown). Build exit=0; camera_smoke ALL PASS.
+
+## Esc toggles the panel open/closed, 2026-10-03
+- Added a key-repeat guard (`escDown`, one toggle per press, cleared on KeyUp)
+  so a held/duplicated Esc cannot open+close in one press.
+- Verified without global input injection (direct window messages to our own
+  client): WM_KEYDOWN/WM_KEYUP VK_ESCAPE posted to the form ->
+  - before: no HUD window visible;
+  - Esc #1: HudOverlay window 18940254 visible, 633x222, RC_HUD_DUMP written;
+  - Esc #2: same window visible=False (panel closed).
+  Build exit=0; camera_smoke ALL PASS.
