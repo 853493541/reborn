@@ -242,6 +242,18 @@ namespace UiProcessApp.Engine
         /// the script's cloned items render fully — the inventory replays the visible
         /// state for the clone sections.</summary>
         public int? Alpha { get; set; }
+        /// <summary>Overrides the authored PosType when the viewer's inference for it is
+        /// wrong for this section. BigBagPanel's Handle_Total authors PosType 10 but sits
+        /// at the window origin: the script's UpdateSize resizes its background children
+        /// (Handle_Bg/Image_Glassmorphism/Image_HBg) to the full frame (BigBagPanel.lua
+        /// L1525-1555, init UpdateSize call L6788-6795), so the frame cannot be offset.</summary>
+        public int? PosType { get; set; }
+        /// <summary>Clips the container's children to its authored rect. The engine clips
+        /// a scroll control's content handle: BigBagPanel registers Handle_Bag_Normal with
+        /// RegisterScrollControl (BigBagPanel.lua L6742-6752) and lays the six category
+        /// rows out with FormatAllItemPos (L1442-1455), clipping them to the 330x111
+        /// viewport.</summary>
+        public bool? Clip { get; set; }
     }
 
     /// <summary>
@@ -592,6 +604,10 @@ namespace UiProcessApp.Engine
                     section.Values["HAlign"] = adjust.HAlign.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 if (adjust.Alpha.HasValue)
                     section.Values["Alpha"] = adjust.Alpha.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.PosType.HasValue)
+                    section.Values["PosType"] = adjust.PosType.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.Clip == true)
+                    section.Values["$Clip"] = "1";
             }
         }
 

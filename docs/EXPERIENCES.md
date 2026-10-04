@@ -1633,3 +1633,31 @@ solved it, and what is still open. **Newest at the bottom.**
   (single 0x0 LSH=1 section, no content) stays dropped as the only bare host.
 - Lesson: parse INI roots with an explicit "first section only" loop, never a `[\s\S]*` grab; and
   validate a bulk show-list change on a sample render before trusting the scan.
+
+### 2026-10-04 ? UI ? deep art extraction: 1.5 GB of atlases into the viewer texture root
+- User: renders still placeholder-heavy -> pull the referenced art from the client paks.
+- Scanned all 1,240 INIs: 1,300 `UITex` references + 578 direct texture names. Pass 1 extracted the
+  1,338 missing referenced files; pass 2 parsed each `.UITex` header for its sibling `TextureName`
+  (offset 24) and pulled 1,046 more. `ui-process-app/assets/uitex` (git-ignored) went 154 -> 2,479
+  files (~1.5 GB); shortlist renders now show real frames/badges/icons.
+- Post-art `--audit`: placeholders=899 unresolved=3262 outOfBounds=6533 across the 1,240 windows.
+- Lesson: extracting the `.UITex` sibling textures (not just the referenced atlases) is what
+  converts most placeholder frames; non-ASCII texture names were skipped in pass 2.
+
+### 2026-10-04 ? UI ? recommended page defaults + BigBagPanel normal-mode render
+- User: "right now everything is messed up" (the 推荐 shortlist after the art unlock).
+- Page defaults (viewer `page`, not INI edits) for the multi-page panels: characterpanel
+  Page_Equipment, newskillpanel Page_Kungfu, socialpanel Page_Friend, mailpanel Page_Receive,
+  auctionpanel Page_Business, horsepanel Page_Horse, newpet Page_MyPet, questtracelist
+  Page_QuestTraceList, guildmainpanel Page_OverView. GuildMainPanel 783 -> 201 sections.
+- BigBagPanel was the worst: the authored state is the extended-mode geometry (605-wide filter rows,
+  PosType 10 Handle_Total centered by the viewer, six category rows stacked by the engine's
+  FormatAllItemPos and unclipped over the lower controls). Fixed from `BigBagPanel.lua` (module
+  defaults bCompact=false / aOpen all true / nFrameW 440 nFrameH 410 L16-36; init UpdateSize L6788):
+  root width 440, backgrounds/title resized to the frame, Handle_Total pinned (0,0),
+  Handle_Bag_Compact + Wnd_Dismantling hidden, Text_Bag2/3/4 shown, filter checkboxes at container
+  origin, Handle_Bag_Normal clipped to its 330x111 scroll viewport. Render 166 -> 145 sections,
+  content 0.277 -> 0.477, canvas 443x449 -> 445x411.
+- New viewer `adjust` fields `posType` and `clip` (ClipToBounds via `$Clip`); both documented in
+  Engine/LayoutPlan.cs with the Lua lines.
+- Gate: --selftest 1240/0/0; --audit placeholders=899 unresolved=3262 outOfBounds=6533.

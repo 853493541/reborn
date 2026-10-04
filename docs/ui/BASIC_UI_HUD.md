@@ -88,7 +88,7 @@ no multi-INI append); documented here for a later engine feature.
 | `TargetBuff` / `TargetDeBuff` | 13 / 9 | 388x45 @560,120 / 160 | target buff/debuff rows |
 | `ExpLine` | 28 | 1280x22 @100,400 | experience bar (runtime value) |
 | `CompassPanel` | 57 | 236x259 @500,100 | compass ring + markers |
-| `QuestTraceList` | 98 | 300x550 @500,150 | quest tracker list (rows runtime) |
+| `QuestTraceList` | 98 | 300x550 @500,150 | quest tracker list (rows runtime); pages QuestTraceList/Achi/PQ — viewer default `Page_QuestTraceList` |
 | `ChatPanel_Bg/_Game/_Normal/_Recent`, `ChatButton`, `ChatSettingPanel` | 3/44/44/44/4/187 | 27x27 @0,500 `Lowest1`; 400x300 @20,520 `Lowest2`; … | chat frame + tabs + settings (largest single HUD surface) |
 | `TeamSwitchBtn` | 17 | 24x138 @300,300 | team/raid switch tab |
 | `ComboPanel` | 22 | 471x182 @100,200 | combo counter art |

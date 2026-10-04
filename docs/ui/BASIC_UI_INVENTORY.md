@@ -508,15 +508,23 @@ CompassPanel, ExpLine, 地图, 角色, 背包, 武学, 社交, 邮件, 交易行
 ExpLine have no authored title string — kept English rather than inventing one.)
 
 Each entry renders the INI's authored state (`PARTIAL`, backdrop `#33393E`, summary with section
-count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 1,008 windows
-(13 BR + 991 basic + 4 spare); `--selftest` 1008/0/0.
+count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 1,240 windows
+(8 stages: 推荐 / 绝境战场界面 / 基础HUD / 功能面板 / 菜单与交互 / 其他界面 / 其他模式与入口 /
+备用); `--selftest` 1240/0/0 (2026-10-04).
 
 **Official Chinese names**: resolved per window from its own strings — the INI's title text
 (`Text_Title`/`*Title` sections) resolved through the window's `StringTable=ui\Scheme\Case\*.txt`
-(129 tables extracted for this pass) and the global `g_tStrings`. **417 windows carry an official
-`cn`** (96 in the classified stages + 321 in 其他界面; e.g. 角色, 背包, 武学, 交易行, 储物箱, 帮会,
-系统设置, 快捷键设置, 表情动作); windows whose data has no authored title (most HUD elements) keep
-the English title (no invented translations).
+and the global `g_tStrings`. **491 windows carry an official `cn`** (e.g. 角色, 背包, 武学, 交易行,
+储物箱, 帮会, 系统设置, 快捷键设置, 表情动作); windows whose data has no authored title (most HUD
+elements) keep the English title (no invented translations).
+
+**Art extraction (2026-10-04)**: scanned all 1,240 INIs → 1,300 `UITex` refs + 578 direct textures;
+pass 1 pulled 1,338 missing files, pass 2 resolved the siblings named by each `.UITex` `TextureName`
+(offset 24) = 1,046 more. The git-ignored viewer texture root `ui-process-app/assets/uitex` grew
+154 → 2,479 files (~1.5 GB), so the shortlist renders now show real art instead of placeholders.
+Post-art `--audit`: placeholders=899, unresolved=3262, outOfBounds=6533 (full 1,240-window scope;
+remaining misses are atlases/frames not referenced from any INI path and non-ASCII texture names
+skipped in pass 2).
 
 Authored-state edge cases fixed: `AccelerateBall` and `HLBOp_Main` author `LockShowAndHide=1`
 roots (runtime-shown / invisible anchor host) — their entries carry `show` lists so the authored

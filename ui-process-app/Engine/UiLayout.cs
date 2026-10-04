@@ -435,6 +435,7 @@ namespace MapUiApp.Engine
                 var height = section.GetInt("Height");
                 if (width > 0) container.Width = width;
                 if (height > 0) container.Height = height;
+                if (section.GetInt("$Clip") == 1) container.ClipToBounds = true;
                 if (Wireframe)
                 {
                     container.Background = new SolidColorBrush(Color.FromArgb(16, 0x6F, 0xC0, 0xEF));

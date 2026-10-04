@@ -2,7 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-  "defaultWindow": "zhenzhuan-queue",
+  "defaultWindow": "bigbagpanel",
   "stages": [
     {
       "id": "recommended",
@@ -101,6 +101,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/QuestTraceList.ini",
+          "page": "Page_QuestTraceList",
           "backdrop": "#33393E",
           "summary": "QuestTraceList (ui/Config/Default/QuestTraceList.ini, 98 sections; root WndFrame 300x550 @500,150 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -155,6 +156,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/CharacterPanel.ini",
+          "page": "Page_Equipment",
           "backdrop": "#33393E",
           "summary": "CharacterPanel (ui/Config/Default/CharacterPanel.ini, 882 sections; root WndFrame 508x515 @0,170 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -169,6 +171,21 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/BigBagPanel.ini",
+          "hide": "Handle_Bag_Compact,Wnd_Dismantling",
+          "show": ["Text_Bag2", "Text_Bag3", "Text_Bag4"],
+          "adjust": [
+            {"section": "BigBagPanel", "width": 440},
+            {"section": "Image_Glassmorphism", "width": 440, "height": 410},
+            {"section": "Image_Bg_Title", "width": 440, "height": 33},
+            {"section": "Image_HBg", "width": 440, "height": 377},
+            {"section": "Text_Title", "width": 440},
+            {"section": "Image_TextureR", "left": 268},
+            {"section": "Wnd_Selector", "left": 262},
+            {"section": "CheckBox_FilterMain", "top": 0},
+            {"section": "CheckBox_FilterSub", "top": 0},
+            {"section": "Handle_Total", "posType": 0},
+            {"section": "Handle_Bag_Normal", "clip": true}
+          ],
           "backdrop": "#33393E",
           "summary": "BigBagPanel (ui/Config/Default/BigBagPanel.ini, 229 sections; root WndFrame 410x410 @500,273 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -183,6 +200,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/NewSkillPanel.ini",
+          "page": "Page_Kungfu",
           "backdrop": "#33393E",
           "summary": "NewSkillPanel (ui/Config/Default/NewSkillPanel.ini, 1005 sections; root WndFrame 960x624 @10,150 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -197,6 +215,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/SocialPanel.ini",
+          "page": "Page_Friend",
           "backdrop": "#33393E",
           "summary": "SocialPanel (ui/Config/Default/SocialPanel.ini, 248 sections; root WndFrame 280x624 @500,225 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -211,6 +230,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/MailPanel.ini",
+          "page": "Page_Receive",
           "backdrop": "#33393E",
           "summary": "MailPanel (ui/Config/Default/MailPanel.ini, 171 sections; root WndFrame 836x512 @100,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -225,6 +245,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/AuctionPanel.ini",
+          "page": "Page_Business",
           "backdrop": "#33393E",
           "summary": "AuctionPanel (ui/Config/Default/AuctionPanel.ini, 396 sections; root WndFrame 960x624 @20,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -268,6 +289,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/GuildMainPanel.ini",
+          "page": "Page_OverView",
           "backdrop": "#33393E",
           "summary": "GuildMainPanel (ui/Config/Default/GuildMainPanel.ini, 1625 sections; root WndFrame 960x624 @300,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -296,6 +318,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/HorsePanel.ini",
+          "page": "Page_Horse",
           "backdrop": "#33393E",
           "summary": "HorsePanel (ui/Config/Default/HorsePanel.ini, 680 sections; root WndFrame 836x510 @10,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -310,6 +333,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/NewPet.ini",
+          "page": "Page_MyPet",
           "backdrop": "#33393E",
           "summary": "NewPet (ui/Config/Default/NewPet.ini, 335 sections; root WndFrame 1141x641 @376,247 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
