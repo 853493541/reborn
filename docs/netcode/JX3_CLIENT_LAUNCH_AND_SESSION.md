@@ -942,3 +942,40 @@ wrapper `+0x10`).
 `dword[1]=0x2B`, `dword[5]=0x1F6`, `dword[9]=[global+0xCB0]`; helper `0x140187540` fills the
 tail from `packet+0xD`. The observed 20 s connect timeout is the client polling the
 connection layer for a server packet before it sends this handshake (server-speaks-first).
+
+## 46. Gateway login flow + connect state machine (static + probe; P2 step 2)
+
+Bindings (`.data` table `0x140A0D8A0`, 16-byte entries `{name, fn}`):
+- `Login_SetGatewayAddress` -> `0x14020C670` -> setter `0x14018A020`:
+  **host string at `gwClient+0x0` (32-byte buffer), port at `gwClient+0x20`**.
+- `Login_ConnectGateway` -> `0x14020C740` -> `Connect` `0x140185ED0`.
+
+`Connect` (`0x140185ED0`):
+- `state [gwClient+0x1250] == 0` -> `state = 1`, clear `[+0x150]`, allocate a task object
+  `{gwClient, fn = 0x140189BF0 RealConnectGateway}` and submit it to the engine task queue;
+  the 16-byte async handle is stored at `[gwClient+0x1258]`.
+- `state != 0` -> set cancel flag `[gwClient+0x1268] = 1` and return (a repeated connect
+  request while busy poisons the flow: the pump then skips the handshake and cleans up).
+
+`RealConnectGateway` (`0x140189BF0`) runs on the task-queue worker thread: requires
+`state == 1`, creates the transport/connection, on success sets `state = 2` (failure: 3).
+
+Pump `0x140185900` (per-frame, from app update `0x1400B0DA0` via `0x1400B156E`):
+1. state machine `0x140189630` (first):
+   - `[+0x1268] != 0 && state != 1` or `state == 3` -> cleanup path (destroys connections,
+     clears `[+0x1268]`, `state = 0`);
+   - `state == 2` and cancel flag clear -> timeout check on the async handle `[+0x1258]`,
+     then `[+0x38]` (pending connection) -> swap into `[+0x28]`, call `ProcessConnectState`
+     `0x140189440` (select-write -> build 229-byte handshake -> `Send` `0x140189E50`),
+     then `state = 0`.
+2. `ProcessPackage` `0x140189870` (second): read-select (transport `+0x14` timeout; the
+   observed 20 s close) -> frame -> dispatch `[gwClient+0x250+proto*8]`.
+
+Probe (`tools/netcode/probe_gw_bp.py`, DEBUG_ONLY_THIS_PROCESS + INT3):
+- verified pump/state machine run from the login screen on (state 0 idle);
+- `RG` (RealConnectGateway) executes on the same singleton the pump drives;
+- synthetic `Connect` via remote thread (host/port written directly) reached our stub
+  (TCP connection + hello observed), but the task-completion bookkeeping is not complete in
+  the synthetic path, so the handshake is not sent and the client exits under the debugger.
+- next: read the gateway handler table `[gwClient+0x250]` for valid server opcodes and
+  drive one clean UI login (single click) on a fresh client for the handshake capture.

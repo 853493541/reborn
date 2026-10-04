@@ -134,7 +134,17 @@ def main():
     u32.GetWindowRect(hwnd, ctypes.byref(rect))
     sw = rect.right - rect.left
     sh = rect.bottom - rect.top
+    u32.ShowWindow(hwnd, 9)
     u32.SetForegroundWindow(hwnd)
+    time.sleep(0.5)
+    fg = u32.GetForegroundWindow()
+    if fg != hwnd:
+        tap(0x12)
+        time.sleep(0.2)
+        u32.SetForegroundWindow(hwnd)
+        time.sleep(0.3)
+        fg = u32.GetForegroundWindow()
+    print("foreground target=%s now=%s focused=%s" % (hwnd, fg, fg == hwnd))
     u32.SetActiveWindow(hwnd)
     time.sleep(0.8)
     cx = rect.left + sw // 2

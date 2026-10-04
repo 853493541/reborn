@@ -75,10 +75,13 @@ Live capture is only used for the final validation, never to discover one step a
    `data-2`; max normal payload `0xFFDC`; optional payload transform flag `transport+0xC`.
    Packet dispatch: proto id = `payload[0]`, handler `[gwClient+0x250+proto*8]`, min size
    `[gwClient+0xa50+proto*8]`.
-2. **Connect state machine (static)**: finish `0x140189440` (connect state -> handshake
-   send); identify exactly which server packet (opcode) triggers the client's
-   `DoHandshakeRequest` (opcode 2, 229 B: `[0]=2`, `[1..4]=0x2b`, `[5..8]=0x1f6`,
-   `[9..12]=[global+0xcb0]`) and what state gate the 20 s timeout belongs to.
+2. **Connect state machine (static)**: **DONE** (launch doc §46): `Login_ConnectGateway`
+   -> `Connect 0x140185ED0` (state 0 -> 1, queue `RealConnectGateway` task; repeated call
+   while busy sets cancel flag `+0x1268`); worker sets state 2; pump state machine
+   `0x189630` (state 2 + flag clear -> `ProcessConnectState` -> 229-byte handshake ->
+   `Send`). `Login_SetGatewayAddress` stores host at `gwClient+0x0`, port at `+0x20`.
+   Probe `probe_gw_bp.py` verified the chain and same-instance connect; remaining: valid
+   server opcode from `[gwClient+0x250]` + one clean UI login for the capture.
 3. **Message set (static)**: recover the gateway protocol table (opcodes, sizes, handlers)
    from the registration writes to `gwClient+0x250`/`+0xa50`; decode
    `OnHandShakeRespond`, `OnSyncLoginKey`, account verify, role list, login-game layouts.
