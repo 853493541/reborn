@@ -61,6 +61,8 @@ static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved,
 }
 
 static HWND g_hostHwnd = NULL;
+static volatile LONG g_flagWatchArmed = 0;
+static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
 static int g_castRequest = -1;
@@ -240,6 +242,21 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         ep->ExceptionRecord->ExceptionCode == 0xC0000409)
         logf("[VEH] exc=0x%08X at=%p", ep->ExceptionRecord->ExceptionCode,
              ep->ExceptionRecord->ExceptionAddress);
+    else if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP &&
+             g_flagWatchArmed && g_flagWatchHit < 10)
+    {
+        g_flagWatchHit++;
+        DWORD64 rip = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
+        logf("[host] flag write watch #%d: rip=eng+0x%llX",
+             g_flagWatchHit, (rip > (DWORD64)g_eng) ? (rip - (DWORD64)g_eng) : 0);
+        ep->ContextRecord->Dr6 = 0;
+        if (g_flagWatchHit >= 10)
+        {
+            ep->ContextRecord->Dr0 = 0;
+            ep->ContextRecord->Dr7 = 0;
+        }
+        return EXCEPTION_CONTINUE_EXECUTION;
+    }
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
@@ -458,6 +475,8 @@ static void* g_entitySO = NULL;
 static void* g_propSO = NULL;
 static void* g_soList[1200];
 static int g_soCount = 0;
+
+
 static long __fastcall hookSceneObjectInit(void* self, void* entityInfo)
 {
     long r = ((long (__fastcall *)(void*, void*))g_soiTramp)(self, entityInfo);
@@ -470,7 +489,30 @@ static long __fastcall hookSceneObjectInit(void* self, void* entityInfo)
     if (r >= 0 && guid != NULL && guid[0] != 0)
     {
         if (strstr(guid, "aaaaaaaa-1111-2222-3333") != NULL)
+        {
             g_entitySO = self;
+            // catch the async flag classifier: watch writes to [self+0x10] on this
+            // thread (Dr0, 4-byte write) - the VEH logs the writer's RIP
+            char watchFlag[8];
+            if (GetEnvironmentVariableA("RC_HOST_WATCH", watchFlag, sizeof(watchFlag)) != 0)
+            __try
+            {
+                CONTEXT ctx;
+                memset(&ctx, 0, sizeof(ctx));
+                ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+                if (GetThreadContext(GetCurrentThread(), &ctx))
+                {
+                    ctx.Dr0 = (DWORD64)((BYTE*)self + 0x10);
+                    ctx.Dr7 = (ctx.Dr7 & ~0x000F0001ULL) | 0x000D0001ULL;
+                    if (SetThreadContext(GetCurrentThread(), &ctx))
+                    {
+                        g_flagWatchArmed = 1;
+                        logf("[host] flag write watch armed on %p", (void*)((BYTE*)self + 0x10));
+                    }
+                }
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] flag watch arm fault"); }
+        }
         else if (g_propSO == NULL)
             g_propSO = self;
         if (g_soCount < 1200)

@@ -1358,3 +1358,31 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   ([mesh+0x4a8]/[0x4b0]) in the mesh dumps.
 - Evidence: %TEMP%\opencode\skillv2\host_kcbt.out, host_reg2/3/4.out, host_dummy.out
   (500-line proof), host_static.out, host_tname.out, host_final2.out (clean state).
+
+## 2026-10-04 — Classifier found: FetchModelFromActor sets IsPlayerObject from the actor's vt[0x130]
+
+- Hardware write-watchpoint (Dr0 on the entity SO flag dword, VEH single-step logging,
+  gated by RC_HOST_WATCH) caught the flag writers. The model-based classification is in
+  `KG3D_SceneObject::FetchModelFromActor` (0x9B9D50): at 0x9B9E4D it calls the scene
+  actor's `vt[0x130]()` and sets/clears IsPlayerObject (0x10000) accordingly (0x9B9E66),
+  then `vt[0x120]()` sets IsMainCharactor (0x40) (0x9B9E9A). A second site
+  (0x9BA1E0-0x9BA272) sets FrameMove/StaticModel-style bits from further actor state.
+  Other writers caught: 0xA61314 (`or [so+0x10],0x80` per-frame InsideSpaceNode in the
+  window update), 0xA62548, 0x850850/0x850879, 0xA42E1B.
+- So the classification key is the **scene actor's vt[0x130]** (a property of the
+  loaded model/actor), not the entity JSON, `_tableName`, model path, or the keep
+  registry. Flag overrides at Init / frame 120 / `_tableName` do not render the player
+  model, and the object still has no GPU buffers (buf1/buf2 null) — the static-world
+  render path excludes player-classified models by design.
+- FetchModelFromActor is **not hookable with the generic call-trampoline**: its prologue
+  is `mov rax,rsp; mov [rax+0x10],rbx; ...; sub rsp,0x2d0` (rsp-capturing frame setup),
+  so a C hook's own frame + call push shifts rsp and the copied prologue computes a
+  wrong frame -> stack-cookie check fails and the paint faults at frame 2 (verified;
+  reverted). A jmp-based naked detour would be needed for that function.
+- Host: watchpoint mechanism kept but arms only with `RC_HOST_WATCH=1`; the failed
+  classifier hook and the rsp-adjusted installer variant were removed.
+- Next probes (unchanged): represent-module integration for player models, or a
+  jmp-based detour on FetchModelFromActor to test forced classification end-to-end.
+- Evidence: %TEMP%\opencode\skillv2\host_watch.out (writer list), host_watch2.out
+  (10 writers), host_class.out / host_class2.out (hook faults), host_final3.out/png
+  (restored clean state).
