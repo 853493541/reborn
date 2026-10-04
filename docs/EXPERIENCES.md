@@ -1137,3 +1137,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   systemCamera.json, so host pose control is the next item.
 - Evidence: %TEMP%\opencode\skillv2\host24.out, host_shot24/25.png; commits
   cda0b6c, 94f2955, ec50b37.
+
+## 2026-10-02 ¡ª Phase 3: ability casting works; actor render registration still open
+
+- The client host now reads the staged ability list (skill_data.json -> 24 entries) and
+  casts on keys 1..9 (auto-cast once at boot): _InitAttachTani resolves the skill tani
+  (anim non-null; rc E_FAIL is the post-load attach step), StartAnimation=0x0, and a
+  real .Sfx is created per cast (exc=0). Verified host_cast.out (ÁÙÊ±·É×¦).
+- Actor visibility attempts: (a) passing the scene as CreateActorFromFile's 3rd arg -
+  no change; (b) injecting a player worldObject entity into the map's
+  entities/sceneinfo_full/000_000.json (	ools/sandbox/add_player_entity.py, cloned
+  record with the f1 mesh + spawn matrix) - map still loads but the character is not
+  drawn. The scene renders map props (worldObjects) yet not our injected/standalone
+  actor: likely the engine scene alone does not spawn/stream actor worldObjects; the
+  game's represent/logic layer (JX3RepresentX64) drives actor entities.
+- Terrain ground also still not drawn (same class: scene-state/render-option wiring).
+- Next: either wire the engine's scene-object render path (KG3D_SceneObject +
+  AcqureRenderActorProxy 0x9BB730) or integrate the represent module for actors.
+- Evidence: %TEMP%\opencode\skillv2\host_cast.out, host_entity.out; commit 9a8f1a0.
