@@ -328,6 +328,75 @@ static void* __fastcall hookMeshFactory(void* a1, void* a2, void* a3, void* a4)
     return r;
 }
 
+// render-data build (0xC4DE80, called from the batch at 0xD8AF40): does f1's mesh
+// reach it, and does it get GPU buffers ([mesh+0x4a8]/[mesh+0x4b0])?
+static BYTE g_bldSaved[32];
+static BYTE* g_bldTramp = NULL;
+static void tryPrintName(const char* tag, void* p)
+{
+    if (p == NULL) return;
+    __try
+    {
+        char* np = *(char**)((BYTE*)p + 8);
+        if (np == NULL) return;
+        char name[160];
+        int k = 0;
+        while (k < 150 && np[k] != 0) { name[k] = np[k]; k++; }
+        name[k] = 0;
+        if (k > 8 && strstr(name, "mesh") != NULL)
+            printf("[host] build %s=%p name='%s'\n", tag, p, name);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+}
+static void* __fastcall hookBuildData(void* a1, void* a2, void* a3, void* a4)
+{
+    static int n = 0;
+    if (n < 20)
+    {
+        n++;
+        printf("[host] buildData a1=%p a2=%p a3=%p a4=%p\n", a1, a2, a3, a4);
+        tryPrintName("a1", a1);
+        tryPrintName("a2", a2);
+        tryPrintName("a3", a3);
+        fflush(stdout);
+    }
+    void* r = ((void* (__fastcall *)(void*, void*, void*, void*))g_bldTramp)(a1, a2, a3, a4);
+    __try
+    {
+        void* cand[3] = { a1, a2, a3 };
+        for (int i = 0; i < 3; i++)
+        {
+            char* np = (cand[i] != NULL) ? *(char**)((BYTE*)cand[i] + 8) : NULL;
+            if (np != NULL && strstr(np, "f1_3094") != NULL)
+                printf("[host] buildData f1 mesh=%p -> %p flag484=0x%02X buf1=%p buf2=%p\n",
+                       cand[i], r, *(unsigned char*)((BYTE*)cand[i] + 0x484),
+                       *(void**)((BYTE*)cand[i] + 0x4a8),
+                       *(void**)((BYTE*)cand[i] + 0x4b0));
+        }
+        fflush(stdout);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+    return r;
+}
+
+// KeepMeshData registry readout: count distinguishes loose tab (1367) vs PakV4
+// copy (1364) - answers whether the builder reads the loose file at all.
+static void dumpRegistryCount(const char* tag)
+{
+    __try
+    {
+        void* reg = *(void**)((BYTE*)g_eng + 0x2CFA548);
+        if (reg != NULL)
+            logf("[host] registry %s: reg=%p live=%llu tomb=%llu cap=%llu", tag, reg,
+                 *(unsigned long long*)((BYTE*)reg + 0x28),
+                 *(unsigned long long*)((BYTE*)reg + 0x20),
+                 *(unsigned long long*)((BYTE*)reg + 0x30));
+        else
+            logf("[host] registry %s: null", tag);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] registry %s: fault", tag); }
+}
+
 // keep-mesh-data checker (0xC4D430): decides whether a NormalMesh's render data
 // is built; props (fd0==0) and KeepMeshData_FileList models pass, character
 // meshes from the loose tree do not. Log calls; let f1_3094 pass for the test.
@@ -350,11 +419,24 @@ static int __fastcall hookKeepCheck(void* mesh)
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { }
     static int n = 0;
-    if (n < 30 || strstr(name, "f1_3094") != NULL)
+    if (n < 6 || strstr(name, "f1_3094") != NULL)
     {
-        printf("[host] keepCheck '%s' -> %d\n", name, r);
+        void* reg = NULL;
+        __try { reg = *(void**)((BYTE*)g_eng + 0x2CFA548); }
+        __except (EXCEPTION_EXECUTE_HANDLER) { reg = NULL; }
+        printf("[host] keepCheck '%s' -> %d (reg=%p live=%llu tomb=%llu)\n", name, r, reg,
+               (reg != NULL) ? *(unsigned long long*)((BYTE*)reg + 0x28) : 0,
+               (reg != NULL) ? *(unsigned long long*)((BYTE*)reg + 0x20) : 0);
+        void* frames[10];
+        USHORT f = RtlCaptureStackBackTrace(1, 10, frames, NULL);
+        for (USHORT i = 0; i < f; i++)
+        {
+            DWORD64 a = (DWORD64)frames[i];
+            printf("[host]   kcbt[%u] = eng+0x%llX\n", i,
+                   (a > (DWORD64)g_eng) ? (a - (DWORD64)g_eng) : 0);
+        }
         fflush(stdout);
-        if (n < 30) n++;
+        if (n < 6) n++;
     }
     return r;
 }
@@ -707,8 +789,10 @@ static void dumpMeshState(const char* tag, void* model)
                 name[k] = 0;
             }
         }
-        logf("[host] mesh %s model=%p z=%p rdi=%p fd=%p fd0=%d flag484=0x%02X name='%s'", tag,
-             model, z, rdi, fd, fd0, flag, name);
+        void* buf1 = (rdi != NULL) ? *(void**)((BYTE*)rdi + 0x4a8) : NULL;
+        void* buf2 = (rdi != NULL) ? *(void**)((BYTE*)rdi + 0x4b0) : NULL;
+        logf("[host] mesh %s model=%p z=%p rdi=%p fd=%p fd0=%d flag484=0x%02X buf1=%p buf2=%p name='%s'", tag,
+             model, z, rdi, fd, fd0, flag, buf1, buf2, name);
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] mesh %s fault", tag); }
 }
@@ -868,7 +952,9 @@ int main(void)
                                   g_facSaved, &g_facTramp, 15);
     int chkOk = installInlineHook(eng, 0xC4D430, (void*)hookKeepCheck,
                                   g_chkSaved, &g_chkTramp, 18);
-    logf("[host] keepCheck hook=%d", chkOk);
+    int bldOk = installInlineHook(eng, 0xC4DE80, (void*)hookBuildData,
+                                  g_bldSaved, &g_bldTramp, 15);
+    logf("[host] keepCheck hook=%d buildData hook=%d", chkOk, bldOk);
     logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soCtor=%d soInit=%d setSfx=%d actorLoaded=%d meshFactory=%d",
          hookOk, lfOk, arpOk, socOk, soiOk, sfpOk, alcOk, facOk);
     {
@@ -1180,6 +1266,7 @@ int main(void)
             }
             if (f == 30 || f == 200)
             {
+                dumpRegistryCount(f == 30 ? "@30" : "@200");
                 dumpSceneObject(f == 30 ? "entity@30" : "entity@200", g_entitySO);
                 dumpSceneObject(f == 30 ? "prop@30" : "prop@200", g_propSO);
                 dumpMeshState(f == 30 ? "f1@30" : "f1@200", g_f1Model);

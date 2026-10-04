@@ -1327,3 +1327,34 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   actor chain), SFX spawn placement.
 - Evidence: %TEMP%\opencode\skillv2\host_char*.out/png, host_npc*.out/png,
   host_f1test.out, host_notab.out, host_final.out/png (clean state, 725 objects).
+
+## 2026-10-04 — Follow-up probes: registry is PakV4-sourced; SO flags set by a model-based classifier
+
+- The render-data build `0xC4DE80` (called from the batch `0xD8AF40`) is **never
+  called** in the host run (hook installed, zero hits). The keep-check calls seen at
+  load come from the render-data creation path instead: chain
+  `0xC4DBF5 (check+set bit0) <- 0xC4E3C0 (create render data) <- 0xBE3D75 (model
+  loader) <- 0xC04A2E <- ...` for both props and f1.
+- The KeepMeshData registry (global 0x2CFA548) has **1480 live entries** at load
+  ([+0x28] = live, [+0x20] = tombstones — the earlier "count=0" read the wrong
+  field). Adding 500 dummy lines plus f1 variants to the loose
+  `data/public/KeepMeshData_FileList.tab` leaves the live count at 1480 — the builder
+  reads the **PakV4 copy**, the loose file is ignored (proven, not inferred).
+- SceneObject flags are set **asynchronously after Init** by a model-based classifier:
+  at Init the f1 entity carries 0x180 (RenderVisible|InsideSpaceNode, like props), and
+  after the model loads it becomes 0x10190 (IsPlayerObject|FrameMove|DisableAngleFilter|
+  SmoothFramemove); the A303 clone becomes 0x8180 (IsStaticModel|...). Forcing static
+  flags at Init or at frame 120 (with SetCullDataDirty) and setting a prop `_tableName`
+  on the f1 entity change nothing — the classification keys on the mesh/model itself.
+- Conclusion: the engine scene's static render path deliberately excludes player models;
+  a player body will only draw through the game layer (represent) or by changing how the
+  mesh classifies (fd0=0x60 vs A303 fd0=0x26 vs props fd0=0). Next probes:
+  (a) find the classifier (who writes IsPlayerObject/FrameMove after model load) and its
+  key; (b) hook the PakV4 read of the tab / the builder's file reader (0xB0FE10 at
+  0xBE4C12) to inject f1 into the registry and test whether registry membership changes
+  classification; (c) represent integration.
+- Host diagnostics added: `buildData` hook (0xC4DE80, currently zero hits),
+  registry live/tombstone/cap readout, keepCheck backtraces (kcbt), buf1/buf2
+  ([mesh+0x4a8]/[0x4b0]) in the mesh dumps.
+- Evidence: %TEMP%\opencode\skillv2\host_kcbt.out, host_reg2/3/4.out, host_dummy.out
+  (500-line proof), host_static.out, host_tname.out, host_final2.out (clean state).
