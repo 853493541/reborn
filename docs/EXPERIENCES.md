@@ -1830,3 +1830,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Next: find how the RL scene turns a unit into a render entity (scene actor/ECS
   component from unit), attach the F1 unit to the scene, verify render
   (image_stats fingerprint). Evidence: host_char_rl19.out, rl_getunit.txt.
+
+## 2026-10-04 — MovieEditor path confirmed: represent WITHOUT full Init; player-parts core creator located
+
+- MovieEditor `MovieEngineCLR.dll` (`KGRepresentHelper::InitRepresent`) uses only
+  `CreateRLLoader` (strings 0x2B82F8-0x2B8360) - no SO3Represent::Init. Its character
+  APIs: `InitPlayerModel`, `GetPlayerModel`, `SetFaceModel`, `ReleasePlayerModel`
+  (+ `KGSceneCLR::LoadModelByRepresentID` / `AddRepresentModel`). This confirms the
+  standalone RL path (CreateRLLoader + player model APIs) is the intended
+  "character without a game world" route; the 15-object Init is not needed for it.
+- `LuaLoadPlayerParts` (0x41C210) = look up the HangPet core by id (thunk 0x10000 ->
+  0x42D860 map lookup, `it->second` at +0x28) then `0x16054 -> 0x422F50(core, partsA[13],
+  partsB[13], count)`. The core must exist first - created by `HangPetWorld::_CreateCore`
+  (assert 0x42E548): alloc 0x788 (core) + `0xFA1(core, cfg, ...)` Init + map insert.
+- Host error fixed conceptually: the core is NOT created by 0x42D860 (lookup); the
+  creator `HangPetWorld::_CreateCore` (function containing 0x42E495/0x42E548) is the
+  next call target, then `0x422F50` (LoadPlayerParts) assembles the player model.
+- Status: player character still NOT visible; not ready to show. Next probes:
+  (a) call `HangPetWorld::_CreateCore(ctx, cfg, ...)` + `LoadPlayerParts` in the host
+  (game's own player assembly), or (b) reproduce MovieEditor's `GetPlayerModel` path
+  (RL loader GetUnit/model proxy + scene add).
+- Evidence: MovieEngineCLR string map, rl_lpp.txt (binding), rl_createcore.txt.
