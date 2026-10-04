@@ -1015,3 +1015,44 @@ handle: if the task-completion token has not resolved, it takes the timeout/dest
 reached. In the synthetic path RG itself also fails (`state=3`) because the remote-thread
 queue token is invalid. Next: find what resolves the task-completion token (task-queue
 pump / completion callback) and whether the login-stage main loop drives it.
+
+## 48. Gateway login message set (static decode, P2 step 3 complete)
+
+All layouts below are read from the client's own builders/handlers (RVAs are exe-relative).
+
+**C->S handshake** (`DoHandshakeRequest`, in `0x140189440`; opcode `2`, 229 bytes):
+`[0]=2`, `[1..4]=0x2B`, `[5..8]=0x1F6`, `[9..0xC]=[global+0xCB0]` (build), `[0xD..]` client
+info block filled by `0x140187540` (SDK ids).
+
+**S->C handshake respond** (proto `2`, handler `0x1882E0`): `[0]=2`, `[1]=result`
+(0 = success/notification, 1 version error, 2 maintenance, 3 account-system lost,
+4 gameworld version, 5 source version, 6 alt success, 7 banned), `[2..5]` dword
+-> `[gwClient+0x168]`, `[6..9]` dword (case 6), `[0xA..0xD]` dword -> `[gwClient+0x1F0]`.
+
+**C->S account verify** (`DoAccountVerifyRequest` `0x1401865B0`; opcode `3`, 161 bytes):
+`[0]=3`, `[1..0x20]` account (32B, from `gwClient+0x40`), `[0x21..0x60]` credential block
+(64B, from `+0x60`), `[0x61..0xA0]` credential block 2 (64B, from `+0xA0`).
+
+**S->C account verify OK** (proto `3`, handler `0x187960`): no fields read; fires the
+"account ok" notification (event code 8). (proto `4` `0x1879D0` is the fuller variant:
+reads `+0x11` byte, `+0x12`, `+0x16`, `+0x26` dwords.)
+
+**S->C role list** (proto `9`/`15`, handler `0x1890B0`): length assert
+`uDataLen == sizeof(G2C_SYNC_ROLE_LIST) + sizeof(KROLE_LIST_INFO)` = **0x324 bytes**;
+role count dword at `+5`; role entry starts at `+9` (client-side entry stride 0x318,
+role id at entry+0x40).
+
+**C->S login game** (`DoLoginGameRequest` `0x140186B30`; opcode `0xA`, 142 bytes):
+`[0]=0xA`, `[1..4]=roleIndex`, `[5..8]=roleIndex2`, `[9..0xC]=[global+0xCB0]`,
+`[0xD]=bool`, `[0xE..]` role name string.
+
+**S->C login key** (proto `14`, handler `0x188900`): `[0]=14`, `[1]=result` (0 = success;
+switch 0..13, case 0 fires event 0x3C and closes the gateway session), `[2..5]` roleID
+(matched against role entries at +0x40), `[6..9]` key dword, `[0xA..0xD]` dword,
+`[0xE..]` **`pcszGameServerIP` string** (assert at `0x188AE3`; passed to the game-login
+handler `0x1401245A0` together with roleID and the `[0xA]` dword).
+
+Login conversation for the stub: connect -> (client handshake op 2) -> proto 2 result 0 ->
+(client account verify op 3) -> proto 3 (2 bytes: `03 00`) -> proto 9 role list (0x324) ->
+(client login game op 10) -> proto 14 (`14 00` + roleID + key + dword + "127.0.0.1") ->
+client connects to the game server address (P3).
