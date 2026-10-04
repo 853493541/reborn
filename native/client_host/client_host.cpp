@@ -263,6 +263,27 @@ static void castAbility(int idx, void* actor, void* ctrl, HMODULE eng)
     createRealSfx(eng);
 }
 
+// render-proxy acquisition hook: proves whether the engine asks for a render
+// proxy per scene object (and for which GUID)
+static HMODULE g_eng = NULL;
+static BYTE g_arpSaved[32];
+static BYTE* g_arpTramp = NULL;
+typedef long (__fastcall *ArpFn)(void*, void*, unsigned char, void**);
+static long __fastcall hookAcquireProxy(void* self, void* scene, unsigned char b, void** out)
+{
+    const char* guid = NULL;
+    __try
+    {
+        guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
+    long r = ((ArpFn)g_arpTramp)(self, scene, b, out);
+    printf("[host] AcquireRenderActorProxy guid=%s b=%u -> 0x%08X\n",
+           guid ? guid : "(?)", (unsigned)b, (unsigned)r);
+    fflush(stdout);
+    return r;
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
@@ -329,7 +350,10 @@ int main(void)
                                    g_ctwSaved, &g_ctwTramp, 15);
     int lfOk = installInlineHook(eng, 0xB0F870, (void*)hookLoadFileSrc,
                                  g_lfSaved, &g_lfTramp, 20);
-    logf("[host] hooks: window=%d loadfile=%d", hookOk, lfOk);
+    g_eng = eng;
+    int arpOk = installInlineHook(eng, 0x9BB730, (void*)hookAcquireProxy,
+                                  g_arpSaved, &g_arpTramp, 22);
+    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d", hookOk, lfOk, arpOk);
     {
         HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
         if (kgc != NULL)

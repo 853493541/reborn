@@ -1170,3 +1170,13 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Host also now logs entity/model LoadFile paths (diag filter in the LoadFile hook).
 - Evidence: %TEMP%\opencode\skillv2\host_probe.out (missing-model line),
   host_char.out/png.
+
+## 2026-10-02 ¡ª Phase 3: AcqureRenderActorProxy never called by the engine (render path is elsewhere)
+
+- Hooked KG3D_SceneObject::AcqureRenderActorProxy (0x9BB730) with GUID logging
+  (GetGUIDString 0x9BBC60) and ran the full host: **zero calls** for the whole run
+  (map props render anyway) - so that API is not the normal actor render path.
+- The injected entity's model IS resolved (missing-model probe earlier), but the actor
+  still does not render; the scene's actor draw path for entity actors remains open.
+- Evidence: %TEMP%\opencode\skillv2\host_proxy.out; host keeps the proxy hook
+  (harmless, logs any future calls).
