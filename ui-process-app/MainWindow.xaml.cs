@@ -679,16 +679,28 @@ namespace UiProcessApp
             if (e.KeyboardDevice.Modifiers != System.Windows.Input.ModifierKeys.None) return;
 
             var window = _currentWindow;
+
+            // Advance the selection to the next window in the list (previous one at the
+            // end) so rejecting a run of windows needs no scrolling back to the spot.
+            var flat = _inventory.Stages
+                .SelectMany(s => s.Windows ?? new List<WindowInfo>())
+                .ToList();
+            int index = flat.IndexOf(window);
+            WindowInfo next = index >= 0 && index + 1 < flat.Count
+                ? flat[index + 1]
+                : (index > 0 ? flat[index - 1] : null);
+
             RejectionStore.Toggle(_inventory, window, _rejected);
             RejectionStore.Save(Paths.AppRoot, _rejected);
             BuildTree(SearchBox.Text.Trim());
 
+            var select = next ?? window;
             foreach (TreeViewItem stageNode in StageTree.Items)
             {
                 bool found = false;
                 foreach (TreeViewItem node in stageNode.Items)
                 {
-                    if (!ReferenceEquals(node.Tag, window)) continue;
+                    if (!ReferenceEquals(node.Tag, select)) continue;
                     node.IsSelected = true;
                     node.BringIntoView();
                     found = true;

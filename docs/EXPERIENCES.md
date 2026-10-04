@@ -1604,3 +1604,7 @@ solved it, and what is still open. **Newest at the bottom.**
   is blocked by the foreground lock; SendKeys without the check can type into the wrong window) - the
   guarded send_x.ps1 aborts unless the foreground PID matches; verify by hand or via the headless
   --reject path.
+- Follow-up (same day): the user clarified the intended flow - after rejecting, the selection must
+  advance to the NEXT window in the list (previous one at the end) so a run can be rejected without
+  scrolling back. The handler now computes the flat tree order before the toggle and selects the
+  successor (fallback: the moved window).
