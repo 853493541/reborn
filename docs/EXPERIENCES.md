@@ -2677,3 +2677,31 @@ work into main without M2 entanglement.
   ported into the tick-based movement, and the server GameMovement walk/run
   constants reconciled to 90/300 (15 Hz) - the work documented in the
   merge-dryrun/collision branch (5d729b2-based integrated result).
+
+### 2026-10-03 - Sandbox: collision bins were the legacy fallback (fixed)
+
+- Did: while updating the sandbox after the merge, found `reborn_client_mini.exe`
+  (map `龙门寻宝_s`) falling back to the LEGACY generic
+  `collision_data\structure_collision.bin` (MD5 1A49A6... vs the real map's
+  0A636D...). The client derives the bin from the map name, so the sandbox never
+  had the real map's collision. Copied `龙门寻宝_structure_collision.bin` (+
+  .cflags/.meshes.txt/.oflags) and `龙门寻宝_foliage_collision.bin` to
+  `龙门寻宝_s_*` (untracked bin64 data).
+- Verified: sandbox log shows `FoliageCollision: instances=5107 meshes=685
+  foliage=龙门寻宝_s_foliage_collision.bin structures=龙门寻宝_s_structure_collision.bin`,
+  `TerrainSampler regions=1x1`, clean run `reborn_20261003_044206.log`.
+### 2026-10-03 - Camera: anchor to the interpolated render height (jump judder)
+
+- Did (user report: sandbox-mini camera shaking, during a jump): the merged
+  client anchors the camera Y on the RAW 15 Hz tick py (B14 easing only covers
+  grounded >5 u snaps; airborne passes raw). Reproduced numerically on the
+  sandbox jump probe (RC_DEMO_JUMP=1 + RC_CAM_YDBG=1, `reborn_20261003_180743.log`):
+  ydbg rawstep=41/35/30/24... with sm=rawstep - the camera followed the tick
+  staircase while the model glided on the interpolated rpy.
+- Fix: `client/RebornClient.cs` camera anchor now uses the interpolated render
+  height: `ax2 = rpx, ay2 = camYFollow ? camYSmooth : (rpy + 90.0), az2 = rpz`
+  (the P2-T1/T3 design, EXPERIENCES 2026-09-30); B14 easing default OFF
+  (`RC_CAM_YFOLLOW=0`; =1 restores it for A/B). ydbg now also logs `anchorstep`.
+- Verified: same jump run after the fix (`reborn_20261003_181024.log`): raw
+  steps still 41/35 u, anchorstep ~2-3 u per render frame (smooth, no 15 Hz
+  staircase); collision selftest 36/36; camera smoke ALL PASS.

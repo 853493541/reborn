@@ -1327,10 +1327,16 @@ internal static class RebornClient
         // The host feeds the raw physics py as the anchor, so a discrete step
         // snap (up to the 64 u ground tolerance) teleported the camera. Only
         // discrete snaps are eased; continuous slope/jump motion passes through.
+        // 2026-10-03: DEFAULT OFF - the anchor now uses the interpolated render
+        // height (rpy, P2-T3 design EXPERIENCES 2026-09-30) so the 15 Hz tick
+        // staircase never reaches the camera (the airborne jump was raw: ydbg
+        // rawstep 41/35/30... sm=rawstep). RC_CAM_YFOLLOW=1 restores B14 (A/B).
         double camYSmooth = 0.0, camYPrevRaw = 0.0;
         bool camYInit = false, camYEasing = false;
-        bool camYFollow = Env("RC_CAM_YFOLLOW", "1") == "1";
+        bool camYFollow = Env("RC_CAM_YFOLLOW", "0") == "1";
         bool camYDbg = Env("RC_CAM_YDBG", "0") == "1";
+        double camYAnchorPrev = 0.0;
+        bool camYAnchorInit = false;
         double camYMaxRate = 1200.0;
         double.TryParse(Env("RC_CAM_YRATE", "1200"), out camYMaxRate);
         double[] rSm = new double[3];
@@ -2414,11 +2420,16 @@ internal static class RebornClient
                     camYSmooth = ay2Raw;
                     camYEasing = false;
                 }
-                if (camYDbg && Math.Abs(ay2Raw - camYPrevRaw) > 4.0)
-                    Log(string.Format("ydbg rawstep={0:F1} sm={1:F1} grounded={2}",
-                        ay2Raw - camYPrevRaw, camYSmooth - camYBefore, grounded));
+                double ax2 = rpx, ay2 = camYFollow ? camYSmooth : (rpy + 90.0), az2 = rpz;
+                if (camYDbg)
+                {
+                    double aStep = camYAnchorInit ? ay2 - camYAnchorPrev : 0.0;
+                    if (Math.Abs(aStep) > 1.0 || Math.Abs(ay2Raw - camYPrevRaw) > 4.0)
+                        Log(string.Format("ydbg rawstep={0:F1} sm={1:F1} anchorstep={2:F1} grounded={3}",
+                            ay2Raw - camYPrevRaw, camYSmooth - camYBefore, aStep, grounded));
+                }
                 camYPrevRaw = ay2Raw;
-                double ax2 = rpx, ay2 = camYSmooth, az2 = rpz;
+                camYAnchorPrev = ay2; camYAnchorInit = true;
                 // Camera probes + obstruction use the candidate (desired) camera
                 // line, not the per-axis smoothed offset: smoothing a rotating
                 // vector through its chord shortens it, and feeding that to the
