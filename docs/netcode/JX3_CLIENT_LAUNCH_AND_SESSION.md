@@ -1016,7 +1016,32 @@ reached. In the synthetic path RG itself also fails (`state=3`) because the remo
 queue token is invalid. Next: find what resolves the task-completion token (task-queue
 pump / completion callback) and whether the login-stage main loop drives it.
 
-## 50. First-packet requirement + real-path result (current state)
+## 51. P2 MILESTONE: gateway session established (hello -> handshake -> stable pings)
+
+**The 42-byte connect hello works.** Verified live (no debugger): the client connects,
+sends its **229-byte handshake (proto 4)**, the stub answers with the proto-4 respond
+(252 B), and the client then **pings every 8 s (proto 39, 5 B) for 26+ minutes** — the
+gateway session is fully established and stable. This closes the "client connects but
+never handshakes" blocker (sec.49/50).
+
+**Corrections from live capture:** the client handshake is **opcode 4** (not 2; opcode 2
+was the ping builder), pings are **opcode 39** (`0x27`, 5 bytes, echoed by the stub).
+
+**UI event registry (runtime dump, `probe_gw_bp.py` trigger `dump_events`):** entries are
+`{name_ptr, id}`; decoded ids include:
+- 3 UNMATCHED_LOGIN_PROTOCOL_VERSION, 4 ACCOUNT_VERIFY_TOO_FREQUENTLY, 5 BAD_GUY,
+- **6 HANDSHAKE_SUCCESS**, 7 HANDSHAKE_ACCOUNT_SYSTEM_LOST,
+- **10 VERIFY_SUCCESS**, 30-43 verify errors, 49/50 GET_*_ROLE_LIST_SUCCESS,
+- 60 REQUEST_LOGIN_GAME_SUCCESS, 61-68 its errors.
+The proto-4 handler (`0x1879D0`) fires: result 1 -> id 10 (VERIFY_SUCCESS) with `[5]=2`
+and `[7]=0`; result 1 + `[7]!=0` + `[5]=1/2/3` -> ids 12/11/13; result 3 -> 13; results
+5/15/8/21/12/68-71/87-91 -> ids 27-35/44-48; default -> 35. **None fires id 6** — the
+HANDSHAKE_SUCCESS event is fired elsewhere (connect success / UI path), and the UI does
+not advance to the account verify (proto 3) yet. Remaining: align the UI event/args so the
+login flow proceeds (HANDSHAKE_SUCCESS id 6 -> OnHandShakeSuccess(ip) -> RequestLogin ->
+account verify).
+
+## 50. First-packet requirement + real-path result (previous)
 
 **First server packet requirement (decoded from the wrapper factory `0x1407A0B00`):**
 the factory calls `transport vt+0x40` (= get-packet `0x14079EBC0`) on the fresh transport

@@ -119,6 +119,7 @@ def main():
     triggered = [False]
     forced = [False]
     table_dumped = [False]
+    events_dumped = [False]
     poll_last = {}
     last_pump = [0.0]
     stepping = [None]
@@ -148,6 +149,29 @@ def main():
                                                    b"\xCC", 1, ctypes.byref(ctypes.c_size_t()))
                             armed[rva] = ob
                             print("[%.2f] armed %s (exe+0x%X)" % (el, TARGETS[rva], rva), flush=True)
+                if (gw_client[0] and not events_dumped[0]
+                        and os.path.exists(r"C:\jx3tmp\dump_events")):
+                    events_dumped[0] = True
+                    try:
+                        os.remove(r"C:\jx3tmp\dump_events")
+                    except OSError:
+                        pass
+                    str_va = exe_base + 0x7DE728
+                    base_reg = exe_base + 0x9FB000
+                    data = read_mem(hproc.value, base_reg, 0x800)
+                    print("=== event registry dump @0x%X (HANDSHAKE_SUCCESS str 0x%X) ==="
+                          % (base_reg, str_va), flush=True)
+                    if data:
+                        for i in range(0, len(data) - 16, 16):
+                            name_ptr = struct.unpack_from("<Q", data, i)[0]
+                            eid = struct.unpack_from("<Q", data, i + 8)[0]
+                            if 0x7FF000000000 < name_ptr < 0x800000000000 and 0 < eid < 0x1000:
+                                s = read_mem(hproc.value, name_ptr, 64)
+                                if s:
+                                    nm = s.split(b"\x00")[0].decode("latin-1", "replace")
+                                    if nm and all(32 <= ord(c) < 127 for c in nm):
+                                        print("  id=%-4d %s" % (eid, nm), flush=True)
+                    print("=== end registry dump ===", flush=True)
                 if (gw_client[0] and not table_dumped[0]
                         and os.path.exists(r"C:\jx3tmp\dump_table")):
                     table_dumped[0] = True

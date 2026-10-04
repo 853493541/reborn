@@ -42,6 +42,21 @@ def handshake_respond():
     return frame(bytes([2, 0]) + b"\x00" * 12)
 
 
+def handshake_respond_v4():
+    # proto 4 (client handshake is 229 B) -> server respond >= 252 B
+    # result code dword at +1 (switch 1..0x5B); fields per handler 0x1879D0;
+    # account strings at +0x5B (0x81) and +0xDC (0x20)
+    p = bytearray(252)
+    p[0] = 4
+    struct.pack_into("<I", p, 1, 1)
+    p[5] = 2
+    p[8:8 + 9] = b"127.0.0.1"
+    acc = "admin".encode("gb18030") + b"\x00"
+    p[0x5B:0x5B + len(acc)] = acc
+    p[0xDC:0xDC + len(acc)] = acc
+    return frame(bytes(p))
+
+
 def connect_hello():
     # connection-layer hello required by the wrapper factory (0x1407A0B00):
     # payload size 0x2A (42) and first bytes 0x20 0x00
@@ -94,9 +109,12 @@ def handle(conn, addr):
                 w("[%s] RECV proto=%d len=%d %s%s"
                   % (time.strftime("%H:%M:%S"), proto, len(payload), hx,
                      "..." if len(payload) > 48 else ""))
-                if proto == 2:
-                    conn.sendall(handshake_respond())
-                    w("   -> proto2 respond")
+                if proto == 4:
+                    conn.sendall(handshake_respond_v4())
+                    w("   -> proto4 handshake respond (252 bytes)")
+                elif proto == 39:
+                    conn.sendall(frame(payload))
+                    w("   -> proto39 ping echo")
                 elif proto == 3:
                     conn.sendall(account_ok())
                     w("   -> proto3 account ok")
@@ -134,7 +152,12 @@ def main():
     w("== gateway stub listening on 127.0.0.1:%d at %s (conversation: proto2/3/9/14) =="
       % (port, time.strftime("%H:%M:%S")))
     while True:
-        conn, addr = srv.accept()
+        try:
+            conn, addr = srv.accept()
+        except Exception as e:
+            w("accept error: %s" % e)
+            time.sleep(0.5)
+            continue
         t = threading.Thread(target=handle, args=(conn, addr), daemon=True)
         t.start()
 
