@@ -5,73 +5,14 @@
   "defaultWindow": "zhenzhuan-queue",
   "stages": [
     {
-      "id": "queue",
-      "title": "1. 排队 Queue",
-      "summary": "排队面板与队列追踪窗口。单人/组队/房间三种队列，飞沙与周奖励展示，排队中匹配状态与取消。",
+      "id": "ui",
+      "title": "绝境战场界面",
+      "summary": "绝境战场全流程界面列表：排队 → 匹配 → 过图 → 入场 → 对局 HUD → 死亡/复活 → 结算 → 离开。",
       "windows": [
-        {
-          "id": "queue-panel",
-          "title": "NewBattleFieldQueue",
-          "cn": "绝境战场排队面板",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/NewBattleFieldQueue.ini",
-          "page": "Page_DesertStorm",
-          "tabs": {
-            "parent": "PageSet_Total",
-            "x0": 18,
-            "step": 100,
-            "show": [
-              "CheckBox_DesertStorm",
-              "CheckBox_DesertStorm_Single",
-              "CheckBox_DesertStorm_Skill",
-              "CheckBox_DesertStorm_Takov",
-              "CheckBox_CustomizeBattlefield"
-            ],
-            "gated": [
-              "CheckBox_DesertStorm_Skill"
-            ]
-          },
-          "adjust": [
-            { "section": "Text_MyScore", "left": -11 },
-            { "section": "Btn_Rull_DS", "left": 601 },
-            { "section": "WndContainer_Buff", "left": 753 }
-          ],
-          "texts": [
-            { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" },
-            { "section": "Text_PersonalScore", "text": "1873" },
-            { "section": "Text_FeiShaLing", "text": "10000/10000" },
-            { "section": "Text_FeiShaLingAvailable", "text": "(本周还可获得：1010)" },
-            { "section": "Text_FeiShaLingAvailable_K", "text": "(本周还可获得：1010)" },
-            { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
-            { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
-          ],
-          "summary": "1,129 sections. The mode tab strip is not authored as a strip: ShowModeTabs (NewBattleFieldQueue.decompiled.lua:4374-4451) hides every tab, then shows only the battlefield ids bound to the entry point and pins them at SetRelX(18 + i*100). InitWndBattleField (lua:4713-4744) drops modes whose IsActivityOn is false, which is why the live queue window shows 五人模式/单人模式/寻宝模式/自定义模式 (乱武模式 676 is off). Visibility follows the engine's LockShowAndHide flag (KGUI decoder clears the visible flag of locked sections; the window script is the only thing that shows them), so locked state widgets stay hidden and the script-shown ones (tabs, activity badges) are listed. The 五人模式 tab handler also sets Text_SkillTitle to STR_DESERTSTORM_TITLE (lua:4477-4488) and Text_TIP_DSTime to the schedule (lua:4350-4372). UpdateAnniversaryTabIcon (lua:6506-6553) would pin the activity tab badges (Image_AnniversaryIcon1/2/3, PartnerTeam.UITex frame 21 周年 / 23 赛季, LockShowAndHide=1) - intentionally NOT shown (user decision 2026-10-02: the queue window renders without the activity badges), plus the player sample values (个人评分 1873, 飞沙令 10000/10000 via inventory `texts`), and the window's own string table string_ArenaCorpsPanel.txt, whose committed UTF-8 copy in Data/text resolves the labels the generic string.txt lacks. GT-measured viewer adjusts (2026-10-02, provisional; re-open when the KGUI engine's format-table item spacing is RE'd): Text_MyScore Left -6->-11 (the reference sits the 个人评分： label 5px left of the authored offset, restoring the label-to-1873 gap), Btn_Rull_DS 596->601 and WndContainer_Buff 744->753 (the 随机地图 ? and the whole 技能平衡 row - Text_Buff right-aligned label, Box_Buff gem, Image_BuffRule ? - measure 5-9px right in the reference).",
-          "evidence": [
-            "ui/Config/Default/NewBattleFieldQueue.ini",
-            "proof/minimap/ui/Config/Default/decompiled/NewBattleFieldQueue.decompiled.lua",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md §1"
-          ],
-          "elements": [
-            "CheckBox_DesertStorm{,_Single,_Skill,_Takov} — mode tabs",
-            "Handle_FEISHA / Text_AllNum / Text_WeekNum / Text_MyScore — 飞沙 currency",
-            "Btn_SingleQueue / Btn_TeamQueue / Btn_RoomQueue + Handle_Mathing_* / Text_Time_*",
-            "Image_S/T/R WeiWang|ZhanJie|ZHF — weekly reward preview",
-            "Btn_LeaveSingleQueue / Btn_LeaveTeamQueue / Btn_LeaveRoomQueue",
-            "WndContainer_Buff / Handle_Buff — queue buffs",
-            "Wnd_ListMaps / Handle_BattlefieldList — map rows",
-            "Bool_CreateRoom / JoinRoom / StartGame / DisbandRoom / ExitRoom — room dialogs"
-          ],
-          "labels": [
-            "STR_BATTLEFIELD_DGPAGE",
-            "STR_SETTING197",
-            "STR_SETTING201"
-          ]
-        },
         {
           "id": "zhenzhuan-queue",
           "title": "NewBattleFieldQueue",
-          "cn": "真传模式",
+          "cn": "排队界面",
           "status": "DESIGN",
           "root": "ui",
           "path": "Config/Default/NewBattleFieldQueue.ini",
@@ -99,7 +40,7 @@
             { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
             { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
           ],
-          "summary": "PROJECT DESIGN VARIANT (not a game-authored state; user request 2026-10-02) - 真传模式 is a new queue page built on the current 五人模式 layout: same INI (NewBattleFieldQueue.ini, page Page_DesertStorm) and the same sample state as queue-panel (个人评分 1873, 飞沙令 10000/10000, 单场奖励/crest art). Four designed differences, all viewer-side (entry hide/texts/tabs/adjust - no INI or asset edits): (1) the mode strip is reduced to a single tab, Text_DesertStorm renamed 经典模式 (the other CheckBox_DesertStorm_* tabs stay hidden); (2) the three tooltip ? icons are removed (Image_Rule_4 个人评分, Btn_Rull_DS 随机地图, Image_BuffRule 技能平衡); (3) the 技能平衡 row (WndContainer_Buff) is removed; (4) the bottom-right button 快捷组队 reads 绝境武学 (Text_BtnQuickTeam_D). The base window data stays the game's own (INI + lua); this entry is a deliberately designed variant for the Reborn project, not client truth - do not cite it as the shipped queue window.",
+          "summary": "PROJECT DESIGN VARIANT (not a game-authored state; user request 2026-10-02; displayed as 排队界面 since the rename pass) - the page is a queue variant built on the current 五人模式 layout: same INI (NewBattleFieldQueue.ini, page Page_DesertStorm) and the same sample state as the 五人模式 panel (个人评分 1873, 飞沙令 10000/10000, 单场奖励/crest art). Four designed differences, all viewer-side (entry hide/texts/tabs/adjust - no INI or asset edits): (1) the mode strip is reduced to a single tab, Text_DesertStorm renamed 经典模式 (the other CheckBox_DesertStorm_* tabs stay hidden); (2) the three tooltip ? icons are removed (Image_Rule_4 个人评分, Btn_Rull_DS 随机地图, Image_BuffRule 技能平衡); (3) the 技能平衡 row (WndContainer_Buff) is removed; (4) the bottom-right button 快捷组队 reads 绝境武学 (Text_BtnQuickTeam_D). The base window data stays the game's own (INI + lua); this entry is a deliberately designed variant for the Reborn project, not client truth - do not cite it as the shipped queue window.",
           "evidence": [
             "ui/Config/Default/NewBattleFieldQueue.ini",
             "proof/minimap/ui/Config/Default/decompiled/NewBattleFieldQueue.decompiled.lua",
@@ -107,7 +48,7 @@
           ],
           "elements": [
             "Single mode tab 经典模式 (CheckBox_DesertStorm)",
-            "Handle_FEISHA / Text_MyScore - 飞沙 currency + 个人评分 (same sample state as queue-panel)",
+            "Handle_FEISHA / Text_MyScore - 飞沙 currency + 个人评分 (same sample state as the 五人模式 panel)",
             "Btn_SingleQueue / Btn_TeamQueue / Btn_RoomQueue + Handle_Mathing_* / Text_Time_*",
             "Btn_DesertStormMask / Btn_DesertStormInfo / Btn_QuickTeam_D (快捷组队 -> 绝境武学)",
             "Wnd_ListMaps / Handle_BattlefieldList - map rows",
@@ -119,47 +60,6 @@
             "STR_SETTING201"
           ]
         },
-        {
-          "id": "map-queue",
-          "title": "MapQueue",
-          "cn": "队列追踪窗口",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/MapQueue.ini",
-          "hide": "Handle_Content,Handle_Content_0",
-          "lists": [
-            { "container": "Handle_List", "ini": "MapQueue.ini", "item": "Handle_Content", "count": 1 }
-          ],
-          "adjust": [
-            { "section": "MapQueue", "height": 112 },
-            { "section": "Handle_List", "height": 48 },
-            { "section": "Handle_Total", "height": 48 },
-            { "section": "Image_Bg", "height": 82 },
-            { "section": "WndCheckBox_AutoSure", "top": 53 }
-          ],
-          "summary": "Per-map queue rows with elapsed time, cancel menu and the auto-enter checkbox; fed by OnSyncMapQueueInfo. Handle_Content/_0 are parked prototypes cloned per queued map by AppendItemFromIni into Handle_List, so the default hides them and injects one authored row. UpdateListSize (MapQueue.decompiled.lua:667-745) resizes the list/bg/checkbox from the row count and then calls Collapse (lua:330-376), which sets the window to 32 + rows*48 + 32 (112 for one row) and shows Wnd_List; the inventory adjust list carries those one-row values.",
-          "evidence": [
-            "ui/Config/Default/MapQueue.ini",
-            "proof/minimap/ui/Config/Default/decompiled/MapQueue.decompiled.lua"
-          ],
-          "elements": [
-            "Per-map queue rows + 点击取消排队 context menu",
-            "自动进入 checkbox (silent entry when match found)",
-            "Elapsed time display (UpdateJoinTime / FormatBattleFieldTime)",
-            "OnQueuePosUpdate-driven position/ETA rows"
-          ],
-          "labels": [
-            "STR_MAP_QUEUE",
-            "STR_MAP_QUEUE_AUTOSURE"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "match",
-      "title": "2. 匹配成功 / 接受 Match found",
-      "summary": "匹配成功后弹出确认（勾选自动进入则直接进入），确认即发送 C→S 0x116。",
-      "windows": [
         {
           "id": "ready-confirm",
           "title": "MessageBox (MB_entermap)",
@@ -217,14 +117,7 @@
             "STR_HOTKEY_SURE",
             "STR_HOTKEY_CANCEL"
           ]
-        }
-      ]
-    },
-    {
-      "id": "loading",
-      "title": "3. 过图 Loading",
-      "summary": "过图载入：琉璃 KGUI LoadingPanel 全屏覆盖（每张绝境地图一张加载画，进度条在屏幕底部 89.4% 处）+ X3DEngine 原生 GDI KWindowsLoadingWnd 兜底（18 张随机背景），等 ComfirmSyncMapProgress 握手。",
-      "windows": [
+        },
         {
           "id": "loading-window",
           "title": "LoadingPanel",
@@ -270,18 +163,11 @@
             "ComfirmSyncMapProgress / CancelSyncMapProgress handshake"
           ],
           "labels": []
-        }
-      ]
-    },
-    {
-      "id": "staging",
-      "title": "4. 入场 / 等待开局 Staging",
-      "summary": "落地在安全区等待 30 秒级倒计时（数值由服务器下发），使用模式专属站姿；倒计时结束后起飞/开战。",
-      "windows": [
+        },
         {
           "id": "staging-countdown",
           "title": "RemainingTimeNotify",
-          "cn": "开局倒计时通知",
+          "cn": "起飞倒计时",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/RemainingTimeNotify.ini",
@@ -328,18 +214,11 @@
             "STR_BUFF_H_LEFT_TIME_MSG",
             "STR_SAFEZONE"
           ]
-        }
-      ]
-    },
-    {
-      "id": "hud",
-      "title": "5. 对局 HUD In-match",
-      "summary": "小地图（含风暴圈与安全区外警告）、战场地图（风暴线/圈）、BR 动态技能栏、拾取窗口、统计面板、消息行、队友与增益。",
-      "windows": [
+        },
         {
           "id": "middlemap",
           "title": "MiddleMap",
-          "cn": "大地图（M）",
+          "cn": "大地图",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MiddleMap.ini",
@@ -404,7 +283,7 @@
         {
           "id": "minimap",
           "title": "MiniMap",
-          "cn": "小地图 / 战场入口按钮",
+          "cn": "小地图",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MiniMap.ini",
@@ -444,7 +323,7 @@
         {
           "id": "battlefield-map",
           "title": "BattleFieldMap",
-          "cn": "战场地图（风暴线/圈）",
+          "cn": "战场地图",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/BattleField/BattleFieldMap.ini",
@@ -531,46 +410,9 @@
           ]
         },
         {
-          "id": "fighting-num",
-          "title": "FightingNum",
-          "cn": "对局数字 HUD",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/FightingNum.ini",
-          "summary": "Number HUD candidates (kills / remaining). The storm countdown and remaining-players renderer (STR_TIMEDESERT / STR_LEFTPEPLE) is still unlocated; this panel is the closest extracted candidate.",
-          "evidence": [
-            "ui/Config/Default/FightingNum.ini",
-            "docs/netcode/JX3_MODE_UI_INVENTORY.md §8"
-          ],
-          "elements": [
-            "Numeric counter rows"
-          ],
-          "labels": [
-            "STR_LEFTPEPLE",
-            "STR_TIMEDESERT",
-            "STR_STORM2"
-          ]
-        },
-        {
-          "id": "fighting-statistic",
-          "title": "FightingStatistic",
-          "cn": "对局统计行",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/FightingStatistic.ini",
-          "summary": "Statistics rows used by the scoreboard-side UI; feeds from the same statistics records as PVPShowPanel.",
-          "evidence": [
-            "ui/Config/Default/FightingStatistic.ini"
-          ],
-          "elements": [
-            "Statistic rows"
-          ],
-          "labels": []
-        },
-        {
           "id": "main-message-line",
           "title": "MainMessageLine",
-          "cn": "系统消息行",
+          "cn": "顶部信息",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MainMessageLine.ini",
@@ -630,40 +472,14 @@
           ]
         },
         {
-          "id": "teammate",
-          "title": "Teammate / TeamBuff",
-          "cn": "队友框",
-          "status": "PROVEN",
-          "root": "ui",
-          "path": "Config/Default/Teammate.ini",
-          "summary": "Squad frames used by the mode (5-player squads in the original design); battlefield side drives nameplate colour.",
-          "evidence": [
-            "ui/Config/Default/Teammate.ini",
-            "ui/Config/Default/TeamBuff.ini"
-          ],
-          "elements": [
-            "Player unit frames",
-            "Team buffs"
-          ],
-          "labels": [
-            "STR_BF_NAME"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "death",
-      "title": "6. 死亡 / 复活 Death",
-      "summary": "受重伤/濒危状态，复活请求 C→S 0xB9；天原冰封复活与流萤魂返花等模式复活手段。",
-      "windows": [
-        {
           "id": "death-revive",
           "title": "RevivePanel",
-          "cn": "死亡与复活",
+          "cn": "重伤提示",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/RevivePanel.ini",
-          "summary": "Located in PakV4 as ui/Config/Default/RevivePanel.ini (43 sections, DesertStorm3 + RevivePanel atlases). BR death/revive prompt driven by C->S 0xB9 DoPlayerReviveRequest.",
+          "hide": "Btn_Sure,Btn_Cancel",
+          "summary": "Located in PakV4 as ui/Config/Default/RevivePanel.ini (43 sections, DesertStorm3 + RevivePanel atlases). BR death/revive prompt driven by C->S 0xB9 DoPlayerReviveRequest. Design variant (user request 2026-10-02): the 原地疗伤 (Btn_Sure) and 复活点复活 (Btn_Cancel) options are removed - the mode allows both actions directly.",
           "evidence": [
             "ui/Config/Default/RevivePanel.ini",
             "ui/Image/UITga/DesertStorm3.UITex",
@@ -679,18 +495,11 @@
             "STR_BF_DEAD",
             "STR_REVIVE_NO"
           ]
-        }
-      ]
-    },
-    {
-      "id": "settlement",
-      "title": "7. 结算 Settlement",
-      "summary": "绝境结算 ACC_TreasureFinal（队伍排名与队员战绩）。",
-      "windows": [
+        },
         {
           "id": "treasure-final",
           "title": "ACC_TreasureFinal",
-          "cn": "绝境结算",
+          "cn": "结算界面",
           "status": "PROVEN",
           "root": "pak",
           "path": "ACC_TreasureFinal.ini",
@@ -788,18 +597,11 @@
             "STR_UISET_BFCENCEL",
             "STR_FACELIST_DAOCHUMIANJU"
           ]
-        }
-      ]
-    },
-    {
-      "id": "exit",
-      "title": "8. 离开 / 退出 Exit",
-      "summary": "小地图菜单离开战场、排队取消确认与 LEAVE_BATTLE_FIELD 事件。",
-      "windows": [
+        },
         {
           "id": "leave-menu",
           "title": "ExitPanel",
-          "cn": "退出游戏",
+          "cn": "离开确认",
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/ExitPanel.ini",
@@ -830,6 +632,110 @@
             "EXIT_RETURN_CHOOSE",
             "STR_SURE",
             "STR_CANCEL"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "basic-ui",
+      "title": "基础界面",
+      "summary": "默认基础界面（深研按组推进，见 docs/ui/BASIC_UI_INVENTORY.md）：HUD、面板、菜单与交互窗口。",
+      "windows": []
+    },
+    {
+      "id": "spare",
+      "title": "备用",
+      "summary": "备用界面：暂不进入主流程或按需接入的窗口。",
+      "windows": [
+        {
+          "id": "map-queue",
+          "title": "MapQueue",
+          "cn": "队列追踪窗口",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/MapQueue.ini",
+          "hide": "Handle_Content,Handle_Content_0",
+          "lists": [
+            { "container": "Handle_List", "ini": "MapQueue.ini", "item": "Handle_Content", "count": 1 }
+          ],
+          "adjust": [
+            { "section": "MapQueue", "height": 112 },
+            { "section": "Handle_List", "height": 48 },
+            { "section": "Handle_Total", "height": 48 },
+            { "section": "Image_Bg", "height": 82 },
+            { "section": "WndCheckBox_AutoSure", "top": 53 }
+          ],
+          "summary": "Per-map queue rows with elapsed time, cancel menu and the auto-enter checkbox; fed by OnSyncMapQueueInfo. Handle_Content/_0 are parked prototypes cloned per queued map by AppendItemFromIni into Handle_List, so the default hides them and injects one authored row. UpdateListSize (MapQueue.decompiled.lua:667-745) resizes the list/bg/checkbox from the row count and then calls Collapse (lua:330-376), which sets the window to 32 + rows*48 + 32 (112 for one row) and shows Wnd_List; the inventory adjust list carries those one-row values.",
+          "evidence": [
+            "ui/Config/Default/MapQueue.ini",
+            "proof/minimap/ui/Config/Default/decompiled/MapQueue.decompiled.lua"
+          ],
+          "elements": [
+            "Per-map queue rows + 点击取消排队 context menu",
+            "自动进入 checkbox (silent entry when match found)",
+            "Elapsed time display (UpdateJoinTime / FormatBattleFieldTime)",
+            "OnQueuePosUpdate-driven position/ETA rows"
+          ],
+          "labels": [
+            "STR_MAP_QUEUE",
+            "STR_MAP_QUEUE_AUTOSURE"
+          ]
+        },
+        {
+          "id": "fighting-num",
+          "title": "FightingNum",
+          "cn": "攻击/防御数值变动",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/FightingNum.ini",
+          "summary": "Number HUD candidates (kills / remaining). The storm countdown and remaining-players renderer (STR_TIMEDESERT / STR_LEFTPEPLE) is still unlocated; this panel is the closest extracted candidate.",
+          "evidence": [
+            "ui/Config/Default/FightingNum.ini",
+            "docs/netcode/JX3_MODE_UI_INVENTORY.md §8"
+          ],
+          "elements": [
+            "Numeric counter rows"
+          ],
+          "labels": [
+            "STR_LEFTPEPLE",
+            "STR_TIMEDESERT",
+            "STR_STORM2"
+          ]
+        },
+        {
+          "id": "fighting-statistic",
+          "title": "FightingStatistic",
+          "cn": "对局统计行",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/FightingStatistic.ini",
+          "summary": "Statistics rows used by the scoreboard-side UI; feeds from the same statistics records as PVPShowPanel.",
+          "evidence": [
+            "ui/Config/Default/FightingStatistic.ini"
+          ],
+          "elements": [
+            "Statistic rows"
+          ],
+          "labels": []
+        },
+        {
+          "id": "teammate",
+          "title": "Teammate / TeamBuff",
+          "cn": "团队列表",
+          "status": "PROVEN",
+          "root": "ui",
+          "path": "Config/Default/Teammate.ini",
+          "summary": "Squad frames used by the mode (5-player squads in the original design); battlefield side drives nameplate colour.",
+          "evidence": [
+            "ui/Config/Default/Teammate.ini",
+            "ui/Config/Default/TeamBuff.ini"
+          ],
+          "elements": [
+            "Player unit frames",
+            "Team buffs"
+          ],
+          "labels": [
+            "STR_BF_NAME"
           ]
         }
       ]

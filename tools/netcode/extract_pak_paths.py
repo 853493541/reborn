@@ -25,6 +25,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--list", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--work", type=Path, default=None)
+    ap.add_argument("--batch", type=int, default=1,
+                    help="paths per PakV4 invocation (default 1; use e.g. 120 for bulk sweeps)")
     args = ap.parse_args(argv)
 
     candidates = [
@@ -36,20 +38,28 @@ def main(argv: list[str] | None = None) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     hits = 0
-    for cand in candidates:
+    batch = max(1, args.batch)
+    for start in range(0, len(candidates), batch):
+        chunk = candidates[start:start + batch]
         try:
-            found = pss_assets.run_pakv4([cand], work=work)
+            found = pss_assets.run_pakv4(chunk, work=work)
         except Exception as exc:  # noqa: BLE001
-            print(f"ERR  {cand}: {exc}")
+            print(f"ERR  batch@{start} ({len(chunk)} paths): {exc}")
             continue
         if not found:
-            print(f"MISS {cand}")
+            for cand in chunk:
+                print(f"MISS {cand}")
             continue
         for key, data in found.items():
             dest = out_dir / Path(key).name
             dest.write_bytes(data)
-            print(f"HIT  {cand} -> {dest} ({len(data)} bytes)")
+            print(f"HIT  {key} -> {dest} ({len(data)} bytes)")
             hits += 1
+        if batch > 1:
+            found_names = {Path(k).name.lower() for k in found}
+            for cand in chunk:
+                if Path(cand).name.lower() not in found_names:
+                    print(f"MISS {cand}")
     print(f"{hits} files extracted from {len(candidates)} candidates")
     return 0 if hits else 1
 

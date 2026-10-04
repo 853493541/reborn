@@ -10,8 +10,8 @@ the real KGUI layout INIs and official string tables.
   `defaultWindow` in `Data/ui_inventory.json` to that window id (the viewer opens
   on it; `MainWindow` falls back to the first window when it is missing). Leave it
   pointing at the last item worked on so the user never has to switch manually.
-- Gate: `UiProcessApp.exe --selftest` must report **0 failed** (currently 16
-  rendered / 1 skipped; writes `ui_process_selftest.txt` next to the exe).
+- Gate: `UiProcessApp.exe --selftest` must report **0 failed** (currently 17
+  rendered / 0 skipped; writes `ui_process_selftest.txt` next to the exe).
 - `Data/ui_inventory.json` is generated from `docs/netcode/JX3_MODE_UI_INVENTORY.md` —
   update the doc first, then regenerate; keep the evidence paths in the inventory.
 - Text assets in `Data/text/` are UTF-8 copies of the game files (see

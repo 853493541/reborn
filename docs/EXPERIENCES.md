@@ -1435,3 +1435,60 @@ solved it, and what is still open. **Newest at the bottom.**
 - Scope check: only this element changes across the whole catalog (the selftest's type-11 debug:
   Image_Line, Image_New_2_2_2_0, MiddleMap Image_Alpha/_1 all detect caps=0 -> unchanged plain
   stretch); --selftest 18/0/0. UI_SYSTEM_REPORT.md item 3 updated (11 = horizontal three-slice).
+
+### 2026-10-02 — UI — catalog rename pass (排队界面, 载入窗口, ...) + queue-panel entry removed
+- User: remove the queue-panel catalog entry (the faithful 五人模式 replica, 1.1); rename the designed
+  真传模式 page to 排队界面; and rename the other catalog items to short Chinese names: 载入窗口,
+  起飞倒计时, 大地图, 小地图, 战场地图, 攻击/防御数值变动, 顶部信息, 团队列表, 重伤提示, 结算界面,
+  离开确认 (the items not listed - 匹配成功确认框, 拾取窗口, 对局统计行, 增益/减益/目标增益 - keep their
+  names).
+- Viewer data only: the queue-panel entry was deleted (its GT-measured `adjust` values live on in the
+  zhenzhuan-queue entry; the research stays in the §1 note and the earlier EXPERIENCES entries);
+  zhenzhuan-queue cn = 排队界面 (id kept, still defaultWindow); the rest are `cn` edits in
+  Data/ui_inventory.json. No INI/asset or engine changes.
+- Docs: JX3_MODE_UI_INVENTORY.md §1 note records the rename + removal; ui-process-app/AGENTS.md and
+  README gate counts refreshed (16/1 -> 17/0).
+- Verified: --selftest 17/0/0; zhenzhuan-queue render intact (68 sections); the tree lists
+  1.1 排队界面 / 1.2 队列追踪窗口 and the renamed stages.
+
+### 2026-10-02 — UI — single-list relist (all items 1.x) + 重伤提示 options removed
+- User: "relist, they all become 1.x" - merge the 8 flow stages into one catalog list so every window
+  numbers as 1.1..1.17 (the app numbers stage.window); and for 重伤提示 (death-revive) remove the
+  原地疗伤 and 复活点复活 options because the mode now allows both actions directly.
+- Viewer data: ui_inventory.json stages merged into one stage (id `ui`, title 绝境战场界面, flow summary;
+  the window entries themselves are byte-identical, order = queue -> match -> loading -> staging -> hud
+  -> death -> settlement -> exit). death-revive gains `hide: "Btn_Sure,Btn_Cancel"` (the dump showed
+  Text_Sure = 原地疗伤, Text_Cancel = 复活点复活) + a design-variant note in its summary.
+- Lesson: the stage merge is text surgery on the hand-formatted JSON - the first attempt cut the file's
+  trailing root brace (lines[779:] was empty); validate with json.load BEFORE writing.
+- Verified: --selftest 17/0/0; death-revive render 26 -> 20 sections with no Btn_Sure/Btn_Cancel drawn
+  (only the 重伤 icon + 空格键或点击队友头像... notice remains).
+
+### 2026-10-02 — UI — 备用 stage: four windows moved out of the main list
+- User: move the windows formerly at 1.2, 1.10, 1.11, 1.14 into a 备用 (spare) stage as 2.x.
+- Viewer data: second stage `spare` (title 备用) added after 绝境战场界面; the moved entries are
+  2.1 队列追踪窗口 (map-queue), 2.2 攻击/防御数值变动 (fighting-num), 2.3 对局统计行
+  (fighting-statistic), 2.4 团队列表 (teammate) - byte-identical blocks, order kept. Main list is now
+  1.1..1.13 (排队界面 .. 离开确认).
+- Same text-surgery method; this time json.loads validated the rebuilt text BEFORE writing (the earlier
+  lesson), and the first splice attempt failed validation (double stage-close brace) so nothing was
+  written.
+- Verified: --selftest 17/0/0; tree shows 绝境战场界面 1.1..1.13 + 备用 2.1..2.4.
+
+### 2026-10-03 — UI — BASIC UI session 1: full Config/Default inventory + extraction
+- User approved the basic-UI deep-research plan (full default UI scope; verification against INI/authored
+  state only - no GT captures; new catalog stage 基础界面; HUD core first).
+- Inventory: every `ui\Config\Default\**.lua` entry in the tracked manifest
+  (proof/netcode/ui_lua_probe/out/ui/module_info.xml) converted to its candidate INI path -> 1,365 paths;
+  extracted with the official PakV4 extractor (`tools/netcode/extract_pak_paths.py --batch 250`, new
+  `--batch` option for bulk sweeps) -> **1,210 HIT / 155 MISS** (MISS = script-only/helper entries with
+  no same-path INI). 1,079 of the 1,210 were new locally (assets/ui held 131 of them).
+- Deliverables: docs/ui/BASIC_UI_INVENTORY.md (scope register: coverage summary, class tables for HUD/
+  panels/menus/world, the 790-row unclassified tier-5 list, excluded classes, MISS appendix, reproduce
+  commands) registered in docs/ui/README.md; evidence under proof/ui/basic_ui/ (extracted_inis.tsv,
+  missing_inis.txt, candidate_inis.txt, extract.log, SOURCES.txt); INIs copied to the ignored
+  ui-process-app/assets/ui/Config/Default (1,211 files).
+- Catalog: new empty stage 基础界面 inserted as stage 2; 备用 is now stage 3 (3.x). The research sessions
+  fill 基础界面 group by group (HUD core first).
+- Classification is a documented working heuristic (first-match regex); per-group sessions refine it.
+- Verified: --selftest 17/0/0 (17 windows unchanged); JSON stages = 绝境战场界面 / 基础界面 / 备用.

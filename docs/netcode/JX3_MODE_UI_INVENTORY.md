@@ -56,13 +56,16 @@ Mode tabs (`PageSet_Total`): `CheckBox_DesertStorm` (绝境/沙漠风暴),
 Room UI (custom rooms): `Bool_CreateRoom/JoinRoom/StartGame/DisbandRoom/ExitRoom`
 confirm dialogs, room member list, OB slot (`NewBattleFieldQueue.decompiled.lua:5604-5882`).
 
-> **Reborn design variant `真传模式` — NOT client truth (user request 2026-10-02).** A
+> **Reborn design variant — NOT client truth (user request 2026-10-02).** A
 > viewer-only queue page built on this section's `Page_DesertStorm` (same INI, same sample
 > state): the mode strip is reduced to one tab renamed 经典模式, the three tooltip `?` icons
 > (`Image_Rule_4`, `Btn_Rull_DS`, `Image_BuffRule`) and the 技能平衡 row (`WndContainer_Buff`)
 > are removed, and 快捷组队 reads 绝境武学 (`Text_BtnQuickTeam_D`). It lives as the
 > `zhenzhuan-queue` entry (status `DESIGN`) in `ui-process-app/Data/ui_inventory.json` with
-> no INI/asset edits — do not cite it as the shipped queue window.
+> no INI/asset edits — do not cite it as the shipped queue window. Rename pass 2026-10-02:
+> displayed as **排队界面** (the catalog's queue entry), and the faithful 五人模式
+> `queue-panel` catalog entry was removed on the user's request (the INI/Lua research in
+> this section stands).
 
 ## 2. Queue tracking — `MapQueue`
 

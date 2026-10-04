@@ -1,0 +1,7 @@
+Basic UI INI extraction (2026-10-03)
+source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\Pakv4 (read-only, via official PakV4SfxExtract.exe)
+tool: tools/netcode/extract_pak_paths.py --batch 250 (run with .venv python)
+candidates: proof/netcode/ui_lua_probe/out/ui/module_info.xml -> ui/Config/Default/<rel>.ini
+result: 1210 HIT / 155 MISS (see extract.log)
+dest: ui-process-app/assets/ui/Config/Default (ignored viewer asset root)
+evidence: extracted_inis.tsv (name/class/was_local), missing_inis.txt, candidate_inis.txt
