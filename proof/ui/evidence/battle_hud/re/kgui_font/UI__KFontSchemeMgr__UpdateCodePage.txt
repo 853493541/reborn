@@ -1,0 +1,707 @@
+# needle: UI::KFontSchemeMgr::UpdateCodePage
+# string VAs: ['0x1805e2e88']
+# xrefs: 2
+
+## xref 0x1801f644c  fn_start 0x1801f63d0
+0x01801f63d0: mov	qword ptr [rsp + 0x18], rbx
+0x01801f63d5: push	rdi
+0x01801f63d6: sub	rsp, 0x160
+0x01801f63dd: mov	rax, qword ptr [rip + 0x4598c4]
+0x01801f63e4: xor	rax, rsp
+0x01801f63e7: mov	qword ptr [rsp + 0x150], rax
+0x01801f63ef: mov	rdx, qword ptr [rip + 0x47845a]
+0x01801f63f6: xor	ebx, ebx
+0x01801f63f8: mov	rdi, rcx
+0x01801f63fb: test	rdx, rdx
+0x01801f63fe: je	0x1801f65f2
+0x01801f6404: mov	rax, qword ptr [rdx + 0xdb50]
+0x01801f640b: mov	qword ptr [rsp + 0x178], rsi
+0x01801f6413: cmp	dword ptr [rax + 0x218], ebx
+0x01801f6419: je	0x1801f6421
+0x01801f641b: mov	ebx, dword ptr [rax + 0x918]
+0x01801f6421: mov	rcx, qword ptr [rcx + 0x18]
+0x01801f6425: lea	rsi, [rax + 0x8f8]
+0x01801f642c: mov	rax, qword ptr [rcx]
+0x01801f642f: cmp	rax, rcx
+0x01801f6432: je	0x1801f6441
+0x01801f6434: cmp	dword ptr [rax + 0x10], ebx
+0x01801f6437: je	0x1801f64a2
+0x01801f6439: mov	rax, qword ptr [rax]
+0x01801f643c: cmp	rax, rcx
+0x01801f643f: jne	0x1801f6434
+0x01801f6441: xor	eax, eax
+0x01801f6443: mov	qword ptr [rdi + 0x28], rax
+0x01801f6447: test	rax, rax
+0x01801f644a: jne	0x1801f64a8
+0x01801f644c: lea	rcx, [rip + 0x3eca35]	; 0x1805e2e88 -> "UI::KFontSchemeMgr::UpdateCodePage"
+0x01801f6453: mov	r9d, 0x23c
+0x01801f6459: mov	qword ptr [rsp + 0x20], rcx
+0x01801f645e: lea	r8, [rip + 0x3ecab3]	; 0x1805e2f18 -> "m_pFontInfoList"
+0x01801f6465: lea	rdx, [rip + 0x3b340c]
+0x01801f646c: mov	ecx, 3
+0x01801f6471: call	qword ptr [rip + 0x2f0da1]
+0x01801f6477: xor	eax, eax
+0x01801f6479: mov	rsi, qword ptr [rsp + 0x178]
+0x01801f6481: mov	rcx, qword ptr [rsp + 0x150]
+0x01801f6489: xor	rcx, rsp
+0x01801f648c: call	0x1804ca730
+0x01801f6491: mov	rbx, qword ptr [rsp + 0x180]
+0x01801f6499: add	rsp, 0x160
+0x01801f64a0: pop	rdi
+0x01801f64a1: ret	
+0x01801f64a2: add	rax, 0x14
+0x01801f64a6: jmp	0x1801f6443
+0x01801f64a8: test	rsi, rsi
+0x01801f64ab: jne	0x1801f64bf
+0x01801f64ad: mov	r9d, 0x250
+0x01801f64b3: lea	r8, [rip + 0x3ecaae]	; 0x1805e2f68 -> "pcszLocale"
+0x01801f64ba: jmp	0x1801f6597
+0x01801f64bf: lea	rcx, [rdx + 0x520]
+0x01801f64c6: mov	qword ptr [rsp + 0x30], 0
+0x01801f64cf: lea	rdx, [rip + 0x3eca12]	; 0x1805e2ee8 -> "FontPathList"
+0x01801f64d6: mov	qword ptr [rsp + 0x38], 0
+0x01801f64df: lea	r9, [rsp + 0x38]
+0x01801f64e4: lea	r8, [rsp + 0x30]
+0x01801f64e9: call	0x1800e1eb0
+0x01801f64ee: test	eax, eax
+0x01801f64f0: jne	0x1801f652c
+0x01801f64f2: lea	rax, [rip + 0x3b900f]	; 0x1805af508 -> "UI::KFilePathMgr::GetFilePath"
+0x01801f64f9: mov	r9d, 0x131
+0x01801f64ff: lea	r8, [rip + 0x3b33fa]	; 0x1805a9900 -> "nRetCode"
+0x01801f6506: mov	qword ptr [rsp + 0x20], rax
+0x01801f650b: lea	rdx, [rip + 0x3b3366]
+0x01801f6512: mov	ecx, 3
+0x01801f6517: call	qword ptr [rip + 0x2f0cfb]
+0x01801f651d: mov	r9d, 0x253
+0x01801f6523: lea	r8, [rip + 0x3b4156]	; 0x1805aa680 -> "pcszFilePath"
+0x01801f652a: jmp	0x1801f6597
+0x01801f652c: mov	rax, qword ptr [rsp + 0x38]
+0x01801f6531: mov	r8, qword ptr [rsp + 0x30]
+0x01801f6536: cmp	byte ptr [rax], 0
+0x01801f6539: cmovne	r8, rax
+0x01801f653d: test	r8, r8
+0x01801f6540: jne	0x1801f6551
+0x01801f6542: mov	r9d, 0x253
+0x01801f6548: lea	r8, [rip + 0x3b4131]	; 0x1805aa680 -> "pcszFilePath"
+0x01801f654f: jmp	0x1801f6597
+0x01801f6551: mov	r9, rsi
+0x01801f6554: lea	rcx, [rsp + 0x40]
+0x01801f6559: call	0x1801f54b0
+0x01801f655e: test	eax, eax
+0x01801f6560: jne	0x1801f656a
+0x01801f6562: mov	r9d, 0x256
+0x01801f6568: jmp	0x1801f6590
+0x01801f656a: lea	rcx, [rsp + 0x40]
+0x01801f656f: call	qword ptr [rip + 0x2f0c0b]	; 0x1804e7180 -> "鋡d"
+0x01801f6575: test	eax, eax
+0x01801f6577: je	0x1801f65d3
+0x01801f6579: lea	rdx, [rsp + 0x40]
+0x01801f657e: mov	rcx, rdi
+0x01801f6581: call	0x1801f6600
+0x01801f6586: test	eax, eax
+0x01801f6588: jne	0x1801f65d3
+0x01801f658a: mov	r9d, 0x25b
+0x01801f6590: lea	r8, [rip + 0x3b3369]	; 0x1805a9900 -> "nRetCode"
+0x01801f6597: lea	rax, [rip + 0x3ec9a2]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f659e: mov	ecx, 3
+0x01801f65a3: lea	rdx, [rip + 0x3b32ce]
+0x01801f65aa: mov	qword ptr [rsp + 0x20], rax
+0x01801f65af: call	qword ptr [rip + 0x2f0c63]
+0x01801f65b5: lea	rcx, [rip + 0x3ec8cc]	; 0x1805e2e88 -> "UI::KFontSchemeMgr::UpdateCodePage"
+0x01801f65bc: mov	r9d, 0x23f
+0x01801f65c2: mov	qword ptr [rsp + 0x20], rcx
+0x01801f65c7: lea	r8, [rip + 0x3b3332]	; 0x1805a9900 -> "nRetCode"
+0x01801f65ce: jmp	0x1801f6465
+0x01801f65d3: mov	r8d, ebx
+0x01801f65d6: lea	rdx, [rip + 0x3ec94b]
+0x01801f65dd: mov	ecx, 6
+0x01801f65e2: call	qword ptr [rip + 0x2f0c30]
+0x01801f65e8: mov	eax, 1
+0x01801f65ed: jmp	0x1801f6479
+0x01801f65f2: xor	eax, eax
+0x01801f65f4: jmp	0x1801f6481
+0x01801f65f9: int3	
+0x01801f65fa: int3	
+0x01801f65fb: int3	
+0x01801f65fc: int3	
+0x01801f65fd: int3	
+0x01801f65fe: int3	
+0x01801f65ff: int3	
+0x01801f6600: mov	qword ptr [rsp + 0x20], rsi
+0x01801f6605: push	rdi
+0x01801f6606: sub	rsp, 0x1b0
+0x01801f660d: mov	rax, qword ptr [rip + 0x459694]
+0x01801f6614: xor	rax, rsp
+0x01801f6617: mov	qword ptr [rsp + 0x1a0], rax
+0x01801f661f: xor	esi, esi
+0x01801f6621: mov	r9, rdx
+0x01801f6624: mov	rdi, rcx
+0x01801f6627: test	rdx, rdx
+0x01801f662a: jne	0x1801f665c
+0x01801f662c: mov	r9d, 0x26e
+0x01801f6632: lea	r8, [rip + 0x3b4047]	; 0x1805aa680 -> "pcszFilePath"
+0x01801f6639: lea	rcx, [rip + 0x3ec900]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f6640: mov	qword ptr [rsp + 0x20], rcx
+0x01801f6645: lea	rdx, [rip + 0x3b322c]
+0x01801f664c: mov	ecx, 3
+0x01801f6651: call	qword ptr [rip + 0x2f0bc1]
+0x01801f6657: jmp	0x1801f684f
+0x01801f665c: cmp	byte ptr [rdx], sil
+0x01801f665f: jne	0x1801f6670
+0x01801f6661: mov	r9d, 0x26f
+0x01801f6667: lea	r8, [rip + 0x3b4022]	; 0x1805aa690 -> "pcszFilePath[0]"
+0x01801f666e: jmp	0x1801f6639
+0x01801f6670: xor	r8d, r8d
+0x01801f6673: mov	qword ptr [rsp + 0x1d0], rbx
+0x01801f667b: xor	edx, edx
+0x01801f667d: mov	byte ptr [rsp + 0x180], sil
+0x01801f6685: mov	rcx, r9
+0x01801f6688: mov	byte ptr [rsp + 0x160], sil
+0x01801f6690: call	qword ptr [rip + 0x2f0ae2]	; 0x1804e7178 -> "魒d"
+0x01801f6696: mov	rbx, rax
+0x01801f6699: test	rax, rax
+0x01801f669c: jne	0x1801f66cc
+0x01801f669e: lea	rcx, [rip + 0x3ec89b]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f66a5: mov	r9d, 0x275
+0x01801f66ab: mov	qword ptr [rsp + 0x20], rcx
+0x01801f66b0: lea	r8, [rip + 0x3b4545]	; 0x1805aabfc -> "pIni"
+0x01801f66b7: lea	ecx, [rax + 3]
+0x01801f66ba: lea	rdx, [rip + 0x3b31b7]
+0x01801f66c1: call	qword ptr [rip + 0x2f0b51]
+0x01801f66c7: jmp	0x1801f6847
+0x01801f66cc: mov	rax, qword ptr [rdi + 0x30]
+0x01801f66d0: lea	r8, [rsp + 0x160]
+0x01801f66d8: mov	qword ptr [rdi + 0x38], rax
+0x01801f66dc: lea	rdx, [rsp + 0x180]
+0x01801f66e4: mov	rax, qword ptr [rbx]
+0x01801f66e7: mov	rcx, rbx
+0x01801f66ea: call	qword ptr [rax + 0x18]
+0x01801f66ed: test	eax, eax
+0x01801f66ef: je	0x1801f6839
+0x01801f66f5: nop	word ptr [rax + rax]
+0x01801f6700: mov	rax, qword ptr [rbx]
+0x01801f6703: lea	rcx, [rsp + 0x30]
+0x01801f6708: mov	dword ptr [rsp + 0x28], 0x20
+0x01801f6710: lea	r9, [rip + 0x3b3101]
+0x01801f6717: mov	qword ptr [rsp + 0x20], rcx
+0x01801f671c: lea	r8, [rip + 0x3ec609]	; 0x1805e2d2c -> "Name"
+0x01801f6723: mov	rcx, rbx
+0x01801f6726: lea	rdx, [rsp + 0x160]
+0x01801f672e: call	qword ptr [rax + 0x48]
+0x01801f6731: mov	rax, qword ptr [rbx]
+0x01801f6734: lea	rcx, [rsp + 0x50]
+0x01801f6739: mov	dword ptr [rsp + 0x28], 0x104
+0x01801f6741: lea	r9, [rip + 0x3b30d0]
+0x01801f6748: mov	qword ptr [rsp + 0x20], rcx
+0x01801f674d: lea	r8, [rip + 0x3ec5d0]	; 0x1805e2d24 -> "File"
+0x01801f6754: mov	rcx, rbx
+0x01801f6757: lea	rdx, [rsp + 0x160]
+0x01801f675f: call	qword ptr [rax + 0x48]
+0x01801f6762: mov	rdx, qword ptr [rdi + 0x38]
+0x01801f6766: cmp	rdx, qword ptr [rdi + 0x40]
+0x01801f676a: je	0x1801f67e7
+0x01801f676c: lea	rax, [rsp + 0x30]
+0x01801f6771: mov	ecx, 2
+0x01801f6776: lea	rdx, [rdx + 0x80]
+0x01801f677d: movups	xmm0, xmmword ptr [rax]
+0x01801f6780: lea	rax, [rax + 0x80]
+0x01801f6787: movups	xmmword ptr [rdx - 0x80], xmm0
+0x01801f678b: movups	xmm1, xmmword ptr [rax - 0x70]
+0x01801f678f: movups	xmmword ptr [rdx - 0x70], xmm1
+0x01801f6793: movups	xmm0, xmmword ptr [rax - 0x60]
+0x01801f6797: movups	xmmword ptr [rdx - 0x60], xmm0
+0x01801f679b: movups	xmm1, xmmword ptr [rax - 0x50]
+0x01801f679f: movups	xmmword ptr [rdx - 0x50], xmm1
+0x01801f67a3: movups	xmm0, xmmword ptr [rax - 0x40]
+0x01801f67a7: movups	xmmword ptr [rdx - 0x40], xmm0
+0x01801f67ab: movups	xmm1, xmmword ptr [rax - 0x30]
+0x01801f67af: movups	xmmword ptr [rdx - 0x30], xmm1
+0x01801f67b3: movups	xmm0, xmmword ptr [rax - 0x20]
+0x01801f67b7: movups	xmmword ptr [rdx - 0x20], xmm0
+0x01801f67bb: movups	xmm1, xmmword ptr [rax - 0x10]
+0x01801f67bf: movups	xmmword ptr [rdx - 0x10], xmm1
+0x01801f67c3: sub	rcx, 1
+0x01801f67c7: jne	0x1801f6776
+0x01801f67c9: movups	xmm0, xmmword ptr [rax]
+0x01801f67cc: movups	xmmword ptr [rdx], xmm0
+0x01801f67cf: movups	xmm1, xmmword ptr [rax + 0x10]
+0x01801f67d3: movups	xmmword ptr [rdx + 0x10], xmm1
+0x01801f67d7: mov	eax, dword ptr [rax + 0x20]
+0x01801f67da: mov	dword ptr [rdx + 0x20], eax
+0x01801f67dd: add	qword ptr [rdi + 0x38], 0x124
+0x01801f67e5: jmp	0x1801f67f5
+0x01801f67e7: lea	r8, [rsp + 0x30]
+0x01801f67ec: lea	rcx, [rdi + 0x30]
+0x01801f67f0: call	0x1801f6a10
+0x01801f67f5: mov	r9d, 0x20
+0x01801f67fb: lea	r8, [rsp + 0x160]
+0x01801f6803: mov	edx, r9d
+0x01801f6806: lea	rcx, [rsp + 0x180]
+0x01801f680e: call	qword ptr [rip + 0x2f1b9c]	; 0x1804e83b0 -> ",渄"
+0x01801f6814: test	eax, eax
+0x01801f6816: jne	0x1801f6872
+0x01801f6818: mov	rax, qword ptr [rbx]
+0x01801f681b: lea	r8, [rsp + 0x160]
+0x01801f6823: lea	rdx, [rsp + 0x180]
+0x01801f682b: mov	rcx, rbx
+0x01801f682e: call	qword ptr [rax + 0x18]
+0x01801f6831: test	eax, eax
+0x01801f6833: jne	0x1801f6700
+0x01801f6839: mov	esi, 1
+0x01801f683e: mov	rax, qword ptr [rbx]
+0x01801f6841: mov	rcx, rbx
+0x01801f6844: call	qword ptr [rax + 0x10]
+0x01801f6847: mov	rbx, qword ptr [rsp + 0x1d0]
+0x01801f684f: mov	eax, esi
+0x01801f6851: mov	rcx, qword ptr [rsp + 0x1a0]
+0x01801f6859: xor	rcx, rsp
+0x01801f685c: call	0x1804ca730
+0x01801f6861: mov	rsi, qword ptr [rsp + 0x1d8]
+0x01801f6869: add	rsp, 0x1b0
+0x01801f6870: pop	rdi
+0x01801f6871: ret	
+0x01801f6872: lea	rcx, [rip + 0x3ec6c7]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f6879: mov	r9d, 0x281
+0x01801f687f: mov	qword ptr [rsp + 0x20], rcx
+0x01801f6884: lea	r8, [rip + 0x3b56e5]	; 0x1805abf70 -> "nRetCode == 0"
+0x01801f688b: mov	ecx, 3
+0x01801f6890: lea	rdx, [rip + 0x3b2fe1]
+0x01801f6897: call	qword ptr [rip + 0x2f097b]
+0x01801f689d: jmp	0x1801f683e
+0x01801f689f: int3	
+0x01801f68a0: push	rbx
+0x01801f68a2: sub	rsp, 0x20
+0x01801f68a6: mov	rbx, rcx
+0x01801f68a9: mov	rcx, qword ptr [rcx]
+0x01801f68ac: test	rcx, rcx
+0x01801f68af: je	0x1801f690d
+0x01801f68b1: mov	rdx, qword ptr [rbx + 0x10]
+0x01801f68b5: movabs	rax, 0x70381c0e070381c1
+0x01801f68bf: sub	rdx, rcx
+0x01801f68c2: imul	rdx
+0x01801f68c5: sar	rdx, 7
+0x01801f68c9: mov	rax, rdx
+0x01801f68cc: shr	rax, 0x3f
+0x01801f68d0: add	rdx, rax
+0x01801f68d3: imul	rdx, rdx, 0x124
+0x01801f68da: cmp	rdx, 0x1000
+0x01801f68e1: jb	0x1801f68fb
+0x01801f68e3: mov	r8, qword ptr [rcx - 8]
+0x01801f68e7: add	rdx, 0x27
+0x01801f68eb: sub	rcx, r8
+0x01801f68ee: lea	rax, [rcx - 8]
+0x01801f68f2: cmp	rax, 0x1f
+0x01801f68f6: ja	0x1801f6913
+0x01801f68f8: mov	rcx, r8
+0x01801f68fb: call	0x180163970
+0x01801f6900: xor	eax, eax
+0x01801f6902: mov	qword ptr [rbx], rax
+0x01801f6905: mov	qword ptr [rbx + 8], rax
+0x01801f6909: mov	qword ptr [rbx + 0x10], rax
+0x01801f690d: add	rsp, 0x20
+0x01801f6911: pop	rbx
+0x01801f6912: ret	
+0x01801f6913: call	qword ptr [rip + 0x2f17cf]	; 0x1804e80e8 -> "跊d"
+0x01801f6919: int3	
+0x01801f691a: int3	
+0x01801f691b: int3	
+0x01801f691c: int3	
+0x01801f691d: int3	
+0x01801f691e: int3	
+0x01801f691f: int3	
+0x01801f6920: mov	qword ptr [rsp + 8], rbx
+0x01801f6925: push	rdi
+0x01801f6926: sub	rsp, 0x20
+0x01801f692a: mov	rdx, qword ptr [rcx]
+0x01801f692d: mov	rdi, rcx
+0x01801f6930: mov	rax, qword ptr [rdx + 8]
+0x01801f6934: mov	qword ptr [rax], 0
+0x01801f693b: mov	rax, qword ptr [rdx]
+0x01801f693e: test	rax, rax
+0x01801f6941: je	0x1801f6976
+0x01801f6943: nop	dword ptr [rax]
+0x01801f6947: nop	word ptr [rax + rax]
+0x01801f6950: mov	rcx, qword ptr [rax - 8]
+0x01801f6954: mov	rbx, qword ptr [rax]
+0x01801f6957: sub	rax, rcx
+0x01801f695a: add	rax, -8
+0x01801f695e: cmp	rax, 0x1f
+0x01801f6962: ja	0x1801f698a
+0x01801f6964: mov	edx, 0x2c1f
+0x01801f6969: call	0x180163970
+0x01801f696e: mov	rax, rbx
+0x01801f6971: test	rbx, rbx
+0x01801f6974: jne	0x1801f6950
+0x01801f6976: mov	rax, qword ptr [rdi]
+0x01801f6979: mov	rcx, qword ptr [rax - 8]
+0x01801f697d: sub	rax, rcx
+0x01801f6980: add	rax, -8
+0x01801f6984: cmp	rax, 0x1f
+0x01801f6988: jbe	0x1801f6991
+0x01801f698a: call	qword ptr [rip + 0x2f1758]	; 0x1804e80e8 -> "跊d"
+0x01801f6990: int3	
+0x01801f6991: mov	edx, 0x2c1f
+0x01801f6996: mov	rbx, qword ptr [rsp + 0x30]
+0x01801f699b: add	rsp, 0x20
+0x01801f699f: pop	rdi
+0x01801f69a0: jmp	0x180163970
+0x01801f69a5: int3	
+0x01801f69a6: int3	
+0x01801f69a7: int3	
+0x01801f69a8: int3	
+0x01801f69a9: int3	
+0x01801f69aa: int3	
+0x01801f69ab: int3	
+0x01801f69ac: int3	
+
+## xref 0x1801f65b5  fn_start 0x1801f63d0
+0x01801f63d0: mov	qword ptr [rsp + 0x18], rbx
+0x01801f63d5: push	rdi
+0x01801f63d6: sub	rsp, 0x160
+0x01801f63dd: mov	rax, qword ptr [rip + 0x4598c4]
+0x01801f63e4: xor	rax, rsp
+0x01801f63e7: mov	qword ptr [rsp + 0x150], rax
+0x01801f63ef: mov	rdx, qword ptr [rip + 0x47845a]
+0x01801f63f6: xor	ebx, ebx
+0x01801f63f8: mov	rdi, rcx
+0x01801f63fb: test	rdx, rdx
+0x01801f63fe: je	0x1801f65f2
+0x01801f6404: mov	rax, qword ptr [rdx + 0xdb50]
+0x01801f640b: mov	qword ptr [rsp + 0x178], rsi
+0x01801f6413: cmp	dword ptr [rax + 0x218], ebx
+0x01801f6419: je	0x1801f6421
+0x01801f641b: mov	ebx, dword ptr [rax + 0x918]
+0x01801f6421: mov	rcx, qword ptr [rcx + 0x18]
+0x01801f6425: lea	rsi, [rax + 0x8f8]
+0x01801f642c: mov	rax, qword ptr [rcx]
+0x01801f642f: cmp	rax, rcx
+0x01801f6432: je	0x1801f6441
+0x01801f6434: cmp	dword ptr [rax + 0x10], ebx
+0x01801f6437: je	0x1801f64a2
+0x01801f6439: mov	rax, qword ptr [rax]
+0x01801f643c: cmp	rax, rcx
+0x01801f643f: jne	0x1801f6434
+0x01801f6441: xor	eax, eax
+0x01801f6443: mov	qword ptr [rdi + 0x28], rax
+0x01801f6447: test	rax, rax
+0x01801f644a: jne	0x1801f64a8
+0x01801f644c: lea	rcx, [rip + 0x3eca35]	; 0x1805e2e88 -> "UI::KFontSchemeMgr::UpdateCodePage"
+0x01801f6453: mov	r9d, 0x23c
+0x01801f6459: mov	qword ptr [rsp + 0x20], rcx
+0x01801f645e: lea	r8, [rip + 0x3ecab3]	; 0x1805e2f18 -> "m_pFontInfoList"
+0x01801f6465: lea	rdx, [rip + 0x3b340c]
+0x01801f646c: mov	ecx, 3
+0x01801f6471: call	qword ptr [rip + 0x2f0da1]
+0x01801f6477: xor	eax, eax
+0x01801f6479: mov	rsi, qword ptr [rsp + 0x178]
+0x01801f6481: mov	rcx, qword ptr [rsp + 0x150]
+0x01801f6489: xor	rcx, rsp
+0x01801f648c: call	0x1804ca730
+0x01801f6491: mov	rbx, qword ptr [rsp + 0x180]
+0x01801f6499: add	rsp, 0x160
+0x01801f64a0: pop	rdi
+0x01801f64a1: ret	
+0x01801f64a2: add	rax, 0x14
+0x01801f64a6: jmp	0x1801f6443
+0x01801f64a8: test	rsi, rsi
+0x01801f64ab: jne	0x1801f64bf
+0x01801f64ad: mov	r9d, 0x250
+0x01801f64b3: lea	r8, [rip + 0x3ecaae]	; 0x1805e2f68 -> "pcszLocale"
+0x01801f64ba: jmp	0x1801f6597
+0x01801f64bf: lea	rcx, [rdx + 0x520]
+0x01801f64c6: mov	qword ptr [rsp + 0x30], 0
+0x01801f64cf: lea	rdx, [rip + 0x3eca12]	; 0x1805e2ee8 -> "FontPathList"
+0x01801f64d6: mov	qword ptr [rsp + 0x38], 0
+0x01801f64df: lea	r9, [rsp + 0x38]
+0x01801f64e4: lea	r8, [rsp + 0x30]
+0x01801f64e9: call	0x1800e1eb0
+0x01801f64ee: test	eax, eax
+0x01801f64f0: jne	0x1801f652c
+0x01801f64f2: lea	rax, [rip + 0x3b900f]	; 0x1805af508 -> "UI::KFilePathMgr::GetFilePath"
+0x01801f64f9: mov	r9d, 0x131
+0x01801f64ff: lea	r8, [rip + 0x3b33fa]	; 0x1805a9900 -> "nRetCode"
+0x01801f6506: mov	qword ptr [rsp + 0x20], rax
+0x01801f650b: lea	rdx, [rip + 0x3b3366]
+0x01801f6512: mov	ecx, 3
+0x01801f6517: call	qword ptr [rip + 0x2f0cfb]
+0x01801f651d: mov	r9d, 0x253
+0x01801f6523: lea	r8, [rip + 0x3b4156]	; 0x1805aa680 -> "pcszFilePath"
+0x01801f652a: jmp	0x1801f6597
+0x01801f652c: mov	rax, qword ptr [rsp + 0x38]
+0x01801f6531: mov	r8, qword ptr [rsp + 0x30]
+0x01801f6536: cmp	byte ptr [rax], 0
+0x01801f6539: cmovne	r8, rax
+0x01801f653d: test	r8, r8
+0x01801f6540: jne	0x1801f6551
+0x01801f6542: mov	r9d, 0x253
+0x01801f6548: lea	r8, [rip + 0x3b4131]	; 0x1805aa680 -> "pcszFilePath"
+0x01801f654f: jmp	0x1801f6597
+0x01801f6551: mov	r9, rsi
+0x01801f6554: lea	rcx, [rsp + 0x40]
+0x01801f6559: call	0x1801f54b0
+0x01801f655e: test	eax, eax
+0x01801f6560: jne	0x1801f656a
+0x01801f6562: mov	r9d, 0x256
+0x01801f6568: jmp	0x1801f6590
+0x01801f656a: lea	rcx, [rsp + 0x40]
+0x01801f656f: call	qword ptr [rip + 0x2f0c0b]	; 0x1804e7180 -> "鋡d"
+0x01801f6575: test	eax, eax
+0x01801f6577: je	0x1801f65d3
+0x01801f6579: lea	rdx, [rsp + 0x40]
+0x01801f657e: mov	rcx, rdi
+0x01801f6581: call	0x1801f6600
+0x01801f6586: test	eax, eax
+0x01801f6588: jne	0x1801f65d3
+0x01801f658a: mov	r9d, 0x25b
+0x01801f6590: lea	r8, [rip + 0x3b3369]	; 0x1805a9900 -> "nRetCode"
+0x01801f6597: lea	rax, [rip + 0x3ec9a2]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f659e: mov	ecx, 3
+0x01801f65a3: lea	rdx, [rip + 0x3b32ce]
+0x01801f65aa: mov	qword ptr [rsp + 0x20], rax
+0x01801f65af: call	qword ptr [rip + 0x2f0c63]
+0x01801f65b5: lea	rcx, [rip + 0x3ec8cc]	; 0x1805e2e88 -> "UI::KFontSchemeMgr::UpdateCodePage"
+0x01801f65bc: mov	r9d, 0x23f
+0x01801f65c2: mov	qword ptr [rsp + 0x20], rcx
+0x01801f65c7: lea	r8, [rip + 0x3b3332]	; 0x1805a9900 -> "nRetCode"
+0x01801f65ce: jmp	0x1801f6465
+0x01801f65d3: mov	r8d, ebx
+0x01801f65d6: lea	rdx, [rip + 0x3ec94b]
+0x01801f65dd: mov	ecx, 6
+0x01801f65e2: call	qword ptr [rip + 0x2f0c30]
+0x01801f65e8: mov	eax, 1
+0x01801f65ed: jmp	0x1801f6479
+0x01801f65f2: xor	eax, eax
+0x01801f65f4: jmp	0x1801f6481
+0x01801f65f9: int3	
+0x01801f65fa: int3	
+0x01801f65fb: int3	
+0x01801f65fc: int3	
+0x01801f65fd: int3	
+0x01801f65fe: int3	
+0x01801f65ff: int3	
+0x01801f6600: mov	qword ptr [rsp + 0x20], rsi
+0x01801f6605: push	rdi
+0x01801f6606: sub	rsp, 0x1b0
+0x01801f660d: mov	rax, qword ptr [rip + 0x459694]
+0x01801f6614: xor	rax, rsp
+0x01801f6617: mov	qword ptr [rsp + 0x1a0], rax
+0x01801f661f: xor	esi, esi
+0x01801f6621: mov	r9, rdx
+0x01801f6624: mov	rdi, rcx
+0x01801f6627: test	rdx, rdx
+0x01801f662a: jne	0x1801f665c
+0x01801f662c: mov	r9d, 0x26e
+0x01801f6632: lea	r8, [rip + 0x3b4047]	; 0x1805aa680 -> "pcszFilePath"
+0x01801f6639: lea	rcx, [rip + 0x3ec900]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f6640: mov	qword ptr [rsp + 0x20], rcx
+0x01801f6645: lea	rdx, [rip + 0x3b322c]
+0x01801f664c: mov	ecx, 3
+0x01801f6651: call	qword ptr [rip + 0x2f0bc1]
+0x01801f6657: jmp	0x1801f684f
+0x01801f665c: cmp	byte ptr [rdx], sil
+0x01801f665f: jne	0x1801f6670
+0x01801f6661: mov	r9d, 0x26f
+0x01801f6667: lea	r8, [rip + 0x3b4022]	; 0x1805aa690 -> "pcszFilePath[0]"
+0x01801f666e: jmp	0x1801f6639
+0x01801f6670: xor	r8d, r8d
+0x01801f6673: mov	qword ptr [rsp + 0x1d0], rbx
+0x01801f667b: xor	edx, edx
+0x01801f667d: mov	byte ptr [rsp + 0x180], sil
+0x01801f6685: mov	rcx, r9
+0x01801f6688: mov	byte ptr [rsp + 0x160], sil
+0x01801f6690: call	qword ptr [rip + 0x2f0ae2]	; 0x1804e7178 -> "魒d"
+0x01801f6696: mov	rbx, rax
+0x01801f6699: test	rax, rax
+0x01801f669c: jne	0x1801f66cc
+0x01801f669e: lea	rcx, [rip + 0x3ec89b]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f66a5: mov	r9d, 0x275
+0x01801f66ab: mov	qword ptr [rsp + 0x20], rcx
+0x01801f66b0: lea	r8, [rip + 0x3b4545]	; 0x1805aabfc -> "pIni"
+0x01801f66b7: lea	ecx, [rax + 3]
+0x01801f66ba: lea	rdx, [rip + 0x3b31b7]
+0x01801f66c1: call	qword ptr [rip + 0x2f0b51]
+0x01801f66c7: jmp	0x1801f6847
+0x01801f66cc: mov	rax, qword ptr [rdi + 0x30]
+0x01801f66d0: lea	r8, [rsp + 0x160]
+0x01801f66d8: mov	qword ptr [rdi + 0x38], rax
+0x01801f66dc: lea	rdx, [rsp + 0x180]
+0x01801f66e4: mov	rax, qword ptr [rbx]
+0x01801f66e7: mov	rcx, rbx
+0x01801f66ea: call	qword ptr [rax + 0x18]
+0x01801f66ed: test	eax, eax
+0x01801f66ef: je	0x1801f6839
+0x01801f66f5: nop	word ptr [rax + rax]
+0x01801f6700: mov	rax, qword ptr [rbx]
+0x01801f6703: lea	rcx, [rsp + 0x30]
+0x01801f6708: mov	dword ptr [rsp + 0x28], 0x20
+0x01801f6710: lea	r9, [rip + 0x3b3101]
+0x01801f6717: mov	qword ptr [rsp + 0x20], rcx
+0x01801f671c: lea	r8, [rip + 0x3ec609]	; 0x1805e2d2c -> "Name"
+0x01801f6723: mov	rcx, rbx
+0x01801f6726: lea	rdx, [rsp + 0x160]
+0x01801f672e: call	qword ptr [rax + 0x48]
+0x01801f6731: mov	rax, qword ptr [rbx]
+0x01801f6734: lea	rcx, [rsp + 0x50]
+0x01801f6739: mov	dword ptr [rsp + 0x28], 0x104
+0x01801f6741: lea	r9, [rip + 0x3b30d0]
+0x01801f6748: mov	qword ptr [rsp + 0x20], rcx
+0x01801f674d: lea	r8, [rip + 0x3ec5d0]	; 0x1805e2d24 -> "File"
+0x01801f6754: mov	rcx, rbx
+0x01801f6757: lea	rdx, [rsp + 0x160]
+0x01801f675f: call	qword ptr [rax + 0x48]
+0x01801f6762: mov	rdx, qword ptr [rdi + 0x38]
+0x01801f6766: cmp	rdx, qword ptr [rdi + 0x40]
+0x01801f676a: je	0x1801f67e7
+0x01801f676c: lea	rax, [rsp + 0x30]
+0x01801f6771: mov	ecx, 2
+0x01801f6776: lea	rdx, [rdx + 0x80]
+0x01801f677d: movups	xmm0, xmmword ptr [rax]
+0x01801f6780: lea	rax, [rax + 0x80]
+0x01801f6787: movups	xmmword ptr [rdx - 0x80], xmm0
+0x01801f678b: movups	xmm1, xmmword ptr [rax - 0x70]
+0x01801f678f: movups	xmmword ptr [rdx - 0x70], xmm1
+0x01801f6793: movups	xmm0, xmmword ptr [rax - 0x60]
+0x01801f6797: movups	xmmword ptr [rdx - 0x60], xmm0
+0x01801f679b: movups	xmm1, xmmword ptr [rax - 0x50]
+0x01801f679f: movups	xmmword ptr [rdx - 0x50], xmm1
+0x01801f67a3: movups	xmm0, xmmword ptr [rax - 0x40]
+0x01801f67a7: movups	xmmword ptr [rdx - 0x40], xmm0
+0x01801f67ab: movups	xmm1, xmmword ptr [rax - 0x30]
+0x01801f67af: movups	xmmword ptr [rdx - 0x30], xmm1
+0x01801f67b3: movups	xmm0, xmmword ptr [rax - 0x20]
+0x01801f67b7: movups	xmmword ptr [rdx - 0x20], xmm0
+0x01801f67bb: movups	xmm1, xmmword ptr [rax - 0x10]
+0x01801f67bf: movups	xmmword ptr [rdx - 0x10], xmm1
+0x01801f67c3: sub	rcx, 1
+0x01801f67c7: jne	0x1801f6776
+0x01801f67c9: movups	xmm0, xmmword ptr [rax]
+0x01801f67cc: movups	xmmword ptr [rdx], xmm0
+0x01801f67cf: movups	xmm1, xmmword ptr [rax + 0x10]
+0x01801f67d3: movups	xmmword ptr [rdx + 0x10], xmm1
+0x01801f67d7: mov	eax, dword ptr [rax + 0x20]
+0x01801f67da: mov	dword ptr [rdx + 0x20], eax
+0x01801f67dd: add	qword ptr [rdi + 0x38], 0x124
+0x01801f67e5: jmp	0x1801f67f5
+0x01801f67e7: lea	r8, [rsp + 0x30]
+0x01801f67ec: lea	rcx, [rdi + 0x30]
+0x01801f67f0: call	0x1801f6a10
+0x01801f67f5: mov	r9d, 0x20
+0x01801f67fb: lea	r8, [rsp + 0x160]
+0x01801f6803: mov	edx, r9d
+0x01801f6806: lea	rcx, [rsp + 0x180]
+0x01801f680e: call	qword ptr [rip + 0x2f1b9c]	; 0x1804e83b0 -> ",渄"
+0x01801f6814: test	eax, eax
+0x01801f6816: jne	0x1801f6872
+0x01801f6818: mov	rax, qword ptr [rbx]
+0x01801f681b: lea	r8, [rsp + 0x160]
+0x01801f6823: lea	rdx, [rsp + 0x180]
+0x01801f682b: mov	rcx, rbx
+0x01801f682e: call	qword ptr [rax + 0x18]
+0x01801f6831: test	eax, eax
+0x01801f6833: jne	0x1801f6700
+0x01801f6839: mov	esi, 1
+0x01801f683e: mov	rax, qword ptr [rbx]
+0x01801f6841: mov	rcx, rbx
+0x01801f6844: call	qword ptr [rax + 0x10]
+0x01801f6847: mov	rbx, qword ptr [rsp + 0x1d0]
+0x01801f684f: mov	eax, esi
+0x01801f6851: mov	rcx, qword ptr [rsp + 0x1a0]
+0x01801f6859: xor	rcx, rsp
+0x01801f685c: call	0x1804ca730
+0x01801f6861: mov	rsi, qword ptr [rsp + 0x1d8]
+0x01801f6869: add	rsp, 0x1b0
+0x01801f6870: pop	rdi
+0x01801f6871: ret	
+0x01801f6872: lea	rcx, [rip + 0x3ec6c7]	; 0x1805e2f40 -> "UI::KFontSchemeMgr::LoadFontPathList"
+0x01801f6879: mov	r9d, 0x281
+0x01801f687f: mov	qword ptr [rsp + 0x20], rcx
+0x01801f6884: lea	r8, [rip + 0x3b56e5]	; 0x1805abf70 -> "nRetCode == 0"
+0x01801f688b: mov	ecx, 3
+0x01801f6890: lea	rdx, [rip + 0x3b2fe1]
+0x01801f6897: call	qword ptr [rip + 0x2f097b]
+0x01801f689d: jmp	0x1801f683e
+0x01801f689f: int3	
+0x01801f68a0: push	rbx
+0x01801f68a2: sub	rsp, 0x20
+0x01801f68a6: mov	rbx, rcx
+0x01801f68a9: mov	rcx, qword ptr [rcx]
+0x01801f68ac: test	rcx, rcx
+0x01801f68af: je	0x1801f690d
+0x01801f68b1: mov	rdx, qword ptr [rbx + 0x10]
+0x01801f68b5: movabs	rax, 0x70381c0e070381c1
+0x01801f68bf: sub	rdx, rcx
+0x01801f68c2: imul	rdx
+0x01801f68c5: sar	rdx, 7
+0x01801f68c9: mov	rax, rdx
+0x01801f68cc: shr	rax, 0x3f
+0x01801f68d0: add	rdx, rax
+0x01801f68d3: imul	rdx, rdx, 0x124
+0x01801f68da: cmp	rdx, 0x1000
+0x01801f68e1: jb	0x1801f68fb
+0x01801f68e3: mov	r8, qword ptr [rcx - 8]
+0x01801f68e7: add	rdx, 0x27
+0x01801f68eb: sub	rcx, r8
+0x01801f68ee: lea	rax, [rcx - 8]
+0x01801f68f2: cmp	rax, 0x1f
+0x01801f68f6: ja	0x1801f6913
+0x01801f68f8: mov	rcx, r8
+0x01801f68fb: call	0x180163970
+0x01801f6900: xor	eax, eax
+0x01801f6902: mov	qword ptr [rbx], rax
+0x01801f6905: mov	qword ptr [rbx + 8], rax
+0x01801f6909: mov	qword ptr [rbx + 0x10], rax
+0x01801f690d: add	rsp, 0x20
+0x01801f6911: pop	rbx
+0x01801f6912: ret	
+0x01801f6913: call	qword ptr [rip + 0x2f17cf]	; 0x1804e80e8 -> "跊d"
+0x01801f6919: int3	
+0x01801f691a: int3	
+0x01801f691b: int3	
+0x01801f691c: int3	
+0x01801f691d: int3	
+0x01801f691e: int3	
+0x01801f691f: int3	
+0x01801f6920: mov	qword ptr [rsp + 8], rbx
+0x01801f6925: push	rdi
+0x01801f6926: sub	rsp, 0x20
+0x01801f692a: mov	rdx, qword ptr [rcx]
+0x01801f692d: mov	rdi, rcx
+0x01801f6930: mov	rax, qword ptr [rdx + 8]
+0x01801f6934: mov	qword ptr [rax], 0
+0x01801f693b: mov	rax, qword ptr [rdx]
+0x01801f693e: test	rax, rax
+0x01801f6941: je	0x1801f6976
+0x01801f6943: nop	dword ptr [rax]
+0x01801f6947: nop	word ptr [rax + rax]
+0x01801f6950: mov	rcx, qword ptr [rax - 8]
+0x01801f6954: mov	rbx, qword ptr [rax]
+0x01801f6957: sub	rax, rcx
+0x01801f695a: add	rax, -8
+0x01801f695e: cmp	rax, 0x1f
+0x01801f6962: ja	0x1801f698a
+0x01801f6964: mov	edx, 0x2c1f
+0x01801f6969: call	0x180163970
+0x01801f696e: mov	rax, rbx
+0x01801f6971: test	rbx, rbx
+0x01801f6974: jne	0x1801f6950
+0x01801f6976: mov	rax, qword ptr [rdi]
+0x01801f6979: mov	rcx, qword ptr [rax - 8]
+0x01801f697d: sub	rax, rcx
+0x01801f6980: add	rax, -8
+0x01801f6984: cmp	rax, 0x1f
+0x01801f6988: jbe	0x1801f6991
+0x01801f698a: call	qword ptr [rip + 0x2f1758]	; 0x1804e80e8 -> "跊d"
+0x01801f6990: int3	
+0x01801f6991: mov	edx, 0x2c1f
+0x01801f6996: mov	rbx, qword ptr [rsp + 0x30]
+0x01801f699b: add	rsp, 0x20
+0x01801f699f: pop	rdi
+0x01801f69a0: jmp	0x180163970
+0x01801f69a5: int3	
+0x01801f69a6: int3	
+0x01801f69a7: int3	
+0x01801f69a8: int3	
+0x01801f69a9: int3	
+0x01801f69aa: int3	
+0x01801f69ab: int3	
+0x01801f69ac: int3	

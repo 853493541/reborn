@@ -1,0 +1,366 @@
+# JX3ClientX64.exe xrefs for 'SeasunGame.exe'
+# image base 0x140000000
+
+## xref @ 0x1400b1e1c -> 0x140957108 '\\SeasunGame.exe'  fn start 0x1400b1c40
+  0x1400b1c40: mov      qword ptr [rsp + 8], rbx
+  0x1400b1c45: push     rbp
+  0x1400b1c46: lea      rbp, [rsp - 0x150]
+  0x1400b1c4e: sub      rsp, 0x250
+  0x1400b1c55: mov      rax, qword ptr [rip + 0x98279c]
+  0x1400b1c5c: xor      rax, rsp
+  0x1400b1c5f: mov      qword ptr [rbp + 0x140], rax
+  0x1400b1c66: mov      rax, qword ptr [rip + 0x9da55b]
+  0x1400b1c6d: mov      dword ptr [rsp + 0x38], 0
+  0x1400b1c75: mov      qword ptr [rsp + 0x30], 0
+  0x1400b1c7e: cmp      dword ptr [rax + 0xe10], 0
+  0x1400b1c85: je       0x1400b1fa7
+  0x1400b1c8b: mov      rcx, qword ptr [rip + 0x9da59e]
+  0x1400b1c92: mov      edx, dword ptr [rcx + 0x18]
+  0x1400b1c95: sub      edx, 3
+  0x1400b1c98: je       0x1400b1f06
+  0x1400b1c9e: cmp      edx, 1
+  0x1400b1ca1: jne      0x1400b1fa7
+  0x1400b1ca7: lea      rdx, [rsp + 0x40]
+  0x1400b1cac: mov      ecx, 0x200
+  0x1400b1cb1: call     qword ptr [rip + 0x7069f1]  ; KERNEL32.dll!GetCurrentDirectoryA
+  0x1400b1cb7: mov      rbx, 0xffffffffffffffff
+  0x1400b1cbe: lea      rcx, [rsp + 0x40]
+  0x1400b1cc3: mov      rax, rbx
+  0x1400b1cc6: mov      edx, 2
+  0x1400b1ccb: nop      dword ptr [rax + rax]
+  0x1400b1cd0: inc      rax
+  0x1400b1cd3: cmp      byte ptr [rcx + rax], 0
+  0x1400b1cd7: jne      0x1400b1cd0
+  0x1400b1cd9: test     eax, eax
+  0x1400b1cdb: jg       0x1400b1d37
+  0x1400b1cdd: mov      r9d, 0x1c
+  0x1400b1ce3: lea      rax, [rip + 0x8a5356]  ; 'StripLastDir'
+  0x1400b1cea: lea      r8, [rip + 0x8a539f]  ; 'nDirLength > 0'
+  0x1400b1cf1: mov      qword ptr [rsp + 0x20], rax
+  0x1400b1cf6: lea      rdx, [rip + 0x89d23b]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1400b1cfd: lea      ecx, [r9 - 0x19]
+  0x1400b1d01: call     qword ptr [rip + 0x706741]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400b1d07: mov      r9d, 0x69
+  0x1400b1d0d: lea      rax, [rip + 0x8a538c]  ; 'KJX3LaunchUpdaterModule::Initialize'
+  0x1400b1d14: mov      ecx, 3
+  0x1400b1d19: lea      r8, [rip + 0x89d208]  ; 'nRetCode'
+  0x1400b1d20: mov      qword ptr [rsp + 0x20], rax
+  0x1400b1d25: lea      rdx, [rip + 0x89d20c]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1400b1d2c: call     qword ptr [rip + 0x706716]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400b1d32: jmp      0x1400b1f93
+  0x1400b1d37: cdqe     
+  0x1400b1d39: test     rax, rax
+  0x1400b1d3c: js       0x1400b1d5f
+  0x1400b1d3e: nop      
+  0x1400b1d40: movzx    ecx, byte ptr [rsp + rax + 0x40]
+  0x1400b1d45: cmp      cl, 0x5c
+  0x1400b1d48: je       0x1400b1d4f
+  0x1400b1d4a: cmp      cl, 0x2f
+  0x1400b1d4d: jne      0x1400b1d59
+  0x1400b1d4f: mov      byte ptr [rsp + rax + 0x40], 0
+  0x1400b1d54: sub      edx, 1
+  0x1400b1d57: je       0x1400b1d5f
+  0x1400b1d59: sub      rax, 1
+  0x1400b1d5d: jns      0x1400b1d40
+  0x1400b1d5f: lea      rax, [rsp + 0x40]
+  0x1400b1d64: dec      rax
+  0x1400b1d67: nop      word ptr [rax + rax]
+  0x1400b1d70: cmp      byte ptr [rax + 1], 0
+  0x1400b1d74: lea      rax, [rax + 1]
+  0x1400b1d78: jne      0x1400b1d70
+  0x1400b1d7a: movups   xmm0, xmmword ptr [rip + 0x8a53bf]  ; '\\xlancher\\XLauncher.exe'
+  0x1400b1d81: lea      rcx, [rsp + 0x40]
+  0x1400b1d86: movsd    xmm1, qword ptr [rip + 0x8a53c2]  ; 'her.exe'
+  0x1400b1d8e: movups   xmmword ptr [rax], xmm0
+  0x1400b1d91: movsd    qword ptr [rax + 0x10], xmm1
+  0x1400b1d96: call     qword ptr [rip + 0x706604]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1400b1d9c: test     eax, eax
+  0x1400b1d9e: jne      0x1400b1f4d
+  0x1400b1da4: lea      rax, [rsp + 0x30]
+  0x1400b1da9: mov      r9d, 0x20019
+  0x1400b1daf: xor      r8d, r8d
+  0x1400b1db2: mov      qword ptr [rsp + 0x20], rax
+  0x1400b1db7: lea      rdx, [rip + 0x8a536a]  ; 'SOFTWARE\\SeasunGame'
+  0x1400b1dbe: mov      rcx, 0xffffffff80000002
+  0x1400b1dc5: call     qword ptr [rip + 0x706285]  ; ADVAPI32.dll!RegOpenKeyExA
+  0x1400b1dcb: test     eax, eax
+  0x1400b1dcd: jne      0x1400b1e3d
+  0x1400b1dcf: mov      rcx, qword ptr [rsp + 0x30]
+  0x1400b1dd4: lea      rax, [rsp + 0x38]
+  0x1400b1dd9: mov      qword ptr [rsp + 0x28], rax
+  0x1400b1dde: lea      rdx, [rip + 0x8a5333]  ; 'InstPath'
+  0x1400b1de5: lea      rax, [rsp + 0x40]
+  0x1400b1dea: mov      dword ptr [rsp + 0x38], 0x200
+  0x1400b1df2: xor      r9d, r9d
+  0x1400b1df5: mov      qword ptr [rsp + 0x20], rax
+  0x1400b1dfa: xor      r8d, r8d
+  0x1400b1dfd: call     qword ptr [rip + 0x7062ad]  ; ADVAPI32.dll!RegQueryValueExA
+  0x1400b1e03: lea      rdx, [rsp + 0x40]
+  0x1400b1e08: mov      byte ptr [rbp + 0x13f], 0
+  0x1400b1e0f: dec      rdx
+  0x1400b1e12: cmp      byte ptr [rdx + 1], 0
+  0x1400b1e16: lea      rdx, [rdx + 1]
+  0x1400b1e1a: jne      0x1400b1e12
+  0x1400b1e1c: movups   xmm0, xmmword ptr [rip + 0x8a52e5]  ; '\\SeasunGame.exe'
+  0x1400b1e23: movups   xmmword ptr [rdx], xmm0
+  0x1400b1e26: test     eax, eax
+  0x1400b1e28: jne      0x1400b1e3d
+  0x1400b1e2a: lea      rcx, [rsp + 0x40]
+  0x1400b1e2f: call     qword ptr [rip + 0x70656b]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1400b1e35: test     eax, eax
+  0x1400b1e37: jne      0x1400b1f6b
+  0x1400b1e3d: lea      rdx, [rsp + 0x40]
+  0x1400b1e42: mov      ecx, 0x200
+  0x1400b1e47: call     qword ptr [rip + 0x70685b]  ; KERNEL32.dll!GetCurrentDirectoryA
+  0x1400b1e4d: mov      edx, 4
+  0x1400b1e52: lea      rax, [rsp + 0x40]
+  0x1400b1e57: inc      rbx
+  0x1400b1e5a: cmp      byte ptr [rax + rbx], 0
+  0x1400b1e5e: jne      0x1400b1e57
+  0x1400b1e60: test     ebx, ebx
+  0x1400b1e62: jg       0x1400b1e99
+  0x1400b1e64: mov      r9d, 0x1c
+  0x1400b1e6a: lea      rax, [rip + 0x8a51cf]  ; 'StripLastDir'
+  0x1400b1e71: lea      r8, [rip + 0x8a5218]  ; 'nDirLength > 0'
+  0x1400b1e78: mov      qword ptr [rsp + 0x20], rax
+  0x1400b1e7d: lea      rdx, [rip + 0x89d0b4]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1400b1e84: lea      ecx, [r9 - 0x19]
+  0x1400b1e88: call     qword ptr [rip + 0x7065ba]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400b1e8e: mov      r9d, 0x88
+  0x1400b1e94: jmp      0x1400b1d0d
+  0x1400b1e99: movsxd   rax, ebx
+  0x1400b1e9c: test     ebx, ebx
+  0x1400b1e9e: js       0x1400b1ebf
+  0x1400b1ea0: movzx    ecx, byte ptr [rsp + rax + 0x40]
+  0x1400b1ea5: cmp      cl, 0x5c
+  0x1400b1ea8: je       0x1400b1eaf
+  0x1400b1eaa: cmp      cl, 0x2f
+  0x1400b1ead: jne      0x1400b1eb9
+  0x1400b1eaf: mov      byte ptr [rsp + rax + 0x40], 0
+  0x1400b1eb4: sub      edx, 1
+  0x1400b1eb7: je       0x1400b1ebf
+  0x1400b1eb9: sub      rax, 1
+  0x1400b1ebd: jns      0x1400b1ea0
+  0x1400b1ebf: lea      rcx, [rsp + 0x40]
+  0x1400b1ec4: dec      rcx
+  0x1400b1ec7: nop      word ptr [rax + rax]
+  0x1400b1ed0: cmp      byte ptr [rcx + 1], 0
+  0x1400b1ed4: lea      rcx, [rcx + 1]
+  0x1400b1ed8: jne      0x1400b1ed0
+  0x1400b1eda: mov      eax, dword ptr [rip + 0x8a52a0]  ; 'er.exe'
+  0x1400b1ee0: movsd    xmm0, qword ptr [rip + 0x8a5290]  ; '\\XLauncher.exe'
+  0x1400b1ee8: movsd    qword ptr [rcx], xmm0
+  0x1400b1eec: mov      dword ptr [rcx + 8], eax
+  0x1400b1eef: movzx    eax, word ptr [rip + 0x8a528e]  ; 'xe'
+  0x1400b1ef6: mov      word ptr [rcx + 0xc], ax
+  0x1400b1efa: movzx    eax, byte ptr [rip + 0x8a5285]
+  0x1400b1f01: mov      byte ptr [rcx + 0xe], al
+  0x1400b1f04: jmp      0x1400b1f3e
+  0x1400b1f06: lea      rdx, [rsp + 0x40]
+  0x1400b1f0b: mov      ecx, 0x200
+  0x1400b1f10: call     qword ptr [rip + 0x706792]  ; KERNEL32.dll!GetCurrentDirectoryA
+  0x1400b1f16: lea      rcx, [rsp + 0x40]
+  0x1400b1f1b: dec      rcx
+  0x1400b1f1e: nop      
+  0x1400b1f20: cmp      byte ptr [rcx + 1], 0
+  0x1400b1f24: lea      rcx, [rcx + 1]
+  0x1400b1f28: jne      0x1400b1f20
+  0x1400b1f2a: movups   xmm0, xmmword ptr [rip + 0x8a511f]  ; '\\gameupdater.exe'
+  0x1400b1f31: movzx    eax, byte ptr [rip + 0x8a5128]
+  0x1400b1f38: movups   xmmword ptr [rcx], xmm0
+  0x1400b1f3b: mov      byte ptr [rcx + 0x10], al
+  0x1400b1f3e: lea      rcx, [rsp + 0x40]
+  0x1400b1f43: call     qword ptr [rip + 0x706457]  ; Engine_Lua5X64.dll!g_IsFileExist
+  0x1400b1f49: test     eax, eax
+  0x1400b1f4b: jne      0x1400b1f6b
+  0x1400b1f4d: mov      r9d, 0x40010
+  0x1400b1f53: lea      r8, [rip + 0x8a51a2]  ; 'Error'
+  0x1400b1f5a: lea      rdx, [rip + 0x8a516f]  ; 'Please start JX3 from the WeGame Client!'
+  0x1400b1f61: xor      ecx, ecx
+  0x1400b1f63: call     qword ptr [rip + 0x7071ef]  ; USER32.dll!MessageBoxA
+  0x1400b1f69: jmp      0x1400b1f93
+  0x1400b1f6b: mov      dword ptr [rsp + 0x28], 1
+  0x1400b1f73: lea      r8, [rsp + 0x40]
+  0x1400b1f78: xor      r9d, r9d
+  0x1400b1f7b: mov      qword ptr [rsp + 0x20], 0
+  0x1400b1f84: lea      rdx, [rip + 0x8a5139]  ; 'open'
+  0x1400b1f8b: xor      ecx, ecx
+  0x1400b1f8d: call     qword ptr [rip + 0x7070d5]  ; SHELL32.dll!ShellExecuteA
+  0x1400b1f93: mov      rcx, qword ptr [rsp + 0x30]
+  0x1400b1f98: test     rcx, rcx
+  0x1400b1f9b: je       0x1400b1fa3
+  0x1400b1f9d: call     qword ptr [rip + 0x7060a5]  ; ADVAPI32.dll!RegCloseKey
+  0x1400b1fa3: xor      eax, eax
+  0x1400b1fa5: jmp      0x1400b1fac
+  0x1400b1fa7: mov      eax, 1
+  0x1400b1fac: mov      rcx, qword ptr [rbp + 0x140]
+  0x1400b1fb3: xor      rcx, rsp
+  0x1400b1fb6: call     0x14079ae80
+  0x1400b1fbb: mov      rbx, qword ptr [rsp + 0x260]
+  0x1400b1fc3: add      rsp, 0x250
+  0x1400b1fca: pop      rbp
+  0x1400b1fcb: ret      
+  0x1400b1fcc: int3     
+  0x1400b1fcd: int3     
+  0x1400b1fce: int3     
+  0x1400b1fcf: int3     
+  0x1400b1fd0: push     rbx
+  0x1400b1fd2: sub      rsp, 0x30
+  0x1400b1fd6: lea      rdx, [rip + 0x9d99cb]
+  0x1400b1fdd: mov      ecx, 0x18
+  0x1400b1fe2: call     0x14079b800
+  0x1400b1fe7: mov      rbx, rax
+  0x1400b1fea: mov      qword ptr [rsp + 0x40], rax
+  0x1400b1fef: test     rax, rax
+  0x1400b1ff2: je       0x1400b2008
+  0x1400b1ff4: mov      rcx, rax
+  0x1400b1ff7: call     0x1400a3470
+  0x1400b1ffc: lea      rax, [rip + 0x8a5005]
+  0x1400b2003: mov      qword ptr [rbx], rax
+  0x1400b2006: jmp      0x1400b200a
+  0x1400b2008: xor      ebx, ebx
+  0x1400b200a: test     rbx, rbx
+  0x1400b200d: jne      0x1400b2038
+  0x1400b200f: lea      rax, [rip + 0x8a5142]  ; 'KJX3LaunchUpdaterModule::Create'
+  0x1400b2016: mov      qword ptr [rsp + 0x20], rax
+  0x1400b201b: mov      r9d, 0xab
+  0x1400b2021: lea      r8, [rip + 0x8a2ac0]  ; 'pModule'
+  0x1400b2028: lea      rdx, [rip + 0x89cf09]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1400b202f: lea      ecx, [rbx + 3]
+  0x1400b2032: call     qword ptr [rip + 0x706410]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1400b2038: mov      rax, rbx
+  0x1400b203b: add      rsp, 0x30
+  0x1400b203f: pop      rbx
+  0x1400b2040: ret      
+  0x1400b2041: int3     
+  0x1400b2042: int3     
+  0x1400b2043: int3     
+  0x1400b2044: int3     
+  0x1400b2045: int3     
+  0x1400b2046: int3     
+  0x1400b2047: int3     
+  0x1400b2048: int3     
+  0x1400b2049: int3     
+  0x1400b204a: int3     
+  0x1400b204b: int3     
+  0x1400b204c: int3     
+  0x1400b204d: int3     
+  0x1400b204e: int3     
+  0x1400b204f: int3     
+  0x1400b2050: lea      rdx, [rip + 0x9d9f69]
+  0x1400b2057: lea      rcx, [rip + 0x9926ba]
+  0x1400b205e: jmp      qword ptr [rip + 0x7072fb]  ; VCRUNTIME140.dll!__std_type_info_name
+  0x1400b2065: int3     
+  0x1400b2066: int3     
+  0x1400b2067: int3     
+  0x1400b2068: int3     
+  0x1400b2069: int3     
+  0x1400b206a: int3     
+  0x1400b206b: int3     
+  0x1400b206c: int3     
+  0x1400b206d: int3     
+  0x1400b206e: int3     
+  0x1400b206f: int3     
+  0x1400b2070: mov      eax, 0xffffefd5
+  0x1400b2075: ret      
+  0x1400b2076: int3     
+  0x1400b2077: int3     
+  0x1400b2078: int3     
+  0x1400b2079: int3     
+  0x1400b207a: int3     
+  0x1400b207b: int3     
+  0x1400b207c: int3     
+  0x1400b207d: int3     
+  0x1400b207e: int3     
+  0x1400b207f: int3     
+  0x1400b2080: mov      qword ptr [rsp + 8], rbx
+  0x1400b2085: push     rdi
+  0x1400b2086: sub      rsp, 0x20
+  0x1400b208a: lea      rax, [rip + 0x8a5197]
+  0x1400b2091: mov      ebx, edx
+  0x1400b2093: mov      qword ptr [rcx], rax
+  0x1400b2096: mov      rdi, rcx
+  0x1400b2099: call     0x1400a3650
+  0x1400b209e: test     bl, 1
+  0x1400b20a1: je       0x1400b20b0
+  0x1400b20a3: mov      edx, 0x18
+  0x1400b20a8: mov      rcx, rdi
+  0x1400b20ab: call     0x14079aeac
+  0x1400b20b0: mov      rbx, qword ptr [rsp + 0x30]
+  0x1400b20b5: mov      rax, rdi
+  0x1400b20b8: add      rsp, 0x20
+  0x1400b20bc: pop      rdi
+  0x1400b20bd: ret      
+  0x1400b20be: int3     
+  0x1400b20bf: int3     
+  0x1400b20c0: lea      rdx, [rip + 0x9d9ef9]
+  0x1400b20c7: lea      rcx, [rip + 0x99269a]
+  0x1400b20ce: jmp      qword ptr [rip + 0x70728b]  ; VCRUNTIME140.dll!__std_type_info_name
+  0x1400b20d5: int3     
+  0x1400b20d6: int3     
+  0x1400b20d7: int3     
+  0x1400b20d8: int3     
+  0x1400b20d9: int3     
+  0x1400b20da: int3     
+  0x1400b20db: int3     
+  0x1400b20dc: int3     
+  0x1400b20dd: int3     
+  0x1400b20de: int3     
+  0x1400b20df: int3     
+  0x1400b20e0: mov      qword ptr [rsp + 8], rbx
+  0x1400b20e5: push     rdi
+  0x1400b20e6: sub      rsp, 0x20
+  0x1400b20ea: mov      ebx, edx
+  0x1400b20ec: mov      rdi, rcx
+  0x1400b20ef: lea      rax, [rip + 0x8a5172]
+  0x1400b20f6: mov      qword ptr [rcx], rax
+  0x1400b20f9: xor      ecx, ecx
+  0x1400b20fb: call     qword ptr [rip + 0x70625f]  ; Engine_Lua5X64.dll!?KGLogUnInit@@YAHPEAX@Z
+  0x1400b2101: nop      
+  0x1400b2102: mov      qword ptr [rip + 0x9da10b], 0
+  0x1400b210d: mov      rcx, rdi
+  0x1400b2110: call     0x1400a3650
+  0x1400b2115: nop      
+  0x1400b2116: test     bl, 1
+  0x1400b2119: je       0x1400b2129
+  0x1400b211b: mov      edx, 0x18
+  0x1400b2120: mov      rcx, rdi
+  0x1400b2123: call     0x14079aeac
+  0x1400b2128: nop      
+  0x1400b2129: mov      rax, rdi
+  0x1400b212c: mov      rbx, qword ptr [rsp + 0x30]
+  0x1400b2131: add      rsp, 0x20
+  0x1400b2135: pop      rdi
+  0x1400b2136: ret      
+  0x1400b2137: int3     
+  0x1400b2138: int3     
+  0x1400b2139: int3     
+  0x1400b213a: int3     
+  0x1400b213b: int3     
+  0x1400b213c: int3     
+  0x1400b213d: int3     
+  0x1400b213e: int3     
+  0x1400b213f: int3     
+  0x1400b2140: mov      qword ptr [rsp + 0x18], rbx
+  0x1400b2145: mov      qword ptr [rsp + 0x20], rsi
+  0x1400b214a: push     rdi
+  0x1400b214b: sub      rsp, 0x150
+  0x1400b2152: mov      rax, qword ptr [rip + 0x98229f]
+  0x1400b2159: xor      rax, rsp
+  0x1400b215c: mov      qword ptr [rsp + 0x140], rax
+  0x1400b2164: mov      rsi, rdx
+  0x1400b2167: mov      rdi, rcx
+  0x1400b216a: xor      edx, edx
+  0x1400b216c: lea      rcx, [rsp + 0x30]
+  0x1400b2171: mov      r8d, 0x104
+  0x1400b2177: xor      ebx, ebx
+  0x1400b2179: call     0x14079c37a
+  0x1400b217e: call     qword ptr [rip + 0x70743c]  ; X3DEngine.dll!?GetFilePath@NSX3DEngine@@YAPEAVIFilePath@1@XZ
+  0x1400b2184: mov      r8d, 0x104
+  0x1400b218a: lea      rdx, [rsp + 0x30]
+  0x1400b218f: mov      rcx, rax
+  0x1400b2192: mov      r9, qword ptr [rax]
+  0x1400b2195: call     qword ptr [r9 + 0x88]
+  0x1400b219c: test     eax, eax
+  0x1400b219e: je       0x1400b21cd
+

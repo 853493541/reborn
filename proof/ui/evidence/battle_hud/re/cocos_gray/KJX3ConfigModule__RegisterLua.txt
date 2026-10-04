@@ -1,0 +1,46 @@
+# needle: KJX3ConfigModule::RegisterLua
+# string VAs: ['0x140955150']
+# xrefs: 1
+
+## xref 0x1400a580d  fn_start 0x1400a57b0
+0x01400a57b0: sub	rsp, 0x38
+0x01400a57b4: mov	rcx, qword ptr [rip + 0x9e6acd]
+0x01400a57bb: test	rcx, rcx
+0x01400a57be: je	0x1400a57e3
+0x01400a57c0: mov	rcx, qword ptr [rcx + 0x18]
+0x01400a57c4: test	rcx, rcx
+0x01400a57c7: je	0x1400a57e3
+0x01400a57c9: mov	rax, qword ptr [rcx]
+0x01400a57cc: lea	rdx, [rip + 0x99897d]
+0x01400a57d3: call	qword ptr [rax + 0xb8]
+0x01400a57d9: mov	eax, 1
+0x01400a57de: add	rsp, 0x38
+0x01400a57e2: ret	
+0x01400a57e3: mov	r9d, 0x1d
+0x01400a57e9: lea	rax, [rip + 0x8bee58]	; 0x140964648 -> "RegisterFunctions"
+0x01400a57f0: lea	r8, [rip + 0x8ab591]	; 0x140950d88 -> "pUI"
+0x01400a57f7: mov	qword ptr [rsp + 0x20], rax
+0x01400a57fc: lea	rdx, [rip + 0x8a9735]
+0x01400a5803: lea	ecx, [r9 - 0x1a]
+0x01400a5807: call	qword ptr [rip + 0x712c3b]	; 0x1407b8448 -> "Z鏋"
+0x01400a580d: lea	r8, [rip + 0x8af93c]	; 0x140955150 -> "KJX3ConfigModule::RegisterLua"
+0x01400a5814: mov	r9d, 0x17f
+0x01400a581a: mov	qword ptr [rsp + 0x20], r8
+0x01400a581f: lea	rdx, [rip + 0x8a9712]
+0x01400a5826: lea	r8, [rip + 0x8a96fb]	; 0x14094ef28 -> "nRetCode"
+0x01400a582d: mov	ecx, 3
+0x01400a5832: call	qword ptr [rip + 0x712c10]	; 0x1407b8448 -> "Z鏋"
+0x01400a5838: xor	eax, eax
+0x01400a583a: add	rsp, 0x38
+0x01400a583e: ret	
+0x01400a583f: int3	
+0x01400a5840: lea	rax, [rip + 0x99d709]
+0x01400a5847: ret	
+0x01400a5848: int3	
+0x01400a5849: int3	
+0x01400a584a: int3	
+0x01400a584b: int3	
+0x01400a584c: int3	
+0x01400a584d: int3	
+0x01400a584e: int3	
+0x01400a584f: int3	

@@ -7,6 +7,7 @@ system for reborn, with a PvP focus. Branch: `research/jx3-pvp-battle`.
 |---|---|
 | `JX3_PVP_BATTLE_RESEARCH.md` | **synthesis**: attributes/units, damage & mitigation, buffs/CC/DR, casting/GCD/resources, PvP modes, combat netcode, open items |
 | `REBORN_PVP_BATTLE_SPEC.md` | implementable server/client contract: data model, damage pipeline, validation gates, our opcode set, mode config, test plan |
+| `TARGET_DUMMY_RESEARCH.md` | 木桩 target dummies: full inventory + live spawn stats (主城木桩 zone + generic), model resolution, PvP damage-test framing, sandbox verification |
 
 Per-workstream evidence reports (raw values + citations + confidence):
 
@@ -22,7 +23,9 @@ Catalogs: `../proof/pvp/attr_catalog.tsv`, `../proof/pvp/combat_opcodes.tsv`,
 `../proof/pvp/cooldown_usage_catalog.tsv`, `../proof/pvp/decay_and_controls.tsv`.
 
 Tools: `tools/pvp/` (`tab.py` table reader, `field_semantics.py`, `verify_pvp_evidence.py`,
-`dump_fn_disasm.py`, …) and the reused `tools/netcode/` Lua/binary helpers.
+`dump_fn_disasm.py`, …), `tools/netcode/mode/extract_target_dummies.py` (dummy
+NPC-template extraction; in-client spawn: `client/RebornClient.cs` `RC_DUMMY`)
+and the reused `tools/netcode/` Lua/binary helpers.
 
 Sources: local JX3 install (`...\zhcn_hd`), extracted PakV4 assets under
 `SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe`, and the

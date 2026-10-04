@@ -1,0 +1,189 @@
+# needle: UI::BindSetFontScheme
+# string VAs: ['0x1805aef88']
+# xrefs: 2
+
+## xref 0x1800de6e2  fn_start 0x1800de6c0
+0x01800de6c0: mov	qword ptr [rsp + 0x18], rbx
+0x01800de6c5: push	rsi
+0x01800de6c6: push	rdi
+0x01800de6c7: push	r14
+0x01800de6c9: sub	rsp, 0x30
+0x01800de6cd: xor	edi, edi
+0x01800de6cf: mov	esi, r8d
+0x01800de6d2: mov	qword ptr [rsp + 0x50], rdi
+0x01800de6d7: mov	r14d, edx
+0x01800de6da: mov	rbx, rcx
+0x01800de6dd: test	rcx, rcx
+0x01800de6e0: jne	0x1800de71b
+0x01800de6e2: lea	rcx, [rip + 0x4d089f]	; 0x1805aef88 -> "UI::BindSetFontScheme"
+0x01800de6e9: mov	r9d, 0x985
+0x01800de6ef: mov	qword ptr [rsp + 0x20], rcx
+0x01800de6f4: lea	r8, [rip + 0x4cbdd5]	; 0x1805aa4d0 -> u"L"
+0x01800de6fb: lea	ecx, [rbx + 3]
+0x01800de6fe: lea	rdx, [rip + 0x4cb173]
+0x01800de705: call	qword ptr [rip + 0x408b0d]
+0x01800de70b: mov	eax, edi
+0x01800de70d: mov	rbx, qword ptr [rsp + 0x60]
+0x01800de712: add	rsp, 0x30
+0x01800de716: pop	r14
+0x01800de718: pop	rdi
+0x01800de719: pop	rsi
+0x01800de71a: ret	
+0x01800de71b: mov	qword ptr [rsp + 0x58], rbp
+0x01800de720: call	0x180233430
+0x01800de725: mov	ebp, eax
+0x01800de727: cmp	r14d, eax
+0x01800de72a: jle	0x1800de75c
+0x01800de72c: mov	r9d, 0x988
+0x01800de732: lea	r8, [rip + 0x4cffe7]	; 0x1805ae720 -> "nValueIndex <= nTopIndex"
+0x01800de739: lea	rcx, [rip + 0x4d0848]	; 0x1805aef88 -> "UI::BindSetFontScheme"
+0x01800de740: mov	qword ptr [rsp + 0x20], rcx
+0x01800de745: lea	rdx, [rip + 0x4cb12c]
+0x01800de74c: mov	ecx, 3
+0x01800de751: call	qword ptr [rip + 0x408ac1]
+0x01800de757: jmp	0x1800de7e3
+0x01800de75c: cmp	esi, -2
+0x01800de75f: jne	0x1800de770
+0x01800de761: mov	r9d, 0x98a
+0x01800de767: lea	r8, [rip + 0x4cffe2]	; 0x1805ae750 -> "nLuaRef != LUA_NOREF"
+0x01800de76e: jmp	0x1800de739
+0x01800de770: mov	r8d, esi
+0x01800de773: mov	edx, 0xffffd8f0
+0x01800de778: mov	rcx, rbx
+0x01800de77b: call	0x180233cf0
+0x01800de780: mov	rcx, rbx
+0x01800de783: call	0x180233430
+0x01800de788: mov	r8d, eax
+0x01800de78b: lea	rdx, [rsp + 0x50]
+0x01800de790: mov	rcx, rbx
+0x01800de793: call	0x1801a7420
+0x01800de798: test	eax, eax
+0x01800de79a: jne	0x1800de7ab
+0x01800de79c: mov	r9d, 0x98e
+0x01800de7a2: lea	r8, [rip + 0x4cb157]	; 0x1805a9900 -> "nRetCode"
+0x01800de7a9: jmp	0x1800de739
+0x01800de7ab: mov	rsi, qword ptr [rsp + 0x50]
+0x01800de7b0: test	rsi, rsi
+0x01800de7b3: jne	0x1800de7c7
+0x01800de7b5: mov	r9d, 0x98f
+0x01800de7bb: lea	r8, [rip + 0x4d07b6]	; 0x1805aef78 -> "pItemText"
+0x01800de7c2: jmp	0x1800de739
+0x01800de7c7: mov	edx, r14d
+0x01800de7ca: mov	rcx, rbx
+0x01800de7cd: call	0x180234450
+0x01800de7d2: cvttsd2si	edx, xmm0
+0x01800de7d6: mov	rcx, rsi
+0x01800de7d9: call	0x18011f0f0
+0x01800de7de: mov	edi, 1
+0x01800de7e3: mov	edx, ebp
+0x01800de7e5: mov	rcx, rbx
+0x01800de7e8: call	0x1802341a0
+0x01800de7ed: mov	rbp, qword ptr [rsp + 0x58]
+0x01800de7f2: mov	eax, edi
+0x01800de7f4: mov	rbx, qword ptr [rsp + 0x60]
+0x01800de7f9: add	rsp, 0x30
+0x01800de7fd: pop	r14
+0x01800de7ff: pop	rdi
+0x01800de800: pop	rsi
+0x01800de801: ret	
+0x01800de802: int3	
+0x01800de803: int3	
+0x01800de804: int3	
+0x01800de805: int3	
+0x01800de806: int3	
+0x01800de807: int3	
+0x01800de808: int3	
+0x01800de809: int3	
+
+## xref 0x1800de739  fn_start 0x1800de6c0
+0x01800de6c0: mov	qword ptr [rsp + 0x18], rbx
+0x01800de6c5: push	rsi
+0x01800de6c6: push	rdi
+0x01800de6c7: push	r14
+0x01800de6c9: sub	rsp, 0x30
+0x01800de6cd: xor	edi, edi
+0x01800de6cf: mov	esi, r8d
+0x01800de6d2: mov	qword ptr [rsp + 0x50], rdi
+0x01800de6d7: mov	r14d, edx
+0x01800de6da: mov	rbx, rcx
+0x01800de6dd: test	rcx, rcx
+0x01800de6e0: jne	0x1800de71b
+0x01800de6e2: lea	rcx, [rip + 0x4d089f]	; 0x1805aef88 -> "UI::BindSetFontScheme"
+0x01800de6e9: mov	r9d, 0x985
+0x01800de6ef: mov	qword ptr [rsp + 0x20], rcx
+0x01800de6f4: lea	r8, [rip + 0x4cbdd5]	; 0x1805aa4d0 -> u"L"
+0x01800de6fb: lea	ecx, [rbx + 3]
+0x01800de6fe: lea	rdx, [rip + 0x4cb173]
+0x01800de705: call	qword ptr [rip + 0x408b0d]
+0x01800de70b: mov	eax, edi
+0x01800de70d: mov	rbx, qword ptr [rsp + 0x60]
+0x01800de712: add	rsp, 0x30
+0x01800de716: pop	r14
+0x01800de718: pop	rdi
+0x01800de719: pop	rsi
+0x01800de71a: ret	
+0x01800de71b: mov	qword ptr [rsp + 0x58], rbp
+0x01800de720: call	0x180233430
+0x01800de725: mov	ebp, eax
+0x01800de727: cmp	r14d, eax
+0x01800de72a: jle	0x1800de75c
+0x01800de72c: mov	r9d, 0x988
+0x01800de732: lea	r8, [rip + 0x4cffe7]	; 0x1805ae720 -> "nValueIndex <= nTopIndex"
+0x01800de739: lea	rcx, [rip + 0x4d0848]	; 0x1805aef88 -> "UI::BindSetFontScheme"
+0x01800de740: mov	qword ptr [rsp + 0x20], rcx
+0x01800de745: lea	rdx, [rip + 0x4cb12c]
+0x01800de74c: mov	ecx, 3
+0x01800de751: call	qword ptr [rip + 0x408ac1]
+0x01800de757: jmp	0x1800de7e3
+0x01800de75c: cmp	esi, -2
+0x01800de75f: jne	0x1800de770
+0x01800de761: mov	r9d, 0x98a
+0x01800de767: lea	r8, [rip + 0x4cffe2]	; 0x1805ae750 -> "nLuaRef != LUA_NOREF"
+0x01800de76e: jmp	0x1800de739
+0x01800de770: mov	r8d, esi
+0x01800de773: mov	edx, 0xffffd8f0
+0x01800de778: mov	rcx, rbx
+0x01800de77b: call	0x180233cf0
+0x01800de780: mov	rcx, rbx
+0x01800de783: call	0x180233430
+0x01800de788: mov	r8d, eax
+0x01800de78b: lea	rdx, [rsp + 0x50]
+0x01800de790: mov	rcx, rbx
+0x01800de793: call	0x1801a7420
+0x01800de798: test	eax, eax
+0x01800de79a: jne	0x1800de7ab
+0x01800de79c: mov	r9d, 0x98e
+0x01800de7a2: lea	r8, [rip + 0x4cb157]	; 0x1805a9900 -> "nRetCode"
+0x01800de7a9: jmp	0x1800de739
+0x01800de7ab: mov	rsi, qword ptr [rsp + 0x50]
+0x01800de7b0: test	rsi, rsi
+0x01800de7b3: jne	0x1800de7c7
+0x01800de7b5: mov	r9d, 0x98f
+0x01800de7bb: lea	r8, [rip + 0x4d07b6]	; 0x1805aef78 -> "pItemText"
+0x01800de7c2: jmp	0x1800de739
+0x01800de7c7: mov	edx, r14d
+0x01800de7ca: mov	rcx, rbx
+0x01800de7cd: call	0x180234450
+0x01800de7d2: cvttsd2si	edx, xmm0
+0x01800de7d6: mov	rcx, rsi
+0x01800de7d9: call	0x18011f0f0
+0x01800de7de: mov	edi, 1
+0x01800de7e3: mov	edx, ebp
+0x01800de7e5: mov	rcx, rbx
+0x01800de7e8: call	0x1802341a0
+0x01800de7ed: mov	rbp, qword ptr [rsp + 0x58]
+0x01800de7f2: mov	eax, edi
+0x01800de7f4: mov	rbx, qword ptr [rsp + 0x60]
+0x01800de7f9: add	rsp, 0x30
+0x01800de7fd: pop	r14
+0x01800de7ff: pop	rdi
+0x01800de800: pop	rsi
+0x01800de801: ret	
+0x01800de802: int3	
+0x01800de803: int3	
+0x01800de804: int3	
+0x01800de805: int3	
+0x01800de806: int3	
+0x01800de807: int3	
+0x01800de808: int3	
+0x01800de809: int3	

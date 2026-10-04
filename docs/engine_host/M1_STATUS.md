@@ -36,15 +36,22 @@ RC_DEMO=1 RC_AUTORUN=22000   # scripted walk/run/jump/strafe/skill
 Env: `RC_MAP`, `RC_SPAWN`, `RC_AUTORUN`, `RC_SHOTS`, `RC_CLIP_*`, `RC_SKILL_MS`,
 `RC_YAW_OFFSET`, `RC_SCALE`, `RC_DEMO`.
 
-## Remaining M1
+## M1.7 HUD overlay + five-minute proof (2026-10-02) — DONE
+
+`docs/engine_host/M1_SOLO5_PROOF.md` — build `reborn_client_m1-final.exe`
+(worktree `agent/m1-final`), `client/HudOverlay.cs` (layered click-through top-level
+window over the engine viewport; "I" toggles the info box). Proof: 10 external window
+captures with distinct fingerprints, 316 s driven session — path span 15555 u
+(243 尺), run 320 u/s, 18 jump-clip switches, 5 skill casts, fps 131-287, no crash.
+**M1 exit criteria met.**
+
+## Remaining M1 (post-exit, tracked for M2)
 
 1. **M1.3 shared movement model** — port the exact integer jump/gravity/fall model
-   (`docs/movement/REBORN_JUMP_FALL_SPEC.md`, `tools/gravity/verify_model.py`) to C#; current
-   movement is the continuous approximation from the map host.
-2. **M1.7 HUD + 5-min proof** — the WinForms label is hidden behind the engine output
-   window; use an overlay (separate top-level transparent form or engine-side draw).
-   Then a 5-minute solo run with screenshots/log.
-3. Refinements: real fall clip, camera orbit verification, yaw calibration
+   (`docs/movement/REBORN_JUMP_FALL_SPEC.md`, `tools/gravity/verify_model.py`) to C#;
+   the current continuous model reproduces the same table values but prediction parity
+   with the server needs the integer 15 Hz model (M2 prerequisite).
+2. Refinements: real fall clip, camera orbit verification, yaw calibration
    (`RC_YAW_OFFSET`), walk/run animation speed vs ground speed.
 
 ## Collision

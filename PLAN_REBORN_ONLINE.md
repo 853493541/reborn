@@ -62,6 +62,9 @@ one skill casts with animation + SFX, follow camera, stable 5 minutes.
 
 ## Rules
 
+- **Purpose & legal (locked):** purely personal interest — this project will **never
+  earn any money**; it is purely for fun. No commercial use, no monetization, no
+  distribution.
 - Do not modify the real client or touch Seasun servers.
 - Prefer engine APIs the editor itself uses (recon before inventing).
 - Spikes stay as reference; product code lives in `client/`.

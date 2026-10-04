@@ -1,0 +1,3 @@
+KGUIUseCocos
+GetCocosGrayInfo
+IsUseCocos

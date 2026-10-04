@@ -1,0 +1,334 @@
+# XCommonX64.dll xrefs for '[XCommon] DetachProgram'
+# image base 0x180000000
+
+## xref @ 0x1800a607b -> 0x1803c68c8 '[XCommon] DetachProgram(%s) %s'  fn start 0x1800a5ef0
+  0x1800a5ef0: mov      qword ptr [rsp + 0x20], rbx
+  0x1800a5ef5: mov      qword ptr [rsp + 0x18], r8
+  0x1800a5efa: mov      qword ptr [rsp + 0x10], rdx
+  0x1800a5eff: mov      qword ptr [rsp + 8], rcx
+  0x1800a5f04: push     rbp
+  0x1800a5f05: push     rsi
+  0x1800a5f06: push     rdi
+  0x1800a5f07: push     r12
+  0x1800a5f09: push     r13
+  0x1800a5f0b: push     r14
+  0x1800a5f0d: push     r15
+  0x1800a5f0f: mov      rbp, rsp
+  0x1800a5f12: sub      rsp, 0x70
+  0x1800a5f16: mov      r15, r9
+  0x1800a5f19: mov      r13, r8
+  0x1800a5f1c: mov      rbx, rdx
+  0x1800a5f1f: mov      r12, rcx
+  0x1800a5f22: xor      esi, esi
+  0x1800a5f24: mov      dword ptr [rbp - 0x40], esi
+  0x1800a5f27: xor      r14b, r14b
+  0x1800a5f2a: xorps    xmm0, xmm0
+  0x1800a5f2d: xor      eax, eax
+  0x1800a5f2f: movups   xmmword ptr [rbp - 0x18], xmm0
+  0x1800a5f33: mov      qword ptr [rbp - 8], rax
+  0x1800a5f37: mov      rdx, r8
+  0x1800a5f3a: lea      rcx, [rbp - 0x38]
+  0x1800a5f3e: call     qword ptr [rip + 0x31cd04]  ; Qt5Core.dll!??0QString@@QEAA@AEBV0@@Z
+  0x1800a5f44: mov      rdi, rax
+  0x1800a5f47: mov      rdx, rbx
+  0x1800a5f4a: lea      rcx, [rbp - 0x30]
+  0x1800a5f4e: call     qword ptr [rip + 0x31ccf4]  ; Qt5Core.dll!??0QString@@QEAA@AEBV0@@Z
+  0x1800a5f54: mov      rbx, rax
+  0x1800a5f57: mov      rdx, r12
+  0x1800a5f5a: lea      rcx, [rbp - 0x28]
+  0x1800a5f5e: call     qword ptr [rip + 0x31cce4]  ; Qt5Core.dll!??0QString@@QEAA@AEBV0@@Z
+  0x1800a5f64: mov      rcx, rax
+  0x1800a5f67: movzx    eax, byte ptr [rbp + 0x60]
+  0x1800a5f6b: mov      byte ptr [rsp + 0x20], al
+  0x1800a5f6f: lea      r9, [rbp - 0x18]
+  0x1800a5f73: mov      r8, rdi
+  0x1800a5f76: mov      rdx, rbx
+  0x1800a5f79: call     0x1800a82f0
+  0x1800a5f7e: lea      ebx, [rsi + 3]
+  0x1800a5f81: test     al, al
+  0x1800a5f83: jne      0x1800a6004
+  0x1800a5f85: lea      rax, [rip + 0x32090c]  ; 'OSUtil::DetachProgram'
+  0x1800a5f8c: mov      qword ptr [rsp + 0x20], rax
+  0x1800a5f91: lea      r9d, [rsi + 0x3a]
+  0x1800a5f95: lea      r8, [rip + 0x31db84]  ; 'nRetCode'
+  0x1800a5f9c: lea      rdx, [rip + 0x31da4d]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800a5fa3: mov      ecx, ebx
+  0x1800a5fa5: call     qword ptr [rip + 0x31c60d]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800a5fab: call     qword ptr [rip + 0x31c51f]  ; KERNEL32.dll!GetLastError
+  0x1800a5fb1: mov      edx, eax
+  0x1800a5fb3: lea      r8d, [rsi + 0xa]
+  0x1800a5fb7: lea      rcx, [rbp - 0x20]
+  0x1800a5fbb: call     qword ptr [rip + 0x31caa7]  ; Qt5Core.dll!?number@QString@@SA?AV1@KH@Z
+  0x1800a5fc1: nop      
+  0x1800a5fc2: mov      dword ptr [rbp - 0x40], 1
+  0x1800a5fc9: mov      r8, rax
+  0x1800a5fcc: lea      rdx, [rip + 0x3208dd]  ; 'Failed, Error code: '
+  0x1800a5fd3: lea      rcx, [rbp - 0x38]
+  0x1800a5fd7: call     0x1800a4c50
+  0x1800a5fdc: nop      
+  0x1800a5fdd: mov      dword ptr [rbp - 0x40], ebx
+  0x1800a5fe0: lea      rdx, [rbp - 0x30]
+  0x1800a5fe4: mov      rcx, rax
+  0x1800a5fe7: call     qword ptr [rip + 0x31cc4b]  ; Qt5Core.dll!?toUtf8@QString@@QEGBA?AVQByteArray@@XZ
+  0x1800a5fed: nop      
+  0x1800a5fee: mov      esi, 7
+  0x1800a5ff3: mov      dword ptr [rbp - 0x40], esi
+  0x1800a5ff6: mov      rcx, rax
+  0x1800a5ff9: call     qword ptr [rip + 0x31cc11]  ; 'FpO'
+  0x1800a5fff: mov      rdi, rax
+  0x1800a6002: jmp      0x1800a6053
+  0x1800a6004: test     r15, r15
+  0x1800a6007: je       0x1800a600f  ; 'D8uht4H�=4/F'
+  0x1800a6009: mov      eax, dword ptr [rbp - 8]
+  0x1800a600c: mov      dword ptr [r15], eax
+  0x1800a600f: cmp      byte ptr [rbp + 0x68], r14b
+  0x1800a6013: je       0x1800a6049
+  0x1800a6015: lea      rdi, [rip + 0x462f34]
+  0x1800a601c: mov      qword ptr [rbp - 0x20], rdi
+  0x1800a6020: mov      rcx, rdi
+  0x1800a6023: call     0x1803b8aaf
+  0x1800a6028: test     eax, eax
+  0x1800a602a: jne      0x1800a6136
+  0x1800a6030: lea      rdx, [rbp - 8]
+  0x1800a6034: lea      rcx, [rip + 0x462f65]
+  0x1800a603b: call     0x1800a8a80
+  0x1800a6040: nop      
+  0x1800a6041: mov      rcx, rdi
+  0x1800a6044: call     0x1803b8ab5
+  0x1800a6049: mov      r14b, 1
+  0x1800a604c: lea      rdi, [rip + 0x31ef6d]  ; 'Success'
+  0x1800a6053: lea      rdx, [rbp - 0x28]
+  0x1800a6057: mov      rcx, r12
+  0x1800a605a: call     qword ptr [rip + 0x31cbd8]  ; Qt5Core.dll!?toUtf8@QString@@QEGBA?AVQByteArray@@XZ
+  0x1800a6060: nop      
+  0x1800a6061: mov      rcx, rax
+  0x1800a6064: call     qword ptr [rip + 0x31cba6]  ; 'FpO'
+  0x1800a606a: mov      r8, rax
+  0x1800a606d: mov      eax, 6
+  0x1800a6072: test     r14b, r14b
+  0x1800a6075: cmovne   ebx, eax
+  0x1800a6078: mov      r9, rdi
+  0x1800a607b: lea      rdx, [rip + 0x320846]  ; '[XCommon] DetachProgram(%s) %s'
+  0x1800a6082: mov      ecx, ebx
+  0x1800a6084: call     qword ptr [rip + 0x31c52e]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800a608a: nop      
+  0x1800a608b: lea      rcx, [rbp - 0x28]
+  0x1800a608f: call     qword ptr [rip + 0x31cb73]  ; ',pO'
+  0x1800a6095: nop      
+  0x1800a6096: test     sil, 4
+  0x1800a609a: je       0x1800a60aa
+  0x1800a609c: and      esi, 0xfffffffb
+  0x1800a609f: lea      rcx, [rbp - 0x30]
+  0x1800a60a3: call     qword ptr [rip + 0x31cb5f]  ; ',pO'
+  0x1800a60a9: nop      
+  0x1800a60aa: test     sil, 2
+  0x1800a60ae: je       0x1800a60be
+  0x1800a60b0: and      esi, 0xfffffffd
+  0x1800a60b3: lea      rcx, [rbp - 0x38]
+  0x1800a60b7: call     qword ptr [rip + 0x31cb33]  ; Qt5Core.dll!??1QString@@QEAA@XZ
+  0x1800a60bd: nop      
+  0x1800a60be: test     sil, 1
+  0x1800a60c2: je       0x1800a60ce
+  0x1800a60c4: lea      rcx, [rbp - 0x20]
+  0x1800a60c8: call     qword ptr [rip + 0x31cb22]  ; Qt5Core.dll!??1QString@@QEAA@XZ
+  0x1800a60ce: mov      rcx, qword ptr [rbp - 0x18]
+  0x1800a60d2: test     rcx, rcx
+  0x1800a60d5: je       0x1800a60e5
+  0x1800a60d7: call     qword ptr [rip + 0x31c3eb]  ; KERNEL32.dll!CloseHandle
+  0x1800a60dd: mov      qword ptr [rbp - 0x18], 0
+  0x1800a60e5: mov      rcx, qword ptr [rbp - 0x10]
+  0x1800a60e9: test     rcx, rcx
+  0x1800a60ec: je       0x1800a60fc
+  0x1800a60ee: call     qword ptr [rip + 0x31c3d4]  ; KERNEL32.dll!CloseHandle
+  0x1800a60f4: mov      qword ptr [rbp - 0x10], 0
+  0x1800a60fc: mov      rcx, r12
+  0x1800a60ff: call     qword ptr [rip + 0x31caeb]  ; Qt5Core.dll!??1QString@@QEAA@XZ
+  0x1800a6105: nop      
+  0x1800a6106: mov      rcx, qword ptr [rbp + 0x48]
+  0x1800a610a: call     qword ptr [rip + 0x31cae0]  ; Qt5Core.dll!??1QString@@QEAA@XZ
+  0x1800a6110: nop      
+  0x1800a6111: mov      rcx, r13
+  0x1800a6114: call     qword ptr [rip + 0x31cad6]  ; Qt5Core.dll!??1QString@@QEAA@XZ
+  0x1800a611a: movzx    eax, r14b
+  0x1800a611e: mov      rbx, qword ptr [rsp + 0xc8]
+  0x1800a6126: add      rsp, 0x70
+  0x1800a612a: pop      r15
+  0x1800a612c: pop      r14
+  0x1800a612e: pop      r13
+  0x1800a6130: pop      r12
+  0x1800a6132: pop      rdi
+  0x1800a6133: pop      rsi
+  0x1800a6134: pop      rbp
+  0x1800a6135: ret      
+  0x1800a6136: mov      ecx, eax
+  0x1800a6138: call     0x1803b8ae5
+  0x1800a613d: int3     
+  0x1800a613e: int3     
+  0x1800a613f: int3     
+  0x1800a6140: mov      qword ptr [rsp + 0x18], rbx
+  0x1800a6145: push     rbp
+  0x1800a6146: push     rsi
+  0x1800a6147: push     rdi
+  0x1800a6148: push     r12
+  0x1800a614a: push     r13
+  0x1800a614c: push     r14
+  0x1800a614e: push     r15
+  0x1800a6150: lea      rbp, [rsp - 0x50]
+  0x1800a6155: sub      rsp, 0x150
+  0x1800a615c: mov      rax, qword ptr [rip + 0x45d295]
+  0x1800a6163: xor      rax, rsp
+  0x1800a6166: mov      qword ptr [rbp + 0x40], rax
+  0x1800a616a: mov      r15, rdx
+  0x1800a616d: mov      r14, rcx
+  0x1800a6170: mov      qword ptr [rsp + 0x70], rcx
+  0x1800a6175: xor      r13d, r13d
+  0x1800a6178: mov      edi, r13d
+  0x1800a617b: mov      dword ptr [rsp + 0x30], r13d
+  0x1800a6180: xor      r12b, r12b
+  0x1800a6183: mov      dword ptr [rsp + 0x34], r13d
+  0x1800a6188: mov      qword ptr [rsp + 0x48], r13
+  0x1800a618d: mov      qword ptr [rsp + 0x78], r13
+  0x1800a6192: mov      qword ptr [rbp - 0x78], r13
+  0x1800a6196: mov      qword ptr [rbp - 0x70], 7
+  0x1800a619e: mov      word ptr [rsp + 0x78], r13w
+  0x1800a61a4: mov      qword ptr [rsp + 0x40], r13
+  0x1800a61a9: mov      rdx, rcx
+  0x1800a61ac: lea      rcx, [rsp + 0x38]
+  0x1800a61b1: call     qword ptr [rip + 0x31ca91]  ; Qt5Core.dll!??0QString@@QEAA@AEBV0@@Z
+  0x1800a61b7: mov      byte ptr [rsp + 0x20], r12b
+  0x1800a61bc: xor      r9d, r9d
+  0x1800a61bf: xor      r8d, r8d
+  0x1800a61c2: mov      rdx, r14
+  0x1800a61c5: mov      rcx, rax
+  0x1800a61c8: call     0x180093350
+  0x1800a61cd: test     al, al
+  0x1800a61cf: jne      0x1800a6203
+  0x1800a61d1: lea      rax, [rip + 0x320790]  ; 'OSUtil::GetAppFileVersionNumber'
+  0x1800a61d8: mov      qword ptr [rsp + 0x20], rax
+  0x1800a61dd: mov      r9d, 0x9c
+  0x1800a61e3: lea      r8, [rip + 0x31d936]  ; 'nRetCode'
+  0x1800a61ea: lea      rdx, [rip + 0x31d7ff]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800a61f1: mov      ebx, 3
+  0x1800a61f6: mov      ecx, ebx
+  0x1800a61f8: call     qword ptr [rip + 0x31c3ba]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800a61fe: jmp      0x1800a646a
+  0x1800a6203: lea      rdx, [rbp - 0x68]
+  0x1800a6207: mov      rcx, r14
+  0x1800a620a: call     qword ptr [rip + 0x31cb18]  ; Qt5Core.dll!?toStdWString@QString@@QEBA?AV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@XZ
+  0x1800a6210: mov      rbx, rax
+  0x1800a6213: lea      rax, [rsp + 0x78]
+  0x1800a6218: cmp      rax, rbx
+  0x1800a621b: je       0x1800a628c
+  0x1800a621d: mov      rdx, qword ptr [rbp - 0x70]
+  0x1800a6221: cmp      rdx, 8
+  0x1800a6225: jb       0x1800a625a
+  0x1800a6227: lea      rdx, [rdx*2 + 2]
+  0x1800a622f: mov      rcx, qword ptr [rsp + 0x78]
+  0x1800a6234: mov      rax, rcx
+  0x1800a6237: cmp      rdx, 0x1000
+  0x1800a623e: jb       0x1800a6255
+  0x1800a6240: add      rdx, 0x27
+  0x1800a6244: mov      rcx, qword ptr [rcx - 8]
+  0x1800a6248: sub      rax, rcx
+  0x1800a624b: add      rax, -8
+  0x1800a624f: cmp      rax, 0x1f
+  0x1800a6253: ja       0x1800a62c3
+  0x1800a6255: call     0x1803b8f3c
+  0x1800a625a: mov      qword ptr [rbp - 0x78], r13
+  0x1800a625e: mov      qword ptr [rbp - 0x70], 7
+  0x1800a6266: mov      word ptr [rsp + 0x78], r13w
+  0x1800a626c: movups   xmm0, xmmword ptr [rbx]
+  0x1800a626f: movups   xmmword ptr [rsp + 0x78], xmm0
+  0x1800a6274: movups   xmm1, xmmword ptr [rbx + 0x10]
+  0x1800a6278: movups   xmmword ptr [rbp - 0x78], xmm1
+  0x1800a627c: mov      qword ptr [rbx + 0x10], r13
+  0x1800a6280: mov      qword ptr [rbx + 0x18], 7
+  0x1800a6288: mov      word ptr [rbx], r13w
+  0x1800a628c: mov      rdx, qword ptr [rbp - 0x50]
+  0x1800a6290: cmp      rdx, 8
+  0x1800a6294: jb       0x1800a62cf
+  0x1800a6296: lea      rdx, [rdx*2 + 2]
+  0x1800a629e: mov      rcx, qword ptr [rbp - 0x68]
+  0x1800a62a2: mov      rax, rcx
+  0x1800a62a5: cmp      rdx, 0x1000
+  0x1800a62ac: jb       0x1800a62ca
+  0x1800a62ae: add      rdx, 0x27
+  0x1800a62b2: mov      rcx, qword ptr [rcx - 8]
+  0x1800a62b6: sub      rax, rcx
+  0x1800a62b9: add      rax, -8
+  0x1800a62bd: cmp      rax, 0x1f
+  0x1800a62c1: jbe      0x1800a62ca
+  0x1800a62c3: call     qword ptr [rip + 0x31d0a7]  ; api-ms-win-crt-runtime-l1-1-0.dll!_invalid_parameter_noinfo_noreturn
+  0x1800a62c9: int3     
+  0x1800a62ca: call     0x1803b8f3c
+  0x1800a62cf: lea      rcx, [rsp + 0x78]
+  0x1800a62d4: cmp      qword ptr [rbp - 0x70], 8
+  0x1800a62d9: cmovae   rcx, qword ptr [rsp + 0x78]
+  0x1800a62df: xor      edx, edx
+  0x1800a62e1: call     0x1803bbbc8
+  0x1800a62e6: mov      ebx, eax
+  0x1800a62e8: test     eax, eax
+  0x1800a62ea: jne      0x1800a631e
+  0x1800a62ec: lea      rax, [rip + 0x320675]  ; 'OSUtil::GetAppFileVersionNumber'
+  0x1800a62f3: mov      qword ptr [rsp + 0x20], rax
+  0x1800a62f8: mov      r9d, 0xa4
+  0x1800a62fe: lea      r8, [rip + 0x320683]  ; 'dwVersionInfoSize'
+  0x1800a6305: lea      rdx, [rip + 0x31d6e4]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800a630c: mov      ebx, 3
+  0x1800a6311: mov      ecx, ebx
+  0x1800a6313: call     qword ptr [rip + 0x31c29f]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800a6319: jmp      0x1800a646a
+  0x1800a631e: mov      rcx, rbx
+  0x1800a6321: lea      rdx, [rip + 0x3f6080]
+  0x1800a6328: call     0x1803b9c0c
+  0x1800a632d: mov      rsi, rax
+  0x1800a6330: test     rax, rax
+  0x1800a6333: jne      0x1800a6367
+  0x1800a6335: lea      rax, [rip + 0x32062c]  ; 'OSUtil::GetAppFileVersionNumber'
+  0x1800a633c: mov      qword ptr [rsp + 0x20], rax
+  0x1800a6341: mov      r9d, 0xa7
+  0x1800a6347: lea      r8, [rip + 0x320652]  ; 'pszVersionInfo'
+  0x1800a634e: lea      rdx, [rip + 0x31d69b]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800a6355: mov      ebx, 3
+  0x1800a635a: mov      ecx, ebx
+  0x1800a635c: call     qword ptr [rip + 0x31c256]  ; KGPK4_BaseX64.dll!KGPK4_LogPrintf
+  0x1800a6362: jmp      0x1800a646a
+  0x1800a6367: lea      rcx, [rsp + 0x78]
+  0x1800a636c: cmp      qword ptr [rbp - 0x70], 8
+  0x1800a6371: cmovae   rcx, qword ptr [rsp + 0x78]
+  0x1800a6377: mov      r9, rsi
+  0x1800a637a: mov      r8d, ebx
+  0x1800a637d: xor      edx, edx
+  0x1800a637f: call     0x1803bbbce
+  0x1800a6384: mov      ebx, 3
+  0x1800a6389: test     eax, eax
+  0x1800a638b: je       0x1800a643a
+  0x1800a6391: lea      r9, [rsp + 0x34]
+  0x1800a6396: lea      r8, [rsp + 0x40]
+  0x1800a639b: lea      rdx, [rip + 0x320636]  ; '\\VarFileInfo\\Translation'
+  0x1800a63a2: mov      rcx, rsi
+  0x1800a63a5: call     0x1803bbbd4
+  0x1800a63aa: test     eax, eax
+  0x1800a63ac: je       0x1800a642b
+  0x1800a63ae: mov      rax, qword ptr [rsp + 0x40]
+  0x1800a63b3: movzx    ecx, word ptr [rax + 2]
+  0x1800a63b7: movzx    r9d, word ptr [rax]
+  0x1800a63bb: mov      dword ptr [rsp + 0x20], ecx
+  0x1800a63bf: lea      r8, [rip + 0x32065a]  ; '\\StringFileInfo\\%04x%04x\\FileVersion'
+  0x1800a63c6: lea      edx, [rbx + 0x7d]
+  0x1800a63c9: lea      rcx, [rbp - 0x40]
+  0x1800a63cd: call     0x180097e30
+  0x1800a63d2: test     eax, eax
+  0x1800a63d4: jle      0x1800a641c
+  0x1800a63d6: cdqe     
+  0x1800a63d8: cmp      rax, 0x80
+  0x1800a63de: jae      0x1800a641c
+  0x1800a63e0: lea      r9, [rsp + 0x34]
+  0x1800a63e5: lea      r8, [rsp + 0x48]
+  0x1800a63ea: lea      rdx, [rbp - 0x40]
+  0x1800a63ee: mov      rcx, rsi
+  0x1800a63f1: call     0x1803bbbd4
+  0x1800a63f6: test     eax, eax
+  0x1800a63f8: je       0x1800a640d
+  0x1800a63fa: mov      rdx, qword ptr [rsp + 0x48]
+

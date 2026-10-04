@@ -1,0 +1,51 @@
+# needle: UI::KItemHandleClassScriptTable::LuaItemText_GetFontScale
+# string VAs: ['0x1805cc568']
+# xrefs: 1
+
+## xref 0x1801976f0  fn_start 0x1801976c0
+0x01801976c0: push	rbx
+0x01801976c2: sub	rsp, 0x30
+0x01801976c6: mov	rbx, rcx
+0x01801976c9: mov	qword ptr [rsp + 0x48], 0
+0x01801976d2: call	0x180233430
+0x01801976d7: cmp	eax, 1
+0x01801976da: jne	0x18019771b
+0x01801976dc: mov	r8d, eax
+0x01801976df: lea	rdx, [rsp + 0x48]
+0x01801976e4: mov	rcx, rbx
+0x01801976e7: call	0x1801a7420
+0x01801976ec: test	eax, eax
+0x01801976ee: jne	0x18019772d
+0x01801976f0: lea	rax, [rip + 0x434e71]	; 0x1805cc568 -> "UI::KItemHandleClassScriptTable::LuaItemText_GetFontScale"
+0x01801976f7: mov	r9d, 0xfb1
+0x01801976fd: lea	r8, [rip + 0x4121fc]	; 0x1805a9900 -> "nRetCode"
+0x0180197704: mov	qword ptr [rsp + 0x20], rax
+0x0180197709: lea	rdx, [rip + 0x412168]
+0x0180197710: mov	ecx, 3
+0x0180197715: call	qword ptr [rip + 0x34fafd]
+0x018019771b: xor	edx, edx
+0x018019771d: mov	rcx, rbx
+0x0180197720: call	0x180182310
+0x0180197725: xor	eax, eax
+0x0180197727: add	rsp, 0x30
+0x018019772b: pop	rbx
+0x018019772c: ret	
+0x018019772d: mov	rcx, qword ptr [rsp + 0x48]
+0x0180197732: test	rcx, rcx
+0x0180197735: je	0x18019771b
+0x0180197737: movss	xmm1, dword ptr [rcx + 0x314]
+0x018019773f: mov	rcx, rbx
+0x0180197742: cvtps2pd	xmm1, xmm1
+0x0180197745: call	0x180233ae0
+0x018019774a: mov	eax, 1
+0x018019774f: add	rsp, 0x30
+0x0180197753: pop	rbx
+0x0180197754: ret	
+0x0180197755: int3	
+0x0180197756: int3	
+0x0180197757: int3	
+0x0180197758: int3	
+0x0180197759: int3	
+0x018019775a: int3	
+0x018019775b: int3	
+0x018019775c: int3	

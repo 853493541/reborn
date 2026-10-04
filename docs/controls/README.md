@@ -22,6 +22,7 @@ state of our own client, so the full control system can be implemented later.
 | `controls/JX3_MOVEMENT_CONTROLS.md` | movement keys and the movement/turn model |
 | `controls/JX3_CAMERA_CONTROLS.md` | camera inputs, drag pipeline, modes, settings, obstruction |
 | `controls/JX3_COMBAT_CONTROLS.md` | targeting, action bars, cast input, server authority |
+| `controls/JX3_TARGET_SELECTION.md` | **target selection mechanics**: 3 cone zones (radius/angle/SelLevel), `KPlayer::LuaSearchForEnemy` disasm, filter/sort order, Tab cycle, click pick, reborn implementation plan |
 | `controls/JX3_UI_CUSTOMIZATION.md` | counts and mechanics of user customization |
 | `controls/REBORN_CONTROLS_SPEC.md` | our target architecture (design only) + phase plan |
 | `controls/OPERATION_MODES_PLAN.md` | CLASSICAL/JOYSTICK operation modes — game truth, routing matrix, switch key, P0–P4 |

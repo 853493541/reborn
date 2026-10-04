@@ -1,0 +1,71 @@
+# needle: KPlayer::LuaFollowSelectTarget
+# string VAs: ['0x140855598']
+# xrefs: 1
+
+## xref 0x1403f00c4  fn_start 0x1403f0080
+0x01403f0080: mov	qword ptr [rsp + 0x18], rbx
+0x01403f0085: mov	qword ptr [rsp + 0x20], rsi
+0x01403f008a: push	rdi
+0x01403f008b: sub	rsp, 0x40
+0x01403f008f: mov	rax, qword ptr [rip + 0x644362]
+0x01403f0096: xor	rax, rsp
+0x01403f0099: mov	qword ptr [rsp + 0x38], rax
+0x01403f009e: mov	rdi, rcx
+0x01403f00a1: xor	ebx, ebx
+0x01403f00a3: mov	rcx, rdx
+0x01403f00a6: mov	qword ptr [rsp + 0x30], rbx
+0x01403f00ab: mov	rsi, rdx
+0x01403f00ae: call	0x140112cb0
+0x01403f00b3: test	eax, eax
+0x01403f00b5: je	0x1403f00e4
+0x01403f00b7: mov	r9d, 0x31e2
+0x01403f00bd: lea	r8, [rip + 0x40bbbc]
+0x01403f00c4: lea	rax, [rip + 0x4654cd]
+0x01403f00cb: mov	ecx, 3
+0x01403f00d0: lea	rdx, [rip + 0x55ee61]
+0x01403f00d7: mov	qword ptr [rsp + 0x20], rax
+0x01403f00dc: call	qword ptr [rip + 0x3c8366]
+0x01403f00e2: jmp	0x1403f0146
+0x01403f00e4: lea	rcx, [rdi + 0xc2c]
+0x01403f00eb: call	0x14023d980
+0x01403f00f0: add	eax, -3
+0x01403f00f3: cmp	eax, 1
+0x01403f00f6: ja	0x1403f011c
+0x01403f00f8: lea	rdx, [rsp + 0x30]
+0x01403f00fd: lea	rcx, [rdi + 0xc2c]
+0x01403f0104: call	0x1402415f0
+0x01403f0109: test	eax, eax
+0x01403f010b: jne	0x1403f011c
+0x01403f010d: mov	r9d, 0x31e9
+0x01403f0113: lea	r8, [rip + 0x56137e]
+0x01403f011a: jmp	0x1403f00c4
+0x01403f011c: cmp	qword ptr [rsp + 0x30], rbx
+0x01403f0121: jne	0x1403f0132
+0x01403f0123: mov	r9d, 0x31ec
+0x01403f0129: lea	r8, [rip + 0x3cc630]
+0x01403f0130: jmp	0x1403f00c4
+0x01403f0132: call	0x140139560
+0x01403f0137: mov	rcx, rax
+0x01403f013a: mov	dl, 1
+0x01403f013c: call	0x140380a00
+0x01403f0141: mov	ebx, 1
+0x01403f0146: mov	edx, ebx
+0x01403f0148: mov	rcx, rsi
+0x01403f014b: call	0x140112e90
+0x01403f0150: mov	eax, 1
+0x01403f0155: mov	rcx, qword ptr [rsp + 0x38]
+0x01403f015a: xor	rcx, rsp
+0x01403f015d: call	0x14079ae80
+0x01403f0162: mov	rbx, qword ptr [rsp + 0x60]
+0x01403f0167: mov	rsi, qword ptr [rsp + 0x68]
+0x01403f016c: add	rsp, 0x40
+0x01403f0170: pop	rdi
+0x01403f0171: ret	
+0x01403f0172: int3	
+0x01403f0173: int3	
+0x01403f0174: int3	
+0x01403f0175: int3	
+0x01403f0176: int3	
+0x01403f0177: int3	
+0x01403f0178: int3	
+0x01403f0179: int3	

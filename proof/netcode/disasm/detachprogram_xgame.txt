@@ -1,0 +1,3 @@
+# XGameX64.dll xrefs for '?DetachProgram@OSUtil@@SA_NPEBD00PEAK_N2@Z'
+# image base 0x180000000
+

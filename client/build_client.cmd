@@ -27,7 +27,8 @@ if not "%RC_CLIENT_EXE%"=="" set BINFO=build_info_%EXE%.txt
   /resource:proof\movement\extracted\ui_hotkey_bindings.ini,ui_hotkey_bindings.ini ^
   client\RebornClient.cs client\JumpTable.cs client\HotkeyTable.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
   client\CameraSystem.cs client\CameraSettings.cs client\EngineRay.cs ^
-  client\CameraShim.cs client\VideoSettings.cs
+  client\CameraShim.cs client\VideoSettings.cs client\Targeting.cs client\UiClient.cs client\HudOverlay.cs ^
+  client\PhysicsProbe.cs
 if errorlevel 1 goto :eof
 rem Shared bin64 configs are only written by the canonical build; feature builds
 rem must not clobber them while another workstream runs.
@@ -56,4 +57,9 @@ if "%RC_SMOKE_EXE%"=="" goto :done
   /resource:proof\movement\extracted\ui_hotkey_bindings.ini,ui_hotkey_bindings.ini ^
   client\CameraSystem.cs client\CameraSmoke.cs client\HotkeyTable.cs
 :done
+rem offline collision gate (no engine/assets); unique name for feature builds
+set COLTEST=collision_selftest.exe
+if not "%RC_CLIENT_EXE%"=="" set COLTEST=collision_selftest_%EXE%
+"%CSC%" /nologo /platform:x64 /target:exe /out:"%BIN%\%COLTEST%" ^
+  client\FoliageCollision.cs client\collision_selftest.cs
 echo build exit=%ERRORLEVEL%

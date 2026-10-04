@@ -9,6 +9,12 @@ JX3 "Reborn": research plus desktop prototypes that recreate JX3 runtime systems
 engine DLLs and original game data. The product is a desktop client — not a website.
 Game assets are private and are not in the repo.
 
+**Purpose & legal (locked, user statement):** this project is **purely for personal
+interest — it will NEVER earn any money; it is purely for fun.** No commercial use, no
+monetization, no distribution, no sale of any kind. Game assets stay private and are
+never redistributed. Any proposal that would commercialize the project is out of scope
+by this rule.
+
 ## 2. Workflow modes
 
 ### Default mode
@@ -153,6 +159,13 @@ unavoidable: label it *provisional*, state why no native path exists, and log it
 `docs/EXPERIENCES.md` with re-open criteria. No guess-scoring, no closest-match-by-name,
 no procedural stand-ins presented as authored data.
 
+**Explore the whole system; never patch the reported spot.** When part of a system's
+behaviour is incorrect, the system was wired up wrong — not only the place that shows it.
+Explore the full system first (inputs → state → outputs, the data it reads, the engine
+calls it makes) before changing anything. When the user points at a specific wrong spot,
+that is a symptom location, not the fix target: fixing only there produces a band-aid.
+Trace the full chain to the root cause and fix the wiring.
+
 ## 7. Map-viewer disposition
 
 The JX3 web map-viewer is a failed project. Its **raw extracted game resources** are
@@ -195,7 +208,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 | Controls | `client/` (input), `tools/controls/` | `docs/controls/README.md` | `proof/controls` |
 | Camera | `client/CameraSystem.cs`, `native/camera_shim.cpp` | `docs/camera/README.md` | `proof/*` camera sets |
 | Movement / gravity / collision | `client/TerrainSampler.cs`, `client/FoliageCollision.cs`, `tools/gravity/`, `tools/movement/`, `tools/collision/` | `docs/movement/REBORN_JUMP_FALL_SPEC.md`, `docs/movement/JX3_GRAVITY_RESEARCH.md`, `docs/movement/FULL_MAP_COLLISION.md` | `proof/gravity`, `proof/collision` |
-| PVP / combat | — | `docs/pvp/README.md` | `proof/pvp` |
+| PVP / combat | `client/` (target dummy + in-world indicator) | `docs/pvp/README.md` | `proof/pvp` |
 
 ## 11. Stack & toolchain
 

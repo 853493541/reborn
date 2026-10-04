@@ -1,0 +1,18 @@
+# Battle floating UI — native (non-KGUI) config/table candidates (PakV4 logical paths).
+# Sources: docs/ui/UI_SYSTEM_REPORT.md resource matrix (ui/** = PakV4),
+# KG3D_CaptionManager loader strings, KBuffManager::Init (TopBuff.tab).
+#   .venv\Scripts\python.exe tools/netcode/extract_pak_paths.py \
+#     --list proof/ui/evidence/battle_hud/pakv4_candidates_native.txt \
+#     --out-dir proof/ui/battle_hud/pakv4_native
+# 2026-09-30.
+data/public/caption.ini
+data/public/caption_ui.ini
+data/public/caption_images.ini
+data/public/captionTextureSlot.ini
+data/public/HPBar.tga
+Represent/common/caption_color_group.txt
+Represent/common/caption_color_group_care.txt
+Represent/common/caption_icon_type.txt
+settings/skill/TopBuff.tab
+settings/TopBuff.tab
+data/skill/TopBuff.tab

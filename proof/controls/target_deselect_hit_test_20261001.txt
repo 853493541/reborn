@@ -1,0 +1,62 @@
+Click pick hit-volume fix - client capture 2026-10-01
+Build: reborn_client_target-dummy.exe (RC_TITLE=targeting), run log reborn_20261001_203922.log
+Map: data\source\maps\龙门寻宝\龙门寻宝.jsonmap; dummy 初级试炼木桩 rid=35901 at spawn+400u
+
+Problem: the click pick used a 12-degree cone around the entity direction from the camera,
+so clicks NEAR the dummy (not on it) still selected/kept the target - "some places are not
+clicking off". The user's rule: any click not on the target is a deselect.
+
+Fix (client/Targeting.cs Pick): ray vs each entity's vertical body cylinder (radius 90 u,
+height 220 u from the entity base), nearest positive ray hit wins; any ray that misses every
+body is an empty pick -> deselect. The real client picks the character model
+(KCharacter::OnPickPrepare / represent PickDoodad); the host has no world->screen/model pick,
+so the body cylinder is the host's hit volume (MED approximation, documented in
+docs/controls/JX3_TARGET_SELECTION.md section 6).
+
+Scripted run (RC_TAB_AT=3000; RC_CLICK_AT=5000,620,430;7000,700,440; RC_SHOTS=4500,6500,8500;
+RC_AUTORUN=10000). Dummy body on screen ~x695-705 y380-500; (620,430) is ~80 px left of the
+body (near-miss), (700,440) is on the body:
+20:39:54.729 target=初级试炼木桩 lv131 zone=MidAxis dist=400u axis=0u
+20:39:54.743 target indicator '...选择特效a002_hd.pss' h=5803828424 ... (selected)
+20:39:56.287 shot -> rc_00_4500ms.png              (indicator present)
+20:39:56.727 RC_CLICK_AT -> click at 620,430
+20:39:56.729 click: deselect (nothing under cursor)   <- near-miss deselects
+20:39:56.733 target indicator removed
+20:39:58.284 shot -> rc_01_6500ms.png              (indicator gone)
+20:39:58.725 RC_CLICK_AT -> click at 700,440
+20:39:58.726 target=初级试炼木桩 (click pick, cursor)   <- on-body click selects
+20:39:58.738 target indicator '...选择特效a002_hd.pss' h=7787866344 ... (selected again)
+20:40:00.284 shot -> rc_02_8500ms.png              (indicator back)
+
+Numeric fingerprints (tools/proof/image_stats.py, 4x4 grid; warm = R-B>60 and R>180):
+selected  (rc_00_4500ms.png) -> proof/controls/target_hittest_selected_20261001.png
+  size=1280x720 mode=RGB bytes=972141 sha256=6fe27fffae91a841
+  mean=#9F8671
+  5C3A29 856A59 8D7763 9E8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AD92 AE9C87
+  9F8B79 876D5D 9E8570 A89682
+near-miss (rc_01_6500ms.png) -> proof/controls/target_hittest_nearmiss_20261001.png
+  size=1280x720 mode=RGB bytes=968170 sha256=0435e9f5dedf2f3a
+  mean=#9E8672
+  5C3A29 856A59 8D7763 9E8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AF94 AE9C87
+  9F8B79 876D5D 9D8672 A89682
+on-hit   (rc_02_8500ms.png) -> proof/controls/target_hittest_onhit_20261001.png
+  size=1280x720 mode=RGB bytes=972211 sha256=2a6579d2b7141dfa
+  mean=#9F8671
+  5C3A29 856A59 8D7763 9D8770
+  866D5C A98B76 B99E85 AE9B84
+  A48F7B C7AC93 C9AD92 AE9C87
+  9F8B79 876D5D 9E8570 A89682
+Warm pixels: selected 13393 -> near-miss 7904 -> on-hit 13392.
+
+Reproduce:
+  set RC_CLIENT_EXE=reborn_client_target-dummy.exe && client\build_client.cmd
+  set RC_TITLE=targeting
+  set RC_TAB_AT=3000
+  set RC_CLICK_AT=5000,620,430;7000,700,440
+  set RC_SHOTS=4500,6500,8500
+  set RC_AUTORUN=10000
+  cd /d C:\SeasunGame\MovieEditor && bin64\reborn_client_target-dummy.exe

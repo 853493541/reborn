@@ -35,7 +35,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | PSS particles | [PART] | `PSS_FORMAT.md`, `pss*.py` |
 | UI textures / `.UITex` atlases | [PART] | `docs/ui/MAP_MINIMAP_RESEARCH.md` |
 | Addon encryption/loader | [DONE] | `tools/addon_decrypt.py`, `proof/minimap/recon/kgui_*` |
-| Fonts/strings (`string.txt`) | [PART] | needed for full UI text parity |
+| Fonts/strings (`string.txt`) | [PART] | `docs/ui/FONT_SCHEME_SYSTEM.md` (2026-09-30): `FontScheme=#<id>`/`FontColor` chain decoded (421 schemes / 36 slots / 106 colors), `tools/ui_scheme_lookup.py`; open: 阴影/projection + per-state font rendering, `Size=0` engine math |
 
 ## 3. Character & animation
 
@@ -61,7 +61,7 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 | Action bars | [DONE] | `controls/RESEARCH_RESOLVED_GAPS.md` §6 |
 | Targeting bodies | [PART] | `target.lua` located, bodies not decoded |
 | UI panels overall (~253 files) | [PART] | `proof/minimap/recon/ui_config_inventory.txt` |
-| HUD/nameplates/damage numbers | [OPEN] | huge UI surface — prioritize by mode |
+| HUD/nameplates/damage numbers | [PART] | catalog `docs/ui/BATTLE_FLOATING_UI.md` (2026-09-30): native caption data (nameplate HP bar/slots/colors/icons) + 33 KGUI modules extracted/decompiled, general-combat must-have table; open: cast-bar consumer, target layout naming, UISetting_HeadTop.ini |
 
 ## 5. Combat — skills & resources
 
