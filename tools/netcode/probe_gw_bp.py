@@ -120,6 +120,7 @@ def main():
     forced = [False]
     table_dumped = [False]
     events_dumped = [False]
+    fire_dumped = [False]
     poll_last = {}
     last_pump = [0.0]
     stepping = [None]
@@ -149,6 +150,35 @@ def main():
                                                    b"\xCC", 1, ctypes.byref(ctypes.c_size_t()))
                             armed[rva] = ob
                             print("[%.2f] armed %s (exe+0x%X)" % (el, TARGETS[rva], rva), flush=True)
+                if (gw_client[0] and not fire_dumped[0]
+                        and os.path.exists(r"C:\jx3tmp\dump_fire")):
+                    fire_dumped[0] = True
+                    try:
+                        os.remove(r"C:\jx3tmp\dump_fire")
+                    except OSError:
+                        pass
+                    obj = read_u64(hproc.value, exe_base + 0xA755C0)
+                    print("=== dispatcher object=0x%X ===" % (obj or 0), flush=True)
+                    if obj:
+                        vt = read_u64(hproc.value, obj)
+                        print("  vtable=0x%X" % (vt or 0), flush=True)
+                        mod = None
+                        for b, size, nm, path in module_list(pid):
+                            if b <= (vt or 0) < b + size:
+                                mod = (nm, b)
+                                break
+                        print("  vtable module: %s base=0x%X" % (mod if mod else ("?", 0)), flush=True)
+                        if vt:
+                            for off in (0x660, 0x668, 0x670):
+                                fn = read_u64(hproc.value, vt + off)
+                                if fn:
+                                    fmod = None
+                                    for b, size, nm, path in module_list(pid):
+                                        if b <= fn < b + size:
+                                            fmod = nm
+                                            break
+                                    print("  vt+0x%X = 0x%X (%s +0x%X)" % (off, fn, fmod or "?", (fn - (mod[1] if mod else 0)) if fmod else 0), flush=True)
+                    print("=== end fire dump ===", flush=True)
                 if (gw_client[0] and not events_dumped[0]
                         and os.path.exists(r"C:\jx3tmp\dump_events")):
                     events_dumped[0] = True
