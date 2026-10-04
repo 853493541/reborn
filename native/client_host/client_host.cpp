@@ -60,6 +60,49 @@ static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved,
 static HWND g_hostHwnd = NULL;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
+static int g_castRequest = -1;
+static int g_autoCastDone = 0;
+static char g_abil[32][512];
+static char g_abilName[32][128];
+static int g_abilCount = 0;
+
+static LRESULT CALLBACK HostWndProc(HWND h, UINT m, WPARAM w, LPARAM l)
+{
+    if (m == WM_KEYDOWN)
+    {
+        if (w >= '1' && w <= '9') g_castRequest = (int)(w - '1');
+    }
+    else if (m == WM_CLOSE)
+    {
+        PostQuitMessage(0);
+        return 0;
+    }
+    return DefWindowProcA(h, m, w, l);
+}
+
+static void loadAbilities(const char* path)
+{
+    FILE* f = NULL;
+    if (fopen_s(&f, path, "rb") != 0 || f == NULL)
+    {
+        logf("[host] abilities file not found: %s", path);
+        return;
+    }
+    char line[1024];
+    while (fgets(line, sizeof(line), f) != NULL && g_abilCount < 32)
+    {
+        char* tab = strchr(line, '\t');
+        if (tab == NULL) continue;
+        *tab = 0;
+        char* nl = strpbrk(tab + 1, "\r\n");
+        if (nl != NULL) *nl = 0;
+        strcpy_s(g_abil[g_abilCount], sizeof(g_abil[0]), line);
+        strcpy_s(g_abilName[g_abilCount], sizeof(g_abilName[0]), tab + 1);
+        g_abilCount++;
+    }
+    fclose(f);
+    logf("[host] abilities loaded: %d", g_abilCount);
+}
 
 typedef long (__fastcall *CreateTargetWindowFn)(void* self, void* hwnd, void** out);
 static long __fastcall hookCreateTargetWindow(void* self, void* hwnd, void** out)
@@ -174,13 +217,53 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
+// real .Sfx through the engine's own factory (client build: no AV)
+static void* createRealSfx(HMODULE eng)
+{
+    void* owner = NULL;
+    void** g = *(void***)((BYTE*)eng + 0x2CF1038);
+    if (g != NULL) owner = ((void* (__fastcall *)(void*))((*(void***)g)[8]))(g);
+    char sfxPath[512];
+    gbk(L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", sfxPath, sizeof(sfxPath));
+    void* sfx = NULL;
+    void* out = NULL;
+    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
+    DWORD exc = 0;
+    typedef void* (__fastcall *CreateFn)(void*, const char*, void*, void*, void*,
+                                         void*, int, void*);
+    __try { sfx = ((CreateFn)((BYTE*)eng + 0xBE5610))(owner, sfxPath, NULL, NULL,
+                                                     NULL, mtx, 0, &out); }
+    __except (exc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { sfx = NULL; }
+    logf("[host] .Sfx create -> obj=%p exc=0x%08X owner=%p", sfx, (unsigned)exc, owner);
+    return sfx;
+}
+
+static void castAbility(int idx, void* actor, void* ctrl, HMODULE eng)
+{
+    if (idx < 0 || idx >= g_abilCount || actor == NULL) return;
+    typedef long (__fastcall *InitAttachTaniFn)(void*, const char*, unsigned);
+    long iat = ((InitAttachTaniFn)((BYTE*)eng + 0x83A6F0))(actor, g_abil[idx], 0);
+    void* anim = *(void**)((BYTE*)actor + 0x368);
+    logf("[host] cast[%d] '%s' _InitAttachTani=0x%08X anim=%p",
+         idx, g_abilName[idx], (unsigned)iat, anim);
+    if (anim != NULL && ctrl != NULL)
+    {
+        typedef long (__fastcall *StartAnimFn)(void*, void*, int, float, unsigned,
+                                               unsigned, void*, void*, void*);
+        long src = ((StartAnimFn)((BYTE*)eng + 0xBC1C70))(ctrl, anim, 0, 1.0f, 0, 0,
+                                                         NULL, NULL, NULL);
+        logf("[host] cast[%d] StartAnimation=0x%08X", idx, (unsigned)src);
+    }
+    createRealSfx(eng);
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
     memset(&wc, 0, sizeof(wc));
     wc.cbSize = sizeof(wc);
     wc.style = CS_OWNDC;
-    wc.lpfnWndProc = DefWindowProcA;
+    wc.lpfnWndProc = HostWndProc;
     wc.hInstance = GetModuleHandleA(NULL);
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = "reborn_skill_host_wnd";
@@ -401,7 +484,7 @@ int main(void)
         23334.0f, 761.0f, 24224.0f, 1.0f
     };
     void* actor = NULL;
-    long mrc = ((CreateActorFn)((BYTE*)eng + 0x8B2DA0))(engine, mpath, NULL, &actor, 0,
+    long mrc = ((CreateActorFn)((BYTE*)eng + 0x8B2DA0))(engine, mpath, scene, &actor, 0,
                                                         actorMtx);
     logf("[host] CreateActorFromFile -> 0x%08X actor=%p", (unsigned)mrc, actor);
 
@@ -434,24 +517,16 @@ int main(void)
     }
 
     // real .Sfx through the engine's own factory (client build: no AV)
+    createRealSfx(eng);
+
+    // ability list for casting (keys 1..9); auto-cast #0 once after boot
     {
-        void* owner = NULL;
-        void** g = *(void***)((BYTE*)eng + 0x2CF1038);
-        if (g != NULL) owner = ((void* (__fastcall *)(void*))((*(void***)g)[8]))(g);
-        char sfxPath[512];
-        gbk(L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx",
-            sfxPath, sizeof(sfxPath));
-        void* sfx = NULL;
-        void* out = NULL;
-        float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-        DWORD exc = 0;
-        typedef void* (__fastcall *CreateFn)(void*, const char*, void*, void*, void*,
-                                             void*, int, void*);
-        __try { sfx = ((CreateFn)((BYTE*)eng + 0xBE5610))(owner, sfxPath, NULL, NULL,
-                                                         NULL, mtx, 0, &out); }
-        __except (exc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { sfx = NULL; }
-        logf("[host] .Sfx create -> obj=%p exc=0x%08X owner=%p", sfx, (unsigned)exc, owner);
+        char abilPath[MAX_PATH];
+        if (GetEnvironmentVariableA("RC_HOST_ABILITIES", abilPath, MAX_PATH) == 0)
+            sprintf_s(abilPath, MAX_PATH, "%s\\abilities.txt", rootA);
+        loadAbilities(abilPath);
     }
+
 
     // frame loop: controller + engine FrameMove + window paint
     void* camObj = NULL;
@@ -484,6 +559,22 @@ int main(void)
         };
         for (int f = 0; f < 240; f++)
         {
+            MSG msg;
+            while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessageA(&msg);
+            }
+            if (g_castRequest >= 0)
+            {
+                castAbility(g_castRequest, actor, ctrl, eng);
+                g_castRequest = -1;
+            }
+            if (f == 30 && !g_autoCastDone && g_abilCount > 0)
+            {
+                g_autoCastDone = 1;
+                castAbility(0, actor, ctrl, eng);
+            }
             if (ctrl != NULL) ctrlFm(ctrl);
             if (f < 8) engFm(engine);
             if (camObj != NULL)
