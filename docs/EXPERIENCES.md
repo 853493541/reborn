@@ -1492,3 +1492,21 @@ solved it, and what is still open. **Newest at the bottom.**
   fill 基础界面 group by group (HUD core first).
 - Classification is a documented working heuristic (first-match regex); per-group sessions refine it.
 - Verified: --selftest 17/0/0 (17 windows unchanged); JSON stages = 绝境战场界面 / 基础界面 / 备用.
+
+### 2026-10-03 — UI — BASIC UI session 2: HUD core deep research + first 基础界面 entries
+- 54 HUD Lua extracted from PakV4 + decompiled (unluac); corpus kept local-ignored at
+  proof/ui/basic_ui/decompiled (new .gitignore entry). Target family INIs (29) extracted into assets.
+- Doc docs/ui/BASIC_UI_HUD.md (registered): MainBarPanel (93 sections; slot strip geometry = 157+14*46+113
+  = 914 = bar width; TGA probe: left cap alpha-67 plate, middle/right frames transparent - slot icons are
+  runtime skill data), Player (88 sections, sample texts baked in), Target family - composition decoded:
+  Target.lua opens TargetPlayer10/11 or Target<Intensity><Relation>(+S) and appends TargetCommon.ini
+  sections into Handle_Energy per kungfu (AppendItemFromIni, Target.decompiled.lua:967-989); remaining
+  HUD register + native-driven caveats (cast bar CASTINGBAR has no Lua consumer).
+- Entries: 2.1 main-bar, 2.2 player-frame, 2.3 target-frame (PARTIAL, backdrop #33393E - the HUD art is
+  dark/translucent and invisible on #101010). Gaps documented: runtime slot icons, Player values/buffs,
+  TargetCommon append (no multi-INI append in the viewer yet), ChatPanel rows, progress-bar behavior.
+- Engine: UiLayout case 8 (PosType 8) now honors an explicitly authored/overridden Left (even 0) - the
+  main bar's strip authors no Left and got parked at the window's right edge otherwise; BR window-right
+  still applies when no Left key exists.
+- Verified: --selftest 20/0/0; renders mb_v4/pf_v2/tf_v2 (bar frame + kungfu box; player frame with
+  sample texts; target frame bars).

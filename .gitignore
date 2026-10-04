@@ -80,3 +80,5 @@ perf_config.ini
 launch_out.txt
 launch_err.txt
 log/
+# Basic UI Lua decompile corpus (local research scratch)
+proof/ui/basic_ui/decompiled/

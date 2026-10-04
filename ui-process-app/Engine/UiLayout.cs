@@ -1117,7 +1117,10 @@ namespace MapUiApp.Engine
                         break;
                     // Tiny auto-size parents (e.g. MapQueue's Handle_Dots) mean "keep
                     // the authored origin"; window-right would park them at the edge.
-                    if (left == 0 && rootWidth > 0 && parentWidth >= 32)
+                    // An explicitly authored/overridden Left (even 0) wins - the main
+                    // bar's slot strip is a left-anchored flow row whose first image
+                    // authors no Left and gets parked right otherwise.
+                    if (left == 0 && section.Get("Left") == null && rootWidth > 0 && parentWidth >= 32)
                         left = rootWidth - elementWidth - parentAbs.X;
                     break;
                 case 11: // bottom-right aligned in the window when no offset is authored

@@ -1,7 +1,9 @@
 # ui-process-app — agent notes
 
-WPF (`net5.0-windows`) explorer for the recovered 绝境战场 UI surfaces, rendered from
-the real KGUI layout INIs and official string tables.
+WPF (`net5.0-windows`) explorer for the recovered JX3 UI surfaces (绝境战场 mode + the
+default 基础界面), rendered from the real KGUI layout INIs and official string tables.
+The basic-UI scope register is `docs/ui/BASIC_UI_INVENTORY.md`; HUD deep research lives
+in `docs/ui/BASIC_UI_HUD.md`.
 
 - Run: `dotnet run --project ui-process-app`. Release binary:
   `ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe`.

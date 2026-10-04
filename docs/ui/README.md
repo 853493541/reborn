@@ -7,6 +7,7 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `MAP_MINIMAP_RESEARCH.md` | Map & Minimap research — how the game does it, and how 龙门绝境 maps |
 | `UI_SYSTEM_REPORT.md` | JX3 Client UI System — Reproduction Report |
 | `BASIC_UI_INVENTORY.md` | Basic UI scope register — all 1,210 client `ui/Config/Default` INIs (extracted 2026-10-03), classes, tiers, exclusions |
+| `BASIC_UI_HUD.md` | HUD core deep research — MainBarPanel / Player / Target family (composition decoded) + remaining HUD register; authored-state verification policy |
 
 ## Tools
 
