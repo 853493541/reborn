@@ -26,6 +26,7 @@ internal sealed class HudOverlay : Form
     bool dirty = true;
     Bitmap buffer;
     Rectangle copyRect;
+    Rectangle copyPosRect;
     readonly Font font;
     readonly Font modeFont;
     readonly Font copyFont;
@@ -35,8 +36,9 @@ internal sealed class HudOverlay : Form
     readonly SolidBrush modeBrush = new SolidBrush(Color.FromArgb(255, 220, 120));
     readonly SolidBrush copyBrush = new SolidBrush(Color.FromArgb(220, 235, 255));
 
-    // Copy-log action, wired by the client (copies the recent run log).
+    // Copy actions, wired by the client (recent run log / current position).
     public Action OnCopyLog;
+    public Action OnCopyPos;
 
     public HudOverlay()
     {
@@ -116,11 +118,11 @@ internal sealed class HudOverlay : Form
         {
             if (modeText.Length > 0) modeSize = Size.Ceiling(g.MeasureString(modeText, modeFont));
             if (text.Length > 0) infoSize = Size.Ceiling(g.MeasureString(text, font));
-            copySize = Size.Ceiling(g.MeasureString("COPY LOG", copyFont));
+            copySize = Size.Ceiling(g.MeasureString("COPY POS", copyFont));
         }
         int modeH = modeText.Length > 0 ? modeSize.Height : 0;
         int copyW = Math.Max(140, copySize.Width + Pad * 3);
-        int w = Math.Max(Math.Max(modeSize.Width, infoSize.Width), copyW) + Pad * 2;
+        int w = Math.Max(Math.Max(modeSize.Width, infoSize.Width), copyW * 2 + Gap) + Pad * 2;
         int h = Pad + modeH + Gap + infoSize.Height + Gap + CopyH + Pad;
         if (w < 1) w = 1;
         if (h < 1) h = 1;
@@ -131,6 +133,7 @@ internal sealed class HudOverlay : Form
             buffer = new Bitmap(w, h, PixelFormat.Format32bppArgb);
         }
         copyRect = new Rectangle(Pad, h - Pad - CopyH, copyW, CopyH);
+        copyPosRect = new Rectangle(Pad + copyW + Gap, h - Pad - CopyH, copyW, CopyH);
         using (Graphics g = Graphics.FromImage(buffer))
         {
             g.Clear(Color.Transparent);
@@ -140,11 +143,13 @@ internal sealed class HudOverlay : Form
                 g.DrawString(modeText, modeFont, modeBrush, new PointF(Pad, Pad));
             g.DrawString(text, font, textBrush, new PointF(Pad, Pad + modeH + Gap));
             g.FillRectangle(copyBoxBrush, copyRect);
+            g.FillRectangle(copyBoxBrush, copyPosRect);
             using (StringFormat sf = new StringFormat())
             {
                 sf.Alignment = StringAlignment.Center;
                 sf.LineAlignment = StringAlignment.Center;
                 g.DrawString("COPY LOG", copyFont, copyBrush, copyRect, sf);
+                g.DrawString("COPY POS", copyFont, copyBrush, copyPosRect, sf);
             }
         }
 
@@ -188,13 +193,16 @@ internal sealed class HudOverlay : Form
     protected override void OnMouseDown(MouseEventArgs e)
     {
         base.OnMouseDown(e);
-        if (showInfo && copyRect.Contains(e.Location) && OnCopyLog != null) OnCopyLog();
+        if (!showInfo) return;
+        if (copyRect.Contains(e.Location)) { if (OnCopyLog != null) OnCopyLog(); }
+        else if (copyPosRect.Contains(e.Location)) { if (OnCopyPos != null) OnCopyPos(); }
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        Cursor want = showInfo && copyRect.Contains(e.Location) ? Cursors.Hand : Cursors.Default;
+        Cursor want = showInfo && (copyRect.Contains(e.Location) || copyPosRect.Contains(e.Location))
+            ? Cursors.Hand : Cursors.Default;
         if (Cursor != want) Cursor = want;
     }
 

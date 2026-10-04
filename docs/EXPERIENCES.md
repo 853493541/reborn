@@ -3852,3 +3852,10 @@ work into main without M2 entanglement.
   verified by posting WM_KEYDOWN/WM_KEYUP VK_ESCAPE to our own client (no
   global input injection - drive_client.ps1 was NOT used): panel window
   visible=True 633x222 after the first Esc and visible=False after the second.
+- Follow-up ("not every Esc will close"): the form KeyPreview misses keys when
+  the engine's native child window holds focus. Replaced the form handlers
+  with an `IMessageFilter` (`EscKeyFilter`) that sees WM_KEYDOWN for every
+  window in the process, consumes Esc and ignores auto-repeat (lParam bit 30).
+  Verified by posting Esc to the engine child window itself. Added a COPY POS
+  button (copies the live "pos X,Y,Z" line) next to COPY LOG; click verified
+  by posting mouse messages at the button rect.

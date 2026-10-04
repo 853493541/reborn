@@ -613,6 +613,17 @@ internal static class RebornClient
 
         // ---------------- player ----------------
         float px = 0f, py = 0f, pz = 0f, vy = 0f;
+        // COPY POS row: copies the displayed position (the panel's pos line).
+        hud.OnCopyPos = delegate
+        {
+            try
+            {
+                string pos = string.Format("pos {0:F0},{1:F0},{2:F0}", px, py, pz);
+                Clipboard.SetText(pos);
+                Log("copied pos to clipboard: " + pos);
+            }
+            catch (Exception e) { Log("clipboard copy failed: " + e.Message); }
+        };
         float viewX = 0f, viewY = 0f, viewZ = 1f;   // spawn orientation (measured once)
         bool grounded = false;
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
@@ -1092,7 +1103,6 @@ internal static class RebornClient
         }
         bool cDown = false, teleportToStructure = false;
         bool iDown = false;   // "I" toggles the info panel (alias of Esc)
-        bool escDown = false; // Esc toggles the info panel (one toggle per press)
         bool divDown = false;
         TargetEntity indTarget = null;
         // Command executor (host equivalent of the ui/script hotkey handlers):
@@ -1417,19 +1427,7 @@ internal static class RebornClient
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape && !escDown)
-            {
-                // information panel (run info + control mode + COPY LOG);
-                // Esc toggles: first press opens, next closes. One toggle per
-                // press (escDown guards key auto-repeat). Also frees a
-                // drag-locked cursor and clears the target.
-                escDown = true;
-                unlockMouse();
-                targetSelector.Current = null;
-                hud.ToggleInfo();
-                hud.UpdateLayered();
-            }
-            else if (e.KeyCode == Keys.Tab)
+            if (e.KeyCode == Keys.Tab)
             {
                 // SEARCH_ENEMY (Tab) / SELECT_PREV_TARGET (Ctrl+Tab), target.lua
                 targetSelector.Cycle(px, pz, curYaw, e.Control, Log);
@@ -1503,9 +1501,20 @@ internal static class RebornClient
             if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.I) iDown = false;
-            else if (e.KeyCode == Keys.Escape) escDown = false;
         };
         panel.Focus();
+        // Esc toggles the information panel (open <-> close) no matter which
+        // child window has focus: the engine's native child window can hold
+        // focus, where the form's KeyPreview would never see the key.
+        var escFilter = new EscKeyFilter();
+        escFilter.OnEscape = delegate
+        {
+            unlockMouse();
+            targetSelector.Current = null;
+            hud.ToggleInfo();
+            hud.UpdateLayered();
+        };
+        Application.AddMessageFilter(escFilter);
 
         // ---------------- main loop ----------------
         // table values converted from 15 logic frames/s into continuous seconds
@@ -4208,5 +4217,24 @@ internal static class RebornClient
             Application.DoEvents();
             Thread.Sleep(16);
         }
+    }
+}
+
+// Application-wide Esc key filter: the form's KeyPreview only sees keys routed
+// through WinForms controls, so when the engine's native child window has focus
+// Esc would go there and the toggle would silently not fire. A message filter
+// sees WM_KEYDOWN for every window in the process; bit 30 of lParam marks key
+// auto-repeat, so one physical press = one toggle. The message is consumed.
+internal sealed class EscKeyFilter : System.Windows.Forms.IMessageFilter
+{
+    public Action OnEscape;
+
+    public bool PreFilterMessage(ref Message m)
+    {
+        if (m.Msg != 0x0100) return false;                       // WM_KEYDOWN
+        if (m.WParam.ToInt32() != 0x1B) return false;            // VK_ESCAPE
+        long lp = m.LParam.ToInt64();
+        if ((lp & (1L << 30)) == 0 && OnEscape != null) OnEscape();
+        return true;
     }
 }

@@ -625,3 +625,23 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   - Esc #1: HudOverlay window 18940254 visible, 633x222, RC_HUD_DUMP written;
   - Esc #2: same window visible=False (panel closed).
   Build exit=0; camera_smoke ALL PASS.
+
+## Esc reliability fix + COPY POS button, 2026-10-03
+- User report: "not every Esc will close" - the form's KeyPreview only sees
+  keys routed through WinForms controls; when the engine's native child window
+  has focus (it does after clicking the viewport), Esc goes there and the
+  toggle silently does not fire.
+- Fix: `EscKeyFilter` (IMessageFilter, `Application.AddMessageFilter`) sees
+  WM_KEYDOWN for every window in the process, consumes Esc, and ignores
+  auto-repeat via lParam bit 30 (one toggle per physical press). The form
+  KeyDown/KeyUp escDown guard was removed.
+- Added a COPY POS button next to COPY LOG in the info panel; it copies the
+  live position line ("pos X,Y,Z").
+- Verified (window messages only, no global input injection):
+  - Esc posted to the ENGINE CHILD window (class WindowsForms10.Window...,
+    1280x720) -> panel 633x222 visible;
+  - repeat Esc with lParam bit 30 -> panel still visible (no double toggle);
+  - WM_LBUTTONDOWN/UP at the COPY POS rect (226,201) -> log
+    "copied pos to clipboard: pos 18991,962,33853";
+  - second normal Esc -> panel visible=False (closed).
+  Build exit=0; camera_smoke ALL PASS.
