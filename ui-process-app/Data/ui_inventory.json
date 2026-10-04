@@ -253,6 +253,7 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/RaidPanel.ini",
+          "show": [ "CheckBox_Team1", "CheckBox_Team2", "CheckBox_Team3", "CheckBox_Team4", "CheckBox_Team5", "Image_Member1", "Image_Member2", "Image_Member3", "Image_Member4", "Image_Member5", "Text_Title", "CheckBox_Minimize" ],
           "backdrop": "#33393E",
           "summary": "RaidPanel (ui/Config/Default/RaidPanel.ini, 77 sections; root WndFrame 550x273 @40,270 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
