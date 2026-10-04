@@ -23,8 +23,8 @@ playable in-world session. Personal use only (AGENTS §1: never commercial, neve
 | Phase | What | Exit criterion | Status |
 |---|---|---|---|
 | P0 | Recon + probe harness | reproducible direct launch; single blocker identified | **DONE** |
-| P1 | Startup gate (critical path) | client survives past the ~2.3 s WinMain timeout; module Initialize runs; `state_sub+0x18 != NULL` | **NEXT** |
-| P2 | Login + gateway stub | client passes login against our gateway | pending |
+| P1 | Startup gate (critical path) | client survives past the ~2.3 s WinMain timeout; module Initialize runs; `state_sub+0x18 != NULL` | **DONE (provisional: `config+0xe10=0`)** |
+| P2 | Login + gateway stub | client passes login against our gateway | **IN PROGRESS (static-first)** |
 | P3 | Game server stub (enter world) | client loads the world and holds the session | pending |
 | P4 | Playable loop | walk around 5 min, no desync/disconnect | pending |
 | P5 | Packaging / ops | one-command cold start to in-world | pending |
@@ -59,13 +59,41 @@ the 52 modules' Initialize handlers are only *registered*, never called (§27).
 
 ## P2 — Login + gateway
 
-- **P2.1** Map the login flow (`login.lua`: `LoginServerList`, `Login_SetGatewayAddress`,
-  `Login_ConnectGateway`, `KGatewayClient::OnSyncLoginKey`) and the gateway message set from
-  the 814-SID S2C table + handler disassembly.
-- **P2.2** Gateway stub (our server): remote server list, login-key sync, redirect the client
-  to our game server via `pcszGameServerIP`.
-- **Exit**: client passes login and reaches the server/character/enter-world stage against
-  the stub. Token semantics: determine whether the client verifies locally or forwards.
+**Status (checkpoint):** routing is live and proven. The client fetches its server list from
+our local host (`.crc` version probe -> `serverlist.ini` download -> crc32 verification ->
+cache `%TEMP%\Jx3\serverlist\zhcn.hd.<crc>.tab`); `乾坤一掷` is patched to `127.0.0.1:3724`.
+Every login attempt now reaches our gateway stub, which proves the whole address path.
+Observed: the client connects and **sends nothing for exactly 20.0 s** (then drops) — the
+gateway protocol is server-speaks-first and the client waits for a valid framed server packet.
+
+### P2 execution plan — static-first (locked)
+
+Live capture is only used for the final validation, never to discover one step at a time.
+
+1. **Framing (static)**: the connection wrapper's `vt+0x38`/`vt+0x40` deliver a whole packet
+   to `KGatewayClient::ProcessPackage` (`0x140189870`): `vt+0x38` -> 1 = packet available,
+   `vt+0x40` -> `piRecvPackage`; `piRecvPackage->vt+0x20` = size, `->vt+0x18` = header
+   (`byte[0]` = protocol id); handler `[gwClient+0x250 + proto*8]`, min size
+   `[gwClient+0xa50 + proto*8]`. Disassemble the wrapper/transport methods to extract the
+   exact wire framing (length prefix, endianness, header fields).
+2. **Connect state machine (static)**: finish `0x140189440` (connect state -> handshake
+   send); identify exactly which server packet (opcode) triggers the client's
+   `DoHandshakeRequest` (opcode 2, 229 B: `[0]=2`, `[1..4]=0x2b`, `[5..8]=0x1f6`,
+   `[9..12]=[global+0xcb0]`) and what state gate the 20 s timeout belongs to.
+3. **Message set (static)**: recover the gateway protocol table (opcodes, sizes, handlers)
+   from the registration writes to `gwClient+0x250`/`+0xa50`; decode
+   `OnHandShakeRespond`, `OnSyncLoginKey`, account verify, role list, login-game layouts.
+4. **Implement the stub conversation** offline: first server packet -> handshake respond ->
+   account verify accept (admin/admin) -> role list -> login game -> `pcszGameServerIP`
+   pointing at our game server. No live runs during implementation.
+5. **One live validation**: single client run, one user login click, capture + compare
+   against the implemented conversation. Exit: client reaches the role-list / enter-world
+   stage against the stub.
+
+Evidence so far: `proof/netcode/disasm/gw_*.txt` (gateway surface),
+`docs/netcode/JX3_PROTOCOL_SPEC.md` §4.1, `JX3_CLIENT_LAUNCH_AND_SESSION.md` §44.
+Token semantics (user decision #2) stays open until step 3 shows whether the client
+verifies locally or forwards.
 
 ## P3 — Game server stub (enter world)
 
@@ -111,8 +139,16 @@ the 52 modules' Initialize handlers are only *registered*, never called (§27).
 ## Reproduce (current phase)
 
 ```powershell
-# direct-launch probe: state timeline + gate (P0/P1 evidence)
+# server-list host: patched 乾坤一掷 -> 127.0.0.1:3724, serves .crc + .ini (template C:\jx3tmp\patched_serverlist.ini)
+.\.venv\Scripts\python.exe tools\netcode\serverlist_host.py --port 80
+# gateway stub: threaded, sends hello on connect, logs every byte
+.\.venv\Scripts\python.exe tools\netcode\gateway_stub.py --port 3724
+# client: production launch shape + config+0xe10=0 + console log flags
+.\.venv\Scripts\python.exe tools\netcode\launcher_emulator.py --observe 3600 --cfg-e10 0 --log-flags
+# direct-launch probe (P0/P1 evidence)
 .\.venv\Scripts\python.exe tools\netcode\probe_state_timeline.py
-# log-visibility probe (negative result: module Initialize is gated by the startup object)
-.\.venv\Scripts\python.exe tools\netcode\probe_logpatch.py
 ```
+
+Hosts entry required once (admin): `127.0.0.1 jx3comm.xoyocdn.com`.
+Login drivers (`drive_login_click.py`, `watch_client_conns.py`) are test-only aids; the
+static-first plan uses one user-driven login for final validation.

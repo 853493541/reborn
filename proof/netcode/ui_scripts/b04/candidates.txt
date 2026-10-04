@@ -1,0 +1,6 @@
+ui/script/loginserverlist.lua
+ui/script/loginserverpanel.lua
+ui/script/loginscene.lua
+ui/script/loginpassword.lua
+ui/script/loginrolelist.lua
+ui/script/loginlogo.lua

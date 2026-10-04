@@ -1,0 +1,6 @@
+ui/Config/Default/LoginServerList.lua
+ui/Config/Default/LoginServerPanel.lua
+ui/Config/Default/LoginWaitServerList.lua
+ui/Config/Default/LoginServerList.xml
+ui/Config/Default/LoginServerPanel.xml
+ui/Config/Default/LoginWaitServerList.xml

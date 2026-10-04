@@ -401,6 +401,14 @@ def main():
             globals_logged = True
             cm = read_u64(h, exe_base + 0xA8C1C8)
             if cm:
+                for off in (0x400, 0x600):
+                    s = read_mem(h, cm + off, 256)
+                    if s:
+                        txt = s.split(b"\x00")[0].decode("gb18030", "replace")
+                        print("[%.2f] config+0x%X str=%r" % (el, off, txt))
+                mode = read_mem(h, cm + 0x908, 4)
+                if mode:
+                    print("[%.2f] config+0x908 mode=%d" % (el, struct.unpack("<I", mode)[0]))
                 for off in (0xdf4, 0xdf8, 0xe0c, 0xe10, 0xe14, 0xe18, 0x224, 0x234):
                     v = read_mem(h, cm + off, 4)
                     print("[%.2f] config+0x%X = %s" % (el, off, struct.unpack("<I", v)[0] if v else "?"))

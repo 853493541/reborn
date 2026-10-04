@@ -29,13 +29,34 @@ DOWNLOADER = os.path.join(CLIENT_DIR, "KGPK4_StreamDownloaderX64.exe")
 CREATE_SUSPENDED = 0x4
 
 
-def launch(path, workdir, suspend=False):
+def launch(path, workdir, suspend=False, stdout_path=None):
     si = STARTUPINFO()
     si.cb = ctypes.sizeof(STARTUPINFO)
     pi = PROCESS_INFORMATION()
     flags = CREATE_SUSPENDED if suspend else 0
-    ok = k32.CreateProcessW(path, None, None, None, False, flags, None, workdir,
+    inherit = False
+    hout = None
+    if stdout_path:
+        class SECURITY_ATTRIBUTES(ctypes.Structure):
+            _fields_ = [("nLength", w.DWORD), ("lpSecurityDescriptor", ctypes.c_void_p),
+                        ("bInheritHandle", w.BOOL)]
+        sa = SECURITY_ATTRIBUTES()
+        sa.nLength = ctypes.sizeof(SECURITY_ATTRIBUTES)
+        sa.bInheritHandle = True
+        k32.CreateFileW.restype = w.HANDLE
+        k32.CreateFileW.argtypes = [w.LPCWSTR, w.DWORD, w.DWORD, ctypes.c_void_p,
+                                    w.DWORD, w.DWORD, w.HANDLE]
+        hout = k32.CreateFileW(stdout_path, 0x40000000, 0x3, ctypes.byref(sa), 4, 0x80, None)
+        if hout and hout != w.HANDLE(-1).value:
+            si.dwFlags = 0x100
+            si.hStdOutput = hout
+            si.hStdError = hout
+            si.hStdInput = hout
+            inherit = True
+    ok = k32.CreateProcessW(path, None, None, None, inherit, flags, None, workdir,
                             ctypes.byref(si), ctypes.byref(pi))
+    if hout:
+        k32.CloseHandle(hout)
     if not ok:
         print("CreateProcess failed for %s err=%d" % (path, k32.GetLastError()))
         return None
@@ -55,6 +76,16 @@ def write_block(pid, kind):
     ctypes.memmove(p, data, BLOCK)
     k32.UnmapViewOfFile(p)
     print("block(%s) written for pid=%d" % (kind, pid))
+
+
+def write_mem(h, addr, data):
+    old = w.DWORD()
+    k32.VirtualProtectEx(h, ctypes.c_void_p(addr), len(data), 0x04, ctypes.byref(old))
+    n = ctypes.c_size_t()
+    ok = (k32.WriteProcessMemory(h, ctypes.c_void_p(addr), data, len(data), ctypes.byref(n))
+          and n.value == len(data))
+    k32.VirtualProtectEx(h, ctypes.c_void_p(addr), len(data), old.value, ctypes.byref(old))
+    return ok
 
 
 def processes():
@@ -122,11 +153,14 @@ def main():
         if dpi:
             print("downloader pid=%d" % dpi.dwProcessId, flush=True)
 
-    cpi = launch(EXE, workdir, suspend)
+    log_flags = "--log-flags" in args
+    console_path = r"C:\jx3tmp\client_console.txt" if log_flags else None
+    cpi = launch(EXE, workdir, suspend, console_path)
     if cpi is None:
         return 1
     pid = cpi.dwProcessId
-    print("client pid=%d suspend=%s block=%s workdir=%s" % (pid, suspend, block_kind, workdir), flush=True)
+    print("client pid=%d suspend=%s block=%s workdir=%s log_flags=%s"
+          % (pid, suspend, block_kind, workdir, log_flags), flush=True)
     write_block(pid, block_kind)
     if suspend:
         k32.ResumeThread(cpi.hThread)
@@ -170,15 +204,16 @@ def main():
     for i, a in enumerate(args):
         if a == "--cfg-e10" and i + 1 < len(args):
             cfg_e10 = int(args[i + 1])
-    hp = k32.OpenProcess(0x438, False, pid) if cfg_e10 is not None else None
+    hp = k32.OpenProcess(0x438, False, pid) if (cfg_e10 is not None or log_flags) else None
     exe_base = None
+    eng_base = None
     t0 = time.time()
     seen_children = set()
     seen_windows = set()
     exited = None
     while time.time() - t0 < observe:
         el = time.time() - t0
-        if hp and exe_base is None:
+        if hp and (exe_base is None or eng_base is None):
             TH32CS_SNAPMODULE = 0x8
 
             class ME32(ctypes.Structure):
@@ -192,12 +227,31 @@ def main():
             me.dwSize = ctypes.sizeof(ME32)
             if k32.Module32First(snap, ctypes.byref(me)):
                 while True:
-                    if me.szModule.decode("gb18030", "replace").lower().startswith("jx3client"):
+                    nm = me.szModule.decode("gb18030", "replace").lower()
+                    if nm.startswith("jx3client") and exe_base is None:
                         exe_base = ctypes.cast(me.modBaseAddr, ctypes.c_void_p).value
-                        break
+                    elif nm.startswith("engine_lua5x64") and eng_base is None:
+                        eng_base = ctypes.cast(me.modBaseAddr, ctypes.c_void_p).value
                     if not k32.Module32Next(snap, ctypes.byref(me)):
                         break
             k32.CloseHandle(snap)
+        if hp and exe_base and eng_base and log_flags and el < 3.0:
+            buf = ctypes.create_string_buffer(8)
+            n = ctypes.c_size_t()
+            if k32.ReadProcessMemory(hp, ctypes.c_void_p(exe_base + 0xA8C1C8), buf, 8, ctypes.byref(n)):
+                cm = struct.unpack("<Q", buf.raw)[0]
+                if cm:
+                    write_mem(hp, cm + 0x224, struct.pack("<I", 1))
+            fl = ctypes.create_string_buffer(4)
+            if k32.ReadProcessMemory(hp, ctypes.c_void_p(eng_base + 0x174020), fl, 4, ctypes.byref(n)):
+                cur = struct.unpack("<I", fl.raw)[0]
+                if (cur & 6) != 6:
+                    write_mem(hp, eng_base + 0x174020, struct.pack("<I", cur | 6))
+            jb = ctypes.create_string_buffer(6)
+            if k32.ReadProcessMemory(hp, ctypes.c_void_p(eng_base + 0xE550F), jb, 6, ctypes.byref(n)):
+                if jb.raw != b"\x90" * 6:
+                    write_mem(hp, eng_base + 0xE550F, b"\x90" * 6)
+                    print("[%.2f] log flags applied (exe=0x%X eng=0x%X)" % (el, exe_base, eng_base), flush=True)
         if hp and exe_base:
             buf = ctypes.create_string_buffer(8)
             n = ctypes.c_size_t()

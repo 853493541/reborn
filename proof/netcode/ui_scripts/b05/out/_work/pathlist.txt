@@ -1,0 +1,1 @@
+ui/Config/Default/LoginWaitServerList.xml

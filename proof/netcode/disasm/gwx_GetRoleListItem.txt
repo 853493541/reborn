@@ -1,0 +1,217 @@
+# JX3ClientX64.exe xrefs for 'KGatewayClient::GetRoleListItem'
+# image base 0x140000000
+
+## xref @ 0x1401877a8 -> 0x1407cd700 'KGatewayClient::GetRoleListItem'  fn start 0x140187790
+  0x140187790: sub      rsp, 0x38
+  0x140187794: movsxd   r8, edx
+  0x140187797: test     edx, edx
+  0x140187799: jns      0x1401877cd
+  0x14018779b: mov      r9d, 0x17d
+  0x1401877a1: lea      r8, [rip + 0x645f78]  ; 'nRoleIndex >= 0'
+  0x1401877a8: lea      rcx, [rip + 0x645f51]  ; 'KGatewayClient::GetRoleListItem'
+  0x1401877af: mov      qword ptr [rsp + 0x20], rcx
+  0x1401877b4: lea      rdx, [rip + 0x7c777d]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1401877bb: mov      ecx, 3
+  0x1401877c0: call     qword ptr [rip + 0x630c82]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1401877c6: xor      eax, eax
+  0x1401877c8: add      rsp, 0x38
+  0x1401877cc: ret      
+  0x1401877cd: mov      r9, qword ptr [rcx + 0x200]
+  0x1401877d4: movabs   rax, 0xa57eb50295fad40b
+  0x1401877de: mov      rcx, qword ptr [rcx + 0x208]
+  0x1401877e5: sub      rcx, r9
+  0x1401877e8: imul     rcx
+  0x1401877eb: add      rdx, rcx
+  0x1401877ee: sar      rdx, 9
+  0x1401877f2: mov      rax, rdx
+  0x1401877f5: shr      rax, 0x3f
+  0x1401877f9: add      rdx, rax
+  0x1401877fc: cmp      r8d, edx
+  0x1401877ff: jl       0x140187810
+  0x140187801: mov      r9d, 0x180
+  0x140187807: lea      r8, [rip + 0x645f22]  ; 'nRoleIndex < nRoleCount'
+  0x14018780e: jmp      0x1401877a8
+  0x140187810: imul     rax, r8, 0x318
+  0x140187817: add      rax, r9
+  0x14018781a: add      rsp, 0x38
+  0x14018781e: ret      
+  0x14018781f: int3     
+  0x140187820: mov      qword ptr [rsp + 0x10], rbx
+  0x140187825: push     rsi
+  0x140187826: sub      rsp, 0x30
+  0x14018782a: mov      ecx, 0xb
+  0x14018782f: mov      rsi, rdx
+  0x140187832: call     0x140111170
+  0x140187837: mov      rbx, rax
+  0x14018783a: test     rax, rax
+  0x14018783d: jne      0x140187873
+  0x14018783f: lea      rax, [rip + 0x64617a]  ; 'KGatewayClient::DoMibaoVerifyRequest'
+  0x140187846: mov      r9d, 0x392
+  0x14018784c: lea      r8, [rip + 0x6346cd]  ; 'piSendBuffer'
+  0x140187853: mov      qword ptr [rsp + 0x20], rax
+  0x140187858: lea      rdx, [rip + 0x7c76d9]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14018785f: lea      ecx, [rbx + 3]
+  0x140187862: call     qword ptr [rip + 0x630be0]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x140187868: mov      rbx, qword ptr [rsp + 0x48]
+  0x14018786d: add      rsp, 0x30
+  0x140187871: pop      rsi
+  0x140187872: ret      
+  0x140187873: mov      rax, qword ptr [rax]
+  0x140187876: mov      rcx, rbx
+  0x140187879: mov      qword ptr [rsp + 0x40], rdi
+  0x14018787e: call     qword ptr [rax + 0x18]
+  0x140187881: mov      rdi, rax
+  0x140187884: test     rax, rax
+  0x140187887: jne      0x14018789b
+  0x140187889: mov      r9d, 0x395
+  0x14018788f: lea      r8, [rip + 0x635412]  ; 'pRequest'
+  0x140187896: jmp      0x140187920
+  0x14018789b: lea      rcx, [rax + 1]
+  0x14018789f: mov      byte ptr [rax], 5
+  0x1401878a2: mov      r8d, 0xa
+  0x1401878a8: mov      rdx, rsi
+  0x1401878ab: call     qword ptr [rip + 0x63220f]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x1401878b1: mov      byte ptr [rdi + 0xa], 0
+  0x1401878b5: mov      rcx, qword ptr [rip + 0x8edd5c]
+  0x1401878bc: test     rcx, rcx
+  0x1401878bf: jne      0x1401878d0
+  0x1401878c1: mov      r9d, 0x2fa
+  0x1401878c7: lea      r8, [rip + 0x6340c2]  ; 'm_piSocketStream'
+  0x1401878ce: jmp      0x1401878eb
+  0x1401878d0: mov      rax, qword ptr [rcx]
+  0x1401878d3: mov      rdx, rbx
+  0x1401878d6: call     qword ptr [rax + 0x30]
+  0x1401878d9: cmp      eax, 1
+  0x1401878dc: je       0x14018793e
+  0x1401878de: mov      r9d, 0x2fd
+  0x1401878e4: lea      r8, [rip + 0x7d2b85]  ; 'nRetCode == 1'
+  0x1401878eb: lea      rax, [rip + 0x645ffe]  ; 'KGatewayClient::Send'
+  0x1401878f2: mov      ecx, 3
+  0x1401878f7: lea      rdx, [rip + 0x7c763a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1401878fe: mov      qword ptr [rsp + 0x20], rax
+  0x140187903: call     qword ptr [rip + 0x630b3f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x140187909: mov      r9d, 0x39d
+  0x14018790f: mov      dword ptr [rip + 0x8edd07], 1
+  0x140187919: lea      r8, [rip + 0x7c7608]  ; 'nRetCode'
+  0x140187920: lea      rax, [rip + 0x646099]  ; 'KGatewayClient::DoMibaoVerifyRequest'
+  0x140187927: mov      ecx, 3
+  0x14018792c: lea      rdx, [rip + 0x7c7605]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x140187933: mov      qword ptr [rsp + 0x20], rax
+  0x140187938: call     qword ptr [rip + 0x630b0a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14018793e: mov      rax, qword ptr [rbx]
+  0x140187941: mov      rcx, rbx
+  0x140187944: mov      rdi, qword ptr [rsp + 0x40]
+  0x140187949: mov      rbx, qword ptr [rsp + 0x48]
+  0x14018794e: add      rsp, 0x30
+  0x140187952: pop      rsi
+  0x140187953: jmp      qword ptr [rax + 0x10]
+  0x140187957: int3     
+  0x140187958: int3     
+  0x140187959: int3     
+  0x14018795a: int3     
+  0x14018795b: int3     
+  0x14018795c: int3     
+  0x14018795d: int3     
+  0x14018795e: int3     
+  0x14018795f: int3     
+  0x140187960: sub      rsp, 0x118
+  0x140187967: mov      rax, qword ptr [rip + 0x8aca8a]
+  0x14018796e: xor      rax, rsp
+  0x140187971: mov      qword ptr [rsp + 0x100], rax
+  0x140187979: xor      edx, edx
+  0x14018797b: mov      dword ptr [rsp + 0x20], 8
+  0x140187983: mov      r8d, 0xdc
+  0x140187989: lea      rcx, [rsp + 0x24]
+  0x14018798e: call     0x14079c37a
+  0x140187993: mov      rcx, qword ptr [rip + 0x8edc26]
+  0x14018799a: test     rcx, rcx
+  0x14018799d: je       0x1401879ad
+  0x14018799f: mov      rax, qword ptr [rcx]
+  0x1401879a2: lea      rdx, [rsp + 0x20]
+  0x1401879a7: call     qword ptr [rax + 0x668]
+  0x1401879ad: mov      rcx, qword ptr [rsp + 0x100]
+  0x1401879b5: xor      rcx, rsp
+  0x1401879b8: call     0x14079ae80
+  0x1401879bd: add      rsp, 0x118
+  0x1401879c4: ret      
+  0x1401879c5: int3     
+  0x1401879c6: int3     
+  0x1401879c7: int3     
+  0x1401879c8: int3     
+  0x1401879c9: int3     
+  0x1401879ca: int3     
+  0x1401879cb: int3     
+  0x1401879cc: int3     
+  0x1401879cd: int3     
+  0x1401879ce: int3     
+  0x1401879cf: int3     
+  0x1401879d0: mov      r11, rsp
+  0x1401879d3: push     rbp
+  0x1401879d4: lea      rbp, [r11 - 0x38]
+  0x1401879d8: sub      rsp, 0x130
+  0x1401879df: mov      rax, qword ptr [rip + 0x8aca12]
+  0x1401879e6: xor      rax, rsp
+  0x1401879e9: mov      qword ptr [rbp + 0x10], rax
+  0x1401879ed: mov      qword ptr [r11 + 0x18], rbx
+  0x1401879f1: mov      qword ptr [r11 + 0x20], rsi
+  0x1401879f5: mov      rsi, rdx
+  0x1401879f8: mov      qword ptr [r11 - 0x10], rdi
+  0x1401879fc: mov      qword ptr [r11 - 0x18], r14
+  0x140187a00: mov      r14, rcx
+  0x140187a03: xor      ecx, ecx
+  0x140187a05: call     qword ptr [rip + 0x632105]  ; api-ms-win-crt-time-l1-1-0.dll!_time64
+  0x140187a0b: mov      qword ptr [r14 + 0x158], rax
+  0x140187a12: movsxd   rax, dword ptr [rsi + 0x26]
+  0x140187a16: mov      qword ptr [r14 + 0x160], rax
+  0x140187a1d: movzx    eax, byte ptr [rsi + 0x11]
+  0x140187a21: mov      byte ptr [rsi + 0x10], 0
+  0x140187a25: cmp      byte ptr [r14 + 0xc0], 0xc
+  0x140187a2d: mov      dword ptr [r14 + 0x16c], eax
+  0x140187a34: mov      eax, dword ptr [rsi + 0x12]
+  0x140187a37: mov      dword ptr [r14 + 0x170], eax
+  0x140187a3e: mov      eax, dword ptr [rsi + 0x16]
+  0x140187a41: mov      qword ptr [r14 + 0x178], rax
+  0x140187a48: mov      eax, dword ptr [rsi + 0x1a]
+  0x140187a4b: mov      dword ptr [r14 + 0x180], eax
+  0x140187a52: mov      eax, dword ptr [rsi + 0x1e]
+  0x140187a55: mov      dword ptr [r14 + 0x184], eax
+  0x140187a5c: mov      eax, dword ptr [rsi + 0x22]
+  0x140187a5f: mov      qword ptr [r14 + 0x188], rax
+  0x140187a66: movsxd   rax, dword ptr [rsi + 0x26]
+  0x140187a6a: mov      qword ptr [r14 + 0x190], rax
+  0x140187a71: movsxd   rax, dword ptr [rsi + 0x2a]
+  0x140187a75: mov      qword ptr [r14 + 0x198], rax
+  0x140187a7c: mov      eax, dword ptr [rsi + 0x2e]
+  0x140187a7f: mov      dword ptr [r14 + 0x1a0], eax
+  0x140187a86: movzx    eax, byte ptr [rsi + 5]
+  0x140187a8a: mov      dword ptr [r14 + 0x1a4], eax
+  0x140187a91: movzx    eax, byte ptr [rsi + 6]
+  0x140187a95: mov      dword ptr [r14 + 0x1a8], eax
+  0x140187a9c: movups   xmm0, xmmword ptr [rsi + 0x3a]
+  0x140187aa0: movups   xmmword ptr [r14 + 0x1b9], xmm0
+  0x140187aa8: movups   xmm1, xmmword ptr [rsi + 0x4a]
+  0x140187aac: movups   xmmword ptr [r14 + 0x1c9], xmm1
+  0x140187ab4: movzx    eax, byte ptr [rsi + 0x5a]
+  0x140187ab8: mov      dword ptr [r14 + 0x1dc], eax
+  0x140187abf: jne      0x140187b19
+  0x140187ac1: lea      rdx, [rsi + 0x5b]
+  0x140187ac5: mov      r8d, 0x81
+  0x140187acb: lea      rcx, [r14 + 0xc1]
+  0x140187ad2: call     qword ptr [rip + 0x631fe8]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x140187ad8: lea      rdx, [rsi + 0xdc]
+  0x140187adf: mov      byte ptr [r14 + 0x141], 0
+  0x140187ae7: mov      r8d, 0x20
+  0x140187aed: lea      rcx, [r14 + 0x40]
+  0x140187af1: call     qword ptr [rip + 0x631fc9]  ; api-ms-win-crt-string-l1-1-0.dll!strncpy
+  0x140187af7: lea      r9, [r14 + 0x40]
+  0x140187afb: mov      byte ptr [r14 + 0x5f], 0
+  0x140187b00: lea      r8, [r14 + 0xc1]
+  0x140187b07: mov      ecx, 7
+  0x140187b0c: lea      rdx, [rip + 0x6462b5]  ; '[OnAccountVerifyRespond] ucXGSDK UnionAcc=%s AccountName=%s'
+  0x140187b13: call     qword ptr [rip + 0x63092f]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x140187b19: xor      edi, edi
+  0x140187b1b: mov      dword ptr [rsp + 0x30], 0x23
+  0x140187b23: mov      dword ptr [r14 + 0x1ac], edi
+  0x140187b2a: .byte    0x8b
+  0x140187b2b: .byte    0x46
+

@@ -1,0 +1,3 @@
+# KGUIX64.dll xrefs for 'GetFileCRC'
+# image base 0x180000000
+

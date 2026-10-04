@@ -1,0 +1,2 @@
+ui/Config/Default/LoginServerList.ini
+ui/Scheme/Case/serverlist.ini
