@@ -1204,3 +1204,20 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   host diagnostics.
 - Next: trace the repeated-load caller (entity spawn internal path) or accept the game
   represent layer as the actor driver; then actor render + terrain, then the app port.
+
+## 2026-10-02 ¡ª Phase 3: SFX play/registration path mapped (effect not standalone)
+
+- The engine's own play sequence after KG3D_CreateSFXFromFile (caller at 0x44FEE9,
+  inside the animation-controller SFX-tag playback block 0x44FExx):
+  1. sfx->vt[0x150] (slot 42) with &local -> reads the SFX world position;
+  2. host object [ctx+0x18] -> t[0xa0] (slot 20) with the position -> places;
+  3. host [ctx+0x18] -> t[0x58] (slot 11) with dx=sfx -> **registers the SFX
+     with the host**;
+  4. host callback [+0x2170]/[+0x2178] ->  xC45470.
+- So a created SFX is inert until registered with a host (controller/scene object);
+  the scene owns an SFX particle renderer (KG3D_SceneObjectContainer::
+  _InitSFXParticleRenderer), i.e. effects render through scene objects.
+- Host diagnostics that crash: inline hooks on FetchModelFromActor/UpdateFromActor
+  (bad trampolines) - removed; keep only clean-prologue hooks (CreateTargetWindow,
+  LoadFile, AcqureRenderActorProxy).
+- Evidence: disasm above; commit c73072 (stable host).
