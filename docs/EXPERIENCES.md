@@ -1221,3 +1221,23 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (bad trampolines) - removed; keep only clean-prologue hooks (CreateTargetWindow,
   LoadFile, AcqureRenderActorProxy).
 - Evidence: disasm above; commit c73072 (stable host).
+
+## 2026-10-03 ¡ª A1 ANSWERED: scene object created; actor draw is the game layer's job
+
+- Hooked KG3D_SceneObject::Init(SOURCE_MAP_SCENE_ENTITY_INFO*) (0x9B9030): it fires for
+  **every** world object (724) with rc=0, including our injected player entity
+  (guid={aaaaaaaa-...} -> 0x0). So the scene-object registration exists and succeeds.
+- Marking our entity with the engine's own character flags (SetCharactorObject 0xE6490,
+  SetMainCharactor 0xE64D0) changes nothing visually.
+- Backtrace on the entity's model load (RtlCaptureStackBackTrace in the LoadFile hook):
+  the f1 mesh + JsonInspack load on an **async worker thread** (chain via
+  0x87F288/0x891771/0x889711 -> engine external thread), i.e. the engine's scene entity
+  loader does stream the actor model; the loads succeed, no error.
+- Conclusion: the engine scene creates scene objects and streams their models, but the
+  **render actor for characters is created by the game layer (JX3RepresentX64 / logic)**,
+  not by the engine scene alone. A1's "host/registration object" therefore does not exist
+  inside the engine scene; the remaining path to a visible character is the represent
+  module integration (or an engine-side render proxy created the way the game does).
+- Also: engine FrameMove is now called every frame again (the old f<8 hack removed; the
+  SceneViewEx paint pair already fixed the shadow crash).
+- Evidence: %TEMP%\opencode\skillv2\host_a3.out (Init trace), host_a6.out (backtrace).

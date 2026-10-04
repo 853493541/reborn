@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+static HMODULE g_eng = NULL;
+
 static void logf(const char* fmt, ...)
 {
     va_list ap;
@@ -132,6 +134,23 @@ static void* __fastcall hookLoadFileSrc(const char* path, int flags)
     {
         printf("[host] LoadFile path=%s\n", path);
         fflush(stdout);
+        if (strstr(path, "f1_3094") != NULL)
+        {
+            static int bt = 0;
+            if (bt < 3)
+            {
+                bt++;
+                void* frames[16];
+                USHORT n = RtlCaptureStackBackTrace(1, 16, frames, NULL);
+                for (USHORT i = 0; i < n; i++)
+                {
+                    DWORD64 a = (DWORD64)frames[i];
+                    printf("[host]   bt[%u] = 0x%llX (eng+0x%llX)\n", i, a,
+                           (a > (DWORD64)g_eng) ? (a - (DWORD64)g_eng) : 0);
+                }
+                fflush(stdout);
+            }
+        }
     }
     return ((LoadFileFn)g_lfTramp)(path, flags);
 }
@@ -266,7 +285,6 @@ static void castAbility(int idx, void* actor, void* ctrl, HMODULE eng)
 
 // render-proxy acquisition hook: proves whether the engine asks for a render
 // proxy per scene object (and for which GUID)
-static HMODULE g_eng = NULL;
 static BYTE g_arpSaved[32];
 static BYTE* g_arpTramp = NULL;
 typedef long (__fastcall *ArpFn)(void*, void*, unsigned char, void**);
@@ -285,16 +303,51 @@ static long __fastcall hookAcquireProxy(void* self, void* scene, unsigned char b
     return r;
 }
 
-// scene-object spawn diagnostics: Init / FetchModelFromActor / UpdateFromActor
+// scene-object trace hooks (A1): ctor / Init(entityInfo) / SetSfxOrPss
+static BYTE g_socSaved[32];
+static BYTE* g_socTramp = NULL;
+static long __fastcall hookSceneObjectCtor(void* self)
+{
+    long r = ((long (__fastcall *)(void*))g_socTramp)(self);
+    static int n = 0;
+    if (n < 60) { printf("[host] SceneObject::ctor self=%p\n", self); fflush(stdout); n++; }
+    return r;
+}
+
 static BYTE g_soiSaved[32];
 static BYTE* g_soiTramp = NULL;
-typedef long (__fastcall *SoInitFn)(void*, int, void*, void*, void*, void*);
+static long __fastcall hookSceneObjectInit(void* self, void* entityInfo)
+{
+    long r = ((long (__fastcall *)(void*, void*))g_soiTramp)(self, entityInfo);
+    const char* guid = NULL;
+    __try { guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
+    printf("[host] SceneObject::Init self=%p info=%p -> 0x%08X guid=%s\n",
+           self, entityInfo, (unsigned)r, guid ? guid : "(?)");
+    fflush(stdout);
+    if (r >= 0 && guid != NULL && strstr(guid, "aaaaaaaa-1111-2222-3333") != NULL)
+    {
+        long cr = ((long (__fastcall *)(void*, int))((BYTE*)g_eng + 0xE6490))(self, 1);
+        long mr = ((long (__fastcall *)(void*, int))((BYTE*)g_eng + 0xE64D0))(self, 1);
+        printf("[host] entity charactor flags -> set=0x%08X main=0x%08X\n",
+               (unsigned)cr, (unsigned)mr);
+        fflush(stdout);
+    }
+    return r;
+}
 
-static BYTE g_fmaSaved[32];
-static BYTE* g_fmaTramp = NULL;
-
-static BYTE g_ufaSaved[32];
-static BYTE* g_ufaTramp = NULL;
+static BYTE g_sfpSaved[32];
+static BYTE* g_sfpTramp = NULL;
+static long __fastcall hookSetSfxOrPss(void* self, int on)
+{
+    long r = ((long (__fastcall *)(void*, int))g_sfpTramp)(self, on);
+    const char* guid = NULL;
+    __try { guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
+    printf("[host] SetSfxOrPss self=%p on=%d guid=%s\n", self, on, guid ? guid : "(?)");
+    fflush(stdout);
+    return r;
+}
 
 static HWND createHostWindow(void)
 {
@@ -365,7 +418,13 @@ int main(void)
     g_eng = eng;
     int arpOk = installInlineHook(eng, 0x9BB730, (void*)hookAcquireProxy,
                                   g_arpSaved, &g_arpTramp, 22);
-    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d", hookOk, lfOk, arpOk);
+    int socOk = 1; // ctor hook not installable (RIP-relative in prologue)
+    int soiOk = installInlineHook(eng, 0x9B9030, (void*)hookSceneObjectInit,
+                                  g_soiSaved, &g_soiTramp, 16);
+    int sfpOk = installInlineHook(eng, 0xE6690, (void*)hookSetSfxOrPss,
+                                  g_sfpSaved, &g_sfpTramp, 16);
+    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soCtor=%d soInit=%d setSfx=%d",
+         hookOk, lfOk, arpOk, socOk, soiOk, sfpOk);
     {
         HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
         if (kgc != NULL)
@@ -618,7 +677,7 @@ int main(void)
                 castAbility(0, actor, ctrl, eng);
             }
             if (ctrl != NULL) ctrlFm(ctrl);
-            if (f < 8) engFm(engine);
+            engFm(engine);
             if (camObj != NULL)
                 ((long (__fastcall *)(void*, float*, int))((BYTE*)eng + 0xB36540))(camObj, camPose, 0);
             if (window != NULL && view != NULL)
