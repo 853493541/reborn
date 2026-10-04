@@ -65,6 +65,9 @@ namespace UiProcessApp
                 target = target ?? (TreeViewItem)firstStage.Items[0];
                 target.IsSelected = true;
                 target.BringIntoView();
+                // Keyboard focus on the tree (not the search box) so the X reject key
+                // works right after startup without an extra click.
+                StageTree.Focus();
             }
         }
 
@@ -667,7 +670,10 @@ namespace UiProcessApp
         /// rejected set is kept in Data/rejected.tsv so the catalog JSON stays clean.</summary>
         private void OnWindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key != System.Windows.Input.Key.X || _currentWindow == null) return;
+            // With a Chinese IME active the letter arrives as Key.ImeProcessed and the
+            // real key lives in ImeProcessedKey; accept both spellings.
+            var key = e.Key == System.Windows.Input.Key.ImeProcessed ? e.ImeProcessedKey : e.Key;
+            if (key != System.Windows.Input.Key.X || _currentWindow == null) return;
             if (System.Windows.Input.Keyboard.FocusedElement is TextBox ||
                 System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.Primitives.TextBoxBase) return;
             if (e.KeyboardDevice.Modifiers != System.Windows.Input.ModifierKeys.None) return;

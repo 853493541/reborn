@@ -1591,3 +1591,16 @@ solved it, and what is still open. **Newest at the bottom.**
   Key handler ignores presses while a TextBox has focus or with modifiers.
 - Verified: `--reject characterpanel` twice -> rejected (not-needed=1) then restored (not-needed=0),
   rejected.tsv back to header-only; --selftest 1037/0/0 (JSON untouched).
+
+### 2026-10-04 — UI — X key "doesnt work" fix: Chinese IME + startup focus
+- User: "doesnt work" (the X reject key in the viewer). Two input-path causes fixed:
+  1) with a Chinese IME active the letter arrives as Key.ImeProcessed (the real key is in
+     ImeProcessedKey) - the handler now accepts both; a press was seen working once (a user press
+     wrote questtracelist to rejected.tsv) which fits an intermittent IME-off/on path.
+  2) startup keyboard focus stayed on the search box, whose guard ignores letter keys - OnLoaded now
+     calls StageTree.Focus() so X works without an extra click.
+  Also made rejected.tsv loading BOM-tolerant (PowerShell Set-Content -Encoding UTF8 writes a BOM).
+- Testing note: driving the GUI key path programmatically needs real foreground (SetForegroundWindow
+  is blocked by the foreground lock; SendKeys without the check can type into the wrong window) - the
+  guarded send_x.ps1 aborts unless the foreground PID matches; verify by hand or via the headless
+  --reject path.

@@ -26,7 +26,7 @@ namespace UiProcessApp
             if (!File.Exists(path)) return map;
             foreach (var raw in File.ReadAllLines(path))
             {
-                var line = raw.Trim();
+                var line = raw.Trim().TrimStart('\uFEFF');
                 if (line.Length == 0 || line.StartsWith("#")) continue;
                 var parts = line.Split('\t');
                 if (parts.Length >= 1 && parts[0].Length > 0)
