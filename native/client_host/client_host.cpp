@@ -648,6 +648,7 @@ static long __fastcall hookSetSfxOrPss(void* self, int on)
 // represent-init probe: run the singleton lifecycle init on a worker thread and
 // capture its stack if it blocks (A1 follow-up)
 static volatile LONG g_repInitDone = 0;
+static volatile LONG g_repProbePending = 0;
 static void* g_repSingleton = NULL;
 static HMODULE g_repModule = NULL;
 
@@ -729,6 +730,49 @@ static void probeRepresentSlots(void)
     }
 }
 
+// ECS hierarchy builder (JX3RepresentX64 0x924B20): creates the "root"/"reference"
+// entities and stores them to globals 0xF512A8/0xF512B0 (GetRepresentECSRootEntity
+// at 0x2680 returns 0xF512A8). The exe module system normally wires this at runtime;
+// call it directly after the singleton lifecycle init.
+static void probeRepresentHierarchy(void)
+{
+    if (g_repModule == NULL) return;
+    // ECS world create (0x920D10): stores the world object at global 0xF51298,
+    // which the entity factory (0x920C40) requires. Normally created by the
+    // module init that faults in this host.
+    __try
+    {
+        void* world = *(void**)((BYTE*)g_repModule + 0xF51298);
+        logf("[host] represent ECS world before = %p", world);
+        if (world == NULL)
+        {
+            struct { void* b; void* e; void* c; } vec = { NULL, NULL, NULL };
+            ((void (__fastcall *)(void*))((BYTE*)g_repModule + 0x920D10))(&vec);
+            logf("[host] world create called: vec=%p..%p..%p world=%p", vec.b, vec.e, vec.c,
+                 *(void**)((BYTE*)g_repModule + 0xF51298));
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] world create fault"); }
+    typedef void (__cdecl *BuildFn)(void);
+    __try
+    {
+        ((BuildFn)((BYTE*)g_repModule + 0x924B20))();
+        logf("[host] represent hierarchy builder (0x924B20) called");
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] represent hierarchy builder fault"); }
+    __try
+    {
+        void* root = *(void**)((BYTE*)g_repModule + 0xF512A8);
+        void* ref = *(void**)((BYTE*)g_repModule + 0xF512B0);
+        logf("[host] represent globals: root=%p reference=%p", root, ref);
+        typedef void* (__cdecl *GetEcsFn)(void);
+        GetEcsFn ge = (GetEcsFn)GetProcAddress(g_repModule, "GetRepresentECSRootEntity");
+        logf("[host] GetRepresentECSRootEntity -> %p", (ge != NULL) ? ge() : NULL);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] represent globals query fault"); }
+}
+
 static void probeRepresentInit(void)
 {
     if (g_repSingleton == NULL) return;
@@ -758,6 +802,7 @@ static void probeRepresentInit(void)
             logf("[host] ECS root after init -> %p", ecs);
         }
         __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] ECS root query fault"); }
+        probeRepresentHierarchy();
         probeRepresentSlots();
         return;
     }
@@ -1080,11 +1125,11 @@ int main(void)
             {
                 char rpFlag[8];
                 if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
-                    probeRepresentInit();
+                    g_repProbePending = 1; // run in the frame loop (engine pump active)
             }
             // NOTE: singleton lifecycle init (vt[1], the game's KJX3RepresentModule
-            // activate path) blocks in this host - it expects the game module
-            // environment; do not call it here (see docs/EXPERIENCES.md).
+            // activate path) spins on a represent lock here - defer it until the
+            // frame loop is pumping (see docs/EXPERIENCES.md).
         }
     }
 
@@ -1305,6 +1350,23 @@ int main(void)
             {
                 g_autoCastDone = 1;
                 castAbility(0, actor, ctrl, eng);
+            }
+            if (f == 5 && g_repProbePending)
+            {
+                g_repProbePending = 0;
+                logf("[host] deferred represent probe at frame %d", f);
+                char rpMode[8] = { 0 };
+                GetEnvironmentVariableA("RC_HOST_REPINIT", rpMode, sizeof(rpMode));
+                if (rpMode[0] == '2')
+                {
+                    logf("[host] represent probe mode 2: skip lifecycle init");
+                    probeRepresentHierarchy();
+                    probeRepresentSlots();
+                }
+                else
+                {
+                    probeRepresentInit();
+                }
             }
             if (f == 30 || f == 200)
             {

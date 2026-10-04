@@ -1386,3 +1386,35 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Evidence: %TEMP%\opencode\skillv2\host_watch.out (writer list), host_watch2.out
   (10 writers), host_class.out / host_class2.out (hook faults), host_final3.out/png
   (restored clean state).
+
+## 2026-10-04 — Represent integration breakthrough: ECS world + hierarchy can be created directly
+
+- The singleton lifecycle init (vt[1]) is nondeterministic in this host: with the frame
+  loop pumping it either completes in 50 ms **after faulting** (AV inside the job
+  processor at represent+0x372CAC, swallowed by the thread wrapper) or spins forever on
+  a job lock (represent+0x372CC8). Either way the ECS world global (0xF51298) stays null,
+  so the entity factory (0x920C40) returns null and the hierarchy builder fails.
+- **Direct path that works (RC_HOST_REPINIT=2):** skip the lifecycle init and call
+  - `represent+0x920D10` (ECS world create; takes a vector ptr, stores the world object
+    at global 0xF51298) with a zeroed local vector, then
+  - `represent+0x924B20` (hierarchy builder; calls CreateEntityByName("root") and
+    ("reference") via thunk 0x15BF4 -> 0xAEDFD0, stores them at globals 0xF512A8/0xF512B0).
+  Result (host_rep11.out): `world=000002B2507666D0`, `root=000002B25F819680`,
+  `GetRepresentECSRootEntity -> 000002B25F819680`, slots 2+ run clean, frame loop
+  completes. This is the first live represent ECS in the host.
+- The represent DLL (16.8 MB) exposes only 3 exports (CreateSO3Represent 0xF9CA,
+  GetRepresentECSRootEntity 0x2680 -> global 0xF512A8, CreateRLLoader 0x141F5); the rest
+  is the singleton vtable + internal "KRL" character API found in strings:
+  `CreateEntity`, `LoadEntityFromFile`, `PlayPlayerAnimation`, `PlayNPCAnimation`,
+  `HandleCharacterAnimation`, `KRL_ENTITY_TYPE::{AVATOR,PLAYER,NPC}`, `pLocalCharacter`,
+  `ReloadAllCharacter`, `scene[main]`, `camera controller` etc. ECS system entities are
+  created by name (e.g. "scene[main]" at 0xADF277).
+- Next probes for a visible player: (a) find the local-player creation path in the KRL
+  API (CreateEntity/LoadEntityFromFile with an entity file + KRL_ENTITY_TYPE::PLAYER)
+  and the f1 model binding; (b) attach the created entity under scene[main]; (c) drive
+  the represent tick each frame; (d) check whether the represent-created actor is drawn
+  by the engine scene (game-layer scene node path).
+- Host: represent probe deferred to frame 5 (engine pump active); RC_HOST_REPINIT=1 =
+  init+hierarchy+slots, =2 = skip init (working path); default runs unchanged and green.
+- Evidence: %TEMP%\opencode\skillv2\host_rep9.out (init fault), host_rep10.out (hang),
+  host_rep11.out (ECS root live), host_final4.out/png (default path clean).
