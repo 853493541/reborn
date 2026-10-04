@@ -3776,3 +3776,24 @@ work into main without M2 entanglement.
 - Verified: same jump run after the fix (`reborn_20261003_181024.log`): raw
   steps still 41/35 u, anchorstep ~2-3 u per render frame (smooth, no 15 Hz
   staircase); collision selftest 36/36; camera smoke ALL PASS.
+
+### 2026-10-03 - Merge main into agent/move-controls (tick model + HudOverlay)
+
+- Did: merged `main` @ 765c357 (15 Hz integer movement, collision system,
+  targeting, HudOverlay, camera anchor) into the controls branch; 11
+  `client/RebornClient.cs` hunks resolved by porting the branch control
+  semantics into main's tick loop (per-tick classical RunTo / joystick instant
+  facing, gait octant, integral step + capsule substeps), plus the
+  `docs/EXPERIENCES.md` union. Merge commit b872d79.
+- Post-merge fixes: removed main's per-tick `curYaw = atan2(mvx,mvz)` snap,
+  turn-key block `dt` -> `pdt`, mode label moved into `HudOverlay.SetModeText`.
+- Lesson (tooling): the hunk side-extraction dropped one closing brace (main's
+  jump probe) - after scripted conflict resolution always brace-balance-scan
+  before building (`depth != 0` catches it instantly).
+- Lesson (proof): layered HUD windows are invisible to `PrintWindow` (flag 2)
+  and to `CopyFromScreen` under DPI virtualization; added `RC_HUD_DUMP=<png>`
+  to save the rendered overlay buffer for a numeric fingerprint.
+- Verified: build exit=0; camera_smoke ALL PASS; jx3_model/gravity/loot gates
+  PASS; scripted classical (`203918`) and joystick (`205138`, git=b872d79)
+  demo runs match pre-merge fingerprints; HUD label buffers 318x33/327x33 with
+  651/675 mode-brush pixels (proof/controls/hud_mode_label_*_20261003.png).

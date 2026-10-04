@@ -541,3 +541,25 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
 - Evidence run reborn_20261002_180750.log (joystick): A-alone yaw -1.57 instant
   dist=320 cam kept; back yaw 3.14; WA 383 dyaw=-2.36; WD 383 dyaw=1.57
   (full distance, no penalty); classical regression 180923 unchanged.
+
+## Merge verification: main 765c357 into agent/move-controls, 2026-10-03
+- Merge commit b872d79: 11 RebornClient.cs hunks resolved (branch control
+  semantics ported into main's 15 Hz integer tick model) + EXPERIENCES.md union;
+  build exit=0; camera_smoke ALL PASS; jx3_model/gravity/loot gates PASS.
+- Post-merge fixes: removed main's per-tick `if (moving) curYaw = atan2(mvx,mvz)`
+  snap (facing is joystick-instant / classical RunTo per tick), turn-key block
+  dt -> pdt, mode label moved from the old WinForms Label into HudOverlay
+  (SetModeText; hint 22 + gap 6 + mode text, brush 255,220,120).
+- RC_HUD_DUMP=<png path>: new HUD diagnostic (HudOverlay.cs) - layered windows
+  cannot be captured with PrintWindow (flag 2) or CopyFromScreen under DPI
+  virtualization, so the switch saves the rendered overlay buffer directly.
+- Runs (final build git=b872d79 dirty=3):
+  - reborn_20261003_203918.log classical RC_DEMO_MOVE: strafe dist=90 yaw/cam
+    unchanged; turn d=-0.33 camd=-1.88 (A13); WA/WD 362; summary yaw=0.45.
+  - reborn_20261003_204046.log joystick: strafe/back instant yaw -1.57 dist=304;
+    turn camd=0; WA/WD 367.
+  - reborn_20261003_205138.log joystick final: strafe -1.57 dist=300; back
+    +4.71; turn -1.57 camd=0; WA/WD 356; summary yaw=0.79.
+- HUD label fingerprints (proof/controls/hud_mode_label_joystick_20261003.png,
+  hud_mode_label_classical_20261003.png): rendered buffers 318x33 / 327x33 with
+  651 / 675 mode-brush pixels at x=38..306 / x=38..315 ("CONTROL: ...").
