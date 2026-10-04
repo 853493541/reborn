@@ -224,7 +224,7 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
 }
 
 // real .Sfx through the engine's own factory (client build: no AV)
-static void* createRealSfx(HMODULE eng)
+static void* createRealSfx(HMODULE eng, float x, float y, float z)
 {
     void* owner = NULL;
     void** g = *(void***)((BYTE*)eng + 0x2CF1038);
@@ -233,14 +233,15 @@ static void* createRealSfx(HMODULE eng)
     gbk(L"data\\source\\other\\特效\\技能\\SFX\\增益\\c纯阳坐忘.Sfx", sfxPath, sizeof(sfxPath));
     void* sfx = NULL;
     void* out = NULL;
-    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
+    float mtx[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, x, y, z, 1 };
     DWORD exc = 0;
     typedef void* (__fastcall *CreateFn)(void*, const char*, void*, void*, void*,
                                          void*, int, void*);
     __try { sfx = ((CreateFn)((BYTE*)eng + 0xBE5610))(owner, sfxPath, NULL, NULL,
                                                      NULL, mtx, 0, &out); }
     __except (exc = GetExceptionCode(), EXCEPTION_EXECUTE_HANDLER) { sfx = NULL; }
-    logf("[host] .Sfx create -> obj=%p exc=0x%08X owner=%p", sfx, (unsigned)exc, owner);
+    logf("[host] .Sfx create (%.0f,%.0f,%.0f) -> obj=%p exc=0x%08X owner=%p",
+         x, y, z, sfx, (unsigned)exc, owner);
     return sfx;
 }
 
@@ -260,7 +261,7 @@ static void castAbility(int idx, void* actor, void* ctrl, HMODULE eng)
                                                          NULL, NULL, NULL);
         logf("[host] cast[%d] StartAnimation=0x%08X", idx, (unsigned)src);
     }
-    createRealSfx(eng);
+    createRealSfx(eng, 0.0f, 0.0f, 0.0f);
 }
 
 // render-proxy acquisition hook: proves whether the engine asks for a render
@@ -288,40 +289,12 @@ static long __fastcall hookAcquireProxy(void* self, void* scene, unsigned char b
 static BYTE g_soiSaved[32];
 static BYTE* g_soiTramp = NULL;
 typedef long (__fastcall *SoInitFn)(void*, int, void*, void*, void*, void*);
-static long __fastcall hookSceneObjectInit(void* self, int type, void* tmpl, void* mtx,
-                                           void* box, void* guid)
-{
-    long r = ((SoInitFn)g_soiTramp)(self, type, tmpl, mtx, box, guid);
-    printf("[host] SceneObject::Init type=%d self=%p -> 0x%08X\n", type, self, (unsigned)r);
-    fflush(stdout);
-    return r;
-}
 
 static BYTE g_fmaSaved[32];
 static BYTE* g_fmaTramp = NULL;
-static long __fastcall hookFetchModel(void* self)
-{
-    const char* guid = NULL;
-    __try { guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self); }
-    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
-    long r = ((long (__fastcall *)(void*))g_fmaTramp)(self);
-    printf("[host] FetchModelFromActor guid=%s -> 0x%08X\n", guid ? guid : "(?)", (unsigned)r);
-    fflush(stdout);
-    return r;
-}
 
 static BYTE g_ufaSaved[32];
 static BYTE* g_ufaTramp = NULL;
-static long __fastcall hookUpdateFromActor(void* self)
-{
-    const char* guid = NULL;
-    __try { guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self); }
-    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
-    long r = ((long (__fastcall *)(void*))g_ufaTramp)(self);
-    printf("[host] UpdateFromActor guid=%s -> 0x%08X\n", guid ? guid : "(?)", (unsigned)r);
-    fflush(stdout);
-    return r;
-}
 
 static HWND createHostWindow(void)
 {
@@ -392,14 +365,7 @@ int main(void)
     g_eng = eng;
     int arpOk = installInlineHook(eng, 0x9BB730, (void*)hookAcquireProxy,
                                   g_arpSaved, &g_arpTramp, 22);
-    int soiOk = installInlineHook(eng, 0x9B9440, (void*)hookSceneObjectInit,
-                                  g_soiSaved, &g_soiTramp, 22);
-    int fmaOk = installInlineHook(eng, 0x9B9D50, (void*)hookFetchModel,
-                                  g_fmaSaved, &g_fmaTramp, 22);
-    int ufaOk = installInlineHook(eng, 0x9B9AD0, (void*)hookUpdateFromActor,
-                                  g_ufaSaved, &g_ufaTramp, 24);
-    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soInit=%d fetch=%d update=%d",
-         hookOk, lfOk, arpOk, soiOk, fmaOk, ufaOk);
+    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d", hookOk, lfOk, arpOk);
     {
         HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
         if (kgc != NULL)
@@ -593,7 +559,7 @@ int main(void)
     }
 
     // real .Sfx through the engine's own factory (client build: no AV)
-    createRealSfx(eng);
+    createRealSfx(eng, 0.0f, 0.0f, 0.0f);
 
     // ability list for casting (keys 1..9); auto-cast #0 once after boot
     {
@@ -691,4 +657,6 @@ int main(void)
     logf("[host] done");
     return 0;
 }
+
+
 
