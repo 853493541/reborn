@@ -1523,3 +1523,17 @@ solved it, and what is still open. **Newest at the bottom.**
   mean the FILTERED set is empty, not the file (the plan pipeline applies LSH after loading).
 - Docs: BASIC_UI_INVENTORY.md gains the bulk bring-in section; AGENTS/README gate counts -> 1,008.
 - Verified: full --selftest 1008/0/0 (one earlier FAIL hlbop-main fixed via show; re-run green).
+
+### 2026-10-03 — UI — catalog curated: 3 basic-UI stages + official Chinese names (备用 last)
+- User: "thats way too many, i need their official chinese name, and you may need to catalogize them by
+  2.x 3.x 4.x; keeping 备用 as last still."
+- Dropped the 787 tier-5 "other panels/dialogs" entries; the 204 classified windows are regrouped into
+  three stages: 2. 基础HUD (49 = 46 HUD + the hand-built trio), 3. 功能面板 (107), 4. 菜单与交互 (48);
+  备用 stays the last stage (5). Catalog 221 windows; --selftest 221/0/0.
+- Official Chinese names: per-window title text ($Text of Text_Title/*Title sections) resolved through
+  each window's own StringTable (49 `ui\Scheme\Case\*.txt` extracted for this pass, GBK) + the global
+  g_tStrings; 96 windows got an official cn (角色/背包/武学/交易行/储物箱/帮会/系统设置/快捷键设置/
+  表情动作/...). Lesson: the fresh per-window string tables are GBK (the Data/text copies are UTF-8);
+  console pipes mangle CJK - write evidence files via cmd redirection or Python raw bytes.
+- Windows whose data has no authored title (most HUD elements) keep the English title (no invented
+  translations); per-window refinement can add descriptive names later.
