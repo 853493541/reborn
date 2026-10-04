@@ -1574,3 +1574,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Evidence: %TEMP%\opencode\skillv2\host_char_rl.out (LoadPlayerAllModel + HangPet env
   error), rl_names.txt, rl_vt3.txt, rl_core.txt (assembly API), hp_scripts.txt,
   rl_extract2\player.txt.
+
+## 2026-10-04 — Last-gate trace: HangPet script comes from the global world object (rep+0xEDDFE0, field +0x25BC0)
+
+- `HangPetControllerLua::CreateEnv` (rep+0x41EF10) reads `[[rep+0xEDDFE0]+0x25BC0]` as
+  m_pScript (line 0xC47) and copies it to rep+0xEE5DC0; null -> CreateEnv fails ->
+  `HangPetWorld::_Init` (ctx 0x42DAD0) fails -> ctx NULL -> no player core.
+- rep+0xEDDFE0 holds a pointer to the game's global world/context object (written by the
+  game init, not by the represent DLL - no direct writer in the represent image); its
+  +0x25BC0 field is read in ~3900 sites across the DLL (the big game-world object).
+- Also mapped: `LuaCreateHangPet(L, representID, type[, {szRoot,szMdl,szBone}])` at
+  0x5BE120 (needs `pScene->m_pHangPetWorld` non-null, i.e. the same world init); the
+  binding is the game's local-avatar creation entry.
+- So the remaining integration is the game's global world/scripting bootstrap (the
+  exe/module environment again), or finding a setter/creator for the +0x25BC0 script on
+  that object in the represent DLL's own init path (next probe: find who creates the
+  world object at rep+0xEDDFE0 - scan for stores of its address, incl. SIB encodings,
+  and for the script slot writer at +0x25BC0 with 0x89 modrm forms).
+- Evidence: hp_env.txt, hp_ctx.txt, hp_g2.txt, hp_scriptset.txt, hp_world.txt.
