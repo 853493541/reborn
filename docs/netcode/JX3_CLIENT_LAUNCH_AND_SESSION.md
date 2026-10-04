@@ -1016,16 +1016,31 @@ reached. In the synthetic path RG itself also fails (`state=3`) because the remo
 queue token is invalid. Next: find what resolves the task-completion token (task-queue
 pump / completion callback) and whether the login-stage main loop drives it.
 
-**Correction (later static pass):** the "queue submit" is actually **`_beginthreadex`**
-(import slot `0x1407B98A0`): `Connect` spawns a worker thread `0x140185250` that calls
-`RealConnectGateway` on the client and then frees the task object. The 16-byte handle at
-`[gwClient+0x1258]` is the **thread handle** (`[+0x1260]` = its high dword = 0, so the
-state machine's `[+0x1260] != 0` timeout branch is skipped). RG's success check
-(`connection vt+0x20` -> wrapper `0x14079F710` -> transport `0x14079F6F0`) simply stores
-the passed value (`0x3C` = 60 s) into `[transport+0x14]` (the read-select timeout) and
-returns 1 -> RG sets state=2. So the remaining `state=1 -> 3` in the synthetic poll is NOT
-the handle gate; it is a later failure (pump/ProcessPackage connection-lost path or the
-handshake send error path), still to be pinned.
+## 49. P2 probe fix + RG failure point (current state)
+
+**Probe bug fixed (important):** `probe_gw_bp.py` re-armed INT3 with
+`rva = rip - exe_base - 1`, which is only correct for 1-byte stepped instructions; for
+longer first instructions the breakpoint was never re-armed, so every breakpoint appeared
+to hit exactly once. Corrected by tracking the stepped address explicitly. Consequences:
+- `FRAME 0x1400B0DA0` **does run per frame** (5 hits in 50 ms), and with it `PUMP`
+  (`0x140185900`) and the `STATE` machine (`0x140189630`). The earlier "pump runs once"
+  conclusion (sec.47/48) is **retracted** — it was a probe artifact.
+
+**RG failure point (proven with the fixed probe, synthetic connect):**
+`RG` (`0x140189BF0`) -> `RGSTATE` (`0x189CE9`) = **new_state 3** 0.2 s after starting.
+Path: `RG` -> factory `0x14079D100` -> address `vt[0]` = connect `0x14079CDC0`
+(socket/bind/ioctlsocket/connect/select-write; TCP connect to the stub succeeds) ->
+wrapper factory `0x1407A0B00` validates the transport:
+- `transport.vt+0x20(&0x14)` stores the read timeout (`transport+0x14` = 0x14 = 20 s —
+  this is the 20 s close timer),
+- `transport.vt+0x40(&out)` -> template object; its `vt+0x20` must return `0x2A` and its
+  `vt+0x18` must return bytes `[0x20, 0x00]`,
+- then a 0x30 wrapper is built (`0x14079C7A0`).
+`RG` sees the factory result: NULL -> `state = 3` (connection destroyed). So the TCP
+connect succeeds but the client's transport/protocol object setup fails — the remaining
+unknown is which of the two factory stages returns NULL (transport creation in
+`0x14079CDC0`'s tail or the template validation in `0x1407A0B00`), and whether it depends
+on a global network-module init (launcher session is the prime suspect).
 
 ## 48. Gateway login message set (static decode, P2 step 3 complete)
 

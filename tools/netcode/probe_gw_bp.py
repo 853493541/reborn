@@ -39,14 +39,16 @@ EXCEPTION_SINGLE_STEP = 0x80000004
 CTX_FULL = 0x10000B
 THREAD_ACCESS = 0x0002 | 0x0004 | 0x0008 | 0x0010
 RUN_S = float(os.environ.get("RUN_S", "1800"))
+PASSIVE = os.environ.get("PASSIVE", "") != ""
+PUMP_DRIVER = os.environ.get("PUMP_DRIVER", "") != ""
 
 TARGETS = {
-    0x185900: "PUMP",
-    0x189630: "STATE",
     0x189BF0: "RG",
     0x189440: "CONNECT",
     0x189E50: "SEND",
     0x187540: "HELPER",
+    0x189CE9: "RGSTATE",
+    0x18992D: "LOST",
 }
 ONCE = {0x185900}
 MAX_HITS = 30
@@ -114,6 +116,8 @@ def main():
     forced = [False]
     table_dumped = [False]
     poll_last = {}
+    last_pump = [0.0]
+    stepping = [None]
     t0 = time.time()
     de = DEBUG_EVENT()
     ctx = ctypes.create_string_buffer(1232)
@@ -133,7 +137,7 @@ def main():
                                                b"\x00\x00\x00\x00", 4,
                                                ctypes.byref(ctypes.c_size_t()))
                 for rva in TARGETS:
-                    if rva not in armed:
+                    if rva not in armed and not PASSIVE:
                         ob = read_mem(hproc.value, exe_base + rva, 1)
                         if ob:
                             k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + rva),
@@ -171,6 +175,20 @@ def main():
                                            struct.pack("<I", 2), 4, ctypes.byref(n))
                     p38 = read_u64(hproc.value, gw_client[0] + 0x38) or 0
                     print("[%.2f] FORCE state=2 handle-cleared p38=0x%X" % (el, p38), flush=True)
+                if gw_client[0] is None and exe_base and el > 5.0:
+                    gw_client[0] = exe_base + 0xA7D5F0
+                    print("[%.2f] gwClient=0x%X (static)" % (el, gw_client[0]), flush=True)
+                if PUMP_DRIVER and gw_client[0] and el - last_pump[0] > 0.5:
+                    last_pump[0] = el
+                    k32.CreateRemoteThread.restype = w.HANDLE
+                    k32.CreateRemoteThread.argtypes = [w.HANDLE, ctypes.c_void_p, ctypes.c_size_t,
+                                                       ctypes.c_void_p, ctypes.c_void_p, w.DWORD,
+                                                       ctypes.POINTER(w.DWORD)]
+                    tid = w.DWORD()
+                    k32.CreateRemoteThread(hproc, None, 0,
+                                           ctypes.c_void_p(exe_base + 0x185900),
+                                           ctypes.c_void_p(gw_client[0]), 0,
+                                           ctypes.byref(tid))
                 if gw_client[0]:
                     st = read_u32(hproc.value, gw_client[0] + 0x1250)
                     f1 = read_u32(hproc.value, gw_client[0] + 0x1268)
@@ -191,6 +209,10 @@ def main():
                     except OSError:
                         pass
                     n = ctypes.c_size_t()
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x28),
+                                           b"\x00" * 8, 8, ctypes.byref(n))
+                    k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0] + 0x38),
+                                           b"\x00" * 8, 8, ctypes.byref(n))
                     host = b"127.0.0.1\x00"
                     k32.WriteProcessMemory(hproc, ctypes.c_void_p(gw_client[0]),
                                            host + b"\x00" * (32 - len(host)), 32, ctypes.byref(n))
@@ -258,6 +280,9 @@ def main():
                         gw_client[0] = rcx
                     info = ""
                     log_it = True
+                    if rva == 0x189CE9:
+                        eax = struct.unpack_from("<I", ctx, 0x78)[0]
+                        info = " new_state=%d" % eax
                     if rva == 0x189630 and rcx:
                         st = read_u32(hproc.value, rcx + 0x1250)
                         f1 = read_u32(hproc.value, rcx + 0x1268)
@@ -278,6 +303,7 @@ def main():
                     # restore + single-step + re-arm
                     k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + rva),
                                            armed[rva], 1, ctypes.byref(ctypes.c_size_t()))
+                    stepping[0] = rva
                     flags = struct.unpack_from("<I", ctx, 0x44)[0]
                     struct.pack_into("<I", ctx, 0x44, flags | 0x100)
                     k32.SetThreadContext(ht, ctx)
@@ -285,15 +311,11 @@ def main():
                     k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_CONTINUE)
                     continue
             if ec == EXCEPTION_SINGLE_STEP and exe_base:
-                ht = k32.OpenThread(THREAD_ACCESS, False, de.dwThreadId)
-                struct.pack_into("<I", ctx, 0x30, CTX_FULL)
-                k32.GetThreadContext(ht, ctx)
-                rip = struct.unpack_from("<Q", ctx, 0xF8)[0]
-                rva = rip - exe_base - 1
-                if rva in TARGETS and rva not in ONCE:
+                rva = stepping[0]
+                stepping[0] = None
+                if rva is not None and rva in TARGETS and rva not in ONCE:
                     k32.WriteProcessMemory(hproc, ctypes.c_void_p(exe_base + rva),
                                            b"\xCC", 1, ctypes.byref(ctypes.c_size_t()))
-                k32.CloseHandle(ht)
                 k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_CONTINUE)
                 continue
             k32.ContinueDebugEvent(pid, de.dwThreadId, DBG_EXCEPTION_NOT_HANDLED)

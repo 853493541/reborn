@@ -68,9 +68,9 @@ def handle(conn, addr):
     conn.settimeout(None)
     buf = b""
     try:
-        time.sleep(0.1)
+        time.sleep(0.2)
         conn.sendall(handshake_respond())
-        w("[%s] SENT proto2 handshake respond" % time.strftime("%H:%M:%S"))
+        w("[%s] SENT proto2 handshake respond (connect hello)" % time.strftime("%H:%M:%S"))
         while True:
             data = conn.recv(65536)
             if not data:
