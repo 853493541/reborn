@@ -1247,6 +1247,31 @@ int main(void)
                 if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
                     g_repProbePending = 1; // run in the frame loop (engine pump active)
             }
+            // CreateRLLoader only validates a 0xC0 tag on its env argument (client
+            // InitLogic builds a stack struct with just that tag). Test it directly:
+            // this is the game's own character loader without the module environment.
+            {
+                char rlFlag[8];
+                if (GetEnvironmentVariableA("RC_HOST_RLLOADER", rlFlag, sizeof(rlFlag)) != 0)
+                {
+                    typedef void* (__cdecl *CreateRLLoaderFn)(void*);
+                    CreateRLLoaderFn crl = (CreateRLLoaderFn)GetProcAddress(rep, "CreateRLLoader");
+                    unsigned char env[0x80];
+                    memset(env, 0, sizeof(env));
+                    *(unsigned*)env = 0xC0;
+                    void* loader = NULL;
+                    __try { loader = (crl != NULL) ? crl(env) : NULL; }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { loader = NULL; }
+                    logf("[host] CreateRLLoader(tag=0xC0) -> %p (fn=%p)", loader, crl);
+                    if (loader != NULL)
+                    {
+                        void** lvt = *(void***)loader;
+                        logf("[host] RLLoader vtable=%p", (void*)lvt);
+                        for (int i = 0; i < 12; i++)
+                            logf("[host]   rlvt[%d] = %s", i, fnLoc(lvt[i]));
+                    }
+                }
+            }
             // NOTE: singleton lifecycle init (vt[1], the game's KJX3RepresentModule
             // activate path) spins on a represent lock here - defer it until the
             // frame loop is pumping (see docs/EXPERIENCES.md).

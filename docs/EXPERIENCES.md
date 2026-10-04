@@ -1485,3 +1485,28 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Evidence: %TEMP%\opencode\skillv2\host_rep11.out (one-off success), host_krl.out /
   host_krl2.out (builder faults), host_final6.out/png (default green), rep_funcs.txt,
   rep_cc.txt, rep_ce.txt (KRL API disassembly).
+
+## 2026-10-04 — BLOCKER BROKEN: KGRLLoader works standalone (0xC0 tag only, no module environment)
+
+- Traced the client's own bootstrap: `JX3LogicEditOperationX64.dll` (client bin64)
+  `InitLogic` creates `g_pSO3World` (0x125A00) + init (0x12B7E0), then builds a stack
+  env struct whose **first dword is 0xC0**, loads `JX3RepresentX64.dll`
+  (`LoadConvertModule` 0x112FC0) and calls `GetProcAddress("CreateRLLoader")` +
+  `CreateRLLoader(&env)` -> `g_pRLLoader`. The env struct carries only the 0xC0 tag at
+  creation time (CreateRLLoader checks `[rcx]==0xC0` and nothing else).
+- **Host test (RC_HOST_RLLOADER=1):** `CreateRLLoader(&{0xC0})` -> non-null loader
+  `0000014C5093D990`, vtable rep+0xC9C668, run completes cleanly (exit 0). No SO3
+  singleton, no lifecycle init, no module environment needed. MovieEditor's own
+  bootstrap (MovieEngineCLR `KGRepresentHelper`) also uses CreateRLLoader (not
+  CreateSO3Represent), confirming this is the host path.
+- KGRLLoader API (named via its assert strings + vtable disassembly):
+  `LoadPlayerAllModel`, `LoadUnitFromFile` (takes a VFS file object, version <= 0x38),
+  `LoadUnitFromBufferV1..V5`, `GetUnitFromPath`, `GetRepresentIDFromPath`, `GetUnit`,
+  `ReleaseUnit`, `GetAnimationRelation`, `GetRandomAnimationID`, `GetEquipmentScale`.
+  Vtable methods live at rep+0x3F4xxx-0x3F9xxx; thunks at rep+0x1xxxx.
+- Next: disassemble `GetUnitFromPath` (rep+0x3F51xx) for the unit path/extension it
+  expects; find the unit files in the pak index (no ".kgrl" in Trunk.Dir - extension
+  naming still open); then `GetUnitFromPath(loader, path)` -> unit -> engine actor ->
+  render. `ConvertKGRLUnitToJson` (MovieEditor build export) hints the unit format.
+- Evidence: %TEMP%\opencode\skillv2\host_rl.out (loader live), le_call.txt/le_init.txt
+  (client InitLogic), rl_names.txt (KGRLLoader API), rl_vt3.txt (vtable methods).
