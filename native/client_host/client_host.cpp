@@ -1301,6 +1301,32 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] resource converter fault"); }
+                        // SO3Represent::Init(Param) (singleton vt[0]) needs 8 engine
+                        // interfaces; the game gets them from the X3DEngine facade
+                        // (already loaded/inited by this host). Probe the getters so we
+                        // know which Param fields are reachable in-host.
+                        __try
+                        {
+                            HMODULE x3d = GetModuleHandleA("X3DEngine.dll");
+                            logf("[host] X3DEngine module -> %p", x3d);
+                            if (x3d != NULL)
+                            {
+                                typedef void* (__cdecl *GetterFn)(void);
+                                GetterFn gm = (GetterFn)GetProcAddress(x3d,
+                                    "?GetK3EngineMgr@NSX3DEngine@@YAPEAVIX3DEngineManager@@XZ");
+                                GetterFn gl = (GetterFn)GetProcAddress(x3d,
+                                    "?GetK3EngineXRepresentLogic@NSX3DEngine@@YAPEAUIKG3DEngineXRepresentLogic@@XZ");
+                                GetterFn gv = (GetterFn)GetProcAddress(x3d,
+                                    "?GetViewMgr@NSX3DEngine@@YAPEAVIView@1@XZ");
+                                GetterFn gs = (GetterFn)GetProcAddress(x3d,
+                                    "?GetScreenMgr@NSX3DEngine@@YAPEAVIScreen@@XZ");
+                                logf("[host] X3D getters: K3EngineMgr=%p K3EngineXRepLogic=%p ViewMgr=%p ScreenMgr=%p",
+                                     gm ? gm() : (void*)-1, gl ? gl() : (void*)-1,
+                                     gv ? gv() : (void*)-1, gs ? gs() : (void*)-1);
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] X3D getter probe fault"); }
                         __try
                         {
                             long pm = ((long (__fastcall *)(void*))lvt[6])(loader);

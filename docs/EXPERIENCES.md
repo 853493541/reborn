@@ -1699,3 +1699,27 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (stable; mgr is 0 until Init runs).
 - Evidence: rl_mgrset.txt / rl_setter.txt (Init asserts), rl_initbody.txt (Param fields),
   rl_x3d.txt (X3DEngine facade), rl_exeinit.txt (exe CreateSO3Represent), host_char_rl7.out.
+
+## 2026-10-04 — RL Init Param interface factories located; 2/8 already live in the host
+
+- The host already loads+inits the X3DEngine facade (`PreInitX3DEngine` + `LoadX3DEngine`,
+  client_host.cpp ~1118) - runtime probe (RC_HOST_RLLOADER=1, host_char_rl8.out):
+  `GetK3EngineMgr() -> non-null (module-static object)`,
+  `GetK3EngineXRepresentLogic() -> non-null (heap)`, ViewMgr/ScreenMgr non-null.
+- Param factory map (for SO3Represent::Init, cbSize 0xD0):
+  - p3DEngineManager = X3DEngine!GetK3EngineMgr (LIVE)
+  - p3DEngineXLogic = X3DEngine!GetK3EngineXRepresentLogic or
+    KG3DEngineAdapterX64!Get3DEngineXLogicInterface (LIVE)
+  - p3DResourceConverter = JX3ResourceConvertX64!KG_GetConvertResource (already used)
+  - p3DUI = JX3UIX64!CreateSO3UI (0x8DCC0; same as logic module InitUI)
+  - p3DSceneResponseMgr = KG3DSceneResponseX64!GetSceneResponse (0x6720)
+  - p3DMovieCore = KG_MovieEngineX64!KG_GetMovieEngine (0x37E0) or
+    KG3DMovieX64!GetMovieEngine (0x1224C0) or KG3DEngineAdapterX64!GetMovieEngine (0x6CAF0)
+  - p3DModelManager = NOT FOUND yet (no export; rep DLL has internal RLModelManager
+    initialized with pi3DEngineManager)
+  - pStepCtrl = NOT FOUND yet
+- Host probe added: X3D getter logging inside RC_HOST_RLLOADER (build OK, run exit 0).
+- Next: identify p3DModelManager/pStepCtrl via the rep DLL's use sites of
+  "g_pRL->m_p3DModelManager" (0xCA22C0) and the Init-adjacent asserts; then build the
+  Param and call singleton vt[0] -> manager -> NewScene -> scene -> character.
+- Evidence: host_char_rl8.out, rl_scanexports.txt (factory exports), rl_repgetter.txt.
