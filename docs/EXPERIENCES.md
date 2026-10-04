@@ -1769,3 +1769,33 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   editor/preview path designed for hosts without a game world.
 - Evidence: host_char_rl12.out, rl_world.txt (0x924B), rl_scenehead2.txt (ctor),
   rl_ugc1.txt (CreateMainCharacter).
+
+## 2026-10-04 — CreateRLScene needs full Init; complete required-Param list; exe SO3World creation located
+
+- `CreateRLScene` (rep+0xB0B5C0 = `KGameWorldHandler::NewScene`; also used by
+  CreateNewReplayScene 0xB023F0, NewUIScene 0xB19570, KRLUGC::CreateScene 0x33A760 via
+  thunk 0x53FD) is the game's real scene creation: registers the scene id, calls the
+  engine-manager NewScene (0x16DB5), and requires `singleton+0x100` (m_pSO3World) plus
+  `[mgr+0x260]` (a facade-held manager) - both null in this host. Called in-host it
+  faults (SEH-caught, run stable exit 0); fallback direct NewScene still yields an
+  unregistered scene (id 0), chain `sceneId=0 world=0`.
+- Complete SO3Represent::Init required-Param list (assert chain 0x3E6093-0x3E637B):
+  +0x08 p3DEngineManager, +0x10 p3DModelManager, +0x18 p3DEngineXLogic,
+  +0x20 p3DSceneResponseMgr, +0x28 p3DResourceConverter, +0x30 p3DMovieCore,
+  +0x38 p3DUI, +0x40 pDispatcher, +0x68 pRLUIHandler, +0x70 pSO3World,
+  +0x78 pSO3WorldClient, +0x90 pEventCommonMgr, +0x98 pLogicEventMgr,
+  +0xA0 pRepresentEventMgr, +0xC8 pStepCtrl. The RL scene/character path needs the full
+  game stack (logic worlds + event managers + dispatcher + UI handler), i.e. the game's
+  own bring-up.
+- The game exe's SO3World creation found (0xB034B): `new(0x567408)` + ctor `0x16EAD0` +
+  `g_pSO3World` (exe global 0x15855B8) + `world->Init` (0x173F00) with three objects from
+  the exe's module holders (`[holder+0x18]`). Logic module alternative: SO3World ctor
+  0x125A00 + init 0x12B7E0 (JX3LogicEditOperationX64, needs InitLogic's args).
+- Next options: (a) study MovieEditor's working represent host (MovieEngineCLR
+  KGRepresentHelper::InitRepresent + its JX3RepresentX64 build) - a reference for
+  rendering characters without a game world (AGENTS: host-behavior evidence);
+  (b) boot the exe's own game stack (SO3World + event managers + dispatcher + UI
+  handler) and call the full Init; (c) drive the UGC preview path (still needs
+  CreateRLScene -> m_pSO3World, so same gate).
+- Evidence: host_char_rl15.out, rl_crs.txt (CreateRLScene), rl_asserts2.txt (full list),
+  rl_sow3.txt (exe SO3World creation).

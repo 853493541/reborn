@@ -1119,8 +1119,9 @@ int main(void)
         LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     if (x3d == NULL) { logf("[host] X3DEngine load failed err=%lu", GetLastError()); return 2; }
     typedef int (__cdecl *fn_void)(void);
-    ((fn_void)GetProcAddress(x3d, "?PreInitX3DEngine@NSX3DEngine@@YAHXZ"))();
-    ((fn_void)GetProcAddress(x3d, "?LoadX3DEngine@NSX3DEngine@@YAHXZ"))();
+    int x3dPre = ((fn_void)GetProcAddress(x3d, "?PreInitX3DEngine@NSX3DEngine@@YAHXZ"))();
+    int x3dLoad = ((fn_void)GetProcAddress(x3d, "?LoadX3DEngine@NSX3DEngine@@YAHXZ"))();
+    logf("[host] X3D PreInit=%d Load=%d", x3dPre, x3dLoad);
 
     HMODULE adapter = GetModuleHandleA("KG3DEngineAdapterX64.dll");
     void* engIface = NULL;
@@ -1384,6 +1385,10 @@ int main(void)
                                 }
                                 logf("[host] Init probe: mgr=%p modelMgr=%p xlogic=%p sceneResp=%p conv=%p movie=%p ui=%p",
                                      mgr, modelMgr, xlogic, sceneResp, conv, movie, ui);
+                                if (mgr != NULL)
+                                    logf("[host] Init probe: [mgr+0x260]=%p [mgr+0x10]=%p",
+                                         *(void**)((BYTE*)mgr + 0x260),
+                                         *(void**)((BYTE*)mgr + 0x10));
                                 unsigned char param[0xD0];
                                 static unsigned char stepCtrl[0x100];
                                 memset(param, 0, sizeof(param));
@@ -1766,14 +1771,48 @@ int main(void)
                     if (g_repSingleton != NULL && g_repModule != NULL)
                     {
                         // NOTE: singleton vt[1] (activate) blocks in this host (job
-                        // processor spinlock) - do not call it. The RL scene is created
-                        // manually: NewScene(rcx = g_pRL->m_p3DEngineManager
-                        // (singleton+0xB0), edx=1, r8=&out) via the 0x16DB5 thunk
-                        // (KRLMovie::SwitchScene / NewExScene / NewScene all use it).
+                        // processor spinlock) - do not call it. The game's full scene
+                        // creation is CreateRLScene (0xB0B5C0 = KGameWorldHandler::
+                        // NewScene): registers the scene in the singleton map, uses the
+                        // engine manager and loads the map file. Called the way
+                        // KRLUGC::CreateScene does:
+                        // CreateRLScene(id, 0x10, 0, 0, 0, mapFile, 0, sceneName, 0).
                         void* mgr = *(void**)((BYTE*)g_repSingleton + 0xB0);
                         logf("[host] RL engine manager (singleton+0xB0) -> %p", mgr);
                         void* scene = NULL;
                         if (mgr != NULL)
+                        {
+                            // CreateRLScene (0xB0B5C0) is the game's full scene
+                            // creation but it requires the full represent Init
+                            // (singleton+0x100 m_pSO3World etc.) - it faults here.
+                            // Own SEH so the fallback + chain probe still run.
+                            __try
+                            {
+                                typedef long (__fastcall *CreateRLSceneFn)(
+                                    unsigned id, unsigned type, unsigned a3, unsigned a4,
+                                    unsigned long long a5, const char* mapFile,
+                                    unsigned long long a7, const char* sceneName,
+                                    unsigned long long a9);
+                                long cs = ((CreateRLSceneFn)
+                                           ((BYTE*)g_repModule + 0xB0B5C0))(
+                                    2, 0x10, 0, 0, 0,
+                                    "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap",
+                                    0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
+                                logf("[host] RL CreateRLScene(id=2) -> 0x%08X", (unsigned)cs);
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] RL CreateRLScene fault (needs full Init: m_pSO3World)"); }
+                            scene = ((void* (__fastcall *)(unsigned))
+                                     ((BYTE*)g_repModule + 0x924B))(2);
+                            logf("[host] RL scene by id 2 -> %p", scene);
+                            if (scene != NULL)
+                            {
+                                logf("[host] RL scene: id=%u 3DScene=%p",
+                                     *(unsigned*)((BYTE*)scene + 0xF1970),
+                                     *(void**)((BYTE*)scene + 0xF1978));
+                            }
+                        }
+                        if (scene == NULL && mgr != NULL)
                         {
                             long ns = ((long (__fastcall *)(void*, int, void**))
                                        ((BYTE*)g_repModule + 0x16DB5))(mgr, 1, &scene);
