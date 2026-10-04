@@ -50,6 +50,9 @@ TARGETS = {
     0x7A0B64: "FCHK1",
     0x7A0B9F: "FCHK2",
     0x7A0BCC: "FCHK3",
+    0x189440: "CONNECT",
+    0x189E50: "SEND",
+    0x187540: "HELPER",
 }
 ONCE = {0x185900}
 MAX_HITS = 30
@@ -177,7 +180,7 @@ def main():
                     p38 = read_u64(hproc.value, gw_client[0] + 0x38) or 0
                     print("[%.2f] FORCE state=2 handle-cleared p38=0x%X" % (el, p38), flush=True)
                 if gw_client[0] is None and exe_base and el > 5.0:
-                    gw_client[0] = exe_base + 0xA7D5F0
+                    gw_client[0] = exe_base + 0xA755F0
                     print("[%.2f] gwClient=0x%X (static)" % (el, gw_client[0]), flush=True)
                 if PUMP_DRIVER and gw_client[0] and el - last_pump[0] > 0.5:
                     last_pump[0] = el
