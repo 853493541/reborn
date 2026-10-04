@@ -294,14 +294,15 @@ internal static class RebornClient
         // M1.7: the engine renders into a child window of orm, so WinForms
         // child controls sit behind the 3D output. The HUD is a separate
         // top-level layered overlay (client/HudOverlay.cs) owned by orm;
-        // "I" toggles the info box (key handled with the other hotkeys).
+        // Esc toggles the information panel (info + control mode + COPY LOG);
+        // nothing is shown while it is closed (no on-screen panel hints).
         var hud = new HudOverlay();
+        if (Env("RC_HUD_OPEN", "0") == "1") hud.ShowInfo = true;   // test: start open
         form.Show();
         hud.PlaceOver(form);
-        // COPY LOG widget: clickable (the HUD overlay is click-through), owned
-        // by the host form; copies the recent run log to the clipboard.
-        var copyLog = new CopyLogOverlay();
-        copyLog.OnClick = delegate
+        // COPY LOG row (clickable inside the open panel); copies the recent
+        // run log to the clipboard.
+        hud.OnCopyLog = delegate
         {
             try
             {
@@ -313,7 +314,6 @@ internal static class RebornClient
             }
             catch (Exception e) { Log("clipboard copy failed: " + e.Message); }
         };
-        copyLog.PlaceOver(form);
         Application.DoEvents();
 
         var baselib = new KGBaseCLR();
@@ -1416,7 +1416,15 @@ internal static class RebornClient
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) { unlockMouse(); targetSelector.Current = null; }
+            if (e.KeyCode == Keys.Escape)
+            {
+                // information panel (run info + control mode + COPY LOG);
+                // also frees a drag-locked cursor and clears the target
+                unlockMouse();
+                targetSelector.Current = null;
+                hud.ToggleInfo();
+                hud.UpdateLayered();
+            }
             else if (e.KeyCode == Keys.Tab)
             {
                 // SEARCH_ENEMY (Tab) / SELECT_PREV_TARGET (Ctrl+Tab), target.lua
@@ -3836,7 +3844,7 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | I info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,

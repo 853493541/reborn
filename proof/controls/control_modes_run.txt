@@ -598,3 +598,20 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   cursor lock. Build exit=0; camera_smoke ALL PASS (gating checks updated);
   joystick demo reborn_20261003_214620.log fingerprints unchanged (strafe
   -1.57 dist=300, back +4.71, turn -1.57 camd=0, summary yaw=0.79).
+
+## UI: single Esc information panel (info + mode + COPY LOG), 2026-10-03
+- Request: merge the three on-screen panels (I info box, joystick mode label,
+  COPY LOG button) into one information panel opened with Esc; no panel hints
+  are shown while it is closed.
+- HudOverlay.cs rewritten: hidden by default, Esc toggles it; content = mode
+  line (yellow) + run info text + clickable COPY LOG row (clipboard). The
+  overlay is no longer click-through, but it only exists while open, so it
+  never blocks input when closed. CopyLogOverlay class removed; the copy
+  action is wired through hud.OnCopyLog. I remains an alias toggle; Esc also
+  keeps the decoded unlock + target clear.
+- Test switches: RC_HUD_OPEN=1 starts with the panel open (no input driving
+  allowed in tests); RC_HUD_DUMP saves the rendered buffer.
+- Fingerprint (proof/controls/hud_info_panel_open_20261003.png): 633x222 RGBA
+  buffer with 621 mode-brush (yellow) px, 1817 white (info) px, 335 light-blue
+  (COPY LOG text) px, 3380 copy-box px. Closed run writes no dump (nothing is
+  rendered or shown). Build exit=0; camera_smoke ALL PASS.

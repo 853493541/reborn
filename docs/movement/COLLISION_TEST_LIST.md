@@ -35,7 +35,7 @@ smokes `170531/170643`).
 
 ## 2. Manual test list (feel checks)
 
-For every "fail", press **COPY LOG** (top-right) and **F9**; the log names the
+For every "fail", press **Esc** and click the **COPY LOG** row in the information panel, then **F9**; the log names the
 exact blocker (`blocked by inst=… mesh=… top=… feet=…`) or the prop contact
 (`propfix … push …`).
 

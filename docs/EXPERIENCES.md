@@ -3832,3 +3832,19 @@ work into main without M2 entanglement.
   joystick demo fingerprints unchanged (`reborn_20261003_214620.log`).
 - Lesson: a console command name is not a behavior spec - decode the handler
   before mapping it onto host input (the branch's J2 over-interpretation).
+
+### 2026-10-03 - UI: one Esc information panel (info + mode + COPY LOG)
+
+- Request: merge the three on-screen panels (I info box, joystick mode label,
+  COPY LOG button) into a single information panel opened with Esc; nothing is
+  shown while it is closed.
+- Did: `client/HudOverlay.cs` rewritten - hidden by default, Esc toggles; the
+  panel shows the mode line, the run info text and a clickable COPY LOG row;
+  the overlay is no longer click-through (it exists only while open, so it
+  never blocks input when closed). `CopyLogOverlay` removed; the copy action
+  is wired via `hud.OnCopyLog`. `I` stays an alias; Esc keeps unlock + target
+  clear. Added `RC_HUD_OPEN=1` (start open, test) alongside `RC_HUD_DUMP`.
+- Verified: build exit=0; camera_smoke ALL PASS; panel buffer fingerprint
+  633x222 RGBA with 621 yellow (mode), 1817 white (info), 335 light-blue
+  (COPY LOG) px (proof/controls/hud_info_panel_open_20261003.png); a closed
+  run writes no dump (nothing shown).
