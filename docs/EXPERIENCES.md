@@ -1192,3 +1192,15 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   entity's actor spawn not completing (or a re-fetch path). Next probe: remove the
   injected entity and compare (persist => standalone actor re-fetch; stop => entity).
 - Evidence: %TEMP%\opencode\skillv2\host_spawn.out.
+
+## 2026-10-02 ¡ª Phase 3: entity on/off comparison (decisive)
+
+- With the injected player entity: the f1 mesh + JsonInspack load **repeatedly during
+  the frame loop** (3+ times, no error lines). Without the entity: exactly **1** load
+  (the standalone actor at creation). So the entity's actor/model path keeps re-loading
+  (spawn retry or re-fetch) but never reaches a drawn actor.
+- The frame loop also takes >120 s in the recent runs (likely GPU/engine contention with
+  the still-running Skill.exe; earlier runs finished ~40 s) - kill the app before long
+  host diagnostics.
+- Next: trace the repeated-load caller (entity spawn internal path) or accept the game
+  represent layer as the actor driver; then actor render + terrain, then the app port.
