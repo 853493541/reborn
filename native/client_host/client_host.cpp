@@ -1314,8 +1314,10 @@ int main(void)
                             void* singleton = g_repSingleton;
                             if (singleton != NULL)
                             {
+                                // rep+0x5BC9F0(slot) = CreateLuaInterface(NULL,NULL) +
+                                // init; stores the interface at the embedded slot
                                 ((long (__fastcall *)(void*))
-                                 ((BYTE*)rep + 0x16130))((BYTE*)singleton + 0x25BC0);
+                                 ((BYTE*)rep + 0x5BC9F0))((BYTE*)singleton + 0x25BC0);
                                 void* lua = *(void**)((BYTE*)singleton + 0x25BC0);
                                 logf("[host] RL lua state (singleton+0x25BC0) -> %p", lua);
                             }
@@ -1351,6 +1353,36 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] local player assembly fault"); }
+                        // LuaCreateHangPet's internal path: scene -> local character ->
+                        // CreateHangPet(world, sceneField, representID, character, cfg, type)
+                        __try
+                        {
+                            void* singleton = g_repSingleton;
+                            void* scene = (singleton != NULL)
+                                ? ((void* (__fastcall *)(void*))
+                                   ((BYTE*)rep + 0x3E5E80))(singleton) : NULL;
+                            logf("[host] RL scene -> %p", scene);
+                            void* character = (scene != NULL)
+                                ? ((void* (__fastcall *)(void*))
+                                   ((BYTE*)rep + 0x58CE20))(scene) : NULL;
+                            logf("[host] RL local character -> %p", character);
+                            if (scene != NULL && character != NULL)
+                            {
+                                void* world = *(void**)((BYTE*)scene + 0xF2988);
+                                int sceneField = *(int*)((BYTE*)scene + 0xF1970);
+                                unsigned char cfg[0x60];
+                                memset(cfg, 0, sizeof(cfg));
+                                typedef void* (__fastcall *CreateHangPetFn)(
+                                    void*, int, int, void*, void*, int);
+                                void* pet = ((CreateHangPetFn)
+                                             ((BYTE*)rep + 0x42D1F0))(
+                                    world, sceneField, 6, character, cfg, 1);
+                                logf("[host] RL CreateHangPet(world=%p, field=%d, id=6, char=%p, cfg, type=1) -> %p",
+                                     world, sceneField, character, pet);
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] CreateHangPet fault"); }
                     }
                 }
             }

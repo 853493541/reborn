@@ -1611,3 +1611,23 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   helper calls) or find the RL script-manager creation in the vt[1] call list
   (0x26BF7/0x175F3/0x270C/0x1E80D/0x12715 ...) by testing each standalone.
 - Evidence: host_char_rl2.out, hp_lua.txt, hp_bc.txt, hp_slotw.txt.
+
+## 2026-10-04 — RL Lua state + HangPet ctx now live in the host; scene creation is the last step
+
+- Found the RL Lua state creator: rep+0x5BC9F0(slot) calls `CreateLuaInterface(NULL,NULL)`
+  (Engine_Lua5X64) and inits it, storing the interface at the embedded slot
+  (singleton+0x25BC0). Called in the host -> `RL lua state -> 0000022251EB0260`.
+- With the state present, `HangPetWorld` ctx creation (rep+0x42DAD0) now **succeeds**:
+  `RL ctx -> 0000022251EB1340` (no more m_pScript error). This closes the "module
+  environment" gate for the RL path - the Lua state was the missing piece.
+- Next gate: the RL **scene** (rep+0x3E5E80(singleton)) is still null (created by another
+  singleton init, `SO3RL::NewScene` wrapper 0x3EA420 -> vt[0xA8] factory). Without the
+  scene: `RL scene -> 0` -> no local character -> CreateHangPet skipped.
+- Full local-player call path now wired in the host (env-gated RC_HOST_RLLOADER=1):
+  `scene = 0x3E5E80(singleton)`; `character = 0x58CE20(scene)`;
+  `CreateHangPet = 0x42D1F0(world, sceneField, representID, character, cfg, type)`
+  (the internal of the LuaCreateHangPet binding; sceneField = [scene+0xF1970],
+  world = [scene+0xF2988], cfg = zeroed role config). Needs a non-null scene.
+- Evidence: host_char_rl3.out (lua state + ctx), host_char_rl4.out (scene null),
+  hp_luacreate.txt (CreateLuaInterface caller), hp_lch2.txt (CreateHangPet path),
+  hp_scene.txt (NewScene).
