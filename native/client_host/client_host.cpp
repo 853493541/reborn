@@ -349,6 +349,110 @@ static long __fastcall hookSetSfxOrPss(void* self, int on)
     return r;
 }
 
+// represent-init probe: run the singleton lifecycle init on a worker thread and
+// capture its stack if it blocks (A1 follow-up)
+static volatile LONG g_repInitDone = 0;
+static void* g_repSingleton = NULL;
+static HMODULE g_repModule = NULL;
+
+static DWORD WINAPI repInitThread(LPVOID)
+{
+    __try
+    {
+        void** rvt = *(void***)g_repSingleton;
+        ((long (__fastcall *)(void*))rvt[1])(g_repSingleton);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+    InterlockedExchange(&g_repInitDone, 1);
+    return 0;
+}
+
+static BOOL CALLBACK enumProcHostWnd(HWND h, LPARAM lp)
+{
+    DWORD pid = 0;
+    GetWindowThreadProcessId(h, &pid);
+    if (pid == GetCurrentProcessId())
+    {
+        char cls[128] = { 0 };
+        char title[256] = { 0 };
+        GetClassNameA(h, cls, sizeof(cls) - 1);
+        GetWindowTextA(h, title, sizeof(title) - 1);
+        printf("[host]   window hwnd=%p class='%s' title='%s' visible=%d\n",
+               h, cls, title, IsWindowVisible(h));
+        fflush(stdout);
+    }
+    return TRUE;
+}
+
+static void probeRepresentInit(void)
+{
+    if (g_repSingleton == NULL) return;
+    HANDLE th = CreateThread(NULL, 0, repInitThread, NULL, 0, NULL);
+    if (th == NULL) return;
+    int waited = 0;
+    while (waited < 6000 && InterlockedCompareExchange(&g_repInitDone, 0, 0) == 0)
+    {
+        MSG msg;
+        while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessageA(&msg);
+        }
+        Sleep(50);
+        waited += 50;
+    }
+    logf("[host] represent init done=%ld after %dms",
+         (long)InterlockedCompareExchange(&g_repInitDone, 0, 0), waited);
+    if (InterlockedCompareExchange(&g_repInitDone, 0, 0) != 0)
+    {
+        __try
+        {
+            typedef void* (__cdecl *GetEcsFn)(void);
+            GetEcsFn ge = (GetEcsFn)GetProcAddress(g_repModule, "GetRepresentECSRootEntity");
+            void* ecs = (ge != NULL) ? ge() : NULL;
+            logf("[host] ECS root after init -> %p", ecs);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] ECS root query fault"); }
+        return;
+    }
+    if (InterlockedCompareExchange(&g_repInitDone, 0, 0) == 0)
+    {
+        SuspendThread(th);
+        CONTEXT ctx;
+        memset(&ctx, 0, sizeof(ctx));
+        ctx.ContextFlags = CONTEXT_CONTROL;
+        if (GetThreadContext(th, &ctx))
+        {
+            printf("[host] represent init HUNG rip=0x%llX rsp=0x%llX\n",
+                   (unsigned long long)ctx.Rip, (unsigned long long)ctx.Rsp);
+            DWORD64* sp = (DWORD64*)ctx.Rsp;
+            int shown = 0;
+            for (int i = 0; i < 512 && shown < 20; i++)
+            {
+                DWORD64 v = 0;
+                __try { v = sp[i]; } __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+                if (v > (DWORD64)g_repModule && v < (DWORD64)g_repModule + 0x8000000)
+                {
+                    printf("[host]   stack[%d] rep+0x%llX\n", i, v - (DWORD64)g_repModule);
+                    shown++;
+                }
+                else if (v > (DWORD64)g_eng && v < (DWORD64)g_eng + 0x8000000)
+                {
+                    printf("[host]   stack[%d] eng+0x%llX\n", i, v - (DWORD64)g_eng);
+                    shown++;
+                }
+            }
+            fflush(stdout);
+        }
+        ResumeThread(th);
+        logf("[host] windows of this process at hang:");
+        EnumWindows(enumProcHostWnd, 0);
+        // the thread is wedged; exit the process cleanly after logging
+        logf("[host] represent init wedged - terminating probe");
+        ExitProcess(0);
+    }
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
@@ -492,6 +596,13 @@ int main(void)
             GetEcsFn ge = (GetEcsFn)GetProcAddress(rep, "GetRepresentECSRootEntity");
             void* ecs = (ge != NULL) ? ge() : NULL;
             logf("[host] GetRepresentECSRootEntity -> %p", ecs);
+            g_repSingleton = r;
+            g_repModule = rep;
+            {
+                char rpFlag[8];
+                if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
+                    probeRepresentInit();
+            }
             // NOTE: singleton lifecycle init (vt[1], the game's KJX3RepresentModule
             // activate path) blocks in this host - it expects the game module
             // environment; do not call it here (see docs/EXPERIENCES.md).

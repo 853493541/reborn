@@ -1257,3 +1257,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   what it waits on; or find the module environment objects (KJX3RepresentModule +0x18
   singleton holder) the game builds before activation.
 - Evidence: %TEMP%\opencode\skillv2\host_rep2.out; commit pending.
+
+## 2026-10-03 ¡ª Represent init: message pump required; ECS hierarchy still not created
+
+- CreateSO3Represent singleton lifecycle init (vt[1]) **completes in 50-200 ms when the
+  main thread pumps messages** during the wait (PeekMessage loop) - without the pump it
+  hangs >6 s (first run completed by luck). The represent init does cross-thread work
+  that needs the message pump.
+- After vt[1], GetRepresentECSRootEntity is still **NULL**: the ECS hierarchy
+  (CreateHierarchy 0x924825 writer at 0x924BC3 -> global 0xF512A8) is not created by
+  vt[1]. The hierarchy function (0x924640..0x924D3E) has **no static references**
+  (not in any vtable/table) - it is wired at runtime by the game's module system
+  (KJX3RepresentModule in JX3ClientX64.exe: slot0 ctor 0xBC100 sets vtable 0x95A350,
+  slot4 Load 0xBC6A0 creates the singleton, slot6 0xBC8F0 lifecycle).
+- Next probes: (a) call the singleton's remaining vtable slots with the pump and check
+  the ECS root after each; (b) hook the ECS-root writer (0x924BC3) at runtime to catch
+  the real caller; (c) engine-side alternative: OnSceneActorLoadedCallBack (0x8CA470)
+  registration for our actor.
+- Evidence: %TEMP%\opencode\skillv2\host_rep4/6.out; commit pending.
