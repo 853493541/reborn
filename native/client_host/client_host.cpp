@@ -706,6 +706,21 @@ static volatile LONG g_repInitDone = 0;
 static volatile LONG g_repProbePending = 0;
 static void* g_repSingleton = NULL;
 static HMODULE g_repModule = NULL;
+static void* g_lastEntity = NULL;
+
+// entity factory (represent 0xAEDFD0 CreateEntityByName): capture created entities
+static BYTE g_efSaved[32];
+static BYTE* g_efTramp = NULL;
+static void* __fastcall hookEntityFactory(void* name)
+{
+    void* r = ((void* (__fastcall *)(void*))g_efTramp)(name);
+    if (name != NULL)
+    {
+        logf("[host] entityFactory('%s') -> %p", (const char*)name, r);
+        g_lastEntity = r;
+    }
+    return r;
+}
 
 static DWORD WINAPI repInitThread(LPVOID)
 {
@@ -816,6 +831,28 @@ static void probeRepresentHierarchy(void)
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     { logf("[host] represent hierarchy builder fault"); }
+    // KRL entity/component creation: CreateEntity(world, &name, type=1) at
+    // 0x2EA6C0, CreateComponent(entity, type=2) at 0x2EA580. The factory hook
+    // captures the created entity pointer. Only when the hierarchy is healthy.
+    void* worldNow = *(void**)((BYTE*)g_repModule + 0xF512A8);
+    if (worldNow == NULL) return;
+    __try
+    {
+        void* world = *(void**)((BYTE*)g_repModule + 0xF51298);
+        const char* name = "player";
+        char ce = ((char (__fastcall *)(void*, void*, int))
+                   ((BYTE*)g_repModule + 0x2EA6C0))(world, (void*)&name, 1);
+        logf("[host] KRL CreateEntity(world=%p, 'player', 1) -> %d entity=%p",
+             world, (int)ce, g_lastEntity);
+        if (g_lastEntity != NULL)
+        {
+            char cc = ((char (__fastcall *)(void*, int))
+                       ((BYTE*)g_repModule + 0x2EA580))(g_lastEntity, 2);
+            logf("[host] KRL CreateComponent(entity=%p, 2) -> %d", g_lastEntity, (int)cc);
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] KRL entity/component create fault"); }
     __try
     {
         void* root = *(void**)((BYTE*)g_repModule + 0xF512A8);
@@ -1203,6 +1240,8 @@ int main(void)
             logf("[host] GetRepresentECSRootEntity -> %p", ecs);
             g_repSingleton = r;
             g_repModule = rep;
+            installInlineHook(rep, 0xAEDFD0, (void*)hookEntityFactory,
+                              g_efSaved, &g_efTramp, 16);
             {
                 char rpFlag[8];
                 if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
@@ -1442,7 +1481,6 @@ int main(void)
                 {
                     logf("[host] represent probe mode 2: skip lifecycle init");
                     probeRepresentHierarchy();
-                    probeRepresentSlots();
                 }
                 else
                 {

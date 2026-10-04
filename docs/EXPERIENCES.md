@@ -1450,3 +1450,38 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   retained. Default run green (host_final5.out).
 - Evidence: %TEMP%\opencode\skillv2\host_cls2.out (method resolution), host_isp.out
   (override + no render), host_final5.out, rep_comp.txt (component API strings).
+
+## 2026-10-04 — Represent: ECS-root success is nondeterministic; KRL create needs a healthy world
+
+- Re-running the mode-2 direct path (world create 0x920D10 + hierarchy builder 0x924B20)
+  now faults in the builder (`represent hierarchy builder fault`, VEH at a heap-looking
+  address) in most runs; the earlier `root=...` success (host_rep11) was the fluke. A
+  faulted builder leaves the represent state bad enough that the later paint AVs
+  (exit 0xC0000005). So the direct path is not yet reliable - the represent module
+  expects its game environment (the same missing bootstrap that makes the singleton
+  lifecycle init fault/hang).
+- KRL API mapped for the next attempt:
+  - `CreateEntity(world, &name, type=1)` at represent+0x2EA6C0: asserts type==1, calls
+    the entity factory thunk 0x15BF4 -> 0xAEDFD0 (`CreateEntityByName`, returns the
+    entity pointer), then a world notify `0x4B33(world, world)`.
+  - `CreateComponent(entity, type=2)` at represent+0x2EA580: asserts type==2, checks
+    the entity's component list ([entity+0x20]) for duplicates (max index 0x26),
+    allocates via 0xE5D4 and attaches via 0x1384A(entity, component).
+  - Component classes (from strings): RendererComponent (LuaLoadModel, LuaPlayAnimation,
+    LuaSetRoleType, LuaSetVisible, LuaSetRepresentID, LuaPlaySFX...), BehaviorComponent,
+    CameraComponent, PhysxComponent; entity/system names "scene[main]", "camera mode",
+    "camera controller".
+  - `CreateRLLoader` (export 0x141F5 -> 0x3FB580) requires a game-environment object
+    (magic tag 0xC0 at [rcx]) - the exe-provided module environment.
+- Host: entity-factory hook (0xAEDFD0) captures created entities; mode-2 now skips the
+  faulting slots and guards the KRL create on a healthy hierarchy root. Default runs
+  remain green (host_final6.out, mean #A2B4B5, exit 0).
+- Blocker statement: the represent path needs the game module environment (services/jobs)
+  that JX3ClientX64.exe builds before activating KJX3RepresentModule. Next options:
+  (a) replicate the environment bootstrap (map the exe module system), (b) retry the
+  direct path with retries/ordering until the builder is stable (nondeterministic), or
+  (c) accept the engine-only sandbox (map + props + SFX + animations) and defer the
+  player body.
+- Evidence: %TEMP%\opencode\skillv2\host_rep11.out (one-off success), host_krl.out /
+  host_krl2.out (builder faults), host_final6.out/png (default green), rep_funcs.txt,
+  rep_cc.txt, rep_ce.txt (KRL API disassembly).
