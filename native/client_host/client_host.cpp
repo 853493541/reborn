@@ -706,6 +706,7 @@ static volatile LONG g_repInitDone = 0;
 static volatile LONG g_repProbePending = 0;
 static volatile LONG g_rlProbePending = 0;
 static void* g_repSingleton = NULL;
+static void* g_rlCtx = NULL;
 static HMODULE g_repModule = NULL;
 static void* g_lastEntity = NULL;
 
@@ -1500,6 +1501,7 @@ int main(void)
                             typedef void* (__fastcall *GetCtxFn)(void*);
                             void* ctx = ((GetCtxFn)((BYTE*)rep + 0x42DAD0))(NULL);
                             logf("[host] RL ctx -> %p", ctx);
+                            g_rlCtx = ctx;
                             void* core = NULL;
                             if (ctx != NULL)
                             {
@@ -1905,18 +1907,37 @@ int main(void)
                             ? ((void* (__fastcall *)(void*))
                                ((BYTE*)g_repModule + 0x58CE20))(scene) : NULL;
                         logf("[host] RL local character -> %p", character);
-                        if (scene != NULL && character != NULL)
+                        // Standalone player-model path (MovieEditor's route): the HangPet
+                        // core does not need a character - it is only a map key in
+                        // CreateHangPet (0x42D1F0 -> 0x42E2B0); NULL just never matches an
+                        // existing core. The Lua binding's call:
+                        // CreateHangPet(world, sceneId, representID, 0, character, nType,
+                        // &cfg) then LoadPlayerParts(core, partsA[13], partsB[13], count).
+                        if (g_rlCtx != NULL)
                         {
-                            void* world = *(void**)((BYTE*)scene + 0xF2988);
-                            int sceneField = *(int*)((BYTE*)scene + 0xF1970);
+                            unsigned sceneId = (scene != NULL)
+                                ? *(unsigned*)((BYTE*)scene + 0xF1970) : 0;
                             unsigned char cfg[0x60];
                             memset(cfg, 0, sizeof(cfg));
                             typedef void* (__fastcall *CreateHangPetFn)(
-                                void*, int, int, void*, void*, int);
+                                void*, unsigned, unsigned, int, void*, int, void*);
                             void* pet = ((CreateHangPetFn)
                                          ((BYTE*)g_repModule + 0x42D1F0))(
-                                world, sceneField, 6, character, cfg, 1);
-                            logf("[host] RL CreateHangPet -> %p", pet);
+                                g_rlCtx, sceneId, 6, 0, NULL, 1, cfg);
+                            logf("[host] RL CreateHangPet(ctx=%p, scene=%u, id=6, 0, NULL, type=1, cfg) -> %p",
+                                 g_rlCtx, sceneId, pet);
+                            if (pet != NULL)
+                            {
+                                int partsA[13];
+                                int partsB[13];
+                                memset(partsA, 0, sizeof(partsA));
+                                memset(partsB, 0, sizeof(partsB));
+                                long lp = ((long (__fastcall *)(void*, void*, void*, int))
+                                           ((BYTE*)g_repModule + 0x422F50))(
+                                    pet, partsA, partsB, 13);
+                                logf("[host] RL LoadPlayerParts(core=%p, zeros, zeros, 13) -> 0x%08X",
+                                     pet, (unsigned)lp);
+                            }
                         }
                     }
                 }

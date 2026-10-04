@@ -1851,3 +1851,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (game's own player assembly), or (b) reproduce MovieEditor's `GetPlayerModel` path
   (RL loader GetUnit/model proxy + scene add).
 - Evidence: MovieEngineCLR string map, rl_lpp.txt (binding), rl_createcore.txt.
+
+## 2026-10-04 — CreateHangPet called in-host: master+frame-data requirement identified (HangPetCore::Init)
+
+- Wired the Lua binding's exact call in the host:
+  `CreateHangPet(ctx, sceneId, 6, 0, NULL, 1, &cfg)` (0x42D1F0 -> 0x42E2B0). Result: NULL
+  with the represent KGLOG errors (IAT-patched into host log):
+  `KGLOG_PROCESS_ERROR(m_pMaster && m_pMaster->m_pFrameData) at line 96 in HangPetCore::Init`
+  and `KGLOG_PROCESS_ERROR(pNewPetCore->Init(pConfig)) at line 65 in HangPetWorld::_CreateCore`.
+- `HangPetCore::Init` (0x421F20): master = `[core+0x6B0]` (the character arg, only a map key
+  for lookup but REQUIRED here); `m_pFrameData = [master+0x39F0]` must be non-null; then it
+  creates three RL actors `m_rlPet` ([core+0x130]), `m_rlItem` ([core+0x3F0]),
+  `m_rlFace` ([core+0x290]) via `Create(g_pRL->GenerateID(m_dwSceneID), type)`, and asserts
+  `sRoleConfig.szRoot && sRoleConfig.szMdl`.
+- Creator call: `Init(core, world, sceneId, representID, arg4, nType, character)` - the cfg
+  (arg7, stored [rsp+0x60]) is not passed to Init directly (used elsewhere in _CreateCore).
+- To finish the standalone HangPet path: (a) provide a master object with
+  `[master+0x39F0]` = valid frame data + the role config (szRoot/szMdl) that reaches Init,
+  or (b) reproduce MovieEditor's `KGRepresentHelper::GetPlayerModel`/`InitPlayerModel`
+  (RL model-proxy API, no character/master needed).
+- Host state: probe stable, exit 0; scene from fallback NewScene; character still not
+  visible. Evidence: host_char_rl16.out, rl_hpcinit.txt, rl_chp4.txt.
