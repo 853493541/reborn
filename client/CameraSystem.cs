@@ -833,8 +833,6 @@ public static class CameraOperationMode
         return Classical;
     }
 
-    public static bool MouseRotatesWithoutButtons(int mode) { return mode == Joystick; }
-    public static bool KeepsCursorLocked(int mode) { return mode == Joystick; }
     public static bool RmbTurnsBody(int mode) { return mode == Classical; }
     public static bool BodyFollowsHeading(int mode) { return mode == Joystick; }
 }

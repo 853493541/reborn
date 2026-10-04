@@ -561,6 +561,16 @@ else        rlcmd('lock input control mouse object rotation 0') end
 Joystick mode locks the mouse-object rotation through the engine console
 command (called from `ApplyOperationMode`, annex A3).
 
+**Engine decode (2026-10-03, game client `JX3RepresentX64.dll`):** the command
+handler `0x180b00950` parses the trailing int and sets/clears bit `0x10` in the
+flags (`+0x20`) of the type-8 input-control entry (`flags |= 0x10` for 1,
+`flags &= ~0x10` for 0); the entry is found by walking `g_managers[0]+0x20`
+(accessor `0x180b35bd0`). It does **not** rotate the camera by itself and does
+**not** touch cursor visibility (cursor hide/show is the separate script API
+`0x1802f7aa0` setting `[KRL+0x25bb8]`, restored by `ShowCursor(TRUE)` in the
+window-message handler). Host consequence: mouse camera rotation stays
+drag-only in BOTH modes; the cursor stays visible.
+
 ### A7.5 Both-buttons autorun — proto `0/25` (L585-599) MED/HIGH
 
 Per A8 the mode test means **JOYSTICK runs this** (classical returns early):

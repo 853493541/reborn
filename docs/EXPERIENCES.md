@@ -3814,3 +3814,21 @@ work into main without M2 entanglement.
   `reborn_20261003_210457.log`); W+A window stable in both (2) - only pure
   A/D was affected. Lesson: per-frame state read by the render path must not
   be reset inside the 15 Hz tick loop.
+
+### 2026-10-03 - Joystick mouse: drag-only camera, visible cursor (decode fix)
+
+- User report: joystick mode hides the cursor (no hover); in the game the
+  cursor is a normal visible cursor and the camera turns only while LMB/RMB
+  are held.
+- Decode: `Scene_LockMouseRotation` (joystick) -> engine handler `0x180b00950`
+  sets/clears LockInputControl flag bit 0x10 (`flags |= 0x10` / `&= ~0x10`) -
+  it is not an always-rotate and does not hide the cursor; cursor visibility is
+  the separate script API `0x1802f7aa0` (`[KRL+0x25bb8]`, ShowCursor restore in
+  the window-message handler). Scene.lua begins camera drag only on button-down
+  (both modes).
+- Fix: removed `MouseRotatesWithoutButtons`/`KeepsCursorLocked` and the
+  joystick always-rotate branch; mouse rotation is drag-only in both modes and
+  the cursor lock exists only while dragging. Smoke gating checks updated;
+  joystick demo fingerprints unchanged (`reborn_20261003_214620.log`).
+- Lesson: a console command name is not a behavior spec - decode the handler
+  before mapping it onto host input (the branch's J2 over-interpretation).

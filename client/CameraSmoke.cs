@@ -213,15 +213,14 @@ internal static class CameraSmoke
               string.Format("init={0:F0}m target={1:F0}m max={2:F0}u",
                   clampCam.Row.F("InitCameraDistance", 0.0), clampCam.Row.F("TargetDistance", 0.0),
                   clampCam.Row.F("MaxCameraDistance", 0.0)));
+        // corrected 2026-10-03: the decoded client rotates the camera only while
+        // LMB/RMB drag in BOTH modes (Scene camera drag handlers); no mode has
+        // an always-rotate mouse path and no mode keeps the cursor locked.
         Check("operation mode gating (classical)",
-              !CameraOperationMode.MouseRotatesWithoutButtons(CameraOperationMode.Classical) &&
-              !CameraOperationMode.KeepsCursorLocked(CameraOperationMode.Classical) &&
               CameraOperationMode.RmbTurnsBody(CameraOperationMode.Classical) &&
               !CameraOperationMode.BodyFollowsHeading(CameraOperationMode.Classical),
               CameraOperationMode.Name(CameraOperationMode.Classical));
         Check("operation mode gating (joystick)",
-              CameraOperationMode.MouseRotatesWithoutButtons(CameraOperationMode.Joystick) &&
-              CameraOperationMode.KeepsCursorLocked(CameraOperationMode.Joystick) &&
               !CameraOperationMode.RmbTurnsBody(CameraOperationMode.Joystick) &&
               CameraOperationMode.BodyFollowsHeading(CameraOperationMode.Joystick),
               CameraOperationMode.Name(CameraOperationMode.Joystick));

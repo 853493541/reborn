@@ -579,3 +579,22 @@ scripts. The engine consumer of `CONTROL_TURN_*` while
   blip); W+A window stable in both (2) - flicker only affected pure A/D.
 - Verified: build exit=0, camera_smoke ALL PASS; classical demo fingerprints
   unchanged (strafe/back/turn dists); WA/WD 329/339 (same method as 203918).
+
+## Fix: joystick mouse = drag-only camera, cursor stays visible, 2026-10-03
+- User report: joystick mode hides the mouse cursor (no hover); game behavior
+  is a normal visible cursor, camera turns only while LMB/RMB held.
+- Decode (game client JX3RepresentX64.dll, hash in PROVENANCE.txt):
+  - Scene_LockMouseRotation (Lua proto 0/61) -> rlcmd 'lock input control mouse
+    object rotation 0/1' -> handler 0x180b00950 parses the int and sets/clears
+    bit 0x10 in the flags (+0x20) of the type-8 input-control entry (list at
+    g_managers[0]+0x20, accessor 0x180b35bd0). No camera rotation and no cursor
+    visibility effect.
+  - Cursor hide/show is a separate script API (0x1802f7aa0 sets [KRL+0x25bb8];
+    ShowCursor(TRUE) restore in the window-message handler 0x1803ddd60).
+  - Scene.lua starts Camera_BeginDrag on LMB/RMB down in both modes; there is
+    no always-rotate mouse path.
+- Host fix: removed MouseRotatesWithoutButtons/KeepsCursorLocked; onMouseMove
+  requires a held button + drag; mouse-up and mode switch always release the
+  cursor lock. Build exit=0; camera_smoke ALL PASS (gating checks updated);
+  joystick demo reborn_20261003_214620.log fingerprints unchanged (strafe
+  -1.57 dist=300, back +4.71, turn -1.57 camd=0, summary yaw=0.79).

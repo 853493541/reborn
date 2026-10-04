@@ -56,7 +56,7 @@ P7 data · P8 verification · P9 publish.
 |---|---|---|---|
 | C1 | LMB drag (`CAMERAORSELECTORMOVE`) | **script DONE** (annex A7): `Camera_BeginDrag(1.0)` gated by `scene.bLDown` + `Hotkey_IsLMouseEnabled` (+ morph-camera bypass); `CONTROL_CAMERA` set/cleared in 0/31 | click-select S7 OPEN (targeting) |
 | C2 | RMB drag (`...STICKY`) | **script DONE** (annex A7): `Camera_BeginDrag(2.0)` gated by `scene.bRDown` + `Hotkey_IsRMouseEnabled`; `CONTROL_OBJECT_STICK_CAMERA` set/cleared; EndDrag 1.0/2.0 | engine flag mapping G2 OPEN(P3); body-carry conditions OPEN(P4) |
-| C3 | mouse move (joystick always-rotate) | `Scene_LockMouseRotation`; ApplyMouse gated by `+0x25C`/controller; controller index `+0x2D0` | OPEN(P4, G9) |
+| C3 | mouse move (joystick) | SOLVED 2026-10-03: `Scene_LockMouseRotation` = LockInputControl flag bit 0x10 only (`0x180b00950`); no always-rotate path, no cursor hide; camera rotates only during LMB/RMB drag in both modes | CLOSED |
 | C4 | wheel zoom in/out | `Camera_Zoom(0.9/1.1)` (wheel 256/257) | DONE |
 | C5 | F11 reset / Home/End presets | `ForceResetCamera +0x428`; behind/front | DONE (host), spring path OPEN(P4, G5) |
 | C6 | per-mode drag speeds/clamps | node `+0x6C..+0x98` (classic/joystick pairs) | DONE (fields); consumer OPEN(P4) |
@@ -85,7 +85,7 @@ P7 data · P8 verification · P9 publish.
 
 | # | Aspect | CLASSICAL | JOYSTICK | Status |
 |---|---|---|---|---|
-| R1 | camera rotation | LMB/RMB only | mouse always (`Scene_LockMouseRotation`) | PART: joystick path OPEN(P4, G9) |
+| R1 | camera rotation | LMB/RMB only | LMB/RMB only (same as classical; corrected 2026-10-03) | SOLVED |
 | R2 | LMB / RMB semantics | camera / camera+body (scripts: `BeginDrag` only) | camera | G2/P4 |
 | R3 | movement keys | WASD camera-relative; A/D habit (default.txt STRAFE; turn habit observed) | WASD + auto-face heading | G6/G10/P4 |
 | R4 | control API | `Camera_EnableControl` | `Scene_EnableFreeMoveControl` | **DONE** (annex A1: wrapper proto 0/61 branches on `GetOperationMode()==CLASSICAL_MODE`) |

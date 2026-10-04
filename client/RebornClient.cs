@@ -1357,9 +1357,9 @@ internal static class RebornClient
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
-            // joystick mode keeps the cursor locked between drags
-            if (!lmbDown && !rmbDown && mouseLocked &&
-                !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
+            // drag ended: release the cursor (both modes - the decoded client
+            // only locks the cursor while dragging; no mode keeps it locked)
+            if (!lmbDown && !rmbDown && mouseLocked) unlockMouse();
             // click (no drag) = select the target under the cursor; an empty
             // pick deselects. Host ray approximation (no world->screen in the
             // managed host); rendering medium only, the selection model follows
@@ -1372,19 +1372,16 @@ internal static class RebornClient
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
-            bool joystick = CameraOperationMode.MouseRotatesWithoutButtons(cameraSettings.OperationMode);
-            if ((!lmbDown && !rmbDown) && !joystick) return;
-            if (!joystick && !dragArmed) return;
+            // Decoded client (corrected 2026-10-03): the camera rotates only
+            // while an LMB/RMB drag is held, in BOTH modes - Scene.lua starts
+            // Camera_BeginDrag on button-down and a plain mouse move never
+            // rotates. Scene_LockMouseRotation is a LockInputControl flag bit
+            // (engine 0x180b00950), NOT an always-rotate / cursor-hide.
+            if (!lmbDown && !rmbDown) return;
+            if (!dragArmed) return;
             System.Drawing.Point p = panelPoint(s, e);
             if (!mouseLocked)
             {
-                if (joystick)
-                {
-                    // operation mode 1 (joystick): Scene_LockMouseRotation -
-                    // mouse movement rotates without holding a button
-                    lockMouse();
-                    return;
-                }
                 int mdx = p.X - pressPoint.X, mdy = p.Y - pressPoint.Y;
                 if (mdx * mdx + mdy * mdy < 16) return;   // 4 px dead zone
                 lockMouse();
@@ -1447,8 +1444,8 @@ internal static class RebornClient
                         ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
                 cameraSettings.ApplyOperationMode();
                 Log("opmode applied: " + cameraSettings.DescribeApplied());
-                if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
-                else if (!lmbDown && !rmbDown) unlockMouse();
+                // mode switch never locks the cursor; release a drag lock
+                if (!lmbDown && !rmbDown) unlockMouse();
             }
             else if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
             {

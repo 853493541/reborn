@@ -57,14 +57,14 @@ tests. Document as host key (real client switches via Its UI panel).
 
 | Input | Classical (keep, `:790-837`) | Joystick (new/shared) |
 |---|---|---|
-| mouse move, no button | ignored | rotates camera (always), cursor locked |
+| mouse move, no button | ignored | ignored (CORRECTED 2026-10-03: no always-rotate path - the engine `Scene_LockMouseRotation` flag bit is not a rotate/cursor-lock; camera rotates only while LMB/RMB drag, cursor stays visible) |
 | LMB drag | orbit camera | orbit camera |
 | RMB drag | orbit + body yaw (`curYaw`) | orbit camera only (body follows movement) |
 | A/D | strafe (camera-relative) | strafe (camera-relative) |
 | W/S | forward/back (camera-relative) | forward/back + body yaw = heading |
 | movement step | unchanged | add turn model: heading vs facing, >112.5° halves speed + turn step (`JX3_MOVEMENT_CONTROLS.md` §2) |
 | F11 / Home / End | behind/facing presets (current) | behind = camera yaw; keep camera yaw on presets |
-| escape | unlock | unlock (cursor re-locks on next move) |
+| escape | unlock | unlock (cursor stays free) |
 
 **Per-mode params:** apply `nCameraModeInClassicMode`/`InJoystickMode` to the
 active follow mode on switch; use `SpringResetSpeed`/`CameraResetSpeed` for the
@@ -152,9 +152,12 @@ worktree as the C1/C2 input core this routes through.
 - Normal (CLASSICAL): hold LMB/RMB to look; RMB also turns the character; A/D
   side-step (strafe), S back-pedal while facing stays camera-forward; free view
   turns A/D into turn-in-place; cursor stays free.
-- Joystick: mouse always looks (cursor locked); W/S/A/D all turn the character
-  to the travel heading; RMB rotates the camera only; camera follow per the
-  role's `nCameraModeInJoystickMode`.
+- Joystick: hold LMB/RMB to look (CORRECTED 2026-10-03 - the earlier
+  "mouse always looks / cursor locked" was a host over-interpretation of
+  `Scene_LockMouseRotation`; the engine command only sets a LockInputControl
+  flag bit, the cursor stays visible); W/S/A/D all turn the character to the
+  travel heading; RMB rotates the camera only; camera follow per the role's
+  `nCameraModeInJoystickMode`.
 
 **Already landed**
 
