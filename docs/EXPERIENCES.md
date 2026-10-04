@@ -3797,3 +3797,20 @@ work into main without M2 entanglement.
   PASS; scripted classical (`203918`) and joystick (`205138`, git=b872d79)
   demo runs match pre-merge fingerprints; HUD label buffers 318x33/327x33 with
   651/675 mode-brush pixels (proof/controls/hud_mode_label_*_20261003.png).
+
+### 2026-10-03 - Fix A/D strafe clip flicker (merge regression)
+
+- Symptom (user report: "pressing A/D plays wrong animation"): the locomotion
+  clip alternated run<->strafe every ~65 ms while pure-lateral input was held.
+- Root cause: the merge resolution computed the gait octant INSIDE the 15 Hz
+  tick loop while `int gait = 0` stayed per render frame - non-tick frames
+  (most frames at 200+ fps) reset gait to 0 -> run clip; tick frames set
+  gait 1/2 -> strafe clip. Pre-merge branch computed gait once per frame, so
+  the merge introduced it.
+- Fix: `client/RebornClient.cs` computes gait per render frame next to
+  `moving`; the in-tick-loop assignment is removed.
+- Numeric fingerprint: clip transitions in the 1.2 s strafe window
+  (RC_DEMO_MOVE classical) 32 -> 3 (`reborn_20261003_203918.log` ->
+  `reborn_20261003_210457.log`); W+A window stable in both (2) - only pure
+  A/D was affected. Lesson: per-frame state read by the render path must not
+  be reset inside the 15 Hz tick loop.

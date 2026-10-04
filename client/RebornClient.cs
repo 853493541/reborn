@@ -2406,6 +2406,20 @@ internal static class RebornClient
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
+            // Locomotion clip by INPUT OCTANT (branch semantics; per render
+            // frame - must NOT live inside the tick loop, where non-tick
+            // frames would reset it to 0 and flicker run<->strafe at 15 Hz):
+            // any forward intent = forward run/walk, backward = back-pedal,
+            // pure lateral = step.
+            int gait = 0;
+            if (moving)
+            {
+                if (followsHeading) gait = 0;
+                else if (fwdAxis > 0f) gait = 0;
+                else if (fwdAxis < 0f) gait = 3;
+                else if (latAxis > 0.01f) gait = 2;
+                else if (latAxis < -0.01f) gait = 1;
+            }
             // keyboard turn rate: the LOCAL camera-controller rotation speed
             // (row RotationSpeed; loader default 0.00314 rad/ms = pi rad/s, both
             // values are local data - no server involvement). pi stays only as
@@ -2426,7 +2440,6 @@ internal static class RebornClient
                 lastTickInit = true;
             }
             bool blocked = false;
-            int gait = 0;   // locomotion clip octant (branch control semantics)
             for (int mti = 0; mti < moveTicks; mti++)
             {
             float pdt = MOVE_TICK;
@@ -2481,13 +2494,6 @@ internal static class RebornClient
                     if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
                     else curYaw += Math.Sign(dYaw) * turnStep;
                 }
-                // Locomotion clip by INPUT OCTANT (branch): any forward intent
-                // = forward run/walk, backward = back-pedal, pure lateral = step.
-                if (followsHeading) gait = 0;
-                else if (fwdAxis > 0f) gait = 0;
-                else if (fwdAxis < 0f) gait = 3;
-                else if (latAxis > 0.01f) gait = 2;
-                else if (latAxis < -0.01f) gait = 1;
                 // the engine moves integer units per logic frame (u/f); make
                 // the per-tick displacement integral too
                 float step = (float)Math.Round(sp * pdt);
