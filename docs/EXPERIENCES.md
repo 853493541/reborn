@@ -1537,3 +1537,9 @@ solved it, and what is still open. **Newest at the bottom.**
   console pipes mangle CJK - write evidence files via cmd redirection or Python raw bytes.
 - Windows whose data has no authored title (most HUD elements) keep the English title (no invented
   translations); per-window refinement can add descriptive names later.
+- Correction (same day): the user asked why the amount decreased - "way too many" meant too many in ONE
+  stage, not "delete them". The 787 tier-5 entries were restored as stage 5 其他界面 (before 备用, which
+  stays last) and the same official-name pass was run over them: 86 more StringTables extracted
+  (80 HIT / 6 MISS; strip leading "/" - a leading slash MISSes in PakV4), 321 of 787 named. Catalog back
+  to 1,008 windows; --selftest 1008/0/0 (hlbop-main needed its show list re-added - the regeneration
+  does not carry per-entry overrides). Total official names: 417.

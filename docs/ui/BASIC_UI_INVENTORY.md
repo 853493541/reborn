@@ -474,27 +474,29 @@ These manifest scripts have no INI at `ui/Config/Default/<rel>.ini`; they are he
 - `UISetting_Addon` · `UISetting_BuffList` · `UISetting_Combat` · `UISetting_Comprehensive` · `UISetting_Display` · `UISetting_Efficiency` · `UISetting_HeadTop` · `UISetting_Interface_Switch`
 - `UISetting_Operation_Switch` · `UISetting_Special_Sect` · `UISetting_StatusBar`
 
-## Bulk bring-in (2026-10-03) — curated to the classified set
+## Bulk bring-in (2026-10-03) — all entries grouped by stage
 
-After the first bulk pass (991 authored-state entries incl. the 787 tier-5 "other panels/dialogs")
-the catalog was **curated down on user request** to the classified groups only:
+The full in-scope set is catalogued as authored-state entries, split across stages by group
+(user request: "catalogize them by 2.x 3.x 4.x; keeping 备用 as last"):
 
 | stage | windows | content |
 |---|---|---|
 | 2. 基础HUD | 49 | HUD class + the hand-built trio (`main-bar`, `player-frame`, `target-frame`) |
 | 3. 功能面板 | 107 | character/bag/skill + social/team/guild + mail/auction/bank |
 | 4. 菜单与交互 | 48 | menus/settings + world/quest/interaction |
-| 5. 备用 (last) | 4 | unchanged |
+| 5. 其他界面 | 787 | the remaining default windows (activities/operations/tools) |
+| 6. 备用 (last) | 4 | unchanged |
 
 Each entry renders the INI's authored state (`PARTIAL`, backdrop `#33393E`, summary with section
-count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 221 windows
-(13 BR + 204 basic + 4 spare); `--selftest` 221/0/0.
+count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 1,008 windows
+(13 BR + 991 basic + 4 spare); `--selftest` 1008/0/0.
 
 **Official Chinese names**: resolved per window from its own strings — the INI's title text
 (`Text_Title`/`*Title` sections) resolved through the window's `StringTable=ui\Scheme\Case\*.txt`
-(49 tables extracted for this pass) and the global `g_tStrings`. ~96 windows carry an official
-`cn` (e.g. 角色, 背包, 武学, 交易行, 储物箱, 帮会, 系统设置, 快捷键设置, 表情动作); windows whose
-data has no authored title (most HUD elements) keep the English title for now.
+(129 tables extracted for this pass) and the global `g_tStrings`. **417 windows carry an official
+`cn`** (96 in the classified stages + 321 in 其他界面; e.g. 角色, 背包, 武学, 交易行, 储物箱, 帮会,
+系统设置, 快捷键设置, 表情动作); windows whose data has no authored title (most HUD elements) keep
+the English title (no invented translations).
 
 Authored-state edge cases fixed: `AccelerateBall` and `HLBOp_Main` author `LockShowAndHide=1`
 roots (runtime-shown / invisible anchor host) — their entries carry `show` lists so the authored
