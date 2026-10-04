@@ -44,11 +44,12 @@ PUMP_DRIVER = os.environ.get("PUMP_DRIVER", "") != ""
 
 TARGETS = {
     0x189BF0: "RG",
-    0x189440: "CONNECT",
-    0x189E50: "SEND",
-    0x187540: "HELPER",
     0x189CE9: "RGSTATE",
-    0x18992D: "LOST",
+    0x79D03D: "TALLOC",
+    0x79D04F: "TCLEAN",
+    0x7A0B64: "FCHK1",
+    0x7A0B9F: "FCHK2",
+    0x7A0BCC: "FCHK3",
 }
 ONCE = {0x185900}
 MAX_HITS = 30
@@ -283,6 +284,19 @@ def main():
                     if rva == 0x189CE9:
                         eax = struct.unpack_from("<I", ctx, 0x78)[0]
                         info = " new_state=%d" % eax
+                    if rva == 0x79D03D:
+                        rdi = struct.unpack_from("<Q", ctx, 0xB0)[0]
+                        r12 = struct.unpack_from("<Q", ctx, 0xD8)[0]
+                        r13 = struct.unpack_from("<Q", ctx, 0xE0)[0]
+                        info = " rdi(transport)=0x%X r12=0x%X r13=0x%X" % (rdi, r12, r13)
+                    elif rva == 0x7A0B64:
+                        info = " ebx(vt40res)=0x%X" % struct.unpack_from("<Q", ctx, 0x90)[0]
+                    elif rva == 0x7A0B9F:
+                        info = " eax(proto)=0x%X" % struct.unpack_from("<Q", ctx, 0x78)[0]
+                    elif rva == 0x7A0BCC:
+                        rax = struct.unpack_from("<Q", ctx, 0x78)[0]
+                        tdata = read_mem(hproc.value, rax, 4) if rax else None
+                        info = " template=0x%X bytes=%s" % (rax, tdata.hex() if tdata else "?")
                     if rva == 0x189630 and rcx:
                         st = read_u32(hproc.value, rcx + 0x1250)
                         f1 = read_u32(hproc.value, rcx + 0x1268)

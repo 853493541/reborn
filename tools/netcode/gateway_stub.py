@@ -42,6 +42,12 @@ def handshake_respond():
     return frame(bytes([2, 0]) + b"\x00" * 12)
 
 
+def connect_hello():
+    # connection-layer hello required by the wrapper factory (0x1407A0B00):
+    # payload size 0x2A (42) and first bytes 0x20 0x00
+    return frame(bytes([0x20, 0x00]) + b"\x00" * 40)
+
+
 def account_ok():
     return frame(bytes([3, 0]))
 
@@ -69,8 +75,8 @@ def handle(conn, addr):
     buf = b""
     try:
         time.sleep(0.2)
-        conn.sendall(handshake_respond())
-        w("[%s] SENT proto2 handshake respond (connect hello)" % time.strftime("%H:%M:%S"))
+        conn.sendall(connect_hello())
+        w("[%s] SENT connect hello (0x20 0x00, 42 bytes)" % time.strftime("%H:%M:%S"))
         while True:
             data = conn.recv(65536)
             if not data:
