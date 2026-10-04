@@ -1621,10 +1621,23 @@ int main(void)
                     if (g_repSingleton != NULL && g_repModule != NULL)
                     {
                         // NOTE: singleton vt[1] (activate) blocks in this host (job
-                        // processor spinlock) - do not call it; the scene map/scene are
-                        // created manually instead (next probe).
-                        void* scene = ((void* (__fastcall *)(void*))
-                                       ((BYTE*)g_repModule + 0x3E5E80))(g_repSingleton);
+                        // processor spinlock) - do not call it. The RL scene is created
+                        // manually: NewScene(rcx = g_pRL->m_p3DEngineManager
+                        // (singleton+0xB0), edx=1, r8=&out) via the 0x16DB5 thunk
+                        // (KRLMovie::SwitchScene / NewExScene / NewScene all use it).
+                        void* mgr = *(void**)((BYTE*)g_repSingleton + 0xB0);
+                        logf("[host] RL engine manager (singleton+0xB0) -> %p", mgr);
+                        void* scene = NULL;
+                        if (mgr != NULL)
+                        {
+                            long ns = ((long (__fastcall *)(void*, int, void**))
+                                       ((BYTE*)g_repModule + 0x16DB5))(mgr, 1, &scene);
+                            logf("[host] RL NewScene(mgr, 1) -> 0x%08X scene=%p",
+                                 (unsigned)ns, scene);
+                        }
+                        if (scene == NULL)
+                            scene = ((void* (__fastcall *)(void*))
+                                     ((BYTE*)g_repModule + 0x3E5E80))(g_repSingleton);
                         logf("[host] RL scene -> %p", scene);
                         void* character = (scene != NULL)
                             ? ((void* (__fastcall *)(void*))

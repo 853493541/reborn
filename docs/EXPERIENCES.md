@@ -1648,3 +1648,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   sub-inits 0x26BF7/0x175F3/0x270C/0x1E80D/0x12715, testable standalone), then
   insert the scene into the map at +0x24F40 and run scene -> character -> CreateHangPet.
 - Evidence: host_char_rl6.out (stable), host_char_rl5.out (vt[1] hang), hp_scene.txt.
+
+## 2026-10-04 — RL scene creation call located: NewScene(mgr = g_pRL->m_p3DEngineManager, 1, &out); manager is vt[1]-created
+
+- Found all three scene-creation call sites (KRLMovie::SwitchScene 0x58531C, NewExScene
+  0xB0B834, NewScene 0xB0BEF9): each does
+  `rcx = [singleton+0xB0] (g_pRL->m_p3DEngineManager); edx = 1; r8 = &scene;
+   call 0x16DB5 (thunk -> 0x3EA420 -> [rcx]->vt[0xA8])`.
+- In the host, `singleton+0xB0` is **NULL** (the engine manager is created by the
+  singleton activate vt[1], which blocks here), so NewScene is skipped (verified:
+  `RL engine manager (singleton+0xB0) -> 0`). Host now attempts NewScene when non-null
+  (env-gated RC_HOST_RLLOADER=1; stable, exit 0).
+- Next probes: (a) find the engine-manager creation (the [singleton+0xB0] writer - the
+  store uses disp8 0xB0 = "-0x50" in disasm; the writer scan needs to key on the
+  singleton register, e.g. by tracing vt[1]'s 0xB0 read at 0x3E5B42 backwards to its
+  creation, or testing the vt[1] sub-inits 0x26BF7/0x175F3/0x270C/0x1E80D/0x12715
+  standalone); (b) or get the engine manager from the engine host interface directly
+  (KG3D_Engine::GetSceneManagerDLL 0x8CB3A0 / adapter interface) if it is the same
+  object; then NewScene -> scene -> character -> CreateHangPet.
+- Evidence: host_char_rl7.out (mgr null), rl_nscallers.txt (call sites), rl_subinits.txt.
