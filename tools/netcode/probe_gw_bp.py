@@ -254,11 +254,15 @@ def main():
                     p38 = read_u64(hproc.value, gw_client[0] + 0x38) or 0
                     h1 = read_u64(hproc.value, gw_client[0] + 0x1258) or 0
                     h2 = read_u64(hproc.value, gw_client[0] + 0x1260) or 0
-                    key = (st, f1, p28, p38, h1, h2)
+                    wgobj = read_u64(hproc.value, exe_base + 0xA8C248) or 0
+                    wgflag = read_u32(hproc.value, wgobj + 0x28) if wgobj else None
+                    smobj = read_u64(hproc.value, exe_base + 0xA8C268) or 0
+                    smflag = read_u32(hproc.value, smobj + 0x20) if smobj else None
+                    key = (st, f1, p28, p38, h1, h2, wgflag, smflag)
                     if poll_last.get("v") != key:
                         poll_last["v"] = key
-                        print("[%.2f] POLL state=%s f1268=%s p28=0x%X p38=0x%X h=0x%X/0x%X"
-                              % (el, st, f1, p28, p38, h1, h2), flush=True)
+                        print("[%.2f] POLL state=%s f1268=%s p28=0x%X p38=0x%X h=0x%X/0x%X wg=%s sm=%s"
+                              % (el, st, f1, p28, p38, h1, h2, wgflag, smflag), flush=True)
                 if (not triggered[0] and gw_client[0]
                         and os.path.exists(r"C:\jx3tmp\trigger_connect")):
                     triggered[0] = True

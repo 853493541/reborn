@@ -108,6 +108,9 @@ def const_str(fn, idx):
 
 def disasm(fn, all_fns):
     print("=== function %s source=%r code=%d consts=%d ===" % (fn["path"], fn["source"], len(fn["code"]), len(fn["consts"])))
+    for i, c in enumerate(fn["consts"][:40]):
+        if isinstance(c, str) or isinstance(c, (int, float)):
+            print("   K%-3d %r" % (i, c))
     for i, ins in enumerate(fn["code"]):
         op = ins & 0x3F
         a = (ins >> 6) & 0xFF
@@ -117,6 +120,10 @@ def disasm(fn, all_fns):
         sbx = bx - 131071
         name = OPCODES[op] if op < len(OPCODES) else "OP%d" % op
         extra = ""
+        def rk(v):
+            if v >= 256:
+                return "K%u=%s" % (v - 256, const_str(fn, v - 256))
+            return "R%u" % v
         if name in ("LOADK", "GETGLOBAL", "SETGLOBAL"):
             extra = " K%u=%s" % (bx, const_str(fn, bx))
         elif name == "GETUPVAL":
@@ -132,7 +139,7 @@ def disasm(fn, all_fns):
         elif name in ("JMP",):
             extra = " -> %d" % (i + 1 + sbx)
         elif name in ("EQ", "LT", "LE", "TEST", "TESTSET"):
-            extra = " K%u=%s" % (b, const_str(fn, b))
+            extra = " %s %s" % (rk(b), rk(c))
         elif name in ("LOADBOOL",):
             extra = " B=%u C=%u" % (b, c)
         elif name in ("CALL", "TAILCALL"):
