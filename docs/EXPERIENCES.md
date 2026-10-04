@@ -1745,3 +1745,27 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   returned 0 this run. Next: disassemble 0x58CE20 to learn the character requirement,
   then CreateHangPet (0x42D1F0) -> visible player.
 - Evidence: host_char_rl10.out, rl_oninit.txt (Param fill), rl_initbody.txt (asserts).
+
+## 2026-10-04 — Character gate: scene has id 0 / no main-scene + local player; UGC path identified
+
+- Local-character chain (rep+0x58CE20): `sceneId = [scene+0xF1970]`; `0x924B(id)` =
+  `id==0 ? GetMainScene(0x1F9DD) : GetScene(singleton+0x24F40, id)`; then
+  `[scene+0xF29E8]` (local-player field), `0x1B9D7(scene)`, `[x+0x20]+0x70`.
+  Host probe (host_char_rl12.out): `char chain: sceneId=0 world=0` - our NewScene scene
+  has id 0 and is not the main scene, so the lookup returns null.
+- Scene constructor (rep+0x588F40, no direct callers - vtable/thunk) initializes
+  `[scene+0xF1970] = 0` (id assigned later); only writer of +0xF1970 in the DLL is that
+  constructor.
+- `KRLScene::GetPlayerAround` (0x58D0A0) uses the same local-player chain.
+- Standalone-character candidates (game's own preview paths):
+  - `KRLUGC::CreateScene` / `KRLUGC::CreateMainCharacter` (0x33A620; asserts pMainScene +
+    pRLCharacter via 0x134F3 -> GetLocalPlayerCharacter) - UGC = the character-preview
+    system (MovieEditor uses this class).
+  - `LuaCreateHangPet` (0x5BE120) requires `pScene->m_pHangPetWorld` + a local character;
+    `pCharacter->SetHangPet(nType, pet)` attaches (string 0xCBECC8).
+- Next probes: (a) find how the main scene + local player are created in the game
+  (KRLSceneMgr::Append 0xCBB010; KGameWorldHandler::OnNewCharacterDisplayData) or
+  (b) drive the UGC path (KRLUGC::CreateScene -> CreateMainCharacter) which is the
+  editor/preview path designed for hosts without a game world.
+- Evidence: host_char_rl12.out, rl_world.txt (0x924B), rl_scenehead2.txt (ctor),
+  rl_ugc1.txt (CreateMainCharacter).

@@ -1482,6 +1482,37 @@ int main(void)
                                 ? ((void* (__fastcall *)(void*))
                                    ((BYTE*)rep + 0x58CE20))(scene) : NULL;
                             logf("[host] RL local character -> %p", character);
+                            // local-player lookup chain (0x58CE20): sceneId ->
+                            // 0x924B(id) world -> [world+0xF29E8] -> 0x1B9D7(world)
+                            // -> [x+0x20]+0x70. Log each step to find the missing one.
+                            if (scene != NULL && character == NULL)
+                            {
+                                __try
+                                {
+                                    unsigned sceneId = *(unsigned*)
+                                        ((BYTE*)scene + 0xF1970);
+                                    void* world = ((void* (__fastcall *)(unsigned))
+                                                   ((BYTE*)rep + 0x924B))(sceneId);
+                                    logf("[host] char chain: sceneId=%u world=%p",
+                                         sceneId, world);
+                                    if (world != NULL)
+                                    {
+                                        void* f = *(void**)((BYTE*)world + 0xF29E8);
+                                        logf("[host] char chain: [world+0xF29E8]=%p", f);
+                                        if (f != NULL)
+                                        {
+                                            void* x = ((void* (__fastcall *)(void*))
+                                                       ((BYTE*)rep + 0x1B9D7))(world);
+                                            logf("[host] char chain: 0x1B9D7(world)=%p", x);
+                                            if (x != NULL)
+                                                logf("[host] char chain: [x+0x20]=%p",
+                                                     *(void**)((BYTE*)x + 0x20));
+                                        }
+                                    }
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] char chain probe fault"); }
+                            }
                             if (scene != NULL && character != NULL)
                             {
                                 void* world = *(void**)((BYTE*)scene + 0xF2988);
@@ -1753,6 +1784,37 @@ int main(void)
                             scene = ((void* (__fastcall *)(void*))
                                      ((BYTE*)g_repModule + 0x3E5E80))(g_repSingleton);
                         logf("[host] RL scene -> %p", scene);
+                        // local-player lookup chain (0x58CE20): sceneId ->
+                        // 0x924B(id) world -> [world+0xF29E8] -> 0x1B9D7(world)
+                        // -> [x+0x20]+0x70. Log each step to find the missing one.
+                        if (scene != NULL)
+                        {
+                            __try
+                            {
+                                unsigned sceneId = *(unsigned*)
+                                    ((BYTE*)scene + 0xF1970);
+                                void* world = ((void* (__fastcall *)(unsigned))
+                                               ((BYTE*)g_repModule + 0x924B))(sceneId);
+                                logf("[host] char chain: sceneId=%u world=%p",
+                                     sceneId, world);
+                                if (world != NULL)
+                                {
+                                    void* f = *(void**)((BYTE*)world + 0xF29E8);
+                                    logf("[host] char chain: [world+0xF29E8]=%p", f);
+                                    if (f != NULL)
+                                    {
+                                        void* x = ((void* (__fastcall *)(void*))
+                                                   ((BYTE*)g_repModule + 0x1B9D7))(world);
+                                        logf("[host] char chain: 0x1B9D7(world)=%p", x);
+                                        if (x != NULL)
+                                            logf("[host] char chain: [x+0x20]=%p",
+                                                 *(void**)((BYTE*)x + 0x20));
+                                    }
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] char chain probe fault"); }
+                        }
                         void* character = (scene != NULL)
                             ? ((void* (__fastcall *)(void*))
                                ((BYTE*)g_repModule + 0x58CE20))(scene) : NULL;
