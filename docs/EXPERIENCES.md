@@ -1288,3 +1288,42 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   but the draw of the actor itself is still pending; possibly needs the correct
   scene-node param struct or the represent actor path).
 - Evidence: %TEMP%\opencode\skillv2\host_loaded.out/png.
+## 2026-10-04 — Character draw root cause: KeepMeshData registry (PakV4 copy) gates render-data build
+
+- The engine scene DOES render live scene objects: moving an existing prop in
+  `entities/sceneinfo_full/000_000.json` moves the visible building; a clone of a
+  building record or of an npc_source model (A303) added at the spawn renders.
+  So the map entity list is the render source (no pre-baked static world).
+- The f1_3094 player model does NOT render as a scene object, while the A303 NPC model
+  and prop models do. Root-cause chain (runtime-verified):
+  - `KG3D_NormalMesh` (+0x484 bit 0) is set from the keep-check `0xC4D430(mesh)`; the
+    check passes for props (fd0==0), npc_source prefixes, or names present in the
+    KeepMeshData registry; f1 fails it (`keepCheck f1_3094_body_hd.mesh -> 0`,
+    A303 -> 1).
+  - The registry (global 0x2CFA548) is built once at engine init (builder 0xBE4BC0,
+    caller 0x8BB4B9) from `data/public/KeepMeshData_FileList.tab` read through the
+    **PakV4** file layer: renaming the loose client_root copy changes nothing (A303
+    still passes), so loose-file edits to that tab are ignored.
+  - When the check fails, the render-data build (0xC4DE80, called from the batch at
+    0xD8AF40/0xC5F3F7) skips the buffers ([mesh+0x4a8]/[mesh+0x4b0] stay null) and the
+    mesh has nothing to draw. Forcing the checker to 1 for f1 did not render it either
+    (next probe: hook 0xC4DE80 and log f1's mesh + post state).
+- Negative results (all tried, no visual change): entity SO flags
+  (IsPlayerObject/StaticModel/ForceRender/NotForCull/EnterScene + SetCullDataDirty),
+  attaching a real KG3D_AnimationController + _InitAttachTani + StartAnimation to the
+  entity's own scene actor, sending OnSceneActorLoadedCallBack with the engine's real
+  param struct, loading the f1 mesh from the pak instead of loose, copying the f1 mesh
+  to a maps_source path, disabling SubSetReplace in the mesh.ini, and the f1 mannequin
+  .mdl (resolves to f1_1000c_body_hd.mesh) — none render.
+- Also: real .Sfx created at the spawn (obj non-null, exc=0) does not render; SFX are
+  actors without scene objects, same actor-draw gap.
+- Next probes: (a) hook 0xC4DE80 to see whether f1's mesh reaches the render-data build
+  and why it bails; (b) hook the registry builder's file stream (0xB0FE10 at 0xBE4C12 /
+  the line iterator at 0xBE4CD0) to serve an augmented KeepMeshData list; (c) represent
+  module integration (the game layer path for player models).
+- Host additions this session (diagnostics): keepCheck logging hook (0xC4D430),
+  meshFactory trace (0xC4D7F0), per-model mesh state dumps (name/fd0/flag484) at
+  frames 30/200, nearest-scene-object dump, notify branch probe (model vt[0x118] /
+  actor chain), SFX spawn placement.
+- Evidence: %TEMP%\opencode\skillv2\host_char*.out/png, host_npc*.out/png,
+  host_f1test.out, host_notab.out, host_final.out/png (clean state, 725 objects).

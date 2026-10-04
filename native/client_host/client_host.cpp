@@ -13,6 +13,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <math.h>
 
 static HMODULE g_eng = NULL;
 
@@ -280,7 +281,7 @@ static void castAbility(int idx, void* actor, void* ctrl, HMODULE eng)
                                                          NULL, NULL, NULL);
         logf("[host] cast[%d] StartAnimation=0x%08X", idx, (unsigned)src);
     }
-    createRealSfx(eng, 0.0f, 0.0f, 0.0f);
+    createRealSfx(eng, 23334.0f, 762.0f, 24224.0f);
 }
 
 // render-proxy acquisition hook: proves whether the engine asks for a render
@@ -303,6 +304,61 @@ static long __fastcall hookAcquireProxy(void* self, void* scene, unsigned char b
     return r;
 }
 
+// mesh render-data factory (0xC4D7F0) trace: who builds render data, for which mesh
+static BYTE g_facSaved[32];
+static BYTE* g_facTramp = NULL;
+static void* __fastcall hookMeshFactory(void* a1, void* a2, void* a3, void* a4)
+{
+    void* r = ((void* (__fastcall *)(void*, void*, void*, void*))g_facTramp)(a1, a2, a3, a4);
+    static int n = 0;
+    if (n < 10)
+    {
+        printf("[host] meshFactory a1=%p a2=%p a3=%p a4=%p -> %p\n", a1, a2, a3, a4, r);
+        void* frames[12];
+        USHORT f = RtlCaptureStackBackTrace(1, 12, frames, NULL);
+        for (USHORT i = 0; i < f; i++)
+        {
+            DWORD64 a = (DWORD64)frames[i];
+            printf("[host]   mfbt[%u] = eng+0x%llX\n", i,
+                   (a > (DWORD64)g_eng) ? (a - (DWORD64)g_eng) : 0);
+        }
+        fflush(stdout);
+        n++;
+    }
+    return r;
+}
+
+// keep-mesh-data checker (0xC4D430): decides whether a NormalMesh's render data
+// is built; props (fd0==0) and KeepMeshData_FileList models pass, character
+// meshes from the loose tree do not. Log calls; let f1_3094 pass for the test.
+static BYTE g_chkSaved[32];
+static BYTE* g_chkTramp = NULL;
+static int __fastcall hookKeepCheck(void* mesh)
+{
+    int r = ((int (__fastcall *)(void*))g_chkTramp)(mesh);
+    char name[256];
+    name[0] = 0;
+    __try
+    {
+        char* np = *(char**)((BYTE*)mesh + 8);
+        if (np != NULL)
+        {
+            int k = 0;
+            while (k < 250 && np[k] != 0) { name[k] = np[k]; k++; }
+            name[k] = 0;
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+    static int n = 0;
+    if (n < 30 || strstr(name, "f1_3094") != NULL)
+    {
+        printf("[host] keepCheck '%s' -> %d\n", name, r);
+        fflush(stdout);
+        if (n < 30) n++;
+    }
+    return r;
+}
+
 // scene-object trace hooks (A1): ctor / Init(entityInfo) / SetSfxOrPss
 static BYTE g_socSaved[32];
 static BYTE* g_socTramp = NULL;
@@ -316,6 +372,10 @@ static long __fastcall hookSceneObjectCtor(void* self)
 
 static BYTE g_soiSaved[32];
 static BYTE* g_soiTramp = NULL;
+static void* g_entitySO = NULL;
+static void* g_propSO = NULL;
+static void* g_soList[1200];
+static int g_soCount = 0;
 static long __fastcall hookSceneObjectInit(void* self, void* entityInfo)
 {
     long r = ((long (__fastcall *)(void*, void*))g_soiTramp)(self, entityInfo);
@@ -325,15 +385,127 @@ static long __fastcall hookSceneObjectInit(void* self, void* entityInfo)
     printf("[host] SceneObject::Init self=%p info=%p -> 0x%08X guid=%s\n",
            self, entityInfo, (unsigned)r, guid ? guid : "(?)");
     fflush(stdout);
-    if (r >= 0 && guid != NULL && strstr(guid, "aaaaaaaa-1111-2222-3333") != NULL)
+    if (r >= 0 && guid != NULL && guid[0] != 0)
     {
-        long cr = ((long (__fastcall *)(void*, int))((BYTE*)g_eng + 0xE6490))(self, 1);
-        long mr = ((long (__fastcall *)(void*, int))((BYTE*)g_eng + 0xE64D0))(self, 1);
-        printf("[host] entity charactor flags -> set=0x%08X main=0x%08X\n",
-               (unsigned)cr, (unsigned)mr);
-        fflush(stdout);
+        if (strstr(guid, "aaaaaaaa-1111-2222-3333") != NULL)
+            g_entitySO = self;
+        else if (g_propSO == NULL)
+            g_propSO = self;
+        if (g_soCount < 1200)
+            g_soList[g_soCount++] = self;
     }
     return r;
+}
+
+// engine's game-layer interface: SetModelHandleCallBack(engine, loadedCb,
+// movedCb, unloadedCb) at 0x8CA400. The engine invokes loadedCb from
+// OnSceneActorLoadedCallBack when a scene actor's model reaches the scene.
+typedef long (__fastcall *ModelHandleCbFn)(void*, unsigned char, int, void*,
+                                           const char*, void*, void*, void*,
+                                           void*, int, unsigned long long);
+static int g_mhCount = 0;
+static long __fastcall onModelHandle(void* actor, unsigned char loaded, int a3,
+                                     void* mesh, const char* path, void* mtx,
+                                     void* v1, void* v2, void* param, int a10,
+                                     unsigned long long a11)
+{
+    if (path != NULL && g_mhCount < 200)
+    {
+        printf("[host] ModelHandleCb actor=%p loaded=%d mesh=%p path=%s\n",
+               actor, (int)loaded, mesh, path);
+        fflush(stdout);
+        g_mhCount++;
+    }
+    return 0;
+}
+
+// render-data readiness flag the OnSceneActorLoaded handler gates on:
+// model->vt[0x1a8]() -> z; rdi = [z+0x10]; ready = byte[rdi+0x484] & 1
+static int modelReadyFlag(void* model)
+{
+    int flag = -1;
+    __try
+    {
+        if (model != NULL)
+        {
+            void** mvt = *(void***)model;
+            void* z = ((void* (__fastcall *)(void*))mvt[0x1a8 / 8])(model);
+            if (z != NULL)
+            {
+                void* rdi = *(void**)((BYTE*)z + 0x10);
+                if (rdi != NULL)
+                    flag = *(unsigned char*)((BYTE*)rdi + 0x484);
+            }
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { flag = -2; }
+    return flag;
+}
+
+static void dumpSceneObject(const char* tag, void* so)
+{
+    if (so == NULL) { logf("[host] SO %s = null", tag); return; }
+    __try
+    {
+        unsigned flags = *(unsigned*)((BYTE*)so + 0x10);
+        void* actor = *(void**)((BYTE*)so + 0x100);
+        void* model = (actor != NULL) ? *(void**)((BYTE*)actor + 0x358) : NULL;
+        const char* guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(so);
+        float wm[16];
+        memset(wm, 0, sizeof(wm));
+        ((void (__fastcall *)(void*, float*))((BYTE*)g_eng + 0x9BA510))(so, wm);
+        void* mbegin = *(void**)((BYTE*)so + 0xd8);
+        void* mend = *(void**)((BYTE*)so + 0xe0);
+        logf("[host] SO %s self=%p flags=0x%08X guid=%s actor=%p model=%p ready484=0x%02X mvec=%p..%p pos=(%.1f,%.1f,%.1f)",
+             tag, so, flags, guid ? guid : "(?)", actor, model, modelReadyFlag(model),
+             mbegin, mend, wm[12], wm[13], wm[14]);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] SO %s dump fault", tag); }
+}
+
+// dump the scene objects nearest to the camera (rendered props) for comparison
+static void dumpLoadedObjects(void)
+{
+    int withActor = 0;
+    float cx = 23334.0f, cz = 24224.0f;
+    int order[1200];
+    float dist[1200];
+    int n = 0;
+    for (int i = 0; i < g_soCount; i++)
+    {
+        __try
+        {
+            float wm[16];
+            memset(wm, 0, sizeof(wm));
+            ((void (__fastcall *)(void*, float*))((BYTE*)g_eng + 0x9BA510))(g_soList[i], wm);
+            if (*(void**)((BYTE*)g_soList[i] + 0x100) != NULL) withActor++;
+            float dx = wm[12] - cx, dz = wm[14] - cz;
+            dist[n] = dx * dx + dz * dz;
+            order[n] = i;
+            n++;
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+    for (int a = 0; a < n; a++)
+        for (int b = a + 1; b < n; b++)
+            if (dist[b] < dist[a]) { float td = dist[a]; dist[a] = dist[b]; dist[b] = td;
+                                     int ti = order[a]; order[a] = order[b]; order[b] = ti; }
+    int shown = 0;
+    for (int a = 0; a < n && shown < 10; a++)
+    {
+        void* so = g_soList[order[a]];
+        __try
+        {
+            const char* guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(so);
+            void* actor = *(void**)((BYTE*)so + 0x100);
+            logf("[host] nearSO dist=%.0f flags=0x%08X guid=%s actor=%p",
+                 dist[a] > 0 ? sqrtf(dist[a]) : 0.0f,
+                 *(unsigned*)((BYTE*)so + 0x10), guid ? guid : "(?)", actor);
+            shown++;
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+    logf("[host] SO total=%d withActor=%d", g_soCount, withActor);
 }
 
 static BYTE g_sfpSaved[32];
@@ -503,6 +675,119 @@ static void probeRepresentInit(void)
     }
 }
 
+// actor-loaded callback capture: dump the real scene-node param struct the engine uses
+static BYTE g_alcSaved[48];
+static BYTE* g_alcTramp = NULL;
+static int g_alcSeen = 0;
+static void* g_f1Model = NULL;
+static void* g_propModel = NULL;
+static void* g_npcModel = NULL;
+static int g_f1CtrlDone = 0;
+
+static void dumpMeshState(const char* tag, void* model)
+{
+    if (model == NULL) { logf("[host] mesh %s = null", tag); return; }
+    __try
+    {
+        void** mvt = *(void***)model;
+        void* z = ((void* (__fastcall *)(void*))mvt[0x1a8 / 8])(model);
+        void* rdi = (z != NULL) ? *(void**)((BYTE*)z + 0x10) : NULL;
+        void* fd = (rdi != NULL) ? *(void**)((BYTE*)rdi + 0x18) : NULL;
+        int fd0 = (fd != NULL) ? *(int*)fd : -1;
+        int flag = (rdi != NULL) ? *(unsigned char*)((BYTE*)rdi + 0x484) : -1;
+        char name[256];
+        name[0] = 0;
+        if (rdi != NULL)
+        {
+            char* np = *(char**)((BYTE*)rdi + 8);
+            if (np != NULL)
+            {
+                int k = 0;
+                while (k < 250 && np[k] != 0) { name[k] = np[k]; k++; }
+                name[k] = 0;
+            }
+        }
+        logf("[host] mesh %s model=%p z=%p rdi=%p fd=%p fd0=%d flag484=0x%02X name='%s'", tag,
+             model, z, rdi, fd, fd0, flag, name);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] mesh %s fault", tag); }
+}
+typedef void (__fastcall *ActorLoadedCbFn)(void*, void*, unsigned char, int, void*,
+                                           const char*, void*, void*, int,
+                                           unsigned long long);
+static void __fastcall hookActorLoaded(void* engine, void* actor, unsigned char loaded,
+                                       int a4, void* model, const char* path, void* mtx,
+                                       void* param, int a9, unsigned long long a10)
+{
+    if (path != NULL)
+    {
+        printf("[host] OnSceneActorLoaded path=%s loaded=%d actor=%p model=%p param=%p\n",
+               path, loaded, actor, model, param);
+        if (strstr(path, "f1_3094") != NULL && g_f1Model == NULL)
+            g_f1Model = model;
+
+        if (strstr(path, "maps_source") != NULL && g_propModel == NULL)
+            g_propModel = model;
+        if (strstr(path, "a303") != NULL && g_npcModel == NULL)
+            g_npcModel = model;
+        if (strstr(path, "player") != NULL || strstr(path, "f1_3094") != NULL ||
+            g_alcSeen < 25)
+        {
+            g_alcSeen++;
+            __try
+            {
+                int type = -1, ebp = -1, flag484 = -1;
+                void* z = NULL;
+                void* rdi = NULL;
+                if (model != NULL)
+                {
+                    void** mvt = *(void***)model;
+                    type = ((int (__fastcall *)(void*))mvt[0x118 / 8])(model);
+                    z = ((void* (__fastcall *)(void*))mvt[0x1a8 / 8])(model);
+                    if (z != NULL)
+                    {
+                        rdi = *(void**)((BYTE*)z + 0x10);
+                        if (rdi != NULL)
+                            flag484 = *(unsigned char*)((BYTE*)rdi + 0x484);
+                    }
+                }
+                if (actor != NULL)
+                {
+                    void** avt = *(void***)actor;
+                    void* x = ((void* (__fastcall *)(void*))avt[0xbc0 / 8])(actor);
+                    if (x != NULL)
+                    {
+                        void** xvt = *(void***)x;
+                        void* y = ((void* (__fastcall *)(void*))xvt[0x40 / 8])(x);
+                        if (y != NULL)
+                        {
+                            void** yvt = *(void***)y;
+                            ebp = ((int (__fastcall *)(void*))yvt[0x68 / 8])(y);
+                        }
+                    }
+                }
+                unsigned long long vtRva = 0;
+                if (rdi != NULL)
+                    vtRva = (unsigned long long)((BYTE*)(*(void**)rdi) - (BYTE*)g_eng);
+                printf("[host]   gate: modelType=0x%X ebp=%d z=%p rdi=%p flag484=0x%02X rdiVt=eng+0x%llX\n",
+                       type, ebp, z, rdi, flag484, vtRva);
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            { printf("[host]   gate: fault\n"); }
+        }
+        if (param != NULL)
+        {
+            BYTE* p = (BYTE*)param;
+            for (int i = 0; i < 10; i++)
+                printf("   param[%02X]=%016llX\n", i * 8,
+                       (unsigned long long)*(unsigned long long*)(p + i * 8));
+        }
+        fflush(stdout);
+    }
+    ((ActorLoadedCbFn)g_alcTramp)(engine, actor, loaded, a4, model, path, mtx, param,
+                                  a9, a10);
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
@@ -577,8 +862,15 @@ int main(void)
                                   g_soiSaved, &g_soiTramp, 16);
     int sfpOk = installInlineHook(eng, 0xE6690, (void*)hookSetSfxOrPss,
                                   g_sfpSaved, &g_sfpTramp, 16);
-    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soCtor=%d soInit=%d setSfx=%d",
-         hookOk, lfOk, arpOk, socOk, soiOk, sfpOk);
+    int alcOk = installInlineHook(eng, 0x8CA470, (void*)hookActorLoaded,
+                                  g_alcSaved, &g_alcTramp, 30);
+    int facOk = installInlineHook(eng, 0xC4D7F0, (void*)hookMeshFactory,
+                                  g_facSaved, &g_facTramp, 15);
+    int chkOk = installInlineHook(eng, 0xC4D430, (void*)hookKeepCheck,
+                                  g_chkSaved, &g_chkTramp, 18);
+    logf("[host] keepCheck hook=%d", chkOk);
+    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soCtor=%d soInit=%d setSfx=%d actorLoaded=%d meshFactory=%d",
+         hookOk, lfOk, arpOk, socOk, soiOk, sfpOk, alcOk, facOk);
     {
         HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
         if (kgc != NULL)
@@ -627,6 +919,15 @@ int main(void)
     }
     logf("[host] engine instance=%p", engine);
     if (engine == NULL) return 4;
+    __try
+    {
+        ((void (__fastcall *)(void*, void*, void*, void*))
+         ((BYTE*)eng + 0x8CA400))(engine, (void*)onModelHandle,
+                                  (void*)onModelHandle, (void*)onModelHandle);
+        logf("[host] SetModelHandleCallBack registered (loaded/moved/unloaded)");
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] SetModelHandleCallBack fault"); }
 
     // represent module (the client's character/effect layer - A1 showed the engine
     // scene alone does not render character actors)
@@ -819,7 +1120,7 @@ int main(void)
     }
 
     // real .Sfx through the engine's own factory (client build: no AV)
-    createRealSfx(eng, 0.0f, 0.0f, 0.0f);
+    createRealSfx(eng, 23334.0f, 762.0f, 24224.0f);
 
     // ability list for casting (keys 1..9); auto-cast #0 once after boot
     {
@@ -877,6 +1178,23 @@ int main(void)
                 g_autoCastDone = 1;
                 castAbility(0, actor, ctrl, eng);
             }
+            if (f == 30 || f == 200)
+            {
+                dumpSceneObject(f == 30 ? "entity@30" : "entity@200", g_entitySO);
+                dumpSceneObject(f == 30 ? "prop@30" : "prop@200", g_propSO);
+                dumpMeshState(f == 30 ? "f1@30" : "f1@200", g_f1Model);
+                dumpMeshState(f == 30 ? "prop@30" : "prop@200", g_propModel);
+                dumpMeshState(f == 30 ? "npc@30" : "npc@200", g_npcModel);
+                if (actor != NULL)
+                    logf("[host] manual actor=%p model=%p ready484=0x%02X (frame %d)", actor,
+                         *(void**)((BYTE*)actor + 0x358),
+                         modelReadyFlag(*(void**)((BYTE*)actor + 0x358)), f);
+            }
+            if (f == 200)
+                dumpLoadedObjects();
+
+
+
             if (ctrl != NULL) ctrlFm(ctrl);
             engFm(engine);
             if (camObj != NULL)
