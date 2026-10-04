@@ -1274,6 +1274,31 @@ int main(void)
                             patchIat(rep, GetProcAddress(lua,
                                 "?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ"),
                                 (void*)hookPrintfLog);
+                        // the client's InitLogic loads the resource converter right
+                        // after CreateRLLoader: JX3ResourceConvertX64.dll ->
+                        // KG_GetConvertResource(void** out) (returns the singleton)
+                        __try
+                        {
+                            wchar_t rcp[MAX_PATH];
+                            swprintf_s(rcp, MAX_PATH, L"%s\\JX3ResourceConvertX64.dll",
+                                       bin64);
+                            HMODULE rcm = LoadLibraryExW(rcp, NULL,
+                                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
+                                LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                            logf("[host] JX3ResourceConvertX64.dll -> %p", rcm);
+                            if (rcm != NULL)
+                            {
+                                typedef long (__cdecl *GetConvFn)(void**);
+                                GetConvFn gc = (GetConvFn)GetProcAddress(rcm,
+                                    "KG_GetConvertResource");
+                                void* conv = NULL;
+                                long rc = (gc != NULL) ? gc(&conv) : -1;
+                                logf("[host] KG_GetConvertResource -> 0x%08X conv=%p",
+                                     (unsigned)rc, conv);
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] resource converter fault"); }
                         __try
                         {
                             long pm = ((long (__fastcall *)(void*))lvt[6])(loader);
@@ -1281,17 +1306,35 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] LoadPlayerAllModel fault"); }
+                        // local player assembly (the game's Lua LoadPlayerParts path):
+                        // ctx = 0x42DAD0(); core = 0x42D860(ctx, roleType);
+                        // 0x422F50(core, partsA[13], partsB[13], count)
                         __try
                         {
-                            const char* unitPath =
-                                "data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh";
-                            void* unit = ((void* (__fastcall *)(void*, const char*))
-                                          lvt[16])(loader, unitPath);
-                            logf("[host] RLLoader::GetUnitFromPath('%s') -> %p",
-                                 unitPath, unit);
+                            typedef void* (__fastcall *GetCtxFn)(void*);
+                            void* ctx = ((GetCtxFn)((BYTE*)rep + 0x42DAD0))(NULL);
+                            logf("[host] RL ctx -> %p", ctx);
+                            void* core = NULL;
+                            if (ctx != NULL)
+                            {
+                                core = ((void* (__fastcall *)(void*, int))
+                                        ((BYTE*)rep + 0x42D860))(ctx, 6);
+                                logf("[host] RL player core(roleType=6) -> %p", core);
+                            }
+                            if (core != NULL)
+                            {
+                                int partsA[13];
+                                int partsB[13];
+                                memset(partsA, 0, sizeof(partsA));
+                                memset(partsB, 0, sizeof(partsB));
+                                long lp = ((long (__fastcall *)(void*, void*, void*, int))
+                                           ((BYTE*)rep + 0x422F50))(core, partsA, partsB, 13);
+                                logf("[host] RL LoadPlayerParts(core, zeros, zeros, 13) -> 0x%08X",
+                                     (unsigned)lp);
+                            }
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
-                        { logf("[host] GetUnitFromPath fault"); }
+                        { logf("[host] local player assembly fault"); }
                     }
                 }
             }

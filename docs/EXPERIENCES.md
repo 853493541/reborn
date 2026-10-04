@@ -1539,3 +1539,38 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   index; GetRepresentIDFromPath maps a model path to an RL id).
 - Evidence: %TEMP%\opencode\skillv2\host_unit.out / host_unit2.out (loader errors),
   rl_full.txt (vtable map), le_post.txt (client post-loader init).
+
+## 2026-10-04 — RL system runs in the host: LoadPlayerAllModel OK; local player path mapped; HangPet controller env is the last gate
+
+- Fixed the two missing pieces from the client's InitLogic:
+  1. `Represent\filepath.ini` (the RL path table) was missing from the host root; the
+     pak-extracted copy (from
+     `...\SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\represent-out\represent`)
+     was installed under `client_root\Represent\` -> `KFilePath::Init` succeeds.
+  2. `JX3ResourceConvertX64.dll` loaded + `KG_GetConvertResource(void** out)` (returns
+     the singleton; no env arg) -> path converter ready.
+  After that **`KGRLLoader::LoadPlayerAllModel -> 1`** and the RL tables stream from the
+  paks (`[rl-bin-tab] Represent/player/equip/...`).
+- RL player table found: `Represent/Player/player.txt` (capital P; pak-extracted):
+  role types 0..6, role 6 (rtLittleGirl) -> `Data\source\player\F1\部件\Mdl\F1.mdl`.
+  `GetUnitFromPath` expects a KGRL unit file (fails `uFileSize >
+  sizeof(KGRL_FILE_HEADER_EX)` on the .mdl) - the units are server/`LoadUnitFromBuffer`
+  generated, not on disk.
+- Local player assembly path mapped (the game's Lua binding `LoadPlayerParts`, 22 params,
+  at 0x41C210):
+  - `ctx = rep+0x42DAD0()` -> the HangPetWorld (RL context) - currently **fails**:
+    `HangPetControllerLua::CreateEnv` (m_pScript, line 3143) -> `HangPetWorld::_Init`
+    -> ctx NULL.
+  - `core = rep+0x42D860(ctx, roleType)` -> per-role player core (map lookup; filled by
+    LoadPlayerAllModel).
+  - `rep+0x422F50(core, partsA[13], partsB[13], count)` -> assembles the player.
+- HangPet behavior scripts are `represent/scripts/%s` (BehaviorComponent::Init 0x3FCDAC);
+  the pak-extracted `represent/scripts/dummy/behavior_base.lua` and
+  `rust_animation/rust_animation.lua` are installed, but the HangPet controller's script
+  name comes from its component config, which the game's logic module sets up.
+- Next: find who creates the HangPet entity/controller with its behavior script (client
+  logic module `JX3LogicEditOperationX64.dll` or the represent DLL's HangPetWorld init
+  path) and supply that config, then ctx -> core -> LoadPlayerParts -> visible player.
+- Evidence: %TEMP%\opencode\skillv2\host_char_rl.out (LoadPlayerAllModel + HangPet env
+  error), rl_names.txt, rl_vt3.txt, rl_core.txt (assembly API), hp_scripts.txt,
+  rl_extract2\player.txt.
