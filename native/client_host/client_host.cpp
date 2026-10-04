@@ -1306,6 +1306,22 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] LoadPlayerAllModel fault"); }
+                        // the RL Lua state lives embedded in the SO3Represent singleton
+                        // at +0x25BC0; the singleton's activate (vt[1]) inits it via
+                        // rep+0x16130 (the rest of vt[1] faults in this host).
+                        __try
+                        {
+                            void* singleton = g_repSingleton;
+                            if (singleton != NULL)
+                            {
+                                ((long (__fastcall *)(void*))
+                                 ((BYTE*)rep + 0x16130))((BYTE*)singleton + 0x25BC0);
+                                void* lua = *(void**)((BYTE*)singleton + 0x25BC0);
+                                logf("[host] RL lua state (singleton+0x25BC0) -> %p", lua);
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] RL lua state init fault"); }
                         // local player assembly (the game's Lua LoadPlayerParts path):
                         // ctx = 0x42DAD0(); core = 0x42D860(ctx, roleType);
                         // 0x422F50(core, partsA[13], partsB[13], count)

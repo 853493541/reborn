@@ -1592,3 +1592,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   world object at rep+0xEDDFE0 - scan for stores of its address, incl. SIB encodings,
   and for the script slot writer at +0x25BC0 with 0x89 modrm forms).
 - Evidence: hp_env.txt, hp_ctx.txt, hp_g2.txt, hp_scriptset.txt, hp_world.txt.
+
+## 2026-10-04 — RL Lua state: singleton+0x25BC0 is an embedded script container; creation path still open
+
+- Confirmed `CreateSO3Represent` (rep+0x3E7E10) allocates the 0x26470-byte singleton and
+  stores it at rep+0xEDDFE0 — the same global `HangPetControllerLua::CreateEnv` reads.
+  `singleton+0x25BC0` is an **embedded** object (BehaviorComponent::Init passes its
+  address to the script loader 0x7CA7; CreateEnv reads its first qword as the script/state
+  pointer).
+- The singleton activate (vt[1] -> 0x3E5AE0) initializes it at 0x3E5B31 via
+  rep+0x16130 -> 0x5C2FA0, but 0x5C2FA0 is a **container cleanup loop**, not a Lua state
+  creator — calling it standalone leaves the state NULL (verified: `RL lua state
+  (singleton+0x25BC0) -> 0`), and CreateEnv still fails with m_pScript.
+- So the script/state creation for that embedded container happens in another part of
+  vt[1] (or needs the engine's scripting module / game env); the host attempt is
+  env-gated (RC_HOST_RLLOADER=1) and harmless. Next probe: trace the writer of the first
+  qword at singleton+0x25BC0 (scan for stores relative to the singleton, incl. through
+  helper calls) or find the RL script-manager creation in the vt[1] call list
+  (0x26BF7/0x175F3/0x270C/0x1E80D/0x12715 ...) by testing each standalone.
+- Evidence: host_char_rl2.out, hp_lua.txt, hp_bc.txt, hp_slotw.txt.
