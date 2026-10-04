@@ -1241,3 +1241,19 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Also: engine FrameMove is now called every frame again (the old f<8 hack removed; the
   SceneViewEx paint pair already fixed the shadow crash).
 - Evidence: %TEMP%\opencode\skillv2\host_a3.out (Init trace), host_a6.out (backtrace).
+
+## 2026-10-03 ¡ª Represent module: booted; lifecycle init blocks (game env needed)
+
+- Host now loads JX3RepresentX64.dll and calls CreateSO3Represent (non-null) +
+  GetRepresentECSRootEntity (null until the module's lifecycle init runs).
+- The game's boot (JX3ClientX64.exe KJX3RepresentModule): Load (0xBC7xx) does
+  GetProcAddress("CreateSO3Represent") + call; the module **vtable RVA 0x95A350**
+  (COL 0x96F840 -> TD .?AVKJX3RepresentModule@@); lifecycle handler 0xBC8F0 calls the
+  singleton's t[1] (activate) / t[2] (deactivate).
+- Calling the singleton's t[1] from our host **blocks/hangs** (no return; killed at
+  150 s) - it expects the game module environment (hierarchy/resources/network context).
+  Reverted to keep the host usable; do not call vt[1] without replicating that env.
+- Next probe: run vt[1] on a worker thread with a watchdog and capture its stack to see
+  what it waits on; or find the module environment objects (KJX3RepresentModule +0x18
+  singleton holder) the game builds before activation.
+- Evidence: %TEMP%\opencode\skillv2\host_rep2.out; commit pending.

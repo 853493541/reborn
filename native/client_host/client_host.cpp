@@ -474,6 +474,30 @@ int main(void)
     logf("[host] engine instance=%p", engine);
     if (engine == NULL) return 4;
 
+    // represent module (the client's character/effect layer - A1 showed the engine
+    // scene alone does not render character actors)
+    {
+        wchar_t rp[MAX_PATH];
+        swprintf_s(rp, MAX_PATH, L"%s\\JX3RepresentX64.dll", bin64);
+        HMODULE rep = LoadLibraryExW(rp, NULL,
+            LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+        logf("[host] JX3RepresentX64.dll -> %p (err=%u)", rep, rep ? 0 : GetLastError());
+        if (rep != NULL)
+        {
+            typedef void* (__cdecl *CreateRepFn)(void);
+            CreateRepFn cr = (CreateRepFn)GetProcAddress(rep, "CreateSO3Represent");
+            void* r = (cr != NULL) ? cr() : NULL;
+            logf("[host] CreateSO3Represent -> %p", r);
+            typedef void* (__cdecl *GetEcsFn)(void);
+            GetEcsFn ge = (GetEcsFn)GetProcAddress(rep, "GetRepresentECSRootEntity");
+            void* ecs = (ge != NULL) ? ge() : NULL;
+            logf("[host] GetRepresentECSRootEntity -> %p", ecs);
+            // NOTE: singleton lifecycle init (vt[1], the game's KJX3RepresentModule
+            // activate path) blocks in this host - it expects the game module
+            // environment; do not call it here (see docs/EXPERIENCES.md).
+        }
+    }
+
     // engine file-mode manager (0x2D22598): created the way the game does
     // (KIndexpack init + the engine's own lazy getter).
     {
