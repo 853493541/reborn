@@ -28,7 +28,7 @@ extracted INI, writes `ui_process_selftest.txt` next to the exe):
 UiProcessApp.exe --selftest
 ```
 
-Current selftest: **1,037/1,037 windows rendered** (13 BR + 1,020 basic UI + spare),
+Current selftest: **1,240/1,240 windows rendered** (13 BR + 1,223 basic/mode UI + spare),
 e.g. NewBattleFieldQueue 1,129 sections / 1,016 elements, BattleFieldMap 367 sections.
 
 ## What it shows

@@ -1618,3 +1618,18 @@ solved it, and what is still open. **Newest at the bottom.**
   AssetNote line shows build=NNN ms / (cached).
 - Verified: build clean; app starts and stays responsive (pid check). First visits still build (big
   panels take their time); repeats and prewarmed neighbours are instant.
+
+### 2026-10-04 ? UI ? catalog everything: the 204 previously-excluded INIs added (1,240 windows)
+- User: "keep getting more UI". Added every remaining local Config/Default INI (login/entry 31, BR
+  sub-panels 50, arena/JJC 23, other modes/minigames 77, housing 20, debug 3 = 204) as a new stage
+  6 ??????? (before ??), with the same official-name pass (18 more StringTables extracted,
+  16 HIT; 73 of 204 named). Catalog 1,240; --selftest 1240/0/0.
+- Mid-wave mistake + fix: a scan for "invisible script hosts" (root 0x0 + LSH=1 + MousePenetrable=1)
+  used a regex that swallowed the WHOLE file's keys (so later sections' LockShowAndHide leaked into
+  the root's key set) and dropped 11 real windows (incl. DLCPanel 2,049 sections) and then added 442
+  bogus `show` lists. Reverted: a single-section-aware parser (first section only) proved only
+  accelerateball + hlbop-main genuinely have LSH=1 roots; the 10 dropped windows were restored (9
+  without show, HLBOp_Main keeps its show) and their summaries regenerated. HomelandEventHandler.ini
+  (single 0x0 LSH=1 section, no content) stays dropped as the only bare host.
+- Lesson: parse INI roots with an explicit "first section only" loop, never a `[\s\S]*` grab; and
+  validate a bulk show-list change on a sample render before trusting the scan.

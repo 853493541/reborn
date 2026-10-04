@@ -481,31 +481,26 @@ The full in-scope set is catalogued as authored-state entries, split across stag
 
 | stage | windows | content |
 |---|---|---|
-| 1. 推荐 | 25 | curated review shortlist (HUD core + main panels + settings) — moved out of the groups below |
-| 2. 基础HUD | 70 | remaining HUD class + the 28 target-frame variants (TargetCommon/Target10..42/S, lua-less) |
-| 3. 功能面板 | 97 | remaining character/bag/skill + social/team/guild + mail/auction/bank (+ ReputationPanel) |
-| 4. 菜单与交互 | 41 | remaining menus/settings + world/quest/interaction |
-| 5. 其他界面 | 787 | the remaining default windows (activities/operations/tools) |
-| 6. 备用 (last) | 4 | unchanged |
+| 1. 推荐 | 25 | curated review shortlist (HUD core + main panels + settings) |
+| 2. 基础HUD | 68 | HUD class + the 28 target-frame variants (TargetCommon/Target10..42/S, lua-less) |
+| 3. 功能面板 | 97 | character/bag/skill + social/team/guild + mail/auction/bank (+ ReputationPanel) |
+| 4. 菜单与交互 | 41 | menus/settings + world/quest/interaction |
+| 5. 其他界面 | 781 | the remaining default windows (activities/operations/tools) |
+| 6. 其他模式与入口 | 211 | the previously-excluded classes: login/entry, BR sub-panels, arena/JJC, other modes/minigames, housing, debug (user request: catalog everything) |
+| 7. 备用 (last) | 4 | unchanged |
 
-## Coverage audit (2026-10-03) — what is left out
+## Coverage (2026-10-04) — all local INIs catalogued
 
-Catalog: **1,037 windows**; local `ui/Config/Default` INIs: 1,240. The 203 extracted-but-uncatalogued
-INIs break down as:
+Catalog: **1,240 windows** = every locally extracted `ui/Config/Default` INI except one bare script
+host (`HomelandEventHandler.ini` — a single 0x0 `LockShowAndHide=1` section with no content; dropped
+rather than rendered empty). The previously excluded classes (login/BR sub-panels/arena/minigames/
+housing/debug) are now in stage 6 其他模式与入口, on user request ("keep getting more UI").
 
-| bucket | count | disposition |
-|---|---|---|
-| login/entry | 31 | excluded by scope (Login*, EULA, Addon*, ...) |
-| BR mode sub-panels | 50 | excluded (ACC_*, PVPShow*, mode info panels; the 13 flow windows are catalogued) |
-| arena/JJC | 23 | excluded by scope |
-| other modes/minigames | 77 | excluded by scope (Moba/Rouge/Monopoly/GooseDuckKill/...) |
-| housing | 20 | excluded by scope (Homeland/BuildingOperation) |
-| debug/GM | 3 | excluded by scope |
-
-Plus: **155 manifest script entries have no same-path INI** (`missing_inis.txt`) — helper/data/logic
-files (e.g. CharInfoData, QuestData), not windows; a few may carry differently-named INIs (probe per
-need). **Unknown:** the pak has no enumerable INI listing, so further lua-less INIs like the Target
-family (found by probing) may exist; new families get probed when a session needs them.
+Still out of reach: the **155 manifest script entries with no same-path INI**
+(`proof/ui/basic_ui/missing_inis.txt` — helper/data files like CharInfoData/QuestData, not windows;
+a few may carry differently-named INIs, probed per need), and any further lua-less INI families (the
+pak has no enumerable INI listing — the Target family was found by probing; new families get probed
+when a session needs them).
 
 **推荐 shortlist (stage 1):** 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪,
 CompassPanel, ExpLine, 地图, 角色, 背包, 武学, 社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易,
