@@ -384,6 +384,55 @@ static BOOL CALLBACK enumProcHostWnd(HWND h, LPARAM lp)
     return TRUE;
 }
 
+static volatile LONG g_repSlot = -1;
+static DWORD WINAPI repSlotThread(LPVOID)
+{
+    __try
+    {
+        void** rvt = *(void***)g_repSingleton;
+        ((long (__fastcall *)(void*))rvt[g_repSlot])(g_repSingleton);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+    InterlockedExchange(&g_repInitDone, 1);
+    return 0;
+}
+
+static void probeRepresentSlots(void)
+{
+    typedef void* (__cdecl *GetEcsFn)(void);
+    GetEcsFn ge = (GetEcsFn)GetProcAddress(g_repModule, "GetRepresentECSRootEntity");
+    int slots[] = { 2, 3, 4, 5, 6, 7, 11, 12, 13, 14 };
+    for (int i = 0; i < 10; i++)
+    {
+        InterlockedExchange(&g_repInitDone, 0);
+        g_repSlot = slots[i];
+        HANDLE th = CreateThread(NULL, 0, repSlotThread, NULL, 0, NULL);
+        int waited = 0;
+        while (waited < 3000 && InterlockedCompareExchange(&g_repInitDone, 0, 0) == 0)
+        {
+            MSG msg;
+            while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessageA(&msg);
+            }
+            Sleep(50);
+            waited += 50;
+        }
+        void* ecs = (ge != NULL) ? ge() : NULL;
+        logf("[host] represent slot %d done=%ld %dms ecs=%p", slots[i],
+             (long)InterlockedCompareExchange(&g_repInitDone, 0, 0), waited, ecs);
+        if (ecs != NULL)
+        {
+            logf("[host] ECS root found after slot %d", slots[i]);
+            break;
+        }
+        if (InterlockedCompareExchange(&g_repInitDone, 0, 0) == 0)
+            logf("[host]   slot %d hung (thread left wedged)", slots[i]);
+        CloseHandle(th);
+    }
+}
+
 static void probeRepresentInit(void)
 {
     if (g_repSingleton == NULL) return;
@@ -413,6 +462,7 @@ static void probeRepresentInit(void)
             logf("[host] ECS root after init -> %p", ecs);
         }
         __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] ECS root query fault"); }
+        probeRepresentSlots();
         return;
     }
     if (InterlockedCompareExchange(&g_repInitDone, 0, 0) == 0)
@@ -723,6 +773,22 @@ int main(void)
     long mrc = ((CreateActorFn)((BYTE*)eng + 0x8B2DA0))(engine, mpath, scene, &actor, 0,
                                                         actorMtx);
     logf("[host] CreateActorFromFile -> 0x%08X actor=%p", (unsigned)mrc, actor);
+    if (actor != NULL)
+    {
+        __try
+        {
+            void* model = *(void**)((BYTE*)actor + 0x358);
+            unsigned char param[0x200];
+            memset(param, 0, sizeof(param));
+            typedef void (__fastcall *ActorLoadedFn)(void*, void*, unsigned char, int,
+                                                     void*, const char*, void*, void*,
+                                                     int, unsigned long long);
+            ((ActorLoadedFn)((BYTE*)eng + 0x8CA470))(engine, actor, 1, 0, model, mpath,
+                                                     actorMtx, param, 0, 0);
+            logf("[host] OnSceneActorLoadedCallBack sent (model=%p)", model);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { logf("[host] actor-loaded callback fault"); }
+    }
 
     // authored animation on the engine's own attach path + controller
     void* ctrl = NULL;

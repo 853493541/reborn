@@ -1275,3 +1275,16 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   the real caller; (c) engine-side alternative: OnSceneActorLoadedCallBack (0x8CA470)
   registration for our actor.
 - Evidence: %TEMP%\opencode\skillv2\host_rep4/6.out; commit pending.
+
+## 2026-10-03 ¡ª TERRAIN RENDERS: OnSceneActorLoadedCallBack unlocks the scene draw
+
+- After the actor is created, sending the engine's own OnSceneActorLoadedCallBack
+  (0x8CA470: engine, actor, loaded=1, 0, model=actor+0x358, path, matrix, zeroed
+  param struct, 0, 0) makes the **terrain render** (sand ground under the props).
+  Before: props floated on sky. After: host_loaded.png shows the dune + flat sand
+  with buildings/cart/trees standing on it (mean #AEB6B0 vs #A2B4B5).
+- The lower frame is void/sky (cropped region edge - the 1x1 crop's terrain ends).
+- Character still not visible (the callback registered the actor into the scene state
+  but the draw of the actor itself is still pending; possibly needs the correct
+  scene-node param struct or the represent actor path).
+- Evidence: %TEMP%\opencode\skillv2\host_loaded.out/png.
