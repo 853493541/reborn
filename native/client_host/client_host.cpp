@@ -478,8 +478,8 @@ int main(void)
         PaintViewFn endView = (PaintViewFn)((BYTE*)eng + 0xA6C480);
         PaintFn endPaint = (PaintFn)((BYTE*)eng + 0xA6FCD0);
         float camPose[9] = {
-            23334.0f, 761.0f + 25.0f, 24224.0f - 30.0f,
-            23334.0f, 761.0f, 24224.0f,
+            23334.0f, 761.0f + 2.2f, 24224.0f - 6.0f,
+            23334.0f, 761.0f + 1.2f, 24224.0f,
             0.0f, 1.0f, 0.0f
         };
         for (int f = 0; f < 240; f++)
