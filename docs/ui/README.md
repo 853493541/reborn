@@ -8,6 +8,7 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `UI_SYSTEM_REPORT.md` | JX3 Client UI System — Reproduction Report |
 | `BASIC_UI_INVENTORY.md` | Basic UI scope register — all 1,210 client `ui/Config/Default` INIs (extracted 2026-10-03), classes, tiers, exclusions |
 | `BASIC_UI_HUD.md` | HUD core deep research — MainBarPanel / Player / Target family (composition decoded) + remaining HUD register; authored-state verification policy |
+| `BASIC_UI_PANELS.md` | Panel group register — the 推荐 shortlist panels: INI facts, pages/LSH, authored-vs-runtime split, review notes |
 
 ## Tools
 

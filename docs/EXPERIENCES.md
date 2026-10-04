@@ -1568,3 +1568,15 @@ solved it, and what is still open. **Newest at the bottom.**
   windows; `proof/ui/basic_ui/missing_inis.txt`), plus the general caveat that the pak has no
   enumerable INI listing - further lua-less INIs like the Target family may exist and get probed per
   need. The audit table lives in docs/ui/BASIC_UI_INVENTORY.md (Coverage audit).
+
+### 2026-10-03 — UI — 推荐 review pass: render audit of all 25 + panel register doc
+- Rendered all 25 推荐 windows and measured content vs the backdrop: 24 render authored content;
+  raidpanel was nearly empty (content 0.04) because its tabs/member slots are LockShowAndHide=1 -
+  fixed with a show list (CheckBox_Team1..5 + Image_Member1..5 + title/minimize; 49 sections drawn).
+  main-bar stays frame-only (slot icons = runtime skill data, documented).
+- New doc docs/ui/BASIC_UI_PANELS.md (registered): per-panel INI facts (sections/root/pages/LSH),
+  authored-vs-runtime split and review notes for the shortlist panels (CharacterPanel 882 sections/9
+  pages, GuildMainPanel 1625/15, UISetting 1749, WorldMap 1061/469 LSH, ...).
+- Next fidelity step per panel: replay one sample row/slot per runtime list once the row templates are
+  identified (rows are created by each panel's Lua).
+- Verified: --selftest 1037/0/0; raidpanel render 49 sections.
