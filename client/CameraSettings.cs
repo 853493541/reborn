@@ -17,7 +17,7 @@ internal sealed class CameraSettings
     public double SpringResetSpeed = 1.0;   // fSpringResetSpeed (read-only for now)
     public double CameraResetSpeed = 1.0;   // fCameraResetSpeed (read-only for now)
     public int CameraMode = 0;              // tCameraStatic.nCameraMode (follow mode 0..3)
-    public int OperationMode = CameraOperationMode.Classical; // CLASSICAL/JOYSTICK (runtime, RC_MODE)
+    public int OperationMode = CameraOperationMode.Joystick;  // default joystick (current focus; RC_MODE / userprefs override)
     public int FollowModeClassic = 0;       // nCameraModeInClassicMode (per-mode follow mode)
     public int FollowModeJoystick = 0;      // nCameraModeInJoystickMode
     public bool CameraSmoothing = true;     // bCameraSmoothing
@@ -26,6 +26,46 @@ internal sealed class CameraSettings
     public bool HasSceneInit;
     public bool HasSavedRuntime;
     public bool HasCustomSettings;
+    // Active per-mode camera values, applied on every mode switch. Clamps and
+    // field sources are verified from the represent setters
+    // (SetCameraFollowMode 0x180ace3f0 [0..3]; SetCameraSpringResetSpeed
+    // 0x180aced60 / SetCameraResetSpeed 0x180ace900 [0.01,10]; classic fields
+    // +0x78/+0x7C/+0x80, joystick +0x90/+0x94/+0x98). The per-frame consumer
+    // of follow mode [0..3] and the reset speeds is still undecoded, so the
+    // host applies/logs the active values and does not fake their behaviour
+    // (docs/controls/OPERATION_MODES_PLAN.md §7b).
+    public int ActiveFollowMode = 0;
+    public double ActiveSpringResetSpeed = 1.0;
+    public double ActiveCameraResetSpeed = 1.0;
+
+    public void ApplyOperationMode()
+    {
+        ActiveFollowMode = ClampFollowMode(
+            OperationMode == CameraOperationMode.Joystick ? FollowModeJoystick : FollowModeClassic);
+        ActiveSpringResetSpeed = ClampResetSpeed(SpringResetSpeed);
+        ActiveCameraResetSpeed = ClampResetSpeed(CameraResetSpeed);
+    }
+
+    public static int ClampFollowMode(int v)
+    {
+        if (v < 0) return 0;
+        if (v > 3) return 3;
+        return v;
+    }
+
+    public static double ClampResetSpeed(double v)
+    {
+        if (v < 0.01) return 0.01;
+        if (v > 10.0) return 10.0;
+        return v;
+    }
+
+    public string DescribeApplied()
+    {
+        return string.Format("op={0} followMode={1} springReset={2:F2} cameraReset={3:F2}",
+            CameraOperationMode.Name(OperationMode), ActiveFollowMode,
+            ActiveSpringResetSpeed, ActiveCameraResetSpeed);
+    }
 
     public static CameraSettings Load(string editorRoot, string mapPath, string appDir, Action<string> log)
     {
@@ -57,9 +97,40 @@ internal sealed class CameraSettings
             catch (Exception e) { log("CameraSettings custom.dat ex: " + e.Message); }
         }
 
-        // operation mode is runtime-session state: set via RC_MODE, toggled by
-        // F7; the custom.dat key for the persisted mode itself is unrecovered
-        // (docs/controls/OPERATION_MODES_PLAN.md), so nothing is written back.
+        // persisted operation mode: the client's StorageServer key
+        // 'CurrentOperationMode' maps to the per-role userpreferences.jx3dat
+        // (decoded 2026-10-02: a GBK text map with "CurrentOperationMode={0|1}";
+        // 0 = classical, 1 = joystick). RC_USER_PREFS points at that file;
+        // read-only - the host never writes it back. RC_MODE overrides (tests).
+        string prefsPath = Environment.GetEnvironmentVariable("RC_USER_PREFS");
+        if (!string.IsNullOrEmpty(prefsPath) && File.Exists(prefsPath))
+        {
+            try
+            {
+                byte[] pb = File.ReadAllBytes(prefsPath);
+                byte[] key = Encoding.ASCII.GetBytes("CurrentOperationMode={");
+                int idx = -1;
+                for (int i = 0; i + key.Length <= pb.Length && idx < 0; i++)
+                {
+                    bool m = true;
+                    for (int j = 0; j < key.Length; j++)
+                        if (pb[i + j] != key[j]) { m = false; break; }
+                    if (m) idx = i + key.Length;
+                }
+                if (idx >= 0 && idx < pb.Length)
+                {
+                    int val = pb[idx] - (byte)'0';
+                    if (val == 0 || val == 1)
+                    {
+                        result.OperationMode = val == 1
+                            ? CameraOperationMode.Joystick : CameraOperationMode.Classical;
+                        log("CameraSettings: userprefs CurrentOperationMode=" + val
+                            + " (" + CameraOperationMode.Name(result.OperationMode) + ")");
+                    }
+                }
+            }
+            catch (Exception e) { log("CameraSettings userprefs ex: " + e.Message); }
+        }
         string opEnv = Environment.GetEnvironmentVariable("RC_MODE");
         if (!string.IsNullOrEmpty(opEnv)) result.OperationMode = CameraOperationMode.Parse(opEnv);
 

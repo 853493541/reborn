@@ -1,11 +1,13 @@
-// HUD overlay for the reborn client (M1.7).
+// Information panel for the reborn client (M1.7).
 //
 // The engine renders into a child window of the host form, so WinForms child
-// controls (the old Label) sit *behind* the 3D output. This overlay is a
+// controls (the old Label) sit *behind* the 3D output. This panel is a
 // separate top-level layered window owned by the host form: per-pixel alpha
-// (UpdateLayeredWindow) draws above the engine viewport, WS_EX_TRANSPARENT
-// keeps it click-through so input still reaches the game. The old clickable
-// "I" toggle becomes a keyboard toggle handled by the client.
+// (UpdateLayeredWindow) draws above the engine viewport. It is hidden by
+// default (no on-screen hints) and toggled with Esc; while open it shows the
+// run info, the control mode and a clickable COPY LOG row. WS_EX_NOACTIVATE
+// keeps focus with the game; the window is only visible while open, so it
+// never blocks input when closed.
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -14,27 +16,39 @@ using System.Windows.Forms;
 
 internal sealed class HudOverlay : Form
 {
-    const int HintSize = 22;   // "I" indicator box
-    const int Gap = 6;         // space between hint and info box
-    const int Pad = 6;         // info box padding
+    const int Pad = 8;         // panel padding
+    const int Gap = 8;         // space between blocks
+    const int CopyH = 26;      // COPY LOG row height
 
     string text = "loading...";
+    string modeText = "";
     bool showInfo;
     bool dirty = true;
     Bitmap buffer;
+    Rectangle copyRect;
+    Rectangle copyPosRect;
     readonly Font font;
-    readonly Font hintFont;
-    readonly SolidBrush boxBrush = new SolidBrush(Color.FromArgb(160, 0, 0, 0));
+    readonly Font modeFont;
+    readonly Font copyFont;
+    readonly SolidBrush boxBrush = new SolidBrush(Color.FromArgb(190, 0, 0, 0));
+    readonly SolidBrush copyBoxBrush = new SolidBrush(Color.FromArgb(210, 40, 60, 90));
     readonly SolidBrush textBrush = new SolidBrush(Color.White);
+    readonly SolidBrush modeBrush = new SolidBrush(Color.FromArgb(255, 220, 120));
+    readonly SolidBrush copyBrush = new SolidBrush(Color.FromArgb(220, 235, 255));
+
+    // Copy actions, wired by the client (recent run log / current position).
+    public Action OnCopyLog;
+    public Action OnCopyPos;
 
     public HudOverlay()
     {
         font = new Font("Consolas", 10f);
-        hintFont = new Font("Consolas", 10f, FontStyle.Bold);
+        modeFont = new Font("Consolas", 12f, FontStyle.Bold);
+        copyFont = new Font("Consolas", 10f, FontStyle.Bold);
         FormBorderStyle = FormBorderStyle.None;
         ShowInTaskbar = false;
         StartPosition = FormStartPosition.Manual;
-        ClientSize = new Size(HintSize, HintSize);
+        ClientSize = new Size(1, 1);
     }
 
     public bool ShowInfo
@@ -56,19 +70,19 @@ internal sealed class HudOverlay : Form
             CreateParams cp = base.CreateParams;
             cp.ExStyle |= 0x00000080    // WS_EX_TOOLWINDOW
                         | 0x08000000    // WS_EX_NOACTIVATE
-                        | 0x00000020    // WS_EX_TRANSPARENT (click-through)
                         | 0x00080000;   // WS_EX_LAYERED
             return cp;
         }
     }
 
     // Position over the engine viewport (host form client origin + 10,10).
+    // Visibility is owned by UpdateLayered (only shown while the panel is open).
     public void PlaceOver(Form owner)
     {
         Point origin = owner.PointToScreen(Point.Empty);
         Point want = new Point(origin.X + 10, origin.Y + 10);
         if (Location != want) Location = want;
-        if (!Visible) { Owner = owner; Show(); }
+        if (Owner == null) Owner = owner;
     }
 
     public void SetText(string value)
@@ -76,21 +90,40 @@ internal sealed class HudOverlay : Form
         if (value != text) { text = value; dirty = true; }
     }
 
-    // Re-render the layered buffer; no-op when nothing changed.
+    // Control-mode name (shown inside the panel).
+    public void SetModeText(string value)
+    {
+        if (value != modeText) { modeText = value; dirty = true; }
+    }
+
+    // Re-render the layered buffer; hidden while the panel is closed.
     public void UpdateLayered()
     {
-        if (!dirty) return;
+        if (!showInfo)
+        {
+            if (Visible) Hide();
+            dirty = false;
+            return;
+        }
+        if (!dirty)
+        {
+            if (!Visible) Show();
+            return;
+        }
         dirty = false;
 
-        Size infoSize = Size.Empty;
-        if (showInfo && text.Length > 0)
+        Size modeSize = Size.Empty, infoSize = Size.Empty, copySize = Size.Empty;
+        using (Bitmap probe = new Bitmap(1, 1))
+        using (Graphics g = Graphics.FromImage(probe))
         {
-            using (Bitmap probe = new Bitmap(1, 1))
-            using (Graphics g = Graphics.FromImage(probe))
-                infoSize = Size.Ceiling(g.MeasureString(text, font));
+            if (modeText.Length > 0) modeSize = Size.Ceiling(g.MeasureString(modeText, modeFont));
+            if (text.Length > 0) infoSize = Size.Ceiling(g.MeasureString(text, font));
+            copySize = Size.Ceiling(g.MeasureString("COPY POS", copyFont));
         }
-        int w = HintSize + (showInfo ? Gap + infoSize.Width + Pad * 2 : 0);
-        int h = Math.Max(HintSize, showInfo ? infoSize.Height + Pad * 2 : 0);
+        int modeH = modeText.Length > 0 ? modeSize.Height : 0;
+        int copyW = Math.Max(140, copySize.Width + Pad * 3);
+        int w = Math.Max(Math.Max(modeSize.Width, infoSize.Width), copyW * 2 + Gap) + Pad * 2;
+        int h = Pad + modeH + Gap + infoSize.Height + Gap + CopyH + Pad;
         if (w < 1) w = 1;
         if (h < 1) h = 1;
 
@@ -99,26 +132,38 @@ internal sealed class HudOverlay : Form
             if (buffer != null) buffer.Dispose();
             buffer = new Bitmap(w, h, PixelFormat.Format32bppArgb);
         }
+        copyRect = new Rectangle(Pad, h - Pad - CopyH, copyW, CopyH);
+        copyPosRect = new Rectangle(Pad + copyW + Gap, h - Pad - CopyH, copyW, CopyH);
         using (Graphics g = Graphics.FromImage(buffer))
         {
             g.Clear(Color.Transparent);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            g.FillRectangle(boxBrush, new Rectangle(0, 0, HintSize, HintSize));
+            g.FillRectangle(boxBrush, new Rectangle(0, 0, w, h));
+            if (modeText.Length > 0)
+                g.DrawString(modeText, modeFont, modeBrush, new PointF(Pad, Pad));
+            g.DrawString(text, font, textBrush, new PointF(Pad, Pad + modeH + Gap));
+            g.FillRectangle(copyBoxBrush, copyRect);
+            g.FillRectangle(copyBoxBrush, copyPosRect);
             using (StringFormat sf = new StringFormat())
             {
                 sf.Alignment = StringAlignment.Center;
                 sf.LineAlignment = StringAlignment.Center;
-                g.DrawString("I", hintFont, textBrush, new RectangleF(0, 0, HintSize, HintSize), sf);
-            }
-            if (showInfo)
-            {
-                g.FillRectangle(boxBrush, new Rectangle(HintSize + Gap, 0, w - HintSize - Gap, h));
-                g.DrawString(text, font, textBrush, new PointF(HintSize + Gap + Pad, Pad));
+                g.DrawString("COPY LOG", copyFont, copyBrush, copyRect, sf);
+                g.DrawString("COPY POS", copyFont, copyBrush, copyPosRect, sf);
             }
         }
 
         if (ClientSize.Width != w || ClientSize.Height != h)
             ClientSize = new Size(w, h);
+
+        // RC_HUD_DUMP=<png path>: save the rendered buffer (test/diagnostic;
+        // layered windows cannot be captured with PrintWindow or screen grabs).
+        string dump = Environment.GetEnvironmentVariable("RC_HUD_DUMP");
+        if (!string.IsNullOrEmpty(dump))
+        {
+            try { buffer.Save(dump, ImageFormat.Png); }
+            catch { }
+        }
 
         IntPtr screenDc = GetDC(IntPtr.Zero);
         IntPtr memDc = CreateCompatibleDC(screenDc);
@@ -142,6 +187,23 @@ internal sealed class HudOverlay : Form
             DeleteDC(memDc);
             ReleaseDC(IntPtr.Zero, screenDc);
         }
+        if (!Visible) Show();
+    }
+
+    protected override void OnMouseDown(MouseEventArgs e)
+    {
+        base.OnMouseDown(e);
+        if (!showInfo) return;
+        if (copyRect.Contains(e.Location)) { if (OnCopyLog != null) OnCopyLog(); }
+        else if (copyPosRect.Contains(e.Location)) { if (OnCopyPos != null) OnCopyPos(); }
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+        base.OnMouseMove(e);
+        Cursor want = showInfo && (copyRect.Contains(e.Location) || copyPosRect.Contains(e.Location))
+            ? Cursors.Hand : Cursors.Default;
+        if (Cursor != want) Cursor = want;
     }
 
     [DllImport("user32.dll")]
@@ -165,53 +227,4 @@ internal sealed class HudOverlay : Form
     struct SIZE { public int cx, cy; public SIZE(int w, int h) { cx = w; cy = h; } }
     [StructLayout(LayoutKind.Sequential)]
     struct BLENDFUNCTION { public byte BlendOp, BlendFlags, SourceConstantAlpha, AlphaFormat; }
-}
-
-// Clickable COPY LOG widget (top-right, owned by the host form): a small
-// top-level form - NOT click-through - so the button receives mouse input over
-// the engine viewport; WS_EX_NOACTIVATE keeps focus with the game. The old
-// panel Label cannot be used: WinForms children sit behind the engine child
-// window (see the HudOverlay header).
-internal sealed class CopyLogOverlay : Form
-{
-    public Action OnClick;
-
-    public CopyLogOverlay()
-    {
-        FormBorderStyle = FormBorderStyle.None;
-        ShowInTaskbar = false;
-        StartPosition = FormStartPosition.Manual;
-        ClientSize = new Size(90, 24);
-        BackColor = Color.Black;
-        var b = new Label();
-        b.Dock = DockStyle.Fill;
-        b.Text = "COPY LOG";
-        b.TextAlign = ContentAlignment.MiddleCenter;
-        b.ForeColor = Color.White;
-        b.BackColor = Color.Black;
-        b.Font = new Font("Consolas", 9f, FontStyle.Bold);
-        b.Cursor = Cursors.Hand;
-        b.Click += delegate { if (OnClick != null) OnClick(); };
-        Controls.Add(b);
-    }
-
-    protected override CreateParams CreateParams
-    {
-        get
-        {
-            CreateParams cp = base.CreateParams;
-            cp.ExStyle |= 0x00000080    // WS_EX_TOOLWINDOW
-                        | 0x08000000    // WS_EX_NOACTIVATE
-                        | 0x00000008;   // WS_EX_TOPMOST
-            return cp;
-        }
-    }
-
-    public void PlaceOver(Form owner)
-    {
-        Point origin = owner.PointToScreen(Point.Empty);
-        Point want = new Point(origin.X + owner.ClientSize.Width - 100, origin.Y + 10);
-        if (Location != want) Location = want;
-        if (!Visible) { Owner = owner; Show(); }
-    }
 }

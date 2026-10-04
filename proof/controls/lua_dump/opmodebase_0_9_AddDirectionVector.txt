@@ -1,0 +1,13 @@
+
+===== function 0/9 | line 241-244 | params=2 nups=1 stack=4 =====
+pc=   0 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   1 L0     GETUPVAL  A=3   B=0    C=0    
+pc=   2 L0     GETTABLE  A=3   B=3    C=256  R3 K0('nX')
+pc=   3 L0     ADD       A=3   B=3    C=0    R3 R0
+pc=   4 L0     SETTABLE  A=2   B=256  C=3    K0('nX') R3
+pc=   5 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   6 L0     GETUPVAL  A=3   B=0    C=0    
+pc=   7 L0     GETTABLE  A=3   B=3    C=257  R3 K1('nY')
+pc=   8 L0     ADD       A=3   B=3    C=1    R3 R1
+pc=   9 L0     SETTABLE  A=2   B=257  C=3    K1('nY') R3
+pc=  10 L0     RETURN    A=0   B=1    C=0    

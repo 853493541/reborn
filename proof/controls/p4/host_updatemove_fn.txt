@@ -1,0 +1,345 @@
+
+##### fn 0x1804D0272 (site 0x1804D0472)
+0x1804D0272  test rdi, rdi
+0x1804D0275  jne 0x1804d02b2
+0x1804D0277  lea rcx, [rip + 0x7fb522]  -> 0x180CCB7A0
+0x1804D027E  mov r9d, 0xe6
+0x1804D0284  mov qword ptr [rsp + 0x20], rcx
+0x1804D0289  lea r8, [rip + 0x7d2d20]  -> 0x180CA2FB0
+0x1804D0290  lea ecx, [rdi + 3]
+0x1804D0293  lea rdx, [rip + 0x7cf8d6]  -> 0x180C9FB70
+0x1804D029A  call qword ptr [rip + 0xbf5e90]
+0x1804D02A0  mov rdi, qword ptr [rsp + 0x48]
+0x1804D02A5  xor eax, eax
+0x1804D02A7  mov rbx, qword ptr [rsp + 0x50]
+0x1804D02AC  add rsp, 0x30
+0x1804D02B0  pop rbp
+0x1804D02B1  ret 
+0x1804D02B2  test r8, r8
+0x1804D02B5  jne 0x1804d02f4
+0x1804D02B7  lea rcx, [rip + 0x7fb4e2]  -> 0x180CCB7A0
+0x1804D02BE  mov r9d, 0xe7
+0x1804D02C4  mov qword ptr [rsp + 0x20], rcx
+0x1804D02C9  lea r8, [rip + 0x7d1f00]  -> 0x180CA21D0
+0x1804D02D0  mov ecx, 3
+0x1804D02D5  lea rdx, [rip + 0x7cf894]  -> 0x180C9FB70
+0x1804D02DC  call qword ptr [rip + 0xbf5e4e]
+0x1804D02E2  mov rdi, qword ptr [rsp + 0x48]
+0x1804D02E7  xor eax, eax
+0x1804D02E9  mov rbx, qword ptr [rsp + 0x50]
+0x1804D02EE  add rsp, 0x30
+0x1804D02F2  pop rbp
+0x1804D02F3  ret 
+0x1804D02F4  mov qword ptr [rsp + 0x40], rsi
+0x1804D02F9  mov rsi, qword ptr [rsp + 0x68]
+0x1804D02FE  test rsi, rsi
+0x1804D0301  jne 0x1804d0330
+0x1804D0303  lea rcx, [rip + 0x7fb496]  -> 0x180CCB7A0
+0x1804D030A  mov r9d, 0xe8
+0x1804D0310  mov qword ptr [rsp + 0x20], rcx
+0x1804D0315  lea r8, [rip + 0x7fb4ac]  -> 0x180CCB7C8
+0x1804D031C  lea ecx, [rsi + 3]
+0x1804D031F  lea rdx, [rip + 0x7cf84a]  -> 0x180C9FB70
+0x1804D0326  call qword ptr [rip + 0xbf5e04]
+0x1804D032C  xor eax, eax
+0x1804D032E  jmp 0x1804d036d
+0x1804D0330  mov qword ptr [rcx + 0xa0], rdx
+0x1804D0337  mov qword ptr [rcx + 0x90], r8
+0x1804D033E  mov rcx, r8
+0x1804D0341  call 0x18000140b  <-- call
+0x1804D0346  mov dword ptr [rbx + 0x98], eax
+0x1804D034C  mov eax, dword ptr [rsp + 0x70]
+0x1804D0350  mov dword ptr [rbx + 0x7c], eax
+0x1804D0353  mov eax, 1
+0x1804D0358  mov qword ptr [rbx + 0x80], rbp
+0x1804D035F  mov qword ptr [rbx + 0x88], rdi
+0x1804D0366  mov qword ptr [rbx + 0x178], rsi
+0x1804D036D  mov rsi, qword ptr [rsp + 0x40]
+0x1804D0372  mov rdi, qword ptr [rsp + 0x48]
+0x1804D0377  mov rbx, qword ptr [rsp + 0x50]
+0x1804D037C  add rsp, 0x30
+0x1804D0380  pop rbp
+0x1804D0381  ret 
+0x1804D0382  int3 
+0x1804D0383  int3 
+0x1804D0384  int3 
+0x1804D0385  int3 
+0x1804D0386  int3 
+0x1804D0387  int3 
+0x1804D0388  int3 
+0x1804D0389  int3 
+0x1804D038A  int3 
+0x1804D038B  int3 
+0x1804D038C  int3 
+0x1804D038D  int3 
+0x1804D038E  int3 
+0x1804D038F  int3 
+0x1804D0390  int3 
+0x1804D0391  int3 
+0x1804D0392  int3 
+0x1804D0393  int3 
+0x1804D0394  int3 
+0x1804D0395  int3 
+0x1804D0396  int3 
+0x1804D0397  int3 
+0x1804D0398  int3 
+0x1804D0399  int3 
+0x1804D039A  int3 
+0x1804D039B  int3 
+0x1804D039C  int3 
+0x1804D039D  int3 
+0x1804D039E  int3 
+0x1804D039F  int3 
+0x1804D03A0  int3 
+0x1804D03A1  int3 
+0x1804D03A2  int3 
+0x1804D03A3  int3 
+0x1804D03A4  int3 
+0x1804D03A5  int3 
+0x1804D03A6  int3 
+0x1804D03A7  int3 
+0x1804D03A8  int3 
+0x1804D03A9  int3 
+0x1804D03AA  int3 
+0x1804D03AB  int3 
+0x1804D03AC  int3 
+0x1804D03AD  int3 
+0x1804D03AE  int3 
+0x1804D03AF  int3 
+0x1804D03B0  int3 
+0x1804D03B1  int3 
+0x1804D03B2  int3 
+0x1804D03B3  int3 
+0x1804D03B4  int3 
+0x1804D03B5  int3 
+0x1804D03B6  int3 
+0x1804D03B7  int3 
+0x1804D03B8  int3 
+0x1804D03B9  int3 
+0x1804D03BA  int3 
+0x1804D03BB  int3 
+0x1804D03BC  int3 
+0x1804D03BD  int3 
+0x1804D03BE  int3 
+0x1804D03BF  int3 
+0x1804D03C0  int3 
+0x1804D03C1  int3 
+0x1804D03C2  int3 
+0x1804D03C3  int3 
+0x1804D03C4  int3 
+0x1804D03C5  int3 
+0x1804D03C6  int3 
+0x1804D03C7  int3 
+0x1804D03C8  int3 
+0x1804D03C9  int3 
+0x1804D03CA  int3 
+0x1804D03CB  int3 
+0x1804D03CC  int3 
+0x1804D03CD  int3 
+0x1804D03CE  int3 
+0x1804D03CF  int3 
+0x1804D03D0  int3 
+0x1804D03D1  int3 
+0x1804D03D2  int3 
+0x1804D03D3  int3 
+0x1804D03D4  int3 
+0x1804D03D5  int3 
+0x1804D03D6  int3 
+0x1804D03D7  int3 
+0x1804D03D8  int3 
+0x1804D03D9  int3 
+0x1804D03DA  int3 
+0x1804D03DB  int3 
+0x1804D03DC  int3 
+0x1804D03DD  int3 
+0x1804D03DE  int3 
+0x1804D03DF  int3 
+0x1804D03E0  int3 
+0x1804D03E1  int3 
+0x1804D03E2  int3 
+0x1804D03E3  int3 
+0x1804D03E4  int3 
+0x1804D03E5  int3 
+0x1804D03E6  int3 
+0x1804D03E7  int3 
+0x1804D03E8  int3 
+0x1804D03E9  int3 
+0x1804D03EA  int3 
+0x1804D03EB  int3 
+0x1804D03EC  int3 
+0x1804D03ED  int3 
+0x1804D03EE  int3 
+0x1804D03EF  int3 
+0x1804D03F0  sub rsp, 0x38
+0x1804D03F4  test rdx, rdx
+0x1804D03F7  jne 0x1804d042b
+0x1804D03F9  lea rcx, [rip + 0x7fb3a0]  -> 0x180CCB7A0
+0x1804D0400  mov r9d, 0xd8
+0x1804D0406  mov qword ptr [rsp + 0x20], rcx
+0x1804D040B  lea r8, [rip + 0x7f7ae6]  -> 0x180CC7EF8
+0x1804D0412  mov ecx, 3
+0x1804D0417  lea rdx, [rip + 0x7cf752]  -> 0x180C9FB70
+0x1804D041E  call qword ptr [rip + 0xbf5d0c]
+0x1804D0424  xor eax, eax
+0x1804D0426  add rsp, 0x38
+0x1804D042A  ret 
+0x1804D042B  mov qword ptr [rcx + 0x80], rdx
+0x1804D0432  mov eax, 1
+0x1804D0437  add rsp, 0x38
+0x1804D043B  ret 
+0x1804D043C  int3 
+0x1804D043D  int3 
+0x1804D043E  int3 
+0x1804D043F  int3 
+0x1804D0440  int3 
+0x1804D0441  int3 
+0x1804D0442  int3 
+0x1804D0443  int3 
+0x1804D0444  int3 
+0x1804D0445  int3 
+0x1804D0446  int3 
+0x1804D0447  int3 
+0x1804D0448  int3 
+0x1804D0449  int3 
+0x1804D044A  int3 
+0x1804D044B  int3 
+0x1804D044C  int3 
+0x1804D044D  int3 
+0x1804D044E  int3 
+0x1804D044F  int3 
+0x1804D0450  mov qword ptr [rsp + 0x10], rbx
+0x1804D0455  mov qword ptr [rsp + 0x18], rbp
+0x1804D045A  mov qword ptr [rsp + 0x20], rdi
+0x1804D045F  push r14
+0x1804D0461  sub rsp, 0x50
+0x1804D0465  xor r14d, r14d
+0x1804D0468  movaps xmmword ptr [rsp + 0x40], xmm6
+0x1804D046D  mov ebp, edx
+0x1804D046F  mov rbx, rcx
+0x1804D0472  cmp dword ptr [rcx + 0x7c], r14d
+0x1804D0476  jne 0x1804d0690
+0x1804D047C  cmp qword ptr [rcx + 0x80], r14
+0x1804D0483  je 0x1804d04f1
+0x1804D0485  mov rcx, qword ptr [rcx + 0xa0]
+0x1804D048C  test rcx, rcx
+0x1804D048F  je 0x1804d049e
+0x1804D0491  call 0x180011969  <-- call
+0x1804D0496  test eax, eax
+0x1804D0498  jne 0x1804d0690
+0x1804D049E  cmp dword ptr [rbx + 0x74], r14d
+0x1804D04A2  mov r8d, dword ptr [rbx + 0xb4]
+0x1804D04A9  mov edx, dword ptr [rbx + 0xb0]
+0x1804D04AF  setne r9b
+0x1804D04B3  mov ecx, dword ptr [rbx + 0xac]
+0x1804D04B9  call 0x180012283  <-- call
+0x1804D04BE  mov rdi, rax
+0x1804D04C1  test rax, rax
+0x1804D04C4  jne 0x1804d04f9
+0x1804D04C6  mov r9d, 0x78f
+0x1804D04CC  lea r8, [rip + 0x7f83bd]  -> 0x180CC8890
+0x1804D04D3  lea rcx, [rip + 0x7fb74e]  -> 0x180CCBC28
+0x1804D04DA  mov qword ptr [rsp + 0x20], rcx
+0x1804D04DF  lea rdx, [rip + 0x7cf68a]  -> 0x180C9FB70
+0x1804D04E6  mov ecx, 3
+0x1804D04EB  call qword ptr [rip + 0xbf5c3f]
+0x1804D04F1  mov eax, r14d
+0x1804D04F4  jmp 0x1804d06f0
+0x1804D04F9  cmp dword ptr [rbx + 0x114], 1
+0x1804D0500  xorps xmm6, xmm6
+0x1804D0503  jne 0x1804d050e
+0x1804D0505  mov rcx, qword ptr [rax + 0x80]
+0x1804D050C  jmp 0x1804d056a
+0x1804D050E  cmp dword ptr [rbx + 0x54], r14d
+0x1804D0512  je 0x1804d051a
+0x1804D0514  mov rcx, qword ptr [rax + 0x3c]
+0x1804D0518  jmp 0x1804d056a
+0x1804D051A  movss xmm1, dword ptr [rax + 0x68]
+0x1804D051F  comiss xmm1, xmm6
+0x1804D0522  jbe 0x1804d0540
+0x1804D0524  movss xmm0, dword ptr [rbx + 0xd0]
+0x1804D052C  comiss xmm0, xmm1
+0x1804D052F  jb 0x1804d0540
+0x1804D0531  mov rcx, qword ptr [rax + 0x70]
+0x1804D0535  mov eax, dword ptr [rax + 0x6c]
+0x1804D0538  mov dword ptr [rbx + 0x34], eax
+0x1804D053B  mov eax, dword ptr [rdi + 0x4c]
+0x1804D053E  jmp 0x1804d056d
+0x1804D0540  movss xmm1, dword ptr [rax + 0x50]
+0x1804D0545  comiss xmm1, xmm6
+0x1804D0548  jbe 0x1804d0566
+0x1804D054A  movss xmm0, dword ptr [rbx + 0xd0]
+0x1804D0552  comiss xmm0, xmm1
+0x1804D0555  jb 0x1804d0566
+0x1804D0557  mov rcx, qword ptr [rax + 0x58]
+0x1804D055B  mov eax, dword ptr [rax + 0x54]
+0x1804D055E  mov dword ptr [rbx + 0x34], eax
+0x1804D0561  mov eax, dword ptr [rdi + 0x4c]
+0x1804D0564  jmp 0x1804d056d
+0x1804D0566  mov rcx, qword ptr [rax + 0x34]
+0x1804D056A  mov eax, dword ptr [rax + 0x30]
+0x1804D056D  mov dword ptr [rbx + 0x30], eax
+0x1804D0570  mov eax, dword ptr [rbx + 0xbc]
+0x1804D0576  mov edx, eax
+0x1804D0578  test eax, eax
+0x1804D057A  je 0x1804d05d4
+0x1804D057C  test rcx, rcx
+0x1804D057F  je 0x1804d05d4
+0x1804D0581  cmp byte ptr [rcx], r14b
+0x1804D0584  je 0x1804d05d4
+0x1804D0586  mov r9d, dword ptr [rbx + 0xac]
+0x1804D058D  mov r8d, 2
+0x1804D0593  mov rdx, qword ptr [rbx + 0x80]
+0x1804D059A  mov dword ptr [rsp + 0x30], r14d
+0x1804D059F  mov dword ptr [rsp + 0x28], r14d
+0x1804D05A4  mov qword ptr [rsp + 0x20], rcx
+0x1804D05A9  mov rcx, rbx
+0x1804D05AC  call 0x1800039c7  <-- call
+0x1804D05B1  test eax, eax
+0x1804D05B3  jne 0x1804d05c7
+0x1804D05B5  mov r9d, 0x7b0
+0x1804D05BB  lea r8, [rip + 0x7cf5e6]  -> 0x180C9FBA8
+0x1804D05C2  jmp 0x1804d04d3
+0x1804D05C7  mov edx, dword ptr [rbx + 0xbc]
+0x1804D05CD  mov dword ptr [rbx + 0x1c], 1
+0x1804D05D4  cmp dword ptr [rbx + 0x114], 1
+0x1804D05DB  jne 0x1804d05e6
+0x1804D05DD  mov rcx, qword ptr [rdi + 0x88]
+0x1804D05E4  jmp 0x1804d0636
+0x1804D05E6  movss xmm1, dword ptr [rdi + 0x68]
+0x1804D05EB  comiss xmm1, xmm6
+0x1804D05EE  jbe 0x1804d060c
+0x1804D05F0  movss xmm0, dword ptr [rbx + 0xd0]
+0x1804D05F8  comiss xmm0, xmm1
+0x1804D05FB  jb 0x1804d060c
+0x1804D05FD  mov eax, dword ptr [rdi + 0x6c]
+0x1804D0600  mov rcx, qword ptr [rdi + 0x78]
+0x1804D0604  mov dword ptr [rbx + 0x34], eax
+0x1804D0607  mov eax, dword ptr [rdi + 0x4c]
+0x1804D060A  jmp 0x1804d0639
+0x1804D060C  movss xmm1, dword ptr [rdi + 0x50]
+0x1804D0611  comiss xmm1, xmm6
+0x1804D0614  jbe 0x1804d0632
+0x1804D0616  movss xmm0, dword ptr [rbx + 0xd0]
+0x1804D061E  comiss xmm0, xmm1
+0x1804D0621  jb 0x1804d0632
+0x1804D0623  mov eax, dword ptr [rdi + 0x54]
+0x1804D0626  mov rcx, qword ptr [rdi + 0x60]
+0x1804D062A  mov dword ptr [rbx + 0x34], eax
+0x1804D062D  mov eax, dword ptr [rdi + 0x4c]
+0x1804D0630  jmp 0x1804d0639
+0x1804D0632  mov rcx, qword ptr [rdi + 0x44]
+0x1804D0636  mov eax, dword ptr [rdi + 0x30]
+0x1804D0639  mov dword ptr [rbx + 0x30], eax
+0x1804D063C  test edx, edx
+0x1804D063E  jne 0x1804d0690
+0x1804D0640  test rcx, rcx
+0x1804D0643  je 0x1804d0690
+0x1804D0645  cmp byte ptr [rcx], r14b
+0x1804D0648  je 0x1804d0690
+0x1804D064A  mov r9d, dword ptr [rbx + 0xac]
+0x1804D0651  lea r8d, [rdx + 2]
+0x1804D0655  mov rdx, qword ptr [rbx + 0x80]
+0x1804D065C  mov dword ptr [rsp + 0x30], r14d
+0x1804D0661  mov dword ptr [rsp + 0x28], r14d
+0x1804D0666  mov qword ptr [rsp + 0x20], rcx
+0x1804D066B  mov rcx, rbx

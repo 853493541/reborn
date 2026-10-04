@@ -1,0 +1,70 @@
+0x180B11E40  mulss xmm7, xmm3
+0x180B11E44  mulss xmm6, xmm3
+0x180B11E48  addss xmm7, dword ptr [rdi + 0x38]
+0x180B11E4D  comiss xmm8, xmm4
+0x180B11E51  addss xmm6, dword ptr [rdi + 0x3c]
+0x180B11E56  mulss xmm5, xmm3
+0x180B11E5A  movss dword ptr [rsp + 0x50], xmm7
+0x180B11E60  addss xmm5, dword ptr [rdi + 0x40]
+0x180B11E65  movss dword ptr [rsp + 0x54], xmm6
+0x180B11E6B  movss dword ptr [rdi + 0x60], xmm4
+0x180B11E70  movss dword ptr [rsp + 0x58], xmm5
+0x180B11E76  jbe 0x180b11e90
+0x180B11E78  xor eax, eax
+0x180B11E7A  movss dword ptr [rsp + 0x50], xmm7
+0x180B11E80  mov qword ptr [rdi + 0x5c], rax
+0x180B11E84  movss dword ptr [rsp + 0x54], xmm6
+0x180B11E8A  movss dword ptr [rsp + 0x58], xmm5
+0x180B11E90  cmp dword ptr [rdi + 0x74], 0
+0x180B11E94  movss xmm2, dword ptr [rip + 0x17b3a4]
+0x180B11E9C  je 0x180b11fad
+0x180B11EA2  movss xmm1, dword ptr [rdi + 0x7c]
+0x180B11EA7  comiss xmm1, xmm13
+0x180B11EAB  jbe 0x180b11fad
+0x180B11EB1  mov rax, qword ptr [rip + 0x3cc128]
+0x180B11EB8  movaps xmm3, xmm7
+0x180B11EBB  subss xmm3, dword ptr [rdi + 0x8c]
+0x180B11EC3  movsd xmm4, qword ptr [rax + 0x80]
+0x180B11ECB  cvtpd2ps xmm4, xmm4
+0x180B11ECF  movaps xmm0, xmm3
+0x180B11ED2  andps xmm0, xmm2
+0x180B11ED5  comiss xmm8, xmm0
+0x180B11ED9  jbe 0x180b11f0a
+0x180B11EDB  movaps xmm0, xmm6
+0x180B11EDE  subss xmm0, dword ptr [rdi + 0x90]
+0x180B11EE6  andps xmm0, xmm2
+0x180B11EE9  comiss xmm8, xmm0
+0x180B11EED  jbe 0x180b11f0a
+0x180B11EEF  movaps xmm0, xmm5
+0x180B11EF2  subss xmm0, dword ptr [rdi + 0x94]
+0x180B11EFA  andps xmm0, xmm2
+0x180B11EFD  comiss xmm8, xmm0
+0x180B11F01  jbe 0x180b11f0a
+0x180B11F03  movss xmm3, dword ptr [rdi + 0x78]
+0x180B11F08  jmp 0x180b11f45
+0x180B11F0A  movaps xmm1, xmm6
+0x180B11F0D  movaps xmm0, xmm5
+0x180B11F10  subss xmm1, dword ptr [rdi + 0x90]
+0x180B11F18  subss xmm0, dword ptr [rdi + 0x94]
+0x180B11F20  movss dword ptr [rdi + 0x80], xmm3
+0x180B11F28  movaps xmm3, xmm4
+0x180B11F2B  movss dword ptr [rdi + 0x84], xmm1
+0x180B11F33  movss dword ptr [rdi + 0x88], xmm0
+0x180B11F3B  movss xmm1, dword ptr [rdi + 0x7c]
+0x180B11F40  movss dword ptr [rdi + 0x78], xmm4
+0x180B11F45  movaps xmm0, xmm1
+0x180B11F48  addss xmm0, xmm3
+0x180B11F4C  comiss xmm0, xmm4
+0x180B11F4F  jbe 0x180b11fad
+0x180B11F51  movss xmm6, dword ptr [rdi + 0x84]
+0x180B11F59  movaps xmm7, xmm12
+0x180B11F5D  mulss xmm7, dword ptr [rdi + 0x80]
+0x180B11F65  movss xmm5, dword ptr [rdi + 0x88]
+0x180B11F6D  mulss xmm6, xmm12
+0x180B11F72  mulss xmm5, xmm12
+0x180B11F77  divss xmm7, xmm1
+0x180B11F7B  divss xmm6, xmm1
+0x180B11F7F  addss xmm7, dword ptr [rdi + 0x8c]
+0x180B11F87  addss xmm6, dword ptr [rdi + 0x90]
+0x180B11F8F  divss xmm5, xmm1
+0x180B11F93  movss dword ptr [rsp + 0x50], xmm7

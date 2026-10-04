@@ -1,0 +1,504 @@
+
+##### caller 0x180AD3609
+0x180AD3589  int3 
+0x180AD358A  int3 
+0x180AD358B  int3 
+0x180AD358C  int3 
+0x180AD358D  int3 
+0x180AD358E  int3 
+0x180AD358F  int3 
+0x180AD3590  int3 
+0x180AD3591  int3 
+0x180AD3592  int3 
+0x180AD3593  int3 
+0x180AD3594  int3 
+0x180AD3595  int3 
+0x180AD3596  int3 
+0x180AD3597  int3 
+0x180AD3598  int3 
+0x180AD3599  int3 
+0x180AD359A  int3 
+0x180AD359B  int3 
+0x180AD359C  int3 
+0x180AD359D  int3 
+0x180AD359E  int3 
+0x180AD359F  int3 
+0x180AD35A0  mov qword ptr [rsp + 8], rbx
+0x180AD35A5  mov qword ptr [rsp + 0x10], rsi
+0x180AD35AA  push rdi
+0x180AD35AB  sub rsp, 0x30
+0x180AD35AF  mov rbx, r8
+0x180AD35B2  mov rdi, rdx
+0x180AD35B5  mov rsi, rcx
+0x180AD35B8  call 0x180014e2f
+0x180AD35BD  test rax, rax
+0x180AD35C0  jne 0x180ad35fd
+0x180AD35C2  lea rcx, [rip + 0x236d0f] ; STR: GetMoveInfo
+0x180AD35C9  mov r9d, 0xbf
+0x180AD35CF  mov qword ptr [rsp + 0x20], rcx
+0x180AD35D4  lea r8, [rip + 0x1bf505] ; STR: pController
+0x180AD35DB  lea ecx, [rax + 3]
+0x180AD35DE  lea rdx, [rip + 0x1ad56b] ; STR: KGLOG_PROCESS_ERROR(%s) at line %d in %s
+
+0x180AD35E5  call qword ptr [rip + 0x5c6a15]
+0x180AD35EB  xor eax, eax
+0x180AD35ED  mov rbx, qword ptr [rsp + 0x40]
+0x180AD35F2  mov rsi, qword ptr [rsp + 0x48]
+0x180AD35F7  add rsp, 0x30
+0x180AD35FB  pop rdi
+0x180AD35FC  ret 
+0x180AD35FD  mov r9, rbx
+0x180AD3600  mov r8, rdi
+0x180AD3603  mov rdx, rsi
+0x180AD3606  mov rcx, rax
+0x180AD3609  call 0x18001ac8f <<<
+0x180AD360E  test eax, eax
+0x180AD3610  jne 0x180ad364d
+0x180AD3612  lea rcx, [rip + 0x236cbf] ; STR: GetMoveInfo
+0x180AD3619  mov r9d, 0xc2
+0x180AD361F  mov qword ptr [rsp + 0x20], rcx
+0x180AD3624  lea r8, [rip + 0x1ad55d] ; STR: nRetCode
+
+##### caller 0x180AD3796
+0x180AD3716  int3 
+0x180AD3717  int3 
+0x180AD3718  int3 
+0x180AD3719  int3 
+0x180AD371A  int3 
+0x180AD371B  int3 
+0x180AD371C  int3 
+0x180AD371D  int3 
+0x180AD371E  int3 
+0x180AD371F  int3 
+0x180AD3720  int3 
+0x180AD3721  int3 
+0x180AD3722  int3 
+0x180AD3723  int3 
+0x180AD3724  int3 
+0x180AD3725  int3 
+0x180AD3726  int3 
+0x180AD3727  int3 
+0x180AD3728  int3 
+0x180AD3729  int3 
+0x180AD372A  int3 
+0x180AD372B  int3 
+0x180AD372C  int3 
+0x180AD372D  int3 
+0x180AD372E  int3 
+0x180AD372F  int3 
+0x180AD3730  mov qword ptr [rsp + 8], rbx
+0x180AD3735  mov qword ptr [rsp + 0x10], rsi
+0x180AD373A  push rdi
+0x180AD373B  sub rsp, 0x30
+0x180AD373F  mov ebx, r8d
+0x180AD3742  mov edi, edx
+0x180AD3744  mov esi, ecx
+0x180AD3746  call 0x180014e2f
+0x180AD374B  test rax, rax
+0x180AD374E  jne 0x180ad378b
+0x180AD3750  lea rcx, [rip + 0x236b65] ; STR: Move
+0x180AD3757  mov r9d, 0x82
+0x180AD375D  mov qword ptr [rsp + 0x20], rcx
+0x180AD3762  lea r8, [rip + 0x1bf377] ; STR: pController
+0x180AD3769  lea ecx, [rax + 3]
+0x180AD376C  lea rdx, [rip + 0x1ad3dd] ; STR: KGLOG_PROCESS_ERROR(%s) at line %d in %s
+
+0x180AD3773  call qword ptr [rip + 0x5c6887]
+0x180AD3779  xor eax, eax
+0x180AD377B  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3780  mov rsi, qword ptr [rsp + 0x48]
+0x180AD3785  add rsp, 0x30
+0x180AD3789  pop rdi
+0x180AD378A  ret 
+0x180AD378B  mov r9d, ebx
+0x180AD378E  mov r8d, edi
+0x180AD3791  mov edx, esi
+0x180AD3793  mov rcx, rax
+0x180AD3796  call 0x18000569b <<<
+0x180AD379B  mov eax, 1
+0x180AD37A0  mov rbx, qword ptr [rsp + 0x40]
+0x180AD37A5  mov rsi, qword ptr [rsp + 0x48]
+0x180AD37AA  add rsp, 0x30
+0x180AD37AE  pop rdi
+0x180AD37AF  ret 
+0x180AD37B0  int3 
+0x180AD37B1  int3 
+0x180AD37B2  int3 
+0x180AD37B3  int3 
+0x180AD37B4  int3 
+0x180AD37B5  int3 
+0x180AD37B6  int3 
+
+##### caller 0x180AD36F6
+0x180AD3676  int3 
+0x180AD3677  int3 
+0x180AD3678  int3 
+0x180AD3679  int3 
+0x180AD367A  int3 
+0x180AD367B  int3 
+0x180AD367C  int3 
+0x180AD367D  int3 
+0x180AD367E  int3 
+0x180AD367F  int3 
+0x180AD3680  int3 
+0x180AD3681  int3 
+0x180AD3682  int3 
+0x180AD3683  int3 
+0x180AD3684  int3 
+0x180AD3685  int3 
+0x180AD3686  int3 
+0x180AD3687  int3 
+0x180AD3688  int3 
+0x180AD3689  int3 
+0x180AD368A  int3 
+0x180AD368B  int3 
+0x180AD368C  int3 
+0x180AD368D  int3 
+0x180AD368E  int3 
+0x180AD368F  int3 
+0x180AD3690  int3 
+0x180AD3691  int3 
+0x180AD3692  int3 
+0x180AD3693  int3 
+0x180AD3694  int3 
+0x180AD3695  int3 
+0x180AD3696  int3 
+0x180AD3697  int3 
+0x180AD3698  int3 
+0x180AD3699  int3 
+0x180AD369A  int3 
+0x180AD369B  int3 
+0x180AD369C  int3 
+0x180AD369D  int3 
+0x180AD369E  int3 
+0x180AD369F  int3 
+0x180AD36A0  mov qword ptr [rsp + 8], rbx
+0x180AD36A5  push rdi
+0x180AD36A6  sub rsp, 0x30
+0x180AD36AA  mov ebx, edx
+0x180AD36AC  mov edi, ecx
+0x180AD36AE  call 0x180014e2f
+0x180AD36B3  test rax, rax
+0x180AD36B6  jne 0x180ad36ee
+0x180AD36B8  lea rcx, [rip + 0x236c11] ; STR: Jump
+0x180AD36BF  mov r9d, 0xaf
+0x180AD36C5  mov qword ptr [rsp + 0x20], rcx
+0x180AD36CA  lea r8, [rip + 0x1bf40f] ; STR: pController
+0x180AD36D1  lea ecx, [rax + 3]
+0x180AD36D4  lea rdx, [rip + 0x1ad475] ; STR: KGLOG_PROCESS_ERROR(%s) at line %d in %s
+
+0x180AD36DB  call qword ptr [rip + 0x5c691f]
+0x180AD36E1  xor eax, eax
+0x180AD36E3  mov rbx, qword ptr [rsp + 0x40]
+0x180AD36E8  add rsp, 0x30
+0x180AD36EC  pop rdi
+0x180AD36ED  ret 
+0x180AD36EE  mov r8d, ebx
+0x180AD36F1  mov edx, edi
+0x180AD36F3  mov rcx, rax
+0x180AD36F6  call 0x1800099e9 <<<
+0x180AD36FB  mov eax, 1
+0x180AD3700  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3705  add rsp, 0x30
+0x180AD3709  pop rdi
+0x180AD370A  ret 
+0x180AD370B  int3 
+0x180AD370C  int3 
+0x180AD370D  int3 
+0x180AD370E  int3 
+0x180AD370F  int3 
+0x180AD3710  int3 
+0x180AD3711  int3 
+0x180AD3712  int3 
+0x180AD3713  int3 
+0x180AD3714  int3 
+0x180AD3715  int3 
+0x180AD3716  int3 
+
+##### caller 0x180AD39F5
+0x180AD3975  ret 
+0x180AD3976  int3 
+0x180AD3977  int3 
+0x180AD3978  int3 
+0x180AD3979  int3 
+0x180AD397A  int3 
+0x180AD397B  int3 
+0x180AD397C  int3 
+0x180AD397D  int3 
+0x180AD397E  int3 
+0x180AD397F  int3 
+0x180AD3980  int3 
+0x180AD3981  int3 
+0x180AD3982  int3 
+0x180AD3983  int3 
+0x180AD3984  int3 
+0x180AD3985  int3 
+0x180AD3986  int3 
+0x180AD3987  int3 
+0x180AD3988  int3 
+0x180AD3989  int3 
+0x180AD398A  int3 
+0x180AD398B  int3 
+0x180AD398C  int3 
+0x180AD398D  int3 
+0x180AD398E  int3 
+0x180AD398F  int3 
+0x180AD3990  mov qword ptr [rsp + 8], rbx
+0x180AD3995  push rdi
+0x180AD3996  sub rsp, 0x30
+0x180AD399A  mov ebx, edx
+0x180AD399C  mov edi, ecx
+0x180AD399E  call 0x180014e2f
+0x180AD39A3  test rax, rax
+0x180AD39A6  jne 0x180ad39dc
+0x180AD39A8  lea rcx, [rip + 0x2368c1] ; STR: ToggleCharacterControl
+0x180AD39AF  mov qword ptr [rsp + 0x20], rcx
+0x180AD39B4  lea r9d, [rax + 0x1b]
+0x180AD39B8  lea ecx, [rax + 3]
+0x180AD39BB  lea r8, [rip + 0x1bf11e] ; STR: pController
+0x180AD39C2  lea rdx, [rip + 0x1ad187] ; STR: KGLOG_PROCESS_ERROR(%s) at line %d in %s
+
+0x180AD39C9  call qword ptr [rip + 0x5c6631]
+0x180AD39CF  xor eax, eax
+0x180AD39D1  mov rbx, qword ptr [rsp + 0x40]
+0x180AD39D6  add rsp, 0x30
+0x180AD39DA  pop rdi
+0x180AD39DB  ret 
+0x180AD39DC  cmp edi, 8
+0x180AD39DF  je 0x180ad3a08
+0x180AD39E1  cmp edi, 0xa
+0x180AD39E4  jne 0x180ad3a29
+0x180AD39E6  test ebx, ebx
+0x180AD39E8  jne 0x180ad3a29
+0x180AD39EA  xor r9d, r9d
+0x180AD39ED  xor r8d, r8d
+0x180AD39F0  xor edx, edx
+0x180AD39F2  mov rcx, rax
+0x180AD39F5  call 0x18000569b <<<
+0x180AD39FA  lea eax, [rdi - 9]
+0x180AD39FD  mov rbx, qword ptr [rsp + 0x40]
+0x180AD3A02  add rsp, 0x30
+0x180AD3A06  pop rdi
+0x180AD3A07  ret 
+0x180AD3A08  mov rcx, rax
+0x180AD3A0B  test ebx, ebx
+0x180AD3A0D  je 0x180ad3a24
+0x180AD3A0F  call 0x18000c04f
+0x180AD3A14  mov eax, 1
+
+##### caller 0x1805DF459
+0x1805DF3D9  adc byte ptr [rax - 0x73], cl
+0x1805DF3DC  or al, r13b
+0x1805DF3DF  push rax
+0x1805DF3E0  movsb byte ptr [rdi], byte ptr fs:[rsi]
+0x1805DF3E2  dec dword ptr [rax - 0x75]
+0x1805DF3E5  jl 0x1805df40b
+0x1805DF3E7  and byte ptr [rax + 0x3b], cl
+0x1805DF3EA  jl 0x1805df410
+0x1805DF3EC  sub byte ptr [rbp - 0x2f], dh
+0x1805DF3EF  lea rcx, [rsi + 8]
+0x1805DF3F3  lea edi, [rbp - 1]
+0x1805DF3F6  call 0x180005c8b
+0x1805DF3FB  cmp eax, 0x200
+0x1805DF400  jbe 0x1805df429
+0x1805DF402  lea rcx, [rsi + 8]
+0x1805DF406  call 0x180005c8b
+0x1805DF40B  mov r8d, eax
+0x1805DF40E  lea rdx, [rip + 0x6e1f93] ; STR: [RL] Input count %d
+
+0x1805DF415  mov ecx, 6
+0x1805DF41A  call qword ptr [rip + 0xababe0]
+0x1805DF420  lea rcx, [rsi + 8]
+0x1805DF424  call 0x180005d62
+0x1805DF429  mov rcx, rsi
+0x1805DF42C  call 0x180007996
+0x1805DF431  lea rcx, [rsi + 8]
+0x1805DF435  call 0x18000f7d1
+0x1805DF43A  test al, al
+0x1805DF43C  jne 0x1805df474
+0x1805DF43E  nop 
+0x1805DF440  lea rcx, [rsi + 8]
+0x1805DF444  call 0x18000ab23
+0x1805DF449  test rax, rax
+0x1805DF44C  je 0x1805df45e
+0x1805DF44E  cmp dword ptr [rax + 0x10], edi
+0x1805DF451  jg 0x1805df474
+0x1805DF453  mov rdx, rax
+0x1805DF456  mov rcx, rsi
+0x1805DF459  call 0x18001622f <<<
+0x1805DF45E  lea rcx, [rsi + 8]
+0x1805DF462  call 0x18000c29d
+0x1805DF467  lea rcx, [rsi + 8]
+0x1805DF46B  call 0x18000f7d1
+0x1805DF470  test al, al
+0x1805DF472  je 0x1805df440
+0x1805DF474  mov rcx, qword ptr [rsp + 0x30]
+0x1805DF479  xor rcx, rsp
+
+##### caller 0x1805DF6F9
+0x1805DF679  mov eax, dword ptr [rax]
+0x1805DF67B  xor rax, rsp
+0x1805DF67E  mov qword ptr [rsp + 0x30], rax
+0x1805DF683  mov rsi, rcx
+0x1805DF686  mov ebp, r8d
+0x1805DF689  add rcx, 8
+0x1805DF68D  mov edi, edx
+0x1805DF68F  call 0x180005c8b
+0x1805DF694  cmp eax, 0x200
+0x1805DF699  jbe 0x1805df6c2
+0x1805DF69B  lea rcx, [rsi + 8]
+0x1805DF69F  call 0x180005c8b
+0x1805DF6A4  mov r8d, eax
+0x1805DF6A7  lea rdx, [rip + 0x6e1cfa] ; STR: [RL] Input count %d
+
+0x1805DF6AE  mov ecx, 6
+0x1805DF6B3  call qword ptr [rip + 0xaba947]
+0x1805DF6B9  lea rcx, [rsi + 8]
+0x1805DF6BD  call 0x180005d62
+0x1805DF6C2  mov rcx, rsi
+0x1805DF6C5  call 0x180007996
+0x1805DF6CA  lea rcx, [rsi + 8]
+0x1805DF6CE  test ebp, ebp
+0x1805DF6D0  je 0x1805df716
+0x1805DF6D2  call 0x18000f7d1
+0x1805DF6D7  test al, al
+0x1805DF6D9  jne 0x1805df76c
+0x1805DF6DF  nop 
+0x1805DF6E0  lea rcx, [rsi + 8]
+0x1805DF6E4  call 0x18000ab23
+0x1805DF6E9  test rax, rax
+0x1805DF6EC  je 0x1805df6fe
+0x1805DF6EE  cmp dword ptr [rax + 0x10], edi
+0x1805DF6F1  jg 0x1805df76c
+0x1805DF6F3  mov rdx, rax
+0x1805DF6F6  mov rcx, rsi
+0x1805DF6F9  call 0x18001622f <<<
+0x1805DF6FE  lea rcx, [rsi + 8]
+0x1805DF702  call 0x18000c29d
+0x1805DF707  lea rcx, [rsi + 8]
+0x1805DF70B  call 0x18000f7d1
+0x1805DF710  test al, al
+0x1805DF712  je 0x1805df6e0
+0x1805DF714  jmp 0x1805df76c
+0x1805DF716  lea rdx, [rsp + 0x20]
+
+##### caller 0x1805E1F21
+0x1805E1EA1  stosd dword ptr [rdi], eax
+0x1805E1EA2  in al, dx
+0x1805E1EA3  imul eax, dword ptr [rax], 0x815515ff
+0x1805E1EA9  stosd dword ptr [rdi], eax
+0x1805E1EAA  add byte ptr [rax - 0x7fffbffb], bh
+0x1805E1EB0  add rsp, 0x38
+0x1805E1EB4  ret 
+0x1805E1EB5  xor eax, eax
+0x1805E1EB7  add rsp, 0x38
+0x1805E1EBB  ret 
+0x1805E1EBC  int3 
+0x1805E1EBD  int3 
+0x1805E1EBE  int3 
+0x1805E1EBF  int3 
+0x1805E1EC0  int3 
+0x1805E1EC1  int3 
+0x1805E1EC2  int3 
+0x1805E1EC3  int3 
+0x1805E1EC4  int3 
+0x1805E1EC5  int3 
+0x1805E1EC6  int3 
+0x1805E1EC7  int3 
+0x1805E1EC8  int3 
+0x1805E1EC9  int3 
+0x1805E1ECA  int3 
+0x1805E1ECB  int3 
+0x1805E1ECC  int3 
+0x1805E1ECD  int3 
+0x1805E1ECE  int3 
+0x1805E1ECF  int3 
+0x1805E1ED0  sub rsp, 0x48
+0x1805E1ED4  movaps xmmword ptr [rsp + 0x30], xmm6
+0x1805E1ED9  movaps xmm6, xmm1
+0x1805E1EDC  call 0x180014e2f
+0x1805E1EE1  test rax, rax
+0x1805E1EE4  jne 0x1805e1f1b
+0x1805E1EE6  lea rax, [rip + 0x6e32ab] ; STR: KGameWorldHandler::AjustCtrlInput
+0x1805E1EED  mov r9d, 0x179c
+0x1805E1EF3  lea r8, [rip + 0x6e17de] ; STR: pCharacterController
+0x1805E1EFA  mov qword ptr [rsp + 0x20], rax
+0x1805E1EFF  lea rdx, [rip + 0x69ec4a] ; STR: KGLOG_PROCESS_ERROR(%s) at line %d in %s
+
+0x1805E1F06  mov ecx, 3
+0x1805E1F0B  call qword ptr [rip + 0xab80ef]
+0x1805E1F11  movaps xmm6, xmmword ptr [rsp + 0x30]
+0x1805E1F16  add rsp, 0x48
+0x1805E1F1A  ret 
+0x1805E1F1B  movaps xmm1, xmm6
+0x1805E1F1E  mov rcx, rax
+0x1805E1F21  call 0x1800214db <<<
+0x1805E1F26  movaps xmm6, xmmword ptr [rsp + 0x30]
+0x1805E1F2B  add rsp, 0x48
+0x1805E1F2F  ret 
+0x1805E1F30  int3 
+0x1805E1F31  int3 
+0x1805E1F32  int3 
+0x1805E1F33  int3 
+0x1805E1F34  int3 
+0x1805E1F35  int3 
+0x1805E1F36  int3 
+0x1805E1F37  int3 
+0x1805E1F38  int3 
+0x1805E1F39  int3 
+0x1805E1F3A  int3 
+0x1805E1F3B  int3 
+0x1805E1F3C  int3 
+0x1805E1F3D  int3 
+0x1805E1F3E  int3 
+0x1805E1F3F  int3 
+0x1805E1F40  int3 
+0x1805E1F41  int3 
+
+##### caller 0x1805EBA41
+0x1805EB9C1  pop rax
+0x1805EB9C2  cmp rax, rdx
+0x1805EB9C5  je 0x1805eb9d4
+0x1805EB9C7  cmp dword ptr [rax + 0x14], esi
+0x1805EB9CA  je 0x1805eb9f3
+0x1805EB9CC  mov rax, qword ptr [rax]
+0x1805EB9CF  cmp rax, rdx
+0x1805EB9D2  jne 0x1805eb9c7
+0x1805EB9D4  mov eax, dword ptr [rbp + 0x3c]
+0x1805EB9D7  lea r8, [rsp + 0x40]
+0x1805EB9DC  lea rdx, [rsp + 0x50]
+0x1805EB9E1  mov dword ptr [rsp + 0x40], eax
+0x1805EB9E5  lea rcx, [r12 + 0x20]
+0x1805EB9EA  mov dword ptr [rsp + 0x44], esi
+0x1805EB9EE  call 0x180025ce3
+0x1805EB9F3  cmp dword ptr [rsp + 0x38], r14d
+0x1805EB9F8  je 0x1805eba4b
+0x1805EB9FA  mov rdx, rbp
+0x1805EB9FD  mov rcx, r15
+0x1805EBA00  call 0x180001866
+0x1805EBA05  test eax, eax
+0x1805EBA07  jne 0x1805eba14
+0x1805EBA09  mov r9d, 0x1a24
+0x1805EBA0F  jmp 0x1805ebbf2
+0x1805EBA14  mov rcx, r15
+0x1805EBA17  call 0x180002c11
+0x1805EBA1C  test eax, eax
+0x1805EBA1E  jne 0x1805eba2b
+0x1805EBA20  mov r9d, 0x1a27
+0x1805EBA26  jmp 0x1805ebbf2
+0x1805EBA2B  call 0x180004b65
+0x1805EBA30  call 0x180014e2f
+0x1805EBA35  test rax, rax
+0x1805EBA38  je 0x1805ebca8
+0x1805EBA3E  mov rcx, rax
+0x1805EBA41  call 0x18000759a <<<
+0x1805EBA46  jmp 0x1805ebca8
+0x1805EBA4B  lea rax, [r12 + 0x88]
+0x1805EBA53  mov rcx, qword ptr [rax]
+0x1805EBA56  mov qword ptr [rsp + 0x40], rax
+0x1805EBA5B  mov rdi, rcx
+0x1805EBA5E  mov rax, qword ptr [rcx + 8]
+
+##### caller 0x18001BB99
+0x18001BB19  add al, 0x8e
+0x18001BB1B  add cl, ch

@@ -104,11 +104,50 @@ def parse_bindings(path: Path):
     return cmds
 
 
-def main() -> int:
+# Movement command set dispatched by the client input core (C1/C2). The
+# expected decoded keys are the defaults the real client ships.
+MOVEMENT_MAP = {
+    "MOVEFORWARD": ["W", "Up"],
+    "MOVEBACKWARD": ["S", "Down"],
+    "TURNLEFT": ["Left"],
+    "TURNRIGHT": ["Right"],
+    "STRAFELEFT": ["A"],
+    "STRAFERIGHT": ["D"],
+    "JUMP": ["Space"],
+    "TOGGLERUN": ["Num/"],
+    "TOGGLEAUTORUN": ["G", "NumLock"],
+}
+
+
+def movement_check(rows) -> int:
+    """Numeric check of the decoded movement key map (offline gate for C1/C2)."""
+    by_name = {r["name"]: r for r in rows}
+    ok = True
+    for name, want in MOVEMENT_MAP.items():
+        r = by_name.get(name)
+        if r is None:
+            print("MISS %s (not in default.txt)" % name)
+            ok = False
+            continue
+        got = [k for k in (decode_key(r["key1"]), decode_key(r["key2"])) if k]
+        if got != want:
+            print("FAIL %s got=%s want=%s" % (name, got, want))
+            ok = False
+        else:
+            print("PASS %s %s" % (name, got))
+    print("movement map: %s (%d commands)" % ("PASS" if ok else "FAIL", len(MOVEMENT_MAP)))
+    return 0 if ok else 1
+
+
+def main(argv) -> int:
     root = Path(__file__).resolve().parent.parent.parent
     dpath = root / "proof" / "movement" / "extracted" / "ui_hotkey_default.txt"
     bpath = root / "proof" / "movement" / "extracted" / "ui_hotkey_bindings.ini"
     out = root / "proof" / "controls"
+
+    if "--movement-check" in argv:
+        return movement_check(parse_default(dpath))
+
     out.mkdir(parents=True, exist_ok=True)
 
     default = parse_default(dpath)
@@ -171,4 +210,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

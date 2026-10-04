@@ -1,0 +1,12 @@
+
+===== function 0/61 | line 924-930 | params=1 nups=0 stack=3 =====
+pc=   0 L0     TEST      A=0   B=0    C=0    
+pc=   1 L0     JMP       A=0   B=256  C=3    to pc 6
+pc=   2 L0     GETGLOBAL A=1   B=0    C=0    'rlcmd'
+pc=   3 L0     LOADK     A=2   B=0    C=1    'lock input control mouse object rotation 1'
+pc=   4 L0     CALL      A=1   B=2    C=1    args=1 ret=0
+pc=   5 L0     JMP       A=0   B=256  C=2    to pc 9
+pc=   6 L0     GETGLOBAL A=1   B=0    C=0    'rlcmd'
+pc=   7 L0     LOADK     A=2   B=0    C=2    'lock input control mouse object rotation 0'
+pc=   8 L0     CALL      A=1   B=2    C=1    args=1 ret=0
+pc=   9 L0     RETURN    A=0   B=1    C=0    

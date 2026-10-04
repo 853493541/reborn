@@ -1,0 +1,290 @@
+##### sub_18085CE60 (state -> animation param lookup)
+0x18085CE60  mov eax, edx
+0x18085CE62  mov edx, ecx
+0x18085CE64  mov rcx, qword ptr [rip + 0x681175]
+0x18085CE6B  test r9b, r9b
+0x18085CE6E  je 0x18085ce8e
+0x18085CE70  cmp byte ptr [rcx + 0x26466], 0
+0x18085CE77  je 0x18085ce8e
+0x18085CE79  mov r9d, r8d
+0x18085CE7C  add rcx, 0x1a0
+0x18085CE83  mov r8d, 0x3e7
+0x18085CE89  jmp 0x180005204
+0x18085CE8E  mov r9d, r8d
+0x18085CE91  add rcx, 0x1a0
+0x18085CE98  mov r8d, eax
+0x18085CE9B  jmp 0x180005204
+0x18085CEA0  int3 
+0x18085CEA1  int3 
+0x18085CEA2  int3 
+0x18085CEA3  int3 
+0x18085CEA4  int3 
+0x18085CEA5  int3 
+0x18085CEA6  int3 
+0x18085CEA7  int3 
+0x18085CEA8  int3 
+0x18085CEA9  int3 
+0x18085CEAA  int3 
+0x18085CEAB  int3 
+0x18085CEAC  int3 
+0x18085CEAD  int3 
+0x18085CEAE  int3 
+0x18085CEAF  int3 
+0x18085CEB0  mov qword ptr [rsp + 8], rbx
+0x18085CEB5  mov qword ptr [rsp + 0x10], rsi
+0x18085CEBA  push rdi
+0x18085CEBB  sub rsp, 0x30
+0x18085CEBF  mov edi, r8d
+0x18085CEC2  xor ebx, ebx
+0x18085CEC4  mov r8d, dword ptr [rcx + 0x2158]
+0x18085CECB  mov esi, r9d
+0x18085CECE  test r8d, r8d
+0x18085CED1  je 0x18085cf6a
+0x18085CED7  mov rcx, qword ptr [rip + 0x681102]
+0x18085CEDE  add rcx, 0x1a0
+0x18085CEE5  call 0x18000d80a
+0x18085CEEA  test rax, rax
+0x18085CEED  je 0x18085cf6a
+0x18085CEEF  mov r8d, dword ptr [rax + 0x50]
+0x18085CEF3  lea rcx, [rax + 4]
+0x18085CEF7  test r8d, r8d
+0x18085CEFA  jne 0x18085cf37
+0x18085CEFC  lea rax, [rip + 0x47d545]
+0x18085CF03  mov r9d, 0x12da
+0x18085CF09  lea r8, [rip + 0x47d558]
+0x18085CF10  mov qword ptr [rsp + 0x20], rax
+0x18085CF15  lea rdx, [rip + 0x423c34]
+0x18085CF1C  lea ecx, [rbx + 3]
+0x18085CF1F  call qword ptr [rip + 0x83d0db]
+0x18085CF25  mov eax, ebx
+0x18085CF27  mov rbx, qword ptr [rsp + 0x40]
+0x18085CF2C  mov rsi, qword ptr [rsp + 0x48]
+0x18085CF31  add rsp, 0x30
+0x18085CF35  pop rdi
+0x18085CF36  ret 
+0x18085CF37  test esi, esi
+0x18085CF39  je 0x18085cf44
+0x18085CF3B  mov eax, edi
+0x18085CF3D  xor edx, edx
+0x18085CF3F  div r8d
+0x18085CF42  mov edi, edx
+0x18085CF44  mov eax, ebx
+0x18085CF46  cmp edi, dword ptr [rcx + 4]
+0x18085CF49  jb 0x18085cf68
+0x18085CF4B  add rcx, 8
+0x18085CF4F  inc eax
+0x18085CF51  cmp eax, 0xa
+0x18085CF54  jl 0x18085cf46
+0x18085CF56  mov eax, ebx
+0x18085CF58  mov rbx, qword ptr [rsp + 0x40]
+0x18085CF5D  mov rsi, qword ptr [rsp + 0x48]
+0x18085CF62  add rsp, 0x30
+0x18085CF66  pop rdi
+0x18085CF67  ret 
+0x18085CF68  mov ebx, dword ptr [rcx]
+0x18085CF6A  mov eax, ebx
+0x18085CF6C  mov rbx, qword ptr [rsp + 0x40]
+0x18085CF71  mov rsi, qword ptr [rsp + 0x48]
+0x18085CF76  add rsp, 0x30
+0x18085CF7A  pop rdi
+0x18085CF7B  ret 
+0x18085CF7C  int3 
+0x18085CF7D  int3 
+0x18085CF7E  int3 
+0x18085CF7F  int3 
+0x18085CF80  int3 
+0x18085CF81  int3 
+0x18085CF82  int3 
+0x18085CF83  int3 
+0x18085CF84  int3 
+0x18085CF85  int3 
+0x18085CF86  int3 
+0x18085CF87  int3 
+0x18085CF88  int3 
+0x18085CF89  int3 
+0x18085CF8A  int3 
+0x18085CF8B  int3 
+0x18085CF8C  int3 
+0x18085CF8D  int3 
+0x18085CF8E  int3 
+0x18085CF8F  int3 
+0x18085CF90  int3 
+0x18085CF91  int3 
+0x18085CF92  int3 
+0x18085CF93  int3 
+0x18085CF94  int3 
+0x18085CF95  int3 
+0x18085CF96  int3 
+0x18085CF97  int3 
+0x18085CF98  int3 
+0x18085CF99  int3 
+0x18085CF9A  int3 
+0x18085CF9B  int3 
+0x18085CF9C  int3 
+0x18085CF9D  int3 
+0x18085CF9E  int3 
+0x18085CF9F  int3 
+0x18085CFA0  int3 
+0x18085CFA1  int3 
+0x18085CFA2  int3 
+0x18085CFA3  int3 
+0x18085CFA4  int3 
+0x18085CFA5  int3 
+0x18085CFA6  int3 
+0x18085CFA7  int3 
+0x18085CFA8  int3 
+0x18085CFA9  int3 
+0x18085CFAA  int3 
+0x18085CFAB  int3 
+0x18085CFAC  int3 
+0x18085CFAD  int3 
+0x18085CFAE  int3 
+0x18085CFAF  int3 
+0x18085CFB0  push rbx
+0x18085CFB2  sub rsp, 0x20
+0x18085CFB6  mov rbx, r8
+0x18085CFB9  test r8, r8
+0x18085CFBC  je 0x18085d00b
+0x18085CFBE  test ecx, ecx
+0x18085CFC0  mov rcx, qword ptr [rip + 0x681019]
+0x18085CFC7  je 0x18085cfd7
+0x18085CFC9  add rcx, 0x1a0
+0x18085CFD0  call 0x18000fd2b
+0x18085CFD5  jmp 0x18085cfe3
+0x18085CFD7  add rcx, 0x1a0
+0x18085CFDE  call 0x180009c9b
+0x18085CFE3  mov rcx, rax
+0x18085CFE6  test rax, rax
+0x18085CFE9  je 0x18085d00b
+0x18085CFEB  movsd xmm0, qword ptr [rax + 4]
+0x18085CFF0  movsd qword ptr [rbx], xmm0
+0x18085CFF4  mov eax, dword ptr [rax + 0xc]
+0x18085CFF7  mov dword ptr [rbx + 8], eax
+0x18085CFFA  mov eax, dword ptr [rcx + 0x10]
+0x18085CFFD  mov dword ptr [rbx + 0xc], eax
+0x18085D000  mov eax, 1
+0x18085D005  add rsp, 0x20
+0x18085D009  pop rbx
+0x18085D00A  ret 
+0x18085D00B  xorps xmm0, xmm0
+0x18085D00E  xor eax, eax
+0x18085D010  movups xmmword ptr [rbx], xmm0
+0x18085D013  add rsp, 0x20
+0x18085D017  pop rbx
+0x18085D018  ret 
+0x18085D019  int3 
+0x18085D01A  int3 
+0x18085D01B  int3 
+0x18085D01C  int3 
+0x18085D01D  int3 
+0x18085D01E  int3 
+0x18085D01F  int3 
+0x18085D020  int3 
+0x18085D021  int3 
+0x18085D022  int3 
+0x18085D023  int3 
+0x18085D024  int3 
+0x18085D025  int3 
+0x18085D026  int3 
+0x18085D027  int3 
+0x18085D028  int3 
+0x18085D029  int3 
+0x18085D02A  int3 
+0x18085D02B  int3 
+0x18085D02C  int3 
+0x18085D02D  int3 
+0x18085D02E  int3 
+0x18085D02F  int3 
+0x18085D030  int3 
+0x18085D031  int3 
+0x18085D032  int3 
+0x18085D033  int3 
+0x18085D034  int3 
+0x18085D035  int3 
+0x18085D036  int3 
+0x18085D037  int3 
+0x18085D038  int3 
+0x18085D039  int3 
+0x18085D03A  int3 
+0x18085D03B  int3 
+0x18085D03C  int3 
+0x18085D03D  int3 
+0x18085D03E  int3 
+0x18085D03F  int3 
+0x18085D040  mov qword ptr [rsp + 0x10], rbx
+0x18085D045  mov qword ptr [rsp + 0x18], rbp
+0x18085D04A  mov qword ptr [rsp + 0x20], rsi
+0x18085D04F  push rdi
+0x18085D050  push r12
+0x18085D052  push r13
+0x18085D054  push r14
+0x18085D056  push r15
+0x18085D058  sub rsp, 0x40
+0x18085D05C  xor edi, edi
+0x18085D05E  mov rsi, r9
+0x18085D061  cmp dword ptr [rcx], 2
+0x18085D064  mov rbx, r8
+0x18085D067  mov r12, rdx
+0x18085D06A  mov r13, rcx
+0x18085D06D  jne 0x18085d1c8
+0x18085D073  mov eax, dword ptr [rcx + 4]
+0x18085D076  lea r14, [r9 + 0x18]
+0x18085D07A  movaps xmmword ptr [rsp + 0x30], xmm6
+0x18085D07F  lea r15, [rip + 0x426776]
+0x18085D086  movss xmm6, dword ptr [rip + 0x4251b2]
+0x18085D08E  mov ebp, edi
+0x18085D090  mov dword ptr [rsp + 0x70], eax
+0x18085D094  sub r12, rbx
+0x18085D097  mov edi, dword ptr [r12 + rbx]
+0x18085D09B  cmp eax, 6
+0x18085D09E  jne 0x18085d0b1
+0x18085D0A0  mov ecx, edi
+0x18085D0A2  call 0x180021ee5
+0x18085D0A7  test eax, eax
+0x18085D0A9  mov eax, 0
+0x18085D0AE  cmove edi, eax
+0x18085D0B1  mov rcx, qword ptr [rip + 0x680f28]
+0x18085D0B8  mov r8d, edi
+0x18085D0BB  add rcx, 0x1a0
+0x18085D0C2  mov edx, ebp
+0x18085D0C4  call 0x18001e6d2
+0x18085D0C9  mov rdx, rax
+0x18085D0CC  test rax, rax
+0x18085D0CF  jne 0x18085d0fa
+0x18085D0D1  mov r8d, edi
+0x18085D0D4  lea rcx, [rip + 0x47c445]
+0x18085D0DB  mov edx, ebp
+0x18085D0DD  call 0x18001bf22
+0x18085D0E2  mov qword ptr [r14 - 0x18], r15
+0x18085D0E6  mov qword ptr [r14 - 0x10], r15
+0x18085D0EA  mov qword ptr [r14], r15
+0x18085D0ED  mov qword ptr [r14 + 8], r15
+0x18085D0F1  mov qword ptr [r14 + 0x10], r15
+0x18085D0F5  jmp 0x18085d19e
+0x18085D0FA  movsxd r8, dword ptr [r13 + 0x2158]
+0x18085D101  lea r9, [rip - 0x85d108]
+0x18085D108  cmp r8d, 6
+0x18085D10C  ja 0x18085d14a
+0x18085D10E  mov ecx, dword ptr [r9 + r8*4 + 0x85d580]
+0x18085D116  add rcx, r9
+0x18085D119  jmp rcx
+0x18085D11B  movaps xmm3, xmm6
+0x18085D11E  jmp 0x18085d153
+0x18085D120  movss xmm3, dword ptr [rax + 0x24]
+0x18085D125  jmp 0x18085d153
+0x18085D127  movss xmm3, dword ptr [rax + 0x30]
+0x18085D12C  jmp 0x18085d153
+0x18085D12E  movss xmm3, dword ptr [rax + 0x28]
+0x18085D133  jmp 0x18085d153
+0x18085D135  movss xmm3, dword ptr [rax + 0x34]
+0x18085D13A  jmp 0x18085d153
+0x18085D13C  movss xmm3, dword ptr [rax + 0x20]
+0x18085D141  jmp 0x18085d153
+0x18085D143  movss xmm3, dword ptr [rax + 0x2c]
+0x18085D148  jmp 0x18085d153
+0x18085D14A  movaps xmm3, xmm6
+0x18085D14D  cmp r8d, 6
+0x18085D151  ja 0x18085d18a
+0x18085D153  mov ecx, dword ptr [r9 + r8*4 + 0x85d59c]
+0x18085D15B  add rcx, r9
+0x18085D15E  jmp rcx

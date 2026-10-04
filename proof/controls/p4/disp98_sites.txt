@@ -1,0 +1,58 @@
+0x18030C389  lea rbx, [rcx + 0x98]
+0x180338C53  call qword ptr [rax + 0x98]
+0x180408A85  mov qword ptr [rcx + 0x98], rax
+0x18040DA84  mov qword ptr [rbx + 0x98], r12
+0x18040F693  mov rcx, qword ptr [rdi + 0x98]
+0x180413DBF  mov rdx, qword ptr [rcx + 0x98]
+0x180428380  call qword ptr [rax + 0x98]
+0x18042846A  call qword ptr [rax + 0x98]
+0x18043A75F  lea rcx, [rdi + 0x98]
+0x18043AF37  lea rcx, [rdi + 0x98]
+0x18043D3D0  lea rcx, [r14 + 0x98]
+0x1804416A1  inc dword ptr [rcx + 0x98]
+0x180442156  lea r10, [rcx + 0x98]
+0x18044F8C8  call qword ptr [r8 + 0x98]
+0x18044FF15  call qword ptr [r8 + 0x98]
+0x18045A560  call qword ptr [rax + 0x98]
+0x18045C160  call qword ptr [rax + 0x98]
+0x180465050  call qword ptr [rax + 0x98]
+0x180471655  mov qword ptr [rsi + 0x98], r13
+0x180471671  mov qword ptr [rsi + 0x98], r15
+0x180602018  call qword ptr [r10 + 0x98]
+0x18072F8AF  mov r9, qword ptr [r8 + 0x98]
+0x180737A31  mov eax, dword ptr [rcx + 0x98]
+0x18073CFC0  mov eax, dword ptr [rcx + rbx + 0x98]
+0x180806D35  lea r12, [r14 + 0x98]
+0x180806D41  movups xmmword ptr [rsi + 0x98], xmm0
+0x180806DE8  lea rbp, [rsi + 0x98]
+0x180806F14  lea r14, [rsi + 0x98]
+0x180807224  mov qword ptr [rcx + 0x98], rax
+0x180809EAF  mov rcx, qword ptr [rcx + 0x98]
+0x180809EF7  mov byte ptr [rbx + 0x98], sil
+0x18080B001  lea r14, [rcx + 0x98]
+0x180903201  call qword ptr [rax + 0x98]
+0x180A3E075  mov qword ptr [rcx + 0x98], rax
+0x180A45C8E  mov qword ptr [rcx + 0x98], rax
+0x180A45D50  mov qword ptr [r10 + 0x98], rcx
+0x180A45E2E  mov qword ptr [rcx + 0x98], rax
+0x180A45F17  mov qword ptr [r10 + 0x98], rax
+0x180A6D90C  mov rax, qword ptr [rdx + 0x98]
+0x180A6D913  mov qword ptr [rcx + 0x98], rax
+0x180A6DA2C  mov rax, qword ptr [rdx + 0x98]
+0x180A6DA33  mov qword ptr [rcx + 0x98], rax
+0x180A6E5A3  mov qword ptr [rsi + 0x98], rbp
+0x180A6E796  lea r14, [rcx + 0x98]
+0x180A6EA39  mov qword ptr [rbx + 0x98], rax
+0x180A6EB83  mov qword ptr [rbx + 0x98], rax
+0x180A7747F  mov rcx, qword ptr [rcx + 0x98]
+0x180A774C3  mov qword ptr [rbx + 0x98], rdi
+0x180A77868  mov rax, qword ptr [rdx + 0x98]
+0x180A7786F  mov qword ptr [rcx + 0x98], rax
+0x180A77958  mov rax, qword ptr [rdx + 0x98]
+0x180A7795F  mov qword ptr [rcx + 0x98], rax
+0x180B01825  movss xmm1, dword ptr [rbx + 0x98]
+0x180B018B4  mov ecx, dword ptr [rbx + 0x98]
+0x180B08B54  mov eax, dword ptr [rcx + 0x98]
+0x180B09448  mov qword ptr [rbx + 0x98], rcx
+0x180B0A5FD  call qword ptr [rax + 0x98]
+0x180B129AB  movss xmm3, dword ptr [rcx + 0x98]

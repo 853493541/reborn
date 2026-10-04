@@ -963,6 +963,389 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: solved (host/user decision; 1245 stays the client-number reference,
   max is the host start).
 
+### 2026-09-29 — client — Collision improvement pass (holes, capsule, slope, substeps)
+- Did: gap audit + fixes on the main client (`docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md`).
+  (1) Terrain holes: `TerrainSampler` now calls the loader's `LoadHoleRegion` (vt[4]) and
+  exposes `SampleGround` (no ground over a hole); the client falls through caves instead of
+  standing on them. (2) `FoliageCollision.InstanceContact` replaced 6-point axis sampling
+  with exact segment/triangle closest pairs (a thin rail at 15 u between former samples now
+  blocks). (3) Slope rule uses a fixed 40 u look-ahead (speed/framerate independent).
+  (4) Long horizontal moves are substepped (≤20 u) so they cannot tunnel thin colliders.
+  (5) Offline gate `collision_selftest.exe` (9 checks) wired into `client\build_client.cmd`.
+- Evidence: selftest 9/9 PASS; engine A/B on 海岛绝境 region 0,0 — engine mask == decoded
+  `.hlb` after the **row-flip in Z** (`tools/collision/check_hole_mask.py`); live fall
+  (`py=-4434`, `vy=-4952`, `grounded=False` at t=2 s); 龙门寻宝 cactus regression blocked at
+  z=53288 (264 events). Proof: `proof/collision/client_holes/`. Commits `4d46810`, `ec72490`,
+  `a7b653c`, `e59234b`, `9ca8549`, `7334772`, `c6d0af1` (push blocked: credential manager
+  hung; local only at session end).
+- Outcome: solved (C-1..C-5). Known limitation: no cave meshes under holes → a fall is
+  bottomless until geometry is baked beneath (no invented floor).
+- Re-open: cave-bake availability; engine A/B for holes beyond region 0,0 once other maps
+  with holes are baked.
+
+### 2026-09-29 — client — Building door block + inside stutter (camera rays, not collision)
+- Did: reproduced the user's report from their run log (57 blocked events at
+  (18758,652,24591), FPS 268→130 sustained at the wall). The blocker is the
+  visual mesh `jz_xb玉门关建筑001_004_hd.mesh` (34,786 tris) — closed gates block
+  per the engine's own `.mesh` rule, and the jump entry exploits the mesh not
+  being a solid volume, so both are engine-faithful. The stutter is the camera
+  obstruction block: `RC_COL_PROF` split `colms=0.19-0.44` vs `camms=3.16`
+  (`nat=1.19` + `vert=1.90` native rays; up to 10.8 ms stalls). Fixed with a
+  20 Hz cap on the camera query set (`RC_CAM_OBSTHZ`, 0 = old every-frame) and
+  skipping the host vertical ladder when the horizontal probes hit.
+- Evidence: user log `reborn_20260929_141108.log`; before/after runs
+  `145720` (122 fps) vs `150433` (228-243 fps) at the same spot; camera still
+  pulls at the gate (`rc_00_7500ms.png`); plan doc §7. Commits `6a4d8b3`,
+  `5ff8705`.
+- Outcome: solved (stutter). Blocking is engine-faithful, not a defect.
+- Re-open: engine camera query cadence / a cheaper native ray path (the 20 Hz
+  cap is a provisional host policy).
+
+### 2026-09-29 — movement — Step forgiveness research (no invented threshold)
+- Did: researched the "low objects don't block" feel. Recovered the shipped engine's
+  PhysX capsule-controller defaults from `PhysicsEngineX64.dll` (`PxControllerDesc`
+  ctor RVA `0x18000e910`): `stepOffset=0.5` m, `slopeLimit=0.7071` (45°),
+  `contactOffset=0.1`, in the metric scene (gravity −9.81). PhysX CCT semantics climb
+  obstacles up to the step offset and block above. Found no gameplay step constant in
+  configs/tables/strings; `fPathingHeight` (unit template) is the only height-like key
+  left and has no recovered consumer; movement is server-authoritative and nav data
+  lives outside the client install.
+- Evidence: `proof/collision/disasm/pxcontrollerdesc_ctor.txt`,
+  `docs/movement/JX3_STEP_FORGIVENESS_RESEARCH.md`; G-13 updated.
+- Outcome: partial (engine defaults HIGH; gameplay applicability unproven). No host
+  threshold changed - deciding between the recovered 50 u default, the calibrated
+  70 u rule, and a live-measured value is pending a choice.
+- Re-open: a live observation of a walked-over object's height, or decoder work on
+  `KCharacter::AdjustPosZ` / server nav semantics.
+
+### 2026-09-29 — movement — Adopt recovered engine step budget (0.5 m)
+- Did: applied the real engine value to the host per user decision: object step budget
+  50 u (recovered PxControllerDesc default 0.5 m, metric scene), env `RC_STEP_HEIGHT`;
+  `FoliageCollision.Resolve`/`MoveResolved` take the budget as a parameter. Terrain
+  slope rule left calibrated (different subsystem: ProcessDropSpeed, not CCT).
+- Evidence: `docs/movement/JX3_STEP_FORGIVENESS_RESEARCH.md` §8; selftest 11/11
+  (`step_up_50u_budget`, `step_blocks_over_budget`).
+- Outcome: solved (adopted).
+- Re-open: a live-measured gameplay step height or server/nav decoding could replace
+  the CCT default with the online value.
+
+### 2026-09-29 — client — Object collidability vs live game (玉门关 building)
+- Did: user reports walking through the 玉门关 wall in the live game while the host
+  blocks it (instance 897 = `jz_xb玉门关建筑001_004_hd.mesh`). Checked the bake rule:
+  H1 admits the model (not file_black; folder `maps_source` white) and H1 is still
+  A/B-pending (G-35). Engine `.mesh` rule collides visual triangles; live collidability
+  is server/streamed state absent from the client install. Units/step are not the
+  issue. Added debug controls `RC_COL_OFF` and `RC_COL_SKIP_BOX=x0,z0,x1,z1` (HUD
+  `[COL OFF]`), launched the client with the building box skipped so the user can
+  verify the rest of the world.
+- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8;
+  `proof/collision/physic/audit_lists.txt`; EngineStaticConfig.ini `[KG3DENGINE]`.
+- Outcome: partial (control shipped; rule open). Next: settle whether the live game
+  blocks any part of that building (whole-object vs doorway vs height) before changing
+  the bake rule; H1 A/B is the candidate fix.
+- Re-open: user observation or server/nav data.
+
+### 2026-09-29 — client — Root cause: physic lists are GB18030, read as UTF-8
+- Did: the "carpet/props block walking" reports traced to `_read_list` in
+  `tools/export_structure_collision.py` decoding the engine's `Represent/physic/*`
+  lists as UTF-8 with errors=replace. Every Chinese stem became mojibake, so the
+  black-list filter silently skipped them (8 rejects instead of 60). Decode u8-sig ->
+  GB18030; re-baked 龙门寻宝 (60 rejects: 29 file_black + 23 folder_black + 8
+  no_whitelist; instances 4,949 -> 4,897). Removed the RC_COL_OFF/RC_COL_SKIP_BOX
+  band-aids entirely.
+- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8.2;
+  `wj_dcy地毯001_001_hd` present in `proof/collision/physic/physic_file_black.txt`
+  (GBK); bake log with 60 rejects; cactus regression still blocks (z=53288).
+- Outcome: solved (list filter now real). Gate passability remains server/doodad
+  state; other four maps need the same re-bake.
+- Re-open: none for the encoding bug; door state needs server data.
+
+### 2026-09-29 — movement — Local prediction ground rules (engine) replace host rise/ledge rules
+- Did: decoded `KCharacter::ProcessVerticalMove` (y = min(y, ground), 64 u landing
+  tolerance) and `ProcessDropSpeed` (slope projection/air-stop); replaced the host's
+  70/50 u rise-budget and 150 u ledge rule with the engine behavior (snap up, snap
+  down within 64, else fall). Named-blocker logging added earlier identifies the
+  merged interior mesh (`jz_xb玉门关建筑001_003sw_hd`) as the carpet/furniture
+  blocker; per-part blocking inside merged meshes is server state.
+- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8.3;
+  `docs/movement/JX3_GRAVITY_RESEARCH.md` §3.2; disasm transcripts; selftest 11/11.
+- Outcome: solved for terrain ground forgiveness; structure blocking remains the
+  host's server proxy.
+- Re-open: server-side obstacle data (client files cannot express doors/carpets).
+
+### 2026-09-29 — movement — CCT top rule: low obstacles never block
+- Did: the remaining "wood on the ground / carpet blocks" cases are merged-mesh
+  features with no up-facing support face (verified: at the gate contact the mesh
+  has 0 up-facing and 10 down-facing local triangles). Implemented the engine's
+  CCT rule directly: when a horizontal contact occurs, measure the obstacle top
+  from the geometry at the contact point (`LocalTop`, world-XZ-tight probe) and
+  climb (no block) whenever top <= feet + stepOffset; block only above.
+- Evidence: `client/FoliageCollision.cs` (LocalTop + Resolve), selftest 14/14
+  (`thin_low_plate_passes`, `thin_tall_plate_blocks`, `step_onto_low_edge`);
+  commit to follow; docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md §8.3.
+- Outcome: solved for low geometry; tall walls/gates still block.
+- Re-open: live spot with a still-blocking low object - the named blocker log
+  gives the model, then the local contact triangle can be inspected.
+
+### 2026-09-29 — movement — Low touching face wins the CCT step test (plank at wall passes)
+- Did: at the gate the deepest contact was a tall face (top 860.8 vs feet 636.9) while a low
+  face also touched the capsule, so the step test blocked. `InstanceContact` now tracks
+  `lowTop` (lowest top among all horizontal faces touching the capsule) and `Resolve` climbs
+  when `lowTop` is within the step budget. Live test at the gate: the first low contact now
+  passes (blocked=False, player climbed and continued); the next block is a genuine 1.03 m
+  face (top 741.7, feet 638) beyond the recovered 0.5 m step budget.
+- Evidence: `client/FoliageCollision.cs`; selftest 15/15 (`low_plank_at_wall_passes`);
+  run log `reborn_20260929_175736.log`.
+- Outcome: solved for low geometry at wall bases; >0.5 m still blocks (engine default).
+
+### 2026-09-29 — movement — Faces at/below the feet must never block (user-log case)
+- Did: the user's copied log showed the stuck contact as
+  `blocked by inst=487 mesh=364 top=929.9 feet=933.9 ...001_003sw_hd.mesh` - the
+  contacting face's top is BELOW the player's feet, yet the resolve pushed out.
+  `Resolve` now treats any horizontal contact whose triangle top is `<= feet` as a
+  non-obstacle (no push-out, keep moving), in addition to the existing within-budget
+  climb. Verified in-engine at the same interior spot: 0 blocked events while
+  running through (was 400+ and stuck).
+- Evidence: `client/FoliageCollision.cs`; selftest 16/16 (`face_below_feet_passes`);
+  run `reborn_20260929_181709.log`.
+- Outcome: solved.
+
+### 2026-09-29 — movement — Capsule bottom artifact: feet are the capsule bottom
+- Did: the "below feet skip" hack caused wall penetration and carpets still blocking.
+  Root cause: `InstanceContact` used the axis py..py+height, extending the capsule a
+  full radius BELOW the feet, so floor edges/thresholds/carpet borders touched it and
+  were treated as obstacles. Fixed the capsule to the engine convention: axis from
+  `py + radius` to `py + height - radius` (bottom exactly at the feet), and removed
+  the skip hack; the CCT top rule remains (below feet cannot touch anymore).
+- Evidence: `client/FoliageCollision.cs`; selftest 16/16; interior run
+  `reborn_20260929_183202.log` (0 blocked, was 400+); gate run
+  `reborn_20260929_183257.log` (blocked by top=860.8 vs feet=701, a real >0.5 m wall).
+- Outcome: solved; this makes the host capsule match the engine controller convention.
+
+### 2026-09-29 — movement — Full collision status audit
+- Did: rechecked the collision docs against the branch and wrote
+  `docs/movement/COLLISION_SYSTEM_STATUS.md` (per-subsystem implemented/missing/wrong).
+  Top issues: terrain slope over-permissive (no ProcessDropSpeed projection);
+  15 Hz integer movement not ported (G-14); H1 list rule A/B pending (G-35);
+  host-generated tree canopy columns; 20 Hz camera query cap; bottomless holes;
+  host-chosen capsule/step values; merged interiors remain server state.
+- Evidence: the audit doc; this branch's commits and run logs.
+- Outcome: documented; implementation priorities listed in the doc §8.
+
+### 2026-09-29 — camera — Re-enable hit stabilizer (door-crossing shake)
+- Did: `RC_CAM_HITWIN` defaulted to "0" (stabilizer disabled) although the class
+  documents 0.25 s as the registered B11 default; raw min-hit flicker at triangle
+  edges made the camera jump while crossing a doorway. Default restored to 0.25 s.
+- Carpet check: `wj_erg地毯001_hd` at (19690,920,36271) crossed with 0 blocked
+  events; the next block 340 u later is a real 1.05 m wall (top 1007.8, feet 903).
+- Evidence: `client/RebornClient.cs`; run `reborn_20260929_203756.log`.
+- Outcome: solved.
+
+### 2026-09-29 — movement — Step budget 64 u (1 尺 ground tolerance), field case
+- Did: the user's run showed the stuck spot (19756,971,...) bouncing at the house floor
+  edge: floor ~51 u above the outside ground, 1 u over the 50 u CCT default. The
+  engine's ground/landing tolerance constant is 64 u = 1 尺 (`ProcessVerticalMove`
+  0x14031A25E), so the step budget is now 64 u (`RC_STEP_HEIGHT` override). New
+  selftest `step_51u_with_64_budget` (17/17).
+- Evidence: run `reborn_20260929_203902.log` (vy/fall-clip loop at the floor edge);
+  `client/RebornClient.cs`.
+- Outcome: solved (field case covered by an engine constant).
+
+### 2026-09-29 — movement — Steps only while grounded; camera stabilizer 0.4 s
+- Did: the CCT climb applied while airborne, so a jump let the player climb/penetrate
+  walls whose top was below the jump height. `Resolve` now climbs only when
+  `grounded`; airborne moves push out. Camera hit stabilizer window 0.25 -> 0.4 s
+  (20 Hz query sampling needs the longer hold to stop doorway shake).
+- Evidence: selftest 17/17 (step tests now start grounded); jump-against-gate run
+  `reborn_20260929_204919.log` (x stays 18768, blocked, no penetration).
+- Outcome: solved.
+
+### 2026-09-29 — movement — Floor query ignores triangle winding (house rug case)
+- Did: the house "carpet" (`wj_erg地毯001_hd`, 龙门寻宝 inst 485 / mesh 75) is an
+  ~800×800 u plate at y 921.8–924.2 authored with **inverted winding** (both
+  triangles ny=−1.00; verified offline from the baked bin). `SupportHeight`
+  (the floor query) required up-facing normals, so the rug was never ground:
+  the capsule surface contact pushed the player up, the 64 u drop-tolerance
+  snapped him back — py oscillated 921↔924 every frame, `hits=0`, camera bob.
+  Fix: `Math.Abs(wny)/nl >= 0.5` in the floor query (winding is a render
+  property; the engine floor test is orientation-agnostic).
+- Verified: selftest 19/19 (`inverted_floor_support`, `inverted_floor_stand`);
+  in-game by the agent at the user's stuck coordinate: `reborn_20260929_212757.log`
+  (spawn 19295,887,36435 → t=2s pos (19935,**924**,36435) grounded `hits=0`
+  `colCalls=0`) and `reborn_20260929_212423.log` (spawn 19240,886,36435).
+  The next blocker east is inst 773, the same mesh placed vertically (top
+  1115.9, feet 924.6) — a real obstacle.
+- Outcome: solved.
+
+### 2026-09-29 — camera — Anchor-Y smooth-follow (step-snap shake, B14)
+- Did: the user's repeated walking in the house area produced 42–64 u camera
+  jumps in single frames: the camera anchor is raw physics `py + 90`, so the
+  grounded step snap (rug 924 ↔ floor 969, stairs) teleported the camera, plus
+  a ~10 Hz +7/+10 u stair train. Added an anchor-Y smooth-follow: one-frame
+  grounded delta > 5 u starts an exponential follow (SmoothTime = camera-row
+  0.06 s = `CharacterCameraSmoothTime`) with a 5 ms frame clamp and a catch-up
+  rate cap (`RC_CAM_YRATE`, 1200 u/s); slopes and airborne frames stay raw.
+  Kill switch `RC_CAM_YFOLLOW=0`; debug `RC_CAM_YDBG=1` (rawstep vs smoothed).
+- Verified: A/B on the field route (spawn 19600,36000, walk north): raw max
+  grounded camera-Y step 63.9 u → shipped 6.0 u (median 0.6, p90 1.5); stair
+  train 7–10 u → 0.1–0.8 u/frame. Logs `reborn_20260929_215235.log` (raw) /
+  `..._220246.log` (fix); selftest 19/19; registered as B14 in
+  `docs/camera/HOST_DEVIATIONS.md`.
+- Outcome: solved (host stabilizer; re-open with the represent-layer
+  interpolation / `DynamicFollowSmoothObjectPosition` port).
+
+### 2026-09-29 — collision — Tagged the door/carpet fix
+- Did: the user asked to record the rug fix commit as the door/carpet fix:
+  annotated tag `door-carpet-fix` → `62f796a` (floor query ignores winding).
+- Evidence: `git show door-carpet-fix`.
+- Outcome: recorded.
+
+### 2026-09-29 — camera — Tagged the step-shake build
+- Did: annotated tag `camera-step-fix` → `6b03864` (anchor-Y smooth-follow B14).
+- Outcome: recorded.
+
+### 2026-09-29 — collision — "walked into the cabinet": engine step rule, not a bug
+- Did: the user's end-of-run log showed them inside the open-front cabinet
+  `wj_erg柜子002_hd` (龙门寻宝 idx 648, AABB 18728-19351/922-1329/36721-36821)
+  at feet 974-1044, asking whether the step forgiveness let them in.
+  Reproduced with a grounded walk (spawn 19040,36650, walk north): the cabinet
+  front BLOCKS at z=36714 (`blocked by inst=1042 top=1017.2 feet=928`), so a
+  plain walk-in is not possible. Route from the log + geometry: a 51 u ledge
+  south of the cabinet (within the 64 u = 1 尺 tolerance) put the feet at ~974;
+  the cabinet's closed-door front top (1007.8) was then only ~34 u above the
+  feet, inside the engine's own `stepOffset` (0.5 m = 50 u), so the step rule
+  climbed over the doors; the following 小跳 landed on the interior shelf
+  (1043.7 / 1052). Same outcome would occur under the real PhysX CCT for the
+  same collidable mesh.
+- Open question (not invented): whether the real game collides with this prop
+  at all — the bake admits it under the unresolved folder-white H1 rule
+  (`G-35`); real per-object physics is server/nav state we cannot derive from
+  the client files. Indoor props' interiors are therefore **[PART/H1]**.
+- Evidence: repro run `reborn_20260929_222021.log`; geometry scan of the
+  cabinet mesh (front panels y 922-1008 + sides; open band y 1008-1224).
+- Outcome: explained + documented; no host rule added (engine-faithful).
+
+### 2026-09-29 — collision — Prop shells: ejection experiment reverted (inverted winding)
+- Did: the user went fully inside the open-front cabinet (latest position
+  (19168,921,36779), inside its footprint) and asked for a fix. Diagnostics:
+  the prop mesh is a hollow shell (front panels y 922-1008, open band
+  y 1008-1224, no bottom face, interior shelves at 1017/1076/1085), admitted
+  by the unresolved H1 folder-white rule (top folder `maps_source`, G-35).
+  A winding-based "stay on the visible side" ejection was implemented and
+  benched: it never fired on this data because the game's meshes are authored
+  with **inverted winding** (the rug's triangles ny=-1; the cabinet's front
+  panel normal points +z INTO the cabinet) - winding carries no reliable
+  visible side. An earlier variant also oscillated between the cabinet and the
+  house shell (exit into a wall). Live game keeps characters out of props via
+  server/nav movement authority, which is not in the client install.
+- Evidence: offline geometry scans; runs `reborn_20260929_222232.log` (user
+  inside), `..._223458/224136/224248.log` (ejection experiment: oscillation /
+  no fire). Reverted; selftest 19/19; build clean.
+- Outcome: documented; no host rule shipped. Options (solid-prop volume
+  approximation vs server/nav research) in `COLLISION_SYSTEM_STATUS.md` §8
+  item 11.
+
+### 2026-09-29 — collision — Solid volumetric props (cabinet entry fixed, host proxy)
+- Did: recovered the shipped per-mesh obstacle flags — every mesh `.mesh.ini`
+  carries `bAutoProduceObstacle` (`[Display]`) and `bLogicObstacle` /
+  `bCollisionOnly` per LOD submesh; consumers in `KG3DEngineDX11EX64.dll` /
+  `KG3D_LoaderNoRenderX64.dll`. Our bake used only `bObscatleCamera` and
+  ignored them. The per-unit passability values (`bUnitWalkable` /
+  `bUnitCanPass`) are **not** in the shipped files (G-21).
+  Implemented the host proxy: volumetric furniture (柜/箱/桌/桶/缸/坛 mesh
+  classes) is solid — when the capsule overlaps the prop's world AABB it is
+  pushed out along the minimum-translation axis (a wall-like contact with
+  2–10 u per-frame pushes), so it cannot be entered and there is no ejection
+  bounce/shake. Near-geometry gate (80 u) keeps the empty AABB air of thin
+  sheets (rugs/banners/bones) non-solid; buildings keep mesh-shell collision.
+- Verified: selftest 22/22 (`prop_solid_eject`, `prop_solid_building_kept`,
+  `prop_solid_free_exit`); in-game pressing into the cabinet front
+  (`reborn_20260929_234229.log`): held at z=36704 (face − radius) with
+  2–9 u per-frame pushes — wall-like, no bounce; running into its east side
+  (`..._234128.log`) the same. Earlier ejection build teleported 19–27 u per
+  frame and made the camera shake (user report 23:38), which is why the
+  contact-push form replaced it.
+- Outcome: solved as a registered host proxy; re-open with the real
+  `bUnitWalkable` data (G-21) or the server/nav obstacle stream.
+
+### 2026-09-29 — docs — Full host-vs-game collision comparison + solid-prop deviation recorded
+- Did: created `docs/movement/COLLISION_SYSTEM_COMPARISON.md`: the game's 16
+  collision domains vs the host, a per-object/per-unit flag inventory
+  (`bAutoProduceObstacle`/`bLogicObstacle`/`bCollisionOnly` ship in every
+  `.mesh.ini` with located consumers; `bUnitWalkable`/`bUnitCanPass` values are
+  NOT in the shipped client files, G-21), data-have / data-do-not-have lists,
+  the `G-0..G-35` rollup mapped to host status, and the registered host
+  deviations including the solid-prop proxy with its exact "partly" scope
+  (name taxonomy + AABB shape + missing unit values). Registered in
+  `docs/movement/README.md`.
+- Evidence: the doc and the sources cited inside it.
+- Outcome: recorded; no code change.
+
+### 2026-09-30 - controls/client - Movement input core + control keys (agent/move-controls)
+- Did: C1/C2 input core (`client/HotkeyTable.cs`): real `ui/hotkey/default.txt` +
+  `bindings.ini` decoded at startup (embedded snapshot of
+  `proof/movement/extracted/`; `RC_HOTKEY_DIR` live override), VK+modifier
+  encoding, Shift ignored for the movement set only (host debug x10); movement
+  commands dispatched from the table (W/Up, S/Down, A, D, Left/Right, Space,
+  Numpad /, G/NumLock); turn-in-place (camera follows); autorun; jump takeoff
+  horizontal velocity from the row's JumpSpeedXY (clamp 0..127, 15 Hz x
+  RC_JUMP_SCALE) + ballistic air carry (no WASD air steering - no horizontal
+  input term in ProcessAcceleration); landing branch: drop > FallDownHeightFloor
+  (500 u) plays the authored F1 FallFloorAnimation (f1b02yd + fist + smalljump c).
+- Evidence: run `reborn_out/reborn_20260930_222145.log` (exit 0,
+  ns=reborn_client_move_controls.memory): `hotkeys: source=embedded rows=286
+  commands=430`; `jump xy takeoff vj=(216,-225) u/s`; forward land +352 u from
+  takeoff; `land drop=600u roll=1 clip=... rc=0`; curated
+  `proof/controls/movement_controls_run.txt`; scripted `RC_DEMO_MOVE=1`.
+- Gates: jx3_model 10x PASS, verify_model exit 0, capture selftest PASS,
+  `hotkey_parse.py --movement-check` 9/9 PASS, build exit 0.
+- Open: integer 15 Hz port (character logic; combat tables 16 fps per
+  JX3_COLLISION_SYSTEM.md:190-191), air-steer/click-to-move path, autorun exact
+  cancel set, rebinding/contexts (C3-C6).
+
+
+### 2026-09-30 - controls/client - Operation modes: classical vs joystick movement routing (agent/move-controls)
+- Did: per-mode input routing in the client. CLASSICAL (normal): lateral/back
+  input keeps the facing - side-step / back-pedal with the authored
+  F1b02yd strafe-left/right and backpedal-01 clips (selected by travel angle vs
+  facing); JOYSTICK: turn-to-heading for all input (run clip), camera untouched
+  by movement. Turn-key camera coupling fixed: heading<->camera-yaw is the
+  cameraYawBehind reflection (Forward(yaw)=(-cos,-sin)); the earlier direct
+  "+=" turned the camera the wrong way. Drag uses the row's 15 deg
+  CameraAdjustYawWhenMoveTurnDisableAngle dead zone. HUD shows op; periodic log
+  gains gait=/mode=.
+- Evidence: classical run reborn_20260930_232408.log (strafe/back d=0.00 + the
+  two clips, turn char +1.88 / camera follow -1.62, land roll rc=0); joystick
+  run reborn_20260930_232519.log (d=-1.57, no strafe clips, camera unchanged);
+  clip load pre-check reborn_20260930_231207.log; curated
+  proof/controls/control_modes_run.txt; camera_smoke_control_modes ALL PASS.
+- Gates: jx3_model 10x PASS, verify_model exit 0, capture selftest PASS.
+- Open: M1 per-mode follow mode (nCameraMode [0..3] semantics), M2 reset
+  speeds (no reset path yet), free view (Camera_IsInFreeView not located);
+  turn-key drag rate is a host interpretation of the documented coupling.
+
+
+### 2026-09-30 - controls/client - Operation-mode settings: decode pass + switch plumbing (agent/move-controls)
+- Did: fresh disasm of JX3RepresentX64.dll camera node setters (type 0xD, pair
+  selector [node+0x34], 0=joystick): drag +0x6C/+0x84, drag-pitch +0x70/+0x88,
+  max distance +0x74/+0x8C, spring reset +0x78/+0x90, camera reset +0x7C/+0x94,
+  follow mode +0x80/+0x98; clamps [0.01,10] / [1,2000] / [0,3] read from the
+  binary. SetCameraFollowCharacterAction stores [obj+0x27C], gating the
+  UpdateCameraFollowAction path (0x180b0e820). Host: CameraSettings
+  ApplyOperationMode() clamps + applies the role's per-mode follow mode and
+  reset speeds on every switch (F7 / RC_MODE / RC_MODE_SWITCH_AT), logged.
+- Evidence: run reborn_20260930_234456.log (opmode applied: classical
+  followMode=0 springReset=1.00 cameraReset=1.00 -> switch test @6000ms ->
+  joystick same, exit 0); proof/controls/control_modes_run.txt addendum;
+  OPERATION_MODES_PLAN.md 7c.
+- Gates: camera_smoke ALL PASS, jx3_model 10x PASS, verify_model exit 0,
+  capture selftest PASS.
+- Open (no invention): per-frame consumer of follow mode [0..3] and of the
+  reset speeds; Camera_IsInFreeView absent from all candidate binaries' string
+  tables (hashed Lua registration?). Next: type-0xD node vtable update trace or
+  live debug on the real client.
+
+
 ### 2026-09-30 — ui — Battle floating UI catalog from client data
 - Did: user asked for battle floating UI (头顶/浮动战斗界面). `#iso` worktree
   `../reborn-iso-battle-floating-ui`, branch `agent/battle-floating-ui`. Extracted
@@ -986,6 +1369,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §6; index rows updated in
   `docs/ui/README.md` and `docs/GAME_SYSTEMS_RESEARCH_MAP.md` §4.
 
+
 ### 2026-09-30 — ui — Font coverage: all 5 shipped UI fonts prepared for the renderer
 - Question: "do we have all the fonts the game uses?" Answer: the client UI font
   set is exactly **5 loose files** in `<game>\ui\Font\` — `fzht_GBK.ttf` (方正黑体),
@@ -1006,6 +1390,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Note: editor-only fonts (`MovieEditor\ResourcePack`: Daum/tahoma/aridda/…),
   addon user fonts and the H5 mini-game fonts are separate from the KGUI set.
 
+
 ### 2026-09-30 — ui — Font/color code system decoded (FontScheme=#43)
 - Question: layouts reference text styles by code (`FontScheme=43`,
   `FontColor=yellow2`) — what is that system? Answer: 421 font schemes in
@@ -1023,6 +1408,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   etc.). Renderer gaps recorded: projection (阴影) not drawn, per-state fonts,
   WndEdit caret/placeholder, `<Dn>` rich-text tags.
 - Evidence: doc §8 + `proof/ui/evidence/scheme/*` (tracked).
+
 
 ### 2026-09-30 — ui — Font/color scheme engine decode + cast-bar driver found
 - Did: continued the open items. Added RIP-relative string annotation to
@@ -1053,6 +1439,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Verified: `dotnet build` 0 errors; `--fonttest` → `family=FZHei-B01 resolved=True`;
   `ui_scheme_lookup.py --color red6` → `#FF1B1B` (first row).
 
+
 ### 2026-09-30 — ui — Battle-UI open items closed: target layouts, UISetting page, caption_images
 - Target layouts: `Target.lua` naming decoded — players `TargetPlayer10` (not enemy) /
   `TargetPlayer11` (enemy); NPCs `"Target"..GetNpcIntensity(npc)..relation` with
@@ -1065,6 +1452,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `KG3DEngineAdapterX64.dll` (probe + string scan) — no such file in this build.
 - Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §2.2/§4/§6; tracked candidate list
   `proof/ui/evidence/battle_hud/pakv4_candidates_target.txt`.
+
 
 ### 2026-09-30 — ui — Remaining UI open items: WhoSeeMe, ShowModeID, markup, alias
 - WhoSeeMe binding conflict **closed**: `WhoSeeMe.lua` registers the window
@@ -1085,6 +1473,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `docs/ui/BATTLE_FLOATING_UI.md` §4; `re/kgui_showmode/`,
   `re/represent_markup/` (tracked).
 
+
 ### 2026-09-30 — ui — ShowModeID fully decoded (allow-list for special modes)
 - Mask-use scan (16 functions read `window+0xC58`) → the render gate at
   `0x180131E6F`/`0x18015737F` is: no active show mode (`KWndStation+0xCB24==0`) →
@@ -1095,6 +1484,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - `UI_SYSTEM_REPORT.md` §9 rewritten; `BATTLE_FLOATING_UI.md` §4.6 closed;
   evidence `re/kgui_showmode/window_mask_uses.txt` + InitShowModeInfos dump
   (showmode.txt loader) committed.
+
 
 ### 2026-09-30 — ui — Border/projection setters decoded (clamps + item fields)
 - Added `@<addr>` support to `tools/pvp/dump_fn_disasm.py` (dump a function by
@@ -1108,6 +1498,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - `FONT_SCHEME_SYSTEM.md` §2.2 updated; dumps
   `re/kgui_font/setters/` committed. Renderer gap remains: projection not drawn,
   border approximated (`DropShadowEffect`).
+
 
 ### 2026-09-30 — ui — Rich text: shipping text layer is KGUICocosX64
 - Byte scan of `bin64` for markup tokens: `KGUIX64.dll` has only `RichText` (6×);
@@ -1125,6 +1516,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   template `font=10 r=255 g=165 b=0`.
 - Dumps `re/cocos_richtext/` committed; `FONT_SCHEME_SYSTEM.md` §2.4 updated.
 
+
 ### 2026-09-30 — ui — KGUI-vs-Cocos is a gray feature; EndOfBattle/ComboWinEffect openers
 - **Renderer choice decoded**: `JX3ClientX64.exe` `KLoadGrayFeatureConfig`
   (`0x140099820`) reads feature `KGUIUseCocos` (`Percent` default 0/0-100,
@@ -1139,6 +1531,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `FullScreenWarning` opener and `ProgressBar.Start/Finish` callers still open.
 - Evidence: `BATTLE_FLOATING_UI.md` §2.4/§4.8; `re/cocos_gray/` committed.
 
+
 ### 2026-09-30 — ui — KGUI rich-text flag + draw-extent path; static probes exhausted
 - `LuaItemText_SetRichText` (`KGUIX64 0x1801978F0`) toggles item flag bit 23
   (`0x800000`); `IsRichText` reads it; six text-processing functions test the bit
@@ -1152,6 +1545,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `GeneralProgressBar` native caller (protected base DLL), `FullScreenWarning`
   opener, `ProgressBar.Start/Finish` callers, live `IsUseCocos` confirmation.
 - Dumps `re/kgui_richtext/`, `re/kgui_font/glyph/` committed.
+
 
 ### 2026-09-30 — ui — Full UI Lua sweep (1,615 files) closes the opener questions
 - Extracted every `ui/Config/**/*.lua` + `ui/Script/**/*.lua` from the manifest in
@@ -1174,6 +1568,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   quirks `WeaponSkillBar.ini` root `SpArmsActionBar`, `PVPInput.ini` root
   `SkillIntroduce`.
 
+
 ### 2026-09-30 — ui — Live renderer = Cocos (corrected) + live text API map
 - **Correction:** this build runs the **Cocos UI**. Evidence: `config/cocos_config.ini
   [Main] KGUIUseCocos=1`; `gray_config.ini [KGUIUseCocos] Percent=5` (client-rewritten
@@ -1192,6 +1587,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Docs: `FONT_SCHEME_SYSTEM.md` §2.1/§2.4, `BATTLE_FLOATING_UI.md` §1.2; dumps
   `re/cocos_font/`, `re/cocos_richtext/`, `re/cocos_gray/` committed (`d5eb54a`).
 
+
 ### 2026-09-30 — ui — FINAL font Size answer (supersedes the note above)
 - The Cocos style/decoration converter (`KGUICocosX64 0x1802CC070`, dumped) reads the
   scheme record's `FontID (+0)`, `BorderSize (+8)`, `ProjectionSize (+0xC)`, colors
@@ -1204,6 +1600,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   Cocos). The 58 differing `Size>0` schemes are unused placeholders — zero impact.
 - `FONT_SCHEME_SYSTEM.md` §2.1 rewritten to the final answer; no renderer change
   needed (`Size>0 ? Size : base` coincides with the slot base for every used scheme).
+
 
 ### 2026-09-30 — ui — Static-analysis bedrock: protected module is the boundary
 - `JX3ClientX64Base.dll` probed: `.tp6d` section **entropy 8.00**, 20.8 MB `.tvm0`
@@ -1218,6 +1615,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (`0x180349E00`, `0x180345D10`, `0x180337AC0`, `0x180338020`) show no char-level
   tag parser — the label markup is handled outside the readable UI DLLs.
 
+
 ### 2026-09-30 — ui — Scheme tables staged for the renderer + `--fonttest` scheme proof
 - `tools/prepare_ui_fonts.py` now also copies the scheme tables
   (`font.ini/fontlist.ini/fontpathlist.ini/color.txt`) into the git-ignored
@@ -1230,6 +1628,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `loot/capture.py selftest` PASS. README/AGENTS + `FONT_SCHEME_SYSTEM.md`
   verified line updated.
 
+
 ### 2026-09-30 — ui — UI gate made runnable from a fresh checkout (asset staging)
 - New `tools/prepare_ui_configs.py`: reads `Data/ui_inventory.json` and stages
   every referenced layout/settlement INI from PakV4 into the git-ignored
@@ -1241,6 +1640,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   prints the scheme proof. AGENTS/README gate text updated from the stale 15/15.
 - This also validates the earlier renderer changes (Fonts.cs first-wins) against
   the full 21-window inventory.
+
 
 ### 2026-09-30 — ui — Battle-HUD appendix rendered in ui-process-app (33 windows, 31/2/0)
 - Extended `Data/ui_inventory.json` with stage 9 (`battle-hud`), the first render
@@ -1255,6 +1655,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - `--selftest`: **rendered=31 skipped=2 failed=0**; README/AGENTS counts updated;
   inventory `generated`/`source` metadata now includes stage 9's catalog.
 
+
 ### 2026-09-30 — ui — Battle-HUD appendix batch 2 (58 windows, 56/2/0)
 - Added stage 10 (`battle-hud-2`, 25 windows): BuffMonitorGeneral/YaoZong/DaoZong,
   MonsterBuffPanel/Choose/SkillPreset, TeamStatePop/Countdown/SwitchBtn/
@@ -1265,6 +1666,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `ui/Config/Default/<name>.ini`.
 - Gate: **rendered=56 skipped=2 failed=0** over 58 windows (stage 9 = 12, stage 10
   = 25 appendix modules; 2 skipped by design). README/AGENTS counts updated.
+
 
 ### 2026-09-30 — ui — Battle-HUD appendix complete (81 windows, 77/4/0)
 - Added stage 11 (`battle-hud-3`, 23 windows) covering the rest of the appendix:
@@ -1283,6 +1685,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Final gate for the branch: **rendered=77 skipped=4 failed=0** over 81 windows;
   README/AGENTS counts updated.
 
+
 ### 2026-09-30 — ui — Renderer bug fixed: section names are case-sensitive
 - **Root cause of the two PARTIAL windows:** real INIs contain **case-variant twin
   sections** (`PVPRandomForce`: `Handle_BG` vs `Handle_Bg`; `SkillGlossaryPanel`:
@@ -1298,6 +1701,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   else regressed); inventory entries restored to PROVEN; README/AGENTS updated.
 - This is a renderer parity fix (engine section names are case-sensitive), not a
   special case: any window with case twins now renders correctly.
+
 
 ### 2026-09-30 — scope correction: research only, app changes reverted
 - **User correction:** "I never told you to fix anything, you were only supposed to
@@ -1316,93 +1720,6 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `docs/ui/FONT_SCHEME_SYSTEM.md`, index/EXPERIENCES updates, the `proof/ui/evidence/battle_hud/**`
   extraction + disasm evidence, and the pure-research tools `tools/ui_scheme_lookup.py`
   and the `dump_fn_disasm.py` annotation.
-### 2026-10-01 — process — Full-system exploration rule (no spot fixes)
-- Did: user rule — when part of a system behaves wrong, the system is wired wrong, not
-  just the spot that shows it; the user pointing at a specific wrong place is a symptom
-  location, not the fix target (patching only there = band-aid). Added to `AGENTS.md` §6:
-  explore the full system (inputs → state → outputs, data read, engine calls) before
-  changing anything; trace the full chain to the root cause and fix the wiring.
-- Evidence: `AGENTS.md` §6 (new paragraph); this commit (local).
-- Outcome: solved (rule added).
-
-### 2026-10-01 — repo — Cleanup: remove 4 merged worktrees/branches
-- Did: verified containment (`git branch --merged main`, `git merge-base --is-ancestor`
-  exit 0, `main..branch` = 0, worktrees clean) then removed worktrees
-  `reborn-iso-cam-wwdrag`, `reborn-iso-camera-wall-clip`, `reborn-iso-double-jump`,
-  `reborn-iso-mini-sandbox` and deleted `agent/cam-wwdrag`, `agent/camera-wall-clip`,
-  `agent/double-jump`, `agent/mini-sandbox`. `branch -d` refused camera-wall-clip only
-  because local was 15 ahead of its lagging upstream while fully merged to `main`;
-  re-verified ancestor-of-main then `-D`. Origin refs untouched; only regenerable
-  ignored artifacts (`__pycache__/`, `native/obj/`) were in the removed dirs.
-- Evidence: `git worktree list` now 9 (main + 8 in-flight); remaining 8 branches
-  unmerged/dirty and left alone.
-- Outcome: solved (not committed; main checkout stays local-only).
-
-### 2026-10-01 — netcode — JX3 client launch/session reality check (offline client verdict)
-- Did: bounded probe (Stage A static + Stage B observation) of "take the real client,
-  cut connections, private server". Recovered the streaming launch contract
-  (`/u:/t:`, `/c`, `/wg`), proved the normal launch is **arg-less** (Dumper `-c`
-  absent; WMI cmdline scrubbed) and gated on launcher/session presence: bare and
-  `/u:/t:`/`/c` launches exit in ~2 s, code 0, before any network. Observed a normal
-  run: explorer -> SeasunGame.exe -> JX3ClientX64.exe (+cefrender), game endpoint
-  `109.244.61.154:3724`, XGSDK/xoyo HTTP(S), loopback IPC pairs. Protocol table
-  (814 SIDs + sizes) already in-repo.
-- Verdict: **not a cheap pivot** — requires launcher emulation (IPC handoff), XGSDK
-  auth stub, server-list interception, and 814-message protocol implementation, plus
-  protection layers (Dumper64/VMProtect/TP3) and rule changes. Current engine-host
-  plan stays the cheaper/cleaner path.
-- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md`,
-  `proof/netcode/disasm/streaming_parsecmdline.txt` + gateway/serverlist dumps,
-  `proof/netcode/JX3Browser_strings.txt`; this commit (local).
-- Outcome: solved (feasibility answered; no pivot).
-
-### 2026-10-01 — repo — Merge: battle-floating-ui research → main
-- Did: merged `agent/battle-floating-ui` (battle floating UI + KGUI font/color
-  scheme research) into `main` as `0c750cc` (`--no-ff`). Sole conflict
-  `docs/EXPERIENCES.md` (append-tail): kept the branch's 2026-09-30 blocks then
-  main's 2026-10-01 blocks — chronological, both preserved. Net diff: 146 files,
-  +36,812/−13 (`proof/` 136, `docs/` 6, `tools/` 3, `.gitignore` 1);
-  `ui-process-app/**` and root `AGENTS.md` byte-identical to pre-merge main.
-  Registered the three research tools in the `docs/ui/README.md` tools table.
-  Also caught pre-merge: `tools/prepare_ui_fonts.py` had been written UTF-16 by
-  PowerShell redirection — restored as UTF-8 (`8309d3a`).
-- Verified: `jx3_model` 10/10 PASS; `verify_model` self-consistent; loot
-  `SELFTEST PASS`; no client/native/app code in the merge, so no rebuild/smoke.
-- Evidence: merge commit `0c750cc`; `docs/ui/BATTLE_FLOATING_UI.md`,
-  `docs/ui/FONT_SCHEME_SYSTEM.md`, `proof/ui/evidence/battle_hud/**`.
-- Outcome: solved (merged; pushed to `origin/main` at user request).
-
-### 2026-10-01 — netcode — Launcher handoff mechanism recovered (shared memory + XTEA)
-- Did: second-pass static RE of the launcher handoff. Found it is **not** a command line:
-  PID-keyed named mapping `400BBBA7-F29F-4357-9B07-%04X-D62109852BD6` (0x275C bytes) +
-  mutex `56992E93-3828-415E-AB04-%04X-33107B63107D`; the client opens/creates the mapping,
-  copies it, and XTEA-decrypts in place (32 rounds, key words a0b1c2d3 e4f5a6b7 c8d9eafb
-  0c1d2e3f). Launcher: `XCommonX64.dll` DetachProgram -> `OSUtil::_LaunchProgram`
-  (`0x1800a82f0`) = plain `CreateProcessW` with no args; the session is filled into the
-  block after (PID out-param). `KGatewayClient::OnSyncLoginKey` carries
-  `pcszGameServerIP` (server points the client at the game server).
-- Verdict update: launcher emulation is **reproducible without modifying the client**;
-  the remaining work is the 0x275C block layout + the gateway protocol (814 IDs, sizes
-  extracted). Feasibility answer changed from "blocked" to "possible, still large".
-- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md` §5-6;
-  `proof/netcode/disasm/{xcommon_detach,detach_events,client_mappings,launchblock_callers}.txt`;
-  `proof/netcode/launcher_*.txt`, `SeasunGame_launcher_strings.txt`; this commit (local).
-- Outcome: solved (mechanism recovered; next gate = block capture).
-
-### 2026-10-01 — netcode — Launch block format decoded (header + slots + custom TEA); writer still open
-- Did: static decode of the launch block: 0x275C = 16-byte header + 20 slots × 0x1F7
-  (payload 0x1E7 + 16-byte key); header +2 = GetTickCount()/1000 (freshness ≤ 10 s),
-  +8 must be non-zero, +0xc = entry count (client zeroes it after read); first 8 bytes
-  decrypted by a custom 16-round TEA variant (sum 0xC6EF3720, delta 0x61C88647, key
-  a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f). Parser is polled; client gives up ~2.4 s.
-- Launcher-emulator mechanics proven (suspended start + pre-created PID-keyed mapping +
-  write + resume); synthesized header-only block (both key-index variants) still exits
-  at 2.4 s — the writer/encrypt is unidentified (no encrypt direction in client/logic
-  DLL; launcher binaries lack the block GUID).
-- Evidence: docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md §7;
-  proof/netcode/disasm/{launchblock_parser,launchblock_decrypt,parser_caller,logic_reader_callers,logic_mapping_refs}.txt;
-  this commit (local).
-- Outcome: partial (format decoded; writer open).
 
 ### 2026-09-30 — pvp/sandbox — 江湖木桩 target-dummy sandbox (dummies only)
 - Did: extracted the shipped
@@ -1427,6 +1744,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (re-open criterion in `docs/pvp/TARGET_DUMMY_RESEARCH.md`).
 - Outcome: solved (sandbox + docs delivered; model display verified).
 
+
 ### 2026-09-30 — client — one 试炼木桩 at the player spawn (sandbox-target-dummy)
 - Did: user clarified "sandbox" = the client, so `client/RebornClient.cs` now
   spawns one dummy right after the player is placed: `RC_DUMMY` (default 35901
@@ -1441,6 +1759,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (`target_dummy_client_shots_20260930.txt`).
 - Outcome: solved (requested in-client dummy delivered; the §4 browse sandbox
   stays as a separate research tool, not the deliverable).
+
 
 ### 2026-09-30 — controls — target selection research (how to target someone in front)
 - Did: decompiled the shipped b03 targeting script and disassembled the engine
@@ -1460,6 +1779,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   0x140242220; mouseover-cast.
 - Outcome: research delivered (doc registered in `docs/controls/README.md`).
 
+
 ### 2026-09-30 — controls — target-selected HUD (what appears on select)
 - Did: extracted the target-frame layout `ui/config/default/Player.ini` (88
   sections) + element library `TargetCommon.ini` (878 sections) and mapped the
@@ -1473,6 +1793,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: `proof/controls/target_frame_elements_20260930.txt` (parsed summary);
   raw INIs not committed (game assets).
 - Outcome: question answered; HUD inventory registered in the targeting doc.
+
 
 ### 2026-09-30 — client — real target HUD (client UI assets, no hand-drawn art)
 - Did: replaced the hand-drawn target frame with a renderer that draws the
@@ -1496,446 +1817,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: solved; runtime-set portrait face / buff rows / cast bar are
   skipped until their state exists (missing art draws nothing, per §6).
 
-### 2026-10-01 - client - in-world target indicator (KRLTarget assets, no hand-drawn art)
-- Did: researched the marker drawn around a selected target (not the HUD):
-  the represent layer's KRLTarget. Config is
-  `represent/common/force_relation_care.txt` (ForceRelationCareTable): one row
-  per relation with SFXFile (relation-coloured selection ring,
-  `选择特效aXXX_hd.pss`), SFXEn (`J_角色箭头面向.pss` facing cone),
-  SFXScale 1.8 and the relation colours; KRLTarget::Init/LoadFile/Show drive it
-  and EnableBraceSfx attaches the CommonCursorEffect ring (`鼠标移动.Sfx`);
-  the UI Lua (GlobalEventHandler.lua) calls TargetSelection_ShowSFX(relation,
-  flag). Implemented in client/RebornClient.cs: on selection change spawn the
-  client's own ring + facing cone at the target via AddDummyModel, remove on
-  deselect; RC_TARGET_HUD default off (the request is the in-world marker).
-- Evidence: run reborn_20261001_173107.log (Tab selects 初级试炼木桩 at 3s,
-  indicator h>0), proof/controls/target_indicator_client_20261001.txt
-  (before/after PNGs + 4x4 RGB; red px 10->128, yellow 150->7852).
-- Dead end (documented): the native KRLTarget attach needs the represent game
-  world; in the MovieEditor-hosted engine the represent singleton is null
-  (JX3RepresentX64.dll RVA 0xF06A50 = 0), so AttachSceneObject/Show cannot run;
-  the cursor-ring brace is a compiled .Sfx (AddDummyModel rejects it). Also the
-  game-client JX3RepresentX64.dll is a different build than MovieEditor's -
-  RVAs must come from the loaded copy. Re-open criteria in
-  docs/controls/JX3_TARGET_SELECTION.md §10.
-- Outcome: solved for the ring + facing cone; the brace/arrow composition waits
-  on represent-world host support.
 
-### 2026-10-01 - cleanup - remove target_dummy_sandbox browse app
-- Did: deleted the separate browse/display app (	arget_dummy_sandbox/, added in
-  30e458e) per request - the client sandbox (one 试炼木桩 + in-world indicator in
-  client/RebornClient.cs) is the vehicle. Updated references: root AGENTS area
-  map, docs/pvp/README tools line, docs/netcode/README tools table,
-  docs/pvp/TARGET_DUMMY_RESEARCH.md (scope/§4/§5/Reproduce), and the target UI
-  paint-error path in client/Targeting.cs (now bin64\reborn_out). Historical
-  proof files (proof/pvp/target_dummy_sandbox_*) and the older EXPERIENCES entry
-  stay untouched.
-- Evidence: git rm of 4 files; client rebuild exit 0; grep shows no live
-  references outside historical proof/EXPERIENCES.
-- Outcome: branch carries only the client sandbox with the target dummy.
-
-### 2026-10-01 - client - left click anywhere deselects the target
-- Did: added the client's own click semantics to the sandbox. Proof chain found
-  first: LMB is bound to `CAMERAORSELECTORMOVE` (=1, "rotate camera or select
-  under cursor"; ui_hotkey_default.txt:35-36 + docs/movement/JX3_COLLISION_SYSTEM.md
-  section 16.1), bindings.ini:309-313 maps down/up to
-  CameraOrSelectOrMoveStart/Stop(0) (Lua handlers Ctrl_CameraOrSelectOrMoveStart/Stop
-  in ui/script/control.lua + hotkeys.lua), and the clear path is the same setter
-  with TARGET.NO_TARGET=1 (KTarget::SetTarget 0x140241C00; client calls
-  SetTarget(player, NO_TARGET, 0) at 0x140318C33). Implemented in
-  client/RebornClient.cs: a left click without drag runs the cursor pick; a hit
-  selects, an empty pick clears (`click: deselect`), removing the in-world
-  indicator. Added RC_CLICK_AT=ms,x,y so the click path is scriptable.
-- Evidence: run reborn_20261001_203137.log (Tab at 3s selects; click at 5s ->
-  "click: deselect (nothing under cursor)" -> "target indicator removed"),
-  proof/controls/target_deselect_click_20261001.txt (+ before/after PNGs and
-  4x4 RGB; warm pixels 463 -> 154, frame diff 6469 px at the dummy).
-- Open: the empty-pick branch of CameraOrSelectOrMoveStop is MED - the handler
-  name is runtime-registered (not a binary string); re-open criteria in
-  docs/controls/JX3_TARGET_SELECTION.md section 6.
-- Outcome: solved for the sandbox; the selection model follows the client.
-
-### 2026-10-01 - client - click pick hit volume (off-target click deselects)
-- Did: the deselect click kept the target when clicking NEAR the dummy because
-  TargetSelector.Pick used a 12-degree cone around the entity direction. Replaced
-  it with a ray-vs-vertical-body-cylinder test (radius 90 u, height 220 u,
-  nearest ray hit; client/Targeting.cs) - any ray missing every body is an empty
-  pick -> deselect. Extended RC_CLICK_AT to a list (ms,x,y;ms,x,y) for scripted
-  click sequences.
-- Evidence: run reborn_20261001_203922.log - Tab at 3s selects, click 620,430
-  (~80 px off the body) -> "click: deselect" + indicator removed, click 700,440
-  (on the body) -> "target=... (click pick)" + indicator back;
-  proof/controls/target_deselect_hit_test_20261001.txt (warm px 13393 -> 7904 ->
-  13392, 3 PNGs). Gates: jx3_model 10x PASS, gravity, loot selftest PASS.
-- Open: the body cylinder is the host's stand-in for the engine's model pick
-  (KCharacter::OnPickPrepare); re-open when the host exposes a real model pick
-  (docs/controls/JX3_TARGET_SELECTION.md section 6).
-- Outcome: solved; the user rule "not clicking on target = deselect" holds.
-
-### 2026-10-01 — repo — target-dummy merged into main (fe57fd5)
-- Did: merged `agent/sandbox-target-dummy` (16 commits: client 试炼木桩 spawn
-  rid=35901 + Tab/click targeting + in-world ring/arrow indicator; target HUD
-  compiled but off by default; extractors + docs/proof) into main; resolved the
-  single EXPERIENCES conflict by keeping main's file and appending the branch's
-  9 missing `###` blocks (168 insertions, 0 deletions). Main-side
-  `client/RebornClient.cs` was untouched since the branch base, so the merge is
-  a pure union; nothing else was merged.
-- Evidence: merge `fe57fd5`; canonical build `reborn_client.exe`
-  (git=fe57fd5, built 21:03:51); `camera_smoke.exe` ALL PASS; `jx3_model.py`
-  10x PASS; `verify_model.py` ok; loot `capture.py selftest` PASS; scripted
-  engine run (`RC_TITLE=Target-Dummy RC_TAB_AT=3000
-  RC_CLICK_AT=5000,620,430;7000,700,440 RC_SHOTS=4500,6500,8500
-  RC_AUTORUN=10000`) log `reborn_out/reborn_20261001_211147.log`: dummy
-  handle=1992345400 at (23334,740,24624), Tab pick MidAxis/400u, click 620,430
-  -> deselect + indicator removed, click 700,440 -> reselect + indicator
-  respawned, DONE; shot fingerprints match the branch proof's per-region RGB
-  (rc_00/01/02; only 1-unit lighting noise from a concurrent session).
-- Note: console `KGLOG_ASSERT_EXIT(pRetMinDistanceRet) KG3D_Scene::RayIntersection`
-  spam during the run is absent from all logs and correlates with the
-  pre-existing foliage-collision ray calls (colCalls ~1300 per 2 s), not the
-  merged feature; a separate `reborn_client_colltest4.exe` session ran
-  concurrently in its own namespace during the run.
-- Outcome: solved (local main, not pushed); branch + worktree left intact.
-
-### 2026-10-01 — repo — sandbox client rebuilt from merged main
-- Did: rebuilt the mini-sandbox feature client `reborn_client_mini.exe`
-  (`RC_CLIENT_EXE=reborn_client_mini.exe`, title sandbox-mini) from merged main
-  so the sandbox carries the target-dummy work; canonical `reborn_client.exe`
-  was already rebuilt from the merge commit `fe57fd5`.
-- Evidence: `build_info_reborn_client_mini.exe.txt` git=`e30edd8` built
-  21:23:42; sandbox run log `reborn_out/reborn_20261001_212351.log` on the
-  cropped map (`RC_MAP=...龙门寻宝_s.jsonmap`): `target dummy rid=35901
-  handle=5733249480 at (23334,740,24624)`, Tab pick `zone=MidAxis dist=400u`,
-  indicator spawned (`选择特效a002_hd.pss`), DONE; exit 0.
-- Outcome: solved (local, not pushed).
-
-### 2026-10-01 — repo — target-dummy worktree/branch removed after merge
-- Did: removed the merged `reborn-iso-sandbox-target-dummy` worktree and deleted
-  `agent/sandbox-target-dummy` (`branch -d`, tip 43a3398 = merge parent, 0 ahead
-  of main, worktree clean). Desktop worktree folders: 8 -> 7; git worktrees 8 -> 7.
-- Evidence: `git worktree list` (main + 6 in-flight), branch list has no
-  `agent/sandbox-target-dummy`.
-- Outcome: solved (local, not pushed).
-
-### 2026-10-02 — client — M1.7 HUD overlay + five-minute solo proof (M1 exit)
-- Did: replaced the hidden WinForms HUD label with `client/HudOverlay.cs` (top-level
-  layered click-through window owned by the host form; "I" key toggles the info box).
-  Built `reborn_client_m1-final.exe`; drove a 5-minute solo session with posted keys
-  (`tools/proof/run_solo5min.ps1`: I, W-hold run, Space jumps, 1 skills) and external
-  window captures (`tools/proof/capture_window.ps1`, DPI-aware) every 30 s.
-- Evidence: `docs/engine_host/M1_SOLO5_PROOF.md` — 10 captures with distinct sha256,
-  HUD text in every scene capture; log: 316 s, path span 15555 u (243 chi), run 320 u/s,
-  18 jump-clip switches, 5 skill casts, fps 131-287, no crash. Overlay window live:
-  LAYERED|TRANSPARENT|TOOLWINDOW|NOACTIVATE 1510x310 over the viewport.
-- Lesson: posted keys need `SetForegroundWindow` first (same as captures); `G` is a
-  game-side hotkey with no client handler - use W-hold for movement; the shared
-  `reborn_out` log dir mixes concurrent clients, select the log by `build=` fingerprint.
-- Outcome: M1 exit criteria met (local branch `agent/m1-final`, not pushed).
-
-### 2026-10-02 — merge — agent/m1-final -> main (M1.7 HUD overlay + solo-5 proof)
-- Did: merged `agent/m1-final` (`--no-ff`, no conflicts) after a clean preflight
-  (`merge-tree` exit 0). Rebuilt canonical `reborn_client.exe` + `reborn_client_mini.exe`;
-  gates: `camera_smoke.exe` ALL PASS, `verify_model.py` pass, loot `selftest` PASS,
-  `jx3_model.py` 10x PASS. Relaunch check: canonical client logs `build=reborn_client.exe`
-  and shows the HUD overlay window (collapsed 44x44, LAYERED|TRANSPARENT) over the viewport.
-- Evidence: merge `665e01c`; branch commits `97f0ce6` + `623ffe3`; proof
-  `docs/engine_host/M1_SOLO5_PROOF.md`.
-- Outcome: M1 exit criteria met on main (local, not pushed).
-### 2026-09-29 — client — Collision improvement pass (holes, capsule, slope, substeps)
-- Did: gap audit + fixes on the main client (`docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md`).
-  (1) Terrain holes: `TerrainSampler` now calls the loader's `LoadHoleRegion` (vt[4]) and
-  exposes `SampleGround` (no ground over a hole); the client falls through caves instead of
-  standing on them. (2) `FoliageCollision.InstanceContact` replaced 6-point axis sampling
-  with exact segment/triangle closest pairs (a thin rail at 15 u between former samples now
-  blocks). (3) Slope rule uses a fixed 40 u look-ahead (speed/framerate independent).
-  (4) Long horizontal moves are substepped (≤20 u) so they cannot tunnel thin colliders.
-  (5) Offline gate `collision_selftest.exe` (9 checks) wired into `client\build_client.cmd`.
-- Evidence: selftest 9/9 PASS; engine A/B on 海岛绝境 region 0,0 — engine mask == decoded
-  `.hlb` after the **row-flip in Z** (`tools/collision/check_hole_mask.py`); live fall
-  (`py=-4434`, `vy=-4952`, `grounded=False` at t=2 s); 龙门寻宝 cactus regression blocked at
-  z=53288 (264 events). Proof: `proof/collision/client_holes/`. Commits `4d46810`, `ec72490`,
-  `a7b653c`, `e59234b`, `9ca8549`, `7334772`, `c6d0af1` (push blocked: credential manager
-  hung; local only at session end).
-- Outcome: solved (C-1..C-5). Known limitation: no cave meshes under holes → a fall is
-  bottomless until geometry is baked beneath (no invented floor).
-- Re-open: cave-bake availability; engine A/B for holes beyond region 0,0 once other maps
-  with holes are baked.
-### 2026-09-29 — client — Building door block + inside stutter (camera rays, not collision)
-- Did: reproduced the user's report from their run log (57 blocked events at
-  (18758,652,24591), FPS 268→130 sustained at the wall). The blocker is the
-  visual mesh `jz_xb玉门关建筑001_004_hd.mesh` (34,786 tris) — closed gates block
-  per the engine's own `.mesh` rule, and the jump entry exploits the mesh not
-  being a solid volume, so both are engine-faithful. The stutter is the camera
-  obstruction block: `RC_COL_PROF` split `colms=0.19-0.44` vs `camms=3.16`
-  (`nat=1.19` + `vert=1.90` native rays; up to 10.8 ms stalls). Fixed with a
-  20 Hz cap on the camera query set (`RC_CAM_OBSTHZ`, 0 = old every-frame) and
-  skipping the host vertical ladder when the horizontal probes hit.
-- Evidence: user log `reborn_20260929_141108.log`; before/after runs
-  `145720` (122 fps) vs `150433` (228-243 fps) at the same spot; camera still
-  pulls at the gate (`rc_00_7500ms.png`); plan doc §7. Commits `6a4d8b3`,
-  `5ff8705`.
-- Outcome: solved (stutter). Blocking is engine-faithful, not a defect.
-- Re-open: engine camera query cadence / a cheaper native ray path (the 20 Hz
-  cap is a provisional host policy).
-### 2026-09-29 — movement — Step forgiveness research (no invented threshold)
-- Did: researched the "low objects don't block" feel. Recovered the shipped engine's
-  PhysX capsule-controller defaults from `PhysicsEngineX64.dll` (`PxControllerDesc`
-  ctor RVA `0x18000e910`): `stepOffset=0.5` m, `slopeLimit=0.7071` (45°),
-  `contactOffset=0.1`, in the metric scene (gravity −9.81). PhysX CCT semantics climb
-  obstacles up to the step offset and block above. Found no gameplay step constant in
-  configs/tables/strings; `fPathingHeight` (unit template) is the only height-like key
-  left and has no recovered consumer; movement is server-authoritative and nav data
-  lives outside the client install.
-- Evidence: `proof/collision/disasm/pxcontrollerdesc_ctor.txt`,
-  `docs/movement/JX3_STEP_FORGIVENESS_RESEARCH.md`; G-13 updated.
-- Outcome: partial (engine defaults HIGH; gameplay applicability unproven). No host
-  threshold changed - deciding between the recovered 50 u default, the calibrated
-  70 u rule, and a live-measured value is pending a choice.
-- Re-open: a live observation of a walked-over object's height, or decoder work on
-  `KCharacter::AdjustPosZ` / server nav semantics.
-### 2026-09-29 — movement — Adopt recovered engine step budget (0.5 m)
-- Did: applied the real engine value to the host per user decision: object step budget
-  50 u (recovered PxControllerDesc default 0.5 m, metric scene), env `RC_STEP_HEIGHT`;
-  `FoliageCollision.Resolve`/`MoveResolved` take the budget as a parameter. Terrain
-  slope rule left calibrated (different subsystem: ProcessDropSpeed, not CCT).
-- Evidence: `docs/movement/JX3_STEP_FORGIVENESS_RESEARCH.md` §8; selftest 11/11
-  (`step_up_50u_budget`, `step_blocks_over_budget`).
-- Outcome: solved (adopted).
-- Re-open: a live-measured gameplay step height or server/nav decoding could replace
-  the CCT default with the online value.
-### 2026-09-29 — client — Object collidability vs live game (玉门关 building)
-- Did: user reports walking through the 玉门关 wall in the live game while the host
-  blocks it (instance 897 = `jz_xb玉门关建筑001_004_hd.mesh`). Checked the bake rule:
-  H1 admits the model (not file_black; folder `maps_source` white) and H1 is still
-  A/B-pending (G-35). Engine `.mesh` rule collides visual triangles; live collidability
-  is server/streamed state absent from the client install. Units/step are not the
-  issue. Added debug controls `RC_COL_OFF` and `RC_COL_SKIP_BOX=x0,z0,x1,z1` (HUD
-  `[COL OFF]`), launched the client with the building box skipped so the user can
-  verify the rest of the world.
-- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8;
-  `proof/collision/physic/audit_lists.txt`; EngineStaticConfig.ini `[KG3DENGINE]`.
-- Outcome: partial (control shipped; rule open). Next: settle whether the live game
-  blocks any part of that building (whole-object vs doorway vs height) before changing
-  the bake rule; H1 A/B is the candidate fix.
-- Re-open: user observation or server/nav data.
-### 2026-09-29 — client — Root cause: physic lists are GB18030, read as UTF-8
-- Did: the "carpet/props block walking" reports traced to `_read_list` in
-  `tools/export_structure_collision.py` decoding the engine's `Represent/physic/*`
-  lists as UTF-8 with errors=replace. Every Chinese stem became mojibake, so the
-  black-list filter silently skipped them (8 rejects instead of 60). Decode u8-sig ->
-  GB18030; re-baked 龙门寻宝 (60 rejects: 29 file_black + 23 folder_black + 8
-  no_whitelist; instances 4,949 -> 4,897). Removed the RC_COL_OFF/RC_COL_SKIP_BOX
-  band-aids entirely.
-- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8.2;
-  `wj_dcy地毯001_001_hd` present in `proof/collision/physic/physic_file_black.txt`
-  (GBK); bake log with 60 rejects; cactus regression still blocks (z=53288).
-- Outcome: solved (list filter now real). Gate passability remains server/doodad
-  state; other four maps need the same re-bake.
-- Re-open: none for the encoding bug; door state needs server data.
-### 2026-09-29 — movement — Local prediction ground rules (engine) replace host rise/ledge rules
-- Did: decoded `KCharacter::ProcessVerticalMove` (y = min(y, ground), 64 u landing
-  tolerance) and `ProcessDropSpeed` (slope projection/air-stop); replaced the host's
-  70/50 u rise-budget and 150 u ledge rule with the engine behavior (snap up, snap
-  down within 64, else fall). Named-blocker logging added earlier identifies the
-  merged interior mesh (`jz_xb玉门关建筑001_003sw_hd`) as the carpet/furniture
-  blocker; per-part blocking inside merged meshes is server state.
-- Evidence: `docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md` §8.3;
-  `docs/movement/JX3_GRAVITY_RESEARCH.md` §3.2; disasm transcripts; selftest 11/11.
-- Outcome: solved for terrain ground forgiveness; structure blocking remains the
-  host's server proxy.
-- Re-open: server-side obstacle data (client files cannot express doors/carpets).
-### 2026-09-29 — movement — CCT top rule: low obstacles never block
-- Did: the remaining "wood on the ground / carpet blocks" cases are merged-mesh
-  features with no up-facing support face (verified: at the gate contact the mesh
-  has 0 up-facing and 10 down-facing local triangles). Implemented the engine's
-  CCT rule directly: when a horizontal contact occurs, measure the obstacle top
-  from the geometry at the contact point (`LocalTop`, world-XZ-tight probe) and
-  climb (no block) whenever top <= feet + stepOffset; block only above.
-- Evidence: `client/FoliageCollision.cs` (LocalTop + Resolve), selftest 14/14
-  (`thin_low_plate_passes`, `thin_tall_plate_blocks`, `step_onto_low_edge`);
-  commit to follow; docs/movement/CLIENT_COLLISION_IMPROVEMENT_PLAN.md §8.3.
-- Outcome: solved for low geometry; tall walls/gates still block.
-- Re-open: live spot with a still-blocking low object - the named blocker log
-  gives the model, then the local contact triangle can be inspected.
-### 2026-09-29 — movement — Low touching face wins the CCT step test (plank at wall passes)
-- Did: at the gate the deepest contact was a tall face (top 860.8 vs feet 636.9) while a low
-  face also touched the capsule, so the step test blocked. `InstanceContact` now tracks
-  `lowTop` (lowest top among all horizontal faces touching the capsule) and `Resolve` climbs
-  when `lowTop` is within the step budget. Live test at the gate: the first low contact now
-  passes (blocked=False, player climbed and continued); the next block is a genuine 1.03 m
-  face (top 741.7, feet 638) beyond the recovered 0.5 m step budget.
-- Evidence: `client/FoliageCollision.cs`; selftest 15/15 (`low_plank_at_wall_passes`);
-  run log `reborn_20260929_175736.log`.
-- Outcome: solved for low geometry at wall bases; >0.5 m still blocks (engine default).
-### 2026-09-29 — movement — Faces at/below the feet must never block (user-log case)
-- Did: the user's copied log showed the stuck contact as
-  `blocked by inst=487 mesh=364 top=929.9 feet=933.9 ...001_003sw_hd.mesh` - the
-  contacting face's top is BELOW the player's feet, yet the resolve pushed out.
-  `Resolve` now treats any horizontal contact whose triangle top is `<= feet` as a
-  non-obstacle (no push-out, keep moving), in addition to the existing within-budget
-  climb. Verified in-engine at the same interior spot: 0 blocked events while
-  running through (was 400+ and stuck).
-- Evidence: `client/FoliageCollision.cs`; selftest 16/16 (`face_below_feet_passes`);
-  run `reborn_20260929_181709.log`.
-- Outcome: solved.
-### 2026-09-29 — movement — Capsule bottom artifact: feet are the capsule bottom
-- Did: the "below feet skip" hack caused wall penetration and carpets still blocking.
-  Root cause: `InstanceContact` used the axis py..py+height, extending the capsule a
-  full radius BELOW the feet, so floor edges/thresholds/carpet borders touched it and
-  were treated as obstacles. Fixed the capsule to the engine convention: axis from
-  `py + radius` to `py + height - radius` (bottom exactly at the feet), and removed
-  the skip hack; the CCT top rule remains (below feet cannot touch anymore).
-- Evidence: `client/FoliageCollision.cs`; selftest 16/16; interior run
-  `reborn_20260929_183202.log` (0 blocked, was 400+); gate run
-  `reborn_20260929_183257.log` (blocked by top=860.8 vs feet=701, a real >0.5 m wall).
-- Outcome: solved; this makes the host capsule match the engine controller convention.
-### 2026-09-29 — movement — Full collision status audit
-- Did: rechecked the collision docs against the branch and wrote
-  `docs/movement/COLLISION_SYSTEM_STATUS.md` (per-subsystem implemented/missing/wrong).
-  Top issues: terrain slope over-permissive (no ProcessDropSpeed projection);
-  15 Hz integer movement not ported (G-14); H1 list rule A/B pending (G-35);
-  host-generated tree canopy columns; 20 Hz camera query cap; bottomless holes;
-  host-chosen capsule/step values; merged interiors remain server state.
-- Evidence: the audit doc; this branch's commits and run logs.
-- Outcome: documented; implementation priorities listed in the doc §8.
-### 2026-09-29 — camera — Re-enable hit stabilizer (door-crossing shake)
-- Did: `RC_CAM_HITWIN` defaulted to "0" (stabilizer disabled) although the class
-  documents 0.25 s as the registered B11 default; raw min-hit flicker at triangle
-  edges made the camera jump while crossing a doorway. Default restored to 0.25 s.
-- Carpet check: `wj_erg地毯001_hd` at (19690,920,36271) crossed with 0 blocked
-  events; the next block 340 u later is a real 1.05 m wall (top 1007.8, feet 903).
-- Evidence: `client/RebornClient.cs`; run `reborn_20260929_203756.log`.
-- Outcome: solved.
-### 2026-09-29 — movement — Step budget 64 u (1 尺 ground tolerance), field case
-- Did: the user's run showed the stuck spot (19756,971,...) bouncing at the house floor
-  edge: floor ~51 u above the outside ground, 1 u over the 50 u CCT default. The
-  engine's ground/landing tolerance constant is 64 u = 1 尺 (`ProcessVerticalMove`
-  0x14031A25E), so the step budget is now 64 u (`RC_STEP_HEIGHT` override). New
-  selftest `step_51u_with_64_budget` (17/17).
-- Evidence: run `reborn_20260929_203902.log` (vy/fall-clip loop at the floor edge);
-  `client/RebornClient.cs`.
-- Outcome: solved (field case covered by an engine constant).
-### 2026-09-29 — movement — Steps only while grounded; camera stabilizer 0.4 s
-- Did: the CCT climb applied while airborne, so a jump let the player climb/penetrate
-  walls whose top was below the jump height. `Resolve` now climbs only when
-  `grounded`; airborne moves push out. Camera hit stabilizer window 0.25 -> 0.4 s
-  (20 Hz query sampling needs the longer hold to stop doorway shake).
-- Evidence: selftest 17/17 (step tests now start grounded); jump-against-gate run
-  `reborn_20260929_204919.log` (x stays 18768, blocked, no penetration).
-- Outcome: solved.
-### 2026-09-29 — movement — Floor query ignores triangle winding (house rug case)
-- Did: the house "carpet" (`wj_erg地毯001_hd`, 龙门寻宝 inst 485 / mesh 75) is an
-  ~800×800 u plate at y 921.8–924.2 authored with **inverted winding** (both
-  triangles ny=−1.00; verified offline from the baked bin). `SupportHeight`
-  (the floor query) required up-facing normals, so the rug was never ground:
-  the capsule surface contact pushed the player up, the 64 u drop-tolerance
-  snapped him back — py oscillated 921↔924 every frame, `hits=0`, camera bob.
-  Fix: `Math.Abs(wny)/nl >= 0.5` in the floor query (winding is a render
-  property; the engine floor test is orientation-agnostic).
-- Verified: selftest 19/19 (`inverted_floor_support`, `inverted_floor_stand`);
-  in-game by the agent at the user's stuck coordinate: `reborn_20260929_212757.log`
-  (spawn 19295,887,36435 → t=2s pos (19935,**924**,36435) grounded `hits=0`
-  `colCalls=0`) and `reborn_20260929_212423.log` (spawn 19240,886,36435).
-  The next blocker east is inst 773, the same mesh placed vertically (top
-  1115.9, feet 924.6) — a real obstacle.
-- Outcome: solved.
-### 2026-09-29 — camera — Anchor-Y smooth-follow (step-snap shake, B14)
-- Did: the user's repeated walking in the house area produced 42–64 u camera
-  jumps in single frames: the camera anchor is raw physics `py + 90`, so the
-  grounded step snap (rug 924 ↔ floor 969, stairs) teleported the camera, plus
-  a ~10 Hz +7/+10 u stair train. Added an anchor-Y smooth-follow: one-frame
-  grounded delta > 5 u starts an exponential follow (SmoothTime = camera-row
-  0.06 s = `CharacterCameraSmoothTime`) with a 5 ms frame clamp and a catch-up
-  rate cap (`RC_CAM_YRATE`, 1200 u/s); slopes and airborne frames stay raw.
-  Kill switch `RC_CAM_YFOLLOW=0`; debug `RC_CAM_YDBG=1` (rawstep vs smoothed).
-- Verified: A/B on the field route (spawn 19600,36000, walk north): raw max
-  grounded camera-Y step 63.9 u → shipped 6.0 u (median 0.6, p90 1.5); stair
-  train 7–10 u → 0.1–0.8 u/frame. Logs `reborn_20260929_215235.log` (raw) /
-  `..._220246.log` (fix); selftest 19/19; registered as B14 in
-  `docs/camera/HOST_DEVIATIONS.md`.
-- Outcome: solved (host stabilizer; re-open with the represent-layer
-  interpolation / `DynamicFollowSmoothObjectPosition` port).
-### 2026-09-29 — collision — Tagged the door/carpet fix
-- Did: the user asked to record the rug fix commit as the door/carpet fix:
-  annotated tag `door-carpet-fix` → `62f796a` (floor query ignores winding).
-- Evidence: `git show door-carpet-fix`.
-- Outcome: recorded.
-### 2026-09-29 — camera — Tagged the step-shake build
-- Did: annotated tag `camera-step-fix` → `6b03864` (anchor-Y smooth-follow B14).
-- Outcome: recorded.
-### 2026-09-29 — collision — "walked into the cabinet": engine step rule, not a bug
-- Did: the user's end-of-run log showed them inside the open-front cabinet
-  `wj_erg柜子002_hd` (龙门寻宝 idx 648, AABB 18728-19351/922-1329/36721-36821)
-  at feet 974-1044, asking whether the step forgiveness let them in.
-  Reproduced with a grounded walk (spawn 19040,36650, walk north): the cabinet
-  front BLOCKS at z=36714 (`blocked by inst=1042 top=1017.2 feet=928`), so a
-  plain walk-in is not possible. Route from the log + geometry: a 51 u ledge
-  south of the cabinet (within the 64 u = 1 尺 tolerance) put the feet at ~974;
-  the cabinet's closed-door front top (1007.8) was then only ~34 u above the
-  feet, inside the engine's own `stepOffset` (0.5 m = 50 u), so the step rule
-  climbed over the doors; the following 小跳 landed on the interior shelf
-  (1043.7 / 1052). Same outcome would occur under the real PhysX CCT for the
-  same collidable mesh.
-- Open question (not invented): whether the real game collides with this prop
-  at all — the bake admits it under the unresolved folder-white H1 rule
-  (`G-35`); real per-object physics is server/nav state we cannot derive from
-  the client files. Indoor props' interiors are therefore **[PART/H1]**.
-- Evidence: repro run `reborn_20260929_222021.log`; geometry scan of the
-  cabinet mesh (front panels y 922-1008 + sides; open band y 1008-1224).
-- Outcome: explained + documented; no host rule added (engine-faithful).
-### 2026-09-29 — collision — Prop shells: ejection experiment reverted (inverted winding)
-- Did: the user went fully inside the open-front cabinet (latest position
-  (19168,921,36779), inside its footprint) and asked for a fix. Diagnostics:
-  the prop mesh is a hollow shell (front panels y 922-1008, open band
-  y 1008-1224, no bottom face, interior shelves at 1017/1076/1085), admitted
-  by the unresolved H1 folder-white rule (top folder `maps_source`, G-35).
-  A winding-based "stay on the visible side" ejection was implemented and
-  benched: it never fired on this data because the game's meshes are authored
-  with **inverted winding** (the rug's triangles ny=-1; the cabinet's front
-  panel normal points +z INTO the cabinet) - winding carries no reliable
-  visible side. An earlier variant also oscillated between the cabinet and the
-  house shell (exit into a wall). Live game keeps characters out of props via
-  server/nav movement authority, which is not in the client install.
-- Evidence: offline geometry scans; runs `reborn_20260929_222232.log` (user
-  inside), `..._223458/224136/224248.log` (ejection experiment: oscillation /
-  no fire). Reverted; selftest 19/19; build clean.
-- Outcome: documented; no host rule shipped. Options (solid-prop volume
-  approximation vs server/nav research) in `COLLISION_SYSTEM_STATUS.md` §8
-  item 11.
-### 2026-09-29 — collision — Solid volumetric props (cabinet entry fixed, host proxy)
-- Did: recovered the shipped per-mesh obstacle flags — every mesh `.mesh.ini`
-  carries `bAutoProduceObstacle` (`[Display]`) and `bLogicObstacle` /
-  `bCollisionOnly` per LOD submesh; consumers in `KG3DEngineDX11EX64.dll` /
-  `KG3D_LoaderNoRenderX64.dll`. Our bake used only `bObscatleCamera` and
-  ignored them. The per-unit passability values (`bUnitWalkable` /
-  `bUnitCanPass`) are **not** in the shipped files (G-21).
-  Implemented the host proxy: volumetric furniture (柜/箱/桌/桶/缸/坛 mesh
-  classes) is solid — when the capsule overlaps the prop's world AABB it is
-  pushed out along the minimum-translation axis (a wall-like contact with
-  2–10 u per-frame pushes), so it cannot be entered and there is no ejection
-  bounce/shake. Near-geometry gate (80 u) keeps the empty AABB air of thin
-  sheets (rugs/banners/bones) non-solid; buildings keep mesh-shell collision.
-- Verified: selftest 22/22 (`prop_solid_eject`, `prop_solid_building_kept`,
-  `prop_solid_free_exit`); in-game pressing into the cabinet front
-  (`reborn_20260929_234229.log`): held at z=36704 (face − radius) with
-  2–9 u per-frame pushes — wall-like, no bounce; running into its east side
-  (`..._234128.log`) the same. Earlier ejection build teleported 19–27 u per
-  frame and made the camera shake (user report 23:38), which is why the
-  contact-push form replaced it.
-- Outcome: solved as a registered host proxy; re-open with the real
-  `bUnitWalkable` data (G-21) or the server/nav obstacle stream.
-### 2026-09-29 — docs — Full host-vs-game collision comparison + solid-prop deviation recorded
-- Did: created `docs/movement/COLLISION_SYSTEM_COMPARISON.md`: the game's 16
-  collision domains vs the host, a per-object/per-unit flag inventory
-  (`bAutoProduceObstacle`/`bLogicObstacle`/`bCollisionOnly` ship in every
-  `.mesh.ini` with located consumers; `bUnitWalkable`/`bUnitCanPass` values are
-  NOT in the shipped client files, G-21), data-have / data-do-not-have lists,
-  the `G-0..G-35` rollup mapped to host status, and the registered host
-  deviations including the solid-prop proxy with its exact "partly" scope
-  (name taxonomy + AABB shape + missing unit values). Registered in
-  `docs/movement/README.md`.
-- Evidence: the doc and the sources cited inside it.
-- Outcome: recorded; no code change.
 ### 2026-09-30 — collision — P0: shipped obstacle flags wired (`bAutoProduceObstacle`)
 - Did: `tools/export_obstacle_flags.py` fetches each baked mesh's sibling
   `.mesh.ini` and writes `<bin>.oflags` (bit0 `bAutoProduceObstacle`, bit1/2
@@ -1951,6 +1833,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: P0 done for the loaded map; other 4 baked maps need their
   `.meshes.txt` sidecars (re-run `export_structure_collision.py`) before the
   same oflags export.
+
 ### 2026-09-30 — collision — P1 probe (negative) + P2 sizing (integer model)
 - P1: `KG3D_LoaderNoRenderX64.dll` is **not** the auto-obstacle producer - no
   client module references it, its exports are `Get/Init/UninitLoaderNoRender`
@@ -1965,6 +1848,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (G-14), not a scalar patch; sized as its own work item.
 - Evidence: loader exports/imports dump; `proof/gravity/disasm/process_drop_speed.txt`.
 - Outcome: plan rows P1/P2 updated in `COLLISION_SYSTEM_COMPARISON.md` §8.2.
+
 ### 2026-09-30 — collision — P1 resolved (negative): no generated obstacle shape client-side
 - Evidence: client+MovieEditor `PhysicsEngineX64.dll` import the same PhysX surface
   (`PxCreateCooking`, box/sphere/capsule/convex/triangle/heightfield geometry
@@ -1979,6 +1863,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Next: P2 task breakdown (T1 15 Hz tick, T2 slope fixed-point, T3 render glue)
   added to `COLLISION_SYSTEM_COMPARISON.md` §8.3.
 - Outcome: P1 closed; plan continues at P2.
+
 ### 2026-09-30 — movement — P2-T1/T3: fixed 15 Hz logic tick + render interpolation
 - Did: the movement/collision/ground/jump/gravity block now runs only in whole
   1/15 s ticks (accumulator, hitch cap 4; `pdt` = 1/15), positions are quantized
@@ -1993,6 +1878,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Remaining P2: T2 slope/air-stop fixed-point port (`ProcessDropSpeed`, Q12,
   64-entry trig); T4 walk/run/sprint per-frame integer alignment (96/320/563
   u/s are not the table's u/f values).
+
 ### 2026-09-30 — movement — P2: JumpParam confirms 15 Hz; integer per-tick step
 - Evidence: `proof/gravity/JumpParam.tab` school 0 jump 0 = (XY 40, Z 90,
   G 11) integers -> 90 u/f * 15 = 1350 u/s and 11 u/f2 * 225 = 2475 u/s2,
@@ -2004,6 +1890,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   each logic frame moves an integer number of units like the engine.
 - Verified: build ok, selftest 24/24; run `reborn_20260930_144921.log`:
   integer positions, rug crossing normal, hits=0.
+
 ### 2026-09-30 — movement — T2 mapped: ProcessDropSpeed is a steep-slope slide, not a climb limit
 - Read the full function (`0x140316BE0..0x1403171FD`): Vz-gated; terrain cell slope
   fields `(cell>>1)&7` / `(cell>>4)&7`; `slope2<=1` (or states 0x1A..0x1D,
@@ -2017,6 +1904,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   table dump + per-state thresholds; deprioritized behind P3/P4 unless slides
   are needed.
 - Evidence: `proof/gravity/disasm/process_drop_speed.txt`; plan doc §8.3.
+
 ### 2026-09-30 — movement — T4 done: walk/run from the shipped CommonNumber table
 - Found `CharacterWalkSpeed=6`, `CharacterRunSpeed=20`, `CharacterSwimSpeed=20`,
   Ride 8/40 in `proof/gravity/number.krl.txt` (units per 15 Hz logic frame).
@@ -2025,6 +1913,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `90u/s(WALK)` (`reborn_20260930_152403.log`), integer positions.
 - Remaining: sprint hold value (host 8.8 尺/s), `CharacterYawTurnSpeed`
   (camera A10).
+
 ### 2026-09-30 — movement — T2 disposition (scene/server data) + P4 probe negative
 - The `0x14020EE10` helper behind ProcessDropSpeed's slope math is a 65-entry
   **Q12 sine table** (0..4096 for 0..90 deg in 1/64 steps): dumped to
@@ -2040,6 +1929,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   candidates: scene-response binary decode or a `filepath.ini` index search.
 - Evidence: `proof/gravity/disasm/process_drop_speed.txt`,
   `heading_table_65x32.txt`; plan doc §8.3.
+
 ### 2026-09-30 — collision — P0 refined (authored siblings keep physics) + all 5 maps re-baked
 - Re-running the bake for the other four maps (白龙绝境, 天原绝境, 海岛绝境,
   龙门寻宝_夜晚) produced their `.meshes.txt` sidecars + fresh cflags; oflags
@@ -2051,6 +1941,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   龙门寻宝 unchanged `noObstacle=56` (`reborn_20260930_153559.log`).
 - New plan item P0b: when a sibling collision file exists the BAKE should use
   it instead of the render mesh (recorded in the comparison doc §8.3).
+
 ### 2026-09-30 — collision — P0b done: authored collision siblings baked
 - `tools/export_structure_collision.py` now resolves each object's obstacle
   geometry through the engine's file-selection chain
@@ -2062,6 +1953,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   龙门寻宝 0.
 - Verified: client load unchanged on 龙门寻宝 (5235 instances, noObstacle=56),
   rug crossing py=924 hits=0, fps 238-248 (`reborn_20260930_154559.log`).
+
 ### 2026-09-30 — collision — P3 closed as runtime boundary (capsule K/V not shipped)
 - `PxWorld::GetRigidParam` / `ShapeData` consume the shape/rigid tables for
   dynamic actors; the gameplay movement capsule is the SIMWorld scenario K/V
@@ -2072,6 +1964,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Plan status after this: P0/P0b/P1/P2-T1-T3/T4 done; T2/P3/P4 closed as
   scene/server/runtime boundaries; P5 (host the game physics stack) and P6
   (server dynamics) gated on a milestone decision.
+
 ### 2026-09-30 — collision — re-baked maps smoke-tested
 - 白龙绝境 (RC_MAP smoke): loads the re-baked bins cleanly -
   `instances=5156 meshes=817 camflag0=112 noObstacle=172`
@@ -2080,6 +1973,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `instances=5842 meshes=501 noObstacle=100` (shared engine root; line captured
   from the concurrent-session log `reborn_20260930_155044.log`).
 - No crashes, terrain/spawn fine on both; 龙门寻宝 unchanged.
+
 ### 2026-09-30 — collision — P5 feasibility confirmed: game physics stack runs in-host
 - Added `client/PhysicsProbe.cs` (`RC_PHYS_PROBE=1`) and the standalone
   `tools/p5_physics_probe/PhysicsProbe.cs` (csc, no engine needed).
@@ -2095,6 +1989,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Next: drive the static dyn loader (`recon_dyn_methods.txt`) to add object
   actors, then query the real scene (`PhysicsScene` rva 0xFA7B8, `SweepEx`
   vt[16]) - P5 continues.
+
 ### 2026-09-30 — collision — P5 static-object path is server-owned (LoadFromFile ok=0)
 - Extended `RC_PHYS_PROBE`: dyn vt[4] = `StaticPhysicsSceneManager::LoadFromFile`
   (0x2BB80), vt[2] = UpdateScene (0x2BA90). `LoadFromFile(sceneDir, mapName)`
@@ -2107,6 +2002,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (feasibility proven); its remaining value is the PhysX query API on
   terrain/dynamic actors, not static collision. Scan diagnostic fixed
   (private-memory filter) after the crash.
+
 ### 2026-09-30 — collision — All five maps smoke-verified; sprint disposition
 - 海岛绝境: `instances=3683 meshes=223 noObstacle=0`
   (`reborn_20260930_170531.log`); 龙门寻宝_夜晚: `instances=5100 meshes=690
@@ -2118,6 +2014,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Note: back-to-back client starts hit the single-instance guard if the
   previous process is still shutting down (no log written, fast exit) - add a
   3 s gap between smoke runs.
+
 ### 2026-09-30 — collision — Remaining items closed (H1 live-game A/B, P5 query API)
 - H1 (G-35): offline rule + audit exact (60 rejects); the in-game A/B needs
   live-game movement observation, banned by the locked constraints (no
@@ -2128,11 +2025,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   covered by TerrainSampler + EngineRay. Optional, not required for parity.
 - Plan execution is complete: everything client-derivable is implemented and
   gate-verified; all remaining items are closed as proven boundaries.
+
 ### 2026-09-30 — collision — Full check + manual test list
 - Full check ran: gates (jx3_model 10x, verify_model, loot, collision 25/25)
   and the three standard routes (rug y=924 hits=0; cabinet held z=36704;
   demo walk/run 90/300 + jump). Manual test checklist written to
   `docs/movement/COLLISION_TEST_LIST.md` (registered in the movement README).
+
 ### 2026-09-30 — collision — Walked-up wood pile fixed (remove host climb shortcuts)
 - User report: "walked up a thing higher than me" - reproduced from the log:
   the climb target is inst 624 `wj_木堆001_hd` (wood pile), AABB y 787..1057
@@ -2149,6 +2048,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `173345`); rug unchanged py=924 `hits=0` (`173620`); house floor edge still
   steps up to ~969 (`173445`); buildings still block (inst 563 top 1061 >
   feet 888).
+
 ### 2026-09-30 — collision — Pile walk-up fix PROVEN by controlled A/B
 - Built the pre-fix revision as a separate binary
   (`bin64\reborn_client_pileold.exe`, source = `85e086b^`) and ran the same
@@ -2163,6 +2063,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   engine table jump (v0=90 u/f, g=11 u/f2 -> ~368 u apex), not a walk-up.
 - The fix removal is therefore validated on the reproducible route; the A/B
   binaries are kept for the user.
+
 ### 2026-09-30 — collision — Solid props collide as AABB boxes (pile no longer penetrable)
 - User follow-up: after contact-only steps the wood pile became **walk-through**
   (its render mesh is stacked logs with air gaps: `hits=0` through the
@@ -2176,6 +2077,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   in-game pile mid (20450,31000) and tall (20450,30800) held at x=20114 with
   y constant and hits climbing - no climb, no pass-through
   (`reborn_20260930_184525/184610.log`); rug unchanged (924, hits=0).
+
 ### 2026-09-30 — collision — Vertical rise is resolved (jump-through-roof class)
 - User diagnosis confirmed: vertical motion was never resolved (only horizontal
   substeps were), so a jump could carry the capsule through a thin slab, and the
@@ -2189,6 +2091,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `vertical_fall_slab_supports` py -> 64); in-game spot (18850,36700) stable at
   y=959 with hits climbing (no launch, `reborn_20260930_203353.log`); a
   pre-vertical-fix binary kept as `bin64\reborn_client_prevert.exe`.
+
 ### 2026-09-30 - collision - Wall-ledge ratchet fixed (CCT up-sweep) + standability gate
 - Field report (user, 玉门关 building backside x 18899-19026): running into the
   back wall climbed the player +96 u (y 951<->1047 airborne cycles, capsule
@@ -2215,6 +2118,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   952-994 blocked (`reborn_20260930_212339` vs `_214718`); rug/prop spawn
   (19690,36270) new build stable grounded y=969, no bounce
   (`reborn_20260930_214555`). A/B binary kept: `bin64\reborn_client_prewall.exe`.
+
 ### 2026-09-30 - collision - Thin-wall walk-through (horizontal motion vs the degenerate normal)
 - Field report (user, end area): "the last wall i can just walk through... i
   simply walk through for no reason" at the 玉门关建筑001_002 south wall
@@ -2237,6 +2141,690 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   jz_xb玉门关建筑001_002_hd.mesh` and slides along it
   (`reborn_20260930_222047` vs `_222711`/`_223142`); regressions re-checked:
   building back wall spot stable (18915,952), rug/prop spawn stable grounded.
+
+### 2026-10-01 - controls/client - Correction: classical A/D turns (bytecode re-decode)
+- Problem: the client implemented classical A/D as side-step, but in the real
+  game (user report) classical A/D turn. Root cause: the earlier
+  RESEARCH_RESOLVED_GAPS summary of hotkeys.lua was wrong - it described only
+  the non-free-view branch.
+- Fix: re-decoded the actual bytecode (lua51_probe): StrafeLeftStart proto 0/76
+  branches CLASSICAL -> SetControl + Camera_IsInFreeView -> TurnLeftStart;
+  JOYSTICK -> ResponseWASDKey (double-tap). Forward/back/turn have no mode
+  branch. Host now: classical A/D turn in place by default (RC_FREEVIEW=1,
+  camera drags behind via cameraYawBehind + 15 deg dead zone); RC_FREEVIEW=0
+  restores the decoded side-step branch with the 挪步 clips; S stays
+  back-pedal in classical.
+- Evidence: runs 20261001_003459 (classical free view: d=-3.14, cam follows),
+  20261001_003600 (RC_FREEVIEW=0: d=0.00 side-step), 20261001_003644 (joystick:
+  d=-1.57); proof/controls/control_modes_run.txt; gates all PASS.
+- Lesson: decode the handler bodies, not the string/global summaries.
+
+
+### 2026-10-01 - controls/client - Mode-matched locomotion animation
+- Did: locomotion clip selection by travel direction vs facing in both modes
+  (>45 deg 挪步 left/right kind 6, >135 deg 后退01 kind 57, else walk/run).
+  Classical side-step (RC_FREEVIEW=0) and S play the authored clips; the
+  joystick pivot plays 挪步/后退 while the facing catches up, then 奔跑.
+  Classical A/D turn-in-place rotates the model: the F1 catalog has no
+  dedicated ground turn clip (kinds 5 run / 6 挪步 / 56 walk / 57-58 后退 /
+  16-19 jumps), so none is invented.
+- Evidence: runs 20261001_074718 (classical: 后退01, turn d=-3.14),
+  074923 (freeview0: 挪步左 + 后退01), 074806 (joystick: 挪步左->奔跑,
+  d=-1.57); proof/controls/control_modes_run.txt; build + smoke exit 0.
+- Open: engine clip-selection criteria (thresholds are host values); ground
+  turn-in-place clip unresolved (catalog-verified absent).
+
+
+### 2026-10-01 - controls/client - Classic base actions: sit + sheath implemented
+- Did: decoded ToggleSitDown (0/98: OnUseSkill(17 打坐) / Stand()) and
+  ToggleSheath (0/97: SetSheath toggle; gates sit/death/fight/bird/horse/
+  tower/buff) from the packed hotkeys.lua bytecode. Host: V/X toggles the
+  looping F1b02dj打坐a.tani pose and stands on movement/jump; Z toggles the
+  b02 draw sequence (F1b02ty拔剑01_start01 -> st01_持续 stance), rejected while
+  sitting, back to idle on sheathe (no 收剑 clip ships for b02). HUD help and
+  the classic-controls audit updated.
+- Evidence: run reborn_20261001_081922.log (sit down/stand + 打坐a; sheath
+  drawn -> 拔剑01_start01 -> st01_持续; sheathed; exit 0);
+  proof/controls/control_modes_run.txt; camera_smoke ALL PASS; jx3_model 10x
+  PASS; verify_model/capture selftest exit 0.
+- Open: mount (T) needs the horse actor; follow/interact need targeting; the
+  sheath gates not modellable in the host (fight/bird/horse/tower/buff) are
+  always false.
+
+
+### 2026-10-01 - controls/client - Full classic movement matrix (S slow, W+A/D diagonals)
+- Problem: classic had only been given A/D turn; W+A/W+D and S were wrong
+  (user report: S must be a slower backward move, W+A and W+D must differ).
+- Research: decoded hotkeys.lua proto 0/46 (ResponseWASDKey) - it merges
+  Forward/Backward and (Turn|Strafe)Left/Right into the 8-way MOVE_* intent
+  and passes it to ResponseDisplacementHotkey (proto 0/44, the sprint/skill
+  dispatcher). number.krl ships no back speed (walk 6 / run 20 only), so the
+  observed slower backward = walk pace (96 u/s).
+- Fix: host classic matrix - A/D alone turn (camera follows); W+A / W+D run
+  the camera-relative 45 deg diagonal with the facing turning to it and no
+  camera turn; S / S+A / S+D back-pedal at 96 u/s facing-kept; arrows always
+  turn; run/walk speeds otherwise unchanged.
+- Evidence: run reborn_20261001_083417.log - S dpos dist=96 (walk) with 后退
+  clip; WA dpos=(33,382) / WD dpos=(383,-33) dist=384 (run speed, mirrored
+  diagonals, camera unchanged); A alone d=-3.14 turn in place; exit 0.
+  camera_smoke ALL PASS; jx3_model 10x PASS; verify/capture selftest exit 0.
+- Open: diagonal-back clip selection uses the host angle thresholds; the
+  yaw-turn-speed consumer is still not located (registered S6 fallback).
+
+
+### 2026-10-01 - controls/client - Classic free view decoded; W+A/W+D are curves (not diagonals)
+- Problem: W+A / W+D behaved wrong (host had guessed camera-relative diagonals).
+- Research: found the actual free-view implementation in the shipped UI scripts:
+  CameraStatus_Animation (mainscene.lua proto 0/0) swaps Turn*<->Strafe*
+  handlers; CameraStatus_Set (0/3) calls it with (mode ~= 'god camera');
+  CameraCommon.lua enters 'local camera' -> free view ON normally. So the
+  classical strafe handler's free-view branch (TurnLeftStart/RightStart) runs
+  in normal play: A/D turn, and W+A/W+D are turns while running (curves).
+- Fix: reverted the diagonal behavior; keyboard turn now rotates the view at
+  the char turn rate (standing: body turns too; moving: body follows the
+  rotating heading via the turn model - one driver per case); curYaw/camSys.Yaw
+  wrapped each frame, fixing a +/-pi alias that flipped the turn model.
+  S stays walk-pace back-pedal.
+- Evidence: run reborn_20261001_085528.log (WA dist=194 curve vs 384 straight,
+  dyaw=-3.75; WD mirrored; back dist=96); joystick sanity run; camera_smoke
+  ALL PASS; jx3_model 10x PASS; verify/capture selftest exit 0.
+- Lesson: the answer was in another shipped script (mainscene.lua), not the
+  engine binary - extract the whole ui/Script set before concluding.
+
+
+### 2026-10-01 - controls/client - W+A + RMB-hold interaction verified; yaw-turn-rate probe negative
+- Did: added RC_DEMO_RMBWA test knob (holds W+A and feeds a simulated RMB orbit
+  drag through the same queue the mouse uses) and ran it; also re-attempted the
+  CharacterYawTurnSpeed (+0x58) consumer hunt: CommonNumber accessor
+  (0x180338bf0 = [0x180EDDFE0]+0x24C14) xref -> 95 call sites scanned for
+  +0x4c/0x50/0x54/0x58 reads; none is the yaw-turn consumer.
+- Result: W+A+RMB is additive and coherent - keyboard A rotates the view, the
+  RMB drag rotates it further, the body follows the camera (RMB body-turn +
+  movement model); simulated run WA rmb=1 dpos=(183,194) dist=266 dyaw=-2.84
+  dcam=-3.44 (same direction, no fight/flip), exit 0.
+- Open: the official A/D turn rate is still not pinned; the host uses the
+  registered S6 fallback (pi rad/s). number.krl ships CharacterYawTurnSpeed =
+  0.007465 but its unit/consumer is unlocated; in live play the per-frame turn
+  step is also delivered by the server sync byte (+0x48). Next probe: live
+  debug on the real client (or the engine's input payload commit path).
+
+
+### 2026-10-01 - controls/client - Keyboard turn is local; RMB owns the camera
+- Problem: user corrections - the A/D turn rate is NOT server-fed (fully local
+  action), and classic RMB-hold + A/D must NOT turn the camera.
+- Research: parsed the sLoadNumberFromFile loader (0x180857df0) key map: the
+  real offsets are walk +0x48 / run +0x4C / yawTurn +0x54 / yawReset +0x58
+  (movement doc was +4 off). The camera-controller default table
+  (Represent .rdata VA 0x180d09f40) holds RotationSpeed=0.00314 rad/ms =
+  pi rad/s - the local keyboard/camera turn rate. The mouse-camera hold
+  (CONTROL_OBJECT_STICK_CAMERA, id 7) owns the camera while RMB is down.
+  Hotkey_EnableTurnLeft/Right are tutorial gates only (Teaching.lua).
+- Fix: charTurnRate = camera row RotationSpeed * 1000 (pi only as fallback);
+  keyboard turn (A/D, arrows) suppressed while RMB is held in classical mode.
+- Evidence: run 20261001_172009 (RM BWA=1: W+A with RMB, no mouse motion ->
+  dcam=0.00 dyaw=0.00 dist=385 straight); RM BWA=2 drag -> dcam=-1.08
+  mouse-only; A-alone still d=3.14/s and back dist=96; all gates PASS.
+
+
+### 2026-10-01 - controls/client - CORRECTION: RMB turn rule was not decoded (process error)
+- Error: after the user observed "classic RMB-hold + A/D does not turn the
+  camera", I coded a suppression rule and labeled it "observed game
+  behaviour"/"verified", implying a client mechanism. No such mechanism was
+  found: the shipped Lua has no gate (strafe handlers run unconditionally), and
+  Hotkey_EnableTurnLeft/Right are used only by Teaching.lua (tutorial).
+- What is decoded: turn keys are a CHARACTER control (TurnLeftStart ->
+  SetControl(CONTROL_TURN_*)); free view = all camera modes except god camera;
+  the keyboard turn rate is local (camera row RotationSpeed).
+- What is not: the engine consumer of CONTROL_TURN while
+  CONTROL_OBJECT_STICK_CAMERA is active (Represent SetControl binding + event
+  adaptor; client-exe consumer not traced).
+- Fix: the rule stays (it matches the user-observed behaviour) but is now
+  labeled a PROVISIONAL host rule with re-open criteria in
+  docs/controls/CLASSIC_CONTROLS_AUDIT.md; the proof file carries a correction
+  section. All 1551 core UI scripts were extracted and searched for a gate.
+- Lesson: "verified" may only describe what the evidence shows; a user
+  observation is a reproduction target, not a decoded mechanism.
+
+
+### 2026-10-01 - controls/client - RMB turn gate REVERTED; the op-mode script layer fully decoded
+- User: the RMB-held turn suppression is an invented rule, not the client's.
+  Revert and get the real behavior from the game client.
+- Did (game-client scripts, game client's own PakV4 extractor):
+  1. Reverted the gate (commit bb91c08: `classicalMode && rmbDown` removed;
+     A/D turn exactly as without RMB).
+  2. Decoded the whole operation-mode layer from the shipped UI scripts:
+     - OperationModeBase.lua: FreeMoveControl builds the joystick direction
+       vector (W=(0,1) S=(0,-1) A=(-1,0) D=(1,0)), RotatePlayer smooths it at
+       0.3/frame, heading from the FastArcTan table (tan(i*pi/128), 64 entries),
+       SetPlayerRotation -> Camera_GetRTParams/ConvertYawToDirection -> TurnTo;
+       ClearMoveState disables all six camera controls via Camera_EnableControl
+       and resets the direction vectors; SetOperationMode(CLASSICAL) applies
+       Camera_SetResetSpeed(1.0) + UseFullAngle(false) +
+       Scene_LockMouseRotation(false), joystick flips both to true.
+     - hotkeys.lua: MoveForward/BackwardStart/Stop (0/65-68) and
+       TurnLeft/TurnRightStart/Stop (0/71-74) have no mode branch;
+       StrafeLeftStart (0/76) is the only mode-branched handler - classical:
+       wrapper(CONTROL_STRAFE_*, true) then if Camera_IsInFreeView() then
+       TurnLeftStart/RightStart(); joystick: ResponseWASDKey('StrafeLeft',...)
+       with Camera_EnableControl fallback. ResponseWASDKey (0/46) is the
+       per-action key refcount -> 8-way MOVE_* displacement dispatcher.
+     - mainscene.lua: Camera_IsInFreeView (proto 0/1) returns the flag stored
+       by CameraStatus_Animation (proto 0/0); CameraStatus_Set (proto 0/3)
+       ends with CameraStatus_Animation(mode ~= 'god camera'), so free view is
+       true in normal play and false only in the god camera; true restores the
+       real Turn* handler globals, false swaps in Strafe* (god camera).
+     - Scene.lua: OnSceneRButtonDown -> Camera_BeginDrag(2.0) +
+       Camera_EnableControl(CONTROL_OBJECT_STICK_CAMERA, true) (LMB ->
+       CONTROL_CAMERA); Scene_SetMoveControl stores the flag and routes
+       non-FORWARD controls to FreeMoveControl. No RMB branch anywhere.
+- Result: no script-level RMB gate exists in any of the five consumers; the
+  host now matches the scripts (turn works with RMB down). The engine consumer
+  of CONTROL_TURN_* vs CONTROL_OBJECT_STICK_CAMERA (JX3RepresentX64.dll commit
+  0x1805df660 -> applier 0x1805df7e0, 8-type switch) stays open and is the next
+  probe; host has no provisional rule on this path any more.
+- Evidence: rebuilt reborn_client_control_modes.exe + camera_smoke ALL PASS;
+  jx3_model 10x PASS; verify_model exit 0; capture selftest PASS; relaunched
+  (pid recorded in-session). Script dumps under
+  %TEMP%\opencode\modes-re\ (opbase_full, hotkeys_full, scene_full,
+  camcommon_full, mainscene_full); extracted scripts in %TEMP%\opencode\ui_ex.
+- Lesson: the whole control truth was in the shipped scripts, not the exe;
+  decode the mode/camera state machines (mainscene CameraStatus_*) before
+  judging any observed input behavior.
+
+
+
+### 2026-10-01 - controls/client - engine dig: the C binding layer has no RMB gate either; classical WASD is engine-side
+- User: "keep digging" after the RMB script sweep.
+- Did: decoded the Lua->C bridge in the game client's own UI DLL and the
+  remaining movement handlers:
+  - control.lua (new extraction): defines the control ids 0..13
+    (FORWARD 0, BACKWARD 1, TURN_LEFT 2, TURN_RIGHT 3, STRAFE_LEFT 4,
+    STRAFE_RIGHT 5, CAMERA 6, OBJECT_STICK_CAMERA 7, WALK 8, JUMP 9,
+    AUTO_RUN 10, FOLLOW 11, UP 12, DOWN 13) and the Ctrl_Camera* stubs.
+  - hotkeys proto 61 (the unnamed wrapper used by Move*/Turn* handlers):
+    CLASSICAL -> Camera_EnableControl(control, flag);
+    JOYSTICK -> Scene_EnableFreeMoveControl(control, flag).
+  - hotkeys proto 63 (guard of the strafe handler's free-view branch):
+    returns true (and calls Camera_EnableControl) ONLY when
+    IsPlayerInOBDungeon(); nil otherwise. => the "classical free view A/D =
+    strafe+turn" claim from earlier today is WRONG outside OB dungeons:
+    normal classical WASD is consumed by the engine, Lua handlers are
+    overrides (joystick free-move, OB camera, displacement).
+  - JX3UIX64.dll (SHA256-verified copy): Camera_EnableControl = Lua* binding
+    at 0x1800AC1F0 (name in the luaL_Reg table at file 0x4A1F70, func
+    0x1800AC1F0): args (id, bool[, self]); ids 6/7 additionally call the
+    camera vtable +0x110 and check the HRESULT; otherwise a core setter
+    0x18011D820(self,id,bool); returns NOTHING to Lua. Camera_BeginDrag
+    0x1800ABFD0: 1-4 args, bridges the represent interface vtable +0x118
+    (mode, &x, &y, opt) and pushes 2 numbers back. Camera_LockControl
+    0x1800ACEE0: timed lock (used by the 轻功 path: IsCharacterMoving(
+    CONTROL_BACKWARD) + skill 9007). Camera_ToggleControl = AUTO_RUN/WALK
+    toggles. MoveControlStart/Stop (hotkeys 0/94-95) = Scene_SetMoveControl
+    (true/false).
+  - JX3RepresentX64.dll 0x1805DF7E0 (input-state applier, 8 event types):
+    writes controller fields +0x7C/+0x80/+0x84/+0x88/+0x8C..+0x94/+0x98 and
+    calls vtable slots +0x88/+0x98/+0xA0/+0xA8/+0xB0/+0xB8 on [obj+0xA8].
+    This is the engine input->character path, no RMB condition visible at
+    this level (types are command kinds, not keys).
+- Result: there is no RMB turn gate in the scripts nor in the UI C bindings;
+  classical A/D is engine-side, so an RMB interaction could only live deeper
+  in the represent input/controller (next probe: the key->input dispatch and
+  the character controller consumer of the fields above).
+- Host model gap (decoded direction, not yet implemented): TURN is a
+  character control; the camera should follow per CameraAdjustYawWhenMoveTurn
+  (moving-only, 15 deg dead zone) and RMB drag owns the camera. The host
+  currently couples A/D 1:1 into camSys.Yaw (the camera-relative run frame),
+  which keeps W+A curves working but makes A/D rotate the camera even while
+  RMB is held. Moving the run frame to its own yaw + enabling FollowYaw while
+  moving (skip while RMB) is the next change; needs the RC_DEMO_MOVE WA/turn
+  fingerprints re-baselined.
+- Evidence: %TEMP%\opencode\modes-re\ui_enablecontrol.txt, ui_begindrag.txt,
+  ui_lockcontrol.txt, hk_proto61.txt, hk_proto63.txt, control_full.txt,
+  apply_input.txt; docs/controls/CLASSIC_CONTROLS_AUDIT.md section 5.
+
+
+
+### 2026-10-01 - controls/client - RESTARTED DIG: game-client camera manager + command chain found
+- User: restart the research, find something.
+- Did (game-client build, SHA-verified copies): mapped the Lua→C binding layer
+  in JX3UIX64.dll (Camera_EnableControl 0x1800AC1F0 = pure setter,
+  Camera_BeginDrag 0x1800ABFD0 = represent vtable +0x118 bridge,
+  Camera_LockControl = timed 轻功 lock, MouseControlMoveEnable 0x1800ACF90 =
+  type-0x54 state + notify; MoveControlStart/Stop = Scene_SetMoveControl);
+  the exe command forwarders (KEventCommonMgr::BeginDragCamera/EndDragCamera/
+  SetCameraDragParams/ForceResetCamera/EnableControlCamera ->
+  world vtable +0x3D0/+0x3D8/+0x3E8/+0x428/+0x450); the character-controller
+  input applier (AjustCtrlInput -> 0x1805DF350 -> 0x1805DF7E0, 8 event types);
+  and the game-client camera mouse path: MouseMove 0x180B21300 + ApplyMouse
+  0x180B1F520 with the manager fields (+0x2F0 controller array stride 0x20,
+  +0x90/+0x94/+0x98/+0x9C accumulators, +0x1A8 moved flag, +0x1AC/+0x1B0
+  yaw/pitch source-select flags), per-mode drag speeds applied from ctx
+  +0x6C/+0x70 (classic) / +0x84/+0x88 (joystick), gate words
+  [0x180EDDFE0+0x25CD0]/[+0x25CF0]. Camera rows (10x0x24 at
+  [0x180EDDFE0+0x262F0], loader 0x180338C10) confirm
+  CameraAdjustYawWhenMoveTurn +0x14 and DisableAngle +0x18.
+- Also corrected: the strafe handler's classical free-view Turn call is
+  OB-dungeon-only (hotkeys proto 63 = IsPlayerInOBDungeon guard), and the
+  hotkeys proto-61 wrapper routes classical -> Camera_EnableControl,
+  joystick -> Scene_EnableFreeMoveControl.
+- Result: the only camera-yaw writer on the input path is the mouse drag
+  (ApplyMouse); TURN controls feed the character controller queue. The host's
+  A/D -> camSys.Yaw coupling is the deviation; camera follow belongs to the
+  cached CameraAdjustYawWhenMoveTurn row. No return of the provisional gate.
+- Evidence: modes-re\gc_mousemove.txt, gc_applymouse_fn.txt,
+  gc_camrow_loader.txt, gc_ctrl_apply.txt, exe_eventcommon_camera.txt,
+  ui_enablecontrol.txt, ui_begindrag.txt, ui_lockcontrol.txt, hk_proto61.txt,
+  hk_proto63.txt, control_full.txt; OPERATION_MODES_PLAN.md sec 7d.
+
+
+
+### 2026-10-01 - controls/client - dig continued: full mouse/rotation pipeline + character-yaw coupling
+- Kept decoding (user: until the full system). New (game-client build):
+  MouseMove 0x180B21300 -> ApplyMouse 0x180B1F520 -> ClampMouse 0x180B1FE70
+  (five named controllers: carrier, "camera", sprint kind 0x1B, glider,
+  npc-dialog) + ApplyRotation 0x180B1FA30 (dynamic-follow; calls
+  pDynamicFollowCameraController) + alternate applier 0x180B211D0; the
+  engine writes the CHARACTER yaw via 0x18001F05F -> 0x180530F00
+  (`[character+0x30] = yaw`) from four sites (0x180B1FCC1 ApplyRotation,
+  0x180B21282 alt applier, 0x180B10115 state-step, 0x180B24EDE reset),
+  conditioned on dynamic-follow/stick state ([mgr+0x1AC]/[+0x1B0], state
+  [mgr+0x5C], dead-zone test), NOT on keyboard A/D.
+  Also: CreateSO3Represent allocates the global 0x180EDDFE0 object (0x26470 B)
+  and CreateRLLoader the RLLoader; character controller input applier
+  (0x1805DF350 -> 0x1805DF7E0) applies 8 command types into +0x7C..+0x98.
+- Precise remaining unknowns (3): which control id (6 vs 7) sets [mgr+0x1B0]
+  / [mgr+0x1AC]; the [mgr+0x5C] state enum 1..7; the character movement
+  direction (facing vs camera) in the controller update.
+- Evidence: modes-re\gc_applyrotation.txt, gc_clampmouse.txt, gc_applyalt.txt,
+  gc_mousemove.txt, gc_applymouse_fn.txt, gc_charyaw_thunk.txt,
+  gc_rowxref.txt, gc_camrow_loader.txt, gc_ctrl_apply.txt,
+  exe_eventcommon_camera.txt; OPERATION_MODES_PLAN.md sec 7d (+addendum).
+
+
+
+### 2026-10-01 - controls/client - final decode pieces: face yaw, move-state, UpdateRotation
+- Closed the three open items as far as static analysis allows:
+  (a) [char+0x30] = KRLLocalCharacter face yaw (setter 0x180530F00 via
+  0x18001F05F; consumer UpdateFaceFootDirection 0x180534699 -> 0x1800236D7);
+  (b) [controller+0x5C] = object move-state (UpdateObjectState 0x180B24F0A;
+  states 5..7 = the water/air cluster; entering/leaving resets face yaw; the
+  alternate camera applier's face write is gated to 5..7);
+  (c) per-frame pipeline = UpdateRotation (carrier/glider/telescope + base
+  0x180B20C30 + ApplyRotation 0x180B1FA30).
+  SetControlOther (0x180530E40, KRLLocalCharacter) is the controller-switch
+  target-id setter, not the control-flag sink.
+- Consequence: the engine rule set is complete for the host; only exact
+  per-state body-carry tuning (which states carry, at what dead zone) rests
+  on the states 5..7 gate + the row CameraAdjustYawWhenMoveTurn.
+- Evidence: modes-re\gc_applyrotation.txt, gc_applyalt.txt, gc_clampmouse.txt,
+  gc_charyaw_thunk.txt, gc_setcontrolother_thunk.txt, exe_createso3.txt;
+  OPERATION_MODES_PLAN.md sec 7d addendum 3.
+
+
+
+### 2026-10-01 - controls/client - IMPLEMENTED the decoded classical model
+- User: implement the fully decoded system.
+- Change (client/RebornClient.cs): classical movement now runs along the
+  character facing (spawn-synced at the three camera-init sites); the turn
+  block writes curYaw only (joystick keeps its historic camera coupling); the
+  camera follows a moving forward character via CameraSystem.FollowYaw
+  (CameraAdjustYawWhenMoveTurn row, dead zone, moving-forward + no-drag gate).
+- Evidence (run reborn_20261001_214418.log, build git=2a1191e dirty=1):
+  A-alone: dyaw=3.13, dpos=(0,0), camd=0.00 (camera untouched - the decoded
+  rule); back-pedal: cam unchanged, dist=96; W+A/W+D: 194 u curves, camera
+  follows (dcam larger than dyaw because the pre-test facing offset is
+  converged by the row). Gates: smoke ALL PASS, jx3_model 10x PASS,
+  verify_model exit 0, loot selftest PASS. Client relaunched (pid per session).
+- Note: two intermediate behaviors were caught by the demo harness and fixed
+  before landing (back-pedal must not drag the camera -> forward-only follow
+  gate; the follow input needed the facing->camera-yaw conversion atan2(-cos,
+  -sin), the same involution the RMB body-carry uses).
+
+
+
+### 2026-10-01 - controls/client - CHECK: was there a recent change to classic A/D/camera?
+- User: "classic does not change camera with A/D - it used to be not like this,
+  feel like a recent change, check."
+- Checked: installed client GameInfo.dat = 1.5.0.9975 (PreVersion 1.5.0.9702),
+  paks updated the same day; official 2026-09-28 notes (1.5.0.9971) have no
+  control/camera item. Local build genealogy (game 09-27, MovieEditor 09-14,
+  client-MovieEditor 04-28, bundled client 03-31) all carry the same camera
+  systems; but ApplyRotation differs: old 03-31 applied up to four rotation
+  channels to the character on any nonzero delta; current 09-27 is
+  follow-state gated and writes a single face-yaw. Character-API thunks differ.
+- Conclusion: a real camera->body coupling change exists between the March and
+  September builds (public notes silent), consistent with the user's feeling;
+  the current decoded behavior (A/D = character turn, camera follows only while
+  moving forward) is the current client truth and is what the host implements.
+- Evidence: docs section 7d addendum 4; old_applyrot.txt / old_updrot.txt in
+  %TEMP%\opencode\modes-re\; GameInfo.dat; jx3.xoyo.com latest notes.
+
+
+### 2026-10-01 - controls/client - A/D also turn the camera 1:1 (user request)
+- User: "just add AD to also turn camera as well, but at what speed?" Answer
+  from client data: 1:1 with the character turn - the local camera-controller
+  RotationSpeed row (0.00314 rad/ms = pi rad/s); the old ApplyRotation wrote
+  the identical yaw delta to both. Implemented: curYaw += dturn; camSys.Yaw -=
+  dturn, except while RMB holds the drag (the observed classic rule).
+- Evidence: run reborn_20261001_220719.log - A 1 s: yaw +3.14 / cam +3.14;
+  TURNRIGHT 0.6 s: +1.88 / -1.88; W+A: 2.51 / -2.51; W+D mirrored; back-pedal
+  camera kept. Smoke ALL PASS. Client relaunched (pid per session).
+
+
+
+### 2026-10-01 - controls/client - WHY W+D+RMB walks diagonally with no camera turn
+- User: W+D+RMB must walk upper-right with the camera still; find the real mechanism.
+- Decoded: shipped default.txt binds A/D to STRAFELEFT/STRAFERIGHT (arrows =
+  TURN); hotkeys proto 76/78 make the strafe handler call TurnStart ONLY when
+  Camera_IsInFreeView(), which is why A/D turn + carry the camera 1:1 without
+  RMB. RMB enables CONTROL_OBJECT_STICK_CAMERA (Scene proto 31) - stick/mouse-look
+  mode where the heading is mouse-owned: turn cannot act, strafe moves the
+  character laterally.
+- Implemented: rmbStrafe = classical && rmbDown -> A/D add lateral input and do
+  not turn; camera untouched (only the drag moves it). Evidence: WA rmb=1
+  dpos=(-286,-257) dist=384 dcam=0.00 (diagonal); WD no-rmb still curving.
+- Smoke ALL PASS; client relaunched (pid per session).
+- Note: g_Scene_bMouseMove/SetMouseMove ('CheckBox_MouseMove') is the operation
+  panel's click-to-move option, NOT this switch; MouseControlMoveEnable remains
+  the engine-side mouse-move option binding.
+
+
+
+### 2026-10-01 - controls/client - forward-right animation fixed (camera frame + drag-gated carry)
+- User: "the animation needs update when walking forward right".
+- Root cause: the facing-frame experiment made W+D fight - RmbTurnsBody held the
+  body toward the camera while RunTo pulled it to the diagonal, so the gait
+  angle exceeded 45 deg and the 挪步 side-step clip played instead of the run.
+  The decoded control set is CAMERA controls; the body faces the TRAVEL
+  direction; the engine's camera->face write fires on mouse DELTAS (ApplyRotation),
+  not on a held RMB.
+- Fix: reverted the movement frame to the camera (both modes); RMB body-carry
+  now requires a real mouse drag (150 ms window).
+- Evidence: WA rmb=1 dpos=(-49,-380) dist=384 dyaw=-0.79 dcam=0.00 - straight
+  45-deg camera-frame diagonal, body aligned to the travel (run clip); WD no-rmb
+  curve unchanged; strafe/turn 1:1 preserved. Smoke ALL PASS. Relaunched.
+
+
+
+### 2026-10-01 - controls/client - animation from the engine's input octant; LMB owns the camera
+- User: LMB hold must also stop the camera turning; and stop matching animation
+  from described behaviour - decode the system.
+- Decoded: represent locomotion state table (RunForward/WalkForward/RunBackward/
+  WalkBackward + ComputeStrafe/pnStrafeRight lateral blend): the clip family
+  follows the INPUT octant (ResponseWASDKey MOVE_* names), not the facing angle.
+- Fix: gait from fwdAxis/latAxis (W=run/walk, S=后退, lateral=挪步); camera
+  keyboard coupling suppressed while either mouse button holds the drag.
+- Evidence: run 224006 - WA rmb=1 gait=0 clip=跑动 during the diagonal; numbers
+  unchanged otherwise. Smoke ALL PASS. Relaunched (pid per session).
+
+
+
+### 2026-10-01 - controls/client - RMB+A/D: walk-tier side-step; engine move-info decoded
+- User: what happens on RMB+A/D? animation not supporting.
+- Decoded: GetMoveInfo (0x1805DFE90) returns forward (+0x50), strafeRight (+0x4C),
+  rotationRight (+0x3C); animation parameter names pnForward/pnStrafeRight/
+  pnRotationRight; locomotion states RunForward/WalkForward/RunBackward/
+  WalkBackward -> lateral is a BLEND into the run state, and pure lateral is the
+  walk-tier 挪步 clip. No strafe-run state exists.
+- Host: pure lateral now moves at walk pace (96) so the 挪步 clip matches;
+  diagonal stays run; joystick always forward-family (body faces travel).
+- Evidence: strafe rmb=1 dist=96 dcam=0; WA rmb=1 dist=384 dcam=0.00; turn
+  1.88/-1.88; smoke ALL PASS. Relaunched.
+
+
+### 2026-10-01 - controls/client - FULL movement system decoded across all layers
+- Kept decoding per user request. Mapped: script bindings -> Camera_EnableControl
+  (14 ids); the character-controller API (Move/Run/Jump/SetYaw/SetPitch/SetRoll/
+  ToggleCharacterControl/GetMoveInfo) with intents fForward +0x50, fStrafeRight
+  +0x4C, fRotationRight +0x3C; the setters push queue commands 5/6/7 into the
+  applier 0x1805DF7E0; CommitInput 0x1805E3270 posts the frame commit; the anim
+  state table (RunForward/WalkForward/RunBackward/WalkBackward + jump/swim/fly)
+  with pnForward/pnStrafeRight/pnRotationRight blend params (lateral = blend;
+  pure lateral = walk-tier 挪步; no strafe-run state); camera pipeline and the
+  LMB/RMB heading-ownership rule.
+- Boundary: the exe-side per-frame control->intent loop runs behind runtime-built
+  interface tables (no static names), so it is characterized behaviorally, not
+  symbolically; the host implements the same model.
+- Docs: OPERATION_MODES_PLAN.md section 7e (full system); evidence in
+  modes-re gc_strafe/gc_runforward/gc_pnstrafe/gc_getmoveinfo_*/gc_intent_*.
+
+
+### 2026-10-01 - controls/client - input/camera plumbing fully decoded (vtable/action-table/property-store)
+- Closed the loop: world vtable 0x180CC21E8 (slots 3D0/3D8/3E8/428/450 =
+  BeginDrag/EndDrag/SetCameraDragParams/ForceReset/EnableControlCamera
+  0x1805E36F0); EnableControlCamera posts to vtbl+7D0 -> thunk -> HandleRLAction
+  0x1802F54B0 -> action table 0x180E96C00 (47 handlers; 6 = control-enable,
+  7 = drag-state, plus HandleCamera/HandleCharacterAnimation/HandleSprint/...);
+  handlers apply (propertyId,value) fields to the property store at
+  [SO3+0x25F08] (property ids 0x1E player, 5 tick, 0x1C drag->SO3+0xC,
+  control ids 0..13). Consumers read the store through the dynamic property
+  system - that is the data-driven boundary, not an unknown.
+- Evidence: gc_handlrlaction/gc_ctrl_action6/gc_ctrl_action7/
+  gc_enablecontrolonly dumps + doc 7f.
+
+
+### 2026-10-01 — process — Full-system exploration rule (no spot fixes)
+- Did: user rule — when part of a system behaves wrong, the system is wired wrong, not
+  just the spot that shows it; the user pointing at a specific wrong place is a symptom
+  location, not the fix target (patching only there = band-aid). Added to `AGENTS.md` §6:
+  explore the full system (inputs → state → outputs, data read, engine calls) before
+  changing anything; trace the full chain to the root cause and fix the wiring.
+- Evidence: `AGENTS.md` §6 (new paragraph); this commit (local).
+- Outcome: solved (rule added).
+
+
+### 2026-10-01 — repo — Cleanup: remove 4 merged worktrees/branches
+- Did: verified containment (`git branch --merged main`, `git merge-base --is-ancestor`
+  exit 0, `main..branch` = 0, worktrees clean) then removed worktrees
+  `reborn-iso-cam-wwdrag`, `reborn-iso-camera-wall-clip`, `reborn-iso-double-jump`,
+  `reborn-iso-mini-sandbox` and deleted `agent/cam-wwdrag`, `agent/camera-wall-clip`,
+  `agent/double-jump`, `agent/mini-sandbox`. `branch -d` refused camera-wall-clip only
+  because local was 15 ahead of its lagging upstream while fully merged to `main`;
+  re-verified ancestor-of-main then `-D`. Origin refs untouched; only regenerable
+  ignored artifacts (`__pycache__/`, `native/obj/`) were in the removed dirs.
+- Evidence: `git worktree list` now 9 (main + 8 in-flight); remaining 8 branches
+  unmerged/dirty and left alone.
+- Outcome: solved (not committed; main checkout stays local-only).
+
+
+### 2026-10-01 — netcode — JX3 client launch/session reality check (offline client verdict)
+- Did: bounded probe (Stage A static + Stage B observation) of "take the real client,
+  cut connections, private server". Recovered the streaming launch contract
+  (`/u:/t:`, `/c`, `/wg`), proved the normal launch is **arg-less** (Dumper `-c`
+  absent; WMI cmdline scrubbed) and gated on launcher/session presence: bare and
+  `/u:/t:`/`/c` launches exit in ~2 s, code 0, before any network. Observed a normal
+  run: explorer -> SeasunGame.exe -> JX3ClientX64.exe (+cefrender), game endpoint
+  `109.244.61.154:3724`, XGSDK/xoyo HTTP(S), loopback IPC pairs. Protocol table
+  (814 SIDs + sizes) already in-repo.
+- Verdict: **not a cheap pivot** — requires launcher emulation (IPC handoff), XGSDK
+  auth stub, server-list interception, and 814-message protocol implementation, plus
+  protection layers (Dumper64/VMProtect/TP3) and rule changes. Current engine-host
+  plan stays the cheaper/cleaner path.
+- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md`,
+  `proof/netcode/disasm/streaming_parsecmdline.txt` + gateway/serverlist dumps,
+  `proof/netcode/JX3Browser_strings.txt`; this commit (local).
+- Outcome: solved (feasibility answered; no pivot).
+
+
+### 2026-10-01 — repo — Merge: battle-floating-ui research → main
+- Did: merged `agent/battle-floating-ui` (battle floating UI + KGUI font/color
+  scheme research) into `main` as `0c750cc` (`--no-ff`). Sole conflict
+  `docs/EXPERIENCES.md` (append-tail): kept the branch's 2026-09-30 blocks then
+  main's 2026-10-01 blocks — chronological, both preserved. Net diff: 146 files,
+  +36,812/−13 (`proof/` 136, `docs/` 6, `tools/` 3, `.gitignore` 1);
+  `ui-process-app/**` and root `AGENTS.md` byte-identical to pre-merge main.
+  Registered the three research tools in the `docs/ui/README.md` tools table.
+  Also caught pre-merge: `tools/prepare_ui_fonts.py` had been written UTF-16 by
+  PowerShell redirection — restored as UTF-8 (`8309d3a`).
+- Verified: `jx3_model` 10/10 PASS; `verify_model` self-consistent; loot
+  `SELFTEST PASS`; no client/native/app code in the merge, so no rebuild/smoke.
+- Evidence: merge commit `0c750cc`; `docs/ui/BATTLE_FLOATING_UI.md`,
+  `docs/ui/FONT_SCHEME_SYSTEM.md`, `proof/ui/evidence/battle_hud/**`.
+- Outcome: solved (merged; pushed to `origin/main` at user request).
+
+
+### 2026-10-01 — netcode — Launcher handoff mechanism recovered (shared memory + XTEA)
+- Did: second-pass static RE of the launcher handoff. Found it is **not** a command line:
+  PID-keyed named mapping `400BBBA7-F29F-4357-9B07-%04X-D62109852BD6` (0x275C bytes) +
+  mutex `56992E93-3828-415E-AB04-%04X-33107B63107D`; the client opens/creates the mapping,
+  copies it, and XTEA-decrypts in place (32 rounds, key words a0b1c2d3 e4f5a6b7 c8d9eafb
+  0c1d2e3f). Launcher: `XCommonX64.dll` DetachProgram -> `OSUtil::_LaunchProgram`
+  (`0x1800a82f0`) = plain `CreateProcessW` with no args; the session is filled into the
+  block after (PID out-param). `KGatewayClient::OnSyncLoginKey` carries
+  `pcszGameServerIP` (server points the client at the game server).
+- Verdict update: launcher emulation is **reproducible without modifying the client**;
+  the remaining work is the 0x275C block layout + the gateway protocol (814 IDs, sizes
+  extracted). Feasibility answer changed from "blocked" to "possible, still large".
+- Evidence: `docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md` §5-6;
+  `proof/netcode/disasm/{xcommon_detach,detach_events,client_mappings,launchblock_callers}.txt`;
+  `proof/netcode/launcher_*.txt`, `SeasunGame_launcher_strings.txt`; this commit (local).
+- Outcome: solved (mechanism recovered; next gate = block capture).
+
+
+### 2026-10-01 — netcode — Launch block format decoded (header + slots + custom TEA); writer still open
+- Did: static decode of the launch block: 0x275C = 16-byte header + 20 slots × 0x1F7
+  (payload 0x1E7 + 16-byte key); header +2 = GetTickCount()/1000 (freshness ≤ 10 s),
+  +8 must be non-zero, +0xc = entry count (client zeroes it after read); first 8 bytes
+  decrypted by a custom 16-round TEA variant (sum 0xC6EF3720, delta 0x61C88647, key
+  a0b1c2d3 e4f5a6b7 c8d9eafb 0c1d2e3f). Parser is polled; client gives up ~2.4 s.
+- Launcher-emulator mechanics proven (suspended start + pre-created PID-keyed mapping +
+  write + resume); synthesized header-only block (both key-index variants) still exits
+  at 2.4 s — the writer/encrypt is unidentified (no encrypt direction in client/logic
+  DLL; launcher binaries lack the block GUID).
+- Evidence: docs/netcode/JX3_CLIENT_LAUNCH_AND_SESSION.md §7;
+  proof/netcode/disasm/{launchblock_parser,launchblock_decrypt,parser_caller,logic_reader_callers,logic_mapping_refs}.txt;
+  this commit (local).
+- Outcome: partial (format decoded; writer open).
+
+
+### 2026-10-01 - client - in-world target indicator (KRLTarget assets, no hand-drawn art)
+- Did: researched the marker drawn around a selected target (not the HUD):
+  the represent layer's KRLTarget. Config is
+  `represent/common/force_relation_care.txt` (ForceRelationCareTable): one row
+  per relation with SFXFile (relation-coloured selection ring,
+  `选择特效aXXX_hd.pss`), SFXEn (`J_角色箭头面向.pss` facing cone),
+  SFXScale 1.8 and the relation colours; KRLTarget::Init/LoadFile/Show drive it
+  and EnableBraceSfx attaches the CommonCursorEffect ring (`鼠标移动.Sfx`);
+  the UI Lua (GlobalEventHandler.lua) calls TargetSelection_ShowSFX(relation,
+  flag). Implemented in client/RebornClient.cs: on selection change spawn the
+  client's own ring + facing cone at the target via AddDummyModel, remove on
+  deselect; RC_TARGET_HUD default off (the request is the in-world marker).
+- Evidence: run reborn_20261001_173107.log (Tab selects 初级试炼木桩 at 3s,
+  indicator h>0), proof/controls/target_indicator_client_20261001.txt
+  (before/after PNGs + 4x4 RGB; red px 10->128, yellow 150->7852).
+- Dead end (documented): the native KRLTarget attach needs the represent game
+  world; in the MovieEditor-hosted engine the represent singleton is null
+  (JX3RepresentX64.dll RVA 0xF06A50 = 0), so AttachSceneObject/Show cannot run;
+  the cursor-ring brace is a compiled .Sfx (AddDummyModel rejects it). Also the
+  game-client JX3RepresentX64.dll is a different build than MovieEditor's -
+  RVAs must come from the loaded copy. Re-open criteria in
+  docs/controls/JX3_TARGET_SELECTION.md §10.
+- Outcome: solved for the ring + facing cone; the brace/arrow composition waits
+  on represent-world host support.
+
+
+### 2026-10-01 - cleanup - remove target_dummy_sandbox browse app
+- Did: deleted the separate browse/display app (	arget_dummy_sandbox/, added in
+  30e458e) per request - the client sandbox (one 试炼木桩 + in-world indicator in
+  client/RebornClient.cs) is the vehicle. Updated references: root AGENTS area
+  map, docs/pvp/README tools line, docs/netcode/README tools table,
+  docs/pvp/TARGET_DUMMY_RESEARCH.md (scope/§4/§5/Reproduce), and the target UI
+  paint-error path in client/Targeting.cs (now bin64\reborn_out). Historical
+  proof files (proof/pvp/target_dummy_sandbox_*) and the older EXPERIENCES entry
+  stay untouched.
+- Evidence: git rm of 4 files; client rebuild exit 0; grep shows no live
+  references outside historical proof/EXPERIENCES.
+- Outcome: branch carries only the client sandbox with the target dummy.
+
+
+### 2026-10-01 - client - left click anywhere deselects the target
+- Did: added the client's own click semantics to the sandbox. Proof chain found
+  first: LMB is bound to `CAMERAORSELECTORMOVE` (=1, "rotate camera or select
+  under cursor"; ui_hotkey_default.txt:35-36 + docs/movement/JX3_COLLISION_SYSTEM.md
+  section 16.1), bindings.ini:309-313 maps down/up to
+  CameraOrSelectOrMoveStart/Stop(0) (Lua handlers Ctrl_CameraOrSelectOrMoveStart/Stop
+  in ui/script/control.lua + hotkeys.lua), and the clear path is the same setter
+  with TARGET.NO_TARGET=1 (KTarget::SetTarget 0x140241C00; client calls
+  SetTarget(player, NO_TARGET, 0) at 0x140318C33). Implemented in
+  client/RebornClient.cs: a left click without drag runs the cursor pick; a hit
+  selects, an empty pick clears (`click: deselect`), removing the in-world
+  indicator. Added RC_CLICK_AT=ms,x,y so the click path is scriptable.
+- Evidence: run reborn_20261001_203137.log (Tab at 3s selects; click at 5s ->
+  "click: deselect (nothing under cursor)" -> "target indicator removed"),
+  proof/controls/target_deselect_click_20261001.txt (+ before/after PNGs and
+  4x4 RGB; warm pixels 463 -> 154, frame diff 6469 px at the dummy).
+- Open: the empty-pick branch of CameraOrSelectOrMoveStop is MED - the handler
+  name is runtime-registered (not a binary string); re-open criteria in
+  docs/controls/JX3_TARGET_SELECTION.md section 6.
+- Outcome: solved for the sandbox; the selection model follows the client.
+
+
+### 2026-10-01 - client - click pick hit volume (off-target click deselects)
+- Did: the deselect click kept the target when clicking NEAR the dummy because
+  TargetSelector.Pick used a 12-degree cone around the entity direction. Replaced
+  it with a ray-vs-vertical-body-cylinder test (radius 90 u, height 220 u,
+  nearest ray hit; client/Targeting.cs) - any ray missing every body is an empty
+  pick -> deselect. Extended RC_CLICK_AT to a list (ms,x,y;ms,x,y) for scripted
+  click sequences.
+- Evidence: run reborn_20261001_203922.log - Tab at 3s selects, click 620,430
+  (~80 px off the body) -> "click: deselect" + indicator removed, click 700,440
+  (on the body) -> "target=... (click pick)" + indicator back;
+  proof/controls/target_deselect_hit_test_20261001.txt (warm px 13393 -> 7904 ->
+  13392, 3 PNGs). Gates: jx3_model 10x PASS, gravity, loot selftest PASS.
+- Open: the body cylinder is the host's stand-in for the engine's model pick
+  (KCharacter::OnPickPrepare); re-open when the host exposes a real model pick
+  (docs/controls/JX3_TARGET_SELECTION.md section 6).
+- Outcome: solved; the user rule "not clicking on target = deselect" holds.
+
+
+### 2026-10-01 — repo — target-dummy merged into main (fe57fd5)
+- Did: merged `agent/sandbox-target-dummy` (16 commits: client 试炼木桩 spawn
+  rid=35901 + Tab/click targeting + in-world ring/arrow indicator; target HUD
+  compiled but off by default; extractors + docs/proof) into main; resolved the
+  single EXPERIENCES conflict by keeping main's file and appending the branch's
+  9 missing `###` blocks (168 insertions, 0 deletions). Main-side
+  `client/RebornClient.cs` was untouched since the branch base, so the merge is
+  a pure union; nothing else was merged.
+- Evidence: merge `fe57fd5`; canonical build `reborn_client.exe`
+  (git=fe57fd5, built 21:03:51); `camera_smoke.exe` ALL PASS; `jx3_model.py`
+  10x PASS; `verify_model.py` ok; loot `capture.py selftest` PASS; scripted
+  engine run (`RC_TITLE=Target-Dummy RC_TAB_AT=3000
+  RC_CLICK_AT=5000,620,430;7000,700,440 RC_SHOTS=4500,6500,8500
+  RC_AUTORUN=10000`) log `reborn_out/reborn_20261001_211147.log`: dummy
+  handle=1992345400 at (23334,740,24624), Tab pick MidAxis/400u, click 620,430
+  -> deselect + indicator removed, click 700,440 -> reselect + indicator
+  respawned, DONE; shot fingerprints match the branch proof's per-region RGB
+  (rc_00/01/02; only 1-unit lighting noise from a concurrent session).
+- Note: console `KGLOG_ASSERT_EXIT(pRetMinDistanceRet) KG3D_Scene::RayIntersection`
+  spam during the run is absent from all logs and correlates with the
+  pre-existing foliage-collision ray calls (colCalls ~1300 per 2 s), not the
+  merged feature; a separate `reborn_client_colltest4.exe` session ran
+  concurrently in its own namespace during the run.
+- Outcome: solved (local main, not pushed); branch + worktree left intact.
+
+
+### 2026-10-01 — repo — sandbox client rebuilt from merged main
+- Did: rebuilt the mini-sandbox feature client `reborn_client_mini.exe`
+  (`RC_CLIENT_EXE=reborn_client_mini.exe`, title sandbox-mini) from merged main
+  so the sandbox carries the target-dummy work; canonical `reborn_client.exe`
+  was already rebuilt from the merge commit `fe57fd5`.
+- Evidence: `build_info_reborn_client_mini.exe.txt` git=`e30edd8` built
+  21:23:42; sandbox run log `reborn_out/reborn_20261001_212351.log` on the
+  cropped map (`RC_MAP=...龙门寻宝_s.jsonmap`): `target dummy rid=35901
+  handle=5733249480 at (23334,740,24624)`, Tab pick `zone=MidAxis dist=400u`,
+  indicator spawned (`选择特效a002_hd.pss`), DONE; exit 0.
+- Outcome: solved (local, not pushed).
+
+
+### 2026-10-01 — repo — target-dummy worktree/branch removed after merge
+- Did: removed the merged `reborn-iso-sandbox-target-dummy` worktree and deleted
+  `agent/sandbox-target-dummy` (`branch -d`, tip 43a3398 = merge parent, 0 ahead
+  of main, worktree clean). Desktop worktree folders: 8 -> 7; git worktrees 8 -> 7.
+- Evidence: `git worktree list` (main + 6 in-flight), branch list has no
+  `agent/sandbox-target-dummy`.
+- Outcome: solved (local, not pushed).
+
+
 ### 2026-10-01 - collision - Map-wide wall-sweep audit + the creep class
 - Built the audit the user asked for ("stop making me find bugs"): the
   `collision_selftest_<exe>.exe audit <structuresBin> [foliageBin] [stride]`
@@ -2265,6 +2853,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   or continuous contact).
 - A/B/notes: the user's session (pid 33448) blocks the shared exe name - test
   builds run as `reborn_client_colltest*.exe` (own namespace).
+
 ### 2026-10-01 - collision - Band-aid audit pass: step budget cleared, tree prisms registered
 - User asked to move toward "less band-aid, more original". Audited the top
   candidates before touching them:
@@ -2282,6 +2871,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Remaining genuine recovery work, priority order: slope model
   (`ProcessDropSpeed` + live engine cell slope), cave floors under holes,
   obstacle production reverse, capsule values, engine-physics-in-host.
+
 ### 2026-10-01 - collision - Cheap-step pass: two stale audit claims corrected, slope re-confirmed parked
 - Ran the "cheap + original" list down to evidence:
   - **Slope (T2)**: the earlier research re-scoped it as an AIRBORNE slide
@@ -2301,6 +2891,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Net: the registered deviation list is now accurate; the remaining genuine
   items (slope slide, obstacle production, capsule values, engine physics) are
   deep recovery work, not cheap steps.
+
 ### 2026-10-01 - collision - Obstacle production REVERSED (engine rule ported)
 - Deep RE pass on `KG3D_LoaderNoRenderX64.dll` + `PhysicsEngineX64.dll` (game
   client copies in a temp dir; never the installs):
@@ -2329,6 +2920,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   `Get-Content|Set-Content` (PS 5.1 reads BOM-less UTF-8 as ANSI and mangles
   the Chinese literals - this broke the prop selftests until restored from
   git and re-applied with the edit tool).
+
 ### 2026-10-01 - collision - Capsule K/V deep pass (runtime boundary confirmed)
 - Goal: replace the host-chosen capsule 17/116 with the engine's gameplay
   values. Result: confirmed NOT recoverable from shipped data, with new
@@ -2344,6 +2936,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   source exists (P3 row updated with the RVAs). Next deep item:
   engine-physics-in-host (feed baked geometry into PhysicsEngineX64 and use
   its own character sweep) - a multi-session project.
+
 ### 2026-10-01 - collision - Engine-physics-in-host: vtables mapped
 - First step of the endgame track: static disasm of `PhysicsEngineX64.dll`'s
   four vtables - PhysicsTerrain @0xFCFE0, PhysicsScene @0xFA7B8,
@@ -2359,6 +2952,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (b) else reuse the engine's own PxPhysics/PxCooking (manager fields) to
   build a private scene with our baked geometry, then A/B the engine's
   floor/sweep vs our solver at the field spots.
+
 ### 2026-10-01 - collision - Engine PhysicsScene CREATED in-host (endgame unblocked)
 - The P5 probe now creates the engine's own PhysicsScene inside our client:
   `CreatePhysicsScene` (manager vt[16], hr=0) with the engineArg = the active
@@ -2376,6 +2970,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Next: recover the query ABI (disasm the vt[16]/raycast call sites), call the
   engine's sweep/raycast against the loaded terrain + our baked geometry, then
   A/B vs `TerrainSampler`/our solver at the field spots.
+
 ### 2026-10-01 - collision - Gameplay query API found (SIMWorldX64 exports)
 - Scene query functions mapped by their KGLOG strings: scene vt[16] =
   `PhysicsScene::SweepEx` (9 args; caller outside PhysicsEngineX64),
@@ -2388,6 +2983,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Next: LoadLibrary SIMWorldX64 in the host, build a PxWorld, Initialize +
   SetupPhysic with our in-host engine scene, then A/B GetFloorHeight /
   RayCastDirect vs TerrainSampler at the field spots.
+
 ### 2026-10-01 - collision - PxWorld needs semantic factories; direct wrapper route found
 - Follow-up on the query API: `CreateSIMWorld` (SIMWorldX64 @0x351C0) takes a
   Semantic TABLE object and drives its factory calls (vt[0x170]/0x168/0x3A8)
@@ -2400,6 +2996,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   vt[0x20]. So calling `SIMWorldX64+0x1A6E0(arg1,arg2)` in-host + the wrapper's
   vt[0x20] gives the engine's floor query without PxWorld/semantic tables.
 - Next: pin arg1/arg2 from the SetupPhysic caller, then A/B vs TerrainSampler.
+
 ### 2026-10-01 - collision - Engine-physics track: route 1 parked (semantic dependency), route 2 scoped
 - Traced `PxWorld::Setup` (0x3380B..0x33D54): the wrapper's two physics objects
   are created by the SEMANTIC table factory (`table.vt[0x170](key,1)` ->
@@ -2413,6 +3010,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   engine's own character sweep. Self-contained, no represent dependency.
 - Multi-step outcome: engine PhysicsScene in-host (kept), query API mapped,
   wrapper/semantic boundary documented, route 2 defined as the next build.
+
 ### 2026-10-01 - Physician route 2: the engine's own PhysX cook+mesh bridge works in-host
 
 - Goal: stop guessing ABI; the engine binaries carry the exact answer. The
@@ -2431,6 +3029,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   entries by behavior (consumed bytes + return), log-before-call so a hang's
   culprit is visible in the last log line.
 - Next: PxShape/PxRigidStatic/PxScene + queries, then A/B vs our solver.
+
 ### 2026-10-01 - PhysX shape slot: actor vtable decoded; identify objects by getConcreteTypeName
 
 - Continue of the PhysX-direct build: after cook+createTriangleMesh, the actor
@@ -2449,6 +3048,460 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   already says this; this is the second reminder).
 - Next: sweep physics vt[23,25..44] for createShape, or trace the engine's own
   shape factory object used at PhysicsEngineX64 ~0x144CF.
+
+### 2026-10-02 - controls/client - re-based host on the decoded control table
+- User: implement the change plan (decode-faithful).
+- Changed client/RebornClient.cs: added ControlId/Ctrl (ids 0..13); per-frame
+  intents forward/strafeRight/rotationRight; movement from the intents;
+  removed the A/D->camera 1:1 coupling (the registered deviation); RMB stick
+  camera switches the strafe-bound A/D to lateral; keyboard no longer writes
+  the camera anywhere; camera = mouse drag + CameraAdjustYawWhenMoveTurn row.
+- Evidence: turn/A-alone camd=0.00; RMB strafe 96 camd=0.00; WA rmb=1 317
+  camd=0.00; WD row curve. Smoke ALL PASS. Relaunched.
+
+
+### 2026-10-02 - controls - official docs check (2 months): no control change; A/D habit is a choice
+- Researched official notes Aug-Oct 2026: 9912/9920/9948/9-16/9971 - content
+  and fixes only, no control/camera/turn changes (9975 installed = hotfix).
+- Official help (zl/new-crjh): LMB = view only, RMB = view + character turn;
+  WASD move, arrows move, Q/E strafe, both buttons/NumLock autorun. Older
+  official posts document the A/D habit choice (turn vs strafe) and joystick
+  mode's camera-direction movement.
+- Consequence: the host's A/D=turn is the TURN habit, not the default; model
+  the habit as an option. No game-side change to blame for the mismatches.
+
+
+### 2026-10-02 - controls/client - complete real control scheme: A/D habit + official bindings
+- Per user: remove the prebuilt control approximations and re-add the real
+  scheme. Implemented: ControlId/Ctrl table; **A/D habit** (RC_ADHABIT=
+  strafe|turn; default "strafe" = shipped default.txt); arrows turn; both
+  mouse buttons = auto-forward (official help); RMB stick camera = mouse owns
+  the heading (turn-habit A/D become strafe there); row follow only on the
+  rotation intent (move+turn) - this fixed a strafe-diagonal feedback spiral.
+- Evidence: strafe habit A-alone side-step 96 dist camd=0; WA/WD straight
+  315/385 dcam=0.00; turn habit A-alone turn 3.14 camd=0; WA curve 375 dcam=1.
+  Smoke ALL PASS. Default relaunched (strafe habit).
+
+
+### 2026-10-02 - controls/client - classic default = TURN habit + moveYaw control frame
+- User: A/D must not move in classic. Default habit flipped to "turn": A/D
+  rotate in place; lateral only with the RMB stick camera. Added the moveYaw
+  movement/control frame (mouse drag sets it; turn keys rotate it; the camera
+  follows it via the row) so W+A/D curves instead of the camera-frame travel
+  canceling the turn.
+- Evidence: A-alone yaw 3.13 dpos=(0,0) camd=0; WA curve dist=193 dyaw=3.93;
+  WD dist=192 dyaw=-4.04; back 96. Smoke ALL PASS. Relaunched (turn default).
+
+
+### 2026-10-02 - controls/client - turn keys rotate the camera (classic turn)
+- User: "AD should turn camera". Turn-habit A/D and arrows now rotate the view
+  exactly like a mouse drag (right = yaw decrease) and feed the engine through
+  the orbit-pixel path; the character turns to the camera direction (RMB-carry
+  relation). Strafe-habit A/D keep side-stepping with no camera rotation.
+- Evidence: turn habit A-alone yaw -3.14 camd -3.15 dpos=(0,0); TURNRIGHT 0.6s
+  camd=-1.89; strafe habit A/D dpos=(-96,0) camd=0, TURNRIGHT camd=-1.89,
+  WA/WD straight 384 dcam=0.00. Smoke ALL PASS. Relaunched (turn default).
+
+
+### 2026-10-02 - controls - P0: full control-modes decode traceability matrix
+- Started the full CLASSICAL+JOYSTICK decode (user: "full is EVERYTHING",
+  animations included). P0 = `docs/controls/CONTROL_MODES_TRACEABILITY.md`:
+  layer ledger, movement/camera/actions/mode-routing matrices, a 20-row
+  animation matrix, data ledger, gaps G1-G10 + A1-A20 with owner phases
+  (P1 Lua ... P9 publish), verification plan. Registered in controls README.
+- No behavior claims changed; host observations marked as verification only.
+
+
+### 2026-10-02 - controls - P1: Lua handler decode (joystick vector + mode routing)
+- New `tools/controls/lua_index.py` (batch proto index); ran it over the full
+  extracted UI script set (1549 files, 56,688 protos) -> proof/controls/
+  lua_index_all.txt + lua_index_control.txt (committed recon).
+- Decoded bodies (annex `CONTROL_MODES_LUA_ANNEX.md`, dumps committed):
+  hotkeys 0/61 mode wrapper (CLASSICAL= Camera_EnableControl, else
+  Scene_EnableFreeMoveControl); hotkeys 0/46 ResponseWASDKey = joystick
+  analog vector (Turn+Strafe share axes, 8-way MOVE_* + MOVE_STOP on overflow,
+  ResponseDisplacementHotkey routing, double-tap Forward -> StartSprint with
+  tower/bird/horse guards); OperationModeBase 0/5 mode apply (persisted key
+  StorageServer('CurrentOperationMode'), UseFullAngle/LockMouseRotation per
+  mode, Camera_SetResetSpeed(1.0) classical, IsMobileKungfu gate open);
+  0/19 toggle (SetCameraMode(nCameraModeIn<Mode>,true); mobile-kungfu forces
+  JOYSTICK + NEVER_FOLLOW); UISetting_Operation_Switch 0/12 setter.
+- Traceability statuses updated (R4/R6/R8 done, G9 Lua side done).
+
+
+### 2026-10-02 - controls - P1 movement/drag handlers + OB wrapper correction
+- Decoded (annex A6/A7, dumps committed): hotkeys 0/63 OB wrapper (returns
+  true only in OB), 0/65 MoveForwardStart (HoldW + displacement skill 3799 +
+  wrapper + ResponseWASDKey double-tap), 0/76 StrafeLeftStart (classical:
+  OB short-circuit else free-view TurnLeftStart; joystick: ResponseWASDKey +
+  Camera_EnableControl fallback), Scene 0/27/0/31 (desk drag: LMB->CONTROL_CAMERA,
+  RMB->CONTROL_OBJECT_STICK_CAMERA, morph bypass), 0/36 EndDrag(1.0/2.0),
+  0/61 Scene_LockMouseRotation rlcmd, 0/25 classical both-buttons autorun.
+- **Corrected the earlier inverted note**: normal classical A/D DOES call
+  TurnLeftStart via Camera_IsInFreeView; OB is the short-circuit. Superseded
+  notes added in CLASSIC_CONTROLS_AUDIT and OPERATION_MODES_PLAN; matrix
+  M4/C1/C2 updated.
+- Lesson: bytecode TEST/JMP convention (JMP taken iff bool(R[A]) == C) matters;
+  re-derive from a known body before trusting a chain.
+
+
+### 2026-10-02 - controls - VM jump rule confirmed; mode branch mapping reopened
+- Confirmed Lua 5.1 conditional semantics from lua.org lvm.c (OP_EQ: jump iff
+  comparison == A; OP_TEST: jump iff l_isfalse != C) after two self-doctored
+  readings collided. Applying it to hotkeys 0/76 INVERTS the mode->block
+  mapping recorded in both older docs: mode==CLASSICAL -> ResponseWASDKey +
+  Camera_EnableControl(STRAFE) fallback; else -> OB wrapper + free-view
+  TurnLeftStart. Observable per-mode behavior now explicitly OPEN until the
+  C-binding constants (P2) and engine consumer (P3/P4) are decoded; docs
+  updated to stop asserting either direction.
+- Resolved CLOSURE upvalues from the chunk pseudo-instructions: 0/76 [0]=0/63,
+  [1]=false constant (skill branch dead), [2]=0/75 CanStrafeMove (fly-jump/
+  sprint/horse); 0/65 [0]=false constant, [1]=wrapper 0/61, [2]=0/62
+  ClientControlEnabled. Dumps committed (0/62, 0/64, 0/75).
+- Lesson: never infer branch polarity from "obvious" intent; cite the VM rule
+  first, then re-check every earlier decode that assumed it.
+
+
+### 2026-10-02 - controls - P2: mode constants are Lua; mapping resolved
+- Found `CLASSICAL_MODE = 0` / `JOYSTICK_MODE = 1` defined in the
+  OperationModeBase.lua chunk (pc0-3) and `GetOperationMode` as a Lua closure
+  over the shared current-mode upvalue (initial CLASSICAL; SetOperationMode
+  writes it). No C binding involved for the mode itself.
+- Consequence (with the confirmed VM jump rule): CLASSICAL A/D (STRAFE-bound)
+  = ResponseWASDKey + Camera_EnableControl(CONTROL_STRAFE_*) = strafe habit;
+  JOYSTICK A/D = OB wrapper + free-view TurnLeftStart = turn. The host's
+  default "turn" corresponds to JOYSTICK mode, not CLASSICAL - corrected in
+  CLASSIC_CONTROLS_AUDIT + OPERATION_MODES_PLAN + traceability (M4/G10).
+- `Camera_IsClientControlDisabled` (mainscene 0/2) is a getter; CameraStatus_Set
+  (0/3) writes the flag as (params.dis_ctrl == 1) and sets the free-view flag
+  to (mode ~= 'god camera'). Full camera-param table inventory recorded (A8)
+  for P4.
+- P2 gap G11: C Lua-binding names (Scene_EnableFreeMoveControl etc.) are not
+  plaintext in any bin64 module -> hash/registration table to be located;
+  `KCharacter::LuaHoldW` and `KEventCommonMgr::EnableControlCamera` ARE
+  present and give direct anchors for those.
+
+
+### 2026-10-02 - controls - P1 complete: full movement handler roster
+- Decoded the remaining handlers (annex A6.5/A7.6): forward/back start+stop
+  (HoldW, OB short-circuit on backward, double-tap, CheckEndSprint), turn
+  start+stop (enable flag + ResponseWASDKey + mode wrapper, no mode branch),
+  strafe stop mirroring start; Scene 0/24 autorun clear, 0/26 control-setter
+  helper (FORWARD routed to the both-buttons function), 0/6 IsInStickCamera =
+  Hotkey_IsRMouseEnabled and bRDown, 0/94/0/95 Scene_SetMoveControl, and the
+  mouse-move setting persistence key StorageServer('SceneMouseMove') (0/50/0/51).
+- All skill-displacement branches are dead in this build (captured const false);
+  enable flags all captured true. P1 Lua layer is complete for the movement /
+  camera / mode handler set.
+
+
+### 2026-10-02 - controls - P3 static: thunk + script-API + apply chain
+- Built a call-ref scanner for JX3RepresentX64.dll: every control function is
+  reached via a single low-region jmp thunk (CommitInput 0x1805E3270 via
+  0x18000E9B2, GetMoveInfo via 0x18001AC8F, Move/Jump/clear, camera drag
+  functions, etc.).
+- Script API wrapper cluster 0x180AD35A0..0x180AD3A40 with resolved assert
+  strings (GetMoveInfo L194, Move L130, Jump) forwarding to the engine thunks:
+  the C-side character API layer.
+- Input apply chain: KEventCommonMgr -> KGameWorldHandler::AjustCtrlInput
+  (0x1805E1ED0) -> controller apply 0x1805DF350 -> queued-input applier
+  0x1805DF7E0 (callers 0x1805DF459/0x1805DF6F9 iterate container [obj+8],
+  node tick [node+0x10] compare = tick-ordered queue drain). CommitInput
+  callers are vtable/runtime (boundary remains dynamic).
+- Doc: docs/controls/CONTROL_MODES_P3_STATIC.md; proof/controls/p3/*.
+
+
+### 2026-10-02 - controls - P5 start: animation selection algorithm
+- Disassembled KRLRushState::UpdateMoveAnimation (0x1804C0700): clip selection is
+  data-driven per state via a param struct from sub_1801252B: two speed
+  thresholds ([param+0x50] low, [param+0x68] high) vs character speed
+  [this+0xD0] select default/low/high tiers; tiers set playback speed
+  [this+0x34] and transition clips (set A +0x34/+0x58/+0x70, set B
+  +0x44/+0x60/+0x78, combat/stance selector [this+0x114]); anim id [this+0x30]
+  (moving id [param+0x4C]); blend call 0x180003D50; two slots +0x1B8/+0x1C0.
+- Dumps: proof/controls/p5/*.txt; doc docs/controls/CONTROL_MODES_P5_ANIM.md.
+  Next: decode sub_1801252B (state->param table) and UpdateDirection.
+
+
+### 2026-10-02 - controls - P5 lookup chain
+- sub_1801252B thunks to 0x18085CE60: state->param lookup via the singleton
+  [0x180EDDFE0]: index = [this+0xB0] (or 999 sentinel when the [this+0x74]
+  flag is set and [base+0x26466]!=0), lookup sub_180005204(base+0x1A0, mode,
+  index). Sibling 0x18085CEB0 maps raw index through a 10-entry {id,limit}
+  table ([+4] count, index%count when flagged). Next: sub_180005204 + the
+  singleton table to enumerate state param structs.
+
+
+### 2026-10-02 - controls - P5 table layout
+- Resolved sub_180005204 -> 0x180812D70 (key fetch with (mode,index) fallbacks)
+  and 0x180812E00 (binary search over 0x54-byte entries in the vector at
+  [container+0x1E2B8], count +0x1E2C0). The 84-byte entry IS the param struct
+  UpdateMoveAnimation consumes. Table loaded via KTableList::LoadBinTextTab
+  (0x180CD02A0); filename not an in-binary string -> entry enumeration goes via
+  the runtime probe / table extractor. 0x26466 sentinel flag set from a config
+  option query at 0x1803185E0.
+
+
+### 2026-10-02 - controls - P4 static: field map + host build diff
+- Host build diff (MovieEditor JX3RepresentX64 09-14): all anchors present
+  (EnableControlCameraOnly ref 0x1802EE4FA, CameraAdjustYawWhenMoveTurn
+  0x1803420EC, UpdateMoveAnimation 0x1804D04D3, GetMoveInfo 0x1805F2A49,
+  ApplyRotation 0x180B373B5) - probe must use host RVAs, not game RVAs.
+- Field writers (game client): +0x1B0 written only as zero in
+  ResetCharacterCamera; +0x1AC written by the dynamic-follow state machine
+  (0x180B1A6ED=1, 0x180B1B3CB var, 0x180B1D31F=0, 0x180B1D3EB var);
+  ApplyMouse/UpdateRotation only read +0x1AC/+0x1B0. G2/G3 static conclusion:
+  controls drive the state machine, not the flags.
+- Probe plan documented (shim module-base/read exports + RC_PROBE_CONTROL
+  telemetry + scripted runs).
+
+
+### 2026-10-02 - controls - P4 probe run: host has no JX3 game-world layer
+- Implemented RC_PROBE_CONTROL=1 (client, read-only: module base via .NET
+  Process.Modules, Marshal.Copy reads; host RVA 0xF06A50 for the game-world
+  singleton). Build exit 0, smoke ALL PASS.
+- Result: the host loads the exact scanned MovieEditor JX3RepresentX64.dll but
+  [base+0xF06A50] is null for the whole run - MovieEditor never instantiates
+  the JX3 game-world (KTableList/animation params/character controller).
+  Therefore runtime animation-table capture in the host is impossible; P5 must
+  enumerate from the shipped BinText tables + static decode. The F1 catalog
+  columns were documented; the 84-byte locomotion table (2 thresholds, 3 clip
+  pairs) is a separate BinText table still to be found in the paks.
+
+
+### 2026-10-02 - controls - P5 data source status
+- No loose locomotion table on disk (depth-3 scan): only MovieEditor editor
+  templates and the extracted samples catalogs (F1 per-kind rows + serial
+  phased sets). The 84-byte locomotion param entry is a separate BinText table
+  loaded by KTableList::LoadBinTextTab. Next: xref the loader string in the
+  game client to find caller-supplied table names; enumerate the PakV4 index
+  (Data\filepath.ini variants not present); hpkg extractor if packed.
+
+
+### 2026-10-02 - controls - default-binding coverage count
+- Fresh audit (proof/controls/hotkey_coverage.txt): 286 bound commands, 18
+  handled (movement 9 + sit/sheath 2 + camera 7 incl. mouse drag), 268
+  unhandled grouped: action bars 106, UI panels 60, other combat/state 82,
+  targeting 10, rogue/BR 6, minigame 4. Movement+camera control plane is
+  complete; the rest need their own systems (action bar/targeting/UI/stance).
+  CLASSIC_CONTROLS_AUDIT.md section 5b updated (old '176 unhandled' stale).
+
+
+### 2026-10-02 - controls - apply input core + full control plan
+- FULL_CONTROL_PLAN.md: all 286 shipped bindings grouped (movement/camera 18
+  done; input core P0; targeting P1; action bars P2; UI panels P3; stance/talent/
+  NPC/capture P4; contexts P5) with dependencies and verification.
+- Applied P0: HotkeyTable now context-aware (Match filters by the active
+  context; MINIGAME_JUMP no longer aliases MOVEFORWARD), loads per-role
+  hotkey_newlast.txt overrides (decoded format name/context/index/key; empty
+  key = unbound; works with an override-only dir), and logs overrides count.
+  Client: RC_HOTKEY_CTX sets the context, periodic log now carries ctx=.
+- Smoke extended (camera_smoke now compiles HotkeyTable.cs + embeds the two
+  hotkey resources): 4 new checks - W normal/MINIGAME_JUMP separation, W
+  minigame context, A normal, override file applies over embedded defaults
+  (2 overrides, W unbound from slot 1). Build exit 0; ALL PASS.
+
+
+### 2026-10-02 - controls - classic A/D default = strafe (client truth)
+- User: "AD is not supposed to be turning by default". Per the P2 decode
+  (CLASSICAL=0: A/D strafe via ResponseWASDKey + CONTROL_STRAFE; joystick=turn)
+  the host default flipped from turn to strafe; RC_ADHABIT=turn keeps the turn
+  habit. Verified: A-alone d=0.00 side-step dist=96 camera kept; WA/WD straight
+  385/384 dcam=0.00; arrows still turn (camd=-1.89). Smoke ALL PASS.
+
+
+### 2026-10-02 - controls - joystick baseline assessed
+- Kept version committed (HEAD 8b4e7d7); joystick evidence run
+  reborn_20261002_164838.log: per-mode apply ok, auto-face ok (WA/WD straight,
+  dcam=0); found two host bugs vs client truth: (1) joystick A/D run laterally
+  instead of turning in place (client 0/76 joystick branch = free-view
+  TurnLeftStart); (2) turn keys rotate the camera in joystick (decode: keyboard
+  never writes the camera; mouse owns it). Patch list recorded in
+  proof/controls/control_modes_run.txt.
+
+
+### 2026-10-02 - controls - joystick J1+J2 (A/D turn, character-only turns)
+- adStrafe now `classicalMode && (...)`: joystick A/D = turn-in-place per the
+  decoded 0/76 joystick branch; classical keeps strafe default / RC_ADHABIT=turn
+  option. Joystick turn keys rotate only the character (no camera write).
+- Verified: joystick A-alone d=3.14 dpos=(0,0) cam kept; TURNRIGHT camd=0.00;
+  classical regression unchanged (A strafe 96, arrows camd=-1.89). Smoke PASS.
+
+
+### 2026-10-02 - controls - joystick corrected model (turn controls = lateral axis)
+- Decoded OperationModeBase FreeMoveControl (0/16): the joystick builds a
+  discrete vector - TURN_LEFT/RIGHT add nX, FORWARD/BACKWARD add nY - with
+  SetPlayerRotation/TurnTo auto-facing and the camera mouse-only. So joystick
+  A/D (via the strafe handler -> TurnLeftStart -> wrapper) and arrows are
+  lateral movement with auto-face; my J1 (turn-in-place) was wrong and was
+  corrected in the host (joystick turn controls fold into the strafe axis).
+- Verified run 170201: A-alone dist=318 auto-face, camera untouched; WA/WD
+  diagonals 348/383 camd=0.00. One non-reproducible camera-drift run (165931)
+  noted as a transient.
+
+
+### 2026-10-02 - controls - J3 sprint input ported
+- Decoded the sprint chain (hotkeys 0/36/164/165/166): double-tap window is
+  exactly 250 ms; StartSprint casts 6754 (non-GAI_BANG) + player:Sprint(true);
+  EndSprint = SetSprintTopPoint + Sprint(false). Host ports the input side
+  (fresh-press detection on the six movement commands, decoded window,
+  Start/End logs, sprint= telemetry); engine Sprint state left open.
+- Verified via RC_SPRINT_TEST scripted double-tap (150 ms gap) -> StartSprint/
+  EndSprint logged; build exit 0, smoke ALL PASS.
+
+
+### 2026-10-02 - controls - J4 decode: RotatePlayer joystick math + constants
+- RotatePlayer (0/14) per frame in joystick: smooths the vector (0.3/call)
+  toward the target built by FreeMoveControl, computes the byte heading via
+  FastArcTan(|nX|/|nY|) + quadrant fixups (0..255), calls
+  Camera_SetResetSpeed(dir * (bSprintFlag and 3.0 or 1.0) * 0.00125) and
+  SetPlayerRotation(dir) -> TurnTo. Constants extracted from the chunk locals.
+- Key insight: Camera_SetResetSpeed is the JOYSTICK CAMERA FOLLOW RATE written
+  per frame from the direction (not a drag-release setting) - resolves the G5
+  ambiguity; per-mode value at switch is only the base.
+- Host port of the rate pending (no invented rate); decode committed in annex
+  A11.
+
+
+### 2026-10-02 - controls - joystick status close
+- J1/J2/J3/J4 decode+input landed; follow-mode setter confirmed (clamp 0..3,
+  +0x80 classic / +0x98 joystick); the remaining consumers (reset-speed
+  application, follow [0..3], UseFullAngle) sit behind the engine property
+  system / hashed bindings and are documented OPEN rather than approximated
+  (OPERATION_MODES_PLAN 7h).
+
+
+### 2026-10-02 - controls - spring integrator candidate; joystick consumers stay open
+- 0x180B11E40 (camera region) is a spring/interpolation step over
+  fields +0x74/+0x78/+0x7C (time) / +0x80..+0x88 (velocity) / +0x8C..+0x94
+  (target) - offsets overlap the camera-node per-mode block but are reused as
+  time/velocity, so it does NOT prove the per-mode springResetSpeed wiring.
+- Follow-mode reads: none direct in the camera region (property-system
+  boundary). UseFullAngle: no plaintext strings anywhere (hash-registered).
+- Conclusion recorded in P4 doc 2c + OPERATION_MODES_PLAN 7h: these consumers
+  need runtime tracing of the game-world layer, which the host cannot provide.
+
+
+### 2026-10-02 - controls - J5 solved: camera follow mode pipe + gating
+- Found the follow-mode enum (NEVER=0/AUTO=1/ALWAYS=2, enum_ui.lua) and the
+  full native pipe: SetCameraMode -> UI_Camera_SetParams_S -> Camera_SetFollowMode
+  (gc 0x1802EB1C0) -> node setter 0x180ACE3F0. Host now gates the camera follow
+  by the per-mode value (custom.dat), joystick following the travel direction
+  per the decoded RotatePlayer rate; RC_FOLLOW_MODE override for tests.
+- Verified: joystick ALWAYS follows (A dcam 1.06, TURNRIGHT 1.57, WD -1.05);
+  classical default 0 unchanged; smoke ALL PASS. Interpretation note + re-open
+  criteria in annex A12.
+
+
+### 2026-10-02 - controls - J6 pipes located (reset speed = property 0x17; UseFullAngle = logic flag)
+- Camera_SetResetSpeed/SetSpringResetSpeed are plaintext bindings in JX3UIX64;
+  engine side KGameWorldHandler::SetCameraResetSpeed (gc 0x1805FA810) builds an
+  action event {0x1E playerId, value, 0x17 property, float} and posts via
+  world vtbl +0x7D0 (HandleRLAction). Consumer = the action handler for that
+  event kind (bounded next decode).
+- UseFullAngle is NOT Represent: ProcessFullAnglePlayer in JX3ClientX64.exe
+  sets player +0x20038/+0x2003C (air/轻功 full-angle camera) - logic layer,
+  outside ground joystick scope.
+- Proof: proof/controls/p4/gc_SetCameraResetSpeed.txt, exe_ProcessFullAnglePlayer.txt,
+  exe_DoUseFullAngle.txt.
+
+
+### 2026-10-02 - controls - reset-speed consumer chain decoded to one hop
+- Chain: Camera_SetResetSpeed -> KGameWorldHandler::SetCameraResetSpeed
+  (0x1805FA810; 4-field event {playerId, selector, prop 0x17, float}) ->
+  HandleRLAction (0x1802F54B0; lookup 0x1805D9A70 over table 0x180E96C00) ->
+  action table[0x1E] 0x1802EA9B0 -> selector table 0x180E92360 -> sel[0]
+  0x1802EE050 (4-field apply) / sel[1] 0x1802EE250. One hop left (what sel[0]
+  does with the value) before porting the A11 joystick rate.
+
+
+### 2026-10-02 - controls - reset-speed lands in the camera-node command slot
+- sel[0] (0x1802EE050) normalizes the event and calls applier 0x180AE75C0:
+  walks the entity to the type-0xD camera node + type-0xE companion, then
+  node[+0x30]=float value, node[+0x2C]=prop, node[+0x24]=1 (command slot);
+  companion[+0x2C]=1; optional +0x64/+0x68; follow-up 0x180019A60.
+- So the joystick/per-mode reset speed is queued in the camera node command
+  slot and consumed by the camera update. Last hunt: the slot reader (narrow).
+- Proof: proof/controls/p4/reset_speed_applier.txt, reset_speed_sel0_tail.txt.
+
+
+### 2026-10-02 - controls - J8 solved (mode persistence) + J7 N/A; all joystick items closed but one
+- J8: StorageServer('CurrentOperationMode') maps to per-role userpreferences.jx3dat
+  (GBK text map, CurrentOperationMode={0|1}); host reads it read-only via
+  RC_USER_PREFS and applies at startup. Verified: real role file parsed
+  (CurrentOperationMode=0 classical), smoke ALL PASS.
+- J7: no morph/OB camera system in the host -> N/A, documented (not stubbed).
+- Residual: the camera-node command-slot reader (+0x24/+0x2C/+0x30) for the
+  exact A11 rate integration; the slot applier is decoded, the reader needs a
+  proper function-start finder.
+
+
+### 2026-10-02 - controls - mode HUD, joystick default, "/" switch, instant joystick turn
+- Top-left label shows CONTROL: JOYSTICK|CLASSICAL [/] switch; default mode is
+  now joystick; "/" (and F7) switch the mode; the old "/" run-toggle removed.
+- Joystick facing is instant per the client design: SetPlayerRotation ->
+  KCharacter::TurnTo (0x14031E7C0) writes the target heading [char+0x44]
+  directly; the display blends via tabCGAni KeepTurningFrame/TurningEpsilon
+  (no ground turn clip ships). Host sets the facing directly in joystick; the
+  classical RunTo path (rate + >112.5deg penalty) is unchanged.
+- Verified: joystick A-alone snap yaw -1.57 dist=320; WA/WD 383 both (no
+  penalty); classical regression identical; smoke ALL PASS.
+
+
+### 2026-10-02 - controls - full audit (movement+camera+joystick)
+- Gates: jx3_model 10 PASS, gravity exit 0, loot SELFTEST PASS, smoke ALL PASS,
+  build exit 0 warning-free; parity/rules/server gates N/A in this worktree
+  (no netcode/ tree).
+- Scripted runs on the audited build: default joystick; joystick instant turn
+  (A yaw snap -1.57 dist=320; WA/WD 383 no penalty); classical regression
+  unchanged; sprint input Start/End; follow ALWAYS dcam 1.06/1.57/-1.05;
+  mode persistence read. Hygiene: removed unused vars, fixed stale / text.
+- Residuals: A11 rate integration (node slot reader), engine Sprint state,
+  locomotion BinText filename, G11 registry, classical turn-key camera
+  deviation (host-requested), camera-drift flake watch. Report:
+  docs/controls/CONTROL_AUDIT_20261002.md.
+
+
+### 2026-10-02 - controls - full plan audit + follow-target bug fix
+- F1 BUG fixed: the classical AUTO/ALWAYS follow used the control frame
+  (moveYaw) as target -> silent no-op; now the travel heading for both modes.
+  Before 184457 (classical fm=2 camd=0.00 everywhere); after 184651 (strafe
+  camera follows +1.05, WA 0.53, WD -1.06); fm=0 regression 184824 unchanged;
+  joystick fm=2 unchanged; smoke ALL PASS.
+- F2 deviations registered: classical turn-key camera coupling -> camera
+  HOST_DEVIATIONS A13 (re-open criteria); host UX additions (HUD/default//`/`/
+  instant turn) labelled host in OPERATION_MODES_PLAN 7h; RC_* test knobs noted.
+- F3 no other band-aids found (sprint engine state open+logged, A11 residual,
+  animation table data hunt, authored clips only, client-derived TurnTo).
+- F4 plan phases: P0 done; P1-P5 out of the camera/movement scope.
+- Audit section appended to docs/controls/CONTROL_AUDIT_20261002.md.
+
+### 2026-10-02 — client — M1.7 HUD overlay + five-minute solo proof (M1 exit)
+- Did: replaced the hidden WinForms HUD label with `client/HudOverlay.cs` (top-level
+  layered click-through window owned by the host form; "I" key toggles the info box).
+  Built `reborn_client_m1-final.exe`; drove a 5-minute solo session with posted keys
+  (`tools/proof/run_solo5min.ps1`: I, W-hold run, Space jumps, 1 skills) and external
+  window captures (`tools/proof/capture_window.ps1`, DPI-aware) every 30 s.
+- Evidence: `docs/engine_host/M1_SOLO5_PROOF.md` — 10 captures with distinct sha256,
+  HUD text in every scene capture; log: 316 s, path span 15555 u (243 chi), run 320 u/s,
+  18 jump-clip switches, 5 skill casts, fps 131-287, no crash. Overlay window live:
+  LAYERED|TRANSPARENT|TOOLWINDOW|NOACTIVATE 1510x310 over the viewport.
+- Lesson: posted keys need `SetForegroundWindow` first (same as captures); `G` is a
+  game-side hotkey with no client handler - use W-hold for movement; the shared
+  `reborn_out` log dir mixes concurrent clients, select the log by `build=` fingerprint.
+- Outcome: M1 exit criteria met (local branch `agent/m1-final`, not pushed).
+
+
+### 2026-10-02 — merge — agent/m1-final -> main (M1.7 HUD overlay + solo-5 proof)
+- Did: merged `agent/m1-final` (`--no-ff`, no conflicts) after a clean preflight
+  (`merge-tree` exit 0). Rebuilt canonical `reborn_client.exe` + `reborn_client_mini.exe`;
+  gates: `camera_smoke.exe` ALL PASS, `verify_model.py` pass, loot `selftest` PASS,
+  `jx3_model.py` 10x PASS. Relaunch check: canonical client logs `build=reborn_client.exe`
+  and shows the HUD overlay window (collapsed 44x44, LAYERED|TRANSPARENT) over the viewport.
+- Evidence: merge `665e01c`; branch commits `97f0ce6` + `623ffe3`; proof
+  `docs/engine_host/M1_SOLO5_PROOF.md`.
+- Outcome: M1 exit criteria met on main (local, not pushed).
+
 ### 2026-10-02 - PhysX midphase A/B: the solver matches the engine at the field spots
 
 - Completed the PhysX-direct path without a scene: PhysX3Common_x64.dll exports
@@ -2461,6 +3514,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Result: engine vs our solver agree at spawn/wall/pile (tool
   tools/collision/spot_ab.py). The engine-side reference is now reproducible.
 - Note: cooked streams can exceed 64 MB; the probe uses a 256 MB buffer.
+
 ### 2026-10-02 - Phase-1 grid A/B: two wrong assumptions caught, then 0.15% match
 
 - The structure bin is NOT world-baked: v2 = local meshes + per-instance l2w.
@@ -2472,6 +3526,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   tangential-contact threshold artifacts, no phasing class).
 - Rule of thumb reinforced: compare only after both sides use identical
   transforms, identical instance rules, and identical shape conventions.
+
 ### 2026-10-02 - Phase-1 reaches 0.00% (7991 poses); sweep ABI parked
 
 - Dense grid (pitch 100) over the play region: 0/7991 mismatch after the
@@ -2483,6 +3538,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Lesson: for an exported C++ static with a long mixed int/float arg list,
   the mangling is necessary but not sufficient - the binary ABI (stack frame)
   must be confirmed from a real caller when the first call crashes.
+
 ### 2026-10-02 - Sweep ABI: the crash was a POINTER arg (hitFlags), semantics still open
 
 - Correct frame accounting (arg5 starts at callee rsp+0xC0) showed PxHitFlags is
@@ -2492,6 +3548,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - The return bool/fields do not yet match the public 3.3.4 semantics (true with
   zero triangles; unfamiliar hit field offsets; long sweeps hang). Unverified -
   next is copying the engine's own caller frame.
+
 ### 2026-10-02 - Sweep cracked end-to-end: find the engine's own caller
 
 - The decisive move was scanning the sibling DLLs' IMPORT tables for the export
@@ -2500,6 +3557,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   caller in one look (flags arg is a POINTER in this build; distance at hit+0x34).
 - First validated data point matches our solver (initial-overlap -> distance 0).
 - Long sweeps (600/3000u) do not return - respect the short-move boundary.
+
 ### 2026-10-02 - Re-audit against the plan + Phase 3 integration decision
 
 - User call-out: offering (a)/(b)/(c) at the end of the sweep work contradicted
@@ -2510,6 +3568,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   COLLISION_SYSTEM_COMPARISON.md 9: solver stays runtime, engine PhysX is the
   re-runnable calibration gate; re-open criteria stated. Phases 4-5 pending.
 - Audit also fixed stale Reproduce text (22/22 -> 33/33).
+
 ### 2026-10-02 - Phase-4 triage: audit residual is 1 real pass-through, 5 fine
 
 - Reproduced the day-map audit (3.83% at stride 64) and triaged 6 play-area
@@ -2521,12 +3580,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   grid vs the resolve at that exact height.
 - New tools: `wallcheck` (global-resolve path test), RC_PX_POSES (arbitrary
   pose queries) - both reused for future triage.
+
 ### 2026-10-02 - Face-2 triage correction: static contact OK, Resolve path at fault
 
 - First read suggested a triangle-grid miss; the correct-bin tinfo disproved it
   (depth 13-17 at every path pose). The wallcheck still passes through => the
   bug is in the Resolve path (prime suspect: the thin-wall normal flip from
   21f1f39). Do not patch before instrumenting per-substep contacts.
+
 ### 2026-10-02 - The face-2 pass-through was a stale-build artifact; sample is clean
 
 - Rebuilt and re-ran: the reported full pass-through at face 2 side=1 blocks
@@ -2535,6 +3596,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   a bug; the per-substep debug (RC_WALL_DBG) made the true behavior visible.
 - Sampled residual status: all 6 play-area faces gameplay-correct (blocked or
   stepped within the 70 budget). Phase 4 closed on the sample.
+
 ### 2026-10-02 - Phase-5 preflight green (merge pending explicit go)
 
 - Feature build `reborn_client_collision.exe` rebuilt clean from the branch
@@ -2542,6 +3604,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   PASS, loot SELFTEST PASS. Shared shim untouched (build script does not touch
   it). Merge to main is the only remaining step and needs the user's explicit
   go (locked repo rule).
+
 ### 2026-10-02 - Prop step-onto-top (can't-walk-over fix) + branch spawn
 
 - User report on the branch build: sprinting in the house, low props (inst
@@ -2554,6 +3617,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   unchanged.
 - Branch default spawn set to (18991, 962, 33853) per user request (was
   23334,761,24224). Client rebuilt from the branch: pid 31940 "JX3 [collision]".
+
 ### 2026-10-02 - Invisible AABB blocks: props back to the engine rule (mesh triangles)
 
 - User report: blocked in the house where NOTHING is visible (inst=748
@@ -2570,6 +3634,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   trunk graze; the cabinet's real geometry still blocks; selftest 34/34.
   Trade-off (engine-faithful): the log pile's mesh gaps are penetrable again
   like the game's own cooked mesh.
+
 ### 2026-10-02 - Creep guard ported to the branch (sprint-through-wall fix)
 
 - User report: on the branch client they could sprint INTO a building/display
@@ -2583,6 +3648,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   sites already pass the motion hints.
 - Verified: creep wallcheck blocks at 4.7 u; selftest 35/35; client rebuilt
   (pid 2924 -> rebuilt).
+
 ### 2026-10-02 - Step budget = the engine's CCT value (50 u), not the host 64
 
 - User: "i can walk go up this pile of thing, how can this happen". Client
@@ -2596,6 +3662,7 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (was the host 64; RC_STEP_HEIGHT overrides). Note: a ~51 u house-floor step
   will now block unless the gameplay step turns out larger in the server
   movement - flagged for the field.
+
 ### 2026-10-02 - Post-version audit: conflicting rules vs the engine (pile climb root)
 
 User asked for a full audit of conflicting (invented + real) rules after the pile
@@ -2621,6 +3688,7 @@ walk-up. Findings and fixes (all engine-grounded, branch only, no merge):
 - Client data checks: wj_木堆001 pak probe = only the render .mesh (no
   CollisionMesh/proxymesh sibling) so the engine cooks the render mesh; the
   climb came from our rules, not the geometry.
+
 ### 2026-10-02 - Audit correction: step budget stays 64 u (PhysX ctor default is not the gameplay value)
 
 Second audit pass on the step rule conflict, after the ctor dump was read as
@@ -2645,6 +3713,7 @@ Second audit pass on the step rule conflict, after the ctor dump was read as
   climb root), lowTop heuristic removed.
 - Verified: selftest 36/36; pile wallcheck (grounded, +300) still blocked at
   the base with 64; wall-ledge field case still blocks cleanly.
+
 
 ### 2026-10-02 - Merge finalize: collision-improvement into main (pre-M2 base)
 
@@ -2678,6 +3747,7 @@ work into main without M2 entanglement.
   constants reconciled to 90/300 (15 Hz) - the work documented in the
   merge-dryrun/collision branch (5d729b2-based integrated result).
 
+
 ### 2026-10-03 - Sandbox: collision bins were the legacy fallback (fixed)
 
 - Did: while updating the sandbox after the merge, found `reborn_client_mini.exe`
@@ -2690,6 +3760,7 @@ work into main without M2 entanglement.
 - Verified: sandbox log shows `FoliageCollision: instances=5107 meshes=685
   foliage=龙门寻宝_s_foliage_collision.bin structures=龙门寻宝_s_structure_collision.bin`,
   `TerrainSampler regions=1x1`, clean run `reborn_20261003_044206.log`.
+
 ### 2026-10-03 - Camera: anchor to the interpolated render height (jump judder)
 
 - Did (user report: sandbox-mini camera shaking, during a jump): the merged
@@ -2705,3 +3776,86 @@ work into main without M2 entanglement.
 - Verified: same jump run after the fix (`reborn_20261003_181024.log`): raw
   steps still 41/35 u, anchorstep ~2-3 u per render frame (smooth, no 15 Hz
   staircase); collision selftest 36/36; camera smoke ALL PASS.
+
+### 2026-10-03 - Merge main into agent/move-controls (tick model + HudOverlay)
+
+- Did: merged `main` @ 765c357 (15 Hz integer movement, collision system,
+  targeting, HudOverlay, camera anchor) into the controls branch; 11
+  `client/RebornClient.cs` hunks resolved by porting the branch control
+  semantics into main's tick loop (per-tick classical RunTo / joystick instant
+  facing, gait octant, integral step + capsule substeps), plus the
+  `docs/EXPERIENCES.md` union. Merge commit b872d79.
+- Post-merge fixes: removed main's per-tick `curYaw = atan2(mvx,mvz)` snap,
+  turn-key block `dt` -> `pdt`, mode label moved into `HudOverlay.SetModeText`.
+- Lesson (tooling): the hunk side-extraction dropped one closing brace (main's
+  jump probe) - after scripted conflict resolution always brace-balance-scan
+  before building (`depth != 0` catches it instantly).
+- Lesson (proof): layered HUD windows are invisible to `PrintWindow` (flag 2)
+  and to `CopyFromScreen` under DPI virtualization; added `RC_HUD_DUMP=<png>`
+  to save the rendered overlay buffer for a numeric fingerprint.
+- Verified: build exit=0; camera_smoke ALL PASS; jx3_model/gravity/loot gates
+  PASS; scripted classical (`203918`) and joystick (`205138`, git=b872d79)
+  demo runs match pre-merge fingerprints; HUD label buffers 318x33/327x33 with
+  651/675 mode-brush pixels (proof/controls/hud_mode_label_*_20261003.png).
+
+### 2026-10-03 - Fix A/D strafe clip flicker (merge regression)
+
+- Symptom (user report: "pressing A/D plays wrong animation"): the locomotion
+  clip alternated run<->strafe every ~65 ms while pure-lateral input was held.
+- Root cause: the merge resolution computed the gait octant INSIDE the 15 Hz
+  tick loop while `int gait = 0` stayed per render frame - non-tick frames
+  (most frames at 200+ fps) reset gait to 0 -> run clip; tick frames set
+  gait 1/2 -> strafe clip. Pre-merge branch computed gait once per frame, so
+  the merge introduced it.
+- Fix: `client/RebornClient.cs` computes gait per render frame next to
+  `moving`; the in-tick-loop assignment is removed.
+- Numeric fingerprint: clip transitions in the 1.2 s strafe window
+  (RC_DEMO_MOVE classical) 32 -> 3 (`reborn_20261003_203918.log` ->
+  `reborn_20261003_210457.log`); W+A window stable in both (2) - only pure
+  A/D was affected. Lesson: per-frame state read by the render path must not
+  be reset inside the 15 Hz tick loop.
+
+### 2026-10-03 - Joystick mouse: drag-only camera, visible cursor (decode fix)
+
+- User report: joystick mode hides the cursor (no hover); in the game the
+  cursor is a normal visible cursor and the camera turns only while LMB/RMB
+  are held.
+- Decode: `Scene_LockMouseRotation` (joystick) -> engine handler `0x180b00950`
+  sets/clears LockInputControl flag bit 0x10 (`flags |= 0x10` / `&= ~0x10`) -
+  it is not an always-rotate and does not hide the cursor; cursor visibility is
+  the separate script API `0x1802f7aa0` (`[KRL+0x25bb8]`, ShowCursor restore in
+  the window-message handler). Scene.lua begins camera drag only on button-down
+  (both modes).
+- Fix: removed `MouseRotatesWithoutButtons`/`KeepsCursorLocked` and the
+  joystick always-rotate branch; mouse rotation is drag-only in both modes and
+  the cursor lock exists only while dragging. Smoke gating checks updated;
+  joystick demo fingerprints unchanged (`reborn_20261003_214620.log`).
+- Lesson: a console command name is not a behavior spec - decode the handler
+  before mapping it onto host input (the branch's J2 over-interpretation).
+
+### 2026-10-03 - UI: one Esc information panel (info + mode + COPY LOG)
+
+- Request: merge the three on-screen panels (I info box, joystick mode label,
+  COPY LOG button) into a single information panel opened with Esc; nothing is
+  shown while it is closed.
+- Did: `client/HudOverlay.cs` rewritten - hidden by default, Esc toggles; the
+  panel shows the mode line, the run info text and a clickable COPY LOG row;
+  the overlay is no longer click-through (it exists only while open, so it
+  never blocks input when closed). `CopyLogOverlay` removed; the copy action
+  is wired via `hud.OnCopyLog`. `I` stays an alias; Esc keeps unlock + target
+  clear. Added `RC_HUD_OPEN=1` (start open, test) alongside `RC_HUD_DUMP`.
+- Verified: build exit=0; camera_smoke ALL PASS; panel buffer fingerprint
+  633x222 RGBA with 621 yellow (mode), 1817 white (info), 335 light-blue
+  (COPY LOG) px (proof/controls/hud_info_panel_open_20261003.png); a closed
+  run writes no dump (nothing shown).
+- Esc toggles open/close: key-repeat guard (`escDown`, one toggle per press);
+  verified by posting WM_KEYDOWN/WM_KEYUP VK_ESCAPE to our own client (no
+  global input injection - drive_client.ps1 was NOT used): panel window
+  visible=True 633x222 after the first Esc and visible=False after the second.
+- Follow-up ("not every Esc will close"): the form KeyPreview misses keys when
+  the engine's native child window holds focus. Replaced the form handlers
+  with an `IMessageFilter` (`EscKeyFilter`) that sees WM_KEYDOWN for every
+  window in the process, consumes Esc and ignores auto-repeat (lParam bit 30).
+  Verified by posting Esc to the engine child window itself. Added a COPY POS
+  button (copies the live "pos X,Y,Z" line) next to COPY LOG; click verified
+  by posting mouse messages at the button rect.

@@ -1,0 +1,246 @@
+# JX3UIX64.dll xrefs for 'LuaCamera_SetParams'
+# image base 0x180000000
+
+## xref @ 0x1800ad6ad -> 0x18038a560 'KRepresentScriptTable::LuaCamera_SetParams'  fn start 0x1800ad660
+  0x1800ad660: mov      qword ptr [rsp + 0x10], rbx
+  0x1800ad665: push     rdi
+  0x1800ad666: sub      rsp, 0x50
+  0x1800ad66a: mov      rax, qword ptr [rip + 0x3ff127]
+  0x1800ad671: xor      rax, rsp
+  0x1800ad674: mov      qword ptr [rsp + 0x48], rax
+  0x1800ad679: movaps   xmm0, xmmword ptr [rip + 0x2e0a90]
+  0x1800ad680: mov      rdi, rcx
+  0x1800ad683: movups   xmmword ptr [rsp + 0x30], xmm0
+  0x1800ad688: mov      dword ptr [rsp + 0x44], 1
+  0x1800ad690: movss    xmm0, dword ptr [rip + 0x2d232c]
+  0x1800ad698: movss    dword ptr [rsp + 0x40], xmm0
+  0x1800ad69e: call     0x180136b40
+  0x1800ad6a3: mov      ebx, eax
+  0x1800ad6a5: lea      ecx, [rax - 5]
+  0x1800ad6a8: cmp      ecx, 2
+  0x1800ad6ab: jbe      0x1800ad6dd
+  0x1800ad6ad: lea      rax, [rip + 0x2dceac]  ; 'KRepresentScriptTable::LuaCamera_SetParams'
+  0x1800ad6b4: mov      r9d, 0x83f
+  0x1800ad6ba: lea      r8, [rip + 0x2d34d7]  ; 'bRetCode'
+  0x1800ad6c1: mov      qword ptr [rsp + 0x20], rax
+  0x1800ad6c6: lea      rdx, [rip + 0x2d1d53]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800ad6cd: mov      ecx, 3
+  0x1800ad6d2: call     qword ptr [rip + 0x2d0a50]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800ad6d8: jmp      0x1800ad7cc
+  0x1800ad6dd: cmp      ebx, 5
+  0x1800ad6e0: jl       0x1800ad76f
+  0x1800ad6e6: mov      edx, 1
+  0x1800ad6eb: mov      rcx, rdi
+  0x1800ad6ee: call     0x1801377a0
+  0x1800ad6f3: xorps    xmm1, xmm1
+  0x1800ad6f6: mov      edx, 2
+  0x1800ad6fb: cvtsd2ss xmm1, xmm0
+  0x1800ad6ff: mov      rcx, rdi
+  0x1800ad702: movss    dword ptr [rsp + 0x30], xmm1
+  0x1800ad708: call     0x1801377a0
+  0x1800ad70d: xorps    xmm1, xmm1
+  0x1800ad710: mov      edx, 3
+  0x1800ad715: cvtsd2ss xmm1, xmm0
+  0x1800ad719: mov      rcx, rdi
+  0x1800ad71c: movss    dword ptr [rsp + 0x38], xmm1
+  0x1800ad722: call     0x1801377a0
+  0x1800ad727: xorps    xmm1, xmm1
+  0x1800ad72a: mov      edx, 4
+  0x1800ad72f: cvtsd2ss xmm1, xmm0
+  0x1800ad733: mov      rcx, rdi
+  0x1800ad736: movss    dword ptr [rsp + 0x3c], xmm1
+  0x1800ad73c: call     0x1801377a0
+  0x1800ad741: xorps    xmm1, xmm1
+  0x1800ad744: mov      edx, 5
+  0x1800ad749: cvtsd2ss xmm1, xmm0
+  0x1800ad74d: mov      rcx, rdi
+  0x1800ad750: movss    dword ptr [rsp + 0x40], xmm1
+  0x1800ad756: call     0x1801377a0
+  0x1800ad75b: movss    xmm1, dword ptr [rsp + 0x30]
+  0x1800ad761: cvttsd2si eax, xmm0
+  0x1800ad765: movss    dword ptr [rsp + 0x34], xmm1
+  0x1800ad76b: mov      dword ptr [rsp + 0x44], eax
+  0x1800ad76f: cmp      ebx, 6
+  0x1800ad772: jl       0x1800ad78e
+  0x1800ad774: mov      edx, 6
+  0x1800ad779: mov      rcx, rdi
+  0x1800ad77c: call     0x1801377a0
+  0x1800ad781: xorps    xmm1, xmm1
+  0x1800ad784: cvtsd2ss xmm1, xmm0
+  0x1800ad788: movss    dword ptr [rsp + 0x34], xmm1
+  0x1800ad78e: cmp      ebx, 7
+  0x1800ad791: jl       0x1800ad7a9
+  0x1800ad793: mov      edx, 7
+  0x1800ad798: mov      rcx, rdi
+  0x1800ad79b: call     0x1801377a0
+  0x1800ad7a0: cvttsd2si rbx, xmm0
+  0x1800ad7a5: test     ebx, ebx
+  0x1800ad7a7: jne      0x1800ad7b8
+  0x1800ad7a9: call     0x180080c30
+  0x1800ad7ae: mov      rcx, rax
+  0x1800ad7b1: call     0x18010d1b0
+  0x1800ad7b6: mov      ebx, eax
+  0x1800ad7b8: call     0x180080c30
+  0x1800ad7bd: mov      rcx, rax
+  0x1800ad7c0: lea      r8, [rsp + 0x30]
+  0x1800ad7c5: mov      edx, ebx
+  0x1800ad7c7: call     0x18011d3b0
+  0x1800ad7cc: xor      eax, eax
+  0x1800ad7ce: mov      rcx, qword ptr [rsp + 0x48]
+  0x1800ad7d3: xor      rcx, rsp
+  0x1800ad7d6: call     0x180377c80
+  0x1800ad7db: mov      rbx, qword ptr [rsp + 0x68]
+  0x1800ad7e0: add      rsp, 0x50
+  0x1800ad7e4: pop      rdi
+  0x1800ad7e5: ret      
+  0x1800ad7e6: int3     
+  0x1800ad7e7: int3     
+  0x1800ad7e8: int3     
+  0x1800ad7e9: int3     
+  0x1800ad7ea: int3     
+  0x1800ad7eb: int3     
+  0x1800ad7ec: int3     
+  0x1800ad7ed: int3     
+  0x1800ad7ee: int3     
+  0x1800ad7ef: int3     
+  0x1800ad7f0: mov      rax, rsp
+  0x1800ad7f3: mov      qword ptr [rax + 0x10], rbx
+  0x1800ad7f7: mov      qword ptr [rax + 0x18], rsi
+  0x1800ad7fb: push     rbp
+  0x1800ad7fc: push     rdi
+  0x1800ad7fd: push     r14
+  0x1800ad7ff: lea      rbp, [rax - 0x5f]
+  0x1800ad803: sub      rsp, 0xc0
+  0x1800ad80a: movaps   xmmword ptr [rax - 0x28], xmm6
+  0x1800ad80e: movaps   xmmword ptr [rax - 0x38], xmm7
+  0x1800ad812: mov      rax, qword ptr [rip + 0x3fef7f]
+  0x1800ad819: xor      rax, rsp
+  0x1800ad81c: mov      qword ptr [rbp + 0x17], rax
+  0x1800ad820: mov      rdi, rcx
+  0x1800ad823: xor      ebx, ebx
+  0x1800ad825: xorps    xmm6, xmm6
+  0x1800ad828: lea      r14, [rip - 0x2e54f]
+  0x1800ad82f: mov      qword ptr [rsp + 0x20], r14
+  0x1800ad834: lea      r9, [rip - 0x2d55b]
+  0x1800ad83b: lea      edx, [rbx + 0x10]
+  0x1800ad83e: lea      r8d, [rbx + 5]
+  0x1800ad842: lea      rcx, [rbp - 0x39]
+  0x1800ad846: call     0x180377cd0
+  0x1800ad84b: nop      
+  0x1800ad84c: mov      rcx, rdi
+  0x1800ad84f: call     0x180136b40
+  0x1800ad854: mov      esi, eax
+  0x1800ad856: dec      eax
+  0x1800ad858: cmp      eax, 1
+  0x1800ad85b: jbe      0x1800ad88b
+  0x1800ad85d: lea      rax, [rip + 0x2dd054]  ; 'KRepresentScriptTable::LuaCamera_SetPitch'
+  0x1800ad864: mov      qword ptr [rsp + 0x20], rax
+  0x1800ad869: mov      r9d, 0xaa3
+  0x1800ad86f: lea      r8, [rip + 0x2d1c1a]  ; 'nRetCode'
+  0x1800ad876: lea      rdx, [rip + 0x2d1ba3]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800ad87d: lea      ecx, [rbx + 3]
+  0x1800ad880: call     qword ptr [rip + 0x2d08a2]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800ad886: jmp      0x1800ad96b
+  0x1800ad88b: mov      ebx, 1
+  0x1800ad890: mov      edx, ebx
+  0x1800ad892: mov      rcx, rdi
+  0x1800ad895: call     0x1801377a0
+  0x1800ad89a: xorps    xmm7, xmm7
+  0x1800ad89d: cvtsd2ss xmm7, xmm0
+  0x1800ad8a1: cmp      esi, 2
+  0x1800ad8a4: jne      0x1800ad8b7
+  0x1800ad8a6: mov      edx, esi
+  0x1800ad8a8: mov      rcx, rdi
+  0x1800ad8ab: call     0x1801377a0
+  0x1800ad8b0: xorps    xmm6, xmm6
+  0x1800ad8b3: cvtsd2ss xmm6, xmm0
+  0x1800ad8b7: mov      dword ptr [rbp - 0x49], 0x1e
+  0x1800ad8be: mov      dword ptr [rbp - 0x41], 8
+  0x1800ad8c5: mov      byte ptr [rbp - 0x3d], 2
+  0x1800ad8c9: lea      rdx, [rbp - 0x49]
+  0x1800ad8cd: lea      rcx, [rbp - 0x39]
+  0x1800ad8d1: call     0x180080470
+  0x1800ad8d6: nop      
+  0x1800ad8d7: mov      dword ptr [rbp - 0x49], 0xffffffff
+  0x1800ad8de: mov      dword ptr [rbp - 0x41], 8
+  0x1800ad8e5: mov      byte ptr [rbp - 0x3d], 5
+  0x1800ad8e9: lea      rdx, [rbp - 0x49]
+  0x1800ad8ed: lea      rcx, [rbp - 0x29]
+  0x1800ad8f1: call     0x180080470
+  0x1800ad8f6: nop      
+  0x1800ad8f7: mov      dword ptr [rbp - 0x49], 0xf
+  0x1800ad8fe: mov      dword ptr [rbp - 0x41], 8
+  0x1800ad905: mov      byte ptr [rbp - 0x3d], 2
+  0x1800ad909: lea      rdx, [rbp - 0x49]
+  0x1800ad90d: lea      rcx, [rbp - 0x19]
+  0x1800ad911: call     0x180080470
+  0x1800ad916: nop      
+  0x1800ad917: movss    dword ptr [rbp - 0x49], xmm7
+  0x1800ad91c: mov      dword ptr [rbp - 0x41], 8
+  0x1800ad923: mov      byte ptr [rbp - 0x3d], 8
+  0x1800ad927: lea      rdx, [rbp - 0x49]
+  0x1800ad92b: lea      rcx, [rbp - 9]
+  0x1800ad92f: call     0x180080470
+  0x1800ad934: nop      
+  0x1800ad935: movss    dword ptr [rbp - 0x49], xmm6
+  0x1800ad93a: mov      dword ptr [rbp - 0x41], 8
+  0x1800ad941: mov      byte ptr [rbp - 0x3d], 8
+  0x1800ad945: lea      rdx, [rbp - 0x49]
+  0x1800ad949: lea      rcx, [rbp + 7]
+  0x1800ad94d: call     0x180080470
+  0x1800ad952: nop      
+  0x1800ad953: call     0x180080c30
+  0x1800ad958: mov      rcx, rax
+  0x1800ad95b: mov      r8d, 5
+  0x1800ad961: lea      rdx, [rbp - 0x39]
+  0x1800ad965: call     0x18011edc0
+  0x1800ad96a: nop      
+  0x1800ad96b: mov      r9, r14
+  0x1800ad96e: mov      edx, 0x10
+  0x1800ad973: lea      r8d, [rdx - 0xb]
+  0x1800ad977: lea      rcx, [rbp - 0x39]
+  0x1800ad97b: call     0x180377a58
+  0x1800ad980: mov      eax, ebx
+  0x1800ad982: mov      rcx, qword ptr [rbp + 0x17]
+  0x1800ad986: xor      rcx, rsp
+  0x1800ad989: call     0x180377c80
+  0x1800ad98e: lea      r11, [rsp + 0xc0]
+  0x1800ad996: mov      rbx, qword ptr [r11 + 0x28]
+  0x1800ad99a: mov      rsi, qword ptr [r11 + 0x30]
+  0x1800ad99e: movaps   xmm6, xmmword ptr [r11 - 0x10]
+  0x1800ad9a3: movaps   xmm7, xmmword ptr [r11 - 0x20]
+  0x1800ad9a8: mov      rsp, r11
+  0x1800ad9ab: pop      r14
+  0x1800ad9ad: pop      rdi
+  0x1800ad9ae: pop      rbp
+  0x1800ad9af: ret      
+  0x1800ad9b0: mov      qword ptr [rsp + 0x18], rbx
+  0x1800ad9b5: push     rdi
+  0x1800ad9b6: sub      rsp, 0x70
+  0x1800ad9ba: movaps   xmmword ptr [rsp + 0x60], xmm6
+  0x1800ad9bf: mov      rax, qword ptr [rip + 0x3fedd2]
+  0x1800ad9c6: xor      rax, rsp
+  0x1800ad9c9: mov      qword ptr [rsp + 0x58], rax
+  0x1800ad9ce: mov      rbx, rcx
+  0x1800ad9d1: xorps    xmm6, xmm6
+  0x1800ad9d4: call     0x180136b40
+  0x1800ad9d9: mov      edi, eax
+  0x1800ad9db: lea      ecx, [rax - 3]
+  0x1800ad9de: cmp      ecx, 1
+  0x1800ad9e1: jbe      0x1800ada13
+  0x1800ad9e3: lea      rax, [rip + 0x2dccfe]  ; 'KRepresentScriptTable::LuaCamera_SetRTParams'
+  0x1800ad9ea: mov      r9d, 0x960
+  0x1800ad9f0: lea      r8, [rip + 0x2d31a1]  ; 'bRetCode'
+  0x1800ad9f7: mov      qword ptr [rsp + 0x20], rax
+  0x1800ad9fc: lea      rdx, [rip + 0x2d1a1d]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1800ada03: mov      ecx, 3
+  0x1800ada08: call     qword ptr [rip + 0x2d071a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1800ada0e: jmp      0x1800adaad
+  0x1800ada13: mov      qword ptr [rsp + 0x88], rsi
+  0x1800ada1b: call     0x180080c30
+  0x1800ada20: mov      rcx, rax
+  0x1800ada23: call     0x18010d1b0
+  0x1800ada28: mov      edx, 1
+  0x1800ada2d: mov      rcx, rbx
+  0x1800ada30: .byte    0x8b
+

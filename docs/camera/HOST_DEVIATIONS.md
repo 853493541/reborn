@@ -20,6 +20,7 @@ N=native bypass, H=harness. Status updated as items land.
 | A10 | `CharacterYawTurnSpeed` (consumer unknown) | RMB body-turn fallback pi rad/s | P | recover the consumer |
 | A11 | mouse deltas are clamped per frame | `CameraSystem.Mouse` now clamps the per-call delta with `CameraMaxDeltaPitch` (was a no-op absolute clamp); still test-path only, the live drag clamps in `RebornClient` | B | wire the model call into the live path |
 | A12 | `CAMERAZOOMIN`/`CAMERAZOOMOUT` bound to the wheel (`ui/script/hotkeys.lua`; `INPUT_CONTROLS.md` §2) | **the wheel is inert; zoom is on the `+`/`-` keys (2026-09-30, user decision)**: `Oemplus`/numpad `Add` = CameraZoomIn (x0.9), `OemMinus`/numpad `Subtract` = CameraZoomOut (x1.1); same `CameraSystem.ZoomBy` rule and clamps | H (host binding) | real hotkey table + input contexts |
+| A13 | decoded: the keyboard never writes the camera (`CONTROL_TURN_*` feeds the character only; the camera is mouse-owned, the move+turn row is the only follow) | CLASSICAL turn keys rotate the **view** directly (user request 2026-10-02: turn keys turn the camera; kept for arrows and the `RC_ADHABIT=turn` option) and the character follows the camera. The decoded row follow is applied on top for AUTO/ALWAYS modes (target = travel heading, fixed 2026-10-02). JOYSTICK turn controls never write the camera (client-true). | H (host/user decision) | revert when the engine `CONTROL_TURN_*` consumer is modeled, or on user preference |
 
 ## B. Visibility/placement band-aids
 

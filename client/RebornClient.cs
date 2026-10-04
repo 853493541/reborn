@@ -18,15 +18,47 @@
 //   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
 // RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using MovieEngineCLR;
+
+// Engine control ids (control.lua / Camera_EnableControl): the host keeps the
+// same table the client stores in its control property store.
+internal static class ControlId
+{
+    public const int Forward = 0, Backward = 1, TurnLeft = 2, TurnRight = 3,
+        StrafeLeft = 4, StrafeRight = 5, Camera = 6, StickCamera = 7,
+        Walk = 8, Jump = 9, AutoRun = 10, Follow = 11, Up = 12, Down = 13;
+}
+
+internal static class Ctrl
+{
+    public static void Set(ref int mask, int id, bool on)
+    {
+        if (on) mask |= 1 << id; else mask &= ~(1 << id);
+    }
+    public static bool Get(int mask, int id) { return (mask & (1 << id)) != 0; }
+}
 
 internal static class RebornClient
 {
     static string outDir;
     static Action<string> Log;
+    static string adHabit = "strafe";   // classic A/D: strafe (default.txt) | turn
+    static double moveYaw = 0.0;        // movement/control frame; turn keys rotate it
+    // P4 control probe (RC_PROBE_CONTROL=1): read-only engine field capture.
+    // Host JX3RepresentX64.dll RVAs come from docs/controls/CONTROL_MODES_P4_PROBE.md
+    // (MovieEditor build 2026-09-14, not the game-client RVAs).
+    static bool probeControl = false;
+    static long nextProbeMs = 0;
+    static bool probeTableDone = false;
+    // J3 sprint input state (decoded: IsKeyDoubleDown window 250 ms; StartSprint
+    // casts skill 6754 + player:Sprint(true); CheckEndSprint -> EndSprint).
+    static bool sprintOn = false;
 
     [STAThread]
     private static void Main(string[] args)
@@ -63,11 +95,31 @@ internal static class RebornClient
                     foreach (var other in System.Diagnostics.Process.GetProcessesByName(name))
                     {
                         if (other.Id == me.Id) continue;
+                        // Blocked-start diagnostics: the dialog keeps its title
+                        // on the feature build and names the conflicting session
+                        // (pid/start/title); a line is also appended to
+                        // reborn_out\guard_block.txt so a missed dialog is
+                        // discoverable from logs (rc=blocked marker).
+                        string started = "?";
+                        string title = "";
+                        try { started = other.StartTime.ToString("HH:mm:ss"); } catch { }
+                        try { title = other.MainWindowTitle; } catch { }
+                        try
+                        {
+                            string gdir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reborn_out");
+                            Directory.CreateDirectory(gdir);
+                            File.AppendAllText(Path.Combine(gdir, "guard_block.txt"),
+                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " +
+                                me.ProcessName + " blocked by " + name + " pid=" + other.Id +
+                                " start=" + started + " title=[" + title + "]\r\n");
+                        }
+                        catch { }
                         System.Windows.Forms.MessageBox.Show(
                             name + " is already running (pid " + other.Id +
-                            ") and shares memory namespace " + memNs +
+                            ", started " + started + ", window [" + title + "])" +
+                            " and shares memory namespace " + memNs +
                             ". Close it first or set RC_ALLOW_MULTI=1.",
-                            "reborn_client");
+                            me.ProcessName + ": start blocked");
                         return;
                     }
                 }
@@ -92,6 +144,34 @@ internal static class RebornClient
         string clipRun = Env("RC_CLIP_RUN", f1 + "f1b02yd\u5954\u8DD1.ani");
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
+        // Landing branch (player_suspend.krl.txt F1 rows): FallFloorAnimation
+        // data/source/player/F1/动作/F1b02yd握拳小跳c.ani is played when the
+        // landed height difference exceeds FallDownHeightFloor (500 u).
+        string clipLand = Env("RC_CLIP_LAND", f1 + "f1b02yd\u63E1\u62F3\u5C0F\u8DF3c.ani");
+        // Strafe / back-pedal locomotion for the operation-mode routing
+        // (CLASSICAL side-step / back-pedal): the F1 authored clips
+        // (player_animation_f1.txt KindID 6 / 57). Verified loadable+playable
+        // in-engine (reborn_20260930_231207.log, rc=0, no AV).
+        string clipStrafeL = Env("RC_CLIP_STRAFE_L", f1 + "F1b02yd\u632A\u6B65\u5DE6.tani");
+        string clipStrafeR = Env("RC_CLIP_STRAFE_R", f1 + "F1b02yd\u632A\u6B65\u53F3.tani");
+        string clipBack = Env("RC_CLIP_BACK", f1 + "F1b02yd\u540E\u900001.tani");
+        // TOGGLESITDOWN (decoded: OnUseSkill(17) / Stand()): the F1 catalog's
+        // looping 打坐 clip (kind 1, loop 1) is the sit pose.
+        string clipSit = Env("RC_CLIP_SIT", f1 + "F1b02dj\u6253\u5750a.tani");
+        // TOGGLESHEATH (decoded: SetSheath flag): the b02 draw transition
+        // (F1b02ty拔剑01_start01) and the drawn-stance loop
+        // (F1b02ty拔剑01_st01_持续, kind 31 loop 1). No 收剑 clip ships for b02;
+        // sheathing falls back to the normal idle.
+        string clipSheathDraw = Env("RC_CLIP_SHEATH_DRAW", f1 + "F1b02ty\u62D4\u525101_start01.ani");
+        string clipSheathHold = Env("RC_CLIP_SHEATH_HOLD", f1 + "F1b02ty\u62D4\u525101_st01_\u6301\u7EED.tani");
+        long landClipMs = 700;
+        long.TryParse(Env("RC_CLIP_LAND_MS", "700"), out landClipMs);
+        float fallDownHeightFloor = 500f;   // FallDownHeightFloor (player_suspend.krl.txt)
+        float.TryParse(Env("RC_FALL_ROLL", "500"), out fallDownHeightFloor);
+        long landClipUntil = 0;
+        // Airborne horizontal state: takeoff/End triple JumpSpeedXY / walk-off
+        // momentum (u/s); airStartY = height when the character left the ground.
+        float vjx = 0f, vjz = 0f, airStartY = 0f;
         string clipSkill = Env("RC_CLIP_SKILL", flws);
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
@@ -185,7 +265,7 @@ internal static class RebornClient
                 Env("RC_PITCH_ALIGN", "1"), Env("RC_PLAYER_HIDE", "1"),
                 Env("RC_CAM_SNAPGUARD", "0"), Env("RC_CAM_CROSS", "0"), Env("RC_CAM_HITMIN", "3.0"), Env("RC_CAM_WALLGATE", "0"), Env("RC_CAM_SCENERAY", "1"), Env("RC_CAM_SCENEMIN", "80"),
                 Env("RC_CAM_BACKFACE", "1"), Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0")),
-                Env("RC_MODE", "classical")));
+                Env("RC_MODE", "joystick")));
         }
         Log("start map=" + mapPath);
         Log("asset_root=" + workingDir + " phys=" + physDll);
@@ -211,17 +291,18 @@ internal static class RebornClient
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         form.Controls.Add(panel);
-        // M1.7: the engine renders into a child window of `form`, so WinForms
+        // M1.7: the engine renders into a child window of orm, so WinForms
         // child controls sit behind the 3D output. The HUD is a separate
-        // top-level layered overlay (client/HudOverlay.cs) owned by `form`;
-        // "I" toggles the info box (key handled with the other hotkeys).
+        // top-level layered overlay (client/HudOverlay.cs) owned by orm;
+        // Esc toggles the information panel (info + control mode + COPY LOG);
+        // nothing is shown while it is closed (no on-screen panel hints).
         var hud = new HudOverlay();
+        if (Env("RC_HUD_OPEN", "0") == "1") hud.ShowInfo = true;   // test: start open
         form.Show();
         hud.PlaceOver(form);
-        // COPY LOG widget: clickable (the HUD overlay is click-through), owned
-        // by the host form; copies the recent run log to the clipboard.
-        var copyLog = new CopyLogOverlay();
-        copyLog.OnClick = delegate
+        // COPY LOG row (clickable inside the open panel); copies the recent
+        // run log to the clipboard.
+        hud.OnCopyLog = delegate
         {
             try
             {
@@ -233,7 +314,6 @@ internal static class RebornClient
             }
             catch (Exception e) { Log("clipboard copy failed: " + e.Message); }
         };
-        copyLog.PlaceOver(form);
         Application.DoEvents();
 
         var baselib = new KGBaseCLR();
@@ -533,6 +613,17 @@ internal static class RebornClient
 
         // ---------------- player ----------------
         float px = 0f, py = 0f, pz = 0f, vy = 0f;
+        // COPY POS row: copies the displayed position (the panel's pos line).
+        hud.OnCopyPos = delegate
+        {
+            try
+            {
+                string pos = string.Format("pos {0:F0},{1:F0},{2:F0}", px, py, pz);
+                Clipboard.SetText(pos);
+                Log("copied pos to clipboard: " + pos);
+            }
+            catch (Exception e) { Log("clipboard copy failed: " + e.Message); }
+        };
         float viewX = 0f, viewY = 0f, viewZ = 1f;   // spawn orientation (measured once)
         bool grounded = false;
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
@@ -588,15 +679,25 @@ internal static class RebornClient
             }
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
+            // Classic A/D default: STRAFE (shipped default.txt binds A/D to
+            // STRAFELEFT/RIGHT; decoded hotkeys 0/76 classical branch =
+            // ResponseWASDKey + Camera_EnableControl(CONTROL_STRAFE_*)).
+            // RC_ADHABIT=turn opts into the turn-in-place habit (the free-view
+            // TurnLeft/RightStart branch used by the joystick mode).
+            adHabit = Env("RC_ADHABIT", "strafe").Trim().ToLowerInvariant();
+            if (adHabit != "turn") adHabit = "strafe";
             string camCfg = Path.Combine(cfgDir, "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
                 catch (Exception e) { Log("camera config ex: " + e.Message); }
             }
+            Log("ad habit: " + adHabit + " (RC_ADHABIT=strafe|turn)");
             camSys.SwitchMode(CameraSystem.MODE_CHARACTER);
             cameraSettings = CameraSettings.Load(
                 editorRoot, mapPath, cfgDir, Log);
+            cameraSettings.ApplyOperationMode();
+            Log("opmode applied: " + cameraSettings.DescribeApplied());
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             // Game-data pitch is NEGATIVE when the camera sits above the anchor
@@ -668,16 +769,17 @@ internal static class RebornClient
         float curYaw = 0f;
         float lastModelX = float.MaxValue, lastModelY = float.MaxValue, lastModelZ = float.MaxValue, lastModelYaw = float.MaxValue;
 
-        Action<string> setClip = delegate(string path)
+        Func<string, int> setClip = delegate(string path)
         {
-            if (path == curClip) return;
+            if (path == curClip) return 0;
             try
             {
                 int pr = model.PlayAnimation(path, 0, 1.0f, 0);
                 Log("clip -> " + path + " (" + pr + ")");
                 curClip = path;
+                return pr;
             }
-            catch (Exception e) { Log("setClip ex: " + e.Message); }
+            catch (Exception e) { Log("setClip ex: " + e.Message); return -1; }
         };
 
         // measure camera view direction by nudging forward (map-host method)
@@ -926,6 +1028,9 @@ internal static class RebornClient
         if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
         {
             camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            // classical movement runs along the facing: spawn facing the view
+            curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            moveYaw = camSys.Yaw;
             Log(string.Format("camera yaw init={0:F3} (view dir {1:F2},{2:F2})", camSys.Yaw, viewX, viewZ));
         }
 
@@ -937,6 +1042,50 @@ internal static class RebornClient
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
+        // C1/C2 input core: the real binding table (ui/hotkey/default.txt +
+        // bindings.ini) is decoded at startup; movement commands below are
+        // dispatched from it instead of hardcoded keys.
+        HotkeyTable hotkeys = HotkeyTable.Load(Env("RC_HOTKEY_DIR", ""), Log);
+        // binding context ("" = normal play). Rows from other contexts must not
+        // fire here (e.g. MINIGAME_JUMP on W). RC_HOTKEY_CTX is the test path
+        // until the runtime contexts (morph/summon/minigame) exist.
+        hotkeys.Context = Env("RC_HOTKEY_CTX", "").Trim();
+        Log("hotkeys: context='" + hotkeys.Context + "'");
+        {
+            string[] probe = new string[] { "MOVEFORWARD", "MOVEBACKWARD", "STRAFELEFT",
+                "STRAFERIGHT", "TURNLEFT", "TURNRIGHT", "JUMP", "TOGGLERUN", "TOGGLEAUTORUN" };
+            for (int hi = 0; hi < probe.Length; hi++)
+                Log("hotkey " + probe[hi] + " = " +
+                    HotkeyTable.Describe(hotkeys.Get(probe[hi])));
+        }
+        bool pTurnL = false, pTurnR = false, autorunOn = false;
+        // base character actions (decoded handlers): sit = OnUseSkill(17 打坐) /
+        // Stand(); sheath = SetSheath flag (gates: sitting blocks it; the
+        // fight/bird/horse/tower/buff gates are always false in the host).
+        bool sitting = false, sheathOn = false;
+        long sheathDrawUntil = 0;   // draw transition window (拔剑 start clip)
+        int unhandledCmd = 0;
+        string lastUnhandled = "";
+        bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
+        probeControl = Env("RC_PROBE_CONTROL", "0") == "1";
+        bool sprintTest = Env("RC_SPRINT_TEST", "0") == "1";
+        bool sprintT1 = false, sprintT2 = false, sprintT3 = false, sprintT4 = false;
+        bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
+        bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
+        bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
+        bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
+        int demoRmbWa = 0;
+        int.TryParse(Env("RC_DEMO_RMBWA", "0"), out demoRmbWa);   // 1 = hold RMB, 2 = + orbit drag
+        int demoRmbStrafe = 0;
+        int.TryParse(Env("RC_DEMO_RMBSTRAFE", "0"), out demoRmbStrafe);   // 1 = hold RMB during the A-strafe phase
+        float strafeX0 = 0f, strafeZ0 = 0f, backX0 = 0f, backZ0 = 0f, waX0 = 0f, waZ0 = 0f, wdX0 = 0f, wdZ0 = 0f;
+        float waYaw0 = 0f, wdYaw0 = 0f;
+        double waCam0 = 0.0, wdCam0 = 0.0;
+        float strafeYaw0 = 0f, backYaw0 = 0f, turnYaw0 = 0f;
+        double strafeCam0 = 0.0, backCam0 = 0.0, turnCam0 = 0.0;
+        long modeSwitchAt = 0;
+        long.TryParse(Env("RC_MODE_SWITCH_AT", "0"), out modeSwitchAt);
+        bool modeSwitched = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
         bool supDbg = Env("RC_SUPDBG", "0") == "1";
@@ -953,9 +1102,117 @@ internal static class RebornClient
             if (dd.Length >= 2) { float.TryParse(dd[0], out demoDirX); float.TryParse(dd[1], out demoDirZ); }
         }
         bool cDown = false, teleportToStructure = false;
-        bool iDown = false;   // "I" toggles the HUD info box (M1.7 overlay)
+        bool iDown = false;   // "I" toggles the info panel (alias of Esc)
         bool divDown = false;
         TargetEntity indTarget = null;
+        // Command executor (host equivalent of the ui/script hotkey handlers):
+        // the movement set is dispatched from the real table; other commands
+        // are counted as unhandled - no fake handlers for combat/UI yet.
+        Action<string, bool> runCommand = delegate(string name, bool down)
+        {
+            switch (name)
+            {
+                case "MOVEFORWARD": pW = down; break;
+                case "MOVEBACKWARD": pS = down; if (down) autorunOn = false; break;
+                case "STRAFELEFT": pA = down; if (down) autorunOn = false; break;
+                case "STRAFERIGHT": pD = down; if (down) autorunOn = false; break;
+                case "TURNLEFT": pTurnL = down; break;
+                case "TURNRIGHT": pTurnR = down; break;
+                case "JUMP":
+                    if (down) { if (!spaceDown) { spaceDown = true; jumpPressed = true; } }
+                    else spaceDown = false;
+                    break;
+                case "TOGGLERUN":
+                    if (down)
+                    {
+                        if (!divDown)
+                        {
+                            divDown = true;
+                            walkMode = !walkMode;
+                            Log("movement mode: " + (walkMode ? "WALK" : "RUN") + " (TOGGLERUN)");
+                        }
+                    }
+                    else divDown = false;
+                    break;
+                case "TOGGLEAUTORUN":
+                    if (down) { autorunOn = !autorunOn; Log("autorun: " + (autorunOn ? "on" : "off")); }
+                    break;
+                case "TOGGLESITDOWN":
+                    // decoded 0/98: nMoveState == ON_SIT ? Stand() : OnUseSkill(17, ..)
+                    if (down)
+                    {
+                        if (sitting) { sitting = false; Log("sit: stand (Stand)"); }
+                        else { sitting = true; Log("sit: down (OnUseSkill 17 打坐)"); }
+                    }
+                    break;
+                case "TOGGLESHEATH":
+                    // decoded 0/97 gates: sit/death/fight/bird/horse/tower/buff
+                    // block it; the host only models the sit gate (the others
+                    // are always false).
+                    if (down)
+                    {
+                        if (sitting) Log("sheath rejected: sitting");
+                        else
+                        {
+                            sheathOn = !sheathOn;
+                            if (sheathOn) sheathDrawUntil = (long)Environment.TickCount + 800;
+                            Log("sheath: " + (sheathOn ? "drawn" : "sheathed"));
+                        }
+                    }
+                    break;
+                default:
+                    unhandledCmd++;
+                    lastUnhandled = name;
+                    break;
+            }
+        };
+        // J3 sprint: double-tap detection on the movement command set, exact
+        // decoded window 250 ms (hotkeys 0/36 Hotkey.GetKeyTimeInterval < 250),
+        // gated by the ResponseWASDKey rules (down + isDouble; tower/bird/horse
+        // are always false in the host). Engine Sprint(true)/skill 6754 are
+        // not modeled (J3 open) - logged, never faked as a speed.
+        System.Collections.Generic.Dictionary<string, long> cmdDownAt =
+            new System.Collections.Generic.Dictionary<string, long>();
+        System.Collections.Generic.Dictionary<string, bool> cmdHeld =
+            new System.Collections.Generic.Dictionary<string, bool>();
+        Func<string, bool> sprintKey = delegate(string name)
+        {
+            return name == "MOVEFORWARD" || name == "MOVEBACKWARD"
+                || name == "STRAFELEFT" || name == "STRAFERIGHT"
+                || name == "TURNLEFT" || name == "TURNRIGHT";
+        };
+        Action<string, bool> keyCommand = delegate(string name, bool down)
+        {
+            bool isDouble = false;
+            if (down)
+            {
+                bool held;
+                if (!cmdHeld.TryGetValue(name, out held) || !held)
+                {
+                    long last;
+                    long t = (long)Environment.TickCount;
+                    if (cmdDownAt.TryGetValue(name, out last) && t - last < 250)
+                        isDouble = true;
+                    cmdDownAt[name] = t;
+                    cmdHeld[name] = true;
+                }
+            }
+            else
+            {
+                cmdHeld[name] = false;
+            }
+            runCommand(name, down);
+            if (isDouble && sprintKey(name) && !sprintOn)
+            {
+                sprintOn = true;
+                Log("sprint: StartSprint (" + name + " double-tap 250ms; skill 6754, Sprint(true) engine state not modeled - J3 open)");
+            }
+            if (!down && sprintOn && sprintKey(name))
+            {
+                sprintOn = false;
+                Log("sprint: EndSprint (Sprint(false), SetSprintTopPoint)");
+            }
+        };
         bool mouseLocked = false;
         bool lmbDown = false, rmbDown = false;
         bool dragArmed = false;
@@ -1002,6 +1259,8 @@ internal static class RebornClient
             measureView();
             if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                 camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            moveYaw = camSys.Yaw;
             camSys.Pitch = targetPitch;
         };
 
@@ -1109,9 +1368,9 @@ internal static class RebornClient
             if (e.Button == MouseButtons.Left) lmbDown = false;
             else if (e.Button == MouseButtons.Right) rmbDown = false;
             dragArmed = false;
-            // joystick mode keeps the cursor locked between drags
-            if (!lmbDown && !rmbDown && mouseLocked &&
-                !CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) unlockMouse();
+            // drag ended: release the cursor (both modes - the decoded client
+            // only locks the cursor while dragging; no mode keeps it locked)
+            if (!lmbDown && !rmbDown && mouseLocked) unlockMouse();
             // click (no drag) = select the target under the cursor; an empty
             // pick deselects. Host ray approximation (no world->screen in the
             // managed host); rendering medium only, the selection model follows
@@ -1124,19 +1383,16 @@ internal static class RebornClient
         };
         MouseEventHandler onMouseMove = delegate(object s, MouseEventArgs e)
         {
-            bool joystick = CameraOperationMode.MouseRotatesWithoutButtons(cameraSettings.OperationMode);
-            if ((!lmbDown && !rmbDown) && !joystick) return;
-            if (!joystick && !dragArmed) return;
+            // Decoded client (corrected 2026-10-03): the camera rotates only
+            // while an LMB/RMB drag is held, in BOTH modes - Scene.lua starts
+            // Camera_BeginDrag on button-down and a plain mouse move never
+            // rotates. Scene_LockMouseRotation is a LockInputControl flag bit
+            // (engine 0x180b00950), NOT an always-rotate / cursor-hide.
+            if (!lmbDown && !rmbDown) return;
+            if (!dragArmed) return;
             System.Drawing.Point p = panelPoint(s, e);
             if (!mouseLocked)
             {
-                if (joystick)
-                {
-                    // operation mode 1 (joystick): Scene_LockMouseRotation -
-                    // mouse movement rotates without holding a button
-                    lockMouse();
-                    return;
-                }
                 int mdx = p.X - pressPoint.X, mdy = p.Y - pressPoint.Y;
                 if (mdx * mdx + mdy * mdy < 16) return;   // 4 px dead zone
                 lockMouse();
@@ -1151,53 +1407,55 @@ internal static class RebornClient
                 try { Cursor.Position = panel.PointToScreen(lockCenter); } catch { }
             }
         };
-        // The wheel no longer zooms (user decision 2026-09-30): the zoom moved
-        // to the +/- keys below. The wheel is deliberately left unbound.
+        // Real default binding (ui/hotkey/default.txt): CAMERAZOOMIN/OUT on the
+        // wheel (codes 256/257) -> Camera_Zoom(0.9 / 1.1). Restored 2026-10-01
+        // for classic-control completeness (the +/- keys stay as a host extra;
+        // the 2026-09-30 wheel-inert host deviation A12 is superseded).
+        MouseEventHandler onWheel = delegate(object s, MouseEventArgs e)
+        {
+            if (e.Delta > 0) camSys.ZoomBy(-1.0);        // CAMERAZOOMIN  x0.9
+            else if (e.Delta < 0) camSys.ZoomBy(1.0);    // CAMERAZOOMOUT x1.1
+        };
         Control[] hitTargets = new Control[] { panel };
         foreach (Control c in hitTargets)
         {
             c.MouseDown += onMouseDown;
             c.MouseUp += onMouseUp;
             c.MouseMove += onMouseMove;
+            c.MouseWheel += onWheel;
         }
         form.KeyPreview = true;
         form.KeyDown += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) { unlockMouse(); targetSelector.Current = null; }
-            else if (e.KeyCode == Keys.Tab)
+            if (e.KeyCode == Keys.Tab)
             {
                 // SEARCH_ENEMY (Tab) / SELECT_PREV_TARGET (Ctrl+Tab), target.lua
                 targetSelector.Cycle(px, pz, curYaw, e.Control, Log);
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            if (e.KeyCode == Keys.W) pW = true;
-            else if (e.KeyCode == Keys.S) pS = true;
-            else if (e.KeyCode == Keys.A) pA = true;
-            else if (e.KeyCode == Keys.D) pD = true;
-            else if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
-            else if (e.KeyCode == Keys.Space && !spaceDown) { spaceDown = true; jumpPressed = true; }
-            else if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
+            if (e.KeyCode == Keys.ShiftKey) shiftDown = true;
+            // real binding table first: movement commands dispatch through the
+            // game's own rows (W/Up, S/Down, A, D, Left, Right, Space, Num/, G)
+            System.Collections.Generic.List<string> hcmds =
+                hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
+            for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], true);
+            // host/test keys outside the movement command set
+            if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
-            else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
+            else if (e.KeyCode == Keys.F7 || e.KeyCode == Keys.OemQuestion)
             {
-                // real TOGGLERUN binding (numpad /), also accept the main "/"
-                divDown = true;
-                walkMode = !walkMode;
-                Log("movement mode: " + (walkMode ? "WALK" : "RUN"));
-            }
-            else if (e.KeyCode == Keys.F7)
-            {
-                // operation-mode switch (host key; the real client switches in
-                // the UISetting_Operation_Switch panel and has no default
-                // hotkey - docs/controls/OPERATION_MODES_PLAN.md)
+                // operation-mode switch (host keys: "/" and F7; the real client
+                // switches in the UISetting_Operation_Switch panel and has no
+                // default hotkey - docs/controls/OPERATION_MODES_PLAN.md)
                 cameraSettings.OperationMode =
                     cameraSettings.OperationMode == CameraOperationMode.Joystick
                         ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
-                Log("operation mode -> " + CameraOperationMode.Name(cameraSettings.OperationMode));
-                if (CameraOperationMode.KeepsCursorLocked(cameraSettings.OperationMode)) lockMouse();
-                else if (!lmbDown && !rmbDown) unlockMouse();
+                cameraSettings.ApplyOperationMode();
+                Log("opmode applied: " + cameraSettings.DescribeApplied());
+                // mode switch never locks the cursor; release a drag lock
+                if (!lmbDown && !rmbDown) unlockMouse();
             }
             else if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
             {
@@ -1236,18 +1494,27 @@ internal static class RebornClient
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.W) pW = false;
-            else if (e.KeyCode == Keys.S) pS = false;
-            else if (e.KeyCode == Keys.A) pA = false;
-            else if (e.KeyCode == Keys.D) pD = false;
-            else if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
-            else if (e.KeyCode == Keys.Space) spaceDown = false;
-            else if (e.KeyCode == Keys.D1) oneDown = false;
+            if (e.KeyCode == Keys.ShiftKey) shiftDown = false;
+            System.Collections.Generic.List<string> hcmds =
+                hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
+            for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], false);
+            if (e.KeyCode == Keys.D1) oneDown = false;
             else if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.I) iDown = false;
-            else if (e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) divDown = false;
         };
         panel.Focus();
+        // Esc toggles the information panel (open <-> close) no matter which
+        // child window has focus: the engine's native child window can hold
+        // focus, where the form's KeyPreview would never see the key.
+        var escFilter = new EscKeyFilter();
+        escFilter.OnEscape = delegate
+        {
+            unlockMouse();
+            targetSelector.Current = null;
+            hud.ToggleInfo();
+            hud.UpdateLayered();
+        };
+        Application.AddMessageFilter(escFilter);
 
         // ---------------- main loop ----------------
         // table values converted from 15 logic frames/s into continuous seconds
@@ -1256,7 +1523,7 @@ internal static class RebornClient
         // "16帧等于1秒", UNIT_SCALE...md §2): walk 6 / run 20 u/frame -> 96 / 320
         // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
         // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
-        // default RUN, "/" toggles WALK, hold Shift for a 10x testing speed.
+        // default RUN, Num/ toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
         // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
         // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
@@ -1320,7 +1587,7 @@ internal static class RebornClient
         // ejected players from empty AABB corners.
         bool propSolid = Env("RC_PROP_SOLID", "0") == "1";
         int propFixEvents = 0;
-        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0;
+        long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
         // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition",
         // CharacterCameraSmoothTime=60 ms in Represent/common/number.krl.txt).
@@ -1522,6 +1789,8 @@ internal static class RebornClient
             measureView();
             if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
                 camSys.Yaw = Math.Atan2(-viewZ, -viewX);
+            curYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+            moveYaw = camSys.Yaw;
             Log(string.Format("camera init skipped mapId={0} (no scene_init_param row; keeping spawn view)",
                 cameraSettings.MapId));
         }
@@ -1643,6 +1912,11 @@ internal static class RebornClient
                 flipPxDelivered != flipPxTarget || flipPitchDelivered != flipPitchTarget)
             {
                 int ox = 0, oy = 0;
+                // raw mouse drag? (distinguishes the user's drag from
+                // synthesised model deltas - gates the RMB body carry and the
+                // mouse-steers-moveYaw rule)
+                bool rawMouse = orbitQueue.Count > 0;
+                if (rawMouse) lastMouseDragMs = now;
                 while (orbitQueue.Count > 0) { int[] d = orbitQueue.Dequeue(); ox += d[0]; oy += d[1]; }
                 if (loadPace && loadProg < 0.999f)
                 {
@@ -1687,6 +1961,8 @@ internal static class RebornClient
                 if (yawNew > Math.PI) yawNew -= twoPi;
                 if (yawNew < -Math.PI) yawNew += twoPi;
                 camSys.Yaw = yawNew;
+                // mouse drag = steering: the movement frame follows the camera
+                if (rawMouse) moveYaw = yawNew;
 
                 double pOld = camSys.Pitch;
                 camSys.Pitch += oy * 0.00121;
@@ -1828,6 +2104,59 @@ internal static class RebornClient
             {
                 demoJumped = true;
                 jumpPressed = true;
+            }
+            if (demoMove)
+            {
+                // scripted movement-controls run (RC_DEMO_MOVE=1): autorun ->
+                // forward jump -> turn key -> classical strafe / back-pedal ->
+                // 600 u drop (roll). Run with RC_MODE=classical|joystick to
+                // compare the operation-mode routing (yaw/gait fingerprints).
+                if (now >= 2500 && !mvAuth) { mvAuth = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
+                if (now >= 5000 && !mvJumped) { mvJumped = true; runCommand("JUMP", true); runCommand("JUMP", false); }
+                if (now >= 6000 && !mvAuthOff) { mvAuthOff = true; runCommand("TOGGLEAUTORUN", true); runCommand("TOGGLEAUTORUN", false); }
+                if (now >= 6800 && !mvStrafe) { mvStrafe = true; strafeYaw0 = curYaw; strafeCam0 = camSys.Yaw; strafeX0 = px; strafeZ0 = pz; runCommand("STRAFELEFT", true); if (demoRmbStrafe >= 1) rmbDown = true; }
+                if (now >= 7800 && !mvStrafeDone) { mvStrafeDone = true; rmbDown = false; runCommand("STRAFELEFT", false); Log(string.Format("movetest strafe mode={0} rmb={1} yaw0={2:F2} yaw1={3:F2} d={4:F2} cam0={5:F2} cam1={6:F2} dpos=({7:F0},{8:F0}) dist={9:F0}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbStrafe, strafeYaw0, curYaw, curYaw - strafeYaw0, strafeCam0, camSys.Yaw, px - strafeX0, pz - strafeZ0, (float)Math.Sqrt((px - strafeX0) * (px - strafeX0) + (pz - strafeZ0) * (pz - strafeZ0)))); }
+                if (now >= 8100 && !mvBack) { mvBack = true; backYaw0 = curYaw; backCam0 = camSys.Yaw; backX0 = px; backZ0 = pz; runCommand("MOVEBACKWARD", true); }
+                if (now >= 9100 && !mvBackDone) { mvBackDone = true; runCommand("MOVEBACKWARD", false); Log(string.Format("movetest back mode={0} yaw0={1:F2} yaw1={2:F2} d={3:F2} cam0={4:F2} cam1={5:F2} dpos=({6:F0},{7:F0}) dist={8:F0}", CameraOperationMode.Name(cameraSettings.OperationMode), backYaw0, curYaw, curYaw - backYaw0, backCam0, camSys.Yaw, px - backX0, pz - backZ0, (float)Math.Sqrt((px - backX0) * (px - backX0) + (pz - backZ0) * (pz - backZ0)))); }
+                if (now >= 9500 && !mvTurn) { mvTurn = true; turnYaw0 = curYaw; turnCam0 = camSys.Yaw; runCommand("TURNRIGHT", true); }
+                if (now >= 10100 && !mvTurnDone) { mvTurnDone = true; runCommand("TURNRIGHT", false); Log(string.Format("movetest turn yaw0={0:F2} yaw1={1:F2} d={2:F2} cam0={3:F2} cam1={4:F2} camd={5:F2}", turnYaw0, curYaw, WrapAngle(curYaw - turnYaw0), turnCam0, camSys.Yaw, WrapAngle(camSys.Yaw - turnCam0))); }
+                if (now >= 10800 && !mvDrop) { mvDrop = true; py += 600f; Log(string.Format("movetest drop600 y={0:F0} (fall > FallDownHeightFloor)", py)); }
+                if (now >= 12600 && !mvSit) { mvSit = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); }
+                if (now >= 13300 && !mvSitDone) { mvSitDone = true; runCommand("TOGGLESITDOWN", true); runCommand("TOGGLESITDOWN", false); Log("movetest sit done"); }
+                if (now >= 13600 && !mvSheath) { mvSheath = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); }
+                if (now >= 14600 && !mvSheathDone) { mvSheathDone = true; runCommand("TOGGLESHEATH", true); runCommand("TOGGLESHEATH", false); Log("movetest sheath done"); }
+                // W+A / W+D free-view windows: A/D turn while W runs -> curve
+                if (now >= 15100 && !mvWA) { mvWA = true; waX0 = px; waZ0 = pz; waYaw0 = curYaw; waCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFELEFT", true); if (demoRmbWa >= 1) rmbDown = true; }
+                if (mvWA && !mvWADone && demoRmbWa >= 2) orbitQueue.Enqueue(new int[] { 2, 0 });   // simulated RMB drag
+                if (now >= 16300 && !mvWADone) { mvWADone = true; rmbDown = false; runCommand("STRAFELEFT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WA mode={0} rmb={1} dpos=({2:F0},{3:F0}) dist={4:F0} dyaw={5:F2} dcam={6:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), demoRmbWa, px - waX0, pz - waZ0, (float)Math.Sqrt((px - waX0) * (px - waX0) + (pz - waZ0) * (pz - waZ0)), WrapAngle(curYaw - waYaw0), WrapAngle(camSys.Yaw - waCam0))); }
+                if (now >= 16600 && !mvWD) { mvWD = true; wdX0 = px; wdZ0 = pz; wdYaw0 = curYaw; wdCam0 = camSys.Yaw; runCommand("MOVEFORWARD", true); runCommand("STRAFERIGHT", true); }
+                if (now >= 17800 && !mvWDDone) { mvWDDone = true; runCommand("STRAFERIGHT", false); runCommand("MOVEFORWARD", false); Log(string.Format("movetest WD mode={0} dpos=({1:F0},{2:F0}) dist={3:F0} dyaw={4:F2} dcam={5:F2}", CameraOperationMode.Name(cameraSettings.OperationMode), px - wdX0, pz - wdZ0, (float)Math.Sqrt((px - wdX0) * (px - wdX0) + (pz - wdZ0) * (pz - wdZ0)), WrapAngle(curYaw - wdYaw0), WrapAngle(camSys.Yaw - wdCam0))); }
+                if (now >= 19000 && !mvDone) { mvDone = true; Log(string.Format("movetest summary yaw={0:F2} pos=({1:F0},{2:F0},{3:F0}) autorun={4} mode={5}", curYaw, px, py, pz, autorunOn ? 1 : 0, CameraOperationMode.Name(cameraSettings.OperationMode))); }
+            }
+            if (sprintTest)
+            {
+                // scripted double-tap sprint input test (same keyCommand path
+                // as real key events): 12000 down, 12100 up, 12150 down
+                // (150 ms gap < 250 ms window), 12650 up.
+                if (now >= 12000 && !sprintT1) { sprintT1 = true; keyCommand("MOVEFORWARD", true); }
+                if (now >= 12100 && !sprintT2) { sprintT2 = true; keyCommand("MOVEFORWARD", false); }
+                if (now >= 12150 && !sprintT3) { sprintT3 = true; keyCommand("MOVEFORWARD", true); }
+                if (now >= 12650 && !sprintT4) { sprintT4 = true; keyCommand("MOVEFORWARD", false); }
+            }
+            if (probeControl && now >= nextProbeMs)
+            {
+                nextProbeMs = now + 2000;
+                ProbeControl();
+            }
+            if (modeSwitchAt > 0 && !modeSwitched && now >= modeSwitchAt)
+            {
+                // scripted operation-mode switch (test harness; same path as F7)
+                modeSwitched = true;
+                cameraSettings.OperationMode =
+                    cameraSettings.OperationMode == CameraOperationMode.Joystick
+                        ? CameraOperationMode.Classical : CameraOperationMode.Joystick;
+                cameraSettings.ApplyOperationMode();
+                Log("opmode switch (test @" + modeSwitchAt + "ms): " + cameraSettings.DescribeApplied());
             }
             if (rotTest)
             {
@@ -1995,9 +2324,18 @@ internal static class RebornClient
                 forceDiag = false;
             }
 
-            // movement is camera-relative: forward = camera -> anchor
-            double cfx, cfz;
-            camSys.Forward(out cfx, out cfz);
+            // Movement frame (decoded): the engine controls are CAMERA controls
+            // (FORWARD/BACKWARD/STRAFE/TURN relative to the camera), so the input
+            // frame is the camera in both modes; the BODY faces the travel
+            // direction (RunTo, KRLLocalCharacter face yaw +0x30). That is why
+            // W+D runs the forward clip while the body faces the diagonal, and
+            // pure D (no W) is the 挪步 side-step.
+            bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
+            bool classicalMode = !followsHeading;
+            // Movement frame: the control frame moveYaw (camera yaw + the turn
+            // keys' rotation). Mouse drags set moveYaw to the camera so mouse
+            // steering keeps working; the camera follows moveYaw via the row.
+            double cfx = -Math.Cos(moveYaw), cfz = -Math.Sin(moveYaw);
             float hx = (float)cfx;
             float hz = (float)cfz;
 
@@ -2014,27 +2352,99 @@ internal static class RebornClient
                 Log("skill cast");
             }
 
-            // input -> direction. The game recomputes camera-relative movement
-            // every frame (MOVEFORWARD = camera forward; A/D strafe), so rotating
-            // the camera steers the run (docs/controls/JX3_MOVEMENT_CONTROLS.md §2;
-            // RMB = CAMERAORSELECTORMOVESTICKY rotates camera + character).
+            // input -> direction (camera controls in both modes; the body faces
+            // the travel). A/D follow the player's A/D HABIT (official: the
+            // tutorial teaches the turn vs strafe habits; shipped default.txt
+            // binds A/D to STRAFE*). The keyboard never writes the camera; a
+            // moving character is followed through the cached
+            // CameraAdjustYawWhenMoveTurn row (see the follow call below).
             float inX = 0f, inZ = 0f;
             float rX = hz, rZ = -hx;
-            if (pW) { inX += hx; inZ += hz; }
-            if (pS) { inX -= hx; inZ -= hz; }
-            if (pA) { inX -= rX; inZ -= rZ; }
-            if (pD) { inX += rX; inZ += rZ; }
+            // Free view: mainscene.lua's CameraStatus_Set calls
+            // CameraStatus_Animation(mode ~= 'god camera'); free view is ON in
+            // normal play. RC_FREEVIEW=0 keeps the god-camera branch (the
+            // Turn<->Strafe handler swap) reachable for tests.
+            bool freeView = Env("RC_FREEVIEW", "1") != "0";
+            // Control table (decoded): ids 0..13, built from keys/mouse exactly
+            // like Camera_EnableControl fills the client's control store.
+            // Decoded: CLASSICAL A/D are STRAFE-bound -> strafe (default.txt);
+            // the "turn" habit is a CLASSICAL option (RC_ADHABIT=turn). In
+            // JOYSTICK the free-move handler (OperationModeBase 0/16
+            // FreeMoveControl) maps the TURN controls to the LATERAL vector
+            // axis - A/D (strafe handler -> TurnLeftStart) and the arrows both
+            // feed strafe; there is no in-place keyboard rotation (auto-face
+            // turns the body to the travel), and the mouse owns the camera.
+            bool adStrafe = classicalMode && (adHabit != "turn" || rmbDown || !freeView);
+            bool turnL, turnR, strafeL, strafeR;
+            if (classicalMode)
+            {
+                turnL = pTurnL || (pA && !adStrafe);
+                turnR = pTurnR || (pD && !adStrafe);
+                strafeL = pA && adStrafe;
+                strafeR = pD && adStrafe;
+            }
+            else
+            {
+                turnL = false;
+                turnR = false;
+                strafeL = pA || pTurnL;
+                strafeR = pD || pTurnR;
+            }
+            int ctrl = 0;
+            // both mouse buttons held = auto-forward (official classic scheme)
+            Ctrl.Set(ref ctrl, ControlId.Forward, pW || autorunOn || (lmbDown && rmbDown));
+            Ctrl.Set(ref ctrl, ControlId.Backward, pS);
+            Ctrl.Set(ref ctrl, ControlId.TurnLeft, turnL);
+            Ctrl.Set(ref ctrl, ControlId.TurnRight, turnR);
+            Ctrl.Set(ref ctrl, ControlId.StrafeLeft, strafeL);
+            Ctrl.Set(ref ctrl, ControlId.StrafeRight, strafeR);
+            Ctrl.Set(ref ctrl, ControlId.Camera, lmbDown);
+            Ctrl.Set(ref ctrl, ControlId.StickCamera, rmbDown);
+            Ctrl.Set(ref ctrl, ControlId.AutoRun, autorunOn);
+            Ctrl.Set(ref ctrl, ControlId.Walk, walkMode);
+            // Intents (GetMoveInfo analog): forward, strafeRight, rotationRight.
+            float fwdAxis = (Ctrl.Get(ctrl, ControlId.Forward) ? 1f : 0f)
+                          - (Ctrl.Get(ctrl, ControlId.Backward) ? 1f : 0f);
+            float latAxis = (Ctrl.Get(ctrl, ControlId.StrafeRight) ? 1f : 0f)
+                          - (Ctrl.Get(ctrl, ControlId.StrafeLeft) ? 1f : 0f);
+            float rotAxis = (Ctrl.Get(ctrl, ControlId.TurnRight) ? 1f : 0f)
+                          - (Ctrl.Get(ctrl, ControlId.TurnLeft) ? 1f : 0f);
+            // sitting stands up on any movement intent (move / turn / jump)
+            if (sitting && (pW || pS || pA || pD || pTurnL || pTurnR || autorunOn))
+            {
+                sitting = false;
+                Log("sit: stand (movement)");
+            }
+            if (Ctrl.Get(ctrl, ControlId.Forward)) { inX += hx; inZ += hz; }
+            if (Ctrl.Get(ctrl, ControlId.Backward)) { inX -= hx; inZ -= hz; }
+            if (Ctrl.Get(ctrl, ControlId.StrafeLeft)) { inX -= rX; inZ -= rZ; }
+            if (Ctrl.Get(ctrl, ControlId.StrafeRight)) { inX += rX; inZ += rZ; }
             float inLen = (float)Math.Sqrt(inX * inX + inZ * inZ);
             if (inLen > 1e-4f) { inX /= inLen; inZ /= inLen; }
             float dirX = inX, dirZ = inZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
             bool moving = len > 0.01f && skillUntil <= now;
-            // character yaw turn rate (rad/s): the game's per-frame turn step
-            // (+0x48) is a server sync byte and not decoded; the host uses the
-            // camera row RotationSpeed fallback pi rad/s (same as the RMB turn)
-            float charTurnRate = (float)camSys.Row.F("RotationSpeed", 0.0);
-            if (charTurnRate < 1f) charTurnRate = (float)Math.PI;
+            // Locomotion clip by INPUT OCTANT (branch semantics; per render
+            // frame - must NOT live inside the tick loop, where non-tick
+            // frames would reset it to 0 and flicker run<->strafe at 15 Hz):
+            // any forward intent = forward run/walk, backward = back-pedal,
+            // pure lateral = step.
+            int gait = 0;
+            if (moving)
+            {
+                if (followsHeading) gait = 0;
+                else if (fwdAxis > 0f) gait = 0;
+                else if (fwdAxis < 0f) gait = 3;
+                else if (latAxis > 0.01f) gait = 2;
+                else if (latAxis < -0.01f) gait = 1;
+            }
+            // keyboard turn rate: the LOCAL camera-controller rotation speed
+            // (row RotationSpeed; loader default 0.00314 rad/ms = pi rad/s, both
+            // values are local data - no server involvement). pi stays only as
+            // the missing-row fallback.
+            float charTurnRate = (float)(camSys.Row.F("RotationSpeed", 0.0) * 1000.0);
+            if (charTurnRate < 0.1f) charTurnRate = (float)Math.PI;
 
             // P2-T1: whole logic ticks only (66.7 ms); remaining time is the
             // render interpolation fraction (P2-T3).
@@ -2065,24 +2475,44 @@ internal static class RebornClient
             int subCount = 1;
             if (moving)
             {
-                float sp = (shiftDown ? pRun * 10f
+                float baseSp = shiftDown ? pRun * 10f
                             : walkMode ? pSpeed
-                            : pRun) / len;
+                            : pRun;
+                // classical S / S+A / S+D: back-pedal at walk pace (user-
+                // observed; number.krl ships no back speed - walk 6 u/f is the
+                // authored slow pace). Pure lateral (no forward/back) is the
+                // walk-tier side-step (挪步 clip cadence); a forward component
+                // runs. Joystick always faces the travel -> run tier.
+                bool backPedal = classicalMode && fwdAxis < 0f;
+                bool sideOnly = classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
+                float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : pSpeed) : baseSp) / len;
                 float ux = dirX / len, uz = dirZ / len;
+                float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
                 // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
                 // direction; facing turns toward it at the turn rate; a turn
                 // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
                 // and the turn step that tick.
-                float heading = (float)Math.Atan2(ux, uz);
-                float dYaw = heading - curYaw;
-                while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
-                while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
-                bool hardTurn = Math.Abs(dYaw) > 2.0071f;
-                if (hardTurn) sp *= 0.5f;
-                float turnStep = charTurnRate * pdt * (hardTurn ? 0.5f : 1f);
-                if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
-                else curYaw += Math.Sign(dYaw) * turnStep;
+                // Branch control semantics: JOYSTICK faces the travel instantly
+                // (decoded KCharacter::TurnTo writes the target heading
+                // [char+0x44] directly); CLASSICAL keeps the RunTo turn model
+                // (turn step per tick, >112.5 deg halves speed and turn step).
+                bool forwardish = fwdAxis > 0f || demoCollide;
+                if (followsHeading)
+                {
+                    curYaw = heading;
+                }
+                else if (forwardish)
+                {
+                    float dYaw = heading - curYaw;
+                    while (dYaw > Math.PI) dYaw -= 2f * (float)Math.PI;
+                    while (dYaw < -Math.PI) dYaw += 2f * (float)Math.PI;
+                    bool hardTurn = Math.Abs(dYaw) > 2.0071f;
+                    if (hardTurn) sp *= 0.5f;
+                    float turnStep = charTurnRate * pdt * (hardTurn ? 0.5f : 1f);
+                    if (Math.Abs(dYaw) <= turnStep) curYaw = heading;
+                    else curYaw += Math.Sign(dYaw) * turnStep;
+                }
                 // the engine moves integer units per logic frame (u/f); make
                 // the per-tick displacement integral too
                 float step = (float)Math.Round(sp * pdt);
@@ -2172,12 +2602,59 @@ internal static class RebornClient
                 colProfFrames++;
                 if (msProf > colMsMax) colMsMax = msProf;
             }
-            if (moving) curYaw = (float)Math.Atan2(mvx, mvz);
+            // facing: joystick instant / classical RunTo above (per tick)
+
+            // TURNLEFT/TURNRIGHT (arrows) plus classical free-view A/D.
+            // DECODED (hotkeys.lua): turn keys are a CHARACTER control -
+            // TurnLeftStart -> SetControl(CONTROL_TURN_LEFT) via the mode
+            // wrapper. In CLASSICAL the host turns the view too (the
+            // user-requested turn-habit/arrow behavior); in JOYSTICK the input
+            // layer above feeds the turn controls into the lateral vector
+            // (OperationModeBase 0/16), so rotAxis stays 0 and the mouse owns
+            // the camera (the decoded keyboard path never writes it).
+            if (grounded && rotAxis != 0f)
+            {
+                float tstep = charTurnRate * (float)pdt;
+                double dyawKey = -rotAxis * tstep;
+                if (classicalMode)
+                {
+                    // classical: turn keys rotate the VIEW (mouse sign); the
+                    // engine camera is fed through the orbit path and the
+                    // character turns to the camera direction (RMB-carry
+                    // relation).
+                    camSys.Yaw += dyawKey;
+                    adjYawPx += (int)Math.Round(-dyawKey / 0.0018);
+                    moveYaw = camSys.Yaw;
+                    float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
+                    float d = targetYaw - curYaw;
+                    while (d > Math.PI) d -= 2f * (float)Math.PI;
+                    while (d < -Math.PI) d += 2f * (float)Math.PI;
+                    float cstep = charTurnRate * (float)pdt;
+                    if (Math.Abs(d) <= cstep) curYaw = targetYaw;
+                    else curYaw += Math.Sign(d) * cstep;
+                }
+                else
+                {
+                    // joystick: turn the CHARACTER in place; the mouse owns
+                    // the view (the decoded keyboard path never writes the
+                    // camera). Facing delta = -camera delta = dyawKey.
+                    curYaw += (float)dyawKey;
+                }
+            }
+            // keep the facing and camera yaw wrapped: the movement turn model
+            // compares against wrapped headings, and an unwrapped facing makes
+            // dYaw alias across +/-pi (turn flips to the long way around).
+            while (curYaw > (float)Math.PI) curYaw -= 2f * (float)Math.PI;
+            while (curYaw < -(float)Math.PI) curYaw += 2f * (float)Math.PI;
+            while (camSys.Yaw > Math.PI) camSys.Yaw -= 2.0 * Math.PI;
+            while (camSys.Yaw < -Math.PI) camSys.Yaw += 2.0 * Math.PI;
 
             // RMB (CAMERAORSELECTORMOVESTICKY) also turns the character to the
-            // camera direction; LMB drag rotates the camera only. The turn is
-            // rate-limited (S6) instead of snapping the yaw in one frame.
-            if (rmbDown && CameraOperationMode.RmbTurnsBody(cameraSettings.OperationMode))
+            // camera direction while the user is actually dragging (the decoded
+            // camera->face write fires on mouse deltas, not on a held button);
+            // LMB drag rotates the camera only. Rate-limited (S6), no snap.
+            if (rmbDown && (now - lastMouseDragMs < 150) &&
+                CameraOperationMode.RmbTurnsBody(cameraSettings.OperationMode))
             {
                 float targetYaw = (float)Math.Atan2(-Math.Cos(camSys.Yaw), -Math.Sin(camSys.Yaw));
                 float d = targetYaw - curYaw;
@@ -2209,6 +2686,7 @@ internal static class RebornClient
             if (jumpPressed)
             {
                 jumpPressed = false;
+                if (sitting) { sitting = false; Log("sit: stand (jump)"); }
                 if (grounded) jumpCount = 0;
                 int nextJump = jumpCount + 1;
                 bool chainMode = djumpMode == "chain";
@@ -2228,6 +2706,27 @@ internal static class RebornClient
                     int gc = trip[2]; if (gc < 0) gc = 0; else if (gc > 31) gc = 31;
                     curJumpGravity = gc * 225f * jumpScale;
                     grounded = false;
+                    airStartY = py;
+                    // takeoff horizontal velocity: JumpSpeedXY of the row
+                    // (clamp [0,127] per JumpTo/KJump), converted at the 15 Hz
+                    // logic tick, along the input direction. A standing jump
+                    // stays ballistic-vertical: with no move intent the client
+                    // commit path carries no horizontal velocity (the air
+                    // commit path is an open item, not invented here).
+                    int xyc = trip[0]; if (xyc < 0) xyc = 0; else if (xyc > 127) xyc = 127;
+                    float xySpd = xyc * 15f * jumpScale;
+                    if (len > 0.01f)
+                    {
+                        vjx = dirX / len * xySpd;
+                        vjz = dirZ / len * xySpd;
+                    }
+                    else
+                    {
+                        vjx = 0f; vjz = 0f;
+                    }
+                    if (djumpLog || demoMove) Log(string.Format(
+                        "jump xy takeoff vj=({0:F0},{1:F0}) u/s dir=({2:F2},{3:F2})",
+                        vjx, vjz, dirX / (len > 0.01f ? len : 1f), dirZ / (len > 0.01f ? len : 1f)));
                     if (djumpLog) Log(string.Format(
                         "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
                         jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
@@ -2260,9 +2759,30 @@ internal static class RebornClient
                     float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    // landing branch: height difference vs FallDownHeightFloor
+                    // (player_suspend.krl.txt F1: 500 u) -> the authored landing
+                    // animation; otherwise the normal resume.
+                    float drop = airStartY - py;
+                    vjx = 0f; vjz = 0f;
+                    if (drop > fallDownHeightFloor)
+                    {
+                        landClipUntil = now + landClipMs;
+                        int lrc = setClip(clipLand);
+                        Log(string.Format("land drop={0:F0}u roll=1 clip={1} rc={2}",
+                            drop, Path.GetFileName(clipLand), lrc));
+                        if (lrc != 0)
+                        {
+                            // clip not playable in this build: keep the branch
+                            // timing, fall back to the known-good fall clip
+                            clipLand = clipFall;
+                            landClipUntil = now + 400;
+                            setClip(clipLand);
+                            Log("land roll clip fallback -> " + Path.GetFileName(clipLand));
+                        }
+                    }
                     if (djumpLog && jumpCount > 0) Log(string.Format(
-                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0}",
-                        jumpCount, px, py, pz, impact));
+                        "djb land n={0} pos={1:F0},{2:F0},{3:F0} vy={4:F0} drop={5:F0}",
+                        jumpCount, px, py, pz, impact, drop));
                     jumpCount = 0;
                 }
             }
@@ -2282,8 +2802,15 @@ internal static class RebornClient
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
-            else if (moving) setClip(walkMode ? clipWalk : clipRun);
-            else setClip(clipIdle);
+            else if (now < landClipUntil) setClip(clipLand);
+            else if (sitting) setClip(clipSit);
+            else if (moving) setClip(
+                gait == 1 ? clipStrafeL :
+                gait == 2 ? clipStrafeR :
+                gait == 3 ? clipBack :
+                walkMode ? clipWalk : clipRun);
+            else if (sheathOn && (long)Environment.TickCount < sheathDrawUntil) setClip(clipSheathDraw);
+            else setClip(sheathOn ? clipSheathHold : clipIdle);
 
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
@@ -2328,6 +2855,41 @@ internal static class RebornClient
                 if (string.IsNullOrEmpty(fixedCam))
                 {
                 bool movingNow = len > 0f;
+                // Camera follow mode (client CAMERA_MODE enum, enum_ui.lua
+                // pc2977-2987: 0 NEVER_FOLLOW, 1 AUTO_FOLLOW, 2 ALWAYS_FOLLOW;
+                // the per-mode value nCameraModeIn<Mode> reaches the camera node
+                // via the decoded Camera_SetFollowMode binding -> +0x80/+0x98).
+                // AUTO = the move+turn row (CameraAdjustYawWhenMoveTurn);
+                // ALWAYS also follows a plain move; NEVER is mouse-only.
+                // Joystick follows the TRAVEL direction (the client's
+                // RotatePlayer drives Camera_SetResetSpeed per frame from the
+                // movement direction), classical follows the control frame.
+                // RC_FOLLOW_MODE overrides for scripted tests.
+                int followMode = cameraSettings.ActiveFollowMode;
+                string followEnv = Env("RC_FOLLOW_MODE", "");
+                if (followEnv.Length > 0)
+                {
+                    int fv;
+                    if (int.TryParse(followEnv, out fv)) followMode = fv;
+                }
+                if (followMode < 0) followMode = 0;
+                else if (followMode > 2) followMode = 2;
+                if (followMode != 0 && movingNow && !lmbDown && !rmbDown)
+                {
+                    bool followNow = classicalMode
+                        ? (followMode == 2 || rotAxis != 0f)
+                        : true;   // joystick: AUTO and ALWAYS follow the travel
+                    if (followNow)
+                    {
+                        // Target = the TRAVEL heading (camera convention). Using
+                        // the control frame here was a no-op (it equals the
+                        // camera unless dragging); the client's row follows the
+                        // run direction. Forward W: travel == camera -> no-op;
+                        // strafe/diagonal: the camera swings behind the travel.
+                        double followYaw = Math.Atan2(-dirZ, -dirX);
+                        camSys.FollowYaw(followYaw, dt);
+                    }
+                }
                 // mode harness: activate a mode row for testing (carrier /
                 // air_combat / npc_dialog / god). The real gameplay triggers
                 // (mount, dialog, air combat, spectate) do not exist in the
@@ -2836,7 +3398,6 @@ internal static class RebornClient
                             if (camDebug && now - lastSetLog >= 500)
                             {
                                 lastSetLog = now;
-                                float mrx = 0f, mry = 0f, mrz = 0f;
                                 Log(string.Format("enginelook rc=0 moved={0:F1} native={1} k={2:F0}",
                                     rmove, usedNativeCam, k));
                             }
@@ -3291,16 +3852,22 @@ internal static class RebornClient
             {
                 lastHud = now;
                 string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
+                             : now < landClipUntil ? "LAND"
                              : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | I info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view (Esc unlock)",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
                     curClip == null ? "-" : Path.GetFileName(curClip)));
+                // top-left control-mode name (always visible)
+                hud.SetModeText("CONTROL: "
+                    + (cameraSettings.OperationMode == CameraOperationMode.Joystick
+                        ? "JOYSTICK" : "CLASSICAL")
+                    + "   [/] switch");
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
             }
@@ -3463,11 +4030,14 @@ internal static class RebornClient
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}){11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26}{11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
-                    curSpd, moveMode, curYaw, dirX, dirZ));
+                    curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz,
+                    unhandledCmd, lastUnhandled, gait,
+                    CameraOperationMode.Name(cameraSettings.OperationMode),
+                    hotkeys.Context, sprintOn ? 1 : 0));
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {
@@ -3534,6 +4104,89 @@ internal static class RebornClient
         }
     }
 
+    // P4 probe: read-only snapshot of the engine animation param table
+    // (KTableList vector at [singleton]+0x1A0+0x1E2B8, 0x54-byte entries).
+    // Entry fields decoded in docs/controls/CONTROL_MODES_P5_ANIM.md.
+    [HandleProcessCorruptedStateExceptions]
+    static void ProbeControl()
+    {
+        try
+        {
+            long repBase = 0;
+            Process proc = Process.GetCurrentProcess();
+            foreach (ProcessModule m in proc.Modules)
+            {
+                if (string.Equals(m.ModuleName, "JX3RepresentX64.dll",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    repBase = m.BaseAddress.ToInt64();
+                    break;
+                }
+            }
+            if (repBase == 0)
+            {
+                Log("probe: JX3RepresentX64.dll not loaded");
+                return;
+            }
+            long singleton = ReadQWord(repBase + 0xF06A50);
+            if (singleton == 0)
+            {
+                Log("probe animtable: singleton null base=0x" + repBase.ToString("X"));
+                return;
+            }
+            long container = singleton + 0x1A0;
+            long data = ReadQWord(container + 0x1E2B8);
+            uint count = ReadU32(container + 0x1E2C0);
+            Log(string.Format("probe animtable base=0x{0:X} singleton=0x{1:X} data=0x{2:X} count={3}",
+                repBase, singleton, data, count));
+            if (!probeTableDone && data != 0 && count > 0 && count <= 2048)
+            {
+                probeTableDone = true;
+                int stride = 0x54;
+                byte[] buf = new byte[(int)count * stride];
+                Marshal.Copy(new IntPtr(data), buf, 0, buf.Length);
+                for (int i = 0; i < count; i++)
+                {
+                    int o = i * stride;
+                    Log(string.Format(
+                        "probe entry {0}: mode={1} index={2} id0={3} clip0=0x{4:X} idMove={5} thrLo={6:F4} spdLo={7:F4} clipLo=0x{8:X} thrHi={9:F4} spdHi={10:F4} clipHi=0x{11:X}",
+                        i,
+                        BitConverter.ToUInt32(buf, o),
+                        BitConverter.ToUInt32(buf, o + 4),
+                        BitConverter.ToUInt32(buf, o + 0x30),
+                        BitConverter.ToUInt32(buf, o + 0x34),
+                        BitConverter.ToUInt32(buf, o + 0x4C),
+                        BitConverter.ToSingle(buf, o + 0x50),
+                        BitConverter.ToSingle(buf, o + 0x54),
+                        BitConverter.ToUInt32(buf, o + 0x58),
+                        BitConverter.ToSingle(buf, o + 0x68),
+                        BitConverter.ToSingle(buf, o + 0x6C),
+                        BitConverter.ToUInt32(buf, o + 0x70)));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log("probe ex: " + e.Message);
+        }
+    }
+
+    [HandleProcessCorruptedStateExceptions]
+    static long ReadQWord(long va)
+    {
+        byte[] b = new byte[8];
+        Marshal.Copy(new IntPtr(va), b, 0, 8);
+        return BitConverter.ToInt64(b, 0);
+    }
+
+    [HandleProcessCorruptedStateExceptions]
+    static uint ReadU32(long va)
+    {
+        byte[] b = new byte[4];
+        Marshal.Copy(new IntPtr(va), b, 0, 4);
+        return BitConverter.ToUInt32(b, 0);
+    }
+
     static double WrapAngle(double angle)
     {
         while (angle > Math.PI) angle -= 2.0 * Math.PI;
@@ -3564,5 +4217,24 @@ internal static class RebornClient
             Application.DoEvents();
             Thread.Sleep(16);
         }
+    }
+}
+
+// Application-wide Esc key filter: the form's KeyPreview only sees keys routed
+// through WinForms controls, so when the engine's native child window has focus
+// Esc would go there and the toggle would silently not fire. A message filter
+// sees WM_KEYDOWN for every window in the process; bit 30 of lParam marks key
+// auto-repeat, so one physical press = one toggle. The message is consumed.
+internal sealed class EscKeyFilter : System.Windows.Forms.IMessageFilter
+{
+    public Action OnEscape;
+
+    public bool PreFilterMessage(ref Message m)
+    {
+        if (m.Msg != 0x0100) return false;                       // WM_KEYDOWN
+        if (m.WParam.ToInt32() != 0x1B) return false;            // VK_ESCAPE
+        long lp = m.LParam.ToInt64();
+        if ((lp & (1L << 30)) == 0 && OnEscape != null) OnEscape();
+        return true;
     }
 }

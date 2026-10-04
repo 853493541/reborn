@@ -1,0 +1,63 @@
+
+===== function 0/5 | line 185-209 | params=1 nups=1 stack=5 =====
+pc=   0 L0     GETGLOBAL A=1   B=0    C=0    'CLASSICAL_MODE'
+pc=   1 L0     EQ        A=0   B=0    C=1    R0 R1
+pc=   2 L0     JMP       A=0   B=256  C=4    to pc 8
+pc=   3 L0     GETGLOBAL A=1   B=0    C=1    'IsMobileKungfu'
+pc=   4 L0     CALL      A=1   B=1    C=2    args=0 ret=1
+pc=   5 L0     TEST      A=1   B=0    C=0    
+pc=   6 L0     JMP       A=0   B=256  C=0    to pc 8
+pc=   7 L0     RETURN    A=0   B=1    C=0    
+pc=   8 L0     GETGLOBAL A=1   B=0    C=2    'ClearMoveState'
+pc=   9 L0     CALL      A=1   B=1    C=1    args=0 ret=0
+pc=  10 L0     SETUPVAL  A=0   B=0    C=0    
+pc=  11 L0     GETGLOBAL A=1   B=0    C=3    'UploadOperationMode'
+pc=  12 L0     MOVE      A=2   B=0    C=0    
+pc=  13 L0     CALL      A=1   B=2    C=1    args=1 ret=0
+pc=  14 L0     GETGLOBAL A=1   B=0    C=4    'StorageServer'
+pc=  15 L0     GETTABLE  A=1   B=1    C=261  R1 K5('GetData')
+pc=  16 L0     LOADK     A=2   B=0    C=6    'CurrentOperationMode'
+pc=  17 L0     CALL      A=1   B=2    C=2    args=1 ret=1
+pc=  18 L0     EQ        A=1   B=1    C=0    R1 R0
+pc=  19 L0     JMP       A=0   B=256  C=3    to pc 24
+pc=  20 L0     GETGLOBAL A=2   B=0    C=7    'UploadOperationModeData'
+pc=  21 L0     MOVE      A=3   B=0    C=0    
+pc=  22 L0     LOADK     A=4   B=0    C=8    1.0
+pc=  23 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  24 L0     GETGLOBAL A=2   B=0    C=0    'CLASSICAL_MODE'
+pc=  25 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=  26 L0     JMP       A=0   B=256  C=14   to pc 42
+pc=  27 L0     GETGLOBAL A=2   B=0    C=9    'Camera_SetResetSpeed'
+pc=  28 L0     LOADK     A=3   B=0    C=8    1.0
+pc=  29 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  30 L0     GETGLOBAL A=2   B=0    C=10   'UseFullAngle'
+pc=  31 L0     LOADBOOL  A=3   B=0    C=0    
+pc=  32 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  33 L0     GETGLOBAL A=2   B=0    C=4    'StorageServer'
+pc=  34 L0     GETTABLE  A=2   B=2    C=267  R2 K11('SetData')
+pc=  35 L0     LOADK     A=3   B=0    C=6    'CurrentOperationMode'
+pc=  36 L0     GETGLOBAL A=4   B=0    C=0    'CLASSICAL_MODE'
+pc=  37 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  38 L0     GETGLOBAL A=2   B=0    C=12   'Scene_LockMouseRotation'
+pc=  39 L0     LOADBOOL  A=3   B=0    C=0    
+pc=  40 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  41 L0     JMP       A=0   B=256  C=13   to pc 56
+pc=  42 L0     GETGLOBAL A=2   B=0    C=13   'JOYSTICK_MODE'
+pc=  43 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=  44 L0     JMP       A=0   B=256  C=10   to pc 56
+pc=  45 L0     GETGLOBAL A=2   B=0    C=10   'UseFullAngle'
+pc=  46 L0     LOADBOOL  A=3   B=1    C=0    
+pc=  47 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  48 L0     GETGLOBAL A=2   B=0    C=12   'Scene_LockMouseRotation'
+pc=  49 L0     LOADBOOL  A=3   B=1    C=0    
+pc=  50 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  51 L0     GETGLOBAL A=2   B=0    C=4    'StorageServer'
+pc=  52 L0     GETTABLE  A=2   B=2    C=267  R2 K11('SetData')
+pc=  53 L0     LOADK     A=3   B=0    C=6    'CurrentOperationMode'
+pc=  54 L0     GETGLOBAL A=4   B=0    C=13   'JOYSTICK_MODE'
+pc=  55 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  56 L0     GETGLOBAL A=2   B=0    C=14   'FireUIEvent'
+pc=  57 L0     LOADK     A=3   B=0    C=15   'CHANGE_OPERATION_MODE'
+pc=  58 L0     GETUPVAL  A=4   B=0    C=0    
+pc=  59 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  60 L0     RETURN    A=0   B=1    C=0    

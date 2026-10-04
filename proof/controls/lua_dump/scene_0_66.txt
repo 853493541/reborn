@@ -1,0 +1,41 @@
+
+===== function 0/66 | line 973-994 | params=2 nups=2 stack=4 =====
+pc=   0 L0     SETUPVAL  A=0   B=0    C=0    
+pc=   1 L0     TEST      A=0   B=0    C=0    
+pc=   2 L0     JMP       A=0   B=256  C=17   to pc 21
+pc=   3 L0     GETUPVAL  A=2   B=1    C=0    
+pc=   4 L0     GETGLOBAL A=3   B=0    C=1    'GetOperationMode'
+pc=   5 L0     CALL      A=3   B=1    C=2    args=0 ret=1
+pc=   6 L0     SETTABLE  A=2   B=256  C=3    K0('nSaveMode') R3
+pc=   7 L0     GETGLOBAL A=2   B=0    C=2    'SetOperationMode'
+pc=   8 L0     GETGLOBAL A=3   B=0    C=3    'JOYSTICK_MODE'
+pc=   9 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  10 L0     TEST      A=1   B=0    C=1    
+pc=  11 L0     JMP       A=0   B=256  C=22   to pc 35
+pc=  12 L0     GETUPVAL  A=2   B=1    C=0    
+pc=  13 L0     GETTABLE  A=2   B=2    C=260  R2 K4('bMoveStart')
+pc=  14 L0     TEST      A=2   B=0    C=1    
+pc=  15 L0     JMP       A=0   B=256  C=1    to pc 18
+pc=  16 L0     GETGLOBAL A=2   B=0    C=5    'MoveForwardStart'
+pc=  17 L0     CALL      A=2   B=1    C=1    args=0 ret=0
+pc=  18 L0     GETUPVAL  A=2   B=1    C=0    
+pc=  19 L0     SETTABLE  A=2   B=260  C=262  K4('bMoveStart') K6(True)
+pc=  20 L0     JMP       A=0   B=256  C=13   to pc 35
+pc=  21 L0     GETGLOBAL A=2   B=0    C=2    'SetOperationMode'
+pc=  22 L0     GETUPVAL  A=3   B=1    C=0    
+pc=  23 L0     GETTABLE  A=3   B=3    C=256  R3 K0('nSaveMode')
+pc=  24 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  25 L0     TEST      A=1   B=0    C=1    
+pc=  26 L0     JMP       A=0   B=256  C=7    to pc 35
+pc=  27 L0     GETUPVAL  A=2   B=1    C=0    
+pc=  28 L0     GETTABLE  A=2   B=2    C=260  R2 K4('bMoveStart')
+pc=  29 L0     TEST      A=2   B=0    C=0    
+pc=  30 L0     JMP       A=0   B=256  C=1    to pc 33
+pc=  31 L0     GETGLOBAL A=2   B=0    C=7    'MoveForwardStop'
+pc=  32 L0     CALL      A=2   B=1    C=1    args=0 ret=0
+pc=  33 L0     GETUPVAL  A=2   B=1    C=0    
+pc=  34 L0     SETTABLE  A=2   B=260  C=264  K4('bMoveStart') K8(False)
+pc=  35 L0     GETGLOBAL A=2   B=0    C=9    'Scene_EnterMorphCamera'
+pc=  36 L0     MOVE      A=3   B=0    C=0    
+pc=  37 L0     CALL      A=2   B=2    C=1    args=1 ret=0
+pc=  38 L0     RETURN    A=0   B=1    C=0    

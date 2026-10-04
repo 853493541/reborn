@@ -1,0 +1,76 @@
+
+===== function 0/53 | line 330-354 | params=2 nups=2 stack=15 =====
+pc=   0 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   1 L0     SETTABLE  A=2   B=256  C=0    K0('nCameraMode') R0
+pc=   2 L0     GETGLOBAL A=2   B=0    C=1    'UISetting'
+pc=   3 L0     GETTABLE  A=2   B=2    C=258  R2 K2('IsOpened')
+pc=   4 L0     CALL      A=2   B=1    C=2    args=0 ret=1
+pc=   5 L0     TEST      A=2   B=0    C=0    
+pc=   6 L0     JMP       A=0   B=256  C=43   to pc 51
+pc=   7 L0     NEWTABLE  A=3   B=3    C=0    
+pc=   8 L0     NEWTABLE  A=4   B=0    C=2    
+pc=   9 L0     SETTABLE  A=4   B=259  C=260  K3('szName') K4('CheckBox_Camera')
+pc=  10 L0     GETGLOBAL A=5   B=0    C=6    'CAMERA_MODE'
+pc=  11 L0     GETTABLE  A=5   B=5    C=263  R5 K7('NEVER_FOLLOW')
+pc=  12 L0     SETTABLE  A=4   B=261  C=5    K5('nVal') R5
+pc=  13 L0     NEWTABLE  A=5   B=0    C=2    
+pc=  14 L0     SETTABLE  A=5   B=259  C=264  K3('szName') K8('CheckBox_Camera1')
+pc=  15 L0     GETGLOBAL A=6   B=0    C=6    'CAMERA_MODE'
+pc=  16 L0     GETTABLE  A=6   B=6    C=265  R6 K9('ALWAYS_FOLLOW')
+pc=  17 L0     SETTABLE  A=5   B=261  C=6    K5('nVal') R6
+pc=  18 L0     NEWTABLE  A=6   B=0    C=2    
+pc=  19 L0     SETTABLE  A=6   B=259  C=266  K3('szName') K10('CheckBox_Camera2')
+pc=  20 L0     GETGLOBAL A=7   B=0    C=6    'CAMERA_MODE'
+pc=  21 L0     GETTABLE  A=7   B=7    C=267  R7 K11('AUTO_FOLLOW')
+pc=  22 L0     SETTABLE  A=6   B=261  C=7    K5('nVal') R7
+pc=  23 L0     SETLIST   A=3   B=3    C=1    
+pc=  24 L0     GETGLOBAL A=4   B=0    C=12   'ipairs'
+pc=  25 L0     MOVE      A=5   B=3    C=0    
+pc=  26 L0     CALL      A=4   B=2    C=4    args=1 ret=3
+pc=  27 L0     JMP       A=0   B=256  C=20   to pc 49
+pc=  28 L0     GETUPVAL  A=9   B=1    C=0    
+pc=  29 L0     GETTABLE  A=10  B=8    C=259  R8 K3('szName')
+pc=  30 L0     GETTABLE  A=9   B=9    C=10   R9 R10
+pc=  31 L0     TEST      A=9   B=0    C=0    
+pc=  32 L0     JMP       A=0   B=256  C=15   to pc 49
+pc=  33 L0     SELF      A=10  B=2    C=269  R2 K13('Lookup')
+pc=  34 L0     LOADK     A=12  B=0    C=14   'WndContainer_AllPage/WndScroll_Comprehensive/'
+pc=  35 L0     GETTABLE  A=13  B=9    C=271  R9 K15('path')
+pc=  36 L0     CONCAT    A=12  B=12   C=13   
+pc=  37 L0     CALL      A=10  B=3    C=2    args=2 ret=1
+pc=  38 L0     TEST      A=10  B=0    C=0    
+pc=  39 L0     JMP       A=0   B=256  C=8    to pc 49
+pc=  40 L0     SELF      A=11  B=10   C=272  R10 K16('Check')
+pc=  41 L0     GETTABLE  A=13  B=8    C=261  R8 K5('nVal')
+pc=  42 L0     EQ        A=1   B=13   C=0    R13 R0
+pc=  43 L0     JMP       A=0   B=256  C=0    to pc 45
+pc=  44 L0     LOADBOOL  A=13  B=0    C=1    
+pc=  45 L0     LOADBOOL  A=13  B=1    C=0    
+pc=  46 L0     GETGLOBAL A=14  B=0    C=17   'WNDEVENT_FIRETYPE'
+pc=  47 L0     GETTABLE  A=14  B=14   C=274  R14 K18('PREVENT')
+pc=  48 L0     CALL      A=11  B=4    C=1    args=3 ret=0
+pc=  49 L0     TFORLOOP  A=4   B=0    C=2    
+pc=  50 L0     JMP       A=0   B=255  C=488  to pc 28
+pc=  51 L0     GETGLOBAL A=3   B=0    C=19   'FormatString'
+pc=  52 L0     GETGLOBAL A=4   B=0    C=20   'g_tStrings'
+pc=  53 L0     GETTABLE  A=4   B=4    C=277  R4 K21('STR_SET_CAMERA_MODE_SUCCESS')
+pc=  54 L0     GETGLOBAL A=5   B=0    C=20   'g_tStrings'
+pc=  55 L0     GETTABLE  A=5   B=5    C=278  R5 K22('STR_CAMERA_MODE')
+pc=  56 L0     GETTABLE  A=5   B=5    C=0    R5 R0
+pc=  57 L0     CALL      A=3   B=3    C=2    args=2 ret=1
+pc=  58 L0     GETGLOBAL A=4   B=0    C=23   'UI_Camera_SetParams_S'
+pc=  59 L0     GETUPVAL  A=5   B=0    C=0    
+pc=  60 L0     GETTABLE  A=5   B=5    C=280  R5 K24('fDragSpeed')
+pc=  61 L0     GETUPVAL  A=6   B=0    C=0    
+pc=  62 L0     GETTABLE  A=6   B=6    C=281  R6 K25('fMaxCameraDistance')
+pc=  63 L0     LOADNIL   A=7   B=8    C=0    
+pc=  64 L0     GETUPVAL  A=9   B=0    C=0    
+pc=  65 L0     GETTABLE  A=9   B=9    C=256  R9 K0('nCameraMode')
+pc=  66 L0     CALL      A=4   B=6    C=1    args=5 ret=0
+pc=  67 L0     TEST      A=1   B=0    C=1    
+pc=  68 L0     JMP       A=0   B=256  C=3    to pc 73
+pc=  69 L0     GETGLOBAL A=4   B=0    C=26   'OutputMessage'
+pc=  70 L0     LOADK     A=5   B=0    C=27   'MSG_ANNOUNCE_YELLOW'
+pc=  71 L0     MOVE      A=6   B=3    C=0    
+pc=  72 L0     CALL      A=4   B=3    C=1    args=2 ret=0
+pc=  73 L0     RETURN    A=0   B=1    C=0    

@@ -1,0 +1,9 @@
+== CommitInput 0x1805E3270: 0 direct call sites
+== GetMoveInfo 0x1805DFE90: 0 direct call sites
+== ApplyQueuedInput 0x1805DF7E0: 0 direct call sites
+== MoveSetter 0x1805E0010: 0 direct call sites
+== JumpSetter 0x1805DFFF0: 0 direct call sites
+== ClearInput 0x1805E0030: 0 direct call sites
+== AjustCtrlInput 0x1805E1ED0: 0 direct call sites
+== ControllerApply 0x1805DF350: 0 direct call sites
+== EnableControlCamera 0x1805E36F0: 0 direct call sites

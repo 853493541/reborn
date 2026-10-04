@@ -53,12 +53,20 @@ States accepted by ground locomotion: `{1, 2, 3, 4, 8, 0x1C}` (mask
 
 | Constant | Value | Source |
 |---|---|---|
-| logic tick | 1/16 s (`GAME_FPS=16`); some systems 15 Hz | PvP research §0 / gravity |
+| logic tick | **character logic 15 Hz (66.7 ms)**; combat tables 16 fps (`GAME_FPS=16`) | `JX3_COLLISION_SYSTEM.md` §"ticks" (`:190-191`); gravity research |
 | length | 1 cm; 1 尺 = 64 u = 0.64 m | mesh calibration |
 | walk / run | 6 / 20 u per frame (96 / 320 u/s at 16 fps) | `number.krl` |
 | ride walk / run | 8 / 40 尺/s | `number.krl` |
 | swim | `CharacterSwimSpeed` | `number.krl` |
 | yaw turn | `CharacterYawTurnSpeed = 0.007465`, reset `0.0023` | `number.krl` |
+
+**Tick note (2026-09-30):** the character logic (movement integration,
+`DoMoveCtrl`) runs at **15 Hz**; `GAME_FPS=16` is the combat data-table time
+(`docs/movement/JX3_COLLISION_SYSTEM.md:190-191`). The host still integrates
+continuous dt for walk/run (96/320 u/s) and converts jump tables at 15 Hz; the
+exact integer 15 Hz port remains open (C11). The `CharacterYawTurnSpeed`
+consumer is still not located; the host uses the registered π rad/s fallback
+(S6).
 
 Movement replication: `DoMoveCtrl` (C→S type 7, 49 B) and `DoSyncDirection`
 (type 0x13, 46 B) carry predicted state + sequence; the server broadcasts
@@ -107,19 +115,83 @@ MoveForwardStop()  → player.HoldW = 0; CheckEndSprint() if no other key
 
 ## 6. Our client today
 
-`client/RebornClient.cs` (feature build `reborn_client_double_jump_control.exe`):
-WASD camera-relative **recomputed per frame** (rotating the camera steers the
-run), heading/facing turn model with the >112.5° speed/turn-step penalty,
-RMB turns camera + character at π rad/s (server `+0x48` step undecoded),
-Shift ×10 debug, Space jump + 二段跳 (J0-profile flip, `RC_JUMP_SCALE`),
-`/` walk-run toggle, continuous gravity/jump
-approximation (the W-double-tap sprint trigger was removed 2026-09-30).
-Missing: turn-in-place keys, autorun, sit/mount/sheath,
-click-to-move, follow/interact, exact 15/16 Hz integer model, jump-chain phase.
+`client/RebornClient.cs` (feature build `reborn_client_move_controls.exe`,
+2026-09-30 `agent/move-controls`):
+
+- **Input core (C1/C2)**: `client/HotkeyTable.cs` decodes
+  `ui/hotkey/default.txt` + `bindings.ini` at startup (embedded snapshot of
+  `proof/movement/extracted/`; `RC_HOTKEY_DIR` overrides with live files) and
+  dispatches the movement command set; the full table (286 rows / 430 commands)
+  is loaded and logged, other commands count as unhandled. Shift is ignored for
+  the movement set only (host debug ×10); Ctrl/Alt match exactly (Alt+W is a
+  skill command, not forward).
+- WASD camera-relative **recomputed per frame** (rotating the camera steers the
+  run), heading/facing turn model with the >112.5° speed/turn-step penalty.
+- **TURNLEFT/TURNRIGHT (←/→)** turn in place at the char turn rate; the camera
+  drags behind through the `cameraYawBehind` reflection with the row's 15°
+  `CameraAdjustYawWhenMoveTurnDisableAngle` dead zone; **TOGGLEAUTORUN
+  (G/NumLock)** runs forward hands-free (cancel: backward/strafe);
+  **TOGGLERUN (Numpad /)**, debug main-`/` kept.
+- **Operation modes** (F7 / `RC_MODE`): the packed `hotkeys.lua` bytecode shows
+  STRAFE is the only mode-branched movement handler — CLASSICAL:
+  `SetControl(CONTROL_STRAFE_*)` and, when `Camera_IsInFreeView()`,
+  `TurnLeftStart/TurnRightStart`; JOYSTICK: `ResponseWASDKey('StrafeLeft/Right')`
+  free-move (no free-view branch). Forward/back/turn handlers are
+  mode-independent. Host: classical A/D **turn in place** by default
+  (`RC_FREEVIEW=1`, the observed game behaviour; the camera drags behind with
+  the 15° dead zone) — `RC_FREEVIEW=0` restores the decoded side-step branch
+  with the authored `F1b02yd挪步左/右.tani` clips. Classical S back-pedals
+  (`F1b02yd后退01.tani`); joystick A/D/S turn the body to the travel heading
+  (run clip). Per-mode follow mode / reset speeds are applied at switch; the
+  free-view state itself and the follow-mode `[0..3]` consumer stay open
+  (`OPERATION_MODES_PLAN.md` §7c); proof `proof/controls/control_modes_run.txt`.
+- **Base actions**: `TOGGLESITDOWN` (V/X — decoded 0/98: `OnUseSkill(17 打坐)` /
+  `Stand()`; the host plays the looping `F1b02dj打坐a.tani` pose and stands on
+  any movement/jump intent) and `TOGGLESHEATH` (Z — decoded 0/97: `SetSheath`
+  toggle with the sit/death/fight/bird/horse/tower/buff gates; b02 draw =
+  `F1b02ty拔剑01_start01` → `…st01_持续` stance, sheathe back to idle). Mount /
+  follow / interact await the mount and targeting subjects
+  (`CLASSIC_CONTROLS_AUDIT.md`).
+- **Mode-matched locomotion clips**: travel direction vs facing selects the
+  clip in both modes (>45° = `挪步左/右` kind 6, >135° = `后退01` kind 57, else
+  walk/run). So the joystick pivot plays `挪步`/`后退` while the body turns to
+  the heading, then the run clip; classical side-step (`RC_FREEVIEW=0`) and S
+  use the same clips. Classical A/D turn-in-place has no authored F1 turn clip
+  — the model rotates (catalog-verified).
+- **Jump carries horizontal takeoff velocity** (`JumpSpeedXY` of the row,
+  clamp 0..127, 15 Hz, `RC_JUMP_SCALE`) along the input direction when moving;
+  a standing jump is ballistic-vertical (no move intent -> no horizontal
+  velocity). Airborne integration is ballistic (no WASD air steering -
+  `ProcessAcceleration` has no horizontal input term). Landing stop resets the
+  horizontal velocity.
+- **Landing branch**: drop > `FallDownHeightFloor` (500 u) plays the authored
+  F1 `FallFloorAnimation` (`f1b02yd握拳小跳c.ani`, `RC_CLIP_LAND`); else the
+  normal resume.
+- Space jump + 二段跳 (J0-profile flip, `RC_JUMP_SCALE`), continuous
+  gravity, ground clamp/ledge/step collision, RMB body turn at π rad/s
+  (server `+0x48` step undecoded).
+- Scripted proof: `proof/controls/movement_controls_run.txt` (autorun → forward
+  jump → turn key → 600 u drop → roll).
+
+Missing: sit/mount/sheath, click-to-move, follow/interact, exact 15 Hz integer
+model, jump-chain phase, swim/sprint/parkour kit.
 
 ## 7. Open items
 
 1. Ground turn-in-place clip (挪步 vs pure model rotation) unresolved.
-2. Exact yaw-turn-speed consumer (`CommonNumber+0x58`) not located.
+2. Exact yaw-turn-speed consumer (`CommonNumber+0x58`) not located; host
+   fallback π rad/s (registered, S6).
 3. `OnAdjustPlayerMove` / `OnSyncRunSpeedLimit` layouts not decoded.
 4. Buff modifiers (`MoveSpeedPercent`, jump chain costs) application.
+5. **Air steering**: no horizontal input term found in the decoded per-frame
+   integrator; click-to-move while airborne (`WalkTo` state-4 branch,
+   `JX3_CHARACTER_MOVEMENT_RESEARCH.md` §3.2) not ported (host has no
+   click-to-move). `KCharacter::Jump` writes `Vxy` unconditionally; whether the
+   air commit / `EndJump` stop path clears it for a standing jump is the next
+   probe - the host keeps standing jumps vertical until then (not invented).
+6. **Autorun cancel rules**: backward/strafe cancel per host reading of the
+   `MoveAction_StopAll` handler; exact per-key cancel set (jump/turn/forward)
+   still to be decoded from the packed hotkey Lua.
+7. **Integer tick port (C11)**: character logic 15 Hz vs host continuous dt -
+   reconcile walk/run conversion when the port lands (G-14 in
+   `JX3_COLLISION_SYSTEM.md`).

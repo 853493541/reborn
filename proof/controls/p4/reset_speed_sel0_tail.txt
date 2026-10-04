@@ -1,0 +1,81 @@
+0x1802EE109  mov byte ptr [rsp + 0x3c], 2
+0x1802EE10E  lea rdx, [rsp + 0x30]
+0x1802EE113  mov rcx, rbx
+0x1802EE116  call 0x180004156
+0x1802EE11B  nop 
+0x1802EE11C  mov eax, dword ptr [rsp + 0x44]
+0x1802EE120  mov dword ptr [rsp + 0x30], eax
+0x1802EE124  mov dword ptr [rsp + 0x38], 8
+0x1802EE12C  mov byte ptr [rsp + 0x3c], 2
+0x1802EE131  lea rdx, [rsp + 0x30]
+0x1802EE136  lea rcx, [rbx + 0x10]
+0x1802EE13A  call 0x180004156
+0x1802EE13F  nop 
+0x1802EE140  mov eax, 1
+0x1802EE145  mov rcx, qword ptr [rsp + 0x48]
+0x1802EE14A  xor rcx, rsp
+0x1802EE14D  call 0x18000bf9b
+0x1802EE152  mov rbx, qword ptr [rsp + 0x70]
+0x1802EE157  add rsp, 0x50
+0x1802EE15B  pop rdi
+0x1802EE15C  ret 
+0x1802EE15D  int3 
+0x1802EE15E  int3 
+0x1802EE15F  int3 
+0x1802EE160  int3 
+0x1802EE161  int3 
+0x1802EE162  int3 
+0x1802EE163  int3 
+0x1802EE164  int3 
+0x1802EE165  int3 
+0x1802EE166  int3 
+0x1802EE167  int3 
+0x1802EE168  int3 
+0x1802EE169  int3 
+0x1802EE16A  int3 
+0x1802EE16B  int3 
+0x1802EE16C  int3 
+0x1802EE16D  int3 
+0x1802EE16E  int3 
+0x1802EE16F  int3 
+0x1802EE170  int3 
+0x1802EE171  int3 
+0x1802EE172  int3 
+0x1802EE173  int3 
+0x1802EE174  int3 
+0x1802EE175  int3 
+0x1802EE176  int3 
+0x1802EE177  int3 
+0x1802EE178  int3 
+0x1802EE179  int3 
+0x1802EE17A  int3 
+0x1802EE17B  int3 
+0x1802EE17C  int3 
+0x1802EE17D  int3 
+0x1802EE17E  int3 
+0x1802EE17F  int3 
+0x1802EE180  int3 
+0x1802EE181  int3 
+0x1802EE182  int3 
+0x1802EE183  int3 
+0x1802EE184  int3 
+0x1802EE185  int3 
+0x1802EE186  int3 
+0x1802EE187  int3 
+0x1802EE188  int3 
+0x1802EE189  int3 
+0x1802EE18A  int3 
+0x1802EE18B  int3 
+0x1802EE18C  int3 
+0x1802EE18D  int3 
+0x1802EE18E  int3 
+0x1802EE18F  int3 
+0x1802EE190  int3 
+0x1802EE191  int3 
+0x1802EE192  int3 
+0x1802EE193  int3 
+0x1802EE194  int3 
+0x1802EE195  int3 
+0x1802EE196  int3 
+0x1802EE197  int3 
+0x1802EE198  int3 

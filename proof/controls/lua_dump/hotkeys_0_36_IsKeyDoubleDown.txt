@@ -1,0 +1,17 @@
+
+===== function 0/36 | line 198-206 | params=0 nups=0 stack=2 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'Hotkey'
+pc=   1 L0     GETTABLE  A=0   B=0    C=257  R0 K1('IsKeyDoubleDown')
+pc=   2 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   3 L0     TEST      A=0   B=0    C=0    
+pc=   4 L0     JMP       A=0   B=256  C=6    to pc 12
+pc=   5 L0     GETGLOBAL A=0   B=0    C=0    'Hotkey'
+pc=   6 L0     GETTABLE  A=0   B=0    C=258  R0 K2('GetKeyTimeInterval')
+pc=   7 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   8 L0     LT        A=0   B=0    C=259  R0 K3(250.0)
+pc=   9 L0     JMP       A=0   B=256  C=1    to pc 12
+pc=  10 L0     LOADBOOL  A=0   B=1    C=0    
+pc=  11 L0     RETURN    A=0   B=2    C=0    
+pc=  12 L0     LOADBOOL  A=0   B=0    C=0    
+pc=  13 L0     RETURN    A=0   B=2    C=0    
+pc=  14 L0     RETURN    A=0   B=1    C=0    
