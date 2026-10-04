@@ -3859,3 +3859,21 @@ work into main without M2 entanglement.
   Verified by posting Esc to the engine child window itself. Added a COPY POS
   button (copies the live "pos X,Y,Z" line) next to COPY LOG; click verified
   by posting mouse messages at the button rect.
+
+### 2026-10-03 - Merge agent/move-controls into main (controls finalize)
+
+- Merged the controls branch into main: `aad94d8` (`--no-ff`). Preflight
+  `git merge-tree` exit=0 (the branch already contained main 765c357; no
+  conflicts - the earlier main->branch merge was verified in `b872d79`).
+- Contents: decoded CLASSICAL+JOYSTICK operation modes (hotkey-table dispatch,
+  mode switch + persistence, sprint input, joystick vector/instant facing,
+  follow gating), 15 Hz tick integration with per-frame gait (A/D strafe clip
+  fix), drag-only mouse with visible cursor (Scene_LockMouseRotation decode
+  correction), Esc information panel (info + mode + COPY LOG/POS, IMessageFilter
+  Esc), HUD mode label, decode docs/proof/tools.
+- Gates from main after the merge: canonical build exit=0 + `camera_smoke` ALL
+  PASS; feature `reborn_client_control_modes.exe` build exit=0 + smoke ALL
+  PASS; gravity `verify_model` PASS; loot selftest PASS; `jx3_model` 10 PASS.
+- Clients relaunched: canonical `reborn_client.exe` (title Main-Full-Client)
+  and sandbox `reborn_client_control_modes.exe` (title sandbox-control_modes).
+- Local only: nothing pushed to origin.
