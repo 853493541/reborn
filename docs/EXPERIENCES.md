@@ -1799,3 +1799,34 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   CreateRLScene -> m_pSO3World, so same gate).
 - Evidence: host_char_rl15.out, rl_crs.txt (CreateRLScene), rl_asserts2.txt (full list),
   rl_sow3.txt (exe SO3World creation).
+
+## 2026-10-04 — RL unit path works: GetRepresentIDFromPath -> 'F1', GetUnit('F1') -> live unit
+
+- MovieEditor represent host study: MovieEngineCLR.dll (C++/CLI) references only
+  `CreateRLLoader` (no CreateSO3Represent, no UGC, no CreateMainCharacter) - its
+  character-render path is in managed IL, not statically visible without an IL dumper
+  (no ildasm on this machine; no new deps without asking).
+- JX3LogicStandaloneX64.dll is self-contained **table-parser tooling** (`JX3Represent::Init`
+  -> reads `represent/doodad.txt` via LoadDoodad/LoadOneDoodad into an internal list),
+  not a renderer - it is the converter-side reader.
+- KGRLLoader vtable (rep+0xC9C668) fully resolved via thunks:
+  [0] 0x3F9C20 update, [1] 0x3F4E50 GetUnit wrapper, [2] 0x3F4EF0 GetUnit fetcher,
+  [3] 0x3F5540, [4] 0x3F9D60 ReleaseUnit, [5] 0x3F9EF0, [6] 0x3F5620 LoadPlayerAllModel,
+  [7] 0x3F4870 GetEquipmentScale, [8] 0x3F5420, [9] 0x3F4540, [10] 0x3F49F0,
+  [11] 0x3F4680, [12] 0x3F4790, [13] 0x3F4E40, [14] 0x3F44A0,
+  [15] 0x3F4C60 GetRepresentIDFromPath, [16] 0x3F51C0 GetUnitFromPath,
+  [17] 0x3F9940 LoadUnitFromFile, [18] 0x3FA100.
+- Signatures (from IL): `GetRepresentIDFromPath(this, szPath, char* outIdStr, count)`
+  -> bool, writes the id as text (leading '0' trimmed, '.' terminator);
+  `GetUnit(this, out{dword id; void* unit}, const char* id)` (slot 1) wraps
+  slot 2 `GetUnit(this, const char* id)` -> unit pointer.
+- **Working in-host (host_char_rl19.out, exit 0)**:
+  `GetRepresentIDFromPath("Data\source\player\F1\部件\Mdl\F1.mdl") -> 1 id='F1'`;
+  `GetUnit('F1') -> unit 0x294CF23EFC0` (live, stable across runs). The player model is
+  now reachable through the game's own RL loader API - no game world needed.
+- Unit object: first qword = 0x00000001524C3030 (id/flags, NOT a module vtable) - the
+  unit is likely POD KRL data; find its class via ReleaseUnit (0x3F9D60) and the
+  scene-attach path next.
+- Next: find how the RL scene turns a unit into a render entity (scene actor/ECS
+  component from unit), attach the F1 unit to the scene, verify render
+  (image_stats fingerprint). Evidence: host_char_rl19.out, rl_getunit.txt.

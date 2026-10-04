@@ -1427,6 +1427,53 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] LoadPlayerAllModel fault"); }
+                        // RL unit APIs: GetRepresentIDFromPath (vt[15],
+                        // 0x3F4C60) is (this, szPath, char* outIdStr, count) - it
+                        // writes the id as text and returns a bool. GetUnit (vt[1]/
+                        // vt[2]) returns the assembled RL unit (the renderable
+                        // object) for an id.
+                        __try
+                        {
+                            typedef long (__fastcall *PathFn)(void*, const char*,
+                                                              char*, unsigned);
+                            typedef void* (__fastcall *UnitFn)(void*, const char*);
+                            char idStr[0x108];
+                            memset(idStr, 0, sizeof(idStr));
+                            const char* f1mdl =
+                                "Data\\source\\player\\F1\\\xB2\xBF\xBC\xFE\\Mdl\\F1.mdl";
+                            long gr = ((PathFn)lvt[15])(loader, f1mdl, idStr,
+                                                        sizeof(idStr));
+                            logf("[host] GetRepresentIDFromPath(F1.mdl) -> %ld id='%s'",
+                                 gr, idStr);
+                            if (idStr[0] != 0)
+                            {
+                                // vt[1]: GetUnit(this, out{dword id; void* unit}, id)
+                                unsigned char out[0x20];
+                                memset(out, 0, sizeof(out));
+                                long ok = ((long (__fastcall *)(void*, void*,
+                                                                 const char*))
+                                           lvt[1])(loader, out, idStr);
+                                logf("[host] GetUnit('%s') -> %ld id=%u unit=%p",
+                                     idStr, ok, *(unsigned*)out,
+                                     *(void**)(out + 8));
+                                // vt[2]: direct fetcher
+                                void* u2 = ((UnitFn)lvt[2])(loader, idStr);
+                                logf("[host] GetUnit('%s') vt2 -> %p", idStr, u2);
+                                if (u2 != NULL)
+                                {
+                                    void** uvt = *(void***)u2;
+                                    logf("[host] unit vtable=%p (rep+0x%llX)",
+                                         uvt, (unsigned long long)
+                                         ((BYTE*)uvt - (BYTE*)rep));
+                                    for (int k = 0; k < 6; k++)
+                                        logf("[host]   unit vt[%d] = rep+0x%llX", k,
+                                             (unsigned long long)
+                                             ((BYTE*)uvt[k] - (BYTE*)rep));
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] RL unit probe fault"); }
                         // the RL Lua state lives embedded in the SO3Represent singleton
                         // at +0x25BC0; the singleton's activate (vt[1]) inits it via
                         // rep+0x16130 (the rest of vt[1] faults in this host).
