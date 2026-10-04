@@ -1510,3 +1510,16 @@ solved it, and what is still open. **Newest at the bottom.**
   still applies when no Left key exists.
 - Verified: --selftest 20/0/0; renders mb_v4/pf_v2/tf_v2 (bar frame + kungfu box; player frame with
   sample texts; target frame bars).
+
+### 2026-10-03 — UI — BASIC UI bulk bring-in: 991 authored-state entries (catalog now 1,008)
+- User: "thats not enough, i need way more UI". Generated catalog entries programmatically for every
+  in-scope window (classified groups 201 + the full tier-5 other set 787) on top of the hand-built
+  trio: entry = INI's authored state (id/title/path/backdrop #33393E + generated summary with section
+  count and root geometry), status PARTIAL, no Lua replay, no GT capture (user-approved policy).
+- Catalog: 13 BR + 991 basic UI + 4 spare = **1,008 windows**; --selftest 1008/0/0.
+- Two authored-state edge cases fixed: AccelerateBall and HLBOp_Main author LockShowAndHide=1 roots
+  (runtime-shown bar / invisible 0x0 anchor host) - "Layout INI has no sections" came from the LSH
+  filter dropping the whole subtree; both entries now carry show lists. Lesson: that error message can
+  mean the FILTERED set is empty, not the file (the plan pipeline applies LSH after loading).
+- Docs: BASIC_UI_INVENTORY.md gains the bulk bring-in section; AGENTS/README gate counts -> 1,008.
+- Verified: full --selftest 1008/0/0 (one earlier FAIL hlbop-main fixed via show; re-run green).

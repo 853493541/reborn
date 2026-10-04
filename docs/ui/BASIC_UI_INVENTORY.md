@@ -474,8 +474,23 @@ These manifest scripts have no INI at `ui/Config/Default/<rel>.ini`; they are he
 - `UISetting_Addon` · `UISetting_BuffList` · `UISetting_Combat` · `UISetting_Comprehensive` · `UISetting_Display` · `UISetting_Efficiency` · `UISetting_HeadTop` · `UISetting_Interface_Switch`
 - `UISetting_Operation_Switch` · `UISetting_Special_Sect` · `UISetting_StatusBar`
 
+## Bulk bring-in (2026-10-03, user request: "way more UI")
+
+**991 authored-state entries** now live in the viewer's 基础界面 stage: the classified groups
+(HUD + character/bag/skill + social/team/guild + mail/auction/bank + menus/settings +
+world/quest/interaction = 204 entries incl. the hand-built trio) plus the full tier-5
+"other panels/dialogs" set (787). Each entry renders the INI's authored state (`PARTIAL`,
+backdrop `#33393E`, summary with section count + root geometry + group; no Lua replay, no GT
+capture yet). Catalog total: 1,008 windows (13 BR + 991 basic + 4 spare); `--selftest`
+1008/0/0.
+
+Two authored-state edge cases fixed during the pass: `AccelerateBall` and `HLBOp_Main` author
+`LockShowAndHide=1` roots (runtime-shown / invisible anchor host) — their entries carry
+`show` lists so the authored state renders.
+
 ## Next sessions
 
 1. HUD core deep research (`BASIC_UI_HUD.md`): MainBarPanel/ActionBar, Player, Target family, BuffList/DebuffList/TargetBuff/DeBuff, ExpLine, CompassPanel, QuestTraceList, ChatPanel — then viewer entries under the new 基础界面 stage.
 2. Panels (character/bag/skill → social/team → mail/auction/bank), menus/settings, world/interaction — one group per session, doc + entries + EXPERIENCES.
 3. Native-driven elements (cast bar `ProgressBar`, generic progress bars, nameplates/damage numbers) get INI-art layout only, flagged; engine-host behavior is a later phase.
+4. Per-window refinement pass over the bulk entries: runtime state replay (texts/tabs/lists/show-hide) where the authored state is empty or misleading, guided by GT captures when available.
