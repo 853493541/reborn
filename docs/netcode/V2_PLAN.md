@@ -70,12 +70,11 @@ gateway protocol is server-speaks-first and the client waits for a valid framed 
 
 Live capture is only used for the final validation, never to discover one step at a time.
 
-1. **Framing (static)**: the connection wrapper's `vt+0x38`/`vt+0x40` deliver a whole packet
-   to `KGatewayClient::ProcessPackage` (`0x140189870`): `vt+0x38` -> 1 = packet available,
-   `vt+0x40` -> `piRecvPackage`; `piRecvPackage->vt+0x20` = size, `->vt+0x18` = header
-   (`byte[0]` = protocol id); handler `[gwClient+0x250 + proto*8]`, min size
-   `[gwClient+0xa50 + proto*8]`. Disassemble the wrapper/transport methods to extract the
-   exact wire framing (length prefix, endianness, header fields).
+1. **Framing (static)** — **DONE** (launch doc §45): wire frame = `[u16 LE total][payload]`,
+   payload = total-2, `0xFFFF` extended form for large frames; send writes the prefix at
+   `data-2`; max normal payload `0xFFDC`; optional payload transform flag `transport+0xC`.
+   Packet dispatch: proto id = `payload[0]`, handler `[gwClient+0x250+proto*8]`, min size
+   `[gwClient+0xa50+proto*8]`.
 2. **Connect state machine (static)**: finish `0x140189440` (connect state -> handshake
    send); identify exactly which server packet (opcode) triggers the client's
    `DoHandshakeRequest` (opcode 2, 229 B: `[0]=2`, `[1..4]=0x2b`, `[5..8]=0x1f6`,

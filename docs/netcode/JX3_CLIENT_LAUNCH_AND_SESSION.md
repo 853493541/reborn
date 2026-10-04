@@ -913,3 +913,32 @@ P2 plan (no client modification):
    choose the path that requires no install writes (emulator-provided server list or a
    user-side config).
 4. Then P3: our game server accepts the in-world connection and serves enter-world.
+
+## 45. Gateway transport framing (static; P2 step 1)
+
+Decoded read-only from `JX3ClientX64.exe`. The gateway connection is a wrapper object
+(vtable `0x14094B9D8`, at `gwClient+0x28`) over a transport object (vtable `0x14094B8C8`,
+wrapper `+0x10`).
+
+**Receive** (transport `vt+0x40` = `0x14079EBC0`):
+- `select()` read-check (`0x1407A0050`) then `recv` into a small stack buffer;
+- first **u16 little-endian = total frame size**; payload size = value - 2;
+  if the u16 == `0xFFFF` the frame is extended: u16 total (must be > 6), u16 sub-length
+  (<= total-6), payload = total - 6;
+- allocator `0x140111170(payload)` creates the packet object; `payload[0]` = protocol id;
+- `KGatewayClient::ProcessPackage` (`0x140189870`) dispatch: size = packet `vt+0x20`,
+  header = packet `vt+0x18`; handler = `[gwClient + 0x250 + proto*8]`, min size =
+  `[gwClient + 0xa50 + proto*8]`.
+
+**Send** (`KGatewayClient::Send` = `0x140189E50` -> wrapper `vt+0x30` -> transport
+`vt+0x30` = `0x14079F1D0`):
+- payload = packet `vt+0x18`, size = packet `vt+0x20` (max normal `0xFFDC` = 65500);
+- the 2-byte LE total (size + 2) is written at `data-2` (the allocator reserves the prefix);
+- `transport+0xC != 0` selects a payload transform (`0x1407A1640`/`0x1407A1660`) before
+  send (whether the gateway connection enables it: TBD at the live test);
+- `transport+0x48` optional send hook; then `select()`-write + `send` loop.
+
+**Client handshake** (`DoHandshakeRequest`, built inside `0x140189440`): payload opcode `2`,
+`dword[1]=0x2B`, `dword[5]=0x1F6`, `dword[9]=[global+0xCB0]`; helper `0x140187540` fills the
+tail from `packet+0xD`. The observed 20 s connect timeout is the client polling the
+connection layer for a server packet before it sends this handshake (server-speaks-first).
