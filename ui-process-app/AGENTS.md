@@ -7,6 +7,10 @@ in `docs/ui/BASIC_UI_HUD.md`.
 
 - Run: `dotnet run --project ui-process-app`. Release binary:
   `ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe`.
+- **Render speed**: the resolver/`UiTexCache` is shared per app session, built layouts are cached
+  per (window, page, wireframe, hide) with a 6-entry cap, and the NEXT catalog window is pre-built on
+  the dispatcher's Background priority after each render — the X sweep renders from cache. The
+  `AssetNote` line shows `build=NNN ms` (or `(cached)`).
 - **不需要 (not needed): press `X`** in the viewer to move the currently shown window into a
   `不需要` stage at the bottom of the tree and advance the selection to the NEXT window in the list
   (previous one at the end) so a run can be rejected without scrolling back; press `X` again on a

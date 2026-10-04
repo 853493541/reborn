@@ -1608,3 +1608,13 @@ solved it, and what is still open. **Newest at the bottom.**
   advance to the NEXT window in the list (previous one at the end) so a run can be rejected without
   scrolling back. The handler now computes the flat tree order before the toggle and selects the
   successor (fallback: the moved window).
+
+### 2026-10-04 ? UI ? viewer render speed: shared caches + layout cache + next-window prewarm
+- User: "it takes a while, can we do faster" (the X sweep re-rendered every next window).
+- RenderLayout refactor: AssetResolver/UiTexCache are now shared for the app session (atlas TGAs
+  decode once), INIs are memoized (32-entry), built layouts are cached per (window, page, wireframe,
+  hide) with a 6-entry cap, and after each render the NEXT catalog window is built on the dispatcher's
+  Background priority (same pure builder - no UI reads) so the X sweep renders from cache. The
+  AssetNote line shows build=NNN ms / (cached).
+- Verified: build clean; app starts and stays responsive (pid check). First visits still build (big
+  panels take their time); repeats and prewarmed neighbours are instant.

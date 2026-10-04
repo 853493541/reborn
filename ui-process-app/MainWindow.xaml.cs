@@ -19,6 +19,19 @@ namespace UiProcessApp
         private Canvas _layoutCanvas;
         private WindowInfo _currentWindow;
         private Dictionary<string, string> _rejected;
+
+        // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
+        // decode once per session) and built layouts are cached per window/page/hide so
+        // re-visits are instant; the NEXT catalog window is pre-built in the background
+        // so sweeping with X renders from cache.
+        private static AssetResolver _sharedAssets;
+        private static UiTexCache _sharedTextures;
+        private readonly Dictionary<string, Canvas> _layoutCache = new Dictionary<string, Canvas>();
+        private readonly Dictionary<string, string> _layoutNotes = new Dictionary<string, string>();
+        private readonly List<string> _layoutOrder = new List<string>();
+        private readonly Dictionary<string, IniFile> _iniCache = new Dictionary<string, IniFile>();
+        private bool _prewarmQueued;
+        private const int LayoutCacheCap = 6;
         private IniFile _currentIni;
         private LayoutPlan _currentPlan;
         private Dictionary<WindowInfo, string> _numbers;
@@ -248,7 +261,7 @@ namespace UiProcessApp
                     AddBullet($"{id} = {Strings.Resolve(id)}");
             }
 
-            _currentIni = iniPath != null && File.Exists(iniPath) ? TryLoadIni(iniPath) : null;
+            _currentIni = GetIni(window);
             HideBox.Text = window.Hide ?? "";
             RenderLabels(window, iniPath);
             RenderIni(iniPath);
@@ -522,105 +535,222 @@ namespace UiProcessApp
             }
             try
             {
-                var plan = LayoutPlanBuilder.Build(_currentIni, CurrentPage());
-                LayoutPlanBuilder.ApplyHide(plan.Filtered, HideBox.Text);
-                LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
-                LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
-                LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, CurrentPage() ?? window.Page);
-                LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, App.LoadTemplateIni);
-                LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, App.ScriptShown(window));
-                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
-                LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
-                LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
-                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
-                var pageState = SelectedPageState();
-                if (pageState != null)
+                var key = LayoutCacheKey(window, CurrentPage(), HideBox.Text);
+                if (_layoutCache.TryGetValue(key, out var cached))
                 {
-                    LayoutPlanBuilder.ApplyTexts(plan.Filtered, pageState.Texts);
-                    LayoutPlanBuilder.ApplyImages(plan.Filtered, pageState.Images);
-                    LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, pageState.Adjust);
-                    if (pageState.Hide != null && pageState.Hide.Count > 0)
-                        LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", pageState.Hide));
+                    ShowCanvas(cached, (_layoutNotes.TryGetValue(key, out var cachedNote) ? cachedNote : "") + "  (cached)");
+                    SchedulePrewarm();
+                    return;
                 }
-                if (plan.Filtered.Sections.Count == 0)
+                var sw = Stopwatch.StartNew();
+                var canvas = BuildLayoutCanvas(window, _currentIni, CurrentPage(), HideBox.Text, out var note, out var message);
+                sw.Stop();
+                if (canvas == null)
                 {
-                    LayoutHost.Child = ShowMessage("All sections are hidden (check the 隐藏 list).");
+                    LayoutHost.Child = ShowMessage(message ?? "Layout render failed.");
                     AssetNote.Text = "";
                     return;
                 }
-                var ini = plan.Filtered;
-                var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
-                var assets = new AssetResolver(Paths.ResolveRoots());
-                var textures = new UiTexCache(assets);
-                var build = UiLayout.Build(ini, assets, textures);
-                var overlayRoot = App.BuildOverlayVisual(window, assets, textures, UiLayout.Wireframe);
-
-                double width = ini.Sections[0].GetInt("Width");
-                double height = ini.Sections[0].GetInt("Height");
-                if (width <= 0) width = 1280;
-                if (height <= 0) height = 720;
-
-                _layoutCanvas = new Canvas
-                {
-                    Width = width,
-                    Height = height,
-                    Background = App.BackdropBrush(window),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                };
-                if (overlayRoot != null && (window.Overlay == null || window.Overlay.Front != true))
-                    _layoutCanvas.Children.Add(overlayRoot);
-                _layoutCanvas.Children.Add(build.Root);
-                if (overlayRoot != null && window.Overlay != null && window.Overlay.Front == true)
-                    _layoutCanvas.Children.Add(overlayRoot);
-                double offsetX = window.OffsetX ?? 0;
-                double offsetY = window.OffsetY ?? 0;
-                if (offsetX != 0 || offsetY != 0)
-                {
-                    // Window placement on the client; only the main window shifts.
-                    Canvas.SetLeft(build.Root, offsetX);
-                    Canvas.SetTop(build.Root, offsetY);
-                    width += Math.Max(0, offsetX);
-                    height += Math.Max(0, offsetY);
-                    _layoutCanvas.Width = width;
-                    _layoutCanvas.Height = height;
-                }
-                _layoutCanvas.Measure(new Size(width, height));
-                _layoutCanvas.Arrange(new Rect(0, 0, width, height));
-                _layoutCanvas.UpdateLayout();
-                var overhang = App.ComputeOverhang(build, width, height);
-                if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
-                {
-                    width += overhang.L + overhang.R;
-                    height += overhang.T + overhang.B;
-                    _layoutCanvas.Width = width;
-                    _layoutCanvas.Height = height;
-                    Canvas.SetLeft(build.Root, overhang.L + offsetX);
-                    Canvas.SetTop(build.Root, overhang.T + offsetY);
-                    if (overlayRoot != null)
-                    {
-                        Canvas.SetLeft(overlayRoot, overhang.L);
-                        Canvas.SetTop(overlayRoot, overhang.T);
-                    }
-                }
-                LayoutScroll.UpdateLayout();
-                _zoom = FitZoom(width, height);
-                _layoutCanvas.LayoutTransform = new ScaleTransform(_zoom, _zoom);
-                LayoutHost.Child = _layoutCanvas;
-                _settingZoom = true;
-                if (Math.Abs(ZoomSlider.Value - _zoom) > 0.001) ZoomSlider.Value = _zoom;
-                _settingZoom = false;
-                LayoutScroll.ScrollToHome();
-                var page = SelectedPage() ?? "(all)";
-                AssetNote.Text = $"page={page}  size={width:0}x{height:0}  " +
-                                 $"sections={ini.Sections.Count}  rendered={CountVisible(build.Root)}  " +
-                                 $"art={(Paths.ProofUiRoot != null ? "on" : "missing")}";
+                note = note + "  build=" + sw.ElapsedMilliseconds + "ms";
+                StoreLayout(key, canvas, note);
+                ShowCanvas(canvas, note);
+                SchedulePrewarm();
             }
             catch (Exception ex)
             {
                 LayoutHost.Child = ShowMessage("Layout render failed: " + ex.Message);
                 AssetNote.Text = "";
             }
+        }
+
+        private void ShowCanvas(Canvas canvas, string note)
+        {
+            _layoutCanvas = canvas;
+            LayoutScroll.UpdateLayout();
+            _zoom = FitZoom(canvas.Width, canvas.Height);
+            canvas.LayoutTransform = new ScaleTransform(_zoom, _zoom);
+            LayoutHost.Child = canvas;
+            _settingZoom = true;
+            if (Math.Abs(ZoomSlider.Value - _zoom) > 0.001) ZoomSlider.Value = _zoom;
+            _settingZoom = false;
+            LayoutScroll.ScrollToHome();
+            AssetNote.Text = note;
+        }
+
+        private static string LayoutCacheKey(WindowInfo window, string page, string hideText)
+        {
+            return window.Id + "|" + (page ?? "(all)") + "|" + (UiLayout.Wireframe ? "wire" : "art") +
+                   "|" + (hideText ?? "") + "|" + (window.Hide ?? "");
+        }
+
+        private void StoreLayout(string key, Canvas canvas, string note)
+        {
+            if (_layoutCache.Count >= LayoutCacheCap && _layoutOrder.Count > 0)
+            {
+                var oldest = _layoutOrder[0];
+                _layoutOrder.RemoveAt(0);
+                _layoutCache.Remove(oldest);
+                _layoutNotes.Remove(oldest);
+            }
+            if (!_layoutCache.ContainsKey(key)) _layoutOrder.Add(key);
+            _layoutCache[key] = canvas;
+            _layoutNotes[key] = note;
+        }
+
+        /// <summary>Builds the arranged canvas for a window/page/hide combination. Reads no
+        /// UI state (CurrentPage/HideBox are passed in) so it is safe to call for the
+        /// prewarm of another window.</summary>
+        private Canvas BuildLayoutCanvas(WindowInfo window, IniFile sourceIni, string page, string hideText,
+                                         out string note, out string message)
+        {
+            note = "";
+            message = null;
+            var plan = LayoutPlanBuilder.Build(sourceIni, page);
+            LayoutPlanBuilder.ApplyHide(plan.Filtered, hideText);
+            LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
+            LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
+            LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, page ?? window.Page);
+            LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, App.LoadTemplateIni);
+            LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, App.ScriptShown(window));
+            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
+            LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+            LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+            PageState pageState = null;
+            if (window.Pages != null && window.Pages.Count > 0)
+                pageState = window.Pages.FirstOrDefault(pg =>
+                                string.Equals(pg.Id, page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+            if (pageState != null)
+            {
+                LayoutPlanBuilder.ApplyTexts(plan.Filtered, pageState.Texts);
+                LayoutPlanBuilder.ApplyImages(plan.Filtered, pageState.Images);
+                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, pageState.Adjust);
+                if (pageState.Hide != null && pageState.Hide.Count > 0)
+                    LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", pageState.Hide));
+            }
+            if (plan.Filtered.Sections.Count == 0)
+            {
+                message = "All sections are hidden (check the 隐藏 list).";
+                return null;
+            }
+            var ini = plan.Filtered;
+            var build = UiLayout.Build(ini, SharedAssets, SharedTextures);
+            var overlayRoot = App.BuildOverlayVisual(window, SharedAssets, SharedTextures, UiLayout.Wireframe);
+
+            double width = ini.Sections[0].GetInt("Width");
+            double height = ini.Sections[0].GetInt("Height");
+            if (width <= 0) width = 1280;
+            if (height <= 0) height = 720;
+
+            var canvas = new Canvas
+            {
+                Width = width,
+                Height = height,
+                Background = App.BackdropBrush(window),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+            if (overlayRoot != null && (window.Overlay == null || window.Overlay.Front != true))
+                canvas.Children.Add(overlayRoot);
+            canvas.Children.Add(build.Root);
+            if (overlayRoot != null && window.Overlay != null && window.Overlay.Front == true)
+                canvas.Children.Add(overlayRoot);
+            double offsetX = window.OffsetX ?? 0;
+            double offsetY = window.OffsetY ?? 0;
+            if (offsetX != 0 || offsetY != 0)
+            {
+                // Window placement on the client; only the main window shifts.
+                Canvas.SetLeft(build.Root, offsetX);
+                Canvas.SetTop(build.Root, offsetY);
+                width += Math.Max(0, offsetX);
+                height += Math.Max(0, offsetY);
+                canvas.Width = width;
+                canvas.Height = height;
+            }
+            canvas.Measure(new Size(width, height));
+            canvas.Arrange(new Rect(0, 0, width, height));
+            canvas.UpdateLayout();
+            var overhang = App.ComputeOverhang(build, width, height);
+            if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
+            {
+                width += overhang.L + overhang.R;
+                height += overhang.T + overhang.B;
+                canvas.Width = width;
+                canvas.Height = height;
+                Canvas.SetLeft(build.Root, overhang.L + offsetX);
+                Canvas.SetTop(build.Root, overhang.T + offsetY);
+                if (overlayRoot != null)
+                {
+                    Canvas.SetLeft(overlayRoot, overhang.L);
+                    Canvas.SetTop(overlayRoot, overhang.T);
+                }
+            }
+            note = $"page={page ?? "(all)"}  size={width:0}x{height:0}  " +
+                   $"sections={ini.Sections.Count}  rendered={CountVisible(build.Root)}  " +
+                   $"art={(Paths.ProofUiRoot != null ? "on" : "missing")}";
+            return canvas;
+        }
+
+        private AssetResolver SharedAssets =>
+            _sharedAssets ?? (_sharedAssets = new AssetResolver(Paths.ResolveRoots()));
+        private UiTexCache SharedTextures =>
+            _sharedTextures ?? (_sharedTextures = new UiTexCache(SharedAssets));
+
+        private IniFile GetIni(WindowInfo window)
+        {
+            var path = ResolveIniPath(window);
+            if (path == null || !File.Exists(path)) return null;
+            if (_iniCache.TryGetValue(path, out var cached)) return cached;
+            var ini = TryLoadIni(path);
+            if (ini != null)
+            {
+                if (_iniCache.Count > 32) _iniCache.Clear();
+                _iniCache[path] = ini;
+            }
+            return ini;
+        }
+
+        /// <summary>Builds the next catalog window's layout while the user looks at the
+        /// current one, so the next X / selection renders from cache.</summary>
+        private void SchedulePrewarm()
+        {
+            if (_prewarmQueued) return;
+            _prewarmQueued = true;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                _prewarmQueued = false;
+                var current = _currentWindow;
+                if (current == null) return;
+                var next = NextWindow(current);
+                if (next == null || ReferenceEquals(next, current)) return;
+                var page = string.IsNullOrWhiteSpace(next.Page) ? null : next.Page;
+                if (next.Pages != null && next.Pages.Count > 0 &&
+                    !next.Pages.Any(pg => string.Equals(pg.Id, page, StringComparison.OrdinalIgnoreCase)))
+                    page = next.Pages[0].Id;
+                var key = LayoutCacheKey(next, page, next.Hide ?? "");
+                if (_layoutCache.ContainsKey(key)) return;
+                try
+                {
+                    var ini = GetIni(next);
+                    if (ini == null) return;
+                    var canvas = BuildLayoutCanvas(next, ini, page, next.Hide ?? "", out var note, out _);
+                    if (canvas != null) StoreLayout(key, canvas, note);
+                }
+                catch
+                {
+                    // prewarm is best-effort; a failed build simply renders on selection
+                }
+            }), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private WindowInfo NextWindow(WindowInfo window)
+        {
+            var flat = _inventory.Stages
+                .SelectMany(s => s.Windows ?? new List<WindowInfo>())
+                .ToList();
+            int index = flat.IndexOf(window);
+            if (index < 0) return null;
+            return index + 1 < flat.Count ? flat[index + 1] : (index > 0 ? flat[index - 1] : null);
         }
 
         private double FitZoom(double width, double height)
@@ -682,13 +812,7 @@ namespace UiProcessApp
 
             // Advance the selection to the next window in the list (previous one at the
             // end) so rejecting a run of windows needs no scrolling back to the spot.
-            var flat = _inventory.Stages
-                .SelectMany(s => s.Windows ?? new List<WindowInfo>())
-                .ToList();
-            int index = flat.IndexOf(window);
-            WindowInfo next = index >= 0 && index + 1 < flat.Count
-                ? flat[index + 1]
-                : (index > 0 ? flat[index - 1] : null);
+            WindowInfo next = NextWindow(window);
 
             RejectionStore.Toggle(_inventory, window, _rejected);
             RejectionStore.Save(Paths.AppRoot, _rejected);
