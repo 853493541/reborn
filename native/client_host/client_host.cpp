@@ -704,6 +704,7 @@ static long __fastcall hookSetSfxOrPss(void* self, int on)
 // capture its stack if it blocks (A1 follow-up)
 static volatile LONG g_repInitDone = 0;
 static volatile LONG g_repProbePending = 0;
+static volatile LONG g_rlProbePending = 0;
 static void* g_repSingleton = NULL;
 static HMODULE g_repModule = NULL;
 static void* g_lastEntity = NULL;
@@ -1254,6 +1255,7 @@ int main(void)
                 char rlFlag[8];
                 if (GetEnvironmentVariableA("RC_HOST_RLLOADER", rlFlag, sizeof(rlFlag)) != 0)
                 {
+                    g_rlProbePending = 1; // deferred: vt[1] + scene + character at frame 5
                     typedef void* (__cdecl *CreateRLLoaderFn)(void*);
                     CreateRLLoaderFn crl = (CreateRLLoaderFn)GetProcAddress(rep, "CreateRLLoader");
                     unsigned char env[0x80];
@@ -1609,6 +1611,42 @@ int main(void)
             {
                 g_autoCastDone = 1;
                 castAbility(0, actor, ctrl, eng);
+            }
+            if (f == 5 && g_rlProbePending)
+            {
+                g_rlProbePending = 0;
+                logf("[host] deferred RL probe at frame %d", f);
+                __try
+                {
+                    if (g_repSingleton != NULL && g_repModule != NULL)
+                    {
+                        // NOTE: singleton vt[1] (activate) blocks in this host (job
+                        // processor spinlock) - do not call it; the scene map/scene are
+                        // created manually instead (next probe).
+                        void* scene = ((void* (__fastcall *)(void*))
+                                       ((BYTE*)g_repModule + 0x3E5E80))(g_repSingleton);
+                        logf("[host] RL scene -> %p", scene);
+                        void* character = (scene != NULL)
+                            ? ((void* (__fastcall *)(void*))
+                               ((BYTE*)g_repModule + 0x58CE20))(scene) : NULL;
+                        logf("[host] RL local character -> %p", character);
+                        if (scene != NULL && character != NULL)
+                        {
+                            void* world = *(void**)((BYTE*)scene + 0xF2988);
+                            int sceneField = *(int*)((BYTE*)scene + 0xF1970);
+                            unsigned char cfg[0x60];
+                            memset(cfg, 0, sizeof(cfg));
+                            typedef void* (__fastcall *CreateHangPetFn)(
+                                void*, int, int, void*, void*, int);
+                            void* pet = ((CreateHangPetFn)
+                                         ((BYTE*)g_repModule + 0x42D1F0))(
+                                world, sceneField, 6, character, cfg, 1);
+                            logf("[host] RL CreateHangPet -> %p", pet);
+                        }
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                { logf("[host] deferred RL probe fault"); }
             }
             if (f == 5 && g_repProbePending)
             {

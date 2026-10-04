@@ -1631,3 +1631,20 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Evidence: host_char_rl3.out (lua state + ctx), host_char_rl4.out (scene null),
   hp_luacreate.txt (CreateLuaInterface caller), hp_lch2.txt (CreateHangPet path),
   hp_scene.txt (NewScene).
+
+## 2026-10-04 — RL scene creation is the final gate; vt[1] hang confirmed; probe stable without it
+
+- Host run with the deferred RL probe (vt[1] call removed): stable, exit 0, frame loop
+  done; `RL lua state -> live`, `RL ctx -> live`, `RL scene -> 0` (twice: represent
+  block + frame-5 deferred), no hang.
+- The singleton activate (vt[1]) **blocks** even with the Lua state present and the
+  frame-loop pump running (confirmed again; the run wedged at frame 5 and had to be
+  killed). So the scene map (singleton+0x24F40, init 0x1F1C2) and the RL scene
+  (`SO3RL::NewScene` wrapper 0x3EA420 -> [rcx]->vt[0xA8] factory, no direct callers -
+  vtable-dispatched) must be created manually.
+- GetRLScene (0x3E5E80) = GetScene(singleton+0x24F40, [singleton+0x68]).
+- Next probe: find the scene factory object/vtable path for vt[0xA8] (trace the wrapper
+  0x3EA420's rcx origin - likely a scene-manager object created by one of the vt[1]
+  sub-inits 0x26BF7/0x175F3/0x270C/0x1E80D/0x12715, testable standalone), then
+  insert the scene into the map at +0x24F40 and run scene -> character -> CreateHangPet.
+- Evidence: host_char_rl6.out (stable), host_char_rl5.out (vt[1] hang), hp_scene.txt.
