@@ -5,6 +5,390 @@
   "defaultWindow": "zhenzhuan-queue",
   "stages": [
     {
+      "id": "recommended",
+      "title": "推荐",
+      "summary": "推荐的核心界面（HUD 与主要面板/设置）：供评估是否满足需要。",
+      "windows": [
+        {
+          "id": "main-bar",
+          "title": "MainBarPanel",
+          "cn": "主技能栏",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/MainBarPanel.ini",
+          "backdrop": "#33393E",
+          "show": [ "Handle_BG1" ],
+          "hide": "Handle_BG2,Handle_BgS2",
+          "adjust": [
+            { "section": "Image_Bg1", "left": 0 },
+            { "section": "Image_Bg2", "left": 157 },
+            { "section": "Image_Bg3", "left": 203 }
+          ],
+          "summary": "Main skill bar (MainBarPanel.ini, 93 sections; WndFrame 914x116 at 477,357 under Lowest1; ShowModeID=27, script MainBarPanel.lua). Authored frame: Handle_BG1 with 16 slot backgrounds (Image_Bg1..16), Handle_BG2 dynamic backgrounds, kungfu box (Animate_KfAni/Image_KFBright/Box_Kungfu/Image_CD/Text_Kungfu/Text_Page), five pose buttons (Handle_PoZhaos/Handle_PoZhao_1..5), page up/down (Btn_PageUp/Down), lock/updown checkboxes, settings + custom-mode (Wnd_CustomMode/CheckBox_Assisant), shell/gear animates. The slot ICONS, cooldown sweeps and page contents are runtime-filled by MainBarPanel.lua (skill data), so the viewer renders the authored bar (empty slots). INI/authored state only - no GT capture yet.",
+          "evidence": [
+            "ui/Config/Default/MainBarPanel.ini",
+            "ui/Config/Default/MainBarPanel.lua",
+            "docs/ui/BASIC_UI_HUD.md"
+          ],
+          "elements": [
+            "16 slot backgrounds (Handle_BG1/Image_Bg1..16) + dynamic bg set",
+            "kungfu icon box + cooldown (Box_Kungfu/Image_CD/Text_Kungfu/Text_Page)",
+            "5 pose buttons (Handle_PoZhao_1..5)",
+            "page up/down, lock/updown, settings, custom-mode, assistant"
+          ]
+        },
+        {
+          "id": "player-frame",
+          "title": "Player",
+          "cn": "玩家状态框",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Player.ini",
+          "backdrop": "#33393E",
+          "summary": "Player frame (Player.ini, 88 sections; WndFrame 398x119 at 301,700 under Normal; script Player.lua). Authored: fight-state backgrounds/animates (Image_FightBG1/Animate_FightBight/Animate_FightTop), back plates (Handle_Back/Image_Back*), HP/mana/energy bars and portrait are runtime-driven by Player.lua (values/buff rows), so the viewer renders the authored frame. INI/authored state only - no GT capture yet.",
+          "evidence": [
+            "ui/Config/Default/Player.ini",
+            "ui/Config/Default/Player.lua",
+            "docs/ui/BASIC_UI_HUD.md"
+          ],
+          "elements": [
+            "fight-state art (Image_FightBG1/Animate_FightBight/Animate_FightTop)",
+            "back plates (Handle_Back/Image_Back*)",
+            "HP/mana/energy + portrait (runtime-driven)"
+          ]
+        },
+        {
+          "id": "target-frame",
+          "title": "TargetPlayer10",
+          "cn": "目标框（玩家）",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/TargetPlayer10.ini",
+          "backdrop": "#33393E",
+          "summary": "Target frame, player base (TargetPlayer10.ini, 77 sections; script Target.lua). Target.lua opens ui/config/default/<base>.ini (TargetPlayer10/11 for players, Target<Intensity><Relation> for NPCs, +S in standard mode) and APPENDS TargetCommon.ini sections (Handle_TM/MJ/CJ/CangYun by kungfu) into the window's Handle_Energy (AppendItemFromIni, Target.decompiled.lua:967-989). Authored art: Handle_TarBg (Image_TarBgL/C/CR), Handle_FBg, avatar/school, health/mana/sub-health bars, NPC mark, name (Text_Target), cure shield. The TargetCommon overlay append is not replayed yet (viewer gap). INI/authored state only - no GT capture yet.",
+          "evidence": [
+            "ui/Config/Default/TargetPlayer10.ini",
+            "ui/Config/Default/TargetCommon.ini",
+            "ui/Config/Default/Target.lua",
+            "docs/ui/BASIC_UI_HUD.md"
+          ],
+          "elements": [
+            "target background plates (Handle_TarBg/Image_TarBg*)",
+            "focus/other background (Handle_FBg)",
+            "avatar + school icon, health/mana/sub-health bars",
+            "name Text_Target, NPC mark, cure shield",
+            "TargetCommon overlay (buffs/cast/class handles) appended at runtime - gap"
+          ]
+        },
+        {
+          "id": "chatpanel-normal",
+          "title": "ChatPanel_Normal",
+          "cn": "聊天窗口",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/ChatPanel_Normal.ini",
+          "backdrop": "#33393E",
+          "summary": "ChatPanel_Normal (ui/Config/Default/ChatPanel_Normal.ini, 44 sections; root WndFrame 400x300 @20,520 under Lowest2). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/ChatPanel_Normal.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "questtracelist",
+          "title": "QuestTraceList",
+          "cn": "任务追踪",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/QuestTraceList.ini",
+          "backdrop": "#33393E",
+          "summary": "QuestTraceList (ui/Config/Default/QuestTraceList.ini, 98 sections; root WndFrame 300x550 @500,150 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/QuestTraceList.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "compasspanel",
+          "title": "CompassPanel",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/CompassPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "CompassPanel (ui/Config/Default/CompassPanel.ini, 57 sections; root WndFrame 236x259 @500,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/CompassPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "expline",
+          "title": "ExpLine",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/ExpLine.ini",
+          "backdrop": "#33393E",
+          "summary": "ExpLine (ui/Config/Default/ExpLine.ini, 28 sections; root WndFrame 1280x22 @100,400 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/ExpLine.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "worldmap",
+          "title": "WorldMap",
+          "cn": "地图",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/WorldMap.ini",
+          "backdrop": "#33393E",
+          "summary": "WorldMap (ui/Config/Default/WorldMap.ini, 1061 sections; root WndFrame 1410x890 @370,96 under Topmost1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: world/quest/interaction) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/WorldMap.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "characterpanel",
+          "title": "CharacterPanel",
+          "cn": "角色",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/CharacterPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "CharacterPanel (ui/Config/Default/CharacterPanel.ini, 882 sections; root WndFrame 508x515 @0,170 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/CharacterPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "bigbagpanel",
+          "title": "BigBagPanel",
+          "cn": "背包",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/BigBagPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "BigBagPanel (ui/Config/Default/BigBagPanel.ini, 229 sections; root WndFrame 410x410 @500,273 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/BigBagPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "newskillpanel",
+          "title": "NewSkillPanel",
+          "cn": "武学",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/NewSkillPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "NewSkillPanel (ui/Config/Default/NewSkillPanel.ini, 1005 sections; root WndFrame 960x624 @10,150 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/NewSkillPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "socialpanel",
+          "title": "SocialPanel",
+          "cn": "社交",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/SocialPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "SocialPanel (ui/Config/Default/SocialPanel.ini, 248 sections; root WndFrame 280x624 @500,225 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/SocialPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "mailpanel",
+          "title": "MailPanel",
+          "cn": "邮件",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/MailPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "MailPanel (ui/Config/Default/MailPanel.ini, 171 sections; root WndFrame 836x512 @100,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/MailPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "auctionpanel",
+          "title": "AuctionPanel",
+          "cn": "交易行",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/AuctionPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "AuctionPanel (ui/Config/Default/AuctionPanel.ini, 396 sections; root WndFrame 960x624 @20,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/AuctionPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "bigbankpanel",
+          "title": "BigBankPanel",
+          "cn": "储物箱",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/BigBankPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "BigBankPanel (ui/Config/Default/BigBankPanel.ini, 126 sections; root WndFrame 750x884 @200,56 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/BigBankPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "raidpanel",
+          "title": "RaidPanel",
+          "cn": "团队",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/RaidPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "RaidPanel (ui/Config/Default/RaidPanel.ini, 77 sections; root WndFrame 550x273 @40,270 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/RaidPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "guildmainpanel",
+          "title": "GuildMainPanel",
+          "cn": "帮会",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/GuildMainPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "GuildMainPanel (ui/Config/Default/GuildMainPanel.ini, 1625 sections; root WndFrame 960x624 @300,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/GuildMainPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "tradepanel",
+          "title": "TradePanel",
+          "cn": "交易",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/TradePanel.ini",
+          "backdrop": "#33393E",
+          "summary": "TradePanel (ui/Config/Default/TradePanel.ini, 116 sections; root WndFrame 380x500 @100,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/TradePanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "horsepanel",
+          "title": "HorsePanel",
+          "cn": "坐骑槽位",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/HorsePanel.ini",
+          "backdrop": "#33393E",
+          "summary": "HorsePanel (ui/Config/Default/HorsePanel.ini, 680 sections; root WndFrame 836x510 @10,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/HorsePanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "newpet",
+          "title": "NewPet",
+          "cn": "宠物秘鉴",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/NewPet.ini",
+          "backdrop": "#33393E",
+          "summary": "NewPet (ui/Config/Default/NewPet.ini, 335 sections; root WndFrame 1141x641 @376,247 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/NewPet.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "optionpanel",
+          "title": "OptionPanel",
+          "cn": "系统设置",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/OptionPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "OptionPanel (ui/Config/Default/OptionPanel.ini, 61 sections; root WndFrame 770x500 @0,0 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/OptionPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "hotkeypanel",
+          "title": "HotkeyPanel",
+          "cn": "快捷键设置",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/HotkeyPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "HotkeyPanel (ui/Config/Default/HotkeyPanel.ini, 72 sections; root WndFrame 770x500 @150,150 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/HotkeyPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "uisetting",
+          "title": "UISetting",
+          "cn": "界面设置",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/UISetting.ini",
+          "backdrop": "#33393E",
+          "summary": "UISetting (ui/Config/Default/UISetting.ini, 1749 sections; root WndFrame 770x500 @595,280 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/UISetting.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "uicustommodepanel",
+          "title": "UICustomModePanel",
+          "cn": "主界面自定义模式",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/UICustomModePanel.ini",
+          "backdrop": "#33393E",
+          "summary": "UICustomModePanel (ui/Config/Default/UICustomModePanel.ini, 14 sections; root WndFrame 350x144 @400,320 under Topmost2). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/UICustomModePanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "systemmenu-left",
+          "title": "SystemMenu_Left",
+          "cn": "系统菜单",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/SystemMenu_Left.ini",
+          "backdrop": "#33393E",
+          "summary": "SystemMenu_Left (ui/Config/Default/SystemMenu_Left.ini, 51 sections; root WndFrame 320x56 @100,500 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/SystemMenu_Left.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        }
+      ]
+    },
+    {
       "id": "ui",
       "title": "绝境战场界面",
       "summary": "绝境战场全流程界面列表：排队 → 匹配 → 过图 → 入场 → 对局 HUD → 死亡/复活 → 结算 → 离开。",
@@ -642,77 +1026,6 @@
       "summary": "基础HUD元素（深研见 docs/ui/BASIC_UI_HUD.md；authored-state 渲染）。",
       "windows": [
         {
-          "id": "main-bar",
-          "title": "MainBarPanel",
-          "cn": "主技能栏",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/MainBarPanel.ini",
-          "backdrop": "#33393E",
-          "show": [ "Handle_BG1" ],
-          "hide": "Handle_BG2,Handle_BgS2",
-          "adjust": [
-            { "section": "Image_Bg1", "left": 0 },
-            { "section": "Image_Bg2", "left": 157 },
-            { "section": "Image_Bg3", "left": 203 }
-          ],
-          "summary": "Main skill bar (MainBarPanel.ini, 93 sections; WndFrame 914x116 at 477,357 under Lowest1; ShowModeID=27, script MainBarPanel.lua). Authored frame: Handle_BG1 with 16 slot backgrounds (Image_Bg1..16), Handle_BG2 dynamic backgrounds, kungfu box (Animate_KfAni/Image_KFBright/Box_Kungfu/Image_CD/Text_Kungfu/Text_Page), five pose buttons (Handle_PoZhaos/Handle_PoZhao_1..5), page up/down (Btn_PageUp/Down), lock/updown checkboxes, settings + custom-mode (Wnd_CustomMode/CheckBox_Assisant), shell/gear animates. The slot ICONS, cooldown sweeps and page contents are runtime-filled by MainBarPanel.lua (skill data), so the viewer renders the authored bar (empty slots). INI/authored state only - no GT capture yet.",
-          "evidence": [
-            "ui/Config/Default/MainBarPanel.ini",
-            "ui/Config/Default/MainBarPanel.lua",
-            "docs/ui/BASIC_UI_HUD.md"
-          ],
-          "elements": [
-            "16 slot backgrounds (Handle_BG1/Image_Bg1..16) + dynamic bg set",
-            "kungfu icon box + cooldown (Box_Kungfu/Image_CD/Text_Kungfu/Text_Page)",
-            "5 pose buttons (Handle_PoZhao_1..5)",
-            "page up/down, lock/updown, settings, custom-mode, assistant"
-          ]
-        },
-        {
-          "id": "player-frame",
-          "title": "Player",
-          "cn": "玩家状态框",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/Player.ini",
-          "backdrop": "#33393E",
-          "summary": "Player frame (Player.ini, 88 sections; WndFrame 398x119 at 301,700 under Normal; script Player.lua). Authored: fight-state backgrounds/animates (Image_FightBG1/Animate_FightBight/Animate_FightTop), back plates (Handle_Back/Image_Back*), HP/mana/energy bars and portrait are runtime-driven by Player.lua (values/buff rows), so the viewer renders the authored frame. INI/authored state only - no GT capture yet.",
-          "evidence": [
-            "ui/Config/Default/Player.ini",
-            "ui/Config/Default/Player.lua",
-            "docs/ui/BASIC_UI_HUD.md"
-          ],
-          "elements": [
-            "fight-state art (Image_FightBG1/Animate_FightBight/Animate_FightTop)",
-            "back plates (Handle_Back/Image_Back*)",
-            "HP/mana/energy + portrait (runtime-driven)"
-          ]
-        },
-        {
-          "id": "target-frame",
-          "title": "TargetPlayer10",
-          "cn": "目标框（玩家）",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/TargetPlayer10.ini",
-          "backdrop": "#33393E",
-          "summary": "Target frame, player base (TargetPlayer10.ini, 77 sections; script Target.lua). Target.lua opens ui/config/default/<base>.ini (TargetPlayer10/11 for players, Target<Intensity><Relation> for NPCs, +S in standard mode) and APPENDS TargetCommon.ini sections (Handle_TM/MJ/CJ/CangYun by kungfu) into the window's Handle_Energy (AppendItemFromIni, Target.decompiled.lua:967-989). Authored art: Handle_TarBg (Image_TarBgL/C/CR), Handle_FBg, avatar/school, health/mana/sub-health bars, NPC mark, name (Text_Target), cure shield. The TargetCommon overlay append is not replayed yet (viewer gap). INI/authored state only - no GT capture yet.",
-          "evidence": [
-            "ui/Config/Default/TargetPlayer10.ini",
-            "ui/Config/Default/TargetCommon.ini",
-            "ui/Config/Default/Target.lua",
-            "docs/ui/BASIC_UI_HUD.md"
-          ],
-          "elements": [
-            "target background plates (Handle_TarBg/Image_TarBg*)",
-            "focus/other background (Handle_FBg)",
-            "avatar + school icon, health/mana/sub-health bars",
-            "name Text_Target, NPC mark, cure shield",
-            "TargetCommon overlay (buffs/cast/class handles) appended at runtime - gap"
-          ]
-        },
-        {
           "id": "accelerateball",
           "title": "AccelerateBall",
           "status": "PARTIAL",
@@ -926,20 +1239,6 @@
           ]
         },
         {
-          "id": "chatpanel-normal",
-          "title": "ChatPanel_Normal",
-          "cn": "聊天窗口",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/ChatPanel_Normal.ini",
-          "backdrop": "#33393E",
-          "summary": "ChatPanel_Normal (ui/Config/Default/ChatPanel_Normal.ini, 44 sections; root WndFrame 400x300 @20,520 under Lowest2). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/ChatPanel_Normal.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "chatpanel-recent",
           "title": "ChatPanel_Recent",
           "cn": "聊天窗口",
@@ -977,19 +1276,6 @@
           "summary": "ComboPanel (ui/Config/Default/ComboPanel.ini, 22 sections; root WndFrame 471x182 @100,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/ComboPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "compasspanel",
-          "title": "CompassPanel",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/CompassPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "CompassPanel (ui/Config/Default/CompassPanel.ini, 57 sections; root WndFrame 236x259 @500,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/CompassPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -1042,19 +1328,6 @@
           "summary": "EnterAreaTip (ui/Config/Default/EnterAreaTip.ini, 9 sections; root WndFrame 394x37 @350,100 under Topmost2). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/EnterAreaTip.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "expline",
-          "title": "ExpLine",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/ExpLine.ini",
-          "backdrop": "#33393E",
-          "summary": "ExpLine (ui/Config/Default/ExpLine.ini, 28 sections; root WndFrame 1280x22 @100,400 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/ExpLine.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -1159,20 +1432,6 @@
           "summary": "PuppetActionBar (ui/Config/Default/PuppetActionBar.ini, 41 sections; root WndFrame 380x61 @200,500 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/PuppetActionBar.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "questtracelist",
-          "title": "QuestTraceList",
-          "cn": "任务追踪",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/QuestTraceList.ini",
-          "backdrop": "#33393E",
-          "summary": "QuestTraceList (ui/Config/Default/QuestTraceList.ini, 98 sections; root WndFrame 300x550 @500,150 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/QuestTraceList.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -1355,20 +1614,6 @@
           ]
         },
         {
-          "id": "bigbagpanel",
-          "title": "BigBagPanel",
-          "cn": "背包",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/BigBagPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "BigBagPanel (ui/Config/Default/BigBagPanel.ini, 229 sections; root WndFrame 410x410 @500,273 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/BigBagPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "charinfo",
           "title": "CharInfo",
           "cn": "属性",
@@ -1393,20 +1638,6 @@
           "summary": "CharInfoMore (ui/Config/Default/CharInfoMore.ini, 36 sections; root WndFrame 228x500 @660,273 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/CharInfoMore.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "characterpanel",
-          "title": "CharacterPanel",
-          "cn": "角色",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/CharacterPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "CharacterPanel (ui/Config/Default/CharacterPanel.ini, 882 sections; root WndFrame 508x515 @0,170 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/CharacterPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -1573,20 +1804,6 @@
           ]
         },
         {
-          "id": "horsepanel",
-          "title": "HorsePanel",
-          "cn": "坐骑槽位",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/HorsePanel.ini",
-          "backdrop": "#33393E",
-          "summary": "HorsePanel (ui/Config/Default/HorsePanel.ini, 680 sections; root WndFrame 836x510 @10,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/HorsePanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "kungfupanel",
           "title": "KungFuPanel",
           "cn": "门派",
@@ -1624,20 +1841,6 @@
           "summary": "MingJiaoSkill (ui/Config/Default/MingJiaoSkill.ini, 21 sections; root WndFrame 350x63 @778,700 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/MingJiaoSkill.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "newpet",
-          "title": "NewPet",
-          "cn": "宠物秘鉴",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/NewPet.ini",
-          "backdrop": "#33393E",
-          "summary": "NewPet (ui/Config/Default/NewPet.ini, 335 sections; root WndFrame 1141x641 @376,247 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/NewPet.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -1690,20 +1893,6 @@
           "summary": "NewSkillGuidePanel (ui/Config/Default/NewSkillGuidePanel.ini, 21 sections; root WndFrame 181x136 @744,641 under Lowest1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/NewSkillGuidePanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "newskillpanel",
-          "title": "NewSkillPanel",
-          "cn": "武学",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/NewSkillPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "NewSkillPanel (ui/Config/Default/NewSkillPanel.ini, 1005 sections; root WndFrame 960x624 @10,150 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/NewSkillPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2294,20 +2483,6 @@
           ]
         },
         {
-          "id": "guildmainpanel",
-          "title": "GuildMainPanel",
-          "cn": "帮会",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/GuildMainPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "GuildMainPanel (ui/Config/Default/GuildMainPanel.ini, 1625 sections; root WndFrame 960x624 @300,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/GuildMainPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "guildmemberdragpanel",
           "title": "GuildMemberDragPanel",
           "status": "PARTIAL",
@@ -2492,20 +2667,6 @@
           ]
         },
         {
-          "id": "raidpanel",
-          "title": "RaidPanel",
-          "cn": "团队",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/RaidPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "RaidPanel (ui/Config/Default/RaidPanel.ini, 77 sections; root WndFrame 550x273 @40,270 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/RaidPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "rankingpanel",
           "title": "RankingPanel",
           "cn": "风云录",
@@ -2530,20 +2691,6 @@
           "summary": "ReputationPanelNew (ui/Config/Default/ReputationPanelNew.ini, 255 sections; root WndFrame 1141x641 @28,20 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/ReputationPanelNew.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "socialpanel",
-          "title": "SocialPanel",
-          "cn": "社交",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/SocialPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "SocialPanel (ui/Config/Default/SocialPanel.ini, 248 sections; root WndFrame 280x624 @500,225 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/SocialPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2643,20 +2790,6 @@
           ]
         },
         {
-          "id": "auctionpanel",
-          "title": "AuctionPanel",
-          "cn": "交易行",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/AuctionPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "AuctionPanel (ui/Config/Default/AuctionPanel.ini, 396 sections; root WndFrame 960x624 @20,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/AuctionPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "banishpanel",
           "title": "BanishPanel",
           "status": "PARTIAL",
@@ -2680,20 +2813,6 @@
           "summary": "BanksInterface (ui/Config/Default/BanksInterface.ini, 23 sections; root WndFrame 510x27 @20,700 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/BanksInterface.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "bigbankpanel",
-          "title": "BigBankPanel",
-          "cn": "储物箱",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/BigBankPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "BigBankPanel (ui/Config/Default/BigBankPanel.ini, 126 sections; root WndFrame 750x884 @200,56 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/BigBankPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2735,20 +2854,6 @@
           "summary": "BuyTime (ui/Config/Default/BuyTime.ini, 68 sections; root WndFrame 381x517 @200,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/BuyTime.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "mailpanel",
-          "title": "MailPanel",
-          "cn": "邮件",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/MailPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "MailPanel (ui/Config/Default/MailPanel.ini, 171 sections; root WndFrame 836x512 @100,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/MailPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2867,20 +2972,6 @@
           ]
         },
         {
-          "id": "hotkeypanel",
-          "title": "HotkeyPanel",
-          "cn": "快捷键设置",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/HotkeyPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "HotkeyPanel (ui/Config/Default/HotkeyPanel.ini, 72 sections; root WndFrame 770x500 @150,150 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/HotkeyPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "keypanel",
           "title": "KeyPanel",
           "status": "PARTIAL",
@@ -2890,20 +2981,6 @@
           "summary": "KeyPanel (ui/Config/Default/KeyPanel.ini, 21 sections; root WndFrame 400x150 @510,450 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/KeyPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "optionpanel",
-          "title": "OptionPanel",
-          "cn": "系统设置",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/OptionPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "OptionPanel (ui/Config/Default/OptionPanel.ini, 61 sections; root WndFrame 770x500 @0,0 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/OptionPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2931,20 +3008,6 @@
           "summary": "SoundSettingPanel (ui/Config/Default/SoundSettingPanel.ini, 175 sections; root WndFrame 770x500 @600,150 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/SoundSettingPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "systemmenu-left",
-          "title": "SystemMenu_Left",
-          "cn": "系统菜单",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/SystemMenu_Left.ini",
-          "backdrop": "#33393E",
-          "summary": "SystemMenu_Left (ui/Config/Default/SystemMenu_Left.ini, 51 sections; root WndFrame 320x56 @100,500 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/SystemMenu_Left.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2990,20 +3053,6 @@
           ]
         },
         {
-          "id": "tradepanel",
-          "title": "TradePanel",
-          "cn": "交易",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/TradePanel.ini",
-          "backdrop": "#33393E",
-          "summary": "TradePanel (ui/Config/Default/TradePanel.ini, 116 sections; root WndFrame 380x500 @100,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/TradePanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "tradingpanels",
           "title": "TradingPanels",
           "cn": "待售列表",
@@ -3041,34 +3090,6 @@
           "summary": "TradingSure (ui/Config/Default/TradingSure.ini, 42 sections; root WndFrame 480x208 @0,0 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/TradingSure.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "uicustommodepanel",
-          "title": "UICustomModePanel",
-          "cn": "主界面自定义模式",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/UICustomModePanel.ini",
-          "backdrop": "#33393E",
-          "summary": "UICustomModePanel (ui/Config/Default/UICustomModePanel.ini, 14 sections; root WndFrame 350x144 @400,320 under Topmost2). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/UICustomModePanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "uisetting",
-          "title": "UISetting",
-          "cn": "界面设置",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/UISetting.ini",
-          "backdrop": "#33393E",
-          "summary": "UISetting (ui/Config/Default/UISetting.ini, 1749 sections; root WndFrame 770x500 @595,280 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: menus/settings) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/UISetting.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -3401,20 +3422,6 @@
           "summary": "TrackingTip (ui/Config/Default/TrackingTip.ini, 16 sections; root WndFrame 386x44 @368,96 under Topmost2). Authored-state render (INI only - no Lua replay, no GT capture yet; group: world/quest/interaction) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/TrackingTip.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "worldmap",
-          "title": "WorldMap",
-          "cn": "地图",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/WorldMap.ini",
-          "backdrop": "#33393E",
-          "summary": "WorldMap (ui/Config/Default/WorldMap.ini, 1061 sections; root WndFrame 1410x890 @370,96 under Topmost1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: world/quest/interaction) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/WorldMap.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         }

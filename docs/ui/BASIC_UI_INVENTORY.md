@@ -481,11 +481,17 @@ The full in-scope set is catalogued as authored-state entries, split across stag
 
 | stage | windows | content |
 |---|---|---|
-| 2. 基础HUD | 49 | HUD class + the hand-built trio (`main-bar`, `player-frame`, `target-frame`) |
-| 3. 功能面板 | 107 | character/bag/skill + social/team/guild + mail/auction/bank |
-| 4. 菜单与交互 | 48 | menus/settings + world/quest/interaction |
+| 1. 推荐 | 25 | curated review shortlist (HUD core + main panels + settings) — moved out of the groups below |
+| 2. 基础HUD | 42 | remaining HUD class |
+| 3. 功能面板 | 96 | remaining character/bag/skill + social/team/guild + mail/auction/bank |
+| 4. 菜单与交互 | 41 | remaining menus/settings + world/quest/interaction |
 | 5. 其他界面 | 787 | the remaining default windows (activities/operations/tools) |
 | 6. 备用 (last) | 4 | unchanged |
+
+**推荐 shortlist (stage 1):** 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪,
+CompassPanel, ExpLine, 地图, 角色, 背包, 武学, 社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易,
+坐骑槽位, 宠物秘鉴, 系统设置, 快捷键设置, 界面设置, 主界面自定义模式, 系统菜单. (CompassPanel /
+ExpLine have no authored title string — kept English rather than inventing one.)
 
 Each entry renders the INI's authored state (`PARTIAL`, backdrop `#33393E`, summary with section
 count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 1,008 windows

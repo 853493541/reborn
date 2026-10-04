@@ -1543,3 +1543,16 @@ solved it, and what is still open. **Newest at the bottom.**
   (80 HIT / 6 MISS; strip leading "/" - a leading slash MISSes in PakV4), 321 of 787 named. Catalog back
   to 1,008 windows; --selftest 1008/0/0 (hlbop-main needed its show list re-added - the regeneration
   does not carry per-entry overrides). Total official names: 417.
+
+### 2026-10-03 — UI — 推荐 stage: curated review shortlist (25 windows)
+- User: "sory things out as 推荐, you reecomand me som of the panels we will see if those are what i
+  need" - a review shortlist of the core UI.
+- 25 entries MOVED from the groups into a new first stage 推荐: HUD core (主技能栏, 玩家状态框,
+  目标框（玩家）, 聊天窗口, 任务追踪, CompassPanel, ExpLine, 地图) + main panels (角色, 背包, 武学,
+  社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易, 坐骑槽位, 宠物秘鉴) + settings (系统设置, 快捷键设置,
+  界面设置, 主界面自定义模式, 系统菜单). Groups shrink accordingly (42/96/41); 其他界面 787 and 备用
+  stay; catalog still 1,008; --selftest 1008/0/0.
+- CompassPanel / ExpLine have no authored title string - kept English (no invented translation).
+- Stage rebuild lesson: when moving blocks between stages, re-emit each stage's remaining blocks with
+  recomputed trailing commas (a removed last block leaves a dangling comma otherwise); validate with
+  json.loads before writing.
