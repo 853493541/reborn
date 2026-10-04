@@ -1579,6 +1579,370 @@
             "ui/Config/Default/WorldMark.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
+        },
+        {
+          "id": "targetcommon",
+          "title": "TargetCommon",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/TargetCommon.ini",
+          "backdrop": "#33393E",
+          "summary": "TargetCommon (ui/Config/Default/TargetCommon.ini, 878 sections; root WndFrame 0x0 @0,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/TargetCommon.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "targetplayer10s",
+          "title": "TargetPlayer10S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/TargetPlayer10S.ini",
+          "backdrop": "#33393E",
+          "summary": "TargetPlayer10S (ui/Config/Default/TargetPlayer10S.ini, 74 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/TargetPlayer10S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "targetplayer11",
+          "title": "TargetPlayer11",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/TargetPlayer11.ini",
+          "backdrop": "#33393E",
+          "summary": "TargetPlayer11 (ui/Config/Default/TargetPlayer11.ini, 74 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/TargetPlayer11.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "targetplayer11s",
+          "title": "TargetPlayer11S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/TargetPlayer11S.ini",
+          "backdrop": "#33393E",
+          "summary": "TargetPlayer11S (ui/Config/Default/TargetPlayer11S.ini, 74 sections; root WndFrame 398x119 @274,298 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/TargetPlayer11S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target10",
+          "title": "Target10",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target10.ini",
+          "backdrop": "#33393E",
+          "summary": "Target10 (ui/Config/Default/Target10.ini, 56 sections; root WndFrame 398x119 @1300,700 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target10.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target10s",
+          "title": "Target10S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target10S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target10S (ui/Config/Default/Target10S.ini, 55 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target10S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target11",
+          "title": "Target11",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target11.ini",
+          "backdrop": "#33393E",
+          "summary": "Target11 (ui/Config/Default/Target11.ini, 56 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target11.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target11s",
+          "title": "Target11S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target11S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target11S (ui/Config/Default/Target11S.ini, 55 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target11S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target12",
+          "title": "Target12",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target12.ini",
+          "backdrop": "#33393E",
+          "summary": "Target12 (ui/Config/Default/Target12.ini, 56 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target12.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target12s",
+          "title": "Target12S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target12S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target12S (ui/Config/Default/Target12S.ini, 55 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target12S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target20",
+          "title": "Target20",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target20.ini",
+          "backdrop": "#33393E",
+          "summary": "Target20 (ui/Config/Default/Target20.ini, 64 sections; root WndFrame 566x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target20.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target20s",
+          "title": "Target20S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target20S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target20S (ui/Config/Default/Target20S.ini, 55 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target20S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target21",
+          "title": "Target21",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target21.ini",
+          "backdrop": "#33393E",
+          "summary": "Target21 (ui/Config/Default/Target21.ini, 64 sections; root WndFrame 566x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target21.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target21s",
+          "title": "Target21S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target21S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target21S (ui/Config/Default/Target21S.ini, 55 sections; root WndFrame 398x149 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target21S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target22",
+          "title": "Target22",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target22.ini",
+          "backdrop": "#33393E",
+          "summary": "Target22 (ui/Config/Default/Target22.ini, 64 sections; root WndFrame 566x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target22.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target22s",
+          "title": "Target22S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target22S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target22S (ui/Config/Default/Target22S.ini, 55 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target22S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target30",
+          "title": "Target30",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target30.ini",
+          "backdrop": "#33393E",
+          "summary": "Target30 (ui/Config/Default/Target30.ini, 64 sections; root WndFrame 662x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target30.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target30s",
+          "title": "Target30S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target30S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target30S (ui/Config/Default/Target30S.ini, 56 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target30S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target31",
+          "title": "Target31",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target31.ini",
+          "backdrop": "#33393E",
+          "summary": "Target31 (ui/Config/Default/Target31.ini, 64 sections; root WndFrame 662x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target31.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target31s",
+          "title": "Target31S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target31S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target31S (ui/Config/Default/Target31S.ini, 56 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target31S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target32",
+          "title": "Target32",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target32.ini",
+          "backdrop": "#33393E",
+          "summary": "Target32 (ui/Config/Default/Target32.ini, 64 sections; root WndFrame 662x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target32.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target32s",
+          "title": "Target32S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target32S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target32S (ui/Config/Default/Target32S.ini, 56 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target32S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target40",
+          "title": "Target40",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target40.ini",
+          "backdrop": "#33393E",
+          "summary": "Target40 (ui/Config/Default/Target40.ini, 68 sections; root WndFrame 662x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target40.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target40s",
+          "title": "Target40S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target40S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target40S (ui/Config/Default/Target40S.ini, 59 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target40S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target41",
+          "title": "Target41",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target41.ini",
+          "backdrop": "#33393E",
+          "summary": "Target41 (ui/Config/Default/Target41.ini, 68 sections; root WndFrame 662x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target41.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target41s",
+          "title": "Target41S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target41S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target41S (ui/Config/Default/Target41S.ini, 59 sections; root WndFrame 398x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target41S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target42",
+          "title": "Target42",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target42.ini",
+          "backdrop": "#33393E",
+          "summary": "Target42 (ui/Config/Default/Target42.ini, 68 sections; root WndFrame 634x119 @274,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target42.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "target42s",
+          "title": "Target42S",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Target42S.ini",
+          "backdrop": "#33393E",
+          "summary": "Target42S (ui/Config/Default/Target42S.ini, 59 sections; root WndFrame 398x119 @274,507 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Target42S.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
         }
       ]
     },
@@ -2868,6 +3232,19 @@
           "summary": "WantedPanel (ui/Config/Default/WantedPanel.ini, 283 sections; root WndFrame 766x501 @50,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/WantedPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ]
+        },
+        {
+          "id": "reputationpanel",
+          "title": "ReputationPanel",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/ReputationPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "ReputationPanel (ui/Config/Default/ReputationPanel.ini, 261 sections; root WndFrame 1118x648 @28,20 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/ReputationPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         }

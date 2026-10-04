@@ -1556,3 +1556,15 @@ solved it, and what is still open. **Newest at the bottom.**
 - Stage rebuild lesson: when moving blocks between stages, re-emit each stage's remaining blocks with
   recomputed trailing commas (a removed last block leaves a dangling comma otherwise); validate with
   json.loads before writing.
+
+### 2026-10-03 — UI — coverage audit: what is left out (and the 29 lua-less INIs added)
+- User: "any UI we have left out?" Audited catalog vs the 1,240 local Config/Default INIs: 1,008
+  cataloged -> 233 uncatalogued. Of those, 204 are deliberate scope exclusions (login/entry 31, BR
+  sub-panels 50, arena/JJC 23, other modes/minigames 77, housing 20, debug 3) and 29 are lua-less INIs
+  not in the manifest candidate set (the Target frame variants + ReputationPanel).
+- Added the 29: 28 target-frame variants (TargetCommon, Target10..42 + S, TargetPlayer10S/11/11S) to
+  基础HUD and ReputationPanel to 功能面板. Catalog 1,037; --selftest 1037/0/0.
+- Remaining known gap: the 155 manifest script entries with no same-path INI (helpers/data, not
+  windows; `proof/ui/basic_ui/missing_inis.txt`), plus the general caveat that the pak has no
+  enumerable INI listing - further lua-less INIs like the Target family may exist and get probed per
+  need. The audit table lives in docs/ui/BASIC_UI_INVENTORY.md (Coverage audit).

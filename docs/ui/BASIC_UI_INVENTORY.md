@@ -482,11 +482,30 @@ The full in-scope set is catalogued as authored-state entries, split across stag
 | stage | windows | content |
 |---|---|---|
 | 1. 推荐 | 25 | curated review shortlist (HUD core + main panels + settings) — moved out of the groups below |
-| 2. 基础HUD | 42 | remaining HUD class |
-| 3. 功能面板 | 96 | remaining character/bag/skill + social/team/guild + mail/auction/bank |
+| 2. 基础HUD | 70 | remaining HUD class + the 28 target-frame variants (TargetCommon/Target10..42/S, lua-less) |
+| 3. 功能面板 | 97 | remaining character/bag/skill + social/team/guild + mail/auction/bank (+ ReputationPanel) |
 | 4. 菜单与交互 | 41 | remaining menus/settings + world/quest/interaction |
 | 5. 其他界面 | 787 | the remaining default windows (activities/operations/tools) |
 | 6. 备用 (last) | 4 | unchanged |
+
+## Coverage audit (2026-10-03) — what is left out
+
+Catalog: **1,037 windows**; local `ui/Config/Default` INIs: 1,240. The 203 extracted-but-uncatalogued
+INIs break down as:
+
+| bucket | count | disposition |
+|---|---|---|
+| login/entry | 31 | excluded by scope (Login*, EULA, Addon*, ...) |
+| BR mode sub-panels | 50 | excluded (ACC_*, PVPShow*, mode info panels; the 13 flow windows are catalogued) |
+| arena/JJC | 23 | excluded by scope |
+| other modes/minigames | 77 | excluded by scope (Moba/Rouge/Monopoly/GooseDuckKill/...) |
+| housing | 20 | excluded by scope (Homeland/BuildingOperation) |
+| debug/GM | 3 | excluded by scope |
+
+Plus: **155 manifest script entries have no same-path INI** (`missing_inis.txt`) — helper/data/logic
+files (e.g. CharInfoData, QuestData), not windows; a few may carry differently-named INIs (probe per
+need). **Unknown:** the pak has no enumerable INI listing, so further lua-less INIs like the Target
+family (found by probing) may exist; new families get probed when a session needs them.
 
 **推荐 shortlist (stage 1):** 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪,
 CompassPanel, ExpLine, 地图, 角色, 背包, 武学, 社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易,
