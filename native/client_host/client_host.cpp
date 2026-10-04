@@ -127,6 +127,12 @@ static void* __fastcall hookLoadFileSrc(const char* path, int flags)
         fflush(stdout);
         return NULL;
     }
+    if (path != NULL && (strstr(path, "entities") != NULL || strstr(path, "sceneinfo") != NULL ||
+                         strstr(path, "f1_3094") != NULL || strstr(path, "npc") != NULL))
+    {
+        printf("[host] LoadFile path=%s\n", path);
+        fflush(stdout);
+    }
     return ((LoadFileFn)g_lfTramp)(path, flags);
 }
 

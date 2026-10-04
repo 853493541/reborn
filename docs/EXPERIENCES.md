@@ -1155,3 +1155,18 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Next: either wire the engine's scene-object render path (KG3D_SceneObject +
   AcqureRenderActorProxy 0x9BB730) or integrate the represent module for actors.
 - Evidence: %TEMP%\opencode\skillv2\host_cast.out, host_entity.out; commit 9a8f1a0.
+
+## 2026-10-02 ¡ª Phase 3: injected map entity IS processed (model path resolved), still not drawn
+
+- Decisive probe: set the injected player worldObject's comRender.actorModel to a
+  nonexistent path -> the engine logged
+  missing model file data\source\player\f1\²¿¼þ\zz_entity_probe.mesh.
+  So the map's entities/sceneinfo_full IS read by the client engine and the entity's
+  model path is resolved (restored to the real f1 mesh afterwards).
+- The entity's actor still does not appear in the render (frames identical with/without
+  it; host_char.png mean #A2B4B5) - the engine scene spawns the world object and
+  loads its model but the actor is not drawn (render-proxy/animation state, or actor
+  entities are driven by the game logic/represent layer).
+- Host also now logs entity/model LoadFile paths (diag filter in the LoadFile hook).
+- Evidence: %TEMP%\opencode\skillv2\host_probe.out (missing-model line),
+  host_char.out/png.
