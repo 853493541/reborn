@@ -1180,3 +1180,15 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   still does not render; the scene's actor draw path for entity actors remains open.
 - Evidence: %TEMP%\opencode\skillv2\host_proxy.out; host keeps the proxy hook
   (harmless, logs any future calls).
+
+## 2026-10-02 ¡ª Phase 3: entity spawn diagnostics (SceneObject Init/Fetch/Update hooks)
+
+- Hooked KG3D_SceneObject::Init(type,...) (0x9B9440), FetchModelFromActor (0x9B9D50),
+  UpdateFromActor (0x9B9AD0) with GUID logging: **zero calls** in the full run - the
+  scene's entity spawn does not use these exported overloads (it uses other internal
+  paths, e.g. the SOURCE_MAP_SCENE_ENTITY_INFO init).
+- The f1 model + JsonInspack keep loading **during the frame loop** (per-frame lines in
+  host_spawn.out), i.e. the actor/model load appears to retry each frame - likely the
+  entity's actor spawn not completing (or a re-fetch path). Next probe: remove the
+  injected entity and compare (persist => standalone actor re-fetch; stop => entity).
+- Evidence: %TEMP%\opencode\skillv2\host_spawn.out.

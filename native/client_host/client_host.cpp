@@ -284,6 +284,45 @@ static long __fastcall hookAcquireProxy(void* self, void* scene, unsigned char b
     return r;
 }
 
+// scene-object spawn diagnostics: Init / FetchModelFromActor / UpdateFromActor
+static BYTE g_soiSaved[32];
+static BYTE* g_soiTramp = NULL;
+typedef long (__fastcall *SoInitFn)(void*, int, void*, void*, void*, void*);
+static long __fastcall hookSceneObjectInit(void* self, int type, void* tmpl, void* mtx,
+                                           void* box, void* guid)
+{
+    long r = ((SoInitFn)g_soiTramp)(self, type, tmpl, mtx, box, guid);
+    printf("[host] SceneObject::Init type=%d self=%p -> 0x%08X\n", type, self, (unsigned)r);
+    fflush(stdout);
+    return r;
+}
+
+static BYTE g_fmaSaved[32];
+static BYTE* g_fmaTramp = NULL;
+static long __fastcall hookFetchModel(void* self)
+{
+    const char* guid = NULL;
+    __try { guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
+    long r = ((long (__fastcall *)(void*))g_fmaTramp)(self);
+    printf("[host] FetchModelFromActor guid=%s -> 0x%08X\n", guid ? guid : "(?)", (unsigned)r);
+    fflush(stdout);
+    return r;
+}
+
+static BYTE g_ufaSaved[32];
+static BYTE* g_ufaTramp = NULL;
+static long __fastcall hookUpdateFromActor(void* self)
+{
+    const char* guid = NULL;
+    __try { guid = ((const char* (__fastcall *)(void*))((BYTE*)g_eng + 0x9BBC60))(self); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { guid = NULL; }
+    long r = ((long (__fastcall *)(void*))g_ufaTramp)(self);
+    printf("[host] UpdateFromActor guid=%s -> 0x%08X\n", guid ? guid : "(?)", (unsigned)r);
+    fflush(stdout);
+    return r;
+}
+
 static HWND createHostWindow(void)
 {
     WNDCLASSEXA wc;
@@ -353,7 +392,14 @@ int main(void)
     g_eng = eng;
     int arpOk = installInlineHook(eng, 0x9BB730, (void*)hookAcquireProxy,
                                   g_arpSaved, &g_arpTramp, 22);
-    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d", hookOk, lfOk, arpOk);
+    int soiOk = installInlineHook(eng, 0x9B9440, (void*)hookSceneObjectInit,
+                                  g_soiSaved, &g_soiTramp, 22);
+    int fmaOk = installInlineHook(eng, 0x9B9D50, (void*)hookFetchModel,
+                                  g_fmaSaved, &g_fmaTramp, 22);
+    int ufaOk = installInlineHook(eng, 0x9B9AD0, (void*)hookUpdateFromActor,
+                                  g_ufaSaved, &g_ufaTramp, 24);
+    logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soInit=%d fetch=%d update=%d",
+         hookOk, lfOk, arpOk, soiOk, fmaOk, ufaOk);
     {
         HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
         if (kgc != NULL)
