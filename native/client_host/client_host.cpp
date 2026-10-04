@@ -1327,6 +1327,94 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] X3D getter probe fault"); }
+                        // SO3Represent::Init(Param) probe - fill the game's Param (0xD0)
+                        // exactly like the exe's KJX3RepresentModule::Initialize fill
+                        // (0xBC263): mgr = GetK3EngineMgr; modelMgr = mgr->vt[9]();
+                        // xlogic = GetK3EngineXRepresentLogic; sceneResp = mgr->vt[0x50]();
+                        // conv = KG_GetConvertResource; movie = KG_GetMovieEngine;
+                        // ui = mgr->vt[0xF](); pStepCtrl = local object (placeholder here).
+                        __try
+                        {
+                            HMODULE x3d = GetModuleHandleA("X3DEngine.dll");
+                            if (x3d != NULL && g_repSingleton != NULL)
+                            {
+                                typedef void* (__cdecl *GetterFn)(void);
+                                GetterFn gm = (GetterFn)GetProcAddress(x3d,
+                                    "?GetK3EngineMgr@NSX3DEngine@@YAPEAVIX3DEngineManager@@XZ");
+                                GetterFn gl = (GetterFn)GetProcAddress(x3d,
+                                    "?GetK3EngineXRepresentLogic@NSX3DEngine@@YAPEAUIKG3DEngineXRepresentLogic@@XZ");
+                                void* mgr = (gm != NULL) ? gm() : NULL;
+                                void* xlogic = (gl != NULL) ? gl() : NULL;
+                                void* modelMgr = NULL;
+                                void* sceneResp = NULL;
+                                void* ui = NULL;
+                                if (mgr != NULL)
+                                {
+                                    void** mvt = *(void***)mgr;
+                                    modelMgr = ((void* (__fastcall *)(void*))mvt[9])(mgr);
+                                    sceneResp = ((void* (__fastcall *)(void*))mvt[0x50])(mgr);
+                                    ui = ((void* (__fastcall *)(void*))mvt[0xF])(mgr);
+                                }
+                                void* conv = NULL;
+                                {
+                                    HMODULE rcm = GetModuleHandleA("JX3ResourceConvertX64.dll");
+                                    if (rcm != NULL)
+                                    {
+                                        typedef long (__cdecl *GetConvFn)(void**);
+                                        GetConvFn gc = (GetConvFn)GetProcAddress(rcm,
+                                            "KG_GetConvertResource");
+                                        if (gc != NULL) gc(&conv);
+                                    }
+                                }
+                                void* movie = NULL;
+                                {
+                                    wchar_t mp[MAX_PATH];
+                                    swprintf_s(mp, MAX_PATH,
+                                               L"%s\\KG_MovieEngineX64.dll", bin64);
+                                    HMODULE mm = LoadLibraryExW(mp, NULL,
+                                        LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
+                                        LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                                    if (mm != NULL)
+                                    {
+                                        typedef void* (__cdecl *GetMovieFn)(void);
+                                        GetMovieFn gmo = (GetMovieFn)GetProcAddress(mm,
+                                            "KG_GetMovieEngine");
+                                        if (gmo != NULL) movie = gmo();
+                                    }
+                                }
+                                logf("[host] Init probe: mgr=%p modelMgr=%p xlogic=%p sceneResp=%p conv=%p movie=%p ui=%p",
+                                     mgr, modelMgr, xlogic, sceneResp, conv, movie, ui);
+                                unsigned char param[0xD0];
+                                static unsigned char stepCtrl[0x100];
+                                memset(param, 0, sizeof(param));
+                                memset(stepCtrl, 0, sizeof(stepCtrl));
+                                *(unsigned*)param = 0xD0;
+                                *(void**)(param + 0x08) = mgr;
+                                *(void**)(param + 0x10) = modelMgr;
+                                *(void**)(param + 0x18) = xlogic;
+                                *(void**)(param + 0x20) = sceneResp;
+                                *(void**)(param + 0x28) = conv;
+                                *(void**)(param + 0x30) = movie;
+                                *(void**)(param + 0x38) = ui;
+                                *(void**)(param + 0xC8) = stepCtrl;
+                                // SO3Represent::Init also requires pSO3World(+0x70) /
+                                // pSO3WorldClient(+0x78) - the logic module's worlds -
+                                // and hangs in its failure path here. The RL scene path
+                                // only needs the engine manager in singleton+0xB0 (the
+                                // field Init would set), so write it directly (host
+                                // wiring; the manager object is the game's own
+                                // K3EngineMgr). The full Init remains the re-open path.
+                                if (mgr != NULL &&
+                                    *(void**)((BYTE*)g_repSingleton + 0xB0) == NULL)
+                                {
+                                    *(void**)((BYTE*)g_repSingleton + 0xB0) = mgr;
+                                }
+                                logf("[host] singleton+0xB0 (mgr) -> %p",
+                                     *(void**)((BYTE*)g_repSingleton + 0xB0));
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] SO3Represent::Init probe fault"); }
                         __try
                         {
                             long pm = ((long (__fastcall *)(void*))lvt[6])(loader);

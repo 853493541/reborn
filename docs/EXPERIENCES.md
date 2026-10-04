@@ -1723,3 +1723,25 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   "g_pRL->m_p3DModelManager" (0xCA22C0) and the Init-adjacent asserts; then build the
   Param and call singleton vt[0] -> manager -> NewScene -> scene -> character.
 - Evidence: host_char_rl8.out, rl_scanexports.txt (factory exports), rl_repgetter.txt.
+
+## 2026-10-04 — RL SCENE CREATED in-host: manager field written directly; NewScene -> scene non-null
+
+- Found the game's Param fill: exe `KJX3RepresentModule::Initialize` (0xBC150):
+  Param at [rsp+0x50], cbSize 0xD0; call `singleton->vt[0](&param)` at 0xBC473.
+  Field map (validated at runtime):
+  +0x08 engineMgr (holder+0x18), +0x10 engineMgr->vt[9](), +0x18 engine XLogic
+  (holder+0x20), +0x20 engineMgr->vt[0x50](), +0x28 resource converter, +0x30 movie core
+  (holder+0x28), +0x38 engineMgr->vt[0xF](), +0x70 pSO3World, +0x78 pSO3WorldClient,
+  +0xC8 pStepCtrl (local object).
+- Host probe (host_char_rl9.out): all 8 interface params resolved non-null from the live
+  X3DEngine facade + factories; `SO3Represent::Init` passed them and failed later on
+  `Param.pSO3World` (line 694), then HUNG in its failure path (do not call Init without
+  the logic worlds).
+- Fix (host wiring, env-gated RC_HOST_RLLOADER=1): write the game's own K3EngineMgr into
+  `singleton+0xB0` (the field Init sets) and skip Init. Result (host_char_rl10.out):
+  `NewScene(mgr,1) -> 0x0 scene=0x2217BE21D18`, `GetRLScene -> non-null`, full run exit 0
+  (screenshot written). **RL scene gate closed.**
+- Remaining: `scene -> local character` (rep+0x58CE20) returns 0; `core(roleType=6)`
+  returned 0 this run. Next: disassemble 0x58CE20 to learn the character requirement,
+  then CreateHangPet (0x42D1F0) -> visible player.
+- Evidence: host_char_rl10.out, rl_oninit.txt (Param fill), rl_initbody.txt (asserts).
