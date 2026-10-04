@@ -32,6 +32,27 @@ static void gbk(const wchar_t* src, char* out, int cap)
     WideCharToMultiByte(936, 0, src, -1, out, cap, NULL, NULL);
 }
 
+// "module.dll+0xRVA" for a function pointer (log-friendly)
+static const char* fnLoc(void* fn)
+{
+    static char buf[128];
+    HMODULE mod = NULL;
+    if (fn != NULL && GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                         GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                         (LPCSTR)fn, &mod) && mod != NULL)
+    {
+        char name[MAX_PATH];
+        GetModuleFileNameA(mod, name, MAX_PATH);
+        const char* base = strrchr(name, '\\');
+        base = (base != NULL) ? base + 1 : name;
+        sprintf_s(buf, sizeof(buf), "%s+0x%llX", base,
+                  (unsigned long long)((BYTE*)fn - (BYTE*)mod));
+    }
+    else
+        sprintf_s(buf, sizeof(buf), "%p", fn);
+    return buf;
+}
+
 static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved,
                              BYTE** trampOut, int len)
 {
@@ -475,6 +496,40 @@ static void* g_entitySO = NULL;
 static void* g_propSO = NULL;
 static void* g_soList[1200];
 static int g_soCount = 0;
+
+// classification method (engine 0x852E00): returns bit 8 of [this-0x68C] on the
+// adjusted SceneActor interface; FetchModelFromActor turns it into IsPlayerObject.
+// Hook logs calls and lets us test forcing 0 for the sandbox entity's actor.
+static BYTE g_ispSaved[32];
+static BYTE* g_ispTramp = NULL;
+static long g_entityAdjThis = 0;
+static int g_ispSeen = 0;
+static int __fastcall hookIsPlayer(void* thisAdj)
+{
+    int r = ((int (__fastcall *)(void*))g_ispTramp)(thisAdj);
+    if (g_entityAdjThis == 0 && g_entitySO != NULL)
+    {
+        __try
+        {
+            void* sceneActor = *(void**)((BYTE*)g_entitySO + 0x100);
+            BYTE* a8 = (sceneActor != NULL) ? *(BYTE**)((BYTE*)sceneActor + 8) : NULL;
+            if (a8 != NULL)
+            {
+                int off = *(int*)(a8 + 4);
+                BYTE* iface = (BYTE*)sceneActor + 8 + off;
+                g_entityAdjThis = (long)(iface - *(int*)(iface - 4));
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+    if (g_ispSeen < 12 || (g_entityAdjThis != 0 && (long)thisAdj == g_entityAdjThis))
+    {
+        g_ispSeen++;
+        logf("[host] isPlayer(this=%p) -> %d (entityAdj=%p)", thisAdj, r,
+             (void*)g_entityAdjThis);
+    }
+    return r;
+}
 
 
 static long __fastcall hookSceneObjectInit(void* self, void* entityInfo)
@@ -936,6 +991,30 @@ static void __fastcall hookActorLoaded(void* engine, void* actor, unsigned char 
                             ebp = ((int (__fastcall *)(void*))yvt[0x68 / 8])(y);
                         }
                     }
+                    // resolve the classification methods on the scene object's
+                    // SceneActor wrapper ([so+0x100], the object FetchModelFromActor
+                    // classifies): MSVC adjustor pattern -> iface; vt[0x130]/vt[0x120]
+                    // decide IsPlayerObject / IsMainCharactor.
+                    __try
+                    {
+                        void* sceneActor = (g_entitySO != NULL)
+                            ? *(void**)((BYTE*)g_entitySO + 0x100) : NULL;
+                        BYTE* a8 = (sceneActor != NULL) ? *(BYTE**)((BYTE*)sceneActor + 8) : NULL;
+                        if (a8 != NULL)
+                        {
+                            int off = *(int*)(a8 + 4);
+                            BYTE* iface = (BYTE*)sceneActor + 8 + off;
+                            void** ivt = *(void***)iface;
+                            void* f130 = ivt[0x130 / 8];
+                            void* f120 = ivt[0x120 / 8];
+                            int r130 = ((int (__fastcall *)(void*))f130)(iface);
+                            int r120 = ((int (__fastcall *)(void*))f120)(iface);
+                            logf("[host]   class methods: iface=%p f130=%s f120=%s r130=%d r120=%d",
+                                 iface, fnLoc(f130), fnLoc(f120), r130, r120);
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host]   class methods: fault"); }
                 }
                 unsigned long long vtRva = 0;
                 if (rdi != NULL)
@@ -1041,7 +1120,9 @@ int main(void)
                                   g_chkSaved, &g_chkTramp, 18);
     int bldOk = installInlineHook(eng, 0xC4DE80, (void*)hookBuildData,
                                   g_bldSaved, &g_bldTramp, 15);
-    logf("[host] keepCheck hook=%d buildData hook=%d", chkOk, bldOk);
+    int ispOk = installInlineHook(eng, 0x852E00, (void*)hookIsPlayer,
+                                  g_ispSaved, &g_ispTramp, 15);
+    logf("[host] keepCheck hook=%d buildData hook=%d isPlayer hook=%d", chkOk, bldOk, ispOk);
     logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soCtor=%d soInit=%d setSfx=%d actorLoaded=%d meshFactory=%d",
          hookOk, lfOk, arpOk, socOk, soiOk, sfpOk, alcOk, facOk);
     {

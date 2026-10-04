@@ -1418,3 +1418,35 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   init+hierarchy+slots, =2 = skip init (working path); default runs unchanged and green.
 - Evidence: %TEMP%\opencode\skillv2\host_rep9.out (init fault), host_rep10.out (hang),
   host_rep11.out (ECS root live), host_final4.out/png (default path clean).
+
+## 2026-10-04 — Engine-side character route conclusively closed; represent KRL component API mapped
+
+- The classification key resolved at runtime: the SceneActor wrapper ([so+0x100]) uses
+  the MSVC adjustor pattern; both FetchModelFromActor slots (0x130 IsPlayerObject,
+  0x120 IsMainCharactor) land on the engine thunk `0x87EAF4 -> 0x852E00`, which returns
+  **bit 8 of the dword at [adjusted_this-0x68C]**.
+- Forcing that method to return 0 for the sandbox entity's actor at load time (both
+  classification calls overridden; logged `isPlayer entity override: 1 -> 0`) still
+  does **not** render the f1 body (screenshot diff vs clean = noise). Combined with the
+  earlier results (flags, registry, keep-check, buffers, controller), the engine-scene
+  route for the player model is conclusively closed: player models are excluded from the
+  static-world render path by design and drawn only by the game layer (represent).
+- Represent status: live ECS root in the host (previous entry). `CreateRLLoader`
+  (export 0x141F5 -> 0x3FB580) requires a game-environment object (magic tag 0xC0 at
+  [rcx]) - the same missing module environment that makes the singleton lifecycle init
+  fault. The KRL API surface is mapped by strings: `CreateEntity`, `CreateComponent`,
+  `LoadEntityFromFile`, `LoadComponentFromFile`, `ApplyComponentAction`, and component
+  classes `RendererComponent` (LuaLoadModel / LuaPlayAnimation / LuaSetRoleType /
+  LuaSetVisible / LuaPlaySFX / LuaSetRepresentID ...), `BehaviorComponent`,
+  `CameraComponent`, `PhysxComponent`.
+- Next represent probes (minimal character path without the loader/environment):
+  (a) map `CreateComponent` + the KRL_COMPONENT_TYPE enum (find the enum/table used by
+  CreateComponent); (b) create a RendererComponent on an entity, call LuaLoadModel with
+  the f1 mesh and LuaSetRoleType, parent the entity under "scene[main]"; (c) find the
+  per-frame represent tick (the singleton's frame update) and call it from the host
+  frame loop; (d) check whether the represent renderer creates an engine actor/scene node
+  that the engine draws.
+- Host: isPlayer hook (0x852E00) is log-only now (override removed); class-method probe
+  retained. Default run green (host_final5.out).
+- Evidence: %TEMP%\opencode\skillv2\host_cls2.out (method resolution), host_isp.out
+  (override + no render), host_final5.out, rep_comp.txt (component API strings).
