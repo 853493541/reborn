@@ -1016,6 +1016,17 @@ reached. In the synthetic path RG itself also fails (`state=3`) because the remo
 queue token is invalid. Next: find what resolves the task-completion token (task-queue
 pump / completion callback) and whether the login-stage main loop drives it.
 
+**Correction (later static pass):** the "queue submit" is actually **`_beginthreadex`**
+(import slot `0x1407B98A0`): `Connect` spawns a worker thread `0x140185250` that calls
+`RealConnectGateway` on the client and then frees the task object. The 16-byte handle at
+`[gwClient+0x1258]` is the **thread handle** (`[+0x1260]` = its high dword = 0, so the
+state machine's `[+0x1260] != 0` timeout branch is skipped). RG's success check
+(`connection vt+0x20` -> wrapper `0x14079F710` -> transport `0x14079F6F0`) simply stores
+the passed value (`0x3C` = 60 s) into `[transport+0x14]` (the read-select timeout) and
+returns 1 -> RG sets state=2. So the remaining `state=1 -> 3` in the synthetic poll is NOT
+the handle gate; it is a later failure (pump/ProcessPackage connection-lost path or the
+handshake send error path), still to be pinned.
+
 ## 48. Gateway login message set (static decode, P2 step 3 complete)
 
 All layouts below are read from the client's own builders/handlers (RVAs are exe-relative).
