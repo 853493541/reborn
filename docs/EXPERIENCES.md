@@ -1667,3 +1667,35 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (KG3D_Engine::GetSceneManagerDLL 0x8CB3A0 / adapter interface) if it is the same
   object; then NewScene -> scene -> character -> CreateHangPet.
 - Evidence: host_char_rl7.out (mgr null), rl_nscallers.txt (call sites), rl_subinits.txt.
+
+## 2026-10-04 — RL manager gate root cause: SO3Represent::Init(Param) needs the full X3DEngine facade stack
+
+- The engine manager (`singleton+0xB0`) is set only by `SO3Represent::Init(Param*)` =
+  singleton vtable slot [0] (vtable 0xC99348 -> thunk 0xF63C -> 0x3E6070); verified by
+  dumping the vtable (slot[0] == 0xF63C) and the Init prologue (asserts at 0x3E6085+).
+- Init Param (cbSize == 0xD0) requires 8 engine interfaces (all asserted non-null):
+  +0x08 p3DEngineManager, +0x10 p3DModelManager, +0x18 p3DEngineXLogic,
+  +0x20 p3DSceneResponseMgr, +0x28 p3DResourceConverter, +0x30 p3DMovieCore,
+  +0x38 p3DUI, +0xC8 pStepCtrl.
+- Where they come from: the game exe imports `X3DEngine.dll`
+  (`NSX3DEngine::GetK3EngineMgr`, `GetK3EngineXRepresentLogic`, `LoadX3DEngine`,
+  `PreInitX3DEngine`, `GetFilePath`, `GetViewMgr`, ...). X3DEngine.dll is a thin facade
+  (GetK3EngineMgr = `mov rax,[X3DEngine+0x2F418]; ret`); the globals are set by its own
+  LoadX3DEngine init. The game exe calls `CreateSO3Represent()` (no args, stores at
+  module+0x18) and later `vt[0](&param)` with the facade objects.
+- Known mappings: p3DEngineXLogic ~ KG3DEngineX64!Get3DEngineXLogicInterface (also
+  X3DEngine GetK3EngineXRepresentLogic); p3DResourceConverter = KG_GetConvertResource
+  (already used by the host); p3DUI = JX3UIX64!CreateSO3UI (logic module InitUI).
+  p3DModelManager / p3DSceneResponseMgr / p3DMovieCore / pStepCtrl are X3DEngine-internal
+  objects with no standalone factories found in bin64 exports.
+- Conclusion: the RL/represent path is gated behind the game's complete engine bring-up
+  (X3DEngine facade). Two options for next session:
+  (A) initialize the game's own X3DEngine.dll facade in the host
+      (LoadLibrary -> PreInitX3DEngine -> LoadX3DEngine) and use its getters - this is the
+      game's own path and likely yields all 8 interfaces + the RL scene naturally;
+  (B) hand-assemble the 8 interfaces (only ~3 have known factories; the rest are
+      X3DEngine-internal) - likely a dead end.
+- Host: `RC_HOST_RLLOADER=1` now attempts NewScene(mgr,1,&out) when singleton+0xB0 != 0
+  (stable; mgr is 0 until Init runs).
+- Evidence: rl_mgrset.txt / rl_setter.txt (Init asserts), rl_initbody.txt (Param fields),
+  rl_x3d.txt (X3DEngine facade), rl_exeinit.txt (exe CreateSO3Represent), host_char_rl7.out.
