@@ -1016,7 +1016,35 @@ reached. In the synthetic path RG itself also fails (`state=3`) because the remo
 queue token is invalid. Next: find what resolves the task-completion token (task-queue
 pump / completion callback) and whether the login-stage main loop drives it.
 
-## 49. P2 probe fix + RG failure point (current state)
+## 50. First-packet requirement + real-path result (current state)
+
+**First server packet requirement (decoded from the wrapper factory `0x1407A0B00`):**
+the factory calls `transport vt+0x40` (= get-packet `0x14079EBC0`) on the fresh transport
+with the 20 s select timeout (`transport+0x14 = 0x14`), then validates the returned packet:
+- `packet vt+0x20` (size) must be `0x2A` = **42 bytes**,
+- `packet vt+0x18` (data) must start with bytes **`0x20 0x00`**.
+If no packet arrives in 20 s, or the checks fail, the factory returns NULL -> `RG` sets
+state 3 and destroys the connection. The stub now sends exactly
+`frame([0x20, 0x00] + 40 zero bytes)` as the connect hello.
+
+**Real-path result (user click, probe armed):** `RG` runs, the transport is created
+(`TALLOC` rdi valid), the connect function returns it (`TCLEAN` r12d=1), the stub receives
+the connection and sends the hello — but the factory checks (`FCHK1/2/3`) are never
+reached and the client **exits/crashes ~4.6 s after the connect**. So the crash is inside
+the factory's get-packet call while processing the hello (or immediately around it). Crash
+markers: `bin64\minidump\ExceptionNotCapture<pid>.dat` (48-byte stubs, no real dump).
+
+**New observation:** in the real-click run `RG`'s `this` was `base+0xA55F0` while the
+frame/pump singleton is `base+0xA7D5F0` — two gateway objects; the real login path uses
+the former. Probe triggers/polls on the static object therefore exercised the wrong
+instance (relevant to the synthetic-path discrepancies).
+
+**Next steps:** (1) verify the two gateway objects and use the correct one; (2) find why
+the factory's get-packet crashes on the hello (check `transport+0xC` transform flag in the
+real path; the synthetic run had it 0); (3) once RG succeeds, the client sends its 229-byte
+handshake and the stub's full conversation (sec.48) runs.
+
+## 49. P2 probe fix + RG failure point
 
 **Probe bug fixed (important):** `probe_gw_bp.py` re-armed INT3 with
 `rva = rip - exe_base - 1`, which is only correct for 1-byte stepped instructions; for
