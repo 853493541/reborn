@@ -1821,6 +1821,25 @@ solved it, and what is still open. **Newest at the bottom.**
 - Verified: --audit placeholders=899 unresolved=3254 outOfBounds=6584; --status placed=1240
   shell=136 runtime-hosts=615; replay 79 OK/43 partial; --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? interaction replay: the client's own handlers dispatch (bag checkbox toggles)
+- User challenge: "how come 99% of the UI is still broken, what percentage did you go against, real
+  client or your notes, i actually think i need interactions". Answer: the coverage percentages are
+  self-assessed implementation coverage measured with our own census/audit tools - NOT against the
+  real client's pixels (no GT for the basic UI). UI_SYSTEM_COVERAGE.md now says this in a §0
+  ("what this measures and what it does not").
+- Agreed direction: interactions are the missing system. Built `tools/ui/replay_server.lua` (same
+  shim as the batch harness, long-running): loads a window module + INI, prints
+  `READY handlers=...` (29 On* handlers for the bag), and accepts `EVENT <section> <handler> [args]`
+  / `STATE` / `QUIT`, returning the mutation delta as TSV.
+- Proven: `EVENT CheckBox_Compact OnCheckBoxCheck` -> RESULT OK + delta (`CheckBox_Compact Check
+  false`, `Handle_Bag_Compact Hide`, `BigBagPanel SetSize 594 624`, FormatAllItemPos...) - the
+  client's own checkbox handler toggles compact/normal exactly as in the game.
+- New doc UI_INTERACTION_REPLAY.md (registered): architecture (viewer spawns one server per window;
+  hit-test from the built element rects; handler by section type; delta applied as an in-memory
+  overlay; cache invalidation + re-render), scope and next steps. Viewer wiring is the next build.
+- Verified: server READY 29 handlers; EVENT -> RESULT OK + 7-step delta; --selftest unchanged
+  1240/0/0 (viewer untouched this pass).
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

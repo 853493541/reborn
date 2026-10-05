@@ -4,6 +4,22 @@
 **Date:** 2026-10-04. **Method:** census every shipped window INI, audit every render, replay every
 window script, then measure each axis of the client's system. Tools/commands in §6.
 
+## 0. What this measures — and what it does NOT
+
+These percentages are **self-assessed implementation coverage**: they count how many of the client's
+constructs (INI keys, WndTypes, script mutations) our tools implement, measured with **our own census
+and audit tools — not against the real client's rendered pixels**. There is no GT capture for the
+basic UI (user policy), so *fidelity* is unmeasured; the reviewer's eyes are the ground truth.
+
+This is why "99.7% of constructs" can coexist with "the windows still look broken":
+- a construct counted as handled can still carry wrong **values/state** (authored INI ≠ runtime);
+- our classification is coarse (e.g. page-set/list/tree types counted "approximate" while their real
+  semantics — tab flow, item virtualization — are not implemented);
+- **interaction is 0%**: a static render cannot exercise tabs, checkboxes, list rows or window
+  chains, so the reviewer cannot reach the states that make the UI "the real thing".
+
+Read the table below as *what is wired*, not as *how right it looks*.
+
 ## 1. What the official UI rendering system is
 
 The client's UI = **KGUI engine** (layout/render, `KGUIX64.dll`) + **window scripts** (Lua 5.1
