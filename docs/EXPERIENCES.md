@@ -2071,3 +2071,20 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   represent-created objects; the exe's fill reads them from its module holders), replace
   dummies, iterate until SO3Represent::Init returns 1; then CreateRLScene (Phase C).
 - Evidence: host_logic15-18.out.
+
+## 2026-10-04 - Phase B: stub managers get Init deeper (rep+0x3DE628 -> 0x3E53CD) but fault in their lock-free internals
+
+- Host now builds stub manager objects (valid vtable of no-op methods returning 0) for
+  pDispatcher/pEventCommonMgr/pLogicEventMgr/pRepresentEventMgr/pStepCtrl. With the
+  zeroed stepCtrl the Init faulted at rep+0x3DE628 (copy-ctor on a null vtable); with
+  stubs it advances to rep+0x3E53CD (a lock-free pool/list traversal with a corrupted
+  node) - the managers have real semantics; stubs are not viable.
+- The real classes are **exe-module classes**: KJX3LogicEventModule::Create (exe 0xAFE00
+  region), KJX3RepresentEventModule::Create (0xBAAxx), KEventCommonMgr methods (0x96xxxx
+  strings). Not present in JX3LogicEditOperationX64.dll, JX3RepresentX64.dll,
+  JX3UIX64.dll or JX3ClientX64Base.dll.
+- Options for the next session: (a) load JX3ClientX64.exe as a module with manual IAT
+  resolution and call its module Create functions (faithful but heavy); (b) find the
+  manager creation elsewhere (UI module Param?). The rest of the Param (world, world
+  client, UI, UI handler) is real and passing.
+- Evidence: host_logic19/20.out, rl_lem2.txt (exe module classes).

@@ -182,6 +182,29 @@ static void* __fastcall hookLoadFileSrc(const char* path, int flags)
     return ((LoadFileFn)g_lfTramp)(path, flags);
 }
 
+// stub object for represent Param managers we cannot construct yet: a valid
+// vtable of no-op methods (return 0) so calls don't fault on a null vtable.
+static long __fastcall stubRet0(void)
+{
+    return 0;
+}
+
+static void* makeStubObject(size_t bytes)
+{
+    static void* stubVt[0x100];
+    static int vtInit = 0;
+    if (!vtInit)
+    {
+        for (int i = 0; i < 0x100; i++)
+            stubVt[i] = (void*)stubRet0;
+        vtInit = 1;
+    }
+    void* obj = calloc(1, bytes);
+    if (obj != NULL)
+        *(void**)obj = stubVt;
+    return obj;
+}
+
 // headless host: never let a modal dialog block the process
 static int WINAPI hookMessageBoxA(HWND h, LPCSTR text, LPCSTR caption, UINT type)
 {
@@ -2413,12 +2436,13 @@ int main(void)
                         }
                         // remaining required fields: dispatcher (+0x40) and the three
                         // event managers (+0x90/+0x98/+0xA0) - no standalone globals
-                        // found yet; non-null dummies to complete the assert chain.
-                        *(void**)(param + 0x40) = dummyDispatcher;
-                        *(void**)(param + 0x90) = dummyEvtCommon;
-                        *(void**)(param + 0x98) = dummyEvtLogic;
-                        *(void**)(param + 0xA0) = dummyEvtRep;
-                        *(void**)(param + 0xC8) = stepCtrl;
+                        // found yet; stub objects with a valid no-op vtable (a zeroed
+                        // buffer faults on call [0]).
+                        *(void**)(param + 0x40) = makeStubObject(0x400);
+                        *(void**)(param + 0x90) = makeStubObject(0x400);
+                        *(void**)(param + 0x98) = makeStubObject(0x400);
+                        *(void**)(param + 0xA0) = makeStubObject(0x400);
+                        *(void**)(param + 0xC8) = makeStubObject(0x400);
                         void** svt60 = *(void***)g_repSingleton;
                         long ir60 = ((long (__fastcall *)(void*, void*))
                                      svt60[0])(g_repSingleton, param);
