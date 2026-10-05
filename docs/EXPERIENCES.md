@@ -3910,3 +3910,18 @@ work into main without M2 entanglement.
   `RENDERING_OPTIONS.md` §Reproduce.
 - Outcome: partial — P0.1 done, P0.3/P0.4 partial (apply path not decided).
 - Re-open: P0.4 selection owner; P1 apply path; P2 caps probe.
+
+### 2026-10-04 — Render options — P0.4: active config is a generated merge
+
+- Did: full-install scan (17,843 files, `Game\JX3` + `MovieEditor`, read-only) for the
+  preset names and `GpuSwitchOptionTab`; compared the game's active `zhcn_hd\config.ini`
+  against the `_bd_` presets.
+- Findings: preset file names are referenced by **no** install binary; active config.ini
+  (471 keys, `nEngineGraphicsLevel=1`) is a merge closest to `config_bd_1_zuijian`
+  (412/467 shared values identical) — so the applied set is generated (base + bd tier +
+  machine/user overrides), not a file copy. MovieEditor `config.ini` (host runtime) is a
+  tier-7-ish editor config, install read-only. Per-user display settings also persist in
+  `userpreferences.jx3dat` (player state).
+- Evidence: `RENDERING_OPTIONS.md` §2.1; census values in `proof/render/`.
+- Outcome: partial (research) — selection writer still open; apply path unchanged.
+- Re-open: P1 apply-path probes; caps probe P2.

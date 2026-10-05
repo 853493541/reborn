@@ -36,10 +36,25 @@ dups counted) is **409** — count method differences only, both agree on 72 var
 | UI/video schema (game) | `JX3UIX64.dll` RVA **`0x118970`**: builds a descriptor map of `{key, type code, struct offset, default}` (e.g. `nWaterDetail` +0x1b0, `bPostEffectEnable` +0x60, `bBloomEnable` +0x64, `bSSAO` +0x7c, `nMDLRenderLimit` +0x218, `nClientSFXLimit` +0x21c, `bEnableRC_AmbientOcclusion` +0x2ac ...), xref at `0x11AD19`; more keys follow past the captured window | the game's video panel option surface, with types (`1`=bool, `2`=int, `5`=enum?, `8`=float) and offsets |
 | Other consumers | `KG3DEngineDX11EX64.dll` has `fModelLodRadius`, `GraphicsLevel`; `KG_EngineEditorX64.dll`/`MovieEditorHD.exe`/`MovieEngineCLR.dll` contain the same keys | editor host exposes the same option set |
 
-**Not found (open):** the literals `config_1_zuijian` / `config_9_chenjin` / `config_%d` /
-`GpuSwitchOption` do **not** appear in any `bin64` binary. So the preset *file selection*
-is not a hardcoded string in the client DLLs — it is either in the launcher/patch tool
-(outside `bin64`), built from a table, or the files are merged before launch. P0.4 item.
+### 2.1 Active `config.ini` is a generated merge (P0.4 progress)
+
+The game's **active** `zhcn_hd\config.ini` (present in the install, 471 keys,
+`nEngineGraphicsLevel=1`) does not equal any preset file. Key/value comparison against
+the `_bd_` family (all 467 keys): closest is `config_bd_1_zuijian` — 412 shared values
+identical, 55 differ (machine/cache/user settings; low-tier values match: foliage
+density 10, cull 10000, shadow type 0). So the applied option set is a **merge** of a
+`_bd_<level>` preset with machine/UI overrides, materialized as `config.ini`.
+
+- Full-install scan (17,843 files, whole `Game\JX3` + `MovieEditor` trees): the literals
+  `config_1_zuijian` / `config_9_chenjin` / `GpuSwitchOptionTab` appear **nowhere** — the
+  preset file names are never referenced by install binaries. The merge/selection owner
+  is therefore external (launcher/patch tooling) or the video panel persists values
+  directly through the adapter **save** function (`0x67B10`).
+- Per-player display settings also persist in `userpreferences.jx3dat` (player state;
+  candidate read path for a future "current user settings" probe).
+- Our host's runtime file is `MovieEditor\config.ini` (tier-7-ish editor values,
+  `nEngineGraphicsLevel=7`, `fFoliageCullDist=400000`) — it is an editor config, not a
+  game tier, and it is install read-only.
 
 ## 3. Option groups with proven struct offsets (load fn)
 
@@ -79,8 +94,9 @@ Exact captures: `proof/render/disasm/adapter_nEngineGraphicsLevel.txt` (load fn)
 
 ## 5. Open items (P0 remainder)
 
-1. Which component copies/merges the selected `config_N` into the active `config.ini`
-   (launcher vs UI vs patch tool); `GpuSwitchOptionTab.tab` consumer not found in `bin64`.
+1. Which component performs the merge into the active `config.ini` (external
+   launcher/patch tooling vs panel-triggered adapter save); `GpuSwitchOptionTab.tab`
+   consumer not found anywhere in the install (see §2.1).
 2. Full key extraction from the adapter load fn + UI schema fn (a generator can turn the
    disasm captures into the complete key ↔ offset table).
 3. `configHttpFile.ini` (224 keys) role.
@@ -114,5 +130,6 @@ Exact captures: `proof/render/disasm/adapter_nEngineGraphicsLevel.txt` (load fn)
 | `nEngineGraphicsLevel` default rule (0/3 vs nRenderLevel==100) | HIGH | load fn L3857-3879 |
 | Clamps (`nShadowType`, `nFoliageDensity`, `nSpeedTreeDensity`) | HIGH | load fn |
 | UI schema function key/offset list | HIGH (sampled) | `JX3UIX64.dll` `0x118970` xref; list not yet exhaustive |
-| Preset *file selection* owner | LOW / open | literals absent from `bin64`; P0.4 |
-| `GpuSwitchOptionTab.tab` consumer | LOW / open | string absent from `bin64` |
+| Active `config.ini` = generated merge; owner external/panel | MED | 471-key active file vs `_bd_1` (412/467 same); full-install scan 17,843 files |
+| Preset *file selection* owner (final writer) | LOW / open | preset names referenced nowhere in install; P1 probe |
+| `GpuSwitchOptionTab.tab` consumer | LOW / open | string absent from the whole install |
