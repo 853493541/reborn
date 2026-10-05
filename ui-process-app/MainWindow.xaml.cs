@@ -319,6 +319,8 @@ namespace UiProcessApp
             UpdatePageBox();
             RenderLayout(window);
             StartReplayServer(window);
+            if (_replayHandlers.Count > 0)
+                AssetNote.Text += "  handlers=" + _replayHandlers.Count.ToString(CultureInfo.InvariantCulture);
         }
 
         private static IniFile TryLoadIni(string path)
@@ -719,7 +721,8 @@ namespace UiProcessApp
         {
             if (section.StartsWith("CheckBox_", StringComparison.OrdinalIgnoreCase) &&
                 _replayHandlers.Contains("OnCheckBoxCheck")) return "OnCheckBoxCheck";
-            if (section.StartsWith("Box_", StringComparison.OrdinalIgnoreCase) &&
+            if ((section.StartsWith("Box_", StringComparison.OrdinalIgnoreCase) ||
+                 section.StartsWith("__lt_", StringComparison.OrdinalIgnoreCase)) &&
                 _replayHandlers.Contains("OnItemLButtonClick")) return "OnItemLButtonClick";
             if (_replayHandlers.Contains("OnLButtonClick")) return "OnLButtonClick";
             return null;
