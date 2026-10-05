@@ -205,6 +205,95 @@ static void* makeStubObject(size_t bytes)
     return obj;
 }
 
+// ---- game exe as a callable module (DONT_RESOLVE + manual IAT) --------------
+// The event managers (KJX3LogicEventModule / KJX3RepresentEventModule /
+// KEventCommonMgr) are exe-internal classes; map the exe and call its code.
+static HMODULE g_exeModule = NULL;
+static void* __fastcall exeNew(size_t n)
+{
+    return malloc(n);
+}
+
+static int mapGameExe(const wchar_t* exePath)
+{
+    HMODULE exe = LoadLibraryExW(exePath, NULL, DONT_RESOLVE_DLL_REFERENCES);
+    logf("[host] JX3ClientX64.exe mapped -> %p (err=%u)", exe,
+         exe ? 0 : GetLastError());
+    if (exe == NULL)
+        return 0;
+    BYTE* b = (BYTE*)exe;
+    PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)b;
+    PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(b + dos->e_lfanew);
+    DWORD impRva = nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
+    PIMAGE_IMPORT_DESCRIPTOR imp = (PIMAGE_IMPORT_DESCRIPTOR)(b + impRva);
+    int resolved = 0, failed = 0;
+    for (; imp->Name != 0; imp++)
+    {
+        const char* dllName = (const char*)(b + imp->Name);
+        HMODULE dep = GetModuleHandleA(dllName);
+        if (dep == NULL)
+            dep = LoadLibraryA(dllName);
+        if (dep == NULL)
+        {
+            failed++;
+            continue;
+        }
+        PIMAGE_THUNK_DATA oft = (PIMAGE_THUNK_DATA)(b + imp->OriginalFirstThunk);
+        PIMAGE_THUNK_DATA ft = (PIMAGE_THUNK_DATA)(b + imp->FirstThunk);
+        for (; oft->u1.AddressOfData != 0; oft++, ft++)
+        {
+            FARPROC fn = NULL;
+            if (oft->u1.Ordinal & IMAGE_ORDINAL_FLAG)
+                fn = GetProcAddress(dep, (LPCSTR)(oft->u1.Ordinal & 0xFFFF));
+            else
+            {
+                PIMAGE_IMPORT_BY_NAME ibn =
+                    (PIMAGE_IMPORT_BY_NAME)(b + oft->u1.AddressOfData);
+                fn = GetProcAddress(dep, (LPCSTR)ibn->Name);
+            }
+            if (fn != NULL)
+            {
+                DWORD oldp = 0;
+                if (VirtualProtect(&ft->u1.Function, 8, PAGE_READWRITE, &oldp))
+                {
+                    ft->u1.Function = (ULONG_PTR)fn;
+                    VirtualProtect(&ft->u1.Function, 8, oldp, &oldp);
+                    resolved++;
+                }
+            }
+            else
+                failed++;
+        }
+    }
+    logf("[host] exe IAT resolved=%d failed=%d", resolved, failed);
+    // NOTE: the exe's malloc/free route to the shared UCRT heap already loaded in
+    // this process - no allocator patch needed (a patch caused heap corruption).
+    // run the exe's CRT static initializers (arrays found in mainCRTStartup:
+    // C++ .CRT$XC 0x7B9CC0-0x7BA4C0, C .CRT$XI 0x7BA4C8-0x7BA4E8)
+    {
+        int ran = 0, failedInit = 0;
+        void** arrays[2][2] = {
+            { (void**)(b + 0x7B9CC0), (void**)(b + 0x7BA4C0) },
+            { (void**)(b + 0x7BA4C8), (void**)(b + 0x7BA4E8) },
+        };
+        for (int a = 0; a < 2; a++)
+        {
+            for (void** p = arrays[a][0]; p < arrays[a][1]; p++)
+            {
+                if (*p == NULL)
+                    continue;
+                logf("[host] exe init[%d] = exe+0x%llX", a,
+                     (unsigned long long)((BYTE*)(*p) - b));
+                __try { ((void (__cdecl *)(void))(*p))(); ran++; }
+                __except (EXCEPTION_EXECUTE_HANDLER) { failedInit++; }
+            }
+        }
+        logf("[host] exe static initializers ran=%d failed=%d", ran, failedInit);
+    }
+    g_exeModule = exe;
+    return 1;
+}
+
 // headless host: never let a modal dialog block the process
 static int WINAPI hookMessageBoxA(HWND h, LPCSTR text, LPCSTR caption, UINT type)
 {
@@ -1636,6 +1725,35 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] logic module init fault"); }
+                        // map the game exe and call its event-module creators
+                        {
+                            char exeFlag[8];
+                            if (GetEnvironmentVariableA("RC_HOST_EXE", exeFlag,
+                                                        sizeof(exeFlag)) != 0)
+                            {
+                                wchar_t ep[MAX_PATH];
+                                swprintf_s(ep, MAX_PATH, L"%s\\JX3ClientX64.exe", bin64);
+                                if (mapGameExe(ep))
+                                {
+                                    __try
+                                    {
+                                        void* g = ((void* (__fastcall *)(void))
+                                                   ((BYTE*)g_exeModule + 0xAFEC0))();
+                                        logf("[host] exe trivial getter -> %p", g);
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] exe trivial getter fault"); }
+                                    __try
+                                    {
+                                        void* m = ((void* (__fastcall *)(void))
+                                                   ((BYTE*)g_exeModule + 0xAFD60))();
+                                        logf("[host] KJX3LogicEventModule::Create -> %p", m);
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] KJX3LogicEventModule::Create fault"); }
+                                }
+                            }
+                        }
                         // SO3Represent::Init(Param) probe - fill the game's Param (0xD0)
                         // exactly like the exe's KJX3RepresentModule::Initialize fill
                         // (0xBC263): mgr = GetK3EngineMgr; modelMgr = mgr->vt[9]();

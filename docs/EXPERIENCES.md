@@ -2088,3 +2088,25 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   manager creation elsewhere (UI module Param?). The rest of the Param (world, world
   client, UI, UI handler) is real and passing.
 - Evidence: host_logic19/20.out, rl_lem2.txt (exe module classes).
+
+## 2026-10-04 - Exe-as-module path opened: mapped + IAT resolved + initializers; static-init crash is the next gate
+
+- RC_HOST_EXE=1: `LoadLibraryExW(JX3ClientX64.exe, DONT_RESOLVE_DLL_REFERENCES)` maps the
+  game exe in-process (0x7FF77F180000), manual IAT resolution works (873 imports, 0
+  failed), the exe's trivial getter executes, and `KJX3LogicEventModule::Create` is
+  callable (it reached its internals).
+- Create faulted at exe+0xA3C58 reading an uninitialized exe global (0x142C1F0) - the
+  exe's C++ statics are not constructed because its CRT startup never ran. Located the
+  CRT init arrays from mainCRTStartup (entry 0x79BA78 -> 0x79B904):
+  C++ .CRT$XC 0x7B9CC0-0x7BA4C0, C .CRT$XI 0x7BA4C8-0x7BA4E8. Running them: the first
+  initializer (exe+0x79B8E8) succeeds, the second (exe+0x843EC, a subsystem global ctor
+  at 0x110428) crashes the process with heap corruption (0xC0000374) - the exe's
+  initializers are full game subsystems that assume the complete game process context.
+- NOTE: do NOT patch the exe's allocator (its malloc/free route to the shared UCRT heap;
+  a patch caused the corruption in the first attempt).
+- Next: selective initialization - run only the initializer(s) that construct the
+  globals the event modules need (e.g., the global whose ctor is 0x110428 / 0x142C1F0's
+  owner) instead of the whole array; or call the specific global ctors directly before
+  the module Create calls. Then KJX3LogicEventModule::Create / RepresentEventModule /
+  KEventCommonMgr -> the three managers -> finish the Param -> Init returns 1.
+- Evidence: host_exe1-3.out.
