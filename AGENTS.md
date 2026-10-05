@@ -227,7 +227,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 # must-stay-green gates
 .venv\Scripts\python.exe tools\netcode\reference\jx3_model.py     # 10x PASS
 .venv\Scripts\python.exe tools\gravity\verify_model.py            # jump/fall model
-.venv\Scripts\python.exe tools\netcode\loot\capture.py selftest   # 8 checks
+.venv\Scripts\python.exe tools\netcode\loot\capture.py selftest   # 9 checks
 native\build_shim.cmd                                             # bin64\camera_shim.dll, RC_Shim exports
 # UI gate (after dotnet build ui-process-app -c Release):
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 15/15 windows

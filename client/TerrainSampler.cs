@@ -1,7 +1,19 @@
 // Height sampler on top of the real terrain data loader
 // (PhysicsEngine::KG3D_PhysxTerrainDataLoader_Source::LoadRegion).
 // Copied from engine_host_spike/MapSpike.cs so the product client is self-contained.
+//
+// Streaming: the engine's PhysicsTerrain streams regions around the player
+// (UpdateTerrain + a bounded region cache, Config nMaxCacheCount). This sampler
+// is a direct data-loader client, so it keeps a small bounded LRU cache of
+// region buffers (RC_TERR_CACHE, default 4) - with a single slot the player,
+// the camera ground clamp and the camera ray march ping-pong two adjacent
+// regions across a border and reload (~1 MB + decode) every frame.
+//
+// Telemetry: every load is timed and the totals are logged at exit
+// (`terrain stats ...`), so a scripted border-crossing run is reproducible
+// before/after evidence.
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 internal sealed class TerrainSampler : IDisposable
@@ -35,14 +47,31 @@ internal sealed class TerrainSampler : IDisposable
     delegate int LoadHoleRegionFn(IntPtr self, int nX, int nZ, IntPtr pData,
                                   int nArraySize, IntPtr pOutFlag);
 
+    // one cached terrain region: height grid + packed hole mask
+    sealed class Region
+    {
+        public int Ix, Iz;
+        public IntPtr Buf;
+        public IntPtr Hole;
+        public bool HasHoles;
+        public long LastUse;
+    }
+
     IntPtr _loader = IntPtr.Zero;
-    IntPtr _buf = IntPtr.Zero;
-    IntPtr _hole = IntPtr.Zero;
-    int _size, _nrx, _nrz, _count, _curIx = -1, _curIz = -1;
-    int _holeRowBytes, _holeIx = -1, _holeIz = -1;
-    bool _hasHoles;
+    int _size, _nrx, _nrz, _count;
+    int _holeRowBytes;
     float _cell, _originX, _originZ;
     Action<string> _log;
+    readonly List<Region> _cache = new List<Region>();
+    Region _cur;
+    readonly int _cacheCap;
+    long _use;
+
+    // streaming telemetry (per-run load cost)
+    public int Loads;
+    public double LoadMsTotal;
+    public double LoadMsMax;
+    public double LastLoadMs;
 
     static float ToF(IntPtr p, int off)
     {
@@ -54,9 +83,10 @@ internal sealed class TerrainSampler : IDisposable
         return (T)(object)Marshal.GetDelegateForFunctionPointer(p, typeof(T));
     }
 
-    public TerrainSampler(string physDll, string mapPath, Action<string> log)
+    public TerrainSampler(string physDll, string mapPath, Action<string> log, int cacheCap)
     {
         _log = log;
+        _cacheCap = cacheCap < 1 ? 1 : cacheCap;
         IntPtr h = GetModuleHandleA("PhysicsEngineX64.dll");
         if (h == IntPtr.Zero) h = LoadLibraryExA(physDll, IntPtr.Zero, 0x8);
         if (h == IntPtr.Zero)
@@ -92,12 +122,9 @@ internal sealed class TerrainSampler : IDisposable
         finally { Marshal.FreeHGlobal(d); }
 
         _count = (_size + 1) * (_size + 1);
-        _buf = Marshal.AllocHGlobal(_count * 4);
         _holeRowBytes = (_size + 7) / 8;
-        _hole = Marshal.AllocHGlobal(_holeRowBytes * _size);
-        Marshal.Copy(new byte[_holeRowBytes * _size], 0, _hole, _holeRowBytes * _size);
-        log(string.Format("TerrainSampler: size={0} regions={1}x{2} cell={3} origin=({4},{5})",
-            _size, _nrx, _nrz, _cell, _originX, _originZ));
+        log(string.Format("TerrainSampler: size={0} regions={1}x{2} cell={3} origin=({4},{5}) cache={6}",
+            _size, _nrx, _nrz, _cell, _originX, _originZ, _cacheCap));
     }
 
     int RegionIndex(float v, float origin, int n)
@@ -110,7 +137,30 @@ internal sealed class TerrainSampler : IDisposable
 
     void EnsureRegion(int ix, int iz)
     {
-        if (ix == _curIx && iz == _curIz) return;
+        if (_cur != null && _cur.Ix == ix && _cur.Iz == iz) { _cur.LastUse = ++_use; return; }
+        Region r = null;
+        for (int i = 0; i < _cache.Count; i++)
+        {
+            if (_cache[i].Ix == ix && _cache[i].Iz == iz) { r = _cache[i]; break; }
+        }
+        if (r == null)
+        {
+            r = LoadRegionEntry(ix, iz);
+            if (r == null) return;   // load failed; keep the previous region
+        }
+        r.LastUse = ++_use;
+        _cur = r;
+    }
+
+    Region LoadRegionEntry(int ix, int iz)
+    {
+        Region r = new Region();
+        r.Ix = ix; r.Iz = iz;
+        r.Buf = Marshal.AllocHGlobal(_count * 4);
+        r.Hole = Marshal.AllocHGlobal(_holeRowBytes * _size);
+        Marshal.Copy(new byte[_holeRowBytes * _size], 0, r.Hole, _holeRowBytes * _size);
+        System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+        bool ok = false;
         try
         {
             IntPtr vt = Marshal.ReadIntPtr(_loader);
@@ -118,46 +168,70 @@ internal sealed class TerrainSampler : IDisposable
             IntPtr a = Marshal.AllocHGlobal(8), b = Marshal.AllocHGlobal(8), c = Marshal.AllocHGlobal(8);
             try
             {
-                int ok = load(_loader, ix, iz, _buf, _count, a, b, c);
-                if (ok != 0) { _curIx = ix; _curIz = iz; }
-                else _log("LoadRegion failed (" + ix + "," + iz + ")");
+                ok = load(_loader, ix, iz, r.Buf, _count, a, b, c) != 0;
             }
             finally { Marshal.FreeHGlobal(a); Marshal.FreeHGlobal(b); Marshal.FreeHGlobal(c); }
 
             // real terrain holes (cave voids): packed 1-bit-per-cell mask
-            _hasHoles = false;
-            _holeIx = -1; _holeIz = -1;
+            r.HasHoles = false;
             IntPtr holeFn = Marshal.ReadIntPtr(vt, 4 * IntPtr.Size);
-            if (holeFn != IntPtr.Zero && _hole != IntPtr.Zero)
+            if (ok && holeFn != IntPtr.Zero && r.Hole != IntPtr.Zero)
             {
                 var loadHole = Fn<LoadHoleRegionFn>(holeFn);
                 IntPtr flag = Marshal.AllocHGlobal(4);
                 try
                 {
                     Marshal.WriteInt32(flag, 0, 1);
-                    int hok = loadHole(_loader, ix, iz, _hole, _size * _size / 8, flag);
-                    if (hok != 0)
-                    {
-                        _holeIx = ix; _holeIz = iz;
-                        _hasHoles = Marshal.ReadInt32(flag) == 0;
-                    }
+                    int hok = loadHole(_loader, ix, iz, r.Hole, _size * _size / 8, flag);
+                    if (hok != 0) r.HasHoles = Marshal.ReadInt32(flag) == 0;
                 }
                 finally { Marshal.FreeHGlobal(flag); }
             }
         }
         catch (Exception e) { _log("EnsureRegion ex: " + e.Message); }
+        sw.Stop();
+        Loads++;
+        LastLoadMs = sw.Elapsed.TotalMilliseconds;
+        LoadMsTotal += LastLoadMs;
+        if (LastLoadMs > LoadMsMax) LoadMsMax = LastLoadMs;
+        if (!ok)
+        {
+            _log(string.Format("LoadRegion failed ({0},{1}) ms={2:F1}", ix, iz, LastLoadMs));
+            Marshal.FreeHGlobal(r.Buf);
+            Marshal.FreeHGlobal(r.Hole);
+            return null;
+        }
+        _log(string.Format("terrain load ({0},{1}) ms={2:F1} holes={3} cache={4}",
+            ix, iz, LastLoadMs, r.HasHoles ? 1 : 0, _cache.Count + 1));
+        // the fresh entry is the most recently used: mark it before the
+        // eviction pass, otherwise it evicts itself (cap=1 freed the buffers
+        // we were about to return)
+        r.LastUse = ++_use;
+        _cache.Add(r);
+        while (_cache.Count > _cacheCap)
+        {
+            int ev = 0;
+            for (int i = 1; i < _cache.Count; i++)
+                if (_cache[i].LastUse < _cache[ev].LastUse) ev = i;
+            Marshal.FreeHGlobal(_cache[ev].Buf);
+            Marshal.FreeHGlobal(_cache[ev].Hole);
+            _cache.RemoveAt(ev);
+        }
+        return r;
     }
 
-    float H(int idx)
+    float H(IntPtr buf, int idx)
     {
-        return BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(_buf, idx * 4)), 0);
+        return BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(buf, idx * 4)), 0);
     }
 
     public float Sample(float x, float z)
     {
-        if (_buf == IntPtr.Zero) return 0f;
+        if (_loader == IntPtr.Zero) return 0f;
         int ix = RegionIndex(x, _originX, _nrx), iz = RegionIndex(z, _originZ, _nrz);
         EnsureRegion(ix, iz);
+        Region r = _cur;
+        if (r == null) return 0f;
         float gx = (x - _originX) / _cell - ix * _size;
         float gz = (z - _originZ) / _cell - iz * _size;
         if (gx < 0f) gx = 0f;
@@ -169,10 +243,10 @@ internal sealed class TerrainSampler : IDisposable
         int z1 = z0 + 1; if (z1 > _size) z1 = _size;
         float fx = gx - x0, fz = gz - z0;
         int stride = _size + 1;
-        float h00 = H(z0 * stride + x0);
-        float h10 = H(z0 * stride + x1);
-        float h01 = H(z1 * stride + x0);
-        float h11 = H(z1 * stride + x1);
+        float h00 = H(r.Buf, z0 * stride + x0);
+        float h10 = H(r.Buf, z0 * stride + x1);
+        float h01 = H(r.Buf, z1 * stride + x0);
+        float h11 = H(r.Buf, z1 * stride + x1);
         float a = h00 + (h10 - h00) * fx;
         float b = h01 + (h11 - h01) * fx;
         return a + (b - a) * fz;
@@ -185,9 +259,10 @@ internal sealed class TerrainSampler : IDisposable
     public bool SampleGround(float x, float z, out float height)
     {
         height = Sample(x, z);
-        if (!_hasHoles) return true;
+        Region r = _cur;
+        if (r == null || !r.HasHoles) return true;
         int ix = RegionIndex(x, _originX, _nrx), iz = RegionIndex(z, _originZ, _nrz);
-        if (ix != _holeIx || iz != _holeIz) return true;
+        if (ix != r.Ix || iz != r.Iz) return true;
         float gx = (x - _originX) / _cell - ix * _size;
         float gz = (z - _originZ) / _cell - iz * _size;
         int cx = (int)Math.Floor(gx), cz = (int)Math.Floor(gz);
@@ -200,29 +275,40 @@ internal sealed class TerrainSampler : IDisposable
         // without it.
         cz = _size - 1 - cz;
         int b = _holeRowBytes * cz + (cx >> 3);
-        byte v = Marshal.ReadByte(_hole, b);
+        byte v = Marshal.ReadByte(r.Hole, b);
         return (v & (1 << (cx & 7))) == 0;
     }
 
-    // Debug/A-B support: the packed mask of the region loaded last.
-    public bool HasHoles { get { return _hasHoles; } }
-    public int HoleRegionX { get { return _holeIx; } }
-    public int HoleRegionZ { get { return _holeIz; } }
+    // Debug/A-B support: state of the region used by the last query.
+    public bool HasHoles { get { return _cur != null && _cur.HasHoles; } }
+    public int HoleRegionX { get { return _cur == null ? -1 : _cur.Ix; } }
+    public int HoleRegionZ { get { return _cur == null ? -1 : _cur.Iz; } }
     public int RegionSize { get { return _size; } }
+
+    // streaming telemetry summary (exit log / A-B runs)
+    public string StatsLine()
+    {
+        return string.Format("terrLoads={0} msTotal={1:F1} msMax={2:F1} last={3:F1} cache={4}",
+            Loads, LoadMsTotal, LoadMsMax, LastLoadMs, _cache.Count);
+    }
 
     public byte[] HoleMaskCopy()
     {
-        if (_hole == IntPtr.Zero) return null;
+        Region r = _cur;
+        if (r == null || r.Hole == IntPtr.Zero) return null;
         byte[] b = new byte[_holeRowBytes * _size];
-        Marshal.Copy(_hole, b, 0, b.Length);
+        Marshal.Copy(r.Hole, b, 0, b.Length);
         return b;
     }
 
     public void Dispose()
     {
-        if (_buf != IntPtr.Zero) Marshal.FreeHGlobal(_buf);
-        _buf = IntPtr.Zero;
-        if (_hole != IntPtr.Zero) Marshal.FreeHGlobal(_hole);
-        _hole = IntPtr.Zero;
+        for (int i = 0; i < _cache.Count; i++)
+        {
+            if (_cache[i].Buf != IntPtr.Zero) Marshal.FreeHGlobal(_cache[i].Buf);
+            if (_cache[i].Hole != IntPtr.Zero) Marshal.FreeHGlobal(_cache[i].Hole);
+        }
+        _cache.Clear();
+        _cur = null;
     }
 }

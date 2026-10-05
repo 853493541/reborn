@@ -3878,6 +3878,95 @@ work into main without M2 entanglement.
   and sandbox `reborn_client_control_modes.exe` (title sandbox-control_modes).
 - Local only: nothing pushed to origin.
 
+### 2026-10-04 - Movement/terrain - region streaming: bounded LRU cache (1.3)
+
+- Did: measured terrain region loads at a map-region border on 龙门寻宝 with a new
+  test-only cross-back harness (`RC_CROSS_BACK`, reverses at t=10.5 s) and per-load
+  telemetry. The single region slot ping-ponged between adjacent regions - 16 loads
+  in a 17 s crossing run (cap=1 control: 85) - because the player ground query, the
+  camera ray march and the camera ground clamp sample opposite sides of the border
+  every frame. Replaced the slot with a bounded LRU (`RC_TERR_CACHE`, default 4;
+  each entry = height grid + hole mask). The cap=1 control exposed a self-eviction
+  bug (fresh entry added with LastUse=0 evicted itself -> AV 0xC0000005); fixed by
+  marking it MRU before the eviction pass.
+- Evidence: `docs/movement/TERRAIN_REGION_STREAMING.md`; logs
+  `reborn_20261004_223128.log` (16 loads), `223600.log` (cap=1, 85 loads),
+  `223711.log` (cap=4, 3 loads, 0 during crossings); commits `ce9d1b6`, `c32f095`.
+- Outcome: solved - 0.2-5.0 ms per load (no frame-scale hitch); the defect was
+  frequency. Hole (0,0) A/B re-PASS 234/234 on the cache build; collision selftest
+  36/36; gravity `verify_model` PASS. Region (1,1) `.hlb` has 0 hole cells; broader
+  hole A/B needs more `.hlb` extraction.
+
+### 2026-10-04 - Crash triage - 海岛绝境 void-spawn AV (pre-existing, new site)
+
+**Problem:** collecting a second hole A/B region on 海岛绝境, spawn over the hole
+region at altitude (`RC_SPAWN=-25600,1000,-25600 RC_SPAWN_Y=1`) crashed ~3 s in.
+**Tried:** `tools/camera/minidump_exc.py` on the dump: AV 0xC0000005 at
+`KG3DEngineDX11EX64.dll+0x12282B3` (engine render stack), shim `d6=seed` loaded - a
+new site, not the documented D6 `+0x11D03B6`. The same scenario on clean main
+(`reborn_client.exe`, `aad94d8`) crashes at the identical address; solid-ground
+spawn on the same map exits clean (`DONE`, `reborn_20261004_225645.log`).
+**Outcome:** pre-existing on main; not caused by the terrain region cache (no host
+frame from the sampler in the crash stack).
+**Why:** scenario-specific - spawn above a hole region at altitude / bottomless fall.
+Dumps: `%LOCALAPPDATA%\CrashDumps\reborn_client_terrainstream.exe.52348.dmp` and
+`reborn_client.exe.37100.dmp`; crash log `reborn_20261004_224645.log`.
+**Re-open criteria:** a void-fall session - repro at y=1000 over a hole; compare the
+spawn-at-altitude path with the historical walk-in hole-fall run
+(`proof/collision/client_holes/hole_fall_*`, 2026-09-29); dump the engine side only
+if the cache/host frames appear.
+**Links:** `docs/movement/TERRAIN_REGION_STREAMING.md` §5; crash site
+`KG3DEngineDX11EX64+0x12282B3`.
+
+### 2026-10-04 - Movement/terrain - hole A/B extended to all hole-bearing maps
+
+- Did: extracted the shipped hole-mask tree (54 `.hlb`, 4256 hole cells across
+  海岛绝境/白龙绝境/天原绝境; 龙门寻宝 and 夜晚 ship none) and A/B'd one region per
+  map on the cache build (engine `RC_HOLE_DUMP` vs the extracted `.hlb`, spawn on a
+  hole-free region-center cell). Added `check_hole_mask.py --scan` for the inventory.
+- Evidence: PASS 海岛绝境 (0,0) 234/234; 白龙绝境 (3,4) 96/96; 天原绝境 (4,3)
+  1400/1400 — all masks identical (32768 bytes); dumps in
+  `%TEMP%\opencode\{bailong,tianyuan}_ab\`; logs `reborn_20261004_23*`.
+- Outcome: solved - the decode rule (four-corner + Z flip) holds on both origins
+  (0,0 4x4 and -102400,-102400 8x8). Corrects the earlier note that only two
+  `.hlb` exist (that was just the extracted set).
+
+### 2026-10-04 - Engine host - map quality tiers probed for all 5 BR maps
+
+- Did: read each map's `.jsonmap` `filePaths` tiers and probed 100 declared paths
+  with a new `tools/probe_map_quality.py`. `bd` + `low` ship on all five maps
+  (environment.json, playerEnvironment.json, `.rcidx` with
+  `RCEffectName=jx3bd/defaultlow`, bd skybox); `bddnc`/`mb` are declared but ship
+  zero files; the tiers carry no heightmap/foliage - HD root is the only scene data.
+- Evidence: `docs/engine_host/MAP_QUALITY_TIERS.md`; tool run "hits 40 of 100".
+- Outcome: solved - no lower-quality geometry exists to downshift to; preset work
+  (1.8-1.10) must drive render/effect options, next probe = `RCEffectName` consumer
+  + `zhcn_hd\config\config_*.ini` linkage.
+
+### 2026-10-04 - Tools - small correctness batch (hole mapping, PvP verifier, doc drift)
+
+- Did: fixed `check_hole_mask.py --spawn-cells` world-Z mapping (converted/engine
+  row -> world z = n-1-r), validated by the 2026-09-29 fall witness: world
+  (22850,30450) is a hole only under the flipped mapping. Made
+  `verify_pvp_evidence.py` source-portable (env overrides `REBORN_MAPLIST`/
+  `REBORN_SKILLS` + repo-relative candidates, hard exit 2 when missing) and fixed
+  the loot selftest count 8 -> 9 in the README + both AGENTS files.
+- Evidence: `verify_pvp_evidence.py` exit 0 with 0 mismatches on all 6 tables;
+  `--spawn-cells 400` prints `hole cell (228,207) -> world (22850,30450)`.
+- Outcome: solved.
+
+### 2026-10-04 - Movement/terrain - R32 <-> BCH relation resolved
+
+- Did: decoded the `.bch` container (36-byte header + samples^2 float32, per-region
+  normalized [0,1]) and compared it with the renderer `.r32` (513^2 float32, no
+  header, ~0.5 band). They are the same field: BCH is row-flipped in Z and exactly
+  affine to R32 (`r32 = r32_min + bch_flip*(range)`, residual 2e-8, corr 1.0).
+  Added `tools/movement/r32_bch_relation.py` for the comparison.
+- Evidence: `docs/movement/TERRAIN_R32_BCH_RELATION.md`; tool output
+  `affine r32 = 0.010569 * bch_flip + 0.500397 max residual 0.000000019`.
+- Outcome: partial - relation solved; the BCH header floats' exact semantics
+  (candidate max/min in cm) remain open (prediction 651.5 vs logged sample 761);
+  next probe = disasm `_LoadHegihtRegionBCH` or A/B `LoadRegion` at known cells.
 ### 2026-10-04 — Render options — improvement plan for areas 1.8–1.10 (#iso)
 
 - Did: created the isolated worktree/branch for the rendering/LOD/weather track

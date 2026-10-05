@@ -44,7 +44,7 @@ readable.
 
 ## Status
 
-- Decoders implemented offline-first; `selftest` (8 checks) and a synthetic 170-record
+- Decoders implemented offline-first; `selftest` (9 checks) and a synthetic 170-record
   end-to-end run pass (`proof/netcode/loot_demo_out/`).
 - Remaining to make it live: a capture agent that logs the handler buffers (same pattern
   as any API hook / debugger breakpoint logger). No client modification is required for
