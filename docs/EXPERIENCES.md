@@ -2317,3 +2317,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   sibling) - next: identify the module + slot and trace the E_FAIL cause (missing
   input for the map converter? required prior scene activation?).
 - Evidence: host_exe51-57.out.
+
+## 2026-10-04 - Phase D: vt[0x70] E_FAIL fixed (GBK path); holder tables loaded; real call reaches map load
+
+- Root cause of the 3D scene vt[0x70] E_FAIL: the host passed the map path as a UTF-8
+  literal; the engine/adapter expects the ANSI/GBK path (same as RC_HOST_MAP is
+  consumed at scene creation). Fix: read RC_HOST_MAP with GetEnvironmentVariableA in
+  frame60. Result: **`3D scene vt[0x70] -> 0`** (was 0x80004005).
+- Next blocker: the map load (rep+0x58D800) binary-searches the holder's table at
+  singleton+0x1A0+0x1E3C0 (CommonForceRelationTable data; empty in this host) and
+  faulted at rep+0x56815D on the empty table. Found the game's table loader =
+  **rep+0x82C3C0(rcx = holder)**, called it in frame60:
+  `holder tables loaded (arr=... n=18)`.
+- With both fixes the real CreateRLScene now runs deep into the map load and ends in a
+  **C++ exception** (VEH: 0xC0000005 at VCRUNTIME140.dll+0x17B0 = throw machinery;
+  previous fault was an AV at rep+0x56815D). Next: capture the thrown exception
+  details / find the throw site in the map load chain.
+- Note: rep+0x22E08 is KRLSceneMgr::Remove (asserts `it != m_apScene.end()` when the
+  scene is absent) - the manual scene path logs that assert but continues.
+- Evidence: host_exe58-61.out.

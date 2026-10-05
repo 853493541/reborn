@@ -2998,12 +2998,32 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
+                        // the map load (0x58D800) binary-searches the holder's table
+                        // at +0x1E3C0 (CommonForceRelationTable data, empty in this
+                        // host). The game's loader for it = rep+0x82C3C0(holder) -
+                        // run it so the table exists before the map load.
+                        __try
+                        {
+                            ((void (__fastcall *)(void*))
+                             ((BYTE*)g_repModule + 0x82C3C0))((BYTE*)g_repSingleton + 0x1A0);
+                            logf("[host] frame60: holder tables loaded (arr=%p n=%llu)",
+                                 *(void**)((BYTE*)g_repSingleton + 0x1A0 + 0x1E3C0),
+                                 *(unsigned long long*)((BYTE*)g_repSingleton + 0x1A0 + 0x1E3C8));
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: holder table loader fault"); }
+                        // the engine reads the map path as ANSI/GBK (the same way
+                        // RC_HOST_MAP is consumed at scene creation) - do NOT use
+                        // a UTF-8 literal here (the adapter can't open it).
+                        static char mapPath60[MAX_PATH];
+                        if (GetEnvironmentVariableA("RC_HOST_MAP", mapPath60,
+                                                    MAX_PATH) == 0)
+                            mapPath60[0] = 0;
+                        logf("[host] frame60: map path (ansi) = '%s'", mapPath60);
                         // probe the two steps CreateRLScene performs, separately:
                         // 1) the by-name lookup (0x16A09), 2) NewScene (0x16DB5).
                         __try
                         {
-                            const char* mapPath60 =
-                                "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap";
                             unsigned typ60 = *(unsigned*)((BYTE*)g_repSingleton + 0x25BB4);
                             void* nameRes = ((void* (__fastcall *)(void*, const char*, unsigned))
                                              ((BYTE*)g_repModule + 0x16A09))(
@@ -3047,6 +3067,10 @@ int main(void)
                                                                typ60, posbuf, NULL);
                                     logf("[host] frame60: 3D scene vt[0x70] -> %ld (vt=%p slot70=%p slot360=%p)",
                                          vr, rsvt, rsvt[0x70 / 8], rsvt[0x360 / 8]);
+                                    logf("[host] frame60: module bases rep=%p eng=%p adapter=%p kge=%p",
+                                         g_repModule, GetModuleHandleA("X3DEngine.dll"),
+                                         GetModuleHandleA("KG3DEngineAdapterX64.dll"),
+                                         GetModuleHandleA("KGEngineX64.dll"));
                                     ((void (__fastcall *)(void*, unsigned))
                                      rsvt[0x360 / 8])(out60, 2);
                                     void* rlScene = ((void* (__fastcall *)(unsigned,
@@ -3104,8 +3128,7 @@ int main(void)
                                 unsigned long long a9);
                             long cs = ((CreateRLSceneFn)
                                        ((BYTE*)g_repModule + 0xB0B5C0))(
-                                2, 0x10, 0, 0, 0,
-                                "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap",
+                                2, 0x10, 0, 0, 0, mapPath60,
                                 0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
                             logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
                             void* sc = ((void* (__fastcall *)(unsigned))
