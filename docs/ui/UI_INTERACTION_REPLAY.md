@@ -71,9 +71,14 @@ for the bag (OnLButtonClick, OnItemLButtonClick, OnMouseEnter, OnEvent, OnFrameB
 
 1. ~~Hover pass (`OnMouseEnter`/`OnMouseLeave`)~~ done: mouse-move hit-tests the section under the
    cursor and dispatches leave/enter when it changes.
-2. **Window chains (recorded):** the shim records `OpenWindow`/`CloseWindow` calls (`opens=N` in the
-   batch RESULT; the server prints `WINDOW <path>` lines; the viewer appends `opens=…` to the
-   AssetNote; `--click` prints them). Navigation (opening the target window) is the next step.
+2. **Window chains (recorded + followed):** the shim records all forms —
+   `Wnd.OpenWindow`/`Station.OpenWindow`/bare `OpenWindow`, plus engine helpers (`OpenBankPanel`,
+   `CloseXxx`) — as `opens=N` in the batch RESULT / `WINDOW <name>` lines in the server. The viewer
+   appends `opens=…` to the AssetNote and, for **clicks**, follows the chain: a matching catalog
+   window is selected (history push), `Close*` pops the history. Hover never navigates. Verified:
+   `--click bigbagpanel Btn_Bank OnLButtonClick` → `opens=OpenBankPanel`.
+   Limitation: cross-module calls (e.g. `AuctionPanel.Open()`) need that module loaded; single-module
+   replays only see the globals they define plus the engine helpers.
 3. Item-level clicks with the row index (the list templates give the geometry).
 4. Show the interactive handler count in the AssetNote.
 

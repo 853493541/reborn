@@ -1947,6 +1947,21 @@ solved it, and what is still open. **Newest at the bottom.**
   dispatch 0 mutations - the close handler uses CloseBigBagPanel, a different global).
 - Verified: replay_all 81 OK/41 partial; --click render; --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? click navigation + all window-chain call forms; Yoga export lead
+- Window-chain recording covers every form the scripts use: `Wnd.OpenWindow`/`Station.OpenWindow`/
+  bare `OpenWindow`, plus engine helpers matched by name (`Open*`/`Close*` -> recorded as the helper
+  name, e.g. `opens=OpenBankPanel`). Clicks now FOLLOW the chain: a matching catalog window is
+  selected (history push), `Close*` pops; hover never navigates. Verified:
+  `--click bigbagpanel Btn_Bank OnLButtonClick` -> `opens=OpenBankPanel`.
+  Limitation: cross-module calls (AuctionPanel.Open) need that module loaded.
+- Item-clone clicks (`__lt_` rows -> OnItemLButtonClick) + handler count in the AssetNote.
+- Tried returning nil for unset UI properties (engine-faithful) - cost one OK window and fixed
+  nothing (the UpdateAnchor cluster fails on `this` being a number, not the property) -> reverted.
+- Lead: client `KGUIX64.dll` exports the **Yoga layout API** (`YGNodeCalculateLayout`,
+  `YGNodeStyleSet*`) -> WndFlexContainer/FlexHandle are flexbox containers; evidence-backed path for
+  the ~117 flex sections (recorded in UI_REAL_CLIENT_ASSESSMENT.md).
+- Verified: replay_all 81 OK/41 partial; --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

@@ -119,9 +119,8 @@ proxyOf = function(sec)
     __tostring = function() return sec.name end,
     __index = function(t, k)
       if type(k) == "string" and k:match("^%l") then
-        -- property read (camelCase/sz/dw/n): numeric authored value or 0. Lua 5.1
-        -- order comparisons between different types error regardless of
-        -- metatables, so UI numeric properties must stay numbers.
+        -- property read (camelCase/sz/dw/n): numeric authored value or 0 (Lua 5.1
+        -- mixed-type comparisons cannot use metatables; 0 keeps them numeric).
         if sec.values[k] ~= nil then return num(sec.values[k]) end
         return 0
       end
@@ -208,9 +207,30 @@ proxy = function(name)
   })
   return p
 end
+-- Window-chain calls: the scripts open/close other windows by module name via
+-- Wnd/Station (Wnd.OpenWindow("BigBankPanel")) or the bare globals/helpers
+-- (OpenBankPanel); record all forms so the viewer can surface/navigate "opens X".
+local openedWindows = {}
+local recordWindow = function(name, closing)
+  if type(name) == "string" and name ~= "" then
+    openedWindows[#openedWindows + 1] = (closing and "-" or "") .. name
+  end
+end
+local function windowCall(a, b, closing)
+  -- supports both Wnd.OpenWindow("X") and Wnd:OpenWindow("X")
+  recordWindow(type(a) == "string" and a or b, closing)
+end
+
 setmetatable(_G, { __index = function(t, k)
   if type(k) == "string" and (k:match("Is%u") or k:match("^Has") or k:match("^Can")) then
     local f = function() return false end
+    rawset(t, k, f)
+    return f
+  end
+  if type(k) == "string" and (k:match("^Open") or k:match("^Close")) then
+    -- engine window helpers (OpenBankPanel, CloseXxx...): record the intent
+    local closing = k:match("^Close") ~= nil
+    local f = function(...) recordWindow(k, closing) end
     rawset(t, k, f)
     return f
   end
@@ -234,15 +254,14 @@ local permissiveMt = {
 setmetatable(INVENTORY_INDEX, permissiveMt)
 setmetatable(EQUIPMENT_INVENTORY, permissiveMt)
 
--- Window-chain calls: the scripts open/close other windows by path; record them
--- so the viewer can surface "opens X" (the engine would open the window).
-local openedWindows = {}
-_G.OpenWindow = function(path, ...)
-  if type(path) == "string" then openedWindows[#openedWindows + 1] = path end
-end
-_G.CloseWindow = function(path, ...)
-  if type(path) == "string" then openedWindows[#openedWindows + 1] = "-" .. path end
-end
+_G.Wnd = _G.Wnd or {}
+_G.Wnd.OpenWindow = function(a, b) windowCall(a, b, false) end
+_G.Wnd.CloseWindow = function(a, b) windowCall(a, b, true) end
+_G.Station = _G.Station or {}
+_G.Station.OpenWindow = function(a, b) windowCall(a, b, false) end
+_G.Station.CloseWindow = function(a, b) windowCall(a, b, true) end
+_G.OpenWindow = function(path, ...) recordWindow(path, false) end
+_G.CloseWindow = function(path, ...) recordWindow(path, true) end
 
 -- Lua 5.1 resolves comparison/arith metamethods on the LEFT operand only; give the
 -- number type a metatable so a stubbed proxy on the right never aborts a replay

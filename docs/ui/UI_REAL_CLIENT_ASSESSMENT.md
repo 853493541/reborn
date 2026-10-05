@@ -77,6 +77,10 @@ sections `runtime=284` (complete replay still applied).
    present in the scanned paks (e.g. `ReputationPanel1.UITex`, `QuestPanelButton.UITex`).
 3. Constructs: PosType 3/4/5 = 70 · HandleType 1/2/4/5 = 137 · FirstItemPosType 1-9 = 98 ·
    approximate WndTypes = 868 sections (page-set/list/tree/scene/web/flex).
+   **New lead (2026-10-04):** the client `KGUIX64.dll` exports the **Yoga layout API**
+   (`YGNodeCalculateLayout`, `YGNodeStyleSet*`, `YGNodeLayoutGet*`) — so `WndFlexContainer`/`FlexHandle`
+   are flexbox (Yoga) containers, not plain canvases. Implementing flex semantics against those
+   exported functions is the evidence-backed path for the ~117 flex sections.
 4. Partial replays: 43 windows (T-A: 23) — stub-tune by error class.
 5. Out-of-bounds elements: 6,584 instances (mix of legitimate overhang and wrong sizes).
 6. No-entry replays: 3 (Balloon, TradingSure, UISetting).
