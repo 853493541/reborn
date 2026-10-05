@@ -1661,3 +1661,17 @@ solved it, and what is still open. **Newest at the bottom.**
 - New viewer `adjust` fields `posType` and `clip` (ClipToBounds via `$Clip`); both documented in
   Engine/LayoutPlan.cs with the Lua lines.
 - Gate: --selftest 1240/0/0; --audit placeholders=899 unresolved=3262 outOfBounds=6533.
+
+### 2026-10-04 ? UI ? recommended shortlist expanded 25 -> 61 (core HUD + panels + menus)
+- User: "recommand more". Promoted 36 windows into stage 1 推荐 (JSON move; catalog stays 1,240):
+  HUD 15 (targettarget/targetbuff/targetdebuff/debufflist/teambuff/teamswitchbtn/worldmark/cdprocess/
+  combopanel/fullscreenwarning/accelerateball/topbuff/bufffold/targetresourcebar/targetskill),
+  maps (minimap/middlemap), panels 11 (charinfo/matrix/kungfupanel/craftpanel/teambuilding/
+  teambuildingplayerset/rankingpanel/reputationpanelnew/guildbankpanel/petpanel/personalcard-showdata),
+  menus 8 (emotionpanel/videosettingpanel/soundsettingpanel/dialoguepanel/activitypanel/
+  achievementpanel/questbar/camppanel). Stage summary updated; the six already-rejected windows
+  (auctionpanel/compasspanel/guildmainpanel/mailpanel/newpet/questtracelist) stay in 不需要.
+- Move mechanics: text surgery on the stage `windows` arrays (extract top-level element spans per
+  stage, rebuild with the original 8-space element indent) - a json.dumps round-trip reformats short
+  arrays (`"show": [ "x" ]`) and would have diffed the whole 872 KB file.
+- Verified: --selftest 1240/0/0; GUI relaunched, 推荐 now 61 windows.

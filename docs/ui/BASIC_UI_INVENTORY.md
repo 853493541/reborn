@@ -502,10 +502,18 @@ a few may carry differently-named INIs, probed per need), and any further lua-le
 pak has no enumerable INI listing — the Target family was found by probing; new families get probed
 when a session needs them).
 
-**推荐 shortlist (stage 1):** 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪,
+**推荐 shortlist (stage 1, 61 windows):** 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪,
 CompassPanel, ExpLine, 地图, 角色, 背包, 武学, 社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易,
 坐骑槽位, 宠物秘鉴, 系统设置, 快捷键设置, 界面设置, 主界面自定义模式, 系统菜单. (CompassPanel /
 ExpLine have no authored title string — kept English rather than inventing one.)
+2026-10-04 expansion (+36, moved from 基础HUD/绝境战场界面/功能面板/菜单与交互):
+目标的目标/目标增益/目标减益/自身减益/队伍状态/队伍切换/世界标记/CD进程/连击/低血警示/加速球/
+顶部增益/折叠增益/目标资源条/目标技能条, 小地图/大地图,
+属性/奇穴/门派/生活技艺/团队招募/队伍配置/风云录/声望/帮会仓库/宠物/个人名片,
+表情动作/画质设置/声音设置/对话/活动/隐元秘鉴/任务栏/阵营.
+The six windows the reviewer moved to 不需要 (auctionpanel, compasspanel, guildmainpanel, mailpanel,
+newpet, questtracelist) stay in the stage in the JSON — the viewer's `RejectionStore` side file is
+what hides them.
 
 Each entry renders the INI's authored state (`PARTIAL`, backdrop `#33393E`, summary with section
 count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 1,240 windows

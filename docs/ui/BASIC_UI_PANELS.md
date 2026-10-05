@@ -5,6 +5,11 @@ INI + authored state (user decision) — each entry renders the shipped INI stat
 This register records the INI facts, the page/tab structure, the authored-vs-runtime split, and the
 review state of each panel; per-panel Lua deep-dives follow in later passes.
 
+2026-10-04: the shortlist grew to 61 windows (36 promoted from the classified stages); the new
+panels (CharInfo/Matrix/KungFuPanel/CraftPanel/TeamBuilding/TeamBuildingPlayerSet/RankingPanel/
+ReputationPanelNew/GuildBankPanel/PetPanel/PersonalCard_ShowData) get register rows in the next
+panel pass.
+
 **Sources:** `ui-process-app/assets/ui/Config/Default/<Panel>.ini` (extracted 2026-10-03),
 `docs/ui/BASIC_UI_INVENTORY.md` (scope register), the render audit (2026-10-03, all 25 recommended
 windows rendered; content ratios in `docs/EXPERIENCES.md`).
