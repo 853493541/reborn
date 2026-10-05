@@ -16,6 +16,7 @@
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
 //   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
+//   RC_TERR_CACHE=4               terrain region cache slots (LRU; >= 1)
 // RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
 using System.Diagnostics;
@@ -437,7 +438,12 @@ internal static class RebornClient
         TerrainSampler sampler = null;
         try
         {
-            sampler = new TerrainSampler(physDll, mapPath, Log);
+            // bounded region cache (the engine's streaming keeps several regions;
+            // a single slot reloads on every border ping-pong - measured 16 loads
+            // in a 17 s crossing run)
+            int terrCache = 4;
+            int.TryParse(Env("RC_TERR_CACHE", "4"), out terrCache);
+            sampler = new TerrainSampler(physDll, mapPath, Log, terrCache);
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 
