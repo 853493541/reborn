@@ -10,6 +10,7 @@ MovieEditor engine-hosting research and the M1 milestone docs.
 | `M1_SOLO5_PROOF.md` | M1.7 — HUD overlay + five-minute solo run proof (2026-10-02) |
 | `CLIENT_PROVENANCE.md` | Client code provenance audit — original vs game-derived (2026-09-29) |
 | `MINI_SANDBOX_CLIENT.md` | Mini Sandbox — cropped loose map for feature work (verified) |
+| `RENDERING_OPTIONS_PLAN.md` | Rendering / LOD / weather options (areas 1.8–1.10) — corpus census + improvement plan (2026-10-04) |
 
 ## Tools
 

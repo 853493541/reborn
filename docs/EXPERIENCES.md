@@ -3877,3 +3877,19 @@ work into main without M2 entanglement.
 - Clients relaunched: canonical `reborn_client.exe` (title Main-Full-Client)
   and sandbox `reborn_client_control_modes.exe` (title sandbox-control_modes).
 - Local only: nothing pushed to origin.
+
+### 2026-10-04 — Render options — improvement plan for areas 1.8–1.10 (#iso)
+
+- Did: created the isolated worktree/branch for the rendering/LOD/weather track
+  (parallel to the 1.3 terrain agent and the predraw agent); wrote
+  `docs/engine_host/RENDERING_OPTIONS_PLAN.md` (corpus census + phases P0–P5 +
+  boundaries with the other agents) and registered it in `docs/engine_host/README.md`.
+- Census (read-only, PowerShell): 15 preset files in `zhcn_hd\config`; 9 main tiers
+  234–375 key entries, `_bd_` family 472 each; 408 unique keys, 72 vary across tiers;
+  `[ENGINEOPTION] nEngineGraphicsLevel=1..9` is the tier selector;
+  `MovieEditor\config.ini` (376 entries, all `bEnableRC_*`, no level key) is the
+  config our host actually loads (cwd = MovieEditor, install read-only).
+- Evidence: census commands in the plan's Reproduce section; this commit.
+- Outcome: partial (plan-only, as requested) — research/implementation phases
+  P0–P5 defined with verification and gates.
+- Re-open: n/a.
