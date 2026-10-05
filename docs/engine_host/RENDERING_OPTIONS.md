@@ -1,0 +1,118 @@
+# Rendering / LOD / weather option reference (areas 1.8–1.10)
+
+**Date:** 2026-10-04 · **Branch:** `agent/render-options` · **Status:** P0 in progress
+(P0.1 tool + census done; P0.3 consumer scan partial; P0.4 selection path partial)
+**Companion plan:** `RENDERING_OPTIONS_PLAN.md`.
+
+Read-only research. Sources: game client `...\zhcn_hd\config`, `...\zhcn_hd\bin64`,
+`...\MovieEditor\config.ini`, and xref disassembly under `proof/render/disasm/`.
+
+## 1. Corpus census (P0.1, tool canonical)
+
+Tool: `tools/render/preset_census.py` → `proof/render/option_matrix.tsv`,
+`proof/render/varying.tsv`, `proof/render/gpu_switch_summary.tsv`.
+
+| Metric | Value |
+|---|---|
+| Preset files | 15 (`config_1..9` + 6 `config_bd_*`) |
+| Key entries per tier | 234 (tiers 1–7), 375 (t8), 241 (t9); `_bd_*` 472; `config.default` 343; `MovieEditor\config.ini` 376 |
+| Unique keys, all sources | **490** (`option_matrix.tsv`) |
+| Unique keys, 9 main tiers | **409** |
+| Varying across the 9 main tiers | **72** (`varying.tsv`) |
+| Tier selector key | `[ENGINEOPTION] nEngineGraphicsLevel=1..9` |
+| GPU override table | `GpuSwitchOptionTab.tab`, 20 data rows × 32 columns |
+
+The earlier plan's PowerShell pass counted 408 unique keys; the tool's parse (canonical,
+dups counted) is **409** — count method differences only, both agree on 72 varying.
+
+## 2. Runtime read chain (P0.3/P0.4 partial)
+
+| Layer | Function / evidence | What it proves |
+|---|---|---|
+| Machine tier detection (game client) | `JX3ClientX64.exe` `InitMachineConfig` RVA `0x9A8A0`: opens `g_OpenIniFile`, reads `[Performance] GPUScore` then `VideoType` (`proof/render/disasm/client_VideoType.txt` L4-96); second path RVA `0xE1FF0` reads/writes `config/machine_config.ini` (`GPUScore`/`VideoType` L573-975) | machine config (GPU score/type) is local and re-written by the client |
+| Engine option load | `KG3DEngineAdapterX64.dll` `KG3D_LoadJX3Config_From_DX9` RVA **`0x5F9F0`**: opens **`config.ini`** (L27) then reads ~150 `[KG3DENGINE]` keys into one config struct (`rsi` + offsets), each with a code default | **`config.ini` in the working dir is the runtime option file**; defaults and clamps live in code |
+| Engine option save | adapter RVA **`0x67B10`**: writes `[KG3DENGINE]` keys back (`AAOPTION_DLSSOption`, `nShadowCullOpt`, `EnableFSR*`, `FSR2Option/Sharpnees`, `EnableFSR3Interpolation`, ...) | config round-trip exists (load + save) |
+| Graphics level key | in the load fn: `nEngineGraphicsLevel` → cfg `+0x260`; default is `'0'` when `nRenderLevel == 100`, else `'3'` (L3857-3879) | level is a first-class config value; no per-level remap seen in this function |
+| UI/video schema (game) | `JX3UIX64.dll` RVA **`0x118970`**: builds a descriptor map of `{key, type code, struct offset, default}` (e.g. `nWaterDetail` +0x1b0, `bPostEffectEnable` +0x60, `bBloomEnable` +0x64, `bSSAO` +0x7c, `nMDLRenderLimit` +0x218, `nClientSFXLimit` +0x21c, `bEnableRC_AmbientOcclusion` +0x2ac ...), xref at `0x11AD19`; more keys follow past the captured window | the game's video panel option surface, with types (`1`=bool, `2`=int, `5`=enum?, `8`=float) and offsets |
+| Other consumers | `KG3DEngineDX11EX64.dll` has `fModelLodRadius`, `GraphicsLevel`; `KG_EngineEditorX64.dll`/`MovieEditorHD.exe`/`MovieEngineCLR.dll` contain the same keys | editor host exposes the same option set |
+
+**Not found (open):** the literals `config_1_zuijian` / `config_9_chenjin` / `config_%d` /
+`GpuSwitchOption` do **not** appear in any `bin64` binary. So the preset *file selection*
+is not a hardcoded string in the client DLLs — it is either in the launcher/patch tool
+(outside `bin64`), built from a table, or the files are merged before launch. P0.4 item.
+
+## 3. Option groups with proven struct offsets (load fn)
+
+| Group | Keys (examples) | Offset evidence |
+|---|---|---|
+| Render baseline | `nRenderLevel` | +0x348 (default `200`) |
+| Graphics level | `nEngineGraphicsLevel` | +0x260 (default 0/3 rule above) |
+| Shadows | `nShadowType` (+ validates: 0..3 or 7, else 0) | +0x5c |
+| Camera | `CammeraDistance`, `fCameraDistance` (UI) | +0xed8 / UI +0x50 |
+| SSR | `EnableSSR`, `bEnable_SSR` (same slot), `SSRQuality` | +0x5fc, +0x634 |
+| Post FX | `bEnableRC_AmbientOcclusion`, `..._AtmosphericFog`, `..._Bloom`, `..._Depth`, `..._HeightFog`, `..._LightShaftBloom`, `..._LightShaftOcclusion`, `..._StingRayVolumetircCloud`, `..._SunLensflare`, `..._Vignette`, `..._EnvProbe`, `..._SSS`, `..._SSR`, `..._LowReflection`, `..._FoliageBlur`, `..._EyeProtectionMode`, `..._HighEnvironmentRender`, `..._ForceSkyCubeTex`, `..._ForceOitToSoftMask2`, `..._ForwardRender`, `..._ShockWave`, `..._SpotLight`, `..._DirectionLight`, `..._PointLight`, `..._{Spot,Direction,Point}LightShadow`, `..._SkyLight` | +0x740..+0x7bc (defaults `1` for lights/fog/bloom, `0` for shadows/low-reflection) |
+| Day/night + environment | `bEnableDayNightCycle` +0x2f0, `bEnableDynamicEnvironment` +0x2f4, `bEnableIndirectLightVolume` +0x2f8, `bEnableOfflineIndirectLightVolume` +0x2fc, `bEnableSSPR` +0x300, `bEnableSeasonalVariation` +0x4c4, `fSeasonEffectIntensity` +0x4cc | same fn |
+| True sky / weather | `bShowTrueSky` +0x50; `bWeatherOn` is EngineStaticConfig | same fn + config |
+| Foliage | `bEnableFoliageCull` +0x990, `bEnableFoliageShadowRender`, `bEnableFoliageRender`, `bEnableSubFoliage{HC,ST,WJ,GM,TW}Render` +0x9ac.., `bEnableFoliageProjCull` +0x9c0, `bDisableFoliageLowMesh`, `bEnableFoliageBakeTerrainRVT`, `fBakeTerrainRVT*`, `nFoliageLoadOption` +0xa2c, `nFoliageDensity` +0x9d8 (**clamp ≤100**), `nFoliageDensityGrade%i` (5 grades), `nLandscapeFoliage` +0xa30 | same fn |
+| SpeedTree | `nSpeedTreeDensity` +0x704 (**clamp ≤100**), `nSpeedTreeLeafScale` +0x708 (float scale), `bIsLoadSRTBillboard`, `nForceFoliageLodForEditor` (default -1) | same fn |
+| LOD / distance cull | `bEnableModelDistCull` +0xa34, `bEnableModelProjNumCull`, `bEnableSpeedTreeDistCull`, `bEnableSimpleModelDistCull`, `bEnableParticleSystemDistCull`, `bEnablePointlightDistCull`, `bEnableFoliageDistCull`, `fSpeedTreeCullDist` +0xa40 (default 80000), `fSimpleModelCullDist` +0xa4c | same fn |
+
+Exact captures: `proof/render/disasm/adapter_nEngineGraphicsLevel.txt` (load fn) and
+`proof/render/disasm/jx3ui_nEngineGraphicsLevel.txt` (UI schema fn).
+
+## 4. Apply-path implications for P1
+
+- **Proven:** the engine-side reader opens `config.ini` by name from the process working
+  directory (`KG3D_LoadJX3Config_From_DX9`). Our host's cwd is `C:\SeasunGame\MovieEditor`,
+  whose `config.ini` (376 keys, all `bEnableRC_*`) is the file actually applied today.
+- **Constraint:** that file is in the install → read-only for us (root AGENTS §8).
+- **Candidate native routes to verify next (P1.1/P1.2):**
+  1. managed/engine setter API (extend `RC_API_DUMP` over `KGEngineCLR`/`KGSceneCLR`/adapter exports;
+     look for `Set*Config*`/`SetOption*` in `KG3DEngineAdapterX64.dll` exports);
+  2. config passed through an argument the host controls — `Init3DEngine(..., "./configHttpFile.ini")`
+     role is still unresolved (224 keys, xref TBD);
+  3. a writable cwd-copy route **without writing the install** (e.g. run cwd elsewhere is
+     blocked by `InitPak` — see `MINI_SANDBOX_CLIENT.md` dead end #1);
+  4. if none exists: registered provisional route + re-open criteria (plan §5.1).
+- Config **save** exists in the adapter, so a future reverse direction (read current values)
+  is plausible via the same functions.
+
+## 5. Open items (P0 remainder)
+
+1. Which component copies/merges the selected `config_N` into the active `config.ini`
+   (launcher vs UI vs patch tool); `GpuSwitchOptionTab.tab` consumer not found in `bin64`.
+2. Full key extraction from the adapter load fn + UI schema fn (a generator can turn the
+   disasm captures into the complete key ↔ offset table).
+3. `configHttpFile.ini` (224 keys) role.
+4. Per-option caps probe (P2), device-row overrides (P1.3), environment.json decode (P4).
+
+## Reproduce
+
+```powershell
+# P0.1 census (stdlib; writes proof/render/*)
+.venv\Scripts\python.exe tools\render\preset_census.py --out proof\render
+
+# P0.3 xref evidence (pefile+capstone from .venv)
+.venv\Scripts\python.exe tools\netcode\xref_string.py `
+  "C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\KG3DEngineAdapterX64.dll" nEngineGraphicsLevel `
+  --out proof\render\disasm\adapter_nEngineGraphicsLevel.txt --after 1200
+.venv\Scripts\python.exe tools\netcode\xref_string.py `
+  "C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3UIX64.dll" nEngineGraphicsLevel `
+  --out proof\render\disasm\jx3ui_nEngineGraphicsLevel.txt --after 700
+.venv\Scripts\python.exe tools\netcode\xref_string.py `
+  "C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3ClientX64.exe" VideoType `
+  --out proof\render\disasm\client_VideoType.txt --after 900
+```
+
+## Confidence
+
+| Claim | Conf. | Source |
+|---|---|---|
+| Census counts (490/409/72; 15 files) | HIGH | `preset_census.py` run 2026-10-04, outputs committed |
+| Engine reads `config.ini` from cwd | HIGH | adapter load fn disasm (`config.ini` L27, per-key reads) |
+| Adapter has load + save functions | HIGH | RVAs `0x5F9F0` / `0x67B10`, disasm |
+| `nEngineGraphicsLevel` default rule (0/3 vs nRenderLevel==100) | HIGH | load fn L3857-3879 |
+| Clamps (`nShadowType`, `nFoliageDensity`, `nSpeedTreeDensity`) | HIGH | load fn |
+| UI schema function key/offset list | HIGH (sampled) | `JX3UIX64.dll` `0x118970` xref; list not yet exhaustive |
+| Preset *file selection* owner | LOW / open | literals absent from `bin64`; P0.4 |
+| `GpuSwitchOptionTab.tab` consumer | LOW / open | string absent from `bin64` |

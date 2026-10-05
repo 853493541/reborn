@@ -3893,3 +3893,20 @@ work into main without M2 entanglement.
 - Outcome: partial (plan-only, as requested) — research/implementation phases
   P0–P5 defined with verification and gates.
 - Re-open: n/a.
+
+### 2026-10-04 — Render options — P0 execution (census tool + consumer xrefs)
+
+- Did: implemented `tools/render/preset_census.py` (stdlib) → `proof/render/option_matrix.tsv`
+  (490 keys), `varying.tsv` (72), `gpu_switch_summary.tsv` (20x32); wrote
+  `docs/engine_host/RENDERING_OPTIONS.md` (P0.3/P0.4 partial).
+- Findings (HIGH): engine reads `config.ini` from cwd via
+  `KG3DEngineAdapterX64.dll!KG3D_LoadJX3Config_From_DX9` @RVA 0x5F9F0 (~150 keys with
+  code defaults/clamps; `nEngineGraphicsLevel` cfg+0x260 default 0/3 by nRenderLevel==100);
+  adapter save fn @0x67B10; `JX3UIX64.dll` @0x118970 = video-panel key/type/offset schema;
+  `JX3ClientX64.exe!InitMachineConfig` @0x9A8A0 reads `config/machine_config.ini`.
+  Open: preset-file selection owner (no `config_N`/`GpuSwitchOption` literals in bin64),
+  per-option caps, apply path (install `config.ini` read-only).
+- Evidence: `proof/render/*`, xref disasm under `proof/render/disasm/`; reproduce in
+  `RENDERING_OPTIONS.md` §Reproduce.
+- Outcome: partial — P0.1 done, P0.3/P0.4 partial (apply path not decided).
+- Re-open: P0.4 selection owner; P1 apply path; P2 caps probe.

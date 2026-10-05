@@ -42,7 +42,8 @@ Sources: `C:\SeasunGame\Game\JX3\bin\zhcn_hd\config\` (game client), `C:\SeasunG
 **Tier selector found:** `[ENGINEOPTION] nEngineGraphicsLevel=1..9` in `config_1..9`
 (9 distinct values across tiers). This is the key the selection path likely keys on.
 
-**Census across the 9 main tiers:** 408 unique option keys; **72 keys vary across tiers**
+**Census across the 9 main tiers:** 409 unique option keys (tool canonical,
+`RENDERING_OPTIONS.md` §1; an earlier PowerShell pass counted 408); **72 keys vary across tiers**
 (rest are shared boilerplate). Top varying keys (distinct values):
 
 ```
