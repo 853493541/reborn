@@ -4199,3 +4199,29 @@ if the cache/host frames appear.
   `reborn_client_mini` PID 12904 started 14:05:32) - rebuild + relaunch once those
   windows are closed.
 - Local only: not pushed to origin.
+
+### 2026-10-05 - repo - Merge agent/predraw finalize (fast startup) + sandbox launcher codepage fix
+
+- Merged `agent/predraw` into main (`4757ada`, `--no-ff`, conflict-free; main ==
+  base `eab4277`). Contents: `RC_STARTUP=nodb` startup shim (D7, content-scan
+  guard), `hitch=` metric, docs/proof, sandbox launcher default.
+- My post-merge pass: `native\build_startup.cmd` + canonical + mini rebuilds
+  exit 0; `camera_smoke` ALL PASS; gravity PASS; loot selftest PASS; `jx3_model`
+  10x PASS. The parallel `agent/terrain-stream-holes` merge (`19232f9`) then
+  absorbed the predraw merge along with render-options/audio/terrain tracks and
+  re-ran the combined gates (smoke ALL PASS incl. `RC_STARTUP=nodb` Init
+  3 157 ms; collision 36/36).
+- Fix during finalize: `tools/sandbox/run_sandbox.cmd` is UTF-8, but cmd parses
+  batch files in the OEM codepage (936), so the non-ASCII `RC_MAP` arrived
+  mojibake (`榫欓棬瀵诲疂_s`) and `LoadMap` failed `E_FAIL ms=0` - latent since the
+  launcher was written (agents had been setting `RC_MAP` manually). Added
+  `chcp 65001 >nul` after `@echo off` (`2cbf004`); verified end-to-end: mini
+  init 3 672 ms, `LoadMap` 156 ms, `regions=1x1`.
+- Final state: main tip `2cbf004`; canonical + mini rebuilt from it at 14:56:45
+  (`git=2cbf004`) and relaunched: `Main-Full-Client` (shipped 24.8 s path) and
+  `sandbox-mini` (`RC_STARTUP=nodb`, 3.6 s init, `LoadMap` 156 ms).
+- Observation (open, not fixed): two clients started in the same second share
+  one `reborn_<ts>.log` (second-resolution filename) and their lines interleave;
+  attribution still works via the `build=` fingerprints, but the name should
+  gain a PID/ms suffix.
+- Local only: not pushed to origin.
