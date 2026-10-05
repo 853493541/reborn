@@ -30,21 +30,27 @@ is unhandled (the census script lives in the session notes; move it to `tools/ui
 
 **Layer B — script runtime-state replay.** Run each window's own Lua with a UI API shim and emit
 the runtime mutations as data the viewer consumes:
-- Corpus: 133 extracted scripts, 132 decompiled with unluac 1.2.3 into
-  `proof/ui/basic_ui/decompiled/` (git-ignored).
-- VM: the client's bundled LuaJIT (`SeasunDownloaderV2.4/.../lua51.dll`, loaded read-only via
-  ctypes) runs Lua 5.1 source; verified (`print`, arithmetic, `luaL_loadfile`).
-- Shim surface (from the decompiled corpus): ~120 UI methods (`Lookup`, `Show`, `Hide`, `SetText`,
-  `SetSize`, `SetRelPos`, `SetPoint`, `SetFrame`, `Check`, `SetAlpha`, `SetFontScheme`, `Enable`,
-  `AppendItemFromIni/String`, `FormatAllItemPos`, `Clear`, `GetSize`, `GetAbsPos`, `UpdateAnchor`, …)
-  plus engine globals (`GetClientPlayer`, `GetFormatText`, `OutputString`, `RegisterEvent`,
-  `FireUIEvent`, `INVENTORY_INDEX`, `g_tStrings`, per-module tables). Data APIs get deterministic
-  placeholder values (marked as samples, same policy as the HUD sample texts).
-- **Blocker found 2026-10-04:** unluac 1.2.3 emits `goto lbl_N` whose label is nested in a sibling
-  block; LuaJIT rejects it (`undefined label`). 148/186 decompiled files compile, **38 fail** —
-  including CharacterPanel, BigBagPanel, NewSkillPanel, GuildMainPanel, KungFuPanel, WorldMap,
-  Target, ActionBar, Minimap, QuestTraceList. Options: newer unluac (1.3.x), a label-repair pass, or
-  a different decompiler. Until fixed, Layer B replays only the compiling scripts.
+- Corpus: 133 extracted scripts. **They are standard Lua 5.1 bytecode** (`\x1bLuaQ` = ESC "Lua" +
+  version 0x51; header `int=4 size_t=4 instr=4 number=8` → a 32-bit PUC 5.1 build). LuaJIT refuses
+  PUC bytecode and the client's own VM (`Engine_Lua5X64.dll`) does not export the Lua API, so
+  **PUC Lua 5.1.5 was built from source** (lua.org tarball, MSVC x86 via vcvars32 — the 64-bit build
+  mismatches the 4-byte `size_t` header). It runs the ORIGINAL compiled scripts directly; the
+  unluac decompiler (and its label-scope bugs) is no longer needed.
+- Harness: `tools/ui/replay_harness.lua` (run by the built `lua32.exe`). It parses the window INI
+  into a section tree, exposes UI proxies (`Lookup`, `Show`/`Hide`, `SetSize`/`SetRelPos`/`SetPoint`,
+  `SetText`/`SetFrame`/`Check`, `FormatAllItemPos`, `GetSize`/`IsVisible`/... — every call is
+  recorded per section), sets `_G.this` to the root (the engine sets the `this` global before
+  dispatching events), runs the module chunk, and calls the module's `OnFrameCreate`. Output:
+  `section TAB method TAB args` TSV. Data APIs get deterministic stubs (camelCase fields → 0,
+  ALL_CAPS names → permissive constant tables, PascalCase → callable proxies).
+- Verified 2026-10-04: `BigBagPanel` → **234 mutations** (`BigBagPanel SetSize 594 624`,
+  `Handle_Bag_Compact …`, `Handle_Bag_Normal SetSize`, `Image_Glassmorphism SetSize`, `Hide`/`Show`/
+  `SetRelPos`/`Check`/`FormatAllItemPos`/`SetSizeByAllItemSize` …); the module table is the global
+  `_G.BigBagPanel` (41 functions; fields `nFrameW=440`, `nFrameH=410`, `nExtendFrameW=594`,
+  `nExtendFrameH=624`, `bCompact=false`, `nCount=6`, `aOpen`) — matching the hand-extracted facts.
+- Remaining: stub tuning per script (data-dependent branches; e.g. the first bag run took the
+  extended 594x624 path because a stubbed branch made `bExtendPackage` truthy), then the viewer
+  consumes the generated mutation TSV instead of hand overrides.
 
 **Layer C — conformance gate + status dashboard.** The existing `--status` scan plus a construct
 census; a window render is "conformant" when it uses no unimplemented construct and its runtime
@@ -54,25 +60,29 @@ state is either replayed (script) or flagged (`runtime-hosts=N`).
 
 1. ~~ImageType 12/17/18/19 on the diced path~~ (done, engine dispatch cited).
 2. ~~AnchorDst=client basis~~ (done; client ≡ window rect for standalone renders).
-3. Script decompiler fix (newer unluac or label-repair) → replay harness → generated
-   `Data/runtime_state/<window>.tsv` consumed by the viewer (no hand edits).
-4. KGUI conformance pass in census order: page sets, list/tree controls, PosType 3/4/5,
+3. ~~Script execution path~~ (done: PUC Lua 5.1.5 32-bit built from source runs the original
+   bytecode; `tools/ui/replay_harness.lua` replays `OnFrameCreate` and records mutations).
+4. Stub-tune the harness per script (data branches), emit `Data/runtime_state/<window>.tsv`, and
+   make the viewer consume it (no hand edits).
+5. KGUI conformance pass in census order: page sets, list/tree controls, PosType 3/4/5,
    FirstItemPosType variants, scene/web surfaces.
-5. Census + `--status` as the gate; contact sheets for review.
+6. Census + `--status` as the gate; contact sheets for review.
 
 ## Reproduce
 
 ```powershell
-# census (session tool): scan assets/ui/Config/Default for WndType/PosType/ImageType/AnchorDst
-# decompile corpus
-.venv\Scripts\python.exe <decompile_all.py>          # unluac over assets/ui/Config/Default/*.lua
-# compile-audit the corpus (LuaJIT lua51.dll via ctypes)
-.venv\Scripts\python.exe <lua_compile_all.py>        # 148/186 OK, 38 label-bug failures
+# build the PUC Lua 5.1 interpreter the bytecode needs (32-bit: size_t=4 in the header)
+#   lua.org lua-5.1.5.tar.gz -> vcvars32 -> cl src\*.c (except luac.c/print.c) /Fe:lua32.exe
+# replay one window (writes the mutation TSV)
+lua32.exe tools\ui\replay_harness.lua <window.lua> <ModuleName> <window.ini> <out.tsv>
+# census + viewer gates
+.venv\Scripts\python.exe tools\ui\ini_construct_census.py
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0/0
 ```
 
 **Confidence:** census HIGH (parsed from the shipped INIs); engine dispatch HIGH (disassembled at
-`KGUIX64.dll` RVA 0x117D7C); decompiler blocker HIGH (compile-audited); shim design MED.
+`KGUIX64.dll` RVA 0x117D7C); script replay HIGH (original bytecode runs; BigBagPanel 234 recorded
+mutations); shim completeness MED (stub tuning in progress).
 
-Last verified: 2026-10-04 (`--selftest` 1240/0/0; census over 1,240 INIs; 132 scripts decompiled;
-148/186 compile).
+Last verified: 2026-10-04 (`--selftest` 1240/0/0; census over 1,240 INIs; BigBagPanel replay 234
+mutations).

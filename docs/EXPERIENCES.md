@@ -1736,6 +1736,27 @@ solved it, and what is still open. **Newest at the bottom.**
   fixes. Work order: decompiler fix -> replay harness -> conformance pass in census order.
 - Verified: --selftest 1240/0/0 after the engine fixes; census tool output (14 unhandled variants).
 
+### 2026-10-04 ? UI ? script replay WORKS: PUC Lua 5.1 built, original bytecode runs, mutations captured
+- The "correct system" breakthrough: the extracted window scripts are standard Lua 5.1 bytecode
+  (ESC "Lua" + version 0x51; 32-bit header: int/size_t/instr = 4, number = 8). LuaJIT refuses PUC
+  bytecode and the client's own VM (`Engine_Lua5X64.dll`) does not export the Lua API, so **PUC Lua
+  5.1.5 was built from source** (lua.org tarball, MSVC x86 via vcvars32) - the ORIGINAL compiled
+  scripts now load and run; the unluac decompiler (and its label-scope bugs) is not needed.
+- `tools/ui/replay_harness.lua`: parses the window INI into a section tree, exposes recording UI
+  proxies, sets `_G.this` (the engine's event global - the scripts call `this:Lookup`, not the arg),
+  runs the module chunk and calls `OnFrameCreate`, writes a `section/method/args` TSV.
+  Verified: BigBagPanel -> **234 mutations** (SetSize 594x624 extended branch, Handle_Bag_Normal/
+  Compact SetSize, Show/Hide, SetRelPos, Check, FormatAllItemPos); the module is the global
+  `_G.BigBagPanel` (41 functions; nFrameW=440 / nFrameH=410 / nExtendFrameW=594 as hand-extracted).
+- Remaining: stub-tune data branches (the bag run took the extended path because a stubbed branch
+  made `bExtendPackage` truthy; user-setting defaults must be pinned), then emit
+  `Data/runtime_state/<window>.tsv` and make the viewer consume it.
+- Debug tooling that cracked it: patched `lvm.c` prints `ARITH op/regs/types/PC` on arithmetic
+  errors; `string.dump` + `unluac --disassemble` maps the failing instruction; traceback function
+  names come from the bytecode's debug info; `debug.getupvalue`/handler inspection located the
+  `this`-global vs argument mix-up.
+- Docs: `UI_RUNTIME_REPLAY.md` Layer B + work order + reproduce updated.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".
