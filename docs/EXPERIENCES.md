@@ -1757,6 +1757,22 @@ solved it, and what is still open. **Newest at the bottom.**
   `this`-global vs argument mix-up.
 - Docs: `UI_RUNTIME_REPLAY.md` Layer B + work order + reproduce updated.
 
+### 2026-10-04 ? UI ? script replay batch: module() env fix, 78/122 windows replay OK
+- The scripts start with `module("Name", ExportExternalLib)` (Lua 5.1 loadlib module system), which
+  re-points the chunk's environment at a fresh plain table; the engine's option function wires the
+  module globals. The harness now overrides `module` to chain `env.__index = _G` afterwards (capturing
+  `getfenv`/`setmetatable`/`_G` as upvalues - `module` re-setfenv's its own caller). Coverage jumped
+  39 -> 78 OK of 122 scripted windows.
+- Data-stub field rules by Hungarian prefix: `b*` -> false, `s*` -> "", `t*`/`h*`/`p*` -> permissive
+  sub-objects, other camelCase -> 0; globals `Is*`/`Has*`/`Can*` -> false; predicates false so the
+  bag does not take the limited-map/extended branch. Top recordings: BigBagPanel 793 mutations,
+  Player 179, TopMenu 106, MailPanel 101, SocialPanel 92, MainBarPanel 89.
+- `tools/ui/replay_all.py` batch runner writes `ui-process-app/Data/runtime_state/<stem>.tsv` +
+  `replay_summary.tsv` (git-ignored with rejected.tsv/render_status.tsv).
+- Next: make the viewer consume the runtime TSVs instead of hand overrides; keep stub-tuning the
+  44 partial scripts (data-object shapes).
+- Verified: replay_all 78 OK / 44 partial; --selftest 1240/0/0 (viewer unchanged).
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

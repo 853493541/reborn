@@ -41,16 +41,19 @@ the runtime mutations as data the viewer consumes:
   `SetText`/`SetFrame`/`Check`, `FormatAllItemPos`, `GetSize`/`IsVisible`/... — every call is
   recorded per section), sets `_G.this` to the root (the engine sets the `this` global before
   dispatching events), runs the module chunk, and calls the module's `OnFrameCreate`. Output:
-  `section TAB method TAB args` TSV. Data APIs get deterministic stubs (camelCase fields → 0,
-  ALL_CAPS names → permissive constant tables, PascalCase → callable proxies).
-- Verified 2026-10-04: `BigBagPanel` → **234 mutations** (`BigBagPanel SetSize 594 624`,
-  `Handle_Bag_Compact …`, `Handle_Bag_Normal SetSize`, `Image_Glassmorphism SetSize`, `Hide`/`Show`/
-  `SetRelPos`/`Check`/`FormatAllItemPos`/`SetSizeByAllItemSize` …); the module table is the global
-  `_G.BigBagPanel` (41 functions; fields `nFrameW=440`, `nFrameH=410`, `nExtendFrameW=594`,
-  `nExtendFrameH=624`, `bCompact=false`, `nCount=6`, `aOpen`) — matching the hand-extracted facts.
-- Remaining: stub tuning per script (data-dependent branches; e.g. the first bag run took the
-  extended 594x624 path because a stubbed branch made `bExtendPackage` truthy), then the viewer
-  consumes the generated mutation TSV instead of hand overrides.
+  `section TAB method TAB args` TSV. Data APIs get deterministic stubs (Hungarian prefixes:
+  `b*` → false, `s*` → "", `t*`/`h*`/`p*` → permissive sub-objects, other camelCase → 0; ALL_CAPS
+  names → permissive constant tables; PascalCase → callable proxies; `Is*`/`Has*`/`Can*` → false).
+- **`module()` finding:** every script starts with `module("Name", ExportExternalLib)` (Lua 5.1
+  `loadlib`'s module system), which re-points the chunk's environment at a fresh plain table. The
+  engine's option function wires the module globals; the harness overrides `module` to chain the new
+  environment to `_G` afterwards (the wrapper must capture `getfenv`/`setmetatable`/`_G` as upvalues —
+  `module` re-setfenv's its caller). Without this, every module script failed on its first global.
+- **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
+  `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`.
+  Verified 2026-10-04: **78/122 scripts replay OK**, 44 partial (most with dozens–hundreds of
+  recorded mutations: BigBagPanel 793, Player 179, TopMenu 106, MailPanel 101, SocialPanel 92,
+  MainBarPanel 89 ...). Remaining errors are stub-tuning (data-object shapes).
 
 **Layer C — conformance gate + status dashboard.** The existing `--status` scan plus a construct
 census; a window render is "conformant" when it uses no unimplemented construct and its runtime
@@ -62,8 +65,9 @@ state is either replayed (script) or flagged (`runtime-hosts=N`).
 2. ~~AnchorDst=client basis~~ (done; client ≡ window rect for standalone renders).
 3. ~~Script execution path~~ (done: PUC Lua 5.1.5 32-bit built from source runs the original
    bytecode; `tools/ui/replay_harness.lua` replays `OnFrameCreate` and records mutations).
-4. Stub-tune the harness per script (data branches), emit `Data/runtime_state/<window>.tsv`, and
-   make the viewer consume it (no hand edits).
+4. ~~Batch replay~~ (done: `tools/ui/replay_all.py`, 78/122 OK + 44 partial). Next: make the viewer
+   consume `Data/runtime_state/<stem>.tsv` instead of hand overrides, and keep stub-tuning the
+   remaining partial scripts.
 5. KGUI conformance pass in census order: page sets, list/tree controls, PosType 3/4/5,
    FirstItemPosType variants, scene/web surfaces.
 6. Census + `--status` as the gate; contact sheets for review.
@@ -74,15 +78,17 @@ state is either replayed (script) or flagged (`runtime-hosts=N`).
 # build the PUC Lua 5.1 interpreter the bytecode needs (32-bit: size_t=4 in the header)
 #   lua.org lua-5.1.5.tar.gz -> vcvars32 -> cl src\*.c (except luac.c/print.c) /Fe:lua32.exe
 # replay one window (writes the mutation TSV)
-lua32.exe tools\ui\replay_harness.lua <window.lua> <ModuleName> <window.ini> <out.tsv>
+lua32.exe tools\ui\replay_harness.lua <window.lua> <ModuleName|auto> <window.ini> <out.tsv>
+# replay every scripted window + summary
+.venv\Scripts\python.exe tools\ui\replay_all.py [--only <stem>]
 # census + viewer gates
 .venv\Scripts\python.exe tools\ui\ini_construct_census.py
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0/0
 ```
 
 **Confidence:** census HIGH (parsed from the shipped INIs); engine dispatch HIGH (disassembled at
-`KGUIX64.dll` RVA 0x117D7C); script replay HIGH (original bytecode runs; BigBagPanel 234 recorded
-mutations); shim completeness MED (stub tuning in progress).
+`KGUIX64.dll` RVA 0x117D7C); script replay HIGH (original bytecode runs; 78/122 scripts replay OK,
+44 partial); shim completeness MED (stub tuning in progress).
 
-Last verified: 2026-10-04 (`--selftest` 1240/0/0; census over 1,240 INIs; BigBagPanel replay 234
-mutations).
+Last verified: 2026-10-04 (`--selftest` 1240/0/0; census over 1,240 INIs; batch replay 78 OK /
+44 partial of 122 scripted windows).

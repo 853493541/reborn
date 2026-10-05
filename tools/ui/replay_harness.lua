@@ -1,11 +1,16 @@
 -- UI runtime replay harness: run a compiled window script's OnFrameCreate against
 -- the window's own INI tree and record every UI mutation.
--- Usage: lua32.exe harness.lua <window.lua> <ModuleName> <window.ini> <out.tsv>
+--
+-- Usage: lua32.exe replay_harness.lua <window.lua> <ModuleName|auto> <window.ini> <out.tsv>
+--
+-- The extracted scripts are standard Lua 5.1 bytecode and must run on a 32-bit PUC
+-- Lua 5.1 (size_t=4 in the header); see docs/ui/UI_RUNTIME_REPLAY.md for the build.
+-- The module chunk assigns its module table to a global (usually the file stem).
 
 local scriptPath, modName, iniPath, outPath = arg[1], arg[2], arg[3], arg[4]
 
 --------------------------------------------------------------------- INI model
-local sections = {}      -- name -> { parent=..., order=..., values={} }
+local sections = {}
 local order = {}
 local function loadIni(path)
   local f = assert(io.open(path, "rb"))
@@ -39,7 +44,7 @@ local function num(v)
   return 0
 end
 
-local proxyOf -- forward
+local proxyOf
 local function record(sec, method, args)
   local flat = {}
   for i = 1, math.min(#args, 4) do
@@ -56,12 +61,10 @@ local function resolvePath(sec, path)
   if path == nil or path == "" then return sec end
   local first = tostring(path):match("^([^/]+)")
   if first == nil or first == "" then return sec end
-  -- children of sec first, then any section by name (engine Lookup is name-based)
   for _, s in ipairs(order) do
     if s.parent == sec.name and s.name == first then return s end
   end
   if sections[first] then return sections[first] end
-  -- "A/B": try the full path's last segment too
   local last = tostring(path):match("([^/]+)$")
   if last and sections[last] then return sections[last] end
   return sec
@@ -112,6 +115,12 @@ proxyOf = function(sec)
     __len = function() return 0 end,
     __tostring = function() return sec.name end,
     __index = function(t, k)
+      if type(k) == "string" and k:match("^%l") then
+        -- property read (camelCase/sz/dw/n): authored value or 0 so numeric
+        -- comparisons in the script behave; rawset writes still win.
+        if sec.values[k] ~= nil then return num(sec.values[k]) end
+        return 0
+      end
       local fn = methods[k]
       if fn then return fn end
       return function(self, ...)
@@ -123,8 +132,6 @@ proxyOf = function(sec)
         elseif k == "SetSize" then
           if args[1] then sec.values.Width = tostring(args[1]) end
           if args[2] then sec.values.Height = tostring(args[2]) end
-        elseif k == "SetRelPos" or k == "SetAbsPos" or k == "SetPoint" then
-          -- recorded; positions are viewer concerns
         elseif k == "Check" then sec.checked = true
         elseif k == "UnCheck" then sec.checked = false
         end
@@ -152,16 +159,30 @@ local function proxy(name)
     __index = function(t, k)
       if type(k) == "string" then
         if k:match("^[A-Z][A-Z0-9_]*$") then
-          -- ALL_CAPS: engine constant table (MAP_OPERATION_TYPE, ITEM_GENRE, ...)
           local v = proxy(name .. "." .. k)
           rawset(t, k, v)
           return v
         end
         if k:match("^%u") then
-          -- PascalCase: engine/API function
+          -- PascalCase: engine/API function. Predicates are false (a normal
+          -- session is not on a limited/MOBA map, has no extended package, ...).
+          if k:match("Is%u") or k:match("^Has") or k:match("^Can") then
+            return function() return false end
+          end
+          if k == "GetSize" then return function() return 0, 0 end end
+          if k == "GetW" or k == "GetH" then return function() return 0 end end
+          if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
+          if k == "IsVisible" or k == "IsOpened" then return function() return false end end
           return function(...) return proxy(name .. "." .. k .. "()") end
         end
-        -- camelCase/sz/dw/n: data field -> number (0) so numeric comparisons work
+        -- camelCase data field: the engine's Hungarian prefixes tell the type.
+        if k:match("^b") then return false end
+        if k:match("^s") then return "" end
+        if k:match("^t") or k:match("^h") or k:match("^p") then
+          local v = proxy(name .. "." .. k)
+          rawset(t, k, v)
+          return v
+        end
         return 0
       end
       return 0
@@ -175,7 +196,16 @@ local function proxy(name)
   })
   return p
 end
-setmetatable(_G, { __index = function(t, k) local v = proxy("_G." .. tostring(k)); rawset(t, k, v); return v end })
+setmetatable(_G, { __index = function(t, k)
+  if type(k) == "string" and (k:match("Is%u") or k:match("^Has") or k:match("^Can")) then
+    local f = function() return false end
+    rawset(t, k, f)
+    return f
+  end
+  local v = proxy("_G." .. tostring(k))
+  rawset(t, k, v)
+  return v
+end })
 
 INVENTORY_INDEX = { PACKAGE = 1, EQUIP = 2 }
 EQUIPMENT_INVENTORY = { PACKAGE1 = 1, PACKAGE_MIBAO = 6 }
@@ -193,46 +223,73 @@ setmetatable(INVENTORY_INDEX, permissiveMt)
 setmetatable(EQUIPMENT_INVENTORY, permissiveMt)
 
 --------------------------------------------------------------------- run
+-- The scripts call module(name, ExportExternalLib) (Lua 5.1 loadlib 'module'),
+-- which sets the chunk's environment to a fresh plain table. The engine's
+-- option function wires the module's globals; we chain the environment to _G so
+-- the engine stubs above stay visible.
+local realModule = module
+local _getfenv, _setmetatable, _getmetatable, _GLOBAL = getfenv, setmetatable, getmetatable, _G
+if type(realModule) == "function" then
+  module = function(name, ...)
+    realModule(name, ...)
+    -- realModule re-setfenv's THIS wrapper to the new module table, so use the
+    -- captured builtins and target the caller (the script chunk).
+    local env = _getfenv(2)
+    local mt = _getmetatable(env)
+    if mt == nil then
+      _setmetatable(env, { __index = _GLOBAL })
+    elseif mt.__index == nil then
+      mt.__index = _GLOBAL
+    end
+    return env
+  end
+end
+
 local f = assert(loadfile(scriptPath))
 local ok, err = pcall(f)
-if not ok then print("chunk error: " .. tostring(err)); os.exit(3) end
-local mod = _G[modName]
-if type(mod) ~= "table" then print("module not found: " .. tostring(modName)); os.exit(4) end
+if not ok then
+  print("RESULT ERR chunk " .. tostring(err))
+  os.exit(3)
+end
 
-local root = proxyOf(rootSection)
-local function handler(e)
-  local out = { tostring(e) }
-  local i = 2
-  while true do
-    local info = debug.getinfo(i, "nSf")
-    if not info then break end
-    out[#out + 1] = string.format("  [%d] %s %s:%s", i, info.name or "?",
-      tostring(info.short_src), tostring(info.currentline))
-    if i == 2 and info.func then
-      if os.getenv("DUMP_FUNC") then
-        local df = io.open(os.getenv("DUMP_FUNC"), "wb")
-        df:write(string.dump(info.func))
-        df:close()
-      end
-      out[#out + 1] = "      func=" .. tostring(info.func)
-      local n1, v1 = debug.getupvalue(info.func, 1)
-      out[#out + 1] = "      up1=[" .. tostring(n1) .. "]=" .. tostring(v1)
-      for u = 1, 30 do
-        local n, v = debug.getupvalue(info.func, u)
-        if not n then break end
-        out[#out + 1] = string.format("      upvalue %s = %s (%s)", tostring(n), tostring(v), type(v))
+local mod = nil
+if modName ~= "auto" and _G[modName] ~= nil and type(_G[modName]) == "table" then
+  mod = _G[modName]
+else
+  local stem = tostring(scriptPath):match("([^/\\]+)%.lua$") or ""
+  local best, bestCount = nil, 0
+  for k, v in pairs(_G) do
+    if type(v) == "table" and type(k) == "string" then
+      local nf = 0
+      for _, fv in pairs(v) do if type(fv) == "function" then nf = nf + 1 end end
+      if nf >= 3 then
+        if k:lower() == stem:lower() then best, bestCount = v, nf; break end
+        if nf > bestCount then best, bestCount = v, nf end
       end
     end
-    i = i + 1
   end
-  return table.concat(out, "\n")
+  mod = best
 end
+if type(mod) ~= "table" then
+  print("RESULT ERR no-module")
+  os.exit(4)
+end
+
+local root = proxyOf(rootSection)
+_G.GetBigBagFrame = function() return root end
+_G.this = root
+
+local handler = function(e)
+  return tostring(e) .. "\n" .. debug.traceback("", 2)
+end
+local ok2, err2 = true, nil
 if type(mod.OnFrameCreate) == "function" then
-  _G.this = root
-  local ok2, err2 = xpcall(function() return mod.OnFrameCreate(root) end, handler)
-  print("OnFrameCreate ok=" .. tostring(ok2) .. " err=" .. tostring(err2))
+  ok2, err2 = xpcall(function() return mod.OnFrameCreate(root) end, handler)
+elseif type(mod.OnLoad) == "function" then
+  ok2, err2 = xpcall(function() return mod.OnLoad(root) end, handler)
 else
-  print("no OnFrameCreate")
+  print("RESULT ERR no-entry")
+  os.exit(5)
 end
 
 local out = assert(io.open(outPath, "w"))
@@ -241,4 +298,5 @@ for i = 1, #log do
   out:write(log[i].sec .. "\t" .. log[i].method .. "\t" .. table.concat(log[i].args, "\t") .. "\n")
 end
 out:close()
-print("mutations: " .. #log .. " -> " .. outPath)
+print(string.format("RESULT %s mutations=%d %s", ok2 and "OK" or "ERR", #log,
+  ok2 and "" or tostring(err2):gsub("[\r\n]+", " ")))
