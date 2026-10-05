@@ -1953,3 +1953,27 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Next client-engine probe: log C++ exceptions (VEH 0xE06D7363 + exception object type name)
   to identify exactly what `HangPetCore::Init` needs, then supply it.
 - Evidence: host_char_rl20.out.
+
+## 2026-10-04 — Full round: render gate isolated; SO3World path found (Init_ForEditor); plan doc added
+
+- Render gate proven by hooking keepCheck (0xC4D430): props/skybox = 1 (rendered),
+  ALL character meshes (npc_source/player) = 0. Registry is PakV4-sourced. Host force
+  `keepCheck=1` for f1_3094 builds render data (flag484=0x01, kept buffers) but the draw
+  still does not happen.
+- JSON worldObjects (entities/sceneinfo_full/000_000.json) create SOs but are NEVER
+  drawn - even a full rendering-prop record at the spawn (the render set comes from the
+  map .SRScene binary). The manual engine actor (CreateActorFromFile) has a valid,
+  render-ready model but no SO in the scene -> not drawn. The entity SO has a render
+  proxy (AcqureRenderActorProxy ok) and forced flags 0x8180/renderVisible - still no draw.
+- Conclusion: the client engine draws the static merged world only; characters require
+  the represent layer (SO3Represent::Init / CreateRLScene), which needs the game logic
+  stack.
+- Progress toward the logic stack: `KSO3World::Init_ForEditor` (logic module 0x12B7E0,
+  2nd arg unused) + `KMemory::Initialize` (Engine_Lua5X64 export) - after the memory init
+  the SO3World allocation works (allocator fault gone); Init_ForEditor now faults in a
+  null hash-map lookup (logic +0xE0998, rbp=NULL) - a logic-module global set by its own
+  module init (CreateJX3LogicOperation -> 0x8B6B0), which hand-construction skips.
+- Also: X3DEngine `GetNativeFileBundle()` returned null (facade field set later).
+- Added `docs/engine_host/CLIENT_CHARACTER_PLAN.md` (phases A-D, registered in the area
+  README). Map entity JSON restored to pristine (backup kept).
+- Evidence: host_f1keep*.out, host_prop_*.out, host_fullprop.out, host_so3world2.out.

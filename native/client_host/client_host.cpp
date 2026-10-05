@@ -497,6 +497,11 @@ static int __fastcall hookKeepCheck(void* mesh)
         fflush(stdout);
         if (n < 6) n++;
     }
+    // Host adaptation (test): the KeepMeshData registry is PakV4-sourced and does
+    // not list character meshes, so their render data is never built. Force-keep
+    // the f1_3094 character mesh so the engine's own render-data build runs.
+    if (strstr(name, "f1_3094") != NULL)
+        return 1;
     return r;
 }
 
@@ -729,6 +734,8 @@ static volatile LONG g_rlProbePending = 0;
 static void* g_repSingleton = NULL;
 static void* g_rlCtx = NULL;
 static void* g_lastPet = NULL;
+static void* g_entityCtrl = NULL;
+static void* g_so3World = NULL;
 static HMODULE g_repModule = NULL;
 static void* g_lastEntity = NULL;
 
@@ -1217,6 +1224,15 @@ int main(void)
             int pr = ((InitPakFn)((BYTE*)lua + 0xCC2D0))(
                 "C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0, 0, 0, 0, (void*)"");
             logf("[host] file layer init=%d", pr);
+            // the game initializes the engine's size-class allocator early; the
+            // client logic module's SO3World (5.6 MB) allocates through it.
+            {
+                typedef int (__cdecl *KMemInitFn)(const char*);
+                KMemInitFn kmem = (KMemInitFn)GetProcAddress(lua,
+                    "?Initialize@KMemory@@YAHQEBD@Z");
+                int kr = (kmem != NULL) ? kmem("reborn_client_host.memory") : -1;
+                logf("[host] KMemory::Initialize -> %d", kr);
+            }
         }
     }
 
@@ -1351,6 +1367,38 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] X3D getter probe fault"); }
+                        // SO3World via the client's own logic module
+                        // (JX3LogicEditOperationX64.dll): KSO3World::Init_ForEditor
+                        // (0x12B7E0, the editor path - 2nd arg unused) after
+                        // new(0x567408) + ctor (0x125A00). This is the object the
+                        // represent Param's pSO3World requires.
+                        __try
+                        {
+                            wchar_t lp2[MAX_PATH];
+                            swprintf_s(lp2, MAX_PATH,
+                                       L"%s\\JX3LogicEditOperationX64.dll", bin64);
+                            HMODULE logic = LoadLibraryExW(lp2, NULL,
+                                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
+                                LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                            logf("[host] JX3LogicEditOperationX64.dll -> %p", logic);
+                            if (logic != NULL)
+                            {
+                                typedef void* (__fastcall *NewFn)(size_t);
+                                void* world = ((NewFn)((BYTE*)logic + 0x73AA70))(0x567408);
+                                if (world != NULL)
+                                {
+                                    ((void (__fastcall *)(void*))
+                                     ((BYTE*)logic + 0x125A00))(world);
+                                    long ok = ((long (__fastcall *)(void*, void*))
+                                               ((BYTE*)logic + 0x12B7E0))(world, NULL);
+                                    logf("[host] SO3World=%p KSO3World::Init_ForEditor -> 0x%08X",
+                                         world, (unsigned)ok);
+                                    g_so3World = world;
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] SO3World create fault"); }
                         // SO3Represent::Init(Param) probe - fill the game's Param (0xD0)
                         // exactly like the exe's KJX3RepresentModule::Initialize fill
                         // (0xBC263): mgr = GetK3EngineMgr; modelMgr = mgr->vt[9]();
@@ -1409,9 +1457,28 @@ int main(void)
                                 logf("[host] Init probe: mgr=%p modelMgr=%p xlogic=%p sceneResp=%p conv=%p movie=%p ui=%p",
                                      mgr, modelMgr, xlogic, sceneResp, conv, movie, ui);
                                 if (mgr != NULL)
+                                {
                                     logf("[host] Init probe: [mgr+0x260]=%p [mgr+0x10]=%p",
                                          *(void**)((BYTE*)mgr + 0x260),
                                          *(void**)((BYTE*)mgr + 0x10));
+                                    // The represent's map-file lookup (0x16A09 ->
+                                    // 0x80D710) resolves names through [mgr+0x260]
+                                    // (a file/resource bundle). The facade exposes
+                                    // GetNativeFileBundle - fill it if empty.
+                                    if (*(void**)((BYTE*)mgr + 0x260) == NULL)
+                                    {
+                                        typedef void* (__cdecl *GetterFn)(void);
+                                        GetterFn gb = (GetterFn)GetProcAddress(x3d,
+                                            "?GetNativeFileBundle@NSX3DEngine@@YAPEAVINativeFileBundle@@XZ");
+                                        void* bundle = (gb != NULL) ? gb() : NULL;
+                                        logf("[host] X3D GetNativeFileBundle -> %p", bundle);
+                                        if (bundle != NULL)
+                                        {
+                                            *(void**)((BYTE*)mgr + 0x260) = bundle;
+                                            logf("[host] [mgr+0x260] set to bundle");
+                                        }
+                                    }
+                                }
                                 unsigned char param[0xD0];
                                 static unsigned char stepCtrl[0x100];
                                 memset(param, 0, sizeof(param));
@@ -1439,6 +1506,16 @@ int main(void)
                                 }
                                 logf("[host] singleton+0xB0 (mgr) -> %p",
                                      *(void**)((BYTE*)g_repSingleton + 0xB0));
+                                // CreateRLScene requires singleton+0x100 (m_pSO3World,
+                                // the field the full Init sets). We created the world
+                                // via the client's own logic module (Init_ForEditor).
+                                if (g_so3World != NULL &&
+                                    *(void**)((BYTE*)g_repSingleton + 0x100) == NULL)
+                                {
+                                    *(void**)((BYTE*)g_repSingleton + 0x100) = g_so3World;
+                                }
+                                logf("[host] singleton+0x100 (SO3World) -> %p",
+                                     *(void**)((BYTE*)g_repSingleton + 0x100));
                             }
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
@@ -1725,7 +1802,7 @@ int main(void)
     typedef long (__fastcall *CreateActorFn)(void*, const char*, void*, void**,
                                              unsigned, void*);
     char mpath[512];
-    gbk(L"data\\source\\player\\f1\\部件\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
+    gbk(L"data\\source\\npc_source\\f1\\部件\\f1_3094_body_hd.mesh", mpath, sizeof(mpath));
     float actorMtx[16] = {
         1,0,0,0, 0,1,0,0, 0,0,1,0,
         23334.0f, 761.0f, 24224.0f, 1.0f
@@ -2027,6 +2104,60 @@ int main(void)
                     probeRepresentInit();
                 }
             }
+            if (f == 10 && g_entitySO != NULL)
+            {
+                // With the f1 mesh force-kept (render data built), try the engine's
+                // own visibility/force-render switches + model re-fetch on the
+                // entity scene object.
+                __try
+                {
+                    long fm = ((long (__fastcall *)(void*))((BYTE*)eng + 0x9B9D50))(g_entitySO);
+                    // rendering props carry flags 0x00008180; the JSON-created entity
+                    // carries 0x00008980 (extra bit 0x800). Force the prop flag set.
+                    unsigned oldFlags = *(unsigned*)((BYTE*)g_entitySO + 0x10);
+                    *(unsigned*)((BYTE*)g_entitySO + 0x10) = 0x00008180;
+                    logf("[host] entity SO flags 0x%08X -> 0x00008180", oldFlags);
+                    ((void (__fastcall *)(void*, int))((BYTE*)eng + 0xE6530))(g_entitySO, 1);
+                    ((void (__fastcall *)(void*, int))((BYTE*)eng + 0xE6510))(g_entitySO, 1);
+                    int rv = ((int (__fastcall *)(void*))((BYTE*)eng + 0xE6290))(g_entitySO);
+                    int fr = ((int (__fastcall *)(void*))((BYTE*)eng + 0xE62A0))(g_entitySO);
+                    void* a2 = ((void* (__fastcall *)(void*))((BYTE*)eng + 0x9BB960))(g_entitySO);
+                    void* proxy = NULL;
+                    long ap = ((long (__fastcall *)(void*, void*, int, void**))
+                               ((BYTE*)eng + 0x9BB730))(g_entitySO, scene, 0, &proxy);
+                    logf("[host] entity SO force: fetch=0x%08X renderVisible=%d forceRender=%d actor2=%p proxyRet=0x%08X proxy=%p",
+                         (unsigned)fm, rv, fr, a2, (unsigned)ap, proxy);
+                    if (a2 != NULL)
+                    {
+                        logf("[host] entity actor vtable=%p", *(void**)a2);
+                        // skinned mesh: attach the f1 animation + controller and
+                        // frame-move it (without bone updates the mesh is degenerate).
+                        char dirAni[64], taniPath[512];
+                        gbk(L"动作", dirAni, sizeof(dirAni));
+                        sprintf_s(taniPath, sizeof(taniPath),
+                                  "data\\source\\player\\f1\\%s\\F1HA393_start01.tani", dirAni);
+                        long iat = ((long (__fastcall *)(void*, const char*, unsigned))
+                                    ((BYTE*)eng + 0x83A6F0))(a2, taniPath, 0);
+                        void* anim = *(void**)((BYTE*)a2 + 0x368);
+                        typedef void* (__fastcall *AllocFn)(void*, size_t, size_t);
+                        void* ec = ((AllocFn)((BYTE*)eng + 0xB0F300))(NULL, 0x3A8, 8);
+                        ((void (__fastcall *)(void*))((BYTE*)eng + 0xBC1100))(ec);
+                        long sar = ((long (__fastcall *)(void*, void*))
+                                    ((BYTE*)eng + 0xBC2120))(ec, a2);
+                        long src = 0;
+                        if (anim != NULL)
+                            src = ((long (__fastcall *)(void*, void*, int, float,
+                                    unsigned, unsigned, void*, void*, void*))
+                                   ((BYTE*)eng + 0xBC1C70))(ec, anim, 0, 1.0f,
+                                    0, 0, NULL, NULL, NULL);
+                        g_entityCtrl = ec;
+                        logf("[host] entity anim: attach=0x%08X anim=%p ctrl=%p setActor=0x%08X start=0x%08X",
+                             (unsigned)iat, anim, ec, (unsigned)sar, (unsigned)src);
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                { logf("[host] entity SO force fault"); }
+            }
             if (f == 30 || f == 200)
             {
                 dumpRegistryCount(f == 30 ? "@30" : "@200");
@@ -2046,6 +2177,7 @@ int main(void)
 
 
             if (ctrl != NULL) ctrlFm(ctrl);
+            if (g_entityCtrl != NULL) ctrlFm(g_entityCtrl);
             engFm(engine);
             if (camObj != NULL)
                 ((long (__fastcall *)(void*, float*, int))((BYTE*)eng + 0xB36540))(camObj, camPose, 0);

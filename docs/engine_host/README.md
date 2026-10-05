@@ -11,6 +11,7 @@ MovieEditor engine-hosting research and the M1 milestone docs.
 | `M1_STATUS.md` | M1 status 鈥?one player on the real map |
 | `CLIENT_PROVENANCE.md` | Client code provenance audit 鈥?original vs game-derived (2026-09-29) |
 | `MINI_SANDBOX_CLIENT.md` | Mini Sandbox 鈥?cropped loose map for feature work (verified) |
+| `CLIENT_CHARACTER_PLAN.md` | Client character plan 鈥?visible player model on the real client engine (active, 2026-10-04) |
 
 ## Tools
 
