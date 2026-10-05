@@ -282,13 +282,22 @@ def main():
                     scst = read_u32(hproc.value, inner + 0x3c) if inner else None
                     rcst = read_u32(hproc.value, inner + 0x40) if inner else None
                     rcb = read_u64(hproc.value, inner + 0x50) if inner else None
-                    key = (st, f1, p28, p38, h1, h2, wgflag, smflag, f30, inner, ifd, ierr, icb, scst, rcst, rcb)
+                    gm = exe_base + 0xA8C4F0
+                    gip = read_mem(hproc.value, gm + 0xe410, 16)
+                    gstr = read_mem(hproc.value, gm + 0xe438, 16)
+                    gport = read_u32(hproc.value, gm + 0xe430)
+                    grole = read_u32(hproc.value, gm + 0xe434)
+                    gtr = read_u64(hproc.value, gm + 0xe3f8) or 0
+                    key = (st, f1, p28, p38, h1, h2, wgflag, smflag, f30, inner, ifd, ierr, icb,
+                           scst, rcst, rcb, gport, grole, gtr, gip, gstr)
                     if poll_last.get("v") != key:
                         poll_last["v"] = key
                         print("[%.2f] POLL state=%s f1268=%s p28=0x%X p38=0x%X h=0x%X/0x%X wg=%s sm=%s"
                               % (el, st, f1, p28, p38, h1, h2, wgflag, smflag), flush=True)
                         print("[%.2f]   f30=%s inner=0x%X fd=%s err=%s scb=0x%X scst=0x%X rcst=0x%X rcb=0x%X"
                               % (el, f30, inner, ifd, ierr, icb or 0, scst or 0, rcst or 0, rcb or 0), flush=True)
+                        print("[%.2f]   game: port=%s role=%s transport=0x%X ip=%r str=%r"
+                              % (el, gport, grole, gtr, gip, gstr), flush=True)
                 if (not triggered[0] and gw_client[0]
                         and os.path.exists(r"C:\jx3tmp\trigger_connect")):
                     triggered[0] = True

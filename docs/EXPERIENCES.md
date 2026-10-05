@@ -1788,3 +1788,21 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: gateway login chain DONE end-to-end with real client + scripted input. Next:
   P3 game server (find the game-server port from the login-key/game-login handler
   0x1401245A0 and capture the client's first game-server packet).
+
+### 2026-10-05 — V2 P3 MILESTONE: game-server connection + game protocol cipher live
+- Did: found the game login path (login-key handler 0x188900 result 0 -> inet_ntoa([+6]) ->
+  0x1401245A0 -> transport factory 0x14079D100 mode 4). Fixed the login key layout
+  ([6..9]=IPv4 network order via inet_ntoa, [0xA..0xD]=port, pad >= 30 bytes - the proto-14
+  handler min size; a 24-byte key was silently rejected by the dispatcher). Started a game
+  listener on 127.0.0.1:3725 with the 42-byte hello. Live-verified: the client connects,
+  receives the hello, and sends its game login request.
+- Findings: the game transport uses the SAME table cipher but a different variant
+  (exe+0x7A26D0): table lookup once, linear keystream (+CIPHER_ADD+remaining), and the state
+  PERSISTS via an LCG per packet: state = state*0x1F + 0x8088405. Both directions start at
+  0xC9FFFFFF; observed send state after one packet = 0x7E0883E6 = LCG(0xC9FFFFFF) - exact.
+  The client's first game packet decrypts to opcode 1, 32 B: [0xB..0xE]=roleID (1001),
+  [0xE..]="127.0.0.1" (the game login request).
+- Evidence: game stub log C:\jx3tmp\game_stub_out.txt 14:19:33 (raw=6590055a pt=0100...e903
+  00003132372e302e302e31...); manager watch (mgr exe+0xA4C4F0: transport/port/role/IP).
+- Outcome: P3 transport established; next = game protocol opcodes (opcode-1 handler response,
+  world entry/sync). Game stub now speaks the game cipher (GameSession cs/sc states).

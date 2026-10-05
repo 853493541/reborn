@@ -1168,3 +1168,28 @@ decrypting our PLAINTEXT respond into garbage -> handler error path -> state=3 t
 **Evidence:** `tools/netcode/gateway_cipher.py; stub log C:\jx3tmp\gw_stdout.txt (raw+pt
 lines); passive probe poll (cipher state/callbacks); captured handshake decrypts to a sane
 opcode-2 packet with gateway_cipher.cipher(..., state=0xC9FFFFFF).
+
+## 53. P3: game-server transport + game protocol cipher (live-verified)
+
+**Game login path:** S->C login key (proto 14, handler `0x188900`) result 0 ->
+`inet_ntoa(payload[6..9])` = the game host string -> `0x1401245A0` -> transport factory
+`0x14079D100` with mode 4 (the same wrapper factory; the first server packet must again be
+the 42-byte hello `0x20 0x00`). Login-key layout: `[2..5]`=roleID, `[6..9]`=IPv4 in network
+order, `[0xA..0xD]`=game server PORT, `[0xE..]`=pcszGameServerIP; the proto-14 handler min
+size is **30** (shorter keys are silently rejected by the dispatcher).
+
+**Game cipher (exe+`0x7A26D0`, used for send AND receive):** same table `0xA34530`,
+divisor `0x162F`, but a different variant:
+- table looked up ONCE: `base = table[(state + words) % 0x162F]`; per word k (remaining
+  count): `ks += 0x2E6D23C1 + k`; tail: `ks += 0x2E6D23C1` then bytewise `>>= 8`.
+- **the state PERSISTS and advances per packet**: `state = state*0x1F + 0x8088405 (mod 2^32)`.
+- both directions start at `0xC9FFFFFF` (observed live; after one client packet the send
+  state = `0x7E0883E6` = LCG(0xC9FFFFFF), exact).
+
+**Live-verified (2026-10-05):** the client connects to our game listener on 127.0.0.1:3725,
+receives the hello, and its first packet decrypts cleanly with `game_cipher(ct, 0xC9FFFFFF)`:
+opcode **1**, 32 B - `[0xB..0xE]`=roleID (1001), `[0xE..]`="127.0.0.1" (game login request).
+
+**Tools:** `tools/netcode/game_server_stub.py` (GameSession: cs/sc states, decrypt/encrypt),
+`tools/netcode/watch_game_mgr.py` (manager exe+`0xA4C4F0`: transport/port/role/IP + inner
+cipher states), `gateway_cipher.game_cipher()`. Game protocol opcodes: TBD (next phase).

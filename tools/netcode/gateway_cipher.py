@@ -60,3 +60,37 @@ def cipher(buf, state=STATE0):
         i += 1
         r10 >>= 8
     return bytes(buf)
+
+
+GAME_CIPHER_MUL = 0x1F
+GAME_CIPHER_ADD = 0x8088405
+
+
+def game_cipher(buf, state):
+    """Game-transport cipher (exe+0x7A26D0): table lookup once, linear keystream, and
+    the state PERSISTS (updated per packet: state = state*0x1F + 0x8088405 mod 2^32).
+
+    Returns (bytes, next_state).
+    """
+    if _table is None:
+        raise RuntimeError("load_table() first")
+    buf = bytearray(buf)
+    n = len(buf)
+    words = n >> 2
+    tail = n & 3
+    eax = _table[(state + words) % DIVISOR]
+    i = 0
+    rcx = words
+    while rcx > 0:
+        rcx -= 1
+        eax = (eax + CIPHER_ADD + rcx) & 0xFFFFFFFF
+        v = struct.unpack_from("<I", buf, i)[0] ^ eax
+        struct.pack_into("<I", buf, i, v)
+        i += 4
+    eax = (eax + CIPHER_ADD) & 0xFFFFFFFF
+    for _ in range(tail):
+        buf[i] ^= (eax & 0xFF)
+        i += 1
+        eax >>= 8
+    next_state = (state * GAME_CIPHER_MUL + GAME_CIPHER_ADD) & 0xFFFFFFFF
+    return bytes(buf), next_state

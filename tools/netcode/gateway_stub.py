@@ -26,6 +26,7 @@ CLIENT_EXE = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3ClientX64.exe"
 DEFAULT_PORT = 3724
 DEFAULT_LOG = r"C:\jx3tmp\gateway_stub.log"
 GAME_IP = "127.0.0.1"
+GAME_PORT = 3725
 ROLE_ID = 1001
 ROLE_LIST_SIZE = 0x324
 
@@ -102,7 +103,15 @@ def role_list():
 
 
 def login_key():
-    p = bytes([14, 0]) + struct.pack("<III", ROLE_ID, 0, 0) + GAME_IP.encode() + b"\x00"
+    # [2..5]=roleID; [6..9]=game server IPv4 dword in NETWORK order (handler 0x188900
+    # runs it through inet_ntoa -> the game host string); [0xA..0xD]=GAME SERVER PORT
+    # (passed to the game transport factory 0x14079D100 as r8); [0xE..]=pcszGameServerIP.
+    ip_net = struct.pack(">I", 0x7F000001)  # 127.0.0.1
+    p = (bytes([14, 0]) + struct.pack("<I", ROLE_ID) + ip_net
+         + struct.pack("<I", GAME_PORT) + GAME_IP.encode() + b"\x00")
+    # handler min size is 30 (docs table row 14); pad so the dispatcher accepts it
+    if len(p) < 40:
+        p = p + b"\x00" * (40 - len(p))
     return frame(p)
 
 
