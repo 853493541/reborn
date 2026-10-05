@@ -1806,3 +1806,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   00003132372e302e302e31...); manager watch (mgr exe+0xA4C4F0: transport/port/role/IP).
 - Outcome: P3 transport established; next = game protocol opcodes (opcode-1 handler response,
   world entry/sync). Game stub now speaks the game cipher (GameSession cs/sc states).
+
+### 2026-10-05 — V2 P3: game protocol table mapped (564 names) + enter-world flow decoded
+- Did: mass-mapped KPlayerClient::On* RTTI strings -> S2C registration table (one-pass LEA
+  xref scan; 564 handlers named) -> proof/netcode/game_protocol_names_s2c.tsv. Decoded the
+  game frame (11B header: u16 id, u8 flags, u16 serial, u16 ack, u32 field; optional u32
+  param) and the enter-world flow. Made the game stub interactive (gsend.hex command file).
+- Findings: session ids - 4 = OnSyncPlayerBaseInfo (343B; sets the client's enter state 4),
+  7 = OnSwitchGS, 8 = OnSwitchMap, 10 = OnSyncNewPlayer, 11 = OnSyncNewNpc, 156 =
+  OnSyncPlayerLoginCSInfo, 187 = OnSyncRoleDataSectionCheckRequest (8B), 188 =
+  OnSyncRoleDataOver (7B). Client enter-world state at player+0xFDC: state 4 -> sends
+  DoClientConfirmReady -> state 7 (ready; the big subsystem init runs). Ping = C->S op 6
+  every 3 s (dead timeout 12 s); reliability ack field at +5. The handshake respond
+  (OnHandShakeRespond: bRecover, ServerName, ReconnectTimeout, Success) id is still unknown
+  (its RTTI string is absent; candidates 1,2,3,9,14,17,18,21,23,27,31,33,35 injected live
+  with zero payload did not advance the client).
+- Evidence: game_protocol_names_s2c.tsv; disasm of the state machine 0x1803525F0 and
+  OnSyncPlayerBaseInfo 0x1801A0510; live injections (stub log, no op-3 reaction).
+- Outcome: game protocol surface mapped; single remaining gate = the handshake respond
+  packet (id + layout). Next leads: the logic-thread dispatch (ring consumer) special cases,
+  unmapped ids with Success!=0 content, or the EXE's KPlayerClient copy.

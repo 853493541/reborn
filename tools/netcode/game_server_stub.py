@@ -55,10 +55,13 @@ class GameSession(object):
         return pframe(out)
 
 
+CMD_FILE = r"C:\jx3tmp\gsend.hex"
+
+
 def handle(conn, addr):
     t0 = time.time()
     w("[%s] GAME CONNECT from %s:%d" % (time.strftime("%H:%M:%S"), addr[0], addr[1]))
-    conn.settimeout(None)
+    conn.settimeout(0.2)
     buf = b""
     sess = GameSession()
     try:
@@ -66,7 +69,19 @@ def handle(conn, addr):
         conn.sendall(hello())
         w("[%s] SENT game hello (42B)" % time.strftime("%H:%M:%S"))
         while True:
-            data = conn.recv(65536)
+            if os.path.exists(CMD_FILE):
+                try:
+                    hx = open(CMD_FILE).read().strip()
+                    os.remove(CMD_FILE)
+                    payload = bytes.fromhex(hx)
+                    conn.sendall(sess.encrypt(payload))
+                    w("[%s] SENT cmd id=%d len=%d (plain %s)" % (time.strftime("%H:%M:%S"), payload[0] if payload else -1, len(payload), payload[:32].hex()))
+                except Exception as e:
+                    w("cmd error: %s" % e)
+            try:
+                data = conn.recv(65536)
+            except socket.timeout:
+                continue
             if not data:
                 w("[%s] CLOSE by peer after %.1fs" % (time.strftime("%H:%M:%S"), time.time() - t0))
                 break
