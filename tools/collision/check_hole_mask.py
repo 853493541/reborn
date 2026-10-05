@@ -16,6 +16,7 @@ This tool applies the flip, so --dump comparisons are engine-exact.
 Usage:
   python tools/collision/check_hole_mask.py --hlb <file.hlb> --dump <holes_*.bin>
   python tools/collision/check_hole_mask.py --hlb <file.hlb> --spawn-cells 8
+  python tools/collision/check_hole_mask.py --scan <dir>   # inventory a .hlb tree
 
 Dump format (written by reborn_client with RC_HOLE_DUMP=<dir>):
   u32 magic=1, u32 n, i32 regionX, i32 regionZ, u32 byteLen, bytes[len*?].
@@ -66,14 +67,39 @@ def hole_cells(mask_hlb: bytes, n: int):
                 yield x, z
 
 
+def scan_tree(directory: str) -> int:
+    """Inventory every .hlb under ``directory`` (per-file hole-cell count)."""
+    import pathlib
+    root = pathlib.Path(directory)
+    files = sorted(root.rglob("*.hlb"))
+    total = 0
+    for f in files:
+        raw = f.read_bytes()
+        n = int(round(len(raw) ** 0.5)) - 1
+        if n <= 0 or (n + 1) * (n + 1) != len(raw):
+            print("%-90s size=%d (not (n+1)^2)" % (f, len(raw)))
+            continue
+        _, holes = convert_hlb(raw, n)
+        total += holes
+        print("%-90s n=%d holeCells=%d" % (f, n, holes))
+    print("scan: %d files, %d hole cells total" % (len(files), total))
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--hlb", required=True)
+    ap.add_argument("--hlb")
     ap.add_argument("--dump")
     ap.add_argument("--spawn-cells", type=int, default=0)
     ap.add_argument("--origin", default="-102400,-102400")
     ap.add_argument("--cell", type=float, default=100.0)
+    ap.add_argument("--scan")
     args = ap.parse_args()
+
+    if args.scan:
+        return scan_tree(args.scan)
+    if not args.hlb:
+        ap.error("--hlb is required unless --scan is used")
 
     raw = open(args.hlb, "rb").read()
     n = int(round(len(raw) ** 0.5)) - 1

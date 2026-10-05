@@ -26,7 +26,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `tools/gravity/parse_jump_tables.py` | parse `JumpParam/JumpFrameParam/Sprint/SkillMove.tab`; `--summary`, `--chain`, `--json`, `--csharp-out` |
 | `tools/gravity/verify_model.py` | numeric gates for the jump/fall model (incl. the 二段跳 chain) -> `proof/gravity/verification.txt` |
 | `tools/movement/find_xrefs.py` | PE call/field xref and window disassembly helper |
-| `tools/collision/check_hole_mask.py` | Convert an extracted `.hlb` hole mask (flip rule applied) and A/B it against a client `RC_HOLE_DUMP` engine dump |
+| `tools/collision/check_hole_mask.py` | Convert an extracted `.hlb` hole mask (flip rule applied) and A/B it against a client `RC_HOLE_DUMP` engine dump; `--scan <dir>` prints the hole-cell inventory of a `.hlb` tree |
 | `tools/collision/spot_ab.py` | Solver-vs-engine A/B at field spots: capsule scan on our baked bin vs the engine PxMeshQuery scan recorded in `proof/movement/phys_engine_vtables.txt` (2026-10-02 c) |
 | `client/collision_selftest.cs` | Offline FoliageCollision gate (36 checks, no engine/assets); built as `bin64\collision_selftest_<exe>.exe` by `client\build_client.cmd`; `audit` mode = map-wide wall-face capsule sweep (walk-through detector) |
 | `tools/export_camera_flags.py` | Per-mesh `bObscatleCamera` extraction -> `camera_mesh_flags.json` -> `.cflags` sidecar |

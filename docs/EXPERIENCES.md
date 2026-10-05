@@ -3917,3 +3917,16 @@ spawn-at-altitude path with the historical walk-in hole-fall run
 if the cache/host frames appear.
 **Links:** `docs/movement/TERRAIN_REGION_STREAMING.md` §5; crash site
 `KG3DEngineDX11EX64+0x12282B3`.
+
+### 2026-10-04 - Movement/terrain - hole A/B extended to all hole-bearing maps
+
+- Did: extracted the shipped hole-mask tree (54 `.hlb`, 4256 hole cells across
+  海岛绝境/白龙绝境/天原绝境; 龙门寻宝 and 夜晚 ship none) and A/B'd one region per
+  map on the cache build (engine `RC_HOLE_DUMP` vs the extracted `.hlb`, spawn on a
+  hole-free region-center cell). Added `check_hole_mask.py --scan` for the inventory.
+- Evidence: PASS 海岛绝境 (0,0) 234/234; 白龙绝境 (3,4) 96/96; 天原绝境 (4,3)
+  1400/1400 — all masks identical (32768 bytes); dumps in
+  `%TEMP%\opencode\{bailong,tianyuan}_ab\`; logs `reborn_20261004_23*`.
+- Outcome: solved - the decode rule (four-corner + Z flip) holds on both origins
+  (0,0 4x4 and -102400,-102400 8x8). Corrects the earlier note that only two
+  `.hlb` exist (that was just the extracted set).

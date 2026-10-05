@@ -64,12 +64,26 @@ RC_AUTORUN=17000` — run east across the border 7.5 s, reverse, run back
 
 ## 4. Hole A/B status (this build)
 
-- 海岛绝境 region (0,0): fresh engine `RC_HOLE_DUMP` on the cache build vs
-  `proof/collision/terrain_extra/海岛绝境_000_000.hlb` → **PASS, 234/234, mask
-  identical (32768 bytes)** (`check_hole_mask.py`).
-- 海岛绝境 region (1,1): the extracted `.hlb` has **0 hole cells** — nothing to A/B.
-- Only two `.hlb` files exist (`proof/collision/terrain_extra/`); broader hole A/B
-  coverage needs more `.hlb` extraction from the paks (not done here).
+Inventory: the shipped hole masks live at `data/source/maps/<map>/landscape/hole/
+<map>_iii_jjj.hlb` — **54 files, 4256 hole cells** total (extract with the
+`run_pakv4` helper in `tools/sandbox/build_sandbox.py`; inventory with
+`check_hole_mask.py --scan <tree>`). Only three maps ship holes: 海岛绝境 (4x4,
+origin (0,0)), 白龙绝境 and 天原绝境 (8x8, origin (-102400,-102400)); 龙门寻宝 and
+龙门寻宝_夜晚 ship none — matching every 龙门 run reporting `holes=0`.
+
+A/B on the cache build (`RC_HOLE_DUMP` engine dump vs the extracted `.hlb`, one
+region per map, spawned on a hole-free region-center cell so the sampler visits the
+region without falling):
+
+| map | region | hole cells | result |
+|---|---|---|---|
+| 海岛绝境 | (0,0) | 234 | **PASS**, mask identical (32768 bytes) |
+| 白龙绝境 | (3,4) | 96 | **PASS**, mask identical |
+| 天原绝境 | (4,3) | 1400 | **PASS**, mask identical |
+
+The decode rule (all four corner samples ≤ 0x7F + Z row flip) is therefore verified
+on all three hole-bearing maps and both origins/grids. The remaining hole regions
+share the same map-agnostic decode path; per-region A/B for them is optional.
 
 ## 5. Pre-existing crash found during the A/B attempt (out of scope)
 
@@ -91,8 +105,11 @@ $env:RC_DEMO_DIR='1,0'; $env:RC_AUTORUN='17000'
 & bin64\reborn_client_terrainstream.exe            # default cache 4
 $env:RC_TERR_CACHE='1'; & bin64\reborn_client_terrainstream.exe   # control
 # read `terrain load` / `terrain stats` lines from bin64\reborn_out\reborn_<ts>.log
-# hole A/B (fish the fresh dump written by RC_HOLE_DUMP=<dir>)
-.venv\Scripts\python.exe tools\collision\check_hole_mask.py --hlb proof\collision\terrain_extra\海岛绝境_000_000.hlb --dump <dir>\holes_海岛绝境_000_000.bin
+# hole inventory: extract the shipped .hlb tree (build_sandbox.run_pakv4 with
+# data/source/maps/<map>/landscape/hole/<map>_iii_jjj.hlb paths) then scan it
+.venv\Scripts\python.exe tools\collision\check_hole_mask.py --scan <extracted-tree>
+# A/B one region: run RC_MAP=<map jsonmap> RC_SPAWN=<hole-free cell> RC_HOLE_DUMP=<dir>
+.venv\Scripts\python.exe tools\collision\check_hole_mask.py --hlb <map>_iii_jjj.hlb --dump <dir>\holes_<map>_iii_jjj.bin
 ```
 
 Gates: `collision_selftest_reborn_client_terrainstream.exe` 36/36 PASS;
@@ -105,5 +122,5 @@ Gates: `collision_selftest_reborn_client_terrainstream.exe` 36/36 PASS;
 | single-slot border ping-pong (16 loads/17 s; cap=1 85) | HIGH | run logs `reborn_20261004_223128/223600.log` |
 | cache removes crossing loads (3 total, 0 per crossing) | HIGH | `reborn_20261004_223711.log` |
 | per-load cost 0.2–5.0 ms (no frame-scale hitch) | HIGH | the same logs |
-| hole (0,0) decode unchanged by the cache | HIGH | `check_hole_mask.py` PASS 234/234 |
+| hole decode verified on all hole-bearing maps (234/96/1400 cells) | HIGH | `check_hole_mask.py` A/B PASS x3 |
 | island void-fall AV is pre-existing | HIGH | canonical `aad94d8` same fault address, dumps 37100/52348 |
