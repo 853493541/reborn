@@ -1872,3 +1872,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (RL model-proxy API, no character/master needed).
 - Host state: probe stable, exit 0; scene from fallback NewScene; character still not
   visible. Evidence: host_char_rl16.out, rl_hpcinit.txt, rl_chp4.txt.
+
+## 2026-10-04 — Fake-master probe: passes the master/frame-data assert, faults deeper in Init
+
+- Host probe updated: CreateHangPet called with a fake master (static 0x8000 buffer,
+  `[master+0x39F0]` = zeroed 0x400 frame-data) and cfg {szRoot="Data\source\player\F1",
+  szMdl="Data\source\player\F1\部件\Mdl\F1.mdl", szBone="", fScale=1.0}.
+- Result: the `m_pMaster && m_pMaster->m_pFrameData` assert is PASSED (no KGLOG error this
+  run), but the call faults deeper inside Init - VEH `0xC0000005 at 0x7FFE21E417B0`
+  (module not the rep/engine/X3D/convert; likely a late-loaded dependency such as the
+  scene-response/movie/UI DLLs), caught by the block SEH ("deferred RL probe fault").
+  Screenshot fingerprint changed vs the NULL-master run (sha/mean differ) but no character
+  is identifiable in the 4-region stats - not proof of a rendered model.
+- This is a registered deviation (fake master); re-open with a real local character once
+  the logic world exists.
+- Next: (a) identify the faulting module/offset (log module list or minidump) and satisfy
+  the specific missing init; or (b) switch to MovieEditor's `KGRepresentHelper::
+  GetPlayerModel`/`InitPlayerModel` (RL model-proxy path, no master).
+- Evidence: host_char_rl17.out, image_stats on host_char_rl17.png vs host_char_rl16.png.

@@ -1917,14 +1917,31 @@ int main(void)
                         {
                             unsigned sceneId = (scene != NULL)
                                 ? *(unsigned*)((BYTE*)scene + 0xF1970) : 0;
+                            // HangPetCore::Init (0x421F20) requires
+                            // [master+0x39F0] = m_pFrameData non-null; the master is the
+                            // 5th arg (character). Probe: a fake master positioned at the
+                            // camera with a zeroed frame-data struct (documented deviation;
+                            // re-open with a real local character once the logic world
+                            // exists). cfg layout (Lua binding): +0x00 szRoot, +0x08 szMdl,
+                            // +0x10 szBone, +0x18 fScale.
+                            static unsigned char fakeMaster[0x8000];
+                            static unsigned char fakeFrame[0x400];
+                            memset(fakeMaster, 0, sizeof(fakeMaster));
+                            memset(fakeFrame, 0, sizeof(fakeFrame));
+                            *(void**)(fakeMaster + 0x39F0) = fakeFrame;
                             unsigned char cfg[0x60];
                             memset(cfg, 0, sizeof(cfg));
+                            *(const char**)(cfg + 0x00) = "Data\\source\\player\\F1";
+                            *(const char**)(cfg + 0x08) =
+                                "Data\\source\\player\\F1\\\xE9\x83\xA8\xE4\xBB\xB6\\Mdl\\F1.mdl";
+                            *(const char**)(cfg + 0x10) = "";
+                            *(float*)(cfg + 0x18) = 1.0f;
                             typedef void* (__fastcall *CreateHangPetFn)(
                                 void*, unsigned, unsigned, int, void*, int, void*);
                             void* pet = ((CreateHangPetFn)
                                          ((BYTE*)g_repModule + 0x42D1F0))(
-                                g_rlCtx, sceneId, 6, 0, NULL, 1, cfg);
-                            logf("[host] RL CreateHangPet(ctx=%p, scene=%u, id=6, 0, NULL, type=1, cfg) -> %p",
+                                g_rlCtx, sceneId, 6, 0, fakeMaster, 1, cfg);
+                            logf("[host] RL CreateHangPet(ctx=%p, scene=%u, id=6, 0, fakeMaster, type=1, cfg[F1]) -> %p",
                                  g_rlCtx, sceneId, pet);
                             if (pet != NULL)
                             {
