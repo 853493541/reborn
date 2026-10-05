@@ -605,8 +605,14 @@ namespace MapUiApp.Engine
                     };
                     visual = glass;
                 }
-                else if (imageType == 10 && source != null && drawWidth > 0 && drawHeight > 0)
+                else if ((imageType == 10 || imageType == 12 || (imageType >= 17 && imageType <= 19)) &&
+                         source != null && drawWidth > 0 && drawHeight > 0)
                 {
+                    // The engine's draw dispatch puts ImageType 10/11/12/17/18/19 on ONE
+                    // diced path (client KGUIX64 0x180117D7C: cmp eax,0xa/0xb/0xc/0x11/0x12/0x13
+                    // -> je 0x180117CE7). The slice geometry comes from the image data, not
+                    // the type id: prefer the four detected borders (nine-slice), fall back
+                    // to plain stretch. Type 11 keeps the horizontal-caps path below.
                     var borders = textures.GetDicedBorders(imagePath, frame);
                     int l = Math.Max(0, borders.L), t = Math.Max(0, borders.T);
                     int r = Math.Max(0, borders.R), b = Math.Max(0, borders.B);
@@ -1019,7 +1025,8 @@ namespace MapUiApp.Engine
             var raw = section.Get("AnchorDst");
             if (string.IsNullOrWhiteSpace(raw)) return null;
             raw = raw.Trim().Replace('\\', '/');
-            if (string.Equals(raw, "root", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(raw, "root", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(raw, "client", StringComparison.OrdinalIgnoreCase))
                 return (0 - parentAbs.X, 0 - parentAbs.Y, rootWidth, rootHeight);
             if (build == null || absPos == null) return null;
             string name = null;

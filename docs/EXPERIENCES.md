@@ -1713,6 +1713,29 @@ solved it, and what is still open. **Newest at the bottom.**
 - Verified: --selftest 1240/0/0; --status; --contact-sheet recommended (14 windows); target-frame
   46 sections; GUI relaunched.
 
+### 2026-10-04 ? UI ? correct-system pivot: systemic census + engine dispatch + script-replay feasibility
+- User: "EVERY WINDOW ... was all wrong, no case by case fix is allowed, you have to make the correct
+  system". Stopped per-window patches; diagnosed the systemic gaps over all 1,240 INIs.
+- Census (new tool `tools/ui/ini_construct_census.py`, registered in docs/ui/README.md):
+  WndPage/WndPageSet 513 sections, list/tree types 152, scene/web ~86 (rendered as generic
+  containers today = approximate); PosType 3/4/5 (70) unhandled; HandleType 1/2/4/5 (137) unhandled;
+  FirstItemPosType 1/2/3/4/7/8/9 (98) approximated as a boolean; AnchorDst special 848 + relative 826.
+- Engine evidence: client KGUIX64.dll 0x180117D7C (`cmp eax,0xa/0xb/0xc/0x11/0x12/0x13 -> je
+  0x180117CE7`) puts ImageType 10/11/12/17/18/19 on ONE diced path -> the viewer's ImageType-12
+  plain stretch was wrong (289 sections). Fixed in UiLayout (unified diced condition).
+  AnchorDst=client (847 sections / 548 files, mostly window roots) fell back to the parent basis ->
+  fixed (client = window/client rect for standalone renders).
+- Scripts: 121 same-name window scripts (38/53 liked, 21/48 recommended) mutate runtime state; the
+  viewer replayed a handful by hand. Decompiled 132/133 with unluac 1.2.3 into
+  `proof/ui/basic_ui/decompiled/` (git-ignored). Compile-audit with the client's bundled LuaJIT
+  (lua51.dll via ctypes, verified running Lua 5.1): 148/186 compile, 38 fail with unluac label-scope
+  bugs (CharacterPanel/BigBagPanel/NewSkillPanel/GuildMainPanel/KungFuPanel/WorldMap/Target/
+  ActionBar/Minimap/QuestTraceList). Blocker for execution; options: newer unluac, label repair.
+- New doc `docs/ui/UI_RUNTIME_REPLAY.md` (registered): the correct system = KGUI conformance
+  (engine-derived, census-gated) + script runtime-state replay + status dashboard; no per-window
+  fixes. Work order: decompiler fix -> replay harness -> conformance pass in census order.
+- Verified: --selftest 1240/0/0 after the engine fixes; census tool output (14 unhandled variants).
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".
