@@ -1826,3 +1826,24 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: game protocol surface mapped; single remaining gate = the handshake respond
   packet (id + layout). Next leads: the logic-thread dispatch (ring consumer) special cases,
   unmapped ids with Success!=0 content, or the EXE's KPlayerClient copy.
+
+### 2026-10-05 — V2 P3: game dispatch found (EXE 0x140168730) + client-side id registration
+- Did: located the game packet dispatch in the EXE (0x140168730): handler table at
+  player+0x16460, size table at player+0x17F28, handler(player, packet, size); ids 1..0x358;
+  size = MINIMUM (uDataLen >= size); var-size ids (size=-1) read the size from u16
+  [packet+7]; the buffer can hold multiple concatenated packets (loop advances by size);
+  id 7 (OnSwitchGS) sets a special flag. Extracted the client's own core registration from
+  the reset function 0x180163540 (53 handlers, exact ids): unmapped core ids are
+  1, 2, 3, 9, 14, 17, 18, 21, 23, 25, 27, 31, 33, 35, 42, 48, 51, 54.
+- Findings: the Lua API "LoadingComplete" (0x18036F4B0) -> DoApplyEnterScene (C->S op 3) -
+  the enter-scene request is UI-driven after the loading; OnSyncPlayerBaseInfo (id 4, 343 B)
+  sets the client enter state 4 -> DoClientConfirmReady -> state 7. Live injections of the
+  unmapped core ids (zero / field=1 / field=2 / field=3) did not advance the client, BUT
+  during an id-1 sub-type sweep the client's game session DISCONNECTED (~14:48:47, pings
+  stopped) and it returned to the login scene (engine re-init + map load) - the first real
+  handler effect observed; an id-1 sub-case (sub ~35-40) acts like a kick/switch.
+- Evidence: disasm 0x140168730, 0x180163540, 0x18036F4B0; game stub log; KG3D logs
+  14:57:11 (map "龙门寻宝" load + player model attempts) after the disconnect.
+- Outcome: dispatch + registration understood; next = identify the id-1 sub-case that
+  disconnected (controlled sweep) and the handshake respond id (still open; content may
+  need the roleID/key echo).
