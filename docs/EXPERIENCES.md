@@ -3925,3 +3925,23 @@ work into main without M2 entanglement.
 - Evidence: `RENDERING_OPTIONS.md` §2.1; census values in `proof/render/`.
 - Outcome: partial (research) — selection writer still open; apply path unchanged.
 - Re-open: P1 apply-path probes; caps probe P2.
+
+### 2026-10-04 — Render options — apply path implemented and proven (P1–P3), weather API (P4)
+
+- Did: managed-API reflection found `MovieEngineCLR.KGEngineCLR.SetEngineOptionFromConfigFile(string)`
+  (+ `EnableDynamicWeather`/`SetDynamicWeatherParameters`); implemented `client/VideoOptions.cs`
+  (`RC_QUALITY=1..9/bd/ default`, `RC_OPT_FILE`, `RC_OPT_<KEY>` merge to a generated ini in
+  `bin64\reborn_out`, `RC_WEATHER[_PARAMS]`) wired right after `Init3DEngine`; built feature
+  client `reborn_client_renderopts.exe` (title `sandbox-renderopts`, own namespace); 5 runs.
+- Results: tier1 vs tier9 differ on every 4x4 region (mean `#BAB197` vs `#C1BBA6`); tier-1
+  repeat delta is 11 PNG bytes (noise) → tier effect causal; 3 `RC_OPT_*` overrides pull
+  tier9 back to tier1-like (`#BAB198`); tier9 ≈ -27 % fps vs tier1 (391 vs 536, measured
+  before another agent's client started); `EnableDynamicWeather(1)=0` success but run D is
+  pixel-identical to tier1 (weather semantics/params open).
+- Evidence: logs `reborn_20261004_231520/231631/231738/231852/231943/232104.log`,
+  `proof/render/runs/{quality1,quality1b,quality9,quality9_override,weather1}.png`,
+  `docs/engine_host/RENDERING_OPTIONS.md` §4/§4b/§4c.
+- Outcome: solved for P1–P3 first cut; P4 partial (API found, effect not observable with
+  defaults); P5 initial numbers.
+- Re-open: weather param/scene semantics; `GpuSwitchOptionTab` matching; full option caps
+  read-back (proxy has no public fields; native `GetOption` export or config round-trip).

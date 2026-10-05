@@ -1,7 +1,9 @@
 # Rendering / LOD / weather options — improvement plan (item 1, areas 1.8–1.10)
 
 **Date:** 2026-10-04 · **Branch:** `agent/render-options` (worktree `reborn-iso-render-options`)
-**Status:** PLAN — no client code in this branch yet. Corpus census done (this doc).
+**Status:** executed first pass (2026-10-04) — P0–P3 first cut done, P4 partial, P5 initial;
+results in `RENDERING_OPTIONS.md` §4/§4b/§4c (`client/VideoOptions.cs`, feature build
+`reborn_client_renderopts.exe`, run logs + `proof/render/runs/`).
 **Scope:** close the three [OPEN] rows of system 1 in `docs/GAME_SYSTEMS_RESEARCH_MAP.md`:
 
 - **1.8** Rendering options / graphics presets

@@ -1,7 +1,9 @@
 # Rendering / LOD / weather option reference (areas 1.8–1.10)
 
-**Date:** 2026-10-04 · **Branch:** `agent/render-options` · **Status:** P0 in progress
-(P0.1 tool + census done; P0.3 consumer scan partial; P0.4 selection path partial)
+**Date:** 2026-10-04 · **Branch:** `agent/render-options` · **Status:** P0–P3 first cut
+**DONE** (apply path = `KGEngineCLR.SetEngineOptionFromConfigFile`; client `RC_QUALITY` /
+`RC_OPT_*` / `RC_WEATHER` implemented and proven on the engine); P4 partial (dynamic
+weather API found, no visible effect with defaults); P5 initial numbers.
 **Companion plan:** `RENDERING_OPTIONS_PLAN.md`.
 
 Read-only research. Sources: game client `...\zhcn_hd\config`, `...\zhcn_hd\bin64`,
@@ -75,32 +77,75 @@ density 10, cull 10000, shadow type 0). So the applied option set is a **merge**
 Exact captures: `proof/render/disasm/adapter_nEngineGraphicsLevel.txt` (load fn) and
 `proof/render/disasm/jx3ui_nEngineGraphicsLevel.txt` (UI schema fn).
 
-## 4. Apply-path implications for P1
+## 4. Apply path — DECIDED (P1, managed API)
 
-- **Proven:** the engine-side reader opens `config.ini` by name from the process working
-  directory (`KG3D_LoadJX3Config_From_DX9`). Our host's cwd is `C:\SeasunGame\MovieEditor`,
-  whose `config.ini` (376 keys, all `bEnableRC_*`) is the file actually applied today.
-- **Constraint:** that file is in the install → read-only for us (root AGENTS §8).
-- **Candidate native routes to verify next (P1.1/P1.2):**
-  1. managed/engine setter API (extend `RC_API_DUMP` over `KGEngineCLR`/`KGSceneCLR`/adapter exports;
-     look for `Set*Config*`/`SetOption*` in `KG3DEngineAdapterX64.dll` exports);
-  2. config passed through an argument the host controls — `Init3DEngine(..., "./configHttpFile.ini")`
-     role is still unresolved (224 keys, xref TBD);
-  3. a writable cwd-copy route **without writing the install** (e.g. run cwd elsewhere is
-     blocked by `InitPak` — see `MINI_SANDBOX_CLIENT.md` dead end #1);
-  4. if none exists: registered provisional route + re-open criteria (plan §5.1).
-- Config **save** exists in the adapter, so a future reverse direction (read current values)
-  is plausible via the same functions.
+- **Proven reader:** the engine opens `config.ini` from the process working directory
+  (`KG3D_LoadJX3Config_From_DX9`); our cwd's `MovieEditor\config.ini` is install
+  read-only, so file replacement is not an option.
+- **Chosen route:** the engine's own managed API —
+  `MovieEngineCLR.KGEngineCLR.SetEngineOptionFromConfigFile(System.String)` (reflection
+  dump of `MovieEngineCLR.dll`, 2026-10-04; sibling calls `GetEngineOption`,
+  `GetEngineOptionFromConfigFile`, `SetEngineOption`). It parses a **config.ini-format
+  file we control** and applies it at runtime, no install write.
+- **Implementation:** `client/VideoOptions.cs`, called right after `Init3DEngine`
+  (before map load). Switches:
+  - `RC_QUALITY=<1..9|bd<1..7>|default>` → picks `zhcn_hd\config\config_*.ini` (read-only read);
+  - `RC_OPT_FILE=<path>` → any ini;
+  - `RC_OPT_<KEY>=<value>` → merged overrides, written to `bin64\reborn_out\renderopts_<hhmmss>.ini`;
+  - `RC_WEATHER=0|1` and `RC_WEATHER_PARAMS=<12 floats>` → `EnableDynamicWeather` /
+    `SetDynamicWeatherParameters`.
+- Native DX11 exports (`GetOption`, `CompareEngineOption`, `BuildRenderCache`) and the
+  adapter save fn `0x67B10` are further native handles; not needed for the chosen route.
 
-## 5. Open items (P0 remainder)
+## 4b. Runtime proof (P2/P3/P5 first cut, 2026-10-04)
+
+Feature build `reborn_client_renderopts.exe` (title `sandbox-renderopts`, namespace
+`reborn_client_renderopts.memory`); fixed pose `(18991,962,33853)`, 龙门寻宝, no input,
+shot at t=15 s. Screenshots in `proof/render/runs/`; logs `bin64\reborn_out\reborn_*.log`.
+
+| Run | Config | Log | Screenshot | Frame mean | fps (t=18 s) |
+|---|---|---|---|---|---|
+| A | tier 1 (最简) | `reborn_20261004_231520.log` | `quality1.png` | `#BAB197` | 536 |
+| A' | tier 1 repeat | `reborn_20261004_231852.log` | `quality1b.png` | `#BAB197` (11-byte delta) | 597* |
+| B | tier 9 (沉浸) | `reborn_20261004_231631.log` | `quality9.png` | `#C1BBA6` (+7 on every 4×4 cell) | 391 |
+| C | tier 9 + `nFoliageDensity=5`, `fFoliageCullDist=5000`, `bEnableRC_Bloom=0` | `reborn_20261004_231943.log` | `quality9_override.png` | `#BAB198` (tier-1-like) | 288* |
+| D | tier 1 + `RC_WEATHER=1` | `reborn_20261004_232104.log` | `weather1.png` | `#BAB197` (identical to A) | 580* |
+
+- **P3 apply path works**: A vs B differ in every region (post-FX/fog/CSS changes); repeat
+  A vs A' differs by a single 11-byte PNG delta → the tier delta is causal, not noise.
+- **P2 per-option overrides work**: C (three `RC_OPT_*` merged into a generated file)
+  lands near tier 1 despite the tier-9 base.
+- **P5 initial**: at this pose tier 9 costs ~27 % fps vs tier 1 (391 vs 536, both runs
+  before other clients started).
+- **P4 partial**: `EnableDynamicWeather(1)=0` (success code) but run D is pixel-identical
+  to A at this pose → the toggle needs params/time/scene support; params API exists
+  (`SetDynamicWeatherParameters`, 12 floats) — semantics still open.
+- \* fps of A'/C/D are contaminated by a concurrently initializing `reborn_client_predraw.exe`
+  (another agent, own namespace — allowed by §2); use A vs B for the tier signal.
+
+## 4c. Weather/day-night (P4) — found API + open semantics
+
+- `KGEngineCLR.EnableDynamicWeather(int)`, `IsEnableDynamicWeather(ref int)`,
+  `Set/GetDynamicWeatherParameters(12 floats)` — the engine's authored weather entry point.
+- Config keys `bEnableDayNightCycle` (cfg +0x2f0), `bEnableDynamicEnvironment` (+0x2f4),
+  `bShowTrueSky` (+0x50), `bWeatherOn` (EngineStaticConfig) can be applied through the same
+  config-file route.
+- Open: parameter semantics + what makes weather visible (scene/time); `environment.json` /
+  `playerEnvironment.json` decode; volumetricCloud asset absent in this install (non-fatal).
+
+## 5. Open items
 
 1. Which component performs the merge into the active `config.ini` (external
    launcher/patch tooling vs panel-triggered adapter save); `GpuSwitchOptionTab.tab`
    consumer not found anywhere in the install (see §2.1).
 2. Full key extraction from the adapter load fn + UI schema fn (a generator can turn the
-   disasm captures into the complete key ↔ offset table).
-3. `configHttpFile.ini` (224 keys) role.
-4. Per-option caps probe (P2), device-row overrides (P1.3), environment.json decode (P4).
+   disasm captures into the complete key ↔ offset table); `KGEngineOptionProxyCLR` has no
+   public fields (reflection), so per-key read-back needs the native `GetOption` export or
+   a config-file round-trip.
+3. `configHttpFile.ini` (224 keys): its name is **not** present in the MovieEditor adapter
+   binary (xref negative) — role still unknown; `Init3DEngine` passes it as an argument.
+4. Caps probe first cut done visually (§4b); device-row overrides (P1.3) and
+   `environment.json` decode + weather param semantics (P4) remain.
 
 ## Reproduce
 
@@ -133,3 +178,6 @@ Exact captures: `proof/render/disasm/adapter_nEngineGraphicsLevel.txt` (load fn)
 | Active `config.ini` = generated merge; owner external/panel | MED | 471-key active file vs `_bd_1` (412/467 same); full-install scan 17,843 files |
 | Preset *file selection* owner (final writer) | LOW / open | preset names referenced nowhere in install; P1 probe |
 | `GpuSwitchOptionTab.tab` consumer | LOW / open | string absent from the whole install |
+| Runtime apply via `SetEngineOptionFromConfigFile` | HIGH | reflection dump + runs A/B/C (§4b), logs cited |
+| Per-option `RC_OPT_*` merge effective | HIGH | run C vs B fingerprints |
+| Weather toggle API exists, no visible effect w/ defaults | MED | run D pixel-identical; params semantics open |
