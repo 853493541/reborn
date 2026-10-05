@@ -4063,3 +4063,118 @@ if the cache/host frames appear.
   build=ok`, `Init3DEngine=3109 ms`; shim rebuild exports `RC_Startup_*`.
 - Evidence: `native/startup_shim.cpp`; `docs/engine_host/FAST_STARTUP.md`;
   D7 register text.
+
+### 2026-10-04 — Render options — improvement plan for areas 1.8–1.10 (#iso)
+
+- Did: created the isolated worktree/branch for the rendering/LOD/weather track
+  (parallel to the 1.3 terrain agent and the predraw agent); wrote
+  `docs/engine_host/RENDERING_OPTIONS_PLAN.md` (corpus census + phases P0–P5 +
+  boundaries with the other agents) and registered it in `docs/engine_host/README.md`.
+- Census (read-only, PowerShell): 15 preset files in `zhcn_hd\config`; 9 main tiers
+  234–375 key entries, `_bd_` family 472 each; 408 unique keys, 72 vary across tiers;
+  `[ENGINEOPTION] nEngineGraphicsLevel=1..9` is the tier selector;
+  `MovieEditor\config.ini` (376 entries, all `bEnableRC_*`, no level key) is the
+  config our host actually loads (cwd = MovieEditor, install read-only).
+- Evidence: census commands in the plan's Reproduce section; this commit.
+- Outcome: partial (plan-only, as requested) — research/implementation phases
+  P0–P5 defined with verification and gates.
+- Re-open: n/a.
+
+### 2026-10-04 — Render options — P0 execution (census tool + consumer xrefs)
+
+- Did: implemented `tools/render/preset_census.py` (stdlib) → `proof/render/option_matrix.tsv`
+  (490 keys), `varying.tsv` (72), `gpu_switch_summary.tsv` (20x32); wrote
+  `docs/engine_host/RENDERING_OPTIONS.md` (P0.3/P0.4 partial).
+- Findings (HIGH): engine reads `config.ini` from cwd via
+  `KG3DEngineAdapterX64.dll!KG3D_LoadJX3Config_From_DX9` @RVA 0x5F9F0 (~150 keys with
+  code defaults/clamps; `nEngineGraphicsLevel` cfg+0x260 default 0/3 by nRenderLevel==100);
+  adapter save fn @0x67B10; `JX3UIX64.dll` @0x118970 = video-panel key/type/offset schema;
+  `JX3ClientX64.exe!InitMachineConfig` @0x9A8A0 reads `config/machine_config.ini`.
+  Open: preset-file selection owner (no `config_N`/`GpuSwitchOption` literals in bin64),
+  per-option caps, apply path (install `config.ini` read-only).
+- Evidence: `proof/render/*`, xref disasm under `proof/render/disasm/`; reproduce in
+  `RENDERING_OPTIONS.md` §Reproduce.
+- Outcome: partial — P0.1 done, P0.3/P0.4 partial (apply path not decided).
+- Re-open: P0.4 selection owner; P1 apply path; P2 caps probe.
+
+### 2026-10-04 — Render options — P0.4: active config is a generated merge
+
+- Did: full-install scan (17,843 files, `Game\JX3` + `MovieEditor`, read-only) for the
+  preset names and `GpuSwitchOptionTab`; compared the game's active `zhcn_hd\config.ini`
+  against the `_bd_` presets.
+- Findings: preset file names are referenced by **no** install binary; active config.ini
+  (471 keys, `nEngineGraphicsLevel=1`) is a merge closest to `config_bd_1_zuijian`
+  (412/467 shared values identical) — so the applied set is generated (base + bd tier +
+  machine/user overrides), not a file copy. MovieEditor `config.ini` (host runtime) is a
+  tier-7-ish editor config, install read-only. Per-user display settings also persist in
+  `userpreferences.jx3dat` (player state).
+- Evidence: `RENDERING_OPTIONS.md` §2.1; census values in `proof/render/`.
+- Outcome: partial (research) — selection writer still open; apply path unchanged.
+- Re-open: P1 apply-path probes; caps probe P2.
+
+### 2026-10-04 — Render options — apply path implemented and proven (P1–P3), weather API (P4)
+
+- Did: managed-API reflection found `MovieEngineCLR.KGEngineCLR.SetEngineOptionFromConfigFile(string)`
+  (+ `EnableDynamicWeather`/`SetDynamicWeatherParameters`); implemented `client/VideoOptions.cs`
+  (`RC_QUALITY=1..9/bd/ default`, `RC_OPT_FILE`, `RC_OPT_<KEY>` merge to a generated ini in
+  `bin64\reborn_out`, `RC_WEATHER[_PARAMS]`) wired right after `Init3DEngine`; built feature
+  client `reborn_client_renderopts.exe` (title `sandbox-renderopts`, own namespace); 5 runs.
+- Results: tier1 vs tier9 differ on every 4x4 region (mean `#BAB197` vs `#C1BBA6`); tier-1
+  repeat delta is 11 PNG bytes (noise) → tier effect causal; 3 `RC_OPT_*` overrides pull
+  tier9 back to tier1-like (`#BAB198`); tier9 ≈ -27 % fps vs tier1 (391 vs 536, measured
+  before another agent's client started); `EnableDynamicWeather(1)=0` success but run D is
+  pixel-identical to tier1 (weather semantics/params open).
+- Evidence: logs `reborn_20261004_231520/231631/231738/231852/231943/232104.log`,
+  `proof/render/runs/{quality1,quality1b,quality9,quality9_override,weather1}.png`,
+  `docs/engine_host/RENDERING_OPTIONS.md` §4/§4b/§4c.
+- Outcome: solved for P1–P3 first cut; P4 partial (API found, effect not observable with
+  defaults); P5 initial numbers.
+- Re-open: weather param/scene semantics; `GpuSwitchOptionTab` matching; full option caps
+  read-back (proxy has no public fields; native `GetOption` export or config round-trip).
+
+### 2026-10-04 — Render options — gates + no-op regression
+
+- Gates after the client change: `jx3_model` exit 0, `gravity/verify_model` exit 0,
+  `loot/capture.py selftest` PASS, `collision_selftest_reborn_client_renderopts` 36/36,
+  canonical `camera_smoke.exe` ALL PASS.
+- No-op regression: `reborn_client_renderopts.exe` with no `RC_QUALITY`/`RC_OPT_*`/`RC_WEATHER`
+  → exit 0, `LoadMap result=0`, zero `VideoOptions:` log lines (`reborn_20261004_232425.log`).
+
+### 2026-10-04 — Render options — P2 caps matrix, P4 env decode, P5 second pose
+
+- Did: 12 more engine runs. P2 isolated caps (tier 9 base, one key per run): bloom=0 is the
+  dominant visible change (`#C1BBA6`→`#BAB198`, all cells); AO=0/SSR=0/nShadowType=0/
+  nFoliageDensity=5 are no-ops at the house pose; `nFoliageDensity=999` is pixel-identical to
+  tier 9 (100) → clamp confirmed behaviorally. P5 second pose (real spawn dune): tier 9 vs
+  tier 1 = −34 % fps (369 vs 562) + large local image deltas. P4: decoded all map
+  environment quality variants (HD root `enableDayNightCycle=1`, `bd`/`low` differ; player
+  light rigs in `playerEnvironment.json`); day-night option gives only a 1–2-unit,
+  non-evolving shift; dynamic-weather toggle still a no-op with defaults.
+- Mistake + correction (recorded): the first caps batch leaked `RC_OPT_*` env vars between
+  runs in one PowerShell process (AO chained into bloom/SSR); the 4 contaminated artifacts
+  were deleted and re-run isolated; the doc table cites only the clean set.
+- Evidence: `proof/render/runs/p2_*.png`, `proof/render/logs/p2_*.log`,
+  `proof/render/environment_summary.txt`, doc §4b/§4c.
+- Outcome: P2 caps first complete matrix; P4 data decoded / effect open; P5 two poses.
+- Re-open: foliage caps at a foliage pose; per-LOD isolation; weather params/time source;
+  GpuSwitch consumer (external tooling — absent from install).
+
+### 2026-10-05 - Merge - render-options <- terrain-stream-holes (branch combine)
+
+- Did: merged `agent/terrain-stream-holes` (7 commits: LRU terrain cache `c32f095`,
+  hole A/B all maps, streaming audit, R32<->BCH relation, quality-tier probe) into
+  `agent/render-options` at `8e3ef69`; the combined branch is the one the 1.3 agent
+  fast-forwards to. Conflicts: 2 (`docs/EXPERIENCES.md` append - theirs first then ours
+  by commit time; `docs/engine_host/README.md` rows - both kept). `client/RebornClient.cs`
+  auto-merged (their telemetry vs our `VideoOptions.Apply` call site).
+- Validation on the combined tree: feature build exit=0; gates `jx3_model` 10 PASS,
+  gravity `verify_model` PASS, loot selftest PASS, collision selftest 36/36, `camera_smoke`
+  ALL PASS; boot run `reborn_20261005_000130.log` `git=8e3ef69 dirty=0`, map load ok,
+  `cache=4` telemetry + `terrain load (2,2) ms=4.1`, no `VideoOptions:` lines (no-op path).
+- Observation for the terrain owner (not a merge blocker, MED): `r32_bch_relation.py` on
+  the sandbox-renamed pair 000_000 (`C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`) prints
+  `max residual = 0.006060575`, not 0 as the doc claims for 002_002 - would be worth
+  re-checking whether the sandbox crop rename pairs the same regions.
+- Handoff: in `reborn-iso-terrain-stream-holes`, commit/stash WIP then
+  `git merge --ff-only agent/render-options` (or plain merge if new commits landed) and
+  rebuild the feature client - the compile list now includes `client/VideoOptions.cs`.

@@ -352,6 +352,8 @@ internal static class RebornClient
         if (startupOverride)
             Log("Startup: " + StartupShim.Status());
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
+        try { VideoOptions.Apply(engine, Env("RC_GAME_CONFIG_DIR", @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\config"), startupPath, Log); }
+        catch (Exception e) { Log("VideoOptions ex: " + e.Message); }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
