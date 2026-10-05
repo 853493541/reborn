@@ -1855,6 +1855,35 @@ solved it, and what is still open. **Newest at the bottom.**
   character pages, skill, social, mail, auction, guild, settings, plus post-click states).
 - Verified: minimap render 40 sections (was 5), bigbagpanel runtime=284, --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? issue register item 1 closed: module string tables added (unresolved 3254 -> 49)
+- The 144 tables in the temp extraction (`reorg_tables_out`) were never loaded by the viewer (only
+  ~21 of them were copied into Data/text/assets). Copied the missing 136 into
+  `ui-process-app/Data/text/ui/Scheme/Case` as UTF-8 (the viewer's TextFile decoder handles UTF-8
+  and GBK by content).
+- Audit: unresolved 3,254 -> **49** (98.5% drop); placeholders 899 -> 901; outOfBounds 6,584 -> 6,903
+  (runtime-state geometry + resolved text widths move elements; many oob are legitimate overhang).
+  Selftest 1240/0/0.
+- The remaining 49 ids are a dev/unreached tail (`STR_COLLECTION*` x24, `STR_GUILD_ALLIANCELOLI`,
+  `STR_MATCHING`, `STR_TESTTEXT_TIME`, `STR_MICROT`, ...); their tables MISS in the searched paks
+  under all name variants tried (string_Collection/EquipRecommend/String_PQTeach), so they are not
+  extractable by path today.
+- Docs updated: UI_SYSTEM_COVERAGE text axis 84.6% -> 99.8%; UI_REAL_CLIENT_ASSESSMENT register item 1
+  marked fixed.
+- Verified: --audit unresolved=49; --selftest 1240/0/0.
+
+### 2026-10-04 ? UI ? issue register item 2: texture pair extraction (real missing 602 -> 434)
+- The audit's 899 placeholders split into 278 intentional `TextureName=no` (runtime-assigned art)
+  and ~602 real missing frames. First attempt extracted the listed paths one by one (121 files) and
+  made the audit WORSE (901 -> 1025, then 1088 after restoring from art_out): overwriting a `.UITex`
+  without its `.Tga` sibling (or vice versa) creates frame/atlas mismatches.
+- Fix: build the pair list (each `.UITex` + its `.Tga` sibling, same directory) -> extract 208 files
+  -> copy both -> placeholders **712** (278 `no` + 434 real), art coverage ~98.5% -> ~98.9%.
+  Lesson: never copy a UITex or its atlas alone; extract and copy the pair.
+- Remaining misses MISS in the scanned paks (ReputationPanel1.UITex, QuestPanelButton.UITex, ...) -
+  not extractable by path today.
+- Verified: --audit placeholders=712 (no=278 real=434) unresolved=49 outOfBounds=6901;
+  --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

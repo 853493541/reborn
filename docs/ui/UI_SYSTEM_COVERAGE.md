@@ -34,8 +34,8 @@ engine draw (slicing/masks/anchors).
 |---|---|---|---|
 | **Window catalog** | all local `ui/Config/Default` INIs extracted and rendered | **100%** (1,240/1,240) | `--selftest` 1240/0/0 |
 | **KGUI constructs** (weighted by section usage) | WndType 112,453/113,321 exact + 868 approximate; PosType 85,210/85,280; ImageType 18,104/18,104; HandleType 26,302/26,439; FirstItemPosType 23,954/24,052; AnchorDst 1,674/1,674 (mechanism) | **≈99.7%** | `tools/ui/ini_construct_census.py` |
-| **Art (image instances)** | 40,802 Image sections; 899 placeholder instances of which 278 are the intentional `TextureName=no` (runtime-assigned) → ~602 real missing | **≈98.5%** | `--audit`; `ui-process-app/assets/uitex` = 2,479 files |
-| **Text (text instances)** | 21,191 Text sections; 3,254 unresolved string ids (2,911 unique — a long tail of module tables not extracted) | **≈84.6%** | `--audit` (top ids: `STR_MEN` ×31, `STR_POINTSGET1` ×10) |
+| **Art (image instances)** | 40,802 Image sections; 712 placeholder instances — 278 are the intentional `TextureName=no` (runtime-assigned), 434 real missing (pair extraction of `.UITex`+`.Tga` from the client) | **≈98.9%** | `--audit`; `ui-process-app/assets/uitex` = 2,481+ files |
+| **Text (text instances)** | 21,191 Text sections; 49 unresolved string ids after adding the 136 extracted module tables (`Data/text/ui/Scheme/Case`, 145 total) | **≈99.8%** | `--audit` (was 3,254 unresolved; remaining 49 are dev/unreached tables, each ×1-4) |
 | **Runtime state (scripted windows)** | 122/1,240 windows ship a script (9.8%); replay 79 full + 43 partial; the viewer consumes the state (`ApplyRuntimeState`, completed replays only — partials fall back to the authored/GT state) | **65% of scripted windows fully** (6.4% of all windows); T-A (liked+recommended, 59 scripted): 35 full / 23 partial | `replay_summary.tsv`, `--render` `runtime=N` |
 | **Interaction / behavior** | events, hover/checked transitions, animations (`Animate`/`SFX`), 3D scenes (`WndScene`), web (`WndWebCef`), native bars | **0% in the viewer** (static review render); out of scope for the viewer — the product runs the real engine for these | census types; `UI_RUNTIME_REPLAY.md` |
 
@@ -50,12 +50,13 @@ MailPanel 101, SoundSettingPanel 93, MiniMap 92, SocialPanel 91, MainBarPanel 89
 
 ## 3. Verdict
 
-- **Static layout + art: ≈98–99%** of the client's system (constructs 99.7% weighted, art 98.5% of
-  image instances). The visible remaining layout gap is small and enumerated above.
-- **Text: ≈85%** — the weakest asset axis; ~2,900 unique unresolved ids need their module string
-  tables extracted (mostly per-module `ui/Scheme/Case/*.txt` not listed in the INI's `StringTable=`).
-- **Runtime state: 65% of scripted windows fully replayed**; the rest carry partial state. Windows
-  without a script (1,118) are authored-complete and don't need replay.
+- **Static layout + art: ≈99%** of the client's system (constructs 99.7% weighted, art 98.9% of
+  image instances after the pair extraction; real missing 434 instances). The visible remaining
+  layout gap is small and enumerated above.
+- **Text: ≈99.8%** — the 136 extracted module string tables (added 2026-10-04 to
+  `Data/text/ui/Scheme/Case`) resolved 3,254 → 49 unresolved ids; the tail is dev/unreached tables.
+- **Runtime state: 65% of scripted windows fully replayed**; the rest carry partial state (not
+  applied until complete). Windows without a script (1,118) are authored-complete.
 - **Behavior/interaction: 0% in the viewer** — deliberately out of scope; the product's UI runs in
   the real engine where events/animation/3D are native.
 

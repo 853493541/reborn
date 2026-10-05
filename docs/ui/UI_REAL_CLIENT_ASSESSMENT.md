@@ -69,9 +69,12 @@ sections `runtime=284` (complete replay still applied).
 6. Entry chain missed `OnCreate`/`Init`/`OnOpen` — added (no-entry 6 → 3).
 
 **Open (counted):**
-1. Text: 3,254 unresolved string instances (2,911 unique ids) — extract the module string tables.
-2. Art: ~602 real missing placeholder instances (~444 unique section/texture pairs); 278 are the
-   intentional `TextureName=no`.
+1. ~~Text: 3,254 unresolved string instances~~ **fixed**: 136 extracted module tables added to
+   `Data/text/ui/Scheme/Case` (145 total) → **3,254 → 49** unresolved (the tail is dev/unreached
+   tables: `STR_COLLECTION*`, `STR_TESTTEXT_TIME`, `STR_MICROT`, ... — each ×1-4).
+2. Art: real missing placeholders **602 → 434** instances (pair extraction of `.UITex` + `.Tga`
+   siblings from the client; 278 `TextureName=no` are intentional). Remaining misses are paths not
+   present in the scanned paks (e.g. `ReputationPanel1.UITex`, `QuestPanelButton.UITex`).
 3. Constructs: PosType 3/4/5 = 70 · HandleType 1/2/4/5 = 137 · FirstItemPosType 1-9 = 98 ·
    approximate WndTypes = 868 sections (page-set/list/tree/scene/web/flex).
 4. Partial replays: 43 windows (T-A: 23) — stub-tune by error class.
