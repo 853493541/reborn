@@ -3930,3 +3930,27 @@ if the cache/host frames appear.
 - Outcome: solved - the decode rule (four-corner + Z flip) holds on both origins
   (0,0 4x4 and -102400,-102400 8x8). Corrects the earlier note that only two
   `.hlb` exist (that was just the extracted set).
+
+### 2026-10-04 - Engine host - map quality tiers probed for all 5 BR maps
+
+- Did: read each map's `.jsonmap` `filePaths` tiers and probed 100 declared paths
+  with a new `tools/probe_map_quality.py`. `bd` + `low` ship on all five maps
+  (environment.json, playerEnvironment.json, `.rcidx` with
+  `RCEffectName=jx3bd/defaultlow`, bd skybox); `bddnc`/`mb` are declared but ship
+  zero files; the tiers carry no heightmap/foliage - HD root is the only scene data.
+- Evidence: `docs/engine_host/MAP_QUALITY_TIERS.md`; tool run "hits 40 of 100".
+- Outcome: solved - no lower-quality geometry exists to downshift to; preset work
+  (1.8-1.10) must drive render/effect options, next probe = `RCEffectName` consumer
+  + `zhcn_hd\config\config_*.ini` linkage.
+
+### 2026-10-04 - Tools - small correctness batch (hole mapping, PvP verifier, doc drift)
+
+- Did: fixed `check_hole_mask.py --spawn-cells` world-Z mapping (converted/engine
+  row -> world z = n-1-r), validated by the 2026-09-29 fall witness: world
+  (22850,30450) is a hole only under the flipped mapping. Made
+  `verify_pvp_evidence.py` source-portable (env overrides `REBORN_MAPLIST`/
+  `REBORN_SKILLS` + repo-relative candidates, hard exit 2 when missing) and fixed
+  the loot selftest count 8 -> 9 in the README + both AGENTS files.
+- Evidence: `verify_pvp_evidence.py` exit 0 with 0 mismatches on all 6 tables;
+  `--spawn-cells 400` prints `hole cell (228,207) -> world (22850,30450)`.
+- Outcome: solved.
