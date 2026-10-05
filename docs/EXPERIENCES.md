@@ -3953,3 +3953,22 @@ work into main without M2 entanglement.
   canonical `camera_smoke.exe` ALL PASS.
 - No-op regression: `reborn_client_renderopts.exe` with no `RC_QUALITY`/`RC_OPT_*`/`RC_WEATHER`
   → exit 0, `LoadMap result=0`, zero `VideoOptions:` log lines (`reborn_20261004_232425.log`).
+
+### 2026-10-04 — Render options — P2 caps matrix, P4 env decode, P5 second pose
+
+- Did: 12 more engine runs. P2 isolated caps (tier 9 base, one key per run): bloom=0 is the
+  dominant visible change (`#C1BBA6`→`#BAB198`, all cells); AO=0/SSR=0/nShadowType=0/
+  nFoliageDensity=5 are no-ops at the house pose; `nFoliageDensity=999` is pixel-identical to
+  tier 9 (100) → clamp confirmed behaviorally. P5 second pose (real spawn dune): tier 9 vs
+  tier 1 = −34 % fps (369 vs 562) + large local image deltas. P4: decoded all map
+  environment quality variants (HD root `enableDayNightCycle=1`, `bd`/`low` differ; player
+  light rigs in `playerEnvironment.json`); day-night option gives only a 1–2-unit,
+  non-evolving shift; dynamic-weather toggle still a no-op with defaults.
+- Mistake + correction (recorded): the first caps batch leaked `RC_OPT_*` env vars between
+  runs in one PowerShell process (AO chained into bloom/SSR); the 4 contaminated artifacts
+  were deleted and re-run isolated; the doc table cites only the clean set.
+- Evidence: `proof/render/runs/p2_*.png`, `proof/render/logs/p2_*.log`,
+  `proof/render/environment_summary.txt`, doc §4b/§4c.
+- Outcome: P2 caps first complete matrix; P4 data decoded / effect open; P5 two poses.
+- Re-open: foliage caps at a foliage pose; per-LOD isolation; weather params/time source;
+  GpuSwitch consumer (external tooling — absent from install).

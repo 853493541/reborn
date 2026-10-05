@@ -97,41 +97,75 @@ Exact captures: `proof/render/disasm/adapter_nEngineGraphicsLevel.txt` (load fn)
 - Native DX11 exports (`GetOption`, `CompareEngineOption`, `BuildRenderCache`) and the
   adapter save fn `0x67B10` are further native handles; not needed for the chosen route.
 
-## 4b. Runtime proof (P2/P3/P5 first cut, 2026-10-04)
+## 4b. Runtime proof (P2/P3/P5, 2026-10-04)
 
 Feature build `reborn_client_renderopts.exe` (title `sandbox-renderopts`, namespace
-`reborn_client_renderopts.memory`); fixed pose `(18991,962,33853)`, 龙门寻宝, no input,
-shot at t=15 s. Screenshots in `proof/render/runs/`; logs `bin64\reborn_out\reborn_*.log`.
+`reborn_client_renderopts.memory`); fixed pose `(18991,962,33853)` unless noted, 龙门寻宝,
+no input, shot t=15 s. Screenshots `proof/render/runs/`, per-run logs `proof/render/logs/`.
 
-| Run | Config | Log | Screenshot | Frame mean | fps (t=18 s) |
+### Tier application (P3)
+
+| Run | Config | Screenshot | Frame mean | fps (t=18 s) |
+|---|---|---|---|---|
+| A | tier 1 | `quality1.png` | `#BAB197` | 536 |
+| A' | tier 1 repeat | `quality1b.png` | `#BAB197` (single-digit PNG byte delta) | 597* |
+| B | tier 9 | `quality9.png` | `#C1BBA6` (+7 on every 4×4 cell) | 391 |
+
+Tier 1 vs tier 9 differ in every region; repeat A vs A' is noise → **the tier delta is
+causal**. (A vs B measured before any other client started; * = fps contaminated by the
+concurrent `reborn_client_predraw.exe` of another agent, own namespace — root AGENTS §2.)
+
+### Per-option caps probe (P2) — isolated, one key per run on tier 9
+
+| Option (set to) | Log | Screenshot | Effect vs tier 9 (`#C1BBA6`) | fps | Verdict at this pose |
 |---|---|---|---|---|---|
-| A | tier 1 (最简) | `reborn_20261004_231520.log` | `quality1.png` | `#BAB197` | 536 |
-| A' | tier 1 repeat | `reborn_20261004_231852.log` | `quality1b.png` | `#BAB197` (11-byte delta) | 597* |
-| B | tier 9 (沉浸) | `reborn_20261004_231631.log` | `quality9.png` | `#C1BBA6` (+7 on every 4×4 cell) | 391 |
-| C | tier 9 + `nFoliageDensity=5`, `fFoliageCullDist=5000`, `bEnableRC_Bloom=0` | `reborn_20261004_231943.log` | `quality9_override.png` | `#BAB198` (tier-1-like) | 288* |
-| D | tier 1 + `RC_WEATHER=1` | `reborn_20261004_232104.log` | `weather1.png` | `#BAB197` (identical to A) | 580* |
+| `bEnableRC_Bloom=0` | `p2_bloom2` | `p2_bloom2.png` | `#BAB198`, every cell changes | 371 | **effective (dominant brightness)** |
+| `bEnableRC_AmbientOcclusion=0` | `p2_ao_off` | `p2_ao_off.png` | cells identical (2 × 1 unit) | 376 | no-op / below noise |
+| `bEnableRC_SSR=0` | `p2_ssr2` | `p2_ssr2.png` | cells identical | 364 | no-op at this pose (no reflective surfaces) |
+| `nShadowType=0` | `p2_shadow0` | `p2_shadow0.png` | ~identical (3 × 1 unit) | 372 | no-op / subtle |
+| `nFoliageDensity=5` | `p2_fol5b` | `p2_fol5b.png` | ~identical (1 × 1 unit) | 370 | no-op at this pose (no foliage in view) |
+| `nFoliageDensity=999` | `p2_fol999b` | `p2_fol999b.png` | **identical to tier 9** | 372 | clamp consistent with adapter `≤100` |
 
-- **P3 apply path works**: A vs B differ in every region (post-FX/fog/CSS changes); repeat
-  A vs A' differs by a single 11-byte PNG delta → the tier delta is causal, not noise.
-- **P2 per-option overrides work**: C (three `RC_OPT_*` merged into a generated file)
-  lands near tier 1 despite the tier-9 base.
-- **P5 initial**: at this pose tier 9 costs ~27 % fps vs tier 1 (391 vs 536, both runs
-  before other clients started).
-- **P4 partial**: `EnableDynamicWeather(1)=0` (success code) but run D is pixel-identical
-  to A at this pose → the toggle needs params/time/scene support; params API exists
-  (`SetDynamicWeatherParameters`, 12 floats) — semantics still open.
-- \* fps of A'/C/D are contaminated by a concurrently initializing `reborn_client_predraw.exe`
-  (another agent, own namespace — allowed by §2); use A vs B for the tier signal.
+**Correction note (honesty):** the first bloom/SSR/density batch ran with leaked
+`RC_OPT_*` env vars inside one PowerShell process (AO ran into bloom, etc.); those four
+artifacts were deleted and re-run isolated. The table above is the clean set. Foliage
+options must be probed at a foliage-rich pose (the house pose has none).
 
-## 4c. Weather/day-night (P4) — found API + open semantics
+### Second pose (P5 groundwork) — real spawn dune `(23334,761,24224)`
 
-- `KGEngineCLR.EnableDynamicWeather(int)`, `IsEnableDynamicWeather(ref int)`,
-  `Set/GetDynamicWeatherParameters(12 floats)` — the engine's authored weather entry point.
-- Config keys `bEnableDayNightCycle` (cfg +0x2f0), `bEnableDynamicEnvironment` (+0x2f4),
-  `bShowTrueSky` (+0x50), `bWeatherOn` (EngineStaticConfig) can be applied through the same
-  config-file route.
-- Open: parameter semantics + what makes weather visible (scene/time); `environment.json` /
-  `playerEnvironment.json` decode; volumetricCloud asset absent in this install (non-fatal).
+| Run | Config | Screenshot | Frame mean | fps (t=18 s) |
+|---|---|---|---|---|
+| `p5b_tier1b` | tier 1 | `p5b_tier1b.png` | `#B7B09C` | **562** |
+| `p5b_tier9b` | tier 9 | `p5b_tier9b.png` | `#B1AD9E`, large local deltas (dark regions: near foliage/shadows rendered) | **369** |
+
+Tier 9 costs ~**−34 % fps** here and changes whole regions → culling/LOD/post differences
+are real at a vista pose. Per-LOD-option isolation still open (P5 remainder).
+
+## 4c. Weather/day-night (P4) — API + map data decoded, effect open
+
+**Engine APIs** (`KGEngineCLR`): `EnableDynamicWeather(int)`, `IsEnableDynamicWeather(ref int)`,
+`Set/GetDynamicWeatherParameters(12 floats)`. Config keys applicable through the file route:
+`bEnableDayNightCycle` (cfg +0x2f0), `bEnableDynamicEnvironment` (+0x2f4),
+`bEnableIndirectLightVolume` (+0x2f8), `bShowTrueSky` (+0x50), `bWeatherOn` (EngineStaticConfig).
+
+**Map data decoded** (loose extracts under `C:\jx3tmp`; summary:
+`proof/render/environment_summary.txt`): every map ships **quality variants** of the
+environment, not just meshes:
+
+| Variant | Keys | Notable values |
+|---|---|---|
+| HD root `environment.json` (龙门寻宝) | 31 | **`enableDayNightCycle=1`**, `lightSource=0`, `sunlight.diffuseIntensity=6.0`, `moonlight.diffuseIntensity=0.37`, `speedTreeEnv` wind/LOD, `oldSkyWeather` (rain/snow particles: density/speed/alpha/splash, `stainForDyWeather.dds`), `cloudList`, `farMountainList`, `lensflares` (sun+moon) |
+| `bd/environment.json` | 35 | day-night off, adds `enableGameTimeAffectLights`, `preferedGameTime`, `enableEnergyCompensation`, `sceneSupplementaryLightMgr` (2 authored lights) |
+| `low/environment.json` | 22 | day-night off, `enableCovermap=1`, `enableWssm`, sunlight 2.0 (vs 6.0), different sky/weather/lensflare set |
+| `playerEnvironment.json` | 4 | `applySetIndex` + `set0`/`set1` player+camera light rigs (diffuse/ambient/sky intensities, camera light radius/length), `playerEnvProbe` dds paths |
+
+**Tests:** `RC_WEATHER=1` (run D) is pixel-identical to tier 1 → `EnableDynamicWeather` with
+default params is a no-op at this pose. `RC_OPT_bEnableDayNightCycle=1` on tier 1
+(`p4_daynight_*`) shifts 4 of 16 cells by 1–2 units vs tier 1 and does **not** evolve over
+8→19 s → subtle at most; the HD env authors day-night, so the gate is likely the engine
+option + game-time source. Open: 12-float param semantics, time-of-day source,
+`bShowTrueSky` (KG3D_TrueSkyX64.dll absent from the editor install — likely no-op here),
+volumetricCloud asset absent (non-fatal).
 
 ## 5. Open items
 
@@ -144,8 +178,13 @@ shot at t=15 s. Screenshots in `proof/render/runs/`; logs `bin64\reborn_out\rebo
    a config-file round-trip.
 3. `configHttpFile.ini` (224 keys): its name is **not** present in the MovieEditor adapter
    binary (xref negative) — role still unknown; `Init3DEngine` passes it as an argument.
-4. Caps probe first cut done visually (§4b); device-row overrides (P1.3) and
-   `environment.json` decode + weather param semantics (P4) remain.
+4. Caps probe done for 6 options at the house pose (§4b); remaining: foliage options at a
+   foliage-rich pose, per-LOD-option isolation (P5), weather param semantics + game-time
+   source (P4).
+5. `GpuSwitchOptionTab.tab` consumer: its header column names (`bEnableGpuCullDynamic`,
+   `GpuSwitch`) appear in **no** install binary → consumer is external (launcher/device
+   tooling), same boundary as the preset-file selection writer (§2.1). Re-open if a
+   launcher binary becomes available locally.
 
 ## Reproduce
 
@@ -180,4 +219,8 @@ shot at t=15 s. Screenshots in `proof/render/runs/`; logs `bin64\reborn_out\rebo
 | `GpuSwitchOptionTab.tab` consumer | LOW / open | string absent from the whole install |
 | Runtime apply via `SetEngineOptionFromConfigFile` | HIGH | reflection dump + runs A/B/C (§4b), logs cited |
 | Per-option `RC_OPT_*` merge effective | HIGH | run C vs B fingerprints |
-| Weather toggle API exists, no visible effect w/ defaults | MED | run D pixel-identical; params semantics open |
+| Isolated caps matrix (bloom effective; AO/SSR/shadow/density no-op at pose; 999 clamps to 100) | HIGH | clean reruns in §4b (`proof/render/logs/p2_*`) |
+| Tier fps gap at vista pose (−34 %) | MED | single pose, one run each; concurrent agents can skew fps |
+| Environment quality variants (bd/low differ; HD day-night authored) | HIGH | `environment_summary.txt`, 15 extracted files |
+| Weather/day-night visible effect | LOW / open | toggle runs pixel-stable; params/time source unresolved |
+| `GpuSwitchOptionTab` consumer external | MED | header column names absent from the whole install |

@@ -1,0 +1,77 @@
+23:40:17.764 build=reborn_client_renderopts.exe 2026-10-04 23:09:45 git=0167e21 dirty=3 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=joystick)
+23:40:17.764 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+23:40:17.764 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+23:40:18.276 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_renderopts.memory ms=(16,0,437)
+23:40:42.603 Init3DEngine=1 err=1 ms=24328
+23:40:42.607 VideoOptions: RC_QUALITY=1 -> C:\SeasunGame\Game\JX3\bin\zhcn_hd\config\config_1_zuijian.ini
+23:40:42.609 VideoOptions: merged 1 override(s) -> C:\SeasunGame\MovieEditor\bin64\reborn_out\renderopts_234042.ini
+23:40:42.610 VideoOptions: SetEngineOptionFromConfigFile=0 file=C:\SeasunGame\MovieEditor\bin64\reborn_out\renderopts_234042.ini
+23:40:42.647 editor.Init result=0
+23:40:44.278 LoadMap result=0 ms=1640
+23:40:44.509 winId=67832434
+23:40:44.510 clr m_pScene=0x11F53FA08 unmapped exec=0
+23:40:44.511 clr scene.vt=0x7FFD80F1F278 KG_EngineEditorX64.dll+0x6F278
+23:40:44.511 clr scene: obj=000000011F53FA08 vt=00007FFD80F1F278 48=00007FFD80EED5F0(0) 50=00007FFD80EED710(0) 58=00007FFD80EED7E0(0) 60=00007FFD80EED810(0)
+23:40:44.511 clr sceneCam=0x137362FC8 unmapped exec=0
+23:40:44.512 clr cam: obj=0000000137362FC8 vt=00007FFD80F21FA8 48=00007FFD80F003A0(0) 50=00007FFD80F003E0(0) 58=00007FFD80F00440(0) 60=00007FFD80F004A0(0)
+23:40:44.512 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+23:40:44.514 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400)
+23:40:45.143 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_foliage_collision.bin structures=龙门寻宝_structure_collision.bin
+23:40:45.145 EngineRay: exports ok, waiting for engine/scene
+23:40:45.146 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+23:40:45.147 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=0000000137362FC8 vt=00007FFD80F21FA8 48=00007FFD80F003A0(0) 50=00007FFD80F003E0(0) 58=00007FFD80F00440(0) 60=00007FFD80F004A0(0) d6=seed slot=0x00007FFC215ABBD0 value=0x392E0BFA0428F080
+23:40:45.151 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+23:40:45.151 ad habit: strafe (RC_ADHABIT=strafe|turn)
+23:40:45.224 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp4\电信区\乾坤一掷\哈没想到吧\custom.dat
+23:40:45.226 CameraSettings: mapId=296 sceneInit=1 yaw=0.646647 pitch=-1.555 max=2000 drag=1.00/1.00 eyeScale=0.90
+23:40:45.226 CameraSettings: operationMode=joystick perModeFollow classic=0 joystick=0
+23:40:45.226 CameraSettings extra: mode=0 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+23:40:45.227 opmode applied: op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+23:40:45.227 CameraSystem ready: mode=character dist=2000u height=200u units/m=100 op=joystick
+23:40:45.227 view angle factor=1
+23:40:45.228 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+23:40:45.228 view angle factor applied=1.250002
+23:40:45.540 spawn=(18991,962,33853) view=(0.00,1.00)
+23:40:46.212 player handle=5096980904
+23:40:46.213 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:40:46.740 target ui: RC_UI_ROOT not set - target HUD art disabled
+23:40:46.746 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=5096978664 at (18991,961,34253)
+23:40:46.747 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+23:40:46.747 target dummy ani -> 0
+23:40:46.747 camera yaw init=-1.571 (view dir 0.00,1.00)
+23:40:46.750 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+23:40:46.751 hotkeys: context=''
+23:40:46.751 hotkey MOVEFORWARD = W / Up
+23:40:46.752 hotkey MOVEBACKWARD = S / Down
+23:40:46.752 hotkey STRAFELEFT = A
+23:40:46.752 hotkey STRAFERIGHT = D
+23:40:46.752 hotkey TURNLEFT =  / Left
+23:40:46.752 hotkey TURNRIGHT =  / Right
+23:40:46.752 hotkey JUMP = Space
+23:40:46.753 hotkey TOGGLERUN = Num/
+23:40:46.753 hotkey TOGGLEAUTORUN = G / NumLock
+23:40:46.756 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+23:40:46.757 camera init applied mapId=296 yaw=0.647 gamePitch=-1.555 modelPitch=1.555
+23:40:46.758 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+23:40:46.813 EngineRay: ready scene=0x101844B00 terrain+950=0x61FAF4C0 terrain+A28=0x0 vtB8=True space=0x101E24598 spaceRay=True entity=0x11FF8D048 entityRay=True entCount=10 guardCell=0x3EC139F0
+23:40:46.828 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:40:48.269 camBind rc=0 pos=(18999.9,1838.5,33859.7) cam=0000000101844B00 posOff=0x9E0 bound=1
+23:40:48.270 camObjDump: obj=0000000101844B00 vt=00007FFC20A15598 48=00007FFC1F1C3870(1) 50=00007FFC1F1C3A40(1) 58=00007FFC1F1E8810(1) 60=00007FFC1F1C3C70(1)
+23:40:48.270 slot50: slot50=00007FFC1F1C3A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+23:40:48.270 slot58: slot58=00007FFC1F1E8810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+23:40:48.271 slot60: slot60=00007FFC1F1C3C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+23:40:48.271 slot68: slot68=00007FFC1F1C3D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+23:40:48.760 t=2s fps=372 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=29 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:40:50.760 t=4s fps=480 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=59 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:40:52.761 t=6s fps=496 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=90 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:40:54.819 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_8000ms.png
+23:40:54.823 t=8s fps=496 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=120 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:40:56.823 t=10s fps=503 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=150 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:40:58.824 t=12s fps=466 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=180 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:41:00.824 t=14s fps=444 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=210 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:41:01.828 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_01_15000ms.png
+23:41:02.826 t=16s fps=382 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=240 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:41:04.824 t=18s fps=431 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=270 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:41:05.821 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_02_19000ms.png
+23:41:06.826 t=20s fps=416 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=300 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 clip=f1b01ty普通待机01.ani
+23:41:08.762 DONE
