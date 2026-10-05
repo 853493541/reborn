@@ -21,6 +21,11 @@ by this rule.
 
 Work directly in the current checkout on the current branch, as normal.
 
+- **V2 protocol work is mostly static; only milestone boundaries run the client.** Extract
+  layouts/tables from the binaries in batch; do not discover protocol steps with
+  step-by-step live runs.
+- **Real captures only via script** (`tools/netcode/login_driver.py`, `drive_verify.py`,
+  probes): never the user's mouse, never ask the user to log in or click for a test.
 - **Never push to `origin` (any branch) unless the user explicitly asks** — pushing is
   always an explicit request; local commits are fine.
 - Never commit to `main` unless the user explicitly asks.

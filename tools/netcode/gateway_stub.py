@@ -112,6 +112,12 @@ def handle(conn, addr):
                 if proto == 4:
                     conn.sendall(handshake_respond())
                     w("   -> proto2 handshake respond (HANDSHAKE_SUCCESS)")
+                    time.sleep(0.05)
+                    conn.sendall(handshake_respond_v4())
+                    w("   -> proto4 verify respond (pushed)")
+                    time.sleep(0.05)
+                    conn.sendall(role_list())
+                    w("   -> proto9 role list (pushed)")
                 elif proto == 39:
                     conn.sendall(frame(payload))
                     w("   -> proto39 ping echo")
