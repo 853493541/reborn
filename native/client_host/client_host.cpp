@@ -2849,6 +2849,35 @@ int main(void)
                     void* mgr60 = *(void**)((BYTE*)g_repSingleton + 0xB0);
                     if (mgr60 != NULL)
                     {
+                        // Phase D probe: the adapter's manager stores its embedded
+                        // sub-manager at +0x260 (0xF5B2F: [rdi+0x260] = rdi+0x30). Try
+                        // the same on the facade, then the REAL CreateRLScene (which
+                        // creates the RL scene + attaches the engine 3D scene).
+                        if (*(void**)((BYTE*)mgr60 + 0x260) == NULL)
+                        {
+                            *(void**)((BYTE*)mgr60 + 0x260) = (BYTE*)mgr60 + 0x30;
+                            logf("[host] frame60: [mgr+0x260] := mgr+0x30 (probe)");
+                        }
+                        __try
+                        {
+                            typedef long (__fastcall *CreateRLSceneFn)(
+                                unsigned id, unsigned type, unsigned a3, unsigned a4,
+                                unsigned long long a5, const char* mapFile,
+                                unsigned long long a7, const char* sceneName,
+                                unsigned long long a9);
+                            long cs = ((CreateRLSceneFn)
+                                       ((BYTE*)g_repModule + 0xB0B5C0))(
+                                2, 0x10, 0, 0, 0,
+                                "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap",
+                                0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
+                            logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
+                            void* sc = ((void* (__fastcall *)(unsigned))
+                                        ((BYTE*)g_repModule + 0x924B))(2);
+                            logf("[host] frame60: GetRLScene(2) -> %p (3DScene=%p)",
+                                 sc, (sc != NULL) ? *(void**)((BYTE*)sc + 0xF1978) : NULL);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: real CreateRLScene fault"); }
                         // Phase C: manual RL scene creation (CreateRLScene's own
                         // registration steps; its resource-manager lookup
                         // [mgr+0x260] is not available yet - registered deviation):

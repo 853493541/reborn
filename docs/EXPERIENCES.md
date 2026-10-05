@@ -2218,3 +2218,23 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   - CreateHangPet with the fake master throws (VCRUNTIME EH fault) - needs the real
     master/character + the scene's 3D scene.
 - Evidence: host_exe35/36.out.
+
+## 2026-10-04 - Phase D start: real NewExScene creates the RL scene (135MB) + attaches the 3D scene
+
+- The RL scene map is a std::vector<Scene*> (singleton+0x24F40, +0x18/0x20/0x28);
+  GetScene 0x597740 scans by [scene+0xF1970]==id; 0x22E08 -> 0x5977D0 is find/remove.
+- The REAL scene creation lives in CreateRLScene's NewExScene tail (0xB0BA20+):
+  alloc 0x8105850 (~135MB) + ctor (0x1ADCF/0x588F40), then
+  [rlScene+0xF1978] = the engine 3D scene, [rlScene+0xF1970] = id, and scene inits
+  (3D-scene vt[0x298]/vt[0x388], 0x164F(rlScene, mapFileObj, ...)).
+- The map-file object (r14) comes from the resource lookup (0x16A09 -> 0x80D710 ->
+  [mgr+0x260]) and is required by the RL scene init.
+- Probe: the adapter stores its embedded sub-manager at [mgr+0x260] = mgr+0x30
+  (adapter 0xF5B2F); setting the same on the X3DEngine facade did NOT satisfy the
+  lookup (real CreateRLScene still faults at rep+0x80D728 - needs the actual resource
+  manager object, not the facade's embedded field).
+- Host Phase C/D sequence kept: manual engine-scene creation + vector push gives a
+  GetRLScene(2) hit, but that object is the ENGINE scene, not the RL scene (3DScene
+  field garbage) - the char chain faults on it. The proper path is the real
+  CreateRLScene once [mgr+0x260] is real.
+- Evidence: host_exe37.out.
