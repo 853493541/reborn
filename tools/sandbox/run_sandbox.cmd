@@ -1,4 +1,8 @@
 @echo off
+rem The map path below is non-ASCII and this file is UTF-8: switch the console
+rem codepage before cmd parses it, or the path arrives mojibake (cmd reads
+rem batch files in the OEM codepage - 936 here) and LoadMap fails E_FAIL.
+chcp 65001 >nul
 rem Run the mini sandbox map (cropped loose map) in its own feature client.
 rem Build:  set RC_CLIENT_EXE=reborn_client_mini.exe   then   client\build_client.cmd
 rem Map:    python tools\sandbox\build_sandbox.py --crop 2,2,1,1 --name 龙门寻宝_s
