@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
+#include <dbghelp.h>
+#pragma comment(lib, "dbghelp.lib")
 
 static HMODULE g_eng = NULL;
 static HMODULE g_repModule = NULL;
@@ -178,6 +180,20 @@ static void* __fastcall hookLoadFileSrc(const char* path, int flags)
         }
     }
     return ((LoadFileFn)g_lfTramp)(path, flags);
+}
+
+// headless host: never let a modal dialog block the process
+static int WINAPI hookMessageBoxA(HWND h, LPCSTR text, LPCSTR caption, UINT type)
+{
+    logf("[host] MessageBoxA suppressed: '%s' | '%s'",
+         caption ? caption : "", text ? text : "");
+    return 1; // IDOK
+}
+
+static int WINAPI hookMessageBoxW(HWND h, LPCWSTR text, LPCWSTR caption, UINT type)
+{
+    logf("[host] MessageBoxW suppressed");
+    return 1;
 }
 
 static int __cdecl hookPrintfLog(int channel, const char* fmt, ...)
@@ -777,8 +793,16 @@ static DWORD WINAPI logicInitThread(LPVOID param)
     CreateLogicFn cl = (CreateLogicFn)param;
     static unsigned char dummyFactory[0x100];
     memset(dummyFactory, 0, sizeof(dummyFactory));
+    // The module formats paths as "%sbin64\%s" - the base path must end with a
+    // backslash or LoadConvertModule fails and its error MessageBoxA blocks.
     char rootCopy[MAX_PATH];
     strcpy_s(rootCopy, MAX_PATH, g_rootA);
+    size_t rl = strlen(rootCopy);
+    if (rl > 0 && rootCopy[rl - 1] != '\\' && rl + 1 < MAX_PATH)
+    {
+        rootCopy[rl] = '\\';
+        rootCopy[rl + 1] = 0;
+    }
     logf("[host] logic init thread: CreateJX3LogicOperation('%s')", rootCopy);
     __try
     {
@@ -795,6 +819,43 @@ static DWORD WINAPI logicInitThread(LPVOID param)
         g_so3World = world;
     }
     g_logicDone = 1;
+    return 0;
+}
+
+static int isCodeAddr(DWORD64 a, char* out, size_t n)
+{
+    struct { HMODULE m; const char* name; } mods[5] = {
+        { g_eng, "eng" }, { g_repModule, "rep" }, { g_logicModule, "logic" },
+        { g_x3dModule, "x3d" }, { g_luaModule, "lua" },
+    };
+    for (int i = 0; i < 5; i++)
+    {
+        if (mods[i].m == NULL)
+            continue;
+        BYTE* base = (BYTE*)mods[i].m;
+        if (a < (DWORD64)base || a >= (DWORD64)base + 0x8000000)
+            continue;
+        __try
+        {
+            PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)base;
+            PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(base + dos->e_lfanew);
+            PIMAGE_SECTION_HEADER sec = IMAGE_FIRST_SECTION(nt);
+            for (int k = 0; k < nt->FileHeader.NumberOfSections; k++)
+            {
+                DWORD64 lo = (DWORD64)base + sec[k].VirtualAddress;
+                DWORD64 hi = lo + sec[k].Misc.VirtualSize;
+                if (a >= lo && a < hi &&
+                    (sec[k].Characteristics & IMAGE_SCN_MEM_EXECUTE))
+                {
+                    sprintf_s(out, n, "%s+0x%llX", mods[i].name,
+                              (unsigned long long)(a - (DWORD64)base));
+                    return 1;
+                }
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+        return 0;
+    }
     return 0;
 }
 
@@ -1494,6 +1555,18 @@ int main(void)
                             g_logicModule = logic;
                             if (logic != NULL)
                             {
+                                HMODULE u32 = GetModuleHandleA("user32.dll");
+                                if (u32 != NULL)
+                                {
+                                    int m1 = patchIat(logic,
+                                        GetProcAddress(u32, "MessageBoxA"),
+                                        (void*)hookMessageBoxA);
+                                    int m2 = patchIat(logic,
+                                        GetProcAddress(u32, "MessageBoxW"),
+                                        (void*)hookMessageBoxW);
+                                    logf("[host] logic MessageBox IAT patched A=%d W=%d",
+                                         m1, m2);
+                                }
                                 typedef void* (__fastcall *CreateLogicFn)(
                                     const char*, void*, const char*);
                                 CreateLogicFn cl = (CreateLogicFn)GetProcAddress(logic,
@@ -2216,16 +2289,36 @@ int main(void)
                     logf("[host] logic thread rip=%p (%s) rsp=0x%llX rbp=0x%llX",
                          (void*)lctx.Rip, mdesc, (unsigned long long)lctx.Rsp,
                          (unsigned long long)lctx.Rbp);
+                    // proper unwind walk (dbghelp)
+                    STACKFRAME64 sf;
+                    memset(&sf, 0, sizeof(sf));
+                    sf.AddrPC.Offset = lctx.Rip;
+                    sf.AddrPC.Mode = AddrModeFlat;
+                    sf.AddrFrame.Offset = lctx.Rbp;
+                    sf.AddrFrame.Mode = AddrModeFlat;
+                    sf.AddrStack.Offset = lctx.Rsp;
+                    sf.AddrStack.Mode = AddrModeFlat;
                     char desc[64];
+                    for (int i = 0; i < 40; i++)
+                    {
+                        if (!StackWalk64(IMAGE_FILE_MACHINE_AMD64, GetCurrentProcess(),
+                                         g_logicThread, &sf, &lctx, NULL, NULL, NULL,
+                                         NULL))
+                            break;
+                        if (sf.AddrPC.Offset == 0)
+                            break;
+                        describeAddr(sf.AddrPC.Offset, desc, sizeof(desc));
+                        logf("[host]   walk[%d] %s", i, desc);
+                    }
+                    // raw stack scan for executable-section addresses (return addrs)
                     DWORD64* sp = (DWORD64*)lctx.Rsp;
-                    for (int i = 0; i < 256; i++)
+                    for (int i = 0; i < 512; i++)
                     {
                         DWORD64 v = 0;
                         __try { v = sp[i]; }
                         __except (EXCEPTION_EXECUTE_HANDLER) { break; }
-                        describeAddr(v, desc, sizeof(desc));
-                        if (strncmp(desc, "0x", 2) != 0)
-                            logf("[host]   lstack[%d] = %s", i, desc);
+                        if (isCodeAddr(v, desc, sizeof(desc)))
+                            logf("[host]   code[%d] %s", i, desc);
                     }
                 }
                 ResumeThread(g_logicThread);
