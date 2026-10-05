@@ -2296,3 +2296,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   CreateRLScene return paths + check the name/type args.
 - Lesson: two wrong-offset arithmetic slips (0x678D vs 0x788D) caused a bogus
   function pointer; always byte-verify rip-relative lea targets.
+
+## 2026-10-04 - Phase D: KGameWorldHandler::NewScene path traced to the exact blocker (vt[0x70] E_FAIL)
+
+- With the MapConverter manager installed, `real CreateRLScene` (rep+0xB0B5C0,
+  KGameWorldHandler::NewScene) executes its full lookup without faulting but returns
+  edi=0 without registering: the creation path bails earlier.
+- Traced the creation path (0xB0B7CF..0xB0BAE9) and replicated it step by step:
+  lookup (0x16A09) -> NewScene (0x16DB5) -> **3D scene vt[0x70](mapFile,0,type,&pos,0)**
+  (0xB0B990) -> alloc RL scene (0x4494 size 0x8105850 + ctor 0x1ADCF) ->
+  [rlScene+0xF1978]=3D scene, +0xF1974=0, +0xF1970=id -> vt[0x298]/vt[0x388] ->
+  map load 0x164F (rep+0x58D800) -> register 0x1E4E8(singleton+0x24F40, rlScene, id)
+  -> 0x141CD(id, 3Dscene).
+- **Blocker found: `3D scene vt[0x70] -> 0x80004005 (E_FAIL)`** - the real call bails
+  at 0xB0B995 (`jns` not taken -> error path -> return edi=0, no registration).
+  Everything after (RL scene alloc etc.) works when forced (fields set, vt298/vt388
+  fine); the map load 0x164F faults only because the scene was never bound.
+- vt[0x70] is the 3D scene's map-bind method; the scene object's vtable lives in a
+  module at 0x7FFE1E... (not rep/X3DEngine/logic; likely KG3DEngineAdapterX64 or a
+  sibling) - next: identify the module + slot and trace the E_FAIL cause (missing
+  input for the map converter? required prior scene activation?).
+- Evidence: host_exe51-57.out.

@@ -2998,6 +2998,103 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
+                        // probe the two steps CreateRLScene performs, separately:
+                        // 1) the by-name lookup (0x16A09), 2) NewScene (0x16DB5).
+                        __try
+                        {
+                            const char* mapPath60 =
+                                "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap";
+                            unsigned typ60 = *(unsigned*)((BYTE*)g_repSingleton + 0x25BB4);
+                            void* nameRes = ((void* (__fastcall *)(void*, const char*, unsigned))
+                                             ((BYTE*)g_repModule + 0x16A09))(
+                                (BYTE*)g_repSingleton + 0x1A0, mapPath60, typ60);
+                            char nbuf[130];
+                            int ni = 0;
+                            __try
+                            {
+                                for (; ni < 128; ni++)
+                                {
+                                    char c = *((char*)nameRes + ni);
+                                    if (c == 0) break;
+                                    nbuf[ni] = (c >= 32 && c < 127) ? c : '?';
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER) { }
+                            nbuf[ni] = 0;
+                            logf("[host] frame60: lookup type=0x%X -> %p str='%s'",
+                                 typ60, nameRes, nbuf);
+                            if (nameRes != NULL)
+                            {
+                                void* out60 = NULL;
+                                long ns = ((long (__fastcall *)(void*, int, void**))
+                                           ((BYTE*)g_repModule + 0x16DB5))(
+                                    *(void**)((BYTE*)g_repSingleton + 0xB0), 1, &out60);
+                                logf("[host] frame60: NewScene probe -> %ld out=%p",
+                                     ns, out60);
+                                // replicate KGameWorldHandler::NewScene's creation
+                                // path (0xB0BA0D..0xB0BAE9) step by step.
+                                if (out60 != NULL)
+                                {
+                                    void** rsvt = *(void***)out60;
+                                    // the real call's pre-step: 3D scene vt[0x70]
+                                    // (mapFile, 0, type, &pos, 0) - if negative, the
+                                    // real call bails without registering.
+                                    float posbuf[4];
+                                    memset(posbuf, 0, sizeof(posbuf));
+                                    long vr = ((long (__fastcall *)(void*, const char*,
+                                                        unsigned, unsigned, void*, void*))
+                                               rsvt[0x70 / 8])(out60, mapPath60, 0,
+                                                               typ60, posbuf, NULL);
+                                    logf("[host] frame60: 3D scene vt[0x70] -> %ld (vt=%p slot70=%p slot360=%p)",
+                                         vr, rsvt, rsvt[0x70 / 8], rsvt[0x360 / 8]);
+                                    ((void (__fastcall *)(void*, unsigned))
+                                     rsvt[0x360 / 8])(out60, 2);
+                                    void* rlScene = ((void* (__fastcall *)(unsigned,
+                                                         const char*))
+                                                     ((BYTE*)g_repModule + 0x4494))(
+                                        0x8105850, "NewExScene");
+                                    if (rlScene != NULL)
+                                        rlScene = ((void* (__fastcall *)(void*))
+                                                   ((BYTE*)g_repModule + 0x1ADCF))(rlScene);
+                                    logf("[host] frame60: RL scene alloc -> %p", rlScene);
+                                    if (rlScene != NULL)
+                                    {
+                                        *(void**)((BYTE*)rlScene + 0xF1978) = out60;
+                                        *(unsigned*)((BYTE*)rlScene + 0xF1974) = 0;
+                                        *(unsigned*)((BYTE*)rlScene + 0xF1970) = 2;
+                                        logf("[host] frame60: fields set");
+                                        ((void (__fastcall *)(void*, unsigned))
+                                         rsvt[0x298 / 8])(out60,
+                                            *(unsigned*)((BYTE*)g_repSingleton + 0x10));
+                                        logf("[host] frame60: vt298 done");
+                                        ((void (__fastcall *)(void*))
+                                         rsvt[0x388 / 8])(out60);
+                                        logf("[host] frame60: vt388 done");
+                                        long ml = ((long (__fastcall *)(void*,
+                                                            const char*, void*))
+                                                   ((BYTE*)g_repModule + 0x164F))(
+                                            rlScene, mapPath60, NULL);
+                                        logf("[host] frame60: map load -> %ld", ml);
+                                        if (ml != 0)
+                                        {
+                                            ((void (__fastcall *)(void*, void*, unsigned))
+                                             ((BYTE*)g_repModule + 0x1E4E8))(
+                                                (BYTE*)g_repSingleton + 0x24F40,
+                                                rlScene, 2);
+                                            *(unsigned*)((BYTE*)g_repSingleton + 0x24F48) = 0;
+                                            ((long (__fastcall *)(unsigned, void*))
+                                             ((BYTE*)g_repModule + 0x141CD))(2, out60);
+                                            void* chk = ((void* (__fastcall *)(unsigned))
+                                                         ((BYTE*)g_repModule + 0x924B))(2);
+                                            logf("[host] frame60: registered -> GetRLScene(2)=%p",
+                                                 chk);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: lookup/NewScene probe fault"); }
                         __try
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
