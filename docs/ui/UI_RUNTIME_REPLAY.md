@@ -50,10 +50,27 @@ the runtime mutations as data the viewer consumes:
   environment to `_G` afterwards (the wrapper must capture `getfenv`/`setmetatable`/`_G` as upvalues —
   `module` re-setfenv's its caller). Without this, every module script failed on its first global.
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
-  `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`.
-  Verified 2026-10-04: **78/122 scripts replay OK**, 44 partial (most with dozens–hundreds of
-  recorded mutations: BigBagPanel 793, Player 179, TopMenu 106, MailPanel 101, SocialPanel 92,
-  MainBarPanel 89 ...). Remaining errors are stub-tuning (data-object shapes).
+  `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
+  `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
+  Verified 2026-10-04 (rechecked): **79/122 scripts replay OK**, 43 partial (most with recorded
+  mutations; 3,265 mutations total). By tier — T-A (liked+recommended, 59 scripted): 35 OK /
+  23 partial / 1 no-entry; T-B (27): 18 / 7 / 2; T-C (36): 26 / 10 / 0. Top recordings:
+  BigBagPanel 793, Player 179, TopMenu 106, MailPanel 101, SoundSettingPanel 93, MiniMap 92,
+  SocialPanel 91, MainBarPanel 89. Remaining errors are stub-tuning (data-object shapes); the
+  no-entry windows (Balloon/TradingSure/UISetting) have no standard init hook.
+
+## Completion recheck (2026-10-04)
+
+| layer | state | evidence |
+|---|---|---|
+| A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
+| B — script replay | **input side ~65%** (79/122 full, 43 partial; 3,265 mutations); **viewer consumption 0%** | `replay_summary.tsv`; viewer still renders hand overrides |
+| C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
+
+**Verdict:** the replay *system* (VM + shim + batch) is proven, but the display has not changed yet —
+the missing piece is the viewer consuming `Data/runtime_state/<stem>.tsv` (SetSize/SetRelPos/Show/
+Hide/SetFrame/Check/SetText per section) in place of the hand-written overrides. That is the next
+work item; stub-tuning the 43 partial scripts continues alongside.
 
 **Layer C — conformance gate + status dashboard.** The existing `--status` scan plus a construct
 census; a window render is "conformant" when it uses no unimplemented construct and its runtime
@@ -65,7 +82,7 @@ state is either replayed (script) or flagged (`runtime-hosts=N`).
 2. ~~AnchorDst=client basis~~ (done; client ≡ window rect for standalone renders).
 3. ~~Script execution path~~ (done: PUC Lua 5.1.5 32-bit built from source runs the original
    bytecode; `tools/ui/replay_harness.lua` replays `OnFrameCreate` and records mutations).
-4. ~~Batch replay~~ (done: `tools/ui/replay_all.py`, 78/122 OK + 44 partial). Next: make the viewer
+4. ~~Batch replay~~ (done: `tools/ui/replay_all.py`, 79/122 OK + 43 partial). Next: make the viewer
    consume `Data/runtime_state/<stem>.tsv` instead of hand overrides, and keep stub-tuning the
    remaining partial scripts.
 5. KGUI conformance pass in census order: page sets, list/tree controls, PosType 3/4/5,
@@ -90,5 +107,5 @@ ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0
 `KGUIX64.dll` RVA 0x117D7C); script replay HIGH (original bytecode runs; 78/122 scripts replay OK,
 44 partial); shim completeness MED (stub tuning in progress).
 
-Last verified: 2026-10-04 (`--selftest` 1240/0/0; census over 1,240 INIs; batch replay 78 OK /
-44 partial of 122 scripted windows).
+Last verified: 2026-10-04 (`--selftest` 1240/0/0; census over 1,240 INIs — 14 unhandled variants;
+batch replay rechecked 79 OK / 43 partial of 122 scripted windows, 3,265 mutations).

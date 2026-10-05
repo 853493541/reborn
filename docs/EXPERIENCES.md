@@ -1773,6 +1773,18 @@ solved it, and what is still open. **Newest at the bottom.**
   44 partial scripts (data-object shapes).
 - Verified: replay_all 78 OK / 44 partial; --selftest 1240/0/0 (viewer unchanged).
 
+### 2026-10-04 ? UI ? system completion recheck: 79/122 replay OK, viewer consumption still missing
+- Re-ran the gates: census 14 unhandled variants (unchanged), batch replay with an extended entry
+  chain (OnFrameCreate -> OnLoad -> OnCreate -> Init -> OnOpen) -> **79 OK / 43 partial** of 122
+  scripted windows, 3,265 mutations total; no-entry down to 3 (Balloon/TradingSure/UISetting).
+- Tier coverage (scripted windows): T-A (liked+recommended, 59) = 35 OK / 23 partial / 1 no-entry;
+  T-B (27) = 18/7/2; T-C (36) = 26/10/0. Top recordings: BigBagPanel 793, Player 179, TopMenu 106,
+  MailPanel 101, SoundSettingPanel 93, MiniMap 92, SocialPanel 91, MainBarPanel 89.
+- Verdict recorded in UI_RUNTIME_REPLAY.md: the replay system (VM + shim + batch) is proven, but the
+  display has not changed yet - the missing piece is the viewer consuming Data/runtime_state/*.tsv
+  instead of hand overrides. Layer A (KGUI conformance) not started beyond the ImageType/anchor fixes.
+- Verified: replay_all 79 OK / 43 partial; --selftest 1240/0/0; git clean at 975947f + this change.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

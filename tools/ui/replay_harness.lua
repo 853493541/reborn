@@ -283,14 +283,18 @@ local handler = function(e)
   return tostring(e) .. "\n" .. debug.traceback("", 2)
 end
 local ok2, err2 = true, nil
-if type(mod.OnFrameCreate) == "function" then
-  ok2, err2 = xpcall(function() return mod.OnFrameCreate(root) end, handler)
-elseif type(mod.OnLoad) == "function" then
-  ok2, err2 = xpcall(function() return mod.OnLoad(root) end, handler)
-else
+local entry = nil
+for _, name in ipairs({ "OnFrameCreate", "OnLoad", "OnCreate", "Init", "OnOpen" }) do
+  if type(mod[name]) == "function" then
+    entry = name
+    break
+  end
+end
+if entry == nil then
   print("RESULT ERR no-entry")
   os.exit(5)
 end
+ok2, err2 = xpcall(function() return mod[entry](root) end, handler)
 
 local out = assert(io.open(outPath, "w"))
 out:write("section\tmethod\targs\n")
