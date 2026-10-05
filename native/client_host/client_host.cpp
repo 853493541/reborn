@@ -261,8 +261,29 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
 {
     if (ep->ExceptionRecord->ExceptionCode == 0xC0000005 ||
         ep->ExceptionRecord->ExceptionCode == 0xC0000409)
-        logf("[VEH] exc=0x%08X at=%p", ep->ExceptionRecord->ExceptionCode,
-             ep->ExceptionRecord->ExceptionAddress);
+    {
+        HMODULE m = NULL;
+        wchar_t path[MAX_PATH] = { 0 };
+        const wchar_t* base = L"?";
+        if (GetModuleHandleExW(4 /*FROM_ADDRESS*/,
+                               (LPCWSTR)ep->ExceptionRecord->ExceptionAddress,
+                               &m) && m != NULL)
+        {
+            GetModuleFileNameW(m, path, MAX_PATH);
+            const wchar_t* slash = wcsrchr(path, L'\\');
+            if (slash != NULL) base = slash + 1;
+            logf("[VEH] exc=0x%08X at=%p in %ls+0x%llX",
+                 ep->ExceptionRecord->ExceptionCode,
+                 ep->ExceptionRecord->ExceptionAddress, base,
+                 (unsigned long long)((DWORD64)ep->ExceptionRecord->ExceptionAddress -
+                                      (DWORD64)m));
+        }
+        else
+        {
+            logf("[VEH] exc=0x%08X at=%p (module?)", ep->ExceptionRecord->ExceptionCode,
+                 ep->ExceptionRecord->ExceptionAddress);
+        }
+    }
     else if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP &&
              g_flagWatchArmed && g_flagWatchHit < 10)
     {
@@ -1462,14 +1483,19 @@ int main(void)
                                 logf("[host] GetUnit('%s') vt2 -> %p", idStr, u2);
                                 if (u2 != NULL)
                                 {
-                                    void** uvt = *(void***)u2;
-                                    logf("[host] unit vtable=%p (rep+0x%llX)",
-                                         uvt, (unsigned long long)
-                                         ((BYTE*)uvt - (BYTE*)rep));
-                                    for (int k = 0; k < 6; k++)
-                                        logf("[host]   unit vt[%d] = rep+0x%llX", k,
-                                             (unsigned long long)
-                                             ((BYTE*)uvt[k] - (BYTE*)rep));
+                                    unsigned char* ub = (unsigned char*)u2;
+                                    logf("[host] unit bytes: %02X %02X %02X %02X %02X %02X %02X %02X | %02X %02X %02X %02X %02X %02X %02X %02X",
+                                         ub[0], ub[1], ub[2], ub[3], ub[4], ub[5], ub[6], ub[7],
+                                         ub[8], ub[9], ub[10], ub[11], ub[12], ub[13], ub[14], ub[15]);
+                                    DWORD64 first = *(DWORD64*)ub;
+                                    // KGRL unit files/structs start with the magic "RL00"
+                                    // (bytes 52 4C 30 30) + version - they are data, not
+                                    // C++ objects with a vtable.
+                                    if ((*(DWORD*)ub) == 0x30304C52)
+                                        logf("[host] unit magic='RL00' ver=%u (KGRL data struct)",
+                                             *(unsigned*)(ub + 4));
+                                    else
+                                        logf("[host] unit first qword=0x%llX", first);
                                 }
                             }
                         }

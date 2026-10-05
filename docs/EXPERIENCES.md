@@ -1890,3 +1890,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   the specific missing init; or (b) switch to MovieEditor's `KGRepresentHelper::
   GetPlayerModel`/`InitPlayerModel` (RL model-proxy path, no master).
 - Evidence: host_char_rl17.out, image_stats on host_char_rl17.png vs host_char_rl16.png.
+
+## 2026-10-04 — PLAYER UNIT FOUND: GetUnit('F1') returns a valid KGRL unit via the RL loader
+
+- Host unit probe (fixed): `GetRepresentIDFromPath("F1.mdl") -> 1 id='F1'`;
+  `GetUnit('F1') -> 1 unit=0x...` (vt[1] and vt[2] both non-null). The unit starts with
+  magic "RL00" + version 1 (bytes 52 4C 30 30 01 00 00 00) - a KGRL data struct, not a
+  vtable object (the earlier "unit vtable" fault was a host logging bug reading the magic
+  as a pointer; guard fixed to detect "RL00").
+- Full KGRLLoader vtable mapped (19 slots): [0] 0x3F9C20, [1] 0x3F4E50 GetUnit,
+  [2] 0x3F4EF0 GetUnit, [3] 0x3F5540, [4] 0x3F9D60 ReleaseUnit, [5] 0x3F9EF0,
+  [6] 0x3F5620 LoadPlayerAllModel, [7] 0x3F4870 GetEquipmentScale, [8] 0x3F5420,
+  [9] 0x3F4540, [10] 0x3F49F0, [11] 0x3F4680, [12] 0x3F4790, [13] 0x3F4E40,
+  [14] 0x3F44A0, [15] 0x3F4C60 GetRepresentIDFromPath, [16] 0x3F51C0 GetUnitFromPath,
+  [17] 0x3F9940 LoadUnitFromFile, [18] 0x3FA100.
+- VEH handler now logs the faulting module+offset (`GetModuleHandleExW(FROM_ADDRESS)`);
+  the CreateHangPet fault is VCRUNTIME140+0x17B0 = an internal C++ exception-unwind helper,
+  i.e. game code THREW during Init (secondary fault in EH), not a raw null deref.
+- Remaining: turn the KGRL unit into a rendered RL actor/model - the MovieEditor's
+  `KGRepresentHelper::GetUnitModel` + `KGSceneCLR::AddRepresentModel` path (its native
+  code in MovieEngineCLR.dll) is the working reference.
+- Evidence: host_char_rl19.out, rl_slots.txt, image/VT maps.
