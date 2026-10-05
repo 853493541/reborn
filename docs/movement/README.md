@@ -17,6 +17,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `REAL_CLIENT_MAP_COLLISION.md` | Real client map collision — recon + working host probe |
 | `REBORN_JUMP_FALL_SPEC.md` | REBORN — JX3 jump & fall reproduction spec |
 | `STRUCTURE_COLLISION_RESEARCH.md` | Structure collision research — how the game handles houses/walls |
+| `TERRAIN_REGION_STREAMING.md` | Terrain region streaming — border-load audit, bounded LRU region cache (`RC_TERR_CACHE`), hole A/B status (2026-10-04) |
 
 ## Tools
 

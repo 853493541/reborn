@@ -24,7 +24,7 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Terrain slope model (`ProcessDropSpeed`: cell slope projection, `Vz=0` air-stop) | **[MISSING]** | host snaps onto any rise (see 4., over-permissive) |
 | R32 detail heights | **[MISSING] (not needed)** | BCH is authoritative; R32 relation unresolved (§7.6) |
 | Terrain normals/materials | **[MISSING]** | not exposed by the sampler |
-| Streaming | **[PART]** | engine streams; sampler caches 1 region; spawn warmup handles region lag |
+| Streaming | **[PART - cache 2026-10-04]** | engine streams; sampler keeps a bounded LRU of regions (`RC_TERR_CACHE`, default 4) — kills border ping-pong reloads (16-85 loads/17 s -> 3, 0 per crossing), `docs/movement/TERRAIN_REGION_STREAMING.md`; spawn warmup handles region lag |
 
 ## 2. Static world (structures, bake)
 

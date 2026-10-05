@@ -3877,3 +3877,43 @@ work into main without M2 entanglement.
 - Clients relaunched: canonical `reborn_client.exe` (title Main-Full-Client)
   and sandbox `reborn_client_control_modes.exe` (title sandbox-control_modes).
 - Local only: nothing pushed to origin.
+
+### 2026-10-04 - Movement/terrain - region streaming: bounded LRU cache (1.3)
+
+- Did: measured terrain region loads at a map-region border on 龙门寻宝 with a new
+  test-only cross-back harness (`RC_CROSS_BACK`, reverses at t=10.5 s) and per-load
+  telemetry. The single region slot ping-ponged between adjacent regions - 16 loads
+  in a 17 s crossing run (cap=1 control: 85) - because the player ground query, the
+  camera ray march and the camera ground clamp sample opposite sides of the border
+  every frame. Replaced the slot with a bounded LRU (`RC_TERR_CACHE`, default 4;
+  each entry = height grid + hole mask). The cap=1 control exposed a self-eviction
+  bug (fresh entry added with LastUse=0 evicted itself -> AV 0xC0000005); fixed by
+  marking it MRU before the eviction pass.
+- Evidence: `docs/movement/TERRAIN_REGION_STREAMING.md`; logs
+  `reborn_20261004_223128.log` (16 loads), `223600.log` (cap=1, 85 loads),
+  `223711.log` (cap=4, 3 loads, 0 during crossings); commits `ce9d1b6`, `c32f095`.
+- Outcome: solved - 0.2-5.0 ms per load (no frame-scale hitch); the defect was
+  frequency. Hole (0,0) A/B re-PASS 234/234 on the cache build; collision selftest
+  36/36; gravity `verify_model` PASS. Region (1,1) `.hlb` has 0 hole cells; broader
+  hole A/B needs more `.hlb` extraction.
+
+### 2026-10-04 - Crash triage - 海岛绝境 void-spawn AV (pre-existing, new site)
+
+**Problem:** collecting a second hole A/B region on 海岛绝境, spawn over the hole
+region at altitude (`RC_SPAWN=-25600,1000,-25600 RC_SPAWN_Y=1`) crashed ~3 s in.
+**Tried:** `tools/camera/minidump_exc.py` on the dump: AV 0xC0000005 at
+`KG3DEngineDX11EX64.dll+0x12282B3` (engine render stack), shim `d6=seed` loaded - a
+new site, not the documented D6 `+0x11D03B6`. The same scenario on clean main
+(`reborn_client.exe`, `aad94d8`) crashes at the identical address; solid-ground
+spawn on the same map exits clean (`DONE`, `reborn_20261004_225645.log`).
+**Outcome:** pre-existing on main; not caused by the terrain region cache (no host
+frame from the sampler in the crash stack).
+**Why:** scenario-specific - spawn above a hole region at altitude / bottomless fall.
+Dumps: `%LOCALAPPDATA%\CrashDumps\reborn_client_terrainstream.exe.52348.dmp` and
+`reborn_client.exe.37100.dmp`; crash log `reborn_20261004_224645.log`.
+**Re-open criteria:** a void-fall session - repro at y=1000 over a hole; compare the
+spawn-at-altitude path with the historical walk-in hole-fall run
+(`proof/collision/client_holes/hole_fall_*`, 2026-09-29); dump the engine side only
+if the cache/host frames appear.
+**Links:** `docs/movement/TERRAIN_REGION_STREAMING.md` §5; crash site
+`KG3DEngineDX11EX64+0x12282B3`.
