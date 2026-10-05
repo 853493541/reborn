@@ -2013,3 +2013,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Host is stable with RC_HOST_LOGIC=1 (async init, frame loop completes).
 - Next: hook the logic module's LoadConvertModule (0x112FC0) / the represent load step
   to see the exact blocking call, or bypass that step.
+
+## 2026-10-04 - PHASE A BREAKTHROUGH: the wedge was a modal MessageBox (malformed base path)
+
+- Root cause of the CreateJX3LogicOperation wedge: the module formats paths as
+  "%sbin64\%s" - our base path lacked the trailing backslash, so
+  LoadConvertModule(JX3RepresentX64.dll) failed and its error path called **MessageBoxA**
+  (identified via the IAT slot 0x765CE0), which blocks forever in a headless host.
+- Fixes (host): base path passed with a trailing backslash; MessageBoxA/W IAT-patched in
+  the logic module (suppressed + logged).
+- Result: the logic init runs: **g_pSO3World created** (non-null, written into
+  represent singleton+0x100 at frame60), its RL loader streams the player tables
+  ([rl-bin-tab] Represent/player/equip/...), PB/event tables init, then the thread
+  faults in a represent std::map destructor (rep+0x3FB265) called from
+  KGJX3LogicOperation::Init (logic+0x8B880) - a cleanup crash after a partial init
+  (g_pRLLoader still 0).
+- Stack-dump tooling in host: dbghelp StackWalk64 + executable-section filter
+  (isCodeAddr) + per-frame thread dump; VEH logs faulting module+offset.
+- Next: identify the failing sub-init that triggers the destructor cleanup (or guard the
+  destructor) so the logic init returns 1; then Phase B (full Param).
