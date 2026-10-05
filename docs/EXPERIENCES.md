@@ -2197,3 +2197,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   used as the Param's p3DEngineManager); or create the adapter's 0x4C0 manager via
   0xE6300 and pass it.
 - Evidence: host_exe30-33.out.
+
+## 2026-10-04 - Phase C: RL scene created AND registered in the singleton scene vector
+
+- Decoded the scene map: a std::vector<Scene*> at singleton+0x24F40 (+0x18 begin,
+  +0x20 end, +0x28 cap); GetScene (0x597740) scans it comparing [scene+0xF1970]==id;
+  0x22E08 -> 0x5977D0 is the find/remove path (not the insert).
+- Host Phase C sequence (frame60, after the successful Init):
+  1. `0x22E08(map, 2)` (stale-slot op),
+  2. `0x16DB5(mgr, 1, &scene)` -> engine scene created,
+  3. `[scene+0xF1970] = 2`,
+  4. push the scene pointer into the vector (host-side vector push incl. growth),
+  5. `GetRLScene(2) -> scene` **non-null** (verified).
+- Remaining gaps for a visible character:
+  - `[scene+0xF1978]` (m_p3DScene) = 0 - the RL scene has no engine 3D scene attached
+    (the game sets it via the map-file resource; the CreateRLScene resource-manager
+    lookup [mgr+0x260] is the same gate).
+  - `[world+0xF29E8]` (local player) = 0 and `local character (0x58CE20)` = 0 - the
+    local player is created by the game's logic world.
+  - CreateHangPet with the fake master throws (VCRUNTIME EH fault) - needs the real
+    master/character + the scene's 3D scene.
+- Evidence: host_exe35/36.out.

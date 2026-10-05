@@ -2116,6 +2116,26 @@ int main(void)
                                     logf("[host] Init probe: [mgr+0x260]=%p [mgr+0x10]=%p",
                                          *(void**)((BYTE*)mgr + 0x260),
                                          *(void**)((BYTE*)mgr + 0x10));
+                                    // the rep reads [mgr+0x260] directly; the facade
+                                    // forwards vt calls to [mgr+0x10] - if the inner
+                                    // object carries +0x260, use it as the Param manager.
+                                    void* inner = *(void**)((BYTE*)mgr + 0x10);
+                                    if (inner != NULL)
+                                    {
+                                        __try
+                                        {
+                                            void* in260 = *(void**)((BYTE*)inner + 0x260);
+                                            logf("[host] mgr inner=%p [inner+0x260]=%p",
+                                                 inner, in260);
+                                            if (in260 != NULL)
+                                            {
+                                                g_ifMgr = inner;
+                                                logf("[host] Init probe: using inner as p3DEngineManager");
+                                            }
+                                        }
+                                        __except (EXCEPTION_EXECUTE_HANDLER)
+                                        { logf("[host] inner+0x260 read fault"); }
+                                    }
                                     // The represent's map-file lookup (0x16A09 ->
                                     // 0x80D710) resolves names through [mgr+0x260]
                                     // (a file/resource bundle). The facade exposes
@@ -2592,80 +2612,12 @@ int main(void)
                         {
                             // CreateRLScene (0xB0B5C0) is the game's full scene
                             // creation but it requires the full represent Init
-                            // (singleton+0x100 m_pSO3World etc.) - it faults here.
-                            // Own SEH so the fallback + chain probe still run.
-                            __try
-                            {
-                                typedef long (__fastcall *CreateRLSceneFn)(
-                                    unsigned id, unsigned type, unsigned a3, unsigned a4,
-                                    unsigned long long a5, const char* mapFile,
-                                    unsigned long long a7, const char* sceneName,
-                                    unsigned long long a9);
-                                long cs = ((CreateRLSceneFn)
-                                           ((BYTE*)g_repModule + 0xB0B5C0))(
-                                    2, 0x10, 0, 0, 0,
-                                    "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap",
-                                    0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
-                                logf("[host] RL CreateRLScene(id=2) -> 0x%08X", (unsigned)cs);
-                            }
-                            __except (EXCEPTION_EXECUTE_HANDLER)
-                            { logf("[host] RL CreateRLScene fault (needs full Init: m_pSO3World)"); }
-                            scene = ((void* (__fastcall *)(unsigned))
-                                     ((BYTE*)g_repModule + 0x924B))(2);
-                            logf("[host] RL scene by id 2 -> %p", scene);
-                            if (scene != NULL)
-                            {
-                                logf("[host] RL scene: id=%u 3DScene=%p",
-                                     *(unsigned*)((BYTE*)scene + 0xF1970),
-                                     *(void**)((BYTE*)scene + 0xF1978));
-                            }
+                            // scene + character work happens AFTER the represent Init
+                            // (frame60) - pre-Init scene creation is skipped.
+                            logf("[host] RL probe: scene work deferred to frame60 (post-Init)");
                         }
-                        if (scene == NULL && mgr != NULL)
-                        {
-                            long ns = ((long (__fastcall *)(void*, int, void**))
-                                       ((BYTE*)g_repModule + 0x16DB5))(mgr, 1, &scene);
-                            logf("[host] RL NewScene(mgr, 1) -> 0x%08X scene=%p",
-                                 (unsigned)ns, scene);
-                        }
-                        if (scene == NULL)
-                            scene = ((void* (__fastcall *)(void*))
-                                     ((BYTE*)g_repModule + 0x3E5E80))(g_repSingleton);
-                        logf("[host] RL scene -> %p", scene);
-                        // local-player lookup chain (0x58CE20): sceneId ->
-                        // 0x924B(id) world -> [world+0xF29E8] -> 0x1B9D7(world)
-                        // -> [x+0x20]+0x70. Log each step to find the missing one.
-                        if (scene != NULL)
-                        {
-                            __try
-                            {
-                                unsigned sceneId = *(unsigned*)
-                                    ((BYTE*)scene + 0xF1970);
-                                void* world = ((void* (__fastcall *)(unsigned))
-                                               ((BYTE*)g_repModule + 0x924B))(sceneId);
-                                logf("[host] char chain: sceneId=%u world=%p",
-                                     sceneId, world);
-                                if (world != NULL)
-                                {
-                                    void* f = *(void**)((BYTE*)world + 0xF29E8);
-                                    logf("[host] char chain: [world+0xF29E8]=%p", f);
-                                    if (f != NULL)
-                                    {
-                                        void* x = ((void* (__fastcall *)(void*))
-                                                   ((BYTE*)g_repModule + 0x1B9D7))(world);
-                                        logf("[host] char chain: 0x1B9D7(world)=%p", x);
-                                        if (x != NULL)
-                                            logf("[host] char chain: [x+0x20]=%p",
-                                                 *(void**)((BYTE*)x + 0x20));
-                                    }
-                                }
-                            }
-                            __except (EXCEPTION_EXECUTE_HANDLER)
-                            { logf("[host] char chain probe fault"); }
-                        }
-                        void* character = (scene != NULL)
-                            ? ((void* (__fastcall *)(void*))
-                               ((BYTE*)g_repModule + 0x58CE20))(scene) : NULL;
-                        logf("[host] RL local character -> %p", character);
+                        // (pre-Init scene fallback removed - frame60 owns it)
+                        // (char chain + character + HangPet moved to frame60)
                         // Standalone player-model path (MovieEditor's route): the HangPet
                         // core does not need a character - it is only a map key in
                         // CreateHangPet (0x42D1F0 -> 0x42E2B0); NULL just never matches an
@@ -2897,25 +2849,152 @@ int main(void)
                     void* mgr60 = *(void**)((BYTE*)g_repSingleton + 0xB0);
                     if (mgr60 != NULL)
                     {
-                        typedef long (__fastcall *CreateRLSceneFn)(
-                            unsigned id, unsigned type, unsigned a3, unsigned a4,
-                            unsigned long long a5, const char* mapFile,
-                            unsigned long long a7, const char* sceneName,
-                            unsigned long long a9);
-                        long cs = ((CreateRLSceneFn)
-                                   ((BYTE*)g_repModule + 0xB0B5C0))(
-                            2, 0x10, 0, 0, 0,
-                            "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap",
-                            0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
-                        logf("[host] frame60: CreateRLScene(id=2) -> 0x%08X",
-                             (unsigned)cs);
-                        void* scene60 = ((void* (__fastcall *)(unsigned))
+                        // Phase C: manual RL scene creation (CreateRLScene's own
+                        // registration steps; its resource-manager lookup
+                        // [mgr+0x260] is not available yet - registered deviation):
+                        // 1) scene slot in the singleton map (0x22E08),
+                        // 2) engine scene via the NewScene thunk (0x16DB5),
+                        // 3) assign the scene id (+0xF1970).
+                        __try
+                        {
+                            ((void (__fastcall *)(void*, unsigned))
+                             ((BYTE*)g_repModule + 0x22E08))(
+                                (BYTE*)g_repSingleton + 0x24F40, 2);
+                            logf("[host] frame60: RL scene slot created (id 2)");
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: scene slot fault"); }
+                        void* scene60 = NULL;
+                        __try
+                        {
+                            long ns = ((long (__fastcall *)(void*, int, void**))
+                                       ((BYTE*)g_repModule + 0x16DB5))(mgr60, 1, &scene60);
+                            logf("[host] frame60: NewScene -> 0x%08X scene=%p",
+                                 (unsigned)ns, scene60);
+                            if (scene60 != NULL)
+                                *(unsigned*)((BYTE*)scene60 + 0xF1970) = 2;
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: NewScene fault"); }
+                        // register the scene in the singleton's scene vector
+                        // (map at singleton+0x24F40; vector begin/end/cap at
+                        // +0x18/+0x20/+0x28) - the bypassed CreateRLScene path
+                        // normally does this via its scene manager.
+                        __try
+                        {
+                            BYTE* map = (BYTE*)g_repSingleton + 0x24F40;
+                            void** vbegin = *(void***)(map + 0x18);
+                            void** vend = *(void***)(map + 0x20);
+                            void** vcap = *(void***)(map + 0x28);
+                            if (scene60 != NULL && vend != NULL && vend < vcap)
+                            {
+                                *vend = scene60;
+                                *(void**)(map + 0x20) = vend + 1;
+                                logf("[host] frame60: scene pushed into map vector");
+                            }
+                            else if (scene60 != NULL)
+                            {
+                                size_t n = (vend != NULL && vbegin != NULL)
+                                    ? (size_t)(vend - vbegin) : 0;
+                                size_t newCap = (n == 0) ? 4 : n * 2;
+                                void** nv = (void**)calloc(newCap, sizeof(void*));
+                                if (nv != NULL)
+                                {
+                                    if (n > 0)
+                                        memcpy(nv, vbegin, n * sizeof(void*));
+                                    nv[n] = scene60;
+                                    if (vbegin != NULL)
+                                        free(vbegin);
+                                    *(void***)(map + 0x18) = nv;
+                                    *(void***)(map + 0x20) = nv + n + 1;
+                                    *(void***)(map + 0x28) = nv + newCap;
+                                    logf("[host] frame60: scene pushed (vector grown to %llu)",
+                                         (unsigned long long)newCap);
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: scene push fault"); }
+                        __try
+                        {
+                            void* got = ((void* (__fastcall *)(unsigned))
                                          ((BYTE*)g_repModule + 0x924B))(2);
-                        logf("[host] frame60: scene by id 2 -> %p", scene60);
+                            logf("[host] frame60: GetRLScene(2) -> %p", got);
+                            if (got != NULL)
+                                scene60 = got;
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: GetRLScene fault"); }
                         if (scene60 != NULL)
+                        {
                             logf("[host] frame60: scene id=%u 3DScene=%p",
                                  *(unsigned*)((BYTE*)scene60 + 0xF1970),
                                  *(void**)((BYTE*)scene60 + 0xF1978));
+                            __try
+                            {
+                                void* character = ((void* (__fastcall *)(void*))
+                                                   ((BYTE*)g_repModule + 0x58CE20))(scene60);
+                                logf("[host] frame60: local character -> %p", character);
+                                unsigned sceneId = *(unsigned*)((BYTE*)scene60 + 0xF1970);
+                                void* world = ((void* (__fastcall *)(unsigned))
+                                               ((BYTE*)g_repModule + 0x924B))(sceneId);
+                                logf("[host] frame60: char chain world -> %p", world);
+                                if (world != NULL)
+                                {
+                                    void* f = *(void**)((BYTE*)world + 0xF29E8);
+                                    logf("[host] frame60: [world+0xF29E8] -> %p", f);
+                                    if (f != NULL)
+                                    {
+                                        void* x = ((void* (__fastcall *)(void*))
+                                                   ((BYTE*)g_repModule + 0x1B9D7))(world);
+                                        logf("[host] frame60: 0x1B9D7 -> %p", x);
+                                        if (x != NULL)
+                                            logf("[host] frame60: [x+0x20] -> %p",
+                                                 *(void**)((BYTE*)x + 0x20));
+                                    }
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: char chain fault"); }
+                            if (g_rlCtx != NULL)
+                            {
+                                __try
+                                {
+                                    static unsigned char fm2[0x8000];
+                                    static unsigned char ff2[0x400];
+                                    memset(fm2, 0, sizeof(fm2));
+                                    memset(ff2, 0, sizeof(ff2));
+                                    *(void**)(fm2 + 0x39F0) = ff2;
+                                    unsigned char cfg2[0x60];
+                                    memset(cfg2, 0, sizeof(cfg2));
+                                    *(const char**)(cfg2 + 0x00) = "F1";
+                                    *(const char**)(cfg2 + 0x08) = "F1";
+                                    *(const char**)(cfg2 + 0x10) = "";
+                                    *(float*)(cfg2 + 0x18) = 1.0f;
+                                    void* pet = ((void* (__fastcall *)(void*, unsigned,
+                                                unsigned, int, void*, int, void*))
+                                                 ((BYTE*)g_repModule + 0x42D1F0))(
+                                        g_rlCtx, 2, 6, 0, fm2, 1, cfg2);
+                                    logf("[host] frame60: CreateHangPet(ctx, 2, 6, 0, fakeMaster, 1, cfg[F1/F1]) -> %p",
+                                         pet);
+                                    if (pet != NULL)
+                                    {
+                                        int pa[13];
+                                        int pb[13];
+                                        memset(pa, 0, sizeof(pa));
+                                        memset(pb, 0, sizeof(pb));
+                                        long lp = ((long (__fastcall *)(void*, void*,
+                                                    void*, int))
+                                                   ((BYTE*)g_repModule + 0x422F50))(
+                                            pet, pa, pb, 13);
+                                        logf("[host] frame60: LoadPlayerParts -> 0x%08X",
+                                             (unsigned)lp);
+                                    }
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: HangPet fault"); }
+                            }
+                        }
                     }
                 }
                 __except (EXCEPTION_EXECUTE_HANDLER)
