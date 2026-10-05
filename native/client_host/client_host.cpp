@@ -215,6 +215,8 @@ static void* g_exeLogicMgr = NULL;
 static void* g_exeRepMgr = NULL;
 static void* g_exeCommonMgr = NULL;
 static void* g_exeDispatcher = NULL;
+static void* g_exeFileModule = NULL;
+static void* g_exePkgModule = NULL;
 
 // exe CRT helpers needed by the magic-static guards in OnInitialize; the exe's
 // CRT was never initialized, so these are stubbed to drive the init block.
@@ -1983,6 +1985,9 @@ int main(void)
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
                                     { logf("[host] convert resource module fault"); }
+                                    // NOTE: KJX3FileModule::Create (0xAAA10) fail-fasts
+                                    // the host (its ctor needs full game state) - not a
+                                    // viable resource-manager source; skipped.
                                     // script dispatcher module: Create 0xB2FA0 stores the
                                     // module at exe+0xA8C220; the dispatcher = +0x18.
                                     __try
@@ -2918,8 +2923,36 @@ int main(void)
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER)
                             { logf("[host] frame60: adapter manager fault"); }
-                            void* cand = (adSub != NULL) ? adSub
-                                         : ((xl != NULL) ? xl : (BYTE*)mgr60 + 0x30);
+                            // priority: file module iface, package module iface,
+                            // adapter sub, XLogic
+                            // validate candidates: must have a readable non-null
+                            // vtable (the file module's +0x18 is out of bounds).
+                            void* fileIf = NULL;
+                            void* pkgIf = NULL;
+                            __try
+                            {
+                                if (g_exeFileModule != NULL)
+                                {
+                                    void* f = *(void**)((BYTE*)g_exeFileModule + 0x18);
+                                    if (f != NULL && *(void**)f != NULL)
+                                        fileIf = f;
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER) { fileIf = NULL; }
+                            __try
+                            {
+                                if (g_exePkgModule != NULL)
+                                {
+                                    void* p = *(void**)((BYTE*)g_exePkgModule + 0x18);
+                                    if (p != NULL && *(void**)p != NULL)
+                                        pkgIf = p;
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER) { pkgIf = NULL; }
+                            void* cand = (fileIf != NULL) ? fileIf
+                                         : ((pkgIf != NULL) ? pkgIf
+                                         : ((adSub != NULL) ? adSub
+                                         : ((xl != NULL) ? xl : (BYTE*)mgr60 + 0x30)));
                             *(void**)((BYTE*)holder60 + 0x260) = cand;
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));

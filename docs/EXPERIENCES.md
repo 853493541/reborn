@@ -2258,3 +2258,18 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Next: create KJX3FileModule (Create 0x955EB8) / KJX3PackageModule (Create 0x958238)
   and try their interfaces as [singleton+0x1A0+0x260]; then the real CreateRLScene.
 - Evidence: host_exe37-43.out.
+
+## 2026-10-04 - Phase D: resource-manager candidates exhausted so far; file module crashes
+
+- Candidates tried for [singleton+0x1A0+0x260] (= [singleton+0x400]) and results at the
+  CreateRLScene lookup call (0x80D710):
+  - null -> fault 0x80D728; facade embedded sub-object -> null vtable; XLogic (facade
+    vt[0x290]) -> vt[0x13] not a container getter (fault 0x80D736); adapter manager
+    (0xF5940-built) +0x260 sub -> no vtable (fault 0x80D72B).
+  - KJX3FileModule::Create (0xAAA10) -> **fail-fasts the host** (0xC0000409, its ctor
+    needs full game state); skipped. KJX3PackageModule untested (the file module crashed
+    first). Host restored to the stable state (Init=1, run exit 0).
+- Next candidates: the engine's own resource manager (KG3DEngineAdapter
+  Get3DEngineXLogicInterface / material system / the engine file manager), the exe's
+  KJX3ConvertResourceModule interface, or the KJX3PackageModule (test alone).
+- Evidence: host_exe42-46.out.
