@@ -315,6 +315,18 @@ namespace MapUiApp.Engine
             return tex?.GetFrame(frame);
         }
 
+        /// <summary>True when the atlas holds a frame record at this index whose rect is
+        /// empty (w/h 0): the engine draws nothing there. Such an authored Frame is an
+        /// intentional "no art" entry, not a missing asset (the audit counted them as
+        /// placeholders).</summary>
+        public bool IsEmptyFrame(string uitPath, int frame)
+        {
+            var tex = Get(uitPath);
+            if (tex == null || frame < 0 || frame >= tex.Frames.Length) return false;
+            var f = tex.Frames[frame];
+            return f.W <= 0 || f.H <= 0;
+        }
+
         public int GetGroupFrame(string uitPath, int group)
         {
             var tex = Get(uitPath);

@@ -1801,6 +1801,23 @@ solved it, and what is still open. **Newest at the bottom.**
   AssetNote shows `runtime=N`. --selftest 1240/0/0 with runtime state in the gate.
 - Verified: --render bigbagpanel runtime=284, dump root 594x624; --selftest 1240/0/0; app relaunched.
 
+### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
+- User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
+  display ... but first we need a plan".
+- Moved the current visible 推荐 1.1-1.15 (门派 … 隐元秘鉴) to liked (2.x; 53 windows now); 推荐
+  keeps the remainder + 20 third-batch promotions: 聊天设置/共享背包/宠物信息/宠物技能/武学指导/阅读/
+  相册/谁看过我/科举/按键/顶部菜单/任务对比/帮会战功榜/活动列表/师父奖励/招收帮众/我的名片/账号好友/
+  宠物动作条/武器技能条. Catalog still 1,240; stages: recommended 48 (42 visible), liked 53, ui 11,
+  hud-ui 45, panels-ui 64, menus-ui 24, other-ui 780, modes-ui 211, spare 4.
+- New doc `docs/ui/UI_RENDER_FIDELITY_PLAN.md` (registered in `docs/ui/README.md`): retrospective of
+  the "out of place -> almost right shape" evolution (engine semantics / runtime state / resources
+  layers, with the fixing commits) + a tiered fidelity contract (T-A core / T-B functional / T-C
+  catalog, with a stop rule) + P1-P5 plan (status badges, contact sheet, runtime replay for T-A,
+  render sanity checks, depth dashboard).
+- Also normalized the stage JSON back to `"windows": [` spacing (the batch-2 move script had eaten
+  the space; valid JSON but noisy in diffs).
+- Verified: --selftest 1240/0/0; GUI relaunched.
+
 ### 2026-10-04 ? UI ? full UI-system coverage audit vs the official client (new doc UI_SYSTEM_COVERAGE.md)
 - User: "run a full check on UI rendering system from game official client, how much percentage".
   Measured every axis over all 1,240 windows:
@@ -1962,19 +1979,12 @@ solved it, and what is still open. **Newest at the bottom.**
   the ~117 flex sections (recorded in UI_REAL_CLIENT_ASSESSMENT.md).
 - Verified: replay_all 81 OK/41 partial; --selftest 1240/0/0.
 
-### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
-- User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
-  display ... but first we need a plan".
-- Moved the current visible 推荐 1.1-1.15 (门派 … 隐元秘鉴) to liked (2.x; 53 windows now); 推荐
-  keeps the remainder + 20 third-batch promotions: 聊天设置/共享背包/宠物信息/宠物技能/武学指导/阅读/
-  相册/谁看过我/科举/按键/顶部菜单/任务对比/帮会战功榜/活动列表/师父奖励/招收帮众/我的名片/账号好友/
-  宠物动作条/武器技能条. Catalog still 1,240; stages: recommended 48 (42 visible), liked 53, ui 11,
-  hud-ui 45, panels-ui 64, menus-ui 24, other-ui 780, modes-ui 211, spare 4.
-- New doc `docs/ui/UI_RENDER_FIDELITY_PLAN.md` (registered in `docs/ui/README.md`): retrospective of
-  the "out of place -> almost right shape" evolution (engine semantics / runtime state / resources
-  layers, with the fixing commits) + a tiered fidelity contract (T-A core / T-B functional / T-C
-  catalog, with a stop rule) + P1-P5 plan (status badges, contact sheet, runtime replay for T-A,
-  render sanity checks, depth dashboard).
-- Also normalized the stage JSON back to `"windows": [` spacing (the batch-2 move script had eaten
-  the space; valid JSON but noisy in diffs).
-- Verified: --selftest 1240/0/0; GUI relaunched.
+### 2026-10-04 ? UI ? zero-size frames draw nothing (placeholders 712 -> 679) + art gap classified
+- The audit's 434 real placeholders split by cause: 33 are frames that exist in the atlas with a
+  **zero-size rect** (the engine draws nothing; `UiTexCache.IsEmptyFrame` + UiLayout now collapse
+  them without a placeholder), 161 are stale-atlas frames (the INI references frames/groups the local
+  atlas version lacks - e.g. QuestPanelButton.UITex is 32 frames while its group table starts at
+  frame 300), 231 are files absent from the scanned paks (mpbj.tga, Cloud.tga).
+- Audit: placeholders 712 -> 679 (278 `no` + 401 real), outOfBounds 6886; --selftest 1240/0/0.
+- Remaining art work needs a full pak index or the correct atlas versions (blocked on extractor
+  coverage, not on the viewer).

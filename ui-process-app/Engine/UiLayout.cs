@@ -562,6 +562,11 @@ namespace MapUiApp.Engine
                 var source = textures.GetFrame(imagePath, frame);
                 if (source == null)
                 {
+                    // An authored empty frame (w/h 0 in the atlas) means "draw nothing",
+                    // not a missing asset - the engine skips it.
+                    if (textures.IsEmptyFrame(imagePath, frame))
+                        return Wireframe ? Placeholder(section.Name, width, height)
+                                         : (FrameworkElement)new Canvas { Visibility = Visibility.Collapsed };
                     // Atlas/frame missing: the engine still lays the element out at the
                     // authored size (or the atlas frame size when it later loads).
                     result.Placeholders.Add($"{section.Name} [{type} {imagePath} frame={frame}]");

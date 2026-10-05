@@ -72,9 +72,12 @@ sections `runtime=284` (complete replay still applied).
 1. ~~Text: 3,254 unresolved string instances~~ **fixed**: 136 extracted module tables added to
    `Data/text/ui/Scheme/Case` (145 total) → **3,254 → 49** unresolved (the tail is dev/unreached
    tables: `STR_COLLECTION*`, `STR_TESTTEXT_TIME`, `STR_MICROT`, ... — each ×1-4).
-2. Art: real missing placeholders **602 → 434** instances (pair extraction of `.UITex` + `.Tga`
-   siblings from the client; 278 `TextureName=no` are intentional). Remaining misses are paths not
-   present in the scanned paks (e.g. `ReputationPanel1.UITex`, `QuestPanelButton.UITex`).
+2. Art: real missing placeholders **602 → 401** instances (pair extraction of `.UITex` + `.Tga`
+   siblings, then the zero-size-frame fix: 33 authored empty frames now draw nothing as the engine
+   does). Breakdown of the 401: **161 stale-atlas frames** (the INI references frames/groups the local
+   atlas version doesn't contain — e.g. `QuestPanelButton.UITex` is 32 frames while its group table
+   starts at frame 300) and **231 files absent from the scanned paks** (e.g. `mpbj.tga`,
+   `Cloud.tga`). 278 `TextureName=no` are intentional.
 3. Constructs: PosType 3/4/5 = 70 · HandleType 1/2/4/5 = 137 · FirstItemPosType 1-9 = 98 ·
    approximate WndTypes = 868 sections (page-set/list/tree/scene/web/flex).
    **New lead (2026-10-04):** the client `KGUIX64.dll` exports the **Yoga layout API**
