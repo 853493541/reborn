@@ -316,6 +316,14 @@ internal static class RebornClient
         };
         Application.DoEvents();
 
+        // Startup override (deviation D7): only armed when RC_STARTUP is set;
+        // must happen before KGEngineCLR/Init3DEngine so the DLL-load
+        // notification is registered before KG3D_MaterialSystemX64.dll loads.
+        string startupEnv = Env("RC_STARTUP", "");
+        bool startupOverride = startupEnv.Length > 0;
+        if (startupOverride)
+            Log("Startup shim: " + StartupShim.Init());
+
         var baselib = new KGBaseCLR();
         var engine = new KGEngineCLR();
         var editor = new KGMovieEditorCLR();
@@ -340,6 +348,8 @@ internal static class RebornClient
         try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1} ms={2}", ok, err, Environment.TickCount - t3d));
+        if (startupOverride)
+            Log("Startup: " + StartupShim.Status());
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
@@ -1588,6 +1598,7 @@ internal static class RebornClient
         bool propSolid = Env("RC_PROP_SOLID", "0") == "1";
         int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
+        long hitchMaxMs = 0;   // max unclamped frame delta since the last status line
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
         // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition",
         // CharacterCameraSmoothTime=60 ms in Represent/common/number.krl.txt).
@@ -1813,6 +1824,8 @@ internal static class RebornClient
         while (!form.IsDisposed)
         {
             long now = sw.ElapsedMilliseconds;
+            long rawFrameMs = now - lastMs;   // unclamped: hitch evidence
+            if (rawFrameMs > hitchMaxMs) hitchMaxMs = rawFrameMs;
             float dt = (now - lastMs) / 1000f;
             lastMs = now;
             if (dt < 0f) dt = 0f;
@@ -4030,14 +4043,15 @@ internal static class RebornClient
                                 : shiftDown ? "RUN10"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26}{11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz,
                     unhandledCmd, lastUnhandled, gait,
                     CameraOperationMode.Name(cameraSettings.OperationMode),
-                    hotkeys.Context, sprintOn ? 1 : 0));
+                    hotkeys.Context, sprintOn ? 1 : 0, hitchMaxMs));
+                hitchMaxMs = 0;
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
             {

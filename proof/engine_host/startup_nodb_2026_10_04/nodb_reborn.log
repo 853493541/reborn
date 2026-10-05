@@ -1,0 +1,137 @@
+23:24:27.905 build=reborn_client_predraw.exe 2026-10-04 23:17:25 git=eab4277 dirty=6 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=joystick)
+23:24:27.906 start map=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap
+23:24:27.906 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+23:24:27.957 Startup shim: rc=0 mode=nodb applied=0 armed (waiting KG3D_MaterialSystemX64.dll)
+23:24:28.573 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_predraw.memory ms=(31,0,594)
+23:24:31.783 Init3DEngine=1 err=1 ms=3203
+23:24:31.784 Startup: mode=nodb applied=1 site=0x3d4518 ip=0.0.0.0
+23:24:31.821 editor.Init result=0
+23:24:31.992 LoadMap result=0 ms=172
+23:24:32.320 winId=6949584
+23:24:32.321 clr m_pScene=0x111432008 unmapped exec=0
+23:24:32.322 clr scene.vt=0x7FFD7CFDF278 KG_EngineEditorX64.dll+0x6F278
+23:24:32.322 clr scene: obj=0000000111432008 vt=00007FFD7CFDF278 48=00007FFD7CFAD5F0(0) 50=00007FFD7CFAD710(0) 58=00007FFD7CFAD7E0(0) 60=00007FFD7CFAD810(0)
+23:24:32.322 clr sceneCam=0x1518051C8 unmapped exec=0
+23:24:32.322 clr cam: obj=00000001518051C8 vt=00007FFD7CFE1FA8 48=00007FFD7CFC03A0(0) 50=00007FFD7CFC03E0(0) 58=00007FFD7CFC0440(0) 60=00007FFD7CFC04A0(0)
+23:24:32.323 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+23:24:32.325 TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0)
+23:24:32.950 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_s_foliage_collision.bin structures=龙门寻宝_s_structure_collision.bin
+23:24:32.951 EngineRay: exports ok, waiting for engine/scene
+23:24:32.953 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+23:24:32.953 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=00000001518051C8 vt=00007FFD7CFE1FA8 48=00007FFD7CFC03A0(0) 50=00007FFD7CFC03E0(0) 58=00007FFD7CFC0440(0) 60=00007FFD7CFC04A0(0) d6=seed slot=0x00007FFC1F47BBD0 value=0x392E0BFA0428F080
+23:24:32.957 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+23:24:32.957 ad habit: strafe (RC_ADHABIT=strafe|turn)
+23:24:33.024 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp4\电信区\乾坤一掷\哈没想到吧\custom.dat
+23:24:33.024 CameraSettings: mapId=-1 sceneInit=1 yaw=0.646647 pitch=-1.555 max=2000 drag=1.00/1.00 eyeScale=0.90
+23:24:33.025 CameraSettings: operationMode=joystick perModeFollow classic=0 joystick=0
+23:24:33.026 CameraSettings extra: mode=0 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+23:24:33.026 opmode applied: op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+23:24:33.026 CameraSystem ready: mode=character dist=2000u height=200u units/m=100 op=joystick
+23:24:33.027 view angle factor=1
+23:24:33.028 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+23:24:33.028 view angle factor applied=1.250002
+23:24:33.356 spawn=(18991,962,33853) view=(0.00,1.00)
+23:24:33.960 player handle=5707181704
+23:24:33.962 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:24:34.491 target ui: RC_UI_ROOT not set - target HUD art disabled
+23:24:34.497 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=4891163800 at (18991,961,34253)
+23:24:34.498 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+23:24:34.498 target dummy ani -> 0
+23:24:34.498 camera yaw init=-1.571 (view dir 0.00,1.00)
+23:24:34.510 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+23:24:34.510 hotkeys: context=''
+23:24:34.511 hotkey MOVEFORWARD = W / Up
+23:24:34.511 hotkey MOVEBACKWARD = S / Down
+23:24:34.511 hotkey STRAFELEFT = A
+23:24:34.512 hotkey STRAFERIGHT = D
+23:24:34.512 hotkey TURNLEFT =  / Left
+23:24:34.512 hotkey TURNRIGHT =  / Right
+23:24:34.512 hotkey JUMP = Space
+23:24:34.512 hotkey TOGGLERUN = Num/
+23:24:34.512 hotkey TOGGLEAUTORUN = G / NumLock
+23:24:34.515 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+23:24:34.516 camera init applied mapId=-1 yaw=0.647 gamePitch=-1.555 modelPitch=1.555
+23:24:34.517 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+23:24:34.571 EngineRay: ready scene=0x101F3AC30 terrain+950=0x10153C4D0 terrain+A28=0x0 vtB8=True space=0x1235AFD88 spaceRay=True entity=0x11093B188 entityRay=True entCount=10 guardCell=0x3E4339E0
+23:24:34.585 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:24:36.022 camBind rc=0 pos=(18999.9,1844.6,33859.8) cam=0000000101F3AC30 posOff=0x9E0 bound=1
+23:24:36.023 camObjDump: obj=0000000101F3AC30 vt=00007FFC1E8E5598 48=00007FFC1D093870(1) 50=00007FFC1D093A40(1) 58=00007FFC1D0B8810(1) 60=00007FFC1D093C70(1)
+23:24:36.023 slot50: slot50=00007FFC1D093A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+23:24:36.023 slot58: slot58=00007FFC1D0B8810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+23:24:36.023 slot60: slot60=00007FFC1D093C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+23:24:36.023 slot68: slot68=00007FFC1D093D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+23:24:36.517 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+23:24:36.521 t=2s fps=313 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=29 colBlocked=0 spd=300u/s(RUN) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=16 clip=f1b02yd奔跑.ani
+23:24:38.521 t=4s fps=306 pos=(18991,956,34473) vy=0 grounded=True blocked=False hits=0 colCalls=91 colBlocked=0 spd=300u/s(RUN) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b02yd奔跑.ani
+23:24:40.525 t=6s fps=299 pos=(18991,946,35073) vy=0 grounded=True blocked=False hits=0 colCalls=151 colBlocked=0 spd=300u/s(RUN) yaw=0.00 dir=(-0.97,0.25) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b02yd奔跑.ani
+23:24:41.516 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+23:24:42.586 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_8000ms.png
+23:24:42.592 t=8s fps=285 pos=(18629,940,35175) vy=0 grounded=True blocked=False hits=0 colCalls=195 colBlocked=0 spd=90u/s(WALK) yaw=-1.32 dir=(-0.97,0.25) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=70 clip=f1b02yd行走.ani
+23:24:43.213 hideNear hide camDist=103.1 (B1 host approximation)
+23:24:44.590 t=10s fps=331 pos=(18507,940,35182) vy=0 grounded=True blocked=False hits=16 colCalls=225 colBlocked=16 spd=90u/s(WALK) yaw=-1.32 dir=(-0.97,0.25) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b02yd行走.ani
+23:24:44.721 hideNear show camDist=251.1
+23:24:46.521 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:24:46.590 t=12s fps=316 pos=(18333,957,35240) vy=0 grounded=True blocked=False hits=16 colCalls=255 colBlocked=16 spd=0u/s(IDLE) yaw=-1.32 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:24:47.070 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+23:24:47.537 clip -> data\source\player\f1\动作\f1b02yd二段跳a.ani (0)
+23:24:48.071 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+23:24:48.592 t=14s fps=296 pos=(18328,1094,35221) vy=-671 grounded=False blocked=False hits=16 colCalls=286 colBlocked=16 spd=300u/s(RUN) yaw=-2.89 dir=(-0.25,-0.97) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b02yd小跳c.ani
+23:24:48.739 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+23:24:49.583 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_01_15000ms.png
+23:24:50.592 t=16s fps=286 pos=(18178,956,34651) vy=0 grounded=True blocked=False hits=16 colCalls=346 colBlocked=16 spd=300u/s(RUN) yaw=-2.89 dir=(-0.25,-0.97) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=66 clip=f1b02yd奔跑.ani
+23:24:52.519 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:24:52.594 t=18s fps=235 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=405 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:24:53.020 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+23:24:53.020 skill cast
+23:24:54.594 t=20s fps=272 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=435 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=27 clip=f1s07cj重剑技能15_风来吴山红色hd.tani
+23:24:56.593 t=22s fps=191 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=465 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=14 clip=f1s07cj重剑技能15_风来吴山红色hd.tani
+23:24:58.597 t=24s fps=235 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=495 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=10 clip=f1s07cj重剑技能15_风来吴山红色hd.tani
+23:25:00.598 t=26s fps=248 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=525 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=13 clip=f1s07cj重剑技能15_风来吴山红色hd.tani
+23:25:01.021 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+23:25:02.598 t=28s fps=242 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=555 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=11 clip=f1b01ty普通待机01.ani
+23:25:04.599 t=30s fps=291 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=585 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:25:06.602 t=32s fps=305 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=615 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:25:08.603 t=34s fps=310 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=645 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:25:10.603 t=36s fps=313 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=675 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:12.605 t=38s fps=270 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=705 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:14.608 t=40s fps=302 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=735 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:25:16.609 t=42s fps=321 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=765 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:18.611 t=44s fps=320 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=795 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:25:20.612 t=46s fps=316 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=825 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:25:22.613 t=48s fps=313 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=855 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:24.614 t=50s fps=282 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=885 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=12 clip=f1b01ty普通待机01.ani
+23:25:26.615 t=52s fps=300 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=915 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:25:28.619 t=54s fps=281 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=945 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=9 clip=f1b01ty普通待机01.ani
+23:25:30.619 t=56s fps=285 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=975 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=9 clip=f1b01ty普通待机01.ani
+23:25:32.621 t=58s fps=264 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1005 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:25:34.622 t=60s fps=285 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1036 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=12 clip=f1b01ty普通待机01.ani
+23:25:36.623 t=62s fps=298 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1066 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:38.625 t=64s fps=296 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1096 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:25:40.628 t=66s fps=332 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1126 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:25:42.629 t=68s fps=323 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1156 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:25:44.629 t=70s fps=302 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1186 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:25:46.631 t=72s fps=314 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1216 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:48.630 t=74s fps=321 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1246 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:25:50.632 t=76s fps=320 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1276 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:25:52.635 t=78s fps=309 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1306 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:25:54.633 t=80s fps=302 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1336 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:25:56.633 t=82s fps=311 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1366 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:25:58.636 t=84s fps=303 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1396 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:26:00.637 t=86s fps=311 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1426 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=10 clip=f1b01ty普通待机01.ani
+23:26:02.639 t=88s fps=314 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1456 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:26:04.640 t=90s fps=320 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1486 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:06.641 t=92s fps=326 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1516 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:26:08.643 t=94s fps=306 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1546 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:10.644 t=96s fps=335 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1576 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:26:12.645 t=98s fps=307 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1606 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:14.645 t=100s fps=309 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1636 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b01ty普通待机01.ani
+23:26:16.646 t=102s fps=309 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1666 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:18.647 t=104s fps=296 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1696 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:20.649 t=106s fps=336 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1726 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=36 clip=f1b01ty普通待机01.ani
+23:26:22.651 t=108s fps=306 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1756 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:24.655 t=110s fps=311 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1786 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:26.654 t=112s fps=233 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1816 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=61 clip=f1b01ty普通待机01.ani
+23:26:28.653 t=114s fps=308 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1846 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b01ty普通待机01.ani
+23:26:30.657 t=116s fps=294 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1876 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=7 clip=f1b01ty普通待机01.ani
+23:26:32.659 t=118s fps=298 pos=(18033,965,34100) vy=0 grounded=True blocked=False hits=16 colCalls=1906 colBlocked=16 spd=0u/s(IDLE) yaw=-2.89 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b01ty普通待机01.ani
+23:26:34.520 DONE
