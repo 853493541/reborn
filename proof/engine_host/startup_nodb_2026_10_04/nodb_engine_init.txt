@@ -1,0 +1,60 @@
+20261004-232428<45316>: INFO KG3D_Engine initializing ...
+20261004-232428<45316>: INFO KG3D_Engine KPerf_Initialize()
+20261004-232428<45316>: INFO KG3D_Engine WIC init
+20261004-232428<45316>: INFO KG3D_Engine Windows version checked.
+20261004-232428<45316>: INFO KG3D_Engine Memory init
+20261004-232428<45316>: INFO KG3D_Engine Object Pool Manager Init
+20261004-232428<45316>: INFO KG3D_Engine String table init
+20261004-232428<45316>: INFO KG3D_Engine Debug server init
+20261004-232428<45316>: INFO KG3D_Engine File system init
+20261004-232428<45316>: INFO KG3D_Engine Streaming file manager init
+20261004-232428<45316>: INFO KG3D_Engine middleware manager init
+20261004-232428<45316>: INFO create 11_1, (disable timeout | base) flag device succeeded.
+20261004-232428<45316>: INFO Use adapter index: 0, adapter name: NVIDIA GeForce RTX 5080.
+20261004-232428<45316>: INFO Adapter has 15977MB of dedicated video memory, 0MB of dedicated system memory, and 48594MB of shared system memory.
+20261004-232428<45316>: INFO NVIDIA driver version: 616.56, branch version: r616_41
+20261004-232428<45316>: INFO Device has support 64 bit atomics
+20261004-232428<45316>: INFO Device has supported ROV
+20261004-232428<45316>: INFO Device has supported Conservative Rasterization in tier3
+20261004-232429<45316>: DEBUG shaderMap load finished, cost time = 0.391s
+20261004-232429<45316>: INFO Shader map created succeeded.
+20261004-232429<45316>: DEBUG gpu particle shader load finished, cost time = 0.000s
+20261004-232429<45316>: INFO Gpu Particle Shader created succeeded.
+20261004-232429<45316>: DEBUG shader load finished, cost time = 0.640s
+20261004-232429<45316>: INFO Shader table created succeeded.
+20261004-232429<45316>: INFO KObjectManager is created.
+20261004-232429<45316>: WARN 预渲染总开关:开启
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piFile) at line 217 in KG3D_LoadFile
+20261004-232431<45316>: WARN KG3D_LoadFile failed data/source/player/M2/部件/m2_new_face.mesh
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piBufferReader) at line 1675 in KG3D_CreateMeshFileData
+20261004-232431<45316>: WARN Mesh file "data/source/player/M2/部件/m2_new_face.mesh" not exist.
+20261004-232431<45316>: WARN load file "data/source/player/M2/部件/m2_new_face.mesh" fail.
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(m_pMeshFileData) at line 101 in KG3D_FaceLiftMeshData::Init
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piFile) at line 217 in KG3D_LoadFile
+20261004-232431<45316>: WARN KG3D_LoadFile failed data/source/player/F2/部件/f2_new_face.mesh
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piBufferReader) at line 1675 in KG3D_CreateMeshFileData
+20261004-232431<45316>: WARN Mesh file "data/source/player/F2/部件/f2_new_face.mesh" not exist.
+20261004-232431<45316>: WARN load file "data/source/player/F2/部件/f2_new_face.mesh" fail.
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(m_pMeshFileData) at line 101 in KG3D_FaceLiftMeshData::Init
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piFile) at line 217 in KG3D_LoadFile
+20261004-232431<45316>: WARN KG3D_LoadFile failed data/source/player/M1/部件/m1_new_face.mesh
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piBufferReader) at line 1675 in KG3D_CreateMeshFileData
+20261004-232431<45316>: WARN Mesh file "data/source/player/M1/部件/m1_new_face.mesh" not exist.
+20261004-232431<45316>: WARN load file "data/source/player/M1/部件/m1_new_face.mesh" fail.
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(m_pMeshFileData) at line 101 in KG3D_FaceLiftMeshData::Init
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piFile) at line 217 in KG3D_LoadFile
+20261004-232431<45316>: WARN KG3D_LoadFile failed data/source/player/F1/部件/f1_new_face.mesh
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(piBufferReader) at line 1675 in KG3D_CreateMeshFileData
+20261004-232431<45316>: WARN Mesh file "data/source/player/F1/部件/f1_new_face.mesh" not exist.
+20261004-232431<45316>: WARN load file "data/source/player/F1/部件/f1_new_face.mesh" fail.
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(m_pMeshFileData) at line 101 in KG3D_FaceLiftMeshData::Init
+20261004-232431<45316>: WARN Load font can't found style of 0x10 in font file ui\Font\fzxk.TTF, use default style instead: style_flags=0x0, style name=Regular, family name=FZXingKai-S04
+20261004-232431<45316>: INFO -- KG3D_Scripting init --
+20261004-232431<45316>: INFO KG3D_Engine VG system init finish, Supported VG :true
+20261004-232431<45316>: INFO -- KG3D_Engine initialize success. const time = 2.843s -- 
+20261004-232431<45316>: INFO Physics Engine initialize success
+20261004-232431<45316>: INFO Successfully loaded standalone TressFX DLL
+20261004-232431<45316>: INFO Succeed Load Animation Tag.
+20261004-232431<45316>: WARN KGLOG_PROCESS_ERROR(hFind != INVALID_HANDLE_VALUE) at line 158 in KLua::SearchLuaAndLoad
+20261004-232431<45316>: WARN KLightConfigManager::LoadConfig failed: data\public\MovieEditor\LightTagConfig.json does not exsit.
+20261004-232431<3192>: DEBUG Texture File "data\editor\moviemodel\texture\white.tga" WithOut DDS !

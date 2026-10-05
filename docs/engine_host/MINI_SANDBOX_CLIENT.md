@@ -36,6 +36,14 @@ real spawn `(23334,761,24224)`.
 
 ## Startup breakdown (measured 2026-09-29 21:54, 1×1)
 
+> **Correction 2026-10-04:** the ~22 s below is **not** the single-threaded
+> pre-draw. It is a blocking TCP `connect()` to the editor shader-build DB
+> `10.11.10.102:1433` (`KG3D_MaterialShaderManager::_initShaderUpload`,
+> `KG3D_MaterialSystemX64.dll`); the master-switch log line just happens
+> immediately before the SYN-timeout wait. Forcing pre-draw threads/skip had no
+> effect. Fixed as deviation D7 (`RC_STARTUP=nodb`, init 24.4 s → 3.1 s); see
+> `FAST_STARTUP.md`. The table below is kept as the 2026-09-29 measurement.
+
 Launch → playable = **26.8 s**, and it does not change with map size:
 
 | phase | time | note |
