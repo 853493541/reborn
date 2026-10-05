@@ -2004,3 +2004,12 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   ready).
 - Next: pump the represent module while the init runs (call RLLoader::Update / the
   represent frame update each frame) or find the specific lock the init waits on.
+
+## 2026-10-04 - Phase A: RL loader pump does not unblock the logic init
+
+- Added a per-frame RLLoader::Update pump while the logic init thread runs - the init
+  still blocks (frame40 stack dump shows it wedged at the same represent/convert-module
+  step). The wait is not the loader job lock.
+- Host is stable with RC_HOST_LOGIC=1 (async init, frame loop completes).
+- Next: hook the logic module's LoadConvertModule (0x112FC0) / the represent load step
+  to see the exact blocking call, or bypass that step.

@@ -737,6 +737,7 @@ static void* g_rlCtx = NULL;
 static void* g_lastPet = NULL;
 static void* g_entityCtrl = NULL;
 static void* g_so3World = NULL;
+static void* g_rlLoader = NULL;
 
 // logic-module init watchdog: if CreateJX3LogicOperation wedges, suspend the main
 // thread after 20 s, dump its stack (module+offset) and exit.
@@ -1410,6 +1411,7 @@ int main(void)
                     if (loader != NULL)
                     {
                         void** lvt = *(void***)loader;
+                        g_rlLoader = loader;
                         logf("[host] RLLoader vtable=%p", (void*)lvt);
                         // represent logging -> host log (shows the loader's own errors;
                         // the DLL logs via Engine_Lua5X64!KGLogPrintf)
@@ -2353,6 +2355,17 @@ int main(void)
 
             if (ctrl != NULL) ctrlFm(ctrl);
             if (g_entityCtrl != NULL) ctrlFm(g_entityCtrl);
+            // while the logic init thread is running, pump the RL loader (its job
+            // lock is a suspect for the init's wait).
+            if (!g_logicDone && g_rlLoader != NULL && g_logicStarted)
+            {
+                __try
+                {
+                    void** lvt = *(void***)g_rlLoader;
+                    ((long (__fastcall *)(void*))lvt[0])(g_rlLoader);
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER) { }
+            }
             engFm(engine);
             if (camObj != NULL)
                 ((long (__fastcall *)(void*, float*, int))((BYTE*)eng + 0xB36540))(camObj, camPose, 0);
