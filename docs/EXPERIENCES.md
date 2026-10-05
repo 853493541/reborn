@@ -1773,3 +1773,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: login conversation complete to the role list; next = role select (op 10) ->
   login key (op 14) -> game server (P3). Cipher state is constant while the hello is
   constant; re-derive if the hello fields change.
+
+### 2026-10-05 — V2 P2 MILESTONE: full gateway login completed end-to-end (scripted)
+- Did: fixed the role-list packet (names at entry+4 / entry+0x24 per parse 0x140185A20;
+  [1]==[5] to fire both role-list events 0x31/0x32), wrote role_click/role_enter
+  (PostMessage grid + enter button, canvas 1280x960 scaled to the window), ran the full
+  scripted flow: post_login -> verify -> role list -> select role + Btn_EnterGame.
+- Findings: client sent op 10 (login game, 142 B: roleIndex=1001, [global+0xCB0]=2283),
+  stub answered op 14 (login key, game IP 127.0.0.1) -> client closed the gateway session
+  (correct: login-key case 0) and moved to the game-server stage. The role packet's field
+  placement was the blocker (the UI showed no selectable role before).
+- Evidence: stub log C:\jx3tmp\gw_stdout.txt 00:20:26 (proto=10 raw=0941187c pt=0ae903...,
+  proto14 sent); role_enter output "OPCODE 10 after enter-click at role=(760,240)".
+- Outcome: gateway login chain DONE end-to-end with real client + scripted input. Next:
+  P3 game server (find the game-server port from the login-key/game-login handler
+  0x1401245A0 and capture the client's first game-server packet).

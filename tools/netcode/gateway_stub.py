@@ -82,13 +82,22 @@ def account_ok():
 
 
 def role_list():
+    # entry layout per the client parse 0x140185A20: name1 @+4 (32B), name2 @+0x24 (32B),
+    # role id @+0x40 (docs) and a qword id @+0x4c; count @+5; [1] must equal [5] to fire
+    # the second role-list event (0x32).
     p = bytearray(ROLE_LIST_SIZE)
     p[0] = 9
+    struct.pack_into("<I", p, 1, 1)
     struct.pack_into("<I", p, 5, 1)
     entry = 9
-    struct.pack_into("<I", p, entry + 0x40, ROLE_ID)
     name = "测试角色".encode("gb18030")
-    p[entry + 0x44:entry + 0x44 + len(name)] = name
+    p[entry + 4:entry + 4 + len(name)] = name
+    p[entry + 0x24:entry + 0x24 + len(name)] = name
+    struct.pack_into("<I", p, entry + 0, ROLE_ID)
+    struct.pack_into("<I", p, entry + 0x40, ROLE_ID)
+    struct.pack_into("<Q", p, entry + 0x4C, ROLE_ID)
+    struct.pack_into("<I", p, entry + 0x73, 100)
+    struct.pack_into("<I", p, entry + 0x77, 0)
     return frame(bytes(p))
 
 
