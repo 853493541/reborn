@@ -2176,3 +2176,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Phase B closed. Next (Phase C): CreateRLScene after the successful Init (the
   frame60 attempt still faults - check the post-Init scene-creation path).
 - Evidence: host_exe29.out.
+
+## 2026-10-04 - Phase C start: CreateRLScene needs [mgr+0x260]; module inits do not set it
+
+- After the successful Init, CreateRLScene faults at rep+0x80D728: `[mgr+0x260]` null
+  (0x80D710: mgr2=[mgr+0x260]; mgr2->vt[0x13](type) -> container; ->vt[7](name) ->
+  item ->vt[0xB]() = the map-file resource).
+- Found the adapter (KG3DEngineAdapterX64) constructs a 0x4C0 manager object whose
+  +0x260 is set (0xF5940; called from 0xE64F0's function which builds/inits it) - the
+  object type matches, but our host's Get3DEngineInterface object (engIface) and the
+  X3DEngine facade both have +0x260 == 0.
+- Called the exe's own module inits (all return 1, stable):
+  KJX3RenderModule::Create 0xB8E40 + Initialize 0xB7D20 states 1/2/4 (LoadX3DEngine +
+  facade/xlogic holder fields), KJX3ConvertResourceModule::Create 0xA65C0 +
+  OnInitialize 0xA6470, KJX3CommonEventModule (manager exe+0xA8D680),
+  KJX3LogicEventModule, KJX3RepresentEventModule, script dispatcher (0xB2FA0) - none
+  sets facade+0x260.
+- Next: find the setter of the facade's +0x260 (the game's engine bring-up: possibly
+  the exe's PreInit path 0x9E121, another module init, or the adapter's manager object
+  used as the Param's p3DEngineManager); or create the adapter's 0x4C0 manager via
+  0xE6300 and pass it.
+- Evidence: host_exe30-33.out.

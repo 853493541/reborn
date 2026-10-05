@@ -1543,6 +1543,16 @@ int main(void)
     HMODULE eng = LoadLibraryExW(engPath, NULL,
         LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     logf("[host] engine=%p iface=%p", eng, engIface);
+    if (engIface != NULL)
+    {
+        __try
+        {
+            logf("[host] engIface+0x260 -> %p (facade+0x260 later)", 
+                 *(void**)((BYTE*)engIface + 0x260));
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        { logf("[host] engIface+0x260 read fault"); }
+    }
     if (eng == NULL) return 3;
 
     int hookOk = installInlineHook(eng, 0x8AEF30, (void*)hookCreateTargetWindow,
@@ -1923,6 +1933,56 @@ int main(void)
                                                  g_exeCommonMgr);
                                         }
                                     }
+                                    // KJX3RenderModule: Create 0xB8E40 + Initialize 0xB7D20
+                                    // (edx=1 -> LoadX3DEngine path; sets the facade and
+                                    // the holder fields, incl. facade+0x260).
+                                    __try
+                                    {
+                                        void* rm = ((void* (__fastcall *)(void))
+                                                    ((BYTE*)g_exeModule + 0xB8E40))();
+                                        logf("[host] KJX3RenderModule::Create -> %p", rm);
+                                        if (rm != NULL)
+                                        {
+                                            long ir = ((long (__fastcall *)(void*, int))
+                                                       ((BYTE*)g_exeModule + 0xB7D20))(rm, 1);
+                                            logf("[host] KJX3RenderModule::Initialize(1) -> 0x%08X",
+                                                 (unsigned)ir);
+                                            long ir2 = ((long (__fastcall *)(void*, int))
+                                                        ((BYTE*)g_exeModule + 0xB7D20))(rm, 2);
+                                            logf("[host] KJX3RenderModule::Initialize(2) -> 0x%08X",
+                                                 (unsigned)ir2);
+                                            long ir4 = ((long (__fastcall *)(void*, int))
+                                                        ((BYTE*)g_exeModule + 0xB7D20))(rm, 4);
+                                            logf("[host] KJX3RenderModule::Initialize(4) -> 0x%08X",
+                                                 (unsigned)ir4);
+                                            void* facade = *(void**)((BYTE*)rm + 0x18);
+                                            logf("[host] render module: facade=%p xlogic=%p",
+                                                 facade, *(void**)((BYTE*)rm + 0x20));
+                                            if (facade != NULL)
+                                                logf("[host] facade+0x260 -> %p",
+                                                     *(void**)((BYTE*)facade + 0x260));
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] render module fault"); }
+                                    // KJX3ConvertResourceModule: Create 0xA65C0 +
+                                    // OnInitialize 0xA6470 (may create the engine's
+                                    // resource manager, facade+0x260).
+                                    __try
+                                    {
+                                        void* crm = ((void* (__fastcall *)(void))
+                                                     ((BYTE*)g_exeModule + 0xA65C0))();
+                                        logf("[host] KJX3ConvertResourceModule::Create -> %p", crm);
+                                        if (crm != NULL)
+                                        {
+                                            long cir = ((long (__fastcall *)(void*, int))
+                                                        ((BYTE*)g_exeModule + 0xA6470))(crm, 1);
+                                            logf("[host] KJX3ConvertResourceModule::OnInitialize(1) -> 0x%08X",
+                                                 (unsigned)cir);
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] convert resource module fault"); }
                                     // script dispatcher module: Create 0xB2FA0 stores the
                                     // module at exe+0xA8C220; the dispatcher = +0x18.
                                     __try
