@@ -71,8 +71,10 @@ for the bag (OnLButtonClick, OnItemLButtonClick, OnMouseEnter, OnEvent, OnFrameB
 
 1. ~~Hover pass (`OnMouseEnter`/`OnMouseLeave`)~~ done: mouse-move hit-tests the section under the
    cursor and dispatches leave/enter when it changes.
-2. Item-level clicks with the row index (the list templates give the geometry).
-3. Window chains: when a handler opens another window, surface it as a new catalog selection.
+2. **Window chains (recorded):** the shim records `OpenWindow`/`CloseWindow` calls (`opens=N` in the
+   batch RESULT; the server prints `WINDOW <path>` lines; the viewer appends `opens=…` to the
+   AssetNote; `--click` prints them). Navigation (opening the target window) is the next step.
+3. Item-level clicks with the row index (the list templates give the geometry).
 4. Show the interactive handler count in the AssetNote.
 
 **Lesson (2026-10-04):** distinguishing "PascalCase method" from "PascalCase property" via verb

@@ -33,6 +33,8 @@ namespace UiProcessApp
         private readonly HashSet<string> _replayHandlers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<string>> _runtimeOverlays =
             new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, List<string>> _openedWindows =
+            new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         private UiBuildResult _lastBuild;
         private Dictionary<object, string> _elementToSection;
         private string _hoverSection;
@@ -610,6 +612,8 @@ namespace UiProcessApp
                 _elementToSection = buildResult == null
                     ? null
                     : buildResult.Elements.ToDictionary(kv => (object)kv.Value, kv => kv.Key);
+                if (_openedWindows.TryGetValue(window.Id, out var openedNow) && openedNow.Count > 0)
+                    AssetNote.Text += "  opens=" + string.Join(",", openedNow.Select(Path.GetFileName));
                 SchedulePrewarm();
             }
             catch (Exception ex)
@@ -766,6 +770,13 @@ namespace UiProcessApp
                     var line = _replayOut.ReadLine();
                     if (line == null || line == "END") break;
                     if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
+                    if (line.StartsWith("WINDOW ", StringComparison.Ordinal))
+                    {
+                        if (!_openedWindows.TryGetValue(_currentWindow.Id, out var opened))
+                            _openedWindows[_currentWindow.Id] = opened = new List<string>();
+                        opened.Add(line.Substring("WINDOW ".Length).Trim());
+                        continue;
+                    }
                     if (line.IndexOf('\t') >= 0) lines.Add(line);
                 }
                 if (lines.Count == 0) return;

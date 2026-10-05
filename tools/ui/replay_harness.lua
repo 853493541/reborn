@@ -234,6 +234,16 @@ local permissiveMt = {
 setmetatable(INVENTORY_INDEX, permissiveMt)
 setmetatable(EQUIPMENT_INVENTORY, permissiveMt)
 
+-- Window-chain calls: the scripts open/close other windows by path; record them
+-- so the viewer can surface "opens X" (the engine would open the window).
+local openedWindows = {}
+_G.OpenWindow = function(path, ...)
+  if type(path) == "string" then openedWindows[#openedWindows + 1] = path end
+end
+_G.CloseWindow = function(path, ...)
+  if type(path) == "string" then openedWindows[#openedWindows + 1] = "-" .. path end
+end
+
 -- Lua 5.1 resolves comparison/arith metamethods on the LEFT operand only; give the
 -- number type a metatable so a stubbed proxy on the right never aborts a replay
 -- (mixed number/table comparisons and arithmetic return neutral values).
@@ -330,5 +340,5 @@ for i = 1, #log do
   out:write(log[i].sec .. "\t" .. log[i].method .. "\t" .. table.concat(log[i].args, "\t") .. "\n")
 end
 out:close()
-print(string.format("RESULT %s mutations=%d %s", ok2 and "OK" or "ERR", #log,
+print(string.format("RESULT %s mutations=%d opens=%d %s", ok2 and "OK" or "ERR", #log, #openedWindows,
   ok2 and "" or tostring(err2):gsub("[\r\n]+", " ")))

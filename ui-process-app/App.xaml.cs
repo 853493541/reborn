@@ -942,8 +942,9 @@ namespace UiProcessApp
                 var luaPath = Path.Combine(Paths.AppRoot, "assets", "ui", "Config", "Default", stem + ".lua");
                 if (!File.Exists(luaPath)) throw new ArgumentException("no script for " + stem);
 
-                var delta = DispatchReplayEvent(luaPath, iniPath, section, handler);
-                Console.WriteLine($"click {windowId} {section} {handler} -> mutations={delta.Count}");
+                var delta = DispatchReplayEvent(luaPath, iniPath, section, handler, out var opened);
+                Console.WriteLine($"click {windowId} {section} {handler} -> mutations={delta.Count}" +
+                                  (opened.Count > 0 ? " opens=" + string.Join(",", opened) : ""));
 
                 var filtered = BuildWindowPlan(window, out _);
                 LayoutPlanBuilder.ApplyRuntimeMutations(filtered, delta);
@@ -1004,8 +1005,10 @@ namespace UiProcessApp
         }
 
         /// <summary>Spawns replay_server.lua, dispatches one EVENT and returns the delta lines.</summary>
-        private static List<string> DispatchReplayEvent(string luaPath, string iniPath, string section, string handler)
+        private static List<string> DispatchReplayEvent(string luaPath, string iniPath, string section, string handler,
+                                                        out List<string> opened)
         {
+            opened = new List<string>();
             var lua32 = Environment.GetEnvironmentVariable("LUA32");
             if (string.IsNullOrWhiteSpace(lua32))
                 lua32 = @"C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\lua-5.1.5\lua-5.1.5\build32\lua32.exe";
@@ -1031,6 +1034,11 @@ namespace UiProcessApp
                     var line = proc.StandardOutput.ReadLine();
                     if (line == null || line == "END") break;
                     if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
+                    if (line.StartsWith("WINDOW ", StringComparison.Ordinal))
+                    {
+                        opened.Add(line.Substring("WINDOW ".Length).Trim());
+                        continue;
+                    }
                     if (line.IndexOf('\t') >= 0) lines.Add(line);
                 }
                 try { proc.Kill(); } catch { }

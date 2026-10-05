@@ -1936,6 +1936,17 @@ solved it, and what is still open. **Newest at the bottom.**
   the handler sets compact=false).
 - Verified: --click delta + render; --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? window-chain recording (OpenWindow/CloseWindow) + server regression fixed
+- The shim now records window-chain calls: `_G.OpenWindow`/`CloseWindow` append to a list; the batch
+  RESULT carries `opens=N`, the server prints `WINDOW <path>` lines, the viewer appends
+  `opens=<basenames>` to the AssetNote, `--click` prints them. Handlers that open/close windows are
+  now visible instead of silent no-ops.
+- Mid-edit regression: the make_server.py template kept the old pcall/print block, producing a server
+  with a duplicate block (syntax error: `'end' expected ... near 'elseif'`), which silently made
+  `--click` return mutations=0. Fixed the template; server re-verified (READY/RESULT/END; Btn_Close
+  dispatch 0 mutations - the close handler uses CloseBigBagPanel, a different global).
+- Verified: replay_all 81 OK/41 partial; --click render; --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".
