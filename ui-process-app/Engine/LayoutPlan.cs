@@ -675,11 +675,21 @@ namespace UiProcessApp.Engine
             // mid-init (sections hidden before the engine shows them), which would
             // break GT-matched windows (the minimap lost its whole subtree).
             if (!ReplayCompleted(statePath)) return 0;
+            return ApplyRuntimeMutations(filtered, File.ReadAllLines(statePath));
+        }
 
+        /// <summary>
+        /// Applies mutation lines (`section TAB method TAB args`, the replay TSV format) —
+        /// shared by the on-disk runtime state and the interaction overlay (viewer clicks
+        /// dispatched to tools/ui/replay_server.lua, docs/ui/UI_INTERACTION_REPLAY.md).
+        /// </summary>
+        public static int ApplyRuntimeMutations(IniFile filtered, IEnumerable<string> lines)
+        {
+            if (filtered == null || lines == null) return 0;
             var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
             int applied = 0;
-            foreach (var line in File.ReadAllLines(statePath))
+            foreach (var line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
                 var parts = line.Split('\t');

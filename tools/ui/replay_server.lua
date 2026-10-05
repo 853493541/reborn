@@ -343,6 +343,12 @@ for line in io.lines() do
     if type(fn) ~= "function" then
       print("RESULT ERR no-handler " .. tostring(handler))
     else
+      if handler == "OnCheckBoxCheck" then
+        -- the engine toggles the checkbox before firing the event
+        local sname = target.__sectionName
+        local s = sname and sections[sname]
+        if s then s.checked = not (s.checked == true) end
+      end
       local ok2, err2 = pcall(function() return fn(root, target, _G.arg2, _G.arg3) end)
       print("RESULT " .. (ok2 and "OK" or "ERR") .. " " .. tostring(err2))
     end

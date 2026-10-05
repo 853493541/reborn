@@ -1896,6 +1896,21 @@ solved it, and what is still open. **Newest at the bottom.**
   for-limit from a method-as-value, one `sub` string case, etc. - per-case stub tuning.
 - Verified: replay_all 81 OK/41 partial; --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? interaction wiring: clicks dispatch the client's own handlers in the viewer
+- Wired the proven dispatch core into the WPF viewer: `MainWindow` spawns one `replay_server.lua`
+  per selected window (completed replays only), reads `READY handlers=...`, stops it on window/stage
+  change. A left click hit-tests the built element tree (VisualTreeHelper.HitTest -> walk up to a
+  section), picks the handler by type (CheckBox_* -> OnCheckBoxCheck, Box_* -> OnItemLButtonClick,
+  else OnLButtonClick), sends EVENT, reads the delta until END, appends it to a per-window overlay
+  and re-renders (`ApplyRuntimeMutations` shared with the on-disk state; cache cleared).
+- `BuildLayoutCanvas` now returns the `UiBuildResult` (stored for hit-testing) and applies the
+  per-window overlay after the on-disk runtime state; interactive windows bypass the layout cache.
+- Server: `OnCheckBoxCheck` toggles the checkbox state before firing (as the engine does).
+- Verified: app spawns lua32 for bigbagpanel (pid pair observed); server CLI RESULT OK + delta;
+  --selftest 1240/0/0. A human click is the remaining live check.
+- Next: hover (OnMouseEnter/Leave), item-level clicks with row index, window chains, handler count
+  in the AssetNote.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

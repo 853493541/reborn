@@ -47,14 +47,27 @@ for the bag (OnLButtonClick, OnItemLButtonClick, OnMouseEnter, OnEvent, OnFrameB
 - **Out of the viewer by design:** animations/SFX playback, 3D scenes, web windows — the product
   runs the real engine for those.
 
-## 4. Next steps
+## 4. Viewer wiring (done 2026-10-04)
 
-1. Viewer wiring: spawn/stop the server per selected window; hit-test clicks; map handler by type;
-   apply the delta overlay; invalidate the layout cache; re-render. Show `interactive=N handlers`
-   in the AssetNote.
-2. Hover pass (`OnMouseEnter`/`OnMouseLeave`) for state frames.
-3. Item-level clicks with the row index (the list templates give the geometry).
-4. Window chains: when a handler opens another window, surface it as a new catalog selection.
+- `MainWindow` starts one `replay_server.lua` process per selected window (only when the replay is
+  completed per `replay_summary.tsv`); it reads the `READY handlers=…` line into the handler set and
+  stops the server on window/stage change.
+- A left click on the render hit-tests the built element tree (`VisualTreeHelper.HitTest` → walk up
+  to a section element), picks the handler by section type (`CheckBox_*` → `OnCheckBoxCheck`,
+  `Box_*` → `OnItemLButtonClick`, else `OnLButtonClick`), sends `EVENT <section> <handler>`, reads
+  the mutation delta until `END`, appends it to a per-window overlay, clears the layout cache and
+  re-renders. `ApplyRuntimeMutations` (shared with the on-disk state) applies the overlay.
+- The server toggles the checkbox state before firing `OnCheckBoxCheck` (the engine does).
+- Verified end-to-end at process level: the viewer spawns the server for the default window
+  (bigbagpanel); the server CLI still returns `RESULT OK` + delta for
+  `EVENT CheckBox_Compact OnCheckBoxCheck`. A human click is the remaining live check.
+
+## 5. Next steps
+
+1. Hover pass (`OnMouseEnter`/`OnMouseLeave`) for state frames.
+2. Item-level clicks with the row index (the list templates give the geometry).
+3. Window chains: when a handler opens another window, surface it as a new catalog selection.
+4. Show the interactive handler count in the AssetNote.
 
 ## Reproduce
 

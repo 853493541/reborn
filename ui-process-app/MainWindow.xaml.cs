@@ -23,6 +23,19 @@ namespace UiProcessApp
         /// placeholders/unresolved/outOfBounds + shell/runtime-host flags).</summary>
         private Dictionary<string, string> _status;
 
+        // Interaction replay (docs/ui/UI_INTERACTION_REPLAY.md): a per-window
+        // replay_server.lua process dispatches the client's own handlers; clicks
+        // append their mutation deltas to a per-window overlay applied on re-render.
+        private Process _replayServer;
+        private StreamWriter _replayIn;
+        private StreamReader _replayOut;
+        private string _replayWindowId;
+        private readonly HashSet<string> _replayHandlers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, List<string>> _runtimeOverlays =
+            new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        private UiBuildResult _lastBuild;
+        private Dictionary<object, string> _elementToSection;
+
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
         // re-visits are instant; the NEXT catalog window is pre-built in the background
@@ -227,6 +240,7 @@ namespace UiProcessApp
 
         private void ShowStage(StageInfo stage)
         {
+            StopReplayServer();
             _currentWindow = null;
             _currentIni = null;
             _currentPlan = null;
@@ -301,6 +315,7 @@ namespace UiProcessApp
             RenderIni(iniPath);
             UpdatePageBox();
             RenderLayout(window);
+            StartReplayServer(window);
         }
 
         private static IniFile TryLoadIni(string path)
@@ -570,14 +585,16 @@ namespace UiProcessApp
             try
             {
                 var key = LayoutCacheKey(window, CurrentPage(), HideBox.Text);
-                if (_layoutCache.TryGetValue(key, out var cached))
+                if (_replayServer == null && _layoutCache.TryGetValue(key, out var cached))
                 {
                     ShowCanvas(cached, (_layoutNotes.TryGetValue(key, out var cachedNote) ? cachedNote : "") + "  (cached)");
+                    _lastBuild = null;
+                    _elementToSection = null;
                     SchedulePrewarm();
                     return;
                 }
                 var sw = Stopwatch.StartNew();
-                var canvas = BuildLayoutCanvas(window, _currentIni, CurrentPage(), HideBox.Text, out var note, out var message);
+                var canvas = BuildLayoutCanvas(window, _currentIni, CurrentPage(), HideBox.Text, out var note, out var message, out var buildResult);
                 sw.Stop();
                 if (canvas == null)
                 {
@@ -588,12 +605,158 @@ namespace UiProcessApp
                 note = note + "  build=" + sw.ElapsedMilliseconds + "ms";
                 StoreLayout(key, canvas, note);
                 ShowCanvas(canvas, note);
+                _lastBuild = buildResult;
+                _elementToSection = buildResult == null
+                    ? null
+                    : buildResult.Elements.ToDictionary(kv => (object)kv.Value, kv => kv.Key);
                 SchedulePrewarm();
             }
             catch (Exception ex)
             {
                 LayoutHost.Child = ShowMessage("Layout render failed: " + ex.Message);
                 AssetNote.Text = "";
+            }
+        }
+
+        /// <summary>Starts the per-window interaction server (tools/ui/replay_server.lua):
+        /// the client's own event handlers run offline and their mutation deltas feed the
+        /// render. Only windows whose replay completed (replay_summary.tsv OK) qualify.</summary>
+        private void StartReplayServer(WindowInfo window)
+        {
+            StopReplayServer();
+            _replayHandlers.Clear();
+            _replayWindowId = null;
+            if (window == null || string.IsNullOrWhiteSpace(window.Path)) return;
+            var stem = Path.GetFileNameWithoutExtension(window.Path);
+            if (string.IsNullOrWhiteSpace(stem)) return;
+            var iniPath = ResolveIniPath(window);
+            var luaPath = Path.Combine(Paths.AppRoot, "assets", "ui", "Config", "Default", stem + ".lua");
+            if (iniPath == null || !File.Exists(iniPath) || !File.Exists(luaPath)) return;
+            var summary = Path.Combine(Paths.AppRoot, "Data", "runtime_state", "replay_summary.tsv");
+            if (!File.Exists(summary)) return;
+            var completed = false;
+            foreach (var line in File.ReadAllLines(summary))
+            {
+                var parts = line.Split('\t');
+                if (parts.Length >= 2 && string.Equals(parts[0], stem, StringComparison.OrdinalIgnoreCase))
+                {
+                    completed = parts[1].StartsWith("OK", StringComparison.OrdinalIgnoreCase);
+                    break;
+                }
+            }
+            if (!completed) return;
+            var lua32 = Environment.GetEnvironmentVariable("LUA32");
+            if (string.IsNullOrWhiteSpace(lua32))
+                lua32 = @"C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\lua-5.1.5\lua-5.1.5\build32\lua32.exe";
+            var server = Path.Combine(Paths.RepoRoot ?? "", "tools", "ui", "replay_server.lua");
+            if (!File.Exists(lua32) || !File.Exists(server)) return;
+            try
+            {
+                var psi = new ProcessStartInfo(lua32,
+                    "\"" + server + "\" \"" + luaPath + "\" auto \"" + iniPath + "\"")
+                {
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+                _replayServer = Process.Start(psi);
+                if (_replayServer == null) return;
+                _replayIn = _replayServer.StandardInput;
+                _replayOut = _replayServer.StandardOutput;
+                var ready = _replayOut.ReadLine() ?? "";
+                if (ready.StartsWith("READY handlers=", StringComparison.Ordinal))
+                {
+                    foreach (var h in ready.Substring("READY handlers=".Length)
+                                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                        _replayHandlers.Add(h.Trim());
+                    _replayWindowId = window.Id;
+                }
+            }
+            catch
+            {
+                StopReplayServer();
+            }
+        }
+
+        private void StopReplayServer()
+        {
+            try { if (_replayIn != null) { _replayIn.Close(); _replayIn = null; } } catch { }
+            try { if (_replayOut != null) { _replayOut.Close(); _replayOut = null; } } catch { }
+            try
+            {
+                if (_replayServer != null)
+                {
+                    if (!_replayServer.HasExited) _replayServer.Kill();
+                    _replayServer.Dispose();
+                }
+            }
+            catch { }
+            _replayServer = null;
+        }
+
+        /// <summary>Click → hit-test the built element tree → dispatch the section's own
+        /// handler through the interaction server and re-render with the delta applied.</summary>
+        private void OnLayoutClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (_replayServer == null || _replayIn == null || _replayOut == null) return;
+            if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
+            if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
+            string sectionName = null;
+            try
+            {
+                var hit = VisualTreeHelper.HitTest(LayoutHost, e.GetPosition(LayoutHost));
+                var visual = hit?.VisualHit;
+                while (visual != null)
+                {
+                    if (_elementToSection.TryGetValue(visual, out var name)) { sectionName = name; break; }
+                    visual = VisualTreeHelper.GetParent(visual);
+                }
+            }
+            catch { }
+            if (sectionName == null) return;
+            var handler = PickHandler(sectionName);
+            if (handler == null) return;
+            SendReplayEvent(sectionName, handler);
+        }
+
+        private string PickHandler(string section)
+        {
+            if (section.StartsWith("CheckBox_", StringComparison.OrdinalIgnoreCase) &&
+                _replayHandlers.Contains("OnCheckBoxCheck")) return "OnCheckBoxCheck";
+            if (section.StartsWith("Box_", StringComparison.OrdinalIgnoreCase) &&
+                _replayHandlers.Contains("OnItemLButtonClick")) return "OnItemLButtonClick";
+            if (_replayHandlers.Contains("OnLButtonClick")) return "OnLButtonClick";
+            return null;
+        }
+
+        private void SendReplayEvent(string section, string handler)
+        {
+            try
+            {
+                _replayIn.WriteLine("EVENT " + section + " " + handler);
+                _replayIn.Flush();
+                var lines = new List<string>();
+                for (int i = 0; i < 5000; i++)
+                {
+                    var line = _replayOut.ReadLine();
+                    if (line == null || line == "END") break;
+                    if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
+                    if (line.IndexOf('\t') >= 0) lines.Add(line);
+                }
+                if (lines.Count == 0) return;
+                if (!_runtimeOverlays.TryGetValue(_currentWindow.Id, out var overlay))
+                    _runtimeOverlays[_currentWindow.Id] = overlay = new List<string>();
+                overlay.AddRange(lines);
+                _layoutCache.Clear();
+                _layoutOrder.Clear();
+                _layoutNotes.Clear();
+                RenderLayout(_currentWindow);
+            }
+            catch
+            {
+                StopReplayServer();
             }
         }
 
@@ -635,13 +798,16 @@ namespace UiProcessApp
         /// UI state (CurrentPage/HideBox are passed in) so it is safe to call for the
         /// prewarm of another window.</summary>
         private Canvas BuildLayoutCanvas(WindowInfo window, IniFile sourceIni, string page, string hideText,
-                                         out string note, out string message)
+                                         out string note, out string message, out UiBuildResult buildResult)
         {
             note = "";
             message = null;
+            buildResult = null;
             var plan = LayoutPlanBuilder.Build(sourceIni, page);
             LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, App.LoadIniTolerant);
             var runtimeApplied = LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
+            if (_runtimeOverlays.TryGetValue(window.Id, out var overlay) && overlay.Count > 0)
+                runtimeApplied += LayoutPlanBuilder.ApplyRuntimeMutations(plan.Filtered, overlay);
             LayoutPlanBuilder.ApplyHide(plan.Filtered, hideText);
             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -671,6 +837,7 @@ namespace UiProcessApp
             }
             var ini = plan.Filtered;
             var build = UiLayout.Build(ini, SharedAssets, SharedTextures);
+            buildResult = build;
             var overlayRoot = App.BuildOverlayVisual(window, SharedAssets, SharedTextures, UiLayout.Wireframe);
 
             double width = ini.Sections[0].GetInt("Width");
@@ -770,7 +937,7 @@ namespace UiProcessApp
                 {
                     var ini = GetIni(next);
                     if (ini == null) return;
-                    var canvas = BuildLayoutCanvas(next, ini, page, next.Hide ?? "", out var note, out _);
+                    var canvas = BuildLayoutCanvas(next, ini, page, next.Hide ?? "", out var note, out _, out _);
                     if (canvas != null) StoreLayout(key, canvas, note);
                 }
                 catch
