@@ -22,7 +22,7 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Holes (`LoadHoleRegion`, vt[4]) | **[OK]** | this branch; Z-flip A/B verified region 0,0; fall-through confirmed |
 | Hole A/B on other regions/maps | **[PART]** | only 海岛绝境 region (0,0) compared |
 | Terrain slope model (`ProcessDropSpeed`: cell slope projection, `Vz=0` air-stop) | **[MISSING]** | host snaps onto any rise (see 4., over-permissive) |
-| R32 detail heights | **[MISSING] (not needed)** | BCH is authoritative; R32 relation unresolved (§7.6) |
+| R32 detail heights | **[RESOLVED 2026-10-04]** | same field as BCH: BCH = per-region normalized [0,1], row-flipped; `r32 = r32_min + bch_flip*(r32_max-r32_min)` (residual 2e-8); header floats semantics open — `docs/movement/TERRAIN_R32_BCH_RELATION.md` |
 | Terrain normals/materials | **[MISSING]** | not exposed by the sampler |
 | Streaming | **[PART - cache 2026-10-04]** | engine streams; sampler keeps a bounded LRU of regions (`RC_TERR_CACHE`, default 4) — kills border ping-pong reloads (16-85 loads/17 s -> 3, 0 per crossing), `docs/movement/TERRAIN_REGION_STREAMING.md`; spawn warmup handles region lag |
 

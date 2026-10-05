@@ -3954,3 +3954,16 @@ if the cache/host frames appear.
 - Evidence: `verify_pvp_evidence.py` exit 0 with 0 mismatches on all 6 tables;
   `--spawn-cells 400` prints `hole cell (228,207) -> world (22850,30450)`.
 - Outcome: solved.
+
+### 2026-10-04 - Movement/terrain - R32 <-> BCH relation resolved
+
+- Did: decoded the `.bch` container (36-byte header + samples^2 float32, per-region
+  normalized [0,1]) and compared it with the renderer `.r32` (513^2 float32, no
+  header, ~0.5 band). They are the same field: BCH is row-flipped in Z and exactly
+  affine to R32 (`r32 = r32_min + bch_flip*(range)`, residual 2e-8, corr 1.0).
+  Added `tools/movement/r32_bch_relation.py` for the comparison.
+- Evidence: `docs/movement/TERRAIN_R32_BCH_RELATION.md`; tool output
+  `affine r32 = 0.010569 * bch_flip + 0.500397 max residual 0.000000019`.
+- Outcome: partial - relation solved; the BCH header floats' exact semantics
+  (candidate max/min in cm) remain open (prediction 651.5 vs logged sample 761);
+  next probe = disasm `_LoadHegihtRegionBCH` or A/B `LoadRegion` at known cells.

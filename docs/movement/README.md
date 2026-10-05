@@ -18,12 +18,14 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `REBORN_JUMP_FALL_SPEC.md` | REBORN — JX3 jump & fall reproduction spec |
 | `STRUCTURE_COLLISION_RESEARCH.md` | Structure collision research — how the game handles houses/walls |
 | `TERRAIN_REGION_STREAMING.md` | Terrain region streaming — border-load audit, bounded LRU region cache (`RC_TERR_CACHE`), hole A/B status (2026-10-04) |
+| `TERRAIN_R32_BCH_RELATION.md` | R32 ↔ BCH relation — same heightfield, row-flipped, exact affine; BCH header decoded (2026-10-04) |
 
 ## Tools
 
 | Tool | What |
 |---|---|
 | `tools/gravity/parse_jump_tables.py` | parse `JumpParam/JumpFrameParam/Sprint/SkillMove.tab`; `--summary`, `--chain`, `--json`, `--csharp-out` |
+| `tools/movement/r32_bch_relation.py` | Compare a renderer `.r32` heightmap with its `.bch` physics counterpart (header decode, row-flip affine, residual) |
 | `tools/gravity/verify_model.py` | numeric gates for the jump/fall model (incl. the 二段跳 chain) -> `proof/gravity/verification.txt` |
 | `tools/movement/find_xrefs.py` | PE call/field xref and window disassembly helper |
 | `tools/collision/check_hole_mask.py` | Convert an extracted `.hlb` hole mask (flip rule applied) and A/B it against a client `RC_HOLE_DUMP` engine dump; `--scan <dir>` prints the hole-cell inventory of a `.hlb` tree |
