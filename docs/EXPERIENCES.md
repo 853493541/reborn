@@ -3967,3 +3967,22 @@ if the cache/host frames appear.
 - Outcome: partial - relation solved; the BCH header floats' exact semantics
   (candidate max/min in cm) remain open (prediction 651.5 vs logged sample 761);
   next probe = disasm `_LoadHegihtRegionBCH` or A/B `LoadRegion` at known cells.
+
+### 2026-10-04 - Movement/terrain - spawn ground settle fixed (stable-value, not non-zero)
+
+- Problem: `RC_SPAWN` in a not-yet-streamed region stalled the settle for 10 s and
+  ended with py=0; one pre-cache run got a partial value (2019) at the same point.
+- Tried: camera-column warmup (no effect), actor-based warmup (no effect),
+  invalidate+reload every 250 ms (39 loads, still 0) - then measured the loader's
+  answer: a stable **0** for 30+ s with fresh loads at (-1000,24224), i.e. the low
+  ground west of the mesa. The engine loader is the gameplay truth; the old settle
+  waited for a NON-zero value that never comes (the 2019 run was a pre-cache
+  partial-load artifact).
+- Fix: settle waits for the sample to stop changing (bounded 2 s) and accepts it;
+  region loads that come back all-zero are never cached (retry; `zeroRetries`
+  telemetry). Verified: settle 250 ms at (-1000,24224) (was 10,047 ms), 281 ms /
+  py=761 at the M1 spawn (23334,24224) matching the M1 proof; crossing run
+  unchanged (2 loads, 0 per crossing); collision 36/36; gravity PASS.
+- Evidence: logs `reborn_20261005_000105` (old stall), `000403`/`000447` (fixed).
+- Outcome: solved. Related open: the coarse 16-bit BCH variant disagrees with the
+  loader at that point (~6090 vs 0) - `TERRAIN_R32_BCH_RELATION.md` §Open.

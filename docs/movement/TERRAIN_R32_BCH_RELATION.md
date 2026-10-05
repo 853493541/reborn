@@ -46,7 +46,13 @@ Implications:
   761 cm — not confirmed (off by ~110 cm). Next probe: disasm
   `_LoadHegihtRegionBCH` (PhysicsEngineX64) or A/B `LoadRegion` output at known
   cells to recover the exact de-normalization.
-- The 128-cell coarse BCH variant: which regions ship it / when it is used.
+- The coarse BCH variants: `_000_000.bch` is 129 samples float32 (format @16=1),
+  `_001_002.bch` is 129 samples **16-bit** (format @16=0, payload 129²×2). The
+  16-bit variant decodes to ~6090 cm at (-1000,24224) under the header min/max
+  hypothesis, while the engine loader reports a **stable 0** there (30 s, fresh
+  loads — see `TERRAIN_REGION_STREAMING.md` §3). Either the coarse variant's
+  normalization differs or the loader does not use it for physics. Open; next
+  probe = disasm `_LoadHegihtRegionBCH` (format field @16 / flags @24).
 
 ## Reproduce
 

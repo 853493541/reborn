@@ -66,6 +66,10 @@ internal sealed class TerrainSampler : IDisposable
     Region _cur;
     readonly int _cacheCap;
     long _use;
+    // region loads that came back all-zero (engine stream not ready): retried
+    // on the next call and never cached as zeros
+    readonly Dictionary<long, int> _zeroTries = new Dictionary<long, int>();
+    public int ZeroRetries;
 
     // streaming telemetry (per-run load cost)
     public int Loads;
@@ -201,6 +205,34 @@ internal sealed class TerrainSampler : IDisposable
             Marshal.FreeHGlobal(r.Hole);
             return null;
         }
+        // The loader can return an all-zero grid before the engine has streamed
+        // the region (observed at spawn in RC_SPAWN regions). Do not cache
+        // zeros - report not-ready and retry on the next call (the engine
+        // streams within seconds once the player model is active). After 600
+        // tries the zeros are cached to avoid an unbounded retry loop.
+        bool allZero = true;
+        for (int i = 0; i < _count; i++)
+        {
+            if (Marshal.ReadInt32(r.Buf, i * 4) != 0) { allZero = false; break; }
+        }
+        if (allZero)
+        {
+            long key = ((long)ix << 32) ^ (uint)iz;
+            int tries = 0;
+            _zeroTries.TryGetValue(key, out tries);
+            tries++;
+            _zeroTries[key] = tries;
+            ZeroRetries++;
+            if (tries == 1 || (tries % 100) == 0)
+                _log(string.Format("terrain region ({0},{1}) all-zero (not streamed yet), retry #{2}", ix, iz, tries));
+            if (tries <= 600)
+            {
+                Marshal.FreeHGlobal(r.Buf);
+                Marshal.FreeHGlobal(r.Hole);
+                return null;
+            }
+            _log(string.Format("terrain region ({0},{1}) still all-zero after {2} retries - caching", ix, iz, tries));
+        }
         _log(string.Format("terrain load ({0},{1}) ms={2:F1} holes={3} cache={4}",
             ix, iz, LastLoadMs, r.HasHoles ? 1 : 0, _cache.Count + 1));
         // the fresh entry is the most recently used: mark it before the
@@ -288,8 +320,8 @@ internal sealed class TerrainSampler : IDisposable
     // streaming telemetry summary (exit log / A-B runs)
     public string StatsLine()
     {
-        return string.Format("terrLoads={0} msTotal={1:F1} msMax={2:F1} last={3:F1} cache={4}",
-            Loads, LoadMsTotal, LoadMsMax, LastLoadMs, _cache.Count);
+        return string.Format("terrLoads={0} msTotal={1:F1} msMax={2:F1} last={3:F1} cache={4} zeroRetries={5}",
+            Loads, LoadMsTotal, LoadMsMax, LastLoadMs, _cache.Count, ZeroRetries);
     }
 
     public byte[] HoleMaskCopy()

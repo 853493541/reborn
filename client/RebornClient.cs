@@ -870,24 +870,17 @@ internal static class RebornClient
             }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
-            // the spawn region (observed on 龙门寻宝). Pump frames and retry
-            // through the neighbouring region until real heights arrive.
+            // the spawn region. The engine streams around the PLAYER MODEL, which
+            // is placed after this block - sample once here and, when the data is
+            // not ready yet, settle after placePlayer below (camera-only warmup
+            // was tried and does not trigger the stream).
             // RC_SPAWN_Y=1 keeps the provided absolute Y (indoor test spawns:
             // floors above terrain are scene meshes, not terrain).
             if (Env("RC_SPAWN_Y", "0") != "1")
             {
                 py = sampler != null ? sampler.Sample(px, pz) : 0f;
                 if (sampler != null && py == 0f)
-                {
-                    long warm = Environment.TickCount;
-                    while (py == 0f && Environment.TickCount - warm < 10000)
-                    {
-                        Pump(engine, 250);
-                        sampler.Sample(px - 51200f, pz);
-                        py = sampler.Sample(px, pz);
-                    }
-                    Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
-                }
+                    Log("spawn terrain not streamed yet - settling after actor placement");
             }
             Log(string.Format("spawn=({0:F0},{1:F0},{2:F0}) view=({3:F2},{4:F2})", px, py, pz, viewX, viewZ));
         }
@@ -916,6 +909,41 @@ internal static class RebornClient
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
+
+        // Spawn ground settle (deferred): the engine streams terrain around the
+        // player model; until the spawn region arrives the loader returns zeros
+        // (observed with RC_SPAWN in a region the map-default camera had not
+        // streamed). Pump frames, then re-place the actor once real heights
+        // arrive (same-name AddDummyModel keeps the handle).
+        if (Env("RC_SPAWN_Y", "0") != "1" && sampler != null)
+        {
+            bool settleDbg = Env("RC_SETTLE_DBG", "0") == "1";
+            long warm = Environment.TickCount;
+            // The loader can be mid-stream right after the actor appears: wait
+            // until the sampled value stops changing (bounded 2 s), then accept
+            // it. Waiting for a NON-zero value is wrong - a genuine 0-height
+            // spot (e.g. the low ground west of the 龙门 mesa) stalled 10 s and
+            // never recovered (2026-10-04 run).
+            float g = sampler.Sample(px, pz);
+            float prev = g;
+            Pump(engine, 250);
+            g = sampler.Sample(px, pz);
+            while (g != prev && Environment.TickCount - warm < 2000)
+            {
+                if (settleDbg)
+                    Log(string.Format("spawn settle sample={0:F1} t={1}ms", g, Environment.TickCount - warm));
+                prev = g;
+                Pump(engine, 250);
+                g = sampler.Sample(px, pz);
+            }
+            if (Math.Abs(g - py) > 0.5f)
+            {
+                py = g;
+                placePlayer(px, py, pz, curYaw);
+            }
+            Log(string.Format("spawn ground settle took {0}ms py={1:F0}",
+                Environment.TickCount - warm, py));
+        }
 
         // ---------------- target selection state (Targeting.cs) ----------------
         // Target HUD art/layout comes from the game client's own UI files

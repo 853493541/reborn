@@ -54,7 +54,14 @@ RC_AUTORUN=17000` — run east across the border 7.5 s, reverse, run back
   its `(ix,iz)`, height grid, packed hole mask, `HasHoles` and last-use stamp.
   Eviction frees the oldest buffers; `Dispose` frees all.
 - Load telemetry: per-load `terrain load (ix,iz) ms=… holes=… cache=…` and an exit
-  `terrain stats terrLoads=… msTotal=… msMax=… cache=…` line.
+  `terrain stats terrLoads=… msTotal=… msMax=… cache=… zeroRetries=…` line.
+- **All-zero region loads are never cached** (`zeroRetries`): the loader can return a
+  zero grid before the engine has streamed the region; retry on the next call instead
+  of poisoning the cache.
+- **Spawn settle** (`RebornClient`): waits for the sampled height to stop changing
+  (bounded 2 s) and accepts it — a genuine 0-height spot must not stall. Measured
+  250 ms at the low spawn (-1000,24224) vs 10,047 ms before the fix; 281 ms /
+  py=761 at the M1 spawn (23334,24224), matching the M1 proof.
 - Bug found by the cap=1 control run: the fresh entry was added with `LastUse=0`, so
   the eviction pass freed the entry it was about to return (AV 0xC0000005 at the
   next sample, dump `reborn_client_terrainstream.exe.16820.dmp`). Fixed by marking
