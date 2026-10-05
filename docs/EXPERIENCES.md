@@ -4061,3 +4061,23 @@ if the cache/host frames appear.
 - Outcome: P2 caps first complete matrix; P4 data decoded / effect open; P5 two poses.
 - Re-open: foliage caps at a foliage pose; per-LOD isolation; weather params/time source;
   GpuSwitch consumer (external tooling — absent from install).
+
+### 2026-10-05 - Merge - render-options <- terrain-stream-holes (branch combine)
+
+- Did: merged `agent/terrain-stream-holes` (7 commits: LRU terrain cache `c32f095`,
+  hole A/B all maps, streaming audit, R32<->BCH relation, quality-tier probe) into
+  `agent/render-options` at `8e3ef69`; the combined branch is the one the 1.3 agent
+  fast-forwards to. Conflicts: 2 (`docs/EXPERIENCES.md` append - theirs first then ours
+  by commit time; `docs/engine_host/README.md` rows - both kept). `client/RebornClient.cs`
+  auto-merged (their telemetry vs our `VideoOptions.Apply` call site).
+- Validation on the combined tree: feature build exit=0; gates `jx3_model` 10 PASS,
+  gravity `verify_model` PASS, loot selftest PASS, collision selftest 36/36, `camera_smoke`
+  ALL PASS; boot run `reborn_20261005_000130.log` `git=8e3ef69 dirty=0`, map load ok,
+  `cache=4` telemetry + `terrain load (2,2) ms=4.1`, no `VideoOptions:` lines (no-op path).
+- Observation for the terrain owner (not a merge blocker, MED): `r32_bch_relation.py` on
+  the sandbox-renamed pair 000_000 (`C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`) prints
+  `max residual = 0.006060575`, not 0 as the doc claims for 002_002 - would be worth
+  re-checking whether the sandbox crop rename pairs the same regions.
+- Handoff: in `reborn-iso-terrain-stream-holes`, commit/stash WIP then
+  `git merge --ff-only agent/render-options` (or plain merge if new commits landed) and
+  rebuild the feature client - the compile list now includes `client/VideoOptions.cs`.
