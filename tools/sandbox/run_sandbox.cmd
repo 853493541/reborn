@@ -5,5 +5,11 @@ rem Map:    python tools\sandbox\build_sandbox.py --crop 2,2,1,1 --name 龙门�
 setlocal
 cd /d C:\SeasunGame\MovieEditor
 set RC_MAP=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap
+rem Fast startup default for sandbox runs (deviation D7, docs/engine_host/
+rem FAST_STARTUP.md): skip the ~21 s editor shader-DB TCP timeout via
+rem startup_shim.dll. Requires the exe to be built from a main that includes
+rem the RC_STARTUP wiring (reborn_client_mini.exe rebuilt at merge). Unset this
+rem (or set RC_STARTUP=engine) to run the shipped 24 s path.
+set RC_STARTUP=nodb
 rem Window title comes from the exe name (sandbox-mini; AGENTS.md 2.7).
 start "" "C:\SeasunGame\MovieEditor\bin64\reborn_client_mini.exe"

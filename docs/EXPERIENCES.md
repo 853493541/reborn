@@ -4014,3 +4014,52 @@ if the cache/host frames appear.
   `sandbox-audio`), clean exit, shim `d6=seed`.
 - Outcome: solved (step 1); native tag path still open (LOW hypothesis: the
   client loads a bank the host does not).
+### 2026-10-04 - engine_host - Startup stall was a shader-DB TCP timeout, not predraw (RC_STARTUP=nodb, D7)
+
+- Did: chased the ~24 s engine init. Planned fix was a pre-draw thread override;
+  built `predraw_shim` (force threads:4/8 via 6-byte substitutions at
+  `KG3DEngineDX11EX64` RVAs `0x8CFF3F/0x8CFF47`, skip via NOP at `0x8CFF64`).
+  It applied (`applied=1 sites=2`) but init stayed 24.2-24.6 s for every mode -
+  threads, skip, baseline all identical.
+- Profiled the gap: CPU ~45 % of one core, disk read avg ~0.14 MB/s, GPU mostly
+  idle; `Get-NetTCPConnection` showed `10.11.10.102:1433` in `SynSent`. Disasm +
+  strings in `KG3D_MaterialSystemX64.dll` pinned
+  `KG3D_MaterialShaderManager::_initShaderUpload` (RVA `0xAAA980`): blocking
+  `connect()` to the editor shader-compile DB. The predraw master-switch log
+  line simply sits immediately before the SYN-timeout wait.
+- Fix: `startup_shim.dll` (DLL-load notification on `KG3D_MaterialSystemX64.dll`,
+  PE stamp/size + exact 13-byte string guard) rewrites the hardcoded IP literal
+  at RVA `0x3D4518` to `0.0.0.0` in memory; `connect()` fails instantly
+  (`WSAEADDRNOTAVAIL`) and the engine takes its own existing "server not ready"
+  path. `RC_STARTUP=nodb`; unset = shipped behaviour and the DLL is never
+  loaded. Data-only write, no code patch.
+- Measured: `Init3DEngine` 24 563/24 187 ms -> 3 187/3 203 ms (engine
+  `const time` 24.375 -> 2.844 s); full 8x8 map 3 094 ms + `LoadMap` 1 563 ms;
+  spawn/terrain/per-region RGB unchanged; hitch p95 27 ms both.
+- Lesson: a suspiciously fixed ~21 s wait is a TCP SYN timeout - check
+  `SynSent` before instrumenting the work itself. A log line adjacent to a gap
+  is not evidence of what the gap is.
+- Dead end: the pre-draw thread override (removed after the A/B; negative
+  evidence kept: forced threads had no effect, so the stall is not the predraw
+  thread wait).
+- Evidence: `docs/engine_host/FAST_STARTUP.md`; deviation D7
+  (`docs/camera/HOST_DEVIATIONS.md`);
+  `proof/engine_host/startup_nodb_2026_10_04/` (logs, engine init extracts,
+  fingerprints).
+- Outcome: solved; default rollout pending (sandbox launcher only, after user
+  review).
+
+### 2026-10-04 - engine_host - D7 hardening: content-scan guard (no hardcoded RVA)
+
+- Did: replaced the hardcoded RVA `0x3D4518` + PE-stamp gate in
+  `startup_shim.cpp` with a scan of the module's readable sections for the
+  exact standalone literal `10.11.10.102` (byte-equal, next byte NUL); every
+  match (cap 8) is rewritten to `0.0.0.0`. PE stamp/size are now reported only
+  (`build=ok|mismatch`).
+- Why: our own client rebuilds never change the installed engine DLL, but a
+  game/MovieEditor update would have invalidated a stamp gate; with the scan,
+  an update that keeps the address needs no action.
+- Verified: `RC_STARTUP=nodb` run -> `Startup: mode=nodb applied=1 sites=1
+  build=ok`, `Init3DEngine=3109 ms`; shim rebuild exports `RC_Startup_*`.
+- Evidence: `native/startup_shim.cpp`; `docs/engine_host/FAST_STARTUP.md`;
+  D7 register text.

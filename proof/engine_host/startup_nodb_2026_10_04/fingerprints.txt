@@ -1,0 +1,40 @@
+startup_nodb proof - 2026-10-04 - branch agent/predraw (#iso)
+Build: reborn_client_predraw.exe 2026-10-04 23:17:25 git=eab4277 dirty=6 (feature build)
+Map: sandbox 1x1 C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s (sandbox cells) /
+     default full 8x8 data\source\maps\龙门寻宝 (fullmap cell)
+Driver: RC_DEMO=1, RC_AUTORUN=120000 (sandbox) / 60000 (fullmap), RC_SHOTS=8000,15000
+
+Run table (client logs copied here):
+  baseline_reborn.log      RC_STARTUP unset  Init3DEngine=24187 ms  LoadMap=156 ms   hitch_clean max=39 p95=27
+  nodb_reborn.log          RC_STARTUP=nodb   Init3DEngine=3203 ms   LoadMap=172 ms   hitch_clean max=61 p95=27
+  fullmap_nodb_reborn.log  RC_STARTUP=nodb   Init3DEngine=3094 ms   LoadMap=1563 ms  hitch_clean max=25 p95=18
+
+Engine const time (KG3D_Engine logs, first 60 lines kept as *_engine_init.txt):
+  baseline_engine_init.txt:  "-- KG3D_Engine initialize success. const time = 24.375s --"
+  nodb_engine_init.txt:      "-- KG3D_Engine initialize success. const time = 2.844s --"
+  fullmap_nodb_engine_init.txt: const time = 2.8xx s (same init; map load happens after)
+
+Stall attribution evidence (method, not in the logs):
+- Get-NetTCPConnection -OwningProcess <client> sampled during the 22 s init gap:
+  remote 10.11.10.102:1433 in state SynSent (9 consecutive samples).
+- strings in KG3D_MaterialSystemX64.dll: KG3D_MaterialShaderManager::_isSqlServerReady,
+  "10.11.10.102", ShaderListUpload\KG3D_ShaderToDB.dll, _initShaderUpload, _AppendShaderList.
+- disasm of the connect path (material-system RVA 0xAAA980): WSAStartup(0x202) ->
+  socket(AF_INET, SOCK_STREAM) -> inet_addr("10.11.10.102") -> htons(0x599=1433) ->
+  blocking connect() -> select() -> on failure sets upload-state 0 and returns.
+- CPU during the gap ~45% of one core, IO read avg ~0.14 MB/s, GPU mostly idle
+  => a network wait, not shader compilation.
+- A/B: RC_PREDRAW patches (threads:4 / skip on StartPreDrawShader) had no effect on
+  init (24.16-24.28 s) - the stall is not the predraw thread path.
+
+Fingerprints (tools/proof/image_stats.py --grid 4x4, 1280x720):
+baseline_rc_00_8000ms.png sha256=1ddb6cd8ec1b66c1 mean=#AD9377
+  CFB18F D2B596 B89D81 47423C / CAAA88 CEAF8F A1886E 584A40
+  CBAB8A CAAB8A A38B70 977D62 / CCAE8E CAAB8B AD9175 957C60
+nodb_rc_00_8000ms.png sha256=cdcc1bcafb09b83f mean=#AD9378
+  CFB190 D3B696 B49A7F 48423C / CAAA89 CEAF8F 9E856C 5E4F44
+  CBAC8B CAAC8B A28A70 9A7F63 / CCAF8F CBAC8B AB9074 967D62
+(+ the 15000 ms pair: baseline mean #B39A7F vs nodb #B2987D; same per-region scene,
+small deltas are the demo animation phase at shot time.)
+
+spawn identical in all cells: (18991,962,33853); no LoadRegion errors.
