@@ -345,6 +345,24 @@ internal static class RebornClient
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
+        // ---- audio (step 1) ------------------------------------------------
+        // Wwise via the engine's own KG3DSoundCLR (the spike's call, now in the
+        // product client). The engine's tani SoundTag does not fire in the host
+        // (SOUND_PATH.md, Frida: Wwise inits, no LoadBank/PostEvent), so the
+        // skill sound is played from the decoded WAV as a REGISTERED PROVISIONAL
+        // until the native tag path is recovered (re-open: the SoundTag fires
+        // with the banks loaded in the host).
+        bool soundReady = false;
+        if (Env("RC_SOUND", "1") != "0")
+        {
+            try { sound.Init(startupPath, form.Handle.ToInt64()); soundReady = true; Log("sound: KG3DSoundCLR.Init ok"); }
+            catch (Exception e) { Log("sound: KG3DSoundCLR.Init ex: " + e.Message); }
+        }
+        else Log("sound: disabled (RC_SOUND=0)");
+        string skillWav = Path.Combine(Application.StartupPath, "flws_sound.wav");
+        if (!File.Exists(skillWav)) { Log("sound: skill wav missing at " + skillWav); skillWav = null; }
+        else Log("sound: skill wav " + skillWav);
+
         var scene = new KGSceneCLR();
         // Recon: dump the managed wrapper API surface for the player / near-plane
         // paths (B1 exit; docs/camera/CLOSE_RANGE_RESEARCH.md §2). Env-gated.
@@ -2406,6 +2424,12 @@ internal static class RebornClient
                 // camera shake on the cast (host default; per-skill shake rows
                 // are data-gated)
                 camShake.Start(2.0, 0.5, 0.8, 3);
+                if (skillWav != null)
+                {
+                    bool played = PlaySound(skillWav, IntPtr.Zero,
+                        SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+                    Log("sound: skill wav play rc=" + played);
+                }
                 Log("skill cast");
             }
 
@@ -3565,6 +3589,7 @@ internal static class RebornClient
             catch (Exception e) { Log("camera system ex: " + e.Message); }
 
             engine.FrameMove();
+            if (soundReady) { try { sound.FrameMove(); } catch { } }
             // Step C test: write the model's exact placement into a post-process
             // camera record BETWEEN FrameMove and Render (bypasses the clamp)
             if (camPreIdx >= 0 && preSet && CameraShim.Available &&
@@ -4264,6 +4289,12 @@ internal static class RebornClient
         }
         return list.ToArray();
     }
+
+    // Provisional skill sound: the decoded FLWS WAV (SOUND_PATH.md) played via
+    // winmm, because the engine's tani SoundTag does not fire in the host.
+    [DllImport("winmm.dll", CharSet = CharSet.Auto)]
+    static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
+    const uint SND_ASYNC = 0x0001, SND_NODEFAULT = 0x0002, SND_FILENAME = 0x00020000;
 
     static void Pump(KGEngineCLR engine, int ms)
     {

@@ -4000,3 +4000,17 @@ if the cache/host frames appear.
   `JX3_STEP_FORGIVENESS_RESEARCH.md` §8 correction note.
 - Outcome: solved (N/A with evidence). Re-open if the online character is proven
   to use the PxController or a SIMWorld skin value is recovered.
+### 2026-10-05 - Audio - host audio step 1 (Wwise init + provisional skill WAV)
+
+- Did: the product client now calls `KG3DSoundCLR.Init(startupPath, hwnd)` after
+  `editor.Init` and `sound.FrameMove()` each frame; on skill cast it plays the
+  decoded FLWS WAV (`bin64\flws_sound.wav`) via winmm. The engine's tani SoundTag
+  still does not fire in the host (SOUND_PATH.md Frida: Wwise inits, no
+  LoadBank/PostEvent), so the WAV play is a REGISTERED PROVISIONAL - re-open when
+  the SoundTag fires with the banks loaded.
+- Evidence: `docs/audio/HOST_AUDIO_STEP1.md`; run `reborn_20261005_135524.log`
+  (`sound: KG3DSoundCLR.Init ok`, `sound: skill wav play rc=True`, `skill cast`;
+  no engine Wwise lines). Feature build `reborn_client_audio.exe` (title
+  `sandbox-audio`), clean exit, shim `d6=seed`.
+- Outcome: solved (step 1); native tag path still open (LOW hypothesis: the
+  client loads a bank the host does not).
