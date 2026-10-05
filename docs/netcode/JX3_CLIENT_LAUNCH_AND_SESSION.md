@@ -1135,3 +1135,36 @@ Login conversation for the stub: connect -> (client handshake op 2) -> proto 2 r
 (client account verify op 3) -> proto 3 (2 bytes: `03 00`) -> proto 9 role list (0x324) ->
 (client login game op 10) -> proto 14 (`14 00` + roleID + key + dword + "127.0.0.1") ->
 client connects to the game server address (P3).
+
+## 52. P2 BREAKTHROUGH: gateway transport stream cipher + REAL opcodes (live-verified)
+
+**The gateway payloads are encrypted.** The client's transport wrapper (created by the
+42-byte-hello factory `0x1407A0B00`) enables a per-session stream cipher on BOTH send and
+receive; the connect hello is the only plaintext packet (it seeds the session state).
+
+**Cipher (exe+`0x7A2590`, used for send AND receive):** XOR keystream over the payload
+(opcode byte included; the [u16 total] frame prefix stays plaintext).
+- table exe+`0xA34530`, `0x162F` (5679) dwords; state0 read live from
+  [[gwClient+0x28]+0x10]+0x3C (send) / +0x40 (receive) — identical for both.
+- per packet of N bytes: words = N>>2, `tail` = N&3; for k = words-1..0:
+  idx = (state + k) % 0x162F; state = table[idx] + 0x2E6D23C1; payload_word ^= state.
+  Tail: state ^= table[tail]; then per byte payload_byte ^= state&0xFF; state >>= 8.
+  The state is NOT persisted between packets (each packet re-derives from state0).
+- **For our constant zero-hello: state0 = `0xC9FFFFFF`** (observed live via passive probe;
+  matches the factory's decrypted hello fields). `tools/netcode/gateway_cipher.py implements
+  it (table read from the exe, read-only).
+
+**REAL opcodes (decrypted, live-verified 2026-10-05):** 1 = ping, 2 = handshake (C->S and
+S->C respond), 3 = account verify (C->S), 4 = verify respond (S->C), 9 = role list, 10 =
+login game, 14 = login key. The previously logged proto=4/proto=39 were cipher bytes.
+
+**Live conversation confirmed (stub with cipher):** client handshake op 2 (229 B, plaintext
+fields: 43, 502, 2283, hardware id string) -> our encrypted proto-2 respond -> **client
+sends op 3 account verify (161 B): `03 "binkp4\0..." + MD5 hex 21232F297A57A5A743894A0E4A801FC3
+(= MD5("admin")) in both 64-byte credential fields** -> our proto-4 respond + proto-9 role
+list -> client stable (pings op 1 every 8 s). The earlier "0.2 s close" was the client
+decrypting our PLAINTEXT respond into garbage -> handler error path -> state=3 teardown.
+
+**Evidence:** `tools/netcode/gateway_cipher.py; stub log C:\jx3tmp\gw_stdout.txt (raw+pt
+lines); passive probe poll (cipher state/callbacks); captured handshake decrypts to a sane
+opcode-2 packet with gateway_cipher.cipher(..., state=0xC9FFFFFF).

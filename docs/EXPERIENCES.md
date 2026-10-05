@@ -1753,3 +1753,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   timestamps above; AGENTS.md §13 new Background-processes rule.
 - Outcome: rule added; long-lived processes must be WMI-launched (run_emul.cmd pattern).
   Also: 22:45:36 gateway connect remains unattributed (not from any of my commands).
+
+### 2026-10-05 — V2 P2 BREAKTHROUGH: gateway stream cipher found; real login chain complete
+- Did: hunted the "0.2 s close after our handshake respond". Passive probe (POLL_MS=5) captured
+  the live transport: send/receive transform callbacks (exe+0x7A2590) + states at inner+0x3C/
+  +0x40. Disassembled the callback: XOR stream cipher over the payload (table exe+0xA34530,
+  0x162F dwords, state update idx=(state+k)%0x162F, state=table[idx]+0x2E6D23C1, no state
+  persistence). Implemented tools/netcode/gateway_cipher.py (reads the table from the exe).
+- Findings: the connect hello is the only plaintext packet; it seeds the session state
+  (for our constant zero-hello: 0xC9FFFFFF). All later packets (both directions) are
+  encrypted, opcode byte included. Our stub had been sending PLAINTEXT responses -> the
+  client decrypted them into garbage -> error path -> +0x30 disconnect flag -> transport
+  destroy -> the 0.2 s close. Real opcodes (decrypted): 1 ping, 2 handshake, 3 account
+  verify, 4 verify respond, 9 role list, 10 login game, 14 login key. With the cipher the
+  client sends its account verify (op 3, 161 B): account "binkp4" + MD5("admin") hash in
+  both credential fields - the full UI chain (LOGIN_NOTIFY -> HandleResult -> OnHandShake
+  Success -> Login_AccountVerify) fires exactly as statically decoded.
+- Evidence: stub log raw=.. pt=.. lines (C:\jx3tmp\gw_stdout.txt); probe poll; doc sec.52.
+- Outcome: login conversation complete to the role list; next = role select (op 10) ->
+  login key (op 14) -> game server (P3). Cipher state is constant while the hello is
+  constant; re-derive if the hello fields change.

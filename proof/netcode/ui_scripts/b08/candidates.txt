@@ -1,0 +1,8 @@
+ui/script/logincommon.lua
+ui/script/loginconst.lua
+ui/script/logindef.lua
+ui/script/logindefine.lua
+ui/script/define.lua
+ui/script/const.lua
+ui/script/login_define.lua
+ui/script/login_const.lua

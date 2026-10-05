@@ -124,8 +124,9 @@ def main():
     t0 = time.time()
     de = DEBUG_EVENT()
     ctx = ctypes.create_string_buffer(1232)
+    poll_ms = int(os.environ.get("POLL_MS", "100"))
     while True:
-        got = k32.WaitForDebugEvent(ctypes.byref(de), 100)
+        got = k32.WaitForDebugEvent(ctypes.byref(de), poll_ms)
         el = time.time() - t0
         if el > RUN_S:
             print("run limit reached", flush=True)
@@ -273,11 +274,21 @@ def main():
                     wgflag = read_u32(hproc.value, wgobj + 0x28) if wgobj else None
                     smobj = read_u64(hproc.value, exe_base + 0xA8C268) or 0
                     smflag = read_u32(hproc.value, smobj + 0x20) if smobj else None
-                    key = (st, f1, p28, p38, h1, h2, wgflag, smflag)
+                    f30 = read_u32(hproc.value, gw_client[0] + 0x30)
+                    inner = read_u64(hproc.value, p28 + 0x10) if p28 else 0
+                    ifd = read_u32(hproc.value, inner + 0x10) if inner else None
+                    ierr = read_u32(hproc.value, inner + 0x38) if inner else None
+                    icb = read_u64(hproc.value, inner + 0x48) if inner else None
+                    scst = read_u32(hproc.value, inner + 0x3c) if inner else None
+                    rcst = read_u32(hproc.value, inner + 0x40) if inner else None
+                    rcb = read_u64(hproc.value, inner + 0x50) if inner else None
+                    key = (st, f1, p28, p38, h1, h2, wgflag, smflag, f30, inner, ifd, ierr, icb, scst, rcst, rcb)
                     if poll_last.get("v") != key:
                         poll_last["v"] = key
                         print("[%.2f] POLL state=%s f1268=%s p28=0x%X p38=0x%X h=0x%X/0x%X wg=%s sm=%s"
                               % (el, st, f1, p28, p38, h1, h2, wgflag, smflag), flush=True)
+                        print("[%.2f]   f30=%s inner=0x%X fd=%s err=%s scb=0x%X scst=0x%X rcst=0x%X rcb=0x%X"
+                              % (el, f30, inner, ifd, ierr, icb or 0, scst or 0, rcst or 0, rcb or 0), flush=True)
                 if (not triggered[0] and gw_client[0]
                         and os.path.exists(r"C:\jx3tmp\trigger_connect")):
                     triggered[0] = True
