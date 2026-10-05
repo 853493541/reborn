@@ -2110,3 +2110,30 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   the module Create calls. Then KJX3LogicEventModule::Create / RepresentEventModule /
   KEventCommonMgr -> the three managers -> finish the Param -> Init returns 1.
 - Evidence: host_exe1-3.out.
+
+## 2026-10-04 - Phase B: ALL Param objects now REAL via the game exe's own modules (stubs retired)
+
+- Exe-as-module path fully working (RC_HOST_EXE=1, RC_HOST_EXE_NOINIT=1):
+  `LoadLibraryExW(DONT_RESOLVE)` + manual IAT (873/0) + NO static initializers
+  (they crash: game subsystems) + CRT helper stubs for the magic-static guards
+  (patch exe 0x79B6E0/0x79B680/0x79B3F0 -> host stubs; force guard globals
+  exe+0xA8F411/0xA8FFC1/0xA8D670 = 1).
+- Created by the exe's own creators and wired into the Param:
+  - pDispatcher (+0x40) = dispatcher module Create 0xB2FA0 -> [exe+0xA8C220]+0x18
+    (the script dispatcher; the module stores itself at 0xA8C220).
+  - pEventCommonMgr (+0x90) = KJX3CommonEventModule Create 0xA4700 +
+    OnInitialize 0xA42F0 -> manager exe+0xA8D680.
+  - pLogicEventMgr (+0x98) = KJX3LogicEventModule Create 0xAFD60 +
+    OnInitialize 0xAF990 -> manager exe+0xA8F420.
+  - pRepresentEventMgr (+0xA0) = KJX3RepresentEventModule Create 0xBA7D0 +
+    OnInitialize 0xBA430 -> manager exe+0xA8FFD0.
+  (All Create functions store the module in the exe holder slots 0xA8C210/0xA8C1C0/
+  0xA8C260/0xA8C220; manager = module+0x18.)
+- SO3Represent::Init now receives only real objects (stub objects retired) but still
+  faults at rep+0x3E53CD (a lock-free pool/list traversal) - the suspect is an
+  INCOMPLETELY initialized real object: the SO3World comes from the patched logic init
+  (game-context skipped) and/or the common manager's OnInitialize faulted partway
+  (after setting the manager, before finishing its member init).
+- Next: verify/complete each real object (finish the common manager's OnInitialize
+  member init; check the SO3World's completeness), then Init should return 1.
+- Evidence: host_exe1-18.out.

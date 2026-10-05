@@ -209,6 +209,41 @@ static void* makeStubObject(size_t bytes)
 // The event managers (KJX3LogicEventModule / KJX3RepresentEventModule /
 // KEventCommonMgr) are exe-internal classes; map the exe and call its code.
 static HMODULE g_exeModule = NULL;
+static void* g_exeLogicEvent = NULL;
+static void* g_exeRepEvent = NULL;
+static void* g_exeLogicMgr = NULL;
+static void* g_exeRepMgr = NULL;
+static void* g_exeCommonMgr = NULL;
+static void* g_exeDispatcher = NULL;
+
+// exe CRT helpers needed by the magic-static guards in OnInitialize; the exe's
+// CRT was never initialized, so these are stubbed to drive the init block.
+static void __fastcall exeGuardHeader(void* guard)
+{
+    *(int*)guard = -1; // mark "initialized" so the init block runs
+}
+
+static void __fastcall exeGuardFooter(void* guard)
+{
+}
+
+static int __cdecl exeAtexit(void* fn)
+{
+    return 0;
+}
+
+static void patchAbsJmp(void* at, void* target)
+{
+    DWORD oldp = 0;
+    if (VirtualProtect(at, 12, PAGE_EXECUTE_READWRITE, &oldp))
+    {
+        BYTE* p = (BYTE*)at;
+        p[0] = 0x48; p[1] = 0xB8;
+        *(void**)(p + 2) = target;
+        p[10] = 0xFF; p[11] = 0xE0;
+        VirtualProtect(at, 12, oldp, &oldp);
+    }
+}
 static void* __fastcall exeNew(size_t n)
 {
     return malloc(n);
@@ -276,14 +311,39 @@ static int mapGameExe(const wchar_t* exePath)
             { (void**)(b + 0x7B9CC0), (void**)(b + 0x7BA4C0) },
             { (void**)(b + 0x7BA4C8), (void**)(b + 0x7BA4E8) },
         };
-        for (int a = 0; a < 2; a++)
+        // initializers that crash the host (full game subsystems); skip and log
+        char noInit[8];
+        int skipAll = (GetEnvironmentVariableA("RC_HOST_EXE_NOINIT", noInit,
+                                               sizeof(noInit)) != 0);
+        char crtOnly[8];
+        int crtOnlyMode = (GetEnvironmentVariableA("RC_HOST_EXE_CRTONLY", crtOnly,
+                                                   sizeof(crtOnly)) != 0);
+        static const DWORD skipInit[] = { 0x843EC };
+        for (int a = 0; a < 2 && !skipAll; a++)
         {
+            int cppIdx = -1;
             for (void** p = arrays[a][0]; p < arrays[a][1]; p++)
             {
                 if (*p == NULL)
                     continue;
-                logf("[host] exe init[%d] = exe+0x%llX", a,
-                     (unsigned long long)((BYTE*)(*p) - b));
+                cppIdx++;
+                DWORD off = (DWORD)((BYTE*)(*p) - b);
+                // CRT-only mode: run just the first C++ entry (the CRT init) and
+                // all C entries; skip the game's static ctors.
+                if (crtOnlyMode && a == 0 && cppIdx > 0)
+                {
+                    logf("[host] exe init[%d] exe+0x%X SKIPPED (game ctor)", a, off);
+                    continue;
+                }
+                int skip = 0;
+                for (int k = 0; k < (int)(sizeof(skipInit) / sizeof(skipInit[0])); k++)
+                    if (off == skipInit[k]) skip = 1;
+                if (skip)
+                {
+                    logf("[host] exe init[%d] exe+0x%X SKIPPED", a, off);
+                    continue;
+                }
+                logf("[host] exe init[%d] = exe+0x%X", a, off);
                 __try { ((void (__cdecl *)(void))(*p))(); ran++; }
                 __except (EXCEPTION_EXECUTE_HANDLER) { failedInit++; }
             }
@@ -1743,14 +1803,157 @@ int main(void)
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
                                     { logf("[host] exe trivial getter fault"); }
+                                    // lazy globals the exe module Create reads directly:
+                                    // 0xA8C1F0 (a list head) is built by the lazy getter
+                                    // at 0x9DB60 - call it first.
+                                    __try
+                                    {
+                                        void* pm = ((void* (__fastcall *)(size_t))
+                                                    ((BYTE*)g_exeModule + 0x79B800))(0x20);
+                                        logf("[host] exe malloc(0x20) -> %p (IAT malloc=%p)",
+                                             pm, *(void**)((BYTE*)g_exeModule + 0x7B96E8));
+                                        ((void (__fastcall *)(void*))
+                                         ((BYTE*)g_exeModule + 0x9DB60))(NULL);
+                                        logf("[host] exe lazy 0x9DB60 -> global 0xA8C1F0=%p",
+                                             *(void**)((BYTE*)g_exeModule + 0xA8C1F0));
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] exe lazy 0x9DB60 fault"); }
                                     __try
                                     {
                                         void* m = ((void* (__fastcall *)(void))
                                                    ((BYTE*)g_exeModule + 0xAFD60))();
                                         logf("[host] KJX3LogicEventModule::Create -> %p", m);
+                                        if (m != NULL)
+                                        {
+                                            unsigned char* mb = (unsigned char*)m;
+                                            logf("[host]   module bytes: %02X %02X %02X %02X | %02X %02X %02X %02X | %02X %02X %02X %02X | %02X %02X %02X %02X",
+                                                 mb[0],mb[1],mb[2],mb[3],mb[4],mb[5],mb[6],mb[7],
+                                                 mb[8],mb[9],mb[10],mb[11],mb[12],mb[13],mb[14],mb[15]);
+                                            g_exeLogicEvent = m;
+                                        }
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
                                     { logf("[host] KJX3LogicEventModule::Create fault"); }
+                                    __try
+                                    {
+                                        void* m = ((void* (__fastcall *)(void))
+                                                   ((BYTE*)g_exeModule + 0xBA7D0))();
+                                        logf("[host] KJX3RepresentEventModule::Create -> %p", m);
+                                        if (m != NULL)
+                                        {
+                                            unsigned char* mb = (unsigned char*)m;
+                                            logf("[host]   module bytes: %02X %02X %02X %02X | %02X %02X %02X %02X | %02X %02X %02X %02X | %02X %02X %02X %02X",
+                                                 mb[0],mb[1],mb[2],mb[3],mb[4],mb[5],mb[6],mb[7],
+                                                 mb[8],mb[9],mb[10],mb[11],mb[12],mb[13],mb[14],mb[15]);
+                                            g_exeRepEvent = m;
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] KJX3RepresentEventModule::Create fault"); }
+                                    // OnInitialize(module, 1) initializes the static
+                                    // manager object and sets [module+0x18] = manager
+                                    // stub the CRT helpers used by the magic-static
+                                    // guards so OnInitialize's init block runs
+                                    patchAbsJmp((BYTE*)g_exeModule + 0x79B6E0,
+                                                (void*)exeGuardHeader);
+                                    patchAbsJmp((BYTE*)g_exeModule + 0x79B680,
+                                                (void*)exeGuardFooter);
+                                    patchAbsJmp((BYTE*)g_exeModule + 0x79B3F0,
+                                                (void*)exeAtexit);
+                                    // force the guard "not initialized" branch
+                                    *(int*)((BYTE*)g_exeModule + 0xA8F411) = 1;
+                                    *(int*)((BYTE*)g_exeModule + 0xA8FFC1) = 1;
+                                    *(int*)((BYTE*)g_exeModule + 0xA8D670) = 1;
+                                    // KJX3CommonEventModule: Create 0xA4700 +
+                                    // OnInitialize 0xA42F0 (manager exe+0xA8D680)
+                                    {
+                                        void* cm = NULL;
+                                        __try
+                                        {
+                                            cm = ((void* (__fastcall *)(void))
+                                                  ((BYTE*)g_exeModule + 0xA4700))();
+                                            logf("[host] KJX3CommonEventModule::Create -> %p", cm);
+                                        }
+                                        __except (EXCEPTION_EXECUTE_HANDLER)
+                                        { logf("[host] common Create fault"); }
+                                        if (cm != NULL)
+                                        {
+                                            // OnInitialize sets [module+0x18] = manager
+                                            // before its later holder call faults
+                                            __try
+                                            {
+                                                ((long (__fastcall *)(void*, int))
+                                                 ((BYTE*)g_exeModule + 0xA42F0))(cm, 1);
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER)
+                                            { logf("[host] common OnInitialize fault"); }
+                                            g_exeCommonMgr = *(void**)((BYTE*)cm + 0x18);
+                                            logf("[host] common event mgr -> %p",
+                                                 g_exeCommonMgr);
+                                        }
+                                    }
+                                    // script dispatcher module: Create 0xB2FA0 stores the
+                                    // module at exe+0xA8C220; the dispatcher = +0x18.
+                                    __try
+                                    {
+                                        void* dm = ((void* (__fastcall *)(void))
+                                                    ((BYTE*)g_exeModule + 0xB2FA0))();
+                                        void* holder = *(void**)((BYTE*)g_exeModule + 0xA8C220);
+                                        if (holder != NULL)
+                                            g_exeDispatcher = (BYTE*)holder + 0x18;
+                                        logf("[host] dispatcher module=%p holder=%p disp=%p",
+                                             dm, holder, g_exeDispatcher);
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] dispatcher module fault"); }
+                                    if (g_exeLogicEvent != NULL)
+                                    {
+                                        __try
+                                        {
+                                            ((long (__fastcall *)(void*, int))
+                                             ((BYTE*)g_exeModule + 0xAF990))(
+                                                g_exeLogicEvent, 1);
+                                            g_exeLogicMgr =
+                                                *(void**)((BYTE*)g_exeLogicEvent + 0x18);
+                                            logf("[host] logic event mgr -> %p", g_exeLogicMgr);
+                                        }
+                                        __except (EXCEPTION_EXECUTE_HANDLER)
+                                        { logf("[host] logic OnInitialize fault"); }
+                                    }
+                                    if (g_exeRepEvent != NULL)
+                                    {
+                                        __try
+                                        {
+                                            ((long (__fastcall *)(void*, int))
+                                             ((BYTE*)g_exeModule + 0xBA430))(
+                                                g_exeRepEvent, 1);
+                                            g_exeRepMgr =
+                                                *(void**)((BYTE*)g_exeRepEvent + 0x18);
+                                            logf("[host] represent event mgr -> %p", g_exeRepMgr);
+                                        }
+                                        __except (EXCEPTION_EXECUTE_HANDLER)
+                                        { logf("[host] represent OnInitialize fault"); }
+                                    }
+                                    // the exe's Param fill reads these holder slots:
+                                    // [0xA8BF20] (+0x18) dispatcher, and
+                                    // [0xA8BFC0]/[0xA8C010]/[0xA8C060] (+0x18) the three
+                                    // event managers.
+                                    __try
+                                    {
+                                        void* hDisp = *(void**)((BYTE*)g_exeModule + 0xA8BF20);
+                                        void* hCommon = *(void**)((BYTE*)g_exeModule + 0xA8BFC0);
+                                        void* hLogic = *(void**)((BYTE*)g_exeModule + 0xA8C010);
+                                        void* hRep = *(void**)((BYTE*)g_exeModule + 0xA8C060);
+                                        logf("[host] exe holders: disp=%p common=%p logic=%p rep=%p",
+                                             hDisp, hCommon, hLogic, hRep);
+                                        if (hDisp) logf("[host]   disp+0x18=%p", *(void**)((BYTE*)hDisp + 0x18));
+                                        if (hCommon) logf("[host]   common+0x18=%p", *(void**)((BYTE*)hCommon + 0x18));
+                                        if (hLogic) logf("[host]   logic+0x18=%p", *(void**)((BYTE*)hLogic + 0x18));
+                                        if (hRep) logf("[host]   rep+0x18=%p", *(void**)((BYTE*)hRep + 0x18));
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] exe holder read fault"); }
                                 }
                             }
                         }
@@ -2556,11 +2759,18 @@ int main(void)
                         // event managers (+0x90/+0x98/+0xA0) - no standalone globals
                         // found yet; stub objects with a valid no-op vtable (a zeroed
                         // buffer faults on call [0]).
-                        *(void**)(param + 0x40) = makeStubObject(0x400);
-                        *(void**)(param + 0x90) = makeStubObject(0x400);
-                        *(void**)(param + 0x98) = makeStubObject(0x400);
-                        *(void**)(param + 0xA0) = makeStubObject(0x400);
+                        *(void**)(param + 0x40) = (g_exeDispatcher != NULL)
+                            ? g_exeDispatcher : makeStubObject(0x400);
+                        *(void**)(param + 0x90) = (g_exeCommonMgr != NULL)
+                            ? g_exeCommonMgr : makeStubObject(0x400);
+                        // real event managers created by the game exe's own modules
+                        *(void**)(param + 0x98) = (g_exeLogicMgr != NULL)
+                            ? g_exeLogicMgr : makeStubObject(0x400);
+                        *(void**)(param + 0xA0) = (g_exeRepMgr != NULL)
+                            ? g_exeRepMgr : makeStubObject(0x400);
                         *(void**)(param + 0xC8) = makeStubObject(0x400);
+                        logf("[host] frame60: param logicMgr=%p repMgr=%p",
+                             *(void**)(param + 0x98), *(void**)(param + 0xA0));
                         void** svt60 = *(void***)g_repSingleton;
                         long ir60 = ((long (__fastcall *)(void*, void*))
                                      svt60[0])(g_repSingleton, param);
