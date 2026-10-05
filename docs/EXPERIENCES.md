@@ -1840,6 +1840,21 @@ solved it, and what is still open. **Newest at the bottom.**
 - Verified: server READY 29 handlers; EVENT -> RESULT OK + 7-step delta; --selftest unchanged
   1240/0/0 (viewer untouched this pass).
 
+### 2026-10-04 ? UI ? recheck vs the real client: partial replay broke GT windows (minimap 5->40 sections)
+- User: "recheck against real client and give me more assessment". GT inventory: the repo's real-client
+  UI captures are the 绝境战场-era set (queue Screenshot-given-1, minimap/battlefield crops,
+  middlemap 2048x1792) - there is NO GT for the basic-UI panels, so their fidelity stays unmeasured.
+- Recheck finding: applying PARTIAL replay state blindly broke GT-matched windows - the minimap
+  render collapsed from its full subtree to 5 sections (a partial replay records Hide during init for
+  sections the engine shows later). Fix: `ApplyRuntimeState` applies a window's state only when
+  `replay_summary.tsv` marks the replay OK; partials fall back to the authored/GT-matched state.
+  After: minimap 40 sections runtime=0, bigbagpanel 145 sections runtime=284 (complete replay kept).
+- New doc `UI_REAL_CLIENT_ASSESSMENT.md` (registered): GT inventory + validation history, the
+  evidence-class matrix (client binary / client data / GT capture / self-assessed / unmeasured),
+  and the capture wishlist needed to measure basic-UI fidelity (bag normal+compact+expanded,
+  character pages, skill, social, mail, auction, guild, settings, plus post-click states).
+- Verified: minimap render 40 sections (was 5), bigbagpanel runtime=284, --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

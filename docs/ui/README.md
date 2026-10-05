@@ -13,6 +13,7 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `UI_RUNTIME_REPLAY.md` | The correct system: KGUI conformance (engine-derived, no per-window patches) + script runtime-state replay; systemic census + decompiler blocker |
 | `UI_SYSTEM_COVERAGE.md` | Coverage audit vs the official client: per-axis percentages (constructs ≈99.7%, art ≈98.5%, text ≈84.6%, runtime replay 65% of scripted windows), gap list, reproduce |
 | `UI_INTERACTION_REPLAY.md` | Interaction replay (the missing system): replay_server.lua dispatches the scripts' own event handlers (proven: bag checkbox toggle), viewer wiring design |
+| `UI_REAL_CLIENT_ASSESSMENT.md` | Fidelity vs the real client: GT inventory, evidence-class matrix (client binary / client data / GT capture / self-assessed / unmeasured), partial-replay regression finding |
 
 ## Tools
 

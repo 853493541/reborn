@@ -671,6 +671,10 @@ namespace UiProcessApp.Engine
             if (string.IsNullOrWhiteSpace(stem)) return 0;
             var statePath = FindRuntimeStateFile(stem);
             if (statePath == null) return 0;
+            // Only apply replays that completed: a partial replay's mutations stop
+            // mid-init (sections hidden before the engine shows them), which would
+            // break GT-matched windows (the minimap lost its whole subtree).
+            if (!ReplayCompleted(statePath)) return 0;
 
             var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
@@ -804,6 +808,28 @@ namespace UiProcessApp.Engine
                         return file;
             }
             return null;
+        }
+
+        /// <summary>True when replay_summary.tsv marks this stem OK (full replay).</summary>
+        private static bool ReplayCompleted(string statePath)
+        {
+            try
+            {
+                var summary = Path.Combine(Path.GetDirectoryName(statePath), "replay_summary.tsv");
+                if (!File.Exists(summary)) return true; // no summary: trust the state file
+                var stem = Path.GetFileNameWithoutExtension(statePath);
+                foreach (var line in File.ReadAllLines(summary))
+                {
+                    var parts = line.Split('\t');
+                    if (parts.Length < 2) continue;
+                    if (string.Equals(parts[0], stem, StringComparison.OrdinalIgnoreCase))
+                        return parts[1].StartsWith("OK", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch
+            {
+            }
+            return true;
         }
 
         /// <summary>Applies the Lua's runtime SetSize/SetRelPos calls (inventory `adjust`).</summary>
