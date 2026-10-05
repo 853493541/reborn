@@ -1977,3 +1977,15 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Added `docs/engine_host/CLIENT_CHARACTER_PLAN.md` (phases A-D, registered in the area
   README). Map entity JSON restored to pristine (backup kept).
 - Evidence: host_f1keep*.out, host_prop_*.out, host_fullprop.out, host_so3world2.out.
+
+## 2026-10-04 - Phase A attempt: CreateJX3LogicOperation wedges
+
+- Called the logic module's own entry CreateJX3LogicOperation(basePath, factory,
+  name) in the host (behind new flag RC_HOST_LOGIC=1): the module loads, then the call
+  WEDGES (no return, process had to be killed) - likely an internal job/thread wait or
+  the dummy factory arg. The flag keeps other probes unaffected.
+- Args decoded from KGJX3LogicOperation::Init (0x8B6B0): arg1 = base path (used for
+  %s\\logs), arg2 = stored to logic global 0x975144, arg3 = name; it then calls
+  InitLogic (0x113150) which creates g_pSO3World (logic+0x9C1320) etc.
+- Next: instrument the wedge (thread/backtrace or stub the factory), or call InitLogic
+  (0x113150) directly after satisfying its piRecorderFactory assert.

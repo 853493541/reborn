@@ -1367,11 +1367,17 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] X3D getter probe fault"); }
-                        // SO3World via the client's own logic module
-                        // (JX3LogicEditOperationX64.dll): KSO3World::Init_ForEditor
-                        // (0x12B7E0, the editor path - 2nd arg unused) after
-                        // new(0x567408) + ctor (0x125A00). This is the object the
-                        // represent Param's pSO3World requires.
+                        // Logic module via its own entry: CreateJX3LogicOperation(
+                        // basePath, factory, name) runs KGJX3LogicOperation::Init ->
+                        // InitLogic (0x113150) which creates g_pSO3World, the RLLoader,
+                        // the resource converter and the UI - the objects the represent
+                        // Param requires. Hand-building the world faults on module
+                        // globals this init sets. NOTE: this call currently WEDGES
+                        // (job/thread wait) - separate flag so it does not hang the
+                        // other probes.
+                        char logicFlag[8];
+                        if (GetEnvironmentVariableA("RC_HOST_LOGIC", logicFlag,
+                                                    sizeof(logicFlag)) != 0)
                         __try
                         {
                             wchar_t lp2[MAX_PATH];
@@ -1383,22 +1389,30 @@ int main(void)
                             logf("[host] JX3LogicEditOperationX64.dll -> %p", logic);
                             if (logic != NULL)
                             {
-                                typedef void* (__fastcall *NewFn)(size_t);
-                                void* world = ((NewFn)((BYTE*)logic + 0x73AA70))(0x567408);
-                                if (world != NULL)
+                                typedef void* (__fastcall *CreateLogicFn)(
+                                    const char*, void*, const char*);
+                                CreateLogicFn cl = (CreateLogicFn)GetProcAddress(logic,
+                                    "CreateJX3LogicOperation");
+                                static unsigned char dummyFactory[0x100];
+                                memset(dummyFactory, 0, sizeof(dummyFactory));
+                                void* op = (cl != NULL)
+                                    ? cl(rootA, dummyFactory, "reborn_client_host")
+                                    : NULL;
+                                logf("[host] CreateJX3LogicOperation('%s') -> %p",
+                                     rootA, op);
+                                if (op != NULL)
                                 {
-                                    ((void (__fastcall *)(void*))
-                                     ((BYTE*)logic + 0x125A00))(world);
-                                    long ok = ((long (__fastcall *)(void*, void*))
-                                               ((BYTE*)logic + 0x12B7E0))(world, NULL);
-                                    logf("[host] SO3World=%p KSO3World::Init_ForEditor -> 0x%08X",
-                                         world, (unsigned)ok);
+                                    // InitLogic's globals: g_pSO3World, g_pRLLoader
+                                    void* world = *(void**)((BYTE*)logic + 0x9C1320);
+                                    void* loader = *(void**)((BYTE*)logic + 0xA01D98);
+                                    logf("[host] logic g_pSO3World=%p g_pRLLoader=%p",
+                                         world, loader);
                                     g_so3World = world;
                                 }
                             }
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
-                        { logf("[host] SO3World create fault"); }
+                        { logf("[host] logic module init fault"); }
                         // SO3Represent::Init(Param) probe - fill the game's Param (0xD0)
                         // exactly like the exe's KJX3RepresentModule::Initialize fill
                         // (0xBC263): mgr = GetK3EngineMgr; modelMgr = mgr->vt[9]();
