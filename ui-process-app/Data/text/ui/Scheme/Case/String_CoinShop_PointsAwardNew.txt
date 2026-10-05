@@ -1,0 +1,22 @@
+ID	Length	String
+STR_GET_TIMES	12	可兑换次数：
+STR_POINTAWARD_TITLE	8	积分兑换
+STR_HAVEGET_TIMES	6	已兑换
+STR_HAVEGETNAME	2	次
+STR_EWAI	8	额外奖励
+STR_YULAN	8	预览奖励
+STR_SHUNXU	10	按顺序兑换
+STR_YICI	7	兑换1次
+STR_SHICI	8	兑换10次
+STR_FENSHI	4	3000
+STR_FENCI	3	300
+STR_ALLHAVE	16	已全兑换本期物品
+STR_HELP	182	<text>text="积分兑换规则" font=65 </text><text>text=" \\\n1.每兑换一次需消耗300积分，按顺序依次兑换奖励。\\\n2.每一期限时积分兑换累计达到一定次数，可以获得该期的额外定制奖励。每一期限时积分兑换的额外定制奖励均不同。\\\n3.每一期限时积分兑换到期下架后，额外奖励将永久上架积分商城（小玩意儿-拾遗），侠士可使用对应数量价值的积分兑换。\\\n4.每月1日7点结算统计上一个月抽到的点/月卡，预计在每月2日7点进行返还，请在“福利返还”中领取，领取截止时间为次月1日7点。如存在跨大区转服，本月已获得时间只显示在原大区，目标大区不显示，但不影响次月领取。"font=162</text>
+STR_SHI	2	10
+STR_FANHUI	4	返回
+STR_BENYUEDIANKA	10	本月已获得
+STR_YUAN	2	元
+STR_TIMECARDS	4	点卡
+STR_MONTHCARD	4	月卡
+STR_MONTHLYCARDP_TONGBAO	4	通宝
+STR_WELFARE	8	前往领取

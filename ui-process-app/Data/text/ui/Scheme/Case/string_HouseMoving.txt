@@ -1,0 +1,30 @@
+ID	Length	String
+STR_HM_TITLE	8	搬家指南
+STR_HM_SEAMLESS	8	无缝搬家
+STR_HM_REATREAT	8	退地搬家
+STR_HM_TIPS1	68	搬家前要看好心仪的宅邸的状态、开售时间、售价，自己是否具有购买资格。
+STR_HM_TITLE1	12	选择搬家方式
+STR_HM_TITLE2	16	第一步  解绑房屋
+STR_HM_TITLE3	16	第二步  搬入新居
+STR_HM_TITLE4	12	第二步  退地
+STR_HM_TITLE5	16	第三步  购买新地
+STR_HM_TIPS2	33	在家中与【管家·阿甘】对话，选择 
+STR_HM_TITLE1TIP	18	"我不想住在这里了"
+STR_HM_TIPS3	44	前往心仪的无主宅邸与【管家·阿甘】对话，选择
+STR_HM_TITLE2TIP	18	"我不想要这块地了"
+STR_HM_TIPS4	41	解绑后，在家中与【管家·阿甘】对话，选择 
+STR_HM_BUY1	12	大唐家园购买
+STR_HM_BUY2	10	管家处购买
+STR_HM_HOUSEMOVING	8	搬家指南
+STR_HM_TIPS5	6	已解绑
+STR_HM_TIPS6	6	已退地
+STR_HM_TIPS7	6	未退地
+STR_HM_TIPS8	6	未解绑
+STR_HM_TITLE5TIP	38	"我已经有解绑的园宅地了，我要搬入此地"
+STR_HM_TIPS_BUY_LAND_COM_1_1	40	打开【大唐家园】选择心仪的无主宅邸，点击
+STR_HM_TIPS_BUY_LAND_DESC_BUY	4	购买
+STR_HM_TIPS_BUY_LAND_COM_1_3	4	按钮
+STR_HM_TIPS_BUY_LAND_COM_2_1	42	在心仪的无主宅邸与【管家·阿甘】对话，选择
+STR_HM_TIPS_BUY_LAND_COM_2_2	32	"我还没有园宅地，我要购买这块地"
+STR_HM_TIPS_BUY_LAND_SP_1_1	40	该社区为定制社区，无法通过此种方式购买。
+STR_HM_TIPS_BUY_LAND_SP_2_1	70	和社区四成以上或上周最活跃的业主组队与宅邸前的【管家·阿甘】对话，选择

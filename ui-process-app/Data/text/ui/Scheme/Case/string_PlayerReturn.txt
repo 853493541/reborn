@@ -1,0 +1,13 @@
+ID	Length	String
+76	10	第一天奖励
+2	16	尚未达到领取条件
+3	12	点击领取奖品
+4	8	领取奖励
+T5	8	全部领取
+T6	8	已经领取
+Warnning	20	点击宝箱直接领取奖励
+STR_TITLE	8	等级礼包
+STR_PLAYER_RETURN	8	我回来了
+STR_RETURN_DESC_FIRST_LINE_1_1	6	，阔别
+STR_RETURN_DESC_FIRST_LINE_1_2	14	日，重回江湖！
+STR_RETURN_DESC_FIRST_LINE_2_1	22	，一别经年，重回江湖！

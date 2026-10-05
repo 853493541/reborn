@@ -1,0 +1,7 @@
+ID	Length	String
+STR_TEAM_SETTING	8	团队设置
+STR_GOLDTEAM_CHOOSE	14	选择分配模式：
+STR_BUFF01	32	邀请拥有“共战江湖”增益的玩家：
+STR_BUFF02	20	1.全团提高伤害和血量
+STR_BUFF03	24	2.增加秘境首领的装备掉落
+STR_JINTUAN	8	拍团分配

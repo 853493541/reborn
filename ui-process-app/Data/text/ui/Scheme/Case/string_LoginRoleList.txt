@@ -1,0 +1,23 @@
+ID	Length	String
+STR_LABEL_CREATE_ROLE	8	创建角色
+STR_FREEZE	4	冻结
+STR_LABEL_DELETE_ROLE	8	删除角色
+STR_TITLE_CHANGE_SERVER	10	更改服务器
+STR_GANPEI_ONE	38	      您的帐号现享受“敢赔服务”资格，
+STR_GANPEI_TWO	28	现在充值游戏时间可享受：\n\n
+STR_GANPEI_NO1	3	1）
+STR_GANPEI_THREE	54	包括交易、拍卖行、加入帮会，世界聊天等数十种权限；\n\n
+STR_GANPEI_FOUR	28	立即解锁试玩账号限制权限：\n
+STR_GANPEI_NO2	3	2）
+STR_GANPEI_FIVE	20	且升级过程中不计费；
+STR_GANPEI_SIX	26	可获得额外的免费游戏时间；
+STR_GANPEI_SIX1	39	获得2000分钟额外免费时间 (7天内有效);\n
+STR_GANPEI_NO3	3	3）
+STR_GANPEI_SEVEN	62	在完成充值游戏时长的24小时内，如您对游戏品质不满意，可随时申请
+STR_GANPEI_EIGHT	20	人民币100%退款。\n\n
+STR_GANPEI_NINE	30	精品诚意之作，邀您仗剑江湖！\n
+STR_GANPEI_EIGHT2	8	币退款。
+STR_GANPEI_FOUR03	18	充值任意金额点卡可
+STR_GANPEI_ONE_YUN	62	      您的帐号现享受“敢赔服务”资格，现在充值游戏时间可享受：
+STR_GANPEI_EIGHT_YUN	10	人民币100%
+STR_GANPEI_EIGHT_YUN1	6	退款。

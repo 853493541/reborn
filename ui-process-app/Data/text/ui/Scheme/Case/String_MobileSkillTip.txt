@@ -1,0 +1,7 @@
+ID	Length	String
+STR_SKILL_TIPS1	21	<按住Shift键固定TIPS>
+STR_SKILLGRAND_TIPS1	30	当前自定义队列中有未装配的招式
+STR_SKILLGRAND_TIPS2	226	关闭使用自定义配置:武学助手开启后会根据当前武学槽位已装备的技能来释放武学招式。/n开启使用自定义配置:武学助手开启后会根据自定义武学助手队列来释放武学招式。如果队列中的招式未装配或者未达到对应释放条件，则会跳过自动释放下个招式。
+STR_SKILLGRAND_TIPS3	296	<text>text="关闭自定义配置：" font=65 </text><text>text="\\\n按默认优先级释放主快捷栏招式。" font=106 </text><text>text="\\\n开启自定义配置：" font=65 </text><text>text="\\\n按自定义配置的招式从左到右释放。如果队列中的招式未装配或者未达到对应释放条件，则会跳过自动释放下个招式。" font=106 </text>
+STR_SKILLGRAND_TIPS4	10	自定义配置
+STR_SKILLGRAND_TIPS5	8	智能助手

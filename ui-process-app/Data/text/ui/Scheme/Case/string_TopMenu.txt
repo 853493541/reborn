@@ -1,0 +1,55 @@
+ID	Length	String
+STR_PVPGUESS	106	<text>text="第二届武林争霸赛竞猜" font=65 </text><text>text=" \\\n火热开启！点击了解详情。"font=162</text>
+STR_GUESSC	180	<text>text="竞技群英赛外观臻选" font=65 </text><text>text=" \\\n竞技群英赛系列新品现已上线！包括黑洞特效武器外观、特效小头像（含框）以及全新手饰，邀君共赏缤纷新品！"font=162</text>
+STR_GOODFANWORKS	105	<text>text="剑网3同人嘉年华" font=65 </text><text>text=" \\\n九周年同人嘉年华，点赞赢挂件"font=162</text>
+STR_CMDVOTE	129	<text>text="剑网3指挥竞选投票" font=65 </text><text>text=" \\\n投票选出阵营指挥\n投票时间：12月8日8点-12月9日24点"font=162</text>
+STR_ZHIHUITOUPIAOP	12	阵营指挥投票
+STR_SURPRISE_FREE	12	双12惊喜免单
+STR_SHARE_TONGBAO	16	免费瓜分10亿通宝
+STR_CAMP_TONGBAO_POOL	14	阵营攻防奖金池
+STR_DELPHIS_GIFT	30	海洋公益献礼，海豚挚友与您结缘
+STR_DAILY	10	天灯寄我愿
+STR_PVP_DYB	116	<text>text="第五届竞技大师赛" font=65 </text><text>text=" \\\n火热开启！点击了解详情并购买纪念肩挂。"font=162</text>
+STR_BLUE_SEA	30	“蓝海守护侠”海洋环保公益活动
+STR_PVP_MASTERLING	237	<text>text="第四届竞技大师赛直播" font=65 </text><text>text=" \\\n点击跳转至大师赛专题直播页面。\n俱乐部定级赛时间：\n2019年  3月30日-4月2日   4月18日-4月21日；\n正式赛时间 ： \n2019年  4月4日-4月17日    4月22日-5月12日。"font=162</text>
+STR_READ_MAIL	8	门内传信
+STR_ANSWER	120	<text>text="萌新解惑" font=163 </text><text>text="\\\n遇到了问题茫然无措？\n机智的阿甘随时为少侠解答！" font=106 </text>
+STR_PVP_HYB	113	<text>text="第二届虎牙杯竞技争霸赛" font=65 </text><text>text=" \\\n正式赛时间：7月16日-7月21日。"font=162</text>
+STR_PVP_MXS	107	<text>text="剑网3全明星邀请赛" font=65 </text><text>text=" \\\n正式赛时间：7月31日-8月3日。"font=162</text>
+STR_PRAISE	89	<text>text="剑网3推栏" font=65 </text><text>text=" \\\n同人嘉年华点赞活动"font=162</text>
+STR_PVP_SZNLS	97	<text>text="十周年庆典" font=65 </text><text>text=" \\\n剑网3十周年现场活动直播。"font=162</text>
+STR_PVP_CSS	107	<text>text="剑网3城市争霸赛" font=65 </text><text>text=" \\\n正式赛时间：11月2日-11月10日。"font=162</text>
+STR_PVP_MASTERLING5	245	<text>text="第五届竞技大师赛直播" font=65 </text><text>text=" \\\n点击跳转至大师赛专题直播页面。\n俱乐部争锋赛时间：\n2020年  3月10日-3月23日；\n正式赛时间 ： \n2020年  3月24日-4月07日；\n总决赛时间 ： \n2020年  4月18日-4月19日。"font=162</text>
+STR_PVP_DYB2	112	<text>text="第二届斗鱼杯竞技争霸赛" font=65 </text><text>text=" \\\n正式赛时间：7月8日-7月19日。"font=162</text>
+STR_PVP_ZYLS	135	<text>text="剑网3职业联赛" font=65 </text><text>text=" \\\n积分赛时间：8月29日-9月15日；\n淘汰赛时间：9月17日-9月20日。"font=162</text>
+STR_11YEARS	110	<text>text="《剑网3》十二周年庆发布会 " font=65 </text><text>text=" \\\n 8月28日19:00 恭候莅临"font=162</text>
+STR_DANGERPW	128	<text>text="账号安全提示" font=65 </text><text>text=" \\\n为了您的账号安全，建议您及时修改密码或绑定玲珑密保锁。"font=162</text>
+STR_PVP_BHLS	136	<text>text="剑网3武林争霸赛" font=65 </text><text>text=" \\\n海选赛时间：8月30日-9月5日；\n淘汰赛时间：9月10日-9月29日。"font=162</text>
+STR_GOODFANS	112	<text>text="剑网3同人大赛投票" font=65 </text><text>text=" \\\n剑网3十二周年同人外装大赛端内评选"font=162</text>
+STR_PVP_MJBXXS	134	<text>text="剑网3第二届名剑杯" font=65 </text><text>text=" \\\n海选赛：10月8日-10月17日；\n正式赛：10月15日-10月26日。"font=162</text>
+STR_BARMITZVAH	8	成年喜报
+STR_PVP_MASTERLING6	195	<text>text="第七届竞技大师赛直播" font=65 </text><text>text=" \\\n点击跳转至大师赛专题直播页面。\n海选赛时间：\n 2022年2月25日-3月13日；\n正式赛时间 ： \n 2022年 3月19日-4月24日。"font=162</text>
+STR_PVP_DSS6	106	<text>text="第二届竞技群英赛报名" font=65 </text><text>text=" \\\n火热开启！点击了解详情。"font=162</text>
+STR_GODCHOICE	104	<text>text="天选系列外观票选" font=65 </text><text>text=" \\\n选出心仪的外装复刻二次创作"font=162</text>
+STR_PVPGUESS1	160	<text>text="第六届武林争霸赛竞猜" font=65 </text><text>text=" \\\n点击参与积分竞猜，竞猜成功获取的积分可用于兑换永久挂件、跟宠、家具等精美奖品！"font=162</text>
+STR_PVP_DEJPL	154	<text>text="剑网3职业联赛" font=65 </text><text>text=" \\\n积分赛：12月16日-12月26日；\n赏金赛：12月30日-1月4日；\n挑战赛：1月7日-1月9日。"font=162</text>
+STR_GOODFANS_JNH	101	<text>text="剑网3创作无疆计划" font=65 </text><text>text=" \\\n江湖有豪杰，创作无极限"font=162</text>
+STR_13YEARSLIVE	96	<text>text="周年庆典" font=65 </text><text>text=" \\\n点击跳转至周年专题直播页面"font=162</text>
+STR_15YEARS	139	<text>text="十五周年盛典" font=65 </text><text>text=" \\\n点击跳转至周年专题页面，观看十五周年发布会+沉浸式演唱会现场直播。"font=162</text>
+STR_PVPGUESS2	106	<text>text="第四届武林争霸赛竞猜" font=65 </text><text>text=" \\\n火热开启！点击了解详情。"font=162</text>
+STR_PVP_DSS7	112	<text>text="第五届武林争霸赛" font=65 </text><text>text=" \\\n赛事风云、活动奖励，点击了解详情。"font=162</text>
+STR_FANSSUPPORT	128	<text>text="原创外装设计评选" font=65 </text><text>text=" \\\n点击参与同人原创外装设计评选，为喜欢的作品投票吧！"font=162</text>
+STR_FRIEND	124	<text>text="有朋自远方来“特惠礼盒”" font=65 </text><text>text=" \\\n超值礼包限时售卖，三人成团享额外优惠。"font=162</text>
+STR_TESTRECRUITMENT	107	<text>text="剑网3无界测试招募" font=65 </text><text>text=" \\\n技术性互通共研测试招募进行中"font=162</text>
+STR_TOPMENU_BP	124	<text>text="江湖行记" font=163 </text><text>text="\\\n参与历练江湖，领取超值奖励。点击查看当前可参与内容。" font=106 </text>
+STR_TOPMENU_BOSSLETER	14	制作人的一封信
+STR_COLLAPSE	19	展开/关闭活动图标栏
+STR_SALETICKLTS	265	<text>text="十五周年线下庆典" font=65 </text><text>text="  \\\n点击打开网页登记购票人信息获取购票资格。\n本次线下庆典需要提前登记购票人身份证及手机号信息，登记成功后才可领取购票资格道具。若最终成功购买门票，只能由登记身份证本人持身份证原件识别入场。"font=162</text>
+STR_WEAPONSELECTION	132	<text>text="全门派武器设计评选" font=65 </text><text>text=" \\\n点击参与同人全门派武器设计评选，为喜欢的作品投票吧！"font=162</text>
+STR_PAKV4_DOWNLOAD_SPEED	6	速度：
+STR_16YEARS	112	<text>text="十六周年盛典" font=65 </text><text>text=" \\\n点击前往观看十六周年线下庆典现场直播。"font=162</text>
+STR_ACCOUNTEXCEPTION	141	<text>text="角色风控状态解除" font=163 </text><text>text="\\\n您已触发角色风控状态，该状态下部分途径获得的系统金币将变为0，点击查看解除方式。
+STR_EFFECTSUPPORT	128	<text>text="原创特效设计评选" font=65 </text><text>text=" \\\n点击参与同人原创特效设计评选，为喜欢的作品投票吧！"font=162</text>
+STR_NEWYEARPANEL	8	春节活动
+STR_LANTERNFESTIVALPANEL	10	元宵节活动
+STR_17YEARS	112	<text>text="十七周年盛典" font=65 </text><text>text=" \\\n点击前往观看十七周年线下庆典现场直播。"font=162</text>

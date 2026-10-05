@@ -1,0 +1,3 @@
+ID	Length	String
+STR_TIME	21	7月20日-8月14日维护前
+STR_DENGJITISHENGZHI	10	等级提升至

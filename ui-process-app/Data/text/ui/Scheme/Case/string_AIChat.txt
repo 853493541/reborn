@@ -1,0 +1,30 @@
+ID	Length	String
+STRING_Title	4	侠缘
+STRING_Channel1	4	对话
+STRING_Channel2	4	最近
+STRING_SEARCH	8	搜索侠客
+STRING_MORE	12	点击加载更多
+STRING_SEARCH_MESSAGE	12	搜索历史记录
+STRING_SEND	4	发送
+STRING_SwitchTitle	8	深度思考
+STRING_Open	2	开
+STRING_Close	2	关
+STRING_Loading	8	思考中…
+STR_StatementTitle	24	侠缘对话功能使用温馨提示
+STR_Statement0	74	亲爱的侠士，欢迎使用侠缘对话功能！为了让您获得更好的体验，请阅读以下内容：
+STR_Statement1	22	一、您的输入，由您负责
+STR_Statement1_0	92	您在使用本功能时，请确保输入的内容符合相关法律法规及游戏规范，共同维护健康、友善的江湖环境：
+STR_Statement1_1	87	1. 不输入含有低俗、淫秽、色情、暴力、宣扬赌博、邪教、迷信、谣言，或违背社会公德的内容；
+STR_Statement1_2	79	2. 不输入任何违法违规信息，包括但不限于危害国家安全、散布谣言、煽动对立等内容；
+STR_Statement1_3	49	3. 不发布侮辱、诽谤他人或侵犯他人合法权益的言论；
+STR_Statement1_4	43	4. 不透露他人隐私信息或商业机密等敏感内容；
+STR_Statement1_5	72	如发现违规行为，我们将依据游戏用户协议采取必要措施，感谢您的理解与配合。
+STR_Statement2	20	二、AI所知，限于江湖
+STR_Statement2_0	70	智能NPC的认知范围主要围绕剑网3的游戏世界观、剧情和角色设定。这意味着：
+STR_Statement2_1	67	1. 您可以与侠缘交谈游戏内的剧情故事、门派设定、角色背景等相关话题；
+STR_Statement2_2	85	2. 涉及现实世界、现代知识或与游戏设定无关的内容，AI可能无法准确理解或回应，请您谅解；
+STR_Statement2_3	79	3. 如果对话偏离了游戏设定，AI会尝试将话题引导回来，帮助您更好地沉浸于江湖世界。
+STR_Statement3	105	特别提醒：如果您希望NPC结束当前话题或调整对话方向，可以输入“换个话题”等关键词，它会进行反思并作出优化。
+STR_Statement4	188	AI所生成的内容，均基于您的输入、游戏设定及相关知识库自动产生，不代表西山居官方的观点、立场或承诺。我们对生成内容的真实性、准确性和完整性不作任何保证，请您理性参考，切勿作为现实决策的依据。
+STR_Statement5	112	若您同意以上内容，点击“接受”即可开启江湖对话；若您暂不同意，点击“拒绝”即可退出。感谢您的支持，祝您游戏愉快！
+STR_Agree	14	您已同意该协议

@@ -1,0 +1,3 @@
+ID	Length	String
+STR_TITLE_PICKUP	4	奖励
+STR_CHOICE_PICKUP	12	选择一项奖励

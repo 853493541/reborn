@@ -1,0 +1,4 @@
+ID	Length	String
+STR_CLOSE	7	ESC退出
+STR_SKIP	8	跳过对话
+STR_RETURN	8	返回选项

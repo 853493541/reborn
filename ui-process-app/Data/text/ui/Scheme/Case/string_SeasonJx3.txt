@@ -1,0 +1,99 @@
+ID	Length	String
+STR_TARGETDONED	12	赛季目标达成
+STR_SeasonDistance	9	赛季展望>
+STR_SeasonZhongjie	8	赛季总结
+STR_GongZhan_JiangliBiaoti	10	每日可领取
+STR_GongZhan_ZhuShi	42	获取途径：秘境日常    阵营日常    茶馆日常
+STR_GongZhan_RiChang_Mijing	8	秘境日常
+STR_GongZhan_RiChang_Zhenying	8	阵营日常
+STR_GongZhan_RiChang_ChaGuan	8	茶馆日常
+STR_GongZhan_RiChang_TimeTitle1	46	侠士处于共战江湖状态，当前可获得以下增益效果：
+STR_GongZhan_RiChang_TimeTitle3	4	剩余
+STR_ReturnGift_ShaoMiao	68	      扫描二维码添加回归专属小管家，真人贴心服务答疑，助您重回巅峰！
+STR_ReturnGift_NumDay1	6	第一天
+STR_ReturnGift_NumDay2	6	第二天
+STR_ReturnGift_NumDay3	6	第三天
+STR_ReturnGift_NumDay4	6	第四天
+STR_ReturnGift_NumDay5	6	第五天
+STR_ReturnGift_NumDay6	6	第六天
+STR_ReturnGift_NumDay7	6	第七天
+STR_ReturnGift_SuoMing	14	回归礼包说明：
+STR_ReturnGift_SuoMingWen	241	1.玩家回归之后，沿用之前领奖方式，升级奖励内容。每天点击即可领取相应奖励\n2.第七天额外提供丰富奖励\n3.有共战江湖buff的玩家每日完成阵营日常/茶馆/大战三选一日常任务，即可获得额外奖励\n4. 此页面会在侠士"共战江湖"效果结束后不可见，请尽快领取奖励
+STR_SeasonPrize_GetPrize	8	立即领奖
+STR_SeasonPrize_SeasonTargetDone	12	赛季达成目标
+STR_SeasonPrize_SeasonAllTargetDone	14	赛季总目标达成
+STR_Distance_BtnChange_Pvx	6	战力篇
+STR_Distance_BtnChange_Homeland	6	家园篇
+STR_Distance_GetScore	6	可获得
+STR_Distance_GeneralMission	10	赛季总目标
+STR_Distance_EquipScoreGet	12	装备分数达到
+STR_ReturnGift_LetterA2_1	4	阔别
+STR_ReturnGift_LetterA2_3	11	日重回江湖!
+STR_ReturnGift_LetterA3_1	4	遥记
+STR_ReturnGift_LetterA3_3	2	与
+STR_ReturnGift_LetterA3_5	2	月
+STR_ReturnGift_LetterA3_7	2	日
+STR_ReturnGift_LetterA3_8	4	与侠
+STR_ReturnGift_LetterA4_1	79	       如今，武林中依旧铭记着你的传说，正所谓江湖浩远，故人归，前路风雪再相携。
+STR_ReturnGift_LetterA5_1	11	剑网3项目组
+STR_ReturnGift_LetterB_1	8	何其有幸
+STR_ReturnGift_LetterB_2	10	江湖再遇！
+STR_ReturnGift_Info_Icon4_PrizeDay7	4	15天
+STR_Distance_HomelandAllDoneGet	26	本赛季家园收藏分增加不低于
+STR_ReturnGift_LetterA3_9	42	侠士第一次相遇，江湖客神采飞扬，仗义行侠。
+STR_GongZhan_Content1_1_1	14	侠行点收益提高
+STR_GongZhan_Title_Price2	3	1次
+STR_ReturnGift_LetterA4_2	10	敬来时路！
+STR_Target1_Pvx	23	身上1件装备品质超过5200
+STR_Target2_Pvx	30	1个当前最高品装备栏精炼不低于6
+STR_Target3_Pvx	37	1个6250品以上的非饰品装备拥有紫色附魔
+STR_Target4_Pvx	25	完成3次大战/矿车/茶馆任务
+STR_Target5_Pvx	42	1个当前最高品装备栏熔嵌的五行石等级不低于6
+STR_Target6_Pvx	16	装备分数达到10万
+STR_Target7_Pvx	28	完成一次十人周常/pvp跨服周常
+STR_Target8_Pvx	35	1个6250品以上的饰品装备拥有紫色附魔
+STR_Target9_Pvx	16	装备分数达到11万
+STR_Target10_Pvx	23	身上1件装备品质超过6250
+STR_Target11_Pvx	45	近身武器(需要不低于当前赛季小橙武最低品质)...
+STR_Target12_Pvx	16	装备分数达到12万
+STR_Target11_Pvx_Tips	65	近身武器(需要不低于当前赛季小橙武最低品质)熔嵌的五彩石等级不低于4
+STR_Text_PrizeAll_Pvx_Title	8	当前积分
+STR_Target1_Homeland	16	拥有并回到园宅地
+STR_Target2_Homeland	35	完成一次超过24h种植收获(铃兰、葫芦)
+STR_Target3_Homeland	20	完成一次家园送信任务
+STR_Target4_Homeland	24	获得 庭居 奖励的金色家具
+STR_Target5_Homeland	24	获得 逢源 奖励的金色家具
+STR_Target6_Homeland	24	获得 理纪 奖励的金色家具
+STR_Target7_Homeland	24	获得 闲趣 奖励的金色家具
+STR_Target8_Homeland	24	获得 奇缘 奖励的金色家具
+STR_Target9_Homeland	24	获得 博识 奖励的金色家具
+STR_Target10_Homeland	24	获得 才名 奖励的金色家具
+STR_Target11_Homeland	24	获得 经营 奖励的金色家具
+STR_Target12_Homeland	20	庐园广记点数达到7000
+STR_Info_PrizeSingle_HomeLand	8	家园展望
+STR_Info_PrizeSingle_Pvx	8	装备展望
+STR_Distance_GetScore13	22	及“横刀断浪”永久称号
+STR_Distance_GetScore13_HomeLand	22	及“朱栏小楼”永久称号
+STR_GongZhan_InfoA_1_1	14	侠行点收益提高
+STR_GongZhan_InfoA_2_1	4	全团
+STR_GongZhan_InfoA_2_2	14	提高伤害和血量
+STR_GongZhan_InfoA_3_1	4	装备
+STR_GongZhan_InfoA_3_2	4	掉落
+STR_GongZhan_InfoA_3_3	4	增加
+STR_GongZhan_InfoB_1_2	16	战阶获取速度提升
+STR_GongZhan_InfoB_2_1	18	威名点获取速度提升
+STR_GongZhan_InfoC_1_1	8	师父获得
+STR_GongZhan_InfoC_1_2	3	2倍
+STR_GongZhan_InfoC_1_3	6	桃李值
+STR_SeasonLetter_Info	4	亲启
+STR_SeasonLetter_Summary	30	关闭后可在【隐元秘鉴】再次查看
+STR_SeasonDate	73	     战力篇：2025年10月30日~待定              家园篇：2025年12月29日~待定
+STR_GongZhan_HQTJ	10	获取途径：
+STR_GongZhan_MJRC	8	秘境日常
+STR_GongZhan_ZYRC	8	阵营日常
+STR_GongZhan_CGRC	8	茶馆日常
+STR_EQUIPSCORE	8	装备分数
+STR_EQUIPTDISTANCE	8	铸剑江湖
+STR_EQUIPTDATE	17	2024年4月3日~待定
+STR_EQUIPTSCORE	10	当前装分：
+STR_GET	4	领取

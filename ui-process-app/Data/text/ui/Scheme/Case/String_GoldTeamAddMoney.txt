@@ -1,0 +1,2 @@
+ID	Length	String
+STR_TIP_CAUTION	64	线下或跨服金币交易存在极高被骗风险，\n一旦被骗可能无法挽回损失。

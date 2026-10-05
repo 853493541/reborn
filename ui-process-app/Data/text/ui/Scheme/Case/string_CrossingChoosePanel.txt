@@ -1,0 +1,5 @@
+ID	Length	String
+STR_ATTACK	4	攻击
+STR_DEFENSE	4	防御
+STR_DOCTOR	4	治疗
+STR_TITLE	10	四时论武阵

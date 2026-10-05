@@ -1,0 +1,8 @@
+ID	Length	String
+STR_COMPLETE	8	快捷收集
+STR_GO	8	前往参与
+STR_COST	4	消耗
+STR_UNLOCK_COUPLET	24	梅良玉签解锁对应春联文字
+STR_QUANTITY	6	数量：
+STR_PRICE	6	价格：
+STR_TIME	9	-天后结束
