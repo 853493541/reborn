@@ -16,6 +16,7 @@
 #include <math.h>
 
 static HMODULE g_eng = NULL;
+static HMODULE g_repModule = NULL;
 
 static void logf(const char* fmt, ...)
 {
@@ -736,7 +737,103 @@ static void* g_rlCtx = NULL;
 static void* g_lastPet = NULL;
 static void* g_entityCtrl = NULL;
 static void* g_so3World = NULL;
-static HMODULE g_repModule = NULL;
+
+// logic-module init watchdog: if CreateJX3LogicOperation wedges, suspend the main
+// thread after 20 s, dump its stack (module+offset) and exit.
+static volatile LONG g_logicDone = 0;
+static HANDLE g_mainThreadHandle = NULL;
+static HANDLE g_logicThread = NULL;
+static HMODULE g_logicModule = NULL;
+static HMODULE g_x3dModule = NULL;
+static HMODULE g_luaModule = NULL;
+
+static void describeAddr(DWORD64 a, char* out, size_t n)
+{
+    struct { HMODULE m; const char* name; } mods[5] = {
+        { g_eng, "eng" }, { g_repModule, "rep" }, { g_logicModule, "logic" },
+        { g_x3dModule, "x3d" }, { g_luaModule, "lua" },
+    };
+    for (int i = 0; i < 5; i++)
+    {
+        if (mods[i].m != NULL && a >= (DWORD64)mods[i].m &&
+            a < (DWORD64)mods[i].m + 0x8000000)
+        {
+            sprintf_s(out, n, "%s+0x%llX", mods[i].name,
+                      (unsigned long long)(a - (DWORD64)mods[i].m));
+            return;
+        }
+    }
+    sprintf_s(out, n, "0x%llX", (unsigned long long)a);
+}
+
+// The logic init spawns its own thread and waits - run the whole init on a worker
+// thread so the main thread keeps the engine pumping (the game calls it with the
+// engine frame loop running).
+static volatile LONG g_logicStarted = 0;
+static DWORD WINAPI logicInitThread(LPVOID param)
+{
+    typedef void* (__fastcall *CreateLogicFn)(const char*, void*, const char*);
+    CreateLogicFn cl = (CreateLogicFn)param;
+    static unsigned char dummyFactory[0x100];
+    memset(dummyFactory, 0, sizeof(dummyFactory));
+    char rootCopy[MAX_PATH];
+    strcpy_s(rootCopy, MAX_PATH, g_rootA);
+    logf("[host] logic init thread: CreateJX3LogicOperation('%s')", rootCopy);
+    __try
+    {
+        void* op = cl(rootCopy, dummyFactory, "reborn_client_host");
+        logf("[host] logic init thread: CreateJX3LogicOperation -> %p", op);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] logic init thread fault"); }
+    if (g_logicModule != NULL)
+    {
+        void* world = *(void**)((BYTE*)g_logicModule + 0x9C1320);
+        void* loader = *(void**)((BYTE*)g_logicModule + 0xA01D98);
+        logf("[host] logic init thread: g_pSO3World=%p g_pRLLoader=%p", world, loader);
+        g_so3World = world;
+    }
+    g_logicDone = 1;
+    return 0;
+}
+
+static DWORD WINAPI logicWatchdog(LPVOID)
+{
+    Sleep(20000);
+    if (g_logicDone)
+        return 0;
+    logf("[host] logic watchdog: still wedged after 20s - dumping main-thread stack");
+    if (g_mainThreadHandle != NULL)
+    {
+        SuspendThread(g_mainThreadHandle);
+        CONTEXT ctx;
+        memset(&ctx, 0, sizeof(ctx));
+        ctx.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
+        if (GetThreadContext(g_mainThreadHandle, &ctx))
+        {
+            char mdesc[64];
+            describeAddr((DWORD64)ctx.Rip, mdesc, sizeof(mdesc));
+            logf("[host] watchdog rip=%p (%s) rsp=0x%llX rbp=0x%llX",
+                 (void*)ctx.Rip, mdesc, (unsigned long long)ctx.Rsp,
+                 (unsigned long long)ctx.Rbp);
+            char desc[64];
+            DWORD64* sp = (DWORD64*)ctx.Rsp;
+            for (int i = 0; i < 512; i++)
+            {
+                DWORD64 v = 0;
+                __try { v = sp[i]; }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                { logf("[host]   stack read fault at %d", i); break; }
+                describeAddr(v, desc, sizeof(desc));
+                logf("[host]   stack[%d] = %s", i, desc);
+            }
+        }
+        ResumeThread(g_mainThreadHandle);
+    }
+    logf("[host] watchdog done");
+    ExitProcess(0);
+    return 0;
+}
 static void* g_lastEntity = NULL;
 
 // entity factory (represent 0xAEDFD0 CreateEntityByName): capture created entities
@@ -1145,9 +1242,13 @@ int main(void)
     SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     AddDllDirectory(bin64);
 
+    g_mainThreadHandle = OpenThread(
+        THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION,
+        FALSE, GetCurrentThreadId());
     HMODULE x3d = LoadLibraryExW(dll, NULL,
         LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     if (x3d == NULL) { logf("[host] X3DEngine load failed err=%lu", GetLastError()); return 2; }
+    g_x3dModule = x3d;
     typedef int (__cdecl *fn_void)(void);
     int x3dPre = ((fn_void)GetProcAddress(x3d, "?PreInitX3DEngine@NSX3DEngine@@YAHXZ"))();
     int x3dLoad = ((fn_void)GetProcAddress(x3d, "?LoadX3DEngine@NSX3DEngine@@YAHXZ"))();
@@ -1214,6 +1315,7 @@ int main(void)
             lua = LoadLibraryExW(lp, NULL,
                 LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
         }
+        g_luaModule = lua;
         if (lua != NULL)
         {
             typedef void (__cdecl *SetRootFn)(const char*);
@@ -1387,27 +1489,23 @@ int main(void)
                                 LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
                                 LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
                             logf("[host] JX3LogicEditOperationX64.dll -> %p", logic);
+                            g_logicModule = logic;
                             if (logic != NULL)
                             {
                                 typedef void* (__fastcall *CreateLogicFn)(
                                     const char*, void*, const char*);
                                 CreateLogicFn cl = (CreateLogicFn)GetProcAddress(logic,
                                     "CreateJX3LogicOperation");
-                                static unsigned char dummyFactory[0x100];
-                                memset(dummyFactory, 0, sizeof(dummyFactory));
-                                void* op = (cl != NULL)
-                                    ? cl(rootA, dummyFactory, "reborn_client_host")
-                                    : NULL;
-                                logf("[host] CreateJX3LogicOperation('%s') -> %p",
-                                     rootA, op);
-                                if (op != NULL)
+                                if (cl != NULL && g_logicStarted == 0)
                                 {
-                                    // InitLogic's globals: g_pSO3World, g_pRLLoader
-                                    void* world = *(void**)((BYTE*)logic + 0x9C1320);
-                                    void* loader = *(void**)((BYTE*)logic + 0xA01D98);
-                                    logf("[host] logic g_pSO3World=%p g_pRLLoader=%p",
-                                         world, loader);
-                                    g_so3World = world;
+                                    g_logicStarted = 1;
+                                    g_logicDone = 0;
+                                    // worker thread: the main thread returns to the
+                                    // engine frame loop (the game calls the logic init
+                                    // with the engine running; its internal thread wait
+                                    // needs the engine pumping).
+                                    g_logicThread = CreateThread(NULL, 0,
+                                        logicInitThread, (void*)cl, 0, NULL);
                                 }
                             }
                         }
@@ -2101,6 +2199,69 @@ int main(void)
                 }
                 __except (EXCEPTION_EXECUTE_HANDLER)
                 { logf("[host] deferred RL probe fault"); }
+            }
+            if (f == 40 && !g_logicDone && g_logicThread != NULL)
+            {
+                logf("[host] frame40: logic init thread still running - dumping its stack");
+                SuspendThread(g_logicThread);
+                CONTEXT lctx;
+                memset(&lctx, 0, sizeof(lctx));
+                lctx.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
+                if (GetThreadContext(g_logicThread, &lctx))
+                {
+                    char mdesc[64];
+                    describeAddr((DWORD64)lctx.Rip, mdesc, sizeof(mdesc));
+                    logf("[host] logic thread rip=%p (%s) rsp=0x%llX rbp=0x%llX",
+                         (void*)lctx.Rip, mdesc, (unsigned long long)lctx.Rsp,
+                         (unsigned long long)lctx.Rbp);
+                    char desc[64];
+                    DWORD64* sp = (DWORD64*)lctx.Rsp;
+                    for (int i = 0; i < 256; i++)
+                    {
+                        DWORD64 v = 0;
+                        __try { v = sp[i]; }
+                        __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+                        describeAddr(v, desc, sizeof(desc));
+                        if (strncmp(desc, "0x", 2) != 0)
+                            logf("[host]   lstack[%d] = %s", i, desc);
+                    }
+                }
+                ResumeThread(g_logicThread);
+            }
+            if (f == 60 && g_logicDone && g_so3World != NULL && g_repSingleton != NULL)
+            {
+                __try
+                {
+                    if (*(void**)((BYTE*)g_repSingleton + 0x100) == NULL)
+                        *(void**)((BYTE*)g_repSingleton + 0x100) = g_so3World;
+                    logf("[host] frame60: singleton+0x100 (SO3World) -> %p",
+                         *(void**)((BYTE*)g_repSingleton + 0x100));
+                    void* mgr60 = *(void**)((BYTE*)g_repSingleton + 0xB0);
+                    if (mgr60 != NULL)
+                    {
+                        typedef long (__fastcall *CreateRLSceneFn)(
+                            unsigned id, unsigned type, unsigned a3, unsigned a4,
+                            unsigned long long a5, const char* mapFile,
+                            unsigned long long a7, const char* sceneName,
+                            unsigned long long a9);
+                        long cs = ((CreateRLSceneFn)
+                                   ((BYTE*)g_repModule + 0xB0B5C0))(
+                            2, 0x10, 0, 0, 0,
+                            "data\\source\\maps\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s\\\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s.jsonmap",
+                            0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
+                        logf("[host] frame60: CreateRLScene(id=2) -> 0x%08X",
+                             (unsigned)cs);
+                        void* scene60 = ((void* (__fastcall *)(unsigned))
+                                         ((BYTE*)g_repModule + 0x924B))(2);
+                        logf("[host] frame60: scene by id 2 -> %p", scene60);
+                        if (scene60 != NULL)
+                            logf("[host] frame60: scene id=%u 3DScene=%p",
+                                 *(unsigned*)((BYTE*)scene60 + 0xF1970),
+                                 *(void**)((BYTE*)scene60 + 0xF1978));
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                { logf("[host] frame60 fault"); }
             }
             if (f == 5 && g_repProbePending)
             {

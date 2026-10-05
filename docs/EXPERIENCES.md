@@ -1989,3 +1989,18 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   InitLogic (0x113150) which creates g_pSO3World (logic+0x9C1320) etc.
 - Next: instrument the wedge (thread/backtrace or stub the factory), or call InitLogic
   (0x113150) directly after satisfying its piRecorderFactory assert.
+
+## 2026-10-04 - Phase A: logic init runs async (host stable); wedge is in the represent/convert-module step
+
+- CreateJX3LogicOperation now runs on a worker thread (host no longer hangs; main thread
+  keeps the engine frame loop pumping). The init thread still does not complete.
+- Thread stack dump (frame40, RC_HOST_LOGIC=1) decodes the wedge: the stack carries the
+  InitLogic strings for the **JX3DoodadRepresent -> LoadConvertModule(JX3RepresentX64.dll)
+  -> m_hConvertModule** step (0x1133C0 region) plus the represent module name - i.e. the
+  init blocks around loading/initializing the represent/convert module, consistent with
+  the represent's job-processor lock (the same one that hangs singleton vt[1]).
+- Host diagnostics added: logicInitThread + per-frame thread-stack dump (describeAddr for
+  eng/rep/logic/x3d/lua) + frame60 deferred CreateRLScene (fires only once the world is
+  ready).
+- Next: pump the represent module while the init runs (call RLLoader::Update / the
+  represent frame update each frame) or find the specific lock the init waits on.
