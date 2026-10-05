@@ -502,10 +502,11 @@ a few may carry differently-named INIs, probed per need), and any further lua-le
 pak has no enumerable INI listing — the Target family was found by probing; new families get probed
 when a session needs them).
 
-**推荐 shortlist (stage 1, 1.x) + liked (stage 2, 2.x):** 2026-10-04 the reviewer confirmed the
-visible list 1.1-1.38 (主技能栏 … 奇穴); those 38 windows moved to the new stage 2 `liked` (2.x).
-推荐 keeps the 17 remaining candidates plus 20 newly promoted ones (43 JSON entries; 37 visible —
-the six rejected windows stay in the JSON and are hidden by the `RejectionStore` side file).
+**推荐 shortlist (stage 1, 1.x) + liked (stage 2, 2.x):** 2026-10-04 the reviewer confirmed two
+visible ranges — 1.1-1.38 of the first expansion (主技能栏 … 奇穴) and 1.1-1.15 of the second
+(门派 … 隐元秘鉴); 53 windows now sit in stage 2 `liked` (2.x). 推荐 (1.x) keeps the remaining
+candidates plus a third promotion batch (48 JSON entries; 42 visible — the six rejected windows
+stay in the JSON and are hidden by the `RejectionStore` side file).
 Original shortlist: 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪, CompassPanel, ExpLine,
 地图, 角色, 背包, 武学, 社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易, 坐骑槽位, 宠物秘鉴, 系统设置,
 快捷键设置, 界面设置, 主界面自定义模式, 系统菜单. (CompassPanel / ExpLine have no authored title
@@ -517,6 +518,8 @@ string — kept English rather than inventing one.)
 2026-10-04 second batch (+20, 1.x): 动作条/战斗预设/增益监视/面向设置/目标框综合, 详细属性/装备共用/
 查看装备/分解/阵法/帮会列表/拍团/添加好友/好友排名/玩具箱, 任务指引/系统菜单列表/系统菜单右/活动签到,
 侠客.
+2026-10-04 third batch (+20, 1.x): 聊天设置/共享背包/宠物信息/宠物技能/武学指导/阅读/相册/谁看过我/
+科举/按键/顶部菜单/任务对比/帮会战功榜/活动列表/师父奖励/招收帮众/我的名片/账号好友/宠物动作条/武器技能条.
 The six windows the reviewer moved to 不需要 (auctionpanel, compasspanel, guildmainpanel, mailpanel,
 newpet, questtracelist) stay in the stage in the JSON — the viewer's `RejectionStore` side file is
 what hides them.

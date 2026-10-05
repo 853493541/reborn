@@ -9,6 +9,7 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `BASIC_UI_INVENTORY.md` | Basic UI scope register — all 1,210 client `ui/Config/Default` INIs (extracted 2026-10-03), classes, tiers, exclusions |
 | `BASIC_UI_HUD.md` | HUD core deep research — MainBarPanel / Player / Target family (composition decoded) + remaining HUD register; authored-state verification policy |
 | `BASIC_UI_PANELS.md` | Panel group register — the 推荐 shortlist panels: INI facts, pages/LSH, authored-vs-runtime split, review notes |
+| `UI_RENDER_FIDELITY_PLAN.md` | Render fidelity retrospective (what made early renders "out of place") + tiered depth contract + P1-P5 plan (status badges, contact sheet, runtime replay) |
 
 ## Tools
 
