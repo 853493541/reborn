@@ -1801,6 +1801,26 @@ solved it, and what is still open. **Newest at the bottom.**
   AssetNote shows `runtime=N`. --selftest 1240/0/0 with runtime state in the gate.
 - Verified: --render bigbagpanel runtime=284, dump root 594x624; --selftest 1240/0/0; app relaunched.
 
+### 2026-10-04 ? UI ? full UI-system coverage audit vs the official client (new doc UI_SYSTEM_COVERAGE.md)
+- User: "run a full check on UI rendering system from game official client, how much percentage".
+  Measured every axis over all 1,240 windows:
+  - constructs (usage-weighted): WndType 99.6%, PosType 99.9%, ImageType 100%, HandleType 99.5%,
+    FirstItemPosType 99.6%, AnchorDst 100% (mechanism) -> aggregate 99.7%.
+  - art: 40,802 Image sections, 899 placeholders of which 278 are the intentional TextureName=no ->
+    ~602 real missing -> 98.5% of image instances.
+  - text: 21,191 Text sections, 3,254 unresolved ids (2,911 unique - a long tail of per-module
+    string tables not extracted) -> 84.6%; weakest asset axis.
+  - runtime: 122/1,240 windows ship scripts (9.8%); replay 79 full (65% of scripted) + 43 partial;
+    the viewer now consumes the state.
+  - behavior (events/animation/3D/web/native bars): 0% in the viewer by design - the product runs
+    the real engine for those.
+- Verdict: static layout+art ~98-99%, text ~85%, runtime 65% of the scripted subset; overall ~95%
+  for the viewer's static-review purpose. Gap list: extract module string tables, stub-tune the 43
+  partial replays, close the census list.
+- Docs: UI_SYSTEM_COVERAGE.md (registered in docs/ui/README.md).
+- Verified: --audit placeholders=899 unresolved=3254 outOfBounds=6584; --status placed=1240
+  shell=136 runtime-hosts=615; replay 79 OK/43 partial; --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".
