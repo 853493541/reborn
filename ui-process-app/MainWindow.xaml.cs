@@ -35,6 +35,7 @@ namespace UiProcessApp
             new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<string>> _openedWindows =
             new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        private readonly List<string> _windowHistory = new List<string>();
         private UiBuildResult _lastBuild;
         private Dictionary<object, string> _elementToSection;
         private string _hoverSection;
@@ -714,7 +715,7 @@ namespace UiProcessApp
             if (sectionName == null) return;
             var handler = PickHandler(sectionName);
             if (handler == null) return;
-            SendReplayEvent(sectionName, handler);
+            SendReplayEvent(sectionName, handler, true);
         }
 
         private string PickHandler(string section)
@@ -761,10 +762,11 @@ namespace UiProcessApp
             return null;
         }
 
-        private void SendReplayEvent(string section, string handler)
+        private void SendReplayEvent(string section, string handler, bool navigate = false)
         {
             try
             {
+                var openedBefore = _openedWindows.TryGetValue(_currentWindow.Id, out var ob) ? ob.Count : 0;
                 _replayIn.WriteLine("EVENT " + section + " " + handler);
                 _replayIn.Flush();
                 var lines = new List<string>();
@@ -782,19 +784,76 @@ namespace UiProcessApp
                     }
                     if (line.IndexOf('\t') >= 0) lines.Add(line);
                 }
-                if (lines.Count == 0) return;
-                if (!_runtimeOverlays.TryGetValue(_currentWindow.Id, out var overlay))
-                    _runtimeOverlays[_currentWindow.Id] = overlay = new List<string>();
-                overlay.AddRange(lines);
-                _layoutCache.Clear();
-                _layoutOrder.Clear();
-                _layoutNotes.Clear();
-                RenderLayout(_currentWindow);
+                if (lines.Count > 0)
+                {
+                    if (!_runtimeOverlays.TryGetValue(_currentWindow.Id, out var overlay))
+                        _runtimeOverlays[_currentWindow.Id] = overlay = new List<string>();
+                    overlay.AddRange(lines);
+                    _layoutCache.Clear();
+                    _layoutOrder.Clear();
+                    _layoutNotes.Clear();
+                    RenderLayout(_currentWindow);
+                }
+                if (navigate) NavigateAfterEvent(openedBefore);
             }
             catch
             {
                 StopReplayServer();
             }
+        }
+
+        /// <summary>Follow a click that opened another window (the game would show it) or
+        /// closed the current one (pop the history). No-op when the path has no catalog entry.</summary>
+        private void NavigateAfterEvent(int openedBefore)
+        {
+            if (_currentWindow == null) return;
+            if (!_openedWindows.TryGetValue(_currentWindow.Id, out var opened)) return;
+            for (int i = openedBefore; i < opened.Count; i++)
+            {
+                var entry = opened[i];
+                if (entry.StartsWith("-", StringComparison.Ordinal))
+                {
+                    if (_windowHistory.Count > 0)
+                    {
+                        var back = _windowHistory[_windowHistory.Count - 1];
+                        _windowHistory.RemoveAt(_windowHistory.Count - 1);
+                        NavigateToWindow(back);
+                    }
+                    return;
+                }
+                var target = FindWindowByIniPath(entry);
+                if (target != null && !string.Equals(target.Id, _currentWindow.Id, StringComparison.OrdinalIgnoreCase))
+                {
+                    _windowHistory.Add(_currentWindow.Id);
+                    NavigateToWindow(target.Id);
+                    return;
+                }
+            }
+        }
+
+        private WindowInfo FindWindowByIniPath(string path)
+        {
+            var name = Path.GetFileName(path.Replace('\\', '/')).ToLowerInvariant();
+            if (string.IsNullOrEmpty(name)) return null;
+            foreach (var stage in _inventory.Stages)
+                foreach (var w in stage.Windows ?? new List<WindowInfo>())
+                {
+                    var wn = Path.GetFileName((w.Path ?? "").Replace('\\', '/')).ToLowerInvariant();
+                    if (wn == name) return w;
+                }
+            return null;
+        }
+
+        private void NavigateToWindow(string id)
+        {
+            foreach (TreeViewItem stageNode in StageTree.Items)
+                foreach (TreeViewItem node in stageNode.Items)
+                    if (node.Tag is WindowInfo wi && string.Equals(wi.Id, id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        node.IsSelected = true;
+                        node.BringIntoView();
+                        return;
+                    }
         }
 
         private void ShowCanvas(Canvas canvas, string note)
