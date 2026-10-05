@@ -57,10 +57,15 @@ for the bag (OnLButtonClick, OnItemLButtonClick, OnMouseEnter, OnEvent, OnFrameB
   `Box_*` → `OnItemLButtonClick`, else `OnLButtonClick`), sends `EVENT <section> <handler>`, reads
   the mutation delta until `END`, appends it to a per-window overlay, clears the layout cache and
   re-renders. `ApplyRuntimeMutations` (shared with the on-disk state) applies the overlay.
-- The server toggles the checkbox state before firing `OnCheckBoxCheck` (the engine does).
+- The server sets `this` to the **control that fired the event** (the scripts branch on
+  `this:GetName()`; e.g. the bag checkbox handler compares it to `"CheckBox_Compact"`), and toggles
+  the checkbox state before firing `OnCheckBoxCheck` (the engine does).
+- Headless check: `UiProcessApp.exe --click <windowId> <section> [handler] [--out file.png]` spawns
+  the server, dispatches the event, applies the delta on top of the runtime state and renders —
+  verified: `--click bigbagpanel CheckBox_Compact OnCheckBoxCheck` → 8-step delta (`SetButtonMaxState`
+  on Btn_Max, compact/normal lookups) → 145 sections rendered.
 - Verified end-to-end at process level: the viewer spawns the server for the default window
-  (bigbagpanel); the server CLI still returns `RESULT OK` + delta for
-  `EVENT CheckBox_Compact OnCheckBoxCheck`. A human click is the remaining live check.
+  (bigbagpanel). A human click is the remaining live check.
 
 ## 5. Next steps
 

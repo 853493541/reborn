@@ -339,7 +339,9 @@ for line in io.lines() do
     local secName, handler, a1, a2 = rest:match("^(%S+)%s+(%S+)%s*(%S*)%s*(%S*)$")
     local before = #log
     local target = proxyOf(resolvePath(rootSection, secName))
-    _G.this = root
+    -- the engine sets `this` to the CONTROL that fired the event (scripts read
+    -- this:GetName() to branch); the window root is `this` only for frame events.
+    _G.this = target
     _G.arg1 = target
     _G.arg2 = (a1 ~= "" and a1 ~= nil) and a1 or nil
     _G.arg3 = (a2 ~= "" and a2 ~= nil) and a2 or nil

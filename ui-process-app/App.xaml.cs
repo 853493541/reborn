@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -56,6 +57,12 @@ namespace UiProcessApp
             if (e.Args.Contains("--contact-sheet"))
             {
                 var exit = RunContactSheet(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--click"))
+            {
+                var exit = RunClick(e.Args);
                 Shutdown(exit);
                 return;
             }
@@ -891,6 +898,143 @@ namespace UiProcessApp
             {
                 Console.WriteLine("contact-sheet failed: " + ex.Message);
                 return 1;
+            }
+        }
+
+        /// <summary>
+        /// Headless interaction check: dispatch one script event through
+        /// tools/ui/replay_server.lua, apply the returned mutation delta on top of the
+        /// window's runtime state and render the result (docs/ui/UI_INTERACTION_REPLAY.md).
+        ///   UiProcessApp.exe --click &lt;windowId&gt; &lt;section&gt; [handler] [--out file.png]
+        /// </summary>
+        private static int RunClick(string[] args)
+        {
+            try
+            {
+                string windowId = null, section = null, handler = null, outPath = null;
+                int ci = Array.IndexOf(args, "--click");
+                if (ci >= 0)
+                {
+                    if (ci + 1 < args.Length) windowId = args[ci + 1];
+                    if (ci + 2 < args.Length) section = args[ci + 2];
+                    if (ci + 3 < args.Length && !args[ci + 3].StartsWith("--")) handler = args[ci + 3];
+                }
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--out") outPath = args[i + 1];
+                if (windowId == null || section == null)
+                    throw new ArgumentException("--click needs <windowId> <section> [handler]");
+                handler ??= "OnLButtonClick";
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+                WindowInfo window = null;
+                foreach (var stage in inventory.Stages)
+                    foreach (var w in stage.Windows ?? new List<WindowInfo>())
+                        if (string.Equals(w.Id, windowId, StringComparison.OrdinalIgnoreCase)) window = w;
+                if (window?.Path == null) throw new ArgumentException($"window '{windowId}' has no layout");
+
+                var stem = Path.GetFileNameWithoutExtension(window.Path);
+                var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+                var iniPath = window.Root == "pak" ? Path.Combine(Paths.PakRoot, rel)
+                                                   : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+                var luaPath = Path.Combine(Paths.AppRoot, "assets", "ui", "Config", "Default", stem + ".lua");
+                if (!File.Exists(luaPath)) throw new ArgumentException("no script for " + stem);
+
+                var delta = DispatchReplayEvent(luaPath, iniPath, section, handler);
+                Console.WriteLine($"click {windowId} {section} {handler} -> mutations={delta.Count}");
+
+                var filtered = BuildWindowPlan(window, out _);
+                LayoutPlanBuilder.ApplyRuntimeMutations(filtered, delta);
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var build = UiLayout.Build(filtered, assets, textures);
+                double width = filtered.Sections[0].GetInt("Width");
+                double height = filtered.Sections[0].GetInt("Height");
+                if (width <= 0) width = 1280;
+                if (height <= 0) height = 720;
+                var host = new Border
+                {
+                    Width = width,
+                    Height = height,
+                    Background = BackdropBrush(window),
+                    Child = build.Root,
+                };
+                host.Measure(new Size(width, height));
+                host.Arrange(new Rect(0, 0, width, height));
+                host.UpdateLayout();
+                var overhang = ComputeOverhang(build, width, height);
+                if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
+                {
+                    var expanded = new Canvas
+                    {
+                        Width = width + overhang.L + overhang.R,
+                        Height = height + overhang.T + overhang.B,
+                        Background = BackdropBrush(window),
+                    };
+                    host.Child = null;
+                    Canvas.SetLeft(build.Root, overhang.L);
+                    Canvas.SetTop(build.Root, overhang.T);
+                    expanded.Children.Add(build.Root);
+                    host.Child = expanded;
+                    host.Width = expanded.Width;
+                    host.Height = expanded.Height;
+                    host.Measure(new Size(expanded.Width, expanded.Height));
+                    host.Arrange(new Rect(0, 0, expanded.Width, expanded.Height));
+                    host.UpdateLayout();
+                }
+                outPath ??= Path.Combine(AppContext.BaseDirectory, $"click_{windowId}_{section}.png");
+                var bitmap = new RenderTargetBitmap((int)host.Width, (int)host.Height, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(host);
+                using (var stream = File.Create(outPath))
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(stream);
+                }
+                Console.WriteLine($"rendered {filtered.Sections.Count} sections -> {outPath}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("click failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>Spawns replay_server.lua, dispatches one EVENT and returns the delta lines.</summary>
+        private static List<string> DispatchReplayEvent(string luaPath, string iniPath, string section, string handler)
+        {
+            var lua32 = Environment.GetEnvironmentVariable("LUA32");
+            if (string.IsNullOrWhiteSpace(lua32))
+                lua32 = @"C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\lua-5.1.5\lua-5.1.5\build32\lua32.exe";
+            var server = Path.Combine(Paths.RepoRoot ?? "", "tools", "ui", "replay_server.lua");
+            if (!File.Exists(lua32) || !File.Exists(server))
+                throw new FileNotFoundException("lua32 or replay_server.lua missing");
+            var psi = new ProcessStartInfo(lua32, "\"" + server + "\" \"" + luaPath + "\" auto \"" + iniPath + "\"")
+            {
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            using (var proc = Process.Start(psi))
+            {
+                proc.StandardOutput.ReadLine(); // READY
+                proc.StandardInput.WriteLine("EVENT " + section + " " + handler);
+                proc.StandardInput.Flush();
+                var lines = new List<string>();
+                for (int i = 0; i < 5000; i++)
+                {
+                    var line = proc.StandardOutput.ReadLine();
+                    if (line == null || line == "END") break;
+                    if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
+                    if (line.IndexOf('\t') >= 0) lines.Add(line);
+                }
+                try { proc.Kill(); } catch { }
+                return lines;
             }
         }
 

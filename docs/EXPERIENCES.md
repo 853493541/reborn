@@ -1924,6 +1924,18 @@ solved it, and what is still open. **Newest at the bottom.**
 - Verified: replay_all back to 81 OK/41 partial; app+server pair spawns (UiProcessApp 40556/lua32
   8540); --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? interaction semantics fix (`this` = the control) + headless --click check
+- The bag checkbox handler branches on `this:GetName() == "CheckBox_Compact"`; the server was
+  setting `this` to the window root, so the branch never ran (delta was Lookups only). Engine truth:
+  **`this` is the control that fired the event** (the root is `this` only for frame events). Fixed in
+  replay_server.lua; the handler now runs its branch (`SetButtonMaxState` on Btn_Max etc.).
+- New headless interaction check: `UiProcessApp.exe --click <windowId> <section> [handler]
+  [--out file.png]` spawns the server, dispatches one EVENT, applies the delta on top of the runtime
+  state and renders. Verified: `--click bigbagpanel CheckBox_Compact OnCheckBoxCheck` -> 8-step delta,
+  145 sections rendered (diff vs base render is small because the base state is already normal mode -
+  the handler sets compact=false).
+- Verified: --click delta + render; --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".
