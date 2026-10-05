@@ -232,6 +232,17 @@ static int __cdecl exeAtexit(void* fn)
     return 0;
 }
 
+// zeroing replacement for the represent's fallback allocator (rep+0xB75754, via
+// the 0x82BA thunk): the copy-ctor treats the new object's list fields as zeroed.
+static void* __fastcall repCallocNew(size_t n)
+{
+    static int nCalls = 0;
+    nCalls++;
+    if (nCalls <= 5)
+        logf("[host] repCallocNew(%llu) call #%d", (unsigned long long)n, nCalls);
+    return calloc(1, n);
+}
+
 static void patchAbsJmp(void* at, void* target)
 {
     DWORD oldp = 0;
@@ -2787,7 +2798,29 @@ int main(void)
                             ? g_exeLogicMgr : makeStubObject(0x400);
                         *(void**)(param + 0xA0) = (g_exeRepMgr != NULL)
                             ? g_exeRepMgr : makeStubObject(0x400);
-                        *(void**)(param + 0xC8) = makeStubObject(0x400);
+                        // zero the represent's fallback allocations (the Init's
+                        // copy-ctor expects fresh objects' list fields to be 0)
+                        if (g_repModule != NULL)
+                            patchAbsJmp((BYTE*)g_repModule + 0xB74A10,
+                                        (void*)repCallocNew);
+                        // stepCtrl: the represent reads [Param+0xC8] -> stepCtrl object
+                        // -> [stepCtrl+0x10] = a pool allocator ([0]=block size,
+                        // [8]=free list). Block size 0 makes the allocator fall back to
+                        // operator new (rep+0x3E5387 path) - no pool needed.
+                        {
+                            // pStepCtrl = the control buffer itself (list owner at
+                            // +0x70/+0x78/+0x80); [0] -> object whose +0x10 is the
+                            // pool allocator (block size 0 -> operator-new fallback).
+                            static unsigned char stepBuf[0x200];
+                            static unsigned char stepA[0x200];
+                            static unsigned char stepAlloc[0x40];
+                            memset(stepBuf, 0, sizeof(stepBuf));
+                            memset(stepA, 0, sizeof(stepA));
+                            memset(stepAlloc, 0, sizeof(stepAlloc));
+                            *(void**)(stepA + 0x10) = stepAlloc;
+                            *(void**)stepBuf = stepA;
+                            *(void**)(param + 0xC8) = stepBuf;
+                        }
                         logf("[host] frame60: param logicMgr=%p repMgr=%p",
                              *(void**)(param + 0x98), *(void**)(param + 0xA0));
                         void** svt60 = *(void***)g_repSingleton;

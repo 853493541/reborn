@@ -2157,3 +2157,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Host file restored after a shell-edit corruption (git checkout b399993) + VEH stack
   trace re-added.
 - Evidence: host_exe21/22.out.
+
+## 2026-10-04 - PHASE B COMPLETE: SO3Represent::Init(Param) -> 1
+
+- `SO3Represent::Init(Param) -> 0x00000001` (host_exe29.out): the full represent Init
+  succeeds with all-real objects. After Init: `singleton+0xB0 = engine manager`,
+  `singleton+0x100 = SO3World` (both set by the game's own Init from the Param).
+- Final pieces of this round:
+  - pStepCtrl decoded: the Param value is the control buffer itself; `[buf]` -> an
+    object whose `+0x10` is a pool allocator ([0]=block size, [8]=free list). Block
+    size 0 makes the allocator take the operator-new fallback (rep+0x3E5387).
+  - The copy-ctor (rep+0x3DE610) then tail-calls a list append (rep+0x3E52A0) with
+    `this = [buf]` - so that object must be a full zeroed 0x200 buffer (list at
+    +0x70/+0x78/+0x80). Host builds: stepBuf(0x200, [0]=stepA) + stepA(0x200,
+    +0x10=stepAlloc(0)) + Param+0xC8 = stepBuf.
+  - The represent's fallback allocator (operator new at rep+0xB74A10) is patched to a
+    zeroing calloc (repCallocNew) so fresh objects' list fields are 0.
+- Phase B closed. Next (Phase C): CreateRLScene after the successful Init (the
+  frame60 attempt still faults - check the post-Init scene-creation path).
+- Evidence: host_exe29.out.
