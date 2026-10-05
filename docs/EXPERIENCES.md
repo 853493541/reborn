@@ -1911,3 +1911,32 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   `KGRepresentHelper::GetUnitModel` + `KGSceneCLR::AddRepresentModel` path (its native
   code in MovieEngineCLR.dll) is the working reference.
 - Evidence: host_char_rl19.out, rl_slots.txt, image/VT maps.
+
+## 2026-10-04 — MovieEditor IL read (mddump tool); F1-as-NPC worldObject test; path-driven player flag cleared but no render
+
+- Built `%TEMP%\opencode\skillv2\mddump` (dotnet 5 console + System.Reflection.Metadata,
+  no external deps) - reads mixed-mode assemblies (PEReader + MetadataReader, IL bytes,
+  call-token resolution). Extracted MovieEditor native RVAs:
+  `KGRepresentHelper.InitRepresent` 0x25AA64, `GetUnitModel` 0x25DE9C,
+  `InitPlayerModel` 0x259DBC, `GetPlayerModel` 0x25D980, `UnitModel.{ctor}` 0x25C7BC,
+  `KMovieObjectHolder.{ctor}` 0x118720, `NewObject` 0x1189C0/0x1188B0/0x118A20,
+  `GetModel` 0x118820.
+- `GetPlayerModel` IL: `new KMovieObjectHolder` -> 6x `NewObject(sprintf_s names)` ->
+  `GetModel` -> caches `IKG3DModelProxy*` in maps keyed by unsigned long. The MovieEditor
+  character path = KMovieObjectHolder + engine model proxies (ME stack), not the client
+  RL/KRLCharacter stack.
+- Client rep's direct model pipeline (found; belongs to the Homeland system):
+  `m_piSNE` ([g_pHomeland+0x400888]) -> `Node_Create` / `Model_CreateCommonModel(&hModel,
+  szModel, ..., szAnim)` / `Node_SetUserData` / `Node_AddModel` (asserts 0x8D1360 block).
+- Experiment: copied `data\source\player\f1` -> `data\source\npc_source\f1` (23 files)
+  and pointed the map's worldObject `comRender.actorModel` at the npc_source path.
+  Result: the path change DID clear the player classification (SO flags 0x00010190 ->
+  0x00000190; the player bit is path-driven), the model files load
+  (`wrapper loose-exists` + `LoadFile`), but it still does NOT render
+  (keepCheck 0; the keep-mesh registry is PakV4-sourced - loose tab ignored; render-data
+  build 0xC4DE80 never runs). Screenshot fingerprint unchanged. Map entity JSON restored
+  from backup (`000_000.json.bak_f1npc` kept in the client_root).
+- Conclusion: the F1 player-model render in the client engine needs the represent layer
+  (game-stack entangled) or a pak-level keep-check entry; the MovieEditor-engine path is
+  the proven character renderer.
+- Evidence: me_getunit.txt, mddump output, host_f1npc1.out, host_f1npc1.png stats.
