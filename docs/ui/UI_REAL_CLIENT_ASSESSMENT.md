@@ -56,8 +56,32 @@ sections `runtime=284` (complete replay still applied).
 | Interaction | handler dispatch proven on the bag checkbox; viewer wiring not built | client data (partially) |
 | Animations/SFX/3D scenes/web/native bars | out of viewer scope | not attempted |
 
-## 5. Verdict
+## 5. Issue register (what the rechecks found)
 
+**Fixed in this pass (6):**
+1. Partial replay state broke GT-matched windows — minimap collapsed 5 sections; `ApplyRuntimeState`
+   now applies only completed replays.
+2. Coverage percentages were self-referential — `UI_SYSTEM_COVERAGE.md` §0 states they measure our
+   tools, not the client.
+3. Bag hand `adjust` (440-wide root/backgrounds) contradicted the script's 594x624 — removed.
+4. A root `Hide` in a replay dropped the whole window — ignored.
+5. Scripts failed without Lua 5.1 `module()` env chaining — fixed (39 → 78 replay OK).
+6. Entry chain missed `OnCreate`/`Init`/`OnOpen` — added (no-entry 6 → 3).
+
+**Open (counted):**
+1. Text: 3,254 unresolved string instances (2,911 unique ids) — extract the module string tables.
+2. Art: ~602 real missing placeholder instances (~444 unique section/texture pairs); 278 are the
+   intentional `TextureName=no`.
+3. Constructs: PosType 3/4/5 = 70 · HandleType 1/2/4/5 = 137 · FirstItemPosType 1-9 = 98 ·
+   approximate WndTypes = 868 sections (page-set/list/tree/scene/web/flex).
+4. Partial replays: 43 windows (T-A: 23) — stub-tune by error class.
+5. Out-of-bounds elements: 6,584 instances (mix of legitimate overhang and wrong sizes).
+6. No-entry replays: 3 (Balloon, TradingSure, UISetting).
+7. Shell windows: 136 (authored chrome, runtime content) — status-flagged, not errors.
+8. Basic-UI fidelity: unmeasured (no GT) — capture wishlist in §6.
+9. Interaction: dispatch core proven; viewer wiring not built.
+
+## 6. Verdict
 - **Client-binary-verified**: the draw/layout core we implemented (slicing, PosType set, anchors).
 - **Client-data-verified**: inputs (INI/scripts/assets) and runtime state for the completed replays.
 - **GT-verified**: the 绝境战场-era window set; the recheck confirmed they still hold after the
@@ -68,7 +92,7 @@ sections `runtime=284` (complete replay still applied).
   zhenjie pages), skill (kungfu/qixue), social, mail, auction, guild, system settings, and the same
   windows after a few clicks (tab switch, checkbox) to cover interaction states.
 
-## 6. Reproduce
+## 7. Reproduce
 
 ```powershell
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --render minimap --out mm.png
