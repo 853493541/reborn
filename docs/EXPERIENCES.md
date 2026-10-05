@@ -1675,3 +1675,17 @@ solved it, and what is still open. **Newest at the bottom.**
   stage, rebuild with the original 8-space element indent) - a json.dumps round-trip reformats short
   arrays (`"show": [ "x" ]`) and would have diffed the whole 872 KB file.
 - Verified: --selftest 1240/0/0; GUI relaunched, 推荐 now 61 windows.
+
+### 2026-10-04 ? UI ? reviewer confirmed 推荐 1.1-1.38 -> new stage liked (2.x) + 20 more promoted
+- User: "1.1-1.38 will move to liked, which is the new 2.x" / "add 20 more recommended".
+- The 38 confirmed visible items (main-bar ... matrix; the six rejected windows are excluded from
+  the visible list) moved out of 推荐 into a new stage `liked`, inserted as stage 2 (2.x). 推荐 (1.x)
+  now holds the 17 remaining candidates + 20 newly promoted: actionbar/actionbarbind/buffmonitor/
+  targetfaceset/targetcommon, charinfomore/equipmentshare/viewequip/dismantle/formationpanel/
+  guildlistpanel/goldteam/addfriendpanel/friendrank/toybox, questguide/systemmenu-list/
+  systemmenu-right/activitysignin, partnerteam. Catalog still 1,240; stages: recommended 43 (37
+  visible), liked 38, ui 11, hud-ui 48, panels-ui 76, menus-ui 29, other-ui 780, modes-ui 211, spare 4.
+- The tree numbering is 1-based per stage (MainWindow.BuildTree), so "1.1-1.38" is the displayed
+  numbering of the visible (post-reject) list; the boundary was confirmed with the user before the
+  move (last item = matrix, 奇穴).
+- Verified: --selftest 1240/0/0; GUI relaunched.
