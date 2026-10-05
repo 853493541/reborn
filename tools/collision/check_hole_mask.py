@@ -113,8 +113,11 @@ def main() -> int:
         ox, oz = [float(v) for v in args.origin.split(",")]
         shown = 0
         for cx, cz in hole_cells(mask, n):
+            # converted/engine mask row cz -> world cell z = n-1-cz (the same
+            # flip SampleGround applies; verified by the 2026-09-29 hole fall:
+            # world (22850,30450) on 海岛绝境 is a hole only under this mapping)
             wx = ox + (cx + 0.5) * args.cell
-            wz = oz + (cz + 0.5) * args.cell
+            wz = oz + (n - 1 - cz + 0.5) * args.cell
             print("hole cell (%d,%d) -> world (%.0f,%.0f)" % (cx, cz, wx, wz))
             shown += 1
             if shown >= args.spawn_cells:
