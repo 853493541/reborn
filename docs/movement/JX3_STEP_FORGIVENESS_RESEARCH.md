@@ -121,3 +121,9 @@ recovered PhysX CCT default:
   calibrated value is the documented host reference.
 
 Self-test: `step_up_50u_budget` PASS, `step_blocks_over_budget` PASS (11/11 total).
+
+**Correction (2026-10-02/10-05):** the 50 u CCT default was **rejected** as a gameplay
+value — the online body is the SIMWorld/KCharacter solver, not a proven PxController,
+so the step budget stays the game-side **64 u** (`COLLISION_SYSTEM_COMPARISON.md` §8.1
+4f, commit `1a20b96`). The same disposition applies to `contactOffset` 0.1 (ctor
+default, **N/A**, `COLLISION_SYSTEM_STATUS.md` §4, 2026-10-05).

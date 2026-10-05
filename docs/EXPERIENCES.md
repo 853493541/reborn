@@ -3986,3 +3986,17 @@ if the cache/host frames appear.
 - Evidence: logs `reborn_20261005_000105` (old stall), `000403`/`000447` (fixed).
 - Outcome: solved. Related open: the coarse 16-bit BCH variant disagrees with the
   loader at that point (~6090 vs 0) - `TERRAIN_R32_BCH_RELATION.md` §Open.
+
+### 2026-10-05 - Movement/collision - contact offset 0.1 registered N/A (ctor default)
+
+- Did: evidence check on the last "CCT default not modelled" row. `contactOffset`
+  0.1 m is the base `PxControllerDesc` **ctor default** (`+0x38`, dump
+  `pxcontrollerdesc_ctor.txt`); the online body is the SIMWorld/KCharacter solver
+  (`bAddPlayerPhysicsActor=0`) with no recovered consumer/value (G-1) - the same
+  class as `stepOffset` 0.5 m, which the host already rejected in favor of the
+  64 u game-side tolerance (`1a20b96`, comparison §8.1 4f). Applying 0.1 m (10 u)
+  would be a guess-fix, so it is registered N/A with re-open criteria.
+- Evidence: `COLLISION_SYSTEM_STATUS.md` §4 row updated; comparison §8.1 #16;
+  `JX3_STEP_FORGIVENESS_RESEARCH.md` §8 correction note.
+- Outcome: solved (N/A with evidence). Re-open if the online character is proven
+  to use the PxController or a SIMWorld skin value is recovered.

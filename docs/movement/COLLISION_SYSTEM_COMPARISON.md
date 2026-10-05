@@ -203,7 +203,7 @@ where they affect collision/camera geometry. Excludes harness switches
 | 13 | tree canopy columns generated (extruded prisms) | rule | bake |
 | 14 | degenerate trunk columns sized from visual mesh (6/68 match client walk-through) | proxy | bake |
 | 15 | capsule 17/116 host-chosen | number | `RC_RADIUS/HEIGHT` |
-| 16 | CCT `contactOffset` 0.1 recovered but not modelled | proxy | solver |
+| 16 | CCT `contactOffset` 0.1 — **resolved 2026-10-05: ctor default, not the gameplay solver (N/A, same as stepOffset 0.5 m)** | n/a | — |
 | 17 | in-house solver instead of PhysX/SIMWorld | proxy | `FoliageCollision` |
 | 18 | camera anchor = chest + 90 u (game: head/socket) | number | `RebornClient` |
 | 19 | 20 Hz camera obstruction query cap | number | `RC_CAM_OBSTHZ` |
