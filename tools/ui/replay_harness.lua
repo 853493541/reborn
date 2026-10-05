@@ -45,6 +45,9 @@ local function num(v)
 end
 
 local proxyOf
+-- forward declaration: the permissive data proxy is defined below but is needed
+-- by the UI section proxies (property sub-objects).
+local proxy
 local function record(sec, method, args)
   local flat = {}
   for i = 1, math.min(#args, 4) do
@@ -72,7 +75,7 @@ end
 
 proxyOf = function(sec)
   local methods = {}
-  local proxy
+  local selfProxy
   methods.Lookup = function(self, a, b)
     record(sec, "Lookup", { a, b })
     return proxyOf(resolvePath(sec, a))
@@ -101,7 +104,7 @@ proxyOf = function(sec)
   methods.GetItemCount = function() return 0 end
   methods.GetData = function() return 0 end
 
-  proxy = setmetatable({ __sectionName = sec.name }, {
+  selfProxy = setmetatable({ __sectionName = sec.name }, {
     __lt = function() return false end,
     __le = function() return false end,
     __add = function() return 0 end,
@@ -116,8 +119,9 @@ proxyOf = function(sec)
     __tostring = function() return sec.name end,
     __index = function(t, k)
       if type(k) == "string" and k:match("^%l") then
-        -- property read (camelCase/sz/dw/n): authored value or 0 so numeric
-        -- comparisons in the script behave; rawset writes still win.
+        -- property read (camelCase/sz/dw/n): numeric authored value or 0. Lua 5.1
+        -- order comparisons between different types error regardless of
+        -- metatables, so UI numeric properties must stay numbers.
         if sec.values[k] ~= nil then return num(sec.values[k]) end
         return 0
       end
@@ -141,7 +145,7 @@ proxyOf = function(sec)
       end
     end,
   })
-  return proxy
+  return selfProxy
 end
 
 --------------------------------------------------------------------- engine stubs
@@ -153,7 +157,7 @@ local function clone(t)
 end
 _G.clone = clone
 
-local function proxy(name)
+proxy = function(name)
   local p = {}
   setmetatable(p, {
     __index = function(t, k)

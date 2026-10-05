@@ -35,6 +35,7 @@ namespace UiProcessApp
             new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         private UiBuildResult _lastBuild;
         private Dictionary<object, string> _elementToSection;
+        private string _hoverSection;
 
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
@@ -703,18 +704,7 @@ namespace UiProcessApp
             if (_replayServer == null || _replayIn == null || _replayOut == null) return;
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
             if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
-            string sectionName = null;
-            try
-            {
-                var hit = VisualTreeHelper.HitTest(LayoutHost, e.GetPosition(LayoutHost));
-                var visual = hit?.VisualHit;
-                while (visual != null)
-                {
-                    if (_elementToSection.TryGetValue(visual, out var name)) { sectionName = name; break; }
-                    visual = VisualTreeHelper.GetParent(visual);
-                }
-            }
-            catch { }
+            var sectionName = HitTestSection(e.GetPosition(LayoutHost));
             if (sectionName == null) return;
             var handler = PickHandler(sectionName);
             if (handler == null) return;
@@ -728,6 +718,39 @@ namespace UiProcessApp
             if (section.StartsWith("Box_", StringComparison.OrdinalIgnoreCase) &&
                 _replayHandlers.Contains("OnItemLButtonClick")) return "OnItemLButtonClick";
             if (_replayHandlers.Contains("OnLButtonClick")) return "OnLButtonClick";
+            return null;
+        }
+
+        /// <summary>Hover: dispatch OnMouseLeave/OnMouseEnter when the section under
+        /// the cursor changes (the scripts' own state handlers, same server).</summary>
+        private void OnLayoutMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (_replayServer == null || _replayIn == null || _replayOut == null) return;
+            if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
+            if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
+            var section = HitTestSection(e.GetPosition(LayoutHost));
+            if (string.Equals(section, _hoverSection, StringComparison.Ordinal)) return;
+            var previous = _hoverSection;
+            _hoverSection = section;
+            if (previous != null && _replayHandlers.Contains("OnMouseLeave"))
+                SendReplayEvent(previous, "OnMouseLeave");
+            if (section != null && _replayHandlers.Contains("OnMouseEnter"))
+                SendReplayEvent(section, "OnMouseEnter");
+        }
+
+        private string HitTestSection(Point point)
+        {
+            try
+            {
+                var hit = VisualTreeHelper.HitTest(LayoutHost, point);
+                var visual = hit?.VisualHit;
+                while (visual != null)
+                {
+                    if (_elementToSection.TryGetValue(visual, out var name)) return name;
+                    visual = VisualTreeHelper.GetParent(visual);
+                }
+            }
+            catch { }
             return null;
         }
 

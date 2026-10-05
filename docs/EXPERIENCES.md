@@ -1911,6 +1911,19 @@ solved it, and what is still open. **Newest at the bottom.**
 - Next: hover (OnMouseEnter/Leave), item-level clicks with row index, window chains, handler count
   in the AssetNote.
 
+### 2026-10-04 ? UI ? hover wired; failed method/property split reverted (Lua 5.1 comparison rule)
+- Hover: mouse-move hit-tests the section under the cursor and dispatches OnMouseLeave/OnMouseEnter
+  when it changes (same replay server; only when the module exposes the handlers). Clicks and hover
+  share `HitTestSection`.
+- Failed experiment: splitting PascalCase keys into methods (verb prefixes) vs properties (proxies)
+  broke the batch - 1 OK/121 ERR then a hang. Root cause: **Lua 5.1 order comparisons between
+  different types error regardless of metatables** (`luaV_lessthan`: ttype(l) != ttype(r) -> error),
+  so property proxies on the right of `number <` abort scripts; the number-type metatable cannot
+  rescue it (it does help arithmetic, which does consult metamethods). Reverted to the known-good
+  shim (81 OK / 41 partial) and kept the shadowing cleanup (`selfProxy`, forward `local proxy`).
+- Verified: replay_all back to 81 OK/41 partial; app+server pair spawns (UiProcessApp 40556/lua32
+  8540); --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

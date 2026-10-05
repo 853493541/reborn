@@ -64,10 +64,17 @@ for the bag (OnLButtonClick, OnItemLButtonClick, OnMouseEnter, OnEvent, OnFrameB
 
 ## 5. Next steps
 
-1. Hover pass (`OnMouseEnter`/`OnMouseLeave`) for state frames.
+1. ~~Hover pass (`OnMouseEnter`/`OnMouseLeave`)~~ done: mouse-move hit-tests the section under the
+   cursor and dispatches leave/enter when it changes.
 2. Item-level clicks with the row index (the list templates give the geometry).
 3. Window chains: when a handler opens another window, surface it as a new catalog selection.
 4. Show the interactive handler count in the AssetNote.
+
+**Lesson (2026-10-04):** distinguishing "PascalCase method" from "PascalCase property" via verb
+prefixes broke the batch (property proxies caused `number < table` errors — Lua 5.1 order
+comparisons between different types error regardless of metatables — and one script hung).
+Reverted to the known-good shim: unknown lowercase fields → permissive proxies, PascalCase → callable
+proxies, UI numeric properties → 0. Keep mixed-type comparisons out of the stubs.
 
 ## Reproduce
 
