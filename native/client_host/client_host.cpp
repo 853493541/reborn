@@ -446,6 +446,8 @@ static long __fastcall wrapExistsHash(void* self, const char* path)
     return r;
 }
 
+static void describeAddr(DWORD64 a, char* out, size_t n);
+
 static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
 {
     if (ep->ExceptionRecord->ExceptionCode == 0xC0000005 ||
@@ -471,6 +473,23 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         {
             logf("[VEH] exc=0x%08X at=%p (module?)", ep->ExceptionRecord->ExceptionCode,
                  ep->ExceptionRecord->ExceptionAddress);
+        }
+        // stack trace for the first few AVs inside the represent module
+        static int vehTraces = 0;
+        DWORD64 fa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
+        int inRep = (g_repModule != NULL && fa >= (DWORD64)g_repModule &&
+                     fa < (DWORD64)g_repModule + 0x2000000);
+        if (inRep && vehTraces < 5)
+        {
+            vehTraces++;
+            void* frames[20];
+            USHORT n = RtlCaptureStackBackTrace(0, 20, frames, NULL);
+            char d[64];
+            for (USHORT i = 0; i < n; i++)
+            {
+                describeAddr((DWORD64)frames[i], d, sizeof(d));
+                logf("[VEH]   bt[%u] = %s", i, d);
+            }
         }
     }
     else if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP &&

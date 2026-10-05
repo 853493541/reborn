@@ -2137,3 +2137,23 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Next: verify/complete each real object (finish the common manager's OnInitialize
   member init; check the SO3World's completeness), then Init should return 1.
 - Evidence: host_exe1-18.out.
+
+## 2026-10-04 - Init fault chain pinned: stepCtrl (Param+0xC8) needs a real vtable[2] factory
+
+- VEH stack trace (host, in-rep faults) at the Init fault:
+  bt[4] = rep+0x3E53CD (fault), bt[5] = rep+0x3DE631 (inside the copy-ctor 0x3DE610),
+  bt[6] = rep+0x3E64EE (Init, right after `call 0x3DE610` at 0x3E64E9).
+- Init code: `rsi = [rdx+0xC8]` = pStepCtrl; at 0x3E64E6 `rcx = rsi`; `call 0x3DE610` -
+  the copy-ctor allocates the destination via `[rsi->vtable + 0x10]` (vtable[2]) and
+  `call 0xD544` (thunk), then copies 0x88+ bytes. With our stub stepCtrl, vtable[2]
+  returns 0 -> null write -> fault.
+- So the LAST missing piece is a real **stepCtrl** object whose vtable[2] is a factory
+  allocating 0xE8-byte objects. The exe's own Initialize passes `&local` (rbp+0x88 =
+  rsp0+0x10 area) and never constructs it in the code scanned - the object must be
+  constructed by a call not yet identified, or the local is a structure the represent
+  Init fills. Next: locate the stepCtrl's construction/type (scan the exe Initialize
+  again for writes to the local via rsp-relative addressing, or find the object class by
+  the vtable[2] factory's allocation size 0xE8).
+- Host file restored after a shell-edit corruption (git checkout b399993) + VEH stack
+  trace re-added.
+- Evidence: host_exe21/22.out.
