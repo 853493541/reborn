@@ -2238,3 +2238,23 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   field garbage) - the char chain faults on it. The proper path is the real
   CreateRLScene once [mgr+0x260] is real.
 - Evidence: host_exe37.out.
+
+## 2026-10-04 - Phase D: the resource lookup's real `this` is singleton+0x1A0; candidates narrowed
+
+- Corrected: CreateRLScene's lookup call is `lea rcx,[singleton+0x1A0]` (not the facade);
+  the resource manager = `[singleton+0x1A0+0x260]` = `[singleton+0x400]`.
+- Fault-chain progression as candidates were supplied (all at the lookup call site
+  0xB0B807 -> 0x16A09 -> 0x80D710):
+  - `[..]=null` -> fault at 0x80D728 (`mov rax,[rcx]`).
+  - XLogic (facade vt[0x290], valid vtable) -> fault moved to 0x80D736: its
+    vt[0x13] does not return a valid container.
+  - adapter manager (0xF5940-built, +0x260 = obj+0x30) -> fault at 0x80D72B: the
+    sub-object has **no vtable** ([sub]=0) - not the resource manager; its inits
+    (vt[0x20]/0x38/0x48 as 0xE6300 does) did not set one either.
+- So the resource manager is another class with vt[0x13](type)->container,
+  container vt[7](name)->item, item vt[0xB](). Likely an exe module interface
+  (KJX3FileModule / KJX3PackageModule - the name->resource lookup) or the engine's
+  file/resource manager.
+- Next: create KJX3FileModule (Create 0x955EB8) / KJX3PackageModule (Create 0x958238)
+  and try their interfaces as [singleton+0x1A0+0x260]; then the real CreateRLScene.
+- Evidence: host_exe37-43.out.

@@ -2853,10 +2853,76 @@ int main(void)
                         // sub-manager at +0x260 (0xF5B2F: [rdi+0x260] = rdi+0x30). Try
                         // the same on the facade, then the REAL CreateRLScene (which
                         // creates the RL scene + attaches the engine 3D scene).
-                        if (*(void**)((BYTE*)mgr60 + 0x260) == NULL)
+                        // CreateRLScene's lookup uses `lea rcx,[singleton+0x1A0]` -
+                        // the resource holder is singleton+0x1A0, its +0x260 is the
+                        // resource manager.
+                        void* holder60 = (BYTE*)g_repSingleton + 0x1A0;
+                        if (*(void**)((BYTE*)holder60 + 0x260) == NULL)
                         {
-                            *(void**)((BYTE*)mgr60 + 0x260) = (BYTE*)mgr60 + 0x30;
-                            logf("[host] frame60: [mgr+0x260] := mgr+0x30 (probe)");
+                            // get the XLogic the way the exe does
+                            // (facade->vt[0x290]) and validate the pointer.
+                            void* xl = NULL;
+                            __try
+                            {
+                                void** mvt = *(void***)mgr60;
+                                xl = ((void* (__fastcall *)(void*))mvt[0x290 / 8])(mgr60);
+                                void* vt0 = NULL;
+                                __try { vt0 = *(void**)xl; }
+                                __except (EXCEPTION_EXECUTE_HANDLER) { vt0 = NULL; }
+                                logf("[host] frame60: facade vt[0x290] -> %p [xl]=%p",
+                                     xl, vt0);
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: vt[0x290] fault"); }
+                            // the adapter's real manager (0x4C0) carries its
+                            // resource sub-object at +0x260 - build one.
+                            void* adSub = NULL;
+                            __try
+                            {
+                                HMODULE ad = GetModuleHandleA("KG3DEngineAdapterX64.dll");
+                                if (ad != NULL)
+                                {
+                                    void* buf = calloc(1, 0x4C0);
+                                    if (buf != NULL)
+                                    {
+                                        void* obj = ((void* (__fastcall *)(void*))
+                                                     ((BYTE*)ad + 0xF5940))(buf);
+                                        if (obj != NULL)
+                                        {
+                                            adSub = *(void**)((BYTE*)obj + 0x260);
+                                            logf("[host] frame60: adapter manager=%p sub(+0x260)=%p [sub]=%p",
+                                                 obj, adSub,
+                                                 (adSub != NULL) ? *(void**)adSub : NULL);
+                                            // the inits 0xE6300 performs
+                                            void** ovt = *(void***)obj;
+                                            unsigned char ia[0x40];
+                                            memset(ia, 0, sizeof(ia));
+                                            int i2 = 1;
+                                            void* i3 = obj;
+                                            __try
+                                            {
+                                                ((long (__fastcall *)(void*, void*, int))
+                                                 ovt[0x20 / 8])(obj, ia, 1);
+                                                ((long (__fastcall *)(void*, void*))
+                                                 ovt[0x38 / 8])(obj, &i2);
+                                                ((long (__fastcall *)(void*, void*))
+                                                 ovt[0x48 / 8])(obj, &i3);
+                                                logf("[host] frame60: adapter inits done [sub]=%p",
+                                                     (adSub != NULL) ? *(void**)adSub : NULL);
+                                            }
+                                            __except (EXCEPTION_EXECUTE_HANDLER)
+                                            { logf("[host] frame60: adapter init fault"); }
+                                        }
+                                    }
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: adapter manager fault"); }
+                            void* cand = (adSub != NULL) ? adSub
+                                         : ((xl != NULL) ? xl : (BYTE*)mgr60 + 0x30);
+                            *(void**)((BYTE*)holder60 + 0x260) = cand;
+                            logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
+                                 cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
                         __try
                         {
