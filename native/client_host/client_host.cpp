@@ -2879,50 +2879,91 @@ int main(void)
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER)
                             { logf("[host] frame60: vt[0x290] fault"); }
-                            // the adapter's real manager (0x4C0) carries its
-                            // resource sub-object at +0x260 - build one.
+                            // the game's own MapConverter setup (rep+0x834BE0):
+                            //   file = opener([rep+0xEDDFE0]+0x120, "MapConverter")
+                            //   rlobj = SemanticX64!CreateRLFile()
+                            //   mgr = rlobj->vt[2](file, 1, 1)  -> [singleton+0x1A0+0x260]
                             void* adSub = NULL;
                             __try
                             {
-                                HMODULE ad = GetModuleHandleA("KG3DEngineAdapterX64.dll");
-                                if (ad != NULL)
+                                HMODULE repM = GetModuleHandleA("JX3RepresentX64.dll");
+                                void* fs = (repM != NULL)
+                                    ? *(void**)((BYTE*)repM + 0xEDDFE0) : NULL;
+                                logf("[host] frame60: rep fs global=%p (+0x128=%p)", fs,
+                                     (fs != NULL) ? *(void**)((BYTE*)fs + 0x128) : NULL);
+                                if (fs != NULL)
                                 {
-                                    void* buf = calloc(1, 0x4C0);
-                                    if (buf != NULL)
+                                    // the rep installs its own file-IO into SemanticX64
+                                    // (SO3Represent init region 0x3E43B5/0x3E68E0):
+                                    // SetFileIOFunctions(open,close,seek,size).
+                                    void* setFIO = *(void**)((BYTE*)repM + 0x109AAE8);
+                                    if (setFIO != NULL)
                                     {
-                                        void* obj = ((void* (__fastcall *)(void*))
-                                                     ((BYTE*)ad + 0xF5940))(buf);
-                                        if (obj != NULL)
+                                        ((void (__fastcall *)(void*, void*, void*, void*))setFIO)(
+                                            (BYTE*)repM + 0x788D, (BYTE*)repM + 0x1EB0,
+                                            (BYTE*)repM + 0x10DC, (BYTE*)repM + 0x18926);
+                                        logf("[host] frame60: SetFileIOFunctions(rep A) done");
+                                    }
+                                    void* file = ((void* (__fastcall *)(void*, const char*, size_t))
+                                                  ((BYTE*)repM + 0x3F08F0))((BYTE*)fs + 0x120,
+                                                                            "MapConverter", 0);
+                                    char fbuf[130];
+                                    int fi = 0;
+                                    __try
+                                    {
+                                        for (; fi < 128; fi++)
                                         {
-                                            adSub = *(void**)((BYTE*)obj + 0x260);
-                                            logf("[host] frame60: adapter manager=%p sub(+0x260)=%p [sub]=%p",
-                                                 obj, adSub,
-                                                 (adSub != NULL) ? *(void**)adSub : NULL);
-                                            // the inits 0xE6300 performs
-                                            void** ovt = *(void***)obj;
-                                            unsigned char ia[0x40];
-                                            memset(ia, 0, sizeof(ia));
-                                            int i2 = 1;
-                                            void* i3 = obj;
-                                            __try
+                                            char c = *(char*)((BYTE*)file + fi);
+                                            if (c == 0) break;
+                                            fbuf[fi] = (c >= 32 && c < 127) ? c : '?';
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER) { }
+                                    fbuf[fi] = 0;
+                                    logf("[host] frame60: MapConverter file=%p str='%s'", file, fbuf);
+                                    if (file != NULL)
+                                    {
+                                        HMODULE sem = GetModuleHandleA("SemanticX64.dll");
+                                        if (sem == NULL)
+                                            sem = LoadLibraryA("SemanticX64.dll");
+                                        void* rlobj = NULL;
+                                        if (sem != NULL)
+                                        {
+                                            void* (__fastcall *crf)(void) =
+                                                (void* (__fastcall *)(void))GetProcAddress(sem, "CreateRLFile");
+                                            if (crf != NULL)
+                                                rlobj = crf();
+                                        }
+                                        logf("[host] frame60: CreateRLFile -> %p [vt]=%p",
+                                             rlobj, (rlobj != NULL) ? *(void**)rlobj : NULL);
+                                        if (rlobj != NULL && *(void**)rlobj != NULL)
+                                        {
+                                            void** rvt = *(void***)rlobj;
+                                            adSub = ((void* (__fastcall *)(void*, void*, int, int))
+                                                     rvt[2])(rlobj, file, 1, 1);
+                                            logf("[host] frame60: MapConverter mgr=%p [vt]=%p",
+                                                 adSub, (adSub != NULL) ? *(void**)adSub : NULL);
+                                            if (adSub == NULL)
                                             {
-                                                ((long (__fastcall *)(void*, void*, int))
-                                                 ovt[0x20 / 8])(obj, ia, 1);
-                                                ((long (__fastcall *)(void*, void*))
-                                                 ovt[0x38 / 8])(obj, &i2);
-                                                ((long (__fastcall *)(void*, void*))
-                                                 ovt[0x48 / 8])(obj, &i3);
-                                                logf("[host] frame60: adapter inits done [sub]=%p",
-                                                     (adSub != NULL) ? *(void**)adSub : NULL);
+                                                // variant B open function
+                                                void* setFIO2 = *(void**)((BYTE*)repM + 0x109AAE8);
+                                                if (setFIO2 != NULL)
+                                                {
+                                                    ((void (__fastcall *)(void*, void*, void*, void*))setFIO2)(
+                                                        (BYTE*)repM + 0x788D, (BYTE*)repM + 0x1EB0,
+                                                        (BYTE*)repM + 0x10DC, (BYTE*)repM + 0x18926);
+                                                    adSub = ((void* (__fastcall *)(void*, void*, int, int))
+                                                             rvt[2])(rlobj, file, 1, 1);
+                                                    logf("[host] frame60: MapConverter mgr(B)=%p",
+                                                         adSub);
+                                                }
                                             }
-                                            __except (EXCEPTION_EXECUTE_HANDLER)
-                                            { logf("[host] frame60: adapter init fault"); }
                                         }
                                     }
                                 }
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER)
-                            { logf("[host] frame60: adapter manager fault"); }
+                            { logf("[host] frame60: MapConverter setup fault"); }
                             // priority: file module iface, package module iface,
                             // adapter sub, XLogic
                             // validate candidates: must have a readable non-null

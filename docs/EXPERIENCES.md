@@ -2273,3 +2273,26 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   Get3DEngineXLogicInterface / material system / the engine file manager), the exe's
   KJX3ConvertResourceModule interface, or the KJX3PackageModule (test alone).
 - Evidence: host_exe42-46.out.
+
+## 2026-10-04 - Phase D BREAKTHROUGH: the resource manager is the MapConverter (game's own path)
+
+- The `[singleton+0x1A0+0x260]` resource manager is built by the game at
+  rep+0x834BE0 (part of the singleton's subsystem setup, one of ~30 named
+  subsystems): `mgr = CreateRLFile()->vt[2](openedFile, 1, 1)` where
+  `openedFile` = the resolved path string for "MapConverter"
+  ("Represent/common/map_converter.krl.txt").
+- `CreateRLFile` = SemanticX64.dll export (0x1F790, no args, 0x68-byte object).
+- The opener = rep+0x3F08F0 (`[rep+0xEDDFE0]+0x120` file system -> vt[0xC](name)
+  -> path string). `[rep+0xEDDFE0]` is the rep main object - **non-null at runtime**
+  (DLL-initialized), its +0x128 = the file system.
+- SemanticX64's file open (0x231D0 -> [0x61098] hook) needs the rep's file-IO:
+  `SetFileIOFunctions(rep+0x788D, rep+0x1EB0, rep+0x10DC, rep+0x18926)`
+  (rep IAT 0x109AAE8; installed by the rep at 0x3E43B5/0x3E68E0 in the
+  SO3Represent init region). Without it the open returns null; with it, works.
+- Result (host_exe51.out): `MapConverter mgr=...05E8 [vt]=...D320` (valid vtable),
+  **`real CreateRLScene` no longer faults** - the lookup executes fully.
+  CreateRLScene currently returns 0 (the by-name item lookup or the map load
+  did not produce a scene; GetRLScene(2)=0 afterwards) - next: disassemble
+  CreateRLScene return paths + check the name/type args.
+- Lesson: two wrong-offset arithmetic slips (0x678D vs 0x788D) caused a bogus
+  function pointer; always byte-verify rip-relative lea targets.
