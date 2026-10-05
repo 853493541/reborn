@@ -1088,6 +1088,8 @@ internal static class RebornClient
         bool modeSwitched = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
+        bool demoCrossBack = Env("RC_CROSS_BACK", "0") == "1", demoCrossBackDone = false;
+        bool demoCrossLogged = false;
         bool supDbg = Env("RC_SUPDBG", "0") == "1";
         int supDbgN = 0;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -2095,7 +2097,28 @@ internal static class RebornClient
             if (demoCollide)
             {
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
-                pW = now >= 3000 && now < 9000;
+                if (demoCrossBack)
+                {
+                    // terrain streaming A/B harness: run RC_DEMO_DIR one way
+                    // across a region border for 7.5 s, reverse, run 5.5 s back
+                    // (RC_SPAWN near the border). Region-load telemetry is
+                    // logged per load + summarized at exit.
+                    if (now >= 3000 && !demoCrossLogged)
+                    {
+                        demoCrossLogged = true;
+                        Log(string.Format("cross run start dir=({0:F1},{1:F1}) pos=({2:F0},{3:F0})",
+                            demoDirX, demoDirZ, px, pz));
+                    }
+                    if (now >= 10500 && !demoCrossBackDone)
+                    {
+                        demoCrossBackDone = true;
+                        demoDirX = -demoDirX; demoDirZ = -demoDirZ;
+                        Log(string.Format("cross run reverse dir=({0:F1},{1:F1}) pos=({2:F0},{3:F0})",
+                            demoDirX, demoDirZ, px, pz));
+                    }
+                    pW = now >= 3000 && now < 16000;
+                }
+                else pW = now >= 3000 && now < 9000;
             }
             // scripted jump-only probe (RC_DEMO_JUMP=1): one full jump at t=5.5 s
             // (lands on a heartbeat sample mid-air), no walking - vertical
@@ -4075,6 +4098,7 @@ internal static class RebornClient
             }
             if (autoRunMs > 0 && now >= autoRunMs) break;
         }
+        if (sampler != null) Log("terrain stats " + sampler.StatsLine());
         Log("DONE");
     }
 

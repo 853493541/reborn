@@ -1,6 +1,12 @@
 // Height sampler on top of the real terrain data loader
 // (PhysicsEngine::KG3D_PhysxTerrainDataLoader_Source::LoadRegion).
 // Copied from engine_host_spike/MapSpike.cs so the product client is self-contained.
+//
+// Streaming telemetry: a region buffer is (size+1)^2 floats (~1 MB), and a region
+// change loads synchronously inside the movement tick - the only terrain-side
+// hitch source. Every load is timed and the totals are logged at exit
+// (`terrain stats ...`), so a scripted border-crossing run is reproducible
+// before/after evidence.
 using System;
 using System.Runtime.InteropServices;
 
@@ -43,6 +49,12 @@ internal sealed class TerrainSampler : IDisposable
     bool _hasHoles;
     float _cell, _originX, _originZ;
     Action<string> _log;
+
+    // streaming telemetry (per-run load cost)
+    public int Loads;
+    public double LoadMsTotal;
+    public double LoadMsMax;
+    public double LastLoadMs;
 
     static float ToF(IntPtr p, int off)
     {
@@ -111,6 +123,8 @@ internal sealed class TerrainSampler : IDisposable
     void EnsureRegion(int ix, int iz)
     {
         if (ix == _curIx && iz == _curIz) return;
+        System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+        bool ok = false;
         try
         {
             IntPtr vt = Marshal.ReadIntPtr(_loader);
@@ -118,9 +132,8 @@ internal sealed class TerrainSampler : IDisposable
             IntPtr a = Marshal.AllocHGlobal(8), b = Marshal.AllocHGlobal(8), c = Marshal.AllocHGlobal(8);
             try
             {
-                int ok = load(_loader, ix, iz, _buf, _count, a, b, c);
-                if (ok != 0) { _curIx = ix; _curIz = iz; }
-                else _log("LoadRegion failed (" + ix + "," + iz + ")");
+                ok = load(_loader, ix, iz, _buf, _count, a, b, c) != 0;
+                if (ok) { _curIx = ix; _curIz = iz; }
             }
             finally { Marshal.FreeHGlobal(a); Marshal.FreeHGlobal(b); Marshal.FreeHGlobal(c); }
 
@@ -146,6 +159,16 @@ internal sealed class TerrainSampler : IDisposable
             }
         }
         catch (Exception e) { _log("EnsureRegion ex: " + e.Message); }
+        sw.Stop();
+        Loads++;
+        LastLoadMs = sw.Elapsed.TotalMilliseconds;
+        LoadMsTotal += LastLoadMs;
+        if (LastLoadMs > LoadMsMax) LoadMsMax = LastLoadMs;
+        if (ok)
+            _log(string.Format("terrain load ({0},{1}) ms={2:F1} holes={3}",
+                ix, iz, LastLoadMs, _hasHoles ? 1 : 0));
+        else
+            _log(string.Format("LoadRegion failed ({0},{1}) ms={2:F1}", ix, iz, LastLoadMs));
     }
 
     float H(int idx)
@@ -209,6 +232,13 @@ internal sealed class TerrainSampler : IDisposable
     public int HoleRegionX { get { return _holeIx; } }
     public int HoleRegionZ { get { return _holeIz; } }
     public int RegionSize { get { return _size; } }
+
+    // streaming telemetry summary (exit log / A-B runs)
+    public string StatsLine()
+    {
+        return string.Format("terrLoads={0} msTotal={1:F1} msMax={2:F1} last={3:F1}",
+            Loads, LoadMsTotal, LoadMsMax, LastLoadMs);
+    }
 
     public byte[] HoleMaskCopy()
     {
