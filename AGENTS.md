@@ -281,6 +281,13 @@ dotnet run --project ui-process-app
   log/timestamp outputs; kill stale hosts before rebuilds; never run two engine clients in
   the same memory namespace (concurrent isolated feature builds are allowed — §2);
   commit recon dumps so they are never redone.
+- **Background processes**: never launch long-lived processes (emulator, stub, watchers)
+  with `Start-Process` from the tool shell — the orphaned child inherits the shell's
+  stdout/stderr pipe and every subsequent tool command is blocked until that child exits
+  (2026-10-04: a 3600 s `--observe` emulator stalled the session 58 min). Launch them via
+  WMI wrappers instead: `Invoke-CimMethod Win32_Process Create -Arguments @{CommandLine =
+  'cmd /c C:\jx3tmp\run_<x>.cmd'}` (WMI children inherit no tool handles; proven recipe:
+  `run_stub.cmd`, `run_vspam.cmd`, `run_emul.cmd`).
 - **Binaries**: never open game assets/binaries with Read; use `tools/` scanners
   (`gbk_grep.py`, `extract_*`, `scan_*`); prefer indexes (`filepath.ini`, `tani.rt`).
 

@@ -1736,3 +1736,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Evidence: doc sec.44; string scan 0x7CC280-0x7CC980.
 - Outcome: P2 implementation plan set (Reborn.Gateway, no client changes); next = map the
   handshake/verify message layouts, then implement the gateway stub.
+
+### 2026-10-04 — Session ops: 58-minute stall root-caused (tool pipe inheritance) + fix
+- Did: audited the hour between 21:55 and 22:53 (no commands executed) with a controlled repro:
+  (a) Start-Process child (30 s) from a tool call -> command logic ended in 28 ms but the tool
+  could not finish until its timeout, and the NEXT command was blocked until the child exited
+  (H entered 23:23:02, child ran 23:22:16.6-23:22:46.6); (b) same child via WMI wrapper -> next
+  command ran immediately while the child was alive (J entered 23:23:43.6).
+- Findings: a Start-Process child inherits the tool shell's stdout/stderr pipe handles; the
+  tool cannot see EOF while any holder lives. When a tool call is timeout-killed, the orphan
+  keeps the pipe and blocks every subsequent command until it exits. In the real incident the
+  orphan was the launcher emulator started with --observe 3600; its exit at 22:53:06 released
+  the next command at 22:53:35 (gap 21:55:33-22:53:35 = the emulator's remaining lifetime).
+  Same pattern explains earlier long gaps whenever the emulator ran with a long observe.
+- Evidence: emul_br1.txt ("[3600.02] still alive at observe limit", mtime 22:53:06); repro
+  timestamps above; AGENTS.md §13 new Background-processes rule.
+- Outcome: rule added; long-lived processes must be WMI-launched (run_emul.cmd pattern).
+  Also: 22:45:36 gateway connect remains unattributed (not from any of my commands).
